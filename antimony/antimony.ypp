@@ -1,0 +1,455 @@
+/* Infix notation calculator. */
+
+%{
+  //#define YYSTYPE double
+#include <math.h>
+#include <stdio.h>
+#include <string>
+#include <ctype.h>
+#include <fstream>
+#include <iostream>
+#include <set>
+
+#include "antimony_api.h"
+#include "registry.h"
+#include "rd_type.h"
+#include "module.h"
+
+  class Formula;
+  class ReactantList;
+  class Reaction;
+  class Variable;
+
+  using namespace std;
+  int yylex(void);
+  void yyerror(char const *);
+  bool CaselessStrCmp(const string& lhs, const string& rhs);
+  Registry g_registry;
+%}
+
+/*Bison declarations */
+%union {
+  char character;
+  const string* word;
+  double num;
+  rd_type reactionDivider;
+  Formula* formula;
+  Module* module;
+  ReactantList* reactantList;
+  Reaction* reaction;
+  Variable* variable;
+  Variable* localvariable;
+}
+
+%type <character> mathThing
+%type <formula> formula
+%type <module> module
+%type <reactantList> reactantList
+%type <reaction> reaction
+%type <reactionDivider> reactionDivider
+%type <variable> variable localvariable
+
+%left '(' ')' '+' '-' '*' '/' '^'
+
+%token <num> NUM
+%token <word> WORD MODNAME
+%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES PROTEIN DNA GENE PROMOTER OPERATOR VAR CONST DASHES ELLIPSES
+
+%debug
+%error-verbose
+
+%% /* The grammar: */
+
+input:          /* empty */
+        |       input module { cout << endl << $2->ToString() << endl << endl; }
+        |       input modulepart {}
+        |       input error lineend {cerr << "(discarding line " << @2.last_line << " and continuing...)" << endl; yyerrok; }
+        ;
+
+module:         MODULE WORD {g_registry.NewCurrentModule($2);} '(' variableexportlist ')' modulebody END
+                {
+                  $$ = g_registry.CurrentModule();
+                  $$->CompileExportLists();
+                  g_registry.RevertToPreviousModule();
+                }
+        |       MODULE WORD {g_registry.NewCurrentModule($2);} modulebody END
+                {
+                  $$ = g_registry.CurrentModule();
+                  $$->CompileExportLists();
+                  g_registry.RevertToPreviousModule();
+                }
+        ;
+
+variableexportlist:
+                /* empty */ {}
+        |       variable {g_registry.AddVariableToCurrentExportList($1); }
+        |       variableexportlist ',' variable { g_registry.AddVariableToCurrentExportList($3); }
+        ;
+
+variable:       WORD {$$ = g_registry.AddVariableToCurrent($1); }
+        |       variable '.' WORD {$$ = $1->GetSubVariable($3); assert($$ != NULL);} //LS DEBUG throw error
+        |       '<' variable '>' {$$ = $2; $$->SetIsConst(true);}
+        ;
+
+//Nothing here needs to actually do anything, since we've already added these
+// things to the current module.
+modulebody:     modulepart {}
+        |       modulebody modulepart {}
+        ;
+
+modulepart:     reaction lineend {}
+        |       assignment lineend {}
+        |       submodule lineend {}
+        |       varinitialize lineend {}
+        |       dnastrand lineend {}
+        |       lineend {}
+        ;
+
+reaction:       variable ':' { g_registry.CurrentModule()->SetReactionVariable($1); } reactantList reactionDivider reactantList ';' formula
+                {
+                  $$ = g_registry.AddNewReactionToCurrent($4, $5, $6, $8, g_registry.CurrentModule()->GetReactionVariable());
+                }
+        |       reactantList reactionDivider reactantList ';' formula
+                {
+                  $$ = g_registry.AddNewReactionToCurrent($1, $2, $3, $5);
+                }
+        ;
+
+reactantList:   /* empty */ {$$ = g_registry.NewBlankReactantList(); }
+        |       variable {$$ = g_registry.NewBlankReactantList(); $$->AddReactant($1); }
+        |       NUM variable {$$ = g_registry.NewBlankReactantList(); $$->AddReactant($2, $1); }
+        |       reactantList '+' variable {$$ = $1; $1->AddReactant($3); }
+        |       reactantList '+' NUM variable {$$ = $1; $1->AddReactant($4, $3); }
+        ;
+
+reactionDivider:
+                BECOMES   {$$ = rdBecomes;}
+        |       INHIBITS  {$$ = rdInhibits;}
+        |       ACTIVATES {$$ = rdActivates;}
+        |       INFLUENCES  {$$ = rdInfluences;}
+        ;
+
+formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
+        |       ELLIPSES {$$ = g_registry.NewBlankFormula(); $$->AddEllipses();}
+        |       variable {$$ = g_registry.NewBlankFormula(); $$->AddVariable($1); }
+        |       NUM  {$$ = g_registry.NewBlankFormula(); $$->AddNum($1); }
+        |       mathThing {$$ = g_registry.NewBlankFormula(); $$->AddMathThing($1); }
+        |       formula variable {$$ = $1; $1->AddVariable($2); }
+        |       formula NUM  {$$ = $1; $1->AddNum($2); }
+        |       formula mathThing {$$ = $1; $1->AddMathThing($2); }
+        ;
+
+mathThing:      '+' {$$ = '+';}
+        |       '-' {$$ = '-';}
+        |       '*' {$$ = '*';}
+        |       '/' {$$ = '/';}
+        |       '(' {$$ = '(';}
+        |       ')' {$$ = ')';}
+        |       '^' {$$ = '^';}
+        |       ',' {$$ = ',';}
+        ;
+
+lineend:        ';' {}
+        |       '\n' {}
+        ;
+
+assignment:     variable '=' { g_registry.SetAssignmentVariable($1); } formula {g_registry.GetAssignmentVariable()->SetFormula($4); }
+        ;
+
+submodule:      variable ':' MODNAME '(' {$1->ImportModule($3);} variableimportlist ')'
+        |       MODNAME '(' {g_registry.CurrentModule()->ImportModule($1);} variableimportlist ')'
+        ;
+variableimportlist:
+                /* empty */ {}
+        |       variable {g_registry.AddVariableToCurrentImportList($1); }
+        |       variableimportlist ',' variable { g_registry.AddVariableToCurrentImportList($3); }
+        |       variableimportlist ',' variable '=' localvariable {$3->Synchronize($5); }
+        ;
+
+localvariable:  WORD {$$ = g_registry.GetImportedModuleSubVariable($1); }
+        |       localvariable '.' WORD {$$ = $1->GetSubVariable($3); }
+        ;
+
+varinitialize:  specinit { }
+        |       protinit { }
+        |       dnainit { }
+        |       geneinit { }
+        |       promoterinit { }
+        |       operatorinit { }
+        |       constprotinit { }
+        |       constgeneinit { }
+        |       constpromoterinit { }
+        |       constoperatorinit { }
+        |       constinit { }
+        ;
+
+specinit:       SPECIES variable {$2->SetType(varSpeciesUndef); }
+        |       VAR SPECIES variable {$3->SetType(varSpeciesUndef); }
+        |       specinit ',' variable {$3->SetType(varSpeciesUndef); }
+        ;
+
+protinit:       PROTEIN variable {$2->SetType(varSpeciesProtein); }
+        |       VAR PROTEIN variable {$3->SetType(varSpeciesProtein); }
+        |       protinit ',' variable {$3->SetType(varSpeciesProtein); }
+        ;
+
+dnainit:        DNA variable {$2->SetType(varDNA); }
+        |       VAR DNA variable {$3->SetType(varDNA); }
+        |       dnainit ',' variable {$3->SetType(varDNA); }
+        ;
+
+geneinit:       GENE variable {$2->SetType(varReactionGene); }
+        |       VAR GENE variable {$3->SetType(varReactionGene); }
+        |       geneinit ',' variable {$3->SetType(varReactionGene); }
+        ;
+
+promoterinit:   PROMOTER variable {$2->SetType(varFormulaPromoter); }
+        |       VAR PROMOTER variable {$3->SetType(varFormulaPromoter); }
+        |       promoterinit ',' variable {$3->SetType(varFormulaPromoter); }
+        ;
+
+operatorinit:   OPERATOR variable {$2->SetType(varFormulaOperator); }
+        |       VAR OPERATOR variable {$3->SetType(varFormulaOperator); }
+        |       operatorinit ',' variable {$3->SetType(varFormulaOperator); }
+        ;
+
+constprotinit:  CONST PROTEIN variable {$3->SetType(varSpeciesProtein);
+                                        $3->SetIsConst(true);}
+        |       constprotinit ',' variable {$3->SetType(varSpeciesProtein); 
+                                            $3->SetIsConst(true)}
+        ;
+
+constgeneinit:  CONST GENE variable {$3->SetType(varReactionGene); 
+                                     $3->SetIsConst(true)}
+        |       constgeneinit ',' variable {$3->SetType(varReactionGene); 
+                                            $3->SetIsConst(true)}
+        ;
+
+constpromoterinit:
+                CONST PROMOTER variable {$3->SetType(varFormulaPromoter); 
+                                         $3->SetIsConst(true)}
+        |       constpromoterinit ',' variable {$3->SetType(varFormulaPromoter); 
+                                                $3->SetIsConst(true)}
+        ;
+
+constoperatorinit:
+                CONST OPERATOR variable {$3->SetType(varFormulaOperator); 
+                                         $3->SetIsConst(true)}
+        |       constoperatorinit ',' variable {$3->SetType(varFormulaOperator); 
+                                                $3->SetIsConst(true)}
+        ;
+
+constinit:      CONST variable {$2->SetIsConst(true)}
+        |       constinit ',' variable {$3->SetIsConst(true)}
+        ;
+
+dnastrand:      DASHES variable { g_registry.SetNewUpstreamOpen($2);}
+        |       DASHES dnamiddle {g_registry.GetWorkingStrand()->SetOpenUpstream(); }
+        |       dnamiddle variable {g_registry.SetDownstreamEnd($2);}
+        |       DASHES dnamiddle variable {g_registry.GetWorkingStrand()->SetOpenUpstream(); g_registry.SetDownstreamEnd($3);}
+        |       dnamiddle { }
+        ;
+
+dnamiddle:      variable DASHES {g_registry.SetNewDownstreamOpen($1);}
+        |       dnamiddle variable DASHES {g_registry.SetDownstreamOpen($2);}
+        ;
+
+%%
+
+
+void yyerror(char const *s)
+{
+    cerr << s << endl;
+}
+
+int yylex(void)
+{
+  //If we're done with the file:
+  if (g_registry.input.eof()) {
+    return 0;
+  }
+  if (!g_registry.input.good()) {
+    //Something else went wrong!
+    //LS DEBUG:  Maybe throw an exception or an error or something.
+    return -1;
+  }
+
+  char cc = 0;
+  g_registry.input.get(cc);
+
+  yylloc.first_line = yylloc.last_line;
+
+  // Skip white space.
+  while (cc == ' ' ||
+         cc == '\t') {
+    g_registry.input.get(cc);
+  }
+
+  // Parse words
+  if (isalpha(cc) || cc == '_') {
+    string word;
+    while (isalpha(cc) || isdigit(cc) || cc == '_') {
+      word += cc;
+      g_registry.input.get(cc);
+    }
+    g_registry.input.unget();
+    if (CaselessStrCmp(word, "module")) {
+      return MODULE;
+    }
+    if (CaselessStrCmp(word, "model")) {
+      return MODULE;
+    }
+    if (CaselessStrCmp(word, "end")) {
+      return END;
+    }
+    if (CaselessStrCmp(word, "species")) {
+      return SPECIES;
+    }
+    if (CaselessStrCmp(word, "protein")) {
+      return PROTEIN;
+    }
+    if (CaselessStrCmp(word, "DNA")) {
+      return DNA;
+    }
+    if (CaselessStrCmp(word, "gene")) {
+      return GENE;
+    }
+    if (CaselessStrCmp(word, "promoter")) {
+      return PROMOTER;
+    }
+    if (CaselessStrCmp(word, "operator")) {
+      return OPERATOR;
+    }
+    if (CaselessStrCmp(word, "var")) {
+      return VAR;
+    }
+    if (CaselessStrCmp(word, "const")) {
+      return CONST;
+    }
+    if (CaselessStrCmp(word, "ext")) {
+      return CONST;
+    }
+    //Otherwise, it's a user-defined variable:
+    yylval.word = g_registry.AddWord(word);
+    //cout << "\tRead word '" << word << "'." << endl;
+    if (g_registry.IsModuleName(word)) {
+      return MODNAME;
+    }
+    return WORD;
+  }
+
+  // Parse numbers
+  if (isdigit(cc)) {
+    double number;
+    g_registry.input.unget();
+    g_registry.input >> number;
+    yylval.num = number;
+    //Now check to see if the last thing read was an 'E'/'e'
+    g_registry.input.unget();
+    g_registry.input.get(cc);
+    if (cc == 'e' || cc == 'E') {
+      g_registry.input.unget();
+    }
+    return NUM;
+  }
+
+  //Parse reaction dividers and dashes
+  if (cc == '-') {
+    g_registry.input.get(cc);
+    if (cc == '>') {
+      return BECOMES;
+    }
+    if (cc == '|') {
+      return INHIBITS;
+    }
+    if (cc == 'o') {
+      return ACTIVATES;
+    }
+    if (cc == '(') {
+      return INFLUENCES;
+    }
+    if (cc == '-') {
+      while (cc == '-') {
+        g_registry.input.get(cc);
+      }
+      g_registry.input.unget();
+      return DASHES;
+    }
+    g_registry.input.unget();
+    cc = '-';
+    return cc;
+  }
+
+  //Skip comments:
+  if (cc == '/') {
+    g_registry.input.get(cc);
+    if (cc == '/') {
+      while (cc != '\n' && cc != '\r') {
+        g_registry.input.get(cc);
+      }
+    }
+    else {
+      g_registry.input.unget();
+      cc = '/';
+    }
+  }
+
+  //Parse ellipses
+  if (cc == '.') {
+    char c1, c2;
+    g_registry.input.get(c1);
+    g_registry.input.get(c2);
+    if (c1=='.' && c2=='.') {
+      return ELLIPSES;
+    }
+    g_registry.input.unget();
+    g_registry.input.unget();
+  }
+
+  //This converts PC and Mac end-of-line characters to \n:
+  if (cc == '\r') {
+    g_registry.input.get(cc);
+    if (cc != '\n') {
+      g_registry.input.unget();
+    }
+    cc = '\n';
+  }
+  if (cc == '\n') {
+    ++yylloc.last_line;
+  }
+  return cc;
+}
+
+bool CaselessStrCmp(const string& lhs, const string& rhs)
+{
+
+  if (lhs.size() != rhs.size()) return false;
+
+  for (size_t i = 0; i < lhs.size(); ++i) {
+    if (toupper(lhs[i]) != toupper(rhs[i])) return false;
+  }
+  return true;
+
+} /* CaselessStrCmp */
+
+int main(long argc, char** argv)
+{
+  string filename="input.txt";
+  if (argc > 2) {
+    cout << "Cannot parse more than one file." << endl;
+    return 0;
+  }
+  else if (argc == 2) {
+    filename = argv[1];
+  }
+  //yydebug = 1;
+  int retval=loadModel(filename.c_str());
+  cout << g_registry.CurrentModule()->ToString().c_str() << endl << endl;
+  cout << "Jarnac:" << endl;
+  cout << getJarnac("[main]") << endl;
+  cout << endl << "Information from the API:" << endl;
+  printAllDataFor(g_registry.CurrentModule()->GetModuleName().c_str());
+  cout << endl;
+  //printAllDataFor("pushonpushoff");
+  return retval;
+}
