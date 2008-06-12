@@ -8,7 +8,7 @@ namespace Antimony
     public class AntimonyInterface
     {
 
-        const string ANTIMONY_LIB = "C:\\Documents and Settings\\lpsmith\\Desktop\\antimony\\bin\\Antimonyd.dll";
+        const string ANTIMONY_LIB = "Antimonyd";
 
         private static string getStringFromPtr(IntPtr pointer)
         {
