@@ -2390,8 +2390,13 @@ void yyerror(char const *s)
 int yylex(void)
 {
   //If we're done with the file:
-  if (!g_registry.input.good()) {
+  if (g_registry.input.eof()) {
     return 0;
+  }
+  if (!g_registry.input.good()) {
+    //Something else went wrong!
+    //LS DEBUG:  Maybe throw an exception or an error or something.
+    return -1;
   }
 
   char cc = 0;
