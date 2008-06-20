@@ -15,9 +15,12 @@ Module::Module(string name)
     m_exportlist(),
     m_returnvalue(),
     m_currentexportvar(0),
-    m_varsntypes(),
-    m_variablenames(),
-    m_variabletypes()
+    m_uniquevars(),
+    m_rxnleftvarnames(),
+    m_rxnrightvarnames(),
+    m_rxntypes(),
+    m_rxnleftstoichiometries(),
+    m_rxnrightstoichiometries()
 {
 }
 
@@ -28,9 +31,12 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_exportlist(src.m_exportlist),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
-    m_varsntypes(),
-    m_variablenames(),
-    m_variabletypes()
+    m_uniquevars(),
+    m_rxnleftvarnames(),
+    m_rxnrightvarnames(),
+    m_rxntypes(),
+    m_rxnleftstoichiometries(),
+    m_rxnrightstoichiometries()
 {
   SetNewTopName(newtopname);
   SetNamespace(modulename);
@@ -44,9 +50,12 @@ Module::Module(const Module& src)
     m_exportlist(src.m_exportlist),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(src.m_currentexportvar),
-    m_varsntypes(),
-    m_variablenames(),
-    m_variabletypes()
+    m_uniquevars(),
+    m_rxnleftvarnames(),
+    m_rxnrightvarnames(),
+    m_rxntypes(),
+    m_rxnleftstoichiometries(),
+    m_rxnrightstoichiometries()
 {
   //CompileExportLists();
 }
@@ -375,6 +384,14 @@ string Module::GetJarnacConstFormulas(string modulename)
 
 void Module::CompileExportLists()
 {
+  m_uniquevars.clear();
+  m_rxnleftvarnames.clear();
+  m_rxnrightvarnames.clear();
+  m_rxntypes.clear();
+  m_rxnleftstoichiometries.clear();
+  m_rxnrightstoichiometries.clear();
+  m_dna.clear();
+
   //Phase 0:  Error checking for loops
   for (size_t var=0; var<m_variables.size(); var++) {
     //If this is a submodule, we'll be calling the error checking bit soon,
@@ -382,7 +399,8 @@ void Module::CompileExportLists()
     //LS DEBUG:  This doesn't actually work.
     //assert(m_variables[var].CheckDoesNotIncludeSelf()); //LS DEBUG: throw error
   }
-  //Phase 1:  Store the data locally (mostly so we can have consistent pointers for strings)
+  //Store the data locally so we don't have to search sub-modules every time
+  // we want to hand out information
   set<string> varnames;
   char cc = '_';
   pair<set<string>::iterator, bool> nameret;
@@ -402,125 +420,53 @@ void Module::CompileExportLists()
     }
     nameret = varnames.insert(newvar.first.first);
     if (nameret.second || m_variables[var].GetListSeparately()) {
-      m_varsntypes.push_back(newvar);
+      m_uniquevars.push_back(m_variables[var].GetName());
       if (IsReaction(m_variables[var].GetType())) {
-        vector<string> rxn = m_variables[var].GetReaction()->ToStringVecDelimitedBy(cc);
-        rxn.insert(rxn.begin(),newvar.first.first);
-        m_reactionvarnames.push_back(rxn);
-        m_leftstoichiometries.push_back(m_variables[var].GetReaction()->GetLeftStoichiometries());
-        m_rightstoichiometries.push_back(m_variables[var].GetReaction()->GetRightStoichiometries());
+        const Reaction* rxn = m_variables[var].GetReaction();
+        m_rxnleftvarnames.push_back(rxn->LeftToStringVecDelimitedBy(cc));
+        m_rxnrightvarnames.push_back(rxn->RightToStringVecDelimitedBy(cc));
+        m_rxntypes.push_back(rxn->GetType());
+        m_rxnleftstoichiometries.push_back(rxn->GetLeftStoichiometries());
+        m_rxnrightstoichiometries.push_back(rxn->GetRightStoichiometries());
       }
-      else if (m_variables[var].IsDNAStart()) {
+      if (m_variables[var].IsDNAStart()) {
         m_dna.push_back(m_variables[var].GetDNAStringDelimitedBy(cc));
       }
-      else if (m_variables[var].GetType() == varModule) {
+      if (m_variables[var].GetType() == varModule) {
         Module* submod = m_variables[var].GetModule();
         submod->CompileExportLists();
         //Copy over what we've just created:
-        vector<pair<pair<string,string>, pair<string,string> > > subvarsntypes = submod->m_varsntypes;
-        vector<vector<string> > rxnvarnames = submod->m_reactionvarnames;
-        vector<vector<double> > lstoichs = submod->m_leftstoichiometries;
-        vector<vector<double> > rstoichs = submod->m_rightstoichiometries;
-        //And put it in our own vectors, if we don't have them already.
-        for (size_t subvar=0; subvar<subvarsntypes.size(); subvar++) {
-          nameret = varnames.insert(subvarsntypes[subvar].first.first);
-          if (nameret.second) {
-            m_varsntypes.push_back(subvarsntypes[subvar]);
-            if (IsReaction(subvarsntypes[subvar].second.first)) {
+        vector<vector<string> > subvars = submod->m_uniquevars;
+        //And put them in our own vectors, if we don't have them already.
+        for (size_t nsubvar=0; nsubvar<subvars.size(); nsubvar++) {
+          Variable* subvar = GetVariable(subvars[nsubvar]);
+          nameret = varnames.insert(subvar.GetNameDelimitedBy(cc));
+          if (nameret.second) { //Or GetListSeparately()?  LS DEBUG
+            m_uniquevars.push_back(submod->m_uniquevars[nsubvar]);
+            if (IsReaction(subvar.GetType())) {
               //Find the reaction and add it.
-              for (size_t subrxn=0; subrxn<rxnvarnames.size(); subrxn++) {
-                if (rxnvarnames[subrxn][0] == subvarsntypes[subvar].first.first) {
-                  m_reactionvarnames.push_back(rxnvarnames[subrxn]);
-                  m_leftstoichiometries.push_back(lstoichs[subrxn]);
-                  m_rightstoichiometries.push_back(rstoichs[subrxn]);
-                  break;
-                }
-              }
+              const Reaction* rxn = var->GetReaction();
+              m_rxnleftvarnames.push_back(rxn->LeftToStringVecDelimitedBy(cc));
+              m_rxnrightvarnames.push_back(rxn->RightToStringVecDelimitedBy(cc));
+              m_rxndividers.push_back(rxn->GetDivider());
+              m_rxnleftstoichiometries.push_back(rxn->GetLeftStoichiometries());
+              m_rxnrightstoichiometries.push_back(rxn->GetRightStoichiometries());
             }
           }
         }
-        vector<vector<string> > dna = submod->m_dna;
-        m_dna.insert(m_dna.end(), dna.begin(), dna.end());
+        //vector<vector<string> > dna = submod->m_dna;
+        m_dna.insert(m_dna.end(), submod->m_dna.begin(), submod->m_dna.end());
       }
     }
   }
-  
-  //Phase 2:  Store the data for export (vectorize the char* pointers to strings)
-
-  //Sorting lets us hand out sub-vectors without duplicating storage.
-  std::sort(m_varsntypes.begin(), m_varsntypes.end(), VarsNTypesSort);
-  
-  for (size_t var=0; var<m_varsntypes.size(); var++) {
-    m_variablenames.push_back(m_varsntypes[var].first.first.c_str());
-    m_variableformulas.push_back(m_varsntypes[var].first.second.c_str());
-    m_variabletypes.push_back(m_varsntypes[var].second.first.c_str());
-    m_variableconsts.push_back(m_varsntypes[var].second.second.c_str());
-  }
-  for (size_t rxn=0; rxn<m_reactionvarnames.size(); rxn++) {
-    vector<const char*> leftnames;
-    vector<const char*> rightnames;
-    bool left=true;
-    for (size_t var=1; var<m_reactionvarnames[rxn].size()-2; var++) {
-      if (m_reactionvarnames[rxn][var] == "->" ||
-          m_reactionvarnames[rxn][var] == "-|" ||
-          m_reactionvarnames[rxn][var] == "-o" ||
-          m_reactionvarnames[rxn][var] == "-(") {
-        left = false;
-        m_rxndividers.push_back(m_reactionvarnames[rxn][var].c_str());
-      }
-      else if (left) {
-        leftnames.push_back(m_reactionvarnames[rxn][var].c_str());
-      }
-      else {
-        rightnames.push_back(m_reactionvarnames[rxn][var].c_str());
-      }
-    }
-    m_rxnnames.push_back(m_reactionvarnames[rxn][0].c_str());
-    m_rxnrates.push_back(m_reactionvarnames[rxn][m_reactionvarnames[rxn].size()-1].c_str());
-    m_leftnames.push_back(leftnames);
-    m_rightnames.push_back(rightnames);
-    m_leftstoichpointers.push_back(&(m_leftstoichiometries[rxn][0]));
-    m_rightstoichpointers.push_back(&(m_rightstoichiometries[rxn][0]));
-    m_leftsizes.push_back(leftnames.size());
-    m_rightsizes.push_back(rightnames.size());
-  }
-  assert(m_leftnames.size() == m_rightnames.size());
-  for (size_t rxn=0; rxn<m_leftnames.size(); rxn++) {
-    m_leftnamepointers.push_back(&m_leftnames[rxn][0]);
-    m_rightnamepointers.push_back(&m_rightnames[rxn][0]);
-  }
-
-  for (size_t strand=0; strand<m_dna.size(); strand++) {
-    vector<const char*> strandvec;
-    for (size_t element=0; element<m_dna[strand].size(); element++) {
-      strandvec.push_back(m_dna[strand][element].c_str());
-    }
-    m_dnapointers.push_back(strandvec);
-  }
-  for(size_t strand=0; strand<m_dnapointers.size(); strand++) {
-    m_dnalengths.push_back(m_dna[strand].size());
-    m_dnanames.push_back(&(m_dnapointers[strand][0]));
-  }
-    
-}
-
-size_t Module::GetFirstVariableIndexForType(return_type rtype)
-{
-  for (size_t var=0; var<m_variabletypes.size(); var++) {
-    if (AreEquivalent(rtype, StringToVarType(m_variabletypes[var])) &&
-        AreEquivalent(rtype, m_variableconsts[var]==string("const"))) {
-      return var;
-    }
-  }
-  return 0; //I think this is the safest
 }
 
 size_t Module::GetNumVariablesOfType(return_type rtype)
 {
   size_t total = 0;
-  for (size_t var=0; var<m_variabletypes.size(); var++) {
-    if (AreEquivalent(rtype, StringToVarType(m_variabletypes[var])) &&
-        AreEquivalent(rtype, m_variableconsts[var]==string("const"))) {
+  for (size_t var=0; var<m_varsntypes.size(); var++) {
+    if (AreEquivalent(rtype, StringToVarType(m_varsntypes[var].second.first)) &&
+        AreEquivalent(rtype, m_varsntypes[var].second.second==string("const"))) {
       total++;
     }
   }
@@ -645,21 +591,4 @@ bool Module::AreEquivalent(return_type rtype, bool isconst)
   }
   assert(false); //uncaught return_type
   return false;
-}
-
-bool VarsNTypesSort(pair<pair<string,string>, pair<string,string> > v1, pair<pair<string,string>, pair<string,string> > v2)
-{
-  if (v1.second.second == "var" && v2.second.second=="const") {
-    return true;
-  }
-  if (v2.second.second == "var" && v1.second.second=="const") {
-    return false;
-  }
-  
-  if (v1.second.first == v2.second.first) {
-    return (v1.first.first < v2.first.first);
-  }
-  var_type v1type = StringToVarType(v1.second.first);
-  var_type v2type = StringToVarType(v2.second.first);
-  return (v1type < v2type);
 }

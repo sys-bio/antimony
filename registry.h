@@ -33,9 +33,6 @@ public:
   std::ifstream input;
   std::set<std::string> variablenames;
 
-  //For output from the library:
-  std::vector<const char*> m_modulenames;
-  
   void ClearModels();
 
   void NewCurrentModule(const std::string* name);
@@ -70,7 +67,6 @@ public:
   const std::string* GetJarnac(std::string modulename);
 
   size_t GetNumModules();
-  void CompileModuleNames();
 };
 
 extern Registry g_registry;

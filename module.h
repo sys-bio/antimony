@@ -28,36 +28,18 @@ private:
   std::vector<std::string> m_currentrxnvar;
 
   size_t m_currentexportvar;
-  std::vector<std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string> > > m_varsntypes;
-  std::vector<std::vector<std::string> > m_reactionvarnames;
-  std::vector<std::vector<const char*> > m_leftnames;
-  std::vector<std::vector<const char*> > m_rightnames;
-  std::vector<std::vector<double> > m_leftstoichiometries;
-  std::vector<std::vector<double> > m_rightstoichiometries;
+
+  //Storage vectors for output:
+  std::vector<std::vector<std::string> > m_uniquevars;
+  std::vector<std::vector<std::string> > m_rxnleftvarnames;
+  std::vector<std::vector<std::string> > m_rxnrightvarnames;
+  std::vector<rd_type>                   m_rxntypes;
+  std::vector<std::vector<double> >      m_rxnleftstoichiometries;
+  std::vector<std::vector<double> >      m_rxnrightstoichiometries;
 
   std::vector<std::vector<std::string> > m_dna;
-  std::vector<std::vector<const char*> > m_dnapointers;
 
 public:
-  //All Variables:
-  std::vector<const char*> m_variablenames;
-  std::vector<const char*> m_variableformulas;
-  std::vector<const char*> m_variabletypes;
-  std::vector<const char*> m_variableconsts;
-
-  //Reactions:
-  std::vector<const char**> m_leftnamepointers;
-  std::vector<const char**> m_rightnamepointers;
-  std::vector<const double*> m_leftstoichpointers;
-  std::vector<const double*> m_rightstoichpointers;
-  std::vector<const char*> m_rxnnames;
-  std::vector<const char*> m_rxnrates;
-  std::vector<const char*> m_rxndividers;
-  std::vector<size_t> m_leftsizes;
-  std::vector<size_t> m_rightsizes;
-
-  std::vector<const char**> m_dnanames;
-  std::vector<size_t> m_dnalengths;
 
   Module(std::string name);
   Module(const Module& src);

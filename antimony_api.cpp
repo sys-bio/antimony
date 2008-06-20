@@ -358,6 +358,14 @@ LIB_EXTERN const char*** getDNAStrands(const char* moduleName)
   return &(g_registry.GetModule(moduleName)->m_dnanames[0]);
 }
 
+LIB_EXTERN const char** getNthDNAStrand(const char* moduleName, size_t n)
+{
+  char** retval;
+  for (size_t dnabit=0; dnabit<g_registry.GetModule(moduleName)->m_dna[n].size(); dnabit++) {
+    char* dnapart = strdup(m_dna[n][dnabit].c_str());
+  }
+}
+
 LIB_EXTERN const size_t* getDNAStrandSizes(const char* moduleName)
 {
   return &(g_registry.GetModule(moduleName)->m_dnalengths[0]);
