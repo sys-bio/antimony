@@ -246,11 +246,3 @@ size_t Registry::GetNumModules()
   return m_modules.size();
 }
 
-void Registry::CompileModuleNames()
-{
-  m_modulenames.clear();
-  for (size_t mod=0; mod<m_modules.size(); mod++) {
-    m_modulenames.push_back(m_modules[mod].GetModuleName().c_str());
-  }
-}
-

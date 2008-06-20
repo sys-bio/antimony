@@ -93,15 +93,14 @@ string Reaction::ToStringDelimitedBy(char cc) const
   return retval;
 }
 
-vector<string> Reaction::ToStringVecDelimitedBy(char cc) const
+vector<string> Reaction::LeftToStringVecDelimitedBy(char cc) const
 {
-  vector<string> retval = m_left.ToStringVecDelimitedBy(cc);
-  retval.push_back(RDToString(m_divider));
-  vector<string> ret2 = m_right.ToStringVecDelimitedBy(cc);
-  retval.insert(retval.end(), ret2.begin(), ret2.end());
-  retval.push_back(";");
-  retval.push_back(m_formula.ToStringDelimitedBy(cc));
-  return retval;
+  return m_left.ToStringVecDelimitedBy(cc);
+}
+
+vector<string> Reaction::RightToStringVecDelimitedBy(char cc) const
+{
+  return m_right.ToStringVecDelimitedBy(cc);
 }
 
 vector<double> Reaction::GetLeftStoichiometries() const

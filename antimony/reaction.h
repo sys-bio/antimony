@@ -33,11 +33,13 @@ public:
 
   const Formula* GetFormula() const;
   Formula* GetFormula();
+  rd_type GetType() const {return m_divider;};
   bool IsEmpty() const;
   bool LeftIsEmpty() const;
 
   std::string ToStringDelimitedBy(char cc) const;
-  std::vector<std::string> ToStringVecDelimitedBy(char cc) const;
+  std::vector<std::string> LeftToStringVecDelimitedBy(char cc) const;
+  std::vector<std::string> RightToStringVecDelimitedBy(char cc) const;
   std::vector<double> GetLeftStoichiometries() const;
   std::vector<double> GetRightStoichiometries() const;
   bool GetIsConst() const;
