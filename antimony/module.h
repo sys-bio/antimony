@@ -80,10 +80,9 @@ public:
   void CompileExportLists();
   size_t GetFirstVariableIndexForType(return_type rtype);
   size_t GetNumVariablesOfType(return_type rtype);
+  const Variable* GetNthVariableOfType(return_type rtype, size_t n);
   bool   AreEquivalent(return_type rtype, var_type vtype);
   bool   AreEquivalent(return_type rtype, bool isconst);
 };
-
-bool VarsNTypesSort(std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string> >, std::pair<std::pair<std::string, std::string>, std::pair<std::string, std::string> >);
 
 #endif //MODULE_H
