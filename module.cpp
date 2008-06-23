@@ -464,14 +464,33 @@ void Module::CompileExportLists()
 size_t Module::GetNumVariablesOfType(return_type rtype)
 {
   size_t total = 0;
-  for (size_t var=0; var<m_varsntypes.size(); var++) {
-    if (AreEquivalent(rtype, StringToVarType(m_varsntypes[var].second.first)) &&
-        AreEquivalent(rtype, m_varsntypes[var].second.second==string("const"))) {
+  for (size_t var=0; var<m_uniquevars.size(); var++) {
+    if (AreEquivalent(rtype, m_uniquevars[var]->GetType()) &&
+        AreEquivalent(rtype, m_uniquevars[var]->GetIsConst())) {
       total++;
     }
   }
   return total;
 }
+
+const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n)
+{
+  size_t total = 0;
+  for (size_t var=0; var<m_uniquevars.size(); var++) {
+    if (AreEquivalent(rtype, m_uniquevars[var]->GetType()) &&
+        AreEquivalent(rtype, m_uniquevars[var]->GetIsConst())) {
+      if (total == n) {
+        return m_uniquevars[var];
+      }
+      total++;
+    }
+  }
+  //LS DEBUG:  THROW AN ERROR
+  assert(false);
+  return NULL;
+}
+
+
 
 bool Module::AreEquivalent(return_type rtype, var_type vtype)
 {
@@ -526,7 +545,6 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype)
     }
     return false;
   case varReactions:
-  case constReactions:
     if (vtype == varReactionGene ||
         vtype == varReactionUndef) {
       return true;
@@ -543,6 +561,8 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype)
       return true;
     }
     return false;
+  case allSymbols:
+    return true;
   }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -573,7 +593,6 @@ bool Module::AreEquivalent(return_type rtype, bool isconst)
   case varPromoters:
   case varOperators:
   case varGenes:
-  case varReactions:
   case varUnknown:
     return (!isconst);
   case constSpecies:
@@ -583,10 +602,11 @@ bool Module::AreEquivalent(return_type rtype, bool isconst)
   case constPromoters:
   case constOperators:
   case constGenes:
-  case constReactions:
   case constUnknown:
     return (isconst);
+  case varReactions:
   case subModules:
+  case allSymbols:
     return true;
   }
   assert(false); //uncaught return_type

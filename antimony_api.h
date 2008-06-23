@@ -5,7 +5,8 @@
 
 BEGIN_C_DECLS;
 
-enum return_type {varSpecies,
+enum return_type {allSymbols,
+                  varSpecies,
                   varProteins,
                   varFormulas,
                   varAnyDNA,
@@ -29,17 +30,20 @@ enum return_type {varSpecies,
 LIB_EXTERN const int loadModel(const char* filename);
 LIB_EXTERN const char* getJarnac(const char* moduleName);
 
+LIB_EXTERN const size_t getNumModules();
 LIB_EXTERN const char** getModuleNames();
 LIB_EXTERN const char*  getNthModuleName(size_t n);
-LIB_EXTERN const size_t getNumModuleNames();
 LIB_EXTERN bool checkModule(const char* moduleName);
 
+LIB_EXTERN const size_t getNumSymbolsOfType(const char* moduleName, return_type rtype);
 LIB_EXTERN const char** getSymbolNamesOfType(const char* moduleName, return_type rtype);
 LIB_EXTERN const char** getSymbolEquationsOfType(const char* moduleName, return_type rtype);
 LIB_EXTERN const char*  getNthSymbolNameOfType(const char* moduleName, return_type rtype, size_t n);
 LIB_EXTERN const char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, size_t n);
-LIB_EXTERN const size_t getNumSymbolsOfType(const char* moduleName, return_type rtype);
 
+LIB_EXTERN const size_t getNumReactions(const char* moduleName);
+LIB_EXTERN const size_t getNumReactants(const char* moduleName, size_t rxn);
+LIB_EXTERN const size_t getNumProducts(const char* moduleName, size_t rxn);
 
 LIB_EXTERN const char*** getReactantNames(const char* moduleName);
 LIB_EXTERN const char*** getProductNames(const char* moduleName);
@@ -50,10 +54,6 @@ LIB_EXTERN const char*   getNthReactionMthReactantName(const char* moduleName, s
 LIB_EXTERN const char*   getNthReactionMthProductName(const char* moduleName, size_t n, size_t m);
 LIB_EXTERN const double* getNthReactionReactantStoichiometries(const char* moduleName, size_t n);
 LIB_EXTERN const double* getNthReactionProductStoichiometries(const char* moduleName, size_t n);
-
-LIB_EXTERN const size_t getNumReactions(const char* moduleName);
-LIB_EXTERN const size_t* getNumReactants(const char* moduleName);
-LIB_EXTERN const size_t* getNumProducts(const char* moduleName);
 
 LIB_EXTERN const char** getReactionDividers(const char* moduleName);
 LIB_EXTERN const char*  getNthReactionDivider(const char* moduleName, size_t n);
