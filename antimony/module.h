@@ -29,6 +29,8 @@ private:
 
   size_t m_currentexportvar;
 
+public:
+
   //Storage vectors for output:
   std::vector<std::vector<std::string> > m_uniquevars;
   std::vector<std::vector<std::string> > m_rxnleftvarnames;
@@ -38,8 +40,6 @@ private:
   std::vector<std::vector<double> >      m_rxnrightstoichiometries;
 
   std::vector<std::vector<std::string> > m_dna;
-
-public:
 
   Module(std::string name);
   Module(const Module& src);

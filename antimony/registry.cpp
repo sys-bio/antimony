@@ -17,6 +17,8 @@ Registry::Registry()
     m_currentImportedModule(),
     m_scratchFormula(),
     m_mainmodulename(),
+    m_jarnac(),
+    m_cc('_'),
     input(),
     variablenames()
 {
@@ -32,7 +34,8 @@ void Registry::ClearModels()
   m_currentReactantLists.clear();
   m_currentImportedModule.clear();
   m_scratchFormula.Clear();
-  m_mainmodulename.clear();  
+  m_mainmodulename.clear();
+  m_jarnac.clear();
   g_registry.input.clear();
   string main = "[main]";
   NewCurrentModule(&main);
@@ -246,3 +249,11 @@ size_t Registry::GetNumModules()
   return m_modules.size();
 }
 
+string Registry::GetNthModuleName(size_t n)
+{
+  if (n>=m_modules.size()) {
+    //LS DEBUG throw error
+    assert(false);
+  }
+  return m_modules[n].GetName();
+}

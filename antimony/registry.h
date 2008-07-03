@@ -25,6 +25,7 @@ private:
   std::vector<std::string> m_assignmentvar;
   std::string m_mainmodulename;
   std::string m_jarnac;
+  char m_cc;
 
 public:
   Registry();
@@ -67,6 +68,8 @@ public:
   const std::string* GetJarnac(std::string modulename);
 
   size_t GetNumModules();
+  std::string GetNthModuleName(size_t n);
+  char GetCC() {return m_cc;};
 };
 
 extern Registry g_registry;

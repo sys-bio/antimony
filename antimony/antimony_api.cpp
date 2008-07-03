@@ -53,16 +53,12 @@ LIB_EXTERN char** getModuleNames()
 
 LIB_EXTERN char*  getNthModuleName(size_t n)
 {
-  if (g_registry.m_modules.size() <= n) {
-    //LS DEBUG:  THROW ERROR
-    assert(false);
-  }
-  return strdup(g_registry.m_modules[n].GetName());
+  return strdup(g_registry.GetNthModuleName(n).c_str());
 }
 
 LIB_EXTERN size_t getNumModules()
 {
-  return g_registry.m_modules.size();
+  return g_registry.GetNumModules();
 }
 
 LIB_EXTERN bool checkModule(const char* moduleName)
@@ -81,7 +77,7 @@ LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype
   size_t vnum = getNumSymbolsOfType(moduleName, rtype);
   char** names = (char**) malloc(vnum*sizeof(char*));
   for (size_t var=0; var<vnum; var++) {
-    names[var] = getNthSymbolNameOfType(moduleName, rtype, n);
+    names[var] = getNthSymbolNameOfType(moduleName, rtype, var);
   }
   return names;
 }
@@ -91,21 +87,21 @@ LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type r
   size_t vnum = getNumSymbolsOfType(moduleName, rtype);
   char** equations = (char**) malloc(vnum*sizeof(char*));
   for (size_t var=0; var<vnum; var++) {
-    names[var] = getNthSymbolEquationOfType(moduleName, rtype, n);
+    equations[var] = getNthSymbolEquationOfType(moduleName, rtype, var);
   }
-  return names;
+  return equations;
 }
 
 LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rtype, size_t n)
 {
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
-  return strdup(var->GetPrintedNameDelimtedBy(g_registry.GetCC()));
+  return strdup(var->GetNameDelimitedBy(g_registry.GetCC()).c_str());
 }
 
 LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, size_t n)
 {
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
-  return strdup(var->GetFormulaStringDelimitedBy(g_registry.GetCC()));
+  return strdup(var->GetFormulaStringDelimitedBy(g_registry.GetCC()).c_str());
 }
 
 
@@ -125,7 +121,7 @@ LIB_EXTERN size_t getNumReactants(const char* moduleName, size_t rxn)
   return g_registry.GetModule(moduleName)->m_rxnleftvarnames[rxn].size();
 }
 
-LIB_EXTERN size_t getNumProducts(const char* moduleName, size_t rxn);
+LIB_EXTERN size_t getNumProducts(const char* moduleName, size_t rxn)
 {
   if (g_registry.GetModule(moduleName)->m_rxnrightvarnames.size() >= rxn) {
     //LS DEBUG THROW ERROR
@@ -136,59 +132,88 @@ LIB_EXTERN size_t getNumProducts(const char* moduleName, size_t rxn);
 
 LIB_EXTERN char*** getReactantNames(const char* moduleName)
 {
-  return &(g_registry.GetModule(moduleName)->m_leftnamepointers[0]);
+  vector<vector<string> >* lnames = &g_registry.GetModule(moduleName)->m_rxnleftvarnames;
+  char*** allnames = (char***) malloc(lnames->size()*sizeof(char**));
+  for (size_t reaction=0; reaction<lnames->size(); reaction++) {
+    allnames[reaction] = (char**) malloc((*lnames)[reaction].size()*sizeof(char*));
+    for (size_t reactant=0; reactant<(*lnames)[reaction].size(); reactant++) {
+      allnames[reaction][reactant] = strdup((*lnames)[reaction][reactant].c_str());
+    }
+  }
+  return allnames;
 }
 
 LIB_EXTERN char*** getProductNames(const char* moduleName)
 {
-  return &(g_registry.GetModule(moduleName)->m_rightnamepointers[0]);
+  vector<vector<string> >* rnames = &g_registry.GetModule(moduleName)->m_rxnrightvarnames;
+  char*** allnames = (char***) malloc(rnames->size()*sizeof(char**));
+  for (size_t reaction=0; reaction<rnames->size(); reaction++) {
+    allnames[reaction] = (char**) malloc((*rnames)[reaction].size()*sizeof(char*));
+    for (size_t reactant=0; reactant<(*rnames)[reaction].size(); reactant++) {
+      allnames[reaction][reactant] = strdup((*rnames)[reaction][reactant].c_str());
+    }
+  }
+  return allnames;
 }
 
 LIB_EXTERN char*   getNthReactionMthReactantName(const char* moduleName, size_t n, size_t m)
 {
   //LS DEBUG error checking bounds
-  return strdup(g_registry.GetModule(moduleName)->m_rxnleftvarnames[n][m]);
+  return strdup(g_registry.GetModule(moduleName)->m_rxnleftvarnames[n][m].c_str());
 }
 
 LIB_EXTERN char*   getNthReactionMthProductName(const char* moduleName, size_t n, size_t m)
 {
   //LS DEBUG error checking bounds
-  return strdup(g_registry.GetModule(moduleName)->m_rxnrightvarnames[n][m]);
+  return strdup(g_registry.GetModule(moduleName)->m_rxnrightvarnames[n][m].c_str());
 }
 
 LIB_EXTERN double** getReactantStoichiometries(const char* moduleName)
 {
-  return &(g_registry.GetModule(moduleName)->m_leftstoichpointers[0]);
+  vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnleftstoichiometries;
+  double** alllstoichs = (double**) malloc(lsrs->size()*sizeof(double*));
+  for (size_t rxn=0; rxn<lsrs->size(); rxn++) {
+    alllstoichs[rxn] = getNthReactionReactantStoichiometries(moduleName, rxn);
+  }
+  return alllstoichs;
 }
 
 LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName, size_t n)
 {
-  return g_registry.GetModule(moduleName)->m_leftstoichpointers[n];
+  vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnleftstoichiometries;
+  if (n >= lsrs->size()) {
+    //LS DEBUG THROW ERROR
+    assert(false);
+  }
+  double* lstoichs = (double*) malloc((*lsrs)[n].size()*sizeof(double));
+  for (size_t stoich=0; stoich<(*lsrs)[n].size(); stoich++) {
+    lstoichs[stoich] = (*lsrs)[n][stoich];
+  }
+  return lstoichs;
 }
 
 LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
 {
-  return &(g_registry.GetModule(moduleName)->m_rightstoichpointers[0]);
+  vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnrightstoichiometries;
+  double** allrstoichs = (double**) malloc(lsrs->size()*sizeof(double*));
+  for (size_t rxn=0; rxn<lsrs->size(); rxn++) {
+    allrstoichs[rxn] = getNthReactionReactantStoichiometries(moduleName, rxn);
+  }
+  return allrstoichs;
 }
 
 LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, size_t n)
 {
-  return g_registry.GetModule(moduleName)->m_rightstoichpointers[n];
-}
-
-LIB_EXTERN size_t getNumReactions(const char* moduleName)
-{
-  return g_registry.GetModule(moduleName)->m_leftnamepointers.size();
-}
-
-LIB_EXTERN size_t* getNumReactants(const char* moduleName)
-{
-  return &(g_registry.GetModule(moduleName)->m_leftsizes[0]);
-}
-
-LIB_EXTERN size_t* getNumProducts(const char* moduleName)
-{
-  return &(g_registry.GetModule(moduleName)->m_rightsizes[0]);
+  vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnrightstoichiometries;
+  if (n >= lsrs->size()) {
+    //LS DEBUG THROW ERROR
+    assert(false);
+  }
+  double* rstoichs = (double*) malloc((*lsrs)[n].size()*sizeof(double));
+  for (size_t stoich=0; stoich<(*lsrs)[n].size(); stoich++) {
+    rstoichs[stoich] = (*lsrs)[n][stoich];
+  }
+  return rstoichs;
 }
 
 LIB_EXTERN double** getStoichiometryMatrix(const char* moduleName)

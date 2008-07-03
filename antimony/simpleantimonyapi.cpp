@@ -83,7 +83,7 @@ LIB_EXTERN const char* getNthReactantName (char* moduleName, size_t reactionId, 
 }
 
 // Get the reactant stoichiometry for the reactantId in reactionId
-LIB_EXTERN size_t getNthReactantStoichiometry (char* moduleName, size_t reactionId, size_t reactantId)
+LIB_EXTERN double getNthReactantStoichiometry (char* moduleName, size_t reactionId, size_t reactantId)
 {
   const double* list = getNthReactionReactantStoichiometries(moduleName, reactionId);
   return list[reactantId];

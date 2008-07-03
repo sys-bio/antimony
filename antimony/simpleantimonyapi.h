@@ -21,8 +21,8 @@ LIB_EXTERN const char* getNthKineticLaw (char* moduleName, size_t n);
 LIB_EXTERN size_t getNumberReactants (char* moduleName, size_t reactionId);
 LIB_EXTERN size_t getNumberProducts (char* moduleName, size_t reactionId);
 
-LIB_EXTERN size_t getNthReactantStoichiometry (char* moduleName, size_t reactionId, size_t reactantId);
-LIB_EXTERN size_t getNthProductStoichiometry (char* moduleName, size_t reactionId, size_t productId);
+LIB_EXTERN double getNthReactantStoichiometry (char* moduleName, size_t reactionId, size_t reactantId);
+LIB_EXTERN double getNthProductStoichiometry (char* moduleName, size_t reactionId, size_t productId);
 
 LIB_EXTERN void freeMatrix (double** mat, size_t nRows);
 LIB_EXTERN double** myGetStoichiometryMatrix (char* moduleName);
