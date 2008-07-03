@@ -47,7 +47,7 @@ public:
   std::vector<std::string> GetName() const;
   std::vector<std::string> GetPointerName() const {return m_sameVariable;};
   std::string GetNameDelimitedBy(char cc) const;
-  std::string GetFormulaStringDelimitedBy(char cc);
+  std::string GetFormulaStringDelimitedBy(char cc) const;
   var_type GetType() const;
   bool HasFormula() const {return (!m_valFormula.IsEmpty());};
   const Formula* GetFormula() const;

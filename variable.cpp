@@ -45,7 +45,7 @@ string Variable::GetNameDelimitedBy(char cc) const
   return retval;
 }
 
-string Variable::GetFormulaStringDelimitedBy(char cc)
+string Variable::GetFormulaStringDelimitedBy(char cc) const
 {
   if (m_upstream.size() > 0) {
     Variable* upvar=g_registry.GetModule(m_namespace)->GetVariable(m_upstream);
