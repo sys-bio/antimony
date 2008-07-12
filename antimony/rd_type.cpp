@@ -28,6 +28,8 @@ string VarTypeToString(const var_type vtype)
     return "Reaction";
   case varReactionGene:
     return "Gene";
+  case varInteraction:
+    return "Interaction";
   case varFormulaPromoter:
     return "Promoter";
   case varFormulaOperator:
@@ -69,6 +71,9 @@ var_type StringToVarType(const string& name)
   if (CaselessStrCmp(name,"Gene")) {
     return varReactionGene;
   }
+  if (CaselessStrCmp(name,"Interaction")) {
+    return varInteraction;
+  }
   if (CaselessStrCmp(name,"Module")) {
     return varModule;
   }
@@ -85,6 +90,7 @@ bool IsReaction(const var_type vtype)
   case varReactionUndef:
   case varReactionGene:
     return true;
+  case varInteraction:
   case varSpeciesUndef:
   case varSpeciesProtein:
   case varFormulaUndef:
@@ -99,6 +105,21 @@ bool IsReaction(const var_type vtype)
   return false;
 }
 
+bool IsInteraction(const rd_type rdtype)
+{
+  switch(rdtype) {
+  case rdBecomes:
+    return false;
+  case rdActivates:
+  case rdInhibits:
+  case rdInfluences:
+    return true;
+  }
+  assert(false); //uncaught type
+  //LS DEBUG throw error
+  return false;
+}
+
 bool IsSpecies(const var_type vtype)
 {
   switch(vtype) {
@@ -107,6 +128,7 @@ bool IsSpecies(const var_type vtype)
     return true;
   case varReactionUndef:
   case varReactionGene:
+  case varInteraction:
   case varFormulaPromoter:
   case varFormulaOperator:
   case varFormulaUndef:
@@ -130,6 +152,7 @@ bool IsDNA(const var_type vtype)
   case varSpeciesUndef:
   case varSpeciesProtein:
   case varReactionUndef:
+  case varInteraction:
   case varFormulaUndef:
   case varModule:
   case varUndefined:
@@ -151,6 +174,7 @@ bool HasOrIsFormula(const var_type vtype)
     return true;
   case varReactionGene:
   case varReactionUndef:
+  case varInteraction: //LS DEBUG:  is this right?  For Jarnac.
   case varModule:
   case varUndefined:
     return false;
@@ -167,5 +191,52 @@ bool IsReaction(const string& name)
 bool IsSpecies(const string& name)
 {
   return IsSpecies(StringToVarType(name));
+}
+
+string ReturnTypeToString(return_type rtype)
+{
+  switch(rtype) {
+  case allSymbols:
+    return "all symbols";
+  case varSpecies:
+    return "variable species (generic)";
+  case varProteins:
+    return "variable species (protein)";
+  case varFormulas:
+    return "variable formula or equation";
+  case varAnyDNA:
+    return "variable DNA (generic)";
+  case varPromoters:
+    return "variable DNA (promoter)";
+  case varOperators:
+    return "variable DNA (operator)";
+  case varGenes:
+    return "variable DNA (gene; also a reaction)";
+  case allReactions:
+    return "Reaction (generic)";
+  case allInteractions:
+    return "Interaction (generic)";
+  case allUnknown:
+    return "Unknown type";
+  case constSpecies:
+    return "constant/boundary species (generic)";
+  case constProteins:
+    return "constant/boundary species (protein)";
+  case constFormulas:
+    return "constant formula or equation";
+  case constAnyDNA:
+    return "constant DNA (generic)";
+  case constPromoters:
+    return "constant DNA (promoter)";
+  case constOperators:
+    return "constant DNA (operator)";
+  case constGenes:
+    return "constant DNA (gene; also a reaction)";
+  case subModules:
+    return "a submodule";
+  }
+  assert(false); //uncaught type
+  //LS DEBUG throw error
+  return "Uncaught type";
 }
 

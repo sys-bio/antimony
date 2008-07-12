@@ -5,6 +5,9 @@
 
 #include "module.h"
 #include "variable.h"
+#include "registry.h"
+
+extern Registry g_registry;
 
 using namespace std;
 
@@ -18,7 +21,6 @@ Module::Module(string name)
     m_uniquevars(),
     m_rxnleftvarnames(),
     m_rxnrightvarnames(),
-    m_rxntypes(),
     m_rxnleftstoichiometries(),
     m_rxnrightstoichiometries()
 {
@@ -34,7 +36,6 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_uniquevars(),
     m_rxnleftvarnames(),
     m_rxnrightvarnames(),
-    m_rxntypes(),
     m_rxnleftstoichiometries(),
     m_rxnrightstoichiometries()
 {
@@ -53,7 +54,6 @@ Module::Module(const Module& src)
     m_uniquevars(),
     m_rxnleftvarnames(),
     m_rxnrightvarnames(),
-    m_rxntypes(),
     m_rxnleftstoichiometries(),
     m_rxnrightstoichiometries()
 {
@@ -387,7 +387,6 @@ void Module::CompileExportLists()
   m_uniquevars.clear();
   m_rxnleftvarnames.clear();
   m_rxnrightvarnames.clear();
-  m_rxntypes.clear();
   m_rxnleftstoichiometries.clear();
   m_rxnrightstoichiometries.clear();
   m_dna.clear();
@@ -423,11 +422,12 @@ void Module::CompileExportLists()
       m_uniquevars.push_back(m_variables[var].GetName());
       if (IsReaction(m_variables[var].GetType())) {
         const Reaction* rxn = m_variables[var].GetReaction();
-        m_rxnleftvarnames.push_back(rxn->LeftToStringVecDelimitedBy(cc));
-        m_rxnrightvarnames.push_back(rxn->RightToStringVecDelimitedBy(cc));
-        m_rxntypes.push_back(rxn->GetType());
-        m_rxnleftstoichiometries.push_back(rxn->GetLeftStoichiometries());
-        m_rxnrightstoichiometries.push_back(rxn->GetRightStoichiometries());
+        if (rxn->GetType() == rdBecomes) {
+          m_rxnleftvarnames.push_back(rxn->LeftToStringVecDelimitedBy(cc));
+          m_rxnrightvarnames.push_back(rxn->RightToStringVecDelimitedBy(cc));
+          m_rxnleftstoichiometries.push_back(rxn->GetLeftStoichiometries());
+          m_rxnrightstoichiometries.push_back(rxn->GetRightStoichiometries());
+        }
       }
       if (m_variables[var].IsDNAStart()) {
         m_dna.push_back(m_variables[var].GetDNAStringDelimitedBy(cc));
@@ -440,17 +440,19 @@ void Module::CompileExportLists()
         //And put them in our own vectors, if we don't have them already.
         for (size_t nsubvar=0; nsubvar<subvars.size(); nsubvar++) {
           Variable* subvar = GetVariable(subvars[nsubvar]);
-          nameret = varnames.insert(subvar.GetNameDelimitedBy(cc));
+          nameret = varnames.insert(subvar->GetNameDelimitedBy(cc));
           if (nameret.second) { //Or GetListSeparately()?  LS DEBUG
             m_uniquevars.push_back(submod->m_uniquevars[nsubvar]);
-            if (IsReaction(subvar.GetType())) {
+            if (IsReaction(subvar->GetType())) {
               //Find the reaction and add it.
-              const Reaction* rxn = var->GetReaction();
-              m_rxnleftvarnames.push_back(rxn->LeftToStringVecDelimitedBy(cc));
-              m_rxnrightvarnames.push_back(rxn->RightToStringVecDelimitedBy(cc));
-              m_rxndividers.push_back(rxn->GetDivider());
-              m_rxnleftstoichiometries.push_back(rxn->GetLeftStoichiometries());
-              m_rxnrightstoichiometries.push_back(rxn->GetRightStoichiometries());
+              const Reaction* rxn = subvar->GetReaction();
+              if (rxn->GetType() == rdBecomes) {
+                //but only if it's a stoichiometry matrix reaction
+                m_rxnleftvarnames.push_back(rxn->LeftToStringVecDelimitedBy(cc));
+                m_rxnrightvarnames.push_back(rxn->RightToStringVecDelimitedBy(cc));
+                m_rxnleftstoichiometries.push_back(rxn->GetLeftStoichiometries());
+                m_rxnrightstoichiometries.push_back(rxn->GetRightStoichiometries());
+              }
             }
           }
         }
@@ -465,8 +467,8 @@ size_t Module::GetNumVariablesOfType(return_type rtype)
 {
   size_t total = 0;
   for (size_t var=0; var<m_uniquevars.size(); var++) {
-    if (AreEquivalent(rtype, m_uniquevars[var]->GetType()) &&
-        AreEquivalent(rtype, m_uniquevars[var]->GetIsConst())) {
+    if (AreEquivalent(rtype, GetVariable(m_uniquevars[var])->GetType()) &&
+        AreEquivalent(rtype, GetVariable(m_uniquevars[var])->GetIsConst())) {
       total++;
     }
   }
@@ -477,10 +479,10 @@ const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n)
 {
   size_t total = 0;
   for (size_t var=0; var<m_uniquevars.size(); var++) {
-    if (AreEquivalent(rtype, m_uniquevars[var]->GetType()) &&
-        AreEquivalent(rtype, m_uniquevars[var]->GetIsConst())) {
+    if (AreEquivalent(rtype, GetVariable(m_uniquevars[var])->GetType()) &&
+        AreEquivalent(rtype, GetVariable(m_uniquevars[var])->GetIsConst())) {
       if (total == n) {
-        return m_uniquevars[var];
+        return GetVariable(m_uniquevars[var]);
       }
       total++;
     }
@@ -544,14 +546,18 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype)
       return true;
     }
     return false;
-  case varReactions:
+  case allReactions:
     if (vtype == varReactionGene ||
         vtype == varReactionUndef) {
       return true;
     }
     return false;
-  case varUnknown:
-  case constUnknown:
+  case allInteractions:
+    if (vtype == varInteraction) {
+      return true;
+    }
+    return false;
+  case allUnknown:
     if (vtype == varUndefined) {
       return true;
     }
@@ -575,6 +581,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype)
   case varFormulaOperator:
   case varReactionGene:
   case varReactionUndef:
+  case varInteraction:
   case varUndefined:
   case varModule:
     break;
@@ -593,7 +600,6 @@ bool Module::AreEquivalent(return_type rtype, bool isconst)
   case varPromoters:
   case varOperators:
   case varGenes:
-  case varUnknown:
     return (!isconst);
   case constSpecies:
   case constProteins:
@@ -602,13 +608,38 @@ bool Module::AreEquivalent(return_type rtype, bool isconst)
   case constPromoters:
   case constOperators:
   case constGenes:
-  case constUnknown:
     return (isconst);
-  case varReactions:
-  case subModules:
   case allSymbols:
+  case allUnknown:
+  case allReactions:
+  case allInteractions:
+  case subModules:
     return true;
   }
   assert(false); //uncaught return_type
+  return false;
+}
+
+var_type Module::GetTypeFor(std::string varname)
+{
+  for (size_t v=0; v<m_uniquevars.size(); v++) {
+    Variable* var = GetVariable(m_uniquevars[v]);
+    if (varname == var->GetNameDelimitedBy(g_registry.GetCC())) {
+      return var->GetType();
+    }
+  }
+  assert(false); //unknown variable
+  return varUndefined;
+}
+
+bool Module::IsConst(std::string varname)
+{
+  for (size_t v=0; v<m_uniquevars.size(); v++) {
+    Variable* var = GetVariable(m_uniquevars[v]);
+    if (varname == var->GetNameDelimitedBy(g_registry.GetCC())) {
+      return var->GetIsConst();
+    }
+  }
+  assert(false); //unknown variable
   return false;
 }

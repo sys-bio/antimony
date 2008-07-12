@@ -255,5 +255,39 @@ string Registry::GetNthModuleName(size_t n)
     //LS DEBUG throw error
     assert(false);
   }
-  return m_modules[n].GetName();
+  return m_modules[n].GetModuleName();
+}
+
+void Registry::FreeAll()
+{
+  for (size_t i=0; i<m_charstars.size(); i++) {
+    free(m_charstars[i]);
+  }
+  m_charstars.clear();
+  for (size_t i=0; i<m_charstarstars.size(); i++) {
+    free(m_charstarstars[i]);
+  }
+  m_charstarstars.clear();
+  for (size_t i=0; i<m_charstarstarstars.size(); i++) {
+    free(m_charstarstarstars[i]);
+  }
+  m_charstarstarstars.clear();
+
+  for (size_t i=0; i<m_doublestars.size(); i++) {
+    free(m_doublestars[i]);
+  }
+  m_doublestars.clear();
+  for (size_t i=0; i<m_doublestarstars.size(); i++) {
+    free(m_doublestarstars[i]);
+  }
+  m_doublestarstars.clear();
+
+  for (size_t i=0; i<m_size_tstars.size(); i++) {
+    free(m_size_tstars[i]);
+  }
+  m_size_tstars.clear();
+  for (size_t i=0; i<m_rd_typestars.size(); i++) {
+    free(m_rd_typestars[i]);
+  }
+  m_rd_typestars.clear();
 }

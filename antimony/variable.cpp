@@ -47,14 +47,11 @@ string Variable::GetNameDelimitedBy(char cc) const
 
 string Variable::GetFormulaStringDelimitedBy(char cc) const
 {
+  Variable* upvar = NULL;
   if (m_upstream.size() > 0) {
-    Variable* upvar=g_registry.GetModule(m_namespace)->GetVariable(m_upstream);
-    GetFormula()->SetEllipses(upvar);
+    upvar=g_registry.GetModule(m_namespace)->GetVariable(m_upstream);
   }
-  else {
-    GetFormula()->SetEllipses(NULL);
-  }
-  return GetFormula()->ToStringDelimitedBy(cc);
+  return GetFormula()->ToDelimitedStringWithUpvar(cc, upvar);
 }
 
 var_type Variable::GetType() const
@@ -93,6 +90,7 @@ const Formula* Variable::GetFormula() const
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
+  case varInteraction:
     assert(m_valModule.size() == 0);
     //assert(m_valFormula.IsEmpty());
     return m_valReaction.GetFormula();
@@ -128,6 +126,7 @@ Formula* Variable::GetFormula()
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
+  case varInteraction:
     assert(m_valModule.size() == 0);
     //assert(m_valFormula.IsEmpty());
     return m_valReaction.GetFormula();
@@ -212,6 +211,7 @@ bool Variable::GetIsConst() const
     break;
   case varReactionUndef:
   case varReactionGene:
+  case varInteraction:
     if (!m_valReaction.GetIsConst()) {
       return false;
     }
@@ -356,6 +356,7 @@ void Variable::SetFormula(Formula* formula)
     break;
   case varReactionUndef:
   case varReactionGene:
+  case varInteraction:
     assert(m_valModule.size() == 0);
     assert(m_valFormula.IsEmpty());
     //assert(!m_valReaction.IsEmpty());
@@ -388,7 +389,12 @@ Reaction* Variable::SetReaction(Reaction* rxn)
   assert(m_type==varUndefined || m_type==varDNA || IsReaction(m_type));
   m_valReaction = *rxn;
   if (m_type==varUndefined) {
-    m_type = varReactionUndef;
+    if (IsInteraction(rxn->GetType())) {
+      m_type = varInteraction;
+    }
+    else {
+      m_type = varReactionUndef;
+    }
   }
   else if (m_type==varDNA) {
     m_type = varReactionGene;
@@ -456,6 +462,7 @@ void Variable::SetIsConst(bool constant)
     break;
   case varReactionUndef:
   case varReactionGene:
+  case varInteraction:
     if (!m_valReaction.GetIsConst() && constant) {
       assert(false);
       //Throw an error--LS DEBUG

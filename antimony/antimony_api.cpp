@@ -45,6 +45,7 @@ LIB_EXTERN char** getModuleNames()
 {
   size_t nummods = getNumModules();
   char** retval = (char**) malloc(nummods*sizeof(char*));
+  g_registry.m_charstarstars.push_back(retval);
   for (size_t mod=0; mod<nummods; mod++) {
     retval[mod] = getNthModuleName(mod);
   }
@@ -53,7 +54,9 @@ LIB_EXTERN char** getModuleNames()
 
 LIB_EXTERN char*  getNthModuleName(size_t n)
 {
-  return strdup(g_registry.GetNthModuleName(n).c_str());
+  char* retval = strdup(g_registry.GetNthModuleName(n).c_str());
+  g_registry.m_charstars.push_back(retval);
+  return retval;
 }
 
 LIB_EXTERN size_t getNumModules()
@@ -76,6 +79,7 @@ LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype
 {
   size_t vnum = getNumSymbolsOfType(moduleName, rtype);
   char** names = (char**) malloc(vnum*sizeof(char*));
+  g_registry.m_charstarstars.push_back(names);
   for (size_t var=0; var<vnum; var++) {
     names[var] = getNthSymbolNameOfType(moduleName, rtype, var);
   }
@@ -86,6 +90,7 @@ LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type r
 {
   size_t vnum = getNumSymbolsOfType(moduleName, rtype);
   char** equations = (char**) malloc(vnum*sizeof(char*));
+  g_registry.m_charstarstars.push_back(equations);
   for (size_t var=0; var<vnum; var++) {
     equations[var] = getNthSymbolEquationOfType(moduleName, rtype, var);
   }
@@ -95,13 +100,17 @@ LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type r
 LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rtype, size_t n)
 {
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
-  return strdup(var->GetNameDelimitedBy(g_registry.GetCC()).c_str());
+  char* retval = strdup(var->GetNameDelimitedBy(g_registry.GetCC()).c_str());
+  g_registry.m_charstars.push_back(retval);
+  return retval;
 }
 
 LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, size_t n)
 {
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
-  return strdup(var->GetFormulaStringDelimitedBy(g_registry.GetCC()).c_str());
+  char* retval = strdup(var->GetFormulaStringDelimitedBy(g_registry.GetCC()).c_str());
+  g_registry.m_charstars.push_back(retval);
+  return retval;
 }
 
 
@@ -109,21 +118,22 @@ LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type
 
 LIB_EXTERN size_t getNumReactions(const char* moduleName)
 {
-  return g_registry.GetModule(moduleName)->m_rxntypes.size();
+  return g_registry.GetModule(moduleName)->m_rxnleftvarnames.size();
 }
 
 LIB_EXTERN size_t getNumReactants(const char* moduleName, size_t rxn)
 {
-  if (g_registry.GetModule(moduleName)->m_rxnleftvarnames.size() >= rxn) {
+  const Module* mod = g_registry.GetModule(moduleName); 
+  if (mod->m_rxnleftvarnames.size() <= rxn) {
     //LS DEBUG THROW ERROR
     assert(false);
   }
-  return g_registry.GetModule(moduleName)->m_rxnleftvarnames[rxn].size();
+  return mod->m_rxnleftvarnames[rxn].size();
 }
 
 LIB_EXTERN size_t getNumProducts(const char* moduleName, size_t rxn)
 {
-  if (g_registry.GetModule(moduleName)->m_rxnrightvarnames.size() >= rxn) {
+  if (g_registry.GetModule(moduleName)->m_rxnrightvarnames.size() <= rxn) {
     //LS DEBUG THROW ERROR
     assert(false);
   }
@@ -134,10 +144,13 @@ LIB_EXTERN char*** getReactantNames(const char* moduleName)
 {
   vector<vector<string> >* lnames = &g_registry.GetModule(moduleName)->m_rxnleftvarnames;
   char*** allnames = (char***) malloc(lnames->size()*sizeof(char**));
+  g_registry.m_charstarstarstars.push_back(allnames);
   for (size_t reaction=0; reaction<lnames->size(); reaction++) {
     allnames[reaction] = (char**) malloc((*lnames)[reaction].size()*sizeof(char*));
+    g_registry.m_charstarstars.push_back(allnames[reaction]);
     for (size_t reactant=0; reactant<(*lnames)[reaction].size(); reactant++) {
       allnames[reaction][reactant] = strdup((*lnames)[reaction][reactant].c_str());
+      g_registry.m_charstars.push_back(allnames[reaction][reactant]);
     }
   }
   return allnames;
@@ -147,31 +160,23 @@ LIB_EXTERN char*** getProductNames(const char* moduleName)
 {
   vector<vector<string> >* rnames = &g_registry.GetModule(moduleName)->m_rxnrightvarnames;
   char*** allnames = (char***) malloc(rnames->size()*sizeof(char**));
+  g_registry.m_charstarstarstars.push_back(allnames);
   for (size_t reaction=0; reaction<rnames->size(); reaction++) {
     allnames[reaction] = (char**) malloc((*rnames)[reaction].size()*sizeof(char*));
+    g_registry.m_charstarstars.push_back(allnames[reaction]);
     for (size_t reactant=0; reactant<(*rnames)[reaction].size(); reactant++) {
       allnames[reaction][reactant] = strdup((*rnames)[reaction][reactant].c_str());
+      g_registry.m_charstars.push_back(allnames[reaction][reactant]);
     }
   }
   return allnames;
-}
-
-LIB_EXTERN char*   getNthReactionMthReactantName(const char* moduleName, size_t n, size_t m)
-{
-  //LS DEBUG error checking bounds
-  return strdup(g_registry.GetModule(moduleName)->m_rxnleftvarnames[n][m].c_str());
-}
-
-LIB_EXTERN char*   getNthReactionMthProductName(const char* moduleName, size_t n, size_t m)
-{
-  //LS DEBUG error checking bounds
-  return strdup(g_registry.GetModule(moduleName)->m_rxnrightvarnames[n][m].c_str());
 }
 
 LIB_EXTERN double** getReactantStoichiometries(const char* moduleName)
 {
   vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnleftstoichiometries;
   double** alllstoichs = (double**) malloc(lsrs->size()*sizeof(double*));
+  g_registry.m_doublestarstars.push_back(alllstoichs);
   for (size_t rxn=0; rxn<lsrs->size(); rxn++) {
     alllstoichs[rxn] = getNthReactionReactantStoichiometries(moduleName, rxn);
   }
@@ -186,6 +191,7 @@ LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName,
     assert(false);
   }
   double* lstoichs = (double*) malloc((*lsrs)[n].size()*sizeof(double));
+  g_registry.m_doublestars.push_back(lstoichs);
   for (size_t stoich=0; stoich<(*lsrs)[n].size(); stoich++) {
     lstoichs[stoich] = (*lsrs)[n][stoich];
   }
@@ -196,6 +202,7 @@ LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
 {
   vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnrightstoichiometries;
   double** allrstoichs = (double**) malloc(lsrs->size()*sizeof(double*));
+  g_registry.m_doublestarstars.push_back(allrstoichs);
   for (size_t rxn=0; rxn<lsrs->size(); rxn++) {
     allrstoichs[rxn] = getNthReactionReactantStoichiometries(moduleName, rxn);
   }
@@ -210,6 +217,7 @@ LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, 
     assert(false);
   }
   double* rstoichs = (double*) malloc((*lsrs)[n].size()*sizeof(double));
+  g_registry.m_doublestars.push_back(rstoichs);
   for (size_t stoich=0; stoich<(*lsrs)[n].size(); stoich++) {
     rstoichs[stoich] = (*lsrs)[n][stoich];
   }
@@ -269,38 +277,45 @@ LIB_EXTERN size_t   getStoichiometryMatrixNumColumns(const char* moduleName)
 
 LIB_EXTERN char** getReactionRates(const char* moduleName)
 {
-  return &(g_registry.GetModule(moduleName)->m_rxnrates[0]);
+  return getSymbolEquationsOfType(moduleName, allReactions);
 }
 
 LIB_EXTERN char*  getNthReactionRate(const char* moduleName, size_t n)
 {
-  return g_registry.GetModule(moduleName)->m_rxnrates[n];
-}
-
-LIB_EXTERN char** getReactionDividers(const char* moduleName)
-{
-  return &(g_registry.GetModule(moduleName)->m_rxndividers[0]);
-}
-
-LIB_EXTERN char*  getNthReactionDivider(const char* moduleName, size_t n)
-{
-  return g_registry.GetModule(moduleName)->m_rxndividers[n];
+  return getNthSymbolEquationOfType(moduleName, allReactions, n);
 }
 
 LIB_EXTERN char** getReactionNames(const char* moduleName)
 {
-  return &(g_registry.GetModule(moduleName)->m_rxnnames[0]);
+  return getSymbolNamesOfType(moduleName, allReactions);
 }
 
 LIB_EXTERN char*  getNthReactionName(const char* moduleName, size_t n)
 {
-  return g_registry.GetModule(moduleName)->m_rxnnames[n];
+  return getNthSymbolNameOfType(moduleName, allReactions, n);
+}
+
+LIB_EXTERN rd_type* getInteractionDividers(const char* moduleName)
+{
+  size_t numints = g_registry.GetModule(moduleName)->GetNumVariablesOfType(allInteractions);
+  rd_type* typelist = (rd_type*) malloc(numints*sizeof(rd_type));
+  g_registry.m_rd_typestars.push_back(typelist);
+  for (size_t i=0; i<numints; i++) {
+    typelist[i] = getNthInteractionDivider(moduleName, i);
+  }
+  return typelist;
+}
+
+LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, size_t n)
+{
+  return g_registry.GetModule(moduleName)->GetNthVariableOfType(allInteractions, n)->GetReaction()->GetType();
 }
 
 LIB_EXTERN char*** getDNAStrands(const char* moduleName)
 {
   size_t numDNA = getNumDNAStrands(moduleName);
   char*** retval = (char***) malloc(numDNA*sizeof(char**));
+  g_registry.m_charstarstarstars.push_back(retval);
   for (size_t strand=0; strand<numDNA; strand++) {
     retval[strand] = getNthDNAStrand(moduleName, strand);
   }
@@ -315,8 +330,10 @@ LIB_EXTERN char** getNthDNAStrand(const char* moduleName, size_t n)
   }
   size_t dna_length = g_registry.GetModule(moduleName)->m_dna[n].size();
   char** retval = (char**) malloc (dna_length*sizeof (char *));
+  g_registry.m_charstarstars.push_back(retval);
   for (size_t dnabit=0; dnabit<g_registry.GetModule(moduleName)->m_dna[n].size(); dnabit++) {
-    retval[dnabit] = strdup(m_dna[n][dnabit].c_str());;
+    retval[dnabit] = strdup(g_registry.GetModule(moduleName)->m_dna[n][dnabit].c_str());;
+    g_registry.m_charstars.push_back(retval[dnabit]);
   }
   return retval;
 }
@@ -325,9 +342,11 @@ LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName)
 {
   size_t numDNA = getNumDNAStrands(moduleName);
   size_t* retval = (size_t*) malloc(numDNA*sizeof(size_t));
+  g_registry.m_size_tstars.push_back(retval);
   for (size_t strand=0; strand<numDNA; strand++) {
     retval[strand] = g_registry.GetModule(moduleName)->m_dna[strand].size();
   }
+  return retval;
 }
 
 LIB_EXTERN size_t getNumDNAStrands(const char* moduleName)
@@ -335,31 +354,70 @@ LIB_EXTERN size_t getNumDNAStrands(const char* moduleName)
   return g_registry.GetModule(moduleName)->m_dna.size();
 }
 
+
+LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbolName)
+{
+  var_type vtype = g_registry.GetModule(moduleName)->GetTypeFor(symbolName);
+  bool isconst = g_registry.GetModule(moduleName)->IsConst(symbolName);
+  switch(vtype) {
+  case varSpeciesUndef:
+    if (isconst) return constSpecies;
+    return varSpecies;
+  case varSpeciesProtein:
+    if (isconst) return constProteins;
+    return varProteins;
+  case varFormulaUndef:
+    if (isconst) return constFormulas;
+    return varFormulas;
+  case varDNA:
+    if (isconst) return constAnyDNA;
+    return varAnyDNA;
+  case varFormulaPromoter:
+    if (isconst) return constPromoters;
+    return varPromoters;
+  case varFormulaOperator:
+    if (isconst) return constOperators;
+    return varOperators;
+  case varReactionGene:
+    if (isconst) return constGenes;
+    return varGenes;
+  case varReactionUndef:
+    return allReactions;
+  case varInteraction:
+    return allInteractions;
+  case varUndefined:
+    return allUnknown;
+  case varModule:
+    return subModules;
+  }
+  assert(false); //uncaught var_type
+  //LS DEBUG throw error
+  return allUnknown;
+}
+
+
+LIB_EXTERN void freeAll()
+{
+  g_registry.FreeAll();
+}
+
+
 LIB_EXTERN void printAllDataFor(const char* moduleName)
 {
   if (!checkModule(moduleName)) {
     cout << "Couldn't find module: '" << moduleName << "'" << endl;
     return;
   }
-  cout << "All variables and types for module " << moduleName << ":" << endl;
-  const char **variablenames = getAllSymbolNames(moduleName);
-  const char **variabletypes = getSymbolTypes(moduleName);
-  const char **variableconsts = getSymbolConsts(moduleName);
-  const char **variableequations = getSymbolEquations(moduleName);
-  for (size_t var=0; var<getNumSymbols(moduleName); var++) {
-    cout << variablenames[var] << " (" << variabletypes[var] << ", " << variableconsts[var] << ") : " << variableequations[var] << endl;
+  
+  cout << "All variables for module " << moduleName << ":" << endl;
+  char **symbolnames = getSymbolNamesOfType(moduleName, allSymbols);
+  char **symbolequations = getSymbolEquationsOfType(moduleName, allSymbols);
+  size_t numvars = getNumSymbolsOfType(moduleName, allSymbols);
+  for (size_t var=0; var<numvars; var++) {
+    cout << symbolnames[var] << " [" << ReturnTypeToString(getTypeOfSymbol(moduleName, symbolnames[var])) << "] : " << symbolequations[var] << endl;
   }
-
-  cout << endl << "Just the constant values and their formulas:" << endl;
-  const char **cvarnames = getConstSymbolNames(moduleName);
-  const char **cvartypes = getConstSymbolTypes(moduleName);
-  const char **cvarequations = getConstSymbolEquations(moduleName);
-  for (size_t cvar=0; cvar<getNumConstSymbols(moduleName); cvar++) {
-    cout << cvarnames[cvar] << ": " << cvarequations[cvar] << " (" << cvartypes[cvar] << ")" << endl;
-  }
-
   if (getNumDNAStrands(moduleName) > 0) {
-    const char ***dnanames = getDNAStrands(moduleName);
+    char ***dnanames = getDNAStrands(moduleName);
     const size_t *dnanums = getDNAStrandSizes(moduleName);
     cout << endl << "DNA strands:" << endl;
     for (size_t strand=0; strand<getNumDNAStrands(moduleName); strand++) {
@@ -371,21 +429,17 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   }
 
   cout << endl << "Reactions:" << endl;
-  const char ***leftrxnnames = getReactantNames(moduleName);
-  const char ***rightrxnnames = getProductNames(moduleName);
-  const char **rxnnames = getReactionNames(moduleName);
-  const char **rxnrates = getReactionRates(moduleName);
-  const char **rxndividers = getReactionDividers(moduleName);
-
-  const double **leftrxnstoichs = getReactantStoichiometries(moduleName);
-  const double **rightrxnstoichs = getProductStoichiometries(moduleName);
-
-  const size_t *leftnums = getNumReactants(moduleName);
-  const size_t *rightnums = getNumProducts(moduleName);
+  char ***leftrxnnames = getReactantNames(moduleName);
+  char ***rightrxnnames = getProductNames(moduleName);
+  char **rxnnames = getReactionNames(moduleName);
+  char **rxnrates = getReactionRates(moduleName);
+  
+  double **leftrxnstoichs = getReactantStoichiometries(moduleName);
+  double **rightrxnstoichs = getProductStoichiometries(moduleName);
 
   for (size_t rxn=0; rxn<getNumReactions(moduleName); rxn++) {
     cout << rxnnames[rxn] << ": ";
-    for (size_t var=0; var<leftnums[rxn]; var++) {
+    for (size_t var=0; var<getNumReactants(moduleName,rxn); var++) {
       if (var > 0) {
         cout << " + ";
       }
@@ -396,8 +450,8 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
       }
       cout << leftrxnnames[rxn][var];
     }
-    cout << " " << rxndividers[rxn] << " ";
-    for (size_t var=0; var<rightnums[rxn]; var++) {
+    cout << " -> ";
+    for (size_t var=0; var<getNumProducts(moduleName,rxn); var++) {
       if (var > 0) {
         cout << " + ";
       }

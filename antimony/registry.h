@@ -70,6 +70,16 @@ public:
   size_t GetNumModules();
   std::string GetNthModuleName(size_t n);
   char GetCC() {return m_cc;};
+
+  //Keeping track of malloc'd stuff so we can free it ourselves if need be.
+  std::vector<char*>    m_charstars;
+  std::vector<char**>   m_charstarstars;
+  std::vector<char***>  m_charstarstarstars;
+  std::vector<double*>  m_doublestars;
+  std::vector<double**> m_doublestarstars;
+  std::vector<size_t*>  m_size_tstars;
+  std::vector<rd_type*> m_rd_typestars;
+  void FreeAll();
 };
 
 extern Registry g_registry;

@@ -29,8 +29,8 @@ void Formula::AddMathThing(char maththing)
 {
   vector<string> novar;
   pair<string, vector<string> > newvar;
-  string math = "   ";
-  math[1] = maththing;
+  string math = " "; // Make this "   " and the subsequent 0 a 1 for spacing.
+  math[0] = maththing;
   newvar = make_pair(math, novar);
   m_components.push_back(newvar);
 }
@@ -137,12 +137,15 @@ vector<string> Formula::GetSimpleVariable() const
   return m_components[0].second;
 }
 
-string Formula::ToStringDelimitedBy(char cc) const
+string Formula::ToDelimitedStringWithUpvar(char cc, Variable* upvar) const
 {
   string retval;
   for (size_t piece=0; piece < m_components.size(); piece++) {
     vector<string> varname = m_components[piece].second;
     Variable* actualvar = g_registry.CurrentModule()->GetVariable(varname);
+    if (m_components[piece].first == "...") {
+      actualvar = upvar;
+    }
     if (actualvar != NULL) {
       retval += actualvar->GetNameDelimitedBy(cc);
     }
