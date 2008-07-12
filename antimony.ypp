@@ -444,12 +444,19 @@ int main(long argc, char** argv)
   }
   //yydebug = 1;
   int retval=loadModel(filename.c_str());
-  cout << g_registry.CurrentModule()->ToString().c_str() << endl << endl;
-  cout << "Jarnac:" << endl;
-  cout << getJarnac("[main]") << endl;
-  cout << endl << "Information from the API:" << endl;
-  printAllDataFor(g_registry.CurrentModule()->GetModuleName().c_str());
-  cout << endl;
-  //printAllDataFor("pushonpushoff");
+  size_t nummods = getNumModules();
+  char** modnames = getModuleNames();
+  for (size_t mod=0; mod<nummods; mod++) {
+    cout << "Information for module '" << modnames[mod] << "'" << endl;
+    cout << "***ToString:***" << endl;
+    cout << g_registry.GetModule(modnames[mod])->ToString().c_str() << endl << endl;
+    cout << "***Jarnac:***" << endl;
+    cout << getJarnac(modnames[mod]) << endl;
+    cout << endl << "***printAllDataFor (from the API):***" << endl;
+    printAllDataFor(modnames[mod]);
+    cout << endl;
+    cout << endl;
+  }
+  freeAll();
   return retval;
 }

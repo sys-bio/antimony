@@ -35,7 +35,6 @@ public:
   std::vector<std::vector<std::string> > m_uniquevars;
   std::vector<std::vector<std::string> > m_rxnleftvarnames;
   std::vector<std::vector<std::string> > m_rxnrightvarnames;
-  std::vector<rd_type>                   m_rxntypes;
   std::vector<std::vector<double> >      m_rxnleftstoichiometries;
   std::vector<std::vector<double> >      m_rxnrightstoichiometries;
 
@@ -76,6 +75,7 @@ public:
   std::string GetJarnacVarFormulas();
   std::string GetJarnacConstFormulas(std::string modulename);
 
+
   //Output for the API
   void CompileExportLists();
   size_t GetFirstVariableIndexForType(return_type rtype);
@@ -83,6 +83,8 @@ public:
   const Variable* GetNthVariableOfType(return_type rtype, size_t n);
   bool   AreEquivalent(return_type rtype, var_type vtype);
   bool   AreEquivalent(return_type rtype, bool isconst);
+  var_type GetTypeFor(std::string varname);
+  bool     IsConst(std::string varname);
 };
 
 #endif //MODULE_H
