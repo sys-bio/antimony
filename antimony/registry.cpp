@@ -244,6 +244,14 @@ const string* Registry::GetJarnac(string modulename)
   return &m_jarnac;
 }
 
+void Registry::CompileAllExportLists()
+{
+  for (size_t mod=0; mod<m_modules.size(); mod++) {
+    m_modules[mod].CompileExportLists();
+  }
+}
+
+
 size_t Registry::GetNumModules()
 {
   return m_modules.size();
