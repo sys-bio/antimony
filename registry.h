@@ -67,6 +67,8 @@ public:
 
   const std::string* GetJarnac(std::string modulename);
 
+  void CompileAllExportLists();
+
   size_t GetNumModules();
   std::string GetNthModuleName(size_t n);
   char GetCC() {return m_cc;};

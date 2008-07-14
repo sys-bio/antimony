@@ -51,6 +51,7 @@ string Variable::GetFormulaStringDelimitedBy(char cc) const
   if (m_upstream.size() > 0) {
     upvar=g_registry.GetModule(m_namespace)->GetVariable(m_upstream);
   }
+  if (GetFormula() == NULL) return "";
   return GetFormula()->ToDelimitedStringWithUpvar(cc, upvar);
 }
 

@@ -31,7 +31,7 @@ LIB_EXTERN const int loadModel(const char* filename)
   g_registry.SetMainModuleName(filename);
   int retval = yyparse();
   g_registry.input.close();
-  g_registry.GetModule("[main]")->CompileExportLists();
+  g_registry.CompileAllExportLists();
   //cout << "Return value: " << retval << endl;
   return retval;
 }
@@ -204,7 +204,7 @@ LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
   double** allrstoichs = (double**) malloc(lsrs->size()*sizeof(double*));
   g_registry.m_doublestarstars.push_back(allrstoichs);
   for (size_t rxn=0; rxn<lsrs->size(); rxn++) {
-    allrstoichs[rxn] = getNthReactionReactantStoichiometries(moduleName, rxn);
+    allrstoichs[rxn] = getNthReactionProductStoichiometries(moduleName, rxn);
   }
   return allrstoichs;
 }
