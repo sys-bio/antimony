@@ -232,7 +232,7 @@ const string* Registry::GetJarnac(string modulename)
   if (name=="[main]") {
     name = m_mainmodulename;
   }
-  if (modulename == m_mainmodulename) {
+  if (GetModule(modulename)== NULL && modulename == m_mainmodulename) {
     modulename = "[main]";
   }
   m_jarnac = name + " = define model\n";

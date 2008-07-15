@@ -1,7 +1,7 @@
 #include <string>
 
 #include "antimony_api.h"
-#include "simpleAntimonyAPI.h"
+#include "simpleantimonyapi.h"
 #include "registry.h"
 
 using namespace std;
@@ -117,6 +117,7 @@ size_t findFloatingSpecies (char* moduleName, const char* name) {
   }
   // We didn't find anything so return -1. 
   return -1;
+  //LS NOTE:  'size_t' is implemented as 'unsigned' on some architectures.  This should work OK anyway, since, this is a flag value and you don't check '<0' anywhere.
 }
 
 // Allows an external caller to free up space created when 

@@ -32,6 +32,7 @@ public:
   std::string ToStringDelimitedBy(char cc) const;
   std::vector<std::string> ToStringVecDelimitedBy(char cc) const;
   std::vector<double> GetStoichiometries() const;
+  double GetStoichiometryFor(const Variable* var) const;
 };
 
 

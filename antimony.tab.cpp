@@ -1603,7 +1603,7 @@ yyreduce:
     {
         case 3:
 #line 64 "antimony.ypp"
-    { cout << endl << (yyvsp[(2) - (2)].module)->ToString() << endl << endl; ;}
+    { /*cout << endl << $2->ToString() << endl << endl;*/ ;}
     break;
 
   case 4:
@@ -2573,11 +2573,11 @@ int main(long argc, char** argv)
   char** modnames = getModuleNames();
   for (size_t mod=0; mod<nummods; mod++) {
     cout << "Information for module '" << modnames[mod] << "'" << endl;
-    cout << "***ToString:***" << endl;
+    cout << "***ToString (" << modnames[mod] << ") ***" << endl;
     cout << g_registry.GetModule(modnames[mod])->ToString().c_str() << endl << endl;
-    cout << "***Jarnac:***" << endl;
+    cout << "***Jarnac (" << modnames[mod] << ") ***" << endl;
     cout << getJarnac(modnames[mod]) << endl;
-    cout << endl << "***printAllDataFor (from the API):***" << endl;
+    cout << endl << "***printAllDataFor (" << modnames[mod] << ") (from the API):***" << endl;
     printAllDataFor(modnames[mod]);
     cout << endl;
     cout << endl;
