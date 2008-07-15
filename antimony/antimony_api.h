@@ -57,15 +57,11 @@ LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, 
 LIB_EXTERN rd_type* getInteractionDividers(const char* moduleName);
 LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, size_t n);
 
-//Note:  unimplemented!
 LIB_EXTERN double** getStoichiometryMatrix(const char* moduleName);
 LIB_EXTERN char**   getStoichiometryMatrixColumnLabels(const char* moduleName);
 LIB_EXTERN char**   getStoichiometryMatrixRowLabels(const char* moduleName);
-LIB_EXTERN char**   getStoichiometryMatrixColumnFormulas(const char* moduleName);
-LIB_EXTERN char*    getStoichiometryMatrixNthColumnFormula(const char* moduleName, size_t n);
 LIB_EXTERN size_t   getStoichiometryMatrixNumRows(const char* moduleName);
 LIB_EXTERN size_t   getStoichiometryMatrixNumColumns(const char* moduleName);
-//(end unimplemented section)
 
 LIB_EXTERN char*** getDNAStrands(const char* moduleName);
 LIB_EXTERN char**  getNthDNAStrand(const char* moduleName, size_t n);

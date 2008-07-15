@@ -113,6 +113,15 @@ vector<double> Reaction::GetRightStoichiometries() const
   return m_right.GetStoichiometries();
 }
 
+double Reaction::GetStoichiometryFor(const Variable* var) const
+{
+  double stoich = 0;
+  stoich += m_left.GetStoichiometryFor(var);
+  stoich -= m_right.GetStoichiometryFor(var);
+  return stoich;
+}
+
+
 bool Reaction::GetIsConst() const
 {
   return m_formula.GetIsConst();

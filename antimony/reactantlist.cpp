@@ -117,3 +117,14 @@ vector<double> ReactantList::GetStoichiometries() const
   }
   return retval;
 }
+
+double ReactantList::GetStoichiometryFor(const Variable* var) const
+{
+  double stoich = 0;
+  for (size_t component=0; component<m_components.size(); component++) {
+    if (m_components[component].second == var->GetName()) {
+      stoich += m_components[component].first;
+    }
+  }
+  return stoich;
+}

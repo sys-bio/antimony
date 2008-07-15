@@ -61,7 +61,7 @@
 %% /* The grammar: */
 
 input:          /* empty */
-        |       input module { cout << endl << $2->ToString() << endl << endl; }
+        |       input module { /*cout << endl << $2->ToString() << endl << endl;*/ }
         |       input modulepart {}
         |       input error lineend {cerr << "(discarding line " << @2.last_line << " and continuing...)" << endl; yyerrok; }
         ;
@@ -448,11 +448,11 @@ int main(long argc, char** argv)
   char** modnames = getModuleNames();
   for (size_t mod=0; mod<nummods; mod++) {
     cout << "Information for module '" << modnames[mod] << "'" << endl;
-    cout << "***ToString:***" << endl;
+    cout << "***ToString (" << modnames[mod] << ") ***" << endl;
     cout << g_registry.GetModule(modnames[mod])->ToString().c_str() << endl << endl;
-    cout << "***Jarnac:***" << endl;
+    cout << "***Jarnac (" << modnames[mod] << ") ***" << endl;
     cout << getJarnac(modnames[mod]) << endl;
-    cout << endl << "***printAllDataFor (from the API):***" << endl;
+    cout << endl << "***printAllDataFor (" << modnames[mod] << ") (from the API):***" << endl;
     printAllDataFor(modnames[mod]);
     cout << endl;
     cout << endl;

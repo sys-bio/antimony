@@ -226,54 +226,43 @@ LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, 
 
 LIB_EXTERN double** getStoichiometryMatrix(const char* moduleName)
 {
-	return NULL;
-}
-
-LIB_EXTERN double*  getStoichiometryMatrixNthRow(const char* moduleName, size_t n)
-{
-	return NULL;
+  size_t nspecies   = getNumSymbolsOfType(moduleName, varSpecies);
+  size_t nreactions = getNumSymbolsOfType(moduleName, allReactions);
+  double** matrix = (double**) malloc (nspecies*sizeof (double *));
+  g_registry.m_doublestarstars.push_back(matrix);
+  for (size_t i=0; i<nspecies; i++) {
+    matrix[i] = (double *) malloc (nreactions*sizeof (double));
+    g_registry.m_doublestars.push_back(matrix[i]);
+  }
+  for (size_t rxn=0; rxn<nreactions; rxn++) {
+    const Reaction* reaction = g_registry.GetModule(moduleName)->GetNthVariableOfType(allReactions, rxn)->GetReaction();
+    for (size_t sp=0; sp<nspecies; sp++) {
+      const Variable* species = g_registry.GetModule(moduleName)->GetNthVariableOfType(varSpecies, sp);
+      matrix[sp][rxn] = reaction->GetStoichiometryFor(species);
+    }
+  }
+  return matrix;
 }
 
 LIB_EXTERN char**   getStoichiometryMatrixColumnLabels(const char* moduleName)
 {
-	return NULL;
+  return getSymbolNamesOfType(moduleName, allReactions);
 }
 
 LIB_EXTERN char**   getStoichiometryMatrixRowLabels(const char* moduleName)
 {
-	return NULL;
-}
-
-LIB_EXTERN char*    getStoichiometryMatrixNthColumnLabel(const char* moduleName, size_t n)
-{
-	return NULL;
-}
-
-LIB_EXTERN char*    getStoichiometryMatrixNthRowLabel(const char* moduleName, size_t n)
-{
-	return NULL;
-}
-
-LIB_EXTERN char**   getStoichiometryMatrixColumnFormulas(const char* moduleName)
-{
-	return NULL;
-}
-
-LIB_EXTERN char*    getStoichiometryMatrixNthColumnFormula(const char* moduleName, size_t n)
-{
-	return NULL;
+  return getSymbolNamesOfType(moduleName, varSpecies);
 }
 
 LIB_EXTERN size_t   getStoichiometryMatrixNumRows(const char* moduleName)
 {
-	return NULL;
+  return getNumSymbolsOfType(moduleName, varSpecies);
 }
 
 LIB_EXTERN size_t   getStoichiometryMatrixNumColumns(const char* moduleName)
 {
-	return NULL;
+  return getNumSymbolsOfType(moduleName, allReactions);
 }
-
 
 LIB_EXTERN char** getReactionRates(const char* moduleName)
 {
