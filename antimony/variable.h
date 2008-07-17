@@ -59,6 +59,7 @@ public:
   std::string GetNamespace() const {return m_namespace;};
   bool GetIsConst() const;
   bool GetListSeparately() const {return m_listseparately;};
+  bool GetIsEquivalentTo(const Variable* var) const;
 
   bool IsDNAStart() const;
   bool IsUnlinked() const;
@@ -66,11 +67,10 @@ public:
   bool HasOpenDownstream() const;
   std::vector<std::string> GetDNAStringDelimitedBy(char cc) const;
 
-  void SetNamespace(std::string name);
   void SetType(var_type newtype);
   void SetFormula(Formula* formula);
   Reaction* SetReaction(Reaction* rxn);
-  void SetNewTopName(std::string newtopname);
+  void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetPrintedName(std::vector<std::string> printedname);
   void SetIsConst(bool constant);
   void SetListSeparately(bool ls) {m_listseparately = ls;};

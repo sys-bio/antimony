@@ -38,7 +38,9 @@ LIB_EXTERN const int loadModel(const char* filename)
 
 LIB_EXTERN const char* getJarnac(const char* moduleName)
 {
-  return g_registry.GetJarnac(moduleName)->c_str();
+  char* jarnac = strdup(g_registry.GetJarnac(moduleName).c_str());
+  g_registry.m_charstars.push_back(jarnac);
+  return jarnac;
 }
 
 LIB_EXTERN char** getModuleNames()
@@ -274,6 +276,11 @@ LIB_EXTERN char*  getNthReactionRate(const char* moduleName, size_t n)
   return getNthSymbolEquationOfType(moduleName, allReactions, n);
 }
 
+LIB_EXTERN size_t getNumReactionRates(const char* moduleName)
+{
+  return getNumSymbolsOfType(moduleName, allReactions);
+}
+
 LIB_EXTERN char** getReactionNames(const char* moduleName)
 {
   return getSymbolNamesOfType(moduleName, allReactions);
@@ -453,6 +460,29 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
     }
     cout << " ; " << rxnrates[rxn];
     cout << endl;
+  }
+
+  cout << "Stoichiometry matrix" << endl;
+  double** matrix = getStoichiometryMatrix(moduleName);
+  char** columns  = getStoichiometryMatrixColumnLabels(moduleName);
+  char** rows     = getStoichiometryMatrixRowLabels(moduleName);
+  cout << "\t";
+  for (size_t col=0; col<getStoichiometryMatrixNumColumns(moduleName); col++) {
+    cout << "\t" << columns[col];
+  }
+  cout << endl;
+  for (size_t row=0; row<getStoichiometryMatrixNumRows(moduleName); row++) {
+    cout << rows[row] << "\t";
+    for (size_t col=0; col<getStoichiometryMatrixNumColumns(moduleName); col++) {
+      cout << "\t" << matrix[row][col];
+    }
+    cout << endl;
+  }
+  cout << endl;
+
+  cout << "Reaction rates" << endl;
+  for (size_t rate=0; rate<getNumReactionRates(moduleName); rate++) {
+    cout << rxnrates[rate] << endl;
   }
   cout << endl;
 }

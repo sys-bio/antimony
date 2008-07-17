@@ -65,8 +65,7 @@ public:
   const std::string& GetModuleName() const;
   std::vector<std::string> GetVariableName() const;
 
-  void SetNewTopName(std::string newtopname);
-  void SetNamespace(std::string modulename);
+  void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetReactionVariable(Variable* var);
   void ImportModule(const std::string* modname);
   

@@ -65,7 +65,7 @@ public:
 
   const std::string* AddWord(std::string word);
 
-  const std::string* GetJarnac(std::string modulename);
+  std::string GetJarnac(std::string modulename);
 
   void CompileAllExportLists();
 

@@ -15,13 +15,14 @@ private:
   //ReactantList& operator=(const ReactantList& src); //Undefined
 
   std::vector<std::pair<double, std::vector<std::string> > > m_components;
+  std::string m_module;
 
 public:
   ReactantList() {};
   ~ReactantList() {};
 
   void AddReactant(Variable* var, double stoichiometry=1);
-  void SetNewTopName(std::string newtopname);
+  void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetVarsTo(var_type vtype);
   void CheckIsSingleDNAVar();
 

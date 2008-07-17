@@ -39,8 +39,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_rxnleftstoichiometries(),
     m_rxnrightstoichiometries()
 {
-  SetNewTopName(newtopname);
-  SetNamespace(modulename);
+  SetNewTopName(modulename, newtopname);
   //CompileExportLists();
 }
 
@@ -118,7 +117,7 @@ Reaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantLi
   case rdInfluences:
     right->SetVarsTo(varDNA);
     right ->CheckIsSingleDNAVar();
-    formula->CheckIncludes(left);
+    formula->CheckIncludes(m_modulename, left);
     right->GetSingleVar()->SetFormula(formula);
     break;
   }
@@ -263,21 +262,14 @@ vector<string> Module::GetVariableName() const
   return m_variablename;
 }
 
-void Module::SetNewTopName(string newtopname)
+void Module::SetNewTopName(string newmodname, string newtopname)
 {
   m_variablename.insert(m_variablename.begin(), newtopname);
   for (size_t var=0; var<m_variables.size(); var++) {
-    m_variables[var].SetNewTopName(newtopname);
+    m_variables[var].SetNewTopName(newmodname, newtopname);
   }
   for (size_t var=0; var<m_exportlist.size(); var++) {
     m_exportlist[var].insert(m_exportlist[var].begin(), newtopname);
-  }
-}
-
-void Module::SetNamespace(string modulename)
-{
-  for (size_t var=0; var<m_variables.size(); var++) {
-    m_variables[var].SetNamespace(modulename);
   }
 }
 

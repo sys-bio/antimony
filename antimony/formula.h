@@ -25,14 +25,13 @@ public:
   void AddMathThing(char maththing);
   void AddEllipses();
 
-  void SetNewTopName(std::string newtopname);
-  void SetEllipses(Variable* var);
+  void SetNewTopName(std::string newmodname, std::string newtopname);
 
   bool IsEmpty() const;
   bool IsSimpleVariable() const;
   bool GetIsConst() const;
-  void CheckIncludes(ReactantList* rlist) const;
-  bool ContainsVar(std::vector<std::string> vname) const;
+  void CheckIncludes(std::string modname, ReactantList* rlist) const;
+  bool ContainsVar(std::string modname, std::vector<std::string> vname) const;
   void Clear();
 
   std::vector<std::string> GetSimpleVariable() const;

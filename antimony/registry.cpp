@@ -44,8 +44,16 @@ void Registry::ClearModels()
 void Registry::NewCurrentModule(const string* name)
 {
   string localname(*name);
-  m_modules.push_back(localname);
   m_currentModules.push_back(localname);
+  //Check to make sure no existing module exist with this name
+  for (size_t mod=0; mod<m_modules.size(); mod++) {
+    if (m_modules[mod].GetModuleName() == localname) {
+      //LS DEBUG:  throw an error?  Assume they're continuing a definition?
+      return;
+    }
+  }
+  //Otherwise, create a new module with that name
+  m_modules.push_back(localname);
 }
 
 Module* Registry::CurrentModule()
@@ -226,7 +234,7 @@ const string*  Registry::AddWord(string word)
   return &(*wordit);
 }
 
-const string* Registry::GetJarnac(string modulename)
+string Registry::GetJarnac(string modulename)
 {
   string name = modulename;
   if (name=="[main]") {
@@ -235,13 +243,13 @@ const string* Registry::GetJarnac(string modulename)
   if (GetModule(modulename)== NULL && modulename == m_mainmodulename) {
     modulename = "[main]";
   }
-  m_jarnac = name + " = define model\n";
-  m_jarnac += GetModule(modulename)->GetJarnacReactions();
-  m_jarnac += "\n";
-  m_jarnac += GetModule(modulename)->GetJarnacVarFormulas();
-  m_jarnac += "\nend\n\n";
-  m_jarnac += GetModule(modulename)->GetJarnacConstFormulas(name);
-  return &m_jarnac;
+  string jarnac = name + " = define model\n";
+  jarnac += GetModule(modulename)->GetJarnacReactions();
+  jarnac += "\n";
+  jarnac += GetModule(modulename)->GetJarnacVarFormulas();
+  jarnac += "\nend\n\n";
+  jarnac += GetModule(modulename)->GetJarnacConstFormulas(name);
+  return jarnac;
 }
 
 void Registry::CompileAllExportLists()
