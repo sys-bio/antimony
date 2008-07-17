@@ -63,6 +63,10 @@ LIB_EXTERN char**   getStoichiometryMatrixRowLabels(const char* moduleName);
 LIB_EXTERN size_t   getStoichiometryMatrixNumRows(const char* moduleName);
 LIB_EXTERN size_t   getStoichiometryMatrixNumColumns(const char* moduleName);
 
+LIB_EXTERN char**   getReactionRates(const char* moduleName);
+LIB_EXTERN char*    getNthReactionRate(const char* moduleName, size_t n);
+LIB_EXTERN size_t   getNumReactionRates(const char* moduleName);
+  
 LIB_EXTERN char*** getDNAStrands(const char* moduleName);
 LIB_EXTERN char**  getNthDNAStrand(const char* moduleName, size_t n);
 LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName);

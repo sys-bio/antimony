@@ -225,6 +225,24 @@ bool Variable::GetIsConst() const
   return m_const;
 }
 
+bool Variable::GetIsEquivalentTo(const Variable* var) const
+{
+  if (var->GetName() == m_name) return true;
+  Module* mod = g_registry.GetModule(m_namespace);
+  assert(mod != NULL);
+  if (IsPointer()) {
+    Variable* otherme = mod->GetVariable(GetPointerName());
+    assert(otherme != NULL);
+    if (otherme->GetIsEquivalentTo(var)) return true;
+  }
+  if (var->IsPointer()) {
+    Variable* otheryou = mod->GetVariable(var->GetPointerName());
+    assert(otheryou != NULL);
+    if (GetIsEquivalentTo(otheryou)) return true;
+  }
+  return false;
+}
+
 bool Variable::IsDNAStart() const
 {
   if (!IsDNA(m_type)) {
@@ -273,14 +291,6 @@ vector<string> Variable::GetDNAStringDelimitedBy(char cc) const
   dna.insert(dna.end(), moredna.begin(), moredna.end());
   return dna;
 }  
-
-void Variable::SetNamespace(string name)
-{
-  m_namespace = name;
-  if (m_type == varModule) {
-    m_valModule[0].SetNamespace(name);
-  }
-}
 
 void Variable::SetType(var_type newtype)
 {
@@ -343,7 +353,7 @@ void Variable::SetFormula(Formula* formula)
       }
     }
   }
-  if (formula->ContainsVar(m_name)) {
+  if (formula->ContainsVar(m_namespace, m_name)) {
     cout << "Loop detected:  " << GetNameDelimitedBy('.').c_str() << "'s definition either includes itself directly ('s5 = 6 + s5') or by proxy ('s5 = 8*d3' and 'd3 = 9*s5')." << endl; 
     //LS DEBUG:  throw an error
     assert(false);
@@ -412,8 +422,9 @@ Reaction* Variable::SetReaction(Reaction* rxn)
   return &m_valReaction;
 }
 
-void Variable::SetNewTopName(string newtopname)
+void Variable::SetNewTopName(string newmodname, string newtopname)
 {
+  m_namespace = newmodname;
   m_name.insert(m_name.begin(), newtopname);
   if (m_sameVariable.size() > 0) {
     m_sameVariable.insert(m_sameVariable.begin(), newtopname);
@@ -422,14 +433,14 @@ void Variable::SetNewTopName(string newtopname)
     m_printedname.insert(m_printedname.begin(), newtopname);
   }
   if (!m_valFormula.IsEmpty()) {
-    m_valFormula.SetNewTopName(newtopname);
+    m_valFormula.SetNewTopName(m_namespace, newtopname);
   }
   if (!m_valReaction.IsEmpty()) {
-    m_valReaction.SetNewTopName(newtopname);
+    m_valReaction.SetNewTopName(m_namespace, newtopname);
   }
   if (m_valModule.size() > 0) {
     assert(m_valModule.size() == 1);
-    m_valModule[0].SetNewTopName(newtopname);
+    m_valModule[0].SetNewTopName(m_namespace, newtopname);
   }
   if (m_upstream.size() > 0 &&
       m_upstream[0] != "[open]") {
@@ -600,7 +611,7 @@ bool Variable::CheckDoesNotIncludeSelf()
 {
   Formula* form = GetFormula();
   if (form != NULL) {
-    if (form->ContainsVar(m_name)) {
+    if (form->ContainsVar(m_namespace, m_name)) {
       return true;
     }
   }

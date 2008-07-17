@@ -14,6 +14,7 @@ Reaction::Reaction(ReactantList left, rd_type divider, ReactantList right, Formu
     m_right(right),
     m_divider(divider),
     m_name(var->GetName()),
+    m_module(var->GetNamespace()),
     m_formula(formula)
 {
   //The reactantlists have pointers to variables in them, so they need to be
@@ -37,12 +38,15 @@ void Reaction::SetFormula(Formula* formula)
   m_formula = *formula;
 }
 
-void Reaction::SetNewTopName(string newtopname)
+void Reaction::SetNewTopName(string modname, string newtopname)
 {
-  m_left.SetNewTopName(newtopname);
-  m_right.SetNewTopName(newtopname);
+  //Ourself:
   m_name.insert(m_name.begin(), newtopname);
-  m_formula.SetNewTopName(newtopname);
+  m_module = modname;
+  //Our dependents
+  m_left.SetNewTopName(modname, newtopname);
+  m_right.SetNewTopName(modname, newtopname);
+  m_formula.SetNewTopName(modname, newtopname);
 }
 
 void Reaction::Clear()
@@ -79,13 +83,17 @@ bool Reaction::LeftIsEmpty() const
 string Reaction::ToStringDelimitedBy(char cc) const
 {
   string retval;
-  Variable* actualvar = g_registry.CurrentModule()->GetVariable(m_name);
+
+  Module* module = g_registry.GetModule(m_module);
+  assert(module != NULL); //LS DEBUG throw error
+  Variable* actualvar = module->GetVariable(m_name);
   if (actualvar != NULL) {
     retval += actualvar->GetNameDelimitedBy(cc);
   }
   else {
+    assert(false); //Should be clean...
     for (size_t i=0; i<m_name.size(); i++) {
-      if (i>0) retval += ".";
+      if (i>0) retval += cc;
       retval += m_name[i];
     }
   }
@@ -116,8 +124,8 @@ vector<double> Reaction::GetRightStoichiometries() const
 double Reaction::GetStoichiometryFor(const Variable* var) const
 {
   double stoich = 0;
-  stoich += m_left.GetStoichiometryFor(var);
-  stoich -= m_right.GetStoichiometryFor(var);
+  stoich -= m_left.GetStoichiometryFor(var);
+  stoich += m_right.GetStoichiometryFor(var);
   return stoich;
 }
 

@@ -20,6 +20,7 @@ private:
   ReactantList m_right;
   rd_type m_divider;
   std::vector<std::string> m_name;
+  std::string m_module;
   Formula m_formula;
 
 public:
@@ -28,7 +29,7 @@ public:
   ~Reaction() {};
 
   void SetFormula(Formula* formula);
-  void SetNewTopName(std::string newtopname);
+  void SetNewTopName(std::string modname, std::string newtopname);
   void Clear();
 
   const Formula* GetFormula() const;

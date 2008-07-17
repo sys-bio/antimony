@@ -10,7 +10,7 @@ using namespace std;
 void Formula::AddVariable(Variable* var)
 {
   pair<string, vector<string> > newvar;
-  newvar = make_pair(var->GetNameDelimitedBy('.'), var->GetName());
+  newvar = make_pair(var->GetNamespace(), var->GetName());
   m_components.push_back(newvar);
 }
 
@@ -45,24 +45,12 @@ void Formula::AddEllipses()
   m_components.push_back(newvar);
 }
 
-void Formula::SetNewTopName(string newtopname)
+void Formula::SetNewTopName(string newmodname, string newtopname)
 {
   for (size_t component=0; component<m_components.size(); component++) {
     if (m_components[component].second.size() > 0) {
-      m_components[component].first = newtopname + "." + m_components[component].first;
+      m_components[component].first = newmodname;
       m_components[component].second.insert(m_components[component].second.begin(), newtopname);
-    }
-  }
-}
-
-void Formula::SetEllipses(Variable* var)
-{
-  if (m_components.size() > 0 && m_components[0].first == "...") {
-    if (var != NULL) {
-      m_components[0].second = var->GetName();
-    }
-    else {
-      m_components[0].second.clear();
     }
   }
 }
@@ -87,7 +75,9 @@ bool Formula::GetIsConst() const
   for (size_t comp=0; comp<m_components.size(); comp++) {
     if (m_components[comp].second.size() > 0 ) {
       vector<string> varname = m_components[comp].second;
-      Variable* actualvar = g_registry.CurrentModule()->GetVariable(varname);
+      Module* module = g_registry.GetModule(m_components[comp].first);
+      assert(module != NULL); //LS DEBUG THROW ERROR
+      const Variable* actualvar = module->GetVariable(varname);
       if (actualvar == NULL) {
         return false; //Can't find the variable in question, so assume.
       }
@@ -99,26 +89,35 @@ bool Formula::GetIsConst() const
   return true;
 }
 
-void Formula::CheckIncludes(ReactantList* rlist) const
+void Formula::CheckIncludes(string modname, ReactantList* rlist) const
 {
   vector<vector<string> > varlist = rlist->GetVariableList();
   for (size_t var=0; var<varlist.size(); var++) {
-    assert(!ContainsVar(varlist[var])); //LS DEBUG:  throw an error
+    assert(!ContainsVar(modname, varlist[var])); //LS DEBUG:  throw an error
   }
 }
 
-bool Formula::ContainsVar(vector<string> vname) const
+bool Formula::ContainsVar(string modname, vector<string> vname) const
 {
   for (size_t var=0; var<m_components.size(); var++) {
     if (m_components[var].second == vname) {
       return true;
     }
-    Variable* subvar = g_registry.CurrentModule()->GetVariable(m_components[var].second);
-    if (subvar != NULL) {
-      Formula* subform = subvar->GetFormula();
-      if (subform != NULL) {
-        if (subform->ContainsVar(vname)) {
-          return true;
+    if (modname == m_components[var].first) {
+      Module* module = g_registry.GetModule(m_components[var].first);
+      Variable* subvar = NULL;
+      if (module != NULL) {
+        subvar = module->GetVariable(m_components[var].second);
+      }
+      else {
+        assert(false); //come on, they're both part of the same nonexistant module?
+      }
+      if (subvar != NULL) {
+        Formula* subform = subvar->GetFormula();
+        if (subform != NULL) {
+          if (subform->ContainsVar(modname, vname)) {
+            return true;
+          }
         }
       }
     }
@@ -140,18 +139,26 @@ vector<string> Formula::GetSimpleVariable() const
 string Formula::ToDelimitedStringWithUpvar(char cc, Variable* upvar) const
 {
   string retval;
-  for (size_t piece=0; piece < m_components.size(); piece++) {
-    vector<string> varname = m_components[piece].second;
-    Variable* actualvar = g_registry.CurrentModule()->GetVariable(varname);
-    if (m_components[piece].first == "...") {
+  for (size_t comp=0; comp < m_components.size(); comp++) {
+    vector<string> varname = m_components[comp].second;
+    Module* module = g_registry.GetModule(m_components[comp].first);
+    Variable* actualvar = NULL;
+    if (module != NULL) {
+      actualvar = module->GetVariable(varname);
+    }
+    if (m_components[comp].first == "...") {
       actualvar = upvar;
     }
     if (actualvar != NULL) {
       retval += actualvar->GetNameDelimitedBy(cc);
     }
+    else if (varname.size() > 0) {
+      assert(false); //Can't find the variable!
+      //LS DEBUG THROW ERROR
+    }
     else {
-      if (m_components[piece].first != "...") {
-        retval += m_components[piece].first;
+      if (m_components[comp].first != "...") {
+        retval += m_components[comp].first;
       }
       else {
         retval += "0";
