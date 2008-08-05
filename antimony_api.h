@@ -7,7 +7,10 @@
 BEGIN_C_DECLS;
 
 /* Return types (declared in rd_type.h) are as follows:
-num return_type {allSymbols,
+enum return_type {allSymbols,
+                  allReactions,
+                  allInteractions,
+                  allUnknown,
                   varSpecies,
                   varProteins,
                   varFormulas,
@@ -15,9 +18,6 @@ num return_type {allSymbols,
                   varPromoters,
                   varOperators,
                   varGenes,
-                  varReactions,
-                  varInteractions,
-                  varUnknown,
                   constSpecies,
                   constProteins,
                   constFormulas,
@@ -28,13 +28,13 @@ num return_type {allSymbols,
                   subModules};
 */
 
-LIB_EXTERN const int loadModel(const char* filename);
-LIB_EXTERN const char* getJarnac(const char* moduleName);
+LIB_EXTERN int loadModel(const char* filename);
+LIB_EXTERN char* getJarnac(const char* moduleName);
 
 LIB_EXTERN size_t getNumModules();
 LIB_EXTERN char** getModuleNames();
 LIB_EXTERN char*  getNthModuleName(size_t n);
-LIB_EXTERN bool checkModule(char* moduleName);
+LIB_EXTERN bool checkModule(const char* moduleName);
 
 LIB_EXTERN size_t getNumSymbolsOfType(const char* moduleName, return_type rtype);
 LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype);
