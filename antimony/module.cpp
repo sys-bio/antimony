@@ -388,7 +388,7 @@ void Module::CompileExportLists()
     //If this is a submodule, we'll be calling the error checking bit soon,
     // so don't worry about it.
     //LS DEBUG:  This doesn't actually work.
-    //assert(m_variables[var].CheckDoesNotIncludeSelf()); //LS DEBUG: throw error
+    assert(m_variables[var].CheckDoesNotIncludeSelf()); //LS DEBUG: throw error
   }
   //Store the data locally so we don't have to search sub-modules every time
   // we want to hand out information

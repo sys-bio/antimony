@@ -326,15 +326,17 @@ void Variable::SetFormula(Formula* formula)
   }
   if (formula->IsSimpleVariable()) {
     Variable* newvar = g_registry.GetModule(m_namespace)->GetVariable(formula->GetSimpleVariable());
-    if (newvar == this) {
+    if (GetIsEquivalentTo(newvar)) {
       //Setting something equal to itself--do nothing.
       //LS DEBUG:  emit a warning?
+      //cout << "Already equivalent." << endl;
       return;
     }
     if (newvar->GetName().size() < GetName().size()) {
       //Synchronize the longer name (and therefore the subvariable) to the
       // shorter name
       newvar->Synchronize(this);
+      return;
     }
     else {
       bool dosync = false;
@@ -353,10 +355,11 @@ void Variable::SetFormula(Formula* formula)
       }
     }
   }
-  if (formula->ContainsVar(m_namespace, m_name)) {
+  if (formula->ContainsVar(this)) {
     cout << "Loop detected:  " << GetNameDelimitedBy('.').c_str() << "'s definition either includes itself directly ('s5 = 6 + s5') or by proxy ('s5 = 8*d3' and 'd3 = 9*s5')." << endl; 
     //LS DEBUG:  throw an error
     assert(false);
+    return;
   }
   switch (m_type) {
   case varSpeciesUndef:
@@ -551,23 +554,40 @@ void Variable::SetDownstream(Variable* var) {
 
 void Variable::Synchronize(Variable* clone)
 {
+  if (GetIsEquivalentTo(clone)) {
+    //already equivalent--don't do anything
+    // (Shouldn't be necessary from Variable:: calls, but this also gets called from the
+    //  registry during parsing.) 
+    //cout << "Already equivalent" << endl;
+    return;
+  }
+
+  //Check to make sure we don't synchronize variables that are already in each other's formulas.
+  Formula* form = GetFormula();
+  if (form != NULL) {
+    if (form->ContainsVar(clone)) {
+      assert(false); //LS DEBUG:  throw error instead
+    }
+  }
+  form = clone->GetFormula();
+  if (form != NULL) {
+    if (form->ContainsVar(this)) {
+      assert(false); //LS DEBUG:  throw error isntead
+    }
+  }
+
   if (m_sameVariable.size() != 0) {
     Variable* samevar = g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable);
     samevar->Synchronize(clone);
   }
 
   assert(m_namespace == clone->GetNamespace());
-  m_sameVariable = clone->GetName();
+
   if (m_printedname.size() > 0) {
     clone->SetPrintedName(m_printedname);
   }
   else {
     clone->SetPrintedName(m_name);
-  }
-  if (m_name == m_sameVariable) {
-    //Don't set a variable to be equal to itself!
-    m_sameVariable.clear();
-    return;
   }
   if ((m_type == varUndefined) ||
       (m_type == varReactionUndef && IsReaction(clone->GetType())) ||
@@ -595,6 +615,10 @@ void Variable::Synchronize(Variable* clone)
   }
 
   clone->SetIsConst(GetIsConst());
+  if (m_sameVariable.size() == 0) {
+    //If we already point to someone, let them point to the new thing.
+    m_sameVariable = clone->GetName();
+  }
 }
 
 void Variable::ImportModule(const string* modname)
@@ -611,11 +635,11 @@ bool Variable::CheckDoesNotIncludeSelf()
 {
   Formula* form = GetFormula();
   if (form != NULL) {
-    if (form->ContainsVar(m_namespace, m_name)) {
-      return true;
+    if (form->ContainsVar(this)) {
+      return false;
     }
   }
-  return false;
+  return true;
 }
 
 string Variable::ToString() const

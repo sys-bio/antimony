@@ -26,6 +26,7 @@ private:
   std::string m_mainmodulename;
   std::string m_jarnac;
   char m_cc;
+  std::string m_error;
 
 public:
   Registry();
@@ -55,6 +56,7 @@ public:
   void SetNewDownstreamOpen(Variable* var);
   void SetDownstreamOpen(Variable* var);
   void SetWorkingStrand(Variable* var);
+  void SetError(std::string error) {m_error = error;};
 
   Module* GetModule(std::string modulename);
   //const Module* GetModule(std::string modulename) const;
@@ -72,6 +74,7 @@ public:
   size_t GetNumModules();
   std::string GetNthModuleName(size_t n);
   char GetCC() {return m_cc;};
+  std::string GetError() {return m_error;};
 
   //Keeping track of malloc'd stuff so we can free it ourselves if need be.
   std::vector<char*>    m_charstars;

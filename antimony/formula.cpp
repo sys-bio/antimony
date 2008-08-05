@@ -99,32 +99,35 @@ void Formula::CheckIncludes(string modname, ReactantList* rlist) const
 
 bool Formula::ContainsVar(string modname, vector<string> vname) const
 {
+  Module* module = g_registry.GetModule(modname);
+  if (module == NULL) return false;
+  Variable* var = module->GetVariable(vname);
+  if (var==NULL) return false;
+  return ContainsVar(var);
+}
+
+bool Formula::ContainsVar(const Variable* outervar) const
+{
   for (size_t var=0; var<m_components.size(); var++) {
-    if (m_components[var].second == vname) {
-      return true;
-    }
-    if (modname == m_components[var].first) {
+    if (m_components[var].second.size() > 0) {
       Module* module = g_registry.GetModule(m_components[var].first);
-      Variable* subvar = NULL;
-      if (module != NULL) {
-        subvar = module->GetVariable(m_components[var].second);
+      assert(module != NULL);
+      Variable* subvar = module->GetVariable(m_components[var].second);
+      assert(subvar != NULL);
+      if (subvar->GetIsEquivalentTo(outervar)) {
+        return true;
       }
-      else {
-        assert(false); //come on, they're both part of the same nonexistant module?
-      }
-      if (subvar != NULL) {
-        Formula* subform = subvar->GetFormula();
-        if (subform != NULL) {
-          if (subform->ContainsVar(modname, vname)) {
-            return true;
-          }
+      Formula* subformula = subvar->GetFormula();
+      if (subformula != NULL) {
+        if (subformula->ContainsVar(outervar)) {
+          return true;
         }
       }
     }
   }
   return false;
 }
-    
+
 void Formula::Clear()
 {
   m_components.clear();
