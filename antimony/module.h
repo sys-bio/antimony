@@ -50,7 +50,7 @@ public:
   void AddVariableToExportList(Variable* var);
   Reaction* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula);
   Reaction* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var);
-  void SetFormula(Formula* formula);
+  bool SetFormula(Formula* formula);
 
   Variable* GetVariable(std::vector<std::string> name);
   const Variable* GetVariable(std::vector<std::string> name) const;
@@ -59,15 +59,17 @@ public:
   const Formula* GetFormula() const;
   Formula* GetFormula();
   Variable* GetNextExportVariable();
+  size_t GetNumExportVariables() const {return m_exportlist.size();};
   Variable* GetUpstreamDNA();
   Variable* GetDownstreamDNA();
 
   const std::string& GetModuleName() const;
   std::vector<std::string> GetVariableName() const;
+  std::string GetVariableNameDelimitedBy(char cc) const;
 
   void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetReactionVariable(Variable* var);
-  void ImportModule(const std::string* modname);
+  bool ImportModule(const std::string* modname);
   
   std::string ToString() const;
   std::string GetJarnacReactions() const;

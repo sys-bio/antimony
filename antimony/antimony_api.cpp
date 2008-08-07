@@ -2,6 +2,7 @@
 
 #include "antimony_api.h"
 #include "registry.h"
+#include "stringx.h"
 
 
 using namespace std;
@@ -38,13 +39,15 @@ LIB_EXTERN int loadModel(const char* filename)
   g_registry.CompileAllExportLists();
   //cout << "Return value: " << retval << endl;
   if (retval == 1) {
-    //LS DEBUG:  We might know the error--try to eke it out of the parser.
-    g_registry.SetError("Parsing failed because of invalid input.");
+    if (g_registry.GetError().size() == 0) {
+      assert(false); //Need to fill in the reason why we failed explicitly, if possible.
+      g_registry.SetError("Parsing failed because of invalid input.");
+    }
   }
-  if (retval == 2) {
+  else if (retval == 2) {
     g_registry.SetError("Parsing failed due to memory exhaution.");
   }
-  if (retval > 2) {
+  else {
     g_registry.SetError("Unknown parsing error.");
   }
   return retval;
@@ -127,6 +130,43 @@ size_t* getSizeTStar(size_t size)
   return ret;
 }
 
+void reportReactionIndexProblem(size_t n, size_t actualsize, const char* moduleName)
+{
+  string error = "There is no reaction with index " + ToString(n) + " in module ";
+  error += moduleName;
+  error += ".";
+  if (actualsize == 0) {
+    error += "  In fact, there are no reactions at all in that module.";
+  }
+  else if (actualsize == 1) {
+    error += "  There is a single reaction with index 0.";
+  }
+  else if (actualsize > 1) {
+    error += "  Valid reaction index values are 0 through " + ToString(actualsize-1) + ".";
+  }
+  g_registry.SetError(error);
+}
+
+void reportVariableTypeIndexProblem(size_t n, return_type rtype, size_t actualsize, const char* moduleName)
+{
+  if (rtype == allReactions) {
+    return reportReactionIndexProblem(n, actualsize, moduleName);
+  }
+  string error = "There is no variable of type " + ReturnTypeToString(rtype);
+  if (actualsize > 0) {
+    error += " with index " + ToString(n);
+  }
+  error += " in module ";
+  error +=  moduleName;
+  error +=  ".";
+  if (actualsize == 1) {
+    error += "  There is a single variable of this type with index 0.";
+  }
+  else if (actualsize > 1) {
+    error += "  Valid index values are 0 through " + ToString(actualsize-1) + ".";
+  }
+  g_registry.SetError(error);
+}
 
 LIB_EXTERN char* getJarnac(const char* moduleName)
 {
@@ -142,6 +182,7 @@ LIB_EXTERN char** getModuleNames()
   if (retval == NULL) return NULL;
   for (size_t mod=0; mod<nummods; mod++) {
     retval[mod] = getNthModuleName(mod);
+    if (retval[mod] == NULL) return NULL;
   }
   return retval;
 }
@@ -149,8 +190,19 @@ LIB_EXTERN char** getModuleNames()
 LIB_EXTERN char*  getNthModuleName(size_t n)
 {
   size_t nummods = g_registry.GetNumModules();
-  if (nummods > n-1) {
-    string error = "There is no module with index " + n;
+  if (n >= nummods) {
+    string error = "There is no module with index " + ToString(n) + ".";
+    if (nummods == 1) {
+      error += "  There is a single module with index 0.";
+    }
+    else if (nummods > 1) {
+      error += "  Valid module index values are 0 through " + ToString(nummods-1) + ".";
+    }
+    if (nummods == 0) {
+      error += "  In fact, there are no modules at all.  Try running loadModule(filename).";
+    }
+    g_registry.SetError(error);
+    return NULL;
   }
   char* retval = getCharStar(g_registry.GetNthModuleName(n).c_str());
   return retval;
@@ -197,6 +249,7 @@ LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype
   if (names == NULL) return NULL;
   for (size_t var=0; var<vnum; var++) {
     names[var] = getNthSymbolNameOfType(moduleName, rtype, var);
+    if (names[var] == NULL) return NULL;
   }
   return names;
 }
@@ -209,6 +262,7 @@ LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type r
   if (equations == NULL) return NULL;
   for (size_t var=0; var<vnum; var++) {
     equations[var] = getNthSymbolEquationOfType(moduleName, rtype, var);
+    if (equations[var]==NULL) return NULL;
   }
   return equations;
 }
@@ -218,23 +272,8 @@ LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rty
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
   if (var==NULL) {
-    string error = "There is no variable of type " + ReturnTypeToString(rtype);
     size_t numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
-    if (numvars > 0) {
-      error += " with index " + n;
-    }
-    error += " in module ";
-    error +=  moduleName;
-    error +=  ".";
-    if (numvars == 1) {
-      error += "  There is a single variable of this type with index 0.";
-    }
-    else if (numvars > 1) {
-      error += "  Valid index values are 0 through ";
-      error += numvars-1;
-      error += ".";
-    }
-    g_registry.SetError(error);
+    reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
   char* retval = getCharStar(var->GetNameDelimitedBy(g_registry.GetCC()).c_str());
@@ -246,23 +285,8 @@ LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
   if (var==NULL) {
-    string error = "There is no variable of type " + ReturnTypeToString(rtype);
     size_t numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
-    if (numvars > 0) {
-      error += " with index " + n;
-    }
-    error += " in module ";
-    error += moduleName;
-    error += ".";
-    if (numvars == 1) {
-      error += "  There is a single variable of this type with index 0.";
-    }
-    else if (numvars > 1) {
-      error += "  Valid index values are 0 through ";
-      error += numvars-1;
-      error += ".";
-    }
-    g_registry.SetError(error);
+    reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
   char* retval = getCharStar(var->GetFormulaStringDelimitedBy(g_registry.GetCC()).c_str());
@@ -283,8 +307,8 @@ LIB_EXTERN size_t getNumReactants(const char* moduleName, size_t rxn)
   if (!checkModule(moduleName)) return NULL;
   const Module* mod = g_registry.GetModule(moduleName); 
   if (mod->m_rxnleftvarnames.size() <= rxn) {
-    //LS DEBUG THROW ERROR
-    assert(false);
+    reportReactionIndexProblem(rxn, mod->m_rxnleftvarnames.size(), moduleName);
+    return NULL;
   }
   return mod->m_rxnleftvarnames[rxn].size();
 }
@@ -292,9 +316,10 @@ LIB_EXTERN size_t getNumReactants(const char* moduleName, size_t rxn)
 LIB_EXTERN size_t getNumProducts(const char* moduleName, size_t rxn)
 {
   if (!checkModule(moduleName)) return NULL;
-  if (g_registry.GetModule(moduleName)->m_rxnrightvarnames.size() <= rxn) {
-    //LS DEBUG THROW ERROR
-    assert(false);
+  const Module* mod = g_registry.GetModule(moduleName); 
+  if (mod->m_rxnrightvarnames.size() <= rxn) {
+    reportReactionIndexProblem(rxn, mod->m_rxnrightvarnames.size(), moduleName);
+    return NULL;
   }
   return g_registry.GetModule(moduleName)->m_rxnrightvarnames[rxn].size();
 }
@@ -341,6 +366,7 @@ LIB_EXTERN double** getReactantStoichiometries(const char* moduleName)
   if (alllstoichs == NULL) return NULL;
   for (size_t rxn=0; rxn<lsrs->size(); rxn++) {
     alllstoichs[rxn] = getNthReactionReactantStoichiometries(moduleName, rxn);
+    if (alllstoichs[rxn] == NULL) return NULL;
   }
   return alllstoichs;
 }
@@ -350,8 +376,8 @@ LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName,
   if (!checkModule(moduleName)) return NULL;
   vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnleftstoichiometries;
   if (n >= lsrs->size()) {
-    //LS DEBUG THROW ERROR
-    assert(false);
+    reportReactionIndexProblem(n, lsrs->size(), moduleName);
+    return NULL;
   }
   double* lstoichs = getDoubleStar((*lsrs)[n].size());
   if (lstoichs == NULL) return NULL;
@@ -369,6 +395,7 @@ LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
   if (allrstoichs == NULL) return NULL;
   for (size_t rxn=0; rxn<lsrs->size(); rxn++) {
     allrstoichs[rxn] = getNthReactionProductStoichiometries(moduleName, rxn);
+    if (allrstoichs[rxn] == NULL) return NULL;
   }
   return allrstoichs;
 }
@@ -378,8 +405,8 @@ LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, 
   if (!checkModule(moduleName)) return NULL;
   vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnrightstoichiometries;
   if (n >= lsrs->size()) {
-    //LS DEBUG THROW ERROR
-    assert(false);
+    reportReactionIndexProblem(n, lsrs->size(), moduleName);
+    return NULL;
   }
   double* rstoichs = getDoubleStar((*lsrs)[n].size());
   if (rstoichs == NULL) return NULL;
@@ -412,55 +439,46 @@ LIB_EXTERN double** getStoichiometryMatrix(const char* moduleName)
 
 LIB_EXTERN char**   getStoichiometryMatrixColumnLabels(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
   return getSymbolNamesOfType(moduleName, allReactions);
 }
 
 LIB_EXTERN char**   getStoichiometryMatrixRowLabels(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
   return getSymbolNamesOfType(moduleName, varSpecies);
 }
 
 LIB_EXTERN size_t   getStoichiometryMatrixNumRows(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
   return getNumSymbolsOfType(moduleName, varSpecies);
 }
 
 LIB_EXTERN size_t   getStoichiometryMatrixNumColumns(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
   return getNumSymbolsOfType(moduleName, allReactions);
 }
 
 LIB_EXTERN char** getReactionRates(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
   return getSymbolEquationsOfType(moduleName, allReactions);
 }
 
 LIB_EXTERN char*  getNthReactionRate(const char* moduleName, size_t n)
 {
-  if (!checkModule(moduleName)) return NULL;
   return getNthSymbolEquationOfType(moduleName, allReactions, n);
 }
 
 LIB_EXTERN size_t getNumReactionRates(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
   return getNumSymbolsOfType(moduleName, allReactions);
 }
 
 LIB_EXTERN char** getReactionNames(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
   return getSymbolNamesOfType(moduleName, allReactions);
 }
 
 LIB_EXTERN char*  getNthReactionName(const char* moduleName, size_t n)
 {
-  if (!checkModule(moduleName)) return NULL;
   return getNthSymbolNameOfType(moduleName, allReactions, n);
 }
 
@@ -490,6 +508,7 @@ LIB_EXTERN char*** getDNAStrands(const char* moduleName)
   if (retval == NULL) return NULL;
   for (size_t strand=0; strand<numDNA; strand++) {
     retval[strand] = getNthDNAStrand(moduleName, strand);
+    if (retval[strand]==NULL) return NULL;
   }
   return retval;
 }
@@ -497,9 +516,24 @@ LIB_EXTERN char*** getDNAStrands(const char* moduleName)
 LIB_EXTERN char** getNthDNAStrand(const char* moduleName, size_t n)
 {
   if (!checkModule(moduleName)) return NULL;
-  if (g_registry.GetModule(moduleName)->m_dna.size() < n) {
-    //LS DEBUG:  THROW AN ERROR
-    assert(false);
+  size_t actualsize = g_registry.GetModule(moduleName)->m_dna.size();
+  if (actualsize <= n) {
+    string error = "There is no DNA strand with index " + n;
+    error += " in module ";
+    error += moduleName;
+    error += ".";
+    if (actualsize == 0) {
+      error += "  In fact, there are no DNA strands at all in that module.";
+    }
+    else if (actualsize == 1) {
+      error += "  There is a single DNA strand with index 0.";
+    }
+    else if (actualsize > 1) {
+      error += "  Valid DNA strand index values are 0 through ";
+      error += actualsize-1;
+      error += ".";
+    }
+    g_registry.SetError(error);
     return NULL;
   }
   size_t dna_length = g_registry.GetModule(moduleName)->m_dna[n].size();
@@ -568,7 +602,7 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
     return subModules;
   }
   assert(false); //uncaught var_type
-  //LS DEBUG throw error
+  g_registry.SetError("Coding error:  Didn't include a return type for variable type " + VarTypeToString(vtype) + " in getTypeOfSymbol; antimony_api.cpp.  Email the author to fix.");
   return allUnknown;
 }
 

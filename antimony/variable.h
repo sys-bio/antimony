@@ -68,7 +68,7 @@ public:
   std::vector<std::string> GetDNAStringDelimitedBy(char cc) const;
 
   void SetType(var_type newtype);
-  void SetFormula(Formula* formula);
+  bool SetFormula(Formula* formula);
   Reaction* SetReaction(Reaction* rxn);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetPrintedName(std::vector<std::string> printedname);
@@ -81,7 +81,7 @@ public:
   void SetUpstream(Variable* var);
 
   void Synchronize(Variable* clone);
-  void ImportModule(const std::string* modname);
+  bool ImportModule(const std::string* modname);
 
   bool CheckDoesNotIncludeSelf();
   std::string ToString() const;
