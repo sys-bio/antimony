@@ -1,11 +1,12 @@
 #include <vector>
 #include <string>
 
-#include "registry.h"
-#include "module.h"
-#include "reaction.h"
-#include "reactantlist.h"
 #include "formula.h"
+#include "module.h"
+#include "reactantlist.h"
+#include "reaction.h"
+#include "registry.h"
+#include "stringx.h"
 #include "variable.h"
 
 using namespace std;
@@ -73,11 +74,17 @@ void Registry::AddVariableToCurrentExportList(Variable* export_var)
   CurrentModule()->AddVariableToExportList(export_var);
 }
 
-void Registry::AddVariableToCurrentImportList(Variable* import_var)
+bool Registry::AddVariableToCurrentImportList(Variable* import_var)
 {
-  Variable* var = CurrentModule()->GetVariable(m_currentImportedModule)->GetModule()->GetNextExportVariable();
-  assert(var != NULL); //LS DEBUG:  throw error
+  Module* submod = CurrentModule()->GetVariable(m_currentImportedModule)->GetModule();
+  Variable* var = submod->GetNextExportVariable();
+  if (var == NULL) {
+    string error = "Unable to add variable '" + import_var->GetNameDelimitedBy(GetCC()) + "' when creating an instance of the module '" + submod->GetModuleName() + "' because this module is defined to have only " + ToString(submod->GetNumExportVariables()) + " variable(s) definable by default in its construction.";
+    SetError(error);
+    return true; //abort!  Nothing to do.
+  }
   import_var->Synchronize(var);
+  return false;
 }
 
 Variable* Registry::AddVariableToCurrent(const string* name)

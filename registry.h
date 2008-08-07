@@ -41,7 +41,7 @@ public:
   Module* CurrentModule();
   void RevertToPreviousModule();
   void AddVariableToCurrentExportList(Variable* export_var);
-  void AddVariableToCurrentImportList(Variable* import_var);
+  bool AddVariableToCurrentImportList(Variable* import_var);
   Variable* AddVariableToCurrent(const std::string* name);
   Reaction* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula);
   Reaction* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var);

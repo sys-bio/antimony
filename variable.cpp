@@ -57,14 +57,7 @@ string Variable::GetFormulaStringDelimitedBy(char cc) const
 
 var_type Variable::GetType() const
 {
-  /*
-  if (m_sameVariable.size() > 0) {
-    Variable* samevar = g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable);
-    assert(samevar != this);
-    return samevar->GetType();
-  }
-  else
-  */
+  //LS NOTE:  don't get the type of the equivalent variable--that can lead to infinite loops.
   return m_type;
 }
 
@@ -102,7 +95,8 @@ const Formula* Variable::GetFormula() const
     return m_valModule[0].GetFormula();
   }
   assert(false); //Uncaught variable type
-  return &(m_valFormula);
+  g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
+  return NULL;
 }
 
 Formula* Variable::GetFormula()
@@ -138,7 +132,8 @@ Formula* Variable::GetFormula()
     return m_valModule[0].GetFormula();
   }
   assert(false); //Uncaught variable type
-  return &(m_valFormula);
+  g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
+  return NULL;
 }
 
 const Reaction* Variable::GetReaction() const
@@ -180,8 +175,7 @@ Module* Variable::GetModule()
 Variable* Variable::GetSubVariable(const std::string* name)
 {
   if (m_type != varModule) {
-    assert(false);
-    //Throw an error  LS DEBUG
+    return NULL;
   }
   if (m_sameVariable.size() > 0) {
     return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->GetSubVariable(name);
@@ -319,7 +313,7 @@ void Variable::SetType(var_type newtype)
   }
 }
 
-void Variable::SetFormula(Formula* formula)
+bool Variable::SetFormula(Formula* formula)
 {
   if (m_sameVariable.size() > 0) {
     return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetFormula(formula);
@@ -330,13 +324,13 @@ void Variable::SetFormula(Formula* formula)
       //Setting something equal to itself--do nothing.
       //LS DEBUG:  emit a warning?
       //cout << "Already equivalent." << endl;
-      return;
+      return false;
     }
     if (newvar->GetName().size() < GetName().size()) {
       //Synchronize the longer name (and therefore the subvariable) to the
       // shorter name
       newvar->Synchronize(this);
-      return;
+      return false;
     }
     else {
       bool dosync = false;
@@ -351,15 +345,13 @@ void Variable::SetFormula(Formula* formula)
       }
       if (dosync) {
         Synchronize(newvar);
-        return;
+        return false;
       }
     }
   }
   if (formula->ContainsVar(this)) {
-    cout << "Loop detected:  " << GetNameDelimitedBy('.').c_str() << "'s definition either includes itself directly ('s5 = 6 + s5') or by proxy ('s5 = 8*d3' and 'd3 = 9*s5')." << endl; 
-    //LS DEBUG:  throw an error
-    assert(false);
-    return;
+    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition either includes itself directly ('s5 = 6 + s5') or by proxy ('s5 = 8*d3' and 'd3 = 9*s5').");
+    return true;
   }
   switch (m_type) {
   case varSpeciesUndef:
@@ -380,8 +372,7 @@ void Variable::SetFormula(Formula* formula)
     assert(m_valReaction.IsEmpty());
     assert(m_valFormula.IsEmpty());
     assert(m_valModule.size() == 1);
-    m_valModule[0].SetFormula(formula);
-    break;
+    return m_valModule[0].SetFormula(formula);
   case varUndefined:
     assert(m_valFormula.IsEmpty());
     m_type = varFormulaUndef;
@@ -394,7 +385,7 @@ void Variable::SetFormula(Formula* formula)
     m_valFormula = *formula;
     break;
   }
-
+  return false;
 }
 
 Reaction* Variable::SetReaction(Reaction* rxn)
@@ -610,7 +601,7 @@ void Variable::Synchronize(Variable* clone)
     assert(false); //I want to know what someone wants when they try this,
     // because I'm not convinced I'm doing the right thing below.  LS DEBUG
     string modname = m_valModule[0].GetModuleName();
-    clone->ImportModule(&modname);
+    clone->ImportModule(&modname); //If we do, check the return value here.
     m_valModule.clear();
   }
 
@@ -621,14 +612,18 @@ void Variable::Synchronize(Variable* clone)
   }
 }
 
-void Variable::ImportModule(const string* modname)
+bool Variable::ImportModule(const string* modname)
 {
   assert(m_name.size() == 1);
-  assert(m_type == varUndefined);
+  if (m_type != varUndefined) {
+    g_registry.SetError("Cannot define '" + GetNameDelimitedBy('.') + "' to be model '" + *modname + "', because it is already a " + VarTypeToString(m_type) + ".");
+    return true; //error
+  }
   Module newmod(*g_registry.GetModule(*modname), m_name[0], m_namespace);
   m_valModule.push_back(newmod);
   m_type = varModule;
   g_registry.SetCurrentImportedModule(m_name);
+  return false;
 }
 
 bool Variable::CheckDoesNotIncludeSelf()

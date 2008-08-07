@@ -118,16 +118,26 @@ Reaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantLi
     right->SetVarsTo(varDNA);
     right ->CheckIsSingleDNAVar();
     formula->CheckIncludes(m_modulename, left);
-    right->GetSingleVar()->SetFormula(formula);
+    if (right->GetSingleVar()->SetFormula(formula)) return NULL;
     break;
   }
   Reaction newrxn(*left, divider, *right, *formula, var);
+  if (formula->ContainsVar(var)) {
+    //Loop!
+    g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy('.') + "' contains a reference to itself directly or indirectly in its formula (" + formula->ToStringDelimitedBy('.') + ").");
+    return NULL;
+  }
   return var->SetReaction(&newrxn);
 }
 
-void Module::SetFormula(Formula* formula)
+bool Module::SetFormula(Formula* formula)
 {
-  GetVariable(m_returnvalue)->SetFormula(formula);
+  Variable* retvar = GetVariable(m_returnvalue);
+  if (retvar == NULL) {
+    g_registry.SetError(GetVariableNameDelimitedBy('.') + " is a submodule, not a variable you can set to be equal to something.");
+    return true;
+  }
+  return GetVariable(m_returnvalue)->SetFormula(formula);
 }
 
 Variable* Module::GetVariable(vector<string> name)
@@ -191,9 +201,10 @@ const Formula* Module::GetFormula() const
 {
   const Variable* retvar = GetVariable(m_returnvalue);
   if (retvar != NULL) {
-    return GetVariable(m_returnvalue)->GetFormula();
+    return retvar->GetFormula();
   }
-  //otherwise throw an error  LS DEBUG
+  //Often, there will be no return value.  In fact, this might always be the case, since as
+  // of this comment, there is no way to actually set this.
   return NULL;
 }
 
@@ -203,7 +214,8 @@ Formula* Module::GetFormula()
   if (retvar != NULL) {
     return GetVariable(m_returnvalue)->GetFormula();
   }
-  //otherwise throw an error  LS DEBUG
+  //Often, there will be no return value.  In fact, this might always be the case, since as
+  // of this comment, there is no way to actually set this.
   return NULL;
 }
 
@@ -262,6 +274,16 @@ vector<string> Module::GetVariableName() const
   return m_variablename;
 }
 
+string Module::GetVariableNameDelimitedBy(char cc) const
+{
+  assert(m_variablename.size() > 0);
+  string retval = m_variablename[0];
+  for (size_t v=1; v<m_variablename.size(); v++) {
+    retval += cc + m_variablename[v];
+  }
+  return retval;
+}
+
 void Module::SetNewTopName(string newmodname, string newtopname)
 {
   m_variablename.insert(m_variablename.begin(), newtopname);
@@ -278,10 +300,10 @@ void Module::SetReactionVariable(Variable* var)
   m_currentrxnvar = var->GetName();
 }
 
-void Module::ImportModule(const string* modname)
+bool Module::ImportModule(const string* modname)
 {
   Variable* newmod = AddNewNumberedVariable("_sys");
-  newmod->ImportModule(modname);
+  return newmod->ImportModule(modname);
 }
 
 string Module::ToString() const
@@ -620,7 +642,7 @@ var_type Module::GetTypeFor(std::string varname)
       return var->GetType();
     }
   }
-  assert(false); //unknown variable
+  g_registry.SetError("Unknown variable " + varname + " in module " + m_modulename + ".");
   return varUndefined;
 }
 
@@ -632,6 +654,6 @@ bool Module::IsConst(std::string varname)
       return var->GetIsConst();
     }
   }
-  assert(false); //unknown variable
+  g_registry.SetError("Unknown variable " + varname + " in module " + m_modulename + ".");
   return false;
 }

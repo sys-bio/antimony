@@ -13,6 +13,7 @@
 #include "antimony_api.h"
 #include "registry.h"
 #include "rd_type.h"
+#include "stringx.h"
 #include "module.h"
 
   class Formula;
@@ -63,7 +64,7 @@
 input:          /* empty */
         |       input module { /*cout << endl << $2->ToString() << endl << endl;*/ }
         |       input modulepart {}
-        |       input error lineend {cerr << "(discarding line " << @2.last_line << " and continuing...)" << endl; yyerrok; }
+        |       input error {cerr << "Error line " << @2.last_line << ": stopping." << endl; YYABORT} 
         ;
 
 module:         MODULE WORD {g_registry.NewCurrentModule($2);} '(' variableexportlist ')' modulebody END
@@ -87,7 +88,12 @@ variableexportlist:
         ;
 
 variable:       WORD {$$ = g_registry.AddVariableToCurrent($1); }
-        |       variable '.' WORD {$$ = $1->GetSubVariable($3); assert($$ != NULL);} //LS DEBUG throw error
+        |       variable '.' WORD {$$ = $1->GetSubVariable($3);
+                  if ($$ == NULL) {
+                    g_registry.SetError("'" + *($3) + "' is not a subvariable of '" + $1->GetNameDelimitedBy('.') + "'.");
+                    YYABORT;
+                  }
+                }
         |       '<' variable '>' {$$ = $2; $$->SetIsConst(true);}
         ;
 
@@ -108,10 +114,12 @@ modulepart:     reaction lineend {}
 reaction:       variable ':' { g_registry.CurrentModule()->SetReactionVariable($1); } reactantList reactionDivider reactantList ';' formula
                 {
                   $$ = g_registry.AddNewReactionToCurrent($4, $5, $6, $8, g_registry.CurrentModule()->GetReactionVariable());
+                  if ($$ == NULL) YYABORT;
                 }
         |       reactantList reactionDivider reactantList ';' formula
                 {
                   $$ = g_registry.AddNewReactionToCurrent($1, $2, $3, $5);
+                  if ($$ == NULL) YYABORT;
                 }
         ;
 
@@ -153,16 +161,16 @@ lineend:        ';' {}
         |       '\n' {}
         ;
 
-assignment:     variable '=' { g_registry.SetAssignmentVariable($1); } formula {g_registry.GetAssignmentVariable()->SetFormula($4); }
+assignment:     variable '=' { g_registry.SetAssignmentVariable($1); } formula {if (g_registry.GetAssignmentVariable()->SetFormula($4)) YYABORT; }
         ;
 
-submodule:      variable ':' MODNAME '(' {$1->ImportModule($3);} variableimportlist ')'
-        |       MODNAME '(' {g_registry.CurrentModule()->ImportModule($1);} variableimportlist ')'
+submodule:      variable ':' MODNAME '(' {if ($1->ImportModule($3)) YYABORT;} variableimportlist ')'
+        |       MODNAME '(' {if(g_registry.CurrentModule()->ImportModule($1)) YYABORT;} variableimportlist ')'
         ;
 variableimportlist:
                 /* empty */ {}
-        |       variable {g_registry.AddVariableToCurrentImportList($1); }
-        |       variableimportlist ',' variable { g_registry.AddVariableToCurrentImportList($3); }
+        |       variable {if (g_registry.AddVariableToCurrentImportList($1)) YYABORT; }
+        |       variableimportlist ',' variable { if (g_registry.AddVariableToCurrentImportList($3)) YYABORT; }
         |       variableimportlist ',' variable '=' localvariable {$3->Synchronize($5); }
         ;
 
@@ -259,7 +267,7 @@ dnamiddle:      variable DASHES {g_registry.SetNewDownstreamOpen($1);}
 
 void yyerror(char const *s)
 {
-    cerr << s << endl;
+  g_registry.SetError("Error parsing line " + ToString(yylloc.last_line) + ":  " + s);
 }
 
 int yylex(void)
@@ -270,7 +278,7 @@ int yylex(void)
   }
   if (!g_registry.input.good()) {
     //Something else went wrong!
-    //LS DEBUG:  Maybe throw an exception or an error or something.
+    g_registry.SetError("The input file is no longer good, for an unknown reason.");
     return -1;
   }
 
@@ -444,18 +452,23 @@ int main(long argc, char** argv)
   }
   //yydebug = 1;
   int retval=loadModel(filename.c_str());
-  size_t nummods = getNumModules();
-  char** modnames = getModuleNames();
-  for (size_t mod=0; mod<nummods; mod++) {
-    cout << "Information for module '" << modnames[mod] << "'" << endl;
-    cout << "***ToString (" << modnames[mod] << ") ***" << endl;
-    cout << g_registry.GetModule(modnames[mod])->ToString().c_str() << endl << endl;
-    cout << "***Jarnac (" << modnames[mod] << ") ***" << endl;
-    cout << getJarnac(modnames[mod]) << endl;
-    cout << endl << "***printAllDataFor (" << modnames[mod] << ") (from the API):***" << endl;
-    printAllDataFor(modnames[mod]);
-    cout << endl;
-    cout << endl;
+  if (retval) {
+    cout << "Error:  " << g_registry.GetError().c_str() << endl;
+  }
+  else {
+    size_t nummods = getNumModules();
+    char** modnames = getModuleNames();
+    for (size_t mod=0; mod<nummods; mod++) {
+      cout << "Information for module '" << modnames[mod] << "'" << endl;
+      cout << "***ToString (" << modnames[mod] << ") ***" << endl;
+      cout << g_registry.GetModule(modnames[mod])->ToString().c_str() << endl << endl;
+      cout << "***Jarnac (" << modnames[mod] << ") ***" << endl;
+      cout << getJarnac(modnames[mod]) << endl;
+      cout << endl << "***printAllDataFor (" << modnames[mod] << ") (from the API):***" << endl;
+      printAllDataFor(modnames[mod]);
+      cout << endl;
+      cout << endl;
+    }
   }
   freeAll();
   return retval;
