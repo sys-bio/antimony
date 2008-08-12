@@ -23,8 +23,8 @@ public:
 
   void AddReactant(Variable* var, double stoichiometry=1);
   void SetNewTopName(std::string newmodname, std::string newtopname);
-  void SetVarsTo(var_type vtype);
-  void CheckIsSingleDNAVar();
+  bool SetVarsTo(var_type vtype);
+  bool CheckIsSingleDNAOrReaction();
 
   Variable* GetSingleVar();
   std::vector<std::vector<std::string> > GetVariableList();

@@ -184,6 +184,19 @@ Variable* Variable::GetSubVariable(const std::string* name)
   return m_valModule[0].GetSubVariable(name);
 }
 
+Variable* Variable::GetUpstreamDNA() const
+{
+  return g_registry.GetModule(m_namespace)->GetVariable(m_upstream);
+}
+
+Variable* Variable::GetDownstreamDNA() const
+{
+  return g_registry.GetModule(m_namespace)->GetVariable(m_downstream);
+}
+
+
+
+
 bool Variable::GetIsConst() const
 {
   if (m_sameVariable.size() > 0) {
@@ -251,10 +264,44 @@ bool Variable::IsDNAStart() const
   return false;
 }
 
-bool Variable::IsUnlinked() const
+bool Variable::IsUnlinked(bool up) const
 {
-  return (m_upstream.size()==0 && m_downstream.size()==0);
+  if (up) {
+    if (m_upstream.size()==0 ||
+        (m_upstream.size()==1 && m_upstream[0] == "[open]")) {
+      return true;
+    }
+    return false;
+  }
+  else {
+    if (m_downstream.size()==0 ||
+        (m_downstream.size()==1 && m_downstream[0] == "[open]")) {
+      return true;
+    }
+    return false;
+  }
 }
+
+bool Variable::DoesNotLinkTo(Variable* var) const
+{
+  if (GetUpstreamDNA() != NULL) {
+    return GetUpstreamDNA()->DoesNotLinkTo(var);
+  }
+  if (m_upstream.size() > 0 && m_upstream[0] != "[open]") {
+    Variable* upvar = g_registry.GetModule(m_namespace)->GetVariable(m_upstream);
+    assert(upvar != NULL);
+    return upvar->DoesNotLinkTo(var);
+  }
+  const Variable* nextvar = this;
+  while (nextvar != NULL) {
+    if (var == nextvar) {
+      return false;
+    }
+    nextvar = nextvar->GetDownstreamDNA();
+  }
+  return true;
+}
+    
 
 bool Variable::HasOpenUpstream() const
 {
@@ -286,31 +333,166 @@ vector<string> Variable::GetDNAStringDelimitedBy(char cc) const
   return dna;
 }  
 
-void Variable::SetType(var_type newtype)
+bool Variable::SetType(var_type newtype)
 {
-  assert(m_type == varUndefined ||
-         m_type == newtype ||
-         (IsReaction(m_type) && IsReaction(newtype)) ||
-         (IsSpecies(m_type)  && IsSpecies(newtype)) ||
-         (IsDNA(m_type)      && IsDNA(newtype)) ||
-         (IsSpecies(newtype) && m_type == varFormulaUndef)
-         );
-  if ((newtype == varSpeciesUndef ||
-       newtype == varReactionUndef) &&
-      m_type != varUndefined) {
-    return;
-  }
-  if (IsDNA(m_type) && newtype == varDNA) {
-    return;
-  }
-  m_type = newtype;
+  if (newtype == varUndefined) return false;
+  if (newtype == m_type) return false;
   if (m_sameVariable.size() > 0) {
     g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetType(newtype);
   }
-  if (IsDNA(m_type) && !m_valReaction.LeftIsEmpty()) {
-    assert(false);
-    //throw an error --LS DEBUG
+  if (IsDNA(newtype) && !m_valReaction.LeftIsEmpty()) {
+    g_registry.SetError("For now, we disallow DNA reactions (i.e. genes) to consume anything in the reaction they define:  the left side of the reaction must be empty (i.e  ' -> S1' and not 'G1 -> S1').");
+    return true;
   }
+  string error = "Unable to set the type of variable '" + GetNameDelimitedBy('.') + "' to " + VarTypeToString(newtype) + " because it is already set to be the incompatible type " + VarTypeToString(m_type) + ".  This situation can occur either with explicit type declaration or by using the variable in different, incompatible contexts.";
+  switch(m_type) {
+  case varSpeciesUndef:
+  case varSpeciesProtein:
+    switch(newtype) {
+    case varSpeciesUndef:
+    case varSpeciesProtein:
+      m_type = varSpeciesProtein; //If they were both SpeciesUndef, we already returned.
+      return false;
+    case varFormulaUndef:
+    case varDNA:
+    case varFormulaPromoter:
+    case varFormulaOperator:
+    case varReactionGene:
+    case varReactionUndef:
+    case varInteraction:
+    case varUndefined:
+    case varModule:
+      g_registry.SetError(error); return true;
+    }
+  case varFormulaUndef:
+    switch(newtype) {
+    case varSpeciesUndef:
+    case varSpeciesProtein:
+    case varFormulaUndef:
+    case varDNA:
+    case varFormulaPromoter:
+    case varFormulaOperator:
+    case varReactionGene:
+    case varReactionUndef:
+    case varInteraction:
+      m_type = newtype;
+      return false;
+    case varModule:
+      g_registry.SetError(error); return true;
+    case varUndefined:
+      return false;
+    }
+  case varDNA:
+    switch(newtype) {
+    case varFormulaUndef:
+    case varUndefined:
+      return false;
+    case varDNA:
+    case varFormulaPromoter:
+    case varFormulaOperator:
+    case varReactionGene:
+      m_type = newtype;
+      return false;
+    case varReactionUndef:
+      m_type = varReactionGene;
+      return false;
+    case varSpeciesUndef:
+    case varSpeciesProtein:
+    case varInteraction:
+    case varModule:
+      g_registry.SetError(error); return true;
+    }
+  case varFormulaPromoter:
+    switch(newtype) {
+    case varFormulaUndef:
+    case varFormulaPromoter:
+    case varDNA:
+    case varUndefined:
+      return false;
+    case varSpeciesUndef:
+    case varSpeciesProtein:
+    case varFormulaOperator:
+    case varReactionGene:
+    case varReactionUndef:
+    case varInteraction:
+    case varModule:
+      g_registry.SetError(error); return true;
+    }
+  case varFormulaOperator:
+    switch(newtype) {
+    case varFormulaUndef:
+    case varFormulaOperator:
+    case varDNA:
+    case varUndefined:
+      return false;
+    case varSpeciesUndef:
+    case varSpeciesProtein:
+    case varFormulaPromoter:
+    case varReactionGene:
+    case varReactionUndef:
+    case varInteraction:
+    case varModule:
+      g_registry.SetError(error); return true;
+    }
+  case varReactionGene:
+    switch(newtype) {
+    case varFormulaUndef:
+    case varDNA:
+    case varReactionGene:
+    case varReactionUndef:
+    case varUndefined:
+      return false;
+    case varSpeciesUndef:
+    case varSpeciesProtein:
+    case varFormulaOperator:
+    case varFormulaPromoter:
+    case varInteraction:
+    case varModule:
+      g_registry.SetError(error); return true;
+    }
+  case varReactionUndef:
+    switch(newtype) {
+    case varReactionUndef:
+    case varUndefined:
+    case varFormulaUndef:
+      return false;
+    case varDNA:
+    case varReactionGene:
+      m_type = varReactionGene;
+      return false;
+    case varSpeciesUndef:
+    case varSpeciesProtein:
+    case varFormulaOperator:
+    case varFormulaPromoter:
+    case varInteraction:
+    case varModule:
+      g_registry.SetError(error); return true;
+    }
+  case varInteraction:
+    switch(newtype) {
+    case varUndefined:
+    case varFormulaUndef:
+    case varInteraction:
+      return false;
+    case varReactionUndef:
+    case varDNA:
+    case varReactionGene:
+    case varSpeciesUndef:
+    case varSpeciesProtein:
+    case varFormulaOperator:
+    case varFormulaPromoter:
+    case varModule:
+      g_registry.SetError(error); return true;
+    }
+  case varUndefined:
+    m_type = newtype;
+    return false;
+  case varModule:
+    g_registry.SetError(error); return true; //the already-a-module case handled above.
+  }
+
+  assert(false); //uncaught vtype
+  return false;
 }
 
 bool Variable::SetFormula(Formula* formula)
@@ -390,8 +572,7 @@ bool Variable::SetFormula(Formula* formula)
 
 Reaction* Variable::SetReaction(Reaction* rxn)
 {
-  //LS DEBUG:  calling something a reaction that used to be a formula is OK
-  assert(m_type==varUndefined || m_type==varDNA || IsReaction(m_type));
+  assert(m_type==varUndefined || m_type==varDNA || m_type==varFormulaUndef || IsReaction(m_type));
   m_valReaction = *rxn;
   if (m_type==varUndefined) {
     if (IsInteraction(rxn->GetType())) {
@@ -401,18 +582,15 @@ Reaction* Variable::SetReaction(Reaction* rxn)
       m_type = varReactionUndef;
     }
   }
-  else if (m_type==varDNA) {
+  if (m_type==varDNA) {
     m_type = varReactionGene;
-    if (!m_valFormula.IsEmpty()) {
-      m_valReaction.SetFormula(&m_valFormula);
-      Formula blankform;
-      m_valFormula = blankform;
-    }
   }
-  else if (!IsReaction(m_type)) {
-    assert(false);
-    //Throw an error
+  if (!m_valFormula.IsEmpty()) {
+    m_valReaction.SetFormula(&m_valFormula);
+    Formula blankform;
+    m_valFormula = blankform;
   }
+  SetType(varReactionUndef);
   return &m_valReaction;
 }
 
@@ -451,8 +629,9 @@ void Variable::SetPrintedName(std::vector<std::string> printedname)
   m_printedname = printedname;
 }
 
-void Variable::SetIsConst(bool constant)
+bool Variable::SetIsConst(bool constant)
 {
+  string error = "Cannot set '" + GetNameDelimitedBy('.') + "' to be constant";
   switch(m_type) {
   case varFormulaUndef:
   case varFormulaPromoter:
@@ -462,26 +641,27 @@ void Variable::SetIsConst(bool constant)
   case varSpeciesProtein:
   case varUndefined:
     if (!m_valFormula.GetIsConst() && constant) {
-      assert(false);
-      //Throw an error--LS DEBUG
+      g_registry.SetError(error + " because its rate constant or initial value contains something that is or cannot be constant (such as a floating species concentration).");
+      return true;
     }
     break;
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-    if (!m_valReaction.GetIsConst() && constant) {
-      assert(false);
-      //Throw an error--LS DEBUG
+    if (constant) {
+      g_registry.SetError(error + ".  Reactions and interactions are non-constant by definition.");
+      return true;
     }
     break;
   case varModule:
-    assert(!constant);
     if (!constant) {
-      //Throw an error--LS DEBUG
+      g_registry.SetError(error + ", as 'constantness' is undefined for submodules.");
+      return true;
     }
     break;
   }
   m_const = constant;
+  return false;
 }
 
 void Variable::SetOpenUpstream()
@@ -543,14 +723,14 @@ void Variable::SetDownstream(Variable* var) {
   var->SetUpstream(this);
 }
 
-void Variable::Synchronize(Variable* clone)
+bool Variable::Synchronize(Variable* clone)
 {
   if (GetIsEquivalentTo(clone)) {
     //already equivalent--don't do anything
     // (Shouldn't be necessary from Variable:: calls, but this also gets called from the
     //  registry during parsing.) 
     //cout << "Already equivalent" << endl;
-    return;
+    return false;
   }
 
   //Check to make sure we don't synchronize variables that are already in each other's formulas.
@@ -605,11 +785,14 @@ void Variable::Synchronize(Variable* clone)
     m_valModule.clear();
   }
 
-  clone->SetIsConst(GetIsConst());
+  if (clone->SetIsConst(GetIsConst())) {
+    return true; //(error condition)
+  }
   if (m_sameVariable.size() == 0) {
     //If we already point to someone, let them point to the new thing.
     m_sameVariable = clone->GetName();
   }
+  return false;
 }
 
 bool Variable::ImportModule(const string* modname)

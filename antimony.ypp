@@ -94,7 +94,7 @@ variable:       WORD {$$ = g_registry.AddVariableToCurrent($1); }
                     YYABORT;
                   }
                 }
-        |       '<' variable '>' {$$ = $2; $$->SetIsConst(true);}
+        |       '<' variable '>' {$$ = $2; if ($$->SetIsConst(true)) YYABORT;}
         ;
 
 //Nothing here needs to actually do anything, since we've already added these
@@ -191,70 +191,70 @@ varinitialize:  specinit { }
         |       constinit { }
         ;
 
-specinit:       SPECIES variable {$2->SetType(varSpeciesUndef); }
-        |       VAR SPECIES variable {$3->SetType(varSpeciesUndef); }
-        |       specinit ',' variable {$3->SetType(varSpeciesUndef); }
+specinit:       SPECIES variable {if ($2->SetType(varSpeciesUndef)) YYABORT; }
+        |       VAR SPECIES variable {if ($3->SetType(varSpeciesUndef)) YYABORT; }
+        |       specinit ',' variable {if ($3->SetType(varSpeciesUndef)) YYABORT; }
         ;
 
-protinit:       PROTEIN variable {$2->SetType(varSpeciesProtein); }
-        |       VAR PROTEIN variable {$3->SetType(varSpeciesProtein); }
-        |       protinit ',' variable {$3->SetType(varSpeciesProtein); }
+protinit:       PROTEIN variable {if ($2->SetType(varSpeciesProtein)) YYABORT; }
+        |       VAR PROTEIN variable {if ($3->SetType(varSpeciesProtein)) YYABORT; }
+        |       protinit ',' variable {if ($3->SetType(varSpeciesProtein)) YYABORT; }
         ;
 
-dnainit:        DNA variable {$2->SetType(varDNA); }
-        |       VAR DNA variable {$3->SetType(varDNA); }
-        |       dnainit ',' variable {$3->SetType(varDNA); }
+dnainit:        DNA variable {if ($2->SetType(varDNA)) YYABORT; }
+        |       VAR DNA variable {if ($3->SetType(varDNA)) YYABORT; }
+        |       dnainit ',' variable {if ($3->SetType(varDNA)) YYABORT; }
         ;
 
-geneinit:       GENE variable {$2->SetType(varReactionGene); }
-        |       VAR GENE variable {$3->SetType(varReactionGene); }
-        |       geneinit ',' variable {$3->SetType(varReactionGene); }
+geneinit:       GENE variable {if ($2->SetType(varReactionGene)) YYABORT; }
+        |       VAR GENE variable {if ($3->SetType(varReactionGene)) YYABORT; }
+        |       geneinit ',' variable {if ($3->SetType(varReactionGene)) YYABORT; }
         ;
 
-promoterinit:   PROMOTER variable {$2->SetType(varFormulaPromoter); }
-        |       VAR PROMOTER variable {$3->SetType(varFormulaPromoter); }
-        |       promoterinit ',' variable {$3->SetType(varFormulaPromoter); }
+promoterinit:   PROMOTER variable {if ($2->SetType(varFormulaPromoter)) YYABORT; }
+        |       VAR PROMOTER variable {if ($3->SetType(varFormulaPromoter)) YYABORT; }
+        |       promoterinit ',' variable {if ($3->SetType(varFormulaPromoter)) YYABORT; }
         ;
 
-operatorinit:   OPERATOR variable {$2->SetType(varFormulaOperator); }
-        |       VAR OPERATOR variable {$3->SetType(varFormulaOperator); }
-        |       operatorinit ',' variable {$3->SetType(varFormulaOperator); }
+operatorinit:   OPERATOR variable {if ($2->SetType(varFormulaOperator)) YYABORT; }
+        |       VAR OPERATOR variable {if ($3->SetType(varFormulaOperator)) YYABORT; }
+        |       operatorinit ',' variable {if ($3->SetType(varFormulaOperator)) YYABORT; }
         ;
 
-constprotinit:  CONST PROTEIN variable {$3->SetType(varSpeciesProtein);
-                                        $3->SetIsConst(true);}
-        |       constprotinit ',' variable {$3->SetType(varSpeciesProtein); 
-                                            $3->SetIsConst(true)}
+constprotinit:  CONST PROTEIN variable {if ($3->SetType(varSpeciesProtein)) YYABORT;
+                                        if ($3->SetIsConst(true)) YYABORT;}
+        |       constprotinit ',' variable {if ($3->SetType(varSpeciesProtein)) YYABORT; 
+                                            if ($3->SetIsConst(true)) YYABORT;}
         ;
 
-constgeneinit:  CONST GENE variable {$3->SetType(varReactionGene); 
-                                     $3->SetIsConst(true)}
-        |       constgeneinit ',' variable {$3->SetType(varReactionGene); 
-                                            $3->SetIsConst(true)}
+constgeneinit:  CONST GENE variable {if ($3->SetType(varReactionGene)) YYABORT; 
+                                     if ($3->SetIsConst(true)) YYABORT;}
+        |       constgeneinit ',' variable {if ($3->SetType(varReactionGene)) YYABORT; 
+                                            if ($3->SetIsConst(true)) YYABORT;}
         ;
 
 constpromoterinit:
-                CONST PROMOTER variable {$3->SetType(varFormulaPromoter); 
-                                         $3->SetIsConst(true)}
-        |       constpromoterinit ',' variable {$3->SetType(varFormulaPromoter); 
-                                                $3->SetIsConst(true)}
+                CONST PROMOTER variable {if ($3->SetType(varFormulaPromoter)) YYABORT; 
+                                         if ($3->SetIsConst(true)) YYABORT;}
+        |       constpromoterinit ',' variable {if ($3->SetType(varFormulaPromoter)) YYABORT; 
+                                                if ($3->SetIsConst(true)) YYABORT;}
         ;
 
 constoperatorinit:
-                CONST OPERATOR variable {$3->SetType(varFormulaOperator); 
-                                         $3->SetIsConst(true)}
-        |       constoperatorinit ',' variable {$3->SetType(varFormulaOperator); 
-                                                $3->SetIsConst(true)}
+                CONST OPERATOR variable {if ($3->SetType(varFormulaOperator)) YYABORT; 
+                                         if ($3->SetIsConst(true)) YYABORT;}
+        |       constoperatorinit ',' variable {if ($3->SetType(varFormulaOperator)) YYABORT; 
+                                                if ($3->SetIsConst(true)) YYABORT;}
         ;
 
-constinit:      CONST variable {$2->SetIsConst(true)}
-        |       constinit ',' variable {$3->SetIsConst(true)}
+constinit:      CONST variable {if ($2->SetIsConst(true)) YYABORT;}
+        |       constinit ',' variable {if ($3->SetIsConst(true)) YYABORT;}
         ;
 
-dnastrand:      DASHES variable { g_registry.SetNewUpstreamOpen($2);}
+dnastrand:      DASHES variable {if (g_registry.SetNewUpstreamOpen($2)) YYABORT;}
         |       DASHES dnamiddle {g_registry.GetWorkingStrand()->SetOpenUpstream(); }
-        |       dnamiddle variable {g_registry.SetDownstreamEnd($2);}
-        |       DASHES dnamiddle variable {g_registry.GetWorkingStrand()->SetOpenUpstream(); g_registry.SetDownstreamEnd($3);}
+        |       dnamiddle variable {if (g_registry.SetDownstreamEnd($2)) YYABORT;}
+        |       DASHES dnamiddle variable {g_registry.GetWorkingStrand()->SetOpenUpstream(); if(g_registry.SetDownstreamEnd($3)) YYABORT;}
         |       dnamiddle { }
         ;
 

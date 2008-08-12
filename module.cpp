@@ -107,24 +107,31 @@ Reaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantLi
 
 Reaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var)
 {
-  left->SetVarsTo(varSpeciesUndef);
+  string err = "When defining reaction '" + var->GetNameDelimitedBy('.') + "':  ";
+  if (left->SetVarsTo(varSpeciesUndef)) {
+    g_registry.SetError(err + g_registry.GetError());
+    return NULL;
+  }
   switch(divider) {
   case rdBecomes:
-    right->SetVarsTo(varSpeciesUndef);
+    if (right->SetVarsTo(varSpeciesUndef)) {
+      g_registry.SetError(err + g_registry.GetError());
+      return NULL;
+    }
     break;
   case rdActivates:
   case rdInhibits:
   case rdInfluences:
-    right->SetVarsTo(varDNA);
-    right ->CheckIsSingleDNAVar();
-    formula->CheckIncludes(m_modulename, left);
+    if (right ->CheckIsSingleDNAOrReaction()) {
+      g_registry.SetError(err + g_registry.GetError());
+      return NULL;
+    }
     if (right->GetSingleVar()->SetFormula(formula)) return NULL;
     break;
   }
   Reaction newrxn(*left, divider, *right, *formula, var);
   if (formula->ContainsVar(var)) {
-    //Loop!
-    g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy('.') + "' contains a reference to itself directly or indirectly in its formula (" + formula->ToStringDelimitedBy('.') + ").");
+    g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy('.') + "' contains a reference to itself directly or indirectly in its reaction rate (" + formula->ToStringDelimitedBy('.') + ").");
     return NULL;
   }
   return var->SetReaction(&newrxn);
@@ -221,9 +228,8 @@ Formula* Module::GetFormula()
 
 Variable* Module::GetNextExportVariable()
 {
-  if (m_currentexportvar > m_exportlist.size() - 1) {
-    //LS DEBUG:  User error
-    assert(false);
+  if (m_currentexportvar >= m_exportlist.size()) {
+    return NULL;
   }
   size_t exp = m_currentexportvar;
   m_currentexportvar++;
@@ -236,13 +242,15 @@ Variable* Module::GetUpstreamDNA()
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var].HasOpenUpstream()) {
       if (retvar != NULL) {
-        assert(false); //throw an error:  LS DEBUG
+        g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has multiple sites at which to attach upstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in 'NEWDNA--" + m_variables[var].GetNameDelimitedBy('.') + "'.");
+        return NULL;
       }
       retvar = &(m_variables[var]);
     }
   }
   if (retvar==NULL) {
-    assert(false); //throw an error:  LS DEBUG
+    g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has no 'open ends' at which to attach DNA.");
+    return NULL;
   }
   return retvar;
 }
@@ -253,13 +261,15 @@ Variable* Module::GetDownstreamDNA()
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var].HasOpenDownstream()) {
       if (retvar != NULL) {
-        assert(false); //throw an error:  LS DEBUG
+        g_registry.SetError("Unable to attach DNA downstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has multiple sites at which to attach downstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in '" + m_variables[var].GetNameDelimitedBy('.') + "--NEWDNA'.");
+        return NULL;
       }
       retvar = &(m_variables[var]);
     }
   }
   if (retvar==NULL) {
-    assert(false); //throw an error:  LS DEBUG
+    g_registry.SetError("Unable to attach DNA downstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has no 'open ends' at which to attach DNA.");
+    return NULL;
   }
   return retvar;
 }
@@ -409,8 +419,8 @@ void Module::CompileExportLists()
   for (size_t var=0; var<m_variables.size(); var++) {
     //If this is a submodule, we'll be calling the error checking bit soon,
     // so don't worry about it.
-    //LS DEBUG:  This doesn't actually work.
-    assert(m_variables[var].CheckDoesNotIncludeSelf()); //LS DEBUG: throw error
+    assert(m_variables[var].CheckDoesNotIncludeSelf());
+    //LS NOTE: loops should be detected at assignment time, but it's possible I missed something.
   }
   //Store the data locally so we don't have to search sub-modules every time
   // we want to hand out information
@@ -501,8 +511,6 @@ const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n)
       total++;
     }
   }
-  //LS DEBUG:  THROW AN ERROR
-  assert(false);
   return NULL;
 }
 

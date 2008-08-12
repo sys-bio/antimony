@@ -1675,7 +1675,7 @@ yyreduce:
 
   case 15:
 #line 97 "antimony.ypp"
-    {(yyval.variable) = (yyvsp[(2) - (3)].variable); (yyval.variable)->SetIsConst(true);;}
+    {(yyval.variable) = (yyvsp[(2) - (3)].variable); if ((yyval.variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 16:
@@ -1981,155 +1981,155 @@ yyreduce:
 
   case 77:
 #line 194 "antimony.ypp"
-    {(yyvsp[(2) - (2)].variable)->SetType(varSpeciesUndef); ;}
+    {if ((yyvsp[(2) - (2)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
     break;
 
   case 78:
 #line 195 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
     break;
 
   case 79:
 #line 196 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
     break;
 
   case 80:
 #line 199 "antimony.ypp"
-    {(yyvsp[(2) - (2)].variable)->SetType(varSpeciesProtein); ;}
+    {if ((yyvsp[(2) - (2)].variable)->SetType(varSpeciesProtein)) YYABORT; ;}
     break;
 
   case 81:
 #line 200 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varSpeciesProtein); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesProtein)) YYABORT; ;}
     break;
 
   case 82:
 #line 201 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varSpeciesProtein); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesProtein)) YYABORT; ;}
     break;
 
   case 83:
 #line 204 "antimony.ypp"
-    {(yyvsp[(2) - (2)].variable)->SetType(varDNA); ;}
+    {if ((yyvsp[(2) - (2)].variable)->SetType(varDNA)) YYABORT; ;}
     break;
 
   case 84:
 #line 205 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varDNA); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varDNA)) YYABORT; ;}
     break;
 
   case 85:
 #line 206 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varDNA); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varDNA)) YYABORT; ;}
     break;
 
   case 86:
 #line 209 "antimony.ypp"
-    {(yyvsp[(2) - (2)].variable)->SetType(varReactionGene); ;}
+    {if ((yyvsp[(2) - (2)].variable)->SetType(varReactionGene)) YYABORT; ;}
     break;
 
   case 87:
 #line 210 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varReactionGene); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varReactionGene)) YYABORT; ;}
     break;
 
   case 88:
 #line 211 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varReactionGene); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varReactionGene)) YYABORT; ;}
     break;
 
   case 89:
 #line 214 "antimony.ypp"
-    {(yyvsp[(2) - (2)].variable)->SetType(varFormulaPromoter); ;}
+    {if ((yyvsp[(2) - (2)].variable)->SetType(varFormulaPromoter)) YYABORT; ;}
     break;
 
   case 90:
 #line 215 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varFormulaPromoter); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaPromoter)) YYABORT; ;}
     break;
 
   case 91:
 #line 216 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varFormulaPromoter); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaPromoter)) YYABORT; ;}
     break;
 
   case 92:
 #line 219 "antimony.ypp"
-    {(yyvsp[(2) - (2)].variable)->SetType(varFormulaOperator); ;}
+    {if ((yyvsp[(2) - (2)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
     break;
 
   case 93:
 #line 220 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
     break;
 
   case 94:
 #line 221 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator); ;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
     break;
 
   case 95:
 #line 224 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varSpeciesProtein);
-                                        (yyvsp[(3) - (3)].variable)->SetIsConst(true);;}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesProtein)) YYABORT;
+                                        if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 96:
 #line 226 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varSpeciesProtein); 
-                                            (yyvsp[(3) - (3)].variable)->SetIsConst(true);}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesProtein)) YYABORT; 
+                                            if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 97:
 #line 230 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varReactionGene); 
-                                     (yyvsp[(3) - (3)].variable)->SetIsConst(true);}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varReactionGene)) YYABORT; 
+                                     if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 98:
 #line 232 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varReactionGene); 
-                                            (yyvsp[(3) - (3)].variable)->SetIsConst(true);}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varReactionGene)) YYABORT; 
+                                            if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 99:
 #line 237 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varFormulaPromoter); 
-                                         (yyvsp[(3) - (3)].variable)->SetIsConst(true);}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaPromoter)) YYABORT; 
+                                         if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 100:
 #line 239 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varFormulaPromoter); 
-                                                (yyvsp[(3) - (3)].variable)->SetIsConst(true);}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaPromoter)) YYABORT; 
+                                                if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 101:
 #line 244 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator); 
-                                         (yyvsp[(3) - (3)].variable)->SetIsConst(true);}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; 
+                                         if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 102:
 #line 246 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator); 
-                                                (yyvsp[(3) - (3)].variable)->SetIsConst(true);}
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; 
+                                                if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 103:
 #line 250 "antimony.ypp"
-    {(yyvsp[(2) - (2)].variable)->SetIsConst(true);}
+    {if ((yyvsp[(2) - (2)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 104:
 #line 251 "antimony.ypp"
-    {(yyvsp[(3) - (3)].variable)->SetIsConst(true);}
+    {if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 105:
 #line 254 "antimony.ypp"
-    { g_registry.SetNewUpstreamOpen((yyvsp[(2) - (2)].variable));;}
+    {if (g_registry.SetNewUpstreamOpen((yyvsp[(2) - (2)].variable))) YYABORT;;}
     break;
 
   case 106:
@@ -2139,12 +2139,12 @@ yyreduce:
 
   case 107:
 #line 256 "antimony.ypp"
-    {g_registry.SetDownstreamEnd((yyvsp[(2) - (2)].variable));;}
+    {if (g_registry.SetDownstreamEnd((yyvsp[(2) - (2)].variable))) YYABORT;;}
     break;
 
   case 108:
 #line 257 "antimony.ypp"
-    {g_registry.GetWorkingStrand()->SetOpenUpstream(); g_registry.SetDownstreamEnd((yyvsp[(3) - (3)].variable));;}
+    {g_registry.GetWorkingStrand()->SetOpenUpstream(); if(g_registry.SetDownstreamEnd((yyvsp[(3) - (3)].variable))) YYABORT;;}
     break;
 
   case 109:
