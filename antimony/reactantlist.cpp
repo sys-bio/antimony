@@ -1,5 +1,6 @@
 #include "reactantlist.h"
 #include "registry.h"
+#include "stringx.h"
 #include "module.h"
 #include "variable.h"
 #include <iostream>
@@ -22,35 +23,49 @@ void ReactantList::SetNewTopName(string newmodname, string newtopname)
   }
 }
 
-void ReactantList::SetVarsTo(var_type vtype)
+bool ReactantList::SetVarsTo(var_type vtype)
 {
   for (size_t component=0; component<m_components.size(); component++) {
     Module* module = g_registry.GetModule(m_module);
-    assert(module != NULL); //LS DEBUG throw error
+    assert(module != NULL);
     Variable* var = module->GetVariable(m_components[component].second);
     if (var != NULL) {
-      var->SetType(vtype);
+      if (var->SetType(vtype)) return true;
     }
   }
+  return false;
 }
 
-void ReactantList::CheckIsSingleDNAVar()
+bool ReactantList::CheckIsSingleDNAOrReaction()
 {
-  //LS DEBUG:  throw errors instead of asserting
-  assert(m_components.size()==1);
-  assert(m_components[0].first==1);
+  if (m_components.size() == 0) {
+    g_registry.SetError("An interaction must be defined to influence DNA or a reaction, but here is defined to influence nothing at all.");
+    return true;
+  }
+  if (m_components.size() > 1) {
+    g_registry.SetError("An interaction may not influence two or more things at once.");
+    return true;
+  }
+  if (m_components[0].first != 1) {
+    g_registry.SetError("An interaction has no stoichiometry:  '" + ToString(m_components[0].first) + "' is illegal in this context.");
+    return true;
+  }
   Module* module = g_registry.GetModule(m_module);
-  assert(module != NULL); //LS DEBUG throw error
+  assert(module != NULL);
   Variable* var = module->GetVariable(m_components[0].second);
   assert(var != NULL);
   var_type vtype = var->GetType();
-  assert(IsDNA(vtype) || vtype==varUndefined);
+  if (IsDNA(vtype) || vtype==varUndefined || IsReaction(vtype)) {
+    return false;
+  }
+  g_registry.SetError("An interaction may not influence a symbol previously defined to be a " + VarTypeToString(vtype) + ".  It must influence a reaction, DNA, or a previously unused symbol.");
+  return true;
 }
 
 Variable* ReactantList::GetSingleVar()
 {
   Module* module = g_registry.GetModule(m_module);
-  assert(module != NULL); //LS DEBUG throw error
+  assert(module != NULL);
   return module->GetVariable(m_components[0].second);
 }
 

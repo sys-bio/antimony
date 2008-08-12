@@ -51,10 +51,10 @@ public:
   void SetCurrentImportedModule(std::vector<std::string> imod) {m_currentImportedModule = imod;}
   void SetAssignmentVariable(Variable* var);
   Variable* NewVariableIfNeeded(Variable* var, bool up);
-  void SetNewUpstreamOpen(Variable* var);
-  void SetDownstreamEnd(Variable* var);
-  void SetNewDownstreamOpen(Variable* var);
-  void SetDownstreamOpen(Variable* var);
+  bool SetNewUpstreamOpen(Variable* var);
+  bool SetDownstreamEnd(Variable* var);
+  bool SetNewDownstreamOpen(Variable* var);
+  bool SetDownstreamOpen(Variable* var);
   void SetWorkingStrand(Variable* var);
   void SetError(std::string error) {m_error = error;};
 

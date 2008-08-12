@@ -49,7 +49,8 @@ void Registry::NewCurrentModule(const string* name)
   //Check to make sure no existing module exist with this name
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (m_modules[mod].GetModuleName() == localname) {
-      //LS DEBUG:  throw an error?  Assume they're continuing a definition?
+      assert(false); //Parsing disallows this condition
+      g_registry.SetError("Programming error:  Unable to create new module with the same name as an existing module.");
       return;
     }
   }
@@ -133,8 +134,12 @@ Variable* Registry::NewVariableIfNeeded(Variable* var, bool up)
       return var->GetModule()->GetDownstreamDNA();
     }
   }
-  if (var->IsUnlinked()) {
-    return var;
+  if (var->IsUnlinked(up)) {
+    Variable* working = GetWorkingStrand();
+    if (working == NULL) return var;
+    if (working->DoesNotLinkTo(var)) {
+      return var;
+    }
   }
   vector<string> varname = var->GetName();
   Variable* newvar=CurrentModule()->AddNewNumberedVariable("_dna");
@@ -144,37 +149,45 @@ Variable* Registry::NewVariableIfNeeded(Variable* var, bool up)
   return newvar;
 }
 
-  void Registry::SetNewUpstreamOpen(Variable* var)
+bool Registry::SetNewUpstreamOpen(Variable* var)
 {
   var = NewVariableIfNeeded(var, true);
-  var->SetType(varDNA);
+  if (var==NULL) return true;
+  if (var->SetType(varDNA)) return true;
   SetWorkingStrand(var);
   var->SetOpenUpstream();
+  return false;
 }
 
-void Registry::SetDownstreamEnd(Variable* var)
+bool Registry::SetDownstreamEnd(Variable* var)
 {
   var = NewVariableIfNeeded(var, true);
-  var->SetType(varDNA);
+  if (var==NULL) return true;
+  if (var->SetType(varDNA)) return true;
   GetWorkingStrand()->SetDownstream(var);
   SetWorkingStrand(var);
+  return false;
 }
 
-void Registry::SetNewDownstreamOpen(Variable* var)
+bool Registry::SetNewDownstreamOpen(Variable* var)
 {
   var = NewVariableIfNeeded(var, false);
-  var->SetType(varDNA);
+  if (var==NULL) return true;
+  if (var->SetType(varDNA)) return true;
   var->SetOpenDownstream();
   SetWorkingStrand(var);
+  return false;
 }
 
-void Registry::SetDownstreamOpen(Variable* var)
+bool Registry::SetDownstreamOpen(Variable* var)
 {
   var = NewVariableIfNeeded(var, true);
-  var->SetType(varDNA);
+  if (var==NULL) return true;
+  if (var->SetType(varDNA)) return true;
   GetWorkingStrand()->SetDownstream(var);
   var->SetOpenDownstream();
   SetWorkingStrand(var);
+  return false;
 }
 
 
@@ -201,7 +214,6 @@ Module* Registry::GetModule(std::string modulename)
       return &(m_modules[mod]);
     }
   }
-  //LS DEBUG:  throw error
   return NULL;
 }
 
@@ -275,8 +287,9 @@ size_t Registry::GetNumModules()
 string Registry::GetNthModuleName(size_t n)
 {
   if (n>=m_modules.size()) {
-    //LS DEBUG throw error
-    assert(false);
+    assert(false); //Shouldn't get here; wrong user calls caught earlier.
+    g_registry.SetError("Programming error:  no such module " + ToString(n) + ".");
+    return NULL;
   }
   return m_modules[n].GetModuleName();
 }

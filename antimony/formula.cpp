@@ -89,12 +89,15 @@ bool Formula::GetIsConst() const
   return true;
 }
 
-void Formula::CheckIncludes(string modname, ReactantList* rlist) const
+bool Formula::CheckIncludes(string modname, ReactantList* rlist) const
 {
   vector<vector<string> > varlist = rlist->GetVariableList();
   for (size_t var=0; var<varlist.size(); var++) {
-    assert(!ContainsVar(modname, varlist[var])); //LS DEBUG:  throw an error
+    if (ContainsVar(modname, varlist[var])) {
+      return true;
+    }
   }
+  return false;
 }
 
 bool Formula::ContainsVar(string modname, vector<string> vname) const

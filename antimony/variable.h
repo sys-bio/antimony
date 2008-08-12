@@ -56,23 +56,26 @@ public:
   const Module* GetModule() const;
   Module* GetModule();
   Variable* GetSubVariable(const std::string* name);
+  Variable* GetUpstreamDNA() const;
+  Variable* GetDownstreamDNA() const;
   std::string GetNamespace() const {return m_namespace;};
   bool GetIsConst() const;
   bool GetListSeparately() const {return m_listseparately;};
   bool GetIsEquivalentTo(const Variable* var) const;
 
   bool IsDNAStart() const;
-  bool IsUnlinked() const;
+  bool IsUnlinked(bool up) const;
+  bool DoesNotLinkTo(Variable* var) const;
   bool HasOpenUpstream() const;
   bool HasOpenDownstream() const;
   std::vector<std::string> GetDNAStringDelimitedBy(char cc) const;
 
-  void SetType(var_type newtype);
+  bool SetType(var_type newtype);
   bool SetFormula(Formula* formula);
   Reaction* SetReaction(Reaction* rxn);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetPrintedName(std::vector<std::string> printedname);
-  void SetIsConst(bool constant);
+  bool SetIsConst(bool constant);
   void SetListSeparately(bool ls) {m_listseparately = ls;};
 
   void SetOpenUpstream();
@@ -80,7 +83,7 @@ public:
   void SetDownstream(Variable* var);
   void SetUpstream(Variable* var);
 
-  void Synchronize(Variable* clone);
+  bool Synchronize(Variable* clone);
   bool ImportModule(const std::string* modname);
 
   bool CheckDoesNotIncludeSelf();

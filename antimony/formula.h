@@ -30,7 +30,7 @@ public:
   bool IsEmpty() const;
   bool IsSimpleVariable() const;
   bool GetIsConst() const;
-  void CheckIncludes(std::string modname, ReactantList* rlist) const;
+  bool CheckIncludes(std::string modname, ReactantList* rlist) const;
   bool ContainsVar(std::string modname, std::vector<std::string> vname) const;
   bool ContainsVar(const Variable* outervar) const;
   void Clear();
