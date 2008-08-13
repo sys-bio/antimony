@@ -171,7 +171,7 @@ variableimportlist:
                 /* empty */ {}
         |       variable {if (g_registry.AddVariableToCurrentImportList($1)) YYABORT; }
         |       variableimportlist ',' variable { if (g_registry.AddVariableToCurrentImportList($3)) YYABORT; }
-        |       variableimportlist ',' variable '=' localvariable {$3->Synchronize($5); }
+        |       variableimportlist ',' variable '=' localvariable {if ($3->Synchronize($5)) YYABORT; }
         ;
 
 localvariable:  WORD {$$ = g_registry.GetImportedModuleSubVariable($1); }

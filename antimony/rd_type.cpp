@@ -116,7 +116,6 @@ bool IsInteraction(const rd_type rdtype)
     return true;
   }
   assert(false); //uncaught type
-  //LS DEBUG throw error
   return false;
 }
 
@@ -174,7 +173,7 @@ bool HasOrIsFormula(const var_type vtype)
     return true;
   case varReactionGene:
   case varReactionUndef:
-  case varInteraction: //LS DEBUG:  is this right?  For Jarnac.
+  case varInteraction:
   case varModule:
   case varUndefined:
     return false;
@@ -236,7 +235,6 @@ string ReturnTypeToString(return_type rtype)
     return "a submodule";
   }
   assert(false); //uncaught type
-  //LS DEBUG throw error
   return "Uncaught type";
 }
 

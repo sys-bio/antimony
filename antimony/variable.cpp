@@ -504,14 +504,13 @@ bool Variable::SetFormula(Formula* formula)
     Variable* newvar = g_registry.GetModule(m_namespace)->GetVariable(formula->GetSimpleVariable());
     if (GetIsEquivalentTo(newvar)) {
       //Setting something equal to itself--do nothing.
-      //LS DEBUG:  emit a warning?
       //cout << "Already equivalent." << endl;
       return false;
     }
     if (newvar->GetName().size() < GetName().size()) {
       //Synchronize the longer name (and therefore the subvariable) to the
       // shorter name
-      newvar->Synchronize(this);
+      if (newvar->Synchronize(this)) return true;
       return false;
     }
     else {
@@ -526,7 +525,7 @@ bool Variable::SetFormula(Formula* formula)
         }
       }
       if (dosync) {
-        Synchronize(newvar);
+        if (Synchronize(newvar)) return true;
         return false;
       }
     }
@@ -737,19 +736,21 @@ bool Variable::Synchronize(Variable* clone)
   Formula* form = GetFormula();
   if (form != NULL) {
     if (form->ContainsVar(clone)) {
-      assert(false); //LS DEBUG:  throw error instead
+      g_registry.SetError("Loop detected:  '" + GetNameDelimitedBy('.') + "' may not be set to be equal to '" + clone->GetNameDelimitedBy('.') + " because " + GetNameDelimitedBy('.') + "'s definition already includes " + clone->GetNameDelimitedBy('.') + " either directly or by proxy .");
+      return true;
     }
   }
   form = clone->GetFormula();
   if (form != NULL) {
     if (form->ContainsVar(this)) {
-      assert(false); //LS DEBUG:  throw error isntead
+      g_registry.SetError("Loop detected:  '" + GetNameDelimitedBy('.') + "' may not be set to be equal to '" + clone->GetNameDelimitedBy('.') + " because " + clone->GetNameDelimitedBy('.') + "'s definition already includes " + GetNameDelimitedBy('.') + " either directly or by proxy .");
+      return true;
     }
   }
 
   if (m_sameVariable.size() != 0) {
     Variable* samevar = g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable);
-    samevar->Synchronize(clone);
+    if (samevar->Synchronize(clone)) return true;
   }
 
   assert(m_namespace == clone->GetNamespace());
@@ -789,7 +790,7 @@ bool Variable::Synchronize(Variable* clone)
     return true; //(error condition)
   }
   if (m_sameVariable.size() == 0) {
-    //If we already point to someone, let them point to the new thing.
+    //If we already point to someone, let them point to the new thing instead.
     m_sameVariable = clone->GetName();
   }
   return false;

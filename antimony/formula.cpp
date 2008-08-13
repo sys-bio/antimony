@@ -76,7 +76,7 @@ bool Formula::GetIsConst() const
     if (m_components[comp].second.size() > 0 ) {
       vector<string> varname = m_components[comp].second;
       Module* module = g_registry.GetModule(m_components[comp].first);
-      assert(module != NULL); //LS DEBUG THROW ERROR
+      assert(module != NULL);
       const Variable* actualvar = module->GetVariable(varname);
       if (actualvar == NULL) {
         return false; //Can't find the variable in question, so assume.
@@ -159,8 +159,7 @@ string Formula::ToDelimitedStringWithUpvar(char cc, Variable* upvar) const
       retval += actualvar->GetNameDelimitedBy(cc);
     }
     else if (varname.size() > 0) {
-      assert(false); //Can't find the variable!
-      //LS DEBUG THROW ERROR
+      assert(false); //Can't find the variable; should be impossible
     }
     else {
       if (m_components[comp].first != "...") {
