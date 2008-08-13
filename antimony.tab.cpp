@@ -1911,7 +1911,7 @@ yyreduce:
 
   case 63:
 #line 174 "antimony.ypp"
-    {(yyvsp[(3) - (5)].variable)->Synchronize((yyvsp[(5) - (5)].variable)); ;}
+    {if ((yyvsp[(3) - (5)].variable)->Synchronize((yyvsp[(5) - (5)].variable))) YYABORT; ;}
     break;
 
   case 64:

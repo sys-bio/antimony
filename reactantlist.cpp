@@ -89,7 +89,7 @@ string ReactantList::ToStringDelimitedBy(char cc) const
     }
     vector<string> varname = m_components[component].second; 
     Module* module = g_registry.GetModule(m_module);
-    assert(module != NULL); //LS DEBUG throw error
+    assert(module != NULL);
     Variable* actualvar = module->GetVariable(m_components[component].second);
     if (actualvar != NULL) {
       retval += actualvar->GetNameDelimitedBy(cc);
@@ -116,7 +116,7 @@ vector<string> ReactantList::ToStringVecDelimitedBy(char cc) const
   for (size_t component=0; component<m_components.size(); component++) {
     vector<string> varname = m_components[component].second;
     Module* module = g_registry.GetModule(m_module);
-    assert(module != NULL); //LS DEBUG throw error
+    assert(module != NULL);
     Variable* actualvar = module->GetVariable(varname);
     if (actualvar != NULL) {
       retval.push_back(actualvar->GetNameDelimitedBy(cc));
@@ -150,9 +150,9 @@ double ReactantList::GetStoichiometryFor(const Variable* var) const
   double stoich = 0;
   for (size_t component=0; component<m_components.size(); component++) {
     Module* module = g_registry.GetModule(m_module);
-    assert(module != NULL); //LS DEBUG throw error
+    assert(module != NULL);
     Variable* compvar = module->GetVariable(m_components[component].second);
-    assert(compvar != NULL); //LS DEBUG throw error
+    assert(compvar != NULL);
     if (compvar->GetIsEquivalentTo(var)) {
       stoich += m_components[component].first;
     }

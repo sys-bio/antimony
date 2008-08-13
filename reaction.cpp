@@ -85,7 +85,7 @@ string Reaction::ToStringDelimitedBy(char cc) const
   string retval;
 
   Module* module = g_registry.GetModule(m_module);
-  assert(module != NULL); //LS DEBUG throw error
+  assert(module != NULL);
   Variable* actualvar = module->GetVariable(m_name);
   if (actualvar != NULL) {
     retval += actualvar->GetNameDelimitedBy(cc);
