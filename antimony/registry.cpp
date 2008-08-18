@@ -12,15 +12,15 @@
 using namespace std;
 
 Registry::Registry()
-  : m_modules(),
+  : m_oldinputs(),
+    m_files(),
+    m_modules(),
     m_currentModules(),
     m_currentReactantLists(),
     m_currentImportedModule(),
     m_scratchFormula(),
-    m_mainmodulename(),
-    m_jarnac(),
     m_cc('_'),
-    input(),
+    input(NULL),
     variablenames()
 {
   //A user can't use []'s in a name, so this is guaranteed to be unique
@@ -30,16 +30,69 @@ Registry::Registry()
 
 void Registry::ClearModels()
 {
+  while (!SwitchToPreviousFile());
+  if (input) {
+    input->close();
+    input->clear();
+    delete(input);
+  }
+  m_files.clear();
   m_modules.clear();
   m_currentModules.clear();
   m_currentReactantLists.clear();
   m_currentImportedModule.clear();
   m_scratchFormula.Clear();
-  m_mainmodulename.clear();
-  m_jarnac.clear();
-  g_registry.input.clear();
   string main = "[main]";
   NewCurrentModule(&main);
+}
+
+bool Registry::OpenFile(const string filename)
+{
+  m_files.push_back(filename);
+  if (input != NULL) {
+    m_oldinputs.push_back(input);
+  }
+  input = new(ifstream);
+  input->open(filename.c_str(), ios::in);
+  if (!input->is_open()) {
+    m_files.pop_back();
+    string error = "Could not open \"";
+    error += filename;
+    error += "\".  "
+      "Please check that this file:\n" 
+      "	1) exists in directory that antimony is being run from,\n"
+      "	2) is read enabled, and\n"
+      "	3) is not in use by another program.\n";
+    SetError(error);	
+    return true;
+  }
+
+  if (!input->good())
+  {
+    m_files.pop_back();
+    string error = "Input file ";
+    error += filename;
+    error += " is open, but not able to be read from.  This should not happen, and is probably a programming error on our part, but just in case, check the permissions on the file and try again.  If that still does not work, contact us letting us know how you got this error.";
+    SetError(error);
+    return true;
+  }
+  return false;
+}
+
+bool Registry::SwitchToPreviousFile()
+{
+  if (!input) return true;
+  input->close();
+  input->clear();
+  delete(input);
+  if (m_oldinputs.size() == 0) {
+    input = NULL;
+    return true;
+  }
+  input = m_oldinputs.back();
+  m_oldinputs.pop_back();
+  m_files.pop_back();
+  return false;
 }
 
 void Registry::NewCurrentModule(const string* name)
@@ -112,16 +165,6 @@ ReactantList* Registry::NewBlankReactantList()
   ReactantList rlist;
   m_currentReactantLists.push_back(rlist);
   return &(m_currentReactantLists.back());
-}
-
-void Registry::SetMainModuleName(const char* filename)
-{
-  string modname = filename;
-  size_t txt = modname.find(".txt");
-  if (txt != string::npos) {
-    modname.erase(txt, 4);
-  }
-  m_mainmodulename = modname;
 }
 
 Variable* Registry::NewVariableIfNeeded(Variable* var, bool up)
@@ -207,7 +250,13 @@ Formula* Registry::NewBlankFormula()
   return &(m_scratchFormula);
 }
 
-Module* Registry::GetModule(std::string modulename)
+string Registry::GetLastFile()
+{
+  if (m_files.size()) return m_files.back();
+  return "";
+}
+
+Module* Registry::GetModule(string modulename)
 {
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (modulename == m_modules[mod].GetModuleName()) {
@@ -255,19 +304,12 @@ const string*  Registry::AddWord(string word)
 
 string Registry::GetJarnac(string modulename)
 {
-  string name = modulename;
-  if (name=="[main]") {
-    name = m_mainmodulename;
-  }
-  if (GetModule(modulename)== NULL && modulename == m_mainmodulename) {
-    modulename = "[main]";
-  }
-  string jarnac = name + " = define model\n";
+  string jarnac = modulename + " = define model\n";
   jarnac += GetModule(modulename)->GetJarnacReactions();
   jarnac += "\n";
   jarnac += GetModule(modulename)->GetJarnacVarFormulas();
   jarnac += "\nend\n\n";
-  jarnac += GetModule(modulename)->GetJarnacConstFormulas(name);
+  jarnac += GetModule(modulename)->GetJarnacConstFormulas(modulename);
   return jarnac;
 }
 
@@ -292,6 +334,41 @@ string Registry::GetNthModuleName(size_t n)
     return NULL;
   }
   return m_modules[n].GetModuleName();
+}
+
+long Registry::SaveModules()
+{
+  m_oldmodules.push_back(m_modules);
+  return m_oldmodules.size();
+}
+
+bool Registry::RevertToModuleSet(long n)
+{
+  if (n == -1) {
+    g_registry.SetError("An error occurred when reading that file.  Any modules in it are unavailable.");
+    return true;
+  }
+  if (n<=0 || n>static_cast<long>(m_oldmodules.size())) {
+    string error = "No such file handle.  ";
+    if (m_oldmodules.size()==0) {
+      error += "No files have been successfully read.";
+    }
+    else if (m_oldmodules.size()==1) {
+      error += "Exactly one file has been successfully read, with file handle 1.";
+    }
+    else {
+      error += "Valid file handles are 1 through " + ToString(m_oldmodules.size());
+    }
+    g_registry.SetError(error);
+    return true;
+  }
+  m_modules = m_oldmodules[n-1];
+  return false;
+}
+
+void Registry::ClearOldModules()
+{
+  m_oldmodules.clear();
 }
 
 void Registry::FreeAll()
