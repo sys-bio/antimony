@@ -7,50 +7,52 @@
 
 using namespace std;
 extern int yyparse();
+extern int yylloc_first_line;
 
-LIB_EXTERN int loadModel(const char* filename)
+LIB_EXTERN long loadFile(const char* filename)
 {
-  g_registry.ClearModels();  
-  g_registry.input.open(filename, ios::in);
-  if (!g_registry.input.is_open()) {
-    string error = "Could not open \"";
-    error += filename;
-    error += "\".  "
-      "Please check that this file:\n" 
-      "	1) exists in directory that antimony is being run from,\n"
-      "	2) is read enabled, and\n"
-      "	3) is not in use by another program.\n";
-    g_registry.SetError(error);	
-    return 3;
-  }
-
-  if (!g_registry.input.good())
-  {
-    string error = "Input file ";
-    error += filename;
-    error += " is open, but not able to be read from.  This should not happen, and is probably a programming error on our part, but just in case, check the permissions on the file and try again.  If that still does not work, contact us letting us know how you got this error.";
-    g_registry.SetError(error);
-    return 4;
-  }
-
-  g_registry.SetMainModuleName(filename);
+  g_registry.ClearModels();
+  if (g_registry.OpenFile(filename)) return 3;
   int retval = yyparse();
-  g_registry.input.close();
+  //g_registry.input->close();
   g_registry.CompileAllExportLists();
   //cout << "Return value: " << retval << endl;
-  if (retval == 1) {
+  if (retval != 0) {
     if (g_registry.GetError().size() == 0) {
       assert(false); //Need to fill in the reason why we failed explicitly, if possible.
-      g_registry.SetError("Parsing failed because of invalid input.");
+      if (retval == 1) {
+        g_registry.SetError("Parsing failed because of invalid input.");
+      }
+      else if (retval == 2) {
+        g_registry.SetError("Parsing failed due to memory exhaution.");
+      }
+      else {
+        g_registry.SetError("Unknown parsing error.");
+      }
     }
+    g_registry.AddErrorPrefix("Error in file '" + g_registry.GetLastFile() + "', line " + ToString(yylloc_first_line) + ":  ");
   }
-  else if (retval == 2) {
-    g_registry.SetError("Parsing failed due to memory exhaution.");
+  if (retval != 0) {
+    return -1;
   }
   else {
-    g_registry.SetError("Unknown parsing error.");
+    return g_registry.SaveModules();
   }
-  return retval;
+}
+
+LIB_EXTERN size_t getNumFiles()
+{
+  return g_registry.GetNumFiles();
+}
+
+LIB_EXTERN bool revertTo(long handle)
+{
+  return g_registry.RevertToModuleSet(handle);
+}
+
+LIB_EXTERN void clearPreviousLoads()
+{
+  g_registry.ClearOldModules();
 }
 
 char* getCharStar(const char* orig)

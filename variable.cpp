@@ -531,7 +531,7 @@ bool Variable::SetFormula(Formula* formula)
     }
   }
   if (formula->ContainsVar(this)) {
-    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition either includes itself directly ('s5 = 6 + s5') or by proxy ('s5 = 8*d3' and 'd3 = 9*s5').");
+    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
     return true;
   }
   switch (m_type) {

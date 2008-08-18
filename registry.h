@@ -13,9 +13,14 @@
 #include "reactantlist.h"
 //#include "calculator.h"
 
+
+
 class Registry
 {
 private:
+  std::vector<std::ifstream*> m_oldinputs;
+  std::vector<std::string>    m_files;
+
   std::vector<Module> m_modules;
   std::vector<std::string> m_currentModules;
   std::vector<ReactantList> m_currentReactantLists;
@@ -23,19 +28,23 @@ private:
   Formula m_scratchFormula;
   std::vector<std::string> m_workingstrand;
   std::vector<std::string> m_assignmentvar;
-  std::string m_mainmodulename;
-  std::string m_jarnac;
+  
   char m_cc;
   std::string m_error;
+  std::vector<std::vector<Module> > m_oldmodules;
 
 public:
   Registry();
   ~Registry() {};
 
-  std::ifstream input;
+  std::ifstream* input;
   std::set<std::string> variablenames;
 
   void ClearModels();
+
+  bool OpenFile(const std::string filename);
+  bool SwitchToPreviousFile();
+  size_t GetNumFiles() {return m_oldmodules.size();};
 
   void NewCurrentModule(const std::string* name);
   Module* CurrentModule();
@@ -47,7 +56,6 @@ public:
   Reaction* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var);
   ReactantList* NewBlankReactantList();
   Formula* NewBlankFormula();
-  void SetMainModuleName(const char* filename);
   void SetCurrentImportedModule(std::vector<std::string> imod) {m_currentImportedModule = imod;}
   void SetAssignmentVariable(Variable* var);
   Variable* NewVariableIfNeeded(Variable* var, bool up);
@@ -57,7 +65,9 @@ public:
   bool SetDownstreamOpen(Variable* var);
   void SetWorkingStrand(Variable* var);
   void SetError(std::string error) {m_error = error;};
+  void AddErrorPrefix(std::string error) {m_error = error + m_error;};
 
+  std::string GetLastFile();
   Module* GetModule(std::string modulename);
   //const Module* GetModule(std::string modulename) const;
   bool IsModuleName(std::string word);
@@ -75,6 +85,9 @@ public:
   std::string GetNthModuleName(size_t n);
   char GetCC() {return m_cc;};
   std::string GetError() {return m_error;};
+  long SaveModules();
+  bool RevertToModuleSet(long n);
+  void ClearOldModules();
 
   //Keeping track of malloc'd stuff so we can free it ourselves if need be.
   std::vector<char*>    m_charstars;
