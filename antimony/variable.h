@@ -25,7 +25,7 @@ private:
 
   //Or, one (and only one!) of the following:
   Formula m_valFormula;
-  Reaction m_valReaction;
+  AntimonyReaction m_valReaction;
   std::vector<Module> m_valModule;
 
   //If the variable is in a strand of DNA, this tells us how they are related
@@ -52,7 +52,7 @@ public:
   bool HasFormula() const {return (!m_valFormula.IsEmpty());};
   const Formula* GetFormula() const;
   Formula* GetFormula();
-  const Reaction* GetReaction() const;
+  const AntimonyReaction* GetReaction() const;
   const Module* GetModule() const;
   Module* GetModule();
   Variable* GetSubVariable(const std::string* name);
@@ -72,7 +72,7 @@ public:
 
   bool SetType(var_type newtype);
   bool SetFormula(Formula* formula);
-  Reaction* SetReaction(Reaction* rxn);
+  AntimonyReaction* SetReaction(AntimonyReaction* rxn);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetPrintedName(std::vector<std::string> printedname);
   bool SetIsConst(bool constant);

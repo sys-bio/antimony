@@ -9,11 +9,12 @@
 #include "reactantlist.h"
 #include "formula.h"
 
-class Reaction
+//Note:  'AntimonyReaction' instead of just 'Reaction' because libSBML defines a 'Reaction' class.
+class AntimonyReaction
 {
 private:
-  //Reaction(const Reaction& src); //Undefined
-  //Reaction& operator=(const Reaction& src); //Undefined
+  //AntimonyReaction(const AntimonyReaction& src); //Undefined
+  //AntimonyReaction& operator=(const AntimonyReaction& src); //Undefined
 
   bool m_empty;
   ReactantList m_left;
@@ -24,9 +25,9 @@ private:
   Formula m_formula;
 
 public:
-  Reaction(ReactantList left, rd_type divider, ReactantList right, Formula formula, Variable* var);
-  Reaction(); //Make a blank one, but don't use it.
-  ~Reaction() {};
+  AntimonyReaction(ReactantList left, rd_type divider, ReactantList right, Formula formula, Variable* var);
+  AntimonyReaction(); //Make a blank one, but don't use it.
+  ~AntimonyReaction() {};
 
   void SetFormula(Formula* formula);
   void SetNewTopName(std::string modname, std::string newtopname);

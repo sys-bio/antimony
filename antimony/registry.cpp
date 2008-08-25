@@ -28,7 +28,7 @@ Registry::Registry()
   NewCurrentModule(&main);
 }
 
-void Registry::ClearModels()
+void Registry::ClearModules()
 {
   while (!SwitchToPreviousFile());
   if (input) {
@@ -146,16 +146,16 @@ Variable* Registry::AddVariableToCurrent(const string* name)
   return CurrentModule()->AddOrFindVariable(name);
 }
 
-Reaction* Registry::AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula)
+AntimonyReaction* Registry::AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula)
 {
-  Reaction* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula);
+  AntimonyReaction* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula);
   m_currentReactantLists.clear();
   return retval;
 }
 
-Reaction* Registry::AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var)
+AntimonyReaction* Registry::AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var)
 {
-  Reaction* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula, var);
+  AntimonyReaction* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula, var);
   m_currentReactantLists.clear();
   return retval;
 }
