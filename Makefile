@@ -1,7 +1,8 @@
-CPPFLAGS = -Wall -ggdb
+CPPFLAGS = -Wall -ggdb 
+LIBRARYFLAGS = -L/usr/local/lib -lsbml
 
 antimony : antimony.tab.o antimony_api.o formula.o module.o rd_type.o reactantlist.o reaction.o registry.o stringx.o variable.o Antimony.o
-	g++ -o antimony -lm $(CPPFLAGS) antimony.tab.o antimony_api.o formula.o module.o rd_type.o reactantlist.o reaction.o registry.o stringx.o variable.o Antimony.o
+	g++ -o antimony -lm $(CPPFLAGS) $(LIBRARYFLAGS) antimony.tab.o antimony_api.o formula.o module.o rd_type.o reactantlist.o reaction.o registry.o stringx.o variable.o Antimony.o
 
 antimony.tar.gz : antimony.ypp antimony.tab.cpp antimony_api.cpp antimony_api.h formula.cpp formula.h libutil.h module.cpp module.h rd_type.cpp rd_type.h reactantlist.cpp reactantlist.h reaction.cpp reaction.h registry.cpp registry.h stringx.cpp stringx.h variable.cpp variable.h Antimony.cpp Makefile documentation.txt 
 	tar -cvf antimony.tar antimony.ypp antimony.tab.cpp antimony_api.cpp antimony_api.h formula.cpp formula.h libutil.h module.cpp module.h rd_type.cpp rd_type.h reactantlist.cpp reactantlist.h reaction.cpp reaction.h registry.cpp registry.h stringx.cpp stringx.h variable.cpp variable.h Antimony.cpp Makefile documentation.txt

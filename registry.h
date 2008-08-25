@@ -1,18 +1,18 @@
 #ifndef REGISTRY_H
 #define REGISTRY_H
 
-#include <math.h>
-#include <stdio.h>
-#include <string>
 #include <ctype.h>
 #include <fstream>
 #include <iostream>
+#include <math.h>
+#include <sbml/SBMLTypes.h>
 #include <set>
-#include "module.h"
-#include "reaction.h"
-#include "reactantlist.h"
-//#include "calculator.h"
+#include <stdio.h>
+#include <string>
 
+#include "module.h"
+#include "reactantlist.h"
+#include "reaction.h"
 
 
 class Registry
@@ -40,7 +40,7 @@ public:
   std::ifstream* input;
   std::set<std::string> variablenames;
 
-  void ClearModels();
+  void ClearModules();
 
   bool OpenFile(const std::string filename);
   bool SwitchToPreviousFile();
@@ -52,8 +52,8 @@ public:
   void AddVariableToCurrentExportList(Variable* export_var);
   bool AddVariableToCurrentImportList(Variable* import_var);
   Variable* AddVariableToCurrent(const std::string* name);
-  Reaction* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula);
-  Reaction* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var);
+  AntimonyReaction* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula);
+  AntimonyReaction* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var);
   ReactantList* NewBlankReactantList();
   Formula* NewBlankFormula();
   void SetCurrentImportedModule(std::vector<std::string> imod) {m_currentImportedModule = imod;}

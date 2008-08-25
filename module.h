@@ -48,8 +48,8 @@ public:
   Variable* AddOrFindVariable(const std::string* name);
   Variable* AddNewNumberedVariable(const std::string name);
   void AddVariableToExportList(Variable* var);
-  Reaction* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula);
-  Reaction* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var);
+  AntimonyReaction* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula);
+  AntimonyReaction* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var);
   bool SetFormula(Formula* formula);
 
   Variable* GetVariable(std::vector<std::string> name);

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Reaction::Reaction(ReactantList left, rd_type divider, ReactantList right, Formula formula, Variable* var)
+AntimonyReaction::AntimonyReaction(ReactantList left, rd_type divider, ReactantList right, Formula formula, Variable* var)
   : m_empty(false),
     m_left(left),
     m_right(right),
@@ -22,7 +22,7 @@ Reaction::Reaction(ReactantList left, rd_type divider, ReactantList right, Formu
 }
 
 
-Reaction::Reaction()
+AntimonyReaction::AntimonyReaction()
   : m_empty(true),
     m_left(),
     m_right(),
@@ -32,13 +32,13 @@ Reaction::Reaction()
 {
 }
 
-void Reaction::SetFormula(Formula* formula)
+void AntimonyReaction::SetFormula(Formula* formula)
 {
   assert(!m_empty);
   m_formula = *formula;
 }
 
-void Reaction::SetNewTopName(string modname, string newtopname)
+void AntimonyReaction::SetNewTopName(string modname, string newtopname)
 {
   //Ourself:
   m_name.insert(m_name.begin(), newtopname);
@@ -49,7 +49,7 @@ void Reaction::SetNewTopName(string modname, string newtopname)
   m_formula.SetNewTopName(modname, newtopname);
 }
 
-void Reaction::Clear()
+void AntimonyReaction::Clear()
 {
   m_empty = true;
   ReactantList blanklist;
@@ -59,28 +59,28 @@ void Reaction::Clear()
   m_formula.Clear();
 }
 
-const Formula* Reaction::GetFormula() const
+const Formula* AntimonyReaction::GetFormula() const
 {
   return &(m_formula);
 }
 
-Formula* Reaction::GetFormula()
+Formula* AntimonyReaction::GetFormula()
 {
   return &(m_formula);
 }
 
-bool Reaction::IsEmpty() const
+bool AntimonyReaction::IsEmpty() const
 {
   return m_empty;
 }
 
-bool Reaction::LeftIsEmpty() const
+bool AntimonyReaction::LeftIsEmpty() const
 {
   if (m_empty) return true;
   return (m_left.Size() == 0);
 }
 
-string Reaction::ToStringDelimitedBy(char cc) const
+string AntimonyReaction::ToStringDelimitedBy(char cc) const
 {
   string retval;
 
@@ -101,27 +101,27 @@ string Reaction::ToStringDelimitedBy(char cc) const
   return retval;
 }
 
-vector<string> Reaction::LeftToStringVecDelimitedBy(char cc) const
+vector<string> AntimonyReaction::LeftToStringVecDelimitedBy(char cc) const
 {
   return m_left.ToStringVecDelimitedBy(cc);
 }
 
-vector<string> Reaction::RightToStringVecDelimitedBy(char cc) const
+vector<string> AntimonyReaction::RightToStringVecDelimitedBy(char cc) const
 {
   return m_right.ToStringVecDelimitedBy(cc);
 }
 
-vector<double> Reaction::GetLeftStoichiometries() const
+vector<double> AntimonyReaction::GetLeftStoichiometries() const
 {
   return m_left.GetStoichiometries();
 }
 
-vector<double> Reaction::GetRightStoichiometries() const
+vector<double> AntimonyReaction::GetRightStoichiometries() const
 {
   return m_right.GetStoichiometries();
 }
 
-double Reaction::GetStoichiometryFor(const Variable* var) const
+double AntimonyReaction::GetStoichiometryFor(const Variable* var) const
 {
   double stoich = 0;
   stoich -= m_left.GetStoichiometryFor(var);
@@ -130,7 +130,7 @@ double Reaction::GetStoichiometryFor(const Variable* var) const
 }
 
 
-bool Reaction::GetIsConst() const
+bool AntimonyReaction::GetIsConst() const
 {
   return m_formula.GetIsConst();
 }

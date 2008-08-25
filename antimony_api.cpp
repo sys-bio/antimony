@@ -1,4 +1,7 @@
 #include <string>
+#include <iostream>
+
+#include <sbml/SBMLTypes.h>
 
 #include "antimony_api.h"
 #include "registry.h"
@@ -9,52 +12,7 @@ using namespace std;
 extern int yyparse();
 extern int yylloc_first_line;
 
-LIB_EXTERN long loadFile(const char* filename)
-{
-  g_registry.ClearModels();
-  if (g_registry.OpenFile(filename)) return 3;
-  int retval = yyparse();
-  //g_registry.input->close();
-  g_registry.CompileAllExportLists();
-  //cout << "Return value: " << retval << endl;
-  if (retval != 0) {
-    if (g_registry.GetError().size() == 0) {
-      assert(false); //Need to fill in the reason why we failed explicitly, if possible.
-      if (retval == 1) {
-        g_registry.SetError("Parsing failed because of invalid input.");
-      }
-      else if (retval == 2) {
-        g_registry.SetError("Parsing failed due to memory exhaution.");
-      }
-      else {
-        g_registry.SetError("Unknown parsing error.");
-      }
-    }
-    g_registry.AddErrorPrefix("Error in file '" + g_registry.GetLastFile() + "', line " + ToString(yylloc_first_line) + ":  ");
-  }
-  if (retval != 0) {
-    return -1;
-  }
-  else {
-    return g_registry.SaveModules();
-  }
-}
-
-LIB_EXTERN size_t getNumFiles()
-{
-  return g_registry.GetNumFiles();
-}
-
-LIB_EXTERN bool revertTo(long handle)
-{
-  return g_registry.RevertToModuleSet(handle);
-}
-
-LIB_EXTERN void clearPreviousLoads()
-{
-  g_registry.ClearOldModules();
-}
-
+//Useful functions for later routines:
 char* getCharStar(const char* orig)
 {
   char* ret = strdup(orig);
@@ -168,6 +126,59 @@ void reportVariableTypeIndexProblem(size_t n, return_type rtype, size_t actualsi
     error += "  Valid index values are 0 through " + ToString(actualsize-1) + ".";
   }
   g_registry.SetError(error);
+}
+
+//Exported routines:
+
+LIB_EXTERN long loadFile(const char* filename)
+{
+  g_registry.ClearModules();
+  if (g_registry.OpenFile(filename)) return 3;
+  int retval = yyparse();
+  //g_registry.input->close();
+  g_registry.CompileAllExportLists();
+  //cout << "Return value: " << retval << endl;
+  if (retval != 0) {
+    if (g_registry.GetError().size() == 0) {
+      assert(false); //Need to fill in the reason why we failed explicitly, if possible.
+      if (retval == 1) {
+        g_registry.SetError("Parsing failed because of invalid input.");
+      }
+      else if (retval == 2) {
+        g_registry.SetError("Parsing failed due to memory exhaution.");
+      }
+      else {
+        g_registry.SetError("Unknown parsing error.");
+      }
+    }
+    g_registry.AddErrorPrefix("Error in file '" + g_registry.GetLastFile() + "', line " + ToString(yylloc_first_line) + ":  ");
+  }
+  if (retval != 0) {
+    return -1;
+  }
+  else {
+    return g_registry.SaveModules();
+  }
+}
+
+LIB_EXTERN size_t getNumFiles()
+{
+  return g_registry.GetNumFiles();
+}
+
+LIB_EXTERN bool revertTo(long handle)
+{
+  return g_registry.RevertToModuleSet(handle);
+}
+
+LIB_EXTERN void clearPreviousLoads()
+{
+  g_registry.ClearOldModules();
+}
+
+LIB_EXTERN char* getLastError()
+{
+  return getCharStar((g_registry.GetError()).c_str());
 }
 
 LIB_EXTERN char* getJarnac(const char* moduleName)
@@ -430,7 +441,7 @@ LIB_EXTERN double** getStoichiometryMatrix(const char* moduleName)
     if (matrix[i] == NULL) return NULL;
   }
   for (size_t rxn=0; rxn<nreactions; rxn++) {
-    const Reaction* reaction = g_registry.GetModule(moduleName)->GetNthVariableOfType(allReactions, rxn)->GetReaction();
+    const AntimonyReaction* reaction = g_registry.GetModule(moduleName)->GetNthVariableOfType(allReactions, rxn)->GetReaction();
     for (size_t sp=0; sp<nspecies; sp++) {
       const Variable* species = g_registry.GetModule(moduleName)->GetNthVariableOfType(varSpecies, sp);
       matrix[sp][rxn] = reaction->GetStoichiometryFor(species);
@@ -608,6 +619,86 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
   return allUnknown;
 }
 
+string getNameFromSBMLObject(const SBase* sbml, string basename)
+{
+  string name = sbml->getId();
+  if (name == "") {
+    name = sbml->getName();
+  }
+  if (name=="") {
+    long num=0;
+    Variable* foundvar = NULL;
+    do {
+      char charnum[50];
+      sprintf(charnum, "%li", num);
+      num++;
+      name = basename;
+      name += charnum;
+      vector<string> fullname;
+      fullname.push_back(name);
+      foundvar = g_registry.CurrentModule()->GetVariable(fullname);
+    } while (foundvar != NULL);
+  }
+  assert(name != "");
+  return name;
+}
+
+LIB_EXTERN long loadSBMLFile(const char* filename)
+{
+  g_registry.ClearModules();
+  SBMLDocument* document = readSBML(filename);
+  if (document->getNumErrors() > 0) {
+    stringstream errorstream;
+    document->printErrors(errorstream);
+    string errors;
+    errorstream >> errors;
+    g_registry.SetError(errors);
+    return -1;
+  }
+  const Model* sbml = document->getModel();
+  string sbmlname = getNameFromSBMLObject(sbml, "filename");
+  g_registry.NewCurrentModule(&sbmlname);
+  Module* antimony = g_registry.CurrentModule();
+  for (unsigned int spec=0; spec<sbml->getNumSpecies(); spec++) {
+    const Species* species = sbml->getSpecies(spec);
+    Variable* var = g_registry.AddVariableToCurrent(&(getNameFromSBMLObject(species, "_S")));
+    var->SetType(varSpeciesUndef);
+
+    //Setting the formula
+    Formula* formula = g_registry.NewBlankFormula();
+    if (species->isSetInitialAmount()) {
+      formula->AddNum(species->getInitialAmount());
+      var->SetFormula(formula);
+    }
+    else if (species->isSetInitialConcentration()) {
+      formula->AddNum(species->getInitialConcentration());
+      var->SetFormula(formula);
+    }
+    //Anything more complicated is set in a Rule, which we'll get to later.
+
+    //Now we check whether to set it constant or not.  For now, our 'constness' is set
+    // if the species is either 'constant' or a 'boundary condition'
+    if (species->getConstant() || species->getBoundaryCondition()) {
+      var->SetIsConst(true);
+    }
+
+    //LS DEBUG:  add compartments here when they're implemented
+    
+    
+  }
+  for (unsigned int rxn=0; rxn<sbml->getNumReactions(); rxn++) {
+    const Reaction* reaction = sbml->getReaction(rxn);
+  }
+  g_registry.SaveModules();
+}
+
+LIB_EXTERN void writeSBMLFile(const char* filename, const char* moduleName)
+{
+}
+
+LIB_EXTERN char* getSBMLString(const char* moduleName)
+{
+}
 
 LIB_EXTERN void freeAll()
 {

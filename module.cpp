@@ -99,13 +99,13 @@ void Module::AddVariableToExportList(Variable* var)
   m_exportlist.push_back(var->GetName());
 }
 
-Reaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula)
+AntimonyReaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula)
 {
   Variable* newrxn = AddNewNumberedVariable("_J");
   return AddNewReaction(left, divider, right, formula, newrxn);
 }
 
-Reaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var)
+AntimonyReaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var)
 {
   string err = "When defining reaction '" + var->GetNameDelimitedBy('.') + "':  ";
   if (left->SetVarsTo(varSpeciesUndef)) {
@@ -129,7 +129,7 @@ Reaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantLi
     if (right->GetSingleVar()->SetFormula(formula)) return NULL;
     break;
   }
-  Reaction newrxn(*left, divider, *right, *formula, var);
+  AntimonyReaction newrxn(*left, divider, *right, *formula, var);
   if (formula->ContainsVar(var)) {
     g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy('.') + "' contains a reference to itself directly or indirectly in its reaction rate (" + formula->ToStringDelimitedBy('.') + ").");
     return NULL;
@@ -445,7 +445,7 @@ void Module::CompileExportLists()
     if (nameret.second || m_variables[var].GetListSeparately()) {
       m_uniquevars.push_back(m_variables[var].GetName());
       if (IsReaction(m_variables[var].GetType())) {
-        const Reaction* rxn = m_variables[var].GetReaction();
+        const AntimonyReaction* rxn = m_variables[var].GetReaction();
         if (rxn->GetType() == rdBecomes) {
           m_rxnleftvarnames.push_back(rxn->LeftToStringVecDelimitedBy(cc));
           m_rxnrightvarnames.push_back(rxn->RightToStringVecDelimitedBy(cc));
@@ -469,7 +469,7 @@ void Module::CompileExportLists()
             m_uniquevars.push_back(submod->m_uniquevars[nsubvar]);
             if (IsReaction(subvar->GetType())) {
               //Find the reaction and add it.
-              const Reaction* rxn = subvar->GetReaction();
+              const AntimonyReaction* rxn = subvar->GetReaction();
               if (rxn->GetType() == rdBecomes) {
                 //but only if it's a stoichiometry matrix reaction
                 m_rxnleftvarnames.push_back(rxn->LeftToStringVecDelimitedBy(cc));

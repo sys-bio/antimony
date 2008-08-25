@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include <set>
+#include <sbml/SBMLTypes.h>
 
 #include "antimony_api.h"
 #include "registry.h"
@@ -17,7 +18,7 @@
 
   class Formula;
   class ReactantList;
-  class Reaction;
+  class AntimonyReaction;
   class Variable;
 
   using namespace std;
@@ -38,7 +39,7 @@
   Formula* formula;
   Module* module;
   ReactantList* reactantList;
-  Reaction* reaction;
+  AntimonyReaction* reaction;
   Variable* variable;
   Variable* localvariable;
 }
@@ -482,14 +483,29 @@ bool CaselessStrCmp(const string& lhs, const string& rhs)
 
 int main(long argc, char** argv)
 {
-  string filename="input.txt";
+  //Test SBML
+  string filename="SBMLModels/equilib.xml";
+  SBMLDocument* document = readSBML(filename.c_str());
+  unsigned int errors = document->getNumErrors();
+
+  cout << endl;
+  cout << "  filename: " << filename.c_str() << endl;
+  cout << "  error(s): " << errors  << endl;
+  cout << endl;
+
+  if (errors > 0) document->printErrors(cerr);
+
+  //end test
   int retval = 0;
   for (long file=1; file<argc; file++) {
     filename = argv[file];
     //yydebug = 1;
     retval=loadFile(filename.c_str());
     if (retval == -1) {
-      cout << g_registry.GetError().c_str() << endl;
+      cout << getLastError() << endl;
+    }
+    else {
+      cout << argv[file] << " read successfully with file handle " << ToString(retval) << "." << endl;
     }
   }
   for (size_t file=0; file<getNumFiles(); file++) {

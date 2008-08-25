@@ -136,7 +136,7 @@ Formula* Variable::GetFormula()
   return NULL;
 }
 
-const Reaction* Variable::GetReaction() const
+const AntimonyReaction* Variable::GetReaction() const
 {
   assert(IsReaction(m_type));
   if (m_sameVariable.size() > 0) {
@@ -569,7 +569,7 @@ bool Variable::SetFormula(Formula* formula)
   return false;
 }
 
-Reaction* Variable::SetReaction(Reaction* rxn)
+AntimonyReaction* Variable::SetReaction(AntimonyReaction* rxn)
 {
   assert(m_type==varUndefined || m_type==varDNA || m_type==varFormulaUndef || IsReaction(m_type));
   m_valReaction = *rxn;
