@@ -25,6 +25,14 @@ void Formula::AddNum(double num)
   m_components.push_back(newvar);
 }
 
+void Formula::AddText(const string* function)
+{
+  vector<string> novar;
+  pair<string, vector<string> > newvar;
+  newvar = make_pair(*function, novar);
+  m_components.push_back(newvar);
+}
+
 void Formula::AddMathThing(char maththing)
 {
   vector<string> novar;

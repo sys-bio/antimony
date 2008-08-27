@@ -20,6 +20,8 @@ class Registry
 private:
   std::vector<std::ifstream*> m_oldinputs;
   std::vector<std::string>    m_files;
+  std::set<std::string>       m_variablenames;
+  std::vector<std::string>    m_functions;
 
   std::vector<Module> m_modules;
   std::vector<std::string> m_currentModules;
@@ -38,13 +40,13 @@ public:
   ~Registry() {};
 
   std::ifstream* input;
-  std::set<std::string> variablenames;
 
   void ClearModules();
 
   bool OpenFile(const std::string filename);
   bool SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};
+  void SetupFunctions();
 
   void NewCurrentModule(const std::string* name);
   Module* CurrentModule();
@@ -76,6 +78,7 @@ public:
   Variable* GetAssignmentVariable();
 
   const std::string* AddWord(std::string word);
+  const std::string* IsFunction(std::string word);
 
   std::string GetJarnac(std::string modulename);
 

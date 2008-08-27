@@ -21,14 +21,12 @@ LIB_EXTERN size_t getNumBoundarySpecies (char* moduleName)
 
 LIB_EXTERN const char* getNthFloatingSpeciesName (char* moduleName, size_t n)
 {
-  n += g_registry.GetModule(moduleName)->GetFirstVariableIndexForType(varSpecies);
-  return g_registry.GetModule(moduleName)->m_variablenames[n];
+  return getNthSymbolNameOfType(moduleName, varSpecies, n);
 }
 
 LIB_EXTERN const char* getNthBoundarySpeciesName (char* moduleName, size_t n) 
 {
-  n += g_registry.GetModule(moduleName)->GetFirstVariableIndexForType(constSpecies);
-  return g_registry.GetModule(moduleName)->m_variablenames[n];
+  return getNthSymbolNameOfType(moduleName, constSpecies, n);
 }
 
 

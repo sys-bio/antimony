@@ -23,6 +23,7 @@ public:
   void AddVariable(Variable* var);
   void AddNum(double num);
   void AddMathThing(char maththing);
+  void AddText(const std::string* function);
   void AddEllipses();
 
   void SetNewTopName(std::string newmodname, std::string newtopname);

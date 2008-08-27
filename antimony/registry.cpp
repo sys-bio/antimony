@@ -14,18 +14,20 @@ using namespace std;
 Registry::Registry()
   : m_oldinputs(),
     m_files(),
+    m_variablenames(),
+    m_functions(),
     m_modules(),
     m_currentModules(),
     m_currentReactantLists(),
     m_currentImportedModule(),
     m_scratchFormula(),
     m_cc('_'),
-    input(NULL),
-    variablenames()
+    input(NULL)
 {
   //A user can't use []'s in a name, so this is guaranteed to be unique
   string main = "[main]";
   NewCurrentModule(&main);
+  SetupFunctions();
 }
 
 void Registry::ClearModules()
@@ -93,6 +95,95 @@ bool Registry::SwitchToPreviousFile()
   m_oldinputs.pop_back();
   m_files.pop_back();
   return false;
+}
+
+void Registry::SetupFunctions()
+{
+  //This list courtesy libSBML, MathML.cpp, MATHML_ELEMENTS, plus "pow", in honor of Batman.
+  // (Ok, other extras (post-xor) from ASTNode.cpp)
+  const char* functions[] = {
+  "abs"
+  , "and"
+  , "annotation"
+  , "annotation-xml"
+  , "apply"
+  , "arccos"
+  , "arccosh"
+  , "arccot"
+  , "arccoth"
+  , "arccsc"
+  , "arccsch"
+  , "arcsec"
+  , "arcsech"
+  , "arcsin"
+  , "arcsinh"
+  , "arctan"
+  , "arctanh"
+  , "bvar"
+  , "ceiling"
+  , "ci"
+  , "cn"
+  , "cos"
+  , "cosh"
+  , "cot"
+  , "coth"
+  , "csc"
+  , "csch"
+  , "csymbol"
+  , "degree"
+  , "divide"
+  , "eq"
+  , "exp"
+  , "exponentiale"
+  , "factorial"
+  , "false"
+  , "floor"
+  , "geq"
+  , "gt"
+  , "infinity"
+  , "lambda"
+  , "leq"
+  , "ln"
+  , "log"
+  , "logbase"
+  , "lt"
+  , "math"
+  , "minus"
+  , "neq"
+  , "not"
+  , "notanumber"
+  , "or"
+  , "otherwise"
+  , "pi"
+  , "piece"
+  , "piecewise"
+  , "plus"
+  , "power"
+  , "root"
+  , "sec"
+  , "sech"
+  , "semantics"
+  , "sep"
+  , "sin"
+  , "sinh"
+  , "tan"
+  , "tanh"
+  , "times"
+  , "true"
+  , "xor"
+  , "acos"
+  , "asin"
+  , "atan"
+  , "ceil"
+  , "delay"
+  , "log10"
+  , "pow"
+  , "sqr"
+  , "sqrt"
+  };
+  for (size_t func=0; func<78; func++) {
+    m_functions.push_back(functions[func]);
+  }
 }
 
 void Registry::NewCurrentModule(const string* name)
@@ -297,9 +388,19 @@ const string*  Registry::AddWord(string word)
 {
   pair<set<string>::iterator,bool> ret;
 
-  ret = variablenames.insert(word);
+  ret = m_variablenames.insert(word);
   set<string>::iterator wordit = ret.first;
   return &(*wordit);
+}
+
+const string* Registry::IsFunction(string word)
+{
+  for (size_t func=0; func<m_functions.size(); func++) {
+    if (word == m_functions[func]) {
+      return &(m_functions[func]);
+    }
+  }
+  return NULL;
 }
 
 string Registry::GetJarnac(string modulename)
@@ -363,6 +464,9 @@ bool Registry::RevertToModuleSet(long n)
     return true;
   }
   m_modules = m_oldmodules[n-1];
+  for (size_t mod=0; mod<m_modules.size(); mod++) {
+    m_modules[mod].CompileExportLists();
+  }
   return false;
 }
 

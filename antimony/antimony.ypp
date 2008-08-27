@@ -56,7 +56,7 @@
 
 %token <num> NUM
 %token <word> WORD MODNAME FILENAME
-%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES PROTEIN DNA GENE PROMOTER OPERATOR VAR CONST DASHES ELLIPSES INCLUDE
+%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES PROTEIN DNA GENE PROMOTER OPERATOR VAR CONST DASHES ELLIPSES FUNCTION INCLUDE
 
 %debug
 %error-verbose
@@ -148,9 +148,11 @@ formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
         |       ELLIPSES {$$ = g_registry.NewBlankFormula(); $$->AddEllipses();}
         |       variable {$$ = g_registry.NewBlankFormula(); $$->AddVariable($1); }
         |       NUM  {$$ = g_registry.NewBlankFormula(); $$->AddNum($1); }
+        |       FUNCTION {$$ = g_registry.NewBlankFormula(); $$->AddText($1);}
         |       mathThing {$$ = g_registry.NewBlankFormula(); $$->AddMathThing($1); }
         |       formula variable {$$ = $1; $1->AddVariable($2); }
         |       formula NUM  {$$ = $1; $1->AddNum($2); }
+        |       formula FUNCTION {$$ = $1; $1->AddText($2);}
         |       formula mathThing {$$ = $1; $1->AddMathThing($2); }
         ;
 
@@ -301,7 +303,7 @@ int yylex(void)
     return -1;
   }
 
-  yylloc_first_line = yylloc_last_line; //If we ever want a first_line object.
+  yylloc_first_line = yylloc_last_line;
 
   // Skip white space.
   while (cc == ' ' ||
@@ -355,6 +357,11 @@ int yylex(void)
     }
     if (CaselessStrCmp(word, "include")) {
       return INCLUDE;
+    }
+    
+    if (g_registry.IsFunction(word) != NULL) {
+      yylval.word = g_registry.IsFunction(word);
+      return FUNCTION;
     }
     //Otherwise, it's a user-defined variable:
     yylval.word = g_registry.AddWord(word);
@@ -483,24 +490,15 @@ bool CaselessStrCmp(const string& lhs, const string& rhs)
 
 int main(long argc, char** argv)
 {
-  //Test SBML
-  string filename="SBMLModels/equilib.xml";
-  SBMLDocument* document = readSBML(filename.c_str());
-  unsigned int errors = document->getNumErrors();
-
-  cout << endl;
-  cout << "  filename: " << filename.c_str() << endl;
-  cout << "  error(s): " << errors  << endl;
-  cout << endl;
-
-  if (errors > 0) document->printErrors(cerr);
-
-  //end test
+  //yydebug = 1;
   int retval = 0;
   for (long file=1; file<argc; file++) {
-    filename = argv[file];
-    //yydebug = 1;
-    retval=loadFile(filename.c_str());
+    if (strstr(argv[file], ".xml") != NULL) {
+      retval = loadSBMLFile(argv[file]);
+    }
+    else {
+      retval=loadFile(argv[file]);
+    }
     if (retval == -1) {
       cout << getLastError() << endl;
     }
