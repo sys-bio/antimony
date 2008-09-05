@@ -14,7 +14,7 @@ Antimony.o : Antimony.cpp
 antimony.tab.o : antimony.tab.cpp
 	g++ -c $(CPPFLAGS) antimony.tab.cpp
 
-antimony_api.o : antimony_api.cpp antimony_api.h libutil.h registry.h sbmlx.h stringx.h
+antimony_api.o : antimony_api.cpp antimony_api.h libutil.h module.h registry.h sbmlx.h stringx.h
 	g++ -c $(CPPFLAGS) antimony_api.cpp
 
 formula.o : formula.cpp formula.h module.h registry.h variable.h reaction.h
