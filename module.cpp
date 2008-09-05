@@ -6,6 +6,7 @@
 #include "module.h"
 #include "variable.h"
 #include "registry.h"
+#include "sbmlx.h"
 
 extern Registry g_registry;
 
@@ -18,6 +19,7 @@ Module::Module(string name)
     m_exportlist(),
     m_returnvalue(),
     m_currentexportvar(0),
+    m_sbml(name + "-unset"),
     m_uniquevars(),
     m_rxnleftvarnames(),
     m_rxnrightvarnames(),
@@ -33,6 +35,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_exportlist(src.m_exportlist),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
+    m_sbml(src.m_sbml),
     m_uniquevars(),
     m_rxnleftvarnames(),
     m_rxnrightvarnames(),
@@ -50,6 +53,7 @@ Module::Module(const Module& src)
     m_exportlist(src.m_exportlist),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(src.m_currentexportvar),
+    //    m_sbml(src.m_sbml),
     m_uniquevars(),
     m_rxnleftvarnames(),
     m_rxnrightvarnames(),
@@ -487,7 +491,7 @@ void Module::CompileExportLists()
   }
 }
 
-size_t Module::GetNumVariablesOfType(return_type rtype)
+size_t Module::GetNumVariablesOfType(return_type rtype) const
 {
   size_t total = 0;
   for (size_t var=0; var<m_uniquevars.size(); var++) {
@@ -499,7 +503,7 @@ size_t Module::GetNumVariablesOfType(return_type rtype)
   return total;
 }
 
-const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n)
+const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n) const
 {
   size_t total = 0;
   for (size_t var=0; var<m_uniquevars.size(); var++) {
@@ -516,9 +520,10 @@ const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n)
 
 
 
-bool Module::AreEquivalent(return_type rtype, var_type vtype)
+bool Module::AreEquivalent(return_type rtype, var_type vtype) const
 {
   switch (rtype) {
+  case allSpecies:
   case varSpecies:
   case constSpecies:
     if (vtype == varSpeciesUndef ||
@@ -532,6 +537,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype)
       return true;
     }
     return false;
+  case allFormulas:
   case varFormulas:
   case constFormulas:
     if (vtype == varFormulaUndef ||
@@ -612,7 +618,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype)
   return false;
 }
 
-bool Module::AreEquivalent(return_type rtype, bool isconst)
+bool Module::AreEquivalent(return_type rtype, bool isconst) const
 {
   switch (rtype) {
   case varSpecies:
@@ -632,6 +638,8 @@ bool Module::AreEquivalent(return_type rtype, bool isconst)
   case constGenes:
     return (isconst);
   case allSymbols:
+  case allSpecies:
+  case allFormulas:
   case allUnknown:
   case allReactions:
   case allInteractions:
@@ -642,10 +650,10 @@ bool Module::AreEquivalent(return_type rtype, bool isconst)
   return false;
 }
 
-var_type Module::GetTypeFor(std::string varname)
+var_type Module::GetTypeFor(std::string varname) const
 {
   for (size_t v=0; v<m_uniquevars.size(); v++) {
-    Variable* var = GetVariable(m_uniquevars[v]);
+    const Variable* var = GetVariable(m_uniquevars[v]);
     if (varname == var->GetNameDelimitedBy(g_registry.GetCC())) {
       return var->GetType();
     }
@@ -654,14 +662,227 @@ var_type Module::GetTypeFor(std::string varname)
   return varUndefined;
 }
 
-bool Module::IsConst(std::string varname)
+bool Module::IsConst(std::string varname) const
 {
   for (size_t v=0; v<m_uniquevars.size(); v++) {
-    Variable* var = GetVariable(m_uniquevars[v]);
+    const Variable* var = GetVariable(m_uniquevars[v]);
     if (varname == var->GetNameDelimitedBy(g_registry.GetCC())) {
       return var->GetIsConst();
     }
   }
   g_registry.SetError("Unknown variable " + varname + " in module " + m_modulename + ".");
   return false;
+}
+
+void Module::LoadSBML(const Model* sbml)
+{
+  string sbmlname = "";
+  //Species
+  for (unsigned int spec=0; spec<sbml->getNumSpecies(); spec++) {
+    const Species* species = sbml->getSpecies(spec);
+    sbmlname = getNameFromSBMLObject(species, "_S");
+    Variable* var = AddOrFindVariable(&sbmlname);
+    var->SetType(varSpeciesUndef);
+
+    //Setting the formula
+    Formula* formula = g_registry.NewBlankFormula();
+    if (species->isSetInitialAmount()) {
+      formula->AddNum(species->getInitialAmount());
+      var->SetFormula(formula);
+    }
+    else if (species->isSetInitialConcentration()) {
+      formula->AddNum(species->getInitialConcentration());
+      var->SetFormula(formula);
+    }
+    //Anything more complicated is set in a Rule, which we'll get to later.
+
+    //Now we check whether to set it constant or not.  For now, our 'constness' is set
+    // if the species is either 'constant' or a 'boundary condition'
+    if (species->getConstant() || species->getBoundaryCondition()) {
+      var->SetIsConst(true);
+    }
+
+    //LS DEBUG:  add compartment assignment here when they're implemented
+  }
+  //LS DEBUG:  Add compartments, constraints, events
+
+  //Function Definitions
+  for (unsigned int func=0; func<sbml->getNumFunctionDefinitions(); func++) {
+    const FunctionDefinition* function = sbml->getFunctionDefinition(func);
+    sbmlname = getNameFromSBMLObject(function, "_F");
+    Variable* var = AddOrFindVariable(&sbmlname);
+    string formulastring(SBML_formulaToString(function->getBody()));
+    Formula* formula = g_registry.NewBlankFormula();
+    setFormulaWithString(formulastring, formula);
+    var->SetFormula(formula);
+  }
+
+  //Parameters
+  for (unsigned int param=0; param<sbml->getNumParameters(); param++) {
+    const Parameter* parameter = sbml->getParameter(param);
+    sbmlname = getNameFromSBMLObject(parameter, "_P");
+    Variable* var = AddOrFindVariable(&sbmlname);
+    Formula* formula = g_registry.NewBlankFormula();
+    formula->AddNum(parameter->getValue());
+    var->SetFormula(formula);
+    //LS DEBUG:  Some 'parameters' can vary from Rules, below, and in those cases, the value is
+    // supposed to be an 'initial value'.  But I have no idea what that might mean, so we'll just
+    // overwrite the formula with the rule if it happens.
+  }
+
+  //Rules
+  for (unsigned int rulen=0; rulen<sbml->getNumRules(); rulen++) {
+    const Rule* rule = sbml->getRule(rulen);
+    if (rule->isAssignment()) {
+      sbmlname = rule->getVariable();
+      if (sbmlname == "") {
+        sbmlname = getNameFromSBMLObject(rule, "_R");
+      }
+      Variable* var = AddOrFindVariable(&sbmlname);
+      Formula* formula = g_registry.NewBlankFormula();
+      string formulastring(SBML_formulaToString(rule->getMath()));
+      setFormulaWithString(formulastring, formula);
+      var->SetFormula(formula);
+    }
+    else {
+      //LS DEBUG:  error message?  Unable to process algebraic or rate rules
+    }
+  }
+
+  //Reactions
+  for (unsigned int rxn=0; rxn<sbml->getNumReactions(); rxn++) {
+    const Reaction* reaction = sbml->getReaction(rxn);
+    sbmlname = getNameFromSBMLObject(reaction, "_J");
+    Variable* var = AddOrFindVariable(&sbmlname);
+    //reactants
+    ReactantList reactants;
+    for (unsigned int react=0; react<reaction->getNumReactants(); react++) {
+      const SpeciesReference* reactant = reaction->getReactant(react);
+      double stoichiometry = 1;
+      if (reactant->isSetStoichiometryMath()) {
+        //LS DEBUG:  error message?
+      }
+      else {
+        stoichiometry = reactant->getStoichiometry();
+      }
+      sbmlname = reactant->getSpecies();
+      if (sbmlname == "") {
+        sbmlname = getNameFromSBMLObject(reactant, "_S");
+      }
+      Variable* rvar = AddOrFindVariable(&sbmlname);
+      reactants.AddReactant(rvar, stoichiometry);
+    }
+    //products
+    ReactantList products;
+    for (unsigned int react=0; react<reaction->getNumProducts(); react++) {
+      const SpeciesReference* product = reaction->getProduct(react);
+      double stoichiometry = 1;
+      if (product->isSetStoichiometryMath()) {
+        //LS DEBUG:  error message?
+      }
+      else {
+        stoichiometry = product->getStoichiometry();
+      }
+      sbmlname = product->getSpecies();
+      if (sbmlname == "") {
+        sbmlname = getNameFromSBMLObject(product, "_S");
+      }
+      Variable* rvar = AddOrFindVariable(&sbmlname);
+      products.AddReactant(rvar, stoichiometry);
+    }
+    //formula
+    Formula* formula = g_registry.NewBlankFormula();
+    char* formulastring = SBML_formulaToString(reaction->getKineticLaw()->getMath());
+    setFormulaWithString(formulastring, formula);
+    free(formulastring);
+    //Put all three together:
+    AddNewReaction(&reactants, rdBecomes, &products, formula, var);
+  }
+  m_sbml = *sbml;
+}
+
+Model Module::GetSBMLModel()
+{
+  if (m_sbml.getId() == m_modulename) {
+    return m_sbml;
+  }
+  CreateSBMLModel();
+  return m_sbml;
+}
+
+void Module::CreateSBMLModel()
+{
+  Model newmod(m_modulename);
+  m_sbml = newmod; //clear the old one, just in case.
+  char cc = g_registry.GetCC();
+  //Species
+  for (size_t spec=0; spec < GetNumVariablesOfType(allSpecies); spec++) {
+    const Variable* species = GetNthVariableOfType(allSpecies, spec);
+    Species* sbmlspecies = m_sbml.createSpecies();
+    sbmlspecies->setId(species->GetNameDelimitedBy(cc));
+    if (species->GetIsConst()) {
+      sbmlspecies->setBoundaryCondition(true);
+      sbmlspecies->setConstant(true);
+    }
+    const Formula* formula = species->GetFormula();
+    if (formula->IsDouble()) {
+      sbmlspecies->setInitialConcentration(atoi(formula->ToStringDelimitedBy(cc).c_str()));
+    }
+    else {
+      //create a rule
+      AssignmentRule rule(species->GetNameDelimitedBy(cc), formula->ToStringDelimitedBy(cc));
+      m_sbml.addRule(&rule);
+    }
+  }
+
+  //Formulas
+  for (size_t form=0; form < GetNumVariablesOfType(allFormulas); form++) {
+    const Variable* formvar = GetNthVariableOfType(allFormulas, form);
+    const Formula*  formula = formvar->GetFormula();
+    Parameter* param = m_sbml.createParameter();
+    param->setId(formvar->GetNameDelimitedBy(cc));
+    if (formula->IsDouble()) {
+      param->setValue(atoi(formula->ToStringDelimitedBy(cc).c_str()));
+    }
+    else {
+      //create a rule
+      AssignmentRule rule(formvar->GetNameDelimitedBy(cc), formula->ToStringDelimitedBy(cc));
+      m_sbml.addRule(&rule);
+    }
+  }
+
+  //Reactions
+  for (size_t rxn=0; rxn < GetNumVariablesOfType(allReactions); rxn++) {
+    const Variable* rxnvar = GetNthVariableOfType(allReactions, rxn);
+    const AntimonyReaction* reaction = rxnvar->GetReaction();
+    const Formula* formula = reaction->GetFormula();
+    KineticLaw kl(formula->ToStringDelimitedBy(cc));
+    Reaction sbmlrxn(rxnvar->GetNameDelimitedBy(cc), "", &kl, false);
+    const ReactantList* left = reaction->GetLeft();
+    for (size_t lnum=0; lnum<left->Size(); lnum++) {
+      const Variable* nthleft = left->GetNthReactant(lnum);
+      double nthstoich = left->GetStoichiometryFor(lnum);
+      SpeciesReference sr(nthleft->GetNameDelimitedBy(cc), nthstoich);
+      sbmlrxn.addReactant(&sr);
+    }
+    const ReactantList* right = reaction->GetRight();
+    for (size_t rnum=0; rnum<right->Size(); rnum++) {
+      const Variable* nthright = right->GetNthReactant(rnum);
+      double nthstoich = right->GetStoichiometryFor(rnum);
+      SpeciesReference sr(nthright->GetNameDelimitedBy(cc), nthstoich);
+      sbmlrxn.addProduct(&sr);
+    }
+    //Find 'modifiers' and add them.
+    for (size_t v=0; v<formula->GetNumVariables(); v++) {
+      const Variable* formvar = formula->GetNthVariable(v);
+      if (formvar != NULL) {
+        if (left->GetStoichiometryFor(formvar) == 0 &&
+            right->GetStoichiometryFor(formvar) == 0) {
+          ModifierSpeciesReference msr(formvar->GetNameDelimitedBy(cc));
+          sbmlrxn.addModifier(&msr);
+        }
+      }
+    }
+    m_sbml.addReaction(&sbmlrxn);
+  }
 }

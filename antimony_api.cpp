@@ -6,6 +6,7 @@
 #include "antimony_api.h"
 #include "registry.h"
 #include "stringx.h"
+#include "sbmlx.h"
 
 
 using namespace std;
@@ -619,80 +620,6 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
   return allUnknown;
 }
 
-string getNameFromSBMLObject(const SBase* sbml, string basename)
-{
-  string name = sbml->getId();
-  if (name == "") {
-    name = sbml->getName();
-  }
-  if (name=="") {
-    long num=0;
-    Variable* foundvar = NULL;
-    do {
-      char charnum[50];
-      sprintf(charnum, "%li", num);
-      num++;
-      name = basename;
-      name += charnum;
-      vector<string> fullname;
-      fullname.push_back(name);
-      foundvar = g_registry.CurrentModule()->GetVariable(fullname);
-    } while (foundvar != NULL);
-  }
-  assert(name != "");
-  return name;
-}
-
-void setFormulaWithString(string formulastring, Formula* formula)
-{
-  if (formulastring.size()==0) return;
-  string formpart = "";
-  formpart.push_back(formulastring[0]);
-  bool isword((isalpha(formulastring[0]) || formulastring[0]=='_'));
-  for (size_t ch=1; ch<formulastring.size(); ch++) {
-    char ccurr = formulastring[ch];
-    if (isword) {
-      if (isalpha(ccurr) || isdigit(ccurr) || ccurr=='_') {
-        //continue word
-        formpart.push_back(ccurr);
-      }
-      else {
-        //end of word
-        if (g_registry.IsFunction(formpart) == NULL) {
-          Variable* subvar = g_registry.CurrentModule()->AddOrFindVariable(&formpart);
-          formula->AddVariable(subvar);
-        }
-        else {
-          formula->AddText(&formpart);
-        }
-        formpart.clear();
-        formpart.push_back(ccurr);
-        isword = false;
-      }
-    }
-    else {
-      if (isalpha(ccurr) || ccurr=='_') {
-        //new word
-        formula->AddText(&formpart);
-        formpart.clear();
-        formpart.push_back(ccurr);
-        isword = true;
-      }
-      else {
-        //continue non-word
-        formpart.push_back(ccurr);
-      }
-    }
-  }
-  if (isword && g_registry.IsFunction(formpart) == NULL) {
-    Variable* subvar = g_registry.CurrentModule()->AddOrFindVariable(&formpart);
-    formula->AddVariable(subvar);
-  }
-  else {
-    formula->AddText(&formpart);
-  }
-}
-
 LIB_EXTERN long loadSBMLFile(const char* filename)
 {
   g_registry.ClearModules();
@@ -708,132 +635,30 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
   const Model* sbml = document->getModel();
   string sbmlname = getNameFromSBMLObject(sbml, "filename");
   g_registry.NewCurrentModule(&sbmlname);
-  Module* antimony = g_registry.CurrentModule();
+  g_registry.CurrentModule()->LoadSBML(sbml);
 
-  //Species
-  for (unsigned int spec=0; spec<sbml->getNumSpecies(); spec++) {
-    const Species* species = sbml->getSpecies(spec);
-    sbmlname = getNameFromSBMLObject(species, "_S");
-    Variable* var = antimony->AddOrFindVariable(&sbmlname);
-    var->SetType(varSpeciesUndef);
-
-    //Setting the formula
-    Formula* formula = g_registry.NewBlankFormula();
-    if (species->isSetInitialAmount()) {
-      formula->AddNum(species->getInitialAmount());
-      var->SetFormula(formula);
-    }
-    else if (species->isSetInitialConcentration()) {
-      formula->AddNum(species->getInitialConcentration());
-      var->SetFormula(formula);
-    }
-    //Anything more complicated is set in a Rule, which we'll get to later.
-
-    //Now we check whether to set it constant or not.  For now, our 'constness' is set
-    // if the species is either 'constant' or a 'boundary condition'
-    if (species->getConstant() || species->getBoundaryCondition()) {
-      var->SetIsConst(true);
-    }
-
-    //LS DEBUG:  add compartment assignment here when they're implemented
-  }
-  //LS DEBUG:  Add compartments, constraints, events
-
-  //Function Definitions
-  for (unsigned int func=0; func<sbml->getNumFunctionDefinitions(); func++) {
-    const FunctionDefinition* function = sbml->getFunctionDefinition(func);
-    sbmlname = getNameFromSBMLObject(function, "_F");
-    Variable* var = antimony->AddOrFindVariable(&sbmlname);
-    string formulastring(SBML_formulaToString(function->getBody()));
-    Formula* formula = g_registry.NewBlankFormula();
-    setFormulaWithString(formulastring, formula);
-    var->SetFormula(formula);
-  }
-
-  //Parameters
-  for (unsigned int param=0; param<sbml->getNumParameters(); param++) {
-    const Parameter* parameter = sbml->getParameter(param);
-    sbmlname = getNameFromSBMLObject(parameter, "_P");
-    Variable* var = antimony->AddOrFindVariable(&sbmlname);
-    Formula* formula = g_registry.NewBlankFormula();
-    formula->AddNum(parameter->getValue());
-    var->SetFormula(formula);
-    //LS DEBUG:  Some 'parameters' can vary from Rules, below, and in those cases, the value is
-    // supposed to be an 'initial value'.  But I have no idea what that might mean, so we'll just
-    // overwrite the formula with the rule if it happens.
-  }
-
-  //Rules
-  for (unsigned int rulen=0; rulen<sbml->getNumRules(); rulen++) {
-    const Rule* rule = sbml->getRule(rulen);
-    if (rule->isAssignment()) {
-      sbmlname = rule->getVariable();
-      if (sbmlname == "") {
-        sbmlname = getNameFromSBMLObject(rule, "_R");
-      }
-      Variable* var = antimony->AddOrFindVariable(&sbmlname);
-      Formula* formula = g_registry.NewBlankFormula();
-      string formulastring(SBML_formulaToString(rule->getMath()));
-      setFormulaWithString(formulastring, formula);
-      var->SetFormula(formula);
-    }
-    else {
-      //LS DEBUG:  error message?  Unable to process algebraic or rate rules
-    }
-  }
-
-  //Reactions
-  for (unsigned int rxn=0; rxn<sbml->getNumReactions(); rxn++) {
-    const Reaction* reaction = sbml->getReaction(rxn);
-    sbmlname = getNameFromSBMLObject(reaction, "_J");
-    Variable* var = antimony->AddOrFindVariable(&sbmlname);
-    //reactants
-    ReactantList reactants;
-    for (unsigned int react=0; react<reaction->getNumReactants(); react++) {
-      const SpeciesReference* reactant = reaction->getReactant(react);
-      double stoichiometry = 1;
-      if (reactant->isSetStoichiometryMath()) {
-        //LS DEBUG:  error message?
-      }
-      else {
-        stoichiometry = reactant->getStoichiometry();
-      }
-      sbmlname = reactant->getSpecies();
-      Variable* rvar = antimony->AddOrFindVariable(&sbmlname);
-      reactants.AddReactant(rvar, stoichiometry);
-    }
-    //products
-    ReactantList products;
-    for (unsigned int react=0; react<reaction->getNumProducts(); react++) {
-      const SpeciesReference* product = reaction->getProduct(react);
-      double stoichiometry = 1;
-      if (product->isSetStoichiometryMath()) {
-        //LS DEBUG:  error message?
-      }
-      else {
-        stoichiometry = product->getStoichiometry();
-      }
-      sbmlname = product->getSpecies();
-      Variable* rvar = antimony->AddOrFindVariable(&sbmlname);
-      products.AddReactant(rvar, stoichiometry);
-    }
-    //formula
-    Formula* formula = g_registry.NewBlankFormula();
-    string formulastring(SBML_formulaToString(reaction->getKineticLaw()->getMath()));
-    setFormulaWithString(formulastring, formula);
-
-    //Put all three together:
-    antimony->AddNewReaction(&reactants, rdBecomes, &products, formula, var);
-  }
-  g_registry.SaveModules();
+  delete(document);
+  return g_registry.SaveModules();
 }
 
-LIB_EXTERN void writeSBMLFile(const char* filename, const char* moduleName)
+LIB_EXTERN int writeSBMLFile(const char* filename, const char* moduleName)
 {
+  if (!checkModule(moduleName)) return NULL;
+  SBMLDocument sbmldoc;
+  Model sbml = g_registry.GetModule(moduleName)->GetSBMLModel();
+  sbmldoc.setModel(&sbml);
+  return writeSBML(&sbmldoc, filename);
 }
 
 LIB_EXTERN char* getSBMLString(const char* moduleName)
 {
+  if (!checkModule(moduleName)) return NULL;
+  SBMLDocument sbmldoc;
+  Model sbml = g_registry.GetModule(moduleName)->GetSBMLModel();
+  sbmldoc.setModel(&sbml);
+  char* sbmlstring = writeSBMLToString(&sbmldoc);
+  g_registry.m_charstars.push_back(sbmlstring);
+  return sbmlstring;
 }
 
 LIB_EXTERN void freeAll()

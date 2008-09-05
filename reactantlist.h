@@ -34,6 +34,8 @@ public:
   std::vector<std::string> ToStringVecDelimitedBy(char cc) const;
   std::vector<double> GetStoichiometries() const;
   double GetStoichiometryFor(const Variable* var) const;
+  double GetStoichiometryFor(size_t n) const;
+  const Variable* GetNthReactant(size_t n) const;
 };
 
 

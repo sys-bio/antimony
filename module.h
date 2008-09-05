@@ -5,6 +5,8 @@
 #include <vector>
 #include <set>
 
+#include <sbml/SBMLTypes.h>
+
 #include "antimony_api.h"
 #include "variable.h"
 #include "reaction.h"
@@ -15,8 +17,9 @@ class Module
 {
 private:
   Module() {}; //undefined
-  //Module(const Module& src); //Must define!  Lots of pointers must change!
-  //Module& operator=(const Module& src); //(uses the above)
+
+  //Module(const Module& src); //Use default, but have to re-run CompileExportLists
+  //Module& operator=(const Module& src); //(same as above)
 
   std::string m_modulename;
   std::vector<std::string> m_variablename;
@@ -29,6 +32,8 @@ private:
 
   size_t m_currentexportvar;
 
+  Model m_sbml;
+  
 public:
 
   //Storage vectors for output:
@@ -79,13 +84,16 @@ public:
 
   //Output for the API
   void CompileExportLists();
-  size_t GetFirstVariableIndexForType(return_type rtype);
-  size_t GetNumVariablesOfType(return_type rtype);
-  const Variable* GetNthVariableOfType(return_type rtype, size_t n);
-  bool   AreEquivalent(return_type rtype, var_type vtype);
-  bool   AreEquivalent(return_type rtype, bool isconst);
-  var_type GetTypeFor(std::string varname);
-  bool     IsConst(std::string varname);
+  size_t GetNumVariablesOfType(return_type rtype) const;
+  const Variable* GetNthVariableOfType(return_type rtype, size_t n) const;
+  bool   AreEquivalent(return_type rtype, var_type vtype) const;
+  bool   AreEquivalent(return_type rtype, bool isconst) const;
+  var_type GetTypeFor(std::string varname) const;
+  bool     IsConst(std::string varname) const;
+
+  void  LoadSBML(const Model* sbml);
+  Model GetSBMLModel();
+  void  CreateSBMLModel();
 };
 
 #endif //MODULE_H
