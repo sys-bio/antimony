@@ -50,6 +50,7 @@ void Registry::ClearModules()
 
 bool Registry::OpenFile(const string filename)
 {
+  
   m_files.push_back(filename);
   if (input != NULL) {
     m_oldinputs.push_back(input);

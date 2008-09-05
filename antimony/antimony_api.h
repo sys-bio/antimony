@@ -80,8 +80,8 @@ LIB_EXTERN size_t  getNumDNAStrands(const char* moduleName);
 LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbolName);
 
 //SBML code
-LIB_EXTERN long loadSBMLFile(const char* filename);
-LIB_EXTERN void writeSBMLFile(const char* filename, const char* moduleName);
+LIB_EXTERN long  loadSBMLFile(const char* filename);
+LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
 LIB_EXTERN char* getSBMLString(const char* moduleName);
 
 LIB_EXTERN void freeAll();

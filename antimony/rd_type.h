@@ -19,7 +19,7 @@ bool HasOrIsFormula(const var_type var);
 bool IsReaction(const std::string& name);
 bool IsSpecies(const std::string& name);
 
-enum return_type {allSymbols, allReactions, allInteractions, allUnknown, varSpecies, varProteins, varFormulas, varAnyDNA, varPromoters, varOperators, varGenes, constSpecies, constProteins, constFormulas, constAnyDNA, constPromoters, constOperators, constGenes, subModules};
+enum return_type {allSymbols, allSpecies, allFormulas, allReactions, allInteractions, allUnknown, varSpecies, varProteins, varFormulas, varAnyDNA, varPromoters, varOperators, varGenes, constSpecies, constProteins, constFormulas, constAnyDNA, constPromoters, constOperators, constGenes, subModules};
 std::string ReturnTypeToString(return_type rtype);
 
 

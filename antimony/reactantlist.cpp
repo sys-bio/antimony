@@ -159,3 +159,17 @@ double ReactantList::GetStoichiometryFor(const Variable* var) const
   }
   return stoich;
 }
+
+double ReactantList::GetStoichiometryFor(size_t n) const
+{
+  if (n>=m_components.size()) return NULL;
+  return m_components[n].first;
+}
+
+const Variable* ReactantList::GetNthReactant(size_t n) const
+{
+  if (n>=m_components.size()) return NULL;
+  Module* module = g_registry.GetModule(m_module);
+  assert(module != NULL);
+  return module->GetVariable(m_components[n].second);
+}

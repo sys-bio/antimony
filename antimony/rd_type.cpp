@@ -197,6 +197,10 @@ string ReturnTypeToString(return_type rtype)
   switch(rtype) {
   case allSymbols:
     return "all symbols";
+  case allSpecies:
+    return "all species (generic, boundary and not)";
+  case allFormulas:
+    return "all formulas (generic, constant or not)";
   case varSpecies:
     return "variable species (generic)";
   case varProteins:

@@ -3,6 +3,7 @@
 #include "formula.h"
 #include "module.h"
 #include "registry.h"
+#include "stringx.h"
 #include "variable.h"
 
 using namespace std;
@@ -78,6 +79,18 @@ bool Formula::IsSimpleVariable() const
   return false;
 }
 
+bool Formula::IsDouble() const
+{
+  if (m_components.size() == 1) {
+    if (m_components[0].second.size() == 0) {
+      if (IsReal(m_components[0].first)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool Formula::GetIsConst() const
 {
   for (size_t comp=0; comp<m_components.size(); comp++) {
@@ -137,6 +150,33 @@ bool Formula::ContainsVar(const Variable* outervar) const
     }
   }
   return false;
+}
+
+size_t Formula::GetNumVariables() const
+{
+  size_t retval = 0;
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() > 0) {
+      retval++;
+    }
+  }
+  return retval;
+}
+
+const Variable* Formula::GetNthVariable(size_t n) const
+{
+  size_t var = -1;
+  for (size_t comp = 0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() > 0) {
+      var++;
+    }
+    if (var == n) {
+      Module* module = g_registry.GetModule(m_components[var].first);
+      assert(module != NULL);
+      return module->GetVariable(m_components[var].second);
+    }
+  }
+  return NULL;
 }
 
 void Formula::Clear()

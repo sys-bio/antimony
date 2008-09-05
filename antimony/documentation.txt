@@ -4,12 +4,13 @@ function, which loads all models from the file in question into memory.
 Information from these models can be retrieved using the other functions in
 this file.
 
-Many of these functions return pointers--they are non-owning pointers, and
-while they are fairly stable, they will be rendered invalid after subsequent
-calls to 'loadModel'.  And, in fact, trying to call 'loadModel' twice in the
-same program has not yet been tested, though this should work in the future. 
-Your best bet in any case is to copy the data into your own allocated memory,
-so you don't have to worry about anything disappearing on you.
+All api functions that return pointers expect that the client (i.e. you) 
+will free the pointer after you're done with it.  If you really don't 
+want to keep track of them all, you may instead use the function 
+'freeAll()', which will free all pointers ever allocated for you.  Do 
+note that if you want to use 'freeAll', you must never free any pointer 
+yourself, as the api will not know you have done so, and will try to 
+free it itself.
 
 Some functions return pointers to arrays of pointers, and a few even return
 pointers to arrays of pointers to arrays of pointers.  Some frameworks don't
@@ -20,12 +21,12 @@ you, though, you shouldn't need the 'Nth' functions.
 
 Terminology:
 
-Antimony classifies every identifier in your model as either a 'variable' or a
-'module'.  (Modules that are sub-modules are associated with both the module
-name and a local variable name.  Only base modules have no variable associated
-with them.)  
+Antimony classifies every identifier in your model as a 'symbol' or a 
+'module'.  (Modules that are sub-modules are associated with both the 
+module name and a local symbol name.  Only base modules have no symbol 
+associated with them.)
 
-Variables come in four basic groups:  Formulas, Species, Reactions, and
+Symbols come in four basic groups:  Formulas, Species, Reactions, and
 Modules.  They can also be constant (if you set them once at the beginning of
 the simulation, they will never change) or variable (they can have a starting
 value, but will change over the course of the simulation).
@@ -70,10 +71,11 @@ than it's worth?]
 
 Reactions:
 
-Reactions are... well, what species participate in.  A reaction has a variable
-name, two lists of species and stoichiometries (one for the left hand side and
-one for the right), and a formula that defines the rate at which the species on
-the left hand side are converted to species on the right.
+Reactions are... well, what species participate in.  A reaction has a 
+symbol name, two lists of species and stoichiometries (one for the left 
+hand side and one for the right), and a formula that defines the rate at 
+which the species on the left hand side are converted to species on the 
+right.
 
 Genes are defined in Antimony as Reactions as well.  Typically they will have
 an empty list of reactants, and a single protein as a product, but this is not
@@ -101,6 +103,29 @@ but at least this way they're all the same).
 
 
 Given the above, hopefully this list of return types makes sense:
+
+allSymbols:		Everything.  Good for complete translations.
+allReactions:		All the reactions.
+allInteractions:	All the interactions.
+allUnknown:		Everything referred to but never defined.
+varSpecies:		All the species that vary during the course of 
+			  the simulation
+constSpecies:		All the 'boundary species'--those that show up 
+			  in reactions, but do not vary during the 
+			  course of the simulation.
+varProteins:		
+constProteins:
+varFormulas:
+constFormulas:
+varAnyDNA:
+constAnyDNA: 
+varPromoters:
+constPromoters: 
+varOperators:
+constOperators:
+varGenes:
+constGenes:
+subModules:
 
 varSpecies:  	All variable species, regardless of type.
 varProteins:  	Just those variable species declared as proteins.
