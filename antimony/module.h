@@ -46,7 +46,7 @@ public:
   std::vector<std::vector<std::string> > m_dna;
 
   Module(std::string name);
-  Module(const Module& src);
+  //Module(const Module& src); //accept default
   Module(const Module& src, std::string newtopname, std::string modulename);
   ~Module() {};
 

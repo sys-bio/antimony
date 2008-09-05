@@ -464,6 +464,7 @@ bool Registry::RevertToModuleSet(long n)
     g_registry.SetError(error);
     return true;
   }
+  m_modules.clear(); //LS NOTE:  needed because otherwise we leak models!  Yes, this is weird.
   m_modules = m_oldmodules[n-1];
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     m_modules[mod].CompileExportLists();

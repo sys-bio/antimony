@@ -46,24 +46,6 @@ Module::Module(const Module& src, string newtopname, string modulename)
   //CompileExportLists();
 }
 
-Module::Module(const Module& src)
-  : m_modulename(src.m_modulename),
-    m_variablename(src.m_variablename),
-    m_variables(src.m_variables),
-    m_exportlist(src.m_exportlist),
-    m_returnvalue(src.m_returnvalue),
-    m_currentexportvar(src.m_currentexportvar),
-    //    m_sbml(src.m_sbml),
-    m_uniquevars(),
-    m_rxnleftvarnames(),
-    m_rxnrightvarnames(),
-    m_rxnleftstoichiometries(),
-    m_rxnrightstoichiometries()
-{
-  //CompileExportLists();
-}
-
-
 Variable* Module::AddOrFindVariable(const string* name)
 {
   vector<string> fullname;
