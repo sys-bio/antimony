@@ -70,7 +70,7 @@ input:          /* empty */
         |       input error {YYABORT;} 
         ;
 
-include:        '#' INCLUDE FILENAME { if (g_registry.OpenFile(*($3))) YYABORT;}
+include:        '#' INCLUDE FILENAME { if (g_registry.OpenFile(*($3))==0) YYABORT;}
         ;
 
 module:         MODULE WORD {g_registry.NewCurrentModule($2);} '(' variableexportlist ')' modulebody END

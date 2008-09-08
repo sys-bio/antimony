@@ -6,6 +6,7 @@
 #include "reactantlist.h"
 #include "reaction.h"
 #include "registry.h"
+#include "sbmlx.h"
 #include "stringx.h"
 #include "variable.h"
 
@@ -48,8 +49,22 @@ void Registry::ClearModules()
   NewCurrentModule(&main);
 }
 
-bool Registry::OpenFile(const string filename)
+//Return values:  0: failure, 1: antimony, unread 2: SBML, read
+int Registry::OpenFile(const string filename)
 {
+  //Try opening as SBML:
+  SBMLDocument* document = readSBML(filename.c_str());
+  if (document->getNumErrors() == 0) {
+    //It's a valid SBML file.
+    const Model* sbml = document->getModel();
+    string sbmlname = getNameFromSBMLObject(sbml, "file");
+    NewCurrentModule(&sbmlname);
+    CurrentModule()->LoadSBML(sbml);
+    RevertToPreviousModule();
+    delete(document);
+    return 2;
+  }
+  delete(document);
   
   m_files.push_back(filename);
   if (input != NULL) {
@@ -67,7 +82,7 @@ bool Registry::OpenFile(const string filename)
       "	2) is read enabled, and\n"
       "	3) is not in use by another program.\n";
     SetError(error);	
-    return true;
+    return 0;
   }
 
   if (!input->good())
@@ -77,9 +92,9 @@ bool Registry::OpenFile(const string filename)
     error += filename;
     error += " is open, but not able to be read from.  This should not happen, and is probably a programming error on our part, but just in case, check the permissions on the file and try again.  If that still does not work, contact us letting us know how you got this error.";
     SetError(error);
-    return true;
+    return 0;
   }
-  return false;
+  return 1;
 }
 
 bool Registry::SwitchToPreviousFile()
