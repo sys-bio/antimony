@@ -1644,7 +1644,7 @@ yyreduce:
 
   case 7:
 #line 73 "antimony.ypp"
-    { if (g_registry.OpenFile(*((yyvsp[(3) - (3)].word)))) YYABORT;;}
+    { if (g_registry.OpenFile(*((yyvsp[(3) - (3)].word)))==0) YYABORT;;}
     break;
 
   case 8:

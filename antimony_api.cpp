@@ -134,11 +134,12 @@ void reportVariableTypeIndexProblem(size_t n, return_type rtype, size_t actualsi
 LIB_EXTERN long loadFile(const char* filename)
 {
   g_registry.ClearModules();
-  if (g_registry.OpenFile(filename)) return 3;
+  int ofreturn = g_registry.OpenFile(filename);
+  if (ofreturn==0) return -1;
+  if (ofreturn==2) return g_registry.SaveModules();
+  assert(ofreturn==1);
   int retval = yyparse();
-  //g_registry.input->close();
   g_registry.CompileAllExportLists();
-  //cout << "Return value: " << retval << endl;
   if (retval != 0) {
     if (g_registry.GetError().size() == 0) {
       assert(false); //Need to fill in the reason why we failed explicitly, if possible.
@@ -633,7 +634,7 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
     return -1;
   }
   const Model* sbml = document->getModel();
-  string sbmlname = getNameFromSBMLObject(sbml, "filename");
+  string sbmlname = getNameFromSBMLObject(sbml, "file");
   g_registry.NewCurrentModule(&sbmlname);
   g_registry.CurrentModule()->LoadSBML(sbml);
 

@@ -43,10 +43,10 @@ public:
 
   void ClearModules();
 
-  bool OpenFile(const std::string filename);
-  bool SwitchToPreviousFile();
+  int    OpenFile(const std::string filename);
+  bool   SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};
-  void SetupFunctions();
+  void   SetupFunctions();
 
   void NewCurrentModule(const std::string* name);
   Module* CurrentModule();
