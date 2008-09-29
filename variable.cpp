@@ -55,6 +55,12 @@ string Variable::GetFormulaStringDelimitedBy(char cc) const
   return GetFormula()->ToDelimitedStringWithUpvar(cc, upvar);
 }
 
+string Variable::GetFormulaStringWithEllipses(char cc) const
+{
+  if (GetFormula() == NULL) return "";
+  return GetFormula()->ToDelimitedStringWithEllipses(cc);
+}
+
 var_type Variable::GetType() const
 {
   //LS NOTE:  don't get the type of the equivalent variable--that can lead to infinite loops.
@@ -69,6 +75,7 @@ const Formula* Variable::GetFormula() const
     if (samevar != NULL) {
       return samevar->GetFormula();
     }
+    assert(false);
     return NULL;
   }
   else switch (m_type) {
@@ -102,10 +109,13 @@ const Formula* Variable::GetFormula() const
 Formula* Variable::GetFormula()
 {
   if (m_sameVariable.size() > 0) {
-    Variable* samevar = g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable);
+    Module* mod = g_registry.GetModule(m_namespace);
+    Variable* samevar = mod->GetVariable(m_sameVariable);
     if (samevar != NULL) {
       return samevar->GetFormula();
     }
+    samevar = mod->GetVariable(m_sameVariable);
+    assert(false);
     return NULL;
   }
   else switch (m_type) {
@@ -184,13 +194,31 @@ Variable* Variable::GetSubVariable(const std::string* name)
   return m_valModule[0].GetSubVariable(name);
 }
 
+Variable* Variable::GetSameVariable()
+{
+  Variable* var = this;
+  Variable* subvar = g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable);
+  if (subvar == NULL) return var;
+  while (var != subvar) {
+    var = subvar;
+    subvar = subvar->GetSameVariable();
+  }
+  return var;
+}
+
 Variable* Variable::GetUpstreamDNA() const
 {
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->GetUpstreamDNA();
+  }
   return g_registry.GetModule(m_namespace)->GetVariable(m_upstream);
 }
 
 Variable* Variable::GetDownstreamDNA() const
 {
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->GetDownstreamDNA();
+  }
   return g_registry.GetModule(m_namespace)->GetVariable(m_downstream);
 }
 
@@ -200,10 +228,7 @@ Variable* Variable::GetDownstreamDNA() const
 bool Variable::GetIsConst() const
 {
   if (m_sameVariable.size() > 0) {
-    const Variable* samevar = g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable);
-    if ((samevar != NULL) && (samevar != this)) {
-      return samevar->GetIsConst();
-    }
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->GetIsConst();
   }
   switch(m_type) {
   case varFormulaUndef:
@@ -250,8 +275,32 @@ bool Variable::GetIsEquivalentTo(const Variable* var) const
   return false;
 }
 
+bool Variable::IsSameVarInNewModule(const Variable* origvar) const
+{
+  if (origvar==NULL) {
+    return false;
+  }
+  vector<string> origname = origvar->GetName();
+  vector<string> myname = m_name;
+  if (origname.size() > myname.size()) {
+    return false;
+  }
+  while (myname.size() > origname.size()) {
+    myname.erase(myname.begin());
+  }
+  for (size_t nn=0; nn < myname.size(); nn++) {
+    if (myname[nn] != origname[nn]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 bool Variable::IsDNAStart() const
 {
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->IsDNAStart();
+  }
   if (!IsDNA(m_type)) {
     return false;
   }
@@ -264,8 +313,27 @@ bool Variable::IsDNAStart() const
   return false;
 }
 
+bool Variable::IsDNAStartForModule() const
+{
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->IsDNAStartForModule();
+  }
+  if (IsDNAStart()) return true;
+  if (m_upstream.size()==0) return false;
+  size_t modlevel = m_name.size();
+  if (m_printedname.size() > 0) {
+    modlevel = m_printedname.size();
+  }
+  size_t uplevel = g_registry.GetModule(m_namespace)->GetVariable(m_upstream)->GetPrintedName().size();
+  if (uplevel <= modlevel) return false;
+  return true;
+}
+
 bool Variable::IsUnlinked(bool up) const
 {
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->IsUnlinked(up);
+  }
   if (up) {
     if (m_upstream.size()==0 ||
         (m_upstream.size()==1 && m_upstream[0] == "[open]")) {
@@ -284,6 +352,9 @@ bool Variable::IsUnlinked(bool up) const
 
 bool Variable::DoesNotLinkTo(Variable* var) const
 {
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->DoesNotLinkTo(var);
+  }
   if (GetUpstreamDNA() != NULL) {
     return GetUpstreamDNA()->DoesNotLinkTo(var);
   }
@@ -305,16 +376,25 @@ bool Variable::DoesNotLinkTo(Variable* var) const
 
 bool Variable::HasOpenUpstream() const
 {
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->HasOpenUpstream();
+  }
   return (m_upstream.size()==1 && m_upstream[0]=="[open]");
 }
 
 bool Variable::HasOpenDownstream() const
 {
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->HasOpenDownstream();
+  }
   return (m_downstream.size()==1 && m_downstream[0]=="[open]");
 }
 
 vector<string> Variable::GetDNAStringDelimitedBy(char cc) const
 {
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->GetDNAStringDelimitedBy(cc);
+  }
   vector<string> dna;
   if (m_upstream.size() == 1 && m_upstream[0] == "[open]") {
     dna.push_back("--");
@@ -332,6 +412,39 @@ vector<string> Variable::GetDNAStringDelimitedBy(char cc) const
   dna.insert(dna.end(), moredna.begin(), moredna.end());
   return dna;
 }  
+
+string Variable::GetDNAStringForThisNamespace() const
+{
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->GetDNAStringForThisNamespace();
+  }
+  string dna = "";
+  if (IsDNAStart() == false && IsDNAStartForModule() == true) {
+    //upstream is in another module
+    dna = g_registry.GetModule(m_namespace)->GetVariable(m_upstream)->GetNameDelimitedBy('.');
+    dna += "--";
+  }
+  else if (IsDNAStart() && IsDNAStartForModule() ) {
+    if (m_upstream.size() == 1 && m_upstream[0] == "[open]") {
+      dna = "--";
+    }
+  }
+  dna += GetNameDelimitedBy('.');
+  if (m_downstream.size() == 0) {
+    return dna;
+  }
+  dna += "--";
+  if (m_downstream.size() == 1 && m_downstream[0] == "[open]") {
+    return dna;
+  }
+  if (m_downstream.size() > 1) {
+    dna += g_registry.GetModule(m_namespace)->GetVariable(m_downstream)->GetNameDelimitedBy('.');
+    return dna;
+  }
+  dna += g_registry.GetModule(m_namespace)->GetVariable(m_downstream)->GetDNAStringForThisNamespace();
+  return dna;
+}
+
 
 bool Variable::SetType(var_type newtype)
 {
@@ -571,6 +684,9 @@ bool Variable::SetFormula(Formula* formula)
 
 AntimonyReaction* Variable::SetReaction(AntimonyReaction* rxn)
 {
+  if (m_sameVariable.size() > 0) {
+    g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetReaction(rxn);
+  }
   assert(m_type==varUndefined || m_type==varDNA || m_type==varFormulaUndef || IsReaction(m_type));
   m_valReaction = *rxn;
   if (m_type==varUndefined) {
@@ -630,6 +746,9 @@ void Variable::SetPrintedName(std::vector<std::string> printedname)
 
 bool Variable::SetIsConst(bool constant)
 {
+  if (m_sameVariable.size() > 0) {
+    g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetIsConst(constant);
+  }
   string error = "Cannot set '" + GetNameDelimitedBy('.') + "' to be constant";
   switch(m_type) {
   case varFormulaUndef:
@@ -665,6 +784,9 @@ bool Variable::SetIsConst(bool constant)
 
 void Variable::SetOpenUpstream()
 {
+  if (m_sameVariable.size() > 0) {
+    g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetOpenUpstream();
+  }
   if (m_upstream.size()>0) {
     Variable* upvar=g_registry.GetModule(m_namespace)->GetVariable(m_upstream);
     if (upvar != NULL) {
@@ -681,6 +803,9 @@ void Variable::SetOpenUpstream()
 
 void Variable::SetOpenDownstream()
 {
+  if (m_sameVariable.size() > 0) {
+    g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetOpenDownstream();
+  }
   if (m_downstream.size()>0) {
     Variable* downvar=g_registry.GetModule(m_namespace)->GetVariable(m_downstream);
     if (downvar != NULL) {
@@ -694,8 +819,12 @@ void Variable::SetOpenDownstream()
 
 void Variable::SetUpstream(Variable* var)
 {
+  if (m_sameVariable.size() > 0) {
+    return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetUpstream(var);
+  }
   Variable* upvar = g_registry.GetModule(m_namespace)->GetVariable(m_upstream);
   if (upvar == NULL) {
+    var = var->GetSameVariable();
     m_upstream = var->GetName();
   }
   else {
@@ -708,11 +837,16 @@ void Variable::SetUpstream(Variable* var)
   }
 }
 
-void Variable::SetDownstream(Variable* var) {
+void Variable::SetDownstream(Variable* var)
+{
+  if (m_sameVariable.size() > 0) {
+    g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetDownstream(var);
+  }
   Variable* downvar = g_registry.GetModule(m_namespace)->GetVariable(m_downstream);
   if (downvar == NULL) {
     assert(m_downstream.size() == 1);
     assert(m_downstream[0] == "[open]");
+    var = var->GetSameVariable();
     m_downstream = var->GetName();
   }
   else {
@@ -724,6 +858,12 @@ void Variable::SetDownstream(Variable* var) {
 
 bool Variable::Synchronize(Variable* clone)
 {
+  //Check for error conditions
+  assert(m_namespace == clone->GetNamespace());
+  if (clone == NULL) {
+    g_registry.SetError("No such variable in this module.");
+    return true;
+  }
   if (GetIsEquivalentTo(clone)) {
     //already equivalent--don't do anything
     // (Shouldn't be necessary from Variable:: calls, but this also gets called from the
@@ -748,13 +888,16 @@ bool Variable::Synchronize(Variable* clone)
     }
   }
 
+  //If we already point to someone, let them point to the new thing instead.
   if (m_sameVariable.size() != 0) {
     Variable* samevar = g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable);
     if (samevar->Synchronize(clone)) return true;
   }
+  else {
+    m_sameVariable = clone->GetName();
+  }
 
-  assert(m_namespace == clone->GetNamespace());
-
+  //Now, actually synchronize the data.
   if (m_printedname.size() > 0) {
     clone->SetPrintedName(m_printedname);
   }
@@ -786,12 +929,61 @@ bool Variable::Synchronize(Variable* clone)
     m_valModule.clear();
   }
 
+  //DNA strands information.
+  if (m_upstream.size() > 0) {
+    Variable* upvar = GetUpstreamDNA();
+    Variable* cloneupvar = clone->GetUpstreamDNA();
+    if (upvar == NULL) {
+      if (cloneupvar == NULL) {
+        cloneupvar->SetOpenUpstream();
+      }
+      //else do nothing;
+    }
+    else {
+      if (cloneupvar == NULL) {
+        cloneupvar->SetUpstream(upvar);
+      }
+      else {
+        upvar = upvar->GetSameVariable();
+        cloneupvar = cloneupvar->GetSameVariable();
+        if (upvar != cloneupvar) {
+          g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' and '" + clone->GetNameDelimitedBy('.') + "' to be the same, since they seem to be already assigned to different DNA strands.");
+          return true;
+        }
+      }
+    }
+  }
+  m_upstream.clear();
+
+  if (m_downstream.size() > 0) {
+    Variable* downvar = GetDownstreamDNA();
+    Variable* clonedownvar = clone->GetDownstreamDNA();
+    if (downvar == NULL) {
+      if (clonedownvar == NULL) {
+        clonedownvar->SetOpenDownstream();
+      }
+      //else do nothing;
+    }
+    else {
+      if (clonedownvar == NULL) {
+        clonedownvar->SetDownstream(downvar);
+      }
+      else {
+        downvar = downvar->GetSameVariable();
+        clonedownvar = clonedownvar->GetSameVariable();
+        if (downvar != clonedownvar) {
+          g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' and '" + clone->GetNameDelimitedBy('.') + "' to be the same, since they seem to be already assigned to different DNA strands.");
+          return true;
+        }
+      }
+    }
+  }
+  m_downstream.clear();
+  
+    
+
   if (clone->SetIsConst(GetIsConst())) {
     return true; //(error condition)
-  }
-  if (m_sameVariable.size() == 0) {
-    //If we already point to someone, let them point to the new thing instead.
-    m_sameVariable = clone->GetName();
   }
   return false;
 }

@@ -11,6 +11,18 @@ string ToString(size_t number)
   return s;
 }
 
+string ToStringDelimitedBy(vector<string> name, char cc)
+{
+  string retval = "";
+  for (size_t nn=0; nn<name.size(); nn++) {
+    if (nn>0) {
+      retval += cc;
+    }
+    retval += name[nn];
+  }
+  return retval;
+}
+
 bool IsReal(const string& src)
 {
   if (src.empty()) return false;

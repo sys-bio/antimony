@@ -20,8 +20,6 @@ string VarTypeToString(const var_type vtype)
   switch(vtype) {
   case varSpeciesUndef:
     return "Species";
-  case varSpeciesProtein:
-    return "Protein";
   case varFormulaUndef:
     return "Formula";
   case varReactionUndef:
@@ -49,9 +47,6 @@ var_type StringToVarType(const string& name)
 {
   if (CaselessStrCmp(name,"Species")) {
     return varSpeciesUndef;
-  }
-  if (CaselessStrCmp(name,"Protein")) {
-    return varSpeciesProtein;
   }
   if (CaselessStrCmp(name,"Formula")) {
     return varFormulaUndef;
@@ -92,7 +87,6 @@ bool IsReaction(const var_type vtype)
     return true;
   case varInteraction:
   case varSpeciesUndef:
-  case varSpeciesProtein:
   case varFormulaUndef:
   case varFormulaPromoter:
   case varFormulaOperator:
@@ -123,7 +117,6 @@ bool IsSpecies(const var_type vtype)
 {
   switch(vtype) {
   case varSpeciesUndef:
-  case varSpeciesProtein:
     return true;
   case varReactionUndef:
   case varReactionGene:
@@ -149,7 +142,6 @@ bool IsDNA(const var_type vtype)
   case varDNA:
     return true;
   case varSpeciesUndef:
-  case varSpeciesProtein:
   case varReactionUndef:
   case varInteraction:
   case varFormulaUndef:
@@ -165,7 +157,6 @@ bool HasOrIsFormula(const var_type vtype)
 {
   switch(vtype) {
   case varSpeciesUndef:
-  case varSpeciesProtein:
   case varFormulaPromoter:
   case varFormulaOperator:
   case varFormulaUndef:
@@ -198,13 +189,11 @@ string ReturnTypeToString(return_type rtype)
   case allSymbols:
     return "all symbols";
   case allSpecies:
-    return "all species (generic, boundary and not)";
+    return "all species (boundary and not)";
   case allFormulas:
     return "all formulas (generic, constant or not)";
   case varSpecies:
     return "variable species (generic)";
-  case varProteins:
-    return "variable species (protein)";
   case varFormulas:
     return "variable formula or equation";
   case varAnyDNA:
@@ -223,8 +212,6 @@ string ReturnTypeToString(return_type rtype)
     return "Unknown type";
   case constSpecies:
     return "constant/boundary species (generic)";
-  case constProteins:
-    return "constant/boundary species (protein)";
   case constFormulas:
     return "constant formula or equation";
   case constAnyDNA:
@@ -241,4 +228,3 @@ string ReturnTypeToString(return_type rtype)
   assert(false); //uncaught type
   return "Uncaught type";
 }
-

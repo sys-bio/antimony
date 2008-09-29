@@ -66,7 +66,9 @@ public:
   Variable* GetNextExportVariable();
   size_t GetNumExportVariables() const {return m_exportlist.size();};
   Variable* GetUpstreamDNA();
+  const Variable* GetUpstreamDNA() const;
   Variable* GetDownstreamDNA();
+  std::vector<std::string> GetNewCrossModuleDNALinks() const;
 
   const std::string& GetModuleName() const;
   std::vector<std::string> GetVariableName() const;
@@ -77,9 +79,10 @@ public:
   bool ImportModule(const std::string* modname);
   
   std::string ToString() const;
+  std::string GetAntimony(set<const Module*> usedmods) const;
   std::string GetJarnacReactions() const;
-  std::string GetJarnacVarFormulas();
-  std::string GetJarnacConstFormulas(std::string modulename);
+  std::string GetJarnacVarFormulas() const;
+  std::string GetJarnacConstFormulas(std::string modulename) const;
 
 
   //Output for the API
@@ -91,6 +94,8 @@ public:
   var_type GetTypeFor(std::string varname) const;
   bool     IsConst(std::string varname) const;
 
+  std::string ListIdentityDifferencesFrom(const Module* origmod, std::string mname) const;
+  std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
   void  LoadSBML(const Model* sbml);
   Model GetSBMLModel();
   void  CreateSBMLModel();

@@ -71,7 +71,7 @@ public:
 
   std::string GetLastFile();
   Module* GetModule(std::string modulename);
-  //const Module* GetModule(std::string modulename) const;
+  const Module* GetModule(std::string modulename) const;
   bool IsModuleName(std::string word);
   Variable* GetImportedModuleSubVariable(const std::string* name);
   Variable* GetWorkingStrand();
@@ -80,7 +80,8 @@ public:
   const std::string* AddWord(std::string word);
   const std::string* IsFunction(std::string word);
 
-  std::string GetJarnac(std::string modulename);
+  std::string GetAntimony(std::string modulename) const;
+  std::string GetJarnac(std::string modulename) const;
 
   void CompileAllExportLists();
 

@@ -220,3 +220,24 @@ string Formula::ToDelimitedStringWithUpvar(char cc, Variable* upvar) const
   }
   return retval;
 }
+
+string Formula::ToDelimitedStringWithEllipses(char cc) const
+{
+  string retval;
+  for (size_t comp=0; comp < m_components.size(); comp++) {
+    vector<string> varname = m_components[comp].second;
+    Module* module = g_registry.GetModule(m_components[comp].first);
+    Variable* actualvar = NULL;
+    if (module != NULL) {
+      actualvar = module->GetVariable(varname);
+    }
+    if (actualvar != NULL) {
+      retval += actualvar->GetNameDelimitedBy(cc);
+    }
+    else {
+      assert(varname.size() == 0);
+      retval += m_components[comp].first;
+    }
+  }
+  return retval;
+}

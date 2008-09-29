@@ -6,6 +6,7 @@
 #include "module.h"
 #include "variable.h"
 #include "registry.h"
+#include "stringx.h"
 #include "sbmlx.h"
 
 extern Registry g_registry;
@@ -241,6 +242,25 @@ Variable* Module::GetUpstreamDNA()
   return retvar;
 }
 
+const Variable* Module::GetUpstreamDNA() const
+{
+  const Variable* retvar = NULL;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var].HasOpenUpstream()) {
+      if (retvar != NULL) {
+        g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has multiple sites at which to attach upstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in 'NEWDNA--" + m_variables[var].GetNameDelimitedBy('.') + "'.");
+        return NULL;
+      }
+      retvar = &(m_variables[var]);
+    }
+  }
+  if (retvar==NULL) {
+    g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has no 'open ends' at which to attach DNA.");
+    return NULL;
+  }
+  return retvar;
+}
+
 Variable* Module::GetDownstreamDNA()
 {
   Variable* retvar = NULL;
@@ -260,6 +280,33 @@ Variable* Module::GetDownstreamDNA()
   return retvar;
 }
 
+vector<string> Module::GetNewCrossModuleDNALinks() const
+{
+  vector<string> newlinks;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    const Variable* downvar = m_variables[var].GetDownstreamDNA();
+    if (downvar != NULL && downvar->GetName().size() > 1) {
+      vector<string> origname = m_variables[var].GetName();
+      origname.erase(origname.begin());
+      const Variable* origvar = g_registry.GetModule(m_modulename)->GetVariable(origname);
+      const Variable* origdown = origvar->GetDownstreamDNA();
+      if (!(downvar->IsSameVarInNewModule(origdown))) {
+        string upname = m_variables[var].GetNameDelimitedBy('.');
+        string downname = downvar->GetNameDelimitedBy('.');
+        if (&m_variables[var] == g_registry.GetModule(m_variables[var].GetNamespace())->GetDownstreamDNA()) {
+          upname = ToStringDelimitedBy(m_variablename, '.');
+        }
+        const Module* downmod = g_registry.GetModule(downvar->GetNamespace());
+        if (downvar == downmod->GetUpstreamDNA()) {
+          downname = downmod->GetVariableNameDelimitedBy('.');
+        }
+        newlinks.push_back(m_variables[var].GetNameDelimitedBy('.') + "--" + downvar->GetNameDelimitedBy('.'));
+      }
+    }
+  }
+  return newlinks;
+}
+
 const string& Module::GetModuleName() const
 {
   return m_modulename;
@@ -272,7 +319,7 @@ vector<string> Module::GetVariableName() const
 
 string Module::GetVariableNameDelimitedBy(char cc) const
 {
-  assert(m_variablename.size() > 0);
+  if (m_variablename.size() == 0) return "";
   string retval = m_variablename[0];
   for (size_t v=1; v<m_variablename.size(); v++) {
     retval += cc + m_variablename[v];
@@ -341,6 +388,136 @@ string Module::ToString() const
   return retval;
 }
 
+string Module::GetAntimony(set<const Module*> usedmods) const
+{
+  string retval;
+  //First, we need any submodules
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var].GetType() == varModule) {
+      const Module* mod = g_registry.GetModule(m_variables[var].GetModule()->GetModuleName());
+      if (mod==NULL) {
+        g_registry.SetError("Unable to find base module " + m_variables[var].GetModule()->GetModuleName() + ".");
+        return NULL;
+      }
+      if ((usedmods.insert(mod)).second) {
+        //New module; add it.
+        retval += mod->GetAntimony(usedmods) + "\n";
+      }
+    }
+  }
+  string indent = "";
+  //Module definition
+  if (m_modulename != "[main]") {
+    retval += "model " + m_modulename + "(";
+    for (size_t exp=0; exp<m_exportlist.size(); exp++) {
+      if (exp > 0) {
+        retval += ", ";
+      }
+      for (size_t nbit=0; nbit<m_exportlist[exp].size(); nbit++) {
+        if (nbit > 0) retval += ".";
+        retval += m_exportlist[exp][nbit];
+      }
+    }
+    retval += ")\n";
+    indent = "  ";
+  }
+
+  //Variables
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if ((m_variables[var].GetType() == varModule) ||
+        (m_variables[var].GetType() == varUndefined)) break;
+    retval += indent;
+    if (m_variables[var].GetIsConst()) {
+      retval += "const ";
+    }
+    switch(m_variables[var].GetType()) {
+    case varSpeciesUndef:
+      retval += "species ";
+      break;
+    case varFormulaUndef:
+      retval += "formula ";
+      break;
+    case varReactionUndef:
+      retval += "reaction ";
+      break;
+    case varReactionGene:
+      retval += "gene ";
+      break;
+    case varInteraction:
+      retval += "reaction ";
+      break;
+    case varFormulaPromoter:
+      retval += "promoter ";
+      break;
+    case varFormulaOperator:
+      retval += "operator ";
+      break;
+    case varDNA:
+      retval += "DNA ";
+      break;
+    case varModule:
+    case varUndefined:
+      //handled earlier
+      break;
+    }
+    vector<string> vname = m_variables[var].GetName();
+    assert(vname.size()==1);
+    retval += vname[0] + ";\n";
+  }
+
+  //Modules next:
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var].GetType() == varModule) {
+      vector<string> mname = m_variables[var].GetName();
+      assert(mname.size() == 1);
+      const Module* submod = m_variables[var].GetModule();
+      const Module* origmod = g_registry.GetModule(submod->GetModuleName());
+      retval += indent + mname[0] + ": " + submod->GetModuleName() + "(";
+      retval += submod->ListIdentityDifferencesFrom(origmod, mname[0]);
+      retval += ")\n";
+      retval += submod->ListAssignmentDifferencesFrom(origmod, mname[0], indent);
+    }
+  }
+
+  //Any linked DNA:
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var].IsDNAStartForModule()) {
+      retval += indent + m_variables[var].GetDNAStringForThisNamespace() + "\n";
+    }
+  }
+
+  //Any linked DNA cross-module!  Yarr.
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var].GetType() == varModule) {
+      vector<string> links = m_variables[var].GetModule()->GetNewCrossModuleDNALinks();
+      for (size_t link = 0; link<links.size(); link++) {
+        retval += indent + links[link] + "\n";
+      }
+    }
+  }
+
+  //And now the definitions of all local variables:
+  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
+    const Variable* var = &m_variables[vnum];
+    var_type type = var->GetType();
+    if (type == varModule) {
+      break;
+    }
+    if (IsReaction(type)) {
+      retval += indent + var->GetReaction()->ToStringDelimitedBy('.') + "\n";
+    }
+    //else 
+  }
+      
+
+  
+  //end model definition
+  if (m_modulename != "[main]") {
+    retval += "end\n";
+  }
+  return retval;
+}
+
 string Module::GetJarnacReactions() const
 {
   string retval;
@@ -356,7 +533,7 @@ string Module::GetJarnacReactions() const
   return retval;
 }
 
-string Module::GetJarnacVarFormulas()
+string Module::GetJarnacVarFormulas() const
 {
   string retval;
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -374,7 +551,7 @@ string Module::GetJarnacVarFormulas()
   return retval;
 }
 
-string Module::GetJarnacConstFormulas(string modulename)
+string Module::GetJarnacConstFormulas(string modulename) const
 {
   string retval;
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -440,6 +617,12 @@ void Module::CompileExportLists()
         }
       }
       if (m_variables[var].IsDNAStart()) {
+        //LS DEBUG printing
+        vector<string> newdna = m_variables[var].GetDNAStringDelimitedBy(cc);
+        for (size_t i=0; i<newdna.size(); i++) {
+          cout << newdna[i];
+        }
+        cout << endl;
         m_dna.push_back(m_variables[var].GetDNAStringDelimitedBy(cc));
       }
       if (m_variables[var].GetType() == varModule) {
@@ -508,14 +691,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case allSpecies:
   case varSpecies:
   case constSpecies:
-    if (vtype == varSpeciesUndef ||
-        vtype == varSpeciesProtein) {
-      return true;
-    }
-    return false;
-  case varProteins:
-  case constProteins:
-    if (vtype == varSpeciesProtein) {
+    if (vtype == varSpeciesUndef) {
       return true;
     }
     return false;
@@ -584,7 +760,6 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   // we remember to change the rest of this function:
   switch(vtype) {
   case varSpeciesUndef:
-  case varSpeciesProtein:
   case varFormulaUndef:
   case varDNA:
   case varFormulaPromoter:
@@ -604,7 +779,6 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
 {
   switch (rtype) {
   case varSpecies:
-  case varProteins:
   case varFormulas:
   case varAnyDNA:
   case varPromoters:
@@ -612,7 +786,6 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case varGenes:
     return (!isconst);
   case constSpecies:
-  case constProteins:
   case constFormulas:
   case constAnyDNA:
   case constPromoters:
@@ -654,6 +827,66 @@ bool Module::IsConst(std::string varname) const
   }
   g_registry.SetError("Unknown variable " + varname + " in module " + m_modulename + ".");
   return false;
+}
+
+string Module::ListIdentityDifferencesFrom(const Module* origmod, string mname) const
+{
+  string list = "";
+  assert(GetNumVariablesOfType(allSymbols) == origmod->GetNumVariablesOfType(allSymbols));
+  set<const Variable*> renamed;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    const Variable* origvar = origmod->GetNthVariableOfType(allSymbols, var);
+    const Variable* thisvar = GetNthVariableOfType(allSymbols, var);
+    vector<string> thispoint = thisvar->GetPrintedName();
+    if (thispoint.size() > 1 && thispoint[0] == mname) {
+      thispoint.erase(thispoint.begin());
+    }
+    vector<string> origpoint = origvar->GetPrintedName();
+    if (origpoint != thispoint) {
+      renamed.insert(thisvar);
+    }
+  }
+  for (size_t exportv=0; exportv<m_exportlist.size(); exportv++) {
+    const Variable* expvar = GetVariable(m_exportlist[exportv]);
+    if (exportv > 0) {
+      list += ", ";
+    }
+    if (renamed.find(expvar) != renamed.end()) {
+      list += ToStringDelimitedBy(expvar->GetPrintedName(), '.');
+      renamed.erase(expvar);
+    }
+  }
+
+  for (set<const Variable*>::iterator newname= renamed.begin(); newname != renamed.end(); newname++) {
+    if (newname != renamed.begin() || m_exportlist.size() > 0) {
+      list += ", ";
+    }
+    vector<string> subname = (*newname)->GetName();
+    subname.erase(subname.begin());
+    list += ToStringDelimitedBy((*newname)->GetPrintedName(), '.') + "=" + ToStringDelimitedBy(subname, '.');
+  }    
+
+  return list;
+}
+
+string Module::ListAssignmentDifferencesFrom(const Module* origmod, string mname, string indent) const
+{
+  string list = "";
+  assert(GetNumVariablesOfType(allSymbols) == origmod->GetNumVariablesOfType(allSymbols));
+  set<const Variable*> renamed;
+  for (size_t var=0; var<GetNumVariablesOfType(allSymbols); var++) {
+    const Variable* thisvar = GetNthVariableOfType(allSymbols, var);
+    const Variable* origvar = origmod->GetNthVariableOfType(allSymbols, var);
+    string thisform = thisvar->GetFormulaStringWithEllipses('.');
+    string origform = origvar->GetFormulaStringWithEllipses('.');
+    while (thisform.find(mname + ".") != string::npos) {
+      thisform.erase(thisform.find(mname + "."), mname.size()+1);
+    }
+    if (thisform != origform) {
+      list += indent + thisvar->GetNameDelimitedBy('.') + " = " + thisvar->GetFormulaStringWithEllipses('.') + ";\n";
+    }
+  }
+  return list;
 }
 
 void Module::LoadSBML(const Model* sbml)

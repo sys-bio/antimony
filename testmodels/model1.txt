@@ -1,8 +1,11 @@
-model foo()
-  a + b -> c; 24;
+model foo(p1, p2)
+  --p1--p2--
 end
 
-#include "SBMLModels/oscli.xml"
-#include "model0.txt"
-
-CROSS: oscli();
+model bar()
+  sub1: foo(x, y);
+  sub2: foo(z, q);
+  sub1--sub2
+  //p1--sub--stop2
+  //sub.J0 = 13;
+end
