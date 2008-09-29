@@ -7,6 +7,7 @@
 #include "reaction.h"
 #include "registry.h"
 #include "sbmlx.h"
+
 #include "stringx.h"
 #include "variable.h"
 
@@ -373,6 +374,16 @@ Module* Registry::GetModule(string modulename)
   return NULL;
 }
 
+const Module* Registry::GetModule(string modulename) const
+{
+  for (size_t mod=0; mod<m_modules.size(); mod++) {
+    if (modulename == m_modules[mod].GetModuleName()) {
+      return &(m_modules[mod]);
+    }
+  }
+  return NULL;
+}
+
 bool Registry::IsModuleName(string word)
 {
   for (size_t mod=0; mod<m_modules.size(); mod++) {
@@ -419,14 +430,24 @@ const string* Registry::IsFunction(string word)
   return NULL;
 }
 
-string Registry::GetJarnac(string modulename)
+string Registry::GetAntimony(string modulename) const
 {
+  const Module* amod = GetModule(modulename);
+  if (amod == NULL) return NULL;
+  set<const Module*> nomods;
+  return amod->GetAntimony(nomods);
+}
+
+string Registry::GetJarnac(string modulename) const
+{
+  const Module* jmod = GetModule(modulename);
+  if (jmod == NULL) return NULL;
   string jarnac = modulename + " = define model\n";
-  jarnac += GetModule(modulename)->GetJarnacReactions();
+  jarnac += jmod->GetJarnacReactions();
   jarnac += "\n";
-  jarnac += GetModule(modulename)->GetJarnacVarFormulas();
+  jarnac += jmod->GetJarnacVarFormulas();
   jarnac += "\nend\n\n";
-  jarnac += GetModule(modulename)->GetJarnacConstFormulas(modulename);
+  jarnac += jmod->GetJarnacConstFormulas(modulename);
   return jarnac;
 }
 

@@ -45,6 +45,7 @@ public:
 
   std::string ToStringDelimitedBy(char cc) const { return ToDelimitedStringWithUpvar(cc, NULL);} ;
   std::string ToDelimitedStringWithUpvar(char cc, Variable* var) const;
+  std::string ToDelimitedStringWithEllipses(char cc) const;
 };
 
 

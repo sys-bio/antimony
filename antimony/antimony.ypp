@@ -56,7 +56,7 @@
 
 %token <num> NUM
 %token <word> WORD MODNAME FILENAME
-%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES PROTEIN DNA GENE PROMOTER OPERATOR VAR CONST DASHES ELLIPSES FUNCTION INCLUDE
+%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES REACTION DNA GENE PROMOTER OPERATOR VAR CONST DASHES ELLIPSES FUNCTION INCLUDE
 
 %debug
 %error-verbose
@@ -183,18 +183,17 @@ variableimportlist:
         |       variableimportlist ',' variable '=' localvariable {if ($3->Synchronize($5)) YYABORT; }
         ;
 
-localvariable:  WORD {$$ = g_registry.GetImportedModuleSubVariable($1); }
-        |       localvariable '.' WORD {$$ = $1->GetSubVariable($3); }
+localvariable:  WORD {$$ = g_registry.GetImportedModuleSubVariable($1); if ($$==NULL) {g_registry.SetError("No such variable '" + *$1 + "' in this module."); YYABORT;} }
+|       localvariable '.' WORD {$$ = $1->GetSubVariable($3); if ($$==NULL) {g_registry.SetError("No such variable '" + $1->GetNameDelimitedBy('.') + "." + *$3 + "' in this module."); YYABORT;} }
         ;
 
 varinitialize:  specinit { }
-        |       protinit { }
+        |       reactioninit { }
         |       dnainit { }
         |       geneinit { }
         |       promoterinit { }
         |       operatorinit { }
-        |       constprotinit { }
-        |       constgeneinit { }
+        |       constdnainit { }
         |       constpromoterinit { }
         |       constoperatorinit { }
         |       constinit { }
@@ -205,9 +204,9 @@ specinit:       SPECIES variable {if ($2->SetType(varSpeciesUndef)) YYABORT; }
         |       specinit ',' variable {if ($3->SetType(varSpeciesUndef)) YYABORT; }
         ;
 
-protinit:       PROTEIN variable {if ($2->SetType(varSpeciesProtein)) YYABORT; }
-        |       VAR PROTEIN variable {if ($3->SetType(varSpeciesProtein)) YYABORT; }
-        |       protinit ',' variable {if ($3->SetType(varSpeciesProtein)) YYABORT; }
+reactioninit:   REACTION variable {if ($2->SetType(varReactionUndef)) YYABORT; }
+        |       VAR REACTION variable {if ($3->SetType(varReactionUndef)) YYABORT; }
+        |       reactioninit ',' variable {if ($3->SetType(varReactionUndef)) YYABORT; }
         ;
 
 dnainit:        DNA variable {if ($2->SetType(varDNA)) YYABORT; }
@@ -230,16 +229,11 @@ operatorinit:   OPERATOR variable {if ($2->SetType(varFormulaOperator)) YYABORT;
         |       operatorinit ',' variable {if ($3->SetType(varFormulaOperator)) YYABORT; }
         ;
 
-constprotinit:  CONST PROTEIN variable {if ($3->SetType(varSpeciesProtein)) YYABORT;
-                                        if ($3->SetIsConst(true)) YYABORT;}
-        |       constprotinit ',' variable {if ($3->SetType(varSpeciesProtein)) YYABORT; 
-                                            if ($3->SetIsConst(true)) YYABORT;}
-        ;
-
-constgeneinit:  CONST GENE variable {if ($3->SetType(varReactionGene)) YYABORT; 
-                                     if ($3->SetIsConst(true)) YYABORT;}
-        |       constgeneinit ',' variable {if ($3->SetType(varReactionGene)) YYABORT; 
-                                            if ($3->SetIsConst(true)) YYABORT;}
+constdnainit:
+                CONST DNA variable {if ($3->SetType(varDNA)) YYABORT; 
+                                    if ($3->SetIsConst(true)) YYABORT;}
+        |       constdnainit ',' variable {if ($3->SetType(varDNA)) YYABORT; 
+                                           if ($3->SetIsConst(true)) YYABORT;}
         ;
 
 constpromoterinit:
@@ -331,8 +325,8 @@ int yylex(void)
     if (CaselessStrCmp(word, "species")) {
       return SPECIES;
     }
-    if (CaselessStrCmp(word, "protein")) {
-      return PROTEIN;
+    if (CaselessStrCmp(word, "reaction")) {
+      return REACTION;
     }
     if (CaselessStrCmp(word, "DNA")) {
       return DNA;
@@ -515,9 +509,11 @@ int main(long argc, char** argv)
       cout << "***ToString (" << modnames[mod] << ") ***" << endl;
       cout << g_registry.GetModule(modnames[mod])->ToString().c_str() << endl << endl;
       cout << "***Jarnac (" << modnames[mod] << ") ***" << endl;
-      cout << getJarnac(modnames[mod]) << endl;
+      cout << getJarnacString(modnames[mod]) << endl;
       cout << endl << "***printAllDataFor (" << modnames[mod] << ") (from the API):***" << endl;
       printAllDataFor(modnames[mod]);
+      cout << endl << "***Antimony (" << modnames[mod] << ")" << endl;
+      cout << getAntimonyString(modnames[mod]) << endl;
       cout << endl;
       cout << endl;
     }
@@ -526,4 +522,3 @@ int main(long argc, char** argv)
   if (retval == -1) return 1;
   return 0;
 }
-

@@ -29,12 +29,12 @@ enum return_type {allSymbols,
 */
 
 LIB_EXTERN long   loadFile(const char* filename);
+LIB_EXTERN long   loadSBMLFile(const char* filename);
+
 LIB_EXTERN size_t getNumFiles();
 LIB_EXTERN bool   revertTo(long handle);
 LIB_EXTERN void   clearPreviousLoads();
 LIB_EXTERN char*  getLastError();
-
-LIB_EXTERN char* getJarnac(const char* moduleName);
 
 LIB_EXTERN size_t getNumModules();
 LIB_EXTERN char** getModuleNames();
@@ -79,8 +79,13 @@ LIB_EXTERN size_t  getNumDNAStrands(const char* moduleName);
 
 LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbolName);
 
-//SBML code
-LIB_EXTERN long  loadSBMLFile(const char* filename);
+//File reading and writing
+LIB_EXTERN int   writeAntimonyFile(const char* filename, const char* moduleName);
+LIB_EXTERN char* getAntimonyString(const char* moduleName);
+
+LIB_EXTERN int   writeJarnacFile(const char* filename, const char* moduleName);
+LIB_EXTERN char* getJarnacString(const char* moduleName);
+
 LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
 LIB_EXTERN char* getSBMLString(const char* moduleName);
 

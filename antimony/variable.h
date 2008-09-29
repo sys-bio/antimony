@@ -45,9 +45,11 @@ public:
 
   bool IsPointer() const {return m_sameVariable.size() != 0;};
   std::vector<std::string> GetName() const;
+  std::vector<std::string> GetPrintedName() const {return m_printedname;};
   std::vector<std::string> GetPointerName() const {return m_sameVariable;};
   std::string GetNameDelimitedBy(char cc) const;
   std::string GetFormulaStringDelimitedBy(char cc) const;
+  std::string GetFormulaStringWithEllipses(char cc) const;
   var_type GetType() const;
   bool HasFormula() const {return (!m_valFormula.IsEmpty());};
   const Formula* GetFormula() const;
@@ -56,19 +58,23 @@ public:
   const Module* GetModule() const;
   Module* GetModule();
   Variable* GetSubVariable(const std::string* name);
+  Variable* GetSameVariable();
   Variable* GetUpstreamDNA() const;
   Variable* GetDownstreamDNA() const;
   std::string GetNamespace() const {return m_namespace;};
   bool GetIsConst() const;
   bool GetListSeparately() const {return m_listseparately;};
   bool GetIsEquivalentTo(const Variable* var) const;
+  bool IsSameVarInNewModule(const Variable* var) const;
 
   bool IsDNAStart() const;
+  bool IsDNAStartForModule() const;
   bool IsUnlinked(bool up) const;
   bool DoesNotLinkTo(Variable* var) const;
   bool HasOpenUpstream() const;
   bool HasOpenDownstream() const;
   std::vector<std::string> GetDNAStringDelimitedBy(char cc) const;
+  std::string GetDNAStringForThisNamespace() const;
 
   bool SetType(var_type newtype);
   bool SetFormula(Formula* formula);

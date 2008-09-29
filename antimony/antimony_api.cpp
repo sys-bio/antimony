@@ -135,18 +135,22 @@ LIB_EXTERN long loadFile(const char* filename)
 {
   g_registry.ClearModules();
   int ofreturn = g_registry.OpenFile(filename);
-  if (ofreturn==0) return -1;
-  if (ofreturn==2) return g_registry.SaveModules();
-  assert(ofreturn==1);
-  int retval = yyparse();
+  if (ofreturn==0) return -1; //file read failure
+  if (ofreturn==2) {
+    //SBML file
+    g_registry.CompileAllExportLists();
+    return g_registry.SaveModules();
+  }
+  assert(ofreturn==1); //antimony file
+  int yyreturn = yyparse();
   g_registry.CompileAllExportLists();
-  if (retval != 0) {
+  if (yyreturn != 0) {
     if (g_registry.GetError().size() == 0) {
       assert(false); //Need to fill in the reason why we failed explicitly, if possible.
-      if (retval == 1) {
+      if (yyreturn == 1) {
         g_registry.SetError("Parsing failed because of invalid input.");
       }
-      else if (retval == 2) {
+      else if (yyreturn == 2) {
         g_registry.SetError("Parsing failed due to memory exhaution.");
       }
       else {
@@ -154,13 +158,30 @@ LIB_EXTERN long loadFile(const char* filename)
       }
     }
     g_registry.AddErrorPrefix("Error in file '" + g_registry.GetLastFile() + "', line " + ToString(yylloc_first_line) + ":  ");
-  }
-  if (retval != 0) {
     return -1;
   }
-  else {
-    return g_registry.SaveModules();
+  return g_registry.SaveModules();
+}
+
+LIB_EXTERN long loadSBMLFile(const char* filename)
+{
+  g_registry.ClearModules();
+  SBMLDocument* document = readSBML(filename);
+  if (document->getNumErrors() > 0) {
+    stringstream errorstream;
+    document->printErrors(errorstream);
+    string errors;
+    errorstream >> errors;
+    g_registry.SetError(errors);
+    return -1;
   }
+  const Model* sbml = document->getModel();
+  string sbmlname = getNameFromSBMLObject(sbml, "file");
+  g_registry.NewCurrentModule(&sbmlname);
+  g_registry.CurrentModule()->LoadSBML(sbml);
+
+  delete(document);
+  return g_registry.SaveModules();
 }
 
 LIB_EXTERN size_t getNumFiles()
@@ -181,13 +202,6 @@ LIB_EXTERN void clearPreviousLoads()
 LIB_EXTERN char* getLastError()
 {
   return getCharStar((g_registry.GetError()).c_str());
-}
-
-LIB_EXTERN char* getJarnac(const char* moduleName)
-{
-  if (!checkModule(moduleName)) return NULL;
-  char* jarnac = getCharStar(g_registry.GetJarnac(moduleName).c_str());
-  return jarnac;
 }
 
 LIB_EXTERN char** getModuleNames()
@@ -621,25 +635,52 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
   return allUnknown;
 }
 
-LIB_EXTERN long loadSBMLFile(const char* filename)
+LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
 {
-  g_registry.ClearModules();
-  SBMLDocument* document = readSBML(filename);
-  if (document->getNumErrors() > 0) {
-    stringstream errorstream;
-    document->printErrors(errorstream);
-    string errors;
-    errorstream >> errors;
-    g_registry.SetError(errors);
-    return -1;
+  if (!checkModule(moduleName)) return 0;
+  string antimony = g_registry.GetAntimony(moduleName);
+  ofstream afile(filename);
+  if (!afile.good()) {
+    string error = "Unable to open file ";
+    error += filename;
+    error += " for writing.";
+    g_registry.SetError(error);
+    return 0;
   }
-  const Model* sbml = document->getModel();
-  string sbmlname = getNameFromSBMLObject(sbml, "file");
-  g_registry.NewCurrentModule(&sbmlname);
-  g_registry.CurrentModule()->LoadSBML(sbml);
+  afile << antimony;
+  afile.close();
+  return 1;
+}
 
-  delete(document);
-  return g_registry.SaveModules();
+LIB_EXTERN char* getAntimonyString(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  char* antimony = getCharStar(g_registry.GetAntimony(moduleName).c_str());
+  return antimony;
+}
+
+LIB_EXTERN int writeJarnacFile(const char* filename, const char* moduleName)
+{
+  if (!checkModule(moduleName)) return 0;
+  string jarnac = g_registry.GetJarnac(moduleName);
+  ofstream jfile(filename);
+  if (!jfile.good()) {
+    string error = "Unable to open file ";
+    error += filename;
+    error += " for writing.";
+    g_registry.SetError(error);
+    return 0;
+  }
+  jfile << jarnac;
+  jfile.close();
+  return 1;
+}
+
+LIB_EXTERN char* getJarnacString(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  char* jarnac = getCharStar(g_registry.GetJarnac(moduleName).c_str());
+  return jarnac;
 }
 
 LIB_EXTERN int writeSBMLFile(const char* filename, const char* moduleName)
@@ -648,7 +689,14 @@ LIB_EXTERN int writeSBMLFile(const char* filename, const char* moduleName)
   SBMLDocument sbmldoc;
   Model sbml = g_registry.GetModule(moduleName)->GetSBMLModel();
   sbmldoc.setModel(&sbml);
-  return writeSBML(&sbmldoc, filename);
+  int sbmlret = writeSBML(&sbmldoc, filename);
+  if (sbmlret == 0) {
+    string error = "Unable to open file ";
+    error += filename;
+    error += " for writing.";
+    g_registry.SetError(error);
+  }
+  return sbmlret;
 }
 
 LIB_EXTERN char* getSBMLString(const char* moduleName)
@@ -674,7 +722,7 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
     cout << "Couldn't find module: '" << moduleName << "'" << endl;
     return;
   }
-  
+
   cout << "All variables for module " << moduleName << ":" << endl;
   char **symbolnames = getSymbolNamesOfType(moduleName, allSymbols);
   char **symbolequations = getSymbolEquationsOfType(moduleName, allSymbols);
