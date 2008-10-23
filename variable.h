@@ -5,6 +5,7 @@
 #include <vector>
 #include "formula.h"
 #include "reaction.h"
+#include "event.h"
 
 class Module;
 
@@ -27,6 +28,7 @@ private:
   Formula m_valFormula;
   AntimonyReaction m_valReaction;
   std::vector<Module> m_valModule;
+  AntimonyEvent m_valEvent;
 
   //If the variable is in a strand of DNA, this tells us how they are related
   std::vector<std::string> m_upstream;
@@ -57,6 +59,8 @@ public:
   const AntimonyReaction* GetReaction() const;
   const Module* GetModule() const;
   Module* GetModule();
+  const AntimonyEvent* GetEvent() const;
+  AntimonyEvent* GetEvent();
   Variable* GetSubVariable(const std::string* name);
   Variable* GetSameVariable();
   Variable* GetUpstreamDNA() const;
@@ -79,6 +83,8 @@ public:
   bool SetType(var_type newtype);
   bool SetFormula(Formula* formula);
   AntimonyReaction* SetReaction(AntimonyReaction* rxn);
+  bool SetModule(const std::string* modname);
+  bool SetEvent(const AntimonyEvent* event);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetPrintedName(std::vector<std::string> printedname);
   bool SetIsConst(bool constant);
@@ -90,7 +96,6 @@ public:
   void SetUpstream(Variable* var);
 
   bool Synchronize(Variable* clone);
-  bool ImportModule(const std::string* modname);
 
   bool CheckDoesNotIncludeSelf();
   std::string ToString() const;

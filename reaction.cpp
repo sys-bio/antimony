@@ -101,6 +101,27 @@ string AntimonyReaction::ToStringDelimitedBy(char cc) const
   return retval;
 }
 
+string AntimonyReaction::ToDelimitedStringWithEllipses(char cc) const
+{
+  string retval;
+
+  Module* module = g_registry.GetModule(m_module);
+  assert(module != NULL);
+  Variable* actualvar = module->GetVariable(m_name);
+  if (actualvar != NULL) {
+    retval += actualvar->GetNameDelimitedBy(cc);
+  }
+  else {
+    assert(false); //Should be clean...
+    for (size_t i=0; i<m_name.size(); i++) {
+      if (i>0) retval += cc;
+      retval += m_name[i];
+    }
+  }
+  retval += ": " + m_left.ToStringDelimitedBy(cc) + " " + RDToString(m_divider) + " " + m_right.ToStringDelimitedBy(cc) + "; " + m_formula.ToDelimitedStringWithEllipses(cc) + ";";
+  return retval;
+}
+
 vector<string> AntimonyReaction::LeftToStringVecDelimitedBy(char cc) const
 {
   return m_left.ToStringVecDelimitedBy(cc);

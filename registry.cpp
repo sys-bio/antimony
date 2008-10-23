@@ -347,6 +347,24 @@ void Registry::SetWorkingStrand(Variable* var)
   m_workingstrand = var->GetName();
 }
 
+bool Registry::SetNewCurrentEvent(Formula* trigger)
+{
+  Variable* evar = CurrentModule()->AddNewNumberedVariable("_E");
+  return SetNewCurrentEvent(trigger, evar);
+}
+
+bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
+{
+  m_currentEvent = var->GetName();
+  AntimonyEvent event(*trigger,var);
+  return var->SetEvent(&event);
+}
+
+bool Registry::AddResultToCurrentEvent(Variable* var, Formula* form)
+{
+  return CurrentModule()->GetVariable(m_currentEvent)->GetEvent()->AddResult(var, form);
+}
+
 void Registry::SetAssignmentVariable(Variable* var)
 {
   m_assignmentvar = var->GetName();

@@ -14,6 +14,7 @@ Variable::Variable(const string name, const Module* module)
     m_valFormula(),
     m_valReaction(),
     m_valModule(),
+    m_valEvent(),
     m_upstream(),
     m_downstream(),
     m_type(varUndefined),
@@ -80,26 +81,19 @@ const Formula* Variable::GetFormula() const
   }
   else switch (m_type) {
   case varFormulaUndef:
-  case varFormulaPromoter:
   case varFormulaOperator:
   case varDNA:
   case varSpeciesUndef:
-  case varSpeciesProtein:
   case varUndefined:
-    assert(m_valReaction.IsEmpty());
-    assert(m_valModule.size()==0);
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-    assert(m_valModule.size() == 0);
-    //assert(m_valFormula.IsEmpty());
     return m_valReaction.GetFormula();
   case varModule:
-    assert(m_valReaction.IsEmpty());
-    assert(m_valFormula.IsEmpty());
-    assert(m_valModule.size()==1);
     return m_valModule[0].GetFormula();
+  case varEvent:
+    return m_valEvent.GetTrigger();
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
@@ -120,26 +114,19 @@ Formula* Variable::GetFormula()
   }
   else switch (m_type) {
   case varFormulaUndef:
-  case varFormulaPromoter:
   case varFormulaOperator:
   case varDNA:
   case varSpeciesUndef:
-  case varSpeciesProtein:
   case varUndefined:
-    assert(m_valReaction.IsEmpty());
-    assert(m_valModule.size()==0);
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-    assert(m_valModule.size() == 0);
-    //assert(m_valFormula.IsEmpty());
     return m_valReaction.GetFormula();
   case varModule:
-    assert(m_valReaction.IsEmpty());
-    assert(m_valFormula.IsEmpty());
-    assert(m_valModule.size()==1);
     return m_valModule[0].GetFormula();
+  case varEvent:
+    return m_valEvent.GetTrigger();
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
@@ -152,9 +139,6 @@ const AntimonyReaction* Variable::GetReaction() const
   if (m_sameVariable.size() > 0) {
     return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->GetReaction();
   }
-  //assert(!m_valReaction.IsEmpty());
-  //assert(m_valFormula.IsEmpty());
-  assert(m_valModule.size() == 0);
   return &(m_valReaction);
 }
 
@@ -164,9 +148,6 @@ const Module* Variable::GetModule() const
   if (m_sameVariable.size() > 0) {
     return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->GetModule();
   }
-  assert(m_valModule.size() == 1);
-  assert(m_valFormula.IsEmpty());
-  assert(m_valReaction.IsEmpty());
   return &(m_valModule[0]);
 }
 
@@ -176,10 +157,19 @@ Module* Variable::GetModule()
   if (m_sameVariable.size() > 0) {
     return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->GetModule();
   }
-  assert(m_valModule.size() == 1);
-  assert(m_valFormula.IsEmpty());
-  assert(m_valReaction.IsEmpty());
   return &(m_valModule[0]);
+}
+
+const AntimonyEvent* Variable::GetEvent() const
+{
+  assert(m_type == varEvent);
+  return &(m_valEvent);
+}
+
+AntimonyEvent* Variable::GetEvent()
+{
+  assert(m_type == varEvent);
+  return &(m_valEvent);
 }
 
 Variable* Variable::GetSubVariable(const std::string* name)
@@ -232,12 +222,10 @@ bool Variable::GetIsConst() const
   }
   switch(m_type) {
   case varFormulaUndef:
-  case varFormulaPromoter:
   case varFormulaOperator:
   case varDNA:
     return m_valFormula.GetIsConst();
   case varSpeciesUndef:
-  case varSpeciesProtein:
     if (!m_valFormula.GetIsConst()) {
       return false;
     }
@@ -250,6 +238,7 @@ bool Variable::GetIsConst() const
     }
     break;
   case varModule:
+  case varEvent:
     return false;
   case varUndefined:
     return true;
@@ -460,30 +449,26 @@ bool Variable::SetType(var_type newtype)
   string error = "Unable to set the type of variable '" + GetNameDelimitedBy('.') + "' to " + VarTypeToString(newtype) + " because it is already set to be the incompatible type " + VarTypeToString(m_type) + ".  This situation can occur either with explicit type declaration or by using the variable in different, incompatible contexts.";
   switch(m_type) {
   case varSpeciesUndef:
-  case varSpeciesProtein:
     switch(newtype) {
     case varSpeciesUndef:
-    case varSpeciesProtein:
-      m_type = varSpeciesProtein; //If they were both SpeciesUndef, we already returned.
+      //If they were both SpeciesUndef, we already returned.
       return false;
     case varFormulaUndef:
     case varDNA:
-    case varFormulaPromoter:
     case varFormulaOperator:
     case varReactionGene:
     case varReactionUndef:
     case varInteraction:
     case varUndefined:
     case varModule:
+    case varEvent:
       g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
     switch(newtype) {
     case varSpeciesUndef:
-    case varSpeciesProtein:
     case varFormulaUndef:
     case varDNA:
-    case varFormulaPromoter:
     case varFormulaOperator:
     case varReactionGene:
     case varReactionUndef:
@@ -491,6 +476,7 @@ bool Variable::SetType(var_type newtype)
       m_type = newtype;
       return false;
     case varModule:
+    case varEvent:
       g_registry.SetError(error); return true;
     case varUndefined:
       return false;
@@ -501,7 +487,6 @@ bool Variable::SetType(var_type newtype)
     case varUndefined:
       return false;
     case varDNA:
-    case varFormulaPromoter:
     case varFormulaOperator:
     case varReactionGene:
       m_type = newtype;
@@ -510,25 +495,9 @@ bool Variable::SetType(var_type newtype)
       m_type = varReactionGene;
       return false;
     case varSpeciesUndef:
-    case varSpeciesProtein:
     case varInteraction:
     case varModule:
-      g_registry.SetError(error); return true;
-    }
-  case varFormulaPromoter:
-    switch(newtype) {
-    case varFormulaUndef:
-    case varFormulaPromoter:
-    case varDNA:
-    case varUndefined:
-      return false;
-    case varSpeciesUndef:
-    case varSpeciesProtein:
-    case varFormulaOperator:
-    case varReactionGene:
-    case varReactionUndef:
-    case varInteraction:
-    case varModule:
+    case varEvent:
       g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
@@ -539,12 +508,11 @@ bool Variable::SetType(var_type newtype)
     case varUndefined:
       return false;
     case varSpeciesUndef:
-    case varSpeciesProtein:
-    case varFormulaPromoter:
     case varReactionGene:
     case varReactionUndef:
     case varInteraction:
     case varModule:
+    case varEvent:
       g_registry.SetError(error); return true;
     }
   case varReactionGene:
@@ -556,11 +524,10 @@ bool Variable::SetType(var_type newtype)
     case varUndefined:
       return false;
     case varSpeciesUndef:
-    case varSpeciesProtein:
     case varFormulaOperator:
-    case varFormulaPromoter:
     case varInteraction:
     case varModule:
+    case varEvent:
       g_registry.SetError(error); return true;
     }
   case varReactionUndef:
@@ -574,11 +541,10 @@ bool Variable::SetType(var_type newtype)
       m_type = varReactionGene;
       return false;
     case varSpeciesUndef:
-    case varSpeciesProtein:
     case varFormulaOperator:
-    case varFormulaPromoter:
     case varInteraction:
     case varModule:
+    case varEvent:
       g_registry.SetError(error); return true;
     }
   case varInteraction:
@@ -591,17 +557,17 @@ bool Variable::SetType(var_type newtype)
     case varDNA:
     case varReactionGene:
     case varSpeciesUndef:
-    case varSpeciesProtein:
     case varFormulaOperator:
-    case varFormulaPromoter:
     case varModule:
+    case varEvent:
       g_registry.SetError(error); return true;
     }
   case varUndefined:
     m_type = newtype;
     return false;
   case varModule:
-    g_registry.SetError(error); return true; //the already-a-module case handled above.
+  case varEvent:
+    g_registry.SetError(error); return true; //the already-a-module/event cases handled above.
   }
 
   assert(false); //uncaught vtype
@@ -610,6 +576,14 @@ bool Variable::SetType(var_type newtype)
 
 bool Variable::SetFormula(Formula* formula)
 {
+  string formstring = formula->ToStringDelimitedBy('.');
+  if (formstring.size() > 0) {
+    ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
+    if (ASTform == NULL) {
+      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      return true;
+    }
+  }
   if (m_sameVariable.size() > 0) {
     return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetFormula(formula);
   }
@@ -649,34 +623,24 @@ bool Variable::SetFormula(Formula* formula)
   }
   switch (m_type) {
   case varSpeciesUndef:
-  case varSpeciesProtein:
-    assert(m_valReaction.IsEmpty());
-    assert(m_valModule.size() == 0);
     m_valFormula = *formula;
     break;
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-    assert(m_valModule.size() == 0);
-    assert(m_valFormula.IsEmpty());
-    //assert(!m_valReaction.IsEmpty());
     m_valReaction.SetFormula(formula);
     break;
   case varModule:
-    assert(m_valReaction.IsEmpty());
-    assert(m_valFormula.IsEmpty());
-    assert(m_valModule.size() == 1);
     return m_valModule[0].SetFormula(formula);
   case varUndefined:
-    assert(m_valFormula.IsEmpty());
     m_type = varFormulaUndef;
   case varFormulaUndef:
-  case varFormulaPromoter:
   case varFormulaOperator:
   case varDNA:
-    assert(m_valReaction.IsEmpty());
-    assert(m_valModule.size() == 0);
     m_valFormula = *formula;
+    break;
+  case varEvent:
+    m_valEvent.SetTrigger(*formula);
     break;
   }
   return false;
@@ -686,6 +650,14 @@ AntimonyReaction* Variable::SetReaction(AntimonyReaction* rxn)
 {
   if (m_sameVariable.size() > 0) {
     g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetReaction(rxn);
+  }
+  string formstring = rxn->GetFormula()->ToStringDelimitedBy('.');
+  if (formstring.size() > 0) {
+    ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
+    if (ASTform == NULL) {
+      g_registry.SetError("The reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      return NULL;
+    }
   }
   assert(m_type==varUndefined || m_type==varDNA || m_type==varFormulaUndef || IsReaction(m_type));
   m_valReaction = *rxn;
@@ -707,6 +679,26 @@ AntimonyReaction* Variable::SetReaction(AntimonyReaction* rxn)
   }
   SetType(varReactionUndef);
   return &m_valReaction;
+}
+
+bool Variable::SetModule(const string* modname)
+{
+  assert(m_name.size() == 1);
+  if (m_type != varUndefined) {
+    g_registry.SetError("Cannot define '" + GetNameDelimitedBy('.') + "' to be model '" + *modname + "', because it is already a " + VarTypeToString(m_type) + ".");
+    return true; //error
+  }
+  Module newmod(*g_registry.GetModule(*modname), m_name[0], m_namespace);
+  m_valModule.push_back(newmod);
+  m_type = varModule;
+  g_registry.SetCurrentImportedModule(m_name);
+  return false;
+}
+
+bool Variable::SetEvent(const AntimonyEvent* event)
+{
+  m_valEvent = *event;
+  return SetType(varEvent);
 }
 
 void Variable::SetNewTopName(string newmodname, string newtopname)
@@ -752,11 +744,9 @@ bool Variable::SetIsConst(bool constant)
   string error = "Cannot set '" + GetNameDelimitedBy('.') + "' to be constant";
   switch(m_type) {
   case varFormulaUndef:
-  case varFormulaPromoter:
   case varFormulaOperator:
   case varDNA:
   case varSpeciesUndef:
-  case varSpeciesProtein:
   case varUndefined:
     if (!m_valFormula.GetIsConst() && constant) {
       g_registry.SetError(error + " because its rate constant or initial value contains something that is or cannot be constant (such as a floating species concentration).");
@@ -774,6 +764,12 @@ bool Variable::SetIsConst(bool constant)
   case varModule:
     if (!constant) {
       g_registry.SetError(error + ", as 'constantness' is undefined for submodules.");
+      return true;
+    }
+    break;
+  case varEvent:
+    if (!constant) {
+      g_registry.SetError(error + ", as 'constantness' is undefined for events.");
       return true;
     }
     break;
@@ -925,7 +921,7 @@ bool Variable::Synchronize(Variable* clone)
     assert(false); //I want to know what someone wants when they try this,
     // because I'm not convinced I'm doing the right thing below.  LS DEBUG
     string modname = m_valModule[0].GetModuleName();
-    clone->ImportModule(&modname); //If we do, check the return value here.
+    clone->SetModule(&modname); //If we do, check the return value here.
     m_valModule.clear();
   }
 
@@ -935,13 +931,12 @@ bool Variable::Synchronize(Variable* clone)
     Variable* cloneupvar = clone->GetUpstreamDNA();
     if (upvar == NULL) {
       if (cloneupvar == NULL) {
-        cloneupvar->SetOpenUpstream();
+        clone->SetOpenUpstream();
       }
-      //else do nothing;
     }
     else {
       if (cloneupvar == NULL) {
-        cloneupvar->SetUpstream(upvar);
+        clone->SetUpstream(upvar);
       }
       else {
         upvar = upvar->GetSameVariable();
@@ -985,20 +980,6 @@ bool Variable::Synchronize(Variable* clone)
   if (clone->SetIsConst(GetIsConst())) {
     return true; //(error condition)
   }
-  return false;
-}
-
-bool Variable::ImportModule(const string* modname)
-{
-  assert(m_name.size() == 1);
-  if (m_type != varUndefined) {
-    g_registry.SetError("Cannot define '" + GetNameDelimitedBy('.') + "' to be model '" + *modname + "', because it is already a " + VarTypeToString(m_type) + ".");
-    return true; //error
-  }
-  Module newmod(*g_registry.GetModule(*modname), m_name[0], m_namespace);
-  m_valModule.push_back(newmod);
-  m_type = varModule;
-  g_registry.SetCurrentImportedModule(m_name);
   return false;
 }
 

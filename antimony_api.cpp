@@ -603,18 +603,12 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
   case varSpeciesUndef:
     if (isconst) return constSpecies;
     return varSpecies;
-  case varSpeciesProtein:
-    if (isconst) return constProteins;
-    return varProteins;
   case varFormulaUndef:
     if (isconst) return constFormulas;
     return varFormulas;
   case varDNA:
     if (isconst) return constAnyDNA;
     return varAnyDNA;
-  case varFormulaPromoter:
-    if (isconst) return constPromoters;
-    return varPromoters;
   case varFormulaOperator:
     if (isconst) return constOperators;
     return varOperators;
@@ -629,6 +623,8 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
     return allUnknown;
   case varModule:
     return subModules;
+  case varEvent:
+    return allEvents;
   }
   assert(false); //uncaught var_type
   g_registry.SetError("Coding error:  Didn't include a return type for variable type " + VarTypeToString(vtype) + " in getTypeOfSymbol; antimony_api.cpp.  Email the author to fix.");
