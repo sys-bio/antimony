@@ -28,14 +28,14 @@ string VarTypeToString(const var_type vtype)
     return "Gene";
   case varInteraction:
     return "Interaction";
-  case varFormulaPromoter:
-    return "Promoter";
   case varFormulaOperator:
     return "Operator";
   case varDNA:
     return "DNA";
   case varModule:
     return "Module";
+  case varEvent:
+    return "Event";
   case varUndefined:
     return "Undefined";
   }
@@ -50,9 +50,6 @@ var_type StringToVarType(const string& name)
   }
   if (CaselessStrCmp(name,"Formula")) {
     return varFormulaUndef;
-  }
-  if (CaselessStrCmp(name,"Promoter")) {
-    return varFormulaPromoter;
   }
   if (CaselessStrCmp(name,"Operator")) {
     return varFormulaOperator;
@@ -75,6 +72,9 @@ var_type StringToVarType(const string& name)
   if (CaselessStrCmp(name,"Undefined")) {
     return varUndefined;
   }
+  if (CaselessStrCmp(name,"Event")) {
+    return varEvent;
+  }
   assert(false); //uncaught var type
   return varUndefined;
 }
@@ -88,10 +88,10 @@ bool IsReaction(const var_type vtype)
   case varInteraction:
   case varSpeciesUndef:
   case varFormulaUndef:
-  case varFormulaPromoter:
   case varFormulaOperator:
   case varDNA:
   case varModule:
+  case varEvent:
   case varUndefined:
     return false;
   }
@@ -121,11 +121,11 @@ bool IsSpecies(const var_type vtype)
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-  case varFormulaPromoter:
   case varFormulaOperator:
   case varFormulaUndef:
   case varDNA:
   case varModule:
+  case varEvent:
   case varUndefined:
     return false;
   }
@@ -137,7 +137,6 @@ bool IsDNA(const var_type vtype)
 {
   switch(vtype) {
   case varReactionGene:
-  case varFormulaPromoter:
   case varFormulaOperator:
   case varDNA:
     return true;
@@ -146,6 +145,7 @@ bool IsDNA(const var_type vtype)
   case varInteraction:
   case varFormulaUndef:
   case varModule:
+  case varEvent:
   case varUndefined:
     return false;
   }
@@ -157,7 +157,6 @@ bool HasOrIsFormula(const var_type vtype)
 {
   switch(vtype) {
   case varSpeciesUndef:
-  case varFormulaPromoter:
   case varFormulaOperator:
   case varFormulaUndef:
   case varDNA:
@@ -166,6 +165,7 @@ bool HasOrIsFormula(const var_type vtype)
   case varReactionUndef:
   case varInteraction:
   case varModule:
+  case varEvent: //Not for the purposes of Jarnac, at any rate.
   case varUndefined:
     return false;
   }
@@ -198,8 +198,6 @@ string ReturnTypeToString(return_type rtype)
     return "variable formula or equation";
   case varAnyDNA:
     return "variable DNA (generic)";
-  case varPromoters:
-    return "variable DNA (promoter)";
   case varOperators:
     return "variable DNA (operator)";
   case varGenes:
@@ -208,6 +206,8 @@ string ReturnTypeToString(return_type rtype)
     return "Reaction (generic)";
   case allInteractions:
     return "Interaction (generic)";
+  case allEvents:
+    return "Event";
   case allUnknown:
     return "Unknown type";
   case constSpecies:
@@ -216,8 +216,6 @@ string ReturnTypeToString(return_type rtype)
     return "constant formula or equation";
   case constAnyDNA:
     return "constant DNA (generic)";
-  case constPromoters:
-    return "constant DNA (promoter)";
   case constOperators:
     return "constant DNA (operator)";
   case constGenes:

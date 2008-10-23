@@ -52,11 +52,11 @@
 %type <reactionDivider> reactionDivider
 %type <variable> variable localvariable
 
-%left '(' ')' '+' '-' '*' '/' '^'
+%left '(' ')' '+' '-' '*' '/' '^' ','
 
 %token <num> NUM
 %token <word> WORD MODNAME FILENAME
-%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES REACTION DNA GENE PROMOTER OPERATOR VAR CONST DASHES ELLIPSES FUNCTION INCLUDE
+%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES REACTION DNA GENE OPERATOR VAR CONST DASHES ELLIPSES FUNCTION INCLUDE EVENT
 
 %debug
 %error-verbose
@@ -115,6 +115,7 @@ modulepart:     reaction lineend {}
         |       submodule lineend {}
         |       varinitialize lineend {}
         |       dnastrand lineend {}
+        |       event lineend {}
         |       lineend {}
         ;
 
@@ -173,8 +174,8 @@ lineend:        ';' {}
 assignment:     variable '=' { g_registry.SetAssignmentVariable($1); } formula {if (g_registry.GetAssignmentVariable()->SetFormula($4)) YYABORT; }
         ;
 
-submodule:      variable ':' MODNAME '(' {if ($1->ImportModule($3)) YYABORT;} variableimportlist ')'
-        |       MODNAME '(' {if(g_registry.CurrentModule()->ImportModule($1)) YYABORT;} variableimportlist ')'
+submodule:      variable ':' MODNAME '(' {if ($1->SetModule($3)) YYABORT;} variableimportlist ')'
+        |       MODNAME '(' {if(g_registry.CurrentModule()->SetModule($1)) YYABORT;} variableimportlist ')'
         ;
 variableimportlist:
                 /* empty */ {}
@@ -191,10 +192,10 @@ varinitialize:  specinit { }
         |       reactioninit { }
         |       dnainit { }
         |       geneinit { }
-        |       promoterinit { }
         |       operatorinit { }
+        |       eventinit { }
+        |       constspecinit { }
         |       constdnainit { }
-        |       constpromoterinit { }
         |       constoperatorinit { }
         |       constinit { }
         ;
@@ -219,14 +220,20 @@ geneinit:       GENE variable {if ($2->SetType(varReactionGene)) YYABORT; }
         |       geneinit ',' variable {if ($3->SetType(varReactionGene)) YYABORT; }
         ;
 
-promoterinit:   PROMOTER variable {if ($2->SetType(varFormulaPromoter)) YYABORT; }
-        |       VAR PROMOTER variable {if ($3->SetType(varFormulaPromoter)) YYABORT; }
-        |       promoterinit ',' variable {if ($3->SetType(varFormulaPromoter)) YYABORT; }
-        ;
-
 operatorinit:   OPERATOR variable {if ($2->SetType(varFormulaOperator)) YYABORT; }
         |       VAR OPERATOR variable {if ($3->SetType(varFormulaOperator)) YYABORT; }
         |       operatorinit ',' variable {if ($3->SetType(varFormulaOperator)) YYABORT; }
+        ;
+
+eventinit:      EVENT variable {if ($2->SetType(varEvent)) YYABORT; }
+        |       VAR EVENT variable {if ($3->SetType(varEvent)) YYABORT; }
+        |       eventinit ',' variable {if ($3->SetType(varEvent)) YYABORT; }
+        ;
+
+constspecinit:  CONST SPECIES variable {if ($3->SetType(varSpeciesUndef)) YYABORT; 
+                                        if ($3->SetIsConst(true)) YYABORT;}
+        |       constspecinit ',' variable {if ($3->SetType(varSpeciesUndef)) YYABORT; 
+                                               if ($3->SetIsConst(true)) YYABORT;}
         ;
 
 constdnainit:
@@ -234,13 +241,6 @@ constdnainit:
                                     if ($3->SetIsConst(true)) YYABORT;}
         |       constdnainit ',' variable {if ($3->SetType(varDNA)) YYABORT; 
                                            if ($3->SetIsConst(true)) YYABORT;}
-        ;
-
-constpromoterinit:
-                CONST PROMOTER variable {if ($3->SetType(varFormulaPromoter)) YYABORT; 
-                                         if ($3->SetIsConst(true)) YYABORT;}
-        |       constpromoterinit ',' variable {if ($3->SetType(varFormulaPromoter)) YYABORT; 
-                                                if ($3->SetIsConst(true)) YYABORT;}
         ;
 
 constoperatorinit:
@@ -265,6 +265,13 @@ dnamiddle:      variable DASHES {g_registry.SetNewDownstreamOpen($1);}
         |       dnamiddle variable DASHES {g_registry.SetDownstreamOpen($2);}
         ;
 
+event:          '@' '(' formula ')' ':' {if (g_registry.SetNewCurrentEvent($3)) YYABORT;} assignmentlist {}
+        |       variable ':' '@' '(' formula ')' ':' {if (g_registry.SetNewCurrentEvent($5, $1)) YYABORT;} assignmentlist {}
+        ;
+
+assignmentlist: variable '=' formula {if (g_registry.AddResultToCurrentEvent($1, $3)) YYABORT;}
+        |       assignmentlist ',' variable '=' formula {if (g_registry.AddResultToCurrentEvent($3, $5)) YYABORT;}
+        ;
 %%
 
 
@@ -334,9 +341,6 @@ int yylex(void)
     if (CaselessStrCmp(word, "gene")) {
       return GENE;
     }
-    if (CaselessStrCmp(word, "promoter")) {
-      return PROMOTER;
-    }
     if (CaselessStrCmp(word, "operator")) {
       return OPERATOR;
     }
@@ -351,6 +355,9 @@ int yylex(void)
     }
     if (CaselessStrCmp(word, "include")) {
       return INCLUDE;
+    }
+    if (CaselessStrCmp(word, "event")) {
+      return EVENT;
     }
     
     if (g_registry.IsFunction(word) != NULL) {

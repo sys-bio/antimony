@@ -42,6 +42,7 @@ public:
   bool LeftIsEmpty() const;
 
   std::string ToStringDelimitedBy(char cc) const;
+  std::string ToDelimitedStringWithEllipses(char cc) const;
   std::vector<std::string> LeftToStringVecDelimitedBy(char cc) const;
   std::vector<std::string> RightToStringVecDelimitedBy(char cc) const;
   std::vector<double> GetLeftStoichiometries() const;

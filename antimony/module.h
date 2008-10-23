@@ -76,7 +76,7 @@ public:
 
   void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetReactionVariable(Variable* var);
-  bool ImportModule(const std::string* modname);
+  bool SetModule(const std::string* modname);
   
   std::string ToString() const;
   std::string GetAntimony(set<const Module*> usedmods) const;

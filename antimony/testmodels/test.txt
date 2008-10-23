@@ -1,6 +1,8 @@
 model foo(p1, p2)
+  //compartment comp1;
   const DNA p1;
   const DNA p2;
+  const species s1;
   --p1--p2--
 end
 
@@ -11,10 +13,14 @@ end
 model bar()
   sub1: foo(x, y)
   sub2: foo(z, q)
+  //sub1.comp1 = sub2.comp1;
+  //event h1;
+  a -> b; if(5);
+  //h1 = if(++/4),y-5;
   z = ...;
-  //sub1.p2--sub2.p1
+  sub1.p2--sub2.p1
   //y--z
-  sub1--sub2
+  //sub1--sub2
 end
 
 A: foo2()

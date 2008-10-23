@@ -30,6 +30,7 @@ private:
   Formula m_scratchFormula;
   std::vector<std::string> m_workingstrand;
   std::vector<std::string> m_assignmentvar;
+  std::vector<std::string> m_currentEvent;
   
   char m_cc;
   std::string m_error;
@@ -66,6 +67,10 @@ public:
   bool SetNewDownstreamOpen(Variable* var);
   bool SetDownstreamOpen(Variable* var);
   void SetWorkingStrand(Variable* var);
+  bool SetNewCurrentEvent(Formula* trigger);
+  bool SetNewCurrentEvent(Formula* trigger, Variable* var);
+  bool AddResultToCurrentEvent(Variable* var, Formula* form);
+
   void SetError(std::string error) {m_error = error;};
   void AddErrorPrefix(std::string error) {m_error = error + m_error;};
 

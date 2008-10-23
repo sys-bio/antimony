@@ -294,7 +294,7 @@ vector<string> Module::GetNewCrossModuleDNALinks() const
         string upname = m_variables[var].GetNameDelimitedBy('.');
         string downname = downvar->GetNameDelimitedBy('.');
         if (&m_variables[var] == g_registry.GetModule(m_variables[var].GetNamespace())->GetDownstreamDNA()) {
-          upname = ToStringDelimitedBy(m_variablename, '.');
+          upname = ToStringFromVecDelimitedBy(m_variablename, '.');
         }
         const Module* downmod = g_registry.GetModule(downvar->GetNamespace());
         if (downvar == downmod->GetUpstreamDNA()) {
@@ -343,10 +343,10 @@ void Module::SetReactionVariable(Variable* var)
   m_currentrxnvar = var->GetName();
 }
 
-bool Module::ImportModule(const string* modname)
+bool Module::SetModule(const string* modname)
 {
   Variable* newmod = AddNewNumberedVariable("_sys");
-  return newmod->ImportModule(modname);
+  return newmod->SetModule(modname);
 }
 
 string Module::ToString() const
@@ -424,45 +424,45 @@ string Module::GetAntimony(set<const Module*> usedmods) const
 
   //Variables
   for (size_t var=0; var<m_variables.size(); var++) {
-    if ((m_variables[var].GetType() == varModule) ||
-        (m_variables[var].GetType() == varUndefined)) break;
-    retval += indent;
-    if (m_variables[var].GetIsConst()) {
-      retval += "const ";
+    if ((m_variables[var].GetType() != varModule) &&
+        (m_variables[var].GetType() != varUndefined)) {
+      retval += indent;
+      if (m_variables[var].GetIsConst()) {
+        retval += "const ";
+      }
+      switch(m_variables[var].GetType()) {
+      case varSpeciesUndef:
+        retval += "species ";
+        break;
+      case varFormulaUndef:
+        retval += "formula ";
+        break;
+      case varReactionUndef:
+        retval += "reaction ";
+        break;
+      case varReactionGene:
+        retval += "gene ";
+        break;
+      case varInteraction:
+        retval += "reaction ";
+        break;
+      case varFormulaOperator:
+        retval += "operator ";
+        break;
+      case varDNA:
+        retval += "DNA ";
+        break;
+      case varEvent:
+        retval += "event ";
+      case varModule:
+      case varUndefined:
+        //handled earlier
+        break;
+      }
+      vector<string> vname = m_variables[var].GetName();
+      assert(vname.size()==1);
+      retval += vname[0] + ";\n";
     }
-    switch(m_variables[var].GetType()) {
-    case varSpeciesUndef:
-      retval += "species ";
-      break;
-    case varFormulaUndef:
-      retval += "formula ";
-      break;
-    case varReactionUndef:
-      retval += "reaction ";
-      break;
-    case varReactionGene:
-      retval += "gene ";
-      break;
-    case varInteraction:
-      retval += "reaction ";
-      break;
-    case varFormulaPromoter:
-      retval += "promoter ";
-      break;
-    case varFormulaOperator:
-      retval += "operator ";
-      break;
-    case varDNA:
-      retval += "DNA ";
-      break;
-    case varModule:
-    case varUndefined:
-      //handled earlier
-      break;
-    }
-    vector<string> vname = m_variables[var].GetName();
-    assert(vname.size()==1);
-    retval += vname[0] + ";\n";
   }
 
   //Modules next:
@@ -500,13 +500,15 @@ string Module::GetAntimony(set<const Module*> usedmods) const
   for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
     const Variable* var = &m_variables[vnum];
     var_type type = var->GetType();
-    if (type == varModule) {
-      break;
-    }
     if (IsReaction(type)) {
-      retval += indent + var->GetReaction()->ToStringDelimitedBy('.') + "\n";
+      retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses('.') + "\n";
     }
-    //else 
+    else if (type != varModule) {
+      const Formula* form = var->GetFormula();
+      if (form != NULL && !form->IsEmpty()) {
+        retval += indent + var->GetNameDelimitedBy('.') + " = " + form->ToDelimitedStringWithEllipses('.') + ";\n";
+      }
+    }
   }
       
 
@@ -617,12 +619,6 @@ void Module::CompileExportLists()
         }
       }
       if (m_variables[var].IsDNAStart()) {
-        //LS DEBUG printing
-        vector<string> newdna = m_variables[var].GetDNAStringDelimitedBy(cc);
-        for (size_t i=0; i<newdna.size(); i++) {
-          cout << newdna[i];
-        }
-        cout << endl;
         m_dna.push_back(m_variables[var].GetDNAStringDelimitedBy(cc));
       }
       if (m_variables[var].GetType() == varModule) {
@@ -700,7 +696,6 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case constFormulas:
     if (vtype == varFormulaUndef ||
         vtype == varDNA ||
-        vtype == varFormulaPromoter ||
         vtype == varFormulaOperator) {
       return true;
     }
@@ -708,15 +703,8 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varAnyDNA:
   case constAnyDNA:
     if (vtype == varDNA ||
-        vtype == varFormulaPromoter ||
         vtype == varFormulaOperator ||
         vtype == varReactionGene) {
-      return true;
-    }
-    return false;
-  case varPromoters:
-  case constPromoters:
-    if (vtype == varFormulaPromoter) {
       return true;
     }
     return false;
@@ -755,6 +743,11 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
     return false;
   case allSymbols:
     return true;
+  case allEvents:
+    if (vtype == varEvent) {
+      return true;
+    }
+    return false;
   }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -762,13 +755,13 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varSpeciesUndef:
   case varFormulaUndef:
   case varDNA:
-  case varFormulaPromoter:
   case varFormulaOperator:
   case varReactionGene:
   case varReactionUndef:
   case varInteraction:
   case varUndefined:
   case varModule:
+  case varEvent:
     break;
   }
   assert(false); //uncaught return type
@@ -781,14 +774,12 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case varSpecies:
   case varFormulas:
   case varAnyDNA:
-  case varPromoters:
   case varOperators:
   case varGenes:
     return (!isconst);
   case constSpecies:
   case constFormulas:
   case constAnyDNA:
-  case constPromoters:
   case constOperators:
   case constGenes:
     return (isconst);
@@ -798,6 +789,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case allUnknown:
   case allReactions:
   case allInteractions:
+  case allEvents:
   case subModules:
     return true;
   }
@@ -852,7 +844,7 @@ string Module::ListIdentityDifferencesFrom(const Module* origmod, string mname) 
       list += ", ";
     }
     if (renamed.find(expvar) != renamed.end()) {
-      list += ToStringDelimitedBy(expvar->GetPrintedName(), '.');
+      list += ToStringFromVecDelimitedBy(expvar->GetPrintedName(), '.');
       renamed.erase(expvar);
     }
   }
@@ -863,7 +855,7 @@ string Module::ListIdentityDifferencesFrom(const Module* origmod, string mname) 
     }
     vector<string> subname = (*newname)->GetName();
     subname.erase(subname.begin());
-    list += ToStringDelimitedBy((*newname)->GetPrintedName(), '.') + "=" + ToStringDelimitedBy(subname, '.');
+    list += ToStringFromVecDelimitedBy((*newname)->GetPrintedName(), '.') + "=" + ToStringFromVecDelimitedBy(subname, '.');
   }    
 
   return list;

@@ -11,7 +11,7 @@ string ToString(size_t number)
   return s;
 }
 
-string ToStringDelimitedBy(vector<string> name, char cc)
+string ToStringFromVecDelimitedBy(vector<string> name, char cc)
 {
   string retval = "";
   for (size_t nn=0; nn<name.size(); nn++) {
