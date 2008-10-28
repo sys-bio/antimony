@@ -32,8 +32,8 @@ void AntimonyEvent::SetTrigger(const Formula& form)
 
 bool AntimonyEvent::AddResult(Variable* var, Formula* form)
 {
-  m_varresults.push_back(var->GetName());
-  m_formresults.push_back(*form);
+  m_varresults.insert(m_varresults.begin(), var->GetName());
+  m_formresults.insert(m_formresults.begin(), *form);
   return false;
 }
 
@@ -49,6 +49,44 @@ void AntimonyEvent::SetNewTopName(string modname, string newtopname)
     m_varresults[result].insert(m_varresults[result].begin(), newtopname);
     m_formresults[result].SetNewTopName(modname, newtopname);
   }
+}
+
+string AntimonyEvent::GetNthAssignmentVariableName(size_t n, char cc) const
+{
+  if (n >= m_varresults.size()) {
+    string error = "Unable to retrieve assignment '" + ToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
+    if (m_varresults.size() == 0) {
+      error += "No assignments are present for this event at all.";
+    }
+    else if (m_varresults.size() == 1) {
+      error += "A single event assignment is present for this event with index 0.";
+    }
+    else {
+      error += "Valid assignment indices for this event are 0 through " + ToString(m_varresults.size());
+    }
+    g_registry.SetError(error);
+    return "";
+  }
+  return ToStringFromVecDelimitedBy(m_varresults[n], cc);
+}
+
+string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc) const
+{
+  if (n >= m_formresults.size()) {
+    string error = "Unable to retrieve assignment '" + ToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
+    if (m_formresults.size() == 0) {
+      error += "No assignments are present for this event at all.";
+    }
+    else if (m_formresults.size() == 1) {
+      error += "A single event assignment is present for this event with index 0.";
+    }
+    else {
+      error += "Valid assignment indices for this event are 0 through " + ToString(m_formresults.size()) + ".";
+    }
+    g_registry.SetError(error);
+    return "";
+  }
+  return m_formresults[n].ToStringDelimitedBy(cc);
 }
 
 string AntimonyEvent::ToStringDelimitedBy(char cc) const

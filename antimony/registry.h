@@ -28,6 +28,7 @@ private:
   std::vector<ReactantList> m_currentReactantLists;
   std::vector<std::string> m_currentImportedModule;
   Formula m_scratchFormula;
+  std::vector<Formula> m_scratchFormulas;
   std::vector<std::string> m_workingstrand;
   std::vector<std::string> m_assignmentvar;
   std::vector<std::string> m_currentEvent;
