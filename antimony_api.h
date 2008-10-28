@@ -67,7 +67,17 @@ LIB_EXTERN size_t   getStoichiometryMatrixNumColumns(const char* moduleName);
 LIB_EXTERN char**   getReactionRates(const char* moduleName);
 LIB_EXTERN char*    getNthReactionRate(const char* moduleName, size_t n);
 LIB_EXTERN size_t   getNumReactionRates(const char* moduleName);
-  
+
+
+LIB_EXTERN size_t  getNumEvents(const char* moduleName);
+LIB_EXTERN char**  getEventNames(const char* moduleName);
+LIB_EXTERN char*   getNthEventName(const char* moduleName, size_t event);
+LIB_EXTERN size_t  getNumAssignmentsForEvent(const char* moduleName, size_t event);
+LIB_EXTERN char*   getTriggerForEvent(const char* moduleName, size_t event);
+LIB_EXTERN char*   getNthAssignmentVariableForEvent(const char* moduleName, size_t event, size_t n);
+LIB_EXTERN char*   getNthAssignmentEquationForEvent(const char* moduleName, size_t event, size_t n);
+
+
 LIB_EXTERN char*** getDNAStrands(const char* moduleName);
 LIB_EXTERN char**  getNthDNAStrand(const char* moduleName, size_t n);
 LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName);

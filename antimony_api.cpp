@@ -529,6 +529,59 @@ LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, size_t n)
   return g_registry.GetModule(moduleName)->GetNthVariableOfType(allInteractions, n)->GetReaction()->GetType();
 }
 
+LIB_EXTERN size_t getNumEvents(const char* moduleName)
+{
+  return getNumSymbolsOfType(moduleName, allEvents);
+}
+
+LIB_EXTERN char** getEventNames(const char* moduleName)
+{
+  return getSymbolNamesOfType(moduleName, allEvents);
+}
+
+LIB_EXTERN char* getNthEventName(const char* moduleName, size_t eventno)
+{
+  return getNthSymbolNameOfType(moduleName, allEvents, eventno);
+}
+
+LIB_EXTERN size_t getNumAssignmentsForEvent(const char* moduleName, size_t eventno)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  return var->GetEvent()->GetNumAssignments();
+}
+
+LIB_EXTERN char* getTriggerForEvent(const char* moduleName, size_t eventno)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  string trig = var->GetEvent()->GetTrigger()->ToStringDelimitedBy(g_registry.GetCC());
+  return getCharStar(trig.c_str());
+}
+
+LIB_EXTERN char* getNthAssignmentVariableForEvent(const char* moduleName, size_t eventno, size_t n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  string asnt = var->GetEvent()->GetNthAssignmentVariableName(n, g_registry.GetCC());
+  if (asnt=="") return NULL;
+  return getCharStar(asnt.c_str());
+}
+
+LIB_EXTERN char* getNthAssignmentEquationForEvent(const char* moduleName, size_t eventno, size_t n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  string formula = var->GetEvent()->GetNthAssignmentFormulaString(n, g_registry.GetCC());
+  if (formula=="") return NULL;
+  return getCharStar(formula.c_str());
+}
+
+
 LIB_EXTERN char*** getDNAStrands(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
@@ -797,6 +850,24 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   cout << "Reaction rates" << endl;
   for (size_t rate=0; rate<getNumReactionRates(moduleName); rate++) {
     cout << rxnrates[rate] << endl;
+  }
+
+  if (getNumEvents(moduleName) > 0) {
+    char** eventnames = getEventNames(moduleName);
+    
+    cout << endl << "Events" << endl;
+    for (size_t event=0; event<getNumEvents(moduleName); event++) {
+      cout << eventnames[event] << ": @(" << getTriggerForEvent(moduleName, event) << "): ";
+      for (size_t asnt=0; asnt<getNumAssignmentsForEvent(moduleName, event); asnt++) {
+        if (asnt > 0) {
+          cout << ", ";
+        }
+        cout << getNthAssignmentVariableForEvent(moduleName, event, asnt);
+        cout << "=";
+        cout << getNthAssignmentEquationForEvent(moduleName, event, asnt);
+      }
+      cout << endl;
+    }
   }
   cout << endl;
 }

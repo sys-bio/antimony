@@ -23,6 +23,7 @@ Registry::Registry()
     m_currentReactantLists(),
     m_currentImportedModule(),
     m_scratchFormula(),
+    m_scratchFormulas(),
     m_cc('_'),
     input(NULL)
 {
@@ -46,6 +47,7 @@ void Registry::ClearModules()
   m_currentReactantLists.clear();
   m_currentImportedModule.clear();
   m_scratchFormula.Clear();
+  m_scratchFormulas.clear();
   string main = "[main]";
   NewCurrentModule(&main);
 }
@@ -362,7 +364,11 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
 
 bool Registry::AddResultToCurrentEvent(Variable* var, Formula* form)
 {
-  return CurrentModule()->GetVariable(m_currentEvent)->GetEvent()->AddResult(var, form);
+  //return
+  CurrentModule()->GetVariable(m_currentEvent)->GetEvent()->AddResult(var, form);
+  m_scratchFormula = m_scratchFormulas.back();
+  m_scratchFormulas.pop_back();
+  return false;
 }
 
 void Registry::SetAssignmentVariable(Variable* var)
@@ -372,6 +378,7 @@ void Registry::SetAssignmentVariable(Variable* var)
 
 Formula* Registry::NewBlankFormula()
 {
+  m_scratchFormulas.push_back(m_scratchFormula);
   m_scratchFormula.Clear();
   return &(m_scratchFormula);
 }

@@ -30,6 +30,9 @@ public:
   //const std::vector<Formula>* GetResults() const {return &m_results;};
   //bool IsEmpty() const;
 
+  size_t GetNumAssignments() const {return m_varresults.size();};
+  std::string GetNthAssignmentVariableName(size_t n, char cc) const;
+  std::string GetNthAssignmentFormulaString(size_t n, char cc) const;
   std::string ToStringDelimitedBy(char cc) const;
 };
 
