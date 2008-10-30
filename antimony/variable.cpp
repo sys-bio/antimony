@@ -583,6 +583,9 @@ bool Variable::SetFormula(Formula* formula)
       g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
+    else {
+      delete ASTform;
+    }
   }
   if (m_sameVariable.size() > 0) {
     return g_registry.GetModule(m_namespace)->GetVariable(m_sameVariable)->SetFormula(formula);
@@ -657,6 +660,9 @@ AntimonyReaction* Variable::SetReaction(AntimonyReaction* rxn)
     if (ASTform == NULL) {
       g_registry.SetError("The reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return NULL;
+    }
+    else {
+      delete ASTform;
     }
   }
   assert(m_type==varUndefined || m_type==varDNA || m_type==varFormulaUndef || IsReaction(m_type));

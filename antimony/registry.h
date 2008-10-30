@@ -23,6 +23,8 @@ private:
   std::set<std::string>       m_variablenames;
   std::vector<std::string>    m_functions;
 
+  std::set<Variable*>      m_storedvars;
+
   std::vector<Module> m_modules;
   std::vector<std::string> m_currentModules;
   std::vector<ReactantList> m_currentReactantLists;
@@ -39,11 +41,12 @@ private:
 
 public:
   Registry();
-  ~Registry() {};
+  ~Registry();
 
   std::ifstream* input;
 
   void ClearModules();
+  void FreeVariables();
 
   int    OpenFile(const std::string filename);
   bool   SwitchToPreviousFile();
@@ -84,6 +87,7 @@ public:
   Variable* GetAssignmentVariable();
 
   const std::string* AddWord(std::string word);
+  void StoreVariable(Variable* var);
   const std::string* IsFunction(std::string word);
 
   std::string GetAntimony(std::string modulename) const;
