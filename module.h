@@ -24,7 +24,7 @@ private:
   std::string m_modulename;
   std::vector<std::string> m_variablename;
 
-  std::vector<Variable> m_variables;
+  std::vector<Variable*> m_variables;
   std::vector< std::vector<std::string> > m_exportlist;
   std::vector<std::string> m_returnvalue;
 

@@ -33,6 +33,11 @@ Registry::Registry()
   SetupFunctions();
 }
 
+Registry::~Registry()
+{
+  FreeVariables();
+}
+
 void Registry::ClearModules()
 {
   while (!SwitchToPreviousFile());
@@ -48,9 +53,17 @@ void Registry::ClearModules()
   m_currentImportedModule.clear();
   m_scratchFormula.Clear();
   m_scratchFormulas.clear();
+  FreeVariables();
   string main = "[main]";
   NewCurrentModule(&main);
 }
+
+void Registry::FreeVariables()
+{
+  for (set<Variable*>::iterator var=m_storedvars.begin(); var!=m_storedvars.end(); var++) {
+    delete *var;
+  }
+}  
 
 //Return values:  0: failure, 1: antimony, unread 2: SBML, read
 int Registry::OpenFile(const string filename)
@@ -443,6 +456,11 @@ const string*  Registry::AddWord(string word)
   ret = m_variablenames.insert(word);
   set<string>::iterator wordit = ret.first;
   return &(*wordit);
+}
+
+void Registry::StoreVariable(Variable* var)
+{
+  m_storedvars.insert(var);
 }
 
 const string* Registry::IsFunction(string word)
