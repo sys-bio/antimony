@@ -43,6 +43,12 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_rxnleftstoichiometries(),
     m_rxnrightstoichiometries()
 {
+  //Need new variables, not just pointers to the old variables.
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* newvar = new Variable(*m_variables[var]);
+    g_registry.StoreVariable(newvar);
+    m_variables[var] = newvar;
+  }
   SetNewTopName(modulename, newtopname);
   //CompileExportLists();
 }
@@ -506,16 +512,18 @@ string Module::GetAntimony(set<const Module*> usedmods) const
     if (IsReaction(type)) {
       retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses(cc) + "\n";
     }
+    else if (type == varEvent) {
+      retval += indent + var->GetEvent()->ToStringDelimitedBy(cc) + "\n";
+    }
     else if (type != varModule) {
       const Formula* form = var->GetFormula();
-      if (form != NULL && !form->IsEmpty()) {
+      if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly()) {
         retval += indent + var->GetNameDelimitedBy(cc) + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
     }
   }
-      
 
-  
+
   //end model definition
   if (m_modulename != "[main]") {
     retval += "end\n";
@@ -916,7 +924,31 @@ void Module::LoadSBML(const Model* sbml)
 
     //LS DEBUG:  add compartment assignment here when they're implemented
   }
-  //LS DEBUG:  Add compartments, constraints, events
+
+  for (unsigned int ev=0; ev<sbml->getNumEvents(); ev++) {
+    const Event* event = sbml->getEvent(ev);
+    sbmlname = getNameFromSBMLObject(event, "_E");
+    Variable* var = AddOrFindVariable(&sbmlname);
+    var->SetType(varEvent);
+
+    //Set the trigger:
+    string triggerstring(SBML_formulaToString(event->getTrigger()->getMath()));
+    Formula* trigger = g_registry.NewBlankFormula();
+    setFormulaWithString(triggerstring, trigger);
+    AntimonyEvent antevent(*trigger,var);
+    var->SetEvent(&antevent);
+
+    //Set the assignments:
+    for (unsigned int asnt=0; asnt<event->getNumEventAssignments(); asnt++) {
+      const EventAssignment* assignment = event->getEventAssignment(asnt);
+      Variable* asntvar = AddOrFindVariable(&(assignment->getVariable()));
+      Formula*  asntform = g_registry.NewBlankFormula();
+      setFormulaWithString(SBML_formulaToString(assignment->getMath()), asntform);
+      var->GetEvent()->AddResult(asntvar, asntform);
+    }
+  }
+
+  //LS DEBUG:  Add compartments, constraints
 
   //Function Definitions
   for (unsigned int func=0; func<sbml->getNumFunctionDefinitions(); func++) {
@@ -1097,4 +1129,23 @@ void Module::CreateSBMLModel()
     }
     m_sbml.addReaction(&sbmlrxn);
   }
+
+  //Events
+  for (size_t ev=0; ev < GetNumVariablesOfType(allEvents); ev++) {
+    const AntimonyEvent* event = GetNthVariableOfType(allEvents, ev)->GetEvent();
+    Event* sbmlevent = m_sbml.createEvent();
+    ASTNode_t* ASTtrig = SBML_parseFormula(event->GetTrigger()->ToStringDelimitedBy(cc).c_str());
+    Trigger trigger(ASTtrig);
+    delete ASTtrig;
+    sbmlevent->setTrigger(&trigger);
+    for (size_t asnt=0; asnt<event->GetNumAssignments(); asnt++) {
+      EventAssignment* sbmlasnt = m_sbml.createEventAssignment();
+      sbmlasnt->setVariable(event->GetNthAssignmentVariableName(asnt, cc));
+      ASTNode_t* ASTasnt = SBML_parseFormula(event->GetNthAssignmentFormulaString(asnt, cc).c_str());
+      sbmlasnt->setMath(ASTasnt);
+      delete ASTasnt;
+    }
+  }
+    
+    
 }

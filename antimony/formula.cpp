@@ -91,6 +91,16 @@ bool Formula::IsDouble() const
   return false;
 }
 
+bool Formula::IsEllipsesOnly() const
+{
+  if (m_components.size() == 1 &&
+      m_components[0].second.size() == 0 &&
+      m_components[0].first == "...") {
+    return true;
+  }
+  return false;
+}
+
 bool Formula::GetIsConst() const
 {
   for (size_t comp=0; comp<m_components.size(); comp++) {

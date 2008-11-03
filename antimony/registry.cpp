@@ -53,7 +53,6 @@ void Registry::ClearModules()
   m_currentImportedModule.clear();
   m_scratchFormula.Clear();
   m_scratchFormulas.clear();
-  FreeVariables();
   string main = "[main]";
   NewCurrentModule(&main);
 }
@@ -63,7 +62,14 @@ void Registry::FreeVariables()
   for (set<Variable*>::iterator var=m_storedvars.begin(); var!=m_storedvars.end(); var++) {
     delete *var;
   }
-}  
+}
+
+void Registry::ClearAll()
+{
+  m_oldmodules.clear();
+  FreeVariables();
+  ClearModules();
+}
 
 //Return values:  0: failure, 1: antimony, unread 2: SBML, read
 int Registry::OpenFile(const string filename)
@@ -549,11 +555,6 @@ bool Registry::RevertToModuleSet(long n)
     m_modules[mod].CompileExportLists();
   }
   return false;
-}
-
-void Registry::ClearOldModules()
-{
-  m_oldmodules.clear();
 }
 
 void Registry::FreeAll()

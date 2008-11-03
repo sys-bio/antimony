@@ -196,7 +196,7 @@ LIB_EXTERN bool revertTo(long handle)
 
 LIB_EXTERN void clearPreviousLoads()
 {
-  g_registry.ClearOldModules();
+  g_registry.ClearAll();
 }
 
 LIB_EXTERN char* getLastError()
