@@ -47,6 +47,7 @@ public:
 
   void ClearModules();
   void FreeVariables();
+  void ClearAll();
 
   int    OpenFile(const std::string filename);
   bool   SwitchToPreviousFile();
@@ -101,7 +102,6 @@ public:
   std::string GetError() {return m_error;};
   long SaveModules();
   bool RevertToModuleSet(long n);
-  void ClearOldModules();
 
   //Keeping track of malloc'd stuff so we can free it ourselves if need be.
   std::vector<char*>    m_charstars;

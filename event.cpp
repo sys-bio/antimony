@@ -98,6 +98,7 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
   Variable* actualvar = module->GetVariable(m_name);
   if (actualvar == NULL) {
     //um what?
+    assert(false);
     return retval;
   }
   retval += actualvar->GetNameDelimitedBy(cc) + ": @(";
@@ -110,7 +111,7 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
     retval += " = ";
     retval += m_formresults[result].ToStringDelimitedBy(cc);
   }
-  retval += ";\n";
+  retval += ";";
   
   return retval;
 }
