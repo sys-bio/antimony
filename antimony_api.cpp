@@ -138,12 +138,11 @@ LIB_EXTERN long loadFile(const char* filename)
   if (ofreturn==0) return -1; //file read failure
   if (ofreturn==2) {
     //SBML file
-    g_registry.CompileAllExportLists();
+    g_registry.FinalizeModules();
     return g_registry.SaveModules();
   }
   assert(ofreturn==1); //antimony file
   int yyreturn = yyparse();
-  g_registry.CompileAllExportLists();
   if (yyreturn != 0) {
     if (g_registry.GetError().size() == 0) {
       assert(false); //Need to fill in the reason why we failed explicitly, if possible.
@@ -160,6 +159,7 @@ LIB_EXTERN long loadFile(const char* filename)
     g_registry.AddErrorPrefix("Error in file '" + g_registry.GetLastFile() + "', line " + ToString(yylloc_first_line) + ":  ");
     return -1;
   }
+  g_registry.FinalizeModules();
   return g_registry.SaveModules();
 }
 
@@ -557,7 +557,7 @@ LIB_EXTERN char* getTriggerForEvent(const char* moduleName, size_t eventno)
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
   if (var==NULL) return NULL;
-  string trig = var->GetEvent()->GetTrigger()->ToStringDelimitedBy(g_registry.GetCC());
+  string trig = var->GetEvent()->GetTrigger()->ToDelimitedStringWithEllipses(g_registry.GetCC());
   return getCharStar(trig.c_str());
 }
 
@@ -678,6 +678,11 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
     return subModules;
   case varEvent:
     return allEvents;
+  case varCompartment:
+    if (isconst) return constCompartments;
+    return varCompartments;
+  case varStrand:
+    return allStrands;
   }
   assert(false); //uncaught var_type
   g_registry.SetError("Coding error:  Didn't include a return type for variable type " + VarTypeToString(vtype) + " in getTypeOfSymbol; antimony_api.cpp.  Email the author to fix.");

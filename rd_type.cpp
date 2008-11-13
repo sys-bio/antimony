@@ -36,12 +36,47 @@ string VarTypeToString(const var_type vtype)
     return "Module";
   case varEvent:
     return "Event";
+  case varCompartment:
+    return "Compartment";
+  case varStrand:
+    return "Strand";
   case varUndefined:
     return "Undefined";
   }
   assert(false);
   return "";
 }
+
+string VarTypeToAntimony(const var_type vtype)
+{
+  switch(vtype) {
+  case varSpeciesUndef:
+    return "species ";
+  case varFormulaUndef:
+    return "formula ";
+  case varReactionUndef:
+    return "reaction ";
+  case varReactionGene:
+    return "gene ";
+  case varInteraction:
+    return "reaction ";
+  case varFormulaOperator:
+    return "operator ";
+  case varDNA:
+    return "DNA ";
+  case varEvent:
+    return "event ";
+  case varCompartment:
+    return "compartment ";
+  case varStrand:
+  case varModule:
+  case varUndefined:
+    assert(false);
+    return "undefinable_type";
+    break;
+  }
+}
+
 
 var_type StringToVarType(const string& name)
 {
@@ -75,6 +110,12 @@ var_type StringToVarType(const string& name)
   if (CaselessStrCmp(name,"Event")) {
     return varEvent;
   }
+  if (CaselessStrCmp(name,"Compartment")) {
+    return varCompartment;
+  }
+  if (CaselessStrCmp(name,"Strand")) {
+    return varStrand;
+  }
   assert(false); //uncaught var type
   return varUndefined;
 }
@@ -92,6 +133,8 @@ bool IsReaction(const var_type vtype)
   case varDNA:
   case varModule:
   case varEvent:
+  case varCompartment:
+  case varStrand:
   case varUndefined:
     return false;
   }
@@ -126,6 +169,8 @@ bool IsSpecies(const var_type vtype)
   case varDNA:
   case varModule:
   case varEvent:
+  case varCompartment:
+  case varStrand:
   case varUndefined:
     return false;
   }
@@ -146,6 +191,8 @@ bool IsDNA(const var_type vtype)
   case varFormulaUndef:
   case varModule:
   case varEvent:
+  case varCompartment:
+  case varStrand:
   case varUndefined:
     return false;
   }
@@ -160,12 +207,14 @@ bool HasOrIsFormula(const var_type vtype)
   case varFormulaOperator:
   case varFormulaUndef:
   case varDNA:
+  case varCompartment:
     return true;
   case varReactionGene:
   case varReactionUndef:
   case varInteraction:
   case varModule:
   case varEvent: //Not for the purposes of Jarnac, at any rate.
+  case varStrand:
   case varUndefined:
     return false;
   }
@@ -208,8 +257,12 @@ string ReturnTypeToString(return_type rtype)
     return "Interaction (generic)";
   case allEvents:
     return "Event";
+  case varCompartments:
+    return "variable-sized compartment";
   case allUnknown:
     return "Unknown type";
+  case allStrands:
+    return "DNA strand";
   case constSpecies:
     return "constant/boundary species (generic)";
   case constFormulas:
@@ -220,6 +273,8 @@ string ReturnTypeToString(return_type rtype)
     return "constant DNA (operator)";
   case constGenes:
     return "constant DNA (gene; also a reaction)";
+  case constCompartments:
+    return "constant-sized compartment";
   case subModules:
     return "a submodule";
   }

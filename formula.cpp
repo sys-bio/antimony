@@ -50,7 +50,7 @@ void Formula::AddEllipses()
   pair<string, vector<string> > newvar;
   string ellipses = "...";
   newvar = make_pair(ellipses, novar);
-  assert(m_components.size()==0);
+  //assert(m_components.size()==0);
   m_components.push_back(newvar);
 }
 
@@ -200,32 +200,59 @@ vector<string> Formula::GetSimpleVariable() const
   return m_components[0].second;
 }
 
-string Formula::ToDelimitedStringWithUpvar(char cc, Variable* upvar) const
+string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, size_t> > strands) const
 {
   string retval;
-  for (size_t comp=0; comp < m_components.size(); comp++) {
-    vector<string> varname = m_components[comp].second;
-    Module* module = g_registry.GetModule(m_components[comp].first);
-    Variable* actualvar = NULL;
-    if (module != NULL) {
-      actualvar = module->GetVariable(varname);
+  if (strands.size() == 0) {
+    Variable* novar = NULL;
+    strands.push_back(make_pair(novar, 0));
+  }
+  if (m_components.size() == 0) return "";
+  for (size_t strand=0; strand<strands.size(); strand++) {
+    if (strand > 0) {
+      retval += " + (";
     }
-    if (m_components[comp].first == "...") {
-      actualvar = upvar;
-    }
-    if (actualvar != NULL) {
-      retval += actualvar->GetNameDelimitedBy(cc);
-    }
-    else if (varname.size() > 0) {
-      assert(false); //Can't find the variable; should be impossible
-    }
-    else {
-      if (m_components[comp].first != "...") {
-        retval += m_components[comp].first;
+    for (size_t comp=0; comp < m_components.size(); comp++) {
+      if (m_components[comp].first == "...") {
+        if (strands[strand].second ==0) {
+          if (strands[strand].first==NULL) {
+            retval += "0";
+          }
+          else {
+            vector<pair<Variable*, size_t> > supervars = strands[strand].first->GetStrandVars();
+            assert(supervars.size() < 2);
+            if (supervars.size() == 0 || supervars[0].second == 0) {
+              retval += "0";
+            }
+            else {
+              retval += "(" + supervars[0].first->GetFormulaForNthEntryInStrand(cc, supervars[0].second-1) + ")";
+            }
+          }
+        }
+        else {
+          retval += "(" + strands[strand].first->GetFormulaForNthEntryInStrand(cc, strands[strand].second-1) + ")";
+        }
       }
       else {
-        retval += "0";
+        vector<string> varname = m_components[comp].second;
+        Module* module = g_registry.GetModule(m_components[comp].first);
+        Variable* actualvar = NULL;
+        if (module != NULL) {
+          actualvar = module->GetVariable(varname);
+        }
+        if (actualvar != NULL) {
+          retval += actualvar->GetNameDelimitedBy(cc);
+        }
+        else if (varname.size() > 0) {
+          assert(false); //Can't find the variable; should be impossible
+        }
+        else {
+          retval += m_components[comp].first;
+        }
       }
+    }
+    if (strand > 0) {
+      retval += ")";
     }
   }
   return retval;
