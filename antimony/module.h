@@ -53,8 +53,8 @@ public:
   Variable* AddOrFindVariable(const std::string* name);
   Variable* AddNewNumberedVariable(const std::string name);
   void AddVariableToExportList(Variable* var);
-  AntimonyReaction* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula);
-  AntimonyReaction* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var);
+  Variable* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula);
+  Variable* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var);
   bool SetFormula(Formula* formula);
 
   Variable* GetVariable(std::vector<std::string> name);
@@ -66,9 +66,7 @@ public:
   Variable* GetNextExportVariable();
   size_t GetNumExportVariables() const {return m_exportlist.size();};
   Variable* GetUpstreamDNA();
-  const Variable* GetUpstreamDNA() const;
   Variable* GetDownstreamDNA();
-  std::vector<std::string> GetNewCrossModuleDNALinks() const;
 
   const std::string& GetModuleName() const;
   std::vector<std::string> GetVariableName() const;
@@ -86,7 +84,7 @@ public:
 
 
   //Output for the API
-  void CompileExportLists();
+  void Finalize();
   size_t GetNumVariablesOfType(return_type rtype) const;
   const Variable* GetNthVariableOfType(return_type rtype, size_t n) const;
   bool   AreEquivalent(return_type rtype, var_type vtype) const;

@@ -39,8 +39,9 @@
   Formula* formula;
   Module* module;
   ReactantList* reactantList;
-  AntimonyReaction* reaction;
   Variable* variable;
+  Variable* variable_in;
+  Variable* maybein;
   Variable* localvariable;
 }
 
@@ -48,15 +49,14 @@
 %type <formula> formula
 %type <module> module
 %type <reactantList> reactantList
-%type <reaction> reaction
 %type <reactionDivider> reactionDivider
-%type <variable> variable localvariable
+%type <variable> variable variable_in maybein localvariable
 
 %left '(' ')' '+' '-' '*' '/' '^' ','
 
 %token <num> NUM
 %token <word> WORD MODNAME FILENAME
-%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES REACTION DNA GENE OPERATOR EVENT VAR CONST DASHES ELLIPSES FUNCTION INCLUDE
+%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES REACTION DNA GENE OPERATOR EVENT COMPARTMENT IN IS VAR CONST DASHES ELLIPSES FUNCTION INCLUDE
 
 %debug
 %error-verbose
@@ -76,13 +76,13 @@ include:        '#' INCLUDE FILENAME { if (g_registry.OpenFile(*($3))==0) YYABOR
 module:         MODULE WORD {g_registry.NewCurrentModule($2);} '(' variableexportlist ')' modulebody END
                 {
                   $$ = g_registry.CurrentModule();
-                  $$->CompileExportLists();
+                  $$->Finalize();
                   g_registry.RevertToPreviousModule();
                 }
         |       MODULE WORD {g_registry.NewCurrentModule($2);} modulebody END
                 {
                   $$ = g_registry.CurrentModule();
-                  $$->CompileExportLists();
+                  $$->Finalize();
                   g_registry.RevertToPreviousModule();
                 }
         |       MODULE MODNAME {g_registry.SetError("line " + ToString(@2.last_line) + ":  module '" + *($2) + "' already defined."); YYABORT;}
@@ -104,8 +104,14 @@ variable:       WORD {$$ = g_registry.AddVariableToCurrent($1); }
         |       '<' variable '>' {$$ = $2; if ($$->SetIsConst(true)) YYABORT;}
         ;
 
-//Nothing here needs to actually do anything, since we've already added these
-// things to the current module.
+variable_in:    variable {$$ = $1;}
+        |       variable IN variable {if ($1->SetCompartment($3)) YYABORT; $$ = $1;}
+        ;
+
+maybein:        /* empty */ {$$ = NULL;}
+        |       IN variable {$$ = $2;}
+        ;
+
 modulebody:     modulepart {}
         |       modulebody modulepart {}
         ;
@@ -114,20 +120,26 @@ modulepart:     reaction lineend {}
         |       assignment lineend {}
         |       submodule lineend {}
         |       varinitialize lineend {}
-        |       dnastrand lineend {}
+        |       dnadef lineend {}
         |       event lineend {}
         |       lineend {}
         ;
 
-reaction:       variable ':' { g_registry.CurrentModule()->SetReactionVariable($1); } reactantList reactionDivider reactantList ';' formula
+reaction:       variable_in ':' { g_registry.CurrentModule()->SetReactionVariable($1); } reactantList reactionDivider reactantList ';' formula maybein
                 {
-                  $$ = g_registry.AddNewReactionToCurrent($4, $5, $6, $8, g_registry.CurrentModule()->GetReactionVariable());
-                  if ($$ == NULL) YYABORT;
+                  Variable* var = g_registry.AddNewReactionToCurrent($4, $5, $6, $8, g_registry.CurrentModule()->GetReactionVariable());
+                  if (var == NULL) YYABORT;
+                  if ($9 != NULL) {
+                    if ($1->SetCompartment($9)) YYABORT;
+                  }
                 }
-        |       reactantList reactionDivider reactantList ';' formula
+        |       reactantList reactionDivider reactantList ';' formula maybein
                 {
-                  $$ = g_registry.AddNewReactionToCurrent($1, $2, $3, $5);
-                  if ($$ == NULL) YYABORT;
+                  Variable* var = g_registry.AddNewReactionToCurrent($1, $2, $3, $5);
+                  if (var == NULL) YYABORT;
+                  if ($6 != NULL) {
+                    if (var->SetCompartment($6)) YYABORT;
+                  }
                 }
         ;
 
@@ -151,6 +163,7 @@ formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
         |       NUM  {$$ = g_registry.NewBlankFormula(); $$->AddNum($1); }
         |       FUNCTION {$$ = g_registry.NewBlankFormula(); $$->AddText($1);}
         |       mathThing {$$ = g_registry.NewBlankFormula(); $$->AddMathThing($1); }
+        |       formula ELLIPSES {$$ = $1; $1->AddEllipses();}
         |       formula variable {$$ = $1; $1->AddVariable($2); }
         |       formula NUM  {$$ = $1; $1->AddNum($2); }
         |       formula FUNCTION {$$ = $1; $1->AddText($2);}
@@ -178,11 +191,12 @@ lineend:        ';' {}
         |       '\n' {}
         ;
 
-assignment:     variable '=' { g_registry.SetAssignmentVariable($1); } formula {if (g_registry.GetAssignmentVariable()->SetFormula($4)) YYABORT; }
+assignment:     variable_in '=' formula {if ($1->SetFormula($3)) YYABORT; }
+        |       variable_in IS variable {if ($1->Synchronize($3)) YYABORT;}
         ;
 
-submodule:      variable ':' MODNAME '(' {if ($1->SetModule($3)) YYABORT;} variableimportlist ')'
-        |       MODNAME '(' {if(g_registry.CurrentModule()->SetModule($1)) YYABORT;} variableimportlist ')'
+submodule:      variable ':' MODNAME '(' {if ($1->SetModule($3)) YYABORT;} variableimportlist ')' maybein {if ($8 != NULL) {if ($1->SetCompartment($8)) YYABORT;}}
+        |       MODNAME '(' {if(g_registry.CurrentModule()->SetModule($1)) YYABORT;} variableimportlist ')' maybein {if ($6 != NULL) {if (g_registry.SetCompartmentOfCurrentSubmod($6)) YYABORT;}}
         ;
 variableimportlist:
                 /* empty */ {}
@@ -201,70 +215,89 @@ varinitialize:  specinit { }
         |       geneinit { }
         |       operatorinit { }
         |       eventinit { }
+        |       compartmentinit { }
         |       constspecinit { }
         |       constdnainit { }
         |       constoperatorinit { }
         |       constinit { }
+        |       constcompartmentinit { }
         ;
 
-specinit:       SPECIES variable {if ($2->SetType(varSpeciesUndef)) YYABORT; }
-        |       VAR SPECIES variable {if ($3->SetType(varSpeciesUndef)) YYABORT; }
-        |       specinit ',' variable {if ($3->SetType(varSpeciesUndef)) YYABORT; }
+specinit:       SPECIES variable_in {if ($2->SetType(varSpeciesUndef)) YYABORT; }
+        |       VAR SPECIES variable_in {if ($3->SetType(varSpeciesUndef)) YYABORT; }
+        |       specinit ',' variable_in {if ($3->SetType(varSpeciesUndef)) YYABORT; }
         ;
 
-reactioninit:   REACTION variable {if ($2->SetType(varReactionUndef)) YYABORT; }
-        |       VAR REACTION variable {if ($3->SetType(varReactionUndef)) YYABORT; }
-        |       reactioninit ',' variable {if ($3->SetType(varReactionUndef)) YYABORT; }
+reactioninit:   REACTION variable_in {if ($2->SetType(varReactionUndef)) YYABORT; }
+        |       VAR REACTION variable_in {if ($3->SetType(varReactionUndef)) YYABORT; }
+        |       reactioninit ',' variable_in {if ($3->SetType(varReactionUndef)) YYABORT; }
         ;
 
-dnainit:        DNA variable {if ($2->SetType(varDNA)) YYABORT; }
-        |       VAR DNA variable {if ($3->SetType(varDNA)) YYABORT; }
-        |       dnainit ',' variable {if ($3->SetType(varDNA)) YYABORT; }
+dnainit:        DNA variable_in {if ($2->SetType(varDNA)) YYABORT; }
+        |       VAR DNA variable_in {if ($3->SetType(varDNA)) YYABORT; }
+        |       dnainit ',' variable_in {if ($3->SetType(varDNA)) YYABORT; }
         ;
 
-geneinit:       GENE variable {if ($2->SetType(varReactionGene)) YYABORT; }
-        |       VAR GENE variable {if ($3->SetType(varReactionGene)) YYABORT; }
-        |       geneinit ',' variable {if ($3->SetType(varReactionGene)) YYABORT; }
+geneinit:       GENE variable_in {if ($2->SetType(varReactionGene)) YYABORT; }
+        |       VAR GENE variable_in {if ($3->SetType(varReactionGene)) YYABORT; }
+        |       geneinit ',' variable_in {if ($3->SetType(varReactionGene)) YYABORT; }
         ;
 
-operatorinit:   OPERATOR variable {if ($2->SetType(varFormulaOperator)) YYABORT; }
-        |       VAR OPERATOR variable {if ($3->SetType(varFormulaOperator)) YYABORT; }
-        |       operatorinit ',' variable {if ($3->SetType(varFormulaOperator)) YYABORT; }
+operatorinit:   OPERATOR variable_in {if ($2->SetType(varFormulaOperator)) YYABORT; }
+        |       VAR OPERATOR variable_in {if ($3->SetType(varFormulaOperator)) YYABORT; }
+        |       operatorinit ',' variable_in {if ($3->SetType(varFormulaOperator)) YYABORT; }
         ;
 
-eventinit:      EVENT variable {if ($2->SetType(varEvent)) YYABORT; }
-        |       VAR EVENT variable {if ($3->SetType(varEvent)) YYABORT; }
-        |       eventinit ',' variable {if ($3->SetType(varEvent)) YYABORT; }
+eventinit:      EVENT variable_in {if ($2->SetType(varEvent)) YYABORT; }
+        |       VAR EVENT variable_in {if ($3->SetType(varEvent)) YYABORT; }
+        |       eventinit ',' variable_in {if ($3->SetType(varEvent)) YYABORT; }
         ;
 
-constspecinit:  CONST SPECIES variable {if ($3->SetType(varSpeciesUndef)) YYABORT; 
+compartmentinit:
+                COMPARTMENT variable_in {if ($2->SetType(varCompartment)) YYABORT; }
+        |       VAR COMPARTMENT variable_in {if ($3->SetType(varCompartment)) YYABORT; }
+        |       compartmentinit ',' variable_in {if ($3->SetType(varCompartment)) YYABORT; }
+        ;
+
+constspecinit:  CONST SPECIES variable_in {if ($3->SetType(varSpeciesUndef)) YYABORT; 
                                         if ($3->SetIsConst(true)) YYABORT;}
-        |       constspecinit ',' variable {if ($3->SetType(varSpeciesUndef)) YYABORT; 
+        |       constspecinit ',' variable_in {if ($3->SetType(varSpeciesUndef)) YYABORT; 
                                                if ($3->SetIsConst(true)) YYABORT;}
         ;
 
 constdnainit:
-                CONST DNA variable {if ($3->SetType(varDNA)) YYABORT; 
+                CONST DNA variable_in {if ($3->SetType(varDNA)) YYABORT; 
                                     if ($3->SetIsConst(true)) YYABORT;}
-        |       constdnainit ',' variable {if ($3->SetType(varDNA)) YYABORT; 
+        |       constdnainit ',' variable_in {if ($3->SetType(varDNA)) YYABORT; 
                                            if ($3->SetIsConst(true)) YYABORT;}
         ;
 
 constoperatorinit:
-                CONST OPERATOR variable {if ($3->SetType(varFormulaOperator)) YYABORT; 
+                CONST OPERATOR variable_in {if ($3->SetType(varFormulaOperator)) YYABORT; 
                                          if ($3->SetIsConst(true)) YYABORT;}
-        |       constoperatorinit ',' variable {if ($3->SetType(varFormulaOperator)) YYABORT; 
+        |       constoperatorinit ',' variable_in {if ($3->SetType(varFormulaOperator)) YYABORT; 
                                                 if ($3->SetIsConst(true)) YYABORT;}
         ;
 
-constinit:      CONST variable {if ($2->SetIsConst(true)) YYABORT;}
-        |       constinit ',' variable {if ($3->SetIsConst(true)) YYABORT;}
+constcompartmentinit:
+                CONST COMPARTMENT variable_in {if ($3->SetType(varCompartment)) YYABORT; 
+                                            if ($3->SetIsConst(true)) YYABORT;}
+        |       constcompartmentinit ',' variable_in {if ($3->SetType(varCompartment)) YYABORT; 
+                                                   if ($3->SetIsConst(true)) YYABORT;}
+        ;
+
+constinit:      CONST variable_in {if ($2->SetIsConst(true)) YYABORT;}
+        |       constinit ',' variable_in {if ($3->SetIsConst(true)) YYABORT;}
+        ;
+
+dnadef:         variable ':' dnastrand {if (g_registry.SetStrandAs($1)) YYABORT;}
+        |       dnastrand {if (g_registry.SaveWorkingStrand()) YYABORT;}
         ;
 
 dnastrand:      DASHES variable {if (g_registry.SetNewUpstreamOpen($2)) YYABORT;}
-        |       DASHES dnamiddle {g_registry.GetWorkingStrand()->SetOpenUpstream(); }
+        |       DASHES dnamiddle {g_registry.SetOpenUpstream(); }
         |       dnamiddle variable {if (g_registry.SetDownstreamEnd($2)) YYABORT;}
-        |       DASHES dnamiddle variable {g_registry.GetWorkingStrand()->SetOpenUpstream(); if(g_registry.SetDownstreamEnd($3)) YYABORT;}
+        |       DASHES dnamiddle variable {g_registry.SetOpenUpstream(); if(g_registry.SetDownstreamEnd($3)) YYABORT;}
         |       dnamiddle { }
         ;
 
@@ -276,9 +309,10 @@ event:          '@' '(' formula ')' ':' {if (g_registry.SetNewCurrentEvent($3)) 
         |       variable ':' '@' '(' formula ')' ':' {if (g_registry.SetNewCurrentEvent($5, $1)) YYABORT;} assignmentlist {}
         ;
 
-assignmentlist: variable '=' formula ',' assignmentlist {if (g_registry.AddResultToCurrentEvent($1, $3)) YYABORT;}
+assignmentlist: variable '=' formula ':' assignmentlist {if (g_registry.AddResultToCurrentEvent($1, $3)) YYABORT;}
         |       variable '=' formula {if (g_registry.AddResultToCurrentEvent($1, $3)) YYABORT;}
         ;
+
 %%
 
 
@@ -350,6 +384,15 @@ int yylex(void)
     }
     if (CaselessStrCmp(word, "operator")) {
       return OPERATOR;
+    }
+    if (CaselessStrCmp(word, "compartment")) {
+      return COMPARTMENT;
+    }
+    if (CaselessStrCmp(word, "in")) {
+      return IN;
+    }
+    if (CaselessStrCmp(word, "is")) {
+      return IS;
     }
     if (CaselessStrCmp(word, "var")) {
       return VAR;

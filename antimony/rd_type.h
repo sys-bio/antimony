@@ -7,9 +7,10 @@
 enum rd_type {rdBecomes, rdActivates, rdInhibits, rdInfluences};
 std::string RDToString(rd_type type);
 
-enum var_type {varSpeciesUndef, varFormulaUndef, varDNA, varFormulaOperator, varReactionGene, varReactionUndef, varInteraction, varUndefined, varModule, varEvent};
+enum var_type {varSpeciesUndef, varFormulaUndef, varDNA, varFormulaOperator, varReactionGene, varReactionUndef, varInteraction, varUndefined, varModule, varEvent, varCompartment, varStrand};
 
 std::string VarTypeToString(const var_type vtype);
+std::string VarTypeToAntimony(const var_type vtype);
 var_type StringToVarType(const std::string& name);
 bool IsReaction(const var_type var);
 bool IsInteraction(const rd_type rdtype);
@@ -19,7 +20,7 @@ bool HasOrIsFormula(const var_type var);
 bool IsReaction(const std::string& name);
 bool IsSpecies(const std::string& name);
 
-enum return_type {allSymbols, allSpecies, allFormulas, allReactions, allInteractions, allEvents, allUnknown, varSpecies, varFormulas, varAnyDNA, varOperators, varGenes, constSpecies, constFormulas, constAnyDNA, constOperators, constGenes, subModules};
+enum return_type {allSymbols, allSpecies, allFormulas, allReactions, allInteractions, allEvents, allStrands, allUnknown, varSpecies, varFormulas, varAnyDNA, varOperators, varGenes, varCompartments, constSpecies, constFormulas, constAnyDNA, constOperators, constGenes, constCompartments, subModules};
 std::string ReturnTypeToString(return_type rtype);
 
 

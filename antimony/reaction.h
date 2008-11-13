@@ -41,7 +41,7 @@ public:
   bool IsEmpty() const;
   bool LeftIsEmpty() const;
 
-  std::string ToStringDelimitedBy(char cc) const;
+  std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands) const;
   std::string ToDelimitedStringWithEllipses(char cc) const;
   std::vector<std::string> LeftToStringVecDelimitedBy(char cc) const;
   std::vector<std::string> RightToStringVecDelimitedBy(char cc) const;

@@ -3,9 +3,11 @@
 
 #include <string>
 #include <vector>
+#include <set>
+#include "dnastrand.h"
+#include "event.h"
 #include "formula.h"
 #include "reaction.h"
-#include "event.h"
 
 class Module;
 
@@ -18,21 +20,21 @@ private:
 
   std::vector<std::string> m_name;
   std::vector<std::string> m_printedname;
-  std::string m_namespace; //The name of the high-level module we're in.
+  std::string m_module; //The name of the high-level module we're in.
 
   //The variable's value is either a different Variable object (with a different name):
   std::vector<std::string> m_sameVariable;
-  bool m_listseparately;
 
   //Or, one (and only one!) of the following:
   Formula m_valFormula;
   AntimonyReaction m_valReaction;
   std::vector<Module> m_valModule;
   AntimonyEvent m_valEvent;
+  DNAStrand m_valStrand;
 
-  //If the variable is in a strand of DNA, this tells us how they are related
-  std::vector<std::string> m_upstream;
-  std::vector<std::string> m_downstream;
+  //If we've set the compartment we're in, this tells us where we are.
+  std::vector<std::string> m_compartment;
+  std::set<std::vector<std::string> > m_strands;
 
   //This tells us what kind of variable we're dealing with.
   var_type m_type;
@@ -63,37 +65,27 @@ public:
   AntimonyEvent* GetEvent();
   Variable* GetSubVariable(const std::string* name);
   Variable* GetSameVariable();
-  Variable* GetUpstreamDNA() const;
-  Variable* GetDownstreamDNA() const;
-  std::string GetNamespace() const {return m_namespace;};
+  const DNAStrand* GetDNAStrand() const;
+  Variable* GetCompartment() const;
+  std::string GetNamespace() const {return m_module;};
   bool GetIsConst() const;
-  bool GetListSeparately() const {return m_listseparately;};
   bool GetIsEquivalentTo(const Variable* var) const;
-  bool IsSameVarInNewModule(const Variable* var) const;
-
-  bool IsDNAStart() const;
-  bool IsDNAStartForModule() const;
-  bool IsUnlinked(bool up) const;
-  bool DoesNotLinkTo(Variable* var) const;
-  bool HasOpenUpstream() const;
-  bool HasOpenDownstream() const;
-  std::vector<std::string> GetDNAStringDelimitedBy(char cc) const;
-  std::string GetDNAStringForThisNamespace() const;
+  std::vector<std::pair<Variable*, size_t> > GetStrandVars() const;
+  bool IsCompleteStrand() const;
+  std::string GetFormulaForNthEntryInStrand(char cc, size_t n);
 
   bool SetType(var_type newtype);
   bool SetFormula(Formula* formula);
-  AntimonyReaction* SetReaction(AntimonyReaction* rxn);
+  bool SetReaction(AntimonyReaction* rxn);
   bool SetModule(const std::string* modname);
   bool SetEvent(const AntimonyEvent* event);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   void SetPrintedName(std::vector<std::string> printedname);
   bool SetIsConst(bool constant);
-  void SetListSeparately(bool ls) {m_listseparately = ls;};
 
-  void SetOpenUpstream();
-  void SetOpenDownstream();
-  void SetDownstream(Variable* var);
-  void SetUpstream(Variable* var);
+  bool SetCompartment(Variable* var);
+  bool SetDNAStrand(DNAStrand& strand);
+  bool SetIsInStrand(Variable* var);
 
   bool Synchronize(Variable* clone);
 

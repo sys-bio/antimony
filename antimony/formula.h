@@ -1,7 +1,7 @@
 #ifndef FORMULA_H
 #define FORMULA_H
 
-#include <string.h>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -44,8 +44,7 @@ public:
 
   std::vector<std::string> GetSimpleVariable() const;
 
-  std::string ToStringDelimitedBy(char cc) const { return ToDelimitedStringWithUpvar(cc, NULL);} ;
-  std::string ToDelimitedStringWithUpvar(char cc, Variable* var) const;
+  std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands) const;
   std::string ToDelimitedStringWithEllipses(char cc) const;
 };
 

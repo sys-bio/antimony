@@ -80,7 +80,7 @@ bool AntimonyReaction::LeftIsEmpty() const
   return (m_left.Size() == 0);
 }
 
-string AntimonyReaction::ToStringDelimitedBy(char cc) const
+string AntimonyReaction::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, size_t> > strands) const
 {
   string retval;
 
@@ -97,7 +97,7 @@ string AntimonyReaction::ToStringDelimitedBy(char cc) const
       retval += m_name[i];
     }
   }
-  retval += ": " + m_left.ToStringDelimitedBy(cc) + " " + RDToString(m_divider) + " " + m_right.ToStringDelimitedBy(cc) + "; " + m_formula.ToStringDelimitedBy(cc) + ";";
+  retval += ": " + m_left.ToStringDelimitedBy(cc) + " " + RDToString(m_divider) + " " + m_right.ToStringDelimitedBy(cc) + "; " + m_formula.ToDelimitedStringWithStrands(cc, strands) + ";";
   return retval;
 }
 

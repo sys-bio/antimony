@@ -43,14 +43,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_rxnleftstoichiometries(),
     m_rxnrightstoichiometries()
 {
-  //Need new variables, not just pointers to the old variables.
-  for (size_t var=0; var<m_variables.size(); var++) {
-    Variable* newvar = new Variable(*m_variables[var]);
-    g_registry.StoreVariable(newvar);
-    m_variables[var] = newvar;
-  }
   SetNewTopName(modulename, newtopname);
-  //CompileExportLists();
 }
 
 Variable* Module::AddOrFindVariable(const string* name)
@@ -94,13 +87,13 @@ void Module::AddVariableToExportList(Variable* var)
   m_exportlist.push_back(var->GetName());
 }
 
-AntimonyReaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula)
+Variable* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula)
 {
   Variable* newrxn = AddNewNumberedVariable("_J");
   return AddNewReaction(left, divider, right, formula, newrxn);
 }
 
-AntimonyReaction* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var)
+Variable* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var)
 {
   string err = "When defining reaction '" + var->GetNameDelimitedBy('.') + "':  ";
   if (left->SetVarsTo(varSpeciesUndef)) {
@@ -126,10 +119,11 @@ AntimonyReaction* Module::AddNewReaction(ReactantList* left, rd_type divider, Re
   }
   AntimonyReaction newrxn(*left, divider, *right, *formula, var);
   if (formula->ContainsVar(var)) {
-    g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy('.') + "' contains a reference to itself directly or indirectly in its reaction rate (" + formula->ToStringDelimitedBy('.') + ").");
+    g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy('.') + "' contains a reference to itself directly or indirectly in its reaction rate (" + formula->ToDelimitedStringWithEllipses('.') + ").");
     return NULL;
   }
-  return var->SetReaction(&newrxn);
+  if (var->SetReaction(&newrxn)) return NULL;
+  return var;
 }
 
 bool Module::SetFormula(Formula* formula)
@@ -234,32 +228,14 @@ Variable* Module::GetNextExportVariable()
 Variable* Module::GetUpstreamDNA()
 {
   Variable* retvar = NULL;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->HasOpenUpstream()) {
+  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
+    Variable* var = m_variables[vnum];
+    if (var->GetType() == varStrand && var->GetDNAStrand()->GetUpstreamOpen()) {
       if (retvar != NULL) {
-        g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has multiple sites at which to attach upstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in 'NEWDNA--" + m_variables[var]->GetNameDelimitedBy('.') + "'.");
+        g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has multiple sites at which to attach upstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in 'NEWDNA--" + var->GetNameDelimitedBy('.') + "'.");
         return NULL;
       }
-      retvar = m_variables[var];
-    }
-  }
-  if (retvar==NULL) {
-    g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has no 'open ends' at which to attach DNA.");
-    return NULL;
-  }
-  return retvar;
-}
-
-const Variable* Module::GetUpstreamDNA() const
-{
-  const Variable* retvar = NULL;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->HasOpenUpstream()) {
-      if (retvar != NULL) {
-        g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has multiple sites at which to attach upstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in 'NEWDNA--" + m_variables[var]->GetNameDelimitedBy('.') + "'.");
-        return NULL;
-      }
-      retvar = m_variables[var];
+      retvar = var;
     }
   }
   if (retvar==NULL) {
@@ -272,13 +248,14 @@ const Variable* Module::GetUpstreamDNA() const
 Variable* Module::GetDownstreamDNA()
 {
   Variable* retvar = NULL;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->HasOpenDownstream()) {
+  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
+    Variable* var = m_variables[vnum];
+    if (var->GetType() == varStrand && var->GetDNAStrand()->GetUpstreamOpen()) {
       if (retvar != NULL) {
-        g_registry.SetError("Unable to attach DNA downstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has multiple sites at which to attach downstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in '" + m_variables[var]->GetNameDelimitedBy('.') + "--NEWDNA'.");
+        g_registry.SetError("Unable to attach DNA downstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has multiple sites at which to attach downstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in '" + var->GetNameDelimitedBy('.') + "--NEWDNA'.");
         return NULL;
       }
-      retvar = m_variables[var];
+      retvar = var;
     }
   }
   if (retvar==NULL) {
@@ -286,33 +263,6 @@ Variable* Module::GetDownstreamDNA()
     return NULL;
   }
   return retvar;
-}
-
-vector<string> Module::GetNewCrossModuleDNALinks() const
-{
-  vector<string> newlinks;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    const Variable* downvar = m_variables[var]->GetDownstreamDNA();
-    if (downvar != NULL && downvar->GetName().size() > 1) {
-      vector<string> origname = m_variables[var]->GetName();
-      origname.erase(origname.begin());
-      const Variable* origvar = g_registry.GetModule(m_modulename)->GetVariable(origname);
-      const Variable* origdown = origvar->GetDownstreamDNA();
-      if (!(downvar->IsSameVarInNewModule(origdown))) {
-        string upname = m_variables[var]->GetNameDelimitedBy('.');
-        string downname = downvar->GetNameDelimitedBy('.');
-        if (m_variables[var] == g_registry.GetModule(m_variables[var]->GetNamespace())->GetDownstreamDNA()) {
-          upname = ToStringFromVecDelimitedBy(m_variablename, '.');
-        }
-        const Module* downmod = g_registry.GetModule(downvar->GetNamespace());
-        if (downvar == downmod->GetUpstreamDNA()) {
-          downname = downmod->GetVariableNameDelimitedBy('.');
-        }
-        newlinks.push_back(m_variables[var]->GetNameDelimitedBy('.') + "--" + downvar->GetNameDelimitedBy('.'));
-      }
-    }
-  }
-  return newlinks;
 }
 
 const string& Module::GetModuleName() const
@@ -337,6 +287,12 @@ string Module::GetVariableNameDelimitedBy(char cc) const
 
 void Module::SetNewTopName(string newmodname, string newtopname)
 {
+  //Need new variables, not just pointers to the old variables.
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* newvar = new Variable(*m_variables[var]);
+    g_registry.StoreVariable(newvar);
+    m_variables[var] = newvar;
+  }
   m_variablename.insert(m_variablename.begin(), newtopname);
   for (size_t var=0; var<m_variables.size(); var++) {
     m_variables[var]->SetNewTopName(newmodname, newtopname);
@@ -370,7 +326,7 @@ string Module::ToString() const
   retval += "\nReactions:  ";
   for (size_t var=0; var<m_variables.size(); var++) {
     if (IsReaction(m_variables[var]->GetType())) {
-      retval += m_variables[var]->GetReaction()->ToStringDelimitedBy('.');
+      retval += m_variables[var]->GetReaction()->ToDelimitedStringWithEllipses('.');
     }
   }
   
@@ -434,43 +390,15 @@ string Module::GetAntimony(set<const Module*> usedmods) const
   //Variables
   for (size_t var=0; var<m_variables.size(); var++) {
     if ((m_variables[var]->GetType() != varModule) &&
-        (m_variables[var]->GetType() != varUndefined)) {
+        (m_variables[var]->GetType() != varUndefined) &&
+        (m_variables[var]->GetType() != varStrand) &&
+        (!m_variables[var]->IsPointer())) {
       retval += indent;
       if (m_variables[var]->GetIsConst()) {
         retval += "const ";
       }
-      switch(m_variables[var]->GetType()) {
-      case varSpeciesUndef:
-        retval += "species ";
-        break;
-      case varFormulaUndef:
-        retval += "formula ";
-        break;
-      case varReactionUndef:
-        retval += "reaction ";
-        break;
-      case varReactionGene:
-        retval += "gene ";
-        break;
-      case varInteraction:
-        retval += "reaction ";
-        break;
-      case varFormulaOperator:
-        retval += "operator ";
-        break;
-      case varDNA:
-        retval += "DNA ";
-        break;
-      case varEvent:
-        retval += "event ";
-      case varModule:
-      case varUndefined:
-        //handled earlier
-        break;
-      }
-      vector<string> vname = m_variables[var]->GetName();
-      //assert(vname.size()==1);
-      retval += ToStringFromVecDelimitedBy(vname, cc) + ";\n";
+      retval += VarTypeToAntimony(m_variables[var]->GetType());
+      retval += m_variables[var]->GetNameDelimitedBy(cc) + ";\n";
     }
   }
 
@@ -488,39 +416,24 @@ string Module::GetAntimony(set<const Module*> usedmods) const
     }
   }
 
-  //Any linked DNA:
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->IsDNAStartForModule()) {
-      retval += indent + m_variables[var]->GetDNAStringForThisNamespace() + "\n";
-    }
-  }
-
-  //Any linked DNA cross-module!  Yarr.
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetType() == varModule) {
-      vector<string> links = m_variables[var]->GetModule()->GetNewCrossModuleDNALinks();
-      for (size_t link = 0; link<links.size(); link++) {
-        retval += indent + links[link] + "\n";
-      }
-    }
-  }
-
   //And now the definitions of all local variables:
   for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
     const Variable* var = m_variables[vnum];
     var_type type = var->GetType();
     if (IsReaction(type)) {
-      retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses(cc) + "\n";
+      retval += indent + var->GetReaction()->ToDelimitedStringWithStrands(cc, var->GetStrandVars()) + "\n";
     }
     else if (type == varEvent) {
       retval += indent + var->GetEvent()->ToStringDelimitedBy(cc) + "\n";
     }
+    else if (type == varStrand) {
+      retval += indent + var->GetNameDelimitedBy(cc) + ": " + var->GetDNAStrand()->ToStringDelimitedBy(cc) + "\n";
+    }      
     else if (type != varModule) {
       const Formula* form = var->GetFormula();
       if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly()) {
         retval += indent + var->GetNameDelimitedBy(cc) + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
-      }
-    }
+      }    }
   }
 
 
@@ -537,7 +450,7 @@ string Module::GetJarnacReactions() const
   for (size_t var=0; var<m_variables.size(); var++) {
     if (IsReaction(m_variables[var]->GetType()) &&
         !m_variables[var]->IsPointer()) {
-      retval += "  " + m_variables[var]->GetReaction()->ToStringDelimitedBy('_') + "\n";
+      retval += "  " + m_variables[var]->GetReaction()->ToDelimitedStringWithStrands('_', m_variables[var]->GetStrandVars()) + "\n";
     }
     else if (m_variables[var]->GetType() == varModule) {
       retval += m_variables[var]->GetModule()->GetJarnacReactions();
@@ -582,14 +495,13 @@ string Module::GetJarnacConstFormulas(string modulename) const
   return retval;
 }
 
-void Module::CompileExportLists()
+void Module::Finalize()
 {
   m_uniquevars.clear();
   m_rxnleftvarnames.clear();
   m_rxnrightvarnames.clear();
   m_rxnleftstoichiometries.clear();
   m_rxnrightstoichiometries.clear();
-  m_dna.clear();
 
   //Phase 0:  Error checking for loops
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -618,7 +530,7 @@ void Module::CompileExportLists()
       newvar.second.second = "var";
     }
     nameret = varnames.insert(newvar.first.first);
-    if (nameret.second || m_variables[var]->GetListSeparately()) {
+    if (nameret.second) {
       m_uniquevars.push_back(m_variables[var]->GetName());
       if (IsReaction(m_variables[var]->GetType())) {
         const AntimonyReaction* rxn = m_variables[var]->GetReaction();
@@ -629,19 +541,19 @@ void Module::CompileExportLists()
           m_rxnrightstoichiometries.push_back(rxn->GetRightStoichiometries());
         }
       }
-      if (m_variables[var]->IsDNAStart()) {
-        m_dna.push_back(m_variables[var]->GetDNAStringDelimitedBy(cc));
+      if (m_variables[var]->GetType() == varStrand && m_variables[var]->IsCompleteStrand()) {
+        m_dna.push_back(m_variables[var]->GetDNAStrand()->ToExpandedStringVecDelimitedBy(cc));
       }
       if (m_variables[var]->GetType() == varModule) {
         Module* submod = m_variables[var]->GetModule();
-        submod->CompileExportLists();
+        submod->Finalize();
         //Copy over what we've just created:
         vector<vector<string> > subvars = submod->m_uniquevars;
         //And put them in our own vectors, if we don't have them already.
         for (size_t nsubvar=0; nsubvar<subvars.size(); nsubvar++) {
           Variable* subvar = GetVariable(subvars[nsubvar]);
           nameret = varnames.insert(subvar->GetNameDelimitedBy(cc));
-          if (nameret.second) { //Or GetListSeparately()?  LS DEBUG
+          if (nameret.second) {
             m_uniquevars.push_back(submod->m_uniquevars[nsubvar]);
             if (IsReaction(subvar->GetType())) {
               //Find the reaction and add it.
@@ -759,6 +671,17 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
       return true;
     }
     return false;
+  case allStrands:
+    if (vtype == varStrand) {
+      return true;
+    }
+    return false;
+  case varCompartments:
+  case constCompartments:
+    if (vtype == varCompartment) {
+      return true;
+    }
+    return false;
   }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -773,6 +696,8 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varUndefined:
   case varModule:
   case varEvent:
+  case varCompartment:
+  case varStrand:
     break;
   }
   assert(false); //uncaught return type
@@ -787,12 +712,14 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case varAnyDNA:
   case varOperators:
   case varGenes:
+  case varCompartments:
     return (!isconst);
   case constSpecies:
   case constFormulas:
   case constAnyDNA:
   case constOperators:
   case constGenes:
+  case constCompartments:
     return (isconst);
   case allSymbols:
   case allSpecies:
@@ -801,6 +728,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case allReactions:
   case allInteractions:
   case allEvents:
+  case allStrands:
   case subModules:
     return true;
   }
@@ -1070,11 +998,11 @@ void Module::CreateSBMLModel()
     }
     const Formula* formula = species->GetFormula();
     if (formula->IsDouble()) {
-      sbmlspecies->setInitialConcentration(atoi(formula->ToStringDelimitedBy(cc).c_str()));
+      sbmlspecies->setInitialConcentration(atoi(formula->ToDelimitedStringWithEllipses(cc).c_str()));
     }
     else {
       //create a rule
-      AssignmentRule rule(species->GetNameDelimitedBy(cc), formula->ToStringDelimitedBy(cc));
+      AssignmentRule rule(species->GetNameDelimitedBy(cc), formula->ToDelimitedStringWithEllipses(cc));
       m_sbml.addRule(&rule);
     }
   }
@@ -1086,11 +1014,11 @@ void Module::CreateSBMLModel()
     Parameter* param = m_sbml.createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
     if (formula->IsDouble()) {
-      param->setValue(atoi(formula->ToStringDelimitedBy(cc).c_str()));
+      param->setValue(atoi(formula->ToDelimitedStringWithEllipses(cc).c_str()));
     }
     else {
       //create a rule
-      AssignmentRule rule(formvar->GetNameDelimitedBy(cc), formula->ToStringDelimitedBy(cc));
+      AssignmentRule rule(formvar->GetNameDelimitedBy(cc), formula->ToDelimitedStringWithStrands(cc, formvar->GetStrandVars()));
       m_sbml.addRule(&rule);
     }
   }
@@ -1100,7 +1028,7 @@ void Module::CreateSBMLModel()
     const Variable* rxnvar = GetNthVariableOfType(allReactions, rxn);
     const AntimonyReaction* reaction = rxnvar->GetReaction();
     const Formula* formula = reaction->GetFormula();
-    KineticLaw kl(formula->ToStringDelimitedBy(cc));
+    KineticLaw kl(formula->ToDelimitedStringWithStrands(cc, rxnvar->GetStrandVars()));
     Reaction sbmlrxn(rxnvar->GetNameDelimitedBy(cc), "", &kl, false);
     const ReactantList* left = reaction->GetLeft();
     for (size_t lnum=0; lnum<left->Size(); lnum++) {
@@ -1134,7 +1062,7 @@ void Module::CreateSBMLModel()
   for (size_t ev=0; ev < GetNumVariablesOfType(allEvents); ev++) {
     const AntimonyEvent* event = GetNthVariableOfType(allEvents, ev)->GetEvent();
     Event* sbmlevent = m_sbml.createEvent();
-    ASTNode_t* ASTtrig = SBML_parseFormula(event->GetTrigger()->ToStringDelimitedBy(cc).c_str());
+    ASTNode_t* ASTtrig = SBML_parseFormula(event->GetTrigger()->ToDelimitedStringWithEllipses(cc).c_str());
     Trigger trigger(ASTtrig);
     delete ASTtrig;
     sbmlevent->setTrigger(&trigger);

@@ -42,7 +42,7 @@ void AntimonyEvent::SetNewTopName(string modname, string newtopname)
   //Ourself:
   m_name.insert(m_name.begin(), newtopname);
   m_module = modname;
-  //Our dependents
+  //Our dependents:
   m_trigger.SetNewTopName(modname, newtopname);
   assert(m_varresults.size() == m_formresults.size());
   for (size_t result=0; result<m_varresults.size(); result++) {
@@ -67,7 +67,12 @@ string AntimonyEvent::GetNthAssignmentVariableName(size_t n, char cc) const
     g_registry.SetError(error);
     return "";
   }
-  return ToStringFromVecDelimitedBy(m_varresults[n], cc);
+  Variable* resultvar = g_registry.GetModule(m_module)->GetVariable(m_varresults[n]);
+  if (resultvar == NULL) {
+    assert(false);
+    return "";
+  }
+  return resultvar->GetNameDelimitedBy(cc);
 }
 
 string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc) const
@@ -86,7 +91,8 @@ string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc) const
     g_registry.SetError(error);
     return "";
   }
-  return m_formresults[n].ToStringDelimitedBy(cc);
+  Variable* resultvar = g_registry.GetModule(m_module)->GetVariable(m_varresults[n]);
+  return m_formresults[n].ToDelimitedStringWithStrands(cc, resultvar->GetStrandVars());
 }
 
 string AntimonyEvent::ToStringDelimitedBy(char cc) const
@@ -99,17 +105,22 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
   if (actualvar == NULL) {
     //um what?
     assert(false);
-    return retval;
+    return "";
   }
   retval += actualvar->GetNameDelimitedBy(cc) + ": @(";
-  retval += m_trigger.ToStringDelimitedBy(cc) + "): ";
+  retval += m_trigger.ToDelimitedStringWithEllipses(cc) + "): ";
   for (size_t result=0; result<m_varresults.size(); result++) {
     if (result>0) {
-      retval += ", ";
+      retval += ": ";
     }
-    retval += ToStringFromVecDelimitedBy(m_varresults[result], cc);
+    Variable* resultvar = g_registry.GetModule(m_module)->GetVariable(m_varresults[result]);
+    if (resultvar == NULL) {
+      assert(false);
+      return "";
+    }
+    retval += resultvar->GetNameDelimitedBy(cc);
     retval += " = ";
-    retval += m_formresults[result].ToStringDelimitedBy(cc);
+    retval += m_formresults[result].ToDelimitedStringWithStrands(cc, resultvar->GetStrandVars());
   }
   retval += ";";
   

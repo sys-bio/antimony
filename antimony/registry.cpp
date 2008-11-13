@@ -12,19 +12,24 @@
 #include "variable.h"
 
 using namespace std;
-
+    
 Registry::Registry()
   : m_oldinputs(),
     m_files(),
     m_variablenames(),
     m_functions(),
+    m_storedvars(),
     m_modules(),
     m_currentModules(),
     m_currentReactantLists(),
     m_currentImportedModule(),
     m_scratchFormula(),
     m_scratchFormulas(),
+    m_workingstrand(),
+    m_currentEvent(),
     m_cc('_'),
+    m_error(),
+    m_oldmodules(),
     input(NULL)
 {
   //A user can't use []'s in a name, so this is guaranteed to be unique
@@ -53,6 +58,9 @@ void Registry::ClearModules()
   m_currentImportedModule.clear();
   m_scratchFormula.Clear();
   m_scratchFormulas.clear();
+  m_workingstrand.Clear();
+  m_currentEvent.clear();
+  m_error.clear();
   string main = "[main]";
   NewCurrentModule(&main);
 }
@@ -275,16 +283,16 @@ Variable* Registry::AddVariableToCurrent(const string* name)
   return CurrentModule()->AddOrFindVariable(name);
 }
 
-AntimonyReaction* Registry::AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula)
+Variable* Registry::AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula)
 {
-  AntimonyReaction* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula);
+  Variable* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula);
   m_currentReactantLists.clear();
   return retval;
 }
 
-AntimonyReaction* Registry::AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var)
+Variable* Registry::AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var)
 {
-  AntimonyReaction* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula, var);
+  Variable* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula, var);
   m_currentReactantLists.clear();
   return retval;
 }
@@ -296,77 +304,54 @@ ReactantList* Registry::NewBlankReactantList()
   return &(m_currentReactantLists.back());
 }
 
-Variable* Registry::NewVariableIfNeeded(Variable* var, bool up)
+bool Registry::SetStrandAs(Variable* var)
 {
-  if (var->GetType() == varModule) {
-    if (up) {
-      return var->GetModule()->GetUpstreamDNA();
-    }
-    else {
-      return var->GetModule()->GetDownstreamDNA();
-    }
+  if (var->SetDNAStrand(m_workingstrand)) return true;
+  vector<Variable*> vars = m_workingstrand.GetVariables();
+  for (size_t vnum=0; vnum<vars.size(); vnum++) {
+    if (vars[vnum]->SetIsInStrand(var)) return true;
   }
-  if (var->IsUnlinked(up)) {
-    Variable* working = GetWorkingStrand();
-    if (working == NULL) return var;
-    if (working->DoesNotLinkTo(var)) {
-      return var;
-    }
-  }
-  vector<string> varname = var->GetName();
-  Variable* newvar=CurrentModule()->AddNewNumberedVariable("_dna");
-  var = CurrentModule()->GetVariable(varname); //Since the pointer is now stale.
-  var->Synchronize(newvar);
-  newvar->SetListSeparately(true);
-  return newvar;
+  m_workingstrand.Clear();
+  return false;
+}
+
+bool Registry::SaveWorkingStrand()
+{
+  Variable* var = CurrentModule()->AddNewNumberedVariable("_dna");
+  return SetStrandAs(var);
 }
 
 bool Registry::SetNewUpstreamOpen(Variable* var)
 {
-  var = NewVariableIfNeeded(var, true);
-  if (var==NULL) return true;
-  if (var->SetType(varDNA)) return true;
-  SetWorkingStrand(var);
-  var->SetOpenUpstream();
-  return false;
+  m_workingstrand.Clear();
+  m_workingstrand.SetUpstream(true);
+  return m_workingstrand.SetUpstream(var);
+}
+
+void Registry::SetOpenUpstream()
+{
+  m_workingstrand.SetUpstream(true);
 }
 
 bool Registry::SetDownstreamEnd(Variable* var)
 {
-  var = NewVariableIfNeeded(var, true);
-  if (var==NULL) return true;
-  if (var->SetType(varDNA)) return true;
-  GetWorkingStrand()->SetDownstream(var);
-  SetWorkingStrand(var);
-  return false;
+  m_workingstrand.SetDownstream(false);
+  return m_workingstrand.SetDownstream(var);
 }
 
 bool Registry::SetNewDownstreamOpen(Variable* var)
 {
-  var = NewVariableIfNeeded(var, false);
-  if (var==NULL) return true;
-  if (var->SetType(varDNA)) return true;
-  var->SetOpenDownstream();
-  SetWorkingStrand(var);
-  return false;
+  m_workingstrand.Clear();
+  m_workingstrand.SetDownstream(true);
+  return m_workingstrand.SetDownstream(var);
 }
 
 bool Registry::SetDownstreamOpen(Variable* var)
 {
-  var = NewVariableIfNeeded(var, true);
-  if (var==NULL) return true;
-  if (var->SetType(varDNA)) return true;
-  GetWorkingStrand()->SetDownstream(var);
-  var->SetOpenDownstream();
-  SetWorkingStrand(var);
-  return false;
+  m_workingstrand.SetDownstream(true);
+  return m_workingstrand.SetDownstream(var);
 }
 
-
-void Registry::SetWorkingStrand(Variable* var)
-{
-  m_workingstrand = var->GetName();
-}
 
 bool Registry::SetNewCurrentEvent(Formula* trigger)
 {
@@ -390,9 +375,9 @@ bool Registry::AddResultToCurrentEvent(Variable* var, Formula* form)
   return false;
 }
 
-void Registry::SetAssignmentVariable(Variable* var)
+bool Registry::SetCompartmentOfCurrentSubmod(Variable* var)
 {
-  m_assignmentvar = var->GetName();
+  return CurrentModule()->GetVariable(m_currentImportedModule)->SetCompartment(var);
 }
 
 Formula* Registry::NewBlankFormula()
@@ -445,16 +430,6 @@ Variable* Registry::GetImportedModuleSubVariable(const std::string* name)
   return CurrentModule()->GetVariable(varname);
 }
 
-Variable* Registry::GetWorkingStrand()
-{
-  return CurrentModule()->GetVariable(m_workingstrand);
-}
-
-Variable* Registry::GetAssignmentVariable()
-{
-  return CurrentModule()->GetVariable(m_assignmentvar);
-}
-
 const string*  Registry::AddWord(string word)
 {
   pair<set<string>::iterator,bool> ret;
@@ -500,10 +475,10 @@ string Registry::GetJarnac(string modulename) const
   return jarnac;
 }
 
-void Registry::CompileAllExportLists()
+void Registry::FinalizeModules()
 {
   for (size_t mod=0; mod<m_modules.size(); mod++) {
-    m_modules[mod].CompileExportLists();
+    m_modules[mod].Finalize();
   }
 }
 
@@ -552,7 +527,7 @@ bool Registry::RevertToModuleSet(long n)
   m_modules.clear(); //LS NOTE:  needed because otherwise we leak models!  Yes, this is weird.
   m_modules = m_oldmodules[n-1];
   for (size_t mod=0; mod<m_modules.size(); mod++) {
-    m_modules[mod].CompileExportLists();
+    m_modules[mod].Finalize();
   }
   return false;
 }

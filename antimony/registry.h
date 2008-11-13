@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <string>
 
+#include "dnastrand.h"
 #include "module.h"
 #include "reactantlist.h"
 #include "reaction.h"
@@ -31,8 +32,8 @@ private:
   std::vector<std::string> m_currentImportedModule;
   Formula m_scratchFormula;
   std::vector<Formula> m_scratchFormulas;
-  std::vector<std::string> m_workingstrand;
-  std::vector<std::string> m_assignmentvar;
+  DNAStrand m_workingstrand;
+
   std::vector<std::string> m_currentEvent;
   
   char m_cc;
@@ -60,21 +61,27 @@ public:
   void AddVariableToCurrentExportList(Variable* export_var);
   bool AddVariableToCurrentImportList(Variable* import_var);
   Variable* AddVariableToCurrent(const std::string* name);
-  AntimonyReaction* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula);
-  AntimonyReaction* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var);
+  Variable* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula);
+  Variable* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var);
   ReactantList* NewBlankReactantList();
   Formula* NewBlankFormula();
   void SetCurrentImportedModule(std::vector<std::string> imod) {m_currentImportedModule = imod;}
-  void SetAssignmentVariable(Variable* var);
   Variable* NewVariableIfNeeded(Variable* var, bool up);
+
+  //DNA strands:
+  bool SetStrandAs(Variable* var);
+  bool SaveWorkingStrand();
   bool SetNewUpstreamOpen(Variable* var);
+  void SetOpenUpstream();
   bool SetDownstreamEnd(Variable* var);
   bool SetNewDownstreamOpen(Variable* var);
   bool SetDownstreamOpen(Variable* var);
-  void SetWorkingStrand(Variable* var);
+
+  //Events
   bool SetNewCurrentEvent(Formula* trigger);
   bool SetNewCurrentEvent(Formula* trigger, Variable* var);
   bool AddResultToCurrentEvent(Variable* var, Formula* form);
+  bool SetCompartmentOfCurrentSubmod(Variable* var);
 
   void SetError(std::string error) {m_error = error;};
   void AddErrorPrefix(std::string error) {m_error = error + m_error;};
@@ -84,8 +91,6 @@ public:
   const Module* GetModule(std::string modulename) const;
   bool IsModuleName(std::string word);
   Variable* GetImportedModuleSubVariable(const std::string* name);
-  Variable* GetWorkingStrand();
-  Variable* GetAssignmentVariable();
 
   const std::string* AddWord(std::string word);
   void StoreVariable(Variable* var);
@@ -94,7 +99,7 @@ public:
   std::string GetAntimony(std::string modulename) const;
   std::string GetJarnac(std::string modulename) const;
 
-  void CompileAllExportLists();
+  void FinalizeModules();
 
   size_t GetNumModules();
   std::string GetNthModuleName(size_t n);
