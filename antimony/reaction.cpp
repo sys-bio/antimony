@@ -34,7 +34,6 @@ AntimonyReaction::AntimonyReaction()
 
 void AntimonyReaction::SetFormula(Formula* formula)
 {
-  assert(!m_empty);
   m_formula = *formula;
 }
 
@@ -48,6 +47,13 @@ void AntimonyReaction::SetNewTopName(string modname, string newtopname)
   m_right.SetNewTopName(modname, newtopname);
   m_formula.SetNewTopName(modname, newtopname);
 }
+
+void AntimonyReaction::SetComponentCompartments(Variable* var)
+{
+  m_left.SetComponentCompartments(var);
+  m_right.SetComponentCompartments(var);
+}
+
 
 void AntimonyReaction::Clear()
 {
@@ -82,6 +88,7 @@ bool AntimonyReaction::LeftIsEmpty() const
 
 string AntimonyReaction::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, size_t> > strands) const
 {
+  if (IsEmpty()) return "";
   string retval;
 
   Module* module = g_registry.GetModule(m_module);
@@ -103,6 +110,7 @@ string AntimonyReaction::ToDelimitedStringWithStrands(char cc, vector<pair<Varia
 
 string AntimonyReaction::ToDelimitedStringWithEllipses(char cc) const
 {
+  if (IsEmpty()) return "";
   string retval;
 
   Module* module = g_registry.GetModule(m_module);

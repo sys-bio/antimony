@@ -272,9 +272,9 @@ bool Registry::AddVariableToCurrentImportList(Variable* import_var)
   if (var == NULL) {
     string error = "Unable to add variable '" + import_var->GetNameDelimitedBy(GetCC()) + "' when creating an instance of the module '" + submod->GetModuleName() + "' because this module is defined to have only " + ToString(submod->GetNumExportVariables()) + " variable(s) definable by default in its construction.";
     SetError(error);
-    return true; //abort!  Nothing to do.
+    return true;
   }
-  import_var->Synchronize(var);
+  var->Synchronize(import_var);
   return false;
 }
 
@@ -343,7 +343,7 @@ bool Registry::SetNewDownstreamOpen(Variable* var)
 {
   m_workingstrand.Clear();
   m_workingstrand.SetDownstream(true);
-  return m_workingstrand.SetDownstream(var);
+  return m_workingstrand.SetUpstream(var);
 }
 
 bool Registry::SetDownstreamOpen(Variable* var)
@@ -475,11 +475,12 @@ string Registry::GetJarnac(string modulename) const
   return jarnac;
 }
 
-void Registry::FinalizeModules()
+bool Registry::FinalizeModules()
 {
   for (size_t mod=0; mod<m_modules.size(); mod++) {
-    m_modules[mod].Finalize();
+    if (m_modules[mod].Finalize()) return true;
   }
+  return false;
 }
 
 
@@ -527,7 +528,7 @@ bool Registry::RevertToModuleSet(long n)
   m_modules.clear(); //LS NOTE:  needed because otherwise we leak models!  Yes, this is weird.
   m_modules = m_oldmodules[n-1];
   for (size_t mod=0; mod<m_modules.size(); mod++) {
-    m_modules[mod].Finalize();
+    if (m_modules[mod].Finalize()) return true;
   }
   return false;
 }

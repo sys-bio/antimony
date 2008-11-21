@@ -24,6 +24,7 @@ public:
   void AddReactant(Variable* var, double stoichiometry=1);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   bool SetVarsTo(var_type vtype);
+  void SetComponentCompartments(Variable* var);
   bool CheckIsSingleDNAOrReaction();
 
   Variable* GetSingleVar();

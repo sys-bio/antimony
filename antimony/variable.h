@@ -19,7 +19,6 @@ private:
   //Variable& operator=(const Variable& src); //Undefined
 
   std::vector<std::string> m_name;
-  std::vector<std::string> m_printedname;
   std::string m_module; //The name of the high-level module we're in.
 
   //The variable's value is either a different Variable object (with a different name):
@@ -49,7 +48,7 @@ public:
 
   bool IsPointer() const {return m_sameVariable.size() != 0;};
   std::vector<std::string> GetName() const;
-  std::vector<std::string> GetPrintedName() const {return m_printedname;};
+  std::vector<std::string> GetPrintedName() const;
   std::vector<std::string> GetPointerName() const {return m_sameVariable;};
   std::string GetNameDelimitedBy(char cc) const;
   std::string GetFormulaStringDelimitedBy(char cc) const;
@@ -64,14 +63,14 @@ public:
   const AntimonyEvent* GetEvent() const;
   AntimonyEvent* GetEvent();
   Variable* GetSubVariable(const std::string* name);
-  Variable* GetSameVariable();
+  Variable* GetSameVariable() const;
   const DNAStrand* GetDNAStrand() const;
   Variable* GetCompartment() const;
   std::string GetNamespace() const {return m_module;};
   bool GetIsConst() const;
   bool GetIsEquivalentTo(const Variable* var) const;
   std::vector<std::pair<Variable*, size_t> > GetStrandVars() const;
-  bool IsCompleteStrand() const;
+  bool IsExpandedStrand() const;
   std::string GetFormulaForNthEntryInStrand(char cc, size_t n);
 
   bool SetType(var_type newtype);
@@ -80,16 +79,18 @@ public:
   bool SetModule(const std::string* modname);
   bool SetEvent(const AntimonyEvent* event);
   void SetNewTopName(std::string newmodname, std::string newtopname);
-  void SetPrintedName(std::vector<std::string> printedname);
   bool SetIsConst(bool constant);
 
   bool SetCompartment(Variable* var);
+  void SetComponentCompartments();
   bool SetDNAStrand(DNAStrand& strand);
   bool SetIsInStrand(Variable* var);
 
   bool Synchronize(Variable* clone);
 
-  bool CheckDoesNotIncludeSelf();
+  bool IncludesSelf();
+  bool AnyCompartmentLoops() const;
+  bool AnyCompartmentLoops(std::vector<const Variable*> lowercomps) const;
   std::string ToString() const;
 };
 

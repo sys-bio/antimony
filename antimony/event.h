@@ -27,8 +27,7 @@ public:
 
   const Formula* GetTrigger() const {return &m_trigger;};
   Formula* GetTrigger() {return &m_trigger;};
-  //const std::vector<Formula>* GetResults() const {return &m_results;};
-  //bool IsEmpty() const;
+  bool IsEmpty() const;
 
   size_t GetNumAssignments() const {return m_varresults.size();};
   std::string GetNthAssignmentVariableName(size_t n, char cc) const;

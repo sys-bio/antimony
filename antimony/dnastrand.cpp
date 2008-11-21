@@ -51,6 +51,15 @@ void DNAStrand::SetModule(std::string modname)
   m_module = modname;
 }
 
+void DNAStrand::SetComponentCompartments(Variable* compartment)
+{
+  for (size_t var=0; var<m_strand.size(); var++) {
+    Variable* subvar = g_registry.GetModule(m_module)->GetVariable(m_strand[var]);
+    subvar->SetCompartment(compartment);
+    subvar->SetComponentCompartments();
+  }
+}
+
 void DNAStrand::Clear()
 {
   m_strand.clear();
@@ -58,7 +67,7 @@ void DNAStrand::Clear()
   m_downstreamopen = false;
 }
 
-bool DNAStrand::IsEmpty()
+bool DNAStrand::IsEmpty() const
 {
   return (m_strand.size() == 0);
 }
@@ -144,5 +153,28 @@ string DNAStrand::ToStringDelimitedBy(char cc) const
 vector<string> DNAStrand::ToExpandedStringVecDelimitedBy(char cc) const
 {
   vector<string> retval;
+  for (size_t dna=0; dna<m_strand.size(); dna++) {
+    const Variable* var = g_registry.GetModule(m_module)->GetVariable(m_strand[dna]);
+    assert(var != NULL);
+    if (var->GetType() == varStrand) {
+      vector<string> subvar = var->GetDNAStrand()->ToExpandedStringVecDelimitedBy(cc);
+      retval.insert(retval.end(), subvar.begin(), subvar.end());
+    }
+    else {
+      assert(IsDNA(var->GetType()));
+      retval.push_back(var->GetNameDelimitedBy(cc));
+    }
+  }
+  return retval;
+}
+
+vector<string> DNAStrand::ToModularStringVecDelimitedBy(char cc) const
+{
+  vector<string> retval;
+  for (size_t dna=0; dna<m_strand.size(); dna++) {
+    const Variable* var = g_registry.GetModule(m_module)->GetVariable(m_strand[dna]);
+    assert(var != NULL);
+    retval.push_back(var->GetNameDelimitedBy(cc));
+  }
   return retval;
 }

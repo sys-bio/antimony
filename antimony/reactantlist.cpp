@@ -36,6 +36,18 @@ bool ReactantList::SetVarsTo(var_type vtype)
   return false;
 }
 
+void ReactantList::SetComponentCompartments(Variable* var)
+{
+  for (size_t component=0; component<m_components.size(); component++) {
+    Module* module = g_registry.GetModule(m_module);
+    assert(module != NULL);
+    Variable* var = module->GetVariable(m_components[component].second);
+    if (var != NULL) {
+      var->SetCompartment(var);
+    }
+  }
+}
+
 bool ReactantList::CheckIsSingleDNAOrReaction()
 {
   if (m_components.size() == 0) {

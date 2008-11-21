@@ -159,7 +159,7 @@ LIB_EXTERN long loadFile(const char* filename)
     g_registry.AddErrorPrefix("Error in file '" + g_registry.GetLastFile() + "', line " + ToString(yylloc_first_line) + ":  ");
     return -1;
   }
-  g_registry.FinalizeModules();
+  if (g_registry.FinalizeModules()) return -1;
   return g_registry.SaveModules();
 }
 
@@ -296,6 +296,19 @@ LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type r
   return equations;
 }
 
+LIB_EXTERN char** getSymbolCompartmentsOfType(const char* moduleName, return_type rtype)
+{
+  if (!checkModule(moduleName)) return NULL;
+  size_t vnum = getNumSymbolsOfType(moduleName, rtype);
+  char** compartments = getCharStarStar(vnum);
+  if (compartments == NULL) return NULL;
+  for (size_t var=0; var<vnum; var++) {
+    compartments[var] = getNthSymbolCompartmentOfType(moduleName, rtype, var);
+    if (compartments[var]==NULL) return NULL;
+  }
+  return compartments;
+}
+
 LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rtype, size_t n)
 {
   if (!checkModule(moduleName)) return NULL;
@@ -305,8 +318,7 @@ LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rty
     reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
-  char* retval = getCharStar(var->GetNameDelimitedBy(g_registry.GetCC()).c_str());
-  return retval;
+  return getCharStar(var->GetNameDelimitedBy(g_registry.GetCC()).c_str());
 }
 
 LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, size_t n)
@@ -318,8 +330,23 @@ LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type
     reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
-  char* retval = getCharStar(var->GetFormulaStringDelimitedBy(g_registry.GetCC()).c_str());
-  return retval;
+  return getCharStar(var->GetFormulaStringDelimitedBy(g_registry.GetCC()).c_str());
+}
+
+LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_type rtype, size_t n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
+  if (var==NULL) {
+    size_t numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
+    reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
+    return NULL;
+  }
+  const Variable* compartment = var->GetCompartment();
+  if (compartment == NULL) {
+    return getCharStar("default_compartment");
+  }
+  return getCharStar(compartment->GetNameDelimitedBy(g_registry.GetCC()).c_str());
 }
 
 
@@ -581,7 +608,6 @@ LIB_EXTERN char* getNthAssignmentEquationForEvent(const char* moduleName, size_t
   return getCharStar(formula.c_str());
 }
 
-
 LIB_EXTERN char*** getDNAStrands(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
@@ -598,7 +624,7 @@ LIB_EXTERN char*** getDNAStrands(const char* moduleName)
 LIB_EXTERN char** getNthDNAStrand(const char* moduleName, size_t n)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t actualsize = g_registry.GetModule(moduleName)->m_dna.size();
+  size_t actualsize = getNumDNAStrands(moduleName);
   if (actualsize <= n) {
     string error = "There is no DNA strand with index " + n;
     error += " in module ";
@@ -618,14 +644,26 @@ LIB_EXTERN char** getNthDNAStrand(const char* moduleName, size_t n)
     g_registry.SetError(error);
     return NULL;
   }
-  size_t dna_length = g_registry.GetModule(moduleName)->m_dna[n].size();
+  vector<string> strand = g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, n)->GetDNAStrand()->ToExpandedStringVecDelimitedBy(g_registry.GetCC());
+  size_t dna_length = strand.size();
   char** retval = getCharStarStar(dna_length);
   if (retval == NULL) return NULL;
-  for (size_t dnabit=0; dnabit<g_registry.GetModule(moduleName)->m_dna[n].size(); dnabit++) {
-    retval[dnabit] = getCharStar(g_registry.GetModule(moduleName)->m_dna[n][dnabit].c_str());;
+  for (size_t dnabit=0; dnabit<dna_length; dnabit++) {
+    retval[dnabit] = getCharStar(strand[dnabit].c_str());;
     if (retval[dnabit] == NULL) return NULL;
   }
   return retval;
+}
+
+LIB_EXTERN bool getIsNthDNAStrandOpen(const char* moduleName, size_t n, bool upstream)
+{
+  const DNAStrand* strand = g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, n)->GetDNAStrand();
+  if (upstream) {
+    return strand->GetUpstreamOpen();
+  }
+  else {
+    return strand->GetDownstreamOpen();
+  }
 }
 
 LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName)
@@ -635,23 +673,102 @@ LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName)
   size_t* retval = getSizeTStar(numDNA);
   if (retval == NULL) return NULL;
   for (size_t strand=0; strand<numDNA; strand++) {
-    retval[strand] = g_registry.GetModule(moduleName)->m_dna[strand].size();
+    retval[strand] = g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, strand)->GetDNAStrand()->ToExpandedStringVecDelimitedBy(g_registry.GetCC()).size();
   }
   return retval;
 }
 
 LIB_EXTERN size_t getNumDNAStrands(const char* moduleName)
 {
+  return getNumSymbolsOfType(moduleName, expandedStrands);
+}
+
+
+LIB_EXTERN char*** getModularDNAStrands(const char* moduleName)
+{
   if (!checkModule(moduleName)) return NULL;
-  return g_registry.GetModule(moduleName)->m_dna.size();
+  size_t numDNA = getNumModularDNAStrands(moduleName);
+  char*** retval = getCharStarStarStar(numDNA);
+  if (retval == NULL) return NULL;
+  for (size_t strand=0; strand<numDNA; strand++) {
+    retval[strand] = getNthModularDNAStrand(moduleName, strand);
+    if (retval[strand]==NULL) return NULL;
+  }
+  return retval;
+}
+
+LIB_EXTERN char** getNthModularDNAStrand(const char* moduleName, size_t n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  size_t actualsize = getNumModularDNAStrands(moduleName);
+  if (actualsize <= n) {
+    string error = "There is no ModularDNA strand with index " + n;
+    error += " in module ";
+    error += moduleName;
+    error += ".";
+    if (actualsize == 0) {
+      error += "  In fact, there are no ModularDNA strands at all in that module.";
+    }
+    else if (actualsize == 1) {
+      error += "  There is a single ModularDNA strand with index 0.";
+    }
+    else if (actualsize > 1) {
+      error += "  Valid ModularDNA strand index values are 0 through ";
+      error += actualsize-1;
+      error += ".";
+    }
+    g_registry.SetError(error);
+    return NULL;
+  }
+  vector<string> strand = g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, n)->GetDNAStrand()->ToModularStringVecDelimitedBy(g_registry.GetCC());
+  size_t dna_length = strand.size();
+  char** retval = getCharStarStar(dna_length);
+  if (retval == NULL) return NULL;
+  for (size_t dnabit=0; dnabit<dna_length; dnabit++) {
+    retval[dnabit] = getCharStar(strand[dnabit].c_str());;
+    if (retval[dnabit] == NULL) return NULL;
+  }
+  return retval;
+}
+
+LIB_EXTERN bool getIsNthModularDNAStrandOpen(const char* moduleName, size_t n, bool upstream)
+{
+  const DNAStrand* strand = g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, n)->GetDNAStrand();
+  if (upstream) {
+    return strand->GetUpstreamOpen();
+  }
+  else {
+    return strand->GetDownstreamOpen();
+  }
+}
+
+LIB_EXTERN size_t* getModularDNAStrandSizes(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  size_t numModularDNA = getNumModularDNAStrands(moduleName);
+  size_t* retval = getSizeTStar(numModularDNA);
+  if (retval == NULL) return NULL;
+  for (size_t strand=0; strand<numModularDNA; strand++) {
+    retval[strand] = g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, strand)->GetDNAStrand()->ToModularStringVecDelimitedBy(g_registry.GetCC()).size();
+  }
+  return retval;
+}
+
+LIB_EXTERN size_t getNumModularDNAStrands(const char* moduleName)
+{
+  return getNumSymbolsOfType(moduleName, modularStrands);
 }
 
 
 LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbolName)
 {
   if (!checkModule(moduleName)) return allUnknown;
-  var_type vtype = g_registry.GetModule(moduleName)->GetTypeFor(symbolName);
-  bool isconst = g_registry.GetModule(moduleName)->IsConst(symbolName);
+  const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
+  if (var == NULL) {
+    return allUnknown;
+  }
+  var_type vtype = var->GetType();
+  bool isconst = var->GetIsConst();
   switch(vtype) {
   case varSpeciesUndef:
     if (isconst) return constSpecies;
@@ -682,11 +799,27 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
     if (isconst) return constCompartments;
     return varCompartments;
   case varStrand:
-    return allStrands;
+    return modularStrands;
   }
   assert(false); //uncaught var_type
   g_registry.SetError("Coding error:  Didn't include a return type for variable type " + VarTypeToString(vtype) + " in getTypeOfSymbol; antimony_api.cpp.  Email the author to fix.");
   return allUnknown;
+}
+
+LIB_EXTERN char* getCompartmentForSymbol(const char* moduleName, const char* symbolName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
+  if (var == NULL) return NULL;
+  const Variable* varcomp = var->GetCompartment();
+  string retval;
+  if (varcomp == NULL) {
+    retval = "default_compartment";
+  }
+  else {
+    retval = varcomp->GetNameDelimitedBy(g_registry.GetCC());
+  }
+  return getCharStar(retval.c_str());
 }
 
 LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
@@ -780,17 +913,49 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   cout << "All variables for module " << moduleName << ":" << endl;
   char **symbolnames = getSymbolNamesOfType(moduleName, allSymbols);
   char **symbolequations = getSymbolEquationsOfType(moduleName, allSymbols);
+  char **symbolcompartments = getSymbolCompartmentsOfType(moduleName, allSymbols);
   size_t numvars = getNumSymbolsOfType(moduleName, allSymbols);
   for (size_t var=0; var<numvars; var++) {
-    cout << symbolnames[var] << " [" << ReturnTypeToString(getTypeOfSymbol(moduleName, symbolnames[var])) << "] : " << symbolequations[var] << endl;
+    cout << symbolnames[var] << " [" << ReturnTypeToString(getTypeOfSymbol(moduleName, symbolnames[var]));
+    string compartmentname(symbolcompartments[var]);
+    if (compartmentname != "default_compartment") {
+      cout << ", in " << compartmentname.c_str();
+    }
+    cout << "] : " << symbolequations[var] << endl;
   }
   if (getNumDNAStrands(moduleName) > 0) {
     char ***dnanames = getDNAStrands(moduleName);
     const size_t *dnanums = getDNAStrandSizes(moduleName);
     cout << endl << "DNA strands:" << endl;
     for (size_t strand=0; strand<getNumDNAStrands(moduleName); strand++) {
+      cout << getNthSymbolNameOfType(moduleName, expandedStrands, strand) << ": ";
       for (size_t element=0; element<dnanums[strand]; element++) {
+        if (element != 0 || getIsNthDNAStrandOpen(moduleName, strand, true)) {
+          cout << "--";
+        }
         cout << dnanames[strand][element];
+      }
+      if (getIsNthDNAStrandOpen(moduleName, strand, false)) {
+        cout << "--";
+      }
+      cout << endl;
+    }
+  }
+
+  if (getNumModularDNAStrands(moduleName) > getNumDNAStrands(moduleName))  {
+    char ***dnanames = getModularDNAStrands(moduleName);
+    const size_t *dnanums = getModularDNAStrandSizes(moduleName);
+    cout << endl << "Modular DNA strands:" << endl;
+    for (size_t strand=0; strand<getNumModularDNAStrands(moduleName); strand++) {
+      cout << getNthSymbolNameOfType(moduleName, modularStrands, strand) << ": ";
+      for (size_t element=0; element<dnanums[strand]; element++) {
+        if (element != 0 || getIsNthModularDNAStrandOpen(moduleName, strand, true)) {
+          cout << "--";
+        }
+        cout << dnanames[strand][element];
+      }
+      if (getIsNthModularDNAStrandOpen(moduleName, strand, false)) {
+        cout << "--";
       }
       cout << endl;
     }

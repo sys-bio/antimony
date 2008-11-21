@@ -99,7 +99,7 @@ public:
   std::string GetAntimony(std::string modulename) const;
   std::string GetJarnac(std::string modulename) const;
 
-  void FinalizeModules();
+  bool FinalizeModules();
 
   size_t GetNumModules();
   std::string GetNthModuleName(size_t n);

@@ -31,6 +31,7 @@ public:
 
   void SetFormula(Formula* formula);
   void SetNewTopName(std::string modname, std::string newtopname);
+  void SetComponentCompartments(Variable* var);
   void Clear();
 
   const Formula* GetFormula() const;

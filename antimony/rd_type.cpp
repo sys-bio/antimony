@@ -75,6 +75,8 @@ string VarTypeToAntimony(const var_type vtype)
     return "undefinable_type";
     break;
   }
+  assert(false); //uncaught type
+  return "undeclared_type";
 }
 
 
@@ -257,12 +259,12 @@ string ReturnTypeToString(return_type rtype)
     return "Interaction (generic)";
   case allEvents:
     return "Event";
+  case allCompartments:
+    return "all compartments (constant and variable)";
   case varCompartments:
     return "variable-sized compartment";
   case allUnknown:
     return "Unknown type";
-  case allStrands:
-    return "DNA strand";
   case constSpecies:
     return "constant/boundary species (generic)";
   case constFormulas:
@@ -277,6 +279,10 @@ string ReturnTypeToString(return_type rtype)
     return "constant-sized compartment";
   case subModules:
     return "a submodule";
+  case expandedStrands:
+    return "expanded DNA strand";
+  case modularStrands:
+    return "modular DNA strand";
   }
   assert(false); //uncaught type
   return "Uncaught type";
