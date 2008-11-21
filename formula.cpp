@@ -181,9 +181,9 @@ const Variable* Formula::GetNthVariable(size_t n) const
       var++;
     }
     if (var == n) {
-      Module* module = g_registry.GetModule(m_components[var].first);
+      Module* module = g_registry.GetModule(m_components[comp].first);
       assert(module != NULL);
-      return module->GetVariable(m_components[var].second);
+      return module->GetVariable(m_components[comp].second);
     }
   }
   return NULL;

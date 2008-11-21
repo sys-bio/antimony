@@ -28,8 +28,6 @@ private:
   std::vector< std::vector<std::string> > m_exportlist;
   std::vector<std::string> m_returnvalue;
 
-  std::vector<std::string> m_currentrxnvar;
-
   size_t m_currentexportvar;
 
   Model m_sbml;
@@ -43,8 +41,6 @@ public:
   std::vector<std::vector<double> >      m_rxnleftstoichiometries;
   std::vector<std::vector<double> >      m_rxnrightstoichiometries;
 
-  std::vector<std::vector<std::string> > m_dna;
-
   Module(std::string name);
   //Module(const Module& src); //accept default
   Module(const Module& src, std::string newtopname, std::string modulename);
@@ -56,11 +52,14 @@ public:
   Variable* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula);
   Variable* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var);
   bool SetFormula(Formula* formula);
+  void SetNewTopName(std::string newmodname, std::string newtopname);
+  bool SetModule(const std::string* modname);
+  void SetComponentCompartments(Variable* compartment);
 
   Variable* GetVariable(std::vector<std::string> name);
   const Variable* GetVariable(std::vector<std::string> name) const;
+  const Variable* GetVariableFromSymbol(std::string varname) const;
   Variable* GetSubVariable(const std::string* name);
-  Variable* GetReactionVariable();
   const Formula* GetFormula() const;
   Formula* GetFormula();
   Variable* GetNextExportVariable();
@@ -72,10 +71,6 @@ public:
   std::vector<std::string> GetVariableName() const;
   std::string GetVariableNameDelimitedBy(char cc) const;
 
-  void SetNewTopName(std::string newmodname, std::string newtopname);
-  void SetReactionVariable(Variable* var);
-  bool SetModule(const std::string* modname);
-  
   std::string ToString() const;
   std::string GetAntimony(set<const Module*> usedmods) const;
   std::string GetJarnacReactions() const;
@@ -84,15 +79,13 @@ public:
 
 
   //Output for the API
-  void Finalize();
+  bool Finalize();
   size_t GetNumVariablesOfType(return_type rtype) const;
   const Variable* GetNthVariableOfType(return_type rtype, size_t n) const;
   bool   AreEquivalent(return_type rtype, var_type vtype) const;
   bool   AreEquivalent(return_type rtype, bool isconst) const;
-  var_type GetTypeFor(std::string varname) const;
-  bool     IsConst(std::string varname) const;
 
-  std::string ListIdentityDifferencesFrom(const Module* origmod, std::string mname) const;
+  std::string ListIdentityDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
   void  LoadSBML(const Model* sbml);
   Model GetSBMLModel();

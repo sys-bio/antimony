@@ -3,6 +3,7 @@
 #include "module.h"
 #include "variable.h"
 #include "registry.h"
+#include "stringx.h"
 
 using namespace std;
 
@@ -29,19 +30,26 @@ vector<string> Variable::GetName() const
   return m_name;
 }
 
+vector<string> Variable::GetPrintedName() const
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetPrintedName();
+  }
+  return m_name;
+}
+
 string Variable::GetNameDelimitedBy(char cc) const
 {
+  if (IsPointer()) {
+    return GetSameVariable()->GetNameDelimitedBy(cc);
+  }
+  //  if (m_sameVariable.size()
   string retval;
-  vector<string> name = m_name;
-  if (m_printedname.size() > 0) {
-    name = m_printedname;
-  }
-  assert(name.size() > 0);
-  if (name.size()) {
-    retval += name[0];
-  }
-  for (size_t i=1; i<name.size(); i++) {
-    retval += cc + name[i];
+  for (size_t i=0; i<m_name.size(); i++) {
+    if (i>0) {
+      retval += cc;
+    }
+    retval += m_name[i];
   }
   return retval;
 }
@@ -67,15 +75,10 @@ var_type Variable::GetType() const
 
 const Formula* Variable::GetFormula() const
 {
-  if (m_sameVariable.size() > 0) {
-    const Variable* samevar = g_registry.GetModule(m_module)->GetVariable(m_sameVariable);
-    if (samevar != NULL) {
-      return samevar->GetFormula();
-    }
-    assert(false);
-    return NULL;
+  if (IsPointer()) {
+    return GetSameVariable()->GetFormula();
   }
-  else switch (m_type) {
+  switch (m_type) {
   case varFormulaUndef:
   case varFormulaOperator:
   case varDNA:
@@ -101,14 +104,8 @@ const Formula* Variable::GetFormula() const
 
 Formula* Variable::GetFormula()
 {
-  if (m_sameVariable.size() > 0) {
-    Module* mod = g_registry.GetModule(m_module);
-    Variable* samevar = mod->GetVariable(m_sameVariable);
-    if (samevar != NULL) {
-      return samevar->GetFormula();
-    }
-    assert(false);
-    return NULL;
+  if (IsPointer()) {
+    return GetSameVariable()->GetFormula();
   }
   else switch (m_type) {
   case varFormulaUndef:
@@ -136,58 +133,64 @@ Formula* Variable::GetFormula()
 
 const AntimonyReaction* Variable::GetReaction() const
 {
-  assert(IsReaction(m_type));
-  if (m_sameVariable.size() > 0) {
-    return g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->GetReaction();
+  if (IsPointer()) {
+    return GetSameVariable()->GetReaction();
   }
+  assert(IsReaction(m_type));
   return &(m_valReaction);
 }
 
 const Module* Variable::GetModule() const
 {
-  assert(m_type == varModule);
-  if (m_sameVariable.size() > 0) {
-    return g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->GetModule();
+  if (IsPointer()) {
+    return GetSameVariable()->GetModule();
   }
+  assert(m_type == varModule);
   return &(m_valModule[0]);
 }
 
 Module* Variable::GetModule()
 {
-  assert(m_type == varModule);
-  if (m_sameVariable.size() > 0) {
-    return g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->GetModule();
+  if (IsPointer()) {
+    return GetSameVariable()->GetModule();
   }
+  assert(m_type == varModule);
   return &(m_valModule[0]);
 }
 
 const AntimonyEvent* Variable::GetEvent() const
 {
+  if (IsPointer()) {
+    return GetSameVariable()->GetEvent();
+  }
   assert(m_type == varEvent);
   return &(m_valEvent);
 }
 
 AntimonyEvent* Variable::GetEvent()
 {
+  if (IsPointer()) {
+    return GetSameVariable()->GetEvent();
+  }
   assert(m_type == varEvent);
   return &(m_valEvent);
 }
 
 Variable* Variable::GetSubVariable(const std::string* name)
 {
+  if (IsPointer()) {
+    return GetSameVariable()->GetSubVariable(name);
+  }
   if (m_type != varModule) {
     return NULL;
-  }
-  if (m_sameVariable.size() > 0) {
-    return g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->GetSubVariable(name);
   }
   assert(m_valModule.size() == 1);
   return m_valModule[0].GetSubVariable(name);
 }
 
-Variable* Variable::GetSameVariable()
+Variable* Variable::GetSameVariable() const
 {
-  Variable* var = this;
+  Variable* var = g_registry.GetModule(m_module)->GetVariable(m_name);
   Variable* subvar = g_registry.GetModule(m_module)->GetVariable(m_sameVariable);
   if (subvar == NULL) return var;
   while (var != subvar) {
@@ -199,6 +202,9 @@ Variable* Variable::GetSameVariable()
 
 const DNAStrand* Variable::GetDNAStrand() const
 {
+  if (IsPointer()) {
+    return GetSameVariable()->GetDNAStrand();
+  }
   if (m_type != varStrand) {
     return NULL;
   }
@@ -207,8 +213,8 @@ const DNAStrand* Variable::GetDNAStrand() const
 
 Variable* Variable::GetCompartment() const
 {
-  if (m_sameVariable.size() > 0) {
-    return g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->GetCompartment();
+  if (IsPointer()) {
+    return GetSameVariable()->GetCompartment();
   }
   return g_registry.GetModule(m_module)->GetVariable(m_compartment);
 }
@@ -216,8 +222,8 @@ Variable* Variable::GetCompartment() const
 
 bool Variable::GetIsConst() const
 {
-  if (m_sameVariable.size() > 0) {
-    return g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->GetIsConst();
+  if (IsPointer()) {
+    return GetSameVariable()->GetIsConst();
   }
   switch(m_type) {
   case varFormulaUndef:
@@ -249,24 +255,19 @@ bool Variable::GetIsConst() const
 
 bool Variable::GetIsEquivalentTo(const Variable* var) const
 {
-  if (var->GetName() == m_name) return true;
-  Module* mod = g_registry.GetModule(m_module);
-  assert(mod != NULL);
   if (IsPointer()) {
-    Variable* otherme = mod->GetVariable(GetPointerName());
-    assert(otherme != NULL);
-    if (otherme->GetIsEquivalentTo(var)) return true;
+    return GetSameVariable()->GetIsEquivalentTo(var);
   }
-  if (var->IsPointer()) {
-    Variable* otheryou = mod->GetVariable(var->GetPointerName());
-    assert(otheryou != NULL);
-    if (GetIsEquivalentTo(otheryou)) return true;
-  }
+  const Variable* othervar = var->GetSameVariable();
+  if (othervar->GetName() == m_name) return true;
   return false;
 }
 
 vector<pair<Variable*, size_t> > Variable::GetStrandVars() const
 {
+  if (IsPointer()) {
+    return GetSameVariable()->GetStrandVars();
+  }
   vector<pair<Variable*, size_t> > retval;
   for (set<vector<string> >::iterator strand = m_strands.begin(); strand != m_strands.end(); strand++) {
     Variable* var = g_registry.GetModule(m_module)->GetVariable(*strand);
@@ -279,14 +280,20 @@ vector<pair<Variable*, size_t> > Variable::GetStrandVars() const
   return retval;
 }
 
-bool Variable::IsCompleteStrand() const
+bool Variable::IsExpandedStrand() const
 {
+  if (IsPointer()) {
+    return GetSameVariable()->IsExpandedStrand();
+  }
   if (GetType() != varStrand) return false;
   return (m_strands.size()==0);
 }
 
 string Variable::GetFormulaForNthEntryInStrand(char cc, size_t n)
 {
+  if (IsPointer()) {
+    return GetSameVariable()->GetFormulaForNthEntryInStrand(cc, n);
+  }
   assert(GetType() == varStrand);
   vector<Variable*> vars = m_valStrand.GetVariables();
   assert(n < vars.size());
@@ -311,8 +318,10 @@ bool Variable::SetType(var_type newtype)
 {
   if (newtype == varUndefined) return false;
   if (newtype == m_type) return false;
-  if (m_sameVariable.size() > 0) {
-    g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->SetType(newtype);
+  if (IsPointer()) {
+    if (GetSameVariable()->SetType(newtype)) return true;
+    m_type = GetSameVariable()->GetType();
+    return false;
   }
   if (IsDNA(newtype) && !m_valReaction.LeftIsEmpty()) {
     g_registry.SetError("For now, we disallow DNA reactions (i.e. genes) to consume anything in the reaction they define:  the left side of the reaction must be empty (i.e  ' -> S1' and not 'G1 -> S1').");
@@ -481,7 +490,10 @@ bool Variable::SetType(var_type newtype)
 
 bool Variable::SetFormula(Formula* formula)
 {
-  string formstring = formula->ToDelimitedStringWithStrands('.', GetStrandVars());
+  if (IsPointer()) {
+    return GetSameVariable()->SetFormula(formula);
+  }
+  string formstring = formula->ToDelimitedStringWithStrands('_', GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
     if (ASTform == NULL) {
@@ -492,8 +504,8 @@ bool Variable::SetFormula(Formula* formula)
       delete ASTform;
     }
   }
-  if (m_sameVariable.size() > 0) {
-    return g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->SetFormula(formula);
+  if (IsPointer()) {
+    return GetSameVariable()->SetFormula(formula);
   }
   if (formula->ContainsVar(this)) {
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
@@ -528,10 +540,10 @@ bool Variable::SetFormula(Formula* formula)
 
 bool Variable::SetReaction(AntimonyReaction* rxn)
 {
-  if (m_sameVariable.size() > 0) {
-    g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->SetReaction(rxn);
+  if (IsPointer()) {
+    return GetSameVariable()->SetReaction(rxn);
   }
-  string formstring = rxn->GetFormula()->ToDelimitedStringWithStrands('.', GetStrandVars());
+  string formstring = rxn->GetFormula()->ToDelimitedStringWithStrands('_', GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
     if (ASTform == NULL) {
@@ -542,7 +554,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
       delete ASTform;
     }
   }
-  assert(m_type==varUndefined || m_type==varDNA || m_type==varFormulaUndef || IsReaction(m_type));
+  if (SetType(varReactionUndef)) return true;
   m_valReaction = *rxn;
   if (m_type==varUndefined) {
     if (IsInteraction(rxn->GetType())) {
@@ -560,12 +572,14 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
     Formula blankform;
     m_valFormula = blankform;
   }
-  if (SetType(varReactionUndef)) return true;
   return false;
 }
 
 bool Variable::SetModule(const string* modname)
 {
+  if (IsPointer()) {
+    return GetSameVariable()->SetModule(modname);
+  }
   assert(m_name.size() == 1);
   if (m_type != varUndefined) {
     g_registry.SetError("Cannot define '" + GetNameDelimitedBy('.') + "' to be model '" + *modname + "', because it is already a " + VarTypeToString(m_type) + ".");
@@ -580,6 +594,9 @@ bool Variable::SetModule(const string* modname)
 
 bool Variable::SetEvent(const AntimonyEvent* event)
 {
+  if (IsPointer()) {
+    return GetSameVariable()->SetEvent(event);
+  }
   m_valEvent = *event;
   return SetType(varEvent);
 }
@@ -590,9 +607,6 @@ void Variable::SetNewTopName(string newmodname, string newtopname)
   m_name.insert(m_name.begin(), newtopname);
   if (m_sameVariable.size() > 0) {
     m_sameVariable.insert(m_sameVariable.begin(), newtopname);
-  }
-  if (m_printedname.size() > 0) {
-    m_printedname.insert(m_printedname.begin(), newtopname);
   }
   if (!m_valFormula.IsEmpty()) {
     m_valFormula.SetNewTopName(m_module, newtopname);
@@ -619,15 +633,10 @@ void Variable::SetNewTopName(string newmodname, string newtopname)
   m_strands = newstrands;
 }
 
-void Variable::SetPrintedName(std::vector<std::string> printedname)
-{
-  m_printedname = printedname;
-}
-
 bool Variable::SetIsConst(bool constant)
 {
-  if (m_sameVariable.size() > 0) {
-    g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->SetIsConst(constant);
+  if (IsPointer()) {
+    return GetSameVariable()->SetIsConst(constant);
   }
   string error = "Cannot set '" + GetNameDelimitedBy('.') + "' to be constant";
   switch(m_type) {
@@ -675,16 +684,50 @@ bool Variable::SetIsConst(bool constant)
 
 bool Variable::SetCompartment(Variable* var)
 {
-  if (m_sameVariable.size() > 0) {
-    return g_registry.GetModule(m_module)->GetVariable(m_sameVariable)->SetCompartment(var);
+  if (IsPointer()) {
+    return GetSameVariable()->SetCompartment(var);
   }
   if (var->SetType(varCompartment)) return true;
+  if (m_compartment.size() > 0) {
+    g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' to be in compartment '" + var->GetNameDelimitedBy('.') + "', because it is already in a different compartment (" + ToStringFromVecDelimitedBy(m_compartment, '.') + ").");
+    return true;
+  }
   m_compartment = var->GetName();
   return false;
 }
 
+void Variable::SetComponentCompartments()
+{
+  if (IsPointer()) {
+    return GetSameVariable()->SetComponentCompartments();
+  }
+  Variable* compartment = g_registry.GetModule(m_module)->GetVariable(m_compartment);
+  if (compartment == NULL) return;
+  switch(m_type) {
+  case varFormulaUndef:
+  case varFormulaOperator:
+  case varDNA:
+  case varCompartment:
+  case varSpeciesUndef:
+  case varEvent:
+  case varUndefined:
+    return; //No components to set
+  case varReactionUndef:
+  case varReactionGene:
+  case varInteraction:
+    return m_valReaction.SetComponentCompartments(compartment);
+  case varModule:
+    return m_valModule[0].SetComponentCompartments(compartment);
+  case varStrand:
+    return m_valStrand.SetComponentCompartments(compartment);
+  }
+}
+
 bool Variable::SetDNAStrand(DNAStrand& strand)
 {
+  if (IsPointer()) {
+    return GetSameVariable()->SetDNAStrand(strand);
+  }
   if (SetType(varStrand)) return true;
   m_valStrand = strand;
   return false;
@@ -692,6 +735,9 @@ bool Variable::SetDNAStrand(DNAStrand& strand)
 
 bool Variable::SetIsInStrand(Variable* var)
 {
+  if (IsPointer()) {
+    return GetSameVariable()->SetIsInStrand(var);
+  }
   if (GetType() == varStrand) {
     if (m_strands.size() > 0) {
       g_registry.SetError("Cannot put the DNA strand '" + GetNameDelimitedBy('.') + "' into the strand '" + var->GetNameDelimitedBy('.') + "' because it is already in the strand '" + g_registry.GetModule(m_module)->GetVariable(*m_strands.begin())->GetNameDelimitedBy('.') + "', and can only be in one strand at a time.  If you want a copy in the new strand, you must copy the DNA itself.");
@@ -706,19 +752,29 @@ bool Variable::SetIsInStrand(Variable* var)
   return false;
 }
 
+//Set this variable to be a shell pointing to the clone, transferring any data we may already have.
 bool Variable::Synchronize(Variable* clone)
 {
-  //Check for error conditions
-  assert(m_module == clone->GetNamespace());
+  if (IsPointer()) {
+    if(GetSameVariable()->Synchronize(clone)) return true;
+    m_type = clone->GetType();
+    return false;
+  }
   if (clone == NULL) {
     g_registry.SetError("No such variable in this module.");
     return true;
   }
+  clone = clone->GetSameVariable();
   if (GetIsEquivalentTo(clone)) {
     //already equivalent--don't do anything
-    // (Shouldn't be necessary from Variable:: calls, but this also gets called from the
-    //  registry during parsing.) 
-    //cout << "Already equivalent" << endl;
+    return false;
+  }
+  
+  //Check for error conditions
+  assert(m_module == clone->GetNamespace());
+
+  if (m_type == varModule) {
+    g_registry.SetError("Cannot set the modules '" + GetNameDelimitedBy('.') + "' and '" + clone->GetNameDelimitedBy('.') + "' to be the same thing--modules must be unique by definition.");
     return false;
   }
 
@@ -739,12 +795,6 @@ bool Variable::Synchronize(Variable* clone)
   }
 
   //Now, actually synchronize the data.
-  if (m_printedname.size() > 0) {
-    clone->SetPrintedName(m_printedname);
-  }
-  else {
-    clone->SetPrintedName(m_name);
-  }
   if ((m_type == varUndefined) ||
       (m_type == varReactionUndef && IsReaction(clone->GetType())) ||
       (m_type == varSpeciesUndef && IsSpecies(clone->GetType())) ){
@@ -755,25 +805,33 @@ bool Variable::Synchronize(Variable* clone)
       g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy('.') + " with " + clone->GetNameDelimitedBy('.') + " because they are set to be " + VarTypeToString(m_type) + " and " + VarTypeToString(clone->GetType()) + " types, respectively, which are incompatible:  ");
       return true;
     }
+    m_type = clone->GetType();
   }
 
+  if (clone->SetIsConst(GetIsConst())) {
+    return true; //(error condition)
+  }
   if (!m_valFormula.IsEmpty()) {
-    if (clone->SetFormula(&m_valFormula)) return true;
+    Formula* cloneform = clone->GetFormula();
+    if (cloneform->IsEmpty()) {
+      if (clone->SetFormula(&m_valFormula)) return true;
+    }
+    //else stay with the clone version--it supercedes our own.
     m_valFormula.Clear();
   }
   if (!m_valReaction.IsEmpty()) {
-    if (clone->SetReaction(&m_valReaction)) return true;
+    const AntimonyReaction* clonerxn = clone->GetReaction();
+    if (clonerxn->IsEmpty()) {
+      if (clone->SetReaction(&m_valReaction)) return true;
+    }
     m_valReaction.Clear();
   }
-  if (m_valModule.size() > 0) {
-    assert(false); //I want to know what someone wants when they try this,
-    // because I'm not convinced I'm doing the right thing below.  LS DEBUG
-    string modname = m_valModule[0].GetModuleName();
-    clone->SetModule(&modname); //If we do, check the return value here.
-    m_valModule.clear();
-  }
+  assert(m_valModule.size()==0);
   if (!m_valStrand.IsEmpty()) {
-    if (clone->SetDNAStrand(m_valStrand)) return true;
+    const DNAStrand* clonestrand = clone->GetDNAStrand();
+    if (clonestrand->IsEmpty()) {
+      if (clone->SetDNAStrand(m_valStrand)) return true;
+    }
     m_valStrand.Clear();
   }
   
@@ -783,40 +841,51 @@ bool Variable::Synchronize(Variable* clone)
     if (clonecompartment == NULL) {
       clone->SetCompartment(compartment);
     }
-    else {
-      compartment = compartment->GetSameVariable();
-      clonecompartment = compartment->GetSameVariable();
-      if (compartment != clonecompartment) {
-        g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' and '" + clone->GetNameDelimitedBy('.') + "' to be the same, since they seem to be already assigned to different compartments (" + compartment->GetNameDelimitedBy('.') + " and " + clonecompartment->GetNameDelimitedBy('.') + ").");
-        return true;
-      }
-    }
-  }
-  if (clone->SetIsConst(GetIsConst())) {
-    return true; //(error condition)
   }
 
-  //If we already point to someone, let them point to the new thing instead.
-  if (m_sameVariable.size() != 0) {
-    Variable* samevar = g_registry.GetModule(m_module)->GetVariable(m_sameVariable);
-    if (samevar->Synchronize(clone)) return true;
-  }
-  else {
-    m_sameVariable = clone->GetName();
-  }
+  m_sameVariable = clone->GetName();
 
   return false;
 }
 
-bool Variable::CheckDoesNotIncludeSelf()
+bool Variable::IncludesSelf()
 {
+  if (IsPointer()) {
+    return GetSameVariable()->IncludesSelf();
+  }
   Formula* form = GetFormula();
   if (form != NULL) {
     if (form->ContainsVar(this)) {
-      return false;
+      g_registry.SetError("Error in model " + m_module + ":  loop detected.  The formula for '" + GetNameDelimitedBy('.') + "' ('" + GetFormula()->ToDelimitedStringWithEllipses('.') + "') contains itself, either directly or indirectly.");
+      return true;
     }
   }
-  return true;
+  return false;
+}
+
+bool Variable::AnyCompartmentLoops() const
+{
+  vector<const Variable*> novars;
+  return AnyCompartmentLoops(novars);
+}
+
+bool Variable::AnyCompartmentLoops(vector<const Variable*> lowercomps) const
+{
+  if (IsPointer()) {
+    return GetSameVariable()->AnyCompartmentLoops(lowercomps);
+  }
+  assert(m_type == varCompartment);
+  lowercomps.push_back(this);
+  if (m_compartment.size() == 0) return false;
+  const Variable* compartment = g_registry.GetModule(m_module)->GetVariable(m_compartment);
+  compartment = compartment->GetSameVariable();
+  for (size_t lnum=0; lnum<lowercomps.size(); lnum++) {
+    if (compartment == lowercomps[lnum]) {
+      g_registry.SetError("Error in model " + m_module + ":  loop detected.  Compartments '" + GetNameDelimitedBy('.') + "' and '" + compartment->GetNameDelimitedBy('.') + "' are contained within each other.");
+      return true;
+    }
+  }
+  return compartment->AnyCompartmentLoops(lowercomps);
 }
 
 string Variable::ToString() const

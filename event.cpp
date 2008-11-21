@@ -51,6 +51,14 @@ void AntimonyEvent::SetNewTopName(string modname, string newtopname)
   }
 }
 
+bool AntimonyEvent::IsEmpty() const
+{
+  if (m_trigger.IsEmpty()) {
+    return true;
+  }
+  return false;
+}
+
 string AntimonyEvent::GetNthAssignmentVariableName(size_t n, char cc) const
 {
   if (n >= m_varresults.size()) {
@@ -97,6 +105,7 @@ string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc) const
 
 string AntimonyEvent::ToStringDelimitedBy(char cc) const
 {
+  if (IsEmpty()) return "";
   string retval;
 
   Module* module = g_registry.GetModule(m_module);

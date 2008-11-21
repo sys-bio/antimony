@@ -1,4 +1,4 @@
-CPPFLAGS = -Wall -ggdb 
+CPPFLAGS = -Wall -ggdb
 LIBRARYFLAGS = -L/usr/local/lib -lsbml
 
 antimony : antimony.tab.o antimony_api.o dnastrand.o event.o formula.o module.o rd_type.o reactantlist.o reaction.o registry.o sbmlx.o stringx.o variable.o Antimony.o
@@ -17,7 +17,7 @@ antimony.tab.o : antimony.tab.cpp
 antimony_api.o : antimony_api.cpp antimony_api.h formula.h libutil.h module.h rd_type.h registry.h sbmlx.h stringx.h
 	g++ -c $(CPPFLAGS) antimony_api.cpp
 
-dnastrand.o : dnastrand.cpp dnastrand.h 
+dnastrand.o : dnastrand.cpp dnastrand.h module.h registry.h variable.h
 	g++ -c $(CPPFLAGS) dnastrand.cpp
 
 event.o : event.cpp event.h formula.h registry.h stringx.h variable.h

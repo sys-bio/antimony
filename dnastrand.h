@@ -28,12 +28,14 @@ public:
   void SetDownstream(bool open);
   void SetUpstream(bool open);
   void SetModule(std::string modname);
+  void SetComponentCompartments(Variable* compartment);
   void Clear();
 
-  bool IsEmpty();
+  bool IsEmpty() const;
   Formula* GetFinalFormula() const;
   std::vector<Variable*> GetVariables() const;
   std::vector<size_t> GetOccurrencesOf(std::vector<std::string> var) const;
+  size_t GetStrandLength() const {return m_strand.size();};
   bool GetUpstreamOpen() const {return m_upstreamopen;};
   bool GetDownstreamOpen() const {return m_downstreamopen;};
   bool CheckContains(Variable* var) const;
@@ -41,6 +43,7 @@ public:
   void SetNewTopName(std::string newmodname, std::string newtopname);
   std::string ToStringDelimitedBy(char cc) const;
   std::vector<std::string> ToExpandedStringVecDelimitedBy(char cc) const;
+  std::vector<std::string> ToModularStringVecDelimitedBy(char cc) const;
 };
 
 
