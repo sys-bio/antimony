@@ -136,17 +136,8 @@ const AntimonyReaction* Variable::GetReaction() const
   if (IsPointer()) {
     return GetSameVariable()->GetReaction();
   }
-  assert(IsReaction(m_type));
+  assert(IsReaction(m_type) || m_type == varInteraction);
   return &(m_valReaction);
-}
-
-const Module* Variable::GetModule() const
-{
-  if (IsPointer()) {
-    return GetSameVariable()->GetModule();
-  }
-  assert(m_type == varModule);
-  return &(m_valModule[0]);
 }
 
 Module* Variable::GetModule()
@@ -504,9 +495,6 @@ bool Variable::SetFormula(Formula* formula)
       delete ASTform;
     }
   }
-  if (IsPointer()) {
-    return GetSameVariable()->SetFormula(formula);
-  }
   if (formula->ContainsVar(this)) {
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
     return true;
@@ -529,7 +517,7 @@ bool Variable::SetFormula(Formula* formula)
     m_valFormula = *formula;
     break;
   case varEvent:
-    m_valEvent.SetTrigger(*formula);
+    if (m_valEvent.SetTrigger(*formula)) return true;
     break;
   case varStrand:
     g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' to be " + formula->ToDelimitedStringWithEllipses('.') + " because DNA strands are only defined by their components, and do not have any equations associated with them.");
@@ -554,19 +542,13 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
       delete ASTform;
     }
   }
-  if (SetType(varReactionUndef)) return true;
+  if (IsInteraction(rxn->GetType())) {
+    if (SetType(varInteraction)) return true;
+  }
+  else {
+    if (SetType(varReactionUndef)) return true;
+  }
   m_valReaction = *rxn;
-  if (m_type==varUndefined) {
-    if (IsInteraction(rxn->GetType())) {
-      m_type = varInteraction;
-    }
-    else {
-      m_type = varReactionUndef;
-    }
-  }
-  if (m_type==varDNA) {
-    m_type = varReactionGene;
-  }
   if (!m_valFormula.IsEmpty()) {
     m_valReaction.SetFormula(&m_valFormula);
     Formula blankform;
@@ -607,6 +589,7 @@ void Variable::SetNewTopName(string newmodname, string newtopname)
   m_name.insert(m_name.begin(), newtopname);
   if (m_sameVariable.size() > 0) {
     m_sameVariable.insert(m_sameVariable.begin(), newtopname);
+    return;
   }
   if (!m_valFormula.IsEmpty()) {
     m_valFormula.SetNewTopName(m_module, newtopname);
@@ -808,9 +791,7 @@ bool Variable::Synchronize(Variable* clone)
     m_type = clone->GetType();
   }
 
-  if (clone->SetIsConst(GetIsConst())) {
-    return true; //(error condition)
-  }
+  clone->SetIsConst(GetIsConst()); //Don't worry about return values--constness can change.
   if (!m_valFormula.IsEmpty()) {
     Formula* cloneform = clone->GetFormula();
     if (cloneform->IsEmpty()) {
