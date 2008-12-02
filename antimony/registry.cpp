@@ -70,6 +70,7 @@ void Registry::FreeVariables()
   for (set<Variable*>::iterator var=m_storedvars.begin(); var!=m_storedvars.end(); var++) {
     delete *var;
   }
+  m_storedvars.clear();
 }
 
 void Registry::ClearAll()
@@ -362,6 +363,17 @@ bool Registry::SetNewCurrentEvent(Formula* trigger)
 bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
 {
   m_currentEvent = var->GetName();
+  string formstring = trigger->ToDelimitedStringWithEllipses('_');
+  if (formstring.size() > 0) {
+    ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
+    if (ASTform == NULL) {
+      g_registry.SetError("The event trigger \"" + trigger->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      return true;
+    }
+    else {
+      delete ASTform;
+    }
+  }
   AntimonyEvent event(*trigger,var);
   return var->SetEvent(&event);
 }
@@ -390,6 +402,7 @@ Formula* Registry::NewBlankFormula()
 string Registry::GetLastFile()
 {
   if (m_files.size()) return m_files.back();
+  assert(false); //Should only be called when parsing.
   return "";
 }
 

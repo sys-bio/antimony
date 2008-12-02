@@ -445,7 +445,7 @@ string Module::GetAntimony(set<const Module*> usedmods) const
     if (var->IsPointer()) {
       retval += indent + ToStringFromVecDelimitedBy(var->GetName(), cc) + " is " + var->GetNameDelimitedBy(cc) + ";\n";
     }
-    else if (IsReaction(type)) {
+    else if (IsReaction(type) || type == varInteraction) {
       retval += indent + var->GetReaction()->ToDelimitedStringWithStrands(cc, var->GetStrandVars()) + "\n";
     }
     else if (type == varEvent) {

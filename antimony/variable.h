@@ -58,7 +58,6 @@ public:
   const Formula* GetFormula() const;
   Formula* GetFormula();
   const AntimonyReaction* GetReaction() const;
-  const Module* GetModule() const;
   Module* GetModule();
   const AntimonyEvent* GetEvent() const;
   AntimonyEvent* GetEvent();

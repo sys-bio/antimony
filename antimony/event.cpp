@@ -25,9 +25,21 @@ AntimonyEvent::AntimonyEvent()
 {
 }
 
-void AntimonyEvent::SetTrigger(const Formula& form)
+bool AntimonyEvent::SetTrigger(const Formula& form)
 {
+  string formstring = form.ToDelimitedStringWithEllipses('_');
+  if (formstring.size() > 0) {
+    ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
+    if (ASTform == NULL) {
+      g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      return true;
+    }
+    else {
+      delete ASTform;
+    }
+  }
   m_trigger = form;
+  return false;
 }
 
 bool AntimonyEvent::AddResult(Variable* var, Formula* form)

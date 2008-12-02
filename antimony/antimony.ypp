@@ -173,11 +173,14 @@ formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
         |       formula NUM  {$$ = $1; $1->AddNum($2); }
         |       formula FUNCTION {$$ = $1; $1->AddText($2);}
         |       formula mathThing {$$ = $1; $1->AddMathThing($2); }
+        |       formula ltgt {g_registry.SetError("Unable to parse less-than or greater-than symbols ('<' or '>'), or '=='.  Use the functions lt(x, y), gt(x, y), eq(x, y), leq(x, y), or geq(x, y) to use comparisons."); YYABORT;}
+/*
         |       formula '<' '=' {$$ = $1; $1->AddMathThing('<'); $1->AddMathThing('='); }
         |       formula '>' '=' {$$ = $1; $1->AddMathThing('>'); $1->AddMathThing('='); }
         |       formula '=' '<' {$$ = $1; $1->AddMathThing('='); $1->AddMathThing('<'); }
         |       formula '=' '>' {$$ = $1; $1->AddMathThing('='); $1->AddMathThing('>'); }
         |       formula '=' '=' {$$ = $1; $1->AddMathThing('='); $1->AddMathThing('='); }
+*/
         ;
 
 mathThing:      '+' {$$ = '+';}
@@ -188,8 +191,11 @@ mathThing:      '+' {$$ = '+';}
         |       ')' {$$ = ')';}
         |       '^' {$$ = '^';}
         |       ',' {$$ = ',';}
-        |       '>' {$$ = '>';}
-        |       '<' {$$ = '<';}
+        ;
+
+ltgt:           '>' {}
+        |       '<' {}
+        |       '=' '=' {}
         ;
 
 lineend:        ';' {}
@@ -206,8 +212,9 @@ submodule:      varmaybein ':' MODNAME '(' {if ($1->SetModule($3)) YYABORT;} var
 variableimportlist:
                 /* empty */ {}
         |       variable {if (g_registry.AddVariableToCurrentImportList($1)) YYABORT; }
+        |       localvariable '=' variable {if ($1->Synchronize($3)) YYABORT; }
         |       variableimportlist ',' variable { if (g_registry.AddVariableToCurrentImportList($3)) YYABORT; }
-        |       variableimportlist ',' variable '=' localvariable {if ($5->Synchronize($3)) YYABORT; }
+        |       variableimportlist ',' localvariable '=' variable {if ($3->Synchronize($5)) YYABORT; }
         ;
 
 localvariable:  WORD {$$ = g_registry.GetImportedModuleSubVariable($1); if ($$==NULL) {g_registry.SetError("No such variable '" + *$1 + "' in this module."); YYABORT;} }
@@ -616,6 +623,16 @@ int main(long argc, char** argv)
     }
     freeAll();
   }
+  /* Just for testing: */
+  clearPreviousLoads();
+  int ret2 = loadFile(argv[1]);
+  if (ret2 == -1) {
+    cout << "Error when re-reading file " << argv[1] << ":  " << getLastError() << endl;
+  }
+  else {
+    cout << argv[1] << " re-read successfully ." << endl;
+  }
+  
   if (retval == -1) return 1;
   return 0;
 }

@@ -21,7 +21,7 @@ public:
   AntimonyEvent(); //A blank one we don't plan to use.
   ~AntimonyEvent() {};
 
-  void SetTrigger(const Formula& form);
+  bool SetTrigger(const Formula& form);
   bool AddResult(Variable* var, Formula* form);
   void SetNewTopName(std::string modname, std::string newtopname);
 
