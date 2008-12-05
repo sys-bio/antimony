@@ -7,6 +7,7 @@
 #include "rd_type.h"
 
 class Variable;
+class Formula;
 
 class ReactantList
 {
@@ -23,9 +24,9 @@ public:
 
   void AddReactant(Variable* var, double stoichiometry=1);
   void SetNewTopName(std::string newmodname, std::string newtopname);
-  bool SetVarsTo(var_type vtype);
   void SetComponentCompartments(Variable* var);
-  bool SetTypesOfComponentsTo(var_type vtype);
+  bool SetComponentTypesTo(var_type vtype);
+  bool SetComponentFormulasTo(Formula form);
   bool CheckIsSingleDNAOrReaction();
 
   Variable* GetSingleVar();

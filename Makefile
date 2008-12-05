@@ -35,7 +35,7 @@ rd_type.o : rd_type.cpp rd_type.h
 reactantlist.o : reactantlist.cpp reactantlist.h rd_type.h registry.h module.h variable.h reaction.h
 	g++ -c $(CPPFLAGS) reactantlist.cpp
 
-reaction.o : reaction.cpp reaction.h registry.h rd_type.h stringx.h module.h variable.h
+reaction.o : reaction.cpp reaction.h reactantlist.h registry.h rd_type.h stringx.h module.h variable.h
 	g++ -c $(CPPFLAGS) reaction.cpp
 
 registry.o : registry.cpp registry.h dnastrand.h module.h reaction.h reactantlist.h formula.h variable.h
