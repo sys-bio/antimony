@@ -91,19 +91,24 @@ size_t* getSizeTStar(size_t size)
   return ret;
 }
 
-void reportReactionIndexProblem(size_t n, size_t actualsize, const char* moduleName)
+void reportReactionIndexProblem(size_t n, size_t actualsize, const char* moduleName, bool reaction=true)
 {
-  string error = "There is no reaction with index " + ToString(n) + " in module ";
+  string name = "reaction";
+  if (!reaction) {
+    name = "interaction";
+  }
+    
+  string error = "There is no " + name + "with index " + ToString(n) + " in module ";
   error += moduleName;
   error += ".";
   if (actualsize == 0) {
-    error += "  In fact, there are no reactions at all in that module.";
+    error += "  In fact, there are no " + name + "s at all in that module.";
   }
   else if (actualsize == 1) {
-    error += "  There is a single reaction with index 0.";
+    error += "  There is a single " + name + " with index 0.";
   }
   else if (actualsize > 1) {
-    error += "  Valid reaction index values are 0 through " + ToString(actualsize-1) + ".";
+    error += "  Valid "+ name + " index values are 0 through " + ToString(actualsize-1) + ".";
   }
   g_registry.SetError(error);
 }
@@ -355,122 +360,237 @@ LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_t
 LIB_EXTERN size_t getNumReactions(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  return g_registry.GetModule(moduleName)->m_rxnleftvarnames.size();
+  return getNumSymbolsOfType(moduleName, allReactions);
 }
 
-LIB_EXTERN size_t getNumReactants(const char* moduleName, size_t rxn)
-{
+LIB_EXTERN size_t getNumInteractions(const char* moduleName)
+{ 
   if (!checkModule(moduleName)) return NULL;
-  const Module* mod = g_registry.GetModule(moduleName); 
-  if (mod->m_rxnleftvarnames.size() <= rxn) {
-    reportReactionIndexProblem(rxn, mod->m_rxnleftvarnames.size(), moduleName);
-    return NULL;
-  }
-  return mod->m_rxnleftvarnames[rxn].size();
+  return getNumSymbolsOfType(moduleName, allInteractions);
 }
 
-LIB_EXTERN size_t getNumProducts(const char* moduleName, size_t rxn)
+size_t getNumReactOrProdForRxnOrInt(const char* moduleName, size_t n, bool reaction, bool reactant)
+{
+  if (!checkModule(moduleName)) return 0;
+  return_type rtype = allReactions;
+  if (!reaction) {
+    rtype = allInteractions;
+  }
+  const Module* mod = g_registry.GetModule(moduleName);
+  if (n >= getNumSymbolsOfType(moduleName, rtype)) {
+    reportReactionIndexProblem(n, getNumSymbolsOfType(moduleName, rtype), moduleName, reaction);    
+  }
+  const Variable* rxn = mod->GetNthVariableOfType(rtype, n);
+  if (rxn->GetReaction() == NULL) {
+    return 0;
+  }
+  if (reactant) {
+    return rxn->GetReaction()->GetLeft()->Size();
+  }
+  else {
+    return rxn->GetReaction()->GetRight()->Size();
+  }
+}
+
+LIB_EXTERN size_t getNumReactants(const char* moduleName, size_t n)
+{
+  return getNumReactOrProdForRxnOrInt(moduleName, n, true, true);
+}
+
+LIB_EXTERN size_t getNumProducts(const char* moduleName, size_t n)
+{
+  return getNumReactOrProdForRxnOrInt(moduleName, n, true, false);
+}
+
+LIB_EXTERN size_t getNumInteractors(const char* moduleName, size_t n)
+{
+  return getNumReactOrProdForRxnOrInt(moduleName, n, false, true);
+}
+
+LIB_EXTERN size_t getNumInteractees(const char* moduleName, size_t n)
+{
+  return getNumReactOrProdForRxnOrInt(moduleName, n, false, false);
+}
+
+char** getNthRxnOrIntReactantOrProductNames(const char* moduleName, size_t n, bool reaction, bool reactant)
 {
   if (!checkModule(moduleName)) return NULL;
-  const Module* mod = g_registry.GetModule(moduleName); 
-  if (mod->m_rxnrightvarnames.size() <= rxn) {
-    reportReactionIndexProblem(rxn, mod->m_rxnrightvarnames.size(), moduleName);
+  return_type rtype = allReactions;
+  if (!reaction) {
+    rtype = allInteractions;
+  }
+  size_t numlines = getNumSymbolsOfType(moduleName, rtype);
+  if (n >= numlines) {
+    reportReactionIndexProblem(n, numlines, moduleName, reaction);    
+  }
+  const Module* mod = g_registry.GetModule(moduleName);
+  const Variable* rxn = mod->GetNthVariableOfType(rtype, n);
+  if (rxn->GetReaction() == NULL) {
     return NULL;
   }
-  return g_registry.GetModule(moduleName)->m_rxnrightvarnames[rxn].size();
+  vector<string> names;
+  if (reactant) {
+    names = rxn->GetReaction()->GetLeft()->ToStringVecDelimitedBy(g_registry.GetCC());
+  }
+  else {
+    names = rxn->GetReaction()->GetRight()->ToStringVecDelimitedBy(g_registry.GetCC());
+  }
+  char** retnames = getCharStarStar(names.size());
+  for (size_t name=0; name<names.size(); name++) {
+    char* rname = getCharStar(names[name].c_str());
+    if (rname == NULL) return NULL;
+    retnames[name] = rname;
+  }
+  return retnames;
+}
+
+char*** getReactantOrProductNamesForRxnOrInt(const char* moduleName, bool reaction, bool reactant)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return_type rtype = allReactions;
+  if (!reaction) {
+    rtype = allInteractions;
+  }
+  size_t numlines = getNumSymbolsOfType(moduleName, rtype);
+  char*** allnames = getCharStarStarStar(numlines);
+  if (allnames == NULL) return NULL;
+  for (size_t rxn=0; rxn<numlines; rxn++) {
+    char** rxnnames = getNthRxnOrIntReactantOrProductNames(moduleName, rxn, reaction, reactant);
+    if (rxnnames == NULL) return NULL;
+    allnames[rxn] = rxnnames;
+  }
+  return allnames;
 }
 
 LIB_EXTERN char*** getReactantNames(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
-  vector<vector<string> >* lnames = &g_registry.GetModule(moduleName)->m_rxnleftvarnames;
-  char*** allnames = getCharStarStarStar(lnames->size());
-  if (allnames == NULL) return NULL;
-  for (size_t reaction=0; reaction<lnames->size(); reaction++) {
-    allnames[reaction] = getCharStarStar((*lnames)[reaction].size());
-    if (allnames[reaction] == NULL) return NULL;
-    for (size_t reactant=0; reactant<(*lnames)[reaction].size(); reactant++) {
-      allnames[reaction][reactant] = getCharStar((*lnames)[reaction][reactant].c_str());
-      if (allnames[reaction][reactant] == NULL) return NULL;
-    }
-  }
-  return allnames;
+  return getReactantOrProductNamesForRxnOrInt(moduleName, true, true);
+}
+
+LIB_EXTERN char** getNthReactionReactantNames(const char* moduleName, size_t n)
+{
+  return getNthRxnOrIntReactantOrProductNames(moduleName, n, true, true);
 }
 
 LIB_EXTERN char*** getProductNames(const char* moduleName)
 {
+  return getReactantOrProductNamesForRxnOrInt(moduleName, true, false);
+}
+
+LIB_EXTERN char** getNthReactionProductNames(const char* moduleName, size_t n)
+{
+  return getNthRxnOrIntReactantOrProductNames(moduleName, n, true, false);
+}
+
+LIB_EXTERN char*** getInteractorNames(const char* moduleName)
+{
+  return getReactantOrProductNamesForRxnOrInt(moduleName, false, true);
+}
+
+LIB_EXTERN char** getNthReactionInteractorNames(const char* moduleName, size_t n)
+{
+  return getNthRxnOrIntReactantOrProductNames(moduleName, n, false, true);
+}
+
+LIB_EXTERN char*** getInteracteeNames(const char* moduleName)
+{
+  return getReactantOrProductNamesForRxnOrInt(moduleName, false, false);
+}
+
+LIB_EXTERN char** getNthReactionInteracteeNames(const char* moduleName, size_t n)
+{
+  return getNthRxnOrIntReactantOrProductNames(moduleName, n, false, false);
+}
+
+double* getNthRxnOrIntReactantOrProductStoichiometries(const char* moduleName, size_t n, bool reaction, bool reactant)
+{
   if (!checkModule(moduleName)) return NULL;
-  vector<vector<string> >* rnames = &g_registry.GetModule(moduleName)->m_rxnrightvarnames;
-  char*** allnames = getCharStarStarStar(rnames->size());
-  if (allnames == NULL) return NULL;
-  for (size_t reaction=0; reaction<rnames->size(); reaction++) {
-    allnames[reaction] = getCharStarStar((*rnames)[reaction].size());
-    if (allnames[reaction] == NULL) return NULL;
-    for (size_t reactant=0; reactant<(*rnames)[reaction].size(); reactant++) {
-      allnames[reaction][reactant] = getCharStar((*rnames)[reaction][reactant].c_str());
-      if (allnames[reaction][reactant] == NULL) return NULL;
-    }
+  return_type rtype = allReactions;
+  if (!reaction) {
+    rtype = allInteractions;
   }
-  return allnames;
+  size_t numlines = getNumSymbolsOfType(moduleName, rtype);
+  if (n >= numlines) {
+    reportReactionIndexProblem(n, numlines, moduleName, reaction);
+    return NULL;
+  }
+  const Module* mod = g_registry.GetModule(moduleName);
+  const Variable* rxn = mod->GetNthVariableOfType(rtype, n);
+  if (rxn->GetReaction() == NULL) {
+    return NULL;
+  }
+  vector<double> stoichiometries;
+  if (reactant) {
+    stoichiometries = rxn->GetReaction()->GetLeft()->GetStoichiometries();
+  }
+  else {
+    stoichiometries = rxn->GetReaction()->GetRight()->GetStoichiometries();
+  }
+  double* retstoichiometries = getDoubleStar(stoichiometries.size());
+  for (size_t stoichiometry=0; stoichiometry<stoichiometries.size(); stoichiometry++) {
+    retstoichiometries[stoichiometry] = stoichiometries[stoichiometry];
+  }
+  return retstoichiometries;
+}
+
+double** getReactantOrProductStoichiometriesForRxnOrInt(const char* moduleName, bool reaction, bool reactant)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return_type rtype = allReactions;
+  if (!reaction) {
+    rtype = allInteractions;
+  }
+  size_t numlines = getNumSymbolsOfType(moduleName, rtype);
+  double** allstoichiometries = getDoubleStarStar(numlines);
+  if (allstoichiometries == NULL) return NULL;
+  for (size_t rxn=0; rxn<numlines; rxn++) {
+    double* rxnstoichiometries = getNthRxnOrIntReactantOrProductStoichiometries(moduleName, rxn, reaction, reactant);
+    if (rxnstoichiometries == NULL) return NULL;
+    allstoichiometries[reaction] = rxnstoichiometries;
+  }
+  return allstoichiometries;
 }
 
 LIB_EXTERN double** getReactantStoichiometries(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
-  vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnleftstoichiometries;
-  double** alllstoichs = getDoubleStarStar(lsrs->size());
-  if (alllstoichs == NULL) return NULL;
-  for (size_t rxn=0; rxn<lsrs->size(); rxn++) {
-    alllstoichs[rxn] = getNthReactionReactantStoichiometries(moduleName, rxn);
-    if (alllstoichs[rxn] == NULL) return NULL;
-  }
-  return alllstoichs;
+  return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, true, true);
 }
 
 LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName, size_t n)
 {
-  if (!checkModule(moduleName)) return NULL;
-  vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnleftstoichiometries;
-  if (n >= lsrs->size()) {
-    reportReactionIndexProblem(n, lsrs->size(), moduleName);
-    return NULL;
-  }
-  double* lstoichs = getDoubleStar((*lsrs)[n].size());
-  if (lstoichs == NULL) return NULL;
-  for (size_t stoich=0; stoich<(*lsrs)[n].size(); stoich++) {
-    lstoichs[stoich] = (*lsrs)[n][stoich];
-  }
-  return lstoichs;
+  return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, true, true);
 }
 
 LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
-  vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnrightstoichiometries;
-  double** allrstoichs = getDoubleStarStar(lsrs->size());
-  if (allrstoichs == NULL) return NULL;
-  for (size_t rxn=0; rxn<lsrs->size(); rxn++) {
-    allrstoichs[rxn] = getNthReactionProductStoichiometries(moduleName, rxn);
-    if (allrstoichs[rxn] == NULL) return NULL;
-  }
-  return allrstoichs;
+  return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, true, false);
 }
 
 LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, size_t n)
 {
-  if (!checkModule(moduleName)) return NULL;
-  vector<vector<double> >* lsrs = &g_registry.GetModule(moduleName)->m_rxnrightstoichiometries;
-  if (n >= lsrs->size()) {
-    reportReactionIndexProblem(n, lsrs->size(), moduleName);
-    return NULL;
-  }
-  double* rstoichs = getDoubleStar((*lsrs)[n].size());
-  if (rstoichs == NULL) return NULL;
-  for (size_t stoich=0; stoich<(*lsrs)[n].size(); stoich++) {
-    rstoichs[stoich] = (*lsrs)[n][stoich];
-  }
-  return rstoichs;
+  return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, true, false);
 }
+
+LIB_EXTERN double** getInteractorStoichiometries(const char* moduleName)
+{
+  return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, false, true);
+}
+
+LIB_EXTERN double* getNthReactionInteractorStoichiometries(const char* moduleName, size_t n)
+{
+  return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, false, true);
+}
+
+LIB_EXTERN double** getInteracteeStoichiometries(const char* moduleName)
+{
+  return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, false, false);
+}
+
+LIB_EXTERN double* getNthReactionInteracteeStoichiometries(const char* moduleName, size_t n)
+{
+  return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, false, false);
+}
+
 
 LIB_EXTERN double** getStoichiometryMatrix(const char* moduleName)
 {
@@ -553,6 +673,11 @@ LIB_EXTERN rd_type* getInteractionDividers(const char* moduleName)
 LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, size_t n)
 {
   if (!checkModule(moduleName)) return rdBecomes;
+  size_t numlines = getNumSymbolsOfType(moduleName, allInteractions);
+  if (n >= numlines) {
+    reportReactionIndexProblem(n, numlines, moduleName, false);
+    return rdBecomes;
+  }
   return g_registry.GetModule(moduleName)->GetNthVariableOfType(allInteractions, n)->GetReaction()->GetType();
 }
 
@@ -603,7 +728,7 @@ LIB_EXTERN char* getNthAssignmentEquationForEvent(const char* moduleName, size_t
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
   if (var==NULL) return NULL;
-  string formula = var->GetEvent()->GetNthAssignmentFormulaString(n, g_registry.GetCC());
+  string formula = var->GetEvent()->GetNthAssignmentFormulaString(n, g_registry.GetCC(), false);
   if (formula=="") return NULL;
   return getCharStar(formula.c_str());
 }
@@ -1022,6 +1147,45 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
     cout << rxnrates[rate] << endl;
   }
 
+  if (getNumSymbolsOfType(moduleName, allInteractions) > 0) {
+    cout << endl << "Interactions:" << endl;
+    char ***leftrxnnames = getInteractorNames(moduleName);
+    char ***rightrxnnames = getInteracteeNames(moduleName);
+    char **rxnnames = getSymbolNamesOfType(moduleName, allInteractions);
+    rd_type *rxndividers = getInteractionDividers(moduleName);  
+  
+    double **leftrxnstoichs = getInteractorStoichiometries(moduleName);
+    double **rightrxnstoichs = getInteracteeStoichiometries(moduleName);
+
+    for (size_t rxn=0; rxn<getNumSymbolsOfType(moduleName, allInteractions); rxn++) {
+      cout << rxnnames[rxn] << ": ";
+      for (size_t var=0; var<getNumReactants(moduleName,rxn); var++) {
+        if (var > 0) {
+          cout << " + ";
+        }
+        if (leftrxnstoichs[rxn][var] > 1) {
+          char lnum[50];
+          sprintf(lnum, "%g", leftrxnstoichs[rxn][var]);
+          cout << lnum;
+        }
+        cout << leftrxnnames[rxn][var];
+      }
+      cout << ToString(rxndividers[rxn]).c_str();
+      for (size_t var=0; var<getNumProducts(moduleName,rxn); var++) {
+        if (var > 0) {
+          cout << " + ";
+        }
+        if (rightrxnstoichs[rxn][var] > 1) {
+          char rnum[50];
+          sprintf(rnum, "%g", rightrxnstoichs[rxn][var]);
+          cout << rnum;
+        }
+        cout << rightrxnnames[rxn][var];
+      }
+      cout << " ; " << rxnrates[rxn];
+      cout << endl;
+    }
+  }
   if (getNumEvents(moduleName) > 0) {
     char** eventnames = getEventNames(moduleName);
     

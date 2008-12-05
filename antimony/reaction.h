@@ -37,6 +37,8 @@ public:
   const Formula* GetFormula() const;
   const ReactantList* GetLeft() const {return &m_left;};
   const ReactantList* GetRight() const {return &m_right;};
+        ReactantList* GetLeft()       {return &m_left;};
+        ReactantList* GetRight()      {return &m_right;};
   Formula* GetFormula();
   rd_type GetType() const {return m_divider;};
   bool IsEmpty() const;

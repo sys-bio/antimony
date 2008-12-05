@@ -278,3 +278,79 @@ string Formula::ToDelimitedStringWithEllipses(char cc) const
   }
   return retval;
 }
+
+string Formula::ToSBMLString() const
+{
+  vector<pair<Variable*, size_t> > nostrands;
+  return ToSBMLString(nostrands);
+}
+
+string Formula::ToSBMLString(std::vector<std::pair<Variable*, size_t> > strands) const
+{
+  string formula = ToDelimitedStringWithStrands('_', strands);
+  string revform = ConvertOneSymbolToFunction(formula);
+  while (formula != revform) {
+    formula = revform;
+    revform = ConvertOneSymbolToFunction(formula);
+  }
+  return formula;
+}
+
+string Formula::ConvertOneSymbolToFunction(string formula) const
+{
+  size_t mid = string::npos;
+  string whichfn = "";
+  const char* symbols[] = {"<=", ">=", "==", "&&", "||", "!=", "<", ">", "!"};
+  const char* symnames[] = {"leq", "geq", "eq", "and", "or", "neq", "lt", "gt", "not"};
+
+  for (size_t sym=0; sym<9; sym++) {
+    size_t ltgt = formula.find(symbols[sym]);
+    if (ltgt != string::npos) {
+      mid = ltgt;
+      whichfn = symnames[sym];
+      break;
+    }
+  }
+  if (mid == string::npos) {
+    return formula;
+  }
+  if (whichfn == "not") {
+    formula.replace(mid, 1, "not");
+    return formula;
+  }
+  vector<size_t> openparens;
+  openparens.push_back(-1);
+  for (size_t chpos=0; chpos<mid; chpos++) {
+    if (formula[chpos] == '(') {
+      openparens.push_back(chpos);
+    }
+    else if (formula[chpos] == ')') {
+      openparens.pop_back();
+    }
+  }
+  if (openparens.size() == 0) return formula; //error condition--too many )'s
+  size_t start = openparens[openparens.size()-1]+1;
+  size_t end = formula.size();
+  int numnewopens = 0;
+  for (size_t chpos=mid; chpos<formula.size(); chpos++) {
+    if (formula[chpos] == '(') {
+      numnewopens++;
+    }
+    else if (formula[chpos] == ')') {
+      if (numnewopens == 0) {
+        end = chpos;
+        break;
+      }
+      numnewopens--;
+    }
+  }
+  formula.insert(end, ")");
+  formula[mid] = ',';
+  if (whichfn != "lt" && whichfn != "gt") {
+    formula.erase(mid+1, 1);
+  }
+  whichfn += "(";
+  formula.insert(start, whichfn);
+  //cout << formula << endl;
+  return formula;
+}

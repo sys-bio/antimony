@@ -363,7 +363,7 @@ bool Registry::SetNewCurrentEvent(Formula* trigger)
 bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
 {
   m_currentEvent = var->GetName();
-  string formstring = trigger->ToDelimitedStringWithEllipses('_');
+  string formstring = trigger->ToSBMLString();
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
     if (ASTform == NULL) {

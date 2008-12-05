@@ -36,10 +36,6 @@ public:
 
   //Storage vectors for output:
   std::vector<std::vector<std::string> > m_uniquevars;
-  std::vector<std::vector<std::string> > m_rxnleftvarnames;
-  std::vector<std::vector<std::string> > m_rxnrightvarnames;
-  std::vector<std::vector<double> >      m_rxnleftstoichiometries;
-  std::vector<std::vector<double> >      m_rxnrightstoichiometries;
 
   Module(std::string name);
   //Module(const Module& src); //accept default

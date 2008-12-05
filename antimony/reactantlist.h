@@ -25,6 +25,7 @@ public:
   void SetNewTopName(std::string newmodname, std::string newtopname);
   bool SetVarsTo(var_type vtype);
   void SetComponentCompartments(Variable* var);
+  bool SetTypesOfComponentsTo(var_type vtype);
   bool CheckIsSingleDNAOrReaction();
 
   Variable* GetSingleVar();
