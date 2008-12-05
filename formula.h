@@ -46,6 +46,9 @@ public:
 
   std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands) const;
   std::string ToDelimitedStringWithEllipses(char cc) const;
+  std::string ToSBMLString() const;
+  std::string ToSBMLString(std::vector<std::pair<Variable*, size_t> > strands) const;
+  std::string ConvertOneSymbolToFunction(std::string formula) const;
 };
 
 

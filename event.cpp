@@ -27,7 +27,7 @@ AntimonyEvent::AntimonyEvent()
 
 bool AntimonyEvent::SetTrigger(const Formula& form)
 {
-  string formstring = form.ToDelimitedStringWithEllipses('_');
+  string formstring = form.ToSBMLString();
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
     if (ASTform == NULL) {
@@ -95,7 +95,7 @@ string AntimonyEvent::GetNthAssignmentVariableName(size_t n, char cc) const
   return resultvar->GetNameDelimitedBy(cc);
 }
 
-string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc) const
+string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc, bool SBML) const
 {
   if (n >= m_formresults.size()) {
     string error = "Unable to retrieve assignment '" + ToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
@@ -112,7 +112,11 @@ string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc) const
     return "";
   }
   Variable* resultvar = g_registry.GetModule(m_module)->GetVariable(m_varresults[n]);
+  if (SBML) {
+    return m_formresults[n].ToSBMLString(resultvar->GetStrandVars());
+  }
   return m_formresults[n].ToDelimitedStringWithStrands(cc, resultvar->GetStrandVars());
+  
 }
 
 string AntimonyEvent::ToStringDelimitedBy(char cc) const
@@ -128,8 +132,8 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
     assert(false);
     return "";
   }
-  retval += actualvar->GetNameDelimitedBy(cc) + ": @(";
-  retval += m_trigger.ToDelimitedStringWithEllipses(cc) + "): ";
+  retval += actualvar->GetNameDelimitedBy(cc) + ": @";
+  retval += m_trigger.ToDelimitedStringWithEllipses(cc) + ": ";
   for (size_t result=0; result<m_varresults.size(); result++) {
     if (result>0) {
       retval += ": ";

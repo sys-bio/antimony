@@ -223,10 +223,7 @@ bool Variable::GetIsConst() const
   case varCompartment:
     return m_valFormula.GetIsConst();
   case varSpeciesUndef:
-    if (!m_valFormula.GetIsConst()) {
-      return false;
-    }
-    break;
+    return m_const; //a starting value set by a variable formula can still be a const species.
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
@@ -484,7 +481,7 @@ bool Variable::SetFormula(Formula* formula)
   if (IsPointer()) {
     return GetSameVariable()->SetFormula(formula);
   }
-  string formstring = formula->ToDelimitedStringWithStrands('_', GetStrandVars());
+  string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
     if (ASTform == NULL) {
@@ -531,7 +528,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
   if (IsPointer()) {
     return GetSameVariable()->SetReaction(rxn);
   }
-  string formstring = rxn->GetFormula()->ToDelimitedStringWithStrands('_', GetStrandVars());
+  string formstring = rxn->GetFormula()->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
     if (ASTform == NULL) {
@@ -542,11 +539,14 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
       delete ASTform;
     }
   }
+  if (rxn->GetLeft()->SetTypesOfComponentsTo(varSpeciesUndef)) return true;
   if (IsInteraction(rxn->GetType())) {
     if (SetType(varInteraction)) return true;
+    if (rxn->GetRight()->SetTypesOfComponentsTo(varReactionUndef)) return true;
   }
   else {
     if (SetType(varReactionUndef)) return true;
+    if (rxn->GetRight()->SetTypesOfComponentsTo(varSpeciesUndef)) return true;
   }
   m_valReaction = *rxn;
   if (!m_valFormula.IsEmpty()) {

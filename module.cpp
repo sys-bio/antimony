@@ -21,11 +21,7 @@ Module::Module(string name)
     m_returnvalue(),
     m_currentexportvar(0),
     m_sbml(name + "-unset"),
-    m_uniquevars(),
-    m_rxnleftvarnames(),
-    m_rxnrightvarnames(),
-    m_rxnleftstoichiometries(),
-    m_rxnrightstoichiometries()
+    m_uniquevars()
 {
 }
 
@@ -37,11 +33,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
     m_sbml(src.m_sbml),
-    m_uniquevars(),
-    m_rxnleftvarnames(),
-    m_rxnrightvarnames(),
-    m_rxnleftstoichiometries(),
-    m_rxnrightstoichiometries()
+    m_uniquevars()
 {
   SetNewTopName(modulename, newtopname);
 }
@@ -524,10 +516,6 @@ string Module::GetJarnacConstFormulas(string modulename) const
 bool Module::Finalize()
 {
   m_uniquevars.clear();
-  m_rxnleftvarnames.clear();
-  m_rxnrightvarnames.clear();
-  m_rxnleftstoichiometries.clear();
-  m_rxnrightstoichiometries.clear();
 
   //Phase 0:  Error checking for loops
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -565,15 +553,6 @@ bool Module::Finalize()
     nameret = varnames.insert(newvar.first.first);
     if (nameret.second) {
       m_uniquevars.push_back(m_variables[var]->GetName());
-      if (IsReaction(m_variables[var]->GetType())) {
-        const AntimonyReaction* rxn = m_variables[var]->GetReaction();
-        if (rxn->GetType() == rdBecomes) {
-          m_rxnleftvarnames.push_back(rxn->LeftToStringVecDelimitedBy(cc));
-          m_rxnrightvarnames.push_back(rxn->RightToStringVecDelimitedBy(cc));
-          m_rxnleftstoichiometries.push_back(rxn->GetLeftStoichiometries());
-          m_rxnrightstoichiometries.push_back(rxn->GetRightStoichiometries());
-        }
-      }
       if (m_variables[var]->GetType() == varModule) {
         Module* submod = m_variables[var]->GetModule();
         submod->Finalize();
@@ -585,17 +564,6 @@ bool Module::Finalize()
           nameret = varnames.insert(subvar->GetNameDelimitedBy(cc));
           if (nameret.second) {
             m_uniquevars.push_back(submod->m_uniquevars[nsubvar]);
-            if (IsReaction(subvar->GetType())) {
-              //Find the reaction and add it.
-              const AntimonyReaction* rxn = subvar->GetReaction();
-              if (rxn->GetType() == rdBecomes) {
-                //but only if it's a stoichiometry matrix reaction
-                m_rxnleftvarnames.push_back(rxn->LeftToStringVecDelimitedBy(cc));
-                m_rxnrightvarnames.push_back(rxn->RightToStringVecDelimitedBy(cc));
-                m_rxnleftstoichiometries.push_back(rxn->GetLeftStoichiometries());
-                m_rxnrightstoichiometries.push_back(rxn->GetRightStoichiometries());
-              }
-            }
           }
         }
       }
@@ -1097,14 +1065,14 @@ void Module::CreateSBMLModel()
   for (size_t ev=0; ev < GetNumVariablesOfType(allEvents); ev++) {
     const AntimonyEvent* event = GetNthVariableOfType(allEvents, ev)->GetEvent();
     Event* sbmlevent = m_sbml.createEvent();
-    ASTNode_t* ASTtrig = SBML_parseFormula(event->GetTrigger()->ToDelimitedStringWithEllipses(cc).c_str());
+    ASTNode_t* ASTtrig = SBML_parseFormula(event->GetTrigger()->ToSBMLString().c_str());
     Trigger trigger(ASTtrig);
     delete ASTtrig;
     sbmlevent->setTrigger(&trigger);
     for (size_t asnt=0; asnt<event->GetNumAssignments(); asnt++) {
       EventAssignment* sbmlasnt = m_sbml.createEventAssignment();
       sbmlasnt->setVariable(event->GetNthAssignmentVariableName(asnt, cc));
-      ASTNode_t* ASTasnt = SBML_parseFormula(event->GetNthAssignmentFormulaString(asnt, cc).c_str());
+      ASTNode_t* ASTasnt = SBML_parseFormula(event->GetNthAssignmentFormulaString(asnt, '_', true).c_str());
       sbmlasnt->setMath(ASTasnt);
       delete ASTasnt;
     }

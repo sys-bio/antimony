@@ -50,7 +50,9 @@ LIB_EXTERN size_t getNumReactants(const char* moduleName, size_t rxn);
 LIB_EXTERN size_t getNumProducts(const char* moduleName, size_t rxn);
 
 LIB_EXTERN char*** getReactantNames(const char* moduleName);
+LIB_EXTERN char**  getNthReactionReactantNames(const char* modulename, size_t rxn);
 LIB_EXTERN char*** getProductNames(const char* moduleName);
+LIB_EXTERN char**  getNthReactionProductNames(const char* modulename, size_t rxn);
 LIB_EXTERN double** getReactantStoichiometries(const char* moduleName);
 LIB_EXTERN double** getProductStoichiometries(const char* moduleName);
 
