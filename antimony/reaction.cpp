@@ -54,6 +54,13 @@ void AntimonyReaction::SetComponentCompartments(Variable* var)
   m_right.SetComponentCompartments(var);
 }
 
+bool AntimonyReaction::SetFormulaOfInteracteesAndClear()
+{
+  if (m_formula.IsEmpty()) return false;
+  if (m_right.SetComponentFormulasTo(m_formula)) return true;
+  m_formula.Clear();
+  return false;
+}
 
 void AntimonyReaction::Clear()
 {

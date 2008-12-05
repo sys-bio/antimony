@@ -539,20 +539,35 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
       delete ASTform;
     }
   }
-  if (rxn->GetLeft()->SetTypesOfComponentsTo(varSpeciesUndef)) return true;
+  string err = "When defining reaction '" + GetNameDelimitedBy('.') + "':  ";
+  if (rxn->GetLeft()->SetComponentTypesTo(varSpeciesUndef)) {
+    g_registry.AddErrorPrefix(err);
+    return true;
+  }
   if (IsInteraction(rxn->GetType())) {
-    if (SetType(varInteraction)) return true;
-    if (rxn->GetRight()->SetTypesOfComponentsTo(varReactionUndef)) return true;
+    if (SetType(varInteraction) || rxn->GetRight()->SetComponentTypesTo(varReactionUndef)) {
+      g_registry.AddErrorPrefix(err);
+      return true;
+    }
   }
   else {
     if (SetType(varReactionUndef)) return true;
-    if (rxn->GetRight()->SetTypesOfComponentsTo(varSpeciesUndef)) return true;
+    if (rxn->GetRight()->SetComponentTypesTo(varSpeciesUndef)){
+      g_registry.AddErrorPrefix(err);
+      return true;
+    }
   }
   m_valReaction = *rxn;
-  if (!m_valFormula.IsEmpty()) {
+  if (!m_valFormula.IsEmpty() && rxn->GetFormula()->IsEmpty()) {
     m_valReaction.SetFormula(&m_valFormula);
     Formula blankform;
     m_valFormula = blankform;
+  }
+  if (IsInteraction(m_valReaction.GetType())) {
+    if (m_valReaction.SetFormulaOfInteracteesAndClear()) {
+      g_registry.AddErrorPrefix(err);
+      return true;
+    }
   }
   return false;
 }

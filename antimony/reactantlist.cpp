@@ -1,3 +1,4 @@
+#include "formula.h"
 #include "reactantlist.h"
 #include "registry.h"
 #include "stringx.h"
@@ -23,19 +24,6 @@ void ReactantList::SetNewTopName(string newmodname, string newtopname)
   }
 }
 
-bool ReactantList::SetVarsTo(var_type vtype)
-{
-  for (size_t component=0; component<m_components.size(); component++) {
-    Module* module = g_registry.GetModule(m_module);
-    assert(module != NULL);
-    Variable* var = module->GetVariable(m_components[component].second);
-    if (var != NULL) {
-      if (var->SetType(vtype)) return true;
-    }
-  }
-  return false;
-}
-
 void ReactantList::SetComponentCompartments(Variable* var)
 {
   for (size_t component=0; component<m_components.size(); component++) {
@@ -48,7 +36,7 @@ void ReactantList::SetComponentCompartments(Variable* var)
   }
 }
 
-bool ReactantList::SetTypesOfComponentsTo(var_type vtype)
+bool ReactantList::SetComponentTypesTo(var_type vtype)
 {
   for (size_t component=0; component<m_components.size(); component++) {
     Module* module = g_registry.GetModule(m_module);
@@ -59,7 +47,20 @@ bool ReactantList::SetTypesOfComponentsTo(var_type vtype)
     }
   }
   return false;
-}    
+}
+
+bool ReactantList::SetComponentFormulasTo(Formula form)
+{
+  for (size_t component=0; component<m_components.size(); component++) {
+    Module* module = g_registry.GetModule(m_module);
+    assert(module != NULL);
+    Variable* var = module->GetVariable(m_components[component].second);
+    if (var != NULL) {
+      if (var->SetFormula(&form)) return true;
+    }
+  }
+  return false;
+}
 
 bool ReactantList::CheckIsSingleDNAOrReaction()
 {

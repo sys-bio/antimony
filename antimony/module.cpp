@@ -87,28 +87,6 @@ Variable* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantLi
 
 Variable* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var)
 {
-  string err = "When defining reaction '" + var->GetNameDelimitedBy('.') + "':  ";
-  if (left->SetVarsTo(varSpeciesUndef)) {
-    g_registry.SetError(err + g_registry.GetError());
-    return NULL;
-  }
-  switch(divider) {
-  case rdBecomes:
-    if (right->SetVarsTo(varSpeciesUndef)) {
-      g_registry.SetError(err + g_registry.GetError());
-      return NULL;
-    }
-    break;
-  case rdActivates:
-  case rdInhibits:
-  case rdInfluences:
-    if (right ->CheckIsSingleDNAOrReaction()) {
-      g_registry.SetError(err + g_registry.GetError());
-      return NULL;
-    }
-    if (right->GetSingleVar()->SetFormula(formula)) return NULL;
-    break;
-  }
   AntimonyReaction newrxn(*left, divider, *right, *formula, var);
   if (formula->ContainsVar(var)) {
     g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy('.') + "' contains a reference to itself directly or indirectly in its reaction rate (" + formula->ToDelimitedStringWithEllipses('.') + ").");
@@ -531,26 +509,13 @@ bool Module::Finalize()
   for (size_t var=0; var<m_variables.size(); var++) {
     m_variables[var]->SetComponentCompartments();
   }
-  //Store the data locally so we don't have to search sub-modules every time
-  // we want to hand out information
+  //Phase 3: Store a list of unique variable names.
   set<string> varnames;
   char cc = '_';
   pair<set<string>::iterator, bool> nameret;
   for (size_t var=0; var<m_variables.size(); var++) {
-    pair<pair<string,string>, pair<string,string> > newvar;
-    newvar.first.first = m_variables[var]->GetNameDelimitedBy(cc);
-    newvar.first.second = "";
-    if (m_variables[var]->GetFormula() != NULL) {
-      newvar.first.second = m_variables[var]->GetFormulaStringDelimitedBy(cc);
-    }
-    newvar.second.first = VarTypeToString(m_variables[var]->GetType());
-    if (m_variables[var]->GetIsConst()) {
-      newvar.second.second = "const";
-    }
-    else {
-      newvar.second.second = "var";
-    }
-    nameret = varnames.insert(newvar.first.first);
+    //if (m_variables[var]->IsPointer()) continue;
+    nameret = varnames.insert(m_variables[var]->GetNameDelimitedBy(cc));
     if (nameret.second) {
       m_uniquevars.push_back(m_variables[var]->GetName());
       if (m_variables[var]->GetType() == varModule) {

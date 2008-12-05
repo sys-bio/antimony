@@ -546,7 +546,7 @@ double** getReactantOrProductStoichiometriesForRxnOrInt(const char* moduleName, 
   for (size_t rxn=0; rxn<numlines; rxn++) {
     double* rxnstoichiometries = getNthRxnOrIntReactantOrProductStoichiometries(moduleName, rxn, reaction, reactant);
     if (rxnstoichiometries == NULL) return NULL;
-    allstoichiometries[reaction] = rxnstoichiometries;
+    allstoichiometries[rxn] = rxnstoichiometries;
   }
   return allstoichiometries;
 }
@@ -1159,7 +1159,7 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
 
     for (size_t rxn=0; rxn<getNumSymbolsOfType(moduleName, allInteractions); rxn++) {
       cout << rxnnames[rxn] << ": ";
-      for (size_t var=0; var<getNumReactants(moduleName,rxn); var++) {
+      for (size_t var=0; var<getNumInteractors(moduleName,rxn); var++) {
         if (var > 0) {
           cout << " + ";
         }
@@ -1170,8 +1170,8 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
         }
         cout << leftrxnnames[rxn][var];
       }
-      cout << ToString(rxndividers[rxn]).c_str();
-      for (size_t var=0; var<getNumProducts(moduleName,rxn); var++) {
+      cout << " " << RDToString(rxndividers[rxn]).c_str() << " ";
+      for (size_t var=0; var<getNumInteractees(moduleName,rxn); var++) {
         if (var > 0) {
           cout << " + ";
         }
@@ -1182,8 +1182,7 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
         }
         cout << rightrxnnames[rxn][var];
       }
-      cout << " ; " << rxnrates[rxn];
-      cout << endl;
+      cout << " ; " << endl;
     }
   }
   if (getNumEvents(moduleName) > 0) {
