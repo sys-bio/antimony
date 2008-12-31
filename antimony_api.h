@@ -1,3 +1,15 @@
+ /**
+  * @file    antimony_api.h
+  * @brief   The API for libAntimony
+  * @author  Lucian Smith
+  *
+  * $Id: antimony_api.h 89 2008-08-21 14:32:54Z lpsmith $
+  * $HeadURL: http://foo.org $
+  *
+  * libAntimony uses a bison parser to 
+ */
+
+
 #ifndef ANTIMONY_API_H
 #define ANTIMONY_API_H
 
@@ -96,7 +108,7 @@ LIB_EXTERN size_t  getNumModularDNAStrands(const char* moduleName);
 LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbolName);
 LIB_EXTERN char*   getCompartmentForSymbol(const char* moduleName, const char* symbolName);
 
-//File reading and writing
+//Output
 LIB_EXTERN int   writeAntimonyFile(const char* filename, const char* moduleName);
 LIB_EXTERN char* getAntimonyString(const char* moduleName);
 
@@ -105,6 +117,10 @@ LIB_EXTERN char* getJarnacString(const char* moduleName);
 
 LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
 LIB_EXTERN char* getSBMLString(const char* moduleName);
+
+//Warnings and extra information
+LIB_EXTERN char* getSBMLInfoMessages(const char* moduleName);
+LIB_EXTERN char* getSBMLWarnings(const char* moduleName);
 
 LIB_EXTERN void freeAll();
 

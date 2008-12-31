@@ -56,7 +56,7 @@
 #define YYPURE 0
 
 /* Using locations.  */
-#define YYLSP_NEEDED 1
+#define YYLSP_NEEDED 0
 
 
 
@@ -154,6 +154,7 @@
   Registry g_registry;
   int yylloc_first_line = 1;
   int yylloc_last_line = 1;
+  std::vector<int> yylloc_last_lines;
 
 
 /* Enabling traces.  */
@@ -176,7 +177,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 34 "antimony.ypp"
+#line 35 "antimony.ypp"
 {
   char character;
   const string* word;
@@ -191,32 +192,20 @@ typedef union YYSTYPE
   Variable* maybein;
 }
 /* Line 187 of yacc.c.  */
-#line 195 "antimony.tab.cpp"
+#line 196 "antimony.tab.cpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
 #endif
 
-#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
-typedef struct YYLTYPE
-{
-  int first_line;
-  int first_column;
-  int last_line;
-  int last_column;
-} YYLTYPE;
-# define yyltype YYLTYPE /* obsolescent; will be withdrawn */
-# define YYLTYPE_IS_DECLARED 1
-# define YYLTYPE_IS_TRIVIAL 1
-#endif
 
 
 /* Copy the second part of user declarations.  */
 
 
 /* Line 216 of yacc.c.  */
-#line 220 "antimony.tab.cpp"
+#line 209 "antimony.tab.cpp"
 
 #ifdef short
 # undef short
@@ -374,16 +363,14 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
-	 || (defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL \
-	     && defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
+	 || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
   yytype_int16 yyss;
   YYSTYPE yyvs;
-    YYLTYPE yyls;
-};
+  };
 
 /* The size of the maximum gap between one aligned stack and the next.  */
 # define YYSTACK_GAP_MAXIMUM (sizeof (union yyalloc) - 1)
@@ -391,8 +378,8 @@ union yyalloc
 /* The size of an array large to enough to hold all stacks, each with
    N elements.  */
 # define YYSTACK_BYTES(N) \
-     ((N) * (sizeof (yytype_int16) + sizeof (YYSTYPE) + sizeof (YYLTYPE)) \
-      + 2 * YYSTACK_GAP_MAXIMUM)
+     ((N) * (sizeof (yytype_int16) + sizeof (YYSTYPE)) \
+      + YYSTACK_GAP_MAXIMUM)
 
 /* Copy COUNT objects from FROM to TO.  The source and destination do
    not overlap.  */
@@ -559,21 +546,21 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    66,    66,    67,    68,    69,    70,    73,    76,    76,
-      82,    82,    88,    92,    93,    94,    97,    98,   107,   108,
-     111,   114,   115,   118,   119,   122,   123,   124,   125,   126,
-     127,   128,   129,   132,   140,   150,   151,   152,   153,   154,
-     158,   159,   160,   161,   164,   165,   166,   167,   168,   169,
-     170,   171,   172,   173,   174,   175,   176,   177,   178,   179,
-     180,   183,   184,   185,   186,   187,   188,   189,   190,   191,
-     192,   193,   196,   197,   200,   201,   204,   204,   205,   205,
-     208,   209,   210,   213,   214,   215,   216,   217,   218,   219,
-     220,   221,   222,   223,   224,   227,   228,   229,   232,   233,
-     234,   237,   238,   239,   242,   243,   244,   247,   248,   249,
-     252,   253,   254,   258,   259,   260,   263,   265,   270,   272,
-     277,   279,   284,   286,   290,   291,   294,   295,   298,   299,
-     300,   301,   302,   305,   306,   309,   309,   310,   310,   313,
-     314
+       0,    67,    67,    68,    69,    70,    71,    74,    77,    77,
+      83,    83,    89,    93,    94,    95,    98,    99,   108,   109,
+     112,   115,   116,   119,   120,   123,   124,   125,   126,   127,
+     128,   129,   130,   133,   141,   151,   152,   153,   154,   155,
+     159,   160,   161,   162,   165,   166,   167,   168,   169,   170,
+     171,   172,   173,   174,   175,   176,   177,   178,   179,   180,
+     181,   184,   185,   186,   187,   188,   189,   190,   191,   192,
+     193,   194,   197,   198,   201,   202,   205,   205,   206,   206,
+     209,   210,   211,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   228,   229,   230,   233,   234,
+     235,   238,   239,   240,   243,   244,   245,   248,   249,   250,
+     253,   254,   255,   259,   260,   261,   264,   266,   271,   273,
+     278,   280,   285,   287,   291,   292,   295,   296,   299,   300,
+     301,   302,   303,   306,   307,   310,   310,   311,   311,   314,
+     315
 };
 #endif
 
@@ -983,7 +970,7 @@ do {									  \
     {									  \
       YYFPRINTF (stderr, "%s ", Title);					  \
       yy_symbol_print (stderr,						  \
-		  Type, Value, Location); \
+		  Type, Value); \
       YYFPRINTF (stderr, "\n");						  \
     }									  \
 } while (YYID (0))
@@ -997,19 +984,17 @@ do {									  \
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
 #else
 static void
-yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp)
+yy_symbol_value_print (yyoutput, yytype, yyvaluep)
     FILE *yyoutput;
     int yytype;
     YYSTYPE const * const yyvaluep;
-    YYLTYPE const * const yylocationp;
 #endif
 {
   if (!yyvaluep)
     return;
-  YYUSE (yylocationp);
 # ifdef YYPRINT
   if (yytype < YYNTOKENS)
     YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
@@ -1031,14 +1016,13 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
 #else
 static void
-yy_symbol_print (yyoutput, yytype, yyvaluep, yylocationp)
+yy_symbol_print (yyoutput, yytype, yyvaluep)
     FILE *yyoutput;
     int yytype;
     YYSTYPE const * const yyvaluep;
-    YYLTYPE const * const yylocationp;
 #endif
 {
   if (yytype < YYNTOKENS)
@@ -1046,9 +1030,7 @@ yy_symbol_print (yyoutput, yytype, yyvaluep, yylocationp)
   else
     YYFPRINTF (yyoutput, "nterm %s (", yytname[yytype]);
 
-  YY_LOCATION_PRINT (yyoutput, *yylocationp);
-  YYFPRINTF (yyoutput, ": ");
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp);
+  yy_symbol_value_print (yyoutput, yytype, yyvaluep);
   YYFPRINTF (yyoutput, ")");
 }
 
@@ -1088,12 +1070,11 @@ do {								\
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_reduce_print (YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule)
+yy_reduce_print (YYSTYPE *yyvsp, int yyrule)
 #else
 static void
-yy_reduce_print (yyvsp, yylsp, yyrule)
+yy_reduce_print (yyvsp, yyrule)
     YYSTYPE *yyvsp;
-    YYLTYPE *yylsp;
     int yyrule;
 #endif
 {
@@ -1108,7 +1089,7 @@ yy_reduce_print (yyvsp, yylsp, yyrule)
       fprintf (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr, yyrhs[yyprhs[yyrule] + yyi],
 		       &(yyvsp[(yyi + 1) - (yynrhs)])
-		       , &(yylsp[(yyi + 1) - (yynrhs)])		       );
+		       		       );
       fprintf (stderr, "\n");
     }
 }
@@ -1116,7 +1097,7 @@ yy_reduce_print (yyvsp, yylsp, yyrule)
 # define YY_REDUCE_PRINT(Rule)		\
 do {					\
   if (yydebug)				\
-    yy_reduce_print (yyvsp, yylsp, Rule); \
+    yy_reduce_print (yyvsp, Rule); \
 } while (YYID (0))
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
@@ -1367,18 +1348,16 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocationp)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
 #else
 static void
-yydestruct (yymsg, yytype, yyvaluep, yylocationp)
+yydestruct (yymsg, yytype, yyvaluep)
     const char *yymsg;
     int yytype;
     YYSTYPE *yyvaluep;
-    YYLTYPE *yylocationp;
 #endif
 {
   YYUSE (yyvaluep);
-  YYUSE (yylocationp);
 
   if (!yymsg)
     yymsg = "Deleting";
@@ -1419,8 +1398,6 @@ YYSTYPE yylval;
 
 /* Number of syntax errors so far.  */
 int yynerrs;
-/* Location data for the look-ahead symbol.  */
-YYLTYPE yylloc;
 
 
 
@@ -1483,21 +1460,16 @@ yyparse ()
   YYSTYPE *yyvs = yyvsa;
   YYSTYPE *yyvsp;
 
-  /* The location stack.  */
-  YYLTYPE yylsa[YYINITDEPTH];
-  YYLTYPE *yyls = yylsa;
-  YYLTYPE *yylsp;
-  /* The locations where the error started and ended.  */
-  YYLTYPE yyerror_range[2];
 
-#define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N), yylsp -= (N))
+
+#define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
 
   YYSIZE_T yystacksize = YYINITDEPTH;
 
   /* The variables used to return semantic value and location from the
      action routines.  */
   YYSTYPE yyval;
-  YYLTYPE yyloc;
+
 
   /* The number of symbols on the RHS of the reduced rule.
      Keep to zero when no symbol should be popped.  */
@@ -1517,12 +1489,6 @@ yyparse ()
 
   yyssp = yyss;
   yyvsp = yyvs;
-  yylsp = yyls;
-#if YYLTYPE_IS_TRIVIAL
-  /* Initialize the default location before parsing starts.  */
-  yylloc.first_line   = yylloc.last_line   = 1;
-  yylloc.first_column = yylloc.last_column = 0;
-#endif
 
   goto yysetstate;
 
@@ -1549,7 +1515,7 @@ yyparse ()
 	   memory.  */
 	YYSTYPE *yyvs1 = yyvs;
 	yytype_int16 *yyss1 = yyss;
-	YYLTYPE *yyls1 = yyls;
+
 
 	/* Each stack pointer address is followed by the size of the
 	   data in use in that stack, in bytes.  This used to be a
@@ -1558,9 +1524,9 @@ yyparse ()
 	yyoverflow (YY_("memory exhausted"),
 		    &yyss1, yysize * sizeof (*yyssp),
 		    &yyvs1, yysize * sizeof (*yyvsp),
-		    &yyls1, yysize * sizeof (*yylsp),
+
 		    &yystacksize);
-	yyls = yyls1;
+
 	yyss = yyss1;
 	yyvs = yyvs1;
       }
@@ -1583,7 +1549,7 @@ yyparse ()
 	  goto yyexhaustedlab;
 	YYSTACK_RELOCATE (yyss);
 	YYSTACK_RELOCATE (yyvs);
-	YYSTACK_RELOCATE (yyls);
+
 #  undef YYSTACK_RELOCATE
 	if (yyss1 != yyssa)
 	  YYSTACK_FREE (yyss1);
@@ -1593,7 +1559,7 @@ yyparse ()
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
-      yylsp = yyls + yysize - 1;
+
 
       YYDPRINTF ((stderr, "Stack size increased to %lu\n",
 		  (unsigned long int) yystacksize));
@@ -1670,7 +1636,7 @@ yybackup:
 
   yystate = yyn;
   *++yyvsp = yylval;
-  *++yylsp = yylloc;
+
   goto yynewstate;
 
 
@@ -1701,43 +1667,42 @@ yyreduce:
      GCC warning that YYVAL may be used uninitialized.  */
   yyval = yyvsp[1-yylen];
 
-  /* Default location.  */
-  YYLLOC_DEFAULT (yyloc, (yylsp - yylen), yylen);
+
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
         case 3:
-#line 67 "antimony.ypp"
+#line 68 "antimony.ypp"
     {;}
     break;
 
   case 4:
-#line 68 "antimony.ypp"
+#line 69 "antimony.ypp"
     { /*cout << endl << $2->ToString() << endl << endl;*/ ;}
     break;
 
   case 5:
-#line 69 "antimony.ypp"
+#line 70 "antimony.ypp"
     {;}
     break;
 
   case 6:
-#line 70 "antimony.ypp"
+#line 71 "antimony.ypp"
     {YYABORT;;}
     break;
 
   case 7:
-#line 73 "antimony.ypp"
+#line 74 "antimony.ypp"
     { if (g_registry.OpenFile(*((yyvsp[(2) - (2)].word)))==0) YYABORT;;}
     break;
 
   case 8:
-#line 76 "antimony.ypp"
+#line 77 "antimony.ypp"
     {g_registry.NewCurrentModule((yyvsp[(2) - (2)].word));;}
     break;
 
   case 9:
-#line 77 "antimony.ypp"
+#line 78 "antimony.ypp"
     {
                   (yyval.module) = g_registry.CurrentModule();
                   if ((yyval.module)->Finalize()) YYABORT;
@@ -1746,12 +1711,12 @@ yyreduce:
     break;
 
   case 10:
-#line 82 "antimony.ypp"
+#line 83 "antimony.ypp"
     {g_registry.NewCurrentModule((yyvsp[(2) - (2)].word));;}
     break;
 
   case 11:
-#line 83 "antimony.ypp"
+#line 84 "antimony.ypp"
     {
                   (yyval.module) = g_registry.CurrentModule();
                   if ((yyval.module)->Finalize()) YYABORT;
@@ -1760,32 +1725,32 @@ yyreduce:
     break;
 
   case 12:
-#line 88 "antimony.ypp"
-    {g_registry.SetError("line " + ToString((yylsp[(2) - (2)]).last_line) + ":  module '" + *((yyvsp[(2) - (2)].word)) + "' already defined."); YYABORT;;}
+#line 89 "antimony.ypp"
+    {g_registry.SetError("module '" + *((yyvsp[(2) - (2)].word)) + "' already defined."); YYABORT;;}
     break;
 
   case 13:
-#line 92 "antimony.ypp"
+#line 93 "antimony.ypp"
     {;}
     break;
 
   case 14:
-#line 93 "antimony.ypp"
+#line 94 "antimony.ypp"
     {g_registry.AddVariableToCurrentExportList((yyvsp[(1) - (1)].variable)); ;}
     break;
 
   case 15:
-#line 94 "antimony.ypp"
+#line 95 "antimony.ypp"
     { g_registry.AddVariableToCurrentExportList((yyvsp[(3) - (3)].variable)); ;}
     break;
 
   case 16:
-#line 97 "antimony.ypp"
+#line 98 "antimony.ypp"
     {(yyval.variable) = g_registry.AddVariableToCurrent((yyvsp[(1) - (1)].word)); ;}
     break;
 
   case 17:
-#line 98 "antimony.ypp"
+#line 99 "antimony.ypp"
     {(yyval.variable) = (yyvsp[(1) - (3)].variable)->GetSubVariable((yyvsp[(3) - (3)].word));
                   if ((yyval.variable) == NULL) {
                     g_registry.SetError("'" + *((yyvsp[(3) - (3)].word)) + "' is not a subvariable of '" + (yyvsp[(1) - (3)].variable)->GetNameDelimitedBy('.') + "'.");
@@ -1795,82 +1760,82 @@ yyreduce:
     break;
 
   case 18:
-#line 107 "antimony.ypp"
-    {(yyval.variable) = (yyvsp[(1) - (1)].variable);;}
-    break;
-
-  case 19:
 #line 108 "antimony.ypp"
     {(yyval.variable) = (yyvsp[(1) - (1)].variable);;}
     break;
 
+  case 19:
+#line 109 "antimony.ypp"
+    {(yyval.variable) = (yyvsp[(1) - (1)].variable);;}
+    break;
+
   case 20:
-#line 111 "antimony.ypp"
+#line 112 "antimony.ypp"
     {if ((yyvsp[(1) - (3)].variable)->SetCompartment((yyvsp[(3) - (3)].variable))) YYABORT; (yyval.variable) = (yyvsp[(1) - (3)].variable);;}
     break;
 
   case 21:
-#line 114 "antimony.ypp"
+#line 115 "antimony.ypp"
     {(yyval.variable) = NULL;;}
     break;
 
   case 22:
-#line 115 "antimony.ypp"
+#line 116 "antimony.ypp"
     {(yyval.variable) = (yyvsp[(2) - (2)].variable);;}
     break;
 
   case 23:
-#line 118 "antimony.ypp"
-    {;}
-    break;
-
-  case 24:
 #line 119 "antimony.ypp"
     {;}
     break;
 
-  case 25:
-#line 122 "antimony.ypp"
+  case 24:
+#line 120 "antimony.ypp"
     {;}
     break;
 
-  case 26:
+  case 25:
 #line 123 "antimony.ypp"
     {;}
     break;
 
-  case 27:
+  case 26:
 #line 124 "antimony.ypp"
     {;}
     break;
 
-  case 28:
+  case 27:
 #line 125 "antimony.ypp"
     {;}
     break;
 
-  case 29:
+  case 28:
 #line 126 "antimony.ypp"
     {;}
     break;
 
-  case 30:
+  case 29:
 #line 127 "antimony.ypp"
     {;}
     break;
 
-  case 31:
+  case 30:
 #line 128 "antimony.ypp"
     {;}
     break;
 
-  case 32:
+  case 31:
 #line 129 "antimony.ypp"
     {;}
     break;
 
+  case 32:
+#line 130 "antimony.ypp"
+    {;}
+    break;
+
   case 33:
-#line 133 "antimony.ypp"
+#line 134 "antimony.ypp"
     {
                   Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[(3) - (8)].reactantList), (yyvsp[(4) - (8)].reactionDivider), (yyvsp[(5) - (8)].reactantList), (yyvsp[(7) - (8)].formula), (yyvsp[(1) - (8)].variable));
                   if (var == NULL) YYABORT;
@@ -1881,7 +1846,7 @@ yyreduce:
     break;
 
   case 34:
-#line 141 "antimony.ypp"
+#line 142 "antimony.ypp"
     {
                   Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[(1) - (6)].reactantList), (yyvsp[(2) - (6)].reactionDivider), (yyvsp[(3) - (6)].reactantList), (yyvsp[(5) - (6)].formula));
                   if (var == NULL) YYABORT;
@@ -1892,546 +1857,546 @@ yyreduce:
     break;
 
   case 35:
-#line 150 "antimony.ypp"
+#line 151 "antimony.ypp"
     {(yyval.reactantList) = g_registry.NewBlankReactantList(); ;}
     break;
 
   case 36:
-#line 151 "antimony.ypp"
+#line 152 "antimony.ypp"
     {(yyval.reactantList) = g_registry.NewBlankReactantList(); (yyval.reactantList)->AddReactant((yyvsp[(1) - (1)].variable)); ;}
     break;
 
   case 37:
-#line 152 "antimony.ypp"
+#line 153 "antimony.ypp"
     {(yyval.reactantList) = g_registry.NewBlankReactantList(); (yyval.reactantList)->AddReactant((yyvsp[(2) - (2)].variable), (yyvsp[(1) - (2)].num)); ;}
     break;
 
   case 38:
-#line 153 "antimony.ypp"
+#line 154 "antimony.ypp"
     {(yyval.reactantList) = (yyvsp[(1) - (3)].reactantList); (yyvsp[(1) - (3)].reactantList)->AddReactant((yyvsp[(3) - (3)].variable)); ;}
     break;
 
   case 39:
-#line 154 "antimony.ypp"
+#line 155 "antimony.ypp"
     {(yyval.reactantList) = (yyvsp[(1) - (4)].reactantList); (yyvsp[(1) - (4)].reactantList)->AddReactant((yyvsp[(4) - (4)].variable), (yyvsp[(3) - (4)].num)); ;}
     break;
 
   case 40:
-#line 158 "antimony.ypp"
+#line 159 "antimony.ypp"
     {(yyval.reactionDivider) = rdBecomes;;}
     break;
 
   case 41:
-#line 159 "antimony.ypp"
+#line 160 "antimony.ypp"
     {(yyval.reactionDivider) = rdInhibits;;}
     break;
 
   case 42:
-#line 160 "antimony.ypp"
+#line 161 "antimony.ypp"
     {(yyval.reactionDivider) = rdActivates;;}
     break;
 
   case 43:
-#line 161 "antimony.ypp"
+#line 162 "antimony.ypp"
     {(yyval.reactionDivider) = rdInfluences;;}
     break;
 
   case 44:
-#line 164 "antimony.ypp"
+#line 165 "antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); ;}
     break;
 
   case 45:
-#line 165 "antimony.ypp"
+#line 166 "antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddEllipses();;}
     break;
 
   case 46:
-#line 166 "antimony.ypp"
+#line 167 "antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddVariable((yyvsp[(1) - (1)].variable)); ;}
     break;
 
   case 47:
-#line 167 "antimony.ypp"
+#line 168 "antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddNum((yyvsp[(1) - (1)].num)); ;}
     break;
 
   case 48:
-#line 168 "antimony.ypp"
+#line 169 "antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddText((yyvsp[(1) - (1)].word));;}
     break;
 
   case 49:
-#line 169 "antimony.ypp"
+#line 170 "antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddMathThing((yyvsp[(1) - (1)].character)); ;}
     break;
 
   case 50:
-#line 170 "antimony.ypp"
+#line 171 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula); (yyvsp[(1) - (2)].formula)->AddEllipses();;}
     break;
 
   case 51:
-#line 171 "antimony.ypp"
+#line 172 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula); (yyvsp[(1) - (2)].formula)->AddVariable((yyvsp[(2) - (2)].variable)); ;}
     break;
 
   case 52:
-#line 172 "antimony.ypp"
+#line 173 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula); (yyvsp[(1) - (2)].formula)->AddNum((yyvsp[(2) - (2)].num)); ;}
     break;
 
   case 53:
-#line 173 "antimony.ypp"
+#line 174 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula); (yyvsp[(1) - (2)].formula)->AddText((yyvsp[(2) - (2)].word));;}
     break;
 
   case 54:
-#line 174 "antimony.ypp"
+#line 175 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula); (yyvsp[(1) - (2)].formula)->AddMathThing((yyvsp[(2) - (2)].character)); ;}
     break;
 
   case 55:
-#line 175 "antimony.ypp"
+#line 176 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('<'); (yyvsp[(1) - (3)].formula)->AddMathThing('='); ;}
     break;
 
   case 56:
-#line 176 "antimony.ypp"
+#line 177 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('>'); (yyvsp[(1) - (3)].formula)->AddMathThing('='); ;}
     break;
 
   case 57:
-#line 177 "antimony.ypp"
+#line 178 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('='); (yyvsp[(1) - (3)].formula)->AddMathThing('='); ;}
     break;
 
   case 58:
-#line 178 "antimony.ypp"
+#line 179 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('!'); (yyvsp[(1) - (3)].formula)->AddMathThing('='); ;}
     break;
 
   case 59:
-#line 179 "antimony.ypp"
+#line 180 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('&'); (yyvsp[(1) - (3)].formula)->AddMathThing('&'); ;}
     break;
 
   case 60:
-#line 180 "antimony.ypp"
+#line 181 "antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('|'); (yyvsp[(1) - (3)].formula)->AddMathThing('|'); ;}
     break;
 
   case 61:
-#line 183 "antimony.ypp"
+#line 184 "antimony.ypp"
     {(yyval.character) = '+';;}
     break;
 
   case 62:
-#line 184 "antimony.ypp"
+#line 185 "antimony.ypp"
     {(yyval.character) = '-';;}
     break;
 
   case 63:
-#line 185 "antimony.ypp"
+#line 186 "antimony.ypp"
     {(yyval.character) = '*';;}
     break;
 
   case 64:
-#line 186 "antimony.ypp"
+#line 187 "antimony.ypp"
     {(yyval.character) = '/';;}
     break;
 
   case 65:
-#line 187 "antimony.ypp"
+#line 188 "antimony.ypp"
     {(yyval.character) = '(';;}
     break;
 
   case 66:
-#line 188 "antimony.ypp"
+#line 189 "antimony.ypp"
     {(yyval.character) = ')';;}
     break;
 
   case 67:
-#line 189 "antimony.ypp"
+#line 190 "antimony.ypp"
     {(yyval.character) = '^';;}
     break;
 
   case 68:
-#line 190 "antimony.ypp"
+#line 191 "antimony.ypp"
     {(yyval.character) = ',';;}
     break;
 
   case 69:
-#line 191 "antimony.ypp"
+#line 192 "antimony.ypp"
     {(yyval.character) = '>';;}
     break;
 
   case 70:
-#line 192 "antimony.ypp"
+#line 193 "antimony.ypp"
     {(yyval.character) = '<';;}
     break;
 
   case 71:
-#line 193 "antimony.ypp"
+#line 194 "antimony.ypp"
     {(yyval.character) = '!';;}
     break;
 
   case 72:
-#line 196 "antimony.ypp"
-    {;}
-    break;
-
-  case 73:
 #line 197 "antimony.ypp"
     {;}
     break;
 
+  case 73:
+#line 198 "antimony.ypp"
+    {;}
+    break;
+
   case 74:
-#line 200 "antimony.ypp"
+#line 201 "antimony.ypp"
     {if ((yyvsp[(1) - (3)].variable)->SetFormula((yyvsp[(3) - (3)].formula))) YYABORT; ;}
     break;
 
   case 75:
-#line 201 "antimony.ypp"
+#line 202 "antimony.ypp"
     {if ((yyvsp[(1) - (3)].variable)->Synchronize((yyvsp[(3) - (3)].variable))) YYABORT;;}
     break;
 
   case 76:
-#line 204 "antimony.ypp"
+#line 205 "antimony.ypp"
     {if ((yyvsp[(1) - (4)].variable)->SetModule((yyvsp[(3) - (4)].word))) YYABORT;;}
     break;
 
   case 77:
-#line 204 "antimony.ypp"
+#line 205 "antimony.ypp"
     {if ((yyvsp[(8) - (8)].variable) != NULL) {if ((yyvsp[(1) - (8)].variable)->SetCompartment((yyvsp[(8) - (8)].variable))) YYABORT;};}
     break;
 
   case 78:
-#line 205 "antimony.ypp"
+#line 206 "antimony.ypp"
     {if(g_registry.CurrentModule()->SetModule((yyvsp[(1) - (2)].word))) YYABORT;;}
     break;
 
   case 79:
-#line 205 "antimony.ypp"
+#line 206 "antimony.ypp"
     {if ((yyvsp[(6) - (6)].variable) != NULL) {if (g_registry.SetCompartmentOfCurrentSubmod((yyvsp[(6) - (6)].variable))) YYABORT;};}
     break;
 
   case 80:
-#line 208 "antimony.ypp"
+#line 209 "antimony.ypp"
     {;}
     break;
 
   case 81:
-#line 209 "antimony.ypp"
+#line 210 "antimony.ypp"
     {if (g_registry.AddVariableToCurrentImportList((yyvsp[(1) - (1)].variable))) YYABORT; ;}
     break;
 
   case 82:
-#line 210 "antimony.ypp"
+#line 211 "antimony.ypp"
     { if (g_registry.AddVariableToCurrentImportList((yyvsp[(3) - (3)].variable))) YYABORT; ;}
     break;
 
   case 83:
-#line 213 "antimony.ypp"
-    { ;}
-    break;
-
-  case 84:
 #line 214 "antimony.ypp"
     { ;}
     break;
 
-  case 85:
+  case 84:
 #line 215 "antimony.ypp"
     { ;}
     break;
 
-  case 86:
+  case 85:
 #line 216 "antimony.ypp"
     { ;}
     break;
 
-  case 87:
+  case 86:
 #line 217 "antimony.ypp"
     { ;}
     break;
 
-  case 88:
+  case 87:
 #line 218 "antimony.ypp"
     { ;}
     break;
 
-  case 89:
+  case 88:
 #line 219 "antimony.ypp"
     { ;}
     break;
 
-  case 90:
+  case 89:
 #line 220 "antimony.ypp"
     { ;}
     break;
 
-  case 91:
+  case 90:
 #line 221 "antimony.ypp"
     { ;}
     break;
 
-  case 92:
+  case 91:
 #line 222 "antimony.ypp"
     { ;}
     break;
 
-  case 93:
+  case 92:
 #line 223 "antimony.ypp"
     { ;}
     break;
 
-  case 94:
+  case 93:
 #line 224 "antimony.ypp"
     { ;}
     break;
 
+  case 94:
+#line 225 "antimony.ypp"
+    { ;}
+    break;
+
   case 95:
-#line 227 "antimony.ypp"
+#line 228 "antimony.ypp"
     {if ((yyvsp[(2) - (2)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
     break;
 
   case 96:
-#line 228 "antimony.ypp"
-    {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
-    break;
-
-  case 97:
 #line 229 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
     break;
 
+  case 97:
+#line 230 "antimony.ypp"
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
+    break;
+
   case 98:
-#line 232 "antimony.ypp"
+#line 233 "antimony.ypp"
     {if ((yyvsp[(2) - (2)].variable)->SetType(varReactionUndef)) YYABORT; ;}
     break;
 
   case 99:
-#line 233 "antimony.ypp"
-    {if ((yyvsp[(3) - (3)].variable)->SetType(varReactionUndef)) YYABORT; ;}
-    break;
-
-  case 100:
 #line 234 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varReactionUndef)) YYABORT; ;}
     break;
 
+  case 100:
+#line 235 "antimony.ypp"
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varReactionUndef)) YYABORT; ;}
+    break;
+
   case 101:
-#line 237 "antimony.ypp"
+#line 238 "antimony.ypp"
     {if ((yyvsp[(2) - (2)].variable)->SetType(varDNA)) YYABORT; ;}
     break;
 
   case 102:
-#line 238 "antimony.ypp"
-    {if ((yyvsp[(3) - (3)].variable)->SetType(varDNA)) YYABORT; ;}
-    break;
-
-  case 103:
 #line 239 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varDNA)) YYABORT; ;}
     break;
 
+  case 103:
+#line 240 "antimony.ypp"
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varDNA)) YYABORT; ;}
+    break;
+
   case 104:
-#line 242 "antimony.ypp"
+#line 243 "antimony.ypp"
     {if ((yyvsp[(2) - (2)].variable)->SetType(varReactionGene)) YYABORT; ;}
     break;
 
   case 105:
-#line 243 "antimony.ypp"
-    {if ((yyvsp[(3) - (3)].variable)->SetType(varReactionGene)) YYABORT; ;}
-    break;
-
-  case 106:
 #line 244 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varReactionGene)) YYABORT; ;}
     break;
 
+  case 106:
+#line 245 "antimony.ypp"
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varReactionGene)) YYABORT; ;}
+    break;
+
   case 107:
-#line 247 "antimony.ypp"
+#line 248 "antimony.ypp"
     {if ((yyvsp[(2) - (2)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
     break;
 
   case 108:
-#line 248 "antimony.ypp"
-    {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
-    break;
-
-  case 109:
 #line 249 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
     break;
 
+  case 109:
+#line 250 "antimony.ypp"
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
+    break;
+
   case 110:
-#line 252 "antimony.ypp"
+#line 253 "antimony.ypp"
     {if ((yyvsp[(2) - (2)].variable)->SetType(varEvent)) YYABORT; ;}
     break;
 
   case 111:
-#line 253 "antimony.ypp"
-    {if ((yyvsp[(3) - (3)].variable)->SetType(varEvent)) YYABORT; ;}
-    break;
-
-  case 112:
 #line 254 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varEvent)) YYABORT; ;}
     break;
 
+  case 112:
+#line 255 "antimony.ypp"
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varEvent)) YYABORT; ;}
+    break;
+
   case 113:
-#line 258 "antimony.ypp"
+#line 259 "antimony.ypp"
     {if ((yyvsp[(2) - (2)].variable)->SetType(varCompartment)) YYABORT; ;}
     break;
 
   case 114:
-#line 259 "antimony.ypp"
-    {if ((yyvsp[(3) - (3)].variable)->SetType(varCompartment)) YYABORT; ;}
-    break;
-
-  case 115:
 #line 260 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varCompartment)) YYABORT; ;}
     break;
 
+  case 115:
+#line 261 "antimony.ypp"
+    {if ((yyvsp[(3) - (3)].variable)->SetType(varCompartment)) YYABORT; ;}
+    break;
+
   case 116:
-#line 263 "antimony.ypp"
+#line 264 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef)) YYABORT; 
                                         if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 117:
-#line 265 "antimony.ypp"
+#line 266 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef)) YYABORT; 
                                                if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 118:
-#line 270 "antimony.ypp"
+#line 271 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varDNA)) YYABORT; 
                                     if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 119:
-#line 272 "antimony.ypp"
+#line 273 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varDNA)) YYABORT; 
                                            if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 120:
-#line 277 "antimony.ypp"
+#line 278 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; 
                                          if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 121:
-#line 279 "antimony.ypp"
+#line 280 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; 
                                                 if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 122:
-#line 284 "antimony.ypp"
+#line 285 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varCompartment)) YYABORT; 
                                             if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 123:
-#line 286 "antimony.ypp"
+#line 287 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetType(varCompartment)) YYABORT; 
                                                    if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 124:
-#line 290 "antimony.ypp"
+#line 291 "antimony.ypp"
     {if ((yyvsp[(2) - (2)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 125:
-#line 291 "antimony.ypp"
+#line 292 "antimony.ypp"
     {if ((yyvsp[(3) - (3)].variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 126:
-#line 294 "antimony.ypp"
+#line 295 "antimony.ypp"
     {if (g_registry.SaveWorkingStrand()) YYABORT;;}
     break;
 
   case 127:
-#line 295 "antimony.ypp"
+#line 296 "antimony.ypp"
     {if (g_registry.SetStrandAs((yyvsp[(1) - (3)].variable))) YYABORT;;}
     break;
 
   case 128:
-#line 298 "antimony.ypp"
+#line 299 "antimony.ypp"
     {if (g_registry.SetNewUpstreamOpen((yyvsp[(2) - (2)].variable))) YYABORT;;}
     break;
 
   case 129:
-#line 299 "antimony.ypp"
+#line 300 "antimony.ypp"
     {g_registry.SetOpenUpstream(); ;}
     break;
 
   case 130:
-#line 300 "antimony.ypp"
+#line 301 "antimony.ypp"
     {if (g_registry.SetDownstreamEnd((yyvsp[(2) - (2)].variable))) YYABORT;;}
     break;
 
   case 131:
-#line 301 "antimony.ypp"
+#line 302 "antimony.ypp"
     {g_registry.SetOpenUpstream(); if(g_registry.SetDownstreamEnd((yyvsp[(3) - (3)].variable))) YYABORT;;}
     break;
 
   case 132:
-#line 302 "antimony.ypp"
+#line 303 "antimony.ypp"
     { ;}
     break;
 
   case 133:
-#line 305 "antimony.ypp"
+#line 306 "antimony.ypp"
     {if (g_registry.SetNewDownstreamOpen((yyvsp[(1) - (2)].variable))) YYABORT;;}
     break;
 
   case 134:
-#line 306 "antimony.ypp"
+#line 307 "antimony.ypp"
     {if (g_registry.SetDownstreamOpen((yyvsp[(2) - (3)].variable))) YYABORT;;}
     break;
 
   case 135:
-#line 309 "antimony.ypp"
+#line 310 "antimony.ypp"
     {if (g_registry.SetNewCurrentEvent((yyvsp[(2) - (3)].formula))) YYABORT;;}
     break;
 
   case 136:
-#line 309 "antimony.ypp"
+#line 310 "antimony.ypp"
     {;}
     break;
 
   case 137:
-#line 310 "antimony.ypp"
+#line 311 "antimony.ypp"
     {if (g_registry.SetNewCurrentEvent((yyvsp[(4) - (5)].formula), (yyvsp[(1) - (5)].variable))) YYABORT;;}
     break;
 
   case 138:
-#line 310 "antimony.ypp"
+#line 311 "antimony.ypp"
     {;}
     break;
 
   case 139:
-#line 313 "antimony.ypp"
+#line 314 "antimony.ypp"
     {if (g_registry.AddResultToCurrentEvent((yyvsp[(1) - (3)].variable), (yyvsp[(3) - (3)].formula))) YYABORT;;}
     break;
 
   case 140:
-#line 314 "antimony.ypp"
+#line 315 "antimony.ypp"
     {if (g_registry.AddResultToCurrentEvent((yyvsp[(1) - (5)].variable), (yyvsp[(3) - (5)].formula))) YYABORT;;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 2435 "antimony.tab.cpp"
+#line 2400 "antimony.tab.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2441,7 +2406,7 @@ yyreduce:
   YY_STACK_PRINT (yyss, yyssp);
 
   *++yyvsp = yyval;
-  *++yylsp = yyloc;
+
 
   /* Now `shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
@@ -2503,7 +2468,7 @@ yyerrlab:
 #endif
     }
 
-  yyerror_range[0] = yylloc;
+
 
   if (yyerrstatus == 3)
     {
@@ -2519,7 +2484,7 @@ yyerrlab:
       else
 	{
 	  yydestruct ("Error: discarding",
-		      yytoken, &yylval, &yylloc);
+		      yytoken, &yylval);
 	  yychar = YYEMPTY;
 	}
     }
@@ -2540,7 +2505,6 @@ yyerrorlab:
   if (/*CONSTCOND*/ 0)
      goto yyerrorlab;
 
-  yyerror_range[0] = yylsp[1-yylen];
   /* Do not reclaim the symbols of the rule which action triggered
      this YYERROR.  */
   YYPOPSTACK (yylen);
@@ -2574,9 +2538,9 @@ yyerrlab1:
       if (yyssp == yyss)
 	YYABORT;
 
-      yyerror_range[0] = *yylsp;
+
       yydestruct ("Error: popping",
-		  yystos[yystate], yyvsp, yylsp);
+		  yystos[yystate], yyvsp);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -2587,11 +2551,6 @@ yyerrlab1:
 
   *++yyvsp = yylval;
 
-  yyerror_range[1] = yylloc;
-  /* Using YYLLOC is tempting, but would change the location of
-     the look-ahead.  YYLOC is available though.  */
-  YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
-  *++yylsp = yyloc;
 
   /* Shift the error token.  */
   YY_SYMBOL_PRINT ("Shifting", yystos[yyn], yyvsp, yylsp);
@@ -2627,7 +2586,7 @@ yyexhaustedlab:
 yyreturn:
   if (yychar != YYEOF && yychar != YYEMPTY)
      yydestruct ("Cleanup: discarding lookahead",
-		 yytoken, &yylval, &yylloc);
+		 yytoken, &yylval);
   /* Do not reclaim the symbols of the rule which action triggered
      this YYABORT or YYACCEPT.  */
   YYPOPSTACK (yylen);
@@ -2635,7 +2594,7 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-		  yystos[*yyssp], yyvsp, yylsp);
+		  yystos[*yyssp], yyvsp);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -2651,7 +2610,7 @@ yyreturn:
 }
 
 
-#line 317 "antimony.ypp"
+#line 318 "antimony.ypp"
 
 
 
@@ -2671,11 +2630,10 @@ int yylex(void)
       return 0;
     }
     else {
-      int firstl  = yylloc_first_line;
-      int lastl  = yylloc_last_line;
+      yylloc_first_line = yylloc_last_lines.back();
+      yylloc_last_line = yylloc_last_lines.back();
+      yylloc_last_lines.pop_back();
       return yylex();
-      yylloc_first_line  = firstl;
-      yylloc_last_line  = lastl;
     }
   }
   if (!g_registry.input->good()) {
@@ -2893,7 +2851,7 @@ int main(int argc, char** argv)
       cout << getLastError() << endl;
     }
     else {
-      cout << argv[file] << " read successfully with file handle " << ToString(retval) << "." << endl;
+      cout << argv[file] << " read successfully with file handle " << SizeTToString(retval) << "." << endl;
     }
   }
   for (size_t file=0; file<getNumFiles(); file++) {
@@ -2914,7 +2872,7 @@ int main(int argc, char** argv)
       filename.erase(filename.find(".xml"), 4);
     }
     for (size_t mod=0; mod<nummods; mod++) {
-      cout << "Information for file " << ToString(file+1) <<", module '" << modnames[mod] << "'" << endl;
+      cout << "Information for file " << SizeTToString(file+1) <<", module '" << modnames[mod] << "'" << endl;
       cout << "***ToString (" << modnames[mod] << ") ***" << endl;
       cout << g_registry.GetModule(modnames[mod])->ToString().c_str() << endl << endl;
       cout << "***Jarnac (" << modnames[mod] << ") ***" << endl;

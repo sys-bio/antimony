@@ -27,7 +27,6 @@ public:
   bool SetUpstream(Variable* var);
   void SetDownstream(bool open);
   void SetUpstream(bool open);
-  void SetModule(std::string modname);
   void SetComponentCompartments(Variable* compartment);
   void Clear();
 

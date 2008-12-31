@@ -28,6 +28,7 @@
   Registry g_registry;
   int yylloc_first_line = 1;
   int yylloc_last_line = 1;
+  std::vector<int> yylloc_last_lines;
 %}
 
 /*Bison declarations */
@@ -85,7 +86,7 @@ module:         MODULE WORD {g_registry.NewCurrentModule($2);} '(' variableexpor
                   if ($$->Finalize()) YYABORT;
                   g_registry.RevertToPreviousModule();
                 }
-        |       MODULE MODNAME {g_registry.SetError("line " + ToString(@2.last_line) + ":  module '" + *($2) + "' already defined."); YYABORT;}
+        |       MODULE MODNAME {g_registry.SetError("module '" + *($2) + "' already defined."); YYABORT;}
         ;
 
 variableexportlist:
@@ -333,11 +334,10 @@ int yylex(void)
       return 0;
     }
     else {
-      int firstl  = yylloc_first_line;
-      int lastl  = yylloc_last_line;
+      yylloc_first_line = yylloc_last_lines.back();
+      yylloc_last_line = yylloc_last_lines.back();
+      yylloc_last_lines.pop_back();
       return yylex();
-      yylloc_first_line  = firstl;
-      yylloc_last_line  = lastl;
     }
   }
   if (!g_registry.input->good()) {
@@ -555,7 +555,7 @@ int main(int argc, char** argv)
       cout << getLastError() << endl;
     }
     else {
-      cout << argv[file] << " read successfully with file handle " << ToString(retval) << "." << endl;
+      cout << argv[file] << " read successfully with file handle " << SizeTToString(retval) << "." << endl;
     }
   }
   for (size_t file=0; file<getNumFiles(); file++) {
@@ -576,7 +576,7 @@ int main(int argc, char** argv)
       filename.erase(filename.find(".xml"), 4);
     }
     for (size_t mod=0; mod<nummods; mod++) {
-      cout << "Information for file " << ToString(file+1) <<", module '" << modnames[mod] << "'" << endl;
+      cout << "Information for file " << SizeTToString(file+1) <<", module '" << modnames[mod] << "'" << endl;
       cout << "***ToString (" << modnames[mod] << ") ***" << endl;
       cout << g_registry.GetModule(modnames[mod])->ToString().c_str() << endl << endl;
       cout << "***Jarnac (" << modnames[mod] << ") ***" << endl;

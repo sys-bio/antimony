@@ -84,7 +84,9 @@ Formula* AntimonyReaction::GetFormula()
 
 bool AntimonyReaction::IsEmpty() const
 {
-  return m_empty;
+  if (m_empty) return true;
+  if (m_left.Size() == 0 && m_right.Size() == 0) return true;
+  return false;
 }
 
 bool AntimonyReaction::LeftIsEmpty() const
@@ -135,26 +137,6 @@ string AntimonyReaction::ToDelimitedStringWithEllipses(char cc) const
   }
   retval += ": " + m_left.ToStringDelimitedBy(cc) + " " + RDToString(m_divider) + " " + m_right.ToStringDelimitedBy(cc) + "; " + m_formula.ToDelimitedStringWithEllipses(cc) + ";";
   return retval;
-}
-
-vector<string> AntimonyReaction::LeftToStringVecDelimitedBy(char cc) const
-{
-  return m_left.ToStringVecDelimitedBy(cc);
-}
-
-vector<string> AntimonyReaction::RightToStringVecDelimitedBy(char cc) const
-{
-  return m_right.ToStringVecDelimitedBy(cc);
-}
-
-vector<double> AntimonyReaction::GetLeftStoichiometries() const
-{
-  return m_left.GetStoichiometries();
-}
-
-vector<double> AntimonyReaction::GetRightStoichiometries() const
-{
-  return m_right.GetStoichiometries();
 }
 
 double AntimonyReaction::GetStoichiometryFor(const Variable* var) const

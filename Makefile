@@ -38,7 +38,7 @@ reactantlist.o : reactantlist.cpp reactantlist.h rd_type.h registry.h module.h v
 reaction.o : reaction.cpp reaction.h reactantlist.h registry.h rd_type.h stringx.h module.h variable.h
 	g++ -c $(CPPFLAGS) reaction.cpp
 
-registry.o : registry.cpp registry.h dnastrand.h module.h reaction.h reactantlist.h formula.h variable.h
+registry.o : registry.cpp registry.h dnastrand.h module.h reaction.h reactantlist.h stringx.h formula.h variable.h
 	g++ -c $(CPPFLAGS) registry.cpp
 
 stringx.o : stringx.cpp stringx.h
@@ -50,6 +50,8 @@ sbmlx.o : sbmlx.cpp sbmlx.h
 variable.o : variable.cpp variable.h dnastrand.h module.h rd_type.h registry.h event.h formula.h reaction.h
 	g++ -c $(CPPFLAGS) variable.cpp
 
-
-antimony.tab.cpp : antimony.ypp antimony_api.h registry.h rd_type.h module.h variable.h reaction.h
+antimony.tab.cpp : antimony.ypp antimony_api.h registry.h rd_type.h module.h variable.h reaction.h stringx.h
 	bison --verbose antimony.ypp
+
+clean :
+	rm antimony *.o

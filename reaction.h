@@ -47,10 +47,6 @@ public:
 
   std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands) const;
   std::string ToDelimitedStringWithEllipses(char cc) const;
-  std::vector<std::string> LeftToStringVecDelimitedBy(char cc) const;
-  std::vector<std::string> RightToStringVecDelimitedBy(char cc) const;
-  std::vector<double> GetLeftStoichiometries() const;
-  std::vector<double> GetRightStoichiometries() const;
   double GetStoichiometryFor(const Variable* var) const;
   bool GetIsConst() const;
 };

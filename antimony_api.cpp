@@ -98,7 +98,7 @@ void reportReactionIndexProblem(size_t n, size_t actualsize, const char* moduleN
     name = "interaction";
   }
     
-  string error = "There is no " + name + "with index " + ToString(n) + " in module ";
+  string error = "There is no " + name + "with index " + SizeTToString(n) + " in module ";
   error += moduleName;
   error += ".";
   if (actualsize == 0) {
@@ -108,7 +108,7 @@ void reportReactionIndexProblem(size_t n, size_t actualsize, const char* moduleN
     error += "  There is a single " + name + " with index 0.";
   }
   else if (actualsize > 1) {
-    error += "  Valid "+ name + " index values are 0 through " + ToString(actualsize-1) + ".";
+    error += "  Valid "+ name + " index values are 0 through " + SizeTToString(actualsize-1) + ".";
   }
   g_registry.SetError(error);
 }
@@ -120,7 +120,7 @@ void reportVariableTypeIndexProblem(size_t n, return_type rtype, size_t actualsi
   }
   string error = "There is no variable of type " + ReturnTypeToString(rtype);
   if (actualsize > 0) {
-    error += " with index " + ToString(n);
+    error += " with index " + SizeTToString(n);
   }
   error += " in module ";
   error +=  moduleName;
@@ -129,7 +129,7 @@ void reportVariableTypeIndexProblem(size_t n, return_type rtype, size_t actualsi
     error += "  There is a single variable of this type with index 0.";
   }
   else if (actualsize > 1) {
-    error += "  Valid index values are 0 through " + ToString(actualsize-1) + ".";
+    error += "  Valid index values are 0 through " + SizeTToString(actualsize-1) + ".";
   }
   g_registry.SetError(error);
 }
@@ -161,7 +161,7 @@ LIB_EXTERN long loadFile(const char* filename)
         g_registry.SetError("Unknown parsing error.");
       }
     }
-    g_registry.AddErrorPrefix("Error in file '" + g_registry.GetLastFile() + "', line " + ToString(yylloc_first_line) + ":  ");
+    g_registry.AddErrorPrefix("Error in file '" + g_registry.GetLastFile() + "', line " + SizeTToString(yylloc_first_line) + ":  ");
     return -1;
   }
   if (g_registry.FinalizeModules()) return -1;
@@ -172,12 +172,12 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
 {
   g_registry.ClearModules();
   SBMLDocument* document = readSBML(filename);
-  if (document->getNumErrors() > 0) {
+  document->checkConsistency();
+  if (document->getErrorLog()->getNumFailsWithSeverity(2) > 0) {
     stringstream errorstream;
     document->printErrors(errorstream);
-    string errors;
-    errorstream >> errors;
-    g_registry.SetError(errors);
+    string file(filename);
+    g_registry.SetError("Unable to read SBML file '" + file + "' due to errors encountered when parsing the file.  Error from libSBML:\n" +  errorstream.str());
     return -1;
   }
   const Model* sbml = document->getModel();
@@ -225,12 +225,12 @@ LIB_EXTERN char*  getNthModuleName(size_t n)
 {
   size_t nummods = g_registry.GetNumModules();
   if (n >= nummods) {
-    string error = "There is no module with index " + ToString(n) + ".";
+    string error = "There is no module with index " + SizeTToString(n) + ".";
     if (nummods == 1) {
       error += "  There is a single module with index 0.";
     }
     else if (nummods > 1) {
-      error += "  Valid module index values are 0 through " + ToString(nummods-1) + ".";
+      error += "  Valid module index values are 0 through " + SizeTToString(nummods-1) + ".";
     }
     if (nummods == 0) {
       error += "  In fact, there are no modules at all.  Try running loadModule(filename).";
@@ -1022,6 +1022,18 @@ LIB_EXTERN char* getSBMLString(const char* moduleName)
   return sbmlstring;
 }
 
+LIB_EXTERN char* getSBMLInfoMessages(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return getCharStar(g_registry.GetModule(moduleName)->GetSBMLInfo().c_str());
+}
+
+LIB_EXTERN char* getSBMLWarnings(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return getCharStar(g_registry.GetModule(moduleName)->GetSBMLWarnings().c_str());
+}
+
 LIB_EXTERN void freeAll()
 {
   g_registry.FreeAll();
@@ -1157,7 +1169,7 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
     double **leftrxnstoichs = getInteractorStoichiometries(moduleName);
     double **rightrxnstoichs = getInteracteeStoichiometries(moduleName);
 
-    for (size_t rxn=0; rxn<getNumSymbolsOfType(moduleName, allInteractions); rxn++) {
+    for (size_t rxn=0; rxn<getNumInteractions(moduleName); rxn++) {
       cout << rxnnames[rxn] << ": ";
       for (size_t var=0; var<getNumInteractors(moduleName,rxn); var++) {
         if (var > 0) {

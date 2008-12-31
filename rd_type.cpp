@@ -80,48 +80,6 @@ string VarTypeToAntimony(const var_type vtype)
 }
 
 
-var_type StringToVarType(const string& name)
-{
-  if (CaselessStrCmp(name,"Species")) {
-    return varSpeciesUndef;
-  }
-  if (CaselessStrCmp(name,"Formula")) {
-    return varFormulaUndef;
-  }
-  if (CaselessStrCmp(name,"Operator")) {
-    return varFormulaOperator;
-  }
-  if (CaselessStrCmp(name,"DNA")) {
-    return varDNA;
-  }
-  if (CaselessStrCmp(name,"Reaction")) {
-    return varReactionUndef;
-  }
-  if (CaselessStrCmp(name,"Gene")) {
-    return varReactionGene;
-  }
-  if (CaselessStrCmp(name,"Interaction")) {
-    return varInteraction;
-  }
-  if (CaselessStrCmp(name,"Module")) {
-    return varModule;
-  }
-  if (CaselessStrCmp(name,"Undefined")) {
-    return varUndefined;
-  }
-  if (CaselessStrCmp(name,"Event")) {
-    return varEvent;
-  }
-  if (CaselessStrCmp(name,"Compartment")) {
-    return varCompartment;
-  }
-  if (CaselessStrCmp(name,"Strand")) {
-    return varStrand;
-  }
-  assert(false); //uncaught var type
-  return varUndefined;
-}
-
 bool IsReaction(const var_type vtype)
 {
   switch(vtype) {
@@ -222,16 +180,6 @@ bool HasOrIsFormula(const var_type vtype)
   }
   assert(false); //uncaught vtype
   return false;
-}
-
-bool IsReaction(const string& name)
-{
-  return IsReaction(StringToVarType(name));
-}
-
-bool IsSpecies(const string& name)
-{
-  return IsSpecies(StringToVarType(name));
 }
 
 string ReturnTypeToString(return_type rtype)
