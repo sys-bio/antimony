@@ -29,11 +29,10 @@ public:
   void SetNewTopName(std::string newmodname, std::string newtopname);
 
   bool IsEmpty() const;
-  bool IsSimpleVariable() const;
   bool IsDouble() const;
   bool IsEllipsesOnly() const;
   bool GetIsConst() const;
-  bool CheckIncludes(std::string modname, ReactantList* rlist) const;
+  bool CheckIncludes(std::string modname, const ReactantList* rlist) const;
   bool ContainsVar(std::string modname, std::vector<std::string> vname) const;
   bool ContainsVar(const Variable* outervar) const;
 
@@ -41,8 +40,6 @@ public:
   const Variable* GetNthVariable(size_t n) const;
 
   void Clear();
-
-  std::vector<std::string> GetSimpleVariable() const;
 
   std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands) const;
   std::string ToDelimitedStringWithEllipses(char cc) const;

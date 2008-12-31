@@ -46,11 +46,6 @@ void DNAStrand::SetUpstream(bool open)
   m_upstreamopen = open;
 }
 
-void DNAStrand::SetModule(std::string modname)
-{
-  m_module = modname;
-}
-
 void DNAStrand::SetComponentCompartments(Variable* compartment)
 {
   for (size_t var=0; var<m_strand.size(); var++) {

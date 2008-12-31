@@ -619,6 +619,9 @@ void Variable::SetNewTopName(string newmodname, string newtopname)
   if (!m_valStrand.IsEmpty()) {
     m_valStrand.SetNewTopName(m_module, newtopname);
   }
+  if (!m_valEvent.IsEmpty()) {
+    m_valEvent.SetNewTopName(m_module, newtopname);
+  }
   if (m_compartment.size() > 0) {
     m_compartment.insert(m_compartment.begin(), newtopname);
   }

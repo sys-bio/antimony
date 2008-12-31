@@ -21,6 +21,8 @@ Module::Module(string name)
     m_returnvalue(),
     m_currentexportvar(0),
     m_sbml(name + "-unset"),
+    m_libsbml_info(""),
+    m_libsbml_warnings(""),
     m_uniquevars()
 {
 }
@@ -33,6 +35,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
     m_sbml(src.m_sbml),
+    m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
+    m_libsbml_warnings(),
     m_uniquevars()
 {
   SetNewTopName(modulename, newtopname);
@@ -278,11 +282,6 @@ const string& Module::GetModuleName() const
   return m_modulename;
 }
 
-vector<string> Module::GetVariableName() const
-{
-  return m_variablename;
-}
-
 string Module::GetVariableNameDelimitedBy(char cc) const
 {
   if (m_variablename.size() == 0) return "";
@@ -352,7 +351,7 @@ string Module::GetAntimony(set<const Module*> usedmods) const
   }
   string indent = "";
   //Module definition
-  if (m_modulename != "[main]") {
+  if (m_modulename != "__main") {
     retval += "model " + m_modulename + "(";
     for (size_t exp=0; exp<m_exportlist.size(); exp++) {
       if (exp > 0) {
@@ -434,7 +433,7 @@ string Module::GetAntimony(set<const Module*> usedmods) const
 
 
   //end model definition
-  if (m_modulename != "[main]") {
+  if (m_modulename != "__main") {
     retval += "end\n";
   }
   return retval;
@@ -495,7 +494,7 @@ bool Module::Finalize()
 {
   m_uniquevars.clear();
 
-  //Phase 0:  Error checking for loops
+  //Phase 1:  Error checking for loops
   for (size_t var=0; var<m_variables.size(); var++) {
     //If this is a submodule, we'll be calling the error checking bit soon,
     // so don't worry about it.
@@ -505,11 +504,28 @@ bool Module::Finalize()
       if (m_variables[var]->AnyCompartmentLoops()) return true;
     }
   }
-  //Phase 1:  Set compartments
+
+  //Phase 2:  Error checking for interactions
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() == varInteraction) {
+      vector<vector<string> > rxns = m_variables[var]->GetReaction()->GetRight()->GetVariableList();
+      for (size_t rxn=0; rxn<rxns.size(); rxn++) {
+        Variable* rightvar = GetVariable(rxns[rxn]);
+        const Formula* form = rightvar->GetFormula();
+        if (form->CheckIncludes(m_variables[var]->GetNamespace(), m_variables[var]->GetReaction()->GetLeft())) {
+          g_registry.AddErrorPrefix("According to the interaction '" + m_variables[var]->GetNameDelimitedBy('_') + "', the formula for '" + rightvar->GetNameDelimitedBy('_') + "' (=" + form->ToDelimitedStringWithEllipses('_') + ") ");
+          return true;
+        }
+      }
+    }
+  }
+  
+  //Phase 3:  Set compartments
   for (size_t var=0; var<m_variables.size(); var++) {
     m_variables[var]->SetComponentCompartments();
   }
-  //Phase 3: Store a list of unique variable names.
+
+  //Phase 4: Store a list of unique variable names.
   set<string> varnames;
   char cc = '_';
   pair<set<string>::iterator, bool> nameret;
@@ -520,7 +536,7 @@ bool Module::Finalize()
       m_uniquevars.push_back(m_variables[var]->GetName());
       if (m_variables[var]->GetType() == varModule) {
         Module* submod = m_variables[var]->GetModule();
-        submod->Finalize();
+        if (submod->Finalize()) return true;
         //Copy over what we've just created:
         vector<vector<string> > subvars = submod->m_uniquevars;
         //And put them in our own vectors, if we don't have them already.
@@ -534,6 +550,48 @@ bool Module::Finalize()
       }
     }
   }
+
+  //Phase 5:  Check SBML compatibility
+  //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
+  SBMLDocument sbmldoc;
+  Model sbml = GetSBMLModel();
+  sbmldoc.setModel(&sbml);
+  SBMLDocument* testdoc = readSBMLFromString(writeSBMLToString(&sbmldoc));
+  testdoc->checkConsistency();
+  SBMLErrorLog* log = testdoc->getErrorLog();
+  string trueerrors = "";
+  for (unsigned int err=0; err<log->getNumErrors(); err++) {
+    const SBMLError* error = log->getError(err);
+    unsigned int errtype = error->getSeverity();
+    switch(errtype) {
+    case 0: //LIBSBML_SEV_INFO:
+      if (m_libsbml_info != "") m_libsbml_info += "\n";
+      m_libsbml_info += error->getMessage();
+      break;
+    case 1: //LIBSBML_SEV_WARNING:
+      if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
+      m_libsbml_warnings += error->getMessage();
+      break;
+    case 2: //LIBSBML_SEV_ERROR:
+      if (trueerrors != "") trueerrors += "\n";
+      trueerrors += error->getMessage();
+      break;
+    case 3: //LIBSBML_SEV_FATAL:
+      g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:  " + error->getMessage());
+      delete(testdoc);
+      return true;
+    default:
+      g_registry.SetError("Unknown error when creating an SBML document--there should have only been four types, but we found a fifth?  libSBML may have been updated; try using an older version, perhaps.  Error from libSBML:  " + error->getMessage());
+      delete(testdoc);
+      return true;
+    }
+  }
+  if (trueerrors != "") {
+    g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but this one slipped through--please let us know what happened and we'll try to fix it.  Error message from libSBML:  " + trueerrors);
+    delete(testdoc);
+    return true;
+  }
+  delete(testdoc);
   return false;
 }
 
@@ -791,6 +849,7 @@ void Module::LoadSBML(const Model* sbml)
     }
     Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
     compartment->SetType(varCompartment);
+    var->SetCompartment(compartment);
   }
 
   //Events:
@@ -905,9 +964,11 @@ void Module::LoadSBML(const Model* sbml)
     }
     //formula
     Formula* formula = g_registry.NewBlankFormula();
-    char* formulastring = SBML_formulaToString(reaction->getKineticLaw()->getMath());
-    setFormulaWithString(formulastring, formula);
-    free(formulastring);
+    if (reaction->isSetKineticLaw()) {
+      char* formulastring = SBML_formulaToString(reaction->getKineticLaw()->getMath());
+      setFormulaWithString(formulastring, formula);
+      free(formulastring);
+    }
     //Put all three together:
     AddNewReaction(&reactants, rdBecomes, &products, formula, var);
   }
@@ -942,7 +1003,7 @@ void Module::CreateSBMLModel()
     if (formula->IsDouble()) {
       sbmlcomp->setSize(atoi(formula->ToDelimitedStringWithEllipses(cc).c_str()));
     }
-    else {
+    else if (!formula->IsEmpty()) {
       AssignmentRule rule(compartment->GetNameDelimitedBy(cc), formula->ToDelimitedStringWithEllipses(cc));
       m_sbml.addRule(&rule);
     }
@@ -961,10 +1022,12 @@ void Module::CreateSBMLModel()
     if (formula->IsDouble()) {
       sbmlspecies->setInitialConcentration(atoi(formula->ToDelimitedStringWithEllipses(cc).c_str()));
     }
-    else {
+    else if (!formula->IsEmpty()) {
       //create a rule
-      AssignmentRule rule(species->GetNameDelimitedBy(cc), formula->ToDelimitedStringWithEllipses(cc));
-      m_sbml.addRule(&rule);
+      InitialAssignment rule;
+      rule.setSymbol(species->GetNameDelimitedBy(cc));
+      rule.setMath(SBML_parseFormula(formula->ToDelimitedStringWithEllipses(cc).c_str()));
+      m_sbml.addInitialAssignment(&rule);
     }
     const Variable* compartment = species->GetCompartment();
     if (compartment == NULL) {
@@ -984,7 +1047,7 @@ void Module::CreateSBMLModel()
     if (formula->IsDouble()) {
       param->setValue(atoi(formula->ToDelimitedStringWithEllipses(cc).c_str()));
     }
-    else {
+    else if (!formula->IsEmpty()) {
       //create a rule
       AssignmentRule rule(formvar->GetNameDelimitedBy(cc), formula->ToDelimitedStringWithStrands(cc, formvar->GetStrandVars()));
       m_sbml.addRule(&rule);
@@ -995,9 +1058,15 @@ void Module::CreateSBMLModel()
   for (size_t rxn=0; rxn < GetNumVariablesOfType(allReactions); rxn++) {
     const Variable* rxnvar = GetNthVariableOfType(allReactions, rxn);
     const AntimonyReaction* reaction = rxnvar->GetReaction();
+    if (reaction->IsEmpty()) {
+      continue; //Reactions that involve no species are illegal in SBML.
+    }
+    Reaction sbmlrxn(rxnvar->GetNameDelimitedBy(cc), "", NULL, false);
     const Formula* formula = reaction->GetFormula();
-    KineticLaw kl(formula->ToDelimitedStringWithStrands(cc, rxnvar->GetStrandVars()));
-    Reaction sbmlrxn(rxnvar->GetNameDelimitedBy(cc), "", &kl, false);
+    if (!formula->IsEmpty()) {
+      KineticLaw kl(formula->ToDelimitedStringWithStrands(cc, rxnvar->GetStrandVars()));
+      sbmlrxn.setKineticLaw(&kl);
+    }
     const ReactantList* left = reaction->GetLeft();
     for (size_t lnum=0; lnum<left->Size(); lnum++) {
       const Variable* nthleft = left->GetNthReactant(lnum);
@@ -1015,7 +1084,7 @@ void Module::CreateSBMLModel()
     //Find 'modifiers' and add them.
     for (size_t v=0; v<formula->GetNumVariables(); v++) {
       const Variable* formvar = formula->GetNthVariable(v);
-      if (formvar != NULL) {
+      if (formvar != NULL && formvar->GetType() == varSpeciesUndef) {
         if (left->GetStoichiometryFor(formvar) == 0 &&
             right->GetStoichiometryFor(formvar) == 0) {
           ModifierSpeciesReference msr(formvar->GetNameDelimitedBy(cc));
@@ -1043,4 +1112,10 @@ void Module::CreateSBMLModel()
     }
   }
 
+  //Unknown variables (turn into parameters)
+  for (size_t form=0; form < GetNumVariablesOfType(allUnknown); form++) {
+    const Variable* formvar = GetNthVariableOfType(allUnknown, form);
+    Parameter* param = m_sbml.createParameter();
+    param->setId(formvar->GetNameDelimitedBy(cc));
+  }
 }

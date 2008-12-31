@@ -69,16 +69,6 @@ bool Formula::IsEmpty() const
   return m_components.size() == 0;
 }
 
-bool Formula::IsSimpleVariable() const
-{
-  if (m_components.size() == 1) {
-    if (m_components[0].second.size() > 0) {
-      return true;
-    }
-  }
-  return false;
-}
-
 bool Formula::IsDouble() const
 {
   if (m_components.size() == 1) {
@@ -120,11 +110,12 @@ bool Formula::GetIsConst() const
   return true;
 }
 
-bool Formula::CheckIncludes(string modname, ReactantList* rlist) const
+bool Formula::CheckIncludes(string modname, const ReactantList* rlist) const
 {
   vector<vector<string> > varlist = rlist->GetVariableList();
   for (size_t var=0; var<varlist.size(); var++) {
-    if (ContainsVar(modname, varlist[var])) {
+    if (!ContainsVar(modname, varlist[var])) {
+      g_registry.SetError("should include the variable '" + g_registry.GetModule(modname)->GetVariable(varlist[var])->GetNameDelimitedBy('_') + "' (either directly or indirectly), but it does not.");
       return true;
     }
   }
@@ -192,12 +183,6 @@ const Variable* Formula::GetNthVariable(size_t n) const
 void Formula::Clear()
 {
   m_components.clear();
-}
-
-vector<string> Formula::GetSimpleVariable() const
-{
-  assert(IsSimpleVariable());
-  return m_components[0].second;
 }
 
 string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, size_t> > strands) const

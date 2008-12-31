@@ -74,7 +74,7 @@ bool AntimonyEvent::IsEmpty() const
 string AntimonyEvent::GetNthAssignmentVariableName(size_t n, char cc) const
 {
   if (n >= m_varresults.size()) {
-    string error = "Unable to retrieve assignment '" + ToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
+    string error = "Unable to retrieve assignment '" + SizeTToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
     if (m_varresults.size() == 0) {
       error += "No assignments are present for this event at all.";
     }
@@ -82,7 +82,7 @@ string AntimonyEvent::GetNthAssignmentVariableName(size_t n, char cc) const
       error += "A single event assignment is present for this event with index 0.";
     }
     else {
-      error += "Valid assignment indices for this event are 0 through " + ToString(m_varresults.size());
+      error += "Valid assignment indices for this event are 0 through " + SizeTToString(m_varresults.size());
     }
     g_registry.SetError(error);
     return "";
@@ -98,7 +98,7 @@ string AntimonyEvent::GetNthAssignmentVariableName(size_t n, char cc) const
 string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc, bool SBML) const
 {
   if (n >= m_formresults.size()) {
-    string error = "Unable to retrieve assignment '" + ToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
+    string error = "Unable to retrieve assignment '" + SizeTToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
     if (m_formresults.size() == 0) {
       error += "No assignments are present for this event at all.";
     }
@@ -106,7 +106,7 @@ string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc, bool SBML
       error += "A single event assignment is present for this event with index 0.";
     }
     else {
-      error += "Valid assignment indices for this event are 0 through " + ToString(m_formresults.size()) + ".";
+      error += "Valid assignment indices for this event are 0 through " + SizeTToString(m_formresults.size()) + ".";
     }
     g_registry.SetError(error);
     return "";

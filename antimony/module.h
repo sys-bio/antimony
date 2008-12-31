@@ -31,6 +31,8 @@ private:
   size_t m_currentexportvar;
 
   Model m_sbml;
+  std::string m_libsbml_info;
+  std::string m_libsbml_warnings;
   
 public:
 
@@ -64,7 +66,6 @@ public:
   Variable* GetDownstreamDNA();
 
   const std::string& GetModuleName() const;
-  std::vector<std::string> GetVariableName() const;
   std::string GetVariableNameDelimitedBy(char cc) const;
 
   std::string ToString() const;
@@ -76,6 +77,8 @@ public:
 
   //Output for the API
   bool Finalize();
+  std::string GetSBMLInfo() const {return m_libsbml_info;};
+  std::string GetSBMLWarnings() const {return m_libsbml_warnings;};
   size_t GetNumVariablesOfType(return_type rtype) const;
   const Variable* GetNthVariableOfType(return_type rtype, size_t n) const;
   bool   AreEquivalent(return_type rtype, var_type vtype) const;

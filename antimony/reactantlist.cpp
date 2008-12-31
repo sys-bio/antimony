@@ -62,40 +62,7 @@ bool ReactantList::SetComponentFormulasTo(Formula form)
   return false;
 }
 
-bool ReactantList::CheckIsSingleDNAOrReaction()
-{
-  if (m_components.size() == 0) {
-    g_registry.SetError("An interaction must be defined to influence DNA or a reaction, but here is defined to influence nothing at all.");
-    return true;
-  }
-  if (m_components.size() > 1) {
-    g_registry.SetError("An interaction may not influence two or more things at once.");
-    return true;
-  }
-  if (m_components[0].first != 1) {
-    g_registry.SetError("An interaction has no stoichiometry:  '" + ToString(m_components[0].first) + "' is illegal in this context.");
-    return true;
-  }
-  Module* module = g_registry.GetModule(m_module);
-  assert(module != NULL);
-  Variable* var = module->GetVariable(m_components[0].second);
-  assert(var != NULL);
-  var_type vtype = var->GetType();
-  if (IsDNA(vtype) || vtype==varUndefined || IsReaction(vtype)) {
-    return false;
-  }
-  g_registry.SetError("An interaction may not influence a symbol previously defined to be a " + VarTypeToString(vtype) + ".  It must influence a reaction, DNA, or a previously unused symbol.");
-  return true;
-}
-
-Variable* ReactantList::GetSingleVar()
-{
-  Module* module = g_registry.GetModule(m_module);
-  assert(module != NULL);
-  return module->GetVariable(m_components[0].second);
-}
-
-vector<vector<string> > ReactantList::GetVariableList()
+vector<vector<string> > ReactantList::GetVariableList() const
 {
   vector<vector<string> > vlist;
   for (size_t var=0; var<m_components.size(); var++) {
@@ -108,30 +75,16 @@ string ReactantList::ToStringDelimitedBy(char cc) const
 {
   string retval;
   for (size_t component=0; component<m_components.size(); component++) {
+    if (component > 0) {
+      retval += " + ";
+    }
     if (m_components[component].first != 1) {
       char charnum[50];
       sprintf(charnum, "%g", m_components[component].first);
       retval += charnum;
     }
     vector<string> varname = m_components[component].second; 
-    Module* module = g_registry.GetModule(m_module);
-    assert(module != NULL);
-    Variable* actualvar = module->GetVariable(m_components[component].second);
-    if (actualvar != NULL) {
-      retval += actualvar->GetNameDelimitedBy(cc);
-    }
-    else {
-      assert(false); //LS DEBUG:  I don't think we should get this.
-      for (size_t i=0; i<varname.size(); i++) {
-        retval += varname[i];
-        if (i<varname.size()-1) {
-          retval.push_back(cc);
-        }
-      }
-    }
-    if (component < m_components.size() - 1) {
-      retval += " + ";
-    }
+    retval += (g_registry.GetModule(m_module)->GetVariable(m_components[component].second)->GetNameDelimitedBy(cc));
   }
   return retval;
 }
@@ -141,23 +94,7 @@ vector<string> ReactantList::ToStringVecDelimitedBy(char cc) const
   vector<string> retval;
   for (size_t component=0; component<m_components.size(); component++) {
     vector<string> varname = m_components[component].second;
-    Module* module = g_registry.GetModule(m_module);
-    assert(module != NULL);
-    Variable* actualvar = module->GetVariable(varname);
-    if (actualvar != NULL) {
-      retval.push_back(actualvar->GetNameDelimitedBy(cc));
-    }
-    else {
-      assert(false); //LS DEBUG:  I don't think we should get this.
-      string var;
-      for (size_t i=0; i<varname.size(); i++) {
-        var += varname[i];
-        if (i<varname.size()-1) {
-          var.push_back(cc);
-        }
-      }
-      retval.push_back(var);
-    }
+    retval.push_back(g_registry.GetModule(m_module)->GetVariable(varname)->GetNameDelimitedBy(cc));
   }
   return retval;
 }

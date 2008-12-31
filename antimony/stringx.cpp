@@ -3,7 +3,7 @@
 
 using namespace std;
 
-string ToString(size_t number)
+string SizeTToString(size_t number)
 {
   ostringstream ostr;
   ostr << number;

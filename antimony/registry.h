@@ -90,7 +90,6 @@ public:
   Module* GetModule(std::string modulename);
   const Module* GetModule(std::string modulename) const;
   bool IsModuleName(std::string word);
-  Variable* GetImportedModuleSubVariable(const std::string* name);
 
   const std::string* AddWord(std::string word);
   void StoreVariable(Variable* var);

@@ -11,6 +11,10 @@
 #include "stringx.h"
 #include "variable.h"
 
+extern int yylloc_first_line;
+extern int yylloc_last_line;
+extern std::vector<int> yylloc_last_lines;
+
 using namespace std;
     
 Registry::Registry()
@@ -32,8 +36,7 @@ Registry::Registry()
     m_oldmodules(),
     input(NULL)
 {
-  //A user can't use []'s in a name, so this is guaranteed to be unique
-  string main = "[main]";
+  string main = "__main";
   NewCurrentModule(&main);
   SetupFunctions();
 }
@@ -61,7 +64,7 @@ void Registry::ClearModules()
   m_workingstrand.Clear();
   m_currentEvent.clear();
   m_error.clear();
-  string main = "[main]";
+  string main = "__main";
   NewCurrentModule(&main);
 }
 
@@ -125,6 +128,9 @@ int Registry::OpenFile(const string filename)
     SetError(error);
     return 0;
   }
+  yylloc_last_lines.push_back(yylloc_last_line);
+  yylloc_last_line = 1;
+  yylloc_first_line = 1;
   return 1;
 }
 
@@ -271,7 +277,7 @@ bool Registry::AddVariableToCurrentImportList(Variable* import_var)
   Module* submod = CurrentModule()->GetVariable(m_currentImportedModule)->GetModule();
   Variable* var = submod->GetNextExportVariable();
   if (var == NULL) {
-    string error = "Unable to add variable '" + import_var->GetNameDelimitedBy(GetCC()) + "' when creating an instance of the module '" + submod->GetModuleName() + "' because this module is defined to have only " + ToString(submod->GetNumExportVariables()) + " variable(s) definable by default in its construction.";
+    string error = "Unable to add variable '" + import_var->GetNameDelimitedBy(GetCC()) + "' when creating an instance of the module '" + submod->GetModuleName() + "' because this module is defined to have only " + SizeTToString(submod->GetNumExportVariables()) + " variable(s) definable by default in its construction.";
     SetError(error);
     return true;
   }
@@ -436,13 +442,6 @@ bool Registry::IsModuleName(string word)
   return false;
 }
 
-Variable* Registry::GetImportedModuleSubVariable(const std::string* name)
-{
-  vector<string> varname = m_currentImportedModule;
-  varname.push_back(*name);
-  return CurrentModule()->GetVariable(varname);
-}
-
 const string*  Registry::AddWord(string word)
 {
   pair<set<string>::iterator,bool> ret;
@@ -506,7 +505,7 @@ string Registry::GetNthModuleName(size_t n)
 {
   if (n>=m_modules.size()) {
     assert(false); //Shouldn't get here; wrong user calls caught earlier.
-    g_registry.SetError("Programming error:  no such module " + ToString(n) + ".");
+    g_registry.SetError("Programming error:  no such module " + SizeTToString(n) + ".");
     return NULL;
   }
   return m_modules[n].GetModuleName();
@@ -533,7 +532,7 @@ bool Registry::RevertToModuleSet(long n)
       error += "Exactly one file has been successfully read, with file handle 1.";
     }
     else {
-      error += "Valid file handles are 1 through " + ToString(m_oldmodules.size());
+      error += "Valid file handles are 1 through " + SizeTToString(m_oldmodules.size());
     }
     g_registry.SetError(error);
     return true;
