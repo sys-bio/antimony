@@ -8,6 +8,7 @@
 #include "event.h"
 #include "formula.h"
 #include "reaction.h"
+#include "rd_type.h"
 
 class Module;
 
@@ -39,7 +40,7 @@ private:
   var_type m_type;
 
   //Additionally, the variable might be set constant
-  bool m_const;
+  const_type m_const;
 
 public:
   Variable(const std::string name, const Module* module);
@@ -79,6 +80,7 @@ public:
   bool SetEvent(const AntimonyEvent* event);
   void SetNewTopName(std::string newmodname, std::string newtopname);
   bool SetIsConst(bool constant);
+  void SetRegConst();
 
   bool SetCompartment(Variable* var);
   void SetComponentCompartments();

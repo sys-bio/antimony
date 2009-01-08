@@ -218,78 +218,49 @@ varinitialize:  specinit { }
         |       operatorinit { }
         |       eventinit { }
         |       compartmentinit { }
-        |       constspecinit { }
-        |       constdnainit { }
-        |       constoperatorinit { }
-        |       constinit { }
-        |       constcompartmentinit { }
         ;
 
-specinit:       SPECIES varmaybein {if ($2->SetType(varSpeciesUndef)) YYABORT; }
-        |       VAR SPECIES varmaybein {if ($3->SetType(varSpeciesUndef)) YYABORT; }
-        |       specinit ',' varmaybein {if ($3->SetType(varSpeciesUndef)) YYABORT; }
+specinit:       SPECIES varmaybein {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varSpeciesUndef)) YYABORT; }
+        |       VAR SPECIES varmaybein {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
+        |       CONST SPECIES varmaybein {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
+        |       specinit ',' varmaybein {$3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
         ;
 
-reactioninit:   REACTION varmaybein {if ($2->SetType(varReactionUndef)) YYABORT; }
-        |       VAR REACTION varmaybein {if ($3->SetType(varReactionUndef)) YYABORT; }
-        |       reactioninit ',' varmaybein {if ($3->SetType(varReactionUndef)) YYABORT; }
+reactioninit:   REACTION varmaybein {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varReactionUndef)) YYABORT; }
+        |       VAR REACTION varmaybein {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varReactionUndef)) YYABORT; }
+        |       CONST REACTION {g_registry.SetError("Reactions may not be set 'const'."); YYABORT; }
+        |       reactioninit ',' varmaybein {$3->SetRegConst(); if ($3->SetType(varReactionUndef)) YYABORT; }
         ;
 
-dnainit:        DNA varmaybein {if ($2->SetType(varDNA)) YYABORT; }
-        |       VAR DNA varmaybein {if ($3->SetType(varDNA)) YYABORT; }
-        |       dnainit ',' varmaybein {if ($3->SetType(varDNA)) YYABORT; }
+dnainit:        DNA varmaybein {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varDNA)) YYABORT; }
+        |       VAR DNA varmaybein {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varDNA)) YYABORT; }
+        |       CONST DNA varmaybein {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varDNA)) YYABORT; }
+        |       dnainit ',' varmaybein {$3->SetRegConst(); if ($3->SetType(varDNA)) YYABORT; }
         ;
 
-geneinit:       GENE varmaybein {if ($2->SetType(varReactionGene)) YYABORT; }
-        |       VAR GENE varmaybein {if ($3->SetType(varReactionGene)) YYABORT; }
-        |       geneinit ',' varmaybein {if ($3->SetType(varReactionGene)) YYABORT; }
+geneinit:       GENE varmaybein {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varReactionGene)) YYABORT; }
+        |       VAR GENE varmaybein {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varReactionGene)) YYABORT; }
+        |       CONST GENE varmaybein {g_registry.SetError("Genes may not be set 'const'."); YYABORT; }
+        |       geneinit ',' varmaybein {$3->SetRegConst(); if ($3->SetType(varReactionGene)) YYABORT; }
         ;
 
-operatorinit:   OPERATOR varmaybein {if ($2->SetType(varFormulaOperator)) YYABORT; }
-        |       VAR OPERATOR varmaybein {if ($3->SetType(varFormulaOperator)) YYABORT; }
-        |       operatorinit ',' varmaybein {if ($3->SetType(varFormulaOperator)) YYABORT; }
+operatorinit:   OPERATOR varmaybein {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varFormulaOperator)) YYABORT; }
+        |       VAR OPERATOR varmaybein {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varFormulaOperator)) YYABORT; }
+        |       CONST OPERATOR varmaybein {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varFormulaOperator)) YYABORT; }
+        |       operatorinit ',' varmaybein {$3->SetRegConst(); if ($3->SetType(varFormulaOperator)) YYABORT; }
         ;
 
-eventinit:      EVENT varmaybein {if ($2->SetType(varEvent)) YYABORT; }
-        |       VAR EVENT varmaybein {if ($3->SetType(varEvent)) YYABORT; }
-        |       eventinit ',' varmaybein {if ($3->SetType(varEvent)) YYABORT; }
+eventinit:      EVENT varmaybein {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varEvent)) YYABORT; }
+        |       VAR EVENT varmaybein {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varEvent)) YYABORT; }
+        |       CONST EVENT varmaybein {g_registry.SetError("Events may not be set 'const'."); YYABORT; }
+        |       eventinit ',' varmaybein {$3->SetRegConst(); if ($3->SetType(varEvent)) YYABORT; }
         ;
 
 compartmentinit:
-                COMPARTMENT varmaybein {if ($2->SetType(varCompartment)) YYABORT; }
-        |       VAR COMPARTMENT varmaybein {if ($3->SetType(varCompartment)) YYABORT; }
-        |       compartmentinit ',' varmaybein {if ($3->SetType(varCompartment)) YYABORT; }
-        ;
-
-constspecinit:  CONST SPECIES varmaybein {if ($3->SetType(varSpeciesUndef)) YYABORT; 
-                                        if ($3->SetIsConst(true)) YYABORT;}
-        |       constspecinit ',' varmaybein {if ($3->SetType(varSpeciesUndef)) YYABORT; 
-                                               if ($3->SetIsConst(true)) YYABORT;}
-        ;
-
-constdnainit:
-                CONST DNA varmaybein {if ($3->SetType(varDNA)) YYABORT; 
-                                    if ($3->SetIsConst(true)) YYABORT;}
-        |       constdnainit ',' varmaybein {if ($3->SetType(varDNA)) YYABORT; 
-                                           if ($3->SetIsConst(true)) YYABORT;}
-        ;
-
-constoperatorinit:
-                CONST OPERATOR varmaybein {if ($3->SetType(varFormulaOperator)) YYABORT; 
-                                         if ($3->SetIsConst(true)) YYABORT;}
-        |       constoperatorinit ',' varmaybein {if ($3->SetType(varFormulaOperator)) YYABORT; 
-                                                if ($3->SetIsConst(true)) YYABORT;}
-        ;
-
-constcompartmentinit:
-                CONST COMPARTMENT varmaybein {if ($3->SetType(varCompartment)) YYABORT; 
-                                            if ($3->SetIsConst(true)) YYABORT;}
-        |       constcompartmentinit ',' varmaybein {if ($3->SetType(varCompartment)) YYABORT; 
-                                                   if ($3->SetIsConst(true)) YYABORT;}
-        ;
-
-constinit:      CONST varmaybein {if ($2->SetIsConst(true)) YYABORT;}
-        |       constinit ',' varmaybein {if ($3->SetIsConst(true)) YYABORT;}
+                COMPARTMENT varmaybein {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varCompartment)) YYABORT; }
+        |       VAR COMPARTMENT varmaybein {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
+        |       CONST COMPARTMENT varmaybein {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
+        |       compartmentinit ',' varmaybein {$3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
         ;
 
 dnadef:         dnastrand {if (g_registry.SaveWorkingStrand()) YYABORT;}

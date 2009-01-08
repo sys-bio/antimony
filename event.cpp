@@ -34,6 +34,11 @@ bool AntimonyEvent::SetTrigger(const Formula& form)
       g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
+    else if (!ASTform->isBoolean()) {
+      g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses('.') + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.");
+      delete ASTform;
+      return true;
+    }      
     else {
       delete ASTform;
     }
@@ -46,6 +51,8 @@ bool AntimonyEvent::AddResult(Variable* var, Formula* form)
 {
   m_varresults.insert(m_varresults.begin(), var->GetName());
   m_formresults.insert(m_formresults.begin(), *form);
+  var->SetType(varFormulaUndef);
+  var->SetIsConst(false);//It might be a straight value, but the event changes it.
   return false;
 }
 

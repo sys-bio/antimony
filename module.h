@@ -25,7 +25,8 @@ private:
   std::vector<std::string> m_variablename;
 
   std::vector<Variable*> m_variables;
-  std::vector< std::vector<std::string> > m_exportlist;
+  std::vector<std::vector<std::string> > m_exportlist;
+  std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
   std::vector<std::string> m_returnvalue;
 
   size_t m_currentexportvar;
@@ -53,6 +54,7 @@ public:
   void SetNewTopName(std::string newmodname, std::string newtopname);
   bool SetModule(const std::string* modname);
   void SetComponentCompartments(Variable* compartment);
+  void AddSynchronizedPair(Variable* oldvar, Variable* newvar);
 
   Variable* GetVariable(std::vector<std::string> name);
   const Variable* GetVariable(std::vector<std::string> name) const;
@@ -67,7 +69,7 @@ public:
 
   const std::string& GetModuleName() const;
   std::string GetVariableNameDelimitedBy(char cc) const;
-
+  std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > GetSyncronized() const {return m_synchronized;};
   std::string ToString() const;
   std::string GetAntimony(set<const Module*> usedmods) const;
   std::string GetJarnacReactions() const;
@@ -84,7 +86,7 @@ public:
   bool   AreEquivalent(return_type rtype, var_type vtype) const;
   bool   AreEquivalent(return_type rtype, bool isconst) const;
 
-  std::string ListIdentityDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
+  std::string ListSynchronizedVariables(std::string indent) const;
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
   void  LoadSBML(const Model* sbml);
   Model GetSBMLModel();

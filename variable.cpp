@@ -19,7 +19,7 @@ Variable::Variable(const string name, const Module* module)
     m_compartment(),
     m_strands(),
     m_type(varUndefined),
-    m_const(false)
+    m_const(constDEFAULT)
 
 {
   m_name.push_back(name);
@@ -216,20 +216,31 @@ bool Variable::GetIsConst() const
   if (IsPointer()) {
     return GetSameVariable()->GetIsConst();
   }
+  const_type formconst = constDEFAULT;
+  if (GetFormula() != NULL) {
+    if (GetFormula()->GetIsConst()) {
+      formconst = constCONST;
+    }
+    else {
+      formconst = constVAR;
+    }
+  }
   switch(m_type) {
   case varFormulaUndef:
   case varFormulaOperator:
   case varDNA:
   case varCompartment:
-    return m_valFormula.GetIsConst();
-  case varSpeciesUndef:
-    return m_const; //a starting value set by a variable formula can still be a const species.
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-    if (!m_valReaction.GetIsConst()) {
-      return false;
+    if (m_const == constDEFAULT) {
+      if (formconst==constDEFAULT || formconst==constCONST) return true;
+      if (formconst==constVAR) return false;
     }
+    if (m_const == constCONST && formconst == constVAR) return false;
+    break;
+  case varSpeciesUndef:
+    if (m_const == constDEFAULT) return false;
     break;
   case varModule:
   case varEvent:
@@ -238,7 +249,17 @@ bool Variable::GetIsConst() const
   case varUndefined:
     return true;
   }
-  return m_const;
+  switch(m_const) {
+  case constCONST:
+    return true;
+  case constVAR:
+    return false;
+  case constDEFAULT:
+    assert(false); //should be caught above.
+    return false;
+  }
+  assert(false); //uncaught const type
+  return false;
 }
 
 bool Variable::GetIsEquivalentTo(const Variable* var) const
@@ -679,8 +700,21 @@ bool Variable::SetIsConst(bool constant)
     }
     break;
   }
-  m_const = constant;
+  if (constant) {
+    m_const = constCONST;
+  }
+  else {
+    m_const = constVAR;
+  }
   return false;
+}
+
+void Variable::SetRegConst()
+{
+  const_type regconst = g_registry.GetConstness();
+  if (regconst != constDEFAULT) {
+    m_const = g_registry.GetConstness();
+  }
 }
 
 bool Variable::SetCompartment(Variable* var)
@@ -809,7 +843,14 @@ bool Variable::Synchronize(Variable* clone)
     m_type = clone->GetType();
   }
 
-  clone->SetIsConst(GetIsConst()); //Don't worry about return values--constness can change.
+  if (m_const==constCONST) {
+    clone->SetIsConst(true);
+  }
+  if (m_const==constVAR) {
+    clone->SetIsConst(false);
+  }
+  //and leave it alone if it's constDEFAULT;
+
   if (!m_valFormula.IsEmpty()) {
     Formula* cloneform = clone->GetFormula();
     if (cloneform->IsEmpty()) {
@@ -843,6 +884,9 @@ bool Variable::Synchronize(Variable* clone)
   }
 
   m_sameVariable = clone->GetName();
+
+  //And save this pair in the module as having been syncronized
+  g_registry.GetModule(m_module)->AddSynchronizedPair(this, clone);
 
   return false;
 }

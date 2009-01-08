@@ -7,7 +7,43 @@
 enum rd_type {rdBecomes, rdActivates, rdInhibits, rdInfluences};
 std::string RDToString(rd_type type);
 
-enum var_type {varSpeciesUndef, varFormulaUndef, varDNA, varFormulaOperator, varReactionGene, varReactionUndef, varInteraction, varUndefined, varModule, varEvent, varCompartment, varStrand};
+enum var_type {varSpeciesUndef,
+               varFormulaUndef,
+               varDNA,
+               varFormulaOperator,
+               varReactionGene,
+               varReactionUndef,
+               varInteraction,
+               varUndefined,
+               varModule,
+               varEvent,
+               varCompartment,
+               varStrand};
+
+enum return_type {allSymbols,
+                  allSpecies,
+                  allFormulas,
+                  allDNA,
+                  allOperators,
+                  allGenes,
+                  allReactions,
+                  allInteractions,
+                  allEvents,
+                  allCompartments,
+                  allUnknown,
+                  varSpecies,
+                  varFormulas,
+                  varOperators,
+                  varCompartments,
+                  constSpecies,
+                  constFormulas,
+                  constOperators,
+                  constCompartments,
+                  subModules,
+                  expandedStrands,
+                  modularStrands};
+
+enum const_type {constDEFAULT, constVAR, constCONST};
 
 std::string VarTypeToString(const var_type vtype);
 std::string VarTypeToAntimony(const var_type vtype);
@@ -17,7 +53,6 @@ bool IsSpecies(const var_type var);
 bool IsDNA(const var_type var);
 bool HasOrIsFormula(const var_type var);
 
-enum return_type {allSymbols, allSpecies, allFormulas, allReactions, allInteractions, allEvents, allCompartments, allUnknown, varSpecies, varFormulas, varAnyDNA, varOperators, varGenes, varCompartments, constSpecies, constFormulas, constAnyDNA, constOperators, constGenes, constCompartments, subModules, expandedStrands, modularStrands};
 std::string ReturnTypeToString(return_type rtype);
 
 
