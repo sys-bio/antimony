@@ -36,7 +36,7 @@ Registry::Registry()
     m_oldmodules(),
     input(NULL)
 {
-  string main = "__main";
+  string main = MAINMODULE;
   NewCurrentModule(&main);
   SetupFunctions();
 }
@@ -64,7 +64,7 @@ void Registry::ClearModules()
   m_workingstrand.Clear();
   m_currentEvent.clear();
   m_error.clear();
-  string main = "__main";
+  string main = MAINMODULE;
   NewCurrentModule(&main);
 }
 
@@ -88,7 +88,9 @@ int Registry::OpenFile(const string filename)
 {
   //Try opening as SBML:
   SBMLDocument* document = readSBML(filename.c_str());
-  if (document->getNumErrors() == 0) {
+  document->checkConsistency();
+  SBMLErrorLog* log = document->getErrorLog();
+  if (log->getNumFailsWithSeverity(2) == 0 && log->getNumFailsWithSeverity(3) == 0) {
     //It's a valid SBML file.
     const Model* sbml = document->getModel();
     string sbmlname = getNameFromSBMLObject(sbml, "file");
@@ -376,6 +378,11 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
       g_registry.SetError("The event trigger \"" + trigger->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
+    else if (!ASTform->isBoolean()) {
+      g_registry.SetError("The formula \"" + trigger->ToDelimitedStringWithEllipses('.') + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.");
+      delete ASTform;
+      return true;
+    }      
     else {
       delete ASTform;
     }

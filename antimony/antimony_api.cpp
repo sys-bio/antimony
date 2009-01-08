@@ -173,11 +173,11 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
   g_registry.ClearModules();
   SBMLDocument* document = readSBML(filename);
   document->checkConsistency();
-  if (document->getErrorLog()->getNumFailsWithSeverity(2) > 0) {
+  if (document->getErrorLog()->getNumFailsWithSeverity(2) > 0 || document->getErrorLog()->getNumFailsWithSeverity(3) > 0 ) {
     stringstream errorstream;
     document->printErrors(errorstream);
     string file(filename);
-    g_registry.SetError("Unable to read SBML file '" + file + "' due to errors encountered when parsing the file.  Error from libSBML:\n" +  errorstream.str());
+    g_registry.SetError("Unable to read SBML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libSBML:\n" +  errorstream.str());
     return -1;
   }
   const Model* sbml = document->getModel();
@@ -194,9 +194,9 @@ LIB_EXTERN size_t getNumFiles()
   return g_registry.GetNumFiles();
 }
 
-LIB_EXTERN bool revertTo(long handle)
+LIB_EXTERN bool revertTo(long index)
 {
-  return g_registry.RevertToModuleSet(handle);
+  return g_registry.RevertToModuleSet(index);
 }
 
 LIB_EXTERN void clearPreviousLoads()
@@ -902,14 +902,12 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
     if (isconst) return constFormulas;
     return varFormulas;
   case varDNA:
-    if (isconst) return constAnyDNA;
-    return varAnyDNA;
+    return allDNA;
   case varFormulaOperator:
     if (isconst) return constOperators;
     return varOperators;
   case varReactionGene:
-    if (isconst) return constGenes;
-    return varGenes;
+    return allGenes;
   case varReactionUndef:
     return allReactions;
   case varInteraction:

@@ -153,33 +153,6 @@ bool Formula::ContainsVar(const Variable* outervar) const
   return false;
 }
 
-size_t Formula::GetNumVariables() const
-{
-  size_t retval = 0;
-  for (size_t comp=0; comp<m_components.size(); comp++) {
-    if (m_components[comp].second.size() > 0) {
-      retval++;
-    }
-  }
-  return retval;
-}
-
-const Variable* Formula::GetNthVariable(size_t n) const
-{
-  size_t var = -1;
-  for (size_t comp = 0; comp<m_components.size(); comp++) {
-    if (m_components[comp].second.size() > 0) {
-      var++;
-    }
-    if (var == n) {
-      Module* module = g_registry.GetModule(m_components[comp].first);
-      assert(module != NULL);
-      return module->GetVariable(m_components[comp].second);
-    }
-  }
-  return NULL;
-}
-
 void Formula::Clear()
 {
   m_components.clear();
@@ -270,7 +243,7 @@ string Formula::ToSBMLString() const
   return ToSBMLString(nostrands);
 }
 
-string Formula::ToSBMLString(std::vector<std::pair<Variable*, size_t> > strands) const
+string Formula::ToSBMLString(vector<pair<Variable*, size_t> > strands) const
 {
   string formula = ToDelimitedStringWithStrands('_', strands);
   string revform = ConvertOneSymbolToFunction(formula);
@@ -338,4 +311,28 @@ string Formula::ConvertOneSymbolToFunction(string formula) const
   formula.insert(start, whichfn);
   //cout << formula << endl;
   return formula;
+}
+
+vector<const Variable*> Formula::GetVariablesFrom(string formula, string module) const
+{
+  vector<const Variable*> retval;
+  string varname = "";
+  bool foundname = false;
+  for (size_t pos=0; pos<formula.size(); pos++) {
+    if (isalpha(formula[pos]) || formula[pos]=='_' ||
+        (foundname && (isdigit(formula[pos]))) ||
+        (foundname && (formula[pos] == g_registry.GetCC())) ) {
+      foundname = true;
+      varname += formula[pos];
+    }
+    else if (foundname) {
+      retval.push_back(g_registry.GetModule(module)->GetVariableFromSymbol(varname));
+      foundname = false;
+      varname = "";
+    }
+  }
+  if (foundname) {
+    retval.push_back(g_registry.GetModule(module)->GetVariableFromSymbol(varname));
+  }
+  return retval;
 }

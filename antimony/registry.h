@@ -14,7 +14,9 @@
 #include "module.h"
 #include "reactantlist.h"
 #include "reaction.h"
+#include "rd_type.h"
 
+#define MAINMODULE "__main"
 
 class Registry
 {
@@ -37,6 +39,7 @@ private:
   std::vector<std::string> m_currentEvent;
   
   char m_cc;
+  const_type m_constness;
   std::string m_error;
   std::vector<std::vector<Module> > m_oldmodules;
 
@@ -55,9 +58,13 @@ public:
   size_t GetNumFiles() {return m_oldmodules.size();};
   void   SetupFunctions();
 
+  //Modules
   void NewCurrentModule(const std::string* name);
   Module* CurrentModule();
   void RevertToPreviousModule();
+
+  //Variables
+  void SetConstness(const_type isconst) {m_constness = isconst;};
   void AddVariableToCurrentExportList(Variable* export_var);
   bool AddVariableToCurrentImportList(Variable* import_var);
   Variable* AddVariableToCurrent(const std::string* name);
@@ -91,6 +98,7 @@ public:
   const Module* GetModule(std::string modulename) const;
   bool IsModuleName(std::string word);
 
+  const_type GetConstness() const {return m_constness;};
   const std::string* AddWord(std::string word);
   void StoreVariable(Variable* var);
   const std::string* IsFunction(std::string word);

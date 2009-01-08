@@ -125,6 +125,10 @@ void Module::SetNewTopName(string newmodname, string newtopname)
   for (size_t var=0; var<m_exportlist.size(); var++) {
     m_exportlist[var].insert(m_exportlist[var].begin(), newtopname);
   }
+  for (size_t pair=0; pair<m_synchronized.size(); pair++) {
+    m_synchronized[pair].first.insert(m_synchronized[pair].first.begin(), newtopname);
+    m_synchronized[pair].second.insert(m_synchronized[pair].second.begin(), newtopname);
+  }
 }
 
 bool Module::SetModule(const string* modname)
@@ -139,6 +143,11 @@ void Module::SetComponentCompartments(Variable* compartment)
     m_variables[var]->SetCompartment(compartment);
     m_variables[var]->SetComponentCompartments();
   }
+}
+
+void Module::AddSynchronizedPair(Variable* oldvar, Variable* newvar)
+{
+  m_synchronized.push_back(make_pair(oldvar->GetName(), newvar->GetName()));
 }
 
 Variable* Module::GetVariable(vector<string> name)
@@ -351,7 +360,7 @@ string Module::GetAntimony(set<const Module*> usedmods) const
   }
   string indent = "";
   //Module definition
-  if (m_modulename != "__main") {
+  if (m_modulename != MAINMODULE) {
     retval += "model " + m_modulename + "(";
     for (size_t exp=0; exp<m_exportlist.size(); exp++) {
       if (exp > 0) {
@@ -395,6 +404,7 @@ string Module::GetAntimony(set<const Module*> usedmods) const
       retval += indent + mname[0] + ": " + submod->GetModuleName() + "()\n";
     }
   }
+  retval += ListSynchronizedVariables(indent);
   //And now subvariables that have changed names or values in submods.
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
@@ -402,7 +412,6 @@ string Module::GetAntimony(set<const Module*> usedmods) const
       assert(mname.size() == 1);
       const Module* submod = m_variables[var]->GetModule();
       const Module* origmod = g_registry.GetModule(submod->GetModuleName());
-      retval += submod->ListIdentityDifferencesFrom(origmod, mname[0], indent);
       retval += submod->ListAssignmentDifferencesFrom(origmod, mname[0], indent);
     }
   }
@@ -411,9 +420,7 @@ string Module::GetAntimony(set<const Module*> usedmods) const
   for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
     const Variable* var = m_variables[vnum];
     var_type type = var->GetType();
-    if (var->IsPointer()) {
-      retval += indent + ToStringFromVecDelimitedBy(var->GetName(), cc) + " is " + var->GetNameDelimitedBy(cc) + ";\n";
-    }
+    if (var->IsPointer()) continue;
     else if (IsReaction(type) || type == varInteraction) {
       retval += indent + var->GetReaction()->ToDelimitedStringWithStrands(cc, var->GetStrandVars()) + "\n";
     }
@@ -422,7 +429,7 @@ string Module::GetAntimony(set<const Module*> usedmods) const
     }
     else if (type == varStrand) {
       retval += indent + var->GetNameDelimitedBy(cc) + ": " + var->GetDNAStrand()->ToStringDelimitedBy(cc) + "\n";
-    }      
+    }
     else if (type != varModule) {
       const Formula* form = var->GetFormula();
       if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly()) {
@@ -431,9 +438,8 @@ string Module::GetAntimony(set<const Module*> usedmods) const
     }
   }
 
-
   //end model definition
-  if (m_modulename != "__main") {
+  if (m_modulename != MAINMODULE) {
     retval += "end\n";
   }
   return retval;
@@ -587,7 +593,7 @@ bool Module::Finalize()
     }
   }
   if (trueerrors != "") {
-    g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but this one slipped through--please let us know what happened and we'll try to fix it.  Error message from libSBML:  " + trueerrors);
+    g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but this one slipped through--please let us know what happened and we'll try to fix it.  Error message(s) from libSBML:\n" + trueerrors);
     delete(testdoc);
     return true;
   }
@@ -647,22 +653,21 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
       return true;
     }
     return false;
-  case varAnyDNA:
-  case constAnyDNA:
+  case allDNA:
     if (vtype == varDNA ||
         vtype == varFormulaOperator ||
         vtype == varReactionGene) {
       return true;
     }
     return false;
+  case allOperators:
   case varOperators:
   case constOperators:
     if (vtype == varFormulaOperator) {
       return true;
     }
     return false;
-  case varGenes:
-  case constGenes:
+  case allGenes:
     if (vtype == varReactionGene) {
       return true;
     }
@@ -735,18 +740,17 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   switch (rtype) {
   case varSpecies:
   case varFormulas:
-  case varAnyDNA:
   case varOperators:
-  case varGenes:
   case varCompartments:
     return (!isconst);
   case constSpecies:
   case constFormulas:
-  case constAnyDNA:
   case constOperators:
-  case constGenes:
   case constCompartments:
     return (isconst);
+  case allDNA:
+  case allGenes:
+  case allOperators:
   case allSymbols:
   case allSpecies:
   case allFormulas:
@@ -764,23 +768,12 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   return false;
 }
 
-string Module::ListIdentityDifferencesFrom(const Module* origmod, string mname, string indent) const
+string Module::ListSynchronizedVariables(string indent) const
 {
   char cc = '.';
   string list = "";
-  assert(m_variables.size() == origmod->m_variables.size());
-  set<const Variable*> renamed;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    const Variable* origvar = origmod->m_variables[var];
-    const Variable* thisvar = m_variables[var];
-    vector<string> thispoint = thisvar->GetPrintedName();
-    if (thispoint.size() > 1 && thispoint[0] == mname) {
-      thispoint.erase(thispoint.begin());
-    }
-    vector<string> origpoint = origvar->GetPrintedName();
-    if (origpoint != thispoint) {
-      list += indent + ToStringFromVecDelimitedBy(thisvar->GetName(), cc) + " is " + ToStringFromVecDelimitedBy(thisvar->GetPrintedName(), cc) + ";\n";
-    }
+  for (size_t pair=0; pair<m_synchronized.size(); pair++) {
+    list += indent + ToStringFromVecDelimitedBy(m_synchronized[pair].first, cc) + " is " + ToStringFromVecDelimitedBy(m_synchronized[pair].second, cc) + ";\n";
   }
   return list;
 }
@@ -1005,6 +998,7 @@ void Module::CreateSBMLModel()
     }
     else if (!formula->IsEmpty()) {
       AssignmentRule rule(compartment->GetNameDelimitedBy(cc), formula->ToDelimitedStringWithEllipses(cc));
+      sbmlcomp->setConstant(false); //Requirement of SBML
       m_sbml.addRule(&rule);
     }
   }
@@ -1044,12 +1038,14 @@ void Module::CreateSBMLModel()
     const Formula*  formula = formvar->GetFormula();
     Parameter* param = m_sbml.createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
+    param->setConstant(formvar->GetIsConst());
     if (formula->IsDouble()) {
       param->setValue(atoi(formula->ToDelimitedStringWithEllipses(cc).c_str()));
     }
     else if (!formula->IsEmpty()) {
       //create a rule
       AssignmentRule rule(formvar->GetNameDelimitedBy(cc), formula->ToDelimitedStringWithStrands(cc, formvar->GetStrandVars()));
+      param->setConstant(false); //requirement of SBML
       m_sbml.addRule(&rule);
     }
   }
@@ -1063,8 +1059,9 @@ void Module::CreateSBMLModel()
     }
     Reaction sbmlrxn(rxnvar->GetNameDelimitedBy(cc), "", NULL, false);
     const Formula* formula = reaction->GetFormula();
+    string formstring = formula->ToDelimitedStringWithStrands(cc, rxnvar->GetStrandVars());
     if (!formula->IsEmpty()) {
-      KineticLaw kl(formula->ToDelimitedStringWithStrands(cc, rxnvar->GetStrandVars()));
+      KineticLaw kl(formstring);
       sbmlrxn.setKineticLaw(&kl);
     }
     const ReactantList* left = reaction->GetLeft();
@@ -1082,12 +1079,12 @@ void Module::CreateSBMLModel()
       sbmlrxn.addProduct(&sr);
     }
     //Find 'modifiers' and add them.
-    for (size_t v=0; v<formula->GetNumVariables(); v++) {
-      const Variable* formvar = formula->GetNthVariable(v);
-      if (formvar != NULL && formvar->GetType() == varSpeciesUndef) {
-        if (left->GetStoichiometryFor(formvar) == 0 &&
-            right->GetStoichiometryFor(formvar) == 0) {
-          ModifierSpeciesReference msr(formvar->GetNameDelimitedBy(cc));
+    vector<const Variable*> subvars = formula->GetVariablesFrom(formstring, m_modulename);
+    for (size_t v=0; v<subvars.size(); v++) {
+      if (subvars[v] != NULL && subvars[v]->GetType() == varSpeciesUndef) {
+        if (left->GetStoichiometryFor(subvars[v]) == 0 &&
+            right->GetStoichiometryFor(subvars[v]) == 0) {
+          ModifierSpeciesReference msr(subvars[v]->GetNameDelimitedBy(cc));
           sbmlrxn.addModifier(&msr);
         }
       }

@@ -36,9 +36,6 @@ public:
   bool ContainsVar(std::string modname, std::vector<std::string> vname) const;
   bool ContainsVar(const Variable* outervar) const;
 
-  size_t GetNumVariables() const;
-  const Variable* GetNthVariable(size_t n) const;
-
   void Clear();
 
   std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands) const;
@@ -46,6 +43,7 @@ public:
   std::string ToSBMLString() const;
   std::string ToSBMLString(std::vector<std::pair<Variable*, size_t> > strands) const;
   std::string ConvertOneSymbolToFunction(std::string formula) const;
+  std::vector<const Variable*> GetVariablesFrom(std::string formula, std::string module) const;
 };
 
 
