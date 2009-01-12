@@ -196,7 +196,7 @@ LIB_EXTERN size_t getNumFiles()
 
 LIB_EXTERN bool revertTo(long index)
 {
-  return g_registry.RevertToModuleSet(index);
+  return !g_registry.RevertToModuleSet(index);
 }
 
 LIB_EXTERN void clearPreviousLoads()

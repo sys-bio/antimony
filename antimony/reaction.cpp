@@ -146,9 +146,3 @@ double AntimonyReaction::GetStoichiometryFor(const Variable* var) const
   stoich += m_right.GetStoichiometryFor(var);
   return stoich;
 }
-
-
-bool AntimonyReaction::GetIsConst() const
-{
-  return m_formula.GetIsConst();
-}

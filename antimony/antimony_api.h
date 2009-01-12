@@ -98,7 +98,7 @@ LIB_EXTERN long   loadSBMLFile(const char* filename);
 LIB_EXTERN size_t getNumFiles();
 
 /**
- * Change the 'active' set of modules to the ones from the given index (as received from 'loadFile' or 'loadSBMLFile').  Attempting to revert to a negative or nonexistent index returns 'true' and the previous active set of modules is retained.
+ * Change the 'active' set of modules to the ones from the given index (as received from 'loadFile' or 'loadSBMLFile').  Attempting to revert to a negative or nonexistent index returns 'false' and the previous active set of modules is retained.  A successful change return 'true'.
  *
  */
 LIB_EXTERN bool   revertTo(long index);

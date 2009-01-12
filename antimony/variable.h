@@ -49,7 +49,6 @@ public:
 
   bool IsPointer() const {return m_sameVariable.size() != 0;};
   std::vector<std::string> GetName() const;
-  std::vector<std::string> GetPrintedName() const;
   std::vector<std::string> GetPointerName() const {return m_sameVariable;};
   std::string GetNameDelimitedBy(char cc) const;
   std::string GetFormulaStringDelimitedBy(char cc) const;
