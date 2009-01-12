@@ -195,12 +195,12 @@ string ReturnTypeToString(return_type rtype)
     return "variable species (generic)";
   case varFormulas:
     return "variable formula or equation";
-  case varAnyDNA:
-    return "variable DNA (generic)";
-  case varOperators:
-    return "variable DNA (operator)";
-  case varGenes:
-    return "variable DNA (gene; also a reaction)";
+  case allDNA:
+    return "all DNA (genes and operators)";
+  case allGenes:
+    return "all genes (DNA that has an associated reaction)";
+  case allOperators:
+    return "all operators (DNA with no associated reaction)";
   case allReactions:
     return "Reaction (generic)";
   case allInteractions:
@@ -209,6 +209,8 @@ string ReturnTypeToString(return_type rtype)
     return "Event";
   case allCompartments:
     return "all compartments (constant and variable)";
+  case varOperators:
+    return "variable DNA (operator)";
   case varCompartments:
     return "variable-sized compartment";
   case allUnknown:
@@ -217,12 +219,8 @@ string ReturnTypeToString(return_type rtype)
     return "constant/boundary species (generic)";
   case constFormulas:
     return "constant formula or equation";
-  case constAnyDNA:
-    return "constant DNA (generic)";
   case constOperators:
     return "constant DNA (operator)";
-  case constGenes:
-    return "constant DNA (gene; also a reaction)";
   case constCompartments:
     return "constant-sized compartment";
   case subModules:

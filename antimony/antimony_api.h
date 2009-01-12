@@ -287,59 +287,215 @@ LIB_EXTERN double* getNthInteractionInteractorStoichiometries(const char* module
  * Returns an array of the stoichiometries for the interactors of the Nth interaction in the module.  If no such interaction exists, an error is set and NULL is returned.
  */
 LIB_EXTERN double* getNthInteractionInteracteeStoichiometries(const char* moduleName, size_t n);
+
+/**
+ * Returns an array of the dividers for the interactions in the given module.  Valid dividers (defined in rd_type.h) are rdInhibits ("-|"), rdActivates ("-o"), and rdInfluences("-(").  The fourth divider (rdBecomes, "->") is used for reactions, not interactions.
+ */
 LIB_EXTERN rd_type* getInteractionDividers(const char* moduleName);
+
+/**
+ * Returns the rd_type of the nth interaction in the module.  If no such interaction exists, 'rdBecomes' is returned, and an error is set.  (Recall that no valid interaction can have the divider 'rdBecomes', as that is used for Reactions.)
+ */
 LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, size_t n);
 
+/**
+ * Returns an N x M stoichiometry matrix where N is the number of reactions in the model, and M is the number of variable species (or 'floating species').
+ */
 LIB_EXTERN double** getStoichiometryMatrix(const char* moduleName);
+
+/**
+ * The row labels for the stoichiometry matrix.  Is exactly the same as calling 'getSymbolNamesOfType(moduleName, varSpecies)', but provided here so you don't have to think about it.
+ */
 LIB_EXTERN char**   getStoichiometryMatrixRowLabels(const char* moduleName);
+
+/**
+ * The column labels for the stoichiometry matrix.  Is exactly the same as calling 'getSymbolNamesOfType(moduleName, allReactions)' but provided here so you don't have to think about it.
+ */
 LIB_EXTERN char**   getStoichiometryMatrixColumnLabels(const char* moduleName);
+
+/**
+ * The number of rows in the stoichiometry matrix (i.e. the number of 'varSpecies').
+ */
 LIB_EXTERN size_t   getStoichiometryMatrixNumRows(const char* moduleName);
+
+/**
+ * The number of columns in the stoichiometry matrix (i.e. the number of 'allReactions').
+ */
 LIB_EXTERN size_t   getStoichiometryMatrixNumColumns(const char* moduleName);
 
-LIB_EXTERN char**   getReactionRates(const char* moduleName);
-LIB_EXTERN char*    getNthReactionRate(const char* moduleName, size_t n);
+
+/**
+ * Returns the number of reactions (and hence reaction rates) in the module.  Useful for looping over all reaction rates in the following function.
+ */
 LIB_EXTERN size_t   getNumReactionRates(const char* moduleName);
 
+/**
+ * Returns an array of the reaction rates for the given module.  Is the same as 'getSymbolEquationsOfType(moduleName, allReactions)', but is provided for convenience.
+ */
+LIB_EXTERN char**   getReactionRates(const char* moduleName);
 
+/**
+ * Returns the reaction rate for the Nth reaction in the module.  If the reaction exists, but its reaction rate has not been set, returns an empty string.  If the reaction does not exist, an error is set, and NULL is returned.
+ */
+LIB_EXTERN char*    getNthReactionRate(const char* moduleName, size_t n);
+
+
+/**
+ * Returns the number of events in the given module.  Useful for subsequent functions that return arrays of information for all events.
+ */
 LIB_EXTERN size_t  getNumEvents(const char* moduleName);
+
+/**
+ * Returns the names of the events in the module.  Is the same as 'getSymbolNamesOfType(moduleName, allEvents)', but is provided for convenience.
+ */
 LIB_EXTERN char**  getEventNames(const char* moduleName);
+
+/**
+ * Returns the name of the nth event in the module.
+ */
 LIB_EXTERN char*   getNthEventName(const char* moduleName, size_t event);
+
+/**
+ * Returns the number of assignments stored in the given event.  Useful when looping through those assignements in functions below.
+ */
 LIB_EXTERN size_t  getNumAssignmentsForEvent(const char* moduleName, size_t event);
+
+/**
+ * Returns the trigger for the given event, as an equation that can be interpreted in a boolean context.
+ */
 LIB_EXTERN char*   getTriggerForEvent(const char* moduleName, size_t event);
+
+/**
+ * Each assignment for an event assigns a formula to a variable.  This function returns the variable in question for the given event and assignment.
+ */
 LIB_EXTERN char*   getNthAssignmentVariableForEvent(const char* moduleName, size_t event, size_t n);
+
+/**
+ * Each assignment for an event assigns a formula to a variable.  This function returns the in question in question for the given event and assignment.
+ */
 LIB_EXTERN char*   getNthAssignmentEquationForEvent(const char* moduleName, size_t event, size_t n);
 
-LIB_EXTERN char*** getDNAStrands(const char* moduleName);
-LIB_EXTERN char**  getNthDNAStrand(const char* moduleName, size_t n);
-LIB_EXTERN bool    getIsNthDNAStrandOpen(const char* moduleName, size_t n, bool upstream);
-LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName);
+
+/**
+ * Returns the number of unique DNA strands in the module, as defined in the Antimony documentation (i.e. the number of physical cassettes of DNA present in the module).  Useful in looping over the arrays returned by functions below.
+ */
 LIB_EXTERN size_t  getNumDNAStrands(const char* moduleName);
 
-LIB_EXTERN char*** getModularDNAStrands(const char* moduleName);
-LIB_EXTERN char**  getNthModularDNAStrand(const char* moduleName, size_t n);
-LIB_EXTERN bool    getIsNthModularDNAStrandOpen(const char* moduleName, size_t n, bool upstream);
-LIB_EXTERN size_t* getModularDNAStrandSizes(const char* moduleName);
+/**
+ * Returns an array of DNA strand sizes for all strands in the module.  Useful for looping over the arrays returned by 'getDNAStrands'
+ */
+LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName);
+
+/**
+ * Returns just the size (in number of components) of the nth DNA strand in the given module.  If no such strand exists, sets an error and returns 0.  This is actually useful here, since all DNA strands otherwise have a size of at least 1.
+ */
+LIB_EXTERN size_t getSizeOfNthDNAStrand(const char* moduleName, size_t n);
+
+/**
+ * Returns an array of all DNA strands in the given module as lists of their components.  All components are either Operator objects or Gene objects, depending on whether they have an associated reaction.
+ */
+LIB_EXTERN char*** getDNAStrands(const char* moduleName);
+
+/**
+ * Returns an array of names of the components in the nth DNA strand in the given module.  If no such strand exists, sets an error and returns NULL.
+ */
+LIB_EXTERN char**  getNthDNAStrand(const char* moduleName, size_t n);
+
+/**
+ * Returns whether the given DNA strand was defined to be 'open' (that is, have an attachable end) at the upstream end (if 'upstream' is true) or at the downstream end (if 'upstream' is false).  This allows reproduction of a strand defined by "--X--Y--" vs. "X--Y", etc.
+ */
+LIB_EXTERN bool    getIsNthDNAStrandOpen(const char* moduleName, size_t n, bool upstream);
+
+/**
+ * Returns the sizes (in number of components) of all modular (separately-defined) DNA strands.  Modular strands may contain genes, operators, and other DNA strands.  Useful for looping over the strands in the array returned by getModularDNAStrands.
+ */
 LIB_EXTERN size_t  getNumModularDNAStrands(const char* moduleName);
 
+/**
+ * Returns an array of Modular DNA strand sizes for the given module.  Useful for looping over the components in the sub-arrays returned by getModularDNAStrands.
+ */
+LIB_EXTERN size_t* getModularDNAStrandSizes(const char* moduleName);
+
+/**
+ * Returns an array of strands, each of which has an array of the names of the components of that strand.  The components may be operators, genes, and other modular DNA strands. 
+ */
+LIB_EXTERN char*** getModularDNAStrands(const char* moduleName);
+
+/**
+ * Returns an array of names of the components in the nth modular DNA strand in the given module.  If no such strand exists, an error is set, and NULL is returned.
+ */
+LIB_EXTERN char**  getNthModularDNAStrand(const char* moduleName, size_t n);
+
+/**
+ * Returns whether the given modular DNA strand was defined to be 'open' (that is, have an attachable end) at the upstream end (if 'upstream' is true) or at the downstream end (if 'upstream' is false).  This allows reproduction of a strand defined by "--X--Y--" vs. "X--Y", etc.
+ */
+LIB_EXTERN bool    getIsNthModularDNAStrandOpen(const char* moduleName, size_t n, bool upstream);
+
+/**
+ * Returns the most specific return type available for the given symbolName.  A symbol defined to be a gene, for example, will return 'allGenes' and not 'allReactions', though the symbol does indeed qualify as a reaction.
+ */
 LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbolName);
+
+/**
+ * Returns the name of the compartment the given symbol is a member of.  In antimony, all symbols may have compartments, not just species.  If a symbol has no set compartment, and is not a member of a symbol with a set compartment, this will return "default_compartment"
+ */
 LIB_EXTERN char*   getCompartmentForSymbol(const char* moduleName, const char* symbolName);
 
 //Output
+/**
+ * Writes out an antimony-formatted file containing the given module.  If the module depends on any sub-modules, those modules are written out as well, also in the antimony format.  Returns 0 on failure (and sets an error), 1 on success.
+ */
 LIB_EXTERN int   writeAntimonyFile(const char* filename, const char* moduleName);
+
+/**
+ * Returns the same output as writeAntimonyFile, but to a char* array instead of to a file.  Returns NULL on failure, and sets an error.
+ */
 LIB_EXTERN char* getAntimonyString(const char* moduleName);
 
+/**
+ * Writes out a jarnac-formatted file containing a 'flattened' version of the current module (i.e. one where all the species and reactions are listed in the same model).  This has *not* been very extensively tested, and many aspects of the model may be dropped.  But the basics should be there.  Returns 1 on success, 0 on failure (and sets an error).
+ */
 LIB_EXTERN int   writeJarnacFile(const char* filename, const char* moduleName);
+
+/**
+ * Returns the same output as writeJarnacFile, but to a char* array instead of to a file.
+ */
 LIB_EXTERN char* getJarnacString(const char* moduleName);
 
+
+/**
+ * Writes out a SBML-formatted XML file to the file indicated.  For now, the output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libSBML's 'writeSBML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
+ */
 LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
+
+/**
+ * Returns the same output as writeSBMLFile, but to a char* array instead of to a file.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
+ */
 LIB_EXTERN char* getSBMLString(const char* moduleName);
 
 //Warnings and extra information
+/**
+ * libAntimony always translates its modules into SBML to check for errors.  If SBML finds errors, libAntimony gives up, passes on the error message, and does not save the model.  However, libSBML may discover other things about your model it wants to tell you about, in 'info' and 'warning' messages.  Info messages are just things it found it thinks you might want to know; warning messages are things it found which it feels violates 'best practices' in biological modelling, but not to the extent that it feels you did something actually wrong.  Since Antimony is unitless, for example, you will always find warnings about how you didn't set any units.  This function returns the 'info' messages from libSBML.  If there are no info messages, returns an empty string.
+ */
 LIB_EXTERN char* getSBMLInfoMessages(const char* moduleName);
+
+/**
+ * See 'getSBMLInfoMessages', above.  This function returns the 'warning' messages from libSBML.  If there are no warning messages (an unlikely occurrence), returns an empty string.
+ */
 LIB_EXTERN char* getSBMLWarnings(const char* moduleName);
 
+
+/**
+ * All libAntimony functions above that return pointers return malloc'ed pointers that you now own.  If you wish, you can ignore this and never free anything, as long as you call 'freeAll' at the very end of your program.  If you free *anything*, however, calling this function will cause the program to crash!  It won't know that you already freed that pointer, and will attempt to free it again.  So either keep track of all memory management yourself, or use this function after you're completely done.
+ *
+ * Note that this function only frees pointers handed to you by other antimony_api functions.  The models themselves are still in memory and are available.
+ */
 LIB_EXTERN void freeAll();
 
+
+/**
+ * An example function that will print to stdout all the information in the given module.  This function probably isn't as useful to call as it is to examine and copy for your own purposes:  it only calls functions defined here in antimony_api.h.
+ */
 LIB_EXTERN void printAllDataFor(const char* moduleName);
 
 
