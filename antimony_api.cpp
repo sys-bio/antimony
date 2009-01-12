@@ -733,6 +733,50 @@ LIB_EXTERN char* getNthAssignmentEquationForEvent(const char* moduleName, size_t
   return getCharStar(formula.c_str());
 }
 
+LIB_EXTERN size_t getNumDNAStrands(const char* moduleName)
+{
+  return getNumSymbolsOfType(moduleName, expandedStrands);
+}
+
+LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  size_t numDNA = getNumDNAStrands(moduleName);
+  size_t* retval = getSizeTStar(numDNA);
+  if (retval == NULL) return NULL;
+  for (size_t strand=0; strand<numDNA; strand++) {
+    retval[strand] = g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, strand)->GetDNAStrand()->ToExpandedStringVecDelimitedBy(g_registry.GetCC()).size();
+  }
+  return retval;
+}
+
+LIB_EXTERN size_t getSizeOfNthDNAStrand(const char* moduleName, size_t n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  size_t actualsize = getNumDNAStrands(moduleName);
+  if (actualsize <= n) {
+    string error = "There is no DNA strand with index " + n;
+    error += " in module ";
+    error += moduleName;
+    error += ".";
+    if (actualsize == 0) {
+      error += "  In fact, there are no DNA strands at all in that module.";
+    }
+    else if (actualsize == 1) {
+      error += "  There is a single DNA strand with index 0.";
+    }
+    else if (actualsize > 1) {
+      error += "  Valid DNA strand index values are 0 through ";
+      error += actualsize-1;
+      error += ".";
+    }
+    g_registry.SetError(error);
+    return NULL;
+  }
+  return g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, n)->GetDNAStrand()->ToExpandedStringVecDelimitedBy(g_registry.GetCC()).size();
+}
+
+
 LIB_EXTERN char*** getDNAStrands(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
@@ -791,23 +835,51 @@ LIB_EXTERN bool getIsNthDNAStrandOpen(const char* moduleName, size_t n, bool ups
   }
 }
 
-LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName)
+
+
+
+LIB_EXTERN size_t getNumModularDNAStrands(const char* moduleName)
+{
+  return getNumSymbolsOfType(moduleName, modularStrands);
+}
+
+LIB_EXTERN size_t* getModularDNAStrandSizes(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t numDNA = getNumDNAStrands(moduleName);
-  size_t* retval = getSizeTStar(numDNA);
+  size_t numModularDNA = getNumModularDNAStrands(moduleName);
+  size_t* retval = getSizeTStar(numModularDNA);
   if (retval == NULL) return NULL;
-  for (size_t strand=0; strand<numDNA; strand++) {
-    retval[strand] = g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, strand)->GetDNAStrand()->ToExpandedStringVecDelimitedBy(g_registry.GetCC()).size();
+  for (size_t strand=0; strand<numModularDNA; strand++) {
+    retval[strand] = g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, strand)->GetDNAStrand()->ToModularStringVecDelimitedBy(g_registry.GetCC()).size();
   }
   return retval;
 }
 
-LIB_EXTERN size_t getNumDNAStrands(const char* moduleName)
+LIB_EXTERN size_t getSizeOfNthModularDNAStrand(const char* moduleName, size_t n)
 {
-  return getNumSymbolsOfType(moduleName, expandedStrands);
+  if (!checkModule(moduleName)) return NULL;
+  size_t actualsize = getNumModularDNAStrands(moduleName);
+  if (actualsize <= n) {
+    string error = "There is no Modular DNA strand with index " + n;
+    error += " in module ";
+    error += moduleName;
+    error += ".";
+    if (actualsize == 0) {
+      error += "  In fact, there are no Modular DNA strands at all in that module.";
+    }
+    else if (actualsize == 1) {
+      error += "  There is a single Modular DNA strand with index 0.";
+    }
+    else if (actualsize > 1) {
+      error += "  Valid Modular DNA strand index values are 0 through ";
+      error += actualsize-1;
+      error += ".";
+    }
+    g_registry.SetError(error);
+    return NULL;
+  }
+  return g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, n)->GetDNAStrand()->ToModularStringVecDelimitedBy(g_registry.GetCC()).size();
 }
-
 
 LIB_EXTERN char*** getModularDNAStrands(const char* moduleName)
 {
@@ -827,18 +899,18 @@ LIB_EXTERN char** getNthModularDNAStrand(const char* moduleName, size_t n)
   if (!checkModule(moduleName)) return NULL;
   size_t actualsize = getNumModularDNAStrands(moduleName);
   if (actualsize <= n) {
-    string error = "There is no ModularDNA strand with index " + n;
+    string error = "There is no Modular DNA strand with index " + n;
     error += " in module ";
     error += moduleName;
     error += ".";
     if (actualsize == 0) {
-      error += "  In fact, there are no ModularDNA strands at all in that module.";
+      error += "  In fact, there are no Modular DNA strands at all in that module.";
     }
     else if (actualsize == 1) {
-      error += "  There is a single ModularDNA strand with index 0.";
+      error += "  There is a single Modular DNA strand with index 0.";
     }
     else if (actualsize > 1) {
-      error += "  Valid ModularDNA strand index values are 0 through ";
+      error += "  Valid Modular DNA strand index values are 0 through ";
       error += actualsize-1;
       error += ".";
     }
@@ -865,23 +937,6 @@ LIB_EXTERN bool getIsNthModularDNAStrandOpen(const char* moduleName, size_t n, b
   else {
     return strand->GetDownstreamOpen();
   }
-}
-
-LIB_EXTERN size_t* getModularDNAStrandSizes(const char* moduleName)
-{
-  if (!checkModule(moduleName)) return NULL;
-  size_t numModularDNA = getNumModularDNAStrands(moduleName);
-  size_t* retval = getSizeTStar(numModularDNA);
-  if (retval == NULL) return NULL;
-  for (size_t strand=0; strand<numModularDNA; strand++) {
-    retval[strand] = g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, strand)->GetDNAStrand()->ToModularStringVecDelimitedBy(g_registry.GetCC()).size();
-  }
-  return retval;
-}
-
-LIB_EXTERN size_t getNumModularDNAStrands(const char* moduleName)
-{
-  return getNumSymbolsOfType(moduleName, modularStrands);
 }
 
 
@@ -1016,6 +1071,13 @@ LIB_EXTERN char* getSBMLString(const char* moduleName)
   Model sbml = g_registry.GetModule(moduleName)->GetSBMLModel();
   sbmldoc.setModel(&sbml);
   char* sbmlstring = writeSBMLToString(&sbmldoc);
+  if (sbmlstring == NULL) {
+    string error = "An underlying parser component in libSBML has failed when writing ";
+    error += moduleName;
+    error += ".";
+    g_registry.SetError(error);
+    return NULL;
+   }
   g_registry.m_charstars.push_back(sbmlstring);
   return sbmlstring;
 }
