@@ -18,6 +18,7 @@ Module::Module(string name)
     m_variablename(),
     m_variables(),
     m_exportlist(),
+    m_synchronized(),
     m_returnvalue(),
     m_currentexportvar(0),
     m_sbml(name + "-unset"),
@@ -32,6 +33,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_variablename(src.m_variablename),
     m_variables(src.m_variables),
     m_exportlist(src.m_exportlist),
+    m_synchronized(src.m_synchronized),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
     m_sbml(src.m_sbml),
@@ -526,7 +528,38 @@ bool Module::Finalize()
     }
   }
   
-  //Phase 3:  Check SBML compatibility
+  //Phase 3:  Set compartments
+  for (size_t var=0; var<m_variables.size(); var++) {
+    m_variables[var]->SetComponentCompartments();
+  }
+
+  //Phase 4: Store a list of unique variable names.
+  set<string> varnames;
+  char cc = '_';
+  pair<set<string>::iterator, bool> nameret;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    //if (m_variables[var]->IsPointer()) continue;
+    nameret = varnames.insert(m_variables[var]->GetNameDelimitedBy(cc));
+    if (nameret.second) {
+      m_uniquevars.push_back(m_variables[var]->GetName());
+      if (m_variables[var]->GetType() == varModule) {
+        Module* submod = m_variables[var]->GetModule();
+        if (submod->Finalize()) return true;
+        //Copy over what we've just created:
+        vector<vector<string> > subvars = submod->m_uniquevars;
+        //And put them in our own vectors, if we don't have them already.
+        for (size_t nsubvar=0; nsubvar<subvars.size(); nsubvar++) {
+          Variable* subvar = GetVariable(subvars[nsubvar]);
+          nameret = varnames.insert(subvar->GetNameDelimitedBy(cc));
+          if (nameret.second) {
+            m_uniquevars.push_back(submod->m_uniquevars[nsubvar]);
+          }
+        }
+      }
+    }
+  }
+
+  //Phase 5:  Check SBML compatibility, and create sbml model object.
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
   SBMLDocument sbmldoc;
   Model sbml = GetSBMLModel();
@@ -567,38 +600,6 @@ bool Module::Finalize()
     return true;
   }
   delete(testdoc);
-
-  //Phase 3:  Set compartments
-  for (size_t var=0; var<m_variables.size(); var++) {
-    m_variables[var]->SetComponentCompartments();
-  }
-
-  //Phase 4: Store a list of unique variable names.
-  set<string> varnames;
-  char cc = '_';
-  pair<set<string>::iterator, bool> nameret;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    //if (m_variables[var]->IsPointer()) continue;
-    nameret = varnames.insert(m_variables[var]->GetNameDelimitedBy(cc));
-    if (nameret.second) {
-      m_uniquevars.push_back(m_variables[var]->GetName());
-      if (m_variables[var]->GetType() == varModule) {
-        Module* submod = m_variables[var]->GetModule();
-        if (submod->Finalize()) return true;
-        //Copy over what we've just created:
-        vector<vector<string> > subvars = submod->m_uniquevars;
-        //And put them in our own vectors, if we don't have them already.
-        for (size_t nsubvar=0; nsubvar<subvars.size(); nsubvar++) {
-          Variable* subvar = GetVariable(subvars[nsubvar]);
-          nameret = varnames.insert(subvar->GetNameDelimitedBy(cc));
-          if (nameret.second) {
-            m_uniquevars.push_back(submod->m_uniquevars[nsubvar]);
-          }
-        }
-      }
-    }
-  }
-
   return false;
 }
 

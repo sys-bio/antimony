@@ -30,14 +30,6 @@ vector<string> Variable::GetName() const
   return m_name;
 }
 
-vector<string> Variable::GetPrintedName() const
-{
-  if (IsPointer()) {
-    return GetSameVariable()->GetPrintedName();
-  }
-  return m_name;
-}
-
 string Variable::GetNameDelimitedBy(char cc) const
 {
   if (IsPointer()) {
@@ -843,13 +835,9 @@ bool Variable::Synchronize(Variable* clone)
     m_type = clone->GetType();
   }
 
-  if (m_const==constCONST) {
-    clone->SetIsConst(true);
+  if (clone->m_const == constDEFAULT) {
+    clone->m_const = m_const;
   }
-  if (m_const==constVAR) {
-    clone->SetIsConst(false);
-  }
-  //and leave it alone if it's constDEFAULT;
 
   if (!m_valFormula.IsEmpty()) {
     Formula* cloneform = clone->GetFormula();
