@@ -17,6 +17,8 @@ Variable::Variable(const string name, const Module* module)
     m_valEvent(),
     m_valStrand(),
     m_compartment(),
+    m_supercompartment(),
+    m_supercomptype(varUndefined),
     m_strands(),
     m_type(varUndefined),
     m_const(constDEFAULT)
@@ -199,7 +201,10 @@ Variable* Variable::GetCompartment() const
   if (IsPointer()) {
     return GetSameVariable()->GetCompartment();
   }
-  return g_registry.GetModule(m_module)->GetVariable(m_compartment);
+  if (m_compartment.size() > 0) {
+    return g_registry.GetModule(m_module)->GetVariable(m_compartment);
+  }
+  return g_registry.GetModule(m_module)->GetVariable(m_supercompartment);
 }
 
 
@@ -229,7 +234,6 @@ bool Variable::GetIsConst() const
       if (formconst==constDEFAULT || formconst==constCONST) return true;
       if (formconst==constVAR) return false;
     }
-    if (m_const == constCONST && formconst == constVAR) return false;
     break;
   case varSpeciesUndef:
     if (m_const == constDEFAULT) return false;
@@ -375,10 +379,10 @@ bool Variable::SetType(var_type newtype)
     case varReactionUndef:
     case varInteraction:
     case varCompartment:
+    case varEvent:
       m_type = newtype;
       return false;
     case varModule:
-    case varEvent:
     case varStrand:
       g_registry.SetError(error); return true;
     case varUndefined:
@@ -459,28 +463,14 @@ bool Variable::SetType(var_type newtype)
       g_registry.SetError(error); return true;
     }
   case varInteraction:
-    switch(newtype) {
-    case varUndefined:
-    case varFormulaUndef:
-    case varInteraction:
-      return false;
-    case varReactionUndef:
-    case varDNA:
-    case varReactionGene:
-    case varSpeciesUndef:
-    case varFormulaOperator:
-    case varModule:
-    case varEvent:
-    case varCompartment:
-    case varStrand:
-      g_registry.SetError(error); return true;
-    }
+  case varEvent:
+  case varCompartment:
+    if (newtype == varFormulaUndef || newtype == varUndefined) return false;
+    g_registry.SetError(error); return true; //the already-identical cases handled above.
   case varUndefined:
     m_type = newtype;
     return false;
   case varModule:
-  case varEvent:
-  case varCompartment:
   case varStrand:
     g_registry.SetError(error); return true; //the already-identical cases handled above.
   }
@@ -638,6 +628,9 @@ void Variable::SetNewTopName(string newmodname, string newtopname)
   if (m_compartment.size() > 0) {
     m_compartment.insert(m_compartment.begin(), newtopname);
   }
+  if (m_supercompartment.size() > 0) {
+    m_supercompartment.insert(m_supercompartment.begin(), newtopname);
+  }
   set<vector<string> > newstrands;
   for (set<vector<string> >::iterator strand = m_strands.begin(); strand != m_strands.end(); strand++) {
     vector<string> newname = *strand;
@@ -723,30 +716,75 @@ bool Variable::SetCompartment(Variable* var)
   return false;
 }
 
-void Variable::SetComponentCompartments()
+bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
 {
   if (IsPointer()) {
-    return GetSameVariable()->SetComponentCompartments();
+    return GetSameVariable()->SetSuperCompartment(var, supertype);
   }
-  Variable* compartment = g_registry.GetModule(m_module)->GetVariable(m_compartment);
+  if (m_compartment.size() > 0) return false; //Already set; no need to do anything.
+  bool change = false;
+  if (m_supercompartment.size() == 0) {
+    change = true;
+  }
+  else switch (m_supercomptype) {
+  case varSpeciesUndef:
+  case varFormulaUndef:
+  case varDNA:
+  case varFormulaOperator:
+  case varEvent:
+  case varCompartment:
+  case varUndefined:
+    assert(false); // Those things don't have components
+    return false;
+  case varStrand:
+    //Strands take precedence over everything else
+    if (supertype == varStrand) {
+      change = true;
+    }
+    break;
+  case varReactionGene:
+  case varReactionUndef:
+  case varInteraction:
+    if (supertype != varModule) {
+      change = true;
+    }
+    break;
+  case varModule:
+    change = true;
+    break;
+  }
+  if (change) {
+    m_supercompartment = var->GetName();
+    m_supercomptype = supertype;
+    return true;
+  }
+  return false;
+}
+
+void Variable::SetComponentCompartments(bool frommodule)
+{
+  if (IsPointer()) {
+    return GetSameVariable()->SetComponentCompartments(frommodule);
+  }
+  Variable* compartment = GetCompartment();
   if (compartment == NULL) return;
   switch(m_type) {
+  case varSpeciesUndef:
   case varFormulaUndef:
   case varFormulaOperator:
   case varDNA:
   case varCompartment:
-  case varSpeciesUndef:
   case varEvent:
   case varUndefined:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-    return m_valReaction.SetComponentCompartments(compartment);
+    return m_valReaction.SetComponentCompartments(compartment, frommodule);
   case varModule:
     return m_valModule[0].SetComponentCompartments(compartment);
   case varStrand:
-    return m_valStrand.SetComponentCompartments(compartment);
+    return m_valStrand.SetComponentCompartments(compartment, frommodule);
   }
 }
 
@@ -841,7 +879,7 @@ bool Variable::Synchronize(Variable* clone)
 
   if (!m_valFormula.IsEmpty()) {
     Formula* cloneform = clone->GetFormula();
-    if (cloneform->IsEmpty()) {
+    if (cloneform->IsEmpty() || cloneform->IsEllipsesOnly()) {
       if (clone->SetFormula(&m_valFormula)) return true;
     }
     //else stay with the clone version--it supercedes our own.
@@ -863,13 +901,18 @@ bool Variable::Synchronize(Variable* clone)
     m_valStrand.Clear();
   }
   
-  if (m_compartment.size() > 0) {
-    Variable* compartment =  g_registry.GetModule(m_module)->GetVariable(m_compartment);
-    Variable* clonecompartment = clone->GetCompartment();
-    if (clonecompartment == NULL) {
-      clone->SetCompartment(compartment);
-    }
+  if (clone->m_compartment.size() == 0) {
+    clone->m_compartment = m_compartment;
   }
+  m_compartment.clear();
+  if (clone->m_supercompartment.size() == 0) {
+    clone->m_supercompartment = m_supercompartment;
+    clone->m_supercomptype = m_supercomptype;
+  }
+  m_supercompartment.clear();
+
+
+  
 
   m_sameVariable = clone->GetName();
 

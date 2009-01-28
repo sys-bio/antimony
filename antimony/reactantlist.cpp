@@ -24,14 +24,14 @@ void ReactantList::SetNewTopName(string newmodname, string newtopname)
   }
 }
 
-void ReactantList::SetComponentCompartments(Variable* var)
+void ReactantList::SetComponentCompartments(Variable* compartment, var_type supercomp)
 {
   for (size_t component=0; component<m_components.size(); component++) {
     Module* module = g_registry.GetModule(m_module);
     assert(module != NULL);
     Variable* var = module->GetVariable(m_components[component].second);
     if (var != NULL) {
-      var->SetCompartment(var);
+      var->SetSuperCompartment(compartment, supercomp);
     }
   }
 }

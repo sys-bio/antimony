@@ -31,7 +31,7 @@ public:
 
   void SetFormula(Formula* formula);
   void SetNewTopName(std::string modname, std::string newtopname);
-  void SetComponentCompartments(Variable* var);
+  void SetComponentCompartments(Variable* var, bool frommodule);
   bool SetFormulaOfInteracteesAndClear();
   void Clear();
 
