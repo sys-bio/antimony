@@ -34,6 +34,8 @@ private:
 
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
+  std::vector<std::string> m_supercompartment;
+  var_type m_supercomptype;
   std::set<std::vector<std::string> > m_strands;
 
   //This tells us what kind of variable we're dealing with.
@@ -65,8 +67,10 @@ public:
   Variable* GetSameVariable() const;
   const DNAStrand* GetDNAStrand() const;
   Variable* GetCompartment() const;
+  bool GetIsSetCompartment() const {return (m_compartment.size() != 0);};
   std::string GetNamespace() const {return m_module;};
   bool GetIsConst() const;
+  const_type GetConstType() const {return m_const;};
   bool GetIsEquivalentTo(const Variable* var) const;
   std::vector<std::pair<Variable*, size_t> > GetStrandVars() const;
   bool IsExpandedStrand() const;
@@ -82,7 +86,8 @@ public:
   void SetRegConst();
 
   bool SetCompartment(Variable* var);
-  void SetComponentCompartments();
+  void SetComponentCompartments(bool from_module);
+  bool SetSuperCompartment(Variable* var, var_type supertype);
   bool SetDNAStrand(DNAStrand& strand);
   bool SetIsInStrand(Variable* var);
 

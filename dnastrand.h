@@ -27,7 +27,7 @@ public:
   bool SetUpstream(Variable* var);
   void SetDownstream(bool open);
   void SetUpstream(bool open);
-  void SetComponentCompartments(Variable* compartment);
+  void SetComponentCompartments(Variable* compartment, bool frommodule);
   void Clear();
 
   bool IsEmpty() const;

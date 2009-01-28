@@ -48,10 +48,12 @@ void AntimonyReaction::SetNewTopName(string modname, string newtopname)
   m_formula.SetNewTopName(modname, newtopname);
 }
 
-void AntimonyReaction::SetComponentCompartments(Variable* var)
+void AntimonyReaction::SetComponentCompartments(Variable* var, bool frommodule)
 {
-  m_left.SetComponentCompartments(var);
-  m_right.SetComponentCompartments(var);
+  var_type supercomp = varReactionUndef;
+  if (frommodule) supercomp = varModule;
+  m_left.SetComponentCompartments(var, supercomp);
+  m_right.SetComponentCompartments(var, supercomp);
 }
 
 bool AntimonyReaction::SetFormulaOfInteracteesAndClear()

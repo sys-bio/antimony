@@ -46,12 +46,14 @@ void DNAStrand::SetUpstream(bool open)
   m_upstreamopen = open;
 }
 
-void DNAStrand::SetComponentCompartments(Variable* compartment)
+void DNAStrand::SetComponentCompartments(Variable* compartment, bool frommodule)
 {
+  var_type supercomp = varStrand;
+  if (frommodule) supercomp = varModule;
   for (size_t var=0; var<m_strand.size(); var++) {
     Variable* subvar = g_registry.GetModule(m_module)->GetVariable(m_strand[var]);
-    subvar->SetCompartment(compartment);
-    subvar->SetComponentCompartments();
+    subvar->SetSuperCompartment(compartment, supercomp);
+    subvar->SetComponentCompartments(frommodule);
   }
 }
 

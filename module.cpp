@@ -142,8 +142,9 @@ bool Module::SetModule(const string* modname)
 void Module::SetComponentCompartments(Variable* compartment)
 {
   for (size_t var=0; var<m_variables.size(); var++) {
-    m_variables[var]->SetCompartment(compartment);
-    m_variables[var]->SetComponentCompartments();
+    if (m_variables[var]->SetSuperCompartment(compartment, varModule)) {
+      m_variables[var]->SetComponentCompartments(true);
+    }
   }
 }
 
@@ -384,14 +385,23 @@ string Module::GetAntimony(set<const Module*> usedmods) const
         (m_variables[var]->GetType() != varStrand) &&
         (!m_variables[var]->IsPointer())) {
       retval += indent;
-      if (m_variables[var]->GetIsConst()) {
+      switch(m_variables[var]->GetConstType()) {
+      case constVAR:
+        retval += "var ";
+        break;
+      case constCONST:
         retval += "const ";
+        break;
+      case constDEFAULT:
+        break;
       }
       retval += VarTypeToAntimony(m_variables[var]->GetType());
       retval += m_variables[var]->GetNameDelimitedBy(cc);
       Variable* compartment = m_variables[var]->GetCompartment();
       if (compartment != NULL) {
-        retval += " in " + compartment->GetNameDelimitedBy(cc);
+        if (m_variables[var]->GetIsSetCompartment()) {
+          retval += " in " + compartment->GetNameDelimitedBy(cc);
+        }
       }
       retval += ";\n";
     }
@@ -424,7 +434,7 @@ string Module::GetAntimony(set<const Module*> usedmods) const
     var_type type = var->GetType();
     if (var->IsPointer()) continue;
     else if (IsReaction(type) || type == varInteraction) {
-      retval += indent + var->GetReaction()->ToDelimitedStringWithStrands(cc, var->GetStrandVars()) + "\n";
+      retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses(cc) + "\n";
     }
     else if (type == varEvent) {
       retval += indent + var->GetEvent()->ToStringDelimitedBy(cc) + "\n";
@@ -530,7 +540,7 @@ bool Module::Finalize()
   
   //Phase 3:  Set compartments
   for (size_t var=0; var<m_variables.size(); var++) {
-    m_variables[var]->SetComponentCompartments();
+    m_variables[var]->SetComponentCompartments(false);
   }
 
   //Phase 4: Store a list of unique variable names.
@@ -897,7 +907,23 @@ void Module::LoadSBML(const Model* sbml)
     // overwrite the formula with the rule if it happens.
   }
 
-  //Rules
+  //Initial Assignments:  can override 'getValue' values.
+  for (unsigned int ia=0; ia<sbml->getNumInitialAssignments(); ia++) {
+    const InitialAssignment* initasnt = sbml->getInitialAssignment(ia);
+    if (initasnt->isSetSymbol()) {
+      sbmlname = initasnt->getSymbol();
+      Variable* var = AddOrFindVariable(&sbmlname);
+      Formula* formula = g_registry.NewBlankFormula();
+      string formulastring(SBML_formulaToString(initasnt->getMath()));
+      setFormulaWithString(formulastring, formula);
+      var->SetFormula(formula);
+    }
+    else {
+      //LS DEBUG:  error?  The 'symbol' is supposed to be required.
+    }
+  }
+    
+  //Rules:  can override 'getValue' values and 'Initial Assignment' formulas.
   for (unsigned int rulen=0; rulen<sbml->getNumRules(); rulen++) {
     const Rule* rule = sbml->getRule(rulen);
     if (rule->isAssignment()) {
@@ -1045,10 +1071,16 @@ void Module::CreateSBMLModel()
       param->setValue(atoi(formula->ToDelimitedStringWithEllipses(cc).c_str()));
     }
     else if (!formula->IsEmpty()) {
-      //create a rule
-      AssignmentRule rule(formvar->GetNameDelimitedBy(cc), formula->ToDelimitedStringWithStrands(cc, formvar->GetStrandVars()));
-      param->setConstant(false); //requirement of SBML
-      m_sbml.addRule(&rule);
+      if (formvar->GetIsConst()) {
+        InitialAssignment ia(formvar->GetNameDelimitedBy(cc));
+        ia.setMath(SBML_parseFormula(formula->ToDelimitedStringWithStrands(cc, formvar->GetStrandVars()).c_str()));
+        m_sbml.addInitialAssignment(&ia);
+      }
+      else {
+        //create a rule
+        AssignmentRule rule(formvar->GetNameDelimitedBy(cc), formula->ToDelimitedStringWithStrands(cc, formvar->GetStrandVars()));
+        m_sbml.addRule(&rule);
+      }
     }
   }
 
