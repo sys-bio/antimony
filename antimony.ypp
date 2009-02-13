@@ -57,7 +57,7 @@
 
 %token <num> NUM
 %token <word> WORD MODNAME FILENAME
-%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES REACTION FORMULA DNA GENE OPERATOR EVENT COMPARTMENT IN IS VAR CONST DASHES ELLIPSES FUNCTION IMPORT AT
+%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES REACTION FORMULA DNA GENE OPERATOR EVENT COMPARTMENT IN IS VAR CONST DASHES ELLIPSES FUNCTION IMPORT AT FUNCTIONWORD
 
 %debug
 %error-verbose
@@ -68,6 +68,7 @@ input:          /* empty */
         |       input import {}
         |       input module { /*cout << endl << $2->ToString() << endl << endl;*/ }
         |       input modulepart {}
+        |       input function {}
         |       input error {YYABORT;} 
         ;
 
@@ -87,6 +88,9 @@ module:         MODULE WORD {g_registry.NewCurrentModule($2);} '(' variableexpor
                   g_registry.RevertToPreviousModule();
                 }
         |       MODULE MODNAME {g_registry.SetError("module '" + *($2) + "' already defined."); YYABORT;}
+        ;
+
+function:       FUNCTIONWORD WORD {g_registry.NewFunction($2);} '(' variableexportlist ')' formula END {g_registry.SetFunction($7);}
         ;
 
 variableexportlist:
@@ -296,10 +300,12 @@ dnamiddle:      variable DASHES {if (g_registry.SetNewDownstreamOpen($1)) YYABOR
 
 event:          AT formula ':' {if (g_registry.SetNewCurrentEvent($2)) YYABORT;} assignmentlist {}
         |       varmaybein ':' AT formula ':' {if (g_registry.SetNewCurrentEvent($4, $1)) YYABORT;} assignmentlist {}
+        |       varmaybein ':' AT formula ':' '\n' {if (g_registry.SetNewCurrentEvent($4, $1)) YYABORT;} assignmentlist {}
         ;
 
 assignmentlist: variable '=' formula {if (g_registry.AddResultToCurrentEvent($1, $3)) YYABORT;}
         |       variable '=' formula ':' assignmentlist {if (g_registry.AddResultToCurrentEvent($1, $3)) YYABORT;}
+        |       variable '=' formula ':' '\n' assignmentlist {if (g_registry.AddResultToCurrentEvent($1, $3)) YYABORT;}
         ;
 
 %%
@@ -339,6 +345,22 @@ int yylex(void)
   while (cc == ' ' ||
          cc == '\t') {
     g_registry.input->get(cc);
+  }
+  // Skip carriage returns after '\':
+  if (cc == '\\') {
+    g_registry.input->get(cc);
+    if (cc == '\r' || cc == '\n') {
+      while (cc == '\r' || cc == '\n') {
+	g_registry.input->get(cc);
+      }
+      ++yylloc_last_line;
+      g_registry.input->unget();
+      return yylex();
+    }
+    else {
+      g_registry.input->unget();
+      cc == '\\';
+    }
   }
 
   // Parse words
@@ -402,6 +424,9 @@ int yylex(void)
     }
     if (CaselessStrCmp(word, "at")) {
       return AT;
+    }
+    if (CaselessStrCmp(word, "function")) {
+      return FUNCTIONWORD;
     }
     
     if (g_registry.IsFunction(word) != NULL) {

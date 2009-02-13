@@ -1,0 +1,264 @@
+<center><h1>Antimony</h1>
+
+<h2>A human-readable,
+human-writable,
+model definition language</h2>
+<h2>Technical Specifications Document</h2>
+</center>
+
+<p>
+Note:  Grammar lines are defined with "&lt;&gt;", "[]", and "|" symbols that are not part of the actual grammar, but indicate different options are permitted.  Words in "&lt;&gt;" (i.e. "&lt;symbol name&gt;") indicate a spot that must be filled in with text that matches that description (all such descriptions are defined at the end of the document).  Grammar in "[]" (i.e. "[in &lt;compartment&gt;]" is optional.  The "|" symbol should be read as an 'or' statement, and indicate that two or more possibilities are valid in that spot (i.e. "[const|var]".
+</P>
+<H3>General Specifications</H3>
+
+<P><B>Order</B></P>
+Each statement in Antimony is parsed as a rule that helps define a model.  Any rule that does not contradict a different rule may be presented in any order without affecting the final model.  If two rules contradict one another, the final rule takes precedence, and the parts of the initial rule that contradict the later rule are discarded.  As an example, if earlier in a model we find the rule "<TT>x=5</TT>" and later find the rule "<TT>x=6</TT>", the "<TT>x=5</TT>" rule is discarded in favor of the later rule.  Incompatible rules, such as using the same symbol as a species and as the name of a reaction, are illegal.
+
+</P><P>
+The one type of symbol that must be defined before being used is that of a submodule.  The submodule's definition must have come earlier in the Antimony file than its use as a submodule, and the name used for a submodule must not be used in any capacity before being defined.  This goes for subvariable names, too:  '<TT>A.y</TT>' is an illegal symbol to use before '<TT>A</TT>' is defined.
+
+</P><P>
+Similarly, once a module has been defined, its components may not be expanded:  if submodule '<TT>A</TT>' did not declare a symbol '<TT>y</TT>', use of the symbol '<TT>A.y</TT>' is illegal, and does not create a new variable inside the submodule.
+
+<p><B>Line endings and white space:</B></P>
+
+</P><P>
+Since Antimony is intended to be easy and simple, it is not a requirement to end every line with a '<TT>;</TT>'.  However, this means that a carriage return is syntactically significant, and breaking up a single statement with returns will not work.  If you want to break up your lines anyway, you may use a '<TT>\</TT>' followed by a return, and Antimony will continue as if that line and the line following were all on one line.  This is the only whitespace that Antimony recognizes--all other whitespace is ignored (spaces and tabs) except to distinguish one symbol from another.
+
+<h3>Antimony Files</h3>
+
+</P><P>
+<dl>
+<dt>Antimony files may contain the following, in any order:
+<dt>&lt;<tt><A href="#import statements">import statements</a></tt>&gt;
+<dt>&lt;<tt><A href="#model definitions">model definitions</a></tt>&gt;
+<dt>&lt;<tt><A href="#declarations">declarations</a></tt>&gt;
+
+</P><P>
+
+</P><P>
+<dt>&lt;<tt><b><A name="import statements">import statements</a></b></tt></tt>&gt;:
+	<dd>One or more lines of the format:
+<dt><TT>import "&lt;<tt><A href="#filename">filename</a></tt>&gt;"</TT>
+	<dd>Read in the file in question, and parse that file using libSBML.  If libSBML returns an error, parse the file as if the file was copied and pasted into the Antimony file at this exact spot.
+
+</P><P>
+<dt>&lt;<tt><b><A name="filename">filename</a></b></tt>&gt;:
+	<dd>The name of a file, relative to the directory where the executable is being run.
+
+</P><P>
+<dt>&lt;<tt><b><A name="model definitions">model definitions</a></b></tt>&gt;:
+	<dd>One or more lines of the format:
+<dt><TT>[model|module] &lt;<tt><A href="#symbol">symbol</a></tt>&gt; [ ( &lt;<tt><A href="#list of exported variables">list of exported variables</a></tt>&gt; ) ] &lt;<tt><A href="#declarations">declarations</a></tt>&gt; end</tt>
+	<dd>Defines a new model with the name '&lt;<tt><A href="#symbol">symbol</a></tt>&gt;'.  The &lt;<tt><A href="#declarations">declarations</a></tt>&gt; are included in the model, and may define any number of symbols.  The &lt;<tt><A href="#list of exported variables">list of exported variables</a></tt>&gt; may be defined in the &lt;<tt><A href="#declarations">declarations</a></tt>&gt;, and are exported for easy synchronization with models that include the defined model (see &lt;<tt><A href="#imported models">imported models</a></tt>&gt;)
+
+</P><P>
+<dt>&lt;<tt><b><A name="list of exported variables">list of exported variables</a></b></tt>&gt;:
+	<dd>A comma-separated list of zero or more &lt;<tt><A href="#symbol">symbol</a></tt>&gt; elements.  
+</P><P>
+<dt>&lt;<tt><b><A name="declarations">declarations</a></b></tt>&gt;:
+	<dd>Declarations define elements of a model.  If used outside a model definition, they define elements of the model "__main".  Declarations are the bulk of Antimony-formatted files, and can contain any of the following, separated by a ';' or by a &lt;<tt><A href="#return">return</a></tt>&gt;.
+<dt> &lt;<tt><A href="#blank lines">blank lines</a></tt>&gt;
+<dt>  &lt;<tt><A href="#comments">comments</a></tt>&gt;
+<dt>  &lt;<tt><A href="#symbol declarations">symbol declarations</a></tt>&gt;
+<dt>  &lt;<tt><A href="#imported models">imported models</a></tt>&gt;
+<dt>  &lt;<tt><A href="#reaction definitions">reaction definitions</a></tt>&gt;
+<dt>  &lt;<tt><A href="#assignment definitions">assignment definitions</a></tt>&gt;
+<dt>  &lt;<tt><A href="#DNA strand definitions">DNA strand definitions</a></tt>&gt;
+<dt>  &lt;<tt><A href="#event definitions">event definitions</a></tt>&gt;
+<dt>  &lt;<tt><A href="#synchronizations">synchronizations</a></tt>&gt;
+
+
+</P><P>
+<dt>&lt;<tt><b><A name="blank lines">blank lines</a></b></tt>&gt;:
+	<dd>A line with nothing in it is legal in Antimony, and does nothing.
+
+</P><P>
+<dt>&lt;<tt><b><A name="comments">comments</a></b></tt>&gt;:
+	<dd>A line of the format:
+<dt><TT>  // [&lt;any text&gt;] &lt;<tt><A href="#return">return</a></tt>&gt;</tt>
+	<dd>All lines of the above format are ignored, and can be used to comment on a model (but will not be exported to translated forms of the model).  They can be used anywhere, and will be parsed simply as a &lt;<tt><A href="#return">return</a></tt>&gt;.
+
+</P><P>
+<dt>&lt;<tt><b><A name="return">return</a></b></tt>&gt;
+	<dd>Antimony files can read Windows, UNIX, and Mac-formatted text files.  This means that a 'return' value can be either LF ('\n'), CR ('\r'), or CRLF ('\r\n').  Returns have semantic meaning in Antimony:  they can be used instead of ';' to define breaks between &lt;<tt><A href="#declarations">declarations</a></tt>&gt;, they define the end of &lt;<tt><A href="#comments">comments</a></tt>&gt;, and they can be used to break up &lt;<tt><A href="#event definitions">event definitions</a></tt>&gt;.  To make a single &lt;<tt><A href="#declarations">declaration</a></tt>&gt; that spans multiple lines, you may precede the return with a '\' symbol.
+</P><P>
+<dt>&lt;<tt><b><A name="symbol declarations">symbol declarations</a></b></tt>&gt;
+	<dd>Lines that declare some basic property of an element.  Can be of the form:
+</P><P>
+<dt><TT>[const|var] &lt;<tt><A href="#symbol type">symbol type</a></tt>&gt; &lt;<tt><A href="#list of symbols">list of symbols</a></tt>&gt;</tt>
+<dt><TT>const|var &lt;<tt><A href="#list of symbols">list of symbols</a></tt>&gt;</tt>
+<dt><TT>&lt;<tt><A href="#symbol">symbol</a></tt>&gt; in &lt;<tt><A href="#compartment">compartment</a></tt>&gt;</tt>
+</P><P>
+	<dd>All symbols in &lt;<tt><A href="#list of symbols">list of symbols</a></tt>&gt; preceded by a 'const' are declared to be const.  All symbols preceded by a 'var' are declared to be variable.  All symbols defined without ever being declared 'const' or 'var' get their type's default:  species are variable, and anything else associated with a value is constant unless it has a variable in the equation that sets its value.  
+
+</P><P>
+	<dd>All symbols in &lt;<tt><A href="#list of symbols">list of symbols</a></tt>&gt; preceded by a &lt;<tt><A href="#symbol type">symbol type</a></tt>&gt; have the corresponding type set.  The only exceptions are when the &lt;<tt><A href="#symbol type">symbol type</a></tt>&gt; is less specific than the type it already has (in which case, it retains its current type), or if the existing type is 'DNA' and the &lt;<tt><A href="#symbol type">symbol type</a></tt>&gt; is 'reaction', or if the existing type is 'reaction' and the &lt;<tt><A href="#symbol type">symbol type</a></tt>&gt; is 'DNA'.  In both cases, the symbol is changed to be the type 'gene'.
+
+</P><P>
+	<dd>If the '&lt;<tt><A href="#symbol">symbol</a></tt>&gt; in &lt;<tt><A href="#compartment">compartment</a></tt>&gt;' line is used, the symbol in question is defined to be a member of the given compartment.
+
+
+</P><P>
+<dt>&lt;<tt><b><A name="symbol type">symbol type</a></b></tt>&gt;
+	<dd>Valid types for &lt;<tt><A href="#symbol type">symbol type</a></tt>&gt; declarations are:
+<dt><TT>species</tt>
+<dt><TT>reaction</tt>
+<dt><TT>formula</tt>
+<dt><TT>DNA</tt>
+<dt><TT>gene</tt>
+<dt><TT>operator</tt>
+<dt><TT>compartment</tt>
+</P><P>
+	<dd>Invalid types for &lt;<tt><A href="#symbol type">symbol type</a></tt>&gt; declarations (but which exist, just by default) are:
+<dt><TT>undefined</tt> <dd>(symbols used in &lt;<A href="#equation">equation</a></tt>&gt;s but never elsewhere)
+<dt><TT>event</tt>  <dd>(symbols defined in event declarations)
+<dt><TT>module</tt> <dd>(symbols defined in submodule declarations)
+<dt><TT>DNA strand</tt> <dd>(symbols defined in DNA strand declarations)
+ 
+</P><P>
+	<dd>For more information on symbol type compatibilities, see &lt;<tt><A href="#species">species</a></tt>&gt;, &lt;<tt><A href="#reaction">reaction</a></tt>&gt;, &lt;<tt><A href="#formula">formula</a></tt>&gt;, &lt;<tt><A href="#DNA">DNA</a></tt>&gt;, &lt;<tt><A href="#operator">operator</a></tt>&gt;, &lt;<tt><A href="#gene">gene</a></tt>&gt;, &lt;<tt><A href="#compartment">compartment</a></tt>&gt;, &lt;<tt><A href="#undefined">undefined</a></tt>&gt;, &lt;<tt><A href="#event">event</a></tt>&gt;, &lt;<tt><A href="#module">module</a></tt>&gt;, &lt;<tt><A href="#DNA strand">DNA strand</a></tt>&gt;, &lt;<tt><A href="#interaction">interaction</a></tt>&gt;, 
+
+</P><P>
+<dt>&lt;<tt><b><A name="list of symbols">list of symbols</a></b></tt>&gt;:  
+	<dd>A comma-separated list of the format:
+</P><P>
+<dt><TT>&lt;<tt><A href="#symbol">symbol</a></tt>&gt; [in &lt;<tt><A href="#compartment">compartment</a></tt>&gt;] [, &lt;<tt><A href="#symbol">symbol</a></tt>&gt; [in &lt;<tt><A href="#compartment">compartment</a></tt>&gt;] ] ...</tt>
+</P><P>
+	<dd>Each symbol may optionally be further defined to be in the specified compartment symbol.
+
+</P><P>
+<dt>&lt;<tt><b><A name="symbol">symbol</a></b></tt>&gt;:  
+	<dd>A string of one or more characters, the first of which must be a letter, optionally capitalized (a-z or A-Z), or the underscore symbol ('_'), and the following characters of which may additionally include numbers (0-9).  "J0" is a valid symbol; "0r" and "$y" are not.
+
+</P><P>
+<dt>&lt;<tt><b><A name="compartment">compartment</a></b></tt>&gt;:
+	<dd>A symbol defined as a compartment.  Symbols previously unused or used only in a 'formula' context are both legal here, but nothing else is.  The symbol will subsequently be tagged as a compartment.
+
+</P><P>
+<dt>&lt;<tt><b><A name="formula">formula</a></b></tt>&gt;:
+	<dd>A symbol defined as a formula.  Symbols previously unused are legal here, and most other types that are compatible with the 'formula' type is legal, but will not change the type of the symbol.  (In other words, if you use a symbol defined as a reaction in a formula context, that's fine, and the symbol will still be defined as a reaction, not a formula.)
+
+</P><P>
+<dt>&lt;<tt><b><A name="DNA">DNA</a></b></tt>&gt;:
+	<dd>A symbol defined as a DNA element (an 'operator' (associated only with a formula) or a 'gene' (associated with a reaction).  Symbols previously unused or used in a 'formula' context are legal, and the symbol will subsequently be tagged as 'DNA'.  Symbols previously used in an 'operator' or 'gene' context are legal, and the symbol will continue to be tagged as an operator or gene, respectively.  Symbols previously used in a 'reaction' context are legal, and will subsequently be tagged as a 'gene'.
+
+</P><P>
+<dt>&lt;<tt><b><A name="operator">operator</a></b></tt>&gt;:
+	<dd>A symbol defined as an operator, or, DNA only associated with a formula.  Symbols previously unused or used in a 'formula' or 'DNA' context are legal, and subsequently become operators.  Other symbols (including genes) are not legal operators.
+
+</P><P>
+<dt>&lt;<tt><b><A name="gene">gene</a></b></tt>&gt;:
+	<dd>A symbol defined as a gene, or, DNA associated with a reaction.  Symbols previously unused or used in a 'formula' or 'DNA' context are legal, and subsequently become genes.  Other symbols (including operators) are not legal genes.
+
+</P><P>
+<dt>&lt;<tt><b><A name="reaction">reaction</a></b></tt>&gt;:
+	<dd>A symbol with an associated reaction and (optionally) a reaction rate.  Symbols previously unused or used in a 'formula' context are legal, and subsequently become reactions.
+
+</P><P>
+<dt>&lt;<tt><b><A name="interaction">interaction</a></b></tt>&gt;:
+	<dd>A symbol with an associated interaction (a species and a reaction or formula).  Any formula associated with the interaction is assigned to the reaction or formula in question.  Symbols previously  unused or used in a 'formula' context are legal, and subsequently become interactions.
+
+</P><P>
+<dt>&lt;<tt><b><A name="species">species</a></b></tt>&gt;:
+	<dd>A symbol defined as a species, or, for the purposes of modeling, participants in reactions.  Symbols previously  unused or used in a 'formula' context are legal, and subsequently become species.
+
+</P><P>
+<dt>&lt;<tt><b><A name="undefined">undefined</a></b></tt>&gt;:
+	<dd>A symbol that is only used in an &lt;<tt><A href="#equation">equation</a></tt>&gt; is created but left otherwise completely undefined.  Obtaining a list of undefined symbols is a good way to 'debug' a model, as they might indicate misspellings.  Most symbol types can have been used as an undefined member of an equation prior to their use, but some (models) do not even allow this.
+
+</P><P>
+<dt>&lt;<tt><b><A name="event">event</a></b></tt>&gt;:
+	<dd>A symbol defined as an event, or, a boolean expression associated with a list of one or more rules.  Symbols previously  unused or used in a 'formula' context are legal, and subsequently become events.  If defined, formulas defined for the event symbol are used as that event's trigger.
+
+</P><P>
+<dt>&lt;<tt><b><A name="module">module</a></b></tt>&gt;:
+	<dd>A symbol defined as a module.  A module is only created with an &lt;<tt><A href="#imported models">imported models</a></tt>&gt; declaration, and the symbol must not have been used in its containing module before this declaration, in any context.  This is the 'local name' of the module, and is different from the name *of* the module
+
+</P><P>
+<dt>&lt;<tt><b><A name="DNA strand">DNA strand</a></b></tt>&gt;:
+	<dd>A symbol defined as a strand of DNA, or, an ordered list of DNA elements.
+
+
+</P><P>
+<dt>&lt;<tt><b><A name="imported models">imported models</a></b></tt>&gt;:
+ 	<dd>Previously-defined models can be imported into a new model by using lines like:
+<dt><TT>[&lt;<tt><A href="#symbol">symbol</a></tt>&gt; : ] &lt;<tt><A href="#module name">module name</a></tt>&gt; ( [&lt;<tt><A href="#list of symbols">list of symbols</a></tt>&gt;] )</tt>
+</P><P>
+	<dd>If the first '&lt;<tt><A href="#symbol">symbol</a></tt>&gt;' is used, it will be used as the name of the new sub-module.  (This symbol must not have been previously used in any context.)  If not, its name will be "_sys&lt;#&gt;", where &lt;#&gt; is the lowest possible integer </a></tt>&gt;=0 for which no previous symbol of that form exists.  If "_sys0" and "_sys1" exist, for example, "_sys2" will be used.  If only "_sys3" exists (for whatever reason), "_sys0" will be used.
+</P><P>
+	<dd>The &lt;<tt><A href="#list of symbols">list of symbols</a></tt>&gt; must be a list equal to or less than the number of symbols in the &lt;<tt><A href="#list of exported variables">list of exported variables</a></tt>&gt; in the definition of the module.  Each symbol in this list is a local symbol, and is matched with the corresponding symbol in the exported list, synchronizing the two symbols with the local symbol having precedence (see &lt;<tt><A href="#synchronizations">synchronizations</a></tt>&gt;).  It is <b>not</b> legal to use the '<tt>in &lt;<A href="#compartment">compartment</a></tt>&gt;' optional syntax when importing a model.
+
+</P><P>
+<dt>&lt;<tt><b><A name="module name">module name</a></b></tt>&gt;:
+	<dd>The 'global' name of a module, i.e. the symbol used in the &lt;<tt><A href="#model definitions">model definitions</a></tt>&gt; section of an Antimony file, or the name used as the 'id' of a model in an imported SBML file.
+
+
+</P><P>
+<dt>&lt;<tt><b><A name="reaction definitions">reaction definitions</a></b></tt>&gt;:
+	<dd>Lines that define reactions or interactions in the model, of the form:
+<dt><TT>[&lt;<tt><A href="#symbol">symbol</a></tt>&gt; : ] &lt;<tt><A href="#list of reactants">list of reactants</a></tt>&gt; -&gt; &lt;<tt><A href="#list of reactants">list of products</a></tt>&gt; ; [&lt;<tt><A href="#equation">equation</a></tt>&gt;]</tt>
+<dt><TT>[&lt;<tt><A href="#symbol">symbol</a></tt>&gt; : ] &lt;<A href="#species">species</a>&gt; -| &lt;<A href="#formula">formula</a>&gt; ; [&lt;<tt><A href="#equation">equation</a></tt>&gt;]</tt>
+<dt><TT>[&lt;<tt><A href="#symbol">symbol</a></tt>&gt; : ] &lt;<A href="#species">species</a>&gt; -o &lt;<A href="#formula">formula</a>&gt; ; [&lt;<tt><A href="#equation">equation</a></tt>&gt;]</tt>
+<dt><TT>[&lt;<tt><A href="#symbol">symbol</a></tt>&gt; : ] &lt;<A href="#species">species</a>&gt; -( &lt;<A href="#formula">formula</a>&gt; ; [&lt;<tt><A href="#equation">equation</a></tt>&gt;]</tt>
+</P><P>
+	<dd>If the first '&lt;<tt><A href="#symbol">symbol</a></tt>&gt;' is used, it will be used as the name of the new reaction or interaction.  (This symbol may have been used in an unknown or formula context.)  If not, its name will be "_J&lt;#&gt;", where &lt;#&gt; is the lowest possible integer </a></tt>&gt;=0 for which no previous symbol of that form exists.
+</P><P>
+	<dd>The first line describes a reaction, and the other three describe an interaction.  The lists of reactant and products (see &lt;<tt><A href="#list of reactants">list of reactants|products</a></tt>&gt;) take the same form; the former describe species that are consumed in the reaction; the latter species that are created.
+</P><P>
+	<dd>The next three lines describe interactions.  The first ('-|') describes an inhibition, the second ('-o') an activation, and the last ('-(') an interaction of either unknown form, or of a form that is sometimes inhibitory and sometimes activating.  Exactly one species must be provided per interaction on the left hand side of the reaction symbol, and exactly one formula on the right (other symbols that are compatible with the 'formula' type are allowed, but they must not be species.  Reactions are probably the most useful thing to put here).  Ideally, if the concentration of the species in an interaction changes, the value of the formula in question should change appropriately in response:  inversely for inhibitions, concomitantly for activations, and one way or the other (or both) but not remain unchanged for unknown.  Antimony does not have the capacity to check this, however, and takes you at your word.
+</P><P>
+	<dd>The optional final &lt;<tt><A href="#equation">equation</a></tt>&gt; will be used as the reaction rate for the reaction form, and will be assigned to the influenced formula for the interaction forms.  Typically, the final equation is left unused for interactions, and defined elsewhere.
+
+</P><P>
+<dt>&lt;<tt><b><A name="list of reactants">list of reactants|products</a></b></tt>&gt;:
+	<dd>A list of zero or more species of the form:
+<dt><TT>[&lt;positive number&gt;] &lt;<tt><A href="#species">species</a></tt>&gt; [+ [&lt;positive number&gt;] &lt;<tt><A href="#species">species</a></tt>&gt; ] ...</tt>
+	<dd>The optional positive integers are the stoichiometry for the list.  Technicallly, SBML and other specifications only state that the stoichiometry must be a valid number, either positive or negative (or zero), but while a negative stoichimetry in a reactant is equivalent to a positive stoichiometry in the product list (and visa versa), nobody ever does this, and we feel safe requiring positive values for the stoichiometries.
+
+</P><P>
+<dt>&lt;<tt><b><A name="assignment definitions">assignment definitions</a></b></tt>&gt;
+	<dd>Assigns a value or an equation to a symbol:
+<dt><TT>&lt;<tt><A href="#symbol">symbol</a></tt>&gt; = &lt;<tt><A href="#equation">equation</a></tt>&gt;</tt>
+	<dd>It is illegal for the equation to contain the symbol in question, or for it to contain a symbol which, in turn, is defined by an equation containing the symbol, etc.
+
+</P><P>
+<dt>&lt;<tt><b><A name="equation">equation</a></b></tt>&gt;
+	<dd>A mathematical function.  May contain numbers, mathematical symbols ('+', '-', '*', '/', '^', '(', ')', '&lt;', '&gt;'), and function names (see &lt;<tt><A href="#function names">function names</a></tt>&gt;).  Antimony's parsing mechanism steals libSBML's level 1 parser, with the addition of the following boolean symbols:  "&lt;=" (less than or equal to), "&gt;=" (greater than or equal to), "==" (exactly equal to), "!=" (not equal to), "&&" (and), "||" (or), and "!" (not).
+	<dd>Equations associated with DNA elements may contain an ellipsis ("..."), which is shorthand for "the rate at the DNA element upstream of this element."  If nothing is found upstream of the DNA element in question, or if the element appears in no DNA strands, this rate is defined to be zero.
+
+</P><P>
+<dt>&lt;<tt><b><A name="function names">function names</a></b></tt>&gt;
+	<dd>Allowable function names are:  "abs", "and", "annotation", "annotation-xml", "apply", "arccos", "arccosh", "arccot", "arccoth", "arccsc", "arccsch", "arcsec", "arcsech", "arcsin", "arcsinh", "arctan", "arctanh", "bvar", "ceiling", "ci", "cn", "cos", "cosh", "cot", "coth", "csc", "csch", "csymbol", "degree", "divide", "eq", "exp", "exponentiale", "factorial", "false", "floor", "geq", "gt", "infinity", "lambda", "leq", "ln", "log", "logbase", "lt", "math", "minus", "neq", "not", "notanumber", "or", "otherwise", "pi", "piece", "piecewise", "plus", "power", "root", "sec", "sech", "semantics", "sep", "sin", "sinh", "tan", "tanh", "times", "true", "xor", "acos", "asin", "atan", "ceil", "delay", "log10", "pow", "sqr", "sqrt"
+
+</P><P>
+<dt>&lt;<tt><b><A name="DNA strand definitions">DNA strand definitions</a></b></tt>&gt;
+	<dd>DNA strands (ordered lists of DNA elements) are defined with lines formatted:
+<dt><TT>[&lt;<tt><A href="#symbol">symbol</a></tt>&gt; : ] [--] &lt;<tt><A href="#DNA">DNA</a></tt>|<tt><A href="#DNA strand">DNA strand</a></tt>|<tt><A href="#module">module</a></tt></a></tt>&gt; [ -- &lt;<tt><A href="#DNA">DNA</a>|<A HREF="#DNA strand">DNA strand</a>|<A HREF="#module">module</a></tt>&gt; ] [...] [--]</tt>
+	<dd>(Note that this must have at least one '--', though it may happen either upstream or downstream of the &lt;DNA | DNA strand&gt;.)  If the first '&lt;<tt><A href="#symbol">symbol</a></tt>&gt;' is used, it will be used as the name of the new DNA strand.  (This symbol may have been used previously in a DNA context, but not as an operator or gene.)  If not, its name will be "_dna&lt;#&gt;", where &lt;#&gt; is the lowest possible integer </a></tt>&gt;=0 for which no previous symbol of that form exists.
+</P><P>
+	<dd>The definition of a DNA strand is 'an ordered list of DNA elements', and can affect the rates of the elements it contains:  if an element's rate contains an ellipsis ("...") meaning 'the rate of the DNA element upstream of this element', it is the DNA strand that supplies the identity of the upstream element.  If an element is found in multiple DNA strands, its overall rate is equal to the sum of the rates within each individual element (whether or not the element rate contains an ellipsis).
+</P><P>
+	<dd>DNA strands are singletons:  a DNA strand may itself be a member of one other DNA strand, but not multiple DNA strands.  
+</P><P>
+	<dd>If a DNA strand is prepended by a '--', Antimony considers it to be 'upstream open'.  If it is suffixed by a '--', it is considered to be 'downstream open'.  The only difference to the parser is that if a &lt;<tt><A HREF="#module">module</a></tt>&gt; contains exactly one DNA strand that is 'upstream open', that module's name may be used in the definition of a DNA strand where it is downstream of another element.  In this case, that DNA strand is place in the containing strand.  If a module contains exactly one DNA strand that is 'downstream open', that module's name may be used in the definition of a DNA strand where it is upstream of another element.  Again, that DNA strand is used in the module's place in the containing strand.  If a module appears in a single DNA strand with both upstream and downstream elements, that module must contain exactly one DNA strand which is both upstream and downstream 'open', and no other DNA strands which are either upstream or downstream 'open'.
+
+</P><P>
+<dt>&lt;<tt><b><A name="event definitions">event definitions</a></b></tt>&gt;
+	<dd>Defines an event (value changes when a condition is met).
+<dt><TT>[&lt;<tt><A href="#symbol">symbol</a></tt>&gt; : ] at|@ &lt;<tt><A href="#boolean expression">boolean expression</a></tt>&gt; : [&lt;<tt><A href="#return">return</a></tt>&gt;] &lt;<tt><A href="#symbol">symbol</a></tt>&gt; = &lt;<tt><A href="#equation">equation</a></tt>&gt; [: [&lt;<tt><A href="#return">return</a></tt>&gt;] &lt;<tt><A href="#symbol">symbol</a></tt>&gt; = &lt;<tt><A href="#equation">equation</a></tt>&gt; ]...</tt>
+	<dd>If the first '&lt;<tt><A href="#symbol">symbol</a></tt>&gt;' is used, it will be used as the name of the new event.  (This symbol must not have been used previously in any context.)  If not, its name will be "_E&lt;#&gt;", where &lt;#&gt; is the lowest possible integer </a></tt>&gt;=0 for which no previous symbol of that form exists.
+</P><P>
+	<dd>After the &lt;<tt><A href="#boolean expression">boolean expression</a></tt>&gt; (see below) is a list of assignments that are to happen when the event condition holds true for the first time.  The equation is to be assigned to the symbol, which must not be const.  (If the symbol was previously undefined for constness, it will now be defined to be variable.)
+
+</P><P>
+<dt>&lt;<tt><b><A name="boolean expression">boolean expression</a></b></tt>&gt;
+	<dd>An &lt;<tt><A href="#equation">equation</a></tt>&gt; which returns a 'true' or 'false'.  Expressions are judged whether they are boolean based on libSBML's parser.
+
+</P><P>
+<dt>&lt;<tt><b><A name="synchronizations">synchronizations</a></b></tt>&gt;
+	<dd>Particularly useful to 'connect' submodules, a synchronization claims that two elements are actually the same thing:
+<dt><TT>&lt;<tt><A href="#symbol">symbol</a></tt>&gt; is &lt;<tt><A href="#symbol">symbol</a></tt>&gt;</tt>
+	<dd>The two symbols are defined to be actually the same thing, with the second symbol taking precedence.  In the final output for this module, only the second symbol will appear.  Any characteristic of the first symbol for which that characteristic of the second symbol is undefined or less specific, the second symbol now embodies.  For example, if the first symbol is a reaction, and the second symbol is a formula, after this synchronization, the symbol will now be defined as a reaction.   If both symbols are defined by conflicting characteristics, the second symbol will take precedence.  In our previous  example, if the first symbol is a reaction with a defined reaction rate, and the second symbol is a formula with a different rate equation, the rate of the resulting reaction will be the second symbol's original rate.
+
+
