@@ -1,3 +1,4 @@
+#include <clocale>
 #include <string>
 #include <iostream>
 
@@ -138,16 +139,20 @@ void reportVariableTypeIndexProblem(size_t n, return_type rtype, size_t actualsi
 
 LIB_EXTERN long loadFile(const char* filename)
 {
+  char* oldlocale = setlocale(LC_ALL, NULL);
+  setlocale(LC_ALL, "C");
   g_registry.ClearModules();
   int ofreturn = g_registry.OpenFile(filename);
   if (ofreturn==0) return -1; //file read failure
   if (ofreturn==2) {
     //SBML file
     g_registry.FinalizeModules();
+    setlocale(LC_ALL, oldlocale);
     return g_registry.SaveModules();
   }
   assert(ofreturn==1); //antimony file
   int yyreturn = yyparse();
+  setlocale(LC_ALL, oldlocale);
   if (yyreturn != 0) {
     if (g_registry.GetError().size() == 0) {
       assert(false); //Need to fill in the reason why we failed explicitly, if possible.
@@ -182,7 +187,9 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
   }
   const Model* sbml = document->getModel();
   string sbmlname = getNameFromSBMLObject(sbml, "file");
-  g_registry.NewCurrentModule(&sbmlname);
+  if (sbmlname != MAINMODULE) {
+    g_registry.NewCurrentModule(&sbmlname);
+  }
   g_registry.CurrentModule()->LoadSBML(sbml);
 
   delete(document);
@@ -755,7 +762,7 @@ LIB_EXTERN size_t getSizeOfNthDNAStrand(const char* moduleName, size_t n)
   if (!checkModule(moduleName)) return NULL;
   size_t actualsize = getNumDNAStrands(moduleName);
   if (actualsize <= n) {
-    string error = "There is no DNA strand with index " + n;
+    string error = "There is no DNA strand with index " + SizeTToString(n);
     error += " in module ";
     error += moduleName;
     error += ".";
@@ -795,7 +802,7 @@ LIB_EXTERN char** getNthDNAStrand(const char* moduleName, size_t n)
   if (!checkModule(moduleName)) return NULL;
   size_t actualsize = getNumDNAStrands(moduleName);
   if (actualsize <= n) {
-    string error = "There is no DNA strand with index " + n;
+    string error = "There is no DNA strand with index " + SizeTToString(n);
     error += " in module ";
     error += moduleName;
     error += ".";
@@ -860,7 +867,7 @@ LIB_EXTERN size_t getSizeOfNthModularDNAStrand(const char* moduleName, size_t n)
   if (!checkModule(moduleName)) return NULL;
   size_t actualsize = getNumModularDNAStrands(moduleName);
   if (actualsize <= n) {
-    string error = "There is no Modular DNA strand with index " + n;
+    string error = "There is no Modular DNA strand with index " + SizeTToString(n);
     error += " in module ";
     error += moduleName;
     error += ".";
@@ -899,7 +906,7 @@ LIB_EXTERN char** getNthModularDNAStrand(const char* moduleName, size_t n)
   if (!checkModule(moduleName)) return NULL;
   size_t actualsize = getNumModularDNAStrands(moduleName);
   if (actualsize <= n) {
-    string error = "There is no Modular DNA strand with index " + n;
+    string error = "There is no Modular DNA strand with index " + SizeTToString(n);
     error += " in module ";
     error += moduleName;
     error += ".";
@@ -1002,6 +1009,8 @@ LIB_EXTERN char* getCompartmentForSymbol(const char* moduleName, const char* sym
 
 LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
 {
+  char* oldlocale = setlocale(LC_ALL, NULL);
+  setlocale(LC_ALL, "C");
   if (!checkModule(moduleName)) return 0;
   string antimony = g_registry.GetAntimony(moduleName);
   ofstream afile(filename);
@@ -1010,22 +1019,29 @@ LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
     error += filename;
     error += " for writing.";
     g_registry.SetError(error);
+    setlocale(LC_ALL, oldlocale);
     return 0;
   }
   afile << antimony;
   afile.close();
+  setlocale(LC_ALL, oldlocale);
   return 1;
 }
 
 LIB_EXTERN char* getAntimonyString(const char* moduleName)
 {
+  char* oldlocale = setlocale(LC_ALL, NULL);
+  setlocale(LC_ALL, "C");
   if (!checkModule(moduleName)) return NULL;
   char* antimony = getCharStar(g_registry.GetAntimony(moduleName).c_str());
+  setlocale(LC_ALL, oldlocale);
   return antimony;
 }
 
 LIB_EXTERN int writeJarnacFile(const char* filename, const char* moduleName)
 {
+  char* oldlocale = setlocale(LC_ALL, NULL);
+  setlocale(LC_ALL, "C");
   if (!checkModule(moduleName)) return 0;
   string jarnac = g_registry.GetJarnac(moduleName);
   ofstream jfile(filename);
@@ -1034,17 +1050,22 @@ LIB_EXTERN int writeJarnacFile(const char* filename, const char* moduleName)
     error += filename;
     error += " for writing.";
     g_registry.SetError(error);
+  setlocale(LC_ALL, oldlocale);
     return 0;
   }
   jfile << jarnac;
   jfile.close();
+  setlocale(LC_ALL, oldlocale);
   return 1;
 }
 
 LIB_EXTERN char* getJarnacString(const char* moduleName)
 {
+  char* oldlocale = setlocale(LC_ALL, NULL);
+  setlocale(LC_ALL, "C");
   if (!checkModule(moduleName)) return NULL;
   char* jarnac = getCharStar(g_registry.GetJarnac(moduleName).c_str());
+  setlocale(LC_ALL, oldlocale);
   return jarnac;
 }
 

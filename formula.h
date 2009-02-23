@@ -44,6 +44,7 @@ public:
   std::string ToSBMLString(std::vector<std::pair<Variable*, size_t> > strands) const;
   std::string ConvertOneSymbolToFunction(std::string formula) const;
   std::vector<const Variable*> GetVariablesFrom(std::string formula, std::string module) const;
+  std::vector<std::vector<std::string> > GetVariables() const;
 };
 
 

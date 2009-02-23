@@ -36,12 +36,17 @@ private:
   std::vector<Formula> m_scratchFormulas;
   DNAStrand m_workingstrand;
 
+  std::vector<UserFunction> m_userfunctions;
+  std::vector<std::string>  m_userfunctionnames;
+  bool m_isfunction;
+
   std::vector<std::string> m_currentEvent;
   
   char m_cc;
   const_type m_constness;
   std::string m_error;
   std::vector<std::vector<Module> > m_oldmodules;
+  std::vector<std::vector<UserFunction> > m_olduserfunctions;
 
 public:
   Registry();
@@ -62,6 +67,10 @@ public:
   void NewCurrentModule(const std::string* name);
   Module* CurrentModule();
   void RevertToPreviousModule();
+
+  //Functions
+  void NewUserFunction(const std::string* name);
+  bool SetUserFunction(Formula* formula);
 
   //Variables
   void SetConstness(const_type isconst) {m_constness = isconst;};
@@ -114,6 +123,9 @@ public:
   std::string GetError() {return m_error;};
   long SaveModules();
   bool RevertToModuleSet(long n);
+
+  size_t GetNumUserFunctions() const {return m_userfunctions.size();};
+  const UserFunction* GetNthUserFunction(size_t n) const;
 
   //Keeping track of malloc'd stuff so we can free it ourselves if need be.
   std::vector<char*>    m_charstars;
