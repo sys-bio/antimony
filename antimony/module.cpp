@@ -15,9 +15,9 @@ using namespace std;
 
 Module::Module(string name)
   : m_modulename(name),
+    m_exportlist(),
     m_variablename(),
     m_variables(),
-    m_exportlist(),
     m_synchronized(),
     m_returnvalue(),
     m_currentexportvar(0),
@@ -30,9 +30,9 @@ Module::Module(string name)
 
 Module::Module(const Module& src, string newtopname, string modulename)
   : m_modulename(src.m_modulename),
+    m_exportlist(src.m_exportlist),
     m_variablename(src.m_variablename),
     m_variables(src.m_variables),
-    m_exportlist(src.m_exportlist),
     m_synchronized(src.m_synchronized),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
@@ -343,11 +343,19 @@ string Module::ToString() const
   return retval;
 }
 
-string Module::GetAntimony(set<const Module*> usedmods) const
+string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) const
 {
   string retval;
   char cc = '.';
-  //First, we need any submodules
+  //First, we need any user-defined functions if we don't have them already.  Eventually we'll want to only write out the used ones, but for now, we'll just write them all out LS DEBUG
+
+  if (!funcsincluded) {
+    for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
+      retval += g_registry.GetNthUserFunction(uf)->GetAntimony() + "\n";
+    }
+  }
+  
+  //Now, we need the definitions of any submodules
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
       const Module* mod = g_registry.GetModule(m_variables[var]->GetModule()->GetModuleName());
@@ -357,7 +365,7 @@ string Module::GetAntimony(set<const Module*> usedmods) const
       }
       if ((usedmods.insert(mod)).second) {
         //New module; add it.
-        retval += mod->GetAntimony(usedmods) + "\n";
+        retval += mod->GetAntimony(usedmods, true) + "\n";
       }
     }
   }
@@ -815,6 +823,33 @@ string Module::ListAssignmentDifferencesFrom(const Module* origmod, string mname
 void Module::LoadSBML(const Model* sbml)
 {
   string sbmlname = "";
+
+  //Function Definitions
+  //This is a bit weird, since functions exist outside of modules, since they can be used in any model.  So we have to go to the registry to save them.
+  for (unsigned int func=0; func<sbml->getNumFunctionDefinitions(); func++) {
+    const FunctionDefinition* function = sbml->getFunctionDefinition(func);
+    sbmlname = getNameFromSBMLObject(function, "_F");
+    g_registry.NewUserFunction(&sbmlname);
+    string formulastring(SBML_formulaToString(function->getBody()));
+    size_t charbit = formulastring.find("lambda(");
+    if (charbit != string::npos) {
+      formulastring.erase(charbit, 7);
+      charbit = formulastring.find(",");
+      while (charbit != string::npos) {
+        string varstring = formulastring;
+        varstring.erase(charbit, varstring.size()-charbit+1);
+        Variable* expvar = g_registry.AddVariableToCurrent(&varstring);
+        g_registry.AddVariableToCurrentExportList(expvar);
+        formulastring.erase(0, charbit+1);
+        charbit = formulastring.find(",");
+      }
+      formulastring.erase(formulastring.size()-1, 1); //erase the final ')'
+    }
+    Formula* formula = g_registry.NewBlankFormula();
+    setFormulaWithString(formulastring, formula);
+    g_registry.SetUserFunction(formula);
+  }
+
   //Compartments
   for (unsigned int comp=0; comp<sbml->getNumCompartments(); comp++) {
     const Compartment* compartment = sbml->getCompartment(comp);
@@ -882,17 +917,6 @@ void Module::LoadSBML(const Model* sbml)
   }
 
   //LS DEBUG:  Add constraints?
-
-  //Function Definitions
-  for (unsigned int func=0; func<sbml->getNumFunctionDefinitions(); func++) {
-    const FunctionDefinition* function = sbml->getFunctionDefinition(func);
-    sbmlname = getNameFromSBMLObject(function, "_F");
-    Variable* var = AddOrFindVariable(&sbmlname);
-    string formulastring(SBML_formulaToString(function->getBody()));
-    Formula* formula = g_registry.NewBlankFormula();
-    setFormulaWithString(formulastring, formula);
-    var->SetFormula(formula);
-  }
 
   //Parameters
   for (unsigned int param=0; param<sbml->getNumParameters(); param++) {
@@ -1010,6 +1034,16 @@ void Module::CreateSBMLModel()
   Model newmod(m_modulename);
   m_sbml = newmod; //clear the old one, just in case.
   char cc = g_registry.GetCC();
+  //User-defined functions
+  for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
+    const UserFunction* userfunction = g_registry.GetNthUserFunction(uf);
+    assert(userfunction != NULL);
+    //FunctionDefinition* fd = m_sbml.createFunctionDefinition();
+    //fd->setId(userfunction->GetModuleName());
+    //fd->setMath(SBML_parseFormula(userfunction->GetFormula().ToDelimitedStringWithEllipses('.').c_str()));
+    FunctionDefinition fd(userfunction->GetModuleName(), userfunction->ToSBMLString());
+    m_sbml.addFunctionDefinition(&fd);
+  }
   //Compartments
   Compartment* defaultCompartment = m_sbml.createCompartment();
   defaultCompartment->setId("default_compartment");

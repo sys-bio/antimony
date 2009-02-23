@@ -38,6 +38,7 @@
   double num;
   rd_type reactionDivider;
   Formula* formula;
+  Formula* spacedformula;
   Module* module;
   ReactantList* reactantList;
   Variable* variable;
@@ -48,6 +49,7 @@
 
 %type <character> mathThing
 %type <formula> formula
+%type <formula> spacedformula
 %type <module> module
 %type <reactantList> reactantList
 %type <reactionDivider> reactionDivider
@@ -88,9 +90,17 @@ module:         MODULE WORD {g_registry.NewCurrentModule($2);} '(' variableexpor
                   g_registry.RevertToPreviousModule();
                 }
         |       MODULE MODNAME {g_registry.SetError("module '" + *($2) + "' already defined."); YYABORT;}
+        |       MODULE FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a module because it is already a defined function."); YYABORT;} 
         ;
 
-function:       FUNCTIONWORD WORD {g_registry.NewFunction($2);} '(' variableexportlist ')' formula END {g_registry.SetFunction($7);}
+function:       FUNCTIONWORD WORD {g_registry.NewUserFunction($2);} '(' variableexportlist ')' spacedformula END {if (g_registry.SetUserFunction($7)) YYABORT;}
+        |       FUNCTIONWORD MODNAME {g_registry.SetError("Cannot use '" + *($2) +"' as a function name because it is already the name of a module."); YYABORT;}
+        |       FUNCTIONWORD FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a new function because it is already a defined function."); YYABORT;} 
+        ;
+
+spacedformula:  formula {$$ = $1;}
+        |       lineend spacedformula {$$ = $2;}
+        |       spacedformula lineend {$$ = $1;}
         ;
 
 variableexportlist:
@@ -359,7 +369,7 @@ int yylex(void)
     }
     else {
       g_registry.input->unget();
-      cc == '\\';
+      cc = '\\';
     }
   }
 

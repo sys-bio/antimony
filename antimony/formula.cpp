@@ -336,3 +336,14 @@ vector<const Variable*> Formula::GetVariablesFrom(string formula, string module)
   }
   return retval;
 }
+
+vector<vector<string> > Formula::GetVariables() const
+{
+  vector<vector<string> > vars;
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() > 0) {
+      vars.push_back(m_components[comp].second);
+    }
+  }
+  return vars;
+}

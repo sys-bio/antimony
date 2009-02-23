@@ -15,17 +15,18 @@ class ReactionList;
 
 class Module
 {
+protected:
+  std::string m_modulename;
+  std::vector<std::vector<std::string> > m_exportlist;
+
 private:
   Module() {}; //undefined
 
   //Module(const Module& src); //Use default, but have to re-run CompileExportLists
   //Module& operator=(const Module& src); //(same as above)
-
-  std::string m_modulename;
   std::vector<std::string> m_variablename;
 
   std::vector<Variable*> m_variables;
-  std::vector<std::vector<std::string> > m_exportlist;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
   std::vector<std::string> m_returnvalue;
 
@@ -34,7 +35,7 @@ private:
   Model m_sbml;
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
-  
+
 public:
 
   //Storage vectors for output:
@@ -71,7 +72,7 @@ public:
   std::string GetVariableNameDelimitedBy(char cc) const;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > GetSyncronized() const {return m_synchronized;};
   std::string ToString() const;
-  std::string GetAntimony(set<const Module*> usedmods) const;
+  std::string GetAntimony(set<const Module*> usedmods, bool funcsincluded) const;
   std::string GetJarnacReactions() const;
   std::string GetJarnacVarFormulas() const;
   std::string GetJarnacConstFormulas(std::string modulename) const;
@@ -92,5 +93,8 @@ public:
   Model GetSBMLModel();
   void  CreateSBMLModel();
 };
+
+#include "userfunction.h"
+
 
 #endif //MODULE_H

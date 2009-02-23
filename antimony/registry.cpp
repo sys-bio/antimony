@@ -64,6 +64,9 @@ void Registry::ClearModules()
   m_workingstrand.Clear();
   m_currentEvent.clear();
   m_error.clear();
+  m_userfunctions.clear();
+  m_userfunctionnames.clear();
+  m_isfunction = false;
   string main = MAINMODULE;
   NewCurrentModule(&main);
 }
@@ -94,9 +97,13 @@ int Registry::OpenFile(const string filename)
     //It's a valid SBML file.
     const Model* sbml = document->getModel();
     string sbmlname = getNameFromSBMLObject(sbml, "file");
-    NewCurrentModule(&sbmlname);
+    if (sbmlname != MAINMODULE) {
+      NewCurrentModule(&sbmlname);
+    }
     CurrentModule()->LoadSBML(sbml);
-    RevertToPreviousModule();
+    if (sbmlname != MAINMODULE) {
+      RevertToPreviousModule();
+    }
     delete(document);
     return 2;
   }
@@ -271,7 +278,25 @@ void Registry::RevertToPreviousModule()
 
 void Registry::AddVariableToCurrentExportList(Variable* export_var)
 {
+  if (m_isfunction) {
+    m_userfunctions.back().AddVariableToExportList(export_var);
+    return;
+  }
   CurrentModule()->AddVariableToExportList(export_var);
+}
+
+void Registry::NewUserFunction(const std::string* name)
+{
+  m_isfunction = true;
+  UserFunction newfunc(*name);
+  m_userfunctionnames.push_back(*name);
+  m_userfunctions.push_back(newfunc);
+}
+
+bool Registry::SetUserFunction(Formula* formula)
+{
+  m_isfunction = false;
+  return m_userfunctions.back().SetFormula(*formula);
 }
 
 bool Registry::AddVariableToCurrentImportList(Variable* import_var)
@@ -289,6 +314,9 @@ bool Registry::AddVariableToCurrentImportList(Variable* import_var)
 
 Variable* Registry::AddVariableToCurrent(const string* name)
 {
+  if (m_isfunction) {
+    return m_userfunctions.back().AddOrFindVariable(name);
+  }
   return CurrentModule()->AddOrFindVariable(name);
 }
 
@@ -426,6 +454,11 @@ Module* Registry::GetModule(string modulename)
       return &(m_modules[mod]);
     }
   }
+  for (size_t uf=0; uf<m_userfunctions.size(); uf++) {
+    if (modulename == m_userfunctions[uf].GetModuleName()) {
+      return &(m_userfunctions[uf]);
+    }
+  }
   return NULL;
 }
 
@@ -434,6 +467,11 @@ const Module* Registry::GetModule(string modulename) const
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (modulename == m_modules[mod].GetModuleName()) {
       return &(m_modules[mod]);
+    }
+  }
+  for (size_t uf=0; uf<m_userfunctions.size(); uf++) {
+    if (modulename == m_userfunctions[uf].GetModuleName()) {
+      return &(m_userfunctions[uf]);
     }
   }
   return NULL;
@@ -470,6 +508,11 @@ const string* Registry::IsFunction(string word)
       return &(m_functions[func]);
     }
   }
+  for (size_t uf=0; uf<m_userfunctionnames.size(); uf++) {
+    if (word == m_userfunctionnames[uf]) {
+      return &(m_userfunctionnames[uf]);
+    }
+  }
   return NULL;
 }
 
@@ -478,7 +521,7 @@ string Registry::GetAntimony(string modulename) const
   const Module* amod = GetModule(modulename);
   if (amod == NULL) return NULL;
   set<const Module*> nomods;
-  return amod->GetAntimony(nomods);
+  return amod->GetAntimony(nomods, false);
 }
 
 string Registry::GetJarnac(string modulename) const
@@ -521,11 +564,14 @@ string Registry::GetNthModuleName(size_t n)
 long Registry::SaveModules()
 {
   m_oldmodules.push_back(m_modules);
+  m_olduserfunctions.push_back(m_userfunctions);
+  m_isfunction = false;
   return m_oldmodules.size();
 }
 
 bool Registry::RevertToModuleSet(long n)
 {
+  assert(m_oldmodules.size() == m_olduserfunctions.size());
   if (n == -1) {
     g_registry.SetError("An error occurred when reading that file.  Any modules in it are unavailable.");
     return true;
@@ -545,11 +591,24 @@ bool Registry::RevertToModuleSet(long n)
     return true;
   }
   m_modules.clear(); //LS NOTE:  needed because otherwise we leak models!  Yes, this is weird.
+  m_userfunctions.clear();
   m_modules = m_oldmodules[n-1];
+  m_userfunctions = m_olduserfunctions[n-1];
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (m_modules[mod].Finalize()) return true;
   }
+  m_userfunctionnames.clear();
+  for (size_t uf=0; uf<m_userfunctions.size(); uf++) {
+    m_userfunctionnames.push_back(m_userfunctions[uf].GetModuleName());
+  }
+  m_isfunction = false;
   return false;
+}
+
+const UserFunction* Registry::GetNthUserFunction(size_t n) const
+{
+  if (m_userfunctions.size() <= n) return NULL;
+  return &(m_userfunctions[n]);
 }
 
 void Registry::FreeAll()

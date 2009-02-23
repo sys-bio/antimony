@@ -1,11 +1,11 @@
 CPPFLAGS = -Wall -ggdb
 LIBRARYFLAGS = -L/usr/local/lib -lsbml
 
-antimony : antimony.tab.o antimony_api.o dnastrand.o event.o formula.o module.o rd_type.o reactantlist.o reaction.o registry.o sbmlx.o stringx.o variable.o Antimony.o
-	g++ -o antimony -lm $(CPPFLAGS) $(LIBRARYFLAGS) antimony.tab.o antimony_api.o dnastrand.o event.o formula.o module.o rd_type.o reactantlist.o reaction.o registry.o sbmlx.o stringx.o variable.o Antimony.o
+antimony : antimony.tab.o antimony_api.o dnastrand.o event.o formula.o module.o rd_type.o reactantlist.o reaction.o registry.o sbmlx.o stringx.o userfunction.o variable.o Antimony.o
+	g++ -o antimony -lm $(CPPFLAGS) $(LIBRARYFLAGS) antimony.tab.o antimony_api.o dnastrand.o event.o formula.o module.o rd_type.o reactantlist.o reaction.o registry.o sbmlx.o stringx.o userfunction.o variable.o Antimony.o
 
-antimony.tar.gz : antimony.ypp antimony.tab.cpp antimony_api.cpp antimony_api.h dnastrand.cpp dnastrand.h event.cpp event.h formula.cpp formula.h libutil.h module.cpp module.h rd_type.cpp rd_type.h reactantlist.cpp reactantlist.h reaction.cpp reaction.h registry.cpp registry.h sbmlx.cpp sbmlx.h stringx.cpp stringx.h variable.cpp variable.h Antimony.cpp Makefile documentation.txt 
-	tar -cvf antimony.tar antimony.ypp antimony.tab.cpp antimony_api.cpp antimony_api.h dnastrand.cpp dnastrand.h event.cpp event.h formula.cpp formula.h libutil.h module.cpp module.h rd_type.cpp rd_type.h reactantlist.cpp reactantlist.h reaction.cpp reaction.h registry.cpp registry.h sbmlx.cpp sbmlx.h stringx.cpp stringx.h variable.cpp variable.h Antimony.cpp Makefile documentation.txt
+antimony.tar.gz : antimony.ypp antimony.tab.cpp antimony_api.cpp antimony_api.h dnastrand.cpp dnastrand.h event.cpp event.h formula.cpp formula.h libutil.h module.cpp module.h rd_type.cpp rd_type.h reactantlist.cpp reactantlist.h reaction.cpp reaction.h registry.cpp registry.h sbmlx.cpp sbmlx.h stringx.cpp stringx.h userfunction.cpp userfunction.o variable.cpp variable.h Antimony.cpp Makefile documentation.txt 
+	tar -cvf antimony.tar antimony.ypp antimony.tab.cpp antimony_api.cpp antimony_api.h dnastrand.cpp dnastrand.h event.cpp event.h formula.cpp formula.h libutil.h module.cpp module.h rd_type.cpp rd_type.h reactantlist.cpp reactantlist.h reaction.cpp reaction.h registry.cpp registry.h sbmlx.cpp sbmlx.h stringx.cpp stringx.h userfunction.cpp userfunction.h variable.cpp variable.h Antimony.cpp Makefile documentation.txt
 	gzip -f antimony.tar
 
 Antimony.o : Antimony.cpp
@@ -46,6 +46,9 @@ stringx.o : stringx.cpp stringx.h
 
 sbmlx.o : sbmlx.cpp sbmlx.h
 	g++ -c $(CPPFLAGS) sbmlx.cpp
+
+userfunction.o : userfunction.cpp module.h formula.h
+	g++ -c $(CPPFLAGS) userfunction.cpp
 
 variable.o : variable.cpp variable.h dnastrand.h module.h rd_type.h registry.h event.h formula.h reaction.h
 	g++ -c $(CPPFLAGS) variable.cpp
