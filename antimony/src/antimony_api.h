@@ -87,6 +87,7 @@ LIB_EXTERN long   loadFile(const char* filename);
  *
  * @see getLastError()
  */
+#ifndef NSBML
 LIB_EXTERN long   loadSBMLFile(const char* filename);
 
 /**
@@ -95,6 +96,8 @@ LIB_EXTERN long   loadSBMLFile(const char* filename);
  * Every time 'loadFile' or 'loadSBMLFile' is called successfully, the module(s) in those files are saved.  This function will tell you how many sets of modules from successful reads are resident in memory.
  * @return The number of files currently stored in memory.
  */
+#endif
+
 LIB_EXTERN size_t getNumFiles();
 
 /**
@@ -466,8 +469,8 @@ LIB_EXTERN char* getJarnacString(const char* moduleName);
 /**
  * Writes out a SBML-formatted XML file to the file indicated.  For now, the output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libSBML's 'writeSBML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
  */
+#ifndef NSBML
 LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
-
 /**
  * Returns the same output as writeSBMLFile, but to a char* array instead of to a file.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
  */
@@ -490,6 +493,7 @@ LIB_EXTERN char* getSBMLWarnings(const char* moduleName);
  *
  * Note that this function only frees pointers handed to you by other antimony_api functions.  The models themselves are still in memory and are available.
  */
+#endif
 LIB_EXTERN void freeAll();
 
 

@@ -1,7 +1,20 @@
-CPPFLAGS = -Wall -ggdb
-LIBRARYFLAGS = -L/usr/local/lib -Llib -lsbml
+#If not using libSBML:
+#sbmlflag = -DNSBML
+#otherwise
+sbmlflag = 
+
+#For a debug version:
+CPPFLAGS = -Wall -ggdb $(sbmlflag)
+#For a non-debug version:
+#CPPFLAGS = -Wall -DNDEBUG $(sbmlflag)
+
+#Library flags
+sbml_location = /usr/local/lib/
+LIBRARYFLAGS = -L$(sbml_location) -lsbml -Llib -lantimony
+
 src_dir = src/
 lib_dir = lib/
+
 YPPFILES = $(src_dir)antimony.ypp
 
 CPPFILES = $(src_dir)antimony_api.cpp \
@@ -56,16 +69,24 @@ DOCFILES = $(doc_dir)Tutorial.odt \
 	$(doc_dir)technical_spec.html
 
 #Executables:
+all : testantimony antimony2sbml sbml2antimony
+	@echo ""
+	@echo "Executables created:  "
+	@echo "  testantimony:  Prints information about your antimony file(s)"
+	@echo "  antimony2sbml:  Converts all modules in an antimony file to SBML files"
+	@echo "  sbml2antimony:  Converts an SBML file into an antimony file."
+	@echo ""
+	@echo "For more information, see the documentation in the doc/ directory."
+	@echo ""
+
 testantimony : $(lib_dir)libantimony.a $(src_dir)testantimony.o
-	g++ -o testantimony $(src_dir)testantimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS) -lantimony
+	g++ -o testantimony $(src_dir)testantimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 antimony2sbml : $(lib_dir)libantimony.a $(src_dir)antimony2sbml.o
-	g++ -o antimony2sbml $(src_dir)antimony2sbml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS) -lantimony
+	g++ -o antimony2sbml $(src_dir)antimony2sbml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
-	g++ -o sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS) -lantimony
-
-all : testantimony antimony2sbml sbml2antimony
+	g++ -o sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 #The distribution zip file.
 antimony.tar.gz : $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) Makefile 
@@ -112,6 +133,7 @@ $(src_dir)userfunction.o : $(src_dir)userfunction.cpp $(src_dir)module.h $(src_d
 
 $(src_dir)variable.o : $(src_dir)variable.cpp $(src_dir)variable.h $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)rd_type.h $(src_dir)registry.h $(src_dir)event.h $(src_dir)formula.h $(src_dir)reaction.h
 
+#The bison-generated .cpp file
 $(src_dir)antimony.tab.cpp : $(src_dir)antimony.ypp $(src_dir)registry.h $(src_dir)module.h
 	bison --verbose -o$(src_dir)antimony.tab.cpp $(src_dir)antimony.ypp
 

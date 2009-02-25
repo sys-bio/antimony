@@ -1,8 +1,12 @@
 #include <clocale>
 #include <string>
 #include <iostream>
+#include <cstdlib>
+#include <string.h>
 
+#ifndef NSBML
 #include <sbml/SBMLTypes.h>
+#endif
 
 #include "antimony_api.h"
 #include "registry.h"
@@ -173,6 +177,7 @@ LIB_EXTERN long loadFile(const char* filename)
   return g_registry.SaveModules();
 }
 
+#ifndef NSBML
 LIB_EXTERN long loadSBMLFile(const char* filename)
 {
   g_registry.ClearModules();
@@ -195,6 +200,7 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
   delete(document);
   return g_registry.SaveModules();
 }
+#endif
 
 LIB_EXTERN size_t getNumFiles()
 {
@@ -1069,6 +1075,7 @@ LIB_EXTERN char* getJarnacString(const char* moduleName)
   return jarnac;
 }
 
+#ifndef NSBML
 LIB_EXTERN int writeSBMLFile(const char* filename, const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
@@ -1114,6 +1121,7 @@ LIB_EXTERN char* getSBMLWarnings(const char* moduleName)
   if (!checkModule(moduleName)) return NULL;
   return getCharStar(g_registry.GetModule(moduleName)->GetSBMLWarnings().c_str());
 }
+#endif
 
 LIB_EXTERN void freeAll()
 {

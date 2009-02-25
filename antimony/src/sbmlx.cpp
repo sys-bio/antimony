@@ -1,3 +1,4 @@
+#ifndef NSBML
 #include "sbmlx.h"
 #include "formula.h"
 #include "variable.h"
@@ -77,3 +78,4 @@ void setFormulaWithString(string formulastring, Formula* formula)
   }
 }
 
+#endif

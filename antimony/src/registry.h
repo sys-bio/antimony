@@ -5,7 +5,6 @@
 #include <fstream>
 #include <iostream>
 #include <math.h>
-#include <sbml/SBMLTypes.h>
 #include <set>
 #include <stdio.h>
 #include <string>
