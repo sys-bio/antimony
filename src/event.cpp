@@ -28,6 +28,7 @@ AntimonyEvent::AntimonyEvent()
 bool AntimonyEvent::SetTrigger(const Formula& form)
 {
   string formstring = form.ToSBMLString();
+#ifndef NSBML
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
     if (ASTform == NULL) {
@@ -43,6 +44,7 @@ bool AntimonyEvent::SetTrigger(const Formula& form)
       delete ASTform;
     }
   }
+#endif
   m_trigger = form;
   return false;
 }

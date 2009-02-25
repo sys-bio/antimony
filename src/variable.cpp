@@ -484,6 +484,7 @@ bool Variable::SetFormula(Formula* formula)
   if (IsPointer()) {
     return GetSameVariable()->SetFormula(formula);
   }
+#ifndef NSBML
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
@@ -495,6 +496,7 @@ bool Variable::SetFormula(Formula* formula)
       delete ASTform;
     }
   }
+#endif
   if (formula->ContainsVar(this)) {
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
     return true;
@@ -531,6 +533,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
   if (IsPointer()) {
     return GetSameVariable()->SetReaction(rxn);
   }
+#ifndef NSBML
   string formstring = rxn->GetFormula()->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
@@ -542,6 +545,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
       delete ASTform;
     }
   }
+#endif
   string err = "When defining reaction '" + GetNameDelimitedBy('.') + "':  ";
   if (rxn->GetLeft()->SetComponentTypesTo(varSpeciesUndef)) {
     g_registry.AddErrorPrefix(err);

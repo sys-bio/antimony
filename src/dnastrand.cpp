@@ -3,6 +3,8 @@
 #include "registry.h"
 #include "variable.h"
 
+using namespace std;
+
 bool DNAStrand::SetDownstream(Variable* var)
 {
   if (var->GetType() == varModule) {

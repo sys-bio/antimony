@@ -21,9 +21,11 @@ Module::Module(string name)
     m_synchronized(),
     m_returnvalue(),
     m_currentexportvar(0),
+#ifndef NSBML
     m_sbml(name + "-unset"),
     m_libsbml_info(""),
     m_libsbml_warnings(""),
+#endif
     m_uniquevars()
 {
 }
@@ -36,9 +38,11 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_synchronized(src.m_synchronized),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
+#ifndef NSBML
     m_sbml(src.m_sbml),
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
     m_libsbml_warnings(),
+#endif
     m_uniquevars()
 {
   SetNewTopName(modulename, newtopname);
@@ -577,6 +581,7 @@ bool Module::Finalize()
     }
   }
 
+#ifndef NSBML
   //Phase 5:  Check SBML compatibility, and create sbml model object.
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
   SBMLDocument sbmldoc;
@@ -618,6 +623,7 @@ bool Module::Finalize()
     return true;
   }
   delete(testdoc);
+#endif
   return false;
 }
 
@@ -820,6 +826,7 @@ string Module::ListAssignmentDifferencesFrom(const Module* origmod, string mname
   return list;
 }
 
+#ifndef NSBML
 void Module::LoadSBML(const Model* sbml)
 {
   string sbmlname = "";
@@ -1184,3 +1191,4 @@ void Module::CreateSBMLModel()
     param->setId(formvar->GetNameDelimitedBy(cc));
   }
 }
+#endif

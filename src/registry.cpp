@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <cstdlib>
 
 #include "formula.h"
 #include "module.h"
@@ -89,6 +90,7 @@ void Registry::ClearAll()
 //Return values:  0: failure, 1: antimony, unread 2: SBML, read
 int Registry::OpenFile(const string filename)
 {
+#ifndef NSBML
   //Try opening as SBML:
   SBMLDocument* document = readSBML(filename.c_str());
   document->checkConsistency();
@@ -108,7 +110,7 @@ int Registry::OpenFile(const string filename)
     return 2;
   }
   delete(document);
-  
+#endif  
   m_files.push_back(filename);
   if (input != NULL) {
     m_oldinputs.push_back(input);
@@ -399,6 +401,7 @@ bool Registry::SetNewCurrentEvent(Formula* trigger)
 bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
 {
   m_currentEvent = var->GetName();
+#ifndef NSBML
   string formstring = trigger->ToSBMLString();
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
@@ -415,6 +418,7 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
       delete ASTform;
     }
   }
+#endif
   AntimonyEvent event(*trigger,var);
   return var->SetEvent(&event);
 }

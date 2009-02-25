@@ -5,7 +5,9 @@
 #include <vector>
 #include <set>
 
+#ifndef NSBML
 #include <sbml/SBMLTypes.h>
+#endif
 
 #include "antimony_api.h"
 #include "variable.h"
@@ -32,9 +34,11 @@ private:
 
   size_t m_currentexportvar;
 
+#ifndef NSBML
   Model m_sbml;
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
+#endif
 
 public:
 
@@ -72,7 +76,7 @@ public:
   std::string GetVariableNameDelimitedBy(char cc) const;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > GetSyncronized() const {return m_synchronized;};
   std::string ToString() const;
-  std::string GetAntimony(set<const Module*> usedmods, bool funcsincluded) const;
+  std::string GetAntimony(std::set<const Module*> usedmods, bool funcsincluded) const;
   std::string GetJarnacReactions() const;
   std::string GetJarnacVarFormulas() const;
   std::string GetJarnacConstFormulas(std::string modulename) const;
@@ -80,8 +84,10 @@ public:
 
   //Output for the API
   bool Finalize();
+#ifndef NSBML
   std::string GetSBMLInfo() const {return m_libsbml_info;};
   std::string GetSBMLWarnings() const {return m_libsbml_warnings;};
+#endif
   size_t GetNumVariablesOfType(return_type rtype) const;
   const Variable* GetNthVariableOfType(return_type rtype, size_t n) const;
   bool   AreEquivalent(return_type rtype, var_type vtype) const;
@@ -89,9 +95,11 @@ public:
 
   std::string ListSynchronizedVariables(std::string indent) const;
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
+#ifndef NSBML
   void  LoadSBML(const Model* sbml);
   Model GetSBMLModel();
   void  CreateSBMLModel();
+#endif
 };
 
 #include "userfunction.h"

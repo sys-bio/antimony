@@ -1,4 +1,6 @@
+#ifndef NSBML
 #include <sbml/SBMLTypes.h>
+#endif
 
 class UserFunction : public Module
 {
@@ -6,7 +8,7 @@ private:
   Formula m_formula;
 
 public:
-  UserFunction(string name);
+  UserFunction(std::string name);
   ~UserFunction() {};
 
   bool SetFormula(const Formula& formula);

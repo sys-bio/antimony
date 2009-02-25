@@ -1,18 +1,26 @@
+#include <iostream>
+
 #include "antimony_api.h"
 #include "registry.h"
 #include "stringx.h"
+
+using namespace std;
 
 int main(int argc, char** argv)
 {
   //yydebug = 1;
   int retval = 0;
   for (long file=1; file<argc; file++) {
+#ifndef NSBML
     if (strstr(argv[file], ".xml") != NULL) {
       retval = loadSBMLFile(argv[file]);
     }
     else {
       retval=loadFile(argv[file]);
     }
+#else
+    retval=loadFile(argv[file]);
+#endif
     if (retval == -1) {
       cout << getLastError() << endl;
     }
@@ -58,12 +66,14 @@ int main(int argc, char** argv)
       else {
         cout << "Problem writing file " << antname.c_str() << endl;
       }
+#ifndef NSBML
       if (writeSBMLFile(sbmlname.c_str(), modnames[mod])) {
         cout << "Successfully wrote file " << sbmlname.c_str() << endl;
       }
       else {
         cout << "Problem writing file " << sbmlname.c_str() << endl;
       }
+#endif
       if (writeJarnacFile(jarname.c_str(), modnames[mod])) {
         cout << "Successfully wrote file " << jarname.c_str() << endl;
       }
@@ -84,8 +94,10 @@ int main(int argc, char** argv)
     else {
       cout << argv[1] << " re-read successfully ." << endl;
     }
+#ifndef NSBML
     cout << "SBML Info from main module in last file:" << endl << getSBMLInfoMessages("__main") << endl;
     cout << "SBML Warning messages from main module in last file:" << endl << getSBMLWarnings("__main") << endl;
+#endif
   }
   else {
     cout << "No files specified." << endl;
