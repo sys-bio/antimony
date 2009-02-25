@@ -1,60 +1,121 @@
 CPPFLAGS = -Wall -ggdb
-LIBRARYFLAGS = -L/usr/local/lib -lsbml
+LIBRARYFLAGS = -L/usr/local/lib -Llib -lsbml
+src_dir = src/
+lib_dir = lib/
+YPPFILES = $(src_dir)antimony.ypp
 
-antimony : antimony.tab.o antimony_api.o dnastrand.o event.o formula.o module.o rd_type.o reactantlist.o reaction.o registry.o sbmlx.o stringx.o userfunction.o variable.o Antimony.o
-	g++ -o antimony -lm $(CPPFLAGS) $(LIBRARYFLAGS) antimony.tab.o antimony_api.o dnastrand.o event.o formula.o module.o rd_type.o reactantlist.o reaction.o registry.o sbmlx.o stringx.o userfunction.o variable.o Antimony.o
+CPPFILES = $(src_dir)antimony_api.cpp \
+	$(src_dir)Antimony.cpp \
+	$(src_dir)antimony.tab.cpp \
+	$(src_dir)dnastrand.cpp \
+	$(src_dir)event.cpp \
+	$(src_dir)formula.cpp \
+	$(src_dir)module.cpp \
+	$(src_dir)rd_type.cpp \
+	$(src_dir)reactantlist.cpp \
+	$(src_dir)reaction.cpp \
+	$(src_dir)registry.cpp \
+	$(src_dir)sbmlx.cpp \
+	$(src_dir)stringx.cpp \
+	$(src_dir)testantimony.cpp \
+	$(src_dir)userfunction.cpp \
+	$(src_dir)variable.cpp
 
-antimony.tar.gz : antimony.ypp antimony.tab.cpp antimony_api.cpp antimony_api.h dnastrand.cpp dnastrand.h event.cpp event.h formula.cpp formula.h libutil.h module.cpp module.h rd_type.cpp rd_type.h reactantlist.cpp reactantlist.h reaction.cpp reaction.h registry.cpp registry.h sbmlx.cpp sbmlx.h stringx.cpp stringx.h userfunction.cpp userfunction.o variable.cpp variable.h Antimony.cpp Makefile documentation.txt 
-	tar -cvf antimony.tar antimony.ypp antimony.tab.cpp antimony_api.cpp antimony_api.h dnastrand.cpp dnastrand.h event.cpp event.h formula.cpp formula.h libutil.h module.cpp module.h rd_type.cpp rd_type.h reactantlist.cpp reactantlist.h reaction.cpp reaction.h registry.cpp registry.h sbmlx.cpp sbmlx.h stringx.cpp stringx.h userfunction.cpp userfunction.h variable.cpp variable.h Antimony.cpp Makefile documentation.txt
+HFILES = $(src_dir)antimony_api.h \
+	$(src_dir)dnastrand.h \
+	$(src_dir)event.h \
+	$(src_dir)formula.h \
+	$(src_dir)libutil.h \
+	$(src_dir)module.h \
+	$(src_dir)rd_type.h \
+	$(src_dir)reactantlist.h \
+	$(src_dir)reaction.h \
+	$(src_dir)registry.h \
+	$(src_dir)sbmlx.h \
+	$(src_dir)stringx.h \
+	$(src_dir)userfunction.h \
+	$(src_dir)variable.h
+
+LIBOFILES = $(src_dir)antimony_api.o \
+	$(src_dir)antimony.tab.o \
+	$(src_dir)dnastrand.o \
+	$(src_dir)event.o \
+	$(src_dir)formula.o \
+	$(src_dir)module.o \
+	$(src_dir)rd_type.o \
+	$(src_dir)reactantlist.o \
+	$(src_dir)reaction.o \
+	$(src_dir)registry.o \
+	$(src_dir)sbmlx.o \
+	$(src_dir)stringx.o \
+	$(src_dir)userfunction.o \
+	$(src_dir)variable.o
+
+DOCFILES = $(doc_dir)Tutorial.odt \
+	$(doc_dir)Tutorial.pdf \
+	$(doc_dir)technical_spec.html
+
+#Executables:
+testantimony : $(lib_dir)libantimony.a $(src_dir)testantimony.o
+	g++ -o testantimony $(src_dir)testantimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS) -lantimony
+
+antimony2sbml : $(lib_dir)libantimony.a $(src_dir)antimony2sbml.o
+	g++ -o antimony2sbml $(src_dir)antimony2sbml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS) -lantimony
+
+sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
+	g++ -o sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS) -lantimony
+
+all : testantimony antimony2sbml sbml2antimony
+
+#The distribution zip file.
+antimony.tar.gz : $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) Makefile 
+	tar -cvf antimony.tar $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) Makefile
 	gzip -f antimony.tar
 
-Antimony.o : Antimony.cpp
-	g++ -c $(CPPFLAGS) Antimony.cpp
+#The library
+$(lib_dir)libantimony.a : $(LIBOFILES)
+	ar -rcs $(lib_dir)libantimony.a $(LIBOFILES)
 
-antimony.tab.o : antimony.tab.cpp
-	g++ -c $(CPPFLAGS) antimony.tab.cpp
 
-antimony_api.o : antimony_api.cpp antimony_api.h formula.h libutil.h module.h rd_type.h registry.h sbmlx.h stringx.h
-	g++ -c $(CPPFLAGS) antimony_api.cpp
+#The .o files
+$(src_dir)antimony2sbml.o : $(src_dir)antimony2sbml.cpp
 
-dnastrand.o : dnastrand.cpp dnastrand.h module.h registry.h variable.h
-	g++ -c $(CPPFLAGS) dnastrand.cpp
+$(src_dir)sbml2antimony.o : $(src_dir)sbml2antimony.cpp
 
-event.o : event.cpp event.h formula.h registry.h stringx.h variable.h
-	g++ -c $(CPPFLAGS) event.cpp
+$(src_dir)testantimony.o : $(src_dir)testantimony.cpp $(src_dir)antimony_api.h $(src_dir)registry.h $(src_dir)stringx.h
 
-formula.o : formula.cpp formula.h module.h registry.h variable.h reaction.h
-	g++ -c $(CPPFLAGS) formula.cpp
+$(src_dir)antimony.tab.o : $(src_dir)antimony.tab.cpp
 
-module.o : module.cpp module.h variable.h rd_type.h reaction.h sbmlx.h stringx.h
-	g++ -c $(CPPFLAGS) module.cpp
+$(src_dir)antimony_api.o : $(src_dir)antimony_api.cpp $(src_dir)antimony_api.h $(src_dir)formula.h $(src_dir)libutil.h $(src_dir)module.h $(src_dir)rd_type.h $(src_dir)registry.h $(src_dir)sbmlx.h $(src_dir)stringx.h
 
-rd_type.o : rd_type.cpp rd_type.h
-	g++ -c $(CPPFLAGS) rd_type.cpp
+$(src_dir)dnastrand.o : $(src_dir)dnastrand.cpp $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)registry.h $(src_dir)variable.h
 
-reactantlist.o : reactantlist.cpp reactantlist.h rd_type.h registry.h module.h variable.h reaction.h
-	g++ -c $(CPPFLAGS) reactantlist.cpp
+$(src_dir)event.o : $(src_dir)event.cpp $(src_dir)event.h $(src_dir)formula.h $(src_dir)registry.h $(src_dir)stringx.h $(src_dir)variable.h
 
-reaction.o : reaction.cpp reaction.h reactantlist.h registry.h rd_type.h stringx.h module.h variable.h
-	g++ -c $(CPPFLAGS) reaction.cpp
+$(src_dir)formula.o : $(src_dir)formula.cpp $(src_dir)formula.h $(src_dir)module.h $(src_dir)registry.h $(src_dir)variable.h $(src_dir)reaction.h
 
-registry.o : registry.cpp registry.h dnastrand.h module.h reaction.h reactantlist.h stringx.h formula.h variable.h
-	g++ -c $(CPPFLAGS) registry.cpp
+$(src_dir)module.o : $(src_dir)module.cpp $(src_dir)module.h $(src_dir)variable.h $(src_dir)rd_type.h $(src_dir)reaction.h $(src_dir)sbmlx.h $(src_dir)stringx.h
 
-stringx.o : stringx.cpp stringx.h
-	g++ -c $(CPPFLAGS) stringx.cpp
+$(src_dir)rd_type.o : $(src_dir)rd_type.cpp $(src_dir)rd_type.h
 
-sbmlx.o : sbmlx.cpp sbmlx.h
-	g++ -c $(CPPFLAGS) sbmlx.cpp
+$(src_dir)reactantlist.o : $(src_dir)reactantlist.cpp $(src_dir)reactantlist.h $(src_dir)rd_type.h $(src_dir)registry.h $(src_dir)module.h $(src_dir)variable.h $(src_dir)reaction.h
 
-userfunction.o : userfunction.cpp module.h formula.h
-	g++ -c $(CPPFLAGS) userfunction.cpp
+$(src_dir)reaction.o : $(src_dir)reaction.cpp $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)registry.h $(src_dir)rd_type.h $(src_dir)stringx.h $(src_dir)module.h $(src_dir)variable.h
 
-variable.o : variable.cpp variable.h dnastrand.h module.h rd_type.h registry.h event.h formula.h reaction.h
-	g++ -c $(CPPFLAGS) variable.cpp
+$(src_dir)registry.o : $(src_dir)registry.cpp $(src_dir)registry.h $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)stringx.h $(src_dir)formula.h $(src_dir)variable.h
 
-antimony.tab.cpp : antimony.ypp antimony_api.h registry.h rd_type.h module.h variable.h reaction.h stringx.h
-	bison --verbose antimony.ypp
+$(src_dir)stringx.o : $(src_dir)stringx.cpp $(src_dir)stringx.h
+
+$(src_dir)sbmlx.o : $(src_dir)sbmlx.cpp $(src_dir)sbmlx.h
+
+$(src_dir)userfunction.o : $(src_dir)userfunction.cpp $(src_dir)module.h $(src_dir)formula.h
+
+$(src_dir)variable.o : $(src_dir)variable.cpp $(src_dir)variable.h $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)rd_type.h $(src_dir)registry.h $(src_dir)event.h $(src_dir)formula.h $(src_dir)reaction.h
+
+$(src_dir)antimony.tab.cpp : $(src_dir)antimony.ypp $(src_dir)registry.h $(src_dir)module.h
+	bison --verbose -o$(src_dir)antimony.tab.cpp $(src_dir)antimony.ypp
+
+
 
 clean :
-	rm antimony *.o
+	rm src/*.o lib/libantimony.a testantimony sbml2antimony antimony2sbml

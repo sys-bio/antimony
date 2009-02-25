@@ -830,7 +830,7 @@ void Module::LoadSBML(const Model* sbml)
     const FunctionDefinition* function = sbml->getFunctionDefinition(func);
     sbmlname = getNameFromSBMLObject(function, "_F");
     g_registry.NewUserFunction(&sbmlname);
-    string formulastring(SBML_formulaToString(function->getBody()));
+    string formulastring(SBML_formulaToString(function->getMath()));
     size_t charbit = formulastring.find("lambda(");
     if (charbit != string::npos) {
       formulastring.erase(charbit, 7);
