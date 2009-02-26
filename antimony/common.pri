@@ -4,6 +4,9 @@ unix:LIBSBML_DIR=/usr/local/lib
 mac:LIBSBML_DIR=/usr/local/lib
 }
 
+# NSBML around here
+
+
 message("using libsbml from: $${LIBSBML_DIR}")
 
 win32:INCLUDEPATH += "$${LIBSBML_DIR}\include" "$${LIBSBML_DIR}\include/sbml"
