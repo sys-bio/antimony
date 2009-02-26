@@ -42,7 +42,6 @@ SOURCES += src/Antimony.cpp \
            src/registry.cpp \
            src/sbmlx.cpp \
            src/stringx.cpp \
-           src/testantimony.cpp \
            src/userfunction.cpp \
            src/variable.cpp
 		   
