@@ -1,1 +1,1 @@
-for i in *.pro ;do  qmake $i && make; done
+for i in *.pro ;do  qmake $i -o QMakeFile && make -f QMakeFile; done
