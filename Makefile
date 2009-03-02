@@ -28,28 +28,29 @@ CPPFILES = $(src_dir)antimony_api.cpp \
 	$(src_dir)event.cpp \
 	$(src_dir)formula.cpp \
 	$(src_dir)module.cpp \
-	$(src_dir)rd_type.cpp \
 	$(src_dir)reactantlist.cpp \
 	$(src_dir)reaction.cpp \
 	$(src_dir)registry.cpp \
 	$(src_dir)sbmlx.cpp \
 	$(src_dir)stringx.cpp \
 	$(src_dir)testantimony.cpp \
+	$(src_dir)typex.cpp \
 	$(src_dir)userfunction.cpp \
 	$(src_dir)variable.cpp
 
 HFILES = $(src_dir)antimony_api.h \
 	$(src_dir)dnastrand.h \
+	$(src_dir)enums.h \
 	$(src_dir)event.h \
 	$(src_dir)formula.h \
 	$(src_dir)libutil.h \
 	$(src_dir)module.h \
-	$(src_dir)rd_type.h \
 	$(src_dir)reactantlist.h \
 	$(src_dir)reaction.h \
 	$(src_dir)registry.h \
 	$(src_dir)sbmlx.h \
 	$(src_dir)stringx.h \
+	$(src_dir)typex.h \
 	$(src_dir)userfunction.h \
 	$(src_dir)variable.h
 
@@ -59,12 +60,12 @@ LIBOFILES = $(src_dir)antimony_api.o \
 	$(src_dir)event.o \
 	$(src_dir)formula.o \
 	$(src_dir)module.o \
-	$(src_dir)rd_type.o \
 	$(src_dir)reactantlist.o \
 	$(src_dir)reaction.o \
 	$(src_dir)registry.o \
 	$(src_dir)sbmlx.o \
 	$(src_dir)stringx.o \
+	$(src_dir)typex.o \
 	$(src_dir)userfunction.o \
 	$(src_dir)variable.o
 
@@ -112,21 +113,21 @@ $(src_dir)testantimony.o : $(src_dir)testantimony.cpp $(src_dir)antimony_api.h $
 
 $(src_dir)antimony.tab.o : $(src_dir)antimony.tab.cpp
 
-$(src_dir)antimony_api.o : $(src_dir)antimony_api.cpp $(src_dir)antimony_api.h $(src_dir)formula.h $(src_dir)libutil.h $(src_dir)module.h $(src_dir)rd_type.h $(src_dir)registry.h $(src_dir)sbmlx.h $(src_dir)stringx.h
+$(src_dir)antimony_api.o : $(src_dir)antimony_api.cpp $(src_dir)antimony_api.h $(src_dir)formula.h $(src_dir)libutil.h $(src_dir)module.h $(src_dir)enums.h $(src_dir)registry.h $(src_dir)sbmlx.h $(src_dir)stringx.h $(src_dir)typex.h
 
-$(src_dir)dnastrand.o : $(src_dir)dnastrand.cpp $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)registry.h $(src_dir)variable.h
+$(src_dir)dnastrand.o : $(src_dir)dnastrand.cpp $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)registry.h $(src_dir)variable.h $(src_dir)typex.h
 
 $(src_dir)event.o : $(src_dir)event.cpp $(src_dir)event.h $(src_dir)formula.h $(src_dir)registry.h $(src_dir)stringx.h $(src_dir)variable.h
 
 $(src_dir)formula.o : $(src_dir)formula.cpp $(src_dir)formula.h $(src_dir)module.h $(src_dir)registry.h $(src_dir)variable.h $(src_dir)reaction.h
 
-$(src_dir)module.o : $(src_dir)module.cpp $(src_dir)module.h $(src_dir)variable.h $(src_dir)rd_type.h $(src_dir)reaction.h $(src_dir)sbmlx.h $(src_dir)stringx.h
+$(src_dir)module.o : $(src_dir)module.cpp $(src_dir)module.h $(src_dir)variable.h $(src_dir)enums.h $(src_dir)reaction.h $(src_dir)sbmlx.h $(src_dir)stringx.h $(src_dir)typex.h
 
-$(src_dir)rd_type.o : $(src_dir)rd_type.cpp $(src_dir)rd_type.h
+$(src_dir)typex.o : $(src_dir)typex.cpp $(src_dir)enums.h $(src_dir)typex.h
 
-$(src_dir)reactantlist.o : $(src_dir)reactantlist.cpp $(src_dir)reactantlist.h $(src_dir)rd_type.h $(src_dir)registry.h $(src_dir)module.h $(src_dir)variable.h $(src_dir)reaction.h
+$(src_dir)reactantlist.o : $(src_dir)reactantlist.cpp $(src_dir)reactantlist.h $(src_dir)enums.h $(src_dir)registry.h $(src_dir)module.h $(src_dir)variable.h $(src_dir)reaction.h
 
-$(src_dir)reaction.o : $(src_dir)reaction.cpp $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)registry.h $(src_dir)rd_type.h $(src_dir)stringx.h $(src_dir)module.h $(src_dir)variable.h
+$(src_dir)reaction.o : $(src_dir)reaction.cpp $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)registry.h $(src_dir)enums.h $(src_dir)stringx.h $(src_dir)module.h $(src_dir)variable.h $(src_dir)typex.h
 
 $(src_dir)registry.o : $(src_dir)registry.cpp $(src_dir)registry.h $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)stringx.h $(src_dir)formula.h $(src_dir)variable.h
 
@@ -136,7 +137,7 @@ $(src_dir)sbmlx.o : $(src_dir)sbmlx.cpp $(src_dir)sbmlx.h
 
 $(src_dir)userfunction.o : $(src_dir)userfunction.cpp $(src_dir)module.h $(src_dir)formula.h
 
-$(src_dir)variable.o : $(src_dir)variable.cpp $(src_dir)variable.h $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)rd_type.h $(src_dir)registry.h $(src_dir)event.h $(src_dir)formula.h $(src_dir)reaction.h
+$(src_dir)variable.o : $(src_dir)variable.cpp $(src_dir)variable.h $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)enums.h $(src_dir)registry.h $(src_dir)event.h $(src_dir)formula.h $(src_dir)reaction.h $(src_dir)typex.h
 
 #The bison-generated .cpp file
 $(src_dir)antimony.tab.cpp : $(src_dir)antimony.ypp $(src_dir)registry.h $(src_dir)module.h

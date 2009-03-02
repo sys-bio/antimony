@@ -144,7 +144,7 @@ modulepart:     reaction lineend {}
 
 reaction:       varmaybein ':' reactantList reactionDivider reactantList ';' formula maybein
                 {
-                  Variable* var = g_registry.AddNewReactionToCurrent($3, $4, $5, $7, $1);
+                  Variable* var = g_registry.AddNewReactionToCurrent($4, $7, $1);
                   if (var == NULL) YYABORT;
                   if ($8 != NULL) {
                     if ($1->SetCompartment($8)) YYABORT;
@@ -152,7 +152,7 @@ reaction:       varmaybein ':' reactantList reactionDivider reactantList ';' for
                 }
         |       reactantList reactionDivider reactantList ';' formula maybein
                 {
-                  Variable* var = g_registry.AddNewReactionToCurrent($1, $2, $3, $5);
+                  Variable* var = g_registry.AddNewReactionToCurrent($2, $5);
                   if (var == NULL) YYABORT;
                   if ($6 != NULL) {
                     if (var->SetCompartment($6)) YYABORT;

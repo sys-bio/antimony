@@ -13,7 +13,7 @@
 #include "module.h"
 #include "reactantlist.h"
 #include "reaction.h"
-#include "rd_type.h"
+#include "enums.h"
 
 #define MAINMODULE "__main"
 
@@ -76,8 +76,8 @@ public:
   void AddVariableToCurrentExportList(Variable* export_var);
   bool AddVariableToCurrentImportList(Variable* import_var);
   Variable* AddVariableToCurrent(const std::string* name);
-  Variable* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula);
-  Variable* AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var);
+  Variable* AddNewReactionToCurrent(rd_type divider, Formula* formula);
+  Variable* AddNewReactionToCurrent(rd_type divider, Formula* formula, Variable* var);
   ReactantList* NewBlankReactantList();
   Formula* NewBlankFormula();
   void SetCurrentImportedModule(std::vector<std::string> imod) {m_currentImportedModule = imod;}
@@ -132,7 +132,7 @@ public:
   std::vector<char***>  m_charstarstarstars;
   std::vector<double*>  m_doublestars;
   std::vector<double**> m_doublestarstars;
-  std::vector<size_t*>  m_size_tstars;
+  std::vector<unsigned long*> m_ulongstars;
   std::vector<rd_type*> m_rd_typestars;
   void FreeAll();
 };

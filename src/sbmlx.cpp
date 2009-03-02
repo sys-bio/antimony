@@ -77,5 +77,54 @@ void setFormulaWithString(string formulastring, Formula* formula)
     formula->AddText(&formpart);
   }
 }
-
 #endif
+
+//SBML models might have variable names in them that are reserved keywords in Antimony (like 'compartment', to take a huge example).  FixName fixes this so that you can output readable Antimony again.
+void FixName(std::string& name)
+{
+  //This list courtesy libSBML, MathML.cpp, MATHML_ELEMENTS, plus "pow", in honor of Batman.
+  // (Ok, other extras (post-xor) from ASTNode.cpp)
+  const char* keywords[] = {
+  "DNA",
+  "at",
+  "compartment",
+  "const",
+  "end",
+  "event",
+  "ext",
+  "formula",
+  "function",
+  "gene",
+  "import",
+  "in",
+  "is",
+  "model",
+  "module",
+  "operator",
+  "reaction",
+  "species",
+  "var"
+  };
+  for (size_t kw=0; kw<19; kw++) {
+    if (name == keywords[kw]) {
+      name += "_";
+      return;
+    }
+  }
+}
+
+void FixName(std::vector<std::string>& names)
+{
+  for (size_t n=0; n<names.size(); n++) {
+    FixName(names[n]);
+  }
+}
+
+void FixName(std::vector<std::vector<std::string> >& allnames) 
+{
+  for (size_t n=0; n<allnames.size(); n++) {
+    FixName(allnames[n]);
+  }
+}
+
+

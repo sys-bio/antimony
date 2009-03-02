@@ -21,12 +21,13 @@ HEADERS += src/antimony_api.h \
            src/formula.h \
            src/libutil.h \
            src/module.h \
-           src/rd_type.h \
+           src/enums.h \
            src/reactantlist.h \
            src/reaction.h \
            src/registry.h \
            src/sbmlx.h \
            src/stringx.h \
+	   src/typex.h \
            src/userfunction.h \
            src/variable.h
 SOURCES += src/Antimony.cpp \
@@ -36,12 +37,13 @@ SOURCES += src/Antimony.cpp \
            src/event.cpp \
            src/formula.cpp \
            src/module.cpp \
-           src/rd_type.cpp \
+           src/typex.cpp \
            src/reactantlist.cpp \
            src/reaction.cpp \
            src/registry.cpp \
            src/sbmlx.cpp \
            src/stringx.cpp \
+	   src/typex.cpp \
            src/userfunction.cpp \
            src/variable.cpp
 		   

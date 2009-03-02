@@ -25,7 +25,7 @@
   * Note that there are many concepts modelled in SBML that are not modelled in libAntimony--as such, libAntimony is not the ideal tool to use to convert SBML models with those concepts included; the excellent libSBML (http://sbml.org/Software/libSBML) should be used instead.  Similarly, the concepts in Antimony not in SBML (the main ones being modularity, interactions, and DNA strands) will be lost when converting to an SBML file, so converting an Antimony file to SBML and back again may be lossy.
   *
   * Return Types
-  * Many of the functions listed below ask for an enum value to determine what kind of symbol you are asking about.  This list is declared in rd_type.h, and is as follows:
+  * Many of the functions listed below ask for an enum value to determine what kind of symbol you are asking about.  This list is declared in enums.h, and is as follows:
          0: allSymbols:        Every symbol of every type in Antimony
          1: allSpecies:        All species, both const (border) and variable.
          2: allFormulas:       All formulas (values defined by an equation), both const and variable.
@@ -60,7 +60,7 @@
 #define ANTIMONY_API_H
 
 #include "libutil.h"
-#include "rd_type.h"
+#include "enums.h"
 
 BEGIN_C_DECLS;
 
@@ -98,7 +98,7 @@ LIB_EXTERN long   loadSBMLFile(const char* filename);
  */
 #endif
 
-LIB_EXTERN size_t getNumFiles();
+LIB_EXTERN unsigned long getNumFiles();
 
 /**
  * Change the 'active' set of modules to the ones from the given index (as received from 'loadFile' or 'loadSBMLFile').  Attempting to revert to a negative or nonexistent index returns 'false' and the previous active set of modules is retained.  A successful change return 'true'.
@@ -119,7 +119,7 @@ LIB_EXTERN char*  getLastError();
 /**
  * Returns the number of modules in the current active set (i.e. the last file successfully loaded, or whichever file was returned to with 'revertTo'
  */
-LIB_EXTERN size_t getNumModules();
+LIB_EXTERN unsigned long getNumModules();
 
 /**
  * Returns an array of all the current module names
@@ -129,7 +129,7 @@ LIB_EXTERN char** getModuleNames();
 /**
  * Returns just the nth module name.  Returns NULL and sets an error if there is no such module n.
  */
-LIB_EXTERN char*  getNthModuleName(size_t n);
+LIB_EXTERN char*  getNthModuleName(unsigned long n);
 
 /**
  * Returns 'true' if the submitted module name exists in the current active set, 'false' if not.
@@ -139,7 +139,7 @@ LIB_EXTERN bool   checkModule(const char* moduleName);
 /**
  * Returns the number of symbols of the given return type (see above).  Useful when looping over the arrays in the subsequent functions.
  */
-LIB_EXTERN size_t getNumSymbolsOfType(const char* moduleName, return_type rtype);
+LIB_EXTERN unsigned long getNumSymbolsOfType(const char* moduleName, return_type rtype);
 
 /**
  * Returns the names of the symbols of the given return type.
@@ -167,32 +167,32 @@ LIB_EXTERN char** getSymbolCompartmentsOfType(const char* moduleName, return_typ
 /**
  * Returns the name of the Nth symbol of the given type.  If no such symbol exists, NULL is returned and an error is set.
  */
-LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rtype, size_t n);
+LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rtype, unsigned long n);
 
 /**
  * Returns the equation associated with the Nth symbol of the given type.  If no equation is set for the symbol in question, an empty string is returned.  If no symbol can be found, NULL is returned and an error is set.
  */
-LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, size_t n);
+LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, unsigned long n);
 
 /**
  * Returns the name of the compartment associated with the nth symbol of the given type.  If no compartment is explicitly set in the file, the string "default_compartment" is returned.  If no symbol can be found, NULL is returned and an error is set.
 */
-LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_type rtype, size_t n);
+LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_type rtype, unsigned long n);
 
 /**
  * Returns the number of reactions (including genes) in the named module.  Useful when looping over all reactions in the arrays returned by subsequent functions.
  */
-LIB_EXTERN size_t getNumReactions(const char* moduleName);
+LIB_EXTERN unsigned long getNumReactions(const char* moduleName);
 
 /**
  * Returns the number of reactants (species on the left side of the reaction) for the given reaction.  If no such reaction is present, '0' is returned and an error is set.  Sadly, if there are no reactants, '0' is also returned, though no error is set.  So you'll have to keep track of this one on your own, most likely.
 */
-LIB_EXTERN size_t getNumReactants(const char* moduleName, size_t rxn);
+LIB_EXTERN unsigned long getNumReactants(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns the number of products (species on the right side of the reaction) for the given reaction.  If no such reaction is present, '0' is returned and an error is set.  Sadly, if there are no products, '0' is also returned, though no error is set.  So you'll have to keep track of this one on your own, too.
  */
-LIB_EXTERN size_t getNumProducts(const char* moduleName, size_t rxn);
+LIB_EXTERN unsigned long getNumProducts(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns all the reactant names for all reactions in the given module.  The dimensions of the included arrays can be found with 'getNumReactions' and 'getNumReactants' (the array is not 'square'--each sub array may have a different length).
@@ -202,7 +202,7 @@ LIB_EXTERN char*** getReactantNames(const char* moduleName);
 /**
  * Returns an array of all the reactant names for the given reaction.  The length of the array can be obtained with 'getNumReactants'.  If no such reaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char**  getNthReactionReactantNames(const char* modulename, size_t rxn);
+LIB_EXTERN char**  getNthReactionReactantNames(const char* modulename, unsigned long rxn);
 
 /**
  * Returns all the product names for all reactions in the given module.  The dimensions of the included arrays can be found with 'getNumReactions' and 'getNumProducts' (the array is not 'square'--each sub array may have a different length).
@@ -212,7 +212,7 @@ LIB_EXTERN char*** getProductNames(const char* moduleName);
 /**
  * Returns an array of all the product names for the given reaction.  The length of the array can be obtained with 'getNumProducts'.  If no such reaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char**  getNthReactionProductNames(const char* modulename, size_t rxn);
+LIB_EXTERN char**  getNthReactionProductNames(const char* modulename, unsigned long rxn);
 
 /**
  * Returns a two-dimensional array of the stoichiometries for all reactants in all reactions in the given module.
@@ -227,29 +227,29 @@ LIB_EXTERN double** getProductStoichiometries(const char* moduleName);
 /**
  * Returns an array of the stoichiometries for the reactants of the Nth reaction in the module.  If no such reaction exists, an error is set and NULL is returned.
  */
-LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName, size_t n);
+LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName, unsigned long n);
 
 /**
  * Returns an array of the stoichiometries for the reactants of the Nth reaction in the module.  If no such reaction exists, an error is set and NULL is returned.
  */
-LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, size_t n);
+LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, unsigned long n);
 
 
 
 /**
  * Returns the number of interactions in the named module.  Useful when looping over all interactions in the arrays returned by subsequent functions.
  */
-LIB_EXTERN size_t getNumInteractions(const char* moduleName);
+LIB_EXTERN unsigned long getNumInteractions(const char* moduleName);
 
 /**
  * Returns the number of interactors (species on the left side of the interaction) for the given interaction.  If no such interaction is present, '0' is returned and an error is set.  Sadly, if there are no interactors, '0' is also returned, though no error is set.  So you'll have to keep track of this one on your own, most likely.
 */
-LIB_EXTERN size_t getNumInteractors(const char* moduleName, size_t rxn);
+LIB_EXTERN unsigned long getNumInteractors(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns the number of interactees (reactions on the right side of the interaction) for the given interaction.  If no such interaction is present, '0' is returned and an error is set.  Sadly, if there are no interactees, '0' is also returned, though no error is set.  So you'll have to keep track of this one on your own, too.
  */
-LIB_EXTERN size_t getNumInteractees(const char* moduleName, size_t rxn);
+LIB_EXTERN unsigned long getNumInteractees(const char* moduleName, unsigned long rxn);
 
 /**
  * Returns all the interactor names for all interactions in the given module.  The dimensions of the included arrays can be found with 'getNumInteractions' and 'getNumInteractors' (the array is not 'square'--each sub array may have a different length).
@@ -259,7 +259,7 @@ LIB_EXTERN char*** getInteractorNames(const char* moduleName);
 /**
  * Returns an array of all the interactor names for the given interaction.  The length of the array can be obtained with 'getNumInteractors'.  If no such interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char**  getNthInteractionInteractorNames(const char* modulename, size_t rxn);
+LIB_EXTERN char**  getNthInteractionInteractorNames(const char* modulename, unsigned long rxn);
 
 /**
  * Returns all the interactee names for all interactions in the given module.  The dimensions of the included arrays can be found with 'getNumInteractions' and 'getNumInteractees' (the array is not 'square'--each sub array may have a different length).
@@ -269,7 +269,7 @@ LIB_EXTERN char*** getInteracteeNames(const char* moduleName);
 /**
  * Returns an array of all the interactee names for the given interaction.  The length of the array can be obtained with 'getNumInteractees'.  If no such interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char**  getNthInteractionInteracteeNames(const char* modulename, size_t rxn);
+LIB_EXTERN char**  getNthInteractionInteracteeNames(const char* modulename, unsigned long rxn);
 
 /**
  * Returns a two-dimensional array of the stoichiometries for all interactors in all interactions in the given module.
@@ -284,22 +284,22 @@ LIB_EXTERN double** getInteracteeStoichiometries(const char* moduleName);
 /**
  * Returns an array of the stoichiometries for the interactors of the Nth interaction in the module.  If no such interaction exists, an error is set and NULL is returned.
  */
-LIB_EXTERN double* getNthInteractionInteractorStoichiometries(const char* moduleName, size_t n);
+LIB_EXTERN double* getNthInteractionInteractorStoichiometries(const char* moduleName, unsigned long n);
 
 /**
  * Returns an array of the stoichiometries for the interactors of the Nth interaction in the module.  If no such interaction exists, an error is set and NULL is returned.
  */
-LIB_EXTERN double* getNthInteractionInteracteeStoichiometries(const char* moduleName, size_t n);
+LIB_EXTERN double* getNthInteractionInteracteeStoichiometries(const char* moduleName, unsigned long n);
 
 /**
- * Returns an array of the dividers for the interactions in the given module.  Valid dividers (defined in rd_type.h) are rdInhibits ("-|"), rdActivates ("-o"), and rdInfluences("-(").  The fourth divider (rdBecomes, "->") is used for reactions, not interactions.
+ * Returns an array of the dividers for the interactions in the given module.  Valid dividers (defined in enums.h) are rdInhibits ("-|"), rdActivates ("-o"), and rdInfluences("-(").  The fourth divider (rdBecomes, "->") is used for reactions, not interactions.
  */
 LIB_EXTERN rd_type* getInteractionDividers(const char* moduleName);
 
 /**
  * Returns the rd_type of the nth interaction in the module.  If no such interaction exists, 'rdBecomes' is returned, and an error is set.  (Recall that no valid interaction can have the divider 'rdBecomes', as that is used for Reactions.)
  */
-LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, size_t n);
+LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, unsigned long n);
 
 /**
  * Returns an N x M stoichiometry matrix where N is the number of reactions in the model, and M is the number of variable species (or 'floating species').
@@ -319,18 +319,18 @@ LIB_EXTERN char**   getStoichiometryMatrixColumnLabels(const char* moduleName);
 /**
  * The number of rows in the stoichiometry matrix (i.e. the number of 'varSpecies').
  */
-LIB_EXTERN size_t   getStoichiometryMatrixNumRows(const char* moduleName);
+LIB_EXTERN unsigned long   getStoichiometryMatrixNumRows(const char* moduleName);
 
 /**
  * The number of columns in the stoichiometry matrix (i.e. the number of 'allReactions').
  */
-LIB_EXTERN size_t   getStoichiometryMatrixNumColumns(const char* moduleName);
+LIB_EXTERN unsigned long   getStoichiometryMatrixNumColumns(const char* moduleName);
 
 
 /**
  * Returns the number of reactions (and hence reaction rates) in the module.  Useful for looping over all reaction rates in the following function.
  */
-LIB_EXTERN size_t   getNumReactionRates(const char* moduleName);
+LIB_EXTERN unsigned long   getNumReactionRates(const char* moduleName);
 
 /**
  * Returns an array of the reaction rates for the given module.  Is the same as 'getSymbolEquationsOfType(moduleName, allReactions)', but is provided for convenience.
@@ -340,13 +340,13 @@ LIB_EXTERN char**   getReactionRates(const char* moduleName);
 /**
  * Returns the reaction rate for the Nth reaction in the module.  If the reaction exists, but its reaction rate has not been set, returns an empty string.  If the reaction does not exist, an error is set, and NULL is returned.
  */
-LIB_EXTERN char*    getNthReactionRate(const char* moduleName, size_t n);
+LIB_EXTERN char*    getNthReactionRate(const char* moduleName, unsigned long n);
 
 
 /**
  * Returns the number of events in the given module.  Useful for subsequent functions that return arrays of information for all events.
  */
-LIB_EXTERN size_t  getNumEvents(const char* moduleName);
+LIB_EXTERN unsigned long  getNumEvents(const char* moduleName);
 
 /**
  * Returns the names of the events in the module.  Is the same as 'getSymbolNamesOfType(moduleName, allEvents)', but is provided for convenience.
@@ -356,43 +356,43 @@ LIB_EXTERN char**  getEventNames(const char* moduleName);
 /**
  * Returns the name of the nth event in the module.
  */
-LIB_EXTERN char*   getNthEventName(const char* moduleName, size_t event);
+LIB_EXTERN char*   getNthEventName(const char* moduleName, unsigned long event);
 
 /**
  * Returns the number of assignments stored in the given event.  Useful when looping through those assignements in functions below.
  */
-LIB_EXTERN size_t  getNumAssignmentsForEvent(const char* moduleName, size_t event);
+LIB_EXTERN unsigned long  getNumAssignmentsForEvent(const char* moduleName, unsigned long event);
 
 /**
  * Returns the trigger for the given event, as an equation that can be interpreted in a boolean context.
  */
-LIB_EXTERN char*   getTriggerForEvent(const char* moduleName, size_t event);
+LIB_EXTERN char*   getTriggerForEvent(const char* moduleName, unsigned long event);
 
 /**
  * Each assignment for an event assigns a formula to a variable.  This function returns the variable in question for the given event and assignment.
  */
-LIB_EXTERN char*   getNthAssignmentVariableForEvent(const char* moduleName, size_t event, size_t n);
+LIB_EXTERN char*   getNthAssignmentVariableForEvent(const char* moduleName, unsigned long event, unsigned long n);
 
 /**
  * Each assignment for an event assigns a formula to a variable.  This function returns the in question in question for the given event and assignment.
  */
-LIB_EXTERN char*   getNthAssignmentEquationForEvent(const char* moduleName, size_t event, size_t n);
+LIB_EXTERN char*   getNthAssignmentEquationForEvent(const char* moduleName, unsigned long event, unsigned long n);
 
 
 /**
  * Returns the number of unique DNA strands in the module, as defined in the Antimony documentation (i.e. the number of physical cassettes of DNA present in the module).  Useful in looping over the arrays returned by functions below.
  */
-LIB_EXTERN size_t  getNumDNAStrands(const char* moduleName);
+LIB_EXTERN unsigned long  getNumDNAStrands(const char* moduleName);
 
 /**
  * Returns an array of DNA strand sizes for all strands in the module.  Useful for looping over the arrays returned by 'getDNAStrands'
  */
-LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName);
+LIB_EXTERN unsigned long* getDNAStrandSizes(const char* moduleName);
 
 /**
  * Returns just the size (in number of components) of the nth DNA strand in the given module.  If no such strand exists, sets an error and returns 0.  This is actually useful here, since all DNA strands otherwise have a size of at least 1.
  */
-LIB_EXTERN size_t getSizeOfNthDNAStrand(const char* moduleName, size_t n);
+LIB_EXTERN unsigned long getSizeOfNthDNAStrand(const char* moduleName, unsigned long n);
 
 /**
  * Returns an array of all DNA strands in the given module as lists of their components.  All components are either Operator objects or Gene objects, depending on whether they have an associated reaction.
@@ -402,22 +402,22 @@ LIB_EXTERN char*** getDNAStrands(const char* moduleName);
 /**
  * Returns an array of names of the components in the nth DNA strand in the given module.  If no such strand exists, sets an error and returns NULL.
  */
-LIB_EXTERN char**  getNthDNAStrand(const char* moduleName, size_t n);
+LIB_EXTERN char**  getNthDNAStrand(const char* moduleName, unsigned long n);
 
 /**
  * Returns whether the given DNA strand was defined to be 'open' (that is, have an attachable end) at the upstream end (if 'upstream' is true) or at the downstream end (if 'upstream' is false).  This allows reproduction of a strand defined by "--X--Y--" vs. "X--Y", etc.
  */
-LIB_EXTERN bool    getIsNthDNAStrandOpen(const char* moduleName, size_t n, bool upstream);
+LIB_EXTERN bool    getIsNthDNAStrandOpen(const char* moduleName, unsigned long n, bool upstream);
 
 /**
  * Returns the sizes (in number of components) of all modular (separately-defined) DNA strands.  Modular strands may contain genes, operators, and other DNA strands.  Useful for looping over the strands in the array returned by getModularDNAStrands.
  */
-LIB_EXTERN size_t  getNumModularDNAStrands(const char* moduleName);
+LIB_EXTERN unsigned long  getNumModularDNAStrands(const char* moduleName);
 
 /**
  * Returns an array of Modular DNA strand sizes for the given module.  Useful for looping over the components in the sub-arrays returned by getModularDNAStrands.
  */
-LIB_EXTERN size_t* getModularDNAStrandSizes(const char* moduleName);
+LIB_EXTERN unsigned long* getModularDNAStrandSizes(const char* moduleName);
 
 /**
  * Returns an array of strands, each of which has an array of the names of the components of that strand.  The components may be operators, genes, and other modular DNA strands. 
@@ -427,12 +427,12 @@ LIB_EXTERN char*** getModularDNAStrands(const char* moduleName);
 /**
  * Returns an array of names of the components in the nth modular DNA strand in the given module.  If no such strand exists, an error is set, and NULL is returned.
  */
-LIB_EXTERN char**  getNthModularDNAStrand(const char* moduleName, size_t n);
+LIB_EXTERN char**  getNthModularDNAStrand(const char* moduleName, unsigned long n);
 
 /**
  * Returns whether the given modular DNA strand was defined to be 'open' (that is, have an attachable end) at the upstream end (if 'upstream' is true) or at the downstream end (if 'upstream' is false).  This allows reproduction of a strand defined by "--X--Y--" vs. "X--Y", etc.
  */
-LIB_EXTERN bool    getIsNthModularDNAStrandOpen(const char* moduleName, size_t n, bool upstream);
+LIB_EXTERN bool    getIsNthModularDNAStrandOpen(const char* moduleName, unsigned long n, bool upstream);
 
 /**
  * Returns the most specific return type available for the given symbolName.  A symbol defined to be a gene, for example, will return 'allGenes' and not 'allReactions', though the symbol does indeed qualify as a reaction.

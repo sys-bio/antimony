@@ -8,7 +8,7 @@
 #include "event.h"
 #include "formula.h"
 #include "reaction.h"
-#include "rd_type.h"
+#include "enums.h"
 
 class Module;
 
@@ -97,6 +97,7 @@ public:
   bool AnyCompartmentLoops() const;
   bool AnyCompartmentLoops(std::vector<const Variable*> lowercomps) const;
   std::string ToString() const;
+  void FixNames();
 };
 
 

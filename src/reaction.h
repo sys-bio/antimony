@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-#include "rd_type.h"
+#include "enums.h"
 #include "reactantlist.h"
 #include "formula.h"
 
@@ -48,6 +48,7 @@ public:
   std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands) const;
   std::string ToDelimitedStringWithEllipses(char cc) const;
   double GetStoichiometryFor(const Variable* var) const;
+  void FixNames();
 };
 
 

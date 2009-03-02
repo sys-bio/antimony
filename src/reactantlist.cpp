@@ -1,6 +1,7 @@
 #include "formula.h"
 #include "reactantlist.h"
 #include "registry.h"
+#include "sbmlx.h"
 #include "stringx.h"
 #include "module.h"
 #include "variable.h"
@@ -135,4 +136,12 @@ const Variable* ReactantList::GetNthReactant(size_t n) const
   Module* module = g_registry.GetModule(m_module);
   assert(module != NULL);
   return module->GetVariable(m_components[n].second);
+}
+
+void ReactantList::FixNames()
+{
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    FixName(m_components[comp].second);
+  }
+  FixName(m_module);
 }

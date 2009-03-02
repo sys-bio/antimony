@@ -3,7 +3,9 @@
 #include "module.h"
 #include "variable.h"
 #include "registry.h"
+#include "sbmlx.h"
 #include "stringx.h"
+#include "typex.h"
 
 using namespace std;
 
@@ -274,7 +276,7 @@ vector<pair<Variable*, size_t> > Variable::GetStrandVars() const
     return GetSameVariable()->GetStrandVars();
   }
   vector<pair<Variable*, size_t> > retval;
-  for (set<vector<string> >::iterator strand = m_strands.begin(); strand != m_strands.end(); strand++) {
+  for (set<vector<string> >::const_iterator strand = m_strands.begin(); strand != m_strands.end(); strand++) {
     Variable* var = g_registry.GetModule(m_module)->GetVariable(*strand);
     assert(var != NULL);
     vector<size_t> occurrences = var->GetDNAStrand()->GetOccurrencesOf(m_name);
@@ -969,4 +971,28 @@ bool Variable::AnyCompartmentLoops(vector<const Variable*> lowercomps) const
 string Variable::ToString() const
 {
   return GetNameDelimitedBy('.') + " (" + VarTypeToString(m_type) + ")";
+}
+
+void Variable::FixNames()
+{
+  FixName(m_name);
+  FixName(m_module);
+  FixName(m_sameVariable);
+  FixName(m_compartment);
+  FixName(m_supercompartment);
+  set<vector<string> > fixedstrands;
+  for (set<vector<string> >::iterator strand=m_strands.begin(); strand != m_strands.end(); strand++) {
+    vector<string> strandcopy = *strand;
+    FixName(strandcopy);
+    fixedstrands.insert(strandcopy);
+  }
+  m_strands = fixedstrands;
+
+  m_valFormula.FixNames();
+  m_valReaction.FixNames();
+  for (size_t mod=0; mod<m_valModule.size(); mod++) {
+    m_valModule[mod].FixNames();
+  }
+  m_valEvent.FixNames();
+  m_valStrand.FixNames();
 }

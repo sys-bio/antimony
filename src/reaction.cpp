@@ -2,7 +2,10 @@
 
 #include "reaction.h"
 #include "registry.h"
-#include "rd_type.h"
+#include "enums.h"
+#include "sbmlx.h"
+#include "stringx.h"
+#include "typex.h"
 #include "module.h"
 #include "variable.h"
 
@@ -147,4 +150,13 @@ double AntimonyReaction::GetStoichiometryFor(const Variable* var) const
   stoich -= m_left.GetStoichiometryFor(var);
   stoich += m_right.GetStoichiometryFor(var);
   return stoich;
+}
+
+void AntimonyReaction::FixNames()
+{
+  FixName(m_name);
+  FixName(m_module);
+  m_left.FixNames();
+  m_right.FixNames();
+  m_formula.FixNames();
 }

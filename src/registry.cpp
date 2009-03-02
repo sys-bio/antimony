@@ -49,7 +49,7 @@ Registry::~Registry()
 
 void Registry::ClearModules()
 {
-  while (!SwitchToPreviousFile());
+  while (!SwitchToPreviousFile()) {}
   if (input) {
     input->close();
     input->clear();
@@ -322,14 +322,14 @@ Variable* Registry::AddVariableToCurrent(const string* name)
   return CurrentModule()->AddOrFindVariable(name);
 }
 
-Variable* Registry::AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula)
+Variable* Registry::AddNewReactionToCurrent(rd_type divider, Formula* formula)
 {
   Variable* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula);
   m_currentReactantLists.clear();
   return retval;
 }
 
-Variable* Registry::AddNewReactionToCurrent(ReactantList* left_react, rd_type divider, ReactantList* right_react, Formula* formula, Variable* var)
+Variable* Registry::AddNewReactionToCurrent(rd_type divider, Formula* formula, Variable* var)
 {
   Variable* retval = CurrentModule()->AddNewReaction(&(m_currentReactantLists[0]), divider, &(m_currentReactantLists[1]), formula, var);
   m_currentReactantLists.clear();
@@ -639,10 +639,10 @@ void Registry::FreeAll()
   }
   m_doublestarstars.clear();
 
-  for (size_t i=0; i<m_size_tstars.size(); i++) {
-    free(m_size_tstars[i]);
+  for (size_t i=0; i<m_ulongstars.size(); i++) {
+    free(m_ulongstars[i]);
   }
-  m_size_tstars.clear();
+  m_ulongstars.clear();
   for (size_t i=0; i<m_rd_typestars.size(); i++) {
     free(m_rd_typestars[i]);
   }

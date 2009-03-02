@@ -33,6 +33,7 @@ public:
   std::string GetNthAssignmentVariableName(size_t n, char cc) const;
   std::string GetNthAssignmentFormulaString(size_t n, char cc, bool SBML) const;
   std::string ToStringDelimitedBy(char cc) const;
+  void FixNames();
 };
 
 
