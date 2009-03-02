@@ -14,6 +14,10 @@ int main(int argc, char** argv)
     cout << "You must supply the filename of a single antimony file and, optionally, may supply a prefix for the SBML file to be written.  You supplied more than that, so I don't know what you meant." << endl;
     return 1;
   }
+  if (loadSBMLFile(argv[1]) != -1) {
+    cout << argv[1] << " is already an SBML file--no conversion is necessary." << endl;
+    return 1;
+  }
   retval=loadFile(argv[1]);
   if (retval == -1) {
     cout << getLastError() << endl;

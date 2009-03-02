@@ -1,6 +1,8 @@
 #include "dnastrand.h"
 #include "module.h"
 #include "registry.h"
+#include "sbmlx.h"
+#include "typex.h"
 #include "variable.h"
 
 using namespace std;
@@ -176,4 +178,10 @@ vector<string> DNAStrand::ToModularStringVecDelimitedBy(char cc) const
     retval.push_back(var->GetNameDelimitedBy(cc));
   }
   return retval;
+}
+
+void DNAStrand::FixNames()
+{
+  FixName(m_strand);
+  FixName(m_module);
 }

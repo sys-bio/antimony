@@ -19,8 +19,6 @@ LIBS += -lantimony -Lbin
 
 # Input
 HEADERS += src/antimony_api.h \
-           src/registry.h \
-           src/sbmlx.h \
-           src/stringx.h 
+           src/enums.h 
 		   
 SOURCES += src/antimony2sbml.cpp 

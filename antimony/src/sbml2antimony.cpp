@@ -1,8 +1,3 @@
-#include "antimony_api.h"
-#include "registry.h"
-#include "stringx.h"
-
-#include <ostream>
 #include <iostream>
 #include "antimony_api.h"
 

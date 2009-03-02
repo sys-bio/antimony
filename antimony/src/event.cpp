@@ -3,6 +3,7 @@
 #include "event.h"
 #include "variable.h"
 #include "registry.h"
+#include "sbmlx.h"
 #include "stringx.h"
 
 using namespace std;
@@ -159,4 +160,15 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
   retval += ";";
   
   return retval;
+}
+
+void AntimonyEvent::FixNames()
+{
+  m_trigger.FixNames();
+  FixName(m_varresults);
+  for (size_t formr=0; formr<m_formresults.size(); formr++) {
+    m_formresults[formr].FixNames();
+  }
+  FixName(m_name);
+  FixName(m_module);
 }

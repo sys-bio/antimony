@@ -1,84 +1,10 @@
-#include "rd_type.h"
+#include <assert.h>
+
+#include "enums.h"
+#include "typex.h"
 
 using namespace std;
 extern bool CaselessStrCmp(const string& lhs, const string& rhs);
-
-std::string RDToString(rd_type type)
-{
-  switch(type) {
-  case rdBecomes:    return "->";
-  case rdActivates:  return "-o";
-  case rdInhibits:   return "-|";
-  case rdInfluences: return "-(";
-  }
-  assert(false); //Forgot to add reaction type;
-  return "";
-}
-
-string VarTypeToString(const var_type vtype)
-{
-  switch(vtype) {
-  case varSpeciesUndef:
-    return "Species";
-  case varFormulaUndef:
-    return "Formula";
-  case varReactionUndef:
-    return "Reaction";
-  case varReactionGene:
-    return "Gene";
-  case varInteraction:
-    return "Interaction";
-  case varFormulaOperator:
-    return "Operator";
-  case varDNA:
-    return "DNA";
-  case varModule:
-    return "Module";
-  case varEvent:
-    return "Event";
-  case varCompartment:
-    return "Compartment";
-  case varStrand:
-    return "Strand";
-  case varUndefined:
-    return "Undefined";
-  }
-  assert(false);
-  return "";
-}
-
-string VarTypeToAntimony(const var_type vtype)
-{
-  switch(vtype) {
-  case varSpeciesUndef:
-    return "species ";
-  case varFormulaUndef:
-    return "formula ";
-  case varReactionUndef:
-    return "reaction ";
-  case varReactionGene:
-    return "gene ";
-  case varInteraction:
-    return "reaction ";
-  case varFormulaOperator:
-    return "operator ";
-  case varDNA:
-    return "DNA ";
-  case varEvent:
-    return "event ";
-  case varCompartment:
-    return "compartment ";
-  case varStrand:
-  case varModule:
-  case varUndefined:
-    assert(false);
-    return "undefinable_type";
-    break;
-  }
-  assert(false); //uncaught type
-  return "undeclared_type";
-}
-
 
 bool IsReaction(const var_type vtype)
 {
@@ -182,6 +108,82 @@ bool HasOrIsFormula(const var_type vtype)
   return false;
 }
 
+std::string RDToString(rd_type type)
+{
+  switch(type) {
+  case rdBecomes:    return "->";
+  case rdActivates:  return "-o";
+  case rdInhibits:   return "-|";
+  case rdInfluences: return "-(";
+  }
+  assert(false); //Forgot to add reaction type;
+  return "";
+}
+
+string VarTypeToString(const var_type vtype)
+{
+  switch(vtype) {
+  case varSpeciesUndef:
+    return "Species";
+  case varFormulaUndef:
+    return "Formula";
+  case varReactionUndef:
+    return "Reaction";
+  case varReactionGene:
+    return "Gene";
+  case varInteraction:
+    return "Interaction";
+  case varFormulaOperator:
+    return "Operator";
+  case varDNA:
+    return "DNA";
+  case varModule:
+    return "Module";
+  case varEvent:
+    return "Event";
+  case varCompartment:
+    return "Compartment";
+  case varStrand:
+    return "Strand";
+  case varUndefined:
+    return "Undefined";
+  }
+  assert(false);
+  return "";
+}
+
+string VarTypeToAntimony(const var_type vtype)
+{
+  switch(vtype) {
+  case varSpeciesUndef:
+    return "species ";
+  case varFormulaUndef:
+    return "formula ";
+  case varReactionUndef:
+    return "reaction ";
+  case varReactionGene:
+    return "gene ";
+  case varInteraction:
+    return "reaction ";
+  case varFormulaOperator:
+    return "operator ";
+  case varDNA:
+    return "DNA ";
+  case varEvent:
+    return "event ";
+  case varCompartment:
+    return "compartment ";
+  case varStrand:
+  case varModule:
+  case varUndefined:
+    assert(false);
+    return "undefinable_type";
+    break;
+  }
+  assert(false); //uncaught type
+  return "undeclared_type";
+}
+
 string ReturnTypeToString(return_type rtype)
 {
   switch(rtype) {
@@ -233,3 +235,4 @@ string ReturnTypeToString(return_type rtype)
   assert(false); //uncaught type
   return "Uncaught type";
 }
+

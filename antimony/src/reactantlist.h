@@ -4,7 +4,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include "rd_type.h"
+#include "enums.h"
 
 class Variable;
 class Formula;
@@ -37,6 +37,7 @@ public:
   double GetStoichiometryFor(const Variable* var) const;
   double GetStoichiometryFor(size_t n) const;
   const Variable* GetNthReactant(size_t n) const;
+  void FixNames();
 };
 
 

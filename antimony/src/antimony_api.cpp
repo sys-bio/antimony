@@ -12,6 +12,9 @@
 #include "registry.h"
 #include "stringx.h"
 #include "sbmlx.h"
+#include "typex.h"
+
+#define DEFAULTCOMP "default_compartment" //Also defined in module.cpp
 
 
 using namespace std;
@@ -30,7 +33,7 @@ char* getCharStar(const char* orig)
   return ret;
 }
 
-char** getCharStarStar(size_t size)
+char** getCharStarStar(unsigned long size)
 {
   char** ret = (char**) malloc(size*sizeof(char*));
   if (ret == NULL) {
@@ -41,7 +44,7 @@ char** getCharStarStar(size_t size)
   return ret;
 }
 
-char*** getCharStarStarStar(size_t size)
+char*** getCharStarStarStar(unsigned long size)
 {
   char*** ret = (char***) malloc(size*sizeof(char**));
   if (ret == NULL) {
@@ -52,7 +55,7 @@ char*** getCharStarStarStar(size_t size)
   return ret;
 }
 
-double* getDoubleStar(size_t size)
+double* getDoubleStar(unsigned long size)
 {
   double* ret = (double*) malloc(size*sizeof(double));
   if (ret == NULL) {
@@ -63,7 +66,7 @@ double* getDoubleStar(size_t size)
   return ret;
 }
 
-double** getDoubleStarStar(size_t size)
+double** getDoubleStarStar(unsigned long size)
 {
   double** ret = (double**) malloc(size*sizeof(double*));
   if (ret == NULL) {
@@ -74,7 +77,7 @@ double** getDoubleStarStar(size_t size)
   return ret;
 }
 
-rd_type* getRDTypeStar(size_t size)
+rd_type* getRDTypeStar(unsigned long size)
 {
   rd_type* ret = (rd_type*) malloc(size*sizeof(rd_type));
   if (ret == NULL) {
@@ -85,18 +88,18 @@ rd_type* getRDTypeStar(size_t size)
   return ret;
 }
 
-size_t* getSizeTStar(size_t size)
+unsigned long* getSizeTStar(unsigned long size)
 {
-  size_t* ret = (size_t*) malloc(size*sizeof(size_t));
+  unsigned long* ret = (unsigned long*) malloc(size*sizeof(unsigned long));
   if (ret == NULL) {
     g_registry.SetError("Out of memory error.");
     return NULL;
   }
-  g_registry.m_size_tstars.push_back(ret);
+  g_registry.m_ulongstars.push_back(ret);
   return ret;
 }
 
-void reportReactionIndexProblem(size_t n, size_t actualsize, const char* moduleName, bool reaction=true)
+void reportReactionIndexProblem(unsigned long n, unsigned long actualsize, const char* moduleName, bool reaction=true)
 {
   string name = "reaction";
   if (!reaction) {
@@ -118,7 +121,7 @@ void reportReactionIndexProblem(size_t n, size_t actualsize, const char* moduleN
   g_registry.SetError(error);
 }
 
-void reportVariableTypeIndexProblem(size_t n, return_type rtype, size_t actualsize, const char* moduleName)
+void reportVariableTypeIndexProblem(unsigned long n, return_type rtype, unsigned long actualsize, const char* moduleName)
 {
   if (rtype == allReactions) {
     return reportReactionIndexProblem(n, actualsize, moduleName);
@@ -202,7 +205,7 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
 }
 #endif
 
-LIB_EXTERN size_t getNumFiles()
+LIB_EXTERN unsigned long getNumFiles()
 {
   return g_registry.GetNumFiles();
 }
@@ -224,19 +227,19 @@ LIB_EXTERN char* getLastError()
 
 LIB_EXTERN char** getModuleNames()
 {
-  size_t nummods = getNumModules();
+  unsigned long nummods = getNumModules();
   char** retval = getCharStarStar(nummods);
   if (retval == NULL) return NULL;
-  for (size_t mod=0; mod<nummods; mod++) {
+  for (unsigned long mod=0; mod<nummods; mod++) {
     retval[mod] = getNthModuleName(mod);
     if (retval[mod] == NULL) return NULL;
   }
   return retval;
 }
 
-LIB_EXTERN char*  getNthModuleName(size_t n)
+LIB_EXTERN char*  getNthModuleName(unsigned long n)
 {
-  size_t nummods = g_registry.GetNumModules();
+  unsigned long nummods = g_registry.GetNumModules();
   if (n >= nummods) {
     string error = "There is no module with index " + SizeTToString(n) + ".";
     if (nummods == 1) {
@@ -255,7 +258,7 @@ LIB_EXTERN char*  getNthModuleName(size_t n)
   return retval;
 }
 
-LIB_EXTERN size_t getNumModules()
+LIB_EXTERN unsigned long getNumModules()
 {
   return g_registry.GetNumModules();
 }
@@ -271,7 +274,7 @@ LIB_EXTERN bool checkModule(const char* moduleName)
     }
     else {
       error += "'" + g_registry.GetNthModuleName(0) + "'";
-      for (size_t mod=1; mod<g_registry.GetNumModules(); mod++) {
+      for (unsigned long mod=1; mod<g_registry.GetNumModules(); mod++) {
         error += ", '" + g_registry.GetNthModuleName(mod) + "'";
       }
     }
@@ -282,7 +285,7 @@ LIB_EXTERN bool checkModule(const char* moduleName)
 }
 
 
-LIB_EXTERN size_t getNumSymbolsOfType(const char* moduleName, return_type rtype)
+LIB_EXTERN unsigned long getNumSymbolsOfType(const char* moduleName, return_type rtype)
 {
   if (!checkModule(moduleName)) return NULL;
   return g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
@@ -291,10 +294,10 @@ LIB_EXTERN size_t getNumSymbolsOfType(const char* moduleName, return_type rtype)
 LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t vnum = getNumSymbolsOfType(moduleName, rtype);
+  unsigned long vnum = getNumSymbolsOfType(moduleName, rtype);
   char** names = getCharStarStar(vnum);
   if (names == NULL) return NULL;
-  for (size_t var=0; var<vnum; var++) {
+  for (unsigned long var=0; var<vnum; var++) {
     names[var] = getNthSymbolNameOfType(moduleName, rtype, var);
     if (names[var] == NULL) return NULL;
   }
@@ -304,10 +307,10 @@ LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype
 LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type rtype)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t vnum = getNumSymbolsOfType(moduleName, rtype);
+  unsigned long vnum = getNumSymbolsOfType(moduleName, rtype);
   char** equations = getCharStarStar(vnum);
   if (equations == NULL) return NULL;
-  for (size_t var=0; var<vnum; var++) {
+  for (unsigned long var=0; var<vnum; var++) {
     equations[var] = getNthSymbolEquationOfType(moduleName, rtype, var);
     if (equations[var]==NULL) return NULL;
   }
@@ -317,52 +320,52 @@ LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type r
 LIB_EXTERN char** getSymbolCompartmentsOfType(const char* moduleName, return_type rtype)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t vnum = getNumSymbolsOfType(moduleName, rtype);
+  unsigned long vnum = getNumSymbolsOfType(moduleName, rtype);
   char** compartments = getCharStarStar(vnum);
   if (compartments == NULL) return NULL;
-  for (size_t var=0; var<vnum; var++) {
+  for (unsigned long var=0; var<vnum; var++) {
     compartments[var] = getNthSymbolCompartmentOfType(moduleName, rtype, var);
     if (compartments[var]==NULL) return NULL;
   }
   return compartments;
 }
 
-LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rtype, size_t n)
+LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rtype, unsigned long n)
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
   if (var==NULL) {
-    size_t numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
+    unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
     reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
   return getCharStar(var->GetNameDelimitedBy(g_registry.GetCC()).c_str());
 }
 
-LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, size_t n)
+LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, unsigned long n)
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
   if (var==NULL) {
-    size_t numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
+    unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
     reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
   return getCharStar(var->GetFormulaStringDelimitedBy(g_registry.GetCC()).c_str());
 }
 
-LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_type rtype, size_t n)
+LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_type rtype, unsigned long n)
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
   if (var==NULL) {
-    size_t numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
+    unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
     reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
   const Variable* compartment = var->GetCompartment();
   if (compartment == NULL) {
-    return getCharStar("default_compartment");
+    return getCharStar(DEFAULTCOMP);
   }
   return getCharStar(compartment->GetNameDelimitedBy(g_registry.GetCC()).c_str());
 }
@@ -370,19 +373,19 @@ LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_t
 
 
 
-LIB_EXTERN size_t getNumReactions(const char* moduleName)
+LIB_EXTERN unsigned long getNumReactions(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
   return getNumSymbolsOfType(moduleName, allReactions);
 }
 
-LIB_EXTERN size_t getNumInteractions(const char* moduleName)
+LIB_EXTERN unsigned long getNumInteractions(const char* moduleName)
 { 
   if (!checkModule(moduleName)) return NULL;
   return getNumSymbolsOfType(moduleName, allInteractions);
 }
 
-size_t getNumReactOrProdForRxnOrInt(const char* moduleName, size_t n, bool reaction, bool reactant)
+unsigned long getNumReactOrProdForRxnOrInt(const char* moduleName, unsigned long n, bool reaction, bool reactant)
 {
   if (!checkModule(moduleName)) return 0;
   return_type rtype = allReactions;
@@ -405,34 +408,34 @@ size_t getNumReactOrProdForRxnOrInt(const char* moduleName, size_t n, bool react
   }
 }
 
-LIB_EXTERN size_t getNumReactants(const char* moduleName, size_t n)
+LIB_EXTERN unsigned long getNumReactants(const char* moduleName, unsigned long n)
 {
   return getNumReactOrProdForRxnOrInt(moduleName, n, true, true);
 }
 
-LIB_EXTERN size_t getNumProducts(const char* moduleName, size_t n)
+LIB_EXTERN unsigned long getNumProducts(const char* moduleName, unsigned long n)
 {
   return getNumReactOrProdForRxnOrInt(moduleName, n, true, false);
 }
 
-LIB_EXTERN size_t getNumInteractors(const char* moduleName, size_t n)
+LIB_EXTERN unsigned long getNumInteractors(const char* moduleName, unsigned long n)
 {
   return getNumReactOrProdForRxnOrInt(moduleName, n, false, true);
 }
 
-LIB_EXTERN size_t getNumInteractees(const char* moduleName, size_t n)
+LIB_EXTERN unsigned long getNumInteractees(const char* moduleName, unsigned long n)
 {
   return getNumReactOrProdForRxnOrInt(moduleName, n, false, false);
 }
 
-char** getNthRxnOrIntReactantOrProductNames(const char* moduleName, size_t n, bool reaction, bool reactant)
+char** getNthRxnOrIntReactantOrProductNames(const char* moduleName, unsigned long n, bool reaction, bool reactant)
 {
   if (!checkModule(moduleName)) return NULL;
   return_type rtype = allReactions;
   if (!reaction) {
     rtype = allInteractions;
   }
-  size_t numlines = getNumSymbolsOfType(moduleName, rtype);
+  unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
   if (n >= numlines) {
     reportReactionIndexProblem(n, numlines, moduleName, reaction);    
   }
@@ -449,7 +452,7 @@ char** getNthRxnOrIntReactantOrProductNames(const char* moduleName, size_t n, bo
     names = rxn->GetReaction()->GetRight()->ToStringVecDelimitedBy(g_registry.GetCC());
   }
   char** retnames = getCharStarStar(names.size());
-  for (size_t name=0; name<names.size(); name++) {
+  for (unsigned long name=0; name<names.size(); name++) {
     char* rname = getCharStar(names[name].c_str());
     if (rname == NULL) return NULL;
     retnames[name] = rname;
@@ -464,10 +467,10 @@ char*** getReactantOrProductNamesForRxnOrInt(const char* moduleName, bool reacti
   if (!reaction) {
     rtype = allInteractions;
   }
-  size_t numlines = getNumSymbolsOfType(moduleName, rtype);
+  unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
   char*** allnames = getCharStarStarStar(numlines);
   if (allnames == NULL) return NULL;
-  for (size_t rxn=0; rxn<numlines; rxn++) {
+  for (unsigned long rxn=0; rxn<numlines; rxn++) {
     char** rxnnames = getNthRxnOrIntReactantOrProductNames(moduleName, rxn, reaction, reactant);
     if (rxnnames == NULL) return NULL;
     allnames[rxn] = rxnnames;
@@ -480,7 +483,7 @@ LIB_EXTERN char*** getReactantNames(const char* moduleName)
   return getReactantOrProductNamesForRxnOrInt(moduleName, true, true);
 }
 
-LIB_EXTERN char** getNthReactionReactantNames(const char* moduleName, size_t n)
+LIB_EXTERN char** getNthReactionReactantNames(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductNames(moduleName, n, true, true);
 }
@@ -490,7 +493,7 @@ LIB_EXTERN char*** getProductNames(const char* moduleName)
   return getReactantOrProductNamesForRxnOrInt(moduleName, true, false);
 }
 
-LIB_EXTERN char** getNthReactionProductNames(const char* moduleName, size_t n)
+LIB_EXTERN char** getNthReactionProductNames(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductNames(moduleName, n, true, false);
 }
@@ -500,7 +503,7 @@ LIB_EXTERN char*** getInteractorNames(const char* moduleName)
   return getReactantOrProductNamesForRxnOrInt(moduleName, false, true);
 }
 
-LIB_EXTERN char** getNthReactionInteractorNames(const char* moduleName, size_t n)
+LIB_EXTERN char** getNthReactionInteractorNames(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductNames(moduleName, n, false, true);
 }
@@ -510,19 +513,19 @@ LIB_EXTERN char*** getInteracteeNames(const char* moduleName)
   return getReactantOrProductNamesForRxnOrInt(moduleName, false, false);
 }
 
-LIB_EXTERN char** getNthReactionInteracteeNames(const char* moduleName, size_t n)
+LIB_EXTERN char** getNthReactionInteracteeNames(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductNames(moduleName, n, false, false);
 }
 
-double* getNthRxnOrIntReactantOrProductStoichiometries(const char* moduleName, size_t n, bool reaction, bool reactant)
+double* getNthRxnOrIntReactantOrProductStoichiometries(const char* moduleName, unsigned long n, bool reaction, bool reactant)
 {
   if (!checkModule(moduleName)) return NULL;
   return_type rtype = allReactions;
   if (!reaction) {
     rtype = allInteractions;
   }
-  size_t numlines = getNumSymbolsOfType(moduleName, rtype);
+  unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
   if (n >= numlines) {
     reportReactionIndexProblem(n, numlines, moduleName, reaction);
     return NULL;
@@ -540,7 +543,7 @@ double* getNthRxnOrIntReactantOrProductStoichiometries(const char* moduleName, s
     stoichiometries = rxn->GetReaction()->GetRight()->GetStoichiometries();
   }
   double* retstoichiometries = getDoubleStar(stoichiometries.size());
-  for (size_t stoichiometry=0; stoichiometry<stoichiometries.size(); stoichiometry++) {
+  for (unsigned long stoichiometry=0; stoichiometry<stoichiometries.size(); stoichiometry++) {
     retstoichiometries[stoichiometry] = stoichiometries[stoichiometry];
   }
   return retstoichiometries;
@@ -553,10 +556,10 @@ double** getReactantOrProductStoichiometriesForRxnOrInt(const char* moduleName, 
   if (!reaction) {
     rtype = allInteractions;
   }
-  size_t numlines = getNumSymbolsOfType(moduleName, rtype);
+  unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
   double** allstoichiometries = getDoubleStarStar(numlines);
   if (allstoichiometries == NULL) return NULL;
-  for (size_t rxn=0; rxn<numlines; rxn++) {
+  for (unsigned long rxn=0; rxn<numlines; rxn++) {
     double* rxnstoichiometries = getNthRxnOrIntReactantOrProductStoichiometries(moduleName, rxn, reaction, reactant);
     if (rxnstoichiometries == NULL) return NULL;
     allstoichiometries[rxn] = rxnstoichiometries;
@@ -569,7 +572,7 @@ LIB_EXTERN double** getReactantStoichiometries(const char* moduleName)
   return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, true, true);
 }
 
-LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName, size_t n)
+LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, true, true);
 }
@@ -579,7 +582,7 @@ LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
   return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, true, false);
 }
 
-LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, size_t n)
+LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, true, false);
 }
@@ -589,7 +592,7 @@ LIB_EXTERN double** getInteractorStoichiometries(const char* moduleName)
   return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, false, true);
 }
 
-LIB_EXTERN double* getNthReactionInteractorStoichiometries(const char* moduleName, size_t n)
+LIB_EXTERN double* getNthReactionInteractorStoichiometries(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, false, true);
 }
@@ -599,7 +602,7 @@ LIB_EXTERN double** getInteracteeStoichiometries(const char* moduleName)
   return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, false, false);
 }
 
-LIB_EXTERN double* getNthReactionInteracteeStoichiometries(const char* moduleName, size_t n)
+LIB_EXTERN double* getNthReactionInteracteeStoichiometries(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, false, false);
 }
@@ -608,17 +611,17 @@ LIB_EXTERN double* getNthReactionInteracteeStoichiometries(const char* moduleNam
 LIB_EXTERN double** getStoichiometryMatrix(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t nspecies   = getNumSymbolsOfType(moduleName, varSpecies);
-  size_t nreactions = getNumSymbolsOfType(moduleName, allReactions);
+  unsigned long nspecies   = getNumSymbolsOfType(moduleName, varSpecies);
+  unsigned long nreactions = getNumSymbolsOfType(moduleName, allReactions);
   double** matrix = getDoubleStarStar(nspecies);
   if (matrix == NULL) return NULL;
-  for (size_t i=0; i<nspecies; i++) {
+  for (unsigned long i=0; i<nspecies; i++) {
     matrix[i] = getDoubleStar(nreactions);
     if (matrix[i] == NULL) return NULL;
   }
-  for (size_t rxn=0; rxn<nreactions; rxn++) {
+  for (unsigned long rxn=0; rxn<nreactions; rxn++) {
     const AntimonyReaction* reaction = g_registry.GetModule(moduleName)->GetNthVariableOfType(allReactions, rxn)->GetReaction();
-    for (size_t sp=0; sp<nspecies; sp++) {
+    for (unsigned long sp=0; sp<nspecies; sp++) {
       const Variable* species = g_registry.GetModule(moduleName)->GetNthVariableOfType(varSpecies, sp);
       matrix[sp][rxn] = reaction->GetStoichiometryFor(species);
     }
@@ -636,12 +639,12 @@ LIB_EXTERN char**   getStoichiometryMatrixRowLabels(const char* moduleName)
   return getSymbolNamesOfType(moduleName, varSpecies);
 }
 
-LIB_EXTERN size_t   getStoichiometryMatrixNumRows(const char* moduleName)
+LIB_EXTERN unsigned long   getStoichiometryMatrixNumRows(const char* moduleName)
 {
   return getNumSymbolsOfType(moduleName, varSpecies);
 }
 
-LIB_EXTERN size_t   getStoichiometryMatrixNumColumns(const char* moduleName)
+LIB_EXTERN unsigned long   getStoichiometryMatrixNumColumns(const char* moduleName)
 {
   return getNumSymbolsOfType(moduleName, allReactions);
 }
@@ -651,12 +654,12 @@ LIB_EXTERN char** getReactionRates(const char* moduleName)
   return getSymbolEquationsOfType(moduleName, allReactions);
 }
 
-LIB_EXTERN char*  getNthReactionRate(const char* moduleName, size_t n)
+LIB_EXTERN char*  getNthReactionRate(const char* moduleName, unsigned long n)
 {
   return getNthSymbolEquationOfType(moduleName, allReactions, n);
 }
 
-LIB_EXTERN size_t getNumReactionRates(const char* moduleName)
+LIB_EXTERN unsigned long getNumReactionRates(const char* moduleName)
 {
   return getNumSymbolsOfType(moduleName, allReactions);
 }
@@ -666,7 +669,7 @@ LIB_EXTERN char** getReactionNames(const char* moduleName)
   return getSymbolNamesOfType(moduleName, allReactions);
 }
 
-LIB_EXTERN char*  getNthReactionName(const char* moduleName, size_t n)
+LIB_EXTERN char*  getNthReactionName(const char* moduleName, unsigned long n)
 {
   return getNthSymbolNameOfType(moduleName, allReactions, n);
 }
@@ -674,19 +677,19 @@ LIB_EXTERN char*  getNthReactionName(const char* moduleName, size_t n)
 LIB_EXTERN rd_type* getInteractionDividers(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t numints = g_registry.GetModule(moduleName)->GetNumVariablesOfType(allInteractions);
+  unsigned long numints = g_registry.GetModule(moduleName)->GetNumVariablesOfType(allInteractions);
   rd_type* typelist = getRDTypeStar(numints);
   if (typelist == NULL) return NULL;
-  for (size_t i=0; i<numints; i++) {
+  for (unsigned long i=0; i<numints; i++) {
     typelist[i] = getNthInteractionDivider(moduleName, i);
   }
   return typelist;
 }
 
-LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, size_t n)
+LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, unsigned long n)
 {
   if (!checkModule(moduleName)) return rdBecomes;
-  size_t numlines = getNumSymbolsOfType(moduleName, allInteractions);
+  unsigned long numlines = getNumSymbolsOfType(moduleName, allInteractions);
   if (n >= numlines) {
     reportReactionIndexProblem(n, numlines, moduleName, false);
     return rdBecomes;
@@ -694,7 +697,7 @@ LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, size_t n)
   return g_registry.GetModule(moduleName)->GetNthVariableOfType(allInteractions, n)->GetReaction()->GetType();
 }
 
-LIB_EXTERN size_t getNumEvents(const char* moduleName)
+LIB_EXTERN unsigned long getNumEvents(const char* moduleName)
 {
   return getNumSymbolsOfType(moduleName, allEvents);
 }
@@ -704,12 +707,12 @@ LIB_EXTERN char** getEventNames(const char* moduleName)
   return getSymbolNamesOfType(moduleName, allEvents);
 }
 
-LIB_EXTERN char* getNthEventName(const char* moduleName, size_t eventno)
+LIB_EXTERN char* getNthEventName(const char* moduleName, unsigned long eventno)
 {
   return getNthSymbolNameOfType(moduleName, allEvents, eventno);
 }
 
-LIB_EXTERN size_t getNumAssignmentsForEvent(const char* moduleName, size_t eventno)
+LIB_EXTERN unsigned long getNumAssignmentsForEvent(const char* moduleName, unsigned long eventno)
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
@@ -717,7 +720,7 @@ LIB_EXTERN size_t getNumAssignmentsForEvent(const char* moduleName, size_t event
   return var->GetEvent()->GetNumAssignments();
 }
 
-LIB_EXTERN char* getTriggerForEvent(const char* moduleName, size_t eventno)
+LIB_EXTERN char* getTriggerForEvent(const char* moduleName, unsigned long eventno)
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
@@ -726,7 +729,7 @@ LIB_EXTERN char* getTriggerForEvent(const char* moduleName, size_t eventno)
   return getCharStar(trig.c_str());
 }
 
-LIB_EXTERN char* getNthAssignmentVariableForEvent(const char* moduleName, size_t eventno, size_t n)
+LIB_EXTERN char* getNthAssignmentVariableForEvent(const char* moduleName, unsigned long eventno, unsigned long n)
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
@@ -736,7 +739,7 @@ LIB_EXTERN char* getNthAssignmentVariableForEvent(const char* moduleName, size_t
   return getCharStar(asnt.c_str());
 }
 
-LIB_EXTERN char* getNthAssignmentEquationForEvent(const char* moduleName, size_t eventno, size_t n)
+LIB_EXTERN char* getNthAssignmentEquationForEvent(const char* moduleName, unsigned long eventno, unsigned long n)
 {
   if (!checkModule(moduleName)) return NULL;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
@@ -746,27 +749,27 @@ LIB_EXTERN char* getNthAssignmentEquationForEvent(const char* moduleName, size_t
   return getCharStar(formula.c_str());
 }
 
-LIB_EXTERN size_t getNumDNAStrands(const char* moduleName)
+LIB_EXTERN unsigned long getNumDNAStrands(const char* moduleName)
 {
   return getNumSymbolsOfType(moduleName, expandedStrands);
 }
 
-LIB_EXTERN size_t* getDNAStrandSizes(const char* moduleName)
+LIB_EXTERN unsigned long* getDNAStrandSizes(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t numDNA = getNumDNAStrands(moduleName);
-  size_t* retval = getSizeTStar(numDNA);
+  unsigned long numDNA = getNumDNAStrands(moduleName);
+  unsigned long* retval = getSizeTStar(numDNA);
   if (retval == NULL) return NULL;
-  for (size_t strand=0; strand<numDNA; strand++) {
+  for (unsigned long strand=0; strand<numDNA; strand++) {
     retval[strand] = g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, strand)->GetDNAStrand()->ToExpandedStringVecDelimitedBy(g_registry.GetCC()).size();
   }
   return retval;
 }
 
-LIB_EXTERN size_t getSizeOfNthDNAStrand(const char* moduleName, size_t n)
+LIB_EXTERN unsigned long getSizeOfNthDNAStrand(const char* moduleName, unsigned long n)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t actualsize = getNumDNAStrands(moduleName);
+  unsigned long actualsize = getNumDNAStrands(moduleName);
   if (actualsize <= n) {
     string error = "There is no DNA strand with index " + SizeTToString(n);
     error += " in module ";
@@ -793,20 +796,20 @@ LIB_EXTERN size_t getSizeOfNthDNAStrand(const char* moduleName, size_t n)
 LIB_EXTERN char*** getDNAStrands(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t numDNA = getNumDNAStrands(moduleName);
+  unsigned long numDNA = getNumDNAStrands(moduleName);
   char*** retval = getCharStarStarStar(numDNA);
   if (retval == NULL) return NULL;
-  for (size_t strand=0; strand<numDNA; strand++) {
+  for (unsigned long strand=0; strand<numDNA; strand++) {
     retval[strand] = getNthDNAStrand(moduleName, strand);
     if (retval[strand]==NULL) return NULL;
   }
   return retval;
 }
 
-LIB_EXTERN char** getNthDNAStrand(const char* moduleName, size_t n)
+LIB_EXTERN char** getNthDNAStrand(const char* moduleName, unsigned long n)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t actualsize = getNumDNAStrands(moduleName);
+  unsigned long actualsize = getNumDNAStrands(moduleName);
   if (actualsize <= n) {
     string error = "There is no DNA strand with index " + SizeTToString(n);
     error += " in module ";
@@ -827,17 +830,17 @@ LIB_EXTERN char** getNthDNAStrand(const char* moduleName, size_t n)
     return NULL;
   }
   vector<string> strand = g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, n)->GetDNAStrand()->ToExpandedStringVecDelimitedBy(g_registry.GetCC());
-  size_t dna_length = strand.size();
+  unsigned long dna_length = strand.size();
   char** retval = getCharStarStar(dna_length);
   if (retval == NULL) return NULL;
-  for (size_t dnabit=0; dnabit<dna_length; dnabit++) {
+  for (unsigned long dnabit=0; dnabit<dna_length; dnabit++) {
     retval[dnabit] = getCharStar(strand[dnabit].c_str());;
     if (retval[dnabit] == NULL) return NULL;
   }
   return retval;
 }
 
-LIB_EXTERN bool getIsNthDNAStrandOpen(const char* moduleName, size_t n, bool upstream)
+LIB_EXTERN bool getIsNthDNAStrandOpen(const char* moduleName, unsigned long n, bool upstream)
 {
   const DNAStrand* strand = g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, n)->GetDNAStrand();
   if (upstream) {
@@ -851,27 +854,27 @@ LIB_EXTERN bool getIsNthDNAStrandOpen(const char* moduleName, size_t n, bool ups
 
 
 
-LIB_EXTERN size_t getNumModularDNAStrands(const char* moduleName)
+LIB_EXTERN unsigned long getNumModularDNAStrands(const char* moduleName)
 {
   return getNumSymbolsOfType(moduleName, modularStrands);
 }
 
-LIB_EXTERN size_t* getModularDNAStrandSizes(const char* moduleName)
+LIB_EXTERN unsigned long* getModularDNAStrandSizes(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t numModularDNA = getNumModularDNAStrands(moduleName);
-  size_t* retval = getSizeTStar(numModularDNA);
+  unsigned long numModularDNA = getNumModularDNAStrands(moduleName);
+  unsigned long* retval = getSizeTStar(numModularDNA);
   if (retval == NULL) return NULL;
-  for (size_t strand=0; strand<numModularDNA; strand++) {
+  for (unsigned long strand=0; strand<numModularDNA; strand++) {
     retval[strand] = g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, strand)->GetDNAStrand()->ToModularStringVecDelimitedBy(g_registry.GetCC()).size();
   }
   return retval;
 }
 
-LIB_EXTERN size_t getSizeOfNthModularDNAStrand(const char* moduleName, size_t n)
+LIB_EXTERN unsigned long getSizeOfNthModularDNAStrand(const char* moduleName, unsigned long n)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t actualsize = getNumModularDNAStrands(moduleName);
+  unsigned long actualsize = getNumModularDNAStrands(moduleName);
   if (actualsize <= n) {
     string error = "There is no Modular DNA strand with index " + SizeTToString(n);
     error += " in module ";
@@ -897,20 +900,20 @@ LIB_EXTERN size_t getSizeOfNthModularDNAStrand(const char* moduleName, size_t n)
 LIB_EXTERN char*** getModularDNAStrands(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t numDNA = getNumModularDNAStrands(moduleName);
+  unsigned long numDNA = getNumModularDNAStrands(moduleName);
   char*** retval = getCharStarStarStar(numDNA);
   if (retval == NULL) return NULL;
-  for (size_t strand=0; strand<numDNA; strand++) {
+  for (unsigned long strand=0; strand<numDNA; strand++) {
     retval[strand] = getNthModularDNAStrand(moduleName, strand);
     if (retval[strand]==NULL) return NULL;
   }
   return retval;
 }
 
-LIB_EXTERN char** getNthModularDNAStrand(const char* moduleName, size_t n)
+LIB_EXTERN char** getNthModularDNAStrand(const char* moduleName, unsigned long n)
 {
   if (!checkModule(moduleName)) return NULL;
-  size_t actualsize = getNumModularDNAStrands(moduleName);
+  unsigned long actualsize = getNumModularDNAStrands(moduleName);
   if (actualsize <= n) {
     string error = "There is no Modular DNA strand with index " + SizeTToString(n);
     error += " in module ";
@@ -931,17 +934,17 @@ LIB_EXTERN char** getNthModularDNAStrand(const char* moduleName, size_t n)
     return NULL;
   }
   vector<string> strand = g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, n)->GetDNAStrand()->ToModularStringVecDelimitedBy(g_registry.GetCC());
-  size_t dna_length = strand.size();
+  unsigned long dna_length = strand.size();
   char** retval = getCharStarStar(dna_length);
   if (retval == NULL) return NULL;
-  for (size_t dnabit=0; dnabit<dna_length; dnabit++) {
+  for (unsigned long dnabit=0; dnabit<dna_length; dnabit++) {
     retval[dnabit] = getCharStar(strand[dnabit].c_str());;
     if (retval[dnabit] == NULL) return NULL;
   }
   return retval;
 }
 
-LIB_EXTERN bool getIsNthModularDNAStrandOpen(const char* moduleName, size_t n, bool upstream)
+LIB_EXTERN bool getIsNthModularDNAStrandOpen(const char* moduleName, unsigned long n, bool upstream)
 {
   const DNAStrand* strand = g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, n)->GetDNAStrand();
   if (upstream) {
@@ -1005,7 +1008,7 @@ LIB_EXTERN char* getCompartmentForSymbol(const char* moduleName, const char* sym
   const Variable* varcomp = var->GetCompartment();
   string retval;
   if (varcomp == NULL) {
-    retval = "default_compartment";
+    retval = DEFAULTCOMP;
   }
   else {
     retval = varcomp->GetNameDelimitedBy(g_registry.GetCC());
@@ -1140,22 +1143,22 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   char **symbolnames = getSymbolNamesOfType(moduleName, allSymbols);
   char **symbolequations = getSymbolEquationsOfType(moduleName, allSymbols);
   char **symbolcompartments = getSymbolCompartmentsOfType(moduleName, allSymbols);
-  size_t numvars = getNumSymbolsOfType(moduleName, allSymbols);
-  for (size_t var=0; var<numvars; var++) {
+  unsigned long numvars = getNumSymbolsOfType(moduleName, allSymbols);
+  for (unsigned long var=0; var<numvars; var++) {
     cout << symbolnames[var] << " [" << ReturnTypeToString(getTypeOfSymbol(moduleName, symbolnames[var]));
     string compartmentname(symbolcompartments[var]);
-    if (compartmentname != "default_compartment") {
+    if (compartmentname != DEFAULTCOMP) {
       cout << ", in " << compartmentname.c_str();
     }
     cout << "] : " << symbolequations[var] << endl;
   }
   if (getNumDNAStrands(moduleName) > 0) {
     char ***dnanames = getDNAStrands(moduleName);
-    const size_t *dnanums = getDNAStrandSizes(moduleName);
+    const unsigned long *dnanums = getDNAStrandSizes(moduleName);
     cout << endl << "DNA strands:" << endl;
-    for (size_t strand=0; strand<getNumDNAStrands(moduleName); strand++) {
+    for (unsigned long strand=0; strand<getNumDNAStrands(moduleName); strand++) {
       cout << getNthSymbolNameOfType(moduleName, expandedStrands, strand) << ": ";
-      for (size_t element=0; element<dnanums[strand]; element++) {
+      for (unsigned long element=0; element<dnanums[strand]; element++) {
         if (element != 0 || getIsNthDNAStrandOpen(moduleName, strand, true)) {
           cout << "--";
         }
@@ -1170,11 +1173,11 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
 
   if (getNumModularDNAStrands(moduleName) > getNumDNAStrands(moduleName))  {
     char ***dnanames = getModularDNAStrands(moduleName);
-    const size_t *dnanums = getModularDNAStrandSizes(moduleName);
+    const unsigned long *dnanums = getModularDNAStrandSizes(moduleName);
     cout << endl << "Modular DNA strands:" << endl;
-    for (size_t strand=0; strand<getNumModularDNAStrands(moduleName); strand++) {
+    for (unsigned long strand=0; strand<getNumModularDNAStrands(moduleName); strand++) {
       cout << getNthSymbolNameOfType(moduleName, modularStrands, strand) << ": ";
-      for (size_t element=0; element<dnanums[strand]; element++) {
+      for (unsigned long element=0; element<dnanums[strand]; element++) {
         if (element != 0 || getIsNthModularDNAStrandOpen(moduleName, strand, true)) {
           cout << "--";
         }
@@ -1196,9 +1199,9 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   double **leftrxnstoichs = getReactantStoichiometries(moduleName);
   double **rightrxnstoichs = getProductStoichiometries(moduleName);
 
-  for (size_t rxn=0; rxn<getNumReactions(moduleName); rxn++) {
+  for (unsigned long rxn=0; rxn<getNumReactions(moduleName); rxn++) {
     cout << rxnnames[rxn] << ": ";
-    for (size_t var=0; var<getNumReactants(moduleName,rxn); var++) {
+    for (unsigned long var=0; var<getNumReactants(moduleName,rxn); var++) {
       if (var > 0) {
         cout << " + ";
       }
@@ -1210,7 +1213,7 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
       cout << leftrxnnames[rxn][var];
     }
     cout << " -> ";
-    for (size_t var=0; var<getNumProducts(moduleName,rxn); var++) {
+    for (unsigned long var=0; var<getNumProducts(moduleName,rxn); var++) {
       if (var > 0) {
         cout << " + ";
       }
@@ -1230,13 +1233,13 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   char** columns  = getStoichiometryMatrixColumnLabels(moduleName);
   char** rows     = getStoichiometryMatrixRowLabels(moduleName);
   cout << "\t";
-  for (size_t col=0; col<getStoichiometryMatrixNumColumns(moduleName); col++) {
+  for (unsigned long col=0; col<getStoichiometryMatrixNumColumns(moduleName); col++) {
     cout << "\t" << columns[col];
   }
   cout << endl;
-  for (size_t row=0; row<getStoichiometryMatrixNumRows(moduleName); row++) {
+  for (unsigned long row=0; row<getStoichiometryMatrixNumRows(moduleName); row++) {
     cout << rows[row] << "\t";
-    for (size_t col=0; col<getStoichiometryMatrixNumColumns(moduleName); col++) {
+    for (unsigned long col=0; col<getStoichiometryMatrixNumColumns(moduleName); col++) {
       cout << "\t" << matrix[row][col];
     }
     cout << endl;
@@ -1244,7 +1247,7 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   cout << endl;
 
   cout << "Reaction rates" << endl;
-  for (size_t rate=0; rate<getNumReactionRates(moduleName); rate++) {
+  for (unsigned long rate=0; rate<getNumReactionRates(moduleName); rate++) {
     cout << rxnrates[rate] << endl;
   }
 
@@ -1258,9 +1261,9 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
     double **leftrxnstoichs = getInteractorStoichiometries(moduleName);
     double **rightrxnstoichs = getInteracteeStoichiometries(moduleName);
 
-    for (size_t rxn=0; rxn<getNumInteractions(moduleName); rxn++) {
+    for (unsigned long rxn=0; rxn<getNumInteractions(moduleName); rxn++) {
       cout << rxnnames[rxn] << ": ";
-      for (size_t var=0; var<getNumInteractors(moduleName,rxn); var++) {
+      for (unsigned long var=0; var<getNumInteractors(moduleName,rxn); var++) {
         if (var > 0) {
           cout << " + ";
         }
@@ -1272,7 +1275,7 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
         cout << leftrxnnames[rxn][var];
       }
       cout << " " << RDToString(rxndividers[rxn]).c_str() << " ";
-      for (size_t var=0; var<getNumInteractees(moduleName,rxn); var++) {
+      for (unsigned long var=0; var<getNumInteractees(moduleName,rxn); var++) {
         if (var > 0) {
           cout << " + ";
         }
@@ -1290,9 +1293,9 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
     char** eventnames = getEventNames(moduleName);
     
     cout << endl << "Events" << endl;
-    for (size_t event=0; event<getNumEvents(moduleName); event++) {
+    for (unsigned long event=0; event<getNumEvents(moduleName); event++) {
       cout << eventnames[event] << ": @(" << getTriggerForEvent(moduleName, event) << "): ";
-      for (size_t asnt=0; asnt<getNumAssignmentsForEvent(moduleName, event); asnt++) {
+      for (unsigned long asnt=0; asnt<getNumAssignmentsForEvent(moduleName, event); asnt++) {
         if (asnt > 0) {
           cout << ", ";
         }

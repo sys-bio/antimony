@@ -4,6 +4,7 @@
 #include "module.h"
 #include "registry.h"
 #include "stringx.h"
+#include "sbmlx.h"
 #include "variable.h"
 
 using namespace std;
@@ -346,4 +347,12 @@ vector<vector<string> > Formula::GetVariables() const
     }
   }
   return vars;
+}
+
+void Formula::FixNames()
+{
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    FixName(m_components[comp].first);
+    FixName(m_components[comp].second);
+  }
 }

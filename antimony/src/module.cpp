@@ -8,10 +8,12 @@
 #include "registry.h"
 #include "stringx.h"
 #include "sbmlx.h"
+#include "typex.h"
 
 extern Registry g_registry;
-
 using namespace std;
+
+#define DEFAULTCOMP "default_compartment" //Also defined in antimony_api.cpp
 
 Module::Module(string name)
   : m_modulename(name),
@@ -308,218 +310,6 @@ string Module::GetVariableNameDelimitedBy(char cc) const
   return retval;
 }
 
-string Module::ToString() const
-{
-  string retval = "Module name:  ";
-  retval += m_modulename + "\n" + "Variables: ";
-  if (m_variables.size() > 0) {
-    retval += m_variables[0]->ToString();
-  }
-  for (size_t var=1; var<m_variables.size(); var++) {
-    retval += ",  " + m_variables[var]->ToString();
-  }
-  retval += "\nReactions:  ";
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (IsReaction(m_variables[var]->GetType())) {
-      retval += m_variables[var]->GetReaction()->ToDelimitedStringWithEllipses('.');
-    }
-  }
-  
-  if (m_exportlist.size() > 0) {
-    retval += "\nExported variables: ";
-    for (size_t var=0; var<m_exportlist.size(); var++) {
-      if (var>0) retval += ", ";
-      for (size_t subnum=0; subnum<m_exportlist[var].size(); subnum++) {
-        if (subnum>0) retval += ".";
-        retval += m_exportlist[var][subnum];
-      }
-    }
-    retval += "\n";
-  }
-
-  retval += "\nSubmodules:  ";
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetType() == varModule) {
-      retval += m_variables[var]->GetModule()->ToString();
-    }
-  }
-
-  return retval;
-}
-
-string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) const
-{
-  string retval;
-  char cc = '.';
-  //First, we need any user-defined functions if we don't have them already.  Eventually we'll want to only write out the used ones, but for now, we'll just write them all out LS DEBUG
-
-  if (!funcsincluded) {
-    for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
-      retval += g_registry.GetNthUserFunction(uf)->GetAntimony() + "\n";
-    }
-  }
-  
-  //Now, we need the definitions of any submodules
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetType() == varModule) {
-      const Module* mod = g_registry.GetModule(m_variables[var]->GetModule()->GetModuleName());
-      if (mod==NULL) {
-        g_registry.SetError("Unable to find base module " + m_variables[var]->GetModule()->GetModuleName() + ".");
-        return NULL;
-      }
-      if ((usedmods.insert(mod)).second) {
-        //New module; add it.
-        retval += mod->GetAntimony(usedmods, true) + "\n";
-      }
-    }
-  }
-  string indent = "";
-  //Module definition
-  if (m_modulename != MAINMODULE) {
-    retval += "model " + m_modulename + "(";
-    for (size_t exp=0; exp<m_exportlist.size(); exp++) {
-      if (exp > 0) {
-        retval += ", ";
-      }
-      for (size_t nbit=0; nbit<m_exportlist[exp].size(); nbit++) {
-        if (nbit > 0) retval += ".";
-        retval += m_exportlist[exp][nbit];
-      }
-    }
-    retval += ")\n";
-    indent = "  ";
-  }
-
-  //Variables
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if ((m_variables[var]->GetType() != varModule) &&
-        (m_variables[var]->GetType() != varUndefined) &&
-        (m_variables[var]->GetType() != varStrand) &&
-        (!m_variables[var]->IsPointer())) {
-      retval += indent;
-      switch(m_variables[var]->GetConstType()) {
-      case constVAR:
-        retval += "var ";
-        break;
-      case constCONST:
-        retval += "const ";
-        break;
-      case constDEFAULT:
-        break;
-      }
-      retval += VarTypeToAntimony(m_variables[var]->GetType());
-      retval += m_variables[var]->GetNameDelimitedBy(cc);
-      Variable* compartment = m_variables[var]->GetCompartment();
-      if (compartment != NULL) {
-        if (m_variables[var]->GetIsSetCompartment()) {
-          retval += " in " + compartment->GetNameDelimitedBy(cc);
-        }
-      }
-      retval += ";\n";
-    }
-  }
-
-  //Modules next:
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetType() == varModule) {
-      vector<string> mname = m_variables[var]->GetName();
-      assert(mname.size() == 1);
-      const Module* submod = m_variables[var]->GetModule();
-      retval += indent + mname[0] + ": " + submod->GetModuleName() + "()\n";
-    }
-  }
-  retval += ListSynchronizedVariables(indent);
-  //And now subvariables that have changed names or values in submods.
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetType() == varModule) {
-      vector<string> mname = m_variables[var]->GetName();
-      assert(mname.size() == 1);
-      const Module* submod = m_variables[var]->GetModule();
-      const Module* origmod = g_registry.GetModule(submod->GetModuleName());
-      retval += submod->ListAssignmentDifferencesFrom(origmod, mname[0], indent);
-    }
-  }
-
-  //And now the definitions of all local variables:
-  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
-    const Variable* var = m_variables[vnum];
-    var_type type = var->GetType();
-    if (var->IsPointer()) continue;
-    else if (IsReaction(type) || type == varInteraction) {
-      retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses(cc) + "\n";
-    }
-    else if (type == varEvent) {
-      retval += indent + var->GetEvent()->ToStringDelimitedBy(cc) + "\n";
-    }
-    else if (type == varStrand) {
-      retval += indent + var->GetNameDelimitedBy(cc) + ": " + var->GetDNAStrand()->ToStringDelimitedBy(cc) + "\n";
-    }
-    else if (type != varModule) {
-      const Formula* form = var->GetFormula();
-      if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly()) {
-        retval += indent + var->GetNameDelimitedBy(cc) + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
-      }
-    }
-  }
-
-  //end model definition
-  if (m_modulename != MAINMODULE) {
-    retval += "end\n";
-  }
-  return retval;
-}
-
-string Module::GetJarnacReactions() const
-{
-  string retval;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (IsReaction(m_variables[var]->GetType()) &&
-        !m_variables[var]->IsPointer()) {
-      retval += "  " + m_variables[var]->GetReaction()->ToDelimitedStringWithStrands('_', m_variables[var]->GetStrandVars()) + "\n";
-    }
-    else if (m_variables[var]->GetType() == varModule) {
-      retval += m_variables[var]->GetModule()->GetJarnacReactions();
-    }
-  }
-  return retval;
-}
-
-string Module::GetJarnacVarFormulas() const
-{
-  string retval;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    var_type type = m_variables[var]->GetType();
-    if (!m_variables[var]->IsPointer() &&
-        (HasOrIsFormula(type) && m_variables[var]->HasFormula() && !m_variables[var]->GetIsConst())) {
-      retval += "  ";
-      retval += m_variables[var]->GetNameDelimitedBy('_') + " = ";
-      retval += m_variables[var]->GetFormulaStringDelimitedBy('_') + "\n";
-    }
-    else if (m_variables[var]->GetType() == varModule) {
-      retval += m_variables[var]->GetModule()->GetJarnacVarFormulas();
-    }
-  }
-  return retval;
-}
-
-string Module::GetJarnacConstFormulas(string modulename) const
-{
-  string retval;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    var_type type = m_variables[var]->GetType();
-    if (!m_variables[var]->IsPointer() &&
-        (HasOrIsFormula(type) && m_variables[var]->HasFormula() && m_variables[var]->GetIsConst())) {
-      retval += modulename + ".";
-      retval += m_variables[var]->GetNameDelimitedBy('_') + " = ";
-      retval += m_variables[var]->GetFormulaStringDelimitedBy('_') + "\n";
-    }
-    else if (m_variables[var]->GetType() == varModule) {
-      retval += m_variables[var]->GetModule()->GetJarnacConstFormulas(modulename);
-    }
-  }
-  return retval;
-}
-
 bool Module::Finalize()
 {
   m_uniquevars.clear();
@@ -794,6 +584,248 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   return false;
 }
 
+string Module::ToString() const
+{
+  string retval = "Module name:  ";
+  retval += m_modulename + "\n" + "Variables: ";
+  if (m_variables.size() > 0) {
+    retval += m_variables[0]->ToString();
+  }
+  for (size_t var=1; var<m_variables.size(); var++) {
+    retval += ",  " + m_variables[var]->ToString();
+  }
+  retval += "\nReactions:  ";
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (IsReaction(m_variables[var]->GetType())) {
+      retval += m_variables[var]->GetReaction()->ToDelimitedStringWithEllipses('.');
+    }
+  }
+  
+  if (m_exportlist.size() > 0) {
+    retval += "\nExported variables: ";
+    for (size_t var=0; var<m_exportlist.size(); var++) {
+      if (var>0) retval += ", ";
+      for (size_t subnum=0; subnum<m_exportlist[var].size(); subnum++) {
+        if (subnum>0) retval += ".";
+        retval += m_exportlist[var][subnum];
+      }
+    }
+    retval += "\n";
+  }
+
+  retval += "\nSubmodules:  ";
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() == varModule) {
+      retval += m_variables[var]->GetModule()->ToString();
+    }
+  }
+
+  return retval;
+}
+
+string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) const
+{
+  string retval;
+  char cc = '.';
+  //First, we need any user-defined functions if we don't have them already.  Eventually we'll want to only write out the used ones, but for now, we'll just write them all out LS DEBUG
+
+  if (!funcsincluded) {
+    for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
+      retval += g_registry.GetNthUserFunction(uf)->GetAntimony() + "\n";
+    }
+  }
+  
+  //Now, we need the definitions of any submodules
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() == varModule) {
+      const Module* mod = g_registry.GetModule(m_variables[var]->GetModule()->GetModuleName());
+      if (mod==NULL) {
+        g_registry.SetError("Unable to find base module " + m_variables[var]->GetModule()->GetModuleName() + ".");
+        return NULL;
+      }
+      if ((usedmods.insert(mod)).second) {
+        //New module; add it.
+        retval += mod->GetAntimony(usedmods, true) + "\n";
+      }
+    }
+  }
+  string indent = "";
+  //Module definition
+  if (m_modulename != MAINMODULE) {
+    retval += "model " + m_modulename + "(";
+    for (size_t exp=0; exp<m_exportlist.size(); exp++) {
+      if (exp > 0) {
+        retval += ", ";
+      }
+      for (size_t nbit=0; nbit<m_exportlist[exp].size(); nbit++) {
+        if (nbit > 0) retval += ".";
+        retval += m_exportlist[exp][nbit];
+      }
+    }
+    retval += ")\n";
+    indent = "  ";
+  }
+
+  //Modules next:
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() == varModule) {
+      vector<string> mname = m_variables[var]->GetName();
+      assert(mname.size() == 1);
+      const Module* submod = m_variables[var]->GetModule();
+      retval += indent + mname[0] + ": " + submod->GetModuleName() + "()\n";
+    }
+  }
+  retval += ListSynchronizedVariables(indent);
+  //And now subvariables that have changed names or values in submods.
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() == varModule) {
+      vector<string> mname = m_variables[var]->GetName();
+      assert(mname.size() == 1);
+      const Module* submod = m_variables[var]->GetModule();
+      const Module* origmod = g_registry.GetModule(submod->GetModuleName());
+      retval += submod->ListAssignmentDifferencesFrom(origmod, mname[0], indent);
+    }
+  }
+
+  //And now the definitions of all local variables:
+  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
+    const Variable* var = m_variables[vnum];
+    var_type type = var->GetType();
+    if (var->IsPointer()) continue;
+    else if (IsReaction(type) || type == varInteraction) {
+      retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses(cc) + "\n";
+    }
+    else if (type == varEvent) {
+      retval += indent + var->GetEvent()->ToStringDelimitedBy(cc) + "\n";
+    }
+    else if (type == varStrand) {
+      retval += indent + var->GetNameDelimitedBy(cc) + ": " + var->GetDNAStrand()->ToStringDelimitedBy(cc) + "\n";
+    }
+    else if (type != varModule) {
+      const Formula* form = var->GetFormula();
+      if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly()) {
+        retval += indent + var->GetNameDelimitedBy(cc) + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
+      }
+    }
+  }
+
+  //Variables
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if ((m_variables[var]->GetType() != varModule) &&
+        (m_variables[var]->GetType() != varUndefined) &&
+        (m_variables[var]->GetType() != varStrand) &&
+        (m_variables[var]->GetType() != varEvent) &&
+        (m_variables[var]->GetType() != varFormulaUndef) &&
+        (!m_variables[var]->IsPointer())) {
+      retval += indent;
+      switch(m_variables[var]->GetConstType()) {
+      case constVAR:
+        retval += "var ";
+        break;
+      case constCONST:
+        retval += "const ";
+        break;
+      case constDEFAULT:
+        break;
+      }
+      retval += VarTypeToAntimony(m_variables[var]->GetType());
+      retval += m_variables[var]->GetNameDelimitedBy(cc);
+      Variable* compartment = m_variables[var]->GetCompartment();
+      if (compartment != NULL) {
+        if (m_variables[var]->GetIsSetCompartment()) {
+          retval += " in " + compartment->GetNameDelimitedBy(cc);
+        }
+      }
+      retval += ";\n";
+    }
+  }
+
+  //Const vs. var
+  string conststring = "";
+  string varstring = "";
+  for (size_t var=0; var<m_variables.size(); var++) {
+    switch(m_variables[var]->GetConstType()) {
+    case constVAR:
+      if (varstring != "") {
+        varstring += ", ";
+      }
+      varstring += m_variables[var]->GetNameDelimitedBy(cc);
+      break;
+    case constCONST:
+      if (conststring != "") {
+        conststring += ", ";
+      }
+      conststring += m_variables[var]->GetNameDelimitedBy(cc);
+      break;
+    case constDEFAULT:
+      break;
+    }
+  }
+  if (conststring != "") {
+    retval += indent + "const " + conststring + ";\n";
+  }
+  if (varstring != "") {
+    retval += indent + "var " + varstring + ";\n";
+  }
+
+  //end model definition
+  if (m_modulename != MAINMODULE) {
+    retval += "end\n";
+  }
+  return retval;
+}
+
+string Module::GetJarnacReactions() const
+{
+  string retval;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (IsReaction(m_variables[var]->GetType()) &&
+        !m_variables[var]->IsPointer()) {
+      retval += "  " + m_variables[var]->GetReaction()->ToDelimitedStringWithStrands('_', m_variables[var]->GetStrandVars()) + "\n";
+    }
+    else if (m_variables[var]->GetType() == varModule) {
+      retval += m_variables[var]->GetModule()->GetJarnacReactions();
+    }
+  }
+  return retval;
+}
+
+string Module::GetJarnacVarFormulas() const
+{
+  string retval;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    var_type type = m_variables[var]->GetType();
+    if (!m_variables[var]->IsPointer() &&
+        (HasOrIsFormula(type) && m_variables[var]->HasFormula() && !m_variables[var]->GetIsConst())) {
+      retval += "  ";
+      retval += m_variables[var]->GetNameDelimitedBy('_') + " = ";
+      retval += m_variables[var]->GetFormulaStringDelimitedBy('_') + "\n";
+    }
+    else if (m_variables[var]->GetType() == varModule) {
+      retval += m_variables[var]->GetModule()->GetJarnacVarFormulas();
+    }
+  }
+  return retval;
+}
+
+string Module::GetJarnacConstFormulas(string modulename) const
+{
+  string retval;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    var_type type = m_variables[var]->GetType();
+    if (!m_variables[var]->IsPointer() &&
+        (HasOrIsFormula(type) && m_variables[var]->HasFormula() && m_variables[var]->GetIsConst())) {
+      retval += modulename + ".";
+      retval += m_variables[var]->GetNameDelimitedBy('_') + " = ";
+      retval += m_variables[var]->GetFormulaStringDelimitedBy('_') + "\n";
+    }
+    else if (m_variables[var]->GetType() == varModule) {
+      retval += m_variables[var]->GetModule()->GetJarnacConstFormulas(modulename);
+    }
+  }
+  return retval;
+}
+
 string Module::ListSynchronizedVariables(string indent) const
 {
   char cc = '.';
@@ -861,6 +893,10 @@ void Module::LoadSBML(const Model* sbml)
   for (unsigned int comp=0; comp<sbml->getNumCompartments(); comp++) {
     const Compartment* compartment = sbml->getCompartment(comp);
     sbmlname = getNameFromSBMLObject(compartment, "_C");
+    if (sbmlname == DEFAULTCOMP && compartment->getConstant() && compartment->isSetSize() && compartment->getSize() == 1.0) {
+      break;
+      //LS NOTE: we assume this was created with Antimony, and ignore the auto-generated 'default compartment'
+    }
     Variable* var = AddOrFindVariable(&sbmlname);
     var->SetType(varCompartment);
     Formula* formula = g_registry.NewBlankFormula();
@@ -875,7 +911,13 @@ void Module::LoadSBML(const Model* sbml)
     const Species* species = sbml->getSpecies(spec);
     sbmlname = getNameFromSBMLObject(species, "_S");
     Variable* var = AddOrFindVariable(&sbmlname);
-    var->SetType(varSpeciesUndef);
+    if (species->getConstant()==false || species->getBoundaryCondition()==true) {
+      //Antimony does not have the concept of boundary species that are not constant.  They can be pretty well modeled simply as parameters, however, so we'll do that instead.
+      var->SetType(varFormulaUndef);
+    }
+    else {
+      var->SetType(varSpeciesUndef);
+    }
 
     //Setting the formula
     Formula* formula = g_registry.NewBlankFormula();
@@ -889,14 +931,15 @@ void Module::LoadSBML(const Model* sbml)
     }
     //Anything more complicated is set in a Rule, which we'll get to later.
 
-    //Now we check whether to set it constant or not.  For now, our 'constness' is set
-    // if the species is either 'constant' or a 'boundary condition'
-    if (species->getConstant() || species->getBoundaryCondition()) {
+    if (species->getConstant()) {
+      //Since all species are variable by default, we only set this explicitly if true.
       var->SetIsConst(true);
     }
-    Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
-    compartment->SetType(varCompartment);
-    var->SetCompartment(compartment);
+    if (species->getCompartment() != DEFAULTCOMP) {
+      Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
+      compartment->SetType(varCompartment);
+      var->SetCompartment(compartment);
+    }
   }
 
   //Events:
@@ -948,6 +991,10 @@ void Module::LoadSBML(const Model* sbml)
       string formulastring(SBML_formulaToString(initasnt->getMath()));
       setFormulaWithString(formulastring, formula);
       var->SetFormula(formula);
+      if (var->GetType() != varSpeciesUndef) {
+        //Initial assignments for non-species variables are only used when the variable is supposed to be constant, so we're going to set the constness explicitly here.  This can be overridden by an assignment rule, but that comes next.
+        var->SetIsConst(true);
+      }
     }
     else {
       //LS DEBUG:  error?  The 'symbol' is supposed to be required.
@@ -967,6 +1014,10 @@ void Module::LoadSBML(const Model* sbml)
       string formulastring(SBML_formulaToString(rule->getMath()));
       setFormulaWithString(formulastring, formula);
       var->SetFormula(formula);
+      if (var->GetType() != varSpeciesUndef) {
+        //Assignment rules always mean the variable in question is not constant
+        var->SetIsConst(false);
+      }
     }
     else {
       //LS DEBUG:  error message?  Unable to process algebraic or rate rules
@@ -1025,6 +1076,7 @@ void Module::LoadSBML(const Model* sbml)
     AddNewReaction(&reactants, rdBecomes, &products, formula, var);
   }
   m_sbml = *sbml;
+  FixNames();
 }
 
 Model Module::GetSBMLModel()
@@ -1053,7 +1105,7 @@ void Module::CreateSBMLModel()
   }
   //Compartments
   Compartment* defaultCompartment = m_sbml.createCompartment();
-  defaultCompartment->setId("default_compartment");
+  defaultCompartment->setId(DEFAULTCOMP);
   defaultCompartment->setConstant(true);
   defaultCompartment->setSize(1);
   for (size_t comp=0; comp<GetNumVariablesOfType(allCompartments); comp++) {
@@ -1063,7 +1115,7 @@ void Module::CreateSBMLModel()
     sbmlcomp->setConstant(compartment->GetIsConst());
     const Formula* formula = compartment->GetFormula();
     if (formula->IsDouble()) {
-      sbmlcomp->setSize(atoi(formula->ToDelimitedStringWithEllipses(cc).c_str()));
+      sbmlcomp->setSize(atof(formula->ToDelimitedStringWithEllipses(cc).c_str()));
     }
     else if (!formula->IsEmpty()) {
       AssignmentRule rule(compartment->GetNameDelimitedBy(cc), formula->ToDelimitedStringWithEllipses(cc));
@@ -1083,7 +1135,7 @@ void Module::CreateSBMLModel()
     }
     const Formula* formula = species->GetFormula();
     if (formula->IsDouble()) {
-      sbmlspecies->setInitialConcentration(atoi(formula->ToDelimitedStringWithEllipses(cc).c_str()));
+      sbmlspecies->setInitialConcentration(atof(formula->ToDelimitedStringWithEllipses(cc).c_str()));
     }
     else if (!formula->IsEmpty()) {
       //create a rule
@@ -1109,7 +1161,7 @@ void Module::CreateSBMLModel()
     param->setId(formvar->GetNameDelimitedBy(cc));
     param->setConstant(formvar->GetIsConst());
     if (formula->IsDouble()) {
-      param->setValue(atoi(formula->ToDelimitedStringWithEllipses(cc).c_str()));
+      param->setValue(atof(formula->ToDelimitedStringWithEllipses(cc).c_str()));
     }
     else if (!formula->IsEmpty()) {
       if (formvar->GetIsConst()) {
@@ -1192,3 +1244,19 @@ void Module::CreateSBMLModel()
   }
 }
 #endif
+
+void Module::FixNames()
+{
+  FixName(m_modulename);
+  FixName(m_exportlist);
+  FixName(m_variablename);
+  FixName(m_returnvalue);
+  for (size_t var=0; var<m_variables.size(); var++) {
+    m_variables[var]->FixNames();
+  }
+  for (size_t pair=0; pair<m_synchronized.size(); pair++) {
+    FixName(m_synchronized[pair].first);
+    FixName(m_synchronized[pair].second);
+  }
+  
+}

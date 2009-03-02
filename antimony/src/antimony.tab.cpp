@@ -1911,7 +1911,7 @@ yyreduce:
   case 42:
 #line 146 "src/antimony.ypp"
     {
-                  Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[(3) - (8)].reactantList), (yyvsp[(4) - (8)].reactionDivider), (yyvsp[(5) - (8)].reactantList), (yyvsp[(7) - (8)].formula), (yyvsp[(1) - (8)].variable));
+                  Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[(4) - (8)].reactionDivider), (yyvsp[(7) - (8)].formula), (yyvsp[(1) - (8)].variable));
                   if (var == NULL) YYABORT;
                   if ((yyvsp[(8) - (8)].variable) != NULL) {
                     if ((yyvsp[(1) - (8)].variable)->SetCompartment((yyvsp[(8) - (8)].variable))) YYABORT;
@@ -1922,7 +1922,7 @@ yyreduce:
   case 43:
 #line 154 "src/antimony.ypp"
     {
-                  Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[(1) - (6)].reactantList), (yyvsp[(2) - (6)].reactionDivider), (yyvsp[(3) - (6)].reactantList), (yyvsp[(5) - (6)].formula));
+                  Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[(2) - (6)].reactionDivider), (yyvsp[(5) - (6)].formula));
                   if (var == NULL) YYABORT;
                   if ((yyvsp[(6) - (6)].variable) != NULL) {
                     if (var->SetCompartment((yyvsp[(6) - (6)].variable))) YYABORT;

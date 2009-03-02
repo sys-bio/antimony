@@ -43,6 +43,8 @@ public:
   std::string ToStringDelimitedBy(char cc) const;
   std::vector<std::string> ToExpandedStringVecDelimitedBy(char cc) const;
   std::vector<std::string> ToModularStringVecDelimitedBy(char cc) const;
+
+  void FixNames();
 };
 
 

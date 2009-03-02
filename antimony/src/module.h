@@ -100,6 +100,7 @@ public:
   Model GetSBMLModel();
   void  CreateSBMLModel();
 #endif
+  void  FixNames();
 };
 
 #include "userfunction.h"
