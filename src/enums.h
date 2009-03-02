@@ -1,9 +1,9 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
-enum rd_type {rdBecomes, rdActivates, rdInhibits, rdInfluences};
+enum rd_type {rdBecomes = 0, rdActivates, rdInhibits, rdInfluences};
 
-enum var_type {varSpeciesUndef,
+enum var_type {varSpeciesUndef = 0,
                varFormulaUndef,
                varDNA,
                varFormulaOperator,
@@ -16,7 +16,7 @@ enum var_type {varSpeciesUndef,
                varCompartment,
                varStrand};
 
-enum return_type {allSymbols,
+enum return_type {allSymbols = 0,
                   allSpecies,
                   allFormulas,
                   allDNA,
@@ -39,6 +39,6 @@ enum return_type {allSymbols,
                   expandedStrands,
                   modularStrands};
 
-enum const_type {constDEFAULT, constVAR, constCONST};
+enum const_type {constDEFAULT = 0, constVAR, constCONST};
 
 #endif // ENUMS_H
