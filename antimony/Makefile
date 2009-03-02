@@ -69,9 +69,15 @@ LIBOFILES = $(src_dir)antimony_api.o \
 	$(src_dir)userfunction.o \
 	$(src_dir)variable.o
 
+QMAKEFILES = antimony.pro \
+	antimony2sbml.pro \
+	sbml2antimony.pro \
+	testantimony.pro
+
 DOCFILES = $(doc_dir)Tutorial.odt \
 	$(doc_dir)Tutorial.pdf \
 	$(doc_dir)technical_spec.html \
+	LICENSE.txt
 	README.txt
 
 #Executables:
@@ -95,8 +101,8 @@ sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
 	g++ -o sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 #The distribution zip file.
-antimony.tar.gz : $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) Makefile 
-	tar -cvf antimony.tar $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) Makefile
+antimony.tar.gz : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) Makefile 
+	tar -cvf antimony.tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) Makefile
 	gzip -f antimony.tar
 
 #The library
