@@ -717,6 +717,7 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
         (m_variables[var]->GetType() != varStrand) &&
         (m_variables[var]->GetType() != varEvent) &&
         (m_variables[var]->GetType() != varFormulaUndef) &&
+        (m_variables[var]->GetType() != varReactionUndef) &&
         (!m_variables[var]->IsPointer())) {
       retval += indent;
       switch(m_variables[var]->GetConstType()) {
