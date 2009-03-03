@@ -5,7 +5,7 @@
 include(common.pri)
 
 contains(DEFINES,NSBML){
-	error("Cannot compile antimony2sbml without LIBSBML, but NSBML is defined")
+	error("Cannot compile sbml2antimony without LIBSBML, but NSBML is defined")
 }
 
 TEMPLATE = app

@@ -93,6 +93,7 @@ int Registry::OpenFile(const string filename)
 #ifndef NSBML
   //Try opening as SBML:
   SBMLDocument* document = readSBML(filename.c_str());
+  document->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   document->checkConsistency();
   SBMLErrorLog* log = document->getErrorLog();
   if (log->getNumFailsWithSeverity(2) == 0 && log->getNumFailsWithSeverity(3) == 0) {
