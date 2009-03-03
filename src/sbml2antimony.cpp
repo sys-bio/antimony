@@ -28,18 +28,18 @@ int main(int argc, char** argv)
   if (filename.find(".xml") != string::npos) {
     filename.erase(filename.find(".xml"), 4);
   }
-  for (size_t mod=0; mod<nummods; mod++) {
-    string antimonyname = filename + ".txt";
-    if (argc == 3) {
-      antimonyname = argv[2];
-    }
-    if (writeAntimonyFile(antimonyname.c_str(), modnames[mod])) {
-      cout << "Successfully wrote file " << antimonyname.c_str() << endl;
-    }
-    else {
-      cout << "Problem writing file " << antimonyname.c_str() << endl;
-      return 1;
-    }
+  size_t modnum = nummods-1;
+  string antimonyname = filename;
+  antimonyname += ".txt";
+  if (argc == 3) {
+    antimonyname = argv[2];
+  }
+  if (writeAntimonyFile(antimonyname.c_str(), modnames[modnum])) {
+    cout << "Successfully wrote file " << antimonyname.c_str() << endl;
+  }
+  else {
+    cout << "Problem writing file " << antimonyname.c_str() << endl;
+    return 1;
   }
   freeAll();
   return 0;
