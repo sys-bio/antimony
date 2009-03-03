@@ -1,6 +1,10 @@
 #include <iostream>
 #include "antimony_api.h"
+
+#ifdef WIN32
 #include <conio.h>
+#endif
+
 using namespace std;
 
 int main(int argc, char** argv)
@@ -51,7 +55,10 @@ int main(int argc, char** argv)
   }
   freeAll();
 
-	getch();
+#ifdef WIN32
+  cout << "(Press any key to exit.)" << endl;
+  getch();
+#endif
 
   return 0;
 }
