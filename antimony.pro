@@ -37,7 +37,6 @@ SOURCES += src/Antimony.cpp \
            src/event.cpp \
            src/formula.cpp \
            src/module.cpp \
-           src/typex.cpp \
            src/reactantlist.cpp \
            src/reaction.cpp \
            src/registry.cpp \
