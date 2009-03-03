@@ -46,5 +46,3 @@ SOURCES += src/Antimony.cpp \
 	   src/typex.cpp \
            src/userfunction.cpp \
            src/variable.cpp
-		   
-

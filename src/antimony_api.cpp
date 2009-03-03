@@ -185,6 +185,7 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
 {
   g_registry.ClearModules();
   SBMLDocument* document = readSBML(filename);
+  document->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   document->checkConsistency();
   if (document->getErrorLog()->getNumFailsWithSeverity(2) > 0 || document->getErrorLog()->getNumFailsWithSeverity(3) > 0 ) {
     stringstream errorstream;

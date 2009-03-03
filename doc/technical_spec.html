@@ -32,6 +32,7 @@ Since Antimony is intended to be easy and simple, it is not a requirement to end
 <dt>Antimony files may contain the following, in any order:
 <dt>&lt;<tt><A href="#import statements">import statements</a></tt>&gt;
 <dt>&lt;<tt><A href="#model definitions">model definitions</a></tt>&gt;
+<dt>&lt;<tt><A href="#function definitions">function definitions</a></tt>&gt;
 <dt>&lt;<tt><A href="#declarations">declarations</a></tt>&gt;
 
 </P><P>
@@ -53,12 +54,18 @@ Since Antimony is intended to be easy and simple, it is not a requirement to end
 	<dd>Defines a new model with the name '&lt;<tt><A href="#symbol">symbol</a></tt>&gt;'.  The &lt;<tt><A href="#declarations">declarations</a></tt>&gt; are included in the model, and may define any number of symbols.  The &lt;<tt><A href="#list of exported variables">list of exported variables</a></tt>&gt; may be defined in the &lt;<tt><A href="#declarations">declarations</a></tt>&gt;, and are exported for easy synchronization with models that include the defined model (see &lt;<tt><A href="#imported models">imported models</a></tt>&gt;)
 
 </P><P>
+<dt>&lt;<tt><b><A name="function definitions">function definitions</a></b></tt>&gt;:
+        <dd>One or more lines of the format:
+<dt><TT>function &lt;<tt><A href="#symbol">symbol</a></tt>&gt; ( &lt;<tt><A href="#list of exported variables">list of exported variables</a></tt>&gt; ) [<A href="#return">return</a>] &lt;<tt><A href="#equation">equation</a></tt>&gt; [<A href="#return">return</a>] end</tt>
+	<dd>Once defined, the &lt;<tt><A href="#symbol">symbol</a>&gt;</tt> may be used in subsequent variable definitions in any module as a replacement for the given <tt><A href="#equation">equation</a>&gt;</tt>.  Any &lt;<tt><A href="#symbol">symbol</a>&gt;</tt> appearing in the <tt><A href="#equation">equation</a>&gt;</tt> must appear in the <tt><A href="#list of exported variables">list of exported variables</a>&gt;</tt>.
+
+</P><P>
 <dt>&lt;<tt><b><A name="list of exported variables">list of exported variables</a></b></tt>&gt;:
 	<dd>A comma-separated list of zero or more &lt;<tt><A href="#symbol">symbol</a></tt>&gt; elements.  
 </P><P>
 <dt>&lt;<tt><b><A name="declarations">declarations</a></b></tt>&gt;:
 	<dd>Declarations define elements of a model.  If used outside a model definition, they define elements of the model "__main".  Declarations are the bulk of Antimony-formatted files, and can contain any of the following, separated by a ';' or by a &lt;<tt><A href="#return">return</a></tt>&gt;.
-<dt> &lt;<tt><A href="#blank lines">blank lines</a></tt>&gt;
+<dt>  &lt;<tt><A href="#blank lines">blank lines</a></tt>&gt;
 <dt>  &lt;<tt><A href="#comments">comments</a></tt>&gt;
 <dt>  &lt;<tt><A href="#symbol declarations">symbol declarations</a></tt>&gt;
 <dt>  &lt;<tt><A href="#imported models">imported models</a></tt>&gt;
@@ -229,7 +236,7 @@ Since Antimony is intended to be easy and simple, it is not a requirement to end
 
 </P><P>
 <dt>&lt;<tt><b><A name="function names">function names</a></b></tt>&gt;
-	<dd>Allowable function names are:  "abs", "and", "annotation", "annotation-xml", "apply", "arccos", "arccosh", "arccot", "arccoth", "arccsc", "arccsch", "arcsec", "arcsech", "arcsin", "arcsinh", "arctan", "arctanh", "bvar", "ceiling", "ci", "cn", "cos", "cosh", "cot", "coth", "csc", "csch", "csymbol", "degree", "divide", "eq", "exp", "exponentiale", "factorial", "false", "floor", "geq", "gt", "infinity", "lambda", "leq", "ln", "log", "logbase", "lt", "math", "minus", "neq", "not", "notanumber", "or", "otherwise", "pi", "piece", "piecewise", "plus", "power", "root", "sec", "sech", "semantics", "sep", "sin", "sinh", "tan", "tanh", "times", "true", "xor", "acos", "asin", "atan", "ceil", "delay", "log10", "pow", "sqr", "sqrt"
+	<dd>Allowable function names are:  "abs", "and", "annotation", "annotation-xml", "apply", "arccos", "arccosh", "arccot", "arccoth", "arccsc", "arccsch", "arcsec", "arcsech", "arcsin", "arcsinh", "arctan", "arctanh", "bvar", "ceiling", "ci", "cn", "cos", "cosh", "cot", "coth", "csc", "csch", "csymbol", "degree", "divide", "eq", "exp", "exponentiale", "factorial", "false", "floor", "geq", "gt", "infinity", "lambda", "leq", "ln", "log", "logbase", "lt", "math", "minus", "neq", "not", "notanumber", "or", "otherwise", "pi", "piece", "piecewise", "plus", "power", "root", "sec", "sech", "semantics", "sep", "sin", "sinh", "tan", "tanh", "times", "true", "xor", "acos", "asin", "atan", "ceil", "delay", "log10", "pow", "sqr", and "sqrt".  In addition, any &lt;<tt><A href="#function definitions">function definitions</a></tt>&gt; previously declared may be used.
 
 </P><P>
 <dt>&lt;<tt><b><A name="DNA strand definitions">DNA strand definitions</a></b></tt>&gt;

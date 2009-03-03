@@ -378,6 +378,7 @@ bool Module::Finalize()
   Model sbml = GetSBMLModel();
   sbmldoc.setModel(&sbml);
   SBMLDocument* testdoc = readSBMLFromString(writeSBMLToString(&sbmldoc));
+  testdoc->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   testdoc->checkConsistency();
   SBMLErrorLog* log = testdoc->getErrorLog();
   string trueerrors = "";
