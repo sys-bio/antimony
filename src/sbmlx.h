@@ -6,7 +6,7 @@
 
 class Formula;
 
-string getNameFromSBMLObject(const SBase* sbml, string basename);
+std::string getNameFromSBMLObject(const SBase* sbml, std::string basename);
 void setFormulaWithString(std::string formulastring, Formula* formula);
 #endif
 

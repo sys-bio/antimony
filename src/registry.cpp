@@ -1,3 +1,4 @@
+#include <cassert>
 #include <vector>
 #include <string>
 #include <cstdlib>
