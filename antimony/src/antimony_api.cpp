@@ -1,3 +1,4 @@
+#include <cassert>
 #include <clocale>
 #include <string>
 #include <iostream>

@@ -1,3 +1,4 @@
+#include <cassert>
 #include "formula.h"
 #include "reactantlist.h"
 #include "registry.h"

@@ -1,3 +1,4 @@
+#include <cassert>
 #include "dnastrand.h"
 #include "module.h"
 #include "registry.h"

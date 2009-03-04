@@ -1,3 +1,6 @@
+#include <cassert>
+#include <string>
+#include <vector>
 #ifndef NSBML
 #include "sbmlx.h"
 #include "formula.h"
