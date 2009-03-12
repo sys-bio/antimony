@@ -4,11 +4,12 @@
 
 #otherwise
 sbml_location = /usr/local/lib/
+sbml_includes = /usr/local/include/
 libsbml = -L$(sbml_location) -lsbml
 sbmlflag = 
 
 #For a debug version:
-CPPFLAGS = -Wall -ggdb $(sbmlflag)
+CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
 #For a non-debug version:
 #CPPFLAGS = -Wall -DNDEBUG $(sbmlflag)
 
@@ -92,13 +93,13 @@ all : testantimony antimony2sbml sbml2antimony
 	@echo ""
 
 testantimony : $(lib_dir)libantimony.a $(src_dir)testantimony.o
-	g++ -o testantimony $(src_dir)testantimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+	$(CXX) -o testantimony $(src_dir)testantimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 antimony2sbml : $(lib_dir)libantimony.a $(src_dir)antimony2sbml.o
-	g++ -o antimony2sbml $(src_dir)antimony2sbml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+	$(CXX) -o antimony2sbml $(src_dir)antimony2sbml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
-	g++ -o sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+	$(CXX) -o sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 #The distribution zip file.
 antimony.tar.gz : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) Makefile 
@@ -107,7 +108,7 @@ antimony.tar.gz : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) Ma
 
 #The library
 $(lib_dir)libantimony.a : $(LIBOFILES)
-	ar -rcs $(lib_dir)libantimony.a $(LIBOFILES)
+	$(AR) -rcs $(lib_dir)libantimony.a $(LIBOFILES)
 
 
 #The .o files
