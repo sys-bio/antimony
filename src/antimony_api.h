@@ -582,7 +582,6 @@ LIB_EXTERN void printAllDataFor(const char* moduleName);
  *
  * Note that this function only frees pointers handed to you by other antimony_api functions.  The models themselves are still in memory and are available.
  */
-#endif
 LIB_EXTERN void freeAll();
 
 /** \} */
