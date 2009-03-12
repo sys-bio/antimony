@@ -785,7 +785,7 @@ LIB_EXTERN unsigned long getSizeOfNthDNAStrand(const char* moduleName, unsigned 
     }
     else if (actualsize > 1) {
       error += "  Valid DNA strand index values are 0 through ";
-      error += actualsize-1;
+      error += SizeTToString(actualsize-1);
       error += ".";
     }
     g_registry.SetError(error);
@@ -825,7 +825,7 @@ LIB_EXTERN char** getNthDNAStrand(const char* moduleName, unsigned long n)
     }
     else if (actualsize > 1) {
       error += "  Valid DNA strand index values are 0 through ";
-      error += actualsize-1;
+      error += SizeTToString(actualsize-1);
       error += ".";
     }
     g_registry.SetError(error);
@@ -890,7 +890,7 @@ LIB_EXTERN unsigned long getSizeOfNthModularDNAStrand(const char* moduleName, un
     }
     else if (actualsize > 1) {
       error += "  Valid Modular DNA strand index values are 0 through ";
-      error += actualsize-1;
+      error += SizeTToString(actualsize-1);
       error += ".";
     }
     g_registry.SetError(error);
@@ -929,7 +929,7 @@ LIB_EXTERN char** getNthModularDNAStrand(const char* moduleName, unsigned long n
     }
     else if (actualsize > 1) {
       error += "  Valid Modular DNA strand index values are 0 through ";
-      error += actualsize-1;
+      error += SizeTToString(actualsize-1);
       error += ".";
     }
     g_registry.SetError(error);
