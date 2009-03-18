@@ -50,8 +50,10 @@ int main(int argc, char** argv)
     }
   }
 #ifdef WIN32
-  cout << "(Press any key to exit.)" << endl;
-  getch();
+  if (retval == 1) {
+    cout << "(Press any key to exit.)" << endl;
+    getch();
+  }
 #endif
   return retval;
 }
