@@ -1,6 +1,7 @@
 #ifndef SBMLX_H
 #define SBMLX_H
-
+#include <string>
+#include <vector>
 #ifndef NSBML
 #include <sbml/SBMLTypes.h>
 

@@ -1,5 +1,6 @@
 #include <cassert>
 #include <iostream>
+#include <cassert>
 
 #include "formula.h"
 #include "module.h"
