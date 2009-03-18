@@ -374,7 +374,7 @@ int yylex(void)
   // Parse words
   if (isalpha(cc) || cc == '_') {
     string word;
-    while (isalpha(cc) || isdigit(cc) || cc == '_') {
+    while ((isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof()) {
       word += cc;
       g_registry.input->get(cc);
     }
