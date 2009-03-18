@@ -9,6 +9,10 @@ TEMPLATE = lib
 
 TARGET = antimony
 CONFIG -= qt
+unix:CONFIG += staticlib
+unix:CONFIG -= dll plugin
+mac:CONFIG += staticlib
+mac:CONFIG -= dll plugin
 DEPENDPATH += . src
 INCLUDEPATH += . src
 
