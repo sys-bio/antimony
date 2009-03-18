@@ -1,6 +1,7 @@
 #include <cassert>
 #include <vector>
 #include <string>
+#include <cassert>
 #include <cstdlib>
 
 #include "formula.h"

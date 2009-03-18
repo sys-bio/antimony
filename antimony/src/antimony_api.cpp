@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <cstdlib>
+#include <cassert>
 #include <string.h>
 
 #ifndef NSBML
