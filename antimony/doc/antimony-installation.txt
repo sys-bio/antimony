@@ -1,0 +1,43 @@
+/** @page antimony-installation Installing libAntimony
+
+<h2>Windows Binaries</h2>
+
+<h3>Using the converters</h3>
+To use the Windows executables, just copy them where you want them, keeping the .exe's and the .dll's together in the same directory.  The easiest way to use them is from the command line:  just double-clicking on the .exe will pop up a window with an error.  To get to the command line, click 'Start', then 'Run', and type 'cmd'.  You can then 'cd' into the directory containing sbml2antimony.exe and antimony2sbml.exe and run them from there.  To convert an SBML file to Antimony, type:
+
+<code>sbml2antimony.exe inputfile.xml outputfile.txt</code>
+
+To convert all models in an Antimony file to SBML files, type:
+
+<code>antimony2sbml.exe inputfile.txt outputfileprefix</code>
+
+This will create one or more output files of the format:
+
+<pre>outputfileprefix_[model1].xml
+outputfileprefix_[model2].xml
+[etc.]</pre>
+
+where [model1] and [model2] are the actual names of the models in the Antimony file.
+
+If you don't include the output file name or prefix, the program will remove '.xml' from SBML files (if present) and add '.txt', or will remove '.txt' from Antimony files (if present) and use the result as the output file prefix instead.
+
+<h3>Programming with the .dll files</h3>
+To use the libAntimony libraries, include the file antimony_api.h in your source for access to the commands, and then link in the libraries, either the provided pre-compiled versions for Windows, or the ones you have created yourself.  The resulting executables will need access to the libAntimony dll as well as its dependencies:  libSBML, expat, bzip, and gzip (all provided).  Due to weirdnesses with Visual Studio, the libSBML dll and the libAntimony dll need to have been created with the same Visual Studio version, meaning (for the moment) that the libSBML dll provided from http://sbml.org/ will not work--use the one we've recompiled instead.  (And if you're compiling your own version with VS, you'll probably also need to compile libSBML yourself, too.)
+
+<h2>Source code</h2>
+
+To compile libAntimony from source, you can either see if the provided makefiles or project files work for you out of the box, or you can make your own anew with qmake, the make package that comes with <A HREF="http://www.qtsoftware.com/products/qt/index.html">Qt</a>.  The main options are whether to compile in debug or release mode, and whether or not to use libSBML.  If you compile without libSBML, you will obviously not be able to convert antimony files to and from SBML, but all other functionality will be retained.
+
+On Unix/MacOS:
+- <b>Using 'make'</b>:  Edit the provided Makefile to tell the compiler whether you are using libSBML, where it is located if so, and whether you want a debug or non-debug version.  Then type 'make', which will compile the library (lib/libAntimony.a), and three executables (sbml2antimony, antimony2sbml, and testantimony).
+- <b>Using QMake</b>:  A provided script 'buildall.sh' will make the library (the static version), the two converter programs, and a test program.  To compile without libSBML, use the flag '--DEFINES+=NSBML'.  To compile with libSBML installed in a location other than /usr/local/lib, use the flag '--LIBSBML_DIR+=&lt;directory&gt;'
+
+On Windows:
+- <b>Using Visual Stuido</b>:  .vcproj files are available in the subdirectories libantimony/, sbml2antimony/, and antimony2sbml/.  The libAntimony dll will need to be built before the other two can be successfully linked.   Unfortunately, due to some sort of bug or incompatibility with VS2008 and libSBML, only Vista seems to be able to produce working executables and libraries if NSBML is not defined (the executables that result do work on XP, it's just the compiling part that seems to have problems).  We are working with the folks at libSBML to fix the problem; in the meantime, either use the NSBML option or the provided executables and dll instead.
+- <b>Using QMake and nmake</b>:  A provided batch file 'buildAll.bat' will generate Makefiles for windows, and if you don't have nmake, you can just use qmake on its own for whatever system you're using (qmake can make cygwin Makefiles, for example).  As on Unix, to compile without libSBML, use the flag '--DEFINES+=NSBML'.  To compile with libSBML installed in a location other than /usr/local/lib, use the flag '--LIBSBML_DIR+=&lt;directory&gt;'
+
+Of course, on any system, there's always the option of:
+- <b>Forging ahead on your own</b>:  libAntimony is not actually all that complicated--there's a single directory with .cpp files in it, three of which are for the example programs (testantimony, antimony2sbml, and sbml2antimony), and the rest of which comprise libAntimony.  There's a .ypp file in there that's the bison-formatted parser, but it simply generates a .cpp file (antimony.tab.cpp) which I've already done for you, so you can safely ignore that, too.  If things still don't work, feel free to file a bug report or contact us directly.
+</P>
+
+*/

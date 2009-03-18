@@ -77,8 +77,10 @@ QMAKEFILES = antimony.pro \
 
 DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)antimony__api_8h-source.html \
-	$(doc_dir)antimony-technical-spec.txt \
-	$(doc_dir)doxygen.antimony.cfg \
+	$(doc_dir)antimony-installation.html \
+	$(doc_dir)antimony-license.html \
+	$(doc_dir)antimony-technical-spec.html \
+	$(doc_dir)antimony-why.html \
 	$(doc_dir)doxygen.css \
 	$(doc_dir)doxygen.png \
 	$(doc_dir)enums_8h.html \
@@ -102,10 +104,6 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)group__input.html \
 	$(doc_dir)group__output.html \
 	$(doc_dir)index.html \
-	$(doc_dir)libantimony-installation.html \
-	$(doc_dir)libantimony-installation.txt \
-	$(doc_dir)libantimony-why.html \
-	$(doc_dir)libantimony-why.txt \
 	$(doc_dir)main.html \
 	$(doc_dir)olddocumentation.txt \
 	$(doc_dir)pages.html \
@@ -113,44 +111,45 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)tab_l.gif \
 	$(doc_dir)tab_r.gif \
 	$(doc_dir)tabs.css \
-	$(doc_dir)technical_spec.html \
-	$(doc_dir)technical_spec.odt \
 	$(doc_dir)tree.html \
 	$(doc_dir)Tutorial.pdf \
-	$(doc_dir)LICENSE.txt \
 
-DOCSRCFILES = $(doc_dir)antimony-mainpage.txt \
+DOCSRCFILES = \
+	$(doc_dir)antimony-installation.txt \
+	$(doc_dir)antimony-license.txt \
+	$(doc_dir)antimony-mainpage.txt \
 	$(doc_dir)antimony-technical-spec.txt \
+	$(doc_dir)antimony-why.txt \
 	$(doc_dir)doxygen.antimony.cfg \
-	$(doc_dir)libantimony-installation.txt \
-	$(doc_dir)libantimony-why.txt \
 	$(doc_dir)technical_spec.html \
-	$(doc_dir)Tutorial.pdf \
 	$(src_dir)antimony_api.h \
 	$(src_dir)enums.h \
-	LICENSE.txt
+	LICENSE.txt \
 	README.txt
 
 
 #Executables:
 all : bin/testantimony bin/antimony2sbml bin/sbml2antimony
 	@echo ""
+	@echo "Libary created:"
+	@echo "  lib/libantimony.a:  The libAntimony static library"
+	@echo ""
 	@echo "Executables created:  "
-	@echo "  bin/testantimony:  Prints information about your antimony file(s)"
+	@echo "  bin/testantimony:   Prints information about your antimony file(s)"
 	@echo "  bin/antimony2sbml:  Converts all modules in an antimony file to SBML files"
 	@echo "  bin/sbml2antimony:  Converts an SBML file into an antimony file."
 	@echo ""
 	@echo "For more information, see the documentation in the doc/ directory."
 	@echo ""
 
-testantimony : $(lib_dir)libantimony.a $(src_dir)testantimony.o
-	$(CXX) -o testantimony $(src_dir)testantimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+bin/testantimony : $(lib_dir)libantimony.a $(src_dir)testantimony.o
+	$(CXX) -o bin/testantimony $(src_dir)testantimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
-antimony2sbml : $(lib_dir)libantimony.a $(src_dir)antimony2sbml.o
-	$(CXX) -o antimony2sbml $(src_dir)antimony2sbml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+bin/antimony2sbml : $(lib_dir)libantimony.a $(src_dir)antimony2sbml.o
+	$(CXX) -o bin/antimony2sbml $(src_dir)antimony2sbml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
-sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
-	$(CXX) -o sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+bin/sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
+	$(CXX) -o bin/sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 #The distribution zip file.
 antimony.tar.gz : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
@@ -159,7 +158,7 @@ antimony.tar.gz : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(
 
 #The documentation.  doxygen.css is a proxy for the general dependencies
 $(doc_dir)index.html : $(DOCSRCFILES)
-	cd doc/; cp ../LICENSE.txt .; doxygen doxygen.antimony.cfg;
+	cd doc/; doxygen doxygen.antimony.cfg;
 
 #The library
 $(lib_dir)libantimony.a : $(LIBOFILES)

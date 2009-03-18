@@ -121,6 +121,55 @@ LIB_EXTERN void   clearPreviousLoads();
 /** \} */
 
 /**
+  * @name Output
+  */
+/** \{ */
+
+/**
+ * Writes out an antimony-formatted file containing the given module.  If the module depends on any sub-modules, those modules are written out as well, also in the antimony format.  Returns 0 on failure (and sets an error), 1 on success.
+ */
+LIB_EXTERN int   writeAntimonyFile(const char* filename, const char* moduleName);
+
+/**
+ * Returns the same output as writeAntimonyFile, but to a char* array instead of to a file.  Returns NULL on failure, and sets an error.
+ */
+LIB_EXTERN char* getAntimonyString(const char* moduleName);
+
+#ifndef NSBML
+/**
+ * Writes out a SBML-formatted XML file to the file indicated.  For now, the output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libSBML's 'writeSBML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
+ * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
+ *
+ *@see getSBMLString
+ */
+LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
+/**
+ * Returns the same output as writeSBMLFile, but to a char* array instead of to a file.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
+ * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
+ *
+ *@see writeSBMLToString
+ */
+LIB_EXTERN char* getSBMLString(const char* moduleName);
+#endif
+
+/**
+ * Writes out a jarnac-formatted file containing a 'flattened' version of the current module (one where all the species and reactions are listed in the same model).  This has *not* been very extensively tested, and many aspects of the model may be dropped.  But the basics should be there.  Returns 1 on success, 0 on failure (and sets an error).
+ */
+LIB_EXTERN int   writeJarnacFile(const char* filename, const char* moduleName);
+
+/**
+ * Returns the same output as writeJarnacFile, but to a char* array instead of to a file.
+ */
+LIB_EXTERN char* getJarnacString(const char* moduleName);
+
+
+/**
+ * An example function that will print to stdout all the information in the given module.  This function probably isn't as useful to call as it is to examine and copy for your own purposes:  it only calls functions defined here in antimony_api.h.
+ */
+LIB_EXTERN void printAllDataFor(const char* moduleName);
+/** \} */
+
+/**
   * @name Errors and Warnings
   */
 /** \{ */
@@ -520,61 +569,9 @@ LIB_EXTERN bool    getIsNthModularDNAStrandOpen(const char* moduleName, unsigned
 /** \} */
 
 /**
-  * @name Output
-  */
-/** \{ */
-
-/**
- * Writes out an antimony-formatted file containing the given module.  If the module depends on any sub-modules, those modules are written out as well, also in the antimony format.  Returns 0 on failure (and sets an error), 1 on success.
- */
-LIB_EXTERN int   writeAntimonyFile(const char* filename, const char* moduleName);
-
-/**
- * Returns the same output as writeAntimonyFile, but to a char* array instead of to a file.  Returns NULL on failure, and sets an error.
- */
-LIB_EXTERN char* getAntimonyString(const char* moduleName);
-
-/**
- * Writes out a jarnac-formatted file containing a 'flattened' version of the current module (one where all the species and reactions are listed in the same model).  This has *not* been very extensively tested, and many aspects of the model may be dropped.  But the basics should be there.  Returns 1 on success, 0 on failure (and sets an error).
- */
-LIB_EXTERN int   writeJarnacFile(const char* filename, const char* moduleName);
-
-/**
- * Returns the same output as writeJarnacFile, but to a char* array instead of to a file.
- */
-LIB_EXTERN char* getJarnacString(const char* moduleName);
-
-
-#ifndef NSBML
-/**
- * Writes out a SBML-formatted XML file to the file indicated.  For now, the output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libSBML's 'writeSBML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
- *
- *@see getSBMLString
- */
-LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
-/**
- * Returns the same output as writeSBMLFile, but to a char* array instead of to a file.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
- * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
- *
- *@see writeSBMLToString
- */
-LIB_EXTERN char* getSBMLString(const char* moduleName);
-#endif
-
-/**
- * An example function that will print to stdout all the information in the given module.  This function probably isn't as useful to call as it is to examine and copy for your own purposes:  it only calls functions defined here in antimony_api.h.
- */
-LIB_EXTERN void printAllDataFor(const char* moduleName);
-/** \} */
-
-/**
   * @name Memory management
   */
 /** \{ */
-
-
-
 
 /**
  * Frees all pointers handed to you by libAntimony.

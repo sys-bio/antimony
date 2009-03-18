@@ -1,9 +1,7 @@
 #include <iostream>
+#include <cstring>
 
 #include "antimony_api.h"
-#include "registry.h"
-#include "stringx.h"
-
 using namespace std;
 
 int main(int argc, char** argv)
@@ -25,7 +23,7 @@ int main(int argc, char** argv)
       cout << getLastError() << endl;
     }
     else {
-      cout << argv[file] << " read successfully with file handle " << SizeTToString(retval) << "." << endl;
+      cout << argv[file] << " read successfully with file handle " << retval << "." << endl;
     }
   }
   for (size_t file=0; file<getNumFiles(); file++) {
@@ -46,9 +44,11 @@ int main(int argc, char** argv)
       filename.erase(filename.find(".xml"), 4);
     }
     for (size_t mod=0; mod<nummods; mod++) {
-      cout << "Information for file " << SizeTToString(file+1) <<", module '" << modnames[mod] << "'" << endl;
+      cout << "Information for file " << file+1 <<", module '" << modnames[mod] << "'" << endl;
+      /* If you have a static library and #include registry.h above, you can uncomment this: 
       cout << "***ToString (" << modnames[mod] << ") ***" << endl;
       cout << g_registry.GetModule(modnames[mod])->ToString().c_str() << endl << endl;
+      */
       cout << "***Jarnac (" << modnames[mod] << ") ***" << endl;
       cout << getJarnacString(modnames[mod]) << endl;
       cout << endl << "***printAllDataFor (" << modnames[mod] << ") (from the API):***" << endl;
