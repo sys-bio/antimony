@@ -1,0 +1,77 @@
+//------------------------------------------
+//Bistable Switch
+//Two genes down-regulate one another. Hill coefficient = 2
+//input x can be used to upregulate one of the genes
+//------------------------------------------
+
+model bistable(s1, s2)
+   gene g1, g2;
+   species s1, s2;
+   g1: -> s1; k1*(1 + x)/(1 + k2*s2^2) //gene 1 makes protein s1 at this rate
+   s1 -> ; k0*s1                       //protein 1 degrades
+   g2: -> s2; k3/(1 + k4*s1^2)         //gene 2 makes protein s2
+   s2 -> ; k0*s2                       //protein s2 degrades
+
+   k0 = 0.1         //parameters in the model
+   k1 = 1
+   k2 = 1
+   k3 = 1
+   k4 = 1
+end
+
+//------------------------------------------
+//Feed Forward Network (Coherent Type 1)
+//The FFN is meant to reduce noise -- the signal x has to last long enough
+//if x is short lived, then g2 does not receive the signal
+//------------------------------------------
+model ffn(x, s2)
+   gene g1, g2;         
+   species x, s1, s2;
+   
+   g1: -> s1; x/(1 + x)         //gene 1 makes protein s1
+   s1 -> ; k1*s1                //s1 degrades
+   g2: -> s2; x*s1/(1 + x + s1) //gene 2 makes protein s2
+   s2 -> ; k2*s2		//s2 degrades
+
+   k0 = 0.1
+   k1 = 0.1
+   k2 = 0.1*k0
+end
+
+//------------------------------------------
+//A ring oscillator (similar to the repressilator)
+//The input x can be used to disturb the oscillator
+//------------------------------------------
+model ringoscil(x)
+   gene g1, g2, g3
+   species s1, s2, s3
+
+   g1: -> s1; k1/(1 + x + s3^2)
+   s1 -> ; k0*s1
+   g2: -> s2; k1/(1 + s1^3)
+   s2 -> ; k0*s2
+   g3: -> s3; k1/(1 + s2^3)
+   s3 -> ; k0*s3
+   
+   k1 = 2
+   k0 = 0.1
+end
+
+//------------------------------------------
+//The combined Model
+// The bistable switch has two proteins - y and z
+// z also interacts with the oscillator to disrupt it
+// the FFN can be used to change the state of the bistable switch
+//------------------------------------------
+// EFFECT: the duration of signal x determines whether the oscillator turns on
+//------------------------------------------
+model combined_model(x)
+   A: bistable(y,z)
+   B: ringoscil(z)
+   C: ffn(x, y)
+end
+
+C: combined_model(x);
+x = 10;
+x -> ; k0*x  //The signal degrades over time, giving us a pulse.
+k0 = 0.1;
