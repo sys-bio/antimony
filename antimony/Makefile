@@ -18,6 +18,7 @@ LIBRARYFLAGS = $(libsbml) -Llib -lantimony
 
 src_dir = src/
 lib_dir = lib/
+bin_dir = bin/
 doc_dir = doc/
 
 YPPFILES = $(src_dir)antimony.ypp
@@ -37,7 +38,10 @@ CPPFILES = $(src_dir)antimony_api.cpp \
 	$(src_dir)testantimony.cpp \
 	$(src_dir)typex.cpp \
 	$(src_dir)userfunction.cpp \
-	$(src_dir)variable.cpp
+	$(src_dir)variable.cpp \
+	$(src_dir)antimony2sbml.cpp \
+	$(src_dir)sbml2antimony.cpp \
+	$(src_dir)testantimony.cpp \
 
 HFILES = $(src_dir)antimony_api.h \
 	$(src_dir)dnastrand.h \
@@ -73,7 +77,16 @@ LIBOFILES = $(src_dir)antimony_api.o \
 QMAKEFILES = antimony.pro \
 	antimony2sbml.pro \
 	sbml2antimony.pro \
-	testantimony.pro
+	testantimony.pro \
+	antimony2sbml/QMakeFile \
+	antimony2sbml/antimony2sbml.pro \
+	antimony2sbml/antimony2sbml.vcproj \
+	sbml2antimony/QMakeFile \
+	sbml2antimony/sbml2antimony.pro \
+	sbml2antimony/sbml2antimony.vcproj \
+	libantimony/QMakeFile \
+	libantimony/libantimony.pro \
+	libantimony/antimony.vcproj \
 
 DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)antimony__api_8h-source.html \
@@ -105,7 +118,6 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)group__output.html \
 	$(doc_dir)index.html \
 	$(doc_dir)main.html \
-	$(doc_dir)olddocumentation.txt \
 	$(doc_dir)pages.html \
 	$(doc_dir)tab_b.gif \
 	$(doc_dir)tab_l.gif \
@@ -129,7 +141,7 @@ DOCSRCFILES = \
 
 
 #Executables:
-all : bin/testantimony bin/antimony2sbml bin/sbml2antimony
+all : $(bin_dir)testantimony $(bin_dir)antimony2sbml $(bin_dir)sbml2antimony
 	@echo ""
 	@echo "Libary created:"
 	@echo "  lib/libantimony.a:  The libAntimony static library"
@@ -142,26 +154,33 @@ all : bin/testantimony bin/antimony2sbml bin/sbml2antimony
 	@echo "For more information, see the documentation in the doc/ directory."
 	@echo ""
 
-bin/testantimony : $(lib_dir)libantimony.a $(src_dir)testantimony.o
-	$(CXX) -o bin/testantimony $(src_dir)testantimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+$(bin_dir)testantimony : $(lib_dir)libantimony.a $(src_dir)testantimony.o
+	mkdir -p $(bin_dir)
+	$(CXX) -o $(bin_dir)testantimony $(src_dir)testantimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
-bin/antimony2sbml : $(lib_dir)libantimony.a $(src_dir)antimony2sbml.o
-	$(CXX) -o bin/antimony2sbml $(src_dir)antimony2sbml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+$(bin_dir)antimony2sbml : $(lib_dir)libantimony.a $(src_dir)antimony2sbml.o
+	mkdir -p $(bin_dir)
+	$(CXX) -o $(bin_dir)antimony2sbml $(src_dir)antimony2sbml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
-bin/sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
-	$(CXX) -o bin/sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+$(bin_dir)sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
+	mkdir -p $(bin_dir)
+	$(CXX) -o $(bin_dir)sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 #The distribution zip file.
-antimony.tar.gz : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
-	tar -cvf antimony.tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
-	gzip -f antimony.tar
+srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
+	tar -cvf antimony_src.tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
+	gzip -f antimony_src.tar
 
-#The documentation.  doxygen.css is a proxy for the general dependencies
+#The documentation.
+docs : $(DOCFILES)
+	zip Antimony_documentation.zip $(DOCFILES)
+
 $(doc_dir)index.html : $(DOCSRCFILES)
 	cd doc/; doxygen doxygen.antimony.cfg;
 
 #The library
 $(lib_dir)libantimony.a : $(LIBOFILES)
+	mkdir -p $(lib_dir)
 	$(AR) -rcs $(lib_dir)libantimony.a $(LIBOFILES)
 
 

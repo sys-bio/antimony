@@ -4,53 +4,32 @@
 
 <h3>Using the converters</h3>
 To use these Windows executables:
-   * Copy this folder where you want it, keeping the .exe's and the .dll's together in the same directory.
+   - Copy this folder where you want it, keeping the .exe's and the .dll's together in the same directory.
 
-   * If you do *not* have Visual Studio 2008 installed, you will need to run the provided executable 'vcredist_x86.exe'.  This was obtained from Microsoft's web site 
+   - If you do *not* have Visual Studio 2008 installed, you will need to run the provided executable 'vcredist_x86.exe'.  This was obtained from Microsoft's web site <br> http://www.microsoft.com/downloads/details.aspx?displaylang=en&FamilyID=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF <br><br> If you are a developer using a different version of Visual Studio, you should probably just compile libAntimony yourself.  But if all you want is to run the two converters (antimony2sbml and sbml2antimony), run this to install the required libraries.
 
-     http://www.microsoft.com/downloads/details.aspx?displaylang=en&FamilyID=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF
-
-     If you are a developer using a different version of Visual Studio, you should probably just compile libAntimony yourself.  But if all you want is to run the two converters (antimony2sbml and sbml2antimony), run this to install the required libraries.
-
-   * The easiest way to run the converters is from the command line (just double-clicking on the .exe will pop up a window with an error). To do this:
-       * Copy any models you want to convert into this folder.
-       * Click 'Start', then 'Run', and type 'cmd'.  A window will pop up.
-       * Type 'cd &lt;directory&gt;' where &lt;directory&gt; is where you put the folder (for example, 'cd Desktop\antimony\')
-       * To convert an SBML file to Antimony, type:
-
-       sbml2antimony.exe &lt;inputfile.xml&gt; &lt;outputfile.txt&gt;
-
-       For example, to convert the provided SBML input file (an oscillator) type:
-
-       sbml2antimony.exe ex_sbml_input.xml ex_antimony_output.txt
-
-       * To convert all models in an Antimony file to SBML files, type:
-
-       antimony2sbml.exe &lt;inputfile.txt&gt; &lt;outputfileprefix&gt;
-
-       This will create one or more output files of the format:
-
-       outputfileprefix_[model1].xml
-       outputfileprefix_[model2].xml
-       [etc.]
-
-       where [model1] and [model2] are the actual names of the models in the Antimony file.
-
-       For example, to convert the provided Antimony input file models to SBML, type:
-
-       antimony2sbml.exe ex_antimony_input.txt ex_sbml_output
-
-       Which will create the files:
-
-        ex_sbml_output_bistable_sbml.xml
-        ex_sbml_output_combined_model_sbml.xml
-        ex_sbml_output_ffn_sbml.xml
-        ex_sbml_output_ringoscil_sbml.xml
-        ex_sbml_output___main_sbml.xml
-
-        If you don't include the output file name or prefix, the program will remove '.xml' from SBML files (if present) and add '.txt', or will remove '.txt' from Antimony files (if present) and use the result as the output file prefix instead.
-
-
+   - The easiest way to run the converters is from the command line (just double-clicking on the .exe will pop up a window with an error). To do this:
+       - Copy any models you want to convert into this folder.
+       - Click 'Start', then 'Run', and type 'cmd'.  A window will pop up.
+       - Type 'cd &lt;directory&gt;' where &lt;directory&gt; is where you put the folder (for example, 'cd Desktop/antimony')
+       - To convert an SBML file to Antimony, type:<br><br>
+         <code>sbml2antimony.exe &lt;inputfile.xml&gt; &lt;outputfile.txt&gt;</code><br><br>
+         For example, to convert the provided SBML input file (an oscillator) type:<br><br>
+         <code>sbml2antimony.exe ex_sbml_input.xml ex_antimony_output.txt</code><br>&nbsp;
+       - To convert all models in an Antimony file to SBML files, type:<br><br>
+         <code>antimony2sbml.exe &lt;inputfile.txt&gt; &lt;outputfileprefix&gt;</code><br><br>
+         This will create one or more output files of the format:<br><br>
+         <code>outputfileprefix_[model1].xml<br>outputfileprefix_[model2].xml<br>[etc.]</code><br><br>
+         where [model1] and [model2] are the actual names of the models in the Antimony file.<br><br>
+         For example, to convert the provided Antimony input file models to SBML, type:<br><br>
+         <code>antimony2sbml.exe ex_antimony_input.txt ex_sbml_output</code><br><br>
+         Which will create the files:<br><br><code>
+         ex_sbml_output_bistable_sbml.xml<br>
+         ex_sbml_output_combined_model_sbml.xml<br>
+         ex_sbml_output_ffn_sbml.xml<br>
+         ex_sbml_output_ringoscil_sbml.xml<br>
+         ex_sbml_output___main_sbml.xml</code><br><br>
+         If you don't include the output file name or prefix, the program will remove '.xml' from SBML files (if present) and add '.txt', or will remove '.txt' from Antimony files (if present) and use the result as the output file prefix instead.<br><br>
 If you don't want to copy the models into this folder all the time, you can cd 
 into a directory containing the models you want to convert and run the
 converter from there by calling it explicitly by typing (for example) 
@@ -60,7 +39,7 @@ converter folder's name to your PATH, but if you know what I'm talking about,
 you know how to do it.)  
 
 <h3>Programming with the .dll files</h3>
-To use the libAntimony libraries, include the file antimony_api.h in your source for access to the commands, and then link in the libraries, either the provided pre-compiled versions for Windows, or the ones you have created yourself.  The resulting executables will need access to the libAntimony dll as well as its dependencies:  libSBML and expat (both provided).  Due to weirdnesses with Visual Studio, the libSBML dll and the libAntimony dll need to have been created with the same Visual Studio version, meaning (for the moment) that the libSBML dll provided from http://sbml.org/ will not work--use the one we've recompiled instead.  (And if you're compiling your own version with VS, you'll probably also need to compile libSBML yourself, too.)  We have also had issues with the latest version of libSBML: the provided dll is actually from June of 2008.  T
+To use the libAntimony libraries, include the file antimony_api.h in your source for access to the commands, and then link in the libraries, either the provided pre-compiled versions for Windows, or the ones you have created yourself.  The resulting executables will need access to the libAntimony dll as well as its dependencies:  libSBML and expat (both provided).  Due to weirdnesses with Visual Studio, the libSBML dll and the libAntimony dll need to have been created with the same Visual Studio version, meaning (for the moment) that the libSBML dll provided from http://sbml.org/ will not work--use the one we've recompiled instead.  (And if you're compiling your own version with VS, you'll probably also need to compile libSBML yourself, too.)  We have also had issues with the latest version of libSBML: the provided dll is actually from June of 2008.  We are working with the libSBML people to resolve the issue; hopefully, the next version either of libAntimony or libSBML will no longer be incompatible with the other.
 
 <h2>Source code</h2>
 
