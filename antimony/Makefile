@@ -11,7 +11,7 @@ sbmlflag =
 #For a debug version:
 CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
 #For a non-debug version:
-#CPPFLAGS = -Wall -DNDEBUG $(sbmlflag)
+#CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
 
 #Library flags
 LIBRARYFLAGS = $(libsbml) -Llib -lantimony
@@ -147,9 +147,10 @@ all : $(bin_dir)testantimony $(bin_dir)antimony2sbml $(bin_dir)sbml2antimony
 	@echo "  lib/libantimony.a:  The libAntimony static library"
 	@echo ""
 	@echo "Executables created:  "
-	@echo "  bin/testantimony:   Prints information about your antimony file(s)"
 	@echo "  bin/antimony2sbml:  Converts all modules in an antimony file to SBML files"
 	@echo "  bin/sbml2antimony:  Converts an SBML file into an antimony file."
+	@echo "  bin/testantimony:   Prints information about your antimony file(s) and re-saves"
+	@echo "                        the data in different formats"
 	@echo ""
 	@echo "For more information, see the documentation in the doc/ directory."
 	@echo ""
@@ -226,4 +227,4 @@ $(src_dir)antimony.tab.cpp : $(src_dir)antimony.ypp $(src_dir)registry.h $(src_d
 
 
 clean :
-	rm src/*.o lib/libantimony.a testantimony sbml2antimony antimony2sbml
+	rm src/*.o $(lib_dir)libantimony.a $(bin_dir)testantimony $(bin_dir)sbml2antimony $(bin_dir)antimony2sbml
