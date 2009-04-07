@@ -313,6 +313,11 @@ LIB_EXTERN char*** getReactantNames(const char* moduleName);
 LIB_EXTERN char**  getNthReactionReactantNames(const char* modulename, unsigned long rxn);
 
 /**
+ * Returns the mth reactant name of the mth reaction.  If no such reaction is present, NULL is returned and an error is set.
+ */
+LIB_EXTERN char*  getNthReactionMthReactantName(const char* modulename, unsigned long rxn, unsigned long reactant);
+
+/**
  * Returns all the product names for all reactions in the given module.  The dimensions of the included arrays can be found with 'getNumReactions' and 'getNumProducts' (the array is not 'square'--each sub array may have a different length).
  */
 LIB_EXTERN char*** getProductNames(const char* moduleName);
@@ -321,6 +326,11 @@ LIB_EXTERN char*** getProductNames(const char* moduleName);
  * Returns an array of all the product names for the given reaction.  The length of the array can be obtained with 'getNumProducts'.  If no such reaction is present, NULL is returned and an error is set.
  */
 LIB_EXTERN char**  getNthReactionProductNames(const char* modulename, unsigned long rxn);
+
+/**
+ * Returns the mth product name of the given reaction.  If no such reaction or product is present, NULL is returned and an error is set.
+ */
+LIB_EXTERN char*  getNthReactionMthProductName(const char* modulename, unsigned long rxn, unsigned long product);
 
 /**
  * Returns a two-dimensional array of the stoichiometries for all reactants in all reactions in the given module.
@@ -335,12 +345,22 @@ LIB_EXTERN double** getProductStoichiometries(const char* moduleName);
 /**
  * Returns an array of the stoichiometries for the reactants of the Nth reaction in the module.  If no such reaction exists, an error is set and NULL is returned.
  */
-LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName, unsigned long n);
+LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName, unsigned long rxn);
 
 /**
- * Returns an array of the stoichiometries for the reactants of the Nth reaction in the module.  If no such reaction exists, an error is set and NULL is returned.
+ * Returns an array of the stoichiometries for the products of the Nth reaction in the module.  If no such reaction exists, an error is set and NULL is returned.
  */
-LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, unsigned long n);
+LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, unsigned long rxn);
+
+/**
+ * Returns the stoichiometry for the Mth reactant of the Nth reaction in the module.  If no such reactant or reaction exists, an error is set and 0 is returned.
+ */
+LIB_EXTERN double getNthReactionMthReactantStoichiometries(const char* moduleName, unsigned long rxn, unsigned long reactant);
+
+/**
+ * Returns the stoichiometries for the Mth product of the Nth reaction in the module.  If no such product or reaction exists, an error is set and 0 is returned.
+ */
+LIB_EXTERN double getNthReactionMthProductStoichiometries(const char* moduleName, unsigned long rxn, unsigned long product);
 
 /** \} */
 
@@ -376,6 +396,11 @@ LIB_EXTERN char*** getInteractorNames(const char* moduleName);
 LIB_EXTERN char**  getNthInteractionInteractorNames(const char* modulename, unsigned long rxn);
 
 /**
+ * Returns the Mth interactor names for the given interaction.  If no such interactor or interaction is present, NULL is returned and an error is set.
+ */
+LIB_EXTERN char**  getNthInteractionMthInteractorNames(const char* modulename, unsigned long interaction, unsigned long interactor);
+
+/**
  * Returns all the interactee names for all interactions in the given module.  The dimensions of the included arrays can be found with 'getNumInteractions' and 'getNumInteractees' (the array is not 'square'--each sub array may have a different length).
  */
 LIB_EXTERN char*** getInteracteeNames(const char* moduleName);
@@ -386,34 +411,20 @@ LIB_EXTERN char*** getInteracteeNames(const char* moduleName);
 LIB_EXTERN char**  getNthInteractionInteracteeNames(const char* modulename, unsigned long rxn);
 
 /**
- * Returns a two-dimensional array of the stoichiometries for all interactors in all interactions in the given module.
+ * Returns the Mth interactee name for the given interaction.  If no such interactee or interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN double** getInteractorStoichiometries(const char* moduleName);
+LIB_EXTERN char**  getNthInteractionMthInteracteeName(const char* modulename, unsigned long interaction, unsigned long interactee);
 
 /**
- * Returns a two-dimensional array of the stoichiometries for all interactees in all interactions in the given module.
- */
-LIB_EXTERN double** getInteracteeStoichiometries(const char* moduleName);
-
-/**
- * Returns an array of the stoichiometries for the interactors of the Nth interaction in the module.  If no such interaction exists, an error is set and NULL is returned.
- */
-LIB_EXTERN double* getNthInteractionInteractorStoichiometries(const char* moduleName, unsigned long n);
-
-/**
- * Returns an array of the stoichiometries for the interactors of the Nth interaction in the module.  If no such interaction exists, an error is set and NULL is returned.
- */
-LIB_EXTERN double* getNthInteractionInteracteeStoichiometries(const char* moduleName, unsigned long n);
-
-/**
- * Returns an array of the dividers for the interactions in the given module.  Valid dividers (defined in enums.h) are rdInhibits ("-|"), rdActivates ("-o"), and rdInfluences("-(").  The fourth divider (rdBecomes, "->") is used for reactions, not interactions.
+ * Returns an array of all the interaction dividers in the given module.  The length of the array can be obtained with 'getNumInteractions'.
  */
 LIB_EXTERN rd_type* getInteractionDividers(const char* moduleName);
 
 /**
- * Returns the rd_type of the nth interaction in the module.  If no such interaction exists, 'rdBecomes' is returned, and an error is set.  (Recall that no valid interaction can have the divider 'rdBecomes', as that is used for Reactions.)
+ * Returns the Nth interaction divider in the module.  If no such interaction is present, 0 is returned, which is 'rdBecomes, which is an invalid Interaction divider (since it's used for reactions instead).
  */
 LIB_EXTERN rd_type  getNthInteractionDivider(const char* moduleName, unsigned long n);
+
 /** \} */
 
 /**
@@ -460,7 +471,7 @@ LIB_EXTERN char**   getReactionRates(const char* moduleName);
 /**
  * Returns the reaction rate for the Nth reaction in the module.  If the reaction exists, but its reaction rate has not been set, returns an empty string.  If the reaction does not exist, an error is set, and NULL is returned.
  */
-LIB_EXTERN char*    getNthReactionRate(const char* moduleName, unsigned long n);
+LIB_EXTERN char*    getNthReactionRate(const char* moduleName, unsigned long rxn);
 
 /** \} */
 

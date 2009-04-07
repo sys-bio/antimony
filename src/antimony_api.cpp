@@ -123,6 +123,35 @@ void reportReactionIndexProblem(unsigned long n, unsigned long actualsize, const
   g_registry.SetError(error);
 }
 
+void reportReactionSubIndexProblem(unsigned long n, unsigned long actualsize, unsigned long rxnnum, const char* moduleName, bool reaction, bool reactant)
+{
+  string rxnname = "reaction";
+  string reactantname = "reactant";
+  if (!reactant) {
+    reactantname = "product";
+  }
+  if (!reaction) {
+    rxnname = "interaction";
+    reactantname = "interactor";
+    if (!reactant) {
+      reactantname = "interactee";
+    }
+  }
+  string error = "There is no " + reactantname + "with index " + SizeTToString(n) + " in " + rxnname + SizeTToString(rxnnum) + " in module ";
+  error += moduleName;
+  error += ".";
+  if (actualsize == 0) {
+    error += "  In fact, there are no " + reactantname + "s at all in that " + rxnname + ".";
+  }
+  else if (actualsize == 1) {
+    error += "  There is a single " + reactantname + " with index 0.";
+  }
+  else if (actualsize > 1) {
+    error += "  Valid "+ reactantname + " index values are 0 through " + SizeTToString(actualsize-1) + ".";
+  }
+  g_registry.SetError(error);
+}
+
 void reportVariableTypeIndexProblem(unsigned long n, return_type rtype, unsigned long actualsize, const char* moduleName)
 {
   if (rtype == allReactions) {
@@ -431,7 +460,7 @@ LIB_EXTERN unsigned long getNumInteractees(const char* moduleName, unsigned long
   return getNumReactOrProdForRxnOrInt(moduleName, n, false, false);
 }
 
-char** getNthRxnOrIntReactantOrProductNames(const char* moduleName, unsigned long n, bool reaction, bool reactant)
+char* getNthRxnorIntMthReactantOrProductName(const char* moduleName, unsigned long n, unsigned long m, bool reaction, bool reactant)
 {
   if (!checkModule(moduleName)) return NULL;
   return_type rtype = allReactions;
@@ -454,13 +483,24 @@ char** getNthRxnOrIntReactantOrProductNames(const char* moduleName, unsigned lon
   else {
     names = rxn->GetReaction()->GetRight()->ToStringVecDelimitedBy(g_registry.GetCC());
   }
-  char** retnames = getCharStarStar(names.size());
-  for (unsigned long name=0; name<names.size(); name++) {
-    char* rname = getCharStar(names[name].c_str());
-    if (rname == NULL) return NULL;
-    retnames[name] = rname;
+  if (names.size() >= m) {
+    reportReactionSubIndexProblem(m, names.size(), n, moduleName, reaction, reactant);
   }
-  return retnames;
+  char* retname = getCharStar(names[m].c_str());
+  return retname;
+}
+
+char** getNthRxnOrIntReactantOrProductNames(const char* moduleName, unsigned long n, bool reaction, bool reactant)
+{
+  if (!checkModule(moduleName)) return NULL;
+  unsigned long vnum = getNumReactOrProdForRxnOrInt(moduleName, n, reaction, reactant);
+  char** names = getCharStarStar(vnum);
+  if (names == NULL) return NULL;
+  for (unsigned long var=0; var<vnum; var++) {
+    names[var] = getNthRxnorIntMthReactantOrProductName(moduleName, n, vnum, reaction, reactant);
+    if (names[var]==NULL) return NULL;
+  }
+  return names;
 }
 
 char*** getReactantOrProductNamesForRxnOrInt(const char* moduleName, bool reaction, bool reactant)
@@ -491,6 +531,11 @@ LIB_EXTERN char** getNthReactionReactantNames(const char* moduleName, unsigned l
   return getNthRxnOrIntReactantOrProductNames(moduleName, n, true, true);
 }
 
+LIB_EXTERN char*  getNthReactionMthReactantName(const char* moduleName, unsigned long rxn, unsigned long reactant)
+{
+  return getNthRxnorIntMthReactantOrProductName(moduleName, rxn, reactant, true, true);
+}
+
 LIB_EXTERN char*** getProductNames(const char* moduleName)
 {
   return getReactantOrProductNamesForRxnOrInt(moduleName, true, false);
@@ -500,6 +545,12 @@ LIB_EXTERN char** getNthReactionProductNames(const char* moduleName, unsigned lo
 {
   return getNthRxnOrIntReactantOrProductNames(moduleName, n, true, false);
 }
+
+LIB_EXTERN char*  getNthReactionMthProductName(const char* moduleName, unsigned long rxn, unsigned long product)
+{
+  return getNthRxnorIntMthReactantOrProductName(moduleName, rxn, product, true, false);
+}
+
 
 LIB_EXTERN char*** getInteractorNames(const char* moduleName)
 {
@@ -511,6 +562,11 @@ LIB_EXTERN char** getNthReactionInteractorNames(const char* moduleName, unsigned
   return getNthRxnOrIntReactantOrProductNames(moduleName, n, false, true);
 }
 
+LIB_EXTERN char* getNthReactionMthInteractorName(const char* moduleName, unsigned long interaction, unsigned long interactor)
+{
+  return getNthRxnorIntMthReactantOrProductName(moduleName, interaction, interactor, false, true);
+}
+
 LIB_EXTERN char*** getInteracteeNames(const char* moduleName)
 {
   return getReactantOrProductNamesForRxnOrInt(moduleName, false, false);
@@ -519,6 +575,42 @@ LIB_EXTERN char*** getInteracteeNames(const char* moduleName)
 LIB_EXTERN char** getNthReactionInteracteeNames(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductNames(moduleName, n, false, false);
+}
+
+LIB_EXTERN char* getNthReactioniMthInteracteeName(const char* moduleName, unsigned long interaction, unsigned long interactee)
+{
+  return getNthRxnorIntMthReactantOrProductName(moduleName, interaction, interactee, false, false);
+}
+
+double getNthRxnOrIntMthReactantOrProductStoichiometries(const char* moduleName, unsigned long n, unsigned long m, bool reaction, bool reactant)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return_type rtype = allReactions;
+  if (!reaction) {
+    rtype = allInteractions;
+  }
+  unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
+  if (n >= numlines) {
+    reportReactionIndexProblem(n, numlines, moduleName, reaction);
+    return NULL;
+  }
+  const Module* mod = g_registry.GetModule(moduleName);
+  const Variable* rxn = mod->GetNthVariableOfType(rtype, n);
+  if (rxn->GetReaction() == NULL) {
+    return NULL;
+  }
+  vector<double> stoichiometries;
+  if (reactant) {
+    stoichiometries = rxn->GetReaction()->GetLeft()->GetStoichiometries();
+  }
+  else {
+    stoichiometries = rxn->GetReaction()->GetRight()->GetStoichiometries();
+  }
+  if (m >= stoichiometries.size()) {
+    reportReactionSubIndexProblem(m, stoichiometries.size(), n, moduleName, reaction, reactant);
+    return NULL;
+  }
+  return stoichiometries[m];
 }
 
 double* getNthRxnOrIntReactantOrProductStoichiometries(const char* moduleName, unsigned long n, bool reaction, bool reactant)
@@ -575,9 +667,14 @@ LIB_EXTERN double** getReactantStoichiometries(const char* moduleName)
   return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, true, true);
 }
 
-LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName, unsigned long n)
+LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName, unsigned long rxn)
 {
-  return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, true, true);
+  return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, rxn, true, true);
+}
+
+LIB_EXTERN double getNthReactionMthReactantStoichiometries(const char* moduleName, unsigned long rxn, unsigned long reactant)
+{
+  return getNthRxnOrIntMthReactantOrProductStoichiometries(moduleName, rxn, reactant, true, true);
 }
 
 LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
@@ -585,31 +682,15 @@ LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
   return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, true, false);
 }
 
-LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, unsigned long n)
+LIB_EXTERN double* getNthReactionProductStoichiometries(const char* moduleName, unsigned long rxn)
 {
-  return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, true, false);
+  return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, rxn, true, false);
 }
 
-LIB_EXTERN double** getInteractorStoichiometries(const char* moduleName)
+LIB_EXTERN double getNthReactionProductStoichiometries(const char* moduleName, unsigned long rxn, unsigned long product)
 {
-  return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, false, true);
+  return getNthRxnOrIntMthReactantOrProductStoichiometries(moduleName, rxn, product, true, false);
 }
-
-LIB_EXTERN double* getNthReactionInteractorStoichiometries(const char* moduleName, unsigned long n)
-{
-  return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, false, true);
-}
-
-LIB_EXTERN double** getInteracteeStoichiometries(const char* moduleName)
-{
-  return getReactantOrProductStoichiometriesForRxnOrInt(moduleName, false, false);
-}
-
-LIB_EXTERN double* getNthReactionInteracteeStoichiometries(const char* moduleName, unsigned long n)
-{
-  return getNthRxnOrIntReactantOrProductStoichiometries(moduleName, n, false, false);
-}
-
 
 LIB_EXTERN double** getStoichiometryMatrix(const char* moduleName)
 {
@@ -1261,31 +1342,19 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
     char **rxnnames = getSymbolNamesOfType(moduleName, allInteractions);
     rd_type *rxndividers = getInteractionDividers(moduleName);  
   
-    double **leftrxnstoichs = getInteractorStoichiometries(moduleName);
-    double **rightrxnstoichs = getInteracteeStoichiometries(moduleName);
-
     for (unsigned long rxn=0; rxn<getNumInteractions(moduleName); rxn++) {
       cout << rxnnames[rxn] << ": ";
       for (unsigned long var=0; var<getNumInteractors(moduleName,rxn); var++) {
         if (var > 0) {
           cout << " + ";
         }
-        if (leftrxnstoichs[rxn][var] > 1) {
-          char lnum[50];
-          sprintf(lnum, "%g", leftrxnstoichs[rxn][var]);
-          cout << lnum;
-        }
         cout << leftrxnnames[rxn][var];
       }
       cout << " " << RDToString(rxndividers[rxn]).c_str() << " ";
       for (unsigned long var=0; var<getNumInteractees(moduleName,rxn); var++) {
         if (var > 0) {
+          assert(false); //Should be only one 'interactee' per interaction.
           cout << " + ";
-        }
-        if (rightrxnstoichs[rxn][var] > 1) {
-          char rnum[50];
-          sprintf(rnum, "%g", rightrxnstoichs[rxn][var]);
-          cout << rnum;
         }
         cout << rightrxnnames[rxn][var];
       }

@@ -22,7 +22,7 @@ protected:
   std::vector<std::vector<std::string> > m_exportlist;
 
 private:
-  Module() {}; //undefined
+  Module(); //undefined
 
   //Module(const Module& src); //Use default, but have to re-run CompileExportLists
   //Module& operator=(const Module& src); //(same as above)
