@@ -7,6 +7,7 @@
 #include "variable.h"
 #include "registry.h"
 
+/* SBase objects no longer have IDs :(
 string getNameFromSBMLObject(const SBase* sbml, string basename)
 {
   string name = sbml->getId();
@@ -30,6 +31,7 @@ string getNameFromSBMLObject(const SBase* sbml, string basename)
   assert(name != "");
   return name;
 }
+*/
 
 void setFormulaWithString(string formulastring, Formula* formula)
 {
