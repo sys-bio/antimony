@@ -55,19 +55,19 @@ To use these Windows executables:
         ex_sbml_output_ringoscil_sbml.xml
         ex_sbml_output___main_sbml.xml
 
-        If you don't include the output file name or prefix, the program will 
-        remove '.xml' from SBML files (if present) and add '.txt', or will 
-        remove '.txt' from Antimony files (if present) and use the result as 
-        the output file prefix instead.
+       If you don't include the output file name or prefix, the program will 
+       remove '.xml' from SBML files (if present) and add '.txt', or will 
+       remove '.txt' from Antimony files (if present) and use the result as 
+       the output file prefix instead.
 
-
-If you don't want to copy the models into this folder all the time, you can cd 
-into a directory containing the models you want to convert and run the
-converter from there by calling it explicitly by typing (for example) 
-"c:\Program Files\Antimony\antimony2sbml.exe", depending on where you put the 
-folder.  (It is also possible to install the dll's somewhere or add the 
-converter folder's name to your PATH, but if you know what I'm talking about, 
-you know how to do it.)  
+       If you don't want to copy the models into this folder all the time,
+       you can cd  into a directory containing the models you want to
+       convert and run the converter from there by calling it explicitly by
+       typing (for example) "c:\Program Files\Antimony\antimony2sbml.exe",
+       depending on where you put the  folder.  (It is also possible to
+       install the dll's somewhere or add the converter folder's name to
+       your PATH, but if you know what I'm talking about, you know how to
+       do it.)  
 
 If you have any questions or problems, please feel free to contact us at 
 

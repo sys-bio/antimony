@@ -37,6 +37,7 @@ int main(int argc, char** argv)
         filename.erase(filename.find(".txt"), 4);
       }
       for (size_t mod=0; mod<nummods; mod++) {
+        if (getNumSymbolsOfType(modnames[mod], allSymbols) == 0) continue; //most likely for the 'main' module.
         string sbmlname = filename;
         if (argc == 3) {
           sbmlname = argv[2];

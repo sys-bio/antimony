@@ -20,6 +20,7 @@ src_dir = src/
 lib_dir = lib/
 bin_dir = bin/
 doc_dir = doc/
+ex_dir  = examples/
 
 YPPFILES = $(src_dir)antimony.ypp
 
@@ -125,6 +126,14 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)tabs.css \
 	$(doc_dir)tree.html \
 	$(doc_dir)Tutorial.pdf \
+	$(ex_dir)ex_antimony_input.txt \
+	$(ex_dir)ex_antimony_output.txt \
+	$(ex_dir)ex_sbml_input.xml \
+	$(ex_dir)ex_sbml_output_bistable_sbml.xml \
+	$(ex_dir)ex_sbml_output_combined_model_sbml.xml \
+	$(ex_dir)ex_sbml_output_ffn_sbml.xml \
+	$(ex_dir)ex_sbml_output___main_sbml.xml \
+	$(ex_dir)ex_sbml_output_ringoscil_sbml.xml \
 
 DOCSRCFILES = \
 	$(doc_dir)antimony-installation.txt \
