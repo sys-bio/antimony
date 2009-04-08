@@ -226,7 +226,8 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
     return -1;
   }
   const Model* sbml = document->getModel();
-  string sbmlname = getNameFromSBMLObject(sbml, "file");
+  //string sbmlname = getNameFromSBMLObject(sbml, "file");
+  string sbmlname = sbml->getId();
   if (sbmlname != MAINMODULE) {
     g_registry.NewCurrentModule(&sbmlname);
   }

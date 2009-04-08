@@ -101,7 +101,8 @@ int Registry::OpenFile(const string filename)
   if (log->getNumFailsWithSeverity(2) == 0 && log->getNumFailsWithSeverity(3) == 0) {
     //It's a valid SBML file.
     const Model* sbml = document->getModel();
-    string sbmlname = getNameFromSBMLObject(sbml, "file");
+    //string sbmlname = getNameFromSBMLObject(sbml, "file");
+    string sbmlname = sbml->getId();
     if (sbmlname != MAINMODULE) {
       NewCurrentModule(&sbmlname);
     }
