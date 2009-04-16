@@ -101,8 +101,7 @@ int Registry::OpenFile(const string filename)
   if (log->getNumFailsWithSeverity(2) == 0 && log->getNumFailsWithSeverity(3) == 0) {
     //It's a valid SBML file.
     const Model* sbml = document->getModel();
-    //string sbmlname = getNameFromSBMLObject(sbml, "file");
-    string sbmlname = sbml->getId();
+    string sbmlname = getNameFromSBMLObject(sbml, "file");
     if (sbmlname != MAINMODULE) {
       NewCurrentModule(&sbmlname);
     }
@@ -248,8 +247,9 @@ void Registry::SetupFunctions()
   , "pow"
   , "sqr"
   , "sqrt"
+  , "time"
   };
-  for (size_t func=0; func<78; func++) {
+  for (size_t func=0; func<79; func++) {
     m_functions.push_back(functions[func]);
   }
 }
@@ -408,7 +408,7 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
 #ifndef NSBML
   string formstring = trigger->ToSBMLString();
   if (formstring.size() > 0) {
-    ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
+    ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
       g_registry.SetError("The event trigger \"" + trigger->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
@@ -617,6 +617,23 @@ const UserFunction* Registry::GetNthUserFunction(size_t n) const
 {
   if (m_userfunctions.size() <= n) return NULL;
   return &(m_userfunctions[n]);
+}
+
+UserFunction* Registry::GetNthUserFunction(size_t n)
+{
+  if (m_userfunctions.size() <= n) return NULL;
+  return &(m_userfunctions[n]);
+}
+
+void Registry::FixTimeInFunctions()
+{
+  for (size_t uf=0; uf<m_userfunctions.size(); uf++) {
+    if (m_userfunctions[uf].ChangeTimeToRef()) {
+      for (size_t mod=0; mod<m_modules.size(); mod++) {
+        m_modules[mod].AddTimeToUserFunction(m_userfunctions[uf].GetModuleName());
+      }
+    }
+  }
 }
 
 void Registry::FreeAll()

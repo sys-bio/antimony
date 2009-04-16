@@ -125,6 +125,8 @@ public:
 
   size_t GetNumUserFunctions() const {return m_userfunctions.size();};
   const UserFunction* GetNthUserFunction(size_t n) const;
+  UserFunction* GetNthUserFunction(size_t n);
+  void FixTimeInFunctions();
 
   //Keeping track of malloc'd stuff so we can free it ourselves if need be.
   std::vector<char*>    m_charstars;

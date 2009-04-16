@@ -156,6 +156,18 @@ bool Formula::ContainsVar(const Variable* outervar) const
   return false;
 }
 
+bool Formula::ContainsFunction(const std::string& function) const
+{
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() == 0  &&
+        m_components[comp].first == function) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
 void Formula::Clear()
 {
   m_components.clear();
@@ -356,5 +368,32 @@ void Formula::FixNames()
   for (size_t comp=0; comp<m_components.size(); comp++) {
     FixName(m_components[comp].first);
     FixName(m_components[comp].second);
+  }
+}
+
+void Formula::ChangeTimeTo(const Variable* timeref)
+{
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() == 0  &&
+        m_components[comp].first == "time") {
+      m_components[comp].first = timeref->GetNamespace();
+      m_components[comp].second = timeref->GetName();
+    }
+  }
+}
+
+void Formula::InsertTimeInFunction(std::string function)
+{
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() == 0  &&
+        m_components[comp].first == function) {
+      for (size_t comp2=comp; comp2<m_components.size(); comp2++) {
+        if (m_components[comp2].second.size() == 0  &&
+            m_components[comp2].first.find(')') != string::npos) {
+          m_components[comp2].first.insert(m_components[comp2].first.find(')'), ", time");
+          continue;
+        }
+      }
+    }
   }
 }

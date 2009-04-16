@@ -35,6 +35,7 @@ public:
   bool CheckIncludes(std::string modname, const ReactantList* rlist) const;
   bool ContainsVar(std::string modname, std::vector<std::string> vname) const;
   bool ContainsVar(const Variable* outervar) const;
+  bool ContainsFunction(const std::string& function) const;
 
   void Clear();
 
@@ -47,6 +48,8 @@ public:
   std::vector<std::vector<std::string> > GetVariables() const;
 
   void FixNames();
+  void ChangeTimeTo(const Variable* timeref);
+  void InsertTimeInFunction(std::string function);
 };
 
 

@@ -7,7 +7,7 @@
 #include "variable.h"
 #include "registry.h"
 
-/* SBase objects no longer have IDs :(
+// SBase objects no longer have IDs :( //update: now they do again!
 string getNameFromSBMLObject(const SBase* sbml, string basename)
 {
   string name = sbml->getId();
@@ -31,8 +31,28 @@ string getNameFromSBMLObject(const SBase* sbml, string basename)
   assert(name != "");
   return name;
 }
-*/
 
+/*
+string getNameFromSBMLObject(string ID, string name, string basename)
+{
+  if (ID != "") return ID;
+  if (name != "") return name;
+  long num=0;
+  Variable* foundvar = NULL;
+  do {
+    char charnum[50];
+    sprintf(charnum, "%li", num);
+    num++;
+    name = basename;
+    name += charnum;
+    vector<string> fullname;
+    fullname.push_back(name);
+    foundvar = g_registry.CurrentModule()->GetVariable(fullname);
+  } while (foundvar != NULL);
+  assert(name != "");
+  return name;
+}
+*/
 void setFormulaWithString(string formulastring, Formula* formula)
 {
   if (formulastring.size()==0) return;
@@ -82,13 +102,53 @@ void setFormulaWithString(string formulastring, Formula* formula)
     formula->AddText(&formpart);
   }
 }
+
+void setTimeName(ASTNode *node)  
+{
+  if (node->getType() == AST_NAME_TIME) {
+    node->setName("time");
+  }
+  for (unsigned int c = 0; c < node->getNumChildren() ; c++) {
+    setTimeName(node->getChild(c));
+  }
+}
+
+string parseASTNodeToString(const ASTNode* ASTform) {
+  if (ASTform==NULL) return "";
+  ASTNode clone(*ASTform);
+  setTimeName(&clone);
+  return SBML_formulaToString(&clone);
+}
+
+
+void setTimeType(ASTNode_t* node)  
+{
+  if (node->isOperator() == false && node->isNumber() == false) {
+    if (string(node->getName()) == "time") {
+      node->setType(AST_NAME_TIME);
+    }
+  }
+  for (unsigned int c = 0; c < node->getNumChildren() ; c++) {
+    setTimeType(node->getChild(c));
+  }
+}
+
+ASTNode* parseStringToASTNode(const string& formula) {
+  ASTNode* rootnode = SBML_parseFormula(formula.c_str());
+  if (rootnode == NULL) return NULL;
+  if (formula.find("time") != string::npos) {
+    setTimeType(rootnode);
+  }
+  return rootnode;
+}
+
 #endif
+
+extern bool CaselessStrCmp(const string& lhs, const string& rhs);
 
 //SBML models might have variable names in them that are reserved keywords in Antimony (like 'compartment', to take a huge example).  FixName fixes this so that you can output readable Antimony again.
 void FixName(std::string& name)
 {
-  //This list courtesy libSBML, MathML.cpp, MATHML_ELEMENTS, plus "pow", in honor of Batman.
-  // (Ok, other extras (post-xor) from ASTNode.cpp)
   const char* keywords[] = {
   "DNA",
   "at",
@@ -111,7 +171,7 @@ void FixName(std::string& name)
   "var"
   };
   for (size_t kw=0; kw<19; kw++) {
-    if (name == keywords[kw]) {
+    if (CaselessStrCmp(name, keywords[kw])) {
       name += "_";
       return;
     }

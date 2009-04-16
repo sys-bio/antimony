@@ -4,6 +4,7 @@
 
 #include "module.h"
 #include "registry.h"
+#include "sbmlx.h"
 
 using namespace std;
 
@@ -18,7 +19,7 @@ bool UserFunction::SetFormula(const Formula& formula)
   string formstring = formula.ToSBMLString();
 #ifndef NSBML
   if (formstring.size() > 0) {
-    ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
+    ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
       g_registry.SetError("The formula \"" + formula.ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
@@ -81,4 +82,28 @@ string UserFunction::GetAntimony() const
   }
   func += ")\n  " + m_formula.ToDelimitedStringWithEllipses('.') + ";\nend\n";
   return func;
+}
+
+void UserFunction::FixNames()
+{
+  Module::FixNames();
+  m_formula.FixNames();
+}
+
+//True if we need to change the signature of this function, false if not.
+bool UserFunction::ChangeTimeToRef()
+{
+  if (m_formula.ContainsFunction("time")) {
+    string trstring = "time_ref";
+    Variable* timeref = AddOrFindVariable(&trstring);
+    m_formula.ChangeTimeTo(timeref);
+    for (size_t exp=0; exp<m_exportlist.size(); exp++) {
+      if (GetVariable(m_exportlist[exp])->GetName() == timeref->GetName()) {
+        return false; //time_ref already in the export list, for some reason.
+      }
+    }
+    AddVariableToExportList(timeref);
+    return true; //time_ref added to export list
+  }
+  return false; //'time' not in function at all.
 }

@@ -31,7 +31,7 @@ bool AntimonyEvent::SetTrigger(const Formula& form)
   string formstring = form.ToSBMLString();
 #ifndef NSBML
   if (formstring.size() > 0) {
-    ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
+    ASTNode* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
       g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;

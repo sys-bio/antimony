@@ -223,11 +223,11 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
     document->printErrors(errorstream);
     string file(filename);
     g_registry.SetError("Unable to read SBML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libSBML:\n" +  errorstream.str());
+    delete(document);
     return -1;
   }
   const Model* sbml = document->getModel();
-  //string sbmlname = getNameFromSBMLObject(sbml, "file");
-  string sbmlname = sbml->getId();
+  string sbmlname = getNameFromSBMLObject(sbml, "file");
   if (sbmlname != MAINMODULE) {
     g_registry.NewCurrentModule(&sbmlname);
   }
@@ -470,7 +470,8 @@ char* getNthRxnorIntMthReactantOrProductName(const char* moduleName, unsigned lo
   }
   unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
   if (n >= numlines) {
-    reportReactionIndexProblem(n, numlines, moduleName, reaction);    
+    reportReactionIndexProblem(n, numlines, moduleName, reaction);
+    return NULL;
   }
   const Module* mod = g_registry.GetModule(moduleName);
   const Variable* rxn = mod->GetNthVariableOfType(rtype, n);
@@ -484,8 +485,9 @@ char* getNthRxnorIntMthReactantOrProductName(const char* moduleName, unsigned lo
   else {
     names = rxn->GetReaction()->GetRight()->ToStringVecDelimitedBy(g_registry.GetCC());
   }
-  if (names.size() >= m) {
+  if (m >= names.size()) {
     reportReactionSubIndexProblem(m, names.size(), n, moduleName, reaction, reactant);
+    return NULL;
   }
   char* retname = getCharStar(names[m].c_str());
   return retname;
@@ -498,7 +500,7 @@ char** getNthRxnOrIntReactantOrProductNames(const char* moduleName, unsigned lon
   char** names = getCharStarStar(vnum);
   if (names == NULL) return NULL;
   for (unsigned long var=0; var<vnum; var++) {
-    names[var] = getNthRxnorIntMthReactantOrProductName(moduleName, n, vnum, reaction, reactant);
+    names[var] = getNthRxnorIntMthReactantOrProductName(moduleName, n, var, reaction, reactant);
     if (names[var]==NULL) return NULL;
   }
   return names;
