@@ -489,7 +489,7 @@ bool Variable::SetFormula(Formula* formula)
 #ifndef NSBML
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
-    ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
+    ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
       g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
@@ -538,7 +538,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
 #ifndef NSBML
   string formstring = rxn->GetFormula()->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
-    ASTNode_t* ASTform = SBML_parseFormula(formstring.c_str());
+    ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
       g_registry.SetError("The reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;

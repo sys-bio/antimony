@@ -57,7 +57,7 @@
 
 %token <num> NUM
 %token <word> WORD MODNAME FILENAME
-%token <word> MODULE END BECOMES INHIBITS ACTIVATES INFLUENCES SPECIES REACTION FORMULA DNA GENE OPERATOR EVENT COMPARTMENT IN IS VAR CONST DASHES ELLIPSES FUNCTION IMPORT AT FUNCTIONWORD
+%token <word> MODULE END SPECIES REACTION FORMULA DNA GENE OPERATOR EVENT COMPARTMENT IN IS VAR CONST DASHES ELLIPSES FUNCTION IMPORT AT FUNCTIONWORD
 
 %debug
 %error-verbose
@@ -168,10 +168,10 @@ reactantList:   /* empty */ {$$ = g_registry.NewBlankReactantList(); }
         ;
 
 reactionDivider:
-                BECOMES   {$$ = rdBecomes;}
-        |       INHIBITS  {$$ = rdInhibits;}
-        |       ACTIVATES {$$ = rdActivates;}
-        |       INFLUENCES  {$$ = rdInfluences;}
+                '-' '>' {$$ = rdBecomes;}
+        |       '-' '|' {$$ = rdInhibits;}
+        |       '-' '(' {$$ = rdInfluences;}
+        |       '-' WORD {if (*$2 != "o") {g_registry.SetError("'-" + *$2 + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} $$ = rdActivates;}
         ;
 
 formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
@@ -468,18 +468,6 @@ int yylex(void)
   //Parse reaction dividers and dashes
   if (cc == '-') {
     g_registry.input->get(cc);
-    if (cc == '>') {
-      return BECOMES;
-    }
-    if (cc == '|') {
-      return INHIBITS;
-    }
-    if (cc == 'o') {
-      return ACTIVATES;
-    }
-    if (cc == '(') {
-      return INFLUENCES;
-    }
     if (cc == '-') {
       while (cc == '-') {
         g_registry.input->get(cc);

@@ -15,6 +15,8 @@ public:
   Formula GetFormula() const {return m_formula;};
   std::string ToSBMLString() const;
   std::string GetAntimony() const;
+  void FixNames();
+  bool ChangeTimeToRef();
 
   //bool GetFormulaUsing(std::vector<std::vector<std::string> > newvars, Formula& setform) const;
 

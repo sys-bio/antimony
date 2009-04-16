@@ -60,6 +60,7 @@ public:
   bool SetModule(const std::string* modname);
   void SetComponentCompartments(Variable* compartment);
   void AddSynchronizedPair(Variable* oldvar, Variable* newvar);
+  void AddTimeToUserFunction(std::string function);
 
   Variable* GetVariable(std::vector<std::string> name);
   const Variable* GetVariable(std::vector<std::string> name) const;

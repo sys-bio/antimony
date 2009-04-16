@@ -160,6 +160,16 @@ void Module::AddSynchronizedPair(Variable* oldvar, Variable* newvar)
   m_synchronized.push_back(make_pair(oldvar->GetName(), newvar->GetName()));
 }
 
+void Module::AddTimeToUserFunction(std::string function)
+{
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Formula* form = m_variables[var]->GetFormula();
+    if (form != NULL && form->ContainsFunction(function)) {
+      form->InsertTimeInFunction(function);
+    }
+  }
+}
+
 Variable* Module::GetVariable(vector<string> name)
 {
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -378,9 +388,11 @@ bool Module::Finalize()
   SBMLDocument sbmldoc;
   Model sbml = GetSBMLModel();
   sbmldoc.setModel(&sbml);
-  SBMLDocument* testdoc = readSBMLFromString(writeSBMLToString(&sbmldoc));
+  char* sbmlstring = writeSBMLToString(&sbmldoc);
+  SBMLDocument* testdoc = readSBMLFromString(sbmlstring);
   testdoc->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   testdoc->checkConsistency();
+  free(sbmlstring);
   SBMLErrorLog* log = testdoc->getErrorLog();
   string trueerrors = "";
   for (unsigned int err=0; err<log->getNumErrors(); err++) {
@@ -871,34 +883,24 @@ void Module::LoadSBML(const Model* sbml)
   //This is a bit weird, since functions exist outside of modules, since they can be used in any model.  So we have to go to the registry to save them.
   for (unsigned int func=0; func<sbml->getNumFunctionDefinitions(); func++) {
     const FunctionDefinition* function = sbml->getFunctionDefinition(func);
-    //sbmlname = getNameFromSBMLObject(function, "_F");
-    sbmlname = function->getId();
+    sbmlname = getNameFromSBMLObject(function, "_F");
     g_registry.NewUserFunction(&sbmlname);
-    string formulastring(SBML_formulaToString(function->getMath()));
-    size_t charbit = formulastring.find("lambda(");
-    if (charbit != string::npos) {
-      formulastring.erase(charbit, 7);
-      charbit = formulastring.find(",");
-      while (charbit != string::npos) {
-        string varstring = formulastring;
-        varstring.erase(charbit, varstring.size()-charbit+1);
-        Variable* expvar = g_registry.AddVariableToCurrent(&varstring);
-        g_registry.AddVariableToCurrentExportList(expvar);
-        formulastring.erase(0, charbit+1);
-        charbit = formulastring.find(",");
-      }
-      formulastring.erase(formulastring.size()-1, 1); //erase the final ')'
+    for (unsigned int arg=0; arg<function->getNumArguments(); arg++) {
+      string argument(parseASTNodeToString(function->getArgument(arg)));
+      Variable* expvar = g_registry.AddVariableToCurrent(&argument);
+      g_registry.AddVariableToCurrentExportList(expvar);
     }
+    string formulastring(parseASTNodeToString(function->getBody()));
     Formula* formula = g_registry.NewBlankFormula();
     setFormulaWithString(formulastring, formula);
     g_registry.SetUserFunction(formula);
+    g_registry.GetNthUserFunction(g_registry.GetNumUserFunctions()-1)->FixNames();
   }
 
   //Compartments
   for (unsigned int comp=0; comp<sbml->getNumCompartments(); comp++) {
     const Compartment* compartment = sbml->getCompartment(comp);
-    //sbmlname = getNameFromSBMLObject(compartment, "_C");
-    sbmlname = compartment->getId();
+    sbmlname = getNameFromSBMLObject(compartment, "_C");
     if (sbmlname == DEFAULTCOMP && compartment->getConstant() && compartment->isSetSize() && compartment->getSize() == 1.0) {
       break;
       //LS NOTE: we assume this was created with Antimony, and ignore the auto-generated 'default compartment'
@@ -915,8 +917,7 @@ void Module::LoadSBML(const Model* sbml)
   //Species
   for (unsigned int spec=0; spec<sbml->getNumSpecies(); spec++) {
     const Species* species = sbml->getSpecies(spec);
-    //sbmlname = getNameFromSBMLObject(species, "_S");
-    sbmlname = species->getId();
+    sbmlname = getNameFromSBMLObject(species, "_S");
     Variable* var = AddOrFindVariable(&sbmlname);
     if (species->getConstant()==false || species->getBoundaryCondition()==true) {
       //Antimony does not have the concept of boundary species that are not constant.  They can be pretty well modeled simply as parameters, however, so we'll do that instead.
@@ -952,13 +953,12 @@ void Module::LoadSBML(const Model* sbml)
   //Events:
   for (unsigned int ev=0; ev<sbml->getNumEvents(); ev++) {
     const Event* event = sbml->getEvent(ev);
-    //sbmlname = getNameFromSBMLObject(event, "_E");
-    sbmlname = event->getId();
+    sbmlname = getNameFromSBMLObject(event, "_E");
     Variable* var = AddOrFindVariable(&sbmlname);
     var->SetType(varEvent);
 
     //Set the trigger:
-    string triggerstring(SBML_formulaToString(event->getTrigger()->getMath()));
+    string triggerstring(parseASTNodeToString(event->getTrigger()->getMath()));
     Formula* trigger = g_registry.NewBlankFormula();
     setFormulaWithString(triggerstring, trigger);
     AntimonyEvent antevent(*trigger,var);
@@ -969,7 +969,7 @@ void Module::LoadSBML(const Model* sbml)
       const EventAssignment* assignment = event->getEventAssignment(asnt);
       Variable* asntvar = AddOrFindVariable(&(assignment->getVariable()));
       Formula*  asntform = g_registry.NewBlankFormula();
-      setFormulaWithString(SBML_formulaToString(assignment->getMath()), asntform);
+      setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform);
       var->GetEvent()->AddResult(asntvar, asntform);
     }
   }
@@ -979,8 +979,7 @@ void Module::LoadSBML(const Model* sbml)
   //Parameters
   for (unsigned int param=0; param<sbml->getNumParameters(); param++) {
     const Parameter* parameter = sbml->getParameter(param);
-    //sbmlname = getNameFromSBMLObject(parameter, "_P");
-    sbmlname = parameter->getId();
+    sbmlname = getNameFromSBMLObject(parameter, "_P");
     Variable* var = AddOrFindVariable(&sbmlname);
     Formula* formula = g_registry.NewBlankFormula();
     formula->AddNum(parameter->getValue());
@@ -997,7 +996,7 @@ void Module::LoadSBML(const Model* sbml)
       sbmlname = initasnt->getSymbol();
       Variable* var = AddOrFindVariable(&sbmlname);
       Formula* formula = g_registry.NewBlankFormula();
-      string formulastring(SBML_formulaToString(initasnt->getMath()));
+      string formulastring(parseASTNodeToString(initasnt->getMath()));
       setFormulaWithString(formulastring, formula);
       var->SetFormula(formula);
       if (var->GetType() != varSpeciesUndef) {
@@ -1015,14 +1014,13 @@ void Module::LoadSBML(const Model* sbml)
     const Rule* rule = sbml->getRule(rulen);
     if (rule->isAssignment()) {
       sbmlname = rule->getVariable();
-      /*
+      assert(sbmlname != "");
       if (sbmlname == "") {
         sbmlname = getNameFromSBMLObject(rule, "_R");
       }
-      */
       Variable* var = AddOrFindVariable(&sbmlname);
       Formula* formula = g_registry.NewBlankFormula();
-      string formulastring(SBML_formulaToString(rule->getMath()));
+      string formulastring(parseASTNodeToString(rule->getMath()));
       setFormulaWithString(formulastring, formula);
       var->SetFormula(formula);
       if (var->GetType() != varSpeciesUndef) {
@@ -1038,8 +1036,7 @@ void Module::LoadSBML(const Model* sbml)
   //Reactions
   for (unsigned int rxn=0; rxn<sbml->getNumReactions(); rxn++) {
     const Reaction* reaction = sbml->getReaction(rxn);
-    //sbmlname = getNameFromSBMLObject(reaction, "_J");
-    sbmlname = reaction->getId();
+    sbmlname = getNameFromSBMLObject(reaction, "_J");
     Variable* var = AddOrFindVariable(&sbmlname);
     //reactants
     ReactantList reactants;
@@ -1054,8 +1051,7 @@ void Module::LoadSBML(const Model* sbml)
       }
       sbmlname = reactant->getSpecies();
       if (sbmlname == "") {
-        //sbmlname = getNameFromSBMLObject(reactant, "_S");
-        sbmlname = reactant->getId();
+        sbmlname = getNameFromSBMLObject(reactant, "_S");
       }
       Variable* rvar = AddOrFindVariable(&sbmlname);
       reactants.AddReactant(rvar, stoichiometry);
@@ -1073,8 +1069,7 @@ void Module::LoadSBML(const Model* sbml)
       }
       sbmlname = product->getSpecies();
       if (sbmlname == "") {
-        //sbmlname = getNameFromSBMLObject(product, "_S");
-        sbmlname = product->getId();
+        sbmlname = getNameFromSBMLObject(product, "_S");
       }
       Variable* rvar = AddOrFindVariable(&sbmlname);
       products.AddReactant(rvar, stoichiometry);
@@ -1082,14 +1077,16 @@ void Module::LoadSBML(const Model* sbml)
     //formula
     Formula* formula = g_registry.NewBlankFormula();
     if (reaction->isSetKineticLaw()) {
-      char* formulastring = SBML_formulaToString(reaction->getKineticLaw()->getMath());
+      string formulastring = parseASTNodeToString(reaction->getKineticLaw()->getMath());
       setFormulaWithString(formulastring, formula);
-      free(formulastring);
     }
     //Put all three together:
     AddNewReaction(&reactants, rdBecomes, &products, formula, var);
   }
   m_sbml = *sbml;
+  //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
+  g_registry.FixTimeInFunctions();
+  //And that some SBML-OK names are not OK in Antimony
   FixNames();
 }
 
@@ -1114,11 +1111,9 @@ void Module::CreateSBMLModel()
     assert(userfunction != NULL);
     FunctionDefinition* fd = m_sbml.createFunctionDefinition();
     fd->setId(userfunction->GetModuleName());
-    fd->setMath(SBML_parseFormula(userfunction->GetFormula().ToDelimitedStringWithEllipses('.').c_str()));
-    //FunctionDefinition fd(2, 4);
-    //fd.setId(userfunction->GetModuleName());
-    //fd.setMath(userfunction->ToSBMLString());
-    //m_sbml.addFunctionDefinition(&fd);
+    ASTNode* math = parseStringToASTNode(userfunction->ToSBMLString());
+    fd->setMath(math);
+    delete math;
   }
   //Compartments
   Compartment* defaultCompartment = m_sbml.createCompartment();
@@ -1137,7 +1132,9 @@ void Module::CreateSBMLModel()
     else if (!formula->IsEmpty()) {
       AssignmentRule* ar = m_sbml.createAssignmentRule();
       ar->setVariable(compartment->GetNameDelimitedBy(cc));
-      ar->setMath(SBML_parseFormula(formula->ToDelimitedStringWithEllipses(cc).c_str()));
+      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
+      ar->setMath(math);
+      delete math;
       sbmlcomp->setConstant(false); //Requirement of SBML
     }
   }
@@ -1158,8 +1155,10 @@ void Module::CreateSBMLModel()
     else if (!formula->IsEmpty()) {
       //create a rule
       InitialAssignment* rule=m_sbml.createInitialAssignment();
-      rule->setSymbol(species->GetNameDelimitedBy(cc));
-      rule->setMath(SBML_parseFormula(formula->ToDelimitedStringWithEllipses(cc).c_str()));
+      rule->setSymbol(species->GetNameDelimitedBy(cc)); 
+      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
+      rule->setMath(math);
+      delete math;
     }
     const Variable* compartment = species->GetCompartment();
     if (compartment == NULL) {
@@ -1184,13 +1183,17 @@ void Module::CreateSBMLModel()
       if (formvar->GetIsConst()) {
         InitialAssignment* ia = m_sbml.createInitialAssignment();
         ia->setSymbol(formvar->GetNameDelimitedBy(cc));
-        ia->setMath(SBML_parseFormula(formula->ToDelimitedStringWithStrands(cc, formvar->GetStrandVars()).c_str()));
+        ASTNode* math = parseStringToASTNode(formula->ToSBMLString(formvar->GetStrandVars()));
+        ia->setMath(math);
+        delete math;
       }
       else {
         //create a rule
         AssignmentRule* rule = m_sbml.createAssignmentRule();
         rule->setVariable(formvar->GetNameDelimitedBy(cc));
-        rule->setMath(SBML_parseFormula(formula->ToDelimitedStringWithStrands(cc, formvar->GetStrandVars()).c_str()));
+        ASTNode* math = parseStringToASTNode(formula->ToSBMLString(formvar->GetStrandVars()));
+        rule->setMath(math);
+        delete math;
       }
     }
   }
@@ -1205,10 +1208,12 @@ void Module::CreateSBMLModel()
     Reaction* sbmlrxn = m_sbml.createReaction();
     sbmlrxn->setId(rxnvar->GetNameDelimitedBy(cc));
     const Formula* formula = reaction->GetFormula();
-    string formstring = formula->ToDelimitedStringWithStrands(cc, rxnvar->GetStrandVars());
+    string formstring = formula->ToSBMLString(rxnvar->GetStrandVars());
     if (!formula->IsEmpty()) {
       KineticLaw* kl = m_sbml.createKineticLaw();
-      kl->setMath(SBML_parseFormula(formstring.c_str()));
+      ASTNode* math = parseStringToASTNode(formstring);
+      kl->setMath(math);
+      delete math;
     }
     const ReactantList* left = reaction->GetLeft();
     for (size_t lnum=0; lnum<left->Size(); lnum++) {
@@ -1244,14 +1249,14 @@ void Module::CreateSBMLModel()
     const AntimonyEvent* event = GetNthVariableOfType(allEvents, ev)->GetEvent();
     Event* sbmlevent = m_sbml.createEvent();
     Trigger trig(2, 4);
-    ASTNode_t* ASTtrig = SBML_parseFormula(event->GetTrigger()->ToSBMLString().c_str());
+    ASTNode* ASTtrig = parseStringToASTNode(event->GetTrigger()->ToSBMLString());
     trig.setMath(ASTtrig);
     delete ASTtrig;
     sbmlevent->setTrigger(&trig);
     for (size_t asnt=0; asnt<event->GetNumAssignments(); asnt++) {
       EventAssignment* sbmlasnt = m_sbml.createEventAssignment();
       sbmlasnt->setVariable(event->GetNthAssignmentVariableName(asnt, cc));
-      ASTNode_t* ASTasnt = SBML_parseFormula(event->GetNthAssignmentFormulaString(asnt, '_', true).c_str());
+      ASTNode* ASTasnt = parseStringToASTNode(event->GetNthAssignmentFormulaString(asnt, '_', true));
       sbmlasnt->setMath(ASTasnt);
       delete ASTasnt;
     }
