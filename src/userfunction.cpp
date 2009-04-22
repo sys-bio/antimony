@@ -87,7 +87,7 @@ string UserFunction::GetAntimony() const
 void UserFunction::FixNames()
 {
   Module::FixNames();
-  m_formula.FixNames();
+  m_formula.FixNames(m_modulename);
 }
 
 //True if we need to change the signature of this function, false if not.

@@ -188,7 +188,7 @@ void Registry::SetupFunctions()
   , "arctanh"
   , "bvar"
   , "ceiling"
-  , "ci"
+  //  , "ci"
   , "cn"
   , "cos"
   , "cosh"
@@ -249,7 +249,7 @@ void Registry::SetupFunctions()
   , "sqrt"
   , "time"
   };
-  for (size_t func=0; func<79; func++) {
+  for (size_t func=0; func<78; func++) {
     m_functions.push_back(functions[func]);
   }
 }

@@ -158,8 +158,8 @@ all : $(bin_dir)testantimony $(bin_dir)antimony2sbml $(bin_dir)sbml2antimony
 	@echo "Executables created:  "
 	@echo "  bin/antimony2sbml:  Converts all modules in an antimony file to SBML files"
 	@echo "  bin/sbml2antimony:  Converts an SBML file into an antimony file."
-	@echo "  bin/testantimony:   Prints information about your antimony file(s) and re-saves"
-	@echo "                        the data in different formats"
+	@echo "  bin/testantimony:   Prints information about your antimony file(s) and"
+	@echo "                        re-saves the data in different formats"
 	@echo ""
 	@echo "For more information, see the documentation in the doc/ directory."
 	@echo ""
@@ -217,7 +217,7 @@ $(src_dir)typex.o : $(src_dir)typex.cpp $(src_dir)enums.h $(src_dir)typex.h
 
 $(src_dir)reactantlist.o : $(src_dir)reactantlist.cpp $(src_dir)reactantlist.h $(src_dir)enums.h $(src_dir)registry.h $(src_dir)module.h $(src_dir)variable.h $(src_dir)reaction.h
 
-$(src_dir)reaction.o : $(src_dir)reaction.cpp $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)registry.h $(src_dir)enums.h $(src_dir)stringx.h $(src_dir)module.h $(src_dir)variable.h $(src_dir)typex.h
+$(src_dir)reaction.o : $(src_dir)reaction.cpp $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)registry.h $(src_dir)enums.h $(src_dir)stringx.h $(src_dir)module.h $(src_dir)variable.h $(src_dir)typex.h $(src_dir)formula.h
 
 $(src_dir)registry.o : $(src_dir)registry.cpp $(src_dir)registry.h $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)stringx.h $(src_dir)sbmlx.h $(src_dir)formula.h $(src_dir)variable.h
 

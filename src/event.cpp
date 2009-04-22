@@ -164,10 +164,10 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
 
 void AntimonyEvent::FixNames()
 {
-  m_trigger.FixNames();
+  m_trigger.FixNames(m_module);
   FixName(m_varresults);
   for (size_t formr=0; formr<m_formresults.size(); formr++) {
-    m_formresults[formr].FixNames();
+    m_formresults[formr].FixNames(m_module);
   }
   FixName(m_name);
   FixName(m_module);

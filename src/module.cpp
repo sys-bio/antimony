@@ -433,11 +433,13 @@ bool Module::Finalize()
 
 size_t Module::GetNumVariablesOfType(return_type rtype) const
 {
+  if (rtype == allSymbols) return m_uniquevars.size();
   size_t total = 0;
-  for (size_t var=0; var<m_uniquevars.size(); var++) {
-    if (AreEquivalent(rtype, GetVariable(m_uniquevars[var])->GetType()) &&
-        AreEquivalent(rtype, GetVariable(m_uniquevars[var])->GetIsConst())) {
-      if (!(rtype == expandedStrands && !GetVariable(m_uniquevars[var])->IsExpandedStrand())) {
+  for (size_t nvar=0; nvar<m_uniquevars.size(); nvar++) {
+    const Variable* var = GetVariable(m_uniquevars[nvar]);
+    if (AreEquivalent(rtype, var->GetType()) &&
+        AreEquivalent(rtype, var->GetIsConst())) {
+      if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
         total++;
       }
     }
@@ -447,13 +449,19 @@ size_t Module::GetNumVariablesOfType(return_type rtype) const
 
 const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n) const
 {
+  if (rtype == allSymbols) {
+    assert(n < m_uniquevars.size());
+    return GetVariable(m_uniquevars[n]);
+  }
+
   size_t total = 0;
-  for (size_t var=0; var<m_uniquevars.size(); var++) {
-    if (AreEquivalent(rtype, GetVariable(m_uniquevars[var])->GetType()) &&
-        AreEquivalent(rtype, GetVariable(m_uniquevars[var])->GetIsConst())) {
-      if (!(rtype == expandedStrands && !GetVariable(m_uniquevars[var])->IsExpandedStrand())) {
+  for (size_t nvar=0; nvar<m_uniquevars.size(); nvar++) {
+    const Variable* var = GetVariable(m_uniquevars[nvar]);
+    if (AreEquivalent(rtype, var->GetType()) &&
+        AreEquivalent(rtype, var->GetIsConst())) {
+      if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
         if (total == n) {
-          return GetVariable(m_uniquevars[var]);
+          return var;
         }
         total++;
       }
@@ -1075,12 +1083,43 @@ void Module::LoadSBML(const Model* sbml)
       products.AddReactant(rvar, stoichiometry);
     }
     //formula
-    Formula* formula = g_registry.NewBlankFormula();
+    string formulastring = "";
     if (reaction->isSetKineticLaw()) {
-      string formulastring = parseASTNodeToString(reaction->getKineticLaw()->getMath());
-      setFormulaWithString(formulastring, formula);
+      const KineticLaw* kl = reaction->getKineticLaw();
+      formulastring = parseASTNodeToString(kl->getMath());
+      for (unsigned int localp=0; localp<kl->getNumParameters(); localp++) {
+        const Parameter* localparam = kl->getParameter(localp);
+        sbmlname = getNameFromSBMLObject(localparam, "_P");
+        string origname = sbmlname;
+        vector<string> fullname;
+        fullname.push_back(sbmlname);
+        Variable* foundvar = GetVariable(fullname);
+        while (foundvar != NULL) {
+          //There's a global variable with the same name--rename the variable
+          sbmlname = var->GetNameDelimitedBy('_') + "_" + sbmlname;
+          fullname.clear();
+          fullname.push_back(sbmlname);
+          foundvar = GetVariable(fullname); //Just in case something weird happened and there was another one of *thi* name, too.
+        }
+        Variable* localvar = AddOrFindVariable(&sbmlname);
+        Formula* formula = g_registry.NewBlankFormula();
+        formula->AddNum(localparam->getValue());
+        localvar->SetFormula(formula);
+        //Now rename the variable in the formulastring:
+        size_t place=0;
+        size_t found = formulastring.find(origname, place);
+        while (found != string::npos) {
+          formulastring.replace(found, origname.size(), sbmlname);
+          place = found + sbmlname.size();
+          found = formulastring.find(origname, place);
+        }
+      }
     }
     //Put all three together:
+    Formula* formula = g_registry.NewBlankFormula();
+    if (formulastring != "") {
+      setFormulaWithString(formulastring, formula);
+    }
     AddNewReaction(&reactants, rdBecomes, &products, formula, var);
   }
   m_sbml = *sbml;
@@ -1120,7 +1159,8 @@ void Module::CreateSBMLModel()
   defaultCompartment->setId(DEFAULTCOMP);
   defaultCompartment->setConstant(true);
   defaultCompartment->setSize(1);
-  for (size_t comp=0; comp<GetNumVariablesOfType(allCompartments); comp++) {
+  size_t numcomps = GetNumVariablesOfType(allCompartments);
+  for (size_t comp=0; comp<numcomps; comp++) {
     const Variable* compartment = GetNthVariableOfType(allCompartments, comp);
     Compartment* sbmlcomp = m_sbml.createCompartment();
     sbmlcomp->setId(compartment->GetNameDelimitedBy(cc));
@@ -1140,7 +1180,8 @@ void Module::CreateSBMLModel()
   }
 
   //Species
-  for (size_t spec=0; spec < GetNumVariablesOfType(allSpecies); spec++) {
+  size_t numspecies = GetNumVariablesOfType(allSpecies);
+  for (size_t spec=0; spec < numspecies; spec++) {
     const Variable* species = GetNthVariableOfType(allSpecies, spec);
     Species* sbmlspecies = m_sbml.createSpecies();
     sbmlspecies->setId(species->GetNameDelimitedBy(cc));
@@ -1170,7 +1211,8 @@ void Module::CreateSBMLModel()
   }
 
   //Formulas
-  for (size_t form=0; form < GetNumVariablesOfType(allFormulas); form++) {
+  size_t numforms = GetNumVariablesOfType(allFormulas);
+  for (size_t form=0; form < numforms; form++) {
     const Variable* formvar = GetNthVariableOfType(allFormulas, form);
     const Formula*  formula = formvar->GetFormula();
     Parameter* param = m_sbml.createParameter();
@@ -1199,7 +1241,8 @@ void Module::CreateSBMLModel()
   }
 
   //Reactions
-  for (size_t rxn=0; rxn < GetNumVariablesOfType(allReactions); rxn++) {
+  size_t numrxns = GetNumVariablesOfType(allReactions);
+  for (size_t rxn=0; rxn < numrxns; rxn++) {
     const Variable* rxnvar = GetNthVariableOfType(allReactions, rxn);
     const AntimonyReaction* reaction = rxnvar->GetReaction();
     if (reaction->IsEmpty()) {
@@ -1245,7 +1288,8 @@ void Module::CreateSBMLModel()
   }
 
   //Events
-  for (size_t ev=0; ev < GetNumVariablesOfType(allEvents); ev++) {
+  size_t numevents = GetNumVariablesOfType(allEvents);
+  for (size_t ev=0; ev < numevents; ev++) {
     const AntimonyEvent* event = GetNthVariableOfType(allEvents, ev)->GetEvent();
     Event* sbmlevent = m_sbml.createEvent();
     Trigger trig(2, 4);
@@ -1263,7 +1307,8 @@ void Module::CreateSBMLModel()
   }
 
   //Unknown variables (turn into parameters)
-  for (size_t form=0; form < GetNumVariablesOfType(allUnknown); form++) {
+  size_t numunknown = GetNumVariablesOfType(allUnknown);
+  for (size_t form=0; form < numunknown; form++) {
     const Variable* formvar = GetNthVariableOfType(allUnknown, form);
     Parameter* param = m_sbml.createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
