@@ -158,5 +158,5 @@ void AntimonyReaction::FixNames()
   FixName(m_module);
   m_left.FixNames();
   m_right.FixNames();
-  m_formula.FixNames();
+  m_formula.FixNames(m_module);
 }

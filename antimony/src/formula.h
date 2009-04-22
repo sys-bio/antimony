@@ -47,7 +47,7 @@ public:
   std::vector<const Variable*> GetVariablesFrom(std::string formula, std::string module) const;
   std::vector<std::vector<std::string> > GetVariables() const;
 
-  void FixNames();
+  void FixNames(std::string modname);
   void ChangeTimeTo(const Variable* timeref);
   void InsertTimeInFunction(std::string function);
 };

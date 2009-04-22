@@ -13,6 +13,10 @@ string getNameFromSBMLObject(const SBase* sbml, string basename)
   string name = sbml->getId();
   if (name == "") {
     name = sbml->getName();
+    //Names can have spaces, so...
+    while (name.find(" ") != string::npos) {
+      name.replace(name.find(" "), 1, "_");
+    }
   }
   if (name=="") {
     long num=0;
@@ -168,9 +172,89 @@ void FixName(std::string& name)
   "operator",
   "reaction",
   "species",
-  "var"
+  "var",
+
+  "abs"
+  , "and"
+  , "annotation"
+  , "annotation-xml"
+  , "apply"
+  , "arccos"
+  , "arccosh"
+  , "arccot"
+  , "arccoth"
+  , "arccsc"
+  , "arccsch"
+  , "arcsec"
+  , "arcsech"
+  , "arcsin"
+  , "arcsinh"
+  , "arctan"
+  , "arctanh"
+  , "bvar"
+  , "ceiling"
+  //  , "ci"
+  , "cn"
+  , "cos"
+  , "cosh"
+  , "cot"
+  , "coth"
+  , "csc"
+  , "csch"
+  , "csymbol"
+  , "degree"
+  , "divide"
+  , "eq"
+  , "exp"
+  , "exponentiale"
+  , "factorial"
+  , "false"
+  , "floor"
+  , "geq"
+  , "gt"
+  , "infinity"
+  , "lambda"
+  , "leq"
+  , "ln"
+  , "log"
+  , "logbase"
+  , "lt"
+  , "math"
+  , "minus"
+  , "neq"
+  , "not"
+  , "notanumber"
+  , "or"
+  , "otherwise"
+  , "pi"
+  , "piece"
+  , "piecewise"
+  , "plus"
+  , "power"
+  , "root"
+  , "sec"
+  , "sech"
+  , "semantics"
+  , "sep"
+  , "sin"
+  , "sinh"
+  , "tan"
+  , "tanh"
+  , "times"
+  , "true"
+  , "xor"
+  , "acos"
+  , "asin"
+  , "atan"
+  , "ceil"
+  , "delay"
+  , "log10"
+  , "pow"
+  , "sqr"
+  , "sqrt"
+  , "time"
   };
-  for (size_t kw=0; kw<19; kw++) {
+  for (size_t kw=0; kw<97; kw++) {
     if (CaselessStrCmp(name, keywords[kw])) {
       name += "_";
       return;

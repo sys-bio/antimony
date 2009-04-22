@@ -988,7 +988,7 @@ void Variable::FixNames()
   }
   m_strands = fixedstrands;
 
-  m_valFormula.FixNames();
+  m_valFormula.FixNames(m_module);
   m_valReaction.FixNames();
   for (size_t mod=0; mod<m_valModule.size(); mod++) {
     m_valModule[mod].FixNames();

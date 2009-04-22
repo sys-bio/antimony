@@ -81,6 +81,12 @@ bool Formula::IsDouble() const
       }
     }
   }
+  if (m_components.size() == 2) {
+    if (m_components[0].second.size() == 0 && m_components[0].first == "-" &&
+        m_components[1].second.size() == 0 && IsReal(m_components[1].first) ) {
+      return true;
+    }
+  }
   return false;
 }
 
@@ -363,12 +369,38 @@ vector<vector<string> > Formula::GetVariables() const
   return vars;
 }
 
-void Formula::FixNames()
+void Formula::FixNames(string modname)
 {
   for (size_t comp=0; comp<m_components.size(); comp++) {
-    FixName(m_components[comp].first);
-    FixName(m_components[comp].second);
+    if (m_components[comp].second.size() > 0) {
+      FixName(m_components[comp].first);
+      FixName(m_components[comp].second);
+    }
   }
+  //Check to make sure we're still a legal formula:
+#ifndef NSBML
+  string formstring = ToSBMLString();
+  if (formstring.size() > 0) {
+    ASTNode_t* ASTform = parseStringToASTNode(formstring);
+    if (ASTform == NULL) {
+      //Something went wrong, so maybe something we thought was a function is actually a variable name:
+      for (size_t comp=0; comp<m_components.size(); comp++) {
+        if (m_components[comp].second.size() == 0) {
+          vector<string> possiblevarname;
+          possiblevarname.push_back(m_components[comp].first + "_");
+          Variable* pvar = g_registry.GetModule(modname)->GetVariable(possiblevarname);
+          if (pvar != NULL) {
+            m_components[comp].first = modname;
+            m_components[comp].second = possiblevarname;
+          }
+        }
+      }
+    }
+    else {
+      delete ASTform;
+    }
+  }
+#endif
 }
 
 void Formula::ChangeTimeTo(const Variable* timeref)
