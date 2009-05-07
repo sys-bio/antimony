@@ -42,15 +42,33 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
 #ifndef NSBML
-    m_sbml(src.m_sbml),
+    m_sbml(2, 4),
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
     m_libsbml_warnings(),
 #endif
     m_uniquevars()
 {
   SetNewTopName(modulename, newtopname);
+  CreateSBMLModel(); //It's either this or go through and rename every blasted thing in it, and libSBML doesn't provide an easy way to go through all elements at once.
 }
-
+/*
+Module::Module(const Module& src)
+  : m_modulename(src.m_modulename),
+    m_exportlist(src.m_exportlist),
+    m_variablename(src.m_variablename),
+    m_variables(src.m_variables),
+    m_synchronized(src.m_synchronized),
+    m_returnvalue(src.m_returnvalue),
+    m_currentexportvar(src.m_currentexportvar),
+#ifndef NSBML
+    m_sbml(src.m_sbml),
+    m_libsbml_info(m_libsbml_info),
+    m_libsbml_warnings(m_libsbml_warnings),
+#endif
+    m_uniquevars(m_uniquevars)
+{
+}
+*/
 Variable* Module::AddOrFindVariable(const string* name)
 {
   vector<string> fullname;
@@ -167,6 +185,10 @@ void Module::AddTimeToUserFunction(std::string function)
     if (form != NULL && form->ContainsFunction(function)) {
       form->InsertTimeInFunction(function);
     }
+    Formula* form2 = m_variables[var]->GetRule();
+    if (form2 != NULL && form2 != form && form2->ContainsFunction(function)) {
+      form2->InsertTimeInFunction(function);
+    }
   }
 }
 
@@ -242,7 +264,7 @@ const Formula* Module::GetFormula() const
   }
   //Often, there will be no return value.  In fact, this might always be the case, since as
   // of this comment, there is no way to actually set this.
-  return NULL;
+  return &(g_registry.m_blankform);
 }
 
 Formula* Module::GetFormula()
@@ -253,7 +275,7 @@ Formula* Module::GetFormula()
   }
   //Often, there will be no return value.  In fact, this might always be the case, since as
   // of this comment, there is no way to actually set this.
-  return NULL;
+  return &(g_registry.m_blankform);
 }
 
 Variable* Module::GetNextExportVariable()
@@ -385,10 +407,8 @@ bool Module::Finalize()
 #ifndef NSBML
   //Phase 5:  Check SBML compatibility, and create sbml model object.
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
-  SBMLDocument sbmldoc;
-  Model sbml = GetSBMLModel();
-  sbmldoc.setModel(&sbml);
-  char* sbmlstring = writeSBMLToString(&sbmldoc);
+  const SBMLDocument* sbmldoc = GetSBML();
+  char* sbmlstring = writeSBMLToString(sbmldoc);
   SBMLDocument* testdoc = readSBMLFromString(sbmlstring);
   testdoc->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   testdoc->checkConsistency();
@@ -606,6 +626,54 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   return false;
 }
 
+string Module::OutputOnly(vector<var_type> types, string name, string indent, char cc) const
+{
+  string retval = "";
+  bool firstone = true;
+  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
+    const Variable* var = m_variables[vnum];
+    if (var->IsPointer()) continue;
+    var_type type = var->GetType();
+    bool matches = false;
+    for (size_t t=0; t<types.size(); t++) {
+      if (type==types[t]) {
+        matches = true;
+        break;
+      }
+    }
+    if (matches) {
+      const Formula* form = var->GetFormula();
+      if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly()) {
+        if (firstone) {
+          retval += "\n" + indent + "// " + name + ":\n";
+          firstone = false;
+        }
+        retval += indent + var->GetNameDelimitedBy(cc) + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
+      }
+    }
+  }
+  return retval;
+}
+
+string Module::ListIn80Cols(string type, vector<string> names, string indent) const
+{
+  if (names.size()==0) return "";
+  string retval = "";
+  string oneline = indent + type + " " + names[0];
+  for (size_t n=1; n<names.size(); n++) {
+    if (oneline.size() > 71) {
+      retval += oneline + ";\n";
+      oneline = indent + type + " " + names[n];
+    }
+    else {
+      oneline += ", " + names[n];
+    }
+  }
+  retval += oneline + ";\n";
+  return retval;
+}
+
+
 string Module::ToString() const
 {
   string retval = "Module name:  ";
@@ -688,12 +756,17 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
     indent = "  ";
   }
 
-  //Modules next:
+  //Definitions of all variables; Modules first:
+  bool firstone = true;
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
       vector<string> mname = m_variables[var]->GetName();
       assert(mname.size() == 1);
       const Module* submod = m_variables[var]->GetModule();
+      if (firstone) {
+        retval += "\n" + indent + "// Sub-modules, and any changes to those submodules:\n";
+        firstone = false;
+      }
       retval += indent + mname[0] + ": " + submod->GetModuleName() + "()\n";
     }
   }
@@ -709,88 +782,192 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
     }
   }
 
-  //And now the definitions of all local variables:
+  //List the compartments and the species (but don't define them yet) so that the order is preserved:
+  vector<string> compartmentnames;
+  vector<string> speciesnames;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    string name = m_variables[var]->GetNameDelimitedBy(cc);
+    Variable* comp = m_variables[var]->GetCompartment();
+    if (comp != NULL) {
+      name += " in " + comp->GetNameDelimitedBy(cc);
+    }
+    if (m_variables[var]->GetType() == varCompartment) {
+      compartmentnames.push_back(name);
+    }
+    else if (IsSpecies(m_variables[var]->GetType())) {
+      speciesnames.push_back(name);
+    }
+  }
+  retval += ListIn80Cols("compartment", compartmentnames, indent);
+  retval += ListIn80Cols("species", speciesnames, indent);
+
+  //Now list DNA strands:
+  firstone = true;
+  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
+    const Variable* var = m_variables[vnum];
+    var_type type = var->GetType();
+    if (var->IsPointer()) continue;
+    else if (type == varStrand) {
+      if (firstone) {
+        retval += "\n" + indent + "// DNA strands:\n";
+        firstone = false;
+      }
+      retval += indent + var->GetNameDelimitedBy(cc) + ": " + var->GetDNAStrand()->ToStringDelimitedBy(cc) + "\n";
+    }
+  }
+
+  //Now any assignment rules:
+  firstone = true;
+  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
+    const Variable* var = m_variables[vnum];
+    if (var->IsPointer()) continue;
+    if (var->GetRuleType() == ruleASSIGNMENT) {
+      const Formula* asntrule = var->GetRule();
+      if (!asntrule->IsEmpty()) {
+        if (firstone) {
+          retval += "\n" + indent + "// Assignment Rules:\n";
+          firstone = false;
+        }
+        retval += indent + var->GetNameDelimitedBy(cc) + " := " + asntrule->ToDelimitedStringWithEllipses(cc) + "\n";
+      }
+    }
+  }
+
+  //Any rate rules:
+  firstone = true;
+  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
+    const Variable* var = m_variables[vnum];
+    if (var->IsPointer()) continue;
+    if (var->GetRuleType() == ruleRATE) {
+      const Formula* raterule = var->GetRule();
+      if (!raterule->IsEmpty()) {
+        if (firstone) {
+          retval += "\n" + indent + "// Rate Rules:\n";
+          firstone = false;
+        }
+        retval += indent + var->GetNameDelimitedBy(cc) + "' = " + raterule->ToDelimitedStringWithEllipses(cc) + "\n";
+      }
+    }
+  }
+
+  //Then reactions:
+  firstone = true;
   for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
     const Variable* var = m_variables[vnum];
     var_type type = var->GetType();
     if (var->IsPointer()) continue;
     else if (IsReaction(type) || type == varInteraction) {
+      if (firstone) {
+        retval += "\n" + indent + "// Reactions:\n";
+        firstone = false;
+      }
       retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses(cc) + "\n";
     }
+  }
+
+  //Then events:
+  firstone = true;
+  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
+    const Variable* var = m_variables[vnum];
+    var_type type = var->GetType();
+    if (var->IsPointer()) continue;
     else if (type == varEvent) {
+      if (firstone) {
+        retval += "\n" + indent + "// Events:\n";
+        firstone = false;
+      }
       retval += indent + var->GetEvent()->ToStringDelimitedBy(cc) + "\n";
     }
-    else if (type == varStrand) {
-      retval += indent + var->GetNameDelimitedBy(cc) + ": " + var->GetDNAStrand()->ToStringDelimitedBy(cc) + "\n";
-    }
-    else if (type != varModule) {
-      const Formula* form = var->GetFormula();
-      if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly()) {
-        retval += indent + var->GetNameDelimitedBy(cc) + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
-      }
-    }
   }
+
+  //Then species:
+  vector<var_type> types;
+  types.push_back(varSpeciesUndef);
+  retval += OutputOnly(types, "Species", indent, cc);
+  
+  //Compartments:
+  types.clear();
+  types.push_back(varCompartment);
+  retval += OutputOnly(types, "Compartments", indent, cc);
+
+  //And finally, other random formulas.
+  types.clear();
+  types.push_back(varFormulaUndef);
+  types.push_back(varFormulaOperator);
+  types.push_back(varUndefined);
+  types.push_back(varDNA);
+  retval += OutputOnly(types, "Other defined symbols", indent, cc);
 
   //Variables
+  vector<string> varnames;
+  vector<string> constnames;
+  vector<string> DNAnames;
+  vector<string> operatornames;
+  vector<string> genenames;
+  vector<string> innames;
   for (size_t var=0; var<m_variables.size(); var++) {
-    if ((m_variables[var]->GetType() != varModule) &&
-        (m_variables[var]->GetType() != varUndefined) &&
-        (m_variables[var]->GetType() != varStrand) &&
-        (m_variables[var]->GetType() != varEvent) &&
-        (m_variables[var]->GetType() != varFormulaUndef) &&
-        (m_variables[var]->GetType() != varReactionUndef) &&
-        (m_variables[var]->GetType() != varInteraction) &&
-        (!m_variables[var]->IsPointer())) {
-      retval += indent;
-      switch(m_variables[var]->GetConstType()) {
-      case constVAR:
-        retval += "var ";
-        break;
-      case constCONST:
-        retval += "const ";
-        break;
-      case constDEFAULT:
-        break;
-      }
-      retval += VarTypeToAntimony(m_variables[var]->GetType());
-      retval += m_variables[var]->GetNameDelimitedBy(cc);
-      Variable* compartment = m_variables[var]->GetCompartment();
-      if (compartment != NULL) {
-        if (m_variables[var]->GetIsSetCompartment()) {
-          retval += " in " + compartment->GetNameDelimitedBy(cc);
-        }
-      }
-      retval += ";\n";
+    var_type type = m_variables[var]->GetType();
+    const_type isconst = m_variables[var]->GetConstType();
+    string name = m_variables[var]->GetNameDelimitedBy(cc);
+    Variable* comp = m_variables[var]->GetCompartment();
+    if (comp != NULL) {
+      name += " in " + comp->GetNameDelimitedBy(cc);
+      innames.push_back(name);
     }
-  }
-
-  //Const vs. var
-  string conststring = "";
-  string varstring = "";
-  for (size_t var=0; var<m_variables.size(); var++) {
-    switch(m_variables[var]->GetConstType()) {
+    switch(isconst) {
     case constVAR:
-      if (varstring != "") {
-        varstring += ", ";
+      varnames.push_back(name);
+      if (comp != NULL) {
+        innames.pop_back();
       }
-      varstring += m_variables[var]->GetNameDelimitedBy(cc);
       break;
     case constCONST:
-      if (conststring != "") {
-        conststring += ", ";
+      constnames.push_back(name);
+      if (comp != NULL) {
+        innames.pop_back();
       }
-      conststring += m_variables[var]->GetNameDelimitedBy(cc);
       break;
     case constDEFAULT:
       break;
     }
+    switch(type) {
+    case varDNA:
+      DNAnames.push_back(name);
+      if (comp != NULL && innames.back() == name) {
+        innames.pop_back();
+      }
+      break;
+    case varFormulaOperator:
+      if (comp != NULL && innames.back() == name) {
+        innames.pop_back();
+      }
+      operatornames.push_back(name);
+      break;
+    case varReactionGene:
+      if (comp != NULL && innames.back() == name) {
+        innames.pop_back();
+      }
+      genenames.push_back(name);
+      break;
+    case varSpeciesUndef: //already taken care of at top
+    case varFormulaUndef: //
+    case varReactionUndef: 
+    case varInteraction: 
+    case varUndefined: 
+    case varModule: 
+    case varEvent: 
+    case varCompartment: 
+    case varStrand:
+      break;
+    }
   }
-  if (conststring != "") {
-    retval += indent + "const " + conststring + ";\n";
-  }
-  if (varstring != "") {
-    retval += indent + "var " + varstring + ";\n";
-  }
+  retval += "\n";
+  retval += ListIn80Cols("DNA", DNAnames, indent);
+  retval += ListIn80Cols("operator", operatornames, indent);
+  retval += ListIn80Cols("gene", genenames, indent);
+  retval += ListIn80Cols("var", varnames, indent);
+  retval += ListIn80Cols("const", constnames, indent);
+
 
   //end model definition
   if (m_modulename != MAINMODULE) {
@@ -823,7 +1000,7 @@ string Module::GetJarnacVarFormulas() const
         (HasOrIsFormula(type) && m_variables[var]->HasFormula() && !m_variables[var]->GetIsConst())) {
       retval += "  ";
       retval += m_variables[var]->GetNameDelimitedBy('_') + " = ";
-      retval += m_variables[var]->GetFormulaStringDelimitedBy('_') + "\n";
+      retval += m_variables[var]->GetFormula()->ToSBMLString() + "\n";
     }
     else if (m_variables[var]->GetType() == varModule) {
       retval += m_variables[var]->GetModule()->GetJarnacVarFormulas();
@@ -841,7 +1018,7 @@ string Module::GetJarnacConstFormulas(string modulename) const
         (HasOrIsFormula(type) && m_variables[var]->HasFormula() && m_variables[var]->GetIsConst())) {
       retval += modulename + ".";
       retval += m_variables[var]->GetNameDelimitedBy('_') + " = ";
-      retval += m_variables[var]->GetFormulaStringDelimitedBy('_') + "\n";
+      retval += m_variables[var]->GetFormula()->ToSBMLString() + "\n";
     }
     else if (m_variables[var]->GetType() == varModule) {
       retval += m_variables[var]->GetModule()->GetJarnacConstFormulas(modulename);
@@ -870,13 +1047,13 @@ string Module::ListAssignmentDifferencesFrom(const Module* origmod, string mname
   for (size_t var=0; var<GetNumVariablesOfType(allSymbols); var++) {
     const Variable* thisvar = GetNthVariableOfType(allSymbols, var);
     const Variable* origvar = origmod->GetNthVariableOfType(allSymbols, var);
-    string thisform = thisvar->GetFormulaStringWithEllipses(cc);
-    string origform = origvar->GetFormulaStringWithEllipses(cc);
+    string thisform = thisvar->GetFormula()->ToDelimitedStringWithEllipses(cc);
+    string origform = origvar->GetFormula()->ToDelimitedStringWithEllipses(cc);
     while (thisform.find(mname + ".") != string::npos) {
       thisform.erase(thisform.find(mname + "."), mname.size()+1);
     }
     if (thisform != origform) {
-      list += indent + thisvar->GetNameDelimitedBy(cc) + " = " + thisvar->GetFormulaStringWithEllipses(cc) + ";\n";
+      list += indent + thisvar->GetNameDelimitedBy(cc) + " = " + thisvar->GetFormula()->ToDelimitedStringWithEllipses(cc) + ";\n";
     }
   }
   return list;
@@ -910,7 +1087,7 @@ void Module::LoadSBML(const Model* sbml)
     const Compartment* compartment = sbml->getCompartment(comp);
     sbmlname = getNameFromSBMLObject(compartment, "_C");
     if (sbmlname == DEFAULTCOMP && compartment->getConstant() && compartment->isSetSize() && compartment->getSize() == 1.0) {
-      break;
+      continue;
       //LS NOTE: we assume this was created with Antimony, and ignore the auto-generated 'default compartment'
     }
     Variable* var = AddOrFindVariable(&sbmlname);
@@ -920,6 +1097,7 @@ void Module::LoadSBML(const Model* sbml)
       formula->AddNum(compartment->getSize());
       var->SetFormula(formula);
     }
+    var->SetUnits(compartment->getUnits());
   }
 
   //Species
@@ -927,13 +1105,7 @@ void Module::LoadSBML(const Model* sbml)
     const Species* species = sbml->getSpecies(spec);
     sbmlname = getNameFromSBMLObject(species, "_S");
     Variable* var = AddOrFindVariable(&sbmlname);
-    if (species->getConstant()==false || species->getBoundaryCondition()==true) {
-      //Antimony does not have the concept of boundary species that are not constant.  They can be pretty well modeled simply as parameters, however, so we'll do that instead.
-      var->SetType(varFormulaUndef);
-    }
-    else {
-      var->SetType(varSpeciesUndef);
-    }
+    var->SetType(varSpeciesUndef);
 
     //Setting the formula
     Formula* formula = g_registry.NewBlankFormula();
@@ -947,7 +1119,7 @@ void Module::LoadSBML(const Model* sbml)
     }
     //Anything more complicated is set in a Rule, which we'll get to later.
 
-    if (species->getConstant()) {
+    if (species->getConstant() || species->getBoundaryCondition()==true) {
       //Since all species are variable by default, we only set this explicitly if true.
       var->SetIsConst(true);
     }
@@ -956,8 +1128,9 @@ void Module::LoadSBML(const Model* sbml)
       compartment->SetType(varCompartment);
       var->SetCompartment(compartment);
     }
+    var->SetUnits(species->getUnits());
   }
-
+  
   //Events:
   for (unsigned int ev=0; ev<sbml->getNumEvents(); ev++) {
     const Event* event = sbml->getEvent(ev);
@@ -975,7 +1148,8 @@ void Module::LoadSBML(const Model* sbml)
     //Set the assignments:
     for (unsigned int asnt=0; asnt<event->getNumEventAssignments(); asnt++) {
       const EventAssignment* assignment = event->getEventAssignment(asnt);
-      Variable* asntvar = AddOrFindVariable(&(assignment->getVariable()));
+      string name = assignment->getVariable();
+      Variable* asntvar = AddOrFindVariable(&name);
       Formula*  asntform = g_registry.NewBlankFormula();
       setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform);
       var->GetEvent()->AddResult(asntvar, asntform);
@@ -992,9 +1166,8 @@ void Module::LoadSBML(const Model* sbml)
     Formula* formula = g_registry.NewBlankFormula();
     formula->AddNum(parameter->getValue());
     var->SetFormula(formula);
-    //LS DEBUG:  Some 'parameters' can vary from Rules, below, and in those cases, the value is
-    // supposed to be an 'initial value'.  But I have no idea what that might mean, so we'll just
-    // overwrite the formula with the rule if it happens.
+    //LS NOTE:  If a parameter has both a value and an 'initial assignment', the initial assignment will override the value.
+    var->SetUnits(parameter->getUnits());
   }
 
   //Initial Assignments:  can override 'getValue' values.
@@ -1007,37 +1180,45 @@ void Module::LoadSBML(const Model* sbml)
       string formulastring(parseASTNodeToString(initasnt->getMath()));
       setFormulaWithString(formulastring, formula);
       var->SetFormula(formula);
-      if (var->GetType() != varSpeciesUndef) {
-        //Initial assignments for non-species variables are only used when the variable is supposed to be constant, so we're going to set the constness explicitly here.  This can be overridden by an assignment rule, but that comes next.
-        var->SetIsConst(true);
-      }
     }
     else {
       //LS DEBUG:  error?  The 'symbol' is supposed to be required.
     }
   }
     
-  //Rules:  can override 'getValue' values and 'Initial Assignment' formulas.
+  //Rules:
   for (unsigned int rulen=0; rulen<sbml->getNumRules(); rulen++) {
     const Rule* rule = sbml->getRule(rulen);
-    if (rule->isAssignment()) {
-      sbmlname = rule->getVariable();
-      assert(sbmlname != "");
-      if (sbmlname == "") {
-        sbmlname = getNameFromSBMLObject(rule, "_R");
-      }
-      Variable* var = AddOrFindVariable(&sbmlname);
-      Formula* formula = g_registry.NewBlankFormula();
-      string formulastring(parseASTNodeToString(rule->getMath()));
-      setFormulaWithString(formulastring, formula);
-      var->SetFormula(formula);
-      if (var->GetType() != varSpeciesUndef) {
-        //Assignment rules always mean the variable in question is not constant
-        var->SetIsConst(false);
-      }
+    if (rule->isAlgebraic()) {
+      //LS DEBUG:  error message?  Unable to process algebraic rules
+      continue;
+    }
+    sbmlname = rule->getVariable();
+    assert(sbmlname != "");
+    if (sbmlname == "") {
+      sbmlname = getNameFromSBMLObject(rule, "_R");
+    }
+    Variable* var = AddOrFindVariable(&sbmlname);
+    Formula* formula = g_registry.NewBlankFormula();
+    string formulastring(parseASTNodeToString(rule->getMath()));
+    setFormulaWithString(formulastring, formula);
+    if (IsSpecies(var->GetType())) {
+      //Any species in any rule must be 'const' (in Antimony), because this means it's a 'boundary species'
+      var->SetIsConst(true);
     }
     else {
-      //LS DEBUG:  error message?  Unable to process algebraic or rate rules
+      //For other parameters, assignment and rate rules always mean the variable in question is not constant.
+      var->SetIsConst(false);
+    }
+
+    if (rule->isAssignment()) {
+      var->SetAssignmentRule(formula);
+    }
+    else if (rule->isRate()) {
+      var->SetRateRule(formula);
+    }
+    else {
+      assert(false); //should be caught above
     }
   }
 
@@ -1084,96 +1265,128 @@ void Module::LoadSBML(const Model* sbml)
     }
     //formula
     string formulastring = "";
+    Formula formula;
     if (reaction->isSetKineticLaw()) {
       const KineticLaw* kl = reaction->getKineticLaw();
+      var->SetUnits(kl->getSubstanceUnits() + "/(" + kl->getTimeUnits() + ")");
       formulastring = parseASTNodeToString(kl->getMath());
+      setFormulaWithString(formulastring, &formula);
       for (unsigned int localp=0; localp<kl->getNumParameters(); localp++) {
         const Parameter* localparam = kl->getParameter(localp);
-        sbmlname = getNameFromSBMLObject(localparam, "_P");
-        string origname = sbmlname;
         vector<string> fullname;
+        //Find the variable with the original name:
+        string origname = getNameFromSBMLObject(localparam, "_P");
+        fullname.push_back(origname);
+        Variable* origvar = GetVariable(fullname);
+
+        //Create a new variable with a new name:
+        fullname.clear();
+        sbmlname = var->GetNameDelimitedBy('_') + "_" + origname;
         fullname.push_back(sbmlname);
         Variable* foundvar = GetVariable(fullname);
         while (foundvar != NULL) {
-          //There's a global variable with the same name--rename the variable
+           //Just in case something weird happened and there was another one of *this* name, too.
           sbmlname = var->GetNameDelimitedBy('_') + "_" + sbmlname;
           fullname.clear();
           fullname.push_back(sbmlname);
-          foundvar = GetVariable(fullname); //Just in case something weird happened and there was another one of *thi* name, too.
+          foundvar = GetVariable(fullname);
         }
         Variable* localvar = AddOrFindVariable(&sbmlname);
-        Formula* formula = g_registry.NewBlankFormula();
-        formula->AddNum(localparam->getValue());
-        localvar->SetFormula(formula);
-        //Now rename the variable in the formulastring:
-        size_t place=0;
-        size_t found = formulastring.find(origname, place);
-        while (found != string::npos) {
-          formulastring.replace(found, origname.size(), sbmlname);
-          place = found + sbmlname.size();
-          found = formulastring.find(origname, place);
+
+        //Replace the variable in the formula:
+        if(origvar != NULL) {
+          formula.ReplaceWith(origvar, localvar);
         }
+        else {
+          //If origvar is NULL, nothing needs to be replaced: if the original formula had included the parameter, the earlier setFormulaWithString would have created one.  But since there wasn't one, this means the original formula didn't include the parameter at all!  Meaning this local parameter has no use whatsoever!  What the heck, dude.  Oh, well.
+          //cout << "Unused local variable for reaction " << var->GetNameDelimitedBy('.') << ":  " << origname << endl;
+        }
+
+        //Set the value for the new variable:
+        Formula localformula;
+        localformula.AddNum(localparam->getValue());
+        localvar->SetFormula(&localformula);
       }
     }
-    //Put all three together:
-    Formula* formula = g_registry.NewBlankFormula();
-    if (formulastring != "") {
-      setFormulaWithString(formulastring, formula);
-    }
-    AddNewReaction(&reactants, rdBecomes, &products, formula, var);
+    //Put reactants, products, and the formula together:
+    AddNewReaction(&reactants, rdBecomes, &products, &formula, var);
   }
-  m_sbml = *sbml;
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
   g_registry.FixTimeInFunctions();
   //And that some SBML-OK names are not OK in Antimony
   FixNames();
 }
 
-Model Module::GetSBMLModel()
+const SBMLDocument* Module::GetSBML()
 {
-  if (m_sbml.getId() == m_modulename) {
-    return m_sbml;
+  const Model* mod = m_sbml.getModel();
+  if (mod != NULL && mod->getId() == m_modulename) {
+    return &m_sbml;
   }
   CreateSBMLModel();
-  return m_sbml;
+  return &m_sbml;
 }
 
 void Module::CreateSBMLModel()
 {
-  Model newmod(2, 4);
-  newmod.setId(m_modulename);
-  m_sbml = newmod; //clear the old one, just in case.
+  Model* sbmlmod = m_sbml.createModel();
+  sbmlmod->setId(m_modulename);
   char cc = g_registry.GetCC();
   //User-defined functions
   for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
     const UserFunction* userfunction = g_registry.GetNthUserFunction(uf);
     assert(userfunction != NULL);
-    FunctionDefinition* fd = m_sbml.createFunctionDefinition();
+    FunctionDefinition* fd = sbmlmod->createFunctionDefinition();
     fd->setId(userfunction->GetModuleName());
     ASTNode* math = parseStringToASTNode(userfunction->ToSBMLString());
     fd->setMath(math);
     delete math;
   }
   //Compartments
-  Compartment* defaultCompartment = m_sbml.createCompartment();
+  Compartment* defaultCompartment = sbmlmod->createCompartment();
   defaultCompartment->setId(DEFAULTCOMP);
   defaultCompartment->setConstant(true);
   defaultCompartment->setSize(1);
   size_t numcomps = GetNumVariablesOfType(allCompartments);
   for (size_t comp=0; comp<numcomps; comp++) {
     const Variable* compartment = GetNthVariableOfType(allCompartments, comp);
-    Compartment* sbmlcomp = m_sbml.createCompartment();
+    Compartment* sbmlcomp = sbmlmod->createCompartment();
     sbmlcomp->setId(compartment->GetNameDelimitedBy(cc));
     sbmlcomp->setConstant(compartment->GetIsConst());
     const Formula* formula = compartment->GetFormula();
     if (formula->IsDouble()) {
-      sbmlcomp->setSize(atof(formula->ToDelimitedStringWithEllipses(cc).c_str()));
+      sbmlcomp->setSize(atof(formula->ToSBMLString().c_str()));
     }
     else if (!formula->IsEmpty()) {
-      AssignmentRule* ar = m_sbml.createAssignmentRule();
-      ar->setVariable(compartment->GetNameDelimitedBy(cc));
+      InitialAssignment* ia = sbmlmod->createInitialAssignment();
+      ia->setSymbol(compartment->GetNameDelimitedBy(cc));
       ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
-      ar->setMath(math);
+      ia->setMath(math);
+      delete math;
+    }
+    formula = compartment->GetRule();
+    if (formula->IsDouble() && compartment->GetRuleType() == ruleASSIGNMENT) {
+      //An assignment rule to a double is wasteful--we'll set it normally instead.
+      sbmlcomp->setSize(atof(formula->ToSBMLString().c_str()));
+    }
+    else if (!formula->IsEmpty()) {
+      AssignmentRule* ar;
+      RateRule* rr;
+      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
+      switch(compartment->GetRuleType()) {
+      case ruleNONE:
+        assert(false);
+      case ruleASSIGNMENT:
+        ar = sbmlmod->createAssignmentRule();
+        ar->setVariable(compartment->GetNameDelimitedBy(cc));
+        ar->setMath(math);
+        break;
+      case ruleRATE:
+        rr = sbmlmod->createRateRule();
+        rr->setVariable(compartment->GetNameDelimitedBy(cc));
+        rr->setMath(math);
+        break;
+      }
       delete math;
       sbmlcomp->setConstant(false); //Requirement of SBML
     }
@@ -1183,23 +1396,14 @@ void Module::CreateSBMLModel()
   size_t numspecies = GetNumVariablesOfType(allSpecies);
   for (size_t spec=0; spec < numspecies; spec++) {
     const Variable* species = GetNthVariableOfType(allSpecies, spec);
-    Species* sbmlspecies = m_sbml.createSpecies();
+    Species* sbmlspecies = sbmlmod->createSpecies();
     sbmlspecies->setId(species->GetNameDelimitedBy(cc));
+    sbmlspecies->setConstant(false); //There's no need to try to distinguish between const and var for species.
     if (species->GetIsConst()) {
       sbmlspecies->setBoundaryCondition(true);
-      sbmlspecies->setConstant(true);
     }
-    const Formula* formula = species->GetFormula();
-    if (formula->IsDouble()) {
-      sbmlspecies->setInitialConcentration(atof(formula->ToDelimitedStringWithEllipses(cc).c_str()));
-    }
-    else if (!formula->IsEmpty()) {
-      //create a rule
-      InitialAssignment* rule=m_sbml.createInitialAssignment();
-      rule->setSymbol(species->GetNameDelimitedBy(cc)); 
-      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
-      rule->setMath(math);
-      delete math;
+    else {
+      sbmlspecies->setBoundaryCondition(false);
     }
     const Variable* compartment = species->GetCompartment();
     if (compartment == NULL) {
@@ -1208,6 +1412,44 @@ void Module::CreateSBMLModel()
     else {
       sbmlspecies->setCompartment(compartment->GetNameDelimitedBy(cc));
     }
+    const Formula* formula = species->GetFormula();
+    if (formula->IsDouble()) {
+      sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
+    }
+    else if (!formula->IsEmpty()) {
+      //create a rule
+      InitialAssignment* rule=sbmlmod->createInitialAssignment();
+      rule->setSymbol(species->GetNameDelimitedBy(cc)); 
+      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
+      rule->setMath(math);
+      delete math;
+    }
+    formula = species->GetRule();
+    if (formula->IsDouble() && species->GetRuleType() == ruleASSIGNMENT) {
+      //Again, it's better to set doubles this way:
+      sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
+    }
+    else if (!formula->IsEmpty()) {
+      AssignmentRule* ar;
+      RateRule* rr;
+      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
+      switch(species->GetRuleType()) {
+      case ruleNONE:
+        assert(false);
+      case ruleASSIGNMENT:
+        ar = sbmlmod->createAssignmentRule();
+        ar->setVariable(species->GetNameDelimitedBy(cc)); 
+        ar->setMath(math);
+        break;
+      case ruleRATE:
+        rr = sbmlmod->createRateRule();
+        rr->setVariable(species->GetNameDelimitedBy(cc));
+        rr->setMath(math);
+        break;
+      }
+      delete math;
+      sbmlspecies->setConstant(false); //requirement of SBML.  Should be false in all cases anyway, but just in case.
+    }
   }
 
   //Formulas
@@ -1215,28 +1457,42 @@ void Module::CreateSBMLModel()
   for (size_t form=0; form < numforms; form++) {
     const Variable* formvar = GetNthVariableOfType(allFormulas, form);
     const Formula*  formula = formvar->GetFormula();
-    Parameter* param = m_sbml.createParameter();
+    Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
     param->setConstant(formvar->GetIsConst());
     if (formula->IsDouble()) {
-      param->setValue(atof(formula->ToDelimitedStringWithEllipses(cc).c_str()));
+      param->setValue(atof(formula->ToSBMLString().c_str()));
     }
     else if (!formula->IsEmpty()) {
-      if (formvar->GetIsConst()) {
-        InitialAssignment* ia = m_sbml.createInitialAssignment();
-        ia->setSymbol(formvar->GetNameDelimitedBy(cc));
-        ASTNode* math = parseStringToASTNode(formula->ToSBMLString(formvar->GetStrandVars()));
-        ia->setMath(math);
-        delete math;
+      InitialAssignment* ia = sbmlmod->createInitialAssignment();
+      ia->setSymbol(formvar->GetNameDelimitedBy(cc));
+      ASTNode* math = parseStringToASTNode(formula->ToSBMLString(formvar->GetStrandVars(), true));
+      ia->setMath(math);
+      delete math;
+    }
+    formula = formvar->GetRule();
+    AssignmentRule* asntrule = NULL;
+    RateRule* raterule = NULL;
+    if (!formula->IsEmpty()) {
+      ASTNode* math = parseStringToASTNode(formula->ToSBMLString(formvar->GetStrandVars(), false));
+      switch(formvar->GetRuleType()) {
+      case ruleNONE:
+        assert(false);
+      case ruleASSIGNMENT:
+        //create an assignment rule
+        asntrule = sbmlmod->createAssignmentRule();
+        asntrule->setVariable(formvar->GetNameDelimitedBy(cc));
+        asntrule->setMath(math);
+        break;
+      case ruleRATE:
+        //create a rate rule
+        raterule = sbmlmod->createRateRule();
+        raterule->setVariable(formvar->GetNameDelimitedBy(cc));
+        raterule->setMath(math);
+        break;
       }
-      else {
-        //create a rule
-        AssignmentRule* rule = m_sbml.createAssignmentRule();
-        rule->setVariable(formvar->GetNameDelimitedBy(cc));
-        ASTNode* math = parseStringToASTNode(formula->ToSBMLString(formvar->GetStrandVars()));
-        rule->setMath(math);
-        delete math;
-      }
+      delete math;
+      param->setConstant(false); //requirement of SBML
     }
   }
 
@@ -1248,12 +1504,12 @@ void Module::CreateSBMLModel()
     if (reaction->IsEmpty()) {
       continue; //Reactions that involve no species are illegal in SBML.
     }
-    Reaction* sbmlrxn = m_sbml.createReaction();
+    Reaction* sbmlrxn = sbmlmod->createReaction();
     sbmlrxn->setId(rxnvar->GetNameDelimitedBy(cc));
     const Formula* formula = reaction->GetFormula();
-    string formstring = formula->ToSBMLString(rxnvar->GetStrandVars());
+    string formstring = formula->ToSBMLString(rxnvar->GetStrandVars(), false);
     if (!formula->IsEmpty()) {
-      KineticLaw* kl = m_sbml.createKineticLaw();
+      KineticLaw* kl = sbmlmod->createKineticLaw();
       ASTNode* math = parseStringToASTNode(formstring);
       kl->setMath(math);
       delete math;
@@ -1262,7 +1518,7 @@ void Module::CreateSBMLModel()
     for (size_t lnum=0; lnum<left->Size(); lnum++) {
       const Variable* nthleft = left->GetNthReactant(lnum);
       double nthstoich = left->GetStoichiometryFor(lnum);
-      SpeciesReference* sr = m_sbml.createReactant();
+      SpeciesReference* sr = sbmlmod->createReactant();
       sr->setSpecies(nthleft->GetNameDelimitedBy(cc));
       sr->setStoichiometry(nthstoich);
     }
@@ -1270,7 +1526,7 @@ void Module::CreateSBMLModel()
     for (size_t rnum=0; rnum<right->Size(); rnum++) {
       const Variable* nthright = right->GetNthReactant(rnum);
       double nthstoich = right->GetStoichiometryFor(rnum);
-      SpeciesReference* sr = m_sbml.createReactant();
+      SpeciesReference* sr = sbmlmod->createProduct();
       sr->setSpecies(nthright->GetNameDelimitedBy(cc));
       sr->setStoichiometry(nthstoich);
     }
@@ -1280,7 +1536,7 @@ void Module::CreateSBMLModel()
       if (subvars[v] != NULL && subvars[v]->GetType() == varSpeciesUndef) {
         if (left->GetStoichiometryFor(subvars[v]) == 0 &&
             right->GetStoichiometryFor(subvars[v]) == 0) {
-          ModifierSpeciesReference* msr = m_sbml.createModifier();
+          ModifierSpeciesReference* msr = sbmlmod->createModifier();
           msr->setSpecies(subvars[v]->GetNameDelimitedBy(cc));
         }
       }
@@ -1290,15 +1546,19 @@ void Module::CreateSBMLModel()
   //Events
   size_t numevents = GetNumVariablesOfType(allEvents);
   for (size_t ev=0; ev < numevents; ev++) {
-    const AntimonyEvent* event = GetNthVariableOfType(allEvents, ev)->GetEvent();
-    Event* sbmlevent = m_sbml.createEvent();
+    const Variable* eventvar = GetNthVariableOfType(allEvents, ev);
+    const AntimonyEvent* event = eventvar->GetEvent();
+    Event* sbmlevent = sbmlmod->createEvent();
+    sbmlevent->setId(eventvar->GetNameDelimitedBy(cc));
     Trigger trig(2, 4);
     ASTNode* ASTtrig = parseStringToASTNode(event->GetTrigger()->ToSBMLString());
     trig.setMath(ASTtrig);
     delete ASTtrig;
     sbmlevent->setTrigger(&trig);
-    for (size_t asnt=0; asnt<event->GetNumAssignments(); asnt++) {
-      EventAssignment* sbmlasnt = m_sbml.createEventAssignment();
+    long numasnts = static_cast<long>(event->GetNumAssignments());
+    for (long asnt=numasnts-1; asnt>=0; asnt--) {
+      //events are stored in reverse order.  Don't ask...
+      EventAssignment* sbmlasnt = sbmlmod->createEventAssignment();
       sbmlasnt->setVariable(event->GetNthAssignmentVariableName(asnt, cc));
       ASTNode* ASTasnt = parseStringToASTNode(event->GetNthAssignmentFormulaString(asnt, '_', true));
       sbmlasnt->setMath(ASTasnt);
@@ -1310,7 +1570,7 @@ void Module::CreateSBMLModel()
   size_t numunknown = GetNumVariablesOfType(allUnknown);
   for (size_t form=0; form < numunknown; form++) {
     const Variable* formvar = GetNthVariableOfType(allUnknown, form);
-    Parameter* param = m_sbml.createParameter();
+    Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
   }
 }

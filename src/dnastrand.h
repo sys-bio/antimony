@@ -31,7 +31,7 @@ public:
   void Clear();
 
   bool IsEmpty() const;
-  Formula* GetFinalFormula() const;
+  Formula* GetFinalFormula(bool initial) const;
   std::vector<Variable*> GetVariables() const;
   std::vector<size_t> GetOccurrencesOf(std::vector<std::string> var) const;
   size_t GetStrandLength() const {return m_strand.size();};

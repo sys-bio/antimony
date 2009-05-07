@@ -97,4 +97,8 @@ enum return_type {allSymbols = 0,
  */
 enum const_type {constDEFAULT = 0, constVAR, constCONST};
 
+/**
+ * rule_type values are not used in the API, but are used internally in libAntimony.  Every symbol starts off having no rule associated with it (ruleNONE), and may have up to one rule, either of an assignment type (ruleASSIGNMENT) or of the rate type (ruleRATE).  This ensures that only one rule is stored per symbol.
+ */
+enum rule_type {ruleNONE = 0, ruleASSIGNMENT, ruleRATE};
 #endif // ENUMS_H

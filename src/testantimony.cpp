@@ -92,7 +92,7 @@ int main(int argc, char** argv)
       cout << "Error when re-reading file " << argv[1] << ":  " << getLastError() << endl;
     }
     else {
-      cout << argv[1] << " re-read successfully ." << endl;
+      cout << argv[1] << " re-read successfully." << endl;
     }
 #ifndef NSBML
     cout << "SBML Info from main module in last file:" << endl << getSBMLInfoMessages("__main") << endl;

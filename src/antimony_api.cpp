@@ -384,7 +384,35 @@ LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type
     reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
-  return getCharStar(var->GetFormulaStringDelimitedBy(g_registry.GetCC()).c_str());
+  bool initial=true;
+  if (IsReaction(var->GetType())) {
+    initial = false;
+  }
+  return getCharStar(var->GetFormula()->ToDelimitedStringWithStrands(g_registry.GetCC(), var->GetStrandVars(), initial).c_str());
+}
+
+LIB_EXTERN char*  getNthSymbolAssignmentRuleOfType(const char* moduleName, return_type rtype, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
+  if (var==NULL) {
+    unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
+    reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
+    return NULL;
+  }
+  return getCharStar(var->GetAssignmentRule()->ToDelimitedStringWithStrands(g_registry.GetCC(), var->GetStrandVars(), false).c_str());
+}
+
+LIB_EXTERN char*  getNthSymbolRateRuleOfType(const char* moduleName, return_type rtype, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
+  if (var==NULL) {
+    unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
+    reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
+    return NULL;
+  }
+  return getCharStar(var->GetRateRule()->ToDelimitedStringWithStrands(g_registry.GetCC(), var->GetStrandVars(), false).c_str());
 }
 
 LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_type rtype, unsigned long n)
@@ -1169,10 +1197,8 @@ LIB_EXTERN char* getJarnacString(const char* moduleName)
 LIB_EXTERN int writeSBMLFile(const char* filename, const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  SBMLDocument sbmldoc;
-  Model sbml = g_registry.GetModule(moduleName)->GetSBMLModel();
-  sbmldoc.setModel(&sbml);
-  int sbmlret = writeSBML(&sbmldoc, filename);
+  const SBMLDocument* sbmldoc = g_registry.GetModule(moduleName)->GetSBML();
+  int sbmlret = writeSBML(sbmldoc, filename);
   if (sbmlret == 0) {
     string error = "Unable to open file ";
     error += filename;
@@ -1185,10 +1211,8 @@ LIB_EXTERN int writeSBMLFile(const char* filename, const char* moduleName)
 LIB_EXTERN char* getSBMLString(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  SBMLDocument sbmldoc;
-  Model sbml = g_registry.GetModule(moduleName)->GetSBMLModel();
-  sbmldoc.setModel(&sbml);
-  char* sbmlstring = writeSBMLToString(&sbmldoc);
+  const SBMLDocument* sbmldoc = g_registry.GetModule(moduleName)->GetSBML();
+  char* sbmlstring = writeSBMLToString(sbmldoc);
   if (sbmlstring == NULL) {
     string error = "An underlying parser component in libSBML has failed when writing ";
     error += moduleName;

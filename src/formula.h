@@ -39,10 +39,10 @@ public:
 
   void Clear();
 
-  std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands) const;
+  std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands, bool initial) const;
   std::string ToDelimitedStringWithEllipses(char cc) const;
   std::string ToSBMLString() const;
-  std::string ToSBMLString(std::vector<std::pair<Variable*, size_t> > strands) const;
+  std::string ToSBMLString(std::vector<std::pair<Variable*, size_t> > strands, bool initial) const;
   std::string ConvertOneSymbolToFunction(std::string formula) const;
   std::vector<const Variable*> GetVariablesFrom(std::string formula, std::string module) const;
   std::vector<std::vector<std::string> > GetVariables() const;
@@ -50,6 +50,7 @@ public:
   void FixNames(std::string modname);
   void ChangeTimeTo(const Variable* timeref);
   void InsertTimeInFunction(std::string function);
+  void ReplaceWith(const Variable* origvar, const Variable* newvar);
 };
 
 

@@ -51,6 +51,9 @@ public:
   Registry();
   ~Registry();
 
+  //Sometimes we need to pass a blank formula instead of a NULL pointer
+  Formula m_blankform;
+
   std::ifstream* input;
 
   void ClearModules();

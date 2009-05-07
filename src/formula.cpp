@@ -22,9 +22,11 @@ void Formula::AddNum(double num)
 {
   vector<string> novar;
   pair<string, vector<string> > newvar;
-  char charnum[50];
-  sprintf(charnum, "%g", num);
-  string strnum(charnum);
+  stringstream convert;
+  convert.precision(15);
+  string strnum;
+  convert << num;
+  convert >> strnum;
   newvar = make_pair(strnum, novar);
   m_components.push_back(newvar);
 }
@@ -151,7 +153,7 @@ bool Formula::ContainsVar(const Variable* outervar) const
       if (subvar->GetIsEquivalentTo(outervar)) {
         return true;
       }
-      Formula* subformula = subvar->GetFormula();
+      const Formula* subformula = subvar->GetFormula();
       if (subformula != NULL) {
         if (subformula->ContainsVar(outervar)) {
           return true;
@@ -179,7 +181,7 @@ void Formula::Clear()
   m_components.clear();
 }
 
-string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, size_t> > strands) const
+string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, size_t> > strands, bool initial) const
 {
   string retval;
   if (strands.size() == 0) {
@@ -204,12 +206,12 @@ string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, siz
               retval += "0";
             }
             else {
-              retval += "(" + supervars[0].first->GetFormulaForNthEntryInStrand(cc, supervars[0].second-1) + ")";
+              retval += "(" + supervars[0].first->GetFormulaForNthEntryInStrand(cc, supervars[0].second-1, initial) + ")";
             }
           }
         }
         else {
-          retval += "(" + strands[strand].first->GetFormulaForNthEntryInStrand(cc, strands[strand].second-1) + ")";
+          retval += "(" + strands[strand].first->GetFormulaForNthEntryInStrand(cc, strands[strand].second-1, initial) + ")";
         }
       }
       else {
@@ -261,12 +263,12 @@ string Formula::ToDelimitedStringWithEllipses(char cc) const
 string Formula::ToSBMLString() const
 {
   vector<pair<Variable*, size_t> > nostrands;
-  return ToSBMLString(nostrands);
+  return ToSBMLString(nostrands, true);
 }
 
-string Formula::ToSBMLString(vector<pair<Variable*, size_t> > strands) const
+string Formula::ToSBMLString(vector<pair<Variable*, size_t> > strands, bool initial) const
 {
-  string formula = ToDelimitedStringWithStrands('_', strands);
+  string formula = ToDelimitedStringWithStrands('_', strands, initial);
   string revform = ConvertOneSymbolToFunction(formula);
   while (formula != revform) {
     formula = revform;
@@ -377,6 +379,7 @@ void Formula::FixNames(string modname)
       FixName(m_components[comp].second);
     }
   }
+  /*
   //Check to make sure we're still a legal formula:
 #ifndef NSBML
   string formstring = ToSBMLString();
@@ -401,6 +404,7 @@ void Formula::FixNames(string modname)
     }
   }
 #endif
+  */
 }
 
 void Formula::ChangeTimeTo(const Variable* timeref)
@@ -426,6 +430,15 @@ void Formula::InsertTimeInFunction(std::string function)
           continue;
         }
       }
+    }
+  }
+}
+
+void Formula::ReplaceWith(const Variable* origvar, const Variable* newvar)
+{
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second == origvar->GetName()) {
+      m_components[comp].second = newvar->GetName();
     }
   }
 }
