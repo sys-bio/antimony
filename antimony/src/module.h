@@ -35,7 +35,7 @@ private:
   size_t m_currentexportvar;
 
 #ifndef NSBML
-  Model m_sbml;
+  SBMLDocument m_sbml;
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
 #endif
@@ -77,6 +77,8 @@ public:
   std::string GetVariableNameDelimitedBy(char cc) const;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > GetSyncronized() const {return m_synchronized;};
   std::string ToString() const;
+  std::string OutputOnly(std::vector<var_type> types, std::string name, std::string indent, char cc) const;
+  std::string ListIn80Cols(std::string type, std::vector<std::string> names, std::string indent) const;
   std::string GetAntimony(std::set<const Module*> usedmods, bool funcsincluded) const;
   std::string GetJarnacReactions() const;
   std::string GetJarnacVarFormulas() const;
@@ -98,7 +100,7 @@ public:
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
 #ifndef NSBML
   void  LoadSBML(const Model* sbml);
-  Model GetSBMLModel();
+  const SBMLDocument* GetSBML();
   void  CreateSBMLModel();
 #endif
   void  FixNames();

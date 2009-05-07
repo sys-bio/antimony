@@ -32,6 +32,10 @@ private:
   AntimonyEvent m_valEvent;
   DNAStrand m_valStrand;
 
+  //Some parameters and species can have assignment rules:
+  Formula m_valRule;
+  rule_type m_ruletype;
+
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
   std::vector<std::string> m_supercompartment;
@@ -44,6 +48,9 @@ private:
   //Additionally, the variable might be set constant
   const_type m_const;
 
+  //If we came from SBML, we have a Unit
+  std::string m_units;
+
 public:
   Variable(const std::string name, const Module* module);
   ~Variable() {};
@@ -53,12 +60,17 @@ public:
   std::vector<std::string> GetName() const;
   std::vector<std::string> GetPointerName() const {return m_sameVariable;};
   std::string GetNameDelimitedBy(char cc) const;
-  std::string GetFormulaStringDelimitedBy(char cc) const;
-  std::string GetFormulaStringWithEllipses(char cc) const;
   var_type GetType() const;
   bool HasFormula() const {return (!m_valFormula.IsEmpty());};
+  bool HasAssignmentRule() const {return (m_ruletype == ruleASSIGNMENT);};
   const Formula* GetFormula() const;
   Formula* GetFormula();
+  const Formula* GetAssignmentRule() const;
+  Formula* GetAssignmentRule();
+  const Formula* GetRateRule() const;
+  const Formula* GetRule() const {return &(m_valRule);};
+  Formula* GetRule()  {return &(m_valRule);};;
+  rule_type GetRuleType() const {return m_ruletype;};
   const AntimonyReaction* GetReaction() const;
   Module* GetModule();
   const AntimonyEvent* GetEvent() const;
@@ -74,10 +86,15 @@ public:
   bool GetIsEquivalentTo(const Variable* var) const;
   std::vector<std::pair<Variable*, size_t> > GetStrandVars() const;
   bool IsExpandedStrand() const;
-  std::string GetFormulaForNthEntryInStrand(char cc, size_t n);
+  std::string GetFormulaForNthEntryInStrand(char cc, size_t n, bool initial);
+
+  std::string GetUnits() const {return m_units;};
+  void SetUnits(std::string ud) {m_units = ud;};
 
   bool SetType(var_type newtype);
   bool SetFormula(Formula* formula);
+  bool SetAssignmentRule(Formula* formula);
+  bool SetRateRule(Formula* formula);
   bool SetReaction(AntimonyReaction* rxn);
   bool SetModule(const std::string* modname);
   bool SetEvent(const AntimonyEvent* event);

@@ -1,6 +1,7 @@
 #include <assert.h>
 
 #include "event.h"
+#include "typex.h"
 #include "variable.h"
 #include "registry.h"
 #include "sbmlx.h"
@@ -55,7 +56,9 @@ bool AntimonyEvent::AddResult(Variable* var, Formula* form)
   m_varresults.insert(m_varresults.begin(), var->GetName());
   m_formresults.insert(m_formresults.begin(), *form);
   var->SetType(varFormulaUndef);
-  var->SetIsConst(false);//It might be a straight value, but the event changes it.
+  if (!IsSpecies(var->GetType())) {
+    var->SetIsConst(false);//It might be a straight value, but the event changes it.
+  }
   return false;
 }
 
@@ -123,10 +126,9 @@ string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc, bool SBML
   }
   Variable* resultvar = g_registry.GetModule(m_module)->GetVariable(m_varresults[n]);
   if (SBML) {
-    return m_formresults[n].ToSBMLString(resultvar->GetStrandVars());
+    return m_formresults[n].ToSBMLString(resultvar->GetStrandVars(), true);
   }
-  return m_formresults[n].ToDelimitedStringWithStrands(cc, resultvar->GetStrandVars());
-  
+  return m_formresults[n].ToDelimitedStringWithStrands(cc, resultvar->GetStrandVars(), true);
 }
 
 string AntimonyEvent::ToStringDelimitedBy(char cc) const
@@ -155,7 +157,7 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
     }
     retval += resultvar->GetNameDelimitedBy(cc);
     retval += " = ";
-    retval += m_formresults[result].ToDelimitedStringWithStrands(cc, resultvar->GetStrandVars());
+    retval += m_formresults[result].ToDelimitedStringWithStrands(cc, resultvar->GetStrandVars(), true);
   }
   retval += ";";
   

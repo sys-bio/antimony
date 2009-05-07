@@ -267,7 +267,7 @@ void Registry::NewCurrentModule(const string* name)
     }
   }
   //Otherwise, create a new module with that name
-  m_modules.push_back(localname);
+  m_modules.push_back(Module(localname));
 }
 
 Module* Registry::CurrentModule()

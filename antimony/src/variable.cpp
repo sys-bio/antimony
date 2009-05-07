@@ -18,13 +18,15 @@ Variable::Variable(const string name, const Module* module)
     m_valModule(),
     m_valEvent(),
     m_valStrand(),
+    m_valRule(),
+    m_ruletype(ruleNONE),
     m_compartment(),
     m_supercompartment(),
     m_supercomptype(varUndefined),
     m_strands(),
     m_type(varUndefined),
-    m_const(constDEFAULT)
-
+    m_const(constDEFAULT),
+    m_units("")
 {
   m_name.push_back(name);
 }
@@ -48,18 +50,6 @@ string Variable::GetNameDelimitedBy(char cc) const
     retval += m_name[i];
   }
   return retval;
-}
-
-string Variable::GetFormulaStringDelimitedBy(char cc) const
-{
-  if (GetFormula() == NULL) return "";
-  return GetFormula()->ToDelimitedStringWithStrands(cc, GetStrandVars());
-}
-
-string Variable::GetFormulaStringWithEllipses(char cc) const
-{
-  if (GetFormula() == NULL) return "";
-  return GetFormula()->ToDelimitedStringWithEllipses(cc);
 }
 
 var_type Variable::GetType() const
@@ -91,7 +81,7 @@ const Formula* Variable::GetFormula() const
   case varEvent:
     return m_valEvent.GetTrigger();
   case varStrand:
-    return m_valStrand.GetFinalFormula();
+    return m_valStrand.GetFinalFormula(true);
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
@@ -120,12 +110,95 @@ Formula* Variable::GetFormula()
   case varEvent:
     return m_valEvent.GetTrigger();
   case varStrand:
-    return m_valStrand.GetFinalFormula();
+    return m_valStrand.GetFinalFormula(true);
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
   return NULL;
 }
+
+const Formula* Variable::GetAssignmentRule() const
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetAssignmentRule();
+  }
+  switch (m_type) {
+  case varFormulaUndef:
+  case varFormulaOperator:
+  case varDNA:
+  case varSpeciesUndef:
+  case varCompartment:
+  case varUndefined:
+    if (m_ruletype == ruleASSIGNMENT) {
+      return &(m_valRule);
+    }
+    else {
+      return &(g_registry.m_blankform);
+    }
+  case varReactionUndef:
+  case varReactionGene:
+  case varInteraction:
+    return m_valReaction.GetFormula();
+  case varModule:
+    return m_valModule[0].GetFormula();
+  case varEvent:
+    return m_valEvent.GetTrigger();
+  case varStrand:
+    return m_valStrand.GetFinalFormula(false);
+  }
+  assert(false); //uncaught type
+  return &(g_registry.m_blankform);
+}    
+
+Formula* Variable::GetAssignmentRule()
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetAssignmentRule();
+  }
+  switch (m_type) {
+  case varFormulaUndef:
+  case varFormulaOperator:
+  case varDNA:
+  case varSpeciesUndef:
+  case varCompartment:
+  case varUndefined:
+    if (m_ruletype == ruleASSIGNMENT) {
+      return &(m_valRule);
+    }
+    else {
+      return &(g_registry.m_blankform);
+    }
+  case varReactionUndef:
+  case varReactionGene:
+  case varInteraction:
+    return m_valReaction.GetFormula();
+  case varModule:
+    return m_valModule[0].GetFormula();
+  case varEvent:
+    return m_valEvent.GetTrigger();
+  case varStrand:
+    return m_valStrand.GetFinalFormula(false);
+  }
+  assert(false); //uncaught type
+  return &(g_registry.m_blankform);
+}
+
+const Formula* Variable::GetRateRule() const
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetRateRule();
+  }
+  switch (m_ruletype) {
+  case ruleRATE:
+    return &(m_valRule);
+  case ruleNONE:
+  case ruleASSIGNMENT:
+    return &(g_registry.m_blankform);
+  }
+  assert(false); //uncaught ruletype
+  return &(g_registry.m_blankform);
+}    
+
 
 const AntimonyReaction* Variable::GetReaction() const
 {
@@ -296,10 +369,10 @@ bool Variable::IsExpandedStrand() const
   return (m_strands.size()==0);
 }
 
-string Variable::GetFormulaForNthEntryInStrand(char cc, size_t n)
+string Variable::GetFormulaForNthEntryInStrand(char cc, size_t n, bool initial)
 {
   if (IsPointer()) {
-    return GetSameVariable()->GetFormulaForNthEntryInStrand(cc, n);
+    return GetSameVariable()->GetFormulaForNthEntryInStrand(cc, n, initial);
   }
   assert(GetType() == varStrand);
   vector<Variable*> vars = m_valStrand.GetVariables();
@@ -312,9 +385,15 @@ string Variable::GetFormulaForNthEntryInStrand(char cc, size_t n)
   else {
     onestrandvar.push_back(make_pair(this, n));
   }
-  Formula* form = vars[n]->GetFormula();
+  Formula* form;
+  if (initial) {
+    form = vars[n]->GetFormula();
+  }
+  else {
+    form = vars[n]->GetAssignmentRule();
+  }
   assert(form != NULL);
-  string retval = form->ToDelimitedStringWithStrands(cc, onestrandvar);
+  string retval = form->ToDelimitedStringWithStrands(cc, onestrandvar, initial);
   if (retval == "") {
     retval = "0";
   }
@@ -351,6 +430,16 @@ bool Variable::SetType(var_type newtype)
       return true;
     }
   }
+  if (!CanHaveRule(newtype) && !m_valRule.IsEmpty()) {
+    g_registry.SetError("Variables with assignment rules or rate rules may not be set to be type " + VarTypeToString(newtype) + " because these variables do not change during the course of the model.");
+    return true;
+  }
+
+  //If we're setting this to be a species and we have a rate rule or assignment rule, we need to be 'const':
+  if (IsSpecies(newtype) && m_ruletype != ruleNONE) {
+    m_const = constCONST;
+  }
+
   string error = "Unable to set the type of variable '" + GetNameDelimitedBy('.') + "' to " + VarTypeToString(newtype) + " because it is already set to be the incompatible type " + VarTypeToString(m_type) + ".  This situation can occur either with explicit type declaration or by using the variable in different, incompatible contexts.";
   switch(m_type) {
   case varSpeciesUndef:
@@ -487,7 +576,7 @@ bool Variable::SetFormula(Formula* formula)
     return GetSameVariable()->SetFormula(formula);
   }
 #ifndef NSBML
-  string formstring = formula->ToSBMLString(GetStrandVars());
+  string formstring = formula->ToSBMLString(GetStrandVars(), true);
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
@@ -530,13 +619,79 @@ bool Variable::SetFormula(Formula* formula)
   return false;
 }
 
+bool Variable::SetAssignmentRule(Formula* formula)
+{
+  if (IsPointer()) {
+    return GetSameVariable()->SetAssignmentRule(formula);
+  }
+#ifndef NSBML
+  string formstring = formula->ToSBMLString(GetStrandVars(), false);
+  if (formstring.size() > 0) {
+    ASTNode_t* ASTform = parseStringToASTNode(formstring);
+    if (ASTform == NULL) {
+      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      return true;
+    }
+    else {
+      delete ASTform;
+    }
+  }
+#endif
+  if (formula->ContainsVar(this)) {
+    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
+    return true;
+  }
+  if (!CanHaveRule(m_type)) {
+    g_registry.SetError("Variables of type " + VarTypeToString(m_type) + " may not have assignment rules associated with them.");
+    return true;
+  }
+  if (m_type == varUndefined) {
+    m_type = varFormulaUndef;
+  }
+  m_ruletype = ruleASSIGNMENT;
+  m_valRule = *formula;
+  return false;
+}
+
+bool Variable::SetRateRule(Formula* formula)
+{
+  if (IsPointer()) {
+    return GetSameVariable()->SetRateRule(formula);
+  }
+#ifndef NSBML
+  string formstring = formula->ToSBMLString(GetStrandVars(), false);
+  if (formstring.size() > 0) {
+    ASTNode_t* ASTform = parseStringToASTNode(formstring);
+    if (ASTform == NULL) {
+      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      return true;
+    }
+    else {
+      delete ASTform;
+    }
+  }
+#endif
+  //if (formula->ContainsVar(this));
+  //Rate rules may indeed contain references to themselves!
+  if (!CanHaveRule(m_type)) {
+    g_registry.SetError("Variables of type " + VarTypeToString(m_type) + " may not have rate rules associated with them.");
+    return true;
+  }
+  if (m_type == varUndefined) {
+    m_type = varFormulaUndef;
+  }
+  m_valRule = *formula;
+  m_ruletype = ruleRATE;
+  return false;
+}
+
 bool Variable::SetReaction(AntimonyReaction* rxn)
 {
   if (IsPointer()) {
     return GetSameVariable()->SetReaction(rxn);
   }
 #ifndef NSBML
-  string formstring = rxn->GetFormula()->ToSBMLString(GetStrandVars());
+  string formstring = rxn->GetFormula()->ToSBMLString(GetStrandVars(), false);
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
@@ -618,6 +773,9 @@ void Variable::SetNewTopName(string newmodname, string newtopname)
   if (!m_valFormula.IsEmpty()) {
     m_valFormula.SetNewTopName(m_module, newtopname);
   }
+  if (!m_valRule.IsEmpty()) {
+    m_valRule.SetNewTopName(m_module, newtopname);
+  }
   if (!m_valReaction.IsEmpty()) {
     m_valReaction.SetNewTopName(m_module, newtopname);
   }
@@ -659,10 +817,7 @@ bool Variable::SetIsConst(bool constant)
   case varSpeciesUndef:
   case varUndefined:
   case varCompartment:
-    if (!m_valFormula.GetIsConst() && constant) {
-      g_registry.SetError(error + " because its rate constant or initial value contains something that is or cannot be constant (such as a floating species concentration).");
-      return true;
-    }
+    //These types can always be set const or non-const, even if they have assignment rules.
     break;
   case varReactionUndef:
   case varReactionGene:
@@ -704,7 +859,7 @@ void Variable::SetRegConst()
 {
   const_type regconst = g_registry.GetConstness();
   if (regconst != constDEFAULT) {
-    m_const = g_registry.GetConstness();
+    m_const = regconst;
   }
 }
 
@@ -715,6 +870,7 @@ bool Variable::SetCompartment(Variable* var)
   }
   if (var->SetType(varCompartment)) return true;
   if (m_compartment.size() > 0) {
+    if (m_compartment == var->GetName()) return false; //resetting
     g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' to be in compartment '" + var->GetNameDelimitedBy('.') + "', because it is already in a different compartment (" + ToStringFromVecDelimitedBy(m_compartment, '.') + ").");
     return true;
   }
@@ -865,6 +1021,14 @@ bool Variable::Synchronize(Variable* clone)
     }
   }
 
+  //If the variables came from SBML, we can check to see if the units are the same:
+  string myunits = GetUnits();
+  string cloneunits = clone->GetUnits();
+  if (myunits != "" && cloneunits != "" && myunits != cloneunits) {
+    g_registry.SetError("The symbols " + GetNameDelimitedBy('.') + " and " + clone->GetNameDelimitedBy('.') + " may not be set to be equal to one another because the units of the first (" + myunits + ") are incompatible with the units of the second (" + cloneunits + ").");
+    return true;
+  }
+  
   //Now, actually synchronize the data.
   if ((m_type == varUndefined) ||
       (m_type == varReactionUndef && IsReaction(clone->GetType())) ||
@@ -890,6 +1054,24 @@ bool Variable::Synchronize(Variable* clone)
     }
     //else stay with the clone version--it supercedes our own.
     m_valFormula.Clear();
+  }
+  if (!m_valRule.IsEmpty()) {
+    Formula* cloneform = clone->GetRule();
+    if (cloneform->IsEmpty() || cloneform->IsEllipsesOnly()) {
+      switch(m_ruletype) {
+      case ruleNONE:
+        assert(false);
+      case ruleASSIGNMENT:
+        if (clone->SetAssignmentRule(&m_valRule)) return true;
+        break;
+      case ruleRATE:
+        if (clone->SetRateRule(&m_valRule)) return true;
+        break;
+      }
+    }
+    //else stay with the clone version--it supercedes our own.
+    m_valRule.Clear();
+    m_ruletype = clone->GetRuleType();
   }
   if (!m_valReaction.IsEmpty()) {
     const AntimonyReaction* clonerxn = clone->GetReaction();
@@ -989,6 +1171,7 @@ void Variable::FixNames()
   m_strands = fixedstrands;
 
   m_valFormula.FixNames(m_module);
+  m_valRule.FixNames(m_module);
   m_valReaction.FixNames();
   for (size_t mod=0; mod<m_valModule.size(); mod++) {
     m_valModule[mod].FixNames();

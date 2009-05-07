@@ -212,6 +212,8 @@ lineend:        ';' {}
 
 assignment:     varmaybein '=' formula {if ($1->SetFormula($3)) YYABORT; }
         |       varmaybein IS variable {if ($1->Synchronize($3)) YYABORT;}
+        |       varmaybein ':' '=' formula {if ($1->SetAssignmentRule($4)) YYABORT;}
+        |       varmaybein '\'' '=' formula {if ($1->SetRateRule($4)) YYABORT;}
         ;
 
 submodule:      varmaybein ':' MODNAME '(' {if ($1->SetModule($3)) YYABORT;} variableimportlist ')' maybein {if ($8 != NULL) {if ($1->SetCompartment($8)) YYABORT;}}
@@ -485,6 +487,19 @@ int yylex(void)
     g_registry.input->get(cc);
     if (cc == '/') {
       while (cc != '\n' && cc != '\r') {
+        g_registry.input->get(cc);
+      }
+    }
+    else if (cc == '*') {
+      bool nextstar = false;
+      g_registry.input->get(cc);
+      while (!(nextstar && cc == '/')) {
+        if (cc == '*') {
+          nextstar = true;
+        }
+        else {
+          nextstar = false;
+        }
         g_registry.input->get(cc);
       }
     }

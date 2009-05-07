@@ -72,8 +72,13 @@ void setFormulaWithString(string formulastring, Formula* formula)
       }
       else {
         //end of word
-        if (g_registry.IsFunction(formpart) == NULL) {
-          Variable* subvar = g_registry.CurrentModule()->AddOrFindVariable(&formpart);
+        vector<string> fullname;
+        fullname.push_back(formpart);
+        Variable* subvar = g_registry.CurrentModule()->GetVariable(fullname);
+        if (subvar == NULL && g_registry.IsFunction(formpart) == NULL) {
+          subvar = g_registry.CurrentModule()->AddOrFindVariable(&formpart);
+        }
+        if (subvar != NULL) {
           formula->AddVariable(subvar);
         }
         else {
@@ -121,7 +126,10 @@ string parseASTNodeToString(const ASTNode* ASTform) {
   if (ASTform==NULL) return "";
   ASTNode clone(*ASTform);
   setTimeName(&clone);
-  return SBML_formulaToString(&clone);
+  char* formula = SBML_formulaToString(&clone);
+  string ret = formula;
+  free(formula);
+  return ret;
 }
 
 
@@ -173,6 +181,8 @@ void FixName(std::string& name)
   "reaction",
   "species",
   "var",
+
+  "nan", //not a number in Math
 
   "abs"
   , "and"
@@ -254,7 +264,7 @@ void FixName(std::string& name)
   , "sqrt"
   , "time"
   };
-  for (size_t kw=0; kw<97; kw++) {
+  for (size_t kw=0; kw<98; kw++) {
     if (CaselessStrCmp(name, keywords[kw])) {
       name += "_";
       return;

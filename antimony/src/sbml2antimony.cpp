@@ -11,42 +11,43 @@ int main(int argc, char** argv)
 {
   int retval = 0;
   if (argc < 2) {
-    cout << "To use sbml2antimony, the first command line argument should be the name of a valid SBML file, and if you wish, you may supply a name for the produced Antimony file as a second argument." << endl;
-    retval = 1;
-  }
-  else if (argc > 3) {
-    cout << "You must supply the filename of a single SBML file and, optionally, may supply the name for the produced Antimony file to be written.  You supplied more than that, so I don't know what you meant." << endl;
+    cout << "To use sbml2antimony, give it a list of one or more SBML files to convert.  In Windows, you can associate .xml files with this program to convert it that way." << endl;
     retval = 1;
   }
   else {
-    retval=loadSBMLFile(argv[1]);
-    if (retval == -1) {
-      cout << getLastError() << endl;
-      retval = 1;
-    }
-    else {
-      cout << argv[1] << " read successfully." << endl;
-      size_t nummods = getNumModules();
-      char** modnames = getModuleNames();
-      string filename(argv[1]);
-      if (filename.find(".xml") != string::npos) {
-        filename.erase(filename.find(".xml"), 4);
-      }
-      size_t modnum = nummods-1;
-      string antimonyname = filename;
-      antimonyname += ".txt";
-      if (argc == 3) {
-        antimonyname = argv[2];
-      }
-      if (writeAntimonyFile(antimonyname.c_str(), modnames[modnum])) {
-        cout << "Successfully wrote file " << antimonyname.c_str() << endl;
-        retval = 0;
-      }
-      else {
-        cout << "Problem writing file " << antimonyname.c_str() << endl;
+    for (int file=1; file<argc; file++) {
+      retval=loadSBMLFile(argv[file]);
+      if (retval == -1) {
+        cout << getLastError() << endl;
         retval = 1;
       }
-      freeAll();
+      else {
+        cout << argv[file] << " read successfully." << endl;
+        size_t nummods = getNumModules();
+        char** modnames = getModuleNames();
+        string filename(argv[file]);
+        if (filename.find(".xml") != string::npos) {
+          filename.erase(filename.find(".xml"), 4);
+        }
+        while (filename.find("/") != string::npos) {
+          filename.erase(0, filename.find("/")+1);
+        }
+        while (filename.find("\\") != string::npos) {
+          filename.erase(0, filename.find("\\")+1);
+        }
+        size_t modnum = nummods-1;
+        string antimonyname = filename;
+        antimonyname += ".txt";
+        if (writeAntimonyFile(antimonyname.c_str(), modnames[modnum])) {
+          cout << "Successfully wrote file " << antimonyname.c_str() << endl;
+          retval = 0;
+        }
+        else {
+          cout << "Problem writing file " << antimonyname.c_str() << endl;
+          retval = 1;
+        }
+        freeAll();
+      }
     }
   }
 #ifdef WIN32

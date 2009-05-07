@@ -9,9 +9,9 @@ libsbml = -L$(sbml_location) -lsbml
 sbmlflag = 
 
 #For a debug version:
-#CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
+CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
 #For a non-debug version:
-CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
+#CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
 
 #Library flags
 LIBRARYFLAGS = $(libsbml) -Llib -lantimony
@@ -199,7 +199,7 @@ $(src_dir)antimony2sbml.o : $(src_dir)antimony2sbml.cpp
 
 $(src_dir)sbml2antimony.o : $(src_dir)sbml2antimony.cpp
 
-$(src_dir)testantimony.o : $(src_dir)testantimony.cpp $(src_dir)antimony_api.h $(src_dir)registry.h $(src_dir)stringx.h
+$(src_dir)testantimony.o : $(src_dir)testantimony.cpp $(src_dir)antimony_api.h $(src_dir)registry.h $(src_dir)stringx.h $(src_dir)variable.h
 
 $(src_dir)antimony.tab.o : $(src_dir)antimony.tab.cpp
 

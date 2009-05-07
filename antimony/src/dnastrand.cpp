@@ -74,12 +74,18 @@ bool DNAStrand::IsEmpty() const
   return (m_strand.size() == 0);
 }
 
-Formula* DNAStrand::GetFinalFormula() const
+Formula* DNAStrand::GetFinalFormula(bool initial) const
 {
   if (m_strand.size()==0) {
     assert(false); //ack
   }
-  return g_registry.GetModule(m_module)->GetVariable(m_strand[m_strand.size()-1])->GetFormula();
+  Variable* var = g_registry.GetModule(m_module)->GetVariable(m_strand[m_strand.size()-1]);
+  if (initial) {
+    return var->GetFormula();
+  }
+  else {
+    return var->GetAssignmentRule();
+  }
 }
 
 void DNAStrand::SetNewTopName(string newmodname, string newtopname)

@@ -241,19 +241,47 @@ LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype
 /**
  * Returns the equations associated with the symbols of the given return type.
  * - Reactions and genes:     The reaction rate
- * - Formulas and operators:  The formula in question
+ * - Formulas and operators:  The initial assignment of the formula in question
  * - Species:                 Initial concentration
  * - Events:                  The trigger condition
  * - Compartments:            The initial size
- * - DNA Strands:             The reaction rate at the end of the strand
+ * - DNA Strands:             The initial assignment or reaction rate or at the end of the strand
  * - Interactions:            Nothing
  * - Modules:                 Nothing
  */
 LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type rtype);
 
+
 /**
- * Returns the compartments associated with the symbols of the given return type.  Note that unlike in SBML, any symbol of any type may have an associated compartment, including compartments themselves.  Rules about compartments in Antimony can be found at [sys-bio.org]
- */ //LS DEBUG:  documentation
+ * Returns the equations associated with the assignment rule for symbols of the given return type.
+ * - Species:                 The assignment rule for the species in question
+ * - Formulas and operators:  The assignment rule of the formula in question
+ * - Compartments:            The assignment rule for the compartment
+ * - DNA Strands:             The assignment rule or reaction rate at the end of the strand.
+ * - Reactions and genes:     The reaction rate (for consistency with DNA strands)
+ *
+ * - Events:                  Nothing
+ * - Interactions:            Nothing
+ * - Modules:                 Nothing
+ */
+LIB_EXTERN char** getSymbolAssignmentRulesOfType(const char* moduleName, return_type rtype);
+
+/**
+ * Returns the equations associated with the rate rule for symbols of the given return type.
+ * - Species:                 The rate rule for the species in question
+ * - Formulas and operators:  The rate rule of the formula in question
+ * - Compartments:            The rate rule for the compartment
+ * - DNA Strands:             The rate rule or reaction rate at the end of the strand.
+ * - Reactions and genes:     Nothing
+ * - Events:                  Nothing
+ * - Interactions:            Nothing
+ * - Modules:                 Nothing
+ */
+LIB_EXTERN char** getSymbolRateRulesOfType(const char* moduleName, return_type rtype);
+
+/**
+ * Returns the compartments associated with the symbols of the given return type.  Note that unlike in SBML, any symbol of any type may have an associated compartment, including compartments themselves.  Rules about compartments in Antimony can be found in the <A class="el" HREF="Tutorial.pdf">Tutorial.pdf</a> document included with this documentation.
+ */ //LS DEBUG:  documentation check
 LIB_EXTERN char** getSymbolCompartmentsOfType(const char* moduleName, return_type rtype);
 
 /**
@@ -265,6 +293,16 @@ LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rty
  * Returns the equation associated with the Nth symbol of the given type.  If no equation is set for the symbol in question, an empty string is returned.  If no symbol can be found, NULL is returned and an error is set.
  */
 LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, unsigned long n);
+
+/**
+ * Returns the assignment rule associated with the Nth symbol of the given type.  If no assignment rule is set for the symbol in question, an empty string is returned.  If no symbol can be found, NULL is returned and an error is set.
+ */
+LIB_EXTERN char*  getNthSymbolAssignmentRuleOfType(const char* moduleName, return_type rtype, unsigned long n);
+
+/**
+ * Returns the rate rule associated with the Nth symbol of the given type.  If no rate rule is set for the symbol in question, an empty string is returned.  If no symbol can be found, NULL is returned and an error is set.
+ */
+LIB_EXTERN char*  getNthSymbolRateRuleOfType(const char* moduleName, return_type rtype, unsigned long n);
 
 /**
  * Returns the name of the compartment associated with the nth symbol of the given type.  If no compartment is explicitly set in the file, the string "default_compartment" is returned.  If no symbol can be found, NULL is returned and an error is set.
