@@ -2876,7 +2876,7 @@ int yylex(void)
     else if (cc == '*') {
       bool nextstar = false;
       g_registry.input->get(cc);
-      while (!(nextstar && cc == '/')) {
+      while ((!g_registry.input->eof()) && !(nextstar && cc == '/')) {
         if (cc == '*') {
           nextstar = true;
         }
