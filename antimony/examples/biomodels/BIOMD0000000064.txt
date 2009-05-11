@@ -1,0 +1,168 @@
+function L_PFK(L, CiATP, KiATP, CAMP, KAMP, CF26BP, KF26BP, CF16BP, KF16BP, AT_, AM, F16, F26)
+  L * pow((1 + CiATP * (AT_ / KiATP)) / (1 + AT_ / KiATP), 2) * pow((1 + CAMP * (AM / KAMP)) / (1 + AM / KAMP), 2) * pow((1 + CF26BP * F26 / KF26BP + CF16BP * F16 / KF16BP) / (1 + F26 / KF26BP + F16 / KF16BP), 2);
+end
+
+function R_PFK(KmF6P, KmATP, g, AT_, F6)
+  1 + F6 / KmF6P + AT_ / KmATP + g * (F6 / KmF6P) * (AT_ / KmATP);
+end
+
+function T_PFK(CATP, KmATP, AT_)
+  1 + CATP * (AT_ / KmATP);
+end
+
+model Teusink2000_Glycolysis()
+
+  // Compartments and Species:
+  compartment extracellular, cytosol;
+  species GLCi in cytosol, G6P in cytosol, F6P in cytosol, F16P in cytosol;
+  species TRIO in cytosol, BPG in cytosol, P3G in cytosol, P2G in cytosol;
+  species PEP in cytosol, PYR in cytosol, ACE in cytosol, P in cytosol, NAD in cytosol;
+  species NADH in cytosol, Glyc in cytosol, Trh in cytosol, CO2 in cytosol;
+  species SUCC in cytosol, GLCo in extracellular, ETOH in cytosol, GLY in cytosol;
+  species ATP in cytosol, ADP in cytosol, AMP in cytosol, SUM_P in cytosol;
+  species F26BP in cytosol;
+
+  // Assignment Rules:
+  ATP := (P - ADP) / 2
+  ADP := (SUM_P - pow(pow(P, 2) * (1 - 4 * KeqAK) + 2 * SUM_P * P * (4 * KeqAK - 1) + pow(SUM_P, 2), 0.5)) / (1 - 4 * KeqAK)
+  AMP := SUM_P - ATP - ADP
+
+  // Reactions:
+  vGLK: GLCi + P -> G6P; cytosol * vGLK_VmGLK / (vGLK_KmGLKGLCi * vGLK_KmGLKATP) * (GLCi * ATP - G6P * ADP / vGLK_KeqGLK) / ((1 + GLCi / vGLK_KmGLKGLCi + G6P / vGLK_KmGLKG6P) * (1 + ATP / vGLK_KmGLKATP + ADP / vGLK_KmGLKADP));
+  vPGI: G6P -> F6P; cytosol * vPGI_VmPGI_2 / vPGI_KmPGIG6P_2 * (G6P - F6P / vPGI_KeqPGI_2) / (1 + G6P / vPGI_KmPGIG6P_2 + F6P / vPGI_KmPGIF6P_2);
+  vGLYCO: G6P + P -> Glyc; cytosol * vGLYCO_KGLYCOGEN_3;
+  vTreha: 2G6P + P -> Trh; cytosol * vTreha_KTREHALOSE;
+  vPFK: F6P + P -> F16P; cytosol * vPFK_VmPFK * gR * (F6P / KmPFKF6P) * (ATP / KmPFKATP) * R_PFK(KmPFKF6P, KmPFKATP, gR, ATP, F6P) / (pow(R_PFK(KmPFKF6P, KmPFKATP, gR, ATP, F6P), 2) + L_PFK(Lzero, CiPFKATP, KiPFKATP, CPFKAMP, KPFKAMP, CPFKF26BP, KPFKF26BP, CPFKF16BP, KPFKF16BP, ATP, AMP, F16P, F26BP) * pow(T_PFK(CPFKATP, KmPFKATP, ATP), 2));
+  vALD: F16P -> 2TRIO; cytosol * vALD_VmALD / vALD_KmALDF16P * (F16P - KeqTPI / (1 + KeqTPI) * TRIO * (1 / (1 + KeqTPI)) * TRIO / vALD_KeqALD) / (1 + F16P / vALD_KmALDF16P + KeqTPI / (1 + KeqTPI) * TRIO / vALD_KmALDGAP + 1 / (1 + KeqTPI) * TRIO / vALD_KmALDDHAP + KeqTPI / (1 + KeqTPI) * TRIO * (1 / (1 + KeqTPI)) * TRIO / (vALD_KmALDGAP * vALD_KmALDDHAP) + F16P * (KeqTPI / (1 + KeqTPI)) * TRIO / (vALD_KmALDGAPi * vALD_KmALDF16P));
+  vGAPDH: TRIO + NAD -> BPG + NADH; cytosol * (vGAPDH_VmGAPDHf * (KeqTPI / (1 + KeqTPI)) * TRIO * NAD / (vGAPDH_KmGAPDHGAP * vGAPDH_KmGAPDHNAD) - vGAPDH_VmGAPDHr * BPG * NADH / (vGAPDH_KmGAPDHBPG * vGAPDH_KmGAPDHNADH)) / ((1 + KeqTPI / (1 + KeqTPI) * TRIO / vGAPDH_KmGAPDHGAP + BPG / vGAPDH_KmGAPDHBPG) * (1 + NAD / vGAPDH_KmGAPDHNAD + NADH / vGAPDH_KmGAPDHNADH));
+  vPGK: BPG -> P3G + P; cytosol * vPGK_VmPGK / (vPGK_KmPGKP3G * vPGK_KmPGKATP) * (vPGK_KeqPGK * BPG * ADP - P3G * ATP) / ((1 + BPG / vPGK_KmPGKBPG + P3G / vPGK_KmPGKP3G) * (1 + ATP / vPGK_KmPGKATP + ADP / vPGK_KmPGKADP));
+  vPGM: P3G -> P2G; cytosol * vPGM_VmPGM / vPGM_KmPGMP3G * (P3G - P2G / vPGM_KeqPGM) / (1 + P3G / vPGM_KmPGMP3G + P2G / vPGM_KmPGMP2G);
+  vENO: P2G -> PEP; cytosol * vENO_VmENO / vENO_KmENOP2G * (P2G - PEP / vENO_KeqENO) / (1 + P2G / vENO_KmENOP2G + PEP / vENO_KmENOPEP);
+  vPYK: PEP -> PYR + P; cytosol * vPYK_VmPYK / (vPYK_KmPYKPEP * vPYK_KmPYKADP) * (PEP * ADP - PYR * ATP / vPYK_KeqPYK) / ((1 + PEP / vPYK_KmPYKPEP + PYR / vPYK_KmPYKPYR) * (1 + ATP / vPYK_KmPYKATP + ADP / vPYK_KmPYKADP));
+  vPDC: PYR -> ACE + CO2; cytosol * vPDC_VmPDC * (pow(PYR, vPDC_nPDC) / pow(vPDC_KmPDCPYR, vPDC_nPDC)) / (1 + pow(PYR, vPDC_nPDC) / pow(vPDC_KmPDCPYR, vPDC_nPDC));
+  vSUC: 2ACE + 3NAD + 4P -> 3NADH + SUCC; cytosol * vSUC_KSUCC * ACE;
+  vGLT: GLCo -> GLCi; vGLT_VmGLT / vGLT_KmGLTGLCo * (GLCo - GLCi / vGLT_KeqGLT) / (1 + GLCo / vGLT_KmGLTGLCo + GLCi / vGLT_KmGLTGLCi + 0.91 * GLCo * GLCi / (vGLT_KmGLTGLCo * vGLT_KmGLTGLCi));
+  vADH: ACE + NADH -> NAD + ETOH; -cytosol * (vADH_VmADH / (vADH_KiADHNAD * vADH_KmADHETOH) * (NAD * ETOH - NADH * ACE / vADH_KeqADH) / (1 + NAD / vADH_KiADHNAD + vADH_KmADHNAD * ETOH / (vADH_KiADHNAD * vADH_KmADHETOH) + vADH_KmADHNADH * ACE / (vADH_KiADHNADH * vADH_KmADHACE) + NADH / vADH_KiADHNADH + NAD * ETOH / (vADH_KiADHNAD * vADH_KmADHETOH) + vADH_KmADHNADH * NAD * ACE / (vADH_KiADHNAD * vADH_KiADHNADH * vADH_KmADHACE) + vADH_KmADHNAD * ETOH * NADH / (vADH_KiADHNAD * vADH_KmADHETOH * vADH_KiADHNADH) + NADH * ACE / (vADH_KiADHNADH * vADH_KmADHACE) + NAD * ETOH * ACE / (vADH_KiADHNAD * vADH_KmADHETOH * vADH_KiADHACE) + ETOH * NADH * ACE / (vADH_KiADHETOH * vADH_KiADHNADH * vADH_KmADHACE)));
+  vG3PDH: TRIO + NADH -> NAD + GLY; cytosol * vG3PDH_VmG3PDH / (vG3PDH_KmG3PDHDHAP * vG3PDH_KmG3PDHNADH) * (1 / (1 + KeqTPI) * TRIO * NADH - GLY * NAD / vG3PDH_KeqG3PDH) / ((1 + 1 / (1 + KeqTPI) * TRIO / vG3PDH_KmG3PDHDHAP + GLY / vG3PDH_KmG3PDHGLY) * (1 + NADH / vG3PDH_KmG3PDHNADH + NAD / vG3PDH_KmG3PDHNAD));
+  vATP: P -> ; cytosol * vATP_KATPASE * ATP;
+
+  // Species initializations:
+  GLCi = 0.087;
+  G6P = 2.45;
+  F6P = 0.62;
+  F16P = 5.51;
+  TRIO = 0.96;
+  BPG = 0;
+  P3G = 0.9;
+  P2G = 0.12;
+  PEP = 0.07;
+  PYR = 1.85;
+  ACE = 0.17;
+  P = 6.31;
+  NAD = 1.2;
+  NADH = 0.39;
+  Glyc = 0;
+  Trh = 0;
+  CO2 = 1;
+  SUCC = 0;
+  GLCo = 50;
+  ETOH = 50;
+  GLY = 0.15;
+  SUM_P = 4.1;
+  F26BP = 0.02;
+
+  // Compartments initializations:
+  extracellular = 1;
+  cytosol = 1;
+
+  // Other defined symbols initializations:
+  gR = 5.12;
+  KmPFKF6P = 0.1;
+  KmPFKATP = 0.71;
+  Lzero = 0.66;
+  CiPFKATP = 100;
+  KiPFKATP = 0.65;
+  CPFKAMP = 0.0845;
+  KPFKAMP = 0.0995;
+  CPFKF26BP = 0.0174;
+  KPFKF26BP = 0.000682;
+  CPFKF16BP = 0.397;
+  KPFKF16BP = 0.111;
+  CPFKATP = 3;
+  KeqAK = 0.45;
+  KeqTPI = 0.045;
+  vGLK_VmGLK = 226.452;
+  vGLK_KmGLKGLCi = 0.08;
+  vGLK_KmGLKATP = 0.15;
+  vGLK_KeqGLK = 3800;
+  vGLK_KmGLKG6P = 30;
+  vGLK_KmGLKADP = 0.23;
+  vPGI_VmPGI_2 = 339.677;
+  vPGI_KmPGIG6P_2 = 1.4;
+  vPGI_KeqPGI_2 = 0.314;
+  vPGI_KmPGIF6P_2 = 0.3;
+  vGLYCO_KGLYCOGEN_3 = 6;
+  vTreha_KTREHALOSE = 2.4;
+  vPFK_VmPFK = 182.903;
+  vALD_VmALD = 322.258;
+  vALD_KmALDF16P = 0.3;
+  vALD_KeqALD = 0.069;
+  vALD_KmALDGAP = 2;
+  vALD_KmALDDHAP = 2.4;
+  vALD_KmALDGAPi = 10;
+  vGAPDH_VmGAPDHf = 1184.52;
+  vGAPDH_KmGAPDHGAP = 0.21;
+  vGAPDH_KmGAPDHNAD = 0.09;
+  vGAPDH_VmGAPDHr = 6549.8;
+  vGAPDH_KmGAPDHBPG = 0.0098;
+  vGAPDH_KmGAPDHNADH = 0.06;
+  vPGK_VmPGK = 1306.45;
+  vPGK_KmPGKP3G = 0.53;
+  vPGK_KmPGKATP = 0.3;
+  vPGK_KeqPGK = 3200;
+  vPGK_KmPGKBPG = 0.003;
+  vPGK_KmPGKADP = 0.2;
+  vPGM_VmPGM = 2525.81;
+  vPGM_KmPGMP3G = 1.2;
+  vPGM_KeqPGM = 0.19;
+  vPGM_KmPGMP2G = 0.08;
+  vENO_VmENO = 365.806;
+  vENO_KmENOP2G = 0.04;
+  vENO_KeqENO = 6.7;
+  vENO_KmENOPEP = 0.5;
+  vPYK_VmPYK = 1088.71;
+  vPYK_KmPYKPEP = 0.14;
+  vPYK_KmPYKADP = 0.53;
+  vPYK_KeqPYK = 6500;
+  vPYK_KmPYKPYR = 21;
+  vPYK_KmPYKATP = 1.5;
+  vPDC_VmPDC = 174.194;
+  vPDC_nPDC = 1.9;
+  vPDC_KmPDCPYR = 4.33;
+  vSUC_KSUCC = 21.4;
+  vGLT_VmGLT = 97.264;
+  vGLT_KmGLTGLCo = 1.1918;
+  vGLT_KeqGLT = 1;
+  vGLT_KmGLTGLCi = 1.1918;
+  vADH_VmADH = 810;
+  vADH_KiADHNAD = 0.92;
+  vADH_KmADHETOH = 17;
+  vADH_KeqADH = 6.9e-05;
+  vADH_KmADHNAD = 0.17;
+  vADH_KmADHNADH = 0.11;
+  vADH_KiADHNADH = 0.031;
+  vADH_KmADHACE = 1.11;
+  vADH_KiADHACE = 1.1;
+  vADH_KiADHETOH = 90;
+  vG3PDH_VmG3PDH = 70.15;
+  vG3PDH_KmG3PDHDHAP = 0.4;
+  vG3PDH_KmG3PDHNADH = 0.023;
+  vG3PDH_KeqG3PDH = 4300;
+  vG3PDH_KmG3PDHGLY = 1;
+  vG3PDH_KmG3PDHNAD = 0.93;
+  vATP_KATPASE = 33.7;
+
+  const Glyc in cytosol, Trh in cytosol, CO2 in cytosol, SUCC in cytosol;
+  const GLCo in extracellular, ETOH in cytosol, GLY in cytosol, ATP in cytosol;
+  const ADP in cytosol, AMP in cytosol, SUM_P in cytosol, F26BP in cytosol;
+end

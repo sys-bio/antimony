@@ -1,0 +1,82 @@
+model Wang2007_ATP_induced_Ca_Oscillation()
+
+  // Compartments and Species:
+  compartment Cytosol, ER;
+  species Galpha_GTP in Cytosol, APLC in Cytosol, IP3 in Cytosol, Ca_ER in ER;
+  species Ca_Cyt in Cytosol, PLC in Cytosol, DG in Cytosol;
+
+  // Assignment Rules:
+  PLC := Cplc_total - APLC
+  DG := IP3
+  Raplc := APLC / (Kp + APLC)
+  Rpkc := DG / (Kd + DG) * Ca_Cyt / (Kr + Ca_Cyt)
+  Rgalpha_gtp := pow(Galpha_GTP, n) / (pow(Kg, n) + pow(Galpha_GTP, n))
+  Rdg := pow(DG, m) / (pow(Kd, m) + pow(DG, m))
+  Rip3 := pow(IP3, 3) / (pow(Ks, 3) + pow(IP3, 3))
+  Rcyt1 := Ca_Cyt / (Kc1 + Ca_Cyt)
+  Rcyt2 := Ca_Cyt / (Kc2 + Ca_Cyt)
+  Rer := pow(Ca_ER, w) / (pow(Ker, w) + pow(Ca_ER, w))
+
+  // Reactions:
+  R1:  -> Galpha_GTP; Cytosol * k0;
+  R2:  -> Galpha_GTP; Cytosol * k1 * Galpha_GTP;
+  R3: Galpha_GTP -> ; Cytosol * k2 * Raplc * Galpha_GTP;
+  R4: Galpha_GTP -> ; Cytosol * k3 * Rpkc * Galpha_GTP;
+  R5:  -> APLC; Cytosol * k4 * Rgalpha_gtp * Rdg * PLC;
+  R6: APLC -> ; Cytosol * k5 * APLC;
+  R7:  -> IP3; Cytosol * k6 * APLC;
+  R8: IP3 -> ; Cytosol * k7 * IP3;
+  R9: 0.001Ca_ER -> 0.01Ca_Cyt; ER * (k8 * Rip3 * Rer - k9 * Rcyt1);
+  R10: 0.05Ca_Cyt -> ; Cytosol * k10 * Rcyt2;
+  R11:  -> 0.05Ca_Cyt; Cytosol * k11;
+
+  // Species initializations:
+  Galpha_GTP = 1;
+  APLC = 9;
+  IP3 = 1;
+  Ca_ER = 1000;
+  Ca_Cyt = 200;
+  PLC = 1;
+  DG = 1;
+
+  // Compartments initializations:
+  Cytosol = 1;
+  ER = 1;
+
+  // Other defined symbols initializations:
+  Raplc = 0;
+  Kp = 4;
+  Rpkc = 0;
+  Kd = 10;
+  Kr = 200;
+  Rgalpha_gtp = 0;
+  n = 4;
+  Kg = 25;
+  Rdg = 0;
+  m = 2;
+  Rip3 = 0;
+  Ks = 25;
+  Rcyt1 = 0;
+  Kc1 = 1000;
+  Rcyt2 = 0;
+  Kc2 = 2000;
+  Rer = 0;
+  w = 3;
+  Ker = 75;
+  Cplc_total = 10;
+  k0 = 0.1;
+  k1 = 3.4;
+  k2 = 4;
+  k3 = 4.5;
+  k4 = 1.2;
+  k5 = 0.12;
+  k6 = 14;
+  k7 = 2;
+  k8 = 10500;
+  k9 = 600;
+  k10 = 3000;
+  k11 = 260;
+
+  var Raplc, Rpkc, Rgalpha_gtp, Rdg, Rip3, Rcyt1, Rcyt2, Rer;
+  const PLC in Cytosol, DG in Cytosol;
+end

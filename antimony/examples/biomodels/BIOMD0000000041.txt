@@ -1,0 +1,62 @@
+model Kongas___Van_Beek()
+
+  // Compartments and Species:
+  compartment IMS, CYT;
+  species ADPi in IMS, ATPi in IMS, Cri in IMS, PCri in IMS, PCr in CYT, ADP in CYT;
+  species ATP in CYT, Cr in CYT, Pi_ in IMS, P in CYT;
+
+  // Reactions:
+  OxPhos: ADPi + Pi_ -> ATPi; IMS * (OxPhos_V_1 * ADPi * Pi_ / (OxPhos_Ka_1 * OxPhos_Kb_1 * (1 + ADPi / OxPhos_Ka_1 + Pi_ / OxPhos_Kb_1 + ADPi * Pi_ / (OxPhos_Ka_1 * OxPhos_Kb_1))));
+  MiCK: ATPi + Cri -> ADPi + PCri; IMS * ((MiCK_Vf_2 * ATPi * Cri / (MiCK_Kia_2 * MiCK_Kb_2) - MiCK_Vb_2 * ADPi * PCri / (MiCK_Kic_2 * MiCK_Kd_2)) / (1 + Cri / MiCK_Kib_2 + PCri / MiCK_Kid_2 + ATPi * (1 / MiCK_Kia_2 + Cri / (MiCK_Kia_2 * MiCK_Kb_2)) + ADPi * (1 / MiCK_Kic_2 + Cri / (MiCK_Kic_2 * MiCK_Kib_2) + PCri / (MiCK_Kid_2 * (MiCK_Kic_2 * MiCK_Kd_2 / MiCK_Kid_2)))));
+  MMCK: ATP + Cr -> PCr + ADP; CYT * ((MMCK_Vf_3 * ATP * Cr / (MMCK_Kia_3 * MMCK_Kb_3) - MMCK_Vb_3 * ADP * PCr / (MMCK_Kic_3 * MMCK_Kd_3)) / (1 + Cr / MMCK_Kib_3 + PCr / MMCK_Kid_3 + ATP * (1 / MMCK_Kia_3 + Cr / (MMCK_Kia_3 * MMCK_Kb_3)) + ADP * (1 / MMCK_Kic_3 + Cr / (MMCK_Kic_3 * MMCK_Kib_3) + PCr / (MMCK_Kid_3 * (MMCK_Kic_3 * MMCK_Kd_3 / MMCK_Kid_3)))));
+  ATPase: ATP -> ADP + P; CYT * ATPase_v_4 * ATP;
+  Pi_diffusion: Pi_ -> P; IMS * Pi_diffusion_k2_5 * Pi_ - CYT * Pi_diffusion_k2_5 * P;
+  Cr_diffusion: Cri -> Cr; IMS * Cr_diffusion_k1_6 * Cri - CYT * Cr_diffusion_k1_6 * Cr;
+  ADP_diffusion: ADPi -> ADP; IMS * ADP_diffusion_k1_7 * ADPi - CYT * ADP_diffusion_k1_7 * ADP;
+  PCr_diffusion: PCri -> PCr; IMS * PCr_diffusion_k1_8 * PCri - CYT * PCr_diffusion_k1_8 * PCr;
+  ATP_diffusion: ATPi -> ATP; IMS * ATP_diffusion_k1_9 * ATPi - CYT * ATP_diffusion_k1_9 * ATP;
+
+  // Species initializations:
+  ADPi = 0;
+  ATPi = 0;
+  Cri = 0;
+  PCri = 0;
+  PCr = 0;
+  ADP = 0;
+  ATP = 9700;
+  Cr = 26000;
+  Pi_ = 32000;
+  P = 0;
+
+  // Compartments initializations:
+  IMS = 0.0625;
+  CYT = 0.75;
+
+  // Other defined symbols initializations:
+  OxPhos_V_1 = 4600;
+  OxPhos_Ka_1 = 800;
+  OxPhos_Kb_1 = 20;
+  MiCK_Vf_2 = 2658;
+  MiCK_Kia_2 = 750;
+  MiCK_Kb_2 = 5200;
+  MiCK_Vb_2 = 11160;
+  MiCK_Kic_2 = 204.8;
+  MiCK_Kd_2 = 500;
+  MiCK_Kib_2 = 28800;
+  MiCK_Kid_2 = 1600;
+  MMCK_Vf_3 = 6966;
+  MMCK_Kia_3 = 900;
+  MMCK_Kb_3 = 15500;
+  MMCK_Vb_3 = 29250;
+  MMCK_Kic_3 = 222.4;
+  MMCK_Kd_3 = 1670;
+  MMCK_Kib_3 = 34900;
+  MMCK_Kid_3 = 4730;
+  ATPase_v_4 = 4600;
+  Pi_diffusion_k2_5 = 18.4;
+  Cr_diffusion_k1_6 = 14.6;
+  ADP_diffusion_k1_7 = 8.16;
+  PCr_diffusion_k1_8 = 14.6;
+  ATP_diffusion_k1_9 = 8.16;
+
+end

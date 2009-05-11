@@ -1,0 +1,90 @@
+model ChenXF2008_CICR()
+
+  // Compartments and Species:
+  compartment Cytoplasm, ER, PM;
+  species Ca_Cyt in Cytoplasm, IP3_Cyt in Cytoplasm, Ca_ER in ER, S2 in ER;
+  species S2a in ER, S4 in ER, Oc in PM, O_o in PM, Orai1 in PM;
+
+  // Assignment Rules:
+  S2 := pow(K1, 2) / (pow(Ca_ER, 2) + pow(K1, 2)) * (St - S2a)
+  Orai1 := Orai1_t - (r_hill * Oc + r_hill * O_o)
+
+  // Rate Rules:
+  h' = A * (Kd - (Ca_Cyt + Kd) * h)
+
+  // Reactions:
+  ER_Channel: Ca_ER -> Ca_Cyt; Cytoplasm * (L + P_IP3R * pow(IP3_Cyt, 3) * pow(Ca_Cyt, 3) * pow(h, 3) / (pow(IP3_Cyt + Ki, 3) * pow(Ca_Cyt + Ka, 3))) * (Ca_ER - Ca_Cyt);
+  SERCA: Ca_Cyt -> Ca_ER; Cytoplasm * (V_SERCA * pow(Ca_Cyt, p) / (pow(K_SERCA, p) + pow(Ca_Cyt, p)));
+  PM_Channel:  -> Ca_Cyt; Cytoplasm * (k_soc * O_o + V_PMleak) * (Ca_ec - Ca_Cyt);
+  PMCA: Ca_Cyt -> ; Cytoplasm * (V_PMCA * pow(Ca_Cyt, q) / (pow(K_PMCA, q) + pow(Ca_Cyt, q)));
+  PLC:  -> IP3_Cyt; Cytoplasm * (V_PLC * pow(Ca_Cyt, 2) / (pow(K_PLC, 2) + pow(Ca_Cyt, 2)));
+  deg: IP3_Cyt -> ; Cytoplasm * (kdeg * pow(Ca_Cyt, 2) / (pow(K_deg, 2) + pow(Ca_Cyt, 2))) * IP3_Cyt;
+  act_apoSTIM1_syn:  -> S2a; ER * k_a * S2;
+  act_apoSTIM1_deg: S2a -> ; ER * k_i * S2a;
+  apoSTIM1_oligo_syn:  -> S4; ER * (Vs4 * pow(S2, 2) / (pow(S2, 2) + pow(K2, 2)));
+  apoSTIM1_oligo_deg: S4 -> ; ER * kd_oligo * S4;
+  close_CRAC_prod:  -> Oc; PM * (Vcp * pow(Orai1, n_hill) / (pow(Kc, n_hill) + pow(Orai1, n_hill)));
+  closed_CRAC_channel_deg: Oc -> ; PM * kdc * Oc;
+  open_CRAC_channel_prod: Oc -> O_o; PM * (kop * pow(S2a, l_hill) * Oc / (pow(Ko, l_hill) + pow(S2a, l_hill)));
+  open_to_closed: O_o -> Oc; PM * kod * O_o;
+  open_CRAC_channel_deg: O_o -> ; PM * kdo * O_o;
+
+  // Species initializations:
+  Ca_Cyt = 0;
+  IP3_Cyt = 0;
+  Ca_ER = 0;
+  S2 = 0.54;
+  S2a = 0.06;
+  S4 = 0;
+  Oc = 0;
+  O_o = 0;
+  Orai1 = 0.001;
+
+  // Compartments initializations:
+  Cytoplasm = 1;
+  ER = 0.185;
+  PM = 1;
+
+  // Other defined symbols initializations:
+  L = 0.00093;
+  P_IP3R = 66.6;
+  Ki = 1;
+  k_i = 6;
+  Ka = 0.4;
+  V_SERCA = 1;
+  p = 2;
+  K_SERCA = 0.15;
+  k_soc = 2.3;
+  V_PMleak = 5e-07;
+  Ca_ec = 1500;
+  V_PMCA = 1;
+  q = 2;
+  K_PMCA = 0.45;
+  V_PLC = 0.5;
+  K_PLC = 0.12;
+  kdeg = 0.5;
+  K_deg = 0.1;
+  A = 0.5;
+  Kd = 0.4;
+  K1 = 5;
+  St = 0.6;
+  k_a = 4;
+  Vs4 = 0.25;
+  K2 = 0.14;
+  kd_oligo = 0.8;
+  Vcp = 0.00018;
+  n_hill = 3;
+  Kc = 2e-05;
+  kdc = 0.5;
+  kop = 0.5;
+  l_hill = 1;
+  Ko = 0.2;
+  kod = 1;
+  kdo = 0.6;
+  r_hill = 4;
+  h = 0;
+  Orai1_t = 0.001;
+
+  var h;
+  const S2 in ER, Orai1 in PM;
+end

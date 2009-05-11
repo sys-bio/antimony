@@ -1,0 +1,50 @@
+model Vilar2006_TGFbeta()
+
+  // Compartments and Species:
+  compartment PM, Endosome;
+  species RI in PM, RII in PM, lRIRII in PM, lRIRII_endo in Endosome, RI_endo in Endosome;
+  species RII_endo in Endosome;
+
+  // Reactions:
+  v1: RII + RI -> lRIRII; ka * ligand * RI * RII;
+  v2: lRIRII -> ; kcd * lRIRII;
+  v3: lRIRII -> ; klid * lRIRII;
+  v4: lRIRII -> lRIRII_endo; ki * lRIRII;
+  v5:  -> RI; pRI;
+  v6: RI -> ; kcd * RI;
+  v7: RI -> RI_endo; ki * RI;
+  v8: RI_endo -> RI; kr * RI_endo;
+  v9: lRIRII_endo -> RI + RII; kr * lRIRII_endo;
+  v10:  -> RII; pRII;
+  v11: RII -> ; kcd * RII;
+  v12: RII -> RII_endo; ki * RII;
+  v13: RII_endo -> RII; kr * RII_endo;
+
+  // Events:
+  event_0000001: @geq(time, 2500): ligand = 0.01;
+
+  // Species initializations:
+  RI = 20;
+  RII = 20;
+  lRIRII = 0;
+  lRIRII_endo = 40;
+  RI_endo = 0;
+  RII_endo = 0;
+
+  // Compartments initializations:
+  PM = 1;
+  Endosome = 1;
+
+  // Other defined symbols initializations:
+  ligand = 3e-05;
+  ka = 1;
+  kcd = 0.0277777778;
+  klid = 0.25;
+  ki = 0.3333333333333;
+  pRI = 8;
+  kr = 0.0333333333333333;
+  alpha = 1;
+  pRII = 4;
+
+  var ligand;
+end

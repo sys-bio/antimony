@@ -1,0 +1,48 @@
+model Tyson1991CellModel_6()
+
+  // Compartments and Species:
+  compartment cell;
+  species EmptySet in cell, C2 in cell, CP in cell, M in cell, pM in cell;
+  species Y in cell, YP in cell, YT in cell, CT in cell;
+
+  // Assignment Rules:
+  YT := Y + YP + M + pM
+  CT := C2 + CP + M + pM
+
+  // Reactions:
+  Reaction1: M -> C2 + YP; cell * Reaction1_k6 * M;
+  Reaction2: C2 -> CP; cell * C2 * Reaction2_k8notP;
+  Reaction3: CP -> C2; cell * CP * Reaction3_k9;
+  Reaction4: CP + Y -> pM; cell * CP * Reaction4_k3 * Y;
+  Reaction5: M -> pM; cell * Reaction5_k5notP * M;
+  Reaction6: EmptySet -> Y; cell * Reaction6_k1aa;
+  Reaction7: Y -> EmptySet; cell * Reaction7_k2 * Y;
+  Reaction8: YP -> EmptySet; cell * Reaction8_k7 * YP;
+  Reaction9: pM -> M; cell * pM * (Reaction9_k4prime + Reaction9_k4 * pow(M / CT, 2));
+
+  // Species initializations:
+  EmptySet = 0;
+  C2 = 0;
+  CP = 0.75;
+  M = 0;
+  pM = 0.25;
+  Y = 0;
+  YP = 0;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  Reaction1_k6 = 1;
+  Reaction2_k8notP = 1000000;
+  Reaction3_k9 = 1000;
+  Reaction4_k3 = 200;
+  Reaction5_k5notP = 0;
+  Reaction6_k1aa = 0.015;
+  Reaction7_k2 = 0;
+  Reaction8_k7 = 0.6;
+  Reaction9_k4 = 180;
+  Reaction9_k4prime = 0.018;
+
+  const EmptySet in cell, YT in cell, CT in cell;
+end

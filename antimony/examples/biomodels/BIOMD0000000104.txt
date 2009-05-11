@@ -1,0 +1,34 @@
+model Model_0()
+
+  // Compartments and Species:
+  compartment compartment_0;
+  species species_0 in compartment_0, species_1 in compartment_0, species_2 in compartment_0;
+  species species_3 in compartment_0, species_4 in compartment_0, species_5 in compartment_0;
+
+  // Assignment Rules:
+  species_3 := species_5 - species_2
+
+  // Reactions:
+  reaction_0: species_0 -> species_1; compartment_0 * species_0 * species_2 * reaction_0_k1;
+  reaction_1: species_1 -> species_4; compartment_0 * reaction_1_k2 * species_1 * species_3;
+
+  // Events:
+  event_0000002: @gt(time, 1): species_2 = 0.4;
+
+  // Species initializations:
+  species_0 = 1;
+  species_1 = 0;
+  species_2 = 1;
+  species_3 = 0;
+  species_4 = 0;
+  species_5 = 1;
+
+  // Compartments initializations:
+  compartment_0 = 1;
+
+  // Other defined symbols initializations:
+  reaction_0_k1 = 1;
+  reaction_1_k2 = 1;
+
+  const species_3 in compartment_0, species_5 in compartment_0;
+end

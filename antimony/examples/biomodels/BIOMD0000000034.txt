@@ -1,0 +1,107 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment compartment_0000002, compartment_0000001;
+  species species_0000001 in compartment_0000001, species_0000002 in compartment_0000001;
+  species species_0000003 in compartment_0000001, species_0000004 in compartment_0000002;
+  species species_0000005 in compartment_0000002, species_0000006 in compartment_0000002;
+  species species_0000007 in compartment_0000001, species_0000008 in compartment_0000001;
+  species species_0000009 in compartment_0000001;
+
+  // Rate Rules:
+  parameter_0000001' = parameter_0000017 * (species_0000008 / (species_0000008 + parameter_0000011)) * (parameter_0000005 / (parameter_0000005 + species_0000001 + species_0000002 + species_0000003)) * (1 - parameter_0000001) - parameter_0000014 * parameter_0000001
+  parameter_0000002' = parameter_0000018 * (species_0000008 / (species_0000008 + parameter_0000012)) * (parameter_0000006 / (parameter_0000006 + species_0000001 + species_0000002 + species_0000003)) * (1 - parameter_0000002) - parameter_0000015 * parameter_0000002
+  parameter_0000003' = parameter_0000019 * (species_0000008 / (species_0000008 + parameter_0000013)) * (parameter_0000007 / (parameter_0000007 + species_0000001 + species_0000002 + species_0000003)) * (1 - parameter_0000003) - parameter_0000016 * parameter_0000003
+  parameter_0000020' = (pow(parameter_0000001, parameter_0000026) - parameter_0000020) / parameter_0000023
+  parameter_0000021' = (pow(parameter_0000002, parameter_0000026) - parameter_0000021) / parameter_0000024
+  parameter_0000022' = (pow(parameter_0000003, parameter_0000026) - parameter_0000022) / parameter_0000025
+
+  // Reactions:
+  reaction_0000001:  -> species_0000004; compartment_0000002 * (parameter_0000027 * parameter_0000021 + parameter_0000031);
+  reaction_0000002:  -> species_0000007; compartment_0000001 * (parameter_0000028 * parameter_0000020 + parameter_0000032);
+  reaction_0000003:  -> species_0000009; compartment_0000001 * delay(parameter_0000029 * parameter_0000022 + parameter_0000034, parameter_0000039);
+  reaction_0000004:  -> species_0000008; compartment_0000001 * (parameter_0000030 * (pow(species_0000009, 2) / (pow(species_0000009, 2) + pow(parameter_0000010, 2))) * (pow(parameter_0000008, 2) / (pow(species_0000007, 2) + pow(parameter_0000008, 2))) + parameter_0000033);
+  reaction_0000005: species_0000008 -> ; compartment_0000001 * parameter_0000036 * species_0000008;
+  reaction_0000006: species_0000009 -> ; compartment_0000001 * parameter_0000038 * species_0000009;
+  reaction_0000007: species_0000007 -> ; compartment_0000001 * parameter_0000037 * species_0000007;
+  reaction_0000008: species_0000004 -> species_0000005; compartment_0000002 * (parameter_0000040 * species_0000004 / (parameter_0000041 + species_0000004));
+  reaction_0000009: species_0000005 -> species_0000006; compartment_0000002 * (parameter_0000040 * species_0000005 / (parameter_0000041 + species_0000005));
+  reaction_0000010: species_0000006 -> species_0000001; compartment_0000002 * (parameter_0000044 * species_0000006 / (parameter_0000045 + species_0000006));
+  reaction_0000011: species_0000001 -> species_0000002; compartment_0000001 * (parameter_0000042 * species_0000001 / (parameter_0000043 + species_0000001));
+  reaction_0000012: species_0000002 -> species_0000003; compartment_0000001 * (parameter_0000042 * species_0000002 / (parameter_0000043 + species_0000002));
+  reaction_0000013: species_0000003 -> ; compartment_0000001 * (parameter_0000046 * species_0000003 / (parameter_0000047 + species_0000003));
+  reaction_0000014: species_0000008 -> ; compartment_0000001 * parameter_0000048 * species_0000008;
+  reaction_0000015: species_0000009 -> ; compartment_0000001 * parameter_0000048 * species_0000009;
+  reaction_0000016: species_0000007 -> ; compartment_0000001 * parameter_0000048 * species_0000007;
+  reaction_0000017: species_0000004 -> ; compartment_0000002 * parameter_0000048 * species_0000004;
+  reaction_0000018: species_0000005 -> ; compartment_0000002 * parameter_0000048 * species_0000005;
+  reaction_0000019: species_0000006 -> ; compartment_0000002 * parameter_0000048 * species_0000006;
+  reaction_0000020: species_0000001 -> ; compartment_0000001 * parameter_0000048 * species_0000001;
+  reaction_0000021: species_0000002 -> ; compartment_0000001 * parameter_0000048 * species_0000002;
+  reaction_0000022: species_0000003 -> ; compartment_0000001 * parameter_0000048 * species_0000003;
+
+  // Species initializations:
+  species_0000001 = 0.001;
+  species_0000002 = 0.001;
+  species_0000003 = 0.001;
+  species_0000004 = 0.001;
+  species_0000005 = 0.001;
+  species_0000006 = 0.001;
+  species_0000007 = 0.001;
+  species_0000008 = 0.001;
+  species_0000009 = 0.001;
+
+  // Compartments initializations:
+  compartment_0000002 = 1;
+  compartment_0000001 = 1;
+
+  // Other defined symbols initializations:
+  parameter_0000001 = 0;
+  parameter_0000002 = 0;
+  parameter_0000003 = 0;
+  parameter_0000005 = 0.2;
+  parameter_0000006 = 0.24;
+  parameter_0000007 = 0.1;
+  parameter_0000008 = 0.54;
+  parameter_0000010 = 0.54;
+  parameter_0000011 = 0.083;
+  parameter_0000012 = 0.134;
+  parameter_0000013 = 0.248;
+  parameter_0000014 = 0.2124;
+  parameter_0000015 = 0.2124;
+  parameter_0000016 = 0.2124;
+  parameter_0000017 = 1.062;
+  parameter_0000018 = 1.062;
+  parameter_0000019 = 1.062;
+  parameter_0000020 = 0;
+  parameter_0000021 = 0;
+  parameter_0000022 = 0;
+  parameter_0000023 = 2.8249;
+  parameter_0000024 = 2.8249;
+  parameter_0000025 = 2.8249;
+  parameter_0000026 = 5;
+  parameter_0000027 = 10.62;
+  parameter_0000028 = 76.464;
+  parameter_0000029 = 344.09;
+  parameter_0000030 = 1.062;
+  parameter_0000031 = 0.02124;
+  parameter_0000032 = 0.19116;
+  parameter_0000033 = 0.001062;
+  parameter_0000034 = 0.38232;
+  parameter_0000036 = 0.2124;
+  parameter_0000037 = 0.7434;
+  parameter_0000038 = 0.6903;
+  parameter_0000039 = 2.8249;
+  parameter_0000040 = 1.6992;
+  parameter_0000041 = 0.25;
+  parameter_0000042 = 0.3186;
+  parameter_0000043 = 0.001;
+  parameter_0000044 = 1.6992;
+  parameter_0000045 = 0.25;
+  parameter_0000046 = 5.31;
+  parameter_0000047 = 0.01;
+  parameter_0000048 = 0.00531;
+
+  var parameter_0000001, parameter_0000002, parameter_0000003, parameter_0000020;
+  var parameter_0000021, parameter_0000022;
+end

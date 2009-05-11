@@ -1,0 +1,60 @@
+model Src_MitoticActivation()
+
+  // Compartments and Species:
+  compartment default;
+  species srci in default, srco in default, srca in default, srcc in default;
+  species Cbp_P_CSK in default, CSK_cytoplasm in default, PTP in default;
+  species PTP_pY789 in default, Cbp in default, Cbp_P in default;
+
+  // Assignment Rules:
+  ptp_activity := PTP_background + Kser * PTP_pY789
+  src_activity := rho_srco * srco + rho_srca * srca + src_background + rho_srcc * srcc
+
+  // Reactions:
+  v1: srci -> srco; (k2 * ptp_activity * srci - k1 * Cbp_P_CSK * srco) * default;
+  v2: srco -> srca; (k3 * src_activity * srco - p1 * srca) * default;
+  v3: srca -> srcc; (k1 * Cbp_P_CSK * srca - k2 * ptp_activity * srcc) * default;
+  v4: srcc -> srci; default * k4 * p1 * srcc;
+  CSK_translocation: CSK_cytoplasm + Cbp_P -> Cbp_P_CSK; (Cbp_P * kCSKon * CSK_cytoplasm - kCSKoff * Cbp_P_CSK) * default;
+  PTP_phosphorylation: PTP -> PTP_pY789; default * ((kPTP * src_activity + p3) * PTP - p2 * PTP_pY789);
+  Cbp_phosphorylation: Cbp -> Cbp_P; kCbp * src_activity * Cbp * default;
+
+  // Species initializations:
+  srci = 1;
+  srco = 0;
+  srca = 0;
+  srcc = 0;
+  Cbp_P_CSK = 0;
+  CSK_cytoplasm = 1;
+  PTP = 1;
+  PTP_pY789 = 0;
+  Cbp = 1;
+  Cbp_P = 0;
+
+  // Compartments initializations:
+  default = 1;
+
+  // Other defined symbols initializations:
+  k1 = 1;
+  k2 = 0.8;
+  k3 = 1;
+  k4 = 10;
+  kPTP = 1;
+  kCbp = 1;
+  p1 = 0.05;
+  p2 = 0.15;
+  p3 = 0.035;
+  src_background = 0.0001;
+  PTP_background = 0;
+  kCSKon = 0.1;
+  kCSKoff = 0.01;
+  rho_srca = 1;
+  rho_srco = 0;
+  rho_srcc = 1;
+  Kser = 1;
+  acsk0 = 0;
+  ptp_activity = 0;
+  src_activity = 0;
+
+  var ptp_activity, src_activity;
+end

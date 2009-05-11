@@ -1,0 +1,72 @@
+model Sneyd2002_dynamic_model_of_IP3_Receptor()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species R in compartment_, O in compartment_, I1 in compartment_, S in compartment_;
+  species A in compartment_, I2 in compartment_;
+
+  // Assignment Rules:
+  open_probability := pow(0.1 * O + 0.9 * A, 4)
+  Phi1 := (k1 * L1 + l2) * c / (L1 + c * (1 + L1 / L3))
+  Phi2 := (k2 * L3 + l4 * c) / (L3 + c * (1 + L3 / L1))
+  Phi_minus2 := (kminus2 + lminus4 * c) / (1 + c / L5)
+  Phi3 := k3 * L5 / (L5 + c)
+  Phi4 := (k4 * L5 + l6) * c / (L5 + c)
+  Phi_minus4 := L1 * (kminus4 + lminus6) / (L1 + c)
+  Phi5 := (k1 * L1 + l2) * c / (L1 + c)
+
+  // Reactions:
+  v1: R -> O; compartment_ * (Phi2 * v1_IP3 * R - Phi_minus2 * O);
+  v2: R -> I1; compartment_ * (Phi1 * R - (v2_kminus1 + v2_lminus2) * I1);
+  v3: O -> S; compartment_ * (Phi3 * O - v3_kminus3 * S);
+  v4: O -> A; compartment_ * (Phi4 * O - Phi_minus4 * A);
+  v5: A -> I2; compartment_ * (Phi5 * A - (v5_kminus1 + v5_lminus2) * I2);
+
+  // Species initializations:
+  R = 1;
+  O = 0;
+  I1 = 0;
+  S = 0;
+  A = 0;
+  I2 = 0;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  open_probability = 0;
+  Phi1 = 0;
+  k1 = 0.64;
+  L1 = 0.12;
+  l2 = 1.7;
+  lminus2 = 0.8;
+  c = 10;
+  L3 = 0.025;
+  Phi2 = 0;
+  k2 = 37.4;
+  l4 = 1.7;
+  Phi_minus2 = 0;
+  kminus1 = 0.04;
+  kminus2 = 1.4;
+  kminus3 = 29.8;
+  lminus4 = 2.5;
+  L5 = 54.7;
+  Phi3 = 0;
+  k3 = 0.11;
+  Phi4 = 0;
+  k4 = 4;
+  l6 = 4707;
+  Phi_minus4 = 0;
+  kminus4 = 0.54;
+  lminus6 = 11.4;
+  Phi5 = 0;
+  IP3 = 10;
+  v1_IP3 = 10;
+  v2_kminus1 = 0.04;
+  v2_lminus2 = 0.8;
+  v3_kminus3 = 29.8;
+  v5_kminus1 = 0.04;
+  v5_lminus2 = 0.8;
+
+  var open_probability, Phi1, Phi2, Phi_minus2, Phi3, Phi4, Phi_minus4, Phi5;
+end

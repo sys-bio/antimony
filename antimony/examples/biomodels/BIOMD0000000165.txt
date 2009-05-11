@@ -1,0 +1,170 @@
+model Saucerman2006_PKA()
+
+  // Compartments and Species:
+  compartment ec, cell, membrane;
+  species Gsbg_cell in cell, L_cell in cell, Gsa_gdp_cell in cell, Gsa_gtp_cell in cell;
+  species b1AR_S464_cell in cell, PDEcAMP_cell in cell, PDE_cell in cell;
+  species ATP_cell in cell, b1AR_cell in cell, Gs_cell in cell, A2RC_cell in cell;
+  species A2R_cell in cell, PKAC_cell in cell, ARC_cell in cell, PKAC_AKAR_cell in cell;
+  species Propranolol_cell in cell, b1ARinhib_cell in cell, light_spot_cell in cell;
+  species AC_cell in cell, PKI_cell in cell, PKAC_PKI_cell in cell, RC_cell in cell;
+  species b1AR_Gs_cell in cell, cAMP_cell in cell, GsAC_cell in cell, IBMX_cell in cell;
+  species PDE_IBMX_cell in cell, Fsk_cell in cell, FskAC_cell in cell, b1AR_p_cell in cell;
+  species L_b1AR_cell in cell, AKAR_cell in cell, AKARp_cell in cell, PP_cell in cell;
+  species PP_AKARp_cell in cell, DMNB_cAMP_cell in cell, L_b1AR_Gs_cell in cell;
+
+  // Assignment Rules:
+  Vmax_cAMP_synthesis_GsAC := k_ac_gsa_cAMP_synthesis_GsAC * GsAC_cell
+  light_cAMP_photolysis := piecewise(1, and(gt(time, ton_global_light_cAMP_photolysis), lt(time, toff_global_light_cAMP_photolysis)), 0) + piecewise(light_spot_cell, and(gt(time, ton_local_light_cAMP_photolysis), lt(time, toff_local_light_cAMP_photolysis)), 0)
+  Vmax_cAMP_synthesis_FskAC := kfsk_cAMP_synthesis_FskAC * FskAC_cell
+  Kf_inhibit_PDE := piecewise(1000, gt(time, 1000), 0)
+  Kr_inhibit_PDE := piecewise(30000, gt(time, 1000), 0)
+  ar_for_add_propranolol := piecewise((Propranolol_pipette + -Propranolol_cell) * (1 / tauPropranolol), gt(time, t_propadd), 0)
+  ar_for_add_Ligand := piecewise((L_pipette + -L_cell) * (1 / tauL), gt(time, t_Ladd), 0)
+  Ratio_AKARp_AKARtot := AKARp_cell / (AKAR_cell + AKARp_cell + PKAC_AKAR_cell + PP_AKARp_cell)
+
+  // Reactions:
+  cAMP_synthesis_GsAC: ATP_cell -> cAMP_cell; Vmax_cAMP_synthesis_GsAC * ATP_cell * (1 / (cAMP_synthesis_GsAC_Km + ATP_cell)) * cell;
+  bind_b1AR_propranolol: Propranolol_cell + b1AR_cell -> b1ARinhib_cell; (bind_b1AR_propranolol_Kf * Propranolol_cell * b1AR_cell + -(bind_b1AR_propranolol_Kr * b1ARinhib_cell)) * cell;
+  add_propranolol:  -> Propranolol_cell; ar_for_add_propranolol * cell;
+  cAMP_photolysis: DMNB_cAMP_cell -> cAMP_cell; cAMP_photolysis_kphot * light_cAMP_photolysis * DMNB_cAMP_cell * cell;
+  LRG_activation: L_b1AR_Gs_cell -> Gsa_gtp_cell + Gsbg_cell + L_b1AR_cell; LRG_activation_k_gact * L_b1AR_Gs_cell * cell;
+  bind_Lb1AR_Gs: Gs_cell + L_b1AR_cell -> L_b1AR_Gs_cell; (bind_Lb1AR_Gs_Kf * Gs_cell * L_b1AR_cell + -(bind_Lb1AR_Gs_Kr * L_b1AR_Gs_cell)) * cell;
+  desens_bark: L_b1AR_cell -> b1AR_S464_cell; desens_bark_k_barkp * (L_b1AR_cell + L_b1AR_Gs_cell) * cell;
+  bind_cAMP_ARC: ARC_cell + cAMP_cell -> A2RC_cell; (bind_cAMP_ARC_Kf * ARC_cell * cAMP_cell + -(bind_cAMP_ARC_Kr * A2RC_cell)) * cell;
+  bind_b1AR_Gs: b1AR_cell + Gs_cell -> b1AR_Gs_cell; (bind_b1AR_Gs_Kf * b1AR_cell * Gs_cell + -(bind_b1AR_Gs_Kr * b1AR_Gs_cell)) * cell;
+  bind_PDEcAMP: PDE_cell + cAMP_cell -> PDEcAMP_cell; (bind_PDEcAMP_Kf * PDE_cell * cAMP_cell + -(bind_PDEcAMP_Kr * PDEcAMP_cell)) * cell;
+  Gs_gtp_hydrolysis: Gsa_gtp_cell -> Gsa_gdp_cell; Gs_gtp_hydrolysis_khyd * Gsa_gtp_cell * cell;
+  Gs_reassociation: Gsbg_cell + Gsa_gdp_cell -> Gs_cell; Gs_reassociation_k_reassoc * Gsa_gdp_cell * Gsbg_cell * cell;
+  bind_FskAC: AC_cell + Fsk_cell -> FskAC_cell; (bind_FskAC_Kf * AC_cell * Fsk_cell + -(bind_FskAC_Kr * FskAC_cell)) * cell;
+  bind_AKARp_PP: PP_cell + AKARp_cell -> PP_AKARp_cell; (bind_AKARp_PP_Kf * PP_cell * AKARp_cell + -(bind_AKARp_PP_Kr * PP_AKARp_cell)) * cell;
+  desens_pka: b1AR_cell -> b1AR_p_cell; (desens_pka_kpkap * PKAC_cell * (L_b1AR_Gs_cell + b1AR_cell + L_b1AR_cell) + -(desens_pka_kpkam * b1AR_p_cell)) * cell;
+  bind_L_b1ARGs: b1AR_Gs_cell + L_cell -> L_b1AR_Gs_cell; (bind_L_b1ARGs_Kf * b1AR_Gs_cell * L_cell + -(bind_L_b1ARGs_Kd * L_b1AR_Gs_cell)) * cell;
+  bind_L_b1AR: L_cell + b1AR_cell -> L_b1AR_cell; (bind_L_b1AR_Kf * L_cell * b1AR_cell + -(bind_L_b1AR_Kr * L_b1AR_cell)) * cell;
+  bind_A2R_PKAC: A2RC_cell -> A2R_cell + PKAC_cell; (bind_A2R_PKAC_Kf * A2RC_cell + -(bind_A2R_PKAC_Kr * A2R_cell * PKAC_cell)) * cell;
+  inhib_PKAC: PKAC_cell + PKI_cell -> PKAC_PKI_cell; (inhib_PKAC_Kf * PKAC_cell * PKI_cell + -(inhib_PKAC_Kr * PKAC_PKI_cell)) * cell;
+  bind_RC_cAMP: RC_cell + cAMP_cell -> ARC_cell; (bind_RC_cAMP_Kf * RC_cell * cAMP_cell + -(bind_RC_cAMP_Kr * ARC_cell)) * cell;
+  cAMP_synthesis_FskAC: ATP_cell -> cAMP_cell; Vmax_cAMP_synthesis_FskAC * ATP_cell * (1 / (cAMP_synthesis_FskAC_Km + ATP_cell)) * cell;
+  add_Ligand:  -> L_cell; ar_for_add_Ligand * cell;
+  bind_Gs_AC: Gsa_gtp_cell + AC_cell -> GsAC_cell; (bind_Gs_AC_Kf * Gsa_gtp_cell * AC_cell + -(bind_Gs_AC_Kr * GsAC_cell)) * cell;
+  resens_bark: b1AR_S464_cell -> L_b1AR_cell; resens_bark_k_barkm * b1AR_S464_cell * cell;
+  bind_PKAC_AKAR: AKAR_cell + PKAC_cell -> PKAC_AKAR_cell; (bind_PKAC_AKAR_Kf * AKAR_cell * PKAC_cell + -(bind_PKAC_AKAR_Kr * PKAC_AKAR_cell)) * cell;
+  inhibit_PDE: PDE_cell + IBMX_cell -> PDE_IBMX_cell; (Kf_inhibit_PDE * PDE_cell * IBMX_cell + -(Kr_inhibit_PDE * PDE_IBMX_cell)) * cell;
+  AKARp_dephosph: PP_AKARp_cell -> PP_cell + AKAR_cell; AKARp_dephosph_kcat_PP_AKARp * PP_AKARp_cell * cell;
+  AKAR_phosph: PKAC_AKAR_cell -> AKARp_cell + PKAC_cell; AKAR_phosph_kpka_akar * PKAC_AKAR_cell * cell;
+  RG_activation: b1AR_Gs_cell -> Gsa_gtp_cell + Gsbg_cell + b1AR_cell; RG_activation_k_gact * b1AR_Gs_cell * cell;
+  cAMP_degradation: PDEcAMP_cell -> PDE_cell; cAMP_degradation_kpde * PDEcAMP_cell * cell;
+
+  // Species initializations:
+  Gsbg_cell = 0;
+  L_cell = 0;
+  Gsa_gdp_cell = 0;
+  Gsa_gtp_cell = 0;
+  b1AR_S464_cell = 0;
+  PDEcAMP_cell = 0;
+  PDE_cell = 0.014;
+  ATP_cell = 5000;
+  b1AR_cell = 0.0132;
+  Gs_cell = 3.83;
+  A2RC_cell = 0;
+  A2R_cell = 0;
+  PKAC_cell = 0;
+  ARC_cell = 0;
+  PKAC_AKAR_cell = 0;
+  Propranolol_cell = 0;
+  b1ARinhib_cell = 0;
+  light_spot_cell = 0;
+  AC_cell = 0.0497;
+  PKI_cell = 0.18;
+  PKAC_PKI_cell = 0;
+  RC_cell = 1.18;
+  b1AR_Gs_cell = 0;
+  cAMP_cell = 0;
+  GsAC_cell = 0;
+  IBMX_cell = 0;
+  PDE_IBMX_cell = 0;
+  Fsk_cell = 0;
+  FskAC_cell = 0;
+  b1AR_p_cell = 0;
+  L_b1AR_cell = 0;
+  AKAR_cell = 10;
+  AKARp_cell = 0;
+  PP_cell = 0.67;
+  PP_AKARp_cell = 0;
+  DMNB_cAMP_cell = 3.01;
+  L_b1AR_Gs_cell = 0;
+
+  // Compartments initializations:
+  ec = 1;
+  cell = 0.25;
+  membrane = 0.25;
+
+  // Other defined symbols initializations:
+  k_ac_gsa_cAMP_synthesis_GsAC = 2.5;
+  Vmax_cAMP_synthesis_GsAC = 0;
+  ton_global_light_cAMP_photolysis = 2160;
+  toff_global_light_cAMP_photolysis = 2165;
+  ton_local_light_cAMP_photolysis = 0;
+  toff_local_light_cAMP_photolysis = 0;
+  light_cAMP_photolysis = 0;
+  kfsk_cAMP_synthesis_FskAC = 7.3;
+  Vmax_cAMP_synthesis_FskAC = 0;
+  Kf_inhibit_PDE = 0;
+  Kr_inhibit_PDE = 0;
+  ar_for_add_propranolol = 0;
+  t_propadd = 2420;
+  Propranolol_pipette = 1;
+  tauPropranolol = 1;
+  ar_for_add_Ligand = 0;
+  t_Ladd = 2160;
+  L_pipette = 0.1;
+  tauL = 1;
+  Ratio_AKARp_AKARtot = 0;
+  cAMP_synthesis_GsAC_Km = 315;
+  bind_b1AR_propranolol_Kf = 1000;
+  bind_b1AR_propranolol_Kr = 8;
+  cAMP_photolysis_kphot = 0.1;
+  LRG_activation_k_gact = 16;
+  bind_Lb1AR_Gs_Kf = 1000;
+  bind_Lb1AR_Gs_Kr = 62;
+  desens_bark_k_barkp = 0.0011;
+  bind_cAMP_ARC_Kf = 1000;
+  bind_cAMP_ARC_Kr = 1640;
+  bind_b1AR_Gs_Kf = 1000;
+  bind_b1AR_Gs_Kr = 33000;
+  bind_PDEcAMP_Kf = 1000;
+  bind_PDEcAMP_Kr = 1300;
+  Gs_gtp_hydrolysis_khyd = 0.8;
+  Gs_reassociation_k_reassoc = 1210;
+  bind_FskAC_Kf = 1000;
+  bind_FskAC_Kr = 860000;
+  bind_AKARp_PP_Kf = 1000;
+  bind_AKARp_PP_Kr = 7000;
+  desens_pka_kpkap = 0.0036;
+  desens_pka_kpkam = 0.0022;
+  bind_L_b1ARGs_Kf = 1000;
+  bind_L_b1ARGs_Kd = 0.535714;
+  bind_L_b1AR_Kf = 1000;
+  bind_L_b1AR_Kr = 285;
+  bind_A2R_PKAC_Kf = 4375;
+  bind_A2R_PKAC_Kr = 1000;
+  inhib_PKAC_Kf = 1000;
+  inhib_PKAC_Kr = 0.2;
+  bind_RC_cAMP_Kf = 1000;
+  bind_RC_cAMP_Kr = 9140;
+  cAMP_synthesis_FskAC_Km = 860;
+  bind_Gs_AC_Kf = 1000;
+  bind_Gs_AC_Kr = 400;
+  resens_bark_k_barkm = 0.0022;
+  bind_PKAC_AKAR_Kf = 1000;
+  bind_PKAC_AKAR_Kr = 21000;
+  AKARp_dephosph_kcat_PP_AKARp = 8.5;
+  AKAR_phosph_kpka_akar = 54;
+  RG_activation_k_gact = 16;
+  cAMP_degradation_kpde = 5;
+
+  var Vmax_cAMP_synthesis_GsAC, light_cAMP_photolysis, Vmax_cAMP_synthesis_FskAC;
+  var Kf_inhibit_PDE, Kr_inhibit_PDE, ar_for_add_propranolol, ar_for_add_Ligand;
+  var Ratio_AKARp_AKARtot;
+  const ATP_cell in cell;
+end

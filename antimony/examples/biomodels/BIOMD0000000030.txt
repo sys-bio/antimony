@@ -1,0 +1,90 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+  species M in cell, MpY in cell, MpT in cell, Mpp in cell, MAPKK in cell;
+  species MKP in cell, MpY_MAPKK in cell, MpT_MAPKK in cell, M_MAPKK_Y in cell;
+  species M_MAPKK_T in cell, Mpp_MKP_Y in cell, Mpp_MKP_T in cell, MpY_MKP_Y in cell;
+  species MpY_MKP_T in cell, MpT_MKP_Y in cell, MpT_MKP_T in cell, M_MKP_T in cell;
+  species M_MKP_Y in cell;
+
+  // Reactions:
+  reaction_0000001: M + MAPKK -> M_MAPKK_Y; cell * (k1 * M * MAPKK - k_1 * M_MAPKK_Y);
+  reaction_0000002: M_MAPKK_Y -> MpY + MAPKK; cell * k2 * M_MAPKK_Y;
+  reaction_0000003: MpY + MAPKK -> MpY_MAPKK; cell * (k3 * MpY * MAPKK - k_3 * MpY_MAPKK);
+  reaction_0000004: MpY_MAPKK -> Mpp + MAPKK; cell * k4 * MpY_MAPKK;
+  reaction_0000005: M + MAPKK -> M_MAPKK_T; cell * (k5 * M * MAPKK - k_5 * M_MAPKK_T);
+  reaction_0000006: M_MAPKK_T -> MpT + MAPKK; cell * k6 * M_MAPKK_T;
+  reaction_0000007: MpT + MAPKK -> MpT_MAPKK; cell * (k7 * MpT * MAPKK - k_7 * MpT_MAPKK);
+  reaction_0000008: MpT_MAPKK -> Mpp + MAPKK; cell * k8 * MpT_MAPKK;
+  reaction_0000009: Mpp + MKP -> Mpp_MKP_Y; cell * (h1 * Mpp * MKP - h_1 * Mpp_MKP_Y);
+  reaction_0000010: Mpp_MKP_Y -> MpT_MKP_Y; cell * h2 * Mpp_MKP_Y;
+  reaction_0000011: MpT_MKP_Y -> MpT + MKP; cell * (h3 * MpT_MKP_Y - h_3 * MpT * MKP);
+  reaction_0000013: MpT + MKP -> MpT_MKP_T; cell * (h4 * MpT * MKP - h_4 * MpT_MKP_T);
+  reaction_0000012: MpT_MKP_T -> M_MKP_T; cell * h5 * MpT_MKP_T;
+  reaction_0000015: M_MKP_T -> M + MKP; cell * (h6 * M_MKP_T - h_6 * M * MKP);
+  reaction_0000017: MpY + MKP -> MpY_MKP_Y; cell * (h7 * MpY * MKP - h_7 * MpY_MKP_Y);
+  reaction_0000014: MpY_MKP_Y -> M_MKP_Y; cell * h8 * MpY_MKP_Y;
+  reaction_0000019: M_MKP_Y -> M + MKP; cell * (h9 * M_MKP_Y - h_9 * M * MKP);
+  reaction_0000020: Mpp + MKP -> Mpp_MKP_T; cell * (h10 * Mpp * MKP - h_10 * Mpp_MKP_T);
+  reaction_0000021: Mpp_MKP_T -> MpY_MKP_T; cell * h11 * Mpp_MKP_T;
+  reaction_0000022: MpY_MKP_T -> MpY + MKP; cell * (h12 * MpY_MKP_T - h_12 * MpY * MKP);
+
+  // Species initializations:
+  M = 800;
+  MpY = 0;
+  MpT = 0;
+  Mpp = 0;
+  MAPKK = 180;
+  MKP = 100;
+  MpY_MAPKK = 0;
+  MpT_MAPKK = 0;
+  M_MAPKK_Y = 0;
+  M_MAPKK_T = 0;
+  Mpp_MKP_Y = 0;
+  Mpp_MKP_T = 0;
+  MpY_MKP_Y = 0;
+  MpY_MKP_T = 0;
+  MpT_MKP_Y = 0;
+  MpT_MKP_T = 0;
+  M_MKP_T = 0;
+  M_MKP_Y = 0;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  k1 = 0.02;
+  k_1 = 1;
+  k2 = 0.01;
+  k3 = 0.032;
+  k_3 = 1;
+  k4 = 15;
+  k5 = 0.02;
+  k_5 = 1;
+  k6 = 0.01;
+  k7 = 0.032;
+  k_7 = 1;
+  k8 = 15;
+  h1 = 0.045;
+  h_1 = 1;
+  h2 = 0.092;
+  h3 = 1;
+  h_3 = 0.01;
+  h4 = 0.01;
+  h_4 = 1;
+  h5 = 0.5;
+  h6 = 0.086;
+  h_6 = 0.0011;
+  h7 = 0.01;
+  h_7 = 1;
+  h8 = 0.47;
+  h9 = 0.14;
+  h_9 = 0.0018;
+  h10 = 0.045;
+  h_10 = 1;
+  h11 = 0.092;
+  h12 = 1;
+  h_12 = 0.01;
+
+end

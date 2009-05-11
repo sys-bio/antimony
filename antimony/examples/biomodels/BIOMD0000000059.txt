@@ -1,0 +1,185 @@
+model Fridlyand2003_Ca_flux_pancreatic_cells()
+
+  // Compartments and Species:
+  compartment Cytoplasm, ER;
+  species Ca_cyt in Cytoplasm, Ca_er in ER, IP3_cyt in Cytoplasm, Na_cyt in Cytoplasm;
+  species ATP_cyt in Cytoplasm, ADP_cyt in Cytoplasm;
+
+  // Assignment Rules:
+  ADP_cyt := 4000 - ATP_cyt
+  Vca := TV / 2 * log(Ca_ec / Ca_cyt)
+  Vk := TV * log(K_ec / K_cyt)
+  Vna := TV * log(Na_ec / Na_cyt)
+  Vnaca := TV * (3 * log(Na_ec / Na_cyt) - log(Ca_ec / Ca_cyt))
+  pvca := 1 / (1 + exp((Vcah - V) / Kcah))
+  f_CRAN := -gm_CRAN / (1 + exp((Ca_er - Kcar) / 3))
+  p_CRAN := V - V_CRAN
+  pna := 1 / (1 + exp((104 + V) / 8))
+  f_5 := f5_ast * exp(V / (2 * TV))
+  b_5 := b5_ast * exp(-V / (2 * TV))
+  F1 := f_1 * pow(Na_cyt, 3)
+  F4 := f_4 * pow(K_ec, 2)
+  F5 := f_5 * ATP_cyt
+  B2 := b_2 * ADP_cyt
+  B3 := b_3 * pow(Na_ec, 3)
+  B4 := b_4 * P
+  B6 := b_6 * pow(Ksup, 2)
+  D := f_2 * f_3 * F4 * F5 * f_6 + b_1 * f_3 * F4 * F5 * f_6 + b_1 * B2 * F4 * F5 * f_6 + b_1 * B2 * B3 * F5 * f_6 + b_1 * B2 * B3 * B4 * f_6 + b_1 * B2 * B3 * B4 * b_5
+  f_Ca := pow(Ca_cyt, 4) / (pow(Ca_cyt, 4) + pow(Kkca, 4))
+  Okatp := (0.08 * (1 + 0.33 * (ADP_cyt / Kdd)) + 0.89 * pow(0.165 * (ADP_cyt / Kdd), 2)) / (pow(1 + 0.165 * (ADP_cyt / Kdd), 2) * (1 + 0.135 * (ADP_cyt / Ktd) + 0.05 * (ATP_cyt / Ktt)))
+  n_infinity := 1 / (1 + exp((Vn - V) / Sn))
+  tau_n := c / (exp((V - Vtau) / a) + exp((Vtau - V) / b))
+  I_Vca := gmvca * pvca * (V - Vca)
+  I_CaPump := Pmcap * pow(Ca_cyt, 2) / (pow(Kcap, 2) + pow(Ca_cyt, 2))
+  I_NaCa := gnaca * pow(Ca_cyt, 5) * (V - Vnaca) / (pow(Ca_cyt, 5) + pow(Knaca, 5))
+  I_CRAN := f_CRAN * p_CRAN * (V - Vna)
+  I_Na := gmna * pna * (V - Vna)
+  I_NaK := Pnak * (F1 * f_2 * f_3 * F4 * F5 * f_6 - b_1 * B2 * B3 * B4 * b_5 * B6) / D
+  I_KDr := gmKDr * n * (V - Vk)
+  I_KCa := gmkca * f_Ca * (V - Vk)
+  I_KATP := gmkatp * Okatp * (V - Vk)
+  Jerp := Pcaer * pow(Ca_cyt, 2) / (pow(Ca_cyt, 2) + pow(Kcarp, 2))
+  O_infinity := Ca_cyt * pow(IP3_cyt, 3) / ((Ca_cyt + Krca) * (pow(IP3_cyt, 3) + pow(Kip3, 3)))
+  Jout := (Pleak + Pip3 * O_infinity) * (Ca_er - Ca_cyt)
+
+  // Rate Rules:
+  n' = (n_infinity - n) / tau_n
+  V' = (0 - (I_Vca + I_CaPump + I_NaCa + I_CRAN + I_Na + I_NaK + I_KDr + I_KCa + I_KATP)) / Cm
+
+  // Reactions:
+  Calcium_cyt_Ivca:  -> Ca_cyt; fi * -I_Vca / (2 * F);
+  Calcium_cyt_Inaca:  -> Ca_cyt; fi * 2 * I_NaCa / (2 * F);
+  Calcium_cyt_Icapump: Ca_cyt -> ; fi * 2 * I_CaPump / (2 * F);
+  Calcium_cyt_Jerp: 0.01Ca_cyt -> 0.03Ca_er; Cytoplasm * Jerp;
+  Calcium_cyt_Jout: 0.03Ca_er -> 0.01Ca_cyt; Jout;
+  Calcium_cyt_sequestration: Ca_cyt -> ; Cytoplasm * ksg * Ca_cyt;
+  IP3_synthesis:  -> IP3_cyt; Cytoplasm * kip * pow(Ca_cyt, 2) / (pow(Ca_cyt, 2) + pow(Kipca, 2));
+  IP3_degradation: IP3_cyt -> ; Cytoplasm * kdip * IP3_cyt;
+  Na_Inaca: Na_cyt -> ; 3 * I_NaCa / F;
+  Na_Inak: Na_cyt -> ; 3 * I_NaK / F;
+  Na_Ina:  -> Na_cyt; -I_Na / F;
+  Na_Icran:  -> Na_cyt; -I_CRAN / F;
+  ATP_production:  -> ATP_cyt; Cytoplasm * kadp * ADP_cyt;
+  ATP_NaKATPase: ATP_cyt -> ; I_NaK / F;
+  ATP_Capump: ATP_cyt -> ; I_CaPump / F;
+  ATP_Jerp: ATP_cyt -> ; Cytoplasm * Jerp / 2;
+  ATP_Ca_dependent_consumption: ATP_cyt -> ; Cytoplasm * katpca * Ca_cyt * ATP_cyt;
+  ATP_consumption: ATP_cyt -> ; Cytoplasm * katp * ATP_cyt;
+
+  // Species initializations:
+  Ca_cyt = 0.085;
+  Ca_er = 22.8;
+  IP3_cyt = 0.33;
+  Na_cyt = 9858;
+  ATP_cyt = 932.1;
+  ADP_cyt = 3067.9;
+
+  // Compartments initializations:
+  Cytoplasm = 7.64e-13;
+  ER = 2.8e-13;
+
+  // Other defined symbols initializations:
+  n = 0.00123;
+  V = -60.9;
+  Vca = 0;
+  TV = 26.73;
+  Ca_ec = 2600;
+  Vk = 0;
+  K_ec = 8000;
+  K_cyt = 132400;
+  Vna = 0;
+  Na_ec = 140000;
+  Vnaca = 0;
+  pvca = 0;
+  Vcah = -19;
+  Kcah = 9.5;
+  f_CRAN = 0;
+  gm_CRAN = 0.7;
+  Kcar = 200;
+  p_CRAN = 0;
+  V_CRAN = 0;
+  pna = 0;
+  f_5 = 0;
+  f5_ast = 0.002;
+  b_5 = 0;
+  b5_ast = 0.03;
+  F1 = 0;
+  f_1 = 2.5e-10;
+  F4 = 0;
+  f_4 = 1.5e-08;
+  F5 = 0;
+  B2 = 0;
+  b_2 = 0.0001;
+  B3 = 0;
+  b_3 = 1.72e-17;
+  B4 = 0;
+  b_4 = 0.0002;
+  P = 4950;
+  B6 = 0;
+  b_6 = 6e-07;
+  Ksup = 150400;
+  D = 0;
+  f_2 = 10;
+  f_3 = 0.172;
+  f_6 = 11.5;
+  b_1 = 100;
+  f_Ca = 0;
+  Kkca = 0.1;
+  Okatp = 0;
+  Kdd = 17;
+  Ktd = 26;
+  Ktt = 1;
+  n_infinity = 0;
+  Vn = -14;
+  Sn = 7;
+  tau_n = 0;
+  c = 20;
+  Vtau = -75;
+  a = 65;
+  b = 20;
+  I_Vca = 0;
+  gmvca = 770;
+  I_CaPump = 0;
+  Pmcap = 2000;
+  Kcap = 0.1;
+  I_NaCa = 0;
+  gnaca = 271;
+  Knaca = 0.75;
+  I_CRAN = 0;
+  I_Na = 0;
+  gmna = 1200;
+  I_NaK = 0;
+  Pnak = 600;
+  I_KDr = 0;
+  gmKDr = 3000;
+  I_KCa = 0;
+  gmkca = 130;
+  I_KATP = 0;
+  gmkatp = 24000;
+  Jerp = 0;
+  Pcaer = 0.105;
+  Kcarp = 0.5;
+  O_infinity = 0;
+  Krca = 0.077;
+  Kip3 = 3.2;
+  Jout = 0;
+  Pleak = 1e-16;
+  Pip3 = 1.2e-15;
+  Cm = 6158;
+  fi = 0.01;
+  F = 9.6485e+16;
+  ksg = 0.0001;
+  fer = 0.03;
+  kip = 0.0003;
+  Kipca = 0.4;
+  kdip = 4e-05;
+  kadp = 0.00037;
+  katpca = 5e-05;
+  katp = 5e-05;
+
+  var n, V, Vca, Vk, Vna, Vnaca, pvca, f_CRAN, p_CRAN, pna, f_5, b_5, F1;
+  var F4, F5, B2, B3, B4, B6, D, f_Ca, Okatp, n_infinity, tau_n, I_Vca, I_CaPump;
+  var I_NaCa, I_CRAN, I_Na, I_NaK, I_KDr, I_KCa, I_KATP, Jerp, O_infinity;
+  var Jout;
+  const ADP_cyt in Cytoplasm;
+end

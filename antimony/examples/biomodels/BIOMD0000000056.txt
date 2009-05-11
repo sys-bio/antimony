@@ -1,0 +1,395 @@
+function BB_218(A1, A2, A3, A4)
+  A2 - A1 + A3 * A2 + A4 * A1;
+end
+
+function GK_219(A1, A2, A3, A4)
+  2 * A4 * A1 / (A2 - A1 + A3 * A2 + A4 * A1 + root(2, pow(A2 - A1 + A3 * A2 + A4 * A1, 2) - 4 * (A2 - A1) * A4 * A1));
+end
+
+function MichaelisMenten_220(M1, J1, k1, S1)
+  k1 * S1 * M1 / (J1 + S1);
+end
+
+function Mass_Action_2_221(k1, S1, S2)
+  k1 * S1 * S2;
+end
+
+function Mass_Action_1_222(k1, S1)
+  k1 * S1;
+end
+
+model Chen2004_CellCycle()
+
+  // Compartments and Species:
+  compartment cell;
+  species BCK2 in cell, BUB2 in cell, BUD in cell, C2 in cell, C2P in cell;
+  species C5 in cell, C5P in cell, CDC14 in cell, CDC14T in cell, CDC15 in cell;
+  species CDC15i in cell, CDC20 in cell, CDC20i in cell, CDC6 in cell, CDC6P in cell;
+  species CDC6T in cell, CDH1 in cell, CDH1i in cell, CKIT in cell, CLB2 in cell;
+  species CLB2T in cell, CLB5 in cell, CLB5T in cell, CLN2 in cell, CLN3 in cell;
+  species ESP1 in cell, F2 in cell, F2P in cell, F5 in cell, F5P in cell;
+  species IE in cell, IEP in cell, LTE1 in cell, MAD2 in cell, MASS in cell;
+  species MCM1 in cell, NET1 in cell, NET1P in cell, NET1T in cell, ORI in cell;
+  species PDS1 in cell, PE in cell, PPX in cell, RENT in cell, RENTP in cell;
+  species SBF in cell, SIC1 in cell, SIC1P in cell, SIC1T in cell, SPN in cell;
+  species SWI5 in cell, SWI5P in cell, TEM1GDP in cell, TEM1GTP in cell;
+
+  // Assignment Rules:
+  BCK2 := b0 * MASS
+  CDC14T := CDC14 + RENT + RENTP
+  CDC15i := CDC15T - CDC15
+  CDC6T := CDC6 + F2 + F5 + CDC6P + F2P + F5P
+  CKIT := SIC1T + CDC6T
+  CLB2T := CLB2 + C2 + C2P + F2 + F2P
+  CLB5T := CLB5 + C5 + C5P + F5 + F5P
+  CLN3 := C0 * Dn3 * MASS / (Jn3 + Dn3 * MASS)
+  IE := IET - IEP
+  MCM1 := GK_219(kamcm * CLB2, kimcm, Jamcm, Jimcm)
+  NET1T := NET1 + NET1P + RENT + RENTP
+  PE := ESP1T - ESP1
+  SBF := GK_219(Vasbf, Visbf, Jasbf, Jisbf)
+  SIC1T := SIC1 + C2 + C5 + SIC1P + C2P + C5P
+  TEM1GDP := TEM1T - TEM1GTP
+  F := exp(-mu * D)
+  D := 1.026 / mu - 32
+  mu := log(2) / mdt
+  Vdb5 := kdb5_p + kdb5_p_p * CDC20
+  Vdb2 := kdb2_p + kdb2_p_p * CDH1 + kdb2p * CDC20
+  Vasbf := kasbf * (esbfn2 * CLN2 + esbfn3 * (CLN3 + BCK2) + esbfb5 * CLB5)
+  Visbf := kisbf_p + kisbf_p_p * CLB2
+  Vkpc1 := kd1c1 + Vd2c1 / (Jd2c1 + SIC1 + C2 + C5 + SIC1P + C2P + C5P)
+  Vkpf6 := kd1f6 + Vd2f6 / (Jd2f6 + CDC6 + F2 + F5 + CDC6P + F2P + F5P)
+  Vacdh := kacdh_p + kacdh_p_p * CDC14
+  Vicdh := kicdh_p + kicdh_p_p * (eicdhn3 * CLN3 + eicdhn2 * CLN2 + eicdhb5 * CLB5 + eicdhb2 * CLB2)
+  Vppnet := kppnet_p + kppnet_p_p * PPX
+  Vkpnet := (kkpnet_p + kkpnet_p_p * CDC15) * MASS
+  Vdppx := kdppx_p + kdppx_p_p * (J20ppx + CDC20) * Jpds / (Jpds + PDS1)
+  Vdpds := kd1pds_p + kd2pds_p_p * CDC20 + kd3pds_p_p * CDH1
+  Vaiep := kaiep * CLB2
+  Vd2c1 := kd2c1 * (ec1n3 * CLN3 + ec1k2 * BCK2 + ec1n2 * CLN2 + ec1b5 * CLB5 + ec1b2 * CLB2)
+  Vd2f6 := kd2f6 * (ef6n3 * CLN3 + ef6k2 * BCK2 + ef6n2 * CLN2 + ef6b5 * CLB5 + ef6b2 * CLB2)
+  Vppc1 := kppc1 * CDC14
+  Vppf6 := kppf6 * CDC14
+
+  // Reactions:
+  Growth:  -> MASS; mu * MASS;
+  Synthesis_of_CLN2:  -> CLN2; (ksn2_p + ksn2_p_p * SBF) * MASS;
+  Degradation_of_CLN2: CLN2 -> ; Mass_Action_1_222(kdn2, CLN2);
+  Synthesis_of_CLB2:  -> CLB2; (ksb2_p + ksb2_p_p * MCM1) * MASS;
+  Degradation_of_CLB2: CLB2 -> ; Mass_Action_1_222(Vdb2, CLB2);
+  Synthesis_of_CLB5:  -> CLB5; (ksb5_p + ksb5_p_p * SBF) * MASS;
+  Degradation_of_CLB5: CLB5 -> ; Mass_Action_1_222(Vdb5, CLB5);
+  Synthesis_of_SIC1:  -> SIC1; ksc1_p + ksc1_p_p * SWI5;
+  Phosphorylation_of_SIC1: SIC1 -> SIC1P; Mass_Action_1_222(Vkpc1, SIC1);
+  Dephosphorylation_of_SIC1: SIC1P -> SIC1; Mass_Action_1_222(Vppc1, SIC1P);
+  Fast_Degradation_of_SIC1P: SIC1P -> ; Mass_Action_1_222(kd3c1, SIC1P);
+  Assoc_of_CLB2_and_SIC1: CLB2 + SIC1 -> C2; Mass_Action_2_221(kasb2, CLB2, SIC1);
+  Dissoc_of_CLB2SIC1_complex: C2 -> CLB2 + SIC1; Mass_Action_1_222(kdib2, C2);
+  Assoc_of_CLB5_and_SIC1: CLB5 + SIC1 -> C5; Mass_Action_2_221(kasb5, CLB5, SIC1);
+  Dissoc_of_CLB5SIC1: C5 -> CLB5 + SIC1; Mass_Action_1_222(kdib5, C5);
+  Phosphorylation_of_C2: C2 -> C2P; Mass_Action_1_222(Vkpc1, C2);
+  Dephosphorylation_of_C2P: C2P -> C2; Mass_Action_1_222(Vppc1, C2P);
+  Phosphorylation_of_C5: C5 -> C5P; Mass_Action_1_222(Vkpc1, C5);
+  Dephosphorylation_of_C5P: C5P -> C5; Mass_Action_1_222(Vppc1, C5P);
+  Degradation_of_CLB2_in_C2: C2 -> SIC1; Mass_Action_1_222(Vdb2, C2);
+  Degradation_of_CLB5_in_C5: C5 -> SIC1; Mass_Action_1_222(Vdb5, C5);
+  Degradation_of_SIC1_in_C2P: C2P -> CLB2; Mass_Action_1_222(kd3c1, C2P);
+  Degradation_of_SIC1P_in_C5P_: C5P -> CLB5; Mass_Action_1_222(kd3c1, C5P);
+  Degradation_of_CLB2_in_C2P: C2P -> SIC1P; Mass_Action_1_222(Vdb2, C2P);
+  Degradation_of_CLB5_in_C5P: C5P -> SIC1P; Mass_Action_1_222(Vdb5, C5P);
+  CDC6_synthesis:  -> CDC6; ksf6_p + ksf6_p_p * SWI5 + ksf6_p_p_p * SBF;
+  Phosphorylation_of_CDC6: CDC6 -> CDC6P; Mass_Action_1_222(Vkpf6, CDC6);
+  Dephosphorylation_of_CDC6: CDC6P -> CDC6; Mass_Action_1_222(Vppf6, CDC6P);
+  Degradation_of_CDC6P: CDC6P -> ; Mass_Action_1_222(kd3f6, CDC6P);
+  CLB2CDC6_complex_formation: CLB2 + CDC6 -> F2; Mass_Action_2_221(kasf2, CLB2, CDC6);
+  CLB2CDC6_dissociation: F2 -> CLB2 + CDC6; Mass_Action_1_222(kdif2, F2);
+  CLB5CDC6_complex_formation: CLB5 + CDC6 -> F5; Mass_Action_2_221(kasf5, CLB5, CDC6);
+  CLB5CDC6_dissociation: F5 -> CLB5 + CDC6; Mass_Action_1_222(kdif5, F5);
+  F2_phosphorylation: F2 -> F2P; Mass_Action_1_222(Vkpf6, F2);
+  F2P_dephosphorylation: F2P -> F2; Mass_Action_1_222(Vppf6, F2P);
+  F5_phosphorylation: F5 -> F5P; Mass_Action_1_222(Vkpf6, F5);
+  F5P_dephosphorylation: F5P -> F5; Mass_Action_1_222(Vppf6, F5P);
+  CLB2_degradation_in_F2: F2 -> CDC6; Mass_Action_1_222(Vdb2, F2);
+  CLB5_degradation_in_F5: F5 -> CDC6; Mass_Action_1_222(Vdb5, F5);
+  CDC6_degradation_in_F2P: F2P -> CLB2; Mass_Action_1_222(kd3f6, F2P);
+  CDC6_degradation_in_F5P: F5P -> CLB5; Mass_Action_1_222(kd3f6, F5P);
+  CLB2_degradation_in_F2P: F2P -> CDC6P; Mass_Action_1_222(Vdb2, F2P);
+  CLB5_degradation_in_F5P: F5P -> CDC6P; Mass_Action_1_222(Vdb5, F5P);
+  Synthesis_of_SWI5:  -> SWI5; ksswi_p + ksswi_p_p * MCM1;
+  Degradation_of_SWI5: SWI5 -> ; Mass_Action_1_222(kdswi, SWI5);
+  Degradation_of_SWI5P: SWI5P -> ; Mass_Action_1_222(kdswi, SWI5P);
+  Activation_of_SWI5: SWI5P -> SWI5; Mass_Action_1_222(kaswi * CDC14, SWI5P);
+  Inactivation_of_SWI5: SWI5 -> SWI5P; Mass_Action_1_222(kiswi * CLB2, SWI5);
+  Activation_of_IEP: IE -> IEP; MichaelisMenten_220(Vaiep, Jaiep, 1, IE);
+  Inactivation_1: IEP -> IE; MichaelisMenten_220(1, Jiiep, kiiep, IEP);
+  Synthesis_of_inactive_CDC20:  -> CDC20i; ks20_p + ks20_p_p * MCM1;
+  Degradation_of_inactiveCDC20: CDC20i -> ; Mass_Action_1_222(kd20, CDC20i);
+  Degradation_of_active_CDC20: CDC20 -> ; Mass_Action_1_222(kd20, CDC20);
+  Activation_of_CDC20: CDC20i -> CDC20; Mass_Action_1_222(ka20_p + ka20_p_p * IEP, CDC20i);
+  Inactivation_2: CDC20 -> CDC20i; Inactivation_2_k * Mass_Action_1_222(MAD2, CDC20);
+  CDH1_synthesis:  -> CDH1; kscdh;
+  CDH1_degradation: CDH1 -> ; Mass_Action_1_222(kdcdh, CDH1);
+  CDH1i_degradation: CDH1i -> ; Mass_Action_1_222(kdcdh, CDH1i);
+  CDH1i_activation: CDH1i -> CDH1; MichaelisMenten_220(Vacdh, Jacdh, 1, CDH1i);
+  Inactivation_3: CDH1 -> CDH1i; MichaelisMenten_220(Vicdh, Jicdh, 1, CDH1);
+  CDC14_synthesis:  -> CDC14; ks14;
+  CDC14_degradation: CDC14 -> ; Mass_Action_1_222(kd14, CDC14);
+  Assoc_with_NET1_to_form_RENT: CDC14 + NET1 -> RENT; Mass_Action_2_221(kasrent, CDC14, NET1);
+  Dissoc_from_RENT: RENT -> NET1 + CDC14; Mass_Action_1_222(kdirent, RENT);
+  Assoc_with_NET1P_to_form_RENTP: CDC14 + NET1P -> RENTP; Mass_Action_2_221(kasrentp, CDC14, NET1P);
+  Dissoc_from_RENP: RENTP -> CDC14 + NET1P; Mass_Action_1_222(kdirentp, RENTP);
+  Net1_synthesis:  -> NET1; ksnet;
+  Net1_degradation: NET1 -> ; Mass_Action_1_222(kdnet, NET1);
+  Net1P_degradation: NET1P -> ; Mass_Action_1_222(kdnet, NET1P);
+  NET1_phosphorylation: NET1 -> NET1P; Mass_Action_1_222(Vkpnet, NET1);
+  dephosphorylation_1: NET1P -> NET1; Mass_Action_1_222(Vppnet, NET1P);
+  RENT_phosphorylation: RENT -> RENTP; Mass_Action_1_222(Vkpnet, RENT);
+  dephosphorylation_2: RENTP -> RENT; Mass_Action_1_222(Vppnet, RENTP);
+  Degradation_of_NET1_in_RENT: RENT -> CDC14; Mass_Action_1_222(kdnet, RENT);
+  Degradation_of_NET1P_in_RENTP: RENTP -> CDC14; Mass_Action_1_222(kdnet, RENTP);
+  Degradation_of_CDC14_in_RENT: RENT -> NET1; Mass_Action_1_222(kd14, RENT);
+  Degradation_of_CDC14_in_RENTP: RENTP -> NET1P; Mass_Action_1_222(kd14, RENTP);
+  TEM1_activation: TEM1GDP -> TEM1GTP; MichaelisMenten_220(LTE1, Jatem, 1, TEM1GDP);
+  inactivation_1: TEM1GTP -> TEM1GDP; MichaelisMenten_220(BUB2, Jitem, 1, TEM1GTP);
+  CDC15_activation: CDC15i -> CDC15; Mass_Action_1_222(ka15_p * TEM1GDP + ka15_p_p * TEM1GTP + ka15p * CDC14, CDC15i);
+  inactivation_2: CDC15 -> CDC15i; Mass_Action_1_222(ki15, CDC15);
+  PPX_synthesis:  -> PPX; ksppx;
+  degradation_1: PPX -> ; Mass_Action_1_222(Vdppx, PPX);
+  PDS1_synthesis:  -> PDS1; kspds_p + ks1pds_p_p * SBF + ks2pds_p_p * MCM1;
+  degradation_2: PDS1 -> ; Mass_Action_1_222(Vdpds, PDS1);
+  Degradation_of_PDS1_in_PE: PE -> ESP1; Mass_Action_1_222(Vdpds, PE);
+  Assoc_with_ESP1_to_form_PE: PDS1 + ESP1 -> PE; Mass_Action_2_221(kasesp, PDS1, ESP1);
+  Disso_from_PE: PE -> PDS1 + ESP1; Mass_Action_1_222(kdiesp, PE);
+  DNA_synthesis:  -> ORI; ksori * (eorib5 * CLB5 + eorib2 * CLB2);
+  Negative_regulation_of_DNA_synthesis: ORI -> ; Mass_Action_1_222(kdori, ORI);
+  Budding:  -> BUD; ksbud * (ebudn2 * CLN2 + ebudn3 * CLN3 + ebudb5 * CLB5);
+  Negative_regulation_of_Cell_budding: BUD -> ; Mass_Action_1_222(kdbud, BUD);
+  Spindle_formation:  -> SPN; ksspn * CLB2 / (Jspn + CLB2);
+  Spindle_disassembly: SPN -> ; Mass_Action_1_222(kdspn, SPN);
+
+  // Events:
+  reset_ORI: @lt(CLB2 + CLB5 - KEZ2, 0): ORI = 0;
+  start_S: @gt(ORI - 1, 0): BUB2 = bub2h: MAD2 = mad2h;
+  spindle_checkpoint: @gt(SPN - 1, 0): BUB2 = bub2l: LTE1 = lte1h: MAD2 = mad2l;
+  cell_division: @lt(CLB2 - KEZ, 0): SPN = 0: BUD = 0: LTE1 = lte1l: MASS = F * MASS;
+
+  // Species initializations:
+  BUB2 = 0.2;
+  BUD = 0.008473;
+  C2 = 0.238404;
+  C2P = 0.024034;
+  C5 = 0.070081;
+  C5P = 0.006878;
+  CDC14 = 0.468344;
+  CDC14T = 2;
+  CDC15 = 0.656533;
+  CDC20 = 0.444296;
+  CDC20i = 1.472044;
+  CDC6 = 0.10758;
+  CDC6P = 0.015486;
+  CDH1 = 0.930499;
+  CDH1i = 0.0695;
+  CLB2 = 0.1469227;
+  CLB2T = 0.17;
+  CLB5 = 0.0518014;
+  CLB5T = 0.12;
+  CLN2 = 0.0652511;
+  ESP1 = 0.301313;
+  F2 = 0.236058;
+  F2P = 0.0273938;
+  F5 = 7.24e-05;
+  F5P = 7.91e-05;
+  IEP = 0.1015;
+  LTE1 = 0.1;
+  MAD2 = 0.01;
+  MASS = 1.206019;
+  NET1 = 0.018645;
+  NET1P = 0.970271;
+  NET1T = 2.8;
+  ORI = 0.000909;
+  PDS1 = 0.025612;
+  PPX = 0.123179;
+  RENT = 1.04954;
+  RENTP = 0.6;
+  SIC1 = 0.0228776;
+  SIC1P = 0.00641;
+  SPN = 0.03;
+  SWI5 = 0.95;
+  SWI5P = 0.02;
+  TEM1GTP = 0.9;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  KEZ2 = 0.2;
+  mad2h = 8;
+  bub2h = 1;
+  mad2l = 0.01;
+  lte1h = 1;
+  bub2l = 0.2;
+  KEZ = 0.3;
+  F = 0;
+  lte1l = 0.1;
+  b0 = 0.054;
+  C0 = 0.4;
+  CDC15T = 1;
+  Dn3 = 1;
+  ebudb5 = 1;
+  ebudn2 = 0.25;
+  ebudn3 = 0.05;
+  ec1b2 = 0.45;
+  ec1b5 = 0.1;
+  ec1k2 = 0.03;
+  ec1n2 = 0.06;
+  ec1n3 = 0.3;
+  ef6b2 = 0.55;
+  ef6b5 = 0.1;
+  ef6k2 = 0.03;
+  ef6n2 = 0.06;
+  ef6n3 = 0.3;
+  eicdhb2 = 1.2;
+  eicdhb5 = 8;
+  eicdhn2 = 0.4;
+  eicdhn3 = 0.25;
+  eorib2 = 0.45;
+  eorib5 = 0.9;
+  esbfb5 = 2;
+  esbfn2 = 2;
+  esbfn3 = 10;
+  ESP1T = 1;
+  IET = 1;
+  J20ppx = 0.15;
+  Jacdh = 0.03;
+  Jaiep = 0.1;
+  Jamcm = 0.1;
+  Jasbf = 0.01;
+  Jatem = 0.1;
+  Jd2c1 = 0.05;
+  Jd2f6 = 0.05;
+  Jicdh = 0.03;
+  Jiiep = 0.1;
+  Jimcm = 0.1;
+  Jisbf = 0.01;
+  Jitem = 0.1;
+  Jn3 = 6;
+  Jpds = 0.04;
+  Jspn = 0.14;
+  ka15_p = 0.002;
+  ka15_p_p = 1;
+  ka15p = 0.001;
+  ka20_p = 0.05;
+  ka20_p_p = 0.2;
+  kacdh_p = 0.01;
+  kacdh_p_p = 0.8;
+  kaiep = 0.1;
+  kamcm = 1;
+  kasb2 = 50;
+  kasb5 = 50;
+  kasbf = 0.38;
+  kasesp = 50;
+  kasf2 = 15;
+  kasf5 = 0.01;
+  kasrent = 200;
+  kasrentp = 1;
+  kaswi = 2;
+  kd14 = 0.1;
+  kd1c1 = 0.01;
+  kd1f6 = 0.01;
+  kd1pds_p = 0.01;
+  kd20 = 0.3;
+  kd2c1 = 1;
+  kd2f6 = 1;
+  kd2pds_p_p = 0.2;
+  kd3c1 = 1;
+  kd3f6 = 1;
+  kd3pds_p_p = 0.04;
+  kdb2_p = 0.003;
+  kdb2_p_p = 0.4;
+  kdb2p = 0.15;
+  kdb5_p = 0.01;
+  kdb5_p_p = 0.16;
+  kdbud = 0.06;
+  kdcdh = 0.01;
+  kdib2 = 0.05;
+  kdib5 = 0.06;
+  kdiesp = 0.5;
+  kdif2 = 0.5;
+  kdif5 = 0.01;
+  kdirent = 1;
+  kdirentp = 2;
+  kdn2 = 0.12;
+  kdnet = 0.03;
+  kdori = 0.06;
+  kdppx_p = 0.17;
+  kdppx_p_p = 2;
+  kdspn = 0.06;
+  kdswi = 0.08;
+  ki15 = 0.5;
+  kicdh_p = 0.001;
+  kicdh_p_p = 0.08;
+  kiiep = 0.15;
+  kimcm = 0.15;
+  kisbf_p = 0.6;
+  kisbf_p_p = 8;
+  kiswi = 0.05;
+  kkpnet_p = 0.01;
+  kkpnet_p_p = 0.6;
+  kppc1 = 4;
+  kppf6 = 4;
+  kppnet_p = 0.05;
+  kppnet_p_p = 3;
+  ks14 = 0.2;
+  ks1pds_p_p = 0.03;
+  ks20_p = 0.006;
+  ks20_p_p = 0.6;
+  ks2pds_p_p = 0.055;
+  ksb2_p = 0.001;
+  ksb2_p_p = 0.04;
+  ksb5_p = 0.0008;
+  ksb5_p_p = 0.005;
+  ksbud = 0.2;
+  ksc1_p = 0.012;
+  ksc1_p_p = 0.12;
+  kscdh = 0.01;
+  ksf6_p = 0.024;
+  ksf6_p_p = 0.12;
+  ksf6_p_p_p = 0.004;
+  ksn2_p = 0;
+  ksn2_p_p = 0.15;
+  ksnet = 0.084;
+  ksori = 2;
+  kspds_p = 0;
+  ksppx = 0.1;
+  ksspn = 0.1;
+  ksswi_p = 0.005;
+  ksswi_p_p = 0.08;
+  mdt = 90;
+  TEM1T = 1;
+  D = 0;
+  mu = 0;
+  Vdb5 = 0;
+  Vdb2 = 0;
+  Vasbf = 0;
+  Visbf = 0;
+  Vkpc1 = 0;
+  Vkpf6 = 0;
+  Vacdh = 0;
+  Vicdh = 0;
+  Vppnet = 0;
+  Vkpnet = 0;
+  Vdppx = 0;
+  Vdpds = 0;
+  Vaiep = 0;
+  Vd2c1 = 0;
+  Vd2f6 = 0;
+  Vppc1 = 0;
+  Vppf6 = 0;
+  Inactivation_2_k = 1;
+
+  var F, D, mu, Vdb5, Vdb2, Vasbf, Visbf, Vkpc1, Vkpf6, Vacdh, Vicdh, Vppnet;
+  var Vkpnet, Vdppx, Vdpds, Vaiep, Vd2c1, Vd2f6, Vppc1, Vppf6;
+  const BCK2 in cell, CDC14T in cell, CDC15i in cell, CDC6T in cell, CKIT in cell;
+  const CLB2T in cell, CLB5T in cell, CLN3 in cell, IE in cell, MCM1 in cell;
+  const NET1T in cell, PE in cell, SBF in cell, SIC1T in cell, TEM1GDP in cell;
+end

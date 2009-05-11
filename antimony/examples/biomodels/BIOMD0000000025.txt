@@ -1,0 +1,37 @@
+model Smolen2002()
+
+  // Compartments and Species:
+  compartment CELL;
+  species EmptySet in CELL, Per in CELL, dClk in CELL, dClkF in CELL;
+
+  // Reactions:
+  rPer: EmptySet -> Per; rPer_V * delay(dClkF / (rPer_K + dClkF), rPer_parameter_0000008) * CELL;
+  rdClk: EmptySet -> dClk; CELL * rdClk_V * delay(rdClk_K / (rdClk_K + dClkF), rdClk_parameter_0000009);
+  rPerD: Per -> EmptySet; rPerD_D * Per * CELL;
+  rdClkD: dClk -> EmptySet; rdClkD_D * dClk * CELL;
+
+  // Events:
+  _E0: @lt(dClk - Per, 0): dClkF = 0;
+  _E1: @geq(dClk - Per, 0): dClkF = dClk - Per;
+
+  // Species initializations:
+  EmptySet = 0;
+  Per = 5e-16;
+  dClk = 1e-16;
+  dClkF = 0;
+
+  // Compartments initializations:
+  CELL = 1e-15;
+
+  // Other defined symbols initializations:
+  rPer_V = 0.5;
+  rPer_K = 0.3;
+  rPer_parameter_0000008 = 10;
+  rdClk_V = 0.25;
+  rdClk_K = 0.1;
+  rdClk_parameter_0000009 = 10;
+  rPerD_D = 0.5;
+  rdClkD_D = 0.5;
+
+  const EmptySet in CELL;
+end

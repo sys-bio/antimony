@@ -1,0 +1,48 @@
+model Model_1()
+
+  // Compartments and Species:
+  compartment compartment_0;
+  species species_0 in compartment_0, species_1 in compartment_0, species_2 in compartment_0;
+  species species_3 in compartment_0, species_4 in compartment_0, species_5 in compartment_0;
+  species species_6 in compartment_0, species_8 in compartment_0;
+
+  // Assignment Rules:
+  species_8 := 0.001 * parameter_1 * species_6 * (0.3 + 0.3 * parameter_2 * time * exp(1 - parameter_2 * time)) / (1 + 0.001 * parameter_1 * species_6)
+
+  // Reactions:
+  reaction_0: species_0 + species_2 -> species_1; compartment_0 * (reaction_0_k1 * species_0 * species_2 - reaction_0_k2 * species_1);
+  reaction_1: 2species_1 -> species_3; compartment_0 * (reaction_1_k1 * pow(species_1, 2) - reaction_1_k2 * species_3);
+  reaction_2: species_3 + species_5 -> species_4; compartment_0 * (reaction_2_k1 * species_3 * species_5 - reaction_2_k2 * species_4);
+  reaction_3: species_6 -> ; compartment_0 * reaction_3_k1 * species_6;
+  reaction_4:  -> species_6; compartment_0 * reaction_4_k * species_4;
+
+  // Events:
+  RemovalH: @gt(time, 5): species_0 = 0;
+
+  // Species initializations:
+  species_0 = 1;
+  species_1 = 0;
+  species_2 = 0.01;
+  species_3 = 0;
+  species_4 = 0;
+  species_5 = 0.1;
+  species_6 = 0;
+  species_8 = 0;
+
+  // Compartments initializations:
+  compartment_0 = 1;
+
+  // Other defined symbols initializations:
+  parameter_1 = 2;
+  parameter_2 = 4;
+  reaction_0_k1 = 2.5;
+  reaction_0_k2 = 5;
+  reaction_1_k1 = 2500;
+  reaction_1_k2 = 5;
+  reaction_2_k1 = 4000;
+  reaction_2_k2 = 200;
+  reaction_3_k1 = 10;
+  reaction_4_k = 20000000;
+
+  const species_8 in compartment_0;
+end

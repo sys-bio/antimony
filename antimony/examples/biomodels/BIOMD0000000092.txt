@@ -1,0 +1,27 @@
+model Fuentes2005_ZymogenActivation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species z in compartment_, e in compartment_, w in compartment_, ez in compartment_;
+
+  // Reactions:
+  v1: z -> w + e; compartment_ * v1_k1 * z;
+  v2: z + e -> ez; compartment_ * (v2_k21 * e * z - v2_k22 * ez);
+  v3: ez -> w + 2e; compartment_ * v3_k3 * ez;
+
+  // Species initializations:
+  z = 2.4e-05;
+  e = 0;
+  w = 0;
+  ez = 0;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  v1_k1 = 0.004;
+  v2_k21 = 1000;
+  v2_k22 = 0.00021;
+  v3_k3 = 0.00054;
+
+end

@@ -1,0 +1,136 @@
+model Xie2007_CircClock()
+
+  // Compartments and Species:
+  compartment wholeCell;
+  species CC in wholeCell, CCPT in wholeCell, clkp in wholeCell, perp in wholeCell;
+  species clkm in wholeCell, perm in wholeCell, PT in wholeCell, vrip in wholeCell;
+  species vrim in wholeCell, VRI in wholeCell, pdpp in wholeCell, pdpm in wholeCell;
+  species PDP in wholeCell, CLK in wholeCell, PER in wholeCell, timp in wholeCell;
+  species timm in wholeCell, TIM in wholeCell, CYC in wholeCell, prcper in wholeCell;
+  species prcv in wholeCell, prcpdp in wholeCell, prvc in wholeCell, prpc in wholeCell;
+  species prct in wholeCell;
+
+  // Reactions:
+  re1: CC + PT -> CCPT; wholeCell * CC * PT * bccpt;
+  re2: CC -> ; wholeCell * CC * dcc;
+  re3: CCPT -> ; wholeCell * CCPT * dccpt;
+  re4: PT -> ; wholeCell * PT * dpt;
+  re9: clkm -> ; wholeCell * clkm * dclkm;
+  re10:  -> CLK; wholeCell * clkm * tlclk;
+  re15: perm -> ; wholeCell * perm * dperm;
+  re17:  -> PER; wholeCell * perm * tlper;
+  re20:  -> perm; wholeCell * ((1 - pow(1 - prcper, npt)) * tcccperp + pow(1 - prcper, npt) * tcdvpmt) * perp;
+  re28:  -> vrim; wholeCell * ((1 - pow(1 - prcv, nvri)) * tcccvrip + pow(1 - prcv, nvri) * tcdvpmt) * vrip;
+  re30: vrim -> ; wholeCell * vrim * dvrim;
+  re31:  -> VRI; wholeCell * vrim * tlvri;
+  re32: VRI -> ; wholeCell * VRI * dvri;
+  re35:  -> pdpm; wholeCell * ((1 - pow(1 - prcpdp, npdp)) * tcccpdpp + pow(1 - prcpdp, npdp) * tcdvpmt) * pdpp;
+  re37: pdpm -> ; wholeCell * pdpm * dpdpm;
+  re38:  -> PDP; wholeCell * pdpm * tlpdp;
+  re39: PDP -> ; wholeCell * PDP * dpdp;
+  re42:  -> clkm; wholeCell * (prvc * tcvriclkp + prpc * tcpdpclkp + (1 - prvc - prpc) * tcclkp) * clkp;
+  re43: CLK + CYC -> CC; wholeCell * CLK * bcc * CYC;
+  re44: CLK -> ; wholeCell * CLK * dclk;
+  re45: CC -> CLK + CYC; wholeCell * CC * ubcc;
+  re46: PER + TIM -> PT; wholeCell * PER * TIM * bpt;
+  re47: PT -> PER + TIM; wholeCell * PT * ubpt;
+  re48: PER -> ; wholeCell * PER * dper;
+  re51:  -> timm; wholeCell * ((1 - pow(1 - prct, npt)) * tccctimp + pow(1 - prct, npt) * tcdvpmt) * timp;
+  re53: timm -> ; wholeCell * timm * dtimm;
+  re54:  -> TIM; wholeCell * timm * tltim;
+  re55: TIM -> ; wholeCell * TIM * dtim;
+  re56: CCPT -> CC + PT; wholeCell * CCPT * ubccpt;
+  re57:  -> prcper; wholeCell * (1 - prcper) * bccperp * CC;
+  re58: prcper -> ; wholeCell * prcper * ubccperp;
+  re59: prcv -> ; wholeCell * ubccvrip * prcv;
+  re60:  -> prcv; wholeCell * (1 - prcv) * bccvrip * CC;
+  re61: prcpdp -> ; wholeCell * ubccpdpp * prcpdp;
+  re62:  -> prcpdp; wholeCell * (1 - prcpdp) * bccpdpp * CC;
+  re63:  -> prvc; wholeCell * (1 - prvc - prpc) * bvriclkp * VRI;
+  re64: prvc -> ; wholeCell * prvc * ubvriclkp;
+  re65:  -> prpc; wholeCell * (1 - prvc - prpc) * bpdpclkp * PDP;
+  re66: prpc -> ; wholeCell * prpc * ubpdpclkp;
+  re68:  -> prct; wholeCell * (1 - prct) * bcctimp * CC;
+  re69: prct -> ; wholeCell * prct * ubcctimp;
+
+  // Species initializations:
+  CC = 0.5566;
+  CCPT = 0.4982;
+  clkp = 0.003185;
+  perp = 0.003185;
+  clkm = 0.2583;
+  perm = 0.2395;
+  PT = 0.4014;
+  vrip = 0.003185;
+  vrim = 0.2571;
+  VRI = 3.175;
+  pdpp = 0.003185;
+  pdpm = 0.3175;
+  PDP = 4.1953;
+  CLK = 3.6628;
+  PER = 2.7527;
+  timp = 0.003185;
+  timm = 0.2395;
+  TIM = 2.7527;
+  CYC = 1;
+  prcper = 0.0431;
+  prcv = 0.0585;
+  prcpdp = 0.08;
+  prvc = 0.489;
+  prpc = 0.426;
+  prct = 0.043;
+
+  // Compartments initializations:
+  wholeCell = 1;
+
+  // Other defined symbols initializations:
+  dccpt = 15.06;
+  bccperp = 0.069;
+  ubccperp = 0.262;
+  bccpt = 51;
+  dperm = 0.053;
+  tlper = 36;
+  tcccperp = 11;
+  tcdvpmt = 0.028;
+  dvri = 1.226;
+  tcclkp = 1.42;
+  bcc = 2.349;
+  dclk = 0.2;
+  ubcc = 0.89;
+  bpt = 1.1;
+  ubpt = 2.93;
+  dper = 0.62;
+  tcccvrip = 16.86;
+  tcccpdpp = 9.831;
+  dvrim = 0.07;
+  dpdpm = 0.06;
+  ubccpt = 7.89;
+  tlvri = 14.68;
+  tlpdp = 1.87;
+  bccvrip = 0.1;
+  bccpdpp = 0.062;
+  ubccvrip = 0.276;
+  ubccpdpp = 0.145;
+  tcpdpclkp = 125.54;
+  dclkm = 0.643;
+  bvriclkp = 1.858;
+  bpdpclkp = 1.155;
+  ubvriclkp = 1.043;
+  ubpdpclkp = 0.952;
+  tcvriclkp = 0.053;
+  dpdp = 0.156;
+  tlclk = 35;
+  dcc = 0.184;
+  dpt = 0.279;
+  dtim = 0.62;
+  dtimm = 0.053;
+  tltim = 36;
+  bcctimp = 0.069;
+  ubcctimp = 0.262;
+  tccctimp = 11;
+  npt = 5;
+  nvri = 4;
+  npdp = 6;
+
+  const CYC in wholeCell;
+end

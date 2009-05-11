@@ -1,0 +1,105 @@
+model wolf01()
+
+  // Compartments and Species:
+  compartment c0, c1, c2;
+  species sul_ex in c0, eth_ex in c0, oxy_ex in c0, oxy in c2, H2O in c2;
+  species A3c in c1, aps in c1, PPi in c1, pap in c1, sul in c1, eth in c1;
+  species A2c in c1, hyd in c1, cys in c1, N2 in c1, N1 in c1, aco in c1;
+  species oah in c1, S1 in c2, S2 in c2, C1 in c2, C2 in c2, A2m in c2, A3m in c2;
+  species Ho in c1, Hm in c2;
+
+  // Assignment Rules:
+  A2c := Ac - A3c
+  N1 := N - N2
+  S2 := S - S1
+  A2m := Am - A3m
+
+  // Reactions:
+  v1: sul_ex -> sul; c0 * k_v0 / (1 + pow(cys / Kc, n));
+  v13: eth_ex -> eth; c0 * k_v13;
+  v2: sul + A3c -> aps + PPi; c1 * k2 * sul * A3c;
+  v10: oxy_ex -> oxy; c0 * k_v10;
+  v14: oxy -> oxy_ex; c2 * k14 * oxy;
+  v3: aps + A3c -> pap + A2c; c1 * k3 * aps * A3c;
+  v4: pap + 3N2 -> hyd + 3N1; c1 * k4 * pap * N2;
+  v5: hyd + oah -> cys; c1 * k5 * hyd * oah;
+  v6: cys -> ; c1 * k6 * cys;
+  v7: eth + 2N1 -> aco + 2N2; c1 * k7 * eth * N1;
+  v15: aco -> oah; c1 * k15 * aco;
+  v17: hyd -> ; c1 * k17 * hyd;
+  v18: oah -> ; c1 * k18 * oah;
+  v8: S2 + aco -> S1; c2 * k8 * aco * S2;
+  v9: S1 + 4N1 -> S2 + 4N2; c2 * k9 * S1 * N1;
+  v11a: C1 + Hm + N2 -> C2 + Ho + N1; c2 * k11 * N2 * oxy / ((a * N2 + oxy) * (1 + pow(hyd / Kh, m)));
+  v11a2: C2 + oxy -> C1 + H2O; c2 * k11 * N2 * oxy / ((a * N2 + oxy) * (1 + pow(hyd / Kh, m)));
+  v16: A2c + A3m -> A2m + A3c; c2 * k16 * A3m * A2c;
+  v11b: Ho + A2m -> Hm + A3m; c2 * 3 * k11 * N2 * oxy / ((a * N2 + oxy) * (1 + pow(hyd / Kh, m))) * A2m / (Ka + A2m);
+  vLEAK: Ho -> Hm; 0;
+  v12: A3c -> A2c; c1 * k12 * A3c;
+
+  // Species initializations:
+  sul_ex = 0;
+  eth_ex = 0;
+  oxy_ex = 0;
+  oxy = 7;
+  H2O = 0;
+  A3c = 1.5;
+  aps = 0.5;
+  PPi = 0;
+  pap = 0.4;
+  sul = 0.4;
+  eth = 4;
+  A2c = 0.5;
+  hyd = 0.5;
+  cys = 0.3;
+  N2 = 2;
+  N1 = 0;
+  aco = 0.3;
+  oah = 1.5;
+  S1 = 1.5;
+  S2 = 0.5;
+  C1 = 0;
+  C2 = 0;
+  A2m = 0.5;
+  A3m = 1.5;
+  Ho = 0;
+  Hm = 0;
+
+  // Compartments initializations:
+  c0 = 1;
+  c1 = 1;
+  c2 = 1;
+
+  // Other defined symbols initializations:
+  k_v0 = 1.6;
+  k2 = 0.2;
+  k3 = 0.2;
+  k4 = 0.2;
+  k5 = 0.1;
+  k6 = 0.12;
+  k7 = 10;
+  k8 = 10;
+  k9 = 10;
+  k_v10 = 80;
+  k11 = 10;
+  k12 = 5;
+  k_v13 = 4;
+  k14 = 10;
+  k15 = 5;
+  k16 = 10;
+  k17 = 0.02;
+  k18 = 1;
+  n = 4;
+  m = 4;
+  Ka = 1;
+  Kc = 0.1;
+  a = 0.1;
+  Ac = 2;
+  Am = 2;
+  S = 2;
+  N = 2;
+  Kh = 0.5;
+
+  const sul_ex in c0, eth_ex in c0, oxy_ex in c0, H2O in c2, PPi in c1, A2c in c1;
+  const N1 in c1, S2 in c2, C1 in c2, C2 in c2, A2m in c2, Ho in c1, Hm in c2;
+end

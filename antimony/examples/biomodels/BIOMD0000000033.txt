@@ -1,0 +1,131 @@
+model Brown2004_NGF_EGF_signaling()
+
+  // Compartments and Species:
+  compartment cell;
+  species EGF in cell, NGF in cell, freeEGFReceptor in cell, boundEGFReceptor in cell;
+  species freeNGFReceptor in cell, boundNGFReceptor in cell, SosInactive in cell;
+  species SosActive in cell, P90RskInactive in cell, P90RskActive in cell;
+  species RasInactive in cell, RasActive in cell, RasGapActive in cell, Raf1Inactive in cell;
+  species Raf1Active in cell, BRafInactive in cell, BRafActive in cell, MekInactive in cell;
+  species MekActive in cell, ErkInactive in cell, ErkActive in cell, PI3KInactive in cell;
+  species PI3KActive in cell, AktInactive in cell, AktActive in cell, C3GInactive in cell;
+  species C3GActive in cell, Rap1Inactive in cell, Rap1Active in cell, RapGapActive in cell;
+  species PP2AActive in cell, Raf1PPtase in cell;
+
+  // Reactions:
+  EGFBindingReaction: EGF + freeEGFReceptor -> boundEGFReceptor; cell * krbEGF * EGF * freeEGFReceptor;
+  EGFUnbindingReaction: boundEGFReceptor -> EGF + freeEGFReceptor; cell * kruEGF * boundEGFReceptor;
+  NGFBindingReaction: NGF + freeNGFReceptor -> boundNGFReceptor; krbNGF * NGF * freeNGFReceptor * cell;
+  NGFUnbindingReaction: boundNGFReceptor -> NGF + freeNGFReceptor; kruNGF * boundNGFReceptor * cell;
+  SosActivationByEGFReaction: SosInactive -> SosActive; cell * (kEGF * boundEGFReceptor * SosInactive / (SosInactive + KmEGF));
+  SosActivationByNGFReaction: SosInactive -> SosActive; cell * (kNGF * boundNGFReceptor * SosInactive / (SosInactive + KmNGF));
+  SosDeactivationReaction: SosActive -> SosInactive; cell * (kdSos * P90RskActive * SosActive / (SosActive + KmdSos));
+  RasActivationReaction: RasInactive -> RasActive; cell * (kSos * SosActive * RasInactive / (RasInactive + KmSos));
+  RasDeactivationReaction: RasActive -> RasInactive; cell * (kRasGap * RasGapActive * RasActive / (RasActive + KmRasGap));
+  Raf1ByRasActivationReaction: Raf1Inactive -> Raf1Active; cell * (kRasToRaf1 * RasActive * Raf1Inactive / (Raf1Inactive + KmRasToRaf1));
+  MekbyRaf1ActivationReaction: MekInactive -> MekActive; cell * (kpRaf1 * Raf1Active * MekInactive / (MekInactive + KmpRaf1));
+  MekbyBRafActivationReaction: MekInactive -> MekActive; cell * (kpBRaf * BRafActive * MekInactive / (MekInactive + KmpBRaf));
+  ErkActivationReaction: ErkInactive -> ErkActive; cell * (kpMekCytoplasmic * MekActive * ErkInactive / (ErkInactive + KmpMekCytoplasmic));
+  MekDeactivationReaction: MekActive -> MekInactive; cell * (kdMek * PP2AActive * MekActive / (MekActive + KmdMek));
+  ErkDeactivationReaction: ErkActive -> ErkInactive; cell * (kdErk * PP2AActive * ErkActive / (ErkActive + KmdErk));
+  Raf1byPPtaseDeactivationReaction: Raf1Active -> Raf1Inactive; cell * (kdRaf1 * Raf1PPtase * Raf1Active / (Raf1Active + KmdRaf1));
+  P90RskActivationReaction: P90RskInactive -> P90RskActive; cell * (kpP90Rsk * ErkActive * P90RskInactive / (P90RskInactive + KmpP90Rsk));
+  PI3KbyEGFRActivationReaction: PI3KInactive -> PI3KActive; cell * (kPI3K * boundEGFReceptor * PI3KInactive / (PI3KInactive + KmPI3K));
+  PI3KbyRasActivationReaction: PI3KInactive -> PI3KActive; cell * (kPI3KRas * RasActive * PI3KInactive / (PI3KInactive + KmPI3KRas));
+  AktActivationReaction: AktInactive -> AktActive; cell * (kAkt * PI3KActive * AktInactive / (AktInactive + KmAkt));
+  Raf1ByAktDeactivationReaction: Raf1Active -> Raf1Inactive; cell * (kdRaf1ByAkt * AktActive * Raf1Active / (Raf1Active + KmRaf1ByAkt));
+  C3GActivationReaction: C3GInactive -> C3GActive; cell * (kC3GNGF * boundNGFReceptor * C3GInactive / (C3GInactive + KmC3GNGF));
+  Rap1ActivationReaction: Rap1Inactive -> Rap1Active; cell * (kC3G * C3GActive * Rap1Inactive / (Rap1Inactive + KmC3G));
+  Rap1DeactivationReaction: Rap1Active -> Rap1Inactive; cell * (kRapGap * RapGapActive * Rap1Active / (Rap1Active + KmRapGap));
+  BRafByRap1ActivationReaction: BRafInactive -> BRafActive; cell * (kRap1ToBRaf * Rap1Active * BRafInactive / (BRafInactive + KmRap1ToBRaf));
+  BRafbyPPtaseDeactivationReaction: BRafActive -> BRafInactive; cell * (kdBRaf * Raf1PPtase * BRafActive / (BRafActive + KmdBRaf));
+
+  // Species initializations:
+  EGF = 10002000;
+  NGF = 456000;
+  freeEGFReceptor = 80000;
+  boundEGFReceptor = 0;
+  freeNGFReceptor = 10000;
+  boundNGFReceptor = 0;
+  SosInactive = 120000;
+  SosActive = 0;
+  P90RskInactive = 120000;
+  P90RskActive = 0;
+  RasInactive = 120000;
+  RasActive = 0;
+  RasGapActive = 120000;
+  Raf1Inactive = 120000;
+  Raf1Active = 0;
+  BRafInactive = 120000;
+  BRafActive = 0;
+  MekInactive = 600000;
+  MekActive = 0;
+  ErkInactive = 600000;
+  ErkActive = 0;
+  PI3KInactive = 120000;
+  PI3KActive = 0;
+  AktInactive = 120000;
+  AktActive = 0;
+  C3GInactive = 120000;
+  C3GActive = 0;
+  Rap1Inactive = 120000;
+  Rap1Active = 0;
+  RapGapActive = 120000;
+  PP2AActive = 120000;
+  Raf1PPtase = 120000;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  krbEGF = 2.18503e-05;
+  kruEGF = 0.0121008;
+  krbNGF = 1.38209e-07;
+  kruNGF = 0.00723811;
+  kEGF = 694.731;
+  KmEGF = 6086070;
+  kNGF = 389.428;
+  KmNGF = 2112.66;
+  kdSos = 1611.97;
+  KmdSos = 896896;
+  kSos = 32.344;
+  KmSos = 35954.3;
+  kRasGap = 1509.36;
+  KmRasGap = 1432410;
+  kRasToRaf1 = 0.884096;
+  KmRasToRaf1 = 62464.6;
+  kpRaf1 = 185.759;
+  KmpRaf1 = 4768350;
+  kpBRaf = 125.089;
+  KmpBRaf = 157948;
+  kdMek = 2.83243;
+  KmdMek = 518753;
+  kpMekCytoplasmic = 9.85367;
+  KmpMekCytoplasmic = 1007340;
+  kdErk = 8.8912;
+  KmdErk = 3496490;
+  kpP90Rsk = 0.0213697;
+  KmpP90Rsk = 763523;
+  kPI3K = 10.6737;
+  KmPI3K = 184912;
+  kPI3KRas = 0.0771067;
+  KmPI3KRas = 272056;
+  kAkt = 0.0566279;
+  KmAkt = 653951;
+  kdRaf1ByAkt = 15.1212;
+  KmRaf1ByAkt = 119355;
+  kC3GNGF = 146.912;
+  KmC3GNGF = 12876.2;
+  kC3G = 1.40145;
+  KmC3G = 10965.6;
+  kRapGap = 27.265;
+  KmRapGap = 295990;
+  kRap1ToBRaf = 2.20995;
+  KmRap1ToBRaf = 1025460;
+  kdRaf1 = 0.126329;
+  KmdRaf1 = 1061.71;
+  kdBRaf = 441.287;
+  KmdBRaf = 10879500;
+
+  const RasGapActive in cell, RapGapActive in cell, PP2AActive in cell, Raf1PPtase in cell;
+end

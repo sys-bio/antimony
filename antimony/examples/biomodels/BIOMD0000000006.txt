@@ -1,0 +1,27 @@
+model Tyson1991CellModel_2()
+
+  // Compartments and Species:
+  compartment cell;
+  species EmptySet in cell, u in cell, z in cell;
+
+  // Reactions:
+  Reaction1: EmptySet -> z; Reaction1_kappa;
+  Reaction2: u -> EmptySet; Reaction2_k6 * u;
+  Reaction3: z -> u; Reaction3_k4 * z * (Reaction3_k4prime / Reaction3_k4 + pow(u, 2));
+
+  // Species initializations:
+  EmptySet = 1;
+  u = 0;
+  z = 0;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  Reaction1_kappa = 0.015;
+  Reaction2_k6 = 1;
+  Reaction3_k4 = 180;
+  Reaction3_k4prime = 0.018;
+
+  const EmptySet in cell;
+end

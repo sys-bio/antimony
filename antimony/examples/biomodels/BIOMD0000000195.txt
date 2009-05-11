@@ -1,0 +1,98 @@
+function GK(A1, A2, A3, A4)
+  2 * A4 * A1 / (A2 - A1 + A3 * A2 + A4 * A1 + root(2, pow(A2 - A1 + A3 * A2 + A4 * A1, 2) - 4 * (A2 - A1) * A4 * A1));
+end
+
+model Tyson2001_Cell_Cycle_Regulation()
+
+  // Compartments and Species:
+  compartment cell;
+  species CycBt in cell, CycB in cell, Cdc20a in cell, Trimer in cell, Cdh1 in cell;
+  species m in cell, Cdc20t in cell, IEP in cell, Mad in cell, CKIt in cell;
+  species SK in cell;
+
+  // Assignment Rules:
+  CycB := CycBt - 2 * CycBt * CKIt / (CycBt + CKIt + 1 / Keq + pow(pow(CycBt + CKIt + 1 / Keq, 2) - 4 * CycBt * CKIt, 1 / 2))
+  Trimer := 2 * CycBt * CKIt / (CycBt + CKIt + 1 / Keq + pow(pow(CycBt + CKIt + 1 / Keq, 2) - 4 * CycBt * CKIt, 1 / 2))
+  Mad := 1
+  TF := GK(k15p * m + k15pp * SK, k16p + k16pp * m * CycB, J15, J16)
+
+  // Reactions:
+  CycBt_synthesis:  -> CycBt; k1;
+  CycBdegradation: CycBt -> ; k2p * CycBt;
+  CycBdegradationviaCdh1: CycBt -> ; k2pp * Cdh1 * CycBt;
+  CycBtdegradationviaCdc20a: CycBt -> ; k2ppp * Cdc20a * CycBt;
+  Cdh1synthesis:  -> Cdh1; (k3p + k3pp * Cdc20a) * (1 - Cdh1) / (J3 + 1 - Cdh1);
+  Cdh1degradation: Cdh1 -> ; (k4p * SK * Cdh1 + k4 * m * CycB * Cdh1) / (J4 + Cdh1);
+  Cdc20tsynthesis:  -> Cdc20t; k5p + k5pp * pow(CycB * m / J5, n) / (1 + pow(CycB * m / J5, n));
+  Cdc20t_deg: Cdc20t -> ; k6 * Cdc20t;
+  Cdc20activation:  -> Cdc20a; k7 * IEP * (Cdc20t - Cdc20a) / (J7 + Cdc20t - Cdc20a);
+  Cdc20ainhibition: Cdc20a -> ; k8 * Mad * Cdc20a / (J8 + Cdc20a);
+  Cdc20adegradation: Cdc20a -> ; k6 * Cdc20a;
+  IEPsynthesis:  -> IEP; k9 * m * CycB * (1 - IEP);
+  IEPdegradation: IEP -> ; k10 * IEP;
+  growth:  -> m; mu * m * (1 - m / mmax);
+  CKItsynthesis:  -> CKIt; k11;
+  CKIdegradation: CKIt -> ; k12p * CKIt;
+  CKItphosphorilationviaSK: CKIt -> ; k12pp * SK * CKIt;
+  eq_7: CKIt -> ; k12ppp * m * CycB * CKIt;
+  SKsynthesis:  -> SK; k13 * TF;
+  SKdegradation: SK -> ; k14 * SK;
+
+  // Events:
+  Cell_division: @lt(CycB, 0.1): m = m / 2;
+
+  // Species initializations:
+  CycBt = 0.001;
+  Cdc20a = 0.001;
+  Cdh1 = 0.001;
+  m = 0.5;
+  Cdc20t = 0.001;
+  IEP = 0.001;
+  CKIt = 0.001;
+  SK = 0.001;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  k1 = 0.04;
+  k2p = 0.04;
+  k2pp = 1;
+  k2ppp = 1;
+  k3p = 1;
+  k3pp = 10;
+  J3 = 0.04;
+  k4 = 35;
+  k5p = 0.005;
+  k5pp = 0.2;
+  J5 = 0.3;
+  k6 = 0.1;
+  n = 4;
+  k7 = 1;
+  J7 = 0.001;
+  k8 = 0.5;
+  J8 = 0.001;
+  k9 = 0.1;
+  k10 = 0.02;
+  mu = 0.005;
+  k11 = 1;
+  k12p = 0.2;
+  k12pp = 50;
+  mmax = 10;
+  k12ppp = 100;
+  Keq = 1000;
+  k13 = 1;
+  k14 = 1;
+  k15p = 1.5;
+  k15pp = 0.05;
+  k16p = 1;
+  k16pp = 3;
+  J15 = 0.01;
+  J16 = 0.01;
+  k4p = 2;
+  J4 = 0.04;
+  TF = 0;
+
+  var TF;
+  const CycB in cell, Trimer in cell, Mad in cell;
+end

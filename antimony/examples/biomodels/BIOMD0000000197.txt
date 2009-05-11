@@ -1,0 +1,51 @@
+model MDCKII_Transport()
+
+  // Compartments and Species:
+  compartment basolat, cell, apical;
+  species x1 in basolat, x2 in basolat, x3 in cell, x4 in cell, x5 in apical;
+  species BSP_tot in apical, BSP_cell in cell;
+
+  // Assignment Rules:
+  BSP_tot := x1 + x2 + x3 + x4 + x5
+  BSP_cell := x3 + x4
+
+  // Reactions:
+  OATP1B3: x1 -> x3; p1 * x1;
+  ABCC2: x3 -> x5; p2 * x3;
+  endo_in_bl: x1 -> x3; p3 * x1;
+  endo_ex_bl: x3 -> x1; p4 * x3;
+  endo_ex_ap: x3 -> x5; p5 * x3;
+  bl_BSP_binding: x1 -> x2; p6 * x1 * (p8 - x2);
+  bl_BSP_dissoc: x2 -> x1; p7 * x2;
+  cellular_BSP_binding: x3 -> x4; p9 * x3 * (p11 - x4);
+  cellular_BSP_dissoc: x4 -> x3; p10 * x4;
+  paracell_transp: x1 -> x5; p12 * (x1 / basolat - x5 / apical);
+
+  // Species initializations:
+  x1 = 88;
+  x2 = 0;
+  x3 = 0;
+  x4 = 0;
+  x5 = 0;
+
+  // Compartments initializations:
+  basolat = 1;
+  cell = 1;
+  apical = 1.5;
+
+  // Other defined symbols initializations:
+  p1 = 0.0025;
+  p2 = 0.0784;
+  p3 = 0.0013;
+  p4 = 0.0827;
+  p5 = 0.0091;
+  p6 = 6.4e-05;
+  p7 = 0.0397;
+  p8 = 1000;
+  p9 = 0.0098;
+  p10 = 1.6;
+  p11 = 1000;
+  p12 = 0.0003;
+
+  const BSP_tot in apical, BSP_cell in cell;
+end

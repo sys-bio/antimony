@@ -1,0 +1,75 @@
+model Romond1999_CellCycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species C1 in compartment_, M1 in compartment_, X1 in compartment_, C2 in compartment_;
+  species M2 in compartment_, X2 in compartment_;
+
+  // Assignment Rules:
+  V1 := C1 / (Kc1 + C1) * V_M1
+  V3 := M1 * V_M3
+  U1 := C2 / (Kc2 + C2) * U_M1
+  U3 := M2 * U_M3
+
+  // Rate Rules:
+  M1' = V1 * (1 - M1) / (K1 + (1 - M1)) - V2 * M1 / (K2 + M1)
+  X1' = V3 * (1 - X1) / (K3 + (1 - X1)) - V4 * X1 / (K4 + X1)
+  M2' = U1 * (1 - M2) / (H1 + (1 - M2)) - U2 * M2 / (H2 + M2)
+  X2' = U3 * (1 - X2) / (H3 + (1 - X2)) - U4 * X2 / (H4 + X2)
+
+  // Reactions:
+  R1:  -> C1; compartment_ * vi1 * Kim1 / (Kim1 + M2);
+  R2: C1 -> ; compartment_ * vd1 * X1 * C1 / (K_d1 + C1);
+  R3: C1 -> ; compartment_ * kd1 * C1;
+  R8:  -> C2; compartment_ * vi2 * Kim2 / (Kim2 + M1);
+  R9: C2 -> ; compartment_ * vd2 * X2 * C2 / (K_d2 + C2);
+  R10: C2 -> ; compartment_ * kd2 * C2;
+
+  // Species initializations:
+  C1 = 2;
+  M1 = 1;
+  X1 = 0;
+  C2 = 0;
+  M2 = 0;
+  X2 = 0;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  V1 = 0;
+  Kc1 = 0.5;
+  V_M1 = 0.3;
+  V3 = 0;
+  V_M3 = 0.1;
+  U1 = 0;
+  Kc2 = 0.5;
+  U_M1 = 0.3;
+  U3 = 0;
+  U_M3 = 0.1;
+  vi1 = 0.05;
+  Kim1 = 0.03;
+  vd1 = 0.025;
+  K_d1 = 0.02;
+  kd1 = 0.001;
+  K1 = 0.01;
+  V2 = 0.15;
+  K2 = 0.01;
+  K3 = 0.01;
+  V4 = 0.05;
+  K4 = 0.01;
+  vi2 = 0.05;
+  Kim2 = 0.03;
+  vd2 = 0.025;
+  K_d2 = 0.02;
+  kd2 = 0.001;
+  H1 = 0.01;
+  U2 = 0.15;
+  H2 = 0.01;
+  H3 = 0.01;
+  U4 = 0.05;
+  H4 = 0.01;
+
+  var V1, V3, U1, U3;
+  const M1 in compartment_, X1 in compartment_, M2 in compartment_, X2 in compartment_;
+end

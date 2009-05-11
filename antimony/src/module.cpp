@@ -798,6 +798,9 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
       speciesnames.push_back(name);
     }
   }
+  if (compartmentnames.size() > 0 || speciesnames.size() > 0) {
+    retval += "\n" + indent + "// Compartments and Species:\n";
+  }
   retval += ListIn80Cols("compartment", compartmentnames, indent);
   retval += ListIn80Cols("species", speciesnames, indent);
 
@@ -883,12 +886,12 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
   //Then species:
   vector<var_type> types;
   types.push_back(varSpeciesUndef);
-  retval += OutputOnly(types, "Species", indent, cc);
+  retval += OutputOnly(types, "Species initializations", indent, cc);
   
   //Compartments:
   types.clear();
   types.push_back(varCompartment);
-  retval += OutputOnly(types, "Compartments", indent, cc);
+  retval += OutputOnly(types, "Compartments initializations", indent, cc);
 
   //And finally, other random formulas.
   types.clear();
@@ -896,7 +899,7 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
   types.push_back(varFormulaOperator);
   types.push_back(varUndefined);
   types.push_back(varDNA);
-  retval += OutputOnly(types, "Other defined symbols", indent, cc);
+  retval += OutputOnly(types, "Other defined symbols initializations", indent, cc);
 
   //Variables
   vector<string> varnames;

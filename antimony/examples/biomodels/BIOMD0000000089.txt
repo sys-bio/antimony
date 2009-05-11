@@ -1,0 +1,153 @@
+function function_1(V, substrate, Km)
+  V * substrate / (Km + substrate);
+end
+
+model Locke2006_CircClock_LL()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species cLm in compartment_, cLc in compartment_, cLn in compartment_, cTm in compartment_;
+  species cTc in compartment_, cTn in compartment_, cXm in compartment_, cXc in compartment_;
+  species cXn in compartment_, cYm in compartment_, cYc in compartment_, cYn in compartment_;
+  species cPn in compartment_, cAm in compartment_, cAc in compartment_, cAn in compartment_;
+
+  // Reactions:
+  reaction_1:  -> cLm; compartment_ * pow(g0, alpha) / (pow(g0, alpha) + pow(cAn, alpha)) * (light * (q1 * cPn + n0) + n1 * pow(cXn, a) / (pow(g1, a) + pow(cXn, a)));
+  reaction_0: cLm -> ; compartment_ * function_1(m1, cLm, k1);
+  reaction_2:  -> cLc; compartment_ * p1 * cLm;
+  reaction_3: cLc -> cLn; compartment_ * (r1 * cLc - r2 * cLn);
+  reaction_4: cLc -> ; compartment_ * function_1(m2, cLc, k2);
+  reaction_5: cLn -> ; compartment_ * function_1(m3, cLn, k3);
+  reaction_6:  -> cTm; compartment_ * n2 * pow(cYn, b) / (pow(g2, b) + pow(cYn, b)) * (pow(g3, c) / (pow(g3, c) + pow(cLn, c)));
+  reaction_7: cTm -> ; compartment_ * function_1(m4, cTm, k4);
+  reaction_9: cYc -> cYn; compartment_ * (r7 * cYc - r8 * cYn);
+  reaction_10: cYn -> ; compartment_ * function_1(m14, cYn, k12);
+  reaction_11:  -> cYc; compartment_ * p4 * cYm;
+  reaction_12: cYc -> ; compartment_ * function_1(m13, cYc, k11);
+  reaction_13: cXc -> cXn; compartment_ * (r5 * cXc - r6 * cXn);
+  reaction_14: cXc -> ; compartment_ * function_1(m10, cXc, k8);
+  reaction_15:  -> cXc; compartment_ * p3 * cXm;
+  reaction_16: cXn -> ; compartment_ * function_1(m11, cXn, k9);
+  reaction_17:  -> cAc; compartment_ * p6 * cAm;
+  reaction_18: cAc -> cAn; compartment_ * (r9 * cAc - r10 * cAn);
+  reaction_19: cAc -> ; compartment_ * function_1(m17, cAc, k15);
+  reaction_20: cAn -> ; compartment_ * function_1(m18, cAn, k16);
+  reaction_21:  -> cPn; (1 - light) * p5 * compartment_;
+  reaction_22: cPn -> ; q3 * light * cPn * compartment_;
+  reaction_23: cPn -> ; compartment_ * m15 * cPn / (k13 + cPn);
+  reaction_25:  -> cAm; light * q4 * cPn * compartment_;
+  reaction_26:  -> cAm; compartment_ * n6 * pow(cLn, g) / (pow(g7, g) + pow(cLn, g));
+  reaction_27: cAm -> ; compartment_ * m16 * cAm / (k14 + cAm);
+  reaction_28:  -> cXm; compartment_ * n3 * pow(cTn, d) / (pow(g4, d) + pow(cTn, d));
+  reaction_29: cXm -> ; compartment_ * m9 * cXm / (k7 + cXm);
+  reaction_30:  -> cTc; p2 * compartment_ * cTm;
+  reaction_31: cTc -> cTn; compartment_ * (-r4 * cTn + r3 * cTc);
+  reaction_32: cTc -> ; compartment_ * (1 - light) * m5 * cTc / (k5 + cTc);
+  reaction_33: cTc -> ; m6 * compartment_ * cTc / (k5 + cTc);
+  reaction_34: cTn -> ; compartment_ * (1 - light) * m7 * cTn / (k6 + cTn);
+  reaction_38: cTn -> ; m8 * compartment_ * cTn / (k6 + cTn);
+  reaction_39:  -> cYm; compartment_ * (light * q2 * cPn + (light * n4 + n5) * pow(g5, e) / (pow(g5, e) + pow(cTn, e))) * (pow(g6, f) / (pow(g6, f) + pow(cLn, f)));
+  reaction_40: cYm -> ; compartment_ * m12 * cYm / (k10 + cYm);
+
+  // Species initializations:
+  cLm = 0.4625;
+  cLc = 0.0132;
+  cLn = 0.0699;
+  cTm = 0.4303;
+  cTc = 10.2965;
+  cTn = 0.5402;
+  cXm = 0.0957;
+  cXc = 1.5413;
+  cXn = 0.4585;
+  cYm = 0.0303;
+  cYc = 0.0041;
+  cYn = 0.0122;
+  cPn = 0.8476;
+  cAm = 14.6921;
+  cAc = 0.7027;
+  cAn = 0.8648;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  q1 = 4.1954;
+  n0 = 0.05;
+  g0 = 1;
+  alpha = 4;
+  n1 = 7.8142;
+  a = 1.2479;
+  g1 = 3.1383;
+  m1 = 1.999;
+  k1 = 2.392;
+  p1 = 0.8295;
+  r1 = 16.8363;
+  r2 = 0.1687;
+  m2 = 20.44;
+  k2 = 1.5644;
+  m3 = 3.6888;
+  k3 = 1.2765;
+  n2 = 3.0087;
+  b = 1.0258;
+  g2 = 0.0368;
+  g3 = 0.2658;
+  c = 1.0258;
+  m4 = 3.8231;
+  k4 = 2.5734;
+  p2 = 4.324;
+  r3 = 0.3166;
+  r4 = 2.1509;
+  m5 = 0.0013;
+  m6 = 3.1741;
+  k5 = 2.7454;
+  m7 = 0.0492;
+  m8 = 4.0424;
+  k6 = 0.4033;
+  n3 = 0.2431;
+  d = 1.4422;
+  g4 = 0.5388;
+  m9 = 10.1132;
+  k7 = 6.5585;
+  p3 = 2.147;
+  r5 = 1.0352;
+  r6 = 3.3017;
+  m10 = 0.2179;
+  k8 = 0.6632;
+  m11 = 3.3442;
+  k9 = 17.1111;
+  q2 = 2.4017;
+  n4 = 0.0857;
+  n5 = 0.1649;
+  g5 = 1.178;
+  g6 = 0.0645;
+  e = 3.6064;
+  f = 1.0237;
+  m12 = 4.297;
+  k10 = 1.7303;
+  p4 = 0.2485;
+  r7 = 2.2123;
+  r8 = 0.2002;
+  m13 = 0.1347;
+  k11 = 1.8258;
+  m14 = 0.6114;
+  k12 = 1.8066;
+  p5 = 0.5;
+  k13 = 1.2;
+  m15 = 1.2;
+  q3 = 1;
+  q4 = 2.4514;
+  g = 1.0258;
+  n6 = 8.0706;
+  g7 = 0.0004;
+  m16 = 12.2398;
+  k14 = 10.3617;
+  p6 = 0.2907;
+  r9 = 0.2528;
+  r10 = 0.2212;
+  m17 = 4.4505;
+  k15 = 0.0703;
+  m18 = 0.0156;
+  k16 = 0.6104;
+  light = 1;
+
+end

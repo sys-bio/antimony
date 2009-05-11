@@ -1,0 +1,151 @@
+model Kim2007_Wnt_ERK_Crosstalk()
+
+  // Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species X1 in cytoplasm, X2 in cytoplasm, X3 in cytoplasm, X4 in cytoplasm;
+  species X5 in cytoplasm, X6 in cytoplasm, X7 in cytoplasm, X8 in cytoplasm;
+  species X9 in cytoplasm, X10 in cytoplasm, X11 in nucleus, X12 in cytoplasm;
+  species X13 in nucleus, X14 in nucleus, X15 in cytoplasm, X16 in cytoplasm;
+  species X17 in cytoplasm, X18 in cytoplasm, X19 in cytoplasm, X20 in cytoplasm;
+  species X21 in cytoplasm, X22 in cytoplasm, X23 in cytoplasm, X24 in cytoplasm;
+  species X25 in cytoplasm, X26 in cytoplasm, X27 in cytoplasm, X28 in cytoplasm;
+
+  // Assignment Rules:
+  X13X14 := X13 + X14
+
+  // Reactions:
+  R1: X1 -> X2; cytoplasm * k1 * X1 * W;
+  R2: X2 -> X1; cytoplasm * k2 * X2;
+  R3: X4 -> X6 + X5; cytoplasm * k3 * X2 * X4;
+  R4: X4 -> X3; cytoplasm * k4 * X4;
+  R5: X3 -> X4; cytoplasm * k5 * X3;
+  R6: X6 + X5 -> X4; cytoplasm * (k_plus6 * X5 * X6 - k_minus6 * X4);
+  R7: X12 + X7 -> X6; cytoplasm * (k_plus7 * X7 * X12 - k_minus7 * X6);
+  R8: X11 + X3 -> X8; cytoplasm * (k_plus8 * X3 * X11 - k_minus8 * X8);
+  R9: X8 -> X9; cytoplasm * k9 * X8;
+  R10: X9 -> X3 + X10; cytoplasm * k10 * X9;
+  R11: X10 -> ; cytoplasm * k11 * X10;
+  R12:  -> X11; cytoplasm * V12;
+  R13: X11 -> ; nucleus * k13 * X11;
+  R14:  -> X12; nucleus * (k14 + k21 * (X11 + X14));
+  R15: X12 -> ; cytoplasm * k15 * X12;
+  R16: X13 + X11 -> X14; nucleus * (k_plus16 * X11 * X13 - k_minus16 * X14);
+  R17: X11 + X7 -> X15; cytoplasm * (k_plus17 * X7 * X11 - k_minus17 * X15);
+  R18: X16 -> X17; cytoplasm * (Vmax1 * X16 * W / (Km1 + X16)) * (Ki / (Ki + X23));
+  R19: X17 -> X16; cytoplasm * (Vmax2 * X17 / (Km2 + X17));
+  R20: X18 -> X19; cytoplasm * (kcat1 * X17 * X18 / (Km3 + X18));
+  R21: X19 -> X18; cytoplasm * Vmax3 * X19 / (Km4 + X19);
+  R22: X20 -> X21; cytoplasm * kcat2 * X19 * X20 / (Km5 + X20);
+  R23: X21 -> X20; cytoplasm * Vmax4 * X21 / (Km6 + X21);
+  R24: X22 -> X23; cytoplasm * kcat3 * X21 * X22 / (Km7 + X22);
+  R25: X23 -> X22; cytoplasm * Vmax5 * X23 / (Km8 + X23);
+  R26: X24 -> X18 + X26; cytoplasm * kcat4 * X23 * X24 / (Km9 + X24);
+  R27: X18 + X25 -> X24; cytoplasm * (k18 * X18 * X25 - k19 * X24);
+  R28: X26 -> X25; cytoplasm * Vmax6 * X26 / (Km10 + X26);
+  R29:  -> X27; cytoplasm * (kcat5 * pow(X14, n1) / (pow(Km11, n1) + pow(X14, n1)));
+  R30: X27 -> ; cytoplasm * k20 * X27;
+  R31: X18 -> X19; cytoplasm * (kcat6 * X27 * X18 / (Km12 + X18));
+  R32: X5 -> X28; cytoplasm * kcat7 * X23 * X5 / (Km13 + X5);
+  R33: X28 -> X5; cytoplasm * Vmax7 * X28 / (Km14 + X28);
+
+  // Events:
+  event_0000001: @and(geq(time, 500), leq(time, 1000)): W = 1;
+  event_0000002: @gt(time, 1000): W = 0;
+
+  // Species initializations:
+  X1 = 100;
+  X2 = 0;
+  X3 = 0.0153;
+  X4 = 0.0076;
+  X5 = 49.1372;
+  X6 = 0.0015;
+  X7 = 96.6019;
+  X8 = 0.002;
+  X9 = 0.002;
+  X10 = 0.9881;
+  X11 = 42.7224;
+  X12 = 0.0008;
+  X13 = 6.1879;
+  X14 = 8.8121;
+  X15 = 3.4392;
+  X16 = 200;
+  X17 = 0;
+  X18 = 112.5585;
+  X19 = 6.486;
+  X20 = 296.1137;
+  X21 = 3.8863;
+  X22 = 297.8897;
+  X23 = 2.1103;
+  X24 = 180.9595;
+  X25 = 418.1788;
+  X26 = 0.8619;
+  X27 = 10.263;
+  X28 = 0.85544;
+
+  // Compartments initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  // Other defined symbols initializations:
+  W = 0;
+  k1 = 0.182;
+  k2 = 0.0182;
+  k3 = 0.05;
+  k4 = 0.267;
+  k5 = 0.133;
+  k_plus6 = 0.0909;
+  k_minus6 = 0.909;
+  k_plus7 = 1;
+  k_minus7 = 50;
+  k_plus8 = 1;
+  k_minus8 = 120;
+  k9 = 206;
+  k10 = 206;
+  k11 = 0.417;
+  V12 = 0.423;
+  k13 = 0.000257;
+  k14 = 8.22e-05;
+  k21 = 1e-06;
+  k15 = 0.167;
+  k_plus16 = 1;
+  k_minus16 = 30;
+  k_plus17 = 1;
+  k_minus17 = 1200;
+  Vmax1 = 150;
+  Km1 = 10;
+  Ki = 9;
+  Vmax2 = 15;
+  Km2 = 8;
+  kcat1 = 1.5;
+  Km3 = 15;
+  Vmax3 = 45;
+  Km4 = 15;
+  kcat2 = 1.5;
+  Km5 = 15;
+  Vmax4 = 45;
+  Km6 = 15;
+  kcat3 = 1.5;
+  Km7 = 15;
+  Vmax5 = 45;
+  Km8 = 15;
+  kcat4 = 1.5;
+  Km9 = 9;
+  k18 = 0.15;
+  k19 = 39;
+  Vmax6 = 45;
+  Km10 = 12;
+  kcat5 = 0.6;
+  n1 = 2;
+  Km11 = 15;
+  k20 = 0.015;
+  kcat6 = 1.5;
+  Km12 = 15;
+  kcat7 = 1.5;
+  Km13 = 15;
+  Vmax7 = 45;
+  Km14 = 15;
+  flag_for_wnt_signal = 0;
+  X13X14 = 0;
+
+  var W, X13X14;
+end

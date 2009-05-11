@@ -1,0 +1,66 @@
+model Yildirim2003_Lac_operon()
+
+  // Compartments and Species:
+  compartment cell;
+  species M in cell, B in cell, A in cell, L in cell, P in cell, I1 in cell;
+  species I2 in cell, I3 in cell, L_e in cell;
+
+  // Reactions:
+  r_m1:  -> M; cell * gamma_0;
+  r_m2: M -> ; cell * M * (gamma_M + mu);
+  r_m3_i1: I1 -> M; cell * I1 / tau_M;
+  r_i1:  -> I1; cell * alpha_M * ((K_1 * exp(mu * tau_M * -2) * pow(A, 2) + 1) / (K + K_1 * exp(-2 * mu * tau_M) * pow(A, 2)));
+  r_b1: B -> ; cell * B * (gamma_B + mu);
+  r_b2_i2: I2 -> B; cell * I2 / tau_B;
+  r_i2:  -> I2; cell * alpha_B * M * exp(-(mu * tau_B));
+  r_a1: A -> ; cell * A * (gamma_A + mu);
+  r_a2: A -> ; cell * beta_A * B * (A / (K_A + A));
+  r_a3_l1: L -> A; cell * alpha_A * B * (L / (K_L + L));
+  r_l2: L -> ; cell * L * (gamma_L + mu);
+  r_l3: L -> ; cell * beta_L1 * P * (L / (K_L1 + L));
+  r_l4:  -> L; cell * alpha_L * P * (L_e / (K_Le + L_e));
+  r_p1: P -> ; cell * P * (gamma_P + mu);
+  r_p2_i3: I3 -> P; cell * I3 / (tau_B + tau_P);
+  r_i3:  -> I3; cell * alpha_P * M * exp(-1 * mu * (tau_B + tau_P));
+
+  // Species initializations:
+  M = 0.000626;
+  B = 0;
+  A = 0.038;
+  L = 0.372;
+  P = 0.0149;
+  I1 = 0;
+  I2 = 0;
+  I3 = 0;
+  L_e = 0.08;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  mu = 0.0226;
+  gamma_M = 0.411;
+  gamma_B = 0.000833;
+  gamma_A = 0.52;
+  gamma_0 = 7.25e-07;
+  K = 7200;
+  alpha_M = 0.000997;
+  tau_B = 2;
+  alpha_A = 17600;
+  K_L1 = 1.81;
+  alpha_B = 0.0166;
+  K_A = 1.95;
+  beta_A = 21500;
+  tau_M = 0.1;
+  K_L = 0.97;
+  gamma_L = 0;
+  gamma_P = 0.65;
+  alpha_L = 2880;
+  alpha_P = 10;
+  tau_P = 0.83;
+  beta_L1 = 2650;
+  K_Le = 0.26;
+  K_1 = 25200;
+
+  const L_e in cell;
+end

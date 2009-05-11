@@ -1,0 +1,39 @@
+model Model_1()
+
+  // Compartments and Species:
+  compartment cell;
+  species L in cell, R in cell, G in cell, Gbg in cell, Gd in cell, Ga in cell;
+  species RL in cell;
+
+  // Reactions:
+  reaction_0: L + R -> RL; cell * (reaction_0_k1 * L * R - reaction_0_k2 * RL);
+  reaction_1:  -> R; cell * reaction_1_v;
+  reaction_2: R -> ; cell * reaction_2_k1 * R;
+  reaction_3: Gd + Gbg -> G; cell * reaction_3_k1 * Gd * Gbg;
+  reaction_4: G -> Ga + Gbg; cell * reaction_4_k1 * RL * G;
+  reaction_5: RL -> ; cell * reaction_5_k1 * RL;
+  reaction_6: Ga -> Gd; cell * reaction_6_k1 * Ga;
+
+  // Species initializations:
+  L = 6.02e+17;
+  R = 10000;
+  G = 7000;
+  Gbg = 3000;
+  Gd = 3000;
+  Ga = 0;
+  RL = 0;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  reaction_0_k1 = 3.32e-18;
+  reaction_0_k2 = 0.01;
+  reaction_1_v = 4;
+  reaction_2_k1 = 0.0004;
+  reaction_3_k1 = 1;
+  reaction_4_k1 = 1e-05;
+  reaction_5_k1 = 0.004;
+  reaction_6_k1 = 0.11;
+
+end

@@ -1,0 +1,38 @@
+model Keizer1996_Ryanodine_receptor_adaptation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Pc1 in compartment_, Po2 in compartment_, Po1 in compartment_, Pc2 in compartment_;
+
+  // Assignment Rules:
+  Open_probability := Po1 + Po2
+
+  // Reactions:
+  Closed_state_1: Po1 -> Pc1; Closed_state_1_ka_minus * Po1 - Closed_state_1_ka_plus * pow(Closed_state_1_Ca, Closed_state_1_n) * Pc1;
+  Open_state_2: Po1 -> Po2; Open_state_2_kb_plus * pow(Open_state_2_Ca, Open_state_2_m) * Po1 - Open_state_2_kb_minus * Po2;
+  Closed_State_2: Po1 -> Pc2; Closed_State_2_kc_plus * Po1 - Closed_State_2_kc_minus * Pc2;
+
+  // Species initializations:
+  Pc1 = 0.963;
+  Po2 = 0;
+  Po1 = 0;
+  Pc2 = 0.037;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  Open_probability = 0;
+  Closed_state_1_ka_minus = 28.8;
+  Closed_state_1_ka_plus = 1500;
+  Closed_state_1_Ca = 0.9;
+  Closed_state_1_n = 4;
+  Open_state_2_kb_plus = 1500;
+  Open_state_2_Ca = 0.9;
+  Open_state_2_m = 3;
+  Open_state_2_kb_minus = 385.9;
+  Closed_State_2_kc_plus = 1.75;
+  Closed_State_2_kc_minus = 0.1;
+
+  var Open_probability;
+end

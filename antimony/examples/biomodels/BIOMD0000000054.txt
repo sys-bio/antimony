@@ -1,0 +1,39 @@
+model Ataullahkhanov1996_Adenylate()
+
+  // Compartments and Species:
+  compartment cell;
+  species I in cell, E in cell, A in cell;
+
+  // Assignment Rules:
+  T := (A + 3 * E - pow(6 * A * E - 3 * pow(E, 2) + pow(A, 2), 0.5)) / 6
+  M := (7 * A - 3 * E - pow(6 * A * E - 3 * pow(E, 2) + pow(A, 2), 0.5)) / 6
+
+  // Reactions:
+  U1:  -> I; cell * P * J;
+  U2: 3I + E -> ; cell * W2 * I * T;
+  U3:  -> E; cell * W3 * pow(T, 0.52) * pow(M, 0.41);
+  U6_plus_3U7: E -> ; cell * 2 * U;
+  U6_plus_U7_minus_U8:  -> A; cell * U * (1 - W * pow(T, n) * pow(M, k));
+
+  // Species initializations:
+  I = 10;
+  E = 2.1;
+  A = 1.11;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  T = 1;
+  M = 0.01;
+  P = 0.121;
+  J = 100;
+  W2 = 0.2;
+  W3 = 13.48;
+  U = 0.02;
+  W = 0.01;
+  n = 1.2;
+  k = -1;
+
+  var T, M;
+end

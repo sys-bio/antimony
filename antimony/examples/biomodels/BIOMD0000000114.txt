@@ -1,0 +1,36 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment cytoplasm, ER, extracellular;
+  species x in ER, y in cytoplasm;
+
+  // Assignment Rules:
+  fy := pow(y, n) / (pow(a, n) + pow(y, n))
+
+  // Reactions:
+  reaction_0000001:  -> y; gamma * cytoplasm;
+  reaction_0000002: x -> y; k * x * cytoplasm - k1 * y * ER;
+  reaction_0000003: y -> ; beta * y * extracellular;
+  reaction_0000004: x -> y; alpha * fy * x * cytoplasm;
+
+  // Species initializations:
+  x = 1;
+  y = 1;
+
+  // Compartments initializations:
+  cytoplasm = 1;
+  ER = 1;
+  extracellular = 1;
+
+  // Other defined symbols initializations:
+  k = 0.01;
+  alpha = 5;
+  n = 4;
+  a = 3;
+  k1 = 2;
+  beta = 1;
+  fy = 0;
+  gamma = 1;
+
+  var fy;
+end

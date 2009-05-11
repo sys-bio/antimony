@@ -1,0 +1,41 @@
+model Lavrentovich2008_Ca_Oscillations()
+
+  // Compartments and Species:
+  compartment compartment_, ER;
+  species X in compartment_, Y in ER, Z in compartment_;
+
+  // Reactions:
+  R1:  -> X; compartment_ * vin;
+  R2: X -> ; compartment_ * kout * X;
+  R3: Y -> X; ER * 4 * vM3 * pow(k_CaA, n) * (pow(X, n) / ((pow(X, n) + pow(k_CaA, n)) * (pow(X, n) + pow(k_CaI, n)))) * (pow(Z, m) / (pow(Z, m) + pow(kip3, m))) * (Y - X);
+  R4: X -> Y; compartment_ * vM2 * pow(X, 2) / (pow(X, 2) + pow(k2, 2));
+  R5: Y -> X; ER * kf * (Y - X);
+  R6:  -> Z; compartment_ * vp * pow(X, 2) / (pow(X, 2) + pow(kp, 2));
+  R7: Z -> ; compartment_ * kdeg * Z;
+
+  // Species initializations:
+  X = 0.1;
+  Y = 1.5;
+  Z = 0.1;
+
+  // Compartments initializations:
+  compartment_ = 1;
+  ER = 1;
+
+  // Other defined symbols initializations:
+  vin = 0.05;
+  kout = 0.5;
+  vM3 = 40;
+  k_CaA = 0.15;
+  n = 2.02;
+  k_CaI = 0.15;
+  m = 2.2;
+  kip3 = 0.1;
+  vM2 = 15;
+  k2 = 0.1;
+  kf = 0.5;
+  vp = 0.05;
+  kp = 0.3;
+  kdeg = 0.08;
+
+end

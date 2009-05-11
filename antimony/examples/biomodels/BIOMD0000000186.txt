@@ -1,0 +1,60 @@
+model MSAC_dissociation_controlled()
+
+  // Compartments and Species:
+  compartment Cytoplasm;
+  species Mad1_CMad2 in Cytoplasm, OMad2 in Cytoplasm, Mad1_CMad2_OMad2 in Cytoplasm;
+  species Cdc20 in Cytoplasm, Cdc20_CMad2 in Cytoplasm, Bub3_BubR1 in Cytoplasm;
+  species MCC in Cytoplasm, Bub3_BubR1_Cdc20 in Cytoplasm, APC in Cytoplasm;
+  species MCC_APC in Cytoplasm, APC_Cdc20 in Cytoplasm;
+
+  // Reactions:
+  R1: Mad1_CMad2 + OMad2 -> Mad1_CMad2_OMad2; Cytoplasm * (u * k1f * Mad1_CMad2 * OMad2 - k1r * Mad1_CMad2_OMad2);
+  R2: Mad1_CMad2_OMad2 + Cdc20 -> Mad1_CMad2 + Cdc20_CMad2; u * k2f * Mad1_CMad2_OMad2 * Cytoplasm * Cdc20;
+  R3: Cdc20_CMad2 -> Cdc20 + OMad2; k3f * Cdc20_CMad2 * Cytoplasm;
+  R4: Cdc20_CMad2 + Bub3_BubR1 -> MCC; Cytoplasm * (u * k4f * Cdc20_CMad2 * Bub3_BubR1 - k4r * MCC);
+  R5: Bub3_BubR1 + Cdc20 -> Bub3_BubR1_Cdc20; Cytoplasm * (u * k5f * Bub3_BubR1 * Cdc20 - k5r * Bub3_BubR1_Cdc20);
+  R6: OMad2 + Cdc20 -> Cdc20_CMad2; kf6 * OMad2 * Cdc20 * Cytoplasm;
+  R7: MCC + APC -> MCC_APC; u * k7f * MCC * APC * Cytoplasm;
+  R7a: MCC_APC -> MCC + APC; u_prime * k7r * MCC_APC * Cytoplasm;
+  R8: APC + Cdc20 -> APC_Cdc20; Cytoplasm * (k8f * APC * Cdc20 - k8r * APC_Cdc20);
+
+  // Events:
+  mt_attachment: @gt(time, 2000): u_prime = const_val_1: u = const_val_0;
+
+  // Species initializations:
+  Mad1_CMad2 = 5e-08;
+  OMad2 = 1.3e-07;
+  Mad1_CMad2_OMad2 = 0;
+  Cdc20 = 2.2e-07;
+  Cdc20_CMad2 = 0;
+  Bub3_BubR1 = 1.27e-07;
+  MCC = 0;
+  Bub3_BubR1_Cdc20 = 0;
+  APC = 9e-08;
+  MCC_APC = 0;
+  APC_Cdc20 = 0;
+
+  // Compartments initializations:
+  Cytoplasm = 1;
+
+  // Other defined symbols initializations:
+  u = 1;
+  const_val_0 = 0;
+  u_prime = 0;
+  const_val_1 = 1;
+  k1f = 200000;
+  k1r = 0.2;
+  k2f = 100000000;
+  k3f = 0.01;
+  k4f = 10000000;
+  k4r = 0.02;
+  k5f = 10000;
+  k5r = 0.2;
+  kf6 = 1000;
+  k7f = 100000000;
+  k7r = 0.08;
+  k8f = 5000000;
+  k8r = 0.08;
+
+  var u, u_prime;
+end

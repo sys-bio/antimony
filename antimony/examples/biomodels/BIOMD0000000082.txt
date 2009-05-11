@@ -1,0 +1,43 @@
+model Model_1()
+
+  // Compartments and Species:
+  compartment cell;
+  species agonist in cell, DR in cell, DRG_GDP in cell, DRG in cell, GDP in cell;
+  species DRG_GTP in cell, GTP in cell, Recptor in cell, G_GDP in cell, G_GTP in cell;
+
+  // Reactions:
+  Forming: agonist + Recptor -> DR; cell * (Forming_k1 * agonist * Recptor - Forming_k7 * DR);
+  reaction_1: DR + G_GDP -> DRG_GDP; cell * (reaction_1_k2 * DR * G_GDP - reaction_1_k8 * DRG_GDP);
+  reaction_2: DRG_GDP -> GDP + DRG; cell * (reaction_2_k3 * DRG_GDP - reaction_2_k9 * DRG * GDP);
+  reaction_3: DRG + GTP -> DRG_GTP; cell * (reaction_3_k4 * DRG * GTP - reaction_3_k10 * DRG_GTP);
+  reaction_4: DRG_GTP -> G_GTP + DR; cell * reaction_4_k5 * DRG_GTP;
+  reaction_5: G_GTP -> G_GDP; cell * reaction_5_k6 * G_GTP;
+
+  // Species initializations:
+  agonist = 1e-08;
+  DR = 0;
+  DRG_GDP = 0;
+  DRG = 0;
+  GDP = 0;
+  DRG_GTP = 0;
+  GTP = 1e-05;
+  Recptor = 1e-09;
+  G_GDP = 1e-09;
+  G_GTP = 0;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  Forming_k1 = 5000000;
+  Forming_k7 = 0.5;
+  reaction_1_k2 = 100000000;
+  reaction_1_k8 = 0.1;
+  reaction_2_k3 = 0.1;
+  reaction_2_k9 = 100000;
+  reaction_3_k4 = 10000000;
+  reaction_3_k10 = 0.1;
+  reaction_4_k5 = 0.05;
+  reaction_5_k6 = 0.1;
+
+end

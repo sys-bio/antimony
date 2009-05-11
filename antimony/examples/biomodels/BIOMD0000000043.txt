@@ -1,0 +1,44 @@
+model Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition()
+
+  // Compartments and Species:
+  compartment extracellular, cytosol, intravesicular;
+  species EC in extracellular, Z in cytosol, Rho in cytosol, Y in intravesicular;
+  species Fraction_Inactive_Channels in cytosol;
+
+  // Reactions:
+  vin: EC -> Z; cytosol * (vin_v0 + vin_v1 * beta);
+  v2: Z -> Y; intravesicular * (v2_Vm2 * pow(Z, 2) / (pow(v2_K2, 2) + pow(Z, 2)));
+  v3: Y -> Z; cytosol * (beta * (Rho * (a / d) * pow(Z, 4) / (1 + a / d * pow(Z, 4))) * v3_Vm3 * pow(Y, 2) / (pow(v3_Ky, 2) + pow(Y, 2)));
+  v4: Y -> Z; cytosol * v4_Kf * Y;
+  v5: Z -> EC; extracellular * v5_K * Z;
+  v6: Rho -> Fraction_Inactive_Channels; cytosol * v6_Kd * pow(Z, 4) * Rho;
+  v7: Fraction_Inactive_Channels -> Rho; cytosol * v7_Kr * (1 - Rho);
+
+  // Species initializations:
+  EC = 0;
+  Z = 0;
+  Rho = 0;
+  Y = 0.36;
+  Fraction_Inactive_Channels = 0;
+
+  // Compartments initializations:
+  extracellular = 1;
+  cytosol = 1;
+  intravesicular = 1;
+
+  // Other defined symbols initializations:
+  a = 40000;
+  d = 100;
+  beta = 1;
+  vin_v0 = 1;
+  vin_v1 = 1;
+  v2_Vm2 = 6.5;
+  v2_K2 = 0.1;
+  v3_Vm3 = 50;
+  v3_Ky = 0.2;
+  v4_Kf = 1;
+  v5_K = 10;
+  v6_Kd = 5000;
+  v7_Kr = 5;
+
+end

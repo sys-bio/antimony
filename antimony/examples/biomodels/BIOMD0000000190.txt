@@ -1,0 +1,110 @@
+model Model_1()
+
+  // Compartments and Species:
+  compartment cytosol;
+  species SAM in cytosol, A in cytosol, P in cytosol, S in cytosol, D in cytosol;
+  species aS in cytosol, aD in cytosol, Met in cytosol, ORN in cytosol, AcCoA in cytosol;
+  species CoA in cytosol;
+
+  // Assignment Rules:
+  Kaccoa := R
+  Kcoa := 3 * R
+
+  // Rate Rules:
+  Vmaxodc' = Ksodc / (1 + Keq * (D + S)) - Kdodc * Antz * Vmaxodc
+  Vmaxssat' = Ksssat * (1 - 1 / (1 + Keq * (D + S))) - Kdssat * (1 / (1 + Keq * (D + S))) * Vmaxssat
+  Vmaxsamdc' = Kssamdc * (1 / (1 + Keq * (D + S))) - Kdsamdc * Vmaxsamdc
+  Antz' = Ksantz * (1 - 1 / (1 + Keq * 0.01 * (D + S))) - Kdantz * Antz
+
+  // Reactions:
+  ODC: ORN -> P; cytosol * (Vmaxodc * ORN / (ODC_Kmodc * (1 + P / ODC_Kipodc) + ORN));
+  SAMdc: SAM -> A; cytosol * (Vmaxsamdc / (1 + S / SAMdc_Kissamdc) * SAM / (SAMdc_Kmsamdc * (1 + SAMdc_Kapsamdc / P + A / SAMdc_Kiasamdc) + SAM));
+  SSAT_for_S: S + AcCoA -> aS + CoA; cytosol * (1 / C * Vmaxssat * S * AcCoA / (SSAT_for_S_Kmsssat * (1 + D / SSAT_for_S_Kmdssat) * SSAT_for_S_Kmaccoassat * (1 + CoA / SSAT_for_S_Kmcoassat) + SSAT_for_S_Kmaccoassat * (1 + CoA / SSAT_for_S_Kmcoassat) * S + SSAT_for_S_Kmsssat * (1 + D / SSAT_for_S_Kmdssat) * AcCoA + S * AcCoA));
+  SSAT_for_D: D + AcCoA -> aD + CoA; cytosol * (Vmaxssat * D * AcCoA / (SSAT_for_D_Kmdssat * (1 + S / SSAT_for_D_Kmsssat) * SSAT_for_D_Kmaccoassat * (1 + CoA / SSAT_for_D_Kmcoassat) + SSAT_for_D_Kmaccoassat * (1 + CoA / SSAT_for_D_Kmcoassat) * D + SSAT_for_D_Kmdssat * (1 + S / SSAT_for_D_Kmsssat) * AcCoA + D * AcCoA));
+  PAO_for_aD: aD -> P; cytosol * (PAO_for_aD_Vmpao * aD / (PAO_for_aD_Kmadpao * (1 + aD / PAO_for_aD_Kmadpao + aS / PAO_for_aD_Kmaspao + D / PAO_for_aD_Kmdpao + S / PAO_for_aD_Kmspao)));
+  PAO_for_aS: aS -> D; cytosol * (PAO_for_aS_Vmpao * aS / (PAO_for_aS_Kmaspao * (1 + aD / PAO_for_aS_Kmadpao + aS / PAO_for_aS_Kmaspao + D / PAO_for_aS_Kmdpao + S / PAO_for_aS_Kmspao)));
+  SpdS: A + P -> D; cytosol * (SpdS_Vmspds * A * P / (SpdS_Kiaspds * SpdS_Kpspds * (1 + D / SpdS_Kidspds) + SpdS_Kpspds * A + SpdS_KaSpds * (1 + D / SpdS_Kidspds) * P + A * P));
+  SpmS: A + D -> S; cytosol * (SpmS_Vmspms * A * D / (SpmS_Kiaspms * SpmS_Kdspms * (1 + S / SpmS_Kisspms) + SpmS_Kdspms * A + SpmS_Kaspms * (1 + S / SpmS_Kisspms) * D + A * D));
+  MAT: Met -> SAM; cytosol * (MAT_Vmmat / (1 + MAT_Kmmat / Met * (1 + SAM / MAT_Kimetmat)));
+  VCoA: AcCoA -> CoA; cytosol * Kcoa * AcCoA;
+  VacCoA: CoA -> AcCoA; cytosol * Kaccoa * CoA;
+  P_efflux: P -> ; cytosol * P_efflux_Kpefflux * P;
+  aD_efflux: aD -> ; cytosol * aD_efflux_Kadefflux * aD;
+
+  // Species initializations:
+  SAM = 0.01;
+  A = 0.01;
+  P = 0.01;
+  S = 0.01;
+  D = 0.01;
+  aS = 0.01;
+  aD = 0.01;
+  Met = 50;
+  ORN = 300;
+  AcCoA = 39.5;
+  CoA = 160;
+
+  // Compartments initializations:
+  cytosol = 1;
+
+  // Other defined symbols initializations:
+  Vmaxodc = 1.27905671844446;
+  Vmaxssat = 0.677298510125025;
+  Vmaxsamdc = 0.367465856805639;
+  Antz = 0.574589492832405;
+  Keq = 1;
+  Kdodc = 0.05;
+  Ksodc = 5;
+  Kdssat = 0.2;
+  Ksssat = 0.001;
+  Kdsamdc = 0.02;
+  Kssamdc = 1;
+  Kdantz = 0.02;
+  Ksantz = 0.02;
+  R = 0.004;
+  C = 4.44;
+  Kaccoa = 0.004;
+  Kcoa = 0.012;
+  ODC_Kipodc = 1300;
+  ODC_Kmodc = 60;
+  SAMdc_Kapsamdc = 0.5;
+  SAMdc_Kiasamdc = 2.5;
+  SAMdc_Kissamdc = 500;
+  SAMdc_Kmsamdc = 50;
+  SSAT_for_S_Kmaccoassat = 1.5;
+  SSAT_for_S_Kmcoassat = 40;
+  SSAT_for_S_Kmdssat = 130;
+  SSAT_for_S_Kmsssat = 35;
+  SSAT_for_D_Kmaccoassat = 1.5;
+  SSAT_for_D_Kmcoassat = 40;
+  SSAT_for_D_Kmdssat = 130;
+  SSAT_for_D_Kmsssat = 35;
+  PAO_for_aD_Kmadpao = 14;
+  PAO_for_aD_Kmaspao = 0.6;
+  PAO_for_aD_Kmdpao = 50;
+  PAO_for_aD_Kmspao = 15;
+  PAO_for_aD_Vmpao = 10.35;
+  PAO_for_aS_Kmadpao = 14;
+  PAO_for_aS_Kmaspao = 0.6;
+  PAO_for_aS_Kmdpao = 50;
+  PAO_for_aS_Kmspao = 15;
+  PAO_for_aS_Vmpao = 10.35;
+  SpdS_KaSpds = 0.3;
+  SpdS_Kiaspds = 0.8;
+  SpdS_Kidspds = 100;
+  SpdS_Kpspds = 40;
+  SpdS_Vmspds = 10.95;
+  SpmS_Kaspms = 0.1;
+  SpmS_Kdspms = 60;
+  SpmS_Kiaspms = 0.06;
+  SpmS_Kisspms = 25;
+  SpmS_Vmspms = 3.23;
+  MAT_Kimetmat = 50;
+  MAT_Kmmat = 41;
+  MAT_Vmmat = 0.45;
+  P_efflux_Kpefflux = 0.01;
+  aD_efflux_Kadefflux = 0.01;
+
+  var Vmaxodc, Vmaxssat, Vmaxsamdc, Antz, Kaccoa, Kcoa;
+  const Met in cytosol, ORN in cytosol, AcCoA in cytosol, CoA in cytosol;
+end

@@ -1,0 +1,178 @@
+model ODea2007_IkappaB()
+
+  // Compartments and Species:
+  compartment cytoplasm, nucleus;
+  species IkBa_mRNA in nucleus, IkBa_cytoplasm in cytoplasm, IkBa_nucleus in nucleus;
+  species IkBaIKK in cytoplasm, IkBaNFkB_cytoplasm in cytoplasm, IkBaNFkB_nucleus in nucleus;
+  species IkBaIKKNFkB in cytoplasm, NFkB_cytoplasm in cytoplasm, IKK in cytoplasm;
+  species NFkB_nucleus in nucleus, IkBbIKK in cytoplasm, IkBbIKKNFkB in cytoplasm;
+  species IkBbNFkB_nucleus in nucleus, IkBbNFkB_cytoplasm in cytoplasm, IkBb_nucleus in nucleus;
+  species IkBb_cytoplasm in cytoplasm, IkBb_mRNA in nucleus, IkBe_mRNA in nucleus;
+  species IkBe_cytoplasm in cytoplasm, IkBe_nucleus in nucleus, IkBeNFkB_cytoplasm in cytoplasm;
+  species IkBeNFkB_nucleus in nucleus, IkBeIKKNFkB in cytoplasm, IkBeIKK in cytoplasm;
+
+  // Assignment Rules:
+  Total_IkBalpha := IkBa_cytoplasm + IkBa_nucleus + IkBaIKK + IkBaIKKNFkB + IkBaNFkB_cytoplasm + IkBaNFkB_nucleus
+  Total_IkBbeta := IkBb_cytoplasm + IkBb_nucleus + IkBbIKK + IkBbIKKNFkB + IkBbNFkB_cytoplasm + IkBbNFkB_nucleus
+  Total_IkBeps := IkBe_cytoplasm + IkBe_nucleus + IkBeIKK + IkBeIKKNFkB + IkBeNFkB_cytoplasm + IkBeNFkB_nucleus
+
+  // Reactions:
+  txn_a:  -> IkBa_mRNA; nucleus * txn_a_tr2a;
+  mdeg_a: IkBa_mRNA -> ; nucleus * mdeg_a_tr3a * IkBa_mRNA;
+  tsl_a: IkBa_mRNA -> IkBa_mRNA + IkBa_cytoplasm; nucleus * tsl_a_tr1a * IkBa_mRNA;
+  int_ai: IkBa_cytoplasm + IKK -> IkBaIKK; cytoplasm * (int_ai_a1 * IkBa_cytoplasm * IKK - int_ai_d1_1 * IkBaIKK);
+  int_an: IkBa_cytoplasm + NFkB_cytoplasm -> IkBaNFkB_cytoplasm; cytoplasm * (int_an_a4_1 * IkBa_cytoplasm * NFkB_cytoplasm - int_an_d4_1 * IkBaNFkB_cytoplasm);
+  int_an_n: IkBa_nucleus + NFkB_nucleus -> IkBaNFkB_nucleus; nucleus * (int_an_n_a4_2 * IkBa_nucleus * NFkB_nucleus - int_an_n_d4_2 * IkBaNFkB_nucleus);
+  int_2ani: IkBaNFkB_cytoplasm + IKK -> IkBaIKKNFkB; cytoplasm * (int_2ani_a7 * IkBaNFkB_cytoplasm * IKK - int_2ani_d1_2 * IkBaIKKNFkB);
+  int_2ain: IkBaIKK + NFkB_cytoplasm -> IkBaIKKNFkB; cytoplasm * (int_2ain_a4_3 * IkBaIKK * NFkB_cytoplasm - int_2ain_d4_3 * IkBaIKKNFkB);
+  deg_a: IkBa_cytoplasm -> ; cytoplasm * deg_a_deg1_c * IkBa_cytoplasm;
+  deg_a_n: IkBa_nucleus -> ; nucleus * deg_a_n_deg1_n * IkBa_nucleus;
+  deg_an_n: IkBaNFkB_nucleus -> NFkB_nucleus; nucleus * deg_an_n_deg4_n * IkBaNFkB_nucleus;
+  deg_an: IkBaNFkB_cytoplasm -> NFkB_cytoplasm; cytoplasm * deg_an_deg4_c * IkBaNFkB_cytoplasm;
+  deg_ai: IkBaIKK -> IKK; cytoplasm * deg_ai_r1 * IkBaIKK;
+  deg_ain: IkBaIKKNFkB -> NFkB_cytoplasm + IKK; cytoplasm * deg_ain_r4 * IkBaIKKNFkB;
+  loc_a: IkBa_cytoplasm -> IkBa_nucleus; cytoplasm * loc_a_tp1a * IkBa_cytoplasm - nucleus * loc_a_tp2a * IkBa_nucleus;
+  loc_an: IkBaNFkB_nucleus -> IkBaNFkB_cytoplasm; nucleus * loc_an_k2_a * IkBaNFkB_nucleus;
+  loc_bn: IkBbNFkB_nucleus -> IkBbNFkB_cytoplasm; nucleus * loc_bn_k2_b * IkBbNFkB_nucleus;
+  loc_b: IkBb_cytoplasm -> IkBb_nucleus; cytoplasm * loc_b_tp1b * IkBb_cytoplasm - nucleus * loc_b_tp2b * IkBb_nucleus;
+  deg_bin: IkBbIKKNFkB -> NFkB_cytoplasm + IKK; cytoplasm * deg_bin_r5 * IkBbIKKNFkB;
+  deg_bi: IkBbIKK -> IKK; cytoplasm * deg_bi_r2 * IkBbIKK;
+  deg_bn: IkBbNFkB_cytoplasm -> NFkB_cytoplasm; cytoplasm * deg_bn_deg5_c * IkBbNFkB_cytoplasm;
+  deg_bn_n: IkBbNFkB_nucleus -> NFkB_nucleus; nucleus * deg_bn_n_deg5_n * IkBbNFkB_nucleus;
+  deg_b_n: IkBb_nucleus -> ; nucleus * deg_b_n_deg2_n * IkBb_nucleus;
+  deg_b: IkBb_cytoplasm -> ; cytoplasm * deg_b_deg2_c * IkBb_cytoplasm;
+  int_2bin: IkBbIKK + NFkB_cytoplasm -> IkBbIKKNFkB; cytoplasm * (int_2bin_a5_3 * IkBbIKK * NFkB_cytoplasm - int_2bin_d5_3 * IkBbIKKNFkB);
+  int_2bni: IkBbNFkB_cytoplasm + IKK -> IkBbIKKNFkB; cytoplasm * (int_2bni_a8 * IkBbNFkB_cytoplasm * IKK - int_2bni_d2_2 * IkBbIKKNFkB);
+  int_bn_n: IkBb_nucleus + NFkB_nucleus -> IkBbNFkB_nucleus; nucleus * (int_bn_n_a5_2 * IkBb_nucleus * NFkB_nucleus - int_bn_n_d5_2 * IkBbNFkB_nucleus);
+  int_bn: IkBb_cytoplasm + NFkB_cytoplasm -> IkBbNFkB_cytoplasm; cytoplasm * (int_bn_a5_1 * IkBb_cytoplasm * NFkB_cytoplasm - int_bn_d5_1 * IkBbNFkB_cytoplasm);
+  int_bi: IkBb_cytoplasm + IKK -> IkBbIKK; cytoplasm * (int_bi_a2 * IkBb_cytoplasm * IKK - int_bi_d2_1 * IkBbIKK);
+  tsl_b: IkBb_mRNA -> IkBb_mRNA + IkBb_cytoplasm; nucleus * tsl_b_tr1b * IkBb_mRNA;
+  mdeg_b: IkBb_mRNA -> ; nucleus * mdeg_b_tr3b * IkBb_mRNA;
+  txn_b:  -> IkBb_mRNA; nucleus * txn_b_tr2b;
+  loc_n: NFkB_cytoplasm -> NFkB_nucleus; cytoplasm * loc_n_k1_2 * NFkB_cytoplasm - nucleus * loc_n_k1_1 * NFkB_nucleus;
+  txn_e:  -> IkBe_mRNA; nucleus * txn_e_tr2e;
+  mdeg_e: IkBe_mRNA -> ; nucleus * mdeg_e_tr3e * IkBe_mRNA;
+  tsl_e: IkBe_mRNA -> IkBe_mRNA + IkBe_cytoplasm; nucleus * tsl_e_tr1e * IkBe_mRNA;
+  int_ei: IkBe_cytoplasm + IKK -> IkBeIKK; cytoplasm * (int_ei_a3 * IkBe_cytoplasm * IKK - int_ei_d3_1 * IkBeIKK);
+  int_en: IkBe_cytoplasm + NFkB_cytoplasm -> IkBeNFkB_cytoplasm; cytoplasm * (int_en_a6_1 * IkBe_cytoplasm * NFkB_cytoplasm - int_en_d6_1 * IkBeNFkB_cytoplasm);
+  int_en_n: IkBe_nucleus + NFkB_nucleus -> IkBeNFkB_nucleus; nucleus * (int_en_n_a6_2 * IkBe_nucleus * NFkB_nucleus - int_en_n_d6_2 * IkBeNFkB_nucleus);
+  int_2eni: IkBeNFkB_cytoplasm + IKK -> IkBeIKKNFkB; cytoplasm * (int_2eni_a9 * IkBeNFkB_cytoplasm * IKK - int_2eni_d3_2 * IkBeIKKNFkB);
+  int_2ein: IkBeIKK + NFkB_cytoplasm -> IkBeIKKNFkB; cytoplasm * (int_2ein_a6_3 * IkBeIKK * NFkB_cytoplasm - int_2ein_d6_3 * IkBeIKKNFkB);
+  deg_e: IkBe_cytoplasm -> ; cytoplasm * deg_e_deg3_c * IkBe_cytoplasm;
+  deg_e_n: IkBe_nucleus -> ; nucleus * deg_e_n_deg3_n * IkBe_nucleus;
+  deg_en_n: IkBeNFkB_nucleus -> NFkB_nucleus; nucleus * deg_en_n_deg6_n * IkBeNFkB_nucleus;
+  deg_en: IkBeNFkB_cytoplasm -> NFkB_cytoplasm; cytoplasm * deg_en_deg6_c * IkBeNFkB_cytoplasm;
+  deg_ei: IkBeIKK -> IKK; cytoplasm * deg_ei_r3 * IkBeIKK;
+  deg_ein: IkBeIKKNFkB -> NFkB_cytoplasm + IKK; cytoplasm * deg_ein_r6 * IkBeIKKNFkB;
+  loc_e: IkBe_cytoplasm -> IkBe_nucleus; cytoplasm * loc_e_tp1e * IkBe_cytoplasm - nucleus * loc_e_tp2e * IkBe_nucleus;
+  loc_en: IkBeNFkB_nucleus -> IkBeNFkB_cytoplasm; nucleus * loc_en_k2_e * IkBeNFkB_nucleus;
+  IKK_deg: IKK -> ; cytoplasm * IKK_deg_IKK_deg * IKK;
+  itxn_a:  -> IkBa_mRNA; nucleus * itxn_a_tr2a_i * pow(NFkB_nucleus, 2);
+
+  // Species initializations:
+  IkBa_mRNA = 0;
+  IkBa_cytoplasm = 0;
+  IkBa_nucleus = 0;
+  IkBaIKK = 0;
+  IkBaNFkB_cytoplasm = 0.06;
+  IkBaNFkB_nucleus = 0;
+  IkBaIKKNFkB = 0;
+  NFkB_cytoplasm = 0;
+  IKK = 0.001;
+  NFkB_nucleus = 0;
+  IkBbIKK = 0;
+  IkBbIKKNFkB = 0;
+  IkBbNFkB_nucleus = 0;
+  IkBbNFkB_cytoplasm = 0.03;
+  IkBb_nucleus = 0;
+  IkBb_cytoplasm = 0;
+  IkBb_mRNA = 0;
+  IkBe_mRNA = 0;
+  IkBe_cytoplasm = 0;
+  IkBe_nucleus = 0;
+  IkBeNFkB_cytoplasm = 0.01;
+  IkBeNFkB_nucleus = 0;
+  IkBeIKKNFkB = 0;
+  IkBeIKK = 0;
+
+  // Compartments initializations:
+  cytoplasm = 1;
+  nucleus = 1;
+
+  // Other defined symbols initializations:
+  Total_IkBalpha = 0;
+  Total_IkBbeta = 0;
+  Total_IkBeps = 0;
+  txn_a_tr2a = 0.0001848;
+  mdeg_a_tr3a = 0.0168;
+  tsl_a_tr1a = 0.2448;
+  int_ai_a1 = 1.35;
+  int_ai_d1_1 = 0.075;
+  int_an_a4_1 = 30;
+  int_an_d4_1 = 6e-05;
+  int_an_n_a4_2 = 30;
+  int_an_n_d4_2 = 6e-05;
+  int_2ani_a7 = 11.1;
+  int_2ani_d1_2 = 0.075;
+  int_2ain_a4_3 = 30;
+  int_2ain_d4_3 = 6e-05;
+  deg_a_deg1_c = 0.12;
+  deg_a_n_deg1_n = 0.12;
+  deg_an_n_deg4_n = 6e-05;
+  deg_an_deg4_c = 6e-05;
+  deg_ai_r1 = 0.072;
+  deg_ain_r4 = 0.36;
+  loc_a_tp1a = 0.018;
+  loc_a_tp2a = 0.012;
+  loc_an_k2_a = 0.828;
+  loc_bn_k2_b = 0.414;
+  loc_b_tp1b = 0.018;
+  loc_b_tp2b = 0.012;
+  deg_bin_r5 = 0.12;
+  deg_bi_r2 = 0.024;
+  deg_bn_deg5_c = 6e-05;
+  deg_bn_n_deg5_n = 6e-05;
+  deg_b_n_deg2_n = 0.18;
+  deg_b_deg2_c = 0.18;
+  int_2bin_a5_3 = 30;
+  int_2bin_d5_3 = 6e-05;
+  int_2bni_a8 = 2.88;
+  int_2bni_d2_2 = 0.105;
+  int_bn_n_a5_2 = 30;
+  int_bn_n_d5_2 = 6e-05;
+  int_bn_a5_1 = 30;
+  int_bn_d5_1 = 6e-05;
+  int_bi_a2 = 0.36;
+  int_bi_d2_1 = 0.105;
+  tsl_b_tr1b = 0.2448;
+  mdeg_b_tr3b = 0.0168;
+  txn_b_tr2b = 4.272e-05;
+  loc_n_k1_2 = 5.4;
+  loc_n_k1_1 = 0.0048;
+  txn_e_tr2e = 3.048e-05;
+  mdeg_e_tr3e = 0.0168;
+  tsl_e_tr1e = 0.2448;
+  int_ei_a3 = 0.54;
+  int_ei_d3_1 = 0.105;
+  int_en_a6_1 = 30;
+  int_en_d6_1 = 6e-05;
+  int_en_n_a6_2 = 30;
+  int_en_n_d6_2 = 6e-05;
+  int_2eni_a9 = 4.2;
+  int_2eni_d3_2 = 0.105;
+  int_2ein_a6_3 = 30;
+  int_2ein_d6_3 = 6e-05;
+  deg_e_deg3_c = 0.18;
+  deg_e_n_deg3_n = 0.18;
+  deg_en_n_deg6_n = 6e-05;
+  deg_en_deg6_c = 6e-05;
+  deg_ei_r3 = 0.036;
+  deg_ein_r6 = 0.18;
+  loc_e_tp1e = 0.018;
+  loc_e_tp2e = 0.012;
+  loc_en_k2_e = 0.414;
+  IKK_deg_IKK_deg = 0;
+  itxn_a_tr2a_i = 1.98;
+
+  var Total_IkBalpha, Total_IkBbeta, Total_IkBeps;
+end

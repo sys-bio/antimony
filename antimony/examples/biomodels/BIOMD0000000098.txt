@@ -1,0 +1,38 @@
+model Goldbeter1990_Ca_Oscillations()
+
+  // Compartments and Species:
+  compartment cytosol, store;
+  species Z in cytosol, Y in store;
+
+  // Reactions:
+  R0:  -> Z; cytosol * v0;
+  R1:  -> Z; cytosol * v1 * beta;
+  R2: Z -> Y; cytosol * (Vm2 * pow(Z, n) / (pow(K2, n) + pow(Z, n)));
+  R3: Y -> Z; store * (Vm3 * pow(Y, m) * pow(Z, p) / ((pow(Kr, m) + pow(Y, m)) * (pow(Ka, p) + pow(Z, p))));
+  Rf: Y -> Z; store * kf * Y;
+  R_eff: Z -> ; cytosol * k * Z;
+
+  // Species initializations:
+  Z = 0.15;
+  Y = 1.6;
+
+  // Compartments initializations:
+  cytosol = 1;
+  store = 1;
+
+  // Other defined symbols initializations:
+  v0 = 1;
+  v1 = 7.3;
+  beta = 0.301;
+  Vm2 = 65;
+  n = 2;
+  K2 = 1;
+  Vm3 = 500;
+  m = 2;
+  Kr = 2;
+  Ka = 0.9;
+  kf = 1;
+  k = 10;
+  p = 4;
+
+end

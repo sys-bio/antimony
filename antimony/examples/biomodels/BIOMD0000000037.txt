@@ -1,0 +1,56 @@
+model Marwan_Genetics_2003()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Pfr in compartment_, Pr in compartment_, Xi in compartment_, Xa in compartment_;
+  species prepreS in compartment_, preS in compartment_, Ya in compartment_;
+  species S in compartment_, Gluc in compartment_, Yi in compartment_, V in compartment_;
+  species Pi_ in compartment_;
+
+  // Reactions:
+  Photoreceptor_activation: Pfr -> Pr; compartment_ * Pfr * Photoreceptor_activation_IfrSfrPfr;
+  Photoreceptor_inactivation: Pr -> Pfr; Photoreceptor_inactivation_IrSrPr * Pr * compartment_;
+  Transducer_activation: Xi -> Xa; Xi * Transducer_activation_kia * Pr * compartment_;
+  Transducer_inactivation: Xa -> Xi; Transducer_inactivation_kai * Xa * compartment_;
+  preS_formation: prepreS -> preS; prepreS * preS_formation_kx * Xa * compartment_;
+  S_generation: preS -> S; preS * S_generation_ky * Ya * compartment_;
+  Glucose_sensor_inactivation: Ya + Gluc -> Yi; Glucose_sensor_inactivation_kG * Ya * Gluc * compartment_;
+  S_formation:  -> S; compartment_ * (S_formation_alpha1 / (1 + pow(V, 3)));
+  V_formation:  -> V; compartment_ * (V_formation_alpha2 / (1 + pow(S, 3)));
+  S_degradation: S -> ; S_degradation_kd_s * S * compartment_;
+  V_degradation: V -> ; compartment_ * V * V_degradation_kd_v;
+  Photoreceptor_decay: Pr -> Pi_; compartment_ * Photoreceptor_decay_kd * Pr;
+
+  // Species initializations:
+  Pfr = 10;
+  Pr = 0;
+  Xi = 6;
+  Xa = 0;
+  prepreS = 200;
+  preS = 0;
+  Ya = 0.9;
+  S = 0;
+  Gluc = 0;
+  Yi = 0;
+  V = 30;
+  Pi_ = 0;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  Photoreceptor_activation_IfrSfrPfr = 0.1;
+  Photoreceptor_inactivation_IrSrPr = 0;
+  Transducer_activation_kia = 0.1;
+  Transducer_inactivation_kai = 0.8;
+  preS_formation_kx = 0.2;
+  S_generation_ky = 1;
+  Glucose_sensor_inactivation_kG = 0.1;
+  S_formation_alpha1 = 30;
+  V_formation_alpha2 = 50;
+  S_degradation_kd_s = 1;
+  V_degradation_kd_v = 1;
+  Photoreceptor_decay_kd = 0.1;
+
+  const Gluc in compartment_;
+end

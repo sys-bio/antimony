@@ -1,0 +1,135 @@
+function LD(tod, length)
+  ceil(sin(pi * tod / length + 0.001) / 2);
+end
+
+model Locke2005_CircadianClock()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species cLm in compartment_, cLc in compartment_, cLn in compartment_, cTm in compartment_;
+  species cTc in compartment_, cTn in compartment_, cXm in compartment_, cXc in compartment_;
+  species cXn in compartment_, cYm in compartment_, cYc in compartment_, cYn in compartment_;
+  species cPn in compartment_;
+
+  // Reactions:
+  one11:  -> cLm; compartment_ * LD(time, dayLength) * q1 * cPn;
+  two11:  -> cLm; compartment_ * (n1 * pow(cXn, a) / (pow(g1, a) + pow(cXn, a)));
+  three11: cLm -> ; compartment_ * (m1 * cLm / (k1 + cLm));
+  one12:  -> cLc; compartment_ * p1 * cLm;
+  three12: cLn -> cLc; compartment_ * r2 * cLn;
+  four12: cLc -> ; compartment_ * (m2 * cLc / (k2 + cLc));
+  one13: cLc -> cLn; compartment_ * r1 * cLc;
+  three13: cLn -> ; compartment_ * (m3 * cLn / (k3 + cLn));
+  one14:  -> cTm; compartment_ * (n2 * pow(cYn, b) / (pow(g2, b) + pow(cYn, b))) * (pow(g3, c) / (pow(g3, c) + pow(cLn, c)));
+  two14: cTm -> ; compartment_ * (m4 * cTm / (k4 + cTm));
+  one15:  -> cTc; compartment_ * p2 * cTm;
+  three15: cTn -> cTc; compartment_ * r4 * cTn;
+  four15: cTc -> ; compartment_ * ((1 - LD(time, dayLength)) * m5 + m6) * (cTc / (k5 + cTc));
+  one16: cTc -> cTn; compartment_ * r3 * cTc;
+  three16: cTn -> ; compartment_ * ((1 - LD(time, dayLength)) * m7 + m8) * (cTn / (k6 + cTn));
+  one17:  -> cXm; compartment_ * (n3 * pow(cTn, d) / (pow(g4, d) + pow(cTn, d)));
+  two17: cXm -> ; compartment_ * (m9 * cXm / (k7 + cXm));
+  one18:  -> cXc; compartment_ * p3 * cXm;
+  three18: cXn -> cXc; compartment_ * r6 * cXn;
+  four18: cXc -> ; compartment_ * (m10 * cXc / (k8 + cXc));
+  one19: cXc -> cXn; compartment_ * r5 * cXc;
+  three19: cXn -> ; compartment_ * (m11 * cXn / (k9 + cXn));
+  one20:  -> cYm; compartment_ * (LD(time, dayLength) * q2 * cPn + (LD(time, dayLength) * n4 + n5) * pow(g5, e) / (pow(g5, e) + pow(cTn, e))) * (pow(g6, f) / (pow(g6, f) + pow(cLn, f)));
+  two20: cYm -> ; compartment_ * (m12 * cYm / (k10 + cYm));
+  one21:  -> cYc; compartment_ * p4 * cYm;
+  three21: cYn -> cYc; compartment_ * r8 * cYn;
+  four21: cYc -> ; compartment_ * (m13 * cYc / (k11 + cYc));
+  one22: cYc -> cYn; compartment_ * r7 * cYc;
+  three22: cYn -> ; compartment_ * (m14 * cYn / (k12 + cYn));
+  one23:  -> cPn; compartment_ * (1 - LD(time, dayLength)) * p5;
+  two23: cPn -> ; compartment_ * (m15 * cPn / (k13 + cPn));
+  three23: cPn -> ; compartment_ * q3 * LD(time, dayLength) * cPn;
+
+  // Species initializations:
+  cLm = 0.539;
+  cLc = 0.015;
+  cLn = 0.0855;
+  cTm = 0.456;
+  cTc = 8.7;
+  cTn = 0.4;
+  cXm = 0.08;
+  cXc = 1.34;
+  cXn = 0.4;
+  cYm = 0.037;
+  cYc = 0.004;
+  cYn = 0.013;
+  cPn = 0.835;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  q1 = 2.4514;
+  n1 = 5.1694;
+  a = 3.3064;
+  g1 = 0.876738488;
+  m1 = 1.5283;
+  k1 = 1.817;
+  p1 = 0.8295;
+  r1 = 16.8363;
+  r2 = 0.1687;
+  m2 = 20.44;
+  k2 = 1.5644;
+  m3 = 3.6888;
+  k3 = 1.2765;
+  n2 = 3.0087;
+  b = 1.0258;
+  g2 = 0.036805783;
+  g3 = 0.26593318;
+  c = 1.0258;
+  m4 = 3.8231;
+  k4 = 2.5734;
+  p2 = 4.324;
+  r3 = 0.3166;
+  r4 = 2.1509;
+  m5 = 0.0013;
+  m6 = 3.1741;
+  k5 = 2.7454;
+  m7 = 0.0492;
+  m8 = 4.0424;
+  k6 = 0.4033;
+  n3 = 0.2431;
+  d = 1.4422;
+  g4 = 0.538811228;
+  m9 = 10.1132;
+  k7 = 6.5585;
+  p3 = 2.147;
+  r5 = 1.0352;
+  r6 = 3.3017;
+  m10 = 0.2179;
+  k8 = 0.6632;
+  m11 = 3.3442;
+  k9 = 17.1111;
+  q2 = 2.40178;
+  n4 = 0.0857;
+  n5 = 0.1649;
+  g5 = 1.17803247;
+  g6 = 0.064455137;
+  f = 1.0237;
+  e = 3.6064;
+  m12 = 4.297;
+  k10 = 1.7303;
+  p4 = 0.2485;
+  r7 = 2.2123;
+  r8 = 0.2002;
+  m13 = 0.1347;
+  k11 = 1.8258;
+  m14 = 0.6114;
+  k12 = 1.8066;
+  p5 = 0.5;
+  k13 = 1.2;
+  q3 = 1;
+  m15 = 1.2;
+  Lmax = 1;
+  Lmin = 0;
+  CP = 24;
+  dayLength = 12;
+  two11_Fch_0 = 8;
+  four12_Fch_0 = 8;
+
+end

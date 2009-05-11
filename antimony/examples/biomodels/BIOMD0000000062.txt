@@ -1,0 +1,42 @@
+model Bhartiya2003_Tryptophan_operon()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Enz in compartment_, Ts in compartment_, Tt in compartment_;
+
+  // Assignment Rules:
+  Tt := (-f_val * e_val - f_val * Tex + Tex * Ts + pow(pow(f_val * (e_val + Tex) - Tex * Ts, 2) - 4 * f_val * Tex * (-e_val * Ts - Tex * Tomax - Tex * Ts), 0.5)) / (2 * Tex)
+
+  // Reactions:
+  Enzyme_synthesis:  -> Enz; compartment_ * Enzyme_synthesis_k1 * pow(Enzyme_synthesis_ki1, Enzyme_synthesis_nH) * Enzyme_synthesis_Ot / (pow(Enzyme_synthesis_ki1, Enzyme_synthesis_nH) + pow(Tt, Enzyme_synthesis_nH));
+  Enzyme_dilution: Enz -> ; compartment_ * Enzyme_dilution_mu * Enz;
+  tryptophan_synthesis:  -> Ts; compartment_ * tryptophan_synthesis_k2 * Enz * tryptophan_synthesis_Ki2 / (tryptophan_synthesis_Ki2 + Tt);
+  tryptophan_consumption: Ts -> ; compartment_ * tryptophan_consumption_g * Ts / (tryptophan_consumption_Kg + Ts);
+  tryptophan_dilution: Ts -> ; compartment_ * tryptophan_dilution_mu * Ts;
+
+  // Species initializations:
+  Enz = 0;
+  Ts = 0;
+  Tt = 0;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  Tomax = 100;
+  Tex = 0.14;
+  e_val = 0.9;
+  f_val = 380;
+  Enzyme_synthesis_k1 = 65;
+  Enzyme_synthesis_ki1 = 3.53;
+  Enzyme_synthesis_nH = 1.92;
+  Enzyme_synthesis_Ot = 0.0033;
+  Enzyme_dilution_mu = 0.01;
+  tryptophan_synthesis_k2 = 25;
+  tryptophan_synthesis_Ki2 = 810;
+  tryptophan_consumption_g = 25;
+  tryptophan_consumption_Kg = 0.2;
+  tryptophan_dilution_mu = 0.01;
+
+  const Tt in compartment_;
+end
