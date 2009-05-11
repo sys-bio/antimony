@@ -1,0 +1,48 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment extracellular, Cytosol, intracellular_Ca_storepool;
+  species z in Cytosol, y in intracellular_Ca_storepool;
+
+  // Assignment Rules:
+  beta := flag * 0.96 * exp(-0.2 * (time - tstim))
+
+  // Reactions:
+  reaction_0000001:  -> z; v1 * beta * Cytosol;
+  reaction_0000002:  -> z; v0 * Cytosol;
+  reaction_0000003: y -> z; kf * y * Cytosol;
+  reaction_0000004: z -> y; intracellular_Ca_storepool * VM2 * pow(z, n) / (pow(K2, n) + pow(z, n));
+  reaction_0000005: y -> z; Cytosol * VM3 * (pow(y, m) / (pow(KR, m) + pow(y, m))) * (pow(z, p) / (pow(KA, p) + pow(z, p)));
+  reaction_0000006: z -> ; k * z * extracellular;
+
+  // Events:
+  event_0000001: @gt(time, tstim): flag = 1;
+
+  // Species initializations:
+  z = 0.1;
+  y = 1.4;
+
+  // Compartments initializations:
+  extracellular = 1;
+  Cytosol = 1;
+  intracellular_Ca_storepool = 1;
+
+  // Other defined symbols initializations:
+  tstim = 4;
+  flag = 0;
+  v0 = 1;
+  v1 = 7.3;
+  VM2 = 65;
+  VM3 = 500;
+  KR = 2;
+  KA = 0.9;
+  K2 = 1;
+  kf = 1;
+  k = 10;
+  n = 2;
+  m = 2;
+  p = 4;
+  beta = 0;
+
+  var flag, beta;
+end

@@ -1,0 +1,59 @@
+model RanGTP_gradient()
+
+  // Compartments and Species:
+  compartment nucleus, cytoplasm;
+  species RanGDP_nuc in nucleus, RCC1_RanGDP in nucleus, GDP in nucleus, RCC1 in nucleus;
+  species RCC1_RanGTP in nucleus, RCC1_Ran in nucleus, GTP in nucleus, RanGTP_nuc in nucleus;
+  species RanGAP in cytoplasm, RanBP1 in cytoplasm, RanGTP_cy in cytoplasm;
+  species RanGTP_RanBP1 in cytoplasm, RanGDP_cy in cytoplasm;
+
+  // Reactions:
+  RCC1_binding: RanGDP_nuc + RCC1 -> RCC1_RanGDP; nucleus * (RCC1_binding_r1 * RanGDP_nuc * RCC1 - RCC1_binding_r8 * RCC1_RanGDP);
+  GDP_dissociation: RCC1_RanGDP -> RCC1_Ran + GDP; nucleus * (GDP_dissociation_r2 * RCC1_RanGDP - GDP_dissociation_r7 * RCC1_Ran * GDP);
+  GTP_binding: RCC1_Ran + GTP -> RCC1_RanGTP; nucleus * (GTP_binding_r3 * RCC1_Ran * GTP - GTP_binding_r6 * RCC1_RanGTP);
+  RanGTP_release: RCC1_RanGTP -> RanGTP_nuc + RCC1; nucleus * (RanGTP_release_r4 * RCC1_RanGTP - RanGTP_release_r5 * RanGTP_nuc * RCC1);
+  Cytoplasmic_transfer: RanGTP_nuc -> RanGTP_cy; Cytoplasmic_transfer_kpermRanGTP * nucleus * (RanGTP_nuc - RanGTP_cy);
+  Nucleoplasmic_transfer: RanGDP_nuc -> RanGDP_cy; Nucleoplasmic_transfer_kpermRanGDP * nucleus * (RanGDP_nuc - RanGDP_cy);
+  RanGTP_binding: RanGTP_cy + RanBP1 -> RanGTP_RanBP1; (RanGTP_binding_kon * RanGTP_cy * RanBP1 - RanGTP_binding_koff * RanGTP_RanBP1) * cytoplasm;
+  RanBP1_RanGDP: RanGTP_RanBP1 -> RanGDP_cy + RanBP1; cytoplasm * RanBP1_RanGDP_kcat * RanGTP_RanBP1 * RanGAP / (RanGTP_RanBP1 + RanBP1_RanGDP_Km);
+  RanGAP_RanGDP: RanGTP_cy -> RanGDP_cy; cytoplasm * RanGAP_RanGDP_kcat_GAP * RanGTP_cy * RanGAP / (RanGAP_RanGDP_Km_GAP + RanGTP_cy);
+
+  // Species initializations:
+  RanGDP_nuc = 0;
+  RCC1_RanGDP = 0;
+  GDP = 1.6;
+  RCC1 = 0.7;
+  RCC1_RanGTP = 0;
+  RCC1_Ran = 0;
+  GTP = 500;
+  RanGTP_nuc = 0;
+  RanGAP = 0.7;
+  RanBP1 = 2;
+  RanGTP_cy = 0;
+  RanGTP_RanBP1 = 0;
+  RanGDP_cy = 5;
+
+  // Compartments initializations:
+  nucleus = 1.2e-11;
+  cytoplasm = 1.8e-11;
+
+  // Other defined symbols initializations:
+  RCC1_binding_r1 = 74;
+  RCC1_binding_r8 = 55;
+  GDP_dissociation_r2 = 21;
+  GDP_dissociation_r7 = 11;
+  GTP_binding_r3 = 0.6;
+  GTP_binding_r6 = 19;
+  RanGTP_release_r4 = 55;
+  RanGTP_release_r5 = 100;
+  Cytoplasmic_transfer_kpermRanGTP = 0.03;
+  Nucleoplasmic_transfer_kpermRanGDP = 0.12;
+  RanGTP_binding_kon = 0.3;
+  RanGTP_binding_koff = 0.0004;
+  RanBP1_RanGDP_kcat = 10.8;
+  RanBP1_RanGDP_Km = 0.1;
+  RanGAP_RanGDP_kcat_GAP = 10.6;
+  RanGAP_RanGDP_Km_GAP = 0.7;
+
+  const GDP in nucleus, GTP in nucleus;
+end

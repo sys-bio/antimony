@@ -1,0 +1,55 @@
+model Markevich2004_MAPK_orderedelementary()
+
+  // Compartments and Species:
+  compartment uVol;
+  species M in uVol, Mp in uVol, Mpp in uVol, MAPKK in uVol, MKP3 in uVol;
+  species M_MAPKK in uVol, Mp_MAPKK in uVol, Mpp_MKP3 in uVol, Mp_MKP3_dep in uVol;
+  species Mp_MKP3 in uVol, M_MKP3 in uVol;
+
+  // Reactions:
+  v1a: M + MAPKK -> M_MAPKK; uVol * (k1 * M * MAPKK - k_1 * M_MAPKK);
+  v1b: M_MAPKK -> Mp + MAPKK; uVol * k2 * M_MAPKK;
+  v2a: Mp + MAPKK -> Mp_MAPKK; uVol * (k3 * Mp * MAPKK - k_3 * Mp_MAPKK);
+  v2b: Mp_MAPKK -> Mpp + MAPKK; uVol * k4 * Mp_MAPKK;
+  v3a: Mpp + MKP3 -> Mpp_MKP3; uVol * (h1 * Mpp * MKP3 - h_1 * Mpp_MKP3);
+  v3b: Mpp_MKP3 -> Mp_MKP3_dep; uVol * h2 * Mpp_MKP3;
+  v3c: Mp_MKP3_dep -> Mp + MKP3; h3 * Mp_MKP3_dep - h_3 * Mp * MKP3;
+  v4a: Mp + MKP3 -> Mp_MKP3; uVol * (h4 * Mp * MKP3 - h_4 * Mp_MKP3);
+  v4b: Mp_MKP3 -> M_MKP3; uVol * h5 * Mp_MKP3;
+  v4c: M_MKP3 -> M + MKP3; uVol * (h6 * M_MKP3 - h_6 * M * MKP3);
+
+  // Species initializations:
+  M = 500;
+  Mp = 0;
+  Mpp = 0;
+  MAPKK = 50;
+  MKP3 = 100;
+  M_MAPKK = 0;
+  Mp_MAPKK = 0;
+  Mpp_MKP3 = 0;
+  Mp_MKP3_dep = 0;
+  Mp_MKP3 = 0;
+  M_MKP3 = 0;
+
+  // Compartments initializations:
+  uVol = 1;
+
+  // Other defined symbols initializations:
+  k1 = 0.02;
+  k_1 = 1;
+  k2 = 0.01;
+  k3 = 0.032;
+  k_3 = 1;
+  k4 = 15;
+  h1 = 0.045;
+  h_1 = 1;
+  h2 = 0.092;
+  h3 = 1;
+  h_3 = 0.01;
+  h4 = 0.01;
+  h_4 = 1;
+  h5 = 0.5;
+  h6 = 0.086;
+  h_6 = 0.0011;
+
+end

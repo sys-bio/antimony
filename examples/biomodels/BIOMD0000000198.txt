@@ -1,0 +1,61 @@
+model testid()
+
+  // Compartments and Species:
+  compartment cytosol;
+  species NO in cytosol, sGCfast in cytosol, NO_sGCfast in cytosol, NO_sGCfast_6coord in cytosol;
+  species NO_sGCfast_5coord in cytosol, sGCslow in cytosol, NO_sGCslow in cytosol;
+  species NO_sGCslow_6coord in cytosol, NO_sGCslow_6coord_NO_int in cytosol;
+  species NO_sGCslow_5coord in cytosol, NO_sGC_5coord_tot in cytosol, sGC_inact_tot in cytosol;
+
+  // Assignment Rules:
+  NO_sGC_5coord_tot := NO_sGCfast_5coord + NO_sGCslow_5coord
+  sGC_inact_tot := sGCfast + NO_sGCfast + NO_sGCfast_6coord + sGCslow + NO_sGCslow + NO_sGCslow_6coord + NO_sGCslow_6coord_NO_int
+  ext_ := e5c * (sGCfast + NO_sGCfast + sGCslow + NO_sGCslow) + e5c_NO * (NO_sGCfast_5coord + NO_sGCslow_5coord) + e6c_NO * (NO_sGCfast_6coord + NO_sGCslow_6coord + NO_sGCslow_6coord_NO_int)
+
+  // Reactions:
+  r1fast: NO + sGCfast -> NO_sGCfast; cytosol * (k1 * NO * sGCfast - k2 * NO_sGCfast);
+  r2fast: NO_sGCfast -> NO_sGCfast_6coord; k3 * cytosol * NO_sGCfast;
+  r3fast: NO_sGCfast_6coord -> NO_sGCfast_5coord; cytosol * (k4 * NO_sGCfast_6coord - k5 * NO_sGCfast_5coord);
+  r1slow: NO + sGCslow -> NO_sGCslow; cytosol * (k6 * NO * sGCslow - k7 * NO_sGCslow);
+  r2slow: NO_sGCslow -> NO_sGCslow_6coord; k8 * cytosol * NO_sGCslow;
+  r3slow: NO + NO_sGCslow_6coord -> NO_sGCslow_6coord_NO_int; cytosol * (k9 * NO * NO_sGCslow_6coord - k10 * NO_sGCslow_6coord_NO_int);
+  r4slow: NO_sGCslow_6coord_NO_int -> NO_sGCslow_5coord; cytosol * (k11 * NO_sGCslow_6coord_NO_int - k12 * NO_sGCslow_5coord);
+
+  // Species initializations:
+  NO = 0.5;
+  sGCfast = 0.112;
+  NO_sGCfast = 0;
+  NO_sGCfast_6coord = 0;
+  NO_sGCfast_5coord = 0;
+  sGCslow = 0.288;
+  NO_sGCslow = 0;
+  NO_sGCslow_6coord = 0;
+  NO_sGCslow_6coord_NO_int = 0;
+  NO_sGCslow_5coord = 0;
+  NO_sGC_5coord_tot = 0;
+  sGC_inact_tot = 0;
+
+  // Compartments initializations:
+  cytosol = 1;
+
+  // Other defined symbols initializations:
+  k1 = 700;
+  k2 = 800;
+  k3 = 850;
+  k4 = 20;
+  k5 = 0.2;
+  k6 = 700;
+  k7 = 800;
+  k8 = 850;
+  k9 = 5;
+  k10 = 25;
+  k11 = 1.6;
+  k12 = 0.02;
+  e5c = 0.11;
+  e5c_NO = 0.025;
+  e6c_NO = 0.064;
+  ext_ = 0;
+
+  var ext_;
+  const NO in cytosol, NO_sGC_5coord_tot in cytosol, sGC_inact_tot in cytosol;
+end

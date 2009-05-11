@@ -1,0 +1,131 @@
+model Yang2007_ArachidonicAcid()
+
+  // Compartments and Species:
+  compartment cell;
+  species x1 in cell, x10 in cell, x11 in cell, x12 in cell, x13 in cell;
+  species x14 in cell, x15 in cell, x16 in cell, x17 in cell, x18 in cell;
+  species x19 in cell, x2 in cell, x20 in cell, x21 in cell, x22 in cell;
+  species x23 in cell, x24 in cell, x25 in cell, x3 in cell, x4 in cell, x5 in cell;
+  species x6 in cell, x7 in cell, x8 in cell, x9 in cell;
+
+  // Reactions:
+  R1:  -> x1; cell * K15 * x15 * lin * (1 + x4 / KI19 + x2 / KI20 + x13 / KI21 + x11 / KI22) / (lin + k15 * (1 + x1 / ks));
+  R2: x1 -> x2; cell * K16 * x16 * x1 / (x1 + k16 * (1 + x2 / ks));
+  R3: x2 -> x3; cell * K24 * x24 * x2 / (x2 + k24 * (1 + x3 / ks));
+  R4: x1 -> x4; cell * K17 * x17 * x1 / (x1 + k17 * (1 + x4 / ki18 + x3 / ki16 + x4 / ks));
+  R5: x4 -> x5; cell * K24 * x24 * x4 / (x4 + k24 * (1 + x5 / ks));
+  R6: x1 -> x6; cell * K18 * x18 * x1 / (x1 + k18 * (1 + x7 / ki3 + x6 / ks));
+  R7: x6 -> x7; cell * K19 * x19 * x6 / (x6 + k19 * (1 + x1 / ki1 + x3 / ki2 + x7 / ks));
+  R8: x6 -> x8; cell * K20 * x20 * x6 / (x6 + k20 * (1 + x8 / ks));
+  R9:  -> x9; kd8 * x8 * cell;
+  R10: x1 -> x10; cell * K21 * x21 * x1 / (x1 + k21 * (1 + x5 / ki7 + x3 / ki8 + x7 / ki11 + x11 / ki12 + x10 / ks));
+  R11: x10 -> x11; cell * K24 * x24 * x10 / (x10 + k24 * (1 + x11 / ks));
+  R12: x10 -> x12; cell * K21 * x21 * x10 / (x10 + k21 * (1 + x5 / ki7 + x3 / ki8 + x7 / ki11 + x11 / ki12 + x12 / ks));
+  R13: x12 -> x13; cell * K22 * x22 * x12 / (x12 + k22 * (1 + x13 / ks));
+  R14: x13 -> x14; cell * K23 * x23 * x13 / (x13 + k23 * (1 + x5 / ki14 + x11 / ki15 + x14 / ks));
+  R16:  -> x16; cell * a24 * x7 * x7 / (x7 * x7 + KI24 * KI24);
+  R17: x17 -> ; cell * ki17 * x2 * x17;
+  R20: x20 -> ; ki4 * x2 * x20 * cell;
+  R21:  -> x21; cell * KI23 * x13 * x21;
+  R22: x22 -> ; cell * K22 * x22 * x12 / ((x12 + k22) * 129);
+  R18: x9 -> ; kd9 * x9 * cell;
+  R19: x20 -> ; cell * ki5 * x6 * x20;
+  R25: x8 -> ; cell * kd8 * x8;
+  R24: x13 -> ; cell * kd13 * x13;
+  R23: x12 -> ; cell * x12 * kd12;
+  R26: x3 -> ; kd3 * x3 * cell;
+  R27: x2 -> ; kd2 * cell * x2;
+  R28: x16 -> ; cell * kd16 * x16;
+  R29: x11 -> ; kd11 * x11 * cell;
+  R30: x21 -> ; cell * ki9 * x12 * x21;
+  R31: x21 -> ; cell * ki10 * x10 * x21;
+  R32: x21 -> ; cell * ki6 * x21 * x2;
+  R34: x1 -> ; 0.1 * x1 * cell;
+
+  // Species initializations:
+  x1 = 0.001;
+  x10 = 0.001;
+  x11 = 0.001;
+  x12 = 0.001;
+  x13 = 0.001;
+  x14 = 0.001;
+  x15 = 1.5;
+  x16 = 1.5;
+  x17 = 0.5;
+  x18 = 0.2;
+  x19 = 0.5;
+  x2 = 0.001;
+  x20 = 0.5;
+  x21 = 5;
+  x22 = 0.76;
+  x23 = 0.07;
+  x24 = 0.8;
+  x25 = 0;
+  x3 = 0.001;
+  x4 = 0.001;
+  x5 = 0.001;
+  x6 = 0.001;
+  x7 = 0.001;
+  x8 = 0.001;
+  x9 = 0.001;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  lin = 12;
+  K15 = 3600;
+  k15 = 2600;
+  K16 = 1000;
+  k16 = 70;
+  K17 = 1000;
+  k17 = 50;
+  K18 = 1000;
+  k18 = 50;
+  K19 = 3000;
+  k19 = 160;
+  K20 = 1599;
+  k20 = 4;
+  K21 = 5000;
+  k21 = 5;
+  K22 = 125;
+  k22 = 20;
+  K23 = 150;
+  k23 = 3.9;
+  K24 = 500;
+  k24 = 70;
+  kd2 = 0.05;
+  kd3 = 0.01;
+  kd8 = 0.1;
+  kd9 = 0.001;
+  kd11 = 0.001;
+  kd12 = 0.07;
+  kd13 = 0.01;
+  kd16 = 0.01;
+  ki1 = 0.3;
+  ki2 = 30;
+  ki3 = 30;
+  ki4 = 0.6;
+  ki5 = 0.1;
+  ki6 = 0.01;
+  ki7 = 30;
+  ki8 = 4;
+  ki9 = 0.175;
+  ki10 = 0.01;
+  ki11 = 15;
+  ki12 = 6.3;
+  ki14 = 0.2;
+  ki15 = 0.86;
+  ki16 = 10;
+  ki17 = 10;
+  ki18 = 10;
+  KI19 = 500;
+  KI20 = 200;
+  KI21 = 500;
+  KI22 = 500;
+  KI23 = 0.053;
+  KI24 = 2.3e-05;
+  a24 = 0.15;
+  ks = 500;
+
+end

@@ -1,0 +1,56 @@
+function function_4(P, V3, R, k3)
+  P * V3 * (1 - R) / (k3 + (1 - R));
+end
+
+function function_3(V2, R, Q, K2)
+  V2 * R * Q / (K2 + Q);
+end
+
+function function_2(V1, Q, K1)
+  V1 * (1 - Q) / (K1 + (1 - Q));
+end
+
+function function_1(V, substrate, Km)
+  V * substrate / (Km + substrate);
+end
+
+function function_0(a, Q)
+  a * Q;
+end
+
+model Model_0()
+
+  // Compartments and Species:
+  compartment compartment_0;
+  species species_0 in compartment_0, species_1 in compartment_0, species_2 in compartment_0;
+
+  // Reactions:
+  reaction_0:  -> species_0; compartment_0 * function_0(reaction_0_a, species_1);
+  reaction_1: species_0 -> ; compartment_0 * function_1(reaction_1_V, species_0, reaction_1_Km);
+  reaction_2:  -> species_1; compartment_0 * function_2(reaction_2_V1, species_1, reaction_2_K1);
+  reaction_3: species_1 -> ; compartment_0 * function_3(reaction_3_V2, species_2, species_1, reaction_3_K2);
+  reaction_4:  -> species_2; compartment_0 * function_4(species_0, reaction_4_V3, species_2, reaction_4_k3);
+  reaction_5: species_2 -> ; compartment_0 * function_1(reaction_5_V, species_2, reaction_5_Km);
+
+  // Species initializations:
+  species_0 = 0.43;
+  species_1 = 0.8;
+  species_2 = 0.55;
+
+  // Compartments initializations:
+  compartment_0 = 1;
+
+  // Other defined symbols initializations:
+  reaction_0_a = 0.1;
+  reaction_1_V = 0.1;
+  reaction_1_Km = 0.2;
+  reaction_2_V1 = 1;
+  reaction_2_K1 = 0.01;
+  reaction_3_V2 = 1.5;
+  reaction_3_K2 = 0.01;
+  reaction_4_V3 = 6;
+  reaction_4_k3 = 0.01;
+  reaction_5_V = 2.5;
+  reaction_5_Km = 0.01;
+
+end

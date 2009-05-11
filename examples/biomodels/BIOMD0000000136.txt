@@ -1,0 +1,30 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+
+  // Rate Rules:
+  v' = 0.04 * pow(v, 2) + 5 * v + 140 - u + i
+  u' = a * (b * v - u)
+
+  // Events:
+  event_0000001: @gt(v, Vthresh): u = u + d: v = c;
+  event_0000002: @or(and(gt(time, 10), lt(time, 15)), and(gt(time, 80), lt(time, 85))): i = 1;
+  event_0000003: @and(gt(time, 70), lt(time, 75)): i = -6;
+  event_0000004: @or(and(geq(time, 15), leq(time, 70)), and(geq(time, 75), leq(time, 80)), geq(time, 85)): i = 0;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  v = -64;
+  Vthresh = 30;
+  c = -60;
+  u = -16;
+  d = 4;
+  i = 0;
+  a = 0.03;
+  b = 0.25;
+
+  var v, u, i;
+end

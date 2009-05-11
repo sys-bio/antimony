@@ -1,0 +1,62 @@
+model vilarOscillator()
+
+  // Compartments and Species:
+  compartment deterministicOscillator;
+  species EmptySet in deterministicOscillator, A in deterministicOscillator;
+  species C in deterministicOscillator, DA in deterministicOscillator, DAp in deterministicOscillator;
+  species DR in deterministicOscillator, DRp in deterministicOscillator, MA in deterministicOscillator;
+  species MR in deterministicOscillator, R in deterministicOscillator;
+
+  // Reactions:
+  Reaction1: A + R -> C; A * R * Reaction1_gammaC;
+  Reaction2: A -> EmptySet; A * Reaction2_deltaA;
+  Reaction3: C -> R; C * Reaction3_deltaA;
+  Reaction4: R -> EmptySet; R * Reaction4_deltaR;
+  Reaction5: A + DA -> DAp; A * DA * Reaction5_gammaA;
+  Reaction6: DAp -> A + DA; DAp * Reaction6_thetaA;
+  Reaction7: DA -> DA + MA; DA * Reaction7_alphaA;
+  Reaction8: DAp -> DAp + MA; DAp * Reaction8_alphaAp;
+  Reaction9: MA -> EmptySet; MA * Reaction9_deltaMA;
+  Reaction10: MA -> A + MA; MA * Reaction10_betaA;
+  Reaction11: A + DR -> DRp; A * DR * Reaction11_gammaR;
+  Reaction12: DRp -> A + DR; DRp * Reaction12_thetaR;
+  Reaction13: DR -> DR + MR; DR * Reaction13_alphaR;
+  Reaction14: DRp -> DRp + MR; DRp * Reaction14_alphaRp;
+  Reaction15: MR -> EmptySet; MR * Reaction15_deltaMR;
+  Reaction16: MR -> MR + R; MR * Reaction16_betaR;
+
+  // Species initializations:
+  EmptySet = 0;
+  A = 0;
+  C = 0;
+  DA = 1;
+  DAp = 0;
+  DR = 1;
+  DRp = 0;
+  MA = 0;
+  MR = 0;
+  R = 0;
+
+  // Compartments initializations:
+  deterministicOscillator = 1;
+
+  // Other defined symbols initializations:
+  Reaction1_gammaC = 2;
+  Reaction2_deltaA = 1;
+  Reaction3_deltaA = 1;
+  Reaction4_deltaR = 0.2;
+  Reaction5_gammaA = 1;
+  Reaction6_thetaA = 50;
+  Reaction7_alphaA = 50;
+  Reaction8_alphaAp = 500;
+  Reaction9_deltaMA = 10;
+  Reaction10_betaA = 50;
+  Reaction11_gammaR = 1;
+  Reaction12_thetaR = 100;
+  Reaction13_alphaR = 0.01;
+  Reaction14_alphaRp = 50;
+  Reaction15_deltaMR = 0.5;
+  Reaction16_betaR = 5;
+
+  const EmptySet in deterministicOscillator;
+end

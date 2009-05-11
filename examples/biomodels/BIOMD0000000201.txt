@@ -1,0 +1,157 @@
+model Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
+
+  // Compartments and Species:
+  compartment cytosol;
+  species N in cytosol, Na in cytosol, Nan_ in cytosol, MF in cytosol, F in cytosol;
+  species Bp in cytosol, BN in cytosol, A in cytosol, K in cytosol, B in cytosol;
+  species MAx in cytosol, Rasa in cytosol, ERKa in cytosol, Xa in cytosol;
+  species MDusp in cytosol, Dusp in cytosol, Rasi in cytosol, ERKi in cytosol;
+  species Xi in cytosol, Rast in cytosol, ERKt in cytosol, Xt in cytosol;
+  species D in cytosol, AK in cytosol, Kt in cytosol, Fgf in cytosol;
+
+  // Assignment Rules:
+  Rasi := Rast - Rasa
+  ERKi := ERKt - ERKa
+  Xi := Xt - Xa
+  AK := Kt - K
+  vsFK := vsF * (KIG1 / (KIG1 + K))
+
+  // Reactions:
+  n_synth:  -> N; cytosol * epsilon * vsN;
+  N_degradation: N -> ; epsilon * cytosol * vdN * N / (KdN + N);
+  N_activation: N -> Na; epsilon * cytosol * kc * N * pow(KIF, j) / (pow(KIF, j) + pow(F, j));
+  Na_degradation: Na -> ; epsilon * cytosol * VdNa * Na / (KdNa + Na);
+  Na_transport: Na -> Nan_; epsilon * cytosol * (kt1 * Na - kt2 * Nan_);
+  Nan_degradation: Nan_ -> ; epsilon * cytosol * VdNan * Nan_ / (KdNan + Nan_);
+  MF_transkription:  -> MF; epsilon * cytosol * vsFK * pow(Nan_, p) / (pow(KA, p) + pow(Nan_, p));
+  MF_degradation: MF -> ; epsilon * cytosol * vmF * MF / (KdMF + MF);
+  F_translation:  -> F; epsilon * cytosol * ksF * MF;
+  F_degradation: F -> ; epsilon * cytosol * vdF * F / (KdF + F);
+  AK_dissoc: AK -> A + K; theta * cytosol * (d1 * AK - a1 * A * K);
+  B_synth:  -> B; theta * cytosol * vsB;
+  B_degradation: B -> ; theta * cytosol * kd1 * B;
+  B_phosphorylation: B -> Bp; theta * cytosol * VMK * KID / (KID + D) * B / (K1 + B) * AK / Kt;
+  BP_dephosphorylation: Bp -> B; theta * cytosol * VMP * Bp / (K2 + Bp);
+  B_shuttling: BN -> B; theta * cytosol * (kt4 * BN - kt3 * B);
+  Bp_degradation: Bp -> ; theta * cytosol * kd2 * Bp;
+  MAx_trans_basal:  -> MAx; theta * cytosol * v0;
+  MAx_trans_BN:  -> MAx; theta * cytosol * (vMB * pow(BN, n) / (pow(KaB, n) + pow(BN, n)));
+  MAx_trans_Xa:  -> MAx; theta * cytosol * (vMXa * pow(Xa, m) / (pow(KaXa, m) + pow(Xa, m)));
+  MAx_degradation: MAx -> ; theta * cytosol * vmd * MAx / (Kmd + MAx);
+  A_translation:  -> A; theta * cytosol * ksAx * MAx;
+  A_degradation: A -> ; theta * cytosol * vdAx * A / (KdAx + A);
+  Ras_activation:  -> Rasa; eta * cytosol * VMaRas * pow(Fgf, r) / (pow(KaFgf, r) + pow(Fgf, r)) * Rasi / (KaRas + Rasi);
+  Ras_inactivation: Rasa -> ; eta * cytosol * VMdRas * Rasa / (KdRas + Rasa);
+  Erk_activation:  -> ERKa; eta * cytosol * VMaErk * Rasa / Rast * ERKi / (KaErk + ERKi);
+  Erk_inactivation: ERKa -> ; eta * cytosol * kcDusp * Dusp * ERKa / (KdErk + ERKa);
+  X_activation:  -> Xa; eta * cytosol * VMaX * ERKa / ERKt * Xi / (KaX + Xi);
+  X_inactivation: Xa -> ; eta * cytosol * VMdX * Xa / (KdX + Xa);
+  MDusp_transkription:  -> MDusp; eta * cytosol * VMsMDusp * pow(Xa, q) / (pow(KaMDusp, q) + pow(Xa, q));
+  MDusp_degradation: MDusp -> ; eta * cytosol * VMdMDusp * MDusp / (KdMDusp + MDusp);
+  Dusp_translation:  -> Dusp; eta * cytosol * ksDusp * MDusp;
+  Dusp_degradation: Dusp -> ; eta * cytosol * vdDusp * Dusp / (KdDusp + Dusp);
+
+  // Species initializations:
+  N = 0.5;
+  Na = 0.2;
+  Nan_ = 0;
+  MF = 0.1;
+  F = 0.001;
+  Bp = 0.1;
+  BN = 0.001;
+  A = 0.1;
+  K = 3;
+  B = 0.1;
+  MAx = 0.1;
+  Rasa = 0.5;
+  ERKa = 0.2;
+  Xa = 0.1;
+  MDusp = 0.1;
+  Dusp = 0.1;
+  Rast = 2;
+  ERKt = 2;
+  Xt = 2;
+  D = 2;
+  Kt = 3;
+  Fgf = 1;
+
+  // Compartments initializations:
+  cytosol = 1;
+
+  // Other defined symbols initializations:
+  KdN = 1.4;
+  vsN = 0.23;
+  vdN = 2.82;
+  KdNa = 0.001;
+  VdNa = 0.01;
+  kt1 = 0.1;
+  kt2 = 0.1;
+  KdNan = 0.001;
+  VdNan = 0.1;
+  KdMF = 0.768;
+  KIG1 = 2.5;
+  vsFK = 0;
+  vsF = 3;
+  vmF = 1.92;
+  KA = 0.05;
+  KdF = 0.37;
+  vdF = 0.39;
+  ksF = 0.3;
+  kd1 = 0;
+  vsB = 0.087;
+  kd2 = 7.062;
+  v0 = 0.06;
+  vMB = 1.64;
+  vmd = 0.8;
+  KaB = 0.7;
+  KaXa = 0.05;
+  Kmd = 0.48;
+  n = 2;
+  m = 2;
+  vMXa = 0.5;
+  ksAx = 0.02;
+  vdAx = 0.6;
+  KdAx = 0.63;
+  d1 = 0.1;
+  a1 = 1.8;
+  K1 = 0.28;
+  K2 = 0.03;
+  kt3 = 0.7;
+  kt4 = 1.5;
+  ksDusp = 0.5;
+  vdDusp = 2;
+  KdDusp = 0.5;
+  kcDusp = 1.35;
+  KaFgf = 0.5;
+  KaRas = 0.103;
+  KdRas = 0.1;
+  KdErk = 0.05;
+  KaErk = 0.05;
+  KaX = 0.05;
+  KIF = 0.5;
+  KID = 0.5;
+  KdX = 0.05;
+  KaMDusp = 0.5;
+  KdMDusp = 0.5;
+  q = 2;
+  r = 2;
+  kc = 3.45;
+  j = 2;
+  p = 2;
+  epsilon = 0.3;
+  theta = 1.5;
+  eta = 0.3;
+  VMsMDusp = 0.9;
+  VMdMDusp = 0.5;
+  VMK = 5.08;
+  VMP = 1;
+  VMaRas = 4.968;
+  VMdRas = 0.41;
+  VMaErk = 3.3;
+  VMaX = 1.6;
+  VMdX = 0.5;
+
+  var vsFK;
+  const Rasi in cytosol, ERKi in cytosol, Xi in cytosol, AK in cytosol, Kt in cytosol;
+  const Fgf in cytosol;
+end

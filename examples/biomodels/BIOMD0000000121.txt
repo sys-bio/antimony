@@ -1,0 +1,64 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+  species c3 in cell, c2 in cell, c1 in cell, o in cell, i in cell, ik in cell;
+
+  // Assignment Rules:
+  ik := Gk * o * (v - vk)
+  vk := R * Temp / F * log(ko / ki)
+  Gk := 1.350000e-02 * pow(ko, 0.59)
+  a := 5.550000e-02 * exp(0.05547153 * (v - 12))
+  b := 2.357000e-03 * exp(-0.036588 * v)
+  aa := 6.550000e-02 * exp(0.05547153 * (v - 36))
+  bb := 2.935700e-03 * exp(-0.02158 * v)
+  ai := 0.439 * exp(-0.02352 * (v + 25)) * 4.5 / ko
+  bi := 0.656 * exp(0.000942 * v) * pow(4.5 / ko, 0.3)
+  u := ai * bb * aa / (aa * bi)
+
+  // Reactions:
+  reaction_0000001: c3 -> c2; (a * c3 - b * c2) * cell;
+  reaction_0000002: c2 -> c1; (ain * c2 - bin * c1) * cell;
+  reaction_0000003: c1 -> o; (c1 * aa - bb * o) * cell;
+  reaction_0000004: o -> i; (o * bi - ai * i) * cell;
+  reaction_0000005: c1 -> i; (aa * c1 - u * i) * cell;
+
+  // Events:
+  event_0000001: @and(gt(time, 50), leq(time, 300)): v = vtest;
+  event_0000002: @gt(time, 300): v = vhold;
+
+  // Species initializations:
+  c3 = 1;
+  c2 = 0;
+  c1 = 0;
+  o = 0.06;
+  i = 0;
+  ik = 0.1;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  v = -40;
+  vtest = 0;
+  vhold = -40;
+  R = 8.314;
+  F = 96.485;
+  Temp = 310;
+  ko = 5.4;
+  ki = 140;
+  vk = 0;
+  Gk = 0;
+  a = 0;
+  b = 0;
+  ain = 2.172;
+  bin = 1.077;
+  aa = 0;
+  bb = 0;
+  ai = 0;
+  bi = 0;
+  u = 0;
+
+  var v, vk, Gk, a, b, aa, bb, ai, bi, u;
+  const ik in cell;
+end

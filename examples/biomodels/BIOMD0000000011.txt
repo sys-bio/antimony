@@ -1,0 +1,104 @@
+model MAPK_in_Solution()
+
+  // Compartments and Species:
+  compartment Cytoplasm;
+  species MAPK in Cytoplasm, MAPKMEKpp in Cytoplasm, MAPKp in Cytoplasm, MAPKPH in Cytoplasm;
+  species MAPKpMAPKPH in Cytoplasm, MAPKpMEKpp in Cytoplasm, MAPKpp in Cytoplasm;
+  species MAPKppMAPKPH in Cytoplasm, MEK in Cytoplasm, MEKp in Cytoplasm;
+  species MEKPH in Cytoplasm, MEKpMEKPH in Cytoplasm, MEKpp in Cytoplasm;
+  species MEKppMEKPH in Cytoplasm, MEKpRAFp in Cytoplasm, MEKRAFp in Cytoplasm;
+  species RAF in Cytoplasm, RAFK in Cytoplasm, RAFp in Cytoplasm, RAFPH in Cytoplasm;
+  species RAFpRAFPH in Cytoplasm, RAFRAFK in Cytoplasm;
+
+  // Reactions:
+  Reaction1: RAF + RAFK -> RAFRAFK; Reaction1_a1 * RAF * RAFK;
+  Reaction2: RAFRAFK -> RAF + RAFK; Reaction2_d1 * RAFRAFK;
+  Reaction3: RAFRAFK -> RAFK + RAFp; Reaction3_k1 * RAFRAFK;
+  Reaction4: RAFp + RAFPH -> RAFpRAFPH; Reaction4_a2 * RAFp * RAFPH;
+  Reaction5: RAFpRAFPH -> RAFp + RAFPH; Reaction5_d2 * RAFpRAFPH;
+  Reaction6: RAFpRAFPH -> RAF + RAFPH; Reaction6_k2 * RAFpRAFPH;
+  Reaction7: MEK + RAFp -> MEKRAFp; Reaction7_a3 * MEK * RAFp;
+  Reaction8: MEKRAFp -> MEK + RAFp; Reaction8_d3 * MEKRAFp;
+  Reaction9: MEKRAFp -> MEKp + RAFp; Reaction9_k3 * MEKRAFp;
+  Reaction10: MEKp + MEKPH -> MEKpMEKPH; Reaction10_a4 * MEKp * MEKPH;
+  Reaction11: MEKpMEKPH -> MEKp + MEKPH; Reaction11_d4 * MEKpMEKPH;
+  Reaction12: MEKpMEKPH -> MEK + MEKPH; Reaction12_k4 * MEKpMEKPH;
+  Reaction13: MEKp + RAFp -> MEKpRAFp; Reaction13_a5 * MEKp * RAFp;
+  Reaction14: MEKpRAFp -> MEKp + RAFp; Reaction14_d5 * MEKpRAFp;
+  Reaction15: MEKpRAFp -> MEKpp + RAFp; Reaction15_k5 * MEKpRAFp;
+  Reaction16: MEKPH + MEKpp -> MEKppMEKPH; Reaction16_a6 * MEKPH * MEKpp;
+  Reaction17: MEKppMEKPH -> MEKPH + MEKpp; Reaction17_d6 * MEKppMEKPH;
+  Reaction18: MEKppMEKPH -> MEKp + MEKPH; Reaction18_k6 * MEKppMEKPH;
+  Reaction19: MAPK + MEKpp -> MAPKMEKpp; Reaction19_a7 * MAPK * MEKpp;
+  Reaction20: MAPKMEKpp -> MAPK + MEKpp; Reaction20_d7 * MAPKMEKpp;
+  Reaction21: MAPKMEKpp -> MAPKp + MEKpp; Reaction21_k7 * MAPKMEKpp;
+  Reaction22: MAPKp + MAPKPH -> MAPKpMAPKPH; Reaction22_a8 * MAPKp * MAPKPH;
+  Reaction23: MAPKpMAPKPH -> MAPKp + MAPKPH; Reaction23_d8 * MAPKpMAPKPH;
+  Reaction24: MAPKpMAPKPH -> MAPK + MAPKPH; Reaction24_k8 * MAPKpMAPKPH;
+  Reaction25: MAPKp + MEKpp -> MAPKpMEKpp; Reaction25_a9 * MAPKp * MEKpp;
+  Reaction26: MAPKpMEKpp -> MAPKp + MEKpp; Reaction26_d9 * MAPKpMEKpp;
+  Reaction27: MAPKpMEKpp -> MAPKpp + MEKpp; Reaction27_k9 * MAPKpMEKpp;
+  Reaction28: MAPKPH + MAPKpp -> MAPKppMAPKPH; Reaction28_a10 * MAPKPH * MAPKpp;
+  Reaction29: MAPKppMAPKPH -> MAPKPH + MAPKpp; Reaction29_d10 * MAPKppMAPKPH;
+  Reaction30: MAPKppMAPKPH -> MAPKp + MAPKPH; Reaction30_k10 * MAPKppMAPKPH;
+
+  // Species initializations:
+  MAPK = 0.3;
+  MAPKMEKpp = 0;
+  MAPKp = 0;
+  MAPKPH = 0.3;
+  MAPKpMAPKPH = 0;
+  MAPKpMEKpp = 0;
+  MAPKpp = 0;
+  MAPKppMAPKPH = 0;
+  MEK = 0.2;
+  MEKp = 0;
+  MEKPH = 0.2;
+  MEKpMEKPH = 0;
+  MEKpp = 0;
+  MEKppMEKPH = 0;
+  MEKpRAFp = 0;
+  MEKRAFp = 0;
+  RAF = 0.4;
+  RAFK = 0.1;
+  RAFp = 0;
+  RAFPH = 0.3;
+  RAFpRAFPH = 0;
+  RAFRAFK = 0;
+
+  // Compartments initializations:
+  Cytoplasm = 1;
+
+  // Other defined symbols initializations:
+  Reaction1_a1 = 1;
+  Reaction2_d1 = 0.4;
+  Reaction3_k1 = 0.1;
+  Reaction4_a2 = 0.5;
+  Reaction5_d2 = 0.5;
+  Reaction6_k2 = 0.1;
+  Reaction7_a3 = 3.3;
+  Reaction8_d3 = 0.42;
+  Reaction9_k3 = 0.1;
+  Reaction10_a4 = 10;
+  Reaction11_d4 = 0.8;
+  Reaction12_k4 = 0.1;
+  Reaction13_a5 = 3.3;
+  Reaction14_d5 = 0.4;
+  Reaction15_k5 = 0.1;
+  Reaction16_a6 = 10;
+  Reaction17_d6 = 0.8;
+  Reaction18_k6 = 0.1;
+  Reaction19_a7 = 20;
+  Reaction20_d7 = 0.6;
+  Reaction21_k7 = 0.1;
+  Reaction22_a8 = 5;
+  Reaction23_d8 = 0.4;
+  Reaction24_k8 = 0.1;
+  Reaction25_a9 = 20;
+  Reaction26_d9 = 0.6;
+  Reaction27_k9 = 0.1;
+  Reaction28_a10 = 5;
+  Reaction29_d10 = 0.4;
+  Reaction30_k10 = 0.1;
+
+end

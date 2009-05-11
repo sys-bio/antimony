@@ -1,0 +1,104 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment nucleus, cytoplasm;
+  species M_T in cytoplasm, M_P in cytoplasm, T0 in cytoplasm, T1 in cytoplasm;
+  species T2 in cytoplasm, P0 in cytoplasm, P1 in cytoplasm, P2 in cytoplasm;
+  species C in cytoplasm, CN_ in nucleus, Tt in cytoplasm, Pt in cytoplasm;
+
+  // Assignment Rules:
+  Tt := T0 + T1 + T2 + C + CN_ * nucleus / cytoplasm
+  Pt := P0 + P1 + P2 + C + CN_ * nucleus / cytoplasm
+  v_dT := (1 + (v_dT_fac - 1) * ceil(sin(time / l_d * pi_) * 0.9)) * v_dT_dark
+
+  // Reactions:
+  per_trans:  -> M_P; per_trans_v_sP * pow(per_trans_Ki_P, n) / (pow(per_trans_Ki_P, n) + pow(CN_, n));
+  tim_trans:  -> M_T; tim_trans_v_sT * pow(tim_trans_Ki_T, n) / (pow(tim_trans_Ki_T, n) + pow(CN_, n));
+  M_T_decay: M_T -> ; (M_T_decay_v_mT / (M_T_decay_K_mT + M_T) + kd) * M_T * cytoplasm;
+  M_P_decay: M_P -> ; (M_P_decay_v_mP / (M_P_decay_K_mP + M_P) + kd) * M_P * cytoplasm;
+  PER_transl:  -> P0; PER_transl_k_sP * M_P * cytoplasm;
+  TIM_transl:  -> T0; TIM_transl_k_sT * M_T * cytoplasm;
+  PO_decay: P0 -> ; kd * P0 * cytoplasm;
+  P1_decay: P1 -> ; kd * P1 * cytoplasm;
+  P2_decay: P2 -> ; kd * P2 * cytoplasm;
+  T0_decay: T0 -> ; kd * T0 * cytoplasm;
+  T1_decay: T1 -> ; kd * T1 * cytoplasm;
+  T2_decay: T2 -> ; kd * T2 * cytoplasm;
+  C_form: P2 + T2 -> C; (C_form_k3 * T2 * P2 - C_form_k4 * C) * cytoplasm;
+  C_decay: C -> ; C_decay_kd_C * C * cytoplasm;
+  CN_decay: CN_ -> ; CN_decay_kd_CN * CN_ * nucleus;
+  C_transp: C -> CN_; C_transp_k1 * C * cytoplasm - C_transp_k2 * CN_ * nucleus;
+  P_pho: P0 -> P1; P_pho_V_1P * P0 / (P_pho_K_1P + P0) * cytoplasm;
+  P1_pho: P1 -> P2; P1_pho_V_3P * P1 / (P1_pho_K_3P + P1) * cytoplasm;
+  P1_depho: P1 -> P0; P1_depho_V_2P * P1 / (P1_depho_K_2P + P1) * cytoplasm;
+  P2_depho: P2 -> P1; P2_depho_V_4P * P2 / (P2_depho_K_4P + P2) * cytoplasm;
+  T_pho: T0 -> T1; T_pho_V_1T * T0 / (T_pho_K_1T + T0) * cytoplasm;
+  T1_pho: T1 -> T2; T1_pho_V_3T * T1 / (T1_pho_K_3T + T1) * cytoplasm;
+  T1_depho: T1 -> T0; T1_depho_V_2T * T1 / (T1_depho_K_2T + T1) * cytoplasm;
+  T2_depho: T2 -> T1; T2_depho_V_4T * T2 / (T2_depho_K_4T + T2) * cytoplasm;
+  T2_light_deact: T2 -> ; v_dT * T2 / (T2_light_deact_K_dT + T2) * cytoplasm;
+  P2_light_deact: P2 -> ; P2_light_deact_v_dP * P2 / (P2_light_deact_K_dP + P2) * cytoplasm;
+
+  // Species initializations:
+  M_T = 1.41;
+  M_P = 0.09;
+  T0 = 0.54;
+  T1 = 0.79;
+  T2 = 4.65;
+  P0 = 0.02;
+  P1 = 0.02;
+  P2 = 0.01;
+  C = 0.18;
+  CN_ = 1.2;
+
+  // Compartments initializations:
+  nucleus = 1;
+  cytoplasm = 1;
+
+  // Other defined symbols initializations:
+  n = 4;
+  kd = 0.01;
+  v_dT = 2;
+  pi_ = 3.14159;
+  l_d = 12;
+  v_dT_fac = 2;
+  v_dT_dark = 2;
+  per_trans_v_sP = 0.8;
+  per_trans_Ki_P = 1;
+  tim_trans_v_sT = 1;
+  tim_trans_Ki_T = 1;
+  M_T_decay_v_mT = 0.7;
+  M_T_decay_K_mT = 0.2;
+  M_P_decay_v_mP = 0.8;
+  M_P_decay_K_mP = 0.2;
+  PER_transl_k_sP = 0.9;
+  TIM_transl_k_sT = 0.9;
+  C_form_k3 = 1.2;
+  C_form_k4 = 0.6;
+  C_decay_kd_C = 0.01;
+  CN_decay_kd_CN = 0.01;
+  C_transp_k1 = 1.2;
+  C_transp_k2 = 0.2;
+  P_pho_V_1P = 8;
+  P_pho_K_1P = 2;
+  P1_pho_V_3P = 8;
+  P1_pho_K_3P = 2;
+  P1_depho_K_2P = 2;
+  P1_depho_V_2P = 1;
+  P2_depho_V_4P = 1;
+  P2_depho_K_4P = 2;
+  T_pho_V_1T = 8;
+  T_pho_K_1T = 2;
+  T1_pho_V_3T = 8;
+  T1_pho_K_3T = 2;
+  T1_depho_K_2T = 2;
+  T1_depho_V_2T = 1;
+  T2_depho_V_4T = 1;
+  T2_depho_K_4T = 2;
+  T2_light_deact_K_dT = 0.2;
+  P2_light_deact_v_dP = 2;
+  P2_light_deact_K_dP = 0.2;
+
+  var v_dT;
+  const Tt in cytoplasm, Pt in cytoplasm;
+end

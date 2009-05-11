@@ -1,0 +1,69 @@
+model Rohwer2000_Phosphotransferase_System()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species EI in compartment_, PyrPI in compartment_, EIP in compartment_;
+  species HPr in compartment_, EIPHPr in compartment_, HPrP in compartment_;
+  species EIIA in compartment_, HPrPIIA in compartment_, EIIAP in compartment_;
+  species EIICB in compartment_, EIIAPIICB in compartment_, EIICBP in compartment_;
+  species EIICBPGlc in compartment_, PEP in compartment_, Pyr in compartment_;
+  species GlcP in compartment_, Glc in compartment_;
+
+  // Reactions:
+  v1: PEP + EI -> PyrPI; compartment_ * (v1_k1f * PEP * EI - v1_k1r * PyrPI);
+  v2: PyrPI -> EIP + Pyr; compartment_ * (v2_k2f * PyrPI - v2_k2r * Pyr * EIP);
+  v3: HPr + EIP -> EIPHPr; compartment_ * (v3_k3f * EIP * HPr - v3_k3r * EIPHPr);
+  v4: EIPHPr -> HPrP + EI; compartment_ * (v4_k4f * EIPHPr - v4_k4r * EI * HPrP);
+  v5: HPrP + EIIA -> HPrPIIA; compartment_ * (v5_k5f * HPrP * EIIA - v5_k5r * HPrPIIA);
+  v6: HPrPIIA -> EIIAP + HPr; compartment_ * (v6_k6f * HPrPIIA - v6_k6r * HPr * EIIAP);
+  v7: EIICB + EIIAP -> EIIAPIICB; compartment_ * (v7_k7f * EIIAP * EIICB - v7_k7r * EIIAPIICB);
+  v8: EIIAPIICB -> EIICBP + EIIA; compartment_ * (v8_k8f * EIIAPIICB - v8_k8r * EIIA * EIICBP);
+  v9: EIICBP + Glc -> EIICBPGlc; compartment_ * (v9_k9f * EIICBP * Glc - v9_k9r * EIICBPGlc);
+  v10: EIICBPGlc -> EIICB + GlcP; compartment_ * (v10_k10f * EIICBPGlc - v10_k10r * EIICB * GlcP);
+
+  // Species initializations:
+  EI = 3;
+  PyrPI = 0;
+  EIP = 2;
+  HPr = 25;
+  EIPHPr = 0;
+  HPrP = 25;
+  EIIA = 20;
+  HPrPIIA = 0;
+  EIIAP = 20;
+  EIICB = 5;
+  EIIAPIICB = 0;
+  EIICBP = 5;
+  EIICBPGlc = 0;
+  PEP = 2800;
+  Pyr = 900;
+  GlcP = 50;
+  Glc = 500;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  v1_k1f = 1960;
+  v1_k1r = 480000;
+  v2_k2f = 108000;
+  v2_k2r = 294;
+  v3_k3f = 14000;
+  v3_k3r = 14000;
+  v4_k4f = 84000;
+  v4_k4r = 3360;
+  v5_k5f = 21960;
+  v5_k5r = 21960;
+  v6_k6f = 4392;
+  v6_k6r = 3384;
+  v7_k7f = 880;
+  v7_k7r = 880;
+  v8_k8f = 2640;
+  v8_k8r = 960;
+  v9_k9f = 260;
+  v9_k9r = 389;
+  v10_k10f = 4800;
+  v10_k10r = 0.0054;
+
+  const PEP in compartment_, Pyr in compartment_, GlcP in compartment_, Glc in compartment_;
+end

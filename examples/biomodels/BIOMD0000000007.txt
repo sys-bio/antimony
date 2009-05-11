@@ -1,0 +1,140 @@
+model NovakTyson1997CellModel()
+
+  // Compartments and Species:
+  compartment Cell;
+  species UbE in Cell, UbE2 in Cell, Wee1 in Cell, Cdc25 in Cell, G2K in Cell;
+  species R in Cell, G1K in Cell, IE in Cell, PG2 in Cell, G1R in Cell, G2R in Cell;
+  species PG2R in Cell, SPF in Cell, MPF in Cell, IEB in Cell, UbEB in Cell;
+  species UbE2B in Cell, Wee1B in Cell, Cdc25B in Cell, Rum1Total in Cell;
+  species Cdc13Total in Cell, Cig2Total in Cell;
+
+  // Assignment Rules:
+  SPF := Cig1 + alpha * G1K + MPF
+  MPF := G2K + beta * PG2
+  IEB := 1 + -1 * IE
+  UbEB := 1 + -1 * UbE
+  UbE2B := 1 + -1 * UbE2
+  Wee1B := 1 + -1 * Wee1
+  Cdc25B := 1 + -1 * Cdc25
+  Rum1Total := G1R + G2R + PG2R + R
+  Cdc13Total := G2K + G2R + PG2 + PG2R
+  Cig2Total := G1K + G1R
+  k2 := UbE * V2 + (1 + -1 * UbE) * V2prime
+  k6 := UbE2 * V6 + (1 + -1 * UbE2) * V6prime
+  kwee := Vwprime * (1 + -1 * Wee1) + Vw * Wee1
+  k25 := Cdc25 * V25 + (1 + -1 * Cdc25) * V25prime
+
+  // Rate Rules:
+  Mass' = Mass * mu
+
+  // Reactions:
+  G2K_Creation:  -> G2K; k1;
+  G1K_Creation:  -> G1K; k5;
+  Cdc2Phos: G2K -> PG2; G2K * kwee + -1 * k25 * PG2;
+  G2R_Creation: G2K + R -> G2R; G2K * k7 * R + -1 * G2R * k7r;
+  PG2R_Creation: PG2 + R -> PG2R; k7 * PG2 * R + -1 * k7r * PG2R;
+  Rum1DegInG2R: G2R -> G2K; G2R * k4;
+  Rum1Deg: R -> ; k4 * R;
+  Rum1DegInPG2R: PG2R -> PG2; k4 * PG2R;
+  RumDegInG1R: G1R -> G1K; G1R * k4;
+  G2K_dissoc: G2K -> ; G2K * k2;
+  PG2_dissoc: PG2 -> ; k2 * PG2;
+  G1K_Dissociation: G1K -> ; G1K * k6;
+  PG2R_Dissociation: PG2R -> R; k2prime * PG2R;
+  G2R_Dissociation: G2R -> R; G2R * k2prime;
+  G1R_Dissociation: G1R -> R; G1R * k6prime;
+  G1R_Binding: G1K + R -> G1R; G1K * k8 * R + -1 * G1R * k8r;
+  G2R_Dissociation_UbE: G2R -> R; G2R * k2;
+  PG2R_Dissociation_UbE: PG2R -> R; k2 * PG2R;
+  Rum1_Production:  -> R; k3;
+  Rum1_Deg_SPF: R -> ; kp * Mass * R * SPF * pow(Kmp + R, -1);
+  IE_Reaction: IEB -> IE; IEB * ki * MPF * pow(IEB + Kmi, -1) + -1 * IE * kir * pow(IE + Kmir, -1);
+  UbE_Reaction: UbEB -> UbE; IE * ku * UbEB * pow(Kmu + UbEB, -1) + -1 * kur * UbE * pow(Kmur + UbE, -1);
+  UbE2_Reaction: UbE2B -> UbE2; ku2 * MPF * UbE2B * pow(Kmu2 + UbE2, -1) + -1 * kur2 * UbE2 * pow(Kmur2 + UbE2, -1);
+  Wee1_Reaction: Wee1B -> Wee1; kwr * Wee1B * pow(Kmwr + Wee1B, -1) + -1 * kw * MPF * Wee1 * pow(Kmw + Wee1, -1);
+  Cdc25_Reaction: Cdc25B -> Cdc25; Cdc25B * kc * MPF * pow(Cdc25B + Kmc, -1) + -1 * Cdc25 * kcr * pow(Cdc25 + Kmcr, -1);
+
+  // Events:
+  Start: @geq(SPF, 0.1): kp = kp * pow(2, -1);
+  Division: @leq(UbE, 0.1): Mass = Mass * pow(2, -1): kp = 2 * kp;
+
+  // Species initializations:
+  UbE = 1;
+  UbE2 = 0;
+  Wee1 = 0;
+  Cdc25 = 0;
+  G2K = 0;
+  R = 0.4;
+  G1K = 0;
+  IE = 0;
+  PG2 = 0;
+  G1R = 0;
+  G2R = 0;
+  PG2R = 0;
+  SPF = 0;
+  MPF = 0;
+  IEB = 0;
+  UbEB = 0;
+  UbE2B = 0;
+  Wee1B = 0;
+  Cdc25B = 0;
+
+  // Compartments initializations:
+  Cell = 1;
+
+  // Other defined symbols initializations:
+  kp = 3.25;
+  Mass = 1;
+  mu = 0.00495;
+  k1 = 0.015;
+  k2prime = 0.05;
+  k3 = 0.09375;
+  k4 = 0.1875;
+  k5 = 0.00175;
+  k6prime = 0;
+  k7 = 100;
+  k7r = 0.1;
+  k8 = 10;
+  k8r = 0.1;
+  kc = 1;
+  kcr = 0.25;
+  ki = 0.4;
+  kir = 0.1;
+  ku = 0.2;
+  kur = 0.1;
+  ku2 = 1;
+  kur2 = 0.3;
+  kw = 1;
+  kwr = 0.25;
+  V2 = 0.25;
+  V2prime = 0.0075;
+  V6 = 7.5;
+  V6prime = 0.0375;
+  V25 = 0.5;
+  V25prime = 0.025;
+  Vw = 0.35;
+  Vwprime = 0.035;
+  Kmc = 0.1;
+  Kmcr = 0.1;
+  Kmi = 0.01;
+  Kmir = 0.01;
+  Kmp = 0.001;
+  Kmu = 0.01;
+  Kmur = 0.01;
+  Kmu2 = 0.05;
+  Kmur2 = 0.05;
+  Kmw = 0.1;
+  Kmwr = 0.1;
+  alpha = 0.25;
+  beta = 0.05;
+  Cig1 = 0;
+  k2 = 0;
+  k6 = 0;
+  kwee = 0;
+  k25 = 0;
+
+  var kp, Mass, k2, k6, kwee, k25;
+  const SPF in Cell, MPF in Cell, IEB in Cell, UbEB in Cell, UbE2B in Cell;
+  const Wee1B in Cell, Cdc25B in Cell, Rum1Total in Cell, Cdc13Total in Cell;
+  const Cig2Total in Cell;
+end

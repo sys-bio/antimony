@@ -1,0 +1,158 @@
+model SmithAE2002_RanTransport()
+
+  // Compartments and Species:
+  compartment Cytosol, EC, Nucleus, Nuc_membrane, PM;
+  species Carrier_Cytosol in Cytosol, Carrier_RanGTP_Cytosol in Cytosol, RanGAP_Cytosol in Cytosol;
+  species RanBP1_Cytosol in Cytosol, RanBP1_Carrier_RanGTP_Cytosol in Cytosol;
+  species NTF2_Nucleus in Nucleus, RanGDP_Nucleus in Nucleus, RCC1_Nucleus in Nucleus;
+  species RanGTP_Nucleus in Nucleus, NTF2_RanGDP_Nucleus in Nucleus, Carrier_Nucleus in Nucleus;
+  species RanGDP_Cytosol in Cytosol, Carrier_RanGTP_Nucleus in Nucleus, NTF2_RanGDP_Cytosol in Cytosol;
+  species FRanGTP_Cytosol in Cytosol, FCarrier_RanGTP_Cytosol in Cytosol;
+  species FRanGDP_Cytosol in Cytosol, FNTF2_RanGDP_Cytosol in Cytosol, FRanBP1_Carrier_RanGTP_Cytosol in Cytosol;
+  species FCarrier_RanGTP_Nucleus in Nucleus, FRanGDP_Nucleus in Nucleus;
+  species FNTF2_RanGDP_Nucleus in Nucleus, FRanGTP_Nucleus in Nucleus, NTF2_Cytosol in Cytosol;
+  species Pipet_Cytosol in Cytosol, RanGTP_Cytosol in Cytosol;
+
+  // Assignment Rules:
+  Vmax_RanGTP_dephosphorylation_FRanGTP_dephosphorylation := RanGAP_Kcat_FRanGTP_dephosphorylation * RanGAP_Cytosol
+  Vmax_dephosphorylation_dephosphorylationF := RanGAP_Cytosol * RanGAP_Kcat_dephosphorylationF
+  Vmax_RanGTP_dephosphorylation_RanGTP_dephosphorylation := RanGAP_Kcat_RanGTP_dephosphorylation * RanGAP_Cytosol
+  Vmax_dephosphorylation_dephosphorylation := RanGAP_Cytosol * RanGAP_Kcat_dephosphorylation
+  ar_for_Microinj := piecewise(kinj * 0.0016611295681 * Pipet_Cytosol, and(gt(time, start), lt(time, start + tau)), 0)
+
+  // Reactions:
+  Carrier_FRanGTP_binding: Carrier_Cytosol + FRanGTP_Cytosol -> FCarrier_RanGTP_Cytosol; (Carrier_FRanGTP_binding_Kon_Carrier_RanGTP_binding * Carrier_Cytosol * FRanGTP_Cytosol + -(Carrier_FRanGTP_binding_Koff_Carrier_RanGTP_binding * FCarrier_RanGTP_Cytosol)) * Cytosol;
+  FRanGTP_dephosphorylation: FRanGTP_Cytosol -> FRanGDP_Cytosol; Vmax_RanGTP_dephosphorylation_FRanGTP_dephosphorylation * FRanGTP_Cytosol * (1 / (FRanGTP_dephosphorylation_Km_RanGTP_dephosphorylation + FRanGTP_Cytosol)) * Cytosol;
+  dephosphorylationF: FRanBP1_Carrier_RanGTP_Cytosol -> FRanGDP_Cytosol + RanBP1_Cytosol + Carrier_Cytosol; Vmax_dephosphorylation_dephosphorylationF * FRanBP1_Carrier_RanGTP_Cytosol * (1 / (dephosphorylationF_Km_dephosphorylation + FRanBP1_Carrier_RanGTP_Cytosol)) * Cytosol;
+  FRanGTP_Carrier_binding: Carrier_Nucleus + FRanGTP_Nucleus -> FCarrier_RanGTP_Nucleus; (FRanGTP_Carrier_binding_Kon_RanGTP_Carrier_binding * Carrier_Nucleus * FRanGTP_Nucleus + -(FRanGTP_Carrier_binding_Koff_RanGTP_Carrier_binding * FCarrier_RanGTP_Nucleus)) * Nucleus;
+  NTF2_FRanGDP_Unbinding: NTF2_Cytosol + FRanGDP_Cytosol -> FNTF2_RanGDP_Cytosol; (NTF2_FRanGDP_Unbinding_Kon_NTF2_RanGDP_binding * NTF2_Cytosol * FRanGDP_Cytosol + -(NTF2_FRanGDP_Unbinding_Koff_NTF2_RanGDP_binding * FNTF2_RanGDP_Cytosol)) * Cytosol;
+  RanBP1_bindingF: FCarrier_RanGTP_Cytosol + RanBP1_Cytosol -> FRanBP1_Carrier_RanGTP_Cytosol; (RanBP1_bindingF_Kon_RanBP1_binding * FCarrier_RanGTP_Cytosol * RanBP1_Cytosol + -(RanBP1_bindingF_Koff_RanBP1_binding * FRanBP1_Carrier_RanGTP_Cytosol)) * Cytosol;
+  NTF2_FRanGDP_unbinding: FNTF2_RanGDP_Nucleus -> NTF2_Nucleus + FRanGDP_Nucleus; (NTF2_FRanGDP_unbinding_Koff_NTF2_RanGDP_unbinding * FNTF2_RanGDP_Nucleus + -(NTF2_FRanGDP_unbinding_Kon_NTF2_RanGDP_unbinding * NTF2_Nucleus * FRanGDP_Nucleus)) * Nucleus;
+  Microinj:  -> FRanGDP_Cytosol; ar_for_Microinj * Cytosol * 1;
+  FRanGDP_to_FRanGTP: FRanGDP_Nucleus -> FRanGTP_Nucleus; 0.75 * FRanGDP_to_FRanGTP_RCC1Kcat * RCC1_Nucleus * FRanGDP_Nucleus * (1 / (FRanGDP_to_FRanGTP_RCC1Km + FRanGDP_Nucleus + NTF2_RanGDP_Nucleus)) * Nucleus;
+  RanGTP_dephosphorylation: RanGTP_Cytosol -> RanGDP_Cytosol; Vmax_RanGTP_dephosphorylation_RanGTP_dephosphorylation * RanGTP_Cytosol * (1 / (RanGTP_dephosphorylation_Km_RanGTP_dephosphorylation + RanGTP_Cytosol)) * Cytosol;
+  RanGTP_Carrier_binding: RanGTP_Nucleus + Carrier_Nucleus -> Carrier_RanGTP_Nucleus; (RanGTP_Carrier_binding_Kon_RanGTP_Carrier_binding * RanGTP_Nucleus * Carrier_Nucleus + -(RanGTP_Carrier_binding_Koff_RanGTP_Carrier_binding * Carrier_RanGTP_Nucleus)) * Nucleus;
+  NTF2_RanGDP_Unbinding: RanGDP_Cytosol + NTF2_Cytosol -> NTF2_RanGDP_Cytosol; (NTF2_RanGDP_Unbinding_Kon_NTF2_RanGDP_binding * RanGDP_Cytosol * NTF2_Cytosol + -(NTF2_RanGDP_Unbinding_Koff_NTF2_RanGDP_binding * NTF2_RanGDP_Cytosol)) * Cytosol;
+  dephosphorylation: RanBP1_Carrier_RanGTP_Cytosol -> RanGDP_Cytosol + Carrier_Cytosol + RanBP1_Cytosol; Vmax_dephosphorylation_dephosphorylation * RanBP1_Carrier_RanGTP_Cytosol * (1 / (dephosphorylation_Km_dephosphorylation + RanBP1_Carrier_RanGTP_Cytosol)) * Cytosol;
+  RanGDP_to_RanGTP: RanGDP_Nucleus -> RanGTP_Nucleus; 0.75 * RanGDP_to_RanGTP_RCC1Kcat * RCC1_Nucleus * RanGDP_Nucleus * (1 / (RanGDP_to_RanGTP_RCC1Km + RanGDP_Nucleus + NTF2_RanGDP_Nucleus)) * Nucleus;
+  NTF2_RAN_Nuc_Exchange: 4NTF2_RanGDP_Nucleus -> 4NTF2_Nucleus + RanGDP_Nucleus + 3RanGTP_Nucleus; 0.25 * NTF2_RAN_Nuc_Exchange_RCC1Kcat * RCC1_Nucleus * NTF2_RanGDP_Nucleus * (1 / (NTF2_RAN_Nuc_Exchange_RCC1Km + RanGDP_Nucleus + NTF2_RanGDP_Nucleus)) * Nucleus;
+  NTF2_RanGDP_unbinding: NTF2_RanGDP_Nucleus -> RanGDP_Nucleus + NTF2_Nucleus; (NTF2_RanGDP_unbinding_Koff_NTF2_RanGDP_unbinding * NTF2_RanGDP_Nucleus + -(NTF2_RanGDP_unbinding_Kon_NTF2_RanGDP_unbinding * RanGDP_Nucleus * NTF2_Nucleus)) * Nucleus;
+  Carrier_RanGTP_binding: RanGTP_Cytosol + Carrier_Cytosol -> Carrier_RanGTP_Cytosol; (Carrier_RanGTP_binding_Kon_Carrier_RanGTP_binding * RanGTP_Cytosol * Carrier_Cytosol + -(Carrier_RanGTP_binding_Koff_Carrier_RanGTP_binding * Carrier_RanGTP_Cytosol)) * Cytosol;
+  NTF2_FRAN_Nuc_Exchange: 4FNTF2_RanGDP_Nucleus -> 4NTF2_Nucleus + 3FRanGTP_Nucleus + FRanGDP_Nucleus; 0.25 * NTF2_FRAN_Nuc_Exchange_RCC1Kcat * RCC1_Nucleus * FNTF2_RanGDP_Nucleus * (1 / (NTF2_FRAN_Nuc_Exchange_RCC1Km + RanGDP_Nucleus + FNTF2_RanGDP_Nucleus)) * Nucleus;
+  RanBP1_binding: RanBP1_Cytosol + Carrier_RanGTP_Cytosol -> RanBP1_Carrier_RanGTP_Cytosol; (RanBP1_binding_Kon_RanBP1_binding * RanBP1_Cytosol * Carrier_RanGTP_Cytosol + -(RanBP1_binding_Koff_RanBP1_binding * RanBP1_Carrier_RanGTP_Cytosol)) * Cytosol;
+  Carrier_RanGTP_flux: Carrier_RanGTP_Cytosol -> Carrier_RanGTP_Nucleus; Carrier_RanGTP_flux_Carrier_RanGTP_Kperm * (Carrier_RanGTP_Cytosol + -Carrier_RanGTP_Nucleus) * Nuc_membrane;
+  NTF2_flux: NTF2_Cytosol -> NTF2_Nucleus; NTF2_flux_NTF2_Kperm * (NTF2_Cytosol + -NTF2_Nucleus) * Nuc_membrane;
+  NTF2_RanGDP_flux: NTF2_RanGDP_Cytosol -> NTF2_RanGDP_Nucleus; NTF2_RanGDP_flux_NTF2_RanGDP_Kperm * (NTF2_RanGDP_Cytosol + -NTF2_RanGDP_Nucleus) * Nuc_membrane;
+  Carrier_flux: Carrier_Cytosol -> Carrier_Nucleus; Carrier_flux_Carrier_Kperm * (Carrier_Cytosol + -Carrier_Nucleus) * Nuc_membrane;
+  FRanGDP_flux: FRanGDP_Cytosol -> FRanGDP_Nucleus; FRanGDP_flux_RanGDP_Kperm * (FRanGDP_Cytosol + -FRanGDP_Nucleus) * Nuc_membrane;
+  Carrier_FRanGTP_flux: FCarrier_RanGTP_Cytosol -> FCarrier_RanGTP_Nucleus; Carrier_FRanGTP_flux_Carrier_RanGTP_Kperm * (FCarrier_RanGTP_Cytosol + -FCarrier_RanGTP_Nucleus) * Nuc_membrane;
+  FNTF2_RanGDP_flux: FNTF2_RanGDP_Cytosol -> FNTF2_RanGDP_Nucleus; FNTF2_RanGDP_flux_NTF2_RanGDP_Kperm * (FNTF2_RanGDP_Cytosol + -FNTF2_RanGDP_Nucleus) * Nuc_membrane;
+  FRanGTP_flux: FRanGTP_Cytosol -> FRanGTP_Nucleus; FRanGTP_flux_RanGTP_Kperm * (FRanGTP_Cytosol + -FRanGTP_Nucleus) * Nuc_membrane;
+  RanGDP_flux: RanGDP_Cytosol -> RanGDP_Nucleus; RanGDP_flux_RanGDP_Kperm * (RanGDP_Cytosol + -RanGDP_Nucleus) * Nuc_membrane;
+  RanGTP_flux: RanGTP_Cytosol -> RanGTP_Nucleus; RanGTP_flux_RanGTP_Kperm * (RanGTP_Cytosol + -RanGTP_Nucleus) * Nuc_membrane;
+
+  // Species initializations:
+  Carrier_Cytosol = 11.8952664327711;
+  Carrier_RanGTP_Cytosol = 0.00182967434742422;
+  RanGAP_Cytosol = 0.5;
+  RanBP1_Cytosol = 2.91577340630959;
+  RanBP1_Carrier_RanGTP_Cytosol = 0.0842265936904004;
+  NTF2_Nucleus = 0.560888580955963;
+  RanGDP_Nucleus = 0.0466849733424111;
+  RCC1_Nucleus = 0.4;
+  RanGTP_Nucleus = 0.0118032373274648;
+  NTF2_RanGDP_Nucleus = 0.939111419044037;
+  Carrier_Nucleus = 10.8211328580636;
+  RanGDP_Cytosol = 1.75546095870568;
+  Carrier_RanGTP_Nucleus = 11.5694219089212;
+  NTF2_RanGDP_Cytosol = 1.47617820113791;
+  FRanGTP_Cytosol = 0;
+  FCarrier_RanGTP_Cytosol = 0;
+  FRanGDP_Cytosol = 1;
+  FNTF2_RanGDP_Cytosol = 0;
+  FRanBP1_Carrier_RanGTP_Cytosol = 0;
+  FCarrier_RanGTP_Nucleus = 0;
+  FRanGDP_Nucleus = 0;
+  FNTF2_RanGDP_Nucleus = 0;
+  FRanGTP_Nucleus = 0;
+  NTF2_Cytosol = 0.023821798862085;
+  Pipet_Cytosol = 0;
+  RanGTP_Cytosol = 0;
+
+  // Compartments initializations:
+  Cytosol = 1;
+  EC = 1.40845070422535;
+  Nucleus = 0.408450704225352;
+  Nuc_membrane = 0.245070422535211;
+  PM = 1.40845070422535;
+
+  // Other defined symbols initializations:
+  RanGAP_Kcat_FRanGTP_dephosphorylation = 6;
+  Vmax_RanGTP_dephosphorylation_FRanGTP_dephosphorylation = 0;
+  RanGAP_Kcat_dephosphorylationF = 6;
+  Vmax_dephosphorylation_dephosphorylationF = 0;
+  RanGAP_Kcat_RanGTP_dephosphorylation = 6;
+  Vmax_RanGTP_dephosphorylation_RanGTP_dephosphorylation = 0;
+  RanGAP_Kcat_dephosphorylation = 6;
+  Vmax_dephosphorylation_dephosphorylation = 0;
+  kinj = 25;
+  start = 1;
+  tau = 0.4;
+  ar_for_Microinj = 0;
+  Carrier_FRanGTP_binding_Kon_Carrier_RanGTP_binding = 0;
+  Carrier_FRanGTP_binding_Koff_Carrier_RanGTP_binding = 0;
+  FRanGTP_dephosphorylation_Km_RanGTP_dephosphorylation = 0.43;
+  dephosphorylationF_Km_dephosphorylation = 0.43;
+  FRanGTP_Carrier_binding_Kon_RanGTP_Carrier_binding = 100;
+  FRanGTP_Carrier_binding_Koff_RanGTP_Carrier_binding = 1;
+  NTF2_FRanGDP_Unbinding_Kon_NTF2_RanGDP_binding = 100;
+  NTF2_FRanGDP_Unbinding_Koff_NTF2_RanGDP_binding = 2.5;
+  RanBP1_bindingF_Kon_RanBP1_binding = 100;
+  RanBP1_bindingF_Koff_RanBP1_binding = 0.5;
+  NTF2_FRanGDP_unbinding_Koff_NTF2_RanGDP_unbinding = 2.5;
+  NTF2_FRanGDP_unbinding_Kon_NTF2_RanGDP_unbinding = 100;
+  FRanGDP_to_FRanGTP_RCC1Kcat = 8.5;
+  FRanGDP_to_FRanGTP_RCC1Km = 1.1;
+  RanGTP_dephosphorylation_Km_RanGTP_dephosphorylation = 0.43;
+  RanGTP_Carrier_binding_Kon_RanGTP_Carrier_binding = 100;
+  RanGTP_Carrier_binding_Koff_RanGTP_Carrier_binding = 1;
+  NTF2_RanGDP_Unbinding_Kon_NTF2_RanGDP_binding = 100;
+  NTF2_RanGDP_Unbinding_Koff_NTF2_RanGDP_binding = 2.5;
+  dephosphorylation_Km_dephosphorylation = 0.43;
+  RanGDP_to_RanGTP_RCC1Kcat = 8.5;
+  RanGDP_to_RanGTP_RCC1Km = 1.1;
+  NTF2_RAN_Nuc_Exchange_RCC1Kcat = 8.5;
+  NTF2_RAN_Nuc_Exchange_RCC1Km = 1.1;
+  NTF2_RanGDP_unbinding_Koff_NTF2_RanGDP_unbinding = 2.5;
+  NTF2_RanGDP_unbinding_Kon_NTF2_RanGDP_unbinding = 100;
+  Carrier_RanGTP_binding_Kon_Carrier_RanGTP_binding = 0;
+  Carrier_RanGTP_binding_Koff_Carrier_RanGTP_binding = 0;
+  NTF2_FRAN_Nuc_Exchange_RCC1Kcat = 8.5;
+  NTF2_FRAN_Nuc_Exchange_RCC1Km = 1.1;
+  RanBP1_binding_Kon_RanBP1_binding = 100;
+  RanBP1_binding_Koff_RanBP1_binding = 0.5;
+  Carrier_RanGTP_flux_I = 0;
+  Carrier_RanGTP_flux_Carrier_RanGTP_Kperm = 0.173333;
+  NTF2_flux_I = 0;
+  NTF2_flux_NTF2_Kperm = 3.73333;
+  NTF2_RanGDP_flux_I = 0;
+  NTF2_RanGDP_flux_NTF2_RanGDP_Kperm = 3.73333;
+  Carrier_flux_I = 0;
+  Carrier_flux_Carrier_Kperm = 1.86667;
+  FRanGDP_flux_I = 0;
+  FRanGDP_flux_RanGDP_Kperm = 0;
+  Carrier_FRanGTP_flux_I = 0;
+  Carrier_FRanGTP_flux_Carrier_RanGTP_Kperm = 0.173333;
+  FNTF2_RanGDP_flux_I = 0;
+  FNTF2_RanGDP_flux_NTF2_RanGDP_Kperm = 3.73333;
+  FRanGTP_flux_I = 0;
+  FRanGTP_flux_RanGTP_Kperm = 0;
+  RanGDP_flux_I = 0;
+  RanGDP_flux_RanGDP_Kperm = 0;
+  RanGTP_flux_I = 0;
+  RanGTP_flux_RanGTP_Kperm = 0;
+
+  var Vmax_RanGTP_dephosphorylation_FRanGTP_dephosphorylation, Vmax_dephosphorylation_dephosphorylationF;
+  var Vmax_RanGTP_dephosphorylation_RanGTP_dephosphorylation, Vmax_dephosphorylation_dephosphorylation;
+  var ar_for_Microinj;
+end

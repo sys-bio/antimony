@@ -1,0 +1,31 @@
+model Zatorsky2006_p53_Model5()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species x in compartment_, y in compartment_, y0 in compartment_;
+
+  // Reactions:
+  R1:  -> x; compartment_ * Theta * x * psi;
+  R3: x -> ; compartment_ * alpha_xy * y * x;
+  R4:  -> y0; compartment_ * beta_y * x * psi;
+  R5: y0 -> y; compartment_ * alpha_0 * y0;
+  R6: y -> ; compartment_ * alpha_y * y;
+
+  // Species initializations:
+  x = 0.02;
+  y = 0.2;
+  y0 = 0.5;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  psi = 1;
+  alpha_x = 0;
+  alpha_xy = 3.7;
+  beta_y = 1.5;
+  alpha_y = 0.9;
+  alpha_0 = 1.1;
+  Theta = 2;
+
+end

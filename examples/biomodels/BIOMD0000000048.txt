@@ -1,0 +1,120 @@
+model Kholodenko1999_EGFRsignaling()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species EGF in compartment_, R in compartment_, Ra in compartment_, R2 in compartment_;
+  species RP in compartment_, PLCg in compartment_, RPLCg in compartment_;
+  species RPLCgP in compartment_, PLCgP in compartment_, Grb in compartment_;
+  species RG in compartment_, SOS in compartment_, RGS in compartment_, GS in compartment_;
+  species Shc in compartment_, RSh in compartment_, RShP in compartment_;
+  species ShP in compartment_, RShG in compartment_, ShG in compartment_;
+  species RShGS in compartment_, ShGS in compartment_, PLCgl in compartment_;
+
+  // Reactions:
+  v1: R + EGF -> Ra; (v1_k1f * R * EGF - v1_k1b * Ra) * compartment_;
+  v2: 2Ra -> R2; (v2_k2f * Ra * Ra - v2_k2b * R2) * compartment_;
+  v3: R2 -> RP; (v3_k3f * R2 - v3_k3b * RP) * compartment_;
+  v4: RP -> R2; v4_V4 * RP / (v4_K4 + RP) * compartment_;
+  v5: RP + PLCg -> RPLCg; (v5_k5f * RP * PLCg - v5_k5b * RPLCg) * compartment_;
+  v6: RPLCg -> RPLCgP; (v6_k6f * RPLCg - v6_k6b * RPLCgP) * compartment_;
+  v7: RPLCgP -> PLCgP + RP; (v7_k7f * RPLCgP - v7_k7b * RP * PLCgP) * compartment_;
+  v8: PLCgP -> PLCg; v8_V8 * PLCgP / (v8_K8 + PLCgP) * compartment_;
+  v9: Grb + RP -> RG; (v9_k9f * RP * Grb - v9_k9b * RG) * compartment_;
+  v10: RG + SOS -> RGS; (v10_k10f * RG * SOS - v10_k10b * RGS) * compartment_;
+  v11: RGS -> GS + RP; (v11_k11f * RGS - v11_k11b * RP * GS) * compartment_;
+  v12: GS -> Grb + SOS; (v12_k12f * GS - v12_k12b * Grb * SOS) * compartment_;
+  v13: Shc + RP -> RSh; (v13_k13f * RP * Shc - v13_k13b * RSh) * compartment_;
+  v14: RSh -> RShP; (v14_k14f * RSh - v14_k14b * RShP) * compartment_;
+  v15: RShP -> RP + ShP; (v15_k15f * RShP - v15_k15b * ShP * RP) * compartment_;
+  v16: ShP -> Shc; v16_V16 * ShP / (v16_K16 + ShP) * compartment_;
+  v17: RShP + Grb -> RShG; (v17_k17f * RShP * Grb - v17_k17b * RShG) * compartment_;
+  v18: RShG -> ShG + RP; (v18_k18f * RShG - v18_k18b * RP * ShG) * compartment_;
+  v19: SOS + RShG -> RShGS; (v19_k19f * RShG * SOS - v19_k19b * RShGS) * compartment_;
+  v20: RShGS -> ShGS + RP; (v20_k20f * RShGS - v20_k20b * ShGS * RP) * compartment_;
+  v21: Grb + ShP -> ShG; (v21_k21f * ShP * Grb - v21_k21b * ShG) * compartment_;
+  v22: ShG + SOS -> ShGS; (v22_k22f * ShG * SOS - v22_k22b * ShGS) * compartment_;
+  v23: ShGS -> GS + ShP; (v23_k23f * ShGS - v23_k23b * ShP * GS) * compartment_;
+  v24: RShP + GS -> RShGS; (v24_k24f * RShP * GS - v24_k24b * RShGS) * compartment_;
+  v25: PLCgP -> PLCgl; (v25_k25f * PLCgP - v25_k25b * PLCgl) * compartment_;
+
+  // Species initializations:
+  EGF = 680;
+  R = 100;
+  Ra = 0;
+  R2 = 0;
+  RP = 0;
+  PLCg = 105;
+  RPLCg = 0;
+  RPLCgP = 0;
+  PLCgP = 0;
+  Grb = 85;
+  RG = 0;
+  SOS = 34;
+  RGS = 0;
+  GS = 0;
+  Shc = 150;
+  RSh = 0;
+  RShP = 0;
+  ShP = 0;
+  RShG = 0;
+  ShG = 0;
+  RShGS = 0;
+  ShGS = 0;
+  PLCgl = 0;
+
+  // Compartments initializations:
+  compartment_ = 3e-12;
+
+  // Other defined symbols initializations:
+  v1_k1f = 0.003;
+  v1_k1b = 0.06;
+  v2_k2f = 0.01;
+  v2_k2b = 0.1;
+  v3_k3f = 1;
+  v3_k3b = 0.01;
+  v4_V4 = 450;
+  v4_K4 = 50;
+  v5_k5f = 0.06;
+  v5_k5b = 0.2;
+  v6_k6f = 1;
+  v6_k6b = 0.05;
+  v7_k7f = 0.3;
+  v7_k7b = 0.006;
+  v8_V8 = 1;
+  v8_K8 = 100;
+  v9_k9f = 0.003;
+  v9_k9b = 0.05;
+  v10_k10f = 0.01;
+  v10_k10b = 0.06;
+  v11_k11f = 0.03;
+  v11_k11b = 0.0045;
+  v12_k12f = 0.0015;
+  v12_k12b = 0.0001;
+  v13_k13f = 0.09;
+  v13_k13b = 0.6;
+  v14_k14f = 6;
+  v14_k14b = 0.06;
+  v15_k15f = 0.3;
+  v15_k15b = 0.0009;
+  v16_V16 = 1.7;
+  v16_K16 = 340;
+  v17_k17f = 0.003;
+  v17_k17b = 0.1;
+  v18_k18f = 0.3;
+  v18_k18b = 0.0009;
+  v19_k19f = 0.01;
+  v19_k19b = 0.0214;
+  v20_k20f = 0.12;
+  v20_k20b = 0.00024;
+  v21_k21f = 0.003;
+  v21_k21b = 0.1;
+  v22_k22f = 0.03;
+  v22_k22b = 0.064;
+  v23_k23f = 0.1;
+  v23_k23b = 0.021;
+  v24_k24f = 0.009;
+  v24_k24b = 0.0429;
+  v25_k25f = 1;
+  v25_k25b = 0.03;
+
+end

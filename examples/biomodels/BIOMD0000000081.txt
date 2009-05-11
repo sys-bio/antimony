@@ -1,0 +1,112 @@
+model Suh2004_KCNQ_regulation()
+
+  // Compartments and Species:
+  compartment EX, M, Cytoplasm;
+  species GTPgS_C in Cytoplasm, KCNQsites_M in M, PIP2_M in M, GGDPbS_M in M;
+  species Mg2_C in Cytoplasm, ATP_C in Cytoplasm, oxoM_EX in EX, GDPbS_C in Cytoplasm;
+  species GGTPMg_M in M, GDP_C in Cytoplasm, GTP_C in Cytoplasm, GGDPAlF4Mg_M in M;
+  species ip3_C in Cytoplasm, AlF4_C in Cytoplasm, G_M in M, GGTP_M in M;
+  species GGDPAlF4_M in M, GGTPgS_M in M, PI_M in M, PIP_M in M, PIP2xKCNQ_M in M;
+  species GGTPgSMg_M in M, GGDP_M in M;
+
+  // Assignment Rules:
+  GTP_C := 100 + -(50 * exp(-(0.00833333333333333 * (290 + time))))
+  MgSat20 := 1 * (1 / (1 + 20 * (1 / Mg2_C)))
+  ATPSat300 := 1 * (1 / (1 + 300 * (1 / (0.5 + ATP_C))))
+  MgSat10 := 0.2 + 0.8 * 1 * (1 / (1 + KMgGTPase * (1 / Mg2_C)))
+  OxoSat := 1 * (1 / (1 + Koxom * (1 / (1.000000e-05 + oxoM_EX))))
+  Gactive := GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M
+  ATPSat1000 := 1 * (1 / (1 + 1000 * (1 / (0.5 + ATP_C))))
+  I_KCNQ := 1.33 * pow(0.025 * PIP2xKCNQ_M, nHill)
+  fGactive := (GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M) / 200
+
+  // Reactions:
+  PIP5kinase: 0.0009967ATP_C + PIP_M -> PIP2_M; (0.2 + 0.8 * MgSat20) * PIP5kinase_kPIP5Kinase * PIP_M * ATPSat300;
+  IP3Phosphatase: ip3_C -> ; ip3_C * IP3Phosphatase_kIP3ase;
+  PIP2binding: KCNQsites_M + PIP2_M -> PIP2xKCNQ_M; PIP2binding_kPIP2on * KCNQsites_M * PIP2_M + -(PIP2binding_kPIP2off * PIP2xKCNQ_M);
+  MgonGGTPgS: GGTPgS_M -> GGTPgSMg_M; MgonGGTPgS_kMg2onGTPgS * GGTPgS_M * Mg2_C;
+  GGTPase: GGTPMg_M -> GGDP_M; GGTPase_kGGTPase * MgSat10 * GGTPMg_M;
+  GTPon: G_M -> GGTP_M; GTPon_kGTPon * G_M * GTP_C + -(GTPon_kGTPoff * GGTP_M);
+  GTPgSon: 0.0009967GTPgS_C + G_M -> GGTPgS_M; GTPgSon_kGTPgSon * G_M * GTPgS_C + -(GTPgSon_kGTPgSoff * GGTPgS_M);
+  GDPbSon: G_M + 0.0009967GDPbS_C -> GGDPbS_M; GDPbSon_kGDPbSon * G_M * GDPbS_C + -(GDPbSon_kGGDPbSoff * (1 + 20 * OxoSat) * GGDPbS_M);
+  MgGTPon: GGTP_M -> GGTPMg_M; MgGTPon_kMg2onGTP * GGTP_M * Mg2_C;
+  GDPdissoc: GGDP_M -> 0.0009967GDP_C + G_M; GDPdissoc_kGDPoff * GGDP_M * (OxoSat + GDPdissoc_TonicAct) + -(GDPdissoc_kGDPon * GDP_C * G_M);
+  PIP2_5Pase: PIP2_M -> PIP_M; MgSat20 * PIP2_5Pase_kPIP2Pase * PIP2_M;
+  PLC: PIP2_M -> 0.0009967ip3_C; PLC_kPLC * (fGactive + PLC_PLCspont) * PIP2_M;
+  AlF4on: 0.0009967AlF4_C + GGDP_M -> GGDPAlF4_M; AlF4on_kAlF4on * AlF4_C * GGDP_M + -(AlF4on_kAlF4off * GGDPAlF4_M);
+  PI4Kinase: 0.0009967ATP_C + PI_M -> PIP_M; (0.2 + 0.8 * MgSat20) * PI4Kinase_kPI4Kinase * PI_M * ATPSat1000;
+  MgonGDPAlF4: GGDPAlF4_M -> GGDPAlF4Mg_M; MgonGDPAlF4_kMgonAlF4 * GGDPAlF4_M * Mg2_C;
+
+  // Events:
+  event_0000001: @geq(time, 3): oxoM_EX = 10;
+  event_0000002: @geq(time, 8): oxoM_EX = 0;
+
+  // Species initializations:
+  GTPgS_C = 0;
+  KCNQsites_M = 6.7;
+  PIP2_M = 5000;
+  GGDPbS_M = 0;
+  Mg2_C = 2100;
+  ATP_C = 3000;
+  oxoM_EX = 0;
+  GDPbS_C = 0;
+  GGTPMg_M = 0.1;
+  GDP_C = 0;
+  GTP_C = 0;
+  GGDPAlF4Mg_M = 0;
+  ip3_C = 0.48;
+  AlF4_C = 0;
+  G_M = 0.065;
+  GGTP_M = 0.048;
+  GGDPAlF4_M = 0;
+  GGTPgS_M = 0;
+  PI_M = 200000;
+  PIP_M = 1150;
+  PIP2xKCNQ_M = 33.3;
+  GGTPgSMg_M = 0;
+  GGDP_M = 200;
+
+  // Compartments initializations:
+  EX = 1;
+  M = 1;
+  Cytoplasm = 1;
+
+  // Other defined symbols initializations:
+  MgSat20 = 0;
+  ATPSat300 = 0;
+  MgSat10 = 0;
+  OxoSat = 0;
+  Gactive = 0;
+  ATPSat1000 = 0;
+  KMgGTPase = 10;
+  Koxom = 8;
+  I_KCNQ = 0;
+  nHill = 1.8;
+  fGactive = 0;
+  PIP5kinase_kPIP5Kinase = 0.06;
+  IP3Phosphatase_kIP3ase = 0.3;
+  PIP2binding_kPIP2on = 0.00025;
+  PIP2binding_kPIP2off = 0.25;
+  MgonGGTPgS_kMg2onGTPgS = 0.002;
+  GGTPase_kGGTPase = 1.8;
+  GTPon_kGTPon = 0.45;
+  GTPon_kGTPoff = 0.08;
+  GTPgSon_kGTPgSon = 0.006;
+  GTPgSon_kGTPgSoff = 0.005;
+  GDPbSon_kGDPbSon = 0.28;
+  GDPbSon_kGGDPbSoff = 0.1;
+  MgGTPon_kMg2onGTP = 0.003;
+  GDPdissoc_kGDPoff = 0.5;
+  GDPdissoc_TonicAct = 0.002;
+  GDPdissoc_kGDPon = 0.003;
+  PIP2_5Pase_kPIP2Pase = 0.005;
+  PLC_kPLC = 4.8;
+  PLC_PLCspont = 0.00075;
+  AlF4on_kAlF4on = 7e-06;
+  AlF4on_kAlF4off = 0.005;
+  PI4Kinase_kPI4Kinase = 0.0001;
+  MgonGDPAlF4_kMgonAlF4 = 0.002;
+
+  var MgSat20, ATPSat300, MgSat10, OxoSat, Gactive, ATPSat1000, I_KCNQ, fGactive;
+  const Mg2_C in Cytoplasm, GTP_C in Cytoplasm;
+end

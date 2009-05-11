@@ -1,0 +1,56 @@
+model Wolf2000_Glycolytic_Oscillations()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species s1 in compartment_, at_ in compartment_, s2 in compartment_, s3 in compartment_;
+  species na in compartment_, s4 in compartment_, s5 in compartment_, s6 in compartment_;
+  species s6o in compartment_;
+
+  // Reactions:
+  v1: s1 + 2at_ -> s2; compartment_ * k1 * s1 * at_ / (1 + pow(at_ / ki, n));
+  v2: s2 -> 2s3; compartment_ * k2 * s2;
+  v3: s3 + na -> s4 + at_; compartment_ * ((k31 * k32 * s3 * na * (atot - at_) - k33 * k34 * s4 * at_ * (ntot - na)) / (k33 * (ntot - na) + k32 * (atot - at_)));
+  v4: s4 -> s5 + at_; compartment_ * k4 * s4 * (atot - at_);
+  v5: s5 -> s6; compartment_ * k5 * s5;
+  v7: at_ -> ; compartment_ * k7 * at_;
+  v8: s3 -> na; compartment_ * k8 * s3 * (ntot - na);
+  v9: s6o -> ; compartment_ * k9 * s6o;
+  v10: s6 -> 0.1s6o; compartment_ * k10 * (s6 - s6o);
+  v6: s6 -> na; compartment_ * k6 * s6 * (ntot - na);
+  v0:  -> s1; compartment_ * k0;
+
+  // Species initializations:
+  s1 = 1;
+  at_ = 2;
+  s2 = 5;
+  s3 = 0.6;
+  na = 0.6;
+  s4 = 0.7;
+  s5 = 8;
+  s6 = 0.08;
+  s6o = 0.02;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  k0 = 50;
+  k1 = 550;
+  k2 = 9.8;
+  k31 = 323.8;
+  k33 = 57823.1;
+  k32 = 76411.1;
+  k34 = 23.7;
+  k4 = 80;
+  k5 = 9.7;
+  k6 = 2000;
+  k7 = 28;
+  k8 = 85.7;
+  k9 = 80;
+  k10 = 375;
+  atot = 4;
+  ntot = 1;
+  n = 4;
+  ki = 1;
+
+end

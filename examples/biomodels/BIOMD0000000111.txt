@@ -1,0 +1,113 @@
+model Novak2001_FissionYeast_CellCycle()
+
+  // Compartments and Species:
+  compartment cell;
+  species cdc13T in cell, preMPF in cell, ste9 in cell, slp1T in cell, slp1 in cell;
+  species IEP in cell, rum1T in cell, SK in cell, M in cell, MPF in cell;
+
+  // Assignment Rules:
+  MPF := (cdc13T - preMPF) * (cdc13T - Trimer) / cdc13T
+  sigma := cdc13T + rum1T + Kdiss
+  Trimer := 2 * cdc13T * rum1T / (sigma + pow(pow(sigma, 2) - 4 * cdc13T * rum1T, 0.5))
+  TF := 2 * k15 * M * J16 / (k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16 + sqrt(pow(k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16, 2) - 4 * (k16_prime + k16_double_prime * MPF - k15 * M) * k15 * M * J16))
+  kwee := kwee_prime + (kwee_double_prime - kwee_prime) * (2 * Vawee * Jiwee / (Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee + sqrt(pow(Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee, 2) - 4 * (Viwee * MPF - Vawee) * Vawee * Jiwee)))
+  k25 := k25_prime + (k25_double_prime - k25_prime) * (2 * Va25 * MPF * Ji25 / (Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25 + sqrt(pow(Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25, 2) - 4 * (Vi25 - Va25 * MPF) * Va25 * MPF * Ji25)))
+
+  // Reactions:
+  R1:  -> cdc13T; k1 * M;
+  R2: cdc13T -> ; (k2_prime + k2_double_prime * ste9 + k2_triple_prime * slp1) * cdc13T;
+  R3:  -> preMPF; kwee * (cdc13T - preMPF);
+  R4: preMPF -> ; k25 * preMPF;
+  R5: preMPF -> ; (k2_prime + k2_double_prime * ste9 + k2_triple_prime * slp1) * preMPF;
+  R6:  -> ste9; (k3_prime + k3_double_prime * slp1) * (1 - ste9) / (J3 + 1 - ste9);
+  R7: ste9 -> ; (k4_prime * SK + k4 * MPF) * ste9 / (J4 + ste9);
+  R8:  -> slp1T; k5_prime + k5_double_prime * pow(MPF, 4) / (pow(J5, 4) + pow(MPF, 4));
+  R9: slp1T -> ; k6 * slp1T;
+  R10:  -> slp1; k7 * IEP * (slp1T - slp1) / (J7 + slp1T - slp1);
+  R11: slp1 -> ; k8 * slp1 / (J8 + slp1);
+  R12: slp1 -> ; k6 * slp1;
+  R13:  -> IEP; k9 * MPF * (1 - IEP) / (J9 + 1 - IEP);
+  R14: IEP -> ; k10 * IEP / (J10 + IEP);
+  R15:  -> rum1T; k11;
+  R16: rum1T -> ; (k12 + k12_prime * SK + k12_double_prime * MPF) * rum1T;
+  R17:  -> SK; k13 * TF;
+  R18: SK -> ; k14 * SK;
+  R19:  -> M; mu * M;
+
+  // Events:
+  event_0000001: @and(leq(MPF, 0.1), eq(flag_MPF, 1)): flag_MPF = 0: M = M / 2;
+  event_0000002: @gt(MPF, 0.1): flag_MPF = 1;
+
+  // Species initializations:
+  cdc13T = 0.2;
+  preMPF = 0;
+  ste9 = 1;
+  slp1T = 0;
+  slp1 = 2.2;
+  IEP = 0;
+  rum1T = 0;
+  SK = 0;
+  M = 1;
+  MPF = 0;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  flag_MPF = 0;
+  sigma = 0;
+  Kdiss = 0.001;
+  Trimer = 0;
+  TF = 0;
+  k15 = 1.5;
+  J16 = 0.01;
+  k16_prime = 1;
+  k16_double_prime = 2;
+  J15 = 0.01;
+  kwee = 0;
+  kwee_prime = 0.15;
+  kwee_double_prime = 1.3;
+  Vawee = 0.25;
+  Jiwee = 0.01;
+  Viwee = 1;
+  Jawee = 0.01;
+  k25 = 0;
+  k25_prime = 0.05;
+  k25_double_prime = 5;
+  Va25 = 1;
+  Ji25 = 0.01;
+  Vi25 = 0.25;
+  Ja25 = 0.01;
+  k1 = 0.03;
+  k2_prime = 0.03;
+  k2_double_prime = 1;
+  k2_triple_prime = 0.1;
+  k3_prime = 1;
+  k3_double_prime = 10;
+  J3 = 0.01;
+  k4_prime = 2;
+  k4 = 35;
+  J4 = 0.01;
+  k5_prime = 0.005;
+  k5_double_prime = 0.3;
+  J5 = 0.3;
+  k6 = 0.1;
+  k7 = 1;
+  J7 = 0.001;
+  k8 = 0.25;
+  J8 = 0.001;
+  k9 = 0.1;
+  J9 = 0.01;
+  k10 = 0.04;
+  J10 = 0.01;
+  k11 = 0.1;
+  k12 = 0.01;
+  k12_prime = 1;
+  k12_double_prime = 3;
+  k13 = 0.1;
+  k14 = 0.1;
+  mu = 0.005;
+
+  var flag_MPF, sigma, Trimer, TF, kwee, k25;
+  const MPF in cell;
+end

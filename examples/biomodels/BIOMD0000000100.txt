@@ -1,0 +1,65 @@
+model Rozi2003_Glycogen_Phosphorylase_Activation()
+
+  // Compartments and Species:
+  compartment extracellular, cytosol, intravesicular;
+  species EC in extracellular, Z in cytosol, A in cytosol, Y in intravesicular;
+  species GP in cytosol;
+
+  // Reactions:
+  vin: EC -> Z; extracellular * (v0 + v1 * beta);
+  R2: Z -> Y; cytosol * (Vm2 * pow(Z, 2) / (pow(K2, 2) + pow(Z, 2)));
+  R3: Y -> Z; intravesicular * Vm3 * pow(A, 4) * pow(Y, 2) * pow(Z, m) / ((pow(Ka, 4) + pow(A, 4)) * (pow(Ky, 2) + pow(Y, 2)) * (pow(Kz, m) + pow(Z, m)));
+  Rkf: Y -> Z; intravesicular * Kf * Y;
+  Rkz: Z -> EC; cytosol * K * Z;
+  R4:  -> A; cytosol * beta * V4;
+  R5: A -> ; cytosol * Vm5 * pow(A, p) * pow(Z, n) / ((pow(K5, p) + pow(A, p)) * (pow(Kd, n) + pow(Z, n)));
+  R6: A -> ; cytosol * epsilon * A;
+  R7:  -> GP; cytosol * (Vpm1 * (1 + gamma * pow(Z, 4) / (pow(Ka5, 4) + pow(Z, 4))) * (1 - GP) / (K1 / (1 + pow(Z, 4) / pow(Ka6, 4)) + 1 - GP));
+  R8: GP -> ; cytosol * (Vpm2 * (1 + alpha * G / (Ka1 + G)) * GP / (Kp2 / (1 + G / Ka2) + GP));
+
+  // Species initializations:
+  EC = 1000;
+  Z = 0;
+  A = 0.45;
+  Y = 0.36;
+  GP = 1;
+
+  // Compartments initializations:
+  extracellular = 1;
+  cytosol = 1;
+  intravesicular = 1;
+
+  // Other defined symbols initializations:
+  v0 = 2;
+  v1 = 2;
+  beta = 0.5;
+  Vm2 = 6;
+  K2 = 0.1;
+  Vm3 = 20;
+  m = 2;
+  Ka = 0.2;
+  Ky = 0.2;
+  Kz = 0.5;
+  Kf = 1;
+  K = 10;
+  V4 = 2;
+  Vm5 = 30;
+  n = 4;
+  K5 = 1;
+  Kd = 0.4;
+  epsilon = 0.1;
+  Vpm1 = 1.5;
+  gamma = 9;
+  Ka5 = 0.5;
+  K1 = 0.1;
+  Ka6 = 0.5;
+  Vpm2 = 0.6;
+  alpha = 9;
+  G = 10000;
+  Ka1 = 10000;
+  Kp2 = 0.2;
+  Ka2 = 10000;
+  p = 2;
+
+  const EC in extracellular;
+end

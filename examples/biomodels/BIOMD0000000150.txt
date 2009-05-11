@@ -1,0 +1,32 @@
+model Morris2002_CellCycle_CDK2Cyclin()
+
+  // Compartments and Species:
+  compartment geometry;
+  species CDK2cycA in geometry, CyclinA in geometry, Cdk2 in geometry, CDK2cycA_star_ in geometry;
+
+  // Assignment Rules:
+  total_fluorescence := CDK2cycA * 599990 * 1.000000e+06 / 43200 + CDK2cycA_star_ * 599990 * 1.000000e+06 / 43200 + basal_fluorescence
+
+  // Reactions:
+  Binding: Cdk2 + CyclinA -> CDK2cycA; Binding_kf * Cdk2 * CyclinA * geometry - Binding_kb * CDK2cycA * geometry;
+  Activation: CDK2cycA -> CDK2cycA_star_; Activation_kf * CDK2cycA * geometry - Activation_kb * CDK2cycA_star_ * geometry;
+
+  // Species initializations:
+  CDK2cycA = 0;
+  CyclinA = 4e-07;
+  Cdk2 = 1e-07;
+  CDK2cycA_star_ = 0;
+
+  // Compartments initializations:
+  geometry = 1e-12;
+
+  // Other defined symbols initializations:
+  basal_fluorescence = 1.21210648148148;
+  total_fluorescence = 0.138886574074074;
+  Binding_kf = 19000000;
+  Binding_kb = 25;
+  Activation_kf = 0.813;
+  Activation_kb = 0.557;
+
+  var total_fluorescence;
+end

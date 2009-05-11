@@ -1,0 +1,128 @@
+model Hoefnagel2002_PyruvateBranches()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species ADP in compartment_, NAD in compartment_, ATP in compartment_, NADH in compartment_;
+  species pyruvate in compartment_, lactate in compartment_, CoA in compartment_;
+  species halfglucose in compartment_, AcCoA in compartment_, AcP in compartment_;
+  species Ac in compartment_, AcO in compartment_, EtOH in compartment_, AcLac in compartment_;
+  species AcetoinIn in compartment_, AcetoinOut in compartment_, Butanediol in compartment_;
+  species O2 in compartment_, PO4 in compartment_;
+
+  // Reactions:
+  R1: ADP + NAD + halfglucose -> ATP + NADH + pyruvate; R1_V_1 * (halfglucose / R1_Kglc_1) * (NAD / R1_Knad_1) * (ADP / R1_Kadp_1) / ((1 + halfglucose / R1_Kglc_1 + pyruvate / R1_Kpyr_1) * (1 + NAD / R1_Knad_1 + NADH / R1_Knadh_1) * (1 + ADP / R1_Kadp_1 + ATP / R1_Katp_1));
+  R2: NADH + pyruvate -> NAD + lactate; R2_V_2 * ((pyruvate * NADH - lactate * NAD / R2_Keq_2) / (R2_Kpyr_2 * R2_Knadh_2)) / ((1 + pyruvate / R2_Kpyr_2 + lactate / R2_Klac_2) * (1 + NADH / R2_Knadh_2 + NAD / R2_Knad_2));
+  R3: NAD + pyruvate + CoA -> NADH + AcCoA; R3_V_3 * (pyruvate / R3_Kpyr_3) * (NAD / R3_Knad_3) * (CoA / R3_Kcoa_3) * (NAD / (NAD + R3_Ki_3 * NADH)) / ((1 + pyruvate / R3_Kpyr_3) * (1 + NAD / R3_Knad_3 + NADH / R3_Knadh_3) * (1 + CoA / R3_Kcoa_3 + AcCoA / R3_Kaccoa_3));
+  R4: AcCoA + PO4 -> CoA + AcP; R4_V_4 * ((AcCoA * PO4 - AcP * CoA / R4_Keq_4) / (R4_Kiaccoa_4 * R4_Kpi_4)) / (1 + AcCoA / R4_Kiaccoa_4 + PO4 / R4_Kipi_4 + AcP / R4_Kiacp_4 + CoA / R4_Kicoa_4 + AcCoA * PO4 / (R4_Kiaccoa_4 * R4_Kpi_4) + AcP * CoA / (R4_Kacp_4 * R4_Kicoa_4));
+  R5: ADP + AcP -> ATP + Ac; R5_V_5 * ((AcP * ADP - Ac * ATP / R5_Keq_5) / (R5_Kadp_5 * R5_Kacp_5)) / ((1 + AcP / R5_Kacp_5 + Ac / R5_Kac_5) * (1 + ADP / R5_Kadp_5 + ATP / R5_Katp_5));
+  R6: NADH + AcCoA -> NAD + CoA + AcO; R6_V_6 * ((AcCoA * NADH - CoA * NAD * AcO / R6_Keq_6) / (R6_Kaccoa_6 * R6_Knadh_6)) / ((1 + NAD / R6_Knad_6 + NADH / R6_Knadh_6) * (1 + AcCoA / R6_Kaccoa_6 + CoA / R6_Kcoa_6 + AcO / R6_Kaco_6 + AcO * CoA / (R6_Kaco_6 * R6_Kcoa_6)));
+  R7: NADH + AcO -> NAD + EtOH; R7_V_7 * ((AcO * NADH - EtOH * NAD / R7_Keq_7) / (R7_Kaco_7 * R7_Knadh_7)) / ((1 + NAD / R7_Knad_7 + NADH / R7_Knadh_7) * (1 + AcO / R7_Kaco_7 + EtOH / R7_Ketoh_7));
+  R8: 2pyruvate -> AcLac; R8_V_8 * (pyruvate / R8_Kpyr_8) * (1 - AcLac / (pyruvate * R8_Keq_8)) * pow(pyruvate / R8_Kpyr_8 + AcLac / R8_Kaclac_8, R8_n_8 - 1) / (1 + pow(pyruvate / R8_Kpyr_8 + AcLac / R8_Kaclac_8, R8_n_8));
+  R9: AcLac -> AcetoinIn; R9_V_9 * (AcLac / R9_Kaclac_9) / (1 + AcLac / R9_Kaclac_9 + AcetoinIn / R9_Kacet_9);
+  R10: AcetoinIn -> AcetoinOut; R10_V_10 * (AcetoinIn / R10_Kacet_10) / (1 + AcetoinIn / R10_Kacet_10);
+  R11: NADH + AcetoinIn -> NAD + Butanediol; R11_V_11 * ((AcetoinIn * NADH - Butanediol * NAD / R11_Keq_11) / (R11_Kacet_11 * R11_Knadh_11)) / ((1 + AcetoinIn / R11_Kacet_11 + Butanediol / R11_Kbut_11) * (1 + NADH / R11_Knadh_11 + NAD / R11_Knad_11));
+  R12: ATP -> ADP; R12_V_12 * pow(ATP / (ADP * R12_Katp_12), R12_n_12) / (1 + pow(ATP / (ADP * R12_Katp_12), R12_n_12));
+  R13: NADH + O2 -> NAD; R13_V_13 * (NADH * O2 / (R13_Knadh_13 * R13_Ko_13)) / ((1 + NADH / R13_Knadh_13 + NAD / R13_Knad_13) * (1 + O2 / R13_Ko_13));
+  R14: AcLac -> AcetoinIn; R14_k_14 * AcLac;
+
+  // Species initializations:
+  ADP = 5;
+  NAD = 10;
+  ATP = 0;
+  NADH = 0;
+  pyruvate = 1e-12;
+  lactate = 1;
+  CoA = 1;
+  halfglucose = 30;
+  AcCoA = 0;
+  AcP = 0;
+  Ac = 1;
+  AcO = 0;
+  EtOH = 1;
+  AcLac = 0;
+  AcetoinIn = 0;
+  AcetoinOut = 0;
+  Butanediol = 0.01;
+  O2 = 0.2;
+  PO4 = 10;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  R1_V_1 = 2397;
+  R1_Kglc_1 = 0.1;
+  R1_Knad_1 = 0.14;
+  R1_Kadp_1 = 0.047;
+  R1_Kpyr_1 = 25;
+  R1_Knadh_1 = 0.09;
+  R1_Katp_1 = 0.019;
+  R2_V_2 = 5118;
+  R2_Keq_2 = 21120.7;
+  R2_Kpyr_2 = 1.5;
+  R2_Knadh_2 = 0.08;
+  R2_Klac_2 = 100;
+  R2_Knad_2 = 2.4;
+  R3_V_3 = 259;
+  R3_Kpyr_3 = 1;
+  R3_Knad_3 = 0.4;
+  R3_Kcoa_3 = 0.014;
+  R3_Ki_3 = 46.4;
+  R3_Knadh_3 = 0.1;
+  R3_Kaccoa_3 = 0.008;
+  R4_V_4 = 42;
+  R4_Keq_4 = 0.0281;
+  R4_Kiaccoa_4 = 0.2;
+  R4_Kpi_4 = 2.6;
+  R4_Kipi_4 = 2.6;
+  R4_Kiacp_4 = 0.2;
+  R4_Kicoa_4 = 0.029;
+  R4_Kacp_4 = 0.7;
+  R5_V_5 = 2700;
+  R5_Keq_5 = 174.2;
+  R5_Kadp_5 = 0.5;
+  R5_Kacp_5 = 0.16;
+  R5_Kac_5 = 7;
+  R5_Katp_5 = 0.07;
+  R6_V_6 = 97;
+  R6_Keq_6 = 1;
+  R6_Kaccoa_6 = 0.007;
+  R6_Knadh_6 = 0.025;
+  R6_Knad_6 = 0.08;
+  R6_Kcoa_6 = 0.008;
+  R6_Kaco_6 = 10;
+  R7_V_7 = 162;
+  R7_Keq_7 = 12354.9;
+  R7_Kaco_7 = 0.03;
+  R7_Knadh_7 = 0.05;
+  R7_Knad_7 = 0.08;
+  R7_Ketoh_7 = 1;
+  R8_V_8 = 600;
+  R8_Kpyr_8 = 50;
+  R8_Keq_8 = 9000000000000;
+  R8_Kaclac_8 = 100;
+  R8_n_8 = 2.4;
+  R9_V_9 = 106;
+  R9_Kaclac_9 = 10;
+  R9_Kacet_9 = 100;
+  R10_V_10 = 200;
+  R10_Kacet_10 = 5;
+  R11_V_11 = 105;
+  R11_Keq_11 = 1400;
+  R11_Kacet_11 = 0.06;
+  R11_Knadh_11 = 0.02;
+  R11_Kbut_11 = 2.6;
+  R11_Knad_11 = 0.16;
+  R12_V_12 = 900;
+  R12_Katp_12 = 6.2;
+  R12_n_12 = 2.6;
+  R13_V_13 = 118;
+  R13_Knadh_13 = 0.041;
+  R13_Ko_13 = 0.01;
+  R13_Knad_13 = 1;
+  R14_k_14 = 0.0003;
+
+  const lactate in compartment_, halfglucose in compartment_, Ac in compartment_;
+  const EtOH in compartment_, Butanediol in compartment_, O2 in compartment_;
+  const PO4 in compartment_;
+end

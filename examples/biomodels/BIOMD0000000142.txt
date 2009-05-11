@@ -1,0 +1,32 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+
+  // Assignment Rules:
+  i := -0.5 + flag * 0.015 * (time - 30)
+
+  // Rate Rules:
+  v' = 0.04 * pow(v, 2) + 5 * v + 140 - u + i
+  u' = a * (b * v - u)
+
+  // Events:
+  event_0000001: @gt(v, Vthresh): u = u + d: v = c;
+  event_0000002: @gt(time, 30): flag = 1;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  v = -64;
+  Vthresh = 30;
+  c = -65;
+  u = -16.64;
+  d = 0;
+  flag = 0;
+  a = 0.2;
+  b = 0.26;
+  i = -0.5;
+
+  var v, u, flag, i;
+end

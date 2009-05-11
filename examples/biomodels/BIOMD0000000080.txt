@@ -1,0 +1,43 @@
+model Model_1()
+
+  // Compartments and Species:
+  compartment cell;
+  species D in cell, DR in cell, DRG_GDP in cell, G_GDP in cell, DRG in cell;
+  species GDP in cell, DRG_GTP in cell, GTP in cell, G_GTP in cell, R in cell;
+
+  // Reactions:
+  Reaction_1: D + R -> DR; cell * (Reaction_1_k1 * D * R - Reaction_1_k7 * DR);
+  Reaction_2: DR + G_GDP -> DRG_GDP; cell * (Reaction_2_k2 * DR * G_GDP - Reaction_2_k8 * DRG_GDP);
+  Reaction_3: DRG_GDP -> GDP + DRG; cell * (Reaction_3_k3 * DRG_GDP - Reaction_3_k9 * GDP * DRG);
+  Reaction_4: DRG + GTP -> DRG_GTP; cell * (Reaction_4_k4 * DRG * GTP - Reaction_4_k10 * DRG_GTP);
+  Reaction_5: DRG_GTP -> G_GTP + DR; cell * Reaction_5_k5 * DRG_GTP;
+  Reaction_6: G_GTP -> G_GDP; cell * Reaction_6_k6 * G_GTP;
+
+  // Species initializations:
+  D = 3.1e-05;
+  DR = 0;
+  DRG_GDP = 0;
+  G_GDP = 1e-06;
+  DRG = 0;
+  GDP = 0;
+  DRG_GTP = 0;
+  GTP = 1e-05;
+  G_GTP = 0;
+  R = 1e-10;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  Reaction_1_k1 = 5000000;
+  Reaction_1_k7 = 10;
+  Reaction_2_k2 = 100000000;
+  Reaction_2_k8 = 0.1;
+  Reaction_3_k3 = 5;
+  Reaction_3_k9 = 100000;
+  Reaction_4_k4 = 5000000;
+  Reaction_4_k10 = 55;
+  Reaction_5_k5 = 1;
+  Reaction_6_k6 = 2;
+
+end

@@ -1,0 +1,100 @@
+function Mass_Action_1_1(k1, S1)
+  k1 * S1;
+end
+
+function Mass_Action_2_1(k1, S1, S2)
+  k1 * S1 * S2;
+end
+
+function Mass_Action_0_1(k1)
+  k1;
+end
+
+model Aguda1999_CellCycle()
+
+  // Compartments and Species:
+  compartment cell_1;
+  species Y3_1 in cell_1, Y4_1 in cell_1, Y11_1 in cell_1, Y2_1 in cell_1;
+  species Y1_1 in cell_1, Y5_1 in cell_1, Y6_1 in cell_1, Y7_1 in cell_1;
+  species Y8_1 in cell_1, Y10_1 in cell_1, Y9_1 in cell_1;
+
+  // Reactions:
+  _1: Y3_1 -> Y4_1 + Y11_1; k1p_1 * Y6_1 * Y3_1 + k1pp_1 * Y9_1 * Y3_1 + k1_1 * Y1_1 * Y3_1;
+  pRBE2Fcomplexformation_1: Y5_1 + Y4_1 -> Y3_1; Mass_Action_2_1(kminus1_1, Y5_1, Y4_1);
+  cycECDK2activation_1: Y2_1 -> Y1_1; k2_1 * Y1_1 * Y2_1;
+  cycECDK2deactivation_1: Y1_1 -> Y2_1; kminus2_1 * Y1_1;
+  cycECDK2synthesis_1:  -> Y2_1; k3_1 * Y4_1 + k3p_1;
+  E2Fsynthesis_1:  -> Y4_1; k4_1;
+  E2Fdegradation_1: Y4_1 -> ; Mass_Action_1_1(kminus4_1, Y4_1);
+  cycECDK2degradation_1: Y2_1 -> ; Mass_Action_1_1(k5_1, Y2_1);
+  cycDCDK4synthesis_1:  -> Y6_1; Mass_Action_0_1(k6_1);
+  cycDCDK4degradation_1: Y6_1 -> ; Mass_Action_1_1(kminus6_1, Y6_1);
+  p27synthesis_1:  -> Y7_1; Mass_Action_0_1(k7_1);
+  p27degradationviacycECDK2_1: Y7_1 -> ; k8_1 * Y7_1 * Y1_1;
+  cycECDK2p27complexformation_1: Y1_1 + Y7_1 -> Y8_1; Mass_Action_2_1(k9_1, Y1_1, Y7_1);
+  cycECDK2p27deassociation_1: Y8_1 -> Y1_1 + Y7_1; Mass_Action_1_1(K10_1, Y8_1);
+  cycDCDK4p16complexformation_1: Y6_1 + Y10_1 -> ; Mass_Action_2_1(k17_1, Y6_1, Y10_1);
+  E2Fautostimulation_1:  -> Y4_1; k18_1 * Y4_1;
+  cycDCDK4p27complexformation_1: Y7_1 + Y6_1 -> Y9_1; Mass_Action_2_1(k19_1, Y7_1, Y6_1);
+  cycDCDK4p27complexdeassociation_1: Y9_1 -> Y7_1 + Y6_1; Mass_Action_1_1(k20_1, Y9_1);
+  acycECDK2degradation_1: Y1_1 -> ; k21_1 * Y1_1 * Y1_1;
+  p27degradation_1: Y7_1 -> ; Mass_Action_1_1(k22_1, Y7_1);
+  _20:  -> Y10_1; Mass_Action_0_1(k23_1);
+  p16degradation_1: Y10_1 -> ; Mass_Action_1_1(k24_1, Y10_1);
+  p16synthesisinhibitedbypRB_1:  -> Y10_1; k25_1 / (1 + k25p_1 * Y5_1);
+  pRBpdephosphorilation_1:  -> Y5_1; k26_1 / (1 + k26p_1 * Y10_1);
+  pRBsynthesis_1:  -> Y5_1; Mass_Action_0_1(k27_1);
+  pRBdegradation_1: Y5_1 -> ; Mass_Action_1_1(k28_1, Y5_1);
+  pRBpdephosphorylation_1: Y11_1 -> Y5_1; Mass_Action_1_1(k29_1, Y11_1);
+
+  // Species initializations:
+  Y3_1 = 1.95;
+  Y4_1 = 0;
+  Y11_1 = 0.01;
+  Y2_1 = 0.01;
+  Y1_1 = 0;
+  Y5_1 = 0.05;
+  Y6_1 = 0;
+  Y7_1 = 15;
+  Y8_1 = 1;
+  Y10_1 = 5;
+  Y9_1 = 0;
+
+  // Compartments initializations:
+  cell_1 = 1;
+
+  // Other defined symbols initializations:
+  k1p_1 = 0.5;
+  k1pp_1 = 0.5;
+  k1_1 = 0.1;
+  k2_1 = 0.1;
+  kminus2_1 = 1;
+  k3_1 = 1.42;
+  k3p_1 = 0;
+  k4_1 = 1e-06;
+  kminus4_1 = 0.016;
+  kminus1_1 = 0.001;
+  k5_1 = 0.02;
+  k6_1 = 0.018;
+  kminus6_1 = 5;
+  k7_1 = 1e-05;
+  k8_1 = 2;
+  k9_1 = 2;
+  K10_1 = 0.035;
+  k17_1 = 3.5;
+  k18_1 = 1e-05;
+  k19_1 = 0.05;
+  k20_1 = 0.01;
+  k21_1 = 0.1;
+  k22_1 = 0.001;
+  k23_1 = 0.2;
+  k24_1 = 0.1;
+  k25_1 = 0.01;
+  k25p_1 = 0.02;
+  k26_1 = 0.01;
+  k26p_1 = 0.1;
+  k27_1 = 0.01;
+  k28_1 = 0.01;
+  k29_1 = 0.001;
+
+end

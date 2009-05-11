@@ -1,0 +1,45 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+  species M in cell, MpY in cell, MpT in cell, Mpp in cell, MEK in cell, MKP3 in cell;
+
+  // Reactions:
+  v1: M -> MpY; cell * (kcat1 * MEK * M / Km1 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
+  v2: MpY -> Mpp; cell * (kcat2 * MEK * MpY / Km2 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
+  v3: M -> MpT; cell * (kcat3 * MEK * M / Km3 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
+  v4: MpT -> Mpp; cell * (kcat4 * MEK * MpT / Km4 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
+  v5: Mpp -> MpT; cell * (kcat5 * MKP3 * Mpp / Km5 / (1 + Mpp / Km5 + MpT / Km6 + MpY / Km7 + M / Km8));
+  v6: MpT -> M; cell * (kcat6 * MKP3 * MpT / Km6 / (1 + Mpp / Km5 + MpT / Km6 + MpY / Km7 + M / Km8));
+  v7: MpY -> M; cell * (kcat7 * MKP3 * MpY / Km7 / (1 + Mpp / Km5 + MpT / Km6 + MpY / Km7 + M / Km8));
+
+  // Species initializations:
+  M = 800;
+  MpY = 0;
+  MpT = 0;
+  Mpp = 0;
+  MEK = 180;
+  MKP3 = 100;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  Km1 = 410;
+  kcat1 = 1.08;
+  Km2 = 40;
+  kcat2 = 0.007;
+  Km3 = 20;
+  kcat3 = 0.008;
+  Km4 = 300;
+  kcat4 = 0.45;
+  Km5 = 22;
+  kcat5 = 0.084;
+  Km6 = 18;
+  kcat6 = 0.06;
+  Km7 = 34;
+  kcat7 = 0.108;
+  Km8 = 40;
+
+  const MEK in cell, MKP3 in cell;
+end

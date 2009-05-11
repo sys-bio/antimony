@@ -1,0 +1,46 @@
+model GMO()
+
+  // Compartments and Species:
+  compartment cell;
+  species C in cell, M in cell, X in cell;
+
+  // Assignment Rules:
+  V1 := C * VM1 * pow(C + Kc, -1)
+  V3 := M * VM3
+
+  // Reactions:
+  reaction1:  -> C; cell * reaction1_vi;
+  reaction2: C -> ; C * cell * reaction2_kd;
+  reaction3: C -> ; C * cell * reaction3_vd * X * pow(C + reaction3_Kd, -1);
+  reaction4:  -> M; cell * (1 + -1 * M) * V1 * pow(reaction4_K1 + -1 * M + 1, -1);
+  reaction5: M -> ; cell * M * reaction5_V2 * pow(reaction5_K2 + M, -1);
+  reaction6:  -> X; cell * V3 * (1 + -1 * X) * pow(reaction6_K3 + -1 * X + 1, -1);
+  reaction7: X -> ; cell * reaction7_V4 * X * pow(reaction7_K4 + X, -1);
+
+  // Species initializations:
+  C = 0.01;
+  M = 0.01;
+  X = 0.01;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  V1 = 0;
+  V3 = 0;
+  VM1 = 3;
+  VM3 = 1;
+  Kc = 0.5;
+  reaction1_vi = 0.025;
+  reaction2_kd = 0.01;
+  reaction3_vd = 0.25;
+  reaction3_Kd = 0.02;
+  reaction4_K1 = 0.005;
+  reaction5_V2 = 1.5;
+  reaction5_K2 = 0.005;
+  reaction6_K3 = 0.005;
+  reaction7_K4 = 0.005;
+  reaction7_V4 = 0.5;
+
+  var V1, V3;
+end

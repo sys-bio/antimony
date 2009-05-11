@@ -1,0 +1,85 @@
+model Glycolysis_Nielsen()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species ATP in compartment_, ADP in compartment_, AMP in compartment_, GLC in compartment_;
+  species F6P in compartment_, FBP in compartment_, GAP in compartment_, NAD in compartment_;
+  species NADH in compartment_, DPG in compartment_, PEP in compartment_;
+  species PYR in compartment_, ACA in compartment_, EtOH in compartment_;
+  species P in compartment_;
+
+  // Reactions:
+  ATPflow:  -> ATP; compartment_ * (3.5 - ATP) * flow;
+  ADPflow:  -> ADP; compartment_ * (1.1 - ADP) * flow;
+  NADHflow:  -> NADH; compartment_ * (0.24 - NADH) * flow;
+  NADflow:  -> NAD; compartment_ * (4 - NAD) * flow;
+  GLCflow:  -> GLC; compartment_ * (50 - GLC) * flow;
+  F6Pflow: F6P -> ; compartment_ * F6P * flow;
+  FBPflow: FBP -> ; compartment_ * FBP * flow;
+  GAPflow: GAP -> ; compartment_ * GAP * flow;
+  DPGflow: DPG -> ; compartment_ * DPG * flow;
+  PEPflow: PEP -> ; compartment_ * PEP * flow;
+  PYRflow: PYR -> ; compartment_ * PYR * flow;
+  ACAflow: ACA -> ; compartment_ * ACA * flow;
+  EtOHflow: EtOH -> ; compartment_ * EtOH * flow;
+  AMPflow: AMP -> ; compartment_ * AMP * flow;
+  Pflow: P -> ; compartment_ * P * flow;
+  reaction_1: GLC + ATP -> F6P + ADP; compartment_ * (V1 * ATP * GLC / ((K1GLC + GLC) * (K1ATP + ATP)));
+  reaction_2: F6P + ATP -> FBP + ADP; compartment_ * (V2 * ATP * pow(F6P, 2) / ((K2 * (1 + k2 * pow(ATP / AMP, 2)) + pow(F6P, 2)) * (K2ATP + ATP)));
+  reaction_3: FBP -> 2GAP; compartment_ * (k3f * FBP - k3b * pow(GAP, 2));
+  reaction_4: GAP + NAD -> DPG + NADH; compartment_ * (V4 * NAD * GAP / ((K4GAP + GAP) * (K4NAD + NAD)));
+  reaction_5: DPG + ADP -> PEP + ATP; compartment_ * (k5f * DPG * ADP - k5b * PEP * ATP);
+  reaction_6: PEP + ADP -> PYR + ATP; compartment_ * (V6 * ADP * PEP / ((K6PEP + PEP) * (K6ADP + ADP)));
+  reaction_7: PYR -> ACA; compartment_ * (V7 * PYR / (K7PYR + PYR));
+  reaction_8: ACA + NADH -> EtOH + NAD; compartment_ * (k8f * NADH * ACA - k8b * NAD * EtOH);
+  reaction_9: AMP + ATP -> 2ADP; compartment_ * (k9f * AMP * ATP - k9b * pow(ADP, 2));
+  reaction_10: F6P -> P; compartment_ * k10 * F6P;
+
+  // Species initializations:
+  ATP = 4.49064;
+  ADP = 0.108367;
+  AMP = 0.00261149;
+  GLC = 0.0112817;
+  F6P = 0.65939;
+  FBP = 0.00770135;
+  GAP = 0.00190919;
+  NAD = 3.62057;
+  NADH = 0.616118;
+  DPG = 0.299109;
+  PEP = 0.0021125;
+  PYR = 0.00422702;
+  ACA = 0.0738334;
+  EtOH = 0.33981;
+  P = 0;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  V1 = 0.5;
+  K1GLC = 0.1;
+  K1ATP = 0.063;
+  V2 = 1.5;
+  K2 = 0.0016;
+  k2 = 0.017;
+  K2ATP = 0.01;
+  k3f = 1;
+  k3b = 50;
+  V4 = 10;
+  K4GAP = 1;
+  K4NAD = 1;
+  k5f = 1;
+  k5b = 0.5;
+  V6 = 10;
+  K6PEP = 0.2;
+  K6ADP = 0.3;
+  V7 = 2;
+  K7PYR = 0.3;
+  k8f = 1;
+  k8b = 0.000143;
+  k9f = 10;
+  k9b = 10;
+  k10 = 0.05;
+  flow = 0.011;
+
+end

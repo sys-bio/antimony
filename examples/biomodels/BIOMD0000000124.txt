@@ -1,0 +1,115 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+  species c in cell, cer in cell;
+
+  // Assignment Rules:
+  alphaIRn := 0.09 / (1 + exp(0.11 * (V + 100)))
+  betaIRn := 0.00035 * exp(0.07 * (V + 25))
+  nIRinf := 1 / (1 + betaIRn / alphaIRn)
+  tauIRn := 1 / (alphaIRn + betaIRn)
+  alphaIRr := 30 / (1 + exp(0.04 * (V + 230)))
+  betaIRr := 0.15 / (1 + exp(-0.05 * (V + 120)))
+  rIRinf := 1 / (1 + betaIRr / alphaIRr)
+  tauIRr := 1 / (alphaIRr + betaIRr)
+  ica := gca * minf * (V - vca)
+  ik := gk * n * (V - vk)
+  ikca := gkca * w * (V - vk)
+  ikatp := gkatp * a * (V - vk)
+  iir := gir * nIR * rIR * (V - vir)
+  minf := 1 / (1 + exp((vm - V) / sm))
+  ninf := 1 / (1 + exp((vn - V) / sn))
+  ainf := 1 / (1 + exp((r - c) / sa))
+  w := pow(c, 5) / (pow(c, 5) + pow(kd, 5))
+  jmem := -(alpha * ica + kpmca * c)
+  jserca := kserca * c
+  jleak := pleak * (cer - c)
+  jip3 := oinf * (cer - c)
+  oinf := c / (dact + c) * (ip3 / (dip3 + ip3)) * (dinact / (dinact + c))
+  jer := jleak + jip3 - jserca
+
+  // Rate Rules:
+  V' = -(ica + ik + ikca + ikatp + iir) / cm
+  n' = (ninf - n) / taun
+  a' = (ainf - a) / taua
+  nIR' = (nIRinf - nIR) / tauIRn
+  rIR' = (rIRinf - rIR) / tauIRr
+
+  // Reactions:
+  reaction_0000005:  -> c; cell * fcyt * (jmem + jer);
+  reaction_0000006:  -> cer; -fer * vcytver * jer * cell;
+
+  // Events:
+  event_0000001: @gt(time, 3.000000e+04): gkatp = 530;
+
+  // Species initializations:
+  c = 0.1;
+  cer = 100;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  gkatp = 500;
+  gca = 1000;
+  gkca = 900;
+  gk = 1400;
+  gir = 5;
+  vca = 50;
+  vk = -75;
+  vir = -75;
+  cm = 5300;
+  taun = 16;
+  alpha = 4.5e-06;
+  fcyt = 0.01;
+  kpmca = 0.2;
+  kd = 0.3;
+  vn = -16;
+  vm = -20;
+  sn = 5;
+  sm = 12;
+  kserca = 0.4;
+  dact = 0.35;
+  dinact = 0.4;
+  fer = 0.01;
+  pleak = 0.0005;
+  dip3 = 0.5;
+  vcytver = 5;
+  ip3 = 0;
+  sa = 0.1;
+  r = 0.14;
+  taua = 300000;
+  alphaIRn = 0;
+  betaIRn = 0;
+  nIRinf = 0;
+  tauIRn = 0;
+  alphaIRr = 0;
+  betaIRr = 0;
+  rIRinf = 0;
+  tauIRr = 0;
+  ica = 0;
+  ik = 0;
+  ikca = 0;
+  ikatp = 0;
+  iir = 0;
+  minf = 0;
+  ninf = 0;
+  ainf = 0;
+  w = 0;
+  jmem = 0;
+  jserca = 0;
+  jleak = 0;
+  jip3 = 0;
+  oinf = 0;
+  jer = 0;
+  V = -60;
+  n = 0.01;
+  a = 0.46;
+  nIR = 0.008;
+  rIR = 0.282;
+
+  var gkatp, alphaIRn, betaIRn, nIRinf, tauIRn, alphaIRr, betaIRr, rIRinf;
+  var tauIRr, ica, ik, ikca, ikatp, iir, minf, ninf, ainf, w, jmem, jserca;
+  var jleak, jip3, oinf, jer, V, n, a, nIR, rIR;
+end

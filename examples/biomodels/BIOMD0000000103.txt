@@ -1,0 +1,128 @@
+model Legewie2006_apoptosis_NC()
+
+  // Compartments and Species:
+  compartment cytosol;
+  species A in cytosol, C9 in cytosol, C9X in cytosol, X in cytosol, AC9X in cytosol;
+  species AC9 in cytosol, C3 in cytosol, C3_star in cytosol, C3_starX in cytosol;
+  species C9_starX in cytosol, C9_star in cytosol, AC9_star in cytosol, AC9_starX in cytosol;
+  species C9X_C3_star in cytosol, AC9X_C3_star in cytosol, C9_starX_C3_star in cytosol;
+  species AC9_starX_C3_star in cytosol;
+
+  // Reactions:
+  v1: A + C9 -> AC9; cytosol * (k1 * A * C9 - kb1 * AC9);
+  v2: C3 + C9 -> C3_star + C9; cytosol * k2 * C3 * C9;
+  v3: C3 + AC9 -> C3_star + AC9; cytosol * k3 * C3 * AC9;
+  v9: C9 + X -> C9X; cytosol * (k9 * C9 * X - k9b * C9X);
+  v10: AC9 + X -> AC9X; cytosol * (k10 * AC9 * X - k10b * AC9X);
+  v13: C9X + A -> AC9X; cytosol * (k13 * C9X * A - k13b * AC9X);
+  v15: C3_star + X -> C3_starX; cytosol * (k15 * C3_star * X - k15b * C3_starX);
+  v4: C9 + C3_star -> C9_star + C3_star; cytosol * k4 * C9 * C3_star;
+  v5: AC9 + C3_star -> AC9_star + C3_star; cytosol * k5 * AC9 * C3_star;
+  v8: C9_star + A -> AC9_star; cytosol * (k8 * C9_star * A - k8b * AC9_star);
+  v11: C9_star + X -> C9_starX; cytosol * (k11 * C9_star * X - k11b * C9_starX);
+  v12: AC9_star + X -> AC9_starX; cytosol * (k12 * AC9_star * X - k12b * AC9_starX);
+  v14: C9_starX + A -> AC9_starX; cytosol * (k14 * C9_starX * A - k14b * AC9_starX);
+  v6: C3 + C9_star -> C3_star + C9_star; cytosol * k6 * C3 * C9_star;
+  v7: C3 + AC9_star -> C3_star + AC9_star; cytosol * k7 * C3 * AC9_star;
+  v16:  -> A; cytosol * (k16prod - k16 * A);
+  v17:  -> C9; cytosol * (k17prod - k17 * C9);
+  v18:  -> X; cytosol * (k18prod - k18 * X);
+  v19: C9X -> ; cytosol * k19 * C9X;
+  v20: AC9X -> ; cytosol * k20 * AC9X;
+  v21: AC9 -> ; cytosol * k21 * AC9;
+  v22:  -> C3; cytosol * (k22prod - k22 * C3);
+  v23: C3_star -> ; cytosol * k23 * C3_star;
+  v24: C3_starX -> ; cytosol * k24 * C3_starX;
+  v25: C9_starX -> ; cytosol * k25 * C9_starX;
+  v26: C9_star -> ; cytosol * k26 * C9_star;
+  v27: AC9_star -> ; cytosol * k27 * AC9_star;
+  v28: AC9_starX -> ; cytosol * k28 * AC9_starX;
+  v29: C9X_C3_star -> ; cytosol * k29 * C9X_C3_star;
+  v30: AC9_starX_C3_star -> ; cytosol * k30 * AC9_starX_C3_star;
+  v31: C9_starX_C3_star -> ; cytosol * k31 * C9_starX_C3_star;
+  v32: AC9_starX_C3_star -> ; cytosol * k32 * AC9_starX_C3_star;
+  v33: C3_star + C9X -> C9X_C3_star; cytosol * (a * k15 * C3_star * C9X - d * k15b * C9X_C3_star);
+  v34: C3_star + AC9X -> AC9X_C3_star; cytosol * (a * k15 * C3_star * AC9X - d * k15b * AC9X_C3_star);
+  v35: C3_star + C9_starX -> C9_starX_C3_star; cytosol * (a * k15 * C3_star * C9_starX - d * k15b * C9_starX_C3_star);
+  v36: C3_star + AC9_starX -> AC9_starX_C3_star; cytosol * (a * k15 * C3_star * AC9_starX - d * k15b * AC9_starX_C3_star);
+  v37: C9 + C3_starX -> C9X_C3_star; cytosol * (a * k9 * C9 * C3_starX - d * k9b * C9X_C3_star);
+  v38: AC9 + C3_starX -> AC9X_C3_star; cytosol * (a * k9 * AC9 * C3_starX - d * k9b * AC9X_C3_star);
+  v39: C9_star + C3_starX -> C9_starX_C3_star; cytosol * (a * k9 * C9_star * C3_starX - d * k9b * C9_starX_C3_star);
+  v40: AC9_star + C3_starX -> AC9_starX_C3_star; cytosol * (a * k9 * AC9_star * C3_starX - d * k9b * AC9_starX_C3_star);
+  v41: C9X_C3_star + A -> AC9X_C3_star; cytosol * (a * k1 * C9X_C3_star * A - d * kb1 * AC9X_C3_star);
+  v42: C9_starX_C3_star + A -> AC9_starX_C3_star; cytosol * (a * k1 * C9_starX_C3_star * A - d * kb1 * AC9_starX_C3_star);
+
+  // Species initializations:
+  A = 20;
+  C9 = 20;
+  C9X = 0;
+  X = 40;
+  AC9X = 0;
+  AC9 = 0;
+  C3 = 200;
+  C3_star = 0;
+  C3_starX = 0;
+  C9_starX = 0;
+  C9_star = 0;
+  AC9_star = 0;
+  AC9_starX = 0;
+  C9X_C3_star = 0;
+  AC9X_C3_star = 0;
+  C9_starX_C3_star = 0;
+  AC9_starX_C3_star = 0;
+
+  // Compartments initializations:
+  cytosol = 1;
+
+  // Other defined symbols initializations:
+  k1 = 0.002;
+  kb1 = 0.1;
+  k2 = 5e-06;
+  k3 = 0.00035;
+  k9 = 0.001;
+  k9b = 0.001;
+  k10 = 0.001;
+  k10b = 0.001;
+  k13 = 0.002;
+  k13b = 0.1;
+  k15 = 0.003;
+  k15b = 0.001;
+  k4 = 0.0002;
+  k5 = 0.0002;
+  k8 = 0.002;
+  k8b = 0.1;
+  k11 = 0.001;
+  k11b = 0.001;
+  k12 = 0.001;
+  k12b = 0.001;
+  k14 = 0.002;
+  k14b = 0.1;
+  k6 = 5e-05;
+  k7 = 0.0035;
+  k16 = 0.001;
+  k16prod = 0.02;
+  k17 = 0.001;
+  k17prod = 0.02;
+  k18 = 0.001;
+  k18prod = 0.04;
+  k19 = 0.001;
+  k20 = 0.001;
+  k21 = 0.001;
+  k22 = 0.001;
+  k22prod = 0.2;
+  k23 = 0.001;
+  k24 = 0.001;
+  k25 = 0.001;
+  k26 = 0.001;
+  k27 = 0.001;
+  k28 = 0.001;
+  k29 = 0.001;
+  k30 = 0.001;
+  k31 = 0.001;
+  k32 = 0.001;
+  a = 1;
+  d = 1;
+  k41 = 1;
+  k42 = 1;
+
+end

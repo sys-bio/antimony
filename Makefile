@@ -134,6 +134,8 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(ex_dir)ex_sbml_output_ffn_sbml.xml \
 	$(ex_dir)ex_sbml_output___main_sbml.xml \
 	$(ex_dir)ex_sbml_output_ringoscil_sbml.xml \
+	$(ex_dir)biomodels/BIOMD0000000001.txt \
+	$(ex_dir)biomodels/BIOMD0000000???.txt \
 
 DOCSRCFILES = \
 	$(doc_dir)antimony-installation.txt \
@@ -187,6 +189,9 @@ docs : $(DOCFILES)
 
 $(doc_dir)index.html : $(DOCSRCFILES)
 	cd doc/; doxygen doxygen.antimony.cfg;
+
+$(ex_dir)/biomodels/BIOMD0000000001.txt : $(bin_dir)sbml2antimony
+	cd $(ex_dir)/biomodels/; ../../($bin_dir)/sbml2antimony ~/biomodels/curated/BIOMD0000000???.xml
 
 #The library
 $(lib_dir)libantimony.a : $(LIBOFILES)

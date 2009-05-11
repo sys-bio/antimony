@@ -1,0 +1,33 @@
+model Field1974_Oregonator()
+
+  // Compartments and Species:
+  compartment BZ;
+  species Br in BZ, BrO3 in BZ, Ce in BZ, HBrO2 in BZ, HOBr in BZ;
+
+  // Reactions:
+  Reaction1: Br + BrO3 -> HBrO2 + HOBr; Br * BrO3 * Reaction1_k1 * BZ;
+  Reaction2: Br + HBrO2 -> 2HOBr; Br * HBrO2 * Reaction2_k2 * BZ;
+  Reaction3: BrO3 + HBrO2 -> Ce + 2HBrO2; BrO3 * HBrO2 * Reaction3_k3 * BZ;
+  Reaction4: 2HBrO2 -> BrO3 + HOBr; pow(HBrO2, 2) * Reaction4_k4 * BZ;
+  Reaction5: Ce -> Br; Ce * Reaction5_k5 * BZ;
+
+  // Species initializations:
+  Br = 1e-07;
+  BrO3 = 0.06;
+  Ce = 0.05;
+  HBrO2 = 5e-11;
+  HOBr = 0;
+
+  // Compartments initializations:
+  BZ = 1;
+
+  // Other defined symbols initializations:
+  f = 1;
+  Reaction1_k1 = 1.34;
+  Reaction2_k2 = 1600000000;
+  Reaction3_k3 = 8000;
+  Reaction4_k4 = 40000000;
+  Reaction5_k5 = 1;
+
+  const BrO3 in BZ, HOBr in BZ;
+end

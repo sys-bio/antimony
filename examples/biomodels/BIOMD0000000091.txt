@@ -1,0 +1,81 @@
+model Proctor2005_Hsp90()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Hsp90 in compartment_, HCom in compartment_, HSF1 in compartment_;
+  species MisP in compartment_, MCom in compartment_, TriH in compartment_;
+  species DiH in compartment_, NatP in compartment_, AggP in compartment_;
+  species HSE in compartment_, HSETriH in compartment_, X in compartment_;
+  species ROS in compartment_, ATP in compartment_, ADP in compartment_, source in compartment_;
+
+  // Reactions:
+  proteinSynthesis: 0source -> NatP; k1;
+  misfolding: NatP + ROS -> MisP + ROS; k2 * NatP * ROS;
+  Hsp90MisPBinding: MisP + Hsp90 -> MCom; k3 * MisP * Hsp90;
+  unsuccessulRefolding: MCom -> MisP + Hsp90; k4 * MCom;
+  refolding: MCom + ATP -> Hsp90 + NatP + ADP; k5 * MCom * ATP;
+  proteinDegradation: MisP + ATP -> ADP; k6 * MisP * ATP;
+  proteinAggregation1: 2MisP -> AggP; (MisP - 1) * k7 * MisP / 2;
+  proteinAggregation2: MisP + AggP -> 2AggP; k7 * MisP * AggP;
+  Hsp90HSF1Binding: Hsp90 + HSF1 -> HCom; k8 * Hsp90 * HSF1;
+  Hsp90HSF1Release: HCom -> Hsp90 + HSF1; k9 * HCom;
+  dimerisation: 2HSF1 -> DiH; (HSF1 - 1) * k10 * HSF1 / 2;
+  trimerisation: HSF1 + DiH -> TriH; k11 * HSF1 * DiH;
+  deTrimerisation: TriH -> HSF1 + DiH; k12 * TriH;
+  deDimerisation: DiH -> 2HSF1; k13 * DiH;
+  HSETriHBinding: TriH + HSE -> HSETriH; k14 * HSE * TriH;
+  HSETriHRelease: HSETriH -> HSE + TriH; k15 * HSETriH;
+  Hsp90Transcription: HSETriH -> HSETriH + Hsp90; k16 * HSETriH;
+  Hsp90Degradation: Hsp90 + ATP -> ADP; k17 * Hsp90 * ATP;
+  countTime: 0source -> X; 1;
+  ATPformation: ADP -> ATP; k18 * ADP;
+  ATPconsumption: ATP -> ADP; k19 * ATP;
+  radicalFormation: 0source -> ROS; k20;
+  radicalScavenging: ROS -> ; k21 * ROS;
+
+  // Species initializations:
+  Hsp90 = 300000;
+  HCom = 5900;
+  HSF1 = 100;
+  MisP = 0;
+  MCom = 0;
+  TriH = 0;
+  DiH = 0;
+  NatP = 6000000;
+  AggP = 0;
+  HSE = 1;
+  HSETriH = 0;
+  X = 0;
+  ROS = 100;
+  ATP = 10000;
+  ADP = 1000;
+  source = 0;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  k1 = 10;
+  k2 = 2e-05;
+  k3 = 50;
+  k4 = 1e-05;
+  k5 = 4e-06;
+  k6 = 6e-07;
+  k7 = 1e-07;
+  k8 = 500;
+  k9 = 1;
+  k10 = 0.01;
+  k11 = 100;
+  k12 = 0.5;
+  k13 = 0.5;
+  k14 = 0.05;
+  k15 = 0.08;
+  k16 = 1000;
+  k17 = 8.02e-09;
+  k18 = 12;
+  k19 = 0.02;
+  k20 = 0.1;
+  k21 = 0.001;
+
+  const source in compartment_;
+end

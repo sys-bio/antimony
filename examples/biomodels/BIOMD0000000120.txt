@@ -1,0 +1,52 @@
+model Chan2004_TCell_receptor_activation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species lck_inactive in compartment_, lck_active in compartment_, phosphatase_inactive in compartment_;
+  species phosphatase_active in compartment_, lck_total in compartment_;
+
+  // Assignment Rules:
+  lck_total := lck_inactive + lck_active
+
+  // Reactions:
+  v1:  -> lck_inactive; r_l;
+  v2: lck_active -> lck_inactive; n1 * lck_active * phosphatase_active;
+  v3: lck_inactive -> lck_active; k1 * lck_inactive;
+  v4: lck_inactive -> lck_active; m1 * pow(lck_active, n) * lck_inactive;
+  v5: lck_inactive -> ; d0 * lck_inactive;
+  v6: lck_active -> ; d1 * lck_active;
+  v7: phosphatase_inactive -> phosphatase_active; k2 * phosphatase_inactive;
+  v8: phosphatase_inactive -> phosphatase_active; m2 * lck_active * phosphatase_inactive;
+  v9: phosphatase_active -> phosphatase_inactive; n2 * phosphatase_active;
+  v10: phosphatase_active -> ; d2 * phosphatase_active;
+
+  // Events:
+  event_0000001: @geq(time, 10): r_l = 1;
+  event_0000002: @geq(time, 24): r_l = 0;
+
+  // Species initializations:
+  lck_inactive = 0;
+  lck_active = 0;
+  phosphatase_inactive = 0.6;
+  phosphatase_active = 0.6;
+  lck_total = 0;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  r_l = 0;
+  n1 = 1;
+  k1 = 0.01;
+  m1 = 1;
+  d0 = 0.15;
+  d1 = 0.15;
+  k2 = 0.01;
+  m2 = 1;
+  n2 = 0.02;
+  d2 = 0;
+  n = 1.95;
+
+  var r_l;
+  const lck_total in compartment_;
+end

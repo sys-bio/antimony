@@ -1,0 +1,75 @@
+model Weimann2004_CircadianOscillator()
+
+  // Compartments and Species:
+  compartment Nucleus, Cytoplasm;
+  species y1 in Cytoplasm, y2 in Cytoplasm, y3 in Nucleus, y4 in Cytoplasm;
+  species y5 in Cytoplasm, y6 in Nucleus, y7 in Nucleus;
+
+  // Assignment Rules:
+  trans_per2_cry := v1b * (y7 + c) / (k1b * (1 + pow(y3 / k1i, hill_coeff)) + y7 + c)
+  trans_Bmal1 := v4b * pow(y3, r) / (pow(k4b, r) + pow(y3, r))
+  y5_y6_y7 := y5 + y6 + y7
+
+  // Reactions:
+  per2_cry_transcription:  -> y1; Cytoplasm * trans_per2_cry;
+  per2_cry_mRNA_degradation: y1 -> ; Cytoplasm * k1d * y1;
+  per2_cry_complex_formation:  -> y2; Cytoplasm * k2b * pow(y1, q);
+  cytoplasmic_per2_cry_complex_degradation: y2 -> ; Cytoplasm * k2d * y2;
+  per2_cry_nuclear_import: y2 -> y3; Cytoplasm * k2t * y2;
+  per2_cry_nuclear_export: y3 -> y2; Nucleus * k3t * y3;
+  nuclear_per2_cry_complex_degradation: y3 -> ; Nucleus * k3d * y3;
+  Bmal1_transcription:  -> y4; Cytoplasm * trans_Bmal1;
+  Bmal1_mRNA_degradation: y4 -> ; Cytoplasm * k4d * y4;
+  BMAL1_translation:  -> y5; Cytoplasm * k5b * y4;
+  cytoplasmic_BMAL1_degradation: y5 -> ; Cytoplasm * k5d * y5;
+  BMAL1_nuclear_import: y5 -> y6; Cytoplasm * k5t * y5;
+  BMAL1_nuclear_export: y6 -> y5; Nucleus * k6t * y6;
+  nuclear_BMAL1_degradation: y6 -> ; Nucleus * k6d * y6;
+  BMAL1_activation: y6 -> y7; Nucleus * k6a * y6;
+  BMAL1_deactivation: y7 -> y6; Nucleus * k7a * y7;
+  Active_BMAL1_degradation: y7 -> ; Nucleus * k7d * y7;
+
+  // Species initializations:
+  y1 = 0.2;
+  y2 = 0;
+  y3 = 1.1;
+  y4 = 0.8;
+  y5 = 1;
+  y6 = 1;
+  y7 = 1.05;
+
+  // Compartments initializations:
+  Nucleus = 1;
+  Cytoplasm = 1;
+
+  // Other defined symbols initializations:
+  trans_per2_cry = 0;
+  v1b = 9;
+  c = 0.01;
+  k1b = 1;
+  k1i = 0.56;
+  hill_coeff = 8;
+  trans_Bmal1 = 0;
+  v4b = 3.6;
+  r = 3;
+  k4b = 2.16;
+  y5_y6_y7 = 3.05;
+  k1d = 0.12;
+  k2b = 0.3;
+  q = 2;
+  k2d = 0.05;
+  k2t = 0.24;
+  k3t = 0.02;
+  k3d = 0.12;
+  k4d = 0.75;
+  k5b = 0.24;
+  k5d = 0.06;
+  k5t = 0.45;
+  k6t = 0.06;
+  k6d = 0.12;
+  k6a = 0.09;
+  k7a = 0.003;
+  k7d = 0.09;
+
+  var trans_per2_cry, trans_Bmal1, y5_y6_y7;
+end

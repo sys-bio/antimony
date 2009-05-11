@@ -1,0 +1,61 @@
+model Fung2005_Metabolator()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species AcCoA in compartment_, AcP in compartment_, OAc in compartment_;
+  species HOAc in compartment_, LacI in compartment_, Acs in compartment_;
+  species Pta in compartment_, HOAc_E in compartment_;
+
+  // Reactions:
+  V_gly:  -> AcCoA; compartment_ * S0;
+  V_TCA: AcCoA -> ; compartment_ * kTCA * AcCoA;
+  V_out: HOAc -> HOAc_E; compartment_ * k3 * (HOAc - HOAc_E);
+  V_Pta: AcCoA -> AcP; compartment_ * k1 * Pta * AcCoA / (KM1 + AcCoA);
+  V_Ack: AcP -> OAc; compartment_ * (kAck_f * AcP - kAck_r * OAc);
+  V_Acs: OAc -> AcCoA; compartment_ * k2 * Acs * OAc / (KM2 + OAc);
+  V_Ace: OAc -> HOAc; compartment_ * C * (OAc * H - Keq * HOAc);
+  R_LacI:  -> LacI; compartment_ * (alpha1 * pow(AcP / Kg1, n) / (1 + pow(AcP / Kg1, n)) + alpha0);
+  R_Acs:  -> Acs; compartment_ * (alpha2 * pow(AcP / Kg2, n) / (1 + pow(AcP / Kg2, n)) + alpha0);
+  R_Pta:  -> Pta; alpha3 / (1 + pow(LacI / Kg3, n)) + alpha0;
+  R_dLacI: LacI -> ; compartment_ * kd * LacI;
+  R_dAcs: Acs -> ; compartment_ * kd * Acs;
+  R_dPta: Pta -> ; compartment_ * kd * Pta;
+
+  // Species initializations:
+  AcCoA = 0;
+  AcP = 0;
+  OAc = 0;
+  HOAc = 0;
+  LacI = 0;
+  Acs = 0;
+  Pta = 0;
+  HOAc_E = 0;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  S0 = 0.5;
+  kTCA = 10;
+  k1 = 80;
+  KM1 = 0.06;
+  k2 = 0.8;
+  KM2 = 0.1;
+  kAck_f = 1;
+  kAck_r = 1;
+  C = 100;
+  H = 1e-07;
+  Keq = 0.0005;
+  k3 = 0.01;
+  alpha0 = 0;
+  alpha1 = 0.1;
+  alpha2 = 2;
+  alpha3 = 2;
+  Kg1 = 10;
+  Kg2 = 10;
+  Kg3 = 0.001;
+  n = 2;
+  kd = 0.06;
+
+  const HOAc_E in compartment_;
+end

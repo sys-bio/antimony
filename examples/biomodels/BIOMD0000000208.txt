@@ -1,0 +1,60 @@
+model Deineko2003_CellCycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species y1 in compartment_, y2 in compartment_, y3 in compartment_, y4 in compartment_;
+  species y5 in compartment_, y6 in compartment_;
+
+  // Assignment Rules:
+  F6 := piecewise(0.044, leq(time, 60), 0)
+
+  // Reactions:
+  R1:  -> y1; emax * k1 * y1 / (k1 * y1 + (k1_prime + k1_double_prime * y1) * y2);
+  R2: y1 -> ; phi1 * y1;
+  R3:  -> y2; k2 * y1;
+  R4: y2 -> y3; k3 * y2 * y5;
+  R5: y2 -> ; phi2 * y2;
+  R6: y3 -> ; phi3 * y3;
+  R7:  -> y4; k4 * y1;
+  R8:  -> y4; k4_double_prime * y6;
+  R9: y4 -> y5; k4i * y4 * y5;
+  R10: y5 -> y4; k4a * y5;
+  R11: y4 -> ; phi4i * y4;
+  R12: y5 -> ; phi4a * y5;
+  R13:  -> y6; k6 * y1;
+  R14:  -> y6; F6;
+  R15: y6 -> ; phi6 * y6;
+
+  // Species initializations:
+  y1 = 0.014;
+  y2 = 0.006;
+  y3 = 0;
+  y4 = 0;
+  y5 = 0.0001;
+  y6 = 0;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  emax = 2;
+  k1 = 1;
+  k1_prime = 1;
+  k1_double_prime = 10;
+  phi1 = 0.1;
+  k2 = 1;
+  k3 = 0.4;
+  phi2 = 0.01;
+  phi3 = 0.1;
+  k4 = 0.09;
+  k4_double_prime = 0.1;
+  k4i = 1;
+  k4a = 2;
+  phi4i = 0.01;
+  phi4a = 0.01;
+  k6 = 0;
+  F6 = 0.044;
+  phi6 = 0.1;
+
+  var F6;
+end

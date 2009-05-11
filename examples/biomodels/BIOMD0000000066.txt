@@ -1,0 +1,84 @@
+model Chassagnole2001_Threonine_Synthesis()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species aspp in compartment_, asa in compartment_, hs in compartment_, hsp in compartment_;
+  species phos in compartment_, thr in compartment_, asp in compartment_;
+  species nadp in compartment_, nadph in compartment_, adp in compartment_;
+  species atp in compartment_;
+
+  // Reactions:
+  vak: atp + asp -> aspp + adp; compartment_ * (vak_vm11 * (asp * atp - aspp * adp / vak_keqak) / ((vak_k11 * (1 + pow(thr / vak_k1thr, vak_nak1)) / (1 + pow(thr / (vak_alpha * vak_k1thr), vak_nak1)) + vak_k11 * aspp / vak_k1aspp + asp) * (vak_k1atp * (1 + adp / vak_k1adp) + atp)) + vak_vm13 * (asp * atp - aspp * adp / vak_keqak) / ((1 + pow(vak_lys / vak_k1lys, vak_nak3)) * (vak_k13 * (1 + aspp / vak_k13aspp) + asp) * (vak_k13atp * (1 + adp / vak_k13adp) + atp)));
+  vasd: nadph + aspp -> nadp + phos + asa; compartment_ * (vasd_vm2f * (aspp * nadph - asa * nadp * phos / vasd_k2eq) / ((vasd_k2aspp * (1 + asa / vasd_k2asa) * (1 + phos / vasd_k2p) + aspp) * (vasd_k2nadph * (1 + nadp / vasd_k2nadp) + nadph)));
+  vhdh: nadph + asa -> hs + nadp; compartment_ * (vhdh_vm3f * (asa * nadph - hs * nadp / vhdh_k3eq) / ((1 + pow(thr / vhdh_k3thr, vhdh_nhdh1)) / (1 + pow(thr / (vhdh_alpha3 * vhdh_k3thr), vhdh_nhdh1)) * (vhdh_k3asa + asa + hs * vhdh_k3asa / vhdh_k3hs) * (vhdh_k3nadph * (1 + nadp / vhdh_k3nadp) + nadph)));
+  vtsy: hsp -> thr + phos; compartment_ * vtsy_vm5 * hsp / (hsp + vtsy_k5hsp);
+  vhk: hs + atp -> hsp + adp; compartment_ * (vhk_vm4f * hs * atp / ((1 + vhk_lys / vhk_k4lys) * (atp + vhk_k4atp * (1 + hs / vhk_k4ihs)) * (hs + vhk_k4hs * (1 + thr / vhk_k4thr) * (1 + atp / vhk_k4iatp))));
+  vnadph_endo: nadph -> nadp; compartment_ * vnadph_endo_prot * vnadph_endo_knadph * nadph;
+  vatpase: atp -> adp + phos; compartment_ * vatpase_prot * vatpase_katpase;
+
+  // Species initializations:
+  aspp = 0;
+  asa = 0;
+  hs = 0;
+  hsp = 0;
+  phos = 0;
+  thr = 2;
+  asp = 2;
+  nadp = 0;
+  nadph = 2;
+  adp = 0;
+  atp = 10;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  vak_vm11 = 0.15;
+  vak_keqak = 0.00064;
+  vak_k11 = 0.97;
+  vak_k1thr = 0.167;
+  vak_nak1 = 4.09;
+  vak_alpha = 2.47;
+  vak_k1aspp = 0.017;
+  vak_k1atp = 0.98;
+  vak_k1adp = 0.25;
+  vak_vm13 = 0.0722;
+  vak_lys = 0.46;
+  vak_k1lys = 0.391;
+  vak_nak3 = 2.8;
+  vak_k13 = 0.32;
+  vak_k13aspp = 0.017;
+  vak_k13atp = 0.22;
+  vak_k13adp = 0.25;
+  vasd_vm2f = 0.1812;
+  vasd_k2eq = 56.4150334574039;
+  vasd_k2aspp = 0.022;
+  vasd_k2asa = 0.11;
+  vasd_k2p = 10;
+  vasd_k2nadph = 0.029;
+  vasd_k2nadp = 0.144;
+  vhdh_vm3f = 1.001;
+  vhdh_k3eq = 3162.27766016838;
+  vhdh_k3thr = 0.097;
+  vhdh_nhdh1 = 1.41;
+  vhdh_alpha3 = 3.93;
+  vhdh_k3asa = 0.24;
+  vhdh_k3hs = 3.39;
+  vhdh_k3nadph = 0.037;
+  vhdh_k3nadp = 0.067;
+  vtsy_vm5 = 0.0434;
+  vtsy_k5hsp = 0.31;
+  vhk_vm4f = 0.1;
+  vhk_lys = 0.46;
+  vhk_k4lys = 9.45;
+  vhk_k4atp = 0.072;
+  vhk_k4ihs = 4.7;
+  vhk_k4hs = 0.11;
+  vhk_k4thr = 1.09;
+  vhk_k4iatp = 4.35;
+  vnadph_endo_knadph = 5.4e-06;
+  vnadph_endo_prot = 202;
+  vatpase_katpase = 4.1e-05;
+  vatpase_prot = 202;
+
+end

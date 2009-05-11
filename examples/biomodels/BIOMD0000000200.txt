@@ -1,0 +1,127 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+  species AA in cell, AAp in cell, W in cell, WAA in cell, WAAp in cell, WWAA in cell;
+  species WWAAp in cell, TT in cell, TTW in cell, TTWW in cell, TTWAA in cell;
+  species TTWAAp in cell, TTAA in cell, TTAAp in cell, TTWWAA in cell, TTWWAAp in cell;
+  species Y in cell, Yp in cell, Z in cell, B in cell, Bp in cell, SetYp in cell;
+
+  // Assignment Rules:
+  Bias := 1 - pow(Yp, Hill) / (2.333 * pow(SetYp, Hill) + pow(Yp, Hill))
+
+  // Reactions:
+  complex_r1: TTW -> TT + W; cell * (complex_r1_k1 * TTW - complex_r1_k2 * TT * W);
+  complex_r2: WAA -> W + AA; cell * (complex_r2_k1 * WAA - complex_r2_k2 * W * AA);
+  complex_r3: TTWAA -> TT + WAA; cell * (complex_r3_k1 * TTWAA - complex_r3_k2 * TT * WAA);
+  complex_r4: TTWWAA -> TTW + WAA; cell * (complex_r4_k1 * TTWWAA - complex_r4_k2 * TTW * WAA);
+  complex_r5: TTWWAA -> TTWW + AA; cell * (complex_r5_k1 * TTWWAA - complex_r5_k2 * TTWW * AA);
+  complex_r6: TTWWAA -> TT + WWAA; cell * (complex_r6_k1 * TTWWAA - complex_r6_k2 * TT * WWAA);
+  complex_r7: TTAA -> TT + AA; cell * (complex_r7_k1 * TTAA - complex_r7_k2 * TT * AA);
+  complex_r8: TTWAA -> TTW + AA; cell * (complex_r8_k1 * TTWAA - complex_r8_k2 * TTW * AA);
+  complex_r9: TTWWAA -> TTWAA + W; cell * (complex_r9_k1 * TTWWAA - complex_r9_k2 * TTWAA * W);
+  complex_r10: TTWW -> TTW + W; cell * (complex_r10_k1 * TTWW - complex_r10_k2 * TTW * W);
+  complex_r11: WWAA -> W + WAA; cell * (complex_r11_k1 * WWAA - complex_r11_k2 * W * WAA);
+  complex_r12: TTWAA -> TTAA + W; cell * (complex_r12_k1 * TTWAA - complex_r12_k2 * TTAA * W);
+  phosphorylation_r1: TTWWAA -> TTWWAAp; cell * phosphorylation_r1_k1 * TTWWAA;
+  phosphorylation_r2: AA -> AAp; cell * phosphorylation_r2_k1 * AA;
+  phosphorylation_r3: WAA -> WAAp; cell * phosphorylation_r3_k1 * WAA;
+  phosphorylation_r4: WWAA -> WWAAp; cell * phosphorylation_r4_k1 * WWAA;
+  phosphorylation_r5: TTAA -> TTAAp; cell * phosphorylation_r5_k1 * TTAA;
+  phosphorylation_r6: TTWAA -> TTWAAp; cell * phosphorylation_r6_k1 * TTWAA;
+  phosphorylation_r7: Y -> Yp; cell * phosphorylation_r7_k1 * Y;
+  phosphorylation_r8: Yp -> Y; cell * phosphorylation_r8_k1 * Yp;
+  phosphorylation_r9: Yp + Z -> Y + Z; cell * phosphorylation_r9_k1 * Yp * Z;
+  phosphorylation_r10: Bp -> B; cell * phosphorylation_r10_k1 * Bp;
+  phosphotransfer_r1: B + AAp -> Bp + AA; cell * phosphotransfer_r1_k1 * B * AAp;
+  phosphotransfer_r2: B + WAAp -> Bp + WAA; cell * phosphotransfer_r2_k1 * B * WAAp;
+  phosphotransfer_r3: B + WWAAp -> Bp + WWAA; cell * phosphotransfer_r3_k1 * B * WWAAp;
+  phosphotransfer_r4: B + TTAAp -> Bp + TTAA; cell * phosphotransfer_r4_k1 * B * TTAAp;
+  phosphotransfer_r5: B + TTWAAp -> Bp + TTWAA; cell * phosphotransfer_r5_k1 * B * TTWAAp;
+  phosphotransfer_r6: B + TTWWAAp -> Bp + TTWWAA; cell * phosphotransfer_r6_k1 * B * TTWWAAp;
+  phosphotransfer_r7: Y + AAp -> Yp + AA; cell * phosphotransfer_r7_k1 * Y * AAp;
+  phosphotransfer_r8: Y + WAAp -> Yp + WAA; cell * phosphotransfer_r8_k1 * Y * WAAp;
+  phosphotransfer_r9: Y + WWAAp -> Yp + WWAA; cell * phosphotransfer_r9_k1 * Y * WWAAp;
+  phosphotransfer_r10: Y + TTAAp -> Yp + TTAA; cell * phosphotransfer_r10_k1 * Y * TTAAp;
+  phosphotransfer_r11: Y + TTWAAp -> Yp + TTWAA; cell * phosphotransfer_r11_k1 * Y * TTWAAp;
+  phosphotransfer_r12: Y + TTWWAAp -> Yp + TTWWAA; cell * phosphotransfer_r12_k1 * Y * TTWWAAp;
+
+  // Species initializations:
+  AA = 2.5e-06;
+  AAp = 0;
+  W = 5e-06;
+  WAA = 0;
+  WAAp = 0;
+  WWAA = 0;
+  WWAAp = 0;
+  TT = 2.5e-06;
+  TTW = 0;
+  TTWW = 0;
+  TTWAA = 0;
+  TTWAAp = 0;
+  TTAA = 0;
+  TTAAp = 0;
+  TTWWAA = 0;
+  TTWWAAp = 0;
+  Y = 1e-05;
+  Yp = 0;
+  Z = 2e-05;
+  B = 2e-06;
+  Bp = 0;
+  SetYp = 1.63e-06;
+
+  // Compartments initializations:
+  cell = 1.41;
+
+  // Other defined symbols initializations:
+  Hill = 4;
+  Bias = 0;
+  complex_r1_k1 = 0.00365;
+  complex_r1_k2 = 1000000;
+  complex_r2_k1 = 0.00894;
+  complex_r2_k2 = 1000000;
+  complex_r3_k1 = 297;
+  complex_r3_k2 = 1000000;
+  complex_r4_k1 = 0.64;
+  complex_r4_k2 = 1000000;
+  complex_r5_k1 = 0.112;
+  complex_r5_k2 = 1000000;
+  complex_r6_k1 = 0.0229;
+  complex_r6_k2 = 1000000;
+  complex_r7_k1 = 39.3;
+  complex_r7_k2 = 1000000;
+  complex_r8_k1 = 727;
+  complex_r8_k2 = 1000000;
+  complex_r9_k1 = 7.87e-06;
+  complex_r9_k2 = 1000000;
+  complex_r10_k1 = 0.0511;
+  complex_r10_k2 = 1000000;
+  complex_r11_k1 = 0.102;
+  complex_r11_k2 = 1000000;
+  complex_r12_k1 = 0.0676;
+  complex_r12_k2 = 1000000;
+  phosphorylation_r1_k1 = 15.5;
+  phosphorylation_r2_k1 = 0.0227;
+  phosphorylation_r3_k1 = 0.0227;
+  phosphorylation_r4_k1 = 0.0227;
+  phosphorylation_r5_k1 = 0.0227;
+  phosphorylation_r6_k1 = 0.0227;
+  phosphorylation_r7_k1 = 0.00124;
+  phosphorylation_r8_k1 = 0.037;
+  phosphorylation_r9_k1 = 500000;
+  phosphorylation_r10_k1 = 0.35;
+  phosphotransfer_r1_k1 = 6000000;
+  phosphotransfer_r2_k1 = 6000000;
+  phosphotransfer_r3_k1 = 6000000;
+  phosphotransfer_r4_k1 = 6000000;
+  phosphotransfer_r5_k1 = 6000000;
+  phosphotransfer_r6_k1 = 6000000;
+  phosphotransfer_r7_k1 = 30000000;
+  phosphotransfer_r8_k1 = 30000000;
+  phosphotransfer_r9_k1 = 30000000;
+  phosphotransfer_r10_k1 = 30000000;
+  phosphotransfer_r11_k1 = 30000000;
+  phosphotransfer_r12_k1 = 30000000;
+
+  var Bias;
+end

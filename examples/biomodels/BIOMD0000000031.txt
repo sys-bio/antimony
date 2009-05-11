@@ -1,0 +1,37 @@
+model Markevich2004_MAPK_orderedMM2kinases()
+
+  // Compartments and Species:
+  compartment uVol;
+  species M in uVol, Mp in uVol, Mpp in uVol, MAPKK1 in uVol, MAPKK2 in uVol;
+  species MKP3 in uVol;
+
+  // Reactions:
+  v1: M -> Mp; uVol * (k1cat * MAPKK1 * M / Km1 / (1 + M / Km1));
+  v2: Mp -> Mpp; uVol * (k2cat * MAPKK2 * Mp / Km2 / (1 + Mp / Km2));
+  v3: Mpp -> Mp; uVol * (k3cat * MKP3 * Mpp / Km3 / (1 + Mpp / Km3 + Mp / Km4 + M / Km5));
+  v4: Mp -> M; uVol * (k4cat * MKP3 * Mp / Km4 / (1 + Mpp / Km3 + Mp / Km4 + M / Km5));
+
+  // Species initializations:
+  M = 500;
+  Mp = 0;
+  Mpp = 0;
+  MAPKK1 = 100;
+  MAPKK2 = 1;
+  MKP3 = 100;
+
+  // Compartments initializations:
+  uVol = 1;
+
+  // Other defined symbols initializations:
+  k1cat = 0.01;
+  Km1 = 50;
+  k2cat = 15;
+  Km2 = 500;
+  k3cat = 0.084;
+  Km3 = 5;
+  k4cat = 0.06;
+  Km4 = 18;
+  Km5 = 78;
+
+  const MAPKK1 in uVol, MAPKK2 in uVol, MKP3 in uVol;
+end

@@ -1,0 +1,56 @@
+model Zhu2007_TF_syn_modulated_by_Ca()
+
+  // Compartments and Species:
+  compartment cytoplasm, store;
+  species X in cytoplasm, Y in store, Z in cytoplasm;
+
+  // Assignment Rules:
+  kf := kf0 * (1 + gamma * pow(Z, 4) / (pow(Ka, 4) + pow(Z, 4)))
+  Kd := Kd0 / (1 + pow(Z, 4) / pow(Kb, 4))
+
+  // Reactions:
+  TF_synthesis:  -> X; kf * pow(X, 2) / (pow(X, 2) + Kd);
+  TF_degradation: X -> ; TF_degradation_kd * X;
+  TF_synthesis_basal:  -> X; TF_synthesis_basal_Rbas;
+  Calcium_Influx:  -> Z; Calcium_Influx_v0;
+  Calcium_Influx_stimulation:  -> Z; Calcium_Influx_stimulation_v1 * Calcium_Influx_stimulation_beta;
+  Calcium_into_store: Z -> Y; Calcium_into_store_Vm2 * pow(Z, Calcium_into_store_n) / (pow(Calcium_into_store_K2, Calcium_into_store_n) + pow(Z, Calcium_into_store_n));
+  Calcium_into_cytoplasm: Y -> Z; Calcium_into_cytoplasm_Vm3 * pow(Y, Calcium_into_cytoplasm_m) / (pow(Calcium_into_cytoplasm_Kr, Calcium_into_cytoplasm_m) + pow(Y, Calcium_into_cytoplasm_m)) * pow(Z, Calcium_into_cytoplasm_p) / (pow(Calcium_into_cytoplasm_K_A, Calcium_into_cytoplasm_p) + pow(Z, Calcium_into_cytoplasm_p));
+  Leakage: Y -> Z; Leakage_k1 * Y;
+  Leakage_from_cytoplasm: Z -> ; Leakage_from_cytoplasm_k * Z;
+
+  // Species initializations:
+  X = 15;
+  Y = 0;
+  Z = 0.25;
+
+  // Compartments initializations:
+  cytoplasm = 1;
+  store = 1;
+
+  // Other defined symbols initializations:
+  kf = 0;
+  Kd = 0;
+  kf0 = 6;
+  gamma = 9;
+  Ka = 0.5;
+  Kb = 0.5;
+  Kd0 = 10;
+  TF_degradation_kd = 1;
+  TF_synthesis_basal_Rbas = 0.1;
+  Calcium_Influx_v0 = 1;
+  Calcium_Influx_stimulation_v1 = 5.7;
+  Calcium_Influx_stimulation_beta = 0.3;
+  Calcium_into_store_Vm2 = 30;
+  Calcium_into_store_K2 = 0.5;
+  Calcium_into_store_n = 2;
+  Calcium_into_cytoplasm_Vm3 = 325;
+  Calcium_into_cytoplasm_Kr = 1.7;
+  Calcium_into_cytoplasm_K_A = 0.46;
+  Calcium_into_cytoplasm_m = 2;
+  Calcium_into_cytoplasm_p = 4;
+  Leakage_k1 = 0.7;
+  Leakage_from_cytoplasm_k = 10;
+
+  var kf, Kd;
+end

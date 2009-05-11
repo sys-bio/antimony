@@ -1,0 +1,92 @@
+model Xu2003_Phosphoinositide_turnover()
+
+  // Compartments and Species:
+  compartment Extracellular, PM, Cytosol, NM, Nucleus;
+  species PIP2_PHGFP_PM in PM, PH_GFP_Cyt in Cytosol, PI_PM in PM, stim_PM in PM;
+  species IP3_PHGFP_Cyt in Cytosol, PIP2_PM in PM, PIP_PM in PM, DAG_PM in PM;
+  species hv_Cytosol in Cytosol, IP3X_Cytosol in Cytosol, PLC_PM in PM, PLC_act_PM in PM;
+  species IP3_Cyt in Cytosol;
+
+  // Assignment Rules:
+  Ratebasal_PIPsyn_PIPSyn := piecewise(0.581 * kBasalSynPIP_PIPSyn * (-1 + exp((PIP_basal_PIPSyn + -PIP_PM) * (1 / PIP_basal_PIPSyn))), lt(PIP_PM, PIP_basal_PIPSyn), 0)
+  Ratestim_PIPsyn_PIPSyn := piecewise(kStimSynPIP_PIPSyn * exp(-((time + -tauPIPsyn_PIPSyn) * (1 / PIPsyndecay_PIPSyn))), gt(time, tauPIPsyn_PIPSyn), 0)
+  signal_PLCact := piecewise(exp(-((time + -tau0_PLCact) * (1 / stimdecay_PLCact))), gt(time, tau0_PLCact), 0)
+  kr_PIP2PH_PIP2_PH := kf_PIP2PH_PIP2_PH * KdPIP2PH_PIP2_PH
+  Rate_PIP2Synbasal_PIP2Syn := piecewise(0.581 * kBasalSynPIP2_PIP2Syn * (-1 + exp((PIP2_basal_PIP2Syn + -PIP2_PM) * (1 / PIP2_basal_PIP2Syn))), lt(PIP2_PM, PIP2_basal_PIP2Syn), 0)
+  Rate_PIP2SynStim_PIP2Syn := piecewise(kStimSynPIP2_PIP2Syn * exp(-((time + -tauPIP2syn_PIP2Syn) * (1 / PIP2syndecay_PIP2Syn))), gt(time, tauPIP2syn_PIP2Syn), 0)
+  kr_IP3PH_IP3_PHGFP := kf_IP3PH_IP3_PHGFP * KdIP3PH_IP3_PHGFP
+
+  // Reactions:
+  PIPSyn: PI_PM -> PIP_PM; (Ratebasal_PIPsyn_PIPSyn + Ratestim_PIPsyn_PIPSyn) * PI_PM * PM;
+  PIP2_hyd: PIP2_PM -> DAG_PM + IP3_Cyt; PIP2_hyd_k_PIP2hyd * PIP2_PM * PLC_act_PM * PM;
+  PLCact: PLC_PM -> PLC_act_PM; (PLCact_KfPLCact * PLC_PM * stim_PM * signal_PLCact + -(PLCact_krPLCact * PLC_act_PM)) * PM;
+  PIP2_PH_hyd: PIP2_PHGFP_PM -> PH_GFP_Cyt + IP3_Cyt + DAG_PM; PIP2_PH_hyd_k_PIP2PHhyd * PLC_act_PM * PIP2_PHGFP_PM * PM;
+  PIP2_PH: PH_GFP_Cyt + PIP2_PM -> PIP2_PHGFP_PM; (kf_PIP2PH_PIP2_PH * 0.00166112956810631 * PH_GFP_Cyt * PIP2_PM + -(kr_PIP2PH_PIP2_PH * PIP2_PHGFP_PM)) * PM;
+  IP3deg: IP3_Cyt -> ; IP3deg_kIP3deg * (0.00166112956810631 * IP3_Cyt + -IP3deg_IP3_basal) * Cytosol * 1 * (1 / KMOLE);
+  PIP2Syn: PIP_PM -> PIP2_PM; (Rate_PIP2Synbasal_PIP2Syn + Rate_PIP2SynStim_PIP2Syn) * PIP_PM * PM;
+  IP3_PHGFP: IP3_Cyt + PH_GFP_Cyt -> IP3_PHGFP_Cyt; (kf_IP3PH_IP3_PHGFP * 0.00166112956810631 * IP3_Cyt * 0.00166112956810631 * PH_GFP_Cyt + -(kr_IP3PH_IP3_PHGFP * 0.00166112956810631 * IP3_PHGFP_Cyt)) * Cytosol * 1 * (1 / KMOLE);
+
+  // Species initializations:
+  PIP2_PHGFP_PM = 0;
+  PH_GFP_Cyt = 0;
+  PI_PM = 142857;
+  stim_PM = 1;
+  IP3_PHGFP_Cyt = 0;
+  PIP2_PM = 4000;
+  PIP_PM = 2857;
+  DAG_PM = 2000;
+  hv_Cytosol = 0;
+  IP3X_Cytosol = 0;
+  PLC_PM = 100;
+  PLC_act_PM = 0;
+  IP3_Cyt = 96.32;
+
+  // Compartments initializations:
+  Extracellular = 0.277777777777778;
+  PM = 0.5555555555556;
+  Cytosol = 1;
+  NM = 0.111111111111111;
+  Nucleus = 0.111111111111111;
+
+  // Other defined symbols initializations:
+  KMOLE = 0.00166112956810631;
+  PIP_basal_PIPSyn = 2857;
+  kBasalSynPIP_PIPSyn = 0.0055;
+  kStimSynPIP_PIPSyn = 0.019;
+  tauPIPsyn_PIPSyn = 0.05;
+  PIPsyndecay_PIPSyn = 1;
+  Ratebasal_PIPsyn_PIPSyn = 0;
+  Ratestim_PIPsyn_PIPSyn = 0;
+  tau0_PLCact = 0.05;
+  stimdecay_PLCact = 1;
+  signal_PLCact = 0;
+  kf_PIP2PH_PIP2_PH = 0.12;
+  KdPIP2PH_PIP2_PH = 2;
+  kr_PIP2PH_PIP2_PH = 0;
+  kStimSynPIP2_PIP2Syn = 0.92;
+  tauPIP2syn_PIP2Syn = 0.05;
+  PIP2syndecay_PIP2Syn = 1;
+  PIP2_basal_PIP2Syn = 4000;
+  kBasalSynPIP2_PIP2Syn = 0.048;
+  Rate_PIP2Synbasal_PIP2Syn = 0;
+  Rate_PIP2SynStim_PIP2Syn = 0;
+  kf_IP3PH_IP3_PHGFP = 10;
+  KdIP3PH_IP3_PHGFP = 2;
+  kr_IP3PH_IP3_PHGFP = 0;
+  PIPSyn_I = 0;
+  PIP2_hyd_I = 0;
+  PIP2_hyd_k_PIP2hyd = 2.4;
+  PLCact_I = 0;
+  PLCact_KfPLCact = 0.0005;
+  PLCact_krPLCact = 0.1;
+  PIP2_PH_hyd_I = 0;
+  PIP2_PH_hyd_k_PIP2PHhyd = 0;
+  PIP2_PH_I = 0;
+  IP3deg_kIP3deg = 0.08;
+  IP3deg_IP3_basal = 0.16;
+  PIP2Syn_I = 0;
+
+  var Ratebasal_PIPsyn_PIPSyn, Ratestim_PIPsyn_PIPSyn, signal_PLCact, kr_PIP2PH_PIP2_PH;
+  var Rate_PIP2Synbasal_PIP2Syn, Rate_PIP2SynStim_PIP2Syn, kr_IP3PH_IP3_PHGFP;
+  const stim_PM in PM, hv_Cytosol in Cytosol, IP3X_Cytosol in Cytosol;
+end

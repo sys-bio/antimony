@@ -1,0 +1,79 @@
+model model_0000001()
+
+  // Compartments and Species:
+  compartment cell;
+  species c in cell;
+
+  // Assignment Rules:
+  phik := 1 / (1 + exp((vn - V) / sn))
+  phia := 1 / (1 + exp((va - V) / sa))
+  phih := 1 / (1 + exp((V - vh) / sh))
+  phif := 1 / (1 + exp((vf - V) / sf))
+  phical := 1 / (1 + exp((vm - V) / sm))
+  cinf := pow(c, 2) / (pow(c, 2) + pow(ks, 2))
+  ica := gcal * phical * (V - vca)
+  isk := gsk * cinf * (V - vk)
+  ibk := gf * phif * (V - vk)
+  ikdr := gk * n * (V - vk)
+  ia := ga * phia * h * (V - vk)
+  ik := isk + ibk + ikdr + ia
+
+  // Rate Rules:
+  n' = lambda_ * (phik - n) / taun
+  h' = (phih - h) / tauh
+  V' = -(ica + ik) / Cm
+
+  // Reactions:
+  reaction_0000004:  -> c; -ff * (alpha * ica + kc * c) * cell;
+
+  // Species initializations:
+  c = 0.3;
+
+  // Compartments initializations:
+  cell = 1;
+
+  // Other defined symbols initializations:
+  vca = 50;
+  vk = -75;
+  Cm = 10;
+  gk = 4;
+  gcal = 2;
+  gsk = 1.7;
+  ga = 0;
+  gf = 0;
+  vn = -5;
+  va = -20;
+  vm = -20;
+  vh = -60;
+  vf = -20;
+  sn = 10;
+  sa = 10;
+  sm = 12;
+  sh = 5;
+  sf = 5.6;
+  taun = 30;
+  tauh = 20;
+  lambda_ = 0.7;
+  kc = 0.16;
+  ks = 0.5;
+  ff = 0.01;
+  alpha = 0.0015;
+  phik = 0;
+  phia = 0;
+  phih = 0;
+  phif = 0;
+  phical = 0;
+  cinf = 0;
+  ica = 0;
+  isk = 0;
+  ibk = 0;
+  ikdr = 0;
+  ia = 0;
+  ik = 0;
+  n = 0.1;
+  h = 0.1;
+  V = -60;
+
+  var phik, phia, phih, phif, phical, cinf, ica, isk, ibk, ikdr, ia, ik, n;
+  var h, V;
+end

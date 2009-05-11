@@ -1,0 +1,37 @@
+model Tyson1999()
+
+  // Compartments and Species:
+  compartment default, CYTOPLASM;
+  species EmptySet in default, M in CYTOPLASM, P in CYTOPLASM;
+
+  // Reactions:
+  TC: EmptySet -> M; CYTOPLASM * (TC_Vm / (1 + pow(P * (1 - 2 / (1 + pow(1 + 8 * TC_Keq * P, 0.5))) / (2 * TC_Pcrit), 2)));
+  TL: EmptySet -> P; TL_V * M * CYTOPLASM;
+  mRNAD: M -> EmptySet; mRNAD_D * M * CYTOPLASM;
+  ProteinD: P -> EmptySet; ProteinD_D * P * CYTOPLASM;
+  DBT: P -> EmptySet; CYTOPLASM * ((DBT_k1 * P * (2 / (1 + pow(1 + 8 * DBT_Keq * P, 0.5))) + DBT_k2 * P) / (DBT_J + P));
+
+  // Species initializations:
+  EmptySet = 0;
+  M = 1;
+  P = 1;
+
+  // Compartments initializations:
+  default = 1;
+  CYTOPLASM = 1;
+
+  // Other defined symbols initializations:
+  N_A = 6.0221367e+23;
+  TC_Vm = 1;
+  TC_Pcrit = 0.1;
+  TC_Keq = 200;
+  TL_V = 0.5;
+  mRNAD_D = 0.1;
+  ProteinD_D = 0.1;
+  DBT_k1 = 10;
+  DBT_k2 = 0.03;
+  DBT_J = 0.05;
+  DBT_Keq = 200;
+
+  const EmptySet in default;
+end

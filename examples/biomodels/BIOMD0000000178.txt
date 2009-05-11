@@ -1,0 +1,39 @@
+model step4()
+
+  // Compartments and Species:
+  compartment extra, endo, neuroplasm;
+  species BoNT in extra, bulk in extra, free in extra, bound in extra, translocate in endo;
+  species lytic in neuroplasm;
+
+  // Assignment Rules:
+  BoNT := bulk + free
+  tension := 1 - lytic
+
+  // Reactions:
+  endcytosis: bound -> translocate; endcytosis_kT * bound * extra;
+  translocation: translocate -> lytic; translocation_kL * translocate * endo;
+  binding: free -> bound; binding_kB * free * extra;
+  bulk_movement: bulk -> free; bulk_movement_kS * bulk * extra;
+
+  // Species initializations:
+  bulk = 1;
+  free = 0;
+  bound = 0;
+  translocate = 0;
+  lytic = 0;
+
+  // Compartments initializations:
+  extra = 1;
+  endo = 1;
+  neuroplasm = 1;
+
+  // Other defined symbols initializations:
+  tension = 0;
+  endcytosis_kT = 0.141;
+  translocation_kL = 0.013;
+  binding_kB = 0.058;
+  bulk_movement_kS = 15;
+
+  var tension;
+  const BoNT in extra;
+end

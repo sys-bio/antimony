@@ -1,0 +1,72 @@
+model Bindschadler_Ca_Oscillator()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species c1 in compartment_, h1 in compartment_, c2 in compartment_, h2 in compartment_;
+
+  // Assignment Rules:
+  Phi1_c1 := r2 * c1 / (R1 + c1)
+  Phi_minus1_c1 := k1 / (R3 + c1)
+  Phi2_c1 := (k2 + r4 * c1) / (R3 + c1)
+  Phi3_c1 := k3 / (R5 + c1)
+  Phi1_c2 := r2 * c2 / (R1 + c2)
+  Phi_minus1_c2 := k1 / (R3 + c2)
+  Phi2_c2 := (k2 + r4 * c2) / (R3 + c2)
+  Phi3_c2 := k3 / (R5 + c2)
+
+  // Reactions:
+  Jreceptor_Cell1:  -> c1; compartment_ * Jreceptor_Cell1_kf * pow(Jreceptor_Cell1_p * h1 * Phi1_c1 / (Phi1_c1 * Jreceptor_Cell1_p + Phi_minus1_c1), 4);
+  Jpump_Cell1: c1 -> ; compartment_ * (Jpump_Cell1_Vp * pow(c1, 2) / (pow(Jpump_Cell1_Kp, 2) + pow(c1, 2)));
+  Jleak_Cell1:  -> c1; compartment_ * Jleak_Cell1_Jleak;
+  Inactivated_to_S_Cell1:  -> h1; compartment_ * Phi3_c1 * (1 - h1);
+  Open_to_Inactivated_Cell1: h1 -> ; compartment_ * Phi1_c1 * Phi2_c1 * h1 * Open_to_Inactivated_Cell1_p / (Phi1_c1 * Open_to_Inactivated_Cell1_p + Phi_minus1_c1);
+  Jreceptor_Cell2:  -> c2; compartment_ * Jreceptor_Cell2_kf * pow(Jreceptor_Cell2_p * h2 * Phi1_c2 / (Phi1_c2 * Jreceptor_Cell2_p + Phi_minus1_c2), 4);
+  Jpump_Cell2: c2 -> ; compartment_ * Jpump_Cell2_Vp * pow(c2, 2) / (pow(Jpump_Cell2_Kp, 2) + pow(c2, 2));
+  Jleak_Cell2:  -> c2; compartment_ * Jleak_Cell2_Jleak;
+  Inactivated_to_S_Cell2:  -> h2; compartment_ * Phi3_c2 * (1 - h2);
+  Open_to_Inactivated_Cell2: h2 -> ; compartment_ * Phi1_c2 * Phi2_c2 * h2 * Open_to_Inactivated_Cell2_p / (Phi1_c2 * Open_to_Inactivated_Cell2_p + Phi_minus1_c2);
+  diffusion: c2 -> c1; compartment_ * diffusion_D * (c2 - c1);
+
+  // Species initializations:
+  c1 = 0.3;
+  h1 = 0.8;
+  c2 = 0.1;
+  h2 = 0.1;
+
+  // Compartments initializations:
+  compartment_ = 1;
+
+  // Other defined symbols initializations:
+  Phi1_c1 = 0;
+  r2 = 100;
+  R1 = 6;
+  Phi_minus1_c1 = 0;
+  k1 = 44;
+  R3 = 50;
+  Phi2_c1 = 0;
+  k2 = 26.5;
+  r4 = 20;
+  Phi3_c1 = 0;
+  k3 = 1.6;
+  R5 = 1.6;
+  Phi1_c2 = 0;
+  Phi_minus1_c2 = 0;
+  Phi2_c2 = 0;
+  Phi3_c2 = 0;
+  Jreceptor_Cell1_kf = 28;
+  Jreceptor_Cell1_p = 0.2778;
+  Jpump_Cell1_Vp = 1.2;
+  Jpump_Cell1_Kp = 0.18;
+  Jleak_Cell1_Jleak = 0.2;
+  Open_to_Inactivated_Cell1_p = 0.2778;
+  Jreceptor_Cell2_kf = 28;
+  Jreceptor_Cell2_p = 0.2778;
+  Jpump_Cell2_Vp = 1.2;
+  Jpump_Cell2_Kp = 0.18;
+  Jleak_Cell2_Jleak = 0.2;
+  Open_to_Inactivated_Cell2_p = 0.2778;
+  diffusion_D = 0.01;
+
+  var Phi1_c1, Phi_minus1_c1, Phi2_c1, Phi3_c1, Phi1_c2, Phi_minus1_c2, Phi2_c2;
+  var Phi3_c2;
+end
