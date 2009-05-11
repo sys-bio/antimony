@@ -1119,7 +1119,7 @@ void Module::LoadSBML(const Model* sbml)
     }
     //Anything more complicated is set in a Rule, which we'll get to later.
 
-    if (species->getConstant() || species->getBoundaryCondition()==true) {
+    if (species->getConstant() || species->getBoundaryCondition()) {
       //Since all species are variable by default, we only set this explicitly if true.
       var->SetIsConst(true);
     }

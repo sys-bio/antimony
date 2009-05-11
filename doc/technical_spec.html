@@ -61,8 +61,10 @@ Since Antimony is intended to be easy and simple, it is not a requirement to end
 <dt>  &lt;<tt><A href="#comments">comments</a></tt>&gt;
 <dt>  &lt;<tt><A href="#symbol declarations">symbol declarations</a></tt>&gt;
 <dt>  &lt;<tt><A href="#imported models">imported models</a></tt>&gt;
+<dt>  &lt;<tt><A href="#assignment rules">assignment rules</a></tt>&gt;
+<dt>  &lt;<tt><A href="#rate rules">rate rules</a></tt>&gt;
 <dt>  &lt;<tt><A href="#reaction definitions">reaction definitions</a></tt>&gt;
-<dt>  &lt;<tt><A href="#assignment definitions">assignment definitions</a></tt>&gt;
+<dt>  &lt;<tt><A href="#initializations">initializations</a></tt>&gt;
 <dt>  &lt;<tt><A href="#DNA strand definitions">DNA strand definitions</a></tt>&gt;
 <dt>  &lt;<tt><A href="#event definitions">event definitions</a></tt>&gt;
 <dt>  &lt;<tt><A href="#synchronizations">synchronizations</a></tt>&gt;
@@ -76,7 +78,9 @@ Since Antimony is intended to be easy and simple, it is not a requirement to end
 <dt>&lt;<tt><b><A name="comments">comments</a></b></tt>&gt;:
 	<dd>A line of the format:
 <dt><TT>  // [&lt;any text&gt;] &lt;<tt><A href="#return">return</a></tt>&gt;</tt>
-	<dd>All lines of the above format are ignored, and can be used to comment on a model (but will not be exported to translated forms of the model).  They can be used anywhere, and will be parsed simply as a &lt;<tt><A href="#return">return</a></tt>&gt;.
+        <dd>Or any text (potentially spanning multiple lines) of the form:
+<dt><TT>  /* [&lt;any text, including returns&gt;] */</tt>
+	<dd>All lines of the above format are ignored, and can be used to comment on a model (but will not be exported to translated forms of the model).  They can be used anywhere: the first form will parsed simply as a &lt;<tt><A href="#return">return</a></tt>&gt;, and the second will be skipped and not parsed at all.
 
 </P><P>
 <dt>&lt;<tt><b><A name="return">return</a></b></tt>&gt;
@@ -213,18 +217,30 @@ Since Antimony is intended to be easy and simple, it is not a requirement to end
 <dt>&lt;<tt><b><A name="list of reactants">list of reactants|products</a></b></tt>&gt;:
 	<dd>A list of zero or more species of the form:
 <dt><TT>[&lt;positive number&gt;] &lt;<tt><A href="#species">species</a></tt>&gt; [+ [&lt;positive number&gt;] &lt;<tt><A href="#species">species</a></tt>&gt; ] ...</tt>
-	<dd>The optional positive integers are the stoichiometry for the list.  Technicallly, SBML and other specifications only state that the stoichiometry must be a valid number, either positive or negative (or zero), but while a negative stoichimetry in a reactant is equivalent to a positive stoichiometry in the product list (and visa versa), nobody ever does this, and we feel safe requiring positive values for the stoichiometries.
+	<dd>The optional positive integers are the stoichiometry for the list.  Technically, SBML and other specifications only state that the stoichiometry must be a valid number, either positive or negative (or zero), but while a negative stoichimetry in a reactant is equivalent to a positive stoichiometry in the product list (and visa versa), nobody ever does this, and we feel safe requiring positive values for the stoichiometries.
 
 </P><P>
-<dt>&lt;<tt><b><A name="assignment definitions">assignment definitions</a></b></tt>&gt;
-	<dd>Assigns a value or an equation to a symbol:
+<dt>&lt;<tt><b><A name="assignment rules">assignment rules</a></b></tt>&gt;
+	<dd>Assigns a value or an equation to a symbol to be updated at all points during a model:
+<dt><TT>&lt;<tt><A href="#symbol">symbol</a></tt>&gt; := &lt;<tt><A href="#equation">equation</a></tt>&gt;</tt>
+	<dd>It is illegal for the equation to contain the symbol in question, or for it to contain a symbol which, in turn, is defined by an equation containing the symbol, etc.  A symbol must have only one assignment rule or rate rule, so only the last such definition in an Antimony file is used.
+
+</P><P>
+<dt>&lt;<tt><b><A name="rate rules">rate rules</a></b></tt>&gt;
+	<dd>Assigns a value or an equation to a symbol that describes how the value of the symbol changes with time (dS/dt):
+<dt><TT>&lt;<tt><A href="#symbol">symbol</a></tt>&gt;' = &lt;<tt><A href="#equation">equation</a></tt>&gt;</tt>
+	<dd>It is <b>legal</b> for the equation to contain the symbol in question.  A symbol must have only one assignment rule or rate rule, so only the last such definition in an Antimony file is used.
+
+</P><P>
+<dt>&lt;<tt><b><A name="initializations">initializations</a></b></tt>&gt;
+	<dd>Assigns a value or an equation to a symbol for the beginning of the model's simulation:
 <dt><TT>&lt;<tt><A href="#symbol">symbol</a></tt>&gt; = &lt;<tt><A href="#equation">equation</a></tt>&gt;</tt>
-	<dd>It is illegal for the equation to contain the symbol in question, or for it to contain a symbol which, in turn, is defined by an equation containing the symbol, etc.
+	<dd>It is illegal for the equation to contain the symbol in question, or for it to contain a symbol which, in turn, is defined by an equation containing the symbol, etc.  A symbol must have only one initialization, so only the last such definition in an Antimony file is used (but a symbol may have both an initialization and an assignment or rate rule).
 
 </P><P>
 <dt>&lt;<tt><b><A name="equation">equation</a></b></tt>&gt;
-	<dd>A mathematical function.  May contain numbers, mathematical symbols ('+', '-', '*', '/', '^', '(', ')', '&lt;', '&gt;'), and function names (see &lt;<tt><A href="#function names">function names</a></tt>&gt;).  Antimony's parsing mechanism steals libSBML's level 1 parser, with the addition of the following boolean symbols:  "&lt;=" (less than or equal to), "&gt;=" (greater than or equal to), "==" (exactly equal to), "!=" (not equal to), "&&" (and), "||" (or), and "!" (not).
-	<dd>Equations associated with DNA elements may contain an ellipsis ("..."), which is shorthand for "the rate at the DNA element upstream of this element."  If nothing is found upstream of the DNA element in question, or if the element appears in no DNA strands, this rate is defined to be zero.
+	<dd>A mathematical function.  May contain numbers, mathematical symbols ('+', '-', '*', '/', '^', '(', ')', '&lt;', '&gt;'), function names (see &lt;<tt><A href="#function names">function names</a></tt>&gt;), and the keyword 'time', which refers to the time in the timecourse of the simulation (when converted to SBML, this becomes the MathML csymbol 'time').  Antimony's parsing mechanism steals libSBML's level 1 parser, with the addition of the following boolean symbols:  "&lt;=" (less than or equal to), "&gt;=" (greater than or equal to), "==" (exactly equal to), "!=" (not equal to), "&&" (and), "||" (or), and "!" (not).
+	<dd>Equations associated with DNA elements may contain an ellipsis ("..."), which is shorthand for "the rate at the DNA element upstream of this element."  If nothing is found upstream of the DNA element in question, or if the element appears in no DNA strands, this rate is defined to be zero.  (Note:  The ellipsis may appear in initializations, assignment rules, and reaction rates, but not in rate rules.
 
 </P><P>
 <dt>&lt;<tt><b><A name="function names">function names</a></b></tt>&gt;

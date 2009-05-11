@@ -413,11 +413,16 @@ bool Variable::SetType(var_type newtype)
     g_registry.SetError("For now, we disallow DNA reactions (i.e. genes) to consume anything in the reaction they define:  the left side of the reaction must be empty (i.e  ' -> S1' and not 'G1 -> S1').");
     return true;
   }
-  if (IsDNA(newtype) && GetFormula()->IsEmpty()) {
-    //Default formula for DNA is "..."
+  if (IsDNA(newtype)) {
+    //Default formula for DNA is "..." for both initial assignments and assignment rules.
     Formula formula;
     formula.AddEllipses();
-    SetFormula(&formula);
+    if (GetFormula()->IsEmpty()) {
+      SetFormula(&formula);
+    }
+    if (m_ruletype == ruleNONE) {
+      SetAssignmentRule(&formula);
+    }
   }
   if (IsDNA(m_type) && newtype == varStrand) {
     if (m_valReaction.IsEmpty() && (m_valFormula.IsEmpty() || m_valFormula.ToDelimitedStringWithEllipses('.')=="...")) {
