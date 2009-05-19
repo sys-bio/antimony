@@ -86,7 +86,7 @@ bool IsDNA(const var_type vtype)
   return false;
 }
 
-bool CanHaveRule(const var_type vtype)
+bool CanHaveRateRule(const var_type vtype)
 {
   switch(vtype) {
   case varFormulaUndef:
@@ -99,6 +99,28 @@ bool CanHaveRule(const var_type vtype)
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
+  case varModule:
+  case varEvent:
+  case varStrand:
+    return false;
+  }
+  assert(false); //uncaught type
+  return false;
+}
+
+bool CanHaveAssignmentRule(const var_type vtype)
+{
+  switch(vtype) {
+  case varFormulaUndef:
+  case varFormulaOperator:
+  case varDNA:
+  case varSpeciesUndef:
+  case varCompartment:
+  case varUndefined:
+  case varReactionUndef:
+  case varReactionGene:
+  case varInteraction:
+    return true;
   case varModule:
   case varEvent:
   case varStrand:

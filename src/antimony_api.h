@@ -240,14 +240,17 @@ LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype
 
 /**
  * Returns the equations associated with the symbols of the given return type.
+ * - Species:                 The initial assignment or assignment rule for the species in question
+ * - Formulas and operators:  The initial assignment or assignment rule for the formula in question
+ * - Compartments:            The initial assignment or assignment rule for the compartment in question
+ * - DNA elements:            The assignment rule or reaction rate of the element in question (no DNA element is defined by an initial assignment or by a rate rule with an initial assignment)
+ * - DNA Strands:             The assignment rule or reaction rate for the last element of the strand
  * - Reactions and genes:     The reaction rate
- * - Formulas and operators:  The initial assignment of the formula in question
- * - Species:                 Initial concentration
  * - Events:                  The trigger condition
- * - Compartments:            The initial size
- * - DNA Strands:             The initial assignment or reaction rate or at the end of the strand
  * - Interactions:            Nothing
  * - Modules:                 Nothing
+ *
+ * For elements that could have either initial assignments or assignment rules, use getTypeOfEquationForSymbol, or just use getSymbolInitialAssignmentsOfType and getSymbolAssignmentRulesOfType explicitly.
  */
 LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type rtype);
 
@@ -260,6 +263,20 @@ LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type r
  * - DNA Strands:             The assignment rule or reaction rate at the end of the strand.
  * - Reactions and genes:     The reaction rate (for consistency with DNA strands)
  *
+ * - Events:                  Nothing
+ * - Interactions:            Nothing
+ * - Modules:                 Nothing
+ */
+LIB_EXTERN char** getSymbolAssignmentRulesOfType(const char* moduleName, return_type rtype);
+
+/**
+ * Returns the equations associated with the initial assignment for symbols of the given return type.
+ * - Species:                 The initial assignment for the species in question
+ * - Formulas and operators:  The initial assignment of the formula in question
+ * - Compartments:            The initial assignment for the compartment
+ *
+ * - DNA Strands:             Nothing
+ * - Reactions and genes:     Nothing
  * - Events:                  Nothing
  * - Interactions:            Nothing
  * - Modules:                 Nothing
@@ -295,6 +312,11 @@ LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rty
 LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, unsigned long n);
 
 /**
+ * Returns the initial assignment associated with the Nth symbol of the given type.  If no initial assignment is set for the symbol in question, an empty string is returned.  If no symbol can be found, NULL is returned and an error is set.
+ */
+LIB_EXTERN char*  getNthSymbolInitialAssignmentOfType(const char* moduleName, return_type rtype, unsigned long n);
+
+/**
  * Returns the assignment rule associated with the Nth symbol of the given type.  If no assignment rule is set for the symbol in question, an empty string is returned.  If no symbol can be found, NULL is returned and an error is set.
  */
 LIB_EXTERN char*  getNthSymbolAssignmentRuleOfType(const char* moduleName, return_type rtype, unsigned long n);
@@ -313,6 +335,11 @@ LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_t
  * Returns the most specific return type available for the given symbolName.  A symbol defined to be a gene, for example, will return 'allGenes' and not 'allReactions', though the symbol does indeed qualify as a reaction.
  */
 LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbolName);
+
+/**
+ * Returns the type of the 'main' equation associated with the given symbolName.  All reactions will return 'formulaKINETIC', and all events will return 'formulaTRIGGER'.  All DNA elements that are not genes will return 'formulaASSIGNMENT', as DNA elements are defined by assignment rules and kinetic laws.  All other symbols will return 'formulaINITIAL' by default (i.e. in the case where no equation at all is associated with the symbol in question), and otherwise will return formulaINITIAL for symbols defined by initial assignments only, formulaASSIGNMENT for symbols defined by assignment rules, and formulaRATE for symbols defined by both initial assignments and rate rules (or just rate rules; it is valid though not simulatable to have a symbol with a rate rule but no initial assignment).  In the case of rate rules, the initial assignment is found in the 'Equation' associated with the symbol, and the rate rule is found in the 'RateRule' associated with the symbol.
+ */
+LIB_EXTERN formula_type getTypeOfEquationForSymbol(const char* moduleName, const char* symbolName);
 
 /**
  * Returns the name of the compartment the given symbol is a member of.  In antimony, all symbols may have compartments, not just species.  If a symbol has no set compartment, and is not a member of a symbol with a set compartment, this will return "default_compartment"

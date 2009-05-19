@@ -350,6 +350,45 @@ LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type r
   return equations;
 }
 
+LIB_EXTERN char** getSymbolInitialAssignmentsOfType(const char* moduleName, return_type rtype)
+{
+  if (!checkModule(moduleName)) return NULL;
+  unsigned long vnum = getNumSymbolsOfType(moduleName, rtype);
+  char** equations = getCharStarStar(vnum);
+  if (equations == NULL) return NULL;
+  for (unsigned long var=0; var<vnum; var++) {
+    equations[var] = getNthSymbolInitialAssignmentOfType(moduleName, rtype, var);
+    if (equations[var]==NULL) return NULL;
+  }
+  return equations;
+}
+
+LIB_EXTERN char** getSymbolAssignmentRulesOfType(const char* moduleName, return_type rtype)
+{
+  if (!checkModule(moduleName)) return NULL;
+  unsigned long vnum = getNumSymbolsOfType(moduleName, rtype);
+  char** equations = getCharStarStar(vnum);
+  if (equations == NULL) return NULL;
+  for (unsigned long var=0; var<vnum; var++) {
+    equations[var] = getNthSymbolAssignmentRuleOfType(moduleName, rtype, var);
+    if (equations[var]==NULL) return NULL;
+  }
+  return equations;
+}
+
+LIB_EXTERN char** getSymbolRateRulesOfType(const char* moduleName, return_type rtype)
+{
+  if (!checkModule(moduleName)) return NULL;
+  unsigned long vnum = getNumSymbolsOfType(moduleName, rtype);
+  char** equations = getCharStarStar(vnum);
+  if (equations == NULL) return NULL;
+  for (unsigned long var=0; var<vnum; var++) {
+    equations[var] = getNthSymbolRateRuleOfType(moduleName, rtype, var);
+    if (equations[var]==NULL) return NULL;
+  }
+  return equations;
+}
+
 LIB_EXTERN char** getSymbolCompartmentsOfType(const char* moduleName, return_type rtype)
 {
   if (!checkModule(moduleName)) return NULL;
@@ -384,11 +423,19 @@ LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type
     reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
-  bool initial=true;
-  if (IsReaction(var->GetType())) {
-    initial = false;
+  return getCharStar(var->GetFormula()->ToDelimitedStringWithStrands(g_registry.GetCC(), var->GetStrandVars()).c_str());
+}
+
+LIB_EXTERN char*  getNthSymbolInitialAssignmentOfType(const char* moduleName, return_type rtype, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
+  if (var==NULL) {
+    unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
+    reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
+    return NULL;
   }
-  return getCharStar(var->GetFormula()->ToDelimitedStringWithStrands(g_registry.GetCC(), var->GetStrandVars(), initial).c_str());
+  return getCharStar(var->GetInitialAssignment()->ToDelimitedStringWithStrands(g_registry.GetCC(), var->GetStrandVars()).c_str());
 }
 
 LIB_EXTERN char*  getNthSymbolAssignmentRuleOfType(const char* moduleName, return_type rtype, unsigned long n)
@@ -400,7 +447,7 @@ LIB_EXTERN char*  getNthSymbolAssignmentRuleOfType(const char* moduleName, retur
     reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
-  return getCharStar(var->GetAssignmentRule()->ToDelimitedStringWithStrands(g_registry.GetCC(), var->GetStrandVars(), false).c_str());
+  return getCharStar(var->GetAssignmentRuleOrKineticLaw()->ToDelimitedStringWithStrands(g_registry.GetCC(), var->GetStrandVars()).c_str());
 }
 
 LIB_EXTERN char*  getNthSymbolRateRuleOfType(const char* moduleName, return_type rtype, unsigned long n)
@@ -412,7 +459,8 @@ LIB_EXTERN char*  getNthSymbolRateRuleOfType(const char* moduleName, return_type
     reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
     return NULL;
   }
-  return getCharStar(var->GetRateRule()->ToDelimitedStringWithStrands(g_registry.GetCC(), var->GetStrandVars(), false).c_str());
+  return getCharStar(var->GetRateRule()->ToDelimitedStringWithStrands(g_registry.GetCC(), var->GetStrandVars()).c_str());
+  //Rate rules don't have ellipses, so the strands don't matter.
 }
 
 LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_type rtype, unsigned long n)
@@ -1115,6 +1163,19 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
   return allUnknown;
 }
 
+LIB_EXTERN formula_type getTypeOfEquationForSymbol(const char* moduleName, const char* symbolName)
+{
+  if (!checkModule(moduleName)) return formulaINITIAL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
+  if (var == NULL) {
+    string error = "No such variable: '";
+    error += *symbolName + "'.";
+    g_registry.SetError(error);
+    return formulaINITIAL;
+  }
+  return var->GetFormulaType();
+}
+
 LIB_EXTERN char* getCompartmentForSymbol(const char* moduleName, const char* symbolName)
 {
   if (!checkModule(moduleName)) return NULL;
@@ -1254,14 +1315,46 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
   char **symbolnames = getSymbolNamesOfType(moduleName, allSymbols);
   char **symbolequations = getSymbolEquationsOfType(moduleName, allSymbols);
   char **symbolcompartments = getSymbolCompartmentsOfType(moduleName, allSymbols);
+  char **symbolraterules = getSymbolRateRulesOfType(moduleName, allSymbols);
   unsigned long numvars = getNumSymbolsOfType(moduleName, allSymbols);
   for (unsigned long var=0; var<numvars; var++) {
-    cout << symbolnames[var] << " [" << ReturnTypeToString(getTypeOfSymbol(moduleName, symbolnames[var]));
+    return_type rtype = getTypeOfSymbol(moduleName, symbolnames[var]);
+    formula_type ftype = getTypeOfEquationForSymbol(moduleName, symbolnames[var]);
+    cout << symbolnames[var] << "\tType:  " << ReturnTypeToString(rtype) << endl;
     string compartmentname(symbolcompartments[var]);
     if (compartmentname != DEFAULTCOMP) {
-      cout << ", in " << compartmentname.c_str();
+      cout << "\tIn compartment: " << compartmentname.c_str() << endl;
     }
-    cout << "] : " << symbolequations[var] << endl;
+    switch(ftype) {
+    case formulaINITIAL:
+      if (string(symbolequations[var]) != "") {
+        cout << "\tInitialization or basic equation : " << symbolequations[var] << endl;
+      }
+      break;
+    case formulaASSIGNMENT:
+      if (string(symbolequations[var]) != "" ) {
+        cout << "\tAssignment rule: " << symbolequations[var] << endl;
+      }
+      break;
+    case formulaRATE:
+      if (string(symbolequations[var]) != "") {
+        cout << "\tInitialization: " << symbolequations[var] << endl;
+      }
+      if (string(symbolraterules[var]) != "") {
+        cout << "\tRate rule: " << symbolraterules[var] << endl;
+      }
+      break;
+    case formulaKINETIC:
+      if (string(symbolequations[var]) != "") {
+        cout << "\tKinetic Law: " << symbolequations[var] << endl;
+      }
+      break;
+    case formulaTRIGGER:
+      if (string(symbolequations[var]) != "") {
+        cout << "\tEvent Trigger: " << symbolequations[var] << endl;
+      }
+      break;
+    }
   }
   if (getNumDNAStrands(moduleName) > 0) {
     char ***dnanames = getDNAStrands(moduleName);

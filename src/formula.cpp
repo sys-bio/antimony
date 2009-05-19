@@ -181,7 +181,7 @@ void Formula::Clear()
   m_components.clear();
 }
 
-string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, size_t> > strands, bool initial) const
+string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, size_t> > strands) const
 {
   string retval;
   if (strands.size() == 0) {
@@ -206,12 +206,12 @@ string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, siz
               retval += "0";
             }
             else {
-              retval += "(" + supervars[0].first->GetFormulaForNthEntryInStrand(cc, supervars[0].second-1, initial) + ")";
+              retval += "(" + supervars[0].first->GetFormulaForNthEntryInStrand(cc, supervars[0].second-1) + ")";
             }
           }
         }
         else {
-          retval += "(" + strands[strand].first->GetFormulaForNthEntryInStrand(cc, strands[strand].second-1, initial) + ")";
+          retval += "(" + strands[strand].first->GetFormulaForNthEntryInStrand(cc, strands[strand].second-1) + ")";
         }
       }
       else {
@@ -263,12 +263,12 @@ string Formula::ToDelimitedStringWithEllipses(char cc) const
 string Formula::ToSBMLString() const
 {
   vector<pair<Variable*, size_t> > nostrands;
-  return ToSBMLString(nostrands, true);
+  return ToSBMLString(nostrands);
 }
 
-string Formula::ToSBMLString(vector<pair<Variable*, size_t> > strands, bool initial) const
+string Formula::ToSBMLString(vector<pair<Variable*, size_t> > strands) const
 {
-  string formula = ToDelimitedStringWithStrands('_', strands, initial);
+  string formula = ToDelimitedStringWithStrands('_', strands);
   string revform = ConvertOneSymbolToFunction(formula);
   while (formula != revform) {
     formula = revform;
