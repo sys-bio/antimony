@@ -9,9 +9,9 @@ libsbml = -L$(sbml_location) -lsbml
 sbmlflag = 
 
 #For a debug version:
-CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
+#CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
 #For a non-debug version:
-#CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
+CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
 
 #Library flags
 LIBRARYFLAGS = $(libsbml) -Llib -lantimony
@@ -20,7 +20,7 @@ src_dir = src/
 lib_dir = lib/
 bin_dir = bin/
 doc_dir = doc/
-ex_dir  = examples/
+ex_dir  = doc/examples/
 
 YPPFILES = $(src_dir)antimony.ypp
 
@@ -115,11 +115,8 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)globals_enum.html \
 	$(doc_dir)globals_func.html \
 	$(doc_dir)globals.html \
-	$(doc_dir)group__input.html \
-	$(doc_dir)group__output.html \
 	$(doc_dir)index.html \
 	$(doc_dir)main.html \
-	$(doc_dir)pages.html \
 	$(doc_dir)tab_b.gif \
 	$(doc_dir)tab_l.gif \
 	$(doc_dir)tab_r.gif \
@@ -184,8 +181,10 @@ srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFI
 	gzip -f antimony_src.tar
 
 #The documentation.
-docs : $(DOCFILES)
+docs : $(DOCSRCFILES) $(doc_dir)index.html
 	zip Antimony_documentation.zip $(DOCFILES)
+
+dist : srcdist docs
 
 $(doc_dir)index.html : $(DOCSRCFILES)
 	cd doc/; doxygen doxygen.antimony.cfg;
@@ -241,4 +240,4 @@ $(src_dir)antimony.tab.cpp : $(src_dir)antimony.ypp $(src_dir)registry.h $(src_d
 
 
 clean :
-	rm src/*.o $(lib_dir)libantimony.a $(bin_dir)testantimony $(bin_dir)sbml2antimony $(bin_dir)antimony2sbml
+	rm src/*.o $(lib_dir)libantimony.a $(bin_dir)testantimony $(bin_dir)sbml2antimony $(bin_dir)antimony2sbml antimony_src.tar.gz Antimony_documentation.zip

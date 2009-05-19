@@ -98,7 +98,7 @@ enum return_type {allSymbols = 0,
 enum const_type {constDEFAULT = 0, constVAR, constCONST};
 
 /**
- * rule_type values are not used in the API, but are used internally in libAntimony.  Every symbol starts off having no rule associated with it (ruleNONE), and may have up to one rule, either of an assignment type (ruleASSIGNMENT) or of the rate type (ruleRATE).  This ensures that only one rule is stored per symbol.
+ * rule_type values are not used in the API, but are used internally in libAntimony.  Every symbol starts off with a default type based on its type (most things are formINITIAL; reactions are formKINETIC, and events are formTRIGGER), and those symbols that aren't reactions, events, or modules may be formASSIGNMENT (for those symbols that have assignment rules) or formRATE (for those symbols that have rate rules).  formASSIGNMENT symbols have only one formula, but formRATE have two: one for their initial condition, and one for how it changes with time.
  */
-enum rule_type {ruleNONE = 0, ruleASSIGNMENT, ruleRATE};
+enum formula_type {formulaINITIAL = 0, formulaASSIGNMENT, formulaRATE, formulaKINETIC, formulaTRIGGER};
 #endif // ENUMS_H

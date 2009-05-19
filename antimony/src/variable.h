@@ -32,9 +32,9 @@ private:
   AntimonyEvent m_valEvent;
   DNAStrand m_valStrand;
 
-  //Some parameters and species can have assignment rules:
-  Formula m_valRule;
-  rule_type m_ruletype;
+  //Some parameters and species can have rate rules in addition to initial assignments:
+  Formula m_valRateRule;
+  formula_type m_formulatype;
 
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
@@ -62,15 +62,14 @@ public:
   std::string GetNameDelimitedBy(char cc) const;
   var_type GetType() const;
   bool HasFormula() const {return (!m_valFormula.IsEmpty());};
-  bool HasAssignmentRule() const {return (m_ruletype == ruleASSIGNMENT);};
+  formula_type GetFormulaType() const;
   const Formula* GetFormula() const;
   Formula* GetFormula();
-  const Formula* GetAssignmentRule() const;
-  Formula* GetAssignmentRule();
+  const Formula* GetInitialAssignment() const;
+  const Formula* GetAssignmentRuleOrKineticLaw() const;
+  Formula* GetAssignmentRuleOrKineticLaw();
   const Formula* GetRateRule() const;
-  const Formula* GetRule() const {return &(m_valRule);};
-  Formula* GetRule()  {return &(m_valRule);};;
-  rule_type GetRuleType() const {return m_ruletype;};
+  Formula* GetRateRule();
   const AntimonyReaction* GetReaction() const;
   Module* GetModule();
   const AntimonyEvent* GetEvent() const;
@@ -86,7 +85,7 @@ public:
   bool GetIsEquivalentTo(const Variable* var) const;
   std::vector<std::pair<Variable*, size_t> > GetStrandVars() const;
   bool IsExpandedStrand() const;
-  std::string GetFormulaForNthEntryInStrand(char cc, size_t n, bool initial);
+  std::string GetFormulaForNthEntryInStrand(char cc, size_t n);
 
   std::string GetUnits() const {return m_units;};
   void SetUnits(std::string ud) {m_units = ud;};

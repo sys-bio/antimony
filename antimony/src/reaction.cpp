@@ -118,7 +118,7 @@ string AntimonyReaction::ToDelimitedStringWithStrands(char cc, vector<pair<Varia
       retval += m_name[i];
     }
   }
-  retval += ": " + m_left.ToStringDelimitedBy(cc) + " " + RDToString(m_divider) + " " + m_right.ToStringDelimitedBy(cc) + "; " + m_formula.ToDelimitedStringWithStrands(cc, strands, false) + ";";
+  retval += ": " + m_left.ToStringDelimitedBy(cc) + " " + RDToString(m_divider) + " " + m_right.ToStringDelimitedBy(cc) + "; " + m_formula.ToDelimitedStringWithStrands(cc, strands) + ";";
   return retval;
 }
 

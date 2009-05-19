@@ -72,6 +72,7 @@ public:
   size_t GetNumExportVariables() const {return m_exportlist.size();};
   Variable* GetUpstreamDNA();
   Variable* GetDownstreamDNA();
+  formula_type GetFormulaType() const; //If we have a return value
 
   const std::string& GetModuleName() const;
   std::string GetVariableNameDelimitedBy(char cc) const;
@@ -102,6 +103,7 @@ public:
   void  LoadSBML(const Model* sbml);
   const SBMLDocument* GetSBML();
   void  CreateSBMLModel();
+  void  SetAssignmentFor(Model* sbmlmod, const Variable* var);
 #endif
   void  FixNames();
 };

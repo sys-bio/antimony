@@ -2869,9 +2869,10 @@ int yylex(void)
   if (cc == '/') {
     g_registry.input->get(cc);
     if (cc == '/') {
-      while (cc != '\n' && cc != '\r') {
+      while (cc != '\n' && cc != '\r' && !g_registry.input->eof()) {
         g_registry.input->get(cc);
       }
+      return yylex();
     }
     else if (cc == '*') {
       bool nextstar = false;
@@ -2885,6 +2886,7 @@ int yylex(void)
         }
         g_registry.input->get(cc);
       }
+      return yylex();
     }
     else {
       g_registry.input->unget();

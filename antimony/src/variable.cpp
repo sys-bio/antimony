@@ -18,8 +18,8 @@ Variable::Variable(const string name, const Module* module)
     m_valModule(),
     m_valEvent(),
     m_valStrand(),
-    m_valRule(),
-    m_ruletype(ruleNONE),
+    m_valRateRule(),
+    m_formulatype(formulaINITIAL),
     m_compartment(),
     m_supercompartment(),
     m_supercomptype(varUndefined),
@@ -58,6 +58,31 @@ var_type Variable::GetType() const
   return m_type;
 }
 
+formula_type Variable::GetFormulaType() const
+{
+  switch(GetType()) {
+  case varFormulaUndef:
+  case varSpeciesUndef:
+  case varCompartment:
+  case varUndefined:
+    return m_formulatype;
+  case varFormulaOperator:
+  case varDNA:
+    return formulaASSIGNMENT;
+  case varReactionUndef:
+  case varReactionGene:
+  case varInteraction:
+    return formulaKINETIC;
+  case varModule:
+    return m_valModule[0].GetFormulaType();
+  case varEvent:
+    return formulaTRIGGER;
+  case varStrand:
+    return formulaASSIGNMENT; //or kinetic, but we treat them the same in this case.
+  }
+  assert(false); //uncaught variable type;
+  return m_formulatype;
+}
 
 const Formula* Variable::GetFormula() const
 {
@@ -67,10 +92,10 @@ const Formula* Variable::GetFormula() const
   switch (m_type) {
   case varFormulaUndef:
   case varFormulaOperator:
-  case varDNA:
   case varSpeciesUndef:
   case varCompartment:
   case varUndefined:
+  case varDNA:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -81,7 +106,7 @@ const Formula* Variable::GetFormula() const
   case varEvent:
     return m_valEvent.GetTrigger();
   case varStrand:
-    return m_valStrand.GetFinalFormula(true);
+    return m_valStrand.GetFinalFormula();
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
@@ -110,50 +135,48 @@ Formula* Variable::GetFormula()
   case varEvent:
     return m_valEvent.GetTrigger();
   case varStrand:
-    return m_valStrand.GetFinalFormula(true);
+    return m_valStrand.GetFinalFormula();
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
   return NULL;
 }
 
-const Formula* Variable::GetAssignmentRule() const
+const Formula* Variable::GetInitialAssignment() const
 {
   if (IsPointer()) {
-    return GetSameVariable()->GetAssignmentRule();
+    return GetSameVariable()->GetInitialAssignment();
   }
   switch (m_type) {
   case varFormulaUndef:
-  case varFormulaOperator:
-  case varDNA:
   case varSpeciesUndef:
   case varCompartment:
   case varUndefined:
-    if (m_ruletype == ruleASSIGNMENT) {
-      return &(m_valRule);
+    if (m_formulatype == formulaINITIAL || m_formulatype==formulaRATE) {
+      return &(m_valFormula);
     }
     else {
       return &(g_registry.m_blankform);
     }
+  case varModule:
+    return m_valModule[0].GetFormula();
+  case varFormulaOperator:
+  case varDNA:
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
-    return m_valReaction.GetFormula();
-  case varModule:
-    return m_valModule[0].GetFormula();
   case varEvent:
-    return m_valEvent.GetTrigger();
   case varStrand:
-    return m_valStrand.GetFinalFormula(false);
+    return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
   return &(g_registry.m_blankform);
 }    
 
-Formula* Variable::GetAssignmentRule()
+const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
 {
   if (IsPointer()) {
-    return GetSameVariable()->GetAssignmentRule();
+    return GetSameVariable()->GetAssignmentRuleOrKineticLaw();
   }
   switch (m_type) {
   case varFormulaUndef:
@@ -162,8 +185,8 @@ Formula* Variable::GetAssignmentRule()
   case varSpeciesUndef:
   case varCompartment:
   case varUndefined:
-    if (m_ruletype == ruleASSIGNMENT) {
-      return &(m_valRule);
+    if (m_formulatype == formulaASSIGNMENT) {
+      return &(m_valFormula);
     }
     else {
       return &(g_registry.m_blankform);
@@ -175,9 +198,42 @@ Formula* Variable::GetAssignmentRule()
   case varModule:
     return m_valModule[0].GetFormula();
   case varEvent:
-    return m_valEvent.GetTrigger();
+    return &(g_registry.m_blankform);
   case varStrand:
-    return m_valStrand.GetFinalFormula(false);
+    return m_valStrand.GetFinalFormula();
+  }
+  assert(false); //uncaught type
+  return &(g_registry.m_blankform);
+}    
+
+Formula* Variable::GetAssignmentRuleOrKineticLaw()
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetAssignmentRuleOrKineticLaw();
+  }
+  switch (m_type) {
+  case varFormulaUndef:
+  case varFormulaOperator:
+  case varDNA:
+  case varSpeciesUndef:
+  case varCompartment:
+  case varUndefined:
+    if (GetFormulaType() == formulaASSIGNMENT) {
+      return &(m_valFormula);
+    }
+    else {
+      return &(g_registry.m_blankform);
+    }
+  case varReactionUndef:
+  case varReactionGene:
+  case varInteraction:
+    return m_valReaction.GetFormula();
+  case varModule:
+    return m_valModule[0].GetFormula();
+  case varEvent:
+    return &(g_registry.m_blankform);
+  case varStrand:
+    return m_valStrand.GetFinalFormula();
   }
   assert(false); //uncaught type
   return &(g_registry.m_blankform);
@@ -188,15 +244,25 @@ const Formula* Variable::GetRateRule() const
   if (IsPointer()) {
     return GetSameVariable()->GetRateRule();
   }
-  switch (m_ruletype) {
-  case ruleRATE:
-    return &(m_valRule);
-  case ruleNONE:
-  case ruleASSIGNMENT:
+  if (GetFormulaType() == formulaRATE) {
+    return &(m_valRateRule);
+  }
+  else {
     return &(g_registry.m_blankform);
   }
-  assert(false); //uncaught ruletype
-  return &(g_registry.m_blankform);
+}    
+
+Formula* Variable::GetRateRule()
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetRateRule();
+  }
+  if (GetFormulaType() == formulaRATE) {
+    return &(m_valRateRule);
+  }
+  else {
+    return &(g_registry.m_blankform);
+  }
 }    
 
 
@@ -369,10 +435,10 @@ bool Variable::IsExpandedStrand() const
   return (m_strands.size()==0);
 }
 
-string Variable::GetFormulaForNthEntryInStrand(char cc, size_t n, bool initial)
+string Variable::GetFormulaForNthEntryInStrand(char cc, size_t n)
 {
   if (IsPointer()) {
-    return GetSameVariable()->GetFormulaForNthEntryInStrand(cc, n, initial);
+    return GetSameVariable()->GetFormulaForNthEntryInStrand(cc, n);
   }
   assert(GetType() == varStrand);
   vector<Variable*> vars = m_valStrand.GetVariables();
@@ -385,15 +451,9 @@ string Variable::GetFormulaForNthEntryInStrand(char cc, size_t n, bool initial)
   else {
     onestrandvar.push_back(make_pair(this, n));
   }
-  Formula* form;
-  if (initial) {
-    form = vars[n]->GetFormula();
-  }
-  else {
-    form = vars[n]->GetAssignmentRule();
-  }
+  Formula* form = vars[n]->GetAssignmentRuleOrKineticLaw();
   assert(form != NULL);
-  string retval = form->ToDelimitedStringWithStrands(cc, onestrandvar, initial);
+  string retval = form->ToDelimitedStringWithStrands(cc, onestrandvar);
   if (retval == "") {
     retval = "0";
   }
@@ -414,13 +474,11 @@ bool Variable::SetType(var_type newtype)
     return true;
   }
   if (IsDNA(newtype)) {
-    //Default formula for DNA is "..." for both initial assignments and assignment rules.
+    //Default formula for DNA is "...", and it must be an assignment rule.
+    m_formulatype = formulaASSIGNMENT; //If it's a gene, the GetFormulaType will figure it out automatically.
     Formula formula;
     formula.AddEllipses();
     if (GetFormula()->IsEmpty()) {
-      SetFormula(&formula);
-    }
-    if (m_ruletype == ruleNONE) {
       SetAssignmentRule(&formula);
     }
   }
@@ -435,13 +493,17 @@ bool Variable::SetType(var_type newtype)
       return true;
     }
   }
-  if (!CanHaveRule(newtype) && !m_valRule.IsEmpty()) {
-    g_registry.SetError("Variables with assignment rules or rate rules may not be set to be type " + VarTypeToString(newtype) + " because these variables do not change during the course of the model.");
+  if (!CanHaveRateRule(newtype) && !m_valRateRule.IsEmpty()) {
+    g_registry.SetError("Variables with rate rules may not be set to be type " + VarTypeToString(newtype) + " because these variables do not change during the course of the model.");
+    return true;
+  }
+  if (!CanHaveAssignmentRule(newtype) && m_formulatype == formulaASSIGNMENT) {
+    g_registry.SetError("Variables with assignment rules may not be set to be type " + VarTypeToString(newtype) + " because these variables do not change during the course of the model.");
     return true;
   }
 
-  //If we're setting this to be a species and we have a rate rule or assignment rule, we need to be 'const':
-  if (IsSpecies(newtype) && m_ruletype != ruleNONE) {
+  //If we're setting this to be a species and we have a rate rule or assignment rule, we need to be 'const' (aka a boundary species):
+  if (IsSpecies(newtype) && (m_formulatype == formulaASSIGNMENT || m_formulatype == formulaRATE)) {
     m_const = constCONST;
   }
 
@@ -581,7 +643,7 @@ bool Variable::SetFormula(Formula* formula)
     return GetSameVariable()->SetFormula(formula);
   }
 #ifndef NSBML
-  string formstring = formula->ToSBMLString(GetStrandVars(), true);
+  string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
@@ -605,11 +667,15 @@ bool Variable::SetFormula(Formula* formula)
     break;
   case varModule:
     return m_valModule[0].SetFormula(formula);
+  case varDNA:
+  case varFormulaOperator:
+    m_formulatype = formulaASSIGNMENT;
+    m_valFormula = *formula;
+    break;
   case varUndefined:
     m_type = varFormulaUndef;
+    //and fall through to:
   case varFormulaUndef:
-  case varFormulaOperator:
-  case varDNA:
   case varCompartment:
   case varSpeciesUndef:
     m_valFormula = *formula;
@@ -630,11 +696,11 @@ bool Variable::SetAssignmentRule(Formula* formula)
     return GetSameVariable()->SetAssignmentRule(formula);
   }
 #ifndef NSBML
-  string formstring = formula->ToSBMLString(GetStrandVars(), false);
+  string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
     else {
@@ -646,15 +712,23 @@ bool Variable::SetAssignmentRule(Formula* formula)
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
     return true;
   }
-  if (!CanHaveRule(m_type)) {
-    g_registry.SetError("Variables of type " + VarTypeToString(m_type) + " may not have assignment rules associated with them.");
+  if (IsReaction(m_type)) {
+    m_valReaction.SetFormula(formula);
+    return false;
+  }
+  if (!CanHaveAssignmentRule(m_type)) {
+    g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is the type " + VarTypeToString(m_type) + ", and may not have an assignment rule associated with it.");
+    return true;
+  }
+  if (GetFormulaType() == formulaRATE) {
+    g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is associated with a rate rule, and may not additionally have an assignment rule.");
     return true;
   }
   if (m_type == varUndefined) {
     m_type = varFormulaUndef;
   }
-  m_ruletype = ruleASSIGNMENT;
-  m_valRule = *formula;
+  m_formulatype = formulaASSIGNMENT;
+  m_valFormula = *formula;
   return false;
 }
 
@@ -664,11 +738,11 @@ bool Variable::SetRateRule(Formula* formula)
     return GetSameVariable()->SetRateRule(formula);
   }
 #ifndef NSBML
-  string formstring = formula->ToSBMLString(GetStrandVars(), false);
+  string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
     else {
@@ -676,17 +750,20 @@ bool Variable::SetRateRule(Formula* formula)
     }
   }
 #endif
-  //if (formula->ContainsVar(this));
-  //Rate rules may indeed contain references to themselves!
-  if (!CanHaveRule(m_type)) {
-    g_registry.SetError("Variables of type " + VarTypeToString(m_type) + " may not have rate rules associated with them.");
+  //if (formula->ContainsVar(this));  //Rate rules may indeed contain references to themselves!
+  if (!CanHaveRateRule(m_type)) {
+    g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is the type " + VarTypeToString(m_type) + ", and may not have a rate rule associated with it.");
+    return true;
+  }
+  if (GetFormulaType() == formulaASSIGNMENT) {
+    g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is associated with an assignment rule, and may not additionally have a rate rule.");
     return true;
   }
   if (m_type == varUndefined) {
     m_type = varFormulaUndef;
   }
-  m_valRule = *formula;
-  m_ruletype = ruleRATE;
+  m_valRateRule = *formula;
+  m_formulatype = formulaRATE;
   return false;
 }
 
@@ -696,7 +773,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
     return GetSameVariable()->SetReaction(rxn);
   }
 #ifndef NSBML
-  string formstring = rxn->GetFormula()->ToSBMLString(GetStrandVars(), false);
+  string formstring = rxn->GetFormula()->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
@@ -778,8 +855,8 @@ void Variable::SetNewTopName(string newmodname, string newtopname)
   if (!m_valFormula.IsEmpty()) {
     m_valFormula.SetNewTopName(m_module, newtopname);
   }
-  if (!m_valRule.IsEmpty()) {
-    m_valRule.SetNewTopName(m_module, newtopname);
+  if (!m_valRateRule.IsEmpty()) {
+    m_valRateRule.SetNewTopName(m_module, newtopname);
   }
   if (!m_valReaction.IsEmpty()) {
     m_valReaction.SetNewTopName(m_module, newtopname);
@@ -1055,29 +1132,41 @@ bool Variable::Synchronize(Variable* clone)
   if (!m_valFormula.IsEmpty()) {
     Formula* cloneform = clone->GetFormula();
     if (cloneform->IsEmpty() || cloneform->IsEllipsesOnly()) {
-      if (clone->SetFormula(&m_valFormula)) return true;
-    }
-    //else stay with the clone version--it supercedes our own.
-    m_valFormula.Clear();
-  }
-  if (!m_valRule.IsEmpty()) {
-    Formula* cloneform = clone->GetRule();
-    if (cloneform->IsEmpty() || cloneform->IsEllipsesOnly()) {
-      switch(m_ruletype) {
-      case ruleNONE:
-        assert(false);
-      case ruleASSIGNMENT:
-        if (clone->SetAssignmentRule(&m_valRule)) return true;
+      switch (GetFormulaType()) {
+      case formulaINITIAL:
+      case formulaRATE: //We'll deal with the actual rate rule next.
+        if (clone->SetFormula(&m_valFormula)) {
+          g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy('.') + " with " + clone->GetNameDelimitedBy('.') + ":  ");
+          return true;
+        }
         break;
-      case ruleRATE:
-        if (clone->SetRateRule(&m_valRule)) return true;
+      case formulaASSIGNMENT:
+        if (clone->SetAssignmentRule(&m_valFormula)) {
+          g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy('.') + " with " + clone->GetNameDelimitedBy('.')+ ":  ");
+          return true;
+        }
+        break;
+      case formulaKINETIC:
+      case formulaTRIGGER:
+        assert(false); //How did a reaction or trigger have a m_valFormula?
         break;
       }
     }
     //else stay with the clone version--it supercedes our own.
-    m_valRule.Clear();
-    m_ruletype = clone->GetRuleType();
+    m_valFormula.Clear();
   }
+  if (!m_valRateRule.IsEmpty()) {
+    Formula* cloneform = clone->GetRateRule();
+    if (cloneform->IsEmpty()) {
+      if (clone->SetRateRule(&m_valRateRule))  {
+        g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy('.') + " with " + clone->GetNameDelimitedBy('.') + ":  ");
+        return true;
+      }
+    }
+    //else stay with the clone version--it supercedes our own.
+    m_valRateRule.Clear();
+  }
+  m_formulatype = clone->GetFormulaType();
   if (!m_valReaction.IsEmpty()) {
     const AntimonyReaction* clonerxn = clone->GetReaction();
     if (clonerxn->IsEmpty()) {
@@ -1176,7 +1265,7 @@ void Variable::FixNames()
   m_strands = fixedstrands;
 
   m_valFormula.FixNames(m_module);
-  m_valRule.FixNames(m_module);
+  m_valRateRule.FixNames(m_module);
   m_valReaction.FixNames();
   for (size_t mod=0; mod<m_valModule.size(); mod++) {
     m_valModule[mod].FixNames();

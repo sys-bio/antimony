@@ -185,7 +185,7 @@ void Module::AddTimeToUserFunction(std::string function)
     if (form != NULL && form->ContainsFunction(function)) {
       form->InsertTimeInFunction(function);
     }
-    Formula* form2 = m_variables[var]->GetRule();
+    Formula* form2 = m_variables[var]->GetRateRule();
     if (form2 != NULL && form2 != form && form2->ContainsFunction(function)) {
       form2->InsertTimeInFunction(function);
     }
@@ -326,6 +326,15 @@ Variable* Module::GetDownstreamDNA()
     return NULL;
   }
   return retvar;
+}
+
+formula_type Module::GetFormulaType() const
+{
+  const Variable* retvar = GetVariable(m_returnvalue);
+  if (retvar == NULL) {
+    return formulaINITIAL;
+  }
+  return retvar->GetFormulaType();
 }
 
 const string& Module::GetModuleName() const
@@ -643,7 +652,7 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, ch
     }
     if (matches) {
       const Formula* form = var->GetFormula();
-      if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly()) {
+      if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly() && var->GetFormulaType()==formulaINITIAL) {
         if (firstone) {
           retval += "\n" + indent + "// " + name + ":\n";
           firstone = false;
@@ -824,9 +833,10 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
   for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
     const Variable* var = m_variables[vnum];
     if (var->IsPointer()) continue;
-    if (var->GetRuleType() == ruleASSIGNMENT) {
-      const Formula* asntrule = var->GetRule();
-      if (!asntrule->IsEmpty()) {
+    if (var->GetType() == varStrand) continue;
+    if (var->GetFormulaType() == formulaASSIGNMENT) {
+      const Formula* asntrule = var->GetFormula();
+      if (!asntrule->IsEmpty() && !asntrule->IsEllipsesOnly()) {
         if (firstone) {
           retval += "\n" + indent + "// Assignment Rules:\n";
           firstone = false;
@@ -841,8 +851,8 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
   for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
     const Variable* var = m_variables[vnum];
     if (var->IsPointer()) continue;
-    if (var->GetRuleType() == ruleRATE) {
-      const Formula* raterule = var->GetRule();
+    if (var->GetFormulaType() == formulaRATE) {
+      const Formula* raterule = var->GetRateRule();
       if (!raterule->IsEmpty()) {
         if (firstone) {
           retval += "\n" + indent + "// Rate Rules:\n";
@@ -899,7 +909,7 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
   types.push_back(varFormulaOperator);
   types.push_back(varUndefined);
   types.push_back(varDNA);
-  retval += OutputOnly(types, "Other defined symbols initializations", indent, cc);
+  retval += OutputOnly(types, "Other initializations", indent, cc);
 
   //Variables
   vector<string> varnames;
@@ -1356,43 +1366,16 @@ void Module::CreateSBMLModel()
     Compartment* sbmlcomp = sbmlmod->createCompartment();
     sbmlcomp->setId(compartment->GetNameDelimitedBy(cc));
     sbmlcomp->setConstant(compartment->GetIsConst());
+    formula_type ftype = compartment->GetFormulaType();
+    assert (ftype == formulaINITIAL || ftype==formulaASSIGNMENT || ftype==formulaRATE);
+    if (ftype != formulaINITIAL) {
+      sbmlcomp->setConstant(false);
+    }
     const Formula* formula = compartment->GetFormula();
     if (formula->IsDouble()) {
       sbmlcomp->setSize(atof(formula->ToSBMLString().c_str()));
     }
-    else if (!formula->IsEmpty()) {
-      InitialAssignment* ia = sbmlmod->createInitialAssignment();
-      ia->setSymbol(compartment->GetNameDelimitedBy(cc));
-      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
-      ia->setMath(math);
-      delete math;
-    }
-    formula = compartment->GetRule();
-    if (formula->IsDouble() && compartment->GetRuleType() == ruleASSIGNMENT) {
-      //An assignment rule to a double is wasteful--we'll set it normally instead.
-      sbmlcomp->setSize(atof(formula->ToSBMLString().c_str()));
-    }
-    else if (!formula->IsEmpty()) {
-      AssignmentRule* ar;
-      RateRule* rr;
-      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
-      switch(compartment->GetRuleType()) {
-      case ruleNONE:
-        assert(false);
-      case ruleASSIGNMENT:
-        ar = sbmlmod->createAssignmentRule();
-        ar->setVariable(compartment->GetNameDelimitedBy(cc));
-        ar->setMath(math);
-        break;
-      case ruleRATE:
-        rr = sbmlmod->createRateRule();
-        rr->setVariable(compartment->GetNameDelimitedBy(cc));
-        rr->setMath(math);
-        break;
-      }
-      delete math;
-      sbmlcomp->setConstant(false); //Requirement of SBML
-    }
+    SetAssignmentFor(sbmlmod, compartment);
   }
 
   //Species
@@ -1419,40 +1402,7 @@ void Module::CreateSBMLModel()
     if (formula->IsDouble()) {
       sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
     }
-    else if (!formula->IsEmpty()) {
-      //create a rule
-      InitialAssignment* rule=sbmlmod->createInitialAssignment();
-      rule->setSymbol(species->GetNameDelimitedBy(cc)); 
-      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
-      rule->setMath(math);
-      delete math;
-    }
-    formula = species->GetRule();
-    if (formula->IsDouble() && species->GetRuleType() == ruleASSIGNMENT) {
-      //Again, it's better to set doubles this way:
-      sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
-    }
-    else if (!formula->IsEmpty()) {
-      AssignmentRule* ar;
-      RateRule* rr;
-      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
-      switch(species->GetRuleType()) {
-      case ruleNONE:
-        assert(false);
-      case ruleASSIGNMENT:
-        ar = sbmlmod->createAssignmentRule();
-        ar->setVariable(species->GetNameDelimitedBy(cc)); 
-        ar->setMath(math);
-        break;
-      case ruleRATE:
-        rr = sbmlmod->createRateRule();
-        rr->setVariable(species->GetNameDelimitedBy(cc));
-        rr->setMath(math);
-        break;
-      }
-      delete math;
-      sbmlspecies->setConstant(false); //requirement of SBML.  Should be false in all cases anyway, but just in case.
-    }
+    SetAssignmentFor(sbmlmod, species);
   }
 
   //Formulas
@@ -1466,36 +1416,11 @@ void Module::CreateSBMLModel()
     if (formula->IsDouble()) {
       param->setValue(atof(formula->ToSBMLString().c_str()));
     }
-    else if (!formula->IsEmpty()) {
-      InitialAssignment* ia = sbmlmod->createInitialAssignment();
-      ia->setSymbol(formvar->GetNameDelimitedBy(cc));
-      ASTNode* math = parseStringToASTNode(formula->ToSBMLString(formvar->GetStrandVars(), true));
-      ia->setMath(math);
-      delete math;
-    }
-    formula = formvar->GetRule();
-    AssignmentRule* asntrule = NULL;
-    RateRule* raterule = NULL;
-    if (!formula->IsEmpty()) {
-      ASTNode* math = parseStringToASTNode(formula->ToSBMLString(formvar->GetStrandVars(), false));
-      switch(formvar->GetRuleType()) {
-      case ruleNONE:
-        assert(false);
-      case ruleASSIGNMENT:
-        //create an assignment rule
-        asntrule = sbmlmod->createAssignmentRule();
-        asntrule->setVariable(formvar->GetNameDelimitedBy(cc));
-        asntrule->setMath(math);
-        break;
-      case ruleRATE:
-        //create a rate rule
-        raterule = sbmlmod->createRateRule();
-        raterule->setVariable(formvar->GetNameDelimitedBy(cc));
-        raterule->setMath(math);
-        break;
-      }
-      delete math;
-      param->setConstant(false); //requirement of SBML
+    SetAssignmentFor(sbmlmod, formvar);
+    formula_type ftype = formvar->GetFormulaType();
+    assert (ftype == formulaINITIAL || ftype==formulaASSIGNMENT || ftype==formulaRATE);
+    if (ftype != formulaINITIAL) {
+      param->setConstant(false);
     }
   }
 
@@ -1510,7 +1435,7 @@ void Module::CreateSBMLModel()
     Reaction* sbmlrxn = sbmlmod->createReaction();
     sbmlrxn->setId(rxnvar->GetNameDelimitedBy(cc));
     const Formula* formula = reaction->GetFormula();
-    string formstring = formula->ToSBMLString(rxnvar->GetStrandVars(), false);
+    string formstring = formula->ToSBMLString(rxnvar->GetStrandVars());
     if (!formula->IsEmpty()) {
       KineticLaw* kl = sbmlmod->createKineticLaw();
       ASTNode* math = parseStringToASTNode(formstring);
@@ -1577,7 +1502,40 @@ void Module::CreateSBMLModel()
     param->setId(formvar->GetNameDelimitedBy(cc));
   }
 }
+
+void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var)
+{
+  char cc = g_registry.GetCC();
+  formula_type ftype = var->GetFormulaType();
+  const Formula* formula = var->GetFormula();
+  if (!formula->IsEmpty()) {
+    ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
+    if (ftype == formulaASSIGNMENT) {
+      AssignmentRule* ar = sbmlmod->createAssignmentRule();
+      ar->setVariable(var->GetNameDelimitedBy(cc));
+      ar->setMath(math);
+    }
+    else if (!formula->IsDouble()) { //if it was a double, we already dealt with it.
+      InitialAssignment* ia = sbmlmod->createInitialAssignment();
+      ia->setSymbol(var->GetNameDelimitedBy(cc));
+      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
+      ia->setMath(math);
+    }
+    delete math;
+  }
+  if (ftype == formulaRATE) {
+    formula = var->GetRateRule();
+    if (!formula->IsEmpty()) {
+      ASTNode* math = parseStringToASTNode(var->GetRateRule()->ToSBMLString());
+      RateRule* rr = sbmlmod->createRateRule();
+      rr->setVariable(var->GetNameDelimitedBy(cc));
+      rr->setMath(math);
+      delete math;
+    }
+  }
+}
 #endif
+  
 
 void Module::FixNames()
 {
