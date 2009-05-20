@@ -177,8 +177,7 @@ $(bin_dir)sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
 
 #The distribution zip file.
 srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
-	tar -cvf antimony_src.tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
-	gzip -f antimony_src.tar
+	tar --transform 's,^,antimony/,' -cvfa antimony_src.tar.gz $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
 
 #The documentation.
 docs : $(DOCSRCFILES) $(doc_dir)index.html

@@ -652,7 +652,8 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, ch
     }
     if (matches) {
       const Formula* form = var->GetFormula();
-      if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly() && var->GetFormulaType()==formulaINITIAL) {
+      formula_type ftype = var->GetFormulaType();
+      if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
         if (firstone) {
           retval += "\n" + indent + "// " + name + ":\n";
           firstone = false;
