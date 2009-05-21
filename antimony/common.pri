@@ -1,7 +1,7 @@
 !contains(DEFINES,NSBML){
 
 isEmpty(LIBSBML_DIR) {
-win32:LIBSBML_DIR=c:\Program Files\SBML\libSBML-3.3.2-expat\win32
+win32:LIBSBML_DIR=c:\Program Files\SBML\libSBML-3.3.2-expat\
 unix:LIBSBML_DIR=/usr/local/lib
 mac:LIBSBML_DIR=/usr/local/lib
 }
@@ -14,6 +14,7 @@ win32:LIBS +=  -llibsbml
 
 win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\lib" 
 win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\bin" 
+win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\win32\bin" 
 #For whatever reason this does not work on XP
 #win32:LIBS += -L"$${LIBSBML_DIR}\bin" 
 #win32:LIBS += -L"$${LIBSBML_DIR}\lib" 
