@@ -20,48 +20,46 @@ To use these Windows executables:
        - Click 'Start', then 'Run', and type 'cmd'.  A window will pop up.
        - Type 'cd <directory>' where <directory> is where you put the folder
          (for example, 'cd Desktop\antimony\')
-       - To convert an SBML file to Antimony, type:
+       - To convert SBML files to Antimony, type:
 
-       sbml2antimony.exe <inputfile.xml> <outputfile.txt>
+       sbml2antimony.exe <inputfile.xml> [<inputfile2.xml>] [...]
+
+       This will produce antimony files with the same names as the inputfiles
+       with '.xml' removed (if it was there) and '.txt' appended.  It will
+       also create the antimony file in the current (working) directory,
+       even if the original files are in a different directory.
 
        For example, to convert the provided SBML input file (an oscillator) 
-       type:
+       from the doc/examples/ directory, type:
 
-       sbml2antimony.exe ex_sbml_input.xml ex_antimony_output.txt
+       sbml2antimony.exe ex_sbml_input.xml
 
-       - To convert all models in an Antimony file to SBML files, type:
+       - To convert all models in Antimony files to SBML files, type:
 
-       antimony2sbml.exe <inputfile.txt> <outputfileprefix>
+       antimony2sbml.exe <inputfile.txt> [<inputfile2.xml>] [...]
 
-       This will create one or more output files of the format:
+       This will create one or more output files, each with the same name
+       as the inputfiles, with '.txt' removed (if present), and 
+       '_<modelname>.xml' appended, where <modelname> is the name of the
+       model in the Antimony file.  As Antimony files may have more than one
+       model in them, converting a single Antimony file to SBML can create
+       multiple SBML files.
 
-       outputfileprefix_[model1].xml
-       outputfileprefix_[model2].xml
-       [etc.]
+       For example, to convert the provided Antimony input file models (in
+       the doc/examples/ directory) to SBML, copy the file to this        directory and type:
 
-       where [model1] and [model2] are the actual names of the models in the 
-       Antimony file.
-
-       For example, to convert the provided Antimony input file models to 
-       SBML, type:
-
-       antimony2sbml.exe ex_antimony_input.txt ex_sbml_output
+       antimony2sbml.exe ex_antimony_input.txt
 
        Which will create the files:
 
-        ex_sbml_output_bistable_sbml.xml
-        ex_sbml_output_combined_model_sbml.xml
-        ex_sbml_output_ffn_sbml.xml
-        ex_sbml_output_ringoscil_sbml.xml
-        ex_sbml_output___main_sbml.xml
+        ex_sbml_input_bistable_sbml.xml
+        ex_sbml_input_combined_model_sbml.xml
+        ex_sbml_input_ffn_sbml.xml
+        ex_sbml_input_ringoscil_sbml.xml
+        ex_sbml_input___main_sbml.xml
 
-       If you don't include the output file name or prefix, the program will 
-       remove '.xml' from SBML files (if present) and add '.txt', or will 
-       remove '.txt' from Antimony files (if present) and use the result as 
-       the output file prefix instead.
-
-       If you don't want to copy the models into this folder all the time,
-       you can cd  into a directory containing the models you want to
+       If you don't want to create models in this folder all the time,
+       you can cd into a directory containing the models you want to
        convert and run the converter from there by calling it explicitly by
        typing (for example) "c:\Program Files\Antimony\antimony2sbml.exe",
        depending on where you put the  folder.  (It is also possible to

@@ -6,8 +6,11 @@ unix:LIBSBML_DIR=/usr/local/lib
 mac:LIBSBML_DIR=/usr/local/lib
 }
 
-
 message("using libsbml from: $${LIBSBML_DIR}")
+
+
+CONFIG -= debug
+CONFIG += release
 
 win32:INCLUDEPATH += "$${LIBSBML_DIR}\include" "$${LIBSBML_DIR}\include/sbml"
 win32:LIBS +=  -llibsbml 
