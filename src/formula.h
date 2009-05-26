@@ -30,6 +30,7 @@ public:
 
   bool IsEmpty() const;
   bool IsDouble() const;
+  bool IsOne() const;
   bool IsEllipsesOnly() const;
   bool GetIsConst() const;
   bool CheckIncludes(std::string modname, const ReactantList* rlist) const;

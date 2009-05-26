@@ -92,6 +92,18 @@ bool Formula::IsDouble() const
   return false;
 }
 
+bool Formula::IsOne() const
+{
+  if (m_components.size() == 1) {
+    if (m_components[0].second.size() == 0) {
+      if (m_components[0].first == "1") {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool Formula::IsEllipsesOnly() const
 {
   if (m_components.size() == 1 &&
