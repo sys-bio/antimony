@@ -1124,7 +1124,16 @@ void Module::LoadSBML(const Model* sbml)
     //Setting the formula
     Formula* formula = g_registry.NewBlankFormula();
     if (species->isSetInitialAmount()) {
-      formula->AddNum(species->getInitialAmount());
+      double amount = species->getInitialAmount();
+      formula->AddNum(amount);
+      if (amount != 0 && species->getCompartment() != DEFAULTCOMP) {
+        Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
+        Formula* compform = compartment->GetFormula();
+        if (!compform->IsOne()) {
+          formula->AddMathThing('/');
+          formula->AddVariable(compartment);
+        }
+      }
       var->SetFormula(formula);
     }
     else if (species->isSetInitialConcentration()) {

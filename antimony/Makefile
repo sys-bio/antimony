@@ -91,6 +91,8 @@ QMAKEFILES = antimony.pro \
 
 DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)antimony__api_8h-source.html \
+	$(doc_dir)antimony-biomodels.html \
+	$(doc_dir)antimony-examples.html \
 	$(doc_dir)antimony-installation.html \
 	$(doc_dir)antimony-license.html \
 	$(doc_dir)antimony-technical-spec.html \
@@ -123,6 +125,7 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)tabs.css \
 	$(doc_dir)tree.html \
 	$(doc_dir)Tutorial.pdf \
+	$(ex_dir).htaccess \
 	$(ex_dir)ex_antimony_input.txt \
 	$(ex_dir)ex_antimony_output.txt \
 	$(ex_dir)ex_sbml_input.xml \
@@ -135,6 +138,8 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(ex_dir)biomodels/BIOMD0000000???.txt \
 
 DOCSRCFILES = \
+	$(doc_dir)antimony-biomodels.txt \
+	$(doc_dir)antimony-examples.txt \
 	$(doc_dir)antimony-installation.txt \
 	$(doc_dir)antimony-license.txt \
 	$(doc_dir)antimony-mainpage.txt \
@@ -177,7 +182,8 @@ $(bin_dir)sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
 
 #The distribution zip file.
 srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
-	tar --transform 's,^,antimony/,' -cvfa antimony_src.tar.gz $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
+	tar --transform 's,^,antimony/,' -cvf antimony_src.tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
+	gzip antimony_src.tar
 
 #The documentation.
 docs : $(DOCSRCFILES) $(doc_dir)index.html
