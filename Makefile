@@ -13,6 +13,9 @@ sbmlflag =
 #For a non-debug version:
 CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
 
+#version number
+version = 1.1
+
 #Library flags
 LIBRARYFLAGS = $(libsbml) -Llib -lantimony
 
@@ -182,12 +185,12 @@ $(bin_dir)sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
 
 #The distribution zip file.
 srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
-	tar --transform 's,^,antimony/,' -cvf antimony_src.tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
-	gzip antimony_src.tar
+	tar --transform 's,^,antimony/,' -cvf antimony_src_v$(version).tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
+	gzip antimony_src_v$(version).tar
 
 #The documentation.
 docs : $(DOCSRCFILES) $(doc_dir)index.html
-	zip Antimony_documentation.zip $(DOCFILES)
+	zip Antimony_documentation_v$(version).zip $(DOCFILES)
 
 dist : srcdist docs
 
