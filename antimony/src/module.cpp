@@ -924,20 +924,21 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
     const_type isconst = m_variables[var]->GetConstType();
     string name = m_variables[var]->GetNameDelimitedBy(cc);
     Variable* comp = m_variables[var]->GetCompartment();
-    if (comp != NULL) {
+    if (comp != NULL && IsSpecies(type)==false) {
+      //We already list the species at the top of the file.
       name += " in " + comp->GetNameDelimitedBy(cc);
       innames.push_back(name);
     }
     switch(isconst) {
     case constVAR:
       varnames.push_back(name);
-      if (comp != NULL) {
+      if (comp != NULL && IsSpecies(type)==false) {
         innames.pop_back();
       }
       break;
     case constCONST:
       constnames.push_back(name);
-      if (comp != NULL) {
+      if (comp != NULL && IsSpecies(type)==false) {
         innames.pop_back();
       }
       break;
@@ -947,18 +948,18 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
     switch(type) {
     case varDNA:
       DNAnames.push_back(name);
-      if (comp != NULL && innames.back() == name) {
+      if (comp != NULL && IsSpecies(type)==false && innames.back() == name) {
         innames.pop_back();
       }
       break;
     case varFormulaOperator:
-      if (comp != NULL && innames.back() == name) {
+      if (comp != NULL && IsSpecies(type)==false && innames.back() == name) {
         innames.pop_back();
       }
       operatornames.push_back(name);
       break;
     case varReactionGene:
-      if (comp != NULL && innames.back() == name) {
+      if (comp != NULL && IsSpecies(type)==false && innames.back() == name) {
         innames.pop_back();
       }
       genenames.push_back(name);
@@ -982,6 +983,7 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
   retval += ListIn80Cols("var", varnames, indent);
   retval += ListIn80Cols("const", constnames, indent);
 
+  //LS DEBUG:  list the innames!
 
   //end model definition
   if (m_modulename != MAINMODULE) {
