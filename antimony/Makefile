@@ -9,9 +9,9 @@ libsbml = -L$(sbml_location) -lsbml
 sbmlflag = 
 
 #For a debug version:
-#CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
+CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
 #For a non-debug version:
-CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
+#CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
 
 #version number
 version = 1.1
@@ -189,7 +189,8 @@ srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFI
 	gzip antimony_src_v$(version).tar
 
 #The documentation.
-docs : $(DOCSRCFILES) $(doc_dir)index.html
+docs : $(doc_dir)index.html
+	cd doc/;doxygen doxygen.antimony.cfg; cd ..;
 	zip Antimony_documentation_v$(version).zip $(DOCFILES)
 
 dist : srcdist docs

@@ -20,10 +20,10 @@
 class Registry
 {
 private:
-  std::vector<std::ifstream*> m_oldinputs;
-  std::vector<std::string>    m_files;
-  std::set<std::string>       m_variablenames;
-  std::vector<std::string>    m_functions;
+  std::vector<std::istream*> m_oldinputs;
+  std::vector<std::string>   m_files;
+  std::set<std::string>      m_variablenames;
+  std::vector<std::string>   m_functions;
 
   std::set<Variable*>      m_storedvars;
 
@@ -54,13 +54,15 @@ public:
   //Sometimes we need to pass a blank formula instead of a NULL pointer
   Formula m_blankform;
 
-  std::ifstream* input;
+  std::istream* input;
 
   void ClearModules();
   void FreeVariables();
   void ClearAll();
 
   int    OpenFile(const std::string filename);
+  int    OpenString(const std::string model);
+  int    CheckAndAddSBMLIfGood(SBMLDocument* document);
   bool   SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};
   void   SetupFunctions();
