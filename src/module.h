@@ -100,7 +100,7 @@ public:
   std::string ListSynchronizedVariables(std::string indent) const;
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
 #ifndef NSBML
-  void  LoadSBML(const Model* sbml);
+  void  LoadSBML(const SBMLDocument* sbmldoc);
   const SBMLDocument* GetSBML();
   void  CreateSBMLModel();
   void  SetAssignmentFor(Model* sbmlmod, const Variable* var);

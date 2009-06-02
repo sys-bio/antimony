@@ -173,22 +173,10 @@ void reportVariableTypeIndexProblem(unsigned long n, return_type rtype, unsigned
   g_registry.SetError(error);
 }
 
-//Exported routines:
 
-LIB_EXTERN long loadFile(const char* filename)
+//Helper function for below.
+long ParseFile(char* oldlocale)
 {
-  char* oldlocale = setlocale(LC_ALL, NULL);
-  setlocale(LC_ALL, "C");
-  g_registry.ClearModules();
-  int ofreturn = g_registry.OpenFile(filename);
-  if (ofreturn==0) return -1; //file read failure
-  if (ofreturn==2) {
-    //SBML file
-    g_registry.FinalizeModules();
-    setlocale(LC_ALL, oldlocale);
-    return g_registry.SaveModules();
-  }
-  assert(ofreturn==1); //antimony file
   int yyreturn = yyparse();
   setlocale(LC_ALL, oldlocale);
   if (yyreturn != 0) {
@@ -204,26 +192,65 @@ LIB_EXTERN long loadFile(const char* filename)
         g_registry.SetError("Unknown parsing error.");
       }
     }
-    g_registry.AddErrorPrefix("Error in file '" + g_registry.GetLastFile() + "', line " + SizeTToString(yylloc_first_line) + ":  ");
+    string errorp = "Error in ";
+    string fname = g_registry.GetLastFile();
+    if (fname == "") {
+      errorp += "model string";
+    }
+    else {
+      errorp += "file '" + fname + "'";
+    }
+    errorp += ", line " + SizeTToString(yylloc_first_line) + ":  ";
+    g_registry.AddErrorPrefix(errorp);
     return -1;
   }
   if (g_registry.FinalizeModules()) return -1;
   return g_registry.SaveModules();
 }
 
-#ifndef NSBML
-LIB_EXTERN long loadSBMLFile(const char* filename)
+
+//Exported routines:
+
+LIB_EXTERN long loadString(const char* model)
 {
+  char* oldlocale = setlocale(LC_ALL, NULL);
+  setlocale(LC_ALL, "C");
   g_registry.ClearModules();
-  SBMLDocument* document = readSBML(filename);
+  int ofreturn = g_registry.OpenString(model);
+  if (ofreturn==0) return -1; //file read failure
+  if (ofreturn==2) {
+    //SBML file
+    g_registry.FinalizeModules();
+    setlocale(LC_ALL, oldlocale);
+    return g_registry.SaveModules();
+  }
+  assert(ofreturn==1); //antimony file
+  return ParseFile(oldlocale);
+}
+
+LIB_EXTERN long loadFile(const char* filename)
+{
+  char* oldlocale = setlocale(LC_ALL, NULL);
+  setlocale(LC_ALL, "C");
+  g_registry.ClearModules();
+  int ofreturn = g_registry.OpenFile(filename);
+  if (ofreturn==0) return -1; //file read failure
+  if (ofreturn==2) {
+    //SBML file
+    g_registry.FinalizeModules();
+    setlocale(LC_ALL, oldlocale);
+    return g_registry.SaveModules();
+  }
+  assert(ofreturn==1); //antimony file
+  return ParseFile(oldlocale);
+}
+
+#ifndef NSBML
+long CheckAndAddSBMLDoc(SBMLDocument* document)
+{
   document->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   document->checkConsistency();
   if (document->getErrorLog()->getNumFailsWithSeverity(2) > 0 || document->getErrorLog()->getNumFailsWithSeverity(3) > 0 ) {
-    stringstream errorstream;
-    document->printErrors(errorstream);
-    string file(filename);
-    g_registry.SetError("Unable to read SBML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libSBML:\n" +  errorstream.str());
-    delete(document);
     return -1;
   }
   const Model* sbml = document->getModel();
@@ -231,10 +258,38 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
   if (sbmlname != MAINMODULE) {
     g_registry.NewCurrentModule(&sbmlname);
   }
-  g_registry.CurrentModule()->LoadSBML(sbml);
+  g_registry.CurrentModule()->LoadSBML(document);
 
-  delete(document);
   return g_registry.SaveModules();
+}
+
+LIB_EXTERN long loadSBMLFile(const char* filename)
+{
+  g_registry.ClearModules();
+  SBMLDocument* document = readSBML(filename);
+  long retval = CheckAndAddSBMLDoc(document);
+  if (retval == -1) {
+    stringstream errorstream;
+    document->printErrors(errorstream);
+    string file(filename);
+    g_registry.SetError("Unable to read SBML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libSBML:\n" +  errorstream.str());
+  }
+  delete document;
+  return retval;
+}
+
+LIB_EXTERN long loadSBMLString(const char* model)
+{
+  g_registry.ClearModules();
+  SBMLDocument* document = readSBMLFromString(model);
+  long retval = CheckAndAddSBMLDoc(document);
+  if (retval == -1) {
+    stringstream errorstream;
+    document->printErrors(errorstream);
+    g_registry.SetError("Unable to read SBML string due to errors encountered when parsing the file.  Error(s) from libSBML:\n" +  errorstream.str());
+  }
+  delete document;
+  return retval;
 }
 #endif
 

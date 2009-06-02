@@ -1076,8 +1076,10 @@ string Module::ListAssignmentDifferencesFrom(const Module* origmod, string mname
 }
 
 #ifndef NSBML
-void Module::LoadSBML(const Model* sbml)
+void Module::LoadSBML(const SBMLDocument* sbmldoc)
 {
+  //m_sbml = *sbmldoc;
+  const Model* sbml = sbmldoc->getModel();
   string sbmlname = "";
 
   //Function Definitions

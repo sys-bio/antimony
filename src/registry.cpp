@@ -53,7 +53,7 @@ void Registry::ClearModules()
 {
   while (!SwitchToPreviousFile()) {}
   if (input) {
-    input->close();
+    //input->close(); //LS DEBUG
     input->clear();
     delete(input);
   }
@@ -89,38 +89,45 @@ void Registry::ClearAll()
   ClearModules();
 }
 
+//Return values:  1: antimony, unread 2: SBML, read
+int Registry::OpenString(const string model)
+{
+#ifndef NSBML
+  //Try opening as SBML:
+  SBMLDocument* document = readSBMLFromString(model.c_str());
+  int sbmlcheck = CheckAndAddSBMLIfGood(document);
+  delete(document);
+  if (sbmlcheck==2) return 2;
+#endif
+  m_files.push_back("");
+  if (input != NULL) {
+    m_oldinputs.push_back(input);
+  }
+  istringstream* inputstring = new istringstream(model);
+  yylloc_last_lines.push_back(yylloc_last_line);
+  yylloc_last_line = 1;
+  yylloc_first_line = 1;
+  input = inputstring;
+  return 1;
+}
+
 //Return values:  0: failure, 1: antimony, unread 2: SBML, read
 int Registry::OpenFile(const string filename)
 {
 #ifndef NSBML
   //Try opening as SBML:
   SBMLDocument* document = readSBML(filename.c_str());
-  document->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
-  document->checkConsistency();
-  SBMLErrorLog* log = document->getErrorLog();
-  if (log->getNumFailsWithSeverity(2) == 0 && log->getNumFailsWithSeverity(3) == 0) {
-    //It's a valid SBML file.
-    const Model* sbml = document->getModel();
-    string sbmlname = getNameFromSBMLObject(sbml, "file");
-    if (sbmlname != MAINMODULE) {
-      NewCurrentModule(&sbmlname);
-    }
-    CurrentModule()->LoadSBML(sbml);
-    if (sbmlname != MAINMODULE) {
-      RevertToPreviousModule();
-    }
-    delete(document);
-    return 2;
-  }
+  int sbmlcheck = CheckAndAddSBMLIfGood(document);
   delete(document);
-#endif  
+  if (sbmlcheck==2) return 2;
+#endif
   m_files.push_back(filename);
   if (input != NULL) {
     m_oldinputs.push_back(input);
   }
-  input = new(ifstream);
-  input->open(filename.c_str(), ios::in);
-  if (!input->is_open()) {
+  ifstream* inputfile = new ifstream();
+  inputfile->open(filename.c_str(), ios::in);
+  if (!inputfile->is_open()) {
     m_files.pop_back();
     string error = "Could not open \"";
     error += filename;
@@ -133,7 +140,7 @@ int Registry::OpenFile(const string filename)
     return 0;
   }
 
-  if (!input->good())
+  if (!inputfile->good())
   {
     m_files.pop_back();
     string error = "Input file ";
@@ -145,13 +152,37 @@ int Registry::OpenFile(const string filename)
   yylloc_last_lines.push_back(yylloc_last_line);
   yylloc_last_line = 1;
   yylloc_first_line = 1;
+  input = inputfile;
   return 1;
 }
+
+#ifndef NSBML
+int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
+{
+  document->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
+  document->checkConsistency();
+  SBMLErrorLog* log = document->getErrorLog();
+  if (log->getNumFailsWithSeverity(2) == 0 && log->getNumFailsWithSeverity(3) == 0) {
+    //It's a valid SBML file.
+    const Model* sbml = document->getModel();
+    string sbmlname = getNameFromSBMLObject(sbml, "file");
+    if (sbmlname != MAINMODULE) {
+      NewCurrentModule(&sbmlname);
+    }
+    CurrentModule()->LoadSBML(document);
+    if (sbmlname != MAINMODULE) {
+      RevertToPreviousModule();
+    }
+    return 2;
+  }
+  return 0;
+}
+#endif  
 
 bool Registry::SwitchToPreviousFile()
 {
   if (!input) return true;
-  input->close();
+  //input->close(); //LS DEBUG
   input->clear();
   delete(input);
   if (m_oldinputs.size() == 0) {

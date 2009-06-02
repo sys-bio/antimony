@@ -71,8 +71,6 @@ BEGIN_C_DECLS;
 /**
  * Load a file of either SBML or Antimony format.  The first attempts to read the document as SBML, and if this results in an error, then reads it as Antimony.  If this, too, results in an error, the second error is saved, and a '-1' is returned.
  *
- * @ingroup input
- *
  * @return a long integer indicating the index of the file read and stored.  On an error, returns -1 and no information is stored.
  *
  * @param filename The filename as a character string.  May be either absolute or relative to the directory the executable is being run from.
@@ -81,11 +79,20 @@ BEGIN_C_DECLS;
  */
 LIB_EXTERN long   loadFile(const char* filename);
 
+/**
+ * Load a string of either SBML or Antimony format.  The first attempts to read the string as SBML, and if this results in an error, then reads it as Antimony.  If this, too, results in an error, the second error is saved, and a '-1' is returned.
+ *
+ * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
+ *
+ * @param model The model, in either Antimony or SBML format.
+ *
+ * @see getLastError()
+ */
+LIB_EXTERN long   loadString(const char* model);
+
 #ifndef NSBML
 /**
  * @brief Load a file known to be SBML.
- *
- * @ingroup input
  *
  * Loads a file and parses it (using libSBML) as an SBML file.  On an error, the error is saved, -1 is returned, and no information is stored.
  * @return a long integer indicating the index of the file read and stored.  On an error, returns -1 and no information is stored.
@@ -96,6 +103,19 @@ LIB_EXTERN long   loadFile(const char* filename);
  * @see getLastError()
  */
 LIB_EXTERN long   loadSBMLFile(const char* filename);
+
+/**
+ * @brief Load a string known to be SBML.
+ *
+ * Loads a string and parses it (using libSBML) as an SBML file.  On an error, the error is saved, -1 is returned, and no information is stored.
+ * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
+ * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
+ *
+ * @param model The model, in SBML format.
+ *
+ * @see getLastError()
+ */
+LIB_EXTERN long   loadSBMLString(const char* model);
 #endif
 
 
