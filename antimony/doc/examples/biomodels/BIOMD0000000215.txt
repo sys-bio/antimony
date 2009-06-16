@@ -1,0 +1,86 @@
+function function_1(Ag, K1, Ifn_Prot, K2, a2)
+  a2 * (Ag / (K1 + Ag)) * (Ifn_Prot / (K2 + Ifn_Prot));
+end
+
+function function_3(a1)
+  a1;
+end
+
+function function_2(a3, Rec_Prot)
+  a3 * Rec_Prot;
+end
+
+function function_4(b, mRNA)
+  b * mRNA;
+end
+
+function function_5(a4, Tbet_Prot, K4, Ag)
+  a4 * Tbet_Prot * (K4 / (K4 + Ag));
+end
+
+function function_6(a5, Tbet_Prot, K5, Rec_Prot, K6, Ag, K7)
+  a5 * (Tbet_Prot / (K5 + Tbet_Prot)) * (Rec_Prot / (K6 + Rec_Prot)) * (Ag / (K7 + Ag));
+end
+
+model Schulz2009_Th1_differentiation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Ag in compartment_, Ifn_Prot in compartment_, Rec_Prot in compartment_;
+  species Tbet_Prot in compartment_, Tbet_mRNA in compartment_, Ifn_mRNA in compartment_;
+  species Rec_mRNA in compartment_;
+
+  // Assignment Rules:
+  Ag := 1 - pow(time, 10) / (pow(34, 10) + pow(time, 10))
+
+  // Reactions:
+  vtrnldeg:  -> Tbet_mRNA; compartment_ * function_1(Ag, vtrnldeg_K1, Ifn_Prot, vtrnldeg_K2, vtrnldeg_a2);
+  reaction_1:  -> Tbet_mRNA; compartment_ * function_2(reaction_1_a3, Rec_Prot);
+  reaction_2:  -> Tbet_mRNA; compartment_ * function_3(reaction_2_a1);
+  reaction_3: Tbet_mRNA -> ; compartment_ * reaction_3_gamma_Tbet * Tbet_mRNA;
+  reaction_4: Tbet_Prot -> ; compartment_ * reaction_4_delta_Tbet * Tbet_Prot;
+  reaction_5: Rec_mRNA -> ; compartment_ * reaction_5_gamma_Rec * Rec_mRNA;
+  reaction_6: Rec_Prot -> ; compartment_ * reaction_6_delta_Rec * Rec_Prot;
+  reaction_7: Ifn_mRNA -> ; compartment_ * reaction_7_gamma_IFN * Ifn_mRNA;
+  reaction_8: Ifn_Prot -> ; compartment_ * reaction_8_delta_IFN * Ifn_Prot;
+  reaction_9:  -> Tbet_Prot; compartment_ * function_4(reaction_9_b, Tbet_mRNA);
+  reaction_10:  -> Ifn_Prot; compartment_ * function_4(reaction_10_b, Ifn_mRNA);
+  reaction_11:  -> Rec_Prot; compartment_ * function_4(reaction_11_b, Rec_mRNA);
+  reaction_12:  -> Rec_mRNA; compartment_ * function_5(reaction_12_a4, Tbet_Prot, reaction_12_K4, Ag);
+  reaction_13:  -> Ifn_mRNA; compartment_ * function_6(reaction_13_a5, Tbet_Prot, reaction_13_K5, Rec_Prot, reaction_13_K6, Ag, reaction_13_K7);
+
+  // Species initializations:
+  Ifn_Prot = 0;
+  Rec_Prot = 0;
+  Tbet_Prot = 44.0000000000001;
+  Tbet_mRNA = 0.0440000000000001;
+  Ifn_mRNA = 0;
+  Rec_mRNA = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  vtrnldeg_K1 = 0.46;
+  vtrnldeg_K2 = 2.1;
+  vtrnldeg_a2 = 0.42;
+  reaction_1_a3 = 0.00051;
+  reaction_2_a1 = 0.044;
+  reaction_3_gamma_Tbet = 1;
+  reaction_4_delta_Tbet = 0.1;
+  reaction_5_gamma_Rec = 1;
+  reaction_6_delta_Rec = 0.1;
+  reaction_7_gamma_IFN = 1;
+  reaction_8_delta_IFN = 1;
+  reaction_9_b = 100;
+  reaction_10_b = 100;
+  reaction_11_b = 100;
+  reaction_12_a4 = 0.0028;
+  reaction_12_K4 = 0.013;
+  reaction_13_a5 = 3.7;
+  reaction_13_K5 = 0.029;
+  reaction_13_K6 = 66;
+  reaction_13_K7 = 0.014;
+
+  const Ag;
+end

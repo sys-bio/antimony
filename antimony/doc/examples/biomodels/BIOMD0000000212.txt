@@ -1,0 +1,133 @@
+model Curien2009_Aspartate_Metabolism()
+
+  // Compartments and Species:
+  compartment c1;
+  species Asp in c1, AK1 in c1, Lys in c1, AdoMet in c1, AspP in c1, AK2 in c1;
+  species AKHSDHI in c1, AKHSDHII in c1, Thr in c1, ASADH in c1, ASA in c1;
+  species DHDPS1 in c1, DHDPS2 in c1, Hser in c1, PHser in c1, HSK in c1;
+  species TS1 in c1, Phosphate in c1, Cys in c1, CGS in c1, Cysta in c1, TD in c1;
+  species Ile in c1, Val in c1, LysTRNA in c1, ThrTRNA in c1, IleTRNA in c1;
+  species LKR in c1, Sacc in c1, THA in c1, Gly in c1;
+
+  // Reactions:
+  Vak1: Asp -> AspP; c1 * AK1 * ((Vak1_AK1_kforward_app_exp - Vak1_AK1_kreverse_app_exp * AspP) / (1 + pow(Lys / (Vak1_AK1_Lys_Ki_app_exp / (1 + AdoMet / Vak1_AK1_AdoMet_Ka_app_exp)), Vak1_AK1_nH_exp)));
+  Vak2: Asp -> AspP; c1 * AK2 * ((Vak2_AK2_kforward_app_exp - Vak2_AK2_kreverse_app_exp * AspP) / (1 + pow(Lys / Vak2_AK2_Lys_Ki_app_exp, Vak2_AK2_nH_exp)));
+  VakI: Asp -> AspP; c1 * AKHSDHI * ((VakI_AKI_kforward_app_exp - VakI_AKI_kreverse_app_exp * AspP) / (1 + pow(Thr / VakI_AKI_Thr_Ki_app_exp, VakI_AKI_nH_exp)));
+  VakII: Asp -> AspP; c1 * AKHSDHII * ((VakII_AKII_kforward_app_exp - VakII_AKII_kreverse_app_exp * AspP) / (1 + pow(Thr / VakII_AKII_Thr_Ki_app_exp, VakII_AKII_nH_exp)));
+  Vasadh: AspP -> ASA; c1 * ASADH * (Vasadh_ASADH_kforward_app_exp * AspP - Vasadh_ASADH_kreverse_app_exp * ASA);
+  Vdhdps1: ASA -> Lys; c1 * Vdhdps1_DHDPS1_k_app_exp * DHDPS1 * ASA * (1 / (1 + pow(Lys / Vdhdps1_DHDPS1_Lys_Ki_app_exp, Vdhdps1_DHDPS1_nH_exp)));
+  Vdhdps2: ASA -> Lys; c1 * Vdhdps2_DHDPS2_k_app_exp * DHDPS2 * ASA * (1 / (1 + pow(Lys / Vdhdps2_DHDPS2_Lys_Ki_app_exp, Vdhdps2_DHDPS2_nH_exp)));
+  Vhsdh1: ASA -> Hser; c1 * Vhsdh1_HSDHI_kforward_app_exp * AKHSDHI * ASA * (Vhsdh1_HSDHI_Thr_relative_residual_activity_app_exp + Vhsdh1_HSDHI_Thr_relative_inhibition_app_exp / (1 + Thr / Vhsdh1_HSDHI_Thr_Ki_app_exp));
+  Vhsdh2: ASA -> Hser; c1 * Vhsdh2_HSDHII_kforward_app_exp * AKHSDHII * ASA * (Vhsdh2_HSDHII_Thr_relative_residual_activity_app_exp + Vhsdh2_HSDHII_Thr_relative_inhibition_app_exp / (1 + Thr / Vhsdh2_HSDHII_Thr_Ki_app_exp));
+  Vhsk: Hser -> PHser; c1 * Vhsk_HSK_kcat_app_exp * HSK * Hser / (Vhsk_HSK_Hser_app_exp + Hser);
+  Vts1: PHser -> Thr; c1 * TS1 * PHser * ((Vts1_TS1_kcatmin_exp + Vts1_TS1_AdoMet_kcatmax_exp * (pow(AdoMet, Vts1_TS1_nH_exp) / Vts1_TS1_AdoMet_Ka1_exp)) / (1 + pow(AdoMet, Vts1_TS1_nH_exp) / Vts1_TS1_AdoMet_Ka1_exp) / (Vts1_TS1_AdoMEt_Km_no_AdoMet_exp * ((1 + AdoMet / Vts1_TS1_AdoMet_Ka2_exp) / (1 + AdoMet / Vts1_TS1_AdoMet_Ka3_exp) / (1 + pow(AdoMet, Vts1_TS1_nH_exp) / Vts1_TS1_AdoMet_Ka4_exp)) * (1 + Phosphate / Vts1_TS1_Phosphate_Ki_exp) + PHser));
+  Vcgs: PHser -> Cysta; c1 * CGS * PHser * (Vcgs_CGS_kcat_exp / (1 + Vcgs_CGS_Cys_Km_exp / Cys) / (Vcgs_CGS_Phser_Km_exp / (1 + Vcgs_CGS_Cys_Km_exp / Cys) * (1 + Phosphate / Vcgs_CGS_Phosphate_Ki_exp) + PHser));
+  Vtd: Thr -> Ile; c1 * TD * Thr * (Vtd_TD_k_app_exp / (1 + pow(Ile / (Vtd_TD_Ile_Ki_no_Val_app_exp + Vtd_TD_Val_Ka1_app_exp * Val / (Vtd_TD_Val_Ka2_app_exp + Val)), Vtd_TD_nH_app_exp)));
+  VlysTRNA: Lys -> LysTRNA; c1 * VlysTRNA_Lys_tRNAS_Vmax * Lys / (VlysTRNA_Lys_tRNAS_Lys_Km + Lys);
+  VthrTRNA: Thr -> ThrTRNA; c1 * VthrTRNA_Thr_tRNAS_Vmax * Thr / (VthrTRNA_Thr_tRNAS_Thr_Km + Thr);
+  VileTRNA: Ile -> IleTRNA; c1 * VileTRNA_Ile_tRNAS_Vmax * Ile / (VileTRNA_Ile_tRNAS_Ile_Km + Ile);
+  VlysKR: Lys -> Sacc; c1 * VlysKR_LKR_kcat_exp * LKR * Lys / (VlysKR_LKR_Lys_Km_exp + Lys);
+  Vtha: Thr -> Gly; c1 * Vtha_THA_kcat_exp * THA * Thr / (Vtha_THA_Thr_Km_exp + Thr);
+
+  // Species initializations:
+  Asp = 1500;
+  AK1 = 0.25;
+  Lys = 0;
+  AdoMet = 20;
+  AspP = 0;
+  AK2 = 0.25;
+  AKHSDHI = 0.63;
+  AKHSDHII = 0.63;
+  Thr = 0;
+  ASADH = 11.6;
+  ASA = 0;
+  DHDPS1 = 1.6;
+  DHDPS2 = 1.6;
+  Hser = 0;
+  PHser = 0;
+  HSK = 4;
+  TS1 = 7.4;
+  Phosphate = 10000;
+  Cys = 15;
+  CGS = 0.7;
+  Cysta = 0;
+  TD = 0.36;
+  Ile = 0;
+  Val = 100;
+  LysTRNA = 0;
+  ThrTRNA = 0;
+  IleTRNA = 0;
+  LKR = 0;
+  Sacc = 0;
+  THA = 0;
+  Gly = 0;
+
+  // Compartment initializations:
+  c1 = 1;
+
+  // Variable initializations:
+  Vak1_AK1_kforward_app_exp = 5.65;
+  Vak1_AK1_kreverse_app_exp = 1.6;
+  Vak1_AK1_Lys_Ki_app_exp = 550;
+  Vak1_AK1_AdoMet_Ka_app_exp = 3.5;
+  Vak1_AK1_nH_exp = 2;
+  Vak2_AK2_kforward_app_exp = 3.15;
+  Vak2_AK2_kreverse_app_exp = 0.86;
+  Vak2_AK2_Lys_Ki_app_exp = 22;
+  Vak2_AK2_nH_exp = 1.1;
+  VakI_AKI_kforward_app_exp = 0.36;
+  VakI_AKI_kreverse_app_exp = 0.15;
+  VakI_AKI_Thr_Ki_app_exp = 124;
+  VakI_AKI_nH_exp = 2;
+  VakII_AKII_kforward_app_exp = 1.35;
+  VakII_AKII_kreverse_app_exp = 0.22;
+  VakII_AKII_Thr_Ki_app_exp = 109;
+  VakII_AKII_nH_exp = 2;
+  Vasadh_ASADH_kforward_app_exp = 0.9;
+  Vasadh_ASADH_kreverse_app_exp = 0.23;
+  Vdhdps1_DHDPS1_k_app_exp = 1;
+  Vdhdps1_DHDPS1_Lys_Ki_app_exp = 10;
+  Vdhdps1_DHDPS1_nH_exp = 2;
+  Vdhdps2_DHDPS2_k_app_exp = 1;
+  Vdhdps2_DHDPS2_Lys_Ki_app_exp = 33;
+  Vdhdps2_DHDPS2_nH_exp = 2;
+  Vhsdh1_HSDHI_kforward_app_exp = 0.84;
+  Vhsdh1_HSDHI_Thr_relative_residual_activity_app_exp = 0.14;
+  Vhsdh1_HSDHI_Thr_relative_inhibition_app_exp = 0.86;
+  Vhsdh1_HSDHI_Thr_Ki_app_exp = 400;
+  Vhsdh2_HSDHII_kforward_app_exp = 0.64;
+  Vhsdh2_HSDHII_Thr_relative_residual_activity_app_exp = 0.25;
+  Vhsdh2_HSDHII_Thr_relative_inhibition_app_exp = 0.75;
+  Vhsdh2_HSDHII_Thr_Ki_app_exp = 8500;
+  Vhsk_HSK_kcat_app_exp = 2.8;
+  Vhsk_HSK_Hser_app_exp = 14;
+  Vts1_TS1_kcatmin_exp = 0.42;
+  Vts1_TS1_AdoMet_kcatmax_exp = 3.5;
+  Vts1_TS1_AdoMet_Ka1_exp = 73;
+  Vts1_TS1_nH_exp = 2;
+  Vts1_TS1_Phosphate_Ki_exp = 1000;
+  Vts1_TS1_AdoMEt_Km_no_AdoMet_exp = 250;
+  Vts1_TS1_AdoMet_Ka2_exp = 0.5;
+  Vts1_TS1_AdoMet_Ka3_exp = 1.09;
+  Vts1_TS1_AdoMet_Ka4_exp = 140;
+  Vcgs_CGS_kcat_exp = 30;
+  Vcgs_CGS_Cys_Km_exp = 460;
+  Vcgs_CGS_Phser_Km_exp = 2500;
+  Vcgs_CGS_Phosphate_Ki_exp = 2000;
+  Vtd_TD_k_app_exp = 0.0124;
+  Vtd_TD_Ile_Ki_no_Val_app_exp = 30;
+  Vtd_TD_Val_Ka1_app_exp = 73;
+  Vtd_TD_Val_Ka2_app_exp = 615;
+  Vtd_TD_nH_app_exp = 3;
+  VlysTRNA_Lys_tRNAS_Vmax = 0.43;
+  VlysTRNA_Lys_tRNAS_Lys_Km = 25;
+  VthrTRNA_Thr_tRNAS_Vmax = 0.43;
+  VthrTRNA_Thr_tRNAS_Thr_Km = 100;
+  VileTRNA_Ile_tRNAS_Vmax = 0.43;
+  VileTRNA_Ile_tRNAS_Ile_Km = 20;
+  VlysKR_LKR_kcat_exp = 3.1;
+  VlysKR_LKR_Lys_Km_exp = 13000;
+  Vtha_THA_kcat_exp = 1.7;
+  Vtha_THA_Thr_Km_exp = 7100;
+
+end

@@ -9,7 +9,7 @@ model model_0000001()
   // Assignment Rules:
   Tt := T0 + T1 + T2 + C + CN_ * nucleus / cytoplasm
   Pt := P0 + P1 + P2 + C + CN_ * nucleus / cytoplasm
-  v_dT := (1 + (v_dT_fac - 1) * ceil(sin(time / l_d * pi_) * 0.9)) * v_dT_dark
+  v_dT := (1 + (v_dT_fac - 1) * ceil(sin(time / l_d * pi) * 0.9)) * v_dT_dark
 
   // Reactions:
   per_trans:  -> M_P; per_trans_v_sP * pow(per_trans_Ki_P, n) / (pow(per_trans_Ki_P, n) + pow(CN_, n));
@@ -51,14 +51,13 @@ model model_0000001()
   C = 0.18;
   CN_ = 1.2;
 
-  // Compartments initializations:
+  // Compartment initializations:
   nucleus = 1;
   cytoplasm = 1;
 
-  // Other initializations:
+  // Variable initializations:
   n = 4;
   kd = 0.01;
-  pi_ = 3.14159;
   l_d = 12;
   v_dT_fac = 2;
   v_dT_dark = 2;
