@@ -1,0 +1,101 @@
+model Akman2008_Circadian_Clock_Model2()
+
+  // Compartments and Species:
+  compartment cytosol, nucleus;
+  species E1F in cytosol, E1Fp in cytosol, E1W in cytosol, E2F in cytosol;
+  species E2Fp in cytosol, E2W in cytosol, MF in nucleus, MW in nucleus, PF in nucleus;
+  species PFp in nucleus, PW in nucleus, PWL in nucleus, sFrq_tot in nucleus;
+  species lFrq_tot in nucleus, Frq_tot in nucleus, WC1_tot in nucleus;
+
+  // Assignment Rules:
+  sFrq_tot := PF + E2F + E1F
+  lFrq_tot := PFp + E2Fp + E1Fp
+  Frq_tot := sFrq_tot + lFrq_tot
+  WC1_tot := PW + PWL + E1W + E2W
+
+  // Reactions:
+  MFtrn:  -> MF; a1 * pow(PWL, n) / ((1 + (PF + PFp) / b1) * (pow(PWL, n) + pow(b2, n))) + a2 * pow(PW, m) / ((1 + (PF + PFp) / b3) * (pow(PW, m) + pow(b4, m)));
+  MFdeg: MF -> ; d1 * MF / (MF + b5);
+  E1Ftrl:  -> E1F; a3 * MF;
+  E1Fdeg: E1F -> ; gam1 * E1F;
+  E2Ftrl: E1F -> E2F; f1 * E1F;
+  E2Fdeg: E2F -> ; gam1 * E2F;
+  PFtrl: E2F -> PF; f1 * E2F;
+  PFdeg: PF -> ; d2 * PF;
+  MWtrn:  -> MW; a4 + a5 * pow(PWL, k) / (pow(PWL, k) + pow(b7, k));
+  MWdeg: MW -> ; d3 * MW / (MW + b8);
+  E1Wtrl:  -> E1W; (a6 + a7 * (PF + PFp)) * MW;
+  E1Wdeg: E1W -> ; gam2 * E1W;
+  E2Wtrl: E1W -> E2W; f2 * E1W;
+  E2Wdeg: E2W -> ; gam2 * E2W;
+  PWtrl: E2W -> PW; f2 * E2W;
+  PWdeg: PW -> ; d4 * PW / (PW + b9);
+  PWtrs: PW -> PWL; r1 * amp * PW * (1 + tanh(24 * (time - 24 * floor(time / 24) - dawn))) * (1 - tanh(24 * (time - 24 * floor(time / 24) - dusk))) / 4 - r2 * PWL;
+  PWLdeg: PWL -> ; d5 * PWL / (PWL + b10);
+  E1Fptrl:  -> E1Fp; a3p * MF;
+  E1Fpdeg: E1Fp -> ; gam1p * E1Fp;
+  E2Fptrl: E1Fp -> E2Fp; f1p * E1Fp;
+  E2Fpdeg: E2Fp -> ; gam1p * E2Fp;
+  PFptrl: E2Fp -> PFp; f1p * E2Fp;
+  PFpdeg: PFp -> ; d2p * PFp;
+
+  // Species initializations:
+  E1F = 0.43076;
+  E1Fp = 0.45583;
+  E1W = 5.84748;
+  E2F = 0.10647;
+  E2Fp = 0.09872;
+  E2W = 5.70265;
+  MF = 0.6935;
+  MW = 1.2689;
+  PF = 0.06565;
+  PFp = 0.07719;
+  PW = 26.4393;
+  PWL = 0;
+
+  // Compartment initializations:
+  cytosol = 1;
+  nucleus = 1;
+
+  // Variable initializations:
+  a1 = 24.9736;
+  a2 = 3.59797;
+  a3 = 0.2834;
+  a4 = 0.46227;
+  a5 = 0.02917;
+  a6 = 0.20695;
+  a7 = 3.02856;
+  b1 = 0.00209;
+  b2 = 2.13476;
+  b3 = 0.08039;
+  b4 = 0.45859;
+  b5 = 0.13056;
+  b7 = 2.96739;
+  b8 = 0.11167;
+  b9 = 81.10381;
+  b10 = 93.03664;
+  b6 = 0;
+  d1 = 1.43549;
+  d2 = 0.21251;
+  d3 = 0.50309;
+  d4 = 3.36641;
+  d5 = 0.41085;
+  f1 = 0.09292;
+  f2 = 0.14979;
+  gam1 = 0.34603;
+  gam2 = 0.00028;
+  r1 = 2.71574;
+  r2 = 35.40005;
+  n = 1.02419;
+  m = 1.34979;
+  k = 2.18234;
+  a3p = 0.34578;
+  d2p = 0.18191;
+  f1p = 0.09588;
+  gam1p = 0.40119;
+  amp = 0;
+  dawn = 12;
+  dusk = 24;
+
+  const sFrq_tot, lFrq_tot, Frq_tot, WC1_tot;
+end

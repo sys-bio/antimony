@@ -5,41 +5,49 @@ model repressilator()
   species PX in cell, PY in cell, PZ in cell, X in cell, Y in cell, Z in cell;
 
   // Assignment Rules:
+  beta := tau_mRNA / tau_prot
+  alpha0 := a0_tr * eff * tau_prot / (log(2) * KM)
+  alpha := a_tr * eff * tau_prot / (log(2) * KM)
   t_ave := tau_mRNA / log(2)
+  kd_mRNA := log(2) / tau_mRNA
+  kd_prot := log(2) / tau_prot
+  k_tl := eff / t_ave
+  a_tr := (ps_a - ps_0) * 60
+  a0_tr := ps_0 * 60
 
   // Reactions:
-  Reaction1: X -> ; X / t_ave;
-  Reaction2: Y -> ; Y / t_ave;
-  Reaction3: Z -> ; Z / t_ave;
-  Reaction4:  -> PX; X * KM * beta / (t_ave * eff);
-  Reaction5:  -> PY; Y * KM * beta / (t_ave * eff);
-  Reaction6:  -> PZ; Z * KM * beta / (t_ave * eff);
-  Reaction7: PX -> ; PX * beta / t_ave;
-  Reaction8: PY -> ; PY * beta / t_ave;
-  Reaction9: PZ -> ; PZ * beta / t_ave;
-  Reaction10:  -> X; alpha0 * eff / t_ave + alpha * eff * pow(KM, n) / (t_ave * (pow(KM, n) + pow(PZ, n)));
-  Reaction11:  -> Y; alpha0 * eff / t_ave + alpha * eff * pow(KM, n) / (t_ave * (pow(KM, n) + pow(PX, n)));
-  Reaction12:  -> Z; alpha0 * eff / t_ave + alpha * eff * pow(KM, n) / (t_ave * (pow(KM, n) + pow(PY, n)));
+  Reaction1: X -> ; kd_mRNA * X;
+  Reaction2: Y -> ; kd_mRNA * Y;
+  Reaction3: Z -> ; kd_mRNA * Z;
+  Reaction4:  -> PX; k_tl * X;
+  Reaction5:  -> PY; k_tl * Y;
+  Reaction6:  -> PZ; k_tl * Z;
+  Reaction7: PX -> ; kd_prot * PX;
+  Reaction8: PY -> ; kd_prot * PY;
+  Reaction9: PZ -> ; kd_prot * PZ;
+  Reaction10:  -> X; a0_tr + a_tr * pow(KM, n) / (pow(KM, n) + pow(PZ, n));
+  Reaction11:  -> Y; a0_tr + a_tr * pow(KM, n) / (pow(KM, n) + pow(PX, n));
+  Reaction12:  -> Z; a0_tr + a_tr * pow(KM, n) / (pow(KM, n) + pow(PY, n));
 
   // Species initializations:
-  PX = 5;
+  PX = 0;
   PY = 0;
-  PZ = 15;
+  PZ = 0;
   X = 0;
-  Y = 0;
+  Y = 20;
   Z = 0;
 
-  // Compartments initializations:
+  // Compartment initializations:
   cell = 1;
 
-  // Other initializations:
-  beta = 0.2;
-  alpha0 = 0.25;
-  alpha = 250;
+  // Variable initializations:
   eff = 20;
   n = 2;
   KM = 40;
   tau_mRNA = 2;
+  tau_prot = 10;
+  ps_a = 0.5;
+  ps_0 = 0.0005;
 
-  var t_ave;
+  var beta, alpha0, alpha, t_ave, kd_mRNA, kd_prot, k_tl, a_tr, a0_tr;
 end

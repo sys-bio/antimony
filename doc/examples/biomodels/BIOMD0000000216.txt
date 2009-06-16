@@ -1,0 +1,85 @@
+function function_4_r1(Dex, system)
+  Dex / system;
+end
+
+function function_4_r8(CP, CP2, IC, Jp, kp1, system)
+  kp1 * CP / (Jp + CP + 2 * CP2 + 2 * IC) / system;
+end
+
+function function_4_r2(J, TF, kms, n, system)
+  kms * pow(TF, n) / (pow(J, n) + pow(TF, n)) / system;
+end
+
+function function_4_r17(CP, CP2, IC, Jp, kp2, system)
+  kp2 * IC / (Jp + CP + 2 * CP2 + 2 * IC) / system;
+end
+
+function function_4_r13(CP, CP2, IC, Jp, kp2, system)
+  kp2 * CP2 / (Jp + CP + 2 * CP2 + 2 * IC) / system;
+end
+
+function function_1(kcps, M)
+  kcps * M;
+end
+
+model Hong2009_CircadianClock()
+
+  // Compartments and Species:
+  compartment system;
+  species CP in system, CP2 in system, IC in system, TF in system, M in system;
+  species CPtot in system;
+
+  // Assignment Rules:
+  CPtot := CP + 2 * CP2 + 2 * IC
+
+  // Reactions:
+  r1:  -> M; system * function_4_r1(Dex, system);
+  r2:  -> M; system * function_4_r2(J, TF, kms, n, system);
+  r3: M -> ; system * kmd * M;
+  r4:  -> CP; system * function_1(kcps, M);
+  r5: CP -> ; system * kcpd * CP;
+  r6: 2CP -> CP2; system * ka * pow(CP, 2);
+  r7: CP2 -> 2CP; system * kd * CP2;
+  r8: CP -> ; system * function_4_r8(CP, CP2, IC, Jp, kp1, system);
+  r9: CP -> ; system * chk2 * CP;
+  r10: IC -> CP2 + TF; system * kicd * IC;
+  r11: CP2 -> ; system * kcp2d * CP2;
+  r12: CP2 + TF -> IC; system * kica * CP2 * TF;
+  r13: CP2 -> ; system * function_4_r13(CP, CP2, IC, Jp, kp2, system);
+  r14: CP2 -> ; system * chk2 * CP2;
+  r15: IC -> TF; system * kcp2d * IC;
+  r16: IC -> TF; system * chk2c * IC;
+  r17: IC -> TF; system * function_4_r17(CP, CP2, IC, Jp, kp2, system);
+
+  // Species initializations:
+  CP = 0.037;
+  CP2 = 0.046;
+  IC = 0.37;
+  TF = 0.13;
+  M = 1.4;
+
+  // Compartment initializations:
+  system = 1;
+
+  // Variable initializations:
+  Dex = 0;
+  kp1 = 10;
+  Jp = 0.05;
+  kms = 1;
+  n = 2;
+  J = 0.3;
+  kp2 = 0.1;
+  kcps = 0.5;
+  kmd = 0.1;
+  kcpd = 0.525;
+  ka = 100;
+  kd = 0.01;
+  chk2 = 0;
+  kicd = 0.01;
+  kcp2d = 0.0525;
+  kica = 20;
+  chk2c = 0;
+  ICtot = 1;
+
+  const CPtot;
+end
