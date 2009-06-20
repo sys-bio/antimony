@@ -116,6 +116,7 @@ public:
   void StoreVariable(Variable* var);
   const std::string* IsFunction(std::string word);
 
+  std::string GetAntimony() const;
   std::string GetAntimony(std::string modulename) const;
   std::string GetJarnac(std::string modulename) const;
 

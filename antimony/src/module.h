@@ -80,7 +80,7 @@ public:
   std::string ToString() const;
   std::string OutputOnly(std::vector<var_type> types, std::string name, std::string indent, char cc) const;
   std::string ListIn80Cols(std::string type, std::vector<std::string> names, std::string indent) const;
-  std::string GetAntimony(std::set<const Module*> usedmods, bool funcsincluded) const;
+  std::string GetAntimony(std::set<const Module*>& usedmods, bool funcsincluded) const;
   std::string GetJarnacReactions() const;
   std::string GetJarnacVarFormulas() const;
   std::string GetJarnacConstFormulas(std::string modulename) const;

@@ -37,6 +37,7 @@ Registry::Registry()
     m_cc('_'),
     m_error(),
     m_oldmodules(),
+    m_olduserfunctions(),
     input(NULL)
 {
   string main = MAINMODULE;
@@ -85,6 +86,7 @@ void Registry::FreeVariables()
 void Registry::ClearAll()
 {
   m_oldmodules.clear();
+  m_olduserfunctions.clear();
   FreeVariables();
   ClearModules();
 }
@@ -553,6 +555,20 @@ const string* Registry::IsFunction(string word)
     }
   }
   return NULL;
+}
+
+string Registry::GetAntimony() const
+{
+  string retval;
+  for (size_t uf=0; uf<m_userfunctions.size(); uf++) {
+    retval += m_userfunctions[uf].GetAntimony() + "\n";
+  }
+  set<const Module*> mods;
+  for (size_t mod=0; mod<m_modules.size(); mod++) {
+    retval += m_modules[mod].GetAntimony(mods, true) + "\n";
+    mods.insert(&m_modules[mod]);
+  }
+  return retval;
 }
 
 string Registry::GetAntimony(string modulename) const

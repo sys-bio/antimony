@@ -2872,6 +2872,9 @@ int yylex(void)
       while (cc != '\n' && cc != '\r' && !g_registry.input->eof()) {
         g_registry.input->get(cc);
       }
+      if (!g_registry.input->eof()) {
+        g_registry.input->unget();
+      }
       return yylex();
     }
     else if (cc == '*') {

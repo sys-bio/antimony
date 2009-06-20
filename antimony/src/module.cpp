@@ -723,7 +723,7 @@ string Module::ToString() const
   return retval;
 }
 
-string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) const
+string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) const
 {
   string retval;
   char cc = '.';
@@ -902,7 +902,7 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
   //Compartments:
   types.clear();
   types.push_back(varCompartment);
-  retval += OutputOnly(types, "Compartments initializations", indent, cc);
+  retval += OutputOnly(types, "Compartment initializations", indent, cc);
 
   //And finally, other random formulas.
   types.clear();
@@ -910,7 +910,7 @@ string Module::GetAntimony(set<const Module*> usedmods, bool funcsincluded) cons
   types.push_back(varFormulaOperator);
   types.push_back(varUndefined);
   types.push_back(varDNA);
-  retval += OutputOnly(types, "Other initializations", indent, cc);
+  retval += OutputOnly(types, "Variable initializations", indent, cc);
 
   //Variables
   vector<string> varnames;

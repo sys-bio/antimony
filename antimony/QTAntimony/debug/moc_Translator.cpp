@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'Translator.h'
 **
-** Created: Fri Jun 12 11:57:54 2009
+** Created: Thu Jun 18 16:59:54 2009
 **      by: The Qt Meta Object Compiler version 61 (Qt 4.5.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,19 +23,22 @@ static const uint qt_meta_data_Translator[] = {
        2,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   12, // methods
+       2,   12, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
 
+ // signals: signature, parameters, type, tag, flags
+      12,   11,   11,   11, 0x05,
+
  // slots: signature, parameters, type, tag, flags
-      12,   11,   11,   11, 0x0a,
+      24,   11,   11,   11, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_Translator[] = {
-    "Translator\0\0SetPasteAvailability()\0"
+    "Translator\0\0isClosing()\0SetPasteAvailability()\0"
 };
 
 const QMetaObject Translator::staticMetaObject = {
@@ -63,11 +66,18 @@ int Translator::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: SetPasteAvailability(); break;
+        case 0: isClosing(); break;
+        case 1: SetPasteAvailability(); break;
         default: ;
         }
-        _id -= 1;
+        _id -= 2;
     }
     return _id;
+}
+
+// SIGNAL 0
+void Translator::isClosing()
+{
+    QMetaObject::activate(this, &staticMetaObject, 0, 0);
 }
 QT_END_MOC_NAMESPACE
