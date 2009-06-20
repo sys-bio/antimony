@@ -7,6 +7,7 @@ SBMLTab::SBMLTab(QWidget* parent)
 
 void SBMLTab::SetModelName(QString name)
 {
+    if (name=="") name = "__main";
     m_modelname = name;
 }
 
@@ -23,4 +24,18 @@ QString SBMLTab::GetTabName()
     else {
         return QString("SBML - ") + QString(m_modelname);
     }
+}
+
+void SBMLTab::addSpecialCopyToMenu(QMenu* menu, QAction* defaultcut)
+{
+}
+
+void SBMLTab::ReplaceModelWithString(QString modelname, QString text)
+{
+    //throw an error?  LS DEBUG
+}
+
+bool SBMLTab::IsMixed()
+{
+    return false;
 }

@@ -1251,8 +1251,14 @@ LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
 {
   char* oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
-  if (!checkModule(moduleName)) return 0;
-  string antimony = g_registry.GetAntimony(moduleName);
+  string antimony;
+  if (moduleName != NULL) {
+    if (!checkModule(moduleName)) return 0;
+    antimony = g_registry.GetAntimony(moduleName);
+  }
+  else {
+    antimony = g_registry.GetAntimony();
+  }
   ofstream afile(filename);
   if (!afile.good()) {
     string error = "Unable to open file ";
@@ -1272,8 +1278,14 @@ LIB_EXTERN char* getAntimonyString(const char* moduleName)
 {
   char* oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
-  if (!checkModule(moduleName)) return NULL;
-  char* antimony = getCharStar(g_registry.GetAntimony(moduleName).c_str());
+  char* antimony;
+  if (moduleName != NULL) {
+    if (!checkModule(moduleName)) return 0;
+    antimony = getCharStar(g_registry.GetAntimony(moduleName).c_str());
+  }
+  else {
+    antimony = getCharStar(g_registry.GetAntimony().c_str());
+  }
   setlocale(LC_ALL, oldlocale);
   return antimony;
 }

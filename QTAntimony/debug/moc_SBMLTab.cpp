@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'SBMLTab.h'
 **
-** Created: Fri Jun 12 11:57:53 2009
+** Created: Thu Jun 18 16:59:53 2009
 **      by: The Qt Meta Object Compiler version 61 (Qt 4.5.0)
 **
 ** WARNING! All changes made in this file will be lost!

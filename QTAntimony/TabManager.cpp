@@ -52,9 +52,13 @@ void TabManager::selectAll()
 {
     GetActiveEditor()->selectAll();
 }
-void TabManager::revertText()
+void TabManager::revertToTranslated()
 {
-    GetActiveEditor()->RevertToLastText();
+    GetActiveEditor()->RevertToTranslated();
+}
+void TabManager::revertToOriginal()
+{
+    GetActiveEditor()->RevertToOriginal();
 }
 
 ChangeableTextBox* TabManager::GetActiveEditor()
@@ -65,7 +69,23 @@ ChangeableTextBox* TabManager::GetActiveEditor()
 void TabManager::SwitchTabs(int tab)
 {
     ChangeableTextBox* oldtab = textbox(m_oldtab);
-    if (oldtab != NULL && oldtab->GetTextChanged()) {
+    /*
+    if (oldtab != NULL) {
+        if (oldtab->IsOriginal()) {
+            SetOthersTranslated(m_oldtab);
+        }
+        else if (oldtab->IsTranslated()) {
+            SetOthersOriginal(m_oldtab);
+        }
+        else if (!oldtab->IsMixed()) {
+            Translate(m_oldtab);
+        }
+    }
+    */
+    if ((oldtab != NULL) &&
+        !oldtab->IsOriginal() &&
+        !oldtab->IsTranslated() &&
+        !oldtab->IsMixed()) {
         Translate(m_oldtab);
     }
     if (tab >= count()) {
@@ -85,6 +105,8 @@ void TabManager::Translate(int tab)
     if (oldtab == NULL) return;
     setUpdatesEnabled(false);
     QString tabtext = oldtab->toPlainText();
+    oldtab->SetOriginal();
+    tabtext.replace(QChar::ParagraphSeparator, "\n");
     if (tab==0) {
         TranslateAntimony(tabtext);
     }
@@ -96,15 +118,38 @@ void TabManager::Translate(int tab)
     setUpdatesEnabled(true);
 }
 
+void TabManager::SetOthersOriginal(int oldtab)
+{
+    if (oldtab==0) {
+        for (int sbml=1; sbml<count(); sbml++) {
+            textbox(sbml)->RevertToOriginal();
+        }
+    }
+    else {
+        textbox(0)->RevertToOriginal();
+    }
+}
+
+void TabManager::SetOthersTranslated(int oldtab)
+{
+    if (oldtab==0) {
+        for (int sbml=1; sbml<count(); sbml++) {
+            textbox(sbml)->RevertToTranslated();
+        }
+    }
+    else {
+        textbox(0)->RevertToTranslated();
+    }
+}
+
 void TabManager::TranslateAntimony(const QString& text)
 {
     long handle = loadString(text.toAscii().data());
     if (handle == -1) {
         //error condition
         char* error = getLastError();
-        for (long tab=1; tab<count(); tab++) {
-            textbox(tab)->SetUntranslated();
-        }
+        emit FailedAntimonyTranslation(QString(error));
+        //Do something with the error --LS DEBUG
         return;
     }
     long nummods = getNumModules();
@@ -126,13 +171,15 @@ void TabManager::TranslateAntimony(const QString& text)
         if (visibletabs < nummods) continue;
         }
         ChangeableTextBox* tab_s = textbox(tabnum);
-        tab_s->SetLastText(QString(getSBMLString(modname)));
+        tab_s->SetTranslatedText(QString(getSBMLString(modname)));
         tab_s->SetModelName(QString(modname));
         setTabText(tabnum, tab_s->GetTabName());
     }
-    while (visibletabs+1 < count()) {
+    while (visibletabs+1 < count() && count()>2) {
         removeTab(count()-1);
     }
+    clearPreviousLoads();
+    freeAll();
     /*
     for (int cleart = visibletabs+1; cleart < count(); cleart++) {
         ChangeableTextBox* tab_s = textbox(cleart);
@@ -144,14 +191,13 @@ void TabManager::TranslateAntimony(const QString& text)
 
 void TabManager::TranslateSBML(int tab, const QString& text)
 {
-    char* errorstring;
     ChangeableTextBox* tab_s = textbox(tab);
     QString oldmodelname = tab_s->GetModelName();
     int handle = loadSBMLString(text.toAscii().data());
     if (handle == -1) {
-        errorstring = getLastError();
+        char* error = getLastError();
+        emit FailedSBMLTranslation(QString(error));
         //do something about the error
-        textbox(0)->SetUntranslated();
         return;
     }
     long modelnum = 0;
@@ -163,7 +209,21 @@ void TabManager::TranslateSBML(int tab, const QString& text)
     setTabText(tab, tab_s->GetTabName());
 
     char* antimonytext = getAntimonyString();
-    ChangeableTextBox* anttab = textbox(0);
+    AntimonyTab* anttab = static_cast<AntimonyTab*>(textbox(0));
     anttab->ReplaceModelWithString(oldmodelname, QString(antimonytext));
-    anttab->SetTextUnchanged();
+    //Now set the antimony tab type appropriately.
+    bool someSBMLtranslated = false;
+    for (int sbml=1; sbml<count(); sbml++) {
+        if (textbox(sbml)->IsTranslated()) {
+            someSBMLtranslated = true;
+        }
+    }
+    if (someSBMLtranslated) {
+        anttab->SetMixed();
+    }
+    else {
+        anttab->SetTranslated();
+    }
+    clearPreviousLoads();
+    freeAll();
 }

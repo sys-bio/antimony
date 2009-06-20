@@ -146,14 +146,14 @@ LIB_EXTERN void   clearPreviousLoads();
 /** \{ */
 
 /**
- * Writes out an antimony-formatted file containing the given module.  If the module depends on any sub-modules, those modules are written out as well, also in the antimony format.  Returns 0 on failure (and sets an error), 1 on success.
+ * Writes out an antimony-formatted file containing the given module.  If no module name is given, all modules in the current set are returned.  If the module depends on any sub-modules, those modules are written out as well, also in the antimony format.  Returns 0 on failure (and sets an error), 1 on success.
  */
-LIB_EXTERN int   writeAntimonyFile(const char* filename, const char* moduleName);
+LIB_EXTERN int   writeAntimonyFile(const char* filename, const char* moduleName = NULL);
 
 /**
  * Returns the same output as writeAntimonyFile, but to a char* array instead of to a file.  Returns NULL on failure, and sets an error.
  */
-LIB_EXTERN char* getAntimonyString(const char* moduleName);
+LIB_EXTERN char* getAntimonyString(const char* moduleName = NULL);
 
 #ifndef NSBML
 /**

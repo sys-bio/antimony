@@ -13,5 +13,8 @@ public:
     void SetModelName(QString name);
     QString GetModelName();
     QString GetTabName();
+    virtual void addSpecialCopyToMenu(QMenu* menu, QAction* paste);
+    virtual void ReplaceModelWithString(QString model, QString text);
+    virtual bool IsMixed();
 };
 #endif // SBMLTAB_H

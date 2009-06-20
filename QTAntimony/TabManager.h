@@ -22,16 +22,23 @@ public slots:
     void copy();
     void paste();
     void selectAll();
-    void revertText();
+    void revertToTranslated();
+    void revertToOriginal();
 
     //Whenever we switch tabs:
     void SwitchTabs(int tab);
     void Translate(int tab);
 
+signals:
+    void FailedAntimonyTranslation(QString error);
+    void FailedSBMLTranslation(QString error);
+
 private:
     ChangeableTextBox* GetActiveEditor();
     void TranslateAntimony(const QString& text);
     void TranslateSBML(int tab, const QString& text);
+    void SetOthersOriginal(int oldtab);
+    void SetOthersTranslated(int oldtab);
 };
 
 #endif // TABMANAGER_H
