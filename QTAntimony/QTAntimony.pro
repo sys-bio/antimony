@@ -1,7 +1,7 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-06-01T16:21:30
 # -------------------------------------------------
-TARGET = Antimony_Translator
+TARGET = QTAntimony
 TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -9,12 +9,17 @@ SOURCES += main.cpp \
     SBMLTab.cpp \
     Translator.cpp \
     ChangeableTextBox.cpp \
-    TabManager.cpp
+    TabManager.cpp \
+    QTAntimony.cpp
 HEADERS += mainwindow.h \
     AntimonyTab.h \
     SBMLTab.h \
     Translator.h \
     ChangeableTextBox.h \
-    TabManager.h
+    TabManager.h \
+    QTAntimony.h
 INCLUDEPATH += /home/lpsmith/antimony/src/
-LIBS += -L/home/lpsmith/antimony/lib/ -lantimony -L/usr/local/lib -lsbml
+LIBS += -L/home/lpsmith/antimony/lib/ \
+    -lantimony \
+    -L/usr/local/lib \
+    -lsbml
