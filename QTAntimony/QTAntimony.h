@@ -16,11 +16,12 @@ public:
     QTAntimony(int& argc, char**& argv);
     void OpenFile(QString filename);
     void OpenFiles(QStringList filenames);
-    Translator* GetNewTranslator();
+    QString GetCurrentDir();
 
 public slots:
     void OpenNewFile();
     void SetCurrentDirectory(QString dir);
+    void NewWindow();
 
 };
 

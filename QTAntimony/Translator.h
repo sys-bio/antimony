@@ -9,7 +9,7 @@ class SBMLTab;
 class QApplication;
 class TabManager;
 class QTAntimony;
-class QFileSystemWatcher;
+class FileWatcher;
 
 class Translator : public QMainWindow
 {
@@ -19,7 +19,7 @@ private:
     //Tabs
     TabManager* m_tabmanager;
     AntimonyTab* m_antimony;
-    QFileSystemWatcher* m_filewatcher;
+    FileWatcher* m_filewatcher;
     std::vector<SBMLTab*> m_allSBML;
     //Editor actions (are tied to active tab only)
     QAction* m_actionUndo;

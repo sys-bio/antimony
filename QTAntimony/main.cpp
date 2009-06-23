@@ -9,8 +9,11 @@ int main(int argc, char *argv[])
         a.OpenFile(argv[arg]);
     }
     if (argc==1) {
+        a.NewWindow();
+        /*
         Translator* newwindow = a.GetNewTranslator();
         newwindow->show();
+        */
     }
     return a.exec();
 }

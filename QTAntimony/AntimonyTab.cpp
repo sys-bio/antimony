@@ -16,6 +16,8 @@ AntimonyTab::AntimonyTab(QWidget* parent)
         m_selectedasSBML(""),
         m_ismixed(false)
 {
+    m_filetypes = "Antimony files (*.txt);;All files(*.*)";
+    m_extension = ".txt";
     m_actionCopySBML= new QAction(tr("Copy &SBML"), this);
     m_actionCopySBML->setEnabled(false);
     connect(m_actionCopySBML, SIGNAL(triggered()), this, SLOT(CopySBML()));
@@ -27,7 +29,7 @@ void AntimonyTab::SetModelName(QString name)
 
 QString AntimonyTab::GetModelName()
 {
-    return "";
+    return "antimony";
 }
 
 QString AntimonyTab::GetTabName()
@@ -93,7 +95,7 @@ void AntimonyTab::ReplaceModelWithString(QString modelname, QString text)
     else {
         QString nomain = "";
         //Save all the existing model/end text
-        QRegExp text_to_find("(model|module).*end", Qt::CaseInsensitive);
+        QRegExp text_to_find("(^|\n)\s*(model|module).*end", Qt::CaseInsensitive);
         text_to_find.setMinimal(true);
         int pos = 0;
         while ((pos = text_to_find.indexIn(model, pos)) != -1) {

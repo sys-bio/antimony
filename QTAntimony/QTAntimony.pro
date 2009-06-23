@@ -10,14 +10,16 @@ SOURCES += main.cpp \
     Translator.cpp \
     ChangeableTextBox.cpp \
     TabManager.cpp \
-    QTAntimony.cpp
+    QTAntimony.cpp \
+    FileWatcher.cpp
 HEADERS += mainwindow.h \
     AntimonyTab.h \
     SBMLTab.h \
     Translator.h \
     ChangeableTextBox.h \
     TabManager.h \
-    QTAntimony.h
+    QTAntimony.h \
+    FileWatcher.h
 INCLUDEPATH += /home/lpsmith/antimony/src/
 LIBS += -L/home/lpsmith/antimony/lib/ \
     -lantimony \

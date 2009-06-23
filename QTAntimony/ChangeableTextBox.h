@@ -23,8 +23,13 @@ private:
 
     QString m_translated;
     QString m_original;
+    QString m_saved;
 
     QString m_filename;
+
+protected:
+    QString m_filetypes;
+    QString m_extension;
 
 public:
     ChangeableTextBox(QWidget* parent = 0);
@@ -42,6 +47,9 @@ public:
     bool IsOriginal();
     bool IsTranslated();
     virtual bool IsMixed() = 0;
+    void SetFilename(QString filename);
+    void SaveTab();
+    void SaveTabAs();
 
 public slots:
     void SetActive();
@@ -63,6 +71,8 @@ signals:
     void ActiveRedoAvailable(bool yes);
     void TranslatedAvailable(bool yes);
     void OriginalAvailable(bool yes);
+    void StopWatching(const QString& filename);
+    void StartWatching(const QString& filename);
 
 private:
     void SetNormalBorder();

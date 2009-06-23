@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'TabManager.h'
 **
-** Created: Wed Jun 17 14:10:45 2009
+** Created: Tue Jun 23 14:57:14 2009
 **      by: The Qt Meta Object Compiler version 61 (Qt 4.5.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_TabManager[] = {
        2,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   12, // methods
+      18,   12, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -42,7 +42,13 @@ static const uint qt_meta_data_TabManager[] = {
      131,   11,   11,   11, 0x0a,
      152,   11,   11,   11, 0x0a,
      175,  171,   11,   11, 0x0a,
-     191,  171,   11,   11, 0x0a,
+     191,   11,   11,   11, 0x0a,
+     205,   11,   11,   11, 0x0a,
+     221,   11,   11,   11, 0x0a,
+     236,   11,   11,   11, 0x0a,
+     250,   11,   11,   11, 0x0a,
+     269,   11,   11,   11, 0x0a,
+     289,   11,   11,   11, 0x0a,
 
        0        // eod
 };
@@ -52,7 +58,10 @@ static const char qt_meta_stringdata_TabManager[] = {
     "FailedSBMLTranslation(QString)\0undo()\0"
     "redo()\0cut()\0copy()\0paste()\0selectAll()\0"
     "revertToTranslated()\0revertToOriginal()\0"
-    "tab\0SwitchTabs(int)\0Translate(int)\0"
+    "tab\0SwitchTabs(int)\0SaveCurrent()\0"
+    "SaveCurrentAs()\0SaveAntimony()\0"
+    "SaveAllSBML()\0TranslateCurrent()\0"
+    "TranslateAntimony()\0TranslateSBML()\0"
 };
 
 const QMetaObject TabManager::staticMetaObject = {
@@ -91,10 +100,16 @@ int TabManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 8: revertToTranslated(); break;
         case 9: revertToOriginal(); break;
         case 10: SwitchTabs((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 11: Translate((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 11: SaveCurrent(); break;
+        case 12: SaveCurrentAs(); break;
+        case 13: SaveAntimony(); break;
+        case 14: SaveAllSBML(); break;
+        case 15: TranslateCurrent(); break;
+        case 16: TranslateAntimony(); break;
+        case 17: TranslateSBML(); break;
         default: ;
         }
-        _id -= 12;
+        _id -= 18;
     }
     return _id;
 }
