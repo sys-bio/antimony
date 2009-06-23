@@ -1,10 +1,15 @@
 #include "ChangeableTextBox.h"
+#include "QTAntimony.h"
 #include <QPalette>
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <iostream>
 #include <QFile>
 #include <QFileInfo>
+#include <QFileDialog>
+#include <QApplication>
+#include <QTextStream>
+#include <QMessageBox>
 
 using namespace std;
 
@@ -21,7 +26,10 @@ ChangeableTextBox::ChangeableTextBox(QWidget* parent)
     m_origshadow(frameShadow()),
     m_translated(""),
     m_original(""),
-    m_filename("")
+    m_saved(""),
+    m_filename(""),
+    m_filetypes(""),
+    m_extension("")
 
 {
     connect(this, SIGNAL(textChanged()), this, SLOT(SetTextChanged()));
@@ -52,12 +60,12 @@ void ChangeableTextBox::SetInactive()
 
 void ChangeableTextBox::SetTextChanged()
 {
-    if (toPlainText() == m_translated) {
-        SetTranslated();
-        return;
-    }
     if (toPlainText() == m_original) {
         SetOriginal();
+        return;
+    }
+    if (toPlainText() == m_translated) {
+        SetTranslated();
         return;
     }
     cout << "Setting tab " << GetTabName().toStdString() << " to 'changed'" << endl;
@@ -81,6 +89,7 @@ void ChangeableTextBox::SetFailedTranslation()
     cout << "Setting tab " << GetTabName().toStdString() << " to 'failed translation'" << endl;
     m_failedtranslation = true;
     viewport()->setBackgroundRole(QPalette::AlternateBase);
+    SetNormalBorder();
 }
 
 void ChangeableTextBox::SetOriginal()
@@ -163,6 +172,63 @@ void ChangeableTextBox::FileChanged(const QString& file)
     //Do something.
 }
 
+void ChangeableTextBox::SaveTab()
+{
+    if (m_filename == "") {
+        QTAntimony* app = static_cast<QTAntimony*>(QApplication::instance());
+        QString suggestedname = app->GetCurrentDir();
+#ifdef Q_OS_WIN
+        suggestedname += "\";
+#else
+        suggestedname += "/";
+#endif
+        suggestedname += GetModelName() + m_extension;
+        m_filename = QFileDialog::getSaveFileName(
+                this,
+                tr("Save file"),
+                suggestedname,
+                m_filetypes);
+        if (m_filename=="") return; //User probably chose 'cancel'
+        QFileInfo qfi(m_filename);
+        app->SetCurrentDirectory(qfi.absoluteDir().absolutePath());
+    }
+    QFile file(m_filename);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox msgBox;
+        QString message = "Unable to open file '" + m_filename + "' for writing.";
+        msgBox.setText(message);
+        msgBox.setInformativeText("Try to save again, or cancel?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        int ret = msgBox.exec();
+        switch(ret)  {
+        case QMessageBox::Save:
+            return SaveTab();
+        case QMessageBox::Cancel:
+        default:
+            return;
+        }
+    }
+    QTextStream out(&file);
+    out << toPlainText();
+    m_saved = toPlainText();
+    emit StartWatching(m_filename);
+}
+
+void ChangeableTextBox::SaveTabAs()
+{
+    if (m_filename != "") {
+        emit StopWatching(m_filename);
+    }
+    m_filename = QFileDialog::getSaveFileName(
+        this,
+        tr("Save file"),
+        m_filename,
+        m_filetypes);
+    if (m_filename=="") return; //User probably chose 'cancel'
+    SaveTab();
+}
+
 void ChangeableTextBox::ReplaceTextWith(QString text)
 {
     if (text == toPlainText()) return;
@@ -185,6 +251,12 @@ bool ChangeableTextBox::IsOriginal()
 bool ChangeableTextBox::IsTranslated()
 {
     return (toPlainText()==m_translated);
+}
+
+void ChangeableTextBox::SetFilename(QString filename)
+{
+    m_filename = filename;
+    emit StartWatching(filename);
 }
 
 void ChangeableTextBox::SetTranslatedText(QString text)

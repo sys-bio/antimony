@@ -98,6 +98,23 @@ void TabManager::SwitchTabs(int tab)
     m_oldtab = tab;
 }
 
+void TabManager::TranslateCurrent()
+{
+    Translate(currentIndex());
+}
+
+void TabManager::TranslateAntimony()
+{
+    Translate(0);
+}
+
+void TabManager::TranslateSBML()
+{
+    for (int sbml=1; sbml<count(); sbml++) {
+        Translate(sbml);
+    }
+}
+
 void TabManager::Translate(int tab)
 {
     if (tab==-1) return;
@@ -159,16 +176,16 @@ void TabManager::TranslateAntimony(const QString& text)
         char* modname = getNthModuleName(mod);
         //The '__main' module will always be model 0.  I want this to be the *last* tab for this translator, so since the Antimony tab is tab 0, model 0 (if it has any variables) goes to the end.
         if (mod==0) {
-        tabnum = nummods;
-        long numvars = getNumSymbolsOfType(modname, allSymbols);
-        if (numvars == 0) {
-            visibletabs--;
-        }
-        Translator* translator = static_cast<Translator*>(parent());
-        while (visibletabs >= count()) {
-            translator->AddSBMLTab();
-        }
-        if (visibletabs < nummods) continue;
+            tabnum = nummods;
+            long numvars = getNumSymbolsOfType(modname, allSymbols);
+            if (numvars == 0) {
+                visibletabs--;
+            }
+            Translator* translator = static_cast<Translator*>(parent());
+            while (visibletabs >= count()) {
+                translator->AddSBMLTab();
+            }
+            if (visibletabs < nummods) continue;
         }
         ChangeableTextBox* tab_s = textbox(tabnum);
         tab_s->SetTranslatedText(QString(getSBMLString(modname)));
@@ -214,7 +231,7 @@ void TabManager::TranslateSBML(int tab, const QString& text)
     //Now set the antimony tab type appropriately.
     bool someSBMLtranslated = false;
     for (int sbml=1; sbml<count(); sbml++) {
-        if (textbox(sbml)->IsTranslated()) {
+        if (!textbox(sbml)->IsOriginal()) {
             someSBMLtranslated = true;
         }
     }
@@ -226,4 +243,26 @@ void TabManager::TranslateSBML(int tab, const QString& text)
     }
     clearPreviousLoads();
     freeAll();
+}
+
+void TabManager::SaveCurrent()
+{
+    GetActiveEditor()->SaveTab();
+}
+
+void TabManager::SaveCurrentAs()
+{
+    GetActiveEditor()->SaveTabAs();
+}
+
+void TabManager::SaveAntimony()
+{
+    textbox(0)->SaveTab();
+}
+
+void TabManager::SaveAllSBML()
+{
+    for (int tab=1; tab<count(); tab++) {
+        textbox(tab)->SaveTab();
+    }
 }

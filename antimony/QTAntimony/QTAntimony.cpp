@@ -38,20 +38,25 @@ void QTAntimony::OpenNewFile()
     QWidget* temp = new QWidget();
     QStringList files = QFileDialog::getOpenFileNames(
                          temp,
-                         QString("Select one or more files to open"),
+                         tr("Select one or more files to open"),
                          m_currentdir,
-                         QString("Antimony and SBML files (*.txt *.xml *.sbml);;Antimony files (*.txt);;SBML files (*.xml *.sbml);;All files(*.*)"));
+                         tr("Antimony and SBML files (*.txt *.xml *.sbml);;Antimony files (*.txt);;SBML files (*.xml *.sbml);;All files(*.*)"));
     delete temp;
     OpenFiles(files);
 }
 
-Translator* QTAntimony::GetNewTranslator()
+QString QTAntimony::GetCurrentDir()
+{
+    return m_currentdir;
+}
+
+void QTAntimony::NewWindow()
 {
     Translator* newt = new Translator(this);
     if (m_original==NULL) {
         m_original = newt;
     }
-    return newt;
+    newt->show();
 }
 
 void QTAntimony::SetCurrentDirectory(QString dir)

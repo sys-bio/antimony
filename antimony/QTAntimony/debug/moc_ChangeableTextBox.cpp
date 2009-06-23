@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'ChangeableTextBox.h'
 **
-** Created: Thu Jun 18 16:59:55 2009
+** Created: Tue Jun 23 10:49:36 2009
 **      by: The Qt Meta Object Compiler version 61 (Qt 4.5.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_ChangeableTextBox[] = {
        2,       // revision
        0,       // classname
        0,    0, // classinfo
-      17,   12, // methods
+      19,   12, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -34,20 +34,22 @@ static const uint qt_meta_data_ChangeableTextBox[] = {
       75,   19,   18,   18, 0x05,
      101,   19,   18,   18, 0x05,
      127,   19,   18,   18, 0x05,
+     160,  151,   18,   18, 0x05,
+     182,  151,   18,   18, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-     151,   18,   18,   18, 0x0a,
-     163,   18,   18,   18, 0x0a,
-     177,   18,   18,   18, 0x0a,
-     194,   18,   18,   18, 0x0a,
+     205,   18,   18,   18, 0x0a,
      217,   18,   18,   18, 0x0a,
      231,   18,   18,   18, 0x0a,
-     247,   19,   18,   18, 0x0a,
-     278,   19,   18,   18, 0x0a,
-     309,   19,   18,   18, 0x0a,
-     340,   18,   18,   18, 0x0a,
-     361,   18,   18,   18, 0x0a,
-     389,  380,   18,   18, 0x0a,
+     248,   18,   18,   18, 0x0a,
+     271,   18,   18,   18, 0x0a,
+     285,   18,   18,   18, 0x0a,
+     301,   19,   18,   18, 0x0a,
+     332,   19,   18,   18, 0x0a,
+     363,   19,   18,   18, 0x0a,
+     394,   18,   18,   18, 0x0a,
+     415,   18,   18,   18, 0x0a,
+     434,  151,   18,   18, 0x0a,
 
        0        // eod
 };
@@ -57,14 +59,15 @@ static const char qt_meta_stringdata_ChangeableTextBox[] = {
     "ActiveUndoAvailable(bool)\0"
     "ActiveRedoAvailable(bool)\0"
     "TranslatedAvailable(bool)\0"
-    "OriginalAvailable(bool)\0SetActive()\0"
-    "SetInactive()\0SetTextChanged()\0"
+    "OriginalAvailable(bool)\0filename\0"
+    "StopWatching(QString)\0StartWatching(QString)\0"
+    "SetActive()\0SetInactive()\0SetTextChanged()\0"
     "SetFailedTranslation()\0SetOriginal()\0"
     "SetTranslated()\0SaveAndEmitCopyAvailable(bool)\0"
     "SaveAndEmitUndoAvailable(bool)\0"
     "SaveAndEmitRedoAvailable(bool)\0"
     "RevertToTranslated()\0RevertToOriginal()\0"
-    "filename\0FileChanged(QString)\0"
+    "FileChanged(QString)\0"
 };
 
 const QMetaObject ChangeableTextBox::staticMetaObject = {
@@ -97,21 +100,23 @@ int ChangeableTextBox::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 2: ActiveRedoAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 3: TranslatedAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 4: OriginalAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 5: SetActive(); break;
-        case 6: SetInactive(); break;
-        case 7: SetTextChanged(); break;
-        case 8: SetFailedTranslation(); break;
-        case 9: SetOriginal(); break;
-        case 10: SetTranslated(); break;
-        case 11: SaveAndEmitCopyAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 12: SaveAndEmitUndoAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 13: SaveAndEmitRedoAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 14: RevertToTranslated(); break;
-        case 15: RevertToOriginal(); break;
-        case 16: FileChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 5: StopWatching((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 6: StartWatching((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 7: SetActive(); break;
+        case 8: SetInactive(); break;
+        case 9: SetTextChanged(); break;
+        case 10: SetFailedTranslation(); break;
+        case 11: SetOriginal(); break;
+        case 12: SetTranslated(); break;
+        case 13: SaveAndEmitCopyAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 14: SaveAndEmitUndoAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 15: SaveAndEmitRedoAvailable((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 16: RevertToTranslated(); break;
+        case 17: RevertToOriginal(); break;
+        case 18: FileChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         default: ;
         }
-        _id -= 17;
+        _id -= 19;
     }
     return _id;
 }
@@ -149,5 +154,19 @@ void ChangeableTextBox::OriginalAvailable(bool _t1)
 {
     void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 4, _a);
+}
+
+// SIGNAL 5
+void ChangeableTextBox::StopWatching(const QString & _t1)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 5, _a);
+}
+
+// SIGNAL 6
+void ChangeableTextBox::StartWatching(const QString & _t1)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 6, _a);
 }
 QT_END_MOC_NAMESPACE

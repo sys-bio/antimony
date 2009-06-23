@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'AntimonyTab.h'
 **
-** Created: Thu Jun 18 16:59:52 2009
+** Created: Tue Jun 23 10:49:34 2009
 **      by: The Qt Meta Object Compiler version 61 (Qt 4.5.0)
 **
 ** WARNING! All changes made in this file will be lost!

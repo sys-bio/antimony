@@ -14,6 +14,7 @@ public:
     int addTab(ChangeableTextBox* page, const QString& label);
     int addTab(ChangeableTextBox* page, const QIcon& icon, const QString& label);
     ChangeableTextBox* textbox(int tabnum);
+    void Translate(int tab);
 public slots:
     //We provide the functions and pass them to the underlying active editor tab
     void undo();
@@ -27,7 +28,15 @@ public slots:
 
     //Whenever we switch tabs:
     void SwitchTabs(int tab);
-    void Translate(int tab);
+
+    void SaveCurrent();
+    void SaveCurrentAs();
+    void SaveAntimony();
+    void SaveAllSBML();
+
+    void TranslateCurrent();
+    void TranslateAntimony();
+    void TranslateSBML();
 
 signals:
     void FailedAntimonyTranslation(QString error);
