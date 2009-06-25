@@ -25,9 +25,8 @@ private:
     QString m_original;
     QString m_saved;
 
-    QString m_filename;
-
 protected:
+    QString m_filename;
     QString m_filetypes;
     QString m_extension;
 
@@ -47,9 +46,11 @@ public:
     bool IsOriginal();
     bool IsTranslated();
     virtual bool IsMixed() = 0;
-    void SetFilename(QString filename);
+    bool IsSaved();
+    virtual void SetFilename(QString filename);
     void SaveTab();
     void SaveTabAs();
+    void DisplayError(QString error);
 
 public slots:
     void SetActive();
@@ -73,6 +74,7 @@ signals:
     void OriginalAvailable(bool yes);
     void StopWatching(const QString& filename);
     void StartWatching(const QString& filename);
+    void TabNameIsNow(const QString& tabname, ChangeableTextBox* tab);
 
 private:
     void SetNormalBorder();

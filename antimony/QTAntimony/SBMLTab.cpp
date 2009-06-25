@@ -20,12 +20,14 @@ QString SBMLTab::GetModelName()
 
 QString SBMLTab::GetTabName()
 {
-    if (QString(m_modelname) == QString("__main")) {
-        return QString("SBML");
+    QString tabname = "SBML";
+    if (!(m_modelname == "__main")) {
+        tabname += " - " + m_modelname;
     }
-    else {
-        return QString("SBML - ") + QString(m_modelname);
+    if (!IsSaved()) {
+        tabname += " *";
     }
+    return tabname;
 }
 
 void SBMLTab::addSpecialCopyToMenu(QMenu* menu, QAction* defaultcut)

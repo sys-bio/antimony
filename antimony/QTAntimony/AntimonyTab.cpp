@@ -6,6 +6,7 @@
 #include <QClipboard>
 #include <QTextCursor>
 #include <QMenu>
+#include <QFileInfo>
 
 #include <iostream>
 using namespace std;
@@ -14,7 +15,8 @@ AntimonyTab::AntimonyTab(QWidget* parent)
         : ChangeableTextBox(parent),
         m_actionCopySBML(NULL),
         m_selectedasSBML(""),
-        m_ismixed(false)
+        m_ismixed(false),
+        m_filenodirectory("")
 {
     m_filetypes = "Antimony files (*.txt);;All files(*.*)";
     m_extension = ".txt";
@@ -34,7 +36,14 @@ QString AntimonyTab::GetModelName()
 
 QString AntimonyTab::GetTabName()
 {
-    return "Antimony";
+    QString tabname = "Antimony";
+    if (m_filenodirectory != "") {
+        tabname += " - " + m_filenodirectory;
+    }
+    if (!IsSaved()) {
+        tabname += " *";
+    }
+    return tabname;
 }
 
 void AntimonyTab::addSpecialCopyToMenu(QMenu* menu, QAction* paste)
@@ -95,7 +104,7 @@ void AntimonyTab::ReplaceModelWithString(QString modelname, QString text)
     else {
         QString nomain = "";
         //Save all the existing model/end text
-        QRegExp text_to_find("(^|\n)\s*(model|module).*end", Qt::CaseInsensitive);
+        QRegExp text_to_find("(^|\n)\\s*(model|module).*end", Qt::CaseInsensitive);
         text_to_find.setMinimal(true);
         int pos = 0;
         while ((pos = text_to_find.indexIn(model, pos)) != -1) {
@@ -129,4 +138,12 @@ void AntimonyTab::SetTextChanged()
 {
     m_ismixed = false;
     ChangeableTextBox::SetTextChanged();
+}
+
+void AntimonyTab::SetFilename(QString filename)
+{
+    ChangeableTextBox::SetFilename(filename);
+    QFileInfo qfi(filename);
+    m_filenodirectory = qfi.fileName();
+    emit FilenameIsNow(m_filenodirectory);
 }

@@ -2735,15 +2735,17 @@ int yylex(void)
   yylloc_first_line = yylloc_last_line;
 
   // Skip white space.
-  while (cc == ' ' ||
-         cc == '\t') {
+  while ((cc == ' ' ||
+         cc == '\t') &&
+         !g_registry.input->eof()) {
     g_registry.input->get(cc);
   }
+  if (g_registry.input->eof()) return yylex();
   // Skip carriage returns after '\':
   if (cc == '\\') {
     g_registry.input->get(cc);
     if (cc == '\r' || cc == '\n') {
-      while (cc == '\r' || cc == '\n') {
+      while ((cc == '\r' || cc == '\n') && !g_registry.input->eof()) {
 	g_registry.input->get(cc);
       }
       ++yylloc_last_line;
@@ -2763,7 +2765,9 @@ int yylex(void)
       word += cc;
       g_registry.input->get(cc);
     }
-    g_registry.input->unget();
+    if (!g_registry.input->eof()) {
+      g_registry.input->unget();
+    }
     if (CaselessStrCmp(word, "module")) {
       return MODULE;
     }
@@ -2854,7 +2858,7 @@ int yylex(void)
   if (cc == '-') {
     g_registry.input->get(cc);
     if (cc == '-') {
-      while (cc == '-') {
+      while ((cc == '-') && !g_registry.input->eof()) {
         g_registry.input->get(cc);
       }
       g_registry.input->unget();

@@ -4,6 +4,10 @@
 #include "SBMLTab.h"
 #include "AntimonyTab.h"
 #include "antimony_api.h"
+#include <QMessageBox>
+#include <vector>
+
+using namespace std;
 
 TabManager::TabManager(QWidget* parent)
         : QTabWidget(parent),
@@ -165,8 +169,8 @@ void TabManager::TranslateAntimony(const QString& text)
     if (handle == -1) {
         //error condition
         char* error = getLastError();
-        emit FailedAntimonyTranslation(QString(error));
-        //Do something with the error --LS DEBUG
+        emit FailedAntimonyTranslation();
+        textbox(0)->DisplayError(error);
         return;
     }
     long nummods = getNumModules();
@@ -213,7 +217,8 @@ void TabManager::TranslateSBML(int tab, const QString& text)
     int handle = loadSBMLString(text.toAscii().data());
     if (handle == -1) {
         char* error = getLastError();
-        emit FailedSBMLTranslation(QString(error));
+        emit FailedSBMLTranslation();
+        tab_s->DisplayError(error);
         //do something about the error
         return;
     }
@@ -245,6 +250,18 @@ void TabManager::TranslateSBML(int tab, const QString& text)
     freeAll();
 }
 
+void TabManager::TabNameIs(const QString& tabname, ChangeableTextBox* tab)
+{
+    for (int tnum=0; tnum<count(); tnum++) {
+        if (textbox(tnum) == tab) {
+            if (tabText(tnum) != tabname) {
+                setTabText(tnum, tabname);
+                return;
+            }
+        }
+    }
+}
+
 void TabManager::SaveCurrent()
 {
     GetActiveEditor()->SaveTab();
@@ -265,4 +282,79 @@ void TabManager::SaveAllSBML()
     for (int tab=1; tab<count(); tab++) {
         textbox(tab)->SaveTab();
     }
+}
+
+bool TabManager::CanIClose()
+{
+    QString message = "The ";
+    vector<int> unsaved;
+    for (int tab=0; tab<count(); tab++) {
+        if (!textbox(tab)->IsSaved()) {
+            if (tab==0) {
+                message += "Antimony tab";
+                unsaved.push_back(tab);
+            }
+            else {
+                if (unsaved.size()==0) {
+                    message += "SBML model(s) ";
+                }
+                else if (unsaved.size()==1 && unsaved[0]==0) {
+                    message += " and the SBML model(s) ";
+                }
+                else {
+                    message += ", ";
+                }
+                message += "'" + textbox(tab)->GetModelName() + "'";
+                unsaved.push_back(tab);
+            }
+        }
+    }
+    if (unsaved.size()==0) return true;
+    if (unsaved.size()==1) {
+        message += " has";
+    }
+    else {
+        message += " have";
+    }
+    message += " not been saved.  Save before closing?";
+    QMessageBox msgBox;
+    msgBox.setText("Some tabs have not been saved.");
+    msgBox.setInformativeText(message);
+    msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Close);
+    msgBox.setDefaultButton(QMessageBox::Save);
+    int ret = msgBox.exec();
+    switch(ret)  {
+    case QMessageBox::Cancel:
+        return false;
+    case QMessageBox::Close:
+        return true;
+    case QMessageBox::Save:
+    default:
+        break;
+    }
+    for (size_t unum=0; unum<unsaved.size(); unum++) {
+        textbox(unsaved[unum])->SaveTab();
+    }
+    bool someunsaved = false;
+    for (int tab=0; tab<count(); tab++) {
+        if (!textbox(tab)->IsSaved()) {
+            someunsaved=true;
+        }
+    }
+    if (someunsaved) {
+        QMessageBox msgBox2;
+        msgBox2.setText("Some tabs are still unsaved.");
+        msgBox2.setInformativeText("Close window anyway?");
+        msgBox2.setStandardButtons(QMessageBox::Cancel | QMessageBox::Close);
+        msgBox2.setDefaultButton(QMessageBox::Cancel);
+        int ret = msgBox2.exec();
+        switch(ret) {
+        case QMessageBox::Close:
+            return true;
+        case QMessageBox::Cancel:
+        default:
+            return false;
+        }
+    }
+    return true;
 }

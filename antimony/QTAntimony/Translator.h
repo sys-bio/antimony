@@ -42,9 +42,7 @@ public:
 
 public slots:
     void SetPasteAvailability();
-
-signals:
-    void isClosing();
+    void ResetWindowNameWith(const QString& filename);
 };
 
 #endif // TRANSLATOR_H
