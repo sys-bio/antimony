@@ -17,6 +17,7 @@
 #include <QClipboard>
 #include <QFile>
 #include <QTextStream>
+#include <QCloseEvent>
 
 using namespace std;
 Translator::Translator(QTAntimony* app, QString filename)
@@ -161,7 +162,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(actionSaveAntimony, SIGNAL(triggered()), m_tabmanager, SLOT(SaveAntimony()));
     connect(actionSaveSBML, SIGNAL(triggered()), m_tabmanager, SLOT(SaveAllSBML()));
     connect(actionSaveAs, SIGNAL(triggered()), m_tabmanager, SLOT(SaveCurrentAs()));
-    connect(actionQuit,SIGNAL(triggered()), QApplication::instance(), SLOT(quit()));
+    connect(actionQuit,SIGNAL(triggered()), QApplication::instance(), SLOT(closeAllWindows()));
     connect(m_actionUndo, SIGNAL(triggered()), m_tabmanager, SLOT(undo()));
     connect(m_antimony, SIGNAL(ActiveUndoAvailable(bool)), m_actionUndo, SLOT(setEnabled(bool)));
     connect(m_actionRedo, SIGNAL(triggered()), m_tabmanager, SLOT(redo()));
@@ -180,11 +181,12 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(m_antimony, SIGNAL(TranslatedAvailable(bool)), m_actionRevertToTranslated, SLOT(setEnabled(bool)));
     connect(m_actionRevertToOriginal, SIGNAL(triggered()), m_tabmanager, SLOT(revertToOriginal()));
     connect(m_antimony, SIGNAL(OriginalAvailable(bool)), m_actionRevertToOriginal, SLOT(setEnabled(bool)));
-    connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation(QString)), m_antimony, SLOT(SetFailedTranslation()));
-    connect(m_tabmanager, SIGNAL(FailedSBMLTranslation(QString)), m_antimony, SLOT(SetFailedTranslation()));
+    connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), m_antimony, SLOT(SetFailedTranslation()));
+    connect(m_tabmanager, SIGNAL(FailedSBMLTranslation()), m_antimony, SLOT(SetFailedTranslation()));
     connect(m_antimony, SIGNAL(StartWatching(QString)), m_filewatcher, SLOT(StartWatching(QString)));
     connect(m_antimony, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), m_antimony, SLOT(FileChanged(QString)));
+    connect(m_antimony, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
 
     //The File menu
     QMenu* filemenu = menuBar()->addMenu(tr("&File"));
@@ -250,8 +252,8 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated)
     connect(sbml, SIGNAL(ActiveCopyAvailable(bool)), m_actionCopy, SLOT(setEnabled(bool)));
     connect(sbml, SIGNAL(TranslatedAvailable(bool)), m_actionRevertToTranslated, SLOT(setEnabled(bool)));
     connect(sbml, SIGNAL(OriginalAvailable(bool)),   m_actionRevertToOriginal, SLOT(setEnabled(bool)));
-    connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation(QString)), sbml, SLOT(SetFailedTranslation()));
-    connect(m_tabmanager, SIGNAL(FailedSBMLTranslation(QString)), sbml, SLOT(SetFailedTranslation()));
+    connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), sbml, SLOT(SetFailedTranslation()));
+    connect(m_tabmanager, SIGNAL(FailedSBMLTranslation()), sbml, SLOT(SetFailedTranslation()));
     connect(sbml, SIGNAL(StartWatching(QString)), m_filewatcher, SLOT(StartWatching(QString)));
     connect(sbml, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), sbml, SLOT(FileChanged(QString)));
@@ -277,6 +279,15 @@ void Translator::SetPasteAvailability()
 
 void Translator::closeEvent(QCloseEvent* event)
 {
-    emit isClosing();
-    QMainWindow::closeEvent(event);
+    if (m_tabmanager->CanIClose()) {
+        event->accept();
+    }
+    else {
+        event->ignore();
+    }
+}
+
+void Translator::ResetWindowNameWith(const QString& filename)
+{
+
 }

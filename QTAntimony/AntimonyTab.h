@@ -9,7 +9,8 @@ class AntimonyTab : public ChangeableTextBox
 private:
     QAction* m_actionCopySBML;
     QString  m_selectedasSBML;
-    bool m_ismixed;
+    bool     m_ismixed;
+    QString  m_filenodirectory;
 
     bool setupSBMLCopy();
 
@@ -21,11 +22,15 @@ public:
     virtual void addSpecialCopyToMenu(QMenu* menu, QAction* paste);
     virtual void ReplaceModelWithString(QString model, QString text);
     virtual bool IsMixed();
+    virtual void SetFilename(QString filename);
     void SetMixed();
 
 public slots:
     void CopySBML();
     virtual void SetTextChanged();
+
+signals:
+    void FilenameIsNow(const QString& filename);
 };
 
 #endif // ANTIMONYTAB_H

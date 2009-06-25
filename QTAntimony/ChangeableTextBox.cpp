@@ -60,6 +60,7 @@ void ChangeableTextBox::SetInactive()
 
 void ChangeableTextBox::SetTextChanged()
 {
+    emit TabNameIsNow(GetTabName(), this);
     if (toPlainText() == m_original) {
         SetOriginal();
         return;
@@ -178,16 +179,16 @@ void ChangeableTextBox::SaveTab()
         QTAntimony* app = static_cast<QTAntimony*>(QApplication::instance());
         QString suggestedname = app->GetCurrentDir();
 #ifdef Q_OS_WIN
-        suggestedname += "\";
+        suggestedname += "\\";
 #else
         suggestedname += "/";
 #endif
         suggestedname += GetModelName() + m_extension;
-        m_filename = QFileDialog::getSaveFileName(
+        SetFilename(QFileDialog::getSaveFileName(
                 this,
                 tr("Save file"),
                 suggestedname,
-                m_filetypes);
+                m_filetypes));
         if (m_filename=="") return; //User probably chose 'cancel'
         QFileInfo qfi(m_filename);
         app->SetCurrentDirectory(qfi.absoluteDir().absolutePath());
@@ -212,7 +213,7 @@ void ChangeableTextBox::SaveTab()
     QTextStream out(&file);
     out << toPlainText();
     m_saved = toPlainText();
-    emit StartWatching(m_filename);
+    emit TabNameIsNow(GetTabName(), this);
 }
 
 void ChangeableTextBox::SaveTabAs()
@@ -227,6 +228,16 @@ void ChangeableTextBox::SaveTabAs()
         m_filetypes);
     if (m_filename=="") return; //User probably chose 'cancel'
     SaveTab();
+}
+
+void ChangeableTextBox::DisplayError(QString error)
+{
+    QMessageBox msgBox;
+    QString message = "Error when attempting to translate " + GetModelName() + ":";
+    msgBox.setText(message);
+    msgBox.setInformativeText(error);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.exec();
 }
 
 void ChangeableTextBox::ReplaceTextWith(QString text)
@@ -251,6 +262,11 @@ bool ChangeableTextBox::IsOriginal()
 bool ChangeableTextBox::IsTranslated()
 {
     return (toPlainText()==m_translated);
+}
+
+bool ChangeableTextBox::IsSaved()
+{
+    return (toPlainText()==m_saved);
 }
 
 void ChangeableTextBox::SetFilename(QString filename)

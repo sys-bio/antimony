@@ -1115,7 +1115,9 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       formula->AddNum(compartment->getSize());
       var->SetFormula(formula);
     }
-    var->SetUnits(compartment->getUnits());
+    if (compartment->isSetUnits()) {
+      var->SetUnits(compartment->getUnits());
+    }
   }
 
   //Species
@@ -1155,7 +1157,9 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       compartment->SetType(varCompartment);
       var->SetCompartment(compartment);
     }
-    var->SetUnits(species->getUnits());
+    if (species->isSetUnits()) {
+      var->SetUnits(species->getUnits());
+    }
   }
   
   //Events:
@@ -1190,11 +1194,15 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     const Parameter* parameter = sbml->getParameter(param);
     sbmlname = getNameFromSBMLObject(parameter, "_P");
     Variable* var = AddOrFindVariable(&sbmlname);
-    Formula* formula = g_registry.NewBlankFormula();
-    formula->AddNum(parameter->getValue());
-    var->SetFormula(formula);
-    //LS NOTE:  If a parameter has both a value and an 'initial assignment', the initial assignment will override the value.
-    var->SetUnits(parameter->getUnits());
+    if (parameter->isSetValue()) {
+      Formula* formula = g_registry.NewBlankFormula();
+      formula->AddNum(parameter->getValue());
+      var->SetFormula(formula);
+      //LS NOTE:  If a parameter has both a value and an 'initial assignment', the initial assignment will override the value.
+    }
+    if (parameter->isSetUnits()) {
+      var->SetUnits(parameter->getUnits());
+    }
   }
 
   //Initial Assignments:  can override 'getValue' values.
