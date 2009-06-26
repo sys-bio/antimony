@@ -320,13 +320,13 @@ bool TabManager::CanIClose()
     QMessageBox msgBox;
     msgBox.setText("Some tabs have not been saved.");
     msgBox.setInformativeText(message);
-    msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Close);
+    msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard);
     msgBox.setDefaultButton(QMessageBox::Save);
     int ret = msgBox.exec();
     switch(ret)  {
     case QMessageBox::Cancel:
         return false;
-    case QMessageBox::Close:
+    case QMessageBox::Discard:
         return true;
     case QMessageBox::Save:
     default:
@@ -345,11 +345,11 @@ bool TabManager::CanIClose()
         QMessageBox msgBox2;
         msgBox2.setText("Some tabs are still unsaved.");
         msgBox2.setInformativeText("Close window anyway?");
-        msgBox2.setStandardButtons(QMessageBox::Cancel | QMessageBox::Close);
+        msgBox2.setStandardButtons(QMessageBox::Cancel | QMessageBox::Discard);
         msgBox2.setDefaultButton(QMessageBox::Cancel);
         int ret = msgBox2.exec();
         switch(ret) {
-        case QMessageBox::Close:
+        case QMessageBox::Discard:
             return true;
         case QMessageBox::Cancel:
         default:

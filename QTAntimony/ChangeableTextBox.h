@@ -48,6 +48,7 @@ public:
     virtual bool IsMixed() = 0;
     bool IsSaved();
     virtual void SetFilename(QString filename);
+    virtual void SetSavedFilename(QString filename);
     void SaveTab();
     void SaveTabAs();
     void DisplayError(QString error);

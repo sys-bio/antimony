@@ -275,6 +275,13 @@ void ChangeableTextBox::SetFilename(QString filename)
     emit StartWatching(filename);
 }
 
+void ChangeableTextBox::SetSavedFilename(QString filename)
+{
+    SetFilename(filename);
+    m_saved = toPlainText();
+    emit TabNameIsNow(GetTabName(), this);
+}
+
 void ChangeableTextBox::SetTranslatedText(QString text)
 {
     ReplaceTextWith(text);
