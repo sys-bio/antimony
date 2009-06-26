@@ -120,7 +120,7 @@ void AntimonyTab::ReplaceModelWithString(QString modelname, QString text)
 
 void AntimonyTab::SetMixed()
 {
-    cout << "Setting tab " << GetTabName().toStdString() << " to 'mixed'" << endl;
+    // cout << "Setting tab " << GetTabName().toStdString() << " to 'mixed'" << endl;
     m_ismixed = true;
     viewport()->setBackgroundRole(QPalette::Midlight);
     setLineWidth(3);
