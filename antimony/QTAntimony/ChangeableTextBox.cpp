@@ -69,7 +69,7 @@ void ChangeableTextBox::SetTextChanged()
         SetTranslated();
         return;
     }
-    cout << "Setting tab " << GetTabName().toStdString() << " to 'changed'" << endl;
+    // cout << "Setting tab " << GetTabName().toStdString() << " to 'changed'" << endl;
     viewport()->setBackgroundRole(QPalette::Base);
     SetNormalBorder();
     m_failedtranslation = false;
@@ -77,7 +77,7 @@ void ChangeableTextBox::SetTextChanged()
 
 void ChangeableTextBox::SetTranslated()
 {
-    cout << "Setting tab " << GetTabName().toStdString() << " to 'translated'" << endl;
+    // cout << "Setting tab " << GetTabName().toStdString() << " to 'translated'" << endl;
     m_translated = toPlainText();
     m_failedtranslation = false;
     EmitPreviousAvailable();
@@ -87,7 +87,7 @@ void ChangeableTextBox::SetTranslated()
 
 void ChangeableTextBox::SetFailedTranslation()
 {
-    cout << "Setting tab " << GetTabName().toStdString() << " to 'failed translation'" << endl;
+    // cout << "Setting tab " << GetTabName().toStdString() << " to 'failed translation'" << endl;
     m_failedtranslation = true;
     viewport()->setBackgroundRole(QPalette::AlternateBase);
     SetNormalBorder();
@@ -95,7 +95,7 @@ void ChangeableTextBox::SetFailedTranslation()
 
 void ChangeableTextBox::SetOriginal()
 {
-    cout << "Setting tab " << GetTabName().toStdString() << " to 'original'" << endl;
+    // cout << "Setting tab " << GetTabName().toStdString() << " to 'original'" << endl;
     m_failedtranslation = false;
     m_original = toPlainText();
     EmitPreviousAvailable();
