@@ -45,6 +45,9 @@ Translator::Translator(QTAntimony* app, QString filename)
     QAction* actionSaveSBML = new QAction(tr("Save All S&BML"), this);
     actionSaveSBML->setShortcut(QKeySequence(tr("Alt+s")));
     actionSaveSBML->setEnabled(true);
+    QAction* actionClose = new QAction(tr("&Close"), this);
+    actionClose->setShortcut(QKeySequence::Close);
+    actionClose->setEnabled(true);
     QAction* actionQuit = new QAction(tr("&Quit"), this);
     actionQuit->setShortcut(QKeySequence(tr("Ctrl+q")));
     m_actionUndo = new QAction(tr("&Undo"), this);
@@ -94,6 +97,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_tabmanager = new TabManager(this);
     m_antimony = new AntimonyTab;
     m_tabmanager->addTab(m_antimony, m_antimony->GetTabName());
+    connect(m_antimony, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
     if (filename != "") {
         QFile file(filename);
         QString filetext = "";
@@ -110,7 +114,7 @@ Translator::Translator(QTAntimony* app, QString filename)
             if (SBMLHandle == -1 && AntimonyHandle != -1) {
                 //Originally Antimony
                 m_antimony->setText(filetext);
-                m_antimony->SetFilename(filename);
+                m_antimony->SetSavedFilename(filename);
                 m_antimony->SetOriginal();
                 for (size_t mod=1; mod<getNumModules(); mod++) {
                     char* modname = getNthModuleName(mod);
@@ -125,7 +129,7 @@ Translator::Translator(QTAntimony* app, QString filename)
                 char* modname = getNthModuleName(getNumModules()-1);
                 AddSBMLTab(modname, filetext, false);
                 m_tabmanager->textbox(1)->SetOriginal();
-                m_tabmanager->textbox(1)->SetFilename(filename);
+                m_tabmanager->textbox(1)->SetSavedFilename(filename);
                 m_antimony->SetTranslatedText(getAntimonyString());
             }
             else {
@@ -136,12 +140,12 @@ Translator::Translator(QTAntimony* app, QString filename)
                     AddSBMLTab("", filetext, false);
                     m_tabmanager->textbox(1)->SetFailedTranslation();
                     m_antimony->SetFailedTranslation();
-                    m_tabmanager->textbox(1)->SetFilename(filename);
+                    m_tabmanager->textbox(1)->SetSavedFilename(filename);
                 }
                 else{
                     AddSBMLTab();
                     m_antimony->setText(filetext);
-                    m_antimony->SetFilename(filename);
+                    m_antimony->SetSavedFilename(filename);
                     m_tabmanager->textbox(1)->SetFailedTranslation();
                     m_antimony->SetFailedTranslation();
                 }
@@ -163,6 +167,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(actionSaveSBML, SIGNAL(triggered()), m_tabmanager, SLOT(SaveAllSBML()));
     connect(actionSaveAs, SIGNAL(triggered()), m_tabmanager, SLOT(SaveCurrentAs()));
     connect(actionQuit,SIGNAL(triggered()), QApplication::instance(), SLOT(closeAllWindows()));
+    connect(actionClose, SIGNAL(triggered()), this, SLOT(close()));
     connect(m_actionUndo, SIGNAL(triggered()), m_tabmanager, SLOT(undo()));
     connect(m_antimony, SIGNAL(ActiveUndoAvailable(bool)), m_actionUndo, SLOT(setEnabled(bool)));
     connect(m_actionRedo, SIGNAL(triggered()), m_tabmanager, SLOT(redo()));
@@ -186,7 +191,6 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(m_antimony, SIGNAL(StartWatching(QString)), m_filewatcher, SLOT(StartWatching(QString)));
     connect(m_antimony, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), m_antimony, SLOT(FileChanged(QString)));
-    connect(m_antimony, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
 
     //The File menu
     QMenu* filemenu = menuBar()->addMenu(tr("&File"));
@@ -196,6 +200,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     filemenu->addAction(actionSaveAs);
     filemenu->addAction(actionSaveAntimony);
     filemenu->addAction(actionSaveSBML);
+    filemenu->addAction(actionClose);
     filemenu->addAction(actionQuit);
 
     //The Edit Menu
@@ -224,10 +229,6 @@ Translator::Translator(QTAntimony* app, QString filename)
     //QKeySequence::
     //setMenuBar(menubar);
 
-    //General look
-    QRect rect = QApplication::desktop()->availableGeometry(this);
-    setGeometry(200, 200, 600, 600);
-
     setCentralWidget(m_tabmanager);
     m_tabmanager->textbox(0)->setFocus();
 
@@ -237,8 +238,6 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated)
 {
     SBMLTab* sbml = new SBMLTab();
     sbml->SetModelName(name);
-    m_tabmanager->addTab(sbml, sbml->GetTabName());
-    m_allSBML.push_back(sbml);
     sbml->setPlainText(text);
     if (translated) {
         sbml->SetTranslated();
@@ -246,6 +245,8 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated)
     else {
         sbml->SetOriginal();
     }
+    m_tabmanager->addTab(sbml, sbml->GetTabName());
+    m_allSBML.push_back(sbml);
     connect(sbml, SIGNAL(ActiveUndoAvailable(bool)), m_actionUndo, SLOT(setEnabled(bool)));
     connect(sbml, SIGNAL(ActiveRedoAvailable(bool)), m_actionRedo, SLOT(setEnabled(bool)));
     connect(sbml, SIGNAL(ActiveCopyAvailable(bool)), m_actionCut, SLOT(setEnabled(bool)));
@@ -257,6 +258,7 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated)
     connect(sbml, SIGNAL(StartWatching(QString)), m_filewatcher, SLOT(StartWatching(QString)));
     connect(sbml, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), sbml, SLOT(FileChanged(QString)));
+    connect(sbml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
 }
 
 bool Translator::IsBlank()

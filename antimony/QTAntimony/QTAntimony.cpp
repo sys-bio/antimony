@@ -3,6 +3,8 @@
 #include <QStringList>
 #include <QString>
 #include <QFileDialog>
+#include <QRect>
+#include <QDesktopWidget>
 
 QTAntimony::QTAntimony(int& argc, char**& argv)
         : QApplication(argc, argv),
@@ -23,7 +25,7 @@ void QTAntimony::OpenFile(QString filename)
     restoreOverrideCursor();
     QFileInfo qfi(filename);
     m_currentdir = qfi.absoluteDir().absolutePath();
-    t->show();
+    DisplayWindow(t);
 }
 
 void QTAntimony::OpenFiles(QStringList filenames)
@@ -35,13 +37,12 @@ void QTAntimony::OpenFiles(QStringList filenames)
 
 void QTAntimony::OpenNewFile()
 {
-    QWidget* temp = new QWidget();
+    QWidget* focus = focusWidget();
     QStringList files = QFileDialog::getOpenFileNames(
-                         temp,
+                         focus,
                          tr("Select one or more files to open"),
                          m_currentdir,
                          tr("Antimony and SBML files (*.txt *.xml *.sbml);;Antimony files (*.txt);;SBML files (*.xml *.sbml);;All files(*.*)"));
-    delete temp;
     OpenFiles(files);
 }
 
@@ -56,10 +57,45 @@ void QTAntimony::NewWindow()
     if (m_original==NULL) {
         m_original = newt;
     }
-    newt->show();
+    DisplayWindow(newt);
 }
 
 void QTAntimony::SetCurrentDirectory(QString dir)
 {
     m_currentdir = dir;
+}
+
+void QTAntimony::DisplayWindow(Translator* t) {
+    if (t==NULL) return;
+    QWidget* focus = focusWidget();
+    QRect desk = desktop()->availableGeometry(focus);
+    if (focus==NULL) {
+        desk = desktop()->availableGeometry(desktop()->primaryScreen());
+        QRect window;
+        window.setTop(desk.height()/8);
+        window.setBottom(desk.height()*7/8);
+        window.setLeft(desk.width()/6);
+        window.setRight(desk.width()*4/6);
+        //New geometry
+        //t->setGeometry(200, 200, 600, 600);
+        t->setGeometry(window);
+    }
+    else {
+        while (focus->parent() != NULL) {
+            focus = static_cast<QWidget*>(focus->parent());
+        }
+        QRect window = focus->geometry();
+        window.translate(10, 10);
+        if (window.bottomLeft().y() > desk.bottomLeft().y()) {
+            window.setBottom(desk.bottomLeft().y());
+        }
+        if (window.bottomRight().x() > desk.bottomRight().x()) {
+            window.setRight(desk.bottomRight().x());
+        }
+        if (window.bottomRight() == desk.bottomRight()) {
+            window.translate(desk.x()-window.x(), desk.y()-window.y());
+        }
+        t->setGeometry(window);
+    }
+    t->show();
 }

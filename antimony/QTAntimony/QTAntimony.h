@@ -17,6 +17,7 @@ public:
     void OpenFile(QString filename);
     void OpenFiles(QStringList filenames);
     QString GetCurrentDir();
+    void DisplayWindow(Translator* t);
 
 public slots:
     void OpenNewFile();

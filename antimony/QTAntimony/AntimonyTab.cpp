@@ -142,8 +142,7 @@ void AntimonyTab::SetTextChanged()
 
 void AntimonyTab::SetFilename(QString filename)
 {
-    ChangeableTextBox::SetFilename(filename);
     QFileInfo qfi(filename);
     m_filenodirectory = qfi.fileName();
-    emit FilenameIsNow(m_filenodirectory);
+    ChangeableTextBox::SetFilename(filename);
 }
