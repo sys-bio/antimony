@@ -1,7 +1,7 @@
 !contains(DEFINES,NSBML){
 
 isEmpty(LIBSBML_DIR) {
-win32:LIBSBML_DIR=c:\Program Files\SBML\libSBML-3.3.2-expat\
+win32:LIBSBML_DIR=..\libSBML-3.3.2\
 unix:LIBSBML_DIR=/usr/local/lib
 mac:LIBSBML_DIR=/usr/local/lib
 }
