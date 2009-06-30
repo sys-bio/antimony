@@ -10,8 +10,17 @@ To use these Windows executables:
 
      If you are a developer using a different version of Visual Studio, you 
      should probably just compile libAntimony yourself.  But if all you want 
-     is to run the two converters (antimony2sbml and sbml2antimony), run this 
-     to install the required libraries.
+     is to run the converters (antimony2sbml and sbml2antimony) and the GUI
+     (QTAntimony), run this to install the required libraries.
+
+   * QTAntimony is a simple editor that can convert Antimony models to SBML 
+     and visa versa.  It can read both Antimony and SBML files, and you can 
+     edit either and translate between them.  Do note that if you convert one 
+     format to the other, modify the latter, then translate it back, you will 
+     often lose information in the process--any annotation or unit definitions
+     in the SBML file will not survive the round-trip, for example.  However, 
+     it should be enough to get started with the language and start to 
+     experiment.
 
    * The easiest way to run the converters is from the command line (just 
      double-clicking on the .exe will pop up a window with an error). 
@@ -46,7 +55,8 @@ To use these Windows executables:
        multiple SBML files.
 
        For example, to convert the provided Antimony input file models (in
-       the doc/examples/ directory) to SBML, copy the file to this        directory and type:
+       the doc/examples/ directory) to SBML, copy the file to this
+       directory and type:
 
        antimony2sbml.exe ex_antimony_input.txt
 
@@ -66,6 +76,10 @@ To use these Windows executables:
        install the dll's somewhere or add the converter folder's name to
        your PATH, but if you know what I'm talking about, you know how to
        do it.)  
+
+Also available are the 216 current curated BioModels (from biomodels.net),
+translated to Antimony by the sbml2antimony.exe converter.  These can be
+found in the \biomodels subdirectory.
 
 If you have any questions or problems, please feel free to contact us at 
 
