@@ -14,7 +14,7 @@ CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
 #CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
 
 #version number
-version = 1.1
+version = 1.2
 
 #Library flags
 LIBRARYFLAGS = $(libsbml) -Llib -lantimony
@@ -24,6 +24,7 @@ lib_dir = lib/
 bin_dir = bin/
 doc_dir = doc/
 ex_dir  = doc/examples/
+qt_dir  = QTAntimony/
 
 YPPFILES = $(src_dir)antimony.ypp
 
@@ -92,12 +93,32 @@ QMAKEFILES = antimony.pro \
 	libantimony/libantimony.pro \
 	libantimony/antimony.vcproj \
 
+QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
+	$(qt_dir)AntimonyTab.h \
+	$(qt_dir)ChangeableTextBox.cpp \
+	$(qt_dir)ChangeableTextBox.h \
+	$(qt_dir)FileWatcher.cpp \
+	$(qt_dir)FileWatcher.h \
+	$(qt_dir)main.cpp \
+	$(qt_dir)QTAntimony.cpp \
+	$(qt_dir)QTAntimony.h \
+	$(qt_dir)QTAntimony.pro \
+	$(qt_dir)SBMLTab.cpp \
+	$(qt_dir)SBMLTab.h \
+	$(qt_dir)TabManager.cpp \
+	$(qt_dir)TabManager.h \
+	$(qt_dir)Translator.cpp \
+	$(qt_dir)Translator.h \
+	$(qt_dir)README.txt \
+
+
 DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)antimony__api_8h-source.html \
 	$(doc_dir)antimony-biomodels.html \
 	$(doc_dir)antimony-examples.html \
 	$(doc_dir)antimony-installation.html \
 	$(doc_dir)antimony-license.html \
+	$(doc_dir)antimony-qt.html \
 	$(doc_dir)antimony-technical-spec.html \
 	$(doc_dir)antimony-why.html \
 	$(doc_dir)doxygen.css \
@@ -128,6 +149,9 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)tabs.css \
 	$(doc_dir)tree.html \
 	$(doc_dir)Tutorial.pdf \
+	$(doc_dir)Screenshot-linux.png \
+	$(doc_dir)Screenshot-macosx.png \
+	$(doc_dir)Screenshot-windows.png \
 	$(ex_dir).htaccess \
 	$(ex_dir)ex_antimony_input.txt \
 	$(ex_dir)ex_antimony_output.txt \
@@ -146,10 +170,14 @@ DOCSRCFILES = \
 	$(doc_dir)antimony-installation.txt \
 	$(doc_dir)antimony-license.txt \
 	$(doc_dir)antimony-mainpage.txt \
+	$(doc_dir)antimony-qt.txt \
 	$(doc_dir)antimony-technical-spec.txt \
 	$(doc_dir)antimony-why.txt \
 	$(doc_dir)doxygen.antimony.cfg \
 	$(doc_dir)technical_spec.html \
+	$(doc_dir)Screenshot-linux.png \
+	$(doc_dir)Screenshot-macosx.png \
+	$(doc_dir)Screenshot-windows.png \
 	$(src_dir)antimony_api.h \
 	$(src_dir)enums.h \
 	LICENSE.txt \
@@ -184,8 +212,8 @@ $(bin_dir)sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
 	$(CXX) -o $(bin_dir)sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 #The distribution zip file.
-srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
-	tar --transform 's,^,antimony/,' -cvf antimony_src_v$(version).tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) Makefile
+srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile
+	tar --transform 's,^,antimony/,' -cvf antimony_src_v$(version).tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile
 	gzip antimony_src_v$(version).tar
 
 #The documentation.
