@@ -9,9 +9,9 @@ libsbml = -L$(sbml_location) -lsbml
 sbmlflag = 
 
 #For a debug version:
-CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
+#CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
 #For a non-debug version:
-#CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
+CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
 
 #version number
 version = 1.2
