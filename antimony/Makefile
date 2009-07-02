@@ -277,4 +277,4 @@ $(src_dir)antimony.tab.cpp : $(src_dir)antimony.ypp $(src_dir)registry.h $(src_d
 
 
 clean :
-	rm src/*.o $(lib_dir)libantimony.a $(bin_dir)testantimony $(bin_dir)sbml2antimony $(bin_dir)antimony2sbml antimony_src.tar.gz Antimony_documentation.zip
+	rm -f src/*.o $(lib_dir)libantimony.a $(bin_dir)testantimony $(bin_dir)sbml2antimony $(bin_dir)antimony2sbml antimony_src*.tar.gz Antimony_documentation*.zip
