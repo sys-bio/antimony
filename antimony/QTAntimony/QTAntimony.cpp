@@ -1,3 +1,4 @@
+
 #include "QTAntimony.h"
 #include "Translator.h"
 #include <QStringList>
@@ -65,6 +66,24 @@ void QTAntimony::SetCurrentDirectory(QString dir)
     m_currentdir = dir;
 }
 
+#ifdef SBW_INTEGRATION
+
+ bool QTAntimony::eventFilter(QObject * /*obj*/, QEvent *oEvent)
+ {
+	 QSBMLEvent *sbmlEvent = dynamic_cast<QSBMLEvent *>( oEvent );
+	 if (sbmlEvent != NULL)
+	 {
+		 // here we would open a new tab with the SBML string ... 
+
+		 NewWindow();
+
+		 return true;
+	 }
+	 return false;
+ }
+#endif
+
+
 void QTAntimony::DisplayWindow(Translator* t) {
     if (t==NULL) return;
     QWidget* focus = focusWidget();
@@ -99,3 +118,5 @@ void QTAntimony::DisplayWindow(Translator* t) {
     }
     t->show();
 }
+
+
