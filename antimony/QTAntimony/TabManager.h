@@ -24,6 +24,7 @@ public slots:
     void cut();
     void copy();
     void paste();
+    void print();
     void selectAll();
     void revertToTranslated();
     void revertToOriginal();

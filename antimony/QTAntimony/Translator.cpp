@@ -45,6 +45,9 @@ Translator::Translator(QTAntimony* app, QString filename)
     QAction* actionSaveSBML = new QAction(tr("Save All S&BML"), this);
     actionSaveSBML->setShortcut(QKeySequence(tr("Alt+s")));
     actionSaveSBML->setEnabled(true);
+    QAction* actionPrint = new QAction(tr("&Print current tab"), this);
+    actionPrint->setShortcut(QKeySequence::Print);
+    actionPrint->setEnabled(true);
     QAction* actionClose = new QAction(tr("&Close"), this);
     actionClose->setShortcut(QKeySequence::Close);
     actionClose->setEnabled(true);
@@ -167,6 +170,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(actionSaveSBML, SIGNAL(triggered()), m_tabmanager, SLOT(SaveAllSBML()));
     connect(actionSaveAs, SIGNAL(triggered()), m_tabmanager, SLOT(SaveCurrentAs()));
     connect(actionQuit,SIGNAL(triggered()), QApplication::instance(), SLOT(closeAllWindows()));
+    connect(actionPrint, SIGNAL(triggered()), m_tabmanager, SLOT(print()));
     connect(actionClose, SIGNAL(triggered()), this, SLOT(close()));
     connect(m_actionUndo, SIGNAL(triggered()), m_tabmanager, SLOT(undo()));
     connect(m_antimony, SIGNAL(ActiveUndoAvailable(bool)), m_actionUndo, SLOT(setEnabled(bool)));
@@ -200,6 +204,9 @@ Translator::Translator(QTAntimony* app, QString filename)
     filemenu->addAction(actionSaveAs);
     filemenu->addAction(actionSaveAntimony);
     filemenu->addAction(actionSaveSBML);
+    filemenu->addSeparator();
+    filemenu->addAction(actionPrint);
+    filemenu->addSeparator();
     filemenu->addAction(actionClose);
     filemenu->addAction(actionQuit);
 
