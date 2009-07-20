@@ -6,7 +6,20 @@
 #include "antimony_api.h"
 #include <QMessageBox>
 #include <QPrintDialog>
+#include <QAction>
 #include <vector>
+
+
+#ifdef SBW_INTEGRATION
+#include "SBW/SBWApplicationException.h"
+#include "SBW/DataBlockReader.h"
+#include "SBW/DataBlockWriter.h"
+#include "SBW/SBWLowLevel.h"
+#include "SBW/SBW.h"
+#include <vector>
+#include <string>
+using namespace SystemsBiologyWorkbench;
+#endif
 
 using namespace std;
 
@@ -366,3 +379,40 @@ bool TabManager::CanIClose()
     }
     return true;
 }
+
+#ifdef SBW_INTEGRATION
+void TabManager::startSBWAnalyzer()
+{
+    ChangeableTextBox* exporttab = GetActiveEditor();
+    if (currentIndex()==0) {
+        //We were on the Antimony tab--translate it if needed
+        if (!exporttab->IsOriginal() &&
+            !exporttab->IsTranslated() &&
+            !exporttab->IsMixed()) {
+            Translate(0);
+        }
+        //Assume the last SBML tab is the one to export
+        exporttab = textbox(count()-1);
+    }
+    string sbml = exporttab->toPlainText().toAscii().constData();
+
+        if (sbml.length() == 0) return;
+        QAction *action = qobject_cast<QAction *>(sender());
+        if (action)
+        {
+                try
+                {
+                        QStringList oModuleInfo = action->data().toStringList();
+                        int nModule =  SBWLowLevel::getModuleInstance(oModuleInfo[0].toAscii().constData());
+                        int nService =  SBWLowLevel::moduleFindServiceByName(nModule, oModuleInfo[1].toAscii().constData());
+                        int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
+                        DataBlockWriter args; args << sbml;
+                        SBWLowLevel::methodSend(nModule, nService, nMethod, args);
+                }
+                catch(...)
+                {
+                }
+        }
+
+}
+#endif

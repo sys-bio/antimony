@@ -8,11 +8,17 @@ unix:LIBSBML_DIR=/usr/local/lib
 mac:LIBSBML_DIR=/usr/local/lib
 }
 
-!isEmpty(SBW_DIR) {
-DEFINES += SBW_INTEGRATION DARWIN LINUX
+isEmpty(SBW_DIR) {
+win32:SBW_DIR=..\..\sbw
+unix:SBW_DIR=../../SBW-2.7.6/
+mac:SBW_DIR=../../buildall/build/cvs-dl/core/
+}
+
+mac:DEFINES += DARWIN LINUX
+unix:DEFINES += LINUX
+DEFINES += SBW_INTEGRATION
 LIBS += -L$${SBW_DIR}/lib -lSBW-static
 INCLUDEPATH += $${SBW_DIR}/include
-}
 
 message("using libsbml from: $${LIBSBML_DIR}")
 CONFIG -= debug
@@ -25,7 +31,7 @@ INCLUDEPATH += "$${LIBSBML_DIR}/include" \
 LIBS += -L../lib/ \
     -lantimony \
     -L$${LIBSBML_DIR} \
-    -lsbml -lxml2 -lbz2 -lz 
+    -lsbml -lxml2 -lz
 	
 
 
