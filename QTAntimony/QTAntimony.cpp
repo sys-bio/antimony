@@ -52,36 +52,35 @@ QString QTAntimony::GetCurrentDir()
     return m_currentdir;
 }
 
-void QTAntimony::NewWindow()
+Translator* QTAntimony::NewWindow()
 {
     Translator* newt = new Translator(this);
     if (m_original==NULL) {
         m_original = newt;
     }
     DisplayWindow(newt);
+    return newt;
 }
 
-void QTAntimony::SetCurrentDirectory(QString dir)
+void QTAntimony::SaveCurrentDirectory(QString dir)
 {
     m_currentdir = dir;
 }
 
-#ifdef SBW_INTEGRATION
+//#ifdef SBW_INTEGRATION
 
  bool QTAntimony::eventFilter(QObject * /*obj*/, QEvent *oEvent)
  {
-	 QSBMLEvent *sbmlEvent = dynamic_cast<QSBMLEvent *>( oEvent );
-	 if (sbmlEvent != NULL)
-	 {
-		 // here we would open a new tab with the SBML string ... 
-
-		 NewWindow();
-
-		 return true;
-	 }
-	 return false;
+    QSBMLEvent *sbmlEvent = dynamic_cast<QSBMLEvent *>( oEvent );
+    if (sbmlEvent != NULL)
+    {
+        // here we open a new window with the SBML string
+        NewWindow()->SetSBMLTab(QString(sbmlEvent->getSBML().c_str()));
+        return true;
+    }
+    return false;
  }
-#endif
+//#endif
 
 
 void QTAntimony::DisplayWindow(Translator* t) {
