@@ -5,6 +5,7 @@
 #include "AntimonyTab.h"
 #include "antimony_api.h"
 #include <QMessageBox>
+#include <QPrintDialog>
 #include <vector>
 
 using namespace std;
@@ -51,6 +52,13 @@ void TabManager::copy()
 void TabManager::paste()
 {
     GetActiveEditor()->paste();
+}
+void TabManager::print()
+{
+    QPrintDialog qpd(GetActiveEditor());
+    if (qpd.exec() == QDialog::Accepted) {
+        GetActiveEditor()->print(qpd.printer());
+    }
 }
 void TabManager::selectAll()
 {

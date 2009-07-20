@@ -16,7 +16,7 @@ CONFIG += console
 DEPENDPATH += . src
 INCLUDEPATH += . src
 
-LIBS += -lantimony -Lbin -L../bin
+LIBS += -L../lib -lantimony
 
 # Input
 HEADERS += ../src/antimony_api.h \
