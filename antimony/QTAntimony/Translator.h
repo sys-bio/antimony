@@ -42,6 +42,9 @@ private:
 	
 	static std::vector< DataBlockReader > findServices(std::string  var0,bool  var1);
 	QMenu *getSBWMenu();
+private slots:
+	void startSBWAnalyzer();
+
 
 #endif
 	
@@ -52,10 +55,6 @@ public:
     void AddSBMLTab(QString name = "", QString text = "", bool translated=true);
     bool IsBlank();
     virtual void closeEvent(QCloseEvent* event);
-
-private slots:
-	void startSBWAnalyzer();
-
 	
 public slots:
     void SetPasteAvailability();
