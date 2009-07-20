@@ -1,3 +1,17 @@
+#ifdef SBW_INTEGRATION
+#include "SBW/SBW.h"
+#include "SBW/SBWApplicationException.h"
+#include "SBW/DataBlockReader.h"
+#include "SBW/DataBlockWriter.h"
+#include "SBW/SBWLowLevel.h"
+#include <vector>
+#include <string>
+using namespace SystemsBiologyWorkbench;
+#undef SetCurrentDirectory
+
+#endif
+
+
 #include "Translator.h"
 #include "TabManager.h"
 #include "AntimonyTab.h"
@@ -19,16 +33,6 @@
 #include <QTextStream>
 #include <QCloseEvent>
 
-#ifdef SBW_INTEGRATION
-#include "SBW/SBWApplicationException.h"
-#include "SBW/DataBlockReader.h"
-#include "SBW/DataBlockWriter.h"
-#include "SBW/SBWLowLevel.h"
-#include "SBW/SBW.h"
-#include <vector>
-#include <string>
-using namespace SystemsBiologyWorkbench;
-#endif
 
 using namespace std;
 Translator::Translator(QTAntimony* app, QString filename)
@@ -277,7 +281,6 @@ vector< DataBlockReader > Translator::findServices(string  var0,bool  var1)
 	{
 		throw e;
 	}
-	catch(...) { /// nothing happened ... }
 }
 
 

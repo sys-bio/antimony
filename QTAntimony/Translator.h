@@ -38,13 +38,13 @@ private:
     QAction* m_actionRevertToTranslated;
     QAction* m_actionRevertToOriginal;
 
-#ifdef SBW_INTEGRATION
 	
 	static std::vector< DataBlockReader > findServices(std::string  var0,bool  var1);
 	QMenu *getSBWMenu();
 private slots:
 	void startSBWAnalyzer();
 
+#ifdef SBW_INTEGRATION
 
 #endif
 	
