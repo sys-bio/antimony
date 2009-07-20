@@ -35,9 +35,9 @@ private:
     bool m_opened;
     QString m_currentdir;
 
-#ifdef SBW_INTEGRATION
 protected:
-	bool QTAntimony::eventFilter(QObject *obj, QEvent *oEvent);
+#ifdef SBW_INTEGRATION
+        bool eventFilter(QObject *obj, QEvent *oEvent);
 #endif
 
 public:
@@ -49,8 +49,8 @@ public:
 
 public slots:
     void OpenNewFile();
-    void SetCurrentDirectory(QString dir);
-    void NewWindow();
+    void SaveCurrentDirectory(QString dir);
+    Translator* NewWindow();
 
 };
 

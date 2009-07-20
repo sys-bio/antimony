@@ -333,6 +333,16 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated)
     connect(sbml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
 }
 
+void Translator::SetSBMLTab(QString model)
+{
+    assert(m_tabmanager->count()==2);
+    assert(m_tabmanager->textbox(0)->toPlainText() == "");
+    assert(m_tabmanager->textbox(1)->toPlainText() == "");
+    m_tabmanager->textbox(1)->setPlainText(model);
+    m_tabmanager->Translate(1);
+    m_tabmanager->setCurrentIndex(1);
+}
+
 bool Translator::IsBlank()
 {
     if (m_tabmanager->count() != 2) return false;

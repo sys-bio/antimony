@@ -191,7 +191,7 @@ void ChangeableTextBox::SaveTab()
                 m_filetypes));
         if (m_filename=="") return; //User probably chose 'cancel'
         QFileInfo qfi(m_filename);
-        app->SetCurrentDirectory(qfi.absoluteDir().absolutePath());
+        app->SaveCurrentDirectory(qfi.absoluteDir().absolutePath());
     }
     QFile file(m_filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
