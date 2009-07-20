@@ -19,6 +19,17 @@
 #include <QTextStream>
 #include <QCloseEvent>
 
+#ifdef SBW_INTEGRATION
+#include "SBW/SBWApplicationException.h"
+#include "SBW/DataBlockReader.h"
+#include "SBW/DataBlockWriter.h"
+#include "SBW/SBWLowLevel.h"
+#include "SBW/SBW.h"
+#include <vector>
+#include <string>
+using namespace SystemsBiologyWorkbench;
+#endif
+
 using namespace std;
 Translator::Translator(QTAntimony* app, QString filename)
         : QMainWindow(NULL),
@@ -229,6 +240,10 @@ Translator::Translator(QTAntimony* app, QString filename)
     editmenu->addAction(actionFind);
     menuBar()->addMenu(editmenu);
 
+#ifdef 	SBW_INTEGRATION
+	getSBWMenu();
+#endif
+	
     //The Help Menu
     QMenu* helpmenu = menuBar()->addMenu(tr("&Help"));
     helpmenu->addAction(actionShowTutorial);
@@ -240,6 +255,80 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_tabmanager->textbox(0)->setFocus();
 
 }
+
+#ifdef 	SBW_INTEGRATION
+
+vector< DataBlockReader > Translator::findServices(string  var0,bool  var1)
+{
+	try
+	{
+		DataBlockWriter oArguments;
+		oArguments.add(var0);
+		oArguments.add(var1);
+		
+		SBW::connect();
+		Module oModule = SBW::getModuleInstance("BROKER");
+		Service oService = oModule.findServiceByName("BROKER");
+		vector< DataBlockReader > result;
+		oService.getMethod("{}[] findServices(string, boolean)").call(oArguments) >> result;
+		return result;
+	}
+	catch(SBWException *e)
+	{
+		throw e;
+	}
+	catch(...) { /// nothing happened ... }
+}
+
+
+QMenu *Translator::getSBWMenu()
+{
+	QMenu *oMenu = menuBar()->addMenu(tr("S&BW"));
+	vector<DataBlockReader> oModules = findServices("Analysis",true);
+	
+	// as exercise to the reader, this list should now be sorted :) based on DisplayName
+	
+	for (unsigned int i = 0; i < oModules.size(); i++)
+	{
+		string sModuleName; string sServiceName; string sMenuName; 
+		DataBlockReader oTemp = oModules[i];
+		oTemp >> sModuleName >> sServiceName >> sMenuName;
+		QAction *oAction = new QAction(QString(sMenuName.c_str()), this);
+		QStringList oList; oList.push_back(sModuleName.c_str()); oList.push_back(sServiceName.c_str());		
+		oAction->setData( QVariant( oList) );		
+		connect(oAction, SIGNAL(triggered()), this, SLOT(startSBWAnalyzer()));
+		oMenu->addAction(oAction);
+		
+	}
+	return oMenu;
+}
+
+void Translator::startSBWAnalyzer()
+{
+	// is this how to get the complete sbml model? how can i update it?
+	string sbml = m_allSBML[m_allSBML.size()-1]->toPlainText().toAscii().constData();
+	
+	if (sbml.length() == 0) return;
+	QAction *action = qobject_cast<QAction *>(sender());
+	if (action)
+	{
+		try
+		{
+			QStringList oModuleInfo = action->data().toStringList();
+			int nModule =  SBWLowLevel::getModuleInstance(oModuleInfo[0].toAscii().constData());
+			int nService =  SBWLowLevel::moduleFindServiceByName(nModule, oModuleInfo[1].toAscii().constData());
+			int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");							
+			DataBlockWriter args; args << sbml;
+			SBWLowLevel::methodSend(nModule, nService, nMethod, args);
+		}
+		catch(...)
+		{
+		}
+	}
+	
+}
+#endif
+
 
 void Translator::AddSBMLTab(QString name, QString text, bool translated)
 {

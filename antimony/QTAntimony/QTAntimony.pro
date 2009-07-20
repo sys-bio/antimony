@@ -8,6 +8,12 @@ unix:LIBSBML_DIR=/usr/local/lib
 mac:LIBSBML_DIR=/usr/local/lib
 }
 
+!isEmpty(SBW_DIR) {
+DEFINES += SBW_INTEGRATION DARWIN LINUX
+LIBS += -L$${SBW_DIR}/lib -lSBW-static
+INCLUDEPATH += $${SBW_DIR}/include
+}
+
 message("using libsbml from: $${LIBSBML_DIR}")
 CONFIG -= debug
 CONFIG += release
@@ -19,7 +25,9 @@ INCLUDEPATH += "$${LIBSBML_DIR}/include" \
 LIBS += -L../lib/ \
     -lantimony \
     -L$${LIBSBML_DIR} \
-    -lsbml
+    -lsbml -lxml2 -lbz2 -lz 
+	
+
 
 win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\lib"
 win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\bin"

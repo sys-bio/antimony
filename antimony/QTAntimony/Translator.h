@@ -4,6 +4,13 @@
 #include <QtGui/QMainWindow>
 #include <QTextEdit>
 
+#ifdef SBW_INTEGRATION
+#include <vector>
+#include <string>
+#include <SBW/DataBlockReader.h>
+#endif
+
+
 class AntimonyTab;
 class SBMLTab;
 class QApplication;
@@ -31,7 +38,13 @@ private:
     QAction* m_actionRevertToTranslated;
     QAction* m_actionRevertToOriginal;
 
+#ifdef SBW_INTEGRATION
+	
+	static std::vector< DataBlockReader > findServices(std::string  var0,bool  var1);
+	QMenu *getSBWMenu();
 
+#endif
+	
 public:
     Translator(); // Unimplemented--no default constructor.
     Translator(QTAntimony* app, QString filename="");
@@ -40,6 +53,10 @@ public:
     bool IsBlank();
     virtual void closeEvent(QCloseEvent* event);
 
+private slots:
+	void startSBWAnalyzer();
+
+	
 public slots:
     void SetPasteAvailability();
     void ResetWindowNameWith(const QString& filename);
