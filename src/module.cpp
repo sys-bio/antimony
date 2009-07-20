@@ -1366,6 +1366,7 @@ void Module::CreateSBMLModel()
 {
   Model* sbmlmod = m_sbml.createModel();
   sbmlmod->setId(m_modulename);
+  sbmlmod->setName(m_modulename);
   char cc = g_registry.GetCC();
   //User-defined functions
   for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
