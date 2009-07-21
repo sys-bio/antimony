@@ -31,7 +31,7 @@ INCLUDEPATH += "$${LIBSBML_DIR}/include" \
 LIBS += -L../lib/ \
     -lantimony \
     -L$${LIBSBML_DIR} \
-    -lsbml -lxml2 -lz
+    -lsbml -lxml2 -lz -lbz2
 	
 
 

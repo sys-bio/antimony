@@ -2,6 +2,7 @@
 #include "SBW/DataBlockReader.h"
 #include "SBW/DataBlockWriter.h"
 #include "SBW/SBW.h"
+#include "SBW/SBWC.h"
 #include "SBW/SBWApplicationException.h"
 #include "SBW/SBWLowLevel.h"
 #include <string>
@@ -269,6 +270,7 @@ vector< DataBlockReader > Translator::findServices(string  var0,bool  var1)
 		oArguments.add(var0);
 		oArguments.add(var1);
 		
+		if (!SBWGetConnectionStatus())
 		SBW::connect();
 		Module oModule = SBW::getModuleInstance("BROKER");
 		Service oService = oModule.findServiceByName("BROKER");

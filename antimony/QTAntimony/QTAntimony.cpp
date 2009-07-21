@@ -67,7 +67,7 @@ void QTAntimony::SaveCurrentDirectory(QString dir)
     m_currentdir = dir;
 }
 
-//#ifdef SBW_INTEGRATION
+#ifdef SBW_INTEGRATION
 
  bool QTAntimony::eventFilter(QObject * /*obj*/, QEvent *oEvent)
  {
@@ -80,7 +80,7 @@ void QTAntimony::SaveCurrentDirectory(QString dir)
     }
     return false;
  }
-//#endif
+#endif
 
 
 void QTAntimony::DisplayWindow(Translator* t) {
