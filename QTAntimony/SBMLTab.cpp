@@ -30,11 +30,11 @@ QString SBMLTab::GetTabName()
     return tabname;
 }
 
-void SBMLTab::addSpecialCopyToMenu(QMenu* menu, QAction* defaultcut)
+void SBMLTab::addSpecialCopyToMenu(QMenu*, QAction*)
 {
 }
 
-void SBMLTab::ReplaceModelWithString(QString modelname, QString text)
+void SBMLTab::ReplaceModelWithString(QString, QString)
 {
     //throw an error?  LS DEBUG
 }

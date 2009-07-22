@@ -1,6 +1,7 @@
 #include <QtGui/QApplication>
 #include "Translator.h"
 #include "QTAntimony.h"
+#include "SBWIntegration.h"
 
 #ifdef SBW_INTEGRATION
 #include "SBW/ModuleImpl.h"
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
 
 	// register if neccessary
     for (int arg=1; arg<argc; arg++) {
-        string sArg(argv[arg]);
+        std::string sArg(argv[arg]);
 		if (sArg == "-sbwregister" || sArg == "--sbwregister")
 		{
 			oModule.run(argc, argv);

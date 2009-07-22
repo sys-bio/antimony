@@ -395,24 +395,22 @@ void TabManager::startSBWAnalyzer()
         exporttab = textbox(count()-1);
     }
     string sbml = exporttab->toPlainText().toAscii().constData();
-
-        if (sbml.length() == 0) return;
-        QAction *action = qobject_cast<QAction *>(sender());
-        if (action)
+    if (sbml.length() == 0) return;
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+    {
+        try
         {
-                try
-                {
-                        QStringList oModuleInfo = action->data().toStringList();
-                        int nModule =  SBWLowLevel::getModuleInstance(oModuleInfo[0].toAscii().constData());
-                        int nService =  SBWLowLevel::moduleFindServiceByName(nModule, oModuleInfo[1].toAscii().constData());
-                        int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
-                        DataBlockWriter args; args << sbml;
-                        SBWLowLevel::methodSend(nModule, nService, nMethod, args);
-                }
-                catch(...)
-                {
-                }
+            QStringList oModuleInfo = action->data().toStringList();
+            int nModule =  SBWLowLevel::getModuleInstance(oModuleInfo[0].toAscii().constData());
+            int nService =  SBWLowLevel::moduleFindServiceByName(nModule, oModuleInfo[1].toAscii().constData());
+            int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
+            DataBlockWriter args; args << sbml;
+            SBWLowLevel::methodSend(nModule, nService, nMethod, args);
         }
-
+        catch(...)
+        {
+        }
+    }
 }
 #endif

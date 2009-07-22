@@ -35,7 +35,7 @@ using namespace SystemsBiologyWorkbench;
 #include <QCloseEvent>
 
 using namespace std;
-Translator::Translator(QTAntimony* app, QString filename)
+Translator::Translator(QTAntimony*, QString filename)
         : QMainWindow(NULL),
         m_antimony(),
         m_filewatcher(new FileWatcher),
@@ -260,7 +260,7 @@ Translator::Translator(QTAntimony* app, QString filename)
 
 }
 
-#ifdef 	SBW_INTEGRATION
+#ifdef SBW_INTEGRATION
 
 vector< DataBlockReader > Translator::findServices(string  var0,bool  var1)
 {
@@ -371,9 +371,4 @@ void Translator::closeEvent(QCloseEvent* event)
     else {
         event->ignore();
     }
-}
-
-void Translator::ResetWindowNameWith(const QString& filename)
-{
-
 }
