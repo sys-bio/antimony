@@ -54,7 +54,6 @@ public:
 	
 public slots:
     void SetPasteAvailability();
-    void ResetWindowNameWith(const QString& filename);
 };
 
 #endif // TRANSLATOR_H

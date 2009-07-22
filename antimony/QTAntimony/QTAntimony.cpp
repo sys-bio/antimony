@@ -1,6 +1,7 @@
 
 #include "QTAntimony.h"
 #include "Translator.h"
+#include "SBWIntegration.h"
 #include <QStringList>
 #include <QString>
 #include <QFileDialog>

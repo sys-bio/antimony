@@ -25,7 +25,7 @@ AntimonyTab::AntimonyTab(QWidget* parent)
     connect(m_actionCopySBML, SIGNAL(triggered()), this, SLOT(CopySBML()));
 }
 
-void AntimonyTab::SetModelName(QString name)
+void AntimonyTab::SetModelName(QString)
 {
 }
 
