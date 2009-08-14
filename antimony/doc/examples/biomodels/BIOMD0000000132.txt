@@ -8,10 +8,10 @@ model model_0000001()
   u' = a * (b * v - u)
 
   // Events:
-  event_0000001: @gt(v, Vthresh): u = u + d: v = c;
-  event_0000002: @and(and(gt(time, 40), lt(time, 44)), and(gt(time, 60), lt(time, 64))): i = 0.65;
-  event_0000003: @and(gt(time, 20), lt(time, 25)): i = -15;
-  event_0000004: @geq(time, 25): i = 0;
+  event_0000001: at(gt(v, Vthresh)): u = u + d: v = c;
+  event_0000002: at(and(and(gt(time, 40), lt(time, 44)), and(gt(time, 60), lt(time, 64)))): i = 0.65;
+  event_0000003: at(and(gt(time, 20), lt(time, 25))): i = -15;
+  event_0000004: at(geq(time, 25)): i = 0;
 
   // Compartment initializations:
   cell = 1;

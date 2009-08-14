@@ -29,8 +29,8 @@ model p53_Mdm2_System()
   ARFDegradation: ARF -> Sink; kdegARF * ARF * kproteff;
 
   // Events:
-  stressCell: @geq(time, 3600): IR = 25;
-  stopStress: @geq(time, 3660): IR = 0;
+  stressCell: at(geq(time, 3600)): IR = 25;
+  stopStress: at(geq(time, 3660)): IR = 0;
 
   // Species initializations:
   Mdm2 = 5;

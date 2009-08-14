@@ -168,10 +168,10 @@ model Chen2004_CellCycle()
   Spindle_disassembly: SPN -> ; Mass_Action_1_222(kdspn, SPN);
 
   // Events:
-  reset_ORI: @lt(CLB2 + CLB5 - KEZ2, 0): ORI = 0;
-  start_S: @gt(ORI - 1, 0): BUB2 = bub2h: MAD2 = mad2h;
-  spindle_checkpoint: @gt(SPN - 1, 0): BUB2 = bub2l: LTE1 = lte1h: MAD2 = mad2l;
-  cell_division: @lt(CLB2 - KEZ, 0): SPN = 0: BUD = 0: LTE1 = lte1l: MASS = F * MASS;
+  reset_ORI: at(lt(CLB2 + CLB5 - KEZ2, 0)): ORI = 0;
+  start_S: at(gt(ORI - 1, 0)): BUB2 = bub2h: MAD2 = mad2h;
+  spindle_checkpoint: at(gt(SPN - 1, 0)): BUB2 = bub2l: LTE1 = lte1h: MAD2 = mad2l;
+  cell_division: at(lt(CLB2 - KEZ, 0)): SPN = 0: BUD = 0: LTE1 = lte1l: MASS = F * MASS;
 
   // Species initializations:
   BUB2 = 0.2;

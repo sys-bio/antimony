@@ -35,8 +35,8 @@ model Novak2001_FissionYeast_CellCycle()
   R19:  -> M; mu * M;
 
   // Events:
-  event_0000001: @and(leq(MPF, 0.1), eq(flag_MPF, 1)): flag_MPF = 0: M = M / 2;
-  event_0000002: @gt(MPF, 0.1): flag_MPF = 1;
+  event_0000001: at(and(leq(MPF, 0.1), eq(flag_MPF, 1))): flag_MPF = 0: M = M / 2;
+  event_0000002: at(gt(MPF, 0.1)): flag_MPF = 1;
 
   // Species initializations:
   cdc13T = 0.2;

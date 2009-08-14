@@ -63,15 +63,15 @@ model YeastWTmodel2()
   MtoG1Progession: M + MCdkA + MG1on -> budscar + G1 + MCdkI + MG1off; MtoG1Progession_kc4 * M * MCdkA * MG1on * kalive;
 
   // Events:
-  Rad9KinaseActivation: @geq(Mec1RPAssDNA, 800): Rad9Kin = 1;
-  ssDNAremoval: @leq(Mec1RPAssDNA + RPAssDNA + ssDNA, 1): ssDNA = 0: RPAssDNA = 0: Mec1RPAssDNA = 0: recovery = 1;
-  G2MRecoveryCompleted: @and(eq(G2, 1), eq(Rad17Utelo, 0)): Rad53A = 0: Rad53I = 6900: ExoXI = 70: ExoXA = 0: Exo1I = 670: Exo1A = 0: Dun1I = 3000: Dun1A = 0: Chk1I = 60: Chk1A = 0: Rad9I = 20: Rad9A = 0: recovery = 0: G2Moff = 0: G2Mon = 1;
-  SphaseRecoveryCompleted: @eq(Rad17Utelo, 0): recovery = 0;
-  G1CdkActivation: @gt(G1cyclin, 100): G1CdkI = 0: G1CdkA = 1;
-  SCdkActivation: @gt(Scyclin, 100): SCdkI = 0: SCdkA = 1;
-  G2CdkActivation: @gt(G2cyclin, 100): G2CdkI = 0: G2CdkA = 1;
-  MCdkActivation: @gt(Mcyclin, 100): MCdkI = 0: MCdkA = 1;
-  CellDeath: @geq(Mec1RPAssDNA + RPAssDNA + ssDNA, 2000): kalive = 0;
+  Rad9KinaseActivation: at(geq(Mec1RPAssDNA, 800)): Rad9Kin = 1;
+  ssDNAremoval: at(leq(Mec1RPAssDNA + RPAssDNA + ssDNA, 1)): ssDNA = 0: RPAssDNA = 0: Mec1RPAssDNA = 0: recovery = 1;
+  G2MRecoveryCompleted: at(and(eq(G2, 1), eq(Rad17Utelo, 0))): Rad53A = 0: Rad53I = 6900: ExoXI = 70: ExoXA = 0: Exo1I = 670: Exo1A = 0: Dun1I = 3000: Dun1A = 0: Chk1I = 60: Chk1A = 0: Rad9I = 20: Rad9A = 0: recovery = 0: G2Moff = 0: G2Mon = 1;
+  SphaseRecoveryCompleted: at(eq(Rad17Utelo, 0)): recovery = 0;
+  G1CdkActivation: at(gt(G1cyclin, 100)): G1CdkI = 0: G1CdkA = 1;
+  SCdkActivation: at(gt(Scyclin, 100)): SCdkI = 0: SCdkA = 1;
+  G2CdkActivation: at(gt(G2cyclin, 100)): G2CdkI = 0: G2CdkA = 1;
+  MCdkActivation: at(gt(Mcyclin, 100)): MCdkI = 0: MCdkA = 1;
+  CellDeath: at(geq(Mec1RPAssDNA + RPAssDNA + ssDNA, 2000)): kalive = 0;
 
   // Species initializations:
   Ctelo = 64;

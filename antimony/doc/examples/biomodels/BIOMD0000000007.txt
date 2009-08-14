@@ -55,8 +55,8 @@ model NovakTyson1997CellModel()
   Cdc25_Reaction: Cdc25B -> Cdc25; Cdc25B * kc * MPF * pow(Cdc25B + Kmc, -1) + -1 * Cdc25 * kcr * pow(Cdc25 + Kmcr, -1);
 
   // Events:
-  Start: @geq(SPF, 0.1): kp = kp * pow(2, -1);
-  Division: @leq(UbE, 0.1): Mass = Mass * pow(2, -1): kp = 2 * kp;
+  Start: at(geq(SPF, 0.1)): kp = kp * pow(2, -1);
+  Division: at(leq(UbE, 0.1)): Mass = Mass * pow(2, -1): kp = 2 * kp;
 
   // Species initializations:
   UbE = 1;

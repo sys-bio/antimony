@@ -57,8 +57,8 @@ model Zeilinger2006_PRR7_PRR9light_Y()
   R45: cP9n -> ; nucleus * m21 * cP9n / (k19 + cP9n);
 
   // Events:
-  event_0000001: @leq(Day_in_hours - time, 0): ld = 1: Day_in_hours = Day_in_hours + 24;
-  event_0000002: @and(leq(Day_in_hours - time, 12), gt(Day_in_hours - time, 0)): ld = 0;
+  event_0000001: at(leq(Day_in_hours - time, 0)): ld = 1: Day_in_hours = Day_in_hours + 24;
+  event_0000002: at(and(leq(Day_in_hours - time, 12), gt(Day_in_hours - time, 0))): ld = 0;
 
   // Species initializations:
   cLc = 0.0731;

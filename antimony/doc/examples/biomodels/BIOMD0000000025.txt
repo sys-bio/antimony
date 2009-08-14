@@ -11,8 +11,8 @@ model Smolen2002()
   rdClkD: dClk -> EmptySet; rdClkD_D * dClk * CELL;
 
   // Events:
-  _E0: @lt(dClk - Per, 0): dClkF = 0;
-  _E1: @geq(dClk - Per, 0): dClkF = dClk - Per;
+  _E0: at(lt(dClk - Per, 0)): dClkF = 0;
+  _E1: at(geq(dClk - Per, 0)): dClkF = dClk - Per;
 
   // Species initializations:
   EmptySet = 0;
