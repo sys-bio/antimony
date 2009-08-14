@@ -8,11 +8,11 @@ model model_0000001()
   u' = a * (b * v - u)
 
   // Events:
-  event_0000001: @gt(v, Vthresh): u = u + d: v = c;
-  event_0000002: @or(and(gt(time, 9), lt(time, 11)), and(gt(time, 14), lt(time, 16))): i = 9;
-  event_0000003: @or(and(gt(time, 70), lt(time, 72)), and(gt(time, 80), lt(time, 82))): i = 9;
-  event_0000004: @or(and(geq(time, 11), leq(time, 14)), and(geq(time, 14), lt(time, 16))): i = 0;
-  event_0000005: @or(and(geq(time, 16), leq(time, 70)), and(geq(time, 72), leq(time, 80)), geq(time, 82)): i = 0;
+  event_0000001: at(gt(v, Vthresh)): u = u + d: v = c;
+  event_0000002: at(or(and(gt(time, 9), lt(time, 11)), and(gt(time, 14), lt(time, 16)))): i = 9;
+  event_0000003: at(or(and(gt(time, 70), lt(time, 72)), and(gt(time, 80), lt(time, 82)))): i = 9;
+  event_0000004: at(or(and(geq(time, 11), leq(time, 14)), and(geq(time, 14), lt(time, 16)))): i = 0;
+  event_0000005: at(or(and(geq(time, 16), leq(time, 70)), and(geq(time, 72), leq(time, 80)), geq(time, 82))): i = 0;
 
   // Compartment initializations:
   cell = 1;
