@@ -1,3 +1,4 @@
+DEFINES += "NCELLML"
 !contains(DEFINES,NSBML){
 
 isEmpty(LIBSBML_DIR) {
