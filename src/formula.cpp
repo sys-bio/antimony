@@ -283,6 +283,7 @@ string Formula::ToSBMLString(vector<pair<Variable*, size_t> > strands) const
   string formula = ToDelimitedStringWithStrands('_', strands);
   string revform = ConvertOneSymbolToFunction(formula);
   while (formula != revform) {
+    //cout << "Changing '" << formula << "' to '" << revform << endl;
     formula = revform;
     revform = ConvertOneSymbolToFunction(formula);
   }

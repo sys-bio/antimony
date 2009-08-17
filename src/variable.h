@@ -72,8 +72,8 @@ public:
   Formula* GetRateRule();
   const AntimonyReaction* GetReaction() const;
   Module* GetModule();
-  const AntimonyEvent* GetEvent() const;
   AntimonyEvent* GetEvent();
+  const AntimonyEvent* GetEvent() const;
   Variable* GetSubVariable(const std::string* name);
   Variable* GetSameVariable() const;
   const DNAStrand* GetDNAStrand() const;

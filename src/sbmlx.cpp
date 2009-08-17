@@ -156,7 +156,7 @@ ASTNode* parseStringToASTNode(const string& formula) {
 
 #endif
 
-extern bool CaselessStrCmp(const string& lhs, const string& rhs);
+extern bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
 
 //SBML models might have variable names in them that are reserved keywords in Antimony (like 'compartment', to take a huge example).  FixName fixes this so that you can output readable Antimony again.
 void FixName(std::string& name)

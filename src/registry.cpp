@@ -14,6 +14,11 @@
 #include "stringx.h"
 #include "variable.h"
 
+#ifndef NCELLML
+#include <IfaceCeVAS.hxx>
+#include <CeVASBootstrap.hpp>
+#endif
+
 extern int yylloc_first_line;
 extern int yylloc_last_line;
 extern std::vector<int> yylloc_last_lines;
@@ -181,6 +186,49 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
 }
 #endif  
 
+#ifndef NCELLML
+bool Registry::LoadCellML(cellml_api::Model* model)
+{
+  if (model == NULL) return true;
+  cellml_services::CeVASBootstrap* cevasboot = CreateCeVASBootstrap();
+  cellml_services::CeVAS* cevas = cevasboot->createCeVASForModel(model);
+  wstring error = cevas->modelError();
+  if (error != L"") {
+    SetError("Error reading CellML model:  " + ToThinString(error));
+    return true;
+  }
+  cevasboot->release_ref();
+  cellml_api::CellMLComponentIterator* cmpi = cevas->iterateRelevantComponents();
+  cellml_api::CellMLComponent* component;
+  int numcomps=0;
+  while ((component = cmpi->nextComponent()) != NULL) {
+    numcomps++;
+    //Each CellML 'component' becomes its own Antimony 'module'
+    wchar_t* cellmltext = component->name();
+    string cellmlname = "cellmlmod_" + ToThinString(cellmltext);
+    free(cellmltext);
+    NewCurrentModule(&cellmlname);
+    CurrentModule()->LoadCellMLComponent(component);
+    RevertToPreviousModule();
+    component->release_ref();
+  }
+  cmpi->release_ref();
+  assert(numcomps > 0);
+  if (numcomps > 1) {
+    //Create a master Module that contains each of the components.
+    wchar_t* cellmltext = model->name();
+    string cellmlname = ToThinString(cellmltext);
+    free(cellmltext);
+    if (cellmlname != MAINMODULE) {
+      NewCurrentModule(&cellmlname);
+    }
+    CurrentModule()->LoadCellMLModel(model);
+  }
+}
+
+
+#endif
+
 bool Registry::SwitchToPreviousFile()
 {
   if (!input) return true;
@@ -295,7 +343,7 @@ void Registry::NewCurrentModule(const string* name)
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (m_modules[mod].GetModuleName() == localname) {
       assert(false); //Parsing disallows this condition
-      g_registry.SetError("Programming error:  Unable to create new module with the same name as an existing module.");
+      SetError("Programming error:  Unable to create new module with the same name as an existing module.");
       return;
     }
   }
@@ -447,10 +495,10 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
       return true;
     }
     else if (!ASTform->isBoolean()) {
-      g_registry.SetError("The formula \"" + trigger->ToDelimitedStringWithEllipses('.') + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.");
+      g_registry.SetError("The formula \"" + trigger->ToDelimitedStringWithEllipses('.') + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
       delete ASTform;
       return true;
-    }      
+    }
     else {
       delete ASTform;
     }

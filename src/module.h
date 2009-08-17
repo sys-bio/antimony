@@ -9,6 +9,11 @@
 #include <sbml/SBMLTypes.h>
 #endif
 
+#ifndef NCELLML
+#include <IfaceCellML_APISPEC.hxx>
+using namespace iface;
+#endif
+
 #include "antimony_api.h"
 #include "variable.h"
 #include "reaction.h"
@@ -24,8 +29,6 @@ protected:
 private:
   Module(); //undefined
 
-  //Module(const Module& src); //Use default, but have to re-run CompileExportLists
-  //Module& operator=(const Module& src); //(same as above)
   std::vector<std::string> m_variablename;
 
   std::vector<Variable*> m_variables;
@@ -40,15 +43,21 @@ private:
   std::string m_libsbml_warnings;
 #endif
 
+#ifndef NCELLML
+  cellml_api::Model* m_cellmlmodel;
+  cellml_api::CellMLComponent* m_cellmlcomponent;
+#endif
+
 public:
 
   //Storage vectors for output:
   std::vector<std::vector<std::string> > m_uniquevars;
 
   Module(std::string name);
-  //Module(const Module& src); //accept default
+  Module(const Module& src); //Can't accept default with CellML, since it reference counts.
+  Module& operator=(const Module& src); //(same as above)
   Module(const Module& src, std::string newtopname, std::string modulename);
-  ~Module() {};
+  ~Module();
 
   Variable* AddOrFindVariable(const std::string* name);
   Variable* AddNewNumberedVariable(const std::string name);
@@ -105,6 +114,16 @@ public:
   void  CreateSBMLModel();
   void  SetAssignmentFor(Model* sbmlmod, const Variable* var);
 #endif
+
+#ifndef NCELLML
+  void  LoadCellMLModel(cellml_api::Model* model);
+  void  LoadConnections(cellml_api::ConnectionSet* connections);
+  void  LoadCellMLComponent(cellml_api::CellMLComponent* component);
+  const cellml_api::Model* GetCellMLModel();
+  void  CreateCellMLModel();
+  cellml_api::CellMLComponent* CreateCellMLComponentFor(cellml_api::Model* model);
+#endif
+
   void  FixNames();
 };
 

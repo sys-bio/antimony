@@ -1,23 +1,37 @@
 #If not using libSBML:
 #sbmlflag = -DNSBML
+#sbml_includes = 
 #libsbml = 
 
 #otherwise
 sbml_location = /usr/local/lib/
-sbml_includes = /usr/local/include/
+sbml_includes = -I/usr/local/include/
 libsbml = -L$(sbml_location) -lsbml
 sbmlflag = 
 
+
+#If not using libCellML:
+cellmlflag = -DNCELLML
+cellml_includes =
+libcellml =
+
+#otherwise
+#cellml_location = /usr/local/lib/
+#cellml_includes = -I/usr/local/include/
+#libcellml = -L$(cellml_location) -lcellml -lcevas
+#cellmlflag =
+
+
 #For a debug version:
-#CPPFLAGS = -Wall -ggdb $(sbmlflag) -I$(sbml_includes)
+CPPFLAGS = -Wall -ggdb $(sbmlflag) $(cellmlflag) $(sbml_includes) $(cellml_includes)
 #For a non-debug version:
-CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag)
+#CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag) $(cellmlflag) -I$(sbml_includes) -I$(cellml_includes)
 
 #version number
 version = 1.2
 
 #Library flags
-LIBRARYFLAGS = $(libsbml) -Llib -lantimony
+LIBRARYFLAGS = $(libsbml) $(libcellml) -Llib -lantimony
 
 src_dir = src/
 lib_dir = lib/

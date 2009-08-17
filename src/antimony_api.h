@@ -118,24 +118,52 @@ LIB_EXTERN long   loadSBMLFile(const char* filename);
 LIB_EXTERN long   loadSBMLString(const char* model);
 #endif
 
+#ifndef NCELLML
+/**
+ * @brief Load a file known to be CellML.
+ *
+ * Loads a file and parses it (using libCellML) as a CellML file.  On an error, the error is saved, -1 is returned, and no information is stored.
+ * @return a long integer indicating the index of the file read and stored.  On an error, returns -1 and no information is stored.
+ * NOTE:  This function is unavailable when libAntimony is compiled with the '-NCELLML' flag.
+ *
+ * @param filename The filename as a character string.  May be either absolute or relative to the directory the executable is being run from.
+ *
+ * @see getLastError()
+ */
+LIB_EXTERN long   loadCellMLFile(const char* filename);
+
+/**
+ * @brief Load a string known to be CellML.
+ *
+ * Loads a string and parses it (using libCellML) as a CellML file.  On an error, the error is saved, -1 is returned, and no information is stored.
+ * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
+ * NOTE:  This function is unavailable when libAntimony is compiled with the '-NCELLML' flag.
+ *
+ * @param model The model, in CellML format.
+ *
+ * @see getLastError()
+ */
+LIB_EXTERN long   loadCellMLString(const char* model);
+#endif
+
 
 /**
  * @brief Returns the number of files loaded into memory so far.
  *
- * Every time 'loadFile' or 'loadSBMLFile' is called successfully, the module(s) in those files are saved.  This function will tell you how many sets of modules from successful reads are resident in memory.
+ * Every time 'load<file/string>' is called successfully, the module(s) in those files are saved.  This function will tell you how many sets of modules from successful reads are resident in memory.
  * @return The number of files currently stored in memory.
  */
 
 LIB_EXTERN unsigned long getNumFiles();
 
 /**
- * Change the 'active' set of modules to the ones from the given index (as received from 'loadFile' or 'loadSBMLFile').  Attempting to revert to a negative or nonexistent index returns 'false' and the previous active set of modules is retained.  A successful change return 'true'.
+ * Change the 'active' set of modules to the ones from the given index (as received from 'load<file/string>').  Attempting to revert to a negative or nonexistent index returns 'false' and the previous active set of modules is retained.  A successful change return 'true'.
  *
  */
 LIB_EXTERN bool   revertTo(long index);
 
 /**
- * Clears memory of all files loaded.  The next successful call to 'loadFile' or 'loadSBMLFile' will return 0 as the first valid index.
+ * Clears memory of all files loaded.  The next successful call to 'load<file/string>' will return 0 as the first valid index.
  */
 LIB_EXTERN void   clearPreviousLoads();
 /** \} */
@@ -170,6 +198,23 @@ LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
  *@see writeSBMLToString
  */
 LIB_EXTERN char* getSBMLString(const char* moduleName);
+#endif
+
+#ifndef NCELLML
+/**
+ * Writes out a CellML-formatted XML file to the file indicated.  For now, the output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libCellML's 'writeCellML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
+ * NOTE:  This function is unavailable when libAntimony is compiled with the '-NCELLML' flag.
+ *
+ *@see getCellMLString
+ */
+LIB_EXTERN int   writeCellMLFile(const char* filename, const char* moduleName);
+/**
+ * Returns the same output as writeCellMLFile, but to a char* array instead of to a file.  Returns the output of libCellML's 'writeCellMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
+ * NOTE:  This function is unavailable when libAntimony is compiled with the '-NCELLML' flag.
+ *
+ *@see writeCellMLToString
+ */
+LIB_EXTERN char* getCellMLString(const char* moduleName);
 #endif
 
 /**

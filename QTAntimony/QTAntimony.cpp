@@ -84,7 +84,7 @@ void QTAntimony::SaveCurrentDirectory(QString dir)
 #endif
 
 
-void QTAntimony::DisplayWindow(Translator* t) {
+void QTAntimony::DisplayWindow(QMainWindow* t) {
     if (t==NULL) return;
     QWidget* focus = focusWidget();
     QRect desk = desktop()->availableGeometry(focus);

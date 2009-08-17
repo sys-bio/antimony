@@ -2,6 +2,7 @@
 #define QTANTIMONY_H
 
 #include <QApplication>
+#include <QMainWindow>
 
 class Translator;
 class QTAntimony : public QApplication
@@ -24,7 +25,7 @@ public:
     void OpenFile(QString filename);
     void OpenFiles(QStringList filenames);
     QString GetCurrentDir();
-    void DisplayWindow(Translator* t);
+    void DisplayWindow(QMainWindow* t);
 
 public slots:
     void OpenNewFile();
