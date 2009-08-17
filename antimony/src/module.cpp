@@ -11,6 +11,13 @@
 #include "sbmlx.h"
 #include "typex.h"
 
+#ifndef NCELLML
+#include <wchar.h>
+#include <CellMLBootstrap.hpp>
+using namespace iface;
+#endif
+
+
 extern Registry g_registry;
 using namespace std;
 
@@ -29,6 +36,10 @@ Module::Module(string name)
     m_libsbml_info(""),
     m_libsbml_warnings(""),
 #endif
+#ifndef NCELLML
+    m_cellmlmodel(NULL),
+    m_cellmlcomponent(NULL),
+#endif
     m_uniquevars()
 {
 }
@@ -46,12 +57,21 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
     m_libsbml_warnings(),
 #endif
+#ifndef NCELLML
+    m_cellmlmodel(NULL),
+    m_cellmlcomponent(NULL),
+#endif
     m_uniquevars()
 {
   SetNewTopName(modulename, newtopname);
+#ifndef NSBML
   CreateSBMLModel(); //It's either this or go through and rename every blasted thing in it, and libSBML doesn't provide an easy way to go through all elements at once.
+#endif
+#ifndef NCELLML
+  CreateCellMLModel(); //ditto
+#endif
 }
-/*
+
 Module::Module(const Module& src)
   : m_modulename(src.m_modulename),
     m_exportlist(src.m_exportlist),
@@ -62,13 +82,66 @@ Module::Module(const Module& src)
     m_currentexportvar(src.m_currentexportvar),
 #ifndef NSBML
     m_sbml(src.m_sbml),
-    m_libsbml_info(m_libsbml_info),
-    m_libsbml_warnings(m_libsbml_warnings),
+    m_libsbml_info(src.m_libsbml_info),
+    m_libsbml_warnings(src.m_libsbml_warnings),
 #endif
-    m_uniquevars(m_uniquevars)
+#ifndef NCELLML
+    m_cellmlmodel(src.m_cellmlmodel),
+    m_cellmlcomponent(src.m_cellmlcomponent),
+#endif
+    m_uniquevars(src.m_uniquevars)
 {
+#ifndef NCELLML
+  if (m_cellmlmodel != NULL) {
+    m_cellmlmodel->add_ref();
+  }
+  if (m_cellmlcomponent != NULL) {
+    m_cellmlcomponent->add_ref();
+  }
+#endif
 }
-*/
+
+Module& Module::operator=(const Module& src)
+{
+  m_modulename = src.m_modulename;
+  m_exportlist = src.m_exportlist;
+  m_variablename = src.m_variablename;
+  m_variables = src.m_variables;
+  m_synchronized = src.m_synchronized;
+  m_returnvalue = src.m_returnvalue;
+  m_currentexportvar = src.m_currentexportvar;
+  m_uniquevars = src.m_uniquevars;
+#ifndef NSBML
+  m_sbml = src.m_sbml;
+  m_libsbml_info = src.m_libsbml_info;
+  m_libsbml_warnings = src.m_libsbml_warnings;
+#endif
+#ifndef NCELLML
+  m_cellmlmodel = src.m_cellmlmodel;
+  m_cellmlcomponent = src.m_cellmlcomponent;
+  if (m_cellmlmodel != NULL) {
+    m_cellmlmodel->add_ref();
+  }
+  if (m_cellmlcomponent != NULL) {
+    m_cellmlcomponent->add_ref();
+  }
+#endif
+  return *this;
+}
+
+
+Module::~Module()
+{
+#ifndef NCELLML
+  if (m_cellmlmodel != NULL) {
+    m_cellmlmodel->release_ref();
+  }
+  if (m_cellmlcomponent != NULL) {
+    m_cellmlcomponent->release_ref();
+  }
+#endif
+}
+  
 Variable* Module::AddOrFindVariable(const string* name)
 {
   vector<string> fullname;
@@ -1100,13 +1173,21 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     g_registry.GetNthUserFunction(g_registry.GetNumUserFunctions()-1)->FixNames();
   }
 
+  set<string> defaultcompartments;
   //Compartments
   for (unsigned int comp=0; comp<sbml->getNumCompartments(); comp++) {
     const Compartment* compartment = sbml->getCompartment(comp);
     sbmlname = getNameFromSBMLObject(compartment, "_C");
+    if (compartment->getSBOTerm() == 410) {
+      //The 'implicit compartment'
+      defaultcompartments.insert(sbmlname);
+      continue;
+    }
     if (sbmlname == DEFAULTCOMP && compartment->getConstant() && compartment->isSetSize() && compartment->getSize() == 1.0) {
+      defaultcompartments.insert(sbmlname);
       continue;
       //LS NOTE: we assume this was created with Antimony, and ignore the auto-generated 'default compartment'
+      // Later versions of antimony now set the SBO terms to 410, so we might not need this code very long.
     }
     Variable* var = AddOrFindVariable(&sbmlname);
     var->SetType(varCompartment);
@@ -1132,7 +1213,7 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     if (species->isSetInitialAmount()) {
       double amount = species->getInitialAmount();
       formula->AddNum(amount);
-      if (amount != 0 && species->getCompartment() != DEFAULTCOMP) {
+      if (amount != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
         Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
         Formula* compform = compartment->GetFormula();
         if (!compform->IsOne()) {
@@ -1152,7 +1233,7 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       //Since all species are variable by default, we only set this explicitly if true.
       var->SetIsConst(true);
     }
-    if (species->getCompartment() != DEFAULTCOMP) {
+    if (defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
       Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
       compartment->SetType(varCompartment);
       var->SetCompartment(compartment);
@@ -1367,6 +1448,7 @@ void Module::CreateSBMLModel()
   Model* sbmlmod = m_sbml.createModel();
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(m_modulename);
+  sbmlmod->setNotes("<body xmlns=\"http://www.w3.org/1999/xhtml\"><p> Originally created by libAntimony " VERSION_STRING " (using libSBML) </p></body>");
   char cc = g_registry.GetCC();
   //User-defined functions
   for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
@@ -1383,6 +1465,7 @@ void Module::CreateSBMLModel()
   defaultCompartment->setId(DEFAULTCOMP);
   defaultCompartment->setConstant(true);
   defaultCompartment->setSize(1);
+  defaultCompartment->setSBOTerm(410); //The 'implicit compartment'
   size_t numcomps = GetNumVariablesOfType(allCompartments);
   for (size_t comp=0; comp<numcomps; comp++) {
     const Variable* compartment = GetNthVariableOfType(allCompartments, comp);
@@ -1559,6 +1642,235 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var)
 }
 #endif
   
+
+#ifndef NCELLML
+void Module::LoadCellMLModel(cellml_api::Model* model)
+{
+  assert(m_cellmlcomponent==NULL);
+  if (m_cellmlmodel != NULL) {
+    m_cellmlmodel->release_ref();
+    assert(false);
+  }
+  m_cellmlmodel = model;
+  m_cellmlmodel->add_ref();
+
+  //Translate
+  wchar_t* cellmltext;
+  string cellmlname;
+
+  //Components become sub-modules
+  cellml_api::CellMLComponentSet* components = m_cellmlmodel->localComponents();
+  cellml_api::CellMLComponentIterator* cmpi = components->iterateComponents();
+  components->release_ref();
+  cellml_api::CellMLComponent* component;
+  while ((component = cmpi->nextComponent()) != NULL) {
+    //Load the component as a submodule (which should already have been loaded by the registry in LoadCellML)
+    cellmltext = component->name();
+    component->release_ref();
+    cellmlname = ToThinString(cellmltext);
+    string cellmlmodname = "cellmlmod_" + cellmlname;
+    free(cellmltext);
+    Variable* var = AddOrFindVariable(&cellmlname);
+    if(var->SetModule(&cellmlmodname)) {
+      assert(false);
+      return;
+    }
+  }
+
+  //Imports also become sub-modules
+  cellml_api::CellMLImportSet* imports = m_cellmlmodel->imports();
+  cellml_api::CellMLImportIterator* impi = imports->iterateImports();
+  cellml_api::CellMLImport* import;
+  while ((import = impi->nextImport()) != NULL) {
+    cellml_api::ImportComponentSet* impcomponents = import->components();
+    cellml_api::ImportComponentIterator* icmpi = impcomponents->iterateImportComponents();
+    impcomponents->release_ref();
+    cellml_api::ImportComponent* impcomponent;
+    while ((impcomponent = icmpi->nextImportComponent()) != NULL) {
+      //Load the imported component as a submodules, too.
+      cellmltext = impcomponent->name();
+      impcomponent->release_ref();
+      cellmlname = ToThinString(cellmltext);
+      free(cellmltext);
+      cellmltext = impcomponent->componentRef();
+      string cellmlmodname = ToThinString(cellmltext);
+      free(cellmltext);
+      Variable* var = AddOrFindVariable(&cellmlname);
+      if(var->SetModule(&cellmlmodname)) {
+        assert(false);
+        return;
+      }
+    }
+    import->release_ref();
+  }
+  impi->release_ref();
+  //Now go through them again to get the connections.  I know, right?
+  impi = imports->iterateImports();
+  imports->release_ref();
+  while ((import = impi->nextImport()) != NULL) {
+    cellml_api::ConnectionSet* impconnections = import->importedConnections();
+    LoadConnections(impconnections);
+    impconnections->release_ref();
+    import->release_ref();
+  }
+  impi->release_ref();
+  //And then get the main model's connections
+  cellml_api::ConnectionSet* connections = model->connections();
+  LoadConnections(connections);
+  connections->release_ref();
+}
+
+void Module::LoadConnections(cellml_api::ConnectionSet* connections)
+{
+  wchar_t* cellmlstring;
+  string cellmlname;
+  cellml_api::ConnectionIterator* coni = connections->iterateConnections();
+  cellml_api::Connection* connection;
+  while ((connection = coni->nextConnection()) != NULL) {
+    cellml_api::MapComponents* compmap = connection->componentMapping();
+    cellmlstring = compmap->firstComponentName();
+    cellmlname = ToThinString(cellmlstring);
+    free(cellmlstring);
+    vector<string> varname;
+    varname.push_back(cellmlname);
+    Variable* firstmod = GetVariable(varname);
+    assert(firstmod!=NULL);
+    cellmlstring = compmap->secondComponentName();
+    cellmlname = ToThinString(cellmlstring);
+    free(cellmlstring);
+    varname.clear();
+    varname.push_back(cellmlname);
+    Variable* secondmod = GetVariable(varname);
+    //LS DEBUG:  The above code will fail if there is more than one module with the same name.
+    cellml_api::MapVariablesSet* mvs = connection->variableMappings();
+    cellml_api::MapVariablesIterator* mvsi = mvs->iterateMapVariables();
+    mvs->release_ref();
+    cellml_api::MapVariables* mapvars;
+    while ((mapvars = mvsi->nextMapVariable()) != NULL) {
+      cellmlstring = mapvars->firstVariableName();
+      cellmlname = ToThinString(cellmlstring);
+      free(cellmlstring);
+      Variable* firstvar = firstmod->GetSubVariable(&cellmlname);
+      assert(firstvar != NULL);
+      cellmlstring = mapvars->secondVariableName();
+      cellmlname = ToThinString(cellmlstring);
+      free(cellmlstring);
+      Variable* secondvar = secondmod->GetSubVariable(&cellmlname);
+      firstvar->Synchronize(secondvar);
+      //LS NOTE: Unlike the above code, this should work regardless of namespace if we get the module right in the first place.
+      mapvars->release_ref();
+    }
+    connection->release_ref();
+  }
+  coni->release_ref();
+}
+
+void Module::LoadCellMLComponent(cellml_api::CellMLComponent* component)
+{
+  wchar_t* cellmlstring;
+  string cellmlname;
+  assert(m_cellmlmodel==NULL);
+  if (m_cellmlcomponent != NULL) {
+    m_cellmlcomponent->release_ref();
+    assert(false);
+  }
+  //Variables
+  cellml_api::CellMLVariableSet* varset = component->variables();
+  cellml_api::CellMLVariableIterator* vsi = varset->iterateVariables();
+  varset->release_ref();
+  cellml_api::CellMLVariable* cmlvar;
+  while ((cmlvar = vsi->nextVariable()) != NULL) {
+    cellmlstring = cmlvar->name();
+    cellmlname = ToThinString(cellmlstring);
+    free(cellmlstring);
+    Variable* antvar = AddOrFindVariable(&cellmlname);
+    cellmlstring = cmlvar->initialValue();
+    cellmlname = ToThinString(cellmlstring);
+    if (cellmlname != "") {
+      Formula* formula = g_registry.NewBlankFormula();
+      setFormulaWithString(cellmlname, formula);
+      antvar->SetFormula(formula);
+    }
+    free(cellmlstring);
+    cmlvar->release_ref();
+  }
+  vsi->release_ref();
+
+  //Reactions
+  cellml_api::ReactionSet* rxnset = component->reactions();
+  cellml_api::ReactionIterator* rxni = rxnset->iterateReactions();
+  rxnset->release_ref();
+  cellml_api::Reaction* rxn;
+  while ((rxn = rxni->nextReaction()) != NULL) {
+    //parse the reaction;
+    //reactions don't have names, so make up a new one for Antimony
+    //LS DEBUG:  stopped coding here for now...
+    //Variable* rxnvar = AddOrFindVariable(&cellmlname);
+    rxn->release_ref();
+  }
+  rxni->release_ref();
+  
+  //Math
+  cellml_api::MathList* mathlist; //LS DEBUG what?  // = cmlvar->math();
+  cellml_api::MathMLElementIterator* mli = mathlist->iterate();
+  mathlist->release_ref();
+  mathml_dom::MathMLElement* mathel;
+  while((mathel = mli->next()) != NULL) {
+    //Er, here's where you'd translate the MathML to Infix and figure out whether it was
+    // and assignment rule or a rate rule.
+    mathel->release_ref();
+  }
+  mli->release_ref();
+
+  //Containers (?)
+}
+
+const cellml_api::Model* Module::GetCellMLModel()
+{
+  if (m_cellmlmodel==NULL || (m_cellmlmodel->name() != ToWString(m_modulename))) {
+    CreateCellMLModel();
+  }
+  return m_cellmlmodel;
+}
+
+void Module::CreateCellMLModel()
+{
+  if (m_cellmlmodel != NULL) {
+    m_cellmlmodel->release_ref();
+    if (m_cellmlcomponent != NULL) {
+      m_cellmlcomponent->release_ref();
+      m_cellmlcomponent = NULL;
+    }
+  }
+  cellml_api::CellMLBootstrap* boot = CreateCellMLBootstrap();;
+  m_cellmlmodel = boot->createModel(L"1.1");
+  boot->release_ref();
+
+  m_cellmlmodel->name(ToWString(m_modulename).c_str());
+  //Create units
+
+  //Create a component for all local variables
+  m_cellmlcomponent = CreateCellMLComponentFor(m_cellmlmodel);
+  m_cellmlmodel->addElement(m_cellmlcomponent);
+
+  //Create all connections
+
+  //Create groups (?)
+}
+
+cellml_api::CellMLComponent* Module::CreateCellMLComponentFor(cellml_api::Model* model)
+{
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* variable = m_variables[var];
+    switch(variable->GetType()) {
+    case varModule:
+      model->addElement(variable->GetModule()->CreateCellMLComponentFor(model));
+    }
+  }
+}
+
+#endif
+
 
 void Module::FixNames()
 {

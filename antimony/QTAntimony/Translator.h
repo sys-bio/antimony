@@ -23,6 +23,7 @@ class Translator : public QMainWindow
     Q_OBJECT
 
 private:
+    QTAntimony* m_app;
     //Tabs
     TabManager* m_tabmanager;
     AntimonyTab* m_antimony;
@@ -40,7 +41,7 @@ private:
 
 #ifdef SBW_INTEGRATION
     static std::vector< DataBlockReader > findServices(std::string  var0,bool  var1);
-    QMenu *getSBWMenu();
+    void addSBWMenu();
 #endif
 	
 public:
@@ -54,6 +55,8 @@ public:
 	
 public slots:
     void SetPasteAvailability();
+    void DisplayAbout();
+    void DisplayTutorial();
 };
 
 #endif // TRANSLATOR_H

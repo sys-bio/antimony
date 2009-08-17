@@ -18,6 +18,11 @@
 
 #define DEFAULTCOMP "default_compartment" //Also defined in module.cpp
 
+#ifndef NCELLML
+#include <IfaceCellML_APISPEC.hxx>
+#include <CellMLBootstrap.hpp>
+//using namespace iface;
+#endif
 
 using namespace std;
 extern int yyparse();
@@ -290,6 +295,61 @@ LIB_EXTERN long loadSBMLString(const char* model)
   }
   delete document;
   return retval;
+}
+#endif
+
+#ifndef NCELLML
+long CheckAndAddCellMLDoc(cellml_api::Model* model)
+{
+  if (g_registry.LoadCellML(model)) return -1;
+  return g_registry.SaveModules();
+}
+
+LIB_EXTERN long loadCellMLFile(const char* filename)
+{ 
+  cellml_api::CellMLBootstrap* boot = CreateCellMLBootstrap();
+  cellml_api::ModelLoader* ml = boot->modelLoader();
+  boot->release_ref();
+  cellml_api::Model* model;
+  try
+  {
+    model = ml->loadFromURL(ToWString(filename).c_str());
+  }
+  catch (...)
+  {
+    string file(filename);
+    wchar_t* error = ml->lastErrorMessage();
+    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  ToThinString(error));
+    ml->release_ref();
+    free(error);
+    return -1;
+  }
+  long retval = CheckAndAddCellMLDoc(model);
+  if (retval == -1) {
+    string error = g_registry.GetError();
+    error += ToThinString(ml->lastErrorMessage());
+    g_registry.SetError(error);
+  }
+  return retval;
+}
+
+LIB_EXTERN long loadCellMLString(const char* modelstring)
+{
+  cellml_api::CellMLBootstrap* boot = CreateCellMLBootstrap();
+  cellml_api::ModelLoader* ml = boot->modelLoader();
+  boot->release_ref();
+  cellml_api::Model* model;
+  try
+  {
+    model = ml->createFromText(ToWString(modelstring).c_str());
+  }
+  catch (...)
+  {
+    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  ToThinString(ml->lastErrorMessage()));
+    ml->release_ref();
+    return -1;
+  }
+  return CheckAndAddCellMLDoc(model);
 }
 #endif
 
@@ -1251,7 +1311,7 @@ LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
 {
   char* oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
-  string antimony;
+  string antimony = "//Created by libAntimony " VERSION_STRING "\n";
   if (moduleName != NULL) {
     if (!checkModule(moduleName)) return 0;
     antimony = g_registry.GetAntimony(moduleName);
@@ -1281,10 +1341,10 @@ LIB_EXTERN char* getAntimonyString(const char* moduleName)
   char* antimony;
   if (moduleName != NULL) {
     if (!checkModule(moduleName)) return 0;
-    antimony = getCharStar(g_registry.GetAntimony(moduleName).c_str());
+    antimony = getCharStar((string("//Created by libAntimony " VERSION_STRING "\n") + g_registry.GetAntimony(moduleName)).c_str());
   }
   else {
-    antimony = getCharStar(g_registry.GetAntimony().c_str());
+  antimony = getCharStar((string("//Created by libAntimony " VERSION_STRING "\n") + g_registry.GetAntimony()).c_str());
   }
   setlocale(LC_ALL, oldlocale);
   return antimony;

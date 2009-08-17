@@ -14,11 +14,13 @@ using namespace SystemsBiologyWorkbench;
 
 
 #include "Translator.h"
+#include "Tutorial.h"
 #include "TabManager.h"
 #include "AntimonyTab.h"
 #include "ChangeableTextBox.h"
 #include "SBMLTab.h"
 #include "FileWatcher.h"
+#include "QTAntimony.h"
 
 #include "antimony_api.h"
 
@@ -33,10 +35,12 @@ using namespace SystemsBiologyWorkbench;
 #include <QFile>
 #include <QTextStream>
 #include <QCloseEvent>
+#include <QMessageBox>
 
 using namespace std;
-Translator::Translator(QTAntimony*, QString filename)
+Translator::Translator(QTAntimony* app, QString filename)
         : QMainWindow(NULL),
+        m_app(app),
         m_antimony(),
         m_filewatcher(new FileWatcher),
         m_allSBML()
@@ -106,9 +110,9 @@ Translator::Translator(QTAntimony*, QString filename)
     actionFind->setShortcut(QKeySequence::Find);
     actionFind->setEnabled(false);
     QAction* actionShowTutorial = new QAction(tr("Show &Tutorial"), this);
-    actionShowTutorial->setEnabled(false);
+    actionShowTutorial->setEnabled(true);
     QAction* actionAbout = new QAction(tr("&About"), this);
-    actionAbout->setEnabled(false);
+    actionAbout->setEnabled(true);
 
     //The tabs
     setWindowTitle("QTAntimony");
@@ -210,6 +214,8 @@ Translator::Translator(QTAntimony*, QString filename)
     connect(m_antimony, SIGNAL(StartWatching(QString)), m_filewatcher, SLOT(StartWatching(QString)));
     connect(m_antimony, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), m_antimony, SLOT(FileChanged(QString)));
+    connect(actionAbout, SIGNAL(triggered()), this, SLOT(DisplayAbout()));
+    connect(actionShowTutorial, SIGNAL(triggered()), this, SLOT(DisplayTutorial()));
 
     //The File menu
     QMenu* filemenu = menuBar()->addMenu(tr("&File"));
@@ -245,7 +251,7 @@ Translator::Translator(QTAntimony*, QString filename)
     menuBar()->addMenu(editmenu);
 
 #ifdef 	SBW_INTEGRATION
-    getSBWMenu();
+    addSBWMenu();
 #endif
 	
     //The Help Menu
@@ -285,10 +291,11 @@ vector< DataBlockReader > Translator::findServices(string  var0,bool  var1)
 }
 
 
-QMenu* Translator::getSBWMenu() {
-    QMenu *oMenu = menuBar()->addMenu(tr("S&BW"));
+void Translator::addSBWMenu() {
     vector<DataBlockReader> oModules = findServices("Analysis",true);
-	
+    if (oModules.size()==0) return;
+    QMenu *oMenu = menuBar()->addMenu(tr("&SBW"));
+
     // as exercise to the reader, this list should now be sorted :) based on DisplayName
 	
     for (unsigned int i = 0; i < oModules.size(); i++)
@@ -302,7 +309,6 @@ QMenu* Translator::getSBWMenu() {
         connect(oAction, SIGNAL(triggered()), m_tabmanager, SLOT(startSBWAnalyzer()));
         oMenu->addAction(oAction);
     }
-    return oMenu;
 }
 
 #endif
@@ -371,4 +377,25 @@ void Translator::closeEvent(QCloseEvent* event)
     else {
         event->ignore();
     }
+}
+
+void Translator::DisplayAbout()
+{
+    QMessageBox msgBox;
+    msgBox.setText("QTAntimony v0.6:");
+    msgBox.setInformativeText("Based on libAntimony v1.2 and libSBML v3.4.1");
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.exec();
+
+}
+
+void Translator::DisplayTutorial()
+{
+    QMainWindow* newwin = new QMainWindow;
+    Tutorial* tutorial = new Tutorial(this);
+    newwin->setCentralWidget(tutorial);
+    newwin->setWindowTitle("Antimony Tutorial");
+
+    m_app->DisplayWindow(newwin);
+    //tutorial.set
 }

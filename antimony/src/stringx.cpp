@@ -44,3 +44,20 @@ bool IsReal(const string& src)
   return true;
 } /* IsReal */
 
+wstring ToWString(std::string in)
+{
+  wstring out;
+  for (size_t ch=0; ch<in.size(); ch++) {
+    out.push_back(in[ch]);
+  }
+  return out;
+}
+  
+string ToThinString(std::wstring in)
+{
+  string out;
+  for (size_t ch=0; ch<in.size(); ch++) {
+    out.push_back(in[ch]);
+  }
+  return out;
+}

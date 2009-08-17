@@ -8,6 +8,7 @@
 #include <set>
 #include <stdio.h>
 #include <string>
+#include <sstream>
 
 #include "dnastrand.h"
 #include "module.h"
@@ -15,7 +16,17 @@
 #include "reaction.h"
 #include "enums.h"
 
+
+#ifndef NCELLML
+#include <IfaceCellML_APISPEC.hxx>
+#include <CellMLBootstrap.hpp>
+using namespace iface;
+#endif
+
 #define MAINMODULE "__main"
+#ifndef VERSION_STRING //So we can define it in the makefile if need be.
+#define VERSION_STRING "v1.3"
+#endif
 
 class Registry
 {
@@ -63,6 +74,9 @@ public:
   int    OpenFile(const std::string filename);
   int    OpenString(const std::string model);
   int    CheckAndAddSBMLIfGood(SBMLDocument* document);
+#ifndef NCELLML
+  bool   LoadCellML(cellml_api::Model* model);
+#endif
   bool   SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};
   void   SetupFunctions();

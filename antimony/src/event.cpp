@@ -38,10 +38,10 @@ bool AntimonyEvent::SetTrigger(const Formula& form)
       return true;
     }
     else if (!ASTform->isBoolean()) {
-      g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses('.') + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.");
+      g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses('.') + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
       delete ASTform;
       return true;
-    }      
+    }
     else {
       delete ASTform;
     }
@@ -144,8 +144,8 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
     assert(false);
     return "";
   }
-  retval += actualvar->GetNameDelimitedBy(cc) + ": @";
-  retval += m_trigger.ToDelimitedStringWithEllipses(cc) + ": ";
+  retval += actualvar->GetNameDelimitedBy(cc) + ": at(";
+  retval += m_trigger.ToDelimitedStringWithEllipses(cc) + "): ";
   for (size_t result=0; result<m_varresults.size(); result++) {
     if (result>0) {
       retval += ": ";
