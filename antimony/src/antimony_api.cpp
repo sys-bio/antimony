@@ -1314,10 +1314,10 @@ LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
   string antimony = "//Created by libAntimony " VERSION_STRING "\n";
   if (moduleName != NULL) {
     if (!checkModule(moduleName)) return 0;
-    antimony = g_registry.GetAntimony(moduleName);
+    antimony += g_registry.GetAntimony(moduleName);
   }
   else {
-    antimony = g_registry.GetAntimony();
+    antimony += g_registry.GetAntimony();
   }
   ofstream afile(filename);
   if (!afile.good()) {
