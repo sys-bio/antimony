@@ -36,6 +36,8 @@ LIBS += -L../lib/ \
 win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\bin"
 win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\win32\bin"
 win32:QMAKE_LFLAGS += /LIBPATH:"..\win32"
+win32:RC_FILE = antimonyicon.rc
+
 TARGET = QTAntimony
 TEMPLATE = app
 SOURCES += main.cpp \
