@@ -251,7 +251,9 @@ Translator::Translator(QTAntimony* app, QString filename)
     menuBar()->addMenu(editmenu);
 
 #ifdef 	SBW_INTEGRATION
-    addSBWMenu();
+    if (m_app->GetUseSBW()) {
+        addSBWMenu();
+    }
 #endif
 	
     //The Help Menu

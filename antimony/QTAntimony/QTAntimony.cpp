@@ -12,8 +12,12 @@ QTAntimony::QTAntimony(int& argc, char**& argv)
         : QApplication(argc, argv),
         m_original(NULL),
         m_opened(false),
+        m_usesbw(false),
         m_currentdir(QDir::homePath())
 {
+#ifdef SBW_INTEGRATION
+    m_usesbw = true;
+#endif
 }
 
 void QTAntimony::OpenFile(QString filename)
@@ -119,4 +123,7 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
     t->show();
 }
 
-
+void QTAntimony::SetUseSBW(bool on)
+{
+    m_usesbw = on;
+}

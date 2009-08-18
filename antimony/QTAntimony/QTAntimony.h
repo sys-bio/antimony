@@ -13,6 +13,7 @@ class QTAntimony : public QApplication
 private:
     Translator* m_original;
     bool m_opened;
+    bool m_usesbw;
     QString m_currentdir;
 
 protected:
@@ -26,6 +27,8 @@ public:
     void OpenFiles(QStringList filenames);
     QString GetCurrentDir();
     void DisplayWindow(QMainWindow* t);
+    bool GetUseSBW() {return m_usesbw;}
+    void SetUseSBW(bool on);
 
 public slots:
     void OpenNewFile();

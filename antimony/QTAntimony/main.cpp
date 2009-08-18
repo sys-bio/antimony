@@ -32,8 +32,9 @@ void myMessageOutput(QtMsgType type, const char *msg)
 int main(int argc, char *argv[])
 {
 	
-#ifdef SBW_INTEGRATION
-	
+//#ifdef SBW_INTEGRATION
+    bool sbwon = true;
+    try {
 	SBWAntimony *service = new SBWAntimony();
 	
 	static const std::string Name("QTAntimony");
@@ -46,29 +47,35 @@ int main(int argc, char *argv[])
 	oModule.addServiceObject(ServiceName, DisplayName, CategoryName, service, HelpString);
 
 	// register if neccessary
-    for (int arg=1; arg<argc; arg++) {
-        std::string sArg(argv[arg]);
-		if (sArg == "-sbwregister" || sArg == "--sbwregister")
-		{
-			oModule.run(argc, argv);
-			return 0;
+        for (int arg=1; arg<argc; arg++) {
+            std::string sArg(argv[arg]);
+                if (sArg == "-sbwregister" || sArg == "--sbwregister")
+                {
+                    oModule.run(argc, argv);
+                    return 0;
 		}
-    }
-	
+        }
 	// otherwise enable SBW service
 	oModule.enableModuleServices();
+    }
+    catch (void* e) {
+        sbwon = false;
+    }
 	
-	
-#endif	
+//#endif
 	
     qInstallMsgHandler(myMessageOutput);
     QTAntimony a(argc, argv);
 
 #ifdef SBW_INTEGRATION
 
-	// install an event filter that will display a new window  when SBML is loaded
-    a.installEventFilter(&a);
-
+    // install an event filter that will display a new window when SBML is loaded
+    if (sbwon) {
+        a.installEventFilter(&a);
+    }
+    else {
+        a.SetUseSBW(false);
+    }
 #endif
 
     for (int arg=1; arg<argc; arg++) {
@@ -76,10 +83,6 @@ int main(int argc, char *argv[])
     }
     if (argc==1) {
         a.NewWindow();
-        /*
-        Translator* newwindow = a.GetNewTranslator();
-        newwindow->show();
-        */
     }
 
     return a.exec();
