@@ -2,6 +2,8 @@
 #include <cassert>
 #include <functional>
 #include <iostream>
+#include <sstream>
+#include <ostream>
 #include <set>
 
 #include "module.h"
@@ -490,11 +492,17 @@ bool Module::Finalize()
   //Phase 5:  Check SBML compatibility, and create sbml model object.
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
   const SBMLDocument* sbmldoc = GetSBML();
-  char* sbmlstring = writeSBMLToString(sbmldoc);
-  SBMLDocument* testdoc = readSBMLFromString(sbmlstring);
+  stringstream stream;
+
+  SBMLWriter writer; writer.writeSBML(sbmldoc, stream);
+  string newSBML = stream.str();
+  SBMLReader reader; reader.readSBMLFromString(newSBML);
+  SBMLDocument* testdoc = reader.readSBMLFromString(newSBML);
+  /*char* sbmlstring = writeSBMLToString(sbmldoc);
+  SBMLDocument* testdoc = readSBMLFromString(sbmlstring);*/
   testdoc->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   testdoc->checkConsistency();
-  free(sbmlstring);
+//  free(sbmlstring);
   SBMLErrorLog* log = testdoc->getErrorLog();
   string trueerrors = "";
   for (unsigned int err=0; err<log->getNumErrors(); err++) {
