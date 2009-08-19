@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 	// otherwise enable SBW service
 	oModule.enableModuleServices();
     }
-    catch (void* e) {
+    catch (...) {
         sbwon = false;
     }
 	
