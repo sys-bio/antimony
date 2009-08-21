@@ -180,10 +180,10 @@ void reportVariableTypeIndexProblem(unsigned long n, return_type rtype, unsigned
 
 
 //Helper function for below.
-long ParseFile(char* oldlocale)
+long ParseFile(string oldlocale)
 {
   int yyreturn = yyparse();
-  setlocale(LC_ALL, oldlocale);
+  setlocale(LC_ALL, oldlocale.c_str());
   if (yyreturn != 0) {
     if (g_registry.GetError().size() == 0) {
       assert(false); //Need to fill in the reason why we failed explicitly, if possible.
@@ -218,7 +218,7 @@ long ParseFile(char* oldlocale)
 
 LIB_EXTERN long loadString(const char* model)
 {
-  char* oldlocale = setlocale(LC_ALL, NULL);
+  string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   g_registry.ClearModules();
   int ofreturn = g_registry.OpenString(model);
@@ -226,7 +226,7 @@ LIB_EXTERN long loadString(const char* model)
   if (ofreturn==2) {
     //SBML file
     g_registry.FinalizeModules();
-    setlocale(LC_ALL, oldlocale);
+    setlocale(LC_ALL, oldlocale.c_str());
     return g_registry.SaveModules();
   }
   assert(ofreturn==1); //antimony file
@@ -235,7 +235,7 @@ LIB_EXTERN long loadString(const char* model)
 
 LIB_EXTERN long loadFile(const char* filename)
 {
-  char* oldlocale = setlocale(LC_ALL, NULL);
+  string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   g_registry.ClearModules();
   int ofreturn = g_registry.OpenFile(filename);
@@ -243,7 +243,7 @@ LIB_EXTERN long loadFile(const char* filename)
   if (ofreturn==2) {
     //SBML file
     g_registry.FinalizeModules();
-    setlocale(LC_ALL, oldlocale);
+    setlocale(LC_ALL, oldlocale.c_str());
     return g_registry.SaveModules();
   }
   assert(ofreturn==1); //antimony file
@@ -1309,7 +1309,7 @@ LIB_EXTERN char* getCompartmentForSymbol(const char* moduleName, const char* sym
 
 LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
 {
-  char* oldlocale = setlocale(LC_ALL, NULL);
+  string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   string antimony = "//Created by libAntimony " VERSION_STRING "\n";
   if (moduleName != NULL) {
@@ -1325,18 +1325,18 @@ LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
     error += filename;
     error += " for writing.";
     g_registry.SetError(error);
-    setlocale(LC_ALL, oldlocale);
+    setlocale(LC_ALL, oldlocale.c_str());
     return 0;
   }
   afile << antimony;
   afile.close();
-  setlocale(LC_ALL, oldlocale);
+  setlocale(LC_ALL, oldlocale.c_str());
   return 1;
 }
 
 LIB_EXTERN char* getAntimonyString(const char* moduleName)
 {
-  char* oldlocale = setlocale(LC_ALL, NULL);
+  string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   char* antimony;
   if (moduleName != NULL) {
@@ -1346,13 +1346,13 @@ LIB_EXTERN char* getAntimonyString(const char* moduleName)
   else {
   antimony = getCharStar((string("//Created by libAntimony " VERSION_STRING "\n") + g_registry.GetAntimony()).c_str());
   }
-  setlocale(LC_ALL, oldlocale);
+  setlocale(LC_ALL, oldlocale.c_str());
   return antimony;
 }
 
 LIB_EXTERN int writeJarnacFile(const char* filename, const char* moduleName)
 {
-  char* oldlocale = setlocale(LC_ALL, NULL);
+  string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   if (!checkModule(moduleName)) return 0;
   string jarnac = g_registry.GetJarnac(moduleName);
@@ -1362,22 +1362,22 @@ LIB_EXTERN int writeJarnacFile(const char* filename, const char* moduleName)
     error += filename;
     error += " for writing.";
     g_registry.SetError(error);
-  setlocale(LC_ALL, oldlocale);
+    setlocale(LC_ALL, oldlocale.c_str());
     return 0;
   }
   jfile << jarnac;
   jfile.close();
-  setlocale(LC_ALL, oldlocale);
+  setlocale(LC_ALL, oldlocale.c_str());
   return 1;
 }
 
 LIB_EXTERN char* getJarnacString(const char* moduleName)
 {
-  char* oldlocale = setlocale(LC_ALL, NULL);
+  string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   if (!checkModule(moduleName)) return NULL;
   char* jarnac = getCharStar(g_registry.GetJarnac(moduleName).c_str());
-  setlocale(LC_ALL, oldlocale);
+  setlocale(LC_ALL, oldlocale.c_str());
   return jarnac;
 }
 

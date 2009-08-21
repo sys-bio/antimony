@@ -61,7 +61,7 @@ void Registry::ClearModules()
   if (input) {
     //input->close(); //LS DEBUG
     input->clear();
-    delete(input);
+    delete input;
   }
   m_files.clear();
   m_modules.clear();
@@ -103,7 +103,7 @@ int Registry::OpenString(const string model)
   //Try opening as SBML:
   SBMLDocument* document = readSBMLFromString(model.c_str());
   int sbmlcheck = CheckAndAddSBMLIfGood(document);
-  delete(document);
+  delete document;
   if (sbmlcheck==2) return 2;
 #endif
   m_files.push_back("");
@@ -125,14 +125,15 @@ int Registry::OpenFile(const string filename)
   //Try opening as SBML:
   SBMLDocument* document = readSBML(filename.c_str());
   int sbmlcheck = CheckAndAddSBMLIfGood(document);
-  delete(document);
+  delete document;
   if (sbmlcheck==2) return 2;
 #endif
   m_files.push_back(filename);
   if (input != NULL) {
     m_oldinputs.push_back(input);
   }
-  ifstream* inputfile = new ifstream();
+  ifstream* inputfile = new ifstream;
+  input = inputfile;
   inputfile->open(filename.c_str(), ios::in);
   if (!inputfile->is_open()) {
     m_files.pop_back();
@@ -143,7 +144,7 @@ int Registry::OpenFile(const string filename)
       "	1) exists in directory that antimony is being run from,\n"
       "	2) is read enabled, and\n"
       "	3) is not in use by another program.\n";
-    SetError(error);	
+    SetError(error);
     return 0;
   }
 
@@ -159,7 +160,6 @@ int Registry::OpenFile(const string filename)
   yylloc_last_lines.push_back(yylloc_last_line);
   yylloc_last_line = 1;
   yylloc_first_line = 1;
-  input = inputfile;
   return 1;
 }
 
@@ -234,7 +234,7 @@ bool Registry::SwitchToPreviousFile()
   if (!input) return true;
   //input->close(); //LS DEBUG
   input->clear();
-  delete(input);
+  delete input;
   if (m_oldinputs.size() == 0) {
     input = NULL;
     return true;

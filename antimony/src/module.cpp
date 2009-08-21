@@ -493,16 +493,14 @@ bool Module::Finalize()
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
   const SBMLDocument* sbmldoc = GetSBML();
   stringstream stream;
-
-  SBMLWriter writer; writer.writeSBML(sbmldoc, stream);
+ 
+  SBMLWriter writer;
+  writer.writeSBML(sbmldoc, stream);
   string newSBML = stream.str();
-  SBMLReader reader; reader.readSBMLFromString(newSBML);
+  SBMLReader reader;
   SBMLDocument* testdoc = reader.readSBMLFromString(newSBML);
-  /*char* sbmlstring = writeSBMLToString(sbmldoc);
-  SBMLDocument* testdoc = readSBMLFromString(sbmlstring);*/
   testdoc->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   testdoc->checkConsistency();
-//  free(sbmlstring);
   SBMLErrorLog* log = testdoc->getErrorLog();
   string trueerrors = "";
   for (unsigned int err=0; err<log->getNumErrors(); err++) {
@@ -523,20 +521,20 @@ bool Module::Finalize()
       break;
     case 3: //LIBSBML_SEV_FATAL:
       g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:  " + error->getMessage());
-      delete(testdoc);
+      delete testdoc;
       return true;
     default:
       g_registry.SetError("Unknown error when creating an SBML document--there should have only been four types, but we found a fifth?  libSBML may have been updated; try using an older version, perhaps.  Error from libSBML:  " + error->getMessage());
-      delete(testdoc);
+      delete testdoc;
       return true;
     }
   }
   if (trueerrors != "") {
     g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but this one slipped through--please let us know what happened and we'll try to fix it.  Error message(s) from libSBML:\n" + trueerrors);
-    delete(testdoc);
+    delete testdoc;
     return true;
   }
-  delete(testdoc);
+  delete testdoc;
 #endif
   return false;
 }
@@ -1632,7 +1630,6 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var)
     else if (!formula->IsDouble()) { //if it was a double, we already dealt with it.
       InitialAssignment* ia = sbmlmod->createInitialAssignment();
       ia->setSymbol(var->GetNameDelimitedBy(cc));
-      ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
       ia->setMath(math);
     }
     delete math;
