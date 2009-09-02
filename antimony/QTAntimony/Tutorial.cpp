@@ -3,6 +3,7 @@
 Tutorial::Tutorial(QWidget* parent)
         :QTextBrowser(parent)
 {
+	setOpenLinks(false);
 #include "Tutorial.xxd"
     std::string tutorial_string;
     tutorial_string.assign(Tutorial_html, Tutorial_html_len);

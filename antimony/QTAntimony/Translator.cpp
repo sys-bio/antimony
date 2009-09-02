@@ -24,6 +24,7 @@ using namespace SystemsBiologyWorkbench;
 
 #include "antimony_api.h"
 
+#include <cassert>
 #include <QTabWidget>
 #include <QAction>
 #include <QMenu>

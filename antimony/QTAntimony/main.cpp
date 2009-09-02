@@ -32,10 +32,10 @@ void myMessageOutput(QtMsgType type, const char *msg)
 int main(int argc, char *argv[])
 {
 	
-//#ifdef SBW_INTEGRATION
+#ifdef SBW_INTEGRATION
     bool sbwon = true;
     try {
-	SBWAntimony *service = new SBWAntimony();
+	SBWAntimony service;
 	
 	static const std::string Name("QTAntimony");
 	static const std::string ServiceName("QTAntimony");
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	static const std::string CategoryName("/Analysis");
 		
 	ModuleImpl oModule(Name, DisplayName, UniqueModule, HelpString);
-	oModule.addServiceObject(ServiceName, DisplayName, CategoryName, service, HelpString);
+	oModule.addServiceObject(ServiceName, DisplayName, CategoryName, &service, HelpString);
 
 	// register if neccessary
         for (int arg=1; arg<argc; arg++) {
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
         sbwon = false;
     }
 	
-//#endif
+#endif
 	
     qInstallMsgHandler(myMessageOutput);
     QTAntimony a(argc, argv);
