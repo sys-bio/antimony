@@ -1,0 +1,163 @@
+//Created by libAntimony v1.3
+model Bruggeman2005_AmmoniumAssimilation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species PII in compartment_, UTP in compartment_, PIIUMP in compartment_;
+  species PPi in compartment_, GLN in compartment_, PIIUMP2 in compartment_;
+  species PIIUMP3 in compartment_, UMP in compartment_, GS in compartment_;
+  species AMP in compartment_, NH4 in compartment_, KG in compartment_, NADPH in compartment_;
+  species GLU in compartment_, NADP in compartment_, AZGLU in compartment_;
+  species ATP in compartment_, ADP in compartment_, AZglu in compartment_;
+  species AZGLN in compartment_, AZgln in compartment_, P_i in compartment_;
+
+  // Assignment Rules:
+  vAPP_GS := aamp * camp / ((1 + pow(12, n1amp) * pow(AMP / (bamp * GStot), n1amp)) * (1 + pow(12, n2amp) * pow(AMP / (damp * GStot), n2amp))) * Vgs
+  nAMP := 12 * AMP / GStot
+  PIIKG1 := 3 * PII * KG / Kd1 / (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3))
+  PIIUMP3KG3 := PIIUMP3 * pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump) / (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump))
+
+  // Reactions:
+  vut1: PII + UTP -> PIIUMP + PPi; compartment_ * (kcatut * UT * UTP * PII / (Kutipii * Kututp * (1 + GLN / Kglnut) * (1 + UTP / Kututp + (PII + PIIUMP + PIIUMP2) / Kutipii + UTP * (PII + PIIUMP + PIIUMP2) / (Kutipii * Kututp) + PPi * UTP * (PII + PIIUMP + PIIUMP2) / (Kutipii * Kutippi * Kututp) + Kutpii * (PIIUMP + PIIUMP2 + PIIUMP3) / (Kutipii * Kutpiiump))));
+  vur1: PIIUMP -> PII + UMP; compartment_ * (kcatur * UR * PIIUMP / (Kurpiiump * (1 + Kglnur / GLN) * (1 + (1 + UMP / Kurump) * (PIIUMP + PIIUMP2 + PIIUMP3) / Kurpiiump)));
+  vut2: PIIUMP + UTP -> PIIUMP2 + PPi; compartment_ * (kcatut * UT * UTP * PIIUMP / (Kutipii * Kututp * (1 + GLN / Kglnut) * (1 + UTP / Kututp + (PII + PIIUMP + PIIUMP2) / Kutipii + UTP * (PII + PIIUMP + PIIUMP2) / (Kutipii * Kututp) + PPi * UTP * (PII + PIIUMP + PIIUMP2) / (Kutipii * Kutippi * Kututp) + Kutpii * (PIIUMP + PIIUMP2 + PIIUMP3) / (Kutipii * Kutpiiump))));
+  vur2: PIIUMP2 -> PIIUMP + UMP; compartment_ * (kcatur * UR * PIIUMP2 / (Kurpiiump * (1 + Kglnur / GLN) * (1 + (1 + UMP / Kurump) * (PIIUMP + PIIUMP2 + PIIUMP3) / Kurpiiump)));
+  vut3: PIIUMP2 + UTP -> PIIUMP3 + PPi; compartment_ * (kcatut * UT * UTP * PIIUMP2 / (Kutipii * Kututp * (1 + GLN / Kglnut) * (1 + UTP / Kututp + (PII + PIIUMP + PIIUMP2) / Kutipii + UTP * (PII + PIIUMP + PIIUMP2) / (Kutipii * Kututp) + PPi * UTP * (PII + PIIUMP + PIIUMP2) / (Kutipii * Kutippi * Kututp) + Kutpii * (PIIUMP + PIIUMP2 + PIIUMP3) / (Kutipii * Kutpiiump))));
+  vur3: PIIUMP3 -> PIIUMP2 + UMP; compartment_ * (kcatur * UR * PIIUMP3 / (Kurpiiump * (1 + Kglnur / GLN) * (1 + (1 + UMP / Kurump) * (PIIUMP + PIIUMP2 + PIIUMP3) / Kurpiiump)));
+  vad: GS -> AMP; compartment_ * (Vad * GS * (b1 * GLN / Kadgln + 3 * a1 * KG * PII / (Kadpiikg * Kd1 * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3))) + 3 * c1 * KG * GLN * PII / (Kadgln * Kadpiikg * Kd1 * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3)))) / ((Kadgs + GS) * (1 + GLN / Kadgln + 3 * KG * PII / (Kadpiikg * Kd1 * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3))) + 3 * KG * GLN * PII / (d1 * Kadgln * Kadpiikg * Kd1 * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3))))));
+  vdead: AMP -> GS; compartment_ * (Vdead * AMP * (f1 * GLN / Kdeadgln + 3 * e1 * KG * PII / (Kd1 * Kdeadpiikg * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3))) + 3 * h1 * KG * GLN * PII / (Kd1 * Kdeadgln * Kdeadpiikg * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3))) + g1 * pow(KG, 3) * PIIUMP3 / (Kd1piiump * Kd2piiump * Kd3piiump * Kdeadpiiu * (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump))) + j1 * pow(KG, 3) * GLN * PIIUMP3 / (Kd1piiump * Kd2piiump * Kd3piiump * Kdeadgln * Kdeadpiiu * (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump))) + 3 * i1 * pow(KG, 4) * PII * PIIUMP3 / (Kd1 * Kd1piiump * Kd2piiump * Kd3piiump * Kdeadpiikg * Kdeadpiiu * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3)) * (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump))) + 3 * k1 * pow(KG, 4) * GLN * PII * PIIUMP3 / (Kd1 * Kd1piiump * Kd2piiump * Kd3piiump * Kdeadgln * Kdeadpiikg * Kdeadpiiu * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3)) * (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump)))) / ((Kdeadgsa + AMP) * (1 + GLN / Kdeadgln + 3 * KG * PII / (Kd1 * Kdeadpiikg * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3))) + 3 * KG * GLN * PII / (Kd1 * Kdeadgln * Kdeadpiikg * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3)) * l1) + pow(KG, 3) * PIIUMP3 / (Kd1piiump * Kd2piiump * Kd3piiump * Kdeadpiiu * (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump))) + pow(KG, 3) * GLN * PIIUMP3 / (Kd1piiump * Kd2piiump * Kd3piiump * Kdeadgln * Kdeadpiiu * (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump)) * n1) + 3 * pow(KG, 4) * PII * PIIUMP3 / (Kd1 * Kd1piiump * Kd2piiump * Kd3piiump * Kdeadpiikg * Kdeadpiiu * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3)) * (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump)) * m1) + 3 * pow(KG, 4) * GLN * PII * PIIUMP3 / (Kd1 * Kd1piiump * Kd2piiump * Kd3piiump * Kdeadgln * Kdeadpiikg * Kdeadpiiu * (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3)) * (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump)) * o1))));
+  vgdh: NH4 + KG + NADPH -> GLU + NADP; compartment_ * (Vgdh * (KG * NADPH * NH4 - NADP * GLU / Keqgdh) / (Kgdhkg * Kgdhnadph * Kgdhnh * (1 + NADP / Kgdhnadp + NADPH / Kgdhnadph) * (1 + NH4 / Kgdhnh) * (1 + KG / Kgdhkg + GLU / Kgdhglu)));
+  vgog: GLN + NADPH + KG -> 2GLU + NADP; compartment_ * (KG * NADPH * Vgog * GLN / (Kgoggln * Kgogkg * Kgognadph * (1 + NADP / Kgognadp + NADPH / Kgognadph) * (1 + AZGLU / Kgogaz) * (1 + KG / Kgogkg + GLU / Kgogglu) * (1 + GLN / Kgoggln + GLU / Kgogglu)));
+  vgs: GLU + ATP + NH4 -> P_i + GLN + ADP; compartment_ * (aamp * camp * Vgs * (-(P_i * ADP * GLN / Keq) + NH4 * ATP * GLU) / (Kgsatp * Kgsglu * Kgsnh * (1 + P_i / Kgspi + ADP / Kgsadp + P_i * ADP / (Kgsadp * Kgspi) + ATP / Kgsatp) * (1 + NH4 / Kgsnh + GLN / Kgsgln + NH4 * GLN / (Kgsgln * Kgsnh) + GLU / Kgsglu + NH4 * GLU / (Kgsglu * Kgsnh)) * (1 + pow(12, n1amp) * pow(AMP / (bamp * GStot), n1amp)) * (1 + pow(12, n2amp) * pow(AMP / (damp * GStot), n2amp))));
+  vgludem: GLU -> AZGLU; compartment_ * (Vgludem * (-(AZGLU / Kgludemeq) + GLU) / (Kgludemglu * (1 + AZGLU / Kgludemazglu + GLU / Kgludemglu)));
+  vazgludem: AZGLU -> AZglu; compartment_ * (Vazgludem * (-(AZglu / Kazgludemeq) + AZGLU) / (Kazgludemazglu * (1 + AZglu / Kazgludemazinter + AZGLU / Kazgludemazglu)));
+  vglndem: GLN -> AZGLN; compartment_ * (Vglndem * (-(AZGLN / Kglndemeq) + GLN) / (Kglndemgln * (1 + AZGLN / Kglndemazgln + GLN / Kglndemgln)));
+  vazglndem: AZGLN -> AZgln; compartment_ * (Vazglndem * (-(AZgln / Kazglndemeq) + AZGLN) / (Kazglndemazgln * (1 + AZgln / Kazglndemazinter + AZGLN / Kazglndemazgln)));
+  vatpase: ADP -> ATP; compartment_ * (Vadp * ADP / (Kadp + ADP));
+
+  // Species initializations:
+  PII = 0.003;
+  UTP = 0.5;
+  PIIUMP = 0;
+  PPi = 0.05;
+  GLN = 1;
+  PIIUMP2 = 0;
+  PIIUMP3 = 0;
+  UMP = 0.01;
+  GS = 0.014;
+  AMP = 0;
+  NH4 = 0.05;
+  KG = 0.2;
+  NADPH = 0.15;
+  GLU = 1;
+  NADP = 0.05;
+  AZGLU = 1;
+  ATP = 2.685;
+  ADP = 2.685;
+  AZglu = 0.1;
+  AZGLN = 1;
+  AZgln = 0.1;
+  P_i = 10;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  UT = 0.0006;
+  kcatut = 137;
+  Kglnut = 0.07;
+  Kutipii = 0.0018;
+  Kutpii = 0.003;
+  Kutpiiump = 0.0035;
+  Kututp = 0.04;
+  Kutippi = 0.1135;
+  UR = 0.0006;
+  kcatur = 5.5;
+  Kurpiiump = 0.0023;
+  Kurump = 8.4;
+  Kglnur = 0.07;
+  a1 = 1e-22;
+  b1 = 0.5166;
+  c1 = 0.5974;
+  d1 = 0.0387;
+  Vad = 0.5;
+  Kadpiikg = 1.052e-05;
+  Kadgln = 0.9714;
+  Kadgs = 0.001703;
+  e1 = 1e-22;
+  f1 = 2.766;
+  g1 = 3.323;
+  h1 = 0.2148;
+  i1 = 1e-22;
+  j1 = 1e-22;
+  k1 = 1e-22;
+  l1 = 0.02316;
+  m1 = 0.8821;
+  n1 = 8.491;
+  o1 = 0.8791;
+  Vdead = 0.5;
+  Kdeadpiikg = 2.274e-06;
+  Kdeadgln = 0.04444;
+  Kdeadpiiu = 1.805e-05;
+  Kdeadgsa = 0.0002015;
+  Vgdh = 360;
+  Kgdhkg = 0.32;
+  Kgdhnh = 1.1;
+  Kgdhglu = 10;
+  Kgdhnadph = 0.04;
+  Kgdhnadp = 0.042;
+  Keqgdh = 1290;
+  Kgdhazglu = 2.5;
+  Vgog = 85;
+  Kgoggln = 0.175;
+  Kgogkg = 0.007;
+  Kgognadph = 0.0015;
+  Kgogglu = 11;
+  Kgognadp = 0.0037;
+  Kgogaz = 0.65;
+  Vgs = 600;
+  aamp = 10;
+  bamp = 2.3667;
+  camp = 0.1012;
+  damp = 10.8688;
+  n1amp = 1.1456;
+  n2amp = 19.2166;
+  Kgseq = 460;
+  Kgsatp = 0.35;
+  Kgsglu = 4.1;
+  Kgsnh = 0.1;
+  Kgsadp = 0.0585;
+  Kgspi = 3.7;
+  Kgsgln = 5.65;
+  Keq = 460;
+  Vgludem = 120;
+  Kgludemglu = 8;
+  Kgludemeq = 10000000000;
+  Kgludemazglu = 0.5;
+  Vglndem = 70;
+  Kglndemgln = 2;
+  Kglndemeq = 10000000000;
+  Kglndemazgln = 0.25;
+  Vazglndem = 20;
+  Kazglndemazgln = 1;
+  Kazglndemeq = 10000000000;
+  Kazglndemazinter = 0.5;
+  Vazgludem = 30;
+  Kazgludemazglu = 0.3;
+  Kazgludemeq = 10000000000;
+  Kazgludemazinter = 0.5;
+  Vadp = 100;
+  Kadp = 0.5;
+  ATPtot = 5.37;
+  GStot = 0.014;
+  PIItot = 0.003;
+  Kd1 = 0.005;
+  Kd2 = 0.15;
+  Kd3 = 0.15;
+  Kd1piiump = 0.025;
+  Kd2piiump = 0.15;
+  Kd3piiump = 0.15;
+
+  var vAPP_GS, nAMP, PIIKG1, PIIUMP3KG3;
+  const UTP, PPi, UMP, NH4, KG, NADPH, NADP, AZglu, AZgln, P_i;
+end

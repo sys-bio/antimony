@@ -1,0 +1,92 @@
+//Created by libAntimony v1.3
+model Singh2006_TCA_Ecoli_glucose()
+
+  // Compartments and Species:
+  compartment cell;
+  species aca in cell, oaa in cell, coa in cell, cit in cell, icit in cell;
+  species akg in cell, sca in cell, suc in cell, fa in cell, mal in cell;
+  species gly in cell, biosyn in cell;
+
+  // Reactions:
+  CS: aca + oaa -> coa + cit; cell * ((CS_Vf_cs * (aca / CS_Kaca_cs) * (oaa / CS_Koaa_cs) - CS_Vr_cs * (coa / CS_Kcoa_cs) * (cit / CS_Kcit_cs)) / ((1 + aca / CS_Kaca_cs + coa / CS_Kcoa_cs) * (1 + oaa / CS_Koaa_cs + cit / CS_Kcit_cs)));
+  ACN: cit -> icit; cell * ((ACN_Vf_acn * (cit / ACN_Kcit_acn) - ACN_Vr_acn * (icit / ACN_Kicit_acn)) / (1 + cit / ACN_Kcit_acn + icit / ACN_Kicit_acn));
+  ICD: icit -> akg; cell * ((ICD_Vf_icd * (icit / ICD_Kicit_icd) - ICD_Vr_icd * (akg / ICD_Kakg_icd)) / (1 + icit / ICD_Kicit_icd + akg / ICD_Kakg_icd));
+  KDH: akg -> sca; cell * ((KDH_Vf_kdh * (akg / KDH_Kakg_kdh) - KDH_Vr_kdh * (sca / KDH_Ksca_kdh)) / (1 + akg / KDH_Kakg_kdh + sca / KDH_Ksca_kdh));
+  ScAS: sca -> suc; cell * ((ScAS_Vf_scas * (sca / ScAS_Ksca_scas) - ScAS_Vr_scas * (suc / ScAS_Ksuc_scas)) / (1 + sca / ScAS_Ksca_scas + suc / ScAS_Ksuc_scas));
+  SDH: suc -> fa; cell * ((SDH_Vf_sdh * (suc / SDH_Ksuc_sdh) - SDH_Vr_sdh * (fa / SDH_Kfa_sdh)) / (1 + suc / SDH_Ksuc_sdh + fa / SDH_Kfa_sdh));
+  FUM: fa -> mal; cell * ((FUM_Vf_fum * (fa / FUM_Kfa_fum) - FUM_Vr_fum * (mal / FUM_Kmal_fum)) / (1 + fa / FUM_Kfa_fum + mal / FUM_Kmal_fum));
+  MDH: mal -> oaa; cell * ((MDH_Vf_mdh * (mal / MDH_Kmal_mdh) - MDH_Vr_mdh * (oaa / MDH_Koaa_mdh)) / (1 + mal / MDH_Kmal_mdh + oaa / MDH_Koaa_mdh));
+  ICL: icit -> suc + gly; cell * ((ICL_Vf_icl * (icit / ICL_Kicit_icl) - ICL_Vr_icl * (suc / ICL_Ksuc_icl) * (gly / ICL_Kgly_icl)) / (1 + icit / ICL_Kicit_icl + suc / ICL_Ksuc_icl + gly / ICL_Kgly_icl + icit / ICL_Kicit_icl * (suc / ICL_Ksuc_icl) + suc / ICL_Ksuc_icl * (gly / ICL_Kgly_icl)));
+  MS: gly + aca -> mal + coa; cell * ((MS_Vf_ms * (gly / MS_Kgly_ms) * (aca / MS_Kaca_ms) - MS_Vr_ms * (mal / MS_Kmal_ms) * (coa / MS_Kcoa_ms)) / ((1 + gly / MS_Kgly_ms + mal / MS_Kmal_ms) * (1 + aca / MS_Kaca_ms + coa / MS_Kcoa_ms)));
+  SYN: akg -> biosyn; cell * 0.188 * ((SYN_Vf_icd * (icit / SYN_Kicit_icd) - SYN_Vr_icd * (akg / SYN_Kakg_icd)) / (1 + icit / SYN_Kicit_icd + akg / SYN_Kakg_icd));
+
+  // Species initializations:
+  aca = 0.5;
+  oaa = 0.004;
+  coa = 0.0001;
+  cit = 3;
+  icit = 0.018;
+  akg = 0.2;
+  sca = 0.04;
+  suc = 0.6;
+  fa = 0.3;
+  mal = 1.8;
+  gly = 4;
+  biosyn = 0.1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  CS_Vf_cs = 91.2;
+  CS_Kaca_cs = 0.03;
+  CS_Koaa_cs = 0.07;
+  CS_Vr_cs = 0.912;
+  CS_Kcoa_cs = 0.3;
+  CS_Kcit_cs = 0.7;
+  ACN_Vf_acn = 91.2;
+  ACN_Kcit_acn = 1.7;
+  ACN_Vr_acn = 0.912;
+  ACN_Kicit_acn = 3.33;
+  ICD_Vf_icd = 14.72;
+  ICD_Kicit_icd = 0.008;
+  ICD_Vr_icd = 0.1472;
+  ICD_Kakg_icd = 0.13;
+  KDH_Vf_kdh = 35.84;
+  KDH_Kakg_kdh = 0.1;
+  KDH_Vr_kdh = 0.3584;
+  KDH_Ksca_kdh = 1;
+  ScAS_Vf_scas = 3.5;
+  ScAS_Ksca_scas = 0.02;
+  ScAS_Vr_scas = 0.035;
+  ScAS_Ksuc_scas = 5;
+  SDH_Vf_sdh = 7.38;
+  SDH_Ksuc_sdh = 0.02;
+  SDH_Vr_sdh = 7.31;
+  SDH_Kfa_sdh = 0.4;
+  FUM_Vf_fum = 44.64;
+  FUM_Kfa_fum = 0.15;
+  FUM_Vr_fum = 37.2;
+  FUM_Kmal_fum = 0.04;
+  MDH_Vf_mdh = 356.64;
+  MDH_Kmal_mdh = 2.6;
+  MDH_Vr_mdh = 353.11;
+  MDH_Koaa_mdh = 0.04;
+  ICL_Vf_icl = 1.9;
+  ICL_Kicit_icl = 0.604;
+  ICL_Vr_icl = 0.019;
+  ICL_Ksuc_icl = 0.59;
+  ICL_Kgly_icl = 0.13;
+  MS_Vf_ms = 1.9;
+  MS_Kgly_ms = 2;
+  MS_Kaca_ms = 0.01;
+  MS_Vr_ms = 0.019;
+  MS_Kmal_ms = 1;
+  MS_Kcoa_ms = 0.1;
+  SYN_Vf_icd = 14.72;
+  SYN_Kicit_icd = 0.008;
+  SYN_Vr_icd = 0.1472;
+  SYN_Kakg_icd = 0.13;
+
+  const aca, oaa, coa, biosyn;
+end

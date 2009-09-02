@@ -1,0 +1,54 @@
+//Created by libAntimony v1.3
+model Ma2002_cAMP_oscillations()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species ACA in compartment_, CAR1 in compartment_, PKA in compartment_;
+  species incAMP in compartment_, ERK2 in compartment_, REGA in compartment_;
+  species excAMP in compartment_;
+
+  // Reactions:
+  v1:  -> ACA; k1 * CAR1;
+  v2: ACA -> ; k2 * ACA * PKA;
+  v3:  -> PKA; k3 * incAMP;
+  v4: PKA -> ; k4 * PKA;
+  v5:  -> ERK2; k5 * CAR1;
+  v6: ERK2 -> ; k6 * PKA * ERK2;
+  v7:  -> REGA; k7;
+  v8: REGA -> ; k8 * ERK2 * REGA;
+  v9:  -> incAMP; k9 * ACA;
+  v10: incAMP -> ; k10 * REGA * incAMP;
+  v11:  -> excAMP; k11 * ACA;
+  v12: excAMP -> ; k12 * excAMP;
+  v13:  -> CAR1; k13 * excAMP;
+  v14: CAR1 -> ; k14 * CAR1;
+
+  // Species initializations:
+  ACA = 3.39;
+  CAR1 = 2.45;
+  PKA = 1.6;
+  incAMP = 1.2;
+  ERK2 = 1.13;
+  REGA = 0.9;
+  excAMP = 0.48;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 2;
+  k2 = 0.9;
+  k3 = 2.5;
+  k4 = 1.5;
+  k5 = 0.6;
+  k6 = 0.8;
+  k7 = 1;
+  k8 = 1.3;
+  k9 = 0.3;
+  k10 = 0.8;
+  k11 = 0.7;
+  k12 = 4.9;
+  k13 = 23;
+  k14 = 4.5;
+
+end

@@ -1,0 +1,211 @@
+//Created by libAntimony v1.3
+model untitled()
+
+  // Compartments and Species:
+  compartment cell, mitochondrion;
+  species L in cell, R in cell, flip in cell, pC8 in cell, C8 in cell, C6 in cell;
+  species BAR in cell, pC3 in cell, C3 in cell, Bid in cell, tBid in cell;
+  species pC6 in cell, XIAP in cell, C3_Ub in cell, PARP in cell, CPARP in cell;
+  species Smac in cell, Bcl2c in cell, Bax in cell, Bax_hash in cell, Bcl2 in mitochondrion;
+  species L_R in cell, R_hash in cell, flip_R_hash in cell, R_hash_pC8 in cell;
+  species C6_pC8 in cell, BAR_C8 in cell, C8_pC3 in cell, pC3_Apop in cell;
+  species Apop in cell, C8_Bid in cell, C3_pC6 in cell, XIAP_C3 in cell, PARP_C3 in cell;
+  species Apop_XIAP in cell, Smac_XIAP in cell, Bcl2c_tBid in cell, Bax_tBid in cell;
+  species Baxm_Bcl2 in mitochondrion, Bax4 in mitochondrion, Bax2_Bcl2 in mitochondrion;
+  species Bax4_Bcl2 in mitochondrion, M in mitochondrion, Bax4_M in mitochondrion;
+  species M_hash in mitochondrion, Smacm in mitochondrion, M_hash_Smacm in mitochondrion;
+  species Smacr in mitochondrion, CytoCm in mitochondrion, M_hash_CytoCm in mitochondrion;
+  species CytoCr in mitochondrion, CytoC in cell, Apaf in cell, CytoC_Apaf in cell;
+  species Apaf_hash in cell, pC9 in cell, Baxm in mitochondrion, Bax2 in mitochondrion;
+
+  // Assignment Rules:
+  pC3_frac := (pC3 + C8_pC3 + pC3_Apop) / C3_tot
+  C3_frac := (C3 + C3_pC6 + XIAP_C3 + PARP_C3) / C3_tot
+  C3_UB_frac := C3_Ub / C3_tot
+  cPARP_frac := CPARP / (CPARP + PARP + PARP_C3)
+  C3_tot := pC3 + C8_pC3 + pC3_Apop + C3 + C3_pC6 + XIAP_C3 + PARP_C3 + C3_Ub
+  fC3_fract := C3 / C3_tot
+
+  // Reactions:
+  re1: L + R -> L_R; cell * (L * R * k1 - L_R * k_1);
+  re2: L_R -> R_hash; cell * L_R * kc1;
+  re3: R_hash + flip -> flip_R_hash; cell * (R_hash * flip * k2 - flip_R_hash * k_2);
+  re4: R_hash + pC8 -> R_hash_pC8; cell * (R_hash * pC8 * k3 - R_hash_pC8 * k_3);
+  re5: R_hash_pC8 -> C8 + R_hash; cell * R_hash_pC8 * kc3;
+  re6: C6 + pC8 -> C6_pC8; cell * (C6 * pC8 * k7 - C6_pC8 * k_7);
+  re7: C6_pC8 -> C8 + C6; cell * C6_pC8 * kc7;
+  re8: C8 + BAR -> BAR_C8; cell * (C8 * BAR * k4 - BAR_C8 * k_4);
+  re9: pC3 + C8 -> C8_pC3; cell * (pC3 * C8 * k5 - C8_pC3 * k_5);
+  re10: C8_pC3 -> C8 + C3; cell * C8_pC3 * kc5;
+  re11: C8 + Bid -> C8_Bid; cell * (C8 * Bid * k10 - C8_Bid * k_10);
+  re12: C8_Bid -> tBid + C8; cell * C8_Bid * kc10;
+  re13: pC3 + Apop -> pC3_Apop; cell * (pC3 * Apop * k25 - pC3_Apop * k_25);
+  re14: pC3_Apop -> C3 + Apop; cell * pC3_Apop * kc25;
+  re15: C3 + pC6 -> C3_pC6; cell * (C3 * pC6 * k6 - C3_pC6 * k_6);
+  re16: C3_pC6 -> C3 + C6; cell * C3_pC6 * kc6;
+  re17: C3 + XIAP -> XIAP_C3; cell * (C3 * XIAP * k8 - XIAP_C3 * k_8);
+  re18: XIAP_C3 -> C3_Ub + XIAP; cell * XIAP_C3 * kc8;
+  re19: PARP + C3 -> PARP_C3; cell * (PARP * C3 * k9 - PARP_C3 * k_9);
+  re20: PARP_C3 -> CPARP + C3; cell * PARP_C3 * kc9;
+  re21: XIAP + Apop -> Apop_XIAP; cell * (XIAP * Apop * k27 - Apop_XIAP * k_27);
+  re22: XIAP + Smac -> Smac_XIAP; cell * (XIAP * Smac * k28 - Smac_XIAP * k_28);
+  re23: tBid + Bcl2c -> Bcl2c_tBid; cell * (tBid * Bcl2c * k11 - Bcl2c_tBid * k_11);
+  re24: tBid + Bax -> Bax_tBid; cell * (tBid * Bax * k12 - Bax_tBid * k_12);
+  re25: Bax_tBid -> tBid + Bax_hash; cell * Bax_tBid * kc12;
+  re26: Bax_hash -> Baxm; cell * (Bax_hash * k13 - Baxm * k_13);
+  re27: Baxm + Bcl2 -> Baxm_Bcl2; mitochondrion * (Baxm * Bcl2 * k14 / v - Baxm_Bcl2 * k_14);
+  re29: Baxm + Baxm -> Bax2; mitochondrion * (Baxm * Baxm * k15 / v - Bax2 * k_15);
+  re30: Bax2 + Bax2 -> Bax4; mitochondrion * (Bax2 * Bax2 * k17 / v - Bax4 * k_17);
+  re31: Bcl2 + Bax2 -> Bax2_Bcl2; mitochondrion * (Bcl2 * Bax2 * k16 / v - Bax2_Bcl2 * k_16);
+  re32: Bcl2 + Bax4 -> Bax4_Bcl2; mitochondrion * (Bcl2 * Bax4 * k18 / v - Bax4_Bcl2 * k_18);
+  re33: Bax4 + M -> Bax4_M; mitochondrion * (Bax4 * M * k19 / v - Bax4_M * k_19);
+  re34: Bax4_M -> M_hash; mitochondrion * Bax4_M * kc19;
+  re35: M_hash + Smacm -> M_hash_Smacm; mitochondrion * (M_hash * Smacm * k21 / v - M_hash_Smacm * k_21);
+  re36: M_hash_Smacm -> M_hash + Smacr; mitochondrion * M_hash_Smacm * kc21;
+  re37: Smacr -> Smac; cell * (Smacr * k26 - Smac * k_26);
+  re38: M_hash + CytoCm -> M_hash_CytoCm; mitochondrion * (M_hash * CytoCm * k20 / v - M_hash_CytoCm * k_20);
+  re39: M_hash_CytoCm -> CytoCr + M_hash; mitochondrion * M_hash_CytoCm * kc20;
+  re40: CytoCr -> CytoC; cell * (CytoCr * k22 - CytoC * k_22);
+  re41: CytoC + Apaf -> CytoC_Apaf; cell * (CytoC * Apaf * k23 - CytoC_Apaf * k_23);
+  re42: CytoC_Apaf -> CytoC + Apaf_hash; cell * CytoC_Apaf * kc23;
+  re43: Apaf_hash + pC9 -> Apop; cell * (Apaf_hash * pC9 * k24 - Apop * k_24);
+
+  // Species initializations:
+  L = 3000;
+  R = 200;
+  flip = 100;
+  pC8 = 20000;
+  C8 = 0;
+  C6 = 0;
+  BAR = 1000;
+  pC3 = 10000;
+  C3 = 0;
+  Bid = 40000;
+  tBid = 0;
+  pC6 = 10000;
+  XIAP = 100000;
+  C3_Ub = 0;
+  PARP = 1000000;
+  CPARP = 0;
+  Smac = 0;
+  Bcl2c = 20000;
+  Bax = 100000;
+  Bax_hash = 0;
+  Bcl2 = 20000;
+  L_R = 0;
+  R_hash = 0;
+  flip_R_hash = 0;
+  R_hash_pC8 = 0;
+  C6_pC8 = 0;
+  BAR_C8 = 0;
+  C8_pC3 = 0;
+  pC3_Apop = 0;
+  Apop = 0;
+  C8_Bid = 0;
+  C3_pC6 = 0;
+  XIAP_C3 = 0;
+  PARP_C3 = 0;
+  Apop_XIAP = 0;
+  Smac_XIAP = 0;
+  Bcl2c_tBid = 0;
+  Bax_tBid = 0;
+  Baxm_Bcl2 = 0;
+  Bax4 = 0;
+  Bax2_Bcl2 = 0;
+  Bax4_Bcl2 = 0;
+  M = 500000;
+  Bax4_M = 0;
+  M_hash = 0;
+  Smacm = 100000;
+  M_hash_Smacm = 0;
+  Smacr = 0;
+  CytoCm = 500000;
+  M_hash_CytoCm = 0;
+  CytoCr = 0;
+  CytoC = 0;
+  Apaf = 100000;
+  CytoC_Apaf = 0;
+  Apaf_hash = 0;
+  pC9 = 100000;
+  Baxm = 0;
+  Bax2 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+  mitochondrion = 1;
+
+  // Variable initializations:
+  k1 = 4e-07;
+  k_1 = 0.001;
+  kc1 = 1e-05;
+  k2 = 1e-06;
+  k_2 = 0.001;
+  k3 = 1e-06;
+  k_3 = 0.001;
+  kc3 = 1;
+  k4 = 1e-06;
+  k_4 = 0.001;
+  k5 = 1e-07;
+  k_5 = 0.001;
+  kc5 = 1;
+  k6 = 1e-06;
+  k_6 = 0.001;
+  kc6 = 1;
+  k7 = 3e-08;
+  k_7 = 0.001;
+  k8 = 2e-06;
+  k_8 = 0.001;
+  kc8 = 0.1;
+  k9 = 1e-06;
+  k_9 = 0.01;
+  kc9 = 1;
+  k10 = 1e-07;
+  k_10 = 0.001;
+  kc10 = 1;
+  k11 = 1e-06;
+  k_11 = 0.001;
+  k12 = 1e-07;
+  k_12 = 0.001;
+  kc12 = 1;
+  k13 = 0.01;
+  k_13 = 0.01;
+  k14 = 1e-06;
+  k_14 = 0.001;
+  k15 = 1e-06;
+  k_15 = 0.001;
+  k16 = 1e-06;
+  k_16 = 0.001;
+  k17 = 1e-06;
+  k_17 = 0.001;
+  k18 = 1e-06;
+  k_18 = 0.001;
+  k19 = 1e-06;
+  k_19 = 0.001;
+  kc19 = 1;
+  k20 = 2e-06;
+  k_20 = 0.001;
+  kc20 = 10;
+  k21 = 2e-06;
+  k_21 = 0.001;
+  kc21 = 10;
+  k22 = 0.01;
+  k_22 = 0.01;
+  k23 = 5e-07;
+  k_23 = 0.001;
+  kc23 = 1;
+  k24 = 5e-08;
+  k_24 = 0.001;
+  k25 = 5e-09;
+  k_25 = 0.001;
+  kc25 = 1;
+  k26 = 0.01;
+  k_26 = 0.01;
+  k27 = 2e-06;
+  k_27 = 0.001;
+  k28 = 7e-06;
+  k_28 = 0.001;
+  kc7 = 1;
+  v = 0.07;
+
+  var pC3_frac, C3_frac, C3_UB_frac, cPARP_frac, C3_tot, fC3_fract;
+end
