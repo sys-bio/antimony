@@ -128,7 +128,7 @@ string parseASTNodeToString(const ASTNode* ASTform) {
   setTimeName(&clone);
   char* formula = SBML_formulaToString(&clone);
   string ret = formula;
-  free(formula);
+  //free(formula);
   return ret;
 }
 
