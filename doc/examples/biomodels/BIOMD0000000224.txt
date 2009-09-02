@@ -1,0 +1,39 @@
+//Created by libAntimony v1.3
+model ICC()
+
+  // Compartments and Species:
+  compartment cytosol, ER_store;
+  species CaI in cytosol, IP3 in cytosol, CaS in ER_store, g in cytosol;
+
+  // Reactions:
+  JChannel: CaS -> CaI; (1 - g) * (A * pow(IP3 * 0.5, 4) / pow(IP3 * 0.5 + k1, 4) + L) * CaS;
+  JPump: CaI -> CaS; B * pow(CaI * 0.01, 2) / (pow(CaI * 0.01, 2) + pow(k2, 2));
+  kPLC:  -> IP3; C * (1 - k3 / (CaI * 0.01 + k3) * (1 / (1 + R)));
+  kPhosphatase: IP3 -> ; D * IP3 * 0.5;
+  inhibition_parameter1:  -> g; E * pow(CaI * 0.01, 4) * (1 - g);
+  inhibition_parameter2: g -> ; F;
+
+  // Species initializations:
+  CaI = 0.1;
+  IP3 = 0.05;
+  CaS = 1100;
+  g = 0;
+
+  // Compartment initializations:
+  cytosol = 1;
+  ER_store = 1;
+
+  // Variable initializations:
+  A = 20;
+  B = 40;
+  C = 1.1;
+  D = 2;
+  E = 1;
+  F = 0.02;
+  k1 = 0.5;
+  k2 = 0.15;
+  k3 = 1;
+  L = 0.01;
+  R = 0.09;
+
+end

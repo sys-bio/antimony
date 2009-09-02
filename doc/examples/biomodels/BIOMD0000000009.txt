@@ -9,7 +9,13 @@ model Huang1996_MAPK_ultrasens()
   species KKPase in compartment_, E1_KKK in compartment_, E2_P_KKK in compartment_;
   species P_KKK_KK in compartment_, P_KKK_P_KK in compartment_, PP_KK_K in compartment_;
   species PP_KK_P_K in compartment_, KKPase_PP_KK in compartment_, KKPase_P_KK in compartment_;
-  species KPase_PP_K in compartment_, KPase_P_K in compartment_;
+  species KPase_PP_K in compartment_, KPase_P_K in compartment_, K_PP_norm in compartment_;
+  species KK_PP_norm in compartment_, KKK_P_norm in compartment_;
+
+  // Assignment Rules:
+  K_PP_norm := (PP_K + P_K + PP_KK_K + PP_KK_P_K + KPase_PP_K + KPase_P_K) / 1.2
+  KK_PP_norm := (PP_KK + P_KK + PP_KK_K + PP_KK_P_K + KKPase_PP_KK + KKPase_P_KK) / 1.2
+  KKK_P_norm := (P_KKK + P_KKK_KK + P_KKK_P_KK) / 0.003
 
   // Reactions:
   r1a: KKK + E1 -> E1_KKK; compartment_ * (r1a_a1 * E1 * KKK - r1a_d1 * E1_KKK);
@@ -92,4 +98,5 @@ model Huang1996_MAPK_ultrasens()
   r10a_d10 = 150;
   r10b_k10 = 150;
 
+  const K_PP_norm, KK_PP_norm, KKK_P_norm;
 end

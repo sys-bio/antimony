@@ -1,0 +1,38 @@
+//Created by libAntimony v1.3
+model Valero2006_Adenine_TernaryCycle()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species ATP in compartment_, AMP in compartment_, ADP in compartment_, Pyr in compartment_;
+  species NADH in compartment_, Lac in compartment_;
+
+  // Reactions:
+  v1: ATP -> AMP; Vmapp1 * ATP / (Kmapp1 + ATP);
+  v2: ATP + AMP -> 2ADP; Vm2 * ATP * AMP / (K + Km2ATP * AMP + Km2AMP * ATP + ATP * AMP);
+  v3: ADP -> ATP + Pyr; Vmapp3 * ADP / (Kmapp3 + ADP);
+  v4: Pyr + NADH -> Lac; k4 * Pyr;
+
+  // Species initializations:
+  ATP = 16.3;
+  AMP = 0;
+  ADP = 0;
+  Pyr = 0;
+  NADH = 256;
+  Lac = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Vmapp1 = 2.3;
+  Kmapp1 = 700;
+  Vm2 = 170;
+  Km2ATP = 25;
+  Km2AMP = 110;
+  K = 71000;
+  Vmapp3 = 65;
+  Kmapp3 = 260;
+  k4 = 5;
+
+  const Lac;
+end
