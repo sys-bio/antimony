@@ -11,8 +11,8 @@ class Formula;
 std::string getNameFromSBMLObject(const SBase* sbml, std::string basename);
 //std::string getNameFromSBMLObject(std::string ID, std::string name, std::string basename);
 void setFormulaWithString(std::string formulastring, Formula* formula);
-string parseASTNodeToString(const ASTNode* ASTform);
-ASTNode* parseStringToASTNode(const string& formula);
+std::string parseASTNodeToString(const ASTNode* ASTform);
+ASTNode* parseStringToASTNode(const std::string& formula);
 #endif
 
 void FixName(std::string& name);

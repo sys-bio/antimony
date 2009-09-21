@@ -186,7 +186,7 @@ void TabManager::SetOthersTranslated(int oldtab)
 
 void TabManager::TranslateAntimony(const QString& text)
 {
-    long handle = loadString(text.toAscii().data());
+    long handle = loadString(text.toUtf8().data());
     if (handle == -1) {
         //error condition
         char* error = getLastError();
@@ -235,7 +235,7 @@ void TabManager::TranslateSBML(int tab, const QString& text)
 {
     ChangeableTextBox* tab_s = textbox(tab);
     QString oldmodelname = tab_s->GetModelName();
-    int handle = loadSBMLString(text.toAscii().data());
+    int handle = loadSBMLString(text.toUtf8().data());
     if (handle == -1) {
         char* error = getLastError();
         emit FailedSBMLTranslation();
@@ -394,7 +394,7 @@ void TabManager::startSBWAnalyzer()
         //Assume the last SBML tab is the one to export
         exporttab = textbox(count()-1);
     }
-    string sbml = exporttab->toPlainText().toAscii().constData();
+    string sbml = exporttab->toPlainText().toUtf8().constData();
     if (sbml.length() == 0) return;
     QAction *action = qobject_cast<QAction *>(sender());
     if (action)
@@ -402,8 +402,8 @@ void TabManager::startSBWAnalyzer()
         try
         {
             QStringList oModuleInfo = action->data().toStringList();
-            int nModule =  SBWLowLevel::getModuleInstance(oModuleInfo[0].toAscii().constData());
-            int nService =  SBWLowLevel::moduleFindServiceByName(nModule, oModuleInfo[1].toAscii().constData());
+            int nModule =  SBWLowLevel::getModuleInstance(oModuleInfo[0].toUtf8().constData());
+            int nService =  SBWLowLevel::moduleFindServiceByName(nModule, oModuleInfo[1].toUtf8().constData());
             int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
             DataBlockWriter args; args << sbml;
             SBWLowLevel::methodSend(nModule, nService, nMethod, args);

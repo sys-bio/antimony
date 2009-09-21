@@ -132,8 +132,8 @@ Translator::Translator(QTAntimony* app, QString filename)
             QTextStream in(&file);
             filetext = in.readAll();
             m_filewatcher->addPath(filename);
-            long SBMLHandle = loadSBMLFile(filename.toAscii().data());
-            long AntimonyHandle = loadFile(filename.toAscii().data());
+            long SBMLHandle = loadSBMLFile(filename.toUtf8().data());
+            long AntimonyHandle = loadFile(filename.toUtf8().data());
             if (SBMLHandle == -1 && AntimonyHandle != -1) {
                 //Originally Antimony
                 m_antimony->setText(filetext);

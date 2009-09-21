@@ -7,6 +7,8 @@
 #include "variable.h"
 #include "registry.h"
 
+using namespace std;
+
 // SBase objects no longer have IDs :( //update: now they do again!
 string getNameFromSBMLObject(const SBase* sbml, string basename)
 {
