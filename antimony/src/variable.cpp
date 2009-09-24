@@ -41,7 +41,6 @@ string Variable::GetNameDelimitedBy(char cc) const
   if (IsPointer()) {
     return GetSameVariable()->GetNameDelimitedBy(cc);
   }
-  //  if (m_sameVariable.size()
   string retval;
   for (size_t i=0; i<m_name.size(); i++) {
     if (i>0) {

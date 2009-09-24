@@ -16,6 +16,8 @@ private:
     bool m_usesbw;
     QString m_currentdir;
 
+    QWidget* m_basewindow;
+
 protected:
 #ifdef SBW_INTEGRATION
         bool eventFilter(QObject *obj, QEvent *oEvent);

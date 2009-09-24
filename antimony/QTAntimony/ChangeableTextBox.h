@@ -33,7 +33,6 @@ protected:
 public:
     ChangeableTextBox(QWidget* parent = 0);
     void NewlyActive();
-    bool GetTextChanged();
     virtual void ReplaceModelWithString(QString model, QString text) = 0;
     virtual void SetModelName(QString name) = 0;
     virtual QString GetModelName() = 0;

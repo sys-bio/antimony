@@ -13,7 +13,8 @@ QTAntimony::QTAntimony(int& argc, char**& argv)
         m_original(NULL),
         m_opened(false),
         m_usesbw(false),
-        m_currentdir(QDir::homePath())
+        m_currentdir(QDir::homePath()),
+        m_basewindow(NULL)
 {
 #ifdef SBW_INTEGRATION
     m_usesbw = true;
@@ -44,12 +45,14 @@ void QTAntimony::OpenFiles(QStringList filenames)
 void QTAntimony::OpenNewFile()
 {
     QWidget* focus = focusWidget();
+    m_basewindow = focus;
     QStringList files = QFileDialog::getOpenFileNames(
                          focus,
                          tr("Select one or more files to open"),
                          m_currentdir,
                          tr("Antimony and SBML files (*.txt *.xml *.sbml);;Antimony files (*.txt);;SBML files (*.xml *.sbml);;All files(*.*)"));
     OpenFiles(files);
+    m_basewindow = NULL;
 }
 
 QString QTAntimony::GetCurrentDir()
@@ -90,7 +93,10 @@ void QTAntimony::SaveCurrentDirectory(QString dir)
 
 void QTAntimony::DisplayWindow(QMainWindow* t) {
     if (t==NULL) return;
-    QWidget* focus = focusWidget();
+    QWidget* focus = m_basewindow;
+    if (focus==NULL) {
+        focus = focusWidget();
+    }
     QRect desk = desktop()->availableGeometry(focus);
     if (focus==NULL) {
         desk = desktop()->availableGeometry(desktop()->primaryScreen());
@@ -121,6 +127,7 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
         t->setGeometry(window);
     }
     t->show();
+    m_basewindow = t;
 }
 
 void QTAntimony::SetUseSBW(bool on)

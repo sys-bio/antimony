@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QPrintDialog>
 #include <QAction>
+#include <QFontDialog>
 #include <vector>
 
 
@@ -84,6 +85,55 @@ void TabManager::revertToTranslated()
 void TabManager::revertToOriginal()
 {
     GetActiveEditor()->RevertToOriginal();
+}
+
+void TabManager::setAntimonyFont()
+{
+    bool ok;
+    QFont font = QFontDialog::getFont(&ok, textbox(0)->font(), this);
+    if (ok) {
+        // the user clicked OK and font is set to the font the user selected
+        textbox(0)->setFont(font);
+    }
+}
+
+void TabManager::setSBMLFont()
+{
+    bool ok;
+    QFont font = QFontDialog::getFont(&ok, textbox(1)->font(), this);
+    if (ok) {
+        // the user clicked OK and font is set to the font the user selected
+        for (int tab=1; tab<count(); tab++) {
+            textbox(tab)->setFont(font);
+        }
+    }
+}
+
+
+void TabManager::zoomIn()
+{
+    int index = currentIndex();
+    if (index==0) {
+        textbox(index)->zoomIn();
+    }
+    else {
+        for (int ind=1; ind<count(); ind++) {
+            textbox(ind)->zoomIn();
+        }
+    }
+}
+
+void TabManager::zoomOut()
+{
+    int index = currentIndex();
+    if (index==0) {
+        textbox(index)->zoomOut();
+    }
+    else {
+        for (int ind=1; ind<count(); ind++) {
+            textbox(ind)->zoomOut();
+        }
+    }
 }
 
 ChangeableTextBox* TabManager::GetActiveEditor()
@@ -310,7 +360,7 @@ bool TabManager::CanIClose()
     QString message = "The ";
     vector<int> unsaved;
     for (int tab=0; tab<count(); tab++) {
-        if (!textbox(tab)->IsSaved()) {
+        if (!(textbox(tab)->IsTranslated()) && !(textbox(tab)->IsSaved())) {
             if (tab==0) {
                 message += "Antimony tab";
                 unsaved.push_back(tab);
