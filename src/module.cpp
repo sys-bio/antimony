@@ -34,7 +34,7 @@ Module::Module(string name)
     m_returnvalue(),
     m_currentexportvar(0),
 #ifndef NSBML
-    m_sbml(2, 4),
+    m_sbml(),
     m_libsbml_info(""),
     m_libsbml_warnings(""),
 #endif
@@ -44,6 +44,7 @@ Module::Module(string name)
 #endif
     m_uniquevars()
 {
+  m_sbml.setLevelAndVersion(2, 4); //LS DEBUG:  bug in libsbml requires this (9/23/09)
 }
 
 Module::Module(const Module& src, string newtopname, string modulename)
@@ -55,7 +56,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
 #ifndef NSBML
-    m_sbml(2, 4),
+    m_sbml(),
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
     m_libsbml_warnings(),
 #endif
@@ -65,6 +66,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
 #endif
     m_uniquevars()
 {
+  m_sbml.setLevelAndVersion(2, 4); //LS DEBUG:  bug in libsbml requires this (9/23/09)
   SetNewTopName(modulename, newtopname);
 #ifndef NSBML
   CreateSBMLModel(); //It's either this or go through and rename every blasted thing in it, and libSBML doesn't provide an easy way to go through all elements at once.

@@ -28,6 +28,10 @@ public slots:
     void selectAll();
     void revertToTranslated();
     void revertToOriginal();
+    void setAntimonyFont();
+    void setSBMLFont();
+    void zoomIn();
+    void zoomOut();
 
     //Whenever we switch tabs:
     void SwitchTabs(int tab);

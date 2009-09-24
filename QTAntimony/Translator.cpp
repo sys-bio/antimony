@@ -47,6 +47,7 @@ Translator::Translator(QTAntimony* app, QString filename)
         m_allSBML()
 {
     //Actions
+    //File
     QAction* actionNew = new QAction(tr("&New"), this);
     actionNew->setShortcut(QKeySequence::New);
     actionNew->setEnabled(true);
@@ -73,6 +74,8 @@ Translator::Translator(QTAntimony* app, QString filename)
     actionClose->setEnabled(true);
     QAction* actionQuit = new QAction(tr("&Quit"), this);
     actionQuit->setShortcut(QKeySequence(tr("Ctrl+q")));
+
+    //Edit
     m_actionUndo = new QAction(tr("&Undo"), this);
     m_actionUndo->setShortcut(QKeySequence::Undo);
     m_actionUndo->setEnabled(false);
@@ -110,6 +113,20 @@ Translator::Translator(QTAntimony* app, QString filename)
     QAction* actionFind = new QAction(tr("&Find"), this);
     actionFind->setShortcut(QKeySequence::Find);
     actionFind->setEnabled(false);
+
+    //View
+    m_actionSetAntimonyFont = new QAction(tr("Set &Antimony Font"), this);
+    m_actionSetAntimonyFont->setEnabled(true);
+    m_actionSetSBMLFont = new QAction(tr("Set &SBML Font"), this);
+    m_actionSetSBMLFont->setEnabled(true);
+    QAction* zoomIn = new QAction(tr("Zoom &in"), this);
+    zoomIn->setShortcut(QKeySequence::ZoomIn);
+    zoomIn->setEnabled(true);
+    QAction* zoomOut = new QAction(tr("Zoom &out"), this);
+    zoomOut->setShortcut(QKeySequence::ZoomOut);
+    zoomOut->setEnabled(true);
+
+    //Help
     QAction* actionShowTutorial = new QAction(tr("Show &Tutorial"), this);
     actionShowTutorial->setEnabled(true);
     QAction* actionAbout = new QAction(tr("&About"), this);
@@ -209,6 +226,10 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(m_actionRevertToTranslated, SIGNAL(triggered()), m_tabmanager, SLOT(revertToTranslated()));
     connect(m_antimony, SIGNAL(TranslatedAvailable(bool)), m_actionRevertToTranslated, SLOT(setEnabled(bool)));
     connect(m_actionRevertToOriginal, SIGNAL(triggered()), m_tabmanager, SLOT(revertToOriginal()));
+    connect(zoomIn, SIGNAL(triggered()), m_tabmanager, SLOT(zoomIn()));
+    connect(zoomOut, SIGNAL(triggered()), m_tabmanager, SLOT(zoomOut()));
+    connect(m_actionSetAntimonyFont, SIGNAL(triggered()), m_tabmanager, SLOT(setAntimonyFont()));
+    connect(m_actionSetSBMLFont, SIGNAL(triggered()), m_tabmanager, SLOT(setSBMLFont()));
     connect(m_antimony, SIGNAL(OriginalAvailable(bool)), m_actionRevertToOriginal, SLOT(setEnabled(bool)));
     connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), m_antimony, SLOT(SetFailedTranslation()));
     connect(m_tabmanager, SIGNAL(FailedSBMLTranslation()), m_antimony, SLOT(SetFailedTranslation()));
@@ -249,7 +270,13 @@ Translator::Translator(QTAntimony* app, QString filename)
     editmenu->addAction(m_actionRevertToOriginal);
     editmenu->addSeparator();
     editmenu->addAction(actionFind);
-    menuBar()->addMenu(editmenu);
+
+    //The View Menu
+    QMenu* viewmenu = menuBar()->addMenu(tr("&View"));
+    viewmenu->addAction(zoomIn);
+    viewmenu->addAction(zoomOut);
+    viewmenu->addAction(m_actionSetAntimonyFont);
+    viewmenu->addAction(m_actionSetSBMLFont);
 
 #ifdef 	SBW_INTEGRATION
     if (m_app->GetUseSBW()) {
@@ -261,9 +288,8 @@ Translator::Translator(QTAntimony* app, QString filename)
     QMenu* helpmenu = menuBar()->addMenu(tr("&Help"));
     helpmenu->addAction(actionShowTutorial);
     helpmenu->addAction(actionAbout);
-    //QKeySequence::
-    //setMenuBar(menubar);
 
+    //And finally...
     setCentralWidget(m_tabmanager);
     m_tabmanager->textbox(0)->setFocus();
 

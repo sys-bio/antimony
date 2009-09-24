@@ -38,6 +38,8 @@ private:
     QAction* m_actionSelectAll;
     QAction* m_actionRevertToTranslated;
     QAction* m_actionRevertToOriginal;
+    QAction* m_actionSetAntimonyFont;
+    QAction* m_actionSetSBMLFont;
 
 #ifdef SBW_INTEGRATION
     static std::vector< DataBlockReader > findServices(std::string  var0,bool  var1);
