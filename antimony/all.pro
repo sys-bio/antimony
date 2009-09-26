@@ -7,4 +7,5 @@ TEMPLATE = subdirs
 SUBDIRS = libantimony
 SUBDIRS += antimony2sbml
 SUBDIRS += sbml2antimony
+SUBDIRS += QtAntimonyBuild
 
