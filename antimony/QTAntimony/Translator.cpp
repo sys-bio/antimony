@@ -72,7 +72,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     QAction* actionClose = new QAction(tr("&Close"), this);
     actionClose->setShortcut(QKeySequence::Close);
     actionClose->setEnabled(true);
-    QAction* actionQuit = new QAction(tr("&Quit"), this);
+    QAction* actionQuit = new QAction(tr("E&xit"), this);
     actionQuit->setShortcut(QKeySequence(tr("Ctrl+q")));
 
     //Edit
