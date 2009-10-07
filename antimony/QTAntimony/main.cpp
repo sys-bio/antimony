@@ -4,7 +4,7 @@
 #include "SBWIntegration.h"
 
 #ifdef SBW_INTEGRATION
-#include "SBW/ModuleImpl.h"
+#include "SBW/SBWC.h"
 #endif
 
 void myMessageOutput(QtMsgType type, const char *msg)
@@ -29,12 +29,24 @@ void myMessageOutput(QtMsgType type, const char *msg)
 	}
 }
 
+#ifdef SBW_INTEGRATION
+
+void doAnlysis(SBWInteger /*from*/, SBWDataBlockReader *args, SBWDataBlockWriter * /*result*/, void * /*userData*/)
+{
+	char *sbml; 
+	SBWRead(args, "string", &sbml);
+	QSBMLEvent sbmlEvent(sbml);
+	qApp->postEvent(qApp, &sbmlEvent);
+	SBWFree(sbml);
+}
+
+#endif 
+
 int main(int argc, char *argv[])
 {
 
 #ifdef SBW_INTEGRATION
 	bool sbwon = true;
-	SBWAntimony service;
 
 	static const char* Name("QTAntimony");
 	static const char* ServiceName("QTAntimony");
@@ -42,27 +54,32 @@ int main(int argc, char *argv[])
 	static const char* HelpString("Antimony analyzer");
 	static const char* CategoryName("/Analysis");
 
-	ModuleImpl oModule(Name, DisplayName, UniqueModule, HelpString);
-	oModule.addServiceObject(ServiceName, DisplayName, CategoryName, &service, HelpString);
+	SBWCreateModuleImpl( Name, DisplayName, SBW_UniqueModule, HelpString);
+
+	SBWModuleImplAddService( ServiceName, DisplayName, CategoryName, HelpString);
+
+	SBWModuleImplSetHandler( ServiceName, doAnlysis, 0, "void doAnalysis(string)", 1, HelpString);
 	
 	int sbwModuleIndex = -1;
-	try {
+	try 
+	{
 		// register if neccessary
 		for (int arg=1; arg<argc; arg++) 
 		{
 			std::string sArg(argv[arg]);
 			if (sArg == "-sbwregister" || sArg == "--sbwregister")
 			{
-				oModule.run(argc, argv);
+				SBWModuleImplRun(argc, argv, 1);
 				return 0;
 			}
 			else if (sArg == "-sbwregister" || sArg == "--sbwregister")
 				sbwModuleIndex = arg;
 		}
 		// otherwise enable SBW service
-		oModule.enableModuleServices();
+		SBWModuleImplEnableServices();
 	}
-	catch (...) {
+	catch (...) 
+	{
 		sbwon = false;
 	}
 
