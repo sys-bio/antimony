@@ -12,14 +12,7 @@
 
 
 #ifdef SBW_INTEGRATION
-#include "SBW/SBWApplicationException.h"
-#include "SBW/DataBlockReader.h"
-#include "SBW/DataBlockWriter.h"
-#include "SBW/SBWLowLevel.h"
-#include "SBW/SBW.h"
-#include <vector>
-#include <string>
-using namespace SystemsBiologyWorkbench;
+#include "SBW/SBWC.h"
 #endif
 
 using namespace std;
@@ -452,11 +445,13 @@ void TabManager::startSBWAnalyzer()
         try
         {
             QStringList oModuleInfo = action->data().toStringList();
-            int nModule =  SBWLowLevel::getModuleInstance(oModuleInfo[0].toUtf8().constData());
-            int nService =  SBWLowLevel::moduleFindServiceByName(nModule, oModuleInfo[1].toUtf8().constData());
-            int nMethod = SBWLowLevel::serviceGetMethod(nModule, nService, "void doAnalysis(string)");
-            DataBlockWriter args; args << sbml;
-            SBWLowLevel::methodSend(nModule, nService, nMethod, args);
+
+            int nModule =  SBWGetModuleInstance(oModuleInfo[0].toUtf8().constData());
+            int nService =  SBWModuleFindServiceByName(nModule, oModuleInfo[1].toUtf8().constData());
+            int nMethod = SBWServiceGetMethod(nModule, nService, "void doAnalysis(string)");
+			
+			SBWMethodSend(nModule, nService, nMethod,"void doAnalysis(string)", sbml.c_str());
+				
         }
         catch(...)
         {

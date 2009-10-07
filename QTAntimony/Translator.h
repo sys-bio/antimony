@@ -4,13 +4,6 @@
 #include <QtGui/QMainWindow>
 #include <QTextEdit>
 
-#ifdef SBW_INTEGRATION
-#include <vector>
-#include <string>
-#include <SBW/DataBlockReader.h>
-#endif
-
-
 class AntimonyTab;
 class SBMLTab;
 class QApplication;
@@ -42,7 +35,6 @@ private:
     QAction* m_actionSetSBMLFont;
 
 #ifdef SBW_INTEGRATION
-    static std::vector< DataBlockReader > findServices(std::string  var0,bool  var1);
     void addSBWMenu();
 #endif
 	

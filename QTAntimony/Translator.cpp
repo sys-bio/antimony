@@ -297,47 +297,29 @@ Translator::Translator(QTAntimony* app, QString filename)
 
 #ifdef SBW_INTEGRATION
 
-vector< DataBlockReader > Translator::findServices(string  var0,bool  var1)
+
+void Translator::addSBWMenu() 
 {
-	try
-	{
-		DataBlockWriter oArguments;
-		oArguments.add(var0);
-		oArguments.add(var1);
-		
-		if (!SBWGetConnectionStatus())
-		SBW::connect();
-		Module oModule = SBW::getModuleInstance("BROKER");
-		Service oService = oModule.findServiceByName("BROKER");
-		vector< DataBlockReader > result;
-		oService.getMethod("{}[] findServices(string, boolean)").call(oArguments) >> result;
-		return result;
-	}
-	catch(SBWException *e)
-	{
-		throw e;
-	}
-}
-
-
-void Translator::addSBWMenu() {
-    vector<DataBlockReader> oModules = findServices("Analysis",true);
-    if (oModules.size()==0) return;
-    QMenu *oMenu = menuBar()->addMenu(tr("&SBW"));
-
-    // as exercise to the reader, this list should now be sorted :) based on DisplayName
 	
-    for (unsigned int i = 0; i < oModules.size(); i++)
-    {
-        string sModuleName; string sServiceName; string sMenuName;
-        DataBlockReader oTemp = oModules[i];
-        oTemp >> sModuleName >> sServiceName >> sMenuName;
-        QAction *oAction = new QAction(QString(sMenuName.c_str()), this);
-        QStringList oList; oList.push_back(sModuleName.c_str()); oList.push_back(sServiceName.c_str());
+	if (!SBWGetConnectionStatus()) SBWConnect();
+	int numServices;
+	SBWServiceDescriptor* descriptors = SBWFindServices("/Analysis", &numServices, true);
+
+	if ( descriptors == NULL || numServices < 1) return;
+
+	QMenu *oMenu = menuBar()->addMenu(tr("&SBW"));
+
+	for (int i = 0; i < numServices; i++)
+	{
+		
+		QAction *oAction = new QAction(QString(descriptors[i].serviceDisplayName), this);
+		QStringList oList; oList.push_back(descriptors[i].module.name); oList.push_back(descriptors[i].serviceName);
         oAction->setData( QVariant( oList) );
         connect(oAction, SIGNAL(triggered()), m_tabmanager, SLOT(startSBWAnalyzer()));
         oMenu->addAction(oAction);
-    }
+	}
+
+	SBWFree(descriptors);
 }
 
 #endif
