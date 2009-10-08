@@ -190,8 +190,6 @@ void ChangeableTextBox::SaveTab()
                 suggestedname,
                 m_filetypes));
         if (m_filename=="") return; //User probably chose 'cancel'
-        QFileInfo qfi(m_filename);
-        app->SaveCurrentDirectory(qfi.absoluteDir().absolutePath());
     }
     QFile file(m_filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -213,6 +211,13 @@ void ChangeableTextBox::SaveTab()
     QTextStream out(&file);
     out << toPlainText();
     m_saved = toPlainText();
+    QFileInfo qfi(m_filename);
+    app->SaveCurrentDirectory(qfi.absoluteDir().absolutePath());
+    QWidget* mainw = parentWidget();
+    while (mainw->parentWidget() != NULL) {
+        mainw = mainw->parentWidget();
+    }
+    mainw->setWindowTitle(qfi.fileName() + " - QTAntimony");
     emit TabNameIsNow(GetTabName(), this);
 }
 

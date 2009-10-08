@@ -11,9 +11,6 @@
 #include <QSettings>
 #include <QVariant>
 
-#define ORG "SBWTeam"
-#define APP "QTAntimony"
-
 QTAntimony::QTAntimony(int& argc, char**& argv)
         : QApplication(argc, argv),
         m_original(NULL),
@@ -41,8 +38,9 @@ void QTAntimony::OpenFile(QString filename)
     restoreOverrideCursor();
     QFileInfo qfi(filename);
     m_currentdir = qfi.absoluteDir().absolutePath();
-	QSettings qset(ORG, APP);
-	qset.setValue("currentdir", m_currentdir);
+    QSettings qset(ORG, APP);
+    qset.setValue("currentdir", m_currentdir);
+    t->setWindowTitle(qfi.fileName() + " - QTAntimony");
 
     DisplayWindow(t);
 }
@@ -117,9 +115,12 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
         window.setBottom(desk.height()*7/8);
         window.setLeft(desk.width()/6);
         window.setRight(desk.width()*4/6);
+        t->setGeometry(window);
         //New geometry
         //t->setGeometry(200, 200, 600, 600);
-        t->setGeometry(window);
+        QSettings qset(ORG, APP);
+        qset.sync();
+        t->restoreGeometry(qset.value("geometry", t->saveGeometry()).toByteArray());
     }
     else {
         while (focus->parent() != NULL) {
