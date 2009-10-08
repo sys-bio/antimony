@@ -23,6 +23,7 @@ using namespace SystemsBiologyWorkbench;
 #include "QTAntimony.h"
 
 #include "antimony_api.h"
+#include <sbml/SBMLTypes.h>
 
 #include <cassert>
 #include <QTabWidget>
@@ -37,6 +38,7 @@ using namespace SystemsBiologyWorkbench;
 #include <QTextStream>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QSettings>
 
 using namespace std;
 Translator::Translator(QTAntimony* app, QString filename)
@@ -384,6 +386,9 @@ void Translator::closeEvent(QCloseEvent* event)
 {
     if (m_tabmanager->CanIClose()) {
         event->accept();
+        QSettings qset(ORG, APP);
+        qset.sync();
+        qset.setValue("geometry", saveGeometry());
     }
     else {
         event->ignore();
@@ -392,9 +397,9 @@ void Translator::closeEvent(QCloseEvent* event)
 
 void Translator::DisplayAbout()
 {
-    QMessageBox msgBox;
+   QMessageBox msgBox;
     msgBox.setText("QTAntimony v0.6:");
-    msgBox.setInformativeText("Based on libAntimony v1.2 and libSBML v3.4.1");
+    msgBox.setInformativeText("Based on libAntimony v1.3 and libSBML v" LIBSBML_DOTTED_VERSION);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
 
