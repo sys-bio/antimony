@@ -88,8 +88,6 @@ void AntimonyTab::ReplaceModelWithString(QString modelname, QString text)
 {
     text = text.trimmed();
     QString model = toPlainText();
-    std::string DEBUGST = model.toStdString();
-    DEBUGST = text.toStdString();
     if (modelname != "__main") {
         QString pattern = "(model|module)\\s+" + modelname + ".*end";
         QRegExp text_to_find(pattern, Qt::CaseInsensitive);

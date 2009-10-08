@@ -7,18 +7,27 @@
 #include <QFileDialog>
 #include <QRect>
 #include <QDesktopWidget>
+#include <QDesktopServices>
+#include <QSettings>
+#include <QVariant>
+
+#define ORG "SBWTeam"
+#define APP "QTAntimony"
 
 QTAntimony::QTAntimony(int& argc, char**& argv)
         : QApplication(argc, argv),
         m_original(NULL),
         m_opened(false),
         m_usesbw(false),
-        m_currentdir(QDir::homePath()),
+		m_currentdir(""), //will set this below.
         m_basewindow(NULL)
 {
 #ifdef SBW_INTEGRATION
     m_usesbw = true;
 #endif
+	QSettings qset(ORG, APP);
+	qset.sync();
+	m_currentdir = qset.value("currentdir", QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation)).toString();
 }
 
 void QTAntimony::OpenFile(QString filename)
@@ -32,6 +41,9 @@ void QTAntimony::OpenFile(QString filename)
     restoreOverrideCursor();
     QFileInfo qfi(filename);
     m_currentdir = qfi.absoluteDir().absolutePath();
+	QSettings qset(ORG, APP);
+	qset.setValue("currentdir", m_currentdir);
+
     DisplayWindow(t);
 }
 
