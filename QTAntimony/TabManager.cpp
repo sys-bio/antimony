@@ -4,6 +4,7 @@
 #include "SBMLTab.h"
 #include "AntimonyTab.h"
 #include "antimony_api.h"
+#include "Settings.h"
 #include <QMessageBox>
 #include <QPrintDialog>
 #include <QAction>
@@ -137,31 +138,22 @@ ChangeableTextBox* TabManager::GetActiveEditor()
 void TabManager::SwitchTabs(int tab)
 {
     ChangeableTextBox* oldtab = textbox(m_oldtab);
-    /*
-    if (oldtab != NULL) {
-        if (oldtab->IsOriginal()) {
-            SetOthersTranslated(m_oldtab);
-        }
-        else if (oldtab->IsTranslated()) {
-            SetOthersOriginal(m_oldtab);
-        }
-        else if (!oldtab->IsMixed()) {
-            Translate(m_oldtab);
-        }
-    }
-    */
+    ChangeableTextBox* newtab = textbox(tab);
     if ((oldtab != NULL) &&
         !oldtab->IsOriginal() &&
         !oldtab->IsTranslated() &&
         !oldtab->IsMixed()) {
         Translate(m_oldtab);
     }
+    else if ((oldtab != NULL) &&
+             !oldtab->IsFailed()) {
+        newtab->SetTextChanged();
+    }
     if (tab >= count()) {
         tab = count()-1;
         setCurrentIndex(tab);
         textbox(tab)->setFocus();
     }
-    ChangeableTextBox* newtab = textbox(tab);
     newtab->NewlyActive();
     m_oldtab = tab;
 }
@@ -421,6 +413,14 @@ bool TabManager::CanIClose()
         }
     }
     return true;
+}
+
+void TabManager::SaveFonts()
+{
+    QSettings qset(ORG, APP);
+    qset.sync();
+    qset.setValue("antimonyfont", textbox(0)->currentFont());
+    qset.setValue("sbmlfont", textbox(1)->currentFont());
 }
 
 #ifdef SBW_INTEGRATION

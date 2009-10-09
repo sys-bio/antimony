@@ -4,9 +4,6 @@
 #include <QApplication>
 #include <QMainWindow>
 
-#define ORG "SBWTeam"
-#define APP "QTAntimony"
-
 class Translator;
 class QTAntimony : public QApplication
 {

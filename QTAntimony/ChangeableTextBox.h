@@ -46,11 +46,13 @@ public:
     bool IsTranslated();
     virtual bool IsMixed() = 0;
     bool IsSaved();
+    bool IsFailed();
     virtual void SetFilename(QString filename);
     virtual void SetSavedFilename(QString filename);
     void SaveTab();
     void SaveTabAs();
     void DisplayError(QString error);
+    virtual void dropEvent(QDropEvent* e);
 
 public slots:
     void SetActive();

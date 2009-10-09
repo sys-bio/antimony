@@ -1311,13 +1311,13 @@ LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
 {
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
-  string antimony = "//Created by libAntimony " VERSION_STRING "\n";
+  string antimony;
   if (moduleName != NULL) {
     if (!checkModule(moduleName)) return 0;
-    antimony += g_registry.GetAntimony(moduleName);
+    antimony = g_registry.GetAntimony(moduleName);
   }
   else {
-    antimony += g_registry.GetAntimony();
+    antimony = g_registry.GetAntimony();
   }
   ofstream afile(filename);
   if (!afile.good()) {
@@ -1328,6 +1328,10 @@ LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
     setlocale(LC_ALL, oldlocale.c_str());
     return 0;
   }
+  while (antimony.size()>1 && antimony[0] == '\n') {
+    antimony.erase(0, 1);
+  }
+  antimony = "//Created by libAntimony " VERSION_STRING "\n" + antimony;
   afile << antimony;
   afile.close();
   setlocale(LC_ALL, oldlocale.c_str());
@@ -1338,16 +1342,19 @@ LIB_EXTERN char* getAntimonyString(const char* moduleName)
 {
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
-  char* antimony;
+  string antimony;
   if (moduleName != NULL) {
     if (!checkModule(moduleName)) return 0;
-    antimony = getCharStar((string("//Created by libAntimony " VERSION_STRING "\n") + g_registry.GetAntimony(moduleName)).c_str());
+    antimony = g_registry.GetAntimony(moduleName);
   }
   else {
-  antimony = getCharStar((string("//Created by libAntimony " VERSION_STRING "\n") + g_registry.GetAntimony()).c_str());
+    antimony = g_registry.GetAntimony();
   }
   setlocale(LC_ALL, oldlocale.c_str());
-  return antimony;
+  while (antimony.size()>1 && antimony[0] == '\n') {
+    antimony.erase(0, 1);
+  }
+  return getCharStar(string("//Created by libAntimony " VERSION_STRING "\n" + antimony).c_str());
 }
 
 LIB_EXTERN int writeJarnacFile(const char* filename, const char* moduleName)

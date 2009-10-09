@@ -60,6 +60,11 @@
 #ifndef ANTIMONY_API_H
 #define ANTIMONY_API_H
 
+#ifndef VERSION_STRING //So we can define it in the makefile if need be.
+#define VERSION_STRING "v1.3"
+#endif
+
+
 #include "libutil.h"
 #include "enums.h"
 

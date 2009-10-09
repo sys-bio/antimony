@@ -16,6 +16,7 @@ using namespace SystemsBiologyWorkbench;
 #include "Translator.h"
 #include "Tutorial.h"
 #include "TabManager.h"
+#include "Settings.h"
 #include "AntimonyTab.h"
 #include "ChangeableTextBox.h"
 #include "SBMLTab.h"
@@ -38,7 +39,6 @@ using namespace SystemsBiologyWorkbench;
 #include <QTextStream>
 #include <QCloseEvent>
 #include <QMessageBox>
-#include <QSettings>
 
 using namespace std;
 Translator::Translator(QTAntimony* app, QString filename)
@@ -389,6 +389,7 @@ void Translator::closeEvent(QCloseEvent* event)
         QSettings qset(ORG, APP);
         qset.sync();
         qset.setValue("geometry", saveGeometry());
+        m_tabmanager->SaveFonts();
     }
     else {
         event->ignore();
@@ -399,7 +400,7 @@ void Translator::DisplayAbout()
 {
    QMessageBox msgBox;
     msgBox.setText("QTAntimony v0.6:");
-    msgBox.setInformativeText("Based on libAntimony v1.3 and libSBML v" LIBSBML_DOTTED_VERSION);
+    msgBox.setInformativeText("Based on libAntimony " VERSION_STRING " and libSBML v" LIBSBML_DOTTED_VERSION);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
 

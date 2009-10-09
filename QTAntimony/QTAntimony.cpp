@@ -2,13 +2,13 @@
 #include "QTAntimony.h"
 #include "Translator.h"
 #include "SBWIntegration.h"
+#include "Settings.h"
 #include <QStringList>
 #include <QString>
 #include <QFileDialog>
 #include <QRect>
 #include <QDesktopWidget>
 #include <QDesktopServices>
-#include <QSettings>
 #include <QVariant>
 
 QTAntimony::QTAntimony(int& argc, char**& argv)

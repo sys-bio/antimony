@@ -73,7 +73,9 @@ public:
 
   int    OpenFile(const std::string filename);
   int    OpenString(const std::string model);
+#ifndef NSBML
   int    CheckAndAddSBMLIfGood(SBMLDocument* document);
+#endif
 #ifndef NCELLML
   bool   LoadCellML(cellml_api::Model* model);
 #endif

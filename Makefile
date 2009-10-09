@@ -1,12 +1,26 @@
+#version number
+version = 1.3
+
+#mingw:
+#mingw = i586-mingw32msvc
+#CXX = $(mingw)-c++
+#AR = $(mingw)-ar
+#sbml_location = /usr/$(mingw)
+#mingw_include = -I/usr/$(mingw)/include
+
+#if no mingw:
+mingw_include =
+
+
 #If not using libSBML:
 #sbmlflag = -DNSBML
 #sbml_includes = 
 #libsbml = 
 
 #otherwise
-sbml_location = /usr/local/lib/
-sbml_includes = -I/usr/local/include/
-libsbml = -L$(sbml_location) -lsbml
+sbml_location = /usr/local
+sbml_includes = -I$(sbml_location)/include
+libsbml = -L$(sbml_location)/lib -lsbml
 sbmlflag = 
 
 
@@ -23,12 +37,9 @@ libcellml =
 
 
 #For a debug version:
-CPPFLAGS = -Wall -ggdb $(sbmlflag) $(cellmlflag) $(sbml_includes) $(cellml_includes)
+CPPFLAGS = -Wall -DVERSION_STRING="\"v$(version)\"" -ggdb $(sbmlflag) $(cellmlflag) $(mingw_include) $(sbml_includes) $(cellml_includes)
 #For a non-debug version:
-#CPPFLAGS = -Wall -O3 -DNDEBUG $(sbmlflag) $(cellmlflag) -I$(sbml_includes) -I$(cellml_includes)
-
-#version number
-version = 1.2
+#CPPFLAGS = -Wall -DVERSION_STRING="\"v$(version)\"" -O3 -DNDEBUG $(sbmlflag) $(cellmlflag) $(mingw_include) $(sbml_includes) $(cellml_includes)
 
 #Library flags
 LIBRARYFLAGS = $(libsbml) $(libcellml) -Llib -lantimony
