@@ -27,7 +27,7 @@ INCLUDEPATH += "$${LIBSBML_DIR}/include" \
 LIBS += -L../lib/ \
     -lantimony \
     -L$${LIBSBML_DIR} \
-    -lsbml \
+    -lsbml
 # -lxml2 \
 # -lz \
 # -lbz2
@@ -37,9 +37,7 @@ win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\bin"
 win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\win32\bin"
 win32:QMAKE_LFLAGS += /LIBPATH:"..\win32"
 win32:RC_FILE = antimonyicon.rc
-
-mac:ICON=antimony.icns
-
+mac:ICON = antimony.icns
 TARGET = QTAntimony
 TEMPLATE = app
 SOURCES += main.cpp \
@@ -60,4 +58,5 @@ HEADERS += AntimonyTab.h \
     QTAntimony.h \
     FileWatcher.h \
     SBWIntegration.h \
-    Tutorial.h
+    Tutorial.h \
+    Settings.h

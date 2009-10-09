@@ -1,6 +1,7 @@
 #include "AntimonyTab.h"
 #include "antimony_api.h"
 #include "Translator.h"
+#include "Settings.h"
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
@@ -23,6 +24,11 @@ AntimonyTab::AntimonyTab(QWidget* parent)
     m_actionCopySBML= new QAction(tr("Copy &SBML"), this);
     m_actionCopySBML->setEnabled(false);
     connect(m_actionCopySBML, SIGNAL(triggered()), this, SLOT(CopySBML()));
+    QSettings qset(ORG, APP);
+    qset.sync();
+    QFont newfont;
+    newfont.fromString(qset.value("antimonyfont", currentFont()).toString());
+    setFont(newfont);
 }
 
 void AntimonyTab::SetModelName(QString)
@@ -113,6 +119,8 @@ void AntimonyTab::ReplaceModelWithString(QString modelname, QString text)
     }
 
     model = model.trimmed();
+    QRegExp repeats("//Created by libAntimony v[0-9.ba]+\\s*//Created by libAntimony");
+    model.replace(repeats, "//Created by libAntimony");
     ReplaceTextWith(model);
 }
 

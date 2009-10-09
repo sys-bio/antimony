@@ -16,6 +16,7 @@ public:
     ChangeableTextBox* textbox(int tabnum);
     void Translate(int tab);
     bool CanIClose();
+    void SaveFonts();
 
 public slots:
     //We provide the functions and pass them to the underlying active editor tab

@@ -622,7 +622,7 @@ string Registry::GetAntimony() const
 string Registry::GetAntimony(string modulename) const
 {
   const Module* amod = GetModule(modulename);
-  if (amod == NULL) return NULL;
+  if (amod == NULL) return "";
   set<const Module*> nomods;
   return amod->GetAntimony(nomods, false);
 }
@@ -630,7 +630,7 @@ string Registry::GetAntimony(string modulename) const
 string Registry::GetJarnac(string modulename) const
 {
   const Module* jmod = GetModule(modulename);
-  if (jmod == NULL) return NULL;
+  if (jmod == NULL) return "";
   string jarnac = modulename + " = define model\n";
   jarnac += jmod->GetJarnacReactions();
   jarnac += "\n";

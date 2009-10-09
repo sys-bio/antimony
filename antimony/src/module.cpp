@@ -44,7 +44,9 @@ Module::Module(string name)
 #endif
     m_uniquevars()
 {
+#ifndef NSBML
   m_sbml.setLevelAndVersion(2, 4); //LS DEBUG:  bug in libsbml requires this (9/23/09)
+#endif
 }
 
 Module::Module(const Module& src, string newtopname, string modulename)
@@ -66,7 +68,9 @@ Module::Module(const Module& src, string newtopname, string modulename)
 #endif
     m_uniquevars()
 {
+#ifndef NSBML
   m_sbml.setLevelAndVersion(2, 4); //LS DEBUG:  bug in libsbml requires this (9/23/09)
+#endif
   SetNewTopName(modulename, newtopname);
 #ifndef NSBML
   CreateSBMLModel(); //It's either this or go through and rename every blasted thing in it, and libSBML doesn't provide an easy way to go through all elements at once.
@@ -822,7 +826,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
       const Module* mod = g_registry.GetModule(m_variables[var]->GetModule()->GetModuleName());
       if (mod==NULL) {
         g_registry.SetError("Unable to find base module " + m_variables[var]->GetModule()->GetModuleName() + ".");
-        return NULL;
+        return "";
       }
       if ((usedmods.insert(mod)).second) {
         //New module; add it.

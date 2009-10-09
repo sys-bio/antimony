@@ -1,6 +1,8 @@
 #ifndef LIB_UTIL_H
 #define LIB_UTIL_H
 
+//#if  ( defined WIN32 && (! defined MINGW && ! defined CYGWIN))
+//#if defined(WIN32)
 #ifdef WIN32
 #if LIB_EXPORTS
 #  define LIB_EXTERN __declspec(dllexport)

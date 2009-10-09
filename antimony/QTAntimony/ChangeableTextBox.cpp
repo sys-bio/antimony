@@ -10,6 +10,8 @@
 #include <QApplication>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QList>
+#include <QUrl>
 
 using namespace std;
 
@@ -44,6 +46,8 @@ ChangeableTextBox::ChangeableTextBox(QWidget* parent)
     pink.setRgb(255, 187, 187);
     p.setColor(QPalette::AlternateBase, pink);
     viewport()->setPalette(p);
+    setFontFamily("Courier New");
+    setFontPointSize(12);
 }
 
 
@@ -175,8 +179,8 @@ void ChangeableTextBox::FileChanged(const QString& file)
 
 void ChangeableTextBox::SaveTab()
 {
+    QTAntimony* app = static_cast<QTAntimony*>(QApplication::instance());
     if (m_filename == "") {
-        QTAntimony* app = static_cast<QTAntimony*>(QApplication::instance());
         QString suggestedname = app->GetCurrentDir();
 #ifdef Q_OS_WIN
         suggestedname += "\\";
@@ -245,6 +249,21 @@ void ChangeableTextBox::DisplayError(QString error)
     msgBox.exec();
 }
 
+void ChangeableTextBox::dropEvent(QDropEvent* e)
+{
+    if (e->mimeData()->hasUrls()) {
+        QList<QUrl> files = e->mimeData()->urls();
+        for (int file=0; file<files.size(); file++) {
+            QTAntimony* app = static_cast<QTAntimony*>(QApplication::instance());
+            app->OpenFile(files[file].toLocalFile());
+        }
+    }
+    else {
+        QTextEdit::dropEvent(e);
+    }
+}
+
+
 void ChangeableTextBox::ReplaceTextWith(QString text)
 {
     if (text == toPlainText()) return;
@@ -272,6 +291,11 @@ bool ChangeableTextBox::IsTranslated()
 bool ChangeableTextBox::IsSaved()
 {
     return (toPlainText()==m_saved);
+}
+
+bool ChangeableTextBox::IsFailed()
+{
+    return m_failedtranslation;
 }
 
 void ChangeableTextBox::SetFilename(QString filename)

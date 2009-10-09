@@ -1,10 +1,16 @@
 #include "SBMLTab.h"
+#include "Settings.h"
 
 SBMLTab::SBMLTab(QWidget* parent)
         : ChangeableTextBox(parent)
 {
     m_filetypes = "SBML files (*.xml *.sbml);;All files(*.*)";
     m_extension = ".xml";
+    QSettings qset(ORG, APP);
+    qset.sync();
+    QFont newfont;
+    newfont.fromString(qset.value("sbmlfont", currentFont()).toString());
+    setFont(newfont);
 }
 
 void SBMLTab::SetModelName(QString name)
