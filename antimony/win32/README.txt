@@ -1,18 +1,4 @@
 To use these Windows executables:
-   * Copy this folder where you want it, keeping the .exe's and the .dll's 
-     together in the same directory.
-
-   * If you do *not* have Visual Studio 2008 installed, you will need to run 
-     the provided executable 'vcredist_x86.exe'.  This was obtained from 
-     Microsoft's web site 
-
-     http://www.microsoft.com/downloads/details.aspx?FamilyID=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF
-
-     If you are a developer using a different version of Visual Studio, you 
-     should probably just compile libAntimony yourself.  But if all you want 
-     is to run the converters (antimony2sbml and sbml2antimony) and the GUI
-     (QTAntimony), run this to install the required libraries.
-
    * QTAntimony is a simple editor that can convert Antimony models to SBML 
      and visa versa.  It can read both Antimony and SBML files, and you can 
      edit either and translate between them.  Do note that if you convert one 
@@ -21,6 +7,15 @@ To use these Windows executables:
      in the SBML file will not survive the round-trip, for example.  However, 
      it should be enough to get started with the language and start to 
      experiment.
+
+   * Example models are available in the Antimony directory.  Assuming you
+     installed this in the default location, you'll find them in:
+
+     C:\Program Files\Antimony
+
+     and the suite of BioModels (http://biomodels.net/) in:
+
+     C:\Program Files\Antimony\biomodels
 
    * The easiest way to run the converters is from the command line (just 
      double-clicking on the .exe will pop up a window with an error). 
@@ -77,12 +72,13 @@ To use these Windows executables:
        your PATH, but if you know what I'm talking about, you know how to
        do it.)  
 
-Also available are the 216 current curated BioModels (from biomodels.net),
-translated to Antimony by the sbml2antimony.exe converter.  These can be
-found in the \biomodels subdirectory.
 
 If you have any questions or problems, please feel free to contact us at 
 
 lpsmith@u.washington.edu
+
+For more information, visit the Antimony web site at
+
+http://antimony.sf.net/
 
 Thank you!
