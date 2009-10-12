@@ -21,6 +21,7 @@ private:
 
   std::vector<std::string> m_name;
   std::string m_module; //The name of the high-level module we're in.
+  std::string m_displayname;
 
   //The variable's value is either a different Variable object (with a different name):
   std::vector<std::string> m_sameVariable;
@@ -86,6 +87,7 @@ public:
   std::vector<std::pair<Variable*, size_t> > GetStrandVars() const;
   bool IsExpandedStrand() const;
   std::string GetFormulaForNthEntryInStrand(char cc, size_t n);
+  std::string GetDisplayName() const;
 
   std::string GetUnits() const {return m_units;};
   void SetUnits(std::string ud) {m_units = ud;};
@@ -106,6 +108,7 @@ public:
   bool SetSuperCompartment(Variable* var, var_type supertype);
   bool SetDNAStrand(DNAStrand& strand);
   bool SetIsInStrand(Variable* var);
+  bool SetDisplayName(std::string name);
 
   bool Synchronize(Variable* clone);
 

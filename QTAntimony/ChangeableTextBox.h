@@ -60,7 +60,7 @@ public slots:
     virtual void SetTextChanged();
     void SetFailedTranslation();
     void SetOriginal();
-    void SetTranslated();
+    virtual void SetTranslated();
     void SaveAndEmitCopyAvailable(bool yes);
     void SaveAndEmitUndoAvailable(bool yes);
     void SaveAndEmitRedoAvailable(bool yes);

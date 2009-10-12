@@ -7,6 +7,7 @@ class SBMLTab : public ChangeableTextBox
     Q_OBJECT;
 private:
     QString m_modelname;
+    int m_levelversion;
 
 public:
     SBMLTab(QWidget* parent = 0);
@@ -16,5 +17,10 @@ public:
     virtual void addSpecialCopyToMenu(QMenu* menu, QAction* paste);
     virtual void ReplaceModelWithString(QString model, QString text);
     virtual bool IsMixed();
+    bool SetLevelAndVersion(int level, int version);
+
+public slots:
+    void SetTranslated();
+    void WhichLevelAndVersion();
 };
 #endif // SBMLTAB_H

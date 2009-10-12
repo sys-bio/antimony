@@ -56,7 +56,7 @@
 %left '(' ')' '+' '-' '*' '/' '^' ','
 
 %token <num> NUM
-%token <word> WORD MODNAME FILENAME
+%token <word> WORD MODNAME TEXTSTRING
 %token <word> MODULE END SPECIES REACTION FORMULA DNA GENE OPERATOR EVENT COMPARTMENT IN IS VAR CONST DASHES ELLIPSES FUNCTION IMPORT AT FUNCTIONWORD
 
 %debug
@@ -72,7 +72,7 @@ input:          /* empty */
         |       input error {YYABORT;} 
         ;
 
-import:         IMPORT FILENAME { if (g_registry.OpenFile(*($2))==0) YYABORT;}
+import:         IMPORT TEXTSTRING { if (g_registry.OpenFile(*($2))==0) YYABORT;}
         ;
 
 module:         MODULE WORD {g_registry.NewCurrentModule($2);} '(' variableexportlist ')' modulebody END
@@ -212,6 +212,7 @@ lineend:        ';' {}
 
 assignment:     varmaybein '=' formula {if ($1->SetFormula($3)) YYABORT; }
         |       varmaybein IS variable {if ($1->Synchronize($3)) YYABORT;}
+        |       varmaybein IS TEXTSTRING {if ($1->SetDisplayName(*($3))) YYABORT;}
         |       varmaybein ':' '=' formula {if ($1->SetAssignmentRule($4)) YYABORT;}
         |       varmaybein '\'' '=' formula {if ($1->SetRateRule($4)) YYABORT;}
         ;
@@ -530,13 +531,13 @@ int yylex(void)
     g_registry.input->unget();
   }
 
-  //Parse filenames
+  //Parse text strings
   if (cc == '"') {
-    string filename;
+    string textstring;
     long ccount = 0;
     g_registry.input->get(cc);
     while (cc != '"' && cc != '\r' && cc != '\n' && !g_registry.input->eof()) {
-      filename += cc;
+      textstring += cc;
       ccount++;
       g_registry.input->get(cc);
     }
@@ -547,8 +548,8 @@ int yylex(void)
       cc = '"';
     }
     else {
-      yylval.word = g_registry.AddWord(filename);
-      return FILENAME;
+      yylval.word = g_registry.AddWord(textstring);
+      return TEXTSTRING;
     }
   }
 
