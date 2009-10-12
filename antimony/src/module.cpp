@@ -1068,6 +1068,18 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   retval += ListIn80Cols("var", varnames, indent);
   retval += ListIn80Cols("const", constnames, indent);
 
+  //Display names
+  bool anydisplay = false;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetDisplayName() != "") {
+      if (anydisplay == false) {
+        retval += "\n" + indent + "//Display Names:\n";
+        anydisplay = true;
+      }
+      retval += indent + m_variables[var]->GetNameDelimitedBy(cc) + " is \"" + m_variables[var]->GetDisplayName() + "\";\n";
+    }
+  }
+
   //LS DEBUG:  list the innames!
 
   //end model definition
@@ -1202,6 +1214,9 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       // Later versions of antimony now set the SBO terms to 410, so we might not need this code very long.
     }
     Variable* var = AddOrFindVariable(&sbmlname);
+    if (compartment->isSetName()) {
+      var->SetDisplayName(compartment->getName());
+    }
     var->SetType(varCompartment);
     Formula* formula = g_registry.NewBlankFormula();
     if (compartment->isSetSize()) {
@@ -1218,6 +1233,9 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     const Species* species = sbml->getSpecies(spec);
     sbmlname = getNameFromSBMLObject(species, "_S");
     Variable* var = AddOrFindVariable(&sbmlname);
+    if (species->isSetName()) {
+      var->SetDisplayName(species->getName());
+    }
     var->SetType(varSpeciesUndef);
 
     //Setting the formula
@@ -1260,6 +1278,9 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     const Event* event = sbml->getEvent(ev);
     sbmlname = getNameFromSBMLObject(event, "_E");
     Variable* var = AddOrFindVariable(&sbmlname);
+    if (event->isSetName()) {
+      var->SetDisplayName(event->getName());
+    }
     var->SetType(varEvent);
 
     //Set the trigger:
@@ -1287,6 +1308,9 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     const Parameter* parameter = sbml->getParameter(param);
     sbmlname = getNameFromSBMLObject(parameter, "_P");
     Variable* var = AddOrFindVariable(&sbmlname);
+    if (parameter->isSetName()) {
+      var->SetDisplayName(parameter->getName());
+    }
     if (parameter->isSetValue()) {
       Formula* formula = g_registry.NewBlankFormula();
       formula->AddNum(parameter->getValue());
@@ -1304,6 +1328,9 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     if (initasnt->isSetSymbol()) {
       sbmlname = initasnt->getSymbol();
       Variable* var = AddOrFindVariable(&sbmlname);
+      if (initasnt->isSetName()) {
+        var->SetDisplayName(initasnt->getName());
+      }
       Formula* formula = g_registry.NewBlankFormula();
       string formulastring(parseASTNodeToString(initasnt->getMath()));
       setFormulaWithString(formulastring, formula);
@@ -1327,6 +1354,9 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       sbmlname = getNameFromSBMLObject(rule, "_R");
     }
     Variable* var = AddOrFindVariable(&sbmlname);
+    if (rule->isSetName()) {
+      var->SetDisplayName(rule->getName());
+    }
     Formula* formula = g_registry.NewBlankFormula();
     string formulastring(parseASTNodeToString(rule->getMath()));
     setFormulaWithString(formulastring, formula);
@@ -1355,6 +1385,9 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     const Reaction* reaction = sbml->getReaction(rxn);
     sbmlname = getNameFromSBMLObject(reaction, "_J");
     Variable* var = AddOrFindVariable(&sbmlname);
+    if (reaction->isSetName()) {
+      var->SetDisplayName(reaction->getName());
+    }
     //reactants
     ReactantList reactants;
     for (unsigned int react=0; react<reaction->getNumReactants(); react++) {
@@ -1460,7 +1493,7 @@ void Module::CreateSBMLModel()
   Model* sbmlmod = m_sbml.createModel();
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(m_modulename);
-  sbmlmod->setNotes("<body xmlns=\"http://www.w3.org/1999/xhtml\"><p> Originally created by libAntimony " VERSION_STRING " (using libSBML) </p></body>");
+  sbmlmod->setNotes("<body xmlns=\"http://www.w3.org/1999/xhtml\"><p> Originally created by libAntimony " VERSION_STRING " (using libSBML " LIBSBML_DOTTED_VERSION ") </p></body>");
   char cc = g_registry.GetCC();
   //User-defined functions
   for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
@@ -1483,6 +1516,9 @@ void Module::CreateSBMLModel()
     const Variable* compartment = GetNthVariableOfType(allCompartments, comp);
     Compartment* sbmlcomp = sbmlmod->createCompartment();
     sbmlcomp->setId(compartment->GetNameDelimitedBy(cc));
+    if (compartment->GetDisplayName() != "") {
+      sbmlcomp->setName(compartment->GetDisplayName());
+    }
     sbmlcomp->setConstant(compartment->GetIsConst());
     formula_type ftype = compartment->GetFormulaType();
     assert (ftype == formulaINITIAL || ftype==formulaASSIGNMENT || ftype==formulaRATE);
@@ -1502,6 +1538,9 @@ void Module::CreateSBMLModel()
     const Variable* species = GetNthVariableOfType(allSpecies, spec);
     Species* sbmlspecies = sbmlmod->createSpecies();
     sbmlspecies->setId(species->GetNameDelimitedBy(cc));
+    if (species->GetDisplayName() != "") {
+      sbmlspecies->setName(species->GetDisplayName());
+    }
     sbmlspecies->setConstant(false); //There's no need to try to distinguish between const and var for species.
     if (species->GetIsConst()) {
       sbmlspecies->setBoundaryCondition(true);
@@ -1530,6 +1569,9 @@ void Module::CreateSBMLModel()
     const Formula*  formula = formvar->GetFormula();
     Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
+    if (formvar->GetDisplayName() != "") {
+      param->setName(formvar->GetDisplayName());
+    }
     param->setConstant(formvar->GetIsConst());
     if (formula->IsDouble()) {
       param->setValue(atof(formula->ToSBMLString().c_str()));
@@ -1552,6 +1594,9 @@ void Module::CreateSBMLModel()
     }
     Reaction* sbmlrxn = sbmlmod->createReaction();
     sbmlrxn->setId(rxnvar->GetNameDelimitedBy(cc));
+    if (rxnvar->GetDisplayName() != "") {
+      sbmlrxn->setName(rxnvar->GetDisplayName());
+    }
     const Formula* formula = reaction->GetFormula();
     string formstring = formula->ToSBMLString(rxnvar->GetStrandVars());
     if (!formula->IsEmpty()) {
@@ -1596,6 +1641,9 @@ void Module::CreateSBMLModel()
     const AntimonyEvent* event = eventvar->GetEvent();
     Event* sbmlevent = sbmlmod->createEvent();
     sbmlevent->setId(eventvar->GetNameDelimitedBy(cc));
+    if (eventvar->GetDisplayName() != "") {
+      sbmlevent->setName(eventvar->GetDisplayName());
+    }
     Trigger trig(2, 4);
     ASTNode* ASTtrig = parseStringToASTNode(event->GetTrigger()->ToSBMLString());
     trig.setMath(ASTtrig);
@@ -1618,6 +1666,9 @@ void Module::CreateSBMLModel()
     const Variable* formvar = GetNthVariableOfType(allUnknown, form);
     Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
+    if (formvar->GetDisplayName() != "") {
+      param->setName(formvar->GetDisplayName());
+    }
   }
 }
 

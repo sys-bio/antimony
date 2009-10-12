@@ -459,6 +459,15 @@ string Variable::GetFormulaForNthEntryInStrand(char cc, size_t n)
   return retval;
 }
 
+string Variable::GetDisplayName() const
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetDisplayName();
+  }
+  return m_displayname;
+}
+
+
 bool Variable::SetType(var_type newtype)
 {
   if (newtype == varUndefined) return false;
@@ -1060,6 +1069,17 @@ bool Variable::SetIsInStrand(Variable* var)
   return false;
 }
 
+bool Variable::SetDisplayName(string name)
+{
+  if (IsPointer()) {
+    return GetSameVariable()->SetDisplayName(name);
+  }
+  if (name == GetNameDelimitedBy('_')) return false; //Don't bother with names that are identical to id's
+  m_displayname = name;
+  return false;
+}
+
+
 //Set this variable to be a shell pointing to the clone, transferring any data we may already have.
 bool Variable::Synchronize(Variable* clone)
 {
@@ -1126,6 +1146,14 @@ bool Variable::Synchronize(Variable* clone)
 
   if (clone->m_const == constDEFAULT) {
     clone->m_const = m_const;
+  }
+
+  if (m_displayname != "") {
+    string clonedispname = clone->GetDisplayName();
+    if (clonedispname == "") {
+      clone->SetDisplayName(m_displayname);
+    }
+    m_displayname = "";
   }
 
   if (!m_valFormula.IsEmpty()) {

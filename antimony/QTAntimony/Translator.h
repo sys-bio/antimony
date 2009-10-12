@@ -31,8 +31,7 @@ private:
     QAction* m_actionSelectAll;
     QAction* m_actionRevertToTranslated;
     QAction* m_actionRevertToOriginal;
-    QAction* m_actionSetAntimonyFont;
-    QAction* m_actionSetSBMLFont;
+    QAction* m_actionSetSBMLLevelAndVersion;
 
 #ifdef SBW_INTEGRATION
     void addSBWMenu();
