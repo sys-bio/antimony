@@ -19,6 +19,7 @@
 using namespace iface;
 #endif
 
+#define LEVELANDVERSION 2, 4
 
 extern Registry g_registry;
 using namespace std;
@@ -45,7 +46,7 @@ Module::Module(string name)
     m_uniquevars()
 {
 #ifndef NSBML
-  m_sbml.setLevelAndVersion(2, 4); //LS DEBUG:  bug in libsbml requires this (9/23/09)
+  m_sbml.setLevelAndVersion(LEVELANDVERSION); //LS DEBUG:  bug in libsbml requires this (9/23/09)
 #endif
 }
 
@@ -69,7 +70,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_uniquevars()
 {
 #ifndef NSBML
-  m_sbml.setLevelAndVersion(2, 4); //LS DEBUG:  bug in libsbml requires this (9/23/09)
+  m_sbml.setLevelAndVersion(LEVELANDVERSION); //LS DEBUG:  bug in libsbml requires this (9/23/09)
 #endif
   SetNewTopName(modulename, newtopname);
 #ifndef NSBML
@@ -1644,7 +1645,7 @@ void Module::CreateSBMLModel()
     if (eventvar->GetDisplayName() != "") {
       sbmlevent->setName(eventvar->GetDisplayName());
     }
-    Trigger trig(2, 4);
+    Trigger trig(LEVELANDVERSION);
     ASTNode* ASTtrig = parseStringToASTNode(event->GetTrigger()->ToSBMLString());
     trig.setMath(ASTtrig);
     delete ASTtrig;
