@@ -85,29 +85,29 @@ void SBMLTab::WhichLevelAndVersion()
             ;
      bool ok;
      QString item = QInputDialog::getItem(this, tr("SBML Level and Version"),
-                                          "Choose SBML Level and Version for " + GetTabName() + ":", lvs, m_levelversion, false, &ok);
+                                          tr("Choose SBML Level and Version for ") + GetTabName() + tr(":"), lvs, m_levelversion, false, &ok);
      if (ok && !item.isEmpty()) {
-         if (item == "Level 1 Version 2") {
+         if (item == tr("Level 1 Version 2")) {
              SetLevelAndVersion(1,2);
              m_levelversion = 0;
          }
-         if (item == "Level 2 Version 1") {
+         if (item == tr("Level 2 Version 1")) {
              SetLevelAndVersion(2,1);
              m_levelversion = 1;
          }
-         if (item == "Level 2 Version 2") {
+         if (item == tr("Level 2 Version 2")) {
              SetLevelAndVersion(2,2);
              m_levelversion = 2;
          }
-         if (item == "Level 2 Version 3") {
+         if (item == tr("Level 2 Version 3")) {
              SetLevelAndVersion(2,3);
              m_levelversion = 3;
          }
-         if (item == "Level 2 Version 4") {
+         if (item == tr("Level 2 Version 4")) {
              SetLevelAndVersion(2,4);
              m_levelversion = 4;
          }
-         if (item == "Level 3 Version 1") {
+         if (item == tr("Level 3 Version 1")) {
              SetLevelAndVersion(3,1);
              m_levelversion = 5;
          }

@@ -136,6 +136,7 @@ void QTAntimony::DisplayWindow(QMainWindow* t) {
         }
         if (window.bottomRight() == desk.bottomRight()) {
             window.translate(desk.x()-window.x(), desk.y()-window.y());
+			window.translate(10,30);
         }
         t->setGeometry(window);
     }
