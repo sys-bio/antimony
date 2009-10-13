@@ -180,9 +180,16 @@ Translator::Translator(QTAntimony* app, QString filename)
                 //Not a valid file of either format, but maybe we can tell if it's XML or not.
                 QRegExp lessthanstart("^\\s*<");
                 if (filetext.contains(lessthanstart)) {
-                    //It's SBML.  Probably.
+                    //It's SBML.  Probably.  Re-read it as SBML to find the error:
+					loadSBMLFile(filename.toUtf8().data());
                     AddSBMLTab("", filetext, false);
                     m_tabmanager->textbox(1)->SetFailedTranslation();
+					QString error = getLastError();
+			        //m_tabmanager->textbox(1)->DisplayError(error);
+					error = "// " + error;
+				    QRegExp returns("\n");
+					error.replace(returns, "\n//  ");
+					m_antimony->ReplaceTextWith(error);
                     m_antimony->SetFailedTranslation();
                     m_tabmanager->textbox(1)->SetSavedFilename(filename);
                 }
