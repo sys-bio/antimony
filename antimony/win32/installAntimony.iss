@@ -267,7 +267,7 @@ Name: {group}\QTAntimony; Filename: {app}\QTAntimony.exe; WorkingDir: {userdocs}
 Name: {group}\README; Filename: {app}\README.txt
 [Run]
 Filename: {app}\vcredist_x86.exe; Parameters: "/q:a /c:""msiexec /i vcredist.msi /qn /l*v %temp%\vcredist_x86.log"""
-Filename: {app}\QTAntimony.exe; WorkingDir: {userdocs}; Flags: postinstall unchecked
 Filename: {app}\README.txt; Description: View the README file; Flags: postinstall shellexec skipifsilent
+Filename: {app}\QTAntimony.exe; WorkingDir: {userdocs}; Flags: postinstall unchecked
 [Dirs]
 Name: {app}\biomodels
