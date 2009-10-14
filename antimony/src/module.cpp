@@ -456,7 +456,8 @@ bool Module::Finalize()
       for (size_t rxn=0; rxn<rxns.size(); rxn++) {
         Variable* rightvar = GetVariable(rxns[rxn]);
         const Formula* form = rightvar->GetFormula();
-        if (form->CheckIncludes(m_variables[var]->GetNamespace(), m_variables[var]->GetReaction()->GetLeft())) {
+        if (!form->IsEmpty() &&
+            form->CheckIncludes(m_variables[var]->GetNamespace(), m_variables[var]->GetReaction()->GetLeft())) {
           g_registry.AddErrorPrefix("According to the interaction '" + m_variables[var]->GetNameDelimitedBy('_') + "', the formula for '" + rightvar->GetNameDelimitedBy('_') + "' (=" + form->ToDelimitedStringWithEllipses('_') + ") ");
           return true;
         }
@@ -956,9 +957,24 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     const Variable* var = m_variables[vnum];
     var_type type = var->GetType();
     if (var->IsPointer()) continue;
-    else if (IsReaction(type) || type == varInteraction) {
+    else if (IsReaction(type)) {
       if (firstone) {
         retval += "\n" + indent + "// Reactions:\n";
+        firstone = false;
+      }
+      retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses(cc) + "\n";
+    }
+  }
+
+  //Then interactions:
+  firstone = true;
+  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
+    const Variable* var = m_variables[vnum];
+    var_type type = var->GetType();
+    if (var->IsPointer()) continue;
+    else if (type == varInteraction) {
+      if (firstone) {
+        retval += "\n" + indent + "// Interactions:\n";
         firstone = false;
       }
       retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses(cc) + "\n";
@@ -1469,7 +1485,23 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
         localformula.AddNum(localparam->getValue());
         localvar->SetFormula(&localformula);
       }
+	}
+	else if (reaction->getNumModifiers() > 0) {
+		//If the kinetic law is empty, we can set some interactions, if there are any Modifiers.
+    ReactantList right;
+    right.AddReactant(var);
+    ReactantList left;
+		for (unsigned int mod=0; mod<reaction->getNumModifiers(); mod++) {
+			const ModifierSpeciesReference* msr = reaction->getModifier(mod);
+      string species = msr->getSpecies();
+      Variable* specvar = AddOrFindVariable(&species);
+      left.AddReactant(specvar);
+      sbmlname = getNameFromSBMLObject(msr, "_I");
     }
+    Variable* interaction = AddOrFindVariable(&sbmlname);
+    Formula blankform;
+    AddNewReaction(&left, rdInfluences, &right, &blankform, interaction);
+	}
     //Put reactants, products, and the formula together:
     AddNewReaction(&reactants, rdBecomes, &products, &formula, var);
   }
@@ -1658,6 +1690,21 @@ void Module::CreateSBMLModel()
       ASTNode* ASTasnt = parseStringToASTNode(event->GetNthAssignmentFormulaString(asnt, '_', true));
       sbmlasnt->setMath(ASTasnt);
       delete ASTasnt;
+    }
+  }
+
+  //Interactions
+  size_t numinteractions = GetNumVariablesOfType(allInteractions);
+  for (size_t irxn=0; irxn<numinteractions; irxn++) {
+    const Variable* arxnvar = GetNthVariableOfType(allInteractions, irxn);
+	  const AntimonyReaction* arxn = arxnvar->GetReaction();
+	  Reaction* rxn = sbmlmod->getReaction(arxn->GetRight()->GetNthReactant(0)->GetNameDelimitedBy(cc));
+    if (rxn != NULL) {
+	    for (size_t interactor=0; interactor<arxn->GetLeft()->Size(); interactor++) {
+		    ModifierSpeciesReference* msr = rxn->createModifier();
+		    msr->setSpecies(arxn->GetLeft()->GetNthReactant(interactor)->GetNameDelimitedBy(cc));
+        msr->setName(arxnvar->GetNameDelimitedBy(cc));
+	    }
     }
   }
 

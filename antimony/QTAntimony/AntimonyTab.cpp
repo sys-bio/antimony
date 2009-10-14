@@ -26,8 +26,11 @@ AntimonyTab::AntimonyTab(QWidget* parent)
     connect(m_actionCopySBML, SIGNAL(triggered()), this, SLOT(CopySBML()));
     QSettings qset(ORG, APP);
     qset.sync();
+    QFont defaultfont;
+    defaultfont.setFamily("Courier New");
+    defaultfont.setPointSize(12);
     QFont newfont;
-    newfont.fromString(qset.value("antimonyfont", currentFont()).toString());
+    newfont.fromString(qset.value("antimonyfont", defaultfont).toString());
     setFont(newfont);
 }
 
