@@ -799,7 +799,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
     return true;
   }
   if (IsInteraction(rxn->GetType())) {
-    if (SetType(varInteraction) || rxn->GetRight()->SetComponentTypesTo(varReactionUndef)) {
+    if (SetType(varInteraction) || rxn->GetRight()->SetComponentTypesTo(varFormulaUndef)) {
       g_registry.AddErrorPrefix(err);
       return true;
     }

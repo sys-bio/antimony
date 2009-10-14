@@ -1,4 +1,6 @@
 #include <QtGui/QApplication>
+#include <QString>
+#include <QRegExp>
 #include "Translator.h"
 #include "QTAntimony.h"
 #include "SBWIntegration.h"
@@ -87,6 +89,9 @@ int main(int argc, char *argv[])
 
 	qInstallMsgHandler(myMessageOutput);
 	QTAntimony a(argc, argv);
+  //QString sheet = a.styleSheet();
+  //sheet.append("QMessageBox { messagebox-text-interaction-flags: 1 }");
+  //a.setStyleSheet(sheet);
 
 #ifdef SBW_INTEGRATION
 

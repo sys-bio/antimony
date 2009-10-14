@@ -411,7 +411,7 @@ void Translator::closeEvent(QCloseEvent* event)
 void Translator::DisplayAbout()
 {
    QMessageBox msgBox;
-    msgBox.setText("QTAntimony v0.6:");
+    msgBox.setText("QTAntimony v0.6.1:");
     msgBox.setInformativeText("Based on libAntimony " VERSION_STRING " and libSBML v" LIBSBML_DOTTED_VERSION);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
