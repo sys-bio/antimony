@@ -130,10 +130,22 @@ QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 	$(qt_dir)QTAntimony.pro \
 	$(qt_dir)SBMLTab.cpp \
 	$(qt_dir)SBMLTab.h \
+	$(qt_dir)SBWIntegration.cpp \
+	$(qt_dir)SBWIntegration.h \
+	$(qt_dir)Settings.h \
 	$(qt_dir)TabManager.cpp \
 	$(qt_dir)TabManager.h \
 	$(qt_dir)Translator.cpp \
 	$(qt_dir)Translator.h \
+	$(qt_dir)Tutorial.cpp \
+	$(qt_dir)Tutorial.h \
+	$(qt_dir)Tutorial.html \
+	$(qt_dir)Tutorial.xxd \
+	$(qt_dir)antimony.icns \
+	$(qt_dir)antimony.ico \
+	$(qt_dir)antimony.jpg \
+	$(qt_dir)antimony_ico.pdn \
+	$(qt_dir)antimonyicon.rc \
 	$(qt_dir)README.txt \
 
 

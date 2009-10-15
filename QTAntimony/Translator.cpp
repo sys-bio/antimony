@@ -302,6 +302,14 @@ Translator::Translator(QTAntimony* app, QString filename)
     helpmenu->addAction(actionShowTutorial);
     helpmenu->addAction(actionAbout);
 
+    //alt-right(?)
+    QAction* nextTab = new QAction(tr("&New"), this);
+    nextTab->setShortcut(QKeySequence::NextChild);
+    nextTab->setShortcut(QKeySequence(tr("Alt+right")));
+    nextTab->setEnabled(true);
+    connect(nextTab, SIGNAL(triggered()), m_tabmanager, SLOT(nextTab()));
+
+
     //And finally...
     setCentralWidget(m_tabmanager);
     m_tabmanager->textbox(0)->setFocus();

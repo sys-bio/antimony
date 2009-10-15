@@ -158,6 +158,14 @@ void TabManager::SwitchTabs(int tab)
     m_oldtab = tab;
 }
 
+void TabManager::nextTab()
+{
+    int tab = currentIndex()+1;
+    if (tab>count()) tab=0;
+    setCurrentIndex(tab);
+}
+
+
 void TabManager::TranslateCurrent()
 {
     Translate(currentIndex());
