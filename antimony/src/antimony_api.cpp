@@ -452,6 +452,19 @@ LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype
   return names;
 }
 
+LIB_EXTERN char** getSymbolDisplayNamesOfType(const char* moduleName, return_type rtype)
+{
+  if (!checkModule(moduleName)) return NULL;
+  unsigned long vnum = getNumSymbolsOfType(moduleName, rtype);
+  char** names = getCharStarStar(vnum);
+  if (names == NULL) return NULL;
+  for (unsigned long var=0; var<vnum; var++) {
+    names[var] = getNthSymbolDisplayNameOfType(moduleName, rtype, var);
+    if (names[var] == NULL) return NULL;
+  }
+  return names;
+}
+
 LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type rtype)
 {
   if (!checkModule(moduleName)) return NULL;
@@ -527,6 +540,18 @@ LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rty
     return NULL;
   }
   return getCharStar(var->GetNameDelimitedBy(g_registry.GetCC()).c_str());
+}
+
+LIB_EXTERN char*  getNthSymbolDisplayNameOfType(const char* moduleName, return_type rtype, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(rtype, n);
+  if (var==NULL) {
+    unsigned long numvars = g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
+    reportVariableTypeIndexProblem(n, rtype, numvars, moduleName);
+    return NULL;
+  }
+  return getCharStar(var->GetDisplayName().c_str());
 }
 
 LIB_EXTERN char*  getNthSymbolEquationOfType(const char* moduleName, return_type rtype, unsigned long n)

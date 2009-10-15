@@ -32,12 +32,12 @@ Since Antimony is intended to be easy and simple, it is not a requirement to end
 </P><P>
 <dt>&lt;<tt><b><A name="import statements">import statements</a></b></tt></tt>&gt;:
 	<dd>One or more lines of the format:
-<dt><TT>import "&lt;<tt><A href="#filename">filename</a></tt>&gt;"</TT>
-	<dd>Read in the file in question, and parse that file using libSBML.  If libSBML returns an error, parse the file as if the file was copied and pasted into the Antimony file at this exact spot.
+<dt><TT>import &lt;<tt><A href="#textstring">textstring</a></tt>&gt;</TT>
+	<dd>Parse the text string as the name of a file (relative to the directory where the executable is being run) and read in the file in question.  First, parse that file using libSBML.  If libSBML returns an error, parse the file as if the file was copied and pasted into the Antimony file at this exact spot.
 
 </P><P>
-<dt>&lt;<tt><b><A name="filename">filename</a></b></tt>&gt;:
-	<dd>The name of a file, relative to the directory where the executable is being run.
+<dt>&lt;<tt><b><A name="textstring">textstring</a></b></tt>&gt;:
+	<dd>Any text surrounded by quotation marks ("), and not containing returns.  Parsed as filenames for &lt;<tt><A href="#import statements">import statements</a></tt>&gt; and used for &lt;<tt><A href="#display names">display names</a></tt>&gt;
 
 </P><P>
 <dt>&lt;<tt><b><A name="model definitions">model definitions</a></b></tt>&gt;:
@@ -68,6 +68,7 @@ Since Antimony is intended to be easy and simple, it is not a requirement to end
 <dt>  &lt;<tt><A href="#DNA strand definitions">DNA strand definitions</a></tt>&gt;
 <dt>  &lt;<tt><A href="#event definitions">event definitions</a></tt>&gt;
 <dt>  &lt;<tt><A href="#synchronizations">synchronizations</a></tt>&gt;
+<dt>  &lt;<tt><A href="#display names">display names</a></tt>&gt;
 
 
 </P><P>
@@ -274,6 +275,18 @@ Since Antimony is intended to be easy and simple, it is not a requirement to end
 <dt>&lt;<tt><b><A name="synchronizations">synchronizations</a></b></tt>&gt;
 	<dd>Particularly useful to 'connect' submodules, a synchronization claims that two elements are actually the same thing:
 <dt><TT>&lt;<tt><A href="#symbol">symbol</a></tt>&gt; is &lt;<tt><A href="#symbol">symbol</a></tt>&gt;</tt>
-	<dd>The two symbols are defined to be actually the same thing, with the second symbol taking precedence.  In the final output for this module, only the second symbol will appear.  Any characteristic of the first symbol for which that characteristic of the second symbol is undefined or less specific, the second symbol now embodies.  For example, if the first symbol is a reaction, and the second symbol is a formula, after this synchronization, the symbol will now be defined as a reaction.   If both symbols are defined by conflicting characteristics, the second symbol will take precedence.  In our previous  example, if the first symbol is a reaction with a defined reaction rate, and the second symbol is a formula with a different rate equation, the rate of the resulting reaction will be the second symbol's original rate.
+	<dd>The two symbols are defined to be actually the same thing, with the second symbol taking precedence.  In the final output for this module, only the second symbol will appear.  Any characteristic of the first symbol for which that characteristic of the second symbol is undefined or less specific, the second symbol now embodies.  For example, if the first symbol is a reaction, and the second symbol is a formula, after this synchronization, the second symbol will be used, and will now be defined as a reaction.   If both symbols are defined by conflicting characteristics, the second symbol will take precedence.  In our previous example, if the first symbol is a reaction with a defined reaction rate, and the second symbol is a formula with a different rate equation, the rate of the resulting reaction will be the second symbol's original rate.
+</P><P>
+        <dd>Two symbols of conflicting types may not be synchronized:  a species may not be synchronized with a reaction, for example.
 
 
+</P><P>
+<dt>&lt;<tt><b><A name="display names">display names</a></b></tt>&gt;
+<dt><TT>&lt;<tt><A href="#symbol">symbol</a></tt>&gt; is &lt;<tt><A href="#textstring">textstring</a></tt>&gt;</tt>
+	<dd>Provides an alternate way for clients to display the name of a symbol.  When translated to SBML, the normal name becomes the 'id', which must be unique and follow certain naming conventions (the same ones used here for <tt>&lt;<A href="#symbol">symbols</a>&gt;</tt>), and this becomes the 'name'.  Any text is allowable in a display name, and it need not be unique.
+
+
+
+
+
+</P>

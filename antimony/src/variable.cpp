@@ -12,6 +12,7 @@ using namespace std;
 Variable::Variable(const string name, const Module* module)
   : m_name(),
     m_module(module->GetModuleName()),
+    m_displayname(""),
     m_sameVariable(),
     m_valFormula(),
     m_valReaction(),

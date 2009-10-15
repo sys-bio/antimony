@@ -304,9 +304,14 @@ LIB_EXTERN char*  getNthModuleName(unsigned long n);
 LIB_EXTERN unsigned long getNumSymbolsOfType(const char* moduleName, return_type rtype);
 
 /**
- * Returns the names of the symbols of the given return type.
+ * Returns the names of the symbols of the given return type.  (In SBML, these are the 'id's.)
  */
 LIB_EXTERN char** getSymbolNamesOfType(const char* moduleName, return_type rtype);
+
+/**
+ * Returns the 'display names' of the symbols of the given return type.  (In SBML, these are the 'name's.)
+ */
+LIB_EXTERN char** getSymbolDisplayNamesOfType(const char* moduleName, return_type rtype);
 
 /**
  * Returns the equations associated with the symbols of the given return type.
@@ -372,9 +377,14 @@ LIB_EXTERN char** getSymbolRateRulesOfType(const char* moduleName, return_type r
 LIB_EXTERN char** getSymbolCompartmentsOfType(const char* moduleName, return_type rtype);
 
 /**
- * Returns the name of the Nth symbol of the given type.  If no such symbol exists, NULL is returned and an error is set.
+ * Returns the name of the Nth symbol of the given type.  If no such symbol exists, NULL is returned and an error is set.  (In SBML, this is the 'id' of the element.)
  */
 LIB_EXTERN char*  getNthSymbolNameOfType(const char* moduleName, return_type rtype, unsigned long n);
+
+/**
+ * Returns the 'display name' of the Nth symbol of the given type.  If no such symbol exists, NULL is returned and an error is set.  (In SBML, this is the 'name' of the element.)
+ */
+LIB_EXTERN char*  getNthSymbolDisplayNameOfType(const char* moduleName, return_type rtype, unsigned long n);
 
 /**
  * Returns the equation associated with the Nth symbol of the given type.  If no equation is set for the symbol in question, an empty string is returned.  If no symbol can be found, NULL is returned and an error is set.

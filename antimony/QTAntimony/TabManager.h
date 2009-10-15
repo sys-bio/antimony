@@ -36,6 +36,7 @@ public slots:
 
     //Whenever we switch tabs:
     void SwitchTabs(int tab);
+    void nextTab();
 
     void SaveCurrent();
     void SaveCurrentAs();

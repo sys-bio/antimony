@@ -26,7 +26,7 @@ an unsynchronized state, where the contents of the SBML tab(s) are not
 the same as the contents of the Antimony tab.  Whichever tab you edit 
 after that will become the new canonical model for the system.
 
-The current version is v0.5, and you should expect there to be some 
+The current version is v0.6, and you should expect there to be some 
 bugs, particularly when there are errors in the models.  We are actively 
 updating this program as well as libAntimony, however, and would 
 appreciate any bug reports or feature requests you may have.  You can 
