@@ -970,9 +970,9 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   firstone = true;
   for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
     const Variable* var = m_variables[vnum];
-    var_type type = var->GetType();
     if (var->IsPointer()) continue;
-    else if (type == varInteraction) {
+    var_type type = var->GetType();
+    if (type == varInteraction) {
       if (firstone) {
         retval += "\n" + indent + "// Interactions:\n";
         firstone = false;
@@ -985,9 +985,9 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   firstone = true;
   for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
     const Variable* var = m_variables[vnum];
-    var_type type = var->GetType();
     if (var->IsPointer()) continue;
-    else if (type == varEvent) {
+    var_type type = var->GetType();
+    if (type == varEvent) {
       if (firstone) {
         retval += "\n" + indent + "// Events:\n";
         firstone = false;
@@ -1022,6 +1022,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   vector<string> genenames;
   vector<string> innames;
   for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->IsPointer()) continue;
     var_type type = m_variables[var]->GetType();
     const_type isconst = m_variables[var]->GetConstType();
     string name = m_variables[var]->GetNameDelimitedBy(cc);
@@ -1088,6 +1089,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   //Display names
   bool anydisplay = false;
   for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->IsPointer()) continue;
     if (m_variables[var]->GetDisplayName() != "") {
       if (anydisplay == false) {
         retval += "\n" + indent + "//Display Names:\n";
