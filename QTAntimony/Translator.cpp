@@ -22,6 +22,7 @@ using namespace SystemsBiologyWorkbench;
 #include "SBMLTab.h"
 #include "FileWatcher.h"
 #include "QTAntimony.h"
+#include "CopyMessageBox.h"
 
 #include "antimony_api.h"
 #include <sbml/SBMLTypes.h>
@@ -38,7 +39,6 @@ using namespace SystemsBiologyWorkbench;
 #include <QFile>
 #include <QTextStream>
 #include <QCloseEvent>
-#include <QMessageBox>
 
 using namespace std;
 Translator::Translator(QTAntimony* app, QString filename)
@@ -181,15 +181,17 @@ Translator::Translator(QTAntimony* app, QString filename)
                 QRegExp lessthanstart("^\\s*<");
                 if (filetext.contains(lessthanstart)) {
                     //It's SBML.  Probably.  Re-read it as SBML to find the error:
-					loadSBMLFile(filename.toUtf8().data());
+                    loadSBMLFile(filename.toUtf8().data());
                     AddSBMLTab("", filetext, false);
                     m_tabmanager->textbox(1)->SetFailedTranslation();
-					QString error = getLastError();
-			        //m_tabmanager->textbox(1)->DisplayError(error);
-					error = "// " + error;
-				    QRegExp returns("\n");
-					error.replace(returns, "\n//  ");
-					m_antimony->ReplaceTextWith(error);
+                    QString error = getLastError();
+                    //m_tabmanager->textbox(1)->DisplayError(error);
+                    QRegExp oneline("([^\n]{50}\\S*)\\s");
+                    error.replace(oneline, "\\1\n");
+                    error = "// " + error;
+                    QRegExp returns("\n");
+                    error.replace(returns, "\n//  ");
+                    m_antimony->ReplaceTextWith(error);
                     m_antimony->SetFailedTranslation();
                     m_tabmanager->textbox(1)->SetSavedFilename(filename);
                 }

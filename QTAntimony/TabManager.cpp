@@ -1,11 +1,11 @@
 #include "TabManager.h"
 #include "Translator.h"
 #include "ChangeableTextBox.h"
+#include "CopyMessageBox.h"
 #include "SBMLTab.h"
 #include "AntimonyTab.h"
 #include "antimony_api.h"
 #include "Settings.h"
-#include <QMessageBox>
 #include <QPrintDialog>
 #include <QAction>
 #include <QFontDialog>
@@ -381,8 +381,7 @@ bool TabManager::CanIClose()
         message += " have";
     }
     message += " not been saved.  Save before closing?";
-    QMessageBox msgBox;
-   	msgBox.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 1 }");
+    CopyMessageBox msgBox;
     msgBox.setText("Some tabs have not been saved.");
     msgBox.setInformativeText(message);
     msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard);
