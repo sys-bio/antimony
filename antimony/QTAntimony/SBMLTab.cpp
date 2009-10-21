@@ -1,6 +1,6 @@
 #include <QInputDialog>
-#include <QMessageBox>
 
+#include "CopyMessageBox.h"
 #include "SBMLTab.h"
 #include "Settings.h"
 #include <sbml/SBMLTypes.h>
@@ -68,21 +68,20 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
     SBMLDocument* sbmldoc = readSBMLFromString(toPlainText().toUtf8());
     SBMLErrorLog* log = sbmldoc->getErrorLog();
     std::string trueerrors = "";
-		for (unsigned int err=0; err<log->getNumErrors(); err++) {
-		  const SBMLError* error = log->getError(err);
-			if(error->getSeverity() >=2) {
-			  if (trueerrors != "") trueerrors += "\n";
-			  trueerrors += error->getMessage();
-      }
+    for (unsigned int err=0; err<log->getNumErrors(); err++) {
+        const SBMLError* error = log->getError(err);
+        if(error->getSeverity() >=2) {
+            if (trueerrors != "") trueerrors += "\n";
+            trueerrors += error->getMessage();
+        }
     }
     if (trueerrors != "") {
-      QMessageBox msgBox;
-     	msgBox.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 1 }");
-	  	QString message = "Error before attempting to translate '" + GetModelName() + "' to the selected level and version.";
-		  msgBox.setText(message);
-  		msgBox.setInformativeText(trueerrors.c_str());
-	  	msgBox.setStandardButtons(QMessageBox::Ok);
-		  msgBox.exec();
+      CopyMessageBox msgBox;
+      QString message = "Error before attempting to translate '" + GetModelName() + "' to the selected level and version.";
+      msgBox.setText(message);
+      msgBox.setInformativeText(trueerrors.c_str());
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.exec();
       return false;
     }
     sbmldoc->setConsistencyChecksForConversion(LIBSBML_CAT_UNITS_CONSISTENCY, false);
@@ -90,26 +89,26 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
     if (success) {
       ReplaceTextWith(writeSBMLToString(sbmldoc));
     }
-	  else {
-		  //sbmldoc->getErrorLog()->clearLog();
-		  //sbmldoc->checkL2v1Compatibility();
-		  SBMLErrorLog* log = sbmldoc->getErrorLog();
-      std::string trueerrors = "";
-		  for (unsigned int err=0; err<log->getNumErrors(); err++) {
-			  const SBMLError* error = log->getError(err);
-			  if(error->getSeverity() >=2) {
-				  if (trueerrors != "") trueerrors += "\n";
-				  trueerrors += error->getMessage();
-			  }
-      }
-      QMessageBox msgBox;
-     	msgBox.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 1 }");
-	  	QString message = "Error when attempting to translate '" + GetModelName() + "' to the selected level and version.";
-		  msgBox.setText(message);
-  		msgBox.setInformativeText(trueerrors.c_str());
-	  	msgBox.setStandardButtons(QMessageBox::Ok);
-		  msgBox.exec();
-  	}
+    else {
+        //sbmldoc->getErrorLog()->clearLog();
+        //sbmldoc->checkL2v1Compatibility();
+        SBMLErrorLog* log = sbmldoc->getErrorLog();
+        std::string trueerrors = "";
+        for (unsigned int err=0; err<log->getNumErrors(); err++) {
+            const SBMLError* error = log->getError(err);
+            if(error->getSeverity() >=2) {
+                if (trueerrors != "") trueerrors += "\n";
+                trueerrors += error->getMessage();
+            }
+        }
+      CopyMessageBox msgBox;
+      QString message = "Error when attempting to translate '" + GetModelName() + "' to the selected level and version.";
+      msgBox.setText(message);
+      msgBox.setInformativeText(trueerrors.c_str());
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.exec();
+  }
+
     return success;
 }
 

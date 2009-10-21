@@ -28,11 +28,10 @@ LIBS += -L../lib/ \
     -lantimony \
     -L$${LIBSBML_DIR} \
     -lsbml
+
 # -lxml2 \
 # -lz \
 # -lbz2
-
-
 win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\bin"
 win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\win32\bin"
 win32:QMAKE_LFLAGS += /LIBPATH:"..\win32"
@@ -49,7 +48,8 @@ SOURCES += main.cpp \
     QTAntimony.cpp \
     FileWatcher.cpp \
     SBWIntegration.cpp \
-    Tutorial.cpp
+    Tutorial.cpp \
+    CopyMessageBox.cpp
 HEADERS += AntimonyTab.h \
     SBMLTab.h \
     Translator.h \
@@ -59,4 +59,5 @@ HEADERS += AntimonyTab.h \
     FileWatcher.h \
     SBWIntegration.h \
     Tutorial.h \
-    Settings.h
+    Settings.h \
+    CopyMessageBox.h

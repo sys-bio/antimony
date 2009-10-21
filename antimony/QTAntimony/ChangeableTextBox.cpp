@@ -1,5 +1,6 @@
 #include "ChangeableTextBox.h"
 #include "QTAntimony.h"
+#include "CopyMessageBox.h"
 #include <QPalette>
 #include <QMenu>
 #include <QContextMenuEvent>
@@ -9,7 +10,6 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QTextStream>
-#include <QMessageBox>
 #include <QList>
 #include <QUrl>
 
@@ -195,8 +195,7 @@ void ChangeableTextBox::SaveTab()
     }
     QFile file(m_filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox msgBox;
-       	msgBox.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 1 }");
+        CopyMessageBox msgBox;
         QString message = "Unable to open file '" + m_filename + "' for writing.";
         msgBox.setText(message);
         msgBox.setInformativeText("Try to save again, or cancel?");
@@ -240,8 +239,7 @@ void ChangeableTextBox::SaveTabAs()
 
 void ChangeableTextBox::DisplayError(QString error)
 {
-    QMessageBox msgBox;
-   	msgBox.setStyleSheet("QMessageBox { messagebox-text-interaction-flags: 1 }");
+    CopyMessageBox msgBox;
     QString message = "Error when attempting to translate " + GetModelName() + ":";
     msgBox.setText(message);
     msgBox.setInformativeText(error);
