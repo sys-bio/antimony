@@ -122,6 +122,8 @@ QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 	$(qt_dir)AntimonyTab.h \
 	$(qt_dir)ChangeableTextBox.cpp \
 	$(qt_dir)ChangeableTextBox.h \
+	$(qt_dir)CopyMessageBox.cpp \
+	$(qt_dir)CopyMessageBox.h \
 	$(qt_dir)FileWatcher.cpp \
 	$(qt_dir)FileWatcher.h \
 	$(qt_dir)main.cpp \

@@ -50,7 +50,7 @@
   * - 21: modularStrands:    All defined DNA strands, with some being subparts of the others.
   *
   * Returned Pointers
-  * The majority of the functions described below return pointers to arrays and/or strings.  These pointers pointers you then own, created with 'malloc':  you must 'free' them yourself to release the allocated memory.  Some programming environments will handle this automatically for you, and others will not.  If you want to not bother with it, the function 'freeAll' is provided, which will free every pointer created by this library.  In order for this to work, however, you must have not freed a single provided pointer yourself, and you must not subsequently try to reference any data provided by the library (your own copies of the data will be fine, of course).
+  * The majority of the functions described below return pointers to arrays and/or strings.  These pointers you then own, and are created with 'malloc':  you must 'free' them yourself to release the allocated memory.  Some programming environments will handle this automatically for you, and others will not.  If you want to not bother with it, the function 'freeAll' is provided, which will free every pointer created by this library.  In order for this to work, however, you must have not freed a single provided pointer yourself, and you must not subsequently try to reference any data provided by the library (your own copies of the data will be fine, of course).
   *
   * If the library runs out of memory when trying to return a pointer, it will return NULL instead and attempt to set an error message, retrievable with 'getLastError()'.
   *
@@ -200,7 +200,7 @@ LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
  * Returns the same output as writeSBMLFile, but to a char* array instead of to a file.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
  * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
  *
- *@see writeSBMLToString
+ *@see writeSBMLFile
  */
 LIB_EXTERN char* getSBMLString(const char* moduleName);
 #endif
@@ -731,9 +731,9 @@ LIB_EXTERN bool    getIsNthModularDNAStrandOpen(const char* moduleName, unsigned
 
 /**
  * Frees all pointers handed to you by libAntimony.
- * All libAntimony functions above that return pointers return malloc'ed pointers that you now own.  If you wish, you can ignore this and never free anything, as long as you call 'freeAll' at the very end of your program.  If you free *anything*, however, calling this function will cause the program to crash!  It won't know that you already freed that pointer, and will attempt to free it again.  So either keep track of all memory management yourself, or use this function after you're completely done.
+ * All libAntimony functions above that return pointers return malloc'ed pointers that you now own.  If you wish, you can ignore this and never free anything, as long as you call 'freeAll' at the very end of your program.  If you free *anything* yourself, however, calling this function will cause the program to crash!  It won't know that you already freed that pointer, and will attempt to free it again.  So either keep track of all memory management yourself, or use this function after you're completely done.
  *
- * Note that this function only frees pointers handed to you by other antimony_api functions.  The models themselves are still in memory and are available.
+ * Note that this function only frees pointers handed to you by other antimony_api functions.  The models themselves are still in memory and are available.  (To clear that memory, use clearPreviousLoads() )
  */
 LIB_EXTERN void freeAll();
 

@@ -45,8 +45,8 @@
   Variable* maybein;
 }
 
-%type <character> mathThing
-%type <formula> formula
+%type <character> mathThing "mathematical symbol"
+%type <formula> formula 
 %type <formula> spacedformula
 %type <module> module
 %type <reactantList> reactantList
@@ -55,13 +55,34 @@
 
 %left '(' ')' '+' '-' '*' '/' '^' ','
 
-%token <num> NUM
-%token <word> WORD MODNAME TEXTSTRING
-%token <word> MODULE END SPECIES REACTION FORMULA DNA GENE OPERATOR EVENT COMPARTMENT IN IS VAR CONST DASHES ELLIPSES FUNCTION IMPORT AT FUNCTIONWORD
+%token YYEOF 0 "end of file"
+%token  <num> NUM "number"
+%token  <word> WORD "element name"
+%token  <word> MODNAME "name of an existing module"
+%token  <word> TEXTSTRING "text string"
+%token  <word> MODULE "string 'module'"
+%token  <word> END "string 'end'"
+%token  <word> SPECIES "string 'species'"
+%token  <word> REACTION "string 'reaction'"
+%token  <word> FORMULA "string 'formula'"
+%token  <word> DNA "string 'DNA'"
+%token  <word> GENE "string 'gene'"
+%token  <word> OPERATOR "string 'operator'"
+%token  <word> EVENT "string 'event'"
+%token  <word> COMPARTMENT "string 'compartment'"
+%token  <word> IN "string 'in'"
+%token  <word> IS "string 'is'"
+%token  <word> VAR "string 'var'"
+%token  <word> CONST "string 'const'"
+%token  <word> DASHES "--"
+%token  <word> ELLIPSES "..."
+%token  <word> FUNCTION "string 'function'"
+%token  <word> IMPORT "string 'import'"
+%token  <word> AT "'@' or 'at'"
+%token  <word> FUNCTIONWORD "name of an existing function"
 
 %debug
 %error-verbose
-
 %% /* The grammar: */
 
 input:          /* empty */
