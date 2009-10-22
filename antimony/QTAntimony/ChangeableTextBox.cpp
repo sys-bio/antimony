@@ -261,7 +261,6 @@ void ChangeableTextBox::dropEvent(QDropEvent* e)
     }
 }
 
-
 void ChangeableTextBox::ReplaceTextWith(QString text)
 {
     if (text == toPlainText()) return;

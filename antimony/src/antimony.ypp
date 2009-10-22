@@ -60,26 +60,26 @@
 %token  <word> WORD "element name"
 %token  <word> MODNAME "name of an existing module"
 %token  <word> TEXTSTRING "text string"
-%token  <word> MODULE "string 'module'"
-%token  <word> END "string 'end'"
-%token  <word> SPECIES "string 'species'"
-%token  <word> REACTION "string 'reaction'"
-%token  <word> FORMULA "string 'formula'"
-%token  <word> DNA "string 'DNA'"
-%token  <word> GENE "string 'gene'"
-%token  <word> OPERATOR "string 'operator'"
-%token  <word> EVENT "string 'event'"
-%token  <word> COMPARTMENT "string 'compartment'"
-%token  <word> IN "string 'in'"
-%token  <word> IS "string 'is'"
-%token  <word> VAR "string 'var'"
-%token  <word> CONST "string 'const'"
+%token  <word> MODULE "'model' or 'module'"
+%token  <word> END "'end'"
+%token  <word> SPECIES "'species'"
+%token  <word> REACTION "'reaction'"
+%token  <word> FORMULA "'formula'"
+%token  <word> DNA "'DNA'"
+%token  <word> GENE "'gene'"
+%token  <word> OPERATOR "'operator'"
+%token  <word> EVENT "'event'"
+%token  <word> COMPARTMENT "'compartment'"
+%token  <word> IN "'in'"
+%token  <word> IS "'is'"
+%token  <word> VAR "'var'"
+%token  <word> CONST "'const'"
 %token  <word> DASHES "--"
 %token  <word> ELLIPSES "..."
-%token  <word> FUNCTION "string 'function'"
-%token  <word> IMPORT "string 'import'"
+%token  <word> FUNCTION "name of an existing function"
+%token  <word> IMPORT "'import'"
 %token  <word> AT "'@' or 'at'"
-%token  <word> FUNCTIONWORD "name of an existing function"
+%token  <word> FUNCTIONWORD "'function'"
 
 %debug
 %error-verbose
@@ -135,7 +135,7 @@ variable:       WORD {$$ = g_registry.AddVariableToCurrent($1); }
                     YYABORT;
                   }
                 }
-        //|       '<' variable '>' {$$ = $2; if ($$->SetIsConst(true)) YYABORT;}
+        |       '$' variable {$$ = $2; if ($$->SetIsConst(true)) YYABORT;}
         ;
 
 variablein:    variable IN variable {if ($1->SetCompartment($3)) YYABORT; $$ = $1;}
