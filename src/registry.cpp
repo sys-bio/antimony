@@ -97,7 +97,7 @@ void Registry::ClearAll()
 }
 
 //Return values:  1: antimony, unread 2: SBML, read
-int Registry::OpenString(const string model)
+int Registry::OpenString(string model)
 {
 #ifndef NSBML
   //Try opening as SBML:
@@ -106,6 +106,9 @@ int Registry::OpenString(const string model)
   delete document;
   if (sbmlcheck==2) return 2;
 #endif
+  if (model[model.size()-1] != '\n') {
+    model.push_back('\n');
+  }
   m_files.push_back("");
   if (input != NULL) {
     m_oldinputs.push_back(input);
@@ -119,7 +122,7 @@ int Registry::OpenString(const string model)
 }
 
 //Return values:  0: failure, 1: antimony, unread 2: SBML, read
-int Registry::OpenFile(const string filename)
+int Registry::OpenFile(const string& filename)
 {
 #ifndef NSBML
   //Try opening as SBML:

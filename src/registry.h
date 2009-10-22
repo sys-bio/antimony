@@ -71,8 +71,8 @@ public:
   void FreeVariables();
   void ClearAll();
 
-  int    OpenFile(const std::string filename);
-  int    OpenString(const std::string model);
+  int    OpenFile(const std::string& filename);
+  int    OpenString(std::string model);
 #ifndef NSBML
   int    CheckAndAddSBMLIfGood(SBMLDocument* document);
 #endif

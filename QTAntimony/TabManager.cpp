@@ -191,7 +191,6 @@ void TabManager::Translate(int tab)
     setUpdatesEnabled(false);
     QString tabtext = oldtab->toPlainText();
     oldtab->SetOriginal();
-    tabtext.replace(QChar::ParagraphSeparator, "\n");
     if (tab==0) {
         TranslateAntimony(tabtext);
     }
@@ -227,8 +226,30 @@ void TabManager::SetOthersTranslated(int oldtab)
     }
 }
 
-void TabManager::TranslateAntimony(const QString& text)
+void TabManager::TranslateAntimony(QString& text)
 {
+    text.replace(QChar(8230), "...");
+    for (int i=0; i<text.size(); i++) {
+        if (text[i].category()==QChar::Punctuation_Dash) {
+            text[i] = '-';
+        }
+        else if (text[i]==QChar(8216) ||
+                 text[i]==QChar(8217) ||
+                 text[i]==QChar(8219)) {
+            text[i] = '\'';
+        }
+        else if (text[i].category()==QChar::Punctuation_FinalQuote ||
+                 text[i].category()==QChar::Punctuation_InitialQuote) {
+            text[i] = '"';
+        }
+    }
+    if (text[text.size()-1] != '\n') {
+        text.append('\n');
+    }
+    if (text != textbox(0)->toPlainText()) {
+        textbox(0)->ReplaceTextWith(text);
+        textbox(0)->SetOriginal();
+    }
     long handle = loadString(text.toUtf8().data());
     if (handle == -1) {
         //error condition

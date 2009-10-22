@@ -59,7 +59,7 @@ signals:
 
 private:
     ChangeableTextBox* GetActiveEditor();
-    void TranslateAntimony(const QString& text);
+    void TranslateAntimony(QString& text);
     void TranslateSBML(int tab, const QString& text);
     void SetOthersOriginal(int oldtab);
     void SetOthersTranslated(int oldtab);
