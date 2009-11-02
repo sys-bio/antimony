@@ -13,12 +13,12 @@ model Yamada2003_JAK_STAT_Pathway()
   species mRNAn in nucleus, mRNAc in cytoplasm, SOCS1 in cytoplasm, IFNRJ2_star_SOCS1 in cytoplasm;
   species IFNRJ2_star_SHP2_SOCS1_STAT1c in cytoplasm, STAT1c_star_STAT1c_star_PPX in cytoplasm;
   species STAT1n_star_STAT1n_star_PPN in nucleus, IFNRJ2_star_SOCS1_STAT1c in cytoplasm;
-  species IFN in cytoplasm, IFNRJ2_star_SHP2_STAT1c in cytoplasm, IFNRJ2_star_SHP2_SOCS1 in cytoplasm;
+  species $IFN in cytoplasm, IFNRJ2_star_SHP2_STAT1c in cytoplasm, IFNRJ2_star_SHP2_SOCS1 in cytoplasm;
   species IFNR in cytoplasm;
 
   // Reactions:
   v1: JAK + R -> RJ; cytoplasm * (v1_kf * R * JAK - v1_kb * RJ);
-  v2: RJ + IFN -> IFNRJ; cytoplasm * (v2_kf * IFN * RJ - v2_kb * IFNRJ);
+  v2: RJ + $IFN -> IFNRJ; cytoplasm * (v2_kf * IFN * RJ - v2_kb * IFNRJ);
   v3: 2IFNRJ -> IFNRJ2; cytoplasm * (v3_kf * IFNRJ * IFNRJ - v3_kb * IFNRJ2);
   v4: IFNRJ2 -> IFNRJ2_star; cytoplasm * v4_kf * IFNRJ2;
   v5: IFNRJ2_star + STAT1c -> IFNRJ2_star_STAT1c; cytoplasm * (v5_kf * STAT1c * IFNRJ2_star - v5_kb * IFNRJ2_star_STAT1c);
@@ -61,7 +61,7 @@ model Yamada2003_JAK_STAT_Pathway()
   v42: IFNRJ2_star_STAT1c + SOCS1 -> IFNRJ2_star_SOCS1_STAT1c; cytoplasm * (v42_kf * SOCS1 * IFNRJ2_star_STAT1c - v42_kb * IFNRJ2_star_SOCS1_STAT1c);
   v43: IFNRJ2_star_SHP2 + SOCS1 -> IFNRJ2_star_SHP2_SOCS1; cytoplasm * (v43_kf * SOCS1 * IFNRJ2_star_SHP2 - v43_kb * IFNRJ2_star_SHP2_SOCS1);
   v44: IFNRJ2_star_SHP2_STAT1c + SOCS1 -> IFNRJ2_star_SHP2_SOCS1_STAT1c; cytoplasm * (v44_kf * SOCS1 * IFNRJ2_star_SHP2_STAT1c - v44_kb * IFNRJ2_star_SHP2_SOCS1_STAT1c);
-  v45: R + IFN -> IFNR; cytoplasm * (v45_kf * IFN * R - v45_kb * IFNR);
+  v45: R + $IFN -> IFNR; cytoplasm * (v45_kf * IFN * R - v45_kb * IFNR);
   v46: JAK + IFNR -> IFNRJ; cytoplasm * (v46_kf * IFNR * JAK - v46_kb * IFNRJ);
 
   // Species initializations:
@@ -177,8 +177,6 @@ model Yamada2003_JAK_STAT_Pathway()
   v45_kb = 0.02;
   v46_kf = 0.1;
   v46_kb = 0.05;
-
-  const IFN;
 
   //Display Names:
   R is "Receptor";

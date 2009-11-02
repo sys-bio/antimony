@@ -3,7 +3,8 @@ model model_0000001()
 
   // Compartments and Species:
   compartment cell;
-  species M in cell, MpY in cell, MpT in cell, Mpp in cell, MEK in cell, MKP3 in cell;
+  species M in cell, MpY in cell, MpT in cell, Mpp in cell, $MEK in cell;
+  species $MKP3 in cell;
 
   // Reactions:
   v1: M -> MpY; cell * (kcat1 * MEK * M / Km1 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
@@ -41,8 +42,6 @@ model model_0000001()
   Km7 = 34;
   kcat7 = 0.108;
   Km8 = 40;
-
-  const MEK, MKP3;
 
   //Display Names:
   M is "ERK";

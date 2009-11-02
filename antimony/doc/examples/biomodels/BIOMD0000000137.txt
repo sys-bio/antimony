@@ -42,9 +42,9 @@ model Sedaghat2002_InsulinSignalling_noFeedback()
   R20: x20 -> x21; Intracellular * ((k13 + k13prime) * x20 - kminus13 * x21);
 
   // Events:
-  event_0000001: at(geq(time, 15)): x1 = 0;
-  event_0000002: at(gt(x6 + x7 + x8, 100)): k5 = 1.670000e-02;
-  event_0000003: at(leq(x6 + x7 + x8, 100)): k5 = 0.1002;
+  event_0000001: at geq(time, 15): x1 = 0;
+  event_0000002: at gt(x6 + x7 + x8, 100): k5 = 1.670000e-02;
+  event_0000003: at leq(x6 + x7 + x8, 100): k5 = 0.1002;
 
   // Species initializations:
   x1 = 100000000;
@@ -108,7 +108,8 @@ model Sedaghat2002_InsulinSignalling_noFeedback()
   PTP = 1;
   APequil = 9.09091;
   PI3K = 5;
-
+  
+//Other declarations:
   var k5, k9, k11, k12, k13prime, Effect, x4x5;
 
   //Display Names:

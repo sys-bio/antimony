@@ -6,12 +6,12 @@ model Brown2004_NGF_EGF_signaling()
   species EGF in cell, NGF in cell, freeEGFReceptor in cell, boundEGFReceptor in cell;
   species freeNGFReceptor in cell, boundNGFReceptor in cell, SosInactive in cell;
   species SosActive in cell, P90RskInactive in cell, P90RskActive in cell;
-  species RasInactive in cell, RasActive in cell, RasGapActive in cell, Raf1Inactive in cell;
+  species RasInactive in cell, RasActive in cell, $RasGapActive in cell, Raf1Inactive in cell;
   species Raf1Active in cell, BRafInactive in cell, BRafActive in cell, MekInactive in cell;
   species MekActive in cell, ErkInactive in cell, ErkActive in cell, PI3KInactive in cell;
   species PI3KActive in cell, AktInactive in cell, AktActive in cell, C3GInactive in cell;
-  species C3GActive in cell, Rap1Inactive in cell, Rap1Active in cell, RapGapActive in cell;
-  species PP2AActive in cell, Raf1PPtase in cell;
+  species C3GActive in cell, Rap1Inactive in cell, Rap1Active in cell, $RapGapActive in cell;
+  species $PP2AActive in cell, $Raf1PPtase in cell;
 
   // Reactions:
   EGFBindingReaction: EGF + freeEGFReceptor -> boundEGFReceptor; cell * krbEGF * EGF * freeEGFReceptor;
@@ -127,8 +127,6 @@ model Brown2004_NGF_EGF_signaling()
   KmdRaf1 = 1061.71;
   kdBRaf = 441.287;
   KmdBRaf = 10879500;
-
-  const RasGapActive, RapGapActive, PP2AActive, Raf1PPtase;
 
   //Display Names:
   EGFBindingReaction is "EGF binding";

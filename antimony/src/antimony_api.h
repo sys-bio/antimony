@@ -331,20 +331,6 @@ LIB_EXTERN char** getSymbolEquationsOfType(const char* moduleName, return_type r
 
 
 /**
- * Returns the equations associated with the assignment rule for symbols of the given return type.
- * - Species:                 The assignment rule for the species in question
- * - Formulas and operators:  The assignment rule of the formula in question
- * - Compartments:            The assignment rule for the compartment
- * - DNA Strands:             The assignment rule or reaction rate at the end of the strand.
- * - Reactions and genes:     The reaction rate (for consistency with DNA strands)
- *
- * - Events:                  Nothing
- * - Interactions:            Nothing
- * - Modules:                 Nothing
- */
-LIB_EXTERN char** getSymbolAssignmentRulesOfType(const char* moduleName, return_type rtype);
-
-/**
  * Returns the equations associated with the initial assignment for symbols of the given return type.
  * - Species:                 The initial assignment for the species in question
  * - Formulas and operators:  The initial assignment of the formula in question
@@ -352,6 +338,20 @@ LIB_EXTERN char** getSymbolAssignmentRulesOfType(const char* moduleName, return_
  *
  * - DNA Strands:             Nothing
  * - Reactions and genes:     Nothing
+ * - Events:                  Nothing
+ * - Interactions:            Nothing
+ * - Modules:                 Nothing
+ */
+LIB_EXTERN char** getSymbolInitialAssignmentsOfType(const char* moduleName, return_type rtype);
+
+/**
+ * Returns the equations associated with the assignment rule for symbols of the given return type.
+ * - Species:                 The assignment rule for the species in question
+ * - Formulas and operators:  The assignment rule of the formula in question
+ * - Compartments:            The assignment rule for the compartment
+ * - DNA Strands:             The assignment rule or reaction rate at the end of the strand.
+ * - Reactions and genes:     The reaction rate (for consistency with DNA strands)
+ *
  * - Events:                  Nothing
  * - Interactions:            Nothing
  * - Modules:                 Nothing
@@ -372,8 +372,8 @@ LIB_EXTERN char** getSymbolAssignmentRulesOfType(const char* moduleName, return_
 LIB_EXTERN char** getSymbolRateRulesOfType(const char* moduleName, return_type rtype);
 
 /**
- * Returns the compartments associated with the symbols of the given return type.  Note that unlike in SBML, any symbol of any type may have an associated compartment, including compartments themselves.  Rules about compartments in Antimony can be found in the <A class="el" HREF="Tutorial.pdf">Tutorial.pdf</a> document included with this documentation.
- */ //LS DEBUG:  documentation check
+ * Returns the compartments associated with the symbols of the given return type.  Note that unlike in SBML, any symbol of any type may have an associated compartment, including compartments themselves.  Rules about compartments in Antimony can be found in the <A class="el" target="_top" HREF="Tutorial.pdf">Tutorial.pdf</a> document included with this documentation.
+ */
 LIB_EXTERN char** getSymbolCompartmentsOfType(const char* moduleName, return_type rtype);
 
 /**

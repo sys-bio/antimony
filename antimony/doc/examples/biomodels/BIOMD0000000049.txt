@@ -28,12 +28,12 @@ model untitled()
   species c_Raf_Ras_GTP_pMEK_ERK in c1, B_Raf_Ras_GTP_MEK in c1, B_Raf_Ras_GTP_pMEK in c1;
   species B_Raf_Ras_GTP_MEK_ERK in c1, B_Raf_Ras_GTP_pMEK_ERK in c1, B_Raf_Rap1_GTP_MEK in c1;
   species B_Raf_Rap1_GTP_pMEK in c1, B_Raf_Rap1_GTP_MEK_ERK in c1, B_Raf_Rap1_GTP_pMEK_ERK in c1;
-  species ppERK_MKP3 in c1, dppERK_MKP3 in c1, pro_TrkA in c1, NGF in compartment_;
-  species EGF in compartment_, pro_EGFR in c1, degradation in c1;
+  species ppERK_MKP3 in c1, dppERK_MKP3 in c1, $pro_TrkA in c1, $NGF in compartment_;
+  species $EGF in compartment_, $pro_EGFR in c1, $degradation in c1;
 
   // Reactions:
-  re1: pro_EGFR -> EGFR; compartment_ * (re1_re1_k1 * pro_EGFR - re1_re1_k2 * EGFR);
-  re2: EGF + EGFR -> L_EGFR; compartment_ * (re2_re2_k1 * EGF * EGFR - re2_re2_k2 * L_EGFR);
+  re1: $pro_EGFR -> EGFR; compartment_ * (re1_re1_k1 * pro_EGFR - re1_re1_k2 * EGFR);
+  re2: $EGF + EGFR -> L_EGFR; compartment_ * (re2_re2_k1 * EGF * EGFR - re2_re2_k2 * L_EGFR);
   re8: 2L_EGFR -> L_EGFR_dimer; compartment_ * (re8_re8_k1 * L_EGFR * L_EGFR - re8_re8_k2 * L_EGFR_dimer);
   J3: SOS + Grb2 -> SOS_Grb2; c1 * (J3_J3_k1 * SOS * Grb2 - J3_J3_k2 * SOS_Grb2);
   J4: Grb2 + pSOS -> pSOS_Grb2; c1 * (J4_J4_k1 * Grb2 * pSOS - J4_J4_k2 * pSOS_Grb2);
@@ -94,11 +94,11 @@ model untitled()
   J67: Rap1_GTP -> Rap1_GDP; c1 * J67_J67_k * Rap1_GTP;
   J68: Rap1_GDP -> Rap1_GTP; c1 * (J68_J68_Vmax * Rap1_GDP * (Crk_C3G_pFRS2_dpEGFR + Crk_C3G_pFRS2_dpEGFR_c_Cbl + Crk_C3G_pFRS2_pTrkA_endo) / (J68_J68_Km1 + Rap1_GDP));
   J69: Ras_GDP -> Ras_GTP; c1 * (J69_J69_Vmax * Ras_GDP * (Grb2_SOS_pShc_dpEGFR + Grb2_SOS_pShc_dpEGFR_c_Cbl + Grb2_SOS_pShc_pTrkA) / (J69_J69_Km1 + Ras_GDP));
-  J70: NGF + NGFR -> L_NGFR; compartment_ * (J70_J70_k1 * NGF * NGFR - J70_J70_k2 * L_NGFR);
+  J70: $NGF + NGFR -> L_NGFR; compartment_ * (J70_J70_k1 * NGF * NGFR - J70_J70_k2 * L_NGFR);
   J71: L_NGFR -> pTrkA; compartment_ * J71_J71_k * L_NGFR;
   J72: pTrkA -> pTrkA_endo; c1 * J72_J72_k * pTrkA;
-  J73: pTrkA_endo -> degradation; c1 * J73_J73_k * pTrkA_endo;
-  J74: pTrkA -> degradation; c1 * J74_J74_k * pTrkA;
+  J73: pTrkA_endo -> $degradation; c1 * J73_J73_k * pTrkA_endo;
+  J74: pTrkA -> $degradation; c1 * J74_J74_k * pTrkA;
   J75: Shc + pTrkA -> Shc_pTrkA; c1 * (J75_J75_k1 * Shc * pTrkA - J75_J75_k2 * Shc_pTrkA);
   J76: pShc + pTrkA -> pShc_pTrkA; c1 * (J76_J76_k1 * pShc * pTrkA - J76_J76_k2 * pShc_pTrkA);
   J77: FRS2 + pTrkA -> FRS2_pTrkA; c1 * (J77_J77_k1 * FRS2 * pTrkA - J77_J77_k2 * FRS2_pTrkA);
@@ -111,13 +111,13 @@ model untitled()
   J84: pTrkA_endo + FRS2 -> FRS2_pTrkA_endo; c1 * (J84_J84_k1 * pTrkA_endo * FRS2 - J84_J84_k2 * FRS2_pTrkA_endo);
   J85: pTrkA_endo + pFRS2 -> pFRS2_pTrkA_endo; c1 * (J85_J85_k1 * pTrkA_endo * pFRS2 - J85_J85_k2 * pFRS2_pTrkA_endo);
   J86: FRS2_pTrkA_endo -> pFRS2_pTrkA_endo; c1 * J86_J86_k * FRS2_pTrkA_endo;
-  J87: FRS2_pTrkA -> degradation + FRS2; c1 * J87_J87_k * FRS2_pTrkA;
-  J88: pFRS2_pTrkA -> degradation + pFRS2; c1 * J88_J88_k * pFRS2_pTrkA;
-  J89: Shc_pTrkA -> degradation + Shc; c1 * J89_J89_k * Shc_pTrkA;
-  J90: pShc_pTrkA -> degradation + pShc; c1 * J90_J90_k * pShc_pTrkA;
-  J92: FRS2_pTrkA_endo -> degradation + FRS2; c1 * J92_J92_k * FRS2_pTrkA_endo;
-  J93: Shc_pTrkA_endo -> degradation + Shc; c1 * J93_J93_k * Shc_pTrkA_endo;
-  J94: pShc_pTrkA_endo -> degradation + pShc; c1 * J94_J94_k * pShc_pTrkA_endo;
+  J87: FRS2_pTrkA -> $degradation + FRS2; c1 * J87_J87_k * FRS2_pTrkA;
+  J88: pFRS2_pTrkA -> $degradation + pFRS2; c1 * J88_J88_k * pFRS2_pTrkA;
+  J89: Shc_pTrkA -> $degradation + Shc; c1 * J89_J89_k * Shc_pTrkA;
+  J90: pShc_pTrkA -> $degradation + pShc; c1 * J90_J90_k * pShc_pTrkA;
+  J92: FRS2_pTrkA_endo -> $degradation + FRS2; c1 * J92_J92_k * FRS2_pTrkA_endo;
+  J93: Shc_pTrkA_endo -> $degradation + Shc; c1 * J93_J93_k * Shc_pTrkA_endo;
+  J94: pShc_pTrkA_endo -> $degradation + pShc; c1 * J94_J94_k * pShc_pTrkA_endo;
   J95: SOS_Grb2 + pShc_pTrkA_endo -> Grb2_SOS_pShc_pTrkA_endo; c1 * (J95_J95_k1 * SOS_Grb2 * pShc_pTrkA_endo - J95_J95_k2 * Grb2_SOS_pShc_pTrkA_endo);
   J96: SOS_Grb2 + pShc_pTrkA -> Grb2_SOS_pShc_pTrkA; c1 * (J96_J96_k1 * SOS_Grb2 * pShc_pTrkA - J96_J96_k2 * Grb2_SOS_pShc_pTrkA);
   J97: Grb2_SOS_pShc_pTrkA -> Grb2_SOS_pShc_pTrkA_endo; c1 * J97_J97_k * Grb2_SOS_pShc_pTrkA;
@@ -130,12 +130,12 @@ model untitled()
   J104: Crk_C3G + pFRS2_pTrkA_endo -> Crk_C3G_pFRS2_pTrkA_endo; c1 * (J104_J104_k1 * Crk_C3G * pFRS2_pTrkA_endo - J104_J104_k2 * Crk_C3G_pFRS2_pTrkA_endo);
   J105: Grb2_SOS_pShc + pTrkA -> Grb2_SOS_pShc_pTrkA; c1 * (J105_J105_k1 * Grb2_SOS_pShc * pTrkA - J105_J105_k2 * Grb2_SOS_pShc_pTrkA);
   J106: Grb2_SOS_pShc + pTrkA_endo -> Grb2_SOS_pShc_pTrkA_endo; c1 * (J106_J106_k1 * Grb2_SOS_pShc * pTrkA_endo - J106_J106_k2 * Grb2_SOS_pShc_pTrkA_endo);
-  J107: Crk_C3G_pFRS2_pTrkA -> degradation + pFRS2 + Crk_C3G; c1 * J107_J107_k * Crk_C3G_pFRS2_pTrkA;
-  J108: Crk_C3G_pFRS2_pTrkA_endo -> degradation + Crk_C3G + pFRS2; c1 * J108_J108_k * Crk_C3G_pFRS2_pTrkA_endo;
-  J109: Grb2_SOS_pShc_pTrkA -> degradation + Grb2_SOS_pShc; c1 * J109_J109_k * Grb2_SOS_pShc_pTrkA;
-  J110: Grb2_SOS_pShc_pTrkA_endo -> degradation + Grb2_SOS_pShc; c1 * J110_J110_k * Grb2_SOS_pShc_pTrkA_endo;
-  J112: pFRS2_pTrkA_endo -> degradation + pFRS2; J112_J112_k * pFRS2_pTrkA_endo;
-  J113: pro_TrkA -> NGFR; compartment_ * (J113_J113_k1 * pro_TrkA - J113_J113_k2 * NGFR);
+  J107: Crk_C3G_pFRS2_pTrkA -> $degradation + pFRS2 + Crk_C3G; c1 * J107_J107_k * Crk_C3G_pFRS2_pTrkA;
+  J108: Crk_C3G_pFRS2_pTrkA_endo -> $degradation + Crk_C3G + pFRS2; c1 * J108_J108_k * Crk_C3G_pFRS2_pTrkA_endo;
+  J109: Grb2_SOS_pShc_pTrkA -> $degradation + Grb2_SOS_pShc; c1 * J109_J109_k * Grb2_SOS_pShc_pTrkA;
+  J110: Grb2_SOS_pShc_pTrkA_endo -> $degradation + Grb2_SOS_pShc; c1 * J110_J110_k * Grb2_SOS_pShc_pTrkA_endo;
+  J112: pFRS2_pTrkA_endo -> $degradation + pFRS2; J112_J112_k * pFRS2_pTrkA_endo;
+  J113: $pro_TrkA -> NGFR; compartment_ * (J113_J113_k1 * pro_TrkA - J113_J113_k2 * NGFR);
   J115: Shc + dpEGFR_c_Cbl -> Shc_dpEGFR_c_Cbl; c1 * (J115_J115_k1 * Shc * dpEGFR_c_Cbl - J115_J115_k2 * Shc_dpEGFR_c_Cbl);
   J116: dpEGFR_c_Cbl + pShc -> pShc_dpEGFR_c_Cbl; c1 * (J116_J116_k1 * dpEGFR_c_Cbl * pShc - J116_J116_k2 * pShc_dpEGFR_c_Cbl);
   J117: pShc_dpEGFR_c_Cbl + SOS_Grb2 -> Grb2_SOS_pShc_dpEGFR_c_Cbl; c1 * (J117_J117_k1 * pShc_dpEGFR_c_Cbl * SOS_Grb2 - J117_J117_k2 * Grb2_SOS_pShc_dpEGFR_c_Cbl);
@@ -523,8 +523,6 @@ model untitled()
   J166_J166_k2 = 0.24;
   J167_J167_k = 0.06;
   J168_J168_k = 0.06;
-
-  const pro_TrkA, NGF, EGF, pro_EGFR, degradation;
 
   //Display Names:
   proteosome is "proteasome";

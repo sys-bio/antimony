@@ -3,18 +3,19 @@ model Radulescu2008_NFkB_hierarchy_M_39_65_90()
 
   // Compartments and Species:
   compartment default, c1;
-  species s22 in c1, s36 in c1, s65 in c1, s93 in c1, s108 in c1, s109 in default;
-  species s110 in default, s111 in default, s112 in default, s113 in default;
-  species s114 in default, s117 in default, s118 in default, s119 in default;
-  species s120 in default, s122 in default, s123 in default, s124 in default;
-  species s126 in c1, s127 in default, s128 in default, s129 in default, s130 in default;
-  species s131 in default, s132 in default, s133 in default, s134 in default;
-  species s150 in c1, s153 in default, s154 in default, s156 in default, s157 in default;
-  species s158 in c1, s160 in c1, s165 in c1, s170 in c1, s173 in c1, s178 in default;
-  species s185 in c1, s188 in default, s189 in default, s190 in default, s191 in default;
-  species s192 in c1, s193 in c1, s194 in c1, s195 in c1, s196 in c1, s197 in c1;
-  species s198 in c1, s199 in c1, s200 in c1, s201 in c1, s205 in c1, s206 in c1;
-  species s209 in c1, s212 in c1, s213 in c1, s214 in c1, s215 in c1;
+  species s22 in c1, s36 in c1, s65 in c1, s93 in c1, $s108 in c1, $s109 in default;
+  species s110 in default, $s111 in default, $s112 in default, s113 in default;
+  species s114 in default, s117 in default, $s118 in default, s119 in default;
+  species $s120 in default, $s122 in default, s123 in default, s124 in default;
+  species s126 in c1, s127 in default, s128 in default, $s129 in default;
+  species s130 in default, $s131 in default, s132 in default, s133 in default;
+  species $s134 in default, s150 in c1, $s153 in default, $s154 in default;
+  species $s156 in default, $s157 in default, $s158 in c1, s160 in c1, s165 in c1;
+  species s170 in c1, s173 in c1, s178 in default, s185 in c1, s188 in default;
+  species s189 in default, s190 in default, s191 in default, s192 in c1, s193 in c1;
+  species s194 in c1, s195 in c1, s196 in c1, s197 in c1, s198 in c1, s199 in c1;
+  species s200 in c1, s201 in c1, s205 in c1, s206 in c1, s209 in c1, s212 in c1;
+  species s213 in c1, s214 in c1, s215 in c1;
 
   // Reactions:
   re1: s22 + s198 -> s199; kf32 * s198 * s22 - kr32 * s199;
@@ -35,30 +36,30 @@ model Radulescu2008_NFkB_hierarchy_M_39_65_90()
   re30: s160 -> s165; k42 * s193 + k43 * s194;
   re31: s170 -> s173; k33 * s198 + k34 * s199 + k69 * s196 + k70 * s200;
   re32: s209 -> s185; k49 * s205 + k50 * s206 + k62 * s214 + k61 * s212;
-  re33: s195 -> s108; k54 * s195;
+  re33: s195 -> $s108; k54 * s195;
   re34: s173 -> s113; k35 * s173;
-  re35: s110 -> s109; k38 * s110;
-  re36: s113 -> s112; k37 * s113;
+  re35: s110 -> $s109; k38 * s110;
+  re36: s113 -> $s112; k37 * s113;
   re37: s113 -> s110 + s113; k36 * s113;
   re38: s110 -> s114; k39 * s110;
-  re39: s114 -> s111; k40 * s114;
+  re39: s114 -> $s111; k40 * s114;
   re40: s165 -> s117; k44 * s165;
-  re41: s117 -> s118; k46 * s117;
-  re42: s119 -> s120; k47 * s119;
+  re41: s117 -> $s118; k46 * s117;
+  re42: s119 -> $s120; k47 * s119;
   re43: s117 -> s119 + s117; k45 * s117;
   re44: s185 -> s178; k51 * s185;
   re45: s178 -> s124; k27 * s178;
-  re46: s123 -> s122; k21 * s123;
+  re46: s123 -> $s122; k21 * s123;
   re47: s178 -> s123 + s178; k22 * s178;
   re48: s126 -> s127; k19 + k20 * s195;
   re49: s133 -> s132; k1 * s133;
   re52: s188 -> s190; k12 * s188;
-  re53: s133 -> s131; k2 * s133;
-  re56: s132 -> s134; k6 * s132;
+  re53: s133 -> $s131; k2 * s133;
+  re56: s132 -> $s134; k6 * s132;
   re57: s191 -> s132; k8 * s191;
   re58: s132 + s188 -> s189; k9 * s132 * s188;
   re59: s189 -> s190 + s132; k10 * s189;
-  re60: s130 -> s129; k11 * s130;
+  re60: s130 -> $s129; k11 * s130;
   re61: s127 -> s128 + s127; k16 * s127;
   re62: s114 + s119 -> s190; kf52 * s114 * s119 - kr52 * s190;
   re63: s132 -> s130; k5 * s132 + k4 * s132 * s128;
@@ -68,15 +69,15 @@ model Radulescu2008_NFkB_hierarchy_M_39_65_90()
   re67: s190 -> 5s195; kf15 * s190 - kr15 * s195;
   re68: 5s192 -> s188; kf28 * s192 - kr28 * s188;
   re69: s195 + s93 -> s192; kf14 * s195 * s93 - kr14 * s192;
-  re70: s127 -> s153; k17 * s127;
-  re71: s128 -> s154; k18 * s128;
+  re70: s127 -> $s153; k17 * s127;
+  re71: s128 -> $s154; k18 * s128;
   re72: s123 -> 5s93; kf23 * s123 - kr23 * s93;
-  re74: s190 -> s156; k53 * s190;
-  re75: s188 -> s157; k71 * s188;
-  re76: s192 -> s158; k72 * s192;
+  re74: s190 -> $s156; k53 * s190;
+  re75: s188 -> $s157; k71 * s188;
+  re76: s192 -> $s158; k72 * s192;
 
   // Events:
-  signal: at(gt(time, 72000)): k1 = 0.0025;
+  signal: at 0 after gt(time, 72000): k1 = 0.0025;
 
   // Species initializations:
   s22 = 0.000333333333333333;
@@ -233,10 +234,9 @@ model Radulescu2008_NFkB_hierarchy_M_39_65_90()
   kr68 = 8e-13;
   k71 = 0.0002;
   k72 = 0.0002;
-
+  
+//Other declarations:
   var k1;
-  const s108, s109, s111, s112, s118, s120, s122, s129, s131, s134, s153;
-  const s154, s156, s157, s158;
 
   //Display Names:
   s22 is "FTAx";

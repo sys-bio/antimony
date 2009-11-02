@@ -3,10 +3,10 @@ model Xu2003_Phosphoinositide_turnover()
 
   // Compartments and Species:
   compartment Extracellular, PM, Cytosol, NM, Nucleus;
-  species PIP2_PHGFP_PM in PM, PH_GFP_Cyt in Cytosol, PI_PM in PM, stim_PM in PM;
+  species PIP2_PHGFP_PM in PM, PH_GFP_Cyt in Cytosol, PI_PM in PM, $stim_PM in PM;
   species IP3_PHGFP_Cyt in Cytosol, PIP2_PM in PM, PIP_PM in PM, DAG_PM in PM;
-  species hv_Cytosol in Cytosol, IP3X_Cytosol in Cytosol, PLC_PM in PM, PLC_act_PM in PM;
-  species IP3_Cyt in Cytosol;
+  species $hv_Cytosol in Cytosol, $IP3X_Cytosol in Cytosol, PLC_PM in PM;
+  species PLC_act_PM in PM, IP3_Cyt in Cytosol;
 
   // Assignment Rules:
   Ratebasal_PIPsyn_PIPSyn := piecewise(0.581 * kBasalSynPIP_PIPSyn * (-1 + exp((PIP_basal_PIPSyn + -PIP_PM) * (1 / PIP_basal_PIPSyn))), lt(PIP_PM, PIP_basal_PIPSyn), 0)
@@ -79,10 +79,10 @@ model Xu2003_Phosphoinositide_turnover()
   IP3deg_kIP3deg = 0.08;
   IP3deg_IP3_basal = 0.16;
   PIP2Syn_I = 0;
-
+  
+//Other declarations:
   var Ratebasal_PIPsyn_PIPSyn, Ratestim_PIPsyn_PIPSyn, signal_PLCact, kr_PIP2PH_PIP2_PH;
   var Rate_PIP2Synbasal_PIP2Syn, Rate_PIP2SynStim_PIP2Syn, kr_IP3PH_IP3_PHGFP;
-  const stim_PM, hv_Cytosol, IP3X_Cytosol;
 
   //Display Names:
   IP3_PHGFP is "IP3-PHGFP";

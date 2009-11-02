@@ -4,7 +4,7 @@ model Novak2001_FissionYeast_CellCycle()
   // Compartments and Species:
   compartment cell;
   species cdc13T in cell, preMPF in cell, ste9 in cell, slp1T in cell, slp1 in cell;
-  species IEP in cell, rum1T in cell, SK in cell, M in cell, MPF in cell;
+  species IEP in cell, rum1T in cell, SK in cell, M in cell, $MPF in cell;
 
   // Assignment Rules:
   MPF := (cdc13T - preMPF) * (cdc13T - Trimer) / cdc13T
@@ -36,8 +36,8 @@ model Novak2001_FissionYeast_CellCycle()
   R19:  -> M; mu * M;
 
   // Events:
-  event_0000001: at(and(leq(MPF, 0.1), eq(flag_MPF, 1))): flag_MPF = 0: M = M / 2;
-  event_0000002: at(gt(MPF, 0.1)): flag_MPF = 1;
+  event_0000001: at and(leq(MPF, 0.1), eq(flag_MPF, 1)): flag_MPF = 0, M = M / 2;
+  event_0000002: at gt(MPF, 0.1): flag_MPF = 1;
 
   // Species initializations:
   cdc13T = 0.2;
@@ -102,9 +102,9 @@ model Novak2001_FissionYeast_CellCycle()
   k13 = 0.1;
   k14 = 0.1;
   mu = 0.005;
-
+  
+//Other declarations:
   var flag_MPF, sigma, Trimer, TF, kwee, k25;
-  const MPF;
 
   //Display Names:
   cdc13T is "Total cdc13";

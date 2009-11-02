@@ -5,7 +5,7 @@ model Saucerman2006_PKA()
   compartment ec, cell, membrane;
   species Gsbg_cell in cell, L_cell in cell, Gsa_gdp_cell in cell, Gsa_gtp_cell in cell;
   species b1AR_S464_cell in cell, PDEcAMP_cell in cell, PDE_cell in cell;
-  species ATP_cell in cell, b1AR_cell in cell, Gs_cell in cell, A2RC_cell in cell;
+  species $ATP_cell in cell, b1AR_cell in cell, Gs_cell in cell, A2RC_cell in cell;
   species A2R_cell in cell, PKAC_cell in cell, ARC_cell in cell, PKAC_AKAR_cell in cell;
   species Propranolol_cell in cell, b1ARinhib_cell in cell, light_spot_cell in cell;
   species AC_cell in cell, PKI_cell in cell, PKAC_PKI_cell in cell, RC_cell in cell;
@@ -25,7 +25,7 @@ model Saucerman2006_PKA()
   Ratio_AKARp_AKARtot := AKARp_cell / (AKAR_cell + AKARp_cell + PKAC_AKAR_cell + PP_AKARp_cell)
 
   // Reactions:
-  cAMP_synthesis_GsAC: ATP_cell -> cAMP_cell; Vmax_cAMP_synthesis_GsAC * ATP_cell * (1 / (cAMP_synthesis_GsAC_Km + ATP_cell)) * cell;
+  cAMP_synthesis_GsAC: $ATP_cell -> cAMP_cell; Vmax_cAMP_synthesis_GsAC * ATP_cell * (1 / (cAMP_synthesis_GsAC_Km + ATP_cell)) * cell;
   bind_b1AR_propranolol: Propranolol_cell + b1AR_cell -> b1ARinhib_cell; (bind_b1AR_propranolol_Kf * Propranolol_cell * b1AR_cell + -(bind_b1AR_propranolol_Kr * b1ARinhib_cell)) * cell;
   add_propranolol:  -> Propranolol_cell; ar_for_add_propranolol * cell;
   cAMP_photolysis: DMNB_cAMP_cell -> cAMP_cell; cAMP_photolysis_kphot * light_cAMP_photolysis * DMNB_cAMP_cell * cell;
@@ -45,7 +45,7 @@ model Saucerman2006_PKA()
   bind_A2R_PKAC: A2RC_cell -> A2R_cell + PKAC_cell; (bind_A2R_PKAC_Kf * A2RC_cell + -(bind_A2R_PKAC_Kr * A2R_cell * PKAC_cell)) * cell;
   inhib_PKAC: PKAC_cell + PKI_cell -> PKAC_PKI_cell; (inhib_PKAC_Kf * PKAC_cell * PKI_cell + -(inhib_PKAC_Kr * PKAC_PKI_cell)) * cell;
   bind_RC_cAMP: RC_cell + cAMP_cell -> ARC_cell; (bind_RC_cAMP_Kf * RC_cell * cAMP_cell + -(bind_RC_cAMP_Kr * ARC_cell)) * cell;
-  cAMP_synthesis_FskAC: ATP_cell -> cAMP_cell; Vmax_cAMP_synthesis_FskAC * ATP_cell * (1 / (cAMP_synthesis_FskAC_Km + ATP_cell)) * cell;
+  cAMP_synthesis_FskAC: $ATP_cell -> cAMP_cell; Vmax_cAMP_synthesis_FskAC * ATP_cell * (1 / (cAMP_synthesis_FskAC_Km + ATP_cell)) * cell;
   add_Ligand:  -> L_cell; ar_for_add_Ligand * cell;
   bind_Gs_AC: Gsa_gtp_cell + AC_cell -> GsAC_cell; (bind_Gs_AC_Kf * Gsa_gtp_cell * AC_cell + -(bind_Gs_AC_Kr * GsAC_cell)) * cell;
   resens_bark: b1AR_S464_cell -> L_b1AR_cell; resens_bark_k_barkm * b1AR_S464_cell * cell;
@@ -155,11 +155,11 @@ model Saucerman2006_PKA()
   AKAR_phosph_kpka_akar = 54;
   RG_activation_k_gact = 16;
   cAMP_degradation_kpde = 5;
-
+  
+//Other declarations:
   var Vmax_cAMP_synthesis_GsAC, light_cAMP_photolysis, Vmax_cAMP_synthesis_FskAC;
   var Kf_inhibit_PDE, Kr_inhibit_PDE, ar_for_add_propranolol, ar_for_add_Ligand;
   var Ratio_AKARp_AKARtot;
-  const ATP_cell;
 
   //Display Names:
   Gsbg_cell is "Gsbg";

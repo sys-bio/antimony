@@ -16,9 +16,9 @@ model Haberichter2007_cellcycle()
   species Cdk4Y01YpRbY01YpRbY11YInt in X, Cdk4Y10 in X, Cdk4Y11 in X, CyclinA in X;
   species CyclinD in X, CyclinE in X, E2F in X, Emi1 in X, p27 in X, pRbY00 in X;
   species pRbY01 in X, pRbY10 in X, pRbY11 in X, pRbY20 in X, pRbY21 in X;
-  species totalYCyclinYD in X, totalYCyclinYE in X, totalYCyclinYA in X, totalYp27 in X;
-  species hypophosphorylatedYpRb in X, hyperphosphorylatedYpRb in X, totalYEmi1 in X;
-  species activeYCdk2 in X;
+  species $totalYCyclinYD in X, $totalYCyclinYE in X, $totalYCyclinYA in X;
+  species $totalYp27 in X, $hypophosphorylatedYpRb in X, $hyperphosphorylatedYpRb in X;
+  species $totalYEmi1 in X, $activeYCdk2 in X;
 
   // Assignment Rules:
   totalYCyclinYD := CyclinD + Cdk4Y01 + Cdk4Y11
@@ -175,7 +175,7 @@ model Haberichter2007_cellcycle()
   rxnY138: APCCYCdk1Y10YCdk1Y11YInt -> Cdk1Y10 + APCC; X * kudYAPCCYYCyclinA * APCCYCdk1Y10YCdk1Y11YInt;
 
   // Events:
-  modifier_activation: at(gt(time, 240.0637)): kYact = k1Yact;
+  modifier_activation: at gt(time, 240.0637): kYact = k1Yact;
 
   // Species initializations:
   APCC = 24582.9;
@@ -289,10 +289,9 @@ model Haberichter2007_cellcycle()
   kuYE2FYYpRb = 0.1;
   kuYEmi1YYAPCC = 0.1;
   kuYAPCCYYCyclinA = 0.1;
-
+  
+//Other declarations:
   var kYact, ksYE2F, ksYEmi1, ksYCyclinA, ksYCyclinE;
-  const totalYCyclinYD, totalYCyclinYE, totalYCyclinYA, totalYp27, hypophosphorylatedYpRb;
-  const hyperphosphorylatedYpRb, totalYEmi1, activeYCdk2;
 
   //Display Names:
   modifier_activation is "modifier activation";

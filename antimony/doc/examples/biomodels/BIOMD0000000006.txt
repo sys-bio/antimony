@@ -3,11 +3,11 @@ model Tyson1991CellModel_2()
 
   // Compartments and Species:
   compartment cell;
-  species EmptySet in cell, u in cell, z in cell;
+  species $EmptySet in cell, u in cell, z in cell;
 
   // Reactions:
-  Reaction1: EmptySet -> z; Reaction1_kappa;
-  Reaction2: u -> EmptySet; Reaction2_k6 * u;
+  Reaction1: $EmptySet -> z; Reaction1_kappa;
+  Reaction2: u -> $EmptySet; Reaction2_k6 * u;
   Reaction3: z -> u; Reaction3_k4 * z * (Reaction3_k4prime / Reaction3_k4 + pow(u, 2));
 
   // Species initializations:
@@ -23,6 +23,4 @@ model Tyson1991CellModel_2()
   Reaction2_k6 = 1;
   Reaction3_k4 = 180;
   Reaction3_k4prime = 0.018;
-
-  const EmptySet;
 end

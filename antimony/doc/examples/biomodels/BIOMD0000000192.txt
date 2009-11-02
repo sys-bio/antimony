@@ -3,15 +3,15 @@ model RanGTP_gradient()
 
   // Compartments and Species:
   compartment nucleus, cytoplasm;
-  species RanGDP_nuc in nucleus, RCC1_RanGDP in nucleus, GDP in nucleus, RCC1 in nucleus;
-  species RCC1_RanGTP in nucleus, RCC1_Ran in nucleus, GTP in nucleus, RanGTP_nuc in nucleus;
-  species RanGAP in cytoplasm, RanBP1 in cytoplasm, RanGTP_cy in cytoplasm;
-  species RanGTP_RanBP1 in cytoplasm, RanGDP_cy in cytoplasm;
+  species RanGDP_nuc in nucleus, RCC1_RanGDP in nucleus, $GDP in nucleus;
+  species RCC1 in nucleus, RCC1_RanGTP in nucleus, RCC1_Ran in nucleus, $GTP in nucleus;
+  species RanGTP_nuc in nucleus, RanGAP in cytoplasm, RanBP1 in cytoplasm;
+  species RanGTP_cy in cytoplasm, RanGTP_RanBP1 in cytoplasm, RanGDP_cy in cytoplasm;
 
   // Reactions:
   RCC1_binding: RanGDP_nuc + RCC1 -> RCC1_RanGDP; nucleus * (RCC1_binding_r1 * RanGDP_nuc * RCC1 - RCC1_binding_r8 * RCC1_RanGDP);
-  GDP_dissociation: RCC1_RanGDP -> RCC1_Ran + GDP; nucleus * (GDP_dissociation_r2 * RCC1_RanGDP - GDP_dissociation_r7 * RCC1_Ran * GDP);
-  GTP_binding: RCC1_Ran + GTP -> RCC1_RanGTP; nucleus * (GTP_binding_r3 * RCC1_Ran * GTP - GTP_binding_r6 * RCC1_RanGTP);
+  GDP_dissociation: RCC1_RanGDP -> RCC1_Ran + $GDP; nucleus * (GDP_dissociation_r2 * RCC1_RanGDP - GDP_dissociation_r7 * RCC1_Ran * GDP);
+  GTP_binding: RCC1_Ran + $GTP -> RCC1_RanGTP; nucleus * (GTP_binding_r3 * RCC1_Ran * GTP - GTP_binding_r6 * RCC1_RanGTP);
   RanGTP_release: RCC1_RanGTP -> RanGTP_nuc + RCC1; nucleus * (RanGTP_release_r4 * RCC1_RanGTP - RanGTP_release_r5 * RanGTP_nuc * RCC1);
   Cytoplasmic_transfer: RanGTP_nuc -> RanGTP_cy; Cytoplasmic_transfer_kpermRanGTP * nucleus * (RanGTP_nuc - RanGTP_cy);
   Nucleoplasmic_transfer: RanGDP_nuc -> RanGDP_cy; Nucleoplasmic_transfer_kpermRanGDP * nucleus * (RanGDP_nuc - RanGDP_cy);
@@ -55,6 +55,4 @@ model RanGTP_gradient()
   RanBP1_RanGDP_Km = 0.1;
   RanGAP_RanGDP_kcat_GAP = 10.6;
   RanGAP_RanGDP_Km_GAP = 0.7;
-
-  const GDP, GTP;
 end

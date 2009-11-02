@@ -35,7 +35,7 @@ model model_0000001()
   reaction_000003:  -> cAMP; cell * ETswitch * ((cAMPlow - cAMP) / taudir);
 
   // Events:
-  event_0000001: at(gt(time, 60000)): ETswitch = 1: girk = 3000: IP3 = 0.3;
+  event_0000001: at gt(time, 60000): ETswitch = 1, girk = 3000, IP3 = 0.3;
 
   // Species initializations:
   c = 0.3;
@@ -80,7 +80,8 @@ model model_0000001()
   inh = 1;
   V = -60;
   n = 0;
-
+  
+//Other declarations:
   var IP3, girk, ETswitch, ninf, minf, hinf, ica, igirk, ik, ainf, hinfer;
   var jerp, binf, o, jerleak, jerip3, jertot, jmemtot, perl_inf, h, inh, V;
   var n;

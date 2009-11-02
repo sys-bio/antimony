@@ -4,7 +4,7 @@ model Chan2004_TCell_receptor_activation()
   // Compartments and Species:
   compartment compartment_;
   species lck_inactive in compartment_, lck_active in compartment_, phosphatase_inactive in compartment_;
-  species phosphatase_active in compartment_, lck_total in compartment_;
+  species phosphatase_active in compartment_, $lck_total in compartment_;
 
   // Assignment Rules:
   lck_total := lck_inactive + lck_active
@@ -22,8 +22,8 @@ model Chan2004_TCell_receptor_activation()
   v10: phosphatase_active -> ; d2 * phosphatase_active;
 
   // Events:
-  event_0000001: at(geq(time, 10)): r_l = 1;
-  event_0000002: at(geq(time, 24)): r_l = 0;
+  event_0000001: at geq(time, 10): r_l = 1;
+  event_0000002: at geq(time, 24): r_l = 0;
 
   // Species initializations:
   lck_inactive = 0;
@@ -46,9 +46,9 @@ model Chan2004_TCell_receptor_activation()
   n2 = 0.02;
   d2 = 0;
   n = 1.95;
-
+  
+//Other declarations:
   var r_l;
-  const lck_total;
 
   //Display Names:
   lck_inactive is "Inactive lck";

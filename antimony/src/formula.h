@@ -24,7 +24,9 @@ public:
   void AddNum(double num);
   void AddMathThing(char maththing);
   void AddText(const std::string* function);
+  void AddFormula(const Formula* form2);
   void AddEllipses();
+  void AddParentheses();
 
   void SetNewTopName(std::string newmodname, std::string newtopname);
 

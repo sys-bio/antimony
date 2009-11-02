@@ -16,7 +16,7 @@ model KDM()
   R6: OMad2 + Cdc20 -> Cdc20_CMad2; Cytoplasm * kf6 * OMad2 * Cdc20;
 
   // Events:
-  mt_attachment: at(gt(time, 2000)): u = const_val_0;
+  mt_attachment: at gt(time, 2000): u = const_val_0;
 
   // Species initializations:
   Mad1_CMad2 = 5e-08;
@@ -44,7 +44,8 @@ model KDM()
   k4f = 10000000;
   k4r = 0.02;
   const_val_1 = 1;
-
+  
+//Other declarations:
   var u;
 
   //Display Names:

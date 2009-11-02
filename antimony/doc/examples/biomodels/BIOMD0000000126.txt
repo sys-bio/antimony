@@ -38,8 +38,8 @@ model model_0000001()
   reaction_0000011: O -> C1; cell * (-C1 * a13 + O * b13);
 
   // Events:
-  event_0000001: at(and(geq(time, 5), leq(time, 20))): v = -30;
-  event_0000002: at(gt(time, 20)): v = -80;
+  event_0000001: at and(geq(time, 5), leq(time, 20)): v = -30;
+  event_0000002: at gt(time, 20): v = -80;
 
   // Species initializations:
   C1 = 0;
@@ -64,7 +64,8 @@ model model_0000001()
   Rk = 8314;
   Fara = 96485;
   Temp = 310;
-
+  
+//Other declarations:
   var v, Ena, a11, a12, a13, b11, b12, b13, a2, b2, a3, b3, a4, b4, a5, b5;
   var Ina;
 

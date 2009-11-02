@@ -69,7 +69,7 @@ model Hoffmann2002_WT_IkBNFkB_Signaling()
   v45: IKK -> ; cytoplasm * k02 * IKK;
 
   // Events:
-  event_0000001: at(and(geq(time, 2000), eq(trigger_value, 0))): flag_for_after_trigger = 0: trigger_value = 1: IKK = 0.1;
+  event_0000001: at and(geq(time, 2000), eq(trigger_value, 0)): flag_for_after_trigger = 0, trigger_value = 1, IKK = 0.1;
 
   // Species initializations:
   IkBalpha = 0.1;
@@ -144,7 +144,8 @@ model Hoffmann2002_WT_IkBNFkB_Signaling()
   fr = 1;
   fr_after_trigger = 0.5;
   v39_k2_IkBbeta_nuc_NFkB_nuc = 0.0069;
-
+  
+//Other declarations:
   var trigger_value, flag_for_after_trigger, fr_after_trigger, Total_IkBbeta;
   var Total_IkBeps, Total_IkBalpha, Total_NFkBn;
 

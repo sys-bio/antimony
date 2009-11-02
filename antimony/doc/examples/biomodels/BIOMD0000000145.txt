@@ -4,7 +4,7 @@ model Wang2007_ATP_induced_Ca_Oscillation()
   // Compartments and Species:
   compartment Cytosol, ER;
   species Galpha_GTP in Cytosol, APLC in Cytosol, IP3 in Cytosol, Ca_ER in ER;
-  species Ca_Cyt in Cytosol, PLC in Cytosol, DG in Cytosol;
+  species Ca_Cyt in Cytosol, $PLC in Cytosol, $DG in Cytosol;
 
   // Assignment Rules:
   PLC := Cplc_total - APLC
@@ -67,9 +67,9 @@ model Wang2007_ATP_induced_Ca_Oscillation()
   k9 = 600;
   k10 = 3000;
   k11 = 260;
-
+  
+//Other declarations:
   var Raplc, Rpkc, Rgalpha_gtp, Rdg, Rip3, Rcyt1, Rcyt2, Rer;
-  const PLC, DG;
 
   //Display Names:
   Ca_ER is "Calcium";

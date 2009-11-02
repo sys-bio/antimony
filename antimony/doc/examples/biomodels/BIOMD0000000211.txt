@@ -63,10 +63,10 @@ model Model_1()
   species species_16 in compartment_2, species_17 in compartment_2, species_18 in compartment_2;
   species species_19 in compartment_2, species_20 in compartment_2, species_21 in compartment_2;
   species species_22 in compartment_2, species_23 in compartment_2, species_24 in compartment_2;
-  species species_25 in compartment_3, species_26 in compartment_3, species_27 in compartment_3;
+  species $species_25 in compartment_3, $species_26 in compartment_3, $species_27 in compartment_3;
 
   // Reactions:
-  vGT: species_25 -> species_10; function_10(vGT_Vmax_v1, species_25, species_10, vGT_KGlc, vGT_Alpha_v1);
+  vGT: $species_25 -> species_10; function_10(vGT_Vmax_v1, species_25, species_10, vGT_KGlc, vGT_Alpha_v1);
   vHK: species_10 + species_11 -> species_14 + species_12; RaHXK * compartment_2 * function_11(vHK_Vmax_v2, species_10, vHK_KGlcInt_v2, species_11, vHK_KATPg_v2, species_12, vHK_KADPg_v2, species_14, vHK_KGlc6P_v2);
   vPGI: species_14 -> species_15; compartment_2 * function_12(species_14, species_15, vPGI_Kms, vPGI_Kmp, vPGI_Vf, vPGI_Vr);
   vPFK: species_15 + species_11 -> species_16 + species_12; RaPFK * compartment_2 * function_13(vPFK_Vmax_v4, vPFK_Ki1Fru16BP_v4, species_16, species_15, vPFK_KFru6P_v4, species_11, vPFK_KATPg_v4, vPFK_Ki2Fru16BP_v4);
@@ -75,7 +75,7 @@ model Model_1()
   vGAPDH: species_18 + species_19 -> species_21 + species_20; compartment_2 * function_15(vGAPDH_Vmax_v7, species_18, vGAPDH_KGAP_v7, species_19, vGAPDH_KNAD_v7, vGAPDH_r_v7, species_21, vGAPDH_KBPGA13_v7, species_20, vGAPDH_KNADH_v7);
   vGPDH: species_17 + species_20 -> species_19 + species_22; compartment_2 * function_16(vGPDH_Vmax_v8, species_17, vGPDH_KDHAPg_v8, species_20, vGPDH_KNADH_v8, vGPDH_r_v8, species_19, vGPDH_KNAD_v8, species_22, vGPDH_KGly3Pg_v8);
   vGPO: species_9 -> species_8; compartment_1 * function_17(species_9, vGPO_Km, vGPO_V);
-  vPT: species_1 -> species_26; function_17(species_1, vPT_Km, vPT_V);
+  vPT: species_1 -> $species_26; function_17(species_1, vPT_Km, vPT_V);
   vPGK: species_21 + species_12 -> species_23 + species_11; compartment_2 * function_18(vPGK_Vmax_v11, species_21, vPGK_KBPGA13_v11, species_12, vPGK_KADPg_v11, vPGK_r_v11, species_23, vPGK_KPGA3_v11, species_11, vPGK_KATPg_v11);
   vPK: species_4 + species_2 -> species_1 + species_3; RaPYK * compartment_1 * function_19(vPK_Vmax_v12, species_4, vPK_PK_n, species_2, vPK_KADP_v12, species_3);
   vAU: species_3 -> species_2; compartment_1 * function_20(vAU_k, species_3, species_2);
@@ -86,7 +86,7 @@ model Model_1()
   vAKg: species_11 + species_13 -> 2species_12; compartment_2 * function_22(vAKg_k, species_11, species_13, vAKg_keqak, species_12);
   vPGT: species_23 -> species_7; vPGT_k1 * species_23 - vPGT_k2 * species_7;
   vANTI: species_22 + species_8 -> species_9 + species_17; vANTI_k1 * species_22 * species_8 - vANTI_k2 * species_9 * species_17;
-  vGlyT: species_24 -> species_27; vGlyT_k1 * species_24 - vGlyT_k2 * species_27;
+  vGlyT: species_24 -> $species_27; vGlyT_k1 * species_24 - vGlyT_k2 * species_27;
 
   // Species initializations:
   species_1 = 10;
@@ -204,8 +204,6 @@ model Model_1()
   vANTI_k2 = 1000000;
   vGlyT_k1 = 1000000;
   vGlyT_k2 = 1000000;
-
-  const species_25, species_26, species_27;
 
   //Display Names:
   species_1 is "pyruvate";

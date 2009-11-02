@@ -3,27 +3,27 @@ model vilarOscillator()
 
   // Compartments and Species:
   compartment deterministicOscillator;
-  species EmptySet in deterministicOscillator, A in deterministicOscillator;
+  species $EmptySet in deterministicOscillator, A in deterministicOscillator;
   species C in deterministicOscillator, DA in deterministicOscillator, DAp in deterministicOscillator;
   species DR in deterministicOscillator, DRp in deterministicOscillator, MA in deterministicOscillator;
   species MR in deterministicOscillator, R in deterministicOscillator;
 
   // Reactions:
   Reaction1: A + R -> C; A * R * Reaction1_gammaC;
-  Reaction2: A -> EmptySet; A * Reaction2_deltaA;
+  Reaction2: A -> $EmptySet; A * Reaction2_deltaA;
   Reaction3: C -> R; C * Reaction3_deltaA;
-  Reaction4: R -> EmptySet; R * Reaction4_deltaR;
+  Reaction4: R -> $EmptySet; R * Reaction4_deltaR;
   Reaction5: A + DA -> DAp; A * DA * Reaction5_gammaA;
   Reaction6: DAp -> A + DA; DAp * Reaction6_thetaA;
   Reaction7: DA -> DA + MA; DA * Reaction7_alphaA;
   Reaction8: DAp -> DAp + MA; DAp * Reaction8_alphaAp;
-  Reaction9: MA -> EmptySet; MA * Reaction9_deltaMA;
+  Reaction9: MA -> $EmptySet; MA * Reaction9_deltaMA;
   Reaction10: MA -> A + MA; MA * Reaction10_betaA;
   Reaction11: A + DR -> DRp; A * DR * Reaction11_gammaR;
   Reaction12: DRp -> A + DR; DRp * Reaction12_thetaR;
   Reaction13: DR -> DR + MR; DR * Reaction13_alphaR;
   Reaction14: DRp -> DRp + MR; DRp * Reaction14_alphaRp;
-  Reaction15: MR -> EmptySet; MR * Reaction15_deltaMR;
+  Reaction15: MR -> $EmptySet; MR * Reaction15_deltaMR;
   Reaction16: MR -> MR + R; MR * Reaction16_betaR;
 
   // Species initializations:
@@ -58,6 +58,4 @@ model vilarOscillator()
   Reaction14_alphaRp = 50;
   Reaction15_deltaMR = 0.5;
   Reaction16_betaR = 5;
-
-  const EmptySet;
 end

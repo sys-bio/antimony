@@ -7,10 +7,10 @@ model Proctor2005_Hsp90()
   species MisP in compartment_, MCom in compartment_, TriH in compartment_;
   species DiH in compartment_, NatP in compartment_, AggP in compartment_;
   species HSE in compartment_, HSETriH in compartment_, X in compartment_;
-  species ROS in compartment_, ATP in compartment_, ADP in compartment_, source in compartment_;
+  species ROS in compartment_, ATP in compartment_, ADP in compartment_, $source in compartment_;
 
   // Reactions:
-  proteinSynthesis: 0source -> NatP; k1;
+  proteinSynthesis: 0$source -> NatP; k1;
   misfolding: NatP + ROS -> MisP + ROS; k2 * NatP * ROS;
   Hsp90MisPBinding: MisP + Hsp90 -> MCom; k3 * MisP * Hsp90;
   unsuccessulRefolding: MCom -> MisP + Hsp90; k4 * MCom;
@@ -28,10 +28,10 @@ model Proctor2005_Hsp90()
   HSETriHRelease: HSETriH -> HSE + TriH; k15 * HSETriH;
   Hsp90Transcription: HSETriH -> HSETriH + Hsp90; k16 * HSETriH;
   Hsp90Degradation: Hsp90 + ATP -> ADP; k17 * Hsp90 * ATP;
-  countTime: 0source -> X; 1;
+  countTime: 0$source -> X; 1;
   ATPformation: ADP -> ATP; k18 * ADP;
   ATPconsumption: ATP -> ADP; k19 * ATP;
-  radicalFormation: 0source -> ROS; k20;
+  radicalFormation: 0$source -> ROS; k20;
   radicalScavenging: ROS -> ; k21 * ROS;
 
   // Species initializations:
@@ -77,8 +77,6 @@ model Proctor2005_Hsp90()
   k19 = 0.02;
   k20 = 0.1;
   k21 = 0.001;
-
-  const source;
 
   //Display Names:
   unsuccessulRefolding is "unsuccessfulRefolding";

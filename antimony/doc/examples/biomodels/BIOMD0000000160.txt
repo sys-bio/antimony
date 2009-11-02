@@ -7,7 +7,7 @@ model Xie2007_CircClock()
   species clkm in wholeCell, perm in wholeCell, PT in wholeCell, vrip in wholeCell;
   species vrim in wholeCell, VRI in wholeCell, pdpp in wholeCell, pdpm in wholeCell;
   species PDP in wholeCell, CLK in wholeCell, PER in wholeCell, timp in wholeCell;
-  species timm in wholeCell, TIM in wholeCell, CYC in wholeCell, prcper in wholeCell;
+  species timm in wholeCell, TIM in wholeCell, $CYC in wholeCell, prcper in wholeCell;
   species prcv in wholeCell, prcpdp in wholeCell, prvc in wholeCell, prpc in wholeCell;
   species prct in wholeCell;
 
@@ -30,9 +30,9 @@ model Xie2007_CircClock()
   re38:  -> PDP; wholeCell * pdpm * tlpdp;
   re39: PDP -> ; wholeCell * PDP * dpdp;
   re42:  -> clkm; wholeCell * (prvc * tcvriclkp + prpc * tcpdpclkp + (1 - prvc - prpc) * tcclkp) * clkp;
-  re43: CLK + CYC -> CC; wholeCell * CLK * bcc * CYC;
+  re43: CLK + $CYC -> CC; wholeCell * CLK * bcc * CYC;
   re44: CLK -> ; wholeCell * CLK * dclk;
-  re45: CC -> CLK + CYC; wholeCell * CC * ubcc;
+  re45: CC -> CLK + $CYC; wholeCell * CC * ubcc;
   re46: PER + TIM -> PT; wholeCell * PER * TIM * bpt;
   re47: PT -> PER + TIM; wholeCell * PT * ubpt;
   re48: PER -> ; wholeCell * PER * dper;
@@ -132,8 +132,6 @@ model Xie2007_CircClock()
   npt = 5;
   nvri = 4;
   npdp = 6;
-
-  const CYC;
 
   //Display Names:
   prcper is "CCbindingPer";

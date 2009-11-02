@@ -4,14 +4,14 @@ model Conant2007_glycolysis_2C()
   // Compartments and Species:
   compartment cyto, mito;
   species GLCi in cyto, ATP in cyto, G6P in cyto, ADP in cyto, F6P in cyto;
-  species F16bP in cyto, F26bP in cyto, AMP in cyto, DHAP in cyto, GAP in cyto;
+  species F16bP in cyto, $F26bP in cyto, AMP in cyto, DHAP in cyto, GAP in cyto;
   species NAD in cyto, BPG in cyto, NADH in cyto, P3G in cyto, P2G in cyto;
-  species PEP in cyto, PYR in cyto, PYRmito in mito, AcAld in cyto, GLCo in cyto;
-  species CO2 in cyto, EtOH in cyto, Glycerol in cyto, Glycogen in cyto, Trehalose in cyto;
-  species Succinate in cyto, AcCoA in mito, CO2mito in mito;
+  species PEP in cyto, PYR in cyto, PYRmito in mito, AcAld in cyto, $GLCo in cyto;
+  species $CO2 in cyto, $EtOH in cyto, $Glycerol in cyto, $Glycogen in cyto;
+  species $Trehalose in cyto, $Succinate in cyto, $AcCoA in mito, $CO2mito in mito;
 
   // Reactions:
-  HXT: GLCo -> GLCi; HXT_Vmax_1 * WGD_E * (GLCo - GLCi) / HXT_Kglc_1 / (1 + (GLCo + GLCi) / HXT_Kglc_1 + HXT_Ki_1 * GLCo * GLCi / pow(HXT_Kglc_1, 2));
+  HXT: $GLCo -> GLCi; HXT_Vmax_1 * WGD_E * (GLCo - GLCi) / HXT_Kglc_1 / (1 + (GLCo + GLCi) / HXT_Kglc_1 + HXT_Ki_1 * GLCo * GLCi / pow(HXT_Kglc_1, 2));
   HXK: GLCi + ATP -> G6P + ADP; cyto * WGD_E * HXK_Vmax_2 * (GLCi * ATP / (HXK_Kglc_2 * HXK_Katp_2) - G6P * ADP / (HXK_Kglc_2 * HXK_Katp_2 * HXK_Keq_2)) / ((1 + GLCi / HXK_Kglc_2 + G6P / HXK_Kg6p_2) * (1 + ATP / HXK_Katp_2 + ADP / HXK_Kadp_2));
   PGI: G6P -> F6P; cyto * PGI_Vmax_3 * WGD_E * (G6P / PGI_Kg6p_3 - F6P / (PGI_Kg6p_3 * PGI_Keq_3)) / (1 + G6P / PGI_Kg6p_3 + F6P / PGI_Kf6p_3);
   PFK: ATP + F6P -> ADP + F16bP; cyto * PFK_Vmax_4 * WGD_E * (PFK_gR_4 * (F6P / PFK_Kf6p_4) * (ATP / PFK_Katp_4) * (1 + F6P / PFK_Kf6p_4 + ATP / PFK_Katp_4 + PFK_gR_4 * F6P / PFK_Kf6p_4 * ATP / PFK_Katp_4) / (pow(1 + F6P / PFK_Kf6p_4 + ATP / PFK_Katp_4 + PFK_gR_4 * F6P / PFK_Kf6p_4 * ATP / PFK_Katp_4, 2) + PFK_L0_4 * pow((1 + PFK_Ciatp_4 * ATP / PFK_Kiatp_4) / (1 + ATP / PFK_Kiatp_4), 2) * pow((1 + PFK_Camp_4 * AMP / PFK_Kamp_4) / (1 + AMP / PFK_Kamp_4), 2) * pow((1 + PFK_Cf26_4 * F26bP / PFK_Kf26_4 + PFK_Cf16_4 * F16bP / PFK_Kf16_4) / (1 + F26bP / PFK_Kf26_4 + F16bP / PFK_Kf16_4), 2) * pow(1 + PFK_Catp_4 * ATP / PFK_Katp_4, 2)));
@@ -22,16 +22,16 @@ model Conant2007_glycolysis_2C()
   PGM: P3G -> P2G; cyto * PGM_Vmax_9 * WGD_E * (P3G / PGM_Kp3g_9 - P2G / (PGM_Kp3g_9 * PGM_Keq_9)) / (1 + P3G / PGM_Kp3g_9 + P2G / PGM_Kp2g_9);
   ENO: P2G -> PEP; cyto * ENO_Vmax_10 * WGD_E * (P2G / ENO_Kp2g_10 - PEP / (ENO_Kp2g_10 * ENO_Keq_10)) / (1 + P2G / ENO_Kp2g_10 + PEP / ENO_Kpep_10);
   PYK: ADP + PEP -> ATP + PYR; cyto * PYK_Vmax_11 * WGD_E * (PEP * ADP / (PYK_Kpep_11 * PYK_Kadp_11) - PYR * ATP / (PYK_Kpep_11 * PYK_Kadp_11 * PYK_Keq_11)) / ((1 + PEP / PYK_Kpep_11 + PYR / PYK_Kpyr_11) * (1 + ADP / PYK_Kadp_11 + ATP / PYK_Katp_11));
-  PDC: PYR -> AcAld + CO2; cyto * PDC_Vmax_12 * WGD_E * pow(PYR / PDC_Kpyr_12, PDC_nH_12) / (1 + pow(PYR / PDC_Kpyr_12, PDC_nH_12));
-  ADH: NAD + EtOH -> NADH + AcAld; cyto * ADH_Vmax_13 * WGD_E * (EtOH * NAD / (ADH_Ketoh_13 * ADH_Kinad_13) - AcAld * NADH / (ADH_Ketoh_13 * ADH_Kinad_13 * ADH_Keq_13)) / (1 + NAD / ADH_Kinad_13 + EtOH * ADH_Knad_13 / (ADH_Kinad_13 * ADH_Ketoh_13) + AcAld * ADH_Knadh_13 / (ADH_Kinadh_13 * ADH_Kacald_13) + NADH / ADH_Kinadh_13 + EtOH * NAD / (ADH_Kinad_13 * ADH_Ketoh_13) + NAD * AcAld * ADH_Knadh_13 / (ADH_Kinad_13 * ADH_Kinadh_13 * ADH_Kacald_13) + EtOH * NADH * ADH_Knad_13 / (ADH_Kinad_13 * ADH_Kinadh_13 * ADH_Ketoh_13) + AcAld * NADH / (ADH_Kacald_13 * ADH_Kinadh_13) + EtOH * NAD * AcAld / (ADH_Kinad_13 * ADH_Kiacald_13 * ADH_Ketoh_13) + EtOH * AcAld * NADH / (ADH_Kietoh_13 * ADH_Kinadh_13 * ADH_Kacald_13));
+  PDC: PYR -> AcAld + $CO2; cyto * PDC_Vmax_12 * WGD_E * pow(PYR / PDC_Kpyr_12, PDC_nH_12) / (1 + pow(PYR / PDC_Kpyr_12, PDC_nH_12));
+  ADH: NAD + $EtOH -> NADH + AcAld; cyto * ADH_Vmax_13 * WGD_E * (EtOH * NAD / (ADH_Ketoh_13 * ADH_Kinad_13) - AcAld * NADH / (ADH_Ketoh_13 * ADH_Kinad_13 * ADH_Keq_13)) / (1 + NAD / ADH_Kinad_13 + EtOH * ADH_Knad_13 / (ADH_Kinad_13 * ADH_Ketoh_13) + AcAld * ADH_Knadh_13 / (ADH_Kinadh_13 * ADH_Kacald_13) + NADH / ADH_Kinadh_13 + EtOH * NAD / (ADH_Kinad_13 * ADH_Ketoh_13) + NAD * AcAld * ADH_Knadh_13 / (ADH_Kinad_13 * ADH_Kinadh_13 * ADH_Kacald_13) + EtOH * NADH * ADH_Knad_13 / (ADH_Kinad_13 * ADH_Kinadh_13 * ADH_Ketoh_13) + AcAld * NADH / (ADH_Kacald_13 * ADH_Kinadh_13) + EtOH * NAD * AcAld / (ADH_Kinad_13 * ADH_Kiacald_13 * ADH_Ketoh_13) + EtOH * AcAld * NADH / (ADH_Kietoh_13 * ADH_Kinadh_13 * ADH_Kacald_13));
   ATPase: ATP -> ADP; cyto * ATPase_Katpase_14 * ATP;
   AK: 2ADP -> ATP + AMP; cyto * (AK_k1_15 * ADP * ADP - AK_k2_15 * ATP * AMP);
-  G3PDH: DHAP + NADH -> NAD + Glycerol; cyto * G3PDH_Vmax_16 * WGD_E * (DHAP / G3PDH_Kdhap_16 * (NADH / G3PDH_Knadh_16) - Glycerol / G3PDH_Kdhap_16 * (NAD / G3PDH_Knadh_16) * (1 / G3PDH_Keq_16)) / ((1 + DHAP / G3PDH_Kdhap_16 + Glycerol / G3PDH_Kglycerol_16) * (1 + NADH / G3PDH_Knadh_16 + NAD / G3PDH_Knad_16));
-  glycogen_branch: ATP + G6P -> ADP + Glycogen; cyto * glycogen_branch_KGLYCOGEN_17;
-  trehalose_synth: ATP + 2G6P -> ADP + Trehalose; cyto * trehalose_synth_Ktrehalose_18;
-  succinate_syn: 3NAD + 2AcAld -> 3NADH + Succinate; cyto * succinate_syn_k_19 * AcAld;
+  G3PDH: DHAP + NADH -> NAD + $Glycerol; cyto * G3PDH_Vmax_16 * WGD_E * (DHAP / G3PDH_Kdhap_16 * (NADH / G3PDH_Knadh_16) - Glycerol / G3PDH_Kdhap_16 * (NAD / G3PDH_Knadh_16) * (1 / G3PDH_Keq_16)) / ((1 + DHAP / G3PDH_Kdhap_16 + Glycerol / G3PDH_Kglycerol_16) * (1 + NADH / G3PDH_Knadh_16 + NAD / G3PDH_Knad_16));
+  glycogen_branch: ATP + G6P -> ADP + $Glycogen; cyto * glycogen_branch_KGLYCOGEN_17;
+  trehalose_synth: ATP + 2G6P -> ADP + $Trehalose; cyto * trehalose_synth_Ktrehalose_18;
+  succinate_syn: 3NAD + 2AcAld -> 3NADH + $Succinate; cyto * succinate_syn_k_19 * AcAld;
   PYR_shut: PYR -> PYRmito; t_m * (PYR_shut_k1 * PYR - PYR_shut_k2 * PYRmito);
-  PDH: PYRmito -> AcCoA + CO2mito; mito * WGD_E * PDH_Vmax_PDH * PYRmito * (PDH_NADX_tot - PDH_NADX_tot / (1 + NAD / NADH)) / (PDH_NADX_tot * PDH_Ki_PYR * PDH_K_NAD / PDH_Ki_NADH / (1 + NAD / NADH) + PDH_K_PYR * (PDH_NADX_tot - PDH_NADX_tot / (1 + NAD / NADH)) + PDH_K_NAD * PYRmito + PDH_NADX_tot * PDH_K_NAD / PDH_Ki_NADH * PYRmito / (1 + NAD / NADH) + (PDH_NADX_tot - PDH_NADX_tot / (1 + NAD / NADH)) * PYRmito);
+  PDH: PYRmito -> $AcCoA + $CO2mito; mito * WGD_E * PDH_Vmax_PDH * PYRmito * (PDH_NADX_tot - PDH_NADX_tot / (1 + NAD / NADH)) / (PDH_NADX_tot * PDH_Ki_PYR * PDH_K_NAD / PDH_Ki_NADH / (1 + NAD / NADH) + PDH_K_PYR * (PDH_NADX_tot - PDH_NADX_tot / (1 + NAD / NADH)) + PDH_K_NAD * PYRmito + PDH_NADX_tot * PDH_K_NAD / PDH_Ki_NADH * PYRmito / (1 + NAD / NADH) + (PDH_NADX_tot - PDH_NADX_tot / (1 + NAD / NADH)) * PYRmito);
 
   // Species initializations:
   GLCi = 0.097652231064563;
@@ -165,9 +165,6 @@ model Conant2007_glycolysis_2C()
   PDH_K_NAD = 160;
   PDH_Ki_NADH = 50;
   PDH_Ki_PYR = 20;
-
-  const F26bP, GLCo, CO2, EtOH, Glycerol, Glycogen, Trehalose, Succinate;
-  const AcCoA, CO2mito;
 
   //Display Names:
   F26bP is "Fru2,6-P2";

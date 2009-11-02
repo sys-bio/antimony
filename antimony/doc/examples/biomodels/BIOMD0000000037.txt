@@ -5,7 +5,7 @@ model Marwan_Genetics_2003()
   compartment compartment_;
   species Pfr in compartment_, Pr in compartment_, Xi in compartment_, Xa in compartment_;
   species prepreS in compartment_, preS in compartment_, Ya in compartment_;
-  species S in compartment_, Gluc in compartment_, Yi in compartment_, V in compartment_;
+  species S in compartment_, $Gluc in compartment_, Yi in compartment_, V in compartment_;
   species Pi_ in compartment_;
 
   // Reactions:
@@ -15,7 +15,7 @@ model Marwan_Genetics_2003()
   Transducer_inactivation: Xa -> Xi; Transducer_inactivation_kai * Xa * compartment_;
   preS_formation: prepreS -> preS; prepreS * preS_formation_kx * Xa * compartment_;
   S_generation: preS -> S; preS * S_generation_ky * Ya * compartment_;
-  Glucose_sensor_inactivation: Ya + Gluc -> Yi; Glucose_sensor_inactivation_kG * Ya * Gluc * compartment_;
+  Glucose_sensor_inactivation: Ya + $Gluc -> Yi; Glucose_sensor_inactivation_kG * Ya * Gluc * compartment_;
   S_formation:  -> S; compartment_ * (S_formation_alpha1 / (1 + pow(V, 3)));
   V_formation:  -> V; compartment_ * (V_formation_alpha2 / (1 + pow(S, 3)));
   S_degradation: S -> ; S_degradation_kd_s * S * compartment_;
@@ -52,6 +52,4 @@ model Marwan_Genetics_2003()
   S_degradation_kd_s = 1;
   V_degradation_kd_v = 1;
   Photoreceptor_decay_kd = 0.1;
-
-  const Gluc;
 end

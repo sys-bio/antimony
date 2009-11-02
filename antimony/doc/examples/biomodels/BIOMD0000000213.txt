@@ -5,9 +5,9 @@ model Folate2004()
   compartment compartment_;
   species _5mTHF in compartment_, THF in compartment_, DHF in compartment_;
   species _5_10_CH2THF in compartment_, _5_10_CHTHF in compartment_, _10fTHF in compartment_;
-  species Ser in compartment_, Gly in compartment_, dUMP in compartment_;
-  species GAR in compartment_, AICAR in compartment_, HCOOH in compartment_;
-  species NADPH in compartment_, Hcy in compartment_;
+  species $Ser in compartment_, $Gly in compartment_, $dUMP in compartment_;
+  species $GAR in compartment_, $AICAR in compartment_, $HCOOH in compartment_;
+  species $NADPH in compartment_, $Hcy in compartment_;
 
   // Reactions:
   V_NE: THF -> _5_10_CH2THF; HCOOH * NE_k1 * THF - NE_k2 * _5_10_CH2THF;
@@ -81,6 +81,4 @@ model Folate2004()
   MTD_Km_5_10_CH2THF = 2;
   MTD_VmaxR = 594000;
   MTD_Km_5_10_CHTHF = 10;
-
-  const Ser, Gly, dUMP, GAR, AICAR, HCOOH, NADPH, Hcy;
 end

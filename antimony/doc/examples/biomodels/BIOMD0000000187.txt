@@ -20,7 +20,7 @@ model MSAC_convey_controlled()
   R8: APC + Cdc20 -> APC_Cdc20; Cytoplasm * (k8f * APC * Cdc20 - k8r * APC_Cdc20);
 
   // Events:
-  mt_attachment: at(gt(time, 2000)): u_prime = const_val_1: u = const_val_0;
+  mt_attachment: at gt(time, 2000): u_prime = const_val_1, u = const_val_0;
 
   // Species initializations:
   Mad1_CMad2 = 5e-08;
@@ -56,7 +56,8 @@ model MSAC_convey_controlled()
   k7bf = 0.08;
   k8f = 5000000;
   k8r = 0.08;
-
+  
+//Other declarations:
   var u, u_prime;
 
   //Display Names:

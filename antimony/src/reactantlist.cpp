@@ -85,8 +85,12 @@ string ReactantList::ToStringDelimitedBy(char cc) const
       sprintf(charnum, "%g", m_components[component].first);
       retval += charnum;
     }
-    vector<string> varname = m_components[component].second; 
-    retval += (g_registry.GetModule(m_module)->GetVariable(m_components[component].second)->GetNameDelimitedBy(cc));
+    vector<string> varname = m_components[component].second;
+    Variable* var = g_registry.GetModule(m_module)->GetVariable(m_components[component].second);
+    if (var->GetIsConst()) {
+      retval += "$";
+    }
+    retval += (var->GetNameDelimitedBy(cc));
   }
   return retval;
 }

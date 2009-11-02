@@ -3,7 +3,7 @@ model Markevich2004_MAPK_orderedMM()
 
   // Compartments and Species:
   compartment uVol;
-  species M in uVol, Mp in uVol, Mpp in uVol, MAPKK in uVol, MKP3 in uVol;
+  species M in uVol, Mp in uVol, Mpp in uVol, $MAPKK in uVol, $MKP3 in uVol;
 
   // Reactions:
   v1: M -> Mp; uVol * (k1cat * MAPKK * M / Km1 / (1 + M / Km1 + Mp / Km2));
@@ -31,8 +31,6 @@ model Markevich2004_MAPK_orderedMM()
   k4cat = 0.06;
   Km4 = 18;
   Km5 = 78;
-
-  const MAPKK, MKP3;
 
   //Display Names:
   v1 is "phosphorylation of MAPK";

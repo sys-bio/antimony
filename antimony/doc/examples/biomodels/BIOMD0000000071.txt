@@ -6,10 +6,10 @@ model Bakker2001_Glycolysis()
   species GlcI in tot_cell, Pg in glycosome, Glc6P in glycosome, Fru6P in glycosome;
   species Fru16BP in glycosome, DHAP in tot_cell, GAP in glycosome, NAD in glycosome;
   species BPGA13 in glycosome, NADH in glycosome, Pyr in cytosol, Nb in tot_cell;
-  species Pc in cytosol, PyrE in extracellular, Gly in glycosome, GlcE in extracellular;
-  species Gly3P in tot_cell, ATPc in cytosol, ADPc in cytosol, ATPg in glycosome;
-  species ADPg in glycosome, DHAPg in glycosome, DHAPc in cytosol, Gly3Pc in cytosol;
-  species Gly3Pg in glycosome, PGAg in glycosome, PEPc in cytosol;
+  species Pc in cytosol, $PyrE in extracellular, $Gly in glycosome, $GlcE in extracellular;
+  species $Gly3P in tot_cell, $ATPc in cytosol, $ADPc in cytosol, $ATPg in glycosome;
+  species $ADPg in glycosome, $DHAPg in glycosome, $DHAPc in cytosol, $Gly3Pc in cytosol;
+  species $Gly3Pg in glycosome, $PGAg in glycosome, $PEPc in cytosol;
 
   // Assignment Rules:
   Gly3P := (Gly3Pc * cytosol + Gly3Pg * glycosome) / tot_cell
@@ -27,20 +27,20 @@ model Bakker2001_Glycolysis()
   Vg := glycosome * Vt / tot_cell
 
   // Reactions:
-  vGlcTr: GlcE -> GlcI; tot_cell / Vt * vGlcTr_Vm1 * (GlcE - GlcI) / (vGlcTr_K1Glc + GlcE + GlcI + vGlcTr_afac * GlcE * GlcI / vGlcTr_K1Glc);
+  vGlcTr: $GlcE -> GlcI; tot_cell / Vt * vGlcTr_Vm1 * (GlcE - GlcI) / (vGlcTr_K1Glc + GlcE + GlcI + vGlcTr_afac * GlcE * GlcI / vGlcTr_K1Glc);
   vHK: Pg + GlcI -> Glc6P; tot_cell / Vt * vHK_Vm2 * GlcI * ATPg / (vHK_K2ATPg * vHK_K2GlcI * (1 + Glc6P / vHK_K2Glc6P + GlcI / vHK_K2GlcI) * (1 + ATPg / vHK_K2ATPg + ADPg / vHK_K2ADPg));
   vPGI: Glc6P -> Fru6P; tot_cell / Vt * vPGI_Vm3 * (Glc6P / vPGI_K3Glc6P - Fru6P / vPGI_K3Fru6P) / (1 + Glc6P / vPGI_K3Glc6P + Fru6P / vPGI_K3Fru6P);
   vPFK: Pg + Fru6P -> Fru16BP; tot_cell / Vt * vPFK_K4i1Fru16BP * vPFK_Vm4 * Fru6P * ATPg / (vPFK_K4ATPg * vPFK_K4Fru6P * (vPFK_K4i1Fru16BP + Fru16BP) * (1 + Fru16BP / vPFK_K4i2Fru16BP + Fru6P / vPFK_K4Fru6P) * (1 + ATPg / vPFK_K4ATPg));
   vALD: Fru16BP -> GAP + DHAP; tot_cell / Vt * (vALD_Vm5f * Fru16BP / (0.009 * (1 + ATPg / 0.68 + ADPg / 1.51 + (sumAg - (ATPg + ADPg)) / 3.65)) - vALD_Vm5r * GAP * DHAPg / (vALD_K5DHAP * vALD_K5GAP)) / (1 + GAP / vALD_K5GAP + DHAPg / vALD_K5DHAP + GAP * DHAPg / (vALD_K5DHAP * vALD_K5GAP) + Fru16BP / (0.009 * (1 + ATPg / 0.68 + ADPg / 1.51 + (sumAg - (ATPg + ADPg)) / 3.65)) + Fru16BP * GAP / (vALD_K5GAPi * 0.009 * (1 + ATPg / 0.68 + ADPg / 1.51 + (sumAg - (ATPg + ADPg)) / 3.65)));
   vTPI: DHAP -> GAP; tot_cell / Vt * TPIact * vTPI_Vm6 * (DHAPg / vTPI_K6DHAPg - 5.7 * GAP / vTPI_K6GAP) / (1 + GAP / vTPI_K6GAP + DHAPg / vTPI_K6DHAPg);
   vGAPdh: GAP + NAD -> NADH + BPGA13; tot_cell / Vt * vGAPdh_Vm7 * (vGAPdh_Vm7f * (GAP * (NAD / vGAPdh_K7GAP / vGAPdh_K7NAD) - vGAPdh_Vm7r / vGAPdh_Vm7f * (BPGA13 * NADH / vGAPdh_K7BPGA13 / vGAPdh_K7NADH)) / ((1 + GAP / vGAPdh_K7GAP + BPGA13 / vGAPdh_K7BPGA13) * (1 + NAD / vGAPdh_K7NAD + NADH / vGAPdh_K7NADH)));
-  vGDH: DHAP + NADH -> NAD + Gly3P; tot_cell / Vt * vGDH_Vm8 * vGDH_Vm8f * (NADH * DHAPg / (vGDH_K8DHAPg * vGDH_K8NADH) - vGDH_Vm8r * NAD * Gly3Pg / (vGDH_K8Gly3Pg * vGDH_K8NAD * vGDH_Vm8f)) / ((1 + NAD / vGDH_K8NAD + NADH / vGDH_K8NADH) * (1 + DHAPg / vGDH_K8DHAPg + Gly3Pg / vGDH_K8Gly3Pg));
-  vGPO: Gly3P -> DHAP; tot_cell / Vt * vGPO_Vm9 * Gly3Pc / (vGPO_K9Gly3Pc * 1 + Gly3Pc);
-  vPyrTr: Pyr -> PyrE; tot_cell / Vt * vPyrTr_Vm10 * Pyr / vPyrTr_K10Pyr / (1 + Pyr / vPyrTr_K10Pyr);
+  vGDH: DHAP + NADH -> NAD + $Gly3P; tot_cell / Vt * vGDH_Vm8 * vGDH_Vm8f * (NADH * DHAPg / (vGDH_K8DHAPg * vGDH_K8NADH) - vGDH_Vm8r * NAD * Gly3Pg / (vGDH_K8Gly3Pg * vGDH_K8NAD * vGDH_Vm8f)) / ((1 + NAD / vGDH_K8NAD + NADH / vGDH_K8NADH) * (1 + DHAPg / vGDH_K8DHAPg + Gly3Pg / vGDH_K8Gly3Pg));
+  vGPO: $Gly3P -> DHAP; tot_cell / Vt * vGPO_Vm9 * Gly3Pc / (vGPO_K9Gly3Pc * 1 + Gly3Pc);
+  vPyrTr: Pyr -> $PyrE; tot_cell / Vt * vPyrTr_Vm10 * Pyr / vPyrTr_K10Pyr / (1 + Pyr / vPyrTr_K10Pyr);
   vPGK: BPGA13 -> Nb + Pg; tot_cell / Vt * vPGK_Vm11 * vPGK_Vm11f * (-vPGK_Vm11r * PGAg * ATPg / (vPGK_K11ATPg * vPGK_K11PGA3 * vPGK_Vm11f) + BPGA13 * ADPg / (vPGK_K11ADPg * vPGK_K11BPGA13)) / ((1 + BPGA13 / vPGK_K11BPGA13 + PGAg / vPGK_K11PGA3) * (1 + ATPg / vPGK_K11ATPg + ADPg / vPGK_K11ADPg));
   vPK: Nb -> Pc + Pyr; tot_cell / Vt * vPK_Vm12 * pow(PEPc / (0.34 * (1 + ADPc / 0.57 + ATPc / 0.64)), vPK_n12) * ADPc / vPK_K12ADP / ((1 + pow(PEPc / (0.34 * (1 + ADPc / 0.57 + ATPc / 0.64)), vPK_n12)) * (1 + ADPc / vPK_K12ADP));
   vATPase: Pc -> ; tot_cell / Vt * vATPase_K13 * ATPc / ADPc;
-  vGlyK: Gly3P -> Pg + Gly; tot_cell / Vt * vGlyK_Vm14 * (vGlyK_Vm14f * ADPg * Gly3Pg / (vGlyK_K14ADPg * vGlyK_K14Gly3Pg) - Gly * vGlyK_Vm14r * ATPg / (vGlyK_K14ATPg * vGlyK_K14Gly)) / ((1 + Gly / vGlyK_K14Gly + Gly3Pg / vGlyK_K14Gly3Pg) * (1 + ATPg / vGlyK_K14ATPg + ADPg / vGlyK_K14ADPg));
+  vGlyK: $Gly3P -> Pg + $Gly; tot_cell / Vt * vGlyK_Vm14 * (vGlyK_Vm14f * ADPg * Gly3Pg / (vGlyK_K14ADPg * vGlyK_K14Gly3Pg) - Gly * vGlyK_Vm14r * ATPg / (vGlyK_K14ATPg * vGlyK_K14Gly)) / ((1 + Gly / vGlyK_K14Gly + Gly3Pg / vGlyK_K14Gly3Pg) * (1 + ATPg / vGlyK_K14ATPg + ADPg / vGlyK_K14ADPg));
 
   // Species initializations:
   GlcI = 0.0340009;
@@ -137,10 +137,9 @@ model Bakker2001_Glycolysis()
   vGlyK_Vm14f = 200;
   vGlyK_K14ADPg = 0.12;
   vGlyK_K14Gly3Pg = 5.1;
-
+  
+//Other declarations:
   var Vc, Vg;
-  const PyrE, Gly, GlcE, Gly3P, ATPc, ADPc, ATPg, ADPg, DHAPg, DHAPc, Gly3Pc;
-  const Gly3Pg, PGAg, PEPc;
 
   //Display Names:
   GlcI is "Glucose ";
