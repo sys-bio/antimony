@@ -34,7 +34,7 @@ model Srividhya2006_CellCycle()
   cellmass:  -> m; mu * m * (1 - m / a);
 
   // Events:
-  cell_division: at(lt(x3, 0.2)): m = m / 2;
+  cell_division: at 0 after lt(x3, 0.2): m = m / 2;
 
   // Species initializations:
   x1 = 0.01;
@@ -88,7 +88,6 @@ model Srividhya2006_CellCycle()
   totwee1 = 1;
   totAPC = 1;
   c = 1.1;
-
 
   //Display Names:
   x1 is "cyclin";

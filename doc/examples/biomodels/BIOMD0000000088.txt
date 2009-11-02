@@ -3,10 +3,10 @@ model Maeda2006_MyosinPhosphorylation()
 
   // Compartments and Species:
   compartment c0, c1, c2;
-  species s2 in c0, s174 in c1, s130 in c1, s4 in c0, s57 in c1, s93 in c1;
-  species s165 in c1, s183 in c1, s55 in c1, s184 in c1, s48 in c1, s187 in c1;
-  species s50 in c1, s171 in c1, s173 in c1, s98 in c1, s124 in c1, s118 in c1;
-  species s153 in c1, s152 in c1, s213 in c1, s214 in c1, s151 in c1, s164 in c1;
+  species $s2 in c0, s174 in c1, s130 in c1, s4 in c0, s57 in c1, s93 in c1;
+  species s165 in c1, s183 in c1, s55 in c1, s184 in c1, $s48 in c1, s187 in c1;
+  species $s50 in c1, s171 in c1, s173 in c1, s98 in c1, s124 in c1, s118 in c1;
+  species s153 in c1, s152 in c1, s213 in c1, s214 in c1, $s151 in c1, s164 in c1;
   species s231 in c1, s233 in c1, s245 in c1, s252 in c1, s277 in c1, s278 in c1;
   species s279 in c1, s280 in c1, s289 in c1, s292 in c1, s293 in c1, s294 in c1;
   species s295 in c1, s309 in c1, s310 in c1, s311 in c1, s314 in c1, s324 in c1;
@@ -18,16 +18,16 @@ model Maeda2006_MyosinPhosphorylation()
   species s443 in c1, s444 in c1, s446 in c1, s449 in c1, s456 in c1, s359 in c1;
   species s463 in c1, s467 in c1, s470 in c1, s477 in c1, s480 in c1, s491 in c1;
   species s487 in c1, s496 in c1, s506 in c1, s512 in c1, s513 in c1, s520 in c1;
-  species s526 in c1, s539 in c1, s546 in c1, s551 in c1, s556 in c1, s267 in c0;
-  species s557 in c1, s564 in c1, s565 in c1, s566 in c1, s567 in c1, s568 in c1;
+  species s526 in c1, s539 in c1, s546 in c1, s551 in c1, $s556 in c1, $s267 in c0;
+  species $s557 in c1, s564 in c1, s565 in c1, s566 in c1, s567 in c1, s568 in c1;
   species s569 in c1, s351 in c1, s570 in c1;
 
   // Reactions:
-  re1: s2 + s130 -> s174; c1 * ((1 + re1_ratio) * re1_Vmax * s130 * s2 / re1_Km - re1_Vmax * re1_ratio * s174);
-  re12: s48 + s435 -> s439 + s410 + s50 + s55; c1 * re12_kf * s48 * s435;
+  re1: $s2 + s130 -> s174; c1 * ((1 + re1_ratio) * re1_Vmax * s130 * s2 / re1_Km - re1_Vmax * re1_ratio * s174);
+  re12: $s48 + s435 -> s439 + s410 + $s50 + s55; c1 * re12_kf * s48 * s435;
   re14: s55 -> s183; c1 * re14_kf * s55;
   re15: s442 + s57 -> s441; c1 * (re15_kf * s442 * s57 - re15_kb * s441);
-  re16: s441 + s48 -> s187 + s55 + s50 + s421; c1 * re16_kf * s48 * s441;
+  re16: s441 + $s48 -> s187 + s55 + $s50 + s421; c1 * re16_kf * s48 * s441;
   re17: s439 -> s438; c1 * re17_kf * s439;
   re19: s410 + s438 -> s437; c1 * re19_kf * s410 * s438;
   re20: s93 + s187 -> s184; c1 * ((1 + re20_ratio) * re20_Vmax * s187 * s93 / re20_Km - re20_ratio * re20_Vmax * s184);
@@ -42,7 +42,7 @@ model Maeda2006_MyosinPhosphorylation()
   re37: s436 -> s438 + s98; c1 * re37_kf * s436;
   re38: s214 -> s231; c1 * re38_kf * s214;
   re39: s124 + s214 -> s252; c1 * (re39_kf * s124 * s214 - re39_kb * s252);
-  re40: s174 -> s57 + s4 + s2; c1 * re40_Vmax * s174;
+  re40: s174 -> s57 + s4 + $s2; c1 * re40_Vmax * s174;
   re43: s437 + s57 -> s435; c1 * (re43_kf * s437 * s57 - re43_kb * s435);
   re44: s187 -> s440; c1 * re44_kf * s187;
   re45: s57 -> s183; c1 * re45_kf * s57;
@@ -51,8 +51,8 @@ model Maeda2006_MyosinPhosphorylation()
   re51: s135 + s443 -> s564; c1 * (re51_kf * s135 * s443 - re51_kb * s564);
   re52: s424 + s135 -> s569; c1 * (re52_kf * s424 * s135 - re52_kb * s569);
   re54: s564 -> s569 + s440; c1 * re54_kf * s564;
-  re55: s569 + s151 -> s568; c1 * ((1 + re55_ratio) * re55_Vmax * s569 * s151 / re55_Km - re55_ratio * re55_Vmax * s568);
-  re56: s564 + s151 -> s567; c1 * ((1 + re56_ratio) * re56_Vmax * s564 * s151 / re56_Km - re56_ratio * re56_Vmax * s567);
+  re55: s569 + $s151 -> s568; c1 * ((1 + re55_ratio) * re55_Vmax * s569 * s151 / re55_Km - re55_ratio * re55_Vmax * s568);
+  re56: s564 + $s151 -> s567; c1 * ((1 + re56_ratio) * re56_Vmax * s564 * s151 / re56_Km - re56_ratio * re56_Vmax * s567);
   re57: s568 -> s152 + s153 + s569; c1 * re57_Vmax * s568;
   re58: s567 -> s153 + s152 + s564; c1 * re58_Vmax * s567;
   re59: s153 -> s164; c1 * re59_kf * s153;
@@ -72,7 +72,7 @@ model Maeda2006_MyosinPhosphorylation()
   re95: s309 + s153 -> s311; c1 * (re95_kf * s309 * s153 - re95_kb * s311);
   re96: s566 -> s314; c1 * (re96_kf * s566 - re96_kb * s314);
   re97: s309 + s135 -> s566; c1 * (re97_kf * s309 * s135 - re97_kb * s566);
-  re98: s446 -> s432 + s267; c1 * re98_Vmax * s446;
+  re98: s446 -> s432 + $s267; c1 * re98_Vmax * s446;
   re100: s430 + 2s135 -> s444; c1 * (re100_kf * s135 * s135 * s430 - re100_kb * s444);
   re101: s566 + s153 -> s565; c1 * (re101_kf * s566 * s153 - re101_kb * s565);
   re102: s565 -> s324; c1 * (re102_kf * s565 - re102_kb * s324);
@@ -131,11 +131,11 @@ model Maeda2006_MyosinPhosphorylation()
   re171: s539 -> s359 + s293; c1 * re171_Vmax * s539;
   re172: s546 -> s360 + s292; c1 * re172_Vmax * s546;
   re173: s551 -> s359 + s292; c1 * re173_Vmax * s551;
-  re174: s267 -> s135; c1 * re174_g * s556 * (s267 - s135);
+  re174: $s267 -> s135; c1 * re174_g * s556 * (s267 - s135);
   re175: s172 -> s135; c1 * re175_g * s557 * (s172 - s135);
 
   // Events:
-  event_0000001: at(geq(time, 300)): s2 = 0.01;
+  event_0000001: at geq(time, 300): s2 = 0.01;
 
   // Species initializations:
   s2 = 0;
@@ -447,8 +447,6 @@ model Maeda2006_MyosinPhosphorylation()
   re173_Vmax = 3.67;
   re174_g = 0.01;
   re175_g = 0.01;
-
-  const s2, s48, s50, s151, s556, s267, s557;
 
   //Display Names:
   s2 is "thrombin";

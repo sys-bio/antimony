@@ -3,13 +3,13 @@ model Schmierer_2008_Smad_Tgfb()
 
   // Compartments and Species:
   compartment nucleus, cytosol;
-  species PPase in nucleus, S2_n in nucleus, pS2_n in nucleus, G_n in nucleus;
+  species $PPase in nucleus, S2_n in nucleus, pS2_n in nucleus, G_n in nucleus;
   species pG_n in nucleus, S22_n in nucleus, S24_n in nucleus, S4_n in nucleus;
   species G2_n in nucleus, G4_n in nucleus, GG_n in nucleus, S22_c in cytosol;
   species S24_c in cytosol, S4_c in cytosol, S2_c in cytosol, pS2_c in cytosol;
   species G_c in cytosol, pG_c in cytosol, G2_c in cytosol, G4_c in cytosol;
-  species GG_c in cytosol, TGFb_c in cytosol, R_act in cytosol, R in cytosol;
-  species R_inact in cytosol, SB in cytosol;
+  species GG_c in cytosol, $TGFb_c in cytosol, R_act in cytosol, R in cytosol;
+  species R_inact in cytosol, $SB in cytosol;
 
   // Assignment Rules:
   SB := piecewise(SB_add, gt(time, t_SB), SB_0)
@@ -28,11 +28,11 @@ model Schmierer_2008_Smad_Tgfb()
   reaction_8: S22_c -> S22_n; kin_CIF * S22_c;
   reaction_9: 2pS2_c -> S22_c; cytosol * (kon * pS2_c * pS2_c - koff * S22_c);
   reaction_10: 2pS2_n -> S22_n; nucleus * (kon * pS2_n * pS2_n - koff * S22_n);
-  reaction_11: pS2_n + PPase -> S2_n + PPase; nucleus * kdephos * pS2_n * PPase;
-  reaction_12: R + TGFb_c -> R_act; cytosol * k_TGFb * R * TGFb_c;
-  reaction_13: R_act + SB -> R_inact; cytosol * (kon_SB * R_act * SB - koff_SB * R_inact);
+  reaction_11: pS2_n + $PPase -> S2_n + $PPase; nucleus * kdephos * pS2_n * PPase;
+  reaction_12: R + $TGFb_c -> R_act; cytosol * k_TGFb * R * TGFb_c;
+  reaction_13: R_act + $SB -> R_inact; cytosol * (kon_SB * R_act * SB - koff_SB * R_inact);
   reaction_14: G_c + R_act -> pG_c + R_act; cytosol * kphos * G_c * R_act;
-  reaction_15: pG_n + PPase -> G_n + PPase; nucleus * kdephos * pG_n * PPase;
+  reaction_15: pG_n + $PPase -> G_n + $PPase; nucleus * kdephos * pG_n * PPase;
   reaction_16: G_c -> G_n; kin * G_c - kex * G_n;
   reaction_17: pG_c -> pG_n; kin * pG_c - kex * pG_n;
   reaction_18: 2pG_c -> GG_c; cytosol * (kon * pG_c * pG_c - koff * GG_c);
@@ -91,9 +91,9 @@ model Schmierer_2008_Smad_Tgfb()
   SB_0 = 0;
   SB_add = 10000;
   t_SB = 2700;
-
+  
+//Other declarations:
   var CIF, K_diss, K_dissSB;
-  const PPase, TGFb_c, SB;
 
   //Display Names:
   S2_n is "Smad2_n";

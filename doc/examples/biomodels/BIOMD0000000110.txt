@@ -3,9 +3,9 @@ model model_0000001()
 
   // Compartments and Species:
   compartment cell;
-  species x1 in cell, x in cell, c0 in cell, c in cell, z0 in cell, z1 in cell;
+  species x1 in cell, x in cell, c0 in cell, $c in cell, z0 in cell, z1 in cell;
   species z2 in cell, w0 in cell, w1 in cell, u in cell, i in cell, ix in cell;
-  species ixp in cell, y in cell, totalCyclin in cell;
+  species ixp in cell, y in cell, $totalCyclin in cell;
 
   // Assignment Rules:
   c := (c0 - (x + x1 + ix + ixp)) / (c0 * cell)
@@ -84,8 +84,6 @@ model model_0000001()
   cw = 1;
   ci = 1;
   Tau = 25;
-
-  const c, totalCyclin;
 
   //Display Names:
   x1 is " Inactive Cyclin:CDK complex";

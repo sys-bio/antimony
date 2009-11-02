@@ -15,13 +15,13 @@ model kofahl_pheromone_pathway()
   species Bar1a in compartment_, Bar1aex in Extracellular, Far1 in compartment_;
   species Far1PP in compartment_, Far1U in compartment_, complexM in compartment_;
   species complexN in compartment_, Cdc28 in compartment_, Sst2 in compartment_;
-  species p in compartment_;
+  species $p in compartment_;
 
   // Reactions:
   v1: alpha -> ; Extracellular * alpha * Bar1aex * v1_k1;
   v2: Ste2 -> Ste2a; compartment_ * Ste2 * alpha * v2_k2;
   v3: Ste2a -> Ste2; compartment_ * Ste2a * v3_k3;
-  v4: Ste2a -> p; compartment_ * Ste2a * v4_k4;
+  v4: Ste2a -> $p; compartment_ * Ste2a * v4_k4;
   v5: Ste2 -> ; compartment_ * Ste2 * v5_k5;
   v6: Gabc -> GaGTP + Gbc; compartment_ * Ste2a * Gabc * v6_k6;
   v7: GaGTP -> GaGDP; compartment_ * GaGTP * v7_k7;
@@ -63,8 +63,8 @@ model kofahl_pheromone_pathway()
   v43: complexM -> Gbc + Far1PP; compartment_ * complexM * v43_k43;
   v44: complexN -> Cdc28 + Far1PP; compartment_ * complexN * v44_k44;
   v45: Cdc28 + Far1PP -> complexN; compartment_ * Far1PP * Cdc28 * v45_k45;
-  v46: p -> Sst2; compartment_ * (pow(Fus3PP, 2) / (pow(4, 2) + pow(Fus3PP, 2))) * v46_k46;
-  v47: Sst2 -> p; compartment_ * Sst2 * v47_k47;
+  v46: $p -> Sst2; compartment_ * (pow(Fus3PP, 2) / (pow(4, 2) + pow(Fus3PP, 2))) * v46_k46;
+  v47: Sst2 -> $p; compartment_ * Sst2 * v47_k47;
 
   // Species initializations:
   alpha = 100;
@@ -157,8 +157,6 @@ model kofahl_pheromone_pathway()
   v45_k45 = 0.1;
   v46_k46 = 200;
   v47_k47 = 1;
-
-  const p;
 
   //Display Names:
   alpha is "α-factor";

@@ -3,7 +3,7 @@ model model_0000001()
 
   // Compartments and Species:
   compartment cell;
-  species c3 in cell, c2 in cell, c1 in cell, o in cell, i in cell, ik in cell;
+  species c3 in cell, c2 in cell, c1 in cell, o in cell, i in cell, $ik in cell;
 
   // Assignment Rules:
   ik := Gk * o * (v - vk)
@@ -25,8 +25,8 @@ model model_0000001()
   reaction_0000005: c1 -> i; (aa * c1 - u * i) * cell;
 
   // Events:
-  event_0000001: at(and(gt(time, 50), leq(time, 300))): v = vtest;
-  event_0000002: at(gt(time, 300)): v = vhold;
+  event_0000001: at and(gt(time, 50), leq(time, 300)): v = vtest;
+  event_0000002: at gt(time, 300): v = vhold;
 
   // Species initializations:
   c3 = 1;
@@ -49,9 +49,9 @@ model model_0000001()
   ki = 140;
   ain = 2.172;
   bin = 1.077;
-
+  
+//Other declarations:
   var v, vk, Gk, a, b, aa, bb, ai, bi, u;
-  const ik;
 
   //Display Names:
   c3 is "ClosedState_3";

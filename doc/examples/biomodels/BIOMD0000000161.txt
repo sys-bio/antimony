@@ -3,7 +3,7 @@ model Eungdamrong2007_Ras_Activation()
 
   // Compartments and Species:
   compartment EC, cyt, er, Golgi, PM, erMembrane, GM;
-  species RasGTP_Golgi_GM in GM, EGF_EC in EC, CAPRI_cyt in cyt, serca in erMembrane;
+  species RasGTP_Golgi_GM in GM, $EGF_EC in EC, CAPRI_cyt in cyt, serca in erMembrane;
   species PIP_PM in PM, PI_PM in PM, Shc_PM in PM, CaCAPRI_PM_PM in PM, RactCa in erMembrane;
   species Shc_star_PM in PM, EGFR_PM in PM, PLC_act_PM in PM, RasGTP_pal_cyt in cyt;
   species PLC_PM in PM, PIP2_PM in PM, Activated_EGFR_PM in PM, Ca in cyt;
@@ -11,7 +11,7 @@ model Eungdamrong2007_Ras_Activation()
   species RasGDP_Golgi_GM in GM, Ca_RasGRP_GM_GM in GM, DAG_GM_GM in GM, RasGRP_DAG_GM in GM;
   species CaCAPRI_cyt in cyt, DAG_PM in PM, RasGTP_depal_cyt in cyt, RasGDP_depal_cyt in cyt;
   species RasGDP_pal_cyt in cyt, Ca_PLCe_cyt in cyt, Ras_CaPLCe_GM in GM;
-  species PIP2_GM_GM in GM, ER_erMembrane in erMembrane, Ca_ER in er, Sos_cyt in cyt;
+  species $PIP2_GM_GM in GM, $ER_erMembrane in erMembrane, Ca_ER in er, Sos_cyt in cyt;
   species Grb2_cyt in cyt, PLCe_cyt in cyt, buffer_cyt in cyt, ca_buffer_cyt in cyt;
   species SosGrb2_cyt in cyt, SGS_PM in PM, RasGTP_PM in PM, RasGDP_PM in PM;
   species RasGRP_cyt in cyt, CaRasGRP1_cyt in cyt;
@@ -51,7 +51,7 @@ model Eungdamrong2007_Ras_Activation()
   Ras_GTP_palm1: RasGTP_Golgi_GM -> RasGTP_pal_cyt; (Ras_GTP_palm1_Kf * RasGTP_Golgi_GM + -(Ras_GTP_palm1_Kr * 0.00166112956810631 * RasGTP_pal_cyt)) * GM;
   RasPal_basal_GAP: RasGTP_pal_cyt -> RasGDP_pal_cyt; (RasPal_basal_GAP_Kf * 0.00166112956810631 * RasGTP_pal_cyt + -(RasPal_basal_GAP_Kr * 0.00166112956810631 * RasGDP_pal_cyt)) * cyt * 1 * (1 / KMOLE);
   basal_cyt_depal_GEF: RasGTP_depal_cyt -> RasGDP_depal_cyt; (basal_cyt_depal_GEF_Kf * 0.00166112956810631 * RasGTP_depal_cyt + -(basal_cyt_depal_GEF_Kr * 0.00166112956810631 * RasGDP_depal_cyt)) * cyt * 1 * (1 / KMOLE);
-  caPLCe_gen_DAG: PIP2_GM_GM -> DAG_GM_GM + IP3; caPLCe_gen_DAG_kact * PIP2_GM_GM * Ras_CaPLCe_GM * GM;
+  caPLCe_gen_DAG: $PIP2_GM_GM -> DAG_GM_GM + IP3; caPLCe_gen_DAG_kact * PIP2_GM_GM * Ras_CaPLCe_GM * GM;
   CaRasGRP_act_RasGM: RasGDP_Golgi_GM -> RasGTP_Golgi_GM; Vmax_CaRasGRP_act_RasGM * RasGDP_Golgi_GM * (1 / (CaRasGRP_act_RasGM_Km + RasGDP_Golgi_GM)) * GM;
   PIP2_hydrolysis: PIP2_PM -> DAG_PM + IP3; PIP2_hydrolysis_k_PIP2hyd * PIP2_PM * PLC_act_PM * PM;
   Sos_activation: SosGrb2_cyt + Shc_star_PM -> SGS_PM; (Sos_activation_Kf * 0.00166112956810631 * SosGrb2_cyt * Shc_star_PM + -(Sos_activation_Kr * SGS_PM)) * PM;
@@ -60,7 +60,7 @@ model Eungdamrong2007_Ras_Activation()
   calcium_buffer: buffer_cyt + Ca -> ca_buffer_cyt; (calcium_buffer_Kf * 0.00166112956810631 * buffer_cyt * 0.00166112956810631 * Ca + -(calcium_buffer_Kr * 0.00166112956810631 * ca_buffer_cyt)) * cyt * 1 * (1 / KMOLE);
   RasGM_basal_GAP: RasGTP_Golgi_GM -> RasGDP_Golgi_GM; RasGM_basal_GAP_Vmax * RasGTP_Golgi_GM * (1 / (RasGM_basal_GAP_Km + RasGTP_Golgi_GM)) * GM;
   reaction0: Shc_star_PM -> Shc_PM; (reaction0_Kf * Shc_star_PM + -(reaction0_Kr * Shc_PM)) * PM;
-  EGFR_binding: EGF_EC + EGFR_PM -> Activated_EGFR_PM; (EGFR_binding_Kf * 0.00166112956810631 * EGF_EC * EGFR_PM + -(EGFR_binding_Kr * Activated_EGFR_PM)) * PM;
+  EGFR_binding: $EGF_EC + EGFR_PM -> Activated_EGFR_PM; (EGFR_binding_Kf * 0.00166112956810631 * EGF_EC * EGFR_PM + -(EGFR_binding_Kr * Activated_EGFR_PM)) * PM;
   ca_act_PLCe: Ca + PLCe_cyt -> Ca_PLCe_cyt; (ca_act_PLCe_Kf * 0.00166112956810631 * Ca * 0.00166112956810631 * PLCe_cyt + -(ca_act_PLCe_Kr * 0.00166112956810631 * Ca_PLCe_cyt)) * cyt * 1 * (1 / KMOLE);
   ras_act_PLCe: RasGTP_Golgi_GM + Ca_PLCe_cyt -> Ras_CaPLCe_GM; (ras_act_PLCe_Kf * RasGTP_Golgi_GM * 0.00166112956810631 * Ca_PLCe_cyt + -(ras_act_PLCe_Kr * Ras_CaPLCe_GM)) * GM;
   RasGDP_depal2: RasGDP_PM -> RasGDP_depal_cyt; (RasGDP_depal2_Kf * RasGDP_PM + -(RasGDP_depal2_Kr * 0.00166112956810631 * RasGDP_depal_cyt)) * PM;
@@ -252,12 +252,12 @@ model Eungdamrong2007_Ras_Activation()
   Ras_PM_depal1_I = 0;
   Ras_PM_depal1_Kf = 0.0001;
   Ras_PM_depal1_Kr = 0;
-
+  
+//Other declarations:
   var Rate_PIP2Synbasal_PIP2_synthesis, Rate_PIP2SynStim_PIP2_synthesis, Vmax_Shc_phosphorylation;
   var Vmax_RasGRP_DAG_GEF, Vmax_CAPRI_GAP, Vmax_CaRasGRP_act_RasGM, Ratebasal_PIPsyn_PIP_synthesis;
   var Ratestim_PIPsyn_PIP_synthesis, Koff_reaction2, Vmax_EGF_act_PLCgamma;
   var Kr_Ca_binds_IP3R, Vmax_Sos_act_RasPM;
-  const EGF_EC, PIP2_GM_GM, ER_erMembrane;
 
   //Display Names:
   PIP2_synthesis is "PIP2 synthesis";

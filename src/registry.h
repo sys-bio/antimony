@@ -37,13 +37,12 @@ private:
   std::vector<std::string>   m_functions;
 
   std::set<Variable*>      m_storedvars;
+  std::set<Formula*>       m_storedformulas;
 
   std::vector<Module> m_modules;
   std::vector<std::string> m_currentModules;
   std::vector<ReactantList> m_currentReactantLists;
   std::vector<std::string> m_currentImportedModule;
-  Formula m_scratchFormula;
-  std::vector<Formula> m_scratchFormulas;
   DNAStrand m_workingstrand;
 
   std::vector<UserFunction> m_userfunctions;
@@ -69,6 +68,7 @@ public:
 
   void ClearModules();
   void FreeVariables();
+  void FreeFormulas();
   void ClearAll();
 
   int    OpenFile(const std::string& filename);
@@ -115,7 +115,9 @@ public:
 
   //Events
   bool SetNewCurrentEvent(Formula* trigger);
+  bool SetNewCurrentEvent(Formula* delay, Formula* trigger);
   bool SetNewCurrentEvent(Formula* trigger, Variable* var);
+  bool SetNewCurrentEvent(Formula* delay, Formula* trigger, Variable* var);
   bool AddResultToCurrentEvent(Variable* var, Formula* form);
   bool SetCompartmentOfCurrentSubmod(Variable* var);
 

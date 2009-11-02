@@ -7,8 +7,8 @@ model Ihekwaba2004_NFkB_Sensitivity()
   species IKK in compartment_, IkBa in compartment_, IKKIkBb in compartment_;
   species IKKIkBbNFkB in compartment_, IkBb in compartment_, IKKIkBe in compartment_;
   species IKKIkBeNFkB in compartment_, IkBe in compartment_, IkBaNFkB in compartment_;
-  species IkBbNFkB in compartment_, IkBeNFkB in compartment_, source in compartment_;
-  species IkBat in compartment_, sink in compartment_, NFkBn in compartment_;
+  species IkBbNFkB in compartment_, IkBeNFkB in compartment_, $source in compartment_;
+  species IkBat in compartment_, $sink in compartment_, NFkBn in compartment_;
   species IkBan in compartment_, IkBanNFkBn in compartment_, IkBbn in compartment_;
   species IkBbnNFkBn in compartment_, IkBbt in compartment_, IkBen in compartment_;
   species IkBenNFkBn in compartment_, IkBet in compartment_;
@@ -39,45 +39,45 @@ model Ihekwaba2004_NFkB_Sensitivity()
   v23: IKK + IkBeNFkB -> IKKIkBeNFkB; k58 * IKK * IkBeNFkB;
   v24: IKKIkBeNFkB -> IKK + IkBeNFkB; k59 * IKKIkBeNFkB;
   v25: IkBa + NFkB -> IkBaNFkB; k1 * IkBa * NFkB;
-  v26: 2source -> IkBat + 2sink; k28 * NFkBn * NFkBn;
+  v26: 2$source -> IkBat + 2$sink; k28 * NFkBn * NFkBn;
   v27: IkBaNFkB -> IkBa + NFkB; k2 * IkBaNFkB;
   v28: NFkBn + IkBan -> IkBanNFkBn; k21 * IkBan * NFkBn;
   v29: IkBanNFkBn -> NFkBn + IkBan; k22 * IkBanNFkBn;
   v30: IkBanNFkBn -> IkBaNFkB; k54 * IkBanNFkBn;
   v31: IkBaNFkB -> NFkB; k16 * IkBaNFkB;
-  v32: IkBat -> sink; k29 * IkBat;
+  v32: IkBat -> $sink; k29 * IkBat;
   v33: IkBan -> IkBa; k39 * IkBan;
   v34: IkBa -> IkBan; k38 * IkBa;
-  v35: source -> IkBa + sink; k36 * IkBat;
+  v35: $source -> IkBa + $sink; k36 * IkBat;
   v36: IkBb + NFkB -> IkBbNFkB; k3 * IkBb * NFkB;
   v37: IkBbNFkB -> IkBb + NFkB; k4 * IkBbNFkB;
   v38: IkBbn + NFkBn -> IkBbnNFkBn; k23 * IkBbn * NFkBn;
   v39: IkBbnNFkBn -> IkBbn + NFkBn; k24 * IkBbnNFkBn;
   v40: IkBbnNFkBn -> IkBbNFkB; k57 * IkBbnNFkBn;
   v41: IkBbNFkB -> NFkB; k17 * IkBbNFkB;
-  v42: IkBbt -> sink; k31 * IkBbt;
+  v42: IkBbt -> $sink; k31 * IkBbt;
   v43: IkBbn -> IkBb; k45 * IkBbn;
   v44: IkBb -> IkBbn; k44 * IkBb;
-  v45: source -> IkBb + sink; k42 * IkBbt;
+  v45: $source -> IkBb + $sink; k42 * IkBbt;
   v46: NFkB + IkBe -> IkBeNFkB; k5 * IkBe * NFkB;
   v47: IkBeNFkB -> NFkB + IkBe; k6 * IkBeNFkB;
   v48: NFkBn + IkBen -> IkBenNFkBn; k25 * IkBen * NFkBn;
   v49: IkBenNFkBn -> IkBen + NFkBn; k26 * IkBenNFkBn;
   v50: IkBenNFkBn -> IkBeNFkB; k60 * IkBenNFkBn;
   v51: IkBeNFkB -> NFkB; k18 * IkBeNFkB;
-  v52: IkBet -> sink; k33 * IkBet;
+  v52: IkBet -> $sink; k33 * IkBet;
   v53: IkBen -> IkBe; k51 * IkBen;
   v54: IkBe -> IkBen; k50 * IkBe;
-  v55: source -> IkBe + sink; k48 * IkBet;
+  v55: $source -> IkBe + $sink; k48 * IkBet;
   v56: NFkBn -> NFkB; k20 * NFkBn;
   v57: NFkB -> NFkBn; k19 * NFkB;
-  v58: source -> IkBat; k27 * source;
-  v59: source -> IkBbt; k30 * source;
-  v60: source -> IkBet; k32 * source;
-  v61: IkBa -> sink; k37 * IkBa;
-  v62: IkBb -> sink; k43 * IkBb;
-  v63: IkBe -> sink; k49 * IkBe;
-  v64: IKK -> sink; k61 * IKK;
+  v58: $source -> IkBat; k27 * source;
+  v59: $source -> IkBbt; k30 * source;
+  v60: $source -> IkBet; k32 * source;
+  v61: IkBa -> $sink; k37 * IkBa;
+  v62: IkBb -> $sink; k43 * IkBb;
+  v63: IkBe -> $sink; k49 * IkBe;
+  v64: IKK -> $sink; k61 * IKK;
 
   // Species initializations:
   NFkB = 0.00025081;
@@ -175,6 +175,4 @@ model Ihekwaba2004_NFkB_Sensitivity()
   k62 = 0.00407;
   k63 = 0.0015;
   k64 = 0.0022;
-
-  const source, sink;
 end

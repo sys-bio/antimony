@@ -6,7 +6,7 @@ model Curto()
   species PRPP in cell, IMP in cell, SAMP in cell, ATP in cell, SAM in cell;
   species Ade in cell, XMP in cell, GTP in cell, dATP in cell, dGTP in cell;
   species RNA in cell, DNA_ in cell, HX in cell, Xa in cell, Gua in cell;
-  species UA in cell, R5P in cell, Pi_ in cell;
+  species UA in cell, $R5P in cell, $Pi_ in cell;
 
   // Reactions:
   ada: ATP -> HX; ada_aada * pow(ATP, ada_fada4);
@@ -38,7 +38,7 @@ model Curto()
   inuc: IMP -> HX; inuc_ainuc * pow(IMP, inuc_finuc2) * pow(Pi_, inuc_finuc18);
   mat: ATP -> SAM; mat_amat * pow(ATP, mat_fmat4) * pow(SAM, mat_fmat5);
   polyam: SAM -> Ade; polyam_apolyam * pow(SAM, polyam_fpolyam5);
-  prpps: R5P -> PRPP; prpps_aprpps * pow(PRPP, prpps_fprpps1) * pow(ATP, prpps_fprpps4) * pow(GTP, prpps_fprpps8) * pow(R5P, prpps_fprpps17) * pow(Pi_, prpps_fprpps18);
+  prpps: $R5P -> PRPP; prpps_aprpps * pow(PRPP, prpps_fprpps1) * pow(ATP, prpps_fprpps4) * pow(GTP, prpps_fprpps8) * pow(R5P, prpps_fprpps17) * pow(Pi_, prpps_fprpps18);
   pyr: PRPP -> ; pyr_apyr * pow(PRPP, pyr_fpyr1);
   rnaa: RNA -> ATP; rnaa_arnaa * pow(RNA, rnaa_frnan11);
   rnag: RNA -> GTP; rnag_arnag * pow(RNA, rnag_frnan11);
@@ -182,8 +182,6 @@ model Curto()
   x_fx14 = 2;
   xd_axd = 0.949;
   xd_fxd14 = 0.55;
-
-  const R5P, Pi_;
 
   //Display Names:
   PRPP is "phosphoribosylpyrophosphate";

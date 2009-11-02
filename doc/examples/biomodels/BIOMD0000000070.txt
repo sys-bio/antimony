@@ -16,11 +16,11 @@ model Holzhutter2004_Erythrocyte_Metabolism()
   species ATPf in compartment_, Mgf in compartment_, MgGri23P2 in compartment_;
   species P1NADP in compartment_, P1f in compartment_, P1NADPH in compartment_;
   species P2NADP in compartment_, P2f in compartment_, P2NADPH in compartment_;
-  species PRPP in compartment_, Lacex in compartment_, Pyrex in compartment_;
-  species Glcout in compartment_, Phiex in compartment_;
+  species $PRPP in compartment_, $Lacex in compartment_, $Pyrex in compartment_;
+  species $Glcout in compartment_, $Phiex in compartment_;
 
   // Reactions:
-  vGLT: Glcout -> Glcin; compartment_ * (vGLT_Vmaxv0 / vGLT_KMoutv0 * (Glcout - Glcin / vGLT_Keqv0) / (1 + Glcout / vGLT_KMoutv0 + Glcin / vGLT_KMinv0 + vGLT_alfav0 * Glcout * Glcin / vGLT_KMoutv0 / vGLT_KMinv0));
+  vGLT: $Glcout -> Glcin; compartment_ * (vGLT_Vmaxv0 / vGLT_KMoutv0 * (Glcout - Glcin / vGLT_Keqv0) / (1 + Glcout / vGLT_KMoutv0 + Glcin / vGLT_KMinv0 + vGLT_alfav0 * Glcout * Glcin / vGLT_KMoutv0 / vGLT_KMinv0));
   vHEX: Glcin + MgATP -> Glc6P + MgADP; compartment_ * (vHEX_Inhibv1 * Glcin / (Glcin + vHEX_KMGlcv1) * (vHEX_Vmax1v1 / vHEX_KMgATPv1) * (MgATP + vHEX_Vmax2v1 / vHEX_Vmax1v1 * MgATP * Mgf / vHEX_KMgATPMgv1 - Glc6P * MgADP / vHEX_Keqv1) / (1 + MgATP / vHEX_KMgATPv1 * (1 + Mgf / vHEX_KMgATPMgv1) + Mgf / vHEX_KMgv1 + (1.55 + Glc6P / vHEX_KGlc6Pv1) * (1 + Mgf / vHEX_KMgv1) + (Gri23P2f + MgGri23P2) / vHEX_K23P2Gv1 + Mgf * (Gri23P2f + MgGri23P2) / (vHEX_KMgv1 * vHEX_KMg23P2Gv1)));
   vGPI: Glc6P -> Fru6P; compartment_ * (vGPI_Vmaxv2 * (Glc6P - Fru6P / vGPI_Keqv2) / (Glc6P + vGPI_KGlc6Pv2 * (1 + Fru6P / vGPI_KFru6Pv2)));
   vPFK: MgATP + Fru6P -> Fru16P2 + MgADP; compartment_ * (vPFK_Vmaxv3 * (Fru6P * MgATP - Fru16P2 * MgADP / vPFK_Keqv3) / ((Fru6P + vPFK_KFru6Pv3) * (MgATP + vPFK_KMgATPv3) * (1 + vPFK_L0v3 * pow((1 + ATPf / vPFK_KATPv3) * (1 + Mgf / vPFK_KMgv3) / ((1 + (AMPf + MgAMP) / vPFK_KAMPv3) * (1 + Fru6P / vPFK_KFru6Pv3)), 4))));
@@ -45,11 +45,11 @@ model Holzhutter2004_Erythrocyte_Metabolism()
   vRibPiso: Rul5P -> Rib5P; compartment_ * (vRibPiso_Vmaxv22 * (Rul5P - Rib5P / vRibPiso_Keqv22) / (Rul5P + vRibPiso_KRu5Pv22 * (1 + Rib5P / vRibPiso_KR5Pv22)));
   vTrKet1: Xul5P + Rib5P -> GraP + Sed7P; compartment_ * (vTrKet1_Vmaxv23 * (Rib5P * Xul5P - GraP * Sed7P / vTrKet1_Keqv23) / ((vTrKet1_K1v23 + Rib5P) * Xul5P + (vTrKet1_K2v23 + vTrKet1_K6v23 * Sed7P) * Rib5P + (vTrKet1_K3v23 + vTrKet1_K5v23 * Sed7P) * GraP + vTrKet1_K4v23 * Sed7P + vTrKet1_K7v23 * Xul5P * GraP));
   vTrAld: GraP + Sed7P -> E4P + Fru6P; compartment_ * (vTrAld_Vmaxv24 * (Sed7P * GraP - E4P * Fru6P / vTrAld_Keqv24) / ((vTrAld_K1v24 + GraP) * Sed7P + (vTrAld_K2v24 + vTrAld_K6v24 * Fru6P) * GraP + (vTrAld_K3v24 + vTrAld_K5v24 * Fru6P) * E4P + vTrAld_K4v24 * Fru6P + vTrAld_K7v24 * Sed7P * E4P));
-  vPPRPPS: MgATP + Rib5P -> MgAMP + PRPP; compartment_ * (vPPRPPS_Vmaxv25 * (Rib5P * MgATP - PRPP * MgAMP / vPPRPPS_Keqv25) / ((vPPRPPS_KATPv25 + MgATP) * (vPPRPPS_KR5Pv25 + Rib5P)));
+  vPPRPPS: MgATP + Rib5P -> MgAMP + $PRPP; compartment_ * (vPPRPPS_Vmaxv25 * (Rib5P * MgATP - PRPP * MgAMP / vPPRPPS_Keqv25) / ((vPPRPPS_KATPv25 + MgATP) * (vPPRPPS_KR5Pv25 + Rib5P)));
   vTrKet2: Xul5P + E4P -> GraP + Fru6P; compartment_ * (vTrKet2_Vmaxv26 * (E4P * Xul5P - GraP * Fru6P / vTrKet2_Keqv26) / ((vTrKet2_K1v26 + E4P) * Xul5P + (vTrKet2_K2v26 + vTrKet2_K6v26 * Fru6P) * E4P + (vTrKet2_K3v26 + vTrKet2_K5v26 * Fru6P) * GraP + vTrKet2_K4v26 * Fru6P + vTrKet2_K7v26 * Xul5P * GraP));
-  vPhiexch: Phiex -> Phi; compartment_ * vPhiexch_Vmaxv27 * (Phiex - Phi / vPhiexch_Keqv27);
-  vLacexch: Lacex -> Lac; compartment_ * vLacexch_Vmaxv28 * (Lacex - Lac / vLacexch_Keqv28);
-  vPyrexch: Pyrex -> Pyr; compartment_ * vPyrexch_Vmaxv29 * (Pyrex - Pyr / vPyrexch_Keqv29);
+  vPhiexch: $Phiex -> Phi; compartment_ * vPhiexch_Vmaxv27 * (Phiex - Phi / vPhiexch_Keqv27);
+  vLacexch: $Lacex -> Lac; compartment_ * vLacexch_Vmaxv28 * (Lacex - Lac / vLacexch_Keqv28);
+  vPyrexch: $Pyrex -> Pyr; compartment_ * vPyrexch_Vmaxv29 * (Pyrex - Pyr / vPyrexch_Keqv29);
   vMgATP: MgATP -> Mgf + ATPf; compartment_ * vMgATP_EqMult * (MgATP - Mgf * ATPf / vMgATP_KdATP);
   vMgADP: MgADP -> Mgf + ADPf; compartment_ * vMgADP_EqMult * (MgADP - Mgf * ADPf / vMgADP_KdADP);
   vMgAMP: MgAMP -> Mgf + AMPf; compartment_ * vMgAMP_EqMult * (MgAMP - Mgf * AMPf / vMgAMP_KdAMP);
@@ -276,8 +276,6 @@ model Holzhutter2004_Erythrocyte_Metabolism()
   vP2NADP_Kd2 = 1e-05;
   vP2NADPH_EqMult = 10000000;
   vP2NADPH_Kd4 = 0.0002;
-
-  const PRPP, Lacex, Pyrex, Glcout, Phiex;
 
   //Display Names:
   Glcin is "Glucose in";

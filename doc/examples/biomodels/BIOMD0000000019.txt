@@ -3,7 +3,7 @@ model Schoeberl2002_EGF_MAPK()
 
   // Compartments and Species:
   compartment c1, c2, c3;
-  species x1 in c1, x2 in c1, x3 in c2, x4 in c2, x5 in c2, x6 in c2, x7 in c2;
+  species $x1 in c1, x2 in c1, x3 in c2, x4 in c2, x5 in c2, x6 in c2, x7 in c2;
   species x8 in c2, x9 in c2, x10 in c2, x11 in c2, x12 in c2, x13 in c3;
   species x14 in c2, x15 in c3, x16 in c2, x17 in c2, x18 in c2, x19 in c2;
   species x20 in c2, x21 in c2, x22 in c2, x23 in c2, x24 in c2, x25 in c2;
@@ -18,8 +18,8 @@ model Schoeberl2002_EGF_MAPK()
   species x74 in c2, x75 in c2, x76 in c2, x77 in c2, x78 in c2, x79 in c2;
   species x80 in c2, x81 in c2, x82 in c2, x83 in c2, x84 in c2, x85 in c2;
   species x86 in c2, x87 in c2, x88 in c2, x89 in c2, x90 in c2, x91 in c2;
-  species x92 in c2, x93 in c2, x94 in c2, Raf_act in c2, Ras_GTP in c2, MEK_PP in c2;
-  species ERK_PP in c2, SHC_P_t in c2, EGF_EGFR_act in c2;
+  species x92 in c2, x93 in c2, x94 in c2, $Raf_act in c2, $Ras_GTP in c2;
+  species $MEK_PP in c2, $ERK_PP in c2, $SHC_P_t in c2, $EGF_EGFR_act in c2;
 
   // Assignment Rules:
   Raf_act := x45 + x46 + x48 + x50 + x72 + x73 + x74 + x76
@@ -32,7 +32,7 @@ model Schoeberl2002_EGF_MAPK()
   C := RT / (kr1 / (k1 * x1) + 1)
 
   // Reactions:
-  v1: x1 + x2 -> x3; k1 * x1 * x2 - kr1 * x3;
+  v1: $x1 + x2 -> x3; k1 * x1 * x2 - kr1 * x3;
   v2: 2x3 -> x4; k2 * x3 * x3 - kr2 * x4;
   v3: x4 -> x5; k3 * x4 - kr3 * x5;
   v4: x23 + x12 -> x7; k4 * x23 * x12 - kr4 * x7;
@@ -348,9 +348,9 @@ model Schoeberl2002_EGF_MAPK()
   k60 = 0.04002;
   k61 = 0.01002;
   RT = 50000;
-
+  
+//Other declarations:
   var k5, C;
-  const x1, Raf_act, Ras_GTP, MEK_PP, ERK_PP, SHC_P_t, EGF_EGFR_act;
 
   //Display Names:
   x1 is "EGF";

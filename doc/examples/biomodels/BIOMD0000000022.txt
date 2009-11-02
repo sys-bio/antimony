@@ -3,45 +3,45 @@ model Ueda2001_CircClock()
 
   // Compartments and Species:
   compartment Drosophilia, compartment_0000003, compartment_0000002;
-  species EmptySet in Drosophilia, CCc in compartment_0000003, CCn in compartment_0000002;
+  species $EmptySet in Drosophilia, CCc in compartment_0000003, CCn in compartment_0000002;
   species Clkc in compartment_0000003, Clkm in compartment_0000003, Perc in compartment_0000003;
   species Perm in compartment_0000003, PTc in compartment_0000003, PTn in compartment_0000002;
-  species Timc in compartment_0000003, Timm in compartment_0000003, species_0000012 in compartment_0000003;
-  species species_0000013 in compartment_0000003;
+  species Timc in compartment_0000003, Timm in compartment_0000003, $species_0000012 in compartment_0000003;
+  species $species_0000013 in compartment_0000003;
 
   // Reactions:
-  Reaction1: EmptySet -> Perm; compartment_0000003 * (Reaction1_c1 + (Reaction1_B1 + pow(CCn / Reaction1_A1, Reaction1_a)) * Reaction1_s1 / (1 + Reaction1_B1 + pow(CCn / Reaction1_A1, Reaction1_a) + pow(PTn / Reaction1_r1, Reaction1_r)));
-  Reaction2: Perm -> EmptySet; compartment_0000003 * Reaction2_D0 * Perm;
-  Reaction3: EmptySet -> Timm; compartment_0000003 * (Reaction3_c2 + (Reaction3_B2 + pow(CCn / Reaction3_A2, Reaction3_a)) * Reaction3_s3 / (1 + Reaction3_B2 + pow(CCn / Reaction3_A2, Reaction3_a) + pow(PTn / Reaction3_r2, Reaction3_r)));
-  Reaction4: Timm -> EmptySet; Drosophilia * Reaction4_D0 * Timm;
-  Reaction5: EmptySet -> Clkm; compartment_0000003 * (Reaction5_c3 + (Reaction5_B3 + pow(PTn / Reaction5_A3, Reaction5_a)) * Reaction5_s5 / (1 + Reaction5_B3 + pow(PTn / Reaction5_A3, Reaction5_a) + pow(CCn / Reaction5_r3, Reaction5_r)));
-  Reaction6: Clkm -> EmptySet; Drosophilia * Clkm * Reaction6_D0;
+  Reaction1: $EmptySet -> Perm; compartment_0000003 * (Reaction1_c1 + (Reaction1_B1 + pow(CCn / Reaction1_A1, Reaction1_a)) * Reaction1_s1 / (1 + Reaction1_B1 + pow(CCn / Reaction1_A1, Reaction1_a) + pow(PTn / Reaction1_r1, Reaction1_r)));
+  Reaction2: Perm -> $EmptySet; compartment_0000003 * Reaction2_D0 * Perm;
+  Reaction3: $EmptySet -> Timm; compartment_0000003 * (Reaction3_c2 + (Reaction3_B2 + pow(CCn / Reaction3_A2, Reaction3_a)) * Reaction3_s3 / (1 + Reaction3_B2 + pow(CCn / Reaction3_A2, Reaction3_a) + pow(PTn / Reaction3_r2, Reaction3_r)));
+  Reaction4: Timm -> $EmptySet; Drosophilia * Reaction4_D0 * Timm;
+  Reaction5: $EmptySet -> Clkm; compartment_0000003 * (Reaction5_c3 + (Reaction5_B3 + pow(PTn / Reaction5_A3, Reaction5_a)) * Reaction5_s5 / (1 + Reaction5_B3 + pow(PTn / Reaction5_A3, Reaction5_a) + pow(CCn / Reaction5_r3, Reaction5_r)));
+  Reaction6: Clkm -> $EmptySet; Drosophilia * Clkm * Reaction6_D0;
   Reaction7: CCc -> CCn; compartment_0000003 * (CCc * Reaction7_T3 / (Reaction7_k3 + CCc));
   Reaction8: CCn -> CCc; compartment_0000002 * (CCn * Reaction8_T4 / (Reaction8_k4 + CCn));
   Reaction9: PTn -> PTc; compartment_0000002 * (PTn * Reaction9_T2 / (Reaction9_k2 + PTn));
   Reaction10: PTc -> PTn; compartment_0000003 * (PTc * Reaction10_T1 / (Reaction10_k1 + PTc));
-  Reaction11: species_0000012 + Clkc -> CCc; compartment_0000003 * (Clkc * Reaction11_v3 * species_0000012 - Reaction11_parameter_0000073 * CCc);
+  Reaction11: $species_0000012 + Clkc -> CCc; compartment_0000003 * (Clkc * Reaction11_v3 * species_0000012 - Reaction11_parameter_0000073 * CCc);
   Reaction12: Perc + Timc -> PTc; compartment_0000003 * (Perc * Timc * Reaction12_v1 - Reaction12_parameter_0000072 * PTc);
-  Reaction16: EmptySet -> Timc; compartment_0000003 * Reaction16_s4 * Timm;
-  Reaction18: EmptySet -> Clkc; compartment_0000003 * Clkm * Reaction18_s6;
-  Reaction19: EmptySet -> Perc; compartment_0000003 * Reaction19_s2 * Perm;
-  Reaction20: Perc -> EmptySet; Drosophilia * Reaction20_D0 * Perc;
-  Reaction21: PTc -> EmptySet; compartment_0000003 * Reaction21_D0 * PTc;
-  Reaction23: PTn -> EmptySet; compartment_0000002 * Reaction23_D0 * PTn;
-  Reaction24: CCc -> EmptySet; compartment_0000003 * CCc * Reaction24_D0;
-  Reaction25: Clkc -> EmptySet; compartment_0000003 * Clkc * Reaction25_D0;
-  Reaction26: CCn -> EmptySet; compartment_0000002 * CCn * Reaction26_D0;
-  Reaction27: Timc -> EmptySet; compartment_0000003 * Reaction27_D0 * Timc;
-  Reaction28: Perm -> EmptySet; compartment_0000003 * (Reaction28_D1 * Perm / (Reaction28_L1 + Perm));
-  Reaction29: Perc -> EmptySet; compartment_0000003 * (Reaction29_D2 * species_0000013 * Perc / (Reaction29_L2 + Perc));
-  Reaction30: Timm -> EmptySet; compartment_0000003 * (Reaction30_D3 * Timm / (Reaction30_L3 + Timm));
-  Reaction31: Timc -> EmptySet; compartment_0000003 * (Reaction31_D4 * Timc / (Reaction31_L4 + Timc));
-  Reaction32: PTc -> EmptySet; compartment_0000003 * (Reaction32_D5 * PTc / (Reaction32_L5 + PTc));
-  Reaction33: PTn -> EmptySet; compartment_0000002 * (Reaction33_D6 * PTn / (Reaction33_L6 + PTn));
-  Reaction34: Clkm -> EmptySet; compartment_0000003 * (Clkm * Reaction34_D7 / (Clkm + Reaction34_L7));
-  Reaction35: Clkc -> EmptySet; compartment_0000003 * (Clkc * Reaction35_D8 / (Clkc + Reaction35_L8));
-  Reaction36: CCc -> EmptySet; compartment_0000003 * (CCc * Reaction36_D9 / (CCc + Reaction36_L9));
-  Reaction37: CCn -> EmptySet; compartment_0000002 * (CCn * Reaction37_D10 / (CCn + Reaction37_L10));
+  Reaction16: $EmptySet -> Timc; compartment_0000003 * Reaction16_s4 * Timm;
+  Reaction18: $EmptySet -> Clkc; compartment_0000003 * Clkm * Reaction18_s6;
+  Reaction19: $EmptySet -> Perc; compartment_0000003 * Reaction19_s2 * Perm;
+  Reaction20: Perc -> $EmptySet; Drosophilia * Reaction20_D0 * Perc;
+  Reaction21: PTc -> $EmptySet; compartment_0000003 * Reaction21_D0 * PTc;
+  Reaction23: PTn -> $EmptySet; compartment_0000002 * Reaction23_D0 * PTn;
+  Reaction24: CCc -> $EmptySet; compartment_0000003 * CCc * Reaction24_D0;
+  Reaction25: Clkc -> $EmptySet; compartment_0000003 * Clkc * Reaction25_D0;
+  Reaction26: CCn -> $EmptySet; compartment_0000002 * CCn * Reaction26_D0;
+  Reaction27: Timc -> $EmptySet; compartment_0000003 * Reaction27_D0 * Timc;
+  Reaction28: Perm -> $EmptySet; compartment_0000003 * (Reaction28_D1 * Perm / (Reaction28_L1 + Perm));
+  Reaction29: Perc -> $EmptySet; compartment_0000003 * (Reaction29_D2 * species_0000013 * Perc / (Reaction29_L2 + Perc));
+  Reaction30: Timm -> $EmptySet; compartment_0000003 * (Reaction30_D3 * Timm / (Reaction30_L3 + Timm));
+  Reaction31: Timc -> $EmptySet; compartment_0000003 * (Reaction31_D4 * Timc / (Reaction31_L4 + Timc));
+  Reaction32: PTc -> $EmptySet; compartment_0000003 * (Reaction32_D5 * PTc / (Reaction32_L5 + PTc));
+  Reaction33: PTn -> $EmptySet; compartment_0000002 * (Reaction33_D6 * PTn / (Reaction33_L6 + PTn));
+  Reaction34: Clkm -> $EmptySet; compartment_0000003 * (Clkm * Reaction34_D7 / (Clkm + Reaction34_L7));
+  Reaction35: Clkc -> $EmptySet; compartment_0000003 * (Clkc * Reaction35_D8 / (Clkc + Reaction35_L8));
+  Reaction36: CCc -> $EmptySet; compartment_0000003 * (CCc * Reaction36_D9 / (CCc + Reaction36_L9));
+  Reaction37: CCn -> $EmptySet; compartment_0000002 * (CCn * Reaction37_D10 / (CCn + Reaction37_L10));
 
   // Species initializations:
   EmptySet = 0;
@@ -130,8 +130,6 @@ model Ueda2001_CircClock()
   Reaction36_L9 = 0.2;
   Reaction37_D10 = 0.3;
   Reaction37_L10 = 0.2;
-
-  const EmptySet, species_0000012, species_0000013;
 
   //Display Names:
   CCc is "Clk-Cyc_cyt";

@@ -16,7 +16,7 @@ model YeastWTmodel2()
   species SCdkA in nucleus, G2CdkI in nucleus, G2CdkA in nucleus, MCdkI in nucleus;
   species MCdkA in nucleus, G1Soff in nucleus, G1Son in nucleus, SG2off in nucleus;
   species SG2on in nucleus, G2Moff in nucleus, G2Mon in nucleus, MG1off in nucleus;
-  species MG1on in nucleus, sink in nucleus, budscar in cellMembrane;
+  species MG1on in nucleus, $sink in nucleus, budscar in cellMembrane;
 
   // Reactions:
   Capping: Cdc13 + Utelo -> Ctelo; Capping_k1 * Cdc13 * Utelo * kalive;
@@ -54,25 +54,25 @@ model YeastWTmodel2()
   StoG2GenesOn: SG2off + S + SCdkA -> SG2on + S + SCdkA; StoG2GenesOn_kc2 * S * SCdkA * SG2off * kalive;
   G2toMGenesOn: G2Moff + G2 + G2CdkA -> G2Mon + G2 + G2CdkA; G2 * G2CdkA * G2Moff * G2toMGenesOn_kc2 * kalive;
   MtoG1GenesOn: MG1off + M + MCdkA -> MG1on + M + MCdkA; MtoG1GenesOn_kc2 * M * MCdkA * MG1off * kalive;
-  G1cyclinDegradation: G1cyclin -> sink; G1cyclin * G1cyclinDegradation_kc3 * kalive;
-  ScyclinDegradation: Scyclin -> sink; ScyclinDegradation_kc3 * Scyclin * kalive;
-  G2cyclinDegradation: G2cyclin -> sink; G2cyclin * G2cyclinDegradation_kc3 * kalive;
-  McyclinDegradation: Mcyclin -> sink; McyclinDegradation_kc3 * Mcyclin * kalive;
+  G1cyclinDegradation: G1cyclin -> $sink; G1cyclin * G1cyclinDegradation_kc3 * kalive;
+  ScyclinDegradation: Scyclin -> $sink; ScyclinDegradation_kc3 * Scyclin * kalive;
+  G2cyclinDegradation: G2cyclin -> $sink; G2cyclin * G2cyclinDegradation_kc3 * kalive;
+  McyclinDegradation: Mcyclin -> $sink; McyclinDegradation_kc3 * Mcyclin * kalive;
   G1toSProgession: G1 + G1CdkA + G1Son -> G1CdkI + G1Soff + S; G1 * G1CdkA * G1Son * G1toSProgession_kc4 * kalive;
   StoG2Progession: S + SCdkA + SG2on -> G2 + SCdkI + SG2off; StoG2Progession_kc4 * S * SCdkA * SG2on * kalive;
   G2toMProgession: G2 + G2CdkA + G2Mon -> G2CdkI + G2Moff + M; G2 * G2CdkA * G2Mon * G2toMProgession_kc4 * kalive;
   MtoG1Progession: M + MCdkA + MG1on -> budscar + G1 + MCdkI + MG1off; MtoG1Progession_kc4 * M * MCdkA * MG1on * kalive;
 
   // Events:
-  Rad9KinaseActivation: at(geq(Mec1RPAssDNA, 800)): Rad9Kin = 1;
-  ssDNAremoval: at(leq(Mec1RPAssDNA + RPAssDNA + ssDNA, 1)): ssDNA = 0: RPAssDNA = 0: Mec1RPAssDNA = 0: recovery = 1;
-  G2MRecoveryCompleted: at(and(eq(G2, 1), eq(Rad17Utelo, 0))): Rad53A = 0: Rad53I = 6900: ExoXI = 70: ExoXA = 0: Exo1I = 670: Exo1A = 0: Dun1I = 3000: Dun1A = 0: Chk1I = 60: Chk1A = 0: Rad9I = 20: Rad9A = 0: recovery = 0: G2Moff = 0: G2Mon = 1;
-  SphaseRecoveryCompleted: at(eq(Rad17Utelo, 0)): recovery = 0;
-  G1CdkActivation: at(gt(G1cyclin, 100)): G1CdkI = 0: G1CdkA = 1;
-  SCdkActivation: at(gt(Scyclin, 100)): SCdkI = 0: SCdkA = 1;
-  G2CdkActivation: at(gt(G2cyclin, 100)): G2CdkI = 0: G2CdkA = 1;
-  MCdkActivation: at(gt(Mcyclin, 100)): MCdkI = 0: MCdkA = 1;
-  CellDeath: at(geq(Mec1RPAssDNA + RPAssDNA + ssDNA, 2000)): kalive = 0;
+  Rad9KinaseActivation: at geq(Mec1RPAssDNA, 800): Rad9Kin = 1;
+  ssDNAremoval: at leq(Mec1RPAssDNA + RPAssDNA + ssDNA, 1): ssDNA = 0, RPAssDNA = 0, Mec1RPAssDNA = 0, recovery = 1;
+  G2MRecoveryCompleted: at and(eq(G2, 1), eq(Rad17Utelo, 0)): Rad53A = 0, Rad53I = 6900, ExoXI = 70, ExoXA = 0, Exo1I = 670, Exo1A = 0, Dun1I = 3000, Dun1A = 0, Chk1I = 60, Chk1A = 0, Rad9I = 20, Rad9A = 0, recovery = 0, G2Moff = 0, G2Mon = 1;
+  SphaseRecoveryCompleted: at eq(Rad17Utelo, 0): recovery = 0;
+  G1CdkActivation: at gt(G1cyclin, 100): G1CdkI = 0, G1CdkA = 1;
+  SCdkActivation: at gt(Scyclin, 100): SCdkI = 0, SCdkA = 1;
+  G2CdkActivation: at gt(G2cyclin, 100): G2CdkI = 0, G2CdkA = 1;
+  MCdkActivation: at gt(Mcyclin, 100): MCdkI = 0, MCdkA = 1;
+  CellDeath: at geq(Mec1RPAssDNA + RPAssDNA + ssDNA, 2000): kalive = 0;
 
   // Species initializations:
   Ctelo = 64;
@@ -180,9 +180,9 @@ model YeastWTmodel2()
   StoG2Progession_kc4 = 0.01;
   G2toMProgession_kc4 = 0.01;
   MtoG1Progession_kc4 = 0.01;
-
+  
+//Other declarations:
   var kalive;
-  const sink;
 
   //Display Names:
   Exo1activation is "Rad24independentExo1Activation";

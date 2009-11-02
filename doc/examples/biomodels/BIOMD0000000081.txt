@@ -4,8 +4,8 @@ model Suh2004_KCNQ_regulation()
   // Compartments and Species:
   compartment EX, M, Cytoplasm;
   species GTPgS_C in Cytoplasm, KCNQsites_M in M, PIP2_M in M, GGDPbS_M in M;
-  species Mg2_C in Cytoplasm, ATP_C in Cytoplasm, oxoM_EX in EX, GDPbS_C in Cytoplasm;
-  species GGTPMg_M in M, GDP_C in Cytoplasm, GTP_C in Cytoplasm, GGDPAlF4Mg_M in M;
+  species $Mg2_C in Cytoplasm, ATP_C in Cytoplasm, oxoM_EX in EX, GDPbS_C in Cytoplasm;
+  species GGTPMg_M in M, GDP_C in Cytoplasm, $GTP_C in Cytoplasm, GGDPAlF4Mg_M in M;
   species ip3_C in Cytoplasm, AlF4_C in Cytoplasm, G_M in M, GGTP_M in M;
   species GGDPAlF4_M in M, GGTPgS_M in M, PI_M in M, PIP_M in M, PIP2xKCNQ_M in M;
   species GGTPgSMg_M in M, GGDP_M in M;
@@ -39,8 +39,8 @@ model Suh2004_KCNQ_regulation()
   MgonGDPAlF4: GGDPAlF4_M -> GGDPAlF4Mg_M; MgonGDPAlF4_kMgonAlF4 * GGDPAlF4_M * Mg2_C;
 
   // Events:
-  event_0000001: at(geq(time, 3)): oxoM_EX = 10;
-  event_0000002: at(geq(time, 8)): oxoM_EX = 0;
+  event_0000001: at geq(time, 3): oxoM_EX = 10;
+  event_0000002: at geq(time, 8): oxoM_EX = 0;
 
   // Species initializations:
   GTPgS_C = 0;
@@ -98,9 +98,9 @@ model Suh2004_KCNQ_regulation()
   AlF4on_kAlF4off = 0.005;
   PI4Kinase_kPI4Kinase = 0.0001;
   MgonGDPAlF4_kMgonAlF4 = 0.002;
-
+  
+//Other declarations:
   var MgSat20, ATPSat300, MgSat10, OxoSat, Gactive, ATPSat1000, I_KCNQ, fGactive;
-  const Mg2_C, GTP_C;
 
   //Display Names:
   GGDPAlF4Mg_M is "GGDPAIF4Mg_M";

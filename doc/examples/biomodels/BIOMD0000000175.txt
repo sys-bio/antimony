@@ -32,8 +32,8 @@ model ErbB()
   species E_E1_PT in membrane, H_E4_PT in membrane, Aktstar in membrane, SigAP_T in membrane;
   species E in membrane, H in membrane, fint in membrane, pERK in membrane;
   species ERK_MEKstar in membrane, pERK_MEKstar in membrane, pERK_ERKpase in membrane;
-  species ERKpase in membrane, ERKstar_ERKpase in membrane, norm_Akt_star in membrane;
-  species norm_Erk_star in membrane;
+  species ERKpase in membrane, ERKstar_ERKpase in membrane, $norm_Akt_star in membrane;
+  species $norm_Erk_star in membrane;
 
   // Assignment Rules:
   norm_Akt_star := Aktstar / 18.8
@@ -507,8 +507,6 @@ model ErbB()
   koff95 = 100.0023;
   kcat96 = 19.9851;
   ERKPpase_Abund = 35.005;
-
-  const norm_Akt_star, norm_Erk_star;
 
   //Display Names:
   E1 is "ErbB1";

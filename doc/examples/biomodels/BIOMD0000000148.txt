@@ -3,8 +3,9 @@ model Komarova2003_BoneRemodeling()
 
   // Compartments and Species:
   compartment compartment_;
-  species x1 in compartment_, x2 in compartment_, x1_bar in compartment_;
-  species x2_bar in compartment_, z in compartment_, y1 in compartment_, y2 in compartment_;
+  species x1 in compartment_, x2 in compartment_, $x1_bar in compartment_;
+  species $x2_bar in compartment_, z in compartment_, y1 in compartment_;
+  species y2 in compartment_;
 
   // Assignment Rules:
   x1_bar := pow(beta1 / alpha1, (1 - g22) / gamma) * pow(beta2 / alpha2, g21 / gamma)
@@ -20,10 +21,10 @@ model Komarova2003_BoneRemodeling()
   R6:  -> z; flag_formation * k2 * (x2 - x2_bar);
 
   // Events:
-  event_0000001: at(gt(x1, x1_bar)): flag_resorption = 1;
-  event_0000003: at(leq(x1, x1_bar)): flag_resorption = 0;
-  event_0000002: at(gt(x2, x2_bar)): flag_formation = 1;
-  event_0000004: at(leq(x2, x2_bar)): flag_formation = 0;
+  event_0000001: at gt(x1, x1_bar): flag_resorption = 1;
+  event_0000003: at leq(x1, x1_bar): flag_resorption = 0;
+  event_0000002: at gt(x2, x2_bar): flag_formation = 1;
+  event_0000004: at leq(x2, x2_bar): flag_formation = 0;
 
   // Species initializations:
   x1 = 11;
@@ -48,9 +49,9 @@ model Komarova2003_BoneRemodeling()
   g22 = 0;
   k1 = 0.24;
   k2 = 0.0017;
-
+  
+//Other declarations:
   var flag_resorption, flag_formation, gamma;
-  const x1_bar, x2_bar;
 
   //Display Names:
   x1 is "Osteoclast";

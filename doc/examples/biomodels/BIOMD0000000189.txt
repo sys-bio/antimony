@@ -4,10 +4,10 @@ model p53_Mdm2_System()
   // Compartments and Species:
   compartment cell;
   species Mdm2 in cell, p53 in cell, Mdm2_p53 in cell, Mdm2_mRNA in cell;
-  species ARF in cell, ARF_Mdm2 in cell, damDNA in cell, Sink in cell, Source in cell;
+  species ARF in cell, ARF_Mdm2 in cell, damDNA in cell, $Sink in cell, $Source in cell;
   species p53deg in cell, p53syn in cell, mdm2deg in cell, mdm2syn in cell;
-  species Mdm2mRNAdeg in cell, Mdm2mRNAsyn in cell, totdamDNA in cell, totp53 in cell;
-  species totMdm2 in cell;
+  species Mdm2mRNAdeg in cell, Mdm2mRNAsyn in cell, totdamDNA in cell, $totp53 in cell;
+  species $totMdm2 in cell;
 
   // Assignment Rules:
   totp53 := p53 + Mdm2_p53
@@ -16,22 +16,22 @@ model p53_Mdm2_System()
   // Reactions:
   Mdm2Synthesis: Mdm2_mRNA -> Mdm2_mRNA + Mdm2 + mdm2syn; ksynMdm2 * Mdm2_mRNA;
   Mdm2mRNASynthesis: p53 -> p53 + Mdm2_mRNA + Mdm2mRNAsyn; ksynMdm2mRNA * p53;
-  Mdm2mRNADegradation: Mdm2_mRNA -> Sink + Mdm2mRNAdeg; kdegMdm2mRNA * Mdm2_mRNA;
-  Mdm2Degradation: Mdm2 -> Sink + mdm2deg; kdegMdm2 * Mdm2 * kproteff;
-  p53Synthesis: Source -> p53 + p53syn; ksynp53 * Source;
+  Mdm2mRNADegradation: Mdm2_mRNA -> $Sink + Mdm2mRNAdeg; kdegMdm2mRNA * Mdm2_mRNA;
+  Mdm2Degradation: Mdm2 -> $Sink + mdm2deg; kdegMdm2 * Mdm2 * kproteff;
+  p53Synthesis: $Source -> p53 + p53syn; ksynp53 * Source;
   p53Degradation: Mdm2_p53 -> Mdm2 + p53deg; kdegp53 * Mdm2_p53 * kproteff;
   P53_Mdm2Binding: p53 + Mdm2 -> Mdm2_p53; kbinMdm2p53 * p53 * Mdm2;
   P53_Mdm2Release: Mdm2_p53 -> p53 + Mdm2; krelMdm2p53 * Mdm2_p53;
   DNAdamage:  -> damDNA + totdamDNA; kdam * IR;
-  DNArepair: damDNA -> Sink; krepair * damDNA;
+  DNArepair: damDNA -> $Sink; krepair * damDNA;
   ARFactivation: damDNA -> damDNA + ARF; kactARF * damDNA;
   ARF_Mdm2Binding: ARF + Mdm2 -> ARF_Mdm2; kbinARFMdm2 * ARF * Mdm2;
   ARF_Mdm2Degradation: ARF_Mdm2 -> ARF + mdm2deg; kdegARFMdm2 * ARF_Mdm2 * kproteff;
-  ARFDegradation: ARF -> Sink; kdegARF * ARF * kproteff;
+  ARFDegradation: ARF -> $Sink; kdegARF * ARF * kproteff;
 
   // Events:
-  stressCell: at(geq(time, 3600)): IR = 25;
-  stopStress: at(geq(time, 3660)): IR = 0;
+  stressCell: at geq(time, 3600): IR = 25;
+  stopStress: at geq(time, 3660): IR = 0;
 
   // Species initializations:
   Mdm2 = 5;
@@ -71,7 +71,7 @@ model p53_Mdm2_System()
   kdam = 0.08;
   krepair = 2e-05;
   kproteff = 1;
-
+  
+//Other declarations:
   var IR;
-  const Sink, Source, totp53, totMdm2;
 end

@@ -3,8 +3,8 @@ model ChenXF2008_CICR()
 
   // Compartments and Species:
   compartment Cytoplasm, ER, PM;
-  species Ca_Cyt in Cytoplasm, IP3_Cyt in Cytoplasm, Ca_ER in ER, S2 in ER;
-  species S2a in ER, S4 in ER, Oc in PM, O_o in PM, Orai1 in PM;
+  species Ca_Cyt in Cytoplasm, IP3_Cyt in Cytoplasm, Ca_ER in ER, $S2 in ER;
+  species S2a in ER, S4 in ER, Oc in PM, O_o in PM, $Orai1 in PM;
 
   // Assignment Rules:
   S2 := pow(K1, 2) / (pow(Ca_ER, 2) + pow(K1, 2)) * (St - S2a)
@@ -83,7 +83,7 @@ model ChenXF2008_CICR()
   r_hill = 4;
   h = 0;
   Orai1_t = 0.001;
-
+  
+//Other declarations:
   var h;
-  const S2, Orai1;
 end

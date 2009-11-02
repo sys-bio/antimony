@@ -3,7 +3,7 @@ model Westermark2003_Pancreatic_GlycOsc_basic()
 
   // Compartments and Species:
   compartment comp;
-  species GLC in comp, G6P_F6P in comp, F6P in comp, FBP in comp, G3P in comp;
+  species $GLC in comp, G6P_F6P in comp, $F6P in comp, FBP in comp, $G3P in comp;
 
   // Assignment Rules:
   F6P := G6P_F6P * KeqGPI / (1 + KeqGPI)
@@ -12,9 +12,9 @@ model Westermark2003_Pancreatic_GlycOsc_basic()
   Vfba := Vfba_min * dw_per_ml / min_to_sec
 
   // Reactions:
-  vgk: GLC -> G6P_F6P; comp * Vgk * pow(GLC / Sgk, hGK) / (1 + pow(GLC / Sgk, hGK));
+  vgk: $GLC -> G6P_F6P; comp * Vgk * pow(GLC / Sgk, hGK) / (1 + pow(GLC / Sgk, hGK));
   vpfk: G6P_F6P -> FBP; comp * Vpfk * pow(F6P / Spfk, hpfk - (hpfk - hact) * (FBP / Sfba / (1 + FBP / Sfba))) / (pow(F6P / Spfk, hpfk - (hpfk - hact) * (FBP / Sfba / (1 + FBP / Sfba))) + (1 + pow(FBP / Xpfk, hx)) / (1 + pow(alpha, hpfk - (hpfk - hact) * (FBP / Sfba / (1 + FBP / Sfba))) * pow(FBP / Xpfk, hx)));
-  vfba: FBP -> G3P; comp * Vfba * (FBP / Sfba) / (FBP / Sfba + 1);
+  vfba: FBP -> $G3P; comp * Vfba * (FBP / Sfba) / (FBP / Sfba + 1);
 
   // Species initializations:
   GLC = 10;
@@ -42,7 +42,7 @@ model Westermark2003_Pancreatic_GlycOsc_basic()
   Vgk_min = 10;
   Vpfk_min = 100;
   Vfba_min = 25;
-
+  
+//Other declarations:
   var Vgk, Vpfk, Vfba;
-  const GLC, F6P, G3P;
 end

@@ -4,7 +4,7 @@ model Model_generated_by_BIOCHAM()
   // Compartments and Species:
   compartment nuclei, cytoplasm;
   species MPFc in cytoplasm, preMPFc in cytoplasm, StgPc in cytoplasm, Wee1c in cytoplasm;
-  species Wee1Pc in cytoplasm, Stgm in cytoplasm, Xp in cytoplasm, Stgc in cytoplasm;
+  species $Wee1Pc in cytoplasm, Stgm in cytoplasm, Xp in cytoplasm, Stgc in cytoplasm;
   species Xm in cytoplasm, MPFn in nuclei, preMPFn in nuclei, Wee1Pn in nuclei;
   species Wee1n in nuclei, StgPn in nuclei, Stgn in nuclei, FZYa in nuclei;
   species IEa_1 in nuclei, N in nuclei;
@@ -20,8 +20,8 @@ model Model_generated_by_BIOCHAM()
   R_3: MPFc -> preMPFc; cytoplasm * (kweep + kwee * Wee1c) * MPFc;
   R_6: preMPFc -> ; cytoplasm * kdc * preMPFc;
   R_7: MPFc -> ; cytoplasm * kdc * MPFc;
-  R_8: Wee1c -> Wee1Pc; cytoplasm * ((kiweep + kiwee * MPFc) * Wee1c / (Jiwee + Wee1c));
-  R_9: Wee1Pc -> Wee1c; cytoplasm * (kawee * Wee1Pc / (Jawee + Wee1Pc));
+  R_8: Wee1c -> $Wee1Pc; cytoplasm * ((kiweep + kiwee * MPFc) * Wee1c / (Jiwee + Wee1c));
+  R_9: $Wee1Pc -> Wee1c; cytoplasm * (kawee * Wee1Pc / (Jawee + Wee1Pc));
   R_10: Stgm -> ; nuclei * (kdmp * Stgm / (Jm + Stgm) + kdm * Xp * Stgm);
   R_12:  -> Stgc; cytoplasm * ksstg * Stgm;
   R_13: Stgc -> StgPc; cytoplasm * ((kastgp + kastg * MPFc) * Stgc / (Jastg + Stgc));
@@ -37,8 +37,8 @@ model Model_generated_by_BIOCHAM()
   _18:  -> preMPFn; cytoplasm * kt * preMPFc;
   exportofpreMPFnfromnucleus_1: preMPFn -> ; nuclei * kout_1 * preMPFn;
   R_21: Wee1Pn -> ; nuclei * koutw_1 * Wee1Pn;
-  _182_1:  -> Wee1Pc; nuclei * (koutw_1 * Wee1Pn * N * E_1 / (1 - N * E_1));
-  R_22: Wee1Pc -> ; cytoplasm * (kinw_1 * Wee1Pc * E_1 * N / (1 - N * E_1));
+  _182_1:  -> $Wee1Pc; nuclei * (koutw_1 * Wee1Pn * N * E_1 / (1 - N * E_1));
+  R_22: $Wee1Pc -> ; cytoplasm * (kinw_1 * Wee1Pc * E_1 * N / (1 - N * E_1));
   _20:  -> Wee1Pn; cytoplasm * kinw_1 * Wee1Pc;
   R_23: Wee1n -> ; nuclei * koutw_1 * Wee1n;
   _22:  -> Wee1c; nuclei * (koutw_1 * Wee1n * N * E_1 / (1 - N * E_1));
@@ -71,7 +71,7 @@ model Model_generated_by_BIOCHAM()
   _51:  -> Xp; cytoplasm * ksxp_1 * Xm;
 
   // Events:
-  _E0: at(geq(FZYa, kez_1)): MPFc = MPFc * ((1 - N * E_1) / (1 - 1.95 * N * E_1)): StgPn = StgPn / 1.95: Stgc = Stgc * ((1 - N * E_1) / (1 - 1.95 * N * E_1)): StgPc = StgPc * ((1 - N * E_1) / (1 - 1.95 * N * E_1)): Stgn = Stgn / 1.95: Wee1c = Wee1c * ((1 - N * E_1) / (1 - 1.95 * N * E_1)): Wee1Pn = Wee1Pn / 1.95: Wee1n = Wee1n / 1.95: preMPFn = preMPFn / 1.95: MPFn = MPFn / 1.95: N = factor_1 * N;
+  _E0: at geq(FZYa, kez_1): MPFc = MPFc * ((1 - N * E_1) / (1 - 1.95 * N * E_1)), StgPn = StgPn / 1.95, Stgc = Stgc * ((1 - N * E_1) / (1 - 1.95 * N * E_1)), StgPc = StgPc * ((1 - N * E_1) / (1 - 1.95 * N * E_1)), Stgn = Stgn / 1.95, Wee1c = Wee1c * ((1 - N * E_1) / (1 - 1.95 * N * E_1)), Wee1Pn = Wee1Pn / 1.95, Wee1n = Wee1n / 1.95, preMPFn = preMPFn / 1.95, MPFn = MPFn / 1.95, N = factor_1 * N;
 
   // Species initializations:
   MPFc = 1;
@@ -141,9 +141,9 @@ model Model_generated_by_BIOCHAM()
   kout_1 = 0;
   StringT = 0.8;
   Wee1T = 0.8;
-
+  
+//Other declarations:
   var CycBT, StgPT;
-  const Wee1Pc;
 
   //Display Names:
   kez_1 is "kez";

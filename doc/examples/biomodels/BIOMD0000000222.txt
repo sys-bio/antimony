@@ -3,22 +3,22 @@ model Singh2006_TCA_Ecoli_glucose()
 
   // Compartments and Species:
   compartment cell;
-  species aca in cell, oaa in cell, coa in cell, cit in cell, icit in cell;
+  species $aca in cell, $oaa in cell, $coa in cell, cit in cell, icit in cell;
   species akg in cell, sca in cell, suc in cell, fa in cell, mal in cell;
-  species gly in cell, biosyn in cell;
+  species gly in cell, $biosyn in cell;
 
   // Reactions:
-  CS: aca + oaa -> coa + cit; cell * ((CS_Vf_cs * (aca / CS_Kaca_cs) * (oaa / CS_Koaa_cs) - CS_Vr_cs * (coa / CS_Kcoa_cs) * (cit / CS_Kcit_cs)) / ((1 + aca / CS_Kaca_cs + coa / CS_Kcoa_cs) * (1 + oaa / CS_Koaa_cs + cit / CS_Kcit_cs)));
+  CS: $aca + $oaa -> $coa + cit; cell * ((CS_Vf_cs * (aca / CS_Kaca_cs) * (oaa / CS_Koaa_cs) - CS_Vr_cs * (coa / CS_Kcoa_cs) * (cit / CS_Kcit_cs)) / ((1 + aca / CS_Kaca_cs + coa / CS_Kcoa_cs) * (1 + oaa / CS_Koaa_cs + cit / CS_Kcit_cs)));
   ACN: cit -> icit; cell * ((ACN_Vf_acn * (cit / ACN_Kcit_acn) - ACN_Vr_acn * (icit / ACN_Kicit_acn)) / (1 + cit / ACN_Kcit_acn + icit / ACN_Kicit_acn));
   ICD: icit -> akg; cell * ((ICD_Vf_icd * (icit / ICD_Kicit_icd) - ICD_Vr_icd * (akg / ICD_Kakg_icd)) / (1 + icit / ICD_Kicit_icd + akg / ICD_Kakg_icd));
   KDH: akg -> sca; cell * ((KDH_Vf_kdh * (akg / KDH_Kakg_kdh) - KDH_Vr_kdh * (sca / KDH_Ksca_kdh)) / (1 + akg / KDH_Kakg_kdh + sca / KDH_Ksca_kdh));
   ScAS: sca -> suc; cell * ((ScAS_Vf_scas * (sca / ScAS_Ksca_scas) - ScAS_Vr_scas * (suc / ScAS_Ksuc_scas)) / (1 + sca / ScAS_Ksca_scas + suc / ScAS_Ksuc_scas));
   SDH: suc -> fa; cell * ((SDH_Vf_sdh * (suc / SDH_Ksuc_sdh) - SDH_Vr_sdh * (fa / SDH_Kfa_sdh)) / (1 + suc / SDH_Ksuc_sdh + fa / SDH_Kfa_sdh));
   FUM: fa -> mal; cell * ((FUM_Vf_fum * (fa / FUM_Kfa_fum) - FUM_Vr_fum * (mal / FUM_Kmal_fum)) / (1 + fa / FUM_Kfa_fum + mal / FUM_Kmal_fum));
-  MDH: mal -> oaa; cell * ((MDH_Vf_mdh * (mal / MDH_Kmal_mdh) - MDH_Vr_mdh * (oaa / MDH_Koaa_mdh)) / (1 + mal / MDH_Kmal_mdh + oaa / MDH_Koaa_mdh));
+  MDH: mal -> $oaa; cell * ((MDH_Vf_mdh * (mal / MDH_Kmal_mdh) - MDH_Vr_mdh * (oaa / MDH_Koaa_mdh)) / (1 + mal / MDH_Kmal_mdh + oaa / MDH_Koaa_mdh));
   ICL: icit -> suc + gly; cell * ((ICL_Vf_icl * (icit / ICL_Kicit_icl) - ICL_Vr_icl * (suc / ICL_Ksuc_icl) * (gly / ICL_Kgly_icl)) / (1 + icit / ICL_Kicit_icl + suc / ICL_Ksuc_icl + gly / ICL_Kgly_icl + icit / ICL_Kicit_icl * (suc / ICL_Ksuc_icl) + suc / ICL_Ksuc_icl * (gly / ICL_Kgly_icl)));
-  MS: gly + aca -> mal + coa; cell * ((MS_Vf_ms * (gly / MS_Kgly_ms) * (aca / MS_Kaca_ms) - MS_Vr_ms * (mal / MS_Kmal_ms) * (coa / MS_Kcoa_ms)) / ((1 + gly / MS_Kgly_ms + mal / MS_Kmal_ms) * (1 + aca / MS_Kaca_ms + coa / MS_Kcoa_ms)));
-  SYN: akg -> biosyn; cell * 0.188 * ((SYN_Vf_icd * (icit / SYN_Kicit_icd) - SYN_Vr_icd * (akg / SYN_Kakg_icd)) / (1 + icit / SYN_Kicit_icd + akg / SYN_Kakg_icd));
+  MS: gly + $aca -> mal + $coa; cell * ((MS_Vf_ms * (gly / MS_Kgly_ms) * (aca / MS_Kaca_ms) - MS_Vr_ms * (mal / MS_Kmal_ms) * (coa / MS_Kcoa_ms)) / ((1 + gly / MS_Kgly_ms + mal / MS_Kmal_ms) * (1 + aca / MS_Kaca_ms + coa / MS_Kcoa_ms)));
+  SYN: akg -> $biosyn; cell * 0.188 * ((SYN_Vf_icd * (icit / SYN_Kicit_icd) - SYN_Vr_icd * (akg / SYN_Kakg_icd)) / (1 + icit / SYN_Kicit_icd + akg / SYN_Kakg_icd));
 
   // Species initializations:
   aca = 0.5;
@@ -87,6 +87,4 @@ model Singh2006_TCA_Ecoli_glucose()
   SYN_Kicit_icd = 0.008;
   SYN_Vr_icd = 0.1472;
   SYN_Kakg_icd = 0.13;
-
-  const aca, oaa, coa, biosyn;
 end

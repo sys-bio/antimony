@@ -5,39 +5,39 @@ model p53_Mdm2_ATM_System()
   compartment cell;
   species Mdm2 in cell, p53 in cell, Mdm2_p53 in cell, Mdm2_mRNA in cell;
   species p53_mRNA in cell, ATMA in cell, ATMI in cell, p53_P in cell, Mdm2_P in cell;
-  species damDNA in cell, Sink in cell, Source in cell, p53deg in cell, p53syn in cell;
-  species mdm2deg in cell, mdm2syn in cell, Mdm2mRNAdeg in cell, Mdm2mRNAsyn in cell;
-  species totp53 in cell, totMdm2 in cell;
+  species damDNA in cell, $Sink in cell, $Source in cell, p53deg in cell;
+  species p53syn in cell, mdm2deg in cell, mdm2syn in cell, Mdm2mRNAdeg in cell;
+  species Mdm2mRNAsyn in cell, $totp53 in cell, $totMdm2 in cell;
 
   // Assignment Rules:
   totp53 := p53 + Mdm2_p53 + p53_P
   totMdm2 := Mdm2 + Mdm2_p53 + Mdm2_P
 
   // Reactions:
-  p53mRNASynthesis: Source -> p53_mRNA; ksynp53mRNA * Source;
-  p53mRNADegradation: p53_mRNA -> Sink; kdegp53mRNA * p53_mRNA;
+  p53mRNASynthesis: $Source -> p53_mRNA; ksynp53mRNA * Source;
+  p53mRNADegradation: p53_mRNA -> $Sink; kdegp53mRNA * p53_mRNA;
   Mdm2Synthesis: Mdm2_mRNA -> Mdm2_mRNA + Mdm2 + mdm2syn; ksynMdm2 * Mdm2_mRNA;
   Mdm2mRNASynthesis1: p53 -> p53 + Mdm2_mRNA + Mdm2mRNAsyn; ksynMdm2mRNA * p53;
   Mdm2mRNASynthesis2: p53_P -> p53_P + Mdm2_mRNA + Mdm2mRNAsyn; ksynMdm2mRNA * p53_P;
-  Mdm2mRNADegradation: Mdm2_mRNA -> Sink + Mdm2mRNAdeg; kdegMdm2mRNA * Mdm2_mRNA;
-  Mdm2Degradation: Mdm2 -> Sink + mdm2deg; kdegMdm2 * Mdm2 * kproteff;
+  Mdm2mRNADegradation: Mdm2_mRNA -> $Sink + Mdm2mRNAdeg; kdegMdm2mRNA * Mdm2_mRNA;
+  Mdm2Degradation: Mdm2 -> $Sink + mdm2deg; kdegMdm2 * Mdm2 * kproteff;
   p53Synthesis: p53_mRNA -> p53 + p53_mRNA + p53syn; ksynp53 * p53_mRNA;
   p53Degradation: Mdm2_p53 -> Mdm2 + p53deg; kdegp53 * Mdm2_p53 * kproteff;
   P53_Mdm2Binding: p53 + Mdm2 -> Mdm2_p53; kbinMdm2p53 * p53 * Mdm2;
   P53_Mdm2Release: Mdm2_p53 -> p53 + Mdm2; krelMdm2p53 * Mdm2_p53;
   DNAdamage:  -> damDNA; kdam * IR;
-  DNArepair: damDNA -> Sink; krepair * damDNA;
+  DNArepair: damDNA -> $Sink; krepair * damDNA;
   ATMactivation: damDNA + ATMI -> damDNA + ATMA; kactATM * damDNA * ATMI;
   p53phoshorylation: p53 + ATMA -> p53_P + ATMA; kphosp53 * p53 * ATMA;
   p53dephosorylation: p53_P -> p53; kdephosp53 * p53_P;
   Mdm2phoshorylation: Mdm2 + ATMA -> Mdm2_P + ATMA; kphosMdm2 * Mdm2 * ATMA;
   Mdm2dephosorylation: Mdm2_P -> Mdm2; kdephosMdm2 * Mdm2_P;
-  Mdm2Pdegradation: Mdm2_P -> Sink + mdm2deg; kdegATMMdm2 * Mdm2_P;
+  Mdm2Pdegradation: Mdm2_P -> $Sink + mdm2deg; kdegATMMdm2 * Mdm2_P;
   ATMInactivation: ATMA -> ATMI; kinactATM * ATMA;
 
   // Events:
-  stressCell: at(geq(time, 3600)): IR = 25;
-  stopStress: at(geq(time, 3660)): IR = 0;
+  stressCell: at geq(time, 3600): IR = 25;
+  stopStress: at geq(time, 3660): IR = 0;
 
   // Species initializations:
   Mdm2 = 5;
@@ -84,7 +84,7 @@ model p53_Mdm2_ATM_System()
   kproteff = 1;
   ksynp53mRNA = 0.001;
   kdegp53mRNA = 0.0001;
-
+  
+//Other declarations:
   var IR;
-  const Sink, Source, totp53, totMdm2;
 end

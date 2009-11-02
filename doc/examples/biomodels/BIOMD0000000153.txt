@@ -22,7 +22,7 @@ model model_0000001()
   species cAMP_PDEP in Spine, PP2ACa in Spine, D34_75_PP2ACa in Spine, D34_75_137_PP2ACa in Spine;
   species D75_PP2ACa in Spine, D75_137_PP2ACa in Spine, D34_75_PP2APCa in Spine;
   species PP2APCa in Spine, D34_75_137_PP2APCa in Spine, D75_PP2APCa in Spine;
-  species D75_137_PP2APCa in Spine, PP2ACa_PKA in Spine, Empty in Spine;
+  species D75_137_PP2APCa in Spine, PP2ACa_PKA in Spine, $Empty in Spine;
 
   // Reactions:
   von1: D + CDK5 -> D_CDK5; Spine * von1_kon1 * D * CDK5;
@@ -143,8 +143,8 @@ model model_0000001()
   von45: cAMP + PDEP -> cAMP_PDEP; Spine * cAMP * PDEP * von45_kon45;
   voff45: cAMP_PDEP -> cAMP + PDEP; Spine * cAMP_PDEP * voff45_koff45;
   vcat45: cAMP_PDEP -> AMP + PDEP; Spine * cAMP_PDEP * vcat45_kcat45;
-  v57: Empty -> Ca; Spine * k57;
-  v58: Ca -> Empty; Spine * Ca * v58_k58;
+  v57: $Empty -> Ca; Spine * k57;
+  v58: Ca -> $Empty; Spine * Ca * v58_k58;
   von46: D34_75 + PP2ACa -> D34_75_PP2ACa; Spine * D34_75 * PP2ACa * von46_kon46;
   von47: D34_75_137 + PP2ACa -> D34_75_137_PP2ACa; Spine * D34_75_137 * PP2ACa * von47_kon47;
   vcat47: D34_75_137_PP2ACa -> D34_137 + PP2ACa; Spine * D34_75_137_PP2ACa * vcat47_kcat47;
@@ -179,27 +179,27 @@ model model_0000001()
   voff55: PP2ACa_PKA -> PP2ACa + PKA; Spine * PP2ACa_PKA * voff55_koff55;
 
   // Events:
-  cAMP_pulse: at(geq(time, cAMP_delay)): cAMP = 6.600000e-06;
-  ca_on1: at(geq(time, cAMP_delay + cAMP_Ca_delay)): k57 = kon_high;
-  ca_on2: at(geq(time, cAMP_delay + cAMP_Ca_delay + 1 * (spike_duration + spike_interval))): k57 = kon_high;
-  ca_off1: at(geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration)): k57 = kon_low;
-  Ca_on3: at(geq(time, cAMP_delay + cAMP_Ca_delay + 2 * (spike_duration + spike_interval))): k57 = kon_high;
-  ca_on4: at(geq(time, cAMP_delay + cAMP_Ca_delay + 3 * (spike_duration + spike_interval))): k57 = kon_high;
-  ca_on5: at(geq(time, cAMP_delay + cAMP_Ca_delay + 4 * (spike_duration + spike_interval))): k57 = kon_high;
-  ca_on6: at(geq(time, cAMP_delay + cAMP_Ca_delay + 5 * (spike_duration + spike_interval))): k57 = kon_high;
-  ca_on7: at(geq(time, cAMP_delay + cAMP_Ca_delay + 6 * (spike_duration + spike_interval))): k57 = kon_high;
-  ca_on8: at(geq(time, cAMP_delay + cAMP_Ca_delay + 7 * (spike_duration + spike_interval))): k57 = kon_high;
-  ca_on9: at(geq(time, cAMP_delay + cAMP_Ca_delay + 8 * (spike_duration + spike_interval))): k57 = kon_high;
-  ca_on10: at(geq(time, cAMP_delay + cAMP_Ca_delay + 9 * (spike_duration + spike_interval))): k57 = kon_high;
-  ca_off2: at(geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 1 * (spike_interval + spike_duration))): k57 = kon_low;
-  ca_off3: at(geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 2 * (spike_interval + spike_duration))): k57 = kon_low;
-  ca_off4: at(geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 3 * (spike_interval + spike_duration))): k57 = kon_low;
-  ca_off5: at(geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 4 * (spike_interval + spike_duration))): k57 = kon_low;
-  ca_off6: at(geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 5 * (spike_interval + spike_duration))): k57 = kon_low;
-  ca_off7: at(geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 6 * (spike_interval + spike_duration))): k57 = kon_low;
-  ca_off8: at(geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 7 * (spike_interval + spike_duration))): k57 = kon_low;
-  ca_off9: at(geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 8 * (spike_interval + spike_duration))): k57 = kon_low;
-  ca_off10: at(geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 9 * (spike_interval + spike_duration))): k57 = kon_low;
+  cAMP_pulse: at geq(time, cAMP_delay): cAMP = 6.600000e-06;
+  ca_on1: at geq(time, cAMP_delay + cAMP_Ca_delay): k57 = kon_high;
+  ca_on2: at geq(time, cAMP_delay + cAMP_Ca_delay + 1 * (spike_duration + spike_interval)): k57 = kon_high;
+  ca_off1: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration): k57 = kon_low;
+  Ca_on3: at geq(time, cAMP_delay + cAMP_Ca_delay + 2 * (spike_duration + spike_interval)): k57 = kon_high;
+  ca_on4: at geq(time, cAMP_delay + cAMP_Ca_delay + 3 * (spike_duration + spike_interval)): k57 = kon_high;
+  ca_on5: at geq(time, cAMP_delay + cAMP_Ca_delay + 4 * (spike_duration + spike_interval)): k57 = kon_high;
+  ca_on6: at geq(time, cAMP_delay + cAMP_Ca_delay + 5 * (spike_duration + spike_interval)): k57 = kon_high;
+  ca_on7: at geq(time, cAMP_delay + cAMP_Ca_delay + 6 * (spike_duration + spike_interval)): k57 = kon_high;
+  ca_on8: at geq(time, cAMP_delay + cAMP_Ca_delay + 7 * (spike_duration + spike_interval)): k57 = kon_high;
+  ca_on9: at geq(time, cAMP_delay + cAMP_Ca_delay + 8 * (spike_duration + spike_interval)): k57 = kon_high;
+  ca_on10: at geq(time, cAMP_delay + cAMP_Ca_delay + 9 * (spike_duration + spike_interval)): k57 = kon_high;
+  ca_off2: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 1 * (spike_interval + spike_duration)): k57 = kon_low;
+  ca_off3: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 2 * (spike_interval + spike_duration)): k57 = kon_low;
+  ca_off4: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 3 * (spike_interval + spike_duration)): k57 = kon_low;
+  ca_off5: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 4 * (spike_interval + spike_duration)): k57 = kon_low;
+  ca_off6: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 5 * (spike_interval + spike_duration)): k57 = kon_low;
+  ca_off7: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 6 * (spike_interval + spike_duration)): k57 = kon_low;
+  ca_off8: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 7 * (spike_interval + spike_duration)): k57 = kon_low;
+  ca_off9: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 8 * (spike_interval + spike_duration)): k57 = kon_low;
+  ca_off10: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 9 * (spike_interval + spike_duration)): k57 = kon_low;
 
   // Species initializations:
   D = 4.98e-06;
@@ -440,9 +440,9 @@ model model_0000001()
   voff56_koff56 = 1;
   vcat56_kcat56 = 5;
   voff55_koff55 = 16;
-
+  
+//Other declarations:
   var k57;
-  const Empty;
 
   //Display Names:
   D34_75 is "D34:75";

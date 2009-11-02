@@ -6,9 +6,9 @@ model Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
   species N in cytosol, Na in cytosol, Nan_ in cytosol, MF in cytosol, F in cytosol;
   species Bp in cytosol, BN in cytosol, A in cytosol, K in cytosol, B in cytosol;
   species MAx in cytosol, Rasa in cytosol, ERKa in cytosol, Xa in cytosol;
-  species MDusp in cytosol, Dusp in cytosol, Rasi in cytosol, ERKi in cytosol;
-  species Xi in cytosol, Rast in cytosol, ERKt in cytosol, Xt in cytosol;
-  species D in cytosol, AK in cytosol, Kt in cytosol, Fgf in cytosol;
+  species MDusp in cytosol, Dusp in cytosol, $Rasi in cytosol, $ERKi in cytosol;
+  species $Xi in cytosol, Rast in cytosol, ERKt in cytosol, Xt in cytosol;
+  species D in cytosol, $AK in cytosol, $Kt in cytosol, $Fgf in cytosol;
 
   // Assignment Rules:
   Rasi := Rast - Rasa
@@ -28,7 +28,7 @@ model Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
   MF_degradation: MF -> ; epsilon * cytosol * vmF * MF / (KdMF + MF);
   F_translation:  -> F; epsilon * cytosol * ksF * MF;
   F_degradation: F -> ; epsilon * cytosol * vdF * F / (KdF + F);
-  AK_dissoc: AK -> A + K; theta * cytosol * (d1 * AK - a1 * A * K);
+  AK_dissoc: $AK -> A + K; theta * cytosol * (d1 * AK - a1 * A * K);
   B_synth:  -> B; theta * cytosol * vsB;
   B_degradation: B -> ; theta * cytosol * kd1 * B;
   B_phosphorylation: B -> Bp; theta * cytosol * VMK * KID / (KID + D) * B / (K1 + B) * AK / Kt;
@@ -150,9 +150,9 @@ model Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
   VMaErk = 3.3;
   VMaX = 1.6;
   VMdX = 0.5;
-
+  
+//Other declarations:
   var vsFK;
-  const Rasi, ERKi, Xi, AK, Kt, Fgf;
 
   //Display Names:
   N is "Notch protein";

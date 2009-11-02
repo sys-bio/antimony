@@ -3,14 +3,14 @@ model Curien2003_MetThr_synthesis()
 
   // Compartments and Species:
   compartment compartment_;
-  species Phser in compartment_, Thr in compartment_, Cystathionine in compartment_;
-  species Hser in compartment_, Phi in compartment_, Cys in compartment_;
-  species AdoMet in compartment_, CGS in compartment_, TS in compartment_;
+  species Phser in compartment_, $Thr in compartment_, $Cystathionine in compartment_;
+  species $Hser in compartment_, $Phi in compartment_, $Cys in compartment_;
+  species $AdoMet in compartment_, $CGS in compartment_, $TS in compartment_;
 
   // Reactions:
-  v1: Hser -> Phser; compartment_ * v1_V0;
-  vCys: Phser + Cys -> Cystathionine + Phi; CGS * (vCys_kcat2 / (1 + vCys_KmCYS / Cys)) * Phser / (Phser + vCys_KmPHSER * (1 + Phi / vCys_Ki2) / (1 + vCys_KmCYS / Cys));
-  vThr: Phser -> Thr + Phi; TS * (5.900000e-04 + 0.062 * pow(AdoMet, 2.9) / (pow(32, 2.9) + pow(AdoMet, 2.9))) * Phser / (1 + Phi / vThr_Ki3);
+  v1: $Hser -> Phser; compartment_ * v1_V0;
+  vCys: Phser + $Cys -> $Cystathionine + $Phi; CGS * (vCys_kcat2 / (1 + vCys_KmCYS / Cys)) * Phser / (Phser + vCys_KmPHSER * (1 + Phi / vCys_Ki2) / (1 + vCys_KmCYS / Cys));
+  vThr: Phser -> $Thr + $Phi; TS * (5.900000e-04 + 0.062 * pow(AdoMet, 2.9) / (pow(32, 2.9) + pow(AdoMet, 2.9))) * Phser / (1 + Phi / vThr_Ki3);
 
   // Species initializations:
   Phser = 0;
@@ -33,8 +33,6 @@ model Curien2003_MetThr_synthesis()
   vCys_KmPHSER = 2500;
   vCys_Ki2 = 2000;
   vThr_Ki3 = 1000;
-
-  const Thr, Cystathionine, Hser, Phi, Cys, AdoMet, CGS, TS;
 
   //Display Names:
   Phser is "Phosphohomoserine";

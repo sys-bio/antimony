@@ -5,23 +5,23 @@ model testid()
   compartment cytosol;
   species FeIII in cytosol, FeII in cytosol, FeII_O2 in cytosol, FeIII_star in cytosol;
   species FeII_star in cytosol, FeII_star_O2 in cytosol, FeIII_NO in cytosol;
-  species FeII_NO in cytosol, NADPH in cytosol, O2 in cytosol, citrulline in cytosol;
-  species NO3 in cytosol, NO in cytosol, NADPplus in cytosol, FeIII_t in cytosol;
+  species FeII_NO in cytosol, $NADPH in cytosol, $O2 in cytosol, $citrulline in cytosol;
+  species $NO3 in cytosol, $NO in cytosol, $NADPplus in cytosol, $FeIII_t in cytosol;
 
   // Assignment Rules:
   FeIII_t := FeIII + FeIII_star
 
   // Reactions:
-  r1: FeIII + NADPH -> FeII + NADPplus; cytosol * k1 * FeIII;
-  r2: FeII + O2 -> FeII_O2; cytosol * k2 * FeII * O2;
+  r1: FeIII + $NADPH -> FeII + $NADPplus; cytosol * k1 * FeIII;
+  r2: FeII + $O2 -> FeII_O2; cytosol * k2 * FeII * O2;
   r3: FeII_O2 -> FeIII_star; cytosol * k3 * FeII_O2;
-  r4: FeIII_star + 0.5NADPH -> FeII_star + 0.5NADPplus; cytosol * k4 * FeIII_star;
-  r5: FeII_star + O2 -> FeII_star_O2; cytosol * k5 * FeII_star * O2;
-  r6: FeII_star_O2 -> FeIII_NO + citrulline; cytosol * k6 * FeII_star_O2;
-  rF: FeIII_NO -> FeIII + NO; cytosol * k7 * FeIII_NO;
-  rG: FeIII_NO + 0.5NADPH -> FeII_NO + 0.5NADPplus; cytosol * k8 * FeIII_NO;
-  r9: FeII_NO -> FeII + NO; cytosol * k9 * FeII_NO;
-  r10: FeII_NO + O2 -> FeIII + NO3; cytosol * k10 * FeII_NO * O2;
+  r4: FeIII_star + 0.5$NADPH -> FeII_star + 0.5$NADPplus; cytosol * k4 * FeIII_star;
+  r5: FeII_star + $O2 -> FeII_star_O2; cytosol * k5 * FeII_star * O2;
+  r6: FeII_star_O2 -> FeIII_NO + $citrulline; cytosol * k6 * FeII_star_O2;
+  rF: FeIII_NO -> FeIII + $NO; cytosol * k7 * FeIII_NO;
+  rG: FeIII_NO + 0.5$NADPH -> FeII_NO + 0.5$NADPplus; cytosol * k8 * FeIII_NO;
+  r9: FeII_NO -> FeII + $NO; cytosol * k9 * FeII_NO;
+  r10: FeII_NO + $O2 -> FeIII + $NO3; cytosol * k10 * FeII_NO * O2;
 
   // Species initializations:
   FeIII = 1;
@@ -53,8 +53,6 @@ model testid()
   k8 = 2.6;
   k9 = 0.0001;
   k10 = 0.0013;
-
-  const NADPH, O2, citrulline, NO3, NO, NADPplus, FeIII_t;
 
   //Display Names:
   citrulline is "citruline";

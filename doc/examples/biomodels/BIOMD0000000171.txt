@@ -5,7 +5,7 @@ model model_0000001()
   compartment nucleus, cytoplasm;
   species M_T in cytoplasm, M_P in cytoplasm, T0 in cytoplasm, T1 in cytoplasm;
   species T2 in cytoplasm, P0 in cytoplasm, P1 in cytoplasm, P2 in cytoplasm;
-  species C in cytoplasm, CN_ in nucleus, Tt in cytoplasm, Pt in cytoplasm;
+  species C in cytoplasm, CN_ in nucleus, $Tt in cytoplasm, $Pt in cytoplasm;
 
   // Assignment Rules:
   Tt := T0 + T1 + T2 + C + CN_ * nucleus / cytoplasm
@@ -97,9 +97,9 @@ model model_0000001()
   T2_light_deact_K_dT = 0.2;
   P2_light_deact_v_dP = 2;
   P2_light_deact_K_dP = 0.2;
-
+  
+//Other declarations:
   var v_dT;
-  const Tt, Pt;
 
   //Display Names:
   M_T is "tim mRNA";

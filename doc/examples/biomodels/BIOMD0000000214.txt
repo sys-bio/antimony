@@ -5,8 +5,8 @@ model Akman2008_Circadian_Clock_Model2()
   compartment cytosol, nucleus;
   species E1F in cytosol, E1Fp in cytosol, E1W in cytosol, E2F in cytosol;
   species E2Fp in cytosol, E2W in cytosol, MF in nucleus, MW in nucleus, PF in nucleus;
-  species PFp in nucleus, PW in nucleus, PWL in nucleus, sFrq_tot in nucleus;
-  species lFrq_tot in nucleus, Frq_tot in nucleus, WC1_tot in nucleus;
+  species PFp in nucleus, PW in nucleus, PWL in nucleus, $sFrq_tot in nucleus;
+  species $lFrq_tot in nucleus, $Frq_tot in nucleus, $WC1_tot in nucleus;
 
   // Assignment Rules:
   sFrq_tot := PF + E2F + E1F
@@ -97,8 +97,6 @@ model Akman2008_Circadian_Clock_Model2()
   amp = 0;
   dawn = 12;
   dusk = 24;
-
-  const sFrq_tot, lFrq_tot, Frq_tot, WC1_tot;
 
   //Display Names:
   E1F is "s-Frq_1";

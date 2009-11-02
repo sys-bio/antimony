@@ -3,7 +3,7 @@ model Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics()
 
   // Compartments and Species:
   compartment cytosol, nucleus;
-  species Ca_Nuc in nucleus, Ca_Cyt in cytosol, NFAT_Nuc in nucleus, Act_C_Nuc in nucleus;
+  species $Ca_Nuc in nucleus, $Ca_Cyt in cytosol, NFAT_Nuc in nucleus, Act_C_Nuc in nucleus;
   species NFAT_Pi_Nuc in nucleus, NFAT_Act_C_Nuc in nucleus, NFAT_Pi_Act_C_Nuc in nucleus;
   species Inact_C_Nuc in nucleus, NFAT_Cyt in cytosol, Act_C_Cyt in cytosol;
   species NFAT_Pi_Cyt in cytosol, NFAT_Act_C_Cyt in cytosol, NFAT_Pi_Act_C_Cyt in cytosol;
@@ -23,15 +23,15 @@ model Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics()
   R11: NFAT_Act_C_Cyt -> Act_C_Cyt + NFAT_Cyt; cytosol * (k15 * NFAT_Act_C_Cyt - k16 * NFAT_Cyt * Act_C_Cyt);
   R17: NFAT_Pi_Act_C_Cyt -> NFAT_Pi_Act_C_Nuc; cytosol * k7 * NFAT_Pi_Act_C_Cyt - nucleus * k8 * NFAT_Pi_Act_C_Nuc;
   R12: NFAT_Pi_Cyt + Act_C_Cyt -> Act_C_Cyt + NFAT_Cyt; cytosol * (k1 * NFAT_Pi_Cyt - k2 * NFAT_Cyt);
-  R13: 3Ca_Cyt + Inact_C_Cyt -> Act_C_Cyt; cytosol * (k19 * Inact_C_Cyt * pow(Ca_Cyt, 3) - k20 * Act_C_Cyt);
-  R14: 3Ca_Nuc + Inact_C_Nuc -> Act_C_Nuc; nucleus * (k19 * Inact_C_Nuc * pow(Ca_Nuc, 3) - k20 * Act_C_Nuc);
+  R13: 3$Ca_Cyt + Inact_C_Cyt -> Act_C_Cyt; cytosol * (k19 * Inact_C_Cyt * pow(Ca_Cyt, 3) - k20 * Act_C_Cyt);
+  R14: 3$Ca_Nuc + Inact_C_Nuc -> Act_C_Nuc; nucleus * (k19 * Inact_C_Nuc * pow(Ca_Nuc, 3) - k20 * Act_C_Nuc);
   R15: Inact_C_Cyt -> Inact_C_Nuc; cytosol * k5 * Inact_C_Cyt - nucleus * k6 * Inact_C_Nuc;
-  R16: Ca_Cyt -> Ca_Nuc; cytosol * k21 * Ca_Cyt - nucleus * k22 * Ca_Nuc;
+  R16: $Ca_Cyt -> $Ca_Nuc; cytosol * k21 * Ca_Cyt - nucleus * k22 * Ca_Nuc;
 
   // Events:
-  event_0000001: at(and(leq(Time_in_Seconds - time, 0), lt(time, 1500))): Ca_Nuc = 1: Ca_Cyt = 1: Time_in_Seconds = Time_in_Seconds + 100;
-  event_0000002: at(and(leq(Time_in_Seconds - time, 90), lt(time, 1500))): Ca_Nuc = 0.1: Ca_Cyt = 0.1;
-  event_0000003: at(geq(time, 1500)): Ca_Nuc = 0.1: Ca_Cyt = 0.1;
+  event_0000001: at and(leq(Time_in_Seconds - time, 0), lt(time, 1500)): Ca_Nuc = 1, Ca_Cyt = 1, Time_in_Seconds = Time_in_Seconds + 100;
+  event_0000002: at and(leq(Time_in_Seconds - time, 90), lt(time, 1500)): Ca_Nuc = 0.1, Ca_Cyt = 0.1;
+  event_0000003: at geq(time, 1500): Ca_Nuc = 0.1, Ca_Cyt = 0.1;
 
   // Species initializations:
   Ca_Nuc = 1;
@@ -77,9 +77,9 @@ model Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics()
   k20 = 1;
   k21 = 0.21;
   k22 = 0.5;
-
+  
+//Other declarations:
   var Time_in_Seconds;
-  const Ca_Nuc, Ca_Cyt;
 
   //Display Names:
   Ca_Nuc is "Calcium in Nucleus";

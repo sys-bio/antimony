@@ -3,13 +3,13 @@ model Scheper1999()
 
   // Compartments and Species:
   compartment compartment_0000004;
-  species EmptySet in compartment_0000004, M in compartment_0000004, P in compartment_0000004;
+  species $EmptySet in compartment_0000004, M in compartment_0000004, P in compartment_0000004;
 
   // Reactions:
-  TC: EmptySet -> M; compartment_0000004 * (TC_rM / (1 + pow(P / TC_k, TC_n)));
-  TL: EmptySet -> P; compartment_0000004 * TL_rP * pow(delay(M, TL_parameter_0000009), TL_m);
-  Md: M -> EmptySet; compartment_0000004 * Md_qM * M;
-  Pd: P -> EmptySet; compartment_0000004 * Pd_qP * P;
+  TC: $EmptySet -> M; compartment_0000004 * (TC_rM / (1 + pow(P / TC_k, TC_n)));
+  TL: $EmptySet -> P; compartment_0000004 * TL_rP * pow(delay(M, TL_parameter_0000009), TL_m);
+  Md: M -> $EmptySet; compartment_0000004 * Md_qM * M;
+  Pd: P -> $EmptySet; compartment_0000004 * Pd_qP * P;
 
   // Species initializations:
   EmptySet = 0;
@@ -28,8 +28,6 @@ model Scheper1999()
   TL_parameter_0000009 = 4;
   Md_qM = 0.21;
   Pd_qP = 0.21;
-
-  const EmptySet;
 
   //Display Names:
   M is "mRNA";

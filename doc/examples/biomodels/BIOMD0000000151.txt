@@ -3,7 +3,7 @@ model Singh2006_IL6_Signal_Transduction()
 
   // Compartments and Species:
   compartment cytosol, nucleus;
-  species x1 in cytosol, x2 in cytosol, x6 in cytosol, x5 in cytosol, x7 in cytosol;
+  species $x1 in cytosol, x2 in cytosol, x6 in cytosol, x5 in cytosol, x7 in cytosol;
   species x8 in cytosol, x16 in cytosol, x15 in cytosol, x9 in cytosol, x11 in cytosol;
   species x10 in cytosol, x12 in cytosol, x29 in cytosol, x30 in cytosol;
   species x39 in cytosol, x46 in cytosol, x40 in cytosol, x45 in cytosol;
@@ -16,9 +16,10 @@ model Singh2006_IL6_Signal_Transduction()
   species x54 in cytosol, x55 in cytosol, x60 in cytosol, x59 in cytosol;
   species x57 in cytosol, x61 in cytosol, x62 in cytosol, x63 in cytosol;
   species x65 in cytosol, x68 in cytosol, x35 in cytosol, x28 in nucleus;
-  species x31 in cytosol, x56 in cytosol, x43 in cytosol, x3 in cytosol, x58 in cytosol;
-  species x4 in cytosol, x26 in nucleus, x49 in cytosol, x33 in cytosol, x64 in cytosol;
-  species x19 in cytosol, x38 in cytosol, x66 in cytosol, x67 in cytosol;
+  species x31 in cytosol, x56 in cytosol, x43 in cytosol, $x3 in cytosol;
+  species x58 in cytosol, x4 in cytosol, x26 in nucleus, x49 in cytosol, x33 in cytosol;
+  species x64 in cytosol, x19 in cytosol, x38 in cytosol, x66 in cytosol;
+  species x67 in cytosol;
 
   // Reactions:
   R1:  -> x2; cytosol * kf0 * x1 * IL6;
@@ -274,8 +275,6 @@ model Singh2006_IL6_Signal_Transduction()
   kr58 = 0.5;
   kf56 = 0.014;
   kr56 = 0.6;
-
-  const x1, x3;
 
   //Display Names:
   x1 is "gp80";

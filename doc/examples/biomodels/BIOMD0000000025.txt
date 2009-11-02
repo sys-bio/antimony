@@ -3,17 +3,17 @@ model Smolen2002()
 
   // Compartments and Species:
   compartment CELL;
-  species EmptySet in CELL, Per in CELL, dClk in CELL, dClkF in CELL;
+  species $EmptySet in CELL, Per in CELL, dClk in CELL, dClkF in CELL;
 
   // Reactions:
-  rPer: EmptySet -> Per; rPer_V * delay(dClkF / (rPer_K + dClkF), rPer_parameter_0000008) * CELL;
-  rdClk: EmptySet -> dClk; CELL * rdClk_V * delay(rdClk_K / (rdClk_K + dClkF), rdClk_parameter_0000009);
-  rPerD: Per -> EmptySet; rPerD_D * Per * CELL;
-  rdClkD: dClk -> EmptySet; rdClkD_D * dClk * CELL;
+  rPer: $EmptySet -> Per; rPer_V * delay(dClkF / (rPer_K + dClkF), rPer_parameter_0000008) * CELL;
+  rdClk: $EmptySet -> dClk; CELL * rdClk_V * delay(rdClk_K / (rdClk_K + dClkF), rdClk_parameter_0000009);
+  rPerD: Per -> $EmptySet; rPerD_D * Per * CELL;
+  rdClkD: dClk -> $EmptySet; rdClkD_D * dClk * CELL;
 
   // Events:
-  _E0: at(lt(dClk - Per, 0)): dClkF = 0;
-  _E1: at(geq(dClk - Per, 0)): dClkF = dClk - Per;
+  _E0: at lt(dClk - Per, 0): dClkF = 0;
+  _E1: at geq(dClk - Per, 0): dClkF = dClk - Per;
 
   // Species initializations:
   EmptySet = 0;
@@ -33,8 +33,6 @@ model Smolen2002()
   rdClk_parameter_0000009 = 10;
   rPerD_D = 0.5;
   rdClkD_D = 0.5;
-
-  const EmptySet;
 
   //Display Names:
   dClkF is "free dClk";

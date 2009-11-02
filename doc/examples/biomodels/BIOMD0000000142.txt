@@ -12,8 +12,8 @@ model model_0000001()
   u' = a * (b * v - u)
 
   // Events:
-  event_0000001: at(gt(v, Vthresh)): u = u + d: v = c;
-  event_0000002: at(gt(time, 30)): flag = 1;
+  event_0000001: at gt(v, Vthresh): u = u + d, v = c;
+  event_0000002: at gt(time, 30): flag = 1;
 
   // Compartment initializations:
   cell = 1;
@@ -27,6 +27,7 @@ model model_0000001()
   flag = 0;
   a = 0.2;
   b = 0.26;
-
+  
+//Other declarations:
   var v, u, flag, i;
 end

@@ -50,8 +50,8 @@ model Kim2007_Wnt_ERK_Crosstalk()
   R33: X28 -> X5; cytoplasm * Vmax7 * X28 / (Km14 + X28);
 
   // Events:
-  event_0000001: at(and(geq(time, 500), leq(time, 1000))): W = 1;
-  event_0000002: at(gt(time, 1000)): W = 0;
+  event_0000001: at and(geq(time, 500), leq(time, 1000)): W = 1;
+  event_0000002: at gt(time, 1000): W = 0;
 
   // Species initializations:
   X1 = 100;
@@ -146,7 +146,8 @@ model Kim2007_Wnt_ERK_Crosstalk()
   Vmax7 = 45;
   Km14 = 15;
   flag_for_wnt_signal = 0;
-
+  
+//Other declarations:
   var W, X13X14;
 
   //Display Names:

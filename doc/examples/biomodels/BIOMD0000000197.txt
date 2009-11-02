@@ -4,7 +4,7 @@ model MDCKII_Transport()
   // Compartments and Species:
   compartment basolat, cell, apical;
   species x1 in basolat, x2 in basolat, x3 in cell, x4 in cell, x5 in apical;
-  species BSP_tot in apical, BSP_cell in cell;
+  species $BSP_tot in apical, $BSP_cell in cell;
 
   // Assignment Rules:
   BSP_tot := x1 + x2 + x3 + x4 + x5
@@ -47,8 +47,6 @@ model MDCKII_Transport()
   p10 = 1.6;
   p11 = 1000;
   p12 = 0.0003;
-
-  const BSP_tot, BSP_cell;
 
   //Display Names:
   x1 is "free basolateral BSP";

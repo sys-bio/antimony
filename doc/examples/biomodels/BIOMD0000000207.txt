@@ -3,8 +3,8 @@ model Romond1999_CellCycle()
 
   // Compartments and Species:
   compartment compartment_;
-  species C1 in compartment_, M1 in compartment_, X1 in compartment_, C2 in compartment_;
-  species M2 in compartment_, X2 in compartment_;
+  species C1 in compartment_, $M1 in compartment_, $X1 in compartment_, C2 in compartment_;
+  species $M2 in compartment_, $X2 in compartment_;
 
   // Assignment Rules:
   V1 := C1 / (Kc1 + C1) * V_M1
@@ -66,9 +66,9 @@ model Romond1999_CellCycle()
   H3 = 0.01;
   U4 = 0.05;
   H4 = 0.01;
-
+  
+//Other declarations:
   var V1, V3, U1, U3;
-  const M1, X1, M2, X2;
 
   //Display Names:
   C1 is "cyclinB";

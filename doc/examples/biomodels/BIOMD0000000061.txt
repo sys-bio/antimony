@@ -8,11 +8,11 @@ model Hynne2001_Glycolysis()
   species DHAP in cytosol, NAD in cytosol, BPG in cytosol, NADH in cytosol;
   species PEP in cytosol, Pyr in cytosol, ACA in cytosol, EtOH in cytosol;
   species EtOHX in extracellular, Glyc in cytosol, GlycX in extracellular;
-  species ACAX in extracellular, CNX in extracellular, AMP in cytosol, P in extracellular;
-  species CNX0 in extracellular, GlcX0 in extracellular;
+  species ACAX in extracellular, CNX in extracellular, AMP in cytosol, $P in extracellular;
+  species $CNX0 in extracellular, $GlcX0 in extracellular;
 
   // Reactions:
-  vinGlc: GlcX0 -> GlcX; extracellular * vinGlc_k0 * (GlcX0 - GlcX);
+  vinGlc: $GlcX0 -> GlcX; extracellular * vinGlc_k0 * (GlcX0 - GlcX);
   vGlcTrans: GlcX -> 59Glc; extracellular * vGlcTrans_V2f / vGlcTrans_Yvol * (GlcX / vGlcTrans_K2Glc / (1 + GlcX / vGlcTrans_K2Glc + (vGlcTrans_P2 * (GlcX / vGlcTrans_K2Glc) + 1) / (vGlcTrans_P2 * (Glc / vGlcTrans_K2Glc) + 1) * (1 + Glc / vGlcTrans_K2Glc + G6P / vGlcTrans_K2IG6P + Glc * G6P / (vGlcTrans_K2Glc * vGlcTrans_K2IIG6P)))) - cytosol * vGlcTrans_V2r / vGlcTrans_Yvol * (Glc / vGlcTrans_K2Glc / (1 + Glc / vGlcTrans_K2Glc + (vGlcTrans_P2 * (Glc / vGlcTrans_K2Glc) + 1) / (vGlcTrans_P2 * (GlcX / vGlcTrans_K2Glc) + 1) * (1 + GlcX / vGlcTrans_K2Glc) + G6P / vGlcTrans_K2IG6P + Glc * G6P / (vGlcTrans_K2Glc * vGlcTrans_K2IIG6P)));
   vHK: ATP + Glc -> G6P + ADP; cytosol * vHK_V3m * ATP * Glc / (vHK_K3DGlc * vHK_K3ATP + vHK_K3Glc * ATP + vHK_K3ATP * Glc + Glc * ATP);
   vPGI: G6P -> F6P; cytosol * (vPGI_V4f * G6P / (vPGI_K4G6P + G6P + vPGI_K4G6P / vPGI_K4F6P * F6P) - vPGI_V4r * (F6P / vPGI_K4eq) / (vPGI_K4G6P + G6P + vPGI_K4G6P / vPGI_K4F6P * F6P));
@@ -25,14 +25,14 @@ model Hynne2001_Glycolysis()
   vPDC: Pyr -> ACA; cytosol * (vPDC_V11m * Pyr / (vPDC_K11 + Pyr));
   vADH: NADH + ACA -> NAD + EtOH; cytosol * (vADH_V12m * ACA * NADH / ((vADH_K12NADH + NADH) * (vADH_K12ACA + ACA)));
   vdifEtOH: 59EtOH -> EtOHX; vdifEtOH_k13 / vdifEtOH_Yvol * (cytosol * EtOH - extracellular * EtOHX);
-  voutEtOH: EtOHX -> P; extracellular * voutEtOH_k0 * EtOHX;
+  voutEtOH: EtOHX -> $P; extracellular * voutEtOH_k0 * EtOHX;
   vlpGlyc: DHAP + NADH -> Glyc + NAD; cytosol * (vlpGlyc_V15m * DHAP / (vlpGlyc_K15DHAP * (1 + vlpGlyc_K15INADH / NADH * (1 + NAD / vlpGlyc_K15INAD)) + DHAP * (1 + vlpGlyc_K15NADH / NADH * (1 + NAD / vlpGlyc_K15INAD))));
   vdifGlyc: 59Glyc -> GlycX; vdifGlyc_k16 / vdifGlyc_Yvol * (cytosol * Glyc - extracellular * GlycX);
-  voutGlyc: GlycX -> P; extracellular * voutGlyc_k0 * GlycX;
+  voutGlyc: GlycX -> $P; extracellular * voutGlyc_k0 * GlycX;
   vdifACA: 59ACA -> ACAX; vdifACA_k18 / vdifACA_Yvol * (cytosol * ACA - extracellular * ACAX);
-  voutACA: ACAX -> P; extracellular * voutACA_k0 * ACAX;
-  vlacto: CNX + ACAX -> P; extracellular * vlacto_k20 * ACAX * CNX;
-  vinCN: CNX0 -> CNX; extracellular * vinCN_k0 * (CNX0 - CNX);
+  voutACA: ACAX -> $P; extracellular * voutACA_k0 * ACAX;
+  vlacto: CNX + ACAX -> $P; extracellular * vlacto_k20 * ACAX * CNX;
+  vinCN: $CNX0 -> CNX; extracellular * vinCN_k0 * (CNX0 - CNX);
   vstorage: ATP + G6P -> ADP; cytosol * vstorage_k22 * ATP * G6P;
   vconsum: ATP -> ADP; cytosol * vconsum_k23 * ATP;
   vAK: ATP + AMP -> 2ADP; cytosol * (vAK_k24f * AMP * ATP - vAK_k24r * pow(ADP, 2));
@@ -138,8 +138,6 @@ model Hynne2001_Glycolysis()
   vconsum_k23 = 3.2076;
   vAK_k24f = 432.9;
   vAK_k24r = 133.333;
-
-  const P, CNX0, GlcX0;
 
   //Display Names:
   GlcX is "Extracellular glucose";

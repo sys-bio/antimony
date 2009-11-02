@@ -7,24 +7,24 @@ model Olsen2003_peroxidase()
   species per3 in compartment_, coI in compartment_, ArH in compartment_;
   species coII in compartment_, Ar in compartment_, NADrad in compartment_;
   species super in compartment_, coIII in compartment_, per2 in compartment_;
-  species NAD2 in compartment_, NAD in compartment_, O2g in compartment_;
-  species NADHres in compartment_;
+  species $NAD2 in compartment_, $NAD in compartment_, $O2g in compartment_;
+  species $NADHres in compartment_;
 
   // Reactions:
-  v1: NADH + O2 -> H2O2 + NAD; compartment_ * v1_k1 * NADH * O2;
+  v1: NADH + O2 -> H2O2 + $NAD; compartment_ * v1_k1 * NADH * O2;
   v2: per3 + H2O2 -> coI; compartment_ * v2_k2 * H2O2 * per3;
   v3: ArH + coI -> Ar + coII; compartment_ * v3_k3 * coI * ArH;
   v4: coII + ArH -> per3 + Ar; compartment_ * v4_k4 * coII * ArH;
-  v5: NADrad + O2 -> NAD + super; compartment_ * v5_k5 * NADrad * O2;
+  v5: NADrad + O2 -> $NAD + super; compartment_ * v5_k5 * NADrad * O2;
   v6: per3 + super -> coIII; compartment_ * v6_k6 * super * per3;
   v7: 2super -> H2O2 + O2; compartment_ * v7_k7 * super * super;
-  v8: NADrad + coIII -> NAD + coI; compartment_ * v8_k8 * coIII * NADrad;
-  v9: 2NADrad -> NAD2; compartment_ * v9_k9 * NADrad * NADrad;
-  v10: per3 + NADrad -> per2 + NAD; compartment_ * v10_k10 * per3 * NADrad;
+  v8: NADrad + coIII -> $NAD + coI; compartment_ * v8_k8 * coIII * NADrad;
+  v9: 2NADrad -> $NAD2; compartment_ * v9_k9 * NADrad * NADrad;
+  v10: per3 + NADrad -> per2 + $NAD; compartment_ * v10_k10 * per3 * NADrad;
   v11: per2 + O2 -> coIII; compartment_ * v11_k11 * per2 * O2;
-  v12: NADHres -> NADH; compartment_ * v12_k12;
-  v131: O2g -> O2; compartment_ * v131_k13f * O2g;
-  v132: O2 -> O2g; compartment_ * v132_k13b * O2;
+  v12: $NADHres -> NADH; compartment_ * v12_k12;
+  v131: $O2g -> O2; compartment_ * v131_k13f * O2g;
+  v132: O2 -> $O2g; compartment_ * v132_k13b * O2;
   v14: NADH + Ar -> NADrad + ArH; compartment_ * v14_k14 * Ar * NADH;
 
   // Species initializations:
@@ -64,6 +64,4 @@ model Olsen2003_peroxidase()
   v131_k13f = 0.006;
   v132_k13b = 0.006;
   v14_k14 = 0.7;
-
-  const NAD2, NAD, O2g, NADHres;
 end

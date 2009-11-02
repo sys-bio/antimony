@@ -3,37 +3,37 @@ model Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky()
 
   // Compartments and Species:
   compartment default, c2;
-  species s121 in c2, s122 in default, s124 in default, s125 in default, s126 in c2;
-  species s127 in default, s128 in default, s129 in default, s130 in default;
-  species s131 in default, s132 in default, s133 in default, s134 in default;
-  species s135 in default, s139 in default, s150 in c2, s152 in default, s153 in default;
-  species s154 in default, s159 in c2, s160 in default, s161 in default, s164 in c2;
-  species s167 in c2;
+  species $s121 in c2, $s122 in default, $s124 in default, s125 in default;
+  species $s126 in c2, s127 in default, s128 in default, $s129 in default;
+  species s130 in default, $s131 in default, s132 in default, s133 in default;
+  species $s134 in default, s135 in default, s139 in default, $s150 in c2;
+  species s152 in default, $s153 in default, $s154 in default, s159 in c2;
+  species s160 in default, s161 in default, s164 in c2, s167 in c2;
 
   // Reactions:
-  re44: s121 -> s125; k26 * s164;
-  re45: s125 -> s124; k27 * s125;
-  re46: s160 -> s122; k21 * s160;
+  re44: $s121 -> s125; k26 * s164;
+  re45: s125 -> $s124; k27 * s125;
+  re46: s160 -> $s122; k21 * s160;
   re47: s125 -> s160 + s125; k22 * s125;
-  re48: s126 -> s127; k19 + k20 * s164;
+  re48: $s126 -> s127; k19 + k20 * s164;
   re49: s133 -> s132; k1 * s133;
   re52: s135 -> s161; k12 * s135;
-  re53: s133 -> s131; k2 * s133;
-  re56: s132 -> s134; k6 * s132;
+  re53: s133 -> $s131; k2 * s133;
+  re56: s132 -> $s134; k6 * s132;
   re57: s139 -> s132; k8 * s139;
   re58: s132 + s135 -> s152; k9 * s132 * s135;
   re59: s152 -> s161 + s132; k10 * s152;
-  re60: s130 -> s129; k11 * s130;
+  re60: s130 -> $s129; k11 * s130;
   re61: s127 -> s128 + s127; k16 * s127;
   re63: s132 -> s130; k5 * s132 + k4 * s132 * s128;
-  re64: s150 -> s133; k3;
+  re64: $s150 -> s133; k3;
   re65: s160 + s161 -> s135; kf13 * s161 * s160 - kr13 * s135;
   re66: s160 + s132 -> s139; k7 * s132 * s160;
   re67: s161 -> 5s164; kf15 * s161 - kr15 * s164;
   re68: 5s159 -> s135; kf28 * s159 - kr28 * s135;
   re69: s164 + s167 -> s159; kf14 * s164 * s167 - kr14 * s159;
-  re70: s127 -> s153; k17 * s127;
-  re71: s128 -> s154; k18 * s128;
+  re70: s127 -> $s153; k17 * s127;
+  re71: s128 -> $s154; k18 * s128;
   re72: s160 -> 5s167; kf23 * s160 - kr23 * s167;
 
   // Species initializations:
@@ -98,8 +98,6 @@ model Radulescu2008_NFkB_hierarchy_M_14_25_28_Lipniacky()
   kf28 = 0.01;
   kr28 = 0;
   k26 = 5e-07;
-
-  const s121, s122, s124, s126, s129, s131, s134, s150, s153, s154;
 
   //Display Names:
   s121 is "IKBA";

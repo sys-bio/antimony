@@ -7,8 +7,8 @@ model Tyson2001_Cell_Cycle_Regulation()
 
   // Compartments and Species:
   compartment cell;
-  species CycBt in cell, CycB in cell, Cdc20a in cell, Trimer in cell, Cdh1 in cell;
-  species m in cell, Cdc20t in cell, IEP in cell, Mad in cell, CKIt in cell;
+  species CycBt in cell, $CycB in cell, Cdc20a in cell, $Trimer in cell, Cdh1 in cell;
+  species m in cell, Cdc20t in cell, IEP in cell, $Mad in cell, CKIt in cell;
   species SK in cell;
 
   // Assignment Rules:
@@ -40,7 +40,7 @@ model Tyson2001_Cell_Cycle_Regulation()
   SKdegradation: SK -> ; k14 * SK;
 
   // Events:
-  Cell_division: at(lt(CycB, 0.1)): m = m / 2;
+  Cell_division: at 0 after lt(CycB, 0.1): m = m / 2;
 
   // Species initializations:
   CycBt = 0.001;
@@ -92,9 +92,9 @@ model Tyson2001_Cell_Cycle_Regulation()
   J16 = 0.01;
   k4p = 2;
   J4 = 0.04;
-
+  
+//Other declarations:
   var TF;
-  const CycB, Trimer, Mad;
 
   //Display Names:
   Cell_division is "Cell division";

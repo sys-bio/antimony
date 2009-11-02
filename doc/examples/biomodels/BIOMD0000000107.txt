@@ -5,8 +5,8 @@ model Novak1993_M_phase_control()
   compartment cytoplasm;
   species cyclin in cytoplasm, dimer in cytoplasm, dimer_p in cytoplasm, p_dimer in cytoplasm;
   species p_dimer_p in cytoplasm, cdc25_p in cytoplasm, wee1_p in cytoplasm;
-  species IE_p in cytoplasm, UbE_star in cytoplasm, cdc2 in cytoplasm, cdc25 in cytoplasm;
-  species wee1 in cytoplasm, IE in cytoplasm, UbE in cytoplasm;
+  species IE_p in cytoplasm, UbE_star in cytoplasm, $cdc2 in cytoplasm, $cdc25 in cytoplasm;
+  species $wee1 in cytoplasm, $IE in cytoplasm, $UbE in cytoplasm;
 
   // Assignment Rules:
   cdc2 := total_cdc2 - (dimer + p_dimer + p_dimer_p + dimer_p)
@@ -91,9 +91,9 @@ model Novak1993_M_phase_control()
   K_c = 0.01;
   kd_anti_IE = 0.095;
   K_d = 0.01;
-
+  
+//Other declarations:
   var k25, kwee, k2, total_cyclin, Y15P;
-  const cdc2, cdc25, wee1, IE, UbE;
 
   //Display Names:
   dimer is "cyclin-cdc2 dimer";
