@@ -294,7 +294,7 @@ LIB_EXTERN long loadSBMLString(const char* model)
 
 #ifndef NCELLML
 
-#include "cellml-opencell/MathMLInputServices.h"
+#include "MathMLInputServices.h"
 #include "ICellMLInputServices.h"
 #include <nsStringAPI.h>
 #include <nsDebug.h>

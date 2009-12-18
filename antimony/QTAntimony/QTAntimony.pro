@@ -3,8 +3,8 @@
 # -------------------------------------------------
 isEmpty(LIBSBML_DIR) { 
     win32:LIBSBML_DIR = ..\..\libSBML-3.3.2
-    unix:LIBSBML_DIR = /usr/local/lib
-    mac:LIBSBML_DIR = /usr/local/lib
+    unix:LIBSBML_DIR = /usr/local/
+    mac:LIBSBML_DIR = /usr/local/
 }
 isEmpty(SBW_DIR) { 
     win32:SBW_DIR = ..\..\sbw
@@ -26,6 +26,7 @@ INCLUDEPATH += "$${LIBSBML_DIR}/include" \
     "../src"
 LIBS += -L../lib/ \
     -lantimony \
+    -L$${LIBSBML_DIR}/lib \
     -L$${LIBSBML_DIR} \
     -lsbml
 
