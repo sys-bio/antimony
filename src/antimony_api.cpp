@@ -18,12 +18,6 @@
 
 #define DEFAULTCOMP "default_compartment" //Also defined in module.cpp
 
-#ifndef NCELLML
-#include <IfaceCellML_APISPEC.hxx>
-#include <CellMLBootstrap.hpp>
-//using namespace iface;
-#endif
-
 using namespace std;
 extern int yyparse();
 extern int yylloc_first_line;
@@ -299,35 +293,43 @@ LIB_EXTERN long loadSBMLString(const char* model)
 #endif
 
 #ifndef NCELLML
-long CheckAndAddCellMLDoc(cellml_api::Model* model)
+
+#include "cellml-opencell/MathMLInputServices.h"
+#include "ICellMLInputServices.h"
+#include <nsStringAPI.h>
+#include <nsDebug.h>
+#include <nsCOMPtr.h>
+#include <nsServiceManagerUtils.h>
+
+long CheckAndAddCellMLDoc(nsCOMPtr<cellml_apiIModel> model)
 {
   if (g_registry.LoadCellML(model)) return -1;
   return g_registry.SaveModules();
 }
 
 LIB_EXTERN long loadCellMLFile(const char* filename)
-{ 
-  cellml_api::CellMLBootstrap* boot = CreateCellMLBootstrap();
-  cellml_api::ModelLoader* ml = boot->modelLoader();
-  boot->release_ref();
-  cellml_api::Model* model;
-  try
-  {
-    model = ml->loadFromURL(ToWString(filename).c_str());
-  }
-  catch (...)
-  {
+{
+  nsresult rv;
+  nsCOMPtr<cellml_apiICellMLBootstrap> boot(do_GetService(CELLML_BOOTSTRAP_CONTRACTID, &rv));
+  NS_ENSURE_SUCCESS(rv, -1);
+  nsCOMPtr<cellml_apiIDOMModelLoader> ml;
+  rv = boot->GetModelLoader(getter_AddRefs(ml));
+
+  nsCOMPtr<cellml_apiIModel> model;
+  rv = ml->LoadFromURL(ToNSString(filename), getter_AddRefs(model));
+  if (NS_FAILED(rv)) {
     string file(filename);
-    wchar_t* error = ml->lastErrorMessage();
-    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  ToThinString(error));
-    ml->release_ref();
-    free(error);
+    nsString error;
+    ml->GetLastErrorMessage(error);
+    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  ToThinString(error.get()));
     return -1;
   }
   long retval = CheckAndAddCellMLDoc(model);
   if (retval == -1) {
     string error = g_registry.GetError();
-    error += ToThinString(ml->lastErrorMessage());
+    nsString nserror;
+    ml->GetLastErrorMessage(nserror);
+    error += ToThinString(nserror.get());
     g_registry.SetError(error);
   }
   return retval;
@@ -335,19 +337,18 @@ LIB_EXTERN long loadCellMLFile(const char* filename)
 
 LIB_EXTERN long loadCellMLString(const char* modelstring)
 {
-  cellml_api::CellMLBootstrap* boot = CreateCellMLBootstrap();
-  cellml_api::ModelLoader* ml = boot->modelLoader();
-  boot->release_ref();
-  cellml_api::Model* model;
-  try
-  {
-    model = ml->createFromText(ToWString(modelstring).c_str());
-  }
-  catch (...)
-  {
-    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  ToThinString(ml->lastErrorMessage()));
-    ml->release_ref();
-    return -1;
+  nsresult rv;
+  nsCOMPtr<cellml_apiICellMLBootstrap> boot(do_GetService(CELLML_BOOTSTRAP_CONTRACTID, &rv));
+  NS_ENSURE_SUCCESS(rv, -1);
+  nsCOMPtr<cellml_apiIDOMModelLoader> ml;
+  rv = boot->GetModelLoader(getter_AddRefs(ml));
+
+  nsCOMPtr<cellml_apiIModel> model;
+  rv = ml->CreateFromText(ToNSString(modelstring), getter_AddRefs(model));
+  if (NS_FAILED(rv)) {
+    nsString error;
+    ml->GetLastErrorMessage(error);
+    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  ToThinString(error.get()));
   }
   return CheckAndAddCellMLDoc(model);
 }
@@ -406,11 +407,6 @@ LIB_EXTERN char*  getNthModuleName(unsigned long n)
   return retval;
 }
 
-LIB_EXTERN unsigned long getNumModules()
-{
-  return g_registry.GetNumModules();
-}
-
 LIB_EXTERN bool checkModule(const char* moduleName)
 {
   if (g_registry.GetModule(moduleName) == NULL) {
@@ -432,6 +428,37 @@ LIB_EXTERN bool checkModule(const char* moduleName)
   return true;
 }
 
+
+LIB_EXTERN unsigned long getNumSymbolsInInterfaceOf(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return g_registry.GetModule(moduleName)->GetNumExportVariables();
+}
+
+LIB_EXTERN char** getSymbolNamesInInterfaceOf(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  Module* mod = g_registry.GetModule(moduleName);
+  unsigned long intnum = mod->GetNumExportVariables();
+  char** names = getCharStarStar(intnum);
+  if (names==NULL) return NULL;
+  for (unsigned long var=0; var<intnum; var++) {
+    names[var] = getNthSymbolNameInInterfaceOf(moduleName, var);
+    if (names[var]==NULL) return NULL;
+  }
+  return names;
+}
+
+LIB_EXTERN char* getNthSymbolNameInInterfaceOf(const char* moduleName, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return getCharStar(g_registry.GetModule(moduleName)->GetNthExportVariable(n).c_str());
+}
+
+LIB_EXTERN unsigned long getNumModules()
+{
+  return g_registry.GetNumModules();
+}
 
 LIB_EXTERN unsigned long getNumSymbolsOfType(const char* moduleName, return_type rtype)
 {
@@ -1030,6 +1057,23 @@ LIB_EXTERN char* getTriggerForEvent(const char* moduleName, unsigned long eventn
   if (var==NULL) return NULL;
   string trig = var->GetEvent()->GetTrigger()->ToDelimitedStringWithEllipses(g_registry.GetCC());
   return getCharStar(trig.c_str());
+}
+
+LIB_EXTERN char* getDelayForEvent(const char* moduleName, unsigned long eventno)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  string trig = var->GetEvent()->GetDelay()->ToDelimitedStringWithEllipses(g_registry.GetCC());
+  return getCharStar(trig.c_str());
+}
+
+LIB_EXTERN bool getEventHasDelay(const char* moduleName, unsigned long eventno)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  return (!var->GetEvent()->GetDelay()->IsEmpty());
 }
 
 LIB_EXTERN char* getNthAssignmentVariableForEvent(const char* moduleName, unsigned long eventno, unsigned long n)
@@ -1645,7 +1689,11 @@ LIB_EXTERN void printAllDataFor(const char* moduleName)
     
     cout << endl << "Events" << endl;
     for (unsigned long event=0; event<getNumEvents(moduleName); event++) {
-      cout << eventnames[event] << ": @(" << getTriggerForEvent(moduleName, event) << "): ";
+      cout << eventnames[event] << ": at ";
+      if (getEventHasDelay(moduleName, event)) {
+        cout << getDelayForEvent(moduleName, event) << " after ";
+      }
+      cout << getTriggerForEvent(moduleName, event) << ": ";
       for (unsigned long asnt=0; asnt<getNumAssignmentsForEvent(moduleName, event); asnt++) {
         if (asnt > 0) {
           cout << ", ";

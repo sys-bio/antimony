@@ -10,8 +10,8 @@
 #endif
 
 #ifndef NCELLML
-#include <IfaceCellML_APISPEC.hxx>
-using namespace iface;
+#include "ICellMLInputServices.h"
+#include <nsCOMPtr.h>
 #endif
 
 #include "antimony_api.h"
@@ -44,8 +44,8 @@ private:
 #endif
 
 #ifndef NCELLML
-  cellml_api::Model* m_cellmlmodel;
-  cellml_api::CellMLComponent* m_cellmlcomponent;
+  nsCOMPtr<cellml_apiIModel> m_cellmlmodel;
+  nsCOMPtr<cellml_apiICellMLComponent> m_cellmlcomponent;
 #endif
 
 public:
@@ -79,6 +79,7 @@ public:
   Formula* GetFormula();
   Variable* GetNextExportVariable();
   size_t GetNumExportVariables() const {return m_exportlist.size();};
+  std::string GetNthExportVariable(size_t n) const;
   Variable* GetUpstreamDNA();
   Variable* GetDownstreamDNA();
   formula_type GetFormulaType() const; //If we have a return value
@@ -116,12 +117,12 @@ public:
 #endif
 
 #ifndef NCELLML
-  void  LoadCellMLModel(cellml_api::Model* model);
-  void  LoadConnections(cellml_api::ConnectionSet* connections);
-  void  LoadCellMLComponent(cellml_api::CellMLComponent* component);
-  const cellml_api::Model* GetCellMLModel();
+  void  LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model);
+  void  LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections);
+  void  LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component);
+  const nsCOMPtr<cellml_apiIModel> GetCellMLModel();
   void  CreateCellMLModel();
-  cellml_api::CellMLComponent* CreateCellMLComponentFor(cellml_api::Model* model);
+  nsCOMPtr<cellml_apiICellMLComponent> CreateCellMLComponentFor(nsCOMPtr<cellml_apiIModel> model);
 #endif
 
   void  FixNames();

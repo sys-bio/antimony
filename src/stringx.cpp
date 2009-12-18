@@ -61,3 +61,45 @@ string ToThinString(std::wstring in)
   }
   return out;
 }
+
+string Trim(std::string in)
+{
+  string out = in;
+  while (out.size() && out[0] == ' ') {
+    out.erase(0,1);
+  }
+  while (out.size() && out[out.size()-1] == ' ') {
+    out.erase(out.size()-1, 1);
+  }
+  size_t retpos;
+  while ((retpos = out.find('\n')) != string::npos) {
+    out.replace(retpos, 1, " ");
+  }
+  while ((retpos = out.find('\r')) != string::npos) {
+    out.replace(retpos, 1, " ");
+  }
+  return out;
+}
+
+#ifndef NCELLML
+std::string ToThinString(const PRUnichar* in)
+{
+  string out;
+  for (size_t ch=0; (in[ch] != '\0'); ch++) {
+    out.push_back(in[ch]);
+  }
+  return out;
+}
+
+nsString ToNSString(const std::string in)
+{
+  PRUnichar out[in.size()+1];
+  
+  for (size_t ch=0; ch<in.size(); ch++) {
+    out[ch] = in[ch];
+  }
+
+  return nsDependentString(out, in.size());
+}
+
+#endif

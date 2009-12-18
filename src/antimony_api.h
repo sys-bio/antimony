@@ -293,6 +293,23 @@ LIB_EXTERN char*  getNthModuleName(unsigned long n);
 /** \} */
 
 /**
+ * Returns the number of symbols defined to be in the interface of the given module.  In other words, if a module is defined 'module M(x, y, z)', this returns '3'.
+ */
+LIB_EXTERN unsigned long getNumSymbolsInInterfaceOf(const char* moduleName);
+
+/**
+ * Returns the names of the symbols defined to be in the interface of the given module.  In other words, if a module is defined 'module M(x, y, z)', this returns the list 'x, y, z'.
+ */
+LIB_EXTERN char** getSymbolNamesInInterfaceOf(const char* moduleName);
+
+/**
+ * Returns the names of the symbols defined to be in the interface of the given module.  In other words, if a module is defined 'module M(x, y, z)', this returns the list 'x, y, z'.
+ */
+LIB_EXTERN char* getNthSymbolNameInInterfaceOf(const char* moduleName, unsigned long n);
+
+
+
+/**
   * @name Symbols and symbol information
   */
 /** \{ */
@@ -649,6 +666,16 @@ LIB_EXTERN unsigned long  getNumAssignmentsForEvent(const char* moduleName, unsi
  * Returns the trigger for the given event, as an equation that can be interpreted in a boolean context.
  */
 LIB_EXTERN char*   getTriggerForEvent(const char* moduleName, unsigned long event);
+
+/**
+ * Returns the delay for the given event, as an equation (if present; if the event has no delay, "" is returned)..
+ */
+LIB_EXTERN char*   getDelayForEvent(const char* moduleName, unsigned long event);
+
+/**
+ * Returns 'true' if the given event has a delay; 'false' otherwise.
+ */
+LIB_EXTERN bool    getEventHasDelay(const char* moduleName, unsigned long event);
 
 /**
  * Each assignment for an event assigns a formula to a variable.  This function returns the variable in question for the given event and assignment.

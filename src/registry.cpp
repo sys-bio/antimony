@@ -14,17 +14,18 @@
 #include "stringx.h"
 #include "variable.h"
 
-#ifndef NCELLML
-#include <IfaceCeVAS.hxx>
-#include <CeVASBootstrap.hpp>
-#endif
-
 extern int yylloc_first_line;
 extern int yylloc_last_line;
 extern std::vector<int> yylloc_last_lines;
 
 using namespace std;
-    
+
+#ifndef NCELLML
+#include <nsXPCOM.h>
+#include <nsIComponentManager.h>
+#include <nsComponentManagerUtils.h>
+#endif
+
 Registry::Registry()
   : m_oldinputs(),
     m_files(),
@@ -47,12 +48,36 @@ Registry::Registry()
   string main = MAINMODULE;
   NewCurrentModule(&main);
   SetupFunctions();
+
+#ifndef NCELLML
+  nsresult rv;
+  // Initialize XPCOM and check for failure ...
+  rv = NS_InitXPCOM2(nsnull, nsnull, nsnull);
+  if ( NS_FAILED(rv) )
+  {
+    printf("Calling NS_InitXPCOM returns [%x].\n", rv);
+    return;
+  }
+
+  nsCOMPtr<cellml_apiICellMLBootstrap> foo = do_CreateInstance(CELLML_BOOTSTRAP_CONTRACTID, &rv);
+  if ( NS_FAILED(rv) )
+  {
+    printf("Creating a cellml bootstrap instance returns [%x].\n", rv);
+    return;
+  }
+
+
+#endif
 }
 
 Registry::~Registry()
 {
   FreeVariables();
   FreeFormulas();
+
+#ifndef NCELLML
+  NS_ShutdownXPCOM(nsnull);
+#endif
 }
 
 void Registry::ClearModules()
@@ -197,43 +222,59 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
 #endif  
 
 #ifndef NCELLML
-bool Registry::LoadCellML(cellml_api::Model* model)
+
+#include "ICellMLInputServices.h"
+#include "ICeVAS.h"
+#include <nsStringAPI.h>
+#include <nsDebug.h>
+#include <nsCOMPtr.h>
+#include <nsServiceManagerUtils.h>
+
+#define CEVAS_BOOTSTRAP_CONTRACTID "@cellml.org/cevas-bootstrap;1"
+
+bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
 {
   if (model == NULL) return true;
-  cellml_services::CeVASBootstrap* cevasboot = CreateCeVASBootstrap();
-  cellml_services::CeVAS* cevas = cevasboot->createCeVASForModel(model);
-  wstring error = cevas->modelError();
-  if (error != L"") {
-    SetError("Error reading CellML model:  " + ToThinString(error));
+  nsresult rv;
+  nsCOMPtr<cellml_servicesICeVASBootstrap> cevasboot(do_GetService(CEVAS_BOOTSTRAP_CONTRACTID, &rv));
+  NS_ENSURE_SUCCESS(rv, true);
+
+  nsCOMPtr<cellml_servicesICeVAS> cevas;
+  rv = cevasboot->CreateCeVASForModel(model, getter_AddRefs(cevas));
+  if (NS_FAILED(rv)) {
+    nsString error;
+    cevas->GetModelError(error);
+    SetError("Error reading CellML model:  " + ToThinString(error.get()));
     return true;
   }
-  cevasboot->release_ref();
-  cellml_api::CellMLComponentIterator* cmpi = cevas->iterateRelevantComponents();
-  cellml_api::CellMLComponent* component;
+  nsCOMPtr<cellml_apiICellMLComponentIterator> cmpi;
+  rv = cevas->IterateRelevantComponents(getter_AddRefs(cmpi));
+  nsCOMPtr<cellml_apiICellMLComponent> component;
+  rv = cmpi->NextComponent(getter_AddRefs(component));
   int numcomps=0;
-  while ((component = cmpi->nextComponent()) != NULL) {
+  while (component != NULL) {
     numcomps++;
     //Each CellML 'component' becomes its own Antimony 'module'
-    wchar_t* cellmltext = component->name();
-    string cellmlname = "cellmlmod_" + ToThinString(cellmltext);
-    free(cellmltext);
+    nsString cellmltext;
+    rv = component->GetName(cellmltext);
+    string cellmlname = "cellmlmod_" + ToThinString(cellmltext.get());
     NewCurrentModule(&cellmlname);
     CurrentModule()->LoadCellMLComponent(component);
     RevertToPreviousModule();
-    component->release_ref();
+    rv = cmpi->NextComponent(getter_AddRefs(component));
   }
-  cmpi->release_ref();
   assert(numcomps > 0);
   if (numcomps > 1) {
     //Create a master Module that contains each of the components.
-    wchar_t* cellmltext = model->name();
-    string cellmlname = ToThinString(cellmltext);
-    free(cellmltext);
+    nsString cellmltext;
+    rv = model->GetName(cellmltext);
+    string cellmlname = ToThinString(cellmltext.get());
     if (cellmlname != MAINMODULE) {
       NewCurrentModule(&cellmlname);
     }
     CurrentModule()->LoadCellMLModel(model);
   }
+  return false; //success
 }
 
 
