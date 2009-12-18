@@ -16,7 +16,6 @@ Source: ..\..\antimony_win32\Antimony\libxml2.dll; DestDir: {app}
 Source: ..\..\antimony_win32\Antimony\msvcp90.dll; DestDir: {app}
 Source: ..\..\antimony_win32\Antimony\msvcr90.dll; DestDir: {app}
 Source: ..\..\antimony_win32\Antimony\biomodels\BIOMD0000000001.txt; DestDir: {app}\biomodels\
-Source: ..\..\antimony_win32\Antimony\biomodels\BIOMD0000000231.txt; DestDir: {app}\biomodels\
 Source: ..\..\antimony_win32\Antimony\biomodels\BIOMD0000000002.txt; DestDir: {app}\biomodels\
 Source: ..\..\antimony_win32\Antimony\biomodels\BIOMD0000000003.txt; DestDir: {app}\biomodels\
 Source: ..\..\antimony_win32\Antimony\biomodels\BIOMD0000000004.txt; DestDir: {app}\biomodels\
@@ -246,6 +245,7 @@ Source: ..\..\antimony_win32\Antimony\biomodels\BIOMD0000000227.txt; DestDir: {a
 Source: ..\..\antimony_win32\Antimony\biomodels\BIOMD0000000228.txt; DestDir: {app}\biomodels\
 Source: ..\..\antimony_win32\Antimony\biomodels\BIOMD0000000229.txt; DestDir: {app}\biomodels\
 Source: ..\..\antimony_win32\Antimony\biomodels\BIOMD0000000230.txt; DestDir: {app}\biomodels\
+Source: ..\..\antimony_win32\Antimony\biomodels\BIOMD0000000231.txt; DestDir: {app}\biomodels\
 Source: ..\..\antimony_win32\Antimony\ex_antimony_output.txt; DestDir: {app}
 Source: ..\..\antimony_win32\Antimony\ex_sbml_input.xml; DestDir: {app}
 Source: ..\..\antimony_win32\Antimony\ex_sbml_output___main_sbml.xml; DestDir: {app}

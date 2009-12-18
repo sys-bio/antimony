@@ -20,7 +20,9 @@
 #ifndef NCELLML
 #include <IfaceCellML_APISPEC.hxx>
 #include <CellMLBootstrap.hpp>
-using namespace iface;
+
+#define CELLML_BOOTSTRAP_CONTRACTID "@cellml.org/cellml-bootstrap;1"
+
 #endif
 
 #define MAINMODULE "__main"
@@ -77,7 +79,7 @@ public:
   int    CheckAndAddSBMLIfGood(SBMLDocument* document);
 #endif
 #ifndef NCELLML
-  bool   LoadCellML(cellml_api::Model* model);
+  bool   LoadCellML(nsCOMPtr<cellml_apiIModel> model);
 #endif
   bool   SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};

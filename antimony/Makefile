@@ -25,15 +25,37 @@ sbmlflag =
 
 
 #If not using libCellML:
-cellmlflag = -DNCELLML
-cellml_includes =
-libcellml =
+#cellmlflag = -DNCELLML
+#cellml_includes =
+#libcellml =
 
 #otherwise
-#cellml_location = /usr/local/lib/
-#cellml_includes = -I/usr/local/include/
-#libcellml = -L$(cellml_location) -lcellml -lcevas
-#cellmlflag =
+xulrunner = /home/lpsmith/xulrunner-sdk
+CELLML_API_DIR = /home/lpsmith/CellML/hg/cellml-api
+CELLML_OPENCELL_DIR = /home/lpsmith/CellML/hg/cellml-opencell
+cellml_location = /usr/local/lib/
+cellml_includes = -I/usr/local/include/ \
+  -I$(xulrunner)/include/xpcom/ \
+  -I$(xulrunner)/include/ \
+  -I$(xulrunner)/include/xpcom/ \
+  -I$(xulrunner)/include/nspr/ \
+  -I$(xulrunner)/include/necko/ \
+  -I$(xulrunner)/include/string/ \
+  -I$(xulrunner)/include/dom/ \
+  -I$(xulrunner)/include/js/ \
+  -I$(xulrunner)/include/editor/ \
+  -I$(xulrunner)/include/docshell/ \
+  -I$(xulrunner)/include/content/ \
+  -I$(xulrunner)/include/rdf/ \
+  -I$(CELLML_API_DIR) \
+  -I$(CELLML_API_DIR)/sources/ \
+  -I$(CELLML_API_DIR)/interfaces/ \
+  -I$(CELLML_API_DIR)/simple_interface_generators/glue/xpcom \
+  -I$(CELLML_OPENCELL_DIR)/DataCollector \
+  -I$(CELLML_OPENCELL_DIR)/stubs
+
+libcellml = -L$(xulrunner)/lib   -l'xpcomglue_s' -l'xpcom' -l'xul' -l'embed_base_s' -l'sqlite3' -l'mozjs' -L$(cellml_location) -lcellml -lcevas  -L$(CELLML_OPENCELL_DIR)/opencellStage/components/ -lDataCollector
+cellmlflag = -fshort-wchar
 
 
 #For a debug version:
@@ -42,7 +64,7 @@ CPPFLAGS = -Wall -DVERSION_STRING="\"v$(version)\"" -ggdb $(sbmlflag) $(cellmlfl
 #CPPFLAGS = -Wall -DVERSION_STRING="\"v$(version)\"" -O3 -DNDEBUG $(sbmlflag) $(cellmlflag) $(mingw_include) $(sbml_includes) $(cellml_includes)
 
 #Library flags
-LIBRARYFLAGS = $(libsbml) $(libcellml) -Llib -lantimony
+LIBRARYFLAGS =  -Llib -lantimony $(libsbml) $(libcellml) 
 
 src_dir = src/
 lib_dir = lib/
@@ -60,6 +82,8 @@ CPPFILES = $(src_dir)antimony_api.cpp \
 	$(src_dir)event.cpp \
 	$(src_dir)formula.cpp \
 	$(src_dir)module.cpp \
+	$(src_dir)module-sbml.cpp \
+	$(src_dir)module-cellml.cpp \
 	$(src_dir)reactantlist.cpp \
 	$(src_dir)reaction.cpp \
 	$(src_dir)registry.cpp \
@@ -71,6 +95,7 @@ CPPFILES = $(src_dir)antimony_api.cpp \
 	$(src_dir)variable.cpp \
 	$(src_dir)antimony2sbml.cpp \
 	$(src_dir)sbml2antimony.cpp \
+	$(src_dir)cellml2antimony.cpp \
 	$(src_dir)testantimony.cpp \
 
 HFILES = $(src_dir)antimony_api.h \
@@ -102,7 +127,7 @@ LIBOFILES = $(src_dir)antimony_api.o \
 	$(src_dir)stringx.o \
 	$(src_dir)typex.o \
 	$(src_dir)userfunction.o \
-	$(src_dir)variable.o
+	$(src_dir)variable.o \
 
 QMAKEFILES = antimony.pro \
 	antimony2sbml.pro \
@@ -224,7 +249,7 @@ DOCSRCFILES = \
 
 
 #Executables:
-all : $(bin_dir)testantimony $(bin_dir)antimony2sbml $(bin_dir)sbml2antimony
+all : $(bin_dir)testantimony $(bin_dir)antimony2sbml $(bin_dir)sbml2antimony $(bin_dir)cellml2antimony
 	@echo ""
 	@echo "Libary created:"
 	@echo "  lib/libantimony.a:  The libAntimony static library"
@@ -232,6 +257,7 @@ all : $(bin_dir)testantimony $(bin_dir)antimony2sbml $(bin_dir)sbml2antimony
 	@echo "Executables created:  "
 	@echo "  bin/antimony2sbml:  Converts all modules in antimony files to SBML files"
 	@echo "  bin/sbml2antimony:  Converts SBML files into antimony files."
+	@echo "  bin/cellml2antimony: Converts CellML files into antimony files."
 	@echo "  bin/testantimony:   Prints information about your antimony file(s) and"
 	@echo "                        re-saves the data in different formats"
 	@echo ""
@@ -249,6 +275,10 @@ $(bin_dir)antimony2sbml : $(lib_dir)libantimony.a $(src_dir)antimony2sbml.o
 $(bin_dir)sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
 	mkdir -p $(bin_dir)
 	$(CXX) -o $(bin_dir)sbml2antimony  $(src_dir)sbml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+
+$(bin_dir)cellml2antimony : $(lib_dir)libantimony.a $(src_dir)cellml2antimony.o
+	mkdir -p $(bin_dir)
+	$(CXX) -o $(bin_dir)cellml2antimony  $(src_dir)cellml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 #The distribution zip file.
 srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile
@@ -279,6 +309,8 @@ $(src_dir)antimony2sbml.o : $(src_dir)antimony2sbml.cpp
 
 $(src_dir)sbml2antimony.o : $(src_dir)sbml2antimony.cpp
 
+$(src_dir)cellml2antimony.o : $(src_dir)cellml2antimony.cpp
+
 $(src_dir)testantimony.o : $(src_dir)testantimony.cpp $(src_dir)antimony_api.h $(src_dir)registry.h $(src_dir)stringx.h $(src_dir)variable.h
 
 $(src_dir)antimony.tab.o : $(src_dir)antimony.tab.cpp
@@ -291,7 +323,7 @@ $(src_dir)event.o : $(src_dir)event.cpp $(src_dir)event.h $(src_dir)formula.h $(
 
 $(src_dir)formula.o : $(src_dir)formula.cpp $(src_dir)formula.h $(src_dir)module.h $(src_dir)registry.h $(src_dir)variable.h $(src_dir)reaction.h
 
-$(src_dir)module.o : $(src_dir)module.cpp $(src_dir)module.h $(src_dir)variable.h $(src_dir)enums.h $(src_dir)reaction.h $(src_dir)sbmlx.h $(src_dir)stringx.h $(src_dir)typex.h $(src_dir)formula.h
+$(src_dir)module.o : $(src_dir)module.cpp $(src_dir)module-sbml.cpp $(src_dir)module-cellml.cpp $(src_dir)module.h $(src_dir)variable.h $(src_dir)enums.h $(src_dir)reaction.h $(src_dir)sbmlx.h $(src_dir)stringx.h $(src_dir)typex.h $(src_dir)formula.h
 
 $(src_dir)typex.o : $(src_dir)typex.cpp $(src_dir)enums.h $(src_dir)typex.h
 
@@ -313,7 +345,5 @@ $(src_dir)variable.o : $(src_dir)variable.cpp $(src_dir)variable.h $(src_dir)dna
 $(src_dir)antimony.tab.cpp : $(src_dir)antimony.ypp $(src_dir)registry.h $(src_dir)module.h
 	bison --verbose -o$(src_dir)antimony.tab.cpp $(src_dir)antimony.ypp
 
-
-
 clean :
-	rm -f src/*.o $(lib_dir)libantimony.a $(bin_dir)testantimony $(bin_dir)sbml2antimony $(bin_dir)antimony2sbml antimony_src*.tar.gz Antimony_documentation*.zip
+	rm -f src/*.o $(lib_dir)libantimony.a $(bin_dir)testantimony $(bin_dir)sbml2antimony $(bin_dir)cellml2antimony $(bin_dir)antimony2sbml antimony_src*.tar.gz Antimony_documentation*.zip

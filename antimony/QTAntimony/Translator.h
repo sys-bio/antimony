@@ -1,12 +1,12 @@
 #ifndef TRANSLATOR_H
 #define TRANSLATOR_H
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include <QTextEdit>
+#include <QAction>
 
 class AntimonyTab;
 class SBMLTab;
-class QApplication;
 class TabManager;
 class QTAntimony;
 class FileWatcher;
