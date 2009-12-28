@@ -80,13 +80,18 @@ public:
   Variable* GetNextExportVariable();
   size_t GetNumExportVariables() const {return m_exportlist.size();};
   std::string GetNthExportVariable(size_t n) const;
+  size_t GetNumSynchronizedVariables() const;
+  std::pair<std::string, std::string> GetNthSynchronizedVariablePair(size_t n) const;
+  std::vector<std::pair<std::string, std::string> > GetAllSynchronizedVariablePairs() const;
+  std::vector<std::pair<std::string, std::string> > GetSynchronizedVariablesBetween(std::string mod1, std::string mod2);
+  std::pair<std::string, std::string> GetNthSynchronizedVariablesBetween(std::string mod1, std::string mod2, size_t n);
   Variable* GetUpstreamDNA();
   Variable* GetDownstreamDNA();
   formula_type GetFormulaType() const; //If we have a return value
 
   const std::string& GetModuleName() const;
   std::string GetVariableNameDelimitedBy(char cc) const;
-  std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > GetSyncronized() const {return m_synchronized;};
+  //std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > GetSynchronized() const {return m_synchronized;};
   std::string ToString() const;
   std::string OutputOnly(std::vector<var_type> types, std::string name, std::string indent, char cc) const;
   std::string ListIn80Cols(std::string type, std::vector<std::string> names, std::string indent) const;
