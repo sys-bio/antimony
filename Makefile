@@ -279,6 +279,9 @@ $(bin_dir)sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
 $(bin_dir)cellml2antimony : $(lib_dir)libantimony.a $(src_dir)cellml2antimony.o
 	mkdir -p $(bin_dir)
 	$(CXX) -o $(bin_dir)cellml2antimony  $(src_dir)cellml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+	echo "cd $(bin_dir);declare -x LD_LIBRARY_PATH=\"/home/lpsmith/xulrunner-sdk/lib/:/home/lpsmith/CellML/hg/cellml-opencell/opencellStage/components/\";cellml2antimony $1" > $(bin_dir)/cellml2antimony.bat
+	chmod a+x $(bin_dir)/cellml2antimony.bat
+
 
 #The distribution zip file.
 srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile

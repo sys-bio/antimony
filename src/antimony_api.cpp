@@ -455,6 +455,118 @@ LIB_EXTERN char* getNthSymbolNameInInterfaceOf(const char* moduleName, unsigned 
   return getCharStar(g_registry.GetModule(moduleName)->GetNthExportVariable(n).c_str());
 }
 
+
+LIB_EXTERN unsigned long getNumReplacedSymbolNames(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return g_registry.GetModule(moduleName)->GetNumSynchronizedVariables();
+}
+
+LIB_EXTERN char*** getAllReplacementSymbolPairs(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  vector<pair<string, string> > replacements = g_registry.GetModule(moduleName)->GetAllSynchronizedVariablePairs();
+  char*** ret = getCharStarStarStar(replacements.size());
+  if (ret==NULL) return NULL;
+  for (size_t n=0; n<replacements.size(); n++) {
+    char** two = getCharStarStar(2);
+    if (two==NULL) return NULL;
+    char* former = getCharStar(replacements[n].first.c_str());
+    if (former==NULL) return NULL;
+    char* latter = getCharStar(replacements[n].second.c_str());
+    if (latter==NULL) return NULL;
+    two[0] = former;
+    two[1] = latter;
+    ret[n] = two;
+  }
+  return ret;
+}
+
+LIB_EXTERN char** getNthReplacementSymbolPair(const char* moduleName, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  pair<string, string> replacement = g_registry.GetModule(moduleName)->GetNthSynchronizedVariablePair(n);
+  char** ret = getCharStarStar(2);
+  if (ret==NULL) return NULL;
+  char* former = getCharStar(replacement.first.c_str());
+  if (former==NULL) return NULL;
+  char* latter = getCharStar(replacement.second.c_str());
+  if (latter==NULL) return NULL;
+  ret[0] = former;
+  ret[1] = latter;
+  return ret;
+}
+
+LIB_EXTERN char* getNthFormerSymbolName(const char* moduleName, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  pair<string, string> replacement = g_registry.GetModule(moduleName)->GetNthSynchronizedVariablePair(n);
+  return getCharStar(replacement.first.c_str());
+}
+
+LIB_EXTERN char* getNthReplacementSymbolName(const char* moduleName, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  pair<string, string> replacement = g_registry.GetModule(moduleName)->GetNthSynchronizedVariablePair(n);
+  return getCharStar(replacement.second.c_str());
+}
+
+
+LIB_EXTERN unsigned long getNumReplacedSymbolNamesBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return g_registry.GetModule(moduleName)->GetSynchronizedVariablesBetween(formerSubmodName, replacementSubmodName).size();
+}
+
+LIB_EXTERN char*** getAllReplacementSymbolPairsBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  vector<pair<string, string> > replacements = g_registry.GetModule(moduleName)->GetSynchronizedVariablesBetween(formerSubmodName, replacementSubmodName);
+  char*** ret = getCharStarStarStar(replacements.size());
+  if (ret==NULL) return NULL;
+  for (size_t n=0; n<replacements.size(); n++) {
+    char** two = getCharStarStar(2);
+    if (two==NULL) return NULL;
+    char* former = getCharStar(replacements[n].first.c_str());
+    if (former==NULL) return NULL;
+    char* latter = getCharStar(replacements[n].second.c_str());
+    if (latter==NULL) return NULL;
+    two[0] = former;
+    two[1] = latter;
+    ret[n] = two;
+  }
+  return ret;
+}
+
+LIB_EXTERN char** getNthReplacementSymbolPairBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  pair<string, string> replacement = g_registry.GetModule(moduleName)->GetNthSynchronizedVariablesBetween(formerSubmodName, replacementSubmodName, n);
+  char** ret = getCharStarStar(2);
+  if (ret==NULL) return NULL;
+  char* former = getCharStar(replacement.first.c_str());
+  if (former==NULL) return NULL;
+  char* latter = getCharStar(replacement.second.c_str());
+  if (latter==NULL) return NULL;
+  ret[0] = former;
+  ret[1] = latter;
+  return ret;
+}
+
+LIB_EXTERN char* getNthFormerSymbolNameBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  pair<string, string> replacement = g_registry.GetModule(moduleName)->GetNthSynchronizedVariablesBetween(formerSubmodName, replacementSubmodName, n);
+  return getCharStar(replacement.first.c_str());
+}
+
+LIB_EXTERN char* getNthReplacementSymbolNameBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n)
+{
+  if (!checkModule(moduleName)) return NULL;
+  pair<string, string> replacement = g_registry.GetModule(moduleName)->GetNthSynchronizedVariablesBetween(formerSubmodName, replacementSubmodName, n);
+  return getCharStar(replacement.second.c_str());
+}
+
 LIB_EXTERN unsigned long getNumModules()
 {
   return g_registry.GetNumModules();

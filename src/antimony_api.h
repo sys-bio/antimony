@@ -293,19 +293,97 @@ LIB_EXTERN char*  getNthModuleName(unsigned long n);
 /** \} */
 
 /**
- * Returns the number of symbols defined to be in the interface of the given module.  In other words, if a module is defined 'module M(x, y, z)', this returns '3'.
+ * Returns the number of symbols defined to be in the interface of the given module.  In other words, if a module is defined 'module M(x, y, z)', this returns '3'.  (Modules with no interface symbols return '0'.)
  */
 LIB_EXTERN unsigned long getNumSymbolsInInterfaceOf(const char* moduleName);
 
 /**
- * Returns the names of the symbols defined to be in the interface of the given module.  In other words, if a module is defined 'module M(x, y, z)', this returns the list 'x, y, z'.
+ * Returns the names of the symbols defined to be in the interface of the given module.  In other words, if a module is defined 'module M(x, y, z)', this returns the list 'x, y, z'.  A module with no symbols defined in its interface would return a pointer to an empty string. 
  */
 LIB_EXTERN char** getSymbolNamesInInterfaceOf(const char* moduleName);
 
 /**
- * Returns the names of the symbols defined to be in the interface of the given module.  In other words, if a module is defined 'module M(x, y, z)', this returns the list 'x, y, z'.
+ * Returns the Nth symbol name defined to be in the interface of the given module.  If a module is defined 'module M(x, y, z)', calling this with n=0 returns "x".  If no such symbol is found, NULL is returned and an error is set.
  */
 LIB_EXTERN char* getNthSymbolNameInInterfaceOf(const char* moduleName, unsigned long n);
+
+
+
+/**
+ * Returns the Nth replacement symbol name of a symbol that has replaced a different symbol in the given module, through the use of an 'is' construct, or through the use of a module's interface.
+ * @see getNthFormerSymbolName
+ * @see getNthReplacementSymbolName
+ */
+LIB_EXTERN unsigned long getNumReplacedSymbolNames(const char* moduleName);
+
+/**
+ * Returns a list of pairs of symbol names that have been synchronized with each other--the first the symbol that was replaced, and the second the symbol used as the replacement.  These replacements are created when 'is' is used, and when a module's 'interface' (the symbols listed in parentheses) is used.
+ * @see getNthFormerSymbolName
+ * @see getNthReplacementSymbolName
+ * @see getNthReplacementSymbolPair
+ */
+LIB_EXTERN char*** getAllReplacementSymbolPairs(const char* moduleName);
+
+/**
+ * Returns the Nth pair of symbol names that have been synchronized with each other--the first the symbol that was replaced, and the second the symbol used as the replacement.  These replacements are created when 'is' is used, and when a module's 'interface' (the symbols listed in parentheses) is used.
+ * @see getNthFormerSymbolName
+ * @see getNthReplacementSymbolName
+ */
+LIB_EXTERN char** getNthReplacementSymbolPair(const char* moduleName, unsigned long n);
+
+/**
+ * Returns the Nth symbol name that has been replaced by a new symbol name in the given module, through the use of an 'is' construct, or through the use of a module's interface.
+ * @see getNthReplacementSymbolName
+ * @see GetNumReplacedSymbolNames
+ */
+LIB_EXTERN char* getNthFormerSymbolName(const char* moduleName, unsigned long n);
+
+/**
+ * Returns the Nth replacement symbol name of a symbol that has replaced a different symbol in the given module, through the use of an 'is' construct, or through the use of a module's interface.
+ * @see getNthFormerSymbolName
+ * @see GetNumReplacedSymbolNames
+ */
+LIB_EXTERN char* getNthReplacementSymbolName(const char* moduleName, unsigned long n);
+
+
+
+/**
+ * Returns the Nth replacement symbol name of a symbol that has replaced a different symbol in the given module, through the use of an 'is' construct, or through the use of a module's interface, between the given submodules, with the variable in the first submodule being the former variable name, and the variable in the second being the replacement variable name.  If an empty string is used as one of the submodule names, those synchronized variables that are not part of any submodule are searched for.
+ * @see getNthFormerSymbolName
+ * @see getNthReplacementSymbolName
+ */
+LIB_EXTERN unsigned long getNumReplacedSymbolNamesBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName);
+
+/**
+ * Returns the Nth pair of symbol names that have been synchronized with each other--the first the symbol that was replaced, and the second the symbol used as the replacement, between the given submodules, with the variable in the first submodule being the former variable name, and the variable in the second being the replacement variable name.  These replacements are created when 'is' is used, and when a module's 'interface' (the symbols listed in parentheses) is used.
+ * @see getNthFormerSymbolName
+ * @see getNthReplacementSymbolName
+ */
+LIB_EXTERN char** getNthReplacementSymbolPairBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n);
+
+/**
+ * Returns the Nth symbol name that has been replaced by a new symbol name in the given module, through the use of an 'is' construct, or through the use of a module's interface, between the given submodules, with the variable in the first submodule being the former variable name, and the variable in the second being the replacement variable name.
+ * @see getNthReplacementSymbolName
+ * @see GetNumReplacedSymbolNames
+ */
+LIB_EXTERN char* getNthFormerSymbolNameBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n);
+
+/**
+ * Returns the Nth replacement symbol name of a symbol that has replaced a different symbol in the given module, through the use of an 'is' construct, or through the use of a module's interface, between the given submodules, with the variable in the first submodule being the former variable name, and the variable in the second being the replacement variable name.
+ * @see getNthFormerSymbolName
+ * @see GetNumReplacedSymbolNames
+ */
+LIB_EXTERN char* getNthReplacementSymbolNameBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n);
+
+/**
+ * Returns a list of pairs of symbol names that have been synchronized with each other--the first the symbol that was replaced, and the second the symbol used as the replacement, between the given submodules, with the variable in the first submodule being the former variable name, and the variable in the second being the replacement variable name.  These replacements are created when 'is' is used, and when a module's 'interface' (the symbols listed in parentheses) is used.
+ * @see getNthFormerSymbolName
+ * @see getNthReplacementSymbolName
+ * @see getNthReplacementSymbolPair
+ */
+LIB_EXTERN char*** getAllReplacementSymbolPairsBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n);
+
+
 
 
 

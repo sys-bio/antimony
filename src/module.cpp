@@ -351,9 +351,69 @@ string Module::GetNthExportVariable(size_t n) const
 {
   if (n>=m_exportlist.size()) {
     g_registry.SetError("Unable to retrieve variable " + SizeTToString(n) + " in the interface of module " + GetModuleName() + " because there are only " + SizeTToString(m_exportlist.size()) + " symbol(s) in that module's interface.");
+    return NULL;
   }
   assert(m_exportlist[n].size() == 1);
   return m_exportlist[n][0];
+}
+
+size_t Module::GetNumSynchronizedVariables() const
+{
+  return m_synchronized.size();
+}
+
+pair<string, string> Module::GetNthSynchronizedVariablePair(size_t n) const
+{
+  if (n >= m_synchronized.size()) {
+    g_registry.SetError("Unable to retrieve synchronized variable pair " + SizeTToString(n) + " in the module " + GetModuleName() + " because there are only " + SizeTToString(m_synchronized.size()) + " synchronized variables defined within that module.");
+    pair<string, string> blank;
+    return blank;
+  }
+  return make_pair(ToStringFromVecDelimitedBy(m_synchronized[n].first, g_registry.GetCC()),
+                   ToStringFromVecDelimitedBy(m_synchronized[n].second, g_registry.GetCC()) );
+}
+
+vector<pair<string, string> > Module::GetAllSynchronizedVariablePairs() const
+{
+  vector<pair<string, string> > ret;
+  for (size_t n=0; n<m_synchronized.size(); n++) {
+    ret.push_back(make_pair(ToStringFromVecDelimitedBy(m_synchronized[n].first, g_registry.GetCC()),
+                            ToStringFromVecDelimitedBy(m_synchronized[n].second, g_registry.GetCC()) ));
+  }
+  return ret;
+}
+
+vector<pair<string, string> > Module::GetSynchronizedVariablesBetween(string mod1, string mod2) {
+  vector<pair<string, string> > ret;
+  for (size_t pr=0; pr<m_synchronized.size(); pr++) {
+    pair<vector<string>, vector<string> > prn = m_synchronized[pr];
+    if ((prn.first[0]  == mod1 || (prn.first.size()==1  && mod1=="")) &&
+        (prn.second[0] == mod2 || (prn.second.size()==1 && mod2=="")) ) {
+      vector<string> shortername = prn.first;
+      string name1, name2;
+      if (shortername.size() > 1) {
+        shortername.erase(shortername.begin());
+      }
+      name1 = ToStringFromVecDelimitedBy(shortername, g_registry.GetCC());
+      shortername = prn.second;
+      if (shortername.size() > 1) {
+        shortername.erase(shortername.begin());
+      }
+      name2 = ToStringFromVecDelimitedBy(shortername, g_registry.GetCC());
+      ret.push_back(make_pair(name1, name2));
+    }
+  }
+  return ret;
+}
+
+pair<string, string> Module::GetNthSynchronizedVariablesBetween(string mod1, string mod2, size_t n) {
+  vector<pair<string, string> >  fullvec = GetSynchronizedVariablesBetween(mod1, mod2);
+  if (n>=fullvec.size()) {
+    g_registry.SetError("Unable to retrieve synchronized variable pair " + SizeTToString(n) + " between submodules '" + mod1 + "' and '" + mod2 + "' in the module '" + GetModuleName() + "' because there are only " + SizeTToString(m_synchronized.size()) + " synchronized variables between those submodules defined within the full module.");
+    pair<string, string> blank;
+    return blank;
+  }
+  return fullvec[n];
 }
 
 Variable* Module::GetUpstreamDNA()
