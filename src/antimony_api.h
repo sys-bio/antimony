@@ -181,12 +181,12 @@ LIB_EXTERN void   clearPreviousLoads();
 /**
  * Writes out an antimony-formatted file containing the given module.  If no module name is given, all modules in the current set are returned.  If the module depends on any sub-modules, those modules are written out as well, also in the antimony format.  Returns 0 on failure (and sets an error), 1 on success.
  */
-LIB_EXTERN int   writeAntimonyFile(const char* filename, const char* moduleName = NULL);
+LIB_EXTERN int   writeAntimonyFile(const char* filename, const char* moduleName);
 
 /**
  * Returns the same output as writeAntimonyFile, but to a char* array instead of to a file.  Returns NULL on failure, and sets an error.
  */
-LIB_EXTERN char* getAntimonyString(const char* moduleName = NULL);
+LIB_EXTERN char* getAntimonyString(const char* moduleName);
 
 #ifndef NSBML
 /**
@@ -355,6 +355,14 @@ LIB_EXTERN char* getNthReplacementSymbolName(const char* moduleName, unsigned lo
 LIB_EXTERN unsigned long getNumReplacedSymbolNamesBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName);
 
 /**
+ * Returns a list of pairs of symbol names that have been synchronized with each other--the first the symbol that was replaced, and the second the symbol used as the replacement, between the given submodules, with the variable in the first submodule being the former variable name, and the variable in the second being the replacement variable name.  These replacements are created when 'is' is used, and when a module's 'interface' (the symbols listed in parentheses) is used.
+ * @see getNthFormerSymbolName
+ * @see getNthReplacementSymbolName
+ * @see getNthReplacementSymbolPair
+ */
+LIB_EXTERN char*** getAllReplacementSymbolPairsBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n);
+
+/**
  * Returns the Nth pair of symbol names that have been synchronized with each other--the first the symbol that was replaced, and the second the symbol used as the replacement, between the given submodules, with the variable in the first submodule being the former variable name, and the variable in the second being the replacement variable name.  These replacements are created when 'is' is used, and when a module's 'interface' (the symbols listed in parentheses) is used.
  * @see getNthFormerSymbolName
  * @see getNthReplacementSymbolName
@@ -374,15 +382,6 @@ LIB_EXTERN char* getNthFormerSymbolNameBetween(const char* moduleName, const cha
  * @see GetNumReplacedSymbolNames
  */
 LIB_EXTERN char* getNthReplacementSymbolNameBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n);
-
-/**
- * Returns a list of pairs of symbol names that have been synchronized with each other--the first the symbol that was replaced, and the second the symbol used as the replacement, between the given submodules, with the variable in the first submodule being the former variable name, and the variable in the second being the replacement variable name.  These replacements are created when 'is' is used, and when a module's 'interface' (the symbols listed in parentheses) is used.
- * @see getNthFormerSymbolName
- * @see getNthReplacementSymbolName
- * @see getNthReplacementSymbolPair
- */
-LIB_EXTERN char*** getAllReplacementSymbolPairsBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n);
-
 
 
 
@@ -746,7 +745,7 @@ LIB_EXTERN unsigned long  getNumAssignmentsForEvent(const char* moduleName, unsi
 LIB_EXTERN char*   getTriggerForEvent(const char* moduleName, unsigned long event);
 
 /**
- * Returns the delay for the given event, as an equation (if present; if the event has no delay, "" is returned)..
+ * Returns the delay for the given event, as an equation (if present; if the event has no delay, "" is returned).
  */
 LIB_EXTERN char*   getDelayForEvent(const char* moduleName, unsigned long event);
 

@@ -1132,7 +1132,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   }
 
   if (DNAnames.size() || operatornames.size() || genenames.size() || varnames.size() || constnames.size() || innames.size()) {
-    retval += indent + "\n//Other declarations:\n";
+    retval += "\n" + indent + "//Other declarations:\n";
     retval += ListIn80Cols("DNA", DNAnames, indent);
     retval += ListIn80Cols("operator", operatornames, indent);
     retval += ListIn80Cols("gene", genenames, indent);

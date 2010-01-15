@@ -179,6 +179,7 @@ QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)antimony__api_8h-source.html \
 	$(doc_dir)antimony-biomodels.html \
+	$(doc_dir)antimony-cellml.html \
 	$(doc_dir)antimony-examples.html \
 	$(doc_dir)antimony-installation.html \
 	$(doc_dir)antimony-license.html \
@@ -227,9 +228,11 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(ex_dir)ex_sbml_output_ringoscil_sbml.xml \
 	$(ex_dir)biomodels/BIOMD0000000001.txt \
 	$(ex_dir)biomodels/BIOMD0000000???.txt \
+	$(ex_dir)cellml/*.cellml.txt \
 
 DOCSRCFILES = \
 	$(doc_dir)antimony-biomodels.txt \
+	$(doc_dir)antimony-cellml.txt \
 	$(doc_dir)antimony-examples.txt \
 	$(doc_dir)antimony-installation.txt \
 	$(doc_dir)antimony-license.txt \
