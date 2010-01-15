@@ -32,6 +32,7 @@ public:
 
   bool IsEmpty() const;
   bool IsDouble() const;
+  bool IsAmountIn(const Variable* compartment) const;
   bool IsOne() const;
   bool IsEllipsesOnly() const;
   bool GetIsConst() const;
@@ -46,6 +47,7 @@ public:
   std::string ToDelimitedStringWithEllipses(char cc) const;
   std::string ToSBMLString() const;
   std::string ToSBMLString(std::vector<std::pair<Variable*, size_t> > strands) const;
+  double      ToAmount() const;
   std::string ConvertOneSymbolToFunction(std::string formula) const;
   std::vector<const Variable*> GetVariablesFrom(std::string formula, std::string module) const;
   std::vector<std::vector<std::string> > GetVariables() const;

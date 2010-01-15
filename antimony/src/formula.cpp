@@ -109,6 +109,44 @@ bool Formula::IsDouble() const
   return false;
 }
 
+bool Formula::IsAmountIn(const Variable* compartment) const
+{
+  if (compartment==NULL) return false;
+  size_t check=0;
+  if (m_components.size() == 3) {
+    if (m_components[0].second.size() == 0) {
+      if (IsReal(m_components[0].first)) {
+        check = 1;
+      }
+    }
+  }
+  else if (m_components.size() == 4) {
+    if (m_components[0].second.size() == 0 && m_components[0].first == "-" &&
+        m_components[1].second.size() == 0 && IsReal(m_components[1].first) ) {
+      check = 2;;
+    }
+  }
+  if (check==0) return false;
+  if (m_components[check].second.size() == 0 && m_components[check].first == "/" &&
+      m_components[check+1].second == compartment->GetName()) {
+    return true;
+  }
+  return false;
+}
+
+double Formula::ToAmount() const
+{
+  //We will assume that 'IsAmountIn' returned true.
+  if (m_components.size() == 3) {
+    return atof(m_components[0].first.c_str());
+  }
+  else if (m_components.size() == 4) {
+    return 0 - atof(m_components[1].first.c_str());
+  }
+  assert(false);
+  return 0;
+}
+
 bool Formula::IsOne() const
 {
   if (m_components.size() == 1) {

@@ -407,6 +407,9 @@ void Module::CreateSBMLModel()
     if (formula->IsDouble()) {
       sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
     }
+    else if (formula->IsAmountIn(species->GetCompartment())) {
+      sbmlspecies->setInitialAmount(formula->ToAmount());
+    }
     SetAssignmentFor(sbmlmod, species);
   }
 
@@ -564,7 +567,9 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var)
       ar->setVariable(var->GetNameDelimitedBy(cc));
       ar->setMath(math);
     }
-    else if (!formula->IsDouble()) { //if it was a double, we already dealt with it.
+    else if (!formula->IsDouble() &&
+             !(IsSpecies(var->GetType()) && formula->IsAmountIn(var->GetCompartment()))) {
+      //if it was a double or a species with an amount, we already dealt with it.
       InitialAssignment* ia = sbmlmod->createInitialAssignment();
       ia->setSymbol(var->GetNameDelimitedBy(cc));
       ia->setMath(math);
