@@ -5,26 +5,26 @@ model hhsa_1952()
   compartment unit_compartment;
 
   // Assignment Rules:
-  V_neg := -V
-  E := V + E_R
-  i_Na := g_Na * pow(m, 3) * h * (V - V_Na)
-  i_K := g_K * pow(n, 4) * (V - V_K)
-  i_L := g_L * (V - V_L)
-  V_Na := E_Na - E_R
-  V_K := E_K - E_R
-  V_L := E_L - E_R
-  alpha_m := 0.1 * (V + 25) / (exp((V + 25) / 10) - 1)
-  beta_m := 4 * exp(V / 18)
-  alpha_h := 0.07 * exp(V / 20)
-  beta_h := 1 / (exp((V + 30) / 10) + 1)
-  alpha_n := 0.01 * (V + 10) / (exp((V + 10) / 10) - 1)
-  beta_n := 0.125 * exp(V / 80)
+  V_neg := -V;
+  E := V + E_R;
+  i_Na := g_Na * pow(m, 3) * h * (V - V_Na);
+  i_K := g_K * pow(n, 4) * (V - V_K);
+  i_L := g_L * (V - V_L);
+  V_Na := E_Na - E_R;
+  V_K := E_K - E_R;
+  V_L := E_L - E_R;
+  alpha_m := 0.1 * (V + 25) / (exp((V + 25) / 10) - 1);
+  beta_m := 4 * exp(V / 18);
+  alpha_h := 0.07 * exp(V / 20);
+  beta_h := 1 / (exp((V + 30) / 10) + 1);
+  alpha_n := 0.01 * (V + 10) / (exp((V + 10) / 10) - 1);
+  beta_n := 0.125 * exp(V / 80);
 
   // Rate Rules:
-  V' = (I - (i_Na + i_K + i_L)) / Cm
-  m' = alpha_m * (1 - m) - beta_m * m
-  h' = alpha_h * (1 - h) - beta_h * h
-  n' = alpha_n * (1 - n) - beta_n * n
+  V' = (I - (i_Na + i_K + i_L)) / Cm;
+  m' = alpha_m * (1 - m) - beta_m * m;
+  h' = alpha_h * (1 - h) - beta_h * h;
+  n' = alpha_n * (1 - n) - beta_n * n;
 
   // Compartment initializations:
   unit_compartment = 1;
@@ -43,8 +43,8 @@ model hhsa_1952()
   E_Na = -190;
   E_K = -63;
   E_L = -85.613;
-  
-//Other declarations:
+
+  //Other declarations:
   var V, V_neg, E, i_Na, i_K, i_L, m, h, n, V_Na, V_K, V_L, alpha_m, beta_m;
   var alpha_h, beta_h, alpha_n, beta_n;
 

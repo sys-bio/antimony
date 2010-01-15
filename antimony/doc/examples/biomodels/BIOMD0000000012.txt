@@ -6,15 +6,15 @@ model repressilator()
   species PX in cell, PY in cell, PZ in cell, X in cell, Y in cell, Z in cell;
 
   // Assignment Rules:
-  beta := tau_mRNA / tau_prot
-  alpha0 := a0_tr * eff * tau_prot / (log(2) * KM)
-  alpha := a_tr * eff * tau_prot / (log(2) * KM)
-  t_ave := tau_mRNA / log(2)
-  kd_mRNA := log(2) / tau_mRNA
-  kd_prot := log(2) / tau_prot
-  k_tl := eff / t_ave
-  a_tr := (ps_a - ps_0) * 60
-  a0_tr := ps_0 * 60
+  beta := tau_mRNA / tau_prot;
+  alpha0 := a0_tr * eff * tau_prot / (log(2) * KM);
+  alpha := a_tr * eff * tau_prot / (log(2) * KM);
+  t_ave := tau_mRNA / log(2);
+  kd_mRNA := log(2) / tau_mRNA;
+  kd_prot := log(2) / tau_prot;
+  k_tl := eff / t_ave;
+  a_tr := (ps_a - ps_0) * 60;
+  a0_tr := ps_0 * 60;
 
   // Reactions:
   Reaction1: X -> ; kd_mRNA * X;
@@ -49,8 +49,8 @@ model repressilator()
   tau_prot = 10;
   ps_a = 0.5;
   ps_0 = 0.0005;
-  
-//Other declarations:
+
+  //Other declarations:
   var beta, alpha0, alpha, t_ave, kd_mRNA, kd_prot, k_tl, a_tr, a0_tr;
 
   //Display Names:

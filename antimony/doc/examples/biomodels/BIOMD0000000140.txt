@@ -13,13 +13,13 @@ model Hoffmann2002_WT_IkBNFkB_Signaling()
   species IkBbeta_transcript in nucleus, IkBeps_transcript in nucleus, IkBeps_nuc_NFkB_nuc in nucleus;
 
   // Assignment Rules:
-  Total_IkBbeta := IkBbeta + IkBbeta_NFkB + IKK_IkBbeta + IKK_IkBbeta_NFkB
-  Total_IkBeps := IkBeps + IkBeps_NFkB + IKK_IkBeps + IKK_IkBeps_NFkB
-  Total_IkBalpha := IkBalpha + IkBalpha_NFkB + IKK_IkBalpha + IKK_IkBalpha_NFkB
-  Total_NFkBn := IkBbeta_nuc_NFkB_nuc + NFkB_nuc
+  Total_IkBbeta := IkBbeta + IkBbeta_NFkB + IKK_IkBbeta + IKK_IkBbeta_NFkB;
+  Total_IkBeps := IkBeps + IkBeps_NFkB + IKK_IkBeps + IKK_IkBeps_NFkB;
+  Total_IkBalpha := IkBalpha + IkBalpha_NFkB + IKK_IkBalpha + IKK_IkBalpha_NFkB;
+  Total_NFkBn := IkBbeta_nuc_NFkB_nuc + NFkB_nuc;
 
   // Rate Rules:
-  fr_after_trigger' = trigger_value * (-0.5 / pow(1 + (time - 2000), 2))
+  fr_after_trigger' = trigger_value * (-0.5 / pow(1 + (time - 2000), 2));
 
   // Reactions:
   v1: NFkB + IkBalpha -> IkBalpha_NFkB; cytoplasm * (a4 * IkBalpha * NFkB - d4 * IkBalpha_NFkB);
@@ -144,8 +144,8 @@ model Hoffmann2002_WT_IkBNFkB_Signaling()
   fr = 1;
   fr_after_trigger = 0.5;
   v39_k2_IkBbeta_nuc_NFkB_nuc = 0.0069;
-  
-//Other declarations:
+
+  //Other declarations:
   var trigger_value, flag_for_after_trigger, fr_after_trigger, Total_IkBbeta;
   var Total_IkBeps, Total_IkBalpha, Total_NFkBn;
 

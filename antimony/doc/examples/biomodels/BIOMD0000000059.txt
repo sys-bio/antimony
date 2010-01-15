@@ -7,45 +7,45 @@ model Fridlyand2003_Ca_flux_pancreatic_cells()
   species ATP_cyt in Cytoplasm, $ADP_cyt in Cytoplasm;
 
   // Assignment Rules:
-  ADP_cyt := 4000 - ATP_cyt
-  Vca := TV / 2 * log(Ca_ec / Ca_cyt)
-  Vk := TV * log(K_ec / K_cyt)
-  Vna := TV * log(Na_ec / Na_cyt)
-  Vnaca := TV * (3 * log(Na_ec / Na_cyt) - log(Ca_ec / Ca_cyt))
-  pvca := 1 / (1 + exp((Vcah - V) / Kcah))
-  f_CRAN := -gm_CRAN / (1 + exp((Ca_er - Kcar) / 3))
-  p_CRAN := V - V_CRAN
-  pna := 1 / (1 + exp((104 + V) / 8))
-  f_5 := f5_ast * exp(V / (2 * TV))
-  b_5 := b5_ast * exp(-V / (2 * TV))
-  F1 := f_1 * pow(Na_cyt, 3)
-  F4 := f_4 * pow(K_ec, 2)
-  F5 := f_5 * ATP_cyt
-  B2 := b_2 * ADP_cyt
-  B3 := b_3 * pow(Na_ec, 3)
-  B4 := b_4 * P
-  B6 := b_6 * pow(Ksup, 2)
-  D := f_2 * f_3 * F4 * F5 * f_6 + b_1 * f_3 * F4 * F5 * f_6 + b_1 * B2 * F4 * F5 * f_6 + b_1 * B2 * B3 * F5 * f_6 + b_1 * B2 * B3 * B4 * f_6 + b_1 * B2 * B3 * B4 * b_5
-  f_Ca := pow(Ca_cyt, 4) / (pow(Ca_cyt, 4) + pow(Kkca, 4))
-  Okatp := (0.08 * (1 + 0.33 * (ADP_cyt / Kdd)) + 0.89 * pow(0.165 * (ADP_cyt / Kdd), 2)) / (pow(1 + 0.165 * (ADP_cyt / Kdd), 2) * (1 + 0.135 * (ADP_cyt / Ktd) + 0.05 * (ATP_cyt / Ktt)))
-  n_infinity := 1 / (1 + exp((Vn - V) / Sn))
-  tau_n := c / (exp((V - Vtau) / a) + exp((Vtau - V) / b))
-  I_Vca := gmvca * pvca * (V - Vca)
-  I_CaPump := Pmcap * pow(Ca_cyt, 2) / (pow(Kcap, 2) + pow(Ca_cyt, 2))
-  I_NaCa := gnaca * pow(Ca_cyt, 5) * (V - Vnaca) / (pow(Ca_cyt, 5) + pow(Knaca, 5))
-  I_CRAN := f_CRAN * p_CRAN * (V - Vna)
-  I_Na := gmna * pna * (V - Vna)
-  I_NaK := Pnak * (F1 * f_2 * f_3 * F4 * F5 * f_6 - b_1 * B2 * B3 * B4 * b_5 * B6) / D
-  I_KDr := gmKDr * n * (V - Vk)
-  I_KCa := gmkca * f_Ca * (V - Vk)
-  I_KATP := gmkatp * Okatp * (V - Vk)
-  Jerp := Pcaer * pow(Ca_cyt, 2) / (pow(Ca_cyt, 2) + pow(Kcarp, 2))
-  O_infinity := Ca_cyt * pow(IP3_cyt, 3) / ((Ca_cyt + Krca) * (pow(IP3_cyt, 3) + pow(Kip3, 3)))
-  Jout := (Pleak + Pip3 * O_infinity) * (Ca_er - Ca_cyt)
+  ADP_cyt := 4000 - ATP_cyt;
+  Vca := TV / 2 * log(Ca_ec / Ca_cyt);
+  Vk := TV * log(K_ec / K_cyt);
+  Vna := TV * log(Na_ec / Na_cyt);
+  Vnaca := TV * (3 * log(Na_ec / Na_cyt) - log(Ca_ec / Ca_cyt));
+  pvca := 1 / (1 + exp((Vcah - V) / Kcah));
+  f_CRAN := -gm_CRAN / (1 + exp((Ca_er - Kcar) / 3));
+  p_CRAN := V - V_CRAN;
+  pna := 1 / (1 + exp((104 + V) / 8));
+  f_5 := f5_ast * exp(V / (2 * TV));
+  b_5 := b5_ast * exp(-V / (2 * TV));
+  F1 := f_1 * pow(Na_cyt, 3);
+  F4 := f_4 * pow(K_ec, 2);
+  F5 := f_5 * ATP_cyt;
+  B2 := b_2 * ADP_cyt;
+  B3 := b_3 * pow(Na_ec, 3);
+  B4 := b_4 * P;
+  B6 := b_6 * pow(Ksup, 2);
+  D := f_2 * f_3 * F4 * F5 * f_6 + b_1 * f_3 * F4 * F5 * f_6 + b_1 * B2 * F4 * F5 * f_6 + b_1 * B2 * B3 * F5 * f_6 + b_1 * B2 * B3 * B4 * f_6 + b_1 * B2 * B3 * B4 * b_5;
+  f_Ca := pow(Ca_cyt, 4) / (pow(Ca_cyt, 4) + pow(Kkca, 4));
+  Okatp := (0.08 * (1 + 0.33 * (ADP_cyt / Kdd)) + 0.89 * pow(0.165 * (ADP_cyt / Kdd), 2)) / (pow(1 + 0.165 * (ADP_cyt / Kdd), 2) * (1 + 0.135 * (ADP_cyt / Ktd) + 0.05 * (ATP_cyt / Ktt)));
+  n_infinity := 1 / (1 + exp((Vn - V) / Sn));
+  tau_n := c / (exp((V - Vtau) / a) + exp((Vtau - V) / b));
+  I_Vca := gmvca * pvca * (V - Vca);
+  I_CaPump := Pmcap * pow(Ca_cyt, 2) / (pow(Kcap, 2) + pow(Ca_cyt, 2));
+  I_NaCa := gnaca * pow(Ca_cyt, 5) * (V - Vnaca) / (pow(Ca_cyt, 5) + pow(Knaca, 5));
+  I_CRAN := f_CRAN * p_CRAN * (V - Vna);
+  I_Na := gmna * pna * (V - Vna);
+  I_NaK := Pnak * (F1 * f_2 * f_3 * F4 * F5 * f_6 - b_1 * B2 * B3 * B4 * b_5 * B6) / D;
+  I_KDr := gmKDr * n * (V - Vk);
+  I_KCa := gmkca * f_Ca * (V - Vk);
+  I_KATP := gmkatp * Okatp * (V - Vk);
+  Jerp := Pcaer * pow(Ca_cyt, 2) / (pow(Ca_cyt, 2) + pow(Kcarp, 2));
+  O_infinity := Ca_cyt * pow(IP3_cyt, 3) / ((Ca_cyt + Krca) * (pow(IP3_cyt, 3) + pow(Kip3, 3)));
+  Jout := (Pleak + Pip3 * O_infinity) * (Ca_er - Ca_cyt);
 
   // Rate Rules:
-  n' = (n_infinity - n) / tau_n
-  V' = (0 - (I_Vca + I_CaPump + I_NaCa + I_CRAN + I_Na + I_NaK + I_KDr + I_KCa + I_KATP)) / Cm
+  n' = (n_infinity - n) / tau_n;
+  V' = (0 - (I_Vca + I_CaPump + I_NaCa + I_CRAN + I_Na + I_NaK + I_KDr + I_KCa + I_KATP)) / Cm;
 
   // Reactions:
   Calcium_cyt_Ivca:  -> Ca_cyt; fi * -I_Vca / (2 * F);
@@ -142,8 +142,8 @@ model Fridlyand2003_Ca_flux_pancreatic_cells()
   kadp = 0.00037;
   katpca = 5e-05;
   katp = 5e-05;
-  
-//Other declarations:
+
+  //Other declarations:
   var n, V, Vca, Vk, Vna, Vnaca, pvca, f_CRAN, p_CRAN, pna, f_5, b_5, F1;
   var F4, F5, B2, B3, B4, B6, D, f_Ca, Okatp, n_infinity, tau_n, I_Vca, I_CaPump;
   var I_NaCa, I_CRAN, I_Na, I_NaK, I_KDr, I_KCa, I_KATP, Jerp, O_infinity;

@@ -19,12 +19,12 @@ model untitled()
   species Apaf_hash in cell, pC9 in cell, Baxm in mitochondrion, Bax2 in mitochondrion;
 
   // Assignment Rules:
-  pC3_frac := (pC3 + C8_pC3 + pC3_Apop) / C3_tot
-  C3_frac := (C3 + C3_pC6 + XIAP_C3 + PARP_C3) / C3_tot
-  C3_UB_frac := C3_Ub / C3_tot
-  cPARP_frac := CPARP / (CPARP + PARP + PARP_C3)
-  C3_tot := pC3 + C8_pC3 + pC3_Apop + C3 + C3_pC6 + XIAP_C3 + PARP_C3 + C3_Ub
-  fC3_fract := C3 / C3_tot
+  pC3_frac := (pC3 + C8_pC3 + pC3_Apop) / C3_tot;
+  C3_frac := (C3 + C3_pC6 + XIAP_C3 + PARP_C3) / C3_tot;
+  C3_UB_frac := C3_Ub / C3_tot;
+  cPARP_frac := CPARP / (CPARP + PARP + PARP_C3);
+  C3_tot := pC3 + C8_pC3 + pC3_Apop + C3 + C3_pC6 + XIAP_C3 + PARP_C3 + C3_Ub;
+  fC3_fract := C3 / C3_tot;
 
   // Reactions:
   re1: L + R -> L_R; cell * (L * R * k1 - L_R * k_1);
@@ -206,8 +206,8 @@ model untitled()
   k_28 = 0.001;
   kc7 = 1;
   v = 0.07;
-  
-//Other declarations:
+
+  //Other declarations:
   var pC3_frac, C3_frac, C3_UB_frac, cPARP_frac, C3_tot, fC3_fract;
 
   //Display Names:

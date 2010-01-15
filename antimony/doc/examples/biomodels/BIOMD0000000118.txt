@@ -9,21 +9,21 @@ model model_0000001()
   compartment compartment_0000001;
 
   // Assignment Rules:
-  INa := gNa * pow(Minfs, pms) * hhs * (V - VNa)
-  INaP := gNaP * Pinfs * (V - VNa)
-  IKdr := gKdr * pow(nns, pns) * (V - VK)
-  IA := gA * pow(Ainfs, 3) * bbs * (V - VK)
-  Iz := gZ * zzs * (V - VK)
-  Minfs := GAMMAF(V, thetam, sigmam)
-  Pinfs := GAMMAF(V, thetap, sigmap)
-  Ainfs := GAMMAF(V, thetaa, sigmaa)
+  INa := gNa * pow(Minfs, pms) * hhs * (V - VNa);
+  INaP := gNaP * Pinfs * (V - VNa);
+  IKdr := gKdr * pow(nns, pns) * (V - VK);
+  IA := gA * pow(Ainfs, 3) * bbs * (V - VK);
+  Iz := gZ * zzs * (V - VK);
+  Minfs := GAMMAF(V, thetam, sigmam);
+  Pinfs := GAMMAF(V, thetap, sigmap);
+  Ainfs := GAMMAF(V, thetaa, sigmaa);
 
   // Rate Rules:
-  zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs) / tauZs
-  bbs' = (GAMMAF(V, thetab, sigmab) - bbs) / tauBs
-  nns' = phi * (GAMMAF(V, thetan, sigman) - nns) / (1 + 5 * GAMMAF(V, t_taun, -15))
-  hhs' = phi * (GAMMAF(V, thetah, sigmah) - hhs) / (1 + 7.5 * GAMMAF(V, t_tauh, -6))
-  V' = (-gL * (V - VL) - INa - INaP - IKdr - IA - Iz + Iapp) / Cm
+  zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs) / tauZs;
+  bbs' = (GAMMAF(V, thetab, sigmab) - bbs) / tauBs;
+  nns' = phi * (GAMMAF(V, thetan, sigman) - nns) / (1 + 5 * GAMMAF(V, t_taun, -15));
+  hhs' = phi * (GAMMAF(V, thetah, sigmah) - hhs) / (1 + 7.5 * GAMMAF(V, t_tauh, -6));
+  V' = (-gL * (V - VL) - INa - INaP - IKdr - IA - Iz + Iapp) / Cm;
 
   // Compartment initializations:
   compartment_0000001 = 1;
@@ -66,8 +66,8 @@ model model_0000001()
   nns = 0.02457;
   hhs = 0.98786;
   V = -71.81327;
-  
-//Other declarations:
+
+  //Other declarations:
   var INa, INaP, IKdr, IA, Iz, Minfs, Pinfs, Ainfs, zzs, bbs, nns, hhs, V;
 
   //Display Names:

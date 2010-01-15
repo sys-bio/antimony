@@ -10,8 +10,8 @@ model p53_Mdm2_System()
   species $totMdm2 in cell;
 
   // Assignment Rules:
-  totp53 := p53 + Mdm2_p53
-  totMdm2 := Mdm2 + Mdm2_p53 + ARF_Mdm2
+  totp53 := p53 + Mdm2_p53;
+  totMdm2 := Mdm2 + Mdm2_p53 + ARF_Mdm2;
 
   // Reactions:
   Mdm2Synthesis: Mdm2_mRNA -> Mdm2_mRNA + Mdm2 + mdm2syn; ksynMdm2 * Mdm2_mRNA;
@@ -71,7 +71,7 @@ model p53_Mdm2_System()
   kdam = 0.08;
   krepair = 2e-05;
   kproteff = 1;
-  
-//Other declarations:
+
+  //Other declarations:
   var IR;
 end

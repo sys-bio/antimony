@@ -6,7 +6,7 @@ model Bhartiya2003_Tryptophan_operon()
   species Enz in compartment_, Ts in compartment_, $Tt in compartment_;
 
   // Assignment Rules:
-  Tt := (-f_val * e_val - f_val * Tex + Tex * Ts + pow(pow(f_val * (e_val + Tex) - Tex * Ts, 2) - 4 * f_val * Tex * (-e_val * Ts - Tex * Tomax - Tex * Ts), 0.5)) / (2 * Tex)
+  Tt := (-f_val * e_val - f_val * Tex + Tex * Ts + pow(pow(f_val * (e_val + Tex) - Tex * Ts, 2) - 4 * f_val * Tex * (-e_val * Ts - Tex * Tomax - Tex * Ts), 0.5)) / (2 * Tex);
 
   // Reactions:
   Enzyme_synthesis:  -> Enz; compartment_ * Enzyme_synthesis_k1 * pow(Enzyme_synthesis_ki1, Enzyme_synthesis_nH) * Enzyme_synthesis_Ot / (pow(Enzyme_synthesis_ki1, Enzyme_synthesis_nH) + pow(Tt, Enzyme_synthesis_nH));

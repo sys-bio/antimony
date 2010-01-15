@@ -7,7 +7,7 @@ model Deineko2003_CellCycle()
   species y5 in compartment_, y6 in compartment_;
 
   // Assignment Rules:
-  F6 := piecewise(0.044, leq(time, 60), 0)
+  F6 := piecewise(0.044, leq(time, 60), 0);
 
   // Reactions:
   R1:  -> y1; emax * k1 * y1 / (k1 * y1 + (k1_prime + k1_double_prime * y1) * y2);
@@ -55,8 +55,8 @@ model Deineko2003_CellCycle()
   phi4a = 0.01;
   k6 = 0;
   phi6 = 0.1;
-  
-//Other declarations:
+
+  //Other declarations:
   var F6;
 
   //Display Names:

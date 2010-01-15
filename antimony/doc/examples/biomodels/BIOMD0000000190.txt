@@ -8,14 +8,14 @@ model Model_1()
   species $AcCoA in cytosol, $CoA in cytosol;
 
   // Assignment Rules:
-  Kaccoa := R
-  Kcoa := 3 * R
+  Kaccoa := R;
+  Kcoa := 3 * R;
 
   // Rate Rules:
-  Vmaxodc' = Ksodc / (1 + Keq * (D + S)) - Kdodc * Antz * Vmaxodc
-  Vmaxssat' = Ksssat * (1 - 1 / (1 + Keq * (D + S))) - Kdssat * (1 / (1 + Keq * (D + S))) * Vmaxssat
-  Vmaxsamdc' = Kssamdc * (1 / (1 + Keq * (D + S))) - Kdsamdc * Vmaxsamdc
-  Antz' = Ksantz * (1 - 1 / (1 + Keq * 0.01 * (D + S))) - Kdantz * Antz
+  Vmaxodc' = Ksodc / (1 + Keq * (D + S)) - Kdodc * Antz * Vmaxodc;
+  Vmaxssat' = Ksssat * (1 - 1 / (1 + Keq * (D + S))) - Kdssat * (1 / (1 + Keq * (D + S))) * Vmaxssat;
+  Vmaxsamdc' = Kssamdc * (1 / (1 + Keq * (D + S))) - Kdsamdc * Vmaxsamdc;
+  Antz' = Ksantz * (1 - 1 / (1 + Keq * 0.01 * (D + S))) - Kdantz * Antz;
 
   // Reactions:
   ODC: $ORN -> P; cytosol * (Vmaxodc * ORN / (ODC_Kmodc * (1 + P / ODC_Kipodc) + ORN));
@@ -103,8 +103,8 @@ model Model_1()
   MAT_Vmmat = 0.45;
   P_efflux_Kpefflux = 0.01;
   aD_efflux_Kadefflux = 0.01;
-  
-//Other declarations:
+
+  //Other declarations:
   var Vmaxodc, Vmaxssat, Vmaxsamdc, Antz, Kaccoa, Kcoa;
 
   //Display Names:

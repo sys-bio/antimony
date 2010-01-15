@@ -7,14 +7,14 @@ model Sneyd2002_dynamic_model_of_IP3_Receptor()
   species A in compartment_, I2 in compartment_;
 
   // Assignment Rules:
-  open_probability := pow(0.1 * O + 0.9 * A, 4)
-  Phi1 := (k1 * L1 + l2) * c / (L1 + c * (1 + L1 / L3))
-  Phi2 := (k2 * L3 + l4 * c) / (L3 + c * (1 + L3 / L1))
-  Phi_minus2 := (kminus2 + lminus4 * c) / (1 + c / L5)
-  Phi3 := k3 * L5 / (L5 + c)
-  Phi4 := (k4 * L5 + l6) * c / (L5 + c)
-  Phi_minus4 := L1 * (kminus4 + lminus6) / (L1 + c)
-  Phi5 := (k1 * L1 + l2) * c / (L1 + c)
+  open_probability := pow(0.1 * O + 0.9 * A, 4);
+  Phi1 := (k1 * L1 + l2) * c / (L1 + c * (1 + L1 / L3));
+  Phi2 := (k2 * L3 + l4 * c) / (L3 + c * (1 + L3 / L1));
+  Phi_minus2 := (kminus2 + lminus4 * c) / (1 + c / L5);
+  Phi3 := k3 * L5 / (L5 + c);
+  Phi4 := (k4 * L5 + l6) * c / (L5 + c);
+  Phi_minus4 := L1 * (kminus4 + lminus6) / (L1 + c);
+  Phi5 := (k1 * L1 + l2) * c / (L1 + c);
 
   // Reactions:
   v1: R -> O; compartment_ * (Phi2 * v1_IP3 * R - Phi_minus2 * O);
@@ -60,8 +60,8 @@ model Sneyd2002_dynamic_model_of_IP3_Receptor()
   v3_kminus3 = 29.8;
   v5_kminus1 = 0.04;
   v5_lminus2 = 0.8;
-  
-//Other declarations:
+
+  //Other declarations:
   var open_probability, Phi1, Phi2, Phi_minus2, Phi3, Phi4, Phi_minus4, Phi5;
 
   //Display Names:

@@ -9,16 +9,16 @@ model Novak1993_M_phase_control()
   species $wee1 in cytoplasm, $IE in cytoplasm, $UbE in cytoplasm;
 
   // Assignment Rules:
-  cdc2 := total_cdc2 - (dimer + p_dimer + p_dimer_p + dimer_p)
-  cdc25 := total_cdc25 - cdc25_p
-  wee1 := total_wee1 - wee1_p
-  IE := total_IE - IE_p
-  UbE := total_UbE - UbE_star
-  k25 := V25_prime * (total_cdc25 - cdc25_p) + V25_double_prime * cdc25_p
-  kwee := Vwee_prime * wee1_p + Vwee_double_prime * (total_wee1 - wee1_p)
-  k2 := V2_prime * (total_UbE - UbE_star) + V2_double_prime * UbE_star
-  total_cyclin := cyclin + dimer + dimer_p + p_dimer + p_dimer_p
-  Y15P := p_dimer + p_dimer_p
+  cdc2 := total_cdc2 - (dimer + p_dimer + p_dimer_p + dimer_p);
+  cdc25 := total_cdc25 - cdc25_p;
+  wee1 := total_wee1 - wee1_p;
+  IE := total_IE - IE_p;
+  UbE := total_UbE - UbE_star;
+  k25 := V25_prime * (total_cdc25 - cdc25_p) + V25_double_prime * cdc25_p;
+  kwee := Vwee_prime * wee1_p + Vwee_double_prime * (total_wee1 - wee1_p);
+  k2 := V2_prime * (total_UbE - UbE_star) + V2_double_prime * UbE_star;
+  total_cyclin := cyclin + dimer + dimer_p + p_dimer + p_dimer_p;
+  Y15P := p_dimer + p_dimer_p;
 
   // Reactions:
   R1:  -> cyclin; k1AA;
@@ -91,8 +91,8 @@ model Novak1993_M_phase_control()
   K_c = 0.01;
   kd_anti_IE = 0.095;
   K_d = 0.01;
-  
-//Other declarations:
+
+  //Other declarations:
   var k25, kwee, k2, total_cyclin, Y15P;
 
   //Display Names:

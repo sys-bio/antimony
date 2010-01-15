@@ -9,10 +9,10 @@ model Akman2008_Circadian_Clock_Model2()
   species $lFrq_tot in nucleus, $Frq_tot in nucleus, $WC1_tot in nucleus;
 
   // Assignment Rules:
-  sFrq_tot := PF + E2F + E1F
-  lFrq_tot := PFp + E2Fp + E1Fp
-  Frq_tot := sFrq_tot + lFrq_tot
-  WC1_tot := PW + PWL + E1W + E2W
+  sFrq_tot := PF + E2F + E1F;
+  lFrq_tot := PFp + E2Fp + E1Fp;
+  Frq_tot := sFrq_tot + lFrq_tot;
+  WC1_tot := PW + PWL + E1W + E2W;
 
   // Reactions:
   MFtrn:  -> MF; a1 * pow(PWL, n) / ((1 + (PF + PFp) / b1) * (pow(PWL, n) + pow(b2, n))) + a2 * pow(PW, m) / ((1 + (PF + PFp) / b3) * (pow(PW, m) + pow(b4, m)));

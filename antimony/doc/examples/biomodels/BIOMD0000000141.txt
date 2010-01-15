@@ -5,11 +5,11 @@ model model_0000001()
   compartment cell;
 
   // Assignment Rules:
-  i := flag * 0.075 * (time - 30)
+  i := flag * 0.075 * (time - 30);
 
   // Rate Rules:
-  v' = 0.04 * pow(v, 2) + 4.1 * v + 108 - u + i
-  u' = a * (b * v - u)
+  v' = 0.04 * pow(v, 2) + 4.1 * v + 108 - u + i;
+  u' = a * (b * v - u);
 
   // Events:
   event_0000001: at gt(v, Vthresh): u = u + d, v = c;
@@ -27,7 +27,7 @@ model model_0000001()
   flag = 0;
   a = 0.02;
   b = -0.1;
-  
-//Other declarations:
+
+  //Other declarations:
   var v, u, flag, i;
 end

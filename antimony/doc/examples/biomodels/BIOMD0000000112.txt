@@ -9,10 +9,10 @@ model Clarke2006_Smad_signalling()
   species Pi_ in nucleus;
 
   // Assignment Rules:
-  sum_R_smad_cyt := R_smad_cyt + R_smad_P_cyt + R_smad_P_smad4_cyt
-  sum_R_smad_nuc := R_smad_nuc + R_smad_P_nuc + R_smad_P_smad4_nuc
-  sum_smad4_cyt := smad4_cyt + R_smad_P_smad4_cyt
-  sum_smad4_nuc := smad4_nuc + R_smad_P_smad4_nuc
+  sum_R_smad_cyt := R_smad_cyt + R_smad_P_cyt + R_smad_P_smad4_cyt;
+  sum_R_smad_nuc := R_smad_nuc + R_smad_P_nuc + R_smad_P_smad4_nuc;
+  sum_smad4_cyt := smad4_cyt + R_smad_P_smad4_cyt;
+  sum_smad4_nuc := smad4_nuc + R_smad_P_smad4_nuc;
 
   // Reactions:
   reaction_1: R_smad_cyt -> R_smad_P_cyt; reaction_1_KCAT * receptor * R_smad_cyt / (reaction_1_K1 + R_smad_cyt);
@@ -54,8 +54,8 @@ model Clarke2006_Smad_signalling()
   reaction_6_k6a = 0.000144;
   reaction_7_Vmax7 = 17100;
   reaction_7_K7 = 8950;
-  
-//Other declarations:
+
+  //Other declarations:
   var sum_R_smad_cyt, sum_R_smad_nuc, sum_smad4_cyt, sum_smad4_nuc;
 
   //Display Names:

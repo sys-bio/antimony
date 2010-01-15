@@ -6,16 +6,16 @@ model model_0000001()
   species c3 in cell, c2 in cell, c1 in cell, o in cell, i in cell, $ik in cell;
 
   // Assignment Rules:
-  ik := Gk * o * (v - vk)
-  vk := R * Temp / F * log(ko / ki)
-  Gk := 1.350000e-02 * pow(ko, 0.59)
-  a := 5.550000e-02 * exp(0.05547153 * (v - 12))
-  b := 2.357000e-03 * exp(-0.036588 * v)
-  aa := 6.550000e-02 * exp(0.05547153 * (v - 36))
-  bb := 2.935700e-03 * exp(-0.02158 * v)
-  ai := 0.439 * exp(-0.02352 * (v + 25)) * 4.5 / ko
-  bi := 0.656 * exp(0.000942 * v) * pow(4.5 / ko, 0.3)
-  u := ai * bb * aa / (aa * bi)
+  ik := Gk * o * (v - vk);
+  vk := R * Temp / F * log(ko / ki);
+  Gk := 1.350000e-02 * pow(ko, 0.59);
+  a := 5.550000e-02 * exp(0.05547153 * (v - 12));
+  b := 2.357000e-03 * exp(-0.036588 * v);
+  aa := 6.550000e-02 * exp(0.05547153 * (v - 36));
+  bb := 2.935700e-03 * exp(-0.02158 * v);
+  ai := 0.439 * exp(-0.02352 * (v + 25)) * 4.5 / ko;
+  bi := 0.656 * exp(0.000942 * v) * pow(4.5 / ko, 0.3);
+  u := ai * bb * aa / (aa * bi);
 
   // Reactions:
   reaction_0000001: c3 -> c2; (a * c3 - b * c2) * cell;
@@ -49,8 +49,8 @@ model model_0000001()
   ki = 140;
   ain = 2.172;
   bin = 1.077;
-  
-//Other declarations:
+
+  //Other declarations:
   var v, vk, Gk, a, b, aa, bb, ai, bi, u;
 
   //Display Names:
