@@ -1,0 +1,60 @@
+//Created by libAntimony v1.3
+model cellmlmod_time()
+
+  //Other declarations:
+  var t;
+end
+
+model cellmlmod_Cformation()
+
+  // Assignment Rules:
+  J1 := kf1 * A * B - kr1 * C
+  Cpc := R / 602.2
+
+  // Rate Rules:
+  A' = -(J1)
+  B' = -(J1)
+  C' = J1 - Cpc * J2
+
+  // Variable initializations:
+  A = 10;
+  B = 5;
+  C = 0;
+  kf1 = 0.2;
+  kr1 = 0.05;
+  R = 5;
+
+  //Other declarations:
+  var A, B, C, J1, kf1, kr1, Cpc, R, J2, t;
+end
+
+model cellmlmod_Eformation()
+
+  // Assignment Rules:
+  J2 := kf2 * C * D - kr2 * E
+
+  // Rate Rules:
+  D' = -(J2)
+  E' = J2
+
+  // Variable initializations:
+  D = 4;
+  E = 0;
+  kf2 = 0.006;
+  kr2 = 0.001;
+
+  //Other declarations:
+  var D, E, J2, kf2, kr2, C, t;
+end
+
+model CombinedExample()
+
+  // Sub-modules, and any changes to those submodules:
+  time: cellmlmod_time()
+  Cformation: cellmlmod_Cformation()
+  Eformation: cellmlmod_Eformation()
+  Cformation.J2 is Eformation.J2;
+  Cformation.C is Eformation.C;
+  time.t is Cformation.t;
+  Cformation.t is Eformation.t;
+end

@@ -1,0 +1,128 @@
+//Created by libAntimony v1.3
+model cellmlmod_Environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_PluralPressureFunction()
+
+  // Assignment Rules:
+  P_L := P_m - R * omega * V_T / 2  * sin(omega * time / 1 ) - E * (2.5  - V_T * 1  / 2  * cos(omega * time / 1 ))
+  dP_Ldt := -(R) * power(omega, 2 ) * V_T / (2  * 1 ) * cos(omega * time / 1 ) - E * (2.5  - V_T / 2  * sin(omega * time / 1 ))
+
+  // Variable initializations:
+  P_m = 760;
+  omega = 1.256637;
+  V_T = 0.41;
+  E = 2.5;
+
+  //Other declarations:
+  var time, P_L, dP_Ldt, P_m, R, omega, V_T, E;
+end
+
+model cellmlmod_lungMechanics()
+
+  // Assignment Rules:
+  q := (P_m - P_A) / R
+
+  // Rate Rules:
+  V_A' = (P_m - P_L - V_A * E / 1 ) / R
+  P_A' = P_m * E * Q_A / (P_A * 1 ) + dP_Ldt
+
+  // Variable initializations:
+  P_m = 760;
+  V_A = 1;
+  E = 2.5;
+  P_A = 760;
+  R = 1;
+
+  //Other declarations:
+  var time, P_L, dP_Ldt, P_m, V_A, E, P_A, R, Q_A, q;
+end
+
+model cellmlmod_gasExchange()
+
+  // Assignment Rules:
+  p_ao := f_o * (P_A - P_w)
+  p_ac := f_c * (P_A - P_w)
+  Q_A := q + 1  * D_c * (p_c - p_ac) + 1  * D_o * (p_o - p_ao)
+
+  // Rate Rules:
+  f_o' = 1  / V_A * (1  * D_o * (p_o - p_ao) + (f_oi - f_o) * q - f_o * (1  * D_c * (p_c - p_ac) + 1  * D_o * (p_o - p_ao)))
+  f_c' = 1  / V_A * (1  * D_c * (p_c - p_ac) + (f_ci - f_c) * q - f_c * (1  * D_o * (p_o - p_ao) + 1  * D_c * (p_c - p_ac)))
+
+  // Variable initializations:
+  D_o = 0.0000156;
+  f_o = 0.1368;
+  D_c = 0.0000316;
+  f_c = 0.05263;
+  P_w = 47;
+  f_om = 0.21;
+  f_cm = 0;
+  V_D = 0.151;
+  V_T = 0.41;
+
+  //Other declarations:
+  var time, P_A, V_A, D_o, f_o, f_oi, D_c, f_c, f_ci, P_w, p_ao, p_o, p_ac;
+  var f_om, f_cm, Q_A, p_c, V_D, V_T, q;
+end
+
+model cellmlmod_gasTransport()
+
+  // Assignment Rules:
+  df_satdp := ((L * power(1  + K_T * sigma * p_o, 4 ) + power(1  + K_R * sigma * p_o, 4 )) * (3  * L * power(K_T, 2 ) * power(sigma, 2 ) * p_o * 1  * power(1  + K_T * sigma * p_o, 2 ) + L * K_T * sigma * 1  * power(1  + K_T * sigma * p_o, 3 ) + 3  * power(K_R, 2 ) * power(sigma, 2 ) * p_o * 1  * power(1  + K_R * sigma * p_o, 2 ) + K_R * sigma * 1  * power(1  + K_R * sigma * p_o, 3 )) - (L * K_T * sigma * p_o * power(1  + K_T * sigma * p_o, 3 ) + K_R * sigma * p_o * power(1  + K_R * sigma * p_o, 3 )) * (4  * L * K_T * sigma * 1  * power(1  + K_T * sigma * p_o, 3 ) + 4  * K_R * sigma * 1  * power(1  + K_R * sigma * p_o, 3 ))) / power(L * power(1  + K_T * sigma * p_o, 4 ) + power(1  + K_R * sigma * p_o, 4 ), 2 )
+  delta := power(10 , 1.9 )
+  h := 1  * power(10 , -(7.4 ))
+
+  // Rate Rules:
+  p_o' = D_o / (sigma * V_c) * power(1  + 4  * T_h / sigma * df_satdp, -(1 )) * (f_o * (P_A - P_w) - p_o)
+  p_c' = D_c / (sigma_c * V_c) * (p_ac - p_c) + 1  * delta * l_2 / sigma_c * h * z - delta * r_2 * p_c
+  z' = delta * r_2 * sigma_c * p_c / 1  - delta * l_2 * h * z
+
+  // Variable initializations:
+  L = 171200000;
+  K_T = 10000;
+  K_R = 3600000;
+  p_o = 40;
+  sigma = 0.0000014;
+  V_c = 0.071;
+  T_h = 0.002;
+  l_2 = 164000;
+  p_c = 46;
+  r_2 = 0.12;
+  sigma_c = 0.000033;
+  z = 0.00000044219;
+
+  //Other declarations:
+  var time, f_o, df_satdp, L, K_T, K_R, p_o, sigma, D_o, V_c, P_A, P_w, T_h;
+  var D_c, delta, h, l_2, p_c, p_ac, r_2, sigma_c, z;
+end
+
+model bental_A_2005()
+
+  // Sub-modules, and any changes to those submodules:
+  Environment: cellmlmod_Environment()
+  PluralPressureFunction: cellmlmod_PluralPressureFunction()
+  lungMechanics: cellmlmod_lungMechanics()
+  gasExchange: cellmlmod_gasExchange()
+  gasTransport: cellmlmod_gasTransport()
+  gasTransport.p_o is gasExchange.p_o;
+  gasTransport.D_o is gasExchange.D_o;
+  gasTransport.f_o is gasExchange.f_o;
+  gasTransport.P_w is gasExchange.P_w;
+  gasTransport.p_c is gasExchange.p_c;
+  gasTransport.D_c is gasExchange.D_c;
+  gasTransport.p_ac is gasExchange.p_ac;
+  Environment.time is gasTransport.time;
+  lungMechanics.P_A is gasTransport.P_A;
+  gasTransport.time is gasExchange.time;
+  lungMechanics.q is gasExchange.q;
+  lungMechanics.Q_A is gasExchange.Q_A;
+  gasTransport.P_A is gasExchange.P_A;
+  lungMechanics.V_A is gasExchange.V_A;
+  gasExchange.time is PluralPressureFunction.time;
+  PluralPressureFunction.time is lungMechanics.time;
+  PluralPressureFunction.P_L is lungMechanics.P_L;
+  PluralPressureFunction.dP_Ldt is lungMechanics.dP_Ldt;
+end

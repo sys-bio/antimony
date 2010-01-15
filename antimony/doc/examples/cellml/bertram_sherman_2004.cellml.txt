@@ -1,0 +1,278 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_membrane()
+
+  // Rate Rules:
+   V ' = -(( i_Ca  +  i_K  +  i_K_Ca  +  i_K_ATP )) /  Cm
+
+  // Variable initializations:
+  Cm = 5300.0;
+
+  //Other declarations:
+  var V, Cm, time, i_Ca, i_K, i_K_Ca, i_K_ATP;
+end
+
+model cellmlmod_calcium_current()
+
+  // Assignment Rules:
+  i_Ca := g_Ca  *  m_infinity  * ( V  -  V_Ca )
+
+  // Variable initializations:
+  g_Ca = 1200.0;
+  V_Ca = 25.0;
+
+  //Other declarations:
+  var i_Ca, g_Ca, V_Ca, V, time, m_infinity;
+end
+
+model cellmlmod_calcium_current_m_gate()
+
+  // Assignment Rules:
+  m_infinity := power( 1.0   + exp(( vm  -  V ) /  sm ),  -1.0  )
+
+  // Variable initializations:
+  vm = -20.0;
+  sm = 12.0;
+
+  //Other declarations:
+  var m_infinity, vm, sm, V, time;
+end
+
+model cellmlmod_delayed_rectifier_potassium_current()
+
+  // Assignment Rules:
+  i_K := g_K  *  n  * ( V  -  V_K )
+
+  // Variable initializations:
+  V_K = -75.0;
+  g_K = 3000.0;
+
+  //Other declarations:
+  var i_K, V_K, g_K, V, time, n;
+end
+
+model cellmlmod_delayed_rectifier_potassium_current_n_gate()
+
+  // Assignment Rules:
+  n_infinity := power( 1.0   + exp(( vn  -  V ) /  sn ),  -1.0  )
+
+  // Rate Rules:
+   n ' = ( n_infinity  -  n ) /  tau_n
+
+  // Variable initializations:
+  tau_n = 16.0;
+  vn = -16.0;
+  sn = 5.0;
+
+  //Other declarations:
+  var n, tau_n, n_infinity, vn, sn, V, time;
+end
+
+model cellmlmod_calcium_dependent_potassium_current()
+
+  // Assignment Rules:
+  i_K_Ca := g_K_Ca  *  omega  * ( V  -  V_K )
+
+  // Variable initializations:
+  g_K_Ca = 300.0;
+
+  //Other declarations:
+  var i_K_Ca, g_K_Ca, V_K, V, c, time, omega;
+end
+
+model cellmlmod_calcium_dependent_potassium_current_omega_gate()
+
+  // Assignment Rules:
+  omega := power( c ,  5.0  ) / (power( c ,  5.0  ) + power( kD ,  5.0  ))
+
+  // Variable initializations:
+  kD = 0.3;
+
+  //Other declarations:
+  var omega, kD, c;
+end
+
+model cellmlmod_nucleotide_sensitive_potassium_current()
+
+  // Assignment Rules:
+  i_K_ATP := g_K_ATP  *  a  * ( V  -  V_K )
+
+  // Variable initializations:
+  g_K_ATP = 500.0;
+
+  //Other declarations:
+  var i_K_ATP, g_K_ATP, V_K, V, c, time, a;
+end
+
+model cellmlmod_nucleotide_sensitive_potassium_current_a_gate()
+
+  // Assignment Rules:
+  a_infinity := power( 1.0   + exp(( r  -  c ) /  sa ),  -1.0  )
+
+  // Rate Rules:
+   a ' = ( a_infinity  -  a ) /  tau_a
+
+  // Variable initializations:
+  tau_a = 300000.0;
+  sa = 0.1;
+  r = 0.14;
+
+  //Other declarations:
+  var a, tau_a, a_infinity, sa, r, c, time;
+end
+
+model cellmlmod_cytosolic_free_calcium_concentration()
+
+  // Rate Rules:
+   c ' = fcyt  * ( Jmem  +  Jer )
+
+  // Variable initializations:
+  fcyt = 0.01;
+
+  //Other declarations:
+  var c, fcyt, Jmem, Jer, time;
+end
+
+model cellmlmod_ER_calcium_concentration()
+
+  // Rate Rules:
+   c_er ' = -( fer ) *  Vcyt_Ver  *  Jer
+
+  // Variable initializations:
+  fer = 0.01;
+  Vcyt_Ver = 5.0;
+
+  //Other declarations:
+  var c_er, fer, Vcyt_Ver, Jer, time;
+end
+
+model cellmlmod_calcium_flux_through_the_membrane()
+
+  // Assignment Rules:
+  Jmem := -(( alpha  *  i_Ca  +  kPMCA  *  c ))
+
+  // Variable initializations:
+  alpha = 4.5E-6;
+  kPMCA = 0.2;
+
+  //Other declarations:
+  var Jmem, alpha, kPMCA, c, i_Ca;
+end
+
+model cellmlmod_calcium_influx_into_the_ER()
+
+  // Assignment Rules:
+  J_SERCA := kSERCA  *  c
+
+  // Variable initializations:
+  kSERCA = 0.4;
+
+  //Other declarations:
+  var J_SERCA, kSERCA, c;
+end
+
+model cellmlmod_calcium_leak_out_of_the_ER()
+
+  // Assignment Rules:
+  Jleak := pleak  * ( c_er  -  c )
+
+  // Variable initializations:
+  pleak = 0.0005;
+
+  //Other declarations:
+  var Jleak, pleak, c, c_er;
+end
+
+model cellmlmod_calcium_efflux_through_the_IP3R()
+
+  // Assignment Rules:
+  JIP3 := O_infinity  * ( c_er  -  c )
+  O_infinity := power(c / (d_act + c), 3 ) * power(IP3 / (d_IP3 + IP3), 3 ) * power(c / (d_inact + c), 3 ) * 1
+
+  // Variable initializations:
+  d_act = 0.35;
+  d_IP3 = 0.5;
+  d_inact = 0.4;
+
+  //Other declarations:
+  var JIP3, O_infinity, d_act, d_IP3, d_inact, IP3, c, c_er;
+end
+
+model cellmlmod_net_calcium_efflux_out_of_the_ER()
+
+  // Assignment Rules:
+  Jer := Jleak  +  JIP3  -  J_SERCA
+
+  //Other declarations:
+  var Jer, Jleak, JIP3, J_SERCA;
+end
+
+model bertram_sherman_2004_version01()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  membrane: cellmlmod_membrane()
+  calcium_current: cellmlmod_calcium_current()
+  calcium_current_m_gate: cellmlmod_calcium_current_m_gate()
+  delayed_rectifier_potassium_current: cellmlmod_delayed_rectifier_potassium_current()
+  delayed_rectifier_potassium_current_n_gate: cellmlmod_delayed_rectifier_potassium_current_n_gate()
+  calcium_dependent_potassium_current: cellmlmod_calcium_dependent_potassium_current()
+  calcium_dependent_potassium_current_omega_gate: cellmlmod_calcium_dependent_potassium_current_omega_gate()
+  nucleotide_sensitive_potassium_current: cellmlmod_nucleotide_sensitive_potassium_current()
+  nucleotide_sensitive_potassium_current_a_gate: cellmlmod_nucleotide_sensitive_potassium_current_a_gate()
+  cytosolic_free_calcium_concentration: cellmlmod_cytosolic_free_calcium_concentration()
+  ER_calcium_concentration: cellmlmod_ER_calcium_concentration()
+  calcium_flux_through_the_membrane: cellmlmod_calcium_flux_through_the_membrane()
+  calcium_influx_into_the_ER: cellmlmod_calcium_influx_into_the_ER()
+  calcium_leak_out_of_the_ER: cellmlmod_calcium_leak_out_of_the_ER()
+  calcium_efflux_through_the_IP3R: cellmlmod_calcium_efflux_through_the_IP3R()
+  net_calcium_efflux_out_of_the_ER: cellmlmod_net_calcium_efflux_out_of_the_ER()
+  membrane.time is environment.time;
+  calcium_current.time is environment.time;
+  ER_calcium_concentration.time is environment.time;
+  delayed_rectifier_potassium_current.time is environment.time;
+  nucleotide_sensitive_potassium_current.time is environment.time;
+  calcium_dependent_potassium_current.time is environment.time;
+  cytosolic_free_calcium_concentration.time is environment.time;
+  delayed_rectifier_potassium_current.V is membrane.V;
+  delayed_rectifier_potassium_current.i_K is membrane.i_K;
+  calcium_current.V is membrane.V;
+  calcium_current.i_Ca is membrane.i_Ca;
+  calcium_dependent_potassium_current.V is membrane.V;
+  calcium_dependent_potassium_current.i_K_Ca is membrane.i_K_Ca;
+  nucleotide_sensitive_potassium_current.V is membrane.V;
+  nucleotide_sensitive_potassium_current.i_K_ATP is membrane.i_K_ATP;
+  cytosolic_free_calcium_concentration.c is calcium_flux_through_the_membrane.c;
+  cytosolic_free_calcium_concentration.Jmem is calcium_flux_through_the_membrane.Jmem;
+  calcium_flux_through_the_membrane.c is nucleotide_sensitive_potassium_current.c;
+  nucleotide_sensitive_potassium_current.c is calcium_dependent_potassium_current.c;
+  calcium_dependent_potassium_current.c is calcium_leak_out_of_the_ER.c;
+  calcium_leak_out_of_the_ER.c is calcium_influx_into_the_ER.c;
+  calcium_influx_into_the_ER.c is calcium_efflux_through_the_IP3R.c;
+  ER_calcium_concentration.c_er is calcium_leak_out_of_the_ER.c_er;
+  calcium_leak_out_of_the_ER.c_er is calcium_efflux_through_the_IP3R.c_er;
+  net_calcium_efflux_out_of_the_ER.J_SERCA is calcium_influx_into_the_ER.J_SERCA;
+  net_calcium_efflux_out_of_the_ER.JIP3 is calcium_efflux_through_the_IP3R.JIP3;
+  net_calcium_efflux_out_of_the_ER.Jleak is calcium_leak_out_of_the_ER.Jleak;
+  net_calcium_efflux_out_of_the_ER.Jer is cytosolic_free_calcium_concentration.Jer;
+  cytosolic_free_calcium_concentration.Jer is ER_calcium_concentration.Jer;
+  membrane.i_Ca is calcium_flux_through_the_membrane.i_Ca;
+  delayed_rectifier_potassium_current.V_K is calcium_dependent_potassium_current.V_K;
+  calcium_dependent_potassium_current.V_K is nucleotide_sensitive_potassium_current.V_K;
+  calcium_current.m_infinity is calcium_current_m_gate.m_infinity;
+  environment.time is calcium_current_m_gate.time;
+  membrane.V is calcium_current_m_gate.V;
+  delayed_rectifier_potassium_current.n is delayed_rectifier_potassium_current_n_gate.n;
+  calcium_current_m_gate.time is delayed_rectifier_potassium_current_n_gate.time;
+  calcium_current_m_gate.V is delayed_rectifier_potassium_current_n_gate.V;
+  nucleotide_sensitive_potassium_current.a is nucleotide_sensitive_potassium_current_a_gate.a;
+  delayed_rectifier_potassium_current_n_gate.time is nucleotide_sensitive_potassium_current_a_gate.time;
+  calcium_efflux_through_the_IP3R.c is nucleotide_sensitive_potassium_current_a_gate.c;
+  calcium_dependent_potassium_current.omega is calcium_dependent_potassium_current_omega_gate.omega;
+  nucleotide_sensitive_potassium_current_a_gate.c is calcium_dependent_potassium_current_omega_gate.c;
+end

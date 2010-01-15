@@ -1,0 +1,644 @@
+//Created by libAntimony v1.3
+model cellmlmod_Environment()
+
+  // Variable initializations:
+  F = 96485;
+  K_o = 5.4;
+  Ca_o = 1.8;
+  Na_o = 140;
+  Cl_o = 100;
+  FonRT = 0.0374358835078;
+  tissue = 0;
+
+  //Other declarations:
+  var time, F, K_o, Ca_o, Na_o, Cl_o, FonRT, tissue;
+end
+
+model cellmlmod_cell()
+
+  // Assignment Rules:
+  caiont := ICaL + ICab + IpCa - 2  * INaCa
+  naiont := INa + 3  * INaCa + 3  * INaK + INal
+  kiont := IKr + IKs + IK1 + IKp - 2  * INaK + Ito + 0.5  * i_Stim
+  clont := IClb + Ito2 + 0.5  * i_Stim
+  Acap := ageo * 2
+  vmyo := vcell * 0.68
+  vmito := vcell * 0.26
+  vsr := vcell * 0.06
+  vnsr := vcell * 0.0552
+  vjsr := vcell * 0.0048
+  vss := vcell * 0.02
+  AF := Acap / F
+  past := floor(time / stim_period) * stim_period
+
+  // Rate Rules:
+  V' = -((naiont + kiont + caiont + clont))
+
+  // Variable initializations:
+  V = -85.781844107117;
+  l = 0.01;
+  a = 0.0011;
+  stim_offset = 0;
+  stim_period = 1e3;
+  stim_duration = 3;
+  stim_amplitude = -20;
+
+  //Other declarations:
+  var time, V, F, INa, ICaL, IK1, IKp, IKs, IKr, IpCa, ICab, INaCa, INaK;
+  var Ito, Ito2, IClb, INal, caiont, naiont, kiont, clont, l, a, vcell, ageo;
+  var Acap, vmyo, vmito, vsr, vnsr, vjsr, vss, AF, stim_offset, stim_period;
+  var stim_duration, stim_amplitude, i_Stim, past;
+end
+
+model cellmlmod_INa()
+
+  // Assignment Rules:
+  gNa := GNa * m * m * m * H * J
+  am := 0.32  * 1  * (V + 47.13 ) / (1  - exp(-(0.1 ) * (V + 47.13 )))
+  bm := 0.08  * exp(-(V) / 11 )
+  INa := gNa * (V - ENa)
+
+  // Rate Rules:
+  H' = ah * (1  - H) - bh * H
+  m' = am * (1  - m) - bm * m
+  J' = aj * (1  - J) - bj * J
+
+  // Variable initializations:
+  H = 0.987317750543;
+  m = 0.001356538159;
+  J = 0.991924983076;
+
+  //Other declarations:
+  var V, time, ENa, tissue, GNa, gNa, H, m, J, am, bm, ah, bh, aj, bj, INa;
+end
+
+model cellmlmod_ICaL()
+
+  // Assignment Rules:
+  ibarca := pca * 4  * (V - 15 ) * F * FonRT * (gacai * Ca_ss * exp(2  * (V - 15 ) * FonRT) - gacao * Ca_o) / (exp(2  * (V - 15 ) * FonRT) - 1 )
+  dss := 1  / (1  + exp(-((V - 4 )) / 6.74 ))
+  taud := 0.59  + 0.8  * exp(0.052  * (V + 13 )) / (1  + exp(0.132  * (V + 13 )))
+  fss := 0.7  / (1  + exp((V + 17.12 ) / 7 )) + 0.3
+  f2ss := 0.77  / (1  + exp((V + 17.12 ) / 7 )) + 0.23
+  tauf := 1  / (0.2411  * exp(-(power(0.045  * (V - 9.6914 ), 2 ))) + 0.0529 )
+  tauf2 := 1  / (0.0423  * exp(-(power(0.059  * (V - 18.5726 ), 2 ))) + 0.0054 )
+  dpss := 9  - 8  / (1  + exp(-((V + 65 )) / 3.4 ))
+  fcass := 0.3  / (1  - ICaL / 0.05 ) + 0.55  / (1  + Ca_ss / 0.003 ) + 0.15
+  fca2ss := 1  / (1  - ICaL / 0.01 )
+  taufca := 10  * CaMKactive / (0.15  + CaMKactive) + 1  / (1  + Ca_ss / 0.003 ) + 0.5
+  taufca2 := 300  / (1  + exp((-(ICaL) - 0.175 ) / 0.04 )) + 125
+
+  // Rate Rules:
+  d' = (dss - d) / taud
+  dp' = (dpss - dp) / 10
+  f' = (fss - f) / tauf
+  fca' = (fcass - fca) / taufca
+  fca2' = (fca2ss - fca2) / taufca2
+  f2' = (f2ss - f2) / tauf2
+
+  // Variable initializations:
+  d = 0.00000164013;
+  dp = 8.98230672628;
+  f = 0.999961508634;
+  fca = 0.97836624923;
+  fca2 = 0.893052931249;
+  f2 = 0.992234519148;
+  pca = 2.43e-4;
+  gacai = 1;
+  gacao = 0.341;
+
+  //Other declarations:
+  var V, F, FonRT, time, tissue, Ca_o, Ca_ss, d, dp, f, fca, fca2, f2, pca;
+  var gacai, gacao, CaMKactive, ibarca, dss, taud, fss, f2ss, tauf, tauf2;
+  var dpss, fcass, fca2ss, taufca, taufca2, ICaL;
+end
+
+model cellmlmod_IK1()
+
+  // Assignment Rules:
+  ak1 := 1.02  / (1  + exp(0.2385  * (V - EK - 59.215 )))
+  bk1 := (0.49124  * exp(0.08032  * (V - EK + 5.476 )) + 1  * exp(0.06175  * (V - EK - 594.31 ))) / (1  + exp(-(0.5143 ) * (V - EK + 4.753 )))
+  IK1 := 0.5  * root(K_o / 5.4 ) * ak1 / (ak1 + bk1) * (V - EK)
+
+  //Other declarations:
+  var V, EK, K_o, ak1, bk1, IK1;
+end
+
+model cellmlmod_IKr()
+
+  // Assignment Rules:
+  gkr := 0.0138542  * root(K_o / 5.4 )
+  r := 1  / (1  + exp((V + 10 ) / 15.4 ))
+  xrss := 1  / (1  + exp(-((V + 10.085 )) / 4.25 ))
+  tauxr := 1  / (6E-4  * (V - 1.7384 ) / (1  - exp(-(0.136 ) * (V - 1.7384 ))) + 3E-4  * (V + 38.3608 ) / (exp(0.1522  * (V + 38.3608 )) - 1 ))
+  IKr := gkr * xr * r * (V - EK)
+
+  // Rate Rules:
+  xr' = (xrss - xr) / tauxr
+
+  // Variable initializations:
+  xr = 0.00000724074;
+
+  //Other declarations:
+  var V, gkr, EK, K_o, r, xr, xrss, tauxr, time, IKr;
+end
+
+model cellmlmod_IKs()
+
+  // Assignment Rules:
+  gks := 0.0248975  * (1  + 0.6  / (1  + power(3.8E-5  / Ca_i, 1.4 )))
+  xss := 1  / (1  + exp(-((V - 10.5 )) / 24.7 ))
+  tauxs := 1  / (7.61E-5  * (V + 44.6 ) / (1  - exp(-(9.97 ) * (V + 44.6 ))) + 3.6E-4  * (V - 0.55 ) / (exp(0.128  * (V - 0.55 )) - 1 ))
+  IKs := gks * xs1 * xs2 * (V - EKs)
+
+  // Rate Rules:
+  xs1' = (xss - xs1) / tauxs
+  xs2' = (xss - xs2) / tauxs / 2
+
+  // Variable initializations:
+  xs1 = 0.019883138161;
+  xs2 = 0.019890650554;
+
+  //Other declarations:
+  var V, Ca_i, time, gks, EKs, xss, tauxs, xs1, xs2, IKs;
+end
+
+model cellmlmod_Ito()
+
+  // Assignment Rules:
+  rv := exp(V / 300 )
+  ay := 25  * exp((V - 40 ) / 25 ) / (1  + exp((V - 40 ) / 25 ))
+  by := 25  * exp(-((V + 90 )) / 25 ) / (1  + exp(-((V + 90 )) / 25 ))
+  ay2 := 0.03  / (1  + exp((V + 60 ) / 5 ))
+  by2 := 0.2  * exp((V + 25 ) / 5 ) / (1  + exp((V + 25 ) / 5 ))
+  ay3 := 0.0039  / (1  + exp((V + 63 ) / 5 ))
+  by3 := 0.1  * exp((V + 25 ) / 5 ) / (1  + exp((V + 25 ) / 5 ))
+  Ito := gitodv * power(ydv, 3 ) * ydv2 * zdv * rv * (V - EK)
+
+  // Rate Rules:
+  ydv' = ay * (1  - ydv) - by * ydv
+  ydv2' = ay2 * (1  - ydv2) - by2 * ydv2
+  zdv' = ay3 * (1  - zdv) - by3 * zdv
+
+  // Variable initializations:
+  gitodv = 0.19;
+  ydv = 0.013970786703;
+  ydv2 = 0.99996472752;
+  zdv = 0.829206149767;
+
+  //Other declarations:
+  var V, gitodv, EK, rv, ay, by, ay2, by2, ay3, by3, time, ydv, ydv2, zdv;
+  var Ito;
+end
+
+model cellmlmod_INaK()
+
+  // Assignment Rules:
+  sigma := (exp(Na_o / 67.3 ) - 1 ) / 7
+  fnak := 1  / (1  + 0.1245  * exp(-(0.1 ) * V * FonRT) + 0.0365  * sigma * exp(-(V) * FonRT))
+  INaK := ibarnak * fnak * 1  / (1  + power(kmnai / Na_i, 2 )) * K_o / (K_o + kmko)
+
+  // Variable initializations:
+  kmnai = 10;
+  kmko = 1.5;
+  ibarnak = 0.61875;
+
+  //Other declarations:
+  var V, Na_i, Na_o, K_o, FonRT, kmnai, kmko, ibarnak, sigma, fnak, INaK;
+end
+
+model cellmlmod_INaCa()
+
+  // Assignment Rules:
+  ca_i_NaCa := 1.5  * Ca_i
+  allo := 1  / (1  + power(KmCa / ca_i_NaCa, 2 ))
+  num := power(Na_i, 3 ) * Ca_o * exp(eta * V * FonRT) - power(Na_o, 3 ) * ca_i_NaCa * exp((eta - 1 ) * V * FonRT)
+  denom1 := 1  + ksat * exp((eta - 1 ) * V * FonRT)
+  denom2 := KmCao * power(Na_i, 3 ) + power(KmNao, 3 ) * ca_i_NaCa + power(KmNai, 3 ) * Ca_o * (1  + ca_i_NaCa / KmCai)
+  denom3 := KmCai * power(Na_o, 3 ) * (1  + power(Na_i / KmNai, 3 )) + power(Na_i, 3 ) * Ca_o + power(Na_o, 3 ) * ca_i_NaCa
+  INaCa := NCXmax * allo * num / (denom1 * (denom2 + denom3))
+
+  // Variable initializations:
+  KmCa = 1.25e-4;
+  NCXmax = 4.5;
+  ksat = 0.27;
+  eta = 0.35;
+  KmNai = 12.3;
+  KmNao = 87.5;
+  KmCai = 0.0036;
+  KmCao = 1.3;
+
+  //Other declarations:
+  var V, FonRT, Ca_i, Ca_o, Na_i, Na_o, ca_i_NaCa, KmCa, allo, NCXmax, ksat;
+  var eta, KmNai, KmNao, KmCai, KmCao, num, denom1, denom2, denom3, INaCa;
+end
+
+model cellmlmod_IKp()
+
+  // Assignment Rules:
+  IKp := 0.00276  * (V - EK) / (1  + exp((7.488  - V) / 5.98 ))
+
+  //Other declarations:
+  var V, EK, IKp;
+end
+
+model cellmlmod_IpCa()
+
+  // Assignment Rules:
+  IpCa := ibarpca * Ca_i / (kmpca + Ca_i)
+
+  // Variable initializations:
+  ibarpca = 0.0575;
+  kmpca = 0.5e-3;
+
+  //Other declarations:
+  var Ca_i, ibarpca, kmpca, IpCa;
+end
+
+model cellmlmod_ICab()
+
+  // Assignment Rules:
+  ICab := 1.995084E-7  * 4  * V * F * FonRT * (Ca_i * exp(2  * V * FonRT) - 0.341  * Ca_o) / (exp(2  * V * FonRT) - 1 )
+
+  //Other declarations:
+  var V, F, FonRT, Ca_i, Ca_o, ICab;
+end
+
+model cellmlmod_Ito2()
+
+  // Assignment Rules:
+  Ito2_max := PCl * V * F * FonRT * (Cl_i - Cl_o * exp(V * FonRT)) / (1  - exp(V * FonRT))
+  AAss := 1  / (1  + Kmto2 / Ca_ss)
+  Ito2 := Ito2_max * AA
+
+  // Rate Rules:
+  AA' = (AAss - AA) / 1
+
+  // Variable initializations:
+  PCl = 4e-7;
+  AA = 0.000816605172;
+  Kmto2 = 0.1502;
+
+  //Other declarations:
+  var time, V, F, FonRT, Cl_i, Cl_o, Ca_ss, PCl, AA, Ito2_max, AAss, Kmto2;
+  var Ito2;
+end
+
+model cellmlmod_IClb()
+
+  // Assignment Rules:
+  IClb := GClb * (V - ECl)
+
+  // Variable initializations:
+  GClb = 2.25e-4;
+
+  //Other declarations:
+  var V, ECl, GClb, IClb;
+end
+
+model cellmlmod_INal()
+
+  // Assignment Rules:
+  amL := 0.32  * 1  * (V + 47.13 ) / (1  - exp(-(0.1 ) * (V + 47.13 )))
+  bmL := 0.08  * exp(-(V) / 11 )
+  hLss := 1  / (1  + exp((V + 91 ) / 6.1 ))
+  INal := GNaL * power(mL, 3 ) * hL * (V - ENa)
+
+  // Rate Rules:
+  mL' = amL * (1  - mL) - bmL * mL
+  hL' = (hLss - hL) / 600
+
+  // Variable initializations:
+  GNaL = 65e-4;
+  mL = 0.001356538159;
+  hL = 0.26130711759;
+
+  //Other declarations:
+  var time, V, ENa, GNaL, mL, hL, amL, bmL, hLss, INal;
+end
+
+model cellmlmod_reversal_potentials()
+
+  // Assignment Rules:
+  ENa := ln(Na_o / Na_i) / FonRT
+  EK := ln(K_o / K_i) / FonRT
+  EKs := ln((K_o + prnak * Na_o) / (K_i + prnak * Na_i)) / FonRT
+  ECl := -(ln(Cl_o / Cl_i)) / FonRT
+
+  // Variable initializations:
+  prnak = 0.01833;
+
+  //Other declarations:
+  var Na_i, Na_o, K_o, K_i, Cl_o, Cl_i, FonRT, prnak, ENa, EK, EKs, ECl;
+end
+
+model cellmlmod_Irel()
+
+  // Assignment Rules:
+  Grel := 3000  * vg
+  dro_inf := power(Ca_jsr, 1.9 ) / (power(Ca_jsr, 1.9 ) + power(49.28  * Ca_ss / (Ca_ss + 0.0028 ), 1.9 ))
+  dtau_rel := dtau_rel_max * CaMKactive / (KmCaMK + CaMKactive)
+  ross := dro_inf / (power(1  / ICaL, 2 ) + 1 )
+  riss := 1  / (1  + exp((Ca_ss - 4E-4  + 0.002  * cafac) / 2.5E-5 ))
+  tauri := 3  + dtau_rel + (350  - dtau_rel) / (1  + exp((Ca_ss - 0.003  + 0.003  * cafac) / 2E-4 ))
+  irelcicr := Grel * ro * ri * (Ca_jsr - Ca_ss)
+  CaMKbound := CaMK0 * (1  - CaMKtrap) / (1  + Km / Ca_ss)
+  CaMKactive := CaMKbound + CaMKtrap
+  cafac := 1  / (1  + exp((ICaL + 0.05 ) / 0.015 ))
+
+  // Rate Rules:
+  CaMKtrap' = 0.05  * CaMKactive * (CaMKactive - CaMKtrap) - 6.8E-4  * CaMKtrap
+  ro' = (ross - ro) / 3
+  ri' = (riss - ri) / tauri
+
+  // Variable initializations:
+  dtau_rel_max = 10;
+  CaMK0 = 0.05;
+  Km = 0.0015;
+  KmCaMK = 0.15;
+  CaMKtrap = 0.021123704774;
+  ro = 0;
+  ri = 0.862666650318;
+
+  //Other declarations:
+  var time, tissue, Ca_ss, Ca_jsr, ibarca, ICaL, Grel, dro_inf, dtau_rel_max;
+  var dtau_rel, ross, riss, tauri, irelcicr, CaMK0, Km, KmCaMK, CaMKbound;
+  var CaMKactive, CaMKtrap, ro, ri, vg, cafac;
+end
+
+model cellmlmod_Iup_Ileak()
+
+  // Assignment Rules:
+  dKmPLB := dKmPLBmax * CaMKactive / (KmCaMK + CaMKactive)
+  dJup := dJupmax * CaMKactive / (KmCaMK + CaMKactive)
+  iup := (dJup + 1 ) * iupmax * Ca_i / (Ca_i + Kmup - dKmPLB)
+  ileak := iupmax * Ca_nsr / nsrmax
+
+  // Variable initializations:
+  dKmPLBmax = 0.00017;
+  dJupmax = 0.75;
+  iupmax = 0.004375;
+  Kmup = 0.00092;
+  nsrmax = 15;
+
+  //Other declarations:
+  var dKmPLBmax, dJupmax, dKmPLB, dJup, iupmax, Kmup, nsrmax, iup, ileak;
+  var KmCaMK, CaMKactive, Ca_i, Ca_nsr;
+end
+
+model cellmlmod_Idiff_Itr()
+
+  // Assignment Rules:
+  idiff := (Ca_ss - Ca_i) / 0.2
+  itr := (Ca_nsr - Ca_jsr) / 120
+
+  //Other declarations:
+  var idiff, itr, Ca_ss, Ca_i, Ca_nsr, Ca_jsr;
+end
+
+model cellmlmod_Na()
+
+  // Assignment Rules:
+  CTNaCl := CTNaClmax * power(ENa - ECl, 4 ) / (power(ENa - ECl, 4 ) + power(87.8251 , 4 ))
+
+  // Rate Rules:
+  Na_i' = -(naiont) * AF / vmyo + CTNaCl
+
+  // Variable initializations:
+  Na_i = 12.972433387269;
+  CTNaClmax = 9.8443e-6;
+
+  //Other declarations:
+  var time, Na_i, naiont, AF, vmyo, CTNaCl, CTNaClmax, ENa, ECl;
+end
+
+model cellmlmod_K()
+
+  // Assignment Rules:
+  CTKCl := CTKClmax * (EK - ECl) / (EK - ECl + 87.8251 )
+
+  // Rate Rules:
+  K_i' = -(kiont) * AF / vmyo + CTKCl
+
+  // Variable initializations:
+  K_i = 135.469546216758;
+  CTKClmax = 7.0756e-6;
+
+  //Other declarations:
+  var time, K_i, kiont, AF, vmyo, CTKCl, CTKClmax, EK, ECl;
+end
+
+model cellmlmod_Cl()
+
+  // Rate Rules:
+  Cl_i' = clont * AF / vmyo + CTNaCl + CTKCl
+
+  // Variable initializations:
+  Cl_i = 15.59207157178;
+
+  //Other declarations:
+  var time, Cl_i, clont, AF, vmyo, CTNaCl, CTKCl;
+end
+
+model cellmlmod_Ca()
+
+  // Assignment Rules:
+  bcsqn := 1  / (1  + kmcsqn * csqnbar / power(Ca_jsr + kmcsqn, 2 ))
+  bmyo := 1  / (1  + cbar * kmc / power(Ca_i + kmc, 2 ) + kmt * tbar / power(Ca_i + kmt, 2 ))
+  bss := 1  / (1  + BSRmax * KmBSR / power(KmBSR + Ca_ss, 2 ) + BSLmax * KmBSL / power(KmBSL + Ca_ss, 2 ))
+
+  // Rate Rules:
+  Ca_i' = bmyo * (-((ICab + IpCa - 2  * INaCa)) * AF / (vmyo * 2 ) + (ileak - iup) * vnsr / vmyo + idiff * vss / vmyo)
+  Ca_jsr' = bcsqn * (itr - irelcicr)
+  Ca_nsr' = iup - itr * vjsr / vnsr - ileak
+  Ca_ss' = bss * (-(ICaL) * AF / (vss * 2 ) + irelcicr * vjsr / vss - idiff)
+
+  // Variable initializations:
+  Ca_i = 0.00012131666;
+  Ca_jsr = 1.737580994071;
+  Ca_nsr = 1.832822335168;
+  Ca_ss = 0.00012271265;
+  kmt = 0.5e-3;
+  kmc = 2.38e-3;
+  tbar = 70e-3;
+  cbar = 50e-3;
+  kmcsqn = 0.8;
+  csqnbar = 10;
+  BSRmax = 0.047;
+  KmBSR = 0.00087;
+  BSLmax = 1.124;
+  KmBSL = 0.0087;
+
+  //Other declarations:
+  var time, Ca_i, Ca_jsr, Ca_nsr, Ca_ss, kmt, kmc, tbar, cbar, kmcsqn, csqnbar;
+  var bcsqn, bmyo, BSRmax, KmBSR, BSLmax, KmBSL, bss, ICab, ICaL, IpCa, INaCa;
+  var vmyo, vsr, vnsr, vjsr, vss, AF, iup, ileak, irelcicr, idiff, itr;
+end
+
+model cellmlmod_intracellular_currents()
+end
+
+model cellmlmod_transmembrane_currents()
+end
+
+model cellmlmod_Ions_n_reversal_potentials()
+end
+
+model benson_epicardial_2008()
+
+  // Sub-modules, and any changes to those submodules:
+  Environment: cellmlmod_Environment()
+  cell: cellmlmod_cell()
+  INa: cellmlmod_INa()
+  ICaL: cellmlmod_ICaL()
+  IK1: cellmlmod_IK1()
+  IKr: cellmlmod_IKr()
+  IKs: cellmlmod_IKs()
+  Ito: cellmlmod_Ito()
+  INaK: cellmlmod_INaK()
+  INaCa: cellmlmod_INaCa()
+  IKp: cellmlmod_IKp()
+  IpCa: cellmlmod_IpCa()
+  ICab: cellmlmod_ICab()
+  Ito2: cellmlmod_Ito2()
+  IClb: cellmlmod_IClb()
+  INal: cellmlmod_INal()
+  reversal_potentials: cellmlmod_reversal_potentials()
+  Irel: cellmlmod_Irel()
+  Iup_Ileak: cellmlmod_Iup_Ileak()
+  Idiff_Itr: cellmlmod_Idiff_Itr()
+  Na: cellmlmod_Na()
+  K: cellmlmod_K()
+  Cl: cellmlmod_Cl()
+  Ca: cellmlmod_Ca()
+  intracellular_currents: cellmlmod_intracellular_currents()
+  transmembrane_currents: cellmlmod_transmembrane_currents()
+  Ions_n_reversal_potentials: cellmlmod_Ions_n_reversal_potentials()
+  cell.time is Environment.time;
+  cell.F is Environment.F;
+  reversal_potentials.K_o is Environment.K_o;
+  reversal_potentials.Na_o is Environment.Na_o;
+  reversal_potentials.Cl_o is Environment.Cl_o;
+  reversal_potentials.FonRT is Environment.FonRT;
+  INa.time is Environment.time;
+  INa.tissue is Environment.tissue;
+  ICaL.time is Environment.time;
+  ICaL.Ca_o is Environment.Ca_o;
+  ICaL.F is Environment.F;
+  ICaL.FonRT is Environment.FonRT;
+  ICaL.tissue is Environment.tissue;
+  IKr.time is Environment.time;
+  IKr.K_o is Environment.K_o;
+  IKs.time is Environment.time;
+  IK1.K_o is Environment.K_o;
+  Ito.time is Environment.time;
+  INaK.K_o is Environment.K_o;
+  INaK.Na_o is Environment.Na_o;
+  INaK.FonRT is Environment.FonRT;
+  INaCa.Ca_o is Environment.Ca_o;
+  INaCa.Na_o is Environment.Na_o;
+  INaCa.FonRT is Environment.FonRT;
+  ICab.F is Environment.F;
+  ICab.FonRT is Environment.FonRT;
+  ICab.Ca_o is Environment.Ca_o;
+  Ito2.time is Environment.time;
+  Ito2.F is Environment.F;
+  Ito2.FonRT is Environment.FonRT;
+  Ito2.Cl_o is Environment.Cl_o;
+  INal.time is Environment.time;
+  Irel.time is Environment.time;
+  Irel.tissue is Environment.tissue;
+  Ca.time is Environment.time;
+  Na.time is Environment.time;
+  K.time is Environment.time;
+  Cl.time is Environment.time;
+  cell.V is INa.V;
+  cell.INa is INa.INa;
+  INa.V is ICaL.V;
+  cell.ICaL is ICaL.ICaL;
+  cell.IpCa is IpCa.IpCa;
+  ICaL.V is ICab.V;
+  cell.ICab is ICab.ICab;
+  ICab.V is IKr.V;
+  cell.IKr is IKr.IKr;
+  IKr.V is IKs.V;
+  cell.IKs is IKs.IKs;
+  IKs.V is IKp.V;
+  cell.IKp is IKp.IKp;
+  IKp.V is Ito.V;
+  cell.Ito is Ito.Ito;
+  Ito.V is IK1.V;
+  cell.IK1 is IK1.IK1;
+  IK1.V is INaK.V;
+  cell.INaK is INaK.INaK;
+  INaK.V is INaCa.V;
+  cell.INaCa is INaCa.INaCa;
+  INaCa.V is Ito2.V;
+  cell.Ito2 is Ito2.Ito2;
+  Ito2.V is IClb.V;
+  cell.IClb is IClb.IClb;
+  IClb.V is INal.V;
+  cell.INal is INal.INal;
+  cell.naiont is Na.naiont;
+  cell.AF is Na.AF;
+  cell.vmyo is Na.vmyo;
+  cell.kiont is K.kiont;
+  Na.AF is K.AF;
+  Na.vmyo is K.vmyo;
+  cell.clont is Cl.clont;
+  K.AF is Cl.AF;
+  K.vmyo is Cl.vmyo;
+  Cl.AF is Ca.AF;
+  Cl.vmyo is Ca.vmyo;
+  cell.vss is Ca.vss;
+  cell.vsr is Ca.vsr;
+  cell.vjsr is Ca.vjsr;
+  cell.vnsr is Ca.vnsr;
+  reversal_potentials.EK is IK1.EK;
+  IK1.EK is IKr.EK;
+  IKr.EK is Ito.EK;
+  Ito.EK is IKp.EK;
+  reversal_potentials.EKs is IKs.EKs;
+  reversal_potentials.ENa is INa.ENa;
+  reversal_potentials.ECl is IClb.ECl;
+  INa.ENa is INal.ENa;
+  INal.ENa is Na.ENa;
+  IClb.ECl is Na.ECl;
+  reversal_potentials.Na_i is Na.Na_i;
+  IKp.EK is K.EK;
+  Na.ECl is K.ECl;
+  reversal_potentials.K_i is K.K_i;
+  reversal_potentials.Cl_i is Cl.Cl_i;
+  INaK.Na_i is Na.Na_i;
+  INaCa.Na_i is Na.Na_i;
+  INaCa.INaCa is Ca.INaCa;
+  INaCa.Ca_i is Ca.Ca_i;
+  IpCa.IpCa is Ca.IpCa;
+  IpCa.Ca_i is Ca.Ca_i;
+  ICab.Ca_i is Ca.Ca_i;
+  ICaL.Ca_ss is Ca.Ca_ss;
+  ICaL.ICaL is Ca.ICaL;
+  IKs.Ca_i is Ca.Ca_i;
+  Ito2.Cl_i is Cl.Cl_i;
+  Ito2.Ca_ss is Ca.Ca_ss;
+  Ca.irelcicr is Irel.irelcicr;
+  Ca.Ca_ss is Irel.Ca_ss;
+  Ca.Ca_jsr is Irel.Ca_jsr;
+  Ca.iup is Iup_Ileak.iup;
+  Ca.ileak is Iup_Ileak.ileak;
+  Ca.Ca_i is Iup_Ileak.Ca_i;
+  Ca.Ca_nsr is Iup_Ileak.Ca_nsr;
+  Ca.idiff is Idiff_Itr.idiff;
+  Ca.itr is Idiff_Itr.itr;
+  Iup_Ileak.Ca_i is Idiff_Itr.Ca_i;
+  Irel.Ca_ss is Idiff_Itr.Ca_ss;
+  Irel.Ca_jsr is Idiff_Itr.Ca_jsr;
+  Iup_Ileak.Ca_nsr is Idiff_Itr.Ca_nsr;
+  ICaL.CaMKactive is Irel.CaMKactive;
+  ICaL.ibarca is Irel.ibarca;
+  Ca.ICaL is Irel.ICaL;
+  Irel.KmCaMK is Iup_Ileak.KmCaMK;
+  Irel.CaMKactive is Iup_Ileak.CaMKactive;
+  K.CTKCl is Cl.CTKCl;
+  Na.CTNaCl is Cl.CTNaCl;
+end

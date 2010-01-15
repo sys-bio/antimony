@@ -1,0 +1,73 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_H1()
+
+  // Rate Rules:
+   H1 ' = -(( betaI  *  H1 )) +  A
+
+  //Other declarations:
+  var H1, A, betaI, time;
+end
+
+model cellmlmod_H2()
+
+  // Rate Rules:
+   H2 ' = betaI  *  H1  -  betaC  *  H2
+
+  //Other declarations:
+  var H2, H1, betaI, betaC, time;
+end
+
+model cellmlmod_A()
+
+  // Variable initializations:
+  Amax = 7.17;
+  t_on = 1316.0;
+  t_off = 1792.0;
+
+  //Other declarations:
+  var A, Amax, t_on, t_off, alpha, lamda, time;
+end
+
+model cellmlmod_model_parameters()
+
+  // Assignment Rules:
+  betaI := log( 2.0  ) /  tauI
+  betaC := log( 2.0  ) /  tauC
+  alpha := log( 2.0  ) /  taualpha
+  lamda := log( 2.0  ) /  taulamda
+
+  // Variable initializations:
+  tauI = 4.85;
+  tauC = 28.54;
+  taualpha = 28.44;
+  taulamda = 28.62;
+
+  //Other declarations:
+  var betaI, betaC, alpha, lamda, tauI, tauC, taualpha, taulamda;
+end
+
+model brown_choe_shanahan_czeisler_model_1997_version01()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  H1: cellmlmod_H1()
+  H2: cellmlmod_H2()
+  A: cellmlmod_A()
+  model_parameters: cellmlmod_model_parameters()
+  H1.time is environment.time;
+  H2.time is environment.time;
+  A.time is environment.time;
+  H1.A is A.A;
+  H1.betaI is model_parameters.betaI;
+  H2.H1 is H1.H1;
+  H2.betaI is model_parameters.betaI;
+  H2.betaC is model_parameters.betaC;
+  A.alpha is model_parameters.alpha;
+  A.lamda is model_parameters.lamda;
+end

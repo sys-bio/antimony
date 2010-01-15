@@ -1,0 +1,694 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_membrane()
+
+  // Rate Rules:
+   V ' = -1.0   /  C  * ( i_Na  +  i_Ca_L  +  i_Ca_T  +  i_to  +  i_sus  +  i_K_r  +  i_K_s  +  i_f  +  i_b_Na  +  i_b_Ca  +  i_b_K  +  i_NaCa  +  i_p  +  i_st  +  i_Ca_P )
+
+  // Variable initializations:
+  V = -63.25;
+  R = 8314.0;
+  T = 310.0;
+  F = 96845.0;
+  C = 65.0;
+
+  //Other declarations:
+  var V, R, T, F, C, time, i_Na, i_Ca_L, i_Ca_T, i_to, i_sus, i_K_r, i_K_s;
+  var i_f, i_b_Na, i_b_Ca, i_b_K, i_NaCa, i_p, i_st, i_Ca_P;
+end
+
+model cellmlmod_sodium_current()
+
+  // Assignment Rules:
+  i_Na := g_Na  * power( m ,  3.0  ) *  h  *  Na_o  * (power( F ,  2.0  ) / ( R  *  T )) * ((exp(( V  -  E_Na ) *  F  / ( R  *  T )) -  1.0  ) / (exp( V  *  F  / ( R  *  T )) -  1.0  )) *  V
+
+  // Variable initializations:
+  g_Na = 0.0000012;
+
+  //Other declarations:
+  var i_Na, g_Na, E_Na, Na_o, R, F, T, time, V, m, h;
+end
+
+model cellmlmod_sodium_current_m_gate()
+
+  // Assignment Rules:
+  m_infinity := power( 1.0   / ( 1.0   + exp(-( V ) /  5.46  )),  1.0   /  3.0  )
+  tau_m := 0.6247E-3  / ( 0.832   * exp( -0.335   * ( V  +  56.7  )) +  0.627   * exp( 0.082   * ( V  +  65.01  ))) +  0.00004
+
+  // Rate Rules:
+   m ' = ( m_infinity  -  m ) /  tau_m
+
+  // Variable initializations:
+  m = 0.135;
+
+  //Other declarations:
+  var m, m_infinity, tau_m, V, time;
+end
+
+model cellmlmod_sodium_current_h_gate()
+
+  // Assignment Rules:
+  h := ( 1.0   -  F_Na ) *  h1  +  F_Na  *  h2
+  h1_infinity := 1.0   / ( 1.0   + exp(( V  +  66.1  ) /  6.4  ))
+  h2_infinity := h1_infinity
+  tau_h1 := 0.000003171   * exp( -0.2815   * ( V  +  17.11  )) / ( 1.0   +  0.003732   * exp( -0.3426   * ( V  +  37.76  ))) +  0.0005977
+  tau_h2 := 0.00000003186   * exp( -0.6219   * ( V  +  18.8  )) / ( 1.0   +  0.00007189   * exp( -0.6683   * ( V  +  34.07  ))) +  0.003556
+
+  // Rate Rules:
+   h1 ' = ( h1_infinity  -  h1 ) /  tau_h1
+   h2 ' = ( h2_infinity  -  h2 ) /  tau_h2
+
+  // Variable initializations:
+  h1 = 0.03123;
+  h2 = 4.894;
+
+  //Other declarations:
+  var h, F_Na, h1, h2, h1_infinity, h2_infinity, tau_h1, tau_h2, V, time;
+end
+
+model cellmlmod_L_type_Ca_channel()
+
+  // Assignment Rules:
+  i_Ca_L := g_Ca_L  * ( f_L  *  d_L  +  0.006   / ( 1.0   + exp(-(( V  +  14.1  )) /  6.0  ))) * ( V  -  E_Ca_L )
+
+  // Variable initializations:
+  g_Ca_L = 0.0659;
+  E_Ca_L = 46.4;
+
+  //Other declarations:
+  var i_Ca_L, g_Ca_L, E_Ca_L, time, V, d_L, f_L;
+end
+
+model cellmlmod_L_type_Ca_channel_d_gate()
+
+  // Assignment Rules:
+  alpha_d_L := -14.19   * (( V  +  35.0  ) / (exp(-(( V  +  35.0  )) /  2.5  ) -  1.0  )) -  42.45   *  V  / (exp( -0.208   *  V ) -  1.0  )
+  beta_d_L := 5.71   * ( V  -  5.0  ) / (exp( 0.4   * ( V  -  5.0  )) -  1.0  )
+  d_L_infinity := 1.0   / ( 1.0   + exp(-(( V  +  23.1  )) /  6.0  ))
+  tau_d_L := 1.0   / ( alpha_d_L  +  beta_d_L )
+
+  // Rate Rules:
+   d_L ' = ( d_L_infinity  -  d_L ) /  tau_d_L
+
+  // Variable initializations:
+  d_L = 0.02248;
+
+  //Other declarations:
+  var d_L, alpha_d_L, beta_d_L, d_L_infinity, tau_d_L, V, time;
+end
+
+model cellmlmod_L_type_Ca_channel_f_gate()
+
+  // Assignment Rules:
+  alpha_f_L := 3.12   * ( V  +  28.0  ) / (exp(( V  +  28.0  ) /  4.0  ) -  1.0  )
+  beta_f_L := 25.0   / ( 1.0   + exp(-(( V  +  28.0  )) /  4.0  ))
+  f_L_infinity := 1.0   / ( 1.0   + exp(( V  +  45.0  ) /  5.0  ))
+  tau_f_L := 1.0   / ( alpha_f_L  +  beta_f_L )
+
+  // Rate Rules:
+   f_L ' = ( f_L_infinity  -  f_L ) /  tau_f_L
+
+  // Variable initializations:
+  f_L = 0.531;
+
+  //Other declarations:
+  var f_L, alpha_f_L, beta_f_L, f_L_infinity, tau_f_L, V, time;
+end
+
+model cellmlmod_T_type_Ca_channel()
+
+  // Assignment Rules:
+  i_Ca_T := g_Ca_T  *  d_T  *  f_T  * ( V  -  E_Ca_T )
+
+  // Variable initializations:
+  g_Ca_T = 0.0139;
+  E_Ca_T = 45.0;
+
+  //Other declarations:
+  var i_Ca_T, g_Ca_T, E_Ca_T, time, V, d_T, f_T;
+end
+
+model cellmlmod_T_type_Ca_channel_d_gate()
+
+  // Assignment Rules:
+  alpha_d_T := 1068.0   * exp(( V  +  26.3  ) /  30.0  )
+  beta_d_T := 1068.0   * exp(-(( V  +  26.3  )) /  30.0  )
+  d_T_infinity := 1.0   / ( 1.0   + exp(-(( V  +  37.0  )) /  6.8  ))
+  tau_d_T := 1.0   / ( alpha_d_T  +  beta_d_T )
+
+  // Rate Rules:
+   d_T ' = ( d_T_infinity  -  d_T ) /  tau_d_T
+
+  // Variable initializations:
+  d_T = 0.02217;
+
+  //Other declarations:
+  var d_T, alpha_d_T, beta_d_T, d_T_infinity, tau_d_T, V, time;
+end
+
+model cellmlmod_T_type_Ca_channel_f_gate()
+
+  // Assignment Rules:
+  alpha_f_T := 15.3   * exp(-(( V  +  71.7  )) /  83.3  )
+  beta_f_T := 15.0   * exp(( V  +  71.7  ) /  15.38  )
+  f_T_infinity := 1.0   / ( 1.0   + exp(( V  +  71.0  ) /  9.0  ))
+  tau_f_T := 1.0   / ( alpha_f_T  +  beta_f_T )
+
+  // Rate Rules:
+   f_T ' = ( f_T_infinity  -  f_T ) /  tau_f_T
+
+  // Variable initializations:
+  f_T = 0.06274;
+
+  //Other declarations:
+  var f_T, alpha_f_T, beta_f_T, f_T_infinity, tau_f_T, V, time;
+end
+
+model cellmlmod_four_AP_sensitive_currents()
+
+  // Assignment Rules:
+  i_to := g_to  *  q  *  r  * ( V  -  E_K )
+  i_sus := g_sus  *  r  * ( V  -  E_K )
+
+  // Variable initializations:
+  g_to = 0.003649;
+  g_sus = 0.0114;
+
+  //Other declarations:
+  var i_to, i_sus, g_to, g_sus, E_K, V, time, q, r;
+end
+
+model cellmlmod_four_AP_sensitive_currents_q_gate()
+
+  // Assignment Rules:
+  q_infinity := 1.0   / ( 1.0   + exp(( V  +  59.37  ) /  13.1  ))
+  tau_q := 10.1E-3  +  0.006517   / ( 0.57   * exp( -0.08   * ( V  +  49.0  ))) +  0.000024   * exp( 0.1   * ( V  +  50.93  ))
+
+  // Rate Rules:
+   q ' = ( q_infinity  -  q ) /  tau_q
+
+  // Variable initializations:
+  q = 0.06609;
+
+  //Other declarations:
+  var q, q_infinity, tau_q, V, time;
+end
+
+model cellmlmod_four_AP_sensitive_currents_r_gate()
+
+  // Assignment Rules:
+  r_infinity := 1.0   / ( 1.0   + exp(-(( V  -  10.93  )) /  19.7  ))
+  tau_r := 0.00298   +  0.001559   / ( 1.037   * exp( 0.09   * ( V  +  30.61  )) +  0.369   * exp( -0.12   * ( V  +  23.84  )))
+
+  // Rate Rules:
+   r ' = ( r_infinity  -  r ) /  tau_r
+
+  // Variable initializations:
+  r = 0.05733;
+
+  //Other declarations:
+  var r, r_infinity, tau_r, V, time;
+end
+
+model cellmlmod_rapid_delayed_rectifying_potassium_current()
+
+  // Assignment Rules:
+  i_K_r := g_K_r  *  P_a  *  P_i  * ( V  -  E_K )
+  P_a := ( 1.0   -  F_K_r ) *  P_af  +  F_K_r  *  P_as
+
+  // Variable initializations:
+  g_K_r = 0.0160;
+
+  //Other declarations:
+  var i_K_r, g_K_r, P_a, F_K_r, E_K, time, V, P_af, P_as, P_i;
+end
+
+model cellmlmod_rapid_delayed_rectifying_potassium_current_P_af_gate()
+
+  // Assignment Rules:
+  P_af_infinity := 1.0   / ( 1.0   + exp(-(( V  +  14.2  )) /  10.6  ))
+  tau_P_af := 1.0   / ( 37.2   * exp(( V  -  9.0  ) /  15.9  ) +  0.96   * exp(-(( V  -  9.0  )) /  22.5  ))
+
+  // Rate Rules:
+   P_af ' = ( P_af_infinity  -  P_af ) /  tau_P_af
+
+  // Variable initializations:
+  P_af = 0.660;
+
+  //Other declarations:
+  var P_af, P_af_infinity, tau_P_af, V, time;
+end
+
+model cellmlmod_rapid_delayed_rectifying_potassium_current_P_as_gate()
+
+  // Assignment Rules:
+  P_as_infinity := P_af_infinity
+  tau_P_as := 1.0   / ( 4.2   * exp(( V  -  9.0  ) /  17.0  ) +  0.15   * exp(-(( V  -  9.0  )) /  21.6  ))
+
+  // Rate Rules:
+   P_as ' = ( P_as_infinity  -  P_as ) /  tau_P_as
+
+  // Variable initializations:
+  P_as = 0.359;
+
+  //Other declarations:
+  var P_as, P_as_infinity, tau_P_as, P_af_infinity, V, time;
+end
+
+model cellmlmod_rapid_delayed_rectifying_potassium_current_P_i_gate()
+
+  // Assignment Rules:
+  P_i_infinity := 1.0   / ( 1.0   + exp(( V  +  18.6  ) /  10.1  ))
+
+  // Rate Rules:
+   P_i ' = ( P_i_infinity  -  P_i ) /  tau_P_i
+
+  // Variable initializations:
+  P_i = 0.976;
+  tau_P_i = 0.002;
+
+  //Other declarations:
+  var P_i, P_i_infinity, tau_P_i, V, time;
+end
+
+model cellmlmod_slow_delayed_rectifying_potassium_current()
+
+  // Assignment Rules:
+  i_K_s := g_K_s  * power( xs ,  2.0  ) * ( V  -  E_K_s )
+
+  // Variable initializations:
+  g_K_s = 0.0104;
+
+  //Other declarations:
+  var i_K_s, g_K_s, E_K_s, time, V, xs;
+end
+
+model cellmlmod_slow_delayed_rectifying_potassium_current_xs_gate()
+
+  // Assignment Rules:
+  alpha_xs := 14.0   / ( 1.0   + exp(-(( V  -  40.0  )) /  9.0  ))
+  beta_xs := exp(-( V ) /  45.0  )
+  xs_infinity := alpha_xs  / ( alpha_xs  +  beta_xs )
+  tau_xs := 1.0   / ( alpha_xs  +  beta_xs )
+
+  // Rate Rules:
+   xs ' = ( xs_infinity  -  xs ) /  tau_xs
+
+  //Other declarations:
+  var xs, alpha_xs, beta_xs, xs_infinity, tau_xs, V, time;
+end
+
+model cellmlmod_hyperpolarisation_activated_current()
+
+  // Assignment Rules:
+  i_f := i_f_Na  +  i_f_K
+  i_f_Na := g_f_Na  *  y  * ( V  -  E_Na )
+  i_f_K := g_f_K  *  y  * ( V  -  E_K )
+
+  // Variable initializations:
+  g_f_Na = 0.0069;
+  g_f_K = 0.0069;
+
+  //Other declarations:
+  var i_f, i_f_Na, i_f_K, g_f_Na, g_f_K, E_K, E_Na, time, V, y;
+end
+
+model cellmlmod_hyperpolarisation_activated_current_y_gate()
+
+  // Assignment Rules:
+  alpha_y := exp(-(( V  +  78.91  )) /  26.62  )
+  beta_y := exp(( V  +  75.13  ) /  21.25  )
+  y_infinity := alpha_y  / ( alpha_y  +  beta_y )
+  tau_y := 1.0   / ( alpha_y  +  beta_y )
+
+  // Rate Rules:
+   y ' = ( y_infinity  -  y ) /  tau_y
+
+  // Variable initializations:
+  y = 0.007645;
+
+  //Other declarations:
+  var y, alpha_y, beta_y, y_infinity, tau_y, V, time;
+end
+
+model cellmlmod_sodium_background_current()
+
+  // Assignment Rules:
+  i_b_Na := g_b_Na  * ( V  -  E_Na )
+
+  // Variable initializations:
+  g_b_Na = 0.000189;
+
+  //Other declarations:
+  var i_b_Na, g_b_Na, E_Na, time, V;
+end
+
+model cellmlmod_potassium_background_current()
+
+  // Assignment Rules:
+  i_b_K := g_b_K  * ( V  -  E_K )
+
+  // Variable initializations:
+  g_b_K = 0.0000819;
+
+  //Other declarations:
+  var i_b_K, g_b_K, E_K, V, time;
+end
+
+model cellmlmod_calcium_background_current()
+
+  // Assignment Rules:
+  i_b_Ca := g_b_Ca  * ( V  -  E_Ca )
+
+  // Variable initializations:
+  g_b_Ca = 0.000043;
+
+  //Other declarations:
+  var i_b_Ca, g_b_Ca, E_Ca, time, V;
+end
+
+model cellmlmod_sodium_calcium_pump()
+
+  // Assignment Rules:
+  i_NaCa := K_NaCa  * ((power( Na_i ,  3.0  ) *  Ca_o  * exp( 0.03743   *  V  *  gamma_NaCa ) - power( Na_o ,  3.0  ) *  Ca_i  * exp( 0.0374   *  V  * ( gamma_NaCa  -  1.0  ))) / ( 1.0   +  d_NaCa  * ( Ca_i  * power( Na_o ,  3.0  ) +  Ca_o  * power( Na_i ,  3.0  ))))
+
+  // Variable initializations:
+  K_NaCa = 0.0000440;
+  d_NaCa = 0.0001;
+  gamma_NaCa = 0.5;
+
+  //Other declarations:
+  var i_NaCa, K_NaCa, d_NaCa, gamma_NaCa, Na_i, Na_o, Ca_i, Ca_o, V, time;
+end
+
+model cellmlmod_sodium_potassium_pump()
+
+  // Assignment Rules:
+  i_p := i_p_max  * power( Na_i  / ( K_m_Na  +  Na_i ),  3.0  ) * power( K_o  / ( K_m_K  +  K_o ),  2.0  ) * ( 1.6   / ( 1.5   + exp(-(( V  +  60.0  )) /  40.0  )))
+
+  // Variable initializations:
+  K_m_Na = 5.64;
+  K_m_K = 0.621;
+  i_p_max = 0.16;
+
+  //Other declarations:
+  var i_p, K_m_Na, K_m_K, i_p_max, Na_i, K_o, V, time;
+end
+
+model cellmlmod_sustained_inward_current()
+
+  // Assignment Rules:
+  i_st := g_st  *  d_s  *  f_s  * ( V  -  18.0  )
+
+  // Variable initializations:
+  g_st = 0.00214;
+
+  //Other declarations:
+  var i_st, g_st, time, V, d_s, f_s;
+end
+
+model cellmlmod_sustained_inward_current_d_gate()
+
+  // Assignment Rules:
+  alpha_d_s := 1000.0   / ( 0.15   * exp(-( V ) /  11.0  ) +  0.2   * exp(-( V ) /  700.0  ))
+  beta_d_s := 1000.0   / ( 16.0   * exp( V  /  8.0  ) +  0.2   * exp( V  /  50.0  ))
+  d_s_infinity := alpha_d_s  / ( alpha_d_s  +  beta_d_s )
+  tau_d_s := 1.0   / ( alpha_d_s  +  beta_d_s )
+
+  // Rate Rules:
+   d_s ' = ( d_s_infinity  -  d_s ) /  tau_d_s
+
+  // Variable initializations:
+  d_s = 0.230;
+
+  //Other declarations:
+  var d_s, alpha_d_s, beta_d_s, d_s_infinity, tau_d_s, V, time;
+end
+
+model cellmlmod_sustained_inward_current_f_gate()
+
+  // Assignment Rules:
+  alpha_f_s := 1000.0   / ( 3100.0   * exp(-( V ) /  13.0  ) +  700.0   * exp(-( V ) /  70.0  ))
+  beta_f_s := 1000.0   / ( 16.0   * exp( V  /  8.0  ) +  0.2   * exp( V  /  50.0  ))
+  f_s_infinity := alpha_f_s  / ( alpha_f_s  +  beta_f_s )
+  tau_f_s := 1.0   / ( alpha_f_s  +  beta_f_s )
+
+  // Rate Rules:
+   f_s ' = ( f_s_infinity  -  f_s ) /  tau_f_s
+
+  // Variable initializations:
+  f_s = 0.283;
+
+  //Other declarations:
+  var f_s, alpha_f_s, beta_f_s, f_s_infinity, tau_f_s, V, time;
+end
+
+model cellmlmod_intracellular_calcium_handling()
+
+  // Assignment Rules:
+  i_Ca_P := i_Ca_P_max  * ( Ca_s  / ( Ca_s  +  0.0004  ))
+  U_d := 1.0   -  B_d  / ( K_m_b  +  Ca_d  +  B_d )
+  U_s := 1.0   -  B_s  / ( K_m_b  +  Ca_s  +  B_s )
+  J_Ca_ds := alpha_ds  *  Vol_d  * ( Ca_d  -  Ca_s )
+  J_Ca_r := alpha_r  *  f_R  * (power( Ca_d ,  2.0  ) / (power( K_m_r ,  2.0  ) + power( Ca_d ,  2.0  ))) *  Vol_r  *  Ca_r
+  J_Ca_P := J_Ca_P_max  * ( Ca_s  / ( Ca_s  +  0.0004  ))
+  J_Ca_u := J_Ca_u_max  * (power( Ca_s ,  2.0  ) / (power( K_m_u ,  2.0  ) + power( Ca_s ,  2.0  )))
+  J_Ca_ur := alpha_ur  *  Vol_u  * ( Ca_u  -  Ca_r )
+  J_Ca_1 := alpha_1  *  Vol_u  *  Ca_u
+  Vol_u := f_u  *  Vol_c
+  Vol_r := f_r  *  Vol_c
+  Vol_d := f_d  *  Vol_c
+  Vol_s := Vol_c  - ( Vol_u  +  Vol_d )
+  i_Ca := i_Ca_L  +  i_Ca_T
+
+  // Rate Rules:
+   f_R ' = -( alpha_fR ) *  Ca_d  *  f_R  +  beta_fR  * ( 1.0   -  f_R )
+   Ca_d ' = U_d  /  Vol_d  * ( J_Ca_ds  -  0.95   *  i_Ca  / ( 2.0   *  F ))
+   Ca_s ' = U_s  /  Vol_s  * ( J_Ca_ds  - (( 0.05   *  i_Ca  -  2.0   *  i_NaCa  +  i_b_Ca ) / ( 2.0   *  F ) +  J_Ca_u ) +  J_Ca_r  +  J_Ca_1 )
+   Ca_u ' = ( J_Ca_u  - ( J_Ca_1  +  J_Ca_ur )) /  Vol_u
+   Ca_r ' = ( J_Ca_ur  -  J_Ca_r ) /  Vol_r
+
+  // Variable initializations:
+  i_Ca_P_max = 0.24;
+  J_Ca_u_max = 0.00000000096;
+  Ca_d = 0.001544;
+  Ca_s = 0.05487;
+  Ca_u = 6.983;
+  Ca_r = 4.909;
+  B_d = 0.4;
+  B_s = 0.2;
+  Vol_c = 8.0e-12;
+  K_m_b = 0.002;
+  K_m_r = 0.001;
+  K_m_u = 0.005;
+  f_d = 0.1;
+  f_r = 0.3;
+  f_u = 0.06;
+  alpha_ds = 3300.0;
+  alpha_fR = 6670.0;
+  alpha_1 = 0.172;
+  alpha_r = 333.5;
+  alpha_ur = 533.6;
+  beta_fR = 2.0;
+  f_R = 0.188;
+
+  //Other declarations:
+  var i_Ca_P, U_d, U_s, i_Ca_P_max, J_Ca_ds, J_Ca_r, J_Ca_P, J_Ca_P_max, J_Ca_u;
+  var J_Ca_u_max, J_Ca_ur, J_Ca_1, Ca_d, Ca_s, Ca_u, Ca_r, B_d, B_s, Vol_u;
+  var Vol_r, Vol_d, Vol_s, Vol_c, K_m_b, K_m_r, K_m_u, f_d, f_r, f_u, alpha_ds;
+  var alpha_fR, alpha_1, alpha_r, alpha_ur, beta_fR, f_R, i_Ca, i_Ca_L, i_Ca_T;
+  var i_NaCa, i_b_Ca, time, F;
+end
+
+model cellmlmod_ionic_concentrations()
+
+  // Variable initializations:
+  Na_i = 8.0;
+  Na_o = 140.0;
+  Ca_i = 0.0001;
+  Ca_o = 2.0;
+  K_i = 140.0;
+  K_o = 5.4;
+
+  //Other declarations:
+  var Na_i, Na_o, Ca_i, Ca_o, K_i, K_o;
+end
+
+model cellmlmod_reversal_and_equilibrium_potentials()
+
+  // Assignment Rules:
+  E_Na := R  *  T  / ( z  *  F ) * ln( Na_o  /  Na_i )
+  E_K := R  *  T  / ( z  *  F ) * ln( K_o  /  K_i )
+  E_K_s := R  *  T  /  F  * ln(( K_o  +  0.12   *  Na_o ) / ( K_i  +  0.12   *  Na_i ))
+  E_Ca := R  *  T  / ( z  *  F ) * ln( Ca_o  /  Ca_i )
+
+  //Other declarations:
+  var E_Na, E_K, E_K_s, E_Ca, z, K_o, Na_o, K_i, Na_i, Ca_o, Ca_i, R, F, T;
+  var time;
+end
+
+model boyett_zhang_garny_holden_2001_version01()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  membrane: cellmlmod_membrane()
+  sodium_current: cellmlmod_sodium_current()
+  sodium_current_m_gate: cellmlmod_sodium_current_m_gate()
+  sodium_current_h_gate: cellmlmod_sodium_current_h_gate()
+  L_type_Ca_channel: cellmlmod_L_type_Ca_channel()
+  L_type_Ca_channel_d_gate: cellmlmod_L_type_Ca_channel_d_gate()
+  L_type_Ca_channel_f_gate: cellmlmod_L_type_Ca_channel_f_gate()
+  T_type_Ca_channel: cellmlmod_T_type_Ca_channel()
+  T_type_Ca_channel_d_gate: cellmlmod_T_type_Ca_channel_d_gate()
+  T_type_Ca_channel_f_gate: cellmlmod_T_type_Ca_channel_f_gate()
+  four_AP_sensitive_currents: cellmlmod_four_AP_sensitive_currents()
+  four_AP_sensitive_currents_q_gate: cellmlmod_four_AP_sensitive_currents_q_gate()
+  four_AP_sensitive_currents_r_gate: cellmlmod_four_AP_sensitive_currents_r_gate()
+  rapid_delayed_rectifying_potassium_current: cellmlmod_rapid_delayed_rectifying_potassium_current()
+  rapid_delayed_rectifying_potassium_current_P_af_gate: cellmlmod_rapid_delayed_rectifying_potassium_current_P_af_gate()
+  rapid_delayed_rectifying_potassium_current_P_as_gate: cellmlmod_rapid_delayed_rectifying_potassium_current_P_as_gate()
+  rapid_delayed_rectifying_potassium_current_P_i_gate: cellmlmod_rapid_delayed_rectifying_potassium_current_P_i_gate()
+  slow_delayed_rectifying_potassium_current: cellmlmod_slow_delayed_rectifying_potassium_current()
+  slow_delayed_rectifying_potassium_current_xs_gate: cellmlmod_slow_delayed_rectifying_potassium_current_xs_gate()
+  hyperpolarisation_activated_current: cellmlmod_hyperpolarisation_activated_current()
+  hyperpolarisation_activated_current_y_gate: cellmlmod_hyperpolarisation_activated_current_y_gate()
+  sodium_background_current: cellmlmod_sodium_background_current()
+  potassium_background_current: cellmlmod_potassium_background_current()
+  calcium_background_current: cellmlmod_calcium_background_current()
+  sodium_calcium_pump: cellmlmod_sodium_calcium_pump()
+  sodium_potassium_pump: cellmlmod_sodium_potassium_pump()
+  sustained_inward_current: cellmlmod_sustained_inward_current()
+  sustained_inward_current_d_gate: cellmlmod_sustained_inward_current_d_gate()
+  sustained_inward_current_f_gate: cellmlmod_sustained_inward_current_f_gate()
+  intracellular_calcium_handling: cellmlmod_intracellular_calcium_handling()
+  ionic_concentrations: cellmlmod_ionic_concentrations()
+  reversal_and_equilibrium_potentials: cellmlmod_reversal_and_equilibrium_potentials()
+  membrane.time is environment.time;
+  sodium_current.time is environment.time;
+  L_type_Ca_channel.time is environment.time;
+  T_type_Ca_channel.time is environment.time;
+  four_AP_sensitive_currents.time is environment.time;
+  rapid_delayed_rectifying_potassium_current.time is environment.time;
+  slow_delayed_rectifying_potassium_current.time is environment.time;
+  hyperpolarisation_activated_current.time is environment.time;
+  sodium_background_current.time is environment.time;
+  potassium_background_current.time is environment.time;
+  calcium_background_current.time is environment.time;
+  sodium_calcium_pump.time is environment.time;
+  sodium_potassium_pump.time is environment.time;
+  reversal_and_equilibrium_potentials.time is environment.time;
+  sustained_inward_current.time is environment.time;
+  intracellular_calcium_handling.time is environment.time;
+  membrane.i_Na is sodium_current.i_Na;
+  membrane.V is sodium_current.V;
+  membrane.R is sodium_current.R;
+  membrane.T is sodium_current.T;
+  membrane.F is sodium_current.F;
+  membrane.i_Ca_L is L_type_Ca_channel.i_Ca_L;
+  sodium_current.V is L_type_Ca_channel.V;
+  membrane.i_Ca_T is T_type_Ca_channel.i_Ca_T;
+  L_type_Ca_channel.V is T_type_Ca_channel.V;
+  membrane.i_to is four_AP_sensitive_currents.i_to;
+  membrane.i_sus is four_AP_sensitive_currents.i_sus;
+  T_type_Ca_channel.V is four_AP_sensitive_currents.V;
+  membrane.i_K_r is rapid_delayed_rectifying_potassium_current.i_K_r;
+  four_AP_sensitive_currents.V is rapid_delayed_rectifying_potassium_current.V;
+  membrane.i_K_s is slow_delayed_rectifying_potassium_current.i_K_s;
+  rapid_delayed_rectifying_potassium_current.V is slow_delayed_rectifying_potassium_current.V;
+  membrane.i_f is hyperpolarisation_activated_current.i_f;
+  slow_delayed_rectifying_potassium_current.V is hyperpolarisation_activated_current.V;
+  hyperpolarisation_activated_current.V is sodium_background_current.V;
+  membrane.i_b_Na is sodium_background_current.i_b_Na;
+  sodium_background_current.V is potassium_background_current.V;
+  membrane.i_b_K is potassium_background_current.i_b_K;
+  potassium_background_current.V is calcium_background_current.V;
+  membrane.i_b_Ca is calcium_background_current.i_b_Ca;
+  membrane.i_NaCa is sodium_calcium_pump.i_NaCa;
+  calcium_background_current.V is sodium_calcium_pump.V;
+  membrane.i_p is sodium_potassium_pump.i_p;
+  sodium_calcium_pump.V is sodium_potassium_pump.V;
+  sodium_current.R is reversal_and_equilibrium_potentials.R;
+  sodium_current.T is reversal_and_equilibrium_potentials.T;
+  sodium_current.F is reversal_and_equilibrium_potentials.F;
+  membrane.i_st is sustained_inward_current.i_st;
+  sodium_potassium_pump.V is sustained_inward_current.V;
+  membrane.i_Ca_P is intracellular_calcium_handling.i_Ca_P;
+  reversal_and_equilibrium_potentials.F is intracellular_calcium_handling.F;
+  reversal_and_equilibrium_potentials.E_Na is sodium_current.E_Na;
+  ionic_concentrations.Na_o is sodium_current.Na_o;
+  reversal_and_equilibrium_potentials.E_K is four_AP_sensitive_currents.E_K;
+  four_AP_sensitive_currents.E_K is rapid_delayed_rectifying_potassium_current.E_K;
+  reversal_and_equilibrium_potentials.E_K_s is slow_delayed_rectifying_potassium_current.E_K_s;
+  rapid_delayed_rectifying_potassium_current.E_K is hyperpolarisation_activated_current.E_K;
+  sodium_current.E_Na is hyperpolarisation_activated_current.E_Na;
+  hyperpolarisation_activated_current.E_Na is sodium_background_current.E_Na;
+  hyperpolarisation_activated_current.E_K is potassium_background_current.E_K;
+  reversal_and_equilibrium_potentials.E_Ca is calcium_background_current.E_Ca;
+  intracellular_calcium_handling.i_b_Ca is calcium_background_current.i_b_Ca;
+  intracellular_calcium_handling.i_Ca_L is L_type_Ca_channel.i_Ca_L;
+  intracellular_calcium_handling.i_Ca_T is T_type_Ca_channel.i_Ca_T;
+  sodium_calcium_pump.Ca_i is ionic_concentrations.Ca_i;
+  sodium_calcium_pump.Na_i is ionic_concentrations.Na_i;
+  sodium_calcium_pump.Ca_o is ionic_concentrations.Ca_o;
+  sodium_calcium_pump.Na_o is sodium_current.Na_o;
+  intracellular_calcium_handling.i_NaCa is sodium_calcium_pump.i_NaCa;
+  sodium_potassium_pump.Na_i is ionic_concentrations.Na_i;
+  sodium_potassium_pump.K_o is ionic_concentrations.K_o;
+  reversal_and_equilibrium_potentials.K_o is ionic_concentrations.K_o;
+  reversal_and_equilibrium_potentials.Na_o is sodium_current.Na_o;
+  reversal_and_equilibrium_potentials.K_i is ionic_concentrations.K_i;
+  reversal_and_equilibrium_potentials.Na_i is ionic_concentrations.Na_i;
+  reversal_and_equilibrium_potentials.Ca_o is ionic_concentrations.Ca_o;
+  reversal_and_equilibrium_potentials.Ca_i is ionic_concentrations.Ca_i;
+  sodium_current.m is sodium_current_m_gate.m;
+  environment.time is sodium_current_m_gate.time;
+  sustained_inward_current.V is sodium_current_m_gate.V;
+  sodium_current.h is sodium_current_h_gate.h;
+  sodium_current_m_gate.time is sodium_current_h_gate.time;
+  sodium_current_m_gate.V is sodium_current_h_gate.V;
+  L_type_Ca_channel.d_L is L_type_Ca_channel_d_gate.d_L;
+  sodium_current_h_gate.time is L_type_Ca_channel_d_gate.time;
+  sodium_current_h_gate.V is L_type_Ca_channel_d_gate.V;
+  L_type_Ca_channel.f_L is L_type_Ca_channel_f_gate.f_L;
+  L_type_Ca_channel_d_gate.time is L_type_Ca_channel_f_gate.time;
+  L_type_Ca_channel_d_gate.V is L_type_Ca_channel_f_gate.V;
+  T_type_Ca_channel.d_T is T_type_Ca_channel_d_gate.d_T;
+  L_type_Ca_channel_f_gate.time is T_type_Ca_channel_d_gate.time;
+  L_type_Ca_channel_f_gate.V is T_type_Ca_channel_d_gate.V;
+  T_type_Ca_channel.f_T is T_type_Ca_channel_f_gate.f_T;
+  T_type_Ca_channel_d_gate.time is T_type_Ca_channel_f_gate.time;
+  T_type_Ca_channel_d_gate.V is T_type_Ca_channel_f_gate.V;
+  four_AP_sensitive_currents.q is four_AP_sensitive_currents_q_gate.q;
+  T_type_Ca_channel_f_gate.time is four_AP_sensitive_currents_q_gate.time;
+  T_type_Ca_channel_f_gate.V is four_AP_sensitive_currents_q_gate.V;
+  four_AP_sensitive_currents.r is four_AP_sensitive_currents_r_gate.r;
+  four_AP_sensitive_currents_q_gate.time is four_AP_sensitive_currents_r_gate.time;
+  four_AP_sensitive_currents_q_gate.V is four_AP_sensitive_currents_r_gate.V;
+  rapid_delayed_rectifying_potassium_current.P_af is rapid_delayed_rectifying_potassium_current_P_af_gate.P_af;
+  four_AP_sensitive_currents_r_gate.time is rapid_delayed_rectifying_potassium_current_P_af_gate.time;
+  four_AP_sensitive_currents_r_gate.V is rapid_delayed_rectifying_potassium_current_P_af_gate.V;
+  rapid_delayed_rectifying_potassium_current.P_as is rapid_delayed_rectifying_potassium_current_P_as_gate.P_as;
+  rapid_delayed_rectifying_potassium_current_P_af_gate.time is rapid_delayed_rectifying_potassium_current_P_as_gate.time;
+  rapid_delayed_rectifying_potassium_current_P_af_gate.V is rapid_delayed_rectifying_potassium_current_P_as_gate.V;
+  rapid_delayed_rectifying_potassium_current_P_af_gate.P_af_infinity is rapid_delayed_rectifying_potassium_current_P_as_gate.P_af_infinity;
+  rapid_delayed_rectifying_potassium_current.P_i is rapid_delayed_rectifying_potassium_current_P_i_gate.P_i;
+  rapid_delayed_rectifying_potassium_current_P_as_gate.time is rapid_delayed_rectifying_potassium_current_P_i_gate.time;
+  rapid_delayed_rectifying_potassium_current_P_as_gate.V is rapid_delayed_rectifying_potassium_current_P_i_gate.V;
+  slow_delayed_rectifying_potassium_current.xs is slow_delayed_rectifying_potassium_current_xs_gate.xs;
+  rapid_delayed_rectifying_potassium_current_P_i_gate.time is slow_delayed_rectifying_potassium_current_xs_gate.time;
+  rapid_delayed_rectifying_potassium_current_P_i_gate.V is slow_delayed_rectifying_potassium_current_xs_gate.V;
+  hyperpolarisation_activated_current.y is hyperpolarisation_activated_current_y_gate.y;
+  slow_delayed_rectifying_potassium_current_xs_gate.time is hyperpolarisation_activated_current_y_gate.time;
+  slow_delayed_rectifying_potassium_current_xs_gate.V is hyperpolarisation_activated_current_y_gate.V;
+  sustained_inward_current.d_s is sustained_inward_current_d_gate.d_s;
+  hyperpolarisation_activated_current_y_gate.time is sustained_inward_current_d_gate.time;
+  hyperpolarisation_activated_current_y_gate.V is sustained_inward_current_d_gate.V;
+  sustained_inward_current.f_s is sustained_inward_current_f_gate.f_s;
+  sustained_inward_current_d_gate.time is sustained_inward_current_f_gate.time;
+  sustained_inward_current_d_gate.V is sustained_inward_current_f_gate.V;
+end

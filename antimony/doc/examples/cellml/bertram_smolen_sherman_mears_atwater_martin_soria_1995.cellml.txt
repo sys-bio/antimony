@@ -1,0 +1,324 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_membrane()
+
+  // Rate Rules:
+  V' = -((i_Ca + i_K + i_K_ATP + i_K_Ca + i_CRAC + i_leak)) / Cm
+
+  // Variable initializations:
+  V = -61;
+  Cm = 6158;
+
+  //Other declarations:
+  var V, Cm, time, i_K, i_K_Ca, i_K_ATP, i_CRAC, i_Ca, i_leak;
+end
+
+model cellmlmod_K_current()
+
+  // Assignment Rules:
+  i_K := g_K * n * (V - V_K)
+
+  // Variable initializations:
+  V_K = -70;
+  g_K = 3900;
+
+  //Other declarations:
+  var time, i_K, V_K, g_K, V, n;
+end
+
+model cellmlmod_K_channel_n_gate()
+
+  // Assignment Rules:
+  n_infinity := 1  / (1  + exp((Vn - V) / Sn))
+  tau_n := 9.09  / (1  + exp((V - Vn) / Sn))
+
+  // Rate Rules:
+  n' = lambda_n * (n_infinity - n) / tau_n
+
+  // Variable initializations:
+  n = 0.0005;
+  Vn = -15;
+  Sn = 6;
+  lambda_n = 1.85;
+
+  //Other declarations:
+  var n, n_infinity, tau_n, Vn, Sn, lambda_n, V, time;
+end
+
+model cellmlmod_K_ATP_current()
+
+  // Assignment Rules:
+  i_K_ATP := g_K_ATP * (V - V_K)
+
+  // Variable initializations:
+  g_K_ATP = 150;
+
+  //Other declarations:
+  var i_K_ATP, g_K_ATP, V_K, time, V;
+end
+
+model cellmlmod_fast_Ca_current()
+
+  // Assignment Rules:
+  i_Ca_f := g_Ca_f * m_f_infinity * (V - V_Ca)
+
+  // Variable initializations:
+  V_Ca = 100;
+  g_Ca_f = 810;
+
+  //Other declarations:
+  var i_Ca_f, V_Ca, g_Ca_f, time, V, m_f_infinity;
+end
+
+model cellmlmod_fast_Ca_channel_m_gate()
+
+  // Assignment Rules:
+  m_f_infinity := 1  / (1  + exp((Vm_f - V) / Sm_f))
+
+  // Variable initializations:
+  Vm_f = -20;
+  Sm_f = 7.5;
+
+  //Other declarations:
+  var m_f_infinity, Vm_f, Sm_f, V;
+end
+
+model cellmlmod_slow_Ca_current()
+
+  // Assignment Rules:
+  i_Ca_s := g_Ca_s * m_s_infinity * (1  - jm) * (V - V_Ca)
+
+  // Variable initializations:
+  g_Ca_s = 510;
+
+  //Other declarations:
+  var i_Ca_s, g_Ca_s, time, V, V_Ca, m_s_infinity, jm;
+end
+
+model cellmlmod_slow_Ca_channel_m_gate()
+
+  // Assignment Rules:
+  m_s_infinity := 1  / (1  + exp((Vm_s - V) / Sm_s))
+
+  // Variable initializations:
+  Vm_s = -16;
+  Sm_s = 10;
+
+  //Other declarations:
+  var m_s_infinity, Vm_s, Sm_s, V;
+end
+
+model cellmlmod_slow_Ca_channel_j_gate()
+
+  // Assignment Rules:
+  j := 1  - jm
+  jm_infinity := 1  - 1  / (1  + exp((V - Vj) / Sj))
+  tau_j := 50000  / (exp((V - Vj) / 4 ) + exp((Vj - V) / 4 )) + 1500
+
+  // Rate Rules:
+  jm' = (jm_infinity - jm) / tau_j
+
+  // Variable initializations:
+  jm = 0.12;
+  Vj = -53;
+  Sj = 2;
+
+  //Other declarations:
+  var jm, j, jm_infinity, Vj, tau_j, Sj, V, time;
+end
+
+model cellmlmod_Ca_current_total()
+
+  // Assignment Rules:
+  i_Ca := i_Ca_f + i_Ca_s
+
+  //Other declarations:
+  var i_Ca, i_Ca_f, i_Ca_s;
+end
+
+model cellmlmod_K_Ca_current()
+
+  // Assignment Rules:
+  i_K_Ca := g_K_Ca * power(Ca_i, 5 ) / (power(Ca_i, 5 ) + power(kdkca, 5 )) * (V - V_K)
+
+  // Variable initializations:
+  g_K_Ca = 1200;
+  kdkca = 0.55;
+
+  //Other declarations:
+  var i_K_Ca, g_K_Ca, time, V, V_K, Ca_i, kdkca;
+end
+
+model cellmlmod_CRAC_current()
+
+  // Assignment Rules:
+  i_CRAC := g_CRAC * r_infinity * (V - V_CRAC)
+
+  // Variable initializations:
+  g_CRAC = 75;
+  V_CRAC = 0;
+
+  //Other declarations:
+  var i_CRAC, g_CRAC, V_CRAC, time, V, Ca_er, r_infinity;
+end
+
+model cellmlmod_CRAC_r_gate()
+
+  // Assignment Rules:
+  r_infinity := 1  / (1  + exp(1  * (Ca_er - Ca_er_bar)))
+
+  // Variable initializations:
+  Ca_er_bar = 3;
+
+  //Other declarations:
+  var r_infinity, Ca_er, Ca_er_bar;
+end
+
+model cellmlmod_leak_current()
+
+  // Assignment Rules:
+  i_leak := g_leak * (V - V_CRAC)
+
+  // Variable initializations:
+  g_leak = 0;
+
+  //Other declarations:
+  var i_leak, g_leak, V_CRAC, time, V;
+end
+
+model cellmlmod_ER_parameters()
+
+  // Assignment Rules:
+  J_er_p := verp * power(Ca_i, 2 ) / (power(Ca_i, 2 ) + power(kerp, 2 ))
+  a_infinity := 1  / (1  + dact / Ca_i)
+  b_infinity := IP3 / (IP3 + dip3)
+  h_infinity := 1  / (1  + Ca_i / dinh)
+  O := power(a_infinity, 3 ) * power(b_infinity, 3 ) * power(h_infinity, 3 ) * 1
+
+  // Variable initializations:
+  IP3 = 0;
+  kerp = 0.1;
+  verp = 0.24;
+  dact = 0.1;
+  dinh = 0.4;
+  dip3 = 0.2;
+
+  //Other declarations:
+  var time, Ca_i, J_er_p, IP3, kerp, verp, dact, dinh, dip3, a_infinity, b_infinity;
+  var h_infinity, O;
+end
+
+model cellmlmod_Ca_equations()
+
+  // Assignment Rules:
+  J_er_tot := J_er_leak + J_er_IP3 - J_er_p
+  J_er_IP3 := O * (Ca_er - Ca_i)
+  J_er_leak := perl * (Ca_er - Ca_i)
+
+  // Rate Rules:
+  Ca_er' = -(J_er_tot) / (lambda_er * sigma_er)
+  Ca_i' = J_er_tot / lambda_er + J_mem_tot
+
+  // Variable initializations:
+  Ca_er = 9;
+  Ca_i = 0.11;
+  perl = 0.02;
+  lambda_er = 250;
+  sigma_er = 5;
+
+  //Other declarations:
+  var time, Ca_er, Ca_i, J_er_tot, J_er_p, J_er_IP3, J_er_leak, J_mem_tot;
+  var O, perl, lambda_er, sigma_er;
+end
+
+model cellmlmod_Ca_membrane_flux()
+
+  // Assignment Rules:
+  J_mem_tot := -(f) * (gamma * i_Ca + k_Ca * Ca_i)
+
+  // Variable initializations:
+  k_Ca = 0.07;
+  gamma = 0.000003607;
+  f = 0.01;
+
+  //Other declarations:
+  var time, k_Ca, gamma, i_Ca, Ca_i, J_mem_tot, f;
+end
+
+model bertram_1995()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  membrane: cellmlmod_membrane()
+  K_current: cellmlmod_K_current()
+  K_channel_n_gate: cellmlmod_K_channel_n_gate()
+  K_ATP_current: cellmlmod_K_ATP_current()
+  fast_Ca_current: cellmlmod_fast_Ca_current()
+  fast_Ca_channel_m_gate: cellmlmod_fast_Ca_channel_m_gate()
+  slow_Ca_current: cellmlmod_slow_Ca_current()
+  slow_Ca_channel_m_gate: cellmlmod_slow_Ca_channel_m_gate()
+  slow_Ca_channel_j_gate: cellmlmod_slow_Ca_channel_j_gate()
+  Ca_current_total: cellmlmod_Ca_current_total()
+  K_Ca_current: cellmlmod_K_Ca_current()
+  CRAC_current: cellmlmod_CRAC_current()
+  CRAC_r_gate: cellmlmod_CRAC_r_gate()
+  leak_current: cellmlmod_leak_current()
+  ER_parameters: cellmlmod_ER_parameters()
+  Ca_equations: cellmlmod_Ca_equations()
+  Ca_membrane_flux: cellmlmod_Ca_membrane_flux()
+  membrane.time is environment.time;
+  K_current.time is environment.time;
+  K_ATP_current.time is environment.time;
+  fast_Ca_current.time is environment.time;
+  slow_Ca_current.time is environment.time;
+  K_Ca_current.time is environment.time;
+  CRAC_current.time is environment.time;
+  Ca_equations.time is environment.time;
+  Ca_membrane_flux.time is environment.time;
+  leak_current.time is environment.time;
+  K_current.V is membrane.V;
+  K_current.i_K is membrane.i_K;
+  K_ATP_current.V is membrane.V;
+  K_ATP_current.i_K_ATP is membrane.i_K_ATP;
+  fast_Ca_current.V is membrane.V;
+  slow_Ca_current.V is membrane.V;
+  K_Ca_current.V is membrane.V;
+  K_Ca_current.i_K_Ca is membrane.i_K_Ca;
+  CRAC_current.V is membrane.V;
+  CRAC_current.i_CRAC is membrane.i_CRAC;
+  leak_current.V is membrane.V;
+  leak_current.i_leak is membrane.i_leak;
+  K_current.V_K is K_ATP_current.V_K;
+  K_ATP_current.V_K is K_Ca_current.V_K;
+  fast_Ca_current.V_Ca is slow_Ca_current.V_Ca;
+  slow_Ca_current.i_Ca_s is Ca_current_total.i_Ca_s;
+  fast_Ca_current.i_Ca_f is Ca_current_total.i_Ca_f;
+  Ca_current_total.i_Ca is membrane.i_Ca;
+  membrane.i_Ca is Ca_membrane_flux.i_Ca;
+  CRAC_current.Ca_er is Ca_equations.Ca_er;
+  K_Ca_current.Ca_i is Ca_equations.Ca_i;
+  CRAC_current.V_CRAC is leak_current.V_CRAC;
+  Ca_equations.Ca_i is Ca_membrane_flux.Ca_i;
+  Ca_equations.J_mem_tot is Ca_membrane_flux.J_mem_tot;
+  ER_parameters.time is environment.time;
+  ER_parameters.Ca_i is Ca_membrane_flux.Ca_i;
+  ER_parameters.J_er_p is Ca_equations.J_er_p;
+  ER_parameters.O is Ca_equations.O;
+  K_current.n is K_channel_n_gate.n;
+  environment.time is K_channel_n_gate.time;
+  membrane.V is K_channel_n_gate.V;
+  fast_Ca_current.m_f_infinity is fast_Ca_channel_m_gate.m_f_infinity;
+  K_channel_n_gate.V is fast_Ca_channel_m_gate.V;
+  fast_Ca_channel_m_gate.V is slow_Ca_channel_m_gate.V;
+  slow_Ca_current.m_s_infinity is slow_Ca_channel_m_gate.m_s_infinity;
+  slow_Ca_current.jm is slow_Ca_channel_j_gate.jm;
+  K_channel_n_gate.time is slow_Ca_channel_j_gate.time;
+  slow_Ca_channel_m_gate.V is slow_Ca_channel_j_gate.V;
+  CRAC_current.r_infinity is CRAC_r_gate.r_infinity;
+  Ca_equations.Ca_er is CRAC_r_gate.Ca_er;
+end

@@ -1,0 +1,551 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_G_o()
+
+  // Variable initializations:
+  G_o = 1;
+
+  //Other declarations:
+  var G_o;
+end
+
+model cellmlmod_G()
+
+  // Rate Rules:
+  G' = V_IN - V_HK
+
+  // Variable initializations:
+  G = 0;
+
+  //Other declarations:
+  var G, V_IN, V_HK, time;
+end
+
+model cellmlmod_G6P()
+
+  // Rate Rules:
+  G6P' = V_HK - (V_PFK + V_G6PDH)
+
+  // Variable initializations:
+  G6P = 0;
+
+  //Other declarations:
+  var G6P, V_PFK, V_HK, V_G6PDH, time;
+end
+
+model cellmlmod_FDP()
+
+  // Rate Rules:
+  FDP' = V_PFK - V_ALD
+
+  // Variable initializations:
+  FDP = 0;
+
+  //Other declarations:
+  var FDP, V_PFK, V_ALD, time;
+end
+
+model cellmlmod_G3P()
+
+  // Rate Rules:
+  G3P' = 2  * V_ALD - V_GAPDH
+
+  // Variable initializations:
+  G3P = 0;
+
+  //Other declarations:
+  var G3P, V_GAPDH, V_ALD, time;
+end
+
+model cellmlmod_DPG()
+
+  // Rate Rules:
+  DPG' = V_GAPDH - V_PGK
+
+  // Variable initializations:
+  DPG = 0;
+
+  //Other declarations:
+  var DPG, V_PGK, V_GAPDH, time;
+end
+
+model cellmlmod_PEP()
+
+  // Rate Rules:
+  PEP' = V_PGK - V_PK
+
+  // Variable initializations:
+  PEP = 0;
+
+  //Other declarations:
+  var PEP, V_PGK, V_PK, time;
+end
+
+model cellmlmod_Py()
+
+  // Rate Rules:
+  Py' = V_PK - (V_TCA + V_ADH)
+
+  // Variable initializations:
+  Py = 0;
+
+  //Other declarations:
+  var Py, V_PK, V_TCA, V_ADH, time;
+end
+
+model cellmlmod_ATP()
+
+  // Rate Rules:
+  ATP' = V_PGK + V_PK + PO * V_TCA - (V_HK + V_PFK + V_ATPase)
+
+  // Variable initializations:
+  ATP = 1.4;
+  PO = 4;
+
+  //Other declarations:
+  var ATP, PO, V_HK, V_PFK, V_PGK, V_PK, V_TCA, V_ATPase, time;
+end
+
+model cellmlmod_ADP()
+
+  // Assignment Rules:
+  ADP := Cn - (ATP + AMP)
+
+  // Variable initializations:
+  Cn = 9;
+
+  //Other declarations:
+  var ADP, Cn, AMP, ATP;
+end
+
+model cellmlmod_AMP()
+
+  // Variable initializations:
+  AMP = 0.5;
+
+  //Other declarations:
+  var AMP;
+end
+
+model cellmlmod_GTP()
+
+  // Variable initializations:
+  GTP = 0.95;
+
+  //Other declarations:
+  var GTP;
+end
+
+model cellmlmod_GDP()
+
+  // Variable initializations:
+  GDP = 0.05;
+
+  //Other declarations:
+  var GDP;
+end
+
+model cellmlmod_H()
+
+  // Variable initializations:
+  H = 3.2e-8;
+
+  //Other declarations:
+  var H;
+end
+
+model cellmlmod_NADP()
+
+  // Variable initializations:
+  NADP = 1;
+
+  //Other declarations:
+  var NADP;
+end
+
+model cellmlmod_NADH()
+
+  // Variable initializations:
+  NADH = 0.01;
+
+  //Other declarations:
+  var NADH;
+end
+
+model cellmlmod_NAD()
+
+  // Variable initializations:
+  NAD = 1;
+
+  //Other declarations:
+  var NAD;
+end
+
+model cellmlmod_CD()
+
+  // Assignment Rules:
+  CD := CMTP - (CT + CP)
+
+  // Variable initializations:
+  CMTP = 0.9;
+
+  //Other declarations:
+  var CD, CMTP, CT, CP;
+end
+
+model cellmlmod_CT()
+
+  // Rate Rules:
+  CT' = -((kpol * CT * power(CP, 2 ) + kf * CD + kb * CT * GDP))
+
+  // Variable initializations:
+  CT = 0.2;
+  kpol = 10;
+  kf = 3;
+  kb = 2.5;
+
+  //Other declarations:
+  var CT, kpol, kf, kb, GDP, CP, CD, time;
+end
+
+model cellmlmod_CP()
+
+  // Rate Rules:
+  CP' = kpol * CT * power(CP, 2 ) - kdp * CP
+
+  // Variable initializations:
+  CP = 1.2;
+  kdp = 0.0025;
+
+  //Other declarations:
+  var CP, kpol, kdp, CT, time;
+end
+
+model cellmlmod_PKp()
+
+  // Rate Rules:
+  PKp' = 0.1  * kp2 * PKt * CP - (kp3 * PKp + k4 * PKp * GTP)
+
+  // Variable initializations:
+  PKp = 0.005;
+  kp2 = 10;
+  kp3 = 0.05;
+  k4 = 0.02;
+
+  //Other declarations:
+  var PKp, kp2, kp3, k4, GTP, PKt, CP, time;
+end
+
+model cellmlmod_PKt()
+
+  // Assignment Rules:
+  PKt := C_PK - PKp
+
+  // Variable initializations:
+  C_PK = 0.01;
+
+  //Other declarations:
+  var PKt, C_PK, PKp;
+end
+
+model cellmlmod_V_IN()
+
+  // Assignment Rules:
+  V_IN := V_IN_max * (G_o / ((KG_in + G_o) * (1  + G6P / Ke_in)) - G / ((KG_in + G) * (1  + G6P / Ke_in)))
+
+  // Variable initializations:
+  Ke_in = 12;
+  KG_in = 0.001;
+  V_IN_max = 10;
+
+  //Other declarations:
+  var V_IN, G_o, G, G6P, Ke_in, KG_in, V_IN_max;
+end
+
+model cellmlmod_V_HK()
+
+  // Assignment Rules:
+  V_HK := V_HK_max * 1  / (1  + KG_s * KATP_m / (G * ATP) + KG_m / G + KATP_m / ATP)
+
+  // Variable initializations:
+  KG_m = 0.11;
+  KG_s = 0.0062;
+  KATP_m = 0.1;
+  V_HK_max = 13;
+
+  //Other declarations:
+  var V_HK, G, ATP, KG_m, KG_s, KATP_m, V_HK_max;
+end
+
+model cellmlmod_V_PFK()
+
+  // Assignment Rules:
+  V_PFK := V_PFK_max * gr * G6P / KG6P_r * ATP / KATP_r * power(1  + G6P / KG6P_r + ATP / KATP_r + gr * G6P / KG6P_r * ATP / KATP_r, n1 - 1 ) / (power(1  + G6P / KG6P_r + ATP / KATP_r + gr * G6P / KG6P_r * ATP / KATP_r, n1) + Lo * power((1  + cAMP * AMP / KAMP_r) / (1  + AMP / KAMP_r), n1) * power(1  + cG6P * G6P / KG6P_r + cATP * ATP / KATP_r + gr * cG6P * G6P / KG6P_r * cATP * ATP / KATP_r, n1))
+
+  // Variable initializations:
+  KG6P_r = 1;
+  KATP_r = 0.06;
+  KAMP_r = 0.025;
+  cATP = 1;
+  cAMP = 0.019;
+  cG6P = 0.0005;
+  Lo = 25000;
+  gr = 10;
+  n1 = 2;
+  V_PFK_max = 30;
+
+  //Other declarations:
+  var V_PFK, G6P, ATP, AMP, KG6P_r, KATP_r, KAMP_r, cATP, cAMP, cG6P, Lo;
+  var gr, n1, V_PFK_max;
+end
+
+model cellmlmod_V_G6PDH()
+
+  // Assignment Rules:
+  V_G6PDH := V_G6PDH_max / (KG6P * KNADP / (G6P * NADP) + KG6P / G6P + KNADP / NADP + 1 ) + V_G6PDH_max_II / (KG6P * KNADP_ * KTUB / (G6P * NADP * TUB) + KG6P * KNADP_ / (G6P * NADP) + KNADP_ * KTUB / (NADP * TUB) + KG6P * KTUB / (G6P * TUB) + KTUB / TUB + KG6P / G6P + KNADP_ / NADP + 1 )
+  TUB := CT + CD
+
+  // Variable initializations:
+  KG6P = 0.05;
+  KNADP = 0.05;
+  KNADP_ = 0.05;
+  KTUB = 0.4;
+  V_G6PDH_max = 1.6;
+  V_G6PDH_max_II = 1;
+
+  //Other declarations:
+  var V_G6PDH, G6P, NADP, CT, CD, TUB, KG6P, KNADP, KNADP_, KTUB, V_G6PDH_max;
+  var V_G6PDH_max_II;
+end
+
+model cellmlmod_V_ALD()
+
+  // Assignment Rules:
+  V_ALD := (V_ALD_max * FDP / KFDP_m - V_ALD_max_r * G3P / KG3P_m) / (1  + FDP / KFDP_m + G3P / KG3P_m)
+
+  // Variable initializations:
+  KG3P_m = 20;
+  KFDP_m = 0.5;
+  V_ALD_max = 2.5;
+  V_ALD_max_r = 1;
+
+  //Other declarations:
+  var V_ALD, G3P, FDP, KG3P_m, KFDP_m, V_ALD_max, V_ALD_max_r;
+end
+
+model cellmlmod_V_GAPDH()
+
+  // Assignment Rules:
+  V_GAPDH := V_GAPDH_max / (1  + KG3P / G3P + KNAD / NAD * (1  + AMP / K1 + ADP / K2 + ATP / K3) + KG3P * KNAD / (G3P * NAD) * (1  + NADH / KNADH_i) + 1  + AMP / K1 + ADP / K2 + ATP / K3)
+
+  // Variable initializations:
+  K1 = 1.1;
+  K2 = 1.5;
+  K3 = 2.5;
+  KG3P = 0.0025;
+  KNAD = 0.18;
+  KNADH_i = 0.0003;
+  V_GAPDH_max = 10;
+
+  //Other declarations:
+  var V_GAPDH, G3P, NAD, NADH, ATP, AMP, ADP, K1, K2, K3, KG3P, KNAD, KNADH_i;
+  var V_GAPDH_max;
+end
+
+model cellmlmod_V_PGK()
+
+  // Assignment Rules:
+  V_PGK := V_PGK_max * DPG / (KDPG_m + DPG)
+
+  // Variable initializations:
+  KDPG_m = 0.002;
+  V_PGK_max = 3;
+
+  //Other declarations:
+  var V_PGK, DPG, KDPG_m, V_PGK_max;
+end
+
+model cellmlmod_V_PK()
+
+  // Assignment Rules:
+  V_PK := V_PK_max / (1  + KpH / H) * (gr_PK * (PEP / KPEP_r) * (ADP / KADP_r) * power(R, n - 1 ) + Lo_PK * power((1  + cFDP * FDP / KFDP_r) / (1  + FDP / KFDP_r), n) * (FDP / KFDP_r) * gt_PK * (cPEP * PEP / KPEP_r) * (cADP * ADP / KADP_r) * power(T, n - 1 )) / (power(R, n) + Lo_PK * power((1  + cFDP * FDP / KFDP_r) / (1  + FDP / KFDP_r), n) * power(T, n))
+  R := 1  + PEP / KPEP_r + ADP / KADP_r + gr_PK * PEP / KPEP_r * ADP / KADP_r
+  T := 1  + cPEP * PEP / KPEP_r + cADP * ADP / KADP_r + gt_PK * cPEP * PEP / KPEP_r * cADP * ADP / KADP_r
+  n := 4  + PKp / C_PK
+  V_PK_max := V_PKt_max + (V_PKp_max - V_PKt_max) * PKp / C_PK
+
+  // Variable initializations:
+  KpH = 9.5e-9;
+  KPEP_r = 1;
+  KADP_r = 0.06;
+  KFDP_r = 0.025;
+  cADP = 1;
+  cFDP = 0.01;
+  cPEP = 0.02;
+  Lo_PK = 1000;
+  gr_PK = 0.1;
+  gt_PK = 1;
+  V_PKt_max = 25;
+  V_PKp_max = 50;
+
+  //Other declarations:
+  var V_PK, PEP, ADP, FDP, H, C_PK, PKp, R, T, KpH, KPEP_r, KADP_r, KFDP_r;
+  var cADP, cFDP, cPEP, Lo_PK, gr_PK, gt_PK, n, V_PK_max, V_PKt_max, V_PKp_max;
+end
+
+model cellmlmod_V_TCA()
+
+  // Assignment Rules:
+  V_TCA := V_TCA_max * power(Py, 2 ) / (power(KPy_m, 2 ) + power(Py, 2 ))
+
+  // Variable initializations:
+  KPy_m = 0.329;
+  V_TCA_max = 10;
+
+  //Other declarations:
+  var V_TCA, Py, KPy_m, V_TCA_max;
+end
+
+model cellmlmod_V_ADH()
+
+  // Assignment Rules:
+  V_ADH := V_ADH_max * Py / (KPy__m + Py)
+
+  // Variable initializations:
+  KPy__m = 0.169;
+  V_ADH_max = 0.5;
+
+  //Other declarations:
+  var V_ADH, Py, KPy__m, V_ADH_max;
+end
+
+model cellmlmod_V_ATPase()
+
+  // Assignment Rules:
+  V_ATPase := KATP * ATP
+
+  // Variable initializations:
+  KATP = 5;
+
+  //Other declarations:
+  var V_ATPase, ATP, KATP;
+end
+
+model aon_cortassa_2002_version01()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  G_o: cellmlmod_G_o()
+  G: cellmlmod_G()
+  G6P: cellmlmod_G6P()
+  FDP: cellmlmod_FDP()
+  G3P: cellmlmod_G3P()
+  DPG: cellmlmod_DPG()
+  PEP: cellmlmod_PEP()
+  Py: cellmlmod_Py()
+  ATP: cellmlmod_ATP()
+  ADP: cellmlmod_ADP()
+  AMP: cellmlmod_AMP()
+  GTP: cellmlmod_GTP()
+  GDP: cellmlmod_GDP()
+  H: cellmlmod_H()
+  NADP: cellmlmod_NADP()
+  NADH: cellmlmod_NADH()
+  NAD: cellmlmod_NAD()
+  CD: cellmlmod_CD()
+  CT: cellmlmod_CT()
+  CP: cellmlmod_CP()
+  PKp: cellmlmod_PKp()
+  PKt: cellmlmod_PKt()
+  V_IN: cellmlmod_V_IN()
+  V_HK: cellmlmod_V_HK()
+  V_PFK: cellmlmod_V_PFK()
+  V_G6PDH: cellmlmod_V_G6PDH()
+  V_ALD: cellmlmod_V_ALD()
+  V_GAPDH: cellmlmod_V_GAPDH()
+  V_PGK: cellmlmod_V_PGK()
+  V_PK: cellmlmod_V_PK()
+  V_TCA: cellmlmod_V_TCA()
+  V_ADH: cellmlmod_V_ADH()
+  V_ATPase: cellmlmod_V_ATPase()
+  G_o.G_o is V_IN.G_o;
+  G.G is V_IN.G;
+  G.V_IN is V_IN.V_IN;
+  V_IN.G is V_HK.G;
+  G.V_HK is V_HK.V_HK;
+  G6P.V_HK is V_HK.V_HK;
+  G6P.G6P is V_PFK.G6P;
+  G6P.V_PFK is V_PFK.V_PFK;
+  V_PFK.G6P is V_G6PDH.G6P;
+  G6P.V_G6PDH is V_G6PDH.V_G6PDH;
+  FDP.V_PFK is V_PFK.V_PFK;
+  FDP.FDP is V_ALD.FDP;
+  FDP.V_ALD is V_ALD.V_ALD;
+  G3P.G3P is V_ALD.G3P;
+  G3P.V_ALD is V_ALD.V_ALD;
+  V_ALD.G3P is V_GAPDH.G3P;
+  G3P.V_GAPDH is V_GAPDH.V_GAPDH;
+  DPG.V_GAPDH is V_GAPDH.V_GAPDH;
+  DPG.DPG is V_PGK.DPG;
+  DPG.V_PGK is V_PGK.V_PGK;
+  PEP.V_PGK is V_PGK.V_PGK;
+  PEP.PEP is V_PK.PEP;
+  PEP.V_PK is V_PK.V_PK;
+  Py.V_PK is V_PK.V_PK;
+  Py.Py is V_TCA.Py;
+  Py.V_TCA is V_TCA.V_TCA;
+  V_TCA.Py is V_ADH.Py;
+  Py.V_ADH is V_ADH.V_ADH;
+  ATP.ATP is V_HK.ATP;
+  ATP.V_HK is V_HK.V_HK;
+  V_HK.ATP is V_PFK.ATP;
+  ATP.V_PFK is V_PFK.V_PFK;
+  ATP.V_PGK is V_PGK.V_PGK;
+  ATP.V_PK is V_PK.V_PK;
+  PKp.PKp is V_PK.PKp;
+  ATP.V_TCA is V_TCA.V_TCA;
+  V_PFK.ATP is V_ATPase.ATP;
+  ATP.V_ATPase is V_ATPase.V_ATPase;
+  V_G6PDH.G6P is V_IN.G6P;
+  AMP.AMP is V_PFK.AMP;
+  NADP.NADP is V_G6PDH.NADP;
+  CT.CT is V_G6PDH.CT;
+  CD.CD is V_G6PDH.CD;
+  NAD.NAD is V_GAPDH.NAD;
+  NADH.NADH is V_GAPDH.NADH;
+  V_ATPase.ATP is V_GAPDH.ATP;
+  V_PFK.AMP is V_GAPDH.AMP;
+  ADP.ADP is V_GAPDH.ADP;
+  V_GAPDH.ADP is V_PK.ADP;
+  V_ALD.FDP is V_PK.FDP;
+  PKt.C_PK is V_PK.C_PK;
+  G.time is environment.time;
+  G6P.time is environment.time;
+  FDP.time is environment.time;
+  G3P.time is environment.time;
+  DPG.time is environment.time;
+  PEP.time is environment.time;
+  Py.time is environment.time;
+  ATP.time is environment.time;
+  CT.time is environment.time;
+  CP.time is environment.time;
+  PKp.time is environment.time;
+  CT.kpol is CP.kpol;
+  CT.CP is CP.CP;
+  V_G6PDH.CT is CP.CT;
+  ADP.ATP is V_GAPDH.ATP;
+  ADP.AMP is V_GAPDH.AMP;
+  CT.CD is V_G6PDH.CD;
+  CP.CT is CD.CT;
+  CD.CP is CP.CP;
+  GDP.GDP is CT.GDP;
+  GTP.GTP is PKp.GTP;
+  PKt.PKt is PKp.PKt;
+  PKt.PKp is V_PK.PKp;
+  CP.CP is PKp.CP;
+end
