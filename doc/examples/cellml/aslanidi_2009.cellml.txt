@@ -1,0 +1,1141 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_membrane()
+
+  // Assignment Rules:
+  i_tot := i_Na + i_Na_L + i_Ca_L + i_Ca_T + i_to_1 + i_to_2 + i_Kr + i_Ks + i_K1 + i_NaCa + i_NaK + i_Na_b + i_K_b + i_Ca_b + i_Cl_b + i_Ca_p + i_K_p
+
+  // Rate Rules:
+  V' = -((i_tot + i_stim))
+
+  // Variable initializations:
+  V = -83.43812846286808;
+  stim_start = 0;
+  stim_end = 1;
+  stim_amplitude = -80;
+
+  //Other declarations:
+  var V, i_stim, i_tot, time, i_Na, i_Na_L, i_Ca_L, i_Ca_T, i_to_1, i_to_2;
+  var i_Kr, i_Ks, i_K1, i_NaCa, i_NaK, i_Na_b, i_Ca_b, i_K_b, i_Cl_b, i_Ca_p;
+  var i_K_p, stim_start, stim_end, stim_amplitude;
+end
+
+model cellmlmod_equilibrium_potentials()
+
+  // Assignment Rules:
+  E_Na := R * T / F * ln(Na_o / Na_i)
+  E_K := R * T / F * ln(K_o / K_i)
+  E_Ca := R * T / (2  * F) * ln(Ca_o / Ca_i)
+  E_Cl := -(R) * T / F * ln(Cl_o / Cl_i)
+  E_Ks := R * T / F * ln((K_o + r_NaK * Na_o) / (K_i + r_NaK * Na_i))
+
+  // Variable initializations:
+  r_NaK = 0.01833;
+
+  //Other declarations:
+  var E_Na, E_K, E_Ca, E_Cl, E_Ks, r_NaK, Na_i, Na_o, Ca_i, Ca_o, K_i, K_o;
+  var Cl_i, Cl_o, R, F, T;
+end
+
+model cellmlmod_i_Na()
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * (0.8  * h + 0.2  * j) * (V - E_Na)
+
+  // Variable initializations:
+  g_Na = 8;
+
+  //Other declarations:
+  var i_Na, g_Na, time, V, E_Na, m, h, j;
+end
+
+model cellmlmod_i_Na_m_gate()
+
+  // Assignment Rules:
+  tau_m := 1  / (alpha_m + beta_m)
+  m_infinity := alpha_m / (alpha_m + beta_m)
+  alpha_m := 0.32  * (V + 47.13 ) / (1  - exp(-(0.1 ) * (V + 47.13 )))
+  beta_m := 0.08  * exp(-(V) / 11 )
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m
+
+  // Variable initializations:
+  m = 0.002003390432234504;
+
+  //Other declarations:
+  var m, tau_m, m_infinity, alpha_m, beta_m, V, time;
+end
+
+model cellmlmod_i_Na_h_gate()
+
+  // Assignment Rules:
+  tau_h := 1  / (alpha_h + beta_h)
+  h_infinity := alpha_h / (alpha_h + beta_h)
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h
+
+  // Variable initializations:
+  h = 0.9786390933308567;
+
+  //Other declarations:
+  var h, tau_h, h_infinity, alpha_h, beta_h, V, time;
+end
+
+model cellmlmod_i_Na_j_gate()
+
+  // Assignment Rules:
+  tau_j := 0.1  / (alpha_j + beta_j)
+  j_infinity := 0.1  * alpha_j / (alpha_j + beta_j)
+
+  // Rate Rules:
+  j' = (j_infinity - j) / tau_j
+
+  // Variable initializations:
+  j = 0.09866447258167589;
+
+  //Other declarations:
+  var j, tau_j, j_infinity, alpha_j, beta_j, V, time;
+end
+
+model cellmlmod_i_Na_L()
+
+  // Assignment Rules:
+  i_Na_L := g_Na_L * power(m_L, 3 ) * h_L * (V - E_Na)
+
+  // Variable initializations:
+  g_Na_L = 0.037375;
+
+  //Other declarations:
+  var i_Na_L, g_Na_L, time, V, E_Na, m_L, h_L;
+end
+
+model cellmlmod_i_Na_L_m_L_gate()
+
+  // Assignment Rules:
+  tau_m_L := 1  / (alpha_m_L + beta_m_L)
+  m_L_infinity := alpha_m_L / (alpha_m_L + beta_m_L)
+  alpha_m_L := 0.32  * (V + 47.13 ) / (1  - exp(-(0.1 ) * (V + 47.13 )))
+  beta_m_L := 0.08  * exp(-(V) / 11 )
+
+  // Rate Rules:
+  m_L' = (m_L_infinity - m_L) / tau_m_L
+
+  // Variable initializations:
+  m_L = 0.002003390432234504;
+
+  //Other declarations:
+  var m_L, tau_m_L, m_L_infinity, alpha_m_L, beta_m_L, V, time;
+end
+
+model cellmlmod_i_Na_L_h_L_gate()
+
+  // Assignment Rules:
+  tau_h_L := 175  + 125  / (1  + exp(-((V + 25 )) / 6 ))
+  h_L_infinity := 1  / (1  + exp((V + 69 ) / 6.1 ))
+
+  // Rate Rules:
+  h_L' = (h_L_infinity - h_L) / tau_h_L
+
+  // Variable initializations:
+  h_L = 0.8946968372659203;
+
+  //Other declarations:
+  var h_L, tau_h_L, h_L_infinity, V, time;
+end
+
+model cellmlmod_i_Ca_L()
+
+  // Assignment Rules:
+  i_Ca_L := g_Ca_L * d * f * f2 * f_Ca * f_Ca2 * i_Ca_L_max
+  i_Ca_L_max := 1  * p_Ca / Cm * power(z_Ca, 2 ) * (V - 15 ) * power(F, 2 ) / (R * T) * (gamma_Cai * Ca_r * exp(z_Ca * F * (V - 15 ) / (R * T)) - gamma_Cao * Ca_o) / (exp(z_Ca * F * (V - 15 ) / (R * T)) - 1 )
+
+  // Variable initializations:
+  g_Ca_L = 0.3392328;
+  p_Ca = 0.000243;
+
+  //Other declarations:
+  var i_Ca_L, g_Ca_L, i_Ca_L_max, p_Ca, z_Ca, gamma_Cai, gamma_Cao, time;
+  var V, Ca_r, Ca_MK_act, km_Ca_MK, Ca_o, R, F, T, d, f, f2, f_Ca, f_Ca2;
+  var Cm;
+end
+
+model cellmlmod_i_Ca_L_d_gate()
+
+  // Assignment Rules:
+  d_infinity := 1  / (1  + exp(-((V - 4 )) / 6.74 ))
+  tau_d := 0.59  + 0.8  * exp(0.052  * (V + 13 )) / (1  + exp(0.132  * (V + 13 )))
+
+  // Rate Rules:
+  d' = (d_infinity - d) / tau_d
+
+  // Variable initializations:
+  d = 0.000002322223865147363;
+
+  //Other declarations:
+  var d, d_infinity, tau_d, V, time;
+end
+
+model cellmlmod_i_Ca_L_f_gate()
+
+  // Assignment Rules:
+  f_infinity := 1  / (1  + exp((V + 18 ) / 10 ))
+  tau_f := 4  + 0.005  * power(V - 2.5 , 2 )
+
+  // Rate Rules:
+  f' = (f_infinity - f) / tau_f
+
+  // Variable initializations:
+  f = 0.9985607329462358;
+
+  //Other declarations:
+  var f, f_infinity, tau_f, V, time;
+end
+
+model cellmlmod_i_Ca_L_f2_gate()
+
+  // Assignment Rules:
+  f2_infinity := 1  / (1  + exp((V + 18 ) / 10 ))
+  tau_f2 := 38  + 0.07  * power(V - 18.6 , 2 )
+
+  // Rate Rules:
+  f2' = (f2_infinity - f2) / tau_f2
+
+  // Variable initializations:
+  f2 = 0.8173435436674658;
+
+  //Other declarations:
+  var f2, f2_infinity, tau_f2, V, time;
+end
+
+model cellmlmod_i_Ca_L_f_Ca_gate()
+
+  // Assignment Rules:
+  f_Ca_infinity := 0.3  / (1  - i_Ca_L / 0.05 ) + 0.55  / (1  + Ca_r / 0.003 ) + 0.15
+  tau_f_Ca := 0.5  + 10  * 1  * Ca_MK_act / (1  * Ca_MK_act + km_Ca_MK) + 1  / (1  + Ca_r / 0.003 )
+
+  // Rate Rules:
+  f_Ca' = (f_Ca_infinity - f_Ca) / tau_f_Ca
+
+  // Variable initializations:
+  f_Ca = 0.9610551285529658;
+
+  //Other declarations:
+  var f_Ca, f_Ca_infinity, tau_f_Ca, Ca_r, i_Ca_L, Ca_MK_act, km_Ca_MK, time;
+end
+
+model cellmlmod_i_Ca_L_f_Ca2_gate()
+
+  // Assignment Rules:
+  f_Ca2_infinity := 1  / (1  - i_Ca_L / 0.01 )
+  tau_f_Ca2 := 125  + 300  / (1  + exp((-(i_Ca_L) - 0.175 ) / 0.04 ))
+
+  // Rate Rules:
+  f_Ca2' = (f_Ca2_infinity - f_Ca2) / tau_f_Ca2
+
+  // Variable initializations:
+  f_Ca2 = 0.868690796671854;
+
+  //Other declarations:
+  var f_Ca2, f_Ca2_infinity, tau_f_Ca2, i_Ca_L, time;
+end
+
+model cellmlmod_i_Ca_T()
+
+  // Assignment Rules:
+  i_Ca_T := g_Ca_T * b * g * (V - 50 )
+
+  // Variable initializations:
+  g_Ca_T = 0.13;
+
+  //Other declarations:
+  var i_Ca_T, g_Ca_T, time, V, b, g;
+end
+
+model cellmlmod_i_Ca_T_b_gate()
+
+  // Assignment Rules:
+  tau_b := 1  / (alpha_b + beta_b)
+  b_infinity := 1  / (1  + exp(-((V + 33 )) / 6.1 ))
+  alpha_b := 1.068  * exp((V + 16.3 ) / 30 )
+  beta_b := 1.068  * exp(-((V + 16.3 )) / 30 )
+
+  // Rate Rules:
+  b' = (b_infinity - b) / tau_b
+
+  // Variable initializations:
+  b = 0.0002563937630984438;
+
+  //Other declarations:
+  var b, tau_b, b_infinity, alpha_b, beta_b, V, time;
+end
+
+model cellmlmod_i_Ca_T_g_gate()
+
+  // Assignment Rules:
+  tau_g := 1  / (alpha_g + beta_g)
+  g_infinity := 1  / (1  + exp((V + 60 ) / 6.6 ))
+  alpha_g := 0.015  * exp(-((V + 71.7 )) / 83.3 )
+  beta_g := 0.015  * exp((V + 71.7 ) / 15.4 )
+
+  // Rate Rules:
+  g' = (g_infinity - g) / tau_g
+
+  // Variable initializations:
+  g = 0.9720432601848331;
+
+  //Other declarations:
+  var g, tau_g, g_infinity, alpha_g, beta_g, V, time;
+end
+
+model cellmlmod_i_to_1()
+
+  // Assignment Rules:
+  i_to_1 := g_to_1 * a * (0.8  * i + 0.2  * i2) * (V - E_K)
+
+  // Variable initializations:
+  g_to_1 = 0.14135944;
+
+  //Other declarations:
+  var i_to_1, g_to_1, E_K, time, V, a, i, i2;
+end
+
+model cellmlmod_i_to_1_a_gate()
+
+  // Assignment Rules:
+  alpha_a := 25  * exp((V - 76 ) / 20 ) / (1  + exp((V - 76 ) / 20 ))
+  beta_a := 25  * exp(-((V + 54 )) / 20 ) / (1  + exp(-((V + 54 )) / 20 ))
+  tau_a := 1  / (alpha_a + beta_a)
+  a_infinity := alpha_a / (alpha_a + beta_a)
+
+  // Rate Rules:
+  a' = (a_infinity - a) / tau_a
+
+  // Variable initializations:
+  a = 0.0004238729429342389;
+
+  //Other declarations:
+  var a, alpha_a, beta_a, tau_a, a_infinity, V, time;
+end
+
+model cellmlmod_i_to_1_i_gate()
+
+  // Assignment Rules:
+  alpha_i := 0.03  / (1  + exp((V + 25 ) / 15 ))
+  beta_i := 0.1  * exp((V - 40 ) / 15 ) / (1  + exp((V - 40 ) / 15 ))
+  tau_i := 6  + 5  / (1  + exp((V - 16.5 ) / 10 ))
+  i_infinity := alpha_i / (alpha_i + beta_i)
+
+  // Rate Rules:
+  i' = (i_infinity - i) / tau_i
+
+  // Variable initializations:
+  i = 0.9990935802459496;
+
+  //Other declarations:
+  var i, alpha_i, beta_i, tau_i, i_infinity, V, time;
+end
+
+model cellmlmod_i_to_1_i2_gate()
+
+  // Assignment Rules:
+  alpha_i2 := 0.00442  / (1  + exp((V + 26 ) / 15 ))
+  beta_i2 := 0.05  * exp((V - 10 ) / 15 ) / (1  + exp((V - 10 ) / 15 ))
+  tau_i2 := 21.5  + 30  / (1  + exp((V - 25 ) / 10 ))
+  i2_infinity := alpha_i2 / (alpha_i2 + beta_i2)
+
+  // Rate Rules:
+  i2' = (i2_infinity - i2) / tau_i2
+
+  // Variable initializations:
+  i2 = 0.9777368439681764;
+
+  //Other declarations:
+  var i2, alpha_i2, beta_i2, tau_i2, i2_infinity, V, time;
+end
+
+model cellmlmod_i_Kr()
+
+  // Assignment Rules:
+  i_Kr := g_Kr * xr * rr_infinity * (V - E_K)
+  g_Kr := 0.040008488  * root(K_o / 5.4 )
+  rr_infinity := 1  / (1  + exp((V - 5.4 ) / 20.4 ))
+
+  //Other declarations:
+  var i_Kr, g_Kr, rr_infinity, time, V, E_K, K_o, xr;
+end
+
+model cellmlmod_i_Kr_xr_gate()
+
+  // Assignment Rules:
+  tau_xr := 900  / (1  + exp(V / 5 )) + 100
+  xr_infinity := 1  / (1  + exp(-((V + 0.085 )) / 12.25 ))
+
+  // Rate Rules:
+  xr' = (xr_infinity - xr) / tau_xr
+
+  // Variable initializations:
+  xr = 0.07084939408222911;
+
+  //Other declarations:
+  var xr, tau_xr, xr_infinity, V, time;
+end
+
+model cellmlmod_i_Ks()
+
+  // Assignment Rules:
+  i_Ks := g_Ks * xs1 * xs2 * (V - E_Ks)
+  g_Ks := 0.052581329  * (1  + 0.6  / (1  + power(0.000038  / Ca_i, 1.4 )))
+
+  //Other declarations:
+  var i_Ks, g_Ks, time, V, E_Ks, Ca_i, xs1, xs2;
+end
+
+model cellmlmod_i_Ks_xs1_gate()
+
+  // Assignment Rules:
+  tau_xs1 := 1  / (0.0000761  * (V + 44.6 ) / (1  - exp(-(9.97 ) * (V + 44.6 ))) + 0.00036  * (V - 0.55 ) / (exp(0.128  * (V - 0.55 )) - 1 ))
+  xs1_infinity := 1  / (1  + exp(-((V - 9 )) / 13.7 ))
+
+  // Rate Rules:
+  xs1' = (xs1_infinity - xs1) / tau_xs1
+
+  // Variable initializations:
+  xs1 = 0.0011737654433043125;
+
+  //Other declarations:
+  var xs1, tau_xs1, xs1_infinity, V, time;
+end
+
+model cellmlmod_i_Ks_xs2_gate()
+
+  // Assignment Rules:
+  tau_xs2 := 2  * 1  / (0.0000761  * (V + 44.6 ) / (1  - exp(-(9.97 ) * (V + 44.6 ))) + 0.00036  * (V - 0.55 ) / (exp(0.128  * (V - 0.55 )) - 1 ))
+  xs2_infinity := 1  / (1  + exp(-((V - 9 )) / 13.7 ))
+
+  // Rate Rules:
+  xs2' = (xs2_infinity - xs2) / tau_xs2
+
+  // Variable initializations:
+  xs2 = 0.001179442867470093;
+
+  //Other declarations:
+  var xs2, tau_xs2, xs2_infinity, V, time;
+end
+
+model cellmlmod_i_K1()
+
+  // Assignment Rules:
+  i_K1 := (g_K1 * xK1 + 0.004 ) * (V - E_K)
+  g_K1 := 0.25  * root(K_o / 5.4 )
+
+  //Other declarations:
+  var i_K1, g_K1, time, V, E_K, K_o, xK1;
+end
+
+model cellmlmod_i_K1_xK1_gate()
+
+  // Assignment Rules:
+  xK1 := alpha_xK1 / (alpha_xK1 + beta_xK1)
+  alpha_xK1 := 1.02  / (1  + exp(0.2385  * (V - (E_K + 59.215 ))))
+  beta_xK1 := (0.49124  * exp(0.08032  * (V + 5.476  - E_K)) + exp(0.06175  * (V - (594.31  + E_K)))) / (1  + exp(-(0.5143 ) * (V + 4.753  - E_K)))
+
+  //Other declarations:
+  var xK1, alpha_xK1, beta_xK1, V, E_K;
+end
+
+model cellmlmod_i_K_p()
+
+  // Assignment Rules:
+  i_K_p := g_K_p * kp * (V - E_K)
+  kp := 1  / (1  + exp((7.488  - V) / 5.98 ))
+
+  // Variable initializations:
+  g_K_p = 0.00276;
+
+  //Other declarations:
+  var i_K_p, g_K_p, kp, V, E_K, time;
+end
+
+model cellmlmod_i_to_2()
+
+  // Assignment Rules:
+  i_to_2 := 20  * i_to_2_max * a
+  i_to_2_max := 1  * p_Cl / Cm * power(z_Cl, 2 ) * V * power(F, 2 ) / (R * T) * (Cl_i - Cl_o * exp(-(z_Cl) * V * F / (R * T))) / (1  - exp(-(z_Cl) * V * F / (R * T)))
+
+  // Variable initializations:
+  p_Cl = 0.0000004;
+  z_Cl = -1;
+
+  //Other declarations:
+  var i_to_2, p_Cl, z_Cl, i_to_2_max, time, V, Ca_r, Cl_i, Cl_o, R, F, T;
+  var a, Cm;
+end
+
+model cellmlmod_i_to_2_a_gate()
+
+  // Assignment Rules:
+  a_infinity := 1  / (1  + km_to_2 / Ca_r)
+  tau_a := 1
+
+  // Rate Rules:
+  a' = (a_infinity - a) / tau_a
+
+  // Variable initializations:
+  a = 0.0014909437525000811;
+  km_to_2 = 0.1502;
+
+  //Other declarations:
+  var a, a_infinity, tau_a, km_to_2, Ca_r, time;
+end
+
+model cellmlmod_i_NaCa()
+
+  // Assignment Rules:
+  i_NaCa := (X_NaCa * i_NaCa_max * power(Na_i, 3 ) * Ca_o * exp(0.35  * F * V / (R * T)) - 1.5  * power(Na_o, 3 ) * Ca_i * exp(-(0.65 ) * F * V / (R * T))) / ((1  + power(km_Ca_act / (1.5  * Ca_i), 2 )) * (1  + k_sat * exp(-(0.65 ) * V * F / (R * T))) * (dNaCa_1 + dNaCa_2))
+  dNaCa_1 := km_Ca_o * power(Na_i, 3 ) + 1.5  * power(km_Na_o, 3 ) * Ca_i + power(km_Na_i_1, 3 ) * Ca_o * (1  + 1.5  * Ca_i / km_Ca_i)
+  dNaCa_2 := km_Ca_i * power(Na_o, 3 ) * (1  + Na_i / km_Na_i_1) + power(Na_i, 3 ) * Ca_o + 1.5  * power(Na_o, 3 ) * Ca_i
+
+  // Variable initializations:
+  X_NaCa = 0.4;
+  i_NaCa_max = 4.5;
+  km_Na_i_1 = 12.3;
+  km_Na_o = 87.5;
+  km_Ca_i = 0.0036;
+  km_Ca_o = 1.3;
+  km_Ca_act = 0.000125;
+  k_sat = 0.27;
+
+  //Other declarations:
+  var i_NaCa, X_NaCa, i_NaCa_max, km_Na_i_1, km_Na_o, km_Ca_i, km_Ca_o, km_Ca_act;
+  var k_sat, dNaCa_1, dNaCa_2, V, R, T, F, Na_i, Na_o, Ca_i, Ca_o;
+end
+
+model cellmlmod_i_NaK()
+
+  // Assignment Rules:
+  i_NaK := g_NaK * f_NaK * 1  / (1  + power(km_Na_i_2 / Na_i, 2 )) * K_o / (K_o + km_K_o)
+  f_NaK := 1  / (1  + 0.1245  * exp(-(0.1 ) * F * V / (R * T)) + 0.0365  * sigma * exp(-(F) * V / (R * T)))
+  sigma := 1  / 7  * (exp(Na_o / 67.3 ) - 1 )
+
+  // Variable initializations:
+  g_NaK = 0.61875;
+  km_Na_i_2 = 10;
+  km_K_o = 1.5;
+
+  //Other declarations:
+  var i_NaK, g_NaK, km_Na_i_2, km_K_o, f_NaK, sigma, K_o, Na_i, Na_o, V, R;
+  var T, F;
+end
+
+model cellmlmod_i_Ca_p()
+
+  // Assignment Rules:
+  i_Ca_p := i_Ca_p_max * Ca_i / (km_Ca_p + Ca_i)
+
+  // Variable initializations:
+  i_Ca_p_max = 0.0575;
+  km_Ca_p = 0.0005;
+
+  //Other declarations:
+  var i_Ca_p, i_Ca_p_max, km_Ca_p, Ca_i;
+end
+
+model cellmlmod_CT_K_Cl()
+
+  // Assignment Rules:
+  CT_K_Cl := CT_K_Cl_max * (E_K - E_Cl) / (E_K + 87.8251  - E_Cl)
+
+  // Variable initializations:
+  CT_K_Cl_max = 7.0756e-6;
+
+  //Other declarations:
+  var CT_K_Cl, CT_K_Cl_max, E_K, E_Cl;
+end
+
+model cellmlmod_CT_Na_Cl()
+
+  // Assignment Rules:
+  CT_Na_Cl := CT_Na_Cl_max * power(E_Na - E_Cl, 4 ) / (power(E_Na - E_Cl, 4 ) + power(87.8251 , 4 ))
+
+  // Variable initializations:
+  CT_Na_Cl_max = 9.8443e-6;
+
+  //Other declarations:
+  var CT_Na_Cl, CT_Na_Cl_max, E_Na, E_Cl;
+end
+
+model cellmlmod_background_currents()
+
+  // Assignment Rules:
+  i_Na_b := g_Na_b * (V - E_Na)
+  i_Ca_b := 1  * p_Ca_b / Cm * power(z_Ca, 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Cai * Ca_i * exp(z_Ca * V * F / (R * T)) - gamma_Cao * Ca_o) / (exp(z_Ca * V * F / (R * T)) - 1 )
+  i_K_b := g_K_b * (V - E_K)
+  i_Cl_b := g_Cl_b * (V - E_Cl)
+
+  // Variable initializations:
+  g_Na_b = 0.0025;
+  g_K_b = 0.005;
+  p_Ca_b = 1.995084e-7;
+  g_Cl_b = 0.000225;
+
+  //Other declarations:
+  var i_Na_b, i_Ca_b, i_K_b, i_Cl_b, g_Na_b, g_K_b, p_Ca_b, g_Cl_b, z_Ca;
+  var gamma_Cai, gamma_Cao, E_K, E_Cl, E_Na, V, Ca_i, Ca_o, R, F, T, Cm;
+end
+
+model cellmlmod_intracellular_ion_concentrations()
+
+  // Rate Rules:
+  Na_i' = -(Cm) * (i_Na + i_Na_L + i_Na_b + 3  * i_NaK + 3  * i_NaCa) * a_cap / (Vol_myo * F) + CT_Na_Cl
+  Cl_i' = -(Cm) * (i_to_2 + i_Cl_b) * a_cap / (Vol_myo * F) + CT_Na_Cl + CT_K_Cl
+  K_i' = -(Cm) * (i_to_1 + i_K1 + i_Kr + i_Ks + i_K_p + i_K_b - 2  * i_NaK) * a_cap / (Vol_myo * F) + CT_K_Cl
+
+  // Variable initializations:
+  Na_i = 9.927155552932733;
+  Cl_i = 18.904682470140408;
+  K_i = 141.9670801746057;
+
+  //Other declarations:
+  var Na_i, Cl_i, K_i, Vol_myo, a_cap, time, F, i_NaK, i_NaCa, i_Na_b, i_Na;
+  var i_Na_L, i_K1, i_to_1, i_to_2, i_Kr, i_Ks, i_K_p, i_K_b, i_Cl_b, CT_Na_Cl;
+  var CT_K_Cl, Cm;
+end
+
+model cellmlmod_Ca_i()
+
+  // Assignment Rules:
+  TRPN := 2  * TRPN_max * Ca_i / power(Ca_i + km_TRPN, 2 )
+  CMDN := 2  * CMDN_max * Ca_i / power(Ca_i + km_CMDN, 2 )
+  b_myo := 1  / (1  + TRPN + CMDN)
+
+  // Rate Rules:
+  Ca_i' = -(b_myo) * (Cm * (i_Ca_b + i_Ca_p - 2  * i_NaCa) * a_cap / (2  * Vol_myo * F) + (q_up - q_leak) * Vol_nsr / Vol_myo - q_diff * Vol_ss / Vol_myo)
+
+  // Variable initializations:
+  Ca_i = 0.00022355433459434943;
+  km_TRPN = 0.0005;
+  km_CMDN = 0.00238;
+  TRPN_max = 0.07;
+  CMDN_max = 0.05;
+
+  //Other declarations:
+  var Ca_i, km_TRPN, km_CMDN, TRPN_max, CMDN_max, TRPN, CMDN, b_myo, Vol_myo;
+  var Vol_nsr, Vol_ss, a_cap, time, F, i_NaCa, i_Ca_b, i_Ca_p, q_up, q_leak;
+  var q_diff, Cm;
+end
+
+model cellmlmod_Ca_MK_act()
+
+  // Assignment Rules:
+  Ca_MK_act := Ca_MK_bound + Ca_MK_trap
+  Ca_MK_bound := Ca_MK_0 * (1  - Ca_MK_trap) / (1  + km_Ca_MK / Ca_r)
+
+  // Rate Rules:
+  Ca_MK_trap' = alpha_Ca_MK * Ca_MK_bound * (Ca_MK_bound + Ca_MK_trap) - beta_Ca_MK * Ca_MK_trap
+
+  // Variable initializations:
+  km_Ca_MK = 0.15;
+  Ca_MK_trap = 0.000008789168284782809;
+  alpha_Ca_MK = 0.05;
+  beta_Ca_MK = 0.00068;
+  Ca_MK_0 = 0.05;
+
+  //Other declarations:
+  var Ca_MK_act, km_Ca_MK, Ca_MK_trap, Ca_MK_bound, alpha_Ca_MK, beta_Ca_MK;
+  var Ca_MK_0, time, Ca_r;
+end
+
+model cellmlmod_Ca_NSR()
+
+  // Rate Rules:
+  Ca_NSR' = q_up - (q_leak + q_tr * Vol_jsr / Vol_nsr)
+
+  // Variable initializations:
+  Ca_NSR = 1.2132524695849454;
+
+  //Other declarations:
+  var Ca_NSR, Vol_jsr, Vol_nsr, q_up, q_leak, q_tr, time;
+end
+
+model cellmlmod_Ca_JSR()
+
+  // Rate Rules:
+  Ca_JSR' = (q_tr - q_rel) / (1  + CSQN_max * km_CSQN / power(km_CSQN + Ca_JSR, 2 ))
+
+  // Variable initializations:
+  Ca_JSR = 1.1433050636518596;
+  CSQN_max = 10;
+  km_CSQN = 0.8;
+
+  //Other declarations:
+  var Ca_JSR, CSQN_max, km_CSQN, Vol_jsr, Vol_nsr, q_tr, q_rel, time;
+end
+
+model cellmlmod_Ca_r()
+
+  // Assignment Rules:
+  q_diff := (Ca_r - Ca_i) / tau_ss
+  b_SR := 2  * b_SR_max * Ca_r / power(Ca_r + km_b_SR, 2 )
+  b_SL := 2  * b_SL_max * Ca_r / power(Ca_r + km_b_SL, 2 )
+  Ca_r_tot := 1  / (1  + b_SR + b_SL)
+
+  // Rate Rules:
+  Ca_r' = Ca_r_tot * (-(Cm) * i_Ca_L * a_cap / (Vol_ss * z_Ca * F) + q_rel * Vol_jsr / Vol_ss - q_diff)
+
+  // Variable initializations:
+  Ca_r = 0.00022418117117903934;
+  km_b_SR = 0.00087;
+  km_b_SL = 0.0087;
+  b_SR_max = 0.047;
+  b_SL_max = 1.124;
+  tau_ss = 0.2;
+
+  //Other declarations:
+  var Ca_r, q_diff, km_b_SR, km_b_SL, b_SR_max, b_SL_max, tau_ss, b_SR, b_SL;
+  var Ca_r_tot, Vol_jsr, Vol_ss, a_cap, z_Ca, time, F, i_Ca_L, q_rel, Ca_i;
+  var Cm;
+end
+
+model cellmlmod_q_rel()
+
+  // Assignment Rules:
+  q_rel := g_rel * ro * ri * (Ca_JSR - Ca_r)
+  g_rel := 3000  * vg
+  vg := 1  / (1  + exp((g_Ca_L * i_Ca_L_max + 13 ) / 5 ))
+
+  //Other declarations:
+  var q_rel, g_rel, vg, time, Ca_MK_act, km_Ca_MK, Ca_r, Ca_JSR, i_Ca_L, i_Ca_L_max;
+  var g_Ca_L, ri, ro;
+end
+
+model cellmlmod_q_rel_ri_gate()
+
+  // Assignment Rules:
+  tau_ri := (350  - tau_Ca_MK) / (1  + exp((Ca_r - 0.003  + 0.003  * Ca_fac) / 0.0002 )) + 3  + tau_Ca_MK
+  tau_Ca_MK := tau_Ca_MK_max * 1  * Ca_MK_act / (km_Ca_MK + 1  * Ca_MK_act)
+  Ca_fac := 1  / (1  + exp((i_Ca_L + 0.05 ) / 0.015 ))
+  ri_infinity := 1  / (1  + exp((Ca_r - 0.0004  + 0.002  * Ca_fac) / 0.000025 ))
+
+  // Rate Rules:
+  ri' = (ri_infinity - ri) / tau_ri
+
+  // Variable initializations:
+  ri = 0.7802870066567904;
+  tau_Ca_MK_max = 10;
+
+  //Other declarations:
+  var ri, tau_ri, tau_Ca_MK, tau_Ca_MK_max, Ca_fac, ri_infinity, Ca_r, Ca_MK_act;
+  var km_Ca_MK, i_Ca_L, time;
+end
+
+model cellmlmod_q_rel_ro_gate()
+
+  // Assignment Rules:
+  ro_infinity := ro_infinity_JSR * power(i_Ca_L, 2 ) / (power(i_Ca_L, 2 ) + 1 )
+  ro_infinity_JSR := power(Ca_JSR, 1.9 ) / (power(Ca_JSR, 1.9 ) + power(49.28  * Ca_r / (Ca_r + 0.0028 ), 1.9 ))
+
+  // Rate Rules:
+  ro' = (ro_infinity - ro) / tau_ro
+
+  // Variable initializations:
+  ro = 1.2785734760674763e-9;
+  tau_ro = 3;
+
+  //Other declarations:
+  var ro, tau_ro, ro_infinity, ro_infinity_JSR, Ca_r, Ca_JSR, i_Ca_L, time;
+end
+
+model cellmlmod_q_leak()
+
+  // Assignment Rules:
+  q_leak := q_leak_max * Ca_NSR / NSR_max
+
+  // Variable initializations:
+  q_leak_max = 0.004375;
+  NSR_max = 15;
+
+  //Other declarations:
+  var q_leak, q_leak_max, NSR_max, Ca_NSR;
+end
+
+model cellmlmod_q_up()
+
+  // Assignment Rules:
+  q_up := X_q_up * (dq_up_Ca_MK + 1 ) * q_up_max * Ca_i / (Ca_i + km_up - dkm_plb)
+  dq_up_Ca_MK := dq_up_Ca_MK_max * Ca_MK_act * 1  / (km_Ca_MK + Ca_MK_act * 1 )
+  dkm_plb := dkm_plb_max * Ca_MK_act * 1  / (km_Ca_MK + Ca_MK_act * 1 )
+
+  // Variable initializations:
+  X_q_up = 0.5;
+  q_up_max = 0.004375;
+  dq_up_Ca_MK_max = 0.75;
+  dkm_plb_max = 0.00017;
+  km_up = 0.00092;
+
+  //Other declarations:
+  var q_up, X_q_up, q_up_max, dq_up_Ca_MK, dq_up_Ca_MK_max, dkm_plb, dkm_plb_max;
+  var km_up, Ca_MK_act, km_Ca_MK, Ca_i;
+end
+
+model cellmlmod_q_tr()
+
+  // Assignment Rules:
+  q_tr := (Ca_NSR - Ca_JSR) / tau_tr
+
+  // Variable initializations:
+  tau_tr = 120;
+
+  //Other declarations:
+  var q_tr, tau_tr, Ca_NSR, Ca_JSR;
+end
+
+model cellmlmod_model_parameters()
+
+  // Assignment Rules:
+  Vol_myo := Vol_cell * 0.68
+  Vol_jsr := Vol_cell * 0.0048
+  Vol_nsr := Vol_cell * 0.0552
+  Vol_ss := Vol_cell * 0.02
+  a_cap := rcg * a_geo
+  a_geo := 2  * 3.14  * power(radius, 2 ) + 2  * 3.14  * radius * length
+
+  // Variable initializations:
+  Na_o = 140;
+  Ca_o = 1.8;
+  K_o = 5.4;
+  Cl_o = 100;
+  R = 8314;
+  T = 310;
+  F = 96485;
+  z_Ca = 2;
+  gamma_Cai = 1;
+  gamma_Cao = 0.341;
+  Vol_cell = 0.3454;
+  radius = 0.0011;
+  length = 0.01;
+  rcg = 2;
+  Cm = 1;
+
+  //Other declarations:
+  var Na_o, Ca_o, K_o, Cl_o, R, T, F, z_Ca, gamma_Cai, gamma_Cao, Vol_myo;
+  var Vol_jsr, Vol_nsr, Vol_ss, a_cap, Vol_cell, a_geo, radius, length, rcg;
+  var Cm;
+end
+
+model aslanidi_2009()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  membrane: cellmlmod_membrane()
+  equilibrium_potentials: cellmlmod_equilibrium_potentials()
+  i_Na: cellmlmod_i_Na()
+  i_Na_m_gate: cellmlmod_i_Na_m_gate()
+  i_Na_h_gate: cellmlmod_i_Na_h_gate()
+  i_Na_j_gate: cellmlmod_i_Na_j_gate()
+  i_Na_L: cellmlmod_i_Na_L()
+  i_Na_L_m_L_gate: cellmlmod_i_Na_L_m_L_gate()
+  i_Na_L_h_L_gate: cellmlmod_i_Na_L_h_L_gate()
+  i_Ca_L: cellmlmod_i_Ca_L()
+  i_Ca_L_d_gate: cellmlmod_i_Ca_L_d_gate()
+  i_Ca_L_f_gate: cellmlmod_i_Ca_L_f_gate()
+  i_Ca_L_f2_gate: cellmlmod_i_Ca_L_f2_gate()
+  i_Ca_L_f_Ca_gate: cellmlmod_i_Ca_L_f_Ca_gate()
+  i_Ca_L_f_Ca2_gate: cellmlmod_i_Ca_L_f_Ca2_gate()
+  i_Ca_T: cellmlmod_i_Ca_T()
+  i_Ca_T_b_gate: cellmlmod_i_Ca_T_b_gate()
+  i_Ca_T_g_gate: cellmlmod_i_Ca_T_g_gate()
+  i_to_1: cellmlmod_i_to_1()
+  i_to_1_a_gate: cellmlmod_i_to_1_a_gate()
+  i_to_1_i_gate: cellmlmod_i_to_1_i_gate()
+  i_to_1_i2_gate: cellmlmod_i_to_1_i2_gate()
+  i_Kr: cellmlmod_i_Kr()
+  i_Kr_xr_gate: cellmlmod_i_Kr_xr_gate()
+  i_Ks: cellmlmod_i_Ks()
+  i_Ks_xs1_gate: cellmlmod_i_Ks_xs1_gate()
+  i_Ks_xs2_gate: cellmlmod_i_Ks_xs2_gate()
+  i_K1: cellmlmod_i_K1()
+  i_K1_xK1_gate: cellmlmod_i_K1_xK1_gate()
+  i_K_p: cellmlmod_i_K_p()
+  i_to_2: cellmlmod_i_to_2()
+  i_to_2_a_gate: cellmlmod_i_to_2_a_gate()
+  i_NaCa: cellmlmod_i_NaCa()
+  i_NaK: cellmlmod_i_NaK()
+  i_Ca_p: cellmlmod_i_Ca_p()
+  CT_K_Cl: cellmlmod_CT_K_Cl()
+  CT_Na_Cl: cellmlmod_CT_Na_Cl()
+  background_currents: cellmlmod_background_currents()
+  intracellular_ion_concentrations: cellmlmod_intracellular_ion_concentrations()
+  Ca_i: cellmlmod_Ca_i()
+  Ca_MK_act: cellmlmod_Ca_MK_act()
+  Ca_NSR: cellmlmod_Ca_NSR()
+  Ca_JSR: cellmlmod_Ca_JSR()
+  Ca_r: cellmlmod_Ca_r()
+  q_rel: cellmlmod_q_rel()
+  q_rel_ri_gate: cellmlmod_q_rel_ri_gate()
+  q_rel_ro_gate: cellmlmod_q_rel_ro_gate()
+  q_leak: cellmlmod_q_leak()
+  q_up: cellmlmod_q_up()
+  q_tr: cellmlmod_q_tr()
+  model_parameters: cellmlmod_model_parameters()
+  membrane.time is environment.time;
+  i_Na.time is environment.time;
+  i_Na_L.time is environment.time;
+  i_Ca_L.time is environment.time;
+  i_Ca_T.time is environment.time;
+  i_to_1.time is environment.time;
+  i_Kr.time is environment.time;
+  i_Ks.time is environment.time;
+  i_K1.time is environment.time;
+  i_K_p.time is environment.time;
+  i_to_2.time is environment.time;
+  intracellular_ion_concentrations.time is environment.time;
+  Ca_i.time is environment.time;
+  Ca_MK_act.time is environment.time;
+  Ca_NSR.time is environment.time;
+  Ca_JSR.time is environment.time;
+  Ca_r.time is environment.time;
+  q_rel.time is environment.time;
+  membrane.V is i_Na.V;
+  membrane.i_Na is i_Na.i_Na;
+  i_Na.V is i_Na_L.V;
+  membrane.i_Na_L is i_Na_L.i_Na_L;
+  i_Na_L.V is i_Ca_L.V;
+  membrane.i_Ca_L is i_Ca_L.i_Ca_L;
+  i_Ca_L.V is i_Ca_T.V;
+  membrane.i_Ca_T is i_Ca_T.i_Ca_T;
+  i_Ca_T.V is i_to_1.V;
+  membrane.i_to_1 is i_to_1.i_to_1;
+  i_to_1.V is i_Kr.V;
+  membrane.i_Kr is i_Kr.i_Kr;
+  i_Kr.V is i_Ks.V;
+  membrane.i_Ks is i_Ks.i_Ks;
+  i_Ks.V is i_K1.V;
+  membrane.i_K1 is i_K1.i_K1;
+  i_K1.V is i_K_p.V;
+  membrane.i_K_p is i_K_p.i_K_p;
+  i_K_p.V is i_to_2.V;
+  membrane.i_to_2 is i_to_2.i_to_2;
+  i_to_2.V is i_NaCa.V;
+  membrane.i_NaCa is i_NaCa.i_NaCa;
+  i_NaCa.V is i_NaK.V;
+  membrane.i_NaK is i_NaK.i_NaK;
+  membrane.i_Ca_p is i_Ca_p.i_Ca_p;
+  i_NaK.V is background_currents.V;
+  membrane.i_Ca_b is background_currents.i_Ca_b;
+  membrane.i_Na_b is background_currents.i_Na_b;
+  membrane.i_Cl_b is background_currents.i_Cl_b;
+  membrane.i_K_b is background_currents.i_K_b;
+  intracellular_ion_concentrations.Na_i is equilibrium_potentials.Na_i;
+  intracellular_ion_concentrations.K_i is equilibrium_potentials.K_i;
+  intracellular_ion_concentrations.Cl_i is equilibrium_potentials.Cl_i;
+  Ca_i.Ca_i is equilibrium_potentials.Ca_i;
+  model_parameters.R is equilibrium_potentials.R;
+  model_parameters.T is equilibrium_potentials.T;
+  model_parameters.F is equilibrium_potentials.F;
+  model_parameters.Na_o is equilibrium_potentials.Na_o;
+  model_parameters.Ca_o is equilibrium_potentials.Ca_o;
+  model_parameters.K_o is equilibrium_potentials.K_o;
+  model_parameters.Cl_o is equilibrium_potentials.Cl_o;
+  i_Na.E_Na is equilibrium_potentials.E_Na;
+  i_Na_L.E_Na is equilibrium_potentials.E_Na;
+  equilibrium_potentials.R is i_Ca_L.R;
+  equilibrium_potentials.T is i_Ca_L.T;
+  equilibrium_potentials.F is i_Ca_L.F;
+  model_parameters.z_Ca is i_Ca_L.z_Ca;
+  equilibrium_potentials.Ca_o is i_Ca_L.Ca_o;
+  model_parameters.gamma_Cai is i_Ca_L.gamma_Cai;
+  model_parameters.gamma_Cao is i_Ca_L.gamma_Cao;
+  model_parameters.Cm is i_Ca_L.Cm;
+  Ca_r.Ca_r is i_Ca_L.Ca_r;
+  Ca_r.i_Ca_L is i_Ca_L.i_Ca_L;
+  Ca_MK_act.Ca_MK_act is i_Ca_L.Ca_MK_act;
+  Ca_MK_act.km_Ca_MK is i_Ca_L.km_Ca_MK;
+  i_to_1.E_K is equilibrium_potentials.E_K;
+  i_Kr.E_K is equilibrium_potentials.E_K;
+  equilibrium_potentials.K_o is i_Kr.K_o;
+  i_Ks.E_Ks is equilibrium_potentials.E_Ks;
+  equilibrium_potentials.Ca_i is i_Ks.Ca_i;
+  i_K1.E_K is equilibrium_potentials.E_K;
+  i_Kr.K_o is i_K1.K_o;
+  i_K_p.E_K is equilibrium_potentials.E_K;
+  i_Ca_L.Ca_r is i_to_2.Ca_r;
+  equilibrium_potentials.Cl_i is i_to_2.Cl_i;
+  intracellular_ion_concentrations.i_to_2 is i_to_2.i_to_2;
+  i_Ca_L.R is i_to_2.R;
+  i_Ca_L.T is i_to_2.T;
+  i_Ca_L.F is i_to_2.F;
+  equilibrium_potentials.Cl_o is i_to_2.Cl_o;
+  i_Ca_L.Cm is i_to_2.Cm;
+  i_to_2.R is i_NaCa.R;
+  i_to_2.T is i_NaCa.T;
+  i_to_2.F is i_NaCa.F;
+  equilibrium_potentials.Na_o is i_NaCa.Na_o;
+  i_Ca_L.Ca_o is i_NaCa.Ca_o;
+  equilibrium_potentials.Na_i is i_NaCa.Na_i;
+  intracellular_ion_concentrations.i_NaCa is i_NaCa.i_NaCa;
+  i_Ks.Ca_i is i_NaCa.Ca_i;
+  Ca_i.i_NaCa is i_NaCa.i_NaCa;
+  i_NaCa.R is i_NaK.R;
+  i_NaCa.T is i_NaK.T;
+  i_NaCa.F is i_NaK.F;
+  i_NaCa.Na_o is i_NaK.Na_o;
+  i_K1.K_o is i_NaK.K_o;
+  i_NaCa.Na_i is i_NaK.Na_i;
+  intracellular_ion_concentrations.i_NaK is i_NaK.i_NaK;
+  i_NaCa.Ca_i is i_Ca_p.Ca_i;
+  Ca_i.i_Ca_p is i_Ca_p.i_Ca_p;
+  CT_K_Cl.E_K is equilibrium_potentials.E_K;
+  CT_K_Cl.E_Cl is equilibrium_potentials.E_Cl;
+  CT_Na_Cl.E_Na is equilibrium_potentials.E_Na;
+  CT_Na_Cl.E_Cl is equilibrium_potentials.E_Cl;
+  i_NaK.R is background_currents.R;
+  i_NaK.T is background_currents.T;
+  i_NaK.F is background_currents.F;
+  i_Ca_L.z_Ca is background_currents.z_Ca;
+  i_NaCa.Ca_o is background_currents.Ca_o;
+  i_Ca_L.gamma_Cai is background_currents.gamma_Cai;
+  i_Ca_L.gamma_Cao is background_currents.gamma_Cao;
+  i_to_2.Cm is background_currents.Cm;
+  background_currents.E_Na is equilibrium_potentials.E_Na;
+  background_currents.E_Cl is equilibrium_potentials.E_Cl;
+  background_currents.E_K is equilibrium_potentials.E_K;
+  i_Ca_p.Ca_i is background_currents.Ca_i;
+  Ca_i.i_Ca_b is background_currents.i_Ca_b;
+  i_Na.i_Na is intracellular_ion_concentrations.i_Na;
+  i_Na_L.i_Na_L is intracellular_ion_concentrations.i_Na_L;
+  i_K1.i_K1 is intracellular_ion_concentrations.i_K1;
+  i_to_1.i_to_1 is intracellular_ion_concentrations.i_to_1;
+  i_Kr.i_Kr is intracellular_ion_concentrations.i_Kr;
+  i_Ks.i_Ks is intracellular_ion_concentrations.i_Ks;
+  i_K_p.i_K_p is intracellular_ion_concentrations.i_K_p;
+  background_currents.i_Na_b is intracellular_ion_concentrations.i_Na_b;
+  background_currents.i_K_b is intracellular_ion_concentrations.i_K_b;
+  background_currents.i_Cl_b is intracellular_ion_concentrations.i_Cl_b;
+  CT_K_Cl.CT_K_Cl is intracellular_ion_concentrations.CT_K_Cl;
+  CT_Na_Cl.CT_Na_Cl is intracellular_ion_concentrations.CT_Na_Cl;
+  model_parameters.Vol_myo is intracellular_ion_concentrations.Vol_myo;
+  model_parameters.a_cap is intracellular_ion_concentrations.a_cap;
+  background_currents.F is intracellular_ion_concentrations.F;
+  background_currents.Cm is intracellular_ion_concentrations.Cm;
+  intracellular_ion_concentrations.Vol_myo is Ca_i.Vol_myo;
+  model_parameters.Vol_nsr is Ca_i.Vol_nsr;
+  model_parameters.Vol_ss is Ca_i.Vol_ss;
+  intracellular_ion_concentrations.a_cap is Ca_i.a_cap;
+  intracellular_ion_concentrations.F is Ca_i.F;
+  intracellular_ion_concentrations.Cm is Ca_i.Cm;
+  q_up.q_up is Ca_i.q_up;
+  q_up.Ca_i is background_currents.Ca_i;
+  q_leak.q_leak is Ca_i.q_leak;
+  i_to_2.Ca_r is Ca_MK_act.Ca_r;
+  model_parameters.Vol_jsr is Ca_NSR.Vol_jsr;
+  Ca_i.Vol_nsr is Ca_NSR.Vol_nsr;
+  Ca_i.q_leak is Ca_NSR.q_leak;
+  q_leak.Ca_NSR is Ca_NSR.Ca_NSR;
+  Ca_i.q_up is Ca_NSR.q_up;
+  q_tr.q_tr is Ca_NSR.q_tr;
+  q_tr.Ca_NSR is Ca_NSR.Ca_NSR;
+  Ca_NSR.Vol_jsr is Ca_JSR.Vol_jsr;
+  Ca_NSR.Vol_nsr is Ca_JSR.Vol_nsr;
+  Ca_NSR.q_tr is Ca_JSR.q_tr;
+  q_tr.Ca_JSR is Ca_JSR.Ca_JSR;
+  q_rel.q_rel is Ca_JSR.q_rel;
+  q_rel.Ca_JSR is Ca_JSR.Ca_JSR;
+  Ca_JSR.Vol_jsr is Ca_r.Vol_jsr;
+  Ca_i.Vol_ss is Ca_r.Vol_ss;
+  Ca_i.a_cap is Ca_r.a_cap;
+  Ca_i.F is Ca_r.F;
+  Ca_i.Cm is Ca_r.Cm;
+  background_currents.z_Ca is Ca_r.z_Ca;
+  background_currents.Ca_i is Ca_r.Ca_i;
+  Ca_i.q_diff is Ca_r.q_diff;
+  Ca_JSR.q_rel is Ca_r.q_rel;
+  q_rel.Ca_r is Ca_MK_act.Ca_r;
+  q_rel.Ca_MK_act is i_Ca_L.Ca_MK_act;
+  q_rel.km_Ca_MK is i_Ca_L.km_Ca_MK;
+  i_Ca_L.i_Ca_L is q_rel.i_Ca_L;
+  i_Ca_L.g_Ca_L is q_rel.g_Ca_L;
+  i_Ca_L.i_Ca_L_max is q_rel.i_Ca_L_max;
+  q_up.Ca_MK_act is i_Ca_L.Ca_MK_act;
+  q_up.km_Ca_MK is i_Ca_L.km_Ca_MK;
+  i_Na.m is i_Na_m_gate.m;
+  environment.time is i_Na_m_gate.time;
+  background_currents.V is i_Na_m_gate.V;
+  i_Na.h is i_Na_h_gate.h;
+  i_Na_m_gate.time is i_Na_h_gate.time;
+  i_Na_m_gate.V is i_Na_h_gate.V;
+  i_Na.j is i_Na_j_gate.j;
+  i_Na_h_gate.time is i_Na_j_gate.time;
+  i_Na_h_gate.V is i_Na_j_gate.V;
+  i_Na_L.m_L is i_Na_L_m_L_gate.m_L;
+  i_Na_j_gate.time is i_Na_L_m_L_gate.time;
+  i_Na_j_gate.V is i_Na_L_m_L_gate.V;
+  i_Na_L.h_L is i_Na_L_h_L_gate.h_L;
+  i_Na_L_m_L_gate.time is i_Na_L_h_L_gate.time;
+  i_Na_L_m_L_gate.V is i_Na_L_h_L_gate.V;
+  i_Ca_L.d is i_Ca_L_d_gate.d;
+  i_Na_L_h_L_gate.time is i_Ca_L_d_gate.time;
+  i_Na_L_h_L_gate.V is i_Ca_L_d_gate.V;
+  i_Ca_L.f is i_Ca_L_f_gate.f;
+  i_Ca_L_d_gate.time is i_Ca_L_f_gate.time;
+  i_Ca_L_d_gate.V is i_Ca_L_f_gate.V;
+  i_Ca_L.f_Ca is i_Ca_L_f_Ca_gate.f_Ca;
+  i_Ca_L_f_gate.time is i_Ca_L_f_Ca_gate.time;
+  q_rel.i_Ca_L is i_Ca_L_f_Ca_gate.i_Ca_L;
+  Ca_MK_act.Ca_r is i_Ca_L_f_Ca_gate.Ca_r;
+  i_Ca_L.Ca_MK_act is i_Ca_L_f_Ca_gate.Ca_MK_act;
+  i_Ca_L.km_Ca_MK is i_Ca_L_f_Ca_gate.km_Ca_MK;
+  i_Ca_L.f2 is i_Ca_L_f2_gate.f2;
+  i_Ca_L_f_Ca_gate.time is i_Ca_L_f2_gate.time;
+  i_Ca_L_f_gate.V is i_Ca_L_f2_gate.V;
+  i_Ca_L.f_Ca2 is i_Ca_L_f_Ca2_gate.f_Ca2;
+  i_Ca_L_f2_gate.time is i_Ca_L_f_Ca2_gate.time;
+  i_Ca_L_f_Ca_gate.i_Ca_L is i_Ca_L_f_Ca2_gate.i_Ca_L;
+  i_Ca_T.b is i_Ca_T_b_gate.b;
+  i_Ca_L_f_Ca2_gate.time is i_Ca_T_b_gate.time;
+  i_Ca_L_f2_gate.V is i_Ca_T_b_gate.V;
+  i_Ca_T.g is i_Ca_T_g_gate.g;
+  i_Ca_T_b_gate.time is i_Ca_T_g_gate.time;
+  i_Ca_T_b_gate.V is i_Ca_T_g_gate.V;
+  i_to_1.a is i_to_1_a_gate.a;
+  i_Ca_T_g_gate.time is i_to_1_a_gate.time;
+  i_Ca_T_g_gate.V is i_to_1_a_gate.V;
+  i_to_1.i is i_to_1_i_gate.i;
+  i_to_1_a_gate.time is i_to_1_i_gate.time;
+  i_to_1_a_gate.V is i_to_1_i_gate.V;
+  i_to_1.i2 is i_to_1_i2_gate.i2;
+  i_to_1_i_gate.time is i_to_1_i2_gate.time;
+  i_to_1_i_gate.V is i_to_1_i2_gate.V;
+  i_Kr.xr is i_Kr_xr_gate.xr;
+  i_to_1_i2_gate.time is i_Kr_xr_gate.time;
+  i_to_1_i2_gate.V is i_Kr_xr_gate.V;
+  i_Ks.xs1 is i_Ks_xs1_gate.xs1;
+  i_Kr_xr_gate.time is i_Ks_xs1_gate.time;
+  i_Kr_xr_gate.V is i_Ks_xs1_gate.V;
+  i_Ks.xs2 is i_Ks_xs2_gate.xs2;
+  i_Ks_xs1_gate.time is i_Ks_xs2_gate.time;
+  i_Ks_xs1_gate.V is i_Ks_xs2_gate.V;
+  i_K1.xK1 is i_K1_xK1_gate.xK1;
+  equilibrium_potentials.E_K is i_K1_xK1_gate.E_K;
+  i_Ks_xs2_gate.V is i_K1_xK1_gate.V;
+  i_to_2.a is i_to_2_a_gate.a;
+  i_Ks_xs2_gate.time is i_to_2_a_gate.time;
+  i_Ca_L_f_Ca_gate.Ca_r is i_to_2_a_gate.Ca_r;
+  q_rel.ri is q_rel_ri_gate.ri;
+  i_to_2_a_gate.time is q_rel_ri_gate.time;
+  i_Ca_L_f_Ca2_gate.i_Ca_L is q_rel_ri_gate.i_Ca_L;
+  i_to_2_a_gate.Ca_r is q_rel_ri_gate.Ca_r;
+  i_Ca_L_f_Ca_gate.Ca_MK_act is q_rel_ri_gate.Ca_MK_act;
+  i_Ca_L_f_Ca_gate.km_Ca_MK is q_rel_ri_gate.km_Ca_MK;
+  q_rel.ro is q_rel_ro_gate.ro;
+  q_rel_ri_gate.time is q_rel_ro_gate.time;
+  q_rel_ri_gate.i_Ca_L is q_rel_ro_gate.i_Ca_L;
+  q_rel_ri_gate.Ca_r is q_rel_ro_gate.Ca_r;
+  Ca_JSR.Ca_JSR is q_rel_ro_gate.Ca_JSR;
+end

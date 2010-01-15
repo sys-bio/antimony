@@ -1,0 +1,74 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_T()
+
+  // Rate Rules:
+  T' = s  - ( dT  *  T  +  b  *  T  *  I )
+
+  // Variable initializations:
+  s = 10.0;
+  dT = 0.01;
+
+  //Other declarations:
+  var T, s, dT, b, I, time;
+end
+
+model cellmlmod_I()
+
+  // Rate Rules:
+  I' = b  *  T  *  I  - ( dI  *  I  +  p  *  I  *  E )
+
+  // Variable initializations:
+  p = 0.05;
+  dI = 0.3;
+
+  //Other declarations:
+  var I, p, dI, b, T, E, time;
+end
+
+model cellmlmod_E()
+
+  // Rate Rules:
+  E' = c  *  I  *  E  / ( I  +  K ) -  dE  *  E
+
+  // Variable initializations:
+  c = 0.05;
+  dE = 0.1;
+  K = 0.1;
+
+  //Other declarations:
+  var E, c, dE, K, I, time;
+end
+
+model cellmlmod_kinetic_parameters()
+
+  // Variable initializations:
+  b = 0.001;
+
+  //Other declarations:
+  var b;
+end
+
+model bonhoeffer_rembiszewski_ortiz_nixon_2000_version01()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  T: cellmlmod_T()
+  I: cellmlmod_I()
+  E: cellmlmod_E()
+  kinetic_parameters: cellmlmod_kinetic_parameters()
+  T.time is environment.time;
+  I.time is environment.time;
+  E.time is environment.time;
+  T.I is I.I;
+  T.T is I.T;
+  I.I is E.I;
+  I.E is E.E;
+  T.b is kinetic_parameters.b;
+  I.b is kinetic_parameters.b;
+end

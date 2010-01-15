@@ -1,0 +1,542 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var t;
+end
+
+model cellmlmod_Calcium()
+
+  // Variable initializations:
+  Ca = 1;
+
+  //Other declarations:
+  var Ca;
+end
+
+model cellmlmod_undefinedvariables()
+
+  // Variable initializations:
+  GTP = 0.5;
+  PKA = 0.1;
+
+  //Other declarations:
+  var GTP, PKA;
+end
+
+model cellmlmod_DGBM_Model_Modules()
+
+  // Rate Rules:
+  GEF_star' = PKC * VmaxB6 * GEF / (kmB6 * (one + GAP / kmB3 + Ng / kmM7 + Raf / kmH1 + NgCaM / kmM8) + GEF) - kfB7 * GEF_star
+  CaM_GEF' = -(kbB5) * CaM_GEF + kfB5 * GEF * Ca4CAM
+  Gbg_GEF' = -((-(kfB8) * GEF * Gbg + kbB8 * Gbg_GEF))
+  CaGqPLC' = GqPLC * Ca * kfG3 - CaGqPLC * kbG3 + CaPLC * Ga_GTP * kfG4 - CaGqPLC * kbG4 - CaGqPLC * kfG5
+  CaPLC' = PLC * Ca * kfG1 - CaPLC * kbG1 + CaGqPLC * kfG5 - (-(CaGqPLC) * kbG4 + CaPLC * Ga_GTP * kfG4)
+  NgCaM' = kfM4 * Ng * CaM - kbM4 * NgCaM - NgCaM * PKC * VmaxM8 / (NgCaM + kmM8 * (one + GAP / kmB3 + GEF / kmB6 + Raf / kmH1 + Ng / kmM7))
+  GEF' = -((PKA * VmaxB1 * GEF / (kmB1 + GEF) + PKC * VmaxB6 * GEF / (kmB6 * (one + GAP / kmB3 + Ng / kmM7 + Raf / kmH1 + NgCaM / kmM8) + GEF) - kfB2 * GEF_inact - kfB7 * GEF_star)) - kfB5 * Ca4CAM * GEF + kbB5 * CaM_GEF - kfB8 * GEF * Gbg + kbB8 * Gbg_GEF
+  Ng' = kfM6 * Ng_star + VmaxM5 * Ng_star / (Ng_star + kmM5) - Ng * PKC * VmaxM7 / (Ng + kmM7 * (one + GAP / kmB3 + GEF / kmB6 + Raf / kmH1 + NgCaM / kmM8))
+  Gbg' = -(Ga_GDP) * Gbg * kfD8 + kfD6 * Gabg_GluR + kfD9 * Gabg * GTP - (kfB8 * GEF * Gbg - kbB8 * Gbg_GEF)
+  Ga_GDP' = Ga_GTP * kfD7 - Ga_GDP * kfD8 * Gbg + CaGqPLC * kfG5
+  mGluR' = kfD5 * Gabg_GluR - kbD5 * Gabg * mGluR - (kfD3 * mGluR - kbD3 * Glu * R) + kfD6 * Gabg_GluR
+  PLC' = -((PLC * Ca * kfG1 - CaPLC * kbG1)) - (PLC * Ga_GTP * kfG2 - GqPLC * kbG2)
+  Ca2CaM' = kfM1 * Ca * Ca * CaM - kbM1 * Ca2CaM - (Ca * Ca2CaM * kfM2 - kbM2 * Ca3CaM)
+  Ca3CaM' = Ca * Ca2CaM * kfM2 - kbM2 * Ca3CaM - (Ca * Ca3CaM * kfM3 - kbM3 * Ca4CAM)
+  Ng_star' = NgCaM * PKC * VmaxM8 / (NgCaM + kmM8 * (one + GAP / kmB3 + GEF / kmB6 + Raf / kmH1 + Ng / kmM7)) - kfM6 * Ng_star - VmaxM5 * Ng_star / (Ng_star + kmM5) + Ng * PKC * VmaxM7 / (Ng + kmM7 * (one + GAP / kmB3 + GEF / kmB6 + Raf / kmH1 + NgCaM / kmM8))
+  Gabg' = Ga_GDP * Gbg * kfD8 - (Gabg * R * kfD4 - Gabg_R * kbD4) + kfD5 * Gabg_GluR - kbD5 * Gabg * mGluR - kfD9 * Gabg * GTP
+  R' = kfD3 * mGluR - kbD3 * Glu * R - (Gabg * R * kfD4 - Gabg_R * kbD4)
+  Gabg_R' = Gabg * R * kfD4 - Gabg_R * kbD4 + kfD2 * Gabg_GluR - Gabg_R * Glu * kbD2
+  Glu_synapse' = -((kfD1 * Glu_synapse - kbD1 * Glu))
+  Gabg_GluR' = -((kfD2 * Gabg_GluR - Gabg_R * Glu * kbD2)) - (kfD5 * Gabg_GluR - kbD5 * Gabg * mGluR) - kfD6 * Gabg_GluR
+  Glu' = kfD1 * Glu_synapse - kbD1 * Glu + kfD2 * Gabg_GluR - Gabg_R * Glu * kbD2 + kfD3 * mGluR - kbD3 * Glu * R
+  Ga_GTP' = kfD9 * Gabg * GTP - Ga_GTP * kfD7 - (PLC * Ga_GTP * kfG2 - GqPLC * kbG2) - (CaGqPLC * kbG4 + CaPLC * Ga_GTP * kfG4)
+  GqPLC' = PLC * Ga_GTP * kfG2 - GqPLC * kbG2 - (Ca * GqPLC * kfG3 - CaGqPLC * kbG3)
+  GEF_inact' = PKA * VmaxB1 * GEF / (kmB1 + GEF) - kfB2 * GEF_inact
+  Ca4CAM' = -((-(kbB5) * CaM_GEF + kfB5 * GEF * Ca4CAM)) + Ca * Ca3CaM * kfM3 - kbM3 * Ca4CAM
+  CaM' = -((kfM1 * Ca * Ca * CaM - kbM1 * Ca2CaM)) - (kfM4 * Ng * CaM - kbM4 * NgCaM) + NgCaM * PKC * VmaxM8 / (NgCaM + kmM8)
+
+  // Variable initializations:
+  GEF_star = 0;
+  CaM_GEF = 0;
+  Gbg_GEF = 0;
+  CaGqPLC = 0;
+  CaPLC = 0;
+  NgCaM = 0;
+  GEF = 0;
+  Ng = 10;
+  Gbg = 0.1;
+  Ga_GDP = 1;
+  mGluR = 0.3;
+  PLC = 0.8;
+  Ca2CaM = 0;
+  Ca3CaM = 0;
+  Ng_star = 0;
+  Gabg = 0;
+  R = 0;
+  Gabg_R = 0;
+  Glu_synapse = 0;
+  Gabg_GluR = 0;
+  Glu = 0;
+  Ga_GTP = 0;
+  GqPLC = 0;
+  GEF_inact = 0.1;
+  Ca4CAM = 0;
+  CaM = 20;
+  one = 1;
+  kfD1 = 500;
+  kbD1 = 1000;
+  kfD2 = 0.000028;
+  kbD2 = 0.1;
+  kfD3 = 0.000028;
+  kbD3 = 10;
+  kfD4 = 0.000001;
+  kbD4 = 1;
+  kfD5 = 0.00000001;
+  kbD5 = 0.0001;
+  kfD6 = 0.01;
+  kfD7 = 0.0133;
+  kfD8 = 0.00001;
+  kfD9 = 0.0001;
+  kfG1 = 0.000005;
+  kbG1 = 1;
+  kfG2 = 0.0000042;
+  kbG2 = 1;
+  kfG3 = 0.00005;
+  kbG3 = 1;
+  kfG4 = 0.0000042;
+  kbG4 = 1;
+  kfG5 = 0.0133;
+  kfB2 = 1;
+  kbB2 = 0;
+  kmB3 = 3.333333333333;
+  kfB5 = 0.0001;
+  kbB5 = 1;
+  kfB7 = 1;
+  kbB7 = 0;
+  kfB8 = 0.00001;
+  kbB8 = 1;
+  kmB1 = 7.5;
+  VmaxB1 = 9;
+  kmB6 = 3.33333333333;
+  VmaxB6 = 4;
+  kfM1 = 0.0000000002;
+  kbM1 = 72;
+  kfM2 = 0.000006;
+  kbM2 = 10;
+  kfM3 = 0.000000775;
+  kbM3 = 10;
+  kfM4 = 0.0000005;
+  kbM4 = 1;
+  kfM6 = 0.005;
+  kmM5 = 10.012;
+  VmaxM5 = 0.67;
+  kmM7 = 28.626667;
+  VmaxM7 = 0.58;
+  kmM8 = 28.595;
+  VmaxM8 = 0.35;
+  kmH1 = 66.666666667;
+
+  //Other declarations:
+  var t, PKA, Ca, GTP, PKC, GAP, Raf, GEF_star, CaM_GEF, Gbg_GEF, CaGqPLC;
+  var CaPLC, NgCaM, GEF, Ng, Gbg, Ga_GDP, mGluR, PLC, Ca2CaM, Ca3CaM, Ng_star;
+  var Gabg, R, Gabg_R, Glu_synapse, Gabg_GluR, Glu, Ga_GTP, GqPLC, GEF_inact;
+  var Ca4CAM, CaM, one, kfD1, kbD1, kfD2, kbD2, kfD3, kbD3, kfD4, kbD4, kfD5;
+  var kbD5, kfD6, kfD7, kfD8, kfD9, kfG1, kbG1, kfG2, kbG2, kfG3, kbG3, kfG4;
+  var kbG4, kfG5, kfB2, kbB2, kmB3, kfB5, kbB5, kfB7, kbB7, kfB8, kbB8, kmB1;
+  var VmaxB1, kmB6, VmaxB6, kfM1, kbM1, kfM2, kbM2, kfM3, kbM3, kfM4, kbM4;
+  var kfM6, kmM5, VmaxM5, kmM7, VmaxM7, kmM8, VmaxM8, kmH1;
+end
+
+model cellmlmod_B_Model_Modules()
+
+  // Rate Rules:
+  Raf_star' = PKC * Raf * VmaxH1 / (kmH1 * (one + GAP / kmB3 + GEF / kmB6 + Ng / kmM7 + NgCaM / kmM8) + Raf) - Raf_star * PP2A * VmaxH3 / (kmH3 * (one + Raf_star_star / kmH4 + MAPKK_star_star / kmH9 + MAPKK_star / kmH8) + Raf_star) - Raf_star * MAPK_star * VmaxH2 / (kmH2 * (one + SOS / kmA9) + Raf_star) + Raf_star_star * PP2A * VmaxH4 / (kmH4 * (one + Raf_star / kmH3 + MAPKK_star_star / kmH9 + MAPKK_star / kmH8) + Raf_star_star)
+  GAP' = -(PKC) * VmaxB3 * GAP / (kmB3 * (one + Raf / kmH1 + GEF / kmB6 + Ng / kmM7 + NgCaM / kmM8) + GAP) + kfB4 * GAPstar
+  Raf' = -(PKC) * Raf * VmaxH1 / (kmH1 * (one + GAP / kmB3 + GEF / kmB6 + Ng / kmM7 + NgCaM / kmM8) + Raf) + Raf_star * PP2A * VmaxH3 / (kmH3 * (one + Raf_star_star / kmH4 + MAPKK_star_star / kmH9 + MAPKK_star / kmH8) + Raf_star)
+  GTPRasRaf_star' = GTP_RAS * Raf_star * kfH5 - GTPRasRaf_star * kbH5
+  Raf_star_star' = Raf_star * MAPK_star * VmaxH2 / (kmH2 * (one + SOS / kmA9) + Raf_star) - Raf_star_star * PP2A * VmaxH4 / (kmH4 * (one + Raf_star / kmH3 + MAPKK_star_star / kmH9 + MAPKK_star / kmH8) + Raf_star_star)
+  GTP_RAS' = -(GAP) * VmaxB13 * GTP_RAS / (kmB13 + GTP_RAS) - kfB12 * GTP_RAS + GEF_star * VmaxB10 * GDP_RAS / (kmB10 + GDP_RAS) + Gbg_GEF * VmaxB11 * GDP_RAS / (kmB11 + GDP_RAS) + CaM_GEF * VmaxB9 * GDP_RAS / (kmB9 + GDP_RAS) + SHCstar_SOS_GRB2 * VmaxA7 * GDP_RAS / (kmA7 + GDP_RAS) - GTP_RAS * Raf_star * kfH5 + GTPRasRaf_star * kbH5
+  GDP_RAS' = -((-(GAP) * VmaxB13 * GTP_RAS / (kmB13 + GTP_RAS) - kfB12 * GTP_RAS + GEF_star * VmaxB10 * GDP_RAS / (kmB10 + GDP_RAS) + Gbg_GEF * VmaxB11 * GDP_RAS / (kmB11 + GDP_RAS) + CaM_GEF * VmaxB9 * GDP_RAS / (kmB9 + GDP_RAS))) - SHCstar_SOS_GRB2 * VmaxA7 * GDP_RAS / (kmA7 + GDP_RAS)
+  GAPstar' = PKC * VmaxB3 * GAP / (kmB3 * (one + Raf / kmH1 + GEF / kmB6 + Ng / kmM7 + NgCaM / kmM8) + GAP) - kfB4 * GAPstar
+
+  // Variable initializations:
+  Raf_star = 0;
+  GAP = 0.002;
+  Raf = 0.2;
+  GTPRasRaf_star = 0;
+  Raf_star_star = 0;
+  GTP_RAS = 0;
+  GDP_RAS = 0.2;
+  GAPstar = 0;
+  PP2A = 0.224;
+  one = 1;
+  kfB12 = 0.0001;
+  kbB12 = 0;
+  kmB9 = 0.50505;
+  VmaxB9 = 0.02;
+  kmB10 = 0.50505;
+  VmaxB10 = 0.02;
+  kmB11 = 0.50505;
+  VmaxB11 = 0.02;
+  kmB13 = 1.0104;
+  VmaxB13 = 10;
+  kfB4 = 0.1;
+  kbB4 = 0;
+  kmB3 = 3.33333333333;
+  VmaxB3 = 4;
+  kmA7 = 0.50505;
+  VmaxA7 = 0.02;
+  kfH5 = 0.00004;
+  kbH5 = 0.5;
+  kmH1 = 66.666666667;
+  kmH2 = 25.64166667;
+  kmH3 = 15.6565;
+  kmH4 = 15.6565;
+  VmaxH1 = 4;
+  VmaxH2 = 10;
+  VmaxH3 = 6;
+  VmaxH4 = 6;
+  kmM8 = 28.595;
+  kmB6 = 3.33333333333;
+  kmM7 = 28.626667;
+  kmA9 = 2.564166667;
+  kmH8 = 15.6565;
+  kmH9 = 15.6565;
+
+  //Other declarations:
+  var t, GEF_star, Gbg_GEF, CaM_GEF, PKC, SHCstar_SOS_GRB2, MAPK_star, NgCaM;
+  var GEF, Ng, SOS, MAPKK_star_star, MAPKK_star, Raf_star, GAP, Raf, GTPRasRaf_star;
+  var Raf_star_star, GTP_RAS, GDP_RAS, GAPstar, PP2A, one, kfB12, kbB12, kmB9;
+  var VmaxB9, kmB10, VmaxB10, kmB11, VmaxB11, kmB13, VmaxB13, kfB4, kbB4;
+  var kmB3, VmaxB3, kmA7, VmaxA7, kfH5, kbH5, kmH1, kmH2, kmH3, kmH4, VmaxH1;
+  var VmaxH2, VmaxH3, VmaxH4, kmM8, kmB6, kmM7, kmA9, kmH8, kmH9;
+end
+
+model cellmlmod_H_Model_Module_MAPKK()
+
+  // Rate Rules:
+  MAPKK_star' = MAPKK * VmaxH6 * GTPRasRaf_star / (kmH6 * (one + MAPKK_star / kmH7) + MAPKK) - MAPKK_star * VmaxH8 * PP2A / (kmH8 * (one + Raf_star / kmH3 + Raf_star_star / kmH4 + MAPKK_star_star / kmH9) + MAPKK_star) - MAPKK_star * VmaxH7 * GTPRasRaf_star / (kmH7 * (one + MAPKK / kmH6) + MAPKK_star) + MAPKK_star_star * VmaxH9 * PP2A / (kmH9 * (one + Raf_star / kmH3 + Raf_star_star / kmH4 + MAPKK_star / kmH8) + MAPKK_star_star)
+  MAPKK_star_star' = MAPKK_star * VmaxH7 * GTPRasRaf_star / (kmH7 * (one + MAPKK / kmH6) + MAPKK_star) - MAPKK_star_star * VmaxH9 * PP2A / (kmH9 * (one + Raf_star / kmH3 + Raf_star_star / kmH4 + MAPKK_star / kmH8) + MAPKK_star_star)
+  MAPKK' = -(MAPKK) * VmaxH6 * GTPRasRaf_star / (kmH6 * (one + MAPKK_star / kmH7) + MAPKK) + MAPKK_star * VmaxH8 * PP2A / (kmH8 * (one + Raf_star / kmH3 + Raf_star_star / kmH4 + MAPKK_star_star / kmH9) + MAPKK_star)
+
+  // Variable initializations:
+  MAPKK_star = 0;
+  MAPKK_star_star = 0;
+  MAPKK = 0.18;
+  PP2A = 0.224;
+  one = 1;
+  kmH6 = 0.159091667;
+  kmH7 = 0.159091667;
+  kmH8 = 15.6565;
+  kmH9 = 15.6565;
+  VmaxH6 = 0.105;
+  VmaxH7 = 0.105;
+  VmaxH8 = 6;
+  VmaxH9 = 6;
+  kmH3 = 15.6565;
+  kmH4 = 15.6565;
+
+  //Other declarations:
+  var t, GTPRasRaf_star, Raf_star, Raf_star_star, MAPKK_star, MAPKK_star_star;
+  var MAPKK, PP2A, one, kmH6, kmH7, kmH8, kmH9, VmaxH6, VmaxH7, VmaxH8, VmaxH9;
+  var kmH3, kmH4;
+end
+
+model cellmlmod_H_Model_Module_MAPK()
+
+  // Rate Rules:
+  MAPK_star' = MAPK_tyr * VmaxH11 * MAPKK_star_star / (kmH11 * (one + MAPK / kmH10) + MAPK_tyr) - MAPK_star * VmaxH13 * MKP1 / (kmH13 * (one + MAPK_tyr / kmH12) + MAPK_star)
+  MAPK' = -(MAPK) * VmaxH10 * MAPKK_star_star / (kmH10 * (one + MAPK_tyr / kmH11) + MAPK) + MAPK_tyr * VmaxH12 * MKP1 / (kmH12 * (one + MAPK_star / kmH13) + MAPK_tyr)
+  MAPK_tyr' = MAPK * VmaxH10 * MAPKK_star_star / (kmH10 * MAPK_tyr / kmH11 + MAPK) - MAPK_tyr * VmaxH12 * MKP1 / (kmH12 * (one + MAPK_star / kmH13) + MAPK_tyr) - MAPK_tyr * VmaxH11 * MAPKK_star_star / (kmH11 * (one + MAPK_tyr / kmH12) + MAPK_tyr) + MAPK_star * VmaxH13 * MKP1 / (kmH13 * (one + MAPK_tyr / kmH12) + MAPK_star)
+
+  // Variable initializations:
+  MAPK_star = 0;
+  MAPK = 0.36;
+  MAPK_tyr = 0;
+  MKP1 = 0.032;
+  one = 1;
+  kmH10 = 0.046296667;
+  kmH11 = 0.046296667;
+  kmH12 = 0.066666667;
+  kmH13 = 0.066666667;
+  VmaxH10 = 0.15;
+  VmaxH11 = 0.15;
+  VmaxH12 = 1;
+  VmaxH13 = 1;
+
+  //Other declarations:
+  var t, MAPKK_star_star, MAPK_star, MAPK, MAPK_tyr, MKP1, one, kmH10, kmH11;
+  var kmH12, kmH13, VmaxH10, VmaxH11, VmaxH12, VmaxH13;
+end
+
+model cellmlmod_A_Model_Module_SHC()
+
+  // Rate Rules:
+  SOS' = kfA8 * SOSstar - kbA8 * SOS - MAPK_star * VmaxA9 * SOS / (kmA9 * (one + Raf_star / kmH2) + SOS) + kbA5 * SOS_GRB2 - kfA5 * SOS * GRB2
+  SHCstar_SOS_GRB2' = kfA6 * SHCstar * SOS_GRB2 - kbA6 * SHCstar_SOS_GRB2
+  SHC' = kfA4 * SHCstar - kbA4 * SHC - EGF_EGFR * VmaxA3 * SHC / (kmA3 * (one + CaPLCg / kmF4) + SHC)
+  SHCstar' = EGF_EGFR * VmaxA3 * SHC / (kmA3 * (one + CaPLCg / kmF4) + SHC) - kfA6 * SHCstar * SOS_GRB2 + kbA6 * SHCstar_SOS_GRB2 - kfA4 * SHCstar
+  SOSstar_GRB2' = kfA10 * SOSstar * GRB2 - kbA10 * SOSstar_GRB2
+  SOS_GRB2' = -(kfA6) * SHCstar * SOS_GRB2 + kbA6 * SHCstar_SOS_GRB2 - kbA5 * SOS_GRB2 + kfA5 * SOS * GRB2
+  GRB2' = kbA5 * SOS_GRB2 - kfA5 * SOS * GRB2 - kfA10 * SOSstar * GRB2 + kbA10 * SOSstar_GRB2
+  SOSstar' = -(kfA8) * SOSstar + kbA8 * SOS + MAPK_star * VmaxA9 * SOS / (kmA9 * (one + Raf_star / kmH2) + SOS) - kfA10 * SOSstar * GRB2 + kbA10 * SOSstar_GRB2
+
+  // Variable initializations:
+  SOS = 0.1;
+  SHCstar_SOS_GRB2 = 0;
+  SHC = 0.5;
+  SHCstar = 0;
+  SOSstar_GRB2 = 0;
+  SOS_GRB2 = 0;
+  GRB2 = 1;
+  SOSstar = 0;
+  one = 1;
+  kmA3 = 0.83333333333;
+  kfA4 = 0.0016667;
+  kbA4 = 0;
+  kfA5 = 0.000000041667;
+  kbA5 = 0.0168;
+  kfA6 = 0.0000008333;
+  kbA6 = 0.1;
+  kfA8 = 0.001;
+  kbA8 = 0;
+  kfA10 = 0.000000041667;
+  kbA10 = 0.0168;
+  kmA7 = 0.40404;
+  kmA9 = 2.564166667;
+  VmaxA7 = 0.02;
+  VmaxA3 = 0.2;
+  VmaxA9 = 10;
+  kmH2 = 25.64166667;
+  kmF4 = 0.33333333333;
+
+  //Other declarations:
+  var t, EGF_EGFR, MAPK_star, Raf_star, CaPLCg, SOS, SHCstar_SOS_GRB2, SHC;
+  var SHCstar, SOSstar_GRB2, SOS_GRB2, GRB2, SOSstar, one, kmA3, kfA4, kbA4;
+  var kfA5, kbA5, kfA6, kbA6, kfA8, kbA8, kfA10, kbA10, kmA7, kmA9, VmaxA7;
+  var VmaxA3, VmaxA9, kmH2, kmF4;
+end
+
+model cellmlmod_A_Model_Module_EGFR()
+
+  // Rate Rules:
+  EGF_EGFR' = kfA1 * EGF * EGFR - kbA1 * EGF_EGFR - kfA2 * EGF_EGFR + kbA2 * EGF_EGFR_INTERNAL
+  EGF_EGFR_INTERNAL' = kfA2 * EGF_EGFR - kbA2 * EGF_EGFR_INTERNAL
+  EGF' = -(kfA1) * EGF * EGFR + kbA1 * EGF_EGFR
+  EGFR' = -(kfA1) * EGF * EGFR + kbA1 * EGF_EGFR
+
+  // Variable initializations:
+  EGF_EGFR = 0;
+  EGF_EGFR_INTERNAL = 0;
+  EGF = 166.67;
+  EGFR = 0.16667;
+  kfA1 = 0.000007;
+  kbA1 = 0.25;
+  kfA2 = 0.002;
+  kbA2 = 0.00033;
+
+  //Other declarations:
+  var t, EGF_EGFR, EGF_EGFR_INTERNAL, EGF, EGFR, kfA1, kbA1, kfA2, kbA2;
+end
+
+model cellmlmod_F_Model_Module_PLC()
+
+  // Rate Rules:
+  CaPLCg' = -((-(Ca) * PLCg * kfF1 + CaPLCg * kbF1)) + kfF3 * CaPLCg_star - VmaxF4 * EGF_EGFR * CaPLCg / (kmF4 * (one + SHC / kmA3) + CaPLCg)
+  CaPLCg_star' = -((kfF3 * CaPLCg_star - VmaxF4 * EGF_EGFR * CaPLCg / (kmF4 + CaPLCg))) + Ca * PLCg_star * kfF5 - kbF5 * CaPLCg_star
+  PLCg' = -(Ca) * PLCg * kfF1 + CaPLCg * kbF1
+  PLCg_star' = -(Ca) * PLCg_star * kfF5 + kbF5 * CaPLCg_star
+
+  // Variable initializations:
+  CaPLCg = 0;
+  CaPLCg_star = 0;
+  PLCg = 0.82;
+  PLCg_star = 0;
+  kfF1 = 0.0003;
+  kbF1 = 10;
+  kfF3 = 0.05;
+  kfF5 = 0.00002;
+  kbF5 = 10;
+  kmF4 = 0.33333333333;
+  VmaxF4 = 0.2;
+  kmA3 = 0.83333333333;
+  one = 1;
+
+  //Other declarations:
+  var t, EGF_EGFR, Ca, SHC, CaPLCg, CaPLCg_star, PLCg, PLCg_star, kfF1, kbF1;
+  var kfF3, kfF5, kbF5, kmF4, VmaxF4, kmA3, one;
+end
+
+model cellmlmod_KEL_DAGIP3_Model_Modules()
+
+  // Rate Rules:
+  PKC' = PKC_i * kfK1 - PKC * kbK1 + PKC_i * AA * kfK2 - PKC * kbK2 + CaPKC * kfK3 - PKC * kbK3 + CaPKC * AA * kfK4 - PKC * kbK4 + DAGCaPKC * kfK5 - PKC * kbK5 + AADAGPKC * kfK6 - PKC * kbK6
+  PKC_i' = -(PKC_i) * kfK1 + PKC * kbK1 - PKC_i * AA * kfK2 + PKC * kbK2 - PKC_i * DAG * kfK9 + DAGPKC * kbK9 - PKC_i * Ca * kfK7 + CaPKC * kbK7
+  DAGPKC' = PKC_i * DAG * kfK9 - DAGPKC * kbK9 - DAGPKC * AA * kfK10 + AADAGPKC * kbK10
+  AADAGPKC' = DAGPKC * AA * kfK10 - AADAGPKC * kbK10 - AADAGPKC * kfK6 + PKC * kbK6
+  DAGCaPKC' = DAG * CaPKC * kfK8 - DAGCaPKC * kbK8 - DAGCaPKC * kfK5 + PKC * kbK5
+  CaPKC' = PKC_i * Ca * kfK7 - CaPKC * kbK7 - CaPKC * kfK3 + PKC * kbK3 - CaPKC * AA * kfK4 + PKC * kbK4 - DAG * CaPKC * kfK8 + DAGCaPKC * kbK8
+  AA' = -(PKC_i) * AA * kfK2 + PKC * kbK2 - CaPKC * AA * kfK4 + PKC * kbK4 - DAGPKC * AA * kfK10 + AADAGPKC * kbK10 - AA * kfE13 + CaPLA2_star * VmaxE12 * APC / (kmE12 + APC) + CaPLA2 * VmaxE4 * APC / (kmE4 + APC) + DAGCaPLA2 * VmaxE8 * APC / (kmE8 + APC) + PIP2CaPLA2 * VmaxE6 * APC / (kmE6 + APC) + PIP2PLA2 * VmaxE2 * APC / (kmE2 + APC)
+  APC' = AA * kfE13 - (CaPLA2_star * VmaxE12 * APC / (kmE12 + APC) + CaPLA2 * VmaxE4 * APC / (kmE4 + APC) + DAGCaPLA2 * VmaxE8 * APC / (kmE8 + APC) + PIP2CaPLA2 * VmaxE6 * APC / (kmE6 + APC) + PIP2PLA2 * VmaxE2 * APC / (kmE2 + APC))
+  PIP2_star' = -(PIP2_star) * PLA2_cyt * kfE1 + PIP2PLA2 * kbE1 - PIP2_star * CaPLA2 * kfE5 + PIP2CaPLA2 * kbE5
+  PLA2_cyt' = PLA2_star * kfE10 - PIP2_star * PLA2_cyt * kfE1 + PIP2PLA2 * kbE1 - Ca * PLA2_cyt * kfE3 + CaPLA2 * kbE3 - MAPK * VmaxE9 * PLA2_cyt / (kmE9 + PLA2_cyt)
+  PLA2_star' = -(PLA2_star) * kfE10 + MAPK * VmaxE9 * PLA2_cyt / (kmE9 + PLA2_cyt) - Ca * PLA2_star * kfE11 + CaPLA2_star * kbE11
+  CaPLA2' = Ca * PLA2_cyt * kfE3 - CaPLA2 * kbE3 - DAG * CaPLA2 * kfE7 + DAGCaPLA2 * kbE7 - PIP2_star * CaPLA2 * kfE5 + PIP2CaPLA2 * kbE5
+  PIP2CaPLA2' = PIP2_star * CaPLA2 * kfE5 - PIP2CaPLA2 * kbE5
+  PIP2PLA2' = PIP2_star * PLA2_cyt * kfE1 - PIP2PLA2 * kbE1
+  DAGCaPLA2' = DAG * CaPLA2 * kfE7 - DAGCaPLA2 * kbE7
+  CaPLA2_star' = Ca * PLA2_star * kfE11 - CaPLA2_star * kbE11
+  PIP2' = -(CaPLCg) * VmaxF2 * PIP2 / (kmF2 + PIP2) - CaPLCg_star * VmaxF6 * PIP2 / (kmF6 + PIP2) - CaPLC * VmaxG7 * PIP2 / (kmG7 + PIP2) - CaGqPLC * VmaxG6 * PIP2 / (kmG6 + PIP2)
+  DAG' = CaPLCg * VmaxF2 * PIP2 / (kmF2 + PIP2) + CaPLCg_star * VmaxF6 * PIP2 / (kmF6 + PIP2) + CaPLC * VmaxG7 * PIP2 / (kmG7 + PIP2) - kfG8 * DAG + CaGqPLC * VmaxG6 * PIP2 / (kmG6 + PIP2) - PKC_i * DAG * kfK9 + DAGPKC * kbK9 - DAG * CaPKC * kfK8 + DAGCaPKC * kbK8 - DAG * CaPLA2 * kfE7 + DAGCaPLA2 * kbE7
+  IP3' = CaPLCg * VmaxF2 * PIP2 / (kmF2 + PIP2) + CaPLCg_star * VmaxF6 * PIP2 / (kmF6 + PIP2) + CaGqPLC * VmaxG6 * PIP2 / (kmG6 + PIP2) - kfG9 * IP3 + CaPLC * VmaxG7 * PIP2 / (kmG7 + PIP2)
+  Inositol' = kfG9 * IP3
+  PC' = kfG8 * DAG
+
+  // Variable initializations:
+  PKC = 0;
+  PKC_i = 1;
+  DAGPKC = 0;
+  AADAGPKC = 0;
+  DAGCaPKC = 0;
+  CaPKC = 0;
+  AA = 0;
+  APC = 30;
+  PIP2_star = 2.5;
+  PLA2_cyt = 0.4;
+  PLA2_star = 0;
+  CaPLA2 = 0;
+  PIP2CaPLA2 = 0;
+  PIP2PLA2 = 0;
+  DAGCaPLA2 = 0;
+  CaPLA2_star = 0;
+  PIP2 = 10;
+  DAG = 0;
+  IP3 = 0;
+  Inositol = 0;
+  PC = 0;
+  kfK1 = 1;
+  kbK1 = 50;
+  kfK2 = 0.0000000002;
+  kbK2 = 0.1;
+  kfK3 = 1.2705;
+  kbK3 = 3.5026;
+  kfK4 = 0.000000002;
+  kbK4 = 0.1;
+  kfK5 = 1;
+  kbK5 = 0.1;
+  kfK6 = 2;
+  kbK6 = 0.2;
+  kfK7 = 0.000001;
+  kbK7 = 0.5;
+  kfK8 = 0.000000013333;
+  kbK8 = 8.6348;
+  kfK9 = 0.000000001;
+  kbK9 = 0.1;
+  kfK10 = 0.00000003;
+  kbK10 = 2;
+  kfE1 = 0.000000002;
+  kbE1 = 0.5;
+  kfE3 = 0.00000016667;
+  kbE3 = 0.1;
+  kfE5 = 0.00000002;
+  kbE5 = 0.1;
+  kfE7 = 0.000000005;
+  kbE7 = 4;
+  kfE10 = 0.17;
+  kbE10 = 0;
+  kfE11 = 0.00001;
+  kbE11 = 0.1;
+  kmE9 = 25.64166667;
+  VmaxE9 = 20;
+  kfE13 = 0.4;
+  kbE13 = 0;
+  kmE2 = 20;
+  kmE4 = 20;
+  kmE6 = 20;
+  kmE8 = 20;
+  kmE12 = 20;
+  VmaxE2 = 11.04;
+  VmaxE4 = 5.4;
+  VmaxE6 = 36;
+  VmaxE8 = 60;
+  VmaxE12 = 120;
+  kmF2 = 97;
+  kmF6 = 19.79166667;
+  VmaxF2 = 14;
+  VmaxF6 = 57;
+  kfG8 = 0.15;
+  kfG9 = 2.5;
+  kmG6 = 5;
+  VmaxG6 = 48;
+  kmG7 = 19.84166667;
+  VmaxG7 = 10;
+
+  //Other declarations:
+  var t, Ca, MAPK, CaPLCg, CaPLCg_star, CaPLC, CaGqPLC, PKC, PKC_i, DAGPKC;
+  var AADAGPKC, DAGCaPKC, CaPKC, AA, APC, PIP2_star, PLA2_cyt, PLA2_star;
+  var CaPLA2, PIP2CaPLA2, PIP2PLA2, DAGCaPLA2, CaPLA2_star, PIP2, DAG, IP3;
+  var Inositol, PC, kfK1, kbK1, kfK2, kbK2, kfK3, kbK3, kfK4, kbK4, kfK5;
+  var kbK5, kfK6, kbK6, kfK7, kbK7, kfK8, kbK8, kfK9, kbK9, kfK10, kbK10;
+  var kfE1, kbE1, kfE3, kbE3, kfE5, kbE5, kfE7, kbE7, kfE10, kbE10, kfE11;
+  var kbE11, kmE9, VmaxE9, kfE13, kbE13, kmE2, kmE4, kmE6, kmE8, kmE12, VmaxE2;
+  var VmaxE4, VmaxE6, VmaxE8, VmaxE12, kmF2, kmF6, VmaxF2, VmaxF6, kfG8, kfG9;
+  var kmG6, VmaxG6, kmG7, VmaxG7;
+end
+
+model bi_model_1999_version01()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  Calcium: cellmlmod_Calcium()
+  undefinedvariables: cellmlmod_undefinedvariables()
+  DGBM_Model_Modules: cellmlmod_DGBM_Model_Modules()
+  B_Model_Modules: cellmlmod_B_Model_Modules()
+  H_Model_Module_MAPKK: cellmlmod_H_Model_Module_MAPKK()
+  H_Model_Module_MAPK: cellmlmod_H_Model_Module_MAPK()
+  A_Model_Module_SHC: cellmlmod_A_Model_Module_SHC()
+  A_Model_Module_EGFR: cellmlmod_A_Model_Module_EGFR()
+  F_Model_Module_PLC: cellmlmod_F_Model_Module_PLC()
+  KEL_DAGIP3_Model_Modules: cellmlmod_KEL_DAGIP3_Model_Modules()
+  DGBM_Model_Modules.t is environment.t;
+  KEL_DAGIP3_Model_Modules.t is environment.t;
+  F_Model_Module_PLC.t is environment.t;
+  B_Model_Modules.t is environment.t;
+  H_Model_Module_MAPK.t is environment.t;
+  H_Model_Module_MAPKK.t is environment.t;
+  A_Model_Module_EGFR.t is environment.t;
+  A_Model_Module_SHC.t is environment.t;
+  DGBM_Model_Modules.Ca is Calcium.Ca;
+  KEL_DAGIP3_Model_Modules.Ca is Calcium.Ca;
+  F_Model_Module_PLC.Ca is Calcium.Ca;
+  F_Model_Module_PLC.EGF_EGFR is A_Model_Module_EGFR.EGF_EGFR;
+  F_Model_Module_PLC.CaPLCg is A_Model_Module_SHC.CaPLCg;
+  F_Model_Module_PLC.SHC is A_Model_Module_SHC.SHC;
+  KEL_DAGIP3_Model_Modules.CaPLCg is A_Model_Module_SHC.CaPLCg;
+  KEL_DAGIP3_Model_Modules.CaPLCg_star is F_Model_Module_PLC.CaPLCg_star;
+  A_Model_Module_SHC.EGF_EGFR is A_Model_Module_EGFR.EGF_EGFR;
+  A_Model_Module_SHC.MAPK_star is H_Model_Module_MAPK.MAPK_star;
+  A_Model_Module_SHC.SHCstar_SOS_GRB2 is B_Model_Modules.SHCstar_SOS_GRB2;
+  A_Model_Module_SHC.SOS is B_Model_Modules.SOS;
+  A_Model_Module_SHC.Raf_star is B_Model_Modules.Raf_star;
+  DGBM_Model_Modules.GEF_star is B_Model_Modules.GEF_star;
+  DGBM_Model_Modules.Gbg_GEF is B_Model_Modules.Gbg_GEF;
+  DGBM_Model_Modules.CaM_GEF is B_Model_Modules.CaM_GEF;
+  DGBM_Model_Modules.NgCaM is B_Model_Modules.NgCaM;
+  DGBM_Model_Modules.GAP is B_Model_Modules.GAP;
+  DGBM_Model_Modules.Raf is B_Model_Modules.Raf;
+  DGBM_Model_Modules.GEF is B_Model_Modules.GEF;
+  DGBM_Model_Modules.Ng is B_Model_Modules.Ng;
+  H_Model_Module_MAPK.MAPK_star is B_Model_Modules.MAPK_star;
+  H_Model_Module_MAPKK.GTPRasRaf_star is B_Model_Modules.GTPRasRaf_star;
+  H_Model_Module_MAPKK.Raf_star is B_Model_Modules.Raf_star;
+  H_Model_Module_MAPKK.Raf_star_star is B_Model_Modules.Raf_star_star;
+  H_Model_Module_MAPKK.MAPKK_star is B_Model_Modules.MAPKK_star;
+  H_Model_Module_MAPKK.MAPKK_star_star is B_Model_Modules.MAPKK_star_star;
+  B_Model_Modules.MAPKK_star_star is H_Model_Module_MAPK.MAPKK_star_star;
+  KEL_DAGIP3_Model_Modules.PKC is B_Model_Modules.PKC;
+  KEL_DAGIP3_Model_Modules.CaPLC is DGBM_Model_Modules.CaPLC;
+  KEL_DAGIP3_Model_Modules.CaGqPLC is DGBM_Model_Modules.CaGqPLC;
+  B_Model_Modules.PKC is DGBM_Model_Modules.PKC;
+  KEL_DAGIP3_Model_Modules.MAPK is H_Model_Module_MAPK.MAPK;
+  DGBM_Model_Modules.GTP is undefinedvariables.GTP;
+  DGBM_Model_Modules.PKA is undefinedvariables.PKA;
+end

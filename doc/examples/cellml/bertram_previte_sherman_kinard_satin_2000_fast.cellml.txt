@@ -1,0 +1,138 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_membrane()
+
+  // Rate Rules:
+  V' = -((ICa + IK + Il + Is1 + Is2)) / Cm
+
+  // Variable initializations:
+  Cm = 4524;
+  V = -43;
+
+  //Other declarations:
+  var time, Cm, V, ICa, IK, Il, Is1, Is2;
+end
+
+model cellmlmod_Ca_current()
+
+  // Assignment Rules:
+  minf := 1  / (1  + exp((Vm - V) / sm))
+  ICa := gCa * minf * (V - VCa)
+
+  // Variable initializations:
+  Vm = -22;
+  VCa = 100;
+  gCa = 280;
+  sm = 7.5;
+
+  //Other declarations:
+  var time, V, Vm, VCa, gCa, minf, sm, ICa;
+end
+
+model cellmlmod_rapid_K_current()
+
+  // Assignment Rules:
+  IK := gK * n * (V - VK)
+  taun := tnbar / (1  + exp((V - Vn) / sn))
+  ninf := 1  / (1  + exp((Vn - V) / sn))
+
+  // Variable initializations:
+  VK = -80;
+  gK = 1300;
+  n = 0.03;
+  lambda = 1.1;
+  tnbar = 9.09;
+  Vn = -9;
+  sn = 10;
+
+  //Other declarations:
+  var time, IK, VK, V, gK, n, lambda, tnbar, Vn, sn, taun, ninf;
+end
+
+model cellmlmod_slow_K_current()
+
+  // Assignment Rules:
+  Is1 := gs1 * s1 * (V - VK)
+  s1inf := 1  / (1  + exp((Vs1 - V) / ss1))
+
+  // Rate Rules:
+  s1' = (s1inf - s1) / (taus1 * 1 )
+
+  // Variable initializations:
+  gs1 = 20;
+  s1 = 0.1;
+  Vs1 = -40;
+  ss1 = 0.5;
+  taus1 = 1000;
+
+  //Other declarations:
+  var time, Is1, gs1, s1, V, VK, s1inf, Vs1, ss1, taus1;
+end
+
+model cellmlmod_very_slow_K_current()
+
+  // Assignment Rules:
+  s2inf := 1  / (1  + exp((Vs2 - V) / ss2))
+  Is2 := gs2 * s2 * (V - VK)
+
+  // Rate Rules:
+  s2' = (s2inf - s2) / (taus2 * 1 )
+
+  // Variable initializations:
+  Vs2 = -42;
+  s2 = 0.434;
+  ss2 = 0.4;
+  gs2 = 32;
+  taus2 = 120000;
+
+  //Other declarations:
+  var time, V, VK, Vs2, s2, s2inf, ss2, gs2, taus2, Is2;
+end
+
+model cellmlmod_leak_current()
+
+  // Assignment Rules:
+  Il := gl * (V - Vl)
+
+  // Variable initializations:
+  gl = 25;
+  Vl = -40;
+
+  //Other declarations:
+  var time, Il, gl, Vl, V;
+end
+
+model bertram_previte_sherman_kinard_satin_2000_version01()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  membrane: cellmlmod_membrane()
+  Ca_current: cellmlmod_Ca_current()
+  rapid_K_current: cellmlmod_rapid_K_current()
+  slow_K_current: cellmlmod_slow_K_current()
+  very_slow_K_current: cellmlmod_very_slow_K_current()
+  leak_current: cellmlmod_leak_current()
+  environment.time is membrane.time;
+  Ca_current.ICa is membrane.ICa;
+  Ca_current.V is membrane.V;
+  rapid_K_current.IK is membrane.IK;
+  rapid_K_current.V is membrane.V;
+  slow_K_current.Is1 is membrane.Is1;
+  slow_K_current.V is membrane.V;
+  very_slow_K_current.Is2 is membrane.Is2;
+  very_slow_K_current.V is membrane.V;
+  leak_current.Il is membrane.Il;
+  leak_current.V is membrane.V;
+  membrane.time is Ca_current.time;
+  Ca_current.time is rapid_K_current.time;
+  rapid_K_current.time is slow_K_current.time;
+  rapid_K_current.VK is slow_K_current.VK;
+  slow_K_current.time is very_slow_K_current.time;
+  slow_K_current.VK is very_slow_K_current.VK;
+  very_slow_K_current.time is leak_current.time;
+end

@@ -1,0 +1,790 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_v_c()
+
+  // Rate Rules:
+  v_c' = dv_c_dt
+
+  // Variable initializations:
+  v_c = 0.5;
+
+  //Other declarations:
+  var v_c, dv_c_dt, time;
+end
+
+model cellmlmod_dv_c_dt()
+
+  // Assignment Rules:
+  dv_c_dt := k_growth * v_c
+
+  //Other declarations:
+  var dv_c_dt, v_c, k_growth;
+end
+
+model cellmlmod_v_n()
+
+  // Rate Rules:
+  v_n' = 0
+
+  // Variable initializations:
+  v_n = 0.5;
+
+  //Other declarations:
+  var v_n, time;
+end
+
+model cellmlmod_k_volume()
+
+  // Assignment Rules:
+  k_volume := v_n / v_c
+
+  //Other declarations:
+  var k_volume, v_n, v_c;
+end
+
+model cellmlmod_mcln2_c()
+
+  // Rate Rules:
+  mcln2_c' = k_50 * mcln2_n * k_volume - k_10 * mcln2_c - dv_c_dt / v_c * mcln2_c
+
+  // Variable initializations:
+  mcln2_c = 0;
+
+  //Other declarations:
+  var mcln2_c, k_50, k_10, mcln2_n, k_volume, v_c, dv_c_dt, time;
+end
+
+model cellmlmod_mclb5_c()
+
+  // Rate Rules:
+  mclb5_c' = k_51 * mclb5_n * k_volume - k_11 * mclb5_c - dv_c_dt / v_c * mclb5_c
+
+  // Variable initializations:
+  mclb5_c = 0;
+
+  //Other declarations:
+  var mclb5_c, k_51, k_11, mclb5_n, k_volume, v_c, dv_c_dt, time;
+end
+
+model cellmlmod_mcln2_n()
+
+  // Rate Rules:
+  mcln2_n' = k_1 * sbf_n - k_50 * mcln2_n
+
+  // Variable initializations:
+  mcln2_n = 0;
+
+  //Other declarations:
+  var mcln2_n, k_1, k_50, sbf_n, time;
+end
+
+model cellmlmod_mclb5_n()
+
+  // Rate Rules:
+  mclb5_n' = k_2 * sbf_n - k_51 * mclb5_n
+
+  // Variable initializations:
+  mclb5_n = 0;
+
+  //Other declarations:
+  var mclb5_n, k_2, k_51, sbf_n, time;
+end
+
+model cellmlmod_sbf_n()
+
+  // Rate Rules:
+  sbf_n' = k_39 * sbfwhi5p_n - k_34 * sbf_n * whi5_n + k_35 * sbfwhi5_n
+
+  // Variable initializations:
+  sbf_n = 0;
+
+  //Other declarations:
+  var sbf_n, k_39, k_34, k_35, sbfwhi5p_n, whi5_n, sbfwhi5_n, time;
+end
+
+model cellmlmod_cln3_c()
+
+  // Rate Rules:
+  cln3_c' = k_6 - k_43 * cln3_c - k_15 * cln3_c - dv_c_dt / v_c * cln3_c
+
+  // Variable initializations:
+  cln3_c = 0.000485;
+
+  //Other declarations:
+  var cln3_c, k_6, k_43, k_15, v_c, dv_c_dt, time;
+end
+
+model cellmlmod_cln2_c()
+
+  // Rate Rules:
+  cln2_c' = k_3 * mcln2_c - k_26 * cdk1_c * cln2_c + k_27 * cdk1cln2_c - k_12 * cln2_c - dv_c_dt / v_c * cln2_c
+
+  // Variable initializations:
+  cln2_c = 0;
+
+  //Other declarations:
+  var cln2_c, k_3, k_26, k_27, k_12, mcln2_c, cdk1_c, cdk1cln2_c, v_c, dv_c_dt;
+  var time;
+end
+
+model cellmlmod_clb5_c()
+
+  // Rate Rules:
+  clb5_c' = k_4 * mclb5_c - k_28 * clb5_c * cdk1_c + k_29 * cdk1clb5_c - k_13 * clb5_c - dv_c_dt / v_c * clb5_c
+
+  // Variable initializations:
+  clb5_c = 0;
+
+  //Other declarations:
+  var clb5_c, k_4, k_28, k_29, k_13, mclb5_c, cdk1_c, cdk1clb5_c, v_c, dv_c_dt;
+  var time;
+end
+
+model cellmlmod_cdk1_c()
+
+  // Rate Rules:
+  cdk1_c' = k_7 - k_44 * cdk1_c + k_49 * cdk1_n + k_27 * cdk1cln2_c - k_26 * cdk1_c * cln2_c - k_28 * cdk1_c * clb5_c + k_29 * cdk1clb5_c - k_16 * cdk1_c - dv_c_dt / v_c * cdk1_c
+
+  // Variable initializations:
+  cdk1_c = 0.333333;
+
+  //Other declarations:
+  var cdk1_c, k_7, k_44, k_49, k_27, k_26, k_28, k_29, k_16, cdk1_n, cdk1cln2_c;
+  var cln2_c, clb5_c, cdk1clb5_c, v_c, dv_c_dt, time;
+end
+
+model cellmlmod_cln3_n()
+
+  // Rate Rules:
+  cln3_n' = k_43 * cln3_c / k_volume - k_24 * cln3_n * cdk1_n + k_25 * cdk1cln3_n - k_20 * cln3_n
+
+  // Variable initializations:
+  cln3_n = 0;
+
+  //Other declarations:
+  var cln3_n, k_24, k_43, k_25, k_20, cln3_c, k_volume, cdk1_n, cdk1cln3_n;
+  var time;
+end
+
+model cellmlmod_cdk1_n()
+
+  // Rate Rules:
+  cdk1_n' = k_44 * cdk1_c / k_volume - k_49 * cdk1_n - k_24 * cln3_n * cdk1_n + k_25 * cdk1cln3_n - k_21 * cdk1_n
+
+  // Variable initializations:
+  cdk1_n = 0.0074127;
+
+  //Other declarations:
+  var cdk1_n, k_44, k_49, k_24, k_25, k_21, k_volume, cdk1_c, cln3_n, cdk1cln3_n;
+  var time;
+end
+
+model cellmlmod_cdk1cln2_c()
+
+  // Rate Rules:
+  cdk1cln2_c' = k_26 * cdk1_c * cln2_c - k_27 * cdk1cln2_c - k_46 * cdk1cln2_c + k_53 * cdk1cln2_n * k_volume - dv_c_dt / v_c * cdk1cln2_c
+
+  // Variable initializations:
+  cdk1cln2_c = 0;
+
+  //Other declarations:
+  var cdk1cln2_c, k_26, k_27, k_46, k_53, cdk1_c, cln2_c, cdk1cln2_n, k_volume;
+  var v_c, dv_c_dt, time;
+end
+
+model cellmlmod_cdk1clb5_c()
+
+  // Rate Rules:
+  cdk1clb5_c' = k_28 * cdk1_c * clb5_c - k_29 * cdk1clb5_c + k_33 * cdk1clb5sic1_c - k_32 * sic1_c * cdk1clb5_c - k_48 * cdk1clb5_c - dv_c_dt / v_c * cdk1clb5_c
+
+  // Variable initializations:
+  cdk1clb5_c = 0;
+
+  //Other declarations:
+  var cdk1clb5_c, k_28, k_29, k_33, k_32, k_48, cdk1_c, clb5_c, cdk1cln2_n;
+  var cdk1clb5sic1_c, sic1_c, v_c, dv_c_dt, time;
+end
+
+model cellmlmod_cdk1cln2_n()
+
+  // Rate Rules:
+  cdk1cln2_n' = k_46 * cdk1cln2_c / k_volume - k_53 * cdk1cln2_n
+
+  // Variable initializations:
+  cdk1cln2_n = 0;
+
+  //Other declarations:
+  var cdk1cln2_n, k_46, k_53, cdk1cln2_c, k_volume, time;
+end
+
+model cellmlmod_cdk1clb5_n()
+
+  // Rate Rules:
+  cdk1clb5_n' = k_41 * cdk1clb5sic1p_n + k_48 * cdk1clb5_c / k_volume
+
+  // Variable initializations:
+  cdk1clb5_n = 0;
+
+  //Other declarations:
+  var cdk1clb5_n, k_41, k_48, cdk1clb5sic1p_n, cdk1clb5_c, k_volume, time;
+end
+
+model cellmlmod_cdk1cln3_n()
+
+  // Rate Rules:
+  cdk1cln3_n' = k_24 * cln3_n * cdk1_n - k_25 * cdk1cln3_n + k_31 * cdk1cln3far1_n - k_30 * far1_n * cdk1cln3_n + k_40 * cdk1cln3far1p_n
+
+  // Variable initializations:
+  cdk1cln3_n = 0;
+
+  //Other declarations:
+  var cdk1cln3_n, k_24, k_25, k_31, k_30, k_40, cln3_n, cdk1_n, cdk1cln3far1_n;
+  var far1_n, cdk1cln3far1p_n, time;
+end
+
+model cellmlmod_sbfwhi5_n()
+
+  // Rate Rules:
+  sbfwhi5_n' = k_34 * sbf_n * whi5_n - k_35 * sbfwhi5_n - k_36 * sbfwhi5_n * cdk1cln3_n
+
+  // Variable initializations:
+  sbfwhi5_n = 0.025544;
+
+  //Other declarations:
+  var sbfwhi5_n, k_34, k_35, k_36, sbf_n, whi5_n, cdk1cln3_n, time;
+end
+
+model cellmlmod_sbfwhi5p_n()
+
+  // Rate Rules:
+  sbfwhi5p_n' = k_36 * sbfwhi5_n * cdk1cln3_n - k_39 * sbfwhi5p_n
+
+  // Variable initializations:
+  sbfwhi5p_n = 0;
+
+  //Other declarations:
+  var sbfwhi5p_n, k_36, k_39, sbfwhi5_n, cdk1cln3_n, time;
+end
+
+model cellmlmod_cdk1cln3far1_n()
+
+  // Rate Rules:
+  cdk1cln3far1_n' = k_30 * far1_n * cdk1cln3_n - k_31 * cdk1cln3far1_n - k_37 * cdk1cln3far1_n * cdk1cln2_n
+
+  // Variable initializations:
+  cdk1cln3far1_n = 0;
+
+  //Other declarations:
+  var cdk1cln3far1_n, k_30, k_31, k_37, far1_n, cdk1cln3_n, cdk1cln2_n, time;
+end
+
+model cellmlmod_cdk1clb5sic1_n()
+
+  // Rate Rules:
+  cdk1clb5sic1_n' = k_47 * cdk1clb5sic1_c / k_volume - k_38 * cdk1clb5sic1_n * cdk1cln2_n
+
+  // Variable initializations:
+  cdk1clb5sic1_n = 0;
+
+  //Other declarations:
+  var cdk1clb5sic1_n, k_47, k_38, cdk1clb5sic1_c, k_volume, cdk1cln2_n, time;
+end
+
+model cellmlmod_cdk1clb5sic1p_n()
+
+  // Rate Rules:
+  cdk1clb5sic1p_n' = k_38 * cdk1clb5sic1_n * cdk1cln2_n - k_41 * cdk1clb5sic1p_n
+
+  // Variable initializations:
+  cdk1clb5sic1p_n = 0;
+
+  //Other declarations:
+  var cdk1clb5sic1p_n, k_41, k_38, cdk1clb5sic1_n, cdk1cln2_n, time;
+end
+
+model cellmlmod_cdk1cln3far1p_n()
+
+  // Rate Rules:
+  cdk1cln3far1p_n' = k_37 * cdk1cln3far1_n * cdk1cln2_n - k_40 * cdk1cln3far1p_n
+
+  // Variable initializations:
+  cdk1cln3far1p_n = 0;
+
+  //Other declarations:
+  var cdk1cln3far1p_n, k_37, k_40, cdk1cln3far1_n, cdk1cln2_n, time;
+end
+
+model cellmlmod_cdk1clb5sic1_c()
+
+  // Rate Rules:
+  cdk1clb5sic1_c' = k_32 * sic1_c * cdk1clb5_c - k_33 * cdk1clb5sic1_c - k_47 * cdk1clb5sic1_c - dv_c_dt / v_c * cdk1clb5sic1_c
+
+  // Variable initializations:
+  cdk1clb5sic1_c = 0;
+
+  //Other declarations:
+  var cdk1clb5sic1_c, k_32, k_33, k_47, sic1_c, cdk1clb5_c, v_c, dv_c_dt;
+  var time;
+end
+
+model cellmlmod_sic1_c()
+
+  // Rate Rules:
+  sic1_c' = k_9 - k_32 * sic1_c * cdk1clb5_c + k_33 * cdk1clb5sic1_c - k_18 * sic1_c - dv_c_dt / v_c * sic1_c
+
+  // Variable initializations:
+  sic1_c = 0.039234;
+
+  //Other declarations:
+  var sic1_c, k_9, k_32, k_33, k_18, cdk1clb5_c, cdk1clb5sic1_c, v_c, dv_c_dt;
+  var time;
+end
+
+model cellmlmod_whi5_c()
+
+  // Rate Rules:
+  whi5_c' = k_8 - k_45 * whi5_c - k_17 * whi5_c - dv_c_dt / v_c * whi5_c
+
+  // Variable initializations:
+  whi5_c = 0.073564;
+
+  //Other declarations:
+  var whi5_c, k_8, k_45, k_17, v_c, dv_c_dt, time;
+end
+
+model cellmlmod_far1_c()
+
+  // Rate Rules:
+  far1_c' = k_5 - k_42 * far1_c - k_14 * far1_c - dv_c_dt / v_c * far1_c
+
+  // Variable initializations:
+  far1_c = 0.0037926;
+
+  //Other declarations:
+  var far1_c, k_5, k_42, k_14, v_c, dv_c_dt, time;
+end
+
+model cellmlmod_whi5p_c()
+
+  // Rate Rules:
+  whi5p_c' = k_52 * whi5p_n * k_volume
+
+  // Variable initializations:
+  whi5p_c = 0;
+
+  //Other declarations:
+  var whi5p_c, k_52, whi5p_n, k_volume, time;
+end
+
+model cellmlmod_sic1P_n()
+
+  // Rate Rules:
+  sic1P_n' = k_41 * cdk1clb5sic1p_n
+
+  // Variable initializations:
+  sic1P_n = 0;
+
+  //Other declarations:
+  var sic1P_n, k_41, cdk1clb5sic1p_n, time;
+end
+
+model cellmlmod_far1P_n()
+
+  // Rate Rules:
+  far1P_n' = k_40 * cdk1cln3far1p_n
+
+  // Variable initializations:
+  far1P_n = 0;
+
+  //Other declarations:
+  var far1P_n, k_40, cdk1cln3far1p_n, time;
+end
+
+model cellmlmod_whi5_n()
+
+  // Rate Rules:
+  whi5_n' = k_45 * whi5_c / k_volume - k_34 * whi5_n * sbf_n - k_22 * whi5_n
+
+  // Variable initializations:
+  whi5_n = 0;
+
+  //Other declarations:
+  var whi5_n, k_45, k_34, k_22, whi5_c, k_volume, sbf_n, time;
+end
+
+model cellmlmod_far1_n()
+
+  // Rate Rules:
+  far1_n' = k_42 * far1_c / k_volume - k_30 * far1_n * cdk1cln3_n + k_31 * cdk1cln3far1_n - k_19 * far1_n
+
+  // Variable initializations:
+  far1_n = 0;
+
+  //Other declarations:
+  var far1_n, k_42, k_30, k_31, k_19, far1_c, k_volume, cdk1cln3_n, cdk1cln3far1_n;
+  var time;
+end
+
+model cellmlmod_whi5p_n()
+
+  // Rate Rules:
+  whi5p_n' = k_39 * sbfwhi5p_n - k_52 * whi5p_n - k_23 * whi5p_n
+
+  // Variable initializations:
+  whi5p_n = 0;
+
+  //Other declarations:
+  var whi5p_n, k_39, k_52, k_23, sbfwhi5p_n, time;
+end
+
+model cellmlmod_rate_constants()
+
+  // Variable initializations:
+  k_1 = 0.03523;
+  k_2 = 0.03523;
+  k_3 = 0.32;
+  k_4 = 0.32;
+  k_5 = 0.000042;
+  k_6 = 0.00001;
+  k_7 = 0.01;
+  k_8 = 0.00004;
+  k_9 = 0.00005;
+  k_10 = 0.12;
+  k_11 = 0.12;
+  k_12 = 0.1;
+  k_13 = 0.35;
+  k_14 = 0.01;
+  k_15 = 0.01;
+  k_16 = 0.03;
+  k_17 = 0.01;
+  k_18 = 0.0008;
+  k_19 = 0.01;
+  k_20 = 0.01;
+  k_21 = 0;
+  k_22 = 0.01;
+  k_23 = 0.01;
+  k_24 = 2.82;
+  k_25 = 0.55;
+  k_26 = 2.82;
+  k_27 = 0.55;
+  k_28 = 2.82;
+  k_29 = 0.55;
+  k_30 = 42300;
+  k_31 = 0.55;
+  k_32 = 84.6;
+  k_33 = 0.55;
+  k_34 = 8.46;
+  k_35 = 0.0005;
+  k_36 = 4363.6;
+  k_37 = 4363.6;
+  k_38 = 4363.6;
+  k_39 = 1;
+  k_40 = 1;
+  k_41 = 1;
+  k_42 = 0.005;
+  k_43 = 0.005;
+  k_44 = 0.005;
+  k_45 = 0.005;
+  k_46 = 0.1;
+  k_47 = 1;
+  k_48 = 0.012;
+  k_49 = 0.001;
+  k_50 = 0.6;
+  k_51 = 0.6;
+  k_52 = 0.005;
+  k_53 = 0.001;
+  k_growth = 0.0051;
+
+  //Other declarations:
+  var k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, k_12, k_13;
+  var k_14, k_15, k_16, k_17, k_18, k_19, k_20, k_21, k_22, k_23, k_24, k_25;
+  var k_26, k_27, k_28, k_29, k_30, k_31, k_32, k_33, k_34, k_35, k_36, k_37;
+  var k_38, k_39, k_40, k_41, k_42, k_43, k_44, k_45, k_46, k_47, k_48, k_49;
+  var k_50, k_51, k_52, k_53, k_growth;
+end
+
+model barberis_klipp_vanoni_alberghina_version01()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  v_c: cellmlmod_v_c()
+  dv_c_dt: cellmlmod_dv_c_dt()
+  v_n: cellmlmod_v_n()
+  k_volume: cellmlmod_k_volume()
+  mcln2_c: cellmlmod_mcln2_c()
+  mclb5_c: cellmlmod_mclb5_c()
+  mcln2_n: cellmlmod_mcln2_n()
+  mclb5_n: cellmlmod_mclb5_n()
+  sbf_n: cellmlmod_sbf_n()
+  cln3_c: cellmlmod_cln3_c()
+  cln2_c: cellmlmod_cln2_c()
+  clb5_c: cellmlmod_clb5_c()
+  cdk1_c: cellmlmod_cdk1_c()
+  cln3_n: cellmlmod_cln3_n()
+  cdk1_n: cellmlmod_cdk1_n()
+  cdk1cln2_c: cellmlmod_cdk1cln2_c()
+  cdk1clb5_c: cellmlmod_cdk1clb5_c()
+  cdk1cln2_n: cellmlmod_cdk1cln2_n()
+  cdk1clb5_n: cellmlmod_cdk1clb5_n()
+  cdk1cln3_n: cellmlmod_cdk1cln3_n()
+  sbfwhi5_n: cellmlmod_sbfwhi5_n()
+  sbfwhi5p_n: cellmlmod_sbfwhi5p_n()
+  cdk1cln3far1_n: cellmlmod_cdk1cln3far1_n()
+  cdk1clb5sic1_n: cellmlmod_cdk1clb5sic1_n()
+  cdk1clb5sic1p_n: cellmlmod_cdk1clb5sic1p_n()
+  cdk1cln3far1p_n: cellmlmod_cdk1cln3far1p_n()
+  cdk1clb5sic1_c: cellmlmod_cdk1clb5sic1_c()
+  sic1_c: cellmlmod_sic1_c()
+  whi5_c: cellmlmod_whi5_c()
+  far1_c: cellmlmod_far1_c()
+  whi5p_c: cellmlmod_whi5p_c()
+  sic1P_n: cellmlmod_sic1P_n()
+  far1P_n: cellmlmod_far1P_n()
+  whi5_n: cellmlmod_whi5_n()
+  far1_n: cellmlmod_far1_n()
+  whi5p_n: cellmlmod_whi5p_n()
+  rate_constants: cellmlmod_rate_constants()
+  v_c.time is environment.time;
+  v_n.time is environment.time;
+  mcln2_c.time is environment.time;
+  mclb5_c.time is environment.time;
+  mcln2_n.time is environment.time;
+  mclb5_n.time is environment.time;
+  cln3_c.time is environment.time;
+  cln2_c.time is environment.time;
+  clb5_c.time is environment.time;
+  cdk1_c.time is environment.time;
+  cln3_n.time is environment.time;
+  cdk1_n.time is environment.time;
+  cdk1cln2_c.time is environment.time;
+  cdk1clb5_c.time is environment.time;
+  cdk1cln2_n.time is environment.time;
+  cdk1clb5_n.time is environment.time;
+  cdk1cln3_n.time is environment.time;
+  sbfwhi5_n.time is environment.time;
+  sbfwhi5p_n.time is environment.time;
+  cdk1cln3far1_n.time is environment.time;
+  cdk1clb5sic1_n.time is environment.time;
+  cdk1clb5sic1p_n.time is environment.time;
+  cdk1cln3far1p_n.time is environment.time;
+  cdk1clb5sic1_c.time is environment.time;
+  sic1_c.time is environment.time;
+  whi5_c.time is environment.time;
+  far1_c.time is environment.time;
+  whi5p_c.time is environment.time;
+  sic1P_n.time is environment.time;
+  far1P_n.time is environment.time;
+  whi5_n.time is environment.time;
+  far1_n.time is environment.time;
+  whi5p_n.time is environment.time;
+  sbf_n.time is environment.time;
+  dv_c_dt.k_growth is rate_constants.k_growth;
+  k_volume.v_n is v_n.v_n;
+  k_volume.v_c is v_c.v_c;
+  dv_c_dt.v_c is v_c.v_c;
+  dv_c_dt.dv_c_dt is v_c.dv_c_dt;
+  mcln2_c.k_50 is rate_constants.k_50;
+  mcln2_c.k_10 is rate_constants.k_10;
+  mcln2_c.mcln2_n is mcln2_n.mcln2_n;
+  mcln2_c.k_volume is k_volume.k_volume;
+  mcln2_c.v_c is v_c.v_c;
+  mcln2_c.dv_c_dt is v_c.dv_c_dt;
+  mclb5_c.k_51 is rate_constants.k_51;
+  mclb5_c.k_11 is rate_constants.k_11;
+  mclb5_c.mclb5_n is mclb5_n.mclb5_n;
+  mclb5_c.k_volume is k_volume.k_volume;
+  mclb5_c.v_c is v_c.v_c;
+  mclb5_c.dv_c_dt is v_c.dv_c_dt;
+  mcln2_n.k_1 is rate_constants.k_1;
+  mcln2_n.k_50 is rate_constants.k_50;
+  mcln2_n.sbf_n is sbf_n.sbf_n;
+  mclb5_n.k_2 is rate_constants.k_2;
+  mclb5_n.k_51 is rate_constants.k_51;
+  mclb5_n.sbf_n is sbf_n.sbf_n;
+  sbf_n.k_39 is rate_constants.k_39;
+  sbf_n.k_34 is rate_constants.k_34;
+  sbf_n.k_35 is rate_constants.k_35;
+  sbf_n.sbfwhi5p_n is sbfwhi5p_n.sbfwhi5p_n;
+  sbf_n.whi5_n is whi5_n.whi5_n;
+  sbf_n.sbf_n is whi5_n.sbf_n;
+  sbf_n.sbfwhi5_n is sbfwhi5_n.sbfwhi5_n;
+  whi5_n.sbf_n is sbfwhi5_n.sbf_n;
+  cln3_c.k_6 is rate_constants.k_6;
+  cln3_c.k_43 is rate_constants.k_43;
+  cln3_c.k_15 is rate_constants.k_15;
+  cln3_c.v_c is v_c.v_c;
+  cln3_c.dv_c_dt is v_c.dv_c_dt;
+  cln2_c.k_3 is rate_constants.k_3;
+  cln2_c.k_26 is rate_constants.k_26;
+  cln2_c.k_27 is rate_constants.k_27;
+  cln2_c.k_12 is rate_constants.k_12;
+  cln2_c.mcln2_c is mcln2_c.mcln2_c;
+  cln2_c.cdk1_c is cdk1_c.cdk1_c;
+  cln2_c.cln2_c is cdk1_c.cln2_c;
+  cln2_c.cdk1cln2_c is cdk1cln2_c.cdk1cln2_c;
+  cdk1_c.cln2_c is cdk1cln2_c.cln2_c;
+  cln2_c.v_c is v_c.v_c;
+  cln2_c.dv_c_dt is v_c.dv_c_dt;
+  clb5_c.k_4 is rate_constants.k_4;
+  clb5_c.k_28 is rate_constants.k_28;
+  clb5_c.k_29 is rate_constants.k_29;
+  clb5_c.k_13 is rate_constants.k_13;
+  clb5_c.mclb5_c is mclb5_c.mclb5_c;
+  clb5_c.cdk1_c is cdk1_c.cdk1_c;
+  clb5_c.clb5_c is cdk1_c.clb5_c;
+  clb5_c.cdk1clb5_c is cdk1clb5_c.cdk1clb5_c;
+  cdk1_c.clb5_c is cdk1clb5_c.clb5_c;
+  clb5_c.v_c is v_c.v_c;
+  clb5_c.dv_c_dt is v_c.dv_c_dt;
+  cdk1_c.k_7 is rate_constants.k_7;
+  cdk1_c.k_44 is rate_constants.k_44;
+  cdk1_c.k_49 is rate_constants.k_49;
+  cdk1_c.k_27 is rate_constants.k_27;
+  cdk1_c.k_26 is rate_constants.k_26;
+  cdk1_c.k_28 is rate_constants.k_28;
+  cdk1_c.k_29 is rate_constants.k_29;
+  cdk1_c.k_16 is rate_constants.k_16;
+  cdk1_c.cdk1_n is cdk1_n.cdk1_n;
+  cdk1_c.cdk1_c is cdk1_n.cdk1_c;
+  cdk1_c.cdk1cln2_c is cdk1cln2_c.cdk1cln2_c;
+  cdk1_n.cdk1_c is cdk1cln2_c.cdk1_c;
+  cdk1_c.cdk1clb5_c is cdk1clb5_c.cdk1clb5_c;
+  cdk1cln2_c.cdk1_c is cdk1clb5_c.cdk1_c;
+  cdk1_c.dv_c_dt is v_c.dv_c_dt;
+  cdk1_c.v_c is v_c.v_c;
+  cln3_n.k_24 is rate_constants.k_24;
+  cln3_n.k_43 is rate_constants.k_43;
+  cln3_n.k_25 is rate_constants.k_25;
+  cln3_n.k_20 is rate_constants.k_20;
+  cln3_n.cln3_c is cln3_c.cln3_c;
+  cln3_n.k_volume is k_volume.k_volume;
+  cln3_n.cdk1_n is cdk1_n.cdk1_n;
+  cln3_n.cln3_n is cdk1_n.cln3_n;
+  cln3_n.cdk1cln3_n is cdk1cln3_n.cdk1cln3_n;
+  cdk1_n.cln3_n is cdk1cln3_n.cln3_n;
+  cdk1_n.k_44 is rate_constants.k_44;
+  cdk1_n.k_49 is rate_constants.k_49;
+  cdk1_n.k_24 is rate_constants.k_24;
+  cdk1_n.k_25 is rate_constants.k_25;
+  cdk1_n.k_21 is rate_constants.k_21;
+  cdk1_n.k_volume is k_volume.k_volume;
+  cdk1_n.cdk1cln3_n is cdk1cln3_n.cdk1cln3_n;
+  cdk1_n.cdk1_n is cdk1cln3_n.cdk1_n;
+  cdk1cln2_c.k_26 is rate_constants.k_26;
+  cdk1cln2_c.k_27 is rate_constants.k_27;
+  cdk1cln2_c.k_46 is rate_constants.k_46;
+  cdk1cln2_c.k_53 is rate_constants.k_53;
+  cdk1cln2_c.cdk1cln2_n is cdk1cln2_n.cdk1cln2_n;
+  cdk1cln2_c.cdk1cln2_c is cdk1cln2_n.cdk1cln2_c;
+  cdk1cln2_c.k_volume is k_volume.k_volume;
+  cdk1cln2_c.dv_c_dt is v_c.dv_c_dt;
+  cdk1cln2_c.v_c is v_c.v_c;
+  cdk1clb5_c.k_28 is rate_constants.k_28;
+  cdk1clb5_c.k_29 is rate_constants.k_29;
+  cdk1clb5_c.k_33 is rate_constants.k_33;
+  cdk1clb5_c.k_32 is rate_constants.k_32;
+  cdk1clb5_c.k_48 is rate_constants.k_48;
+  cdk1clb5_c.cdk1cln2_n is cdk1cln2_n.cdk1cln2_n;
+  cdk1clb5_c.cdk1clb5sic1_c is cdk1clb5sic1_c.cdk1clb5sic1_c;
+  cdk1clb5_c.cdk1clb5_c is cdk1clb5sic1_c.cdk1clb5_c;
+  cdk1clb5_c.sic1_c is sic1_c.sic1_c;
+  cdk1clb5sic1_c.cdk1clb5_c is sic1_c.cdk1clb5_c;
+  cdk1clb5_c.dv_c_dt is v_c.dv_c_dt;
+  cdk1clb5_c.v_c is v_c.v_c;
+  cdk1cln2_n.k_46 is rate_constants.k_46;
+  cdk1cln2_n.k_53 is rate_constants.k_53;
+  cdk1cln2_n.k_volume is k_volume.k_volume;
+  cdk1clb5_n.k_41 is rate_constants.k_41;
+  cdk1clb5_n.k_48 is rate_constants.k_48;
+  cdk1clb5_n.cdk1clb5sic1p_n is cdk1clb5sic1p_n.cdk1clb5sic1p_n;
+  cdk1clb5_n.cdk1clb5_c is sic1_c.cdk1clb5_c;
+  cdk1clb5_n.k_volume is k_volume.k_volume;
+  cdk1cln3_n.k_24 is rate_constants.k_24;
+  cdk1cln3_n.k_25 is rate_constants.k_25;
+  cdk1cln3_n.k_31 is rate_constants.k_31;
+  cdk1cln3_n.k_30 is rate_constants.k_30;
+  cdk1cln3_n.k_40 is rate_constants.k_40;
+  cdk1cln3_n.cdk1cln3far1_n is cdk1cln3far1_n.cdk1cln3far1_n;
+  cdk1cln3_n.cdk1cln3_n is cdk1cln3far1_n.cdk1cln3_n;
+  cdk1cln3_n.far1_n is far1_n.far1_n;
+  cdk1cln3far1_n.cdk1cln3_n is far1_n.cdk1cln3_n;
+  cdk1cln3_n.cdk1cln3far1p_n is cdk1cln3far1p_n.cdk1cln3far1p_n;
+  sbfwhi5_n.k_34 is rate_constants.k_34;
+  sbfwhi5_n.k_35 is rate_constants.k_35;
+  sbfwhi5_n.k_36 is rate_constants.k_36;
+  sbfwhi5_n.whi5_n is whi5_n.whi5_n;
+  sbfwhi5_n.cdk1cln3_n is far1_n.cdk1cln3_n;
+  sbfwhi5p_n.k_36 is rate_constants.k_36;
+  sbfwhi5p_n.k_39 is rate_constants.k_39;
+  sbfwhi5p_n.sbfwhi5_n is sbfwhi5_n.sbfwhi5_n;
+  sbfwhi5p_n.cdk1cln3_n is far1_n.cdk1cln3_n;
+  cdk1cln3far1_n.k_30 is rate_constants.k_30;
+  cdk1cln3far1_n.k_31 is rate_constants.k_31;
+  cdk1cln3far1_n.k_37 is rate_constants.k_37;
+  cdk1cln3far1_n.far1_n is far1_n.far1_n;
+  cdk1cln3far1_n.cdk1cln3far1_n is far1_n.cdk1cln3far1_n;
+  cdk1cln3far1_n.cdk1cln2_n is cdk1cln2_n.cdk1cln2_n;
+  cdk1clb5sic1_n.k_47 is rate_constants.k_47;
+  cdk1clb5sic1_n.k_38 is rate_constants.k_38;
+  cdk1clb5sic1_n.cdk1clb5sic1_c is cdk1clb5sic1_c.cdk1clb5sic1_c;
+  cdk1clb5sic1_n.k_volume is k_volume.k_volume;
+  cdk1clb5sic1_n.cdk1cln2_n is cdk1cln2_n.cdk1cln2_n;
+  cdk1clb5sic1p_n.k_41 is rate_constants.k_41;
+  cdk1clb5sic1p_n.k_38 is rate_constants.k_38;
+  cdk1clb5sic1p_n.cdk1clb5sic1_n is cdk1clb5sic1_n.cdk1clb5sic1_n;
+  cdk1clb5sic1p_n.cdk1cln2_n is cdk1cln2_n.cdk1cln2_n;
+  cdk1cln3far1p_n.k_37 is rate_constants.k_37;
+  cdk1cln3far1p_n.k_40 is rate_constants.k_40;
+  cdk1cln3far1p_n.cdk1cln3far1_n is far1_n.cdk1cln3far1_n;
+  cdk1cln3far1p_n.cdk1cln2_n is cdk1cln2_n.cdk1cln2_n;
+  cdk1clb5sic1_c.k_32 is rate_constants.k_32;
+  cdk1clb5sic1_c.k_33 is rate_constants.k_33;
+  cdk1clb5sic1_c.k_47 is rate_constants.k_47;
+  cdk1clb5sic1_c.sic1_c is sic1_c.sic1_c;
+  cdk1clb5sic1_c.cdk1clb5sic1_c is sic1_c.cdk1clb5sic1_c;
+  cdk1clb5sic1_c.v_c is v_c.v_c;
+  cdk1clb5sic1_c.dv_c_dt is v_c.dv_c_dt;
+  sic1_c.k_9 is rate_constants.k_9;
+  sic1_c.k_32 is rate_constants.k_32;
+  sic1_c.k_33 is rate_constants.k_33;
+  sic1_c.k_18 is rate_constants.k_18;
+  sic1_c.v_c is v_c.v_c;
+  sic1_c.dv_c_dt is v_c.dv_c_dt;
+  whi5_c.k_8 is rate_constants.k_8;
+  whi5_c.k_45 is rate_constants.k_45;
+  whi5_c.k_17 is rate_constants.k_17;
+  whi5_c.v_c is v_c.v_c;
+  whi5_c.dv_c_dt is v_c.dv_c_dt;
+  far1_c.k_5 is rate_constants.k_5;
+  far1_c.k_42 is rate_constants.k_42;
+  far1_c.k_14 is rate_constants.k_14;
+  far1_c.v_c is v_c.v_c;
+  far1_c.dv_c_dt is v_c.dv_c_dt;
+  whi5p_c.k_52 is rate_constants.k_52;
+  whi5p_c.whi5p_n is whi5p_n.whi5p_n;
+  whi5p_c.k_volume is k_volume.k_volume;
+  sic1P_n.k_41 is rate_constants.k_41;
+  sic1P_n.cdk1clb5sic1p_n is cdk1clb5sic1p_n.cdk1clb5sic1p_n;
+  far1P_n.k_40 is rate_constants.k_40;
+  far1P_n.cdk1cln3far1p_n is cdk1cln3far1p_n.cdk1cln3far1p_n;
+  whi5_n.k_45 is rate_constants.k_45;
+  whi5_n.k_34 is rate_constants.k_34;
+  whi5_n.k_22 is rate_constants.k_22;
+  whi5_n.whi5_c is whi5_c.whi5_c;
+  whi5_n.k_volume is k_volume.k_volume;
+  far1_n.k_42 is rate_constants.k_42;
+  far1_n.k_30 is rate_constants.k_30;
+  far1_n.k_31 is rate_constants.k_31;
+  far1_n.k_19 is rate_constants.k_19;
+  far1_n.far1_c is far1_c.far1_c;
+  far1_n.k_volume is k_volume.k_volume;
+  whi5p_n.k_39 is rate_constants.k_39;
+  whi5p_n.k_52 is rate_constants.k_52;
+  whi5p_n.k_23 is rate_constants.k_23;
+  whi5p_n.sbfwhi5p_n is sbfwhi5p_n.sbfwhi5p_n;
+end

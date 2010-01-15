@@ -1,0 +1,233 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_NO()
+
+  // Assignment Rules:
+  r_1NO := k_1NO
+  r_4NO := k_4NO * NO * O_2m
+  r_12aNO := k_12aNO * power(NO, 2 ) * O_2
+  r_12bNOp := k_12bNOp * NO_2 * NO
+  r_12bNOm := k_12bNOm * N2O3
+  r_14NO := k_14NO * GSNO
+  r_15NO := k_15NO * CcOX * NO
+  r_16NO := k_16NO * FeLn * NO
+
+  // Rate Rules:
+  NO' = r_1NO - r_4NO - 2  * r_12aNO - r_12bNOp + r_12bNOm + r_14NO - r_15NO - r_16NO
+  NO_2' = 2  * r_12aNO - r_12bNOp + r_12bNOm
+  CcOX' = -(r_15NO)
+
+  // Variable initializations:
+  NO = 0;
+  O_2 = 35;
+  NO_2 = 0;
+  CcOX = 0.1;
+
+  //Other declarations:
+  var NO, O_2m, O_2, NO_2, N2O3, GSNO, CcOX, FeLn, r_1NO, r_4NO, r_12aNO;
+  var r_12bNOp, r_12bNOm, r_14NO, r_15NO, r_16NO, k_1NO, k_4NO, k_12aNO, k_12bNOp;
+  var k_12bNOm, k_14NO, k_15NO, k_16NO, time;
+end
+
+model cellmlmod_O_2m()
+
+  // Assignment Rules:
+  r_2NO := k_2NO
+  r_5NO := k_5NO * SOD * O_2m
+  r_10NO := k_10NO * power(GSNO, 2 ) * O_2m
+
+  // Rate Rules:
+  O_2m' = r_2NO - r_4NO - r_5NO - r_10NO
+
+  // Variable initializations:
+  O_2m = 0;
+  SOD = 10;
+
+  //Other declarations:
+  var O_2m, SOD, GSNO, r_2NO, r_4NO, r_5NO, r_10NO, k_2NO, k_5NO, k_10NO;
+  var time;
+end
+
+model cellmlmod_ONOO_m()
+
+  // Assignment Rules:
+  r_6NO := k_6NO * ONOO_m * GSH
+  r_7NO := k_7NO * ONOO_m * GPX
+  r_8NO := k_8NO * ONOO_m * CO_2
+  r_9NO := k_9NO * ONOO_m * Cyt_c
+
+  // Rate Rules:
+  ONOO_m' = r_4NO - r_6NO - r_7NO - r_8NO - r_9NO
+
+  // Variable initializations:
+  ONOO_m = 0;
+  GPX = 5.8;
+  CO_2 = 1000;
+  Cyt_c = 400;
+
+  //Other declarations:
+  var ONOO_m, GSH, GPX, CO_2, Cyt_c, r_4NO, r_6NO, r_7NO, r_8NO, r_9NO, k_6NO;
+  var k_7NO, k_8NO, k_9NO, time;
+end
+
+model cellmlmod_GSH()
+
+  // Assignment Rules:
+  GSSG := (GSH_0 - GSH - GSNO) / 2
+  FeLnNO := FeLn_0 - FeLn
+  r_11NO := k_11NO * N2O3 * GSH
+  r_m := v_m * GSSG / (k_m + GSSG)
+  r_17NO := k_17NO * FeLnNO * GSH
+
+  // Rate Rules:
+  GSH' = -(r_6NO) - r_11NO + 2  * r_m - r_17NO
+
+  // Variable initializations:
+  GSH = 10000;
+
+  //Other declarations:
+  var GSH, N2O3, GSSG, FeLnNO, FeLn, FeLn_0, GSH_0, GSNO, r_6NO, r_11NO, r_m;
+  var r_17NO, k_11NO, v_m, k_m, k_17NO, time;
+end
+
+model cellmlmod_GSNO()
+
+  // Rate Rules:
+  GSNO' = r_6NO - 2  * r_10NO + r_11NO - r_14NO + r_17NO
+
+  // Variable initializations:
+  GSNO = 0;
+
+  //Other declarations:
+  var GSNO, r_6NO, r_10NO, r_11NO, r_14NO, r_17NO, time;
+end
+
+model cellmlmod_N2O3()
+
+  // Assignment Rules:
+  r_13NO := k_13NO * N2O3
+
+  // Rate Rules:
+  N2O3' = -(r_11NO) + r_12bNOp - r_12bNOm - r_13NO
+
+  // Variable initializations:
+  N2O3 = 0;
+
+  //Other declarations:
+  var N2O3, r_11NO, r_12bNOp, r_12bNOm, r_13NO, k_13NO, time;
+end
+
+model cellmlmod_FeLn()
+
+  // Rate Rules:
+  FeLn' = -(r_16NO) + r_17NO
+
+  // Variable initializations:
+  FeLn = 0.05;
+
+  //Other declarations:
+  var FeLn, r_16NO, r_17NO, time;
+end
+
+model cellmlmod_model_constant()
+
+  // Variable initializations:
+  k_1NO = 1;
+  k_2NO = 0.1;
+  k_4NO = 6700;
+  k_5NO = 2400;
+  k_6NO = 0.00135;
+  k_7NO = 2;
+  k_8NO = 0.058;
+  k_9NO = 0.025;
+  k_10NO = 0.0006;
+  k_11NO = 66;
+  k_12aNO = 0.000006;
+  k_12bNOm = 81000;
+  k_12bNOp = 1100;
+  k_13NO = 1600;
+  v_m = 320;
+  k_m = 50;
+  k_14NO = 0.0002;
+  k_15NO = 100;
+  k_16NO = 1.21;
+  k_17NO = 66;
+  k_17bNO = 0.0002;
+  FeLn_0 = 0.05;
+  GSH_0 = 10000;
+
+  //Other declarations:
+  var k_1NO, k_2NO, k_4NO, k_5NO, k_6NO, k_7NO, k_8NO, k_9NO, k_10NO, k_11NO;
+  var k_12aNO, k_12bNOm, k_12bNOp, k_13NO, v_m, k_m, k_14NO, k_15NO, k_16NO;
+  var k_17NO, k_17bNO, FeLn_0, GSH_0;
+end
+
+model bagci_2008a()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  NO: cellmlmod_NO()
+  O_2m: cellmlmod_O_2m()
+  ONOO_m: cellmlmod_ONOO_m()
+  GSH: cellmlmod_GSH()
+  GSNO: cellmlmod_GSNO()
+  N2O3: cellmlmod_N2O3()
+  FeLn: cellmlmod_FeLn()
+  model_constant: cellmlmod_model_constant()
+  NO.k_1NO is model_constant.k_1NO;
+  NO.k_4NO is model_constant.k_4NO;
+  NO.k_12aNO is model_constant.k_12aNO;
+  NO.k_12bNOp is model_constant.k_12bNOp;
+  NO.k_12bNOm is model_constant.k_12bNOm;
+  NO.k_14NO is model_constant.k_14NO;
+  NO.k_15NO is model_constant.k_15NO;
+  NO.k_16NO is model_constant.k_16NO;
+  NO.O_2m is O_2m.O_2m;
+  NO.r_4NO is O_2m.r_4NO;
+  NO.N2O3 is N2O3.N2O3;
+  NO.r_12bNOm is N2O3.r_12bNOm;
+  NO.r_12bNOp is N2O3.r_12bNOp;
+  NO.GSNO is GSNO.GSNO;
+  NO.r_14NO is GSNO.r_14NO;
+  NO.FeLn is FeLn.FeLn;
+  NO.r_16NO is FeLn.r_16NO;
+  O_2m.k_2NO is model_constant.k_2NO;
+  O_2m.k_5NO is model_constant.k_5NO;
+  O_2m.k_10NO is model_constant.k_10NO;
+  O_2m.GSNO is GSNO.GSNO;
+  O_2m.r_10NO is GSNO.r_10NO;
+  ONOO_m.k_6NO is model_constant.k_6NO;
+  ONOO_m.k_7NO is model_constant.k_7NO;
+  ONOO_m.k_8NO is model_constant.k_8NO;
+  ONOO_m.k_9NO is model_constant.k_9NO;
+  ONOO_m.r_4NO is O_2m.r_4NO;
+  ONOO_m.GSH is GSH.GSH;
+  ONOO_m.r_6NO is GSH.r_6NO;
+  GSH.k_11NO is model_constant.k_11NO;
+  GSH.v_m is model_constant.v_m;
+  GSH.k_m is model_constant.k_m;
+  GSH.k_17NO is model_constant.k_17NO;
+  GSH.GSH_0 is model_constant.GSH_0;
+  GSH.FeLn_0 is model_constant.FeLn_0;
+  GSH.N2O3 is N2O3.N2O3;
+  GSH.r_11NO is N2O3.r_11NO;
+  GSH.FeLn is FeLn.FeLn;
+  GSH.r_17NO is FeLn.r_17NO;
+  GSNO.GSNO is GSH.GSNO;
+  GSNO.r_11NO is N2O3.r_11NO;
+  GSNO.r_17NO is FeLn.r_17NO;
+  GSNO.r_6NO is GSH.r_6NO;
+  N2O3.k_13NO is model_constant.k_13NO;
+  NO.time is environment.time;
+  O_2m.time is environment.time;
+  ONOO_m.time is environment.time;
+  GSH.time is environment.time;
+  N2O3.time is environment.time;
+  FeLn.time is environment.time;
+  GSNO.time is environment.time;
+end

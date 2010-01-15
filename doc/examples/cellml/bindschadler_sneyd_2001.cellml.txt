@@ -1,0 +1,185 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_h1()
+
+  // Rate Rules:
+  h1' = phi3_c1 * (1  - h1) - phi1_c1 * phi2_c1 * h1 * p / (phi1_c1 * p + phi_1_c1)
+
+  // Variable initializations:
+  h1 = 0.8;
+
+  //Other declarations:
+  var time, phi3_c1, h1, phi1_c1, phi2_c1, p, phi_1_c1;
+end
+
+model cellmlmod_h2()
+
+  // Rate Rules:
+  h2' = phi3_c2 * (1  - h2) - phi1_c2 * phi2_c2 * h2 * p / (phi1_c2 * p + phi_1_c2)
+
+  // Variable initializations:
+  h2 = 0.1;
+
+  //Other declarations:
+  var time, phi3_c2, h2, phi1_c2, phi2_c2, p, phi_1_c2;
+end
+
+model cellmlmod_phi()
+
+  // Assignment Rules:
+  phi1_c1 := r2 * c1 / (R1 + c1)
+  phi_1_c1 := k1 / (R3 + c1)
+  phi2_c1 := (k2 + r4 * c1) / (R3 + c1)
+  phi3_c1 := k3 / (R5 + c1)
+  phi1_c2 := r2 * c2 / (R1 + c2)
+  phi_1_c2 := k1 / (R3 + c2)
+  phi2_c2 := (k2 + r4 * c2) / (R3 + c2)
+  phi3_c2 := k3 / (R5 + c2)
+
+  //Other declarations:
+  var phi1_c1, phi_1_c1, phi2_c1, phi3_c1, phi1_c2, phi_1_c2, phi2_c2, phi3_c2;
+  var r2, R1, k1, R3, k2, r4, k3, R5, c1, c2;
+end
+
+model cellmlmod_j_pump()
+
+  // Assignment Rules:
+  j_pump_c1 := Vp * power(c1, 2 ) / (power(Kp, 2 ) + power(c1, 2 ))
+  j_pump_c2 := Vp * power(c2, 2 ) / (power(Kp, 2 ) + power(c2, 2 ))
+
+  //Other declarations:
+  var Vp, c1, c2, Kp, j_pump_c1, j_pump_c2;
+end
+
+model cellmlmod_j_receptor()
+
+  // Assignment Rules:
+  j_receptor_c1 := kf * power(p * h1 * phi1_c1 / (phi1_c1 * p + phi_1_c1), 4 )
+  j_receptor_c2 := kf * power(p * h2 * phi1_c2 / (phi1_c2 * p + phi_1_c2), 4 )
+
+  //Other declarations:
+  var kf, p, h1, phi1_c1, phi1_c2, phi_1_c1, phi_1_c2, j_receptor_c1, j_receptor_c2;
+  var h2;
+end
+
+model cellmlmod_j_diffusion()
+
+  // Assignment Rules:
+  j_diffusion := D * (c2 - c1)
+
+  //Other declarations:
+  var j_diffusion, D, c1, c2;
+end
+
+model cellmlmod_c1()
+
+  // Rate Rules:
+  c1' = j_receptor_c1 - j_pump_c1 + j_leak + j_diffusion
+
+  // Variable initializations:
+  c1 = 0.3;
+
+  //Other declarations:
+  var c1, j_receptor_c1, j_pump_c1, j_leak, j_diffusion, time;
+end
+
+model cellmlmod_c2()
+
+  // Rate Rules:
+  c2' = j_receptor_c2 - j_pump_c2 + j_leak + j_diffusion
+
+  // Variable initializations:
+  c2 = 0.1;
+
+  //Other declarations:
+  var c2, j_receptor_c2, j_pump_c2, j_leak, j_diffusion, time;
+end
+
+model cellmlmod_rxn_parameters()
+
+  // Variable initializations:
+  kf = 28;
+  Vp = 1.2;
+  R5 = 1.6;
+  R3 = 50;
+  r2 = 100;
+  R1 = 6;
+  j_leak = 0.2;
+  Kp = 0.18;
+  k2 = 26.5;
+  k1 = 44;
+  r4 = 20;
+  k3 = 1.6;
+  p = 0.2778;
+  D = 0.01;
+
+  //Other declarations:
+  var kf, Vp, R5, R3, r2, R1, j_leak, Kp, k2, k1, r4, k3, p, D;
+end
+
+model bindschadler_sneyd_2001()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  h1: cellmlmod_h1()
+  h2: cellmlmod_h2()
+  phi: cellmlmod_phi()
+  j_pump: cellmlmod_j_pump()
+  j_receptor: cellmlmod_j_receptor()
+  j_diffusion: cellmlmod_j_diffusion()
+  c1: cellmlmod_c1()
+  c2: cellmlmod_c2()
+  rxn_parameters: cellmlmod_rxn_parameters()
+  environment.time is h1.time;
+  phi.phi1_c1 is h1.phi1_c1;
+  phi.phi2_c1 is h1.phi2_c1;
+  phi.phi3_c1 is h1.phi3_c1;
+  phi.phi_1_c1 is h1.phi_1_c1;
+  rxn_parameters.p is h1.p;
+  h1.time is h2.time;
+  phi.phi1_c2 is h2.phi1_c2;
+  phi.phi2_c2 is h2.phi2_c2;
+  phi.phi3_c2 is h2.phi3_c2;
+  phi.phi_1_c2 is h2.phi_1_c2;
+  h1.p is h2.p;
+  rxn_parameters.r2 is phi.r2;
+  rxn_parameters.R1 is phi.R1;
+  rxn_parameters.k1 is phi.k1;
+  rxn_parameters.R3 is phi.R3;
+  rxn_parameters.k2 is phi.k2;
+  rxn_parameters.r4 is phi.r4;
+  rxn_parameters.k3 is phi.k3;
+  rxn_parameters.R5 is phi.R5;
+  c1.c1 is phi.c1;
+  c2.c2 is phi.c2;
+  rxn_parameters.Vp is j_pump.Vp;
+  rxn_parameters.Kp is j_pump.Kp;
+  phi.c1 is j_pump.c1;
+  c1.j_pump_c1 is j_pump.j_pump_c1;
+  phi.c2 is j_pump.c2;
+  c2.j_pump_c2 is j_pump.j_pump_c2;
+  rxn_parameters.kf is j_receptor.kf;
+  h2.p is j_receptor.p;
+  h1.h1 is j_receptor.h1;
+  h2.h2 is j_receptor.h2;
+  h1.phi1_c1 is j_receptor.phi1_c1;
+  h1.phi_1_c1 is j_receptor.phi_1_c1;
+  h2.phi1_c2 is j_receptor.phi1_c2;
+  h2.phi_1_c2 is j_receptor.phi_1_c2;
+  rxn_parameters.D is j_diffusion.D;
+  j_pump.c1 is j_diffusion.c1;
+  c1.j_diffusion is j_diffusion.j_diffusion;
+  j_pump.c2 is j_diffusion.c2;
+  c2.j_diffusion is j_diffusion.j_diffusion;
+  j_receptor.j_receptor_c1 is c1.j_receptor_c1;
+  rxn_parameters.j_leak is c1.j_leak;
+  j_receptor.j_receptor_c2 is c2.j_receptor_c2;
+  c1.j_leak is c2.j_leak;
+  h2.time is c2.time;
+  c2.time is c1.time;
+end

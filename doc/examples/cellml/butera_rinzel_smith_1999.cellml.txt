@@ -1,0 +1,207 @@
+//Created by libAntimony v1.3
+model cellmlmod_environment()
+
+  //Other declarations:
+  var time;
+end
+
+model cellmlmod_membrane()
+
+  // Rate Rules:
+   V ' = (-(( i_NaP  +  i_Na  +  i_K  +  i_L  +  i_tonic_e )) +  i_app ) /  C
+
+  // Variable initializations:
+  C = 21.0;
+  i_app = 0.0;
+
+  //Other declarations:
+  var V, C, i_app, time, i_NaP, i_Na, i_K, i_L, i_tonic_e;
+end
+
+model cellmlmod_fast_sodium_current()
+
+  // Assignment Rules:
+  i_Na := g_Na  * power( m_infinity ,  3.0  ) * ( 1.0   -  n ) * ( V  -  E_Na )
+
+  // Variable initializations:
+  E_Na = 50.0;
+  g_Na = 28.0;
+
+  //Other declarations:
+  var i_Na, E_Na, g_Na, time, V, m_infinity, n;
+end
+
+model cellmlmod_fast_sodium_current_m_gate()
+
+  // Assignment Rules:
+  m_infinity := 1.0   / ( 1.0   + exp(( V  -  theta_m ) /  omega_m ))
+
+  // Variable initializations:
+  theta_m = -34.0;
+  omega_m = -5.0;
+
+  //Other declarations:
+  var m_infinity, theta_m, omega_m, V;
+end
+
+model cellmlmod_fast_sodium_current_n_gate()
+
+  // Assignment Rules:
+  n_infinity := 1.0   / ( 1.0   + exp(( V  -  theta_n ) /  omega_n ))
+  tau_n := tau_n_max  / cosh(( V  -  theta_n ) / ( 2.0   *  omega_n ))
+
+  // Rate Rules:
+   n ' = ( n_infinity  -  n ) /  tau_n
+
+  // Variable initializations:
+  tau_n_max = 10.0;
+  theta_n = -29.0;
+  omega_n = -4.0;
+
+  //Other declarations:
+  var n, n_infinity, tau_n, tau_n_max, theta_n, omega_n, V, time;
+end
+
+model cellmlmod_potassium_current()
+
+  // Assignment Rules:
+  i_K := g_K  * power( n ,  4.0  ) * ( V  -  E_K )
+
+  // Variable initializations:
+  g_K = 11.2;
+  E_K = -85.0;
+
+  //Other declarations:
+  var i_K, g_K, E_K, time, V, n;
+end
+
+model cellmlmod_potassium_current_n_gate()
+
+  // Assignment Rules:
+  n_infinity := 1.0   / ( 1.0   + exp(( V  -  theta_n ) /  omega_n ))
+  tau_n := tau_n_max  / cosh(( V  -  theta_n ) / ( 2.0   *  omega_n ))
+
+  // Rate Rules:
+   n ' = ( n_infinity  -  n ) /  tau_n
+
+  // Variable initializations:
+  tau_n_max = 10.0;
+  theta_n = -29.0;
+  omega_n = -4.0;
+
+  //Other declarations:
+  var n, n_infinity, tau_n, tau_n_max, theta_n, omega_n, V, time;
+end
+
+model cellmlmod_persistent_sodium_current()
+
+  // Assignment Rules:
+  i_NaP := g_NaP  *  m_infinity  *  h  * ( V  -  E_Na )
+
+  // Variable initializations:
+  g_NaP = 2.8;
+
+  //Other declarations:
+  var i_NaP, g_NaP, time, V, E_Na, m_infinity, h;
+end
+
+model cellmlmod_persistent_sodium_current_m_gate()
+
+  // Assignment Rules:
+  m_infinity := 1.0   / ( 1.0   + exp(( V  -  theta_m ) /  omega_m ))
+
+  // Variable initializations:
+  theta_m = -40.0;
+  omega_m = -6.0;
+
+  //Other declarations:
+  var m_infinity, theta_m, omega_m, V;
+end
+
+model cellmlmod_persistent_sodium_current_h_gate()
+
+  // Assignment Rules:
+  h_infinity := 1.0   / ( 1.0   + exp(( V  -  theta_h ) /  omega_h ))
+  tau_h := tau_h_max  / cosh(( V  -  theta_h ) / ( 2.0   *  omega_h ))
+
+  // Rate Rules:
+   h ' = ( h_infinity  -  h ) /  tau_h
+
+  // Variable initializations:
+  tau_h_max = 10000.0;
+  theta_h = -48.0;
+  omega_h = 6.0;
+
+  //Other declarations:
+  var h, h_infinity, tau_h, tau_h_max, theta_h, omega_h, V, time;
+end
+
+model cellmlmod_leakage_current()
+
+  // Assignment Rules:
+  i_L := g_L  * ( V  -  E_L )
+
+  // Variable initializations:
+  g_L = 2.8;
+  E_L = -65.0;
+
+  //Other declarations:
+  var i_L, g_L, E_L, time, V;
+end
+
+model cellmlmod_tonic_current()
+
+  // Variable initializations:
+  g_tonic_e = 0.0;
+  E_syn_e = 0.0;
+
+  //Other declarations:
+  var i_tonic_e, g_tonic_e, E_syn_e, time, V;
+end
+
+model butera_rinzel_smith_1999_version01()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cellmlmod_environment()
+  membrane: cellmlmod_membrane()
+  fast_sodium_current: cellmlmod_fast_sodium_current()
+  fast_sodium_current_m_gate: cellmlmod_fast_sodium_current_m_gate()
+  fast_sodium_current_n_gate: cellmlmod_fast_sodium_current_n_gate()
+  potassium_current: cellmlmod_potassium_current()
+  potassium_current_n_gate: cellmlmod_potassium_current_n_gate()
+  persistent_sodium_current: cellmlmod_persistent_sodium_current()
+  persistent_sodium_current_m_gate: cellmlmod_persistent_sodium_current_m_gate()
+  persistent_sodium_current_h_gate: cellmlmod_persistent_sodium_current_h_gate()
+  leakage_current: cellmlmod_leakage_current()
+  tonic_current: cellmlmod_tonic_current()
+  membrane.time is environment.time;
+  fast_sodium_current.time is environment.time;
+  potassium_current.time is environment.time;
+  persistent_sodium_current.time is environment.time;
+  leakage_current.time is environment.time;
+  tonic_current.time is environment.time;
+  fast_sodium_current.V is membrane.V;
+  fast_sodium_current.i_Na is membrane.i_Na;
+  potassium_current.V is membrane.V;
+  potassium_current.i_K is membrane.i_K;
+  persistent_sodium_current.V is membrane.V;
+  persistent_sodium_current.i_NaP is membrane.i_NaP;
+  leakage_current.V is membrane.V;
+  leakage_current.i_L is membrane.i_L;
+  tonic_current.V is membrane.V;
+  tonic_current.i_tonic_e is membrane.i_tonic_e;
+  fast_sodium_current.E_Na is persistent_sodium_current.E_Na;
+  fast_sodium_current.m_infinity is fast_sodium_current_m_gate.m_infinity;
+  membrane.V is fast_sodium_current_m_gate.V;
+  fast_sodium_current.n is fast_sodium_current_n_gate.n;
+  fast_sodium_current_m_gate.V is fast_sodium_current_n_gate.V;
+  environment.time is fast_sodium_current_n_gate.time;
+  potassium_current.n is potassium_current_n_gate.n;
+  fast_sodium_current_n_gate.V is potassium_current_n_gate.V;
+  fast_sodium_current_n_gate.time is potassium_current_n_gate.time;
+  persistent_sodium_current.m_infinity is persistent_sodium_current_m_gate.m_infinity;
+  potassium_current_n_gate.V is persistent_sodium_current_m_gate.V;
+  persistent_sodium_current.h is persistent_sodium_current_h_gate.h;
+  persistent_sodium_current_m_gate.V is persistent_sodium_current_h_gate.V;
+  potassium_current_n_gate.time is persistent_sodium_current_h_gate.time;
+end
