@@ -15,14 +15,14 @@ model Saucerman2006_PKA()
   species PP_AKARp_cell in cell, DMNB_cAMP_cell in cell, L_b1AR_Gs_cell in cell;
 
   // Assignment Rules:
-  Vmax_cAMP_synthesis_GsAC := k_ac_gsa_cAMP_synthesis_GsAC * GsAC_cell
-  light_cAMP_photolysis := piecewise(1, and(gt(time, ton_global_light_cAMP_photolysis), lt(time, toff_global_light_cAMP_photolysis)), 0) + piecewise(light_spot_cell, and(gt(time, ton_local_light_cAMP_photolysis), lt(time, toff_local_light_cAMP_photolysis)), 0)
-  Vmax_cAMP_synthesis_FskAC := kfsk_cAMP_synthesis_FskAC * FskAC_cell
-  Kf_inhibit_PDE := piecewise(1000, gt(time, 1000), 0)
-  Kr_inhibit_PDE := piecewise(30000, gt(time, 1000), 0)
-  ar_for_add_propranolol := piecewise((Propranolol_pipette + -Propranolol_cell) * (1 / tauPropranolol), gt(time, t_propadd), 0)
-  ar_for_add_Ligand := piecewise((L_pipette + -L_cell) * (1 / tauL), gt(time, t_Ladd), 0)
-  Ratio_AKARp_AKARtot := AKARp_cell / (AKAR_cell + AKARp_cell + PKAC_AKAR_cell + PP_AKARp_cell)
+  Vmax_cAMP_synthesis_GsAC := k_ac_gsa_cAMP_synthesis_GsAC * GsAC_cell;
+  light_cAMP_photolysis := piecewise(1, and(gt(time, ton_global_light_cAMP_photolysis), lt(time, toff_global_light_cAMP_photolysis)), 0) + piecewise(light_spot_cell, and(gt(time, ton_local_light_cAMP_photolysis), lt(time, toff_local_light_cAMP_photolysis)), 0);
+  Vmax_cAMP_synthesis_FskAC := kfsk_cAMP_synthesis_FskAC * FskAC_cell;
+  Kf_inhibit_PDE := piecewise(1000, gt(time, 1000), 0);
+  Kr_inhibit_PDE := piecewise(30000, gt(time, 1000), 0);
+  ar_for_add_propranolol := piecewise((Propranolol_pipette + -Propranolol_cell) * (1 / tauPropranolol), gt(time, t_propadd), 0);
+  ar_for_add_Ligand := piecewise((L_pipette + -L_cell) * (1 / tauL), gt(time, t_Ladd), 0);
+  Ratio_AKARp_AKARtot := AKARp_cell / (AKAR_cell + AKARp_cell + PKAC_AKAR_cell + PP_AKARp_cell);
 
   // Reactions:
   cAMP_synthesis_GsAC: $ATP_cell -> cAMP_cell; Vmax_cAMP_synthesis_GsAC * ATP_cell * (1 / (cAMP_synthesis_GsAC_Km + ATP_cell)) * cell;
@@ -155,8 +155,8 @@ model Saucerman2006_PKA()
   AKAR_phosph_kpka_akar = 54;
   RG_activation_k_gact = 16;
   cAMP_degradation_kpde = 5;
-  
-//Other declarations:
+
+  //Other declarations:
   var Vmax_cAMP_synthesis_GsAC, light_cAMP_photolysis, Vmax_cAMP_synthesis_FskAC;
   var Kf_inhibit_PDE, Kr_inhibit_PDE, ar_for_add_propranolol, ar_for_add_Ligand;
   var Ratio_AKARp_AKARtot;

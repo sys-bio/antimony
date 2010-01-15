@@ -17,25 +17,25 @@ model Neves2008_Cell_Shape()
   species PTP_PP_cyto in cyto, PDE4_P_cyto in cyto;
 
   // Assignment Rules:
-  Vmax_pde4_p_pde4_p := 20 * 0.00166112956810631 * PDE4_P_cyto
-  Vmax_PPase_Raf := kcat_PPase_Raf * 0.00166112956810631 * PP2A_cyto
-  Vmax_PDE4_PDE4 := 8 * 0.00166112956810631 * PDE4_cyto
-  Vmax_MEK_activates_MAPK := 0.15 * 0.00166112956810631 * MEK_active_cyto
-  Vmax_PKA_activates_Raf := kcat_PKA_activates_Raf * 0.00166112956810631 * PKA_cyto
-  Vmax_AC_active_AC_active := 8.5 * AC_active_cyto_mem
-  Vmax_highKM_PDE := 8 * 0.00166112956810631 * PDE_high_km_cyto
-  Vmax_PKA_P_PTP := kcat_PKA_P_PTP * 0.00166112956810631 * PKA_cyto
-  Vmax_AC_basal_AC_basal := 0.2 * AC_cyto_mem
-  Vmax_grk_GRK := 0.104 * 0.00166112956810631 * GRK_cyto
-  Vmax_PKA_P_PDE := 10 * 0.00166112956810631 * PKA_cyto
-  Vmax_Raf_activates_MEK := 0.105 * 0.00166112956810631 * B_Raf_active_cyto
-  Vmax_PTP_PKA := kcat_PTP_PKA * 0.00166112956810631 * PTP_PKA_cyto
-  Vmax_PTP := kcat_PTP * 0.00166112956810631 * PTP_cyto
-  Vmax_PPase_MAPK := kcat_PPase_MAPK * 0.00166112956810631 * PP2A_cyto
-  Vmax_pp2a_4_pp2a_4 := 5 * 0.00166112956810631 * PP_PDE_cyto
-  Vmax_pp_ptp := kcat_pp_ptp_pp_ptp * 0.00166112956810631 * PTP_PP_cyto
-  Vmax_GRK_bg_GRK_bg := 1.34 * 0.00166112956810631 * GRK_bg_cyto
-  Vmax_PPase_mek := kcat_PPase_mek * 0.00166112956810631 * PP2A_cyto
+  Vmax_pde4_p_pde4_p := 20 * 0.00166112956810631 * PDE4_P_cyto;
+  Vmax_PPase_Raf := kcat_PPase_Raf * 0.00166112956810631 * PP2A_cyto;
+  Vmax_PDE4_PDE4 := 8 * 0.00166112956810631 * PDE4_cyto;
+  Vmax_MEK_activates_MAPK := 0.15 * 0.00166112956810631 * MEK_active_cyto;
+  Vmax_PKA_activates_Raf := kcat_PKA_activates_Raf * 0.00166112956810631 * PKA_cyto;
+  Vmax_AC_active_AC_active := 8.5 * AC_active_cyto_mem;
+  Vmax_highKM_PDE := 8 * 0.00166112956810631 * PDE_high_km_cyto;
+  Vmax_PKA_P_PTP := kcat_PKA_P_PTP * 0.00166112956810631 * PKA_cyto;
+  Vmax_AC_basal_AC_basal := 0.2 * AC_cyto_mem;
+  Vmax_grk_GRK := 0.104 * 0.00166112956810631 * GRK_cyto;
+  Vmax_PKA_P_PDE := 10 * 0.00166112956810631 * PKA_cyto;
+  Vmax_Raf_activates_MEK := 0.105 * 0.00166112956810631 * B_Raf_active_cyto;
+  Vmax_PTP_PKA := kcat_PTP_PKA * 0.00166112956810631 * PTP_PKA_cyto;
+  Vmax_PTP := kcat_PTP * 0.00166112956810631 * PTP_cyto;
+  Vmax_PPase_MAPK := kcat_PPase_MAPK * 0.00166112956810631 * PP2A_cyto;
+  Vmax_pp2a_4_pp2a_4 := 5 * 0.00166112956810631 * PP_PDE_cyto;
+  Vmax_pp_ptp := kcat_pp_ptp_pp_ptp * 0.00166112956810631 * PTP_PP_cyto;
+  Vmax_GRK_bg_GRK_bg := 1.34 * 0.00166112956810631 * GRK_bg_cyto;
+  Vmax_PPase_mek := kcat_PPase_mek * 0.00166112956810631 * PP2A_cyto;
 
   // Reactions:
   activate_Gs: iso_BAR_G_cyto_mem -> iso_BAR_cyto_mem + bg_cyto + G_a_s_cyto; (activate_Gs_Kf_activate_Gs * iso_BAR_G_cyto_mem - activate_Gs_Kr_activate_Gs * iso_BAR_cyto_mem * 0.00166112956810631 * bg_cyto * 0.00166112956810631 * G_a_s_cyto) * cyto_mem;
@@ -180,8 +180,8 @@ model Neves2008_Cell_Shape()
   PPase_mek_Km = 15.7;
   A1_Kf = 8.35;
   A1_Kr = 0.0167;
-  
-//Other declarations:
+
+  //Other declarations:
   var Vmax_pde4_p_pde4_p, Vmax_PPase_Raf, Vmax_PDE4_PDE4, Vmax_MEK_activates_MAPK;
   var Vmax_PKA_activates_Raf, Vmax_AC_active_AC_active, Vmax_highKM_PDE, Vmax_PKA_P_PTP;
   var Vmax_AC_basal_AC_basal, Vmax_grk_GRK, Vmax_PKA_P_PDE, Vmax_Raf_activates_MEK;

@@ -6,10 +6,10 @@ model Westermark2003_Pancreatic_GlycOsc_basic()
   species $GLC in comp, G6P_F6P in comp, $F6P in comp, FBP in comp, $G3P in comp;
 
   // Assignment Rules:
-  F6P := G6P_F6P * KeqGPI / (1 + KeqGPI)
-  Vgk := Vgk_min * dw_per_ml / min_to_sec
-  Vpfk := Vpfk_min * dw_per_ml / min_to_sec
-  Vfba := Vfba_min * dw_per_ml / min_to_sec
+  F6P := G6P_F6P * KeqGPI / (1 + KeqGPI);
+  Vgk := Vgk_min * dw_per_ml / min_to_sec;
+  Vpfk := Vpfk_min * dw_per_ml / min_to_sec;
+  Vfba := Vfba_min * dw_per_ml / min_to_sec;
 
   // Reactions:
   vgk: $GLC -> G6P_F6P; comp * Vgk * pow(GLC / Sgk, hGK) / (1 + pow(GLC / Sgk, hGK));
@@ -42,7 +42,7 @@ model Westermark2003_Pancreatic_GlycOsc_basic()
   Vgk_min = 10;
   Vpfk_min = 100;
   Vfba_min = 25;
-  
-//Other declarations:
+
+  //Other declarations:
   var Vgk, Vpfk, Vfba;
 end

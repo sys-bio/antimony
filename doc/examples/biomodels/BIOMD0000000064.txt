@@ -24,9 +24,9 @@ model Teusink2000_Glycolysis()
   species $F26BP in cytosol;
 
   // Assignment Rules:
-  ATP := (P - ADP) / 2
-  ADP := (SUM_P - pow(pow(P, 2) * (1 - 4 * KeqAK) + 2 * SUM_P * P * (4 * KeqAK - 1) + pow(SUM_P, 2), 0.5)) / (1 - 4 * KeqAK)
-  AMP := SUM_P - ATP - ADP
+  ATP := (P - ADP) / 2;
+  ADP := (SUM_P - pow(pow(P, 2) * (1 - 4 * KeqAK) + 2 * SUM_P * P * (4 * KeqAK - 1) + pow(SUM_P, 2), 0.5)) / (1 - 4 * KeqAK);
+  AMP := SUM_P - ATP - ADP;
 
   // Reactions:
   vGLK: GLCi + P -> G6P; cytosol * vGLK_VmGLK / (vGLK_KmGLKGLCi * vGLK_KmGLKATP) * (GLCi * ATP - G6P * ADP / vGLK_KeqGLK) / ((1 + GLCi / vGLK_KmGLKGLCi + G6P / vGLK_KmGLKG6P) * (1 + ATP / vGLK_KmGLKATP + ADP / vGLK_KmGLKADP));

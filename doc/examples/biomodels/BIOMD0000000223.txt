@@ -24,35 +24,35 @@ model InsEGFdiam_2008_10_03_debugged()
   species imGABp in cell, bRasGAP in cell, $phosphorylated_Akt in cell;
 
   // Assignment Rules:
-  phosphorylated_Akt := pAkt + ppAkt
-  EGF_tot := EGF + (RE + 2 * (Rd + Rp + Ri + Rp_GS + Rp_Shc + Rp_pShc + Rp_pShc_GS + Rp_PI3K + Rp_RasGAP)) * (cell / extra)
-  k11 := k9
-  k_1 := Kd1 * k1
-  k_2 := Kd2 * k2
-  k_4 := Kd4 * k4
-  k_5 := Kd5 * k5
-  k_7 := Kd7 * k7
-  k_9 := Kd9 * k9
-  k_10 := Kd10 * k10
-  k_11 := k_9
-  k_12 := Kd12 * k12
-  k_13 := Kd13 * k13
-  k_24 := Kd24 * k24
-  k_26 := Kd26 * k26
-  k_27 := Kd27 * k27
-  k_28 := Kd28 * k28
-  k_30 := Kd30 * k30
-  k_42 := Kd42 * k42
-  k_45 := k45 * Kd45
-  k_46 := Kd46 * k46
-  k_47 := Kd47 * k47
-  k_49 := Kd49 * k49
-  k_52 := k52 * Kd52
-  k_53 := Kd53 * k53
-  k_54 := Kd54 * k54
-  k_55 := Kd55 * k55
-  k_59 := Kd59 * k59
-  k_74 := k74 * Kd74
+  phosphorylated_Akt := pAkt + ppAkt;
+  EGF_tot := EGF + (RE + 2 * (Rd + Rp + Ri + Rp_GS + Rp_Shc + Rp_pShc + Rp_pShc_GS + Rp_PI3K + Rp_RasGAP)) * (cell / extra);
+  k11 := k9;
+  k_1 := Kd1 * k1;
+  k_2 := Kd2 * k2;
+  k_4 := Kd4 * k4;
+  k_5 := Kd5 * k5;
+  k_7 := Kd7 * k7;
+  k_9 := Kd9 * k9;
+  k_10 := Kd10 * k10;
+  k_11 := k_9;
+  k_12 := Kd12 * k12;
+  k_13 := Kd13 * k13;
+  k_24 := Kd24 * k24;
+  k_26 := Kd26 * k26;
+  k_27 := Kd27 * k27;
+  k_28 := Kd28 * k28;
+  k_30 := Kd30 * k30;
+  k_42 := Kd42 * k42;
+  k_45 := k45 * Kd45;
+  k_46 := Kd46 * k46;
+  k_47 := Kd47 * k47;
+  k_49 := Kd49 * k49;
+  k_52 := k52 * Kd52;
+  k_53 := Kd53 * k53;
+  k_54 := Kd54 * k54;
+  k_55 := Kd55 * k55;
+  k_59 := Kd59 * k59;
+  k_74 := k74 * Kd74;
 
   // Reactions:
   reaction_1: R + EGF -> RE; (k1 * R * EGF - k_1 * RE) * cell;
@@ -391,8 +391,8 @@ model InsEGFdiam_2008_10_03_debugged()
   k85 = 0.0166;
   k111 = 0.0133;
   k118 = 0.001;
-  
-//Other declarations:
+
+  //Other declarations:
   var EGF_tot, k11, k_1, k_2, k_4, k_5, k_7, k_9, k_10, k_11, k_12, k_13;
   var k_24, k_26, k_27, k_28, k_30, k_42, k_45, k_46, k_47, k_49, k_52, k_53;
   var k_54, k_55, k_59, k_74;

@@ -6,28 +6,28 @@ model model_0000001()
   species c in cell, cer in cell, cAMP in cell;
 
   // Assignment Rules:
-  ninf := 1 / (1 + exp((vn - V) / sn))
-  minf := 1 / (1 + exp((vm - V) / sm))
-  hinf := 1 / (1 + exp((vh - V) / sh))
-  ica := gca * minf * (V - vca)
-  igirk := girk * h * (V - vk)
-  ik := gk * n * (V - vk)
-  ainf := 1 / (1 + dact / c)
-  hinfer := 1 / (1 + c / dinh)
-  jerp := kserca * c
-  binf := IP3 / (IP3 + dip3)
-  o := pow(ainf, 3) * pow(binf, 3) * pow(hinfer, 3)
-  jerleak := perl * (cer - c)
-  jerip3 := o * (cer - c)
-  jertot := jerleak + jerip3 - jerp
-  jmemtot := -(alpha * ica + kc * c)
-  perl_inf := inh * cAMP * pow(c, 4) / (pow(ki, 4) + pow(c, 4))
+  ninf := 1 / (1 + exp((vn - V) / sn));
+  minf := 1 / (1 + exp((vm - V) / sm));
+  hinf := 1 / (1 + exp((vh - V) / sh));
+  ica := gca * minf * (V - vca);
+  igirk := girk * h * (V - vk);
+  ik := gk * n * (V - vk);
+  ainf := 1 / (1 + dact / c);
+  hinfer := 1 / (1 + c / dinh);
+  jerp := kserca * c;
+  binf := IP3 / (IP3 + dip3);
+  o := pow(ainf, 3) * pow(binf, 3) * pow(hinfer, 3);
+  jerleak := perl * (cer - c);
+  jerip3 := o * (cer - c);
+  jertot := jerleak + jerip3 - jerp;
+  jmemtot := -(alpha * ica + kc * c);
+  perl_inf := inh * cAMP * pow(c, 4) / (pow(ki, 4) + pow(c, 4));
 
   // Rate Rules:
-  h' = (hinf - h) / tauh
-  inh' = ETswitch * ((0.2 - inh) / taudir)
-  V' = (-ica - ik - igirk) / cm
-  n' = lambda_ * (ninf - n) / taun
+  h' = (hinf - h) / tauh;
+  inh' = ETswitch * ((0.2 - inh) / taudir);
+  V' = (-ica - ik - igirk) / cm;
+  n' = lambda_ * (ninf - n) / taun;
 
   // Reactions:
   reaction_0000001:  -> c; cell * f * (jertot + jmemtot);
@@ -80,8 +80,8 @@ model model_0000001()
   inh = 1;
   V = -60;
   n = 0;
-  
-//Other declarations:
+
+  //Other declarations:
   var IP3, girk, ETswitch, ninf, minf, hinf, ica, igirk, ik, ainf, hinfer;
   var jerp, binf, o, jerleak, jerip3, jertot, jmemtot, perl_inf, h, inh, V;
   var n;

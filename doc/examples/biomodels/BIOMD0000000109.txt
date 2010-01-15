@@ -21,18 +21,18 @@ model Haberichter2007_cellcycle()
   species $totalYEmi1 in X, $activeYCdk2 in X;
 
   // Assignment Rules:
-  totalYCyclinYD := CyclinD + Cdk4Y01 + Cdk4Y11
-  totalYCyclinYE := CyclinE + Cdk2Y001 + Cdk2Y011 + Cdk2Y101 + Cdk2Y111
-  totalYCyclinYA := CyclinA + Cdk1Y01 + Cdk1Y11 + Cdk2Y002 + Cdk2Y012 + Cdk2Y102 + Cdk2Y112
-  totalYp27 := p27 + Cdk4Y10 + Cdk4Y11 + Cdk2Y100 + Cdk2Y101 + Cdk2Y102 + Cdk2Y110 + Cdk2Y111 + Cdk2Y112
-  hypophosphorylatedYpRb := pRbY10 + pRbY11
-  hyperphosphorylatedYpRb := pRbY20 + pRbY21
-  totalYEmi1 := Emi1 + APCCYEmi1
-  activeYCdk2 := Cdk2Y011 + Cdk2Y012
-  ksYE2F := ks0YE2F + ks1YE2F * E2F / (ksMYE2F + E2F)
-  ksYEmi1 := ks0YEmi1 + ks1YEmi1 * E2F / (ksMYEmi1 + E2F)
-  ksYCyclinA := ks0YCyclinA + ks1YCyclinA * E2F / (ksMYCyclinA + E2F)
-  ksYCyclinE := ks0YCyclinE + ks1YCyclinE * E2F / (ksMYCyclinE + E2F)
+  totalYCyclinYD := CyclinD + Cdk4Y01 + Cdk4Y11;
+  totalYCyclinYE := CyclinE + Cdk2Y001 + Cdk2Y011 + Cdk2Y101 + Cdk2Y111;
+  totalYCyclinYA := CyclinA + Cdk1Y01 + Cdk1Y11 + Cdk2Y002 + Cdk2Y012 + Cdk2Y102 + Cdk2Y112;
+  totalYp27 := p27 + Cdk4Y10 + Cdk4Y11 + Cdk2Y100 + Cdk2Y101 + Cdk2Y102 + Cdk2Y110 + Cdk2Y111 + Cdk2Y112;
+  hypophosphorylatedYpRb := pRbY10 + pRbY11;
+  hyperphosphorylatedYpRb := pRbY20 + pRbY21;
+  totalYEmi1 := Emi1 + APCCYEmi1;
+  activeYCdk2 := Cdk2Y011 + Cdk2Y012;
+  ksYE2F := ks0YE2F + ks1YE2F * E2F / (ksMYE2F + E2F);
+  ksYEmi1 := ks0YEmi1 + ks1YEmi1 * E2F / (ksMYEmi1 + E2F);
+  ksYCyclinA := ks0YCyclinA + ks1YCyclinA * E2F / (ksMYCyclinA + E2F);
+  ksYCyclinE := ks0YCyclinE + ks1YCyclinE * E2F / (ksMYCyclinE + E2F);
 
   // Reactions:
   rxnY001:  -> CyclinD; ksYCyclinD * X;
@@ -289,8 +289,8 @@ model Haberichter2007_cellcycle()
   kuYE2FYYpRb = 0.1;
   kuYEmi1YYAPCC = 0.1;
   kuYAPCCYYCyclinA = 0.1;
-  
-//Other declarations:
+
+  //Other declarations:
   var kYact, ksYE2F, ksYEmi1, ksYCyclinA, ksYCyclinE;
 
   //Display Names:

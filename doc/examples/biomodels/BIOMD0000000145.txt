@@ -7,16 +7,16 @@ model Wang2007_ATP_induced_Ca_Oscillation()
   species Ca_Cyt in Cytosol, $PLC in Cytosol, $DG in Cytosol;
 
   // Assignment Rules:
-  PLC := Cplc_total - APLC
-  DG := IP3
-  Raplc := APLC / (Kp + APLC)
-  Rpkc := DG / (Kd + DG) * Ca_Cyt / (Kr + Ca_Cyt)
-  Rgalpha_gtp := pow(Galpha_GTP, n) / (pow(Kg, n) + pow(Galpha_GTP, n))
-  Rdg := pow(DG, m) / (pow(Kd, m) + pow(DG, m))
-  Rip3 := pow(IP3, 3) / (pow(Ks, 3) + pow(IP3, 3))
-  Rcyt1 := Ca_Cyt / (Kc1 + Ca_Cyt)
-  Rcyt2 := Ca_Cyt / (Kc2 + Ca_Cyt)
-  Rer := pow(Ca_ER, w) / (pow(Ker, w) + pow(Ca_ER, w))
+  PLC := Cplc_total - APLC;
+  DG := IP3;
+  Raplc := APLC / (Kp + APLC);
+  Rpkc := DG / (Kd + DG) * Ca_Cyt / (Kr + Ca_Cyt);
+  Rgalpha_gtp := pow(Galpha_GTP, n) / (pow(Kg, n) + pow(Galpha_GTP, n));
+  Rdg := pow(DG, m) / (pow(Kd, m) + pow(DG, m));
+  Rip3 := pow(IP3, 3) / (pow(Ks, 3) + pow(IP3, 3));
+  Rcyt1 := Ca_Cyt / (Kc1 + Ca_Cyt);
+  Rcyt2 := Ca_Cyt / (Kc2 + Ca_Cyt);
+  Rer := pow(Ca_ER, w) / (pow(Ker, w) + pow(Ca_ER, w));
 
   // Reactions:
   R1:  -> Galpha_GTP; Cytosol * k0;
@@ -67,8 +67,8 @@ model Wang2007_ATP_induced_Ca_Oscillation()
   k9 = 600;
   k10 = 3000;
   k11 = 260;
-  
-//Other declarations:
+
+  //Other declarations:
   var Raplc, Rpkc, Rgalpha_gtp, Rdg, Rip3, Rcyt1, Rcyt2, Rer;
 
   //Display Names:

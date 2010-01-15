@@ -14,28 +14,28 @@ model model_0000001()
   species Ca in compartment_0000001;
 
   // Assignment Rules:
-  INa := gNa * pow(Minfs, pms) * hhs * (V - VNa)
-  INaP := gNaP * Pinfs * (V - VNa)
-  IKdr := gKdr * pow(nns, pns) * (V - VK)
-  IA := gA * pow(Ainfs, 3) * bbs * (V - VK)
-  Iz := gZ * zzs * (V - VK)
-  Minfs := GAMMAF(V, thetam, sigmam)
-  Pinfs := GAMMAF(V, thetap, sigmap)
-  Ainfs := GAMMAF(V, thetaa, sigmaa)
-  mKCa := ZFUNC(ac, Ca, pwrc)
-  ICa := gCa * pow(rrs, 2) * (V - VCa)
-  IAHP := gKAHP * qqs * (V - VK)
-  IKC := gKCa * mKCa * ccs * (V - VK)
+  INa := gNa * pow(Minfs, pms) * hhs * (V - VNa);
+  INaP := gNaP * Pinfs * (V - VNa);
+  IKdr := gKdr * pow(nns, pns) * (V - VK);
+  IA := gA * pow(Ainfs, 3) * bbs * (V - VK);
+  Iz := gZ * zzs * (V - VK);
+  Minfs := GAMMAF(V, thetam, sigmam);
+  Pinfs := GAMMAF(V, thetap, sigmap);
+  Ainfs := GAMMAF(V, thetaa, sigmaa);
+  mKCa := ZFUNC(ac, Ca, pwrc);
+  ICa := gCa * pow(rrs, 2) * (V - VCa);
+  IAHP := gKAHP * qqs * (V - VK);
+  IKC := gKCa * mKCa * ccs * (V - VK);
 
   // Rate Rules:
-  zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs) / tauZs
-  bbs' = (GAMMAF(V, thetab, sigmab) - bbs) / tauBs
-  nns' = phi * (GAMMAF(V, thetan, sigman) - nns) / (1 + 5 * GAMMAF(V, t_taun, -15))
-  hhs' = phi * (GAMMAF(V, thetah, sigmah) - hhs) / (1 + 7.5 * GAMMAF(V, t_tauh, -6))
-  V' = (-gL * (V - VL) - INa - INaP - IKdr - IA - Iz - ICa - IKC - IAHP + Iapp) / Cm
-  rrs' = (GAMMAF(V, thetar, sigmar) - rrs) / tauRs
-  ccs' = (GAMMAF(V, thetac, sigmac) - ccs) / tauKc
-  qqs' = (ZFUNC(aq, Ca, pwrq) - qqs) / tauq
+  zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs) / tauZs;
+  bbs' = (GAMMAF(V, thetab, sigmab) - bbs) / tauBs;
+  nns' = phi * (GAMMAF(V, thetan, sigman) - nns) / (1 + 5 * GAMMAF(V, t_taun, -15));
+  hhs' = phi * (GAMMAF(V, thetah, sigmah) - hhs) / (1 + 7.5 * GAMMAF(V, t_tauh, -6));
+  V' = (-gL * (V - VL) - INa - INaP - IKdr - IA - Iz - ICa - IKC - IAHP + Iapp) / Cm;
+  rrs' = (GAMMAF(V, thetar, sigmar) - rrs) / tauRs;
+  ccs' = (GAMMAF(V, thetac, sigmac) - ccs) / tauKc;
+  qqs' = (ZFUNC(aq, Ca, pwrq) - qqs) / tauq;
 
   // Reactions:
   reaction_0000001:  -> Ca; compartment_0000001 * (-uuCa * ICa - Ca) / tauCa;
@@ -104,8 +104,8 @@ model model_0000001()
   tauCa = 13;
   uuCa = 0.13;
   tauKc = 2;
-  
-//Other declarations:
+
+  //Other declarations:
   var INa, INaP, IKdr, IA, Iz, Minfs, Pinfs, Ainfs, zzs, bbs, nns, hhs, V;
   var rrs, ccs, qqs, mKCa, ICa, IAHP, IKC;
 

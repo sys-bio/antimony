@@ -13,10 +13,10 @@ model Bruggeman2005_AmmoniumAssimilation()
   species $P_i in compartment_;
 
   // Assignment Rules:
-  vAPP_GS := aamp * camp / ((1 + pow(12, n1amp) * pow(AMP / (bamp * GStot), n1amp)) * (1 + pow(12, n2amp) * pow(AMP / (damp * GStot), n2amp))) * Vgs
-  nAMP := 12 * AMP / GStot
-  PIIKG1 := 3 * PII * KG / Kd1 / (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3))
-  PIIUMP3KG3 := PIIUMP3 * pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump) / (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump))
+  vAPP_GS := aamp * camp / ((1 + pow(12, n1amp) * pow(AMP / (bamp * GStot), n1amp)) * (1 + pow(12, n2amp) * pow(AMP / (damp * GStot), n2amp))) * Vgs;
+  nAMP := 12 * AMP / GStot;
+  PIIKG1 := 3 * PII * KG / Kd1 / (1 + 3 * KG / Kd1 + 3 * pow(KG, 2) / (Kd1 * Kd2) + pow(KG, 3) / (Kd1 * Kd2 * Kd3));
+  PIIUMP3KG3 := PIIUMP3 * pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump) / (1 + 3 * KG / Kd1piiump + 3 * pow(KG, 2) / (Kd1piiump * Kd2piiump) + pow(KG, 3) / (Kd1piiump * Kd2piiump * Kd3piiump));
 
   // Reactions:
   vut1: PII + $UTP -> PIIUMP + $PPi; compartment_ * (kcatut * UT * UTP * PII / (Kutipii * Kututp * (1 + GLN / Kglnut) * (1 + UTP / Kututp + (PII + PIIUMP + PIIUMP2) / Kutipii + UTP * (PII + PIIUMP + PIIUMP2) / (Kutipii * Kututp) + PPi * UTP * (PII + PIIUMP + PIIUMP2) / (Kutipii * Kutippi * Kututp) + Kutpii * (PIIUMP + PIIUMP2 + PIIUMP3) / (Kutipii * Kutpiiump))));
@@ -158,8 +158,8 @@ model Bruggeman2005_AmmoniumAssimilation()
   Kd1piiump = 0.025;
   Kd2piiump = 0.15;
   Kd3piiump = 0.15;
-  
-//Other declarations:
+
+  //Other declarations:
   var vAPP_GS, nAMP, PIIKG1, PIIUMP3KG3;
 
   //Display Names:

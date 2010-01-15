@@ -12,8 +12,8 @@ model MorrisonAllegra()
   species $glycine in cell, $NADP in cell, $NADPH in cell, $homocysteine in cell;
 
   // Assignment Rules:
-  FH2b := FH2f * DHFRf / Keq
-  DHFRtot := FH2b + DHFRf + MTX1b + MTX2b + MTX3b + MTX4b + MTX5b
+  FH2b := FH2f * DHFRf / Keq;
+  DHFRtot := FH2b + DHFRf + MTX1b + MTX2b + MTX3b + MTX4b + MTX5b;
 
   // Reactions:
   SHMT: FH4 + $serine -> CH2FH4; cell * (SHMT_Vm * (serine / SHMT_Km2 / (1 + serine / SHMT_Km2)) * (FH4 / SHMT_Km1) / (1 + FH4 / SHMT_Km1));

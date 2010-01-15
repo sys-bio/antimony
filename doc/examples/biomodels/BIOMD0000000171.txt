@@ -8,9 +8,9 @@ model model_0000001()
   species C in cytoplasm, CN_ in nucleus, $Tt in cytoplasm, $Pt in cytoplasm;
 
   // Assignment Rules:
-  Tt := T0 + T1 + T2 + C + CN_ * nucleus / cytoplasm
-  Pt := P0 + P1 + P2 + C + CN_ * nucleus / cytoplasm
-  v_dT := (1 + (v_dT_fac - 1) * ceil(sin(time / l_d * pi) * 0.9)) * v_dT_dark
+  Tt := T0 + T1 + T2 + C + CN_ * nucleus / cytoplasm;
+  Pt := P0 + P1 + P2 + C + CN_ * nucleus / cytoplasm;
+  v_dT := (1 + (v_dT_fac - 1) * ceil(sin(time / l_d * pi) * 0.9)) * v_dT_dark;
 
   // Reactions:
   per_trans:  -> M_P; per_trans_v_sP * pow(per_trans_Ki_P, n) / (pow(per_trans_Ki_P, n) + pow(CN_, n));
@@ -97,8 +97,8 @@ model model_0000001()
   T2_light_deact_K_dT = 0.2;
   P2_light_deact_v_dP = 2;
   P2_light_deact_K_dP = 0.2;
-  
-//Other declarations:
+
+  //Other declarations:
   var v_dT;
 
   //Display Names:

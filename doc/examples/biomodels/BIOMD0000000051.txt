@@ -10,13 +10,13 @@ model Chassagnole2002_Carbon_Metabolism()
   species cpg2 in cytosol, cribu5p in cytosol;
 
   // Assignment Rules:
-  catp := 4.27 - 4.163 * (time / (0.657 + 1.43 * time + 0.0364 * pow(time, 2)))
-  cadp := 0.582 + 1.73 * pow(2.731, -0.15 * time) * (0.12 * time + 0.000214 * pow(time, 3))
-  camp := 0.123 + 7.25 * (time / (7.25 + 1.47 * time + 0.17 * pow(time, 2))) + 1.073 / (1.29 + 8.05 * time)
-  cnadp := 0.159 - 0.00554 * (time / (2.8 - 0.271 * time + 0.01 * pow(time, 2))) + 0.182 / (4.82 + 0.526 * time)
-  cnadph := 0.062 + 0.332 * pow(2.718, -0.464 * time) * (0.0166 * pow(time, 1.58) + 0.000166 * pow(time, 4.73) + 0.1312 * pow(10, -9) * pow(time, 7.89) + 0.1362 * pow(10, -12) * pow(time, 11) + 0.1233 * pow(10, -15) * pow(time, 14.2))
-  cnad := 1.314 + 1.314 * pow(2.73, -0.0435 * time - 0.342) - (time + 7.871) * (pow(2.73, -0.0218 * time - 0.171) / (8.481 + time))
-  cnadh := 0.0934 + 0.00111 * pow(2.371, -0.123 * time) * (0.844 * time + 0.104 * pow(time, 3))
+  catp := 4.27 - 4.163 * (time / (0.657 + 1.43 * time + 0.0364 * pow(time, 2)));
+  cadp := 0.582 + 1.73 * pow(2.731, -0.15 * time) * (0.12 * time + 0.000214 * pow(time, 3));
+  camp := 0.123 + 7.25 * (time / (7.25 + 1.47 * time + 0.17 * pow(time, 2))) + 1.073 / (1.29 + 8.05 * time);
+  cnadp := 0.159 - 0.00554 * (time / (2.8 - 0.271 * time + 0.01 * pow(time, 2))) + 0.182 / (4.82 + 0.526 * time);
+  cnadph := 0.062 + 0.332 * pow(2.718, -0.464 * time) * (0.0166 * pow(time, 1.58) + 0.000166 * pow(time, 4.73) + 0.1312 * pow(10, -9) * pow(time, 7.89) + 0.1362 * pow(10, -12) * pow(time, 11) + 0.1233 * pow(10, -15) * pow(time, 14.2));
+  cnad := 1.314 + 1.314 * pow(2.73, -0.0435 * time - 0.342) - (time + 7.871) * (pow(2.73, -0.0218 * time - 0.171) / (8.481 + time));
+  cnadh := 0.0934 + 0.00111 * pow(2.371, -0.123 * time) * (0.844 * time + 0.104 * pow(time, 3));
 
   // Reactions:
   vPTS: cglcex + 65cpep -> 65cg6p + 65cpyr; extracellular * vPTS_rmaxPTS * cglcex * (cpep / cpyr) / ((vPTS_KPTSa1 + vPTS_KPTSa2 * (cpep / cpyr) + vPTS_KPTSa3 * cglcex + cglcex * (cpep / cpyr)) * (1 + pow(cg6p, vPTS_nPTSg6p) / vPTS_KPTSg6p));
@@ -228,8 +228,8 @@ model Chassagnole2002_Carbon_Metabolism()
   vGLP_mu = 2.78e-05;
   vEXTER_Dil = 2.78e-05;
   vEXTER_cfeed = 110.96;
-  
-//Other declarations:
+
+  //Other declarations:
   var catp, cadp, camp, cnadp, cnadph, cnad, cnadh;
 
   //Display Names:

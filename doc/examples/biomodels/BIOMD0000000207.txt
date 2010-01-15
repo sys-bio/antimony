@@ -7,16 +7,16 @@ model Romond1999_CellCycle()
   species $M2 in compartment_, $X2 in compartment_;
 
   // Assignment Rules:
-  V1 := C1 / (Kc1 + C1) * V_M1
-  V3 := M1 * V_M3
-  U1 := C2 / (Kc2 + C2) * U_M1
-  U3 := M2 * U_M3
+  V1 := C1 / (Kc1 + C1) * V_M1;
+  V3 := M1 * V_M3;
+  U1 := C2 / (Kc2 + C2) * U_M1;
+  U3 := M2 * U_M3;
 
   // Rate Rules:
-  M1' = V1 * (1 - M1) / (K1 + (1 - M1)) - V2 * M1 / (K2 + M1)
-  X1' = V3 * (1 - X1) / (K3 + (1 - X1)) - V4 * X1 / (K4 + X1)
-  M2' = U1 * (1 - M2) / (H1 + (1 - M2)) - U2 * M2 / (H2 + M2)
-  X2' = U3 * (1 - X2) / (H3 + (1 - X2)) - U4 * X2 / (H4 + X2)
+  M1' = V1 * (1 - M1) / (K1 + (1 - M1)) - V2 * M1 / (K2 + M1);
+  X1' = V3 * (1 - X1) / (K3 + (1 - X1)) - V4 * X1 / (K4 + X1);
+  M2' = U1 * (1 - M2) / (H1 + (1 - M2)) - U2 * M2 / (H2 + M2);
+  X2' = U3 * (1 - X2) / (H3 + (1 - X2)) - U4 * X2 / (H4 + X2);
 
   // Reactions:
   R1:  -> C1; compartment_ * vi1 * Kim1 / (Kim1 + M2);
@@ -66,8 +66,8 @@ model Romond1999_CellCycle()
   H3 = 0.01;
   U4 = 0.05;
   H4 = 0.01;
-  
-//Other declarations:
+
+  //Other declarations:
   var V1, V3, U1, U3;
 
   //Display Names:

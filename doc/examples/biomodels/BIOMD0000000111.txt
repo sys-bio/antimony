@@ -7,12 +7,12 @@ model Novak2001_FissionYeast_CellCycle()
   species IEP in cell, rum1T in cell, SK in cell, M in cell, $MPF in cell;
 
   // Assignment Rules:
-  MPF := (cdc13T - preMPF) * (cdc13T - Trimer) / cdc13T
-  sigma := cdc13T + rum1T + Kdiss
-  Trimer := 2 * cdc13T * rum1T / (sigma + pow(pow(sigma, 2) - 4 * cdc13T * rum1T, 0.5))
-  TF := 2 * k15 * M * J16 / (k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16 + sqrt(pow(k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16, 2) - 4 * (k16_prime + k16_double_prime * MPF - k15 * M) * k15 * M * J16))
-  kwee := kwee_prime + (kwee_double_prime - kwee_prime) * (2 * Vawee * Jiwee / (Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee + sqrt(pow(Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee, 2) - 4 * (Viwee * MPF - Vawee) * Vawee * Jiwee)))
-  k25 := k25_prime + (k25_double_prime - k25_prime) * (2 * Va25 * MPF * Ji25 / (Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25 + sqrt(pow(Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25, 2) - 4 * (Vi25 - Va25 * MPF) * Va25 * MPF * Ji25)))
+  MPF := (cdc13T - preMPF) * (cdc13T - Trimer) / cdc13T;
+  sigma := cdc13T + rum1T + Kdiss;
+  Trimer := 2 * cdc13T * rum1T / (sigma + pow(pow(sigma, 2) - 4 * cdc13T * rum1T, 0.5));
+  TF := 2 * k15 * M * J16 / (k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16 + sqrt(pow(k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16, 2) - 4 * (k16_prime + k16_double_prime * MPF - k15 * M) * k15 * M * J16));
+  kwee := kwee_prime + (kwee_double_prime - kwee_prime) * (2 * Vawee * Jiwee / (Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee + sqrt(pow(Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee, 2) - 4 * (Viwee * MPF - Vawee) * Vawee * Jiwee)));
+  k25 := k25_prime + (k25_double_prime - k25_prime) * (2 * Va25 * MPF * Ji25 / (Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25 + sqrt(pow(Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25, 2) - 4 * (Vi25 - Va25 * MPF) * Va25 * MPF * Ji25)));
 
   // Reactions:
   R1:  -> cdc13T; k1 * M;
@@ -102,8 +102,8 @@ model Novak2001_FissionYeast_CellCycle()
   k13 = 0.1;
   k14 = 0.1;
   mu = 0.005;
-  
-//Other declarations:
+
+  //Other declarations:
   var flag_MPF, sigma, Trimer, TF, kwee, k25;
 
   //Display Names:

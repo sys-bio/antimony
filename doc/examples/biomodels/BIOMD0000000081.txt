@@ -11,15 +11,15 @@ model Suh2004_KCNQ_regulation()
   species GGTPgSMg_M in M, GGDP_M in M;
 
   // Assignment Rules:
-  GTP_C := 100 + -(50 * exp(-(0.00833333333333333 * (290 + time))))
-  MgSat20 := 1 * (1 / (1 + 20 * (1 / Mg2_C)))
-  ATPSat300 := 1 * (1 / (1 + 300 * (1 / (0.5 + ATP_C))))
-  MgSat10 := 0.2 + 0.8 * 1 * (1 / (1 + KMgGTPase * (1 / Mg2_C)))
-  OxoSat := 1 * (1 / (1 + Koxom * (1 / (1.000000e-05 + oxoM_EX))))
-  Gactive := GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M
-  ATPSat1000 := 1 * (1 / (1 + 1000 * (1 / (0.5 + ATP_C))))
-  I_KCNQ := 1.33 * pow(0.025 * PIP2xKCNQ_M, nHill)
-  fGactive := (GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M) / 200
+  GTP_C := 100 + -(50 * exp(-(0.00833333333333333 * (290 + time))));
+  MgSat20 := 1 * (1 / (1 + 20 * (1 / Mg2_C)));
+  ATPSat300 := 1 * (1 / (1 + 300 * (1 / (0.5 + ATP_C))));
+  MgSat10 := 0.2 + 0.8 * 1 * (1 / (1 + KMgGTPase * (1 / Mg2_C)));
+  OxoSat := 1 * (1 / (1 + Koxom * (1 / (1.000000e-05 + oxoM_EX))));
+  Gactive := GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M;
+  ATPSat1000 := 1 * (1 / (1 + 1000 * (1 / (0.5 + ATP_C))));
+  I_KCNQ := 1.33 * pow(0.025 * PIP2xKCNQ_M, nHill);
+  fGactive := (GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M) / 200;
 
   // Reactions:
   PIP5kinase: 0.0009967ATP_C + PIP_M -> PIP2_M; (0.2 + 0.8 * MgSat20) * PIP5kinase_kPIP5Kinase * PIP_M * ATPSat300;
@@ -98,8 +98,8 @@ model Suh2004_KCNQ_regulation()
   AlF4on_kAlF4off = 0.005;
   PI4Kinase_kPI4Kinase = 0.0001;
   MgonGDPAlF4_kMgonAlF4 = 0.002;
-  
-//Other declarations:
+
+  //Other declarations:
   var MgSat20, ATPSat300, MgSat10, OxoSat, Gactive, ATPSat1000, I_KCNQ, fGactive;
 
   //Display Names:

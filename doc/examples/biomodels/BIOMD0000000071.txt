@@ -12,19 +12,19 @@ model Bakker2001_Glycolysis()
   species $Gly3Pg in glycosome, $PGAg in glycosome, $PEPc in cytosol;
 
   // Assignment Rules:
-  Gly3P := (Gly3Pc * cytosol + Gly3Pg * glycosome) / tot_cell
-  ATPc := (Pc * (1 - 4 * KeqAK) - sumAc + pow(pow(sumAc - (1 - 4 * KeqAK) * Pc, 2) + 4 * (1 - 4 * KeqAK) * KeqAK * pow(Pc, 2), 0.5)) / (2 * (1 - 4 * KeqAK))
-  ADPc := Pc - 2 * ATPc
-  ATPg := (Pg * (1 - 4 * KeqAK) - sumAg + pow(pow(sumAg - (1 - 4 * KeqAK) * Pg, 2) + 4 * (1 - 4 * KeqAK) * KeqAK * pow(Pg, 2), 0.5)) / (2 * (1 - 4 * KeqAK))
-  ADPg := Pg - 2 * ATPg
-  DHAPg := (DHAP * Vt - DHAPc * Vc) / Vg
-  DHAPc := sumc5 * (1 + Vc / Vg) * DHAP / (sumc4 + sumc5 * Vc / Vg - (BPGA13 + 2 * Fru16BP + Fru6P + GAP + Glc6P + Pg))
-  Gly3Pc := sumc5 - DHAPc
-  Gly3Pg := Gly3Pc * DHAPg / (Keq_anti * DHAPc)
-  PGAg := Nb * (1 + Vc / Vg) / (1 + (1 + Keq_PGM + Keq_PGM * Keq_ENO) * Vc / Vg)
-  PEPc := Keq_ENO * Keq_PGM * PGAg
-  Vc := cytosol * Vt / tot_cell
-  Vg := glycosome * Vt / tot_cell
+  Gly3P := (Gly3Pc * cytosol + Gly3Pg * glycosome) / tot_cell;
+  ATPc := (Pc * (1 - 4 * KeqAK) - sumAc + pow(pow(sumAc - (1 - 4 * KeqAK) * Pc, 2) + 4 * (1 - 4 * KeqAK) * KeqAK * pow(Pc, 2), 0.5)) / (2 * (1 - 4 * KeqAK));
+  ADPc := Pc - 2 * ATPc;
+  ATPg := (Pg * (1 - 4 * KeqAK) - sumAg + pow(pow(sumAg - (1 - 4 * KeqAK) * Pg, 2) + 4 * (1 - 4 * KeqAK) * KeqAK * pow(Pg, 2), 0.5)) / (2 * (1 - 4 * KeqAK));
+  ADPg := Pg - 2 * ATPg;
+  DHAPg := (DHAP * Vt - DHAPc * Vc) / Vg;
+  DHAPc := sumc5 * (1 + Vc / Vg) * DHAP / (sumc4 + sumc5 * Vc / Vg - (BPGA13 + 2 * Fru16BP + Fru6P + GAP + Glc6P + Pg));
+  Gly3Pc := sumc5 - DHAPc;
+  Gly3Pg := Gly3Pc * DHAPg / (Keq_anti * DHAPc);
+  PGAg := Nb * (1 + Vc / Vg) / (1 + (1 + Keq_PGM + Keq_PGM * Keq_ENO) * Vc / Vg);
+  PEPc := Keq_ENO * Keq_PGM * PGAg;
+  Vc := cytosol * Vt / tot_cell;
+  Vg := glycosome * Vt / tot_cell;
 
   // Reactions:
   vGlcTr: $GlcE -> GlcI; tot_cell / Vt * vGlcTr_Vm1 * (GlcE - GlcI) / (vGlcTr_K1Glc + GlcE + GlcI + vGlcTr_afac * GlcE * GlcI / vGlcTr_K1Glc);
@@ -137,8 +137,8 @@ model Bakker2001_Glycolysis()
   vGlyK_Vm14f = 200;
   vGlyK_K14ADPg = 0.12;
   vGlyK_K14Gly3Pg = 5.1;
-  
-//Other declarations:
+
+  //Other declarations:
   var Vc, Vg;
 
   //Display Names:

@@ -9,7 +9,7 @@ model model_0000001()
   species Y in cell, Yp in cell, Z in cell, B in cell, Bp in cell, SetYp in cell;
 
   // Assignment Rules:
-  Bias := 1 - pow(Yp, Hill) / (2.333 * pow(SetYp, Hill) + pow(Yp, Hill))
+  Bias := 1 - pow(Yp, Hill) / (2.333 * pow(SetYp, Hill) + pow(Yp, Hill));
 
   // Reactions:
   complex_r1: TTW -> TT + W; cell * (complex_r1_k1 * TTW - complex_r1_k2 * TT * W);
@@ -122,8 +122,8 @@ model model_0000001()
   phosphotransfer_r10_k1 = 30000000;
   phosphotransfer_r11_k1 = 30000000;
   phosphotransfer_r12_k1 = 30000000;
-  
-//Other declarations:
+
+  //Other declarations:
   var Bias;
 
   //Display Names:

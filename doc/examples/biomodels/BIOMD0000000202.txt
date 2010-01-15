@@ -7,11 +7,11 @@ model ChenXF2008_CICR()
   species S2a in ER, S4 in ER, Oc in PM, O_o in PM, $Orai1 in PM;
 
   // Assignment Rules:
-  S2 := pow(K1, 2) / (pow(Ca_ER, 2) + pow(K1, 2)) * (St - S2a)
-  Orai1 := Orai1_t - (r_hill * Oc + r_hill * O_o)
+  S2 := pow(K1, 2) / (pow(Ca_ER, 2) + pow(K1, 2)) * (St - S2a);
+  Orai1 := Orai1_t - (r_hill * Oc + r_hill * O_o);
 
   // Rate Rules:
-  h' = A * (Kd - (Ca_Cyt + Kd) * h)
+  h' = A * (Kd - (Ca_Cyt + Kd) * h);
 
   // Reactions:
   ER_Channel: Ca_ER -> Ca_Cyt; Cytoplasm * (L + P_IP3R * pow(IP3_Cyt, 3) * pow(Ca_Cyt, 3) * pow(h, 3) / (pow(IP3_Cyt + Ki, 3) * pow(Ca_Cyt + Ka, 3))) * (Ca_ER - Ca_Cyt);
@@ -83,7 +83,7 @@ model ChenXF2008_CICR()
   r_hill = 4;
   h = 0;
   Orai1_t = 0.001;
-  
-//Other declarations:
+
+  //Other declarations:
   var h;
 end

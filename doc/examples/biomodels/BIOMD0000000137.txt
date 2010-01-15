@@ -12,12 +12,12 @@ model Sedaghat2002_InsulinSignalling_noFeedback()
   species x21 in CellSurface;
 
   // Assignment Rules:
-  k9 := (k9_stimulated + k9_basal) * (x12 / PI3K) + k9_basal
-  k11 := 0.1 * kminus11 * (x13 - 0.31) / (3.1 - 0.31)
-  k12 := 0.1 * kminus12 * (x13 - 0.31) / (3.1 - 0.31)
-  k13prime := (40 / 60 - 4 / 96) * kminus13 * Effect
-  Effect := (0.2 * x17 + 0.8 * x19) / APequil
-  x4x5 := x4 + x5
+  k9 := (k9_stimulated + k9_basal) * (x12 / PI3K) + k9_basal;
+  k11 := 0.1 * kminus11 * (x13 - 0.31) / (3.1 - 0.31);
+  k12 := 0.1 * kminus12 * (x13 - 0.31) / (3.1 - 0.31);
+  k13prime := (40 / 60 - 4 / 96) * kminus13 * Effect;
+  Effect := (0.2 * x17 + 0.8 * x19) / APequil;
+  x4x5 := x4 + x5;
 
   // Reactions:
   R1: x2 -> x3; CellSurface * (k1 * x1 * x2 - kminus1 * x3);
@@ -108,8 +108,8 @@ model Sedaghat2002_InsulinSignalling_noFeedback()
   PTP = 1;
   APequil = 9.09091;
   PI3K = 5;
-  
-//Other declarations:
+
+  //Other declarations:
   var k5, k9, k11, k12, k13prime, Effect, x4x5;
 
   //Display Names:

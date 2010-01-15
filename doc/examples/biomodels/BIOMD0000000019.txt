@@ -22,14 +22,14 @@ model Schoeberl2002_EGF_MAPK()
   species $MEK_PP in c2, $ERK_PP in c2, $SHC_P_t in c2, $EGF_EGFR_act in c2;
 
   // Assignment Rules:
-  Raf_act := x45 + x46 + x48 + x50 + x72 + x73 + x74 + x76
-  Ras_GTP := x42 + x28 + x70 + x69
-  MEK_PP := x51 + x77
-  ERK_PP := x59 + x83
-  SHC_P_t := x33 + x34 + x35 + x36 + x37 + x38 + x39 + x40 + x91 + x92 + x93 + x94 + x64 + x65 + x66 + x67 + x68
-  EGF_EGFR_act := x5 + x7 + x15 + x23 + x25 + x27 + x29 + x32 + x33 + x34 + x35 + x36 + x37 + x88 + x89 + x90 + x91 + x92 + x93 + x94 + x8 + x11 + x17 + x18 + x19 + x20 + x21 + x63 + x64 + x65 + x66 + x67 + x68
-  k5 := piecewise(1.55, lt(C, 3100), 0.2, gt(C, 100000), C * -1.350000e-05 + 1.55)
-  C := RT / (kr1 / (k1 * x1) + 1)
+  Raf_act := x45 + x46 + x48 + x50 + x72 + x73 + x74 + x76;
+  Ras_GTP := x42 + x28 + x70 + x69;
+  MEK_PP := x51 + x77;
+  ERK_PP := x59 + x83;
+  SHC_P_t := x33 + x34 + x35 + x36 + x37 + x38 + x39 + x40 + x91 + x92 + x93 + x94 + x64 + x65 + x66 + x67 + x68;
+  EGF_EGFR_act := x5 + x7 + x15 + x23 + x25 + x27 + x29 + x32 + x33 + x34 + x35 + x36 + x37 + x88 + x89 + x90 + x91 + x92 + x93 + x94 + x8 + x11 + x17 + x18 + x19 + x20 + x21 + x63 + x64 + x65 + x66 + x67 + x68;
+  k5 := piecewise(1.55, lt(C, 3100), 0.2, gt(C, 100000), C * -1.350000e-05 + 1.55);
+  C := RT / (kr1 / (k1 * x1) + 1);
 
   // Reactions:
   v1: $x1 + x2 -> x3; k1 * x1 * x2 - kr1 * x3;
@@ -348,8 +348,8 @@ model Schoeberl2002_EGF_MAPK()
   k60 = 0.04002;
   k61 = 0.01002;
   RT = 50000;
-  
-//Other declarations:
+
+  //Other declarations:
   var k5, C;
 
   //Display Names:

@@ -10,23 +10,23 @@ model NovakTyson1997CellModel()
   species $Cdc13Total in Cell, $Cig2Total in Cell;
 
   // Assignment Rules:
-  SPF := Cig1 + alpha * G1K + MPF
-  MPF := G2K + beta * PG2
-  IEB := 1 + -1 * IE
-  UbEB := 1 + -1 * UbE
-  UbE2B := 1 + -1 * UbE2
-  Wee1B := 1 + -1 * Wee1
-  Cdc25B := 1 + -1 * Cdc25
-  Rum1Total := G1R + G2R + PG2R + R
-  Cdc13Total := G2K + G2R + PG2 + PG2R
-  Cig2Total := G1K + G1R
-  k2 := UbE * V2 + (1 + -1 * UbE) * V2prime
-  k6 := UbE2 * V6 + (1 + -1 * UbE2) * V6prime
-  kwee := Vwprime * (1 + -1 * Wee1) + Vw * Wee1
-  k25 := Cdc25 * V25 + (1 + -1 * Cdc25) * V25prime
+  SPF := Cig1 + alpha * G1K + MPF;
+  MPF := G2K + beta * PG2;
+  IEB := 1 + -1 * IE;
+  UbEB := 1 + -1 * UbE;
+  UbE2B := 1 + -1 * UbE2;
+  Wee1B := 1 + -1 * Wee1;
+  Cdc25B := 1 + -1 * Cdc25;
+  Rum1Total := G1R + G2R + PG2R + R;
+  Cdc13Total := G2K + G2R + PG2 + PG2R;
+  Cig2Total := G1K + G1R;
+  k2 := UbE * V2 + (1 + -1 * UbE) * V2prime;
+  k6 := UbE2 * V6 + (1 + -1 * UbE2) * V6prime;
+  kwee := Vwprime * (1 + -1 * Wee1) + Vw * Wee1;
+  k25 := Cdc25 * V25 + (1 + -1 * Cdc25) * V25prime;
 
   // Rate Rules:
-  Mass' = Mass * mu
+  Mass' = Mass * mu;
 
   // Reactions:
   G2K_Creation:  -> G2K; k1;
@@ -122,8 +122,8 @@ model NovakTyson1997CellModel()
   alpha = 0.25;
   beta = 0.05;
   Cig1 = 0;
-  
-//Other declarations:
+
+  //Other declarations:
   var kp, Mass, k2, k6, kwee, k25;
 
   //Display Names:

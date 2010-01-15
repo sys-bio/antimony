@@ -6,8 +6,8 @@ model Zhu2007_TF_syn_modulated_by_Ca()
   species X in cytoplasm, Y in store, Z in cytoplasm;
 
   // Assignment Rules:
-  kf := kf0 * (1 + gamma * pow(Z, 4) / (pow(Ka, 4) + pow(Z, 4)))
-  Kd := Kd0 / (1 + pow(Z, 4) / pow(Kb, 4))
+  kf := kf0 * (1 + gamma * pow(Z, 4) / (pow(Ka, 4) + pow(Z, 4)));
+  Kd := Kd0 / (1 + pow(Z, 4) / pow(Kb, 4));
 
   // Reactions:
   TF_synthesis:  -> X; kf * pow(X, 2) / (pow(X, 2) + Kd);
@@ -50,8 +50,8 @@ model Zhu2007_TF_syn_modulated_by_Ca()
   Calcium_into_cytoplasm_p = 4;
   Leakage_k1 = 0.7;
   Leakage_from_cytoplasm_k = 10;
-  
-//Other declarations:
+
+  //Other declarations:
   var kf, Kd;
 
   //Display Names:
