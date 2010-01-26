@@ -67,7 +67,7 @@ model ODea2007_IkappaB()
   deg_ein: IkBeIKKNFkB -> NFkB_cytoplasm + IKK; cytoplasm * deg_ein_r6 * IkBeIKKNFkB;
   loc_e: IkBe_cytoplasm -> IkBe_nucleus; cytoplasm * loc_e_tp1e * IkBe_cytoplasm - nucleus * loc_e_tp2e * IkBe_nucleus;
   loc_en: IkBeNFkB_nucleus -> IkBeNFkB_cytoplasm; nucleus * loc_en_k2_e * IkBeNFkB_nucleus;
-  IKK_deg: IKK -> ; cytoplasm * IKK_deg_IKK_deg * IKK;
+  IKK_deg: IKK -> ; cytoplasm * IKK_deg_k_IKK_deg * IKK;
   itxn_a:  -> IkBa_mRNA; nucleus * itxn_a_tr2a_i * pow(NFkB_nucleus, 2);
 
   // Species initializations:
@@ -169,7 +169,7 @@ model ODea2007_IkappaB()
   loc_e_tp1e = 0.018;
   loc_e_tp2e = 0.012;
   loc_en_k2_e = 0.414;
-  IKK_deg_IKK_deg = 0;
+  IKK_deg_k_IKK_deg = 0;
   itxn_a_tr2a_i = 1.98;
 
   //Other declarations:

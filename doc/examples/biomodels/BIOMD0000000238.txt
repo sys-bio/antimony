@@ -1,0 +1,99 @@
+//Created by libAntimony v1.3
+model Overgaard2007_PDmodel_IL21()
+
+  // Compartments and Species:
+  compartment COMpartment_;
+
+  // Assignment Rules:
+  E_slow := AMT_dose * pEs2 * (gNsTs1 + gNsTs2 + gNsTs3);
+  E_fast := pEf2 * (gNfTf1 + gNfTf2 + gNfTf3);
+  f_prime := delta_high_dose * pow(1 + exp(-alpha * (time - (tdose1 + t_prime))), -1);
+  M_c := piecewise(M_night, and(geq(tprime / 3600, t_night), lt(tprime / 3600, t_day)), M_day);
+  tprime := time * 3600 * 1 - floor(time * 3600 * 1 / day_length) * day_length;
+  k := kb + kinc * (T - T_b * (1 + pEtot * BR)) + f2_drug;
+  f2_drug := 0;
+  T_day := T_b + delta_T / 2;
+  T_night := T_b - delta_T / 2;
+  kb := M_b / (T_b - T_a);
+  M_day := (kb + kinc * (T_day - T_b)) * (T_day - T_a);
+  M_night := (1 - f_prime) * M_night_baseline + f_prime * M_day;
+  M_night_baseline := (kb + kinc * (T_night - T_b)) * (T_night - T_a);
+  gNsTs1 := piecewise(pow(Ks, Ns) / 6 * exp(-Ks * X1) * pow(X1, Ns - 1), gt(X1, 0), 0);
+  gNsTs2 := piecewise(pow(Ks, Ns) / 6 * exp(-Ks * X2) * pow(X2, Ns - 1), gt(X2, 0), 0);
+  gNsTs3 := piecewise(pow(Ks, Ns) / 6 * exp(-Ks * X3) * pow(X3, Ns - 1), gt(X3, 0), 0);
+  gNfTf1 := piecewise(pow(Kf, Nf) / 6 * exp(-Kf * X1) * pow(X1, Nf - 1), gt(X1, 0), 0);
+  gNfTf2 := piecewise(pow(Kf, Nf) / 6 * exp(-Kf * X2) * pow(X2, Nf - 1), gt(X2, 0), 0);
+  gNfTf3 := piecewise(pow(Kf, Nf) / 6 * exp(-Kf * X3) * pow(X3, Nf - 1), gt(X3, 0), 0);
+  X1 := (time - tdose1) / 24;
+  X2 := (time - tdose2) / 24;
+  X3 := (time - tdose3) / 24;
+  Kf := Nf / Tf;
+  Ks := Ns / Ts;
+
+  // Rate Rules:
+  M' = -km * (M - M_c);
+  T' = pow(c, -1) * (M - k * (T - T_a));
+  BR' = f_prime * (E_slow + E_fast) * (1 - BR) - kR * BR;
+
+  // Compartment initializations:
+  COMpartment_ = 1;
+
+  // Variable initializations:
+  M = 3.5;
+  T = 38.785;
+  BR = 0;
+  T_a = 21;
+  T_b = 38;
+  delta_T = 1.57;
+  kinc = 0.0258;
+  tdose1 = 24;
+  tdose2 = 72;
+  tdose3 = 120;
+  t_day = 17.5;
+  t_night = 6.73;
+  day_length = 86400;
+  km = 1.1375;
+  c = 3.47;
+  pEtot = 0.144;
+  kR = 5.35;
+  AMT_dose = 3;
+  pEf1 = 1;
+  pEs1 = 0.2;
+  pEf2 = 3.57;
+  pEs2 = 2.43;
+  pEf3 = 8;
+  pEs3 = 50;
+  M_b = 3;
+  t_prime = 45.12;
+  alpha = 0.2229166;
+  delta_high_dose = 1;
+  Ns = 4;
+  Nf = 4;
+  Ts = 2.45;
+  Tf = 0.368;
+
+  //Other declarations:
+  var M, T, BR, E_slow, E_fast, f_prime, M_c, tprime, k, f2_drug, T_day, T_night;
+  var kb, M_day, M_night, M_night_baseline, gNsTs1, gNsTs2, gNsTs3, gNfTf1;
+  var gNfTf2, gNfTf3, X1, X2, X3, Kf, Ks;
+
+  //Display Names:
+  M is "Metabolic rate";
+  T is "Temperature";
+  BR is "Bound Receptor";
+  E_slow is "Slow Effect";
+  E_fast is "Fast Effect";
+  f_prime is "Priming";
+  T_a is "ambient temperature";
+  T_b is "basiline temperature";
+  delta_T is "temperature difference";
+  M_c is "circadian rhythm";
+  km is "rate constant Metabolism";
+  c is "specific heat constant";
+  k is "heat conductance";
+  kb is "heat conductance baselinevalue";
+  Ns is "No. of transit compartment (slow)";
+  Nf is "No. of transit compartment (fast)";
+  Ts is "mean total delay (slow)";
+  Tf is "mena total delay (fast)";
+end

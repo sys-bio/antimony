@@ -1,0 +1,62 @@
+//Created by libAntimony v1.3
+model blub()
+
+  // Compartments and Species:
+  compartment Gut, C, P, Tol, Eff;
+  species $X_gut in Gut, $C_p in C, $C_per in P, $C_e in Eff, $C_t in Tol;
+
+  // Assignment Rules:
+  E := E_0 + S * C_e / (1 + C_t / T_50);
+
+  // Rate Rules:
+  X_gut' = -k_a * X_gut;
+  C_p' = k_a * F * X_gut / V_C - k12 * C_p + k21 * C_per - k10 * C_p;
+  C_per' = k12 * C_p - k21 * C_per;
+  C_e' = k_eo * (C_p - C_e);
+  C_t' = k_tol * (C_p - C_t);
+
+  // Events:
+  coffecup: at geq(time, t_int * cups + t_lag): X_gut = X_gut + cupsize / bodyweight, cups = cups + 1;
+
+  // Species initializations:
+  X_gut = 0;
+  C_p = 0;
+  C_per = 0;
+  C_e = 0;
+  C_t = 0;
+
+  // Compartment initializations:
+  Gut = 1;
+  C = 0.31;
+  P = 1;
+  Tol = 1;
+  Eff = 1;
+
+  // Variable initializations:
+  t_int = 2;
+  cups = 0;
+  t_lag = 0.15;
+  cupsize = 90;
+  bodyweight = 80;
+  CL = 0.11;
+  V_C = 0.32;
+  k_a = 12;
+  k10 = 0.34;
+  k12 = 1.64;
+  k21 = 1.19;
+  t_half = 3.98;
+  F = 0.984;
+  k_eo = 2.03;
+  k_tol = 0.75;
+  E_0 = 83.3;
+  S = 19.07;
+  T_50 = 0.26;
+
+  //Other declarations:
+  var cups, E;
+
+  //Display Names:
+  coffecup is "coffee cup";
+  t_int is "t_intervall";
+  E is "MAP";
+end

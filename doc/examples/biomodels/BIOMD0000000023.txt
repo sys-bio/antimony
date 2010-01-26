@@ -20,7 +20,7 @@ model Rohwer2001_Sucrose()
   v8: HexP + Fru -> Suc + $UDP; compartment_ * (-v8_Vmax8f * (Suc * UDP - Fru * 0.8231 * HexP / v8_Keq8) / (Suc * UDP * (1 + Fru / v8_Ki8Fru) + v8_Km8Suc * (UDP + v8_Ki8UDP) + v8_Km8UDP * Suc + v8_Vmax8f / (v8_Vmax8r * v8_Keq8) * (v8_Km8UDPGlc * Fru * (1 + UDP / v8_Ki8UDP) + 0.8231 * HexP * (v8_Km8Fru * (1 + v8_Km8UDP * Suc / (v8_Ki8UDP * v8_Km8Suc)) + Fru * (1 + Suc / v8_Ki8Suc)))));
   v9: Suc -> Fru + Glc; compartment_ * (v9_Vmax9 / (1 + Glc / v9_Ki9Glc) * Suc / (v9_Km9Suc * (1 + Fru / v9_Ki9Fru) + Suc));
   v10: HexP -> $glycolysis; compartment_ * (v10_Vmax10 * 0.0575 * HexP / (v10_Km10F6P + 0.0575 * HexP));
-  v11: Suc -> $Sucvac; compartment_ * compartment_ * (v11_Vmax11 * Suc / (v11_Km11Suc + Suc));
+  v11: Suc -> $Sucvac; compartment_ * (v11_Vmax11 * Suc / (v11_Km11Suc + Suc));
 
   // Species initializations:
   Fru = 1;
@@ -95,4 +95,7 @@ model Rohwer2001_Sucrose()
   v10_Km10F6P = 0.2;
   v11_Vmax11 = 1;
   v11_Km11Suc = 100;
+
+  //Display Names:
+  compartment_ is "cell";
 end
