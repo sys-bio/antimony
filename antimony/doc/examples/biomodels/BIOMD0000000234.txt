@@ -1,0 +1,42 @@
+//Created by libAntimony v1.3
+model Tham2008_PDmodel_TumourShrinkage()
+
+  // Compartments and Species:
+  compartment COMpartment_;
+  species $Ce in COMpartment_;
+
+  // Assignment Rules:
+  rem_time := (time * conversion_factor - floor(time * conversion_factor / (Cycle_Int * conversion_factor)) * Cycle_Int * conversion_factor) / conversion_factor;
+  Exposure := piecewise(Dose, and(lt(time, Cycle_Int * N_Cycle), lt(Dose_Int1, rem_time), lt(rem_time, Dose_Length)), Dose, and(lt(time, Cycle_Int * N_Cycle), lt(Dose_Int2, rem_time), lt(rem_time, Dose_Int2 + Dose_Length)), 0);
+  Effect := 1 - Ce / (AE50 + Ce);
+  Keq := log(2) / Teq;
+  RateIn := Size_0 * Kover;
+  Kover := 1 / T_Turnover;
+
+  // Rate Rules:
+  Ce' = Exposure / 1 - Ce * Keq;
+  Size' = (RateIn * Effect - Kover * Size) * Size;
+
+  // Species initializations:
+  Ce = 0;
+
+  // Compartment initializations:
+  COMpartment_ = 1;
+
+  // Variable initializations:
+  Size = 6.66;
+  Dose = 5203.84;
+  Dose_Int1 = 0;
+  Dose_Int2 = 1;
+  Dose_Length = 0.44359;
+  Cycle_Int = 3;
+  N_Cycle = 6;
+  conversion_factor = 604800;
+  AE50 = 10600;
+  Teq = 7.67;
+  Size_0 = 6.66;
+  T_Turnover = 21.8;
+
+  //Other declarations:
+  var rem_time, Exposure, Size, Effect, Keq, RateIn, Kover;
+end

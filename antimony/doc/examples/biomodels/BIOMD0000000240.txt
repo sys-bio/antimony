@@ -1,0 +1,68 @@
+//Created by libAntimony v1.3
+model Veening2008_DegU_Regulation()
+
+  // Compartments and Species:
+  compartment univ;
+  species AprE in univ, DegU in univ, DegUP in univ, Dim in univ, mAprE in univ;
+  species mDegU in univ;
+
+  // Assignment Rules:
+  kdephos := q / ratio;
+  kphos := ratio * p;
+  DegU_Total := DegU + DegUP + 2 * Dim;
+
+  // Reactions:
+  AprEdeg: AprE -> ; kdeg * AprE;
+  AprEsyn:  -> AprE; ksyn * mAprE * univ;
+  DimerAss: 2DegUP -> Dim; ka * pow(DegUP, 2);
+  DimerDis: Dim -> 2DegUP; kd * Dim;
+  degradation1: DegU -> ; kdeg * DegU * univ;
+  degradation2: DegUP -> ; kdeg * DegUP * univ;
+  degradation3: Dim -> ; kdeg * Dim * univ;
+  degradationmRNA: mDegU -> ; kdegm * mDegU;
+  dephosphorylation: DegUP -> DegU; kdephos * DegUP;
+  mRNAAprEdeg: mAprE -> ; kdegm * mAprE;
+  mRNAAprEsyn:  -> mAprE; Kr1 / (R + Kr1) * (Iro * (Dim * univ / Kdim + 1) / (1 + Dim * univ / Kdim + pow(Dim * univ, 2) / pow(Kdim, 2) + R / Kr) + Irmax * pow(Dim * univ, 2) / (pow(Kdim, 2) * (1 + Dim * univ / Kdim + pow(Dim * univ, 2) / pow(Kdim, 2) + R / Kr)));
+  phosphorylation: DegU -> DegUP; kphos * DegU;
+  synthesisDegU:  -> DegU; ksyn1 * mDegU * univ;
+  synthesismRNA:  -> mDegU; Io * K / (Dim * univ + K) + Imax * Dim * univ / (Dim * univ + K);
+
+  // Species initializations:
+  AprE = 0;
+  DegU = 10;
+  DegUP = 0;
+  Dim = 0;
+  mAprE = 0;
+  mDegU = 0;
+
+  // Compartment initializations:
+  univ = 1;
+
+  // Variable initializations:
+  Imax = 0.048;
+  Io = 0.004;
+  Irmax = 0.4;
+  Iro = 0.02;
+  K = 7;
+  Kdim = 12;
+  Kr = 7;
+  Kr1 = 7;
+  R = 7;
+  V = 1;
+  ka = 0.025;
+  kd = 0.1;
+  kdeg = 0.0004;
+  kdegA = 0.0001;
+  kdegm = 0.01;
+  ksyn = 0.04;
+  ksyn1 = 0.04;
+  p = 0.15;
+  q = 0.004;
+  ratio = 0.026666667;
+
+  //Other declarations:
+  var kdephos, kphos, DegU_Total;
+
+  //Display Names:
+  ratio is "kphosratiokdephos";
+end

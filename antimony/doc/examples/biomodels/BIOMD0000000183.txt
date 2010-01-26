@@ -1,4 +1,8 @@
 //Created by libAntimony v1.3
+function transition1_R_T(ka, b, species_)
+  species_ * ka * pow(b, 1 / 2);
+end
+
 function function_1(parameter_10, parameter_11, species_18)
   species_18 * parameter_10 / pow(parameter_11, 1 / 2);
 end
@@ -309,10 +313,10 @@ model Model_1()
   reaction_126: species_32 -> species_31 + species_1; compartment_0 * parameter_5 * species_32;
   reaction_127: species_0 -> species_17; compartment_0 * parameter_9 * species_0;
   reaction_128: species_17 -> species_0; compartment_0 * parameter_10 * species_17;
-  reaction_129: species_2 -> species_18; compartment_0 * parameter_9 * species_2;
-  reaction_130: species_3 -> species_19; compartment_0 * parameter_9 * species_3;
-  reaction_131: species_4 -> species_20; compartment_0 * parameter_9 * species_4;
-  reaction_132: species_5 -> species_21; compartment_0 * parameter_9 * species_5;
+  reaction_129: species_2 -> species_18; compartment_0 * transition1_R_T(parameter_9, parameter_10, species_2);
+  reaction_130: species_3 -> species_19; compartment_0 * transition1_R_T(parameter_9, parameter_12, species_3);
+  reaction_131: species_4 -> species_20; compartment_0 * transition1_R_T(parameter_9, parameter_13, species_4);
+  reaction_132: species_5 -> species_21; compartment_0 * transition1_R_T(parameter_9, parameter_14, species_5);
   reaction_133: species_18 -> species_2; compartment_0 * function_1(parameter_10, parameter_11, species_18);
   reaction_134: species_19 -> species_3; compartment_0 * function_2(parameter_10, parameter_12, species_19);
   reaction_135: species_20 -> species_4; compartment_0 * function_3(parameter_10, parameter_13, species_20);
@@ -666,6 +670,7 @@ model Model_1()
   species_31 is "camT_ca3_BCD";
   species_16 is "camR_ca4_ABCD";
   species_32 is "camT_ca4_ABCD";
+  compartment_0 is "Spine";
   species_0 is "camR";
   species_1 is "ca";
   species_2 is "camR_ca1_A";
@@ -788,7 +793,7 @@ model Model_1()
   reaction_23 is "Ca dissociating from camR_ca2_AB site A";
   reaction_24 is "Ca dissociating from camR_ca2_BC site C";
   reaction_25 is "Ca dissociating from camR_ca2_BD site D";
-  reaction_26 is "Ca dissociating from camR_ca2_AC site A ";
+  reaction_26 is "Ca dissociating from camR_ca2_AC site A";
   reaction_27 is "Ca dissociating from camR_ca2_BC site B";
   reaction_28 is "Ca dissociating from camR_ca2_CD site D";
   reaction_29 is "Ca dissociating from camR_ca2_AD site A";
@@ -805,7 +810,7 @@ model Model_1()
   reaction_40 is "Ca binding to camR_ca2_BD site A";
   reaction_41 is "Ca binding to camR_ca2_BD site C";
   reaction_42 is "Ca binding to camR_ca2_CD site A";
-  reaction_43 is "Ca binding to camR_ca2_CD site B ";
+  reaction_43 is "Ca binding to camR_ca2_CD site B";
   reaction_44 is "Ca dissociating from camR_ca3_ABC site A";
   reaction_45 is "Ca dissociating from camR_ca3_ABC site B";
   reaction_46 is "Ca dissociating from camR_ca3_ABC site C";
@@ -818,15 +823,15 @@ model Model_1()
   reaction_53 is "Ca dissociating from camR_ca3_BCD site B";
   reaction_54 is "Ca dissociating from camR_ca3_BCD site C";
   reaction_55 is "Ca dissociating from camR_ca3_BCD site D";
-  reaction_56 is "Ca binding to camR_ca3_ABC site D ";
+  reaction_56 is "Ca binding to camR_ca3_ABC site D";
   reaction_57 is "Ca binding to camR_ca3_ABD site C";
   reaction_58 is "Ca binding to camR_ca3_ACD site B";
   reaction_59 is "Ca binding to camR_ca3_BCD site A";
   reaction_60 is "Ca dissociating from camR_ca4_ABCD site D";
-  reaction_61 is "Ca dissociating from camR_ca4_ABCD site C ";
+  reaction_61 is "Ca dissociating from camR_ca4_ABCD site C";
   reaction_62 is "Ca dissociating from camR_ca4_ABCD site B";
-  reaction_63 is "Ca dissociating from camR_ca4_ABCD site A ";
-  reaction_64 is "Ca binding to camT site A ";
+  reaction_63 is "Ca dissociating from camR_ca4_ABCD site A";
+  reaction_64 is "Ca binding to camT site A";
   reaction_65 is "Ca binding to camT site B";
   reaction_66 is "Ca binding to camT site C";
   reaction_67 is "Ca binding to camT site D";
@@ -856,7 +861,7 @@ model Model_1()
   reaction_91 is "Ca dissociating from camT_ca2_BC site C";
   reaction_92 is "Ca dissociating from camT_ca2_BD site B";
   reaction_93 is "Ca dissociating from camT_ca2_BD site D";
-  reaction_94 is "Ca dissociating from camT_ca2_CD site C ";
+  reaction_94 is "Ca dissociating from camT_ca2_CD site C";
   reaction_95 is "Ca dissociating from camT_ca2_CD site D";
   reaction_96 is "Ca binding to camT_ca2_AB site C";
   reaction_97 is "Ca binding to camT_ca2_AB site D";
@@ -887,8 +892,8 @@ model Model_1()
   reaction_122 is "Ca binding to camT_ca3_BCD site A";
   reaction_123 is "Ca dissociating from camT_ca4_ABCD site D";
   reaction_124 is "Ca dissociating from camT_ca4_ABCD site C";
-  reaction_125 is "Ca dissociating from camT_ca4_ABCD site B ";
-  reaction_126 is "Ca dissociating from camT_ca4_ABCD site A ";
+  reaction_125 is "Ca dissociating from camT_ca4_ABCD site B";
+  reaction_126 is "Ca dissociating from camT_ca4_ABCD site A";
   reaction_127 is "Transition camR to camT";
   reaction_128 is "Transition camT to camR";
   reaction_129 is "Transition camR_ca1_A to camT_ca1_A";
@@ -986,11 +991,11 @@ model Model_1()
   reaction_221 is "PP2B dissociation from camR_ca3_BCD";
   reaction_222 is "PP2B dissociation from camR_ca4_ABCD";
   reaction_223 is "Ca binding to camR_CaMKII site A";
-  reaction_224 is "Ca binding to camR_CaMKII site B ";
+  reaction_224 is "Ca binding to camR_CaMKII site B";
   reaction_225 is "Ca binding to camR_CaMKII site C";
   reaction_226 is "Ca binding to camR_CaMKII site D";
   reaction_227 is "Ca dissociation from camR_ca1_CaMKII site A";
-  reaction_228 is "Ca dissociation from camR_ca1_CaMKII site C ";
+  reaction_228 is "Ca dissociation from camR_ca1_CaMKII site C";
   reaction_229 is "Ca dissociation from camR_ca1_CaMKII site D";
   reaction_230 is "Ca binding to camR_ca1_A_CaMKII site B";
   reaction_231 is "Ca binding to camR_ca1_A_CaMKII site C";
@@ -1069,7 +1074,7 @@ model Model_1()
   reaction_304 is "Ca binding to camR_ca1_D_PP2B site B";
   reaction_305 is "Ca binding to camR_ca1_D_PP2B site C";
   reaction_306 is "Ca dissociating from camR_ca2_AB_PP2B site A";
-  reaction_307 is "Ca dissociating from camR_ca2_AB_PP2B site B ";
+  reaction_307 is "Ca dissociating from camR_ca2_AB_PP2B site B";
   reaction_308 is "Ca dissociating from camR_ca2_AC_PP2B site A";
   reaction_309 is "Ca dissociating from camR_ca2_AC_PP2B site C";
   reaction_310 is "Ca dissociating from camR_ca2_AD_PP2B site A";

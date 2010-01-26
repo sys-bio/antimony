@@ -22,24 +22,24 @@ end
 model Model_0()
 
   // Compartments and Species:
-  compartment compartment_0;
-  species species_0 in compartment_0, species_1 in compartment_0, species_2 in compartment_0;
+  compartment body;
+  species P in body, R in body, Q in body;
 
   // Reactions:
-  reaction_0:  -> species_0; compartment_0 * function_0(reaction_0_a, species_1);
-  reaction_1: species_0 -> ; compartment_0 * function_1(reaction_1_V, species_0, reaction_1_Km);
-  reaction_2:  -> species_1; compartment_0 * function_2(reaction_2_V1, species_1, reaction_2_K1);
-  reaction_3: species_1 -> ; compartment_0 * function_3(reaction_3_V2, species_2, species_1, reaction_3_K2);
-  reaction_4:  -> species_2; compartment_0 * function_4(species_0, reaction_4_V3, species_2, reaction_4_k3);
-  reaction_5: species_2 -> ; compartment_0 * function_1(reaction_5_V, species_2, reaction_5_Km);
+  reaction_0:  -> P; body * function_0(reaction_0_a, Q);
+  reaction_1: P -> ; function_1(reaction_1_V, P, reaction_1_Km);
+  reaction_2:  -> Q; function_2(reaction_2_V1, Q, reaction_2_K1);
+  reaction_3: Q -> ; function_3(reaction_3_V2, R, Q, reaction_3_K2);
+  reaction_4:  -> R; function_4(P, reaction_4_V3, R, reaction_4_k3);
+  reaction_5: R -> ; function_1(reaction_5_V, R, reaction_5_Km);
 
   // Species initializations:
-  species_0 = 0.43;
-  species_1 = 0.8;
-  species_2 = 0.55;
+  P = 0.43;
+  R = 0.55;
+  Q = 0.8;
 
   // Compartment initializations:
-  compartment_0 = 1;
+  body = 1;
 
   // Variable initializations:
   reaction_0_a = 0.1;
@@ -55,9 +55,6 @@ model Model_0()
   reaction_5_Km = 0.01;
 
   //Display Names:
-  species_0 is "P";
-  species_1 is "Q";
-  species_2 is "R";
   reaction_0 is "Increase of  P";
   reaction_1 is "Decrease of P";
   reaction_2 is "Increase of Q";

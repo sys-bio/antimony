@@ -2,39 +2,38 @@
 model Model_1()
 
   // Compartments and Species:
-  compartment compartment_0;
-  species species_0 in compartment_0, species_1 in compartment_0, species_2 in compartment_0;
-  species species_3 in compartment_0, species_4 in compartment_0, species_5 in compartment_0;
-  species species_6 in compartment_0, $species_8 in compartment_0;
+  compartment cell;
+  species H in cell, HR in cell, R in cell, HRRH in cell, E in cell, GQ in cell;
+  species IP3 in cell, $CHO in cell;
 
   // Assignment Rules:
-  species_8 := 0.001 * parameter_1 * species_6 * (0.3 + 0.3 * parameter_2 * time * exp(1 - parameter_2 * time)) / (1 + 0.001 * parameter_1 * species_6);
+  CHO := 0.001 * alpha * IP3 * (0.3 + 0.3 * beta * time * exp(1 - beta * time)) / (1 + 0.001 * alpha * IP3);
 
   // Reactions:
-  reaction_0: species_0 + species_2 -> species_1; compartment_0 * (reaction_0_k1 * species_0 * species_2 - reaction_0_k2 * species_1);
-  reaction_1: 2species_1 -> species_3; compartment_0 * (reaction_1_k1 * pow(species_1, 2) - reaction_1_k2 * species_3);
-  reaction_2: species_3 + species_5 -> species_4; compartment_0 * (reaction_2_k1 * species_3 * species_5 - reaction_2_k2 * species_4);
-  reaction_3: species_6 -> ; compartment_0 * reaction_3_k1 * species_6;
-  reaction_4:  -> species_6; compartment_0 * reaction_4_k * species_4;
+  reaction_0: H + R -> HR; cell * (reaction_0_k1 * H * R - reaction_0_k2 * HR);
+  reaction_1: 2HR -> HRRH; cell * (reaction_1_k1 * pow(HR, 2) - reaction_1_k2 * HRRH);
+  reaction_2: HRRH + GQ -> E; cell * (reaction_2_k1 * HRRH * GQ - reaction_2_k2 * E);
+  reaction_3: IP3 -> ; cell * reaction_3_k1 * IP3;
+  reaction_4:  -> IP3; cell * reaction_4_k * E;
 
   // Events:
-  RemovalH: at gt(time, 5): species_0 = 0;
+  RemovalH: at gt(time, 5): H = 0;
 
   // Species initializations:
-  species_0 = 1;
-  species_1 = 0;
-  species_2 = 0.01;
-  species_3 = 0;
-  species_4 = 0;
-  species_5 = 0.1;
-  species_6 = 0;
+  H = 1;
+  HR = 0;
+  R = 0.01;
+  HRRH = 0;
+  E = 0;
+  GQ = 0.1;
+  IP3 = 0;
 
   // Compartment initializations:
-  compartment_0 = 1;
+  cell = 1;
 
   // Variable initializations:
-  parameter_1 = 2;
-  parameter_2 = 4;
+  alpha = 2;
+  beta = 4;
   reaction_0_k1 = 2.5;
   reaction_0_k2 = 5;
   reaction_1_k1 = 2500;
@@ -45,20 +44,10 @@ model Model_1()
   reaction_4_k = 20000000;
 
   //Display Names:
-  species_0 is "H";
-  species_1 is "HR";
-  species_2 is "R";
-  species_3 is "HRRH";
-  species_4 is "E";
-  species_5 is "GQ";
-  species_6 is "IP3";
-  species_8 is "CHO";
   RemovalH is "removal of hormone";
-  parameter_1 is "alpha";
-  parameter_2 is "beta";
   reaction_0 is "H binding to  R";
   reaction_1 is "HR forming HRRH";
   reaction_2 is "G protein react with dimer producing E";
-  reaction_3 is "IP3 converted into inactive metabolites ";
+  reaction_3 is "IP3 converted into inactive metabolites";
   reaction_4 is "Production of IP3";
 end

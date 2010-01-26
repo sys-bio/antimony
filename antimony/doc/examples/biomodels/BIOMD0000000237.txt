@@ -1,0 +1,132 @@
+//Created by libAntimony v1.3
+model Schaber2006_Pheromone_Starvation_Crosstalk()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species Ste5 in compartment_, Ste11 in compartment_, Ste5Ste11 in compartment_;
+  species Gbg in compartment_, Ste5Ste11Gbg in compartment_, Fus3 in compartment_;
+  species Ste5Ste11GbgFus3 in compartment_, Ste5Ste11GbgFus3P in compartment_;
+  species Fus3PP in compartment_, Ste5Ste11GbgP in compartment_, Ste11Ubi in compartment_;
+  species $p in compartment_, Kss1 in compartment_, Ste5Ste11GbgKss1 in compartment_;
+  species Ste5Ste11GbgKss1P in compartment_, Kss1PP in compartment_, Ste11P in compartment_;
+  species Ste12Kss1 in compartment_, Ste12 in compartment_, Ste12P in compartment_;
+  species $s in compartment_, PREP in compartment_, Ste12TeSte5Kss1 in compartment_;
+  species Ste12TeSte5 in compartment_, Ste12TeSte5P in compartment_, FREP in compartment_;
+
+  // Assignment Rules:
+  alpha := alphastim * piecewise(alphaA * (1 - exp(-(time - alphat) / alphas)), and(geq(time, alphat), leq(time, alphae)), piecewise(alphaA * exp(-(time - alphat) / alphas), geq(time, alphae), 0));
+  beta := betastim * betaA * piecewise(1 - exp(-(time - betat) / betas), and(geq(time, betat), leq(time, betae)), piecewise(exp(-(time - betae) / betas), gt(time, betae), 0));
+
+  // Reactions:
+  v1: Ste5 + Ste11 -> Ste5Ste11; compartment_ * k1 * Ste5 * Ste11;
+  v2: Ste5Ste11 + Gbg -> Ste5Ste11Gbg; compartment_ * k2 * Ste5Ste11 * Gbg * alpha;
+  v3: Ste5Ste11Gbg + Fus3 -> Ste5Ste11GbgFus3; compartment_ * k3 * Ste5Ste11Gbg * Fus3;
+  v4: Ste5Ste11GbgFus3 -> Ste5Ste11GbgFus3P; compartment_ * k4 * Ste5Ste11GbgFus3;
+  v5: Ste5Ste11GbgFus3P -> Fus3PP + Ste5Ste11GbgP; compartment_ * k5 * Ste5Ste11GbgFus3P;
+  v6: Fus3 + Ste5Ste11GbgP -> Ste5Ste11GbgFus3P; compartment_ * k6 * Fus3 * Ste5Ste11GbgP;
+  v7: Ste5 + Ste5Ste11GbgP -> Gbg + Ste11Ubi; compartment_ * k7 * Ste5Ste11GbgP;
+  v8: Ste11Ubi -> $p; compartment_ * k8 * Ste11Ubi;
+  v9: Ste5Ste11Gbg + Kss1 -> Ste5Ste11GbgKss1; compartment_ * k9 * Ste5Ste11Gbg * Kss1;
+  v10: Ste5Ste11GbgKss1 -> Ste5Ste11GbgKss1P; compartment_ * k10 * Ste5Ste11GbgKss1;
+  v11: Ste5Ste11GbgKss1P -> Ste5Ste11GbgP + Kss1PP; compartment_ * k11 * Ste5Ste11GbgKss1P;
+  v12: Ste5Ste11GbgP + Kss1 -> Ste5Ste11GbgKss1P; compartment_ * k12 * Ste5Ste11GbgP * Kss1;
+  v13: Ste11 -> Ste11P; compartment_ * k13 * Ste11 * beta;
+  v14: Ste11P -> Ste11; compartment_ * k14 * Ste11P;
+  v15: Kss1 -> Kss1PP; compartment_ * (k15 * Kss1 * Ste11P + k30 * Kss1 * Ste11Ubi);
+  v16: Kss1PP -> Kss1; compartment_ * (k16 * Kss1PP + k28 * Kss1PP * Fus3PP);
+  v17: Ste12Kss1 -> 2Kss1 + Ste12; compartment_ * k17 * Ste12Kss1;
+  v18: 2Kss1 + Ste12 -> Ste12Kss1; compartment_ * k18 * Kss1 * Ste12;
+  v19: Ste12 -> Ste12P; compartment_ * (k19 * Ste12 * Fus3PP + k29 * Ste12 * Kss1PP);
+  v20: $s -> PREP; compartment_ * k20 * Ste12P;
+  v21: Ste12TeSte5Kss1 -> Kss1 + Ste12TeSte5; compartment_ * k21 * Ste12TeSte5Kss1;
+  v22: Kss1 + Ste12TeSte5 -> Ste12TeSte5Kss1; compartment_ * k22 * Kss1 * Ste12TeSte5;
+  v23: Ste12TeSte5 -> Ste12TeSte5P; compartment_ * k23 * Ste12TeSte5 * Kss1PP;
+  v24: Ste12TeSte5 -> $p; compartment_ * k24 * Ste12TeSte5 * Fus3PP;
+  v25: $s -> FREP; compartment_ * k25 * Ste12TeSte5P;
+  v26: Fus3PP -> Fus3; compartment_ * k26 * Fus3PP;
+  v27: Ste5Ste11 -> Ste5 + Ste11; compartment_ * k27 * Ste5Ste11;
+  v28: Ste12P -> Ste12; compartment_ * k31 * Ste12P;
+  v29: PREP -> $p; compartment_ * k32 * PREP;
+  v30: Ste12TeSte5P -> Ste12TeSte5; compartment_ * k33 * Ste12TeSte5P;
+  v31: FREP -> $p; compartment_ * k34 * FREP;
+
+  // Species initializations:
+  Ste5 = 42.3;
+  Ste11 = 13.3;
+  Ste5Ste11 = 5.6;
+  Gbg = 53;
+  Ste5Ste11Gbg = 0;
+  Fus3 = 217;
+  Ste5Ste11GbgFus3 = 0;
+  Ste5Ste11GbgFus3P = 0;
+  Fus3PP = 0;
+  Ste5Ste11GbgP = 0;
+  Ste11Ubi = 0;
+  p = 0;
+  Kss1 = 54.4;
+  Ste5Ste11GbgKss1 = 0;
+  Ste5Ste11GbgKss1P = 0;
+  Kss1PP = 0;
+  Ste11P = 0;
+  Ste12Kss1 = 35.9;
+  Ste12 = 0.07;
+  Ste12P = 0;
+  s = 0;
+  PREP = 0;
+  Ste12TeSte5Kss1 = 13.7;
+  Ste12TeSte5 = 0.25;
+  Ste12TeSte5P = 0;
+  FREP = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  alphaA = 1;
+  betaA = 1;
+  alphat = 0;
+  betat = 0;
+  alphas = 2;
+  betas = 20;
+  alphae = 10;
+  betae = 360;
+  k3 = 1;
+  k4 = 1;
+  k5 = 1;
+  k6 = 1;
+  k9 = 1;
+  k10 = 1;
+  k11 = 1;
+  k12 = 1;
+  k13 = 1;
+  k17 = 1;
+  k19 = 1;
+  k20 = 1;
+  k21 = 1;
+  k22 = 1;
+  k23 = 1;
+  k25 = 1;
+  k27 = 1;
+  k31 = 1;
+  k32 = 1;
+  k33 = 1;
+  k34 = 1;
+  k8 = 0.1;
+  k14 = 0.1;
+  k15 = 0.1;
+  k16 = 0.1;
+  k26 = 0.1;
+  k30 = 0.1;
+  k7 = 10;
+  k18 = 10;
+  k1 = 0.01;
+  k2 = 0.01;
+  k24 = 0.01;
+  k28 = 0.01;
+  k29 = 0.01;
+  alphastim = 1;
+  betastim = 1;
+
+  //Other declarations:
+  var alpha, beta;
+end

@@ -1,0 +1,103 @@
+//Created by libAntimony v1.3
+model Nazaret2009_TCA_RC_ATP()
+
+  // Compartments and Species:
+  compartment cytoplasm, mitochondrion;
+  species $ADP in mitochondrion, ATP in mitochondrion, $H in mitochondrion;
+  species $He in cytoplasm, NAD in mitochondrion, $NADH in mitochondrion;
+  species AcCoA in mitochondrion, KG in mitochondrion, Cit in mitochondrion;
+  species OAA in mitochondrion, $O2 in mitochondrion, $iP in mitochondrion;
+  species Pyr in mitochondrion, $H2O in mitochondrion;
+
+  // Assignment Rules:
+  ADP := At_ - ATP;
+  NADH := Nt - NAD;
+  ATPcrit := At_ / (1 + exp(-3 * DeltaGtransport / (R * T)) / (Kapp * iP));
+  DeltaGtransport := 1.2 * F * DeltaPsi;
+  JANT := kANT * ATP;
+  JATP := kATP * (2 / (1 + exp(b * (ATP - ATPcrit))) - 1);
+  Jleak := kleak * DeltaPsi;
+  Jresp := kresp * ((Nt - NAD) / (K + Nt - NAD)) / (1 + exp(a * (DeltaPsi - DeltaPsim)));
+
+  // Rate Rules:
+  DeltaPsi' = (10 * Jresp - 3 * JATP - Jleak - JANT) / C;
+
+  // Reactions:
+  v1:  -> Pyr; mitochondrion * v1_k1;
+  v2: Pyr + NAD -> AcCoA + $NADH; mitochondrion * v2_k2 * Pyr * NAD;
+  v3: OAA + AcCoA -> Cit; mitochondrion * v3_k3 * OAA * AcCoA;
+  v4: Cit + NAD -> KG + $NADH; mitochondrion * v4_k4 * Cit * NAD;
+  v5: KG + $ADP + 2NAD -> OAA + ATP + 2$NADH; mitochondrion * v5_k5 * KG * NAD * (At_ - ATP);
+  v6: OAA -> KG; mitochondrion * v6_k6 * (OAA - KG / v6_Keq);
+  v7: Pyr + ATP -> OAA + $ADP; mitochondrion * v7_k7 * Pyr * ATP;
+  v8: OAA -> ; mitochondrion * v8_k8 * OAA;
+  vresp: $NADH + 0.5$O2 + 11$H -> NAD + $H2O + 10$He; mitochondrion * Jresp;
+  vATP: $ADP + $iP + 3$He -> ATP + $H2O + 3$H; mitochondrion * JATP;
+  vANT: ATP -> $ADP; mitochondrion * JANT;
+  vleak: $He -> $H; mitochondrion * Jleak;
+
+  // Species initializations:
+  ATP = 3.536;
+  H = 1;
+  He = 1;
+  NAD = 0.856;
+  AcCoA = 0.063;
+  KG = 0.225;
+  Cit = 0.44;
+  OAA = 0.005;
+  O2 = 1;
+  iP = 2.44;
+  Pyr = 0.154;
+  H2O = 1;
+
+  // Compartment initializations:
+  cytoplasm = 1;
+  mitochondrion = 1;
+
+  // Variable initializations:
+  At_ = 4.16;
+  C = 6.75e-06;
+  DeltaPsi = 150;
+  DeltaPsim = 150;
+  F = 96485;
+  K = 2;
+  Kapp = 4.4e-09;
+  Nt = 1.07;
+  R = 8314;
+  T = 298;
+  a = 0.1;
+  b = 0.004;
+  kANT = 0.05387;
+  kATP = 131.9;
+  kleak = 0.000426;
+  kresp = 2.5;
+  v1_k1 = 0.038;
+  v2_k2 = 0.152;
+  v3_k3 = 57.142;
+  v4_k4 = 0.053;
+  v5_k5 = 0.082361;
+  v6_k6 = 0.0032;
+  v6_Keq = 0.3975;
+  v7_k7 = 0.04;
+  v8_k8 = 3.6;
+
+  //Other declarations:
+  var ATPcrit, DeltaGtransport, DeltaPsi, JANT, JATP, Jleak, Jresp;
+
+  //Display Names:
+  mitochondrion is "mitochondrial matrix";
+  H is "H+";
+  He is "H+";
+  NAD is "NAD(+)";
+  AcCoA is "acetyl-CoA";
+  KG is "alpha-ketoglutarate";
+  Cit is "citrate";
+  OAA is "oxaloacetate";
+  O2 is "oxygen";
+  iP is "phosphate";
+  Pyr is "pyruvate";
+  H2O is "water";
+  F is "Faraday constant";
+  R is "gas constant";
+  T is "absolute temperature";
+end

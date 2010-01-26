@@ -4,8 +4,6 @@ model Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_o
   // Compartments and Species:
   compartment extracellular, cytosol, intravesicular;
   species EC in extracellular, Z in cytosol, A in cytosol, Y in intravesicular;
-  species Agonist_stimulated_production_of_IP3 in cytosol, Ca_dependant_IP3_degradation in cytosol;
-  species Ca_independant_IP3_degradation in cytosol;
 
   // Reactions:
   vin: EC -> Z; cytosol * (vin_v0 + vin_v1 * beta);
@@ -13,18 +11,15 @@ model Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_o
   v3: Y -> Z; cytosol * v3_Vm3 * pow(A, 4) * pow(Y, 2) * pow(Z, 4) / ((pow(v3_Ka, 4) + pow(A, 4)) * (pow(v3_Ky, 2) + pow(Y, 2)) * (pow(v3_Kz, 4) + pow(Z, 4)));
   v4: Y -> Z; cytosol * v4_Kf * Y;
   v5: Z -> EC; extracellular * v5_K * Z;
-  v6: Agonist_stimulated_production_of_IP3 -> A; cytosol * beta * v6_Vp;
-  v7: A -> Ca_dependant_IP3_degradation; cytosol * v7_Vd * pow(A, 2) * pow(Z, v7_n) / ((pow(v7_Kp, 2) + pow(A, 2)) * (pow(v7_Kd, v7_n) + pow(Z, v7_n)));
-  v8: A -> Ca_independant_IP3_degradation; cytosol * v8_epsilon * A;
+  v6:  -> A; cytosol * beta * v6_Vp;
+  v7: A -> ; cytosol * v7_Vd * pow(A, 2) * pow(Z, v7_n) / ((pow(v7_Kp, 2) + pow(A, 2)) * (pow(v7_Kd, v7_n) + pow(Z, v7_n)));
+  v8: A -> ; cytosol * v8_epsilon * A;
 
   // Species initializations:
   EC = 1000;
   Z = 0;
   A = 0.45;
   Y = 0.36;
-  Agonist_stimulated_production_of_IP3 = 0;
-  Ca_dependant_IP3_degradation = 0;
-  Ca_independant_IP3_degradation = 0;
 
   // Compartment initializations:
   extracellular = 1;
@@ -49,4 +44,9 @@ model Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_o
   v7_Kd = 0.4;
   v7_n = 4;
   v8_epsilon = 0.1;
+
+  //Display Names:
+  v6 is "Agonist stimulated production of IP3";
+  v7 is "Ca dependent IP3 degradation";
+  v8 is "Ca independent IP3 degradation";
 end
