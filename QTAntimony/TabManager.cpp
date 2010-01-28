@@ -315,7 +315,7 @@ void TabManager::TranslateSBML(int tab, const QString& text)
     tab_s->SetModelName(modelname);
     setTabText(tab, tab_s->GetTabName());
 
-    char* antimonytext = getAntimonyString();
+    char* antimonytext = getAntimonyString(NULL);
     AntimonyTab* anttab = static_cast<AntimonyTab*>(textbox(0));
     anttab->ReplaceModelWithString(oldmodelname, QString(antimonytext));
     //Now set the antimony tab type appropriately.

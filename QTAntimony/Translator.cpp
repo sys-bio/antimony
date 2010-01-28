@@ -174,7 +174,7 @@ Translator::Translator(QTAntimony* app, QString filename)
                 AddSBMLTab(modname, filetext, false);
                 m_tabmanager->textbox(1)->SetOriginal();
                 m_tabmanager->textbox(1)->SetSavedFilename(filename);
-                m_antimony->SetTranslatedText(getAntimonyString());
+                m_antimony->SetTranslatedText(getAntimonyString(NULL));
             }
             else {
                 //Not a valid file of either format, but maybe we can tell if it's XML or not.
