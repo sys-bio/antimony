@@ -47,6 +47,7 @@ SOURCES += ../QTAntimony/main.cpp \
     ../QTAntimony/QTAntimony.cpp \
     ../QTAntimony/FileWatcher.cpp \
     ../QTAntimony/SBWIntegration.cpp \
+    ../QTAntimony/CopyMessageBox.cpp\
     ../QTAntimony/Tutorial.cpp
 HEADERS += ../QTAntimony/AntimonyTab.h \
     ../QTAntimony/SBMLTab.h \
