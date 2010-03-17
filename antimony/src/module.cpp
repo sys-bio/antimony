@@ -347,14 +347,15 @@ Variable* Module::GetNextExportVariable()
   return GetVariable(m_exportlist[exp]);
 }
 
-string Module::GetNthExportVariable(size_t n) const
+vector<string> Module::GetNthExportVariable(size_t n) const
 {
   if (n>=m_exportlist.size()) {
     g_registry.SetError("Unable to retrieve variable " + SizeTToString(n) + " in the interface of module " + GetModuleName() + " because there are only " + SizeTToString(m_exportlist.size()) + " symbol(s) in that module's interface.");
-    return NULL;
+    vector<string> empty;
+    empty.push_back("");
+    return empty;
   }
-  assert(m_exportlist[n].size() == 1);
-  return m_exportlist[n][0];
+  return m_exportlist[n];
 }
 
 size_t Module::GetNumSynchronizedVariables() const
@@ -909,6 +910,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
 
   //Definitions of all variables; Modules first:
   bool firstone = true;
+  set<size_t> already_synchronized;
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
       vector<string> mname = m_variables[var]->GetName();
@@ -918,10 +920,32 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
         retval += "\n" + indent + "// Sub-modules, and any changes to those submodules:\n";
         firstone = false;
       }
-      retval += indent + mname[0] + ": " + submod->GetModuleName() + "()\n";
+      retval += indent + mname[0] + ": " + submod->GetModuleName() + "(";
+      string varimportlist;
+      set<size_t> added_syncs;
+      for (size_t exp=0; exp<submod->GetNumExportVariables(); exp++) {
+        vector<string> exportname = submod->GetNthExportVariable(exp);
+        for (size_t sync=0; sync<m_synchronized.size(); sync++) {
+          if (m_synchronized[sync].first == exportname &&
+              m_synchronized[sync].second.size() == 1) {
+            if (added_syncs.size() > 0) {
+              varimportlist += ", ";
+            }
+            varimportlist += m_synchronized[sync].second[0];
+            added_syncs.insert(sync);
+            break;
+          }
+        }
+      }
+      if (added_syncs.size() == submod->GetNumExportVariables()) {
+        retval += varimportlist;
+        already_synchronized.insert(added_syncs.begin(), added_syncs.end());
+      }
+
+      retval += ")\n";
     }
   }
-  retval += ListSynchronizedVariables(indent);
+  retval += ListSynchronizedVariables(indent, already_synchronized);
   //And now subvariables that have changed names or values in submods.
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
@@ -1212,14 +1236,14 @@ string Module::GetJarnacConstFormulas(string modulename) const
   return retval;
 }
 
-string Module::ListSynchronizedVariables(string indent) const
+string Module::ListSynchronizedVariables(string indent, set<size_t> alreadysynchronized) const
 {
-  //LS DEBUG:  Get this to work for sub-sub-modules, i.e. 'X is foo.bar.y'
-  //LS DEBUG 2: er, does it already do this?
   char cc = '.';
   string list = "";
   for (size_t pair=0; pair<m_synchronized.size(); pair++) {
-    list += indent + ToStringFromVecDelimitedBy(m_synchronized[pair].first, cc) + " is " + ToStringFromVecDelimitedBy(m_synchronized[pair].second, cc) + ";\n";
+    if (alreadysynchronized.find(pair) == alreadysynchronized.end()) {
+      list += indent + ToStringFromVecDelimitedBy(m_synchronized[pair].first, cc) + " is " + ToStringFromVecDelimitedBy(m_synchronized[pair].second, cc) + ";\n";
+    }
   }
   return list;
 }
