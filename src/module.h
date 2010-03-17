@@ -80,7 +80,7 @@ public:
   Formula* GetFormula();
   Variable* GetNextExportVariable();
   size_t GetNumExportVariables() const {return m_exportlist.size();};
-  std::string GetNthExportVariable(size_t n) const;
+  std::vector<std::string> GetNthExportVariable(size_t n) const;
   size_t GetNumSynchronizedVariables() const;
   std::pair<std::string, std::string> GetNthSynchronizedVariablePair(size_t n) const;
   std::vector<std::pair<std::string, std::string> > GetAllSynchronizedVariablePairs() const;
@@ -112,7 +112,7 @@ public:
   bool   AreEquivalent(return_type rtype, var_type vtype) const;
   bool   AreEquivalent(return_type rtype, bool isconst) const;
 
-  std::string ListSynchronizedVariables(std::string indent) const;
+  std::string ListSynchronizedVariables(std::string indent, std::set<size_t> alreadysynchronized) const;
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
 #ifndef NSBML
   void  LoadSBML(const SBMLDocument* sbmldoc);

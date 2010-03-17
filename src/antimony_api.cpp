@@ -447,7 +447,7 @@ LIB_EXTERN char** getSymbolNamesInInterfaceOf(const char* moduleName)
 LIB_EXTERN char* getNthSymbolNameInInterfaceOf(const char* moduleName, unsigned long n)
 {
   if (!checkModule(moduleName)) return NULL;
-  return getCharStar(g_registry.GetModule(moduleName)->GetNthExportVariable(n).c_str());
+  return getCharStar(g_registry.GetModule(moduleName)->GetNthExportVariable(n)[0].c_str());
 }
 
 

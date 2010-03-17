@@ -312,18 +312,18 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
     rv = import->GetImportedConnections(getter_AddRefs(impconnections));
     nsCOMPtr<cellml_apiIModel> impmodel;
     rv = import->GetImportedModel(getter_AddRefs(impmodel));
-    LoadConnections(impconnections, impmodel);
+    LoadConnections(impconnections);
     rv = impi->NextImport(getter_AddRefs(import));
   }
   //And then get the main model's connections
   nsCOMPtr<cellml_apiIConnectionSet> connections;
   rv = model->GetConnections(getter_AddRefs(connections));
-  LoadConnections(connections, model);
+  LoadConnections(connections);
   
   return false; //success
 }
 
-bool Registry::LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections, nsCOMPtr<cellml_apiIModel> topmodel)
+bool Registry::LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections)
 {
   nsString cellmltext;
   string cellmlname;
@@ -335,7 +335,7 @@ bool Registry::LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections, n
   rv = coni->NextConnection(getter_AddRefs(connection));
   bool somewrong = false;
   while (connection != NULL) {
-    if (SynchronizeCellMLConnection(connection, topmodel)) {
+    if (SynchronizeCellMLConnection(connection)) {
       somewrong = true;
     }
     rv = coni->NextConnection(getter_AddRefs(connection));
@@ -343,12 +343,15 @@ bool Registry::LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections, n
   return somewrong;
 }
 
-bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> connection, nsCOMPtr<cellml_apiIModel> topmodel)
+bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> connection)
 {
   nsString cellmltext;
   string cellmlname;
   nsresult rv;
 
+  nsCOMPtr<cellml_apiIModel> topmodel; //used when the encapsulation parent is null (in GetNameAccordingToEncapsulationParent)
+  rv = connection->GetModelElement(getter_AddRefs(topmodel));
+  
   //First we get the list of the component and any/all encapsulation parents
   vector<string> comp1moduleparents, comp2moduleparents;
   vector<string> comp1modulenames, comp2modulenames;
@@ -549,7 +552,7 @@ void Registry::NewCurrentModule(const string* name)
   //Check to make sure no existing module exist with this name
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (m_modules[mod].GetModuleName() == localname) {
-      //assert(false); //Parsing disallows this condition
+      //assert(false); //Parsing disallows this condition, but translation allows it (though it's still an Antimony error).
       //cout << "duplicated name: " << localname << endl;
       SetError("Programming error:  Unable to create new module with the same name as an existing module (\"" + localname + "\").");
       return;
