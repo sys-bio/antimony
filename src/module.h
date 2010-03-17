@@ -122,9 +122,9 @@ public:
 #endif
 
 #ifndef NCELLML
-  void  LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model);
-  void  LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections);
+  void  LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model, std::vector<nsCOMPtr<cellml_apiICellMLComponent> > top_components);
   void  LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component);
+  void  SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> component);
   const nsCOMPtr<cellml_apiIModel> GetCellMLModel();
   void  CreateCellMLModel();
   nsCOMPtr<cellml_apiICellMLComponent> CreateCellMLComponentFor(nsCOMPtr<cellml_apiIModel> model);

@@ -585,8 +585,8 @@ bool Module::Finalize()
   }
   if (trueerrors != "") {
     g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but this one slipped through--please let us know what happened and we'll try to fix it.  Error message(s) from libSBML:\n" + trueerrors);
-    delete testdoc;
-    return true;
+    //delete testdoc;
+    //return true;
   }
   delete testdoc;
 #endif
@@ -969,7 +969,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
         retval += "\n" + indent + "// DNA strands:\n";
         firstone = false;
       }
-      retval += indent + var->GetNameDelimitedBy(cc) + ": " + var->GetDNAStrand()->ToStringDelimitedBy(cc) + "\n";
+      retval += indent + var->GetNameDelimitedBy(cc) + ": " + var->GetDNAStrand()->ToStringDelimitedBy(cc) + ";\n";
     }
   }
 
@@ -986,7 +986,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
           retval += "\n" + indent + "// Assignment Rules:\n";
           firstone = false;
         }
-        retval += indent + var->GetNameDelimitedBy(cc) + " := " + asntrule->ToDelimitedStringWithEllipses(cc) + "\n";
+        retval += indent + var->GetNameDelimitedBy(cc) + " := " + asntrule->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
     }
   }
@@ -1003,7 +1003,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
           retval += "\n" + indent + "// Rate Rules:\n";
           firstone = false;
         }
-        retval += indent + var->GetNameDelimitedBy(cc) + "' = " + raterule->ToDelimitedStringWithEllipses(cc) + "\n";
+        retval += indent + var->GetNameDelimitedBy(cc) + "' = " + raterule->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
     }
   }

@@ -1,4 +1,6 @@
 #include <sstream>
+#include <assert.h>
+#include <iostream>
 #include "stringx.h"
 
 using namespace std;
@@ -81,25 +83,25 @@ string Trim(std::string in)
   return out;
 }
 
-#ifndef NCELLML
-std::string ToThinString(const PRUnichar* in)
+std::string AndsAndOrs(std::string& in)
 {
-  string out;
-  for (size_t ch=0; (in[ch] != '\0'); ch++) {
-    out.push_back(in[ch]);
+  string out = in;
+  size_t andpos;
+  while ((andpos = out.find("and")) != string::npos) {
+    string left, right;
+    left.assign(out, 0, andpos);
+    right.assign(out, andpos+3, out.size()-andpos-3);
+    out = "(" + left + ") && (" + right + ")";
   }
+
+  size_t orpos;
+  while ((orpos = out.find("or")) != string::npos) {
+    string left, right;
+    left.assign(out, 0, orpos);
+    right.assign(out, orpos+2, out.size()-orpos-2);
+    out = "(" + left + ") && (" + right + ")";
+  }
+
+
   return out;
 }
-
-nsString ToNSString(const std::string in)
-{
-  PRUnichar out[in.size()+1];
-  
-  for (size_t ch=0; ch<in.size(); ch++) {
-    out[ch] = in[ch];
-  }
-
-  return nsDependentString(out, in.size());
-}
-
-#endif

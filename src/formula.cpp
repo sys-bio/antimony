@@ -349,10 +349,10 @@ string Formula::ConvertOneSymbolToFunction(string formula) const
 {
   size_t mid = string::npos;
   string whichfn = "";
-  const char* symbols[] = {"<=", ">=", "==", "&&", "||", "!=", "<", ">", "!"};
-  const char* symnames[] = {"leq", "geq", "eq", "and", "or", "neq", "lt", "gt", "not"};
+  const char* symbols[] = {"<=", ">=", "==", "&&", "||", "!=", "<>", "<", ">", "!"};
+  const char* symnames[] = {"leq", "geq", "eq", "and", "or", "neq", "neq", "lt", "gt", "not"};
 
-  for (size_t sym=0; sym<9; sym++) {
+  for (size_t sym=0; sym<10; sym++) {
     size_t ltgt = formula.find(symbols[sym]);
     if (ltgt != string::npos) {
       mid = ltgt;

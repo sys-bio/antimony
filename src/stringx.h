@@ -10,13 +10,7 @@ std::string ToStringFromVecDelimitedBy(std::vector<std::string> name, char cc);
 std::wstring ToWString(std::string in);
 std::string ToThinString(std::wstring in);
 std::string Trim(std::string in);
-
-#ifndef NCELLML
-#include <nsStringAPI.h>
-std::string ToThinString(const PRUnichar* in);
-nsString ToNSString(const std::string in);
-
-#endif
+std::string AndsAndOrs(std::string& in);
 
 bool IsReal(const std::string& src);
 

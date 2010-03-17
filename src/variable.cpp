@@ -665,7 +665,7 @@ bool Variable::SetFormula(Formula* formula)
   }
 #endif
   if (formula->ContainsVar(this)) {
-    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
+    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition (" + formula->ToDelimitedStringWithEllipses('.') + ") either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
     return true;
   }
   switch (m_type) {
@@ -718,7 +718,7 @@ bool Variable::SetAssignmentRule(Formula* formula)
   }
 #endif
   if (formula->ContainsVar(this)) {
-    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
+    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition (" + formula->ToDelimitedStringWithEllipses('.') + ") either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').");
     return true;
   }
   if (IsReaction(m_type)) {
@@ -1093,10 +1093,18 @@ bool Variable::Synchronize(Variable* clone)
     g_registry.SetError("No such variable in this module.");
     return true;
   }
+  if ((m_type == varModule) || (clone->m_type == varModule)) {
+    g_registry.SetError("Modules may not be synchronized directly.  Instead, synchronize elements of the modules individually.");
+    return true;
+  }
   clone = clone->GetSameVariable();
   if (GetIsEquivalentTo(clone)) {
     //already equivalent--don't do anything
     return false;
+  }
+  if (clone->m_name.size() > 1 && m_name.size() == 1) {
+    //When synchronizing a local variable to a submodule's variable, always have the local trump the submodule.
+    return clone->Synchronize(this);
   }
   
   //Check for error conditions
@@ -1148,6 +1156,10 @@ bool Variable::Synchronize(Variable* clone)
   if (clone->m_const == constDEFAULT) {
     clone->m_const = m_const;
   }
+  else if (clone->m_const == constCONST && m_const == constVAR) {
+    clone->m_const = constVAR;
+  }
+  m_const = clone->m_const;
 
   if (m_displayname != "") {
     string clonedispname = clone->GetDisplayName();

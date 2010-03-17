@@ -1,15 +1,17 @@
 #ifndef NCELLML
 
+#include "cellmlx.h"
 #include "MathMLInputServices.h"
 #include "ICellMLInputServices.h"
 #include <nsStringAPI.h>
 #include <nsDebug.h>
 #include <nsCOMPtr.h>
+#include <prtypes.h>
 #include <nsServiceManagerUtils.h>
 
 #define CELLML_BOOTSTRAP_CONTRACTID "@cellml.org/cellml-bootstrap;1"
 
-void Module::LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model)
+void Module::LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model, vector<nsCOMPtr<cellml_apiICellMLComponent> > top_components)
 {
   assert(m_cellmlcomponent==NULL);
   if (m_cellmlmodel != NULL) {
@@ -20,117 +22,20 @@ void Module::LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model)
   //Translate
   nsString cellmltext;
   string cellmlname;
-  nsresult rv;
 
   //Components become sub-modules
-  nsCOMPtr<cellml_apiICellMLComponentSet> components;
-  rv = m_cellmlmodel->GetLocalComponents(getter_AddRefs(components));
-  nsCOMPtr<cellml_apiICellMLComponentIterator> cmpi;
-  rv = components->IterateComponents(getter_AddRefs(cmpi));
-  nsCOMPtr<cellml_apiICellMLComponent> component;
-  rv = cmpi->NextComponent(getter_AddRefs(component));
-  while (component != NULL) {
+  for (size_t comp=0; comp<top_components.size(); comp++) {
     //Load the component as a submodule (which should already have been loaded by the registry in LoadCellML)
-    rv = component->GetName(cellmltext);
-    cellmlname = ToThinString(cellmltext.get());
-    string cellmlmodname = "cellmlmod_" + cellmlname;
-    Variable* var = AddOrFindVariable(&cellmlname);
+    string compname = GetNameAccordingToEncapsulationParent(top_components[comp], model);
+    string cellmlmodname = GetModuleNameFrom(top_components[comp]);
+    Variable* var = AddOrFindVariable(&compname);
     if(var->SetModule(&cellmlmodname)) {
       assert(false);
       return;
     }
-    rv = cmpi->NextComponent(getter_AddRefs(component));
   }
 
-  //Imports also become sub-modules
-  nsCOMPtr<cellml_apiICellMLImportSet> imports;
-  rv = m_cellmlmodel->GetImports(getter_AddRefs(imports));
-  nsCOMPtr<cellml_apiICellMLImportIterator> impi;
-  rv = imports->IterateImports(getter_AddRefs(impi));
-  nsCOMPtr<cellml_apiICellMLImport> import;
-  rv = impi->NextImport(getter_AddRefs(import));
-  while (import != NULL) {
-    nsCOMPtr<cellml_apiIImportComponentSet> impcomponents;
-    rv = import->GetComponents(getter_AddRefs(impcomponents));
-    nsCOMPtr<cellml_apiIImportComponentIterator> icmpi;
-    rv = impcomponents->IterateImportComponents(getter_AddRefs(icmpi));
-    nsCOMPtr<cellml_apiIImportComponent> impcomponent;
-    rv = icmpi->NextImportComponent(getter_AddRefs(impcomponent));
-    while (impcomponent != NULL) {
-      //Load the imported component as a submodules, too.
-      rv = impcomponent->GetName(cellmltext);
-      cellmlname = ToThinString(cellmltext.get());
-      rv = impcomponent->GetComponentRef(cellmltext);
-      string cellmlmodname = ToThinString(cellmltext.get());
-      Variable* var = AddOrFindVariable(&cellmlname);
-      if(var->SetModule(&cellmlmodname)) {
-        assert(false);
-        return;
-      }
-      rv = icmpi->NextImportComponent(getter_AddRefs(impcomponent));
-    }
-    rv = impi->NextImport(getter_AddRefs(import));
-  }
-  //Now go through them again to get the connections.  I know, right?
-  rv = imports->IterateImports(getter_AddRefs(impi));
-  rv = impi->NextImport(getter_AddRefs(import));
-  while (import != NULL) {
-    nsCOMPtr<cellml_apiIConnectionSet> impconnections;
-    rv = import->GetImportedConnections(getter_AddRefs(impconnections));
-    LoadConnections(impconnections);
-    rv = impi->NextImport(getter_AddRefs(import));
-  }
-  //And then get the main model's connections
-  nsCOMPtr<cellml_apiIConnectionSet> connections;
-  rv = model->GetConnections(getter_AddRefs(connections));
-  LoadConnections(connections);
-}
-
-void Module::LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections)
-{
-  nsString cellmltext;
-  string cellmlname;
-  nsresult rv;
-
-  nsCOMPtr<cellml_apiIConnectionIterator> coni;
-  rv = connections->IterateConnections(getter_AddRefs(coni));
-  nsCOMPtr<cellml_apiIConnection> connection;
-  rv = coni->NextConnection(getter_AddRefs(connection));
-  while (connection != NULL) {
-    nsCOMPtr<cellml_apiIMapComponents> compmap;
-    rv = connection->GetComponentMapping(getter_AddRefs(compmap));
-    rv = compmap->GetFirstComponentName(cellmltext);
-    cellmlname = ToThinString(cellmltext.get());
-    vector<string> varname;
-    varname.push_back(cellmlname);
-    Variable* firstmod = GetVariable(varname);
-    assert(firstmod!=NULL);
-    rv = compmap->GetSecondComponentName(cellmltext);
-    cellmlname = ToThinString(cellmltext.get());
-    varname.clear();
-    varname.push_back(cellmlname);
-    Variable* secondmod = GetVariable(varname);
-    //LS DEBUG:  The above code will fail if there is more than one module with the same name.
-    nsCOMPtr<cellml_apiIMapVariablesSet> mvs;
-    rv = connection->GetVariableMappings(getter_AddRefs(mvs));
-    nsCOMPtr<cellml_apiIMapVariablesIterator> mvsi;
-    rv = mvs->IterateMapVariables(getter_AddRefs(mvsi));
-    nsCOMPtr<cellml_apiIMapVariables> mapvars;
-    rv = mvsi->NextMapVariable(getter_AddRefs(mapvars));
-    while (mapvars != NULL) {
-      rv = mapvars->GetFirstVariableName(cellmltext);
-      cellmlname = ToThinString(cellmltext.get());
-      Variable* firstvar = firstmod->GetSubVariable(&cellmlname);
-      assert(firstvar != NULL);
-      rv = mapvars->GetSecondVariableName(cellmltext);
-      cellmlname = ToThinString(cellmltext.get());
-      Variable* secondvar = secondmod->GetSubVariable(&cellmlname);
-      firstvar->Synchronize(secondvar);
-      //LS NOTE: Unlike the above code, this should work regardless of namespace if we get the module right in the first place.
-      rv = mvsi->NextMapVariable(getter_AddRefs(mapvars));
-    }
-    rv = coni->NextConnection(getter_AddRefs(connection));
-  }
+  FixNames();  //In case the name of one of the modules is something like 'time'.
 }
 
 bool HasTimeUnits(nsCOMPtr<cellml_apiICellMLVariable> cmlvar) {
@@ -176,7 +81,7 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
     rv = cmlvar->GetName(cellmltext);
     cellmlname = ToThinString(cellmltext.get());
     Variable* antvar = AddOrFindVariable(&cellmlname);
-    antvar->SetIsConst(false); //This forces it to be output in the Antimony script even if it's not otherwise used.
+    //antvar->SetIsConst(false); //This forces it to be output in the Antimony script even if it's not otherwise used.
     rv = cmlvar->GetInitialValue(cellmltext);
     cellmlname = ToThinString(cellmltext.get());
     if (cellmlname != "") {
@@ -184,6 +89,16 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
       setFormulaWithString(cellmlname, formula);
       antvar->SetFormula(formula);
     }
+    //Put it in the module interface if it has one:
+    PRUint32 vi;
+    rv = cmlvar->GetPrivateInterface(&vi);
+    if (vi == 2) {
+      rv = cmlvar->GetPublicInterface(&vi);
+    }
+    if (vi != 2) {
+      AddVariableToExportList(antvar);
+    }
+    
     rv = vsi->NextVariable(getter_AddRefs(cmlvar));
   }
 
@@ -230,6 +145,9 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
         string variable, equation;
         variable.assign(infix, 0, infix.find('='));
         equation.assign(infix, infix.find('=')+1, infix.size());
+        variable = Trim(variable);
+        equation = Trim(equation);
+        string origeq = equation;
 
         //Remove all the '{id: ...}' bits
         size_t idpos;
@@ -240,11 +158,27 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
         while ((idpos = equation.find("{unit:")) != string::npos) {
           equation.erase(idpos, equation.find("}", idpos)-idpos+1);
         }
+        //Remove '{base: ...}' bits
+        while ((idpos = equation.find("{base:")) != string::npos) {
+          equation.erase(idpos, equation.find("}", idpos)-idpos+1);
+        }
+        //Remove '$'--it's apparantly the way that cellml notes variables that are also function names.
+        // (We'll fix the name later ourselves with 'FixNames')
+        while ((idpos = equation.find("$")) != string::npos) {
+          equation.erase(idpos, 1);
+        }
+        while ((idpos = variable.find("$")) != string::npos) {
+          variable.erase(idpos, 1);
+        }
+
+        //Handle piecewise equations
+        if ((idpos = equation.find("piecewise")) != string::npos) {
+          equation = CellMLPiecewiseToSBML(equation);
+        }
         Formula* formula = g_registry.NewBlankFormula();
         setFormulaWithString(Trim(equation), formula);
 
         //Find out what variable we're assigning to, and how we're assigning to it.
-        variable = Trim(variable);
         vector<string> fullname;
         fullname.push_back(variable);
         Variable* var = GetVariable(fullname);
@@ -252,7 +186,8 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
           //Math is simple assignent rule
           if (var->SetAssignmentRule(formula)) {
             //Something went wrong
-            cout << "Unable to use the formula \"" << formula->ToDelimitedStringWithEllipses('.') << "\" to set the assignment rule for " << var->GetNameDelimitedBy('.') << endl;
+            //cout << "Unable to use the formula \"" << formula->ToDelimitedStringWithEllipses('.') << "\" (originally \"" << origeq << "\") to set the assignment rule for " << var->GetNameDelimitedBy('.') << ":  " << getLastError() << endl;
+            cout << "Unable to use the formula \"" << formula->ToDelimitedStringWithEllipses('.') << "\" to set the assignment rule for " << var->GetNameDelimitedBy('.') << ":  " << getLastError() << endl;
           }
         }
         else if (variable.find("d(") == 0 && variable.find(")/d(") != string::npos) {
@@ -263,7 +198,8 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
           cellmltext = ToNSString(maybetime);
           rv = varset->GetVariable(cellmltext, getter_AddRefs(cmlvar));
           if (cmlvar && !HasTimeUnits(cmlvar)) {
-            cout << "Units of \"" << maybetime << "\" are not time units, so CellML is trying to take the derivative of something with respect to some not-time element.  Which we don't know how to deal with, so we're punting." << endl;
+            rv = cmlvar->GetUnitsName(cellmltext);
+            cout << "The units of \"" << maybetime << "\" ('" << ToThinString(cellmltext.get()) << "') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative." << endl;
             continue;
           }
           variable.assign(variable, 2, timepos-6);
@@ -272,41 +208,20 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
             cout << "Unable to use the formula \"" << formula->ToDelimitedStringWithEllipses('.') << "\" to set the rate rule for " << var->GetNameDelimitedBy('.') << endl;
           }
         }
+        else if (variable.find("del(") != string::npos) {
+          //It's a partial differential equation.
+          cout << "Unable to translate an assignment to \"" << variable << "\" in the Antimony format because Antimony does not handle partial differential equations." << endl;
+        }
+        else if (variable.find("selector(") != string::npos) {
+          //It's vector or matrix math of some sort.
+          cout << "Unable to translate an assignment to \"" << variable << "\" in the Antimony format because Antimony does not handle vector or matrix algebra." << endl;
+        }
         else {
           //Unable to determine what kind of math we're talking about.
           cout << "Unable to figure out how to translate an assignment to \"" << variable << "\" in the Antimony format." << endl;
           
         }
 
-        /*
-        cout << "original:  " << cinfix.get() << endl;
-        if (var != NULL) {
-          cout << "antimony:  " << var->GetNameDelimitedBy('.');
-          formula_type ftype = var->GetFormulaType();
-          switch(ftype) {
-          case formulaASSIGNMENT:
-            cout << " := ";
-            break;
-          case formulaRATE:
-            cout << "' = " << var->GetRateRule()->ToDelimitedStringWithEllipses('.') << endl;
-            if (!var->GetFormula()->IsEmpty()) {
-              cout << "           " << var->GetNameDelimitedBy('.') << "  = ";
-            }
-            break;
-          case formulaINITIAL:
-            cout << " = ";
-            break;
-          case formulaKINETIC:
-          case formulaTRIGGER:
-            assert(false); //These don't exist in CellML
-            break;
-          }
-          cout << var->GetFormula()->ToDelimitedStringWithEllipses('.') << endl;
-        }
-        else {
-          cout << "(No Antimony version available)" << endl;
-        }
-        */
       }
       else {
         //cout << "Child node " <<  i << " of 'math' element not an 'apply' element" << endl;
@@ -316,7 +231,42 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
   }
 
   //Containers (?)
+
+  //And finally, fix names.
+  FixNames();
 }
+
+void Module::SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> component) {
+  //Iterate over 'encapsulation' children and make them submodules.
+  nsString cellmltext;
+  string cellmlname;
+  nsresult rv;
+  nsCOMPtr<cellml_apiICellMLComponentSet> children;
+  rv = component->GetEncapsulationChildren(getter_AddRefs(children));
+  nsCOMPtr<cellml_apiICellMLComponentIterator> childi;
+  nsCOMPtr<cellml_apiICellMLComponent> child;
+  
+  rv = children->IterateComponents(getter_AddRefs(childi));
+  rv = childi->NextComponent(getter_AddRefs(child));
+  while (child != NULL) {
+    rv = child->GetName(cellmltext);
+    cellmlname = ToThinString(cellmltext.get());
+    string cellmlmodname = GetModuleNameFrom(child);
+    vector<string> fullname;
+    fullname.push_back(cellmlname);
+    Variable* foundvar = GetVariable(fullname);
+    if (foundvar != NULL) {
+      cellmlname = cellmlname + "_mod";
+    }
+    Variable* var = AddOrFindVariable(&cellmlname);
+    if(var->SetModule(&cellmlmodname)) {
+      assert(false);
+      return;
+    }
+    rv = childi->NextComponent(getter_AddRefs(child));
+  }
+}
+
 
 const nsCOMPtr<cellml_apiIModel> Module::GetCellMLModel()
 {
