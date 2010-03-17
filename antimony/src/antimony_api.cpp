@@ -294,12 +294,7 @@ LIB_EXTERN long loadSBMLString(const char* model)
 
 #ifndef NCELLML
 
-#include "MathMLInputServices.h"
-#include "ICellMLInputServices.h"
-#include <nsStringAPI.h>
-#include <nsDebug.h>
-#include <nsCOMPtr.h>
-#include <nsServiceManagerUtils.h>
+#include "cellmlx.h"
 
 long CheckAndAddCellMLDoc(nsCOMPtr<cellml_apiIModel> model)
 {

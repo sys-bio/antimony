@@ -62,7 +62,7 @@ Registry::Registry()
   nsCOMPtr<cellml_apiICellMLBootstrap> foo = do_CreateInstance(CELLML_BOOTSTRAP_CONTRACTID, &rv);
   if ( NS_FAILED(rv) )
   {
-    printf("Creating a cellml bootstrap instance returns [%x].\n", rv);
+    printf("Creating a cellml bootstrap instance returns [%x]:  your working directory must be the one with the 'components/' subdirectory.  I know, right?  Sigh.\n", rv);
     return;
   }
 
@@ -223,12 +223,7 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
 
 #ifndef NCELLML
 
-#include "ICellMLInputServices.h"
-#include "ICeVAS.h"
-#include <nsStringAPI.h>
-#include <nsDebug.h>
-#include <nsCOMPtr.h>
-#include <nsServiceManagerUtils.h>
+#include "cellmlx.h"
 
 #define CEVAS_BOOTSTRAP_CONTRACTID "@cellml.org/cevas-bootstrap;1"
 
@@ -236,11 +231,18 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
 {
   if (model == NULL) return true;
   nsresult rv;
+  nsString cellmltext;
+  string cellmlname;
   nsCOMPtr<cellml_servicesICeVASBootstrap> cevasboot(do_GetService(CEVAS_BOOTSTRAP_CONTRACTID, &rv));
   NS_ENSURE_SUCCESS(rv, true);
 
   nsCOMPtr<cellml_servicesICeVAS> cevas;
-  rv = cevasboot->CreateCeVASForModel(model, getter_AddRefs(cevas));
+  try {
+    rv = cevasboot->CreateCeVASForModel(model, getter_AddRefs(cevas));
+  }
+  catch (...){
+    return true;
+  }
   if (NS_FAILED(rv)) {
     nsString error;
     cevas->GetModelError(error);
@@ -252,31 +254,185 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
   nsCOMPtr<cellml_apiICellMLComponent> component;
   rv = cmpi->NextComponent(getter_AddRefs(component));
   int numcomps=0;
+  vector<nsCOMPtr<cellml_apiICellMLComponent> > top_components;
   while (component != NULL) {
     numcomps++;
     //Each CellML 'component' becomes its own Antimony 'module'
-    nsString cellmltext;
-    rv = component->GetName(cellmltext);
-    string cellmlname = "cellmlmod_" + ToThinString(cellmltext.get());
-    NewCurrentModule(&cellmlname);
-    CurrentModule()->LoadCellMLComponent(component);
-    RevertToPreviousModule();
+    cellmlname = GetModuleNameFrom(component);
+    Module* mod = GetModule(cellmlname);
+    if (mod == NULL) {
+      NewCurrentModule(&cellmlname);
+      CurrentModule()->LoadCellMLComponent(component);
+      RevertToPreviousModule();
+    }
+    else {
+      //It's either a multiply-imported component, or a component with an identical name.
+    }
+    nsCOMPtr<cellml_apiICellMLComponent> parent;
+    rv = component->GetEncapsulationParent(getter_AddRefs(parent));
+    if (parent == NULL) {
+      top_components.push_back(component);
+    }
     rv = cmpi->NextComponent(getter_AddRefs(component));
   }
-  assert(numcomps > 0);
-  if (numcomps > 1) {
-    //Create a master Module that contains each of the components.
-    nsString cellmltext;
-    rv = model->GetName(cellmltext);
-    string cellmlname = ToThinString(cellmltext.get());
-    if (cellmlname != MAINMODULE) {
-      NewCurrentModule(&cellmlname);
-    }
-    CurrentModule()->LoadCellMLModel(model);
+  if (numcomps == 0) {
+    SetError("No components found in this CellML model.");
+    return true;
   }
+
+  //Now loop through all the components again, this time setting up 'encapsulation' for the submodules
+  rv = cevas->IterateRelevantComponents(getter_AddRefs(cmpi));
+  rv = cmpi->NextComponent(getter_AddRefs(component));
+  while (component != NULL) {
+    rv = component->GetName(cellmltext);
+    cellmlname = GetModuleNameFrom(component);
+    Module* mod = GetModule(cellmlname);
+    assert(mod != NULL);
+    mod->SetCellMLChildrenAsSubmodules(component); // <- Here's where the work happens
+    rv = cmpi->NextComponent(getter_AddRefs(component));
+  }
+
+  //Now create a master model that contains only contain the top_components.
+  rv = model->GetName(cellmltext);
+  cellmlname = ToThinString(cellmltext.get());
+  if (cellmlname != MAINMODULE) {
+    NewCurrentModule(&cellmlname);
+  }
+  CurrentModule()->LoadCellMLModel(model, top_components);
+
+  //Now intercolate the connections into the modules.  First, get the connections from the imports:
+  nsCOMPtr<cellml_apiICellMLImportSet> imports;
+  rv = model->GetImports(getter_AddRefs(imports));
+  nsCOMPtr<cellml_apiICellMLImportIterator> impi;
+  rv = imports->IterateImports(getter_AddRefs(impi));
+  nsCOMPtr<cellml_apiICellMLImport> import;
+  rv = impi->NextImport(getter_AddRefs(import));
+  while (import != NULL) {
+    nsCOMPtr<cellml_apiIConnectionSet> impconnections;
+    rv = import->GetImportedConnections(getter_AddRefs(impconnections));
+    nsCOMPtr<cellml_apiIModel> impmodel;
+    rv = import->GetImportedModel(getter_AddRefs(impmodel));
+    LoadConnections(impconnections, impmodel);
+    rv = impi->NextImport(getter_AddRefs(import));
+  }
+  //And then get the main model's connections
+  nsCOMPtr<cellml_apiIConnectionSet> connections;
+  rv = model->GetConnections(getter_AddRefs(connections));
+  LoadConnections(connections, model);
+  
   return false; //success
 }
 
+bool Registry::LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections, nsCOMPtr<cellml_apiIModel> topmodel)
+{
+  nsString cellmltext;
+  string cellmlname;
+  nsresult rv;
+
+  nsCOMPtr<cellml_apiIConnectionIterator> coni;
+  rv = connections->IterateConnections(getter_AddRefs(coni));
+  nsCOMPtr<cellml_apiIConnection> connection;
+  rv = coni->NextConnection(getter_AddRefs(connection));
+  bool somewrong = false;
+  while (connection != NULL) {
+    if (SynchronizeCellMLConnection(connection, topmodel)) {
+      somewrong = true;
+    }
+    rv = coni->NextConnection(getter_AddRefs(connection));
+  }
+  return somewrong;
+}
+
+bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> connection, nsCOMPtr<cellml_apiIModel> topmodel)
+{
+  nsString cellmltext;
+  string cellmlname;
+  nsresult rv;
+
+  //First we get the list of the component and any/all encapsulation parents
+  vector<string> comp1moduleparents, comp2moduleparents;
+  vector<string> comp1modulenames, comp2modulenames;
+  nsCOMPtr<cellml_apiIMapComponents> compmap;
+  rv = connection->GetComponentMapping(getter_AddRefs(compmap));
+  nsCOMPtr<cellml_apiICellMLComponent> component;
+
+  //First
+  rv = compmap->GetFirstComponent(getter_AddRefs(component));
+  while (component != NULL) {
+    string modname = GetModuleNameFrom(component);
+    comp1moduleparents.insert(comp1moduleparents.begin(), modname);
+    modname = GetNameAccordingToEncapsulationParent(component, topmodel);
+    FixName(modname);
+    comp1modulenames.insert(comp1modulenames.begin(), modname);
+    rv = component->GetEncapsulationParent(getter_AddRefs(component));
+  }
+  comp1moduleparents.insert(comp1moduleparents.begin(), CurrentModule()->GetModuleName());
+  
+  //Second
+  rv = compmap->GetSecondComponent(getter_AddRefs(component));
+  while (component != NULL) {
+    string modname = GetModuleNameFrom(component);
+    comp2moduleparents.insert(comp2moduleparents.begin(), modname);
+    modname = GetNameAccordingToEncapsulationParent(component, topmodel);
+    FixName(modname);
+    comp2modulenames.insert(comp2modulenames.begin(), modname);
+    rv = component->GetEncapsulationParent(getter_AddRefs(component));
+  }
+  comp2moduleparents.insert(comp2moduleparents.begin(), CurrentModule()->GetModuleName());
+
+  //Now figure out the 'lowest' common parent in the encapsulation tree:
+  string commonparent = "";
+  for (size_t i=0; i<comp1moduleparents.size() && i<comp2moduleparents.size(); ++i) {
+    if (comp1moduleparents[i] == comp2moduleparents[i]) {
+      commonparent = comp1moduleparents[i];
+      if (i>0) {
+        comp1modulenames.erase(comp1modulenames.begin());
+        comp2modulenames.erase(comp2modulenames.begin());
+      }
+    }
+    else break;
+  }
+
+  //At this point, we have the name of the module where the encapsulation happens:
+  Module* topmod = CurrentModule();
+  if (commonparent != "") {
+    topmod = GetModule(commonparent);
+  }
+  assert(topmod != NULL);
+
+  //And we have the full names of the submodules whose variables need to be synchronized.  But there might be multiple variables, so we go through them all:
+  nsCOMPtr<cellml_apiIMapVariablesSet> mvs;
+  rv = connection->GetVariableMappings(getter_AddRefs(mvs));
+  nsCOMPtr<cellml_apiIMapVariablesIterator> mvsi;
+  rv = mvs->IterateMapVariables(getter_AddRefs(mvsi));
+  nsCOMPtr<cellml_apiIMapVariables> mapvars;
+  rv = mvsi->NextMapVariable(getter_AddRefs(mapvars));
+  bool somefalse = false;
+  while (mapvars != NULL) {
+    rv = mapvars->GetFirstVariableName(cellmltext);
+    cellmlname = ToThinString(cellmltext.get());
+    FixName(cellmlname);
+    vector<string> fullvarname = comp1modulenames;
+    fullvarname.push_back(cellmlname);
+    Variable* firstvar = topmod->GetVariable(fullvarname);
+    assert(firstvar != NULL);
+    rv = mapvars->GetSecondVariableName(cellmltext);
+    cellmlname = ToThinString(cellmltext.get());
+    FixName(cellmlname);
+    fullvarname = comp2modulenames;
+    fullvarname.push_back(cellmlname);
+    Variable* secondvar = topmod->GetVariable(fullvarname);
+    assert(secondvar != NULL);
+    //We synchronize the second to the first because the first is usually the one with the 'higher' name.
+    if (firstvar->Synchronize(secondvar)) {
+      //LS DEBUG:  Say why we can't synchronize these variables
+      cout << "The variables " << firstvar->GetNameDelimitedBy('.') << " and " << secondvar->GetNameDelimitedBy('.') << " were unable to be synchronized:  " << g_registry.GetError() << endl;
+      somefalse = true;
+    }
+    rv = mvsi->NextMapVariable(getter_AddRefs(mapvars));
+  }
+  return somefalse;
+}  
 
 #endif
 
@@ -393,8 +549,9 @@ void Registry::NewCurrentModule(const string* name)
   //Check to make sure no existing module exist with this name
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (m_modules[mod].GetModuleName() == localname) {
-      assert(false); //Parsing disallows this condition
-      SetError("Programming error:  Unable to create new module with the same name as an existing module.");
+      //assert(false); //Parsing disallows this condition
+      //cout << "duplicated name: " << localname << endl;
+      SetError("Programming error:  Unable to create new module with the same name as an existing module (\"" + localname + "\").");
       return;
     }
   }

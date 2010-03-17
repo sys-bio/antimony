@@ -80,6 +80,8 @@ public:
 #endif
 #ifndef NCELLML
   bool   LoadCellML(nsCOMPtr<cellml_apiIModel> model);
+  bool   LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections, nsCOMPtr<cellml_apiIModel> topmodel);
+  bool   SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> connection, nsCOMPtr<cellml_apiIModel> topmodel);
 #endif
   bool   SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};

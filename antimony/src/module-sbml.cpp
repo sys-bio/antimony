@@ -569,7 +569,7 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var)
     }
     else if (!formula->IsDouble() &&
              !(IsSpecies(var->GetType()) && formula->IsAmountIn(var->GetCompartment()))) {
-      //if it was a double or a species with an amount, we already dealt with it.
+      //if it was a double or a species with an amount, we already dealt with it.  Otherwise:
       InitialAssignment* ia = sbmlmod->createInitialAssignment();
       ia->setSymbol(var->GetNameDelimitedBy(cc));
       ia->setMath(math);
@@ -588,5 +588,3 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var)
   }
 }
 #endif
-  
-

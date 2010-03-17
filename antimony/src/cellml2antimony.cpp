@@ -29,6 +29,9 @@ int main(int argc, char** argv)
         if (filename.find(".xml") != string::npos) {
           filename.erase(filename.find(".xml"), 4);
         }
+        if (filename.find(".cellml") != string::npos) {
+          filename.erase(filename.find(".cellml"), 7);
+        }
         while (filename.find("/") != string::npos) {
           filename.erase(0, filename.find("/")+1);
         }

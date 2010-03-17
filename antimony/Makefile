@@ -78,6 +78,7 @@ YPPFILES = $(src_dir)antimony.ypp
 CPPFILES = $(src_dir)antimony_api.cpp \
 	$(src_dir)Antimony.cpp \
 	$(src_dir)antimony.tab.cpp \
+	$(src_dir)cellmlx.cpp \
 	$(src_dir)dnastrand.cpp \
 	$(src_dir)event.cpp \
 	$(src_dir)formula.cpp \
@@ -100,6 +101,7 @@ CPPFILES = $(src_dir)antimony_api.cpp \
 
 HFILES = $(src_dir)antimony_api.h \
 	$(src_dir)dnastrand.h \
+	$(src_dir)cellmlx.h \
 	$(src_dir)enums.h \
 	$(src_dir)event.h \
 	$(src_dir)formula.h \
@@ -116,6 +118,7 @@ HFILES = $(src_dir)antimony_api.h \
 
 LIBOFILES = $(src_dir)antimony_api.o \
 	$(src_dir)antimony.tab.o \
+	$(src_dir)cellmlx.o \
 	$(src_dir)dnastrand.o \
 	$(src_dir)event.o \
 	$(src_dir)formula.o \
@@ -252,17 +255,21 @@ DOCSRCFILES = \
 
 
 #Executables:
-all : $(bin_dir)testantimony $(bin_dir)antimony2sbml $(bin_dir)sbml2antimony $(bin_dir)cellml2antimony
+all : \
+	$(bin_dir)testantimony \
+	$(bin_dir)antimony2sbml \
+	$(bin_dir)sbml2antimony \
+	$(bin_dir)cellml2antimony 
 	@echo ""
 	@echo "Libary created:"
 	@echo "  lib/libantimony.a:  The libAntimony static library"
 	@echo ""
 	@echo "Executables created:  "
-	@echo "  bin/antimony2sbml:  Converts all modules in antimony files to SBML files"
-	@echo "  bin/sbml2antimony:  Converts SBML files into antimony files."
+	@echo "  bin/antimony2sbml:   Converts all modules in antimony files to SBML files"
+	@echo "  bin/sbml2antimony:   Converts SBML files into antimony files."
 	@echo "  bin/cellml2antimony: Converts CellML files into antimony files."
-	@echo "  bin/testantimony:   Prints information about your antimony file(s) and"
-	@echo "                        re-saves the data in different formats"
+	@echo "  bin/testantimony:    Prints information about your antimony file(s) and"
+	@echo "                         re-saves the data in different formats"
 	@echo ""
 	@echo "For more information, see the documentation in the doc/ directory."
 	@echo ""
@@ -321,7 +328,9 @@ $(src_dir)testantimony.o : $(src_dir)testantimony.cpp $(src_dir)antimony_api.h $
 
 $(src_dir)antimony.tab.o : $(src_dir)antimony.tab.cpp
 
-$(src_dir)antimony_api.o : $(src_dir)antimony_api.cpp $(src_dir)antimony_api.h $(src_dir)formula.h $(src_dir)libutil.h $(src_dir)module.h $(src_dir)enums.h $(src_dir)registry.h $(src_dir)sbmlx.h $(src_dir)stringx.h $(src_dir)typex.h
+$(src_dir)antimony_api.o : $(src_dir)antimony_api.cpp $(src_dir)antimony_api.h $(src_dir)cellmlx.h $(src_dir)formula.h $(src_dir)libutil.h $(src_dir)module.h $(src_dir)enums.h $(src_dir)registry.h $(src_dir)sbmlx.h $(src_dir)stringx.h $(src_dir)typex.h
+
+$(src_dir)cellmlx.o : $(src_dir)cellmlx.cpp $(src_dir)cellmlx.h
 
 $(src_dir)dnastrand.o : $(src_dir)dnastrand.cpp $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)registry.h $(src_dir)variable.h $(src_dir)typex.h
 
@@ -329,7 +338,7 @@ $(src_dir)event.o : $(src_dir)event.cpp $(src_dir)event.h $(src_dir)formula.h $(
 
 $(src_dir)formula.o : $(src_dir)formula.cpp $(src_dir)formula.h $(src_dir)module.h $(src_dir)registry.h $(src_dir)variable.h $(src_dir)reaction.h
 
-$(src_dir)module.o : $(src_dir)module.cpp $(src_dir)module-sbml.cpp $(src_dir)module-cellml.cpp $(src_dir)module.h $(src_dir)variable.h $(src_dir)enums.h $(src_dir)reaction.h $(src_dir)sbmlx.h $(src_dir)stringx.h $(src_dir)typex.h $(src_dir)formula.h
+$(src_dir)module.o : $(src_dir)module.cpp $(src_dir)module-sbml.cpp $(src_dir)module-cellml.cpp $(src_dir)cellmlx.h $(src_dir)module.h $(src_dir)variable.h $(src_dir)enums.h $(src_dir)reaction.h $(src_dir)sbmlx.h $(src_dir)stringx.h $(src_dir)typex.h $(src_dir)formula.h
 
 $(src_dir)typex.o : $(src_dir)typex.cpp $(src_dir)enums.h $(src_dir)typex.h
 
@@ -337,7 +346,7 @@ $(src_dir)reactantlist.o : $(src_dir)reactantlist.cpp $(src_dir)reactantlist.h $
 
 $(src_dir)reaction.o : $(src_dir)reaction.cpp $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)registry.h $(src_dir)enums.h $(src_dir)stringx.h $(src_dir)module.h $(src_dir)variable.h $(src_dir)typex.h $(src_dir)formula.h
 
-$(src_dir)registry.o : $(src_dir)registry.cpp $(src_dir)registry.h $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)stringx.h $(src_dir)sbmlx.h $(src_dir)formula.h $(src_dir)variable.h
+$(src_dir)registry.o : $(src_dir)registry.cpp $(src_dir)registry.h $(src_dir)cellmlx.h $(src_dir)dnastrand.h $(src_dir)module.h $(src_dir)reaction.h $(src_dir)reactantlist.h $(src_dir)stringx.h $(src_dir)sbmlx.h $(src_dir)formula.h $(src_dir)variable.h
 
 $(src_dir)stringx.o : $(src_dir)stringx.cpp $(src_dir)stringx.h
 
