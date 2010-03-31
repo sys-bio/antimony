@@ -13,6 +13,7 @@ bool HasOrIsFormula(const var_type vtype);
 std::string RDToString(rd_type type);
 std::string VarTypeToString(const var_type vtype);
 std::string VarTypeToAntimony(const var_type vtype);
-std::string ReturnTypeToString(return_type rtype);
+std::string ReturnTypeToString(const return_type rtype);
+std::string FormulaTypeToString(const formula_type ftype);
 
 #endif

@@ -21,6 +21,7 @@ extern std::vector<int> yylloc_last_lines;
 using namespace std;
 
 #ifndef NCELLML
+#include "cellmlx.h"
 #include <nsXPCOM.h>
 #include <nsIComponentManager.h>
 #include <nsComponentManagerUtils.h>
@@ -34,6 +35,7 @@ Registry::Registry()
     m_storedvars(),
     m_storedformulas(),
     m_modules(),
+    m_modulemap(),
     m_currentModules(),
     m_currentReactantLists(),
     m_currentImportedModule(),
@@ -43,6 +45,7 @@ Registry::Registry()
     m_error(),
     m_oldmodules(),
     m_olduserfunctions(),
+    m_oldmodulemaps(),
     input(NULL)
 {
   string main = MAINMODULE;
@@ -65,7 +68,6 @@ Registry::Registry()
     printf("Creating a cellml bootstrap instance returns [%x]:  your working directory must be the one with the 'components/' subdirectory.  I know, right?  Sigh.\n", rv);
     return;
   }
-
 
 #endif
 }
@@ -90,6 +92,7 @@ void Registry::ClearModules()
   }
   m_files.clear();
   m_modules.clear();
+  m_modulemap.clear();
   m_currentModules.clear();
   m_currentReactantLists.clear();
   m_currentImportedModule.clear();
@@ -122,6 +125,7 @@ void Registry::FreeFormulas()
 void Registry::ClearAll()
 {
   m_oldmodules.clear();
+  m_oldmodulemaps.clear();
   m_olduserfunctions.clear();
   FreeVariables();
   FreeFormulas();
@@ -259,6 +263,7 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
     numcomps++;
     //Each CellML 'component' becomes its own Antimony 'module'
     cellmlname = GetModuleNameFrom(component);
+    FixName(cellmlname);
     Module* mod = GetModule(cellmlname);
     if (mod == NULL) {
       NewCurrentModule(&cellmlname);
@@ -281,20 +286,19 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
   }
 
   //Now loop through all the components again, this time setting up 'encapsulation' for the submodules
-  rv = cevas->IterateRelevantComponents(getter_AddRefs(cmpi));
-  rv = cmpi->NextComponent(getter_AddRefs(component));
-  while (component != NULL) {
+  for (size_t topnum = 0; topnum<top_components.size(); topnum++) {
+    component = top_components[topnum];
     rv = component->GetName(cellmltext);
     cellmlname = GetModuleNameFrom(component);
     Module* mod = GetModule(cellmlname);
     assert(mod != NULL);
     mod->SetCellMLChildrenAsSubmodules(component); // <- Here's where the work happens
-    rv = cmpi->NextComponent(getter_AddRefs(component));
   }
 
   //Now create a master model that contains only contain the top_components.
   rv = model->GetName(cellmltext);
   cellmlname = ToThinString(cellmltext.get());
+  FixName(cellmlname);
   if (cellmlname != MAINMODULE) {
     NewCurrentModule(&cellmlname);
   }
@@ -319,6 +323,9 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
   nsCOMPtr<cellml_apiIConnectionSet> connections;
   rv = model->GetConnections(getter_AddRefs(connections));
   LoadConnections(connections);
+
+  //We've pulled a fast one here by inserting connections into models that were already copied into other models.  So, we need to go back through and pull those connections into the copied models.  We'll do this recursively by calling the routine on the top model.
+  CurrentModule()->ReloadSubmodelConnections();
   
   return false; //success
 }
@@ -351,6 +358,8 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
 
   nsCOMPtr<cellml_apiIModel> topmodel; //used when the encapsulation parent is null (in GetNameAccordingToEncapsulationParent)
   rv = connection->GetModelElement(getter_AddRefs(topmodel));
+  //rv = topmodel->GetName(cellmltext);
+  //cout << "Top model: " << ToThinString(cellmltext.get()) << endl;
   
   //First we get the list of the component and any/all encapsulation parents
   vector<string> comp1moduleparents, comp2moduleparents;
@@ -370,7 +379,7 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
     rv = component->GetEncapsulationParent(getter_AddRefs(component));
   }
   comp1moduleparents.insert(comp1moduleparents.begin(), CurrentModule()->GetModuleName());
-  
+
   //Second
   rv = compmap->GetSecondComponent(getter_AddRefs(component));
   while (component != NULL) {
@@ -403,6 +412,10 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
   }
   assert(topmod != NULL);
 
+  //cout << "Top module: " << commonparent << endl;
+  //cout << "first compartment submodule name: " << ToStringFromVecDelimitedBy(comp1modulenames, '.') << endl;
+  //cout << "second compartment submodule name: " << ToStringFromVecDelimitedBy(comp2modulenames, '.') << endl;
+
   //And we have the full names of the submodules whose variables need to be synchronized.  But there might be multiple variables, so we go through them all:
   nsCOMPtr<cellml_apiIMapVariablesSet> mvs;
   rv = connection->GetVariableMappings(getter_AddRefs(mvs));
@@ -419,6 +432,7 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
     fullvarname.push_back(cellmlname);
     Variable* firstvar = topmod->GetVariable(fullvarname);
     assert(firstvar != NULL);
+    firstvar = firstvar->GetSameVariable();
     rv = mapvars->GetSecondVariableName(cellmltext);
     cellmlname = ToThinString(cellmltext.get());
     FixName(cellmlname);
@@ -426,11 +440,35 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
     fullvarname.push_back(cellmlname);
     Variable* secondvar = topmod->GetVariable(fullvarname);
     assert(secondvar != NULL);
-    //We synchronize the second to the first because the first is usually the one with the 'higher' name.
-    if (firstvar->Synchronize(secondvar)) {
-      //LS DEBUG:  Say why we can't synchronize these variables
-      cout << "The variables " << firstvar->GetNameDelimitedBy('.') << " and " << secondvar->GetNameDelimitedBy('.') << " were unable to be synchronized:  " << g_registry.GetError() << endl;
-      somefalse = true;
+    secondvar = secondvar->GetSameVariable();
+    //Now we create a local name for the variables to be synchronized if one doesn't already exist.
+    vector<string> firstvarname = firstvar->GetName();
+    vector<string> secondvarname = secondvar->GetName();
+    if (firstvarname.size() > 1 && secondvarname.size() > 1) {
+      //Create a local variable
+      vector<string> newvarname;
+      newvarname.push_back(secondvarname[firstvarname.size()-1]);
+      Variable* newvar = topmod->GetVariable(newvarname);
+      if (newvar == NULL) {
+        newvar = topmod->AddOrFindVariable(&newvarname[0]);
+      }
+      else {
+        newvar = topmod->AddNewNumberedVariable(newvarname[0]);
+      }
+      if (firstvar->Synchronize(newvar)) {
+        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + firstvar->GetNameDelimitedBy('.') + " and " + newvar->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
+        somefalse = true;
+      }
+      if (secondvar->Synchronize(newvar)) {
+        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + secondvar->GetNameDelimitedBy('.') + " and " + newvar->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
+        somefalse = true;
+      }
+    }
+    else {
+      if (firstvar->Synchronize(secondvar)) {
+        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + firstvar->GetNameDelimitedBy('.') + " and " + secondvar->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
+        somefalse = true;
+      }
     }
     rv = mvsi->NextMapVariable(getter_AddRefs(mapvars));
   }
@@ -560,6 +598,7 @@ void Registry::NewCurrentModule(const string* name)
   }
   //Otherwise, create a new module with that name
   m_modules.push_back(Module(localname));
+  m_modulemap.insert(make_pair(*name, m_modules.size()-1));
 }
 
 Module* Registry::CurrentModule()
@@ -761,13 +800,21 @@ string Registry::GetLastFile()
 
 Module* Registry::GetModule(string modulename)
 {
+  map<string, size_t>::iterator found = m_modulemap.find(modulename);
+  if (found != m_modulemap.end()) {
+    return &(m_modules[found->second]);
+  }
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (modulename == m_modules[mod].GetModuleName()) {
+      assert(false);
+      m_modulemap.insert(make_pair(modulename, mod));
       return &(m_modules[mod]);
     }
   }
   for (size_t uf=0; uf<m_userfunctions.size(); uf++) {
     if (modulename == m_userfunctions[uf].GetModuleName()) {
+      assert(false);
+      m_modulemap.insert(make_pair(modulename, uf));
       return &(m_userfunctions[uf]);
     }
   }
@@ -776,13 +823,19 @@ Module* Registry::GetModule(string modulename)
 
 const Module* Registry::GetModule(string modulename) const
 {
+  map<string, size_t>::const_iterator found = m_modulemap.find(modulename);
+  if (found != m_modulemap.end()) {
+    return &(m_modules[found->second]);
+  }
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (modulename == m_modules[mod].GetModuleName()) {
+      assert(false);
       return &(m_modules[mod]);
     }
   }
   for (size_t uf=0; uf<m_userfunctions.size(); uf++) {
     if (modulename == m_userfunctions[uf].GetModuleName()) {
+      assert(false);
       return &(m_userfunctions[uf]);
     }
   }
@@ -891,6 +944,7 @@ long Registry::SaveModules()
 {
   m_oldmodules.push_back(m_modules);
   m_olduserfunctions.push_back(m_userfunctions);
+  m_oldmodulemaps.push_back(m_modulemap);
   m_isfunction = false;
   return m_oldmodules.size();
 }
@@ -919,6 +973,7 @@ bool Registry::RevertToModuleSet(long n)
   m_modules.clear(); //LS NOTE:  needed because otherwise we leak models!  Yes, this is weird.
   m_userfunctions.clear();
   m_modules = m_oldmodules[n-1];
+  m_modulemap = m_oldmodulemaps[n-1];
   m_userfunctions = m_olduserfunctions[n-1];
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (m_modules[mod].Finalize()) return true;

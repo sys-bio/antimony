@@ -32,7 +32,7 @@ Variable::Variable(const string name, const Module* module)
   m_name.push_back(name);
 }
 
-vector<string> Variable::GetName() const
+const vector<string>& Variable::GetName() const
 {
   return m_name;
 }
@@ -60,6 +60,9 @@ var_type Variable::GetType() const
 
 formula_type Variable::GetFormulaType() const
 {
+  if (IsPointer()) {
+    return GetSameVariable()->GetFormulaType();
+  }
   switch(GetType()) {
   case varFormulaUndef:
   case varSpeciesUndef:
@@ -314,8 +317,22 @@ Variable* Variable::GetSubVariable(const std::string* name)
   return m_valModule[0].GetSubVariable(name);
 }
 
-Variable* Variable::GetSameVariable() const
+Variable* Variable::GetSameVariable()
 {
+  if (m_sameVariable.size() == 0) return this; //LS NOTE: speed
+  Variable* var = g_registry.GetModule(m_module)->GetVariable(m_name);
+  Variable* subvar = g_registry.GetModule(m_module)->GetVariable(m_sameVariable);
+  if (subvar == NULL) return var;
+  while (var != subvar) {
+    var = subvar;
+    subvar = subvar->GetSameVariable();
+  }
+  return var;
+}
+
+const Variable* Variable::GetSameVariable() const
+{
+  if (m_sameVariable.size() == 0) return this; //LS NOTE:  speed
   Variable* var = g_registry.GetModule(m_module)->GetVariable(m_name);
   Variable* subvar = g_registry.GetModule(m_module)->GetVariable(m_sameVariable);
   if (subvar == NULL) return var;
@@ -348,21 +365,12 @@ Variable* Variable::GetCompartment() const
   return g_registry.GetModule(m_module)->GetVariable(m_supercompartment);
 }
 
-
 bool Variable::GetIsConst() const
 {
   if (IsPointer()) {
     return GetSameVariable()->GetIsConst();
   }
   const_type formconst = constDEFAULT;
-  if (GetFormula() != NULL) {
-    if (GetFormula()->GetIsConst()) {
-      formconst = constCONST;
-    }
-    else {
-      formconst = constVAR;
-    }
-  }
   switch(m_type) {
   case varFormulaUndef:
   case varFormulaOperator:
@@ -372,6 +380,14 @@ bool Variable::GetIsConst() const
   case varReactionGene:
   case varInteraction:
     if (m_const == constDEFAULT) {
+      if (GetFormula() != NULL) {
+        if (GetFormula()->GetIsConst()) {
+          formconst = constCONST;
+        }
+        else {
+          formconst = constVAR;
+        }
+      }
       if (formconst==constDEFAULT || formconst==constCONST) return true;
       if (formconst==constVAR) return false;
     }
@@ -709,7 +725,8 @@ bool Variable::SetAssignmentRule(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      //g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The formula \"" + formstring + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
     else {
@@ -841,6 +858,7 @@ bool Variable::SetModule(const string* modname)
   m_valModule.push_back(newmod);
   m_type = varModule;
   g_registry.SetCurrentImportedModule(m_name);
+  g_registry.GetModule(m_module)->AddToVarMapFrom(newmod);
   return false;
 }
 
@@ -1097,7 +1115,10 @@ bool Variable::Synchronize(Variable* clone)
     g_registry.SetError("Modules may not be synchronized directly.  Instead, synchronize elements of the modules individually.");
     return true;
   }
-  clone = clone->GetSameVariable();
+  if (clone->IsPointer()) {
+    //We have to wrap this in this check because sometimes we're synchronizing variables that are not actually in the model (to check if they've been written out already when outputting Antimony script).
+    clone = clone->GetSameVariable();
+  }
   if (GetIsEquivalentTo(clone)) {
     //already equivalent--don't do anything
     return false;
@@ -1119,14 +1140,14 @@ bool Variable::Synchronize(Variable* clone)
   Formula* form = GetFormula();
   if (form != NULL) {
     if (form->ContainsVar(clone)) {
-      g_registry.SetError("Loop detected:  '" + GetNameDelimitedBy('.') + "' may not be set to be equal to '" + clone->GetNameDelimitedBy('.') + " because " + GetNameDelimitedBy('.') + "'s definition already includes " + clone->GetNameDelimitedBy('.') + " either directly or by proxy .");
+      g_registry.SetError("Loop detected:  '" + GetNameDelimitedBy('.') + "' may not be set to be equal to '" + clone->GetNameDelimitedBy('.') + "' because " + GetNameDelimitedBy('.') + "'s definition already includes " + clone->GetNameDelimitedBy('.') + " either directly or by proxy.");
       return true;
     }
   }
   form = clone->GetFormula();
   if (form != NULL) {
     if (form->ContainsVar(this)) {
-      g_registry.SetError("Loop detected:  '" + GetNameDelimitedBy('.') + "' may not be set to be equal to '" + clone->GetNameDelimitedBy('.') + " because " + clone->GetNameDelimitedBy('.') + "'s definition already includes " + GetNameDelimitedBy('.') + " either directly or by proxy .");
+      g_registry.SetError("Loop detected:  '" + GetNameDelimitedBy('.') + "' may not be set to be equal to '" + clone->GetNameDelimitedBy('.') + "' because " + clone->GetNameDelimitedBy('.') + "'s definition already includes " + GetNameDelimitedBy('.') + " either directly or by proxy.");
       return true;
     }
   }

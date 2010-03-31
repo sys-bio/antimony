@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include "antimony_api.h"
 
 #ifdef WIN32
@@ -22,7 +23,14 @@ int main(int argc, char** argv)
         retval = 1;
       }
       else {
-        cout << argv[file] << " read successfully." << endl;
+        cout << argv[file] << " read successfully";
+        char* warnings = getWarnings();
+        if (warnings == NULL) {
+          cout << "." << endl;
+        }
+        else {
+          cout << ", with the following warnings:" << endl << warnings << endl;
+        }
         size_t nummods = getNumModules();
         char** modnames = getModuleNames();
         string filename(argv[file]);
@@ -32,15 +40,25 @@ int main(int argc, char** argv)
         if (filename.find(".cellml") != string::npos) {
           filename.erase(filename.find(".cellml"), 7);
         }
+        string dirname = filename;
         while (filename.find("/") != string::npos) {
           filename.erase(0, filename.find("/")+1);
         }
         while (filename.find("\\") != string::npos) {
           filename.erase(0, filename.find("\\")+1);
         }
+        size_t lastslash = dirname.rfind("/");
+        while (dirname.find("/") != lastslash) {
+          dirname.erase(0, dirname.find("/")+1);
+          lastslash = dirname.rfind("/");
+        }
+        dirname.erase(lastslash, dirname.size()-lastslash);
+        //cout << "Dirname = " << dirname << endl;
+        string command = "mkdir -p cellml/" + dirname;
+        system(command.c_str());
         size_t modnum = nummods-1;
-        string antimonyname = filename;
-        antimonyname += ".txt";
+        string antimonyname = "cellml/" + dirname + "/" + filename + ".txt";
+        //antimonyname += ".txt";
         if (writeAntimonyFile(antimonyname.c_str(), modnames[modnum])) {
           cout << "Successfully wrote file " << antimonyname.c_str() << endl;
           retval = 0;

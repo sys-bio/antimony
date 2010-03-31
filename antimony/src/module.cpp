@@ -12,7 +12,6 @@
 #include "stringx.h"
 #include "sbmlx.h"
 #include "typex.h"
-
 #ifndef NCELLML
 #include <wchar.h>
 #include <CellMLBootstrap.hpp>
@@ -33,6 +32,7 @@ Module::Module(string name)
     m_synchronized(),
     m_returnvalue(),
     m_currentexportvar(0),
+    m_varmap(),
 #ifndef NSBML
     m_sbml(),
     m_libsbml_info(""),
@@ -41,6 +41,7 @@ Module::Module(string name)
 #ifndef NCELLML
     m_cellmlmodel(NULL),
     m_cellmlcomponent(NULL),
+    m_childrenadded(false),
 #endif
     m_uniquevars()
 {
@@ -57,6 +58,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_synchronized(src.m_synchronized),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
+    m_varmap(), // useless--will reset with SetNewTopName, below.
 #ifndef NSBML
     m_sbml(),
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
@@ -65,6 +67,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
 #ifndef NCELLML
     m_cellmlmodel(NULL),
     m_cellmlcomponent(NULL),
+    m_childrenadded(src.m_childrenadded),
 #endif
     m_uniquevars()
 {
@@ -88,6 +91,7 @@ Module::Module(const Module& src)
     m_synchronized(src.m_synchronized),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(src.m_currentexportvar),
+    m_varmap(src.m_varmap),
 #ifndef NSBML
     m_sbml(src.m_sbml),
     m_libsbml_info(src.m_libsbml_info),
@@ -96,6 +100,7 @@ Module::Module(const Module& src)
 #ifndef NCELLML
     m_cellmlmodel(src.m_cellmlmodel),
     m_cellmlcomponent(src.m_cellmlcomponent),
+    m_childrenadded(src.m_childrenadded),
 #endif
     m_uniquevars(src.m_uniquevars)
 {
@@ -110,7 +115,7 @@ Module& Module::operator=(const Module& src)
   m_synchronized = src.m_synchronized;
   m_returnvalue = src.m_returnvalue;
   m_currentexportvar = src.m_currentexportvar;
-  m_uniquevars = src.m_uniquevars;
+  m_varmap = src.m_varmap;
 #ifndef NSBML
   m_sbml = src.m_sbml;
   m_libsbml_info = src.m_libsbml_info;
@@ -119,7 +124,9 @@ Module& Module::operator=(const Module& src)
 #ifndef NCELLML
   m_cellmlmodel = src.m_cellmlmodel;
   m_cellmlcomponent = src.m_cellmlcomponent;
+  m_childrenadded = src.m_childrenadded;
 #endif
+  m_uniquevars = src.m_uniquevars;
   return *this;
 }
 
@@ -137,7 +144,7 @@ Variable* Module::AddOrFindVariable(const string* name)
     //Didn't find one--need to create a new one.
     Variable* newvar = new Variable(*name, this);
     m_variables.push_back(newvar);
-    g_registry.StoreVariable(newvar);
+    StoreVariable(newvar);
     foundvar = newvar;
   }
   return foundvar;
@@ -160,8 +167,14 @@ Variable* Module::AddNewNumberedVariable(const string name)
   } while (foundvar != NULL);
   Variable* newvar = new Variable(newvarname, this);
   m_variables.push_back(newvar);
-  g_registry.StoreVariable(newvar);
+  StoreVariable(newvar);
   return newvar;
+}
+
+void Module::StoreVariable(Variable* var)
+{
+  g_registry.StoreVariable(var);
+  m_varmap.insert(make_pair(var->GetName(), var));
 }
 
 void Module::AddVariableToExportList(Variable* var)
@@ -199,15 +212,18 @@ bool Module::SetFormula(Formula* formula)
 void Module::SetNewTopName(string newmodname, string newtopname)
 {
   //Need new variables, not just pointers to the old variables.
+  m_varmap.clear(); //Refilled with StoreVariable, below.
   for (size_t var=0; var<m_variables.size(); var++) {
     Variable* newvar = new Variable(*m_variables[var]);
-    g_registry.StoreVariable(newvar);
+    newvar->SetNewTopName(newmodname, newtopname);
+    if (newvar->GetType() == varModule) {
+      const Module* submod = newvar->GetModule();
+      m_varmap.insert(submod->m_varmap.begin(), submod->m_varmap.end());
+    }
     m_variables[var] = newvar;
+    StoreVariable(newvar);
   }
   m_variablename.insert(m_variablename.begin(), newtopname);
-  for (size_t var=0; var<m_variables.size(); var++) {
-    m_variables[var]->SetNewTopName(newmodname, newtopname);
-  }
   for (size_t var=0; var<m_exportlist.size(); var++) {
     m_exportlist[var].insert(m_exportlist[var].begin(), newtopname);
   }
@@ -251,32 +267,53 @@ void Module::AddTimeToUserFunction(std::string function)
   }
 }
 
-Variable* Module::GetVariable(vector<string> name)
+void PrintVarMap(map<vector<string>, Variable* > varmap)
 {
+  cout << "variables in map:" << endl;
+  for (map<vector<string>, Variable* >::iterator var=varmap.begin(); var != varmap.end(); var++) {
+    cout << ToStringFromVecDelimitedBy(var->first, '.') << endl;
+  }
+}
+
+Variable* Module::GetVariable(const vector<string>& name)
+{
+  map<vector<string>, Variable*>::iterator found = m_varmap.find(name);
+  if (found != m_varmap.end()) {
+    return found->second;
+  }
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetName() == name) {
+      //PrintVarMap(m_varmap);
+      m_varmap.insert(make_pair(name, m_variables[var]));
+      //assert(false); //already got?
       return m_variables[var];
     }
     if (m_variables[var]->GetType() == varModule) {
       Variable* subvar = m_variables[var]->GetModule()->GetVariable(name);
       if (subvar != NULL) {
+        //PrintVarMap(m_varmap);
+        //cout << "and from subvar:" << endl;
+        //PrintVarMap(m_variables[var]->GetModule()->m_varmap);
+        m_varmap.insert(make_pair(name, subvar));
+        //assert(false); //already got?
         return subvar;
       }
     }
   }
-  /*
-  cout << "No variable found for ";
-  for (size_t nname=0; nname<name.size(); nname++) {
-    if (nname > 0) cout << ".";
-    cout << name[nname];
-  }
-  cout << endl;
-  */
   return NULL;
 }
 
-const Variable* Module::GetVariable(vector<string> name) const
+void Module::AddToVarMapFrom(const Module& submod)
 {
+  m_varmap.insert(submod.m_varmap.begin(), submod.m_varmap.end());
+}
+
+const Variable* Module::GetVariable(const vector<string>& name) const
+{
+  map<vector<string>, Variable*>::const_iterator found = m_varmap.find(name);
+  if (found != m_varmap.end()) {
+    return found->second;
+  }
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetName() == name) {
       return m_variables[var];
@@ -294,9 +331,8 @@ const Variable* Module::GetVariable(vector<string> name) const
 const Variable* Module::GetVariableFromSymbol(std::string varname) const
 {
   for (size_t v=0; v<m_uniquevars.size(); v++) {
-    const Variable* var = GetVariable(m_uniquevars[v]);
-    if (varname == var->GetNameDelimitedBy(g_registry.GetCC())) {
-      return var;
+    if (varname == m_uniquevars[v]->GetNameDelimitedBy(g_registry.GetCC())) {
+      return m_uniquevars[v];
     }
   }
   g_registry.SetError("Unknown variable " + varname + " in module " + m_modulename + ".");
@@ -384,7 +420,8 @@ vector<pair<string, string> > Module::GetAllSynchronizedVariablePairs() const
   return ret;
 }
 
-vector<pair<string, string> > Module::GetSynchronizedVariablesBetween(string mod1, string mod2) {
+vector<pair<string, string> > Module::GetSynchronizedVariablesBetween(string mod1, string mod2) const
+{
   vector<pair<string, string> > ret;
   for (size_t pr=0; pr<m_synchronized.size(); pr++) {
     pair<vector<string>, vector<string> > prn = m_synchronized[pr];
@@ -407,7 +444,8 @@ vector<pair<string, string> > Module::GetSynchronizedVariablesBetween(string mod
   return ret;
 }
 
-pair<string, string> Module::GetNthSynchronizedVariablesBetween(string mod1, string mod2, size_t n) {
+pair<string, string> Module::GetNthSynchronizedVariablesBetween(string mod1, string mod2, size_t n) const
+{
   vector<pair<string, string> >  fullvec = GetSynchronizedVariablesBetween(mod1, mod2);
   if (n>=fullvec.size()) {
     g_registry.SetError("Unable to retrieve synchronized variable pair " + SizeTToString(n) + " between submodules '" + mod1 + "' and '" + mod2 + "' in the module '" + GetModuleName() + "' because there are only " + SizeTToString(m_synchronized.size()) + " synchronized variables between those submodules defined within the full module.");
@@ -518,25 +556,24 @@ bool Module::Finalize()
   }
 
   //Phase 4: Store a list of unique variable names.
-  set<string> varnames;
-  char cc = '_';
-  pair<set<string>::iterator, bool> nameret;
+  set<Variable*> uniquevarset;  //Can't have m_uniquevars be a set because order matters (bah).
+  pair<set<Variable*>::iterator, bool> setret;
   for (size_t var=0; var<m_variables.size(); var++) {
-    //if (m_variables[var]->IsPointer()) continue;
-    nameret = varnames.insert(m_variables[var]->GetNameDelimitedBy(cc));
-    if (nameret.second) {
-      m_uniquevars.push_back(m_variables[var]->GetName());
-      if (m_variables[var]->GetType() == varModule) {
-        Module* submod = m_variables[var]->GetModule();
+    Variable* basevar = m_variables[var]->GetSameVariable();
+    setret = uniquevarset.insert(basevar);
+    if (setret.second) {
+      m_uniquevars.push_back(basevar);
+      if (basevar->GetType() == varModule) {
+        Module* submod = basevar->GetModule();
         if (submod->Finalize()) return true;
         //Copy over what we've just created:
-        vector<vector<string> > subvars = submod->m_uniquevars;
+        vector<Variable*> subvars = submod->m_uniquevars;
         //And put them in our own vectors, if we don't have them already.
         for (size_t nsubvar=0; nsubvar<subvars.size(); nsubvar++) {
-          Variable* subvar = GetVariable(subvars[nsubvar]);
-          nameret = varnames.insert(subvar->GetNameDelimitedBy(cc));
-          if (nameret.second) {
-            m_uniquevars.push_back(submod->m_uniquevars[nsubvar]);
+          Variable* subvar = subvars[nsubvar];
+          setret = uniquevarset.insert(subvar);
+          if (setret.second) {
+            m_uniquevars.push_back(subvar);
           }
         }
       }
@@ -599,7 +636,7 @@ size_t Module::GetNumVariablesOfType(return_type rtype) const
   if (rtype == allSymbols) return m_uniquevars.size();
   size_t total = 0;
   for (size_t nvar=0; nvar<m_uniquevars.size(); nvar++) {
-    const Variable* var = GetVariable(m_uniquevars[nvar]);
+    const Variable* var = m_uniquevars[nvar];
     if (AreEquivalent(rtype, var->GetType()) &&
         AreEquivalent(rtype, var->GetIsConst())) {
       if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
@@ -614,12 +651,12 @@ const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n) const
 {
   if (rtype == allSymbols) {
     assert(n < m_uniquevars.size());
-    return GetVariable(m_uniquevars[n]);
+    return m_uniquevars[n];
   }
 
   size_t total = 0;
   for (size_t nvar=0; nvar<m_uniquevars.size(); nvar++) {
-    const Variable* var = GetVariable(m_uniquevars[nvar]);
+    const Variable* var = m_uniquevars[nvar];
     if (AreEquivalent(rtype, var->GetType()) &&
         AreEquivalent(rtype, var->GetIsConst())) {
       if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
@@ -769,7 +806,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   return false;
 }
 
-string Module::OutputOnly(vector<var_type> types, string name, string indent, char cc) const
+string Module::OutputOnly(vector<var_type> types, string name, string indent, char cc, map<const Variable*, Variable > origmap) const
 {
   string retval = "";
   bool firstone = true;
@@ -788,11 +825,13 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, ch
       const Formula* form = var->GetFormula();
       formula_type ftype = var->GetFormulaType();
       if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
+        string formula = form->ToDelimitedStringWithEllipses(cc);
+        if (OrigFormulaIsAlready(var, origmap, formula)) continue;
         if (firstone) {
           retval += "\n" + indent + "// " + name + ":\n";
           firstone = false;
         }
-        retval += indent + var->GetNameDelimitedBy(cc) + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
+        retval += indent + var->GetNameDelimitedBy(cc) + " = " + formula + ";\n";
       }
     }
   }
@@ -867,6 +906,7 @@ string Module::ToString() const
 
 string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) const
 {
+  assert(m_uniquevars.size() > 0 || m_variables.size() == 0); //The api usually calls Finalize--it didn't!
   string retval;
   char cc = '.';
   //First, we need any user-defined functions if we don't have them already.  Eventually we'll want to only write out the used ones, but for now, we'll just write them all out LS DEBUG
@@ -908,7 +948,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     indent = "  ";
   }
 
-  //Definitions of all variables; Modules first:
+  //Definitions of all modules first:
   bool firstone = true;
   set<size_t> already_synchronized;
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -946,34 +986,85 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     }
   }
   retval += ListSynchronizedVariables(indent, already_synchronized);
-  //And now subvariables that have changed names or values in submods.
+
+  //Now get the mapping of unique variables to original module variables--the latter will be the variables that are still hanging around in the ur-version of the module, not the ones we copied into the SubModule variable in this model.
+  map<const Variable*, Variable > origmap;
+  map<const Variable*, Variable >::iterator origmapiter;
+  
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
       vector<string> mname = m_variables[var]->GetName();
       assert(mname.size() == 1);
       const Module* submod = m_variables[var]->GetModule();
       const Module* origmod = g_registry.GetModule(submod->GetModuleName());
-      retval += submod->ListAssignmentDifferencesFrom(origmod, mname[0], indent);
+      for (size_t uniq=0; uniq<origmod->m_uniquevars.size(); uniq++) {
+        Variable copied(*(origmod->m_uniquevars[uniq]));
+        copied.ClearSameName();
+        copied.SetNewTopName(m_modulename, mname[0]);
+        //cout << copied.GetNameDelimitedBy('.') << ": " << FormulaTypeToString(copied.GetFormulaType()) << endl;
+        const Variable* origvar = GetVariable(copied.GetName())->GetSameVariable();
+        assert(find(m_uniquevars.begin(), m_uniquevars.end(), origvar) != m_uniquevars.end());
+        origmapiter = origmap.find(origvar);
+        if (origmapiter == origmap.end()) {
+          origmap.insert(make_pair(origvar, copied));
+        }
+        else {
+          //Find out how the two variables were synchronized
+          bool synched;
+          for (size_t sync=0; sync<m_synchronized.size(); sync++) {
+            if ((m_synchronized[sync].first == copied.GetName()) &&
+                (m_synchronized[sync].second == origmapiter->second.GetName())) {
+              copied.Synchronize(&origmapiter->second);
+              if (origmapiter->second.IsPointer()) {
+                assert(!copied.IsPointer());
+                origmapiter->second = copied;
+              }
+              synched = true;
+              break;
+            }
+            if ((m_synchronized[sync].first == origmapiter->second.GetName()) &&
+                (m_synchronized[sync].second == copied.GetName())) {
+              origmapiter->second.Synchronize(&copied);
+              if (origmapiter->second.IsPointer()) {
+                assert(!copied.IsPointer());
+                origmapiter->second = copied;
+              }
+              synched = true;
+              break;
+            }
+          }
+          if (!synched) {
+            //Sync them randomly  LS DEBUG
+            //assert(false);
+            //origmapiter->second.Synchronize(&copied);
+            copied.Synchronize(&origmapiter->second);
+          }
+        }
+      }
     }
   }
 
   //List the compartments and the species (but don't define them yet) so that the order is preserved:
   vector<string> compartmentnames;
   vector<string> speciesnames;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    string name = m_variables[var]->GetNameDelimitedBy(cc);
-    Variable* comp = m_variables[var]->GetCompartment();
+  for (size_t var=0; var<m_uniquevars.size(); var++) {
+    string name = m_uniquevars[var]->GetNameDelimitedBy(cc);
+    Variable* comp = m_uniquevars[var]->GetCompartment();
     if (comp != NULL) {
       name += " in " + comp->GetNameDelimitedBy(cc);
     }
-    if (m_variables[var]->GetType() == varCompartment) {
-      compartmentnames.push_back(name);
+    if (m_uniquevars[var]->GetType() == varCompartment) {
+      if (!OrigIsAlreadyCompartment(m_uniquevars[var], origmap)) {
+        compartmentnames.push_back(name);
+      }
     }
-    else if (IsSpecies(m_variables[var]->GetType())) {
-      if (m_variables[var]->GetIsConst()) {
+    else if (IsSpecies(m_uniquevars[var]->GetType())) {
+      if (m_uniquevars[var]->GetIsConst()) {
         name = "$" + name;
       }
-      speciesnames.push_back(name);
+      if (!OrigIsAlreadyConstSpecies(m_uniquevars[var], origmap, m_uniquevars[var]->GetIsConst())) {
+        speciesnames.push_back(name);
+      }
     }
   }
   if (compartmentnames.size() > 0 || speciesnames.size() > 0) {
@@ -984,108 +1075,114 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
 
   //Now list DNA strands:
   firstone = true;
-  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
-    const Variable* var = m_variables[vnum];
-    var_type type = var->GetType();
-    if (var->IsPointer()) continue;
-    else if (type == varStrand) {
+  for (size_t vnum=0; vnum<m_uniquevars.size(); vnum++) {
+    const Variable* var = m_uniquevars[vnum];
+    if (var->GetType() == varStrand) {
+      string strand = var->GetDNAStrand()->ToStringDelimitedBy(cc);
+      if (OrigIsAlreadyDNAStrand(var, origmap, strand)) continue;
       if (firstone) {
         retval += "\n" + indent + "// DNA strands:\n";
         firstone = false;
       }
-      retval += indent + var->GetNameDelimitedBy(cc) + ": " + var->GetDNAStrand()->ToStringDelimitedBy(cc) + ";\n";
+      retval += indent + var->GetNameDelimitedBy(cc) + ": " + strand + ";\n";
     }
   }
 
   //Now any assignment rules:
   firstone = true;
-  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
-    const Variable* var = m_variables[vnum];
-    if (var->IsPointer()) continue;
+  for (size_t vnum=0; vnum<m_uniquevars.size(); vnum++) {
+    const Variable* var = m_uniquevars[vnum];
     if (var->GetType() == varStrand) continue;
     if (var->GetFormulaType() == formulaASSIGNMENT) {
       const Formula* asntrule = var->GetFormula();
       if (!asntrule->IsEmpty() && !asntrule->IsEllipsesOnly()) {
+        string rule = asntrule->ToDelimitedStringWithEllipses(cc);
+        if (OrigIsAlreadyAssignmentRule(var, origmap, rule)) continue;
         if (firstone) {
           retval += "\n" + indent + "// Assignment Rules:\n";
           firstone = false;
         }
-        retval += indent + var->GetNameDelimitedBy(cc) + " := " + asntrule->ToDelimitedStringWithEllipses(cc) + ";\n";
+        retval += indent + var->GetNameDelimitedBy(cc) + " := " + rule + ";\n";
       }
     }
   }
 
   //Any rate rules:
   firstone = true;
-  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
-    const Variable* var = m_variables[vnum];
-    if (var->IsPointer()) continue;
+  for (size_t vnum=0; vnum<m_uniquevars.size(); vnum++) {
+    const Variable* var = m_uniquevars[vnum];
     if (var->GetFormulaType() == formulaRATE) {
       const Formula* raterule = var->GetRateRule();
+      string rule =  raterule->ToDelimitedStringWithEllipses(cc);
+      if (OrigIsAlreadyRateRule(var, origmap, rule)) continue;
       if (!raterule->IsEmpty()) {
         if (firstone) {
           retval += "\n" + indent + "// Rate Rules:\n";
           firstone = false;
         }
-        retval += indent + var->GetNameDelimitedBy(cc) + "' = " + raterule->ToDelimitedStringWithEllipses(cc) + ";\n";
+        retval += indent + var->GetNameDelimitedBy(cc) + "' = " + rule + ";\n";
       }
     }
   }
 
   //Then reactions:
   firstone = true;
-  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
-    const Variable* var = m_variables[vnum];
+  for (size_t vnum=0; vnum<m_uniquevars.size(); vnum++) {
+    const Variable* var = m_uniquevars[vnum];
     var_type type = var->GetType();
-    if (var->IsPointer()) continue;
-    else if (IsReaction(type)) {
+    if (IsReaction(type)) {
+      string rxn = var->GetReaction()->ToDelimitedStringWithEllipses(cc);
+      if (OrigIsAlreadyReaction(var, origmap, rxn)) continue;
       if (firstone) {
         retval += "\n" + indent + "// Reactions:\n";
         firstone = false;
       }
-      retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses(cc) + "\n";
+      retval += indent + rxn + "\n";
     }
   }
 
   //Then interactions:
   firstone = true;
-  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
-    const Variable* var = m_variables[vnum];
-    if (var->IsPointer()) continue;
+  for (size_t vnum=0; vnum<m_uniquevars.size(); vnum++) {
+    const Variable* var = m_uniquevars[vnum];
+    //if (var->IsPointer()) continue;
     var_type type = var->GetType();
     if (type == varInteraction) {
+      string rxn = var->GetReaction()->ToDelimitedStringWithEllipses(cc);
+      if (OrigIsAlreadyReaction(var, origmap, rxn)) continue;
       if (firstone) {
         retval += "\n" + indent + "// Interactions:\n";
         firstone = false;
       }
-      retval += indent + var->GetReaction()->ToDelimitedStringWithEllipses(cc) + "\n";
+      retval += indent + rxn + "\n";
     }
   }
 
   //Then events:
   firstone = true;
-  for (size_t vnum=0; vnum<m_variables.size(); vnum++) {
-    const Variable* var = m_variables[vnum];
-    if (var->IsPointer()) continue;
+  for (size_t vnum=0; vnum<m_uniquevars.size(); vnum++) {
+    const Variable* var = m_uniquevars[vnum];
     var_type type = var->GetType();
     if (type == varEvent) {
+      string event = var->GetEvent()->ToStringDelimitedBy(cc);
+      if (OrigIsAlreadyEvent(var, origmap, event)) continue;
       if (firstone) {
         retval += "\n" + indent + "// Events:\n";
         firstone = false;
       }
-      retval += indent + var->GetEvent()->ToStringDelimitedBy(cc) + "\n";
+      retval += indent + event + "\n";
     }
   }
 
   //Then species:
   vector<var_type> types;
   types.push_back(varSpeciesUndef);
-  retval += OutputOnly(types, "Species initializations", indent, cc);
+  retval += OutputOnly(types, "Species initializations", indent, cc, origmap);
   
   //Compartments:
   types.clear();
   types.push_back(varCompartment);
-  retval += OutputOnly(types, "Compartment initializations", indent, cc);
+  retval += OutputOnly(types, "Compartment initializations", indent, cc, origmap);
 
   //And finally, other random formulas.
   types.clear();
@@ -1093,7 +1190,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   types.push_back(varFormulaOperator);
   types.push_back(varUndefined);
   types.push_back(varDNA);
-  retval += OutputOnly(types, "Variable initializations", indent, cc);
+  retval += OutputOnly(types, "Variable initializations", indent, cc, origmap);
 
   //Variables
   vector<string> varnames;
@@ -1102,13 +1199,13 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   vector<string> operatornames;
   vector<string> genenames;
   vector<string> innames;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->IsPointer()) continue;
-    var_type type = m_variables[var]->GetType();
+  for (size_t var=0; var<m_uniquevars.size(); var++) {
+    var_type type = m_uniquevars[var]->GetType();
     if (IsSpecies(type)) continue; //already named them and know if they're const.
-    const_type isconst = m_variables[var]->GetConstType();
-    string name = m_variables[var]->GetNameDelimitedBy(cc);
-    Variable* comp = m_variables[var]->GetCompartment();
+    const_type isconst = m_uniquevars[var]->GetConstType();
+    string name = m_uniquevars[var]->GetNameDelimitedBy(cc);
+    Variable* comp = m_uniquevars[var]->GetCompartment();
+    if (OrigMatches(m_uniquevars[var], origmap, type, isconst, comp)) continue;
     if (comp != NULL) {
       name += " in " + comp->GetNameDelimitedBy(cc);
       innames.push_back(name);
@@ -1167,14 +1264,14 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
 
   //Display names
   bool anydisplay = false;
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->IsPointer()) continue;
-    if (m_variables[var]->GetDisplayName() != "") {
+  for (size_t var=0; var<m_uniquevars.size(); var++) {
+    //if (m_uniquevars[var]->IsPointer()) continue;
+    if (m_uniquevars[var]->GetDisplayName() != "") {
       if (anydisplay == false) {
         retval += "\n" + indent + "//Display Names:\n";
         anydisplay = true;
       }
-      retval += indent + m_variables[var]->GetNameDelimitedBy(cc) + " is \"" + m_variables[var]->GetDisplayName() + "\";\n";
+      retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is \"" + m_uniquevars[var]->GetDisplayName() + "\";\n";
     }
   }
 
@@ -1292,5 +1389,99 @@ void Module::FixNames()
     FixName(m_synchronized[pair].first);
     FixName(m_synchronized[pair].second);
   }
+  FixName(m_varmap);
+}
+
+
+bool Module::OrigFormulaIsAlready(const Variable* var, map<const Variable*, Variable> origmap, string formula) const
+{
+  map<const Variable*, Variable >::iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  char cc = '.';
+  const Formula* form = origmapiter->second.GetFormula();
+  formula_type ftype = origmapiter->second.GetFormulaType();
+  if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
+    return (form->ToDelimitedStringWithEllipses(cc) == formula);
+  }
+  return false;
+}
+
+bool Module::OrigIsAlreadyCompartment(const Variable* var, map<const Variable*, Variable> origmap) const
+{
+  map<const Variable*, Variable >::iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  return (origmapiter->second.GetType() == varCompartment);
+}
+
+bool Module::OrigIsAlreadyConstSpecies(const Variable* var, map<const Variable*, Variable> origmap, bool isconst) const
+{
+  map<const Variable*, Variable >::iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  if (!IsSpecies(origmapiter->second.GetType())) return false;
+  return (origmapiter->second.GetIsConst() == isconst);
+}
+
+bool Module::OrigIsAlreadyDNAStrand(const Variable* var, map<const Variable*, Variable> origmap, string strand) const
+{
+  map<const Variable*, Variable >::iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  char cc = '.';
+  if (origmapiter->second.GetType() != varStrand) return false;
+  return (origmapiter->second.GetDNAStrand()->ToStringDelimitedBy(cc) == strand);
+}
+
+bool Module::OrigIsAlreadyAssignmentRule(const Variable* var, map<const Variable*, Variable> origmap, string rule) const
+{
+  map<const Variable*, Variable >::iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) {
+    //cout << "not found" << endl;
+    return false;
+  }
+  char cc = '.';
   
+  if (origmapiter->second.GetFormulaType() != formulaASSIGNMENT) {
+    //cout << var->GetNameDelimitedBy('.') << " is not assignment:" << FormulaTypeToString(origmapiter->second.GetFormulaType()) << endl;
+    return false;
+  }
+  string newrule = origmapiter->second.GetFormula()->ToDelimitedStringWithEllipses(cc);
+  //cout << "Old: " << rule << endl;
+  //cout << "New: " << newrule << endl;
+  return (origmapiter->second.GetFormula()->ToDelimitedStringWithEllipses(cc) == rule);
+}
+
+bool Module::OrigIsAlreadyRateRule(const Variable* var, map<const Variable*, Variable> origmap, string rule) const
+{
+  map<const Variable*, Variable >::iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  char cc = '.';
+  if (origmapiter->second.GetFormulaType() != formulaRATE) return false;
+  return (origmapiter->second.GetRateRule()->ToDelimitedStringWithEllipses(cc) == rule);
+}
+
+bool Module::OrigIsAlreadyReaction(const Variable* var, map<const Variable*, Variable> origmap, string rxn) const
+{
+  map<const Variable*, Variable >::iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  char cc = '.';
+  var_type type = origmapiter->second.GetType();
+  if (!(IsReaction(type) || type==varInteraction)) return false;
+  return (origmapiter->second.GetReaction()->ToDelimitedStringWithEllipses(cc) == rxn);
+}
+
+bool Module::OrigIsAlreadyEvent(const Variable* var, map<const Variable*, Variable> origmap, string event) const
+{
+  map<const Variable*, Variable >::iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  char cc = '.';
+  if (origmapiter->second.GetType() != varEvent) return false;
+  return (origmapiter->second.GetEvent()->ToStringDelimitedBy(cc) == event);
+}
+
+bool Module::OrigMatches(const Variable* var, map<const Variable*, Variable> origmap, var_type type, const_type isconst, const Variable* comp) const
+{
+  map<const Variable*, Variable >::iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  if (origmapiter->second.GetType() != type) return false;
+  if (origmapiter->second.GetConstType() != isconst) return false;
+  return (origmapiter->second.GetCompartment() == comp);
 }

@@ -20,6 +20,8 @@
 #ifndef NCELLML
 #include <IfaceCellML_APISPEC.hxx>
 #include <CellMLBootstrap.hpp>
+#include "IAnnoTools.h"
+#include "cellmlx.h"
 
 #define CELLML_BOOTSTRAP_CONTRACTID "@cellml.org/cellml-bootstrap;1"
 
@@ -42,6 +44,7 @@ private:
   std::set<Formula*>       m_storedformulas;
 
   std::vector<Module> m_modules;
+  std::map<std::string, size_t> m_modulemap;
   std::vector<std::string> m_currentModules;
   std::vector<ReactantList> m_currentReactantLists;
   std::vector<std::string> m_currentImportedModule;
@@ -56,8 +59,10 @@ private:
   char m_cc;
   const_type m_constness;
   std::string m_error;
+  std::vector<std::string> m_warnings;
   std::vector<std::vector<Module> > m_oldmodules;
   std::vector<std::vector<UserFunction> > m_olduserfunctions;
+  std::vector<std::map<std::string, size_t> > m_oldmodulemaps;
 
 public:
   Registry();
@@ -82,6 +87,7 @@ public:
   bool   LoadCellML(nsCOMPtr<cellml_apiIModel> model);
   bool   LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections);
   bool   SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> connection);
+  std::map<std::string, std::string> m_cellmlnames;
 #endif
   bool   SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};
@@ -127,6 +133,8 @@ public:
 
   void SetError(std::string error) {m_error = error;};
   void AddErrorPrefix(std::string error) {m_error = error + m_error;};
+  void AddWarning(std::string warning) {m_warnings.push_back(warning);};
+  void ClearWarnings() {m_warnings.clear();};
 
   std::string GetLastFile();
   Module* GetModule(std::string modulename);
@@ -148,6 +156,7 @@ public:
   std::string GetNthModuleName(size_t n);
   char GetCC() {return m_cc;};
   std::string GetError() {return m_error;};
+  std::vector<std::string> GetWarnings() {return m_warnings;};
   long SaveModules();
   bool RevertToModuleSet(long n);
 

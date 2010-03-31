@@ -254,6 +254,11 @@ LIB_EXTERN bool   checkModule(const char* moduleName);
  */
 LIB_EXTERN char*  getLastError();
 
+/**
+ * When translating some other format to Antimony, elements that are unable to be translated are saved as warnings, retrievable with this function (returns NULL if no warnings present).
+ */
+LIB_EXTERN char*  getWarnings();
+
 #ifndef NSBML
 /**
  *  Returns the 'info' messages from libSBML. libAntimony always translates its modules into SBML to check for errors.  If SBML finds errors, libAntimony gives up, passes on the error message, and does not save the model.  However, libSBML may discover other things about your model it wants to tell you about, in 'info' and 'warning' messages.  Info messages are just things it found it thinks you might want to know; warning messages are things it found which it feels violates 'best practices' in biological modelling, but not to the extent that it feels you did something actually wrong.  Since Antimony is unitless, for example, you will always find warnings about how you didn't set any units.  This function returns the 'info' messages from libSBML.  If there are no info messages, returns an empty string.
