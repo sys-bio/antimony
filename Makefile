@@ -58,10 +58,13 @@ libcellml = -L$(xulrunner)/lib   -l'xpcomglue_s' -l'xpcom' -l'xul' -l'embed_base
 cellmlflag = -fshort-wchar
 
 
+generalcflags = -Wall -DVERSION_STRING="\"v$(version)\"" $(sbmlflag) $(cellmlflag) $(mingw_include) $(sbml_includes) $(cellml_includes)
 #For a debug version:
-CPPFLAGS = -Wall -DVERSION_STRING="\"v$(version)\"" -ggdb $(sbmlflag) $(cellmlflag) $(mingw_include) $(sbml_includes) $(cellml_includes)
-#For a non-debug version:
-#CPPFLAGS = -Wall -DVERSION_STRING="\"v$(version)\"" -O3 -DNDEBUG $(sbmlflag) $(cellmlflag) $(mingw_include) $(sbml_includes) $(cellml_includes)
+#CPPFLAGS = -ggdb $(generalcflags)
+#For profiling:
+CPPFLAGS = -O3 -pg $(generalcflags)
+#for nondebug version
+#CPPFLAGS = -O3 -DNDEBUG $(generalcflags)
 
 #Library flags
 LIBRARYFLAGS =  -Llib -lantimony $(libsbml) $(libcellml) 

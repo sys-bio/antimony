@@ -38,6 +38,9 @@ private:
 
   size_t m_currentexportvar;
 
+  //Caching for speed:
+  std::map<std::vector<std::string>, Variable*> m_varmap;
+
 #ifndef NSBML
   SBMLDocument m_sbml;
   std::string m_libsbml_info;
@@ -47,12 +50,13 @@ private:
 #ifndef NCELLML
   nsCOMPtr<cellml_apiIModel> m_cellmlmodel;
   nsCOMPtr<cellml_apiICellMLComponent> m_cellmlcomponent;
+  bool m_childrenadded;
 #endif
 
 public:
 
   //Storage vectors for output:
-  std::vector<std::vector<std::string> > m_uniquevars;
+  std::vector<Variable*> m_uniquevars;
 
   Module(std::string name);
   Module(const Module& src); //Can't accept default with CellML, since it reference counts.
@@ -62,6 +66,7 @@ public:
 
   Variable* AddOrFindVariable(const std::string* name);
   Variable* AddNewNumberedVariable(const std::string name);
+  void StoreVariable(Variable* var);
   void AddVariableToExportList(Variable* var);
   Variable* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula);
   Variable* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var);
@@ -72,8 +77,9 @@ public:
   void AddSynchronizedPair(Variable* oldvar, Variable* newvar);
   void AddTimeToUserFunction(std::string function);
 
-  Variable* GetVariable(std::vector<std::string> name);
-  const Variable* GetVariable(std::vector<std::string> name) const;
+  Variable* GetVariable(const std::vector<std::string>& name);
+  void AddToVarMapFrom(const Module& submod);
+  const Variable* GetVariable(const std::vector<std::string>& name) const;
   const Variable* GetVariableFromSymbol(std::string varname) const;
   Variable* GetSubVariable(const std::string* name);
   const Formula* GetFormula() const;
@@ -84,8 +90,8 @@ public:
   size_t GetNumSynchronizedVariables() const;
   std::pair<std::string, std::string> GetNthSynchronizedVariablePair(size_t n) const;
   std::vector<std::pair<std::string, std::string> > GetAllSynchronizedVariablePairs() const;
-  std::vector<std::pair<std::string, std::string> > GetSynchronizedVariablesBetween(std::string mod1, std::string mod2);
-  std::pair<std::string, std::string> GetNthSynchronizedVariablesBetween(std::string mod1, std::string mod2, size_t n);
+  std::vector<std::pair<std::string, std::string> > GetSynchronizedVariablesBetween(std::string mod1, std::string mod2) const;
+  std::pair<std::string, std::string> GetNthSynchronizedVariablesBetween(std::string mod1, std::string mod2, size_t n) const;
   Variable* GetUpstreamDNA();
   Variable* GetDownstreamDNA();
   formula_type GetFormulaType() const; //If we have a return value
@@ -93,7 +99,7 @@ public:
   const std::string& GetModuleName() const;
   std::string GetVariableNameDelimitedBy(char cc) const;
   std::string ToString() const;
-  std::string OutputOnly(std::vector<var_type> types, std::string name, std::string indent, char cc) const;
+  std::string OutputOnly(std::vector<var_type> types, std::string name, std::string indent, char cc, std::map<const Variable*, Variable > origmap) const;
   std::string ListIn80Cols(std::string type, std::vector<std::string> names, std::string indent) const;
   std::string GetAntimony(std::set<const Module*>& usedmods, bool funcsincluded) const;
   std::string GetJarnacReactions() const;
@@ -128,9 +134,21 @@ public:
   const nsCOMPtr<cellml_apiIModel> GetCellMLModel();
   void  CreateCellMLModel();
   nsCOMPtr<cellml_apiICellMLComponent> CreateCellMLComponentFor(nsCOMPtr<cellml_apiIModel> model);
+  void  ReloadSubmodelConnections();
 #endif
 
   void  FixNames();
+
+private:
+  bool OrigFormulaIsAlready(const Variable* var, std::map<const Variable*, Variable> origmap, std::string formula) const;
+  bool OrigIsAlreadyCompartment(const Variable* var, std::map<const Variable*, Variable> origmap) const;
+  bool OrigIsAlreadyConstSpecies(const Variable* var, std::map<const Variable*, Variable> origmap, bool isconst) const;
+  bool OrigIsAlreadyDNAStrand(const Variable* var, std::map<const Variable*, Variable> origmap, std::string strand) const;
+  bool OrigIsAlreadyAssignmentRule(const Variable* var, std::map<const Variable*, Variable> origmap, std::string rule) const;
+  bool OrigIsAlreadyRateRule(const Variable* var, std::map<const Variable*, Variable> origmap, std::string rule) const;
+  bool OrigIsAlreadyReaction(const Variable* var, std::map<const Variable*, Variable> origmap, std::string rxn) const;
+  bool OrigIsAlreadyEvent(const Variable* var, std::map<const Variable*, Variable> origmap, std::string event) const;
+  bool OrigMatches(const Variable* var, std::map<const Variable*, Variable> origmap, var_type type, const_type isconst, const Variable* comp) const;
 };
 
 #include "userfunction.h"

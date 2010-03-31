@@ -3,6 +3,7 @@
 #include "cellmlx.h"
 #include "MathMLInputServices.h"
 #include "ICellMLInputServices.h"
+#include "IAnnoTools.h"
 #include <nsStringAPI.h>
 #include <nsDebug.h>
 #include <nsCOMPtr.h>
@@ -21,7 +22,6 @@ void Module::LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model, vector<nsCOMPtr<c
 
   //Translate
   nsString cellmltext;
-  string cellmlname;
 
   //Components become sub-modules
   for (size_t comp=0; comp<top_components.size(); comp++) {
@@ -91,10 +91,7 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
     }
     //Put it in the module interface if it has one:
     PRUint32 vi;
-    rv = cmlvar->GetPrivateInterface(&vi);
-    if (vi == 2) {
-      rv = cmlvar->GetPublicInterface(&vi);
-    }
+    rv = cmlvar->GetPublicInterface(&vi);
     if (vi != 2) {
       AddVariableToExportList(antvar);
     }
@@ -179,6 +176,10 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
         setFormulaWithString(Trim(equation), formula);
 
         //Find out what variable we're assigning to, and how we're assigning to it.
+        //Remove '{unit: ...}' bits (for now)
+        while ((idpos = variable.find("{unit:")) != string::npos) {
+          variable.erase(idpos, variable.find("}", idpos)-idpos+1);
+        }
         vector<string> fullname;
         fullname.push_back(variable);
         Variable* var = GetVariable(fullname);
@@ -187,7 +188,8 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
           if (var->SetAssignmentRule(formula)) {
             //Something went wrong
             //cout << "Unable to use the formula \"" << formula->ToDelimitedStringWithEllipses('.') << "\" (originally \"" << origeq << "\") to set the assignment rule for " << var->GetNameDelimitedBy('.') << ":  " << getLastError() << endl;
-            cout << "Unable to use the formula \"" << formula->ToDelimitedStringWithEllipses('.') << "\" to set the assignment rule for " << var->GetNameDelimitedBy('.') << ":  " << getLastError() << endl;
+            string warning = "Unable to use the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" to set the assignment rule for " + var->GetNameDelimitedBy('.') + ":  " + getLastError();
+            g_registry.AddWarning(warning);
           }
         }
         else if (variable.find("d(") == 0 && variable.find(")/d(") != string::npos) {
@@ -199,32 +201,41 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
           rv = varset->GetVariable(cellmltext, getter_AddRefs(cmlvar));
           if (cmlvar && !HasTimeUnits(cmlvar)) {
             rv = cmlvar->GetUnitsName(cellmltext);
-            cout << "The units of \"" << maybetime << "\" ('" << ToThinString(cellmltext.get()) << "') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative." << endl;
+            string warning = "The units of \"" + maybetime + "\" ('" + ToThinString(cellmltext.get()) + "') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.";
+            g_registry.AddWarning(warning);
             continue;
           }
           variable.assign(variable, 2, timepos-6);
           var = AddOrFindVariable(&variable);
           if (var->SetRateRule(formula)) {
-            cout << "Unable to use the formula \"" << formula->ToDelimitedStringWithEllipses('.') << "\" to set the rate rule for " << var->GetNameDelimitedBy('.') << endl;
+            string warning = "Unable to use the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" to set the rate rule for " + var->GetNameDelimitedBy('.') + ":  " + getLastError();
+            g_registry.AddWarning(warning);
           }
         }
         else if (variable.find("del(") != string::npos) {
           //It's a partial differential equation.
-          cout << "Unable to translate an assignment to \"" << variable << "\" in the Antimony format because Antimony does not handle partial differential equations." << endl;
+          string warning = "Unable to translate an assignment to \"" + variable + "\" in the Antimony format because Antimony does not handle partial differential equations.";
+          g_registry.AddWarning(warning);
         }
         else if (variable.find("selector(") != string::npos) {
           //It's vector or matrix math of some sort.
-          cout << "Unable to translate an assignment to \"" << variable << "\" in the Antimony format because Antimony does not handle vector or matrix algebra." << endl;
+          string warning = "Unable to translate an assignment to \"" + variable + "\" in the Antimony format because Antimony does not handle vector or matrix algebra.";
+          g_registry.AddWarning(warning);
+        }
+        else if (IsReal(variable)) {
+          //It's some sort of algebraic rule.
+          string warning = "Unable to translate the equation \"" + variable + " = " + equation + "\" because Antimony does not handle algebraic rules.";
+          g_registry.AddWarning(warning);
         }
         else {
           //Unable to determine what kind of math we're talking about.
-          cout << "Unable to figure out how to translate an assignment to \"" << variable << "\" in the Antimony format." << endl;
-          
+          string warning = "Unable to figure out how to translate an assignment to \"" + variable + "\" in the Antimony format.  This variable may have been left undefined in that component.";
+          g_registry.AddWarning(warning);
         }
 
       }
       else {
-        //cout << "Child node " <<  i << " of 'math' element not an 'apply' element" << endl;
+        //string warning = "Child node " +  i + " of 'math' element not an 'apply' element";
       }
     }
     rv = mli->Next(getter_AddRefs(mathel));
@@ -237,6 +248,8 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
 }
 
 void Module::SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> component) {
+  if (m_childrenadded) return;
+  m_childrenadded = true; //Since this is recursive, we may call some multiply-imported submodules multiple times otherwise.
   //Iterate over 'encapsulation' children and make them submodules.
   nsString cellmltext;
   string cellmlname;
@@ -246,18 +259,27 @@ void Module::SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> 
   nsCOMPtr<cellml_apiICellMLComponentIterator> childi;
   nsCOMPtr<cellml_apiICellMLComponent> child;
   
+  nsString namekey = ToNSString("AntimonyName");
   rv = children->IterateComponents(getter_AddRefs(childi));
   rv = childi->NextComponent(getter_AddRefs(child));
   while (child != NULL) {
     rv = child->GetName(cellmltext);
     cellmlname = ToThinString(cellmltext.get());
+    FixName(cellmlname);
     string cellmlmodname = GetModuleNameFrom(child);
+    Module* submod = g_registry.GetModule(cellmlmodname);
+    submod->SetCellMLChildrenAsSubmodules(child); //Recursive!  This is so the submodels are all set up before we copy them.
     vector<string> fullname;
     fullname.push_back(cellmlname);
     Variable* foundvar = GetVariable(fullname);
     if (foundvar != NULL) {
       cellmlname = cellmlname + "_mod";
     }
+    //Save the name, since it's not obvious whether the "_mod" was added or not.
+    nsCString compmodid;
+    nsCOMPtr<IWrappedPCM> cw(do_QueryInterface(child));
+    rv = cw->GetObjid(compmodid);
+    g_registry.m_cellmlnames.insert(make_pair(compmodid.get(), cellmlname));
     Variable* var = AddOrFindVariable(&cellmlname);
     if(var->SetModule(&cellmlmodname)) {
       assert(false);
@@ -330,6 +352,85 @@ nsCOMPtr<cellml_apiICellMLComponent> Module::CreateCellMLComponentFor(nsCOMPtr<c
     }
   }
   return newc;
+}
+
+void Module::ReloadSubmodelConnections()
+{
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* variable = m_variables[var];
+    if (variable->GetType() == varModule) {
+      Module* modcopy = variable->GetModule();
+      Module* submod = g_registry.GetModule(modcopy->GetModuleName());
+      submod->ReloadSubmodelConnections();
+      //Sometimes we've created new variables for synchronization that are not in our map:
+      m_varmap.insert(submod->m_varmap.begin(), submod->m_varmap.end());
+      for (size_t var = modcopy->m_variables.size(); var<submod->m_variables.size(); var++) {
+        //There were variables added in the ur-module that were added (by synchronization-creation of a local variable through which to synchronize sub-variables) after we copied it
+        Variable* newsubvar = submod->m_variables[var];
+        assert(newsubvar->GetName().size() == 1);
+        Variable* newcopyvar = modcopy->AddOrFindVariable(&newsubvar->GetName()[0]);
+        newcopyvar->SetNewTopName(m_modulename, variable->GetName()[0]);
+      }
+      for (size_t sync = modcopy->m_synchronized.size(); sync<submod->m_synchronized.size(); sync++) {
+        //There are synchronizations in the ur-module that we didn't get when we copied it.
+        vector<string> var1name = submod->m_synchronized[sync].first;
+        vector<string> var2name = submod->m_synchronized[sync].second;
+        var1name.insert(var1name.begin(), variable->GetName()[0]);
+        var2name.insert(var2name.begin(), variable->GetName()[0]);
+        Variable* var1 = GetVariable(var1name);
+        Variable* var2 = GetVariable(var2name);
+        assert(var1 != NULL && var2 != NULL);
+        if (!var1->Synchronize(var2)) {
+          //This adds the synchronization to the local list instead of the submodel's list.  So, move it!
+          pair<vector<string>, vector<string> > newsync = m_synchronized[m_synchronized.size()-1];
+          m_synchronized.pop_back();
+          modcopy->m_synchronized.push_back(newsync);
+        }
+        else {
+          g_registry.AddWarning("In module '" + m_modulename + "', the variables " + var1->GetNameDelimitedBy('.') + " and " + var2->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
+          //This is tricky, because now we have to remove the main module's synchronization that set this up in the first place.
+          vector<string> sync1name, sync2name;
+          bool foundorig = false;
+          if (var1->IsPointer()) {
+            sync1name = var1->GetName();
+            sync2name = var1->GetPointerName();
+            for (vector<pair<vector<string>, vector<string> > >::iterator sync = m_synchronized.begin();
+                 sync != m_synchronized.end(); sync++) {
+              if ((sync1name == sync->first && sync2name == sync->second) ||
+                  (sync2name == sync->first && sync1name == sync->second)) {
+                m_synchronized.erase(sync);
+                foundorig = true;
+                //cout << "Found original!" << endl;
+                break;
+              }
+            }
+          }
+          if (!foundorig && var2->IsPointer()) {
+            sync1name = var2->GetName();
+            sync2name = var2->GetPointerName();
+            for (vector<pair<vector<string>, vector<string> > >::iterator sync = m_synchronized.begin();
+                 sync != m_synchronized.end(); sync++) {
+              if ((sync1name == sync->first && sync2name == sync->second) ||
+                  (sync2name == sync->first && sync1name == sync->second)) {
+                m_synchronized.erase(sync);
+                foundorig = true;
+                //cout << "Found original!" << endl;
+                break;
+              }
+            }
+          }
+          /*
+              if ((sync1name == sync->first) || (sync2name == sync->first) ||
+                  (sync1name == sync->second) || (sync2name == sync->second)) {
+                cout << "Rejected possibility:  " << ToStringFromVecDelimitedBy(sync->first, '.') << " -- " << ToStringFromVecDelimitedBy(sync->second, '.') << endl;
+              }
+            }
+          */
+          assert(foundorig);
+        }
+      }
+    }
+  }
 }
 
 #endif

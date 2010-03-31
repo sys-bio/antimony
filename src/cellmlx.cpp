@@ -1,26 +1,12 @@
 #ifndef NCELLML
 
+#include "registry.h"
 #include "cellmlx.h"
 #include "stringx.h"
+#include "sbmlx.h"
 #include <assert.h>
 #include <iostream>
 #include <sstream>
-#include <nsIID.h>
-#include <nsComponentManagerUtils.h>
-#include <nsServiceManagerUtils.h>
-#include <nsStringAPI.h>
-#include <prprf.h>
-#include <nsCOMArray.h>
-namespace iface
-{
-  namespace XPCOM
-  {
-    class IObject;
-  };
-};
-
-#include <IWrappedPCM.h>
-
 
 using namespace std;
 
@@ -53,6 +39,7 @@ string CellMLPiecewiseToSBML(const string& in)
     out.replace(spacepos, 2, " ");
   }
 
+  //cout << "Thus far:  " << in << endl;
   //If there are multiple 'piecewise' bits, excise the internal ones and parse them separately.
   size_t piecepos = 5;
   if ((piecepos = out.find("piecewise", piecepos)) != string::npos) {
@@ -78,7 +65,7 @@ string CellMLPiecewiseToSBML(const string& in)
     out.replace(out.rfind("ANT_REPLACE"), 11, internal); //rfind because if multiple replacements, we replace them last-to-first (recursively).
     return out;
   }
-  size_t casepos = out.find("case");
+  size_t casepos = out.find("case ");
   if (casepos == string::npos) {
     //Done with the case/then lists; now replace "else Z" with "Z"
     size_t elsepos = out.find("else");
@@ -99,15 +86,22 @@ string CellMLPiecewiseToSBML(const string& in)
   //Now replace "case X then Y" with "Y, X,"
   size_t thenpos = out.find("then");
   assert(thenpos != string::npos); //Shouldn't have 'case' without 'then'
-  size_t thenendpos = out.find("case", thenpos);
+  size_t thenendpos = out.find("case ", thenpos);
   if (thenendpos == string::npos) {
     thenendpos = out.find("else");
+  }
+  if (thenendpos == string::npos) {
+    //No final 'else'--just find the final ')'
+    thenendpos = out.rfind(")");
+    assert(thenendpos != string::npos);
+    assert(thenpos < thenendpos);
   }
   string casestr, thenstr;
   casestr.assign(out, casepos+4, thenpos-casepos-4);
   thenstr.assign(out, thenpos+4, thenendpos-thenpos-4);
+  //cout << "Case pre:  " << casestr << endl;
   casestr = AndsAndOrs(casestr);
-  //cout << "Case: " << casestr << endl;
+  //cout << "Case post: " << casestr << endl;
   //cout << "Then: " << thenstr << endl;
   string replacement = thenstr + ", " + casestr + ", ";
   out.replace(casepos, thenendpos-casepos, replacement);
@@ -154,6 +148,14 @@ string GetNameAccordingToEncapsulationParent(nsCOMPtr<cellml_apiICellMLComponent
   string cellmlname;
   nsresult rv;
 
+  nsCString compid;
+  nsCOMPtr<IWrappedPCM> cw(do_QueryInterface(component));
+  rv = cw->GetObjid(compid);
+  map<string, string>::iterator name = g_registry.m_cellmlnames.find(compid.get());
+  if (name != g_registry.m_cellmlnames.end()) {
+    return name->second;
+  }
+
   nsCOMPtr<cellml_apiICellMLComponent> encapsulationparent;
   rv = component->GetEncapsulationParent(getter_AddRefs(encapsulationparent));
   nsCOMPtr<cellml_apiIModel> encapsulationmodel;
@@ -171,19 +173,19 @@ string GetNameAccordingToEncapsulationParent(nsCOMPtr<cellml_apiICellMLComponent
 
   nsCOMPtr<cellml_apiIModel> compmodel;
   rv = component->GetModelElement(getter_AddRefs(compmodel));
-  //rv = compmodel->GetName(cellmltext);
+  rv = compmodel->GetName(cellmltext);
   //cout << "Component model: " << ToThinString(cellmltext.get()) << endl;
   rv = component->GetName(cellmltext);
   nsString componentref = cellmltext;
   cellmlname = ToThinString(cellmltext.get());
+  FixName(cellmlname);
 
-  nsCString compmodid;
-  nsCOMPtr<IWrappedPCM> cw(do_QueryInterface(compmodel));
-  rv = cw->GetObjid(compmodid);
+  cw = do_QueryInterface(compmodel);
+  rv = cw->GetObjid(compid);
   nsCString encapmodid;
   cw = do_QueryInterface(encapsulationmodel);
   rv = cw->GetObjid(encapmodid);
-  while (compmodid != encapmodid) {
+  while (compid != encapmodid) {
     nsCOMPtr<cellml_apiICellMLElement> parentel;
     rv = compmodel->GetParentElement(getter_AddRefs(parentel));
     //Now cast 'parentel' as a ImportComponent and get the local name of the imported component.
@@ -214,9 +216,10 @@ string GetNameAccordingToEncapsulationParent(nsCOMPtr<cellml_apiICellMLComponent
     
     rv = parentel->GetModelElement(getter_AddRefs(compmodel));
     cw = do_QueryInterface(compmodel);
-    rv = cw->GetObjid(compmodid);
+    rv = cw->GetObjid(compid);
   }
 
+  FixName(cellmlname);
   return cellmlname;
 }
 

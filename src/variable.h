@@ -58,7 +58,7 @@ public:
 
 
   bool IsPointer() const {return m_sameVariable.size() != 0;};
-  std::vector<std::string> GetName() const;
+  const std::vector<std::string>& GetName() const;
   std::vector<std::string> GetPointerName() const {return m_sameVariable;};
   std::string GetNameDelimitedBy(char cc) const;
   var_type GetType() const;
@@ -76,7 +76,8 @@ public:
   AntimonyEvent* GetEvent();
   const AntimonyEvent* GetEvent() const;
   Variable* GetSubVariable(const std::string* name);
-  Variable* GetSameVariable() const;
+  Variable* GetSameVariable();
+  const Variable* GetSameVariable() const;
   const DNAStrand* GetDNAStrand() const;
   Variable* GetCompartment() const;
   bool GetIsSetCompartment() const {return (m_compartment.size() != 0);};
@@ -117,6 +118,7 @@ public:
   bool AnyCompartmentLoops(std::vector<const Variable*> lowercomps) const;
   std::string ToString() const;
   void FixNames();
+  void ClearSameName() {m_sameVariable.clear();};
 };
 
 

@@ -5,11 +5,26 @@
 #include "MathMLInputServices.h"
 #include "ICellMLInputServices.h"
 #include "ICeVAS.h"
-#include <nsStringAPI.h>
+#include "IAnnoTools.h"
+#include <nsCOMArray.h>
+#include <nsCOMPtr.h>
+#include <nsComponentManagerUtils.h>
 #include <nsDebug.h>
 #include <nsIID.h>
-#include <nsCOMPtr.h>
 #include <nsServiceManagerUtils.h>
+#include <nsStringAPI.h>
+#include <prprf.h>
+
+namespace iface
+{
+  namespace XPCOM
+  {
+    class IObject;
+  };
+};
+#include <IWrappedPCM.h>
+
+
 
 #include <string>
 #include <vector>

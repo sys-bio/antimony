@@ -186,7 +186,7 @@ ASTNode* parseStringToASTNode(const string& formula) {
 extern bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
 
 //SBML models might have variable names in them that are reserved keywords in Antimony (like 'compartment', to take a huge example).  FixName fixes this so that you can output readable Antimony again.
-void FixName(std::string& name)
+bool FixName(std::string& name)
 {
   const char* keywords[] = {
   "DNA",
@@ -294,19 +294,24 @@ void FixName(std::string& name)
   for (size_t kw=0; kw<98; kw++) {
     if (CaselessStrCmp(name, keywords[kw])) {
       name += "_";
-      return;
+      return true;
     }
   }
+  return false;
 }
 
-void FixName(std::vector<std::string>& names)
+bool FixName(vector<string>& names)
 {
+  bool ret = false;
   for (size_t n=0; n<names.size(); n++) {
-    FixName(names[n]);
+    if (FixName(names[n])) {
+      ret = true;
+    }
   }
+  return ret;
 }
 
-void FixName(std::vector<std::vector<std::string> >& allnames) 
+void FixName(vector<vector<string> >& allnames) 
 {
   for (size_t n=0; n<allnames.size(); n++) {
     FixName(allnames[n]);
@@ -314,3 +319,20 @@ void FixName(std::vector<std::vector<std::string> >& allnames)
 }
 
 
+void FixName(map<vector<string>, Variable*>& varmap)
+{
+  for (map<vector<string>, Variable*>::iterator vm=varmap.begin(); vm != varmap.end();)
+  {
+    vector<string> name = vm->first;
+    if (FixName(name)) {
+      map<vector<string>, Variable*>::iterator vm2 = vm;
+      vm++;
+      varmap.insert(make_pair(name, vm2->second));
+      varmap.erase(vm2);
+    }
+    else {
+      vm++;
+    }
+  }
+  
+}

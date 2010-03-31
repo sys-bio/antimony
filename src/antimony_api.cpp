@@ -247,6 +247,7 @@ LIB_EXTERN long loadFile(const char* filename)
 #ifndef NSBML
 long CheckAndAddSBMLDoc(SBMLDocument* document)
 {
+  g_registry.ClearWarnings();
   document->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   document->checkConsistency();
   if (document->getErrorLog()->getNumFailsWithSeverity(2) > 0 || document->getErrorLog()->getNumFailsWithSeverity(3) > 0 ) {
@@ -298,7 +299,9 @@ LIB_EXTERN long loadSBMLString(const char* model)
 
 long CheckAndAddCellMLDoc(nsCOMPtr<cellml_apiIModel> model)
 {
+  g_registry.ClearWarnings();
   if (g_registry.LoadCellML(model)) return -1;
+  g_registry.FinalizeModules();
   return g_registry.SaveModules();
 }
 
@@ -367,6 +370,20 @@ LIB_EXTERN void clearPreviousLoads()
 LIB_EXTERN char* getLastError()
 {
   return getCharStar((g_registry.GetError()).c_str());
+}
+
+LIB_EXTERN char* getWarnings()
+{
+  string ret;
+  vector<string> warnings = g_registry.GetWarnings();
+  if (warnings.size() == 0) return NULL;
+  for (size_t warn=0; warn<warnings.size(); warn++) {
+    if (warn > 0) {
+      ret += "\n";
+    }
+    ret += warnings[warn];
+  }
+  return getCharStar(ret.c_str());
 }
 
 LIB_EXTERN char** getModuleNames()
@@ -1507,8 +1524,18 @@ LIB_EXTERN int writeAntimonyFile(const char* filename, const char* moduleName)
   while (antimony.size()>1 && antimony[0] == '\n') {
     antimony.erase(0, 1);
   }
-  antimony = "//Created by libAntimony " VERSION_STRING "\n" + antimony;
-  afile << antimony;
+  string top = "//Created by libAntimony " VERSION_STRING "\n";
+  vector<string> warnings = g_registry.GetWarnings();
+  for (size_t warn=0; warn<warnings.size(); warn++) {
+    if (warn == 0) {
+      top += "\n//Warnings from automatic translation:\n";
+    }
+    top += "//    " + warnings[warn] + "\n";
+  }
+  if (warnings.size() > 0) {
+    top += "\n";
+  }
+  afile << top << antimony;
   afile.close();
   setlocale(LC_ALL, oldlocale.c_str());
   return 1;

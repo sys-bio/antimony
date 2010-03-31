@@ -87,19 +87,19 @@ std::string AndsAndOrs(std::string& in)
 {
   string out = in;
   size_t andpos;
-  while ((andpos = out.find("and")) != string::npos) {
+  while ((andpos = out.find(" and ")) != string::npos) {
     string left, right;
     left.assign(out, 0, andpos);
-    right.assign(out, andpos+3, out.size()-andpos-3);
+    right.assign(out, andpos+5, out.size()-andpos-5);
     out = "(" + left + ") && (" + right + ")";
   }
 
   size_t orpos;
-  while ((orpos = out.find("or")) != string::npos) {
+  while ((orpos = out.find(" or ")) != string::npos) {
     string left, right;
     left.assign(out, 0, orpos);
-    right.assign(out, orpos+2, out.size()-orpos-2);
-    out = "(" + left + ") && (" + right + ")";
+    right.assign(out, orpos+4, out.size()-orpos-4);
+    out = "(" + left + ") || (" + right + ")";
   }
 
 
