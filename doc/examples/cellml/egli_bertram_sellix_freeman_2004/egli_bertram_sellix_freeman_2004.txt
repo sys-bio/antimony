@@ -1,0 +1,63 @@
+//Created by libAntimony v1.3
+model egli_model_2004_version01__environment(time_)
+end
+
+model egli_model_2004_version01__PRL(OT, DA, time_)
+
+  // Rate Rules:
+  PRL' = rP * ( 1.0 / ( kD + DA )) * power( OT / ( kO + OT ), 2.0 ) - qP * PRL;
+
+  // Variable initializations:
+  PRL = 20.0;
+  kD = 300.0;
+  kO = 9.0;
+  rP = 300000.0;
+  qP = 0.5;
+end
+
+model egli_model_2004_version01__DA(DA, time_)
+
+  // Assignment Rules:
+  vD := piecewise( vDbar , ( time_ >= 2.0) && (time_ <= 4.0 ), 0.0 );
+
+  // Rate Rules:
+  DA' = qD * ( DA_infinity - DA ) - vD;
+
+  // Variable initializations:
+  DA = 20000.0;
+  vDbar = 10000.0;
+  DA_infinity = 20000.0;
+  qD = 0.2;
+end
+
+model egli_model_2004_version01__OT(OT, x, time_)
+
+  // Assignment Rules:
+  vO := piecewise( vObar , ( time_ >= 2.0) && (time_ <= 4.0 ), 0.0 );
+
+  // Rate Rules:
+  OT' = rO * ( x / ( kx + x )) - ( qO * OT + vO );
+
+  // Variable initializations:
+  OT = 25.0;
+  kx = 50.0;
+  vObar = 500.0;
+  rO = 1100.0;
+  qO = 1.0;
+end
+
+model egli_model_2004_version01__x(x, time_)
+
+  // Assignment Rules:
+  x := piecewise( 51.0 , ( time_ >= 2.0) && (time_ <= 4.0 ), 51.0 , ( time_ >= 16.0) && (time_ <= 18.0 ), 1.0 );
+end
+
+model egli_model_2004_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: egli_model_2004_version01__environment(time_);
+  PRL: egli_model_2004_version01__PRL(OT0, DA0, time_);
+  DA: egli_model_2004_version01__DA(DA0, time_);
+  OT: egli_model_2004_version01__OT(OT0, x0, time_);
+  x: egli_model_2004_version01__x(x0, time_);
+end

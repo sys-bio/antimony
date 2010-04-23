@@ -1,0 +1,169 @@
+//Created by libAntimony v1.3
+model thomas_model_2000_version01__N_x(N_x, N_0, x, ksh)
+
+  // Assignment Rules:
+  N_x := N_0 * exp(-(( ksh * x )));
+end
+
+model thomas_model_2000_version01__F_DVR_v(F_DVR_v, Jv, ksh, x)
+
+  // Rate Rules:
+  F_DVR_v' = -(( Jv + ksh * F_DVR_v ));
+
+  // Variable initializations:
+  F_DVR_v = 3.75;
+end
+
+model thomas_model_2000_version01__F_DVR_GLU(F_DVR_GLU, JGLU, ksh, x)
+
+  // Rate Rules:
+  F_DVR_GLU' = -(( JGLU + ksh * F_DVR_GLU ));
+
+  // Variable initializations:
+  F_DVR_GLU = 0.01;
+end
+
+model thomas_model_2000_version01__F_DVR_LAC(F_DVR_LAC, JLAC, ksh, x)
+
+  // Rate Rules:
+  F_DVR_LAC' = -(( JLAC + ksh * F_DVR_LAC ));
+
+  // Variable initializations:
+  F_DVR_LAC = 0.01;
+end
+
+model thomas_model_2000_version01__F_AVR_v(F_AVR_v, Jv, ksh, x, J_ABS_V, F_DVR_v)
+
+  // Rate Rules:
+  F_AVR_v' = Jv + ksh * F_DVR_v + J_ABS_V;
+
+  // Variable initializations:
+  F_AVR_v = 0.01;
+end
+
+model thomas_model_2000_version01__F_AVR_GLU(F_AVR_GLU, JGLU, JGLY, ksh, x, F_DVR_GLU)
+
+  // Rate Rules:
+  F_AVR_GLU' = JGLU + ksh * F_DVR_GLU - JGLY;
+
+  // Variable initializations:
+  F_AVR_GLU = 0.01;
+end
+
+model thomas_model_2000_version01__F_AVR_LAC(F_AVR_LAC, JLAC, JGLY, ksh, x, F_DVR_LAC)
+
+  // Rate Rules:
+  F_AVR_LAC' = JLAC + ksh * F_DVR_LAC + 2.0 * JGLY;
+
+  // Variable initializations:
+  F_AVR_LAC = 0.01;
+end
+
+model thomas_model_2000_version01__JGLU(JGLU, N_x, Jv, c_DVR_GLU, c_AVR_GLU)
+
+  // Assignment Rules:
+  JGLU := N_x * PGLU * ( c_DVR_GLU - c_AVR_GLU ) + ( 1.0 - sigma_GLU ) * Jv * (( c_DVR_GLU + c_AVR_GLU ) / 2.0 );
+
+  // Variable initializations:
+  PGLU = 1.2;
+  sigma_GLU = 0.5;
+end
+
+model thomas_model_2000_version01__JLAC(JLAC, N_x, Jv, c_DVR_LAC, c_AVR_LAC)
+
+  // Assignment Rules:
+  JLAC := N_x * PLAC * ( c_DVR_LAC - c_AVR_LAC ) + ( 1.0 - sigma_LAC ) * Jv * (( c_DVR_LAC + c_AVR_LAC ) / 2.0 );
+
+  // Variable initializations:
+  PLAC = 33.93;
+  sigma_LAC = 0.5;
+end
+
+model thomas_model_2000_version01__c_DVR_GLU(c_DVR_GLU, F_DVR_GLU, F_DVR_v)
+
+  // Assignment Rules:
+  c_DVR_GLU := F_DVR_GLU / F_DVR_v;
+end
+
+model thomas_model_2000_version01__c_AVR_GLU(c_AVR_GLU, F_AVR_GLU, F_AVR_v)
+
+  // Assignment Rules:
+  c_AVR_GLU := F_AVR_GLU / F_AVR_v;
+end
+
+model thomas_model_2000_version01__c_DVR_LAC(c_DVR_LAC, F_DVR_LAC, F_DVR_v)
+
+  // Assignment Rules:
+  c_DVR_LAC := F_DVR_LAC / F_DVR_v;
+end
+
+model thomas_model_2000_version01__c_AVR_LAC(c_AVR_LAC, F_AVR_LAC, F_AVR_v)
+
+  // Assignment Rules:
+  c_AVR_LAC := F_AVR_LAC / F_AVR_v;
+end
+
+model thomas_model_2000_version01__JGLY(JGLY, F_DVR_G_0, L, c_AVR_GLU, N_x, N_0, ksh)
+
+  // Assignment Rules:
+  JGLY := N_x * ( Vmax * c_AVR_GLU / ( Km + c_AVR_GLU ));
+  Vmax := ksh / ( N_0 * ( 1.0 - exp(-(( ksh * L ))))) * ( GlyFract * F_DVR_G_0 );
+
+  // Variable initializations:
+  Km = 0.1;
+  GlyFract = 0.2;
+end
+
+model thomas_model_2000_version01__J_ABS_V(J_ABS_V, kv, N_x)
+
+  // Assignment Rules:
+  J_ABS_V := kv * N_x;
+end
+
+model thomas_model_2000_version01__kv(kv, F_DVR_V_0, L, N_0, ksh)
+
+  // Assignment Rules:
+  kv := ksh / ( N_0 * ( 1.0 - exp(-(( ksh * L ))))) * VolFract * F_DVR_V_0;
+
+  // Variable initializations:
+  VolFract = 0.3;
+end
+
+model thomas_model_2000_version01__model_parameters(ksh, L, N_0, x, F_DVR_G_0, F_DVR_V_0, Jv, F_DVR_v, N_x)
+
+  // Assignment Rules:
+  F_DVR_G_0 := F_DVR_V_0 * c_DVR_GLU_0;
+  F_DVR_V_0 := 3.75 * N_0;
+  Jv := 0.3 * ( F_DVR_v / ( N_0 * b )) * N_x;
+  x_L := x / L;
+
+  // Variable initializations:
+  ksh = 1.213;
+  L = 4.0;
+  N_0 = 128.0;
+  x = 0;
+  c_DVR_GLU_0 = 10.0;
+  b = 4.0;
+end
+
+model thomas_model_2000_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  N_x: thomas_model_2000_version01__N_x(N_x0, N_0, x, ksh);
+  F_DVR_v: thomas_model_2000_version01__F_DVR_v(F_DVR_v0, Jv, ksh, x);
+  F_DVR_GLU: thomas_model_2000_version01__F_DVR_GLU(F_DVR_GLU0, JGLU0, ksh, x);
+  F_DVR_LAC: thomas_model_2000_version01__F_DVR_LAC(F_DVR_LAC0, JLAC0, ksh, x);
+  F_AVR_v: thomas_model_2000_version01__F_AVR_v(F_AVR_v0, Jv, ksh, x, J_ABS_V0, F_DVR_v0);
+  F_AVR_GLU: thomas_model_2000_version01__F_AVR_GLU(F_AVR_GLU0, JGLU0, JGLY0, ksh, x, F_DVR_GLU0);
+  F_AVR_LAC: thomas_model_2000_version01__F_AVR_LAC(F_AVR_LAC0, JLAC0, JGLY0, ksh, x, F_DVR_LAC0);
+  JGLU: thomas_model_2000_version01__JGLU(JGLU0, N_x0, Jv, c_DVR_GLU0, c_AVR_GLU0);
+  JLAC: thomas_model_2000_version01__JLAC(JLAC0, N_x0, Jv, c_DVR_GLU0, c_AVR_LAC0);
+  c_DVR_GLU: thomas_model_2000_version01__c_DVR_GLU(c_DVR_GLU0, F_DVR_GLU0, F_DVR_v0);
+  c_AVR_GLU: thomas_model_2000_version01__c_AVR_GLU(c_AVR_GLU0, F_AVR_GLU0, F_AVR_v0);
+  c_DVR_LAC: thomas_model_2000_version01__c_DVR_LAC(c_DVR_LAC0, F_DVR_LAC0, F_DVR_v0);
+  c_AVR_LAC: thomas_model_2000_version01__c_AVR_LAC(c_AVR_LAC0, F_AVR_LAC0, F_AVR_v0);
+  JGLY: thomas_model_2000_version01__JGLY(JGLY0, F_DVR_G_0, L, c_AVR_GLU0, N_x0, N_0, ksh);
+  J_ABS_V: thomas_model_2000_version01__J_ABS_V(J_ABS_V0, kv0, N_x0);
+  kv: thomas_model_2000_version01__kv(kv0, F_DVR_V_0, L, N_0, ksh);
+  model_parameters: thomas_model_2000_version01__model_parameters(ksh, L, N_0, x, F_DVR_G_0, F_DVR_V_0, Jv, F_DVR_v0, N_x0);
+end

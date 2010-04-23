@@ -1,0 +1,78 @@
+//Created by libAntimony v1.3
+model haugh_model_2004_version01__environment(time_)
+end
+
+model haugh_model_2004_version01__C(C, kf1, kr1, kx2, k_x2, kt, D, L, R, time_)
+
+  // Rate Rules:
+  C' = kf1 * L * R + k_x2 * D - ( kr1 + kx2 * R + kt ) * C;
+
+  // Variable initializations:
+  C = 0.0;
+end
+
+model haugh_model_2004_version01__D(D, k_x1, kx2, k_x2, ke, C, R, time_)
+
+  // Rate Rules:
+  D' = kx2 * R * C - ( k_x2 + k_x1 + ke ) * D;
+
+  // Variable initializations:
+  D = 0.0;
+end
+
+model haugh_model_2004_version01__R(R, R_initial, kf1, kr1, kx2, k_x2, kt, k_x1, krec, D, Ri, L, C, Vs, time_)
+
+  // Rate Rules:
+  R' = Vs + kr1 * C + ( k_x2 + 2.0 * k_x1 ) * D + krec * Ri - ( kf1 * L + kx2 * C + kt ) * R;
+
+  // Variable initializations:
+  R = 2000.0;
+  R_initial = 2000.0;
+end
+
+model haugh_model_2004_version01__Ri(Ri, krec, kdeg, kt, R, C, time_)
+
+  // Rate Rules:
+  Ri' = kt * ( R + C ) - ( krec + kdeg ) * Ri;
+
+  // Variable initializations:
+  Ri = 200.0;
+end
+
+model haugh_model_2004_version01__signal(kappaE, D, R_initial)
+
+  // Assignment Rules:
+  signal := 2.0 * D / R_initial / ( kappaE + 2.0 * D / R_initial );
+end
+
+model haugh_model_2004_version01__model_parameters(kf1, kr1, kx2, k_x2, k_x1, ke, kt, krec, kdeg, Vs, L, kappaE)
+
+  // Assignment Rules:
+  kr1 := KD * kf1;
+  k_x1 := 0.01 * kr1;
+
+  // Variable initializations:
+  kf1 = 0.1;
+  kx2 = 4.83;
+  k_x2 = 0.016;
+  ke = 0.10;
+  kt = 0.005;
+  krec = 0.0;
+  kdeg = 0.05;
+  Vs = 10.0;
+  L = 0.01;
+  kappaE = 0.20;
+  KD = 1.0;
+end
+
+model haugh_model_2004_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: haugh_model_2004_version01__environment(time_);
+  C: haugh_model_2004_version01__C(C0, kf1, kr1, kx2, k_x2, kt, D0, L, R0, time_);
+  D: haugh_model_2004_version01__D(D0, k_x1, kx2, k_x2, ke, C0, R0, time_);
+  R: haugh_model_2004_version01__R(R0, R_initial, kf1, kr1, kx2, k_x2, kt, k_x1, krec, D0, Ri0, L, C0, Vs, time_);
+  Ri: haugh_model_2004_version01__Ri(Ri0, krec, kdeg, kt, R0, C0, time_);
+  signal: haugh_model_2004_version01__signal(kappaE, D0, R_initial);
+  model_parameters: haugh_model_2004_version01__model_parameters(kf1, kr1, kx2, k_x2, k_x1, ke, kt, krec, kdeg, Vs, L, kappaE);
+end

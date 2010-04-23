@@ -1,0 +1,249 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to translate an assignment to "del(degree( 2.0  ),  V )/del( x ,  2.0  )" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(degree( 2.0  ),  V )/del( y ,  2.0  )" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__environment(time_)
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__membrane(V, R, T, F, time_, i_Na, i_Ca, i_to, i_K, i_K1, i_b_Na, i_b_Ca, i_NaK, i_NaCa)
+
+  // Rate Rules:
+  V' = (-(( i_Na + i_Ca + i_to + i_K + i_K1 + i_b_Na + i_b_Ca + i_NaCa + i_NaK )) + power( rho_x * S , -1.0 ) * V_x2 + power( rho_y * S , -1.0 ) * V_y2 ) / Cm;
+
+  // Variable initializations:
+  V = -90.2;
+  R = 8314.0;
+  T = 310.0;
+  F = 96845.0;
+  Cm = 153.4;
+  x = 100.0;
+  y = 22.0;
+  rho_x = 180.0;
+  rho_y = 180.0;
+  S = 0.2;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := 0.32 * ( V + 47.13 ) / ( 1.0 - exp( -0.1 * ( V + 47.13 )));
+  beta_m := 0.08 * exp(-( V ) / 11.0 );
+
+  // Rate Rules:
+  m' = alpha_m * ( 1.0 - m ) - beta_m * m;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_current_v_gate(v, V, time_)
+
+  // Assignment Rules:
+  v_infinity := 0.5 * ( 1.0 - tanh( 7.74 + V * 0.12 ));
+  tau_v := 0.25 + 2.24 * (( 1.0 - tanh( 7.74 + V * 0.12 )) / ( 1.0 - tanh( 0.07 * ( V + 92.4 ))));
+
+  // Rate Rules:
+  v' = ( v_infinity - v ) / tau_v;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_current(i_Na, E_Na, Na_i, Na_e, R, F, T, time_, V, m, v)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current_m_gate: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_current_m_gate(m, V, time_);
+  sodium_current_v_gate: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_current_v_gate(v, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power( m , 3.0 ) * power( v , 2.0 ) * ( V - E_Na );
+  E_Na := R * T / F * ln( Na_e / Na_i );
+
+  // Variable initializations:
+  g_Na = 16.0;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__calcium_current_d_gate(d_infinity, V, time_)
+
+  // Assignment Rules:
+  d_infinity := alpha_d / ( alpha_d + beta_d );
+  alpha_d := 14.98 * exp(-( 0.5 ) * power(( V - 22.36 ) / 16.68 , 2.0 )) / ( 16.68 * root( 2.0 * pi ));
+  beta_d := 0.1471 - 5.3 * exp(-( 0.5 ) * power(( V - 6.27 ) / 14.93 , 2.0 )) / ( 14.93 * root( 2.0 * pi ));
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__calcium_current_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  alpha_f := 6.87E-3 / ( 1.0 + exp(-(( 6.1546 - V )) / 6.12 ));
+  beta_f := ( 0.069 * exp( -11.0 * ( V + 9.825 )) + 0.011 ) / ( 1.0 + exp( -0.278 * ( V + 9.825 ))) + 5.75E-4;
+
+  // Rate Rules:
+  f' = alpha_f * ( 1.0 - f ) - beta_f * f;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__calcium_current_f_Ca_gate(f_Ca, Ca_i)
+
+  // Assignment Rules:
+  f_Ca := 1.0 / ( 1.0 + Ca_i / 0.0006 );
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__calcium_current(i_Ca, E_Ca, Ca_e, R, F, T, time_, V, Ca_i, d_infinity, f, f_Ca)
+
+  // Sub-modules, and any changes to those submodules:
+  calcium_current_d_gate: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__calcium_current_d_gate(d_infinity, V, time_);
+  calcium_current_f_gate: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__calcium_current_f_gate(f, V, time_);
+  calcium_current_f_Ca_gate: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__calcium_current_f_Ca_gate(f_Ca, Ca_i);
+
+  // Assignment Rules:
+  i_Ca := g_Ca * d_infinity * f * f_Ca * ( V - E_Ca );
+  E_Ca := R * T / ( 2.0 * F ) * ln( Ca_e / Ca_i );
+
+  // Variable initializations:
+  g_Ca = 0.064;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__transient_outward_current_r_gate(r_infinity, V, time_)
+
+  // Assignment Rules:
+  r_infinity := alpha_r / ( alpha_r + beta_r );
+  alpha_r := 0.5266 * exp(-( 0.0166 ) * ( V - 42.2912 )) / ( 1.0 + exp(-( 0.0943 ) * ( V - 42.2912 )));
+  beta_r := ( 5.186E-5 * V + 0.5149 * exp(-( 0.1344 ) * ( V - 5.0027 ))) / ( 1.0 + exp(-( 0.1348 ) * ( V - 5.186E-5 )));
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__transient_outward_current_to_gate(to, V, time_)
+
+  // Assignment Rules:
+  alpha_to := ( 5.612E-5 * V + 0.0721 * exp( -0.173 * ( V + 34.2531 ))) / ( 1.0 + exp( -0.1732 * ( V + 34.2531 )));
+  beta_to := ( 1.215E-4 * V + 0.0767 * exp( -1.66E-9 * ( V + 34.0235 ))) / ( 1.0 + exp(-( 0.1604 ) * ( V + 34.0235 )));
+  to_infinity := alpha_to * ( V - V_shift ) / ( alpha_to * ( V - V_shift ) + beta_to * ( V - V_shift ));
+  tau_to := 1.0 / ( p * alpha_to * V + p * beta_to * V );
+
+  // Rate Rules:
+  to' = alpha_to * ( 1.0 - to ) - beta_to * to;
+
+  // Variable initializations:
+  V_shift = 0.0;
+  p = 1.0;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__transient_outward_current(i_to, Na_i, Na_e, K_i, K_e, R, F, T, V, time_, to, r_infinity)
+
+  // Sub-modules, and any changes to those submodules:
+  transient_outward_current_r_gate: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__transient_outward_current_r_gate(r_infinity, V, time_);
+  transient_outward_current_to_gate: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__transient_outward_current_to_gate(to, V, time_);
+
+  // Assignment Rules:
+  i_to := g_to * r_infinity * to * ( V - E_to );
+  E_to := R * T / F * ln(( 0.043 * Na_e + K_e ) / ( 0.043 * Na_i + K_i ));
+
+  // Variable initializations:
+  g_to = 0.4;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__delayed_rectifier_potassium_current_X_gate(X, V, time_)
+
+  // Assignment Rules:
+  X_infinity := 0.988 / ( 1.0 + exp( -0.861 - V * 0.0620 ));
+  tau_X := 240.0 * exp(-(power( 25.5 + V , 2.0 )) / 156.0 ) + 182.0 * ( 1.0 + tanh( 0.154 + 0.0116 * V )) + tau_X_a;
+  tau_X_a := 40.0 * ( 1.0 - tanh( 160.0 + 2.0 * V ));
+
+  // Rate Rules:
+  X' = ( X_infinity - X ) / tau_X;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__delayed_rectifier_potassium_current(i_K, E_K, K_i, K_e, R, F, T, time_, V, X)
+
+  // Sub-modules, and any changes to those submodules:
+  delayed_rectifier_potassium_current_X_gate: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__delayed_rectifier_potassium_current_X_gate(X, V, time_);
+
+  // Assignment Rules:
+  i_K := g_K * power( X , 2.0 ) * ( V - E_K );
+  E_K := R * T / F * ln( K_e / K_i );
+
+  // Variable initializations:
+  g_K = 0.019;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__inward_rectifier_potassium_current_K1_gate(K1_infinity, E_K, V, time_)
+
+  // Assignment Rules:
+  K1_infinity := alpha_K1 / ( alpha_K1 + beta_K1 );
+  alpha_K1 := 0.1 / ( 1.0 + exp( 0.06 * ( V - ( E_K + 200.0 ))));
+  beta_K1 := ( 3.0 * exp( 2.0E-4 * ( V + 100.0 + -( E_K ))) + exp( 0.1 * ( V - ( 10.0 + E_K )))) / ( 1.0 + exp(-( 0.5 ) * ( V - E_K )));
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__inward_rectifier_potassium_current(i_K1, E_K, time_, V, K1_infinity)
+
+  // Sub-modules, and any changes to those submodules:
+  inward_rectifier_potassium_current_K1_gate: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__inward_rectifier_potassium_current_K1_gate(K1_infinity, E_K, V, time_);
+
+  // Assignment Rules:
+  i_K1 := g_K1 * K1_infinity * ( V - E_K );
+
+  // Variable initializations:
+  g_K1 = 3.9;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__calcium_background_current(i_b_Ca, E_Ca, time_, V)
+
+  // Assignment Rules:
+  i_b_Ca := g_b_Ca * ( V - E_Ca );
+
+  // Variable initializations:
+  g_b_Ca = 0.00085;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_background_current(i_b_Na, E_Na, time_, V)
+
+  // Assignment Rules:
+  i_b_Na := g_b_Na * ( V - E_Na );
+
+  // Variable initializations:
+  g_b_Na = 0.001;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_potassium_pump(i_NaK, Na_i, K_e, Na_e, V, time_)
+
+  // Assignment Rules:
+  i_NaK := g_NaK * f_NaK * f_NaK_a;
+  f_NaK := 1.0 / ( 1.0 + 0.1245 * exp( -0.0037 * V ) + 0.0365 * sigma * exp( -0.037 * V ));
+  f_NaK_a := 1.0 / ( 1.0 + power( 10.0 / Na_i , 1.5 )) * ( K_e / ( K_e + 1.5 ));
+  sigma := 0.1428 * (exp( Na_e / 67.3 ) - 1.0 );
+
+  // Variable initializations:
+  g_NaK = 1.3;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_calcium_pump(i_NaCa, Na_i, Na_e, Ca_i, Ca_e, V, time_)
+
+  // Assignment Rules:
+  i_NaCa := g_NaCa * f_NaCa;
+  f_NaCa := power(power( 87.5 , 3.0 ) + power( Na_e , 3.0 ), -1.0 ) * power( 1.38 + Ca_e , -1.0 ) * power( 1.0 + 0.1 * exp( -0.024 * V ), -1.0 ) * (power( Na_i , 3.0 ) * Ca_e * exp( 0.013 * V ) - power( Na_e , 3.0 ) * Ca_i * exp( -0.024 * V ));
+
+  // Variable initializations:
+  g_NaCa = 1000.0;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01__ionic_concentrations(Na_i, Na_e, Ca_i, Ca_e, K_i, K_e)
+
+  // Variable initializations:
+  Na_i = 10.0;
+  Na_e = 138.0;
+  Ca_i = 0.0004;
+  Ca_e = 2.0;
+  K_i = 140.0;
+  K_e = 4.0;
+end
+
+model bernus_wilders_zemlin_verschelde_panfilov_2002_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__environment(time_);
+  membrane: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__membrane(V, R, T, F, time_, i_Na, i_Ca, i_to, i_K, i_K1, i_b_Na, i_b_Ca, i_NaK, i_NaCa);
+  sodium_current: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_current(i_Na, E_Na, Na_i, Na_e, R, F, T, time_, V, m, v);
+  calcium_current: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__calcium_current(i_Ca, E_Ca, Ca_e, R, F, T, time_, V, Ca_i, d_infinity, f, f_Ca);
+  transient_outward_current: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__transient_outward_current(i_to, Na_i, Na_e, K_i, K_e, R, F, T, V, time_, to, r_infinity);
+  delayed_rectifier_potassium_current: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__delayed_rectifier_potassium_current(i_K, E_K, K_i, K_e, R, F, T, time_, V, X);
+  inward_rectifier_potassium_current: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__inward_rectifier_potassium_current(i_K1, E_K, time_, V, K1_infinity);
+  calcium_background_current: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__calcium_background_current(i_b_Ca, E_Ca, time_, V);
+  sodium_background_current: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_background_current(i_b_Na, E_Na, time_, V);
+  sodium_potassium_pump: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_potassium_pump(i_NaK, Na_i, K_e, Na_e, V, time_);
+  sodium_calcium_pump: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__sodium_calcium_pump(i_NaCa, Na_i, Na_e, Ca_i, Ca_e, V, time_);
+  ionic_concentrations: bernus_wilders_zemlin_verschelde_panfilov_2002_version01__ionic_concentrations(Na_i, Na_e, Ca_i, Ca_e, K_i, K_e);
+end

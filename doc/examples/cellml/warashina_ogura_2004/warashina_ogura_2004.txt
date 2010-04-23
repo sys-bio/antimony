@@ -1,0 +1,261 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "CaBu * k2b - Cai * Bu * k1b" to set the assignment rule for Cai:  Loop detected:  Cai's definition (CaBu * k2b - Cai * Bu * k1b) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "CaBu * k2b - Cai * Bu * k1b" to set the assignment rule for Bu:  Loop detected:  Bu's definition (CaBu * k2b - Cai * Bu * k1b) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "Cai * Bu * k1b - CaBu * k2b" to set the assignment rule for CaBu:  Loop detected:  CaBu's definition (Cai * Bu * k1b - CaBu * k2b) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "A * k1f - ( B * k1b + B * k2 )" to set the assignment rule for B:  Loop detected:  B's definition (A * k1f - ( B * k1b + B * k2 )) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "Dyi2 * kbd - Dy * kfd" to set the assignment rule for Dy:  Loop detected:  Dy's definition (Dyi2 * kbd - Dy * kfd) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "Dy * Cai * k1d - CaDy * k2d" to set the assignment rule for CaDy:  Loop detected:  CaDy's definition (Dy * Cai * k1d - CaDy * k2d) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+
+model warashina_ogura_2004_version01__environment(time_)
+end
+
+model warashina_ogura_2004_version01__membrane(V, time_, i_Na, i_sp, i_K, i_l, i_Ca, i_SK, i_ex)
+
+  // Rate Rules:
+  V' = -(( i_sp + i_Na + i_K + i_l + i_Ca + i_SK + i_ex )) / Cm;
+
+  // Variable initializations:
+  Cm = 1.0;
+end
+
+model warashina_ogura_2004_version01__excitatory_synapse(i_sp, V)
+
+  // Assignment Rules:
+  i_sp := G * ( V - E_rev );
+  G := L * tau1 - D * tau2;
+
+  // Variable initializations:
+  L = 0.016;
+  E_rev = -7.0;
+  tau1 = 1.0;
+  tau2 = 6.3;
+end
+
+model warashina_ogura_2004_version01__sodium_channel_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := 0.109 * ( V + 38.0 ) / ( 1.0 - exp(-(( V + 38.0 )) / 5.0 ));
+  beta_m := 0.0744 * ( V + 38.0 ) / (exp(( V + 38.0 ) / 5.0 ) - 1.0 );
+
+  // Rate Rules:
+  m' = alpha_m * ( 1.0 - m ) - beta_m * m;
+end
+
+model warashina_ogura_2004_version01__sodium_channel_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := 0.0192 * exp(-(( 55.0 + V )) / 15.0 );
+  beta_h := 2.48 / ( 1.0 + exp(( 17.0 - V ) / 21.0 ));
+
+  // Rate Rules:
+  h' = alpha_h * ( 1.0 - h ) - beta_h * h;
+end
+
+model warashina_ogura_2004_version01__sodium_channel(i_Na, time_, V, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_channel_m_gate: warashina_ogura_2004_version01__sodium_channel_m_gate(m, V, time_);
+  sodium_channel_h_gate: warashina_ogura_2004_version01__sodium_channel_h_gate(h, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power( m , 3.0 ) * h * ( V - E_Na );
+
+  // Variable initializations:
+  g_Na = 40.0;
+  E_Na = 50.0;
+end
+
+model warashina_ogura_2004_version01__potassium_channel_n_gate(n, V, time_)
+
+  // Assignment Rules:
+  alpha_n := 0.012 * ( V + 45.0 ) / ( 1.0 - exp(-(( 45.0 + V )) / 5.0 ));
+  beta_n := 0.204 * exp(-(( V + 50.0 )) / 40.0 );
+
+  // Rate Rules:
+  n' = alpha_n * ( 1.0 - n ) - beta_n * n;
+end
+
+model warashina_ogura_2004_version01__potassium_channel(i_K, time_, V, E_K, n)
+
+  // Sub-modules, and any changes to those submodules:
+  potassium_channel_n_gate: warashina_ogura_2004_version01__potassium_channel_n_gate(n, V, time_);
+
+  // Assignment Rules:
+  i_K := g_K * power( n , 4.0 ) * ( V - E_K );
+
+  // Variable initializations:
+  g_K = 1.2;
+end
+
+model warashina_ogura_2004_version01__leak_channel(i_l, V)
+
+  // Assignment Rules:
+  i_l := g_l * ( V - E_l );
+
+  // Variable initializations:
+  g_l = 1.6;
+  E_l = -65.0;
+end
+
+model warashina_ogura_2004_version01__calcium_channel_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := 5.0 / ( 1.0 + exp( -0.075 * ( V - 5.0 )));
+  beta_m := 0.05 * ( V - 2.0 ) / ( 1.0 - exp(( V - 2.0 ) / 8.0 ));
+
+  // Rate Rules:
+  m' = alpha_m * ( 1.0 - m ) - beta_m * m;
+end
+
+model warashina_ogura_2004_version01__calcium_channel_h_gate(h, time_)
+
+  // Assignment Rules:
+  h := Ff * exp(-( time_ ) / tau_f ) + Fm * exp(-( time_ ) / tau_m ) + Fs * exp(-( time_ ) / tau_s ) + Fr;
+
+  // Variable initializations:
+  Ff = 0.79;
+  Fm = 0.0;
+  Fs = 0.0;
+  tau_f = 500.0;
+end
+
+model warashina_ogura_2004_version01__calcium_channel(i_Ca, time_, V, Ca0, R, T, F, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  calcium_channel_m_gate: warashina_ogura_2004_version01__calcium_channel_m_gate(m, V, time_);
+  calcium_channel_h_gate: warashina_ogura_2004_version01__calcium_channel_h_gate(h, time_);
+
+  // Assignment Rules:
+  i_Ca := PCa * power( m , 2.0 ) * h * ghk;
+  ghk := V * power( 2.0 * F , 2.0 ) / ( R * T ) * (( Cao - Ca0 * exp( 2.0 * V * F / ( R * T ))) / ( 1.0 - exp( 2.0 * V * F / ( R * T ))));
+
+  // Variable initializations:
+  PCa = 2.0;
+  Cao = 2.0;
+end
+
+model warashina_ogura_2004_version01__calcium_dependent_potassium_channel_m_gate(m, Ca0, time_)
+
+  // Assignment Rules:
+  m_infinity := Car / ( 1.0 + Car );
+  tau_m := 1.0 / ( beta_k * ( 1.0 + Car ));
+  Car := power( Ca0 / Cac , n_SK );
+
+  // Rate Rules:
+  m' = -(( m - m_infinity )) / tau_m;
+
+  // Variable initializations:
+  beta_k = 0.1;
+  n_SK = 1.7;
+  Cac = 700.0;
+end
+
+model warashina_ogura_2004_version01__calcium_dependent_potassium_channel(i_SK, time_, V, Ca0, E_K, m)
+
+  // Sub-modules, and any changes to those submodules:
+  calcium_dependent_potassium_channel_m_gate: warashina_ogura_2004_version01__calcium_dependent_potassium_channel_m_gate(m, Ca0, time_);
+
+  // Assignment Rules:
+  i_SK := g_SK * power( m , 2.0 ) * ( V - E_K );
+
+  // Variable initializations:
+  g_SK = 3.0;
+end
+
+model warashina_ogura_2004_version01__buffered_calcium_diffusion(Bu, CaBu, k1b, k2b, kfc, kbc, delta_r, Ai2, vol_i)
+
+  // Assignment Rules:
+  kfc := DCa * Ai2 / ( delta_r * vol_i );
+  kbc := DCa * Ai2 / ( delta_r * vol_i );
+  FCai := ( Cai2 - Cai ) * DCa * ( Ai2 / delta_r );
+
+  // Variable initializations:
+  k1b = 100.0;
+  k2b = 10.0;
+  DCa = 0.22;
+  TBu = 4.0;
+end
+
+model warashina_ogura_2004_version01__calcium_extrusion(i_ex, Ca0)
+
+  // Assignment Rules:
+  i_ex := Vmax * ( Ca0 / ( Kex + Ca0 )) - Vmax * ( Ca_rest / ( Kex + Ca_rest ));
+
+  // Variable initializations:
+  Vmax = 3.0;
+  Kex = 830.0;
+  Ca_rest = 100.0;
+end
+
+model warashina_ogura_2004_version01__calcium_triggered_exocytosis(Ca0)
+
+  // Assignment Rules:
+  SR := k2 * B;
+  k1f := a1 * ( Ca0 / ( b1 + Ca0 ));
+  k1b := a2;
+  k2 := a3 * power( Ca0 , 3.0 );
+  C := B * k2;
+
+  // Variable initializations:
+  a1 = 9.0E-6;
+  a2 = 5.5E-6;
+  a3 = 2.3E-5;
+  b1 = 1.2;
+  A = 2000.0;
+end
+
+model warashina_ogura_2004_version01__calcium_indicator(CaDy, Dy, k1d, k2d, delta_r, Ai2, vol_i)
+
+  // Assignment Rules:
+  FDy := ( 1.0 - F0 ) * FCaDy + F0;
+  kfd := Ddy * Ai2 / ( delta_r * vol_i );
+  kbd := Ddy * Ai2 / ( delta_r * vol_i );
+
+  // Variable initializations:
+  k1d = 500.0;
+  TDy = 5.0;
+  Ddy = 0.05;
+  Dkd = 240.0;
+  F0 = 0.36;
+end
+
+model warashina_ogura_2004_version01__calcium_concentration(Ca0, time_, i_Ca, i_ex, CaBu, Bu, CaDy, Dy, F, k1d, k2d, k1b, k2b, kfc, kbc)
+
+  // Rate Rules:
+  Ca0' = kbc * Ca1 + k2b * CaBu + k2d * CaDy - (( i_Ca + i_ex ) * A0 / ( 2.0 * F * vol0 ) + kfc * Ca0 + k1b * Bu * Ca0 + k1d * Dy * Ca0 );
+end
+
+model warashina_ogura_2004_version01__model_parameters(R, T, F, delta_r, Ai2, vol_i, E_K)
+
+  // Assignment Rules:
+  delta_r := diameter / ( 2.0 * ( Nc - 1.0 ));
+
+  // Variable initializations:
+  R = 8.3144;
+  T = 310.15;
+  F = 96485;
+  E_K = -80.0;
+  diameter = 15.0;
+  Nc = 6.0;
+end
+
+model warashina_ogura_2004_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: warashina_ogura_2004_version01__environment(time_);
+  membrane: warashina_ogura_2004_version01__membrane(V, time_, i_Na, i_sp, i_K, i_l, i_Ca, i_SK, i_ex);
+  excitatory_synapse: warashina_ogura_2004_version01__excitatory_synapse(i_sp, V);
+  sodium_channel: warashina_ogura_2004_version01__sodium_channel(i_Na, time_, V, m, h);
+  potassium_channel: warashina_ogura_2004_version01__potassium_channel(i_K, time_, V, E_K, n);
+  leak_channel: warashina_ogura_2004_version01__leak_channel(i_l, V);
+  calcium_channel: warashina_ogura_2004_version01__calcium_channel(i_Ca, time_, V, Ca0, R, T, F, m0, h0);
+  calcium_dependent_potassium_channel: warashina_ogura_2004_version01__calcium_dependent_potassium_channel(i_SK, time_, V, Ca0, E_K, m1);
+  buffered_calcium_diffusion: warashina_ogura_2004_version01__buffered_calcium_diffusion(Bu, CaBu, k1b, k2b, kfc, kbc, delta_r, Ai2, vol_i);
+  calcium_extrusion: warashina_ogura_2004_version01__calcium_extrusion(i_ex, Ca0);
+  calcium_triggered_exocytosis: warashina_ogura_2004_version01__calcium_triggered_exocytosis(Ca0);
+  calcium_indicator: warashina_ogura_2004_version01__calcium_indicator(CaDy, Dy, k1d, k2d, delta_r, Ai2, vol_i);
+  calcium_concentration: warashina_ogura_2004_version01__calcium_concentration(Ca0, time_, i_Ca, i_ex, CaBu, Bu, CaDy, Dy, F, k1d, k2d, k1b, k2b, kfc, kbc);
+  model_parameters: warashina_ogura_2004_version01__model_parameters(R, T, F, delta_r, Ai2, vol_i, E_K);
+end

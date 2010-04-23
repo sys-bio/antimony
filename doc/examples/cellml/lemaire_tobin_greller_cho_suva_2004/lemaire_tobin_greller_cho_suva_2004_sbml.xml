@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="lemaire_model_2004____main" name="lemaire_model_2004____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="R0" value="0" constant="false"/>
+      <parameter id="DR" value="0.0007"/>
+      <parameter id="pi_C" constant="false"/>
+      <parameter id="DB" constant="false"/>
+      <parameter id="B0" value="0" constant="false"/>
+      <parameter id="kB" value="0.189"/>
+      <parameter id="C0" value="0" constant="false"/>
+      <parameter id="DC" value="0.0021"/>
+      <parameter id="pi_L0" constant="false"/>
+      <parameter id="DA" value="0.7"/>
+      <parameter id="pi_L_k1" value="0.01"/>
+      <parameter id="pi_L_k2" value="10"/>
+      <parameter id="pi_L_k3" value="0.00058"/>
+      <parameter id="pi_L_k4" value="0.017"/>
+      <parameter id="pi_L_K" value="10"/>
+      <parameter id="pi_L_ko" value="0.35"/>
+      <parameter id="pi_L_Io" value="0"/>
+      <parameter id="pi_L_IL" value="0"/>
+      <parameter id="pi_L_rL" value="1000"/>
+      <parameter id="pi_L_KOP" value="200000"/>
+      <parameter id="pi_L_KLP" value="3000000"/>
+      <parameter id="pi_P" constant="false"/>
+      <parameter id="model_parameters_f0" value="0.05"/>
+      <parameter id="model_parameters_dB" value="0.7"/>
+      <parameter id="model_parameters_IP" value="0"/>
+      <parameter id="model_parameters_kP" value="86"/>
+      <parameter id="model_parameters_P" constant="false"/>
+      <parameter id="model_parameters_P_0" constant="false"/>
+      <parameter id="model_parameters_P_s" constant="false"/>
+      <parameter id="model_parameters_C_s" value="0.005"/>
+      <parameter id="model_parameters_SP" value="250"/>
+      <parameter id="model_parameters_k5" value="0.02"/>
+      <parameter id="model_parameters_k6" value="3"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> DR </ci>
+              <ci> pi_C </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <ci> DB </ci>
+                <ci> pi_C </ci>
+              </apply>
+              <ci> R0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="pi_C">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> C0 </ci>
+              <apply>
+                <times/>
+                <ci> model_parameters_f0 </ci>
+                <ci> model_parameters_C_s </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> C0 </ci>
+              <ci> model_parameters_C_s </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="DB">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_f0 </ci>
+            <ci> model_parameters_dB </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="B0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <ci> DB </ci>
+                <ci> pi_C </ci>
+              </apply>
+              <ci> R0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kB </ci>
+              <ci> B0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> DC </ci>
+              <ci> pi_L0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> DA </ci>
+              <ci> pi_C </ci>
+              <ci> C0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="pi_L0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <divide/>
+                      <ci> pi_L_k3 </ci>
+                      <ci> pi_L_k4 </ci>
+                    </apply>
+                    <ci> pi_L_KLP </ci>
+                  </apply>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <ci> pi_P </ci>
+                <ci> B0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> pi_L_k3 </ci>
+                    <ci> pi_L_K </ci>
+                  </apply>
+                  <ci> pi_L_k4 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> pi_L_k1 </ci>
+                    <apply>
+                      <times/>
+                      <ci> pi_L_k2 </ci>
+                      <ci> pi_L_ko </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <divide/>
+                          <ci> pi_L_KOP </ci>
+                          <cn type="integer"> 1 </cn>
+                        </apply>
+                        <ci> pi_P </ci>
+                      </apply>
+                      <ci> R0 </ci>
+                    </apply>
+                    <ci> pi_L_Io </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> pi_L_IL </ci>
+                <ci> pi_L_rL </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pi_P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> model_parameters_P </ci>
+              <ci> model_parameters_P_0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> model_parameters_P </ci>
+              <ci> model_parameters_P_s </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> model_parameters_IP </ci>
+            <ci> model_parameters_kP </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_P_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> model_parameters_SP </ci>
+            <ci> model_parameters_kP </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_P_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> model_parameters_k6 </ci>
+            <ci> model_parameters_k5 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

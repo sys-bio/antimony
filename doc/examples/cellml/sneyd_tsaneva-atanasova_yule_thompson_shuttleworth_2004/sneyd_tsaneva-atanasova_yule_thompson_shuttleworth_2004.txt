@@ -1,0 +1,174 @@
+//Created by libAntimony v1.3
+model sneyd_2004__environment(time_)
+end
+
+model sneyd_2004__c(c, J_serca, J_in, J_pm, J_IPR, time_)
+
+  // Rate Rules:
+  c' = J_IPR - J_serca + delta * ( J_in - J_pm );
+
+  // Variable initializations:
+  c = 0.01;
+  delta = 0.1;
+end
+
+model sneyd_2004__ce(ce, J_serca, J_IPR, time_)
+
+  // Rate Rules:
+  ce' = gamma * ( J_serca - J_IPR );
+
+  // Variable initializations:
+  ce = 0.01;
+  gamma = 5.4;
+end
+
+model sneyd_2004__p(p)
+
+  // Variable initializations:
+  p = 10.0;
+end
+
+model sneyd_2004__J_IPR(J_IPR, A, O, c, ce)
+
+  // Assignment Rules:
+  J_IPR := ( kf * power( 0.1 * O + 0.9 * A , 4.0 ) + g1 ) * ( ce - c );
+
+  // Variable initializations:
+  kf = 0.96;
+  g1 = 0.002;
+end
+
+model sneyd_2004__R(R, O, phi_1, phi_2, phi_2_, k_1_, l_2_, I_1, p, time_)
+
+  // Rate Rules:
+  R' = phi_2_ * O - ( phi_2 * p * R + phi_1 * R ) + ( l_2_ + k_1_ ) * I_1;
+
+  // Variable initializations:
+  R = 0.16;
+end
+
+model sneyd_2004__O(O, R, A, S, phi_2, phi_2_, phi_3, phi_4, phi_4_, k_3_, p, time_)
+
+  // Rate Rules:
+  O' = phi_2 * p * R - ( phi_2_ + phi_4 + 1 * phi_3 ) * O + phi_4_ * A + k_3_ * S;
+
+  // Variable initializations:
+  O = 0.01;
+end
+
+model sneyd_2004__I_1(I_1, R, phi_1, k_1_, l_2_, time_)
+
+  // Rate Rules:
+  I_1' = phi_1 * R - ( k_1_ + l_2_ ) * I_1;
+
+  // Variable initializations:
+  I_1 = 0.16;
+end
+
+model sneyd_2004__I_2(I_2, A, phi_5, k_1_, l_2_, time_)
+
+  // Rate Rules:
+  I_2' = phi_5 * A - ( k_1_ + l_2_ ) * I_2;
+
+  // Variable initializations:
+  I_2 = 0.16;
+end
+
+model sneyd_2004__S(S, O, phi_3, k_3_, time_)
+
+  // Rate Rules:
+  S' = 1 * phi_3 * O - k_3_ * S;
+
+  // Variable initializations:
+  S = 0.16;
+end
+
+model sneyd_2004__A(A, O, I_2, phi_4, phi_4_, phi_5, k_1_, l_2_, time_)
+
+  // Rate Rules:
+  A' = phi_4 * O - ( phi_4_ * A + phi_5 * A ) + ( k_1_ + l_2_ ) * I_2;
+
+  // Variable initializations:
+  A = 0.16;
+end
+
+model sneyd_2004__IPR_parameters(phi_1, phi_2, phi_2_, phi_3, phi_4, phi_4_, phi_5, k_1_, k_3_, l_2_, p, c)
+
+  // Assignment Rules:
+  phi_1 := ( k_1 * L_1 + l_2 ) * c / ( L_1 + c * ( 1.0 + L_1 / L_3 ));
+  phi_2 := ( k_2 * L_3 + l_4 * c ) / ( L_3 + c * ( 1.0 + L_3 / L_1 ));
+  phi_2_ := ( k_2_ + l_4_ * c ) / ( 1.0 + c / L_5 );
+  phi_3 := k_3 * L_5 / ( c + L_5 );
+  phi_4 := ( k_4 * L_5 + l_6 ) * c / ( c + L_5 );
+  phi_4_ := L_1 * ( k_4_ + l_6_ ) / ( c + L_1 );
+  phi_5 := ( k_1 * L_1 + l_2 ) * c / ( c + L_1 );
+
+  // Variable initializations:
+  k_1 = 0.64;
+  k_1_ = 0.04;
+  k_2 = 37.4;
+  k_2_ = 1.4;
+  k_3 = 0.11;
+  k_3_ = 29.8;
+  k_4 = 4.0;
+  k_4_ = 0.54;
+  l_2 = 1.7;
+  l_2_ = 0.8;
+  l_4 = 1.7;
+  l_4_ = 2.5;
+  l_6 = 4707.0;
+  l_6_ = 11.4;
+  L_1 = 0.12;
+  L_3 = 0.025;
+  L_5 = 54.7;
+end
+
+model sneyd_2004__J_serca(J_serca, c, ce)
+
+  // Assignment Rules:
+  J_serca := Vs * c / ( Ks + c ) * ( 1.0 / ce );
+
+  // Variable initializations:
+  Vs = 120.0;
+  Ks = 0.18;
+end
+
+model sneyd_2004__J_pm(J_pm, c, ce)
+
+  // Assignment Rules:
+  J_pm := Vp * power( c , 2.0 ) / (power( Kp , 2.0 ) + power( c , 2.0 ));
+
+  // Variable initializations:
+  Vp = 28.0;
+  Kp = 0.42;
+end
+
+model sneyd_2004__J_in(J_in, p)
+
+  // Assignment Rules:
+  J_in := alpha1 + alpha2 * p;
+
+  // Variable initializations:
+  alpha1 = 0.03;
+  alpha2 = 0.2;
+end
+
+model sneyd_2004____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: sneyd_2004__environment(time_);
+  c: sneyd_2004__c(c0, J_serca0, J_in0, J_pm0, J_IPR0, time_);
+  ce: sneyd_2004__ce(ce0, J_serca0, J_IPR0, time_);
+  p: sneyd_2004__p(p0);
+  J_IPR: sneyd_2004__J_IPR(J_IPR0, A0, O0, c0, ce0);
+  R: sneyd_2004__R(R0, O0, phi_1, phi_2, phi_2_, k_1_, l_2_, I_10, p0, time_);
+  O: sneyd_2004__O(O0, R0, A0, S0, phi_2, phi_2_, phi_3, phi_4, phi_4_, k_3_, p0, time_);
+  I_1: sneyd_2004__I_1(I_10, R0, phi_1, k_1_, l_2_, time_);
+  I_2: sneyd_2004__I_2(I_20, A0, phi_5, k_1_, l_2_, time_);
+  S: sneyd_2004__S(S0, O0, phi_3, k_3_, time_);
+  A: sneyd_2004__A(A0, O0, I_20, phi_4, phi_4_, phi_5, k_1_, l_2_, time_);
+  IPR_parameters: sneyd_2004__IPR_parameters(phi_1, phi_2, phi_2_, phi_3, phi_4, phi_4_, phi_5, k_1_, k_3_, l_2_, p0, c0);
+  J_serca: sneyd_2004__J_serca(J_serca0, c0, ce0);
+  J_pm: sneyd_2004__J_pm(J_pm0, c0, ce0);
+  J_in: sneyd_2004__J_in(J_in0, p0);
+end

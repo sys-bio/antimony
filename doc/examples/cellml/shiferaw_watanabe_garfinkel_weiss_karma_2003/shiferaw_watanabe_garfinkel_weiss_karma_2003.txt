@@ -1,0 +1,249 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "-(( g * I_Ca * Q * ( I_r / taur )))" to set the assignment rule for I_r:  Loop detected:  I_r's definition (-(( g * I_Ca * Q * ( I_r / taur )))) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__environment(time_)
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Ca_concentration_in_the_dyadic_space(cp, I_rel, I_d, i_Ca, time_)
+
+  // Rate Rules:
+  cp' = alpha * ( I_rel - I_d + i_Ca );
+
+  // Variable initializations:
+  alpha = 50.0;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Ca_concentration_in_the_local_JSR(cf_jsr, I_rel, I_tr, time_)
+
+  // Rate Rules:
+  cf_jsr' = I_tr - I_rel;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__release_current(I_rel, cp, cf_jsr, time_)
+
+  // Assignment Rules:
+  I_rel := gs * a * ( cf_jsr - cp );
+  a_infinity := power( cp , 2.0 ) / (power( cp , 2.0 ) + power( cp_ , 2.0 ));
+  tau_a := 1.0 / ( kd * (power( cp , 2.0 ) + power( cp_ , 2.0 )));
+
+  // Rate Rules:
+  a' = ( a_infinity - a ) / tau_a;
+
+  // Variable initializations:
+  gs = 120.0;
+  cp_ = 65.0;
+  kd = 0.5;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__diffusion_current(I_d, cs, cp, time_)
+
+  // Assignment Rules:
+  I_d := ( cp - cs ) / tau_p;
+
+  // Variable initializations:
+  tau_p = 0.0025;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__transfer_current(I_tr, cf_jsr, time_)
+
+  // Assignment Rules:
+  I_tr := ( cf_nsr - cf_jsr ) / tau_tr;
+
+  // Variable initializations:
+  tau_tr = 0.05;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__L_type_Ca_channel_d_gate(d_infinity, V, time_)
+
+  // Assignment Rules:
+  d_infinity := 1.0 / ( 1.0 + exp(-(( V - 5.0 )) / 6.24 ));
+  alpha_d := d_infinity / tau_d;
+  beta_d := ( 1.0 - d_infinity ) / tau_d;
+
+  // Rate Rules:
+  d' = alpha_d * ( 1.0 - d ) - beta_d * d;
+
+  // Variable initializations:
+  tau_d = 4.0;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__L_type_Ca_channel_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  alpha_f := f_infinity / tau_f;
+  beta_f := ( 1.0 - f_infinity ) / tau_f;
+  f_infinity := 1.0 / ( 1.0 + exp(( V + 35.0 ) / 8.6 ));
+
+  // Rate Rules:
+  f' = alpha_f * ( 1.0 - f ) - beta_f * f;
+
+  // Variable initializations:
+  tau_f = 30.0;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__L_type_Ca_channel(i_Ca, I_Ca, time_, V, cs, R, T, F, Cao, d_infinity, f)
+
+  // Sub-modules, and any changes to those submodules:
+  L_type_Ca_channel_d_gate: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__L_type_Ca_channel_d_gate(d_infinity, V, time_);
+  L_type_Ca_channel_f_gate: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__L_type_Ca_channel_f_gate(f, V, time_);
+
+  // Assignment Rules:
+  i_Ca := i_Ca_ * P_Ca * ( 4.0 * V * power( F , 2.0 ) / ( R * T )) * (( cs * exp( 2.0 * V * power( F , 2.0 ) / ( R * T )) - 0.341 * Cao ) / (exp( 2.0 * V * power( F , 2.0 ) / ( R * T )) - 1.0 )) / M;
+  I_Ca := M * Po * i_Ca;
+  Po := d_infinity * f * q;
+  alpha_q := q_infinity / tau_q;
+  beta_q := ( 1.0 - q_infinity ) / tau_q;
+  q_infinity := 1.0 / ( 1.0 + power( cs / cs_ , gamma ));
+  tau_q := q_infinity / ko;
+
+  // Rate Rules:
+  q' = alpha_q * ( 1.0 - q ) - beta_q * q;
+
+  // Variable initializations:
+  ko = 8.0;
+  i_Ca_ = 25.0;
+  P_Ca = 5.4E-4;
+  cs_ = 0.5;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Na_Ca_exchanger(I_NaCa, V, R, T, F, Nai, Nao, cs, Cao)
+
+  // Assignment Rules:
+  I_NaCa := K_NaCa * ( 1.0 / (power( K_mNa , 3.0 ) + power( Nao , 3.0 ))) * ( 1.0 / ( K_mCa + Cao )) * ( 1.0 / ( 1.0 + K_sat * exp(( eta - 1.0 ) * V * ( F / ( R * T ))))) * (exp( eta * V * ( F / ( R * T ))) * power( Nai , 3.0 ) * Cao - exp(( eta - 1.0 ) * V * ( F / ( R * T ))) * power( Nao , 3.0 ) * cs );
+
+  // Variable initializations:
+  K_NaCa = 2E4;
+  K_mNa = 87.5;
+  K_mCa = 1.38;
+  K_sat = 0.1;
+  eta = 0.35;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__uptake_current(I_up, ci)
+
+  // Assignment Rules:
+  I_up := vup * power( ci , 2.0 ) / (power( ci , 2.0 ) + power( cup , 2.0 ));
+
+  // Variable initializations:
+  vup = 250.0;
+  cup = 0.5;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__calcium_buffering(beta_ci, beta_cs, I_trpn_i, I_trpn_s, ci, cs, time_)
+
+  // Assignment Rules:
+  beta_ci := power( 1.0 + BSR * KSR / power( ci + KSR , 2.0 ) + BCd * KCd / power( ci + KCd , 2.0 ), -1.0 );
+  beta_cs := power( 1.0 + BSR * KSR / power( cs + KSR , 2.0 ) + BCd * KCd / power( cs + KCd , 2.0 ), -1.0 );
+  I_trpn_i := kT_on * ci * ( BT - CaTi ) - kT_off * CaTi;
+  I_trpn_s := kT_on * cs * ( BT - CaTs ) - kT_off * CaTs;
+
+  // Rate Rules:
+  CaTi' = I_trpn_i;
+  CaTs' = I_trpn_s;
+
+  // Variable initializations:
+  kT_on = 32.7;
+  kT_off = 19.6;
+  BT = 70.0;
+  BSR = 47.0;
+  BCd = 24.0;
+  KSR = 0.6;
+  KCd = 7.0;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Ca_concentration_in_the_submembrane_space(cs, taus, beta_cs, ci, I_Ca, I_NaCa, I_r, I_trpn_s, time_)
+
+  // Rate Rules:
+  cs' = beta_cs * ( vi / vs * ( I_r - (( cs - ci ) / taus + I_Ca ) + I_NaCa ) - I_trpn_s );
+
+  // Variable initializations:
+  vi = 0.0001;
+  vs = 0.00001;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Ca_concentration_in_the_cytosol(ci, taus, beta_ci, cs, I_up, I_trpn_i, time_)
+
+  // Rate Rules:
+  ci' = beta_ci * (( cs - ci ) / taus - ( I_up + I_trpn_i ));
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__total_Ca_concentration_in_the_SR(cj, I_up, I_r, time_)
+
+  // Rate Rules:
+  cj' = I_up - I_r;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__average_Ca_concentration_in_unrecruited_JSR_compartments(cj_, cj, time_)
+
+  // Rate Rules:
+  cj_' = ( cj - cj_ ) / taua;
+
+  // Variable initializations:
+  taua = 50.0;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Ca_flux_out_of_the_SR(I_r, I_Ca, cj_)
+
+  // Assignment Rules:
+  N := -(( g * I_Ca * A ));
+  Q := piecewise( 0.0 , ( cj_ < 50.0) && (cj_ > 0.0 ), cj_ - 50.0 , ( cj_ < 115.0) && (cj_ >= 50.0 ), u * cj_ + s , cj_ >= 115.0 );
+
+  // Variable initializations:
+  taur = 20.0;
+  g = 1.5E4;
+  u = 11.3;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__membrane(V, time_)
+
+  // Assignment Rules:
+  V := piecewise( Vmin + ( Vmax - Vmin ) * power( 1.0 - power(( time_ - m * T ) / ( m * T ), 2.0 ), 0.5 ) , ( time_ <= m * T + x * T) && (time_ >= m * T ), Vmin , ( time_ < ( m + 1.0 ) * T) && (time_ > m * T + x * T ) );
+  x := a / ( a + T );
+
+  // Variable initializations:
+  Vmin = -80.0;
+  Vmax = 30.0;
+  a = 0.666667;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__intracellular_Na_concentration(Nai)
+
+  // Assignment Rules:
+  Nai := a / ( 1.0 + b * power( T , 0.5 ));
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__physical_constants_and_ionic_concentrations(Nao, Cao, R, T, F, taus)
+
+  // Variable initializations:
+  Nao = 140.0;
+  Cao = 1.8;
+  R = 8.314;
+  T = 310.0;
+  F = 9.65E4;
+  taus = 10.0;
+end
+
+model shiferaw_watanabe_garfinkel_weiss_karma_2003_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__environment(time_);
+  Ca_concentration_in_the_dyadic_space: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Ca_concentration_in_the_dyadic_space(cp, I_rel, I_d, i_Ca, time_);
+  Ca_concentration_in_the_local_JSR: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Ca_concentration_in_the_local_JSR(cf_jsr, I_rel, I_tr, time_);
+  release_current: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__release_current(I_rel, cp, cf_jsr, time_);
+  diffusion_current: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__diffusion_current(I_d, cs, cp, time_);
+  transfer_current: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__transfer_current(I_tr, cf_jsr, time_);
+  L_type_Ca_channel: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__L_type_Ca_channel(i_Ca, I_Ca, time_, V, cs, R, T, F, Cao, d_infinity, f);
+  Na_Ca_exchanger: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Na_Ca_exchanger(I_NaCa, V, R, T, F, Nai, Nao, cs, Cao);
+  uptake_current: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__uptake_current(I_up, ci);
+  calcium_buffering: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__calcium_buffering(beta_ci, beta_cs, I_trpn_i, I_trpn_s, ci, cs, time_);
+  Ca_concentration_in_the_submembrane_space: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Ca_concentration_in_the_submembrane_space(cs, taus, beta_cs, ci, I_Ca, I_NaCa, I_r, I_trpn_s, time_);
+  Ca_concentration_in_the_cytosol: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Ca_concentration_in_the_cytosol(ci, taus, beta_ci, cs, I_up, I_trpn_i, time_);
+  total_Ca_concentration_in_the_SR: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__total_Ca_concentration_in_the_SR(cj, I_up, I_r, time_);
+  average_Ca_concentration_in_unrecruited_JSR_compartments: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__average_Ca_concentration_in_unrecruited_JSR_compartments(cj_, cj, time_);
+  Ca_flux_out_of_the_SR: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__Ca_flux_out_of_the_SR(I_r, I_Ca, cj_);
+  membrane: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__membrane(V, time_);
+  intracellular_Na_concentration: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__intracellular_Na_concentration(Nai);
+  physical_constants_and_ionic_concentrations: shiferaw_watanabe_garfinkel_weiss_karma_2003_version01__physical_constants_and_ionic_concentrations(Nao, Cao, R, T, F, taus);
+end

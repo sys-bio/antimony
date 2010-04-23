@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="ueda_2001____main" name="ueda_2001____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Per_m0" value="0.5" constant="false"/>
+      <parameter id="Per_m_B1" value="0"/>
+      <parameter id="Per_m_C1" value="0"/>
+      <parameter id="Per_m_S1" value="1.45"/>
+      <parameter id="Per_m_D1" value="0.94"/>
+      <parameter id="Per_m_L1" value="0.3"/>
+      <parameter id="Per_m_R1" value="1.02"/>
+      <parameter id="Per_m_A1" value="0.45"/>
+      <parameter id="PT_n0" value="1" constant="false"/>
+      <parameter id="CC_n0" value="0.4" constant="false"/>
+      <parameter id="D0" value="0.012"/>
+      <parameter id="a" value="1"/>
+      <parameter id="r" value="4"/>
+      <parameter id="Per_c0" value="0.6" constant="false"/>
+      <parameter id="Per_c_S2" value="0.48"/>
+      <parameter id="Per_c_D2" value="0.44"/>
+      <parameter id="Per_c_L2" value="0.2"/>
+      <parameter id="Per_c_Dbt_c" value="1"/>
+      <parameter id="V1" value="1.45"/>
+      <parameter id="V2" value="1.45"/>
+      <parameter id="Tim_c0" value="0.8" constant="false"/>
+      <parameter id="PT_c0" value="0.9" constant="false"/>
+      <parameter id="Tim_m0" value="0.7" constant="false"/>
+      <parameter id="Tim_m_B2" value="0"/>
+      <parameter id="Tim_m_C2" value="0"/>
+      <parameter id="Tim_m_S3" value="1.45"/>
+      <parameter id="Tim_m_D3" value="0.94"/>
+      <parameter id="Tim_m_L3" value="0.3"/>
+      <parameter id="Tim_m_R2" value="1.02"/>
+      <parameter id="Tim_m_A2" value="0.45"/>
+      <parameter id="Tim_c_S4" value="0.48"/>
+      <parameter id="Tim_c_D4" value="0.44"/>
+      <parameter id="Tim_c_L4" value="0.2"/>
+      <parameter id="PT_c_D5" value="0.44"/>
+      <parameter id="PT_c_L5" value="0.2"/>
+      <parameter id="K1" value="2"/>
+      <parameter id="K2" value="2"/>
+      <parameter id="T1" value="1.73"/>
+      <parameter id="T2" value="0.72"/>
+      <parameter id="PT_n_D6" value="0.29"/>
+      <parameter id="PT_n_L6" value="0.2"/>
+      <parameter id="Clk_m0" value="0.1" constant="false"/>
+      <parameter id="Clk_m_B3" value="0.6"/>
+      <parameter id="Clk_m_C3" value="0"/>
+      <parameter id="Clk_m_S5" value="1.63"/>
+      <parameter id="Clk_m_D7" value="0.54"/>
+      <parameter id="Clk_m_L7" value="0.13"/>
+      <parameter id="Clk_m_R3" value="0.89"/>
+      <parameter id="Clk_m_A3" value="0.8"/>
+      <parameter id="Clk_c0" value="0.2" constant="false"/>
+      <parameter id="Clk_c_S6" value="0.47"/>
+      <parameter id="Clk_c_D8" value="0.6"/>
+      <parameter id="Clk_c_L8" value="0.2"/>
+      <parameter id="V3" value="1.63"/>
+      <parameter id="V4" value="1.63"/>
+      <parameter id="Cyc_c0" value="1"/>
+      <parameter id="CC_c0" value="0.3" constant="false"/>
+      <parameter id="CC_c_D9" value="0.6"/>
+      <parameter id="CC_c_L9" value="0.2"/>
+      <parameter id="K3" value="2"/>
+      <parameter id="K4" value="2"/>
+      <parameter id="T3" value="1.63"/>
+      <parameter id="T4" value="0.52"/>
+      <parameter id="CC_n_D10" value="0.3"/>
+      <parameter id="CC_n_L10" value="0.2"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Per_m0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> Per_m_C1 </ci>
+              <apply>
+                <times/>
+                <ci> Per_m_S1 </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> CC_n0 </ci>
+                        <ci> Per_m_A1 </ci>
+                      </apply>
+                      <ci> a </ci>
+                    </apply>
+                    <ci> Per_m_B1 </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> PT_n0 </ci>
+                        <ci> Per_m_R1 </ci>
+                      </apply>
+                      <ci> r </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> CC_n0 </ci>
+                        <ci> Per_m_A1 </ci>
+                      </apply>
+                      <ci> a </ci>
+                    </apply>
+                    <ci> Per_m_B1 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Per_m_D1 </ci>
+                <apply>
+                  <divide/>
+                  <ci> Per_m0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Per_m_L1 </ci>
+                    <ci> Per_m0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> D0 </ci>
+                <ci> Per_m0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PT_n0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> T1 </ci>
+              <apply>
+                <divide/>
+                <ci> PT_c0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> K1 </ci>
+                  <ci> PT_c0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> T2 </ci>
+                <apply>
+                  <divide/>
+                  <ci> PT_n0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> K2 </ci>
+                    <ci> PT_n0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PT_n_D6 </ci>
+                <apply>
+                  <divide/>
+                  <ci> PT_n0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> PT_n_L6 </ci>
+                    <ci> PT_n0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> D0 </ci>
+                <ci> PT_n0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CC_n0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> T3 </ci>
+              <apply>
+                <divide/>
+                <ci> CC_c0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> K3 </ci>
+                  <ci> CC_c0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> T4 </ci>
+                <apply>
+                  <divide/>
+                  <ci> CC_n0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> K4 </ci>
+                    <ci> CC_n0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> CC_n_D10 </ci>
+                <apply>
+                  <divide/>
+                  <ci> CC_n0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> CC_n_L10 </ci>
+                    <ci> CC_n0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> D0 </ci>
+                <ci> CC_n0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Per_c0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Per_c_S2 </ci>
+                <ci> Per_m0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> V2 </ci>
+                <ci> PT_c0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V1 </ci>
+                <ci> Per_c0 </ci>
+                <ci> Tim_c0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Per_c_D2 </ci>
+                <ci> Per_c_Dbt_c </ci>
+                <apply>
+                  <divide/>
+                  <ci> Per_c0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Per_c_L2 </ci>
+                    <ci> Per_c0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> D0 </ci>
+                <ci> Per_c0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Tim_c0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Tim_c_S4 </ci>
+                <ci> Tim_m0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> V2 </ci>
+                <ci> PT_c0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V1 </ci>
+                <ci> Per_c0 </ci>
+                <ci> Tim_c0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Tim_c_D4 </ci>
+                <apply>
+                  <divide/>
+                  <ci> Tim_c0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Tim_c_L4 </ci>
+                    <ci> Tim_c0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> D0 </ci>
+                <ci> Tim_c0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PT_c0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V1 </ci>
+                <ci> Per_c0 </ci>
+                <ci> Tim_c0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> T2 </ci>
+                <apply>
+                  <divide/>
+                  <ci> PT_n0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> K2 </ci>
+                    <ci> PT_n0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V2 </ci>
+                <ci> PT_c0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> T1 </ci>
+                <apply>
+                  <divide/>
+                  <ci> PT_c0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> K1 </ci>
+                    <ci> PT_c0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PT_c_D5 </ci>
+                <apply>
+                  <divide/>
+                  <ci> PT_c0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> PT_c_L5 </ci>
+                    <ci> PT_c0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> D0 </ci>
+                <ci> PT_c0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Tim_m0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> Tim_m_C2 </ci>
+              <apply>
+                <times/>
+                <ci> Tim_m_S3 </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> CC_n0 </ci>
+                        <ci> Tim_m_A2 </ci>
+                      </apply>
+                      <ci> a </ci>
+                    </apply>
+                    <ci> Tim_m_B2 </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> PT_n0 </ci>
+                        <ci> Tim_m_R2 </ci>
+                      </apply>
+                      <ci> r </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> CC_n0 </ci>
+                        <ci> Tim_m_A2 </ci>
+                      </apply>
+                      <ci> a </ci>
+                    </apply>
+                    <ci> Tim_m_B2 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Tim_m_D3 </ci>
+                <apply>
+                  <divide/>
+                  <ci> Tim_m0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Tim_m_L3 </ci>
+                    <ci> Tim_m0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> D0 </ci>
+                <ci> Tim_m0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Clk_m0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> Clk_m_C3 </ci>
+              <apply>
+                <times/>
+                <ci> Clk_m_S5 </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> PT_n0 </ci>
+                        <ci> Clk_m_A3 </ci>
+                      </apply>
+                      <ci> a </ci>
+                    </apply>
+                    <ci> Clk_m_B3 </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> CC_n0 </ci>
+                        <ci> Clk_m_R3 </ci>
+                      </apply>
+                      <ci> r </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> PT_n0 </ci>
+                        <ci> Clk_m_A3 </ci>
+                      </apply>
+                      <ci> a </ci>
+                    </apply>
+                    <ci> Clk_m_B3 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Clk_m_D7 </ci>
+                <apply>
+                  <divide/>
+                  <ci> Clk_m0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Clk_m_L7 </ci>
+                    <ci> Clk_m0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> D0 </ci>
+                <ci> Clk_m0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Clk_c0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Clk_c_S6 </ci>
+                <ci> Clk_m0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> V4 </ci>
+                <ci> CC_c0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V3 </ci>
+                <ci> Clk_c0 </ci>
+                <ci> Cyc_c0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Clk_c_D8 </ci>
+                <apply>
+                  <divide/>
+                  <ci> Clk_c0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Clk_c_L8 </ci>
+                    <ci> Clk_c0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> D0 </ci>
+                <ci> Clk_c0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CC_c0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V3 </ci>
+                <ci> Clk_c0 </ci>
+                <ci> Cyc_c0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> T4 </ci>
+                <apply>
+                  <divide/>
+                  <ci> CC_n0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> K4 </ci>
+                    <ci> CC_n0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V4 </ci>
+                <ci> CC_c0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> T3 </ci>
+                <apply>
+                  <divide/>
+                  <ci> CC_c0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> K3 </ci>
+                    <ci> CC_c0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> CC_c_D9 </ci>
+                <apply>
+                  <divide/>
+                  <ci> CC_c0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> CC_c_L9 </ci>
+                    <ci> CC_c0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> D0 </ci>
+                <ci> CC_c0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

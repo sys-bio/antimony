@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="wierschem_2004____main" name="wierschem_2004____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="membrane_C_m" value="5300"/>
+      <parameter id="I_Ca" constant="false"/>
+      <parameter id="I_K" constant="false"/>
+      <parameter id="I_KCa" constant="false"/>
+      <parameter id="I_KATP" constant="false"/>
+      <parameter id="V" value="-67.018" constant="false"/>
+      <parameter id="Ca_current_g_Ca_" value="1200"/>
+      <parameter id="Ca_current_V_Ca" value="25"/>
+      <parameter id="Ca_current_v_m" value="-20"/>
+      <parameter id="Ca_current_s_m" value="12"/>
+      <parameter id="Ca_current_m_infinity" constant="false"/>
+      <parameter id="K_current_g_K_" value="3000"/>
+      <parameter id="V_K" value="-75"/>
+      <parameter id="n" value="0.00011" constant="false"/>
+      <parameter id="K_current_K_channel_activation_tau_n" value="16"/>
+      <parameter id="K_current_K_channel_activation_v_n" value="-16"/>
+      <parameter id="K_current_K_channel_activation_s_n" value="5.6"/>
+      <parameter id="K_current_K_channel_activation_n_infinity" constant="false"/>
+      <parameter id="Ca_activated_K_current_g_KCa_" value="300"/>
+      <parameter id="Ca_activated_K_current_k_D" value="0.3"/>
+      <parameter id="c" value="0.15666" constant="false"/>
+      <parameter id="Ca_activated_K_current_omega" constant="false"/>
+      <parameter id="ATP" value="2.1047" constant="false"/>
+      <parameter id="ATP_sensitive_K_current_g_KATP_" value="350"/>
+      <parameter id="ATP_sensitive_K_current_nucleotides_tau_c" value="1200"/>
+      <parameter id="ATP_sensitive_K_current_nucleotides_eta" value="185"/>
+      <parameter id="ATP_sensitive_K_current_nucleotides_v" value="10"/>
+      <parameter id="ATP_sensitive_K_current_nucleotides_k" value="20"/>
+      <parameter id="ATP_sensitive_K_current_nucleotides_phi" constant="false"/>
+      <parameter id="ATP_sensitive_K_current_nucleotides_ADP" value="0.085817" constant="false"/>
+      <parameter id="J_mem" constant="false"/>
+      <parameter id="Ca_influx_f" value="0.001"/>
+      <parameter id="Ca_influx_alpha" value="2.25e-06"/>
+      <parameter id="Ca_influx_k_c" value="0.1"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="I_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ca_current_g_Ca_ </ci>
+            <ci> Ca_current_m_infinity </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> Ca_current_V_Ca </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_K">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> K_current_g_K_ </ci>
+            <ci> n </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_KCa">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ca_activated_K_current_g_KCa_ </ci>
+            <ci> Ca_activated_K_current_omega </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_KATP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> V </ci>
+                <ci> V_K </ci>
+              </apply>
+              <ci> ATP_sensitive_K_current_g_KATP_ </ci>
+            </apply>
+            <ci> ATP </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> I_Ca </ci>
+                <ci> I_K </ci>
+                <ci> I_KCa </ci>
+                <ci> I_KATP </ci>
+              </apply>
+            </apply>
+            <ci> membrane_C_m </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Ca_current_m_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> Ca_current_v_m </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> Ca_current_s_m </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> K_current_K_channel_activation_n_infinity </ci>
+              <ci> n </ci>
+            </apply>
+            <ci> K_current_K_channel_activation_tau_n </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="K_current_K_channel_activation_n_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> K_current_K_channel_activation_v_n </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> K_current_K_channel_activation_s_n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> J_mem </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Ca_activated_K_current_omega">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> Ca_activated_K_current_k_D </ci>
+                <ci> c </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="ATP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> ATP_sensitive_K_current_nucleotides_v </ci>
+              <ci> ATP_sensitive_K_current_nucleotides_phi </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 1000 </cn>
+              <ci> ATP_sensitive_K_current_nucleotides_tau_c </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="ATP_sensitive_K_current_nucleotides_phi">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ATP </ci>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> ATP_sensitive_K_current_nucleotides_k </ci>
+                  <ci> ATP_sensitive_K_current_nucleotides_ADP </ci>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="ATP_sensitive_K_current_nucleotides_ADP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> ATP_sensitive_K_current_nucleotides_phi </ci>
+              <apply>
+                <times/>
+                <ci> ATP_sensitive_K_current_nucleotides_eta </ci>
+                <ci> ATP_sensitive_K_current_nucleotides_ADP </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 1000 </cn>
+              <ci> ATP_sensitive_K_current_nucleotides_tau_c </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="J_mem">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> Ca_influx_f </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Ca_influx_alpha </ci>
+                <ci> I_Ca </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Ca_influx_k_c </ci>
+                <ci> c </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

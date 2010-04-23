@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="siebert_2008____main" name="siebert_2008____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="contraction_L_1" value="-23"/>
+      <parameter id="contraction_L_2" value="-14"/>
+      <parameter id="contraction_L_3" value="2"/>
+      <parameter id="contraction_L_4" value="19"/>
+      <parameter id="contraction_f_c" value="0.49"/>
+      <parameter id="contraction_v_max" value="-141"/>
+      <parameter id="contraction_curv" value="5.8"/>
+      <parameter id="contraction_k_1" value="0.012"/>
+      <parameter id="contraction_k_2" value="0.317"/>
+      <parameter id="contraction_F_1" value="4.1"/>
+      <parameter id="contraction_d_LSEC1" value="4.1"/>
+      <parameter id="contraction_k_sh" value="3.3"/>
+      <parameter id="contraction_L_m" value="0.3"/>
+      <parameter id="contraction_F_im" value="18.1"/>
+      <parameter id="contraction_tau" value="0.006"/>
+      <parameter id="contraction_v_cc" constant="false"/>
+      <parameter id="contraction_f_L" constant="false"/>
+      <parameter id="contraction_f_sec" constant="false"/>
+      <parameter id="contraction_f_pec" constant="false"/>
+      <parameter id="contraction_delta_L_sec" constant="false"/>
+      <parameter id="contraction_delta_L_sec1" value="4.1"/>
+      <parameter id="contraction_delta_L_pec" value="0.2" constant="false"/>
+      <parameter id="contraction_k" value="3.5"/>
+      <parameter id="contraction_L_mtc" constant="false"/>
+      <parameter id="contraction_A" value="1"/>
+      <parameter id="contraction_L_mslack" value="0.3"/>
+      <parameter id="time_"/>
+      <parameter id="contraction_f_v"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="contraction_v_cc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> contraction_f_v </ci>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <ci> contraction_f_sec </ci>
+                <ci> contraction_f_pec </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> contraction_A </ci>
+                <ci> contraction_f_L </ci>
+                <ci> contraction_F_im </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="contraction_f_L"/>
+      <assignmentRule variable="contraction_f_sec"/>
+      <assignmentRule variable="contraction_f_pec"/>
+      <assignmentRule variable="contraction_delta_L_sec">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> contraction_L_mtc </ci>
+              <ci> contraction_delta_L_pec </ci>
+            </apply>
+            <ci> contraction_L_mslack </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="contraction_delta_L_pec">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> contraction_v_cc </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="contraction_L_mtc"/>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="karagiannis_model_2004____main" name="karagiannis_model_2004____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="main_v1" constant="false"/>
+      <parameter id="main_v2" constant="false"/>
+      <parameter id="main_v3" constant="false"/>
+      <parameter id="main_v4" constant="false"/>
+      <parameter id="main_v5" constant="false"/>
+      <parameter id="main_v6" constant="false"/>
+      <parameter id="main_v7" constant="false"/>
+      <parameter id="main_v8" constant="false"/>
+      <parameter id="main_v9" constant="false"/>
+      <parameter id="main_MT1" value="1e-07" constant="false"/>
+      <parameter id="main_MT1cat" value="0" constant="false"/>
+      <parameter id="main_MT1T2" value="0" constant="false"/>
+      <parameter id="main_MT1T2M2P" value="0" constant="false"/>
+      <parameter id="main_M2P" value="5e-08" constant="false"/>
+      <parameter id="main_M2" value="0" constant="false"/>
+      <parameter id="main_M2T2" value="0" constant="false"/>
+      <parameter id="main_M2T2star" value="0" constant="false"/>
+      <parameter id="main_M2C1" value="0" constant="false"/>
+      <parameter id="main_C1" value="1e-06" constant="false"/>
+      <parameter id="main_C1dmt1" value="0" constant="false"/>
+      <parameter id="main_C1dm2" value="0" constant="false"/>
+      <parameter id="main_T2" value="5e-08" constant="false"/>
+      <parameter id="kshed_eff" value="2800"/>
+      <parameter id="kon_MT1T2" value="3540000"/>
+      <parameter id="ki_MT1T2" value="4.9e-09"/>
+      <parameter id="kon_MT1T2M2P" value="140000"/>
+      <parameter id="koff_MT1T2M2P" value="0.0047"/>
+      <parameter id="kact_eff_m2" value="2800"/>
+      <parameter id="kon_M2T2" value="5900000"/>
+      <parameter id="ki_M2T2" value="1.07e-06"/>
+      <parameter id="kiso_M2T2" value="33"/>
+      <parameter id="k_iso_M2T2" value="2e-08"/>
+      <parameter id="kon_M2C1" value="2600"/>
+      <parameter id="koff_M2C1" value="0.0021"/>
+      <parameter id="kcat_M2C1" value="0.0045"/>
+      <parameter id="kcat_MT1C1" value="0.00197"/>
+      <parameter id="km_MT1C1" value="2.9e-06"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="main_v1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kshed_eff </ci>
+            <ci> main_MT1 </ci>
+            <ci> main_MT1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_v2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_MT1T2 </ci>
+              <ci> main_MT1 </ci>
+              <ci> main_T2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ki_MT1T2 </ci>
+              <ci> kon_MT1T2 </ci>
+              <ci> main_MT1T2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_v3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_MT1T2M2P </ci>
+              <ci> main_MT1T2 </ci>
+              <ci> main_M2P </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_MT1T2M2P </ci>
+              <ci> main_MT1T2M2P </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_v4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kact_eff_m2 </ci>
+            <ci> main_MT1 </ci>
+            <ci> main_MT1T2M2P </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_v5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_M2T2 </ci>
+              <ci> main_M2 </ci>
+              <ci> main_T2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kon_M2T2 </ci>
+              <ci> ki_M2T2 </ci>
+              <ci> main_M2T2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_v6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kiso_M2T2 </ci>
+              <ci> main_M2T2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_iso_M2T2 </ci>
+              <ci> main_M2T2star </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_v7">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_M2C1 </ci>
+              <ci> main_M2 </ci>
+              <ci> main_C1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_M2C1 </ci>
+              <ci> main_M2C1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_v8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kcat_M2C1 </ci>
+            <ci> main_M2C1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_v9">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> kcat_MT1C1 </ci>
+              <ci> km_MT1C1 </ci>
+            </apply>
+            <ci> main_MT1 </ci>
+            <ci> main_C1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="main_MT1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> main_v1 </ci>
+            </apply>
+            <ci> main_v2 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="main_MT1cat">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> main_v1 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="main_MT1T2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> main_v2 </ci>
+            <ci> main_v3 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="main_MT1T2M2P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> main_v3 </ci>
+            <ci> main_v4 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="main_M2P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> main_v3 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="main_M2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> main_v4 </ci>
+              <ci> main_v5 </ci>
+            </apply>
+            <ci> main_v7 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="main_M2T2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> main_v5 </ci>
+            <ci> main_v6 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="main_M2T2star">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> main_v6 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="main_M2C1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> main_v7 </ci>
+            <ci> main_v8 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="main_C1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> main_v7 </ci>
+            </apply>
+            <ci> main_v9 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="main_C1dmt1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> main_v9 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="main_C1dm2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> main_v8 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="main_T2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> main_v2 </ci>
+            </apply>
+            <ci> main_v5 </ci>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

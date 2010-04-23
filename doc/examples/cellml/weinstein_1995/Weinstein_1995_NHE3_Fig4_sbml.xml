@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="Proximal_Tubule_NHE3____main" name="Proximal_Tubule_NHE3____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="C_ext_Na" value="0.1"/>
+      <parameter id="C_ext_H" value="0.0002512"/>
+      <parameter id="C_ext_NH4" value="1" constant="false"/>
+      <parameter id="C_int_Na" value="0"/>
+      <parameter id="C_int_H" value="0.001"/>
+      <parameter id="C_int_NH4" value="0"/>
+      <parameter id="XTxP0_NHE3_Na" value="0.0016"/>
+      <parameter id="XTxP0_NHE3_H" value="0.00048"/>
+      <parameter id="XTxP0_NHE3_NH4" value="0.0016"/>
+      <parameter id="K_NHE3_Na" value="30"/>
+      <parameter id="K_NHE3_H" value="7.2e-05"/>
+      <parameter id="K_NHE3_NH4" value="27"/>
+      <parameter id="NHE3_XTxP_NHE3_Na" constant="false"/>
+      <parameter id="NHE3_XTxP_NHE3_H" constant="false"/>
+      <parameter id="NHE3_XTxP_NHE3_NH4" constant="false"/>
+      <parameter id="NHE3_alpha_ext_Na" constant="false"/>
+      <parameter id="NHE3_beta_ext_H" constant="false"/>
+      <parameter id="NHE3_gamma_ext_NH4" constant="false"/>
+      <parameter id="NHE3_alpha_int_Na" constant="false"/>
+      <parameter id="NHE3_beta_int_H" constant="false"/>
+      <parameter id="NHE3_gamma_int_NH4" constant="false"/>
+      <parameter id="NHE3_sum_NHE3" constant="false"/>
+      <parameter id="J_NHE3_Na" constant="false"/>
+      <parameter id="J_NHE3_H" constant="false"/>
+      <parameter id="J_NHE3_NH4" constant="false"/>
+      <parameter id="J_NHE3_Na_Max" constant="false"/>
+      <parameter id="NHE3_plot" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="C_ext_NH4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="integer"> 39 </cn>
+        </math>
+      </rateRule>
+      <assignmentRule variable="NHE3_XTxP_NHE3_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> XTxP0_NHE3_Na </ci>
+              <cn type="integer"> 2 </cn>
+              <ci> C_int_H </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> C_int_H </ci>
+              <cn type="e-notation"> 1 <sep/> -6 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="NHE3_XTxP_NHE3_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> XTxP0_NHE3_H </ci>
+              <cn type="integer"> 2 </cn>
+              <ci> C_int_H </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> C_int_H </ci>
+              <cn type="e-notation"> 1 <sep/> -6 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="NHE3_XTxP_NHE3_NH4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> XTxP0_NHE3_NH4 </ci>
+              <cn type="integer"> 2 </cn>
+              <ci> C_int_H </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> C_int_H </ci>
+              <cn type="e-notation"> 1 <sep/> -6 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="NHE3_alpha_ext_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> C_ext_Na </ci>
+            <ci> K_NHE3_Na </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="NHE3_beta_ext_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> C_ext_H </ci>
+            <ci> K_NHE3_H </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="NHE3_gamma_ext_NH4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> C_ext_NH4 </ci>
+            <ci> K_NHE3_NH4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="NHE3_alpha_int_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> C_int_Na </ci>
+            <ci> K_NHE3_Na </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="NHE3_beta_int_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> C_int_H </ci>
+            <ci> K_NHE3_H </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="NHE3_gamma_int_NH4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> C_int_NH4 </ci>
+            <ci> K_NHE3_NH4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="NHE3_sum_NHE3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> NHE3_alpha_ext_Na </ci>
+                <ci> NHE3_beta_ext_H </ci>
+                <ci> NHE3_gamma_ext_NH4 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_Na </ci>
+                  <ci> NHE3_alpha_int_Na </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_H </ci>
+                  <ci> NHE3_beta_int_H </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_NH4 </ci>
+                  <ci> NHE3_gamma_int_NH4 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> NHE3_alpha_int_Na </ci>
+                <ci> NHE3_beta_int_H </ci>
+                <ci> NHE3_gamma_int_NH4 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_Na </ci>
+                  <ci> NHE3_alpha_ext_Na </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_H </ci>
+                  <ci> NHE3_beta_ext_H </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_NH4 </ci>
+                  <ci> NHE3_gamma_ext_NH4 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_NHE3_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_Na </ci>
+                  <ci> NHE3_XTxP_NHE3_H </ci>
+                </apply>
+                <ci> NHE3_sum_NHE3 </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_alpha_ext_Na </ci>
+                  <ci> NHE3_beta_int_H </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> NHE3_alpha_int_Na </ci>
+                  <ci> NHE3_beta_ext_H </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_Na </ci>
+                  <ci> NHE3_XTxP_NHE3_NH4 </ci>
+                </apply>
+                <ci> NHE3_sum_NHE3 </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_alpha_ext_Na </ci>
+                  <ci> NHE3_gamma_int_NH4 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> NHE3_alpha_int_Na </ci>
+                  <ci> NHE3_gamma_ext_NH4 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_NHE3_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_Na </ci>
+                  <ci> NHE3_XTxP_NHE3_H </ci>
+                </apply>
+                <ci> NHE3_sum_NHE3 </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_alpha_int_Na </ci>
+                  <ci> NHE3_beta_ext_H </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> NHE3_alpha_ext_Na </ci>
+                  <ci> NHE3_beta_int_H </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_H </ci>
+                  <ci> NHE3_XTxP_NHE3_NH4 </ci>
+                </apply>
+                <ci> NHE3_sum_NHE3 </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_beta_ext_H </ci>
+                  <ci> NHE3_gamma_int_NH4 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> NHE3_beta_int_H </ci>
+                  <ci> NHE3_gamma_ext_NH4 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_NHE3_NH4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_Na </ci>
+                  <ci> NHE3_XTxP_NHE3_NH4 </ci>
+                </apply>
+                <ci> NHE3_sum_NHE3 </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_alpha_int_Na </ci>
+                  <ci> NHE3_gamma_ext_NH4 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> NHE3_alpha_ext_Na </ci>
+                  <ci> NHE3_gamma_int_NH4 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_XTxP_NHE3_H </ci>
+                  <ci> NHE3_XTxP_NHE3_NH4 </ci>
+                </apply>
+                <ci> NHE3_sum_NHE3 </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> NHE3_gamma_ext_NH4 </ci>
+                  <ci> NHE3_beta_int_H </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> NHE3_beta_ext_H </ci>
+                  <ci> NHE3_gamma_int_NH4 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_NHE3_Na_Max">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> NHE3_XTxP_NHE3_Na </ci>
+              <ci> NHE3_XTxP_NHE3_H </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> NHE3_XTxP_NHE3_Na </ci>
+              <ci> NHE3_XTxP_NHE3_H </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="NHE3_plot">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> J_NHE3_Na </ci>
+              <ci> J_NHE3_Na_Max </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

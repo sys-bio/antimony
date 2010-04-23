@@ -1,0 +1,68 @@
+//Created by libAntimony v1.3
+model volume_receptors_CellML1_0_model__environment(time_)
+end
+
+model volume_receptors_CellML1_0_model__parameter_values(AH10, AH11, AH9, ATRFBM, ATRVM)
+
+  // Variable initializations:
+  AH10 = 0.333;
+  AH11 = 1000;
+  AH9 = 1;
+  ATRFBM = 0;
+  ATRVM = 0;
+end
+
+model volume_receptors_CellML1_0_model__effect_of_pressure_on_volume_receptors(PRA, AHZ, AH10, AH9)
+
+  // Assignment Rules:
+  AHZ := piecewise( -(AHZ1) , PRA < 0 , AHZ1 );
+  AHZ1 := power(abs(PRA), AH10) * AH9;
+end
+
+model volume_receptors_CellML1_0_model__time_dependent_volume_receptor_adaptation(AHZ, time_, AHY, AH11)
+
+  // Rate Rules:
+  AHY' = (AHZ - AHY) / AH11;
+
+  // Variable initializations:
+  AHY = 0.301963;
+end
+
+model volume_receptors_CellML1_0_model__total_volume_nervous_feedback(AHZ, AHY, AH7)
+
+  // Assignment Rules:
+  AH7 := AHZ - AHY;
+end
+
+model volume_receptors_CellML1_0_model__volume_effect_on_arteries(AH7, ATRRFB, ATRFBM)
+
+  // Assignment Rules:
+  ATRRFB := AH7 * ATRFBM + 1;
+end
+
+model volume_receptors_CellML1_0_model__volume_effect_on_unstressed_venous_volume(AH7, ATRVFB, ATRVM)
+
+  // Assignment Rules:
+  ATRVFB := AH7 * ATRVM;
+end
+
+model volume_receptors_CellML1_0_model__volume_receptors(time_, PRA)
+
+  // Sub-modules, and any changes to those submodules:
+  parameter_values: volume_receptors_CellML1_0_model__parameter_values(AH10, AH11, AH9, ATRFBM, ATRVM);
+  effect_of_pressure_on_volume_receptors: volume_receptors_CellML1_0_model__effect_of_pressure_on_volume_receptors(PRA, AHZ, AH10, AH9);
+  time_dependent_volume_receptor_adaptation: volume_receptors_CellML1_0_model__time_dependent_volume_receptor_adaptation(AHZ, time_, AHY, AH11);
+  total_volume_nervous_feedback: volume_receptors_CellML1_0_model__total_volume_nervous_feedback(AHZ, AHY, AH7);
+  volume_effect_on_arteries: volume_receptors_CellML1_0_model__volume_effect_on_arteries(AH7, ATRRFB, ATRFBM);
+  volume_effect_on_unstressed_venous_volume: volume_receptors_CellML1_0_model__volume_effect_on_unstressed_venous_volume(AH7, ATRVFB, ATRVM);
+
+  // Variable initializations:
+  PRA = 0.00852183;
+end
+
+model volume_receptors_CellML1_0_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: volume_receptors_CellML1_0_model__environment(time_);
+  volume_receptors: volume_receptors_CellML1_0_model__volume_receptors(time_, PRA);
+end

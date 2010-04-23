@@ -1,0 +1,276 @@
+//Created by libAntimony v1.3
+model cloutier_2009a__environment(time_)
+end
+
+model cloutier_2009a__F6P(F6P, V_hk, V_pfk, V_pfk2, time_)
+
+  // Rate Rules:
+  F6P' = V_hk - ( V_pfk - V_pfk2 );
+
+  // Variable initializations:
+  F6P = 0.2;
+end
+
+model cloutier_2009a__F26P(F26P, V_pfk2, time_)
+
+  // Rate Rules:
+  F26P' = V_pfk2;
+
+  // Variable initializations:
+  F26P = 0.001;
+end
+
+model cloutier_2009a__GAP(GAP, V_pk, V_pfk, time_)
+
+  // Rate Rules:
+  GAP' = 2.0 * V_pfk - V_pk;
+
+  // Variable initializations:
+  GAP = 0.0405;
+end
+
+model cloutier_2009a__PYR(PYR, V_pk, V_ldh, V_op, time_)
+
+  // Rate Rules:
+  PYR' = V_pk - (V_op + V_ldh);
+
+  // Variable initializations:
+  PYR = 0.1;
+end
+
+model cloutier_2009a__LAC(LAC, V_lac, V_ldh, time_)
+
+  // Rate Rules:
+  LAC' = 2.25 * V_ldh + V_lac;
+
+  // Variable initializations:
+  LAC = 0.5;
+end
+
+model cloutier_2009a__ATP(ATP, V_hk, V_pfk, V_pfk2, V_pk, V_ATPase, V_op, V_ck, dAMP_dATP, time_)
+
+  // Rate Rules:
+  ATP' = ( 2.0 * V_pk + 15.0 * V_op + V_ck - ( V_hk + V_pfk + V_pfk2 + V_ATPase )) * power( 1 - dAMP_dATP , -1 );
+
+  // Variable initializations:
+  ATP = 2.402;
+end
+
+model cloutier_2009a__PCr(PCr, V_ck, time_)
+
+  // Rate Rules:
+  PCr' = -( V_ck );
+
+  // Variable initializations:
+  PCr = 18.14;
+end
+
+model cloutier_2009a__V_hk(V_hk, F6P, ATP)
+
+  // Assignment Rules:
+  V_hk := Vmax_hk * ( ATP / ( ATP + Km_ATP_hk )) * power( 1 + power( F6P / KI_F6P , 4 ), -1 );
+
+  // Variable initializations:
+  Vmax_hk = 2.5;
+  Km_ATP_hk = 0.5;
+  KI_F6P = 0.068;
+end
+
+model cloutier_2009a__V_pfk(V_pfk, ATP, F6P, F26P, AMP_act, ATP_inh)
+
+  // Assignment Rules:
+  V_pfk := Vmax_pfk * ( F6P / ( F6P + Km_F6P_pfk )) * ( ATP / ( ATP + Km_ATP_pfk )) * ( F26P / ( F26P + Km_F26P_pfk )) * ATP_inh * AMP_act;
+
+  // Variable initializations:
+  Vmax_pfk = 3.85;
+  Km_ATP_pfk = 0.05;
+  Km_F6P_pfk = 0.18;
+  Km_F26P_pfk = 0.01;
+end
+
+model cloutier_2009a__V_pfk2(V_pfk2, ATP, F6P, F26P, AMP_pfk2)
+
+  // Assignment Rules:
+  V_pfk2 := Vmaxf_pfk2 * (ATP / (ATP + Km_ATP_pfk2)) * (F6P / (F6P + Km_F6P_pfk2)) * AMP_pfk2 - Vmaxr_pfk2 * (F26P / (F26P + Km_F26P_pfk2));
+
+  // Variable initializations:
+  Vmaxf_pfk2 = 0;
+  Vmaxr_pfk2 = 0;
+  Km_ATP_pfk2 = 0.05;
+  Km_F6P_pfk2 = 0.01;
+  Km_F26P_pfk2 = 0.0001;
+end
+
+model cloutier_2009a__V_pk(V_pk, ADP, GAP, ATP_inh)
+
+  // Assignment Rules:
+  V_pk := Vmax_pk * (GAP / (GAP + Km_GAP_pk)) * (ADP / (ADP + Km_ADP_pk)) * 0.1104;
+
+  // Variable initializations:
+  Vmax_pk = 5.0;
+  Km_ADP_pk = 0.005;
+  Km_GAP_pk = 0.4;
+end
+
+model cloutier_2009a__V_op(V_op, ATP, ADP, PYR)
+
+  // Assignment Rules:
+  V_op := Vmax_op * (PYR / (PYR + Km_PYR_op)) * (ADP / (ADP + Km_ADP_op)) * (1 / (1 + 0.1 * 24 ));
+
+  // Variable initializations:
+  Vmax_op = 1.0;
+  Km_ADP_op = 0.005;
+  Km_PYR_op = 0.5;
+end
+
+model cloutier_2009a__V_ldh(V_ldh, LAC, PYR)
+
+  // Assignment Rules:
+  V_ldh := kf_ldh * PYR - kr_ldh * LAC;
+
+  // Variable initializations:
+  kf_ldh = 0;
+  kr_ldh = 0;
+end
+
+model cloutier_2009a__V_ck(V_ck, Cr, PCr, ADP, ATP)
+
+  // Assignment Rules:
+  V_ck := kf_ck * PCr * ADP - kr_ck * Cr * ATP;
+
+  // Variable initializations:
+  kf_ck = 0;
+  kr_ck = 0;
+end
+
+model cloutier_2009a__Cr(Cr, PCr)
+
+  // Assignment Rules:
+  Cr := PCrtot - PCr;
+
+  // Variable initializations:
+  PCrtot = 20.0;
+end
+
+model cloutier_2009a__V_ATPase(V_ATPase, ATP, v_stim)
+
+  // Assignment Rules:
+  V_ATPase := Vmax_ATPase * ( ATP / ( ATP + Km_ATP )) * ( 1 + v_stim );
+
+  // Variable initializations:
+  Vmax_ATPase = 0.9355;
+  Km_ATP = 0.5;
+end
+
+model cloutier_2009a__V_lac(V_lac, LAC, v_stim)
+
+  // Assignment Rules:
+  V_lac := Vlac_0 * ( 1 + v_stim * K_LAC ) - K_LAC_eff * LAC;
+
+  // Variable initializations:
+  Vlac_0 = 0.355;
+  K_LAC_eff = 0.71;
+  K_LAC = 0.641;
+end
+
+model cloutier_2009a__ADP(ADP, u, ATP, ANP, Q_adk)
+
+  // Assignment Rules:
+  ADP := ATP / 2 * (-( Q_adk ) + root( u ));
+  u := power( Q_adk , 2 ) + 4 * Q_adk * ( ANP / ATP - 1 );
+end
+
+model cloutier_2009a__dAMP_dATP(dAMP_dATP, ATP, ANP, u, Q_adk)
+
+  // Assignment Rules:
+  dAMP_dATP := -( 1 ) + Q_adk / 2 + -(( 0.5 * root( u ))) + Q_adk * ( ANP / ( ATP * root( u )));
+end
+
+model cloutier_2009a__AMP(AMP, ANP, ATP, ADP)
+
+  // Assignment Rules:
+  AMP := ANP - ( ATP + ADP );
+end
+
+model cloutier_2009a__ATP_inh(ATP_inh, ATP)
+
+  // Assignment Rules:
+  ATP_inh := power((1 + nATP * (ATP / KI_ATP)) / (1 + ATP / KI_ATP), 4 );
+
+  // Variable initializations:
+  nATP = 0.4;
+  KI_ATP = 1.0;
+end
+
+model cloutier_2009a__AMP_act(AMP_act, AMP)
+
+  // Assignment Rules:
+  AMP_act := power((1 + AMP / Ka_AMP) / (1 + nAMP * (AMP / Ka_AMP)), 4 );
+
+  // Variable initializations:
+  nAMP = 0.5;
+  Ka_AMP = 0.05;
+end
+
+model cloutier_2009a__v_stim(v_stim, time_)
+
+  // Assignment Rules:
+  v_stim := stim * (v1_n + v2_n * ((time_ - to) / t_n_stim) * exp(-(((time_ - to) * (unitpulseSB / t_n_stim))))) * unitpulseSB;
+  unitpulseSB := piecewise( 1 , ( time_ >= to) && (time_ <= to + tend ), 0 );
+
+  // Variable initializations:
+  stim = 1;
+  to = 50;
+  tend = 200;
+  v1_n = 0.5;
+  v2_n = 0.0;
+  t_n_stim = 2;
+end
+
+model cloutier_2009a__model_parameters(ANP, Q_adk)
+
+  // Variable initializations:
+  ANP = 2.51;
+  Q_adk = 0.92;
+end
+
+model cloutier_2009a__AMP_pfk2(AMP_pfk2, AMP)
+
+  // Assignment Rules:
+  AMP_pfk2 := power(AMP / Kamp_pfk2, nh_amp) / (1 + power(AMP / Kamp_pfk2, nh_amp));
+
+  // Variable initializations:
+  Kamp_pfk2 = 0.005;
+  nh_amp = 2;
+end
+
+model cloutier_2009a____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cloutier_2009a__environment(time_);
+  F6P: cloutier_2009a__F6P(F6P0, V_hk0, V_pfk0, V_pfk20, time_);
+  F26P: cloutier_2009a__F26P(F26P0, V_pfk20, time_);
+  GAP: cloutier_2009a__GAP(GAP0, V_pk0, V_pfk0, time_);
+  PYR: cloutier_2009a__PYR(PYR0, V_pk0, V_ldh0, V_op0, time_);
+  LAC: cloutier_2009a__LAC(LAC0, V_lac0, V_ldh0, time_);
+  ATP: cloutier_2009a__ATP(ATP0, V_hk0, V_pfk0, V_pfk20, V_pk0, V_ATPase0, V_op0, V_ck0, dAMP_dATP0, time_);
+  PCr: cloutier_2009a__PCr(PCr0, V_ck0, time_);
+  V_hk: cloutier_2009a__V_hk(V_hk0, F6P0, ATP0);
+  V_pfk: cloutier_2009a__V_pfk(V_pfk0, ATP0, F6P0, F26P0, AMP_act0, ATP_inh0);
+  V_pfk2: cloutier_2009a__V_pfk2(V_pfk20, ATP0, F6P0, F26P0, AMP_pfk20);
+  V_pk: cloutier_2009a__V_pk(V_pk0, ADP0, GAP0, ATP_inh0);
+  V_op: cloutier_2009a__V_op(V_op0, ATP0, ADP0, PYR0);
+  V_ldh: cloutier_2009a__V_ldh(V_ldh0, LAC0, PYR0);
+  V_ck: cloutier_2009a__V_ck(V_ck0, Cr0, PCr0, ADP0, ATP0);
+  Cr: cloutier_2009a__Cr(Cr0, PCr0);
+  V_ATPase: cloutier_2009a__V_ATPase(V_ATPase0, ATP0, v_stim0);
+  V_lac: cloutier_2009a__V_lac(V_lac0, LAC0, v_stim0);
+  ADP: cloutier_2009a__ADP(ADP0, u, ATP0, ANP, Q_adk);
+  dAMP_dATP: cloutier_2009a__dAMP_dATP(dAMP_dATP0, ATP0, ANP, u, Q_adk);
+  AMP: cloutier_2009a__AMP(AMP0, ANP, ATP0, ADP0);
+  ATP_inh: cloutier_2009a__ATP_inh(ATP_inh0, ATP0);
+  AMP_act: cloutier_2009a__AMP_act(AMP_act0, AMP0);
+  v_stim: cloutier_2009a__v_stim(v_stim0, time_);
+  model_parameters: cloutier_2009a__model_parameters(ANP, Q_adk);
+  AMP_pfk2: cloutier_2009a__AMP_pfk2(AMP_pfk20, AMP0);
+end

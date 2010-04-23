@@ -1,0 +1,118 @@
+//Created by libAntimony v1.3
+model fink_slepchenko_moraru_watras_schaff_loew_2000_version01__environment(time_)
+end
+
+model fink_slepchenko_moraru_watras_schaff_loew_2000_version01__IP3_dynamics(IP3, time_)
+
+  // Assignment Rules:
+  j_IP3 := J_IP3 * exp(-( k_0 ) * time_ );
+
+  // Rate Rules:
+  IP3' = D_IP3 * IP3 - k_degr * ( IP3 - IP3_0 );
+
+  // Variable initializations:
+  IP3 = 3.0;
+  J_IP3 = 20.86;
+  k_0 = 1.188;
+  k_degr = 0.14;
+  IP3_0 = 0.16;
+  D_IP3 = 283.0;
+end
+
+model fink_slepchenko_moraru_watras_schaff_loew_2000_version01__ER(Ca_ER)
+
+  // Variable initializations:
+  Ca_ER = 400.0;
+end
+
+model fink_slepchenko_moraru_watras_schaff_loew_2000_version01__Calcium_dynamics(Ca, time_, J_channel, J_pump, J_leak, R_buffering)
+
+  // Rate Rules:
+  Ca' = D_Ca * Ca + alpha * ( J_channel + -( J_pump ) + J_leak ) + R_buffering;
+
+  // Variable initializations:
+  Ca = 0.05;
+  D_Ca = 220.0;
+  alpha = 0.0;
+end
+
+model fink_slepchenko_moraru_watras_schaff_loew_2000_version01__Channel_kinetics(J_channel, time_, IP3, Ca, Ca_ER)
+
+  // Assignment Rules:
+  J_channel := J_max * power( IP3 / ( IP3 + K_IP3 ) * ( Ca / ( Ca + K_act )) * h , 3.0 ) * ( 1.0 - Ca / Ca_ER );
+
+  // Rate Rules:
+  h' = k_on * ( K_inh - h * ( Ca + K_inh ));
+
+  // Variable initializations:
+  J_max = 3500.0;
+  h = 0.8;
+  K_act = 0.3;
+  K_IP3 = 0.8;
+  K_inh = 0.2;
+  k_on = 2.7;
+end
+
+model fink_slepchenko_moraru_watras_schaff_loew_2000_version01__SERCA_pump_kinetics(J_pump, time_, Ca)
+
+  // Assignment Rules:
+  J_pump := V_max * (power( Ca , 2.0 ) / (power( Ca , 2.0 ) + power( K_p , 2.0 )));
+
+  // Variable initializations:
+  V_max = 3.75;
+  K_p = 0.27;
+end
+
+model fink_slepchenko_moraru_watras_schaff_loew_2000_version01__Leak(J_leak, time_, Ca, Ca_ER)
+
+  // Assignment Rules:
+  J_leak := L * ( 1.0 - Ca / Ca_ER );
+
+  // Variable initializations:
+  L = 0.1;
+end
+
+model fink_slepchenko_moraru_watras_schaff_loew_2000_version01__Calcium_buffering(R_buffering, time_, Ca)
+
+  // Assignment Rules:
+  R_buffering := R1 + R2;
+  R1 := -(( k1_on * Ca * B1 )) + k1_off * CaB1;
+  R2 := -(( k2_on * Ca * B2 )) + k2_off * CaB2;
+  K1 := k1_on / k1_off;
+  K2 := k2_on / k2_off;
+
+  // Rate Rules:
+  B1' = R1;
+  B2' = D_buffer * B2 + R2;
+  CaB1' = -( R1 );
+  CaB2' = D_buffer * CaB2 - R2;
+
+  // Variable initializations:
+  B1 = 450.0;
+  B2 = 75.0;
+  D_buffer = 50.0;
+end
+
+model fink_slepchenko_moraru_watras_schaff_loew_2000_version01__Plasma_membrane_extrusion_mechanisms(time_, Ca)
+
+  // Assignment Rules:
+  J_Ca := piecewise( gamma * ( Ca - Ca_c ) , Ca > Ca_c , 0.0 );
+
+  // Variable initializations:
+  gamma = 8.0;
+  Ca_c = 0.2;
+end
+
+model fink_slepchenko_moraru_watras_schaff_loew_2000_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: fink_slepchenko_moraru_watras_schaff_loew_2000_version01__environment(time_);
+  IP3_dynamics: fink_slepchenko_moraru_watras_schaff_loew_2000_version01__IP3_dynamics(IP3, time_);
+  ER: fink_slepchenko_moraru_watras_schaff_loew_2000_version01__ER(Ca_ER);
+  Calcium_dynamics: fink_slepchenko_moraru_watras_schaff_loew_2000_version01__Calcium_dynamics(Ca, time_, J_channel, J_pump, J_leak, R_buffering);
+  Channel_kinetics: fink_slepchenko_moraru_watras_schaff_loew_2000_version01__Channel_kinetics(J_channel, time_, IP3, Ca, Ca_ER);
+  SERCA_pump_kinetics: fink_slepchenko_moraru_watras_schaff_loew_2000_version01__SERCA_pump_kinetics(J_pump, time_, Ca);
+  Leak: fink_slepchenko_moraru_watras_schaff_loew_2000_version01__Leak(J_leak, time_, Ca, Ca_ER);
+  Calcium_buffering: fink_slepchenko_moraru_watras_schaff_loew_2000_version01__Calcium_buffering(R_buffering, time_, Ca);
+  Plasma_membrane_extrusion_mechanisms: fink_slepchenko_moraru_watras_schaff_loew_2000_version01__Plasma_membrane_extrusion_mechanisms(time_, Ca);
+end

@@ -1,0 +1,182 @@
+//Created by libAntimony v1.3
+model ciliberto_tyson_2000_version01__environment(time_)
+end
+
+model ciliberto_tyson_2000_version01__Y(Y, k2, k3, C, time_)
+
+  // Rate Rules:
+  Y' = k1 - (k2 * Y + k3 * Y * C);
+
+  // Variable initializations:
+  Y = 0.01577552;
+  k1 = 0.024;
+end
+
+model ciliberto_tyson_2000_version01__M(M, k2, k3, kwee, kcdc25, C, Y, preMPF, time_)
+
+  // Rate Rules:
+  M' = kcdc25 * preMPF + k3 * Y * C - (k2 * M + kwee * M);
+
+  // Variable initializations:
+  M = 0.0142077;
+end
+
+model ciliberto_tyson_2000_version01__preMPF(preMPF, k2, kwee, kcdc25, M, time_)
+
+  // Rate Rules:
+  preMPF' = kwee * M - (k2 * preMPF + kcdc25 * preMPF);
+
+  // Variable initializations:
+  preMPF = 0.02541723;
+end
+
+model ciliberto_tyson_2000_version01__Cdc25P(Cdc25P, p, Cdc25, M, time_)
+
+  // Assignment Rules:
+  k25ro := k25r / p;
+
+  // Rate Rules:
+  Cdc25P' = k25 * M * Cdc25 / (Km25 + Cdc25) - k25r * Cdc25P / (Km25r + Cdc25P);
+
+  // Variable initializations:
+  Cdc25P = 0.4844362;
+  k25 = 18;
+  Km25 = 0.1;
+  k25r = 0.8;
+  Km25r = 1;
+end
+
+model ciliberto_tyson_2000_version01__Wee1(Wee1, p, M, Wee1P, time_)
+
+  // Assignment Rules:
+  kwro := kwr / p;
+
+  // Rate Rules:
+  Wee1' = -(kw) * M * Wee1 / (Kmw + Wee1) + kwr * Wee1P / (Kmwr + Wee1P);
+
+  // Variable initializations:
+  Wee1 = 0.5155638;
+  kw = 18;
+  Kmw = 0.1;
+  kwr = 0.8;
+  Kmwr = 1;
+end
+
+model ciliberto_tyson_2000_version01__IEP(IEP, IE, M, time_)
+
+  // Rate Rules:
+  IEP' = kie * M * IE / (Kmie + IE) - kier * IEP / (Kmier + IEP);
+
+  // Variable initializations:
+  IEP = 0.002287817;
+  kie = 4.5;
+  Kmie = 0.01;
+  kier = 0.34;
+  Kmier = 0.01;
+end
+
+model ciliberto_tyson_2000_version01__APC_(APC_, IEP, APC, time_)
+
+  // Rate Rules:
+  APC_' = kap * IEP * APC / (Kmap + APC) - kapr * APC_ / (Kmapr + APC_);
+
+  // Variable initializations:
+  APC_ = 0.5051103;
+  kap = 0.3;
+  Kmap = 0.01;
+  kapr = 0.3;
+  Kmapr = 1;
+end
+
+model ciliberto_tyson_2000_version01__C(C, preMPF, M)
+
+  // Assignment Rules:
+  C := Cdc2tot - (M + preMPF);
+
+  // Variable initializations:
+  Cdc2tot = 1;
+end
+
+model ciliberto_tyson_2000_version01__Cdc25(Cdc25, Cdc25P)
+
+  // Assignment Rules:
+  Cdc25 := Cdc25tot - Cdc25P;
+
+  // Variable initializations:
+  Cdc25tot = 1;
+end
+
+model ciliberto_tyson_2000_version01__Wee1P(Wee1P, Wee1)
+
+  // Assignment Rules:
+  Wee1P := Wee1tot - Wee1;
+
+  // Variable initializations:
+  Wee1tot = 1;
+end
+
+model ciliberto_tyson_2000_version01__IE(IE, IEP)
+
+  // Assignment Rules:
+  IE := IEtot - IEP;
+
+  // Variable initializations:
+  IEtot = 1;
+end
+
+model ciliberto_tyson_2000_version01__APC(APC, APC_)
+
+  // Assignment Rules:
+  APC := APCtot - APC_;
+
+  // Variable initializations:
+  APCtot = 1;
+end
+
+model ciliberto_tyson_2000_version01__p(p)
+
+  // Assignment Rules:
+  p := s * R + q;
+
+  // Variable initializations:
+  R = 1;
+  s = 0.021;
+  q = 1;
+end
+
+model ciliberto_tyson_2000_version01__kinetic_parameters(k2, k3, kwee, kcdc25, Cdc25, Cdc25P, Wee1, APC_, APC, Wee1P)
+
+  // Assignment Rules:
+  k2 := V2 * APC + V2_ * APC_;
+  kwee := Vwee * Wee1P + Vwee_ * Wee1;
+  kcdc25 := V25 * Cdc25 + V25_ * Cdc25P;
+
+  // Variable initializations:
+  k3 = 1.15;
+  V2 = 0.01;
+  V2_ = 0.6;
+  V25 = 0.04;
+  V25_ = 0.4;
+  Vwee = 0.025;
+  Vwee_ = 2.5;
+end
+
+model ciliberto_tyson_2000_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: ciliberto_tyson_2000_version01__environment(time_);
+  Y: ciliberto_tyson_2000_version01__Y(Y0, k2, k3, C0, time_);
+  M: ciliberto_tyson_2000_version01__M(M0, k2, k3, kwee, kcdc25, C0, Y0, preMPF0, time_);
+  preMPF: ciliberto_tyson_2000_version01__preMPF(preMPF0, k2, kwee, kcdc25, M0, time_);
+  Cdc25P: ciliberto_tyson_2000_version01__Cdc25P(Cdc25P0, p0, Cdc250, M0, time_);
+  Wee1: ciliberto_tyson_2000_version01__Wee1(Wee10, p0, M0, Wee1P0, time_);
+  IEP: ciliberto_tyson_2000_version01__IEP(IEP0, IE0, M0, time_);
+  APC_: ciliberto_tyson_2000_version01__APC_(APC_0, IEP0, APC0, time_);
+  C: ciliberto_tyson_2000_version01__C(C0, preMPF0, M0);
+  Cdc25: ciliberto_tyson_2000_version01__Cdc25(Cdc250, Cdc25P0);
+  Wee1P: ciliberto_tyson_2000_version01__Wee1P(Wee1P0, Wee10);
+  IE: ciliberto_tyson_2000_version01__IE(IE0, IEP0);
+  APC: ciliberto_tyson_2000_version01__APC(APC0, APC_0);
+  p: ciliberto_tyson_2000_version01__p(p0);
+  kinetic_parameters: ciliberto_tyson_2000_version01__kinetic_parameters(k2, k3, kwee, kcdc25, Cdc250, Cdc25P0, Wee10, APC_0, APC0, Wee1P0);
+end

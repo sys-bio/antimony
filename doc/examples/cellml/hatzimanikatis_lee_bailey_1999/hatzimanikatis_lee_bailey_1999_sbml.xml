@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="hatzimanikatis_model_1999____main" name="hatzimanikatis_model_1999____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="C0" value="0.38" constant="false"/>
+      <parameter id="C_gamma" value="1"/>
+      <parameter id="Vs0" constant="false"/>
+      <parameter id="V10" constant="false"/>
+      <parameter id="V20" constant="false"/>
+      <parameter id="Vd0" constant="false"/>
+      <parameter id="K0" value="0.1" constant="false"/>
+      <parameter id="RP0" value="1" constant="false"/>
+      <parameter id="V30" constant="false"/>
+      <parameter id="V40" constant="false"/>
+      <parameter id="E0" constant="false"/>
+      <parameter id="E_sigma" value="10"/>
+      <parameter id="KP0" constant="false"/>
+      <parameter id="KPI0" constant="false"/>
+      <parameter id="KPI_thetaI" value="1"/>
+      <parameter id="I1" constant="false"/>
+      <parameter id="I_lambda_" value="1"/>
+      <parameter id="RE0" constant="false"/>
+      <parameter id="RE_thetaE" value="0.01"/>
+      <parameter id="R0" constant="false"/>
+      <parameter id="Vs_VCs" value="1"/>
+      <parameter id="Vs_Vsm" value="1"/>
+      <parameter id="Vs_KsE" value="0.1"/>
+      <parameter id="V1_V1m" value="50"/>
+      <parameter id="V1_K1C" value="0.1"/>
+      <parameter id="V1_K1" value="0.0001"/>
+      <parameter id="V2_V2m" value="40"/>
+      <parameter id="V2_K2" value="0.0001"/>
+      <parameter id="V3_V3m" value="3000"/>
+      <parameter id="V3_K3" value="0.0001"/>
+      <parameter id="V4_V4m" value="3"/>
+      <parameter id="V4_K4" value="0.0001"/>
+      <parameter id="Vd_VdEm" value="1000"/>
+      <parameter id="Vd_KdC" value="0.005"/>
+      <parameter id="time_"/>
+      <parameter id="RE1"/>
+      <parameter id="KP1"/>
+      <parameter id="I0"/>
+      <parameter id="RE2"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="C0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> Vs0 </ci>
+              <apply>
+                <times/>
+                <ci> C_gamma </ci>
+                <ci> V20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> C_gamma </ci>
+                <ci> V10 </ci>
+              </apply>
+              <ci> Vd0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Vs0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> Vs_VCs </ci>
+            <apply>
+              <times/>
+              <ci> Vs_Vsm </ci>
+              <apply>
+                <divide/>
+                <ci> E0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> Vs_KsE </ci>
+                  <ci> E0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V1_V1m </ci>
+            <apply>
+              <divide/>
+              <ci> C0 </ci>
+              <apply>
+                <plus/>
+                <ci> V1_K1C </ci>
+                <ci> C0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <ci> K0 </ci>
+              <apply>
+                <plus/>
+                <ci> V1_K1 </ci>
+                <ci> K0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V2_V2m </ci>
+            <apply>
+              <divide/>
+              <ci> KP0 </ci>
+              <apply>
+                <plus/>
+                <ci> V2_K2 </ci>
+                <ci> KP0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Vd0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> C0 </ci>
+            <apply>
+              <times/>
+              <ci> Vd_VdEm </ci>
+              <ci> E0 </ci>
+              <apply>
+                <divide/>
+                <ci> C0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> Vd_KdC </ci>
+                  <ci> C0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="K0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V20 </ci>
+            <ci> V10 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V30 </ci>
+            <ci> V40 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V3_V3m </ci>
+            <ci> KP0 </ci>
+            <apply>
+              <divide/>
+              <ci> RE0 </ci>
+              <apply>
+                <plus/>
+                <ci> V3_K3 </ci>
+                <ci> RE0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V4_V4m </ci>
+            <apply>
+              <divide/>
+              <ci> RP0 </ci>
+              <apply>
+                <plus/>
+                <ci> V4_K4 </ci>
+                <ci> RP0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="E0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> 1 </cn>
+            <apply>
+              <times/>
+              <ci> E_sigma </ci>
+              <ci> RE1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="KP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <ci> KPI0 </ci>
+              <ci> K0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="KPI0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> KPI_thetaI </ci>
+            <ci> KP1 </ci>
+            <ci> I0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> 1 </cn>
+            <apply>
+              <times/>
+              <ci> I_lambda_ </ci>
+              <ci> KPI0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="RE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> RE_thetaE </ci>
+            <ci> R0 </ci>
+            <ci> E0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <ci> RP0 </ci>
+              <ci> RE2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

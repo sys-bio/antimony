@@ -1,0 +1,84 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    In module 'non_muscle_O2_delivery_CellML1_0_model__non_muscle_O2_delivery', the variables delivery_of_O2_to_NM_tissues.POV and POV were unable to be set as equivalent:  Loop detected:  'delivery_of_O2_to_NM_tissues.POV' may not be set to be equal to 'POV' because POV's definition already includes delivery_of_O2_to_NM_tissues.POV either directly or by proxy.
+
+model non_muscle_O2_delivery_CellML1_0_model__environment(time_)
+end
+
+model non_muscle_O2_delivery_CellML1_0_model__parameter_values(O2M)
+
+  // Variable initializations:
+  O2M = 164;
+end
+
+model non_muscle_O2_delivery_CellML1_0_model__NM_O2_blood_supply(OVA, BFN, O2ARTN)
+
+  // Assignment Rules:
+  O2ARTN := OVA * BFN;
+end
+
+model non_muscle_O2_delivery_CellML1_0_model__NM_venous_O2_content(O2ARTN, DOB, BFN, HM, time_, POV)
+
+  // Assignment Rules:
+  POV := OSV * 57.14;
+  OSV := (O2ARTN - DOB) / (HM * 5.25 * BFN);
+end
+
+model non_muscle_O2_delivery_CellML1_0_model__O2_consumption_by_NM_tissue(POT, AOM, MO2, O2M)
+
+  // Assignment Rules:
+  MO2 := AOM * O2M * (1 - power(35.0001 - P1O, 3 ) / 42875 );
+  P1O := piecewise( 35 , POT > 35 , POT );
+end
+
+model non_muscle_O2_delivery_CellML1_0_model__delivery_of_O2_to_NM_tissues(POT, POV, BFN, DOB)
+
+  // Assignment Rules:
+  DOB := (POV - POT) * 12.857 * BFN;
+end
+
+model non_muscle_O2_delivery_CellML1_0_model__volume_of_O2_in_NM_tissue(DOB, MO2, time_, QO2)
+
+  // Assignment Rules:
+  QO2 := piecewise( 0 , QO2T < 0 , QO2T );
+  DO2N := piecewise( DO2N1 * 0.1 , ( QO2 < 6) && (DO2N1 < 0 ), DO2N1 );
+  DO2N1 := DOB - MO2;
+
+  // Rate Rules:
+  QO2T' = DO2N;
+
+  // Variable initializations:
+  QO2T = 72.2362;
+end
+
+model non_muscle_O2_delivery_CellML1_0_model__pressure_of_O2_in_NM_tissue_cells(QO2, POT)
+
+  // Assignment Rules:
+  POT := QO2 * 0.48611;
+end
+
+model non_muscle_O2_delivery_CellML1_0_model__non_muscle_O2_delivery(time_, BFN, OVA, HM, AOM)
+
+  // Sub-modules, and any changes to those submodules:
+  parameter_values: non_muscle_O2_delivery_CellML1_0_model__parameter_values(O2M);
+  NM_O2_blood_supply: non_muscle_O2_delivery_CellML1_0_model__NM_O2_blood_supply(OVA, BFN, O2ARTN);
+  NM_venous_O2_content: non_muscle_O2_delivery_CellML1_0_model__NM_venous_O2_content(O2ARTN, DOB, BFN, HM, time_, POV);
+  O2_consumption_by_NM_tissue: non_muscle_O2_delivery_CellML1_0_model__O2_consumption_by_NM_tissue(POT, AOM, MO2, O2M);
+  delivery_of_O2_to_NM_tissues: non_muscle_O2_delivery_CellML1_0_model__delivery_of_O2_to_NM_tissues(POT, POV0, BFN, DOB);
+  volume_of_O2_in_NM_tissue: non_muscle_O2_delivery_CellML1_0_model__volume_of_O2_in_NM_tissue(DOB, MO2, time_, QO2);
+  pressure_of_O2_in_NM_tissue_cells: non_muscle_O2_delivery_CellML1_0_model__pressure_of_O2_in_NM_tissue_cells(QO2, POT);
+
+  // Variable initializations:
+  BFN = 2.79521;
+  OVA = 204.497;
+  HM = 40.0381;
+  AOM = 1.00002;
+end
+
+model non_muscle_O2_delivery_CellML1_0_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: non_muscle_O2_delivery_CellML1_0_model__environment(time_);
+  non_muscle_O2_delivery: non_muscle_O2_delivery_CellML1_0_model__non_muscle_O2_delivery(time_, BFN, OVA, HM, AOM);
+end

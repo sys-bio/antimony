@@ -1,0 +1,50 @@
+//Created by libAntimony v1.3
+model gonzalezheydrich_steingard_kohane_model_1994_version01__environment(time_)
+end
+
+model gonzalezheydrich_steingard_kohane_model_1994_version01__cortisol(cortisol, ACTH, time_)
+
+  // Rate Rules:
+  cortisol' = k1 * ACTH + k2 - k3 * cortisol;
+
+  // Variable initializations:
+  cortisol = 0.0;
+  k1 = 5E5;
+  k2 = 0.01;
+  k3 = 0.01;
+end
+
+model gonzalezheydrich_steingard_kohane_model_1994_version01__ACTH(ACTH, CRH, cortisol, time_)
+
+  // Rate Rules:
+  ACTH' = k4 * CRH + k5 - ( k6 * ACTH + ( k4 * CRH + k5 ) * ( Imax * cortisol / ( Kd + cortisol )));
+
+  // Variable initializations:
+  ACTH = 0.0;
+  k4 = 10.0;
+  k5 = 4E-3;
+  k6 = 0.035;
+  Kd = 0.004;
+  Imax = 0.99;
+end
+
+model gonzalezheydrich_steingard_kohane_model_1994_version01__CRH(CRH, time_)
+
+  // Rate Rules:
+  CRH' = pulse + k7 - k8 * CRH;
+
+  // Variable initializations:
+  CRH = 50.0;
+  k7 = 1E-6;
+  k8 = 0.01;
+  pulse = 50.0;
+end
+
+model gonzalezheydrich_steingard_kohane_model_1994_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: gonzalezheydrich_steingard_kohane_model_1994_version01__environment(time_);
+  cortisol: gonzalezheydrich_steingard_kohane_model_1994_version01__cortisol(cortisol0, ACTH0, time_);
+  ACTH: gonzalezheydrich_steingard_kohane_model_1994_version01__ACTH(ACTH0, CRH0, cortisol0, time_);
+  CRH: gonzalezheydrich_steingard_kohane_model_1994_version01__CRH(CRH0, time_);
+end

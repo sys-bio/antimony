@@ -1,0 +1,119 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    In module 'martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01____main', the variables K_AHC0 and Hcy.K_AHC were unable to be set as equivalent:  Loop detected:  'Hcy.K_AHC' may not be set to be equal to 'K_AHC0' because K_AHC0's definition already includes Hcy.K_AHC either directly or by proxy.
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__environment(time_)
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__Ado(Ado)
+
+  // Variable initializations:
+  Ado = 1.0;
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__Met(Met)
+
+  // Variable initializations:
+  Met = 45.0;
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__Hcy(Hcy, AdoHcy, Ado, K_AHC)
+
+  // Assignment Rules:
+  Hcy := AdoHcy * (K_AHC / Ado);
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__K_AHC(K_AHC, AdoHcy, Ado, Hcy)
+
+  // Assignment Rules:
+  K_AHC := Ado * Hcy / AdoHcy;
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__AdoMet(AdoMet, V_MET, V_GNMT, V_MATI, V_MATIII, time_)
+
+  // Rate Rules:
+  AdoMet' = V_MATI + V_MATIII - (V_MET + V_GNMT);
+
+  // Variable initializations:
+  AdoMet = 60.0;
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__AdoHcy(AdoHcy, V_MET, V_GNMT, V_D, Ado, K_AHC, time_)
+
+  // Rate Rules:
+  AdoHcy' = (V_MET + V_GNMT - V_D) / ( 1.0 + K_AHC / Ado);
+
+  // Variable initializations:
+  AdoHcy = 3.0;
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__V_MATI(V_MATI, Met, AdoMet)
+
+  // Assignment Rules:
+  V_MATI := V_MATImax / ( 1.0 + Km_MATI / Met * ( 1.0 + AdoMet / Ki_MATI ));
+
+  // Variable initializations:
+  V_MATImax = 561.0;
+  Km_MATI = 41.0;
+  Ki_MATI = 50.0;
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__V_MATIII(V_MATIII, AdoMet, Met)
+
+  // Assignment Rules:
+  V_MATIII := V_MATIIImax / ( 1.0 + Km1_MATIII * Km2_MATIII / (power( Met , 2.0 ) + Met * Km2_MATIII ));
+  Km1_MATIII := 20000.0 / ( 1.0 + 5.7 * power( AdoMet / ( AdoMet + 600.0 ), 2.0 ));
+
+  // Variable initializations:
+  V_MATIIImax = 22870.0;
+  Km2_MATIII = 21.1;
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__V_MET(V_MET, AdoMet, AdoHcy)
+
+  // Assignment Rules:
+  V_MET := V_METmax / ( 1.0 + Km1_MET / AdoMet + Km2_MET_A + Km2_MET_A * ( Km1_MET / AdoMet ));
+  Km1_MET := 10.0 * ( 1.0 + AdoHcy / 4.0 );
+
+  // Variable initializations:
+  V_METmax = 4544.0;
+  Km2_MET_A = 0.1;
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__V_GNMT(V_GNMT, AdoMet, AdoHcy)
+
+  // Assignment Rules:
+  V_GNMT := V_GNMTmax / ( 1.0 + power( Km_GNMT / AdoMet , 2.3 )) * ( 1.0 / ( 1.0 + AdoHcy / Ki_GNMT ));
+
+  // Variable initializations:
+  V_GNMTmax = 10600.0;
+  Km_GNMT = 4500.0;
+  Ki_GNMT = 20.0;
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__V_D(V_D, Hcy)
+
+  // Assignment Rules:
+  V_D := alphad * Hcy;
+
+  // Variable initializations:
+  alphad = 1333.0;
+end
+
+model martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__environment(time_);
+  Ado: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__Ado(Ado0);
+  Met: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__Met(Met0);
+  Hcy: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__Hcy(Hcy0, AdoHcy0, Ado0, K_AHC1);
+  K_AHC: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__K_AHC(K_AHC0, AdoHcy0, Ado0, Hcy0);
+  AdoMet: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__AdoMet(AdoMet0, V_MET0, V_GNMT0, V_MATI0, V_MATIII0, time_);
+  AdoHcy: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__AdoHcy(AdoHcy0, V_MET0, V_GNMT0, V_D0, Ado0, K_AHC0, time_);
+  V_MATI: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__V_MATI(V_MATI0, Met0, AdoMet0);
+  V_MATIII: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__V_MATIII(V_MATIII0, AdoMet0, Met0);
+  V_MET: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__V_MET(V_MET0, AdoMet0, AdoHcy0);
+  V_GNMT: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__V_GNMT(V_GNMT0, AdoMet0, AdoHcy0);
+  V_D: martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01__V_D(V_D0, Hcy0);
+end

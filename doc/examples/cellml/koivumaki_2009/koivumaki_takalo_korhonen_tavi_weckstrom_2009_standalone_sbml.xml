@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="koivumaki_takalo_korhonen_tavi_weckstrom_2009____main" name="koivumaki_takalo_korhonen_tavi_weckstrom_2009____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Ca_cyt" value="0.25"/>
+      <parameter id="Ca_NSR" value="760"/>
+      <parameter id="CaMKII_reg" value="0"/>
+      <parameter id="SERCA_TOT" value="47"/>
+      <parameter id="serca_parameters_PSR" value="1"/>
+      <parameter id="serca_parameters_Kmf_PLBKO" value="0.15"/>
+      <parameter id="serca_parameters_Kmf_PLB" value="0.15"/>
+      <parameter id="serca_parameters_Kmr_PLBKO" value="2500"/>
+      <parameter id="serca_parameters_Kmr_PLB" value="1110"/>
+      <parameter id="EC_50_fwd" constant="false"/>
+      <parameter id="EC_50_rev" constant="false"/>
+      <parameter id="k_cyt_serca" constant="false"/>
+      <parameter id="k_serca_cyt" constant="false"/>
+      <parameter id="k_serca_sr" constant="false"/>
+      <parameter id="k_sr_serca" constant="false"/>
+      <parameter id="transition_parameters_br_cyt_serca" constant="false"/>
+      <parameter id="transition_parameters_br_serca_sr" value="0.00625"/>
+      <parameter id="J_cyt_serca" constant="false"/>
+      <parameter id="J_serca_sr" constant="false"/>
+      <parameter id="Ca_serca" value="12" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="EC_50_fwd">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <ci> serca_parameters_Kmf_PLBKO </ci>
+              <apply>
+                <times/>
+                <ci> serca_parameters_Kmf_PLB </ci>
+                <ci> serca_parameters_PSR </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <times/>
+                <cn> 0.27 </cn>
+                <ci> CaMKII_reg </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="EC_50_rev">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> serca_parameters_Kmr_PLBKO </ci>
+            <apply>
+              <times/>
+              <ci> serca_parameters_Kmr_PLB </ci>
+              <ci> serca_parameters_PSR </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_cyt_serca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> transition_parameters_br_cyt_serca </ci>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <times/>
+                <cn> 0.7 </cn>
+                <ci> CaMKII_reg </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_serca_cyt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <power/>
+              <ci> EC_50_fwd </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <ci> transition_parameters_br_cyt_serca </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_serca_sr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> transition_parameters_br_serca_sr </ci>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <times/>
+                <cn> 0.7 </cn>
+                <ci> CaMKII_reg </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_sr_serca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> transition_parameters_br_serca_sr </ci>
+            <apply>
+              <power/>
+              <ci> EC_50_rev </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="transition_parameters_br_cyt_serca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1000 </cn>
+            <ci> transition_parameters_br_serca_sr </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_cyt_serca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_cyt_serca </ci>
+              <apply>
+                <power/>
+                <ci> Ca_cyt </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> SERCA_TOT </ci>
+                <ci> Ca_serca </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_serca_cyt </ci>
+              <ci> Ca_serca </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_serca_sr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_serca_sr </ci>
+              <ci> Ca_serca </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_sr_serca </ci>
+              <apply>
+                <power/>
+                <ci> Ca_NSR </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> SERCA_TOT </ci>
+                <ci> Ca_serca </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_serca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> J_cyt_serca </ci>
+            <ci> J_serca_sr </ci>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

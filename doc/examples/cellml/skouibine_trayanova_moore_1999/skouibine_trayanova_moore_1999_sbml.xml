@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="skouibine_trayanova_moore_1999_version02____main" name="skouibine_trayanova_moore_1999_version02____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="V" value="-86.9" constant="false"/>
+      <parameter id="membrane_C" value="0.01"/>
+      <parameter id="i_Na" constant="false"/>
+      <parameter id="i_s" constant="false"/>
+      <parameter id="i_x1" constant="false"/>
+      <parameter id="i_K1" constant="false"/>
+      <parameter id="fast_sodium_current_g_Na" value="0.15"/>
+      <parameter id="fast_sodium_current_E_Na" value="40"/>
+      <parameter id="m" value="0" constant="false"/>
+      <parameter id="h" value="0.99" constant="false"/>
+      <parameter id="fast_sodium_current_fast_sodium_current_m_gate_alpha_m" constant="false"/>
+      <parameter id="fast_sodium_current_fast_sodium_current_m_gate_beta_m" constant="false"/>
+      <parameter id="fast_sodium_current_fast_sodium_current_h_gate_alpha_h" constant="false"/>
+      <parameter id="fast_sodium_current_fast_sodium_current_h_gate_beta_h" constant="false"/>
+      <parameter id="x1" value="0" constant="false"/>
+      <parameter id="time_dependent_outward_current_time_dependent_outward_current_x1_gate_alpha_x1" constant="false"/>
+      <parameter id="time_dependent_outward_current_time_dependent_outward_current_x1_gate_beta_x1" constant="false"/>
+      <parameter id="slow_inward_current_g_s" value="0.0009"/>
+      <parameter id="slow_inward_current_E_s" constant="false"/>
+      <parameter id="slow_inward_current_Cai" value="0.0001" constant="false"/>
+      <parameter id="d" value="0" constant="false"/>
+      <parameter id="f" value="1" constant="false"/>
+      <parameter id="slow_inward_current_slow_inward_current_d_gate_alpha_d" constant="false"/>
+      <parameter id="slow_inward_current_slow_inward_current_d_gate_beta_d" constant="false"/>
+      <parameter id="slow_inward_current_slow_inward_current_d_gate_R_d" value="1"/>
+      <parameter id="slow_inward_current_slow_inward_current_f_gate_alpha_f" constant="false"/>
+      <parameter id="slow_inward_current_slow_inward_current_f_gate_beta_f" constant="false"/>
+      <parameter id="slow_inward_current_slow_inward_current_f_gate_R_f" value="1"/>
+      <parameter id="time_"/>
+      <parameter id="membrane_I_stim"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> membrane_I_stim </ci>
+              <apply>
+                <plus/>
+                <ci> i_Na </ci>
+                <ci> i_s </ci>
+                <ci> i_x1 </ci>
+                <ci> i_K1 </ci>
+              </apply>
+            </apply>
+            <ci> membrane_C </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="i_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> fast_sodium_current_g_Na </ci>
+            <apply>
+              <power/>
+              <ci> m </ci>
+              <cn> 3 </cn>
+            </apply>
+            <ci> h </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> fast_sodium_current_E_Na </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> slow_inward_current_g_s </ci>
+            <ci> d </ci>
+            <ci> f </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> slow_inward_current_E_s </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_x1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> x1 </ci>
+            <cn type="e-notation"> 0.8 <sep/> -2 </cn>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <times/>
+                    <cn> 0.04 </cn>
+                    <apply>
+                      <plus/>
+                      <ci> V </ci>
+                      <cn> 77 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+                <cn> 1 </cn>
+              </apply>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <cn> 0.04 </cn>
+                  <apply>
+                    <plus/>
+                    <ci> V </ci>
+                    <cn> 35 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_K1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="e-notation"> 0.35 <sep/> -2 </cn>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn> 4 </cn>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <times/>
+                        <cn> 0.04 </cn>
+                        <apply>
+                          <plus/>
+                          <ci> V </ci>
+                          <cn> 85 </cn>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <cn> 1 </cn>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <times/>
+                        <cn> 0.08 </cn>
+                        <apply>
+                          <plus/>
+                          <ci> V </ci>
+                          <cn type="integer"> 53 </cn>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <times/>
+                        <cn> 0.04 </cn>
+                        <apply>
+                          <plus/>
+                          <ci> V </ci>
+                          <cn> 53 </cn>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <cn> 0.2 </cn>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> V </ci>
+                    <cn> 23 </cn>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <times/>
+                        <cn> -0.04 </cn>
+                        <apply>
+                          <plus/>
+                          <ci> V </ci>
+                          <cn> 23 </cn>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> fast_sodium_current_fast_sodium_current_m_gate_alpha_m </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> m </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> fast_sodium_current_fast_sodium_current_m_gate_beta_m </ci>
+              <ci> m </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> fast_sodium_current_fast_sodium_current_h_gate_alpha_h </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> h </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> fast_sodium_current_fast_sodium_current_h_gate_beta_h </ci>
+              <ci> h </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="fast_sodium_current_fast_sodium_current_m_gate_alpha_m"/>
+      <assignmentRule variable="fast_sodium_current_fast_sodium_current_m_gate_beta_m"/>
+      <assignmentRule variable="fast_sodium_current_fast_sodium_current_h_gate_alpha_h"/>
+      <assignmentRule variable="fast_sodium_current_fast_sodium_current_h_gate_beta_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1.7 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <cn> -0.095 </cn>
+                    <ci> V </ci>
+                  </apply>
+                  <cn> 1.9475 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> time_dependent_outward_current_time_dependent_outward_current_x1_gate_alpha_x1 </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> x1 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> time_dependent_outward_current_time_dependent_outward_current_x1_gate_beta_x1 </ci>
+              <ci> x1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="time_dependent_outward_current_time_dependent_outward_current_x1_gate_alpha_x1"/>
+      <assignmentRule variable="time_dependent_outward_current_time_dependent_outward_current_x1_gate_beta_x1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.0013 </cn>
+            <apply>
+              <divide/>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> V </ci>
+                    <cn> -0.06 </cn>
+                  </apply>
+                  <cn> 1.2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <times/>
+                      <cn> -0.04 </cn>
+                      <ci> V </ci>
+                    </apply>
+                    <cn> 0.8 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="slow_inward_current_E_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> -82.3 </cn>
+            <apply>
+              <times/>
+              <cn> 13.0287 </cn>
+              <apply>
+                <ln/>
+                <apply>
+                  <times/>
+                  <ci> slow_inward_current_Cai </ci>
+                  <cn> 0.001 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="slow_inward_current_Cai"/>
+      <rateRule variable="d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <ci> slow_inward_current_slow_inward_current_d_gate_alpha_d </ci>
+                <ci> slow_inward_current_slow_inward_current_d_gate_R_d </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> d </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> slow_inward_current_slow_inward_current_d_gate_beta_d </ci>
+              <ci> d </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="f">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <ci> slow_inward_current_slow_inward_current_f_gate_alpha_f </ci>
+                <ci> slow_inward_current_slow_inward_current_f_gate_R_f </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> f </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> slow_inward_current_slow_inward_current_f_gate_beta_f </ci>
+              <ci> f </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="slow_inward_current_slow_inward_current_d_gate_alpha_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.095 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> V </ci>
+                      <cn> 5 </cn>
+                    </apply>
+                    <cn> 100 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> V </ci>
+                      <cn> 5 </cn>
+                    </apply>
+                    <cn> 13.89 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="slow_inward_current_slow_inward_current_d_gate_beta_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.07 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <ci> V </ci>
+                      <cn> 44 </cn>
+                    </apply>
+                    <cn> 59 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> V </ci>
+                    <cn> 44 </cn>
+                  </apply>
+                  <cn> 20 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="slow_inward_current_slow_inward_current_f_gate_alpha_f">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.012 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <ci> V </ci>
+                      <cn> 28 </cn>
+                    </apply>
+                    <cn> 125 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> V </ci>
+                    <cn> 28 </cn>
+                  </apply>
+                  <cn> 6.67 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="slow_inward_current_slow_inward_current_f_gate_beta_f">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.0065 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <ci> V </ci>
+                      <cn> 30 </cn>
+                    </apply>
+                    <cn> 50 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <ci> V </ci>
+                      <cn> 30 </cn>
+                    </apply>
+                    <cn> 5 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,427 @@
+//Created by libAntimony v1.3
+model demir_clark_giles_1999__environment(time_)
+end
+
+model demir_clark_giles_1999__membrane(V, R, T, F, time_, i_Na, i_Ca_T, i_Ca_L, i_K, i_f, i_B, i_NaK, i_NaCa, i_Ca_P, i_K_ACh)
+
+  // Rate Rules:
+  V' = -((i_Na + i_Ca_T + i_Ca_L + i_K + i_f + i_B + i_NaK + i_NaCa + i_Ca_P + i_K_ACh)) / Cm;
+
+  // Variable initializations:
+  V = -49.54105;
+  R = 8314.472;
+  T = 310;
+  F = 96485.3415;
+  Cm = 5.5e-5;
+end
+
+model demir_clark_giles_1999__sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  m_infinity := alpha_m / (alpha_m + beta_m);
+  tau_m := 1 / (alpha_m + beta_m) + 0.000015;
+  alpha_m := -(824 ) * (V + 51.9 ) / (exp((V + 51.9 ) / -(8.9 )) - 1 );
+  beta_m := 32960 * exp((V + 51.9 ) / -(8.9 ));
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.250113;
+end
+
+model demir_clark_giles_1999__sodium_current_h_gate(h1, h2, V, time_)
+
+  // Assignment Rules:
+  h1_infinity := alpha_h1 / (alpha_h1 + beta_h1);
+  h2_infinity := h1_infinity;
+  tau_h1 := 1 / (alpha_h1 + beta_h1);
+  tau_h2 := 20 * tau_h1;
+  alpha_h1 := 165 * exp((V + 101.3 ) / -(12.6 ));
+  beta_h1 := 12360 / (320 * exp((V + 101.3 ) / -(12.6 )) + 1 );
+
+  // Rate Rules:
+  h1' = (h1_infinity - h1) / tau_h1;
+  h2' = (h2_infinity - h2) / tau_h2;
+
+  // Variable initializations:
+  h1 = 0.001386897;
+  h2 = 0.002065463;
+end
+
+model demir_clark_giles_1999__sodium_current(i_Na, E_Na, Na_c, ACh, R, F, T, time_, V, m, h1, h2)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current_m_gate: demir_clark_giles_1999__sodium_current_m_gate(m, V, time_);
+  sodium_current_h_gate: demir_clark_giles_1999__sodium_current_h_gate(h1, h2, V, time_);
+
+  // Assignment Rules:
+  i_Na := F_ACh_Na * P_Na * power(m, 3 ) * h1 * h2 * Na_c * V * power(F, 2 ) / (R * T) * (exp((V - E_Na) * F / (R * T)) - 1 ) / (exp(V * F / (R * T)) - 1 );
+  F_ACh_Na := 1 - ACh / (ACh + 1E-3 );
+
+  // Variable initializations:
+  P_Na = 0.00344;
+end
+
+model demir_clark_giles_1999__L_type_Ca_channel_d_gate(d_L, d_L_infinity, V, time_)
+
+  // Assignment Rules:
+  d_L_infinity := 1 / (1 + exp((V + 14.1 ) / -(6 )));
+  alpha_d_L := -(28.39 ) * (V + 35 ) / (exp((V + 35 ) / -(2.5 )) - 1 ) + -(84.9 ) * V / (exp(-(0.208 ) * V) - 1 );
+  beta_d_L := 11.43 * (V - 5 ) / (exp(0.4 * (V - 5 )) - 1 );
+  tau_d_L := 1 / (alpha_d_L + beta_d_L);
+
+  // Rate Rules:
+  d_L' = (d_L_infinity - d_L) / tau_d_L;
+
+  // Variable initializations:
+  d_L = 0.002572773;
+end
+
+model demir_clark_giles_1999__L_type_Ca_channel_f_gate(f_L, V, time_)
+
+  // Assignment Rules:
+  alpha_f_L := 3.75 * (V + 28 ) / (exp((V + 28 ) / 4 ) - 1 );
+  beta_f_L := 30 / (1 + exp((V + 28 ) / -(4 )));
+  f_L_infinity := 1 / (1 + exp((V + 30 ) / 5 ));
+  tau_f_L := 1 / (alpha_f_L + beta_f_L);
+
+  // Rate Rules:
+  f_L' = (f_L_infinity - f_L) / tau_f_L;
+
+  // Variable initializations:
+  f_L = 0.98651;
+end
+
+model demir_clark_giles_1999__L_type_Ca_channel(i_Ca_L, cAMP, time_, V, d_L, d_L_infinity, f_L)
+
+  // Sub-modules, and any changes to those submodules:
+  L_type_Ca_channel_d_gate: demir_clark_giles_1999__L_type_Ca_channel_d_gate(d_L, d_L_infinity, V, time_);
+  L_type_Ca_channel_f_gate: demir_clark_giles_1999__L_type_Ca_channel_f_gate(f_L, V, time_);
+
+  // Assignment Rules:
+  i_Ca_L := g_Ca_L * (f_L * d_L + 0.095 * d_L_infinity) * (V - E_Ca_L);
+  g_Ca_L := g_Ca_L_cont * F_cAMP_CaL;
+  F_cAMP_CaL := 0.4 * (1 + 4.5 * cAMP / (cAMP + 6.5E-3 )) + 0.03157;
+
+  // Variable initializations:
+  g_Ca_L_cont = 0.02115;
+  E_Ca_L = 46.4;
+end
+
+model demir_clark_giles_1999__T_type_Ca_channel_d_gate(d_T, V, time_)
+
+  // Assignment Rules:
+  alpha_d_T := 1068 * exp((V + 26.3 ) / 30 );
+  beta_d_T := 1068 * exp((V + 26.3 ) / -(30 ));
+  d_T_infinity := 1 / (1 + exp((V + 26.3 ) / -(6 )));
+  tau_d_T := 1 / (alpha_d_T + beta_d_T);
+
+  // Rate Rules:
+  d_T' = (d_T_infinity - d_T) / tau_d_T;
+
+  // Variable initializations:
+  d_T = 0.02012114;
+end
+
+model demir_clark_giles_1999__T_type_Ca_channel_f_gate(f_T, V, time_)
+
+  // Assignment Rules:
+  alpha_f_T := 15.3 * exp((V + 61.7 ) / -(83.3 ));
+  beta_f_T := 15 * exp((V + 61.7 ) / 15.38 );
+  f_T_infinity := 1 / (1 + exp((V + 61.7 ) / 5.6 ));
+  tau_f_T := 1 / (alpha_f_T + beta_f_T);
+
+  // Rate Rules:
+  f_T' = (f_T_infinity - f_T) / tau_f_T;
+
+  // Variable initializations:
+  f_T = 0.1945111;
+end
+
+model demir_clark_giles_1999__T_type_Ca_channel(i_Ca_T, time_, V, d_T, f_T)
+
+  // Sub-modules, and any changes to those submodules:
+  T_type_Ca_channel_d_gate: demir_clark_giles_1999__T_type_Ca_channel_d_gate(d_T, V, time_);
+  T_type_Ca_channel_f_gate: demir_clark_giles_1999__T_type_Ca_channel_f_gate(f_T, V, time_);
+
+  // Assignment Rules:
+  i_Ca_T := g_Ca_T * d_T * f_T * (V - E_Ca_T);
+
+  // Variable initializations:
+  g_Ca_T = 0.02521;
+  E_Ca_T = 45;
+end
+
+model demir_clark_giles_1999__delayed_rectifying_potassium_current_P_a_gate(P_a, V, time_)
+
+  // Assignment Rules:
+  tau_P_a := 1 / (17 * exp(0.0398 * V) + 2.11 * exp(-(0.051 ) * V));
+  P_a_infinity := 1 / (1 + exp((V + 5.1 ) / -(7.4 )));
+
+  // Rate Rules:
+  P_a' = (P_a_infinity - P_a) / tau_P_a;
+
+  // Variable initializations:
+  P_a = 0.02302278;
+end
+
+model demir_clark_giles_1999__delayed_rectifying_potassium_current_P_i_gate(P_i, V, time_)
+
+  // Assignment Rules:
+  alpha_P_i := 100 * exp(-(0.0183 ) * V);
+  beta_P_i := 656 * exp(0.00942 * V);
+
+  // Rate Rules:
+  P_i' = alpha_P_i * (1 - P_i) - beta_P_i * P_i;
+
+  // Variable initializations:
+  P_i = 0.3777728;
+end
+
+model demir_clark_giles_1999__delayed_rectifying_potassium_current(i_K, cAMP, E_K, time_, V, K_b, P_a, P_i)
+
+  // Sub-modules, and any changes to those submodules:
+  delayed_rectifying_potassium_current_P_a_gate: demir_clark_giles_1999__delayed_rectifying_potassium_current_P_a_gate(P_a, V, time_);
+  delayed_rectifying_potassium_current_P_i_gate: demir_clark_giles_1999__delayed_rectifying_potassium_current_P_i_gate(P_i, V, time_);
+
+  // Assignment Rules:
+  i_K := g_K * P_a * P_i * (V - E_K);
+  g_K := F_cAMP_K * 0.00693 * power(K_b / 1 , 0.59 );
+  F_cAMP_K := 0.62 * (1 + 2.6129 * cAMP / (cAMP + 9E-3 )) - 0.025;
+end
+
+model demir_clark_giles_1999__linear_background_current(i_B, i_B_Na, i_B_Ca, i_B_K, E_Na, E_Ca, E_K, ACh, time_, V)
+
+  // Assignment Rules:
+  i_B := i_B_Na + i_B_Ca + i_B_K;
+  i_B_Na := F_ACh_bNa * g_B_Na * (V - E_Na);
+  i_B_Ca := g_B_Ca * (V - E_Ca);
+  i_B_K := g_B_K * (V - E_K);
+  F_ACh_bNa := 1 - ACh / (ACh + 5E-1 );
+
+  // Variable initializations:
+  g_B_Na = 0.00016;
+  g_B_Ca = 0.0000364;
+  g_B_K = 0.0000694;
+end
+
+model demir_clark_giles_1999__hyperpolarisation_activated_current_y_gate(y, cAMP, V, time_)
+
+  // Assignment Rules:
+  y_infinity := 1 / (1 + exp((V - V_half) / 9 ));
+  V_half := 20.5 / (1 + exp((cAMP - 3.4E-3 ) / -(5E-4 ))) - 78.56;
+  tau_y := 1 / (1.6483 * exp((V + 54.06 ) / -(24.33 )) + 14.01055 / (0.7 + exp((V + 60 ) / -(5.5 ))));
+
+  // Rate Rules:
+  y' = (y_infinity - y) / tau_y;
+
+  // Variable initializations:
+  y = 0.09227776;
+end
+
+model demir_clark_giles_1999__hyperpolarisation_activated_current(i_f, i_f_Na, i_f_K, time_, V, cAMP, y)
+
+  // Sub-modules, and any changes to those submodules:
+  hyperpolarisation_activated_current_y_gate: demir_clark_giles_1999__hyperpolarisation_activated_current_y_gate(y, cAMP, V, time_);
+
+  // Assignment Rules:
+  i_f := i_f_Na + i_f_K;
+  i_f_Na := g_f_Na * power(y, 2 ) * (V - 75 );
+  i_f_K := g_f_K * power(y, 2 ) * (V + 85 );
+
+  // Variable initializations:
+  g_f_Na = 0.0067478;
+  g_f_K = 0.0128821;
+end
+
+model demir_clark_giles_1999__sodium_potassium_pump(i_NaK, cAMP, Na_i, K_c, Ca_i, V, time_)
+
+  // Assignment Rules:
+  i_NaK := piecewise( (2 - F_cAMP_NaK) * i_NaK_max * power(Na_i / (K_m_Na + Na_i), 3 ) * power(K_c / (K_m_K + K_c), 2 ) * 1.6 / (1.5 + exp((V + 60 ) / -(40 ))) , Ca_i < 0.00015 , F_cAMP_NaK * i_NaK_max * power(Na_i / (K_m_Na + Na_i), 3 ) * power(K_c / (K_m_K + K_c), 2 ) * 1.6 / (1.5 + exp((V + 60 ) / -(40 ))) );
+  F_cAMP_NaK := 1.6 / (1 + exp((cAMP - 3.75E-3 ) / -(1.5E-4 ))) + 0.99;
+
+  // Variable initializations:
+  K_m_Na = 5.46;
+  K_m_K = 0.621;
+  i_NaK_max = 0.2192;
+end
+
+model demir_clark_giles_1999__calcium_pump_current(i_Ca_P, Ca_i, time_)
+
+  // Assignment Rules:
+  i_Ca_P := i_Ca_P_max * Ca_i / (Ca_i + 0.0004 );
+
+  // Variable initializations:
+  i_Ca_P_max = 0.02869;
+end
+
+model demir_clark_giles_1999__sodium_calcium_pump(i_NaCa, Na_i, Na_c, Ca_i, Ca_c, V, time_)
+
+  // Assignment Rules:
+  i_NaCa := K_NaCa * (power(Na_i, 3 ) * Ca_c * exp(0.03743 * V * gamma) - power(Na_c, 3 ) * Ca_i * exp(0.03743 * V * (gamma - 1 ))) / (1 + d_NaCa * (Ca_i * power(Na_c, 3 ) + Ca_c * power(Na_i, 3 )));
+
+  // Variable initializations:
+  K_NaCa = 0.00001248;
+  d_NaCa = 0.0001;
+  gamma = 0.5;
+end
+
+model demir_clark_giles_1999__muscarinic_potassium_current(i_K_ACh, ACh, V, E_K, f_Vagal, time_)
+
+  // Assignment Rules:
+  i_K_ACh := a * I_K_ACh;
+  I_K_ACh := g_K_ACh * (V - E_K);
+  g_K_ACh := P_M2_KACh * g_K_ACh_base;
+  P_M2_KACh := piecewise( 1.026 / (1 + exp((f_Vagal + 11.05 ) / -(7.5095 ))) - 0.99 , ( f_Vagal < 100) && (f_Vagal > 25 ), 0.0006 );
+  alpha_a := 17 * exp(0.0133 * (V + 40 ));
+  beta_a := 12.32 / (1 + 0.0042 / ACh);
+
+  // Rate Rules:
+  a' = beta_a * (1 - a) - alpha_a * a;
+
+  // Variable initializations:
+  g_K_ACh_base = 7.833e-3;
+  a = 0;
+end
+
+model demir_clark_giles_1999__intracellular_concentrations_and_buffer_equations(Na_i, Ca_i, K_i, Vol, V_i, i_NaK, i_NaCa, i_B_Na, i_f_Na, i_Na, i_K, i_B_K, i_f_K, i_Ca_L, i_Ca_T, i_Ca_P, i_B_Ca, i_up, i_rel, F, time_)
+
+  // Assignment Rules:
+  phi_C := 129000 * Ca_i * (1 - Ca_Calmod) - 307 * Ca_Calmod;
+  phi_TC := 50500 * Ca_i * (1 - Ca_Trop) - 252 * Ca_Trop;
+  phi_TMgC := 129000 * Ca_i * (1 - (Ca_Mg_Trop + Mg_Mg_Trop)) - 4.25 * Ca_Mg_Trop;
+  phi_TMgM := 1290 * Mg_i * (1 - (Ca_Mg_Trop + Mg_Mg_Trop)) - 429 * Mg_Mg_Trop;
+  phi_B := F_C + F_TC + F_TMgC;
+  F_C := 0.09 * phi_C;
+  F_TC := 0.031 * phi_TC;
+  F_TMgC := 0.062 * phi_TMgC;
+  V_i := 0.465 * Vol;
+
+  // Rate Rules:
+  Na_i' = -((3 * i_NaK + 3 * i_NaCa + i_B_Na + i_f_Na + i_Na)) / (F * V_i);
+  Ca_i' = (2 * i_NaCa + i_rel - (i_Ca_L + i_Ca_T + i_Ca_P + i_B_Ca + i_up)) / (2 * V_i * F) - phi_B;
+  K_i' = (2 * i_NaK - (i_K + i_f_K + i_B_K)) / (F * V_i);
+  Ca_Calmod' = phi_C;
+  Ca_Trop' = phi_TC;
+  Ca_Mg_Trop' = phi_TMgC;
+  Mg_Mg_Trop' = phi_TMgM;
+
+  // Variable initializations:
+  Na_i = 9.701621;
+  Ca_i = 3.787018e-4;
+  K_i = 1.407347e2;
+  Ca_Calmod = 0.1411678;
+  Ca_Trop = 0.07331396;
+  Ca_Mg_Trop = 0.7618549;
+  Mg_Mg_Trop = 0.2097049;
+  Mg_i = 2.5;
+end
+
+model demir_clark_giles_1999__cleft_space_equations(Na_c, Ca_c, K_c, K_b, Vol, i_NaK, i_NaCa, i_B_Na, i_f_Na, i_Na, i_K, i_B_K, i_f_K, i_Ca_L, i_Ca_T, i_Ca_P, i_B_Ca, F, time_)
+
+  // Assignment Rules:
+  V_c := 0.136 * Vol;
+
+  // Rate Rules:
+  Na_c' = (Na_b - Na_c) / tau_p + (i_Na + 3 * i_NaCa + 3 * i_NaK + i_B_Na + i_f_Na) / (F * V_c);
+  Ca_c' = (Ca_b - Ca_c) / tau_p + (-(2 ) * i_NaCa + i_Ca_L + i_Ca_T + i_Ca_P + i_B_Ca) / (2 * F * V_c);
+  K_c' = (K_b - K_c) / tau_p + (-(2 ) * i_NaK + i_K + i_B_K + i_f_K) / (F * V_c);
+
+  // Variable initializations:
+  Na_c = 139.9988;
+  Ca_c = 2.00474;
+  K_c = 5.389014;
+  K_b = 5.4;
+  Na_b = 140;
+  Ca_b = 2;
+  Vol = 3.497e-6;
+  tau_p = 0.01;
+end
+
+model demir_clark_giles_1999__SR_Ca_uptake_and_release(i_rel, i_up, V_i, Ca_i, F, V, time_)
+
+  // Assignment Rules:
+  i_rel := alpha_rel * power(F2 / (F2 + 0.25 ), 2 ) * Ca_rel;
+  i_up := (alpha_up * Ca_i - beta_up * Ca_up * K1) / K2;
+  i_tr := (Ca_up - Ca_rel) * 2 * F * V_up / 0.06418;
+  K1 := k_cyca * k_xcs / k_SRCa;
+  K2 := Ca_i + Ca_up * K1 + k_cyca * k_xcs + k_cyca;
+  r_act := 240 * exp((V - 40 ) * 0.08 ) + 240 * power(Ca_i / (Ca_i + k_rel), 4 );
+  r_inact := 40 + 240 * power(Ca_i / (Ca_i + k_rel), 4 );
+  phi_Calse := 770 * Ca_rel * (1 - Ca_Calse) - 641 * Ca_Calse;
+  V_up := 0.01166 * V_i;
+  V_rel := 0.001296 * V_i;
+
+  // Rate Rules:
+  Ca_up' = (i_up - i_tr) / (2 * V_up * F);
+  Ca_rel' = (i_tr - i_rel) / (2 * V_rel * F) - 11.48 * phi_Calse;
+  Ca_Calse' = phi_Calse;
+  F1' = 0.96 * F3 - r_act * F1;
+  F2' = r_act * F1 - r_inact * F2;
+  F3' = r_inact * F2 - 0.96 * F3;
+
+  // Variable initializations:
+  Ca_up = 16.95311;
+  alpha_up = 0.08;
+  beta_up = 0.072;
+  Ca_rel = 16.85024;
+  alpha_rel = 0.5;
+  k_cyca = 0.00005;
+  k_xcs = 0.9;
+  k_SRCa = 22;
+  k_rel = 0.004;
+  Ca_Calse = 0.9528726;
+  F1 = 0.1133251;
+  F2 = 0.0007594214;
+  F3 = 0.8859153;
+end
+
+model demir_clark_giles_1999__reversal_potentials(E_Na, E_K, E_Ca, K_c, Na_c, K_i, Na_i, Ca_c, Ca_i, R, T, F, time_)
+
+  // Assignment Rules:
+  E_Na := R * T / F * ln(Na_c / Na_i);
+  E_K := R * T / F * ln(K_c / K_i);
+  E_Ca := 0.5 * R * T / F * ln(Ca_c / Ca_i);
+end
+
+model demir_clark_giles_1999__cAMP_balance(cAMP, ACh, time_, f_Vagal)
+
+  // Rate Rules:
+  cAMP' = 1 * (K_ADC * (1 + Iso / (Iso + Km_Iso) - P_M2_ADC * ACh / (P_M2_ADC * ACh + Km_ACh)) - V_PDE * cGMP * cAMP / (cAMP + K_PDE * cGMP));
+
+  // Variable initializations:
+  cAMP = 3e-3;
+  cGMP = 2e-3;
+  Iso = 0;
+  ACh = 0;
+  Km_Iso = 0.14e-3;
+  Km_ACh = 0.14e-3;
+  K_PDE = 6;
+  K_ADC = 8e-3;
+  V_PDE = 20;
+  P_M2_ADC = 0.02;
+  f_Vagal = 200;
+end
+
+model demir_clark_giles_1999____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: demir_clark_giles_1999__environment(time_);
+  membrane: demir_clark_giles_1999__membrane(V, R, T, F, time_, i_Na, i_Ca_T, i_Ca_L, i_K, i_f, i_B, i_NaK, i_NaCa, i_Ca_P, i_K_ACh);
+  sodium_current: demir_clark_giles_1999__sodium_current(i_Na, E_Na, Na_c, ACh, R, F, T, time_, V, m, h1, h2);
+  L_type_Ca_channel: demir_clark_giles_1999__L_type_Ca_channel(i_Ca_L, cAMP, time_, V, d_L, d_L_infinity, f_L);
+  T_type_Ca_channel: demir_clark_giles_1999__T_type_Ca_channel(i_Ca_T, time_, V, d_T, f_T);
+  delayed_rectifying_potassium_current: demir_clark_giles_1999__delayed_rectifying_potassium_current(i_K, cAMP, E_K, time_, V, K_b, P_a, P_i);
+  linear_background_current: demir_clark_giles_1999__linear_background_current(i_B, i_B_Na, i_B_Ca, i_B_K, E_Na, E_Ca, E_K, ACh, time_, V);
+  hyperpolarisation_activated_current: demir_clark_giles_1999__hyperpolarisation_activated_current(i_f, i_f_Na, i_f_K, time_, V, cAMP, y);
+  sodium_potassium_pump: demir_clark_giles_1999__sodium_potassium_pump(i_NaK, cAMP, Na_i, K_c, Ca_i, V, time_);
+  calcium_pump_current: demir_clark_giles_1999__calcium_pump_current(i_Ca_P, Ca_i, time_);
+  sodium_calcium_pump: demir_clark_giles_1999__sodium_calcium_pump(i_NaCa, Na_i, Na_c, Ca_i, Ca_c, V, time_);
+  muscarinic_potassium_current: demir_clark_giles_1999__muscarinic_potassium_current(i_K_ACh, ACh, V, E_K, f_Vagal, time_);
+  intracellular_concentrations_and_buffer_equations: demir_clark_giles_1999__intracellular_concentrations_and_buffer_equations(Na_i, Ca_i, K_i, Vol, V_i, i_NaK, i_NaCa, i_B_Na, i_f_Na, i_Na, i_K, i_B_K, i_f_K, i_Ca_L, i_Ca_T, i_Ca_P, i_B_Ca, i_up, i_rel, F, time_);
+  cleft_space_equations: demir_clark_giles_1999__cleft_space_equations(Na_c, Ca_c, K_c, K_b, Vol, i_NaK, i_NaCa, i_B_Na, i_f_Na, i_Na, i_K, i_B_K, i_f_K, i_Ca_L, i_Ca_T, i_Ca_P, i_B_Ca, F, time_);
+  SR_Ca_uptake_and_release: demir_clark_giles_1999__SR_Ca_uptake_and_release(i_rel, i_up, V_i, Ca_i, F, V, time_);
+  reversal_potentials: demir_clark_giles_1999__reversal_potentials(E_Na, E_K, E_Ca, K_c, Na_c, K_i, Na_i, Ca_c, Ca_i, R, T, F, time_);
+  cAMP_balance: demir_clark_giles_1999__cAMP_balance(cAMP, ACh, time_, f_Vagal);
+end

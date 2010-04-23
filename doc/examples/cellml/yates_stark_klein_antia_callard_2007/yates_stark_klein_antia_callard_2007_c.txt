@@ -1,0 +1,69 @@
+//Created by libAntimony v1.3
+model yates_stark_klein_antia_callard_model_2007_version01__environment(time_)
+end
+
+model yates_stark_klein_antia_callard_model_2007_version01__x(x, d1, a, alpha, mu, r, y, w, kappa, time_)
+
+  // Rate Rules:
+  x' = 2.0 * r * y + 0.1 * mu * w - ( a * x * ( 1.0 - x / kappa ) + d1 * x * ( x / kappa ) + alpha * x );
+
+  // Variable initializations:
+  x = 10E-1;
+end
+
+model yates_stark_klein_antia_callard_model_2007_version01__y(y, d1, a, r, p, x, z, kappa, time_)
+
+  // Assignment Rules:
+  d2 := (-(( 99.0 * a * d1 )) + a * r + d1 * r ) / ( a - d1 );
+
+  // Rate Rules:
+  y' = a * x * ( 1.0 - x / kappa ) - (( r + d2 ) * y + p * z * y );
+
+  // Variable initializations:
+  y = 0.0;
+end
+
+model yates_stark_klein_antia_callard_model_2007_version01__w(w, alpha, mu, p, x, z, y, time_)
+
+  // Rate Rules:
+  w' = f * alpha * x - ( mu * w + p * w * z );
+
+  // Variable initializations:
+  w = 0.0;
+  f = 100.0;
+end
+
+model yates_stark_klein_antia_callard_model_2007_version01__z(z, p, y, w, time_)
+
+  // Rate Rules:
+  z' = p * z * ( y + w ) - v * z;
+
+  // Variable initializations:
+  z = 0.01;
+  v = 0.5;
+end
+
+model yates_stark_klein_antia_callard_model_2007_version01__model_parameters(a, d1, r, p, alpha, mu, kappa)
+
+  // Assignment Rules:
+  alpha := 0.01 * a;
+
+  // Variable initializations:
+  a = 0.03333;
+  d1 = 0.005;
+  r = 1.0;
+  p = 200.0;
+  mu = 0.023;
+  kappa = 1.0;
+end
+
+model yates_stark_klein_antia_callard_model_2007_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: yates_stark_klein_antia_callard_model_2007_version01__environment(time_);
+  x: yates_stark_klein_antia_callard_model_2007_version01__x(x0, d1, a, alpha, mu, r, y0, w0, kappa, time_);
+  y: yates_stark_klein_antia_callard_model_2007_version01__y(y0, d1, a, r, p, x0, z0, kappa, time_);
+  w: yates_stark_klein_antia_callard_model_2007_version01__w(w0, alpha, mu, p, x0, z0, y0, time_);
+  z: yates_stark_klein_antia_callard_model_2007_version01__z(z0, p, y0, w0, time_);
+  model_parameters: yates_stark_klein_antia_callard_model_2007_version01__model_parameters(a, d1, r, p, alpha, mu, kappa);
+end

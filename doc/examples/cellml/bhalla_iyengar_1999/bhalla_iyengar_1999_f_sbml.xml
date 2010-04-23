@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="bi_model_1999_version01____main" name="bi_model_1999_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="PKC_kf1" value="1"/>
+      <parameter id="PKC_kb1" value="50"/>
+      <parameter id="PKC_kf2" value="2e-10"/>
+      <parameter id="PKC_kb2" value="0.1"/>
+      <parameter id="PKC_kf3" value="1.2705"/>
+      <parameter id="PKC_kb3" value="3.5026"/>
+      <parameter id="PKC_kf4" value="2e-09"/>
+      <parameter id="PKC_kb4" value="0.1"/>
+      <parameter id="PKC_kf5" value="1"/>
+      <parameter id="PKC_kb5" value="0.1"/>
+      <parameter id="PKC_kf6" value="2"/>
+      <parameter id="PKC_kb6" value="0.2"/>
+      <parameter id="PKC_kf7" value="1e-06"/>
+      <parameter id="PKC_kb7" value="0.5"/>
+      <parameter id="PKC_kf8" value="1.3333e-08"/>
+      <parameter id="PKC_kb8" value="8.6348"/>
+      <parameter id="PKC_kf9" value="1e-09"/>
+      <parameter id="PKC_kb9" value="0.1"/>
+      <parameter id="PKC_kf10" value="3e-08"/>
+      <parameter id="PKC_kb10" value="2"/>
+      <parameter id="PKC_PKC_i" value="1" constant="false"/>
+      <parameter id="PKC_AA" value="1" constant="false"/>
+      <parameter id="PKC_DAG" value="0.1" constant="false"/>
+      <parameter id="PKC_Ca" value="0.1" constant="false"/>
+      <parameter id="PKC_DAGPKC" value="0" constant="false"/>
+      <parameter id="PKC_AADAGPKC" value="0" constant="false"/>
+      <parameter id="PKC_DAGCaPKC" value="0" constant="false"/>
+      <parameter id="PKC_CaPKC" value="0" constant="false"/>
+      <parameter id="PKC_PKC_a" value="0" constant="false"/>
+      <parameter id="t"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="PKC_PKC_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <plus/>
+                        <apply>
+                          <times/>
+                          <apply>
+                            <minus/>
+                            <ci> PKC_PKC_i </ci>
+                          </apply>
+                          <ci> PKC_kf1 </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> PKC_PKC_a </ci>
+                          <ci> PKC_kb1 </ci>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> PKC_PKC_i </ci>
+                        <ci> PKC_AA </ci>
+                        <ci> PKC_kf2 </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> PKC_PKC_a </ci>
+                      <ci> PKC_kb2 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> PKC_PKC_i </ci>
+                    <ci> PKC_DAG </ci>
+                    <ci> PKC_kf9 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> PKC_DAGPKC </ci>
+                  <ci> PKC_kb9 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PKC_PKC_i </ci>
+                <ci> PKC_Ca </ci>
+                <ci> PKC_kf7 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PKC_CaPKC </ci>
+              <ci> PKC_kb7 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PKC_AA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <minus/>
+                        <ci> PKC_PKC_i </ci>
+                      </apply>
+                      <ci> PKC_AA </ci>
+                      <ci> PKC_kf2 </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> PKC_PKC_a </ci>
+                      <ci> PKC_kb2 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> PKC_CaPKC </ci>
+                    <ci> PKC_AA </ci>
+                    <ci> PKC_kf4 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> PKC_PKC_a </ci>
+                  <ci> PKC_kb4 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PKC_DAGPKC </ci>
+                <ci> PKC_AA </ci>
+                <ci> PKC_kf10 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PKC_AADAGPKC </ci>
+              <ci> PKC_kb10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PKC_DAG">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> PKC_PKC_i </ci>
+                  </apply>
+                  <ci> PKC_DAG </ci>
+                  <ci> PKC_kf9 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> PKC_DAGPKC </ci>
+                  <ci> PKC_kb9 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PKC_DAG </ci>
+                <ci> PKC_CaPKC </ci>
+                <ci> PKC_kf8 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PKC_DAGCaPKC </ci>
+              <ci> PKC_kb8 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PKC_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> PKC_PKC_i </ci>
+              </apply>
+              <ci> PKC_Ca </ci>
+              <ci> PKC_kf7 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PKC_CaPKC </ci>
+              <ci> PKC_kb7 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PKC_DAGPKC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> PKC_PKC_i </ci>
+                  <ci> PKC_DAG </ci>
+                  <ci> PKC_kf9 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> PKC_DAGPKC </ci>
+                  <ci> PKC_kb9 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PKC_DAGPKC </ci>
+                <ci> PKC_AA </ci>
+                <ci> PKC_kf10 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PKC_AADAGPKC </ci>
+              <ci> PKC_kb10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PKC_AADAGPKC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> PKC_DAGPKC </ci>
+                  <ci> PKC_AA </ci>
+                  <ci> PKC_kf10 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> PKC_AADAGPKC </ci>
+                  <ci> PKC_kb10 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PKC_AADAGPKC </ci>
+                <ci> PKC_kf6 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PKC_PKC_a </ci>
+              <ci> PKC_kb6 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PKC_DAGCaPKC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> PKC_DAG </ci>
+                  <ci> PKC_CaPKC </ci>
+                  <ci> PKC_kf8 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> PKC_DAGCaPKC </ci>
+                  <ci> PKC_kb8 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PKC_DAGCaPKC </ci>
+                <ci> PKC_kf5 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PKC_PKC_a </ci>
+              <ci> PKC_kb5 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PKC_CaPKC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <minus/>
+                        <apply>
+                          <times/>
+                          <ci> PKC_PKC_i </ci>
+                          <ci> PKC_Ca </ci>
+                          <ci> PKC_kf7 </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> PKC_CaPKC </ci>
+                          <ci> PKC_kb7 </ci>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> PKC_CaPKC </ci>
+                        <ci> PKC_kf3 </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> PKC_PKC_a </ci>
+                      <ci> PKC_kb3 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> PKC_CaPKC </ci>
+                    <ci> PKC_AA </ci>
+                    <ci> PKC_kf4 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> PKC_PKC_a </ci>
+                  <ci> PKC_kb4 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PKC_DAG </ci>
+                <ci> PKC_CaPKC </ci>
+                <ci> PKC_kf8 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PKC_DAGCaPKC </ci>
+              <ci> PKC_kb8 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PKC_PKC_a">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <plus/>
+                      <apply>
+                        <minus/>
+                        <apply>
+                          <plus/>
+                          <apply>
+                            <minus/>
+                            <apply>
+                              <plus/>
+                              <apply>
+                                <minus/>
+                                <apply>
+                                  <times/>
+                                  <ci> PKC_PKC_i </ci>
+                                  <ci> PKC_kf1 </ci>
+                                </apply>
+                                <apply>
+                                  <times/>
+                                  <ci> PKC_PKC_a </ci>
+                                  <ci> PKC_kb1 </ci>
+                                </apply>
+                              </apply>
+                              <apply>
+                                <times/>
+                                <ci> PKC_PKC_i </ci>
+                                <ci> PKC_AA </ci>
+                                <ci> PKC_kf2 </ci>
+                              </apply>
+                            </apply>
+                            <apply>
+                              <times/>
+                              <ci> PKC_PKC_a </ci>
+                              <ci> PKC_kb2 </ci>
+                            </apply>
+                          </apply>
+                          <apply>
+                            <times/>
+                            <ci> PKC_CaPKC </ci>
+                            <ci> PKC_kf3 </ci>
+                          </apply>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> PKC_PKC_a </ci>
+                          <ci> PKC_kb3 </ci>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> PKC_CaPKC </ci>
+                        <ci> PKC_AA </ci>
+                        <ci> PKC_kf4 </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> PKC_PKC_a </ci>
+                      <ci> PKC_kb4 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> PKC_DAGCaPKC </ci>
+                    <ci> PKC_kf5 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> PKC_PKC_a </ci>
+                  <ci> PKC_kb5 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PKC_AADAGPKC </ci>
+                <ci> PKC_kf6 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PKC_PKC_a </ci>
+              <ci> PKC_kb6 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

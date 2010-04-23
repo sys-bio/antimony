@@ -1,0 +1,104 @@
+//Created by libAntimony v1.3
+model pulmonary_fluid_dynamics_CellML1_0_model__environment(time_)
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model__parameter_values(CPF)
+
+  // Variable initializations:
+  CPF = 0.0003;
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model__pulmonary_capillary_pressure(PPA, PLA, RPV, RPA, PCP)
+
+  // Assignment Rules:
+  PCP := (PPA - PLA) * RPV / (RPV + RPA) + PLA;
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model__fluid_filtration_into_pulmonary_interstitium(PCP, PPC, POS, PPI, PFI, CPF)
+
+  // Assignment Rules:
+  PFI := (PCP - PPI + POS - PPC) * CPF;
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model__pulmonary_interstitial_free_fluid_volume(PFI, PLF, time_, DFP, VPF)
+
+  // Assignment Rules:
+  DFP := DFZ;
+  VPF := piecewise( 0.001 , VPF1 < 0.001 , VPF1 );
+  DFZ := PFI - PLF;
+
+  // Rate Rules:
+  VPF1' = DFP;
+
+  // Variable initializations:
+  VPF1 = 0.0123238;
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model__pulmonary_interstitial_fluid_pressure(VPF, PPI)
+
+  // Assignment Rules:
+  PPI := 2 - 0.15 / VPF;
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model__concentration_of_protein_in_pulmonary_interstitium(PPO, PPN, VPF, time_, PPD, CPN)
+
+  // Assignment Rules:
+  PPD := PPZ;
+  CPN := PPR / VPF;
+  PPZ := PPN - PPO;
+  PPR := piecewise( 0.025 , PPR1 < 0.025 , PPR1 );
+
+  // Rate Rules:
+  PPR1' = PPD;
+
+  // Variable initializations:
+  PPR1 = 0.419998;
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model__colloid_osmotic_pressure_of_pulmonary_interstitium(CPN, POS)
+
+  // Assignment Rules:
+  POS := CPN * 0.4;
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model__protein_leakage_into_pulmonary_interstitium(CPP, CPN, PPN)
+
+  // Assignment Rules:
+  PPN := (CPP - CPN) * 0.000225;
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model__lung_lymphatic_protein_flow(PPI, CPN, PLF, PPO)
+
+  // Assignment Rules:
+  PLF := (PPI + 11 ) * 0.0003;
+  PPO := PLF * CPN;
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model__pulmonary_fluid_dynamics(time_, PPC, PPA, PLA, CPP, RPV, RPA)
+
+  // Sub-modules, and any changes to those submodules:
+  parameter_values: pulmonary_fluid_dynamics_CellML1_0_model__parameter_values(CPF);
+  pulmonary_capillary_pressure: pulmonary_fluid_dynamics_CellML1_0_model__pulmonary_capillary_pressure(PPA, PLA, RPV, RPA, PCP);
+  fluid_filtration_into_pulmonary_interstitium: pulmonary_fluid_dynamics_CellML1_0_model__fluid_filtration_into_pulmonary_interstitium(PCP, PPC, POS, PPI, PFI, CPF);
+  pulmonary_interstitial_free_fluid_volume: pulmonary_fluid_dynamics_CellML1_0_model__pulmonary_interstitial_free_fluid_volume(PFI, PLF, time_, DFP, VPF);
+  pulmonary_interstitial_fluid_pressure: pulmonary_fluid_dynamics_CellML1_0_model__pulmonary_interstitial_fluid_pressure(VPF, PPI);
+  concentration_of_protein_in_pulmonary_interstitium: pulmonary_fluid_dynamics_CellML1_0_model__concentration_of_protein_in_pulmonary_interstitium(PPO, PPN, VPF, time_, PPD, CPN);
+  colloid_osmotic_pressure_of_pulmonary_interstitium: pulmonary_fluid_dynamics_CellML1_0_model__colloid_osmotic_pressure_of_pulmonary_interstitium(CPN, POS);
+  protein_leakage_into_pulmonary_interstitium: pulmonary_fluid_dynamics_CellML1_0_model__protein_leakage_into_pulmonary_interstitium(CPP, CPN, PPN);
+  lung_lymphatic_protein_flow: pulmonary_fluid_dynamics_CellML1_0_model__lung_lymphatic_protein_flow(PPI, CPN, PLF, PPO);
+
+  // Variable initializations:
+  PPC = 29.9941;
+  PPA = 15.6376;
+  PLA = 2;
+  CPP = 71.9719;
+  RPV = 1.55719;
+  RPA = 1.5683;
+end
+
+model pulmonary_fluid_dynamics_CellML1_0_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: pulmonary_fluid_dynamics_CellML1_0_model__environment(time_);
+  pulmonary_fluid_dynamics: pulmonary_fluid_dynamics_CellML1_0_model__pulmonary_fluid_dynamics(time_, PPC, PPA, PLA, CPP, RPV, RPA);
+end

@@ -1,0 +1,458 @@
+//Created by libAntimony v1.3
+model salem_model_2002__environment(time_)
+end
+
+model salem_model_2002__v1(v1, GL)
+
+  // Assignment Rules:
+  v1 := Vmax * ( GL / ( Km + GL ));
+
+  // Variable initializations:
+  Vmax = 5.90;
+  Km = 0.05;
+end
+
+model salem_model_2002__v2(v2, O2)
+
+  // Assignment Rules:
+  v2 := Vmax * ( O2 / ( Km + O2 ));
+
+  // Variable initializations:
+  Vmax = 67.6;
+  Km = 0.01;
+end
+
+model salem_model_2002__v3(v3, FA, PS, PS0)
+
+  // Assignment Rules:
+  v3 := k3 * FA;
+  k3 := Vmax * (power( PS , -1 ) / (power( PS0 , -1 ) + power( PS , -1 )));
+
+  // Variable initializations:
+  Vmax = 4.90;
+end
+
+model salem_model_2002__v4(v4, FA, RS, RS0, AF, AF0)
+
+  // Assignment Rules:
+  v4 := k4 * FA;
+  k4 := Vmax * ( epsilon * (power( AF , -1 ) / (power( AF0 , -1 ) + power( AF , -1 ))) + ( 1 - epsilon ) * (power( RS , -1 ) / (power( RS0 , -1 ) + power( RS , -1 ))));
+
+  // Variable initializations:
+  Vmax = 21.3;
+  epsilon = 0.6;
+end
+
+model salem_model_2002__v5(v5, GP, RS, RS0, PS, PS0)
+
+  // Assignment Rules:
+  v5 := k5 * GP;
+  k5 := Vmax * ( epsilon * ( PS / ( PS0 + PS )) + ( 1 - epsilon ) * (power( RS , -1 ) / (power( RS0 , -1 ) + power( RS , -1 ))));
+
+  // Variable initializations:
+  Vmax = 2.82;
+  epsilon = 0.254;
+end
+
+model salem_model_2002__v6(v6, GP, CS, CS0, PS, PS0)
+
+  // Assignment Rules:
+  v6 := k6 * GP;
+  k6 := Vmax * ( epsilon * (power( PS , -1 ) / (power( PS0 , -1 ) + power( PS , -1 ))) + ( 1 - epsilon ) * power(power( CS , -1 ) / (power( CS0 , -1 ) + power( CS , -1 )), 2 ));
+
+  // Variable initializations:
+  Vmax = 3.14;
+  epsilon = 0.5;
+end
+
+model salem_model_2002__v7(v7, GY, CS, CS0, PS, PS0)
+
+  // Assignment Rules:
+  v7 := k7 * GY;
+  k7 := Vmax * ( epsilon * ( PS / ( PS0 + PS )) + ( 1 - epsilon ) * power( CS / ( CS0 + CS ), 2 ));
+
+  // Variable initializations:
+  Vmax = 0.0162;
+  epsilon = 0.5;
+end
+
+model salem_model_2002__v8(v8, TG)
+
+  // Assignment Rules:
+  v8 := k8 * TG;
+  k8 := Vmax;
+
+  // Variable initializations:
+  Vmax = 0.005;
+end
+
+model salem_model_2002__v9(v9, PY, RS, RS0)
+
+  // Assignment Rules:
+  v9 := k9 * PY;
+  k9 := Vmax * ( RS / ( RS0 + RS ));
+
+  // Variable initializations:
+  Vmax = 1.8;
+end
+
+model salem_model_2002__v10(v10, PY, RS, RS0, AF, AF0)
+
+  // Assignment Rules:
+  v10 := k10 * PY;
+  k10 := Vmax * ( epsilon * (power( RS , -1 ) / (power( RS0 , -1 ) + power( RS , -1 ))) + ( 1 - epsilon ) * (power( AF , -1 ) / (power( AF0 , -1 ) + power( AF , -1 ))));
+
+  // Variable initializations:
+  Vmax = 12.6;
+  epsilon = 0.98;
+end
+
+model salem_model_2002__v11(v11, LA, RS, RS0)
+
+  // Assignment Rules:
+  v11 := k11 * LA;
+  k11 := Vmax * (power( RS , -1 ) / (power( RS0 , -1 ) + power( RS , -1 )));
+
+  // Variable initializations:
+  Vmax = 0.96;
+end
+
+model salem_model_2002__v12(v12, AC, RS, RS0, PS, PS0)
+
+  // Assignment Rules:
+  v12 := k12 * AC;
+  k12 := Vmax * ( epsilon * (power( RS , -1 ) / (power( RS0 , -1 ) + power( RS , -1 ))) + ( 1 - epsilon ) * ( PS / ( PS0 + PS )));
+
+  // Variable initializations:
+  Vmax = 695.7;
+  epsilon = 0.75;
+end
+
+model salem_model_2002__v13(v13, CR, PS, PS0)
+
+  // Assignment Rules:
+  v13 := k13 * CR;
+  k13 := Vmax * (power( PS , -1 ) / (power( PS0 , -1 ) + power( PS , -1 )));
+
+  // Variable initializations:
+  Vmax = 0.455;
+end
+
+model salem_model_2002__v14(v14, PC, PS, PS0)
+
+  // Assignment Rules:
+  v14 := k14 * PC;
+  k14 := Vmax * ( PS / ( PS0 + PS ));
+
+  // Variable initializations:
+  Vmax = 0.455;
+end
+
+model salem_model_2002__v15(v15, CoA_pool, RS, RS0, FC, FC0)
+
+  // Assignment Rules:
+  v15 := k15 * CoA_pool;
+  k15 := Vmax * ( epsilon * (power( RS , -1 ) / (power( RS0 , -1 ) + power( RS , -1 ))) + ( 1 - epsilon ) * (power( FC , -1 ) / (power( FC0 , -1 ) + power( FC , -1 ))));
+
+  // Variable initializations:
+  Vmax = 626.1;
+  epsilon = 0.669;
+end
+
+model salem_model_2002__v16(v16, AC, RS, RS0, FC, FC0)
+
+  // Assignment Rules:
+  v16 := k16 * AC;
+  k16 := Vmax * ( epsilon * (power( RS , -1 ) / (power( RS0 , -1 ) + power( RS , -1 ))) + ( 1 - epsilon ) * (power( FC , -1 ) / (power( FC0 , -1 ) + power( FC , -1 ))));
+
+  // Variable initializations:
+  Vmax = 67.0;
+  epsilon = 0.775;
+end
+
+model salem_model_2002__v17(v17, ATP)
+
+  // Assignment Rules:
+  v17 := k17 * ATP;
+  k17 := Vmax;
+
+  // Variable initializations:
+  Vmax = 7.76;
+end
+
+model salem_model_2002__GL(GL, F, v1, time_)
+
+  // Rate Rules:
+  GL' = F * ( aGL - sigmaGL * GL ) - v1;
+
+  // Variable initializations:
+  GL = 0.998;
+  aGL = 4.0;
+  sigmaGL = 3.76;
+end
+
+model salem_model_2002__FA(FA, F, v8, v3, v4, time_)
+
+  // Rate Rules:
+  FA' = 3 * v8 + F * ( aFA - sigmaFA * FA ) - ( v3 + v4 );
+
+  // Variable initializations:
+  FA = 0.021;
+  aFA = 0.5;
+  sigmaFA = 13.2;
+end
+
+model salem_model_2002__GP(GP, v1, v5, v6, v7, time_)
+
+  // Rate Rules:
+  GP' = v1 + v7 - ( v5 + v6 );
+
+  // Variable initializations:
+  GP = 0.171;
+end
+
+model salem_model_2002__GY(GY, v6, v7, time_)
+
+  // Rate Rules:
+  GY' = v6 - v7;
+
+  // Variable initializations:
+  GY = 33.0;
+end
+
+model salem_model_2002__TG(TG, v3, v8, time_)
+
+  // Rate Rules:
+  TG' = 1 / 3 * v3 - v8;
+
+  // Variable initializations:
+  TG = 3.96;
+end
+
+model salem_model_2002__PY(PY, v5, v11, v9, v10, time_)
+
+  // Rate Rules:
+  PY' = 2 * v5 + v11 - ( v9 + v10 );
+
+  // Variable initializations:
+  PY = 0.20;
+end
+
+model salem_model_2002__LA(LA, F, v9, v11, time_)
+
+  // Rate Rules:
+  LA' = v9 + F * ( aLA - sigmaLA * LA ) - v11;
+
+  // Variable initializations:
+  LA = 1.98;
+  aLA = 1.8;
+  sigmaLA = 0.51;
+end
+
+model salem_model_2002__AC(AC, v10, v4, v12, v16, time_)
+
+  // Rate Rules:
+  AC' = v10 + v4 - ( v12 + v16 );
+
+  // Variable initializations:
+  AC = 0.0046;
+end
+
+model salem_model_2002__FC(FC, v10, v4, v12, v15, v16, time_)
+
+  // Rate Rules:
+  FC' = v12 + v15 + v16 - ( v10 + v4 );
+
+  // Variable initializations:
+  FC = 0.0088;
+end
+
+model salem_model_2002__CoA_pool(CoA_pool, v15, v16, time_)
+
+  // Rate Rules:
+  CoA_pool' = v16 - v15;
+
+  // Variable initializations:
+  CoA_pool = 0.043;
+end
+
+model salem_model_2002__O2(O2, F, v2, time_)
+
+  // Rate Rules:
+  O2' = F * ( aO2 - sigmaO2 * O2 ) - v2;
+
+  // Variable initializations:
+  O2 = 0.963;
+  aO2 = 6.53;
+  sigmaO2 = 1.0;
+end
+
+model salem_model_2002__CO2(CO2, F, v10, v12, time_)
+
+  // Rate Rules:
+  CO2' = v10 + 2 * v12 + F * ( aCO2 - sigmaCO2 * CO2 );
+
+  // Variable initializations:
+  CO2 = 20.0;
+  aCO2 = 15.5;
+  sigmaCO2 = 1.0;
+end
+
+model salem_model_2002__NAD(NAD, v5, v11, v9, v10, v12, v4, v2, time_)
+
+  // Rate Rules:
+  NAD' = v9 + 2 * v2 - ( 2 * v5 + v10 + v11 + 11 / 3 * v12 + 35 / 3 * v4 );
+
+  // Variable initializations:
+  NAD = 1.81;
+end
+
+model salem_model_2002__ADP(ADP, v1, v5, v6, v12, v4, v3, v2, v14, v13, v17, time_)
+
+  // Rate Rules:
+  ADP' = v1 + v6 + 2 * v4 + 2 * v3 + v13 + v17 - ( 3 * v5 + v12 + 6 * v2 + v14 );
+
+  // Variable initializations:
+  ADP = 0.90;
+end
+
+model salem_model_2002__PC(PC, v13, v14, time_)
+
+  // Rate Rules:
+  PC' = v13 - v14;
+
+  // Variable initializations:
+  PC = 8.80;
+end
+
+model salem_model_2002__CR(CR, v13, v14, time_)
+
+  // Rate Rules:
+  CR' = v14 - v13;
+
+  // Variable initializations:
+  CR = 3.5;
+end
+
+model salem_model_2002__ATP(ATP)
+
+  // Variable initializations:
+  ATP = 4.5;
+end
+
+model salem_model_2002__NADH(NADH)
+
+  // Variable initializations:
+  NADH = 0.19;
+end
+
+model salem_model_2002__CS0(CS0)
+
+  // Variable initializations:
+  CS0 = 1.0;
+end
+
+model salem_model_2002__PS0(PS0)
+
+  // Variable initializations:
+  PS0 = 0.2;
+end
+
+model salem_model_2002__RS0(RS0)
+
+  // Variable initializations:
+  RS0 = 0.111;
+end
+
+model salem_model_2002__AF0(AF0)
+
+  // Variable initializations:
+  AF0 = 0.523;
+end
+
+model salem_model_2002__FC0(FC0)
+
+  // Variable initializations:
+  FC0 = 0.0088;
+end
+
+model salem_model_2002__CS(CS, CR, PC)
+
+  // Assignment Rules:
+  CS := CR / PC;
+end
+
+model salem_model_2002__RS(RS, NADH, NAD)
+
+  // Assignment Rules:
+  RS := NADH / NAD;
+end
+
+model salem_model_2002__PS(PS, ADP, ATP)
+
+  // Assignment Rules:
+  PS := ADP / ATP;
+end
+
+model salem_model_2002__AF(AF, AC, FC)
+
+  // Assignment Rules:
+  AF := AC / FC;
+end
+
+model salem_model_2002__model_parameters(F, time_)
+
+  // Assignment Rules:
+  F := piecewise( 1.0 , ( time_ > 0.0) && (time_ < 5.0 ), 0.4 );
+end
+
+model salem_model_2002____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: salem_model_2002__environment(time_);
+  v1: salem_model_2002__v1(v18, GL0);
+  v2: salem_model_2002__v2(v20, O20);
+  v3: salem_model_2002__v3(v30, FA0, PS1, PS00);
+  v4: salem_model_2002__v4(v40, FA0, RS1, RS00, AF1, AF00);
+  v5: salem_model_2002__v5(v50, GP0, RS1, RS00, PS1, PS00);
+  v6: salem_model_2002__v6(v60, GP0, CS1, CS00, PS1, PS00);
+  v7: salem_model_2002__v7(v70, GY0, CS1, CS00, PS1, PS00);
+  v8: salem_model_2002__v8(v80, TG0);
+  v9: salem_model_2002__v9(v90, PY0, RS1, RS00);
+  v10: salem_model_2002__v10(v100, PY0, RS1, RS00, AF1, AF00);
+  v11: salem_model_2002__v11(v110, LA0, RS1, RS00);
+  v12: salem_model_2002__v12(v120, AC0, RS1, RS00, PS1, PS00);
+  v13: salem_model_2002__v13(v130, CR0, PS1, PS00);
+  v14: salem_model_2002__v14(v140, PC0, PS1, PS00);
+  v15: salem_model_2002__v15(v150, CoA_pool0, RS1, RS00, FC1, FC00);
+  v16: salem_model_2002__v16(v160, AC0, RS1, RS00, FC1, FC00);
+  v17: salem_model_2002__v17(v170, ATP0);
+  GL: salem_model_2002__GL(GL0, F, v18, time_);
+  FA: salem_model_2002__FA(FA0, F, v80, v30, v40, time_);
+  GP: salem_model_2002__GP(GP0, v18, v50, v60, v70, time_);
+  GY: salem_model_2002__GY(GY0, v60, v70, time_);
+  TG: salem_model_2002__TG(TG0, v30, v80, time_);
+  PY: salem_model_2002__PY(PY0, v50, v110, v90, v100, time_);
+  LA: salem_model_2002__LA(LA0, F, v90, v110, time_);
+  AC: salem_model_2002__AC(AC0, v100, v40, v120, v160, time_);
+  FC: salem_model_2002__FC(FC1, v100, v40, v120, v150, v160, time_);
+  CoA_pool: salem_model_2002__CoA_pool(CoA_pool0, v150, v160, time_);
+  O2: salem_model_2002__O2(O20, F, v20, time_);
+  CO2: salem_model_2002__CO2(CO20, F, v100, v120, time_);
+  NAD: salem_model_2002__NAD(NAD0, v50, v110, v90, v100, v120, v40, v20, time_);
+  ADP: salem_model_2002__ADP(ADP0, v18, v50, v60, v120, v40, v30, v20, v140, v130, v170, time_);
+  PC: salem_model_2002__PC(PC0, v130, v140, time_);
+  CR: salem_model_2002__CR(CR0, v130, v140, time_);
+  ATP: salem_model_2002__ATP(ATP0);
+  NADH: salem_model_2002__NADH(NADH0);
+  CS0: salem_model_2002__CS0(CS00);
+  PS0: salem_model_2002__PS0(PS00);
+  RS0: salem_model_2002__RS0(RS00);
+  AF0: salem_model_2002__AF0(AF00);
+  FC0: salem_model_2002__FC0(FC00);
+  CS: salem_model_2002__CS(CS1, CR0, PC0);
+  RS: salem_model_2002__RS(RS1, NADH0, NAD0);
+  PS: salem_model_2002__PS(PS1, ADP0, ATP0);
+  AF: salem_model_2002__AF(AF1, AC0, FC1);
+  model_parameters: salem_model_2002__model_parameters(F, time_);
+end

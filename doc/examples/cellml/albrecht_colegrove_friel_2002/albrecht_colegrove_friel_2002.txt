@@ -1,0 +1,81 @@
+//Created by libAntimony v1.3
+model albrecht_colegrove_friel_2002_version01__environment(time_)
+end
+
+model albrecht_colegrove_friel_2002_version01__cytoplasmic_calcium(Ca_i, J_ER, J_pm, time_)
+
+  // Assignment Rules:
+  J_i := J_pm + J_ER;
+
+  // Rate Rules:
+  Ca_i' = -( J_i );
+end
+
+model albrecht_colegrove_friel_2002_version01__intraluminal_calcium(Ca_ER, Ca_i, v_i, k_i, J_ER, P_ER, J_SERCA, time_)
+
+  // Assignment Rules:
+  Ca_ER_init := Ca_i + J_SERCA * Ca_i / ( P_ER * ( Ca_i / v_i ));
+
+  // Rate Rules:
+  Ca_ER' = J_ER * ( v_i * k_i / ( v_ER * k_ER ));
+end
+
+model albrecht_colegrove_friel_2002_version01__total_cytoplasmic_Ca_flux(J_ICa, v_i, k_i, time_)
+
+  // Assignment Rules:
+  J_ICa := I_Ca / ( 2.0 * F * v_i * k_i );
+
+  // Variable initializations:
+  F = 96.5;
+end
+
+model albrecht_colegrove_friel_2002_version01__Ca_extrusion_across_the_plasma_membrane(J_pm, J_ICa, k_i, Ca_i, time_)
+
+  // Assignment Rules:
+  J_pm := J_extru + J_ICa;
+  J_extru := power( k_i , -1.0 ) * ( k_leak_pm * ( Ca_i - Ca_o ) + Vmax_extru / ( 1.0 + power( EC50_extru / Ca_i , n_extru )));
+
+  // Variable initializations:
+  k_leak_pm = 0.00000015;
+  Vmax_extru = 25.0;
+  EC50_extru = 386.0;
+  n_extru = 2.4;
+  Ca_o = 2.0;
+end
+
+model albrecht_colegrove_friel_2002_version01__Ca_uptake_by_SR_Ca_ATPase(J_SERCA, k_i, Ca_i, time_)
+
+  // Assignment Rules:
+  J_SERCA := Vmax_SERCA / ( k_i * ( 1.0 + power( EC50_SERCA / Ca_i , n_SERCA )));
+
+  // Variable initializations:
+  Vmax_SERCA = 2146.0;
+  EC50_SERCA = 30.3;
+  n_SERCA = 2.5;
+end
+
+model albrecht_colegrove_friel_2002_version01__ER_Ca_release(J_ER, P_ER, J_SERCA, v_i, k_i, Ca_i, Ca_ER, time_)
+
+  // Assignment Rules:
+  J_ER := J_SERCA + J_release;
+  P_ER := v_i * ( P_basal + Pmax_RyR / ( 1.0 + power( EC50_RyR / Ca_i , n_RyR )));
+  J_release := P_ER * ( Ca_i - Ca_ER ) / ( v_i * k_i );
+
+  // Variable initializations:
+  P_basal = 0.009;
+  Pmax_RyR = 0.05;
+  EC50_RyR = 2641.0;
+  n_RyR = 0.96;
+end
+
+model albrecht_colegrove_friel_2002_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: albrecht_colegrove_friel_2002_version01__environment(time_);
+  cytoplasmic_calcium: albrecht_colegrove_friel_2002_version01__cytoplasmic_calcium(Ca_i, J_ER, J_pm, time_);
+  intraluminal_calcium: albrecht_colegrove_friel_2002_version01__intraluminal_calcium(Ca_ER, Ca_i, v_i, k_i, J_ER, P_ER, J_SERCA, time_);
+  total_cytoplasmic_Ca_flux: albrecht_colegrove_friel_2002_version01__total_cytoplasmic_Ca_flux(J_ICa, v_i, k_i, time_);
+  Ca_extrusion_across_the_plasma_membrane: albrecht_colegrove_friel_2002_version01__Ca_extrusion_across_the_plasma_membrane(J_pm, J_ICa, k_i, Ca_i, time_);
+  Ca_uptake_by_SR_Ca_ATPase: albrecht_colegrove_friel_2002_version01__Ca_uptake_by_SR_Ca_ATPase(J_SERCA, k_i, Ca_i, time_);
+  ER_Ca_release: albrecht_colegrove_friel_2002_version01__ER_Ca_release(J_ER, P_ER, J_SERCA, v_i, k_i, Ca_i, Ca_ER, time_);
+end

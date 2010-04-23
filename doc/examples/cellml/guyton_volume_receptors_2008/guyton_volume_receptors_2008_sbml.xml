@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="volume_receptors_CellML1_0_model____main" name="volume_receptors_CellML1_0_model____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="PRA" value="0.00852183"/>
+      <parameter id="volume_receptors_AH10" value="0.333"/>
+      <parameter id="volume_receptors_AH11" value="1000"/>
+      <parameter id="volume_receptors_AH9" value="1"/>
+      <parameter id="volume_receptors_ATRFBM" value="0"/>
+      <parameter id="volume_receptors_ATRVM" value="0"/>
+      <parameter id="volume_receptors_AHZ" constant="false"/>
+      <parameter id="volume_receptors_effect_of_pressure_on_volume_receptors_AHZ1" constant="false"/>
+      <parameter id="volume_receptors_AHY" value="0.301963" constant="false"/>
+      <parameter id="volume_receptors_AH7" constant="false"/>
+      <parameter id="volume_receptors_ATRRFB" constant="false"/>
+      <parameter id="volume_receptors_ATRVFB" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="volume_receptors_AHZ"/>
+      <assignmentRule variable="volume_receptors_effect_of_pressure_on_volume_receptors_AHZ1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <power/>
+              <apply>
+                <abs/>
+                <ci> PRA </ci>
+              </apply>
+              <ci> volume_receptors_AH10 </ci>
+            </apply>
+            <ci> volume_receptors_AH9 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="volume_receptors_AHY">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> volume_receptors_AHZ </ci>
+              <ci> volume_receptors_AHY </ci>
+            </apply>
+            <ci> volume_receptors_AH11 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="volume_receptors_AH7">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> volume_receptors_AHZ </ci>
+            <ci> volume_receptors_AHY </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="volume_receptors_ATRRFB">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> volume_receptors_AH7 </ci>
+              <ci> volume_receptors_ATRFBM </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="volume_receptors_ATRVFB">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> volume_receptors_AH7 </ci>
+            <ci> volume_receptors_ATRVM </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

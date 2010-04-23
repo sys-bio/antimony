@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="gall_susa_1999_version01____main" name="gall_susa_1999_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="V" constant="false"/>
+      <parameter id="membrane_Cm" value="5310"/>
+      <parameter id="i_Ca" constant="false"/>
+      <parameter id="i_K" constant="false"/>
+      <parameter id="i_K_Ca" constant="false"/>
+      <parameter id="i_Na_Ca" constant="false"/>
+      <parameter id="V_K" value="-75"/>
+      <parameter id="rapidly_activating_K_current_g_K" value="2500"/>
+      <parameter id="n" constant="false"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_n_infinity" constant="false"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_lamda" value="1.6"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_tau_n" constant="false"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_V_n" value="-15"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_S_n" value="5.6"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_a" value="65"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_b" value="20"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_c" value="6"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_V_" value="-75"/>
+      <parameter id="calcium_current_V_Ca" value="110"/>
+      <parameter id="calcium_current_g_Ca" value="1400"/>
+      <parameter id="m_infinity" constant="false"/>
+      <parameter id="h" constant="false"/>
+      <parameter id="calcium_current_calcium_current_m_gate_V_m" value="4"/>
+      <parameter id="calcium_current_calcium_current_m_gate_S_m" value="14"/>
+      <parameter id="calcium_current_calcium_current_h_gate_V_h" value="-10"/>
+      <parameter id="calcium_current_calcium_current_h_gate_S_h" value="-10"/>
+      <parameter id="calcium_activated_K_current_g_K_Ca" value="30000"/>
+      <parameter id="calcium_activated_K_current_K_d" value="100"/>
+      <parameter id="Ca_i" constant="false"/>
+      <parameter id="Na_Ca_exchanger_current_g_Na_Ca" value="234"/>
+      <parameter id="Na_Ca_exchanger_current_K_1_2" value="1.5"/>
+      <parameter id="Na_Ca_exchanger_current_V_Na_Ca" constant="false"/>
+      <parameter id="Na_Ca_exchanger_current_RT_F" value="26.54"/>
+      <parameter id="Na_Ca_exchanger_current_nH" value="5"/>
+      <parameter id="Ca_o" value="2600"/>
+      <parameter id="Na_i" value="10"/>
+      <parameter id="Na_o" value="140"/>
+      <parameter id="ionic_concentrations_f" value="0.001"/>
+      <parameter id="ionic_concentrations_k_Ca" value="0.03"/>
+      <parameter id="ionic_concentrations_alpha" value="4.5055e-06"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> i_K </ci>
+                <ci> i_Ca </ci>
+                <ci> i_K_Ca </ci>
+                <ci> i_Na_Ca </ci>
+              </apply>
+            </apply>
+            <ci> membrane_Cm </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="i_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_current_g_Ca </ci>
+            <ci> m_infinity </ci>
+            <ci> h </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> calcium_current_V_Ca </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_K">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> rapidly_activating_K_current_g_K </ci>
+            <ci> n </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_K_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_activated_K_current_g_K_Ca </ci>
+            <apply>
+              <divide/>
+              <ci> Ca_i </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> calcium_activated_K_current_K_d </ci>
+                  <ci> Ca_i </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <ci> V </ci>
+                  <ci> V_K </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_Na_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Na_Ca_exchanger_current_g_Na_Ca </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <ci> Ca_i </ci>
+                <ci> Na_Ca_exchanger_current_nH </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> Na_Ca_exchanger_current_K_1_2 </ci>
+                    <ci> Na_Ca_exchanger_current_nH </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> Ca_i </ci>
+                    <ci> Na_Ca_exchanger_current_nH </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <minus/>
+                  <ci> V </ci>
+                  <ci> Na_Ca_exchanger_current_V_Na_Ca </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_lamda </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_n_infinity </ci>
+                <ci> n </ci>
+              </apply>
+              <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_tau_n </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_n_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_V_n </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_S_n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_tau_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_c </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> V </ci>
+                    <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_V_ </ci>
+                  </apply>
+                  <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_a </ci>
+                </apply>
+              </apply>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_V_ </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_b </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="m_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> calcium_current_calcium_current_m_gate_V_m </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> calcium_current_calcium_current_m_gate_S_m </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> calcium_current_calcium_current_h_gate_V_h </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> calcium_current_calcium_current_h_gate_S_h </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ionic_concentrations_f </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> ionic_concentrations_alpha </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <ci> i_Ca </ci>
+                  <apply>
+                    <times/>
+                    <cn> 2 </cn>
+                    <ci> i_Na_Ca </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ionic_concentrations_k_Ca </ci>
+                <ci> Ca_i </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Na_Ca_exchanger_current_V_Na_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Na_Ca_exchanger_current_RT_F </ci>
+            <cn> 3 </cn>
+            <apply>
+              <ln/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <ci> Na_o </ci>
+                  <ci> Na_i </ci>
+                </apply>
+                <apply>
+                  <ln/>
+                  <apply>
+                    <divide/>
+                    <ci> Ca_o </ci>
+                    <ci> Ca_i </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="oomens_maenhout_vanoijen_drost_baaijens_2003_version01____main" name="oomens_maenhout_vanoijen_drost_baaijens_2003_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="r0" constant="false"/>
+      <parameter id="mu" value="0.2"/>
+      <parameter id="Ct0" constant="false"/>
+      <parameter id="Ct_Ct_initial" constant="false"/>
+      <parameter id="Ct_km" value="0.006"/>
+      <parameter id="Ct_tau0" value="9.2"/>
+      <parameter id="rho" value="2.9"/>
+      <parameter id="chi0" constant="false"/>
+      <parameter id="Ca_in0" constant="false"/>
+      <parameter id="chi_chi_" constant="false"/>
+      <parameter id="chi_tau1" value="0.005"/>
+      <parameter id="chi_tau2" value="0.001"/>
+      <parameter id="time_"/>
+      <parameter id="c"/>
+      <parameter id="Ct_b"/>
+      <parameter id="Ct_Q0"/>
+      <parameter id="c_"/>
+      <parameter id="chi_i"/>
+      <parameter id="chi_time_i"/>
+      <parameter id="chi_sum"/>
+      <parameter id="chi_domainofapplication"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="r0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <ci> c </ci>
+              <cn> 2 </cn>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> c </ci>
+                <cn> 2 </cn>
+              </apply>
+              <apply>
+                <times/>
+                <ci> mu </ci>
+                <ci> c </ci>
+              </apply>
+              <apply>
+                <power/>
+                <ci> mu </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ct0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> c </ci>
+                  <ci> c_ </ci>
+                </apply>
+              </apply>
+              <ci> chi0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <power/>
+                <ci> Ct_tau0 </ci>
+                <cn> -1 </cn>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> c </ci>
+                <apply>
+                  <plus/>
+                  <ci> c </ci>
+                  <ci> Ct_km </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Ct_Ct_initial">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> c </ci>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> Ct_b </ci>
+              <ci> Ct_Q0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> r0 </ci>
+              <apply>
+                <plus/>
+                <cn> 2 </cn>
+                <apply>
+                  <divide/>
+                  <ci> mu </ci>
+                  <ci> c </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> Ct_b </ci>
+                  <ci> Ct_Q0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="chi0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> chi_sum </ci>
+            <apply>
+              <ci> chi_domainofapplication </ci>
+              <ci> chi_i </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> chi_chi_ </ci>
+              <apply>
+                <minus/>
+                <ci> time_ </ci>
+                <ci> chi_time_i </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_in0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> rho </ci>
+            <apply>
+              <minus/>
+              <cn> 2 </cn>
+              <apply>
+                <divide/>
+                <ci> c </ci>
+                <ci> c_ </ci>
+              </apply>
+            </apply>
+            <ci> chi0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="chi_chi_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> time_ </ci>
+                  </apply>
+                  <ci> chi_tau1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> time_ </ci>
+                  </apply>
+                  <ci> chi_tau2 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> chi_tau1 </ci>
+              <ci> chi_tau2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

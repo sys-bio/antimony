@@ -1,0 +1,819 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to translate an assignment to "del(TCa)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(TMon)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(M_ATP)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(M_ADP_Pi)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A_M__ADP_Pi)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A_M_ADP_Pi)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A_M__ADP)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A_M_ADP)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A_M)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A__M_ATP)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(M)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(M_ADP)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+
+model seemann_sachse_weib_dossel_2003_version01__environment(time_)
+end
+
+model seemann_sachse_weib_dossel_2003_version01__membrane(V, R, T, F, time_, i_Na, i_Ca, i_to, i_Kr, i_Ks, i_K1, i_NaCa, i_NaK, i_b_Na, i_b_Ca)
+
+  // Rate Rules:
+  V' = -(( 1.0 / Cm )) * ( i_Na + i_Ca + i_to + i_Kr + i_Ks + i_K1 + i_NaCa + i_NaK + i_b_Na + i_b_Ca + I_st );
+
+  // Variable initializations:
+  V = -84.624;
+  R = 8314.0;
+  T = 310.0;
+  F = 96500.0;
+  Cm = 1.0;
+  I_st = -100.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__fast_sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := 0.32 * ( V + 47.13 ) / ( 1.0 - exp( -0.1 * ( V + 47.13 )));
+  beta_m := 0.08 * exp(-( V ) / 11.0 );
+
+  // Rate Rules:
+  m' = alpha_m * ( 1.0 - m ) - beta_m * m;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__fast_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := piecewise( 0.135 * exp(( 80.0 + V ) / -6.8 ) , V < -40.0 , 0.0 );
+  beta_h := piecewise( 3.56 * exp( 0.079 * V ) + 31.0E5 * exp( 0.35 * V ) , V < -40.0 , 1.0 / ( 0.13 * ( 1.0 + exp(-(( V + 10.66 )) / 11.1 ))) );
+
+  // Rate Rules:
+  h' = alpha_h * ( 1.0 - h ) - beta_h * h;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__fast_sodium_current_j_gate(j, V, time_)
+
+  // Assignment Rules:
+  alpha_j := piecewise( ( -127140.0 * exp( 0.2444 * V ) - 0.00003474 * exp( -0.04391 * V )) * (( V + 37.78 ) / ( 1.0 + exp( 0.311 * ( V + 79.23 )))) , V < -40.0 , 0.0 );
+  beta_j := piecewise( 0.1212 * exp( -0.01052 * V ) / ( 1.0 + exp( -0.1378 * ( V + 40.14 ))) , V < -40.0 , 0.3 * exp( -0.0000002535 * V ) / ( 1.0 + exp( -0.1 * ( V + 32.0 ))) );
+
+  // Rate Rules:
+  j' = alpha_j * ( 1.0 - j ) - beta_j * j;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__fast_sodium_current(i_Na, E_Na, time_, V, R, F, T, Nai, Nao, m, h, j)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: seemann_sachse_weib_dossel_2003_version01__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: seemann_sachse_weib_dossel_2003_version01__fast_sodium_current_h_gate(h, V, time_);
+  fast_sodium_current_j_gate: seemann_sachse_weib_dossel_2003_version01__fast_sodium_current_j_gate(j, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power( m , 3.0 ) * h * j * ( V - E_Na );
+  E_Na := R * T / F * ln( Nao / Nai );
+
+  // Variable initializations:
+  g_Na = 16.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__slow_calcium_current_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  alpha_d := 14.98 / ( 16.68 * power( 2.0 * pi(), 0.5 ) * exp(-(power(( V - 22.36 ) / 16.68 , 2.0 )) / 2.0 ));
+  beta_d := 0.1471 - 5.3 / ( 14.93 * power( 2.0 * pi(), 0.5 ) * exp(-(power(( V - 6.27 ) / 14.93 , 2.0 )) / 2.0 ));
+
+  // Rate Rules:
+  d' = alpha_d * ( 1.0 - d ) - beta_d * d;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__slow_calcium_current_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  alpha_f := 6.87E-3 / ( 1.0 + exp(( 6.1546 - V ) / -6.12 ));
+  beta_f := 0.069 * exp( -0.11 * ( V + 9.825 ) + 0.011 ) / ( 1.0 + exp( -0.278 * ( V + 9.825 )) - 5.75E-4 );
+
+  // Rate Rules:
+  f' = alpha_f * ( 1.0 - f ) - beta_f * f;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__slow_calcium_current_f_Ca_gate(f_Ca, V, time_, Cai)
+
+  // Assignment Rules:
+  f_Ca := 1.0 / ( 1.0 + Cai / Km_Ca );
+
+  // Variable initializations:
+  Km_Ca = 600.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__slow_calcium_current(i_Ca, E_Ca, time_, V, Cai, R, T, F, Cao, d, f, f_Ca)
+
+  // Sub-modules, and any changes to those submodules:
+  slow_calcium_current_d_gate: seemann_sachse_weib_dossel_2003_version01__slow_calcium_current_d_gate(d, V, time_);
+  slow_calcium_current_f_gate: seemann_sachse_weib_dossel_2003_version01__slow_calcium_current_f_gate(f, V, time_);
+  slow_calcium_current_f_Ca_gate: seemann_sachse_weib_dossel_2003_version01__slow_calcium_current_f_Ca_gate(f_Ca, V, time_, Cai);
+
+  // Assignment Rules:
+  i_Ca := g_Ca_max * d * f * f_Ca * ( V - E_Ca );
+  E_Ca := R * T / ( 2.0 * F ) * ln( Cao / Cai );
+
+  // Variable initializations:
+  g_Ca_max = 0.064;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__transient_outward_current_r_gate(r, V, time_)
+
+  // Assignment Rules:
+  F1_alpha_r := F1_alpha_r_a * exp( F1_alpha_r_b * ( V + F1_alpha_r_c ) + F1_alpha_r_d ) + F1_alpha_r_e;
+  F2_alpha_r := F2_alpha_r_a * exp( F2_alpha_r_b * ( V + F2_alpha_r_c ) + F2_alpha_r_d ) + F2_alpha_r_e;
+  alpha_r := F1_alpha_r / F2_alpha_r;
+  F1_beta_r := F1_beta_r_a * exp( F1_beta_r_b * ( V + F1_beta_r_c ) + F1_beta_r_d ) + F1_beta_r_e;
+  F2_beta_r := F2_beta_r_a * exp( F2_beta_r_b * ( V + F2_beta_r_c ) + F2_beta_r_d ) + F2_beta_r_e;
+  beta_r := F1_beta_r / F2_beta_r;
+  F1_beta_r_e := 0.00006 * V;
+
+  // Rate Rules:
+  r' = alpha_r * ( 1.0 - r ) - beta_r * r;
+
+  // Variable initializations:
+  F1_alpha_r_a = 0.5266;
+  F1_alpha_r_b = -0.01394;
+  F1_alpha_r_c = -53.2869;
+  F1_alpha_r_d = 0.0;
+  F1_alpha_r_e = 0.0;
+  F1_beta_r_a = 0.5149;
+  F1_beta_r_b = -0.16128;
+  F1_beta_r_c = -3.11768;
+  F1_beta_r_d = 0.0;
+  F2_alpha_r_a = 1.0;
+  F2_alpha_r_b = -0.07544;
+  F2_alpha_r_c = -53.2869;
+  F2_alpha_r_d = 0.0;
+  F2_alpha_r_e = 1.0;
+  F2_beta_r_a = 1.0;
+  F2_beta_r_b = -0.1348;
+  F2_beta_r_c = -0.00006;
+  F2_beta_r_d = 0.0;
+  F2_beta_r_e = 1.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__transient_outward_current_t_gate(t, V, time_)
+
+  // Assignment Rules:
+  F1_alpha_t := F1_alpha_t_a * exp( F1_alpha_t_b * ( V + F1_alpha_t_c ) + F1_alpha_t_d ) + F1_alpha_t_e;
+  F2_alpha_t := F2_alpha_t_a * exp( F2_alpha_t_b * ( V + F2_alpha_t_c ) + F2_alpha_t_d ) + F2_alpha_t_e;
+  alpha_t := F1_alpha_t / F2_alpha_t;
+  F1_beta_t := F1_beta_t_a * exp( F1_beta_t_b * ( V + F1_beta_t_c ) + F1_beta_t_d ) + F1_beta_t_e;
+  F2_beta_t := F2_beta_t_a * exp( F2_beta_t_b * ( V + F2_beta_t_c ) + F2_beta_t_d ) + F2_beta_t_e;
+  beta_t := F1_beta_t / F2_beta_t;
+  F1_alpha_t_e := 0.00007 * V;
+  F1_beta_t_e := 0.0001215 * V;
+
+  // Rate Rules:
+  t' = alpha_t * ( 1.0 - t ) - beta_t * t;
+
+  // Variable initializations:
+  F1_alpha_t_a = 0.0721;
+  F1_alpha_t_b = -0.13148;
+  F1_alpha_t_c = 26.0324;
+  F1_alpha_t_d = 0.0;
+  F1_beta_t_a = 0.0767;
+  F1_beta_t_b = 1.6E-9;
+  F1_beta_t_c = 34.0235;
+  F1_beta_t_d = 0.0;
+  F2_alpha_t_a = 1.0;
+  F2_alpha_t_b = -.0237871;
+  F2_alpha_t_c = 26.0324;
+  F2_alpha_t_d = 0.0;
+  F2_alpha_t_e = 1.0;
+  F2_beta_t_a = 1.0;
+  F2_beta_t_b = -0.1604;
+  F2_beta_t_c = 34.0235;
+  F2_beta_t_d = 0.0;
+  F2_beta_t_e = 1.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__transient_outward_current(i_to, Nai, Nao, Ki, Ko, R, F, T, V, time_, t, r)
+
+  // Sub-modules, and any changes to those submodules:
+  transient_outward_current_r_gate: seemann_sachse_weib_dossel_2003_version01__transient_outward_current_r_gate(r, V, time_);
+  transient_outward_current_t_gate: seemann_sachse_weib_dossel_2003_version01__transient_outward_current_t_gate(t, V, time_);
+
+  // Assignment Rules:
+  i_to := g_to_max * r * t * ( V - E_to );
+  E_to := R * T / F * ln(( 0.043 * Nao + Ko ) / ( 0.043 * Nai + Ki ));
+
+  // Variable initializations:
+  g_to_max = 0.1301;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__slowly_activating_delayed_rectifier_potassium_current_Xs_gate(Xs, V, time_)
+
+  // Assignment Rules:
+  F1_alpha_Xs := F1_alpha_Xs_a * exp( F1_alpha_Xs_b * ( V + F1_alpha_Xs_c ) + F1_alpha_Xs_d ) + F1_alpha_Xs_e;
+  F2_alpha_Xs := F2_alpha_Xs_a * exp( F2_alpha_Xs_b * ( V + F2_alpha_Xs_c ) + F2_alpha_Xs_d ) + F2_alpha_Xs_e;
+  alpha_Xs := F1_alpha_Xs / F2_alpha_Xs;
+  F1_beta_Xs := F1_beta_Xs_a * exp( F1_beta_Xs_b * ( V + F1_beta_Xs_c ) + F1_beta_Xs_d ) + F1_beta_Xs_e;
+  F2_beta_Xs := F2_beta_Xs_a * exp( F2_beta_Xs_b * ( V + F2_beta_Xs_c ) + F2_beta_Xs_d ) + F2_beta_Xs_e;
+  beta_Xs := F1_beta_Xs / F2_beta_Xs;
+
+  // Rate Rules:
+  Xs' = alpha_Xs * ( 1.0 - Xs ) - beta_Xs * Xs;
+
+  // Variable initializations:
+  F1_alpha_Xs_a = 0.0;
+  F1_alpha_Xs_b = 0.0;
+  F1_alpha_Xs_c = 0.0;
+  F1_alpha_Xs_d = 0.0;
+  F1_alpha_Xs_e = 0.003013;
+  F1_beta_Xs_a = 0.0;
+  F1_beta_Xs_b = 0.0;
+  F1_beta_Xs_c = 0.0;
+  F1_beta_Xs_d = 0.0;
+  F1_beta_Xs_e = 0.005875;
+  F2_alpha_Xs_a = 1.0;
+  F2_alpha_Xs_b = -0.0593696;
+  F2_alpha_Xs_c = 13.0;
+  F2_alpha_Xs_d = 0.1888755;
+  F2_alpha_Xs_e = 1.0;
+  F2_beta_Xs_a = 1.0;
+  F2_beta_Xs_b = 0.0537295;
+  F2_beta_Xs_c = 10.0;
+  F2_beta_Xs_d = 0.3676441;
+  F2_beta_Xs_e = 1.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__slowly_activating_delayed_rectifier_potassium_current(i_Ks, Ki, Ko, Nai, Nao, R, F, T, time_, V, Xs)
+
+  // Sub-modules, and any changes to those submodules:
+  slowly_activating_delayed_rectifier_potassium_current_Xs_gate: seemann_sachse_weib_dossel_2003_version01__slowly_activating_delayed_rectifier_potassium_current_Xs_gate(Xs, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks_max * power( Xs , 2.0 ) * ( V - E_Ks );
+  E_Ks := R * T / F * (ln( 0.01833 * Nao + Ko ) / ln( 0.01833 * Nai + Ki ));
+
+  // Variable initializations:
+  g_Ks_max = 0.0382;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__rapidly_activating_delayed_rectifier_potassium_current_Xr_gate(Xr, V, time_)
+
+  // Assignment Rules:
+  F1_alpha_Xr := F1_alpha_Xr_a * exp( F1_alpha_Xr_b * ( V + F1_alpha_Xr_c ) + F1_alpha_Xr_d ) + F1_alpha_Xr_e;
+  F2_alpha_Xr := F2_alpha_Xr_a * exp( F2_alpha_Xr_b * ( V + F2_alpha_Xr_c ) + F2_alpha_Xr_d ) + F2_alpha_Xr_e;
+  alpha_Xr := F1_alpha_Xr / F2_alpha_Xr;
+  F1_beta_Xr := F1_beta_Xr_a * exp( F1_beta_Xr_b * ( V + F1_beta_Xr_c ) + F1_beta_Xr_d ) + F1_beta_Xr_e;
+  F2_beta_Xr := F2_beta_Xr_a * exp( F2_beta_Xr_b * ( V + F2_beta_Xr_c ) + F2_beta_Xr_d ) + F2_beta_Xr_e;
+  beta_Xr := F1_beta_Xr / F2_beta_Xr;
+
+  // Rate Rules:
+  Xr' = alpha_Xr * ( 1.0 - Xr ) - beta_Xr * Xr;
+
+  // Variable initializations:
+  F1_alpha_Xr_a = 0.005;
+  F1_alpha_Xr_b = 0.00044761;
+  F1_alpha_Xr_c = 2.23685;
+  F1_alpha_Xr_d = 0.0;
+  F1_alpha_Xr_e = 0.0;
+  F1_beta_Xr_a = 0.016;
+  F1_beta_Xr_b = 0.00232;
+  F1_beta_Xr_c = 55.811;
+  F1_beta_Xr_d = 0.0;
+  F1_beta_Xr_e = 0.0;
+  F2_alpha_Xr_a = 1.0;
+  F2_alpha_Xr_b = -0.10727;
+  F2_alpha_Xr_c = 2.23685;
+  F2_alpha_Xr_d = 0.0;
+  F2_alpha_Xr_e = 0.0;
+  F2_beta_Xr_a = 1.0;
+  F2_beta_Xr_b = 0.066555;
+  F2_beta_Xr_c = 55.811;
+  F2_beta_Xr_d = 0.0;
+  F2_beta_Xr_e = 0.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__rapidly_activating_delayed_rectifier_potassium_current(i_Kr, E_K, Ki, Ko, R, F, T, time_, V, Xr)
+
+  // Sub-modules, and any changes to those submodules:
+  rapidly_activating_delayed_rectifier_potassium_current_Xr_gate: seemann_sachse_weib_dossel_2003_version01__rapidly_activating_delayed_rectifier_potassium_current_Xr_gate(Xr, V, time_);
+
+  // Assignment Rules:
+  i_Kr := g_Kr_max * ( 1.0 / FCIKr ) * Xr * ( V - E_K );
+  E_K := R * T / F * ln( Ko / Ki );
+  FCIKr := FCIKr_a * exp( FCIKr_b * ( V + FCIKr_c ) + FCIKr_d ) + FCIKr_e;
+
+  // Variable initializations:
+  g_Kr_max = 0.02;
+  FCIKr_a = 1.0;
+  FCIKr_b = 0.023913;
+  FCIKr_c = 29.9;
+  FCIKr_d = 0.0;
+  FCIKr_e = 1.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__inward_rectifier_potassium_current_K1_gate(alpha_K1, beta_K1, E_K, V, time_)
+
+  // Assignment Rules:
+  F1_alpha_K1 := F1_alpha_K1_a * exp( F1_alpha_K1_b * ( V + F1_alpha_K1_c ) + F1_alpha_K1_d ) + F1_alpha_K1_e;
+  F2_alpha_K1 := F2_alpha_K1_a * exp( F2_alpha_K1_b * ( V + F2_alpha_K1_c ) + F2_alpha_K1_d ) + F2_alpha_K1_e;
+  alpha_K1 := F1_alpha_K1 / F2_alpha_K1;
+  F1_beta_K1 := F1_beta_K1_a * exp( F1_beta_K1_b * ( V + F1_beta_K1_c ) + F1_beta_K1_d ) + F1_beta_K1_e;
+  F2_beta_K1 := F2_beta_K1_a * exp( F2_beta_K1_b * ( V + F2_beta_K1_c ) + F2_beta_K1_d ) + F2_beta_K1_e;
+  F3_beta_K1 := F3_beta_K1_a * exp( F3_beta_K1_b * ( V + F3_beta_K1_c ) + F3_beta_K1_d ) + F3_beta_K1_e;
+  beta_K1 := ( F1_beta_K1 + F2_beta_K1 ) / F3_beta_K1;
+  F1_beta_K1_c := 94.0 - E_K;
+  F2_alpha_K1_c := 206.0 - E_K;
+  F2_beta_K1_c := -16.0 - E_K;
+  F3_beta_K1_c := 4.0 - E_K;
+
+  // Variable initializations:
+  F1_alpha_K1_a = 0.0;
+  F1_alpha_K1_b = 0.0;
+  F1_alpha_K1_c = 0.0;
+  F1_alpha_K1_d = 0.0;
+  F1_alpha_K1_e = 0.3;
+  F1_beta_K1_a = 3.0;
+  F1_beta_K1_b = 0.0002;
+  F1_beta_K1_d = 0.0;
+  F1_beta_K1_e = 0.0;
+  F2_alpha_K1_a = 1.0;
+  F2_alpha_K1_b = 0.06;
+  F2_alpha_K1_d = 0.0;
+  F2_alpha_K1_e = 1.0;
+  F2_beta_K1_a = 1.0;
+  F2_beta_K1_b = 0.191;
+  F2_beta_K1_d = 0.0;
+  F2_beta_K1_e = 0.0;
+  F3_beta_K1_a = 1.0;
+  F3_beta_K1_b = -0.5;
+  F3_beta_K1_d = 0.0;
+  F3_beta_K1_e = 10.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__inward_rectifier_potassium_current(i_K1, time_, V, E_K, alpha_K1, beta_K1)
+
+  // Sub-modules, and any changes to those submodules:
+  inward_rectifier_potassium_current_K1_gate: seemann_sachse_weib_dossel_2003_version01__inward_rectifier_potassium_current_K1_gate(alpha_K1, beta_K1, E_K, V, time_);
+
+  // Assignment Rules:
+  i_K1 := g_K1_max * ( alpha_K1 / ( alpha_K1 + beta_K1 )) * ( V - ( E_K + Vs ));
+
+  // Variable initializations:
+  g_K1_max = 0.41;
+  Vs = 6.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__calcium_background_current(i_b_Ca, E_Ca, time_, V)
+
+  // Assignment Rules:
+  i_b_Ca := g_b_Ca_max * ( V - E_Ca );
+
+  // Variable initializations:
+  g_b_Ca_max = 0.00085;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__sodium_background_current(i_b_Na, E_Na, time_, V)
+
+  // Assignment Rules:
+  i_b_Na := g_b_Na_max * ( V - E_Na );
+
+  // Variable initializations:
+  g_b_Na_max = 0.001;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__sodium_potassium_pump(i_NaK, time_, V, R, T, F, Nai, Nao, Ko)
+
+  // Assignment Rules:
+  i_NaK := I_NaK * f_NaK * ( 1.0 / (( 1.0 + power( K_mNai / Nai , 1.5 )) * ( Ko / ( Ko + K_mKo ))));
+  f_NaK := 1.0 / ( 1.0 + 0.1245 * exp( -0.1 * ( V * F / ( R * T ))) + 0.0365 * sigma * exp(-( V ) * F / ( R * T )));
+  sigma := 1.0 / 7.0 * (exp( Nao / 67.3 ) - 1.0 );
+
+  // Variable initializations:
+  I_NaK = 1.3;
+  K_mNai = 10.0;
+  K_mKo = 1.5;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__Na_Ca_exchanger(i_NaCa, time_, V, R, T, F, Nai, Nao, Cai, Cao)
+
+  // Assignment Rules:
+  i_NaCa := K_NaCa * ( 1.0 / (power( K_mNa , 3.0 ) + power( Nao , 3.0 ))) * ( 1.0 / ( K_mCa + Cao )) * ( 1.0 / ( 1.0 + K_sat * exp(( eta - 1.0 ) * V * ( F / ( R * T ))))) * (exp( eta * V * ( F / ( R * T ))) * power( Nai , 3.0 ) * Cao - exp(( eta - 1.0 ) * V * ( F / ( R * T ))) * power( Nao , 3.0 ) * Cai );
+
+  // Variable initializations:
+  K_NaCa = 1000.0;
+  K_mNa = 82.5;
+  K_mCa = 1.38;
+  K_sat = 0.1;
+  eta = 0.35;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__CICR_of_JSR(i_rel, time_, Cai, Ca_JSR)
+
+  // Assignment Rules:
+  i_rel := G_rel * ( Ca_JSR - Cai );
+  G_rel := piecewise( G_rel_max * (( delta_Ca_i2 - delta_Ca_ith ) / ( K_mrel + delta_Ca_i2 - delta_Ca_ith )) * ( 1.0 - exp(-(( time_ / tau_on )))) * exp(-( time_ ) / tau_off ) , calcium_overload == 0.0 , G_rel_max * ( Ca_JSR - Cai ) * ( 1.0 - exp(-( time_ ) / tau_on )) * exp(-( time_ ) / tau_off ) );
+
+  // Variable initializations:
+  G_rel_max = -22.0;
+  K_mrel = 0.8;
+  tau_on = 4.0;
+  tau_off = 4.0;
+  delta_Ca_ith = 0.005;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__Ca_uptake_of_NSR(i_up, time_, Cai)
+
+  // Assignment Rules:
+  i_up := I_up * ( Cai / ( Cai + K_mup ));
+
+  // Variable initializations:
+  I_up = 0.0045;
+  K_mup = 0.92;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__Ca_leakage_of_NSR(i_leak, time_, Ca_NSR)
+
+  // Assignment Rules:
+  i_leak := K_leak * Ca_NSR;
+
+  // Variable initializations:
+  K_leak = 0.00026;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__translocation_of_Ca_from_NSR_to_JSR(i_tr, time_, Ca_JSR, Ca_NSR)
+
+  // Assignment Rules:
+  i_tr := ( Ca_NSR - Ca_JSR ) / tau_tr;
+
+  // Variable initializations:
+  tau_tr = 180.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__calcium_buffers_in_the_myoplasm(time_, Cai)
+
+  // Assignment Rules:
+  Tn_buff := Tn_max * ( Cai / ( Cai + K_mTn ));
+  CMDN_buff := CMDN_max * ( Cai / ( Cai + K_mCMDN ));
+
+  // Variable initializations:
+  K_mTn = 0.5;
+  K_mCMDN = 2.38;
+  Tn_max = 70.0;
+  CMDN_max = 50.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__calcium_buffers_in_the_JSR(time_, Ca_JSR)
+
+  // Assignment Rules:
+  CSQN_buff := CSQN_max * ( Ca_JSR / ( Ca_JSR + K_mCSQN ));
+
+  // Variable initializations:
+  CSQN_max = 10.0;
+  K_mCSQN = 0.8;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__ionic_concentrations(Nai, Nao, Cai, Cao, Ki, Ko, Ca_JSR, Ca_NSR, time_, F, i_Na, i_b_Na, i_NaCa, i_NaK, i_Ca, i_b_Ca, i_Kr, i_K1, i_Ks, i_to, i_tr, i_rel, i_leak, i_up)
+
+  // Rate Rules:
+  Nai' = -(( i_Na + i_b_Na + i_NaCa * 3.0 + i_NaK * 3.0 )) * ( A_cap / ( V_myo * F ));
+  Cai' = ( i_Ca + i_b_Ca - i_NaCa ) * ( A_cap / ( 2.0 * V_myo * F )) + i_rel * ( V_JSR / V_myo ) + ( i_leak - i_up ) * ( V_NSR / V_myo );
+  Ki' = -(( i_to + i_Kr + i_K1 + i_Ks + -(( i_NaK * 2.0 )))) * ( A_cap / ( V_myo * F ));
+  Ko' = ( i_to + i_Kr + i_K1 + i_Ks + -(( i_NaK * 2.0 ))) * ( A_cap / ( V_cleft * F ));
+  Ca_JSR' = -(( i_rel - i_tr * ( V_NSR / V_JSR )));
+  Ca_NSR' = -(( i_leak + i_tr - i_up ));
+  Ca_foot' = -( i_Ca ) * ( A_cap / ( 2.0 * V_myo * F )) * R_A_V;
+
+  // Variable initializations:
+  Nai = 10.0;
+  Nao = 140.0;
+  Cai = 0.12;
+  Cao = 1.8;
+  Ki = 145.0;
+  Ko = 5.4;
+  Ca_NSR = 15.0;
+  A_cap = 0.000153;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__ATP(ATP)
+
+  // Variable initializations:
+  ATP = 4.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__T(T)
+
+  // Variable initializations:
+  T = 1.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__TCa(TCa, Cai, lamda, T, S_A_M, time_)
+
+  // Variable initializations:
+  TCa = 0.0;
+  kon = 100.0;
+  koff = 160.0;
+  TCa_lamda = 1.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__TMoff(TMoff)
+
+  // Variable initializations:
+  TMoff = 1.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__TMon(TMon, lamda, TMoff, TCa, time_)
+
+  // Variable initializations:
+  TMon = 0.0;
+  kmon = 60.0;
+  kmoff = 280.0;
+  TMoncoop = 2.0;
+  TMonpow = 2.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__M_ATP(M_ATP, t2, t3, t14, time_)
+
+  // Variable initializations:
+  M_ATP = 0.0385;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__M_ADP_Pi(M_ADP_Pi, t3, t4, t13, time_)
+
+  // Variable initializations:
+  M_ADP_Pi = 0.3846;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__A_M__ADP_Pi(A_M__ADP_Pi, t5, t4, time_)
+
+  // Variable initializations:
+  A_M__ADP_Pi = 0.5769;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__A_M_ADP_Pi(A_M_ADP_Pi, t5, t6, t13, time_)
+
+  // Variable initializations:
+  A_M_ADP_Pi = 0.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__A_M__ADP(A_M__ADP, t7, t6, t11, time_)
+
+  // Variable initializations:
+  A_M__ADP = 0.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__A_M_ADP(A_M_ADP, t7, t8, t10, time_)
+
+  // Variable initializations:
+  A_M_ADP = 0.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__A_M(A_M, t9, t8, t1, time_)
+
+  // Variable initializations:
+  A_M = 0.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__A__M_ATP(A__M_ATP, t1, t2, time_)
+
+  // Variable initializations:
+  A__M_ATP = 0.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__M(M, t9, t12, t14, time_)
+
+  // Variable initializations:
+  M = 0.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__M_ADP(M_ADP, t10, t12, t11, time_)
+
+  // Variable initializations:
+  M_ADP = 0.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__S_A_M(S_A_M, A_M, A_M_ADP_Pi, A_M__ADP, A_M_ADP)
+
+  // Assignment Rules:
+  S_A_M := A_M_ADP_Pi + A_M__ADP + A_M_ADP + A_M;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t1(t1, A_M, A__M_ATP, ATP)
+
+  // Assignment Rules:
+  t1 := k1 * ATP * A_M - k_1 * A__M_ATP;
+
+  // Variable initializations:
+  k1 = 1000.0;
+  k_1 = 10.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t2(t2, A__M_ATP, v_factor, v_detach)
+
+  // Assignment Rules:
+  t2 := k2 * ( 1.0 + v_factor * v_detach ) * A__M_ATP;
+
+  // Variable initializations:
+  k2 = 1000.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t3(t3, M_ATP, M_ADP_Pi)
+
+  // Assignment Rules:
+  t3 := k3 * M_ATP - k_3 * M_ADP_Pi;
+
+  // Variable initializations:
+  k3 = 150.0;
+  k_3 = 15.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t4(t4, M_ADP_Pi, A_M__ADP_Pi, v_factor, v_detach)
+
+  // Assignment Rules:
+  t4 := k4 * M_ADP_Pi - k_4 * ( 1.0 + v_factor * v_detach ) * A_M__ADP_Pi;
+
+  // Variable initializations:
+  k4 = 1500.0;
+  k_4 = 1000.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t5(t5, TMon, A_M__ADP_Pi, A_M_ADP_Pi, lamda, S_A_M)
+
+  // Assignment Rules:
+  t5 := k5 * TMon * ( k5_lamda * lamda + 0.4 ) * power( 1.0 + k5_xb * S_A_M , 2.0 ) * A_M__ADP_Pi - k_5 * A_M_ADP_Pi;
+
+  // Variable initializations:
+  k5 = 25.0;
+  k_5 = 8.0;
+  k5_lamda = 1.0;
+  k5_xb = 2.1;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t6(t6, A_M__ADP, A_M_ADP_Pi)
+
+  // Assignment Rules:
+  t6 := k6 * A_M_ADP_Pi - k_6 * A_M__ADP;
+
+  // Variable initializations:
+  k6 = 50.0;
+  k_6 = 20.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t7(t7, F, A_M__ADP, lamda, v)
+
+  // Assignment Rules:
+  t7 := k7 * A_M__ADP * (( k7_base - k7_lamda * lamda + v ) / ( 1.0 + k7_force * F ));
+
+  // Variable initializations:
+  k7 = 30.0;
+  k7_base = 2.25;
+  k7_lamda = 1.25;
+  k7_force = 1.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t8(t8, A_M_ADP, A_M)
+
+  // Assignment Rules:
+  t8 := k8 * A_M_ADP - k_8 * A_M;
+
+  // Variable initializations:
+  k8 = 200.0;
+  k_8 = 5.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t9(t9, A_M, v_factor)
+
+  // Assignment Rules:
+  t9 := k9 * v_factor * A_M;
+
+  // Variable initializations:
+  k9 = 1000.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t10(t10, A_M_ADP, v_factor)
+
+  // Assignment Rules:
+  t10 := k10 * v_factor * A_M_ADP;
+
+  // Variable initializations:
+  k10 = 1000.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t11(t11, A_M__ADP, v_factor)
+
+  // Assignment Rules:
+  t11 := k11 * v_factor * A_M__ADP;
+
+  // Variable initializations:
+  k11 = 1000.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t12(t12, M_ADP)
+
+  // Assignment Rules:
+  t12 := k12 * M_ADP;
+
+  // Variable initializations:
+  k12 = 50.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t13(t13, A_M_ADP_Pi, v_factor)
+
+  // Assignment Rules:
+  t13 := k13 * v_factor * A_M_ADP_Pi;
+
+  // Variable initializations:
+  k13 = 1000.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__t14(t14, ATP, M)
+
+  // Assignment Rules:
+  t14 := k14 * ATP * M;
+
+  // Variable initializations:
+  k14 = 1000.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__v_factor(v_factor, v)
+
+  // Assignment Rules:
+  v_factor := power( v , Nv ) / (power( v , Nv ) + power( v50 , Nv ));
+
+  // Variable initializations:
+  Nv = 10.0;
+  v50 = 3.0;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__F(F, Cai)
+
+  // Assignment Rules:
+  F := Fmax * (power( Cai , nh ) / (power( Cai , nh ) + power( Ca50 , nh )));
+
+  // Variable initializations:
+  Fmax = 0.524;
+  nh = 5.0;
+  Ca50 = 0.575;
+end
+
+model seemann_sachse_weib_dossel_2003_version01__parameters(v_detach, v, lamda)
+
+  // Variable initializations:
+  v_detach = 10.0;
+  lamda = 1.1;
+end
+
+model seemann_sachse_weib_dossel_2003_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: seemann_sachse_weib_dossel_2003_version01__environment(time_);
+  membrane: seemann_sachse_weib_dossel_2003_version01__membrane(V, R, T0, F0, time_, i_Na, i_Ca, i_to, i_Kr, i_Ks, i_K1, i_NaCa, i_NaK, i_b_Na, i_b_Ca);
+  fast_sodium_current: seemann_sachse_weib_dossel_2003_version01__fast_sodium_current(i_Na, E_Na, time_, V, R, F0, T0, Nai, Nao, m, h, j);
+  slow_calcium_current: seemann_sachse_weib_dossel_2003_version01__slow_calcium_current(i_Ca, E_Ca, time_, V, Cai, R, T0, F0, Cao, d, f, f_Ca);
+  transient_outward_current: seemann_sachse_weib_dossel_2003_version01__transient_outward_current(i_to, Nai, Nao, Ki, Ko, R, F0, T0, V, time_, t, r);
+  slowly_activating_delayed_rectifier_potassium_current: seemann_sachse_weib_dossel_2003_version01__slowly_activating_delayed_rectifier_potassium_current(i_Ks, Ki, Ko, Nai, Nao, R, F0, T0, time_, V, Xs);
+  rapidly_activating_delayed_rectifier_potassium_current: seemann_sachse_weib_dossel_2003_version01__rapidly_activating_delayed_rectifier_potassium_current(i_Kr, E_K, Ki, Ko, R, F0, T0, time_, V, Xr);
+  inward_rectifier_potassium_current: seemann_sachse_weib_dossel_2003_version01__inward_rectifier_potassium_current(i_K1, time_, V, E_K, alpha_K1, beta_K1);
+  calcium_background_current: seemann_sachse_weib_dossel_2003_version01__calcium_background_current(i_b_Ca, E_Ca, time_, V);
+  sodium_background_current: seemann_sachse_weib_dossel_2003_version01__sodium_background_current(i_b_Na, E_Na, time_, V);
+  sodium_potassium_pump: seemann_sachse_weib_dossel_2003_version01__sodium_potassium_pump(i_NaK, time_, V, R, T0, F0, Nai, Nao, Ko);
+  Na_Ca_exchanger: seemann_sachse_weib_dossel_2003_version01__Na_Ca_exchanger(i_NaCa, time_, V, R, T0, F0, Nai, Nao, Cai, Cao);
+  CICR_of_JSR: seemann_sachse_weib_dossel_2003_version01__CICR_of_JSR(i_rel, time_, Cai, Ca_JSR);
+  Ca_uptake_of_NSR: seemann_sachse_weib_dossel_2003_version01__Ca_uptake_of_NSR(i_up, time_, Cai);
+  Ca_leakage_of_NSR: seemann_sachse_weib_dossel_2003_version01__Ca_leakage_of_NSR(i_leak, time_, Ca_NSR);
+  translocation_of_Ca_from_NSR_to_JSR: seemann_sachse_weib_dossel_2003_version01__translocation_of_Ca_from_NSR_to_JSR(i_tr, time_, Ca_JSR, Ca_NSR);
+  calcium_buffers_in_the_myoplasm: seemann_sachse_weib_dossel_2003_version01__calcium_buffers_in_the_myoplasm(time_, Cai);
+  calcium_buffers_in_the_JSR: seemann_sachse_weib_dossel_2003_version01__calcium_buffers_in_the_JSR(time_, Ca_JSR);
+  ionic_concentrations: seemann_sachse_weib_dossel_2003_version01__ionic_concentrations(Nai, Nao, Cai, Cao, Ki, Ko, Ca_JSR, Ca_NSR, time_, F0, i_Na, i_b_Na, i_NaCa, i_NaK, i_Ca, i_b_Ca, i_Kr, i_K1, i_Ks, i_to, i_tr, i_rel, i_leak, i_up);
+  ATP: seemann_sachse_weib_dossel_2003_version01__ATP(ATP0);
+  T: seemann_sachse_weib_dossel_2003_version01__T(T1);
+  TCa: seemann_sachse_weib_dossel_2003_version01__TCa(TCa0, Cai, lamda, T1, S_A_M0, time_);
+  TMoff: seemann_sachse_weib_dossel_2003_version01__TMoff(TMoff0);
+  TMon: seemann_sachse_weib_dossel_2003_version01__TMon(TMon0, lamda, TMoff0, TCa0, time_);
+  M_ATP: seemann_sachse_weib_dossel_2003_version01__M_ATP(M_ATP0, t20, t30, t140, time_);
+  M_ADP_Pi: seemann_sachse_weib_dossel_2003_version01__M_ADP_Pi(M_ADP_Pi0, t30, t40, t130, time_);
+  A_M__ADP_Pi: seemann_sachse_weib_dossel_2003_version01__A_M__ADP_Pi(A_M__ADP_Pi0, t50, t40, time_);
+  A_M_ADP_Pi: seemann_sachse_weib_dossel_2003_version01__A_M_ADP_Pi(A_M_ADP_Pi0, t50, t60, t130, time_);
+  A_M__ADP: seemann_sachse_weib_dossel_2003_version01__A_M__ADP(A_M__ADP0, t70, t60, t110, time_);
+  A_M_ADP: seemann_sachse_weib_dossel_2003_version01__A_M_ADP(A_M_ADP0, t70, t80, t100, time_);
+  A_M: seemann_sachse_weib_dossel_2003_version01__A_M(A_M0, t90, t80, t15, time_);
+  A__M_ATP: seemann_sachse_weib_dossel_2003_version01__A__M_ATP(A__M_ATP0, t15, t20, time_);
+  M: seemann_sachse_weib_dossel_2003_version01__M(M0, t90, t120, t140, time_);
+  M_ADP: seemann_sachse_weib_dossel_2003_version01__M_ADP(M_ADP0, t100, t120, t110, time_);
+  S_A_M: seemann_sachse_weib_dossel_2003_version01__S_A_M(S_A_M0, A_M0, A_M_ADP_Pi0, A_M__ADP0, A_M_ADP0);
+  t1: seemann_sachse_weib_dossel_2003_version01__t1(t15, A_M0, A__M_ATP0, ATP0);
+  t2: seemann_sachse_weib_dossel_2003_version01__t2(t20, A__M_ATP0, v_factor0, v_detach);
+  t3: seemann_sachse_weib_dossel_2003_version01__t3(t30, M_ATP0, M_ADP_Pi0);
+  t4: seemann_sachse_weib_dossel_2003_version01__t4(t40, M_ADP_Pi0, A_M__ADP_Pi0, v_factor0, v_detach);
+  t5: seemann_sachse_weib_dossel_2003_version01__t5(t50, TMon0, A_M__ADP_Pi0, A_M_ADP_Pi0, lamda, S_A_M0);
+  t6: seemann_sachse_weib_dossel_2003_version01__t6(t60, A_M__ADP0, A_M_ADP_Pi0);
+  t7: seemann_sachse_weib_dossel_2003_version01__t7(t70, F1, A_M__ADP0, lamda, v);
+  t8: seemann_sachse_weib_dossel_2003_version01__t8(t80, A_M_ADP0, A_M0);
+  t9: seemann_sachse_weib_dossel_2003_version01__t9(t90, A_M0, v_factor0);
+  t10: seemann_sachse_weib_dossel_2003_version01__t10(t100, A_M_ADP0, v_factor0);
+  t11: seemann_sachse_weib_dossel_2003_version01__t11(t110, A_M__ADP0, v_factor0);
+  t12: seemann_sachse_weib_dossel_2003_version01__t12(t120, M_ADP0);
+  t13: seemann_sachse_weib_dossel_2003_version01__t13(t130, A_M_ADP_Pi0, v_factor0);
+  t14: seemann_sachse_weib_dossel_2003_version01__t14(t140, ATP0, M0);
+  v_factor: seemann_sachse_weib_dossel_2003_version01__v_factor(v_factor0, v);
+  F: seemann_sachse_weib_dossel_2003_version01__F(F1, Cai);
+  parameters: seemann_sachse_weib_dossel_2003_version01__parameters(v_detach, v, lamda);
+end

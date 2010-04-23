@@ -1,0 +1,66 @@
+//Created by libAntimony v1.3
+model koivumaki_takalo_korhonen_tavi_weckstrom_2009__environment(time_)
+end
+
+model koivumaki_takalo_korhonen_tavi_weckstrom_2009__general_parameters(Ca_cyt, Ca_NSR, CaMKII_reg)
+
+  // Variable initializations:
+  Ca_cyt = 0.25;
+  Ca_NSR = 760;
+  CaMKII_reg = 0;
+end
+
+model koivumaki_takalo_korhonen_tavi_weckstrom_2009__serca_parameters(SERCA_TOT, EC_50_fwd, EC_50_rev, CaMKII_reg)
+
+  // Assignment Rules:
+  EC_50_fwd := (Kmf_PLBKO + Kmf_PLB * PSR) * (1 + 0.27 * CaMKII_reg);
+  EC_50_rev := Kmr_PLBKO - Kmr_PLB * PSR;
+
+  // Variable initializations:
+  SERCA_TOT = 47;
+  PSR = 1;
+  Kmf_PLBKO = 0.15;
+  Kmf_PLB = 0.15;
+  Kmr_PLBKO = 2500;
+  Kmr_PLB = 1110;
+end
+
+model koivumaki_takalo_korhonen_tavi_weckstrom_2009__transition_parameters(k_cyt_serca, k_serca_cyt, k_serca_sr, k_sr_serca, CaMKII_reg, EC_50_fwd, EC_50_rev)
+
+  // Assignment Rules:
+  k_cyt_serca := br_cyt_serca * (1 + 0.7 * CaMKII_reg);
+  k_serca_cyt := power(EC_50_fwd, 2 ) * br_cyt_serca;
+  k_serca_sr := br_serca_sr * (1 + 0.7 * CaMKII_reg);
+  k_sr_serca := br_serca_sr / power(EC_50_rev, 2 );
+  br_cyt_serca := 1000 * br_serca_sr;
+
+  // Variable initializations:
+  br_serca_sr = 0.00625;
+end
+
+model koivumaki_takalo_korhonen_tavi_weckstrom_2009__calcium_fluxes(J_cyt_serca, J_serca_sr, Ca_cyt, Ca_NSR, SERCA_TOT, k_cyt_serca, k_serca_cyt, k_serca_sr, k_sr_serca, Ca_serca)
+
+  // Assignment Rules:
+  J_cyt_serca := k_cyt_serca * power(Ca_cyt, 2 ) * (SERCA_TOT - Ca_serca) - k_serca_cyt * Ca_serca;
+  J_serca_sr := k_serca_sr * Ca_serca - k_sr_serca * power(Ca_NSR, 2 ) * (SERCA_TOT - Ca_serca);
+end
+
+model koivumaki_takalo_korhonen_tavi_weckstrom_2009__calcium_bound_serca(Ca_serca, time_, J_cyt_serca, J_serca_sr)
+
+  // Rate Rules:
+  Ca_serca' = J_cyt_serca - J_serca_sr;
+
+  // Variable initializations:
+  Ca_serca = 12;
+end
+
+model koivumaki_takalo_korhonen_tavi_weckstrom_2009____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: koivumaki_takalo_korhonen_tavi_weckstrom_2009__environment(time_);
+  general_parameters: koivumaki_takalo_korhonen_tavi_weckstrom_2009__general_parameters(Ca_cyt, Ca_NSR, CaMKII_reg);
+  serca_parameters: koivumaki_takalo_korhonen_tavi_weckstrom_2009__serca_parameters(SERCA_TOT, EC_50_fwd, EC_50_rev, CaMKII_reg);
+  transition_parameters: koivumaki_takalo_korhonen_tavi_weckstrom_2009__transition_parameters(k_cyt_serca, k_serca_cyt, k_serca_sr, k_sr_serca, CaMKII_reg, EC_50_fwd, EC_50_rev);
+  calcium_fluxes: koivumaki_takalo_korhonen_tavi_weckstrom_2009__calcium_fluxes(J_cyt_serca, J_serca_sr, Ca_cyt, Ca_NSR, SERCA_TOT, k_cyt_serca, k_serca_cyt, k_serca_sr, k_sr_serca, Ca_serca);
+  calcium_bound_serca: koivumaki_takalo_korhonen_tavi_weckstrom_2009__calcium_bound_serca(Ca_serca, time_, J_cyt_serca, J_serca_sr);
+end

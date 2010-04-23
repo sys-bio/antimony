@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="farhy_bowers_veldhuis_model_2007____main" name="farhy_bowers_veldhuis_model_2007____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="GH0" value="0" constant="false"/>
+      <parameter id="GHS" value="20"/>
+      <parameter id="GH_k1" value="3"/>
+      <parameter id="GH_kr1" value="600"/>
+      <parameter id="GH_t1" value="357"/>
+      <parameter id="GH_n1" value="5"/>
+      <parameter id="GH_n2" value="2"/>
+      <parameter id="GH_g0" value="2"/>
+      <parameter id="GH_ng0" value="2.9"/>
+      <parameter id="GH_tg0" value="200"/>
+      <parameter id="GH_t2" value="10"/>
+      <parameter id="SRIF_PeV0" value="0" constant="false"/>
+      <parameter id="F1_GHS" constant="false"/>
+      <parameter id="GHRH0" value="0" constant="false"/>
+      <parameter id="ghr_GHRH0" value="0" constant="false"/>
+      <parameter id="SRIF_PeV_k4" value="25"/>
+      <parameter id="SRIF_PeV_kr4" value="20400"/>
+      <parameter id="SRIF_PeV_t5" value="10"/>
+      <parameter id="SRIF_PeV_n5" value="2"/>
+      <parameter id="SRIF_PeV_S_basal" value="900"/>
+      <parameter id="SRIF_ArC0" value="0" constant="false"/>
+      <parameter id="SRIF_ArC_k2" value="25"/>
+      <parameter id="SRIF_ArC_kr2" value="2200"/>
+      <parameter id="SRIF_ArC_t3" value="400"/>
+      <parameter id="SRIF_ArC_n3" value="2"/>
+      <parameter id="GHRH_k3" value="40"/>
+      <parameter id="GHRH_kr3" value="63000"/>
+      <parameter id="GHRH_t4" value="28"/>
+      <parameter id="GHRH_n4" value="5"/>
+      <parameter id="F2_GHS" constant="false"/>
+      <parameter id="F_g1" value="90000"/>
+      <parameter id="F_g2" value="100"/>
+      <parameter id="F_tg1" value="390"/>
+      <parameter id="F_tg2" value="10000"/>
+      <parameter id="F_ng1" value="3"/>
+      <parameter id="F_ng2" value="2"/>
+      <parameter id="dghr_GHRH_dt" constant="false"/>
+      <parameter id="ghr_GHRH_inject" constant="false"/>
+      <parameter id="ghr_GHRH_kghr" value="15"/>
+      <parameter id="ghr_GHRH_C" value="10000"/>
+      <parameter id="ghr_GHRH_onset" value="2"/>
+      <parameter id="ghr_GHRH_duration" value="0.2"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="GH0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> GH_kr1 </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <plus/>
+                        <ci> GHRH0 </ci>
+                        <ci> ghr_GHRH0 </ci>
+                      </apply>
+                      <ci> GH_t1 </ci>
+                    </apply>
+                    <ci> GH_n1 </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <plus/>
+                          <ci> GHRH0 </ci>
+                          <ci> ghr_GHRH0 </ci>
+                        </apply>
+                        <ci> GH_t1 </ci>
+                      </apply>
+                      <ci> GH_n1 </ci>
+                    </apply>
+                    <cn> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> GH_g0 </ci>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> GHS </ci>
+                        <ci> GH_tg0 </ci>
+                      </apply>
+                      <ci> GH_ng0 </ci>
+                    </apply>
+                    <apply>
+                      <plus/>
+                      <cn> 1 </cn>
+                      <apply>
+                        <power/>
+                        <apply>
+                          <divide/>
+                          <ci> GHS </ci>
+                          <ci> GH_tg0 </ci>
+                        </apply>
+                        <ci> GH_ng0 </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <ci> F1_GHS </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> SRIF_PeV0 </ci>
+                        <ci> GH_t2 </ci>
+                      </apply>
+                      <ci> GH_n2 </ci>
+                    </apply>
+                    <ci> F1_GHS </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> GH_k1 </ci>
+              <ci> GH0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="SRIF_PeV0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> SRIF_PeV_k4 </ci>
+                <ci> SRIF_PeV0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> SRIF_PeV_kr4 </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> GH0 </ci>
+                    <ci> SRIF_PeV_t5 </ci>
+                  </apply>
+                  <ci> SRIF_PeV_n5 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> GH0 </ci>
+                      <ci> SRIF_PeV_t5 </ci>
+                    </apply>
+                    <ci> SRIF_PeV_n5 </ci>
+                  </apply>
+                  <cn> 1 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <ci> SRIF_PeV_S_basal </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="F1_GHS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> F_g1 </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> GHS </ci>
+                  <ci> F_tg1 </ci>
+                </apply>
+                <ci> F_ng1 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> GHS </ci>
+                    <ci> F_tg1 </ci>
+                  </apply>
+                  <ci> F_ng1 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="GHRH0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> GHRH_kr3 </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <ci> F2_GHS </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <plus/>
+                          <ci> SRIF_PeV0 </ci>
+                          <ci> SRIF_ArC0 </ci>
+                        </apply>
+                        <ci> GHRH_t4 </ci>
+                      </apply>
+                      <ci> GHRH_n4 </ci>
+                    </apply>
+                    <ci> F2_GHS </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ghr_GHRH0 </ci>
+                <cn> 1 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> GHRH_k3 </ci>
+              <ci> GHRH0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="ghr_GHRH0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> ghr_GHRH_inject </ci>
+            <apply>
+              <times/>
+              <ci> ghr_GHRH_kghr </ci>
+              <ci> ghr_GHRH0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="SRIF_ArC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> SRIF_ArC_kr2 </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <ci> GHRH0 </ci>
+                      <ci> ghr_GHRH0 </ci>
+                    </apply>
+                    <ci> SRIF_ArC_t3 </ci>
+                  </apply>
+                  <ci> SRIF_ArC_n3 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <plus/>
+                        <ci> GHRH0 </ci>
+                        <ci> ghr_GHRH0 </ci>
+                      </apply>
+                      <ci> SRIF_ArC_t3 </ci>
+                    </apply>
+                    <ci> SRIF_ArC_n3 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> SRIF_ArC_k2 </ci>
+              <ci> SRIF_ArC0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="F2_GHS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> F_g2 </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> GHS </ci>
+                  <ci> F_tg2 </ci>
+                </apply>
+                <ci> F_ng2 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> GHS </ci>
+                    <ci> F_tg2 </ci>
+                  </apply>
+                  <ci> F_ng2 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dghr_GHRH_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> ghr_GHRH_inject </ci>
+            <apply>
+              <times/>
+              <ci> ghr_GHRH_kghr </ci>
+              <ci> ghr_GHRH0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ghr_GHRH_inject"/>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,53 @@
+//Created by libAntimony v1.3
+model itskov_ehret_mavrilas_2005_version01__equations(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32)
+
+  // Assignment Rules:
+  Tdev11 := 0.5 * (mu1 * (exp((i1tilde - 1 ) * a1) / x11denom + -(1 ) * exp((k1tilde - 1 ) * b1) * (power(k1, 2 ) / x11denom + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) * power(x11, 2 ) / (power(detc, 2 ) * x11denom * x21denom) + (-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * (-(4 ) * E22 * E31 + -(2 ) * E31 + 4 * E21 * E32) * power(x11, 2 ) * power(x21, 2 ) / (power(detc, 2 ) * x11denom * x21denom))) + mu2 * (exp((i2tilde - 1 ) * a2) / x12denom + -(1 ) * exp((k2tilde - 1 ) * b2) * (power(k1, 2 ) / x12denom + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) * power(x12, 2 ) / (power(detc, 2 ) * x12denom * x22denom) + (-(4 ) * E22 * E31 + -(2 ) * E13 + 4 * E12 * E23) * (-(4 ) * E22 * E31 + -(2 ) * E31 + 4 * E21 * E32) * power(x12, 2 ) * power(x22, 2 )) + power(detc, 2 ) * x12denom * x22denom));
+  Tdev22 := 0.5 * (mu1 * (exp((i1tilde - 1 ) * a1) * power(x11, 2 ) / (x11denom * x21denom) + -(1 ) * exp((k1tilde - 1 ) * b1) * (power(k2, 2 ) * power(x11, 2 ) / (x11denom * x21denom) + (-(4 ) * E11 * E23 + -(2 ) * E23 + 4 * E31 * E21) * (-(4 ) * E11 * E32 + -(2 ) * E32 + 4 * E12 * E31) * power(x11, 2 ) * power(x21, 2 ) / (power(detc, 2 ) * x11denom * x21denom) + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) / (power(detc, 2 ) * x11denom))) + mu2 * (exp((i2tilde - 1 ) * a2) * power(x12, 2 ) / (x12denom * x22denom) + -(1 ) * exp((k2tilde - 1 ) * b2) * (power(k2, 2 ) * power(x12, 2 ) / (x12denom * x22denom) + (4 * E13 * E21 + -(2 ) * E23 + -(4 ) * E11 * E23) * (-(4 ) * E11 * E32 + -(2 ) * E32 + 4 * E12 * E31) * power(x12, 2 ) * power(x22, 2 ) / (power(detc, 2 ) * x12denom * x22denom) + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) + unsupported-element + power(detc, 2 ) + x12denom)));
+  Tdev33 := 0.5 * (mu1 * (exp((i1tilde - 1 ) * a1) * power(x11, 2 ) * power(x21, 2 ) / (x11denom * x21denom) + -(1 ) * exp((k1tilde - 1 ) * b1) * (power(k3, 2 ) * power(x11, 2 ) * power(x21, 2 ) / (x11denom * x21denom) + (-(4 ) * E11 * E23 + -(2 ) * E23 + 4 * E13 * E21) * (-(4 ) * E11 * E32 + -(2 ) * E32 + 4 * E12 * E31) * power(x11, 2 ) / (power(detc, 2 ) * x11denom * x21denom) + (-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * (-(4 ) * E22 * E31 + -(2 ) * E31 + 4 * E21 * E32) / (power(detc, 2 ) * x11denom))) + mu2 * (exp((i2tilde - 1 ) * a2) * power(x12, 2 ) * power(x22, 2 ) / (x12denom * x22denom) + -(1 ) * exp((k2tilde - 1 ) * b2) * (power(k3, 2 ) * power(x12, 2 ) * power(x22, 2 ) / (x12denom * x22denom) + (4 * E13 * E21 + -(2 ) * E23 + -(4 ) * E11 * E23) * (-(4 ) * E11 * E32 + -(2 ) * E32 + 4 * E12 * E31) * power(x12, 2 ) / (power(detc, 2 ) * x12denom * x22denom) + (-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * (-(4 ) * E22 * E31 + -(2 ) * E31 + 4 * E21 * E32) + power(detc, 2 ) * x12denom)));
+  Tdev12 := 0.5 * (-(1 ) * mu1 * exp((k1tilde - 1 ) * b1) * ((-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * (4 * E12 * E31 + -(4 ) * E11 * E32 + -(2 ) * E32) * power(x21, 2 ) * power(x11, 2 ) / (power(detc, 2 ) * x11denom * x21denom) + (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) * power(x11, 2 ) * k2 / (detc * x11denom * x21denom) + (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) * k1 / (detc * x11denom)) + -(1 ) * mu2 * exp((k2tilde - 1 ) * b2) * ((-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * (4 * E12 * E31 + -(4 ) * E11 * E32 + -(2 ) * E32) * power(x22, 2 ) * power(x12, 2 ) / (power(detc, 2 ) * x12denom * x22denom) + (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) * power(x12, 2 ) * k2 / (detc * x12denom * x22denom) + (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) * k1 / (detc * x12denom)));
+  Tdev13 := 0.5 * (-(1 ) * mu1 * exp((k1tilde - 1 ) * b1) * ((4 * E13 * E21 + -(2 ) * E23 + -(4 ) * E11 * E23) * (4 * E13 * E32 + -(4 ) * E33 * E12 + -(2 ) * E12) * power(x11, 2 ) / (power(detc, 2 ) * x11denom * x21denom) + (-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * power(x21, 2 ) * power(x11, 2 ) * k3 / (detc * x11denom * x21denom) + (-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * k1 / (detc * x11denom)) + -(1 ) * mu2 * exp((k2tilde - 1 ) * b2) * ((4 * E13 * E21 + -(2 ) * E23 + -(4 ) * E11 * E23) * (4 * E13 * E32 + -(4 ) * E33 * E12 + -(2 ) * E12) * power(x12, 2 ) / (power(detc, 2 ) * x12denom * x22denom) + (-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * power(x12, 2 ) * power(x22, 2 ) * k3 / (detc * x12denom * x22denom) + (-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * k1 / (detc * x12denom)));
+  Tdev21 := 0.5 * (-(1 ) * mu1 * exp((k1tilde - 1 ) * b1) * ((4 * E13 * E21 + -(2 ) * E23 + -(4 ) * E11 * E23) * (4 * E21 * E32 + -(4 ) * E22 * E31 + -(2 ) * E31) * power(x21, 2 ) * power(x11, 2 ) / (power(detc, 2 ) * x11denom * x21denom) + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * power(x11, 2 ) * k2 / (detc * x11denom * x21denom) + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * k1 / (detc * x11denom)) + -(1 ) * mu2 * exp((k2tilde - 1 ) * b2) * ((4 * E13 * E21 + -(2 ) * E23 + -(4 ) * E11 * E23) * (4 * E21 * E32 + -(4 ) * E22 * E31 + -(2 ) * E31) * power(x12, 2 ) * power(x22, 2 ) / (power(detc, 2 ) * x12denom * x22denom) + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * power(x12, 2 ) * k2 / (detc * x12denom * x22denom) + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * k1 / (detc * x12denom)));
+  Tdev23 := 0.5 * (-(1 ) * mu1 * exp((k1tilde - 1 ) * b1) * ((4 * E13 * E21 + -(2 ) * E23 + -(4 ) * E11 * E23) * power(x21, 2 ) * power(x11, 2 ) * k3 / (detc * x11denom * x21denom) + (-(4 ) * E11 * E23 + -(2 ) * E23 + 4 * E13 * E21) * power(x11, 2 ) * k2 / (detc * x11denom * x21denom) + (-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) / (power(detc, 2 ) * x11denom)) + -(1 ) * mu2 * exp((k2tilde - 1 ) * b2) * ((4 * E13 * E21 + -(2 ) * E23 + -(4 ) * E11 * E23) * k3 * power(x12, 2 ) * power(x22, 2 ) / (detc * x12denom * x22denom) + (-(4 ) * E11 * E23 + -(2 ) * E23 + 4 * E13 * E21) * power(x12, 2 ) * k2 / (detc * x12denom * x22denom) + (-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) / (power(detc, 2 ) * x12denom)));
+  Tdev31 := 0.5 * (-(1 ) * mu1 * exp((k1tilde - 1 ) * b1) * ((4 * E21 * E32 + -(2 ) * E31 + -(4 ) * E22 * E31) * power(x21, 2 ) * power(x11, 2 ) * k3 / (detc * x11denom * x21denom) + (-(4 ) * E22 * E31 + -(2 ) * E31 + 4 * E21 * E32) * k1 / (detc * x11denom) + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * (4 * E12 * E31 + -(2 ) * E32 + -(4 ) * E11 * E32) * power(x11, 2 ) / (power(detc, 2 ) * x11denom * x21denom)) + -(1 ) * mu2 * exp((k2tilde - 1 ) * b2) * ((4 * E21 * E32 + -(2 ) * E31 + -(4 ) * E22 * E31) * k3 * power(x12, 2 ) * power(x22, 2 ) / (detc * x12denom * x22denom) + (-(4 ) * E22 * E31 + -(2 ) * E31 + 4 * E21 * E32) * k1 / (detc * x12denom) + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * (-(4 ) * E11 * E32 + -(2 ) * E32 + 4 * E12 * E31) * power(x12, 2 ) / (power(detc, 2 ) * x12denom * x22denom)));
+  Tdev32 := 0.5 * (-(1 ) * mu1 * exp((k1tilde - 1 ) * b1) * ((4 * E12 * E31 + -(2 ) * E32 + -(4 ) * E11 * E32) * power(x21, 2 ) * power(x11, 2 ) * k3 / (detc * x11denom * x21denom) + (-(4 ) * E11 * E32 + -(2 ) * E32 + 4 * E12 * E31) * power(x11, 2 ) * k2 / (detc * x11denom * x21denom) + (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) * (-(4 ) * E22 * E31 + -(2 ) * E31 + 4 * E21 * E32) / (power(detc, 2 ) * x11denom)) + -(1 ) * mu2 * exp((k2tilde - 1 ) * b2) * ((4 * E12 * E31 + -(2 ) * E32 + -(4 ) * E11 * E32) * k2 * power(x12, 2 ) / (detc * x12denom * x22denom) + (-(4 ) * E11 * E32 + -(2 ) * E32 + 4 * E12 * E31) * power(x12, 2 ) * power(x22, 2 ) * k3 / (detc * x12denom * x22denom) + (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) * (-(4 ) * E22 * E31 + -(2 ) * E31 + 4 * E21 * E32) / (power(detc, 2 ) * x12denom)));
+  i1 := 1 + 2 * E11;
+  i2 := 1 + 2 * E22;
+  i3 := 1 + 2 * E33;
+  detc := 1 + 2 * E11 + -(4 ) * E12 * E21 + 2 * E22 + 4 * E11 * E22 + -(4 ) * E13 * E31 + -(-8 ) * E13 * E22 * E31 + 8 * E12 * E23 * E31 + 8 * E13 * E21 * E32 + -(4 ) * E23 * E32 + -(8 ) * E11 * E23 * E31 + 2 * E33 + 4 * E11 * E33 + -(-8 ) * E12 * E21 * E33 + 4 * E22 * E33 + 8 * E11 * E22 * E33;
+  k1 := (1 + 2 * E22 + -(4 ) * E23 * E32 + 2 * E33 + 4 * E22 * E33) / detc;
+  k2 := (1 + 2 * E11 + -(4 ) * E13 * E31 + 2 * E33 + 4 * E11 * E33) / detc;
+  k3 := (1 + 2 * E11 + -(4 ) * E12 * E21 + 2 * E22 + 4 * E11 * E22) / detc;
+  x11denom := 1 + power(x11, 2 );
+  x21denom := 1 + power(x21, 2 );
+  x12denom := 1 + power(x12, 2 );
+  x22denom := 1 + power(x22, 2 );
+  i1tilde := i1 / x11denom + i2 * power(x11, 2 ) / (x11denom * x21denom) + i3 * power(x11, 2 ) * power(x21, 2 ) / (x11denom * x21denom);
+  i2tilde := i1 / x12denom + i2 * power(x12, 2 ) / (x12denom * x22denom) + i3 * power(x12, 2 ) * power(x22, 2 ) / (x12denom * x22denom);
+  k1tilde := k1 / x11denom + k2 * power(x11, 2 ) / (x11denom * x21denom) + k3 * power(x11, 2 ) * power(x21, 2 ) / (x11denom * x21denom);
+  k2tilde := k1 / x12denom + k2 * power(x12, 2 ) / (x12denom * x22denom) + k3 * power(x12, 2 ) * power(x22, 2 ) / (x12denom * x22denom);
+end
+
+model itskov_ehret_mavrilas_2005_version01__interface(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32)
+
+  // Sub-modules, and any changes to those submodules:
+  equations: itskov_ehret_mavrilas_2005_version01__equations(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32);
+
+  // Variable initializations:
+  mu1 = 0;
+  a1 = 0;
+  b1 = 0;
+  x11 = 0;
+  x21 = 0;
+  mu2 = 0;
+  a2 = 0;
+  b2 = 0;
+  x12 = 0;
+  x22 = 0;
+end
+
+model itskov_ehret_mavrilas_2005_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  interface: itskov_ehret_mavrilas_2005_version01__interface(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32);
+end

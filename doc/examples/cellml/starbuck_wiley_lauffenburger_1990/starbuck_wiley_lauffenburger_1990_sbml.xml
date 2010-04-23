@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="starbuck_wiley_lauffenburger_1990_version01____main" name="starbuck_wiley_lauffenburger_1990_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Rs0" constant="false"/>
+      <parameter id="kfc" constant="false"/>
+      <parameter id="kr"/>
+      <parameter id="ks" value="1"/>
+      <parameter id="kt" value="0.05"/>
+      <parameter id="krec_c" value="0.05"/>
+      <parameter id="krec_i" value="0.05"/>
+      <parameter id="numcell" constant="false"/>
+      <parameter id="Ric0" constant="false"/>
+      <parameter id="Rii0" constant="false"/>
+      <parameter id="Lo0" constant="false"/>
+      <parameter id="Cs0" constant="false"/>
+      <parameter id="kc"/>
+      <parameter id="ku" constant="false"/>
+      <parameter id="Ts0" constant="false"/>
+      <parameter id="Ps0" constant="false"/>
+      <parameter id="Cic0" constant="false"/>
+      <parameter id="Cii0" constant="false"/>
+      <parameter id="lamda" value="1.8"/>
+      <parameter id="krec_p" value="20"/>
+      <parameter id="Pi_0" constant="false"/>
+      <parameter id="Lic0" constant="false"/>
+      <parameter id="kfe" constant="false"/>
+      <parameter id="kr_"/>
+      <parameter id="kdeg" value="0.02"/>
+      <parameter id="Lii0" constant="false"/>
+      <parameter id="ku_" value="0.1216"/>
+      <parameter id="Ti0" constant="false"/>
+      <parameter id="kfv" constant="false"/>
+      <parameter id="kuc"/>
+      <parameter id="kinetic_constants_kf"/>
+      <parameter id="kinetic_constants_K_DC"/>
+      <parameter id="kinetic_constants_K_DT"/>
+      <parameter id="kinetic_constants_Kcp"/>
+      <parameter id="kinetic_constants_RT"/>
+      <parameter id="kinetic_constants_PT"/>
+      <parameter id="kinetic_constants_PT_RT" value="0.37"/>
+      <parameter id="kinetic_constants_Vplate" constant="false"/>
+      <parameter id="kinetic_constants_Vendosome"/>
+      <parameter id="kinetic_constants_Vvesicle"/>
+      <parameter id="kinetic_constants_Nav"/>
+      <parameter id="time_"/>
+      <parameter id="fr"/>
+      <parameter id="kinetic_constants_cell"/>
+      <parameter id="kinetic_constants_plate"/>
+      <parameter id="kinetic_constants_L"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="kr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3.6 <sep/> -2 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3.8 <sep/> -7 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kr_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3.6 <sep/> -1 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kuc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.2 <sep/> -2 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kinetic_constants_kf">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.2 <sep/> 6 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kinetic_constants_K_DC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3 <sep/> -8 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kinetic_constants_K_DT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3.2 <sep/> 5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kinetic_constants_Kcp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3.125 <sep/> -6 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kinetic_constants_RT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.8 <sep/> 5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kinetic_constants_PT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 6.6 <sep/> 4 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kinetic_constants_Vendosome">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 5 <sep/> -19 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kinetic_constants_Vvesicle">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 5 <sep/> -15 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kinetic_constants_Nav">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 6.0221419 <sep/> 23 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="Rs0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kr </ci>
+                <ci> Cs0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> krec_c </ci>
+                <ci> Ric0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> krec_i </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <ci> fr </ci>
+                </apply>
+                <ci> Rii0 </ci>
+              </apply>
+              <ci> ks </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> kfc </ci>
+                  <ci> numcell </ci>
+                </apply>
+                <ci> Rs0 </ci>
+                <ci> Lo0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kt </ci>
+                <ci> Rs0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="kfc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> kinetic_constants_kf </ci>
+              <ci> numcell </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kinetic_constants_Nav </ci>
+              <ci> kinetic_constants_Vplate </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="numcell">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> kinetic_constants_cell </ci>
+            <ci> kinetic_constants_plate </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ric0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kr </ci>
+                <ci> Cic0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kt </ci>
+                <ci> Rs0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> kfv </ci>
+                  <ci> numcell </ci>
+                </apply>
+                <ci> Ric0 </ci>
+                <ci> Lic0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> krec_c </ci>
+                <ci> Ric0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Rii0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kr_ </ci>
+              <ci> Cii0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> kfe </ci>
+                  <ci> numcell </ci>
+                </apply>
+                <ci> Rii0 </ci>
+                <ci> Lii0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> krec_i </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <ci> fr </ci>
+                </apply>
+                <ci> Rii0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> fr </ci>
+                <ci> kdeg </ci>
+                <ci> Rii0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Lo0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> numcell </ci>
+                <ci> kr </ci>
+                <ci> Cs0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> krec_c </ci>
+                <ci> Lic0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kfc </ci>
+              <ci> Rs0 </ci>
+              <ci> Lo0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Cs0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> ku </ci>
+                <ci> Ts0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> krec_c </ci>
+                <ci> Cic0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> krec_i </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <ci> fr </ci>
+                </apply>
+                <ci> Cii0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> kfc </ci>
+                  <ci> numcell </ci>
+                </apply>
+                <ci> Rs0 </ci>
+                <ci> Lo0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kr </ci>
+                <ci> Cs0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kc </ci>
+                <ci> Cs0 </ci>
+                <ci> Ps0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kt </ci>
+                <ci> Cs0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="ku">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> kc </ci>
+            <ci> kinetic_constants_Kcp </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ts0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kc </ci>
+              <ci> Cs0 </ci>
+              <ci> Ps0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> ku </ci>
+                <ci> Ts0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> lamda </ci>
+                <ci> Ts0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ps0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> ku </ci>
+                <ci> Ts0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> krec_p </ci>
+                <ci> Pi_0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kc </ci>
+                <ci> Cs0 </ci>
+                <ci> Ps0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> lamda </ci>
+                <ci> Ps0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Cic0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> kfv </ci>
+                  <ci> numcell </ci>
+                </apply>
+                <ci> Ric0 </ci>
+                <ci> Lic0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kt </ci>
+                <ci> Cs0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kr </ci>
+                <ci> Cic0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> krec_c </ci>
+                <ci> Cic0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Cii0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> kfe </ci>
+                  <ci> numcell </ci>
+                </apply>
+                <ci> Rii0 </ci>
+                <ci> Lii0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ku_ </ci>
+                <ci> Ti0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kr_ </ci>
+                <ci> Cii0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> fr </ci>
+                <ci> kdeg </ci>
+                <ci> Cii0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> krec_i </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <ci> fr </ci>
+                </apply>
+                <ci> Cii0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Pi_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> ku_ </ci>
+                <ci> Ti0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> lamda </ci>
+                <ci> Pi_0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> krec_p </ci>
+              <ci> Pi_0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Lic0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> numcell </ci>
+              <ci> kr </ci>
+              <ci> Cic0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> krec_c </ci>
+                <ci> Lic0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kfv </ci>
+                <ci> Ric0 </ci>
+                <ci> Lic0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="kfe">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> kinetic_constants_kf </ci>
+            <apply>
+              <times/>
+              <ci> kinetic_constants_Nav </ci>
+              <ci> kinetic_constants_Vendosome </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Lii0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> numcell </ci>
+              <ci> kr_ </ci>
+              <ci> Cii0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kdeg </ci>
+                <ci> Lii0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kfe </ci>
+                <ci> Rii0 </ci>
+                <ci> Lii0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ti0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> lamda </ci>
+              <ci> Ts0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> ku_ </ci>
+                <ci> Ti0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdeg </ci>
+                <ci> Ti0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="kfv">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> kinetic_constants_kf </ci>
+            <apply>
+              <times/>
+              <ci> kinetic_constants_Nav </ci>
+              <ci> kinetic_constants_Vvesicle </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="kinetic_constants_Vplate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> kinetic_constants_L </ci>
+            <ci> kinetic_constants_plate </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

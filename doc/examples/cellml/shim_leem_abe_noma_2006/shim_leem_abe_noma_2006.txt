@@ -1,0 +1,677 @@
+//Created by libAntimony v1.3
+model shim_2006__time(time_)
+end
+
+model shim_2006__stimulus_protocol_params(stimPeriod, stimDuration, stimCurrent)
+
+  // Variable initializations:
+  stimPeriod = 1000;
+  stimDuration = 1;
+  stimCurrent = 100;
+end
+
+model shim_2006__additional_currents(IK_additional, ICa_additional, INa_additional, JCaSR_additional, Istim)
+
+  // Assignment Rules:
+  IK_additional := -(Istim);
+
+  // Variable initializations:
+  ICa_additional = 0;
+  INa_additional = 0;
+  JCaSR_additional = 0;
+end
+
+model shim_2006__default_parameters(Am, Cm, Capacitance, temperature, vC, vSR, g_Na, g_K1, g_to, g_Kr, g_Ks, g_pK, g_bNa, g_bCa, p_KNa, P_NaK, K_mNa, K_mK, g_CaL, Bufc, Kbufc, Bufsr, Kbufsr, Nao, Ko, Cao, V_leak, K_up, Vmax_up, a_rel, b_rel, c_rel, tau_g, g_pCa, K_pCa, k_NaCa, K_mNai, K_mCa, k_sat, gamma, alpha)
+
+  // Variable initializations:
+  Am = 200;
+  Cm = 0.01;
+  Capacitance = 0.00185;
+  temperature = 310;
+  vC = 0.49;
+  vSR = 0.1;
+  g_Na = 0.14838;
+  g_K1 = 0.05405;
+  g_to = 0.00294;
+  g_Kr = 0.00096;
+  g_Ks = 0.00245;
+  g_pK = 0.000146;
+  g_bNa = 2.9e-6;
+  g_bCa = 5.92e-6;
+  p_KNa = 0.03;
+  P_NaK = 0.01362;
+  K_mNa = 40;
+  K_mK = 1;
+  g_CaL = 1.75e-6;
+  Bufc = 0.104;
+  Kbufc = 0.001;
+  Bufsr = 10;
+  Kbufsr = 0.3;
+  Nao = 140;
+  Ko = 5.4;
+  Cao = 2;
+  V_leak = 8e-5;
+  K_up = 0.00025;
+  Vmax_up = 0.000425;
+  a_rel = 0.016464;
+  b_rel = 0.25;
+  c_rel = 0.008232;
+  tau_g = 2;
+  g_pCa = 0.00825;
+  K_pCa = 0.0005;
+  k_NaCa = 10;
+  K_mNai = 87.5;
+  K_mCa = 1.38;
+  k_sat = 0.1;
+  gamma = 0.35;
+  alpha = 2.5;
+end
+
+model shim_2006__default_initial_conditions(V_initial, m_initial, h_initial, j_initial, s_initial, r_initial, Xr1_initial, Xr2_initial, Xs_initial, d_initial, f_initial, fCa_initial, g_initial, Nai_initial, Ki_initial, Cai_total_initial, CaSR_total_initial)
+
+  // Variable initializations:
+  V_initial = -86.2;
+  m_initial = 0;
+  h_initial = 0.75;
+  j_initial = 0.75;
+  s_initial = 1;
+  r_initial = 0;
+  Xr1_initial = 0;
+  Xr2_initial = 1;
+  Xs_initial = 0;
+  d_initial = 0;
+  f_initial = 1;
+  fCa_initial = 1;
+  g_initial = 1;
+  Nai_initial = 11.6;
+  Ki_initial = 138.3;
+  Cai_total_initial = 0.0064;
+  CaSR_total_initial = 4.2;
+end
+
+model shim_2006__membrane_potential(V, V_initial, Cm, time_, Itotal)
+
+  // Rate Rules:
+  V' = -(Itotal) / Cm;
+
+  // Variable initializations:
+  V = -86.2018875318461;
+end
+
+model shim_2006__total_membrane_current(Itotal, ICa_additional, INa_additional, IK_additional, INa, IK1, Ito, IKr, IKs, ICaL, INaCa, INaK, IpCa, IpK, IbCa, IbNa)
+
+  // Assignment Rules:
+  Itotal := ICa_additional + INa_additional + IK_additional + INa + IK1 + Ito + IKr + IKs + ICaL + INaCa + INaK + IbNa + IbCa + IpCa + IpK;
+end
+
+model shim_2006__K_flux(K_flux, vC, Am, F, IK_additional, IK1, Ito, IKr, IKs, INaK, IpK)
+
+  // Assignment Rules:
+  K_flux := Am / (vC * F) * (IK_additional + IK1 + Ito + IKr + IKs + IpK - INaK * 2 );
+end
+
+model shim_2006__Na_flux(Na_flux, vC, Am, F, INa_additional, INa, IbNa, INaK, INaCa)
+
+  // Assignment Rules:
+  Na_flux := Am / (vC * F) * (INa + INa_additional + IbNa + INaK * 3 + INaCa * 3 );
+end
+
+model shim_2006__Ca_flux(Ca_flux, vC, Am, F, ICa_additional, ICaL, IbCa, IpCa, INaCa)
+
+  // Assignment Rules:
+  Ca_flux := Am / (2 * vC * F) * (2 * INaCa - (ICa_additional + ICaL + IbCa + IpCa));
+end
+
+model shim_2006__Ca_SR_flux(Ca_SR_flux, Jleak, Jup, Jrel, JCaSR_additional)
+
+  // Assignment Rules:
+  Ca_SR_flux := Jleak + Jrel + JCaSR_additional - Jup;
+end
+
+model shim_2006__INa(INa, time_, V, E_Na, g_Na, m, h, j)
+
+  // Assignment Rules:
+  INa := g_Na * power(m, 3 ) * h * j * (V - E_Na);
+end
+
+model shim_2006__IK1(IK1, g_K1, V, Ko, E_K, K1_infinity)
+
+  // Assignment Rules:
+  IK1 := g_K1 * root(Ko / 5.4 ) * K1_infinity * (V - E_K);
+end
+
+model shim_2006__Ito(Ito, g_to, E_K, V, time_, s, r)
+
+  // Assignment Rules:
+  Ito := g_to * r * s * (V - E_K);
+end
+
+model shim_2006__IKr(IKr, g_Kr, time_, V, E_K, Ko, Xr1, Xr2)
+
+  // Assignment Rules:
+  IKr := g_Kr * root(Ko / 5.4 ) * Xr1 * Xr2 * (V - E_K);
+end
+
+model shim_2006__IKs(IKs, g_Ks, time_, V, E_Ks, Xs)
+
+  // Assignment Rules:
+  IKs := g_Ks * power(Xs, 2 ) * (V - E_Ks);
+end
+
+model shim_2006__INaK(INaK, P_NaK, K_mNa, K_mK, V, R, T, F, Nai, Ko)
+
+  // Assignment Rules:
+  INaK := P_NaK * Ko * Nai / ((Ko + K_mK) * (Nai + K_mNa) * (1 + 0.1245 * exp(-(0.1 ) * V * F / (R * T)) + 0.0353 * exp(-(V) * F / (R * T))));
+end
+
+model shim_2006__IpK(IpK, g_pK, V, E_K)
+
+  // Assignment Rules:
+  IpK := g_pK * (V - E_K) / (1 + exp((25 - V) / 5.98 ));
+end
+
+model shim_2006__IbNa(IbNa, g_bNa, V, E_Na)
+
+  // Assignment Rules:
+  IbNa := g_bNa * (V - E_Na);
+end
+
+model shim_2006__ICaL(ICaL, g_CaL, time_, V, Cai, Cao, R, T, F, d, f, fCa)
+
+  // Assignment Rules:
+  ICaL := g_CaL * d * f * fCa * 4 * V * power(F, 2 ) / (R * T) * (Cai * exp(2 * V * F / (R * T)) - 0.341 * Cao) / (exp(2 * V * F / (R * T)) - 1 );
+end
+
+model shim_2006__IpCa(IpCa, g_pCa, K_pCa, Cai)
+
+  // Assignment Rules:
+  IpCa := g_pCa * Cai / (K_pCa + Cai);
+end
+
+model shim_2006__INaCa(INaCa, k_NaCa, K_mNai, K_mCa, k_sat, gamma, alpha, V, R, T, F, Nai, Nao, Cai, Cao)
+
+  // Assignment Rules:
+  INaCa := k_NaCa * (exp(gamma * V * F / (R * T)) * power(Nai, 3 ) * Cao - exp((gamma - 1 ) * V * F / (R * T)) * power(Nao, 3 ) * Cai * alpha) / ((power(K_mNai, 3 ) + power(Nao, 3 )) * (K_mCa + Cao) * (1 + k_sat * exp((gamma - 1 ) * V * F / (R * T))));
+end
+
+model shim_2006__IbCa(IbCa, g_bCa, V, E_Ca)
+
+  // Assignment Rules:
+  IbCa := g_bCa * (V - E_Ca);
+end
+
+model shim_2006__ENa(T, intracellular_concentration, extracellular_concentration, R, F, reversal_potential)
+
+  // Assignment Rules:
+  reversal_potential := R * T / (z * F) * ln(extracellular_concentration / intracellular_concentration);
+
+  // Variable initializations:
+  z = 1;
+  R = 8314.472;
+  F = 96485;
+end
+
+model shim_2006__EK(T, intracellular_concentration, extracellular_concentration, R, F, reversal_potential)
+
+  // Assignment Rules:
+  reversal_potential := R * T / (z * F) * ln(extracellular_concentration / intracellular_concentration);
+
+  // Variable initializations:
+  z = 1;
+  R = 8314.472;
+  F = 96485;
+end
+
+model shim_2006__ECa(T, intracellular_concentration, extracellular_concentration, R, F, reversal_potential)
+
+  // Assignment Rules:
+  reversal_potential := R * T / (z * F) * ln(extracellular_concentration / intracellular_concentration);
+
+  // Variable initializations:
+  z = 2;
+  R = 8314.472;
+  F = 96485;
+end
+
+model shim_2006__EKs(T, intracellular_concentration_1, extracellular_concentration_1, intracellular_concentration_2, extracellular_concentration_2, multiplier_2, R, F, reversal_potential)
+
+  // Assignment Rules:
+  reversal_potential := R * T / (z * F) * ln((multiplier_1 * extracellular_concentration_1 + multiplier_2 * extracellular_concentration_2) / (multiplier_1 * intracellular_concentration_1 + multiplier_2 * intracellular_concentration_2));
+
+  // Variable initializations:
+  z = 1;
+  multiplier_1 = 1;
+  R = 8314.472;
+  F = 96485;
+end
+
+model shim_2006__Nai(Nai, time_, Na_flux)
+
+  // Rate Rules:
+  Nai' = -(Na_flux);
+
+  // Variable initializations:
+  Nai = 10.9532662826763;
+end
+
+model shim_2006__Ki(Ki, time_, K_flux)
+
+  // Rate Rules:
+  Ki' = -(K_flux);
+
+  // Variable initializations:
+  Ki = 138.048487061761;
+end
+
+model shim_2006__Cai(Cai, CaSR, Cai_total, CaSR_total, Cai_buf, CaSR_buf, Bufc, Kbufc, Bufsr, Kbufsr, vSR, vC, Am, F, time_, Capacitance, Ca_flux, Ca_SR_flux)
+
+  // Assignment Rules:
+  Cai := Cai_total - Cai_buf;
+  CaSR := CaSR_total - CaSR_buf;
+  Cai_buf := (root(power(bCai, 2 ) - 4 * aCai * cCai) - bCai) / (2 * aCai);
+  CaSR_buf := (root(power(bCaSR, 2 ) - 4 * aCaSR * cCaSR) - bCaSR) / (2 * aCaSR);
+  aCai := -(1 );
+  bCai := Cai_total + Kbufc + Bufc;
+  cCai := -(Bufc) * Cai_total;
+  aCaSR := -(1 );
+  bCaSR := CaSR_total + Kbufsr + Bufsr;
+  cCaSR := -(Bufsr) * CaSR_total;
+
+  // Rate Rules:
+  Cai_total' = Ca_flux + Ca_SR_flux;
+  CaSR_total' = vC / vSR * -(Ca_SR_flux);
+
+  // Variable initializations:
+  Cai_total = 0.00682342989751132;
+  CaSR_total = 6.39862043165719;
+end
+
+model shim_2006__Jleak(Jleak, V_leak, Cai, CaSR)
+
+  // Assignment Rules:
+  Jleak := V_leak * (CaSR - Cai);
+end
+
+model shim_2006__Jup(Jup, Vmax_up, Cai, K_up)
+
+  // Assignment Rules:
+  Jup := Vmax_up / (1 + power(K_up, 2 ) / power(Cai, 2 ));
+end
+
+model shim_2006__Jrel(Jrel, Cai, CaSR, a_rel, b_rel, c_rel, tau_g, V, time_, d, g)
+
+  // Assignment Rules:
+  Jrel := (a_rel * power(CaSR, 2 ) / (power(b_rel, 2 ) + power(CaSR, 2 )) + c_rel) * d * g;
+end
+
+model shim_2006__m_gate(m, tau_m, m_infinity, V, time_)
+
+  // Assignment Rules:
+  tau_m := 1 * alpha_m * beta_m;
+  m_infinity := 1 / power(1 + exp((-(56.86 ) - V) / 9.03 ), 2 );
+  alpha_m := 1 / (1 + exp((-(60 ) - V) / 5 ));
+  beta_m := 0.1 / (1 + exp((35 + V) / 5 )) + 0.1 / (1 + exp((V - 50 ) / 200 ));
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.00139496502667641;
+end
+
+model shim_2006__h_gate(h, tau_h, h_infinity, V, time_)
+
+  // Assignment Rules:
+  tau_h := 1 / (alpha_h + beta_h);
+  h_infinity := 1 / power(1 + exp((71.55 + V) / 7.43 ), 2 );
+  alpha_h := piecewise( 0.057 * exp(-((80 + V)) / 6.8 ) , V < -(40 ) , 0 );
+  beta_h := piecewise( 2.7 * exp(0.079 * V) + 3.1E5 * exp(0.3485 * V) , V < -(40 ) , 0.77 / (0.13 * (1 + exp(-((V + 10.66 )) / 11.1 ))) );
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  h = 0.770575154565896;
+end
+
+model shim_2006__j_gate(j, tau_j, j_infinity, V, time_)
+
+  // Assignment Rules:
+  tau_j := 1 / (alpha_j + beta_j);
+  j_infinity := 1 / power(1 + exp((71.55 + V) / 7.43 ), 2 );
+  alpha_j := piecewise( (-(2.5428E4 ) * exp(0.2444 * V) - 6.948E-6 * exp(-(0.04391 ) * V)) * (V + 37.78 ) / (1 + exp(0.311 * (V + 79.23 ))) , V < -(40 ) , 0 );
+  beta_j := piecewise( 0.02424 * exp(-(0.01052 ) * V) / (1 + exp(-(0.1378 ) * (V + 40.14 ))) , V < -(40 ) , 0.6 * exp(0.057 * V) / (1 + exp(-(0.1 ) * (V + 32 ))) );
+
+  // Rate Rules:
+  j' = (j_infinity - j) / tau_j;
+
+  // Variable initializations:
+  j = 0.770443444995156;
+end
+
+model shim_2006__K1_gate(K1_infinity, E_K, V)
+
+  // Assignment Rules:
+  K1_infinity := alpha_K1 / (alpha_K1 + beta_K1);
+  alpha_K1 := 0.1 / (1 + exp(0.06 * (V - (E_K + 200 ))));
+  beta_K1 := (3 * exp(0.0002 * (V - E_K + 100 )) + exp(0.1 * (V - (E_K + 10 )))) / (1 + exp(-(0.5 ) * (V - E_K)));
+end
+
+model shim_2006__r_gate(r, V, time_)
+
+  // Assignment Rules:
+  r_infinity := 1 / (1 + exp((20 - V) / 6 ));
+  tau_r := 9.5 * exp(-(power(V + 40 , 2 )) / 1800 ) + 0.8;
+
+  // Rate Rules:
+  r' = (r_infinity - r) / tau_r;
+
+  // Variable initializations:
+  r = 2.05519333410682e-8;
+end
+
+model shim_2006__s_gate(s, V, time_)
+
+  // Assignment Rules:
+  s_infinity := 1 / (1 + exp((20 + V) / 5 ));
+  tau_s := 85 * exp(-(power(V + 45 , 2 )) / 320 ) + 5 / (1 + exp((V - 20 ) / 5 )) + 3;
+
+  // Rate Rules:
+  s' = (s_infinity - s) / tau_s;
+
+  // Variable initializations:
+  s = 0.999998222617307;
+end
+
+model shim_2006__Xr1_gate(Xr1, V, time_)
+
+  // Assignment Rules:
+  alpha_Xr1 := 450 / (1 + exp((-(45 ) - V) / 10 ));
+  beta_Xr1 := 6 / (1 + exp((V + 30 ) / 11.5 ));
+  Xr1_infinity := 1 / (1 + exp((-(26 ) - V) / 7 ));
+  tau_Xr1 := 1 * alpha_Xr1 * beta_Xr1;
+
+  // Rate Rules:
+  Xr1' = (Xr1_infinity - Xr1) / tau_Xr1;
+
+  // Variable initializations:
+  Xr1 = 0.000184456278122146;
+end
+
+model shim_2006__Xr2_gate(Xr2, V, time_)
+
+  // Assignment Rules:
+  alpha_Xr2 := 3 / (1 + exp((-(60 ) - V) / 20 ));
+  beta_Xr2 := 1.12 / (1 + exp((V - 60 ) / 20 ));
+  Xr2_infinity := 1 / (1 + exp((88 + V) / 24 ));
+  tau_Xr2 := 1 * alpha_Xr2 * beta_Xr2;
+
+  // Rate Rules:
+  Xr2' = (Xr2_infinity - Xr2) / tau_Xr2;
+
+  // Variable initializations:
+  Xr2 = 0.481278373434186;
+end
+
+model shim_2006__Xs_gate(Xs, V, time_)
+
+  // Assignment Rules:
+  alpha_Xs := 1100 / root(1 + exp((-(10 ) - V) / 6 ));
+  beta_Xs := 1 / (1 + exp((V - 60 ) / 20 ));
+  Xs_infinity := 1 / (1 + exp((-(5 ) - V) / 14 ));
+  tau_Xs := 1 * alpha_Xs * beta_Xs;
+
+  // Rate Rules:
+  Xs' = (Xs_infinity - Xs) / tau_Xs;
+
+  // Variable initializations:
+  Xs = 0.00301801313676975;
+end
+
+model shim_2006__d_gate(d, alpha_d, beta_d, tau_d, gamma_d, d_infinity, V, time_)
+
+  // Assignment Rules:
+  alpha_d := 1.4 / (1 + exp((-(35 ) - V) / 13 )) + 0.25;
+  beta_d := 1.4 / (1 + exp((5 + V) / 5 ));
+  tau_d := 1 * alpha_d * beta_d + gamma_d;
+  gamma_d := 1 / (1 + exp((50 - V) / 20 ));
+  d_infinity := 1 / (1 + exp((-(5 ) - V) / 7.5 ));
+
+  // Rate Rules:
+  d' = (d_infinity - d) / tau_d;
+
+  // Variable initializations:
+  d = 1.98573194199555e-5;
+end
+
+model shim_2006__f_gate(f, tau_f, f_infinity, V, time_)
+
+  // Assignment Rules:
+  tau_f := 1125 * exp(-(power(V + 27 , 2 )) / 240 ) + 165 / (1 + exp((25 - V) / 10 )) + 80;
+  f_infinity := 1 / (1 + exp((20 + V) / 7 ));
+
+  // Rate Rules:
+  f' = (f_infinity - f) / tau_f;
+
+  // Variable initializations:
+  f = 0.999672095225684;
+end
+
+model shim_2006__fCa_gate(fCa, tau_fCa, fCa_infinity, V, time_, Cai)
+
+  // Assignment Rules:
+  alpha_fCa := 1 / (1 + power(Cai / 0.000325 , 8 ));
+  beta_fCa := 0.1 / (1 + exp((Cai - 0.0005 ) / 0.0001 ));
+  gamma_fCa := 0.2 / (1 + exp((Cai - 0.00075 ) / 0.0008 ));
+  fCa_infinity := (alpha_fCa + beta_fCa + gamma_fCa + 0.23 ) / 1.46;
+
+  // Rate Rules:
+  fCa' = piecewise( 0 , ( fCa_infinity > fCa) && (V > -(60 ) ), (fCa_infinity - fCa) / tau_fCa );
+
+  // Variable initializations:
+  fCa = 1.00603163752055;
+  tau_fCa = 2;
+end
+
+model shim_2006__g_gate(g, g_infinity, tau_g, Cai, V, time_)
+
+  // Assignment Rules:
+  g_infinity := piecewise( 1 / (1 + power(Cai, 6 ) / power(0.00035 , 6 )) , Cai <= 0.00035 , 1 / (1 + power(Cai, 16 ) / power(0.00035 , 16 )) );
+
+  // Rate Rules:
+  g' = piecewise( 0 , ( g_infinity > g) && (V > -(60 ) ), (g_infinity - g) / tau_g );
+
+  // Variable initializations:
+  g = 0.999938939681683;
+end
+
+model shim_2006__stimulus_protocol(IStim, Am, time_)
+
+  // Assignment Rules:
+  IStim := piecewise( stimCurrent / Am , (( time_ >= IstimStart) && (time_ <= IstimEnd) && (time_ - IstimStart - floor((time_ - IstimStart) / IstimPeriod) * IstimPeriod <= IstimPulseDuration )), 0 );
+
+  // Variable initializations:
+  IstimStart = 100;
+  IstimEnd = 5000000;
+  stimCurrent = 100;
+  IstimPeriod = 1000;
+  IstimPulseDuration = 1;
+end
+
+model shim_2006__NL_model(Cai, ForceExt, time_, cTRPN, V_LV, P_LV)
+
+  // Assignment Rules:
+  xHalfSL := 10000 * 2 * pi * radiusLV / 236550;
+  ForceExt := ForceP + ForceB;
+  cTnCaEff := cTnCa / exp(R * power(xHalfSL - OptiHSL, 2 ));
+  Q_a := Y_2 * cTnCaEff / 1 - Z_2 * cTnCaCB / 1;
+  Q_b := Y_1 * Cai * cTn / 1 - Z_1 * cTnCa / 1;
+  Q_r := Y_3 * cTnCaCB / 1 - Z_3 * cTnCB * Cai / 1;
+  Q_d := Y_4 * cTnCB / 1;
+  Q_d1 := Y_d * power(SlidingR * (xHalfSL - xInext - xLLimitCB), 2 ) * cTnCaCB / 1;
+  Q_d2 := Y_d * power(SlidingR * (xHalfSL - xInext - xLLimitCB), 2 ) * cTnCB / 1;
+  cTn := 1 - cTnCa - cTnCaCB - cTnCB;
+  cCaTropC := trpnbar * (Q_r + Q_d2 - Q_b) / 1;
+  xhhh := xHalfSL - xInext;
+  cTRPN := (cTnCaCB + cTnCB) * trpnbar / 1;
+  xNewCBF := AForceCB * (cTnCaCB + cTnCB) * trpnbar / 1;
+  ForceP := piecewise( xKcoeff * power(xHalfSL - 0.97 , 5 ) , xHalfSL > 0.97 , 30 * (xHalfSL - 0.97 ) );
+  ForceB := xNewCBF * xhhh;
+  radiusLV := power(3 * V_LV / 2 / pi , 1 / 3 );
+  Tension := ForceExt * Fmult;
+  P_LV := 2 * Tension / radiusLV * 1000 / 133;
+
+  // Rate Rules:
+  cTnCa' = Q_b * 1 - Q_a * 1;
+  cTnCaCB' = Q_a * 1 - Q_r * 1 - Q_d1 * 1;
+  cTnCB' = Q_r * 1 - Q_d * 1 - Q_d2 * 1;
+  xInext' = SlidingR * (xHalfSL - xInext - xLLimitCB);
+
+  // Variable initializations:
+  cTnCa = 0.074511924815213;
+  cTnCaCB = 0.0145019379063895;
+  cTnCB = 0.00190549185450413;
+  Y_1 = 39;
+  Y_2 = 0.0039;
+  Y_3 = 0.03;
+  Y_4 = 0.12;
+  Y_d = 0.027;
+  Z_1 = 0.03;
+  Z_2 = 0.0039;
+  Z_3 = 1560;
+  OptiHSL = 1.17;
+  xLLimitCB = 0.005;
+  R = 20;
+  SlidingR = 1.2;
+  xInext = 1.13295171019871;
+  trpnbar = 0.07;
+  AForceCB = 1800000;
+  xKcoeff = 140000;
+  Fmult = 0.8;
+end
+
+model shim_2006__circulation(time_, P_LV, V_LV)
+
+  // Assignment Rules:
+  P_RV := (P_LV - lvb) * rva / (lva - lvb) + (lva - P_LV) * rvb / (lva - lvb);
+  P_A := Vs_A / C_A;
+  P_V := Vs_V / C_V;
+  P_PA := Vs_PA / C_PA;
+  P_PV := Vs_PV / C_PV;
+  P_AO := Vs_AO / C_AO;
+  F_PV := piecewise( 0 , (P_PV - P_LV) / R_PV < 0 , (P_PV - P_LV) / R_PV );
+  F_LO := piecewise( 0 , (P_LV - P_AO) / R_LO < 0 , (P_LV - P_AO) / R_LO );
+  F_AO := (P_AO - P_A) / R_AO;
+  F_A := (P_A - P_V) / R_A;
+  F_V := piecewise( 0 , (P_V - P_RV) / R_V < 0 , (P_V - P_RV) / R_V );
+  F_RO := piecewise( 0 , (P_RV - P_PA) / R_V < 0 , (P_RV - P_PA) / R_V );
+  F_PA := (P_PA - P_PV) / R_PA;
+  V_LV := Vs_LV + V_LV0;
+  V_A := Vs_A + V_A0;
+  V_AO := Vs_AO + V_AO0;
+  V_V := Vs_V + V_V0;
+  V_RV := Vs_RV + V_RV0;
+  V_PA := Vs_PA + V_PA0;
+  V_PV := Vs_PV + V_PV0;
+  lva := EmaxLV * (V_LV - Vs_LV);
+  rva := EmaxRV * (V_RV - Vs_RV);
+  lvb := P0lv * (exp(kelv * V_LV) - 1 );
+  rvb := P0rv * (exp(kerv * V_RV) - 1 );
+
+  // Rate Rules:
+  Vs_LV' = F_PV - F_LO;
+  Vs_RV' = F_V - F_RO;
+  Vs_A' = F_AO - F_A;
+  Vs_V' = F_A - F_V;
+  Vs_PA' = F_RO - F_PA;
+  Vs_PV' = F_PA - F_PV;
+  Vs_AO' = F_LO - F_AO;
+
+  // Variable initializations:
+  R_A = 1000;
+  R_AO = 60;
+  R_V = 28;
+  R_RO = 3;
+  R_PA = 80;
+  R_PV = 10;
+  R_LO = 6;
+  C_A = 3.5;
+  C_AO = 0.3;
+  C_V = 110;
+  C_PA = 4.3;
+  C_PV = 8.4;
+  V_A0 = 715;
+  V_V0 = 2750;
+  V_RV0 = 20;
+  V_PA0 = 90;
+  V_PV0 = 490;
+  V_LV0 = 20;
+  V_AO0 = 0;
+  Vs_LV = 144.687729485028;
+  Vs_RV = -5851.58291726876;
+  Vs_A = 435.463300626406;
+  Vs_V = 5965.81859634061;
+  Vs_PA = 356.531769433971;
+  Vs_PV = 685.284664433661;
+  Vs_AO = 37.4256033611631;
+  EmaxLV = 2.95;
+  EmaxRV = 1.75;
+  kelv = 0.014;
+  kerv = 0.011;
+  P0lv = 1.5;
+  P0rv = 1.5;
+end
+
+model shim_2006____main()
+
+  // Sub-modules, and any changes to those submodules:
+  time_: shim_2006__time(time_0);
+  stimulus_protocol_params: shim_2006__stimulus_protocol_params(stimPeriod, stimDuration, stimCurrent);
+  additional_currents: shim_2006__additional_currents(IK_additional, ICa_additional, INa_additional, JCaSR_additional, IStim);
+  default_parameters: shim_2006__default_parameters(Am, Cm, Capacitance, T, vC, vSR, g_Na, g_K1, g_to, g_Kr, g_Ks, g_pK, g_bNa, g_bCa, multiplier_2, P_NaK, K_mNa, K_mK, g_CaL, Bufc, Kbufc, Bufsr, Kbufsr, Nao, Ko, Cao, V_leak, K_up, Vmax_up, a_rel, b_rel, c_rel, tau_g, g_pCa, K_pCa, k_NaCa, K_mNai, K_mCa, k_sat, gamma, alpha);
+  default_initial_conditions: shim_2006__default_initial_conditions(V_initial, m_initial, h_initial, j_initial, s_initial, r_initial, Xr1_initial, Xr2_initial, Xs_initial, d_initial, f_initial, fCa_initial, g_initial, Nai_initial, Ki_initial, Cai_total_initial, CaSR_total_initial);
+  membrane_potential: shim_2006__membrane_potential(V, V_initial, Cm, time_0, Itotal);
+  total_membrane_current: shim_2006__total_membrane_current(Itotal, ICa_additional, INa_additional, IK_additional, INa0, IK10, Ito0, IKr0, IKs0, ICaL0, INaCa0, INaK0, IpCa0, IpK0, IbCa0, IbNa0);
+  K_flux: shim_2006__K_flux(K_flux0, vC, Am, F0, IK_additional, IK10, Ito0, IKr0, IKs0, INaK0, IpK0);
+  Na_flux: shim_2006__Na_flux(Na_flux0, vC, Am, F, INa_additional, INa0, IbNa0, INaK0, INaCa0);
+  Ca_flux: shim_2006__Ca_flux(Ca_flux0, vC, Am, F1, ICa_additional, ICaL0, IbCa0, IpCa0, INaCa0);
+  Ca_SR_flux: shim_2006__Ca_SR_flux(Ca_SR_flux0, Jleak0, Jup0, Jrel0, JCaSR_additional);
+  INa: shim_2006__INa(INa0, time_0, V, reversal_potential0, g_Na, m, h, j);
+  IK1: shim_2006__IK1(IK10, g_K1, V, Ko, reversal_potential, K1_infinity);
+  Ito: shim_2006__Ito(Ito0, g_to, reversal_potential, V, time_0, s, r);
+  IKr: shim_2006__IKr(IKr0, g_Kr, time_0, V, reversal_potential, Ko, Xr1, Xr2);
+  IKs: shim_2006__IKs(IKs0, g_Ks, time_0, V, reversal_potential1, Xs);
+  INaK: shim_2006__INaK(INaK0, P_NaK, K_mNa, K_mK, V, R, T, F, Nai0, Ko);
+  IpK: shim_2006__IpK(IpK0, g_pK, V, reversal_potential);
+  IbNa: shim_2006__IbNa(IbNa0, g_bNa, V, reversal_potential0);
+  ICaL: shim_2006__ICaL(ICaL0, g_CaL, time_0, V, Cai0, Cao, R0, T, F1, d, f, fCa);
+  IpCa: shim_2006__IpCa(IpCa0, g_pCa, K_pCa, Cai0);
+  INaCa: shim_2006__INaCa(INaCa0, k_NaCa, K_mNai, K_mCa, k_sat, gamma, alpha, V, R, T, F, Nai0, Nao, Cai0, Cao);
+  IbCa: shim_2006__IbCa(IbCa0, g_bCa, V, reversal_potential2);
+  ENa: shim_2006__ENa(T, Nai0, Nao, R, F, reversal_potential0);
+  EK: shim_2006__EK(T, Ki0, Ko, R1, F0, reversal_potential);
+  ECa: shim_2006__ECa(T, Cai0, Cao, R0, F1, reversal_potential2);
+  EKs: shim_2006__EKs(T, Ki0, Ko, Nai0, Nao, multiplier_2, R2, F2, reversal_potential1);
+  Nai: shim_2006__Nai(Nai0, time_0, Na_flux0);
+  Ki: shim_2006__Ki(Ki0, time_0, K_flux0);
+  Cai: shim_2006__Cai(Cai0, CaSR, Cai_total, CaSR_total, Cai_buf, CaSR_buf, Bufc, Kbufc, Bufsr, Kbufsr, vSR, vC, Am, F1, time_0, Cm, Ca_flux0, Ca_SR_flux0);
+  Jleak: shim_2006__Jleak(Jleak0, V_leak, Cai0, CaSR);
+  Jup: shim_2006__Jup(Jup0, Vmax_up, Cai0, K_up);
+  Jrel: shim_2006__Jrel(Jrel0, Cai0, CaSR, a_rel, b_rel, c_rel, tau_g, V, time_0, d, g);
+  m_gate: shim_2006__m_gate(m, tau_m, m_infinity, V, time_0);
+  h_gate: shim_2006__h_gate(h, tau_h, h_infinity, V, time_0);
+  j_gate: shim_2006__j_gate(j, tau_j, j_infinity, V, time_0);
+  K1_gate: shim_2006__K1_gate(K1_infinity, reversal_potential, V);
+  r_gate: shim_2006__r_gate(r, V, time_0);
+  s_gate: shim_2006__s_gate(s, V, time_0);
+  Xr1_gate: shim_2006__Xr1_gate(Xr1, V, time_0);
+  Xr2_gate: shim_2006__Xr2_gate(Xr2, V, time_0);
+  Xs_gate: shim_2006__Xs_gate(Xs, V, time_0);
+  d_gate: shim_2006__d_gate(d, alpha_d, beta_d, tau_d, gamma_d, d_infinity, V, time_0);
+  f_gate: shim_2006__f_gate(f, tau_f, f_infinity, V, time_0);
+  fCa_gate: shim_2006__fCa_gate(fCa, tau_fCa, fCa_infinity, V, time_0, Cai0);
+  g_gate: shim_2006__g_gate(g, g_infinity, tau_g, Cai0, V, time_0);
+  stimulus_protocol: shim_2006__stimulus_protocol(IStim, Am, time_0);
+  NL_model: shim_2006__NL_model(Cai0, ForceExt, time_0, cTRPN, V_LV, P_LV);
+  circulation: shim_2006__circulation(time_0, P_LV, V_LV);
+end

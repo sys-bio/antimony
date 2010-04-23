@@ -1,0 +1,193 @@
+//Created by libAntimony v1.3
+model qu_maclellan_weiss_2003_version1__environment(time_)
+end
+
+model qu_maclellan_weiss_2003_version1__rate_constants(k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k2u, k7u, k16u, az, bz, cz, aw, bw, cw, ai, bi, ci, cyclin_CDK_active, kplus_z, kplus_w, kplus_i, kminus_z, kminus_w, kminus_i)
+
+  // Assignment Rules:
+  kplus_z := bz + cz * cyclin_CDK_active;
+  kplus_w := bw + cw * cyclin_CDK_active;
+  kplus_i := bi + ci * cyclin_CDK_active;
+  kminus_z := az;
+  kminus_w := aw;
+  kminus_i := ai;
+
+  // Variable initializations:
+  k1 = 300;
+  k2 = 5;
+  k3 = 30;
+  k4 = 30;
+  k5 = 0.1;
+  k6 = 1;
+  k7 = 10;
+  k8 = 100;
+  k9 = 1;
+  k10 = 10;
+  k11 = 1;
+  k12 = 0;
+  k13 = 1;
+  k14 = 1;
+  k15 = 1;
+  k16 = 2;
+  k2u = 50;
+  k7u = 0;
+  k16u = 25;
+  az = 10;
+  bz = 0.1;
+  cz = 1;
+  aw = 10;
+  bw = 0.1;
+  cw = 1;
+  ai = 10;
+  bi = 0.1;
+  ci = 1;
+end
+
+model qu_maclellan_weiss_2003_version1__cyclin(cyclin, k1, k2, k2u, k3, k4, cyclin_CDK_inactive, CDK, APC, time_)
+
+  // Rate Rules:
+  cyclin' = k1 + k4 * cyclin_CDK_inactive - k3 * cyclin * CDK - (k2 + k2u * APC) * cyclin;
+
+  // Variable initializations:
+  cyclin = 0;
+end
+
+model qu_maclellan_weiss_2003_version1__cyclin_CDK_inactive(cyclin_CDK_inactive, k3, k4, k5, k6, cyclin_CDK_active, wee1, cyclin, CDK, Cdc25_2P, time_)
+
+  // Rate Rules:
+  cyclin_CDK_inactive' = k3 * cyclin * CDK + k6 * cyclin_CDK_active + wee1 * cyclin_CDK_active * 1 - k4 * cyclin_CDK_inactive - k5 * cyclin_CDK_inactive - Cdc25_2P * cyclin_CDK_inactive * 1;
+
+  // Variable initializations:
+  cyclin_CDK_inactive = 0.1;
+end
+
+model qu_maclellan_weiss_2003_version1__cyclin_CDK_active(cyclin_CDK_active, k5, k6, k7, k7u, k14, k15, k16, k16u, Cdc25_2P, CKI, cyclin_CDK_inactive, cyclin_CDK_CKI, cyclin_CDK_CKI_P, wee1, APC, time_)
+
+  // Rate Rules:
+  cyclin_CDK_active' = k5 * cyclin_CDK_inactive + Cdc25_2P * cyclin_CDK_inactive * 1 - k6 * cyclin_CDK_active - wee1 * cyclin_CDK_active * 1 - (k7 + k7u * APC) * cyclin_CDK_active - k14 * cyclin_CDK_active * CKI + k15 * cyclin_CDK_CKI + (k16 + k16u * APC) * cyclin_CDK_CKI_P;
+
+  // Variable initializations:
+  cyclin_CDK_active = 0.1;
+end
+
+model qu_maclellan_weiss_2003_version1__Cdc25(Cdc25, k8, kminus_z, kplus_z, k9, Cdc25_P, time_)
+
+  // Rate Rules:
+  Cdc25' = k8 + kminus_z * Cdc25_P - kplus_z * Cdc25 - k9 * Cdc25;
+
+  // Variable initializations:
+  Cdc25 = 0;
+end
+
+model qu_maclellan_weiss_2003_version1__Cdc25_P(Cdc25_P, kplus_z, kminus_z, k9, Cdc25, Cdc25_2P, time_)
+
+  // Rate Rules:
+  Cdc25_P' = kplus_z * (Cdc25 - Cdc25_P) + kminus_z * (Cdc25_2P - Cdc25_P) - k9 * Cdc25_P;
+
+  // Variable initializations:
+  Cdc25_P = 0;
+end
+
+model qu_maclellan_weiss_2003_version1__Cdc25_2P(Cdc25_2P, kminus_z, kplus_z, k9, Cdc25_P, time_)
+
+  // Rate Rules:
+  Cdc25_2P' = kplus_z * Cdc25_P - kminus_z * Cdc25_2P - k9 * Cdc25_2P;
+
+  // Variable initializations:
+  Cdc25_2P = 0;
+end
+
+model qu_maclellan_weiss_2003_version1__wee1(wee1, k10, k11, kminus_w, kplus_w, wee1_P, time_)
+
+  // Rate Rules:
+  wee1' = k10 + kminus_w * wee1_P - kplus_w * wee1 - k11 * wee1;
+
+  // Variable initializations:
+  wee1 = 0;
+end
+
+model qu_maclellan_weiss_2003_version1__wee1_P(wee1_P, kplus_w, kminus_w, k11, wee1, time_)
+
+  // Rate Rules:
+  wee1_P' = kplus_w * wee1 - kminus_w * wee1_P - k11 * wee1_P;
+
+  // Variable initializations:
+  wee1_P = 0;
+end
+
+model qu_maclellan_weiss_2003_version1__APC(APC, cyclin_CDK_active, time_)
+
+  // Assignment Rules:
+  h_x := power(cyclin_CDK_active, 2 ) / (power(a, 2 ) + power(cyclin_CDK_active, 2 ));
+
+  // Rate Rules:
+  APC' = (h_x - APC) / tau;
+
+  // Variable initializations:
+  APC = 0;
+  tau = 25;
+  a = 4;
+end
+
+model qu_maclellan_weiss_2003_version1__CKI(CKI, k12, k13, k14, k15, cyclin_CDK_active, cyclin_CDK_CKI, time_)
+
+  // Rate Rules:
+  CKI' = k12 - k13 * CKI - k14 * cyclin_CDK_active * CKI + k15 * cyclin_CDK_CKI;
+
+  // Variable initializations:
+  CKI = 0;
+end
+
+model qu_maclellan_weiss_2003_version1__cyclin_CDK_CKI(cyclin_CDK_CKI, k14, k15, kminus_i, kplus_i, cyclin_CDK_active, cyclin_CDK_CKI_P, CKI, time_)
+
+  // Rate Rules:
+  cyclin_CDK_CKI' = k14 * cyclin_CDK_active * CKI - k15 * cyclin_CDK_CKI + kminus_i * cyclin_CDK_CKI_P - kplus_i * cyclin_CDK_CKI;
+
+  // Variable initializations:
+  cyclin_CDK_CKI = 0;
+end
+
+model qu_maclellan_weiss_2003_version1__cyclin_CDK_CKI_P(cyclin_CDK_CKI_P, k14, k15, k16, k16u, kminus_i, kplus_i, APC, cyclin_CDK_CKI, time_)
+
+  // Rate Rules:
+  cyclin_CDK_CKI_P' = kplus_i * cyclin_CDK_CKI - kminus_i * cyclin_CDK_CKI_P - (k16 + k16u * APC) * cyclin_CDK_CKI_P;
+
+  // Variable initializations:
+  cyclin_CDK_CKI_P = 0;
+end
+
+model qu_maclellan_weiss_2003_version1__CDK(CDK, cyclin_CDK_CKI_P, cyclin_CDK_CKI, cyclin_CDK_active, cyclin_CDK_inactive)
+
+  // Assignment Rules:
+  CDK := (CDK_T - cyclin_CDK_active - cyclin_CDK_inactive - cyclin_CDK_CKI - cyclin_CDK_CKI_P) / CDK_T;
+
+  // Variable initializations:
+  CDK_T = 200;
+end
+
+model qu_maclellan_weiss_2003_version1__cyclin_T(cyclin_T, cyclin, cyclin_CDK_active, cyclin_CDK_inactive)
+
+  // Assignment Rules:
+  cyclin_T := cyclin + cyclin_CDK_active + cyclin_CDK_inactive;
+end
+
+model qu_maclellan_weiss_2003_version1____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: qu_maclellan_weiss_2003_version1__environment(time_);
+  rate_constants: qu_maclellan_weiss_2003_version1__rate_constants(k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k2u, k7u, k16u, az, bz, cz, aw, bw, cw, ai, bi, ci, cyclin_CDK_active0, kplus_z, kplus_w, kplus_i, kminus_z, kminus_w, kminus_i);
+  cyclin: qu_maclellan_weiss_2003_version1__cyclin(cyclin0, k1, k2, k2u, k3, k4, cyclin_CDK_inactive0, CDK0, APC0, time_);
+  cyclin_CDK_inactive: qu_maclellan_weiss_2003_version1__cyclin_CDK_inactive(cyclin_CDK_inactive0, k3, k4, k5, k6, cyclin_CDK_active0, wee10, cyclin0, CDK0, Cdc25_2P0, time_);
+  cyclin_CDK_active: qu_maclellan_weiss_2003_version1__cyclin_CDK_active(cyclin_CDK_active0, k5, k6, k7, k7u, k14, k15, k16, k16u, Cdc25_2P0, CKI0, cyclin_CDK_inactive0, cyclin_CDK_CKI0, cyclin_CDK_CKI_P0, wee10, APC0, time_);
+  Cdc25: qu_maclellan_weiss_2003_version1__Cdc25(Cdc250, k8, kminus_z, kplus_z, k9, Cdc25_P0, time_);
+  Cdc25_P: qu_maclellan_weiss_2003_version1__Cdc25_P(Cdc25_P0, kplus_z, kminus_z, k9, Cdc250, Cdc25_2P0, time_);
+  Cdc25_2P: qu_maclellan_weiss_2003_version1__Cdc25_2P(Cdc25_2P0, kminus_z, kplus_z, k9, Cdc25_P0, time_);
+  wee1: qu_maclellan_weiss_2003_version1__wee1(wee10, k10, k11, kminus_w, kplus_w, wee1_P0, time_);
+  wee1_P: qu_maclellan_weiss_2003_version1__wee1_P(wee1_P0, kplus_w, kminus_w, k11, wee10, time_);
+  APC: qu_maclellan_weiss_2003_version1__APC(APC0, cyclin_CDK_active0, time_);
+  CKI: qu_maclellan_weiss_2003_version1__CKI(CKI0, k12, k13, k12, k15, cyclin_CDK_active0, cyclin_CDK_CKI0, time_);
+  cyclin_CDK_CKI: qu_maclellan_weiss_2003_version1__cyclin_CDK_CKI(cyclin_CDK_CKI0, k14, k15, kminus_i, kplus_i, cyclin_CDK_active0, cyclin_CDK_CKI_P0, CKI0, time_);
+  cyclin_CDK_CKI_P: qu_maclellan_weiss_2003_version1__cyclin_CDK_CKI_P(cyclin_CDK_CKI_P0, k14, k15, k16, k16u, kminus_i, kplus_i, APC0, cyclin_CDK_CKI0, time_);
+  CDK: qu_maclellan_weiss_2003_version1__CDK(CDK0, cyclin_CDK_CKI_P0, cyclin_CDK_CKI0, cyclin_CDK_active0, cyclin_CDK_inactive0);
+  cyclin_T: qu_maclellan_weiss_2003_version1__cyclin_T(cyclin_T0, cyclin0, cyclin_CDK_active0, cyclin_CDK_inactive0);
+end

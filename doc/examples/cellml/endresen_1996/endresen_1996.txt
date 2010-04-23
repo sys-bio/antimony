@@ -1,0 +1,94 @@
+//Created by libAntimony v1.3
+model endresen_1997__environment(time_)
+end
+
+model endresen_1997__membrane(V, time_, i_s, i_K, i_K_ACh, i_j)
+
+  // Rate Rules:
+  V' = -((i_s + i_K + i_K_ACh + i_j)) / Cm;
+
+  // Variable initializations:
+  V = -52.07606;
+  Cm = 60;
+end
+
+model endresen_1997__calcium_channel(i_s, V)
+
+  // Assignment Rules:
+  i_s := 1 / 2 * g_s * (1 + tanh((V - V_1) / V_2)) * (V - V_s);
+
+  // Variable initializations:
+  g_s = 382.9118;
+  V_s = 214.1429;
+  V_1 = -35.9358;
+  V_2 = 7.8589;
+end
+
+model endresen_1997__potassium_channel_w_gate(w, V, time_)
+
+  // Rate Rules:
+  w' = lambda_w * cosh((V - V_3) / (2 * V_4)) * (1 / 2 * (1 + tanh((V - V_3) / V_4)) - w);
+
+  // Variable initializations:
+  w = 0.0008971;
+  lambda_w = 20.7796;
+  V_3 = -27.9375;
+  V_4 = 6.321;
+end
+
+model endresen_1997__potassium_channel(i_K, time_, V, w)
+
+  // Sub-modules, and any changes to those submodules:
+  potassium_channel_w_gate: endresen_1997__potassium_channel_w_gate(w, V, time_);
+
+  // Assignment Rules:
+  i_K := g_K * w * (V - V_K);
+
+  // Variable initializations:
+  g_K = 536.1093;
+  V_K = -259.0783;
+end
+
+model endresen_1997__acetyl_choline_activated_potassium_channel_u_gate(u, V, time_)
+
+  // Assignment Rules:
+  alpha := 0.012332 / (1 + 4.2E-6 / ACh);
+  beta := 0.01 * exp(0.0133 * (V + 40 ));
+
+  // Rate Rules:
+  u' = alpha * (1 - u) - beta * u;
+
+  // Variable initializations:
+  u = 0.2344555;
+  ACh = 1e-6;
+end
+
+model endresen_1997__acetyl_choline_activated_potassium_channel(i_K_ACh, time_, V, u)
+
+  // Sub-modules, and any changes to those submodules:
+  acetyl_choline_activated_potassium_channel_u_gate: endresen_1997__acetyl_choline_activated_potassium_channel_u_gate(u, V, time_);
+
+  // Assignment Rules:
+  i_K_ACh := 1 * 0.27 * u * (V + 90 );
+end
+
+model endresen_1997__coupling_current(i_j, V)
+
+  // Assignment Rules:
+  i_j := g_j * (V - V_B);
+
+  // Variable initializations:
+  g_j = 0;
+  V_B = -50;
+end
+
+model endresen_1997____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: endresen_1997__environment(time_);
+  membrane: endresen_1997__membrane(V, time_, i_s, i_K, i_K_ACh, i_j);
+  calcium_channel: endresen_1997__calcium_channel(i_s, V);
+  potassium_channel: endresen_1997__potassium_channel(i_K, time_, V, w);
+  acetyl_choline_activated_potassium_channel: endresen_1997__acetyl_choline_activated_potassium_channel(i_K_ACh, time_, V, u);
+  coupling_current: endresen_1997__coupling_current(i_j, V);
+end

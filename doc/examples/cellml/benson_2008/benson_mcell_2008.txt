@@ -1,0 +1,442 @@
+//Created by libAntimony v1.3
+model benson_mcell_2008__Environment(time_, F, K_o, Ca_o, Na_o, Cl_o, FonRT, tissue)
+
+  // Variable initializations:
+  F = 96485;
+  K_o = 5.4;
+  Ca_o = 1.8;
+  Na_o = 140;
+  Cl_o = 100;
+  FonRT = 0.0374358835078;
+  tissue = 0;
+end
+
+model benson_mcell_2008__cell(time_, V, F, INa, ICaL, IK1, IKp, IKs, IKr, IpCa, ICab, INaCa, INaK, Ito, Ito2, IClb, INal, naiont, kiont, clont, vmyo, vsr, vnsr, vjsr, vss, AF, i_Stim)
+
+  // Assignment Rules:
+  caiont := ICaL + ICab + IpCa - 2 * INaCa;
+  naiont := INa + 3 * INaCa + 3 * INaK + INal;
+  kiont := IKr + IKs + IK1 + IKp - 2 * INaK + Ito + 0.5 * i_Stim;
+  clont := IClb + Ito2 + 0.5 * i_Stim;
+  vcell := 1000 * pi * a * a * l;
+  ageo := 2 * pi * a * a + 2 * pi * a * l;
+  Acap := ageo * 2;
+  vmyo := vcell * 0.68;
+  vmito := vcell * 0.26;
+  vsr := vcell * 0.06;
+  vnsr := vcell * 0.0552;
+  vjsr := vcell * 0.0048;
+  vss := vcell * 0.02;
+  AF := Acap / F;
+  i_Stim := piecewise( stim_amplitude , ( time_ - past >= stim_offset) && (time_ - past <= stim_offset + stim_duration ), 0 );
+  past := floor(time_ / stim_period) * stim_period;
+
+  // Rate Rules:
+  V' = -((naiont + kiont + caiont + clont));
+
+  // Variable initializations:
+  V = -85.781844107117;
+  l = 0.01;
+  a = 0.0011;
+  stim_offset = 0;
+  stim_period = 1e3;
+  stim_duration = 3;
+  stim_amplitude = -20;
+end
+
+model benson_mcell_2008__INa(V, time_, ENa, tissue, INa)
+
+  // Assignment Rules:
+  GNa := piecewise( 11.5 , tissue == 0 , 4 * 11.5 );
+  gNa := GNa * m * m * m * H * J;
+  am := 0.32 * 1 * (V + 47.13 ) / (1 - exp(-(0.1 ) * (V + 47.13 )));
+  bm := 0.08 * exp(-(V) / 11 );
+  ah := piecewise( 0 , V >= -(40 ) , 0.135 * exp((80 + V) / -(6.8 )) );
+  bh := piecewise( 1 / (0.13 * (1 + exp((V + 10.66 ) / -(11.1 )))) , V >= -(40 ) , 3.56 * exp(0.079 * V) + 3.1E5 * exp(0.35 * V) );
+  aj := piecewise( 0 , V >= -(40 ) , (-(1.2714E5 ) * exp(0.2444 * V) - 3.474E-5 * exp(-(0.04391 ) * V)) * 1 * (V + 37.78 ) / (1 + exp(0.311 * (V + 79.23 ))) );
+  bj := piecewise( 0.3 * exp(-(2.535E-7 ) * V) / (1 + exp(-(0.1 ) * (V + 32 ))) , V >= -(40 ) , 0.1212 * exp(-(0.01052 ) * V) / (1 + exp(-(0.1378 ) * (V + 40.14 ))) );
+  INa := gNa * (V - ENa);
+
+  // Rate Rules:
+  H' = ah * (1 - H) - bh * H;
+  m' = am * (1 - m) - bm * m;
+  J' = aj * (1 - J) - bj * J;
+
+  // Variable initializations:
+  H = 0.987317750543;
+  m = 0.001356538159;
+  J = 0.991924983076;
+end
+
+model benson_mcell_2008__ICaL(V, F, FonRT, time_, tissue, Ca_o, Ca_ss, CaMKactive, ibarca, ICaL)
+
+  // Assignment Rules:
+  ibarca := pca * 4 * (V - 15 ) * F * FonRT * (gacai * Ca_ss * exp(2 * (V - 15 ) * FonRT) - gacao * Ca_o) / (exp(2 * (V - 15 ) * FonRT) - 1 );
+  dss := 1 / (1 + exp(-((V - 4 )) / 6.74 ));
+  taud := 0.59 + 0.8 * exp(0.052 * (V + 13 )) / (1 + exp(0.132 * (V + 13 )));
+  fss := 0.7 / (1 + exp((V + 17.12 ) / 7 )) + 0.3;
+  f2ss := 0.77 / (1 + exp((V + 17.12 ) / 7 )) + 0.23;
+  tauf := 1 / (0.2411 * exp(-(power(0.045 * (V - 9.6914 ), 2 ))) + 0.0529 );
+  tauf2 := 1 / (0.0423 * exp(-(power(0.059 * (V - 18.5726 ), 2 ))) + 0.0054 );
+  dpss := 9 - 8 / (1 + exp(-((V + 65 )) / 3.4 ));
+  fcass := 0.3 / (1 - ICaL / 0.05 ) + 0.55 / (1 + Ca_ss / 0.003 ) + 0.15;
+  fca2ss := 1 / (1 - ICaL / 0.01 );
+  taufca := 10 * CaMKactive / (0.15 + CaMKactive) + 1 / (1 + Ca_ss / 0.003 ) + 0.5;
+  taufca2 := 300 / (1 + exp((-(ICaL) - 0.175 ) / 0.04 )) + 125;
+  ICaL := piecewise( power(d, dp) * f * f2 * fca * fca2 * ibarca , tissue == 0 , d * f * f2 * fca * fca2 * ibarca );
+
+  // Rate Rules:
+  d' = (dss - d) / taud;
+  dp' = (dpss - dp) / 10;
+  f' = (fss - f) / tauf;
+  fca' = (fcass - fca) / taufca;
+  fca2' = (fca2ss - fca2) / taufca2;
+  f2' = (f2ss - f2) / tauf2;
+
+  // Variable initializations:
+  d = 0.00000164013;
+  dp = 8.98230672628;
+  f = 0.999961508634;
+  fca = 0.97836624923;
+  fca2 = 0.893052931249;
+  f2 = 0.992234519148;
+  pca = 2.43e-4;
+  gacai = 1;
+  gacao = 0.341;
+end
+
+model benson_mcell_2008__IK1(V, EK, K_o, IK1)
+
+  // Assignment Rules:
+  ak1 := 1.02 / (1 + exp(0.2385 * (V - EK - 59.215 )));
+  bk1 := (0.49124 * exp(0.08032 * (V - EK + 5.476 )) + 1 * exp(0.06175 * (V - EK - 594.31 ))) / (1 + exp(-(0.5143 ) * (V - EK + 4.753 )));
+  IK1 := 0.5 * root(K_o / 5.4 ) * ak1 / (ak1 + bk1) * (V - EK);
+end
+
+model benson_mcell_2008__IKr(V, EK, K_o, time_, IKr)
+
+  // Assignment Rules:
+  gkr := 0.0138542 * root(K_o / 5.4 );
+  r := 1 / (1 + exp((V + 10 ) / 15.4 ));
+  xrss := 1 / (1 + exp(-((V + 10.085 )) / 4.25 ));
+  tauxr := 1 / (6E-4 * (V - 1.7384 ) / (1 - exp(-(0.136 ) * (V - 1.7384 ))) + 3E-4 * (V + 38.3608 ) / (exp(0.1522 * (V + 38.3608 )) - 1 ));
+  IKr := gkr * xr * r * (V - EK);
+
+  // Rate Rules:
+  xr' = (xrss - xr) / tauxr;
+
+  // Variable initializations:
+  xr = 0.00000724074;
+end
+
+model benson_mcell_2008__IKs(V, Ca_i, time_, EKs, IKs)
+
+  // Assignment Rules:
+  gks := 0.0074692 * (1 + 0.6 / (1 + power(3.8E-5 / Ca_i, 1.4 )));
+  xss := 1 / (1 + exp(-((V - 10.5 )) / 24.7 ));
+  tauxs := 1 / (7.61E-5 * (V + 44.6 ) / (1 - exp(-(9.97 ) * (V + 44.6 ))) + 3.6E-4 * (V - 0.55 ) / (exp(0.128 * (V - 0.55 )) - 1 ));
+  IKs := gks * xs1 * xs2 * (V - EKs);
+
+  // Rate Rules:
+  xs1' = (xss - xs1) / tauxs;
+  xs2' = (xss - xs2) / tauxs / 2;
+
+  // Variable initializations:
+  xs1 = 0.019883138161;
+  xs2 = 0.019890650554;
+end
+
+model benson_mcell_2008__Ito(V, EK, time_, Ito)
+
+  // Assignment Rules:
+  rv := exp(V / 300 );
+  ay := 25 * exp((V - 40 ) / 25 ) / (1 + exp((V - 40 ) / 25 ));
+  by := 25 * exp(-((V + 90 )) / 25 ) / (1 + exp(-((V + 90 )) / 25 ));
+  ay2 := 0.03 / (1 + exp((V + 60 ) / 5 ));
+  by2 := 0.2 * exp((V + 25 ) / 5 ) / (1 + exp((V + 25 ) / 5 ));
+  ay3 := 0.00225 / (1 + exp((V + 60 ) / 5 ));
+  by3 := 0.1 * exp((V + 25 ) / 5 ) / (1 + exp((V + 25 ) / 5 ));
+  Ito := gitodv * power(ydv, 3 ) * ydv2 * zdv * rv * (V - EK);
+
+  // Rate Rules:
+  ydv' = ay * (1 - ydv) - by * ydv;
+  ydv2' = ay2 * (1 - ydv2) - by2 * ydv2;
+  zdv' = ay3 * (1 - zdv) - by3 * zdv;
+
+  // Variable initializations:
+  gitodv = 0.1805;
+  ydv = 0.013970786703;
+  ydv2 = 0.99996472752;
+  zdv = 0.829206149767;
+end
+
+model benson_mcell_2008__INaK(V, Na_i, Na_o, K_o, FonRT, INaK)
+
+  // Assignment Rules:
+  sigma := (exp(Na_o / 67.3 ) - 1 ) / 7;
+  fnak := 1 / (1 + 0.1245 * exp(-(0.1 ) * V * FonRT) + 0.0365 * sigma * exp(-(V) * FonRT));
+  INaK := ibarnak * fnak * 1 / (1 + power(kmnai / Na_i, 2 )) * K_o / (K_o + kmko);
+
+  // Variable initializations:
+  kmnai = 10;
+  kmko = 1.5;
+  ibarnak = 0.61875;
+end
+
+model benson_mcell_2008__INaCa(V, FonRT, Ca_i, Ca_o, Na_i, Na_o, INaCa)
+
+  // Assignment Rules:
+  ca_i_NaCa := 1.5 * Ca_i;
+  allo := 1 / (1 + power(KmCa / ca_i_NaCa, 2 ));
+  num := power(Na_i, 3 ) * Ca_o * exp(eta * V * FonRT) - power(Na_o, 3 ) * ca_i_NaCa * exp((eta - 1 ) * V * FonRT);
+  denom1 := 1 + ksat * exp((eta - 1 ) * V * FonRT);
+  denom2 := KmCao * power(Na_i, 3 ) + power(KmNao, 3 ) * ca_i_NaCa + power(KmNai, 3 ) * Ca_o * (1 + ca_i_NaCa / KmCai);
+  denom3 := KmCai * power(Na_o, 3 ) * (1 + power(Na_i / KmNai, 3 )) + power(Na_i, 3 ) * Ca_o + power(Na_o, 3 ) * ca_i_NaCa;
+  INaCa := NCXmax * allo * num / (denom1 * (denom2 + denom3));
+
+  // Variable initializations:
+  KmCa = 1.25e-4;
+  NCXmax = 5.85;
+  ksat = 0.27;
+  eta = 0.35;
+  KmNai = 12.3;
+  KmNao = 87.5;
+  KmCai = 0.0036;
+  KmCao = 1.3;
+end
+
+model benson_mcell_2008__IKp(V, EK, IKp)
+
+  // Assignment Rules:
+  IKp := 0.00276 * (V - EK) / (1 + exp((7.488 - V) / 5.98 ));
+end
+
+model benson_mcell_2008__IpCa(Ca_i, IpCa)
+
+  // Assignment Rules:
+  IpCa := ibarpca * Ca_i / (kmpca + Ca_i);
+
+  // Variable initializations:
+  ibarpca = 0.0575;
+  kmpca = 0.5e-3;
+end
+
+model benson_mcell_2008__ICab(V, F, FonRT, Ca_i, Ca_o, ICab)
+
+  // Assignment Rules:
+  ICab := 1.995084E-7 * 4 * V * F * FonRT * (Ca_i * exp(2 * V * FonRT) - 0.341 * Ca_o) / (exp(2 * V * FonRT) - 1 );
+end
+
+model benson_mcell_2008__Ito2(time_, V, F, FonRT, Cl_i, Cl_o, Ca_ss, Ito2)
+
+  // Assignment Rules:
+  Ito2_max := PCl * V * F * FonRT * (Cl_i - Cl_o * exp(V * FonRT)) / (1 - exp(V * FonRT));
+  AAss := 1 / (1 + Kmto2 / Ca_ss);
+  Ito2 := Ito2_max * AA;
+
+  // Rate Rules:
+  AA' = (AAss - AA) / 1;
+
+  // Variable initializations:
+  PCl = 4e-7;
+  AA = 0.000816605172;
+  Kmto2 = 0.1502;
+end
+
+model benson_mcell_2008__IClb(V, ECl, IClb)
+
+  // Assignment Rules:
+  IClb := GClb * (V - ECl);
+
+  // Variable initializations:
+  GClb = 2.25e-4;
+end
+
+model benson_mcell_2008__INal(time_, V, ENa, INal)
+
+  // Assignment Rules:
+  amL := 0.32 * 1 * (V + 47.13 ) / (1 - exp(-(0.1 ) * (V + 47.13 )));
+  bmL := 0.08 * exp(-(V) / 11 );
+  hLss := 1 / (1 + exp((V + 91 ) / 6.1 ));
+  INal := GNaL * power(mL, 3 ) * hL * (V - ENa);
+
+  // Rate Rules:
+  mL' = amL * (1 - mL) - bmL * mL;
+  hL' = (hLss - hL) / 600;
+
+  // Variable initializations:
+  GNaL = 65e-4;
+  mL = 0.001356538159;
+  hL = 0.26130711759;
+end
+
+model benson_mcell_2008__reversal_potentials(Na_i, Na_o, K_o, K_i, Cl_o, Cl_i, FonRT, ENa, EK, EKs, ECl)
+
+  // Assignment Rules:
+  ENa := ln(Na_o / Na_i) / FonRT;
+  EK := ln(K_o / K_i) / FonRT;
+  EKs := ln((K_o + prnak * Na_o) / (K_i + prnak * Na_i)) / FonRT;
+  ECl := -(ln(Cl_o / Cl_i)) / FonRT;
+
+  // Variable initializations:
+  prnak = 0.01833;
+end
+
+model benson_mcell_2008__Irel(time_, tissue, Ca_ss, Ca_jsr, ibarca, ICaL, irelcicr, KmCaMK, CaMKactive)
+
+  // Assignment Rules:
+  Grel := 3000 * vg;
+  dro_inf := power(Ca_jsr, 1.9 ) / (power(Ca_jsr, 1.9 ) + power(49.28 * Ca_ss / (Ca_ss + 0.0028 ), 1.9 ));
+  dtau_rel := dtau_rel_max * CaMKactive / (KmCaMK + CaMKactive);
+  ross := dro_inf / (power(1 / ICaL, 2 ) + 1 );
+  riss := 1 / (1 + exp((Ca_ss - 4E-4 + 0.002 * cafac) / 2.5E-5 ));
+  tauri := 3 + dtau_rel + (350 - dtau_rel) / (1 + exp((Ca_ss - 0.003 + 0.003 * cafac) / 2E-4 ));
+  irelcicr := Grel * ro * ri * (Ca_jsr - Ca_ss);
+  CaMKbound := CaMK0 * (1 - CaMKtrap) / (1 + Km / Ca_ss);
+  CaMKactive := CaMKbound + CaMKtrap;
+  vg := piecewise( 1 / (1 + exp((ibarca + 13 ) / 5 )) , tissue == 0 , 1 );
+  cafac := 1 / (1 + exp((ICaL + 0.05 ) / 0.015 ));
+
+  // Rate Rules:
+  CaMKtrap' = 0.05 * CaMKactive * (CaMKactive - CaMKtrap) - 6.8E-4 * CaMKtrap;
+  ro' = (ross - ro) / 3;
+  ri' = (riss - ri) / tauri;
+
+  // Variable initializations:
+  dtau_rel_max = 10;
+  CaMK0 = 0.05;
+  Km = 0.0015;
+  KmCaMK = 0.15;
+  CaMKtrap = 0.021123704774;
+  ro = 0;
+  ri = 0.862666650318;
+end
+
+model benson_mcell_2008__Iup_Ileak(iup, ileak, KmCaMK, CaMKactive, Ca_i, Ca_nsr)
+
+  // Assignment Rules:
+  dKmPLB := dKmPLBmax * CaMKactive / (KmCaMK + CaMKactive);
+  dJup := dJupmax * CaMKactive / (KmCaMK + CaMKactive);
+  iup := (dJup + 1 ) * iupmax * Ca_i / (Ca_i + Kmup - dKmPLB);
+  ileak := iupmax * Ca_nsr / nsrmax;
+
+  // Variable initializations:
+  dKmPLBmax = 0.00017;
+  dJupmax = 0.75;
+  iupmax = 0.004375;
+  Kmup = 0.00092;
+  nsrmax = 15;
+end
+
+model benson_mcell_2008__Idiff_Itr(idiff, itr, Ca_ss, Ca_i, Ca_nsr, Ca_jsr)
+
+  // Assignment Rules:
+  idiff := (Ca_ss - Ca_i) / 0.2;
+  itr := (Ca_nsr - Ca_jsr) / 120;
+end
+
+model benson_mcell_2008__Na(time_, Na_i, naiont, AF, vmyo, CTNaCl, ENa, ECl)
+
+  // Assignment Rules:
+  CTNaCl := CTNaClmax * power(ENa - ECl, 4 ) / (power(ENa - ECl, 4 ) + power(87.8251 , 4 ));
+
+  // Rate Rules:
+  Na_i' = -(naiont) * AF / vmyo + CTNaCl;
+
+  // Variable initializations:
+  Na_i = 12.972433387269;
+  CTNaClmax = 9.8443e-6;
+end
+
+model benson_mcell_2008__K(time_, K_i, kiont, AF, vmyo, CTKCl, EK, ECl)
+
+  // Assignment Rules:
+  CTKCl := CTKClmax * (EK - ECl) / (EK - ECl + 87.8251 );
+
+  // Rate Rules:
+  K_i' = -(kiont) * AF / vmyo + CTKCl;
+
+  // Variable initializations:
+  K_i = 135.469546216758;
+  CTKClmax = 7.0756e-6;
+end
+
+model benson_mcell_2008__Cl(time_, Cl_i, clont, AF, vmyo, CTNaCl, CTKCl)
+
+  // Rate Rules:
+  Cl_i' = clont * AF / vmyo + CTNaCl + CTKCl;
+
+  // Variable initializations:
+  Cl_i = 15.59207157178;
+end
+
+model benson_mcell_2008__Ca(time_, Ca_i, Ca_jsr, Ca_nsr, Ca_ss, ICab, ICaL, IpCa, INaCa, vmyo, vsr, vnsr, vjsr, vss, AF, iup, ileak, irelcicr, idiff, itr)
+
+  // Assignment Rules:
+  bcsqn := 1 / (1 + kmcsqn * csqnbar / power(Ca_jsr + kmcsqn, 2 ));
+  bmyo := 1 / (1 + cbar * kmc / power(Ca_i + kmc, 2 ) + kmt * tbar / power(Ca_i + kmt, 2 ));
+  bss := 1 / (1 + BSRmax * KmBSR / power(KmBSR + Ca_ss, 2 ) + BSLmax * KmBSL / power(KmBSL + Ca_ss, 2 ));
+
+  // Rate Rules:
+  Ca_i' = bmyo * (-((ICab + IpCa - 2 * INaCa)) * AF / (vmyo * 2 ) + (ileak - iup) * vnsr / vmyo + idiff * vss / vmyo);
+  Ca_jsr' = bcsqn * (itr - irelcicr);
+  Ca_nsr' = iup - itr * vjsr / vnsr - ileak;
+  Ca_ss' = bss * (-(ICaL) * AF / (vss * 2 ) + irelcicr * vjsr / vss - idiff);
+
+  // Variable initializations:
+  Ca_i = 0.00012131666;
+  Ca_jsr = 1.737580994071;
+  Ca_nsr = 1.832822335168;
+  Ca_ss = 0.00012271265;
+  kmt = 0.5e-3;
+  kmc = 2.38e-3;
+  tbar = 70e-3;
+  cbar = 50e-3;
+  kmcsqn = 0.8;
+  csqnbar = 10;
+  BSRmax = 0.047;
+  KmBSR = 0.00087;
+  BSLmax = 1.124;
+  KmBSL = 0.0087;
+end
+
+model benson_mcell_2008__intracellular_currents()
+end
+
+model benson_mcell_2008__transmembrane_currents()
+end
+
+model benson_mcell_2008__Ions_n_reversal_potentials()
+end
+
+model benson_mcell_2008____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Environment: benson_mcell_2008__Environment(time_, F, K_o, Ca_o, Na_o, Cl_o, FonRT, tissue);
+  cell: benson_mcell_2008__cell(time_, V, F, INa0, ICaL0, IK10, IKp0, IKs0, IKr0, IpCa0, ICab0, INaCa0, INaK0, Ito0, Ito20, IClb0, INal0, naiont, kiont, clont, vmyo, vsr, vnsr, vjsr, vss, AF, i_Stim);
+  INa: benson_mcell_2008__INa(V, time_, ENa, tissue, INa0);
+  ICaL: benson_mcell_2008__ICaL(V, F, FonRT, time_, tissue, Ca_o, Ca_ss, CaMKactive, ibarca, ICaL0);
+  IK1: benson_mcell_2008__IK1(V, EK, K_o, IK10);
+  IKr: benson_mcell_2008__IKr(V, EK, K_o, time_, IKr0);
+  IKs: benson_mcell_2008__IKs(V, Ca_i, time_, EKs, IKs0);
+  Ito: benson_mcell_2008__Ito(V, EK, time_, Ito0);
+  INaK: benson_mcell_2008__INaK(V, Na_i, Na_o, K_o, FonRT, INaK0);
+  INaCa: benson_mcell_2008__INaCa(V, FonRT, Ca_i, Ca_o, Na_i, Na_o, INaCa0);
+  IKp: benson_mcell_2008__IKp(V, EK, IKp0);
+  IpCa: benson_mcell_2008__IpCa(Ca_i, IpCa0);
+  ICab: benson_mcell_2008__ICab(V, F, FonRT, Ca_i, Ca_o, ICab0);
+  Ito2: benson_mcell_2008__Ito2(time_, V, F, FonRT, Cl_i, Cl_o, Ca_ss, Ito20);
+  IClb: benson_mcell_2008__IClb(V, ECl, IClb0);
+  INal: benson_mcell_2008__INal(time_, V, ENa, INal0);
+  reversal_potentials: benson_mcell_2008__reversal_potentials(Na_i, Na_o, K_o, K_i, Cl_o, Cl_i, FonRT, ENa, EK, EKs, ECl);
+  Irel: benson_mcell_2008__Irel(time_, tissue, Ca_ss, Ca_jsr, ibarca, ICaL0, irelcicr, KmCaMK, CaMKactive);
+  Iup_Ileak: benson_mcell_2008__Iup_Ileak(iup, ileak, KmCaMK, CaMKactive, Ca_i, Ca_nsr);
+  Idiff_Itr: benson_mcell_2008__Idiff_Itr(idiff, itr, Ca_ss, Ca_i, Ca_nsr, Ca_jsr);
+  Na: benson_mcell_2008__Na(time_, Na_i, naiont, AF, vmyo, CTNaCl, ENa, ECl);
+  K: benson_mcell_2008__K(time_, K_i, kiont, AF, vmyo, CTKCl, EK, ECl);
+  Cl: benson_mcell_2008__Cl(time_, Cl_i, clont, AF, vmyo, CTNaCl, CTKCl);
+  Ca: benson_mcell_2008__Ca(time_, Ca_i, Ca_jsr, Ca_nsr, Ca_ss, ICab0, ICaL0, IpCa0, INaCa0, vmyo, vsr, vnsr, vjsr, vss, AF, iup, ileak, irelcicr, idiff, itr);
+  intracellular_currents: benson_mcell_2008__intracellular_currents();
+  transmembrane_currents: benson_mcell_2008__transmembrane_currents();
+  Ions_n_reversal_potentials: benson_mcell_2008__Ions_n_reversal_potentials();
+end

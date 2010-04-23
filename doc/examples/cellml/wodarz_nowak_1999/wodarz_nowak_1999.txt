@@ -1,0 +1,73 @@
+//Created by libAntimony v1.3
+model wodarz_1999__environment(time_)
+end
+
+model wodarz_1999__x(x, beta, s, y, time_)
+
+  // Rate Rules:
+  x' = lamda - (d * x + s * beta * x * y);
+
+  // Variable initializations:
+  x = 10;
+  lamda = 1;
+  d = 0.1;
+end
+
+model wodarz_1999__y(y, p, beta, s, x, z, time_)
+
+  // Assignment Rules:
+  log_y := log(y * 1 );
+
+  // Rate Rules:
+  y' = s * beta * x * y - (a * y + p * y * z);
+
+  // Variable initializations:
+  y = 0.1;
+  a = 0.2;
+end
+
+model wodarz_1999__w(w, c, q, x, y, time_)
+
+  // Assignment Rules:
+  log_w := log(w * 1 );
+
+  // Rate Rules:
+  w' = c * x * y * w - (c * q * y * w + b * w);
+
+  // Variable initializations:
+  w = 0.001;
+  b = 0.01;
+end
+
+model wodarz_1999__z(z, c, q, y, w, time_)
+
+  // Rate Rules:
+  z' = c * q * y * w - h * z;
+
+  // Variable initializations:
+  z = 0;
+  h = 0.1;
+end
+
+model wodarz_1999__kinetic_parameters(beta, p, q, c, s, time_)
+
+  // Assignment Rules:
+  s := piecewise( 1 , time_ <= 15 , 1 , time_ >= 40 , 0.0042 );
+
+  // Variable initializations:
+  beta = 0.5;
+  p = 1;
+  q = 0.5;
+  c = 0.1;
+end
+
+model wodarz_1999____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: wodarz_1999__environment(time_);
+  x: wodarz_1999__x(x0, beta, s, y0, time_);
+  y: wodarz_1999__y(y0, p, beta, s, x0, z0, time_);
+  w: wodarz_1999__w(w0, c, q, x0, y0, time_);
+  z: wodarz_1999__z(z0, c, q, y0, w0, time_);
+  kinetic_parameters: wodarz_1999__kinetic_parameters(beta, p, q, c, s, time_);
+end

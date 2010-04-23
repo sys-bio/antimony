@@ -1,0 +1,21 @@
+//Created by libAntimony v1.3
+model Template_RBS__Template_RBS(RNA, RNARiPs, k, localVolume)
+
+  // Assignment Rules:
+  RNARiPs := 1e9 * k * RNA * localVolume * 1e-15;
+end
+
+model Bugbuster_RBS_spaR__Bugbuster_RBS_spaR(localVolume, RNA, RNARiPs, k)
+
+  // Sub-modules, and any changes to those submodules:
+  Template_RBS: Template_RBS__Template_RBS(RNA, RNARiPs, k, localVolume);
+
+  // Variable initializations:
+  k = 0.1;
+end
+
+model Bugbuster_RBS_spaR____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Bugbuster_RBS_spaR: Bugbuster_RBS_spaR__Bugbuster_RBS_spaR(localVolume, RNA, RNARiPs, k);
+end

@@ -1,0 +1,48 @@
+//Created by libAntimony v1.3
+model li_rinzel_1994_version02__C(C, time_, h)
+
+  // Assignment Rules:
+  factor1 := 0.001 * ( v1 * power( IP3 / ( IP3 + d_ip3 ), 3.0 ) * power( C / ( C + d_act ), 3.0 ) * power( h , 3.0 ) + v2 );
+  factor2 := c0 - C * (1.0 + c1 );
+  v3_summand := v3 * 0.001 * power( C , 2.0 ) / (power( k_er , 2.0 ) + power( C , 2.0 ));
+  v4_summand := 0.001 * epsilon * ( j_in - v4 * power( C , 2.0 ) / (power( k_pl , 2.0 ) + power( C , 2.0 )));
+
+  // Rate Rules:
+  C' = factor1 * factor2 - v3_summand + v4_summand;
+  v2' = 0.0;
+  v3' = 0.0;
+  c0' = epsilon * 0.001 * ( j_in - v4 * power( C , 2.0 ) / (power( k_pl , 2.0 ) + power( C , 2.0 )));
+  j_in' = 0.0;
+  h' = 0.001 * ( a * d_inh - h * a * ( C + d_inh ));
+
+  // Variable initializations:
+  C = 0.2;
+  a = 1.;
+  v1 = 40.;
+  v2 = 0.02;
+  v3 = 0.6;
+  v4 = 1.8;
+  d_ip3 = 0.2;
+  d_act = 0.4;
+  d_inh = 0.4;
+  k_er = 0.18;
+  k_pl = 0.1;
+  c0 = 2.0;
+  IP3 = 0.6;
+  j_in = 1.2;
+  epsilon = 0.01;
+  c1 = 0.185;
+  h = 0.8;
+end
+
+model li_rinzel_1994_version02__environment(time_)
+
+  // Sub-modules, and any changes to those submodules:
+  C: li_rinzel_1994_version02__C(C0, time_, h);
+end
+
+model li_rinzel_1994_version02____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: li_rinzel_1994_version02__environment(time_);
+end

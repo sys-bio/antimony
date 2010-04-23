@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="saftenku_williams_sitsapesan_2001_version03____main" name="saftenku_williams_sitsapesan_2001_version03____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="C10" value="1" constant="false"/>
+      <parameter id="O2C1" value="2.62"/>
+      <parameter id="C1O2" value="2277"/>
+      <parameter id="C1C2" value="60.8"/>
+      <parameter id="C2C1" value="198"/>
+      <parameter id="C20" constant="false"/>
+      <parameter id="O20" constant="false"/>
+      <parameter id="Ca" value="50"/>
+      <parameter id="O10" constant="false"/>
+      <parameter id="O1O2" value="2.41"/>
+      <parameter id="O2O1" value="85.1"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="C10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> O2C1 </ci>
+                <ci> Ca </ci>
+                <ci> O20 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> C2C1 </ci>
+                <ci> C20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> C1O2 </ci>
+                <ci> C10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> C1C2 </ci>
+                <ci> C10 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> C1C2 </ci>
+              <ci> C10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> C2C1 </ci>
+              <ci> C20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="O20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> O1O2 </ci>
+                <ci> Ca </ci>
+                <ci> O10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> C1O2 </ci>
+                <ci> C10 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> O2O1 </ci>
+                <ci> O20 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> O2C1 </ci>
+                <ci> Ca </ci>
+                <ci> O20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="O10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> O2O1 </ci>
+              <ci> O20 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> O1O2 </ci>
+              <ci> Ca </ci>
+              <ci> O10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,2475 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    In module 'Guyton_Model__muscle_O2_delivery', the variables delivery_of_O2_to_M_tissues.PVO and PVO were unable to be set as equivalent:  Loop detected:  'delivery_of_O2_to_M_tissues.PVO' may not be set to be equal to 'PVO' because PVO's definition already includes delivery_of_O2_to_M_tissues.PVO either directly or by proxy.
+//    In module 'Guyton_Model__non_muscle_O2_delivery', the variables delivery_of_O2_to_NM_tissues.POV and POV were unable to be set as equivalent:  Loop detected:  'delivery_of_O2_to_NM_tissues.POV' may not be set to be equal to 'POV' because POV's definition already includes delivery_of_O2_to_NM_tissues.POV either directly or by proxy.
+//    In module 'Guyton_Model__kidney', the variables glomerular_filtration_rate.GLPC and GLPC were unable to be set as equivalent:  Loop detected:  'glomerular_filtration_rate.GLPC' may not be set to be equal to 'GLPC' because GLPC's definition already includes glomerular_filtration_rate.GLPC either directly or by proxy.
+//    In module 'Guyton_Model__kidney', the variables proximal_tubular_and_macula_densa_flow.GFN and GFN were unable to be set as equivalent:  Loop detected:  'proximal_tubular_and_macula_densa_flow.GFN' may not be set to be equal to 'GFN' because GFN's definition already includes proximal_tubular_and_macula_densa_flow.GFN either directly or by proxy.
+//    In module 'Guyton_Model____main', the variables circulatory_dynamics.venous_resistance.PC and PC were unable to be set as equivalent:  Loop detected:  'circulatory_dynamics.venous_resistance.PC' may not be set to be equal to 'PC' because PC's definition already includes circulatory_dynamics.venous_resistance.PC either directly or by proxy.
+
+model Guyton_Model__environment(time_)
+end
+
+model Guyton_Model__temp_myogrs_and_pamk(MYOGRS, PAMK, PAMKRN)
+
+  // Variable initializations:
+  MYOGRS = 1.0;
+  PAMK = 1.0;
+  PAMKRN = 1.0;
+end
+
+model Guyton_Model__aldosterone_parameter_values(ANMALD, AMKMUL, ALDINF, ALDKNS, AMT, AM1UL, AM1LL, AMCSNS, ALDMM, AMKM, AMNAM, AMNAUL, AMNALL)
+
+  // Variable initializations:
+  ANMALD = 2.5;
+  AMKMUL = 12;
+  ALDINF = 0;
+  ALDKNS = 0;
+  AMT = 60;
+  AM1UL = 5;
+  AM1LL = 0;
+  AMCSNS = 0.65;
+  ALDMM = 2.5;
+  AMKM = 0.5;
+  AMNAM = 0.8;
+  AMNAUL = 15;
+  AMNALL = 0.04;
+end
+
+model Guyton_Model__angiotensin_control_of_aldosterone_secretion(ANM, ANMAL, ANMALD)
+
+  // Assignment Rules:
+  ANMAL := (ANM - 1 ) * ANMALD + 1;
+end
+
+model Guyton_Model__osmotic_control_of_aldosterone_secretion(CKE, OSMAL)
+
+  // Assignment Rules:
+  OSMAL := (CKE - 3.3 ) / 1.0;
+end
+
+model Guyton_Model__aldosterone_secretion(ANMAL, OSMAL, AMR1, AMKMUL, ALDINF, ALDKNS)
+
+  // Assignment Rules:
+  AMR1 := piecewise( ALDKNS , ALDKNS > 0 , AMR + ALDINF );
+  AMRBSC := ANMAL * 0.909 * OSMAL;
+  AMRT := (AMRBSC - 1 ) * AMKMUL + 1;
+  AMR := piecewise( 0 , AMRT < 0 , AMRT );
+end
+
+model Guyton_Model__aldosterone_concentration(AMR1, time_, AMC, AMT)
+
+  // Rate Rules:
+  AMC' = (AMR1 - AMC) / AMT;
+
+  // Variable initializations:
+  AMC = 1.0;
+end
+
+model Guyton_Model__general_aldosterone_multiplier(AMC, AM, AM1UL, AM1LL, AMCSNS, ALDMM)
+
+  // Assignment Rules:
+  AM := (AM1 - 1 ) * ALDMM + 1;
+  AM1 := AM1UL - (AM1UL - 1 ) / ((AM1LL - 1 ) / (AM1LL - AM1UL) * (AMC - 1 ) * AMCSNS + 1 );
+end
+
+model Guyton_Model__aldosterone_effect_on_cell_membrane_K_transport(AM, AMK, AMKM)
+
+  // Assignment Rules:
+  AMK := piecewise( 0.2 , AMKT < 0.2 , AMKT );
+  AMKT := (AM - 1 ) * AMKM + 1;
+end
+
+model Guyton_Model__aldosterone_effect_on_cell_membrane_Na_transport(AM, AMNA, AMNAM, AMNAUL, AMNALL)
+
+  // Assignment Rules:
+  AMNA := piecewise( AMNALL , AMNAT < AMNALL , AMNAUL , AMNAT > AMNAUL , AMNAT );
+  AMNAT := (AM - 1 ) * AMNAM + 1;
+end
+
+model Guyton_Model__aldosterone(time_, ANM, CKE, AMK, AMNA)
+
+  // Sub-modules, and any changes to those submodules:
+  aldosterone_parameter_values: Guyton_Model__aldosterone_parameter_values(ANMALD, AMKMUL, ALDINF, ALDKNS, AMT, AM1UL, AM1LL, AMCSNS, ALDMM, AMKM, AMNAM, AMNAUL, AMNALL);
+  angiotensin_control_of_aldosterone_secretion: Guyton_Model__angiotensin_control_of_aldosterone_secretion(ANM, ANMAL, ANMALD);
+  osmotic_control_of_aldosterone_secretion: Guyton_Model__osmotic_control_of_aldosterone_secretion(CKE, OSMAL);
+  aldosterone_secretion: Guyton_Model__aldosterone_secretion(ANMAL, OSMAL, AMR1, AMKMUL, ALDINF, ALDKNS);
+  aldosterone_concentration: Guyton_Model__aldosterone_concentration(AMR1, time_, AMC, AMT);
+  general_aldosterone_multiplier: Guyton_Model__general_aldosterone_multiplier(AMC, AM, AM1UL, AM1LL, AMCSNS, ALDMM);
+  aldosterone_effect_on_cell_membrane_K_transport: Guyton_Model__aldosterone_effect_on_cell_membrane_K_transport(AM, AMK, AMKM);
+  aldosterone_effect_on_cell_membrane_Na_transport: Guyton_Model__aldosterone_effect_on_cell_membrane_Na_transport(AM, AMNA, AMNAM, AMNAUL, AMNALL);
+end
+
+model Guyton_Model__angiotensin_parameter_values(ANXM, ANV, REK, ANGINF, ANGKNS, ANT, Z12, ANMUL, ANMLL, ANCSNS, ANULL, ANUM, ANUVM)
+
+  // Variable initializations:
+  ANXM = 0;
+  ANV = 5000;
+  REK = 1;
+  ANGINF = 0;
+  ANGKNS = 0;
+  ANT = 12;
+  Z12 = 5;
+  ANMUL = 1.8;
+  ANMLL = 0.7;
+  ANCSNS = 0.4;
+  ANULL = 0.8;
+  ANUM = 6;
+  ANUVM = 0;
+end
+
+model Guyton_Model__instantaneous_angiotensin_formation(MDFLW, ANGSCR)
+
+  // Assignment Rules:
+  ANGSCR := piecewise( 1 / (1 + (MDFLW3 - 1 ) * 72 ) , MDFLW3 > 1 , 10 - 9 / (1 + (1 - MDFLW3) * 8 ) );
+  MDFLW3 := MDFLW;
+end
+
+model Guyton_Model__time_delayed_angiotensin_formation(ANGSCR, time_, ANX1, ANXM, ANV)
+
+  // Assignment Rules:
+  ANX := (ANGSCR - 1 ) * ANXM;
+
+  // Rate Rules:
+  ANX1' = (ANX - ANX1) / ANV;
+
+  // Variable initializations:
+  ANX1 = 0.0;
+end
+
+model Guyton_Model__total_angiotensin_formation(ANGSCR, ANX1, ANPR, REK)
+
+  // Assignment Rules:
+  ANPR := piecewise( 0.00001 , ANPRT < 0.00001 , ANPRT );
+  ANPRT := (ANGSCR + ANX1) * REK;
+end
+
+model Guyton_Model__artificial_angiotensin_formation(ANPR, ANPR1, ANGKNS, ANGINF)
+
+  // Assignment Rules:
+  ANPR1 := piecewise( ANGKNS , ANGKNS > 0 , ANPR + ANGINF );
+end
+
+model Guyton_Model__angiotensin_concentration(ANPR1, time_, ANC, ANT)
+
+  // Rate Rules:
+  ANC' = (ANPR1 - ANC) / ANT;
+
+  // Variable initializations:
+  ANC = 0.859476;
+end
+
+model Guyton_Model__general_angiotensin_multiplier(ANC, ANM, ANMUL, ANMLL, ANCSNS)
+
+  // Assignment Rules:
+  ANM := ANMUL - (ANMUL - 1 ) / ((ANMLL - 1 ) / (ANMLL - ANMUL) * (ANC - 1 ) * ANCSNS + 1 );
+end
+
+model Guyton_Model__angiotensin_effect_on_circulation(ANM, ANU, ANUM, ANULL)
+
+  // Assignment Rules:
+  ANU := piecewise( ANULL , ANU1 < ANULL , ANU1 );
+  ANU1 := (ANM - 1 ) * ANUM + 1;
+end
+
+model Guyton_Model__angiotensin_effect_on_venous_constriction(ANU, ANUVN, ANUVM)
+
+  // Assignment Rules:
+  ANUVN := (ANU - 1 ) * ANUVM + 1;
+end
+
+model Guyton_Model__angiotensin(time_, MDFLW, ANUVN, ANU, ANM)
+
+  // Sub-modules, and any changes to those submodules:
+  angiotensin_parameter_values: Guyton_Model__angiotensin_parameter_values(ANXM, ANV, REK, ANGINF, ANGKNS, ANT, Z12, ANMUL, ANMLL, ANCSNS, ANULL, ANUM, ANUVM);
+  instantaneous_angiotensin_formation: Guyton_Model__instantaneous_angiotensin_formation(MDFLW, ANGSCR);
+  time_delayed_angiotensin_formation: Guyton_Model__time_delayed_angiotensin_formation(ANGSCR, time_, ANX1, ANXM, ANV);
+  total_angiotensin_formation: Guyton_Model__total_angiotensin_formation(ANGSCR, ANX1, ANPR, REK);
+  artificial_angiotensin_formation: Guyton_Model__artificial_angiotensin_formation(ANPR, ANPR1, ANGKNS, ANGINF);
+  angiotensin_concentration: Guyton_Model__angiotensin_concentration(ANPR1, time_, ANC, ANT);
+  general_angiotensin_multiplier: Guyton_Model__general_angiotensin_multiplier(ANC, ANM, ANMUL, ANMLL, ANCSNS);
+  angiotensin_effect_on_circulation: Guyton_Model__angiotensin_effect_on_circulation(ANM, ANU, ANUM, ANULL);
+  angiotensin_effect_on_venous_constriction: Guyton_Model__angiotensin_effect_on_venous_constriction(ANU, ANUVN, ANUVM);
+end
+
+model Guyton_Model__antidiuretic_hormone_parameter_values(CNR, ADHPUL, ADHPAM, ADHINF, ADHTC, ADHVUL, ADHVLL, ADHKLL, ADHKUL)
+
+  // Variable initializations:
+  CNR = 139;
+  ADHPUL = 85;
+  ADHPAM = 0.3;
+  ADHINF = 0;
+  ADHTC = 15;
+  ADHVUL = 2.5;
+  ADHVLL = 0.93617;
+  ADHKLL = 0.2;
+  ADHKUL = 5;
+end
+
+model Guyton_Model__osmotic_control_of_ADH_secretion(CNA, ADHNA, CNR)
+
+  // Assignment Rules:
+  ADHNA := piecewise( 0 , ADHNA1 < 0 , ADHNA1 );
+  ADHNA1 := (CNA - CNR) / (142 - CNR);
+end
+
+model Guyton_Model__pressure_control_of_ADH_secretion(PA1, ADHPR, ADHPUL, ADHPAM)
+
+  // Assignment Rules:
+  ADHPR := power(ADHPUL - ADHPA, 2 ) * ADHPAM;
+  ADHPA := piecewise( ADHPUL , PA1 > ADHPUL , PA1 );
+end
+
+model Guyton_Model__total_ADH_secretion(ADHNA, ADHPR, ADH, ADHINF)
+
+  // Assignment Rules:
+  ADH := piecewise( 0 , ADH1 < 0 , ADH1 );
+  ADH1 := ADHNA + ADHPR + ADHINF;
+end
+
+model Guyton_Model__ADH_in_blood(ADH, time_, ADHC, ADHTC)
+
+  // Rate Rules:
+  ADHC' = (ADH - ADHC) / ADHTC;
+
+  // Variable initializations:
+  ADHC = 1.0;
+end
+
+model Guyton_Model__ADH_effect_on_nonrenal_vascular_resistance(ADHC, ADHMV, ADHVUL, ADHVLL)
+
+  // Assignment Rules:
+  ADHMV := piecewise( ADHVLL , ADHMV1 < ADHVLL , ADHMV1 );
+  ADHMV1 := ADHVUL - (ADHVUL - 1 ) / ((ADHVLL - 1 ) / (ADHVLL - ADHVUL) * (ADHC - 1 ) + 1 );
+end
+
+model Guyton_Model__ADH_effect_on_kidney(ADHC, ADHMK, ADHKLL, ADHKUL)
+
+  // Assignment Rules:
+  ADHMK := piecewise( ADHKLL , ADHMK1 < ADHKLL , ADHMK1 );
+  ADHMK1 := ADHKUL - (ADHKUL - 1 ) / ((ADHKLL - 1 ) / (ADHKLL - ADHKUL) * (ADHC - 1 ) + 1 );
+end
+
+model Guyton_Model__antidiuretic_hormone(time_, CNA, PA1, ADHMK, ADHMV, ADHC)
+
+  // Sub-modules, and any changes to those submodules:
+  antidiuretic_hormone_parameter_values: Guyton_Model__antidiuretic_hormone_parameter_values(CNR, ADHPUL, ADHPAM, ADHINF, ADHTC, ADHVUL, ADHVLL, ADHKLL, ADHKUL);
+  osmotic_control_of_ADH_secretion: Guyton_Model__osmotic_control_of_ADH_secretion(CNA, ADHNA, CNR);
+  pressure_control_of_ADH_secretion: Guyton_Model__pressure_control_of_ADH_secretion(PA1, ADHPR, ADHPUL, ADHPAM);
+  total_ADH_secretion: Guyton_Model__total_ADH_secretion(ADHNA, ADHPR, ADH, ADHINF);
+  ADH_in_blood: Guyton_Model__ADH_in_blood(ADH, time_, ADHC, ADHTC);
+  ADH_effect_on_nonrenal_vascular_resistance: Guyton_Model__ADH_effect_on_nonrenal_vascular_resistance(ADHC, ADHMV, ADHVUL, ADHVLL);
+  ADH_effect_on_kidney: Guyton_Model__ADH_effect_on_kidney(ADHC, ADHMK, ADHKLL, ADHKUL);
+end
+
+model Guyton_Model__atrial_natriuretic_peptide_parameter_values(ANPKNS, ANPINF, ANPTC, ANPXUL)
+
+  // Variable initializations:
+  ANPKNS = 0;
+  ANPINF = 0;
+  ANPTC = 4;
+  ANPXUL = 10;
+end
+
+model Guyton_Model__total_ANP_secreted(PLA, PRA, ANP)
+
+  // Assignment Rules:
+  ANP := (ANPL + ANPR2) / 3;
+  ANPL := piecewise( 0 , (PLA - 1 ) * 1 < 0 , (PLA - 1 ) * 1 );
+  ANPR2 := piecewise( 0 , (PRA + 1 ) * 2 < 0 , (PRA + 1 ) * 2 );
+end
+
+model Guyton_Model__ANP_into_circulation(ANP, ANP1, ANPKNS, ANPINF)
+
+  // Assignment Rules:
+  ANP1 := piecewise( ANPKNS , ANPKNS > 0 , ANP + ANPINF );
+end
+
+model Guyton_Model__ANP_in_plasma(ANP1, time_, ANPC, ANPTC)
+
+  // Rate Rules:
+  ANPC' = (ANP1 - ANPC) / ANPTC;
+
+  // Variable initializations:
+  ANPC = 1.0;
+end
+
+model Guyton_Model__ANP_effect_on_renal_afferent_arteriolar_resistance(ANPC, ANPX, ANPXUL)
+
+  // Assignment Rules:
+  ANPX := piecewise( -(1 ) , ANPX1 < -(1 ) , ANPX1 );
+  ANPX1 := ANPXUL - ANPXUL / (0.5555556 * (1 + ANPC));
+end
+
+model Guyton_Model__atrial_natriuretic_peptide(time_, PLA, PRA, ANPX)
+
+  // Sub-modules, and any changes to those submodules:
+  atrial_natriuretic_peptide_parameter_values: Guyton_Model__atrial_natriuretic_peptide_parameter_values(ANPKNS, ANPINF, ANPTC, ANPXUL);
+  total_ANP_secreted: Guyton_Model__total_ANP_secreted(PLA, PRA, ANP);
+  ANP_into_circulation: Guyton_Model__ANP_into_circulation(ANP, ANP1, ANPKNS, ANPINF);
+  ANP_in_plasma: Guyton_Model__ANP_in_plasma(ANP1, time_, ANPC, ANPTC);
+  ANP_effect_on_renal_afferent_arteriolar_resistance: Guyton_Model__ANP_effect_on_renal_afferent_arteriolar_resistance(ANPC, ANPX, ANPXUL);
+end
+
+model Guyton_Model__autonomics_parameter_values(VV9, AUL, AULPM, AUY, AUV, AUS, O2A, AUM1, AUM2, AUDMP, AUMAX, AUMIN, AUSLP, EXC, EXCML, EXCXP, AUN1, MDMP, BAROTC, AUK, AUX, O2CHMO, AUC1, CRRFLX, EXE)
+
+  // Variable initializations:
+  VV9 = 2.51;
+  AUL = 1.5;
+  AULPM = 0;
+  AUY = 0;
+  AUV = 0.55;
+  AUS = 1;
+  O2A = 0.1;
+  AUM1 = 3;
+  AUM2 = 1;
+  AUDMP = 0.3;
+  AUMAX = 5.0;
+  AUMIN = 0.4;
+  AUSLP = 1.5;
+  EXC = 1;
+  EXCML = 0.01;
+  EXCXP = 1.0;
+  AUN1 = 0.5;
+  MDMP = 0;
+  BAROTC = 0.16;
+  AUK = 0.004;
+  AUX = 1;
+  O2CHMO = 0.01;
+  AUC1 = 0.3;
+  CRRFLX = 0;
+  EXE = 0;
+end
+
+model Guyton_Model__pressure_driving_autonomic_receptors(PA, PA1, CRRFLX, EXE)
+
+  // Assignment Rules:
+  PA1 := piecewise( CRRFLX , CRRFLX > 0.0000001 , PA - EXE );
+end
+
+model Guyton_Model__chemoreceptors_effect_of_PA(PA1, AUC, AUC1)
+
+  // Assignment Rules:
+  AUC := piecewise( 0.005 * (80 - PA1) * AUC1 , ( PA1 < 80) && (PA1 >= 40 ), 0.2 * AUC1 , PA1 < 40 , 0 );
+end
+
+model Guyton_Model__chemoreceptors_effect_of_art_PO2(PO2ART, AUC, AUC3, O2CHMO)
+
+  // Assignment Rules:
+  AUC3 := AUC + AUC2;
+  AUC2 := piecewise( O2CHMO * (80 - PO2ART) , ( PO2ART < 80) && (PO2ART >= 40 ), O2CHMO * 40 , PO2ART < 40 , 0 );
+end
+
+model Guyton_Model__arterial_baroreceptor_reflex(PA1, time_, AU6C, AUX, AUK, BAROTC)
+
+  // Assignment Rules:
+  AU6C := AU6;
+  AUB := piecewise( 0.016667 * (160 - PA1) , ( PA1 < 160) && (PA1 >= 80 ), 1.3336 , PA1 < 80 , 0 );
+  A1B := (AUB - 1 ) * AUX + 1;
+  AU6A := A1B - AU4;
+
+  // Rate Rules:
+  AU6' = (AU6A - AU6) / BAROTC;
+
+  // Variable initializations:
+  AU4 = -0.060024;
+  AU6 = 1.00132;
+end
+
+model Guyton_Model__CNS_ischemic_reflex(PA1, AUN, AUN1)
+
+  // Assignment Rules:
+  AUN := piecewise( 0.04 * (40 - PA1) * AUN1 , PA1 < 40 , 0 );
+end
+
+model Guyton_Model__autonomic_response_to_vasculature_pressure(PLA, PRA, PPA, AULP, AULPM)
+
+  // Assignment Rules:
+  AULP := (15 / (PLA + PRA + PPA) - 1 ) * AULPM + 1;
+end
+
+model Guyton_Model__autonomic_response_to_exercise(AUEX, EXC, EXCXP)
+
+  // Assignment Rules:
+  AUEX := power(EXC, EXCXP);
+end
+
+model Guyton_Model__total_autonomic_stimulation(AUC3, AU6C, AUN, AULP, AUEX, AUTTL, EXCML)
+
+  // Assignment Rules:
+  AUTTL := piecewise( 0 , AUTTL1 < 0 , AUTTL1 );
+  AUTTL1 := (AUEX * AULP * (AUC3 + AU6C + AUN) - 1 ) * EXCML + 1;
+end
+
+model Guyton_Model__actual_autonomic_stimulation(AUTTL, time_, AU, AUDMP, AUMAX, AUMIN, AUSLP)
+
+  // Assignment Rules:
+  AU := piecewise( AUMIN , AUT < AUMIN , AUT );
+  DAU := (AUTTL - AU1) / AUDMP;
+  AUT := AUMAX - (AUMAX - 1 ) / exp(AUSLP * (AU1 - 1 ));
+
+  // Rate Rules:
+  AU1' = DAU;
+
+  // Variable initializations:
+  AU1 = 1.00007;
+end
+
+model Guyton_Model__autonomic_drive_on_target_organs_and_tissues(AU, VVR, AUH, AUR, AOM, AUM, AVE, VV9, AUL, AUV, AUS, O2A, AUM1, AUM2, AUY)
+
+  // Assignment Rules:
+  VVR := VV9 - AU * AUL + AUL;
+  AUH := AUO * AUV + 1;
+  AUR := AUO * AUS + 1;
+  AOM := AUO * O2A + 1;
+  AUM := power(AUO * AUM1 + 1 , AUM2);
+  AVE := AUO * AUY + 1;
+  AUO := AU - 1;
+end
+
+model Guyton_Model__autonomics(time_, PA, PO2ART, PLA, PRA, PPA, PA1, VVR, AUH, AUR, AUM, AOM, AVE, AU)
+
+  // Sub-modules, and any changes to those submodules:
+  autonomics_parameter_values: Guyton_Model__autonomics_parameter_values(VV9, AUL, AULPM, AUY, AUV, AUS, O2A, AUM1, AUM2, AUDMP, AUMAX, AUMIN, AUSLP, EXC, EXCML, EXCXP, AUN1, MDMP, BAROTC, AUK, AUX, O2CHMO, AUC1, CRRFLX, EXE);
+  pressure_driving_autonomic_receptors: Guyton_Model__pressure_driving_autonomic_receptors(PA, PA1, CRRFLX, EXE);
+  chemoreceptors_effect_of_PA: Guyton_Model__chemoreceptors_effect_of_PA(PA1, AUC, AUC1);
+  chemoreceptors_effect_of_art_PO2: Guyton_Model__chemoreceptors_effect_of_art_PO2(PO2ART, AUC, AUC3, O2CHMO);
+  arterial_baroreceptor_reflex: Guyton_Model__arterial_baroreceptor_reflex(PA1, time_, AU6C, AUX, AUK, BAROTC);
+  CNS_ischemic_reflex: Guyton_Model__CNS_ischemic_reflex(PA1, AUN, AUN1);
+  autonomic_response_to_vasculature_pressure: Guyton_Model__autonomic_response_to_vasculature_pressure(PLA, PRA, PPA, AULP, AULPM);
+  autonomic_response_to_exercise: Guyton_Model__autonomic_response_to_exercise(AUEX, EXC, EXCXP);
+  total_autonomic_stimulation: Guyton_Model__total_autonomic_stimulation(AUC3, AU6C, AUN, AULP, AUEX, AUTTL, EXCML);
+  actual_autonomic_stimulation: Guyton_Model__actual_autonomic_stimulation(AUTTL, time_, AU, AUDMP, AUMAX, AUMIN, AUSLP);
+  autonomic_drive_on_target_organs_and_tissues: Guyton_Model__autonomic_drive_on_target_organs_and_tissues(AU, VVR, AUH, AUR, AOM, AUM, AVE, VV9, AUL, AUV, AUS, O2A, AUM1, AUM2, AUY);
+end
+
+model Guyton_Model__capillary_dynamics_parameter_values(CFC, TRPL, CPR, LPDE, PCE, PCR, LPK, LPPR, CPK, TSSLML, TSSLTC, HYL, CMPTSS, PGHF, GCOPF, VTSF, PLDF)
+
+  // Variable initializations:
+  CFC = 0.01167;
+  TRPL = 0;
+  CPR = 40;
+  LPDE = 8;
+  PCE = 1;
+  PCR = 15;
+  LPK = 2.728e-14;
+  LPPR = 0.03;
+  CPK = 0.000253;
+  TSSLML = 0.15;
+  TSSLTC = 0.005;
+  HYL = 60;
+  CMPTSS = 2;
+  PGHF = -2;
+  GCOPF = 0.8092;
+  VTSF = 6;
+  PLDF = 4.2;
+end
+
+model Guyton_Model__capillary_membrane_dynamics()
+end
+
+model Guyton_Model__capillary_pressure(RVS, BFN, PVS, time_, PC)
+
+  // Assignment Rules:
+  PC := RVS * 1.7 * BFN + PVS;
+end
+
+model Guyton_Model__rate_of_fluid_out_of_capillaries(PC, PGH, PTC, PPC, VTCPL, VTC, CFC)
+
+  // Assignment Rules:
+  VTC := (PC - PPC - PGH + PTC) * CFC + VTCPL;
+end
+
+model Guyton_Model__plasma_volume_and_protein()
+end
+
+model Guyton_Model__plasma_volume(DFP, VTC, VTL, time_, VP, TRPL)
+
+  // Assignment Rules:
+  VPD := VTL - VTC - DFP + TRPL;
+
+  // Rate Rules:
+  VP' = VPD;
+
+  // Variable initializations:
+  VP = 3.00449;
+end
+
+model Guyton_Model__plasma_protein_concentration(PRP, VP, CPP)
+
+  // Assignment Rules:
+  CPP := PRP / VP;
+end
+
+model Guyton_Model__protein_destruction_and_formation(CPP, DLP, CPR, LPPR, LPDE, LPK)
+
+  // Assignment Rules:
+  DLP := LPPR - power(CPPD, LPDE) * LPK;
+  CPPD := piecewise( 0 , CPP - CPR < 0 , CPP - CPR );
+end
+
+model Guyton_Model__plasma_leakage(PC, VTCPL, PCR, CPK, PCE)
+
+  // Assignment Rules:
+  VTCPL := power(PRCD * CPK, PCE);
+  PRCD := piecewise( 0 , PC - PCR < 0 , PC - PCR );
+end
+
+model Guyton_Model__protein_influx_into_interstitium(VTCPL, CPP, CPI, DPC)
+
+  // Assignment Rules:
+  DPC := VTCPL * CPP + (CPP - CPI) * 0.00104;
+end
+
+model Guyton_Model__total_plasma_protein(DPC, PPD, DPL, DLP, time_, PRP, TRPL)
+
+  // Assignment Rules:
+  DPP := DLP + DPL - DPC - PPD + TRPL * 72;
+
+  // Rate Rules:
+  PRP' = DPP;
+
+  // Variable initializations:
+  PRP = 216.243;
+end
+
+model Guyton_Model__plasma_colloid_osmotic_pressure(CPP, PPC)
+
+  // Assignment Rules:
+  PPC := 0.28 * CPP + 0.0019 * power(CPP, 2 );
+end
+
+model Guyton_Model__systemic_tissue_fluid_volume_and_protein()
+end
+
+model Guyton_Model__total_systemic_fluid_volume(VEC, VP, VPF, VTS)
+
+  // Assignment Rules:
+  VTS := VEC - VP - VPF;
+end
+
+model Guyton_Model__interstitial_fluid_volume(VTS, time_, VTS1, TSSLML, TSSLTC)
+
+  // Assignment Rules:
+  VTS1 := VTS - VTS2;
+
+  // Rate Rules:
+  VTS2' = ((VTS - 12 ) * TSSLML - VTS2) * TSSLTC;
+
+  // Variable initializations:
+  VTS2 = 0.0;
+end
+
+model Guyton_Model__total_interstitial_protein(DPC, DPL, time_, TSP)
+
+  // Assignment Rules:
+  DPI := DPC - DPL;
+
+  // Rate Rules:
+  TSP' = DPI;
+
+  // Variable initializations:
+  TSP = 279.945;
+end
+
+model Guyton_Model__interstitial_protein_concentration(TSP, VTS, CPI)
+
+  // Assignment Rules:
+  CPI := TSP / VTS;
+end
+
+model Guyton_Model__interstitial_colloid_osmotic_pressure(CPI, PTCPR)
+
+  // Assignment Rules:
+  PTCPR := 0.28 * CPI + 0.0019 * power(CPI, 2 );
+end
+
+model Guyton_Model__lymph_protein_flow(CPI, VTL, DPL)
+
+  // Assignment Rules:
+  DPL := CPI * VTL;
+end
+
+model Guyton_Model__tissue_gel_and_fluid_and_lymph_flow()
+end
+
+model Guyton_Model__hydrostatic_pressure_of_tissue_gel(VTS, PTT, CHY, PGH, HYL, CMPTSS, PGHF)
+
+  // Assignment Rules:
+  CHY := power(HYL / VTS / 5 , CMPTSS);
+  PGH := CHY * PGHF + PTT;
+end
+
+model Guyton_Model__total_osmotic_pressure_of_tissue_gel(CHY, PTCPR, POSHYL, PTC, GCOPF)
+
+  // Assignment Rules:
+  POSHYL := CHY * 2;
+  PTC := POSHYL * PTCPR * GCOPF;
+end
+
+model Guyton_Model__total_tissue_pressure(VTS1, PTT, VTSF)
+
+  // Assignment Rules:
+  PTT := power((VTS1 - VTSF) / VTSF, 2 ) * 1;
+end
+
+model Guyton_Model__interstial_free_fluid_pressure(PGH, POSHYL, PIF)
+
+  // Assignment Rules:
+  PIF := PGH - POSHYL;
+end
+
+model Guyton_Model__interstitial_solid_tissue_pressure(PIF, PTT, PTS)
+
+  // Assignment Rules:
+  PTS := PTT - PIF;
+end
+
+model Guyton_Model__lymph_flow(PIF, PTT, VTL, PLDF)
+
+  // Assignment Rules:
+  VTL := piecewise( 0 , PLD < 0 , PLD * 0.02 );
+  PLD1 := PIF + PLDF - PTT;
+  PLD := piecewise( 7 , PLD1 > 7 , PLD1 );
+end
+
+model Guyton_Model__interstitial_gel_volume(VTS, VG)
+
+  // Assignment Rules:
+  VG := piecewise( 0 , VTS <= 0 , 0 + (11.4 - 0 ) * (VTS - 0 ) / (12 - 0 ) , ( VTS > 0) && (VTS <= 12 ), 11.4 + (14 - 11.4 ) * (VTS - 12 ) / (15 - 12 ) , ( VTS > 12) && (VTS <= 15 ), 14 + (16 - 14 ) * (VTS - 15 ) / (18 - 15 ) , ( VTS > 15) && (VTS <= 18 ), 16 + (17.3 - 16 ) * (VTS - 18 ) / (21 - 18 ) , ( VTS > 18) && (VTS <= 21 ), 17.3 + (18 - 17.3 ) * (VTS - 21 ) / (24 - 21 ) , ( VTS > 21) && (VTS <= 24 ), 18 );
+end
+
+model Guyton_Model__interstitial_free_fluid_volume(VTS, VG, VIF)
+
+  // Assignment Rules:
+  VIF := VTS - VG;
+end
+
+model Guyton_Model__capillary_dynamics(time_, VEC, PPD, RVS, DFP, VPF, BFN, PVS, PC, CPP, PPC, VP)
+
+  // Sub-modules, and any changes to those submodules:
+  capillary_dynamics_parameter_values: Guyton_Model__capillary_dynamics_parameter_values(CFC, TRPL, CPR, LPDE, PCE, PCR, LPK, LPPR, CPK, TSSLML, TSSLTC, HYL, CMPTSS, PGHF, GCOPF, VTSF, PLDF);
+  capillary_membrane_dynamics: Guyton_Model__capillary_membrane_dynamics();
+  capillary_pressure: Guyton_Model__capillary_pressure(RVS, BFN, PVS, time_, PC);
+  rate_of_fluid_out_of_capillaries: Guyton_Model__rate_of_fluid_out_of_capillaries(PC, PGH, PTC, PPC, VTCPL, VTC, CFC);
+  plasma_volume_and_protein: Guyton_Model__plasma_volume_and_protein();
+  plasma_volume: Guyton_Model__plasma_volume(DFP, VTC, VTL, time_, VP, TRPL);
+  plasma_protein_concentration: Guyton_Model__plasma_protein_concentration(PRP, VP, CPP);
+  protein_destruction_and_formation: Guyton_Model__protein_destruction_and_formation(CPP, DLP, CPR, LPPR, LPDE, LPK);
+  plasma_leakage: Guyton_Model__plasma_leakage(PC, VTCPL, PCR, CPK, PCE);
+  protein_influx_into_interstitium: Guyton_Model__protein_influx_into_interstitium(VTCPL, CPP, CPI, DPC);
+  total_plasma_protein: Guyton_Model__total_plasma_protein(DPC, PPD, DPL, DLP, time_, PRP, TRPL);
+  plasma_colloid_osmotic_pressure: Guyton_Model__plasma_colloid_osmotic_pressure(CPP, PPC);
+  systemic_tissue_fluid_volume_and_protein: Guyton_Model__systemic_tissue_fluid_volume_and_protein();
+  total_systemic_fluid_volume: Guyton_Model__total_systemic_fluid_volume(VEC, VP, VPF, VTS);
+  interstitial_fluid_volume: Guyton_Model__interstitial_fluid_volume(VTS, time_, VTS1, TSSLML, TSSLTC);
+  total_interstitial_protein: Guyton_Model__total_interstitial_protein(DPC, DPL, time_, TSP);
+  interstitial_protein_concentration: Guyton_Model__interstitial_protein_concentration(TSP, VTS, CPI);
+  interstitial_colloid_osmotic_pressure: Guyton_Model__interstitial_colloid_osmotic_pressure(CPI, PTCPR);
+  lymph_protein_flow: Guyton_Model__lymph_protein_flow(CPI, VTL, DPL);
+  tissue_gel_and_fluid_and_lymph_flow: Guyton_Model__tissue_gel_and_fluid_and_lymph_flow();
+  hydrostatic_pressure_of_tissue_gel: Guyton_Model__hydrostatic_pressure_of_tissue_gel(VTS, PTT, CHY, PGH, HYL, CMPTSS, PGHF);
+  total_osmotic_pressure_of_tissue_gel: Guyton_Model__total_osmotic_pressure_of_tissue_gel(CHY, PTCPR, POSHYL, PTC, GCOPF);
+  total_tissue_pressure: Guyton_Model__total_tissue_pressure(VTS1, PTT, VTSF);
+  interstial_free_fluid_pressure: Guyton_Model__interstial_free_fluid_pressure(PGH, POSHYL, PIF);
+  interstitial_solid_tissue_pressure: Guyton_Model__interstitial_solid_tissue_pressure(PIF, PTT, PTS);
+  lymph_flow: Guyton_Model__lymph_flow(PIF, PTT, VTL, PLDF);
+  interstitial_gel_volume: Guyton_Model__interstitial_gel_volume(VTS, VG);
+  interstitial_free_fluid_volume: Guyton_Model__interstitial_free_fluid_volume(VTS, VG, VIF);
+end
+
+model Guyton_Model__circulatory_dynamics_parameter_values(HTAUML, QRF, HSR, HSL, ANY, CV, PR1LL, RVSM, CN2, CN7, PAEX, RAR, RMULT1, RAM, FIS)
+
+  // Variable initializations:
+  HTAUML = 0.4;
+  QRF = 0.15;
+  HSR = 1;
+  HSL = 1;
+  ANY = -0.2;
+  CV = 0.1;
+  PR1LL = 0;
+  RVSM = 1;
+  CN2 = 0.0212;
+  CN7 = 0.2;
+  PAEX = 2;
+  RAR = 30.52;
+  RMULT1 = 1;
+  RAM = 96.3;
+  FIS = 0;
+end
+
+model Guyton_Model__total_blood_volume_change(VP, VRC, VVS1, VAS1, VLA1, VPA1, VRA1, VBD)
+
+  // Assignment Rules:
+  VBD := (VP + VRC - VVS1 - VAS1 - VLA1 - VPA1 - VRA1) / 2;
+end
+
+model Guyton_Model__right_atrium()
+end
+
+model Guyton_Model__right_atrial_blood_volume(QVO, QRO, VBD, time_, VRA, VRA1)
+
+  // Assignment Rules:
+  VRA := VRA1 + VBD * 0.0574;
+  DRA := QVO - QRO;
+
+  // Rate Rules:
+  VRA1' = DRA;
+
+  // Variable initializations:
+  VRA1 = 0.100043;
+end
+
+model Guyton_Model__right_atrial_pressure(VRA, PRA)
+
+  // Assignment Rules:
+  PRA := VRE / 0.005;
+  VRE := VRA - 0.1;
+end
+
+model Guyton_Model__autonomic_stimulation_effect_on_right_atrial_pressure(PRA, AU, PRA1, HTAUML)
+
+  // Assignment Rules:
+  PRA1 := (PRA + 8 ) * (HTAUML * (AU - 1 ) + 1 ) - 8;
+end
+
+model Guyton_Model__right_ventricle()
+end
+
+model Guyton_Model__pressure_effect_on_right_ventricular_pumping(PPA, AUH, OSA, RVM)
+
+  // Assignment Rules:
+  RVM := piecewise( 1.06 , PP2 <= 0 , 1.06 + (0.97 - 1.06 ) * (PP2 - 0 ) / (32 - 0 ) , ( PP2 > 0) && (PP2 <= 32 ), 0.97 + (0.93 - 0.97 ) * (PP2 - 32 ) / (38.4 - 32 ) , ( PP2 > 32) && (PP2 <= 38.4 ), 0.93 + (0.8 - 0.93 ) * (PP2 - 38.4 ) / (48 - 38.4 ) , ( PP2 > 38.4) && (PP2 <= 48 ), 0.8 + (0.46 - 0.8 ) * (PP2 - 48 ) / (60.8 - 48 ) , ( PP2 > 48) && (PP2 <= 60.8 ), 0.46 + (0 - 0.46 ) * (PP2 - 60.8 ) / (72 - 60.8 ) , ( PP2 > 60.8) && (PP2 <= 72 ), 0 );
+  PP2 := PPA / AUH / OSA;
+end
+
+model Guyton_Model__pumping_effectiveness_of_right_ventricle(AUH, RVM, HMD, HPR, QLO, QLN, HPEF, QRF, HSR)
+
+  // Assignment Rules:
+  HPEF := (1 - QRF) * AUH * RVM * HSR * HMD * HPR + QRF * QLO / QLN;
+end
+
+model Guyton_Model__right_ventricular_output(PRA1, HPEF, QRO)
+
+  // Assignment Rules:
+  QRO := QRN * HPEF;
+  QRN := piecewise( 0 , PRA1 <= -(8 ) , 0 + (0.75 - 0 ) * (PRA1 - -(8 )) / (-(6 ) - -(8 )) , ( PRA1 > -(8 )) && (PRA1 <= -(6 ) ), 0.75 + (2.6 - 0.75 ) * (PRA1 - -(6 )) / (-(2 ) - -(6 )) , ( PRA1 > -(6 )) && (PRA1 <= -(2 ) ), 2.6 + (9.8 - 2.6 ) * (PRA1 - -(2 )) / (4 - -(2 )) , ( PRA1 > -(2 )) && (PRA1 <= 4 ), 9.8 + (13.5 - 9.8 ) * (PRA1 - 4 ) / (12 - 4 ) , ( PRA1 > 4) && (PRA1 <= 12 ), 13.5 );
+end
+
+model Guyton_Model__pulmonary_vasculature()
+end
+
+model Guyton_Model__pulmonary_vasculature_blood_volume(QRO, QPO, VBD, time_, VPA, VPA1)
+
+  // Assignment Rules:
+  VPA := VPA1 + VBD * 0.155;
+  DPA := QRO - QPO;
+
+  // Rate Rules:
+  VPA1' = DPA;
+
+  // Variable initializations:
+  VPA1 = 0.38131;
+end
+
+model Guyton_Model__pulmonary_vasculature_pressure(VPA, PPA)
+
+  // Assignment Rules:
+  PPA := VPE / 0.0048;
+  VPE := VPA - 0.30625;
+end
+
+model Guyton_Model__pulmonary_arterial_resistance(PPA, RPA)
+
+  // Assignment Rules:
+  RPA := 1 / CPA;
+  PP1T := 0.026 * PPA;
+  PP1 := piecewise( 0.00001 , PP1T < 0.00001 , PP1T );
+  CPA := power(PP1, 0.5 );
+end
+
+model Guyton_Model__pulmonary_venous_resistance(PLA, RPV)
+
+  // Assignment Rules:
+  RPV := 1 / (PL1 * 0.0357 );
+  PL1 := PLA + 18;
+end
+
+model Guyton_Model__total_pulmonary_vascular_resistance(RPV, RPA, RPT)
+
+  // Assignment Rules:
+  RPT := RPV + RPA;
+end
+
+model Guyton_Model__pressure_gradient_through_the_lungs(PPA, PLA, PGL)
+
+  // Assignment Rules:
+  PGL := PPA - PLA;
+end
+
+model Guyton_Model__rate_of_blood_flow_from_pulmonary_veins_to_left_atrium(PGL, RPT, QLO, QPO)
+
+  // Assignment Rules:
+  QPO := PGL / RPT;
+end
+
+model Guyton_Model__left_atrium()
+end
+
+model Guyton_Model__left_atrial_blood_volume(QPO, QLO, VBD, time_, VLA, VLA1)
+
+  // Assignment Rules:
+  VLA := VLA1 + VBD * 0.128;
+  DLA := QPO - QLO;
+
+  // Rate Rules:
+  VLA1' = DLA;
+
+  // Variable initializations:
+  VLA1 = 0.379883;
+end
+
+model Guyton_Model__left_atrial_pressure(VLA, PLA)
+
+  // Assignment Rules:
+  PLA := VLE / 0.01;
+  VLE := VLA - 0.38;
+end
+
+model Guyton_Model__autonomic_stimulation_effect_on_left_atrial_pressure(PLA, AU, PLA1, HTAUML)
+
+  // Assignment Rules:
+  PLA1 := (PLA + 4 ) * (HTAUML * (AU - 1 ) + 1 ) - 4;
+end
+
+model Guyton_Model__left_ventricle()
+end
+
+model Guyton_Model__pumping_effectiveness_of_left_ventricle(PA, AUH, OSA, LVM)
+
+  // Assignment Rules:
+  LVM := piecewise( 1.04 , PA2 <= 0 , 1.04 + (1.025 - 1.04 ) * (PA2 - 0 ) / (60 - 0 ) , ( PA2 > 0) && (PA2 <= 60 ), 1.025 + (0.97 - 1.025 ) * (PA2 - 60 ) / (125 - 60 ) , ( PA2 > 60) && (PA2 <= 125 ), 0.97 + (0.88 - 0.97 ) * (PA2 - 125 ) / (160 - 125 ) , ( PA2 > 125) && (PA2 <= 160 ), 0.88 + (0.59 - 0.88 ) * (PA2 - 160 ) / (200 - 160 ) , ( PA2 > 160) && (PA2 <= 200 ), 0.59 + (0 - 0.59 ) * (PA2 - 200 ) / (240 - 200 ) , ( PA2 > 200) && (PA2 <= 240 ), 0 );
+  PA2 := PA / (AUH * OSA);
+end
+
+model Guyton_Model__left_ventricular_output(PLA1, LVM, AUH, HMD, HPL, PLA, PA, QLO, QLOT, QLN, HSL)
+
+  // Assignment Rules:
+  QLO := piecewise( QLOT + QLO1 , QLO1 > 0 , QLOT );
+  QLOT := LVM * QLN * AUH * HSL * HMD * HPL;
+  QLN := piecewise( 0.01 , PLA1 <= -(2 ) , 0.01 + (3.6 - 0.01 ) * (PLA1 - -(2 )) / (1 - -(2 )) , ( PLA1 > -(2 )) && (PLA1 <= 1 ), 3.6 + (9.4 - 3.6 ) * (PLA1 - 1 ) / (5 - 1 ) , ( PLA1 > 1) && (PLA1 <= 5 ), 9.4 + (11.6 - 9.4 ) * (PLA1 - 5 ) / (8 - 5 ) , ( PLA1 > 5) && (PLA1 <= 8 ), 11.6 + (13.5 - 11.6 ) * (PLA1 - 8 ) / (12 - 8 ) , ( PLA1 > 8) && (PLA1 <= 12 ), 13.5 );
+  QLO1 := (PLA - PA) / 3;
+end
+
+model Guyton_Model__systemic_venous_system()
+end
+
+model Guyton_Model__venous_blood_volume(QAO, QVO, VBD, time_, VVS, VVS1)
+
+  // Assignment Rules:
+  VVS := VVS1 + VBD * 0.3986;
+  DVS := QAO - QVO;
+
+  // Rate Rules:
+  VVS1' = DVS;
+
+  // Variable initializations:
+  VVS1 = 3.28246;
+end
+
+model Guyton_Model__angiotensin_induced_venous_constriction(ANU, VVA, ANY)
+
+  // Assignment Rules:
+  VVA := (ANU - 1 ) * ANY;
+end
+
+model Guyton_Model__venous_excess_volume(VVS, VVR, VVA, VV6, VV7, ATRVFB, VVE)
+
+  // Assignment Rules:
+  VVE := piecewise( 0.0001 , VVE1 < 0.0001 , VVE1 );
+  VVE1 := VVS - VVR - VVA - VV7 - VV6 - ATRVFB;
+end
+
+model Guyton_Model__venous_average_pressure(VVE, PVS, CV)
+
+  // Assignment Rules:
+  PVS := piecewise( 0.0001 , PVS1 < 0.0001 , PVS1 );
+  PVS1 := 3.7 + (VVE - 0.74 ) / CV;
+end
+
+model Guyton_Model__venous_outflow_pressure_into_heart(PRA, PR1, PR1LL)
+
+  // Assignment Rules:
+  PR1 := piecewise( PR1LL , PRA < PR1LL , PRA );
+end
+
+model Guyton_Model__resistance_from_veins_to_right_atrium(PVS, VIM, RVG)
+
+  // Assignment Rules:
+  RVG := 0.74 / power(PVS / (VIM * 3.7 ), 0.5 );
+end
+
+model Guyton_Model__rate_of_blood_flow_from_veins_to_right_atrium(PVS, PR1, RVG, QRO, QVO)
+
+  // Assignment Rules:
+  QVO := PGV / RVG;
+  PGV := PVS - PR1;
+end
+
+model Guyton_Model__venous_resistance(PC, VIM, AVE, ANUVN, RVS, CN7, CN2, RVSM)
+
+  // Assignment Rules:
+  RVS := AVE * RV1 * VIM * ANUVN;
+  CN3 := ((PC - 17 ) * CN7 + 17 ) * CN2;
+  RV1 := RVSM / CN3;
+end
+
+model Guyton_Model__NM_NR_venous_resistance(RVS, NNRVR)
+
+  // Assignment Rules:
+  NNRVR := RVS * 1.79;
+end
+
+model Guyton_Model__systemic_arterial_system()
+end
+
+model Guyton_Model__arterial_blood_volume(QLO, QAO, VBD, time_, VAS, VAS1)
+
+  // Assignment Rules:
+  VAS := VAS1 + VBD * 0.261;
+  DAS := QLO - QAO;
+
+  // Rate Rules:
+  VAS1' = DAS;
+
+  // Variable initializations:
+  VAS1 = 0.862514;
+end
+
+model Guyton_Model__arterial_pressure_and_pressure_gradient(VAS, PRA, PA, PAG)
+
+  // Assignment Rules:
+  PA := VAE / 0.00355;
+  PAG := PA - PRA;
+  VAE := VAS - 0.495;
+end
+
+model Guyton_Model__pressure_effect_on_arterial_distention(PA, PAM, PAEX)
+
+  // Assignment Rules:
+  PAM := power(PA / 100 , PAEX);
+end
+
+model Guyton_Model__non_renal_systemic_arterial_resistance_multiplier(ANU, ADHMV, AUM, VIM, PAMK, PAM, ATRRFB, R1)
+
+  // Assignment Rules:
+  R1 := ANU * ADHMV * AUM * VIM * PAMK / PAM / ATRRFB;
+end
+
+model Guyton_Model__NM_NR_arterial_resistance(R1, ARM, MYOGRS, NNRAR, RAR, RMULT1)
+
+  // Assignment Rules:
+  NNRAR := RAR * ARM * R1 * MYOGRS * RMULT1;
+end
+
+model Guyton_Model__pressure_gradient_from_arteries_to_veins(PA, PVS, PGS)
+
+  // Assignment Rules:
+  PGS := PA - PVS;
+end
+
+model Guyton_Model__M_systemic_resistance(R1, AMM, MYOGRS, RSM, RAM, RMULT1)
+
+  // Assignment Rules:
+  RSM := RAM * AMM * R1 * MYOGRS * RMULT1;
+end
+
+model Guyton_Model__total_NM_NR_systemic_resistance(NNRAR, NNRVR, RSN)
+
+  // Assignment Rules:
+  RSN := NNRAR + NNRVR;
+end
+
+model Guyton_Model__blood_flow_through_M_tissues(PGS, RSM, BFM)
+
+  // Assignment Rules:
+  BFM := PGS / RSM;
+end
+
+model Guyton_Model__blood_flow_through_NM_NR_tissues(PGS, RSN, BFN)
+
+  // Assignment Rules:
+  BFN := PGS / RSN;
+end
+
+model Guyton_Model__blood_flow_through_AV_fistulas(PAG, FISFLO, FIS)
+
+  // Assignment Rules:
+  FISFLO := PAG * FIS;
+end
+
+model Guyton_Model__systemic_blood_flow(BFM, BFN, RBF, FISFLO, SYSFLO, QAO)
+
+  // Assignment Rules:
+  SYSFLO := BFM + BFN + RBF;
+  QAO := SYSFLO + FISFLO;
+end
+
+model Guyton_Model__total_peripheral_resistance(PAG, QAO, RTP)
+
+  // Assignment Rules:
+  RTP := PAG / QAO;
+end
+
+model Guyton_Model__circulatory_dynamics(time_, ADHMV, AMM, ANU, ANUVN, ARM, ATRRFB, ATRVFB, AU, AUH, AUM, AVE, HMD, HPL, HPR, MYOGRS, OSA, PAMK, PC, RBF, VIM, VP, VRC, VV6, VV7, VVR, BFM, BFN, PA, PLA, PPA, PRA, PVS, QAO, QRO, QLO, RPA, RPV, RVS, VVE)
+
+  // Sub-modules, and any changes to those submodules:
+  circulatory_dynamics_parameter_values: Guyton_Model__circulatory_dynamics_parameter_values(HTAUML, QRF, HSR, HSL, ANY, CV, PR1LL, RVSM, CN2, CN7, PAEX, RAR, RMULT1, RAM, FIS);
+  total_blood_volume_change: Guyton_Model__total_blood_volume_change(VP, VRC, VVS1, VAS1, VLA1, VPA1, VRA1, VBD);
+  right_atrium: Guyton_Model__right_atrium();
+  right_atrial_blood_volume: Guyton_Model__right_atrial_blood_volume(QVO, QRO, VBD, time_, VRA, VRA1);
+  right_atrial_pressure: Guyton_Model__right_atrial_pressure(VRA, PRA);
+  autonomic_stimulation_effect_on_right_atrial_pressure: Guyton_Model__autonomic_stimulation_effect_on_right_atrial_pressure(PRA, AU, PRA1, HTAUML);
+  right_ventricle: Guyton_Model__right_ventricle();
+  pressure_effect_on_right_ventricular_pumping: Guyton_Model__pressure_effect_on_right_ventricular_pumping(PPA, AUH, OSA, RVM);
+  pumping_effectiveness_of_right_ventricle: Guyton_Model__pumping_effectiveness_of_right_ventricle(AUH, RVM, HMD, HPR, QLO0, QLN, HPEF, QRF, HSR);
+  right_ventricular_output: Guyton_Model__right_ventricular_output(PRA1, HPEF, QRO);
+  pulmonary_vasculature: Guyton_Model__pulmonary_vasculature();
+  pulmonary_vasculature_blood_volume: Guyton_Model__pulmonary_vasculature_blood_volume(QRO, QPO, VBD, time_, VPA, VPA1);
+  pulmonary_vasculature_pressure: Guyton_Model__pulmonary_vasculature_pressure(VPA, PPA);
+  pulmonary_arterial_resistance: Guyton_Model__pulmonary_arterial_resistance(PPA, RPA);
+  pulmonary_venous_resistance: Guyton_Model__pulmonary_venous_resistance(PLA, RPV);
+  total_pulmonary_vascular_resistance: Guyton_Model__total_pulmonary_vascular_resistance(RPV, RPA, RPT);
+  pressure_gradient_through_the_lungs: Guyton_Model__pressure_gradient_through_the_lungs(PPA, PLA, PGL);
+  rate_of_blood_flow_from_pulmonary_veins_to_left_atrium: Guyton_Model__rate_of_blood_flow_from_pulmonary_veins_to_left_atrium(PGL, RPT, QLO0, QPO);
+  left_atrium: Guyton_Model__left_atrium();
+  left_atrial_blood_volume: Guyton_Model__left_atrial_blood_volume(QPO, QLO0, VBD, time_, VLA, VLA1);
+  left_atrial_pressure: Guyton_Model__left_atrial_pressure(VLA, PLA);
+  autonomic_stimulation_effect_on_left_atrial_pressure: Guyton_Model__autonomic_stimulation_effect_on_left_atrial_pressure(PLA, AU, PLA1, HTAUML);
+  left_ventricle: Guyton_Model__left_ventricle();
+  pumping_effectiveness_of_left_ventricle: Guyton_Model__pumping_effectiveness_of_left_ventricle(PA, AUH, OSA, LVM);
+  left_ventricular_output: Guyton_Model__left_ventricular_output(PLA1, LVM, AUH, HMD, HPL, PLA, PA, QLO0, QLOT, QLN, HSL);
+  systemic_venous_system: Guyton_Model__systemic_venous_system();
+  venous_blood_volume: Guyton_Model__venous_blood_volume(QAO0, QVO, VBD, time_, VVS, VVS1);
+  angiotensin_induced_venous_constriction: Guyton_Model__angiotensin_induced_venous_constriction(ANU, VVA, ANY);
+  venous_excess_volume: Guyton_Model__venous_excess_volume(VVS, VVR, VVA, VV6, VV7, ATRVFB, VVE);
+  venous_average_pressure: Guyton_Model__venous_average_pressure(VVE, PVS, CV);
+  venous_outflow_pressure_into_heart: Guyton_Model__venous_outflow_pressure_into_heart(PRA, PR1, PR1LL);
+  resistance_from_veins_to_right_atrium: Guyton_Model__resistance_from_veins_to_right_atrium(PVS, VIM, RVG);
+  rate_of_blood_flow_from_veins_to_right_atrium: Guyton_Model__rate_of_blood_flow_from_veins_to_right_atrium(PVS, PR1, RVG, QRO, QVO);
+  venous_resistance: Guyton_Model__venous_resistance(PC, VIM, AVE, ANUVN, RVS, CN7, CN2, RVSM);
+  NM_NR_venous_resistance: Guyton_Model__NM_NR_venous_resistance(RVS, NNRVR);
+  systemic_arterial_system: Guyton_Model__systemic_arterial_system();
+  arterial_blood_volume: Guyton_Model__arterial_blood_volume(QLO, QAO0, VBD, time_, VAS, VAS1);
+  arterial_pressure_and_pressure_gradient: Guyton_Model__arterial_pressure_and_pressure_gradient(VAS, PRA, PA, PAG);
+  pressure_effect_on_arterial_distention: Guyton_Model__pressure_effect_on_arterial_distention(PA, PAM, PAEX);
+  non_renal_systemic_arterial_resistance_multiplier: Guyton_Model__non_renal_systemic_arterial_resistance_multiplier(ANU, ADHMV, AUM, VIM, PAMK, PAM, ATRRFB, R1);
+  NM_NR_arterial_resistance: Guyton_Model__NM_NR_arterial_resistance(R1, ARM, MYOGRS, NNRAR, RAR, RMULT1);
+  pressure_gradient_from_arteries_to_veins: Guyton_Model__pressure_gradient_from_arteries_to_veins(PA, PVS, PGS);
+  M_systemic_resistance: Guyton_Model__M_systemic_resistance(R1, AMM, MYOGRS, RSM, RAM, RMULT1);
+  total_NM_NR_systemic_resistance: Guyton_Model__total_NM_NR_systemic_resistance(NNRAR, NNRVR, RSN);
+  blood_flow_through_M_tissues: Guyton_Model__blood_flow_through_M_tissues(PGS, RSM, BFM);
+  blood_flow_through_NM_NR_tissues: Guyton_Model__blood_flow_through_NM_NR_tissues(PGS, RSN, BFN);
+  blood_flow_through_AV_fistulas: Guyton_Model__blood_flow_through_AV_fistulas(PAG, FISFLO, FIS);
+  systemic_blood_flow: Guyton_Model__systemic_blood_flow(BFM, BFN, RBF, FISFLO, SYSFLO, QAO0);
+  total_peripheral_resistance: Guyton_Model__total_peripheral_resistance(PAG, QAO, RTP);
+  QLO0 is QLO;
+  QAO0 is QAO;
+end
+
+model Guyton_Model__electrolytes_parameter_values(TRPL, NID, ALCLK, KID, VIDML)
+
+  // Variable initializations:
+  TRPL = 0;
+  NID = 0.1;
+  ALCLK = 0.3;
+  KID = 0.08;
+  VIDML = 0.01;
+end
+
+model Guyton_Model__extracellular_Na_concentration(STH, NOD, VEC, time_, CNA, NID, TRPL)
+
+  // Assignment Rules:
+  CNA := NAE / VEC;
+  NED := NID * STH - NOD + TRPL * 142;
+
+  // Rate Rules:
+  NAE' = NED;
+
+  // Variable initializations:
+  NAE = 2109.91;
+end
+
+model Guyton_Model__aldosterone_effect_on_cellular_K_distribution(AMK, AMK1, ALCLK)
+
+  // Assignment Rules:
+  AMK1 := (AMK - 1 ) * ALCLK + 1;
+end
+
+model Guyton_Model__extracellular_K_concentration(KOD, AMK1, VEC, time_, CKE, KE, KTOT, KID)
+
+  // Assignment Rules:
+  CKE := KE / VEC;
+  KE := (KTOT - 3000 ) / (AMK1 * 9.3333 );
+  KTOTD := KID - KOD;
+
+  // Rate Rules:
+  KTOT' = KTOTD;
+
+  // Variable initializations:
+  KTOT = 3622.54;
+end
+
+model Guyton_Model__intracellular_K_concentration(KTOT, KE, VIC, CKI)
+
+  // Assignment Rules:
+  CKI := KI / VIC;
+  KI := KTOT - KE;
+end
+
+model Guyton_Model__intracellular_fluid_volume(CNA, CKI, time_, VIC, VID, VIDML)
+
+  // Assignment Rules:
+  VID := CCD * VIDML;
+  CCD := CKI - CNA;
+
+  // Rate Rules:
+  VIC' = VID;
+
+  // Variable initializations:
+  VIC = 25.0404;
+end
+
+model Guyton_Model__total_body_water(TVD, VUD, time_, VTW)
+
+  // Rate Rules:
+  VTW' = TVD - VUD;
+
+  // Variable initializations:
+  VTW = 39.8952;
+end
+
+model Guyton_Model__extracellular_fluid_volume(VIC, VTW, VEC)
+
+  // Assignment Rules:
+  VEC := VTW - VIC;
+end
+
+model Guyton_Model__electrolytes(time_, AMK, TVD, NOD, STH, KOD, VUD, CKE, VEC, CNA, VTW)
+
+  // Sub-modules, and any changes to those submodules:
+  electrolytes_parameter_values: Guyton_Model__electrolytes_parameter_values(TRPL, NID, ALCLK, KID, VIDML);
+  extracellular_Na_concentration: Guyton_Model__extracellular_Na_concentration(STH, NOD, VEC, time_, CNA, NID, TRPL);
+  aldosterone_effect_on_cellular_K_distribution: Guyton_Model__aldosterone_effect_on_cellular_K_distribution(AMK, AMK1, ALCLK);
+  extracellular_K_concentration: Guyton_Model__extracellular_K_concentration(KOD, AMK1, VEC, time_, CKE, KE, KTOT, KID);
+  intracellular_K_concentration: Guyton_Model__intracellular_K_concentration(KTOT, KE, VIC, CKI);
+  intracellular_fluid_volume: Guyton_Model__intracellular_fluid_volume(CNA, CKI, time_, VIC, VID, VIDML);
+  total_body_water: Guyton_Model__total_body_water(TVD, VUD, time_, VTW);
+  extracellular_fluid_volume: Guyton_Model__extracellular_fluid_volume(VIC, VTW, VEC);
+end
+
+model Guyton_Model__heart_hypertrophy_or_deterioration_parameter_values(HSL, Z13, HSR, DHDTR)
+
+  // Variable initializations:
+  HSL = 1;
+  Z13 = 0.625;
+  HSR = 1;
+  DHDTR = 0.05;
+end
+
+model Guyton_Model__left_ventricular_hypertrophy(QAO, PA, time_, HPL, HSL, Z13)
+
+  // Rate Rules:
+  HPL' = (power(PA * QAO / (500 * HSL), Z13) - HPL) / 57600;
+
+  // Variable initializations:
+  HPL = 1.00163;
+end
+
+model Guyton_Model__right_ventricular_hypertrophy(QAO, PPA, time_, HPR, HSR, Z13)
+
+  // Rate Rules:
+  HPR' = (power(PPA * QAO / (75 * HSR), Z13) - HPR) / 57600;
+
+  // Variable initializations:
+  HPR = 1.00237;
+end
+
+model Guyton_Model__heart_deterioration(POT, time_, HMD, DHDTR)
+
+  // Assignment Rules:
+  HMD := piecewise( 1 , HMD1 > 1 , HMD1 );
+  DHM := (POT - 10 ) * DHDTR;
+
+  // Rate Rules:
+  HMD1' = DHM;
+
+  // Variable initializations:
+  HMD1 = 1.0;
+end
+
+model Guyton_Model__heart_hypertrophy_or_deterioration(time_, QAO, PA, POT, PPA, HPL, HPR, HMD)
+
+  // Sub-modules, and any changes to those submodules:
+  heart_hypertrophy_or_deterioration_parameter_values: Guyton_Model__heart_hypertrophy_or_deterioration_parameter_values(HSL, Z13, HSR, DHDTR);
+  left_ventricular_hypertrophy: Guyton_Model__left_ventricular_hypertrophy(QAO, PA, time_, HPL, HSL, Z13);
+  right_ventricular_hypertrophy: Guyton_Model__right_ventricular_hypertrophy(QAO, PPA, time_, HPR, HSR, Z13);
+  heart_deterioration: Guyton_Model__heart_deterioration(POT, time_, HMD, DHDTR);
+end
+
+model Guyton_Model__HR_and_SV_parameter_values(PR1LL)
+
+  // Variable initializations:
+  PR1LL = 0;
+end
+
+model Guyton_Model__effect_of_autonomic_stimulation_on_HR(AUR, AUHR)
+
+  // Assignment Rules:
+  AUHR := 72 * AUR;
+end
+
+model Guyton_Model__effect_of_PRA_on_HR(PRHR, PR1LL)
+
+  // Assignment Rules:
+  PRHR := power(PR1LL, 0.5 ) * 5;
+end
+
+model Guyton_Model__effect_of_heart_deterioration_on_HR(HMD, HDHR)
+
+  // Assignment Rules:
+  HDHR := (HMD - 1 ) * 0.5 + 1;
+end
+
+model Guyton_Model__heart_rate(AUHR, PRHR, HDHR, HR)
+
+  // Assignment Rules:
+  HR := (AUHR + PRHR) * HDHR;
+end
+
+model Guyton_Model__stroke_volume_output(QLO, HR, SVO)
+
+  // Assignment Rules:
+  SVO := QLO / HR;
+end
+
+model Guyton_Model__heart_rate_and_stroke_volume(QLO, AUR, PRA, HMD)
+
+  // Sub-modules, and any changes to those submodules:
+  HR_and_SV_parameter_values: Guyton_Model__HR_and_SV_parameter_values(PR1LL);
+  effect_of_autonomic_stimulation_on_HR: Guyton_Model__effect_of_autonomic_stimulation_on_HR(AUR, AUHR);
+  effect_of_PRA_on_HR: Guyton_Model__effect_of_PRA_on_HR(PRHR, PR1LL);
+  effect_of_heart_deterioration_on_HR: Guyton_Model__effect_of_heart_deterioration_on_HR(HMD, HDHR);
+  heart_rate: Guyton_Model__heart_rate(AUHR, PRHR, HDHR, HR);
+  stroke_volume_output: Guyton_Model__stroke_volume_output(QLO, HR, SVO);
+end
+
+model Guyton_Model__M_autoregulatory_local_blood_flow_parameter_values(POM, A4K, AMM4, POM2, A4K2)
+
+  // Variable initializations:
+  POM = 0.04;
+  A4K = 0.1;
+  AMM4 = 0.005;
+  POM2 = 2;
+  A4K2 = 40000;
+end
+
+model Guyton_Model__M_autoregulatory_driving_force(PMO, PDO)
+
+  // Assignment Rules:
+  PDO := PMO - 38;
+end
+
+model Guyton_Model__M_short_term_autoregulation()
+end
+
+model Guyton_Model__M_ST_sensitivity_control(PDO, POE, POM)
+
+  // Assignment Rules:
+  POE := PDO * POM + 1;
+end
+
+model Guyton_Model__M_ST_time_delay_and_limit(POE, time_, AMM1, A4K, AMM4)
+
+  // Assignment Rules:
+  AMM1 := piecewise( AMM4 , AMM1T < AMM4 , AMM1T );
+
+  // Rate Rules:
+  AMM1T' = (POE * 1 - AMM1T) / A4K;
+
+  // Variable initializations:
+  AMM1T = 1.00269;
+end
+
+model Guyton_Model__M_long_term_autoregulation()
+end
+
+model Guyton_Model__M_LT_sensitivity_control(PDO, POF, POM2)
+
+  // Assignment Rules:
+  POF := POM2 * PDO + 1;
+end
+
+model Guyton_Model__M_LT_time_delay(POF, time_, AMM2, A4K2)
+
+  // Rate Rules:
+  AMM2' = (POF * 1 - AMM2) / A4K2;
+
+  // Variable initializations:
+  AMM2 = 1.09071;
+end
+
+model Guyton_Model__global_M_blood_flow_autoregulation_output(AMM1, AMM2, AMM)
+
+  // Assignment Rules:
+  AMM := AMM1 * AMM2;
+end
+
+model Guyton_Model__muscle_autoregulatory_local_blood_flow_control(time_, PMO, AMM)
+
+  // Sub-modules, and any changes to those submodules:
+  M_autoregulatory_local_blood_flow_parameter_values: Guyton_Model__M_autoregulatory_local_blood_flow_parameter_values(POM, A4K, AMM4, POM2, A4K2);
+  M_autoregulatory_driving_force: Guyton_Model__M_autoregulatory_driving_force(PMO, PDO);
+  M_short_term_autoregulation: Guyton_Model__M_short_term_autoregulation();
+  M_ST_sensitivity_control: Guyton_Model__M_ST_sensitivity_control(PDO, POE, POM);
+  M_ST_time_delay_and_limit: Guyton_Model__M_ST_time_delay_and_limit(POE, time_, AMM1, A4K, AMM4);
+  M_long_term_autoregulation: Guyton_Model__M_long_term_autoregulation();
+  M_LT_sensitivity_control: Guyton_Model__M_LT_sensitivity_control(PDO, POF, POM2);
+  M_LT_time_delay: Guyton_Model__M_LT_time_delay(POF, time_, AMM2, A4K2);
+  global_M_blood_flow_autoregulation_output: Guyton_Model__global_M_blood_flow_autoregulation_output(AMM1, AMM2, AMM);
+end
+
+model Guyton_Model__M_O2_delivery_parameter_values(EXC, EXCXP2, OMM, PM5, PK2)
+
+  // Variable initializations:
+  EXC = 1;
+  EXCXP2 = 0.17;
+  OMM = 57.1;
+  PM5 = 30;
+  PK2 = 0.79167;
+end
+
+model Guyton_Model__M_O2_blood_supply(OVA, BFM, O2ARTM)
+
+  // Assignment Rules:
+  O2ARTM := OVA * BFM;
+end
+
+model Guyton_Model__M_venous_O2_content(O2ARTM, RMO, BFM, HM, time_, PVO, EXC, EXCXP2)
+
+  // Assignment Rules:
+  PVO := 57.14 * OVS * power(EXC, EXCXP2);
+  OVS := (O2ARTM - RMO) / (HM * 5.25 * BFM);
+end
+
+model Guyton_Model__metabolic_O2_consumption_by_M_tissue(PMO, AOM, MMO, P2O, OMM, EXC)
+
+  // Assignment Rules:
+  MMO := AOM * OMM * EXC * (1 - power(38.0001 - P2O, 3 ) / 54872 );
+  P2O := piecewise( 38 , PMO > 38 , PMO );
+end
+
+model Guyton_Model__delivery_of_O2_to_M_tissues(PMO, PVO, BFM, RMO, PM5)
+
+  // Assignment Rules:
+  RMO := (PVO - PMO) * PM5 * BFM;
+end
+
+model Guyton_Model__volume_of_O2_in_M_tissue(RMO, MMO, time_, QOM)
+
+  // Assignment Rules:
+  QOM := piecewise( 0.0001 , QOM1 < 0.0001 , QOM1 );
+  DO2M := RMO - MMO;
+
+  // Rate Rules:
+  QOM1' = DO2M;
+
+  // Variable initializations:
+  QOM1 = 48.0839;
+end
+
+model Guyton_Model__pressure_of_O2_in_M_tissue_cells(QOM, PMO, PK2)
+
+  // Assignment Rules:
+  PMO := PK2 * QOM;
+end
+
+model Guyton_Model__muscle_O2_delivery(time_, BFM, OVA, HM, AOM, PMO, RMO)
+
+  // Sub-modules, and any changes to those submodules:
+  M_O2_delivery_parameter_values: Guyton_Model__M_O2_delivery_parameter_values(EXC, EXCXP2, OMM, PM5, PK2);
+  M_O2_blood_supply: Guyton_Model__M_O2_blood_supply(OVA, BFM, O2ARTM);
+  M_venous_O2_content: Guyton_Model__M_venous_O2_content(O2ARTM, RMO0, BFM, HM, time_, PVO, EXC, EXCXP2);
+  metabolic_O2_consumption_by_M_tissue: Guyton_Model__metabolic_O2_consumption_by_M_tissue(PMO, AOM, MMO, P2O, OMM, EXC);
+  delivery_of_O2_to_M_tissues: Guyton_Model__delivery_of_O2_to_M_tissues(PMO, PVO0, BFM, RMO0, PM5);
+  volume_of_O2_in_M_tissue: Guyton_Model__volume_of_O2_in_M_tissue(RMO, MMO, time_, QOM);
+  pressure_of_O2_in_M_tissue_cells: Guyton_Model__pressure_of_O2_in_M_tissue_cells(QOM, PMO, PK2);
+  RMO0 is RMO;
+end
+
+model Guyton_Model__NM_autoregulatory_local_blood_flow_parameter_values(POR, POK, A1K, PON, A2K, A3K, POZ, AUTOSN)
+
+  // Variable initializations:
+  POR = 35;
+  POK = 0.1;
+  A1K = 0.5;
+  PON = 0.1;
+  A2K = 60;
+  A3K = 40000;
+  POZ = 2;
+  AUTOSN = 0.9;
+end
+
+model Guyton_Model__NM_autoregulatory_driving_force(POT, POD, POR)
+
+  // Assignment Rules:
+  POD := POT - POR;
+end
+
+model Guyton_Model__NM_short_term_autoregulation()
+end
+
+model Guyton_Model__NM_ST_sensitivity_control(POD, POB, POK)
+
+  // Assignment Rules:
+  POB := POD * POK + 1;
+end
+
+model Guyton_Model__NM_ST_time_delay_and_damping(POB, time_, AR1, A1K)
+
+  // Assignment Rules:
+  AR1 := piecewise( 0.5 , AR1T < 0.5 , AR1T );
+
+  // Rate Rules:
+  AR1T' = (POB * 1 - AR1T) / A1K;
+
+  // Variable initializations:
+  AR1T = 1.02127;
+end
+
+model Guyton_Model__NM_intermediate_autoregulation()
+end
+
+model Guyton_Model__NM_I_sensitivity_control(POD, POA, PON)
+
+  // Assignment Rules:
+  POA := PON * POD + 1;
+end
+
+model Guyton_Model__NM_I_time_delay_and_limit(POA, time_, AR2, A2K)
+
+  // Assignment Rules:
+  AR2 := piecewise( 0.5 , AR2T < 0.5 , AR2T );
+
+  // Rate Rules:
+  AR2T' = (POA * 1 - AR2T) / A2K;
+
+  // Variable initializations:
+  AR2T = 1.01179;
+end
+
+model Guyton_Model__NM_long_term_autoregulation()
+end
+
+model Guyton_Model__NM_LT_sensitivity_control(POD, POC, POZ)
+
+  // Assignment Rules:
+  POC := POZ * POD + 1;
+end
+
+model Guyton_Model__NM_LT_time_delay_and_limit(POC, time_, AR3, A3K)
+
+  // Assignment Rules:
+  AR3 := piecewise( 0.3 , AR3T < 0.3 , AR3T );
+
+  // Rate Rules:
+  AR3T' = (POC * 1 - AR3T) / A3K;
+
+  // Variable initializations:
+  AR3T = 1.1448;
+end
+
+model Guyton_Model__total_NM_autoregulation(AR1, AR2, AR3, ARM1)
+
+  // Assignment Rules:
+  ARM1 := AR1 * AR2 * AR3;
+end
+
+model Guyton_Model__global_NM_blood_flow_autoregulation_output(ARM1, ARM, AUTOSN)
+
+  // Assignment Rules:
+  ARM := (ARM1 - 1 ) * AUTOSN + 1;
+end
+
+model Guyton_Model__non_muscle_autoregulatory_local_blood_flow_control(time_, POT, ARM)
+
+  // Sub-modules, and any changes to those submodules:
+  NM_autoregulatory_local_blood_flow_parameter_values: Guyton_Model__NM_autoregulatory_local_blood_flow_parameter_values(POR, POK, A1K, PON, A2K, A3K, POZ, AUTOSN);
+  NM_autoregulatory_driving_force: Guyton_Model__NM_autoregulatory_driving_force(POT, POD, POR);
+  NM_short_term_autoregulation: Guyton_Model__NM_short_term_autoregulation();
+  NM_ST_sensitivity_control: Guyton_Model__NM_ST_sensitivity_control(POD, POB, POK);
+  NM_ST_time_delay_and_damping: Guyton_Model__NM_ST_time_delay_and_damping(POB, time_, AR1, A1K);
+  NM_intermediate_autoregulation: Guyton_Model__NM_intermediate_autoregulation();
+  NM_I_sensitivity_control: Guyton_Model__NM_I_sensitivity_control(POD, POA, PON);
+  NM_I_time_delay_and_limit: Guyton_Model__NM_I_time_delay_and_limit(POA, time_, AR2, A2K);
+  NM_long_term_autoregulation: Guyton_Model__NM_long_term_autoregulation();
+  NM_LT_sensitivity_control: Guyton_Model__NM_LT_sensitivity_control(POD, POC, POZ);
+  NM_LT_time_delay_and_limit: Guyton_Model__NM_LT_time_delay_and_limit(POC, time_, AR3, A3K);
+  total_NM_autoregulation: Guyton_Model__total_NM_autoregulation(AR1, AR2, AR3, ARM1);
+  global_NM_blood_flow_autoregulation_output: Guyton_Model__global_NM_blood_flow_autoregulation_output(ARM1, ARM, AUTOSN);
+end
+
+model Guyton_Model__NM_O2_delivery_parameter_values(O2M)
+
+  // Variable initializations:
+  O2M = 164;
+end
+
+model Guyton_Model__NM_O2_blood_supply(OVA, BFN, O2ARTN)
+
+  // Assignment Rules:
+  O2ARTN := OVA * BFN;
+end
+
+model Guyton_Model__NM_venous_O2_content(O2ARTN, DOB, BFN, HM, time_, POV)
+
+  // Assignment Rules:
+  POV := OSV * 57.14;
+  OSV := (O2ARTN - DOB) / (HM * 5.25 * BFN);
+end
+
+model Guyton_Model__O2_consumption_by_NM_tissue(POT, AOM, MO2, O2M)
+
+  // Assignment Rules:
+  MO2 := AOM * O2M * (1 - power(35.0001 - P1O, 3 ) / 42875 );
+  P1O := piecewise( 35 , POT > 35 , POT );
+end
+
+model Guyton_Model__delivery_of_O2_to_NM_tissues(POT, POV, BFN, DOB)
+
+  // Assignment Rules:
+  DOB := (POV - POT) * 12.857 * BFN;
+end
+
+model Guyton_Model__volume_of_O2_in_NM_tissue(DOB, MO2, time_, QO2)
+
+  // Assignment Rules:
+  QO2 := piecewise( 0 , QO2T < 0 , QO2T );
+  DO2N := piecewise( DO2N1 * 0.1 , ( QO2 < 6) && (DO2N1 < 0 ), DO2N1 );
+  DO2N1 := DOB - MO2;
+
+  // Rate Rules:
+  QO2T' = DO2N;
+
+  // Variable initializations:
+  QO2T = 72.2362;
+end
+
+model Guyton_Model__pressure_of_O2_in_NM_tissue_cells(QO2, POT)
+
+  // Assignment Rules:
+  POT := QO2 * 0.48611;
+end
+
+model Guyton_Model__non_muscle_O2_delivery(time_, BFN, OVA, HM, AOM, POT, DOB)
+
+  // Sub-modules, and any changes to those submodules:
+  NM_O2_delivery_parameter_values: Guyton_Model__NM_O2_delivery_parameter_values(O2M);
+  NM_O2_blood_supply: Guyton_Model__NM_O2_blood_supply(OVA, BFN, O2ARTN);
+  NM_venous_O2_content: Guyton_Model__NM_venous_O2_content(O2ARTN, DOB0, BFN, HM, time_, POV);
+  O2_consumption_by_NM_tissue: Guyton_Model__O2_consumption_by_NM_tissue(POT, AOM, MO2, O2M);
+  delivery_of_O2_to_NM_tissues: Guyton_Model__delivery_of_O2_to_NM_tissues(POT, POV0, BFN, DOB0);
+  volume_of_O2_in_NM_tissue: Guyton_Model__volume_of_O2_in_NM_tissue(DOB, MO2, time_, QO2);
+  pressure_of_O2_in_NM_tissue_cells: Guyton_Model__pressure_of_O2_in_NM_tissue_cells(QO2, POT);
+  DOB0 is DOB;
+end
+
+model Guyton_Model__pulmonary_fluid_dynamics_parameter_values(CPF)
+
+  // Variable initializations:
+  CPF = 0.0003;
+end
+
+model Guyton_Model__pulmonary_capillary_pressure(PPA, PLA, RPV, RPA, PCP)
+
+  // Assignment Rules:
+  PCP := (PPA - PLA) * RPV / (RPV + RPA) + PLA;
+end
+
+model Guyton_Model__fluid_filtration_into_pulmonary_interstitium(PCP, PPC, POS, PPI, PFI, CPF)
+
+  // Assignment Rules:
+  PFI := (PCP - PPI + POS - PPC) * CPF;
+end
+
+model Guyton_Model__pulmonary_interstitial_free_fluid_volume(PFI, PLF, time_, DFP, VPF)
+
+  // Assignment Rules:
+  DFP := DFZ;
+  VPF := piecewise( 0.001 , VPF1 < 0.001 , VPF1 );
+  DFZ := PFI - PLF;
+
+  // Rate Rules:
+  VPF1' = DFP;
+
+  // Variable initializations:
+  VPF1 = 0.0123238;
+end
+
+model Guyton_Model__pulmonary_interstitial_fluid_pressure(VPF, PPI)
+
+  // Assignment Rules:
+  PPI := 2 - 0.15 / VPF;
+end
+
+model Guyton_Model__concentration_of_protein_in_pulmonary_interstitium(PPO, PPN, VPF, time_, PPD, CPN)
+
+  // Assignment Rules:
+  PPD := PPZ;
+  CPN := PPR / VPF;
+  PPZ := PPN - PPO;
+  PPR := piecewise( 0.025 , PPR1 < 0.025 , PPR1 );
+
+  // Rate Rules:
+  PPR1' = PPD;
+
+  // Variable initializations:
+  PPR1 = 0.419998;
+end
+
+model Guyton_Model__colloid_osmotic_pressure_of_pulmonary_interstitium(CPN, POS)
+
+  // Assignment Rules:
+  POS := CPN * 0.4;
+end
+
+model Guyton_Model__protein_leakage_into_pulmonary_interstitium(CPP, CPN, PPN)
+
+  // Assignment Rules:
+  PPN := (CPP - CPN) * 0.000225;
+end
+
+model Guyton_Model__lung_lymphatic_protein_flow(PPI, CPN, PLF, PPO)
+
+  // Assignment Rules:
+  PLF := (PPI + 11 ) * 0.0003;
+  PPO := PLF * CPN;
+end
+
+model Guyton_Model__pulmonary_fluid_dynamics(time_, PPC, PPA, PLA, CPP, RPV, RPA, DFP, VPF, PPD)
+
+  // Sub-modules, and any changes to those submodules:
+  pulmonary_fluid_dynamics_parameter_values: Guyton_Model__pulmonary_fluid_dynamics_parameter_values(CPF);
+  pulmonary_capillary_pressure: Guyton_Model__pulmonary_capillary_pressure(PPA, PLA, RPV, RPA, PCP);
+  fluid_filtration_into_pulmonary_interstitium: Guyton_Model__fluid_filtration_into_pulmonary_interstitium(PCP, PPC, POS, PPI, PFI, CPF);
+  pulmonary_interstitial_free_fluid_volume: Guyton_Model__pulmonary_interstitial_free_fluid_volume(PFI, PLF, time_, DFP, VPF);
+  pulmonary_interstitial_fluid_pressure: Guyton_Model__pulmonary_interstitial_fluid_pressure(VPF, PPI);
+  concentration_of_protein_in_pulmonary_interstitium: Guyton_Model__concentration_of_protein_in_pulmonary_interstitium(PPO, PPN, VPF, time_, PPD, CPN);
+  colloid_osmotic_pressure_of_pulmonary_interstitium: Guyton_Model__colloid_osmotic_pressure_of_pulmonary_interstitium(CPN, POS);
+  protein_leakage_into_pulmonary_interstitium: Guyton_Model__protein_leakage_into_pulmonary_interstitium(CPP, CPN, PPN);
+  lung_lymphatic_protein_flow: Guyton_Model__lung_lymphatic_protein_flow(PPI, CPN, PLF, PPO);
+end
+
+model Guyton_Model__pulmonary_O2_uptake_parameter_values(PO2AMB, PL2, VPTISS, VNTSTM)
+
+  // Variable initializations:
+  PO2AMB = 150;
+  PL2 = 1.8;
+  VPTISS = 0.0175;
+  VNTSTM = 1;
+end
+
+model Guyton_Model__total_O2_utilization(DOB, RMO, O2UTIL)
+
+  // Assignment Rules:
+  O2UTIL := DOB + RMO;
+end
+
+model Guyton_Model__alveolar_ventilation(O2UTIL, O2VAD2, O2VTS2, ALVENT, VNTSTM)
+
+  // Assignment Rules:
+  ALVENT := O2UTIL * VNTSTM * 0.026667 * O2VTS2 * O2VAD2;
+end
+
+model Guyton_Model__alveolar_PO2(O2UTIL, ALVENT, PO2ALV, PO2AMB)
+
+  // Assignment Rules:
+  PO2ALV := PO2AMB - O2UTIL / ALVENT / 0.761;
+end
+
+model Guyton_Model__respiratory_O2_diffusion_into_capillaries(PO2ALV, PO2ART, VPF, O2DFS, PL2, VPTISS)
+
+  // Assignment Rules:
+  O2DFS := (PO2ALV - PO2ART) * RSPDFC;
+  RSPDFC := PL2 / (VPTISS + VPF);
+end
+
+model Guyton_Model__O2_volume_of_arterial_blood(O2DFS, O2UTIL, QRO, time_, OVA)
+
+  // Assignment Rules:
+  DOVA := (O2DFS - O2UTIL) / (QRO * 1.0 );
+
+  // Rate Rules:
+  OVA' = DOVA;
+
+  // Variable initializations:
+  OVA = 204.497;
+end
+
+model Guyton_Model__arterial_PO2(OVA, HM, PO2ART, OSA)
+
+  // Assignment Rules:
+  PO2ART := piecewise( 114 + (OSA - 1 ) * 6667 , OSA > 1 , 74 + (OSA - 0.936 ) * 625 , ( OSA > 0.936) && (OSA <= 1 ), 46 + (OSA - 0.8 ) * 205.882 , ( OSA > 0.8) && (OSA <= 0.936 ), OSA * 57.5 );
+  OSA := OVA / HM / 5.25;
+end
+
+model Guyton_Model__chemoreceptor_adaptation_of_alveolar_ventilation()
+end
+
+model Guyton_Model__acute_chemoreceptor_adaptation_of_alveolar_ventilation(PO2ART, O2VTS2)
+
+  // Assignment Rules:
+  O2VTS2 := 1 / O2VTST;
+  O2VTST := piecewise( 1 , O2VTST1 > 1 , 0.6 , O2VTST1 < 0.6 , O2VTST1 );
+  O2VTST1 := (PO2ART - 67 ) / 30;
+end
+
+model Guyton_Model__progressive_chemoreceptor_adaptation_of_alveolar_ventilation(O2VTS2, time_, O2VAD2)
+
+  // Assignment Rules:
+  O2VAD2 := O2VAD1 + 1;
+  DO2VAD := ((O2VTS2 - 1 ) * 3 - O2VAD1) * 0.0005;
+
+  // Rate Rules:
+  O2VAD1' = DO2VAD;
+
+  // Variable initializations:
+  O2VAD1 = 2.368e-07;
+end
+
+model Guyton_Model__pulmonary_O2_uptake(time_, VPF, DOB, QRO, RMO, HM, OVA, PO2ART, OSA)
+
+  // Sub-modules, and any changes to those submodules:
+  pulmonary_O2_uptake_parameter_values: Guyton_Model__pulmonary_O2_uptake_parameter_values(PO2AMB, PL2, VPTISS, VNTSTM);
+  total_O2_utilization: Guyton_Model__total_O2_utilization(DOB, RMO, O2UTIL);
+  alveolar_ventilation: Guyton_Model__alveolar_ventilation(O2UTIL, O2VAD2, O2VTS2, ALVENT, VNTSTM);
+  alveolar_PO2: Guyton_Model__alveolar_PO2(O2UTIL, ALVENT, PO2ALV, PO2AMB);
+  respiratory_O2_diffusion_into_capillaries: Guyton_Model__respiratory_O2_diffusion_into_capillaries(PO2ALV, PO2ART0, VPF, O2DFS, PL2, VPTISS);
+  O2_volume_of_arterial_blood: Guyton_Model__O2_volume_of_arterial_blood(O2DFS, O2UTIL, QRO, time_, OVA);
+  arterial_PO2: Guyton_Model__arterial_PO2(OVA, HM, PO2ART0, OSA);
+  chemoreceptor_adaptation_of_alveolar_ventilation: Guyton_Model__chemoreceptor_adaptation_of_alveolar_ventilation();
+  acute_chemoreceptor_adaptation_of_alveolar_ventilation: Guyton_Model__acute_chemoreceptor_adaptation_of_alveolar_ventilation(PO2ART, O2VTS2);
+  progressive_chemoreceptor_adaptation_of_alveolar_ventilation: Guyton_Model__progressive_chemoreceptor_adaptation_of_alveolar_ventilation(O2VTS2, time_, O2VAD2);
+  PO2ART0 is PO2ART;
+end
+
+model Guyton_Model__red_cells_and_viscosity_parameter_values(HMK, HKM, PO2AMB, HM6, HM8, REK, RKC, TRRBC)
+
+  // Variable initializations:
+  HMK = 90;
+  HKM = 0.53333;
+  PO2AMB = 150;
+  HM6 = 1850;
+  HM8 = 4.714e-08;
+  REK = 1;
+  RKC = 5.8e-06;
+  TRRBC = 0;
+end
+
+model Guyton_Model__blood_viscosity_calculations()
+end
+
+model Guyton_Model__hematocrit_fraction(VP, VRC, HM, HM1)
+
+  // Assignment Rules:
+  HM := 100 * HM1;
+  HM1 := VRC / VB;
+  VB := VP + VRC;
+end
+
+model Guyton_Model__viscosity_due_to_RBCs(HM, VIE, HMK, HKM)
+
+  // Assignment Rules:
+  VIE := HM / ((HMK - HM) * HKM);
+end
+
+model Guyton_Model__blood_viscosity(VIE, VIM)
+
+  // Assignment Rules:
+  VIM := 0.3333 * VIB;
+  VIB := VIE + 1.5;
+end
+
+model Guyton_Model__RBC_formation_and_destruction()
+end
+
+model Guyton_Model__oxygen_stimulation(HM, HM7, PO2AMB, HM6)
+
+  // Assignment Rules:
+  HM7 := HM6 - HM5;
+  PO2AM1 := piecewise( 80 , PO2AMB > 80 , PO2AMB );
+  HM3 := (PO2AM1 - 40 ) * HM;
+  HM4 := PO2AMB - 40;
+  HM5 := piecewise( 0 , HM3 + HM4 < 0 , HM3 + HM4 );
+end
+
+model Guyton_Model__RBC_production(HM7, RC1, HM8, REK)
+
+  // Assignment Rules:
+  RC1 := piecewise( 0 , HM7 * HM8 * REK + 0.000005 < 0 , HM7 * HM8 * REK + 0.000005 );
+end
+
+model Guyton_Model__RBC_destruction(VRC, VIM, RC2, RKC)
+
+  // Assignment Rules:
+  RC2 := VRC * RKC * VIM;
+end
+
+model Guyton_Model__RBC_volume(RC1, RC2, time_, VRC, TRRBC)
+
+  // Assignment Rules:
+  RCD := RC1 - RC2 + TRRBC;
+
+  // Rate Rules:
+  VRC' = RCD;
+
+  // Variable initializations:
+  VRC = 2.00439;
+end
+
+model Guyton_Model__red_cells_and_viscosity(time_, VP, VIM, HM, HM1, VRC)
+
+  // Sub-modules, and any changes to those submodules:
+  red_cells_and_viscosity_parameter_values: Guyton_Model__red_cells_and_viscosity_parameter_values(HMK, HKM, PO2AMB, HM6, HM8, REK, RKC, TRRBC);
+  blood_viscosity_calculations: Guyton_Model__blood_viscosity_calculations();
+  hematocrit_fraction: Guyton_Model__hematocrit_fraction(VP, VRC0, HM, HM1);
+  viscosity_due_to_RBCs: Guyton_Model__viscosity_due_to_RBCs(HM, VIE, HMK, HKM);
+  blood_viscosity: Guyton_Model__blood_viscosity(VIE, VIM);
+  RBC_formation_and_destruction: Guyton_Model__RBC_formation_and_destruction();
+  oxygen_stimulation: Guyton_Model__oxygen_stimulation(HM, HM7, PO2AMB, HM6);
+  RBC_production: Guyton_Model__RBC_production(HM7, RC1, HM8, REK);
+  RBC_destruction: Guyton_Model__RBC_destruction(VRC0, VIM, RC2, RKC);
+  RBC_volume: Guyton_Model__RBC_volume(RC1, RC2, time_, VRC0, TRRBC);
+  VRC0 is VRC;
+end
+
+model Guyton_Model__stress_relaxation_parameter_values(SR, SR2, SRK, SRK2)
+
+  // Variable initializations:
+  SR = 1;
+  SR2 = 1;
+  SRK = 5;
+  SRK2 = 10000;
+end
+
+model Guyton_Model__short_term_stress_relaxation(VVE, time_, VV7, SR, SRK)
+
+  // Rate Rules:
+  VV7' = ((VVE - 0.74 ) * SR - VV7) / SRK;
+
+  // Variable initializations:
+  VV7 = 0.00366525;
+end
+
+model Guyton_Model__long_term_stress_relaxation(VVE, time_, VV6, SR2, SRK2)
+
+  // Rate Rules:
+  VV6' = ((VVE - 0.74 ) * SR2 - VV6) / SRK2;
+
+  // Variable initializations:
+  VV6 = 0.0101913;
+end
+
+model Guyton_Model__stress_relaxation(time_, VVE, VV6, VV7)
+
+  // Sub-modules, and any changes to those submodules:
+  stress_relaxation_parameter_values: Guyton_Model__stress_relaxation_parameter_values(SR, SR2, SRK, SRK2);
+  short_term_stress_relaxation: Guyton_Model__short_term_stress_relaxation(VVE, time_, VV7, SR, SRK);
+  long_term_stress_relaxation: Guyton_Model__long_term_stress_relaxation(VVE, time_, VV6, SR2, SRK2);
+end
+
+model Guyton_Model__thirst_drinking_and_salt_appetite_parameter_values(Z10, Z11, ANMSLT, AHTHM, ANMTM, DR, TVDDL)
+
+  // Variable initializations:
+  Z10 = 45;
+  Z11 = 0.01;
+  ANMSLT = 2;
+  AHTHM = 2;
+  ANMTM = 1.5;
+  DR = 0;
+  TVDDL = 30;
+end
+
+model Guyton_Model__effect_of_salt_appetite_stimulation_on_thirst(ANM, POT, STH, ANMSLT, Z10, Z11)
+
+  // Assignment Rules:
+  STH := piecewise( 0.8 , STH1 < 0.8 , 8 , STH1 > 8 , STH1 );
+  ANMSML := (ANM - 1 ) * ANMSLT + 1;
+  STH1 := power(Z10 - POT, 2 ) * Z11 * ANMSML;
+end
+
+model Guyton_Model__effect_of_antidiuretic_hormone_on_thirst(ADHC, AHCM, AHTHM)
+
+  // Assignment Rules:
+  AHCM := (ADHC - 1 ) * AHTHM + 1;
+end
+
+model Guyton_Model__effect_of_angiotensin_on_thirst(ANM, ANMTH, ANMTM)
+
+  // Assignment Rules:
+  ANMTH := (ANM - 1 ) * ANMTM * 0.001;
+end
+
+model Guyton_Model__rate_of_fluid_intake(STH, AHCM, ANMTH, time_, TVD, DR, TVDDL)
+
+  // Assignment Rules:
+  AHTH := piecewise( 0 , AHTH1 < 0 , AHTH1 );
+  AHTH1 := AHCM * STH * 0.001;
+  TVZ := piecewise( 0 , TVZ1 < 0 , TVZ1 );
+  TVZ1 := (ANMTH + AHTH) * 1;
+
+  // Rate Rules:
+  TVD' = (TVZ + DR - TVD) / TVDDL;
+
+  // Variable initializations:
+  TVD = 0.000980838;
+end
+
+model Guyton_Model__thirst_drinking_and_salt_appetite(time_, ADHC, ANM, POT, TVD, STH)
+
+  // Sub-modules, and any changes to those submodules:
+  thirst_drinking_and_salt_appetite_parameter_values: Guyton_Model__thirst_drinking_and_salt_appetite_parameter_values(Z10, Z11, ANMSLT, AHTHM, ANMTM, DR, TVDDL);
+  effect_of_salt_appetite_stimulation_on_thirst: Guyton_Model__effect_of_salt_appetite_stimulation_on_thirst(ANM, POT, STH, ANMSLT, Z10, Z11);
+  effect_of_antidiuretic_hormone_on_thirst: Guyton_Model__effect_of_antidiuretic_hormone_on_thirst(ADHC, AHCM, AHTHM);
+  effect_of_angiotensin_on_thirst: Guyton_Model__effect_of_angiotensin_on_thirst(ANM, ANMTH, ANMTM);
+  rate_of_fluid_intake: Guyton_Model__rate_of_fluid_intake(STH, AHCM, ANMTH, time_, TVD, DR, TVDDL);
+end
+
+model Guyton_Model__volume_receptors_parameter_values(AH10, AH11, AH9, ATRFBM, ATRVM)
+
+  // Variable initializations:
+  AH10 = 0.333;
+  AH11 = 1000;
+  AH9 = 1;
+  ATRFBM = 0;
+  ATRVM = 0;
+end
+
+model Guyton_Model__effect_of_pressure_on_volume_receptors(PRA, AHZ, AH10, AH9)
+
+  // Assignment Rules:
+  AHZ := piecewise( -(AHZ1) , PRA < 0 , AHZ1 );
+  AHZ1 := power(abs(PRA), AH10) * AH9;
+end
+
+model Guyton_Model__time_dependent_volume_receptor_adaptation(AHZ, time_, AHY, AH11)
+
+  // Rate Rules:
+  AHY' = (AHZ - AHY) / AH11;
+
+  // Variable initializations:
+  AHY = 0.301963;
+end
+
+model Guyton_Model__total_volume_nervous_feedback(AHZ, AHY, AH7)
+
+  // Assignment Rules:
+  AH7 := AHZ - AHY;
+end
+
+model Guyton_Model__volume_effect_on_arteries(AH7, ATRRFB, ATRFBM)
+
+  // Assignment Rules:
+  ATRRFB := AH7 * ATRFBM + 1;
+end
+
+model Guyton_Model__volume_effect_on_unstressed_venous_volume(AH7, ATRVFB, ATRVM)
+
+  // Assignment Rules:
+  ATRVFB := AH7 * ATRVM;
+end
+
+model Guyton_Model__volume_receptors(time_, PRA, ATRRFB, ATRVFB)
+
+  // Sub-modules, and any changes to those submodules:
+  volume_receptors_parameter_values: Guyton_Model__volume_receptors_parameter_values(AH10, AH11, AH9, ATRFBM, ATRVM);
+  effect_of_pressure_on_volume_receptors: Guyton_Model__effect_of_pressure_on_volume_receptors(PRA, AHZ, AH10, AH9);
+  time_dependent_volume_receptor_adaptation: Guyton_Model__time_dependent_volume_receptor_adaptation(AHZ, time_, AHY, AH11);
+  total_volume_nervous_feedback: Guyton_Model__total_volume_nervous_feedback(AHZ, AHY, AH7);
+  volume_effect_on_arteries: Guyton_Model__volume_effect_on_arteries(AH7, ATRRFB, ATRFBM);
+  volume_effect_on_unstressed_venous_volume: Guyton_Model__volume_effect_on_unstressed_venous_volume(AH7, ATRVFB, ATRVM);
+end
+
+model Guyton_Model__kidney_parameter_values(GBL, RAPRSP, RFCDFT, RCDFDP, RCDFPC, RNAUGN, RNAULL, RNAUUL, RNAGTC, RNAUAD, ARF, ANMAM, ANMARL, AARK, AARLL, ANPXAF, AUMK1, ANMEM, EFAFR, EARK, EARLL, REK, GPPD, GLPCA, PXTP, GFLC, GFNLL, GFNDMP, URFORM, MDFL1, RTPPR, RTPPRS, RTSPRS, MDFLKM, ANMKEM, RVRS, RFABX, RABSC, RFABDP, RFABDM, DTNAR, DTNARL, DIURET, AHMNAR, ANMNAM, RFABKM, ANMKEL, CKEEX)
+
+  // Variable initializations:
+  GBL = 0;
+  RAPRSP = 0;
+  RFCDFT = 0;
+  RCDFDP = 2000;
+  RCDFPC = 0;
+  RNAUGN = 0.6;
+  RNAULL = 0.3;
+  RNAUUL = 10;
+  RNAGTC = 15;
+  RNAUAD = 0;
+  ARF = 0.5;
+  ANMAM = 1.4;
+  ANMARL = 0.86;
+  AARK = 1;
+  AARLL = 4;
+  ANPXAF = 1.5;
+  AUMK1 = 0.3;
+  ANMEM = 1.6;
+  EFAFR = 0;
+  EARK = 1;
+  EARLL = 24;
+  REK = 1;
+  GPPD = 1.0;
+  GLPCA = 1.0;
+  PXTP = 8;
+  GFLC = 0.0208333;
+  GFNLL = 0.001;
+  GFNDMP = 3;
+  URFORM = 0.24;
+  MDFL1 = 10;
+  RTPPR = 0.9;
+  RTPPRS = 15.2;
+  RTSPRS = 6;
+  MDFLKM = 0.667;
+  ANMKEM = 2;
+  RVRS = 19.167;
+  RFABX = 0.8;
+  RABSC = 0.5;
+  RFABDP = 1;
+  RFABDM = 0.3;
+  DTNAR = 0.675;
+  DTNARL = 1e-06;
+  DIURET = 1;
+  AHMNAR = 0.3;
+  ANMNAM = 1;
+  RFABKM = 0.03;
+  ANMKEL = 0.3;
+  CKEEX = 4;
+end
+
+model Guyton_Model__perfusion_pressure(PA, time_, PAR, GBL, RAPRSP, RFCDFT, RCDFPC, RCDFDP)
+
+  // Assignment Rules:
+  PAR := piecewise( RAPRSP , ( RAPRSP > 0) && (RFCDFT <= 0 ), PAR1 , RFCDFT > 0 , PA - GBL );
+
+  // Rate Rules:
+  PAR1' = (100 + (PA - 100 ) * RCDFPC - PAR1) / RCDFDP;
+
+  // Variable initializations:
+  PAR1 = 103.525;
+end
+
+model Guyton_Model__renal_autoregulatory_feedback_factor(MDFLW, time_, RNAUG2, RNAUGN, RNAULL, RNAUUL, RNAUAD)
+
+  // Assignment Rules:
+  RNAUG2 := RNAUG1 - RNAUG3;
+  RNAUG1 := piecewise( RNAULL , RNAUG1T < RNAULL , RNAUUL , RNAUG1T > RNAUUL , RNAUG1T );
+  RNAUG1T := (MDFLW - 1 ) * RNAUGN + 1;
+
+  // Rate Rules:
+  RNAUG3' = (RNAUG2 - 1 ) * RNAUAD;
+
+  // Variable initializations:
+  RNAUG3 = 0.0;
+end
+
+model Guyton_Model__afferent_arterial_resistance()
+end
+
+model Guyton_Model__autonomic_effect_on_AAR(AUM, AUMK, ARF)
+
+  // Assignment Rules:
+  AUMK := piecewise( 0.8 , AUMKT < 0.8 , AUMKT );
+  AUMKT := (AUM - 1 ) * ARF + 1;
+end
+
+model Guyton_Model__angiotensin_effect_on_AAR(ANM, ANMAR, ANMAM, ANMARL)
+
+  // Assignment Rules:
+  ANMAR := piecewise( ANMARL , ANMAR1 < ANMARL , ANMAR1 );
+  ANMAR1 := (ANM - 1 ) * ANMAM + 1;
+end
+
+model Guyton_Model__AAR_calculation(PAMKRN, AUMK, RNAUG2, ANMAR, MYOGRS, AAR1, AARK)
+
+  // Assignment Rules:
+  AAR1 := AARK * PAMKRN * AUMK * RNAUG2 * ANMAR * 40 * MYOGRS;
+end
+
+model Guyton_Model__atrial_natriuretic_peptide_effect_on_AAR(AAR1, ANPX, AAR, ANPXAF, AARLL)
+
+  // Assignment Rules:
+  AAR := piecewise( AARLL , AART < AARLL , AART );
+  AART := AAR1 - ANPX * ANPXAF + ANPXAF;
+end
+
+model Guyton_Model__efferent_arterial_resistance()
+end
+
+model Guyton_Model__autonomic_effect_on_EAR(AUMK, AUMK2, AUMK1)
+
+  // Assignment Rules:
+  AUMK2 := (AUMK - 1 ) * AUMK1 + 1;
+end
+
+model Guyton_Model__angiotensin_effect_on_EAR(ANM, ANMER, ANMEM)
+
+  // Assignment Rules:
+  ANMER := (ANM - 1 ) * ANMEM + 1;
+end
+
+model Guyton_Model__effect_of_renal_autoregulatory_feedback_on_EAR(RNAUG2, RNAUG4, EFAFR)
+
+  // Assignment Rules:
+  RNAUG4 := (RNAUG2 - 1 ) * EFAFR + 1;
+end
+
+model Guyton_Model__EAR_calculation(ANMER, AUMK2, MYOGRS, RNAUG4, EAR, EARK, EARLL)
+
+  // Assignment Rules:
+  EAR := piecewise( EARLL , EAR1 < EARLL , EAR1 );
+  EAR1 := 43.333 * EARK * ANMER * RNAUG4 * MYOGRS * AUMK2;
+end
+
+model Guyton_Model__total_renal_resistance(AAR, EAR, RR)
+
+  // Assignment Rules:
+  RR := AAR + EAR;
+end
+
+model Guyton_Model__normal_renal_blood_flow(RR, PAR, RFN)
+
+  // Assignment Rules:
+  RFN := PAR / RR;
+end
+
+model Guyton_Model__actual_renal_blood_flow(RFN, RBF, REK)
+
+  // Assignment Rules:
+  RBF := REK * RFN;
+end
+
+model Guyton_Model__glomerular_capillaries()
+end
+
+model Guyton_Model__glomerular_colloid_osmotic_pressure(HM1, RFN, GFN, PPC, GLPC, GPPD, GLPCA)
+
+  // Assignment Rules:
+  GLPC := piecewise( power(EFAFPR, 1.35 ) * PPC * 0.98 , GLPCA > 0 , PPC + 4 );
+  EFAFPR := piecewise( 1 , EFAFPR1 < 1 , EFAFPR1 );
+  EFAFPR1 := RFN * (1 - HM1) / (RFN * (1 - HM1) - GFN);
+end
+
+model Guyton_Model__glomerular_pressure(AAR, PAR, RFN, GLP)
+
+  // Assignment Rules:
+  GLP := PAR - APD;
+  APD := AAR * RFN;
+end
+
+model Guyton_Model__glomerular_filtration_rate(GLP, GLPC, GFN, GFR, PXTP, GFLC, GFNLL, REK)
+
+  // Assignment Rules:
+  GFN := piecewise( GFNLL , GFN1 < GFNLL , GFN1 );
+  GFR := GFN * REK;
+  PFL := GLP - GLPC - PXTP;
+  GFN1 := PFL * GFLC;
+end
+
+model Guyton_Model__glomerular_urea_concentration(UROD, time_, PLUR, URFORM)
+
+  // Rate Rules:
+  PLUR' = URFORM - UROD;
+
+  // Variable initializations:
+  PLUR = 159.549;
+end
+
+model Guyton_Model__proximal_tubular_and_macula_densa_flow(GFN, MDFLW, MDFL1)
+
+  // Assignment Rules:
+  MDFLW := piecewise( 0 , MDFLWT < 0 , MDFLWT );
+  PTFL := GFN * 8;
+  MDFLWT := (PTFL - 1 ) * MDFL1 + 1;
+end
+
+model Guyton_Model__renal_tissue_osmotic_pressure(GLPC, RTSPPC, RTPPR, RTPPRS)
+
+  // Assignment Rules:
+  RTSPPC := piecewise( 1 , RTSPPC1 < 1 , RTSPPC1 );
+  RTSPPC1 := GLPC * RTPPR - RTPPRS;
+end
+
+model Guyton_Model__urea_handling()
+end
+
+model Guyton_Model__plasma_urea_concentration(PLUR, VTW, PLURC)
+
+  // Assignment Rules:
+  PLURC := PLUR / VTW;
+end
+
+model Guyton_Model__renal_peritubular_capillaries()
+end
+
+model Guyton_Model__peritubular_capillary_pressure(RFN, RCPRS, RFABX, RVRS)
+
+  // Assignment Rules:
+  RCPRS := ((RFN - 1.2 ) * RFABX + 1.2 ) * RVRS;
+end
+
+model Guyton_Model__peritubular_capillary_reabsorption_factor(RCPRS, GLPC, RTSPPC, RFABD, RTSPRS, RABSC, RFABDP, RFABDM)
+
+  // Assignment Rules:
+  RFABD := piecewise( 0.0001 , RFABD1 < 0.0001 , RFABD1 );
+  RABSPR := GLPC + RTSPRS - RCPRS - RTSPPC;
+  RFAB1 := RABSPR * RABSC;
+  RFAB := RFAB1;
+  RFABD1 := (RFAB - 1 ) * RFABDM + 1;
+end
+
+model Guyton_Model__sodium_and_potassium_handling()
+end
+
+model Guyton_Model__distal_tubular_Na_delivery(MDFLW, CNA, DTNAI)
+
+  // Assignment Rules:
+  DTNAI := MDFLW * CNA * 0.0061619;
+end
+
+model Guyton_Model__Na_reabsorption_into_distal_tubules(ADHMK, AMNA, RFABD, DTNARA, DTNAR, DIURET, AHMNAR, DTNARL)
+
+  // Assignment Rules:
+  DTNARA := piecewise( DTNARL , DTNARA1 < DTNARL , DTNARA1 );
+  DTNARA1 := AMNA * RFABD * DTNAR / DIURET * ((ADHMK - 1 ) * AHMNAR + 1 );
+end
+
+model Guyton_Model__angiotensin_induced_Na_reabsorption_into_distal_tubules(ANM, DTNANG, ANMNAM)
+
+  // Assignment Rules:
+  DTNANG := piecewise( 0 , DTNANG1 < 0 , DTNANG1 );
+  DTNANG1 := ((ANM - 1 ) * ANMNAM + 1 ) * 0.1;
+end
+
+model Guyton_Model__distal_tubular_K_delivery(DTNAI, CNA, CKE, DTKI)
+
+  // Assignment Rules:
+  DTKI := DTNAI * CKE / CNA;
+end
+
+model Guyton_Model__effect_of_physical_forces_on_distal_K_reabsorption(RFABD, RFABK, RFABKM)
+
+  // Assignment Rules:
+  RFABK := (RFABD - 1 ) * RFABKM;
+end
+
+model Guyton_Model__effect_of_fluid_flow_on_distal_K_reabsorption(MDFLW, MDFLK, MDFLKM)
+
+  // Assignment Rules:
+  MDFLK := piecewise( 0.1 , MDFLK1 < 0.1 , MDFLK1 );
+  MDFLK1 := (MDFLW - 1 ) * MDFLKM + 1;
+end
+
+model Guyton_Model__K_reabsorption_into_distal_tubules(KODN, VUDN, time_, DTKA)
+
+  // Rate Rules:
+  DTKA' = (KODN / VUDN * 0.0004518 - DTKA) * 1.0;
+
+  // Variable initializations:
+  DTKA = 0.0367573;
+end
+
+model Guyton_Model__K_secretion_from_distal_tubules(CKE, AMK, MDFLK, ANM, DTKSC, ANMKEM, ANMKEL, CKEEX)
+
+  // Assignment Rules:
+  DTKSC := power(CKE / 4.4 , CKEEX) * AMK * 0.08 * MDFLK / ANMKE;
+  ANMKE1 := (ANM - 1 ) * ANMKEM + 1;
+  ANMKE := piecewise( ANMKEL , ANMKE1 < ANMKEL , ANMKE1 );
+end
+
+model Guyton_Model__urinary_excretion()
+end
+
+model Guyton_Model__normal_Na_excretion(DTNAI, DTNANG, DTNARA, NODN)
+
+  // Assignment Rules:
+  NODN := piecewise( 0.00000001 , NODN1 < 0.00000001 , NODN1 );
+  NODN1 := DTNAI - DTNARA - DTNANG;
+end
+
+model Guyton_Model__normal_K_excretion(DTKI, RFABK, DTKSC, DTKA, KODN)
+
+  // Assignment Rules:
+  KODN := piecewise( 0 , KODN1 < 0 , KODN1 );
+  KODN1 := DTKI + DTKSC - DTKA - RFABK;
+end
+
+model Guyton_Model__normal_urea_excretion(GFN, PLURC, DTURI)
+
+  // Assignment Rules:
+  DTURI := power(GFN, 2 ) * PLURC * 3.84;
+end
+
+model Guyton_Model__normal_osmolar_and_water_excretion(DTURI, NODN, KODN, OSMOPN1, OSMOPN)
+
+  // Assignment Rules:
+  OSMOPN1 := DTURI + 2 * (NODN + KODN);
+  OSMOPN := piecewise( 0.6 , OSMOPN1 > 0.6 , OSMOPN1 );
+end
+
+model Guyton_Model__normal_urine_volume(OSMOPN, OSMOPN1, ADHMK, VUDN)
+
+  // Assignment Rules:
+  VUDN := OSMOPN / (600 * ADHMK) + OSMOP1 / 360;
+  OSMOP1T := OSMOPN1 - 0.6;
+  OSMOP1 := piecewise( 0 , OSMOP1T < 0 , OSMOP1T );
+end
+
+model Guyton_Model__actual_Na_excretion_rate(NODN, NOD, REK)
+
+  // Assignment Rules:
+  NOD := NODN * REK;
+end
+
+model Guyton_Model__actual_K_excretion_rate(KODN, KOD, REK)
+
+  // Assignment Rules:
+  KOD := KODN * REK;
+end
+
+model Guyton_Model__actual_urea_excretion_rate(DTURI, UROD, REK)
+
+  // Assignment Rules:
+  UROD := DTURI * REK;
+end
+
+model Guyton_Model__actual_urine_volume(VUDN, VUD, REK)
+
+  // Assignment Rules:
+  VUD := VUDN * REK;
+end
+
+model Guyton_Model__kidney(time_, ADHMK, AMK, AMNA, ANM, ANPX, AUM, CKE, CNA, HM1, MYOGRS, PA, PAMKRN, PPC, VTW, RBF, MDFLW, NOD, KOD, VUD)
+
+  // Sub-modules, and any changes to those submodules:
+  kidney_parameter_values: Guyton_Model__kidney_parameter_values(GBL, RAPRSP, RFCDFT, RCDFDP, RCDFPC, RNAUGN, RNAULL, RNAUUL, RNAGTC, RNAUAD, ARF, ANMAM, ANMARL, AARK, AARLL, ANPXAF, AUMK1, ANMEM, EFAFR, EARK, EARLL, REK, GPPD, GLPCA, PXTP, GFLC, GFNLL, GFNDMP, URFORM, MDFL1, RTPPR, RTPPRS, RTSPRS, MDFLKM, ANMKEM, RVRS, RFABX, RABSC, RFABDP, RFABDM, DTNAR, DTNARL, DIURET, AHMNAR, ANMNAM, RFABKM, ANMKEL, CKEEX);
+  perfusion_pressure: Guyton_Model__perfusion_pressure(PA, time_, PAR, GBL, RAPRSP, RFCDFT, RCDFPC, RCDFDP);
+  renal_autoregulatory_feedback_factor: Guyton_Model__renal_autoregulatory_feedback_factor(MDFLW, time_, RNAUG2, RNAUGN, RNAULL, RNAUUL, RNAUAD);
+  afferent_arterial_resistance: Guyton_Model__afferent_arterial_resistance();
+  autonomic_effect_on_AAR: Guyton_Model__autonomic_effect_on_AAR(AUM, AUMK, ARF);
+  angiotensin_effect_on_AAR: Guyton_Model__angiotensin_effect_on_AAR(ANM, ANMAR, ANMAM, ANMARL);
+  AAR_calculation: Guyton_Model__AAR_calculation(PAMKRN, AUMK, RNAUG2, ANMAR, MYOGRS, AAR1, AARK);
+  atrial_natriuretic_peptide_effect_on_AAR: Guyton_Model__atrial_natriuretic_peptide_effect_on_AAR(AAR1, ANPX, AAR, ANPXAF, AARLL);
+  efferent_arterial_resistance: Guyton_Model__efferent_arterial_resistance();
+  autonomic_effect_on_EAR: Guyton_Model__autonomic_effect_on_EAR(AUMK, AUMK2, AUMK1);
+  angiotensin_effect_on_EAR: Guyton_Model__angiotensin_effect_on_EAR(ANM, ANMER, ANMEM);
+  effect_of_renal_autoregulatory_feedback_on_EAR: Guyton_Model__effect_of_renal_autoregulatory_feedback_on_EAR(RNAUG2, RNAUG4, EFAFR);
+  EAR_calculation: Guyton_Model__EAR_calculation(ANMER, AUMK2, MYOGRS, RNAUG4, EAR, EARK, EARLL);
+  total_renal_resistance: Guyton_Model__total_renal_resistance(AAR, EAR, RR);
+  normal_renal_blood_flow: Guyton_Model__normal_renal_blood_flow(RR, PAR, RFN);
+  actual_renal_blood_flow: Guyton_Model__actual_renal_blood_flow(RFN, RBF, REK);
+  glomerular_capillaries: Guyton_Model__glomerular_capillaries();
+  glomerular_colloid_osmotic_pressure: Guyton_Model__glomerular_colloid_osmotic_pressure(HM1, RFN, GFN, PPC, GLPC, GPPD, GLPCA);
+  glomerular_pressure: Guyton_Model__glomerular_pressure(AAR, PAR, RFN, GLP);
+  glomerular_filtration_rate: Guyton_Model__glomerular_filtration_rate(GLP, GLPC0, GFN, GFR, PXTP, GFLC, GFNLL, REK);
+  glomerular_urea_concentration: Guyton_Model__glomerular_urea_concentration(UROD, time_, PLUR, URFORM);
+  proximal_tubular_and_macula_densa_flow: Guyton_Model__proximal_tubular_and_macula_densa_flow(GFN0, MDFLW, MDFL1);
+  renal_tissue_osmotic_pressure: Guyton_Model__renal_tissue_osmotic_pressure(GLPC, RTSPPC, RTPPR, RTPPRS);
+  urea_handling: Guyton_Model__urea_handling();
+  plasma_urea_concentration: Guyton_Model__plasma_urea_concentration(PLUR, VTW, PLURC);
+  renal_peritubular_capillaries: Guyton_Model__renal_peritubular_capillaries();
+  peritubular_capillary_pressure: Guyton_Model__peritubular_capillary_pressure(RFN, RCPRS, RFABX, RVRS);
+  peritubular_capillary_reabsorption_factor: Guyton_Model__peritubular_capillary_reabsorption_factor(RCPRS, GLPC, RTSPPC, RFABD, RTSPRS, RABSC, RFABDP, RFABDM);
+  sodium_and_potassium_handling: Guyton_Model__sodium_and_potassium_handling();
+  distal_tubular_Na_delivery: Guyton_Model__distal_tubular_Na_delivery(MDFLW, CNA, DTNAI);
+  Na_reabsorption_into_distal_tubules: Guyton_Model__Na_reabsorption_into_distal_tubules(ADHMK, AMNA, RFABD, DTNARA, DTNAR, DIURET, AHMNAR, DTNARL);
+  angiotensin_induced_Na_reabsorption_into_distal_tubules: Guyton_Model__angiotensin_induced_Na_reabsorption_into_distal_tubules(ANM, DTNANG, ANMNAM);
+  distal_tubular_K_delivery: Guyton_Model__distal_tubular_K_delivery(DTNAI, CNA, CKE, DTKI);
+  effect_of_physical_forces_on_distal_K_reabsorption: Guyton_Model__effect_of_physical_forces_on_distal_K_reabsorption(RFABD, RFABK, RFABKM);
+  effect_of_fluid_flow_on_distal_K_reabsorption: Guyton_Model__effect_of_fluid_flow_on_distal_K_reabsorption(MDFLW, MDFLK, MDFLKM);
+  K_reabsorption_into_distal_tubules: Guyton_Model__K_reabsorption_into_distal_tubules(KODN, VUDN, time_, DTKA);
+  K_secretion_from_distal_tubules: Guyton_Model__K_secretion_from_distal_tubules(CKE, AMK, MDFLK, ANM, DTKSC, ANMKEM, ANMKEL, CKEEX);
+  urinary_excretion: Guyton_Model__urinary_excretion();
+  normal_Na_excretion: Guyton_Model__normal_Na_excretion(DTNAI, DTNANG, DTNARA, NODN);
+  normal_K_excretion: Guyton_Model__normal_K_excretion(DTKI, RFABK, DTKSC, DTKA, KODN);
+  normal_urea_excretion: Guyton_Model__normal_urea_excretion(GFN, PLURC, DTURI);
+  normal_osmolar_and_water_excretion: Guyton_Model__normal_osmolar_and_water_excretion(DTURI, NODN, KODN, OSMOPN1, OSMOPN);
+  normal_urine_volume: Guyton_Model__normal_urine_volume(OSMOPN, OSMOPN1, ADHMK, VUDN);
+  actual_Na_excretion_rate: Guyton_Model__actual_Na_excretion_rate(NODN, NOD, REK);
+  actual_K_excretion_rate: Guyton_Model__actual_K_excretion_rate(KODN, KOD, REK);
+  actual_urea_excretion_rate: Guyton_Model__actual_urea_excretion_rate(DTURI, UROD, REK);
+  actual_urine_volume: Guyton_Model__actual_urine_volume(VUDN, VUD, REK);
+end
+
+model Guyton_Model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: Guyton_Model__environment(time_);
+  temp_myogrs_and_pamk: Guyton_Model__temp_myogrs_and_pamk(MYOGRS, PAMK, PAMKRN);
+  aldosterone: Guyton_Model__aldosterone(time_, ANM, CKE, AMK, AMNA);
+  angiotensin: Guyton_Model__angiotensin(time_, MDFLW, ANUVN, ANU, ANM);
+  antidiuretic_hormone: Guyton_Model__antidiuretic_hormone(time_, CNA, PA1, ADHMK, ADHMV, ADHC);
+  atrial_natriuretic_peptide: Guyton_Model__atrial_natriuretic_peptide(time_, PLA, PRA, ANPX);
+  autonomics: Guyton_Model__autonomics(time_, PA, PO2ART, PLA, PRA, PPA, PA1, VVR, AUH, AUR, AUM, AOM, AVE, AU);
+  capillary_dynamics: Guyton_Model__capillary_dynamics(time_, VEC, PPD, RVS, DFP, VPF, BFN, PVS, PC, CPP, PPC, VP);
+  circulatory_dynamics: Guyton_Model__circulatory_dynamics();
+  electrolytes: Guyton_Model__electrolytes(time_, AMK, TVD, NOD, STH, KOD, VUD, CKE, VEC, CNA, VTW);
+  heart_hypertrophy_or_deterioration: Guyton_Model__heart_hypertrophy_or_deterioration(time_, QAO, PA, POT, PPA, HPL, HPR, HMD);
+  heart_rate_and_stroke_volume: Guyton_Model__heart_rate_and_stroke_volume(QLO, AUR, PRA, HMD);
+  muscle_autoregulatory_local_blood_flow_control: Guyton_Model__muscle_autoregulatory_local_blood_flow_control(time_, PMO, AMM);
+  muscle_O2_delivery: Guyton_Model__muscle_O2_delivery(time_, BFM, OVA, HM, AOM, PMO, RMO);
+  non_muscle_autoregulatory_local_blood_flow_control: Guyton_Model__non_muscle_autoregulatory_local_blood_flow_control(time_, POT, ARM);
+  non_muscle_O2_delivery: Guyton_Model__non_muscle_O2_delivery(time_, BFN, OVA, HM, AOM, POT, DOB);
+  pulmonary_fluid_dynamics: Guyton_Model__pulmonary_fluid_dynamics(time_, PPC, PPA, PLA, CPP, RPV, RPA, DFP, VPF, PPD);
+  pulmonary_O2_uptake: Guyton_Model__pulmonary_O2_uptake(time_, VPF, DOB, QRO, RMO, HM, OVA, PO2ART, OSA);
+  red_cells_and_viscosity: Guyton_Model__red_cells_and_viscosity(time_, VP, VIM, HM, HM1, VRC);
+  stress_relaxation: Guyton_Model__stress_relaxation(time_, VVE, VV6, VV7);
+  thirst_drinking_and_salt_appetite: Guyton_Model__thirst_drinking_and_salt_appetite(time_, ADHC, ANM, POT, TVD, STH);
+  volume_receptors: Guyton_Model__volume_receptors(time_, PRA, ATRRFB, ATRVFB);
+  kidney: Guyton_Model__kidney(time_, ADHMK, AMK, AMNA, ANM, ANPX, AUM, CKE, CNA, HM1, MYOGRS, PA, PAMKRN, PPC, VTW, RBF, MDFLW, NOD, KOD, VUD);
+  circulatory_dynamics.QLO is QLO;
+  circulatory_dynamics.PRA is PRA;
+  circulatory_dynamics.PLA is PLA;
+  circulatory_dynamics.PA is PA;
+  circulatory_dynamics.PPA is PPA;
+  circulatory_dynamics.AVE is AVE;
+  circulatory_dynamics.VVR is VVR;
+  circulatory_dynamics.AUH is AUH;
+  circulatory_dynamics.AUM is AUM;
+  circulatory_dynamics.AU is AU;
+  circulatory_dynamics.ANU is ANU;
+  circulatory_dynamics.ANUVN is ANUVN;
+  circulatory_dynamics.ADHMV is ADHMV;
+  circulatory_dynamics.PAMK is PAMK;
+  circulatory_dynamics.MYOGRS is MYOGRS;
+  circulatory_dynamics.ARM is ARM;
+  circulatory_dynamics.VIM is VIM;
+  circulatory_dynamics.VRC is VRC;
+  circulatory_dynamics.ATRVFB is ATRVFB;
+  circulatory_dynamics.ATRRFB is ATRRFB;
+  circulatory_dynamics.VP is VP;
+  circulatory_dynamics.RVS is RVS;
+  circulatory_dynamics.BFN is BFN;
+  circulatory_dynamics.PVS is PVS;
+  circulatory_dynamics.HPR is HPR;
+  circulatory_dynamics.HMD is HMD;
+  circulatory_dynamics.HPL is HPL;
+  circulatory_dynamics.QAO is QAO;
+  circulatory_dynamics.OSA is OSA;
+  circulatory_dynamics.QRO is QRO;
+  circulatory_dynamics.AMM is AMM;
+  circulatory_dynamics.time_ is time_;
+  circulatory_dynamics.BFM is BFM;
+  circulatory_dynamics.RPV is RPV;
+  circulatory_dynamics.RPA is RPA;
+  circulatory_dynamics.VVE is VVE;
+  circulatory_dynamics.VV6 is VV6;
+  circulatory_dynamics.VV7 is VV7;
+  circulatory_dynamics.RBF is RBF;
+end

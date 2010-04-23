@@ -1,0 +1,323 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to translate an assignment to "del(TCa)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(TMon)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(M_ATP)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(M_ADP_Pi)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A_M__ADP_Pi)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A_M_ADP_Pi)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A_M__ADP)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A_M_ADP)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A_M)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(A__M_ATP)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(M)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(M_ADP)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+
+model sachse_glanzel_seemann_2003_version01__environment(time_)
+end
+
+model sachse_glanzel_seemann_2003_version01__ATP(ATP)
+
+  // Variable initializations:
+  ATP = 4.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__T(T)
+
+  // Variable initializations:
+  T = 1.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__TCa(TCa, lamda, T, S_A_M, time_)
+
+  // Variable initializations:
+  TCa = 0.0;
+  kon = 40.0;
+  koff = 40.0;
+  TCa_lamda = 1.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__TMoff(TMoff)
+
+  // Variable initializations:
+  TMoff = 1.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__TMon(TMon, lamda, TMoff, TCa, time_)
+
+  // Variable initializations:
+  TMon = 0.0;
+  kmon = 12.0;
+  kmoff = 35.0;
+  TMoncoop = 2.0;
+  TMonpow = 2.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__M_ATP(M_ATP, t2, t3, t14, time_)
+
+  // Variable initializations:
+  M_ATP = 0.0385;
+end
+
+model sachse_glanzel_seemann_2003_version01__M_ADP_Pi(M_ADP_Pi, t3, t4, t13, time_)
+
+  // Variable initializations:
+  M_ADP_Pi = 0.3846;
+end
+
+model sachse_glanzel_seemann_2003_version01__A_M__ADP_Pi(A_M__ADP_Pi, t5, t4, time_)
+
+  // Variable initializations:
+  A_M__ADP_Pi = 0.5769;
+end
+
+model sachse_glanzel_seemann_2003_version01__A_M_ADP_Pi(A_M_ADP_Pi, t5, t6, t13, time_)
+
+  // Variable initializations:
+  A_M_ADP_Pi = 0.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__A_M__ADP(A_M__ADP, t7, t6, t11, time_)
+
+  // Variable initializations:
+  A_M__ADP = 0.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__A_M_ADP(A_M_ADP, t7, t8, t10, time_)
+
+  // Variable initializations:
+  A_M_ADP = 0.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__A_M(A_M, t9, t8, t1, time_)
+
+  // Variable initializations:
+  A_M = 0.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__A__M_ATP(A__M_ATP, t1, t2, time_)
+
+  // Variable initializations:
+  A__M_ATP = 0.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__M(M, t9, t12, t14, time_)
+
+  // Variable initializations:
+  M = 0.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__M_ADP(M_ADP, t10, t12, t11, time_)
+
+  // Variable initializations:
+  M_ADP = 0.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__S_A_M(S_A_M, A_M, A_M_ADP_Pi, A_M__ADP, A_M_ADP)
+
+  // Assignment Rules:
+  S_A_M := A_M_ADP_Pi + A_M__ADP + A_M_ADP + A_M;
+end
+
+model sachse_glanzel_seemann_2003_version01__t1(t1, A_M, A__M_ATP, ATP)
+
+  // Assignment Rules:
+  t1 := k1 * ATP * A_M - k_1 * A__M_ATP;
+
+  // Variable initializations:
+  k1 = 1000.0;
+  k_1 = 10.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t2(t2, A__M_ATP, v_factor, v_detach)
+
+  // Assignment Rules:
+  t2 := k2 * ( 1.0 + v_factor * v_detach ) * A__M_ATP;
+
+  // Variable initializations:
+  k2 = 1000.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t3(t3, M_ATP, M_ADP_Pi)
+
+  // Assignment Rules:
+  t3 := k3 * M_ATP - k_3 * M_ADP_Pi;
+
+  // Variable initializations:
+  k3 = 150.0;
+  k_3 = 15.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t4(t4, M_ADP_Pi, A_M__ADP_Pi, v_factor, v_detach)
+
+  // Assignment Rules:
+  t4 := k4 * M_ADP_Pi - k_4 * ( 1.0 + v_factor * v_detach ) * A_M__ADP_Pi;
+
+  // Variable initializations:
+  k4 = 1500.0;
+  k_4 = 1000.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t5(t5, TMon, A_M__ADP_Pi, A_M_ADP_Pi, lamda, S_A_M)
+
+  // Assignment Rules:
+  t5 := k5 * TMon * ( k5_lamda * lamda + 0.4 ) * power( 1.0 + k5_xb * S_A_M , 2.0 ) * A_M__ADP_Pi - k_5 * A_M_ADP_Pi;
+
+  // Variable initializations:
+  k5 = 25.0;
+  k_5 = 8.0;
+  k5_lamda = 1.0;
+  k5_xb = 1.5;
+end
+
+model sachse_glanzel_seemann_2003_version01__t6(t6, A_M__ADP, A_M_ADP_Pi)
+
+  // Assignment Rules:
+  t6 := k6 * A_M_ADP_Pi - k_6 * A_M__ADP;
+
+  // Variable initializations:
+  k6 = 50.0;
+  k_6 = 20.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t7(t7, F, A_M__ADP, lamda, v)
+
+  // Assignment Rules:
+  t7 := k7 * A_M__ADP * (( k7_base - k7_lamda * lamda + v ) / ( 1.0 + k7_force * F ));
+
+  // Variable initializations:
+  k7 = 30.0;
+  k7_base = 2.25;
+  k7_lamda = 1.25;
+  k7_force = 1.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t8(t8, A_M_ADP, A_M)
+
+  // Assignment Rules:
+  t8 := k8 * A_M_ADP - k_8 * A_M;
+
+  // Variable initializations:
+  k8 = 200.0;
+  k_8 = 5.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t9(t9, A_M, v_factor)
+
+  // Assignment Rules:
+  t9 := k9 * v_factor * A_M;
+
+  // Variable initializations:
+  k9 = 1000.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t10(t10, A_M_ADP, v_factor)
+
+  // Assignment Rules:
+  t10 := k10 * v_factor * A_M_ADP;
+
+  // Variable initializations:
+  k10 = 1000.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t11(t11, A_M__ADP, v_factor)
+
+  // Assignment Rules:
+  t11 := k11 * v_factor * A_M__ADP;
+
+  // Variable initializations:
+  k11 = 1000.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t12(t12, M_ADP)
+
+  // Assignment Rules:
+  t12 := k12 * M_ADP;
+
+  // Variable initializations:
+  k12 = 50.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t13(t13, A_M_ADP_Pi, v_factor)
+
+  // Assignment Rules:
+  t13 := k13 * v_factor * A_M_ADP_Pi;
+
+  // Variable initializations:
+  k13 = 1000.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__t14(t14, ATP, M)
+
+  // Assignment Rules:
+  t14 := k14 * ATP * M;
+
+  // Variable initializations:
+  k14 = 1000.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__v_factor(v_factor, v)
+
+  // Assignment Rules:
+  v_factor := power( v , Nv ) / (power( v , Nv ) + power( v50 , Nv ));
+
+  // Variable initializations:
+  Nv = 10.0;
+  v50 = 3.0;
+end
+
+model sachse_glanzel_seemann_2003_version01__F(F, A_M, A_M_ADP, A_M__ADP)
+
+  // Assignment Rules:
+  F := alpha * T_AM / Fmax;
+  T_AM := A_M + A_M_ADP + A_M__ADP;
+
+  // Variable initializations:
+  Fmax = 0.498;
+end
+
+model sachse_glanzel_seemann_2003_version01__parameters(v_detach, v, lamda)
+
+  // Variable initializations:
+  v_detach = 10.0;
+end
+
+model sachse_glanzel_seemann_2003_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: sachse_glanzel_seemann_2003_version01__environment(time_);
+  ATP: sachse_glanzel_seemann_2003_version01__ATP(ATP0);
+  T: sachse_glanzel_seemann_2003_version01__T(T0);
+  TCa: sachse_glanzel_seemann_2003_version01__TCa(TCa0, lamda, T0, S_A_M0, time_);
+  TMoff: sachse_glanzel_seemann_2003_version01__TMoff(TMoff0);
+  TMon: sachse_glanzel_seemann_2003_version01__TMon(TMon0, lamda, TMoff0, TCa0, time_);
+  M_ATP: sachse_glanzel_seemann_2003_version01__M_ATP(M_ATP0, t20, t30, t140, time_);
+  M_ADP_Pi: sachse_glanzel_seemann_2003_version01__M_ADP_Pi(M_ADP_Pi0, t30, t40, t130, time_);
+  A_M__ADP_Pi: sachse_glanzel_seemann_2003_version01__A_M__ADP_Pi(A_M__ADP_Pi0, t50, t40, time_);
+  A_M_ADP_Pi: sachse_glanzel_seemann_2003_version01__A_M_ADP_Pi(A_M_ADP_Pi0, t50, t60, t130, time_);
+  A_M__ADP: sachse_glanzel_seemann_2003_version01__A_M__ADP(A_M__ADP0, t70, t60, t110, time_);
+  A_M_ADP: sachse_glanzel_seemann_2003_version01__A_M_ADP(A_M_ADP0, t70, t80, t100, time_);
+  A_M: sachse_glanzel_seemann_2003_version01__A_M(A_M0, t90, t80, t15, time_);
+  A__M_ATP: sachse_glanzel_seemann_2003_version01__A__M_ATP(A__M_ATP0, t15, t20, time_);
+  M: sachse_glanzel_seemann_2003_version01__M(M0, t90, t120, t140, time_);
+  M_ADP: sachse_glanzel_seemann_2003_version01__M_ADP(M_ADP0, t100, t120, t110, time_);
+  S_A_M: sachse_glanzel_seemann_2003_version01__S_A_M(S_A_M0, A_M0, A_M_ADP_Pi0, A_M__ADP0, A_M_ADP0);
+  t1: sachse_glanzel_seemann_2003_version01__t1(t15, A_M0, A__M_ATP0, ATP0);
+  t2: sachse_glanzel_seemann_2003_version01__t2(t20, A__M_ATP0, v_factor0, v_detach);
+  t3: sachse_glanzel_seemann_2003_version01__t3(t30, M_ATP0, M_ADP_Pi0);
+  t4: sachse_glanzel_seemann_2003_version01__t4(t40, M_ADP_Pi0, A_M__ADP_Pi0, v_factor0, v_detach);
+  t5: sachse_glanzel_seemann_2003_version01__t5(t50, TMon0, A_M__ADP_Pi0, A_M_ADP_Pi0, lamda, S_A_M0);
+  t6: sachse_glanzel_seemann_2003_version01__t6(t60, A_M__ADP0, A_M_ADP_Pi0);
+  t7: sachse_glanzel_seemann_2003_version01__t7(t70, F0, A_M__ADP0, lamda, v);
+  t8: sachse_glanzel_seemann_2003_version01__t8(t80, A_M_ADP0, A_M0);
+  t9: sachse_glanzel_seemann_2003_version01__t9(t90, A_M0, v_factor0);
+  t10: sachse_glanzel_seemann_2003_version01__t10(t100, A_M_ADP0, v_factor0);
+  t11: sachse_glanzel_seemann_2003_version01__t11(t110, A_M__ADP0, v_factor0);
+  t12: sachse_glanzel_seemann_2003_version01__t12(t120, M_ADP0);
+  t13: sachse_glanzel_seemann_2003_version01__t13(t130, A_M_ADP_Pi0, v_factor0);
+  t14: sachse_glanzel_seemann_2003_version01__t14(t140, ATP0, M0);
+  v_factor: sachse_glanzel_seemann_2003_version01__v_factor(v_factor0, v);
+  F: sachse_glanzel_seemann_2003_version01__F(F0, A_M0, A_M_ADP0, A_M__ADP0);
+  parameters: sachse_glanzel_seemann_2003_version01__parameters(v_detach, v, lamda);
+end

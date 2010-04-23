@@ -1,0 +1,52 @@
+//Created by libAntimony v1.3
+model Dupont_1991a__environment(time_)
+end
+
+model Dupont_1991a__parameters(time_, v0, v1, v2, v3, beta, kf, k, Z, Y)
+
+  // Assignment Rules:
+  v2 := VM2 * power(Z, n) / (power(K2, n) + power(Z, n));
+  v3 := VM3 * (power(Y, m) / (power(KR, m) + power(Y, m))) * (power(Z, p) / (power(KA, p) + power(Z, p)));
+
+  // Variable initializations:
+  v0 = 1;
+  v1 = 7.3;
+  beta = 0.6;
+  VM2 = 65;
+  VM3 = 500;
+  KR = 2;
+  KA = 0.9;
+  kf = 1;
+  k = 10;
+  K2 = 1;
+  n = 2;
+  m = 2;
+  p = 4;
+end
+
+model Dupont_1991a__cytosol(time_, v0, v1, v2, v3, kf, k, beta, Z, Y)
+
+  // Rate Rules:
+  Z' = v0 + v1 * beta - v2 + v3 + kf * Y - k * Z;
+
+  // Variable initializations:
+  Z = 0.52;
+end
+
+model Dupont_1991a__insensitive_pool(time_, v2, v3, kf, Y)
+
+  // Rate Rules:
+  Y' = v2 - v3 - kf * Y;
+
+  // Variable initializations:
+  Y = 0.93;
+end
+
+model Dupont_1991a____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: Dupont_1991a__environment(time_);
+  parameters: Dupont_1991a__parameters(time_, v0, v1, v2, v3, beta, kf, k, Z, Y);
+  cytosol: Dupont_1991a__cytosol(time_, v0, v1, v2, v3, kf, k, beta, Z, Y);
+  insensitive_pool: Dupont_1991a__insensitive_pool(time_, v2, v3, kf, Y);
+end

@@ -1,0 +1,523 @@
+//Created by libAntimony v1.3
+model hynne_dano_sorensen_2001_version01__environment(time_)
+end
+
+model hynne_dano_sorensen_2001_version01__Glc_x_0(Glc_x_0)
+
+  // Variable initializations:
+  Glc_x_0 = 18.5;
+end
+
+model hynne_dano_sorensen_2001_version01__Glc_x(Glc_x, GlcTrans, inGlc, time_)
+
+  // Rate Rules:
+  Glc_x' = inGlc + GlcTrans;
+
+  // Variable initializations:
+  Glc_x = 1.55307;
+end
+
+model hynne_dano_sorensen_2001_version01__Glc(Glc, GlcTrans, HK, time_)
+
+  // Rate Rules:
+  Glc' = GlcTrans + HK;
+
+  // Variable initializations:
+  Glc = 0.573074;
+end
+
+model hynne_dano_sorensen_2001_version01__G6P(G6P, PGI, HK, storage, time_)
+
+  // Rate Rules:
+  G6P' = HK + PGI + storage;
+
+  // Variable initializations:
+  G6P = 4.2;
+end
+
+model hynne_dano_sorensen_2001_version01__F6P(F6P, PGI, PFK, time_)
+
+  // Rate Rules:
+  F6P' = PGI + PFK;
+
+  // Variable initializations:
+  F6P = 0.49;
+end
+
+model hynne_dano_sorensen_2001_version01__FBP(FBP, PFK, ALD, time_)
+
+  // Rate Rules:
+  FBP' = PFK + ALD;
+
+  // Variable initializations:
+  FBP = 4.64;
+end
+
+model hynne_dano_sorensen_2001_version01__GAP(GAP, GAPDH, ALD, TIM, time_)
+
+  // Rate Rules:
+  GAP' = ALD + TIM + GAPDH;
+
+  // Variable initializations:
+  GAP = 0.115;
+end
+
+model hynne_dano_sorensen_2001_version01__DHAP(DHAP, ALD, TIM, time_)
+
+  // Rate Rules:
+  DHAP' = ALD + TIM;
+
+  // Variable initializations:
+  DHAP = 2.95;
+end
+
+model hynne_dano_sorensen_2001_version01__BPG(BPG, lpPEP, GAPDH, time_)
+
+  // Rate Rules:
+  BPG' = GAPDH + lpPEP;
+
+  // Variable initializations:
+  BPG = 0.00027;
+end
+
+model hynne_dano_sorensen_2001_version01__PEP(PEP, lpPEP, PK, time_)
+
+  // Rate Rules:
+  PEP' = lpPEP + PK;
+
+  // Variable initializations:
+  PEP = 0.04;
+end
+
+model hynne_dano_sorensen_2001_version01__Pyr(Pyr, PK, PDC, time_)
+
+  // Rate Rules:
+  Pyr' = PK + PDC;
+
+  // Variable initializations:
+  Pyr = 8.7;
+end
+
+model hynne_dano_sorensen_2001_version01__ATP(ATP, HK, lpPEP, PFK, PK, storage, consum, AK, time_)
+
+  // Rate Rules:
+  ATP' = PFK + PK + lpPEP + storage + HK + consum + AK;
+
+  // Variable initializations:
+  ATP = 2.1;
+end
+
+model hynne_dano_sorensen_2001_version01__ADP(ADP, HK, lpPEP, PFK, PK, storage, consum, AK, time_)
+
+  // Rate Rules:
+  ADP' = PFK + PK + lpPEP + storage + HK + consum + 2.0 * AK;
+
+  // Variable initializations:
+  ADP = 1.5;
+end
+
+model hynne_dano_sorensen_2001_version01__AMP(AMP, AK, time_)
+
+  // Rate Rules:
+  AMP' = AK;
+
+  // Variable initializations:
+  AMP = 0.33;
+end
+
+model hynne_dano_sorensen_2001_version01__CN_x_0(CN_x_0)
+
+  // Variable initializations:
+  CN_x_0 = 5.60;
+end
+
+model hynne_dano_sorensen_2001_version01__CN_x(CN_x, lacto, inCN, time_)
+
+  // Rate Rules:
+  CN_x' = lacto + inCN;
+
+  // Variable initializations:
+  CN_x = 5.20358;
+end
+
+model hynne_dano_sorensen_2001_version01__ACA(ACA, difACA, PDC, ADH, time_)
+
+  // Rate Rules:
+  ACA' = difACA + PDC + ADH;
+end
+
+model hynne_dano_sorensen_2001_version01__ACA_x(ACA_x, lacto, difACA, outACA, time_)
+
+  // Rate Rules:
+  ACA_x' = lacto + difACA + outACA;
+
+  // Variable initializations:
+  ACA_x = 1.28836;
+end
+
+model hynne_dano_sorensen_2001_version01__EtOH(EtOH, difEtOH, time_)
+
+  // Rate Rules:
+  EtOH' = difEtOH;
+
+  // Variable initializations:
+  EtOH = 19.2379;
+end
+
+model hynne_dano_sorensen_2001_version01__EtOH_x(EtOH_x, difEtOH, outEtOH, time_)
+
+  // Rate Rules:
+  EtOH_x' = difEtOH + outEtOH;
+
+  // Variable initializations:
+  EtOH_x = 16.4514;
+end
+
+model hynne_dano_sorensen_2001_version01__Glyc(Glyc, difGlyc, lpGlyc, time_)
+
+  // Rate Rules:
+  Glyc' = difGlyc + lpGlyc;
+
+  // Variable initializations:
+  Glyc = 4.196;
+end
+
+model hynne_dano_sorensen_2001_version01__Glyc_x(Glyc_x, difGlyc, outGlyc, time_)
+
+  // Rate Rules:
+  Glyc_x' = difGlyc + outGlyc;
+
+  // Variable initializations:
+  Glyc_x = 1.68478;
+end
+
+model hynne_dano_sorensen_2001_version01__NADH(NADH, GAPDH, ADH, lpGlyc, time_)
+
+  // Rate Rules:
+  NADH' = GAPDH + ADH + lpGlyc;
+
+  // Variable initializations:
+  NADH = 0.33;
+end
+
+model hynne_dano_sorensen_2001_version01__NAD(NAD, GAPDH, ADH, lpGlyc, time_)
+
+  // Rate Rules:
+  NAD' = GAPDH + ADH + lpGlyc;
+
+  // Variable initializations:
+  NAD = 0.65;
+end
+
+model hynne_dano_sorensen_2001_version01__inGlc(inGlc, Glc_x_0, Glc_x)
+
+  // Assignment Rules:
+  inGlc := y_vol * k0 * Glc_x_0 - y_vol * k0 * Glc_x;
+
+  // Variable initializations:
+  k0 = 0.048;
+  y_vol = 59.0;
+end
+
+model hynne_dano_sorensen_2001_version01__GlcTrans(GlcTrans, Glc_x, Glc, G6P)
+
+  // Assignment Rules:
+  GlcTrans := V_2m * ( Glc_x / K2_Glc ) / ( 1.0 + Glc_x / K2_Glc + ( P2 * ( Glc_x / K2_Glc ) + 1.0 ) / ( P2 * ( Glc / K2_Glc ) + 1.0 ) * ( 1.0 + Glc / K2_Glc ) + G6P / K2_IG6P + Glc * G6P / ( K2_Glc * K2_IIG6P )) - V_2m * ( Glc / K2_Glc ) / ( 1.0 + Glc / K2_Glc + ( P2 * ( Glc / K2_Glc ) + 1.0 ) / ( P2 * ( Glc_x / K2_Glc ) + 1.0 ) * ( 1.0 + Glc_x / K2_Glc ) + G6P / K2_IG6P + Glc * G6P / ( K2_Glc * K2_IIG6P ));
+
+  // Variable initializations:
+  K2_Glc = 1.7;
+  K2_IG6P = 1.2;
+  K2_IIG6P = 7.2;
+  V_2m = 0.01496E3;
+  P2 = 1.0;
+end
+
+model hynne_dano_sorensen_2001_version01__HK(HK, Glc, ATP)
+
+  // Assignment Rules:
+  HK := V_3m * ATP * Glc / ( K3_DGlc * K3_ATP + K3_Glc * ATP + K3_ATP * Glc + Glc * ATP );
+
+  // Variable initializations:
+  K3_DGlc = 0.37;
+  K3_Glc = 0.0;
+  K3_ATP = 0.1;
+  V_3m = 5.17547E1;
+end
+
+model hynne_dano_sorensen_2001_version01__PGI(PGI, G6P, F6P)
+
+  // Assignment Rules:
+  PGI := V_4m * G6P / ( K4_G6P + G6P + K4_G6P / K4_F6P * F6P ) - V_4m * ( F6P / K4_eq ) / ( K4_G6P + G6P + K4_G6P / K4_F6P * F6P );
+
+  // Variable initializations:
+  V_4m = 4.96042E2;
+  K4_G6P = 0.8;
+  K4_F6P = 0.15;
+  K4_eq = 0.13;
+end
+
+model hynne_dano_sorensen_2001_version01__PFK(PFK, F6P, ATP, AMP)
+
+  // Assignment Rules:
+  PFK := V_5m * power( F6P , 2.0 ) / ( K5 * ( 1.0 + k5 * ( ATP / AMP )) + power( F6P , 2.0 ));
+
+  // Variable initializations:
+  K5 = 0.021;
+  k5 = 0.15;
+  V_5m = 4.54327E1;
+end
+
+model hynne_dano_sorensen_2001_version01__ALD(ALD, GAP, DHAP, FBP)
+
+  // Assignment Rules:
+  ALD := V_6f * FBP / ( K6_FBP + FBP + GAP * K6_DHAP * V_6f / ( K6_eq * V_6r ) + DHAP * K6_GAP * V_6f / ( K6_eq * V_6r ) + FBP * GAP / K6_IGAP + GAP * DHAP * V_6f / ( K6_eq * V_6r )) - V_6f * ( GAP * DHAP / K6_eq ) / ( K6_FBP + FBP + GAP * K6_DHAP * V_6f / ( K6_eq * V_6r ) + DHAP * K6_GAP * V_6f / ( K6_eq * V_6r ) + FBP * GAP / K6_IGAP + GAP * DHAP * V_6f / ( K6_eq * V_6r ));
+
+  // Variable initializations:
+  K6_eq = 0.081;
+  K6_FBP = 0.3;
+  K6_DHAP = 2.0;
+  K6_GAP = 4.0;
+  K6_IGAP = 10.0;
+  V_6r = 1.10391E4;
+  V_6f = 2.20782E3;
+end
+
+model hynne_dano_sorensen_2001_version01__TIM(TIM, GAP, DHAP)
+
+  // Assignment Rules:
+  TIM := V_7m * DHAP / ( K7_DHAP + DHAP + K7_DHAP / K7_GAP * GAP ) - V_7m * ( GAP / K7_eq ) / ( K7_DHAP + DHAP + K7_DHAP / K7_GAP * GAP );
+
+  // Variable initializations:
+  K7_eq = 0.055;
+  K7_DHAP = 1.23;
+  K7_GAP = 1.27;
+  V_7m = 1.16365E2;
+end
+
+model hynne_dano_sorensen_2001_version01__GAPDH(GAPDH, GAP, NAD, NADH, BPG)
+
+  // Assignment Rules:
+  GAPDH := V_8m * GAP * NAD / ( K8_GAP * K8_NAD * ( 1.0 + GAP / K8_GAP + BPG / K8_BPG ) * ( 1.0 + NAD / K8_NAD + NADH / K8_NADH )) - V_8m * ( BPG * NADH / K8_eq ) / ( K8_GAP * K8_NAD * ( 1.0 + GAP / K8_GAP + BPG / K8_BPG ) * ( 1.0 + NAD / K8_NAD + NADH / K8_NADH ));
+
+  // Variable initializations:
+  K8_NAD = 0.1;
+  K8_NADH = 0.06;
+  K8_GAP = 0.6;
+  K8_BPG = 0.01;
+  K8_eq = 0.0055;
+  V_8m = 8.33858E2;
+end
+
+model hynne_dano_sorensen_2001_version01__lpPEP(lpPEP, PEP, ADP, ATP, BPG)
+
+  // Assignment Rules:
+  lpPEP := k9f * BPG * ADP - k9r * PEP * ATP;
+
+  // Variable initializations:
+  k9f = 4.43866E5;
+  k9r = 1.52862E3;
+end
+
+model hynne_dano_sorensen_2001_version01__PK(PK, PEP, ADP)
+
+  // Assignment Rules:
+  PK := V_10m * ADP * PEP / (( K10_PEP + PEP ) * ( K10_ADP + ADP ));
+
+  // Variable initializations:
+  K10_PEP = 0.2;
+  K10_ADP = 0.17;
+  V_10m = 3.43096E2;
+end
+
+model hynne_dano_sorensen_2001_version01__PDC(PDC, Pyr)
+
+  // Assignment Rules:
+  PDC := V_11m * Pyr / ( K11 + Pyr );
+
+  // Variable initializations:
+  K11 = 0.3;
+  V_11m = 5.31328E1;
+end
+
+model hynne_dano_sorensen_2001_version01__ADH(ADH, NADH, ACA)
+
+  // Assignment Rules:
+  ADH := V_12m * ACA * NADH / (( K12_NADH + NADH ) * ( K12_ACA + ACA ));
+
+  // Variable initializations:
+  K12_NADH = 0.1;
+  K12_ACA = 0.71;
+  V_12m = 8.98023E1;
+end
+
+model hynne_dano_sorensen_2001_version01__difEtOH(difEtOH, EtOH_x, EtOH)
+
+  // Assignment Rules:
+  difEtOH := k13 * EtOH - k13 * EtOH_x;
+
+  // Variable initializations:
+  k13 = 16.72;
+end
+
+model hynne_dano_sorensen_2001_version01__outEtOH(outEtOH, EtOH_x)
+
+  // Assignment Rules:
+  outEtOH := y_vol * k0 * EtOH_x;
+
+  // Variable initializations:
+  k0 = 0.048;
+  y_vol = 59.0;
+end
+
+model hynne_dano_sorensen_2001_version01__lpGlyc(lpGlyc, NAD, NADH, DHAP)
+
+  // Assignment Rules:
+  lpGlyc := V_15m * DHAP / ( K15_DHAP * ( 1.0 + K15_INADH / NADH * ( 1.0 + NAD / K15_INAD )) + DHAP * ( 1.0 + K15_NADH / NADH * ( 1.0 + NAD / K15_INAD )));
+
+  // Variable initializations:
+  K15_NADH = 0.13;
+  K15_INADH = 0.043;
+  K15_INAD = 0.13;
+  K15_DHAP = 25.0;
+  V_15m = 8.14797E1;
+end
+
+model hynne_dano_sorensen_2001_version01__difGlyc(difGlyc, Glyc_x, Glyc)
+
+  // Assignment Rules:
+  difGlyc := k16 * Glyc - k16 * Glyc_x;
+
+  // Variable initializations:
+  k16 = 1.9;
+end
+
+model hynne_dano_sorensen_2001_version01__outGlyc(outGlyc, Glyc_x)
+
+  // Assignment Rules:
+  outGlyc := y_vol * k0 * Glyc_x;
+
+  // Variable initializations:
+  k0 = 0.048;
+  y_vol = 59.0;
+end
+
+model hynne_dano_sorensen_2001_version01__difACA(difACA, ACA_x, ACA)
+
+  // Assignment Rules:
+  difACA := k18 * ACA - k18 * ACA_x;
+
+  // Variable initializations:
+  k18 = 24.7;
+end
+
+model hynne_dano_sorensen_2001_version01__outACA(outACA, ACA_x)
+
+  // Assignment Rules:
+  outACA := y_vol * k0 * ACA_x;
+
+  // Variable initializations:
+  k0 = 0.048;
+  y_vol = 59.0;
+end
+
+model hynne_dano_sorensen_2001_version01__lacto(lacto, ACA_x, CN_x)
+
+  // Assignment Rules:
+  lacto := y_vol * k20 * ACA_x * CN_x;
+
+  // Variable initializations:
+  k20 = 2.83828E-3;
+  y_vol = 59.0;
+end
+
+model hynne_dano_sorensen_2001_version01__inCN(inCN, CN_x_0, CN_x)
+
+  // Assignment Rules:
+  inCN := y_vol * k0 * CN_x_0 - y_vol * k0 * CN_x;
+
+  // Variable initializations:
+  k0 = 0.048;
+  y_vol = 59.0;
+end
+
+model hynne_dano_sorensen_2001_version01__storage(storage, ATP, G6P)
+
+  // Assignment Rules:
+  storage := k22 * ATP * G6P;
+
+  // Variable initializations:
+  k22 = 2.25932;
+end
+
+model hynne_dano_sorensen_2001_version01__consum(consum, ATP)
+
+  // Assignment Rules:
+  consum := k23 * ATP;
+
+  // Variable initializations:
+  k23 = 3.20760;
+end
+
+model hynne_dano_sorensen_2001_version01__AK(AK, ATP, ADP, AMP)
+
+  // Assignment Rules:
+  AK := k24f * AMP * ATP - k24r * power( ADP , 2.0 );
+
+  // Variable initializations:
+  k24f = 4.32900E2;
+  k24r = 1.33333E2;
+end
+
+model hynne_dano_sorensen_2001_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: hynne_dano_sorensen_2001_version01__environment(time_);
+  Glc_x_0: hynne_dano_sorensen_2001_version01__Glc_x_0(Glc_x_00);
+  Glc_x: hynne_dano_sorensen_2001_version01__Glc_x(Glc_x0, GlcTrans0, inGlc0, time_);
+  Glc: hynne_dano_sorensen_2001_version01__Glc(Glc0, GlcTrans0, HK0, time_);
+  G6P: hynne_dano_sorensen_2001_version01__G6P(G6P0, PGI0, HK0, storage0, time_);
+  F6P: hynne_dano_sorensen_2001_version01__F6P(F6P0, PGI0, PFK0, time_);
+  FBP: hynne_dano_sorensen_2001_version01__FBP(FBP0, PFK0, ALD0, time_);
+  GAP: hynne_dano_sorensen_2001_version01__GAP(GAP0, GAPDH0, ALD0, TIM0, time_);
+  DHAP: hynne_dano_sorensen_2001_version01__DHAP(DHAP0, ALD0, TIM0, time_);
+  BPG: hynne_dano_sorensen_2001_version01__BPG(BPG0, lpPEP0, GAPDH0, time_);
+  PEP: hynne_dano_sorensen_2001_version01__PEP(PEP0, lpPEP0, PK0, time_);
+  Pyr: hynne_dano_sorensen_2001_version01__Pyr(Pyr0, PK0, PDC0, time_);
+  ATP: hynne_dano_sorensen_2001_version01__ATP(ATP0, HK0, lpPEP0, PFK0, PK0, storage0, consum0, AK0, time_);
+  ADP: hynne_dano_sorensen_2001_version01__ADP(ADP0, HK0, lpPEP0, PFK0, PK0, storage0, consum0, AK0, time_);
+  AMP: hynne_dano_sorensen_2001_version01__AMP(AMP0, AK0, time_);
+  CN_x_0: hynne_dano_sorensen_2001_version01__CN_x_0(CN_x_00);
+  CN_x: hynne_dano_sorensen_2001_version01__CN_x(CN_x0, lacto0, inCN0, time_);
+  ACA: hynne_dano_sorensen_2001_version01__ACA(ACA0, difACA0, PDC0, ADH0, time_);
+  ACA_x: hynne_dano_sorensen_2001_version01__ACA_x(ACA_x0, lacto0, difACA0, outACA0, time_);
+  EtOH: hynne_dano_sorensen_2001_version01__EtOH(EtOH0, difEtOH0, time_);
+  EtOH_x: hynne_dano_sorensen_2001_version01__EtOH_x(EtOH_x0, difEtOH0, outEtOH0, time_);
+  Glyc: hynne_dano_sorensen_2001_version01__Glyc(Glyc0, difGlyc0, lpGlyc0, time_);
+  Glyc_x: hynne_dano_sorensen_2001_version01__Glyc_x(Glyc_x0, difGlyc0, outGlyc0, time_);
+  NADH: hynne_dano_sorensen_2001_version01__NADH(NADH0, GAPDH0, ADH0, lpGlyc0, time_);
+  NAD: hynne_dano_sorensen_2001_version01__NAD(NAD0, GAPDH0, ADH0, lpGlyc0, time_);
+  inGlc: hynne_dano_sorensen_2001_version01__inGlc(inGlc0, Glc_x_00, Glc_x0);
+  GlcTrans: hynne_dano_sorensen_2001_version01__GlcTrans(GlcTrans0, Glc_x0, Glc0, G6P0);
+  HK: hynne_dano_sorensen_2001_version01__HK(HK0, Glc0, ATP0);
+  PGI: hynne_dano_sorensen_2001_version01__PGI(PGI0, G6P0, F6P0);
+  PFK: hynne_dano_sorensen_2001_version01__PFK(PFK0, F6P0, ATP0, AMP0);
+  ALD: hynne_dano_sorensen_2001_version01__ALD(ALD0, GAP0, DHAP0, FBP0);
+  TIM: hynne_dano_sorensen_2001_version01__TIM(TIM0, GAP0, DHAP0);
+  GAPDH: hynne_dano_sorensen_2001_version01__GAPDH(GAPDH0, GAP0, NAD0, NADH0, BPG0);
+  lpPEP: hynne_dano_sorensen_2001_version01__lpPEP(lpPEP0, PEP0, ADP0, ATP0, BPG0);
+  PK: hynne_dano_sorensen_2001_version01__PK(PK0, PEP0, ADP0);
+  PDC: hynne_dano_sorensen_2001_version01__PDC(PDC0, Pyr0);
+  ADH: hynne_dano_sorensen_2001_version01__ADH(ADH0, NADH0, ACA0);
+  difEtOH: hynne_dano_sorensen_2001_version01__difEtOH(difEtOH0, EtOH_x0, EtOH0);
+  outEtOH: hynne_dano_sorensen_2001_version01__outEtOH(outEtOH0, EtOH_x0);
+  lpGlyc: hynne_dano_sorensen_2001_version01__lpGlyc(lpGlyc0, NAD0, NADH0, DHAP0);
+  difGlyc: hynne_dano_sorensen_2001_version01__difGlyc(difGlyc0, Glyc_x0, Glyc0);
+  outGlyc: hynne_dano_sorensen_2001_version01__outGlyc(outGlyc0, Glyc_x0);
+  difACA: hynne_dano_sorensen_2001_version01__difACA(difACA0, ACA_x0, ACA0);
+  outACA: hynne_dano_sorensen_2001_version01__outACA(outACA0, ACA_x0);
+  lacto: hynne_dano_sorensen_2001_version01__lacto(lacto0, ACA_x0, CN_x0);
+  inCN: hynne_dano_sorensen_2001_version01__inCN(inCN0, CN_x_00, CN_x0);
+  storage: hynne_dano_sorensen_2001_version01__storage(storage0, ATP0, G6P0);
+  consum: hynne_dano_sorensen_2001_version01__consum(consum0, ATP0);
+  AK: hynne_dano_sorensen_2001_version01__AK(AK0, ATP0, ADP0, AMP0);
+end

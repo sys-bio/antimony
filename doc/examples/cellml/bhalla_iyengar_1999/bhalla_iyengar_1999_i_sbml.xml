@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="bi_model_1999_version01____main" name="bi_model_1999_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="GEF_kf2" value="1"/>
+      <parameter id="GEF_kb2" value="0"/>
+      <parameter id="GEF_kf5" value="0.0001"/>
+      <parameter id="GEF_kb5" value="1"/>
+      <parameter id="GEF_kf7" value="1"/>
+      <parameter id="GEF_kb7" value="0"/>
+      <parameter id="GEF_kf8" value="1e-05"/>
+      <parameter id="GEF_kb8" value="1"/>
+      <parameter id="GEF_km1" value="7.5"/>
+      <parameter id="GEF_Vmax1" value="9"/>
+      <parameter id="GEF_km6" value="3.33333333333"/>
+      <parameter id="GEF_Vmax6" value="4"/>
+      <parameter id="GEF_inact" value="0.1" constant="false"/>
+      <parameter id="GEF_GEF" value="0" constant="false"/>
+      <parameter id="PKA" value="1"/>
+      <parameter id="GEF_Ca4CAM" value="1" constant="false"/>
+      <parameter id="PKC" value="1"/>
+      <parameter id="GEF_Gby" value="1" constant="false"/>
+      <parameter id="CaM_GEF" value="0" constant="false"/>
+      <parameter id="Gby_GEF" value="0" constant="false"/>
+      <parameter id="GTPRAS_kf12" value="0.0001"/>
+      <parameter id="GTPRAS_kb12" value="0"/>
+      <parameter id="GTPRAS_km9" value="0.50505"/>
+      <parameter id="GTPRAS_Vmax9" value="0.02"/>
+      <parameter id="GTPRAS_km10" value="0.50505"/>
+      <parameter id="GTPRAS_Vmax10" value="0.02"/>
+      <parameter id="GTPRAS_km11" value="0.50505"/>
+      <parameter id="GTPRAS_Vmax11" value="0.02"/>
+      <parameter id="GTPRAS_km13" value="1.0104"/>
+      <parameter id="GTPRAS_Vmax13" value="10"/>
+      <parameter id="GTPRAS_GTP_RAS" value="0" constant="false"/>
+      <parameter id="GTPRAS_GDP_RAS" value="0.2" constant="false"/>
+      <parameter id="GAP0" value="0.002" constant="false"/>
+      <parameter id="GAP_kf4" value="0.1"/>
+      <parameter id="GAP_kb4" value="0"/>
+      <parameter id="GAP_km3" value="3.33333333333"/>
+      <parameter id="GAP_Vmax3" value="4"/>
+      <parameter id="GAP_GAPstar" value="0" constant="false"/>
+      <parameter id="Ca4CAM" value="1"/>
+      <parameter id="Gby" value="1"/>
+      <parameter id="t"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="GEF_inact">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> PKA </ci>
+                    <ci> GEF_Vmax1 </ci>
+                    <ci> GEF_GEF </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> GEF_km1 </ci>
+                    <ci> GEF_GEF </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> PKC </ci>
+                    <ci> GEF_Vmax6 </ci>
+                    <ci> GEF_GEF </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> GEF_km6 </ci>
+                    <ci> GEF_GEF </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> GEF_kf2 </ci>
+                <ci> GEF_inact </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> GEF_kf7 </ci>
+              <ci> GEF_inact </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GEF_GEF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <minus/>
+                        <apply>
+                          <plus/>
+                          <apply>
+                            <divide/>
+                            <apply>
+                              <times/>
+                              <ci> PKA </ci>
+                              <ci> GEF_Vmax1 </ci>
+                              <ci> GEF_GEF </ci>
+                            </apply>
+                            <apply>
+                              <plus/>
+                              <ci> GEF_km1 </ci>
+                              <ci> GEF_GEF </ci>
+                            </apply>
+                          </apply>
+                          <apply>
+                            <divide/>
+                            <apply>
+                              <times/>
+                              <ci> PKC </ci>
+                              <ci> GEF_Vmax6 </ci>
+                              <ci> GEF_GEF </ci>
+                            </apply>
+                            <apply>
+                              <plus/>
+                              <ci> GEF_km6 </ci>
+                              <ci> GEF_GEF </ci>
+                            </apply>
+                          </apply>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> GEF_kf2 </ci>
+                          <ci> GEF_inact </ci>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> GEF_kf7 </ci>
+                        <ci> GEF_inact </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> GEF_kf5 </ci>
+                    <ci> GEF_Ca4CAM </ci>
+                    <ci> GEF_GEF </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> GEF_kb5 </ci>
+                  <ci> CaM_GEF </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> GEF_kf8 </ci>
+                <ci> GEF_GEF </ci>
+                <ci> GEF_Gby </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> GEF_kb8 </ci>
+              <ci> Gby_GEF </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GEF_Ca4CAM">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> GEF_kb5 </ci>
+                </apply>
+                <ci> CaM_GEF </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> GEF_kf5 </ci>
+                <ci> GEF_GEF </ci>
+                <ci> GEF_Ca4CAM </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GEF_Gby">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> GEF_kf8 </ci>
+              </apply>
+              <ci> GEF_GEF </ci>
+              <ci> GEF_Gby </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> GEF_kb8 </ci>
+              <ci> Gby_GEF </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CaM_GEF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> GEF_kb5 </ci>
+              </apply>
+              <ci> CaM_GEF </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> GEF_kf5 </ci>
+              <ci> GEF_GEF </ci>
+              <ci> GEF_Ca4CAM </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Gby_GEF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> GEF_kf8 </ci>
+                </apply>
+                <ci> GEF_GEF </ci>
+                <ci> GEF_Gby </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> GEF_kb8 </ci>
+                <ci> Gby_GEF </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GTPRAS_GTP_RAS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> GAP0 </ci>
+                  </apply>
+                  <ci> GTPRAS_Vmax13 </ci>
+                  <ci> GTPRAS_GTP_RAS </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> GTPRAS_km13 </ci>
+                  <ci> GTPRAS_GTP_RAS </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> GTPRAS_kf12 </ci>
+                <ci> GTPRAS_GTP_RAS </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> GEF_inact </ci>
+                <ci> GTPRAS_Vmax10 </ci>
+                <ci> GTPRAS_GDP_RAS </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> GTPRAS_km10 </ci>
+                <ci> GTPRAS_GDP_RAS </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Gby_GEF </ci>
+                <ci> GTPRAS_Vmax11 </ci>
+                <ci> GTPRAS_GDP_RAS </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> GTPRAS_km11 </ci>
+                <ci> GTPRAS_GDP_RAS </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> CaM_GEF </ci>
+                <ci> GTPRAS_Vmax9 </ci>
+                <ci> GTPRAS_GDP_RAS </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> GTPRAS_km9 </ci>
+                <ci> GTPRAS_GDP_RAS </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GTPRAS_GDP_RAS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <minus/>
+                      <ci> GAP0 </ci>
+                    </apply>
+                    <ci> GTPRAS_Vmax13 </ci>
+                    <ci> GTPRAS_GTP_RAS </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> GTPRAS_km13 </ci>
+                    <ci> GTPRAS_GTP_RAS </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> GTPRAS_kf12 </ci>
+                  <ci> GTPRAS_GTP_RAS </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> GEF_inact </ci>
+                  <ci> GTPRAS_Vmax10 </ci>
+                  <ci> GTPRAS_GDP_RAS </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> GTPRAS_km10 </ci>
+                  <ci> GTPRAS_GDP_RAS </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> Gby_GEF </ci>
+                  <ci> GTPRAS_Vmax11 </ci>
+                  <ci> GTPRAS_GDP_RAS </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> GTPRAS_km11 </ci>
+                  <ci> GTPRAS_GDP_RAS </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> CaM_GEF </ci>
+                  <ci> GTPRAS_Vmax9 </ci>
+                  <ci> GTPRAS_GDP_RAS </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> GTPRAS_km9 </ci>
+                  <ci> GTPRAS_GDP_RAS </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GAP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> PKC </ci>
+                </apply>
+                <ci> GAP_Vmax3 </ci>
+                <ci> GAP0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> GAP_km3 </ci>
+                <ci> GAP0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> GAP_kf4 </ci>
+              <ci> GAP_GAPstar </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GAP_GAPstar">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> PKC </ci>
+                <ci> GAP_Vmax3 </ci>
+                <ci> GAP0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> GAP_km3 </ci>
+                <ci> GAP0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> GAP_kf4 </ci>
+              <ci> GAP_GAPstar </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

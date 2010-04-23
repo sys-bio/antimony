@@ -1,0 +1,136 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+
+model de_paor_model_1986_version03__environment(time_)
+end
+
+model de_paor_model_1986_version03__f(f, r, p)
+
+  // Assignment Rules:
+  f := a * p * power( r , 4.0 );
+
+  // Variable initializations:
+  a = 1.0;
+end
+
+model de_paor_model_1986_version03__r(r, ur0, m, r0, p, time_)
+
+  // Variable initializations:
+  r = 0.5;
+  beta = 1.0;
+  alpha = 1.0;
+end
+
+model de_paor_model_1986_version03__y(y, r, r1, ur1)
+
+  // Assignment Rules:
+  y := ( r - r1 ) * ur1;
+end
+
+model de_paor_model_1986_version03__z(z, t1, y, x1)
+
+  // Assignment Rules:
+  z := ( y - x1 ) / t1;
+end
+
+model de_paor_model_1986_version03__x1(x1, t1, y, time_)
+
+  // Variable initializations:
+  x1 = 0.0;
+end
+
+model de_paor_model_1986_version03__q(q, z, uz)
+
+  // Assignment Rules:
+  q := k * ( 1.0 - exp(-(( d * z )))) * uz;
+
+  // Variable initializations:
+  d = 5.0;
+  k = 10.5;
+end
+
+model de_paor_model_1986_version03__x2(x2, t2, q, time_)
+
+  // Variable initializations:
+  x2 = 0.0;
+end
+
+model de_paor_model_1986_version03__x3(x3, t2, x2, time_)
+
+  // Variable initializations:
+  x3 = 0.0;
+end
+
+model de_paor_model_1986_version03__m(m, x3, phi)
+
+  // Assignment Rules:
+  m := x3 * phi;
+end
+
+model de_paor_model_1986_version03__phi(phi, r)
+
+  // Assignment Rules:
+  phi := piecewise( 0.0 , r < 0.25 , 0.0 , r > 2.0 , 1.0 - 1.3061225 * ( r - 1.125 ) * ( r - 1.125 ) );
+end
+
+model de_paor_model_1986_version03__ur0(ur0, r, r0)
+
+  // Assignment Rules:
+  ur0 := piecewise( 1.0 , r > r0 , 0.0 );
+end
+
+model de_paor_model_1986_version03__ur1(ur1, r, r1)
+
+  // Assignment Rules:
+  ur1 := piecewise( 1.0 , r > r1 , 0.0 );
+end
+
+model de_paor_model_1986_version03__uz(uz, z)
+
+  // Assignment Rules:
+  uz := piecewise( 1.0 , z > 0.0 , 0.0 );
+end
+
+model de_paor_model_1986_version03__h(h, t4, f, time_)
+
+  // Variable initializations:
+  h = 0.0;
+end
+
+model de_paor_model_1986_version03__model_parameters(r0, r1, t1, t2, t4, p)
+
+  // Variable initializations:
+  r0 = 0.5;
+  r1 = 1.2;
+  t1 = 0.1;
+  t2 = 0.5;
+  t4 = 20.0;
+  p = 1.05;
+end
+
+model de_paor_model_1986_version03____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: de_paor_model_1986_version03__environment(time_);
+  f: de_paor_model_1986_version03__f(f0, r0, p);
+  r: de_paor_model_1986_version03__r(r0, ur00, m0, r00, p, time_);
+  y: de_paor_model_1986_version03__y(y0, r0, r1, ur10);
+  z: de_paor_model_1986_version03__z(z0, t1, y0, x10);
+  x1: de_paor_model_1986_version03__x1(x10, t1, y0, time_);
+  q: de_paor_model_1986_version03__q(q0, z0, uz0);
+  x2: de_paor_model_1986_version03__x2(x20, t2, q0, time_);
+  x3: de_paor_model_1986_version03__x3(x30, t2, x20, time_);
+  m: de_paor_model_1986_version03__m(m0, x30, phi0);
+  phi: de_paor_model_1986_version03__phi(phi0, r0);
+  ur0: de_paor_model_1986_version03__ur0(ur00, r0, r00);
+  ur1: de_paor_model_1986_version03__ur1(ur10, r0, r1);
+  uz: de_paor_model_1986_version03__uz(uz0, z0);
+  h: de_paor_model_1986_version03__h(h0, t4, f0, time_);
+  model_parameters: de_paor_model_1986_version03__model_parameters(r00, r1, t1, t2, t4, p);
+end

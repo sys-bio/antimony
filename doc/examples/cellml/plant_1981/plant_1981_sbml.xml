@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="plant_1981_version01____main" name="plant_1981_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="V" constant="false"/>
+      <parameter id="membrane_Cm" value="1"/>
+      <parameter id="i_Na" constant="false"/>
+      <parameter id="i_Ca" constant="false"/>
+      <parameter id="i_K" constant="false"/>
+      <parameter id="i_K_Ca" constant="false"/>
+      <parameter id="i_L" constant="false"/>
+      <parameter id="sodium_current_g_Na" value="4"/>
+      <parameter id="sodium_current_V_Na" value="30"/>
+      <parameter id="m_infinity" constant="false"/>
+      <parameter id="h" constant="false"/>
+      <parameter id="sodium_current_sodium_current_m_gate_alpha_m" constant="false"/>
+      <parameter id="sodium_current_sodium_current_m_gate_beta_m" constant="false"/>
+      <parameter id="sodium_current_sodium_current_h_gate_h_infinity" constant="false"/>
+      <parameter id="sodium_current_sodium_current_h_gate_alpha_h" constant="false"/>
+      <parameter id="sodium_current_sodium_current_h_gate_beta_h" constant="false"/>
+      <parameter id="sodium_current_sodium_current_h_gate_tau_h" constant="false"/>
+      <parameter id="c" constant="false"/>
+      <parameter id="calcium_current_V_Ca" value="140"/>
+      <parameter id="calcium_current_g_Ca" value="0.004"/>
+      <parameter id="calcium_current_f" value="0.0003"/>
+      <parameter id="calcium_current_k1" value="0.0085"/>
+      <parameter id="x" constant="false"/>
+      <parameter id="calcium_current_calcium_current_x_gate_x_infinity" constant="false"/>
+      <parameter id="calcium_current_calcium_current_x_gate_tau_x" value="235"/>
+      <parameter id="V_K" value="-75"/>
+      <parameter id="potassium_current_g_K" value="0.3"/>
+      <parameter id="n" constant="false"/>
+      <parameter id="potassium_current_potassium_current_n_gate_n_infinity" constant="false"/>
+      <parameter id="potassium_current_potassium_current_n_gate_alpha_n" constant="false"/>
+      <parameter id="potassium_current_potassium_current_n_gate_beta_n" constant="false"/>
+      <parameter id="potassium_current_potassium_current_n_gate_tau_n" constant="false"/>
+      <parameter id="calcium_activated_potassium_current_g_K_Ca" value="0.03"/>
+      <parameter id="leak_current_g_L" value="0.003"/>
+      <parameter id="leak_current_V_L" value="-40"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> i_Na </ci>
+                <ci> i_Ca </ci>
+                <ci> i_K </ci>
+                <ci> i_K_Ca </ci>
+                <ci> i_L </ci>
+              </apply>
+            </apply>
+            <ci> membrane_Cm </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="i_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> sodium_current_g_Na </ci>
+            <apply>
+              <power/>
+              <ci> m_infinity </ci>
+              <cn> 3 </cn>
+            </apply>
+            <ci> h </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> sodium_current_V_Na </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_current_g_Ca </ci>
+            <ci> x </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> calcium_current_V_Ca </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_K">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> potassium_current_g_K </ci>
+            <apply>
+              <power/>
+              <ci> n </ci>
+              <cn> 4 </cn>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_K_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <ci> calcium_activated_potassium_current_g_K_Ca </ci>
+                <ci> c </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 0.5 </cn>
+                <ci> c </ci>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_L">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> leak_current_g_L </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> leak_current_V_L </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="m_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> sodium_current_sodium_current_m_gate_alpha_m </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn> 1.21 </cn>
+                  <ci> V </ci>
+                </apply>
+                <cn> 78.71 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> sodium_current_sodium_current_m_gate_alpha_m </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn> 1.21 </cn>
+                    <ci> V </ci>
+                  </apply>
+                  <cn> 78.71 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> sodium_current_sodium_current_m_gate_beta_m </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn> 1.21 </cn>
+                    <ci> V </ci>
+                  </apply>
+                  <cn> 78.71 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> sodium_current_sodium_current_h_gate_h_infinity </ci>
+              <ci> h </ci>
+            </apply>
+            <ci> sodium_current_sodium_current_h_gate_tau_h </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="sodium_current_sodium_current_m_gate_alpha_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.1 </cn>
+              <apply>
+                <minus/>
+                <ci> V </ci>
+                <cn> 50 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <times/>
+                <cn> -1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> V </ci>
+                      <cn> 50 </cn>
+                    </apply>
+                    <cn> -10 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="sodium_current_sodium_current_m_gate_beta_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 4 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <ci> V </ci>
+                  <cn> 25 </cn>
+                </apply>
+                <cn> -18 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="sodium_current_sodium_current_h_gate_h_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> sodium_current_sodium_current_h_gate_alpha_h </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn> 1.21 </cn>
+                  <ci> V </ci>
+                </apply>
+                <cn> 78.71 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> sodium_current_sodium_current_h_gate_alpha_h </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn> 1.21 </cn>
+                    <ci> V </ci>
+                  </apply>
+                  <cn> 78.71 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> sodium_current_sodium_current_h_gate_beta_h </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn> 1.21 </cn>
+                    <ci> V </ci>
+                  </apply>
+                  <cn> 78.71 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="sodium_current_sodium_current_h_gate_alpha_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.07 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <ci> V </ci>
+                  <cn> 25 </cn>
+                </apply>
+                <cn> -20 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="sodium_current_sodium_current_h_gate_beta_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.07 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> V </ci>
+                    <cn> 55 </cn>
+                  </apply>
+                  <cn> 10 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> V </ci>
+                    <cn> 55 </cn>
+                  </apply>
+                  <cn> 10 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="sodium_current_sodium_current_h_gate_tau_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <times/>
+              <cn> 0.08 </cn>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> sodium_current_sodium_current_h_gate_alpha_h </ci>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <cn> 1.21 </cn>
+                      <ci> V </ci>
+                    </apply>
+                    <cn> 78.71 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> sodium_current_sodium_current_h_gate_beta_h </ci>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <cn> 1.21 </cn>
+                      <ci> V </ci>
+                    </apply>
+                    <cn> 78.71 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_current_f </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> calcium_current_k1 </ci>
+                <ci> x </ci>
+                <apply>
+                  <minus/>
+                  <ci> V </ci>
+                  <ci> calcium_current_V_Ca </ci>
+                </apply>
+              </apply>
+              <ci> c </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> calcium_current_calcium_current_x_gate_x_infinity </ci>
+              <ci> x </ci>
+            </apply>
+            <ci> calcium_current_calcium_current_x_gate_tau_x </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="calcium_current_calcium_current_x_gate_x_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <cn> -0.15 </cn>
+                  <apply>
+                    <plus/>
+                    <ci> V </ci>
+                    <cn> 50 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <cn> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> potassium_current_potassium_current_n_gate_n_infinity </ci>
+              <ci> n </ci>
+            </apply>
+            <ci> potassium_current_potassium_current_n_gate_tau_n </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="potassium_current_potassium_current_n_gate_n_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> potassium_current_potassium_current_n_gate_alpha_n </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn> 1.21 </cn>
+                  <ci> V </ci>
+                </apply>
+                <cn> 78.71 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> potassium_current_potassium_current_n_gate_alpha_n </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn> 1.21 </cn>
+                    <ci> V </ci>
+                  </apply>
+                  <cn> 78.71 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> potassium_current_potassium_current_n_gate_beta_n </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn> 1.21 </cn>
+                    <ci> V </ci>
+                  </apply>
+                  <cn> 78.71 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="potassium_current_potassium_current_n_gate_alpha_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.07 </cn>
+              <apply>
+                <minus/>
+                <ci> V </ci>
+                <cn> 55 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> V </ci>
+                    <cn> 55 </cn>
+                  </apply>
+                  <cn> -10 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="potassium_current_potassium_current_n_gate_beta_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.125 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <ci> V </ci>
+                  <cn> 45 </cn>
+                </apply>
+                <cn> -80 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="potassium_current_potassium_current_n_gate_tau_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <times/>
+              <cn> 0.08 </cn>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> potassium_current_potassium_current_n_gate_alpha_n </ci>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <cn> 1.21 </cn>
+                      <ci> V </ci>
+                    </apply>
+                    <cn> 78.71 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> potassium_current_potassium_current_n_gate_beta_n </ci>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <cn> 1.21 </cn>
+                      <ci> V </ci>
+                    </apply>
+                    <cn> 78.71 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

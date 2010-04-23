@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="cheng_model_2000____main" name="cheng_model_2000____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="F_SE0" constant="false"/>
+      <parameter id="F_SE_cT" value="27.8"/>
+      <parameter id="F_SE_kT" value="0.0047"/>
+      <parameter id="F_SE_LT_r" value="0.964"/>
+      <parameter id="LT_" value="0.02"/>
+      <parameter id="F_max" value="23"/>
+      <parameter id="F_PE10" constant="false"/>
+      <parameter id="F_PE1_c1" value="23"/>
+      <parameter id="F_PE1_k1" value="0.046"/>
+      <parameter id="F_PE1_L_r1" value="1.17"/>
+      <parameter id="F_PE1_eta" value="0.001"/>
+      <parameter id="L1" value="0.15" constant="false"/>
+      <parameter id="L_max" value="0.13"/>
+      <parameter id="V1" value="0.09314" constant="false"/>
+      <parameter id="F_PE20" constant="false"/>
+      <parameter id="F_PE2_c2" value="23"/>
+      <parameter id="F_PE2_k2" value="0.046"/>
+      <parameter id="F_PE2_L_r2" value="1.17"/>
+      <parameter id="FL0" constant="false"/>
+      <parameter id="FL_beta" value="1.55"/>
+      <parameter id="FL_omega" value="0.75"/>
+      <parameter id="FL_rho" value="2.12"/>
+      <parameter id="FV0" constant="false"/>
+      <parameter id="FV_av0" value="-1.53"/>
+      <parameter id="FV_av1" value="0"/>
+      <parameter id="FV_av2" value="0"/>
+      <parameter id="FV_cv0" value="-5.7"/>
+      <parameter id="FV_cv1" value="9.18"/>
+      <parameter id="FV_bv" value="0.69"/>
+      <parameter id="FV_V_max" value="-9.15"/>
+      <parameter id="Af0" constant="false"/>
+      <parameter id="Af_af" value="0.56"/>
+      <parameter id="Af_nf0" value="2.1"/>
+      <parameter id="Af_nf1" value="3.3"/>
+      <parameter id="Af_nf" value="1"/>
+      <parameter id="Y0" value="1" constant="false"/>
+      <parameter id="S0" value="1" constant="false"/>
+      <parameter id="f_eff" value="0" constant="false"/>
+      <parameter id="L_eff0" value="0.1497" constant="false"/>
+      <parameter id="F00" constant="false"/>
+      <parameter id="F_CE0" constant="false"/>
+      <parameter id="F_total0" constant="false"/>
+      <parameter id="L_eff_T_L" value="0.088"/>
+      <parameter id="S_T_s" value="43"/>
+      <parameter id="S_as1" value="1.76"/>
+      <parameter id="S_as2" value="0.96"/>
+      <parameter id="S_as_" constant="false"/>
+      <parameter id="Y_c_Y" value="0.35"/>
+      <parameter id="Y_V_Y" value="0.1"/>
+      <parameter id="Y_T_Y" value="200"/>
+      <parameter id="f_int" value="0" constant="false"/>
+      <parameter id="rise_and_fall_time_df_eff_dt" constant="false"/>
+      <parameter id="rise_and_fall_time_T_f1" value="0.35"/>
+      <parameter id="rise_and_fall_time_T_f2" value="0.1"/>
+      <parameter id="rise_and_fall_time_T_f3" value="200"/>
+      <parameter id="rise_and_fall_time_T_f4" value="200"/>
+      <parameter id="f_env" value="1"/>
+      <parameter id="V_mass" value="0.005"/>
+      <parameter id="V00" constant="false"/>
+      <parameter id="L00" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="rise_and_fall_time_T_f"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="F_SE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> F_SE_cT </ci>
+            <ci> F_max </ci>
+            <ci> F_SE_kT </ci>
+            <apply>
+              <ln/>
+              <apply>
+                <plus/>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> LT_ </ci>
+                      <ci> F_SE_LT_r </ci>
+                    </apply>
+                    <ci> F_SE_kT </ci>
+                  </apply>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F_PE10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> F_PE1_c1 </ci>
+              <ci> F_PE1_k1 </ci>
+              <apply>
+                <ln/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <minus/>
+                        <apply>
+                          <divide/>
+                          <ci> L1 </ci>
+                          <ci> L_max </ci>
+                        </apply>
+                        <ci> F_PE1_L_r1 </ci>
+                      </apply>
+                      <ci> F_PE1_k1 </ci>
+                    </apply>
+                  </apply>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> F_PE1_eta </ci>
+              <ci> V1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="L1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> V1 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="V1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> F_total0 </ci>
+            <ci> V_mass </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="F_PE20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> F_PE2_c2 </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> F_PE2_k2 </ci>
+                  <apply>
+                    <minus/>
+                    <ci> L1 </ci>
+                    <ci> F_PE2_L_r2 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="FL0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <exp/>
+            <apply>
+              <minus/>
+              <apply>
+                <power/>
+                <apply>
+                  <abs/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <power/>
+                        <ci> L1 </ci>
+                        <ci> FL_beta </ci>
+                      </apply>
+                      <cn type="integer"> 1 </cn>
+                    </apply>
+                    <ci> FL_omega </ci>
+                  </apply>
+                </apply>
+                <ci> FL_rho </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="FV0"/>
+      <assignmentRule variable="Af0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <minus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> Y0 </ci>
+                      <ci> S0 </ci>
+                      <ci> f_eff </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> Af_af </ci>
+                      <ci> Af_nf </ci>
+                    </apply>
+                  </apply>
+                  <ci> Af_nf </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Y0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Y_c_Y </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <minus/>
+                          <apply>
+                            <abs/>
+                            <ci> V1 </ci>
+                          </apply>
+                        </apply>
+                        <ci> Y_V_Y </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <ci> Y0 </ci>
+              </apply>
+            </apply>
+            <ci> Y_T_Y </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="S0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> S_as_ </ci>
+              <ci> S0 </ci>
+            </apply>
+            <ci> S_T_s </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="f_eff">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> rise_and_fall_time_df_eff_dt </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="L_eff0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <apply>
+                <minus/>
+                <ci> L1 </ci>
+                <ci> L_eff0 </ci>
+              </apply>
+              <cn type="integer"> 3 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <ci> L_eff_T_L </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> Af0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="F00">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> Af0 </ci>
+              <apply>
+                <plus/>
+                <ci> FL0 </ci>
+                <ci> FV0 </ci>
+                <ci> F_PE20 </ci>
+              </apply>
+            </apply>
+            <ci> F_PE10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F_CE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> F00 </ci>
+            <ci> F_max </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F_total0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> F_SE0 </ci>
+            <ci> F_CE0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="S_as_"/>
+      <rateRule variable="f_int">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> f_env </ci>
+              <ci> f_int </ci>
+            </apply>
+            <ci> rise_and_fall_time_T_f </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="rise_and_fall_time_df_eff_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> f_int </ci>
+              <ci> f_eff </ci>
+            </apply>
+            <ci> rise_and_fall_time_T_f </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V00">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> V1 </ci>
+            <ci> L_max </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="L00">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> L1 </ci>
+            <ci> L_max </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

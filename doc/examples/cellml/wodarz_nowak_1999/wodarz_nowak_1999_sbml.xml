@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="wodarz_1999____main" name="wodarz_1999____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="x0" value="10" constant="false"/>
+      <parameter id="x_lamda" value="1"/>
+      <parameter id="x_d" value="0.1"/>
+      <parameter id="beta" value="0.5"/>
+      <parameter id="s" constant="false"/>
+      <parameter id="y0" value="0.1" constant="false"/>
+      <parameter id="y_a" value="0.2"/>
+      <parameter id="p" value="1"/>
+      <parameter id="z0" value="0" constant="false"/>
+      <parameter id="y_log_y" constant="false"/>
+      <parameter id="w0" value="0.001" constant="false"/>
+      <parameter id="w_b" value="0.01"/>
+      <parameter id="c" value="0.1"/>
+      <parameter id="q" value="0.5"/>
+      <parameter id="w_log_w" constant="false"/>
+      <parameter id="z_h" value="0.1"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="x0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> x_lamda </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> x_d </ci>
+                <ci> x0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> s </ci>
+                <ci> beta </ci>
+                <ci> x0 </ci>
+                <ci> y0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="s"/>
+      <rateRule variable="y0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> s </ci>
+              <ci> beta </ci>
+              <ci> x0 </ci>
+              <ci> y0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> y_a </ci>
+                <ci> y0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> p </ci>
+                <ci> y0 </ci>
+                <ci> z0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="z0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> c </ci>
+              <ci> q </ci>
+              <ci> y0 </ci>
+              <ci> w0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> z_h </ci>
+              <ci> z0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="y_log_y">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ln/>
+            <apply>
+              <times/>
+              <ci> y0 </ci>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="w0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> c </ci>
+              <ci> x0 </ci>
+              <ci> y0 </ci>
+              <ci> w0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> c </ci>
+                <ci> q </ci>
+                <ci> y0 </ci>
+                <ci> w0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> w_b </ci>
+                <ci> w0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="w_log_w">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ln/>
+            <apply>
+              <times/>
+              <ci> w0 </ci>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

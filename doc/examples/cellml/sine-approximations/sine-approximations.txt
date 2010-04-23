@@ -1,0 +1,27 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    The units of "x" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+
+model sine_approximations__main()
+
+  // Assignment Rules:
+  sin1 := sin(x);
+  sin3 := piecewise( -((z * z)) + C + z , x < kPi_2 , -((z * z)) + C + z , x < kPi , z * z - C - z , x < kPi_32 , z * z - C - z );
+  k2_oPi := 2.0 / pi;
+  k2Pi := 2.0 * pi;
+  kPi_2 := pi / 2.0;
+  kPi := pi;
+  kPi_32 := 3.0 * pi / 2.0;
+  z := piecewise( x * k2_oPi - 0.5 , x < kPi_2 , (pi - x) * k2_oPi - 0.5 , x < kPi , (x - pi ) * k2_oPi - 0.5 , x < kPi_32 , (k2Pi - x) * k2_oPi - 0.5 );
+
+  // Variable initializations:
+  sin2 = 0;
+  C = 0.75;
+end
+
+model sine_approximations____main()
+
+  // Sub-modules, and any changes to those submodules:
+  main: sine_approximations__main();
+end

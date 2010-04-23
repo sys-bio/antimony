@@ -1,0 +1,103 @@
+//Created by libAntimony v1.3
+model cui_kaandorp_2006_version01__environment(time_)
+end
+
+model cui_kaandorp_2006_version01__m(m, x, time_)
+
+  // Assignment Rules:
+  dmdt := kM_plus * (CaMtotal - m) * power(x, 3 ) - kM_minus * m;
+
+  // Rate Rules:
+  m' = kM_plus * ( CaMtotal - m ) * power( x , 3.0 ) - kM_minus * m;
+
+  // Variable initializations:
+  m = 0.0;
+  kM_plus = 500.0;
+  kM_minus = 100.0;
+  CaMtotal = 25.0;
+end
+
+model cui_kaandorp_2006_version01__z(z, m, time_)
+
+  // Assignment Rules:
+  dzdt := kN_plus * (CaNtotal - z) * m - kN_minus * z;
+
+  // Rate Rules:
+  z' = kN_plus * ( CaNtotal - z ) * m - kN_minus * z;
+
+  // Variable initializations:
+  z = 1.0E-8;
+  kN_plus = 5.0;
+  kN_minus = 5.0;
+  CaNtotal = 25.0;
+end
+
+model cui_kaandorp_2006_version01__h(h, z, phi, time_)
+
+  // Rate Rules:
+  h' = d * phi * ( 1.0 / z ) * ( 1.0 - h ) - f * ( 1.0 - phi * ( 1.0 / z )) * h;
+
+  // Variable initializations:
+  h = 0.0;
+  d = 0.4;
+  f = 0.1;
+end
+
+model cui_kaandorp_2006_version01__phi(phi, lamda, L0, y, N)
+
+  // Assignment Rules:
+  phi := 1.0 / ( 1.0 + L0 * (power( lamda * y , N + 1.0 ) - 1.0 ) / (( lamda * y - 1.0 ) * (( y - 1.0 ) / (power( y , N + 1.0 ) - 1.0 ))));
+end
+
+model cui_kaandorp_2006_version01__psi(psi, lamda, L0, y, N)
+
+  // Assignment Rules:
+  psi := ( 1.0 + L0 ) / ((power( y , N + 1.0 ) - 1.0 ) / ( y - 1.0 ) + L0 * ((power( lamda * y , N + 1.0 ) - 1.0 ) / ( lamda * y - 1.0 )));
+end
+
+model cui_kaandorp_2006_version01__x(x, h, psi, z, time_)
+
+  // Assignment Rules:
+  dxdt := Vx * Caex / (Kx + Caex) - (h * psi * (1 / z) * (V1 * x / (K1 + x)) + h * psi * (1 / z) * (V2 * x / (K2 + x)) + 1 / (1 + kc * z) * (V3 * x / (K3 + x)) + alpha * x);
+
+  // Rate Rules:
+  x' = Vx * Caex / ( Kx + Caex ) - ( h * psi * ( 1.0 / z ) * ( V1 * x / ( K1 + x )) + h * psi * ( 1.0 / z ) * ( V2 * x / ( K2 + x )) + 1.0 / ( 1.0 + kc * z ) * ( V3 * x / ( K3 + x )) + alpha * x );
+
+  // Variable initializations:
+  x = 0.0;
+  Vx = 1000.0;
+  Kx = 500.0;
+  V1 = 30000.0;
+  K1 = 4.3;
+  V2 = 100.0;
+  K2 = 0.1;
+  V3 = 10000.0;
+  K3 = 100.0;
+  kc = 10.0;
+  alpha = 0.006;
+  Caex = 1.0;
+end
+
+model cui_kaandorp_2006_version01__model_parameters(L0, N, lamda, y, z)
+
+  // Assignment Rules:
+  L0 := power( 10.0 , -(( N / 2.0 )));
+  y := 1.0 / z;
+
+  // Variable initializations:
+  N = 13.0;
+  lamda = 5.0;
+end
+
+model cui_kaandorp_2006_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cui_kaandorp_2006_version01__environment(time_);
+  m: cui_kaandorp_2006_version01__m(m0, x0, time_);
+  z: cui_kaandorp_2006_version01__z(z0, m0, time_);
+  h: cui_kaandorp_2006_version01__h(h0, z0, phi0, time_);
+  phi: cui_kaandorp_2006_version01__phi(phi0, lamda, L0, y, N);
+  psi: cui_kaandorp_2006_version01__psi(psi0, lamda, L0, y, N);
+  x: cui_kaandorp_2006_version01__x(x0, h0, psi0, z0, time_);
+  model_parameters: cui_kaandorp_2006_version01__model_parameters(L0, N, lamda, y, z0);
+end

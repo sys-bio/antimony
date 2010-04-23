@@ -1,0 +1,48 @@
+//Created by libAntimony v1.3
+model herz_bonhoeffer_anderson_may_nowak_1996_version01__environment(time_)
+end
+
+model herz_bonhoeffer_anderson_may_nowak_1996_version01__x(x, beta, vI, time_)
+
+  // Rate Rules:
+  x' = lamda - ( x + beta * x * vI );
+end
+
+model herz_bonhoeffer_anderson_may_nowak_1996_version01__y(y, beta, x, vI, time_)
+
+  // Rate Rules:
+  y' = beta * ( time_ - tau ) * x * ( time_ - tau ) * vI * ( time_ - tau ) * exp( a_ * tau ) - a * y;
+
+  // Variable initializations:
+  tau = 12.0;
+  a = 0.5;
+end
+
+model herz_bonhoeffer_anderson_may_nowak_1996_version01__v(u, y, time_)
+
+  // Rate Rules:
+  v' = k * y - u * v;
+end
+
+model herz_bonhoeffer_anderson_may_nowak_1996_version01__vI(vI, u, time_)
+
+  // Rate Rules:
+  vI' = -(( u * vI ));
+end
+
+model herz_bonhoeffer_anderson_may_nowak_1996_version01__kinetic_parameters(beta, u)
+
+  // Variable initializations:
+  u = 3.0;
+end
+
+model herz_bonhoeffer_anderson_may_nowak_1996_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: herz_bonhoeffer_anderson_may_nowak_1996_version01__environment(time_);
+  x: herz_bonhoeffer_anderson_may_nowak_1996_version01__x(x0, beta, vI0, time_);
+  y: herz_bonhoeffer_anderson_may_nowak_1996_version01__y(y0, beta, x0, vI0, time_);
+  v: herz_bonhoeffer_anderson_may_nowak_1996_version01__v(u, y0, time_);
+  vI: herz_bonhoeffer_anderson_may_nowak_1996_version01__vI(vI0, u, time_);
+  kinetic_parameters: herz_bonhoeffer_anderson_may_nowak_1996_version01__kinetic_parameters(beta, u);
+end

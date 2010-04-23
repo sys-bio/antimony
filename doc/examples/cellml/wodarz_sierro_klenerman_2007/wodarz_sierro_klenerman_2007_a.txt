@@ -1,0 +1,82 @@
+//Created by libAntimony v1.3
+model wodarz_2007a__environment(time_)
+end
+
+model wodarz_2007a__x(x, d, gamma, lambda_, beta, v, time_)
+
+  // Rate Rules:
+  x' = lambda_ - (d * x + beta * x * v + gamma * x * v);
+
+  // Variable initializations:
+  x = 1;
+end
+
+model wodarz_2007a__y0(y0, beta, x, a0, eta, phi, L, v, time_)
+
+  // Rate Rules:
+  y0' = beta * x * v - (a0 * y0 + eta * y0) + phi * L;
+
+  // Variable initializations:
+  y0 = 0;
+end
+
+model wodarz_2007a__y1(y1, a1, eta, y0, time_)
+
+  // Rate Rules:
+  y1' = eta * y0 - a1 * y1;
+
+  // Variable initializations:
+  y1 = 0;
+end
+
+model wodarz_2007a__L(L, gamma, x, v, phi, d, time_)
+
+  // Rate Rules:
+  L' = gamma * x * v - (phi * L + d * L);
+
+  // Variable initializations:
+  L = 0;
+end
+
+model wodarz_2007a__v(v, k, y1, u, time_)
+
+  // Rate Rules:
+  v' = k * y1 - u * v;
+
+  // Variable initializations:
+  v = 1;
+end
+
+model wodarz_2007a__R0(gamma, lambda_, eta, a1, a0, beta, phi, d)
+
+  // Assignment Rules:
+  R0 := lambda_ * eta / (d * a1 * (a0 + eta)) * (beta + gamma * phi / (phi + d));
+end
+
+model wodarz_2007a__model_parameters(a0, a1, k, u, lambda_, d, beta, gamma, phi, eta)
+
+  // Variable initializations:
+  a0 = 0.1;
+  a1 = 0.2;
+  k = 1;
+  u = 1;
+  lambda_ = 10;
+  d = 0.1;
+  beta = 0.1;
+  gamma = 0.5;
+  phi = 0.1;
+  eta = 0.01;
+end
+
+model wodarz_2007a____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: wodarz_2007a__environment(time_);
+  x: wodarz_2007a__x(x0, d, gamma, lambda_, beta, v0, time_);
+  y0: wodarz_2007a__y0(y00, beta, x0, a0, eta, phi, L0, v0, time_);
+  y1: wodarz_2007a__y1(y10, a1, eta, y00, time_);
+  L: wodarz_2007a__L(L0, gamma, x0, v0, phi, d, time_);
+  v: wodarz_2007a__v(v0, k, y10, u, time_);
+  R0: wodarz_2007a__R0(gamma, lambda_, eta, a1, a0, beta, phi, d);
+  model_parameters: wodarz_2007a__model_parameters(a0, a1, k, u, lambda_, d, beta, gamma, phi, eta);
+end

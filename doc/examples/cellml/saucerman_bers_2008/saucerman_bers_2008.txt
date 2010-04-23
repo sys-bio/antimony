@@ -1,0 +1,1474 @@
+//Created by libAntimony v1.3
+model saucerman_bers_2008__environment(time_)
+end
+
+model saucerman_bers_2008__JCaM_DYAD_SL(CaM_DYAD, B_DYAD, CaM_SL)
+
+  // Assignment Rules:
+  JCaM_DYAD_SL := k0B_off * CaM_DYAD - k0B_on * B_DYAD * CaM_SL;
+
+  // Variable initializations:
+  k0B_on = 0.007;
+  k0B_off = 0.0014;
+end
+
+model saucerman_bers_2008__JCa2CaM_DYAD_SL(Ca2CaM_DYAD, B_DYAD, Ca2CaM_SL)
+
+  // Assignment Rules:
+  JCa2CaM_DYAD_SL := k2B_off * Ca2CaM_DYAD - k2B_on * B_DYAD * Ca2CaM_SL;
+
+  // Variable initializations:
+  k2B_on = 0.007;
+  k2B_off = 0.000014;
+end
+
+model saucerman_bers_2008__JCa4CaM_DYAD_SL(Ca4CaM_DYAD, B_DYAD, Ca4CaM_SL)
+
+  // Assignment Rules:
+  JCa4CaM_DYAD_SL := k4B_off * Ca4CaM_DYAD - k4B_on * B_DYAD * Ca4CaM_SL;
+
+  // Variable initializations:
+  k4B_on = 0.007;
+  k4B_off = 0.000014;
+end
+
+model saucerman_bers_2008__JCaM_SL_CYT(kSLCYT, CaM_SL, CaM_CYT)
+
+  // Assignment Rules:
+  JCaM_SL_CYT := kSLCYT * ( CaM_SL - CaM_CYT );
+end
+
+model saucerman_bers_2008__JCa2CaM_SL_CYT(kSLCYT, Ca2CaM_SL, Ca2CaM_CYT)
+
+  // Assignment Rules:
+  JCa2CaM_SL_CYT := kSLCYT * ( Ca2CaM_SL - Ca2CaM_CYT );
+end
+
+model saucerman_bers_2008__JCa4CaM_SL_CYT(kSLCYT, Ca4CaM_SL, Ca4CaM_CYT)
+
+  // Assignment Rules:
+  JCa4CaM_SL_CYT := kSLCYT * ( Ca4CaM_SL - Ca4CaM_CYT );
+end
+
+model saucerman_bers_2008__model_parameters(kSLCYT)
+
+  // Variable initializations:
+  kSLCYT = 8.59E-12;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_02(Reaction_02, k02, k20, K, Mg, Ca, CaM, Ca2CaM)
+
+  // Assignment Rules:
+  Reaction_02 := k02 * power( Ca , 2 ) * CaM - k20 * Ca2CaM;
+  k02 := k20 / Kd02;
+  Kd02 := piecewise( 0.0025 * ( 1.0 + K / 0.94 - Mg / 0.012 ) * ( 1.0 + K / 8.1 + Mg / 0.022 ) , Mg <= 1.0 , 0.0025 * ( 1.0 + K / 0.94 + ( Mg - 1.0 ) / 0.06 - 1.0 / 0.012 ) * ( 1.0 + K / 8.1 + 1.0 / 0.022 + ( Mg - 1.0 ) / 0.068 ) );
+
+  // Variable initializations:
+  k20 = 10.0;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_24(Reaction_24, k24, k42, K, Mg, Ca, Ca2CaM, Ca4CaM)
+
+  // Assignment Rules:
+  Reaction_24 := k24 * power( Ca , 2 ) * Ca2CaM - k42 * Ca4CaM;
+  k24 := k42 / Kd24;
+  Kd24 := piecewise( 0.128 * ( 1.0 + K / 0.64 + Mg / 0.014 ) * ( 1.0 + K / 13.0 - Mg / 0.153 ) , Mg <= 1.0 , 0.128 * ( 1.0 + K / 0.64 + ( Mg - 1.0 ) / 0.005 ) * ( 1.0 / 0.012 ) * ( 1.0 + K / 13.0 + ( Mg - 1.0 ) / 0.15 - 1.0 / 0.153 ) );
+
+  // Variable initializations:
+  k42 = 500.0;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_02B(Reaction_02B, k02, Ca, CaMB, Ca2CaMB)
+
+  // Assignment Rules:
+  Reaction_02B := k02B * power( Ca , 2 ) * CaMB - k20B * Ca2CaMB;
+  k02B := k02;
+
+  // Variable initializations:
+  k20B = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_24B(Reaction_24B, k24, k42, Ca, Ca2CaMB, Ca4CaMB)
+
+  // Assignment Rules:
+  Reaction_24B := k24B * power( Ca , 2 ) * Ca2CaMB - k42B * Ca4CaMB;
+  k24B := k24;
+  k42B := k42;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_2B(Reaction_2B, B, Ca2CaM, Ca2CaMB)
+
+  // Assignment Rules:
+  Reaction_2B := k2B_on * Ca2CaM * B - k2B_off * Ca2CaMB;
+
+  // Variable initializations:
+  k2B_on = 0.007;
+  k2B_off = 0.000014;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_0B(Reaction_0B, B, CaM, CaMB)
+
+  // Assignment Rules:
+  Reaction_0B := k0B_on * CaM * B - k0B_off * CaMB;
+
+  // Variable initializations:
+  k0B_on = 0.007;
+  k0B_off = 0.0014;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_4B(Reaction_4B, B, Ca4CaM, Ca4CaMB)
+
+  // Assignment Rules:
+  Reaction_4B := k4B_on * Ca4CaM * B - k4B_off * Ca4CaMB;
+
+  // Variable initializations:
+  k4B_on = 0.007;
+  k4B_off = 0.000014;
+end
+
+model saucerman_model_dyadic_cleft_2008__B(B, CaMB, Ca2CaMB, Ca4CaMB)
+
+  // Assignment Rules:
+  B := Btot - ( CaMB + Ca2CaMB + Ca4CaMB );
+
+  // Variable initializations:
+  Btot = 1860.0;
+end
+
+model saucerman_model_dyadic_cleft_2008__CaM(CaM, Reaction_02, Reaction_0B, Reaction_0CaN, time_)
+
+  // Rate Rules:
+  CaM' = 1E-3 * -(( Reaction_02 + Reaction_0B + Reaction_0CaN ));
+
+  // Variable initializations:
+  CaM = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Ca2CaM(Ca2CaM, CaMKIItot, Reaction_02, Reaction_24, Reaction_2B, Reaction_2CaN, Reaction_CKt2a, Reaction_CKib2, time_)
+
+  // Rate Rules:
+  Ca2CaM' = 1E-3 * ( CaMKIItot * ( Reaction_CKt2a - Reaction_CKib2 ) + Reaction_02 - ( Reaction_24 + Reaction_2B + Reaction_2CaN ));
+
+  // Variable initializations:
+  Ca2CaM = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Ca4CaM(Ca4CaM, CaMKIItot, Reaction_24, Reaction_4CaN, Reaction_4B, Reaction_CKta, Reaction_CKib, time_)
+
+  // Rate Rules:
+  Ca4CaM' = 1E-3 * ( CaMKIItot * ( Reaction_CKta - Reaction_CKib ) + Reaction_24 - ( Reaction_4CaN + Reaction_4B ));
+
+  // Variable initializations:
+  Ca4CaM = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__CaMB(CaMB, Reaction_02B, Reaction_0B, time_)
+
+  // Rate Rules:
+  CaMB' = 1E-3 * ( Reaction_0B - Reaction_02B );
+
+  // Variable initializations:
+  CaMB = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Ca2CaMB(Ca2CaMB, Reaction_02B, Reaction_2B, Reaction_24B, time_)
+
+  // Rate Rules:
+  Ca2CaMB' = 1E-3 * ( Reaction_02B + Reaction_2B - Reaction_24B );
+
+  // Variable initializations:
+  Ca2CaMB = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Ca4CaMB(Ca4CaMB, Reaction_4B, Reaction_24B, time_)
+
+  // Rate Rules:
+  Ca4CaMB' = 1E-3 * ( Reaction_24B + Reaction_4B );
+
+  // Variable initializations:
+  Ca4CaMB = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__CaMKIIi(Pi_, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIi := Pi_ * CaMKIItot;
+end
+
+model saucerman_model_dyadic_cleft_2008__CaMKIIb2(Pb2, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIb2 := Pb2 * CaMKIItot;
+end
+
+model saucerman_model_dyadic_cleft_2008__CaMKIIb(Pb, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIb := Pb * CaMKIItot;
+end
+
+model saucerman_model_dyadic_cleft_2008__CaMKIIt(Pt, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIt := Pt * CaMKIItot;
+end
+
+model saucerman_model_dyadic_cleft_2008__CaMKIIt2(Pt2, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIt2 := Pt2 * CaMKIItot;
+end
+
+model saucerman_model_dyadic_cleft_2008__CaMKIIa(Pa, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIa := Pa * CaMKIItot;
+end
+
+model saucerman_model_dyadic_cleft_2008__Pi(Pi_, Pb, Pb2, Pt, Pt2, Pa)
+
+  // Assignment Rules:
+  Pi_ := 1.0 - ( Pb + Pb2 + Pt + Pt2 + Pa );
+end
+
+model saucerman_model_dyadic_cleft_2008__T(T, Pb, Pt, Pt2, Pa)
+
+  // Assignment Rules:
+  T := Pb + Pt + Pt2 + Pa;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_CKbt(Reaction_CKbt, kPP1, KmPP1, PP1tot, CaMKIItot, T, Pt, Pb)
+
+  // Assignment Rules:
+  Reaction_CKbt := kbt * Pb - kPP1 * PP1tot * Pt / ( KmPP1 + CaMKIItot * Pt );
+  kbt := 0.055 * T + 0.0074 * power( T , 2.0 ) + 0.015 * power( T , 3.0 );
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_CKib2(Reaction_CKib2, Ca2CaM, Pi_, Pb2)
+
+  // Assignment Rules:
+  Reaction_CKib2 := kib2 * Ca2CaM * Pi_ - kb2i * Pb2;
+
+  // Variable initializations:
+  kib2 = 65.67;
+  kb2i = 328.36;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_CKb2b(Reaction_CKb2b, k24, k42, Ca, Pb, Pb2)
+
+  // Assignment Rules:
+  Reaction_CKb2b := kb24 * power( Ca , 2.0 ) * Pb2 - kb42 * Pb2;
+  kb24 := k24;
+  kb42 := k42 * ( 33.5E-3 / 5.0 );
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_CKib(Reaction_CKib, Ca4CaM, Pi_, Pb)
+
+  // Assignment Rules:
+  Reaction_CKib := kib * Ca4CaM * Pi_ - kbi * Pb;
+
+  // Variable initializations:
+  kib = 6.567;
+  kbi = 2.2;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_CKtt2(Reaction_CKtt2, k24, k42, Ca, Pt, Pt2)
+
+  // Assignment Rules:
+  Reaction_CKtt2 := kt42 * Pt - kt24 * power( Ca , 2.0 ) * Pt2;
+  kt24 := k24;
+  kt42 := k42 * ( 33.5E-6 / 5.0 );
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_CKta(Reaction_CKta, Ca4CaM, Pt, Pa)
+
+  // Assignment Rules:
+  Reaction_CKta := kta * Pt - kat * Ca4CaM * Pa;
+
+  // Variable initializations:
+  kat = 6.567;
+  kta = 0.0022;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_CKt2a(Reaction_CKt2a, Ca2CaM, Pt2, Pa)
+
+  // Assignment Rules:
+  Reaction_CKt2a := kt2a * Pt2 - kat2 * Ca2CaM * Pa;
+
+  // Variable initializations:
+  kat2 = 6.567;
+  kt2a = 32.835;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_CKt2b2(Reaction_CKt2b2, kPP1, KmPP1, PP1tot, CaMKIItot, Pt2)
+
+  // Assignment Rules:
+  Reaction_CKt2b2 := kPP1 * PP1tot * Pt2 / ( KmPP1 + CaMKIItot * Pt2 );
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_CKai(Reaction_CKai, kPP1, KmPP1, PP1tot, CaMKIItot, Pa)
+
+  // Assignment Rules:
+  Reaction_CKai := kPP1 * PP1tot * Pa / ( KmPP1 + CaMKIItot * Pa );
+end
+
+model saucerman_model_dyadic_cleft_2008__Pb2(Pb2, Reaction_CKib2, Reaction_CKb2b, Reaction_CKt2b2, time_)
+
+  // Rate Rules:
+  Pb2' = 1E-3 * ( Reaction_CKt2b2 - ( Reaction_CKib2 + Reaction_CKb2b ));
+
+  // Variable initializations:
+  Pb2 = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Pb(Pb, Reaction_CKib, Reaction_CKb2b, Reaction_CKbt, time_)
+
+  // Rate Rules:
+  Pb' = 1E-3 * ( Reaction_CKib + Reaction_CKb2b - Reaction_CKbt );
+
+  // Variable initializations:
+  Pb = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Pt(Pt, Reaction_CKta, Reaction_CKtt2, Reaction_CKbt, time_)
+
+  // Rate Rules:
+  Pt' = 1E-3 * -(( Reaction_CKbt + Reaction_CKta + Reaction_CKtt2 ));
+
+  // Variable initializations:
+  Pt = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Pt2(Pt2, Reaction_CKt2a, Reaction_CKtt2, Reaction_CKt2b2, time_)
+
+  // Rate Rules:
+  Pt2' = 1E-3 * -(( Reaction_CKtt2 + Reaction_CKt2a + Reaction_CKt2b2 ));
+
+  // Variable initializations:
+  Pt2 = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Pa(Pa, Reaction_CKta, Reaction_CKt2a, Reaction_CKai, time_)
+
+  // Rate Rules:
+  Pa' = 1E-3 * ( Reaction_CKta + Reaction_CKt2a - Reaction_CKai );
+
+  // Variable initializations:
+  Pa = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Ca2CaN(Ca2CaN, Ca4CaN, CaMCaN, Ca2CaMCaN, Ca4CaMCaN)
+
+  // Assignment Rules:
+  Ca2CaN := CaNtot - ( Ca4CaN + CaMCaN + Ca2CaMCaN + Ca4CaMCaN );
+
+  // Variable initializations:
+  CaNtot = 3.62;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_Ca4CaN(Reaction_Ca4CaN, Ca, Ca2CaN, Ca4CaN)
+
+  // Assignment Rules:
+  Reaction_Ca4CaN := kCaNCa_on * power( Ca , 2 ) * Ca2CaN - kCaNCa_off * Ca4CaN;
+
+  // Variable initializations:
+  kCaNCa_on = 2.0;
+  kCaNCa_off = 1.0;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_02CaN(Reaction_02CaN, k02, k20, Ca, CaMCaN, Ca2CaMCaN)
+
+  // Assignment Rules:
+  Reaction_02CaN := k02CaN * power( Ca , 2 ) * CaMCaN - k20CaN * Ca2CaMCaN;
+  k02CaN := k02;
+  k20CaN := k20 / 160.0;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_24CaN(Reaction_24CaN, k24, k42, Ca, Ca2CaMCaN, Ca4CaMCaN)
+
+  // Assignment Rules:
+  Reaction_24CaN := k24CaN * power( Ca , 2 ) * Ca2CaMCaN - k42CaN * Ca4CaMCaN;
+  k24CaN := k24;
+  k42CaN := k42 / 2508.0;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_2CaN(Reaction_2CaN, Ca2CaM, Ca4CaN, Ca2CaMCaN)
+
+  // Assignment Rules:
+  Reaction_2CaN := kCaN2_on * Ca2CaM * Ca4CaN - kCaN2_off * Ca2CaMCaN;
+
+  // Variable initializations:
+  kCaN2_on = 46.0;
+  kCaN2_off = 3.2604;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_4CaN(Reaction_4CaN, Ca4CaM, Ca4CaN, Ca4CaMCaN)
+
+  // Assignment Rules:
+  Reaction_4CaN := kCaN4_on * Ca4CaM * Ca4CaN - kCaN4_off * Ca4CaMCaN;
+
+  // Variable initializations:
+  kCaN4_on = 46.0;
+  kCaN4_off = 1.3E-3;
+end
+
+model saucerman_model_dyadic_cleft_2008__Reaction_0CaN(Reaction_0CaN, CaM, Ca4CaN, CaMCaN)
+
+  // Assignment Rules:
+  Reaction_0CaN := kCaN0_on * CaM * Ca4CaN - kCaN0_off * CaMCaN;
+
+  // Variable initializations:
+  kCaN0_on = 46.0;
+  kCaN0_off = 537.966;
+end
+
+model saucerman_model_dyadic_cleft_2008__Ca4CaN(Ca4CaN, Reaction_Ca4CaN, Reaction_0CaN, Reaction_2CaN, Reaction_4CaN, time_)
+
+  // Rate Rules:
+  Ca4CaN' = 1E-3 * ( Reaction_Ca4CaN - ( Reaction_0CaN + Reaction_2CaN + Reaction_4CaN ));
+
+  // Variable initializations:
+  Ca4CaN = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__CaMCaN(CaMCaN, Reaction_0CaN, Reaction_02CaN, time_)
+
+  // Rate Rules:
+  CaMCaN' = 1E-3 * ( Reaction_0CaN - Reaction_02CaN );
+
+  // Variable initializations:
+  CaMCaN = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Ca2CaMCaN(Ca2CaMCaN, Reaction_24CaN, Reaction_02CaN, Reaction_2CaN, time_)
+
+  // Rate Rules:
+  Ca2CaMCaN' = 1E-3 * ( Reaction_2CaN + Reaction_02CaN - Reaction_24CaN );
+
+  // Variable initializations:
+  Ca2CaMCaN = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__Ca4CaMCaN(Ca4CaMCaN, Reaction_24CaN, Reaction_4CaN, time_)
+
+  // Rate Rules:
+  Ca4CaMCaN' = 1E-3 * ( Reaction_4CaN + Reaction_24CaN );
+
+  // Variable initializations:
+  Ca4CaMCaN = 0.1;
+end
+
+model saucerman_model_dyadic_cleft_2008__model_parameters(CaMKIItot, PP1tot, kPP1, KmPP1, Mg, K, Ca)
+
+  // Variable initializations:
+  CaMKIItot = 120.0;
+  PP1tot = 96.5;
+  kPP1 = 1.72;
+  KmPP1 = 11.5;
+  Mg = 1;
+  K = 135;
+  Ca = 1;
+end
+
+model saucerman_model_dyadic_cleft_2008__dyadic_cleft(B, CaM, Ca2CaM, Ca4CaM, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  Reaction_02: saucerman_model_dyadic_cleft_2008__Reaction_02(Reaction_020, k02, k20, K, Mg, Ca, CaM, Ca2CaM);
+  Reaction_24: saucerman_model_dyadic_cleft_2008__Reaction_24(Reaction_240, k24, k42, K, Mg, Ca, Ca2CaM, Ca4CaM);
+  Reaction_02B: saucerman_model_dyadic_cleft_2008__Reaction_02B(Reaction_02B0, k02, Ca, CaMB0, Ca2CaMB0);
+  Reaction_24B: saucerman_model_dyadic_cleft_2008__Reaction_24B(Reaction_24B0, k24, k42, Ca, Ca2CaMB0, Ca4CaMB0);
+  Reaction_2B: saucerman_model_dyadic_cleft_2008__Reaction_2B(Reaction_2B0, B, Ca2CaM, Ca2CaMB0);
+  Reaction_0B: saucerman_model_dyadic_cleft_2008__Reaction_0B(Reaction_0B0, B, CaM, CaMB0);
+  Reaction_4B: saucerman_model_dyadic_cleft_2008__Reaction_4B(Reaction_4B0, B, Ca4CaM, Ca4CaMB0);
+  B_mod: saucerman_model_dyadic_cleft_2008__B(B, CaMB0, Ca2CaMB0, Ca4CaMB0);
+  CaM_mod: saucerman_model_dyadic_cleft_2008__CaM(CaM, Reaction_020, Reaction_0B0, Reaction_0CaN0, time_);
+  Ca2CaM_mod: saucerman_model_dyadic_cleft_2008__Ca2CaM(Ca2CaM, CaMKIItot, Reaction_020, Reaction_240, Reaction_2B0, Reaction_2CaN0, Reaction_CKt2a0, Reaction_CKib20, time_);
+  Ca4CaM_mod: saucerman_model_dyadic_cleft_2008__Ca4CaM(Ca4CaM, CaMKIItot, Reaction_240, Reaction_4CaN0, Reaction_4B0, Reaction_CKta0, Reaction_CKib0, time_);
+  CaMB: saucerman_model_dyadic_cleft_2008__CaMB(CaMB0, Reaction_02B0, Reaction_0B0, time_);
+  Ca2CaMB: saucerman_model_dyadic_cleft_2008__Ca2CaMB(Ca2CaMB0, Reaction_02B0, Reaction_2B0, Reaction_24B0, time_);
+  Ca4CaMB: saucerman_model_dyadic_cleft_2008__Ca4CaMB(Ca4CaMB0, Reaction_4B0, Reaction_24B0, time_);
+  CaMKIIi: saucerman_model_dyadic_cleft_2008__CaMKIIi(Pi_0, CaMKIItot);
+  CaMKIIb2: saucerman_model_dyadic_cleft_2008__CaMKIIb2(Pb20, CaMKIItot);
+  CaMKIIb: saucerman_model_dyadic_cleft_2008__CaMKIIb(Pb0, CaMKIItot);
+  CaMKIIt: saucerman_model_dyadic_cleft_2008__CaMKIIt(Pt0, CaMKIItot);
+  CaMKIIt2: saucerman_model_dyadic_cleft_2008__CaMKIIt2(Pt20, CaMKIItot);
+  CaMKIIa: saucerman_model_dyadic_cleft_2008__CaMKIIa(Pa0, CaMKIItot);
+  Pi_: saucerman_model_dyadic_cleft_2008__Pi(Pi_0, Pb0, Pb20, Pt0, Pt20, Pa0);
+  T: saucerman_model_dyadic_cleft_2008__T(T0, Pb0, Pt0, Pt20, Pa0);
+  Reaction_CKbt: saucerman_model_dyadic_cleft_2008__Reaction_CKbt(Reaction_CKbt0, kPP1, KmPP1, PP1tot, CaMKIItot, T0, Pt0, Pb0);
+  Reaction_CKib2: saucerman_model_dyadic_cleft_2008__Reaction_CKib2(Reaction_CKib20, Ca2CaM, Pi_0, Pb20);
+  Reaction_CKb2b: saucerman_model_dyadic_cleft_2008__Reaction_CKb2b(Reaction_CKb2b0, k24, k42, Ca, Pb0, Pb20);
+  Reaction_CKib: saucerman_model_dyadic_cleft_2008__Reaction_CKib(Reaction_CKib0, Ca4CaM, Pi_0, Pb0);
+  Reaction_CKtt2: saucerman_model_dyadic_cleft_2008__Reaction_CKtt2(Reaction_CKtt20, k24, k42, Ca, Pt0, Pt20);
+  Reaction_CKta: saucerman_model_dyadic_cleft_2008__Reaction_CKta(Reaction_CKta0, Ca4CaM, Pt0, Pa0);
+  Reaction_CKt2a: saucerman_model_dyadic_cleft_2008__Reaction_CKt2a(Reaction_CKt2a0, Ca2CaM, Pt20, Pa0);
+  Reaction_CKt2b2: saucerman_model_dyadic_cleft_2008__Reaction_CKt2b2(Reaction_CKt2b20, kPP1, KmPP1, PP1tot, CaMKIItot, Pt20);
+  Reaction_CKai: saucerman_model_dyadic_cleft_2008__Reaction_CKai(Reaction_CKai0, kPP1, KmPP1, PP1tot, CaMKIItot, Pa0);
+  Pb2: saucerman_model_dyadic_cleft_2008__Pb2(Pb20, Reaction_CKib20, Reaction_CKb2b0, Reaction_CKt2b20, time_);
+  Pb: saucerman_model_dyadic_cleft_2008__Pb(Pb0, Reaction_CKib0, Reaction_CKb2b0, Reaction_CKbt0, time_);
+  Pt: saucerman_model_dyadic_cleft_2008__Pt(Pt0, Reaction_CKta0, Reaction_CKtt20, Reaction_CKbt0, time_);
+  Pt2: saucerman_model_dyadic_cleft_2008__Pt2(Pt20, Reaction_CKt2a0, Reaction_CKtt20, Reaction_CKt2b20, time_);
+  Pa: saucerman_model_dyadic_cleft_2008__Pa(Pa0, Reaction_CKta0, Reaction_CKt2a0, Reaction_CKai0, time_);
+  Ca2CaN: saucerman_model_dyadic_cleft_2008__Ca2CaN(Ca2CaN0, Ca4CaN0, CaMCaN0, Ca2CaMCaN0, Ca4CaMCaN0);
+  Reaction_Ca4CaN: saucerman_model_dyadic_cleft_2008__Reaction_Ca4CaN(Reaction_Ca4CaN0, Ca, Ca2CaN0, Ca4CaN0);
+  Reaction_02CaN: saucerman_model_dyadic_cleft_2008__Reaction_02CaN(Reaction_02CaN0, k02, k20, Ca, CaMCaN0, Ca2CaMCaN0);
+  Reaction_24CaN: saucerman_model_dyadic_cleft_2008__Reaction_24CaN(Reaction_24CaN0, k24, k42, Ca, Ca2CaMCaN0, Ca4CaMCaN0);
+  Reaction_2CaN: saucerman_model_dyadic_cleft_2008__Reaction_2CaN(Reaction_2CaN0, Ca2CaM, Ca4CaN0, Ca2CaMCaN0);
+  Reaction_4CaN: saucerman_model_dyadic_cleft_2008__Reaction_4CaN(Reaction_4CaN0, Ca4CaM, Ca4CaN0, Ca4CaMCaN0);
+  Reaction_0CaN: saucerman_model_dyadic_cleft_2008__Reaction_0CaN(Reaction_0CaN0, CaM, Ca4CaN0, CaMCaN0);
+  Ca4CaN: saucerman_model_dyadic_cleft_2008__Ca4CaN(Ca4CaN0, Reaction_Ca4CaN0, Reaction_0CaN0, Reaction_2CaN0, Reaction_4CaN0, time_);
+  CaMCaN: saucerman_model_dyadic_cleft_2008__CaMCaN(CaMCaN0, Reaction_0CaN0, Reaction_02CaN0, time_);
+  Ca2CaMCaN: saucerman_model_dyadic_cleft_2008__Ca2CaMCaN(Ca2CaMCaN0, Reaction_24CaN0, Reaction_02CaN0, Reaction_2CaN0, time_);
+  Ca4CaMCaN: saucerman_model_dyadic_cleft_2008__Ca4CaMCaN(Ca4CaMCaN0, Reaction_24CaN0, Reaction_4CaN0, time_);
+  model_parameters: saucerman_model_dyadic_cleft_2008__model_parameters(CaMKIItot, PP1tot, kPP1, KmPP1, Mg, K, Ca);
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_02(Reaction_02, k02, k20, K, Mg, Ca, CaM, Ca2CaM)
+
+  // Assignment Rules:
+  Reaction_02 := k02 * power( Ca , 2 ) * CaM - k20 * Ca2CaM;
+  k02 := k20 / Kd02;
+  Kd02 := piecewise( 0.0025 * ( 1.0 + K / 0.94 - Mg / 0.012 ) * ( 1.0 + K / 8.1 + Mg / 0.022 ) , Mg <= 1.0 , 0.0025 * ( 1.0 + K / 0.94 + ( Mg - 1.0 ) / 0.06 - 1.0 / 0.012 ) * ( 1.0 + K / 8.1 + 1.0 / 0.022 + ( Mg - 1.0 ) / 0.068 ) );
+
+  // Variable initializations:
+  k20 = 10.0;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_24(Reaction_24, k24, k42, K, Mg, Ca, Ca2CaM, Ca4CaM)
+
+  // Assignment Rules:
+  Reaction_24 := k24 * power( Ca , 2 ) * Ca2CaM - k42 * Ca4CaM;
+  k24 := k42 / Kd24;
+  Kd24 := piecewise( 0.128 * ( 1.0 + K / 0.64 + Mg / 0.014 ) * ( 1.0 + K / 13.0 - Mg / 0.153 ) , Mg <= 1.0 , 0.128 * ( 1.0 + K / 0.64 + ( Mg - 1.0 ) / 0.005 ) * ( 1.0 / 0.012 ) * ( 1.0 + K / 13.0 + ( Mg - 1.0 ) / 0.15 - 1.0 / 0.153 ) );
+
+  // Variable initializations:
+  k42 = 500.0;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_02B(Reaction_02B, k02, Ca, CaMB, Ca2CaMB)
+
+  // Assignment Rules:
+  Reaction_02B := k02B * power( Ca , 2 ) * CaMB - k20B * Ca2CaMB;
+  k02B := k02;
+
+  // Variable initializations:
+  k20B = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_24B(Reaction_24B, k24, k42, Ca, Ca2CaMB, Ca4CaMB)
+
+  // Assignment Rules:
+  Reaction_24B := k24B * power( Ca , 2 ) * Ca2CaMB - k42B * Ca4CaMB;
+  k24B := k24;
+  k42B := k42;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_2B(Reaction_2B, B, Ca2CaM, Ca2CaMB)
+
+  // Assignment Rules:
+  Reaction_2B := k2B_on * Ca2CaM * B - k2B_off * Ca2CaMB;
+
+  // Variable initializations:
+  k2B_on = 0.007;
+  k2B_off = 0.000014;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_0B(Reaction_0B, B, CaM, CaMB)
+
+  // Assignment Rules:
+  Reaction_0B := k0B_on * CaM * B - k0B_off * CaMB;
+
+  // Variable initializations:
+  k0B_on = 0.007;
+  k0B_off = 0.0014;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_4B(Reaction_4B, B, Ca4CaM, Ca4CaMB)
+
+  // Assignment Rules:
+  Reaction_4B := k4B_on * Ca4CaM * B - k4B_off * Ca4CaMB;
+
+  // Variable initializations:
+  k4B_on = 0.007;
+  k4B_off = 0.000014;
+end
+
+model saucerman_model_sarcolemma_2008__B(B, CaMB, Ca2CaMB, Ca4CaMB)
+
+  // Assignment Rules:
+  B := Btot - ( CaMB + Ca2CaMB + Ca4CaMB );
+
+  // Variable initializations:
+  Btot = 24.5;
+end
+
+model saucerman_model_sarcolemma_2008__CaM(CaM, Reaction_02, Reaction_0B, Reaction_0CaN, time_)
+
+  // Rate Rules:
+  CaM' = 1E-3 * -(( Reaction_02 + Reaction_0B + Reaction_0CaN ));
+
+  // Variable initializations:
+  CaM = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Ca2CaM(Ca2CaM, CaMKIItot, Reaction_02, Reaction_24, Reaction_2B, Reaction_2CaN, Reaction_CKt2a, Reaction_CKib2, time_)
+
+  // Rate Rules:
+  Ca2CaM' = 1E-3 * ( CaMKIItot * ( Reaction_CKt2a - Reaction_CKib2 ) + Reaction_02 - ( Reaction_24 + Reaction_2B + Reaction_2CaN ));
+
+  // Variable initializations:
+  Ca2CaM = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Ca4CaM(Ca4CaM, CaMKIItot, Reaction_24, Reaction_4CaN, Reaction_4B, Reaction_CKta, Reaction_CKib, time_)
+
+  // Rate Rules:
+  Ca4CaM' = 1E-3 * ( CaMKIItot * ( Reaction_CKta - Reaction_CKib ) + Reaction_24 - ( Reaction_4CaN + Reaction_4B ));
+
+  // Variable initializations:
+  Ca4CaM = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__CaMB(CaMB, Reaction_02B, Reaction_0B, time_)
+
+  // Rate Rules:
+  CaMB' = 1E-3 * ( Reaction_0B - Reaction_02B );
+
+  // Variable initializations:
+  CaMB = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Ca2CaMB(Ca2CaMB, Reaction_02B, Reaction_2B, Reaction_24B, time_)
+
+  // Rate Rules:
+  Ca2CaMB' = 1E-3 * ( Reaction_02B + Reaction_2B - Reaction_24B );
+
+  // Variable initializations:
+  Ca2CaMB = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Ca4CaMB(Ca4CaMB, Reaction_4B, Reaction_24B, time_)
+
+  // Rate Rules:
+  Ca4CaMB' = 1E-3 * ( Reaction_24B + Reaction_4B );
+
+  // Variable initializations:
+  Ca4CaMB = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__CaMKIIi(Pi_, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIi := Pi_ * CaMKIItot;
+end
+
+model saucerman_model_sarcolemma_2008__CaMKIIb2(Pb2, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIb2 := Pb2 * CaMKIItot;
+end
+
+model saucerman_model_sarcolemma_2008__CaMKIIb(Pb, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIb := Pb * CaMKIItot;
+end
+
+model saucerman_model_sarcolemma_2008__CaMKIIt(Pt, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIt := Pt * CaMKIItot;
+end
+
+model saucerman_model_sarcolemma_2008__CaMKIIt2(Pt2, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIt2 := Pt2 * CaMKIItot;
+end
+
+model saucerman_model_sarcolemma_2008__CaMKIIa(Pa, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIa := Pa * CaMKIItot;
+end
+
+model saucerman_model_sarcolemma_2008__Pi(Pi_, Pb, Pb2, Pt, Pt2, Pa)
+
+  // Assignment Rules:
+  Pi_ := 1.0 - ( Pb + Pb2 + Pt + Pt2 + Pa );
+end
+
+model saucerman_model_sarcolemma_2008__T(T, Pb, Pt, Pt2, Pa)
+
+  // Assignment Rules:
+  T := Pb + Pt + Pt2 + Pa;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_CKbt(Reaction_CKbt, kPP1, KmPP1, PP1tot, CaMKIItot, T, Pt, Pb)
+
+  // Assignment Rules:
+  Reaction_CKbt := kbt * Pb - kPP1 * PP1tot * Pt / ( KmPP1 + CaMKIItot * Pt );
+  kbt := 0.055 * T + 0.0074 * power( T , 2.0 ) + 0.015 * power( T , 3.0 );
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_CKib2(Reaction_CKib2, Ca2CaM, Pi_, Pb2)
+
+  // Assignment Rules:
+  Reaction_CKib2 := kib2 * Ca2CaM * Pi_ - kb2i * Pb2;
+
+  // Variable initializations:
+  kib2 = 65.67;
+  kb2i = 328.36;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_CKb2b(Reaction_CKb2b, k24, k42, Ca, Pb, Pb2)
+
+  // Assignment Rules:
+  Reaction_CKb2b := kb24 * power( Ca , 2.0 ) * Pb2 - kb42 * Pb2;
+  kb24 := k24;
+  kb42 := k42 * ( 33.5E-3 / 5.0 );
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_CKib(Reaction_CKib, Ca4CaM, Pi_, Pb)
+
+  // Assignment Rules:
+  Reaction_CKib := kib * Ca4CaM * Pi_ - kbi * Pb;
+
+  // Variable initializations:
+  kib = 6.567;
+  kbi = 2.2;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_CKtt2(Reaction_CKtt2, k24, k42, Ca, Pt, Pt2)
+
+  // Assignment Rules:
+  Reaction_CKtt2 := kt42 * Pt - kt24 * power( Ca , 2.0 ) * Pt2;
+  kt24 := k24;
+  kt42 := k42 * ( 33.5E-6 / 5.0 );
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_CKta(Reaction_CKta, Ca4CaM, Pt, Pa)
+
+  // Assignment Rules:
+  Reaction_CKta := kta * Pt - kat * Ca4CaM * Pa;
+
+  // Variable initializations:
+  kat = 6.567;
+  kta = 0.0022;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_CKt2a(Reaction_CKt2a, Ca2CaM, Pt2, Pa)
+
+  // Assignment Rules:
+  Reaction_CKt2a := kt2a * Pt2 - kat2 * Ca2CaM * Pa;
+
+  // Variable initializations:
+  kat2 = 6.567;
+  kt2a = 32.835;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_CKt2b2(Reaction_CKt2b2, kPP1, KmPP1, PP1tot, CaMKIItot, Pt2)
+
+  // Assignment Rules:
+  Reaction_CKt2b2 := kPP1 * PP1tot * Pt2 / ( KmPP1 + CaMKIItot * Pt2 );
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_CKai(Reaction_CKai, kPP1, KmPP1, PP1tot, CaMKIItot, Pa)
+
+  // Assignment Rules:
+  Reaction_CKai := kPP1 * PP1tot * Pa / ( KmPP1 + CaMKIItot * Pa );
+end
+
+model saucerman_model_sarcolemma_2008__Pb2(Pb2, Reaction_CKib2, Reaction_CKb2b, Reaction_CKt2b2, time_)
+
+  // Rate Rules:
+  Pb2' = 1E-3 * ( Reaction_CKt2b2 - ( Reaction_CKib2 + Reaction_CKb2b ));
+
+  // Variable initializations:
+  Pb2 = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Pb(Pb, Reaction_CKib, Reaction_CKb2b, Reaction_CKbt, time_)
+
+  // Rate Rules:
+  Pb' = 1E-3 * ( Reaction_CKib + Reaction_CKb2b - Reaction_CKbt );
+
+  // Variable initializations:
+  Pb = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Pt(Pt, Reaction_CKta, Reaction_CKtt2, Reaction_CKbt, time_)
+
+  // Rate Rules:
+  Pt' = 1E-3 * -(( Reaction_CKbt + Reaction_CKta + Reaction_CKtt2 ));
+
+  // Variable initializations:
+  Pt = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Pt2(Pt2, Reaction_CKt2a, Reaction_CKtt2, Reaction_CKt2b2, time_)
+
+  // Rate Rules:
+  Pt2' = 1E-3 * -(( Reaction_CKtt2 + Reaction_CKt2a + Reaction_CKt2b2 ));
+
+  // Variable initializations:
+  Pt2 = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Pa(Pa, Reaction_CKta, Reaction_CKt2a, Reaction_CKai, time_)
+
+  // Rate Rules:
+  Pa' = 1E-3 * ( Reaction_CKta + Reaction_CKt2a - Reaction_CKai );
+
+  // Variable initializations:
+  Pa = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Ca2CaN(Ca2CaN, Ca4CaN, CaMCaN, Ca2CaMCaN, Ca4CaMCaN)
+
+  // Assignment Rules:
+  Ca2CaN := CaNtot - ( Ca4CaN + CaMCaN + Ca2CaMCaN + Ca4CaMCaN );
+
+  // Variable initializations:
+  CaNtot = 3E-3;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_Ca4CaN(Reaction_Ca4CaN, Ca, Ca2CaN, Ca4CaN)
+
+  // Assignment Rules:
+  Reaction_Ca4CaN := kCaNCa_on * power( Ca , 2 ) * Ca2CaN - kCaNCa_off * Ca4CaN;
+
+  // Variable initializations:
+  kCaNCa_on = 2.0;
+  kCaNCa_off = 1.0;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_02CaN(Reaction_02CaN, k02, k20, Ca, CaMCaN, Ca2CaMCaN)
+
+  // Assignment Rules:
+  Reaction_02CaN := k02CaN * power( Ca , 2 ) * CaMCaN - k20CaN * Ca2CaMCaN;
+  k02CaN := k02;
+  k20CaN := k20 / 160.0;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_24CaN(Reaction_24CaN, k24, k42, Ca, Ca2CaMCaN, Ca4CaMCaN)
+
+  // Assignment Rules:
+  Reaction_24CaN := k24CaN * power( Ca , 2 ) * Ca2CaMCaN - k42CaN * Ca4CaMCaN;
+  k24CaN := k24;
+  k42CaN := k42 / 2508.0;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_2CaN(Reaction_2CaN, Ca2CaM, Ca4CaN, Ca2CaMCaN)
+
+  // Assignment Rules:
+  Reaction_2CaN := kCaN2_on * Ca2CaM * Ca4CaN - kCaN2_off * Ca2CaMCaN;
+
+  // Variable initializations:
+  kCaN2_on = 46.0;
+  kCaN2_off = 3.2604;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_4CaN(Reaction_4CaN, Ca4CaM, Ca4CaN, Ca4CaMCaN)
+
+  // Assignment Rules:
+  Reaction_4CaN := kCaN4_on * Ca4CaM * Ca4CaN - kCaN4_off * Ca4CaMCaN;
+
+  // Variable initializations:
+  kCaN4_on = 46.0;
+  kCaN4_off = 1.3E-3;
+end
+
+model saucerman_model_sarcolemma_2008__Reaction_0CaN(Reaction_0CaN, CaM, Ca4CaN, CaMCaN)
+
+  // Assignment Rules:
+  Reaction_0CaN := kCaN0_on * CaM * Ca4CaN - kCaN0_off * CaMCaN;
+
+  // Variable initializations:
+  kCaN0_on = 46.0;
+  kCaN0_off = 537.966;
+end
+
+model saucerman_model_sarcolemma_2008__Ca4CaN(Ca4CaN, Reaction_Ca4CaN, Reaction_0CaN, Reaction_2CaN, Reaction_4CaN, time_)
+
+  // Rate Rules:
+  Ca4CaN' = 1E-3 * ( Reaction_Ca4CaN - ( Reaction_0CaN + Reaction_2CaN + Reaction_4CaN ));
+
+  // Variable initializations:
+  Ca4CaN = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__CaMCaN(CaMCaN, Reaction_0CaN, Reaction_02CaN, time_)
+
+  // Rate Rules:
+  CaMCaN' = 1E-3 * ( Reaction_0CaN - Reaction_02CaN );
+
+  // Variable initializations:
+  CaMCaN = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Ca2CaMCaN(Ca2CaMCaN, Reaction_24CaN, Reaction_02CaN, Reaction_2CaN, time_)
+
+  // Rate Rules:
+  Ca2CaMCaN' = 1E-3 * ( Reaction_2CaN + Reaction_02CaN - Reaction_24CaN );
+
+  // Variable initializations:
+  Ca2CaMCaN = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__Ca4CaMCaN(Ca4CaMCaN, Reaction_24CaN, Reaction_4CaN, time_)
+
+  // Rate Rules:
+  Ca4CaMCaN' = 1E-3 * ( Reaction_4CaN + Reaction_24CaN );
+
+  // Variable initializations:
+  Ca4CaMCaN = 0.1;
+end
+
+model saucerman_model_sarcolemma_2008__model_parameters(CaMKIItot, PP1tot, kPP1, KmPP1, Mg, K, Ca)
+
+  // Variable initializations:
+  CaMKIItot = 0.2;
+  PP1tot = 0.57;
+  kPP1 = 1.72;
+  KmPP1 = 11.5;
+  Mg = 1;
+  K = 135;
+  Ca = 1;
+end
+
+model saucerman_model_sarcolemma_2008__sarcolemma(CaM, Ca2CaM, Ca4CaM, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  Reaction_02: saucerman_model_sarcolemma_2008__Reaction_02(Reaction_020, k02, k20, K, Mg, Ca, CaM, Ca2CaM);
+  Reaction_24: saucerman_model_sarcolemma_2008__Reaction_24(Reaction_240, k24, k42, K, Mg, Ca, Ca2CaM, Ca4CaM);
+  Reaction_02B: saucerman_model_sarcolemma_2008__Reaction_02B(Reaction_02B0, k02, Ca, CaMB0, Ca2CaMB0);
+  Reaction_24B: saucerman_model_sarcolemma_2008__Reaction_24B(Reaction_24B0, k24, k42, Ca, Ca2CaMB0, Ca4CaMB0);
+  Reaction_2B: saucerman_model_sarcolemma_2008__Reaction_2B(Reaction_2B0, B0, Ca2CaM, Ca2CaMB0);
+  Reaction_0B: saucerman_model_sarcolemma_2008__Reaction_0B(Reaction_0B0, B0, CaM, CaMB0);
+  Reaction_4B: saucerman_model_sarcolemma_2008__Reaction_4B(Reaction_4B0, B0, Ca4CaM, Ca4CaMB0);
+  B: saucerman_model_sarcolemma_2008__B(B0, CaMB0, Ca2CaMB0, Ca4CaMB0);
+  CaM_mod: saucerman_model_sarcolemma_2008__CaM(CaM, Reaction_020, Reaction_0B0, Reaction_0CaN0, time_);
+  Ca2CaM_mod: saucerman_model_sarcolemma_2008__Ca2CaM(Ca2CaM, CaMKIItot, Reaction_020, Reaction_240, Reaction_2B0, Reaction_2CaN0, Reaction_CKt2a0, Reaction_CKib20, time_);
+  Ca4CaM_mod: saucerman_model_sarcolemma_2008__Ca4CaM(Ca4CaM, CaMKIItot, Reaction_240, Reaction_4CaN0, Reaction_4B0, Reaction_CKta0, Reaction_CKib0, time_);
+  CaMB: saucerman_model_sarcolemma_2008__CaMB(CaMB0, Reaction_02B0, Reaction_0B0, time_);
+  Ca2CaMB: saucerman_model_sarcolemma_2008__Ca2CaMB(Ca2CaMB0, Reaction_02B0, Reaction_2B0, Reaction_24B0, time_);
+  Ca4CaMB: saucerman_model_sarcolemma_2008__Ca4CaMB(Ca4CaMB0, Reaction_4B0, Reaction_24B0, time_);
+  CaMKIIi: saucerman_model_sarcolemma_2008__CaMKIIi(Pi_0, CaMKIItot);
+  CaMKIIb2: saucerman_model_sarcolemma_2008__CaMKIIb2(Pb20, CaMKIItot);
+  CaMKIIb: saucerman_model_sarcolemma_2008__CaMKIIb(Pb0, CaMKIItot);
+  CaMKIIt: saucerman_model_sarcolemma_2008__CaMKIIt(Pt0, CaMKIItot);
+  CaMKIIt2: saucerman_model_sarcolemma_2008__CaMKIIt2(Pt20, CaMKIItot);
+  CaMKIIa: saucerman_model_sarcolemma_2008__CaMKIIa(Pa0, CaMKIItot);
+  Pi_: saucerman_model_sarcolemma_2008__Pi(Pi_0, Pb0, Pb20, Pt0, Pt20, Pa0);
+  T: saucerman_model_sarcolemma_2008__T(T0, Pb0, Pt0, Pt20, Pa0);
+  Reaction_CKbt: saucerman_model_sarcolemma_2008__Reaction_CKbt(Reaction_CKbt0, kPP1, KmPP1, PP1tot, CaMKIItot, T0, Pt0, Pb0);
+  Reaction_CKib2: saucerman_model_sarcolemma_2008__Reaction_CKib2(Reaction_CKib20, Ca2CaM, Pi_0, Pb20);
+  Reaction_CKb2b: saucerman_model_sarcolemma_2008__Reaction_CKb2b(Reaction_CKb2b0, k24, k42, Ca, Pb0, Pb20);
+  Reaction_CKib: saucerman_model_sarcolemma_2008__Reaction_CKib(Reaction_CKib0, Ca4CaM, Pi_0, Pb0);
+  Reaction_CKtt2: saucerman_model_sarcolemma_2008__Reaction_CKtt2(Reaction_CKtt20, k24, k42, Ca, Pt0, Pt20);
+  Reaction_CKta: saucerman_model_sarcolemma_2008__Reaction_CKta(Reaction_CKta0, Ca4CaM, Pt0, Pa0);
+  Reaction_CKt2a: saucerman_model_sarcolemma_2008__Reaction_CKt2a(Reaction_CKt2a0, Ca2CaM, Pt20, Pa0);
+  Reaction_CKt2b2: saucerman_model_sarcolemma_2008__Reaction_CKt2b2(Reaction_CKt2b20, kPP1, KmPP1, PP1tot, CaMKIItot, Pt20);
+  Reaction_CKai: saucerman_model_sarcolemma_2008__Reaction_CKai(Reaction_CKai0, kPP1, KmPP1, PP1tot, CaMKIItot, Pa0);
+  Pb2: saucerman_model_sarcolemma_2008__Pb2(Pb20, Reaction_CKib20, Reaction_CKb2b0, Reaction_CKt2b20, time_);
+  Pb: saucerman_model_sarcolemma_2008__Pb(Pb0, Reaction_CKib0, Reaction_CKb2b0, Reaction_CKbt0, time_);
+  Pt: saucerman_model_sarcolemma_2008__Pt(Pt0, Reaction_CKta0, Reaction_CKtt20, Reaction_CKbt0, time_);
+  Pt2: saucerman_model_sarcolemma_2008__Pt2(Pt20, Reaction_CKt2a0, Reaction_CKtt20, Reaction_CKt2b20, time_);
+  Pa: saucerman_model_sarcolemma_2008__Pa(Pa0, Reaction_CKta0, Reaction_CKt2a0, Reaction_CKai0, time_);
+  Ca2CaN: saucerman_model_sarcolemma_2008__Ca2CaN(Ca2CaN0, Ca4CaN0, CaMCaN0, Ca2CaMCaN0, Ca4CaMCaN0);
+  Reaction_Ca4CaN: saucerman_model_sarcolemma_2008__Reaction_Ca4CaN(Reaction_Ca4CaN0, Ca, Ca2CaN0, Ca4CaN0);
+  Reaction_02CaN: saucerman_model_sarcolemma_2008__Reaction_02CaN(Reaction_02CaN0, k02, k20, Ca, CaMCaN0, Ca2CaMCaN0);
+  Reaction_24CaN: saucerman_model_sarcolemma_2008__Reaction_24CaN(Reaction_24CaN0, k24, k42, Ca, Ca2CaMCaN0, Ca4CaMCaN0);
+  Reaction_2CaN: saucerman_model_sarcolemma_2008__Reaction_2CaN(Reaction_2CaN0, Ca2CaM, Ca4CaN0, Ca2CaMCaN0);
+  Reaction_4CaN: saucerman_model_sarcolemma_2008__Reaction_4CaN(Reaction_4CaN0, Ca4CaM, Ca4CaN0, Ca4CaMCaN0);
+  Reaction_0CaN: saucerman_model_sarcolemma_2008__Reaction_0CaN(Reaction_0CaN0, CaM, Ca4CaN0, CaMCaN0);
+  Ca4CaN: saucerman_model_sarcolemma_2008__Ca4CaN(Ca4CaN0, Reaction_Ca4CaN0, Reaction_0CaN0, Reaction_2CaN0, Reaction_4CaN0, time_);
+  CaMCaN: saucerman_model_sarcolemma_2008__CaMCaN(CaMCaN0, Reaction_0CaN0, Reaction_02CaN0, time_);
+  Ca2CaMCaN: saucerman_model_sarcolemma_2008__Ca2CaMCaN(Ca2CaMCaN0, Reaction_24CaN0, Reaction_02CaN0, Reaction_2CaN0, time_);
+  Ca4CaMCaN: saucerman_model_sarcolemma_2008__Ca4CaMCaN(Ca4CaMCaN0, Reaction_24CaN0, Reaction_4CaN0, time_);
+  model_parameters: saucerman_model_sarcolemma_2008__model_parameters(CaMKIItot, PP1tot, kPP1, KmPP1, Mg, K, Ca);
+end
+
+model saucerman_model_cytosol_2008__Reaction_02(Reaction_02, k02, k20, K, Mg, Ca, CaM, Ca2CaM)
+
+  // Assignment Rules:
+  Reaction_02 := k02 * power( Ca , 2 ) * CaM - k20 * Ca2CaM;
+  k02 := k20 / Kd02;
+  Kd02 := piecewise( 0.0025 * ( 1.0 + K / 0.94 - Mg / 0.012 ) * ( 1.0 + K / 8.1 + Mg / 0.022 ) , Mg <= 1.0 , 0.0025 * ( 1.0 + K / 0.94 + ( Mg - 1.0 ) / 0.06 - 1.0 / 0.012 ) * ( 1.0 + K / 8.1 + 1.0 / 0.022 + ( Mg - 1.0 ) / 0.068 ) );
+
+  // Variable initializations:
+  k20 = 10.0;
+end
+
+model saucerman_model_cytosol_2008__Reaction_24(Reaction_24, k24, k42, K, Mg, Ca, Ca2CaM, Ca4CaM)
+
+  // Assignment Rules:
+  Reaction_24 := k24 * power( Ca , 2 ) * Ca2CaM - k42 * Ca4CaM;
+  k24 := k42 / Kd24;
+  Kd24 := piecewise( 0.128 * ( 1.0 + K / 0.64 + Mg / 0.014 ) * ( 1.0 + K / 13.0 - Mg / 0.153 ) , Mg <= 1.0 , 0.128 * ( 1.0 + K / 0.64 + ( Mg - 1.0 ) / 0.005 ) * ( 1.0 / 0.012 ) * ( 1.0 + K / 13.0 + ( Mg - 1.0 ) / 0.15 - 1.0 / 0.153 ) );
+
+  // Variable initializations:
+  k42 = 500.0;
+end
+
+model saucerman_model_cytosol_2008__Reaction_02B(Reaction_02B, k02, Ca, CaMB, Ca2CaMB)
+
+  // Assignment Rules:
+  Reaction_02B := k02B * power( Ca , 2 ) * CaMB - k20B * Ca2CaMB;
+  k02B := k02;
+
+  // Variable initializations:
+  k20B = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Reaction_24B(Reaction_24B, k24, k42, Ca, Ca2CaMB, Ca4CaMB)
+
+  // Assignment Rules:
+  Reaction_24B := k24B * power( Ca , 2 ) * Ca2CaMB - k42B * Ca4CaMB;
+  k24B := k24;
+  k42B := k42;
+end
+
+model saucerman_model_cytosol_2008__Reaction_2B(Reaction_2B, B, Ca2CaM, Ca2CaMB)
+
+  // Assignment Rules:
+  Reaction_2B := k2B_on * Ca2CaM * B - k2B_off * Ca2CaMB;
+
+  // Variable initializations:
+  k2B_on = 0.007;
+  k2B_off = 0.000014;
+end
+
+model saucerman_model_cytosol_2008__Reaction_0B(Reaction_0B, B, CaM, CaMB)
+
+  // Assignment Rules:
+  Reaction_0B := k0B_on * CaM * B - k0B_off * CaMB;
+
+  // Variable initializations:
+  k0B_on = 0.007;
+  k0B_off = 0.0014;
+end
+
+model saucerman_model_cytosol_2008__Reaction_4B(Reaction_4B, B, Ca4CaM, Ca4CaMB)
+
+  // Assignment Rules:
+  Reaction_4B := k4B_on * Ca4CaM * B - k4B_off * Ca4CaMB;
+
+  // Variable initializations:
+  k4B_on = 0.007;
+  k4B_off = 0.000014;
+end
+
+model saucerman_model_cytosol_2008__B(B, CaMB, Ca2CaMB, Ca4CaMB)
+
+  // Assignment Rules:
+  B := Btot - ( CaMB + Ca2CaMB + Ca4CaMB );
+
+  // Variable initializations:
+  Btot = 24.5;
+end
+
+model saucerman_model_cytosol_2008__CaM(CaM, Reaction_02, Reaction_0B, Reaction_0CaN, time_)
+
+  // Rate Rules:
+  CaM' = 1E-3 * -(( Reaction_02 + Reaction_0B + Reaction_0CaN ));
+
+  // Variable initializations:
+  CaM = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Ca2CaM(Ca2CaM, CaMKIItot, Reaction_02, Reaction_24, Reaction_2B, Reaction_2CaN, Reaction_CKt2a, Reaction_CKib2, time_)
+
+  // Rate Rules:
+  Ca2CaM' = 1E-3 * ( CaMKIItot * ( Reaction_CKt2a - Reaction_CKib2 ) + Reaction_02 - ( Reaction_24 + Reaction_2B + Reaction_2CaN ));
+
+  // Variable initializations:
+  Ca2CaM = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Ca4CaM(Ca4CaM, CaMKIItot, Reaction_24, Reaction_4CaN, Reaction_4B, Reaction_CKta, Reaction_CKib, time_)
+
+  // Rate Rules:
+  Ca4CaM' = 1E-3 * ( CaMKIItot * ( Reaction_CKta - Reaction_CKib ) + Reaction_24 - ( Reaction_4CaN + Reaction_4B ));
+
+  // Variable initializations:
+  Ca4CaM = 0.1;
+end
+
+model saucerman_model_cytosol_2008__CaMB(CaMB, Reaction_02B, Reaction_0B, time_)
+
+  // Rate Rules:
+  CaMB' = 1E-3 * ( Reaction_0B - Reaction_02B );
+
+  // Variable initializations:
+  CaMB = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Ca2CaMB(Ca2CaMB, Reaction_02B, Reaction_2B, Reaction_24B, time_)
+
+  // Rate Rules:
+  Ca2CaMB' = 1E-3 * ( Reaction_02B + Reaction_2B - Reaction_24B );
+
+  // Variable initializations:
+  Ca2CaMB = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Ca4CaMB(Ca4CaMB, Reaction_4B, Reaction_24B, time_)
+
+  // Rate Rules:
+  Ca4CaMB' = 1E-3 * ( Reaction_24B + Reaction_4B );
+
+  // Variable initializations:
+  Ca4CaMB = 0.1;
+end
+
+model saucerman_model_cytosol_2008__CaMKIIi(Pi_, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIi := Pi_ * CaMKIItot;
+end
+
+model saucerman_model_cytosol_2008__CaMKIIb2(Pb2, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIb2 := Pb2 * CaMKIItot;
+end
+
+model saucerman_model_cytosol_2008__CaMKIIb(Pb, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIb := Pb * CaMKIItot;
+end
+
+model saucerman_model_cytosol_2008__CaMKIIt(Pt, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIt := Pt * CaMKIItot;
+end
+
+model saucerman_model_cytosol_2008__CaMKIIt2(Pt2, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIt2 := Pt2 * CaMKIItot;
+end
+
+model saucerman_model_cytosol_2008__CaMKIIa(Pa, CaMKIItot)
+
+  // Assignment Rules:
+  CaMKIIa := Pa * CaMKIItot;
+end
+
+model saucerman_model_cytosol_2008__Pi(Pi_, Pb, Pb2, Pt, Pt2, Pa)
+
+  // Assignment Rules:
+  Pi_ := 1.0 - ( Pb + Pb2 + Pt + Pt2 + Pa );
+end
+
+model saucerman_model_cytosol_2008__T(T, Pb, Pt, Pt2, Pa)
+
+  // Assignment Rules:
+  T := Pb + Pt + Pt2 + Pa;
+end
+
+model saucerman_model_cytosol_2008__Reaction_CKbt(Reaction_CKbt, kPP1, KmPP1, PP1tot, CaMKIItot, T, Pt, Pb)
+
+  // Assignment Rules:
+  Reaction_CKbt := kbt * Pb - kPP1 * PP1tot * Pt / ( KmPP1 + CaMKIItot * Pt );
+  kbt := 0.055 * T + 0.0074 * power( T , 2.0 ) + 0.015 * power( T , 3.0 );
+end
+
+model saucerman_model_cytosol_2008__Reaction_CKib2(Reaction_CKib2, Ca2CaM, Pi_, Pb2)
+
+  // Assignment Rules:
+  Reaction_CKib2 := kib2 * Ca2CaM * Pi_ - kb2i * Pb2;
+
+  // Variable initializations:
+  kib2 = 65.67;
+  kb2i = 328.36;
+end
+
+model saucerman_model_cytosol_2008__Reaction_CKb2b(Reaction_CKb2b, k24, k42, Ca, Pb, Pb2)
+
+  // Assignment Rules:
+  Reaction_CKb2b := kb24 * power( Ca , 2.0 ) * Pb2 - kb42 * Pb2;
+  kb24 := k24;
+  kb42 := k42 * ( 33.5E-3 / 5.0 );
+end
+
+model saucerman_model_cytosol_2008__Reaction_CKib(Reaction_CKib, Ca4CaM, Pi_, Pb)
+
+  // Assignment Rules:
+  Reaction_CKib := kib * Ca4CaM * Pi_ - kbi * Pb;
+
+  // Variable initializations:
+  kib = 6.567;
+  kbi = 2.2;
+end
+
+model saucerman_model_cytosol_2008__Reaction_CKtt2(Reaction_CKtt2, k24, k42, Ca, Pt, Pt2)
+
+  // Assignment Rules:
+  Reaction_CKtt2 := kt42 * Pt - kt24 * power( Ca , 2.0 ) * Pt2;
+  kt24 := k24;
+  kt42 := k42 * ( 33.5E-6 / 5.0 );
+end
+
+model saucerman_model_cytosol_2008__Reaction_CKta(Reaction_CKta, Ca4CaM, Pt, Pa)
+
+  // Assignment Rules:
+  Reaction_CKta := kta * Pt - kat * Ca4CaM * Pa;
+
+  // Variable initializations:
+  kat = 6.567;
+  kta = 0.0022;
+end
+
+model saucerman_model_cytosol_2008__Reaction_CKt2a(Reaction_CKt2a, Ca2CaM, Pt2, Pa)
+
+  // Assignment Rules:
+  Reaction_CKt2a := kt2a * Pt2 - kat2 * Ca2CaM * Pa;
+
+  // Variable initializations:
+  kat2 = 6.567;
+  kt2a = 32.835;
+end
+
+model saucerman_model_cytosol_2008__Reaction_CKt2b2(Reaction_CKt2b2, kPP1, KmPP1, PP1tot, CaMKIItot, Pt2)
+
+  // Assignment Rules:
+  Reaction_CKt2b2 := kPP1 * PP1tot * Pt2 / ( KmPP1 + CaMKIItot * Pt2 );
+end
+
+model saucerman_model_cytosol_2008__Reaction_CKai(Reaction_CKai, kPP1, KmPP1, PP1tot, CaMKIItot, Pa)
+
+  // Assignment Rules:
+  Reaction_CKai := kPP1 * PP1tot * Pa / ( KmPP1 + CaMKIItot * Pa );
+end
+
+model saucerman_model_cytosol_2008__Pb2(Pb2, Reaction_CKib2, Reaction_CKb2b, Reaction_CKt2b2, time_)
+
+  // Rate Rules:
+  Pb2' = 1E-3 * ( Reaction_CKt2b2 - ( Reaction_CKib2 + Reaction_CKb2b ));
+
+  // Variable initializations:
+  Pb2 = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Pb(Pb, Reaction_CKib, Reaction_CKb2b, Reaction_CKbt, time_)
+
+  // Rate Rules:
+  Pb' = 1E-3 * ( Reaction_CKib + Reaction_CKb2b - Reaction_CKbt );
+
+  // Variable initializations:
+  Pb = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Pt(Pt, Reaction_CKta, Reaction_CKtt2, Reaction_CKbt, time_)
+
+  // Rate Rules:
+  Pt' = 1E-3 * -(( Reaction_CKbt + Reaction_CKta + Reaction_CKtt2 ));
+
+  // Variable initializations:
+  Pt = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Pt2(Pt2, Reaction_CKt2a, Reaction_CKtt2, Reaction_CKt2b2, time_)
+
+  // Rate Rules:
+  Pt2' = 1E-3 * -(( Reaction_CKtt2 + Reaction_CKt2a + Reaction_CKt2b2 ));
+
+  // Variable initializations:
+  Pt2 = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Pa(Pa, Reaction_CKta, Reaction_CKt2a, Reaction_CKai, time_)
+
+  // Rate Rules:
+  Pa' = 1E-3 * ( Reaction_CKta + Reaction_CKt2a - Reaction_CKai );
+
+  // Variable initializations:
+  Pa = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Ca2CaN(Ca2CaN, Ca4CaN, CaMCaN, Ca2CaMCaN, Ca4CaMCaN)
+
+  // Assignment Rules:
+  Ca2CaN := CaNtot - ( Ca4CaN + CaMCaN + Ca2CaMCaN + Ca4CaMCaN );
+
+  // Variable initializations:
+  CaNtot = 3E-3;
+end
+
+model saucerman_model_cytosol_2008__Reaction_Ca4CaN(Reaction_Ca4CaN, Ca, Ca2CaN, Ca4CaN)
+
+  // Assignment Rules:
+  Reaction_Ca4CaN := kCaNCa_on * power( Ca , 2 ) * Ca2CaN - kCaNCa_off * Ca4CaN;
+
+  // Variable initializations:
+  kCaNCa_on = 2.0;
+  kCaNCa_off = 1.0;
+end
+
+model saucerman_model_cytosol_2008__Reaction_02CaN(Reaction_02CaN, k02, k20, Ca, CaMCaN, Ca2CaMCaN)
+
+  // Assignment Rules:
+  Reaction_02CaN := k02CaN * power( Ca , 2 ) * CaMCaN - k20CaN * Ca2CaMCaN;
+  k02CaN := k02;
+  k20CaN := k20 / 160.0;
+end
+
+model saucerman_model_cytosol_2008__Reaction_24CaN(Reaction_24CaN, k24, k42, Ca, Ca2CaMCaN, Ca4CaMCaN)
+
+  // Assignment Rules:
+  Reaction_24CaN := k24CaN * power( Ca , 2 ) * Ca2CaMCaN - k42CaN * Ca4CaMCaN;
+  k24CaN := k24;
+  k42CaN := k42 / 2508.0;
+end
+
+model saucerman_model_cytosol_2008__Reaction_2CaN(Reaction_2CaN, Ca2CaM, Ca4CaN, Ca2CaMCaN)
+
+  // Assignment Rules:
+  Reaction_2CaN := kCaN2_on * Ca2CaM * Ca4CaN - kCaN2_off * Ca2CaMCaN;
+
+  // Variable initializations:
+  kCaN2_on = 46.0;
+  kCaN2_off = 3.2604;
+end
+
+model saucerman_model_cytosol_2008__Reaction_4CaN(Reaction_4CaN, Ca4CaM, Ca4CaN, Ca4CaMCaN)
+
+  // Assignment Rules:
+  Reaction_4CaN := kCaN4_on * Ca4CaM * Ca4CaN - kCaN4_off * Ca4CaMCaN;
+
+  // Variable initializations:
+  kCaN4_on = 46.0;
+  kCaN4_off = 1.3E-3;
+end
+
+model saucerman_model_cytosol_2008__Reaction_0CaN(Reaction_0CaN, CaM, Ca4CaN, CaMCaN)
+
+  // Assignment Rules:
+  Reaction_0CaN := kCaN0_on * CaM * Ca4CaN - kCaN0_off * CaMCaN;
+
+  // Variable initializations:
+  kCaN0_on = 46.0;
+  kCaN0_off = 537.966;
+end
+
+model saucerman_model_cytosol_2008__Ca4CaN(Ca4CaN, Reaction_Ca4CaN, Reaction_0CaN, Reaction_2CaN, Reaction_4CaN, time_)
+
+  // Rate Rules:
+  Ca4CaN' = 1E-3 * ( Reaction_Ca4CaN - ( Reaction_0CaN + Reaction_2CaN + Reaction_4CaN ));
+
+  // Variable initializations:
+  Ca4CaN = 0.1;
+end
+
+model saucerman_model_cytosol_2008__CaMCaN(CaMCaN, Reaction_0CaN, Reaction_02CaN, time_)
+
+  // Rate Rules:
+  CaMCaN' = 1E-3 * ( Reaction_0CaN - Reaction_02CaN );
+
+  // Variable initializations:
+  CaMCaN = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Ca2CaMCaN(Ca2CaMCaN, Reaction_24CaN, Reaction_02CaN, Reaction_2CaN, time_)
+
+  // Rate Rules:
+  Ca2CaMCaN' = 1E-3 * ( Reaction_2CaN + Reaction_02CaN - Reaction_24CaN );
+
+  // Variable initializations:
+  Ca2CaMCaN = 0.1;
+end
+
+model saucerman_model_cytosol_2008__Ca4CaMCaN(Ca4CaMCaN, Reaction_24CaN, Reaction_4CaN, time_)
+
+  // Rate Rules:
+  Ca4CaMCaN' = 1E-3 * ( Reaction_4CaN + Reaction_24CaN );
+
+  // Variable initializations:
+  Ca4CaMCaN = 0.1;
+end
+
+model saucerman_model_cytosol_2008__model_parameters(CaMKIItot, PP1tot, kPP1, KmPP1, Mg, K, Ca)
+
+  // Variable initializations:
+  CaMKIItot = 0.2;
+  PP1tot = 0.57;
+  kPP1 = 1.72;
+  KmPP1 = 11.5;
+  Mg = 1;
+  K = 135;
+  Ca = 1;
+end
+
+model saucerman_model_cytosol_2008__cytosol(CaM, Ca2CaM, Ca4CaM, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  Reaction_02: saucerman_model_cytosol_2008__Reaction_02(Reaction_020, k02, k20, K, Mg, Ca, CaM, Ca2CaM);
+  Reaction_24: saucerman_model_cytosol_2008__Reaction_24(Reaction_240, k24, k42, K, Mg, Ca, Ca2CaM, Ca4CaM);
+  Reaction_02B: saucerman_model_cytosol_2008__Reaction_02B(Reaction_02B0, k02, Ca, CaMB0, Ca2CaMB0);
+  Reaction_24B: saucerman_model_cytosol_2008__Reaction_24B(Reaction_24B0, k24, k42, Ca, Ca2CaMB0, Ca4CaMB0);
+  Reaction_2B: saucerman_model_cytosol_2008__Reaction_2B(Reaction_2B0, B0, Ca2CaM, Ca2CaMB0);
+  Reaction_0B: saucerman_model_cytosol_2008__Reaction_0B(Reaction_0B0, B0, CaM, CaMB0);
+  Reaction_4B: saucerman_model_cytosol_2008__Reaction_4B(Reaction_4B0, B0, Ca4CaM, Ca4CaMB0);
+  B: saucerman_model_cytosol_2008__B(B0, CaMB0, Ca2CaMB0, Ca4CaMB0);
+  CaM_mod: saucerman_model_cytosol_2008__CaM(CaM, Reaction_020, Reaction_0B0, Reaction_0CaN0, time_);
+  Ca2CaM_mod: saucerman_model_cytosol_2008__Ca2CaM(Ca2CaM, CaMKIItot, Reaction_020, Reaction_240, Reaction_2B0, Reaction_2CaN0, Reaction_CKt2a0, Reaction_CKib20, time_);
+  Ca4CaM_mod: saucerman_model_cytosol_2008__Ca4CaM(Ca4CaM, CaMKIItot, Reaction_240, Reaction_4CaN0, Reaction_4B0, Reaction_CKta0, Reaction_CKib0, time_);
+  CaMB: saucerman_model_cytosol_2008__CaMB(CaMB0, Reaction_02B0, Reaction_0B0, time_);
+  Ca2CaMB: saucerman_model_cytosol_2008__Ca2CaMB(Ca2CaMB0, Reaction_02B0, Reaction_2B0, Reaction_24B0, time_);
+  Ca4CaMB: saucerman_model_cytosol_2008__Ca4CaMB(Ca4CaMB0, Reaction_4B0, Reaction_24B0, time_);
+  CaMKIIi: saucerman_model_cytosol_2008__CaMKIIi(Pi_0, CaMKIItot);
+  CaMKIIb2: saucerman_model_cytosol_2008__CaMKIIb2(Pb20, CaMKIItot);
+  CaMKIIb: saucerman_model_cytosol_2008__CaMKIIb(Pb0, CaMKIItot);
+  CaMKIIt: saucerman_model_cytosol_2008__CaMKIIt(Pt0, CaMKIItot);
+  CaMKIIt2: saucerman_model_cytosol_2008__CaMKIIt2(Pt20, CaMKIItot);
+  CaMKIIa: saucerman_model_cytosol_2008__CaMKIIa(Pa0, CaMKIItot);
+  Pi_: saucerman_model_cytosol_2008__Pi(Pi_0, Pb0, Pb20, Pt0, Pt20, Pa0);
+  T: saucerman_model_cytosol_2008__T(T0, Pb0, Pt0, Pt20, Pa0);
+  Reaction_CKbt: saucerman_model_cytosol_2008__Reaction_CKbt(Reaction_CKbt0, kPP1, KmPP1, PP1tot, CaMKIItot, T0, Pt0, Pb0);
+  Reaction_CKib2: saucerman_model_cytosol_2008__Reaction_CKib2(Reaction_CKib20, Ca2CaM, Pi_0, Pb20);
+  Reaction_CKb2b: saucerman_model_cytosol_2008__Reaction_CKb2b(Reaction_CKb2b0, k24, k42, Ca, Pb0, Pb20);
+  Reaction_CKib: saucerman_model_cytosol_2008__Reaction_CKib(Reaction_CKib0, Ca4CaM, Pi_0, Pb0);
+  Reaction_CKtt2: saucerman_model_cytosol_2008__Reaction_CKtt2(Reaction_CKtt20, k24, k42, Ca, Pt0, Pt20);
+  Reaction_CKta: saucerman_model_cytosol_2008__Reaction_CKta(Reaction_CKta0, Ca4CaM, Pt0, Pa0);
+  Reaction_CKt2a: saucerman_model_cytosol_2008__Reaction_CKt2a(Reaction_CKt2a0, Ca2CaM, Pt20, Pa0);
+  Reaction_CKt2b2: saucerman_model_cytosol_2008__Reaction_CKt2b2(Reaction_CKt2b20, kPP1, KmPP1, PP1tot, CaMKIItot, Pt20);
+  Reaction_CKai: saucerman_model_cytosol_2008__Reaction_CKai(Reaction_CKai0, kPP1, KmPP1, PP1tot, CaMKIItot, Pa0);
+  Pb2: saucerman_model_cytosol_2008__Pb2(Pb20, Reaction_CKib20, Reaction_CKb2b0, Reaction_CKt2b20, time_);
+  Pb: saucerman_model_cytosol_2008__Pb(Pb0, Reaction_CKib0, Reaction_CKb2b0, Reaction_CKbt0, time_);
+  Pt: saucerman_model_cytosol_2008__Pt(Pt0, Reaction_CKta0, Reaction_CKtt20, Reaction_CKbt0, time_);
+  Pt2: saucerman_model_cytosol_2008__Pt2(Pt20, Reaction_CKt2a0, Reaction_CKtt20, Reaction_CKt2b20, time_);
+  Pa: saucerman_model_cytosol_2008__Pa(Pa0, Reaction_CKta0, Reaction_CKt2a0, Reaction_CKai0, time_);
+  Ca2CaN: saucerman_model_cytosol_2008__Ca2CaN(Ca2CaN0, Ca4CaN0, CaMCaN0, Ca2CaMCaN0, Ca4CaMCaN0);
+  Reaction_Ca4CaN: saucerman_model_cytosol_2008__Reaction_Ca4CaN(Reaction_Ca4CaN0, Ca, Ca2CaN0, Ca4CaN0);
+  Reaction_02CaN: saucerman_model_cytosol_2008__Reaction_02CaN(Reaction_02CaN0, k02, k20, Ca, CaMCaN0, Ca2CaMCaN0);
+  Reaction_24CaN: saucerman_model_cytosol_2008__Reaction_24CaN(Reaction_24CaN0, k24, k42, Ca, Ca2CaMCaN0, Ca4CaMCaN0);
+  Reaction_2CaN: saucerman_model_cytosol_2008__Reaction_2CaN(Reaction_2CaN0, Ca2CaM, Ca4CaN0, Ca2CaMCaN0);
+  Reaction_4CaN: saucerman_model_cytosol_2008__Reaction_4CaN(Reaction_4CaN0, Ca4CaM, Ca4CaN0, Ca4CaMCaN0);
+  Reaction_0CaN: saucerman_model_cytosol_2008__Reaction_0CaN(Reaction_0CaN0, CaM, Ca4CaN0, CaMCaN0);
+  Ca4CaN: saucerman_model_cytosol_2008__Ca4CaN(Ca4CaN0, Reaction_Ca4CaN0, Reaction_0CaN0, Reaction_2CaN0, Reaction_4CaN0, time_);
+  CaMCaN: saucerman_model_cytosol_2008__CaMCaN(CaMCaN0, Reaction_0CaN0, Reaction_02CaN0, time_);
+  Ca2CaMCaN: saucerman_model_cytosol_2008__Ca2CaMCaN(Ca2CaMCaN0, Reaction_24CaN0, Reaction_02CaN0, Reaction_2CaN0, time_);
+  Ca4CaMCaN: saucerman_model_cytosol_2008__Ca4CaMCaN(Ca4CaMCaN0, Reaction_24CaN0, Reaction_4CaN0, time_);
+  model_parameters: saucerman_model_cytosol_2008__model_parameters(CaMKIItot, PP1tot, kPP1, KmPP1, Mg, K, Ca);
+end
+
+model saucerman_bers_2008____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: saucerman_bers_2008__environment(time_);
+  JCaM_DYAD_SL: saucerman_bers_2008__JCaM_DYAD_SL(CaM_DYAD, B_DYAD, CaM_SL);
+  JCa2CaM_DYAD_SL: saucerman_bers_2008__JCa2CaM_DYAD_SL(Ca2CaM_DYAD, B_DYAD, Ca2CaM_SL);
+  JCa4CaM_DYAD_SL: saucerman_bers_2008__JCa4CaM_DYAD_SL(Ca4CaM_DYAD, B_DYAD, Ca4CaM_SL);
+  JCaM_SL_CYT: saucerman_bers_2008__JCaM_SL_CYT(kSLCYT, CaM_SL, CaM_CYT);
+  JCa2CaM_SL_CYT: saucerman_bers_2008__JCa2CaM_SL_CYT(kSLCYT, Ca2CaM_SL, Ca2CaM_CYT);
+  JCa4CaM_SL_CYT: saucerman_bers_2008__JCa4CaM_SL_CYT(kSLCYT, Ca4CaM_SL, Ca4CaM_CYT);
+  model_parameters: saucerman_bers_2008__model_parameters(kSLCYT);
+  dyadic_cleft: saucerman_model_dyadic_cleft_2008__dyadic_cleft(B_DYAD, CaM_DYAD, Ca2CaM_DYAD, Ca4CaM_DYAD, time_);
+  sarcolemma: saucerman_model_sarcolemma_2008__sarcolemma(CaM_SL, Ca2CaM_SL, Ca4CaM_SL, time_);
+  cytosol: saucerman_model_cytosol_2008__cytosol(CaM_CYT, Ca2CaM_CYT, Ca4CaM_CYT, time_);
+end

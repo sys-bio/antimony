@@ -1,0 +1,257 @@
+//Created by libAntimony v1.3
+model mcallister_noble_tsien_1975_modelB__environment(time_)
+end
+
+model mcallister_noble_tsien_1975_modelB__membrane(V, time_, i_Na, i_si, i_K2, i_x1, i_x2, i_qr, i_K1, i_Na_b, i_Cl_b)
+
+  // Rate Rules:
+  V' = -((i_Na + i_si + i_K2 + i_x1 + i_x2 + i_qr + i_K1 + i_Na_b + i_Cl_b)) / C;
+
+  // Variable initializations:
+  V = -78.041367;
+  C = 10;
+end
+
+model mcallister_noble_tsien_1975_modelB__fast_sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := 1 * (V + 47 ) / (1 - exp(-((V + 47 )) / 10 ));
+  beta_m := 40 * exp(-(0.056 ) * (V + 72 ));
+
+  // Rate Rules:
+  m' = alpha_m * (1 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.02566853;
+end
+
+model mcallister_noble_tsien_1975_modelB__fast_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := 0.0085 * exp(-(0.184 ) * (V + 71 ));
+  beta_h := 2.5 / (exp(-(0.082 ) * (V + 10 )) + 1 );
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.78656359;
+end
+
+model mcallister_noble_tsien_1975_modelB__fast_sodium_current(i_Na, E_Na, time_, V, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: mcallister_noble_tsien_1975_modelB__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: mcallister_noble_tsien_1975_modelB__fast_sodium_current_h_gate(h, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * (V - E_Na);
+
+  // Variable initializations:
+  E_Na = 40;
+  g_Na = 150;
+end
+
+model mcallister_noble_tsien_1975_modelB__secondary_inward_current_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  alpha_d := 0.002 * (V + 40 ) / (1 - exp(-(0.1 ) * (V + 40 )));
+  beta_d := 0.02 * exp(-(0.0888 ) * (V + 40 ));
+
+  // Rate Rules:
+  d' = alpha_d * (1 - d) - beta_d * d;
+
+  // Variable initializations:
+  d = 0.00293135;
+end
+
+model mcallister_noble_tsien_1975_modelB__secondary_inward_current_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  alpha_f := 0.000987 * exp(-(0.04 ) * (V + 60 ));
+  beta_f := 0.02 / (exp(-(0.087 ) * (V + 26 )) + 1 );
+
+  // Rate Rules:
+  f' = alpha_f * (1 - f) - beta_f * f;
+
+  // Variable initializations:
+  f = 0.80873917;
+end
+
+model mcallister_noble_tsien_1975_modelB__secondary_inward_current_d1_gate(d1, V, time_)
+
+  // Assignment Rules:
+  d1 := 1 / (1 + exp(-(0.15 ) * (V + 40 )));
+end
+
+model mcallister_noble_tsien_1975_modelB__secondary_inward_current(i_si, time_, V, d, f, d1)
+
+  // Sub-modules, and any changes to those submodules:
+  secondary_inward_current_d_gate: mcallister_noble_tsien_1975_modelB__secondary_inward_current_d_gate(d, V, time_);
+  secondary_inward_current_f_gate: mcallister_noble_tsien_1975_modelB__secondary_inward_current_f_gate(f, V, time_);
+  secondary_inward_current_d1_gate: mcallister_noble_tsien_1975_modelB__secondary_inward_current_d1_gate(d1, V, time_);
+
+  // Assignment Rules:
+  i_si := g_si * d * f * (V - E_si) + g_si_ * d1 * (V - E_si);
+
+  // Variable initializations:
+  g_si = 0.8;
+  g_si_ = 0.04;
+  E_si = 70;
+end
+
+model mcallister_noble_tsien_1975_modelB__pacemaker_potassium_current_s_gate(s, V, time_)
+
+  // Assignment Rules:
+  alpha_s := 0.001 * (V - E_s) / (1 - exp(-(0.2 ) * (V - E_s)));
+  beta_s := 0.00005 * exp(-(0.067 ) * (V - E_s));
+
+  // Rate Rules:
+  s' = alpha_s * (1 - s) - beta_s * s;
+
+  // Variable initializations:
+  s = 0.75473994;
+  E_s = -52;
+end
+
+model mcallister_noble_tsien_1975_modelB__pacemaker_potassium_current(i_K2, I_K2, time_, V, s)
+
+  // Sub-modules, and any changes to those submodules:
+  pacemaker_potassium_current_s_gate: mcallister_noble_tsien_1975_modelB__pacemaker_potassium_current_s_gate(s, V, time_);
+
+  // Assignment Rules:
+  i_K2 := I_K2 * s;
+  I_K2 := 2.8 * (exp((V - E_K) / 25 ) - 1 ) / (exp((V + 60 ) / 12.5 ) + exp((V + 60 ) / 25 ));
+
+  // Variable initializations:
+  E_K = -110;
+end
+
+model mcallister_noble_tsien_1975_modelB__plateau_potassium_current1_x1_gate(x1, V, time_)
+
+  // Assignment Rules:
+  alpha_x1 := 5E-4 * exp((V + 50 ) / 12.1 ) / (1 + exp((V + 50 ) / 17.5 ));
+  beta_x1 := 0.0013 * exp(-((V + 20 )) / 16.67 ) / (1 + exp(-((V + 20 )) / 25 ));
+
+  // Rate Rules:
+  x1' = alpha_x1 * (1 - x1) - beta_x1 * x1;
+
+  // Variable initializations:
+  x1 = 0.02030289;
+end
+
+model mcallister_noble_tsien_1975_modelB__plateau_potassium_current1(i_x1, time_, V, x1)
+
+  // Sub-modules, and any changes to those submodules:
+  plateau_potassium_current1_x1_gate: mcallister_noble_tsien_1975_modelB__plateau_potassium_current1_x1_gate(x1, V, time_);
+
+  // Assignment Rules:
+  i_x1 := x1 * I_x1;
+  I_x1 := 1.2 * (exp((V + 95 ) / 25 ) - 1 ) / exp((V + 45 ) / 25 );
+end
+
+model mcallister_noble_tsien_1975_modelB__plateau_potassium_current2_x2_gate(x2, V, time_)
+
+  // Assignment Rules:
+  alpha_x2 := 0.000127 * 1 / (1 + exp(-((V + 19 )) / 5 ));
+  beta_x2 := 0.0003 * exp(-((V + 20 )) / 16.67 ) / (1 + exp(-((V + 20 )) / 25 ));
+
+  // Rate Rules:
+  x2' = alpha_x2 * (1 - x2) - beta_x2 * x2;
+
+  // Variable initializations:
+  x2 = 0.0176854;
+end
+
+model mcallister_noble_tsien_1975_modelB__plateau_potassium_current2(i_x2, time_, V, x2)
+
+  // Sub-modules, and any changes to those submodules:
+  plateau_potassium_current2_x2_gate: mcallister_noble_tsien_1975_modelB__plateau_potassium_current2_x2_gate(x2, V, time_);
+
+  // Assignment Rules:
+  i_x2 := x2 * I_x2;
+  I_x2 := 25 + 1 * 0.385 * V;
+end
+
+model mcallister_noble_tsien_1975_modelB__transient_chloride_current_q_gate(q, V, time_)
+
+  // Assignment Rules:
+  alpha_q := 0.008 * V / (1 - exp(-(0.1 ) * V));
+  beta_q := 0.08 * exp(-(0.0888 ) * V);
+
+  // Rate Rules:
+  q' = alpha_q * (1 - q) - beta_q * q;
+
+  // Variable initializations:
+  q = 3.11285794;
+end
+
+model mcallister_noble_tsien_1975_modelB__transient_chloride_current_r_gate(r, V, time_)
+
+  // Assignment Rules:
+  alpha_r := 0.000033 * exp(-(V) / 17 );
+  beta_r := 0.033 / (exp(-((V + 30 )) / 8 ) + 1 );
+
+  // Rate Rules:
+  r' = alpha_r * (1 - r) - beta_r * r;
+
+  // Variable initializations:
+  r = 0.13500116;
+end
+
+model mcallister_noble_tsien_1975_modelB__transient_chloride_current(i_qr, E_Cl, time_, V, q, r)
+
+  // Sub-modules, and any changes to those submodules:
+  transient_chloride_current_q_gate: mcallister_noble_tsien_1975_modelB__transient_chloride_current_q_gate(q, V, time_);
+  transient_chloride_current_r_gate: mcallister_noble_tsien_1975_modelB__transient_chloride_current_r_gate(r, V, time_);
+
+  // Assignment Rules:
+  i_qr := g_qr * q * r * (V - E_Cl);
+
+  // Variable initializations:
+  E_Cl = -70;
+  g_qr = 2.5;
+end
+
+model mcallister_noble_tsien_1975_modelB__time_independent_outward_current(i_K1, time_, V, I_K2)
+
+  // Assignment Rules:
+  i_K1 := I_K2 / 2.8 + 0.2 * (V - E_K1) / (1 - exp(-((V - E_K1)) / 25 ));
+
+  // Variable initializations:
+  E_K1 = -30;
+end
+
+model mcallister_noble_tsien_1975_modelB__sodium_background_current(i_Na_b, time_, V, E_Na)
+
+  // Assignment Rules:
+  i_Na_b := g_Nab * (V - E_Na);
+
+  // Variable initializations:
+  g_Nab = 0.105;
+end
+
+model mcallister_noble_tsien_1975_modelB__chloride_background_current(i_Cl_b, time_, V, E_Cl)
+
+  // Assignment Rules:
+  i_Cl_b := g_Clb * (V - E_Cl);
+
+  // Variable initializations:
+  g_Clb = 0.01;
+end
+
+model mcallister_noble_tsien_1975_modelB____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: mcallister_noble_tsien_1975_modelB__environment(time_);
+  membrane: mcallister_noble_tsien_1975_modelB__membrane(V, time_, i_Na, i_si, i_K2, i_x1, i_x2, i_qr, i_K1, i_Na_b, i_Cl_b);
+  fast_sodium_current: mcallister_noble_tsien_1975_modelB__fast_sodium_current(i_Na, E_Na, time_, V, m, h);
+  secondary_inward_current: mcallister_noble_tsien_1975_modelB__secondary_inward_current(i_si, time_, V, d, f, d1);
+  pacemaker_potassium_current: mcallister_noble_tsien_1975_modelB__pacemaker_potassium_current(i_K2, I_K2, time_, V, s);
+  plateau_potassium_current1: mcallister_noble_tsien_1975_modelB__plateau_potassium_current1(i_x1, time_, V, x1);
+  plateau_potassium_current2: mcallister_noble_tsien_1975_modelB__plateau_potassium_current2(i_x2, time_, V, x2);
+  transient_chloride_current: mcallister_noble_tsien_1975_modelB__transient_chloride_current(i_qr, E_Cl, time_, V, q, r);
+  time_independent_outward_current: mcallister_noble_tsien_1975_modelB__time_independent_outward_current(i_K1, time_, V, I_K2);
+  sodium_background_current: mcallister_noble_tsien_1975_modelB__sodium_background_current(i_Na_b, time_, V, E_Na);
+  chloride_background_current: mcallister_noble_tsien_1975_modelB__chloride_background_current(i_Cl_b, time_, V, E_Cl);
+end

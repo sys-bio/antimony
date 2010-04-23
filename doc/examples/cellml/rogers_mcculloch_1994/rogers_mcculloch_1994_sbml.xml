@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="rogers_mcculloch_1994_version01____main" name="rogers_mcculloch_1994_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Cm" value="0.01"/>
+      <parameter id="Vr" value="-85"/>
+      <parameter id="Vth" value="-75"/>
+      <parameter id="Vp" value="15"/>
+      <parameter id="c1" value="0.26"/>
+      <parameter id="c2" value="0.1"/>
+      <parameter id="b" value="0.013"/>
+      <parameter id="d" value="0.8"/>
+      <parameter id="Vm" value="-85" constant="false"/>
+      <parameter id="v" value="0" constant="false"/>
+      <parameter id="Iion" constant="false"/>
+      <parameter id="IStimC" constant="false"/>
+      <parameter id="interface_u" constant="false"/>
+      <parameter id="t"/>
+      <parameter id="Istim"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Vm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> Istim </ci>
+              <ci> Iion </ci>
+            </apply>
+            <ci> Cm </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="v">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> b </ci>
+            <apply>
+              <minus/>
+              <ci> interface_u </ci>
+              <apply>
+                <times/>
+                <ci> d </ci>
+                <ci> v </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Iion">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> c1 </ci>
+              <ci> interface_u </ci>
+              <apply>
+                <minus/>
+                <ci> interface_u </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> Vth </ci>
+                    <ci> Vr </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> Vp </ci>
+                    <ci> Vr </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> interface_u </ci>
+                <cn> 1 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> c2 </ci>
+              <ci> interface_u </ci>
+              <ci> v </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="IStimC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> Istim </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_u">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> Vm </ci>
+              <ci> Vr </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> Vp </ci>
+              <ci> Vr </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

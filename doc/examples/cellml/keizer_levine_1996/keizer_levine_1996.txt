@@ -1,0 +1,86 @@
+//Created by libAntimony v1.3
+model keizer_levine_1996_version01__environment(time_)
+end
+
+model keizer_levine_1996_version01__P_C1(P_C1, n, time_, Cai, ka, ka_, P_O1)
+
+  // Rate Rules:
+  P_C1' = -((ka * power(Cai, n) * P_C1)) + ka_ * P_O1;
+end
+
+model keizer_levine_1996_version01__P_O1(P_O1, n, m, time_, Cai, ka, ka_, kb, kb_, kc, kc_, P_C1, P_C2, P_O2)
+
+  // Rate Rules:
+  P_O1' = ka * power(Cai, n) * P_C1 + -((ka_ * P_O1 + kb * power(Cai, m) * P_O1)) + kb_ * P_O2 + -((kc * P_O1)) + kc_ * P_C2;
+end
+
+model keizer_levine_1996_version01__P_O2(P_O2, m, time_, Cai, kb, kb_, P_O1)
+
+  // Rate Rules:
+  P_O2' = -((kb * power(Cai, m) * P_O1)) + kb_ * P_O2;
+end
+
+model keizer_levine_1996_version01__P_C2(P_C2, time_, kc, kc_, P_O1)
+
+  // Rate Rules:
+  P_C2' = kc * P_O1 - kc_ * P_C2;
+end
+
+model keizer_levine_1996_version01__P_O_slow(P_O_slow, ka, kb, ka_, kb_, kc, kc_, Cai, P_C2, time_)
+
+  // Assignment Rules:
+  P_O_slow := w * ( 1.0 + power( Cai / Kb , 3.0 )) / ( 1.0 + power( Ka / Cai , 4.0 ) + power( Cai / Kb , 3.0 ));
+  w_init := 1.0 - P_C2;
+  w_infinity_Cai := ( 1.0 + power( Ka / Cai , 4.0 ) + power( Cai / Kb , 3.0 )) / ( 1.0 + 1.0 / Kc + power( Ka / Cai , 4.0 ) + power( Cai / Kb , 3.0 ));
+  tau_Cai := w_infinity_Cai / kc_;
+  Ka := ka_ / ka;
+  Kb := kb_ / kb;
+  Kc := kc_ / kc;
+
+  // Rate Rules:
+  w' = -(( w - w_infinity_Cai * Cai )) / ( tau_Cai * Cai );
+end
+
+model keizer_levine_1996_version01__Cai(Cai, P_O_slow, time_)
+
+  // Assignment Rules:
+  Cas := ( Co - Cai ) / c1;
+
+  // Rate Rules:
+  Cai' = fi * (( v1 * P_O_slow + v2 ) * ( Cas - Cai ) - v3 * (power( Cai , 2.0 ) / (power( Cai , 2.0 ) + power( K3 , 2.0 ))));
+
+  // Variable initializations:
+  fi = 0.01;
+  v1 = 40.0;
+  v2 = 0.5;
+  v3 = 1000.0;
+  K3 = 0.30;
+  Co = 10.0;
+  c1 = 0.15;
+end
+
+model keizer_levine_1996_version01__constants(ka, kb, ka_, kb_, kc, kc_, n, m)
+
+  // Variable initializations:
+  ka = 1500.0;
+  kb = 1500.0;
+  ka_ = 28.8;
+  kb_ = 385.9;
+  kc = 1.75;
+  kc_ = 0.1;
+  n = 4;
+  m = 3;
+end
+
+model keizer_levine_1996_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: keizer_levine_1996_version01__environment(time_);
+  P_C1: keizer_levine_1996_version01__P_C1(P_C10, n, time_, Cai0, ka, ka_, P_O10);
+  P_O1: keizer_levine_1996_version01__P_O1(P_O10, n, m, time_, Cai0, ka, ka_, kb, kb_, kc, kc_, P_C10, P_C20, P_O20);
+  P_O2: keizer_levine_1996_version01__P_O2(P_O20, m, time_, Cai0, kb, kb_, P_O10);
+  P_C2: keizer_levine_1996_version01__P_C2(P_C20, time_, kc, kc_, P_O10);
+  P_O_slow: keizer_levine_1996_version01__P_O_slow(P_O_slow0, ka, kb, ka_, kb_, kc, kc_, Cai0, P_C20, time_);
+  Cai: keizer_levine_1996_version01__Cai(Cai0, P_O_slow0, time_);
+  constants: keizer_levine_1996_version01__constants(ka, kb, ka_, kb_, kc, kc_, n, m);
+end

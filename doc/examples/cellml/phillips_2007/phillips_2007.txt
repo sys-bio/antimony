@@ -1,0 +1,86 @@
+//Created by libAntimony v1.3
+model phillips_2007__environment(time_)
+end
+
+model phillips_2007__v(Qv, Vv, Qm, Qmax, D, theta, sigma, time_)
+
+  // Assignment Rules:
+  Qv := Qmax / (1 + exp(-((Vv - theta)) / sigma));
+
+  // Rate Rules:
+  Vv' = (v_vm * Qm + D - Vv) / (tau_v / 3600 );
+
+  // Variable initializations:
+  Vv = 0.0;
+  tau_v = 10.0;
+  v_vm = -1.9;
+end
+
+model phillips_2007__a(Qmax, D, theta, sigma, time_)
+
+  // Assignment Rules:
+  Qa := Qmax / (1 + exp(-((Va - theta)) / sigma));
+  Va := Vao;
+
+  // Variable initializations:
+  Vao = 1.0;
+end
+
+model phillips_2007__m(Qm, Vm, Qmax, theta, sigma, Qv, time_)
+
+  // Assignment Rules:
+  Qm := Qmax / (1 + exp(-((Vm - theta)) / sigma));
+
+  // Rate Rules:
+  Vm' = (v_maQao + v_mv * Qv - Vm) / (tau_m / 3600 );
+
+  // Variable initializations:
+  Vm = 0.0;
+  tau_m = 10.0;
+  v_mv = -1.9;
+  v_maQao = 1.0;
+end
+
+model phillips_2007__H(H, Qm, time_)
+
+  // Rate Rules:
+  H' = (mu * Qm - H) / chi;
+
+  // Variable initializations:
+  H = 15.0;
+  chi = 10.8;
+  mu = 3.6;
+end
+
+model phillips_2007__D(D, H, time_)
+
+  // Assignment Rules:
+  D := v_vc * C + v_vh * H;
+  C := c0 + cos(omega * time_);
+  omega := 2 * pi / 24;
+
+  // Variable initializations:
+  c0 = 1.0;
+  v_vc = -6.3;
+  v_vh = 0.19;
+end
+
+model phillips_2007__model_parameters(Qmax, theta, sigma)
+
+  // Variable initializations:
+  Qmax = 100.0;
+  theta = 10.0;
+  sigma = 3.0;
+end
+
+model phillips_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: phillips_2007__environment(time_);
+  v: phillips_2007__v(Qv, Vv, Qm, Qmax, D0, theta, sigma, time_);
+  a: phillips_2007__a(Qmax, D0, theta, sigma, time_);
+  m: phillips_2007__m(Qm, Vm, Qmax, theta, sigma, Qv, time_);
+  H: phillips_2007__H(H0, Qm, time_);
+  D: phillips_2007__D(D0, H0, time_);
+  model_parameters: phillips_2007__model_parameters(Qmax, theta, sigma);
+end

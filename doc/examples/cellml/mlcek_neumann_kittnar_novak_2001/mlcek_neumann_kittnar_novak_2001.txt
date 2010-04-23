@@ -1,0 +1,87 @@
+//Created by libAntimony v1.3
+model mlcek_neumann_kittnar_novak_2001_version01__environment(time_)
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__A(A, kTA, kTA_, kDPA, kDPA_, kan, kab, M_ATP, A_M_ATP, M_ADP_Pi, A_M_ADP_Pi, Cai, TnC, u, time_)
+
+  // Rate Rules:
+  A' = kTA_ * A_M_ATP + kDPA_ * A_M_ADP_Pi + u * kan * Cai * TnC - ( kTA * A * M_ATP + kDPA * A * M_ADP_Pi + kab * A );
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__M_ADP_Pi(M_ADP_Pi, kH, kH_, kDPA, kDPA_, kan, kab, M_ATP, A, A_M_ADP_Pi, Cai, TnC, u, w1, time_)
+
+  // Rate Rules:
+  M_ADP_Pi' = kH * M_ATP + kDPA_ * A_M_ADP_Pi + w1 * u * kan * Cai * TnC - ( kH_ * M_ADP_Pi + kDPA * A * M_ADP_Pi + kab * M_ADP_Pi );
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__A_M_ADP_Pi(A_M_ADP_Pi, kAH, kAH_, kDPA, kDPA_, kDAP_, A, M_ADP_Pi, A_M_ATP, time_)
+
+  // Rate Rules:
+  A_M_ADP_Pi' = kAH * A_M_ATP + kDPA_ * A * M_ADP_Pi - ( kDPA_ * A_M_ADP_Pi + kDAP_ * A_M_ADP_Pi + kAH_ * A_M_ADP_Pi );
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__AM_ADP(AM_ADP, kAD_, kDAP_, A_M_ADP_Pi, time_)
+
+  // Rate Rules:
+  AM_ADP' = kDAP_ * A_M_ADP_Pi - kAD_ * AM_ADP;
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__AM(AM, kAT, kAT_, kAD_, ATP, A_M_ATP, AM_ADP, time_)
+
+  // Rate Rules:
+  AM' = kAT_ * A_M_ATP + kAD_ * AM_ADP - kAT_ * AM * ATP;
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__ATP(ATP, kAT, kAT_, AM, A_M_ATP, time_)
+
+  // Rate Rules:
+  ATP' = kAT_ * A_M_ATP - kAT * AM * ATP;
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__A_M_ATP(A_M_ATP, kTA, kTA_, kAT, kAT_, kAH, kAH_, M_ATP, A, A_M_ADP_Pi, AM, ATP, time_)
+
+  // Rate Rules:
+  A_M_ATP' = kTA * A * M_ATP + kAT * AM * ATP + kAH_ * A_M_ADP_Pi - ( kTA_ * A_M_ATP + kAT_ * A_M_ATP + kAH * A_M_ATP );
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__M_ATP(M_ATP, kH, kH_, kTA, kTA_, kan, kab, M_ADP_Pi, A, A_M_ATP, Cai, TnC, u, w6, time_)
+
+  // Rate Rules:
+  M_ATP' = kH_ * M_ADP_Pi + kTA_ * A_M_ATP + w6 * u * kan * Cai * TnC - ( kH * M_ATP + kTA * A * M_ATP + kab * M_ATP );
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__TnC(TnC, kan, kab, A, Cai, u, time_)
+
+  // Rate Rules:
+  TnC' = 1.0 / u * kab * A - kan * Cai * TnC;
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__Cai(Cai, kr, kan, kab, A, CaF, TnC, u, time_)
+
+  // Rate Rules:
+  Cai' = 1.0 / u * kab * A + d( CaF )/d(time_) - ( kan * Cai * TnC + kr * Cai );
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__CaF(CaF)
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01__constants(kTA, kTA_, kDPA, kDPA_, kan, kab, kAD_, kAT, kAT_, kAH, kAH_, kH, kH_, kDAP_, kr, u, w1, w6)
+end
+
+model mlcek_neumann_kittnar_novak_2001_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: mlcek_neumann_kittnar_novak_2001_version01__environment(time_);
+  A: mlcek_neumann_kittnar_novak_2001_version01__A(A0, kTA, kTA_, kDPA, kDPA_, kan, kab, M_ATP0, A_M_ATP0, M_ADP_Pi0, A_M_ADP_Pi0, Cai0, TnC0, u, time_);
+  M_ADP_Pi: mlcek_neumann_kittnar_novak_2001_version01__M_ADP_Pi(M_ADP_Pi0, kH, kH_, kDPA, kDPA_, kan, kab, M_ATP0, A0, A_M_ADP_Pi0, Cai0, TnC0, u, w1, time_);
+  A_M_ADP_Pi: mlcek_neumann_kittnar_novak_2001_version01__A_M_ADP_Pi(A_M_ADP_Pi0, kAH, kAH_, kDPA, kDPA_, kDAP_, A0, M_ADP_Pi0, A_M_ATP0, time_);
+  AM_ADP: mlcek_neumann_kittnar_novak_2001_version01__AM_ADP(AM_ADP0, kAD_, kDAP_, A_M_ADP_Pi0, time_);
+  AM: mlcek_neumann_kittnar_novak_2001_version01__AM(AM0, kAT, kAT_, kAD_, ATP0, A_M_ATP0, AM_ADP0, time_);
+  ATP: mlcek_neumann_kittnar_novak_2001_version01__ATP(ATP0, kAT, kAT_, AM0, A_M_ATP0, time_);
+  A_M_ATP: mlcek_neumann_kittnar_novak_2001_version01__A_M_ATP(A_M_ATP0, kTA, kTA_, kAT, kAT_, kAH, kAH_, M_ATP0, A0, A_M_ADP_Pi0, AM0, ATP0, time_);
+  M_ATP: mlcek_neumann_kittnar_novak_2001_version01__M_ATP(M_ATP0, kH, kH_, kTA, kTA_, kan, kab, M_ADP_Pi0, A0, A_M_ATP0, Cai0, TnC0, u, w6, time_);
+  TnC: mlcek_neumann_kittnar_novak_2001_version01__TnC(TnC0, kan, kab, A0, Cai0, u, time_);
+  Cai: mlcek_neumann_kittnar_novak_2001_version01__Cai(Cai0, kr, kan, kab, A0, CaF0, TnC0, u, time_);
+  CaF: mlcek_neumann_kittnar_novak_2001_version01__CaF(CaF0);
+  constants: mlcek_neumann_kittnar_novak_2001_version01__constants(kTA, kTA_, kDPA, kDPA_, kan, kab, kAD_, kAT, kAT_, kAH, kAH_, kH, kH_, kDAP_, kr, u, w1, w6);
+end

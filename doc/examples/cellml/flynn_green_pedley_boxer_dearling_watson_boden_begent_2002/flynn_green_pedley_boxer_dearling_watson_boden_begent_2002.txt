@@ -1,0 +1,65 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "2.0   *  P  * definite_integral( R  * exp(-( mu ) * ( T  -  time )),  time ,  0  ,  T )" to define 'total_probability' because Antimony does not handle definite integrals.
+//    Unable to use the formula "2.0   * power( P ,  2.0  ) * definite_integral( R , definite_integral( R , exp(-( mu ) * ( T  -  time )),  T ,  0  ,  T ),  time ,  0  ,  time )" to define 'probability_of_typeB_damage' because Antimony does not handle definite integrals.
+//    Unable to use the formula "alpha  * definite_integral( R ,  time ,  0  ,  time )" to define 'probability_of_typeB_damage' because Antimony does not handle definite integrals.
+
+model flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__environment(time_)
+end
+
+model flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__B(B, lamda_Vi, time_)
+
+  // Rate Rules:
+  B' = -(( lamda_Bo + lamda_Vi )) * B;
+
+  // Variable initializations:
+  B = 0.4;
+end
+
+model flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__V(V, lamda_Vi, lamda_Ho, B, time_)
+
+  // Rate Rules:
+  V' = lamda_Vi * B - ( lamda_Vo + lamda_Ho ) * V;
+end
+
+model flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__H(H, lamda_Ho, V, time_)
+
+  // Rate Rules:
+  H' = -(( lamda_Hi * V )) + lamda_Ho * H;
+end
+
+model flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__antibody_dose_rate(RV, RH, V, H)
+
+  // Assignment Rules:
+  RV := A0 * Eav * n_beta * K * ( V * ( phi * VV ) + H * ( phi * VH ));
+  RH := A0 * Eav * n_beta * K * ( V * ( phi * HV ) + H * ( phi * HH ));
+
+  // Variable initializations:
+  K = 1.6E-6;
+end
+
+model flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__S(S, alpha)
+
+  // Assignment Rules:
+  S := exp(-(( alpha * D )) * RE );
+end
+
+model flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__response_models(total_probability, probability_of_typeB_damage, probability_of_typeA_damage, alpha, time_)
+end
+
+model flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__model_parameters(alpha, lamda_Vi, lamda_Ho)
+end
+
+model flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__environment(time_);
+  B: flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__B(B0, lamda_Vi, time_);
+  V: flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__V(V0, lamda_Vi, lamda_Ho, B0, time_);
+  H: flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__H(H0, lamda_Ho, V0, time_);
+  antibody_dose_rate: flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__antibody_dose_rate(RV, RH, V0, H0);
+  S: flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__S(S0, alpha);
+  response_models: flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__response_models(total_probability, probability_of_typeB_damage, probability_of_typeA_damage, alpha, time_);
+  model_parameters: flynn_green_pedley_boxer_dearling_watson_boden_begent_2002_version01__model_parameters(alpha, lamda_Vi, lamda_Ho);
+end

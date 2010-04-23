@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="dawson_lea_irvine_2003_version03____main" name="dawson_lea_irvine_2003_version03____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="R0" constant="false"/>
+      <parameter id="V11" constant="false"/>
+      <parameter id="V40" constant="false"/>
+      <parameter id="V20" constant="false"/>
+      <parameter id="R__0" constant="false"/>
+      <parameter id="V50" constant="false"/>
+      <parameter id="I0" constant="false"/>
+      <parameter id="V60" constant="false"/>
+      <parameter id="O10" constant="false"/>
+      <parameter id="V70" constant="false"/>
+      <parameter id="V30" constant="false"/>
+      <parameter id="O20" constant="false"/>
+      <parameter id="R_0" constant="false"/>
+      <parameter id="C10" constant="false"/>
+      <parameter id="Ca_ER0" constant="false"/>
+      <parameter id="V80" constant="false"/>
+      <parameter id="V90" constant="false"/>
+      <parameter id="Ca_cyt0" constant="false"/>
+      <parameter id="V100" constant="false"/>
+      <parameter id="Ca_L0" constant="false"/>
+      <parameter id="V1_k1" value="1"/>
+      <parameter id="V1_k1_" value="10"/>
+      <parameter id="V2_k2" value="100"/>
+      <parameter id="V2_k2_" value="12000"/>
+      <parameter id="V3_k3" value="100"/>
+      <parameter id="V3_k3_" value="10"/>
+      <parameter id="V4_k4" value="1"/>
+      <parameter id="V4_k4_" value="1"/>
+      <parameter id="V5_k5" value="10"/>
+      <parameter id="V5_k5_" value="1"/>
+      <parameter id="V6_k6" value="2"/>
+      <parameter id="V6_k6_" value="2.4"/>
+      <parameter id="V7_k7" value="10"/>
+      <parameter id="V7_k7_" value="1"/>
+      <parameter id="V8_k8" value="500"/>
+      <parameter id="V9_k9" value="5000"/>
+      <parameter id="V10_k10" value="500"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> V11 </ci>
+            <ci> V40 </ci>
+            <ci> V20 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V11">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V1_k1_ </ci>
+              <ci> R_0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V1_k1 </ci>
+              <ci> R0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V4_k4_ </ci>
+              <ci> R__0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V4_k4 </ci>
+              <ci> R0 </ci>
+              <ci> Ca_L0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V2_k2_ </ci>
+              <ci> O10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V2_k2 </ci>
+              <ci> R0 </ci>
+              <ci> I0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="R__0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> V40 </ci>
+            <ci> V50 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V50">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V5_k5_ </ci>
+              <ci> R__0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V5_k5 </ci>
+              <ci> R_0 </ci>
+              <ci> Ca_L0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="I0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> V20 </ci>
+            <ci> V60 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V60">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V6_k6_ </ci>
+              <ci> C10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V6_k6 </ci>
+              <ci> R_0 </ci>
+              <ci> I0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="O10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> V20 </ci>
+            <ci> V70 </ci>
+            <ci> V30 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V70">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V7_k7_ </ci>
+              <ci> C10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V7_k7 </ci>
+              <ci> O10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V3_k3_ </ci>
+              <ci> O20 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V3_k3 </ci>
+              <ci> O10 </ci>
+              <ci> Ca_L0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="O20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> V30 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="R_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> V11 </ci>
+            <ci> V50 </ci>
+            <ci> V60 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> V60 </ci>
+            <ci> V70 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_ER0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> V80 </ci>
+            <ci> V90 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V80">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V8_k8 </ci>
+            <ci> Ca_ER0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V9_k9 </ci>
+            <ci> Ca_ER0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_cyt0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> V100 </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V100">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V10_k10 </ci>
+            <ci> Ca_L0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_L0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> V40 </ci>
+            <ci> V50 </ci>
+            <ci> V30 </ci>
+            <ci> V100 </ci>
+            <ci> V80 </ci>
+            <ci> V90 </ci>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

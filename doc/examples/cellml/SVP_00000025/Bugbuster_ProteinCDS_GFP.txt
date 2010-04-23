@@ -1,0 +1,18 @@
+//Created by libAntimony v1.3
+model Template_ProteinCDS__Template_ProteinCDS(localVolume, hostRNARiPs, J)
+
+  // Assignment Rules:
+  J := 1e6 * hostRNARiPs / localVolume;
+end
+
+model Bugbuster_ProteinCDS_GFP__Bugbuster_ProteinCDS_GFP(localVolume, hostRNARiPs, J)
+
+  // Sub-modules, and any changes to those submodules:
+  Template_ProteinCDS: Template_ProteinCDS__Template_ProteinCDS(localVolume, hostRNARiPs, J);
+end
+
+model Bugbuster_ProteinCDS_GFP____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Bugbuster_ProteinCDS_GFP: Bugbuster_ProteinCDS_GFP__Bugbuster_ProteinCDS_GFP(localVolume, hostRNARiPs, J);
+end

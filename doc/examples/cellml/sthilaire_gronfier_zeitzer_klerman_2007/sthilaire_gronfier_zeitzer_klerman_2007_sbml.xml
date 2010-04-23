@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="st_hilaire_model_2007_version01____main" name="st_hilaire_model_2007_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="H10" value="0.5" constant="false"/>
+      <parameter id="A0" constant="false"/>
+      <parameter id="betaIP" value="0.047"/>
+      <parameter id="H20" value="0.5" constant="false"/>
+      <parameter id="betaIS" value="0.065"/>
+      <parameter id="betaCP" value="0.025"/>
+      <parameter id="H30" value="0.5" constant="false"/>
+      <parameter id="betaCS" value="0.028"/>
+      <parameter id="A_" constant="false"/>
+      <parameter id="A_Amax" value="4.834"/>
+      <parameter id="A_m" value="7"/>
+      <parameter id="A_t_on" value="21.93"/>
+      <parameter id="A_t_off" value="29.867"/>
+      <parameter id="alpha" value="0.067"/>
+      <parameter id="lamda" value="0.588"/>
+      <parameter id="B_" constant="false"/>
+      <parameter id="Process_L_n" value="7" constant="false"/>
+      <parameter id="Process_L_p" value="0.6"/>
+      <parameter id="Process_L_I" constant="false"/>
+      <parameter id="Process_L_I0" value="9500"/>
+      <parameter id="Process_L_G" value="37"/>
+      <parameter id="Process_L_alph_0" value="0.1"/>
+      <parameter id="Process_L_beta" value="0.007"/>
+      <parameter id="Process_L_alph" constant="false"/>
+      <parameter id="Process_P_x" constant="false"/>
+      <parameter id="Process_P_xc" constant="false"/>
+      <parameter id="Process_P_B" constant="false"/>
+      <parameter id="Process_P_k" value="0.55"/>
+      <parameter id="Process_P_mu" value="0.13"/>
+      <parameter id="Process_P_q" value="0.333333"/>
+      <parameter id="Process_P_tau_x" value="24.2"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="H10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> betaIP </ci>
+                <ci> H10 </ci>
+              </apply>
+            </apply>
+            <ci> A0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="A0"/>
+      <rateRule variable="H20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> betaIP </ci>
+              <ci> H10 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> betaCP </ci>
+                <ci> H20 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> betaIS </ci>
+                <ci> H20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="H30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> betaIS </ci>
+              <ci> H20 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> betaCS </ci>
+              <ci> H30 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="A_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> A0 </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <apply>
+                <times/>
+                <ci> A_m </ci>
+                <ci> B_ </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="B_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Process_L_G </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <ci> Process_L_n </ci>
+            </apply>
+            <ci> Process_L_alph </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Process_L_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 60 </cn>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> Process_L_alph </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <ci> Process_L_n </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Process_L_beta </ci>
+                <ci> Process_L_n </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Process_L_I"/>
+      <assignmentRule variable="Process_L_alph">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Process_L_alph_0 </ci>
+            <apply>
+              <power/>
+              <apply>
+                <divide/>
+                <ci> Process_L_I </ci>
+                <ci> Process_L_I0 </ci>
+              </apply>
+              <ci> Process_L_p </ci>
+            </apply>
+            <apply>
+              <divide/>
+              <ci> Process_L_I </ci>
+              <apply>
+                <plus/>
+                <ci> Process_L_I </ci>
+                <cn> 100 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Process_P_x">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <pi/>
+              <cn> 12 </cn>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> Process_P_xc </ci>
+              <apply>
+                <times/>
+                <ci> Process_P_mu </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <divide/>
+                        <cn> 1 </cn>
+                        <cn> 3 </cn>
+                      </apply>
+                      <ci> Process_P_x </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <divide/>
+                        <cn> 4 </cn>
+                        <cn> 3 </cn>
+                      </apply>
+                      <apply>
+                        <power/>
+                        <ci> Process_P_x </ci>
+                        <cn> 3 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <divide/>
+                      <cn> 256 </cn>
+                      <cn> 105 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> Process_P_x </ci>
+                      <cn> 7 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> Process_P_B </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Process_P_xc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <pi/>
+              <cn> 12 </cn>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> Process_P_q </ci>
+                  <ci> Process_P_B </ci>
+                  <ci> Process_P_xc </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Process_P_x </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <cn> 24 </cn>
+                      <apply>
+                        <times/>
+                        <cn> 0.99729 </cn>
+                        <ci> Process_P_tau_x </ci>
+                      </apply>
+                    </apply>
+                    <cn> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Process_P_k </ci>
+                <ci> Process_P_B </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Process_P_B">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> B_ </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <apply>
+                <times/>
+                <cn> 0.4 </cn>
+                <ci> Process_P_x </ci>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <apply>
+                <times/>
+                <cn> 0.4 </cn>
+                <ci> Process_P_xc </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

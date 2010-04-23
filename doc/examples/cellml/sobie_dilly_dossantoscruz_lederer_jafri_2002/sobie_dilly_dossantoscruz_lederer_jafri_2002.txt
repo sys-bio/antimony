@@ -1,0 +1,106 @@
+//Created by libAntimony v1.3
+model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__environment(time_)
+end
+
+model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__subspace(Ca_SS, J_RyR, J_buf, V_SS, Ca_lumen, time_)
+
+  // Assignment Rules:
+  J_RyR := D_RyR * ( Ca_lumen - Ca_SS );
+  J_buf := k_on_CaM * Ca_SS * Ca_B_CaM - k_off_CaM * ( Ca_B_CaM_tot - Ca_B_CaM ) + ( k_on_trpnC * Ca_SS * Ca_B_trpnC - k_off_trpnC * ( Ca_B_trpnC_tot - Ca_B_trpnC )) + ( k_on_SR * Ca_SS * Ca_B_SR - k_off_SR * ( Ca_B_SR_tot - Ca_B_SR )) + ( k_on_SL * Ca_SS * Ca_B_SL - k_off_SL * ( Ca_B_SL_tot - Ca_B_SL ));
+  J_release := sum(bvar( i ), lowlimit( 1.0 ), RyR_open * J_RyR );
+  J_DHPR := -(( I_DHPR / ( 2.0 * F * V_SS )));
+  J_efflux := ( Ca_myo + Ca_SS ) / tau_efflux;
+  RyR_open := piecewise( 0.0 , i == 0.0 , 1.0 );
+
+  // Rate Rules:
+  Ca_SS' = J_release + J_DHPR + J_efflux + J_buf;
+  Ca_B_SR' = k_on_SR * Ca_SS * Ca_B_SR - k_off_SR * ( Ca_B_SR_tot - Ca_B_SR );
+  Ca_B_CaM' = k_on_CaM * Ca_SS * Ca_B_CaM - k_off_CaM * ( Ca_B_CaM_tot - Ca_B_CaM );
+  Ca_B_SL' = k_on_SL * Ca_SS * Ca_B_SL - k_off_SL * ( Ca_B_SL_tot - Ca_B_SL );
+  Ca_B_trpnC' = k_on_trpnC * Ca_SS * Ca_B_trpnC - k_off_trpnC * ( Ca_B_trpnC_tot - Ca_B_trpnC );
+
+  // Variable initializations:
+  V_SS = 1.0E-13;
+  Ca_myo = 0.1;
+  F = 96480.0;
+  i = 0.0;
+  N = 50.0;
+  I_DHPR = -0.5;
+  D_RyR = 4000.0;
+  Ca_B_SR_tot = 47.0;
+  Ca_B_CaM_tot = 24.0;
+  Ca_B_SL_tot = 1124.0;
+  Ca_B_trpnC_tot = 70.0;
+  k_on_SR = 115.0;
+  k_off_SR = 100.0;
+  k_on_CaM = 100.0;
+  k_off_CaM = 38.0;
+  k_on_trpnC = 39.0;
+  k_off_trpnC = 20.0;
+  k_on_SL = 115.0;
+  k_off_SL = 1000.0;
+  tau_efflux = 7.0E-7;
+end
+
+model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__lumen(Ca_lumen, J_RyR, V_SS, time_)
+
+  // Assignment Rules:
+  J_refill := ( Ca_NSR - Ca_lumen ) / tau_refill;
+  beta_JSR := power( 1.0 + CSQ_tot * K_CSQ / power( CSQ + K_CSQ , 2.0 ), -1.0 );
+
+  // Rate Rules:
+  Ca_lumen' = beta_JSR * (-( J_RyR ) * ( V_SS / V_JSR ) + J_refill );
+
+  // Variable initializations:
+  tau_refill = 0.01;
+  Ca_NSR = 1.0;
+  V_JSR = 1.0E-11;
+  CSQ_tot = 10.0;
+  K_CSQ = 0.8;
+end
+
+model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__RyR_receptor_gating(time_, Ca_lumen, Ca_SS)
+
+  // Assignment Rules:
+  k_close := CF_close * 480.0;
+  k_open := CF_open * 30000.0 * (power( Ca_SS , 4.0 ) / (power( Ca_SS , 4.0 ) + power( K_m , 4.0 )));
+  CF_close := k_coop * ( 1.0 + ( N_closed + 1.0 ) / ( N_open + N_closed ));
+  CF_open := 1.0 + ( N_open + 1.0 ) / ( N_open + N_closed );
+  K_m := 6.0 - 0.0024 * Ca_lumen;
+
+  // Variable initializations:
+  k_coop = 1.0;
+end
+
+model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__spark_model(time_, J_RyR, J_buf)
+
+  // Assignment Rules:
+  J_pump := Vmax_pump * power( Ca , m ) / ( Km_pump + power( Ca , m ));
+  J_leak := -(( Vmax_pump * power( C_infinity , m ) / ( Km_pump + power( C_infinity , m ))));
+  J_dye := -( k_F_plus ) * Ca * ( F_T - Ca_F ) + k_F_minus * Ca_F;
+
+  // Rate Rules:
+  Ca' = DC * Ca + J_dye + J_buf + J_pump + J_leak + J_RyR;
+  Ca_F' = DF * Ca_F - J_dye;
+
+  // Variable initializations:
+  DC = 250.0;
+  DF = 20.0;
+  F_T = 50.0;
+  Vmax_pump = 208.0;
+  Km_pump = 0.184;
+  m = 3.9;
+  C_infinity = 100.0;
+  k_F_plus = 80.0;
+  k_F_minus = 40.0;
+end
+
+model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__environment(time_);
+  subspace: sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__subspace(Ca_SS, J_RyR, J_buf, V_SS, Ca_lumen, time_);
+  lumen: sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__lumen(Ca_lumen, J_RyR, V_SS, time_);
+  RyR_receptor_gating: sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__RyR_receptor_gating(time_, Ca_lumen, Ca_SS);
+  spark_model: sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__spark_model(time_, J_RyR, J_buf);
+end

@@ -1,0 +1,63 @@
+//Created by libAntimony v1.3
+model goodwin_model_1965__environment(time_)
+end
+
+model goodwin_model_1965__X1(X1, Y1, Y2, time_)
+
+  // Rate Rules:
+  X1' = a1 / ( A1 + k11 * Y1 + k12 * Y2 ) - b1;
+
+  // Variable initializations:
+  X1 = 7;
+  a1 = 360;
+  b1 = 10;
+  A1 = 36;
+  k11 = 1;
+  k12 = 0;
+end
+
+model goodwin_model_1965__Y1(Y1, X1, time_)
+
+  // Rate Rules:
+  Y1' = alpha_1 * X1 - beta_1;
+
+  // Variable initializations:
+  Y1 = -10;
+  beta_1 = 0;
+  alpha_1 = 0.5;
+end
+
+model goodwin_model_1965__X2(X2, Y1, Y2, time_)
+
+  // Rate Rules:
+  X2' = a2 / ( A2 + k21 * Y1 + k22 * Y2 ) - b2;
+
+  // Variable initializations:
+  X2 = 7;
+  a2 = 360;
+  b2 = 10;
+  A2 = 43;
+  k21 = 0;
+  k22 = 1;
+end
+
+model goodwin_model_1965__Y2(Y2, X2, time_)
+
+  // Rate Rules:
+  Y2' = alpha_2 * X2 - beta_2;
+
+  // Variable initializations:
+  Y2 = -10;
+  beta_2 = 0;
+  alpha_2 = 0.6;
+end
+
+model goodwin_model_1965____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: goodwin_model_1965__environment(time_);
+  X1: goodwin_model_1965__X1(X10, Y10, Y20, time_);
+  Y1: goodwin_model_1965__Y1(Y10, X10, time_);
+  X2: goodwin_model_1965__X2(X20, Y10, Y20, time_);
+  Y2: goodwin_model_1965__Y2(Y20, X20, time_);
+end

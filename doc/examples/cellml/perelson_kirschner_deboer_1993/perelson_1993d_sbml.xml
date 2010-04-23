@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="perelson_1993d____main" name="perelson_1993d____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="uninfected_s" value="10"/>
+      <parameter id="uninfected_p" value="0.01"/>
+      <parameter id="uninfected_gamma"/>
+      <parameter id="uninfected_beta" constant="false"/>
+      <parameter id="N" value="1000"/>
+      <parameter id="k_1"/>
+      <parameter id="k_2"/>
+      <parameter id="k_3" value="0.023"/>
+      <parameter id="mu_V" value="2.4"/>
+      <parameter id="T_1" value="0" constant="false"/>
+      <parameter id="mu_b" value="0.24"/>
+      <parameter id="T" value="1000" constant="false"/>
+      <parameter id="latently_infected_k_4" value="2.424"/>
+      <parameter id="latently_infected_T_0" value="1000"/>
+      <parameter id="latently_infected_V_0"/>
+      <parameter id="latently_infected_t_min" value="2"/>
+      <parameter id="latently_infected_T_1_t" constant="false"/>
+      <parameter id="actively_infected_T_2" constant="false"/>
+      <parameter id="free_virus_particle_V" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="uninfected_gamma">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2 <sep/> -5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="k_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.4 <sep/> -5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="k_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3 <sep/> -3 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="latently_infected_V_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> -3 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <assignmentRule variable="uninfected_beta">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> uninfected_gamma </ci>
+              <ci> k_3 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> k_2 </ci>
+                <ci> mu_b </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="T_1"/>
+      <rateRule variable="T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> uninfected_s </ci>
+                <apply>
+                  <times/>
+                  <ci> uninfected_p </ci>
+                  <ci> T </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> uninfected_gamma </ci>
+                <apply>
+                  <power/>
+                  <ci> T </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> k_3 </ci>
+                  <ci> uninfected_beta </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> N </ci>
+                    <ci> k_1 </ci>
+                    <ci> k_2 </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> k_1 </ci>
+                      <ci> T </ci>
+                    </apply>
+                    <ci> mu_V </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> T </ci>
+              <ci> T_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="latently_infected_T_1_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> latently_infected_T_0 </ci>
+                <ci> latently_infected_V_0 </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> latently_infected_k_4 </ci>
+                <ci> k_3 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> k_3 </ci>
+                  </apply>
+                  <ci> time_ </ci>
+                </apply>
+              </apply>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> latently_infected_k_4 </ci>
+                  </apply>
+                  <ci> time_ </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="actively_infected_T_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> k_2 </ci>
+              <ci> T_1 </ci>
+            </apply>
+            <ci> mu_b </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="free_virus_particle_V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> N </ci>
+              <ci> k_2 </ci>
+              <ci> T_1 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> T </ci>
+              </apply>
+              <ci> mu_V </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

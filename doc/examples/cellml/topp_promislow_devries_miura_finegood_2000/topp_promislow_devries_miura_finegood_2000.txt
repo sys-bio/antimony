@@ -1,0 +1,45 @@
+//Created by libAntimony v1.3
+model topp_promislow_devries_miura_finegood_2000_version01__environment(time_)
+end
+
+model topp_promislow_devries_miura_finegood_2000_version01__glucose_dynamics(G, time_, I)
+
+  // Rate Rules:
+  G' = R0 - ( EG0 + SI * I ) * G;
+
+  // Variable initializations:
+  R0 = 846.0;
+  SI = 0.72;
+  EG0 = 1.44;
+end
+
+model topp_promislow_devries_miura_finegood_2000_version01__insulin_dynamics(I, time_, G, beta)
+
+  // Rate Rules:
+  I' = beta * sigma * power( G , 2.0 ) / ( alpha + power( G , 2.0 )) - k * I;
+
+  // Variable initializations:
+  alpha = 2000.0;
+  sigma = 43.2;
+  k = 432.0;
+end
+
+model topp_promislow_devries_miura_finegood_2000_version01__beta_cell_dynamics(beta, time_, G)
+
+  // Rate Rules:
+  beta' = ( r1 * G + -( d0 ) + -(( r2 * power( G , 2.0 )))) * beta;
+
+  // Variable initializations:
+  d0 = 0.06;
+  r1 = 0.84E-3;
+  r2 = 0.24E-5;
+end
+
+model topp_promislow_devries_miura_finegood_2000_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: topp_promislow_devries_miura_finegood_2000_version01__environment(time_);
+  glucose_dynamics: topp_promislow_devries_miura_finegood_2000_version01__glucose_dynamics(G, time_, I);
+  insulin_dynamics: topp_promislow_devries_miura_finegood_2000_version01__insulin_dynamics(I, time_, G, beta);
+  beta_cell_dynamics: topp_promislow_devries_miura_finegood_2000_version01__beta_cell_dynamics(beta, time_, G);
+end

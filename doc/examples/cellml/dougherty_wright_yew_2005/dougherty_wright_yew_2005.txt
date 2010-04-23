@@ -1,0 +1,234 @@
+//Created by libAntimony v1.3
+model dougherty_wright_yew_2005__environment(time_)
+end
+
+model dougherty_wright_yew_2005__parameters(cap, cc1lin, cc_2, ck1lin, ck_2, clmax, cnmax, cx1lin, cx2, ef, gl, hmc_1, hmc_2, inf, inhmax, k_1, k_2, kI, kinh, kinhcng, n_1, n_2, nI, ninh, ninhcng, pd, r_1, r_2, smax, V_Cl, V_cng, V_l, F_vol)
+
+  // Assignment Rules:
+  F_vol := 1E12 / 1 * (1 / 1000 ) * F * C_vol;
+
+  // Variable initializations:
+  cap = 0.004;
+  cc1lin = 0.88;
+  cc_2 = 26;
+  ck1lin = 13;
+  ck_2 = 0.9;
+  clmax = 1;
+  cnmax = 1;
+  cx1lin = 1;
+  cx2 = 13;
+  ef = 2;
+  gl = 6;
+  hmc_1 = 2;
+  hmc_2 = 3;
+  inf = 1.9;
+  inhmax = 5;
+  k_1 = 0.06;
+  k_2 = 20;
+  kI = 0.7;
+  kinh = 2;
+  kinhcng = 1;
+  n_1 = 2;
+  n_2 = 2;
+  nI = 2;
+  ninh = 1.5;
+  ninhcng = 1.3;
+  pd = 20;
+  r_1 = 10;
+  r_2 = 5;
+  smax = 71;
+  V_Cl = -50;
+  V_cng = 0;
+  V_l = -70;
+  F = 9.649e4;
+  C_vol = 1e-13;
+end
+
+model dougherty_wright_yew_2005__O_stim(O_stim, time_)
+
+  // Assignment Rules:
+  O_stim := od * (H_0 - H_1);
+  H_0 := piecewise( 0 , time_ < t_0 , 1 );
+  H_1 := piecewise( 0 , time_ < t_1 , 1 );
+
+  // Variable initializations:
+  od = 20;
+  t_0 = 0.5;
+  t_1 = 1.5;
+end
+
+model dougherty_wright_yew_2005__bLR(bLR, time_, k_1, O_stim, r_1)
+
+  // Rate Rules:
+  bLR' = k_1 * O_stim * (R_tot - bLR) - r_1 * bLR;
+
+  // Variable initializations:
+  bLR = 0;
+  R_tot = 1;
+end
+
+model dougherty_wright_yew_2005__k_G(k_G, k_2, bLR)
+
+  // Assignment Rules:
+  k_G := k_2 * bLR;
+end
+
+model dougherty_wright_yew_2005__r_G(r_G, r_2, aG)
+
+  // Assignment Rules:
+  r_G := r_2 * aG;
+end
+
+model dougherty_wright_yew_2005__aG(aG, time_, k_G, r_G, bLR, r_2, k_2)
+
+  // Sub-modules, and any changes to those submodules:
+  k_G_mod: dougherty_wright_yew_2005__k_G(k_G, k_2, bLR);
+  r_G_mod: dougherty_wright_yew_2005__r_G(r_G, r_2, aG);
+
+  // Rate Rules:
+  aG' = k_G * (G_tot - aG) - r_G;
+
+  // Variable initializations:
+  aG = 0;
+  G_tot = 1;
+end
+
+model dougherty_wright_yew_2005__synth(synth, aG, smax, aCaMK, kinh, ninh)
+
+  // Assignment Rules:
+  synth := aG * smax / (1 + power(aCaMK / kinh, ninh));
+end
+
+model dougherty_wright_yew_2005__degrad(degrad, cAMP, pd)
+
+  // Assignment Rules:
+  degrad := pd * cAMP;
+end
+
+model dougherty_wright_yew_2005__cAMP(cAMP, time_, synth, degrad, aG, smax, aCaMK, kinh, ninh, pd)
+
+  // Sub-modules, and any changes to those submodules:
+  synth_mod: dougherty_wright_yew_2005__synth(synth, aG, smax, aCaMK, kinh, ninh);
+  degrad_mod: dougherty_wright_yew_2005__degrad(degrad, cAMP, pd);
+
+  // Rate Rules:
+  cAMP' = synth - degrad;
+
+  // Variable initializations:
+  cAMP = 1.35648992164649e-88;
+end
+
+model dougherty_wright_yew_2005__cc_1(cc_1, cc1lin, Ca)
+
+  // Assignment Rules:
+  cc_1 := cc1lin * Ca;
+end
+
+model dougherty_wright_yew_2005__Ca(Ca, time_, inf, I_CNG, J_NCX, cc_1, cc1lin, cc_2, CaCaM)
+
+  // Sub-modules, and any changes to those submodules:
+  cc_1_mod: dougherty_wright_yew_2005__cc_1(cc_1, cc1lin, Ca);
+
+  // Rate Rules:
+  Ca' = 1000 / 1 * inf * I_CNG - J_NCX - (cc_1 - cc_2 * CaCaM);
+
+  // Variable initializations:
+  Ca = 5.09073088043779e-12;
+end
+
+model dougherty_wright_yew_2005__CaCaM(CaCaM, time_, cc_1, cc_2)
+
+  // Rate Rules:
+  CaCaM' = cc_1 - cc_2 * CaCaM;
+
+  // Variable initializations:
+  CaCaM = 1.86113118246926e-13;
+end
+
+model dougherty_wright_yew_2005__ck_1(ck_1, ck1lin, CaCaM)
+
+  // Assignment Rules:
+  ck_1 := ck1lin * CaCaM;
+end
+
+model dougherty_wright_yew_2005__aCaMK(aCaMK, time_, ck_1, ck_2, CaCaM, ck1lin)
+
+  // Sub-modules, and any changes to those submodules:
+  ck_1_mod: dougherty_wright_yew_2005__ck_1(ck_1, ck1lin, CaCaM);
+
+  // Rate Rules:
+  aCaMK' = ck_1 - ck_2 * aCaMK;
+
+  // Variable initializations:
+  aCaMK = 6.60756525051462e-8;
+end
+
+model dougherty_wright_yew_2005__V(V, time_, cap, I_CNG, I_ClCa, I_NCX, I_other)
+
+  // Rate Rules:
+  V' = 1000 / 1 * (1 / cap) * (I_CNG + I_ClCa + I_NCX + I_other);
+
+  // Variable initializations:
+  V = -70;
+end
+
+model dougherty_wright_yew_2005__inhcng(inhcng, inhmax, ninhcng, kinhcng, CaCaM)
+
+  // Assignment Rules:
+  inhcng := 1 + (inhmax - 1 ) * power(CaCaM, ninhcng) / (power(CaCaM, ninhcng) + power(kinhcng, ninhcng));
+end
+
+model dougherty_wright_yew_2005__I_CNG(I_CNG, V, V_cng, cnmax, hmc_1, n_1, inhcng, cAMP, inhmax, ninhcng, kinhcng, CaCaM)
+
+  // Sub-modules, and any changes to those submodules:
+  inhcng_mod: dougherty_wright_yew_2005__inhcng(inhcng, inhmax, ninhcng, kinhcng, CaCaM);
+
+  // Assignment Rules:
+  I_CNG := cnmax * power(cAMP, n_1) / (power(cAMP, n_1) + power(inhcng * hmc_1, n_1)) * (1 / 1000 ) * (V_cng - V);
+end
+
+model dougherty_wright_yew_2005__I_ClCa(I_ClCa, Ca, n_2, hmc_2, V_Cl, clmax, V)
+
+  // Assignment Rules:
+  I_ClCa := clmax * power(Ca, n_2) / (power(Ca, n_2) + power(hmc_2, n_2)) * (1 / 1000 ) * (V_Cl - V);
+end
+
+model dougherty_wright_yew_2005__J_NCX(J_NCX, Ca, ef)
+
+  // Assignment Rules:
+  J_NCX := ef * Ca;
+end
+
+model dougherty_wright_yew_2005__I_NCX(I_NCX, J_NCX, Ca, F_vol, ef)
+
+  // Sub-modules, and any changes to those submodules:
+  J_NCX_mod: dougherty_wright_yew_2005__J_NCX(J_NCX, Ca, ef);
+
+  // Assignment Rules:
+  I_NCX := 1 / 1000 * F_vol * J_NCX;
+end
+
+model dougherty_wright_yew_2005__I_other(I_other, gl, V_l, V)
+
+  // Assignment Rules:
+  I_other := gl * (1 / 1000 ) * (V_l - V);
+end
+
+model dougherty_wright_yew_2005____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: dougherty_wright_yew_2005__environment(time_);
+  parameters: dougherty_wright_yew_2005__parameters(cap, cc1lin, cc_2, ck1lin, ck_2, clmax, cnmax, cx1lin, cx2, ef, gl, hmc_1, hmc_2, inf, inhmax, k_1, k_2, kI, kinh, kinhcng, n_1, n_2, nI, ninh, ninhcng, pd, r_1, r_2, smax, V_Cl, V_cng, V_l, F_vol);
+  O_stim: dougherty_wright_yew_2005__O_stim(O_stim0, time_);
+  bLR: dougherty_wright_yew_2005__bLR(bLR0, time_, k_1, O_stim0, r_1);
+  aG: dougherty_wright_yew_2005__aG(aG0, time_, k_G, r_G, bLR0, r_2, k_2);
+  cAMP: dougherty_wright_yew_2005__cAMP(cAMP0, time_, synth, degrad, aG0, smax, aCaMK0, kinh, ninh, pd);
+  Ca: dougherty_wright_yew_2005__Ca(Ca0, time_, inf, I_CNG0, J_NCX, cc_1, cc1lin, cc_2, CaCaM0);
+  CaCaM: dougherty_wright_yew_2005__CaCaM(CaCaM0, time_, cc_1, cc_2);
+  aCaMK: dougherty_wright_yew_2005__aCaMK(aCaMK0, time_, ck_1, ck_2, CaCaM0, ck1lin);
+  V: dougherty_wright_yew_2005__V(V0, time_, cap, I_CNG0, I_ClCa0, I_NCX0, I_other0);
+  I_CNG: dougherty_wright_yew_2005__I_CNG(I_CNG0, V0, V_cng, cnmax, hmc_1, n_1, inhcng, cAMP0, inhmax, ninhcng, kinhcng, CaCaM0);
+  I_ClCa: dougherty_wright_yew_2005__I_ClCa(I_ClCa0, Ca0, n_2, hmc_2, V_Cl, clmax, V0);
+  I_NCX: dougherty_wright_yew_2005__I_NCX(I_NCX0, J_NCX, Ca0, F_vol, ef);
+  I_other: dougherty_wright_yew_2005__I_other(I_other0, gl, V_l, V0);
+end

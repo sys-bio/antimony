@@ -1,0 +1,55 @@
+//Created by libAntimony v1.3
+model tran_model_2009__environment(time_)
+end
+
+model tran_model_2009__SERCA(time_)
+
+  // Assignment Rules:
+  T_Cai := Ca_i / kdcai;
+  T_Casr := Ca_sr / kdcasr;
+  T_H1 := H_i / kdh1;
+  T_Hi := power(H_i, n) / kdhi;
+  T_Hsr := power(H_i, n) / kdhsr;
+  T_H := H_i / kdh;
+  a_p1 := k_p1 * ATP;
+  a_p2 := k_p2 * power(T_Cai, 2 ) / (power(T_Cai, 2 ) + power(T_Cai, 2 ) * T_Hi + T_Hi * (1 + T_H1));
+  a_p3 := k_p3 * T_Hsr / (power(T_Casr, 2 ) * T_H + T_H + T_Hsr * (1 + T_H));
+  a_m1 := k_m1 * T_Hi / (power(T_Cai, 2 ) + power(T_Cai, 2 ) * T_Hi + T_Hi * (1 + T_H1));
+  a_m2 := k_m2 * ADP * power(T_Casr, 2 ) * T_H / (power(T_Casr, 2 ) * T_H + T_H + T_Hsr * (1 + T_H));
+  a_m3 := k_m3 * P_i;
+  s1 := a_p2 * a_p3 + a_m1 * a_p3 + a_m1 * a_m2;
+  s2 := a_p1 * a_p3 + a_m2 * a_p1 + a_m2 * a_m3;
+  s3 := a_p1 * a_p2 + a_m3 * a_m1 + a_m3 * a_p2;
+  v_cycle := (a_p1 * a_p2 * a_p3 - a_m1 * a_m2 * a_m3) / (s1 + s2 + s3);
+
+  // Rate Rules:
+  Ca_sr' = 1.0;
+
+  // Variable initializations:
+  k_p1 = 25900;
+  k_p2 = 2540;
+  k_p3 = 20.5;
+  k_m1 = 16;
+  k_m2 = 67200;
+  k_m3 = 149;
+  kdcai = 0.9;
+  kdcasr = 2.24;
+  kdh1 = 1.09e-5;
+  kdhi = 3.54e-3;
+  kdhsr = 1.05e-8;
+  kdh = 7.24e-5;
+  n = 2;
+  Ca_i = 150e-6;
+  Ca_sr = 0;
+  H_i = 1e-4;
+  ATP = 5;
+  ADP = 36.3e-3;
+  P_i = 1;
+end
+
+model tran_model_2009____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: tran_model_2009__environment(time_);
+  SERCA: tran_model_2009__SERCA(time_);
+end

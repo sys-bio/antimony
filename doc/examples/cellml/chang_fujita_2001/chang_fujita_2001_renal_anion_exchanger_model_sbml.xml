@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="chang_fujita_2001_version01____main" name="chang_fujita_2001_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="E_e0" value="1" constant="false"/>
+      <parameter id="E_i0" value="1" constant="false"/>
+      <parameter id="Cl_e0" value="1" constant="false"/>
+      <parameter id="Cl_i0" value="1" constant="false"/>
+      <parameter id="ECl_e0" value="1" constant="false"/>
+      <parameter id="J_Cl_influx0" constant="false"/>
+      <parameter id="J_Cl_influx_Ki_Cl" value="0.528"/>
+      <parameter id="J_Cl_influx_Ki_HCO3" value="0.423"/>
+      <parameter id="HCO3_i0" value="1" constant="false"/>
+      <parameter id="ECl_i0" value="1" constant="false"/>
+      <parameter id="HCO3_e0" value="1" constant="false"/>
+      <parameter id="EHCO3_e0" value="1" constant="false"/>
+      <parameter id="EHCO3_i0" value="1" constant="false"/>
+      <parameter id="reaction0_k0"/>
+      <parameter id="reaction0_k0_" value="7870000"/>
+      <parameter id="reaction1_k1"/>
+      <parameter id="reaction1_k1_" value="8280000"/>
+      <parameter id="reaction2_k2"/>
+      <parameter id="reaction2_k2_" value="7870000"/>
+      <parameter id="reaction3_k3"/>
+      <parameter id="reaction3_k3_" value="8280000"/>
+      <parameter id="reaction4_k4" value="514000"/>
+      <parameter id="reaction4_k4_" value="92600"/>
+      <parameter id="reaction5_k5" value="324000"/>
+      <parameter id="reaction5_k5_" value="58300"/>
+      <parameter id="time_"/>
+      <parameter id="delta_E_e_rxn0"/>
+      <parameter id="delta_E_e_rxn1"/>
+      <parameter id="delta_E_i_rxn2"/>
+      <parameter id="delta_E_i_rxn3"/>
+      <parameter id="delta_Cl_e_rxn0"/>
+      <parameter id="delta_Cl_i_rxn2"/>
+      <parameter id="delta_ECl_e_rxn0"/>
+      <parameter id="delta_ECl_e_rxn4"/>
+      <parameter id="delta_ECl_i_rxn4"/>
+      <parameter id="delta_ECl_i_rxn2"/>
+      <parameter id="delta_HCO3_e_rxn1"/>
+      <parameter id="delta_EHCO3_e_rxn1"/>
+      <parameter id="delta_EHCO3_e_rxn5"/>
+      <parameter id="delta_HCO3_i_rxn3"/>
+      <parameter id="delta_EHCO3_i_rxn3"/>
+      <parameter id="delta_EHCO3_i_rxn5"/>
+      <parameter id="reaction0_rate"/>
+      <parameter id="reaction1_rate"/>
+      <parameter id="reaction2_rate"/>
+      <parameter id="reaction3_rate"/>
+      <parameter id="reaction4_rate"/>
+      <parameter id="reaction5_rate"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="reaction0_k0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> 8 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="reaction1_k1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> 8 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="reaction2_k2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> 8 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="reaction3_k3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> 8 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="E_e0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> delta_E_e_rxn0 </ci>
+            <ci> delta_E_e_rxn1 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="E_i0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> delta_E_i_rxn2 </ci>
+            <ci> delta_E_i_rxn3 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Cl_e0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> delta_Cl_e_rxn0 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="Cl_i0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> delta_Cl_i_rxn2 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="ECl_e0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> delta_ECl_e_rxn0 </ci>
+            <ci> delta_ECl_e_rxn4 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="J_Cl_influx0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <ci> delta_ECl_i_rxn4 </ci>
+              <ci> delta_ECl_e_rxn4 </ci>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> Cl_i0 </ci>
+                  <ci> J_Cl_influx_Ki_Cl </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> HCO3_i0 </ci>
+                  <ci> J_Cl_influx_Ki_HCO3 </ci>
+                </apply>
+              </apply>
+              <cn> -1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="HCO3_i0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> delta_HCO3_i_rxn3 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="ECl_i0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> delta_ECl_i_rxn2 </ci>
+            <ci> delta_ECl_i_rxn4 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="HCO3_e0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> delta_HCO3_e_rxn1 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="EHCO3_e0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> delta_EHCO3_e_rxn1 </ci>
+            <ci> delta_EHCO3_e_rxn5 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="EHCO3_i0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> delta_EHCO3_i_rxn3 </ci>
+            <ci> delta_EHCO3_i_rxn5 </ci>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,53 @@
+//Created by libAntimony v1.3
+model saftenku_williams_sitsapesan_2001_version03__environment(time_)
+end
+
+model saftenku_williams_sitsapesan_2001_version03__C1(C1, O2C1, C1O2, C1C2, C2C1, C2, O2, Ca, time_)
+
+  // Rate Rules:
+  C1' = O2C1 * Ca * O2 + C2C1 * C2 - ( C1O2 * C1 + C1C2 * C1 );
+
+  // Variable initializations:
+  C1 = 1;
+end
+
+model saftenku_williams_sitsapesan_2001_version03__C2(C2, C1C2, C2C1, C1, time_)
+
+  // Rate Rules:
+  C2' = C1C2 * C1 - C2C1 * C2;
+end
+
+model saftenku_williams_sitsapesan_2001_version03__O1(O1, O1O2, O2O1, O2, Ca, time_)
+
+  // Rate Rules:
+  O1' = O2O1 * O2 - O1O2 * Ca * O1;
+end
+
+model saftenku_williams_sitsapesan_2001_version03__O2(O2, O1O2, O2O1, O2C1, C1O2, O1, C1, Ca, time_)
+
+  // Rate Rules:
+  O2' = O1O2 * Ca * O1 + C1O2 * C1 - ( O2O1 * O2 + O2C1 * Ca * O2 );
+end
+
+model saftenku_williams_sitsapesan_2001_version03__reaction_constants(C1C2, C2C1, O1O2, O2O1, C1O2, O2C1, Ca)
+
+  // Variable initializations:
+  C1C2 = 60.8;
+  C2C1 = 198.0;
+  O1O2 = 2.41;
+  O2O1 = 85.1;
+  C1O2 = 2277.0;
+  O2C1 = 2.62;
+  Ca = 50.0;
+end
+
+model saftenku_williams_sitsapesan_2001_version03____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: saftenku_williams_sitsapesan_2001_version03__environment(time_);
+  C1: saftenku_williams_sitsapesan_2001_version03__C1(C10, O2C1, C1O2, C1C2, C2C1, C20, O20, Ca, time_);
+  C2: saftenku_williams_sitsapesan_2001_version03__C2(C20, C1C2, C2C1, C10, time_);
+  O1: saftenku_williams_sitsapesan_2001_version03__O1(O10, O1O2, O2O1, O20, Ca, time_);
+  O2: saftenku_williams_sitsapesan_2001_version03__O2(O20, O1O2, O2O1, O2C1, C1O2, O10, C10, Ca, time_);
+  reaction_constants: saftenku_williams_sitsapesan_2001_version03__reaction_constants(C1C2, C2C1, O1O2, O2O1, C1O2, O2C1, Ca);
+end

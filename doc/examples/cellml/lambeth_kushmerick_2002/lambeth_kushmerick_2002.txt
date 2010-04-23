@@ -1,0 +1,492 @@
+//Created by libAntimony v1.3
+model lambeth_2002__environment(time_)
+end
+
+model lambeth_2002__GLY(GLY, flux_GP, time_)
+
+  // Rate Rules:
+  GLY' = -(flux_GP);
+
+  // Variable initializations:
+  GLY = 112.0;
+end
+
+model lambeth_2002__G1P(G1P, flux_GP, V_PGLM, time_)
+
+  // Rate Rules:
+  G1P' = flux_GP - V_PGLM;
+
+  // Variable initializations:
+  G1P = 0.0589;
+end
+
+model lambeth_2002__G6P(G6P, V_PGLM, V_PGI, time_)
+
+  // Rate Rules:
+  G6P' = V_PGLM - V_PGI;
+
+  // Variable initializations:
+  G6P = 0.75;
+end
+
+model lambeth_2002__F6P(F6P, V_PGI, V_PFK, time_)
+
+  // Rate Rules:
+  F6P' = V_PGI - V_PFK;
+
+  // Variable initializations:
+  F6P = 0.228;
+end
+
+model lambeth_2002__FBP(FBP, V_PFK, V_ALD, time_)
+
+  // Rate Rules:
+  FBP' = V_PFK - V_ALD;
+
+  // Variable initializations:
+  FBP = 0.0723;
+end
+
+model lambeth_2002__DHAP(DHAP, V_ALD, V_TPI, time_)
+
+  // Rate Rules:
+  DHAP' = V_ALD + V_TPI;
+
+  // Variable initializations:
+  DHAP = 0.0764;
+end
+
+model lambeth_2002__GAP(GAP, V_ALD, V_TPI, V_GAPDH, time_)
+
+  // Rate Rules:
+  GAP' = V_ALD - (V_TPI + V_GAPDH);
+
+  // Variable initializations:
+  GAP = 0.0355;
+end
+
+model lambeth_2002__Thirteen_BPG(Thirteen_BPG, V_GAPDH, V_PGK, time_)
+
+  // Rate Rules:
+  Thirteen_BPG' = V_GAPDH - V_PGK;
+
+  // Variable initializations:
+  Thirteen_BPG = 0.065;
+end
+
+model lambeth_2002__three_PG(three_PG, V_PGK, V_PGM, time_)
+
+  // Rate Rules:
+  three_PG' = V_PGK - V_PGM;
+
+  // Variable initializations:
+  three_PG = 0.052;
+end
+
+model lambeth_2002__two_PG(two_PG, V_PGM, V_ENOL, time_)
+
+  // Rate Rules:
+  two_PG' = V_PGM - V_ENOL;
+
+  // Variable initializations:
+  two_PG = 0.005;
+end
+
+model lambeth_2002__PEP(PEP, V_ENOL, V_PK, time_)
+
+  // Rate Rules:
+  PEP' = V_ENOL - V_PK;
+
+  // Variable initializations:
+  PEP = 0.0194;
+end
+
+model lambeth_2002__PYR(PYR, V_PK, V_LDH, time_)
+
+  // Rate Rules:
+  PYR' = V_PK - V_LDH;
+
+  // Variable initializations:
+  PYR = 0.0994;
+end
+
+model lambeth_2002__LAC(LAC, V_LDH, time_)
+
+  // Assignment Rules:
+  output := 0.2 * LAC;
+
+  // Rate Rules:
+  LAC' = V_LDH - output;
+
+  // Variable initializations:
+  LAC = 1.3;
+end
+
+model lambeth_2002__Pi(Pi_, flux_GP, V_GAPDH, V_ATPase, time_)
+
+  // Rate Rules:
+  Pi_' = V_ATPase - (flux_GP + V_GAPDH);
+
+  // Variable initializations:
+  Pi_ = 4.1;
+end
+
+model lambeth_2002__ADP(ADP, V_PFK, V_PGK, V_PK, V_ADK, V_CK, V_ATPase, time_)
+
+  // Rate Rules:
+  ADP' = V_PFK + 2.0 * V_ADK + V_CK + V_ATPase + -((V_PGK + V_PK));
+
+  // Variable initializations:
+  ADP = 0.013;
+end
+
+model lambeth_2002__ATP(ATP, V_PFK, V_PGK, V_PK, V_ADK, V_CK, V_ATPase, time_)
+
+  // Rate Rules:
+  ATP' = V_PGK + V_PK + -((V_PFK + V_ADK + V_CK + V_ATPase));
+
+  // Variable initializations:
+  ATP = 8.2;
+end
+
+model lambeth_2002__AMP(AMP, V_ADK, time_)
+
+  // Rate Rules:
+  AMP' = -(V_ADK);
+
+  // Variable initializations:
+  AMP = 0.99;
+end
+
+model lambeth_2002__PCr(PCr, V_CK, time_)
+
+  // Rate Rules:
+  PCr' = V_CK;
+
+  // Variable initializations:
+  PCr = 34.67;
+end
+
+model lambeth_2002__Cr(Cr, V_CK, time_)
+
+  // Rate Rules:
+  Cr' = -(V_CK);
+
+  // Variable initializations:
+  Cr = 35.0;
+end
+
+model lambeth_2002__NADH(NADH, V_GAPDH, V_LDH, time_)
+
+  // Rate Rules:
+  NADH' = V_GAPDH - V_LDH;
+
+  // Variable initializations:
+  NADH = 0.001;
+end
+
+model lambeth_2002__NAD(NAD, V_GAPDH, V_LDH, time_)
+
+  // Rate Rules:
+  NAD' = V_LDH - V_GAPDH;
+
+  // Variable initializations:
+  NAD = 0.5;
+end
+
+model lambeth_2002__flux_GP(flux_GP, V_GPa, V_GPb)
+
+  // Assignment Rules:
+  flux_GP := frac_a * V_GPa + frac_b * V_GPb;
+
+  // Variable initializations:
+  frac_a = 0.4;
+  frac_b = 0.6;
+end
+
+model lambeth_2002__V_GPa(V_GPa, GLY, Pi_, G1P)
+
+  // Assignment Rules:
+  V_GPa := ( V_max_f * ( GLY * Pi_ / ( Ki_GLY_f * K_Pi )) - V_max_r * ( GLY * G1P / ( Ki_GLY_b * Ki_G1P ))) / ( 1.0 + GLY / Ki_GLY_f + Pi_ / Ki_Pi + GLY / Ki_GLY_b + G1P / Ki_G1P + GLY * Pi_ / ( K_GLY_f * Ki_Pi ) + GLY * G1P / ( K_GLY_b * Ki_G1P ));
+  V_max_r := V_max_f * K_GLY_b * Ki_G1P / ( Ki_GLY_f * K_Pi * Keq_GP );
+
+  // Variable initializations:
+  Ki_GLY_f = 2.0;
+  Ki_GLY_b = 2.0;
+  K_GLY_f = 1.7;
+  K_GLY_b = 0.15;
+  Keq_GP = 0.42;
+  Ki_Pi = 4.7;
+  K_Pi = 4.0;
+  Ki_G1P = 10.1;
+  V_max_f = 20.0;
+end
+
+model lambeth_2002__V_GPb(V_GPb, GLY, Pi_, G1P, AMP)
+
+  // Assignment Rules:
+  V_GPb := ( V_max_f * ( GLY * Pi_ / ( Ki_GLY_f * K_Pi )) - V_max_r * ( GLY * G1P / ( Ki_GLY_b * Ki_G1P ))) / ( 1.0 + GLY / Ki_GLY_f + Pi_ / Ki_Pi + GLY / Ki_GLY_b + G1P / Ki_G1P + GLY * Pi_ / ( K_GLY_f * Ki_Pi ) + GLY * G1P / ( K_GLY_b * Ki_G1P )) * (power( AMP , nH ) / K_AMP / ( 1.0 + power( AMP , nH ) / K_AMP ));
+  V_max_r := V_max_f * Ki_GLY_b * K_G1P / ( K_GLY_f * Ki_Pi * Keq_GP );
+
+  // Variable initializations:
+  Ki_GLY_f = 15.0;
+  Ki_GLY_b = 4.4;
+  K_GLY_f = 1.7;
+  Keq_GP = 0.42;
+  nH = 1.75;
+  K_AMP = 1.9E-6;
+  K_GLY_b = 0.15;
+  Ki_Pi = 4.6;
+  K_Pi = 0.2;
+  Ki_G1P = 7.4;
+  K_G1P = 1.5;
+  V_max_f = 30.0;
+end
+
+model lambeth_2002__V_PGLM(V_PGLM, G6P, G1P)
+
+  // Assignment Rules:
+  V_PGLM := ( V_max_f * ( G1P / K_G1P ) - V_max_r * ( G6P / K_G6P )) / ( 1.0 + G1P / K_G1P + G6P / K_G6P );
+  V_max_r := V_max_f * K_G6P / ( K_G1P * Keq_PGLM );
+
+  // Variable initializations:
+  K_G1P = 0.063;
+  K_G6P = 0.03;
+  Keq_PGLM = 16.62;
+  V_max_f = 480.0;
+end
+
+model lambeth_2002__V_PGI(V_PGI, F6P, G6P)
+
+  // Assignment Rules:
+  V_PGI := ( V_max_f * ( G6P / K_G6P ) - V_max_r * ( F6P / K_F6P )) / ( 1.0 + G6P / K_G6P + F6P / K_F6P );
+  V_max_f := V_max_r * K_G6P * Keq_PGI / K_F6P;
+
+  // Variable initializations:
+  K_G6P = 0.18;
+  K_F6P = 0.119;
+  Keq_PGI = 0.45;
+  V_max_r = 880.0;
+end
+
+model lambeth_2002__V_PFK(V_PFK, F6P, FBP, ATP, ADP, AMP)
+
+  // Assignment Rules:
+  V_PFK := ( V_max_f * ( ATP * F6P / ( K_ATP * K_F6P )) - V_max_r * ( ADP * FBP / ( K_ADP * K_FBP ))) / delta * (( 1.0 + alpha * L * power( delta_ / delta , 3.0 )) / ( 1.0 + L * power( delta_ / delta , 4.0 )));
+  V_max_r := V_max_f * K_ADP * K_FBP / ( K_ATP * K_F6P );
+  alpha := K_F6P * K_ATP / ( K_F6P_ * K_ATP_ );
+  L := Lo * power(( 1.0 + ATP / Ki_ATP ) / ( 1.0 + d * ( ATP / Ki_ATP )) * (( 1.0 + var_e * ( AMP / Ka_AMP )) / ( 1.0 + AMP / Ka_AMP )), 4.0 );
+  delta := ( 1.0 + F6P / K_F6P ) * ( 1.0 + ATP / K_ATP ) + ADP / K_ADP + FBP / K_FBP * ( 1.0 + ADP / K_ADP );
+  delta_ := ( 1.0 + F6P / K_F6P_ ) * ( 1.0 + ATP / K_ATP_ ) + ADP / K_ADP_ + FBP / K_FBP_ * ( 1.0 + ADP / K_ADP_ );
+
+  // Variable initializations:
+  K_FBP = 4.02;
+  K_FBP_ = 4.02;
+  K_F6P = 0.18;
+  K_ATP = 0.08;
+  K_F6P_ = 20.0;
+  K_ATP_ = 0.25;
+  K_ADP = 2.7;
+  K_ADP_ = 2.7;
+  Ki_ATP = 0.87;
+  Ka_AMP = 0.06;
+  V_max_f = 56.0;
+  Lo = 13.0;
+  d = 0.01;
+  var_e = 0.01;
+end
+
+model lambeth_2002__V_ALD(V_ALD, FBP, GAP, DHAP)
+
+  // Assignment Rules:
+  V_ALD := ( V_max_f * ( FBP / K_FBP ) - V_max_r * ( DHAP * GAP / ( K_DHAP * K_GAP ))) / ( 1.0 + FBP / K_FBP + DHAP / K_DHAP + GAP / K_GAP );
+  V_max_r := V_max_f * K_DHAP * K_GAP / ( K_FBP * Keq_ALD );
+
+  // Variable initializations:
+  K_GAP = 1.0;
+  K_FBP = 0.05;
+  K_DHAP = 2.0;
+  Keq_ALD = 9.5E-5;
+  V_max_f = 104.0;
+end
+
+model lambeth_2002__V_TPI(V_TPI, GAP, DHAP)
+
+  // Assignment Rules:
+  V_TPI := ( V_max_f * ( GAP / K_GAP ) - V_max_r * ( DHAP / K_DHAP )) / ( 1.0 + DHAP / K_DHAP + GAP / K_GAP );
+  V_max_r := V_max_f * K_DHAP / ( K_GAP * Keq_TPI );
+
+  // Variable initializations:
+  K_GAP = 0.32;
+  K_DHAP = 0.61;
+  Keq_TPI = 0.052;
+  V_max_f = 12000.0;
+end
+
+model lambeth_2002__V_GAPDH(V_GAPDH, GAP, NADH, NAD, Thirteen_BPG, Pi_)
+
+  // Assignment Rules:
+  V_GAPDH := ( V_max_f * ( GAP * NAD * Pi_ / ( K_GAP * K_NAD * K_Pi )) - V_max_r * ( Thirteen_BPG * NADH / ( K_Thirteen_BPG * K_NADH ))) / D_GAPDH;
+  D_GAPDH := 1.0 + GAP / K_GAP + NAD / K_NAD + Pi_ / K_Pi + GAP * NAD / ( K_GAP * K_NAD ) + GAP * NAD * Pi_ / ( K_GAP * K_NAD * K_Pi ) + Thirteen_BPG / K_Thirteen_BPG + NADH / K_NADH + Thirteen_BPG * NADH / ( K_Thirteen_BPG * K_NADH );
+  V_max_r := V_max_f * 1 * K_Thirteen_BPG * K_NADH / ( K_GAP * K_NAD * K_Pi * Keq_GAPDH );
+
+  // Variable initializations:
+  K_GAP = 0.0025;
+  K_Pi = 0.29;
+  K_NAD = 0.09;
+  K_NADH = 0.0033;
+  K_Thirteen_BPG = 0.0008;
+  Keq_GAPDH = 0.089;
+  V_max_f = 1265.0;
+end
+
+model lambeth_2002__V_PGK(V_PGK, three_PG, ATP, ADP, Thirteen_BPG)
+
+  // Assignment Rules:
+  V_PGK := ( V_max_f * ( Thirteen_BPG * ADP / ( K_Thirteen_BPG * K_ADP )) - V_max_r * ( three_PG * ATP / ( K_three_PG * K_ATP ))) / ( 1.0 + Thirteen_BPG / K_Thirteen_BPG + ADP / K_ADP + Thirteen_BPG * ADP / ( K_Thirteen_BPG * K_ADP ) + three_PG / K_three_PG + ATP / K_ATP + three_PG * ATP / ( K_three_PG * K_ATP ));
+  V_max_f := V_max_r * K_Thirteen_BPG * K_ADP * Keq_PGK / ( K_three_PG * K_ATP );
+
+  // Variable initializations:
+  K_three_PG = 1.2;
+  K_ADP = 0.008;
+  K_ATP = 0.35;
+  K_Thirteen_BPG = 0.002;
+  Keq_PGK = 57109.0;
+  V_max_r = 1120.0;
+end
+
+model lambeth_2002__V_PGM(V_PGM, two_PG, three_PG)
+
+  // Assignment Rules:
+  V_PGM := ( V_max_f * ( three_PG / K_three_PG ) - V_max_r * ( two_PG / K_two_PG )) / ( 1.0 + three_PG / K_three_PG + two_PG / K_two_PG );
+  V_max_r := V_max_f * K_two_PG / ( K_three_PG * Keq_PGM );
+
+  // Variable initializations:
+  K_two_PG = 0.014;
+  K_three_PG = 0.2;
+  Keq_PGM = 0.18;
+  V_max_f = 1120.0;
+end
+
+model lambeth_2002__V_ENOL(V_ENOL, PEP, two_PG)
+
+  // Assignment Rules:
+  V_ENOL := ( V_max_f * ( two_PG / K_two_PG ) - V_max_r * ( PEP / K_PEP )) / ( 1.0 + two_PG / K_two_PG + PEP / K_PEP );
+  V_max_r := V_max_f * K_PEP / ( K_two_PG * Keq_ENOL );
+
+  // Variable initializations:
+  K_PEP = 0.37;
+  K_two_PG = 0.1;
+  Keq_ENOL = 0.49;
+  V_max_f = 192.0;
+end
+
+model lambeth_2002__V_PK(V_PK, PYR, ATP, ADP, PEP)
+
+  // Assignment Rules:
+  V_PK := ( V_max_f * ( PEP * ADP / ( K_PEP * K_ADP )) - V_max_r * ( PYR * ATP / ( K_PYR * K_ATP ))) / ( 1.0 + PEP / K_PEP + ADP / K_ADP + PEP * ADP / ( K_PEP * K_ADP ) + PYR / K_PYR + ATP / K_ATP + PYR * ATP / ( K_PYR * K_ATP ));
+  V_max_r := V_max_f * K_ATP * K_PYR / ( K_PEP * K_ADP * Keq_PK );
+
+  // Variable initializations:
+  K_PYR = 7.05;
+  K_ADP = 0.3;
+  K_ATP = 1.13;
+  K_PEP = 0.08;
+  Keq_PK = 10304.0;
+  V_max_f = 1440.0;
+end
+
+model lambeth_2002__V_LDH(V_LDH, LAC, NAD, NADH, PYR)
+
+  // Assignment Rules:
+  V_LDH := ( V_max_f * ( PYR * NADH / ( K_PYR * K_NADH )) - V_max_r * ( LAC * NAD / ( K_LAC * K_NAD ))) / ( 1.0 + PYR / K_PYR + NADH / K_NADH + PYR * NADH / ( K_PYR * K_NADH ) + LAC / K_LAC + NAD / K_NAD + LAC * NAD / ( K_LAC * K_NAD ));
+  V_max_r := V_max_f * K_LAC * K_NAD / ( K_PYR * K_NADH * Keq_LDH );
+
+  // Variable initializations:
+  K_LAC = 17.0;
+  K_NADH = 0.002;
+  K_NAD = 0.849;
+  K_PYR = 0.335;
+  Keq_LDH = 16198.0;
+  V_max_f = 1920.0;
+end
+
+model lambeth_2002__V_CK(V_CK, ADP, PCr, Cr, ATP)
+
+  // Assignment Rules:
+  V_CK := ( V_max_f * ( ATP * Cr / ( Ki_ATP * K_Cr )) - V_max_r * ( ADP * PCr / ( Ki_ADP * K_PCr ))) / ( 1.0 + ADP / Ki_ADP + PCr / Ki_PCr + ADP * PCr / ( Ki_ADP * K_PCr ) + ATP / Ki_ATP + ATP * Cr / ( Ki_ATP * K_Cr ));
+  V_max_f := V_max_r * Ki_ATP * K_Cr * Keq_CK / ( Ki_ADP * K_PCr );
+
+  // Variable initializations:
+  Ki_ADP = 0.135;
+  K_Cr = 3.8;
+  K_PCr = 1.11;
+  Ki_PCr = 3.9;
+  Ki_ATP = 3.5;
+  Keq_CK = 233.0;
+  V_max_r = 500.0;
+end
+
+model lambeth_2002__V_ADK(V_ADK, ADP, AMP, ATP)
+
+  // Assignment Rules:
+  V_ADK := ( V_max_f * ( ATP * AMP / ( K_ATP * K_AMP )) - V_max_r * (power( ADP , 2.0 ) / power( K_ADP , 2.0 ))) / ( 1.0 + ATP / K_ATP + AMP / K_AMP + ATP * AMP / ( K_ATP * K_AMP ) + 2.0 * ADP / K_ADP + power( ADP , 2.0 ) / power( K_ADP , 2.0 ));
+  V_max_r := V_max_f * power( K_ADP , 2.0 ) / ( K_ATP * K_AMP * Keq_ADK );
+
+  // Variable initializations:
+  K_ADP = 0.35;
+  K_AMP = 0.32;
+  K_ATP = 0.27;
+  Keq_ADK = 2.21;
+  V_max_f = 880.0;
+end
+
+model lambeth_2002__V_ATPase(V_ATPase)
+
+  // Variable initializations:
+  V_ATPase = 600.0;
+end
+
+model lambeth_2002____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: lambeth_2002__environment(time_);
+  GLY: lambeth_2002__GLY(GLY0, flux_GP0, time_);
+  G1P: lambeth_2002__G1P(G1P0, flux_GP0, V_PGLM0, time_);
+  G6P: lambeth_2002__G6P(G6P0, V_PGLM0, V_PGI0, time_);
+  F6P: lambeth_2002__F6P(F6P0, V_PGI0, V_PFK0, time_);
+  FBP: lambeth_2002__FBP(FBP0, V_PFK0, V_ALD0, time_);
+  DHAP: lambeth_2002__DHAP(DHAP0, V_ALD0, V_TPI0, time_);
+  GAP: lambeth_2002__GAP(GAP0, V_ALD0, V_TPI0, V_GAPDH0, time_);
+  Thirteen_BPG: lambeth_2002__Thirteen_BPG(Thirteen_BPG0, V_GAPDH0, V_PGK0, time_);
+  three_PG: lambeth_2002__three_PG(three_PG0, V_PGK0, V_PGM0, time_);
+  two_PG: lambeth_2002__two_PG(two_PG0, V_PGM0, V_ENOL0, time_);
+  PEP: lambeth_2002__PEP(PEP0, V_ENOL0, V_PK0, time_);
+  PYR: lambeth_2002__PYR(PYR0, V_PK0, V_LDH0, time_);
+  LAC: lambeth_2002__LAC(LAC0, V_LDH0, time_);
+  Pi_: lambeth_2002__Pi(Pi_0, flux_GP0, V_GAPDH0, V_ATPase0, time_);
+  ADP: lambeth_2002__ADP(ADP0, V_PFK0, V_PGK0, V_PK0, V_ADK0, V_CK0, V_ATPase0, time_);
+  ATP: lambeth_2002__ATP(ATP0, V_PFK0, V_PGK0, V_PK0, V_ADK0, V_CK0, V_ATPase0, time_);
+  AMP: lambeth_2002__AMP(AMP0, V_ADK0, time_);
+  PCr: lambeth_2002__PCr(PCr0, V_CK0, time_);
+  Cr: lambeth_2002__Cr(Cr0, V_CK0, time_);
+  NADH: lambeth_2002__NADH(NADH0, V_GAPDH0, V_LDH0, time_);
+  NAD: lambeth_2002__NAD(NAD0, V_GAPDH0, V_LDH0, time_);
+  flux_GP: lambeth_2002__flux_GP(flux_GP0, V_GPa0, V_GPb0);
+  V_GPa: lambeth_2002__V_GPa(V_GPa0, GLY0, Pi_0, G1P0);
+  V_GPb: lambeth_2002__V_GPb(V_GPb0, GLY0, Pi_0, G1P0, AMP0);
+  V_PGLM: lambeth_2002__V_PGLM(V_PGLM0, G6P0, G1P0);
+  V_PGI: lambeth_2002__V_PGI(V_PGI0, F6P0, G6P0);
+  V_PFK: lambeth_2002__V_PFK(V_PFK0, F6P0, FBP0, ATP0, ADP0, AMP0);
+  V_ALD: lambeth_2002__V_ALD(V_ALD0, FBP0, GAP0, DHAP0);
+  V_TPI: lambeth_2002__V_TPI(V_TPI0, GAP0, DHAP0);
+  V_GAPDH: lambeth_2002__V_GAPDH(V_GAPDH0, GAP0, NADH0, NAD0, Thirteen_BPG0, Pi_0);
+  V_PGK: lambeth_2002__V_PGK(V_PGK0, three_PG0, ATP0, ADP0, Thirteen_BPG0);
+  V_PGM: lambeth_2002__V_PGM(V_PGM0, two_PG0, three_PG0);
+  V_ENOL: lambeth_2002__V_ENOL(V_ENOL0, PEP0, two_PG0);
+  V_PK: lambeth_2002__V_PK(V_PK0, PYR0, ATP0, ADP0, PEP0);
+  V_LDH: lambeth_2002__V_LDH(V_LDH0, LAC0, NAD0, NADH0, PYR0);
+  V_CK: lambeth_2002__V_CK(V_CK0, ADP0, PCr0, Cr0, ATP0);
+  V_ADK: lambeth_2002__V_ADK(V_ADK0, ADP0, AMP0, ATP0);
+  V_ATPase: lambeth_2002__V_ATPase(V_ATPase0);
+end

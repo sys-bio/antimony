@@ -1,0 +1,1375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="magnus_keizer_1997_version01____main" name="magnus_keizer_1997_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="V" constant="false"/>
+      <parameter id="V_B" value="50"/>
+      <parameter id="R" value="8314"/>
+      <parameter id="T" value="310"/>
+      <parameter id="F" value="96845"/>
+      <parameter id="delta_pH" constant="false"/>
+      <parameter id="proton_motive_force" constant="false"/>
+      <parameter id="g_H" value="0.2"/>
+      <parameter id="membrane_Cmito" value="0.00145"/>
+      <parameter id="JH_res" constant="false"/>
+      <parameter id="JH_leak" constant="false"/>
+      <parameter id="JH_F1" constant="false"/>
+      <parameter id="J_ant" constant="false"/>
+      <parameter id="J_uni" constant="false"/>
+      <parameter id="proton_pump_Jo" constant="false"/>
+      <parameter id="proton_pump_A_res" constant="false"/>
+      <parameter id="proton_pump_K_res" value="1.35e+17"/>
+      <parameter id="proton_pump_total_NAD_m" constant="false"/>
+      <parameter id="proton_pump_rho_res" value="0.4"/>
+      <parameter id="proton_pump_r1" value="2.077e-18"/>
+      <parameter id="proton_pump_r2" value="1.728e-09"/>
+      <parameter id="proton_pump_r3" value="1.059e-26"/>
+      <parameter id="proton_pump_ra" value="6.394e-10"/>
+      <parameter id="proton_pump_rb" value="1.762e-13"/>
+      <parameter id="proton_pump_rc1" value="2.656e-19"/>
+      <parameter id="proton_pump_rc2" value="8.632e-27"/>
+      <parameter id="proton_pump_g" value="0.85"/>
+      <parameter id="Jp_F1" constant="false"/>
+      <parameter id="F0_F1_ATPase_rho_F1" value="0.7"/>
+      <parameter id="F0_F1_ATPase_K_F1" value="1710000"/>
+      <parameter id="F0_F1_ATPase_A_F1" constant="false"/>
+      <parameter id="F0_F1_ATPase_total_mitochondrial_adenosine_phosphate" constant="false"/>
+      <parameter id="F0_F1_ATPase_ADP_m_free" constant="false"/>
+      <parameter id="F0_F1_ATPase_Pi_m" value="20"/>
+      <parameter id="F0_F1_ATPase_p1" value="1.346e-08"/>
+      <parameter id="F0_F1_ATPase_p2" value="7.739e-07"/>
+      <parameter id="F0_F1_ATPase_p3" value="6.65e-15"/>
+      <parameter id="F0_F1_ATPase_pa" value="1.656e-05"/>
+      <parameter id="F0_F1_ATPase_pb" value="3.373e-07"/>
+      <parameter id="F0_F1_ATPase_pc1" value="9.651e-14"/>
+      <parameter id="F0_F1_ATPase_pc2" value="4.845e-19"/>
+      <parameter id="ADP_m" constant="false"/>
+      <parameter id="ATP_ADP_exchange_Jmax_ant" value="1000"/>
+      <parameter id="ATP_ADP_exchange_ATP4_i" constant="false"/>
+      <parameter id="ATP_ADP_exchange_ATP4_m" constant="false"/>
+      <parameter id="ATP_ADP_exchange_ADP3_i" constant="false"/>
+      <parameter id="ATP_ADP_exchange_ADP3_m" constant="false"/>
+      <parameter id="ATP_ADP_exchange_f" value="0.5"/>
+      <parameter id="V_offset" value="91"/>
+      <parameter id="Ca_uniporter_Jmax_uni" value="300"/>
+      <parameter id="Ca_uniporter_K_trans" value="19"/>
+      <parameter id="Ca_uniporter_K_act" value="0.38"/>
+      <parameter id="Ca_uniporter_L" value="110"/>
+      <parameter id="Ca_uniporter_na" value="2.8"/>
+      <parameter id="Na_Ca_exchanger_J_Na_Ca" constant="false"/>
+      <parameter id="Na_Ca_exchanger_Jmax_Na_Ca" value="25"/>
+      <parameter id="Na_Ca_exchanger_Ca_m" constant="false"/>
+      <parameter id="Na_Ca_exchanger_Na_i" value="30"/>
+      <parameter id="Na_Ca_exchanger_K_Na" value="9.4"/>
+      <parameter id="Na_Ca_exchanger_K_Ca" value="0.003"/>
+      <parameter id="Na_Ca_exchanger_b" value="0"/>
+      <parameter id="Na_Ca_exchanger_n" value="2"/>
+      <parameter id="Na_Ca_exchanger_fm" value="0.0003"/>
+      <parameter id="time_"/>
+      <parameter id="membrane_pH_i"/>
+      <parameter id="membrane_pH_m"/>
+      <parameter id="proton_pump_NAD_m"/>
+      <parameter id="proton_pump_NADH_m"/>
+      <parameter id="F0_F1_ATPase_ATP_m"/>
+      <parameter id="ATP_ADP_exchange_ATP_i"/>
+      <parameter id="ATP_ADP_exchange_ATP_m"/>
+      <parameter id="ATP_ADP_exchange_ADP_i"/>
+      <parameter id="Ca_uniporter_Ca_i"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> -1 </cn>
+              <ci> membrane_Cmito </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> JH_F1 </ci>
+                <ci> J_ant </ci>
+                <ci> JH_leak </ci>
+                <apply>
+                  <times/>
+                  <ci> J_uni </ci>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <ci> JH_res </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="delta_pH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> membrane_pH_i </ci>
+            <ci> membrane_pH_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="proton_motive_force">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V </ci>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn> 2.303 </cn>
+                  <ci> R </ci>
+                  <ci> T </ci>
+                </apply>
+                <ci> F </ci>
+              </apply>
+              <ci> delta_pH </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JH_res">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 360 </cn>
+            <ci> proton_pump_rho_res </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> proton_pump_ra </ci>
+                    <apply>
+                      <power/>
+                      <cn> 10 </cn>
+                      <apply>
+                        <times/>
+                        <cn> 6 </cn>
+                        <ci> delta_pH </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <times/>
+                          <ci> F </ci>
+                          <ci> proton_pump_A_res </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> R </ci>
+                          <ci> T </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> proton_pump_rb </ci>
+                    <apply>
+                      <power/>
+                      <cn> 10 </cn>
+                      <apply>
+                        <times/>
+                        <cn> 6 </cn>
+                        <ci> delta_pH </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> proton_pump_ra </ci>
+                    <ci> proton_pump_rb </ci>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> proton_pump_g </ci>
+                        <cn> 6 </cn>
+                        <ci> F </ci>
+                        <ci> V </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <times/>
+                      <ci> proton_pump_r1 </ci>
+                      <apply>
+                        <exp/>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <ci> F </ci>
+                            <ci> proton_pump_A_res </ci>
+                          </apply>
+                          <apply>
+                            <times/>
+                            <ci> R </ci>
+                            <ci> T </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <cn> 6 </cn>
+                        <ci> F </ci>
+                        <ci> V_B </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> proton_pump_r2 </ci>
+                    <apply>
+                      <times/>
+                      <ci> proton_pump_r3 </ci>
+                      <apply>
+                        <exp/>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <ci> F </ci>
+                            <ci> proton_pump_A_res </ci>
+                          </apply>
+                          <apply>
+                            <times/>
+                            <ci> R </ci>
+                            <ci> T </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> proton_pump_g </ci>
+                        <cn> 6 </cn>
+                        <ci> F </ci>
+                        <ci> V </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JH_leak">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> g_H </ci>
+            <ci> proton_motive_force </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JH_F1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> -180 </cn>
+            <ci> F0_F1_ATPase_rho_F1 </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> F0_F1_ATPase_pa </ci>
+                    <apply>
+                      <power/>
+                      <cn> 10 </cn>
+                      <apply>
+                        <times/>
+                        <cn> 3 </cn>
+                        <ci> delta_pH </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <times/>
+                          <ci> F </ci>
+                          <ci> F0_F1_ATPase_A_F1 </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> R </ci>
+                          <ci> T </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> F0_F1_ATPase_pb </ci>
+                    <apply>
+                      <power/>
+                      <cn> 10 </cn>
+                      <apply>
+                        <times/>
+                        <cn> 3 </cn>
+                        <ci> delta_pH </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> F0_F1_ATPase_pa </ci>
+                    <ci> F0_F1_ATPase_pb </ci>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <cn> 3 </cn>
+                        <ci> F </ci>
+                        <ci> V </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <times/>
+                      <ci> F0_F1_ATPase_p1 </ci>
+                      <apply>
+                        <exp/>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <ci> F </ci>
+                            <ci> F0_F1_ATPase_A_F1 </ci>
+                          </apply>
+                          <apply>
+                            <times/>
+                            <ci> R </ci>
+                            <ci> T </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <cn> 3 </cn>
+                        <ci> F </ci>
+                        <ci> V_B </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> F0_F1_ATPase_p2 </ci>
+                    <apply>
+                      <times/>
+                      <ci> F0_F1_ATPase_p3 </ci>
+                      <apply>
+                        <exp/>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <ci> F </ci>
+                            <ci> F0_F1_ATPase_A_F1 </ci>
+                          </apply>
+                          <apply>
+                            <times/>
+                            <ci> R </ci>
+                            <ci> T </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <cn> 3 </cn>
+                        <ci> F </ci>
+                        <ci> V </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_ant">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ATP_ADP_exchange_Jmax_ant </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> ATP_ADP_exchange_ATP4_i </ci>
+                      <ci> ATP_ADP_exchange_ADP3_m </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> ATP_ADP_exchange_ADP3_i </ci>
+                      <ci> ATP_ADP_exchange_ATP4_m </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <apply>
+                          <minus/>
+                          <ci> F </ci>
+                        </apply>
+                        <ci> V </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <divide/>
+                      <ci> ATP_ADP_exchange_ATP4_i </ci>
+                      <ci> ATP_ADP_exchange_ADP3_i </ci>
+                    </apply>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <times/>
+                          <apply>
+                            <minus/>
+                            <ci> ATP_ADP_exchange_f </ci>
+                          </apply>
+                          <ci> F </ci>
+                          <ci> V </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> R </ci>
+                          <ci> T </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> ATP_ADP_exchange_ADP3_m </ci>
+                    <ci> ATP_ADP_exchange_ATP4_m </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_uni">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ca_uniporter_Jmax_uni </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> Ca_uniporter_Ca_i </ci>
+                  <ci> Ca_uniporter_K_trans </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Ca_uniporter_Ca_i </ci>
+                      <ci> Ca_uniporter_K_trans </ci>
+                    </apply>
+                  </apply>
+                  <cn> 3 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Ca_uniporter_Ca_i </ci>
+                      <ci> Ca_uniporter_K_trans </ci>
+                    </apply>
+                  </apply>
+                  <cn> 4 </cn>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> Ca_uniporter_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn> 1 </cn>
+                      <apply>
+                        <divide/>
+                        <ci> Ca_uniporter_Ca_i </ci>
+                        <ci> Ca_uniporter_K_act </ci>
+                      </apply>
+                    </apply>
+                    <ci> Ca_uniporter_na </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn> 2 </cn>
+                  <ci> F </ci>
+                  <apply>
+                    <minus/>
+                    <ci> V </ci>
+                    <ci> V_offset </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> R </ci>
+                  <ci> T </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <cn> -2 </cn>
+                      <ci> F </ci>
+                      <apply>
+                        <minus/>
+                        <ci> V </ci>
+                        <ci> V_offset </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> R </ci>
+                      <ci> T </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="proton_pump_Jo">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 30 </cn>
+            <ci> proton_pump_rho_res </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <plus/>
+                      <apply>
+                        <times/>
+                        <ci> proton_pump_ra </ci>
+                        <apply>
+                          <power/>
+                          <cn> 10 </cn>
+                          <apply>
+                            <times/>
+                            <cn> 6 </cn>
+                            <ci> delta_pH </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> proton_pump_rc1 </ci>
+                        <apply>
+                          <exp/>
+                          <apply>
+                            <divide/>
+                            <apply>
+                              <times/>
+                              <cn> 6 </cn>
+                              <ci> F </ci>
+                              <ci> V_B </ci>
+                            </apply>
+                            <apply>
+                              <times/>
+                              <ci> R </ci>
+                              <ci> T </ci>
+                            </apply>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <times/>
+                          <ci> F </ci>
+                          <ci> proton_pump_A_res </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> R </ci>
+                          <ci> T </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> proton_pump_ra </ci>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <times/>
+                          <ci> proton_pump_g </ci>
+                          <cn> 6 </cn>
+                          <ci> F </ci>
+                          <ci> V </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> R </ci>
+                          <ci> T </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> proton_pump_rc2 </ci>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> F </ci>
+                        <ci> proton_pump_A_res </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> proton_pump_g </ci>
+                        <cn> 6 </cn>
+                        <ci> F </ci>
+                        <ci> V </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <times/>
+                      <ci> proton_pump_r1 </ci>
+                      <apply>
+                        <exp/>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <ci> F </ci>
+                            <ci> proton_pump_A_res </ci>
+                          </apply>
+                          <apply>
+                            <times/>
+                            <ci> R </ci>
+                            <ci> T </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <cn> 6 </cn>
+                        <ci> F </ci>
+                        <ci> V_B </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> proton_pump_r2 </ci>
+                    <apply>
+                      <times/>
+                      <ci> proton_pump_r3 </ci>
+                      <apply>
+                        <exp/>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <ci> F </ci>
+                            <ci> proton_pump_A_res </ci>
+                          </apply>
+                          <apply>
+                            <times/>
+                            <ci> R </ci>
+                            <ci> T </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> proton_pump_g </ci>
+                        <cn> 6 </cn>
+                        <ci> F </ci>
+                        <ci> V </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="proton_pump_A_res">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> R </ci>
+                <ci> T </ci>
+              </apply>
+              <ci> F </ci>
+            </apply>
+            <apply>
+              <ln/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> proton_pump_K_res </ci>
+                  <apply>
+                    <root/>
+                    <ci> proton_pump_NADH_m </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <root/>
+                  <ci> proton_pump_NAD_m </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="proton_pump_total_NAD_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> proton_pump_NADH_m </ci>
+            <ci> proton_pump_NAD_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Jp_F1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> -60 </cn>
+            <ci> F0_F1_ATPase_rho_F1 </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <plus/>
+                      <apply>
+                        <times/>
+                        <ci> F0_F1_ATPase_pa </ci>
+                        <apply>
+                          <power/>
+                          <cn> 10 </cn>
+                          <apply>
+                            <times/>
+                            <cn> 3 </cn>
+                            <ci> delta_pH </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> F0_F1_ATPase_pc1 </ci>
+                        <apply>
+                          <exp/>
+                          <apply>
+                            <divide/>
+                            <apply>
+                              <times/>
+                              <cn> 3 </cn>
+                              <ci> F </ci>
+                              <ci> V_B </ci>
+                            </apply>
+                            <apply>
+                              <times/>
+                              <ci> R </ci>
+                              <ci> T </ci>
+                            </apply>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <times/>
+                          <ci> F </ci>
+                          <ci> F0_F1_ATPase_A_F1 </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> R </ci>
+                          <ci> T </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> F0_F1_ATPase_pa </ci>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <divide/>
+                        <apply>
+                          <times/>
+                          <cn> 3 </cn>
+                          <ci> F </ci>
+                          <ci> V </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> R </ci>
+                          <ci> T </ci>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> F0_F1_ATPase_pc2 </ci>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> F </ci>
+                        <ci> F0_F1_ATPase_A_F1 </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <cn> 3 </cn>
+                        <ci> F </ci>
+                        <ci> V </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <times/>
+                      <ci> F0_F1_ATPase_p1 </ci>
+                      <apply>
+                        <exp/>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <ci> F </ci>
+                            <ci> F0_F1_ATPase_A_F1 </ci>
+                          </apply>
+                          <apply>
+                            <times/>
+                            <ci> R </ci>
+                            <ci> T </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <cn> 3 </cn>
+                        <ci> F </ci>
+                        <ci> V_B </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> F0_F1_ATPase_p2 </ci>
+                    <apply>
+                      <times/>
+                      <ci> F0_F1_ATPase_p3 </ci>
+                      <apply>
+                        <exp/>
+                        <apply>
+                          <divide/>
+                          <apply>
+                            <times/>
+                            <ci> F </ci>
+                            <ci> F0_F1_ATPase_A_F1 </ci>
+                          </apply>
+                          <apply>
+                            <times/>
+                            <ci> R </ci>
+                            <ci> T </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <cn> 3 </cn>
+                        <ci> F </ci>
+                        <ci> V </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F0_F1_ATPase_A_F1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> R </ci>
+                <ci> T </ci>
+              </apply>
+              <ci> F </ci>
+            </apply>
+            <apply>
+              <ln/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> F0_F1_ATPase_K_F1 </ci>
+                  <ci> F0_F1_ATPase_ATP_m </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> F0_F1_ATPase_ADP_m_free </ci>
+                  <ci> F0_F1_ATPase_Pi_m </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F0_F1_ATPase_total_mitochondrial_adenosine_phosphate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> F0_F1_ATPase_ATP_m </ci>
+            <ci> ADP_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F0_F1_ATPase_ADP_m_free">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.8 </cn>
+            <ci> ADP_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="ADP_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> J_ant </ci>
+            <ci> Jp_F1 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="ATP_ADP_exchange_ATP4_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.05 </cn>
+            <ci> ATP_ADP_exchange_ATP_i </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ATP_ADP_exchange_ATP4_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.05 </cn>
+            <ci> ATP_ADP_exchange_ATP_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ATP_ADP_exchange_ADP3_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.45 </cn>
+            <cn> 1 </cn>
+            <ci> ATP_ADP_exchange_ADP_i </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ATP_ADP_exchange_ADP3_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.45 </cn>
+            <cn> 0.8 </cn>
+            <ci> ADP_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_Ca_exchanger_J_Na_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Na_Ca_exchanger_Jmax_Na_Ca </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Na_Ca_exchanger_b </ci>
+                    <ci> F </ci>
+                    <apply>
+                      <minus/>
+                      <ci> V </ci>
+                      <ci> V_offset </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> Na_Ca_exchanger_K_Na </ci>
+                      <ci> Na_Ca_exchanger_Na_i </ci>
+                    </apply>
+                  </apply>
+                  <ci> Na_Ca_exchanger_n </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> Na_Ca_exchanger_K_Ca </ci>
+                    <ci> Na_Ca_exchanger_Ca_m </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Na_Ca_exchanger_Ca_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Na_Ca_exchanger_fm </ci>
+            <apply>
+              <minus/>
+              <ci> J_uni </ci>
+              <ci> Na_Ca_exchanger_J_Na_Ca </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

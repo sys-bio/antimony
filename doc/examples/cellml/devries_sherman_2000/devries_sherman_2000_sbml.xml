@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="devries_sherman_2000_version01____main" name="devries_sherman_2000_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="V" constant="false"/>
+      <parameter id="tau" value="20"/>
+      <parameter id="i_K" constant="false"/>
+      <parameter id="i_K_ATP" constant="false"/>
+      <parameter id="i_Ca" constant="false"/>
+      <parameter id="i_s" constant="false"/>
+      <parameter id="calcium_current_g_Ca" value="3.6"/>
+      <parameter id="calcium_current_V_Ca" value="25"/>
+      <parameter id="m_infinity" constant="false"/>
+      <parameter id="calcium_current_calcium_current_m_gate_V_m" value="-20"/>
+      <parameter id="calcium_current_calcium_current_m_gate_theta_m" value="12"/>
+      <parameter id="V_K" value="-75"/>
+      <parameter id="potassium_current_g_K" value="10"/>
+      <parameter id="n" constant="false"/>
+      <parameter id="potassium_current_potassium_current_n_gate_n_infinity" constant="false"/>
+      <parameter id="potassium_current_potassium_current_n_gate_V_n" value="-17"/>
+      <parameter id="potassium_current_potassium_current_n_gate_theta_n" value="5.6"/>
+      <parameter id="potassium_current_potassium_current_n_gate_lamda" value="0.8"/>
+      <parameter id="slow_current_g_s" value="4"/>
+      <parameter id="s" constant="false"/>
+      <parameter id="slow_current_slow_current_s_gate_s_infinity" constant="false"/>
+      <parameter id="slow_current_slow_current_s_gate_V_s" value="-22"/>
+      <parameter id="slow_current_slow_current_s_gate_theta_s" value="8"/>
+      <parameter id="slow_current_slow_current_s_gate_tau_s" value="20000"/>
+      <parameter id="ATP_sensitive_potassium_current_g_K_ATP" value="1.2"/>
+      <parameter id="ATP_sensitive_potassium_current_p" value="0.5"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> i_Ca </ci>
+                <ci> i_K </ci>
+                <ci> i_K_ATP </ci>
+                <ci> i_s </ci>
+              </apply>
+            </apply>
+            <ci> tau </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="i_K">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> potassium_current_g_K </ci>
+            <ci> n </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_K_ATP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ATP_sensitive_potassium_current_g_K_ATP </ci>
+            <ci> ATP_sensitive_potassium_current_p </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_current_g_Ca </ci>
+            <ci> m_infinity </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> calcium_current_V_Ca </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> slow_current_g_s </ci>
+            <ci> s </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="m_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> calcium_current_calcium_current_m_gate_V_m </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> calcium_current_calcium_current_m_gate_theta_m </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> potassium_current_potassium_current_n_gate_lamda </ci>
+              <apply>
+                <minus/>
+                <ci> potassium_current_potassium_current_n_gate_n_infinity </ci>
+                <ci> n </ci>
+              </apply>
+            </apply>
+            <ci> tau </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="potassium_current_potassium_current_n_gate_n_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> potassium_current_potassium_current_n_gate_V_n </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> potassium_current_potassium_current_n_gate_theta_n </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> slow_current_slow_current_s_gate_s_infinity </ci>
+              <ci> s </ci>
+            </apply>
+            <ci> slow_current_slow_current_s_gate_tau_s </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="slow_current_slow_current_s_gate_s_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> slow_current_slow_current_s_gate_V_s </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> slow_current_slow_current_s_gate_theta_s </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

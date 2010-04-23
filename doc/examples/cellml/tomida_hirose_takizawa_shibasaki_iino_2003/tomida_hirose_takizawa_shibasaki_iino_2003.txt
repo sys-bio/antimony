@@ -1,0 +1,38 @@
+//Created by libAntimony v1.3
+model tomida2003__model()
+
+  // Assignment Rules:
+  NFAT_tot := NFATP_cyt + NFAT_cyt + NFAT_nuc;
+  k1 := piecewise( k1_stim , stim_on == 1 , k1_unstim );
+  stim_on := piecewise( 1 , ( time_ >= time_before_stim) && (rem( time_ - time_before_stim , stim_wavelength ) <= stim_duration ), 0 );
+  Jdephosphorylation := k1 * NFATP_cyt - k2 * NFAT_cyt;
+  Jtranslocate := k3 * NFAT_cyt;
+  Jexport := k4 * NFAT_nuc;
+  percentage_NFAT_cyt := NFAT_cyt * 100 / NFAT_tot;
+  percentage_NFATP_cyt := NFATP_cyt * 100 / NFAT_tot;
+  percentage_NFAT_nuc := NFAT_nuc * 100 / NFAT_tot;
+
+  // Rate Rules:
+  NFATP_cyt' = Jexport - Jdephosphorylation;
+  NFAT_cyt' = Jdephosphorylation - Jtranslocate;
+  NFAT_nuc' = Jtranslocate - Jexport;
+
+  // Variable initializations:
+  NFATP_cyt = 5000;
+  NFAT_cyt = 0;
+  NFAT_nuc = 0;
+  k1_unstim = 0;
+  k1_stim = 0.359;
+  k2 = 0.147;
+  k3 = 0.06;
+  k4 = 0.035;
+  stim_wavelength = 3;
+  stim_duration = 0.5;
+  time_before_stim = 1;
+end
+
+model tomida2003____main()
+
+  // Sub-modules, and any changes to those submodules:
+  model_: tomida2003__model();
+end

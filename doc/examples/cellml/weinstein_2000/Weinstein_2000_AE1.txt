@@ -1,0 +1,64 @@
+//Created by libAntimony v1.3
+model weinstein_2000_AE1__environment(time_)
+end
+
+model weinstein_2000_AE1__Concentrations(time_, HCO3_i, HCO3_e, Cl_i, Cl_e, x_T, K_I)
+
+  // Assignment Rules:
+  x_T := x_Tmax / (1 + HCO3_i / K_I);
+
+  // Rate Rules:
+  HCO3_i' = 60;
+
+  // Variable initializations:
+  HCO3_i = 0;
+  HCO3_e = 26;
+  Cl_i = 29;
+  Cl_e = 114;
+  x_Tmax = 1;
+end
+
+model weinstein_2000_AE1__AE1_rate_constants(K_I, Kc_p, Kc_pp, Kb_p, Kb_pp, Pc_p, Pc_pp, Pb_p, Pb_pp)
+
+  // Variable initializations:
+  K_I = 172;
+  Kc_p = 50;
+  Kc_pp = 50;
+  Kb_p = 198;
+  Kb_pp = 198;
+  Pc_p = 562;
+  Pc_pp = 61;
+  Pb_p = 1247;
+  Pb_pp = 135;
+end
+
+model weinstein_2000_AE1__AE1(x_T, HCO3_i, HCO3_e, Cl_i, Cl_e, Kc_p, Kc_pp, Kb_p, Kb_pp, Pc_p, Pc_pp, Pb_p, Pb_pp, J_HCO3, J_Cl, Jb_influx, Jc_influx)
+
+  // Assignment Rules:
+  beta_p := HCO3_e / Kb_p;
+  beta_pp := HCO3_i / Kb_pp;
+  gamma_p := Cl_e / Kc_p;
+  gamma_pp := Cl_i / Kc_pp;
+  sigma := (1 + beta_p + gamma_p) * (Pb_pp * beta_pp + Pc_pp * gamma_pp) + (1 + beta_pp + gamma_pp) * (Pb_p * beta_p + Pc_p * gamma_p);
+  x_p := x_T * (Pb_pp * beta_pp + Pc_pp * gamma_pp) / sigma;
+  x_pp := x_T * (Pb_p * beta_p + Pc_p * gamma_p) / sigma;
+  J_HCO3 := x_T / sigma * (Pb_pp * beta_pp * Pc_p * gamma_p - Pb_p * beta_p * Pc_pp * gamma_pp);
+  J_Cl := -(J_HCO3);
+  Jb_influx := x_T / sigma * Pb_p * beta_p * (Pb_pp * beta_pp + Pc_pp * gamma_pp);
+  Jc_influx := x_T / sigma * Pc_p * gamma_p * (Pb_pp * beta_pp + Pc_pp * gamma_pp);
+  Jo_bm := power(1 / x_T * (1 / Pb_p + 1 / Pb_pp + Kb_pp / (Pb_pp * HCO3_i)), -(1 ));
+  Ji_bm := power(1 / x_T * (1 / Pb_p + 1 / Pb_pp + Kb_p / (Pb_p * HCO3_e)), -(1 ));
+  Js_bm := power(1 / x_T * (1 / Pb_p + 1 / Pb_pp), -(1 ));
+  Jo_cm := power(1 / x_T * (1 / Pc_p + 1 / Pc_pp + Kc_pp / (Pc_pp * Cl_i)), -(1 ));
+  Ji_cm := power(1 / x_T * (1 / Pc_p + 1 / Pc_pp + Kc_p / (Pc_p * Cl_e)), -(1 ));
+  Js_cm := power(1 / x_T * (1 / Pc_p + 1 / Pc_pp), -(1 ));
+end
+
+model weinstein_2000_AE1____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: weinstein_2000_AE1__environment(time_);
+  Concentrations: weinstein_2000_AE1__Concentrations(time_, HCO3_i, HCO3_e, Cl_i, Cl_e, x_T, K_I);
+  AE1_rate_constants: weinstein_2000_AE1__AE1_rate_constants(K_I, Kc_p, Kc_pp, Kb_p, Kb_pp, Pc_p, Pc_pp, Pb_p, Pb_pp);
+  AE1: weinstein_2000_AE1__AE1(x_T, HCO3_i, HCO3_e, Cl_i, Cl_e, Kc_p, Kc_pp, Kb_p, Kb_pp, Pc_p, Pc_pp, Pb_p, Pb_pp, J_HCO3, J_Cl, Jb_influx, Jc_influx);
+end

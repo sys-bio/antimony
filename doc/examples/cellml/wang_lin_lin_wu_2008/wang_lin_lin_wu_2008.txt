@@ -1,0 +1,257 @@
+//Created by libAntimony v1.3
+model wang_lin_lin_wu_2007__environment(time_)
+end
+
+model wang_lin_lin_wu_2007__parameters(RT)
+
+  // Variable initializations:
+  RT = 2577;
+end
+
+model wang_lin_lin_wu_2007__membrane(V_m, time_, I_Na, I_T, I_KCa, I_Ca, I_L, I_K, I_stim)
+
+  // Rate Rules:
+  V_m' = (I_stim - (I_Na + I_Ca + I_K + I_L + I_T + I_KCa)) / C_m;
+
+  // Variable initializations:
+  V_m = -75;
+  C_m = 0.009;
+end
+
+model wang_lin_lin_wu_2007__I_stim(I_stim, time_)
+
+  // Assignment Rules:
+  I_stim := I_mag * (H_0 - H_1);
+  H_0 := piecewise( 0 , time_ < t_0 , 1 );
+  H_1 := piecewise( 0 , time_ < t_1 , 1 );
+
+  // Variable initializations:
+  I_mag = 2;
+  t_0 = 5;
+  t_1 = 6;
+end
+
+model wang_lin_lin_wu_2007__m(m, time_, V_m)
+
+  // Assignment Rules:
+  alpha_m := alpha_m_max * (V_m - E_m) / (1 - exp((E_m - V_m) / V_alpha_m));
+  beta_m := beta_m_max * exp((E_m - V_m) / V_beta_m);
+
+  // Rate Rules:
+  m' = alpha_m * (1 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 0;
+  E_m = -42;
+  V_alpha_m = 10;
+  V_beta_m = 18;
+  alpha_m_max = 0.208;
+  beta_m_max = 2.081;
+end
+
+model wang_lin_lin_wu_2007__h(h, time_, V_m)
+
+  // Assignment Rules:
+  alpha_h := alpha_h_max * exp((V_m - E_h) / V_alpha_h);
+  beta_h := beta_h_max / (1 + exp((E_h - V_m) / V_beta_h));
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 1;
+  E_h = -41;
+  V_alpha_h = 14.7;
+  V_beta_h = 7.6;
+  alpha_h_max = 0.0156;
+  beta_h_max = 3.382;
+end
+
+model wang_lin_lin_wu_2007__I_Na(I_Na, time_, V_m, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  m_mod: wang_lin_lin_wu_2007__m(m, time_, V_m);
+  h_mod: wang_lin_lin_wu_2007__h(h, time_, V_m);
+
+  // Assignment Rules:
+  I_Na := g_Na * power(m, 3 ) * h * (V_m - E_Na);
+
+  // Variable initializations:
+  g_Na = 0.45;
+  E_Na = 50;
+end
+
+model wang_lin_lin_wu_2007__V_T(V_T, R_s, C_t, time_, V_m)
+
+  // Rate Rules:
+  V_T' = (V_m - V_T) / (R_s * C_t);
+
+  // Variable initializations:
+  V_T = -70;
+end
+
+model wang_lin_lin_wu_2007__I_T(I_T, R_s, C_t, V_m, time_, V_T)
+
+  // Sub-modules, and any changes to those submodules:
+  V_T_mod: wang_lin_lin_wu_2007__V_T(V_T, R_s, C_t, time_, V_m);
+
+  // Assignment Rules:
+  I_T := (V_m - V_T) / R_s;
+
+  // Variable initializations:
+  R_s = 15;
+  C_t = 0.04;
+end
+
+model wang_lin_lin_wu_2007__o(o, time_, V_m, c, RT)
+
+  // Assignment Rules:
+  o_oinf := alpha_Vm * tau_Vm;
+  alpha_Vm := a_bar / (1 + k_1 * exp(-(2 ) * d_1 * 96.485 * V_m / (RT * c)));
+  beta_Vm := b_bar / (1 + c / (k_2 * exp(-(2 ) * d_2 * 96.485 * V_m / RT)));
+  tau_Vm := 1 / (alpha_Vm + beta_Vm);
+
+  // Rate Rules:
+  o' = (o_oinf - o) / tau_Vm;
+
+  // Variable initializations:
+  o = 0.15;
+  d_1 = 0.84;
+  d_2 = 1;
+  k_1 = 0.18;
+  k_2 = 0.011;
+  a_bar = 0.48;
+  b_bar = 0.28;
+end
+
+model wang_lin_lin_wu_2007__w(w, time_, c)
+
+  // Assignment Rules:
+  w := power(c, 5 ) / (power(c, 5 ) + power(kd, 5 ));
+
+  // Variable initializations:
+  kd = 0.18;
+end
+
+model wang_lin_lin_wu_2007__I_KCa(I_KCa, E_K, o, w, V_m, time_, c, RT)
+
+  // Sub-modules, and any changes to those submodules:
+  o_mod: wang_lin_lin_wu_2007__o(o, time_, V_m, c, RT);
+  w_mod: wang_lin_lin_wu_2007__w(w, time_, c);
+
+  // Assignment Rules:
+  I_KCa := g_KCa * o * w * (V_m - E_K);
+
+  // Variable initializations:
+  g_KCa = 0.5;
+end
+
+model wang_lin_lin_wu_2007__calcium_handling(c, time_, cer, I_Ca)
+
+  // Assignment Rules:
+  j_mem := -(alpha) * I_Ca * k_pmca * c;
+  j_leak := p_leak * (cer - c);
+  j_serca := k_serca * c;
+  j_er := j_leak - j_serca;
+
+  // Rate Rules:
+  c' = f_cyt * (j_mem + j_er);
+  cer' = -(f_er) * v_cytver * j_er;
+
+  // Variable initializations:
+  c = 0.15;
+  cer = 200;
+  alpha = 4.5e-6;
+  k_pmca = 0.2;
+  k_serca = 0.4;
+  p_leak = 0.0005;
+  f_er = 0.01;
+  f_cyt = 0.01;
+  v_cytver = 5;
+end
+
+model wang_lin_lin_wu_2007__d(d, V_m, time_)
+
+  // Assignment Rules:
+  alpha_d := d_infinity / tau_d;
+  beta_d := (1 - d_infinity) / tau_d;
+  tau_d := 80 * 1 / cosh(-(0.031 ) * (V_m + 37.1 ));
+  d_infinity := 1 / (1 + exp((-(24.6 ) - V_m) / 11.3 ));
+
+  // Rate Rules:
+  d' = alpha_d * (1 - d) - beta_d * d;
+
+  // Variable initializations:
+  d = 0;
+end
+
+model wang_lin_lin_wu_2007__I_Ca(I_Ca, V_m, time_, d)
+
+  // Sub-modules, and any changes to those submodules:
+  d_mod: wang_lin_lin_wu_2007__d(d, V_m, time_);
+
+  // Assignment Rules:
+  I_Ca := g_Ca * power(d, 2 ) * (V_m - E_Ca);
+  g_Ca := -(g_Ca0) * V_m / (exp(0.117 * V_m) - 1 );
+
+  // Variable initializations:
+  g_Ca0 = 0.05;
+  E_Ca = 50;
+end
+
+model wang_lin_lin_wu_2007__I_L(I_L, V_m)
+
+  // Assignment Rules:
+  I_L := g_Lmax * (V_m - E_L);
+
+  // Variable initializations:
+  E_L = -75;
+  g_Lmax = 0.0024;
+end
+
+model wang_lin_lin_wu_2007__n(n, time_, V_m)
+
+  // Assignment Rules:
+  alpha_n := alpha_n_max * (V_m - E_n) / (1 - exp((E_n - V_m) / V_alpha_n));
+  beta_n := beta_n_max * exp((E_n - V_m) / V_beta_n);
+
+  // Rate Rules:
+  n' = alpha_n * (1 - n) - beta_n * n;
+
+  // Variable initializations:
+  n = 0;
+  E_n = -40;
+  V_alpha_n = 7;
+  V_beta_n = 40;
+  alpha_n_max = 0.0229;
+  beta_n_max = 0.09616;
+end
+
+model wang_lin_lin_wu_2007__I_K(I_K, time_, V_m, n, E_K)
+
+  // Sub-modules, and any changes to those submodules:
+  n_mod: wang_lin_lin_wu_2007__n(n, time_, V_m);
+
+  // Assignment Rules:
+  I_K := g_K * power(n, 4 ) * (V_m - E_K);
+
+  // Variable initializations:
+  E_K = -70;
+  g_K = 0.415;
+end
+
+model wang_lin_lin_wu_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: wang_lin_lin_wu_2007__environment(time_);
+  parameters: wang_lin_lin_wu_2007__parameters(RT);
+  membrane: wang_lin_lin_wu_2007__membrane(V_m, time_, I_Na0, I_T0, I_KCa0, I_Ca0, I_L0, I_K0, I_stim0);
+  I_stim: wang_lin_lin_wu_2007__I_stim(I_stim0, time_);
+  I_Na: wang_lin_lin_wu_2007__I_Na(I_Na0, time_, V_m, m, h);
+  I_T: wang_lin_lin_wu_2007__I_T(I_T0, R_s, C_t, V_m, time_, V_T);
+  I_KCa: wang_lin_lin_wu_2007__I_KCa(I_KCa0, E_K, o, w, V_m, time_, c, RT);
+  calcium_handling: wang_lin_lin_wu_2007__calcium_handling(c, time_, cer, I_Ca0);
+  I_Ca: wang_lin_lin_wu_2007__I_Ca(I_Ca0, V_m, time_, d);
+  I_L: wang_lin_lin_wu_2007__I_L(I_L0, V_m);
+  I_K: wang_lin_lin_wu_2007__I_K(I_K0, time_, V_m, n, E_K);
+end

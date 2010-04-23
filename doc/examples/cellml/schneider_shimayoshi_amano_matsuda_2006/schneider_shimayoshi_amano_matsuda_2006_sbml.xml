@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="schneider_shimayoshi_amano_matsuda_2006____main" name="schneider_shimayoshi_amano_matsuda_2006____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="A_iso" value="9000"/>
+      <parameter id="k_off" value="0.2"/>
+      <parameter id="k_on" value="17.3"/>
+      <parameter id="k_onI" value="0.2"/>
+      <parameter id="k_offi" value="0.075"/>
+      <parameter id="k_OFF" value="-0.32"/>
+      <parameter id="k_xboff" value="-1.37"/>
+      <parameter id="k_tmoff" value="0.067"/>
+      <parameter id="k_tmonc" value="0.014"/>
+      <parameter id="k_tmRU" value="10"/>
+      <parameter id="k_tmxb" value="-1.86"/>
+      <parameter id="k_12" value="2"/>
+      <parameter id="k_minus12" value="0.6"/>
+      <parameter id="k_Titin" value="0.2"/>
+      <parameter id="k_3c" value="0.025"/>
+      <parameter id="k_3f" value="50"/>
+      <parameter id="k_3xb" value="-1.23"/>
+      <parameter id="k_minus3" value="0.008"/>
+      <parameter id="k_4" value="0.077"/>
+      <parameter id="k_minus4" value="0.001"/>
+      <parameter id="k_5" value="0.03723"/>
+      <parameter id="active_force_F_b" constant="false"/>
+      <parameter id="RUA_MADPPi" value="0" constant="false"/>
+      <parameter id="RUA_MADP" value="0" constant="false"/>
+      <parameter id="Q_CaB" constant="false"/>
+      <parameter id="RUNA" constant="false"/>
+      <parameter id="Ca" value="0.01" constant="false"/>
+      <parameter id="RUTCa_off" value="0" constant="false"/>
+      <parameter id="Q_TCaA" constant="false"/>
+      <parameter id="TnI_conf_change_rate_k_offI" constant="false"/>
+      <parameter id="RUTCa_on" value="0" constant="false"/>
+      <parameter id="RUA" constant="false"/>
+      <parameter id="RU_total" value="0.0726"/>
+      <parameter id="Q_TMA" constant="false"/>
+      <parameter id="Tm_conf_change_rate_k_tmon" constant="false"/>
+      <parameter id="RUTM_on" value="0" constant="false"/>
+      <parameter id="Q_MB" constant="false"/>
+      <parameter id="KTitin" constant="false"/>
+      <parameter id="L" constant="false"/>
+      <parameter id="L_0" value="0.001"/>
+      <parameter id="MADPPi" value="0.1375"/>
+      <parameter id="RUTM_on_eff" constant="false"/>
+      <parameter id="RUAMADPPi" value="0" constant="false"/>
+      <parameter id="myosin_binding_rate_KTitin_mod_f_titinNormal" constant="false"/>
+      <parameter id="myosin_binding_rate_KTitin_mod_f_titinDamaged" constant="false"/>
+      <parameter id="Q_Fgen" constant="false"/>
+      <parameter id="Force_Generating_rate_k_3" constant="false"/>
+      <parameter id="RUTCa_on_eff" constant="false"/>
+      <parameter id="Q_PiR" constant="false"/>
+      <parameter id="Q_ADPR" constant="false"/>
+      <parameter id="alpha" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="active_force_F_b">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> A_iso </ci>
+            <apply>
+              <plus/>
+              <ci> RUA_MADPPi </ci>
+              <ci> RUA_MADP </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="RUA_MADPPi">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Q_Fgen </ci>
+            <ci> Q_PiR </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RUA_MADP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Q_PiR </ci>
+            <ci> Q_ADPR </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Q_CaB">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_on </ci>
+              <ci> RUNA </ci>
+              <ci> Ca </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_off </ci>
+              <ci> RUTCa_off </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="RUNA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> RU_total </ci>
+            <apply>
+              <plus/>
+              <ci> RUTCa_off </ci>
+              <ci> RUTCa_on </ci>
+              <ci> RUTM_on </ci>
+              <ci> RUAMADPPi </ci>
+              <ci> RUA_MADPPi </ci>
+              <ci> RUA_MADP </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Q_CaB </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RUTCa_off">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Q_CaB </ci>
+            <ci> Q_TCaA </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Q_TCaA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_onI </ci>
+              <ci> RUTCa_off </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> TnI_conf_change_rate_k_offI </ci>
+              <ci> RUTCa_on </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="TnI_conf_change_rate_k_offI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_offi </ci>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> k_OFF </ci>
+                  <apply>
+                    <divide/>
+                    <ci> RUA </ci>
+                    <ci> RU_total </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> k_xboff </ci>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <ci> RUA_MADPPi </ci>
+                      <ci> RUA_MADP </ci>
+                    </apply>
+                    <ci> RU_total </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <cn> 4.4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="RUTCa_on">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Q_TCaA </ci>
+            <ci> Q_TMA </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="RUA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> RUTCa_on </ci>
+            <ci> RUTM_on </ci>
+            <ci> RUAMADPPi </ci>
+            <ci> RUA_MADPPi </ci>
+            <ci> RUA_MADP </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Q_TMA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> Tm_conf_change_rate_k_tmon </ci>
+              <ci> RUTCa_on </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_tmoff </ci>
+              <ci> RUTM_on </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Tm_conf_change_rate_k_tmon">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_tmonc </ci>
+            <apply>
+              <divide/>
+              <ci> RUTCa_on </ci>
+              <ci> RU_total </ci>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> k_tmRU </ci>
+                  <apply>
+                    <divide/>
+                    <ci> RUTM_on </ci>
+                    <ci> RU_total </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> k_tmxb </ci>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <ci> RUA_MADPPi </ci>
+                      <ci> RUA_MADP </ci>
+                    </apply>
+                    <ci> RU_total </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="RUTM_on">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <ci> Q_TMA </ci>
+              <ci> Q_MB </ci>
+            </apply>
+            <ci> Q_ADPR </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Q_MB">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> KTitin </ci>
+              <ci> MADPPi </ci>
+              <ci> RUTM_on_eff </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_minus12 </ci>
+              <ci> RUAMADPPi </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="KTitin"/>
+      <assignmentRule variable="L">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> L_0 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="RUTM_on_eff">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> alpha </ci>
+            <ci> RUTM_on </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="RUAMADPPi">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Q_MB </ci>
+            <ci> Q_Fgen </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="myosin_binding_rate_KTitin_mod_f_titinNormal">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_Titin </ci>
+            <apply>
+              <divide/>
+              <cn> 9.9663 </cn>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <apply>
+                        <divide/>
+                        <ci> L </ci>
+                        <ci> L_0 </ci>
+                      </apply>
+                      <cn> 1.0639 </cn>
+                    </apply>
+                    <cn> 0.0696 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="myosin_binding_rate_KTitin_mod_f_titinDamaged">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_Titin </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn type="integer"> -31 </cn>
+                <apply>
+                  <divide/>
+                  <ci> L </ci>
+                  <ci> L_0 </ci>
+                </apply>
+              </apply>
+              <cn type="integer"> 40 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Q_Fgen">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> Force_Generating_rate_k_3 </ci>
+              <ci> RUAMADPPi </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_minus3 </ci>
+              <ci> RUA_MADPPi </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Force_Generating_rate_k_3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_3c </ci>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> k_3f </ci>
+                    <apply>
+                      <plus/>
+                      <ci> RUTCa_on_eff </ci>
+                      <ci> RUTM_on_eff </ci>
+                      <ci> RUAMADPPi </ci>
+                    </apply>
+                  </apply>
+                  <ci> RU_total </ci>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> k_3xb </ci>
+                    <apply>
+                      <plus/>
+                      <ci> RUA_MADPPi </ci>
+                      <ci> RUA_MADP </ci>
+                    </apply>
+                  </apply>
+                  <ci> RU_total </ci>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="RUTCa_on_eff">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> alpha </ci>
+            <ci> RUTCa_on </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Q_PiR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_4 </ci>
+              <ci> RUA_MADPPi </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_minus4 </ci>
+              <ci> RUA_MADP </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Q_ADPR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_5 </ci>
+            <ci> RUA_MADP </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="alpha"/>
+    </listOfRules>
+  </model>
+</sbml>

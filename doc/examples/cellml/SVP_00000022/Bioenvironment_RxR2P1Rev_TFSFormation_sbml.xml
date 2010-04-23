@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="Bioenvironment_RxR2P1Rev_TFSFormation____main" name="Bioenvironment_RxR2P1Rev_TFSFormation____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="J" constant="false"/>
+      <parameter id="kf" value="1000"/>
+      <parameter id="kb" value="4000000"/>
+      <parameter id="reactant1"/>
+      <parameter id="reactant2"/>
+      <parameter id="product"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="J">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> reactant1 </ci>
+              <ci> reactant2 </ci>
+              <ci> kf </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kb </ci>
+              <ci> product </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

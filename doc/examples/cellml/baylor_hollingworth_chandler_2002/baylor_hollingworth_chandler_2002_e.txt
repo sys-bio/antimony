@@ -1,0 +1,44 @@
+//Created by libAntimony v1.3
+model baylor_model_f_2002__environment(time_)
+end
+
+model baylor_model_f_2002__Ca(Ca, k1, k1_, Trop, CaTrop, time_)
+
+  // Rate Rules:
+  Ca' = k1_ * CaTrop - k1 * Ca * Trop;
+
+  // Variable initializations:
+  Ca = 0.05;
+end
+
+model baylor_model_f_2002__Trop(Trop, k1, k1_, Ca, CaTrop, time_)
+
+  // Rate Rules:
+  Trop' = k1_ * CaTrop - k1 * Ca * Trop;
+
+  // Variable initializations:
+  Trop = 360.0;
+end
+
+model baylor_model_f_2002__CaTrop(CaTrop, k1, k1_, Trop, Ca, time_)
+
+  // Rate Rules:
+  CaTrop' = k1 * Ca * Trop - k1_ * CaTrop;
+end
+
+model baylor_model_f_2002__reaction_constants(k1, k1_)
+
+  // Variable initializations:
+  k1 = 1.017E8;
+  k1_ = 132.0;
+end
+
+model baylor_model_f_2002____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: baylor_model_f_2002__environment(time_);
+  Ca: baylor_model_f_2002__Ca(Ca0, k1, k1_, Trop0, CaTrop0, time_);
+  Trop: baylor_model_f_2002__Trop(Trop0, k1, k1_, Ca0, CaTrop0, time_);
+  CaTrop: baylor_model_f_2002__CaTrop(CaTrop0, k1, k1_, Trop0, Ca0, time_);
+  reaction_constants: baylor_model_f_2002__reaction_constants(k1, k1_);
+end

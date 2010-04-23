@@ -1,0 +1,493 @@
+//Created by libAntimony v1.3
+model ICC_model__Time(time_)
+end
+
+model ICC_model__Environment(T, T_exp, F, R, Q10Ca, Q10K, Q10Na, Ca_o, Na_o, K_o, Cl_o, T_correction_Na, T_correction_K, T_correction_Ca, T_correction_BK, FoRT, RToF)
+
+  // Assignment Rules:
+  T_correction_Na := power(Q10Na, (T - T_exp) / 10 );
+  T_correction_K := power(Q10K, (T - T_exp) / 10 );
+  T_correction_Ca := power(Q10Ca, (T - T_exp) / 10 );
+  T_correction_BK := 1.1 * (T - T_exp);
+  FoRT := F / (R * T);
+  RToF := R * T / F;
+
+  // Variable initializations:
+  T = 310;
+  T_exp = 297;
+  F = 96.4846;
+  R = 8.3144;
+  Q10Ca = 2.1;
+  Q10K = 1.5;
+  Q10Na = 2.45;
+  Ca_o = 2.5;
+  Na_o = 137;
+  K_o = 7;
+  Cl_o = 134;
+end
+
+model ICC_model__d_Na(Vm, d_Na, time_, T_correction_Na)
+
+  // Assignment Rules:
+  d_inf_Na := 1 / (1 + exp((Vm + 47 ) / -(4.8 )));
+  tau_d_Na := T_correction_Na * 0.003;
+
+  // Rate Rules:
+  d_Na' = (d_inf_Na - d_Na) / tau_d_Na;
+
+  // Variable initializations:
+  d_Na = 0;
+end
+
+model ICC_model__f_Na(Vm, f_Na, time_, T_correction_Na)
+
+  // Assignment Rules:
+  f_inf_Na := 1 / (1 + exp((Vm + 78 ) / 7 ));
+  tau_f_Na := T_correction_Na * 0.0016;
+
+  // Rate Rules:
+  f_Na' = (f_inf_Na - f_Na) / tau_f_Na;
+
+  // Variable initializations:
+  f_Na = 1;
+end
+
+model ICC_model__I_Na(I_Na, Vm, f_Na, d_Na, RToF, Na_o, Na_i, T_correction_Na, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  d_Na_mod: ICC_model__d_Na(Vm, d_Na, time_, T_correction_Na);
+  f_Na_mod: ICC_model__f_Na(Vm, f_Na, time_, T_correction_Na);
+
+  // Assignment Rules:
+  I_Na := G_max_Na * f_Na * d_Na * (Vm - E_Na);
+  E_Na := RToF * ln(Na_o / Na_i);
+
+  // Variable initializations:
+  G_max_Na = 20;
+end
+
+model ICC_model__d_Ltype(Vm, d_Ltype, time_, T_correction_Ca)
+
+  // Assignment Rules:
+  d_inf_Ltype := 1 / (1 + exp((Vm + 17 ) / -(4.3 )));
+  tau_d_Ltype := T_correction_Ca * 0.001;
+
+  // Rate Rules:
+  d_Ltype' = (d_inf_Ltype - d_Ltype) / tau_d_Ltype;
+
+  // Variable initializations:
+  d_Ltype = 0;
+end
+
+model ICC_model__f_Ltype(Vm, f_Ltype, time_, T_correction_Ca)
+
+  // Assignment Rules:
+  f_inf_Ltype := 1 / (1 + exp((Vm + 43 ) / 8.9 ));
+  tau_f_Ltype := T_correction_Ca * 0.086;
+
+  // Rate Rules:
+  f_Ltype' = (f_inf_Ltype - f_Ltype) / tau_f_Ltype;
+
+  // Variable initializations:
+  f_Ltype = 1;
+end
+
+model ICC_model__f_ca_Ltype(Ca_i, f_ca_Ltype, time_, T_correction_Ca)
+
+  // Assignment Rules:
+  f_ca_inf_Ltype := 1 - 1 / (1 + exp((Ca_i - 0.0001 - 0.000214 ) / -(0.0000131 )));
+  tau_f_ca_Ltype := T_correction_Ca * 0.002;
+
+  // Rate Rules:
+  f_ca_Ltype' = (f_ca_inf_Ltype - f_ca_Ltype) / tau_f_ca_Ltype;
+
+  // Variable initializations:
+  f_ca_Ltype = 1;
+end
+
+model ICC_model__I_Ltype(I_Ltype, Vm, f_Ltype, d_Ltype, f_ca_Ltype, RToF, Ca_o, Ca_i, T_correction_Ca, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  d_Ltype_mod: ICC_model__d_Ltype(Vm, d_Ltype, time_, T_correction_Ca);
+  f_Ltype_mod: ICC_model__f_Ltype(Vm, f_Ltype, time_, T_correction_Ca);
+  f_ca_Ltype_mod: ICC_model__f_ca_Ltype(Ca_i, f_ca_Ltype, time_, T_correction_Ca);
+
+  // Assignment Rules:
+  I_Ltype := G_max_Ltype * f_Ltype * d_Ltype * f_ca_Ltype * (Vm - E_Ca);
+  E_Ca := 0.5 * RToF * ln(Ca_o / Ca_i);
+
+  // Variable initializations:
+  G_max_Ltype = 2;
+end
+
+model ICC_model__d_VDDR(Vm, d_VDDR, time_, T_correction_Ca)
+
+  // Assignment Rules:
+  d_inf_VDDR := 1 / (1 + exp((Vm + 26 ) / -(6 )));
+  tau_d_VDDR := T_correction_Ca * 0.006;
+
+  // Rate Rules:
+  d_VDDR' = (d_inf_VDDR - d_VDDR) / tau_d_VDDR;
+
+  // Variable initializations:
+  d_VDDR = 0;
+end
+
+model ICC_model__f_VDDR(Vm, f_VDDR, time_, T_correction_Ca)
+
+  // Assignment Rules:
+  f_inf_VDDR := 1 / (1 + exp((Vm + 66 ) / 6 ));
+  tau_f_VDDR := T_correction_Ca * 0.04;
+
+  // Rate Rules:
+  f_VDDR' = (f_inf_VDDR - f_VDDR) / tau_f_VDDR;
+
+  // Variable initializations:
+  f_VDDR = 1;
+end
+
+model ICC_model__I_VDDR(I_VDDR, Vm, f_VDDR, d_VDDR, RToF, Ca_o, Ca_i, T_correction_Ca, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  d_VDDR_mod: ICC_model__d_VDDR(Vm, d_VDDR, time_, T_correction_Ca);
+  f_VDDR_mod: ICC_model__f_VDDR(Vm, f_VDDR, time_, T_correction_Ca);
+
+  // Assignment Rules:
+  I_VDDR := G_max_VDDR * f_VDDR * d_VDDR * (Vm - E_Ca);
+  E_Ca := 0.5 * RToF * ln(Ca_o / Ca_i);
+
+  // Variable initializations:
+  G_max_VDDR = 3;
+end
+
+model ICC_model__d_BK(Vm, Ca_i, d_BK, time_)
+
+  // Assignment Rules:
+  d_BK := 1 / (1 + exp(Vm / -(17 ) - 2 * ln(Ca_i / 0.001 )));
+end
+
+model ICC_model__I_BK(I_BK, Ca_i, Vm, d_BK, RToF, K_o, K_i, T_correction_BK, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  d_BK_mod: ICC_model__d_BK(Vm, Ca_i, d_BK, time_);
+
+  // Assignment Rules:
+  I_BK := (G_max_BK + T_correction_BK) * d_BK * (Vm - E_K);
+  E_K := RToF * ln(K_o / K_i);
+
+  // Variable initializations:
+  G_max_BK = 23;
+end
+
+model ICC_model__d_CaCl(Ca_i, d_CaCl, time_)
+
+  // Assignment Rules:
+  d_inf_CaCl := 1 / (1 + power(0.00014 / Ca_i, 3 ));
+
+  // Rate Rules:
+  d_CaCl' = (d_inf_CaCl - d_CaCl) / tau_d_CaCl;
+
+  // Variable initializations:
+  tau_d_CaCl = 0.03;
+  d_CaCl = 0;
+end
+
+model ICC_model__I_CaCl(I_CaCl, Ca_i, Vm, d_CaCl, RToF, Cl_o, Cl_i, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  d_CaCl_mod: ICC_model__d_CaCl(Ca_i, d_CaCl, time_);
+
+  // Assignment Rules:
+  I_CaCl := G_max_CaCl * d_CaCl * (Vm - E_Cl);
+  E_Cl := RToF * ln(Cl_i / Cl_o);
+
+  // Variable initializations:
+  G_max_CaCl = 10.1;
+end
+
+model ICC_model__d_kv11(Vm, d_kv11, time_, T_correction_K)
+
+  // Assignment Rules:
+  d_inf_kv11 := 1 / (1 + exp((Vm + 25 ) / -(7.7 )));
+  tau_d_kv11 := T_correction_K * 0.005;
+
+  // Rate Rules:
+  d_kv11' = (d_inf_kv11 - d_kv11) / tau_d_kv11;
+
+  // Variable initializations:
+  d_kv11 = 0;
+end
+
+model ICC_model__f_kv11(Vm, f_kv11, time_, T_correction_K)
+
+  // Assignment Rules:
+  f_inf_kv11 := 0.5 + 0.5 / (1 + exp((Vm + 44.8 ) / 4.4 ));
+  tau_f_kv11 := T_correction_K * 0.005;
+
+  // Rate Rules:
+  f_kv11' = (f_inf_kv11 - f_kv11) / tau_f_kv11;
+
+  // Variable initializations:
+  f_kv11 = 1;
+end
+
+model ICC_model__I_kv11(I_kv11, Vm, f_kv11, d_kv11, RToF, K_o, K_i, T_correction_K, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  d_kv11_mod: ICC_model__d_kv11(Vm, d_kv11, time_, T_correction_K);
+  f_kv11_mod: ICC_model__f_kv11(Vm, f_kv11, time_, T_correction_K);
+
+  // Assignment Rules:
+  I_kv11 := G_max_kv11 * f_kv11 * d_kv11 * (Vm - E_K);
+  E_K := RToF * ln(K_o / K_i);
+
+  // Variable initializations:
+  G_max_kv11 = 6.3;
+end
+
+model ICC_model__d_ERG(Vm, d_ERG, time_, T_correction_K)
+
+  // Assignment Rules:
+  d_inf_ERG := 0.2 + 0.8 / (1 + exp((Vm + 20 ) / -(1.8 )));
+  tau_d_ERG := T_correction_K * 0.003;
+
+  // Rate Rules:
+  d_ERG' = (d_inf_ERG - d_ERG) / tau_d_ERG;
+
+  // Variable initializations:
+  d_ERG = 0;
+end
+
+model ICC_model__I_ERG(I_ERG, Vm, d_ERG, RToF, K_o, K_i, T_correction_K, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  d_ERG_mod: ICC_model__d_ERG(Vm, d_ERG, time_, T_correction_K);
+
+  // Assignment Rules:
+  I_ERG := G_max_ERG * d_ERG * (Vm - E_K);
+  E_K := RToF * ln(K_o / K_i);
+
+  // Variable initializations:
+  G_max_ERG = 2.5;
+end
+
+model ICC_model__I_bk(I_bk, Vm, RToF, K_o, K_i)
+
+  // Assignment Rules:
+  I_bk := G_max_bk * (Vm - E_K);
+  E_K := RToF * ln(K_o / K_i);
+
+  // Variable initializations:
+  G_max_bk = 0.15;
+end
+
+model ICC_model__d_NSCC(Ca_PU, d_NSCC, time_)
+
+  // Assignment Rules:
+  d_inf_NSCC := 1 / (1 + power(0.0000745 / Ca_PU, -(85 )));
+
+  // Rate Rules:
+  d_NSCC' = (d_inf_NSCC - d_NSCC) / tau_d_NSCC;
+
+  // Variable initializations:
+  tau_d_NSCC = 0.35;
+  d_NSCC = 0;
+end
+
+model ICC_model__I_NSCC(I_NSCC, Vm, d_NSCC, RToF, Na_o, Na_i, K_o, K_i, Ca_PU, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  d_NSCC_mod: ICC_model__d_NSCC(Ca_PU, d_NSCC, time_);
+
+  // Assignment Rules:
+  I_NSCC := G_max_NSCC * d_NSCC * (Vm - E_NSCC);
+  E_NSCC := RToF * ln((K_o + Na_o * NaPerm_o_Kperm) / (K_i + Na_i * NaPerm_o_Kperm));
+
+  // Variable initializations:
+  G_max_NSCC = 12.15;
+  NaPerm_o_Kperm = 1.056075;
+end
+
+model ICC_model__J_PMCA(J_PMCA, Ca_i)
+
+  // Assignment Rules:
+  J_PMCA := J_max_PMCA * 1 / (1 + 0.000298 / Ca_i);
+
+  // Variable initializations:
+  J_max_PMCA = 0.088464;
+end
+
+model ICC_model__PU_unit(Vol, time_, fc, Na_i, Ca_i, V_cyto, FoRT, RToF, Ca_PU, F, J_leak)
+
+  // Assignment Rules:
+  V_MITO := Vol * P_mito;
+  V_ER := Vol * P_ER;
+  V_PU := Vol * P_PU;
+  NAD_m := total_NAD_m - NADH_m;
+  ATP_m := total_ANP_m - ADP_m;
+  ADP_mfree := 0.8 * ADP_m;
+  ADP3_m := 0.45 * ADP_mfree;
+  ATP4_m := 0.05 * ATP_m;
+  ATP_i := total_ANP_i - ADP_i;
+  ADP_ifree := 0.3 * ADP_i;
+  ADP3_i := 0.45 * ADP_ifree;
+  MgADP_i := 0.55 * ADP_ifree;
+  ATP4_i := 0.05 * ATP_i;
+  J_ERout := (Jmax_IP3 * power(IP3 / (IP3 + d_IP3), 3 ) * power(Ca_PU / (Ca_PU + d_ACT), 3 ) * power(h, 3 ) + J_ERleak) * (Ca_ER - Ca_PU);
+  J_SERCA := Jmax_serca * power(Ca_PU, 2 ) / (power(k_serca, 2 ) + power(Ca_PU, 2 ));
+  MWC := conc * Ca_PU / K_trans * power(1 + Ca_PU / K_trans, 3 ) / (power(1 + Ca_PU / K_trans, 4 ) + L / power(1 + Ca_PU / K_act, na));
+  J_uni := Jmax_uni * (MWC - Ca_m * exp(-(2 ) * FoRT * (deltaPsi - deltaPsi_star))) * 2 * FoRT * (deltaPsi - deltaPsi_star) / (1 - exp(-(2 ) * FoRT * (deltaPsi - deltaPsi_star)));
+  J_NaCa := Jmax_NaCa * exp(b * FoRT * (deltaPsi - deltaPsi_star)) / ((1 + power(K_Na / Na_i, n)) * (1 + K_Ca / Ca_m));
+  J_leak := J_max_leak * (Ca_PU - Ca_i);
+  J_red := J_red_basal + 6.3944 * f_PDHa * J_glyTotal;
+  J_pTCA := J_red_basal / 3 + 0.84 * f_PDHa * J_glyTotal;
+  A_F1 := RToF * ln(K_F1 * ATP_m / (ADP_mfree * Pi_m));
+  J_pF1 := rho_F1 * -(1 ) * ((pa * power(10 , 3 * deltapH) + pc1 * exp(3 * FoRT * deltaPsi_B)) * exp(FoRT * A_F1) + -(1 ) * pa * exp(3 * FoRT * deltaPsi) + pc2 * exp(FoRT * A_F1) * exp(3 * FoRT * deltaPsi)) / ((1 + p1 * exp(FoRT * A_F1)) * exp(3 * FoRT * deltaPsi_B) + (p2 + p3 * exp(FoRT * A_F1)) * exp(3 * FoRT * deltaPsi));
+  J_HF1 := -(1 ) * rho_F1 * 3 * (pa * power(10 , 3 * deltapH) * exp(FoRT * A_F1) + pb * power(10 , 3 * deltapH) + -(1 ) * (pa + pb) * exp(3 * FoRT * deltaPsi)) / ((1 + p1 * exp(FoRT * A_F1)) * exp(3 * FoRT * deltaPsi_B) + (p2 + p3 * exp(FoRT * A_F1)) * exp(3 * FoRT * deltaPsi));
+  A_res := RToF * ln(K_res * root(NADH_m) / root(NAD_m));
+  J_o := rho_res * 0.5 * ((ra * power(10 , 6 * deltapH) + rc1 * exp(6 * deltaPsi_B * FoRT)) * exp(A_res * FoRT) + -(1 ) * ra * exp(g * 6 * FoRT * deltaPsi) + rc2 * exp(FoRT * A_res) * exp(FoRT * deltaPsi * 6 * g)) / ((1 + r1 * exp(FoRT * A_res)) * exp(FoRT * deltaPsi_B * 6 ) + (r2 + r3 * exp(FoRT * A_res)) * exp(FoRT * deltaPsi * g * 6 ));
+  J_glyTotal := beta_max * (1 + beta1 * Glc) * beta2 * Glc * ATP_i / (1 + beta3 * ATP_i + (1 + beta4 * ATP_i) * beta5 * Glc + (1 + beta6 * ATP_i) * beta7 * Glc);
+  f_PDHa := 1 / (1 + u2 * (1 + u1 / power(1 + Ca_m / KCa_PDH, 2 )));
+  J_Hres := rho_res * 3.966 * (ra * power(10 , 6 * deltapH) * exp(FoRT * A_res) + rb * power(10 , 6 * deltapH) + -(1 ) * (ra + rb) * exp(g * FoRT * deltaPsi * 6 )) / ((1 + r1 * exp(FoRT * A_res)) * exp(6 * FoRT * deltaPsi_B) + (r2 + r3 * exp(FoRT * A_res)) * exp(g * 6 * FoRT * deltaPsi));
+  J_ANT := Jmax_ANT * (1 - ATP4_i * ADP3_m / (ADP3_i * ATP4_m) * exp(-(1 ) * FoRT * deltaPsi)) / ((1 + ATP4_i / ADP3_i * exp(-(1 ) * frac * FoRT * deltaPsi)) * (1 + ADP3_m / ATP4_m));
+  PMF := deltaPsi - 2.303 * RToF * deltapH;
+  J_Hleak := g_H * PMF;
+  J_pGly := 0.15 * J_glyTotal;
+  J_hydSS := J_hyd_max / (1 + power(K_Glc / Glc, nhyd));
+  J_hyd := K_hyd * ATP_i + J_hydSS;
+
+  // Rate Rules:
+  Ca_PU' = fc * ((J_NaCa - J_uni) * V_MITO / V_PU + (J_ERout - J_SERCA) * V_ER / V_PU + -(1 ) * J_leak * V_cyto / V_PU);
+  Ca_m' = fm * (J_uni - J_NaCa);
+  Ca_ER' = fe * (J_SERCA - J_ERout);
+  ADP_m' = J_ANT + -(1 ) * J_pTCA + -(1 ) * J_pF1;
+  ADP_i' = -(1 ) * J_ANT * V_MITO / V_cyto + J_hyd + -(1 ) * J_pGly;
+  NADH_m' = J_red - J_o;
+  h' = 1 * (d_INH - h * (Ca_PU + d_INH)) / tauh;
+  deltaPsi' = -(1 ) * F * V_MITO * 1000000 * 1 / Cmito * (J_Hleak + -(1 ) * J_Hres + J_ANT + J_HF1 + 2 * J_uni);
+
+  // Variable initializations:
+  P_PU = 0.001;
+  P_mito = 0.12871;
+  P_ER = 0.1;
+  fe = 0.01;
+  fm = 0.0003;
+  Ca_PU = 0.0000902;
+  Ca_m = 0.000136;
+  Ca_ER = 0.007299;
+  ADP_m = 2.60093454;
+  ADP_i = 0.0077282;
+  NADH_m = 0.101476;
+  h = 0.9397;
+  IP3 = 0.0006;
+  deltaPsi = 164.000044;
+  deltapH = -0.4;
+  Cmito = 0.006995;
+  K_res = 1.35e18;
+  r1 = 2.077e-18;
+  r2 = 1.728e-9;
+  r3 = 1.059e-26;
+  ra = 6.394e-10;
+  rb = 1.762e-13;
+  rc1 = 2.656e-19;
+  rc2 = 8.632e-27;
+  deltaPsi_B = 50;
+  g = 0.85;
+  K_F1 = 1.71e9;
+  Pi_m = 20;
+  p1 = 1.346e-8;
+  p2 = 7.739e-7;
+  p3 = 6.65e-15;
+  pa = 1.656e-5;
+  pb = 3.373e-7;
+  pc1 = 9.651e-14;
+  pc2 = 4.845e-19;
+  frac = 0.5;
+  K_act = 0.00038;
+  na = 2.8;
+  deltaPsi_star = 91;
+  K_Na = 9.4;
+  K_Ca = 0.003;
+  K_trans = 0.006;
+  L = 50;
+  b = 0.5;
+  beta_max = 2.055;
+  beta1 = 1.66;
+  beta2 = 0.0249;
+  beta3 = 4;
+  beta4 = 2.83;
+  beta5 = 1.3;
+  beta6 = 2.66;
+  beta7 = 0.16;
+  KCa_PDH = 0.00005;
+  u1 = 15;
+  u2 = 1.1;
+  n = 2;
+  K_Glc = 8.7;
+  nhyd = 2.7;
+  K_hyd = 0.05125;
+  J_ERleak = 1.666667;
+  Jmax_IP3 = 50000;
+  d_IP3 = 0.00025;
+  d_ACT = 0.001;
+  d_INH = 0.0014;
+  tauh = 4;
+  Jmax_serca = 1.8333;
+  k_serca = 0.00042;
+  conc = 0.001;
+  Jmax_uni = 5000;
+  Jmax_NaCa = 0.05;
+  J_max_leak = 0.01;
+  rho_res = 0.4;
+  rho_F1 = 0.7;
+  g_H = 0.0033333;
+  J_red_basal = 0.3333;
+  Jmax_ANT = 15;
+  J_hyd_max = 0.037625;
+  Glc = 1;
+  total_NAD_m = 8;
+  total_ANP_m = 12;
+  total_ANP_i = 2;
+end
+
+model ICC_model__ICC_Membrane(Vol, P_cyto, V_cyto, fc, Vm, time_, Ca_i, Na_i, K_i, Cl_i, Ca_o, Na_o, K_o, Cl_o, T_correction_Ca, T_correction_Na, T_correction_K, T_correction_BK, RToF, FoRT, F, J_leak, I_Na, I_Ltype, I_VDDR, I_kv11, I_BK, I_ERG, I_CaCl, I_NSCC, I_bk, J_PMCA)
+
+  // Sub-modules, and any changes to those submodules:
+  I_Na_mod: ICC_model__I_Na(I_Na, Vm, f_Na, d_Na, RToF, Na_o, Na_i, T_correction_Na, time_);
+  I_Ltype_mod: ICC_model__I_Ltype(I_Ltype, Vm, f_Ltype, d_Ltype, f_ca_Ltype, RToF, Ca_o, Ca_i, T_correction_Ca, time_);
+  I_VDDR_mod: ICC_model__I_VDDR(I_VDDR, Vm, f_VDDR, d_VDDR, RToF, Ca_o, Ca_i, T_correction_Ca, time_);
+  I_BK_mod: ICC_model__I_BK(I_BK, Ca_i, Vm, d_BK, RToF, K_o, K_i, T_correction_BK, time_);
+  I_CaCl_mod: ICC_model__I_CaCl(I_CaCl, Ca_i, Vm, d_CaCl, RToF, Cl_o, Cl_i, time_);
+  I_kv11_mod: ICC_model__I_kv11(I_kv11, Vm, f_kv11, d_kv11, RToF, K_o, K_i, T_correction_K, time_);
+  I_ERG_mod: ICC_model__I_ERG(I_ERG, Vm, d_ERG, RToF, K_o, K_i, T_correction_K, time_);
+  I_bk_mod: ICC_model__I_bk(I_bk, Vm, RToF, K_o, K_i);
+  I_NSCC_mod: ICC_model__I_NSCC(I_NSCC, Vm, d_NSCC, RToF, Na_o, Na_i, K_o, K_i, Ca_PU, time_);
+  J_PMCA_mod: ICC_model__J_PMCA(J_PMCA, Ca_i);
+  PU_unit: ICC_model__PU_unit(Vol, time_, fc, Na_i, Ca_i, V_cyto, FoRT, RToF, Ca_PU, F, J_leak);
+
+  // Assignment Rules:
+  V_cyto := Vol * P_cyto;
+
+  // Rate Rules:
+  Vm' = -(1 ) * 1 / Cm * (I_Na + I_Ltype + I_VDDR + I_kv11 + I_ERG + I_BK + I_CaCl + I_NSCC + I_bk + J_PMCA * 2 * 1000000 * 1000000 * F * V_cyto);
+  Ca_i' = fc * ((-(1 ) * I_Ltype + -(1 ) * I_VDDR) / (2 * 1000000 * 1000000 * F * V_cyto) + J_leak + -(1 ) * J_PMCA);
+
+  // Variable initializations:
+  Cm = 0.025;
+  Vol = 1e-12;
+  P_cyto = 0.7;
+  fc = 0.01;
+  Vm = -67;
+  Ca_i = 0.00000993087;
+  Na_i = 30;
+  K_i = 120;
+  Cl_i = 88;
+end
+
+model ICC_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Time_: ICC_model__Time(time_);
+  Environment: ICC_model__Environment(T, T_exp, F, R, Q10Ca, Q10K, Q10Na, Ca_o, Na_o, K_o, Cl_o, T_correction_Na, T_correction_K, T_correction_Ca, T_correction_BK, FoRT, RToF);
+  ICC_Membrane: ICC_model__ICC_Membrane(Vol, P_cyto, V_cyto, fc, Vm, time_, Ca_i, Na_i, K_i, Cl_i, Ca_o, Na_o, K_o, Cl_o, T_correction_Ca, T_correction_Na, T_correction_K, T_correction_BK, RToF, FoRT, F, J_leak, I_Na, I_Ltype, I_VDDR, I_kv11, I_BK, I_ERG, I_CaCl, I_NSCC, I_bk, J_PMCA);
+end

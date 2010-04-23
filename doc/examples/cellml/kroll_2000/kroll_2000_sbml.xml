@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="kroll_model_2000____main" name="kroll_model_2000____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Y0" value="10" constant="false"/>
+      <parameter id="C1" value="1"/>
+      <parameter id="k1" value="1"/>
+      <parameter id="P0" value="10" constant="false"/>
+      <parameter id="K" value="5"/>
+      <parameter id="C" value="50"/>
+      <parameter id="C2" value="1"/>
+      <parameter id="k2" value="1.3"/>
+      <parameter id="ky" value="0.01"/>
+      <parameter id="X0" value="500" constant="false"/>
+      <parameter id="k3" value="0.05"/>
+      <parameter id="k4" value="0.9"/>
+      <parameter id="Z0" value="200" constant="false"/>
+      <parameter id="C3" value="1"/>
+      <parameter id="k5" value="5"/>
+      <parameter id="K2" value="2"/>
+      <parameter id="IL60" value="1.9" constant="false"/>
+      <parameter id="k6" value="0.02"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Y0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> C1 </ci>
+              <apply>
+                <divide/>
+                <ci> P0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> K </ci>
+                  <ci> P0 </ci>
+                </apply>
+              </apply>
+              <ci> C </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k2 </ci>
+                <ci> C2 </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> P0 </ci>
+                    <apply>
+                      <plus/>
+                      <ci> K </ci>
+                      <ci> P0 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <ci> Y0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ky </ci>
+                <ci> Y0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="P0"/>
+      <rateRule variable="X0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <ci> C2 </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> P0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> K </ci>
+                    <ci> P0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> Y0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k3 </ci>
+              <ci> X0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Z0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k5 </ci>
+              <ci> C3 </ci>
+              <apply>
+                <divide/>
+                <ci> IL60 </ci>
+                <apply>
+                  <plus/>
+                  <ci> K2 </ci>
+                  <ci> IL60 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k6 </ci>
+              <ci> Z0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="IL60">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 0.1 </cn>
+              <ci> X0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn> 10 </cn>
+              <ci> IL60 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

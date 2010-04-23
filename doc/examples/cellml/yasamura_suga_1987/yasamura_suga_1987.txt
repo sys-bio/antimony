@@ -1,0 +1,60 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to figure out how to translate an assignment to "PVA" in the Antimony format.  This variable may have been left undefined in that component.
+//    Unable to figure out how to translate an assignment to "PVA" in the Antimony format.  This variable may have been left undefined in that component.
+//    Unable to figure out how to translate an assignment to "V_O2" in the Antimony format.  This variable may have been left undefined in that component.
+//    Unable to figure out how to translate an assignment to "eff" in the Antimony format.  This variable may have been left undefined in that component.
+//    Unable to use the formula "0.5 * P * (V - V_0)" to set the assignment rule for U:  The variable 'U' is associated with a rate rule, and may not additionally have an assignment rule.
+
+model yasamura_suga_1987__environment(time_)
+end
+
+model yasamura_suga_1987__equations()
+end
+
+model yasamura_suga_1987__equations_final(Elasticity, time_)
+
+  // Assignment Rules:
+  PVA := U + W;
+  P := Elasticity * (V - V_0);
+  V := not_known;
+  dN_on_dt := R_A - R_D;
+  R_D := R_DF + R_DW;
+  R_DF := r * N_on;
+  h := N_0 * -(delta_H) - W;
+  delta_G := -(R) * T * ln(K_2 / K_1);
+
+  // Rate Rules:
+  U' = alpha * -(delta_G) * dN_on_dt;
+  W' = alpha * -(delta_G) * R_DW;
+  EnergyLoss' = 0.5 * P * (V_t - V_0);
+  N_on' = R_A - R_D;
+  N_0' = R_A;
+
+  // Variable initializations:
+  EnergyLoss = 0;
+  N_on = 0;
+  N_0 = 0;
+end
+
+model yasamura_suga_1987__driver_function_shaw(e_t, time_)
+
+  // Assignment Rules:
+  e_t := A * exp(-(B) * power(time_ * HR / 60 - C, 2 ));
+
+  // Variable initializations:
+  A = 1;
+  B = 80;
+  C = 0.27;
+  HR = 80;
+end
+
+model yasamura_suga_1987____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: yasamura_suga_1987__environment(time_);
+  equations: yasamura_suga_1987__equations();
+  equations_final: yasamura_suga_1987__equations_final(e_t, time_);
+  driver_function_shaw: yasamura_suga_1987__driver_function_shaw(e_t, time_);
+end

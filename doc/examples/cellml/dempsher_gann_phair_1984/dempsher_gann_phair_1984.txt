@@ -1,0 +1,187 @@
+//Created by libAntimony v1.3
+model dempsher_model_1984__environment(time_)
+end
+
+model dempsher_model_1984__cAMP(cAMP, time_)
+
+  // Assignment Rules:
+  ACTH := piecewise( 12E-6 , ( time_ >= 0.0) && (time_ < 10.0 ), 16E-6 , ( time_ >= 10.0) && (time_ < 20.0 ), 12E-6 , ( time_ >= 20.0) && (time_ < 35.0 ), 16E-6 , ( time_ >= 35.0) && (time_ < 45.0 ), 12E-6 );
+
+  // Rate Rules:
+  cAMP' = Vmsm * Ko * ( 1.0 + Kb * ACTH ) / ( 1.0 + Ka * ACTH + Ko * ( 1.0 + Kb * ACTH )) - Vdsm * cAMP / ( Kdsm + cAMP );
+
+  // Variable initializations:
+  cAMP = 0.95;
+  Ko = 0.013;
+  Ka = 10;
+  Kb = 1000000.0;
+  Kdsm = 10.0;
+  Vmsm = 6.0;
+  Vdsm = 10.0;
+end
+
+model dempsher_model_1984__IS(IS_, cAMP)
+
+  // Assignment Rules:
+  IS_ := K * Crpt * power( cAMP , n ) / (power( Kd , n ) + power( cAMP , n ));
+
+  // Variable initializations:
+  Crpt = 3.0;
+  K = 80.0;
+  Kd = 2.11;
+  n = 4.0;
+end
+
+model dempsher_model_1984__V(V, IS_, time_)
+
+  // Rate Rules:
+  V' = P * IS_ - Q * V;
+
+  // Variable initializations:
+  V = 11.3;
+  P = 0.052;
+  Q = 0.042;
+end
+
+model dempsher_model_1984__W(W, CHOC, time_)
+
+  // Rate Rules:
+  W' = T * power( CHOC , -1.0 ) - U * W;
+
+  // Variable initializations:
+  W = 10.0;
+  T = 8.0;
+  U = 0.0015;
+end
+
+model dempsher_model_1984__CHOC(CHOC, Lmtr, Kmtr, CHOM, V, W, time_)
+
+  // Rate Rules:
+  CHOC' = V + W + Lmtr * CHOM - Kmtr * CHOC;
+
+  // Variable initializations:
+  CHOC = 532.0;
+end
+
+model dempsher_model_1984__CHOM(CHOM, Kbac, Kfor, Kcb, Kcf, Lmtr, Kmtr, CHOC, CHON, CHOL, time_)
+
+  // Rate Rules:
+  CHOM' = Kmtr * CHOC + Kbac * CHON + Kcf * CHOL - ( Lmtr * CHOM + Kcb * CHOM + Kfor * CHOM );
+
+  // Variable initializations:
+  CHOM = 139.0;
+end
+
+model dempsher_model_1984__CHOL(CHOL, Kcb, Kcf, CHOM, time_)
+
+  // Rate Rules:
+  CHOL' = Kcb * CHOM - Kcf * CHOL;
+
+  // Variable initializations:
+  CHOL = 3000.0;
+end
+
+model dempsher_model_1984__Kmtr(Kmtr, IS_, time_)
+
+  // Rate Rules:
+  Kmtr' = C * IS_ - D * Kmtr;
+
+  // Variable initializations:
+  Kmtr = 0.446;
+  C = 6.25;
+  D = 125.0;
+end
+
+model dempsher_model_1984__Kfor(Kfor, IS_, time_)
+
+  // Rate Rules:
+  Kfor' = R * IS_ - S * Kfor;
+
+  // Variable initializations:
+  Kfor = 0.370;
+  R = 3.0;
+  S = 76.0;
+end
+
+model dempsher_model_1984__CHON(CHON, Kbac, Kfor, Vm, Km, CHOM, time_)
+
+  // Rate Rules:
+  CHON' = Kfor * CHOM - ( Kbac * CHON + Vm * CHON / ( Km + CHON ));
+
+  // Variable initializations:
+  CHON = 3.03;
+end
+
+model dempsher_model_1984__PREG(PREG, Vmptr, Kmptr, Vm, Km, CHON, time_)
+
+  // Rate Rules:
+  PREG' = Vm * CHON / ( Km + CHON ) - Vmptr * PREG / ( Kmptr + PREG );
+
+  // Variable initializations:
+  PREG = 6.56;
+end
+
+model dempsher_model_1984__PRO(PRO, Vmptr, Kmptr, AH, PREG, time_)
+
+  // Rate Rules:
+  PRO' = HA * ( Vmptr * PREG / ( Kmptr + PREG )) - AH * PRO;
+
+  // Variable initializations:
+  PRO = 0.64;
+  HA = 0.5;
+end
+
+model dempsher_model_1984__HYPR(HYPR, HY, AH, PRO, time_)
+
+  // Rate Rules:
+  HYPR' = AH * PRO - HY * HYPR;
+
+  // Variable initializations:
+  HYPR = 0.64;
+end
+
+model dempsher_model_1984__CORT(HY, HYPR, time_)
+
+  // Rate Rules:
+  CORT' = HY * HYPR - LH * CORT;
+
+  // Variable initializations:
+  CORT = 5.2;
+  LH = 0.724;
+end
+
+model dempsher_model_1984__model_parameters(Lmtr, Kbac, Kcb, Kcf, Vm, Km, Vmptr, Kmptr, AH, HY)
+
+  // Variable initializations:
+  Lmtr = 1.65;
+  Kbac = 10.0;
+  Kcb = 0.01;
+  Kcf = 0.00033;
+  Vm = 1890.0;
+  Km = 270.0;
+  Vmptr = 500.0;
+  Kmptr = 150.0;
+  AH = 16.4;
+  HY = 16.4;
+end
+
+model dempsher_model_1984____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: dempsher_model_1984__environment(time_);
+  cAMP: dempsher_model_1984__cAMP(cAMP0, time_);
+  IS_: dempsher_model_1984__IS(IS_0, cAMP0);
+  V: dempsher_model_1984__V(V0, IS_0, time_);
+  W: dempsher_model_1984__W(W0, CHOC0, time_);
+  CHOC: dempsher_model_1984__CHOC(CHOC0, Lmtr, Kmtr0, CHOM0, V0, W0, time_);
+  CHOM: dempsher_model_1984__CHOM(CHOM0, Kbac, Kfor0, Kcb, Kcf, Lmtr, Kmtr0, CHOC0, CHON0, CHOL0, time_);
+  CHOL: dempsher_model_1984__CHOL(CHOL0, Kcb, Kcf, CHOM0, time_);
+  Kmtr: dempsher_model_1984__Kmtr(Kmtr0, IS_0, time_);
+  Kfor: dempsher_model_1984__Kfor(Kfor0, IS_0, time_);
+  CHON: dempsher_model_1984__CHON(CHON0, Kbac, Kfor0, Vm, Km, CHOM0, time_);
+  PREG: dempsher_model_1984__PREG(PREG0, Vmptr, Kmptr, Vm, Km, CHON0, time_);
+  PRO: dempsher_model_1984__PRO(PRO0, Vmptr, Kmptr, AH, PREG0, time_);
+  HYPR: dempsher_model_1984__HYPR(HYPR0, HY, AH, PRO0, time_);
+  CORT: dempsher_model_1984__CORT(HY, HYPR0, time_);
+  model_parameters: dempsher_model_1984__model_parameters(Lmtr, Kbac, Kcb, Kcf, Vm, Km, Vmptr, Kmptr, AH, HY);
+end

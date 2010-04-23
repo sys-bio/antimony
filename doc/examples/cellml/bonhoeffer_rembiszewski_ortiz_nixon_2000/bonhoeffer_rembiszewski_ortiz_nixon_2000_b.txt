@@ -1,0 +1,64 @@
+//Created by libAntimony v1.3
+model bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__environment(time_)
+end
+
+model bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__T(T, b, I, time_)
+
+  // Rate Rules:
+  T' = s - ( dT * T + b * T * I );
+
+  // Variable initializations:
+  s = 10.0;
+  dT = 0.01;
+end
+
+model bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__I(I, b, ql, qa, T, E, time_)
+
+  // Rate Rules:
+  I' = b * T * I - ( dI * I + p * E * I + ql * I ) + qa * I;
+
+  // Variable initializations:
+  p = 0.05;
+  dI = 0.3;
+end
+
+model bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__Il(Il, ql, qa, I, time_)
+
+  // Rate Rules:
+  Il' = ql * I - ( al * Il + qa * Il );
+
+  // Variable initializations:
+  al = 0.01;
+end
+
+model bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__E(E, I, time_)
+
+  // Rate Rules:
+  E' = c * E * I / ( I + K ) - ( dE * E + dE_ * E * I / ( K_ + I ));
+
+  // Variable initializations:
+  c = 0.3;
+  dE = 0.1;
+  K = 0.1;
+  dE_ = 0.25;
+  K_ = 05.0;
+end
+
+model bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__kinetic_parameters(b, qa, ql)
+
+  // Variable initializations:
+  b = 0.001;
+  qa = 0.001;
+  ql = 0.001;
+end
+
+model bonhoeffer_rembiszewski_ortiz_nixon_2000_version02____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__environment(time_);
+  T: bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__T(T0, b, I0, time_);
+  I: bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__I(I0, b, ql, qa, T0, E0, time_);
+  Il: bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__Il(Il0, ql, qa, I0, time_);
+  E: bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__E(E0, I0, time_);
+  kinetic_parameters: bonhoeffer_rembiszewski_ortiz_nixon_2000_version02__kinetic_parameters(b, qa, ql);
+end

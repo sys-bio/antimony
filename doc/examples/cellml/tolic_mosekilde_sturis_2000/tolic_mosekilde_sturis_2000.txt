@@ -1,0 +1,87 @@
+//Created by libAntimony v1.3
+model tolic_mosekilde_sturis_2000_version03__environment(time_, Vp, Vi, Vg, E)
+
+  // Variable initializations:
+  Vp = 3.0;
+  Vi = 11.0;
+  Vg = 10.0;
+  E = 0.2;
+end
+
+model tolic_mosekilde_sturis_2000_version03__plasma_insulin(Ip, time_, Vp, Vi, Vg, Ii, G, E)
+
+  // Assignment Rules:
+  f1_G := Rm / ( 1.0 + exp(( C1 - G ) / Vg / a1 ));
+
+  // Rate Rules:
+  Ip' = f1_G - ( E * ( Ip / Vp - Ii / Vi ) + Ip / tp );
+
+  // Variable initializations:
+  tp = 6.0;
+  Rm = 210.0;
+  C1 = 2000.0;
+  a1 = 300.0;
+end
+
+model tolic_mosekilde_sturis_2000_version03__intercellular_insulin(Ii, ti, time_, Vp, Vi, Ip, E)
+
+  // Rate Rules:
+  Ii' = E * ( Ip / Vp - Ii / Vi ) - Ii / ti;
+
+  // Variable initializations:
+  ti = 100.0;
+end
+
+model tolic_mosekilde_sturis_2000_version03__glucose(G, time_, ti, Vg, Vp, Vi, E, Ii, x3)
+
+  // Assignment Rules:
+  f2_G := Ub * ( 1.0 - exp(-( G ) / ( C2 * Vg )));
+  f3_G := G / ( C3 * Vg );
+  f4_Ii := U0 + ( Um - U0 ) / ( 1.0 + exp(-(( beta * ln( Ii / ( C4 * ( 1.0 / ( Vi + 1.0 / ( E * ti )))))))));
+  f5_x3 := Rg / ( 1.0 + exp( alpha * ( x3 / ( Vp - C5 ))));
+  f6_G := 1.0 / ( 1.0 + exp( gamma * ( G / ( C3 * Vg - C6 ))));
+  f7_G := Sb + ( Sm - Sb ) + ( 1.0 + exp( delta * ( G / ( C3 * Vg - C7 ))));
+
+  // Rate Rules:
+  G' = Gin + f5_x3 * f6_G + -(( f2_G + f3_G * f4_Ii + f7_G ));
+
+  // Variable initializations:
+  Gin = 216.0;
+  C2 = 144.0;
+  C3 = 1000.0;
+  C4 = 80.0;
+  C5 = 26.0;
+  C6 = 2.0;
+  C7 = 2.0;
+  U0 = 40.0;
+  Um = 940.0;
+  Ub = 72.0;
+  beta = 1.77;
+  Rg = 180.0;
+  alpha = 0.29;
+  gamma = 5.0;
+  delta = -2.4;
+  Sb = 20.0;
+  Sm = 140.0;
+end
+
+model tolic_mosekilde_sturis_2000_version03__delay(x3, time_, Ip)
+
+  // Rate Rules:
+  x3' = 3.0 / td * ( x2 - x3 );
+  x1' = 3.0 / td * ( Ip - x1 );
+  x2' = 3.0 / td * ( x1 - x2 );
+
+  // Variable initializations:
+  td = 36.0;
+end
+
+model tolic_mosekilde_sturis_2000_version03____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: tolic_mosekilde_sturis_2000_version03__environment(time_, Vp, Vi, Vg, E);
+  plasma_insulin: tolic_mosekilde_sturis_2000_version03__plasma_insulin(Ip, time_, Vp, Vi, Vg, Ii, G, E);
+  intercellular_insulin: tolic_mosekilde_sturis_2000_version03__intercellular_insulin(Ii, ti, time_, Vp, Vi, Ip, E);
+  glucose: tolic_mosekilde_sturis_2000_version03__glucose(G, time_, ti, Vg, Vp, Vi, E, Ii, x3);
+  delay_: tolic_mosekilde_sturis_2000_version03__delay(x3, time_, Ip);
+end

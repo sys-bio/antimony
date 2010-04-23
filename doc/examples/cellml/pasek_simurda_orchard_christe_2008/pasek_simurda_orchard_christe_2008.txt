@@ -1,0 +1,867 @@
+//Created by libAntimony v1.3
+model pasek_model_2008__environment(time_)
+end
+
+model pasek_model_2008__model_parameters(R, T, F, Na_e, Ca_e, K_e, ATP_i, Vt, Vd, Vmyo, Sms, Smt, Cms, Cmt, Rst, VSRup, VSRrel)
+
+  // Assignment Rules:
+  Vt := 3.14159 * power(rt, 2 ) * Lt_ * pt;
+  Vd := Vc * 0.68 * 0.00006;
+  Vmyo := Vc * 0.68;
+  Sms := 2 * 3.141592 * power(rc, 2 ) + 2 * 3.14159 * rc * Lc;
+  Smt := 2 * 3.14159 * rt * Lt_ * pt;
+  Cms := Sms * 1;
+  Cmt := Smt * 1;
+  Rst := Rot * Lt_ / 2 / (3.14159 * power(rt, 2 ) * pt);
+  VSRup := Vc * 0.055;
+  VSRrel := Vc * 0.00316;
+  Vc := 3.14159 * power(rc, 2 ) * Lc;
+  pt := ptcm * 2 * 3.14159 * rc * Lc;
+
+  // Variable initializations:
+  R = 8310;
+  T = 310;
+  F = 96500;
+  Na_e = 140;
+  Ca_e = 1.8;
+  K_e = 5.4;
+  ATP_i = 6.8;
+  Rot = 83.33;
+  rt = 148.15e-7;
+  Lt_ = 5.93e-4;
+  rc = 5.93e-4;
+  Lc = 0.013;
+  ptcm = 21028875;
+end
+
+model pasek_model_2008__i_circ(i_circ, Rst, Vm_s, Vm_t)
+
+  // Assignment Rules:
+  i_circ := 1000 * (Vm_t / Rst - Vm_s / Rst);
+end
+
+model pasek_model_2008__membrane_permeabilities(g_Na_s, g_Naps_s, q_Kr_s, q_Ks_s, g_Kp_s, g_Kto_s, g_K1_s, g_KNa_s, g_KATP_s, g_Nab_s, g_Cab_s, i_pCa_max_s, i_NaK_max_s, i_NaCa_max_s, P_CaL_s, P_KL_s, P_nsNa_s, P_nsK_s, g_Na_t, g_Naps_t, q_Kr_t, q_Ks_t, g_Kp_t, g_Kto_t, g_K1_t, g_KNa_t, g_KATP_t, g_Nab_t, g_Cab_t, i_pCa_max_t, i_NaK_max_t, i_NaCa_max_t, P_CaL_t, P_KL_t, P_nsNa_t, P_nsK_t, Sms, Smt)
+
+  // Assignment Rules:
+  g_Na_s := g_Na * (Sms + Smt) * (1 - fNat);
+  g_Naps_s := g_Naps * (Sms + Smt) * (1 - fNapst);
+  q_Kr_s := q_Kr * (Sms + Smt) * (1 - fKrt);
+  q_Ks_s := q_Ks * (Sms + Smt) * (1 - fKst);
+  g_Kp_s := g_Kp * (Sms + Smt) * (1 - fKpt);
+  g_Kto_s := g_Kto * (Sms + Smt) * (1 - fKtot);
+  g_K1_s := g_K1 * (Sms + Smt) * (1 - fK1t);
+  g_KNa_s := g_KNa * (Sms + Smt) * (1 - fKNat);
+  g_KATP_s := g_KATP * (Sms + Smt) * (1 - fKATPt);
+  g_Nab_s := g_Nab * (Sms + Smt) * (1 - fNabt);
+  g_Cab_s := g_Cab * (Sms + Smt) * (1 - fCabt);
+  i_pCa_max_s := i_pCa_max * (Sms + Smt) * (1 - fpCat);
+  i_NaK_max_s := i_NaK_max * (Sms + Smt) * (1 - fNaKt);
+  i_NaCa_max_s := i_NaCa_max * (Sms + Smt) * (1 - fNaCat);
+  P_CaL_s := P_CaL * (Sms + Smt) * (1 - fCaLt);
+  P_KL_s := P_KL * (Sms + Smt) * (1 - fCaLt);
+  P_nsNa_s := P_nsNa * (Sms + Smt) * (1 - fnsNat);
+  P_nsK_s := P_nsK * (Sms + Smt) * (1 - fnsKt);
+  g_Na_t := g_Na * (Sms + Smt) * fNat;
+  g_Naps_t := g_Naps * (Sms + Smt) * fNapst;
+  q_Kr_t := q_Kr * (Sms + Smt) * fKrt;
+  q_Ks_t := q_Ks * (Sms + Smt) * fKst;
+  g_Kp_t := g_Kp * (Sms + Smt) * fKpt;
+  g_Kto_t := g_Kto * (Sms + Smt) * fKtot;
+  g_K1_t := g_K1 * (Sms + Smt) * fK1t;
+  g_KNa_t := g_KNa * (Sms + Smt) * fKNat;
+  g_KATP_t := g_KATP * (Sms + Smt) * fKATPt;
+  g_Nab_t := g_Nab * (Sms + Smt) * fNabt;
+  g_Cab_t := g_Cab * (Sms + Smt) * fCabt;
+  i_pCa_max_t := i_pCa_max * (Sms + Smt) * fpCat;
+  i_NaK_max_t := i_NaK_max * (Sms + Smt) * fNaKt;
+  i_NaCa_max_t := i_NaCa_max * (Sms + Smt) * fNaCat;
+  P_CaL_t := P_CaL * (Sms + Smt) * fCaLt;
+  P_KL_t := P_KL * (Sms + Smt) * fCaLt;
+  P_nsNa_t := P_nsNa * (Sms + Smt) * fnsNat;
+  P_nsK_t := P_nsK * (Sms + Smt) * fnsKt;
+
+  // Variable initializations:
+  g_Na = 30;
+  fNat = 0.64;
+  g_Naps = 0.0053;
+  fNapst = 0.526;
+  q_Kr = 0.8;
+  fKrt = 0.526;
+  q_Ks = 0.1975;
+  fKst = 0.526;
+  g_Kp = 0.006;
+  fKpt = 0.526;
+  g_Kto = 0;
+  fKtot = 0.526;
+  g_K1 = 0.75;
+  fK1t = 0.8;
+  g_KNa = 0.12848;
+  fKNat = 0.526;
+  g_KATP = 1;
+  fKATPt = 0.526;
+  g_Nab = 0.00075;
+  fNabt = 0.526;
+  g_Cab = 0.0021;
+  fCabt = 0.526;
+  P_CaL = 48e-4;
+  fCaLt = 0.64;
+  P_KL = 48e-7;
+  P_nsNa = 1.75e-7;
+  fnsNat = 0.526;
+  P_nsK = 1.75e-7;
+  fnsKt = 0.526;
+  i_NaCa_max = 0.00025;
+  fNaCat = 0.526;
+  i_NaK_max = 1.5;
+  fNaKt = 0.526;
+  i_pCa_max = 1.15;
+  fpCat = 0.2;
+end
+
+model pasek_model_2008__i_Kext(i_Kext, Sms, Smt, time_)
+
+  // Assignment Rules:
+  i_Kext := piecewise( 45 * (Sms + Smt) , ( time_ - floor(time_ / stim_Period) * stim_Period >= 0) && (time_ - floor(time_ / stim_Period) * stim_Period <= 0.001 ), 0 );
+
+  // Variable initializations:
+  stim_Period = 1;
+end
+
+model pasek_model_2008__i_Na_s_m_gate(m, Vm_s, time_)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp((Vm_s + 52.2 - 9 ) / -(7.4 )));
+  tau_m := (0.001 / (101.6 * exp(Vm_s * 0.1135 ) + 0.02268 * exp(-(0.0717 ) * Vm_s)) + 0.0001 ) / 4.83;
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 3.4130493e-3;
+end
+
+model pasek_model_2008__i_Na_s_h_gate(h, Vm_s, time_)
+
+  // Assignment Rules:
+  h_infinity := 1 / (1 + exp((Vm_s + 85.6 - 9 ) / 5.5 ));
+  tau_h := (0.001 / (1.1381e-6 * exp(-(0.1017 ) * Vm_s) + 6.537 * exp(Vm_s * 0.08016 )) + 0.0005 ) / 4.83;
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  h = 8.2699973e-1;
+end
+
+model pasek_model_2008__i_Na_s(i_Na_s, E_Na_s, g_Na_s, Na_i, Na_e, K_i, K_e, R, F, T, time_, Vm_s, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  i_Na_s_m_gate: pasek_model_2008__i_Na_s_m_gate(m, Vm_s, time_);
+  i_Na_s_h_gate: pasek_model_2008__i_Na_s_h_gate(h, Vm_s, time_);
+
+  // Assignment Rules:
+  i_Na_s := g_Na_s * power(m, 3 ) * h * (Vm_s - ln((Na_e + 0.12 * K_e) / (Na_i + 0.12 * K_i)) * R * T / F);
+  E_Na_s := ln(Na_e / Na_i) * R * T / F;
+end
+
+model pasek_model_2008__i_Na_t_m_gate(m, Vm_t, time_)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp((Vm_t + 52.2 - 9 ) / -(7.4 )));
+  tau_m := (0.001 / (101.6 * exp(Vm_t * 0.1135 ) + 0.02268 * exp(-(0.0717 ) * Vm_t)) + 0.0001 ) / 4.83;
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 3.4129472e-3;
+end
+
+model pasek_model_2008__i_Na_t_h_gate(h, Vm_t, time_)
+
+  // Assignment Rules:
+  h_infinity := 1 / (1 + exp((Vm_t + 85.6 - 9 ) / 5.5 ));
+  tau_h := (0.001 / (1.1381e-6 * exp(-(0.1017 ) * Vm_t) + 6.537 * exp(Vm_t * 0.08016 )) + 0.0005 ) / 4.83;
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  h = 8.2700551e-1;
+end
+
+model pasek_model_2008__i_Na_t(i_Na_t, E_Na_t, g_Na_t, Na_i, Na_t, K_i, K_t, R, F, T, time_, Vm_t, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  i_Na_t_m_gate: pasek_model_2008__i_Na_t_m_gate(m, Vm_t, time_);
+  i_Na_t_h_gate: pasek_model_2008__i_Na_t_h_gate(h, Vm_t, time_);
+
+  // Assignment Rules:
+  i_Na_t := g_Na_t * power(m, 3 ) * h * (Vm_t - ln((Na_t + 0.12 * K_t) / (Na_i + 0.12 * K_i)) * R * T / F);
+  E_Na_t := ln(Na_t / Na_i) * R * T / F;
+end
+
+model pasek_model_2008__i_Naps_s(i_Naps_s, Na_i, Na_e, K_i, K_e, R, F, T, g_Naps_s, Vm_s)
+
+  // Assignment Rules:
+  i_Naps_s := g_Naps_s / (1 + exp((-(54 ) - Vm_s) / 8 )) * (Vm_s - ln((Na_e + 0.12 * K_e) / (Na_i + 0.12 * K_i)) * R * T / F);
+end
+
+model pasek_model_2008__i_Naps_t(i_Naps_t, Na_i, Na_t, K_i, K_t, R, F, T, g_Naps_t, Vm_t)
+
+  // Assignment Rules:
+  i_Naps_t := g_Naps_t / (1 + exp((-(54 ) - Vm_t) / 8 )) * (Vm_t - ln((Na_t + 0.12 * K_t) / (Na_i + 0.12 * K_i)) * R * T / F);
+end
+
+model pasek_model_2008__i_CaL_s_y_gate(y, Vm_s, time_)
+
+  // Assignment Rules:
+  y_infinity := 1 / (1 + exp((Vm_s + 35 ) / 6 ));
+  tau_y := 0.001 / (0.02 + 0.0197 * exp(-(power((Vm_s + 10 ) * 0.0337 , 2 )))) + 0.55 / (1 + exp((Vm_s + 40 ) / 9.5 * 4 ));
+
+  // Rate Rules:
+  y' = (y_infinity - y) / tau_y;
+
+  // Variable initializations:
+  y = 7.8134852e-1;
+end
+
+model pasek_model_2008__i_CaL_s(i_CaL_s, i_KL_s, P_KL_s, P_CaL_s, time_, R, T, F, Vm_s, Ca_ss, Ca_e, K_i, K_e, i_CaL_t, Sms, Smt, y)
+
+  // Sub-modules, and any changes to those submodules:
+  i_CaL_s_y_gate: pasek_model_2008__i_CaL_s_y_gate(y, Vm_s, time_);
+
+  // Assignment Rules:
+  i_CaL_s := 1 * P_CaL_s * 4 * (Co + Ccao) * y * Vm_s * power(F, 2 ) / (R * T) * (0.001 * exp(2 * Vm_s * F / (R * T)) - 0.341 * Ca_e) / (exp(2 * Vm_s * F / (R * T)) - 1 );
+  i_KL_s := 1 * P_KL_s / (1 - (i_CaL_s + i_CaL_t) / (0.458 * (Sms + Smt))) * (Co + Ccao) * y * Vm_s * power(F, 2 ) / (R * T) * (K_i * exp(Vm_s * F / (R * T)) - K_e) / (exp(Vm_s * F / (R * T)) - 1 );
+  alfas := 400 * exp((Vm_s + 12 ) / 10 );
+  betas := 50 * exp(-((Vm_s + 12 )) / 13 );
+  gama := 187.5 * Ca_ss;
+  alfa2s := alfas * a;
+  beta2s := betas / b;
+
+  // Rate Rules:
+  Cst' = betas * C1 + omega * Ccast - (4 * alfas + gama) * Cst;
+  C1' = 4 * alfas * Cst + 2 * betas * C2 + omega / b * Cca1 - (betas + 3 * alfas + gama * a) * C1;
+  C2' = 3 * alfas * C1 + 3 * betas * C3 + omega / power(b, 2 ) * Cca2 - (2 * betas + 2 * alfas + gama * power(a, 2 )) * C2;
+  C3' = 2 * alfas * C2 + 4 * betas * C4 + omega / power(b, 3 ) * Cca3 - (3 * betas + alfas + gama * power(a, 3 )) * C3;
+  C4' = alfas * C3 + g * Co + omega / power(b, 4 ) * Cca4 - (4 * betas + f + gama * power(a, 4 )) * C4;
+  Co' = f * C4 - g * Co;
+  Ccast' = beta2s * Cca1 + gama * Cst - (4 * alfa2s + omega) * Ccast;
+  Cca1' = 4 * alfa2s * Ccast + 2 * beta2s * Cca2 + gama * a * C1 - (beta2s + 3 * alfa2s + omega / b) * Cca1;
+  Cca2' = 3 * alfa2s * Cca1 + 3 * beta2s * Cca3 + gama * power(a, 2 ) * C2 - (2 * beta2s + 2 * alfa2s + omega / power(b, 2 )) * Cca2;
+  Cca3' = 2 * alfa2s * Cca2 + 4 * beta2s * Cca4 + gama * power(a, 3 ) * C3 - (3 * beta2s + alfa2s + omega / power(b, 3 )) * Cca3;
+  Cca4' = alfa2s * Cca3 + g2 * Ccao + gama * power(a, 4 ) * C4 - (4 * beta2s + f2 + omega / power(b, 4 )) * Cca4;
+  Ccao' = f2 * Cca4 - g2 * Ccao;
+
+  // Variable initializations:
+  omega = 10;
+  a = 2;
+  b = 2;
+  f = 300;
+  g = 2000;
+  f2 = 5;
+  g2 = 7000;
+  Cst = 9.9797984e-1;
+  C1 = 7.5722514e-5;
+  C2 = 2.1545646e-9;
+  C3 = 2.7463178e-14;
+  C4 = -5.7569102e-17;
+  Co = -1.3496934e-17;
+  Ccast = 1.9155065e-3;
+  Cca1 = 5.8135383e-7;
+  Cca2 = 6.615513e-11;
+  Cca3 = 3.3426555e-15;
+  Cca4 = 4.6640361e-19;
+  Ccao = 3.7986638e-22;
+end
+
+model pasek_model_2008__i_CaL_t_y_gate(y, Vm_t, time_)
+
+  // Assignment Rules:
+  y_infinity := 1 / (1 + exp((Vm_t + 35 ) / 6 ));
+  tau_y := 0.001 / (0.02 + 0.0197 * exp(-(power((Vm_t + 10 ) * 0.0337 , 2 )))) + 0.55 / (1 + exp((Vm_t + 40 ) / 9.5 * 4 ));
+
+  // Rate Rules:
+  y' = (y_infinity - y) / tau_y;
+
+  // Variable initializations:
+  y = 7.813477e-1;
+end
+
+model pasek_model_2008__i_CaL_t(i_CaL_t, i_KL_t, P_KL_t, P_CaL_t, time_, R, T, F, Vm_t, Ca_ss, Ca_t, K_i, K_t, i_CaL_s, Sms, Smt, y)
+
+  // Sub-modules, and any changes to those submodules:
+  i_CaL_t_y_gate: pasek_model_2008__i_CaL_t_y_gate(y, Vm_t, time_);
+
+  // Assignment Rules:
+  i_CaL_t := 1 * P_CaL_t * 4 * (TCo + TCcao) * y * Vm_t * power(F, 2 ) / (R * T) * (0.001 * exp(2 * Vm_t * F / (R * T)) - 0.341 * Ca_t) / (exp(2 * Vm_t * F / (R * T)) - 1 );
+  i_KL_t := 1 * P_KL_t / (1 - (i_CaL_s + i_CaL_t) / (0.458 * (Sms + Smt))) * (TCo + TCcao) * y * Vm_t * power(F, 2 ) / (R * T) * (K_i * exp(Vm_t * F / (R * T)) - K_t) / (exp(Vm_t * F / (R * T)) - 1 );
+  alfat := 400 * exp((Vm_t + 12 ) / 10 );
+  betat := 50 * exp(-((Vm_t + 12 )) / 13 );
+  gama := 187.5 * Ca_ss;
+  alfa2t := alfat * a;
+  beta2t := betat / b;
+
+  // Rate Rules:
+  TCst' = betat * TC1 + omega * TCcast - (4 * alfat + gama) * TCst;
+  TC1' = 4 * alfat * TCst + 2 * betat * TC2 + omega / b * TCca1 - (betat + 3 * alfat + gama * a) * TC1;
+  TC2' = 3 * alfat * TC1 + 3 * betat * TC3 + omega / power(b, 2 ) * TCca2 - (2 * betat + 2 * alfat + gama * power(a, 2 )) * TC2;
+  TC3' = 2 * alfat * TC2 + 4 * betat * TC4 + omega / power(b, 3 ) * TCca3 - (3 * betat + alfat + gama * power(a, 3 )) * TC3;
+  TC4' = alfat * TC3 + g * TCo + omega / power(b, 4 ) * TCca4 - (4 * betat + f + gama * power(a, 4 )) * TC4;
+  TCo' = f * TC4 - g * TCo;
+  TCcast' = beta2t * TCca1 + gama * TCst - (4 * alfa2t + omega) * TCcast;
+  TCca1' = 4 * alfa2t * TCcast + 2 * beta2t * TCca2 + gama * a * TC1 - (beta2t + 3 * alfa2t + omega / b) * TCca1;
+  TCca2' = 3 * alfa2t * TCca1 + 3 * beta2t * TCca3 + gama * power(a, 2 ) * TC2 - (2 * beta2t + 2 * alfa2t + omega / power(b, 2 )) * TCca2;
+  TCca3' = 2 * alfa2t * TCca2 + 4 * beta2t * TCca4 + gama * power(a, 3 ) * TC3 - (3 * beta2t + alfa2t + omega / power(b, 3 )) * TCca3;
+  TCca4' = alfa2t * TCca3 + g2 * TCcao + gama * power(a, 4 ) * TC4 - (4 * beta2t + f2 + omega / power(b, 4 )) * TCca4;
+  TCcao' = f2 * TCca4 - g2 * TCcao;
+
+  // Variable initializations:
+  omega = 10;
+  a = 2;
+  b = 2;
+  f = 300;
+  g = 2000;
+  f2 = 5;
+  g2 = 7000;
+  TCst = 9.9798934e-1;
+  TC1 = 7.5720257e-5;
+  TC2 = 2.1544156e-9;
+  TC3 = 2.7459475e-14;
+  TC4 = -5.7367189e-17;
+  TCo = -1.3449454e-17;
+  TCcast = 1.9155245e-3;
+  TCca1 = 5.8133643e-7;
+  TCca2 = 6.6150547e-11;
+  TCca3 = 3.3423167e-15;
+  TCca4 = 4.6165955e-19;
+  TCcao = 3.75926e-22;
+end
+
+model pasek_model_2008__i_Kr_s_xr_gate(xr, Vm_s, time_)
+
+  // Assignment Rules:
+  xr_infinity := 1 / (1 + exp(-((Vm_s + 21.5 )) / 7.5 ));
+  tau_xr := 0.001 / (0.00138 * (Vm_s + 14.2 ) / (1 - exp(-(0.123 ) * (Vm_s + 14.2 ))) + 0.00061 * (Vm_s + 38.9 ) / (exp(0.145 * (Vm_s + 38.9 )) - 1 ));
+
+  // Rate Rules:
+  xr' = (xr_infinity - xr) / tau_xr;
+
+  // Variable initializations:
+  xr = 2.0469344e-4;
+end
+
+model pasek_model_2008__i_Kr_s_xri_gate(xri, Vm_s)
+
+  // Assignment Rules:
+  xri := 1 / (1 + exp((Vm_s + 9 ) / 22.4 ));
+end
+
+model pasek_model_2008__i_Kr_s(i_Kr_s, E_Kr_s, q_Kr_s, time_, Vm_s, R, T, F, K_e, K_i, xr, xri)
+
+  // Sub-modules, and any changes to those submodules:
+  i_Kr_s_xr_gate: pasek_model_2008__i_Kr_s_xr_gate(xr, Vm_s, time_);
+  i_Kr_s_xri_gate: pasek_model_2008__i_Kr_s_xri_gate(xri, Vm_s);
+
+  // Assignment Rules:
+  i_Kr_s := q_Kr_s * 0.02614 * root(K_e / 5.4 ) * xr * xri * (Vm_s - E_Kr_s);
+  E_Kr_s := ln(K_e / K_i) * R * T / F;
+end
+
+model pasek_model_2008__i_Kr_t_xr_gate(xr, Vm_t, time_)
+
+  // Assignment Rules:
+  xr_infinity := 1 / (1 + exp(-((Vm_t + 21.5 )) / 7.5 ));
+  tau_xr := 0.001 / (0.00138 * (Vm_t + 14.2 ) / (1 - exp(-(0.123 ) * (Vm_t + 14.2 ))) + 0.00061 * (Vm_t + 38.9 ) / (exp(0.145 * (Vm_t + 38.9 )) - 1 ));
+
+  // Rate Rules:
+  xr' = (xr_infinity - xr) / tau_xr;
+
+  // Variable initializations:
+  xr = 2.0469344e-4;
+end
+
+model pasek_model_2008__i_Kr_t_xri_gate(xri, Vm_t)
+
+  // Assignment Rules:
+  xri := 1 / (1 + exp((Vm_t + 9 ) / 22.4 ));
+end
+
+model pasek_model_2008__i_Kr_t(i_Kr_t, E_Kr_t, q_Kr_t, time_, Vm_t, R, T, F, K_t, K_i, xr, xri)
+
+  // Sub-modules, and any changes to those submodules:
+  i_Kr_t_xr_gate: pasek_model_2008__i_Kr_t_xr_gate(xr, Vm_t, time_);
+  i_Kr_t_xri_gate: pasek_model_2008__i_Kr_t_xri_gate(xri, Vm_t);
+
+  // Assignment Rules:
+  i_Kr_t := q_Kr_t * 0.02614 * root(K_t / 5.4 ) * xr * xri * (Vm_t - E_Kr_t);
+  E_Kr_t := ln(K_t / K_i) * R * T / F;
+end
+
+model pasek_model_2008__i_Ks_s_xs_gate(xs, Vm_s, time_)
+
+  // Assignment Rules:
+  xs_infinity := 1 / (1 + exp(-((Vm_s - 1.5 )) / 16.7 ));
+  tau_xs := 0.001 / (7.19e-5 * (Vm_s + 30 ) / (1 - exp(-(0.148 ) * (Vm_s + 30 ))) + 1.31e-4 * (Vm_s + 30 ) / (exp(0.0687 * (Vm_s + 30 )) - 1 ));
+
+  // Rate Rules:
+  xs' = (xs_infinity - xs) / tau_xs;
+
+  // Variable initializations:
+  xs = 6.1359896e-3;
+end
+
+model pasek_model_2008__i_Ks_s(i_Ks_s, q_Ks_s, time_, Vm_s, R, T, F, K_e, K_i, Na_e, Na_i, Ca_i, xs)
+
+  // Sub-modules, and any changes to those submodules:
+  i_Ks_s_xs_gate: pasek_model_2008__i_Ks_s_xs_gate(xs, Vm_s, time_);
+
+  // Assignment Rules:
+  i_Ks_s := q_Ks_s * (0.2308 + 0.7692 / (1 + exp((-(log(1 * Ca_i)) - 4.2 ) / 0.6 ))) * power(xs, 2 ) * (Vm_s - E_Ks_s);
+  E_Ks_s := ln((K_e + PRNaK * Na_e) / (K_i + PRNaK * Na_i)) * R * T / F;
+
+  // Variable initializations:
+  PRNaK = 0.01833;
+end
+
+model pasek_model_2008__i_Ks_t_xs_gate(xs, Vm_t, time_)
+
+  // Assignment Rules:
+  xs_infinity := 1 / (1 + exp(-((Vm_t - 1.5 )) / 16.7 ));
+  tau_xs := 0.001 / (7.19e-5 * (Vm_t + 30 ) / (1 - exp(-(0.148 ) * (Vm_t + 30 ))) + 1.31e-4 * (Vm_t + 30 ) / (exp(0.0687 * (Vm_t + 30 )) - 1 ));
+
+  // Rate Rules:
+  xs' = (xs_infinity - xs) / tau_xs;
+
+  // Variable initializations:
+  xs = 6.1359896e-3;
+end
+
+model pasek_model_2008__i_Ks_t(i_Ks_t, q_Ks_t, time_, Vm_t, R, T, F, K_t, K_i, Na_t, Na_i, Ca_i, xs)
+
+  // Sub-modules, and any changes to those submodules:
+  i_Ks_t_xs_gate: pasek_model_2008__i_Ks_t_xs_gate(xs, Vm_t, time_);
+
+  // Assignment Rules:
+  i_Ks_t := q_Ks_t * (0.2308 + 0.7692 / (1 + exp((-(log(1 * Ca_i)) - 4.2 ) / 0.6 ))) * power(xs, 2 ) * (Vm_t - E_Ks_t);
+  E_Ks_t := ln((K_t + PRNaK * Na_t) / (K_i + PRNaK * Na_i)) * R * T / F;
+
+  // Variable initializations:
+  PRNaK = 0.01833;
+end
+
+model pasek_model_2008__i_K1_s(i_K1_s, g_K1_s, time_, Vm_s, K_e, E_Kr_s)
+
+  // Assignment Rules:
+  i_K1_s := g_K1_s * root(K_e / 5.4 ) * aK1s / (aK1s + bK1s) * (Vm_s - E_K1_s);
+  E_K1_s := E_Kr_s;
+  aK1s := 1020 / (1 + exp(0.2385 * (Vm_s - E_K1_s - 59.215 )));
+  bK1s := 1000 * (0.49124 * exp(0.08032 * (Vm_s - E_K1_s + 5.476 )) + exp(0.06175 * (Vm_s - E_K1_s - 594.31 ))) / (1 + exp(-(0.5143 ) * (Vm_s - E_K1_s + 4.753 )));
+end
+
+model pasek_model_2008__i_K1_t(i_K1_t, g_K1_t, time_, Vm_t, K_t, E_Kr_t)
+
+  // Assignment Rules:
+  i_K1_t := g_K1_t * root(K_t / 5.4 ) * aK1t / (aK1t + bK1t) * (Vm_t - E_K1_t);
+  E_K1_t := E_Kr_t;
+  aK1t := 1020 / (1 + exp(0.2385 * (Vm_t - E_K1_t - 59.215 )));
+  bK1t := 1000 * (0.49124 * exp(0.08032 * (Vm_t - E_K1_t + 5.476 )) + exp(0.06175 * (Vm_t - E_K1_t - 594.31 ))) / (1 + exp(-(0.5143 ) * (Vm_t - E_K1_t + 4.753 )));
+end
+
+model pasek_model_2008__i_Kp_s(i_Kp_s, g_Kp_s, E_Kr_s, Vm_s)
+
+  // Assignment Rules:
+  i_Kp_s := g_Kp_s * kps * (Vm_s - E_Kp_s);
+  kps := 1 / (1 + exp((20 - Vm_s) / 5 ));
+  E_Kp_s := E_Kr_s;
+end
+
+model pasek_model_2008__i_Kp_t(i_Kp_t, g_Kp_t, E_Kr_t, Vm_t)
+
+  // Assignment Rules:
+  i_Kp_t := g_Kp_t * kpt * (Vm_t - E_Kp_t);
+  kpt := 1 / (1 + exp((20 - Vm_t) / 5 ));
+  E_Kp_t := E_Kr_t;
+end
+
+model pasek_model_2008__i_Kto_s_r2_gate(r2, r2_infinity, Vm_s, time_)
+
+  // Assignment Rules:
+  r2_infinity := 1.006 / (1 + exp((Vm_s + 36.69 + 10 ) / 12.43 ));
+
+  // Rate Rules:
+  r2' = (r2_infinity - r2) / tau_r2;
+
+  // Variable initializations:
+  r2 = 9.625701e-1;
+  tau_r2 = 0.02;
+end
+
+model pasek_model_2008__i_Kto_s_r3_gate(r3, r2_infinity, time_)
+
+  // Assignment Rules:
+  r3_infinity := r2_infinity;
+
+  // Rate Rules:
+  r3' = (r3_infinity - r3) / tau_r3;
+
+  // Variable initializations:
+  r3 = 9.6250049e-1;
+  tau_r3 = 0.08;
+end
+
+model pasek_model_2008__i_Kto_s(i_Kto_s, g_Kto_s, time_, Vm_s, E_Kr_s, r2, r3)
+
+  // Sub-modules, and any changes to those submodules:
+  i_Kto_s_r2_gate: pasek_model_2008__i_Kto_s_r2_gate(r2, r2_infinity, Vm_s, time_);
+  i_Kto_s_r3_gate: pasek_model_2008__i_Kto_s_r3_gate(r3, r2_infinity, time_);
+
+  // Assignment Rules:
+  i_Kto_s := g_Kto_s / ((1 + exp((Vm_s + 57.53 ) / -(5.863 ))) * (1 + exp((Vm_s - 45.8 ) / 25.87 ))) * (r2 * fr2 + r3 * (1 - fr2)) * (Vm_s - E_Kto_s);
+  E_Kto_s := E_Kr_s;
+
+  // Variable initializations:
+  fr2 = 1;
+end
+
+model pasek_model_2008__i_Kto_t_r2_gate(r2, r2_infinity, Vm_t, time_)
+
+  // Assignment Rules:
+  r2_infinity := 1.006 / (1 + exp((Vm_t + 36.69 + 10 ) / 12.43 ));
+
+  // Rate Rules:
+  r2' = (r2_infinity - r2) / tau_r2;
+
+  // Variable initializations:
+  r2 = 9.625701e-1;
+  tau_r2 = 0.02;
+end
+
+model pasek_model_2008__i_Kto_t_r3_gate(r3, r2_infinity, time_)
+
+  // Assignment Rules:
+  r3_infinity := r2_infinity;
+
+  // Rate Rules:
+  r3' = (r3_infinity - r3) / tau_r3;
+
+  // Variable initializations:
+  r3 = 9.6250049e-1;
+  tau_r3 = 0.08;
+end
+
+model pasek_model_2008__i_Kto_t(i_Kto_t, g_Kto_t, time_, Vm_t, E_Kr_t, r2, r3)
+
+  // Sub-modules, and any changes to those submodules:
+  i_Kto_t_r2_gate: pasek_model_2008__i_Kto_t_r2_gate(r2, r2_infinity, Vm_t, time_);
+  i_Kto_t_r3_gate: pasek_model_2008__i_Kto_t_r3_gate(r3, r2_infinity, time_);
+
+  // Assignment Rules:
+  i_Kto_t := g_Kto_t / ((1 + exp((Vm_t + 57.53 ) / -(5.863 ))) * (1 + exp((Vm_t - 45.8 ) / 25.87 ))) * (r2 * fr2 + r3 * (1 - fr2)) * (Vm_t - E_Kto_t);
+  E_Kto_t := E_Kr_t;
+
+  // Variable initializations:
+  fr2 = 1;
+end
+
+model pasek_model_2008__i_KNa_s(i_KNa_s, g_KNa_s, time_, Vm_s, E_Kr_s, Na_i)
+
+  // Assignment Rules:
+  i_KNa_s := g_KNa_s * (0.8 - 0.65 / (1 + exp((Vm_s + 125 ) / 15 ))) * 0.85 / (1 + power(66 / Na_i, 2.8 )) * (Vm_s - E_KNa_s);
+  E_KNa_s := E_Kr_s;
+end
+
+model pasek_model_2008__i_KNa_t(i_KNa_t, g_KNa_t, time_, Vm_t, E_Kr_t, Na_i)
+
+  // Assignment Rules:
+  i_KNa_t := g_KNa_t * (0.8 - 0.65 / (1 + exp((Vm_t + 125 ) / 15 ))) * 0.85 / (1 + power(66 / Na_i, 2.8 )) * (Vm_t - E_KNa_t);
+  E_KNa_t := E_Kr_t;
+end
+
+model pasek_model_2008__i_nsNa_s(i_nsNa_s, P_nsNa_s, R, T, F, Na_e, Na_i, time_, Ca_i, Vm_s)
+
+  // Assignment Rules:
+  i_nsNa_s := 1 * P_nsNa_s * Vm_s * power(F, 2 ) / (R * T) * (0.75 * Na_i * exp(Vm_s * F / (R * T)) - 0.75 * Na_e) / (exp(Vm_s * F / (R * T)) - 1 ) / (1 + power(0.0025 / Ca_i, 3 ));
+end
+
+model pasek_model_2008__i_nsNa_t(i_nsNa_t, P_nsNa_t, R, T, F, Na_t, Na_i, time_, Ca_i, Vm_t)
+
+  // Assignment Rules:
+  i_nsNa_t := 1 * P_nsNa_t * Vm_t * power(F, 2 ) / (R * T) * (0.75 * Na_i * exp(Vm_t * F / (R * T)) - 0.75 * Na_t) / (exp(Vm_t * F / (R * T)) - 1 ) / (1 + power(0.0025 / Ca_i, 3 ));
+end
+
+model pasek_model_2008__i_nsK_s(i_nsK_s, P_nsK_s, R, T, F, K_e, K_i, time_, Ca_i, Vm_s)
+
+  // Assignment Rules:
+  i_nsK_s := 1 * P_nsK_s * Vm_s * power(F, 2 ) / (R * T) * (0.75 * K_i * exp(Vm_s * F / (R * T)) - 0.75 * K_e) / (exp(Vm_s * F / (R * T)) - 1 ) / (1 + power(0.0025 / Ca_i, 3 ));
+end
+
+model pasek_model_2008__i_nsK_t(i_nsK_t, P_nsK_t, R, T, F, K_t, K_i, time_, Ca_i, Vm_t)
+
+  // Assignment Rules:
+  i_nsK_t := 1 * P_nsK_t * Vm_t * power(F, 2 ) / (R * T) * (0.75 * K_i * exp(Vm_t * F / (R * T)) - 0.75 * K_t) / (exp(Vm_t * F / (R * T)) - 1 ) / (1 + power(0.0025 / Ca_i, 3 ));
+end
+
+model pasek_model_2008__i_Nab_s(i_Nab_s, g_Nab_s, Vm_s, E_Na_s)
+
+  // Assignment Rules:
+  i_Nab_s := g_Nab_s * (Vm_s - E_Na_s);
+end
+
+model pasek_model_2008__i_Nab_t(i_Nab_t, g_Nab_t, Vm_t, E_Na_t)
+
+  // Assignment Rules:
+  i_Nab_t := g_Nab_t * (Vm_t - E_Na_t);
+end
+
+model pasek_model_2008__i_Cab_s(i_Cab_s, g_Cab_s, R, F, T, Ca_e, Ca_i, Vm_s)
+
+  // Assignment Rules:
+  i_Cab_s := g_Cab_s * (Vm_s - E_Ca_s);
+  E_Ca_s := ln(Ca_e / Ca_i) * R * T / (2 * F);
+end
+
+model pasek_model_2008__i_Cab_t(i_Cab_t, g_Cab_t, R, F, T, Ca_t, Ca_i, Vm_t)
+
+  // Assignment Rules:
+  i_Cab_t := g_Cab_t * (Vm_t - E_Ca_t);
+  E_Ca_t := ln(Ca_t / Ca_i) * R * T / (2 * F);
+end
+
+model pasek_model_2008__i_NaCa_s(i_NaCa_s, i_NaCa_max_s, Vm_s, R, T, F, Na_i, Na_e, Ca_i, Ca_e)
+
+  // Assignment Rules:
+  i_NaCa_s := i_NaCa_max_s * exp(-(0.85 ) * Vm_s * F / (R * T)) * (exp(Vm_s * F / (R * T)) * power(Na_i, 3 ) * Ca_e - power(Na_e, 3 ) * Ca_i) / (1 + 0.0001 * exp(-(0.85 ) * Vm_s * F / (R * T)) * (exp(Vm_s * F / (R * T)) * power(Na_i, 3 ) * Ca_e + power(Na_e, 3 ) * Ca_i));
+end
+
+model pasek_model_2008__i_NaCa_t(i_NaCa_t, i_NaCa_max_t, Vm_t, R, T, F, Na_i, Na_t, Ca_i, Ca_t)
+
+  // Assignment Rules:
+  i_NaCa_t := i_NaCa_max_t * exp(-(0.85 ) * Vm_t * F / (R * T)) * (exp(Vm_t * F / (R * T)) * power(Na_i, 3 ) * Ca_t - power(Na_t, 3 ) * Ca_i) / (1 + 0.0001 * exp(-(0.85 ) * Vm_t * F / (R * T)) * (exp(Vm_t * F / (R * T)) * power(Na_i, 3 ) * Ca_t + power(Na_t, 3 ) * Ca_i));
+end
+
+model pasek_model_2008__i_NaK_s(i_NaK_s, i_NaK_max_s, R, T, F, Vm_s, Na_i, K_e, Na_e)
+
+  // Assignment Rules:
+  i_NaK_s := i_NaK_max_s / (1 + 0.1245 * exp(-(0.1 ) * Vm_s * F / (R * T)) + 0.0365 * 1 / 7 * (exp(Na_e / 67.3 ) - 1 ) * exp(-(Vm_s) * F / (R * T))) * 1 / (1 + power(10 / Na_i, 1.5 )) * K_e / (K_e + 1.5 );
+end
+
+model pasek_model_2008__i_NaK_t(i_NaK_t, i_NaK_max_t, R, T, F, Vm_t, Na_i, K_t, Na_t)
+
+  // Assignment Rules:
+  i_NaK_t := i_NaK_max_t / (1 + 0.1245 * exp(-(0.1 ) * Vm_t * F / (R * T)) + 0.0365 * 1 / 7 * (exp(Na_t / 67.3 ) - 1 ) * exp(-(Vm_t) * F / (R * T))) * 1 / (1 + power(10 / Na_i, 1.5 )) * K_t / (K_t + 1.5 );
+end
+
+model pasek_model_2008__i_pCa_s(i_pCa_s, i_pCa_max_s, Ca_i)
+
+  // Assignment Rules:
+  i_pCa_s := i_pCa_max_s * Ca_i / (0.0005 + Ca_i);
+end
+
+model pasek_model_2008__i_pCa_t(i_pCa_t, i_pCa_max_t, Ca_i)
+
+  // Assignment Rules:
+  i_pCa_t := i_pCa_max_t * Ca_i / (0.0005 + Ca_i);
+end
+
+model pasek_model_2008__i_KATP_s(i_KATP_s, g_KATP_s, time_, Vm_s, E_Kr_s, ATP_i, K_e)
+
+  // Assignment Rules:
+  i_KATP_s := g_KATP_s * 1 / (1 + power(ATP_i / 0.114 , 2 )) * power(K_e / 4 , 0.24 ) * (Vm_s - E_KATP_s);
+  E_KATP_s := E_Kr_s;
+end
+
+model pasek_model_2008__i_KATP_t(i_KATP_t, g_KATP_t, time_, Vm_t, E_Kr_t, ATP_i, K_t)
+
+  // Assignment Rules:
+  i_KATP_t := g_KATP_t * 1 / (1 + power(ATP_i / 0.114 , 2 )) * power(K_t / 4 , 0.24 ) * (Vm_t - E_KATP_t);
+  E_KATP_t := E_Kr_t;
+end
+
+model pasek_model_2008__t_tubular_ion_fluxes(JteNa, JteCa, JteK, Vt, Na_t, Ca_t, K_t, Na_e, Ca_e, K_e)
+
+  // Assignment Rules:
+  JteNa := 1 * Vt / tau_Na * (Na_t - Na_e);
+  JteCa := 1 * Vt / tau_Ca * (Ca_t - Ca_e);
+  JteK := 1 * Vt / tau_K * (K_t - K_e);
+
+  // Variable initializations:
+  tau_Na = 0.2;
+  tau_Ca = 0.24;
+  tau_K = 0.2;
+end
+
+model pasek_model_2008__JCaSRup(JCaSRup, Ca_i, Vmyo)
+
+  // Assignment Rules:
+  JCaSRup := 1 * 1000 * Vmyo * 0.0018 * power(Ca_i, 2 ) / (power(Ca_i, 2 ) + power(0.0005 , 2 ));
+end
+
+model pasek_model_2008__JCaSRleak(JCaSRleak, Ca_i, CaSRup, Vmyo)
+
+  // Assignment Rules:
+  JCaSRleak := 1250 * Vmyo * 0.000058 * (CaSRup - Ca_i);
+end
+
+model pasek_model_2008__Jtr(Jtr, CaSRrel, CaSRup, VSRrel)
+
+  // Assignment Rules:
+  Jtr := 1 * VSRrel / tau_tr * (CaSRup - CaSRrel);
+
+  // Variable initializations:
+  tau_tr = 0.03448;
+end
+
+model pasek_model_2008__JCaSRrel(JCaSRrel, time_, VSRrel, Ca_ss, CaSRrel)
+
+  // Assignment Rules:
+  JCaSRrel := 1800 * VSRrel * (F2 + F3) * (CaSRrel - Ca_ss);
+  kap := 3 * 12.15e12;
+  kbp := 4.05e9;
+
+  // Rate Rules:
+  F1' = F2 * kam - F1 * kap * power(Ca_ss, 4 );
+  F2' = F1 * kap * power(Ca_ss, 4 ) + F3 * kbm + F4 * kcm - F2 * (kam + kbp * power(Ca_ss, 3 ) + kcp);
+  F3' = F2 * kbp * power(Ca_ss, 3 ) - F3 * kbm;
+  F4' = F2 * kcp - F4 * kcm;
+
+  // Variable initializations:
+  kam = 576;
+  kbm = 1930;
+  kcp = 18;
+  kcm = 0.8;
+  F1 = 8.053082e-1;
+  F2 = 2.6639195e-4;
+  F3 = 4.9455459e-10;
+  F4 = 1.9442578e-1;
+end
+
+model pasek_model_2008__JCad(JCad, Ca_i, Ca_ss, Vmyo)
+
+  // Assignment Rules:
+  JCad := 1 * (Ca_ss - Ca_i) * Vmyo / tau_d;
+
+  // Variable initializations:
+  tau_d = 0.003125;
+end
+
+model pasek_model_2008__CaSRrel(CaSRrel, Jtr, JCaSRrel, VSRrel, time_)
+
+  // Rate Rules:
+  CaSRrel' = 1 / (1 + 15 * 0.8 / power(0.8 + CaSRrel, 2 )) * (Jtr - JCaSRrel) / VSRrel;
+
+  // Variable initializations:
+  CaSRrel = 1.0326252e0;
+end
+
+model pasek_model_2008__CaSRup(CaSRup, JCaSRleak, JCaSRup, Jtr, VSRup, time_)
+
+  // Rate Rules:
+  CaSRup' = (JCaSRup - JCaSRleak - Jtr) / (1 * VSRup);
+
+  // Variable initializations:
+  CaSRup = 1.0200296e0;
+end
+
+model pasek_model_2008__ion_concentrations(K_t, Na_t, Ca_t, K_i, Na_i, Ca_i, Ca_ss, Vd, VSRrel, VSRup, Vt, Vmyo, time_, F, i_Kext, i_Na_s, i_Naps_s, i_nsNa_s, i_Nab_s, i_NaCa_s, i_NaK_s, i_Kr_s, i_Ks_s, i_Kp_s, i_K1_s, i_Kto_s, i_KNa_s, i_KATP_s, i_nsK_s, i_KL_s, i_Cab_s, i_pCa_s, i_CaL_s, i_Na_t, i_Naps_t, i_nsNa_t, i_Nab_t, i_NaCa_t, i_NaK_t, i_Kr_t, i_Ks_t, i_Kp_t, i_K1_t, i_Kto_t, i_KNa_t, i_KATP_t, i_nsK_t, i_KL_t, i_Cab_t, i_pCa_t, i_CaL_t, JCaSRup, JCaSRrel, JCaSRleak, JCad, Jtr, JteNa, JteCa, JteK, Sms, Smt)
+
+  // Assignment Rules:
+  dBTRH := 20000 * Ca_i * (1 - BTRH) - 0.07 * BTRH;
+  dBTRL := 40000 * Ca_i * (1 - BTRL) - BTRL * 40;
+
+  // Rate Rules:
+  K_t' = ((i_Ks_t + i_Kr_t + i_K1_t + i_Kp_t + i_KNa_t + i_KL_t + i_nsK_t - 2 * i_NaK_t + i_KATP_t + i_Kto_t) / F - 1 * JteK) / Vt;
+  Na_t' = ((i_Na_t + i_Naps_t + i_nsNa_t + i_Nab_t + 3 * i_NaCa_t + 3 * i_NaK_t) / F - 1 * JteNa) / Vt;
+  Ca_t' = ((-(2 ) * i_NaCa_t + i_CaL_t + i_Cab_t + i_pCa_t) / (2 * F) - 1 * JteCa) / Vt;
+  K_i' = -((-(0 ) * i_Kext + i_Ks_s + i_Ks_t + i_Kr_s + i_Kr_t + i_K1_s + i_K1_t + i_Kp_s + i_Kp_t + i_KL_s + i_KL_t + i_KNa_s + i_KNa_t + i_nsK_s + i_nsK_t - 2 * i_NaK_s - 2 * i_NaK_t + i_KATP_s + i_KATP_t + i_Kto_s + i_Kto_t)) / (F * Vmyo);
+  Na_i' = -((i_Na_s + i_Na_t + i_Naps_s + i_Naps_t + i_nsNa_s + i_nsNa_t + i_Nab_s + i_Nab_t + 3 * i_NaCa_s + 3 * i_NaCa_t + 3 * i_NaK_s + 3 * i_NaK_t)) / (F * Vmyo);
+  Ca_i' = 1 / (1 + 0.05 * 0.00238 / power(0.00238 + Ca_i, 2 )) * ((-(2 ) * (i_NaCa_s + i_NaCa_t) + i_Cab_s + i_Cab_t + i_pCa_s + i_pCa_t) / (-(2 ) * F * Vmyo) + 1 * (JCad + JCaSRleak - JCaSRup) / Vmyo - dBTRH * 0.14 - dBTRL * 0.07 );
+  Ca_ss' = 1 / (1 + 0.05 * 0.00238 / power(0.00238 + Ca_ss, 2 )) * (-((i_CaL_s + i_CaL_t)) / (2 * F * Vd) + 1 * JCaSRrel / Vd - 1 * JCad / Vd);
+  BTRH' = dBTRH;
+  BTRL' = dBTRL;
+
+  // Variable initializations:
+  K_t = 5.4140321e0;
+  Na_t = 1.3993239e2;
+  Ca_t = 1.8476402e0;
+  K_i = 1.3678926e2;
+  Na_i = 1.1120279e1;
+  Ca_i = 8.8787034e-5;
+  Ca_ss = 9.5977033e-5;
+  BTRH = 9.6700747e-1;
+  BTRL = 8.1740868e-2;
+end
+
+model pasek_model_2008__Vm_s(Vm_s, Cms, i_circ, i_Kext, time_, i_Na_s, i_Naps_s, i_Nab_s, i_NaCa_s, i_NaK_s, i_Kr_s, i_Ks_s, i_Kp_s, i_K1_s, i_Kto_s, i_KNa_s, i_KATP_s, i_nsNa_s, i_nsK_s, i_KL_s, i_Cab_s, i_pCa_s, i_CaL_s)
+
+  // Rate Rules:
+  Vm_s' = 1000 * (i_Kext + i_circ - i_Na_s - i_Naps_s - i_CaL_s - i_KL_s - i_Ks_s - i_Kr_s - i_K1_s - i_Kp_s - i_KNa_s - i_KATP_s - i_nsNa_s - i_nsK_s - i_Nab_s - i_Cab_s - i_NaCa_s - i_NaK_s - i_pCa_s - i_Kto_s) / Cms;
+
+  // Variable initializations:
+  Vm_s = -8.5207812e1;
+end
+
+model pasek_model_2008__Vm_t(Vm_t, Cmt, i_circ, time_, i_Na_t, i_Naps_t, i_Nab_t, i_NaCa_t, i_NaK_t, i_Kr_t, i_Ks_t, i_Kp_t, i_K1_t, i_Kto_t, i_KNa_t, i_KATP_t, i_nsNa_t, i_nsK_t, i_KL_t, i_Cab_t, i_pCa_t, i_CaL_t)
+
+  // Rate Rules:
+  Vm_t' = 1000 * (-(i_circ) - i_Na_t - i_Naps_t - i_CaL_t - i_KL_t - i_Ks_t - i_Kr_t - i_K1_t - i_Kp_t - i_KNa_t - i_KATP_t - i_nsNa_t - i_nsK_t - i_Nab_t - i_Cab_t - i_NaCa_t - i_NaK_t - i_pCa_t - i_Kto_t) / Cmt;
+
+  // Variable initializations:
+  Vm_t = -8.5208034e1;
+end
+
+model pasek_model_2008____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: pasek_model_2008__environment(time_);
+  model_parameters: pasek_model_2008__model_parameters(R, T, F, Na_e, Ca_e, K_e, ATP_i, Vt, Vd, Vmyo, Sms, Smt, Cms, Cmt, Rst, VSRup, VSRrel);
+  i_circ: pasek_model_2008__i_circ(i_circ0, Rst, Vm_s0, Vm_t0);
+  membrane_permeabilities: pasek_model_2008__membrane_permeabilities(g_Na_s, g_Naps_s, q_Kr_s, q_Ks_s, g_Kp_s, g_Kto_s, g_K1_s, g_KNa_s, g_KATP_s, g_Nab_s, g_Cab_s, i_pCa_max_s, i_NaK_max_s, i_NaCa_max_s, P_CaL_s, P_KL_s, P_nsNa_s, P_nsK_s, g_Na_t, g_Naps_t, q_Kr_t, q_Ks_t, g_Kp_t, g_Kto_t, g_K1_t, g_KNa_t, g_KATP_t, g_Nab_t, g_Cab_t, i_pCa_max_t, i_NaK_max_t, i_NaCa_max_t, P_CaL_t, P_KL_t, P_nsNa_t, P_nsK_t, Sms, Smt);
+  i_Kext: pasek_model_2008__i_Kext(i_Kext0, Sms, Smt, time_);
+  i_Na_s: pasek_model_2008__i_Na_s(i_Na_s0, E_Na_s, g_Na_s, Na_i, Na_e, K_i, K_e, R, F, T, time_, Vm_s0, m, h);
+  i_Na_t: pasek_model_2008__i_Na_t(i_Na_t0, E_Na_t, g_Na_t, Na_i, Na_t, K_i, K_t, R, F, T, time_, Vm_t0, m0, h0);
+  i_Naps_s: pasek_model_2008__i_Naps_s(i_Naps_s0, Na_i, Na_e, K_i, K_e, R, F, T, g_Naps_s, Vm_s0);
+  i_Naps_t: pasek_model_2008__i_Naps_t(i_Naps_t0, Na_i, Na_t, K_i, K_t, R, F, T, g_Naps_t, Vm_t0);
+  i_CaL_s: pasek_model_2008__i_CaL_s(i_CaL_s0, i_KL_s, P_KL_s, P_CaL_s, time_, R, T, F, Vm_s0, Ca_ss, Ca_e, K_i, K_e, i_CaL_t0, Sms, Smt, y);
+  i_CaL_t: pasek_model_2008__i_CaL_t(i_CaL_t0, i_KL_t, P_KL_t, P_CaL_t, time_, R, T, F, Vm_t0, Ca_ss, Ca_t, K_i, K_t, i_CaL_s0, Sms, Smt, y0);
+  i_Kr_s: pasek_model_2008__i_Kr_s(i_Kr_s0, E_Kr_s, q_Kr_s, time_, Vm_s0, R, T, F, K_e, K_i, xr, xri);
+  i_Kr_t: pasek_model_2008__i_Kr_t(i_Kr_t0, E_Kr_t, q_Kr_t, time_, Vm_t0, R, T, F, K_t, K_i, xr0, xri0);
+  i_Ks_s: pasek_model_2008__i_Ks_s(i_Ks_s0, q_Ks_s, time_, Vm_s0, R, T, F, K_e, K_i, Na_e, Na_i, Ca_i, xs);
+  i_Ks_t: pasek_model_2008__i_Ks_t(i_Ks_t0, q_Ks_t, time_, Vm_t0, R, T, F, K_t, K_i, Na_t, Na_i, Ca_i, xs0);
+  i_K1_s: pasek_model_2008__i_K1_s(i_K1_s0, g_K1_s, time_, Vm_s0, K_e, E_Kr_s);
+  i_K1_t: pasek_model_2008__i_K1_t(i_K1_t0, g_K1_t, time_, Vm_t0, K_t, E_Kr_t);
+  i_Kp_s: pasek_model_2008__i_Kp_s(i_Kp_s0, g_Kp_s, E_Kr_s, Vm_s0);
+  i_Kp_t: pasek_model_2008__i_Kp_t(i_Kp_t0, g_Kp_t, E_Kr_t, Vm_t0);
+  i_Kto_s: pasek_model_2008__i_Kto_s(i_Kto_s0, g_Kto_s, time_, Vm_s0, E_Kr_s, r2, r3);
+  i_Kto_t: pasek_model_2008__i_Kto_t(i_Kto_t0, g_Kto_t, time_, Vm_t0, E_Kr_t, r20, r30);
+  i_KNa_s: pasek_model_2008__i_KNa_s(i_KNa_s0, g_KNa_s, time_, Vm_s0, E_Kr_s, Na_i);
+  i_KNa_t: pasek_model_2008__i_KNa_t(i_KNa_t0, g_KNa_t, time_, Vm_t0, E_Kr_t, Na_i);
+  i_nsNa_s: pasek_model_2008__i_nsNa_s(i_nsNa_s0, P_nsNa_s, R, T, F, Na_e, Na_i, time_, Ca_i, Vm_s0);
+  i_nsNa_t: pasek_model_2008__i_nsNa_t(i_nsNa_t0, P_nsNa_t, R, T, F, Na_t, Na_i, time_, Ca_i, Vm_t0);
+  i_nsK_s: pasek_model_2008__i_nsK_s(i_nsK_s0, P_nsK_s, R, T, F, K_e, K_i, time_, Ca_i, Vm_s0);
+  i_nsK_t: pasek_model_2008__i_nsK_t(i_nsK_t0, P_nsK_t, R, T, F, K_t, K_i, time_, Ca_i, Vm_t0);
+  i_Nab_s: pasek_model_2008__i_Nab_s(i_Nab_s0, g_Nab_s, Vm_s0, E_Na_s);
+  i_Nab_t: pasek_model_2008__i_Nab_t(i_Nab_t0, g_Nab_t, Vm_t0, E_Na_t);
+  i_Cab_s: pasek_model_2008__i_Cab_s(i_Cab_s0, g_Cab_s, R, F, T, Ca_e, Ca_i, Vm_s0);
+  i_Cab_t: pasek_model_2008__i_Cab_t(i_Cab_t0, g_Cab_t, R, F, T, Ca_t, Ca_i, Vm_t0);
+  i_NaCa_s: pasek_model_2008__i_NaCa_s(i_NaCa_s0, i_NaCa_max_s, Vm_s0, R, T, F, Na_i, Na_e, Ca_i, Ca_e);
+  i_NaCa_t: pasek_model_2008__i_NaCa_t(i_NaCa_t0, i_NaCa_max_t, Vm_t0, R, T, F, Na_i, Na_t, Ca_i, Ca_t);
+  i_NaK_s: pasek_model_2008__i_NaK_s(i_NaK_s0, i_NaK_max_s, R, T, F, Vm_s0, Na_i, K_e, Na_e);
+  i_NaK_t: pasek_model_2008__i_NaK_t(i_NaK_t0, i_NaK_max_t, R, T, F, Vm_t0, Na_i, K_t, Na_t);
+  i_pCa_s: pasek_model_2008__i_pCa_s(i_pCa_s0, i_pCa_max_s, Ca_i);
+  i_pCa_t: pasek_model_2008__i_pCa_t(i_pCa_t0, i_pCa_max_t, Ca_i);
+  i_KATP_s: pasek_model_2008__i_KATP_s(i_KATP_s0, g_KATP_s, time_, Vm_s0, E_Kr_s, ATP_i, K_e);
+  i_KATP_t: pasek_model_2008__i_KATP_t(i_KATP_t0, g_KATP_t, time_, Vm_t0, E_Kr_t, ATP_i, K_t);
+  t_tubular_ion_fluxes: pasek_model_2008__t_tubular_ion_fluxes(JteNa, JteCa, JteK, Vt, Na_t, Ca_t, K_t, Na_e, Ca_e, K_e);
+  JCaSRup: pasek_model_2008__JCaSRup(JCaSRup0, Ca_i, Vmyo);
+  JCaSRleak: pasek_model_2008__JCaSRleak(JCaSRleak0, Ca_i, CaSRup0, Vmyo);
+  Jtr: pasek_model_2008__Jtr(Jtr0, CaSRrel0, CaSRup0, VSRrel);
+  JCaSRrel: pasek_model_2008__JCaSRrel(JCaSRrel0, time_, VSRrel, Ca_ss, CaSRrel0);
+  JCad: pasek_model_2008__JCad(JCad0, Ca_i, Ca_ss, Vmyo);
+  CaSRrel: pasek_model_2008__CaSRrel(CaSRrel0, Jtr0, JCaSRrel0, VSRrel, time_);
+  CaSRup: pasek_model_2008__CaSRup(CaSRup0, JCaSRleak0, JCaSRup0, Jtr0, VSRup, time_);
+  ion_concentrations: pasek_model_2008__ion_concentrations(K_t, Na_t, Ca_t, K_i, Na_i, Ca_i, Ca_ss, Vd, VSRrel, VSRup, Vt, Vmyo, time_, F, i_Kext0, i_Na_s0, i_Naps_s0, i_nsNa_s0, i_Nab_s0, i_NaCa_s0, i_NaK_s0, i_Kr_s0, i_Ks_s0, i_Kp_s0, i_K1_s0, i_Kto_s0, i_KNa_s0, i_KATP_s0, i_nsK_s0, i_KL_s, i_Cab_s0, i_pCa_s0, i_CaL_s0, i_Na_t0, i_Naps_t0, i_nsNa_t0, i_Nab_t0, i_NaCa_t0, i_NaK_t0, i_Kr_t0, i_Ks_t0, i_Kp_t0, i_K1_t0, i_Kto_t0, i_KNa_t0, i_KATP_t0, i_nsK_t0, i_KL_t, i_Cab_t0, i_pCa_t0, i_CaL_t0, JCaSRup0, JCaSRrel0, JCaSRleak0, JCad0, Jtr0, JteNa, JteCa, JteK, Sms, Smt);
+  Vm_s: pasek_model_2008__Vm_s(Vm_s0, Cms, i_circ0, i_Kext0, time_, i_Na_s0, i_Naps_s0, i_Nab_s0, i_NaCa_s0, i_NaK_s0, i_Kr_s0, i_Ks_s0, i_Kp_s0, i_K1_s0, i_Kto_s0, i_KNa_s0, i_KATP_s0, i_nsNa_s0, i_nsK_s0, i_KL_s, i_Cab_s0, i_pCa_s0, i_CaL_s0);
+  Vm_t: pasek_model_2008__Vm_t(Vm_t0, Cmt, i_circ0, time_, i_Na_t0, i_Naps_t0, i_Nab_t0, i_NaCa_t0, i_NaK_t0, i_Kr_t0, i_Ks_t0, i_Kp_t0, i_K1_t0, i_Kto_t0, i_KNa_t0, i_KATP_t0, i_nsNa_t0, i_nsK_t0, i_KL_t, i_Cab_t0, i_pCa_t0, i_CaL_t0);
+end

@@ -1,0 +1,262 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "1 - p_0" to set the assignment rule for p_1:  Loop detected:  p_1's definition (1 - p_0) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "1 - c_1 - o_1" to set the assignment rule for o_2:  Loop detected:  o_2's definition (1 - c_1 - o_1) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+
+model winograd_destexhe_sanchez_vives_2008__environment(time_)
+end
+
+model winograd_destexhe_sanchez_vives_2008__membrane(V, V_T, V_S, F, R, T, I_leak, I_Na, I_KD, I_KM, I_CaL, I_h, I_app, time_)
+
+  // Rate Rules:
+  V' = 1e-3 * (I_app + -(I_leak) - I_Na - I_KD - I_KM - I_CaL - I_h) / C_m;
+
+  // Variable initializations:
+  V = -70;
+  V_T = -55;
+  V_S = 0;
+  C_m = 1e-3;
+  F = 96489;
+  R = 8.314;
+  T = 296.65;
+end
+
+model winograd_destexhe_sanchez_vives_2008__stimulus_protocol(I_app, time_)
+
+  // Assignment Rules:
+  I_app := piecewise( i_stimAmplitude , ( tau >= i_stimStart) && (tau <= i_stimEnd ), 0 );
+  tau := time_ - period * floor(time_ / period);
+
+  // Variable initializations:
+  i_stimStart = 5;
+  i_stimEnd = 9;
+  i_stimAmplitude = -0.3;
+  period = 9;
+end
+
+model winograd_destexhe_sanchez_vives_2008__I_leak(I_leak, V)
+
+  // Assignment Rules:
+  I_leak := 1000 * g_leak * (V - E_leak);
+
+  // Variable initializations:
+  g_leak = 1;
+  E_leak = -70;
+end
+
+model winograd_destexhe_sanchez_vives_2008__Na_m_gate(m, V_T, V, time_)
+
+  // Assignment Rules:
+  alpha := piecewise( 0.32 * 4 * (1 - (13 + V_T - V) / (2 * 4 )) , abs((13 + V_T - V) / 4 ) < 1e-6 , 0.32 * (13 + V_T - V) / (exp((13 + V_T - V) / 4 ) - 1 ) );
+  beta := piecewise( -(0.28 ) * 5 * (1 - -((V - V_T - 40 )) / (2 * 5 )) , abs(-((V - V_T - 40 )) / 5 ) < 1e-6 , -(0.28 ) * (V - V_T - 40 ) / (exp(-((V - V_T - 40 )) / 5 ) - 1 ) );
+  tau_m := 1 / (alpha + beta);
+  m_inf := alpha / (alpha + beta);
+
+  // Rate Rules:
+  m' = (m_inf - m) / tau_m;
+
+  // Variable initializations:
+  m = 0;
+end
+
+model winograd_destexhe_sanchez_vives_2008__Na_h_gate(h, V_S, V_T, V, time_)
+
+  // Assignment Rules:
+  alpha_h := 0.128 * exp((17 + V_T + V_S - V) / 18 );
+  beta_h := 4 / (1 + exp((40 + V_S + V_T - V) / 5 ));
+  h_inf := alpha_h / (alpha_h + beta_h);
+  tau_h := 1 / (alpha_h + beta_h);
+
+  // Rate Rules:
+  h' = (h_inf - h) / tau_h;
+
+  // Variable initializations:
+  h = 0;
+end
+
+model winograd_destexhe_sanchez_vives_2008__I_Na(I_Na, V_S, V_T, V, time_, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  Na_m_gate: winograd_destexhe_sanchez_vives_2008__Na_m_gate(m, V_T, V, time_);
+  Na_h_gate: winograd_destexhe_sanchez_vives_2008__Na_h_gate(h, V_S, V_T, V, time_);
+
+  // Assignment Rules:
+  I_Na := 1000 * g_Na * power(m, 3 ) * h * (V - E_Na);
+
+  // Variable initializations:
+  g_Na = 70;
+  E_Na = 50;
+end
+
+model winograd_destexhe_sanchez_vives_2008__KD_n_gate(n, V_T, V, time_)
+
+  // Assignment Rules:
+  alpha_n := piecewise( -(0.032 ) * 5 * (1 - (V - V_T - 15 ) / (2 * 5 )) , abs((V - V_T - 15 ) / 5 ) < 1e-6 , -(0.032 ) * (V - V_T - 15 ) / (exp((V - V_T - 15 ) / 5 ) - 1 ) );
+  beta_n := piecewise( 0.5 * 40 * (1 + (V - V_T - 10 ) / (2 * 40 )) , abs(-((V - V_T - 10 )) / 40 ) < 1e-6 , 0.5 * -((V - V_T - 10 )) / (exp(-((V - V_T - 10 )) / 40 ) - 1 ) );
+  tau_n := 1 / (alpha_n + beta_n);
+  n_inf := alpha_n / (alpha_n + beta_n);
+
+  // Rate Rules:
+  n' = (n_inf - n) / tau_n;
+
+  // Variable initializations:
+  n = 0;
+end
+
+model winograd_destexhe_sanchez_vives_2008__I_KD(I_KD, E_K, V_T, V, time_, n)
+
+  // Sub-modules, and any changes to those submodules:
+  KD_n_gate: winograd_destexhe_sanchez_vives_2008__KD_n_gate(n, V_T, V, time_);
+
+  // Assignment Rules:
+  I_KD := 1000 * g_KD * power(n, 4 ) * (V - E_K);
+
+  // Variable initializations:
+  g_KD = 7;
+  E_K = -95;
+end
+
+model winograd_destexhe_sanchez_vives_2008__KM_p_gate(p, V, time_)
+
+  // Assignment Rules:
+  p_inf := piecewise( 1 / (1 + exp(-((V + 35 )) / 10 )) , ( -((V + 35 )) / 10 < 25) && (-((V + 35 )) / 10 > -(25 ) ), 1 );
+  tau_p := piecewise( tau_max / (3.3 * exp((V + 35 ) / 20 ) + exp(-((V + 35 )) / 20 )) , ( (V + 35 ) / 20 < 25) && ((V + 35 ) / 20 > -(25 ) ), 1 );
+
+  // Rate Rules:
+  p' = (p_inf - p) / tau_p;
+
+  // Variable initializations:
+  p = 0;
+  tau_max = 4;
+end
+
+model winograd_destexhe_sanchez_vives_2008__I_KM(I_KM, E_K, V, time_, p)
+
+  // Sub-modules, and any changes to those submodules:
+  KM_p_gate: winograd_destexhe_sanchez_vives_2008__KM_p_gate(p, V, time_);
+
+  // Assignment Rules:
+  I_KM := 1000 * g_KM * p * (V - E_K);
+
+  // Variable initializations:
+  g_KM = 0.004;
+end
+
+model winograd_destexhe_sanchez_vives_2008__CaL_q_gate(q, V, time_)
+
+  // Assignment Rules:
+  alpha_q := 6.32 / (1 + exp(-((V - 5 )) / 13.89 ));
+  beta_q := piecewise( 0.02 * (5.36 + (1.31 - V) / 2 ) , abs((1.31 - V) / 5.36 ) < 1e-6 , 0.02 * (1.31 - V) / (1 - exp((V - 1.31 ) / 5.36 )) );
+  tau_q := 1 / (alpha_q + beta_q);
+  q_inf := 1 / (1 + exp((V + 10 ) / -(10 )));
+
+  // Rate Rules:
+  q' = (q_inf - q) / tau_q;
+
+  // Variable initializations:
+  q = 0.00247262;
+end
+
+model winograd_destexhe_sanchez_vives_2008__I_CaL(I_CaL, V, time_, G, q)
+
+  // Sub-modules, and any changes to those submodules:
+  CaL_q_gate: winograd_destexhe_sanchez_vives_2008__CaL_q_gate(q, V, time_);
+
+  // Assignment Rules:
+  I_CaL := 1000 * P_Ca * power(q, 2 ) * G;
+
+  // Variable initializations:
+  P_Ca = 2.76e-4;
+end
+
+model winograd_destexhe_sanchez_vives_2008__dCa_i_dt(Ca_i, time_, I_CaL, F, R, T)
+
+  // Assignment Rules:
+  drive_channel := k * I_CaL / (2 * F * d);
+
+  // Rate Rules:
+  Ca_i' = piecewise( (Ca_inf - Ca_i) / tau_r , drive_channel <= 0 , drive_channel + (Ca_inf - Ca_i) / tau_r );
+
+  // Variable initializations:
+  Ca_i = 100e-6;
+  Ca_inf = 100e-6;
+  tau_r = 17e-3;
+  d = 1e-4;
+  k = 0.1;
+end
+
+model winograd_destexhe_sanchez_vives_2008__G_nonlin(G, V, time_, F, R, T, I_CaL, Ca_i)
+
+  // Sub-modules, and any changes to those submodules:
+  dCa_i_dt: winograd_destexhe_sanchez_vives_2008__dCa_i_dt(Ca_i, time_, I_CaL, F, R, T);
+
+  // Assignment Rules:
+  G := power(Z, 2 ) * power(F, 2 ) * 1e-3 * V / (R * T) * 1e-6 * (Ca_i - Ca_o * exp(Z * F * 1e-3 * V / (R * T))) / (1 - exp(1e-3 * Z * F * V / (R * T)));
+
+  // Variable initializations:
+  Z = 2;
+  Ca_o = 2;
+end
+
+model winograd_destexhe_sanchez_vives_2008__kinetic(p_1, o_1, o_2, alpha, beta, k_1Ca, k_2, k_3p, k_4)
+
+  // Assignment Rules:
+  p_0 := p_1 * k_2 / k_1Ca;
+  c_1 := beta / alpha * o_1;
+  o_1 := k_4 / k_3p * o_2;
+end
+
+model winograd_destexhe_sanchez_vives_2008__rate_constants(alpha, beta, k_1Ca, k_3p, V, V_S, p_1, k_2, k_4, Ca_i)
+
+  // Assignment Rules:
+  h_inf := 1 / (1 + exp((V + 75 - V_S) / 5.5 ));
+  tau_s := tau_m + 1000 / (exp((V + 71.55 - V_S) / 14.2 ) + exp(-((V + 89 - V_S)) / 11.6 ));
+  alpha := h_inf / tau_s;
+  beta := (1 - h_inf) / tau_s;
+  k_1Ca := k_2 * power(Ca_i / Ca_c, n_Ca);
+  k_3p := k_4 * power(p_1 / p_C, n_exp);
+
+  // Variable initializations:
+  k_2 = 0.1;
+  P_c = 0.01;
+  k_4 = 1;
+  n_Ca = 4;
+  n_exp = 1;
+  p_C = 0.01;
+  Ca_c = 0.006;
+  tau_m = 20e-3;
+end
+
+model winograd_destexhe_sanchez_vives_2008__I_h(I_h, V, V_S, Ca_i, o_1, o_2)
+
+  // Sub-modules, and any changes to those submodules:
+  kinetic: winograd_destexhe_sanchez_vives_2008__kinetic(p_1, o_1, o_2, alpha, beta, k_1Ca, k_2, k_3p, k_4);
+  rate_constants: winograd_destexhe_sanchez_vives_2008__rate_constants(alpha, beta, k_1Ca, k_3p, V, V_S, p_1, k_2, k_4, Ca_i);
+
+  // Assignment Rules:
+  I_h := 1000 * g_hbar * m * (V - E_h);
+  m := o_1 + g_inc + o_2;
+
+  // Variable initializations:
+  E_h = -20;
+  g_hbar = 0.02;
+  cac = 0.006;
+  V_S = 0;
+  g_inc = 2;
+end
+
+model winograd_destexhe_sanchez_vives_2008____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: winograd_destexhe_sanchez_vives_2008__environment(time_);
+  membrane: winograd_destexhe_sanchez_vives_2008__membrane(V, V_T, V_S, F, R, T, I_leak0, I_Na0, I_KD0, I_KM0, I_CaL0, I_h0, I_app, time_);
+  stimulus_protocol: winograd_destexhe_sanchez_vives_2008__stimulus_protocol(I_app, time_);
+  I_leak: winograd_destexhe_sanchez_vives_2008__I_leak(I_leak0, V);
+  I_Na: winograd_destexhe_sanchez_vives_2008__I_Na(I_Na0, V_S, V_T, V, time_, m, h);
+  I_KD: winograd_destexhe_sanchez_vives_2008__I_KD(I_KD0, E_K, V_T, V, time_, n);
+  I_KM: winograd_destexhe_sanchez_vives_2008__I_KM(I_KM0, E_K, V, time_, p);
+  I_CaL: winograd_destexhe_sanchez_vives_2008__I_CaL(I_CaL0, V, time_, G, q);
+  G_nonlin: winograd_destexhe_sanchez_vives_2008__G_nonlin(G, V, time_, F, R, T, I_CaL0, Ca_i);
+  I_h: winograd_destexhe_sanchez_vives_2008__I_h(I_h0, V, V_S0, Ca_i, o_1, o_2);
+end

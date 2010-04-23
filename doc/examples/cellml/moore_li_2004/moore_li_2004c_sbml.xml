@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="moore_2004____main" name="moore_2004____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Tn0" value="1510" constant="false"/>
+      <parameter id="Tn_sn" value="0.071"/>
+      <parameter id="Tn_dn" value="0.05"/>
+      <parameter id="kn" value="0.063"/>
+      <parameter id="eta" value="43"/>
+      <parameter id="C0" value="9600" constant="false"/>
+      <parameter id="Te0" value="20" constant="false"/>
+      <parameter id="Te_alpha_n" value="0.56"/>
+      <parameter id="Te_alpha_e" value="0.53"/>
+      <parameter id="Te_de" value="0.12"/>
+      <parameter id="Te_gamma_e" value="0.0077"/>
+      <parameter id="C_Cmax" value="190000"/>
+      <parameter id="C_rc" value="0.23"/>
+      <parameter id="C_dc" value="0.68"/>
+      <parameter id="C_gamma_c" value="0.047"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Tn0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Tn_sn </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Tn_dn </ci>
+                <ci> Tn0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kn </ci>
+                <ci> Tn0 </ci>
+                <apply>
+                  <divide/>
+                  <ci> C0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> C0 </ci>
+                    <ci> eta </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> C_rc </ci>
+              <ci> C0 </ci>
+              <apply>
+                <ln/>
+                <apply>
+                  <divide/>
+                  <ci> C_Cmax </ci>
+                  <ci> C0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> C_dc </ci>
+                <ci> C0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> C_gamma_c </ci>
+                <ci> C0 </ci>
+                <ci> Te0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Te0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Te_alpha_n </ci>
+                <ci> kn </ci>
+                <ci> Tn0 </ci>
+                <apply>
+                  <divide/>
+                  <ci> C0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> C0 </ci>
+                    <ci> eta </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Te_alpha_e </ci>
+                <ci> Te0 </ci>
+                <apply>
+                  <divide/>
+                  <ci> C0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> C0 </ci>
+                    <ci> eta </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Te_de </ci>
+                <ci> Te0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Te_gamma_e </ci>
+                <ci> C0 </ci>
+                <ci> Te0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

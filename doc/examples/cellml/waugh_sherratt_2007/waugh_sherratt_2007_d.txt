@@ -1,0 +1,173 @@
+//Created by libAntimony v1.3
+model waugh_model_2007__environment(time_)
+end
+
+model waugh_model_2007__phi_I(phi_I, alpha, k1, k2, k3, k5, k6, d1, phi_R, K_T, F, C, time_)
+
+  // Rate Rules:
+  phi_I' = alpha * K_T + k1 * k2 * phi_I * ( 1.0 - ( k3 * ( phi_I + phi_R ) + k5 * F + k6 * C )) - d1 * phi_I;
+
+  // Variable initializations:
+  phi_I = 200.0;
+end
+
+model waugh_model_2007__phi_R(phi_R, alpha, k1, k2, k3, k5, k6, d1, phi_I, K_T, F, C, time_)
+
+  // Rate Rules:
+  phi_R' = ( 1.0 - alpha ) * K_T + k1 * k2 * phi_R * ( 1.0 - ( k3 * ( phi_I + phi_R ) + k5 * F + k6 * C )) - d1 * phi_R;
+
+  // Variable initializations:
+  phi_R = 200.0;
+end
+
+model waugh_model_2007__T(T, k4, k7, d2, phi_I, F, time_)
+
+  // Assignment Rules:
+  Apligraf := piecewise( 0.0 , ( time_ >= 0.0) && (time_ < 28.0 ), 0.4 , ( time_ >= 28.0) && (time_ < 29.0 ), 0.0 , ( time_ >= 29.0) && (time_ < 35.0 ), 0.4 , ( time_ >= 35.0) && (time_ < 36.0 ), 0.0 , ( time_ >= 36.0) && (time_ < 42.0 ), 0.4 , ( time_ >= 42.0) && (time_ < 43.0 ), 0.0 , ( time_ >= 43.0) && (time_ < 49.0 ), 0.4 , ( time_ >= 49.0) && (time_ < 50.0 ), 0.0 , ( time_ >= 50.0) && (time_ < 56.0 ), 0.4 , ( time_ >= 56.0) && (time_ < 57.0 ), 0.0 , ( time_ >= 57.0) && (time_ < 63.0 ), 0.4 , ( time_ >= 63.0) && (time_ < 64.0 ), 0.0 , ( time_ >= 64.0) && (time_ < 70.0 ), 0.4 , ( time_ >= 70.0) && (time_ < 71.0 ), 0.0 , ( time_ >= 71.0) && (time_ < 77.0 ), 0.4 , ( time_ >= 77.0) && (time_ < 78.0 ), 0.0 );
+
+  // Rate Rules:
+  T' = k4 * phi_I + k7 * F + Apligraf - d2 * T;
+
+  // Variable initializations:
+  T = 6.0;
+end
+
+model waugh_model_2007__P(P, k8, k9, d3, phi_I, phi_R, F, time_)
+
+  // Assignment Rules:
+  Apligraf := piecewise( 0.0 , ( time_ >= 0.0) && (time_ < 28.0 ), 1.0 , ( time_ >= 28.0) && (time_ < 29.0 ), 0.0 , ( time_ >= 29.0) && (time_ < 35.0 ), 1.0 , ( time_ >= 35.0) && (time_ < 36.0 ), 0.0 , ( time_ >= 36.0) && (time_ < 42.0 ), 1.0 , ( time_ >= 42.0) && (time_ < 43.0 ), 0.0 , ( time_ >= 43.0) && (time_ < 49.0 ), 1.0 , ( time_ >= 49.0) && (time_ < 50.0 ), 0.0 , ( time_ >= 50.0) && (time_ < 56.0 ), 1.0 , ( time_ >= 56.0) && (time_ < 57.0 ), 0.0 , ( time_ >= 57.0) && (time_ < 63.0 ), 1.0 , ( time_ >= 63.0) && (time_ < 64.0 ), 0.0 , ( time_ >= 64.0) && (time_ < 70.0 ), 1.0 , ( time_ >= 70.0) && (time_ < 71.0 ), 0.0 , ( time_ >= 71.0) && (time_ < 77.0 ), 1.0 , ( time_ >= 77.0) && (time_ < 78.0 ), 0.0 );
+
+  // Rate Rules:
+  P' = k8 * ( phi_I + phi_R ) + k9 * F + Apligraf - d3 * P;
+
+  // Variable initializations:
+  P = 2.0;
+end
+
+model waugh_model_2007__F(F, k10, k3, k5, k6, d4, phi_I, phi_R, M_P, C, time_)
+
+  // Assignment Rules:
+  Apligraf := piecewise( 0.0 , ( time_ >= 0.0) && (time_ < 28.0 ), 8000.0 , ( time_ >= 28.0) && (time_ < 29.0 ), 0.0 , ( time_ >= 29.0) && (time_ < 35.0 ), 8000.0 , ( time_ >= 35.0) && (time_ < 36.0 ), 0.0 , ( time_ >= 36.0) && (time_ < 42.0 ), 8000.0 , ( time_ >= 42.0) && (time_ < 43.0 ), 0.0 , ( time_ >= 43.0) && (time_ < 49.0 ), 8000.0 , ( time_ >= 49.0) && (time_ < 50.0 ), 0.0 , ( time_ >= 50.0) && (time_ < 56.0 ), 8000.0 , ( time_ >= 56.0) && (time_ < 57.0 ), 0.0 , ( time_ >= 57.0) && (time_ < 63.0 ), 8000.0 , ( time_ >= 63.0) && (time_ < 64.0 ), 0.0 , ( time_ >= 64.0) && (time_ < 70.0 ), 8000.0 , ( time_ >= 70.0) && (time_ < 71.0 ), 0.0 , ( time_ >= 71.0) && (time_ < 77.0 ), 8000.0 , ( time_ >= 77.0) && (time_ < 78.0 ), 0.0 );
+
+  // Rate Rules:
+  F' = M_P + k10 * F * ( 1.0 - ( k3 * ( phi_I + phi_R ) + k5 * F + k6 * C )) + Apligraf - d4 * F;
+
+  // Variable initializations:
+  F = 50.0;
+end
+
+model waugh_model_2007__C(C, k11, f_T, g_C, d5, F, time_)
+
+  // Assignment Rules:
+  Apligraf := piecewise( 0.0 , ( time_ >= 0.0) && (time_ < 28.0 ), 18.75 , ( time_ >= 28.0) && (time_ < 29.0 ), 0.0 , ( time_ >= 29.0) && (time_ < 35.0 ), 18.75 , ( time_ >= 35.0) && (time_ < 36.0 ), 0.0 , ( time_ >= 36.0) && (time_ < 42.0 ), 18.75 , ( time_ >= 42.0) && (time_ < 43.0 ), 0.0 , ( time_ >= 43.0) && (time_ < 49.0 ), 18.75 , ( time_ >= 49.0) && (time_ < 50.0 ), 0.0 , ( time_ >= 50.0) && (time_ < 56.0 ), 18.75 , ( time_ >= 56.0) && (time_ < 57.0 ), 0.0 , ( time_ >= 57.0) && (time_ < 63.0 ), 18.75 , ( time_ >= 63.0) && (time_ < 64.0 ), 0.0 , ( time_ >= 64.0) && (time_ < 70.0 ), 18.75 , ( time_ >= 70.0) && (time_ < 71.0 ), 0.0 , ( time_ >= 71.0) && (time_ < 77.0 ), 18.75 , ( time_ >= 77.0) && (time_ < 78.0 ), 0.0 );
+
+  // Rate Rules:
+  C' = k11 * F * f_T * g_C + Apligraf - d5 * F * C;
+
+  // Variable initializations:
+  C = 10.0;
+end
+
+model waugh_model_2007__H(H, k12, d6, F, time_)
+
+  // Assignment Rules:
+  Apligraf := piecewise( 0.0 , ( time_ >= 0.0) && (time_ < 28.0 ), 80.0 , ( time_ >= 28.0) && (time_ < 29.0 ), 0.0 , ( time_ >= 29.0) && (time_ < 35.0 ), 80.0 , ( time_ >= 35.0) && (time_ < 36.0 ), 0.0 , ( time_ >= 36.0) && (time_ < 42.0 ), 80.0 , ( time_ >= 42.0) && (time_ < 43.0 ), 0.0 , ( time_ >= 43.0) && (time_ < 49.0 ), 80.0 , ( time_ >= 49.0) && (time_ < 50.0 ), 0.0 , ( time_ >= 50.0) && (time_ < 56.0 ), 80.0 , ( time_ >= 56.0) && (time_ < 57.0 ), 0.0 , ( time_ >= 57.0) && (time_ < 63.0 ), 80.0 , ( time_ >= 63.0) && (time_ < 64.0 ), 0.0 , ( time_ >= 64.0) && (time_ < 70.0 ), 80.0 , ( time_ >= 70.0) && (time_ < 71.0 ), 0.0 , ( time_ >= 71.0) && (time_ < 77.0 ), 80.0 , ( time_ >= 77.0) && (time_ < 78.0 ), 0.0 );
+
+  // Rate Rules:
+  H' = k12 * F + Apligraf - d6 * H;
+
+  // Variable initializations:
+  H = 0.01;
+end
+
+model waugh_model_2007__K_T(K_T, T)
+
+  // Assignment Rules:
+  K_T := tau1 * power( T , 3.0 ) + tau2 * power( T , 2.0 ) + tau3 * T + tau4;
+
+  // Variable initializations:
+  tau1 = -2.47;
+  tau2 = 21.94;
+  tau3 = 6.41;
+  tau4 = 1.75;
+end
+
+model waugh_model_2007__M_P(M_P, P)
+
+  // Assignment Rules:
+  M_P := tau1 * power( P , 3.0 ) + tau2 * power( P , 2.0 ) + tau3 * P + tau4;
+
+  // Variable initializations:
+  tau1 = 15.333;
+  tau2 = -167.21;
+  tau3 = 452.38;
+  tau4 = 2.6593;
+end
+
+model waugh_model_2007__f_T(f_T, T)
+
+  // Assignment Rules:
+  f_T := tau1 * power( T , 3.0 ) + tau2 * power( T , 2.0 ) + tau3 * T + tau4;
+
+  // Variable initializations:
+  tau1 = 0.0092;
+  tau2 = -0.1552;
+  tau3 = 0.6279;
+  tau4 = 0.2527;
+end
+
+model waugh_model_2007__g_C(g_C, C)
+
+  // Assignment Rules:
+  g_C := tau1 * power( C , 3.0 ) + tau2 * power( C , 2.0 ) + tau3 * C + tau4;
+
+  // Variable initializations:
+  tau1 = -4.33E-10;
+  tau2 = 0.0000009;
+  tau3 = -0.00055;
+  tau4 = 0.13;
+end
+
+model waugh_model_2007__model_parameters(alpha, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, d1, d2, d3, d4, d5, d6, H)
+
+  // Assignment Rules:
+  alpha := -(( 0.197 * log( H ))) + 0.4407;
+
+  // Variable initializations:
+  k1 = 0.05;
+  k2 = 0.693;
+  k3 = 0.002;
+  k4 = 0.07;
+  k5 = 0.0025;
+  k6 = 0.0004;
+  k7 = 0.004;
+  k8 = 0.015;
+  k9 = 0.0015;
+  k10 = 0.924;
+  k11 = 5.0;
+  k12 = 0.001;
+  d1 = 0.2;
+  d2 = 9.1;
+  d3 = 4.0;
+  d4 = 2.5;
+  d5 = 1.5E-5;
+  d6 = 0.7;
+end
+
+model waugh_model_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: waugh_model_2007__environment(time_);
+  phi_I: waugh_model_2007__phi_I(phi_I0, alpha, k1, k2, k3, k5, k6, d1, phi_R0, K_T0, F0, C0, time_);
+  phi_R: waugh_model_2007__phi_R(phi_R0, alpha, k1, k2, k3, k5, k6, d1, phi_I0, K_T0, F0, C0, time_);
+  T: waugh_model_2007__T(T0, k4, k7, d2, phi_I0, F0, time_);
+  P: waugh_model_2007__P(P0, k8, k9, d3, phi_I0, phi_R0, F0, time_);
+  F: waugh_model_2007__F(F0, k10, k3, k5, k6, d4, phi_I0, phi_R0, M_P0, C0, time_);
+  C: waugh_model_2007__C(C0, k11, f_T0, g_C0, d5, F0, time_);
+  H: waugh_model_2007__H(H0, k12, d6, F0, time_);
+  K_T: waugh_model_2007__K_T(K_T0, T0);
+  M_P: waugh_model_2007__M_P(M_P0, P0);
+  f_T: waugh_model_2007__f_T(f_T0, T0);
+  g_C: waugh_model_2007__g_C(g_C0, C0);
+  model_parameters: waugh_model_2007__model_parameters(alpha, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, d1, d2, d3, d4, d5, d6, H0);
+end

@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="capillary_dynamics_CellML1_0_model____main" name="capillary_dynamics_CellML1_0_model____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="VEC" value="14.8548"/>
+      <parameter id="PPD" value="4.4805e-06"/>
+      <parameter id="RVS" value="2.77751"/>
+      <parameter id="DFP" value="-4.078e-07"/>
+      <parameter id="VPF" value="0.0123238"/>
+      <parameter id="BFN" value="2.79521"/>
+      <parameter id="PVS" value="3.71612"/>
+      <parameter id="capillary_dynamics_CFC" value="0.01167"/>
+      <parameter id="capillary_dynamics_TRPL" value="0"/>
+      <parameter id="capillary_dynamics_CPR" value="40"/>
+      <parameter id="capillary_dynamics_LPDE" value="8"/>
+      <parameter id="capillary_dynamics_PCE" value="1"/>
+      <parameter id="capillary_dynamics_PCR" value="15"/>
+      <parameter id="capillary_dynamics_LPK" value="2.728e-14"/>
+      <parameter id="capillary_dynamics_LPPR" value="0.03"/>
+      <parameter id="capillary_dynamics_CPK" value="0.000253"/>
+      <parameter id="capillary_dynamics_TSSLML" value="0.15"/>
+      <parameter id="capillary_dynamics_TSSLTC" value="0.005"/>
+      <parameter id="capillary_dynamics_HYL" value="60"/>
+      <parameter id="capillary_dynamics_CMPTSS" value="2"/>
+      <parameter id="capillary_dynamics_PGHF" value="-2"/>
+      <parameter id="capillary_dynamics_GCOPF" value="0.8092"/>
+      <parameter id="capillary_dynamics_VTSF" value="6"/>
+      <parameter id="capillary_dynamics_PLDF" value="4.2"/>
+      <parameter id="capillary_dynamics_PC" constant="false"/>
+      <parameter id="capillary_dynamics_PGH" constant="false"/>
+      <parameter id="capillary_dynamics_PTC" constant="false"/>
+      <parameter id="capillary_dynamics_PPC" constant="false"/>
+      <parameter id="capillary_dynamics_VTCPL" constant="false"/>
+      <parameter id="capillary_dynamics_VTC" constant="false"/>
+      <parameter id="capillary_dynamics_VTL" constant="false"/>
+      <parameter id="capillary_dynamics_VP" value="3.00449" constant="false"/>
+      <parameter id="capillary_dynamics_plasma_volume_VPD" constant="false"/>
+      <parameter id="capillary_dynamics_PRP" value="216.243" constant="false"/>
+      <parameter id="capillary_dynamics_CPP" constant="false"/>
+      <parameter id="capillary_dynamics_DLP" constant="false"/>
+      <parameter id="capillary_dynamics_protein_destruction_and_formation_CPPD" constant="false"/>
+      <parameter id="capillary_dynamics_plasma_leakage_PRCD" constant="false"/>
+      <parameter id="capillary_dynamics_CPI" constant="false"/>
+      <parameter id="capillary_dynamics_DPC" constant="false"/>
+      <parameter id="capillary_dynamics_DPL" constant="false"/>
+      <parameter id="capillary_dynamics_total_plasma_protein_DPP" constant="false"/>
+      <parameter id="capillary_dynamics_VTS" constant="false"/>
+      <parameter id="capillary_dynamics_VTS1" constant="false"/>
+      <parameter id="capillary_dynamics_interstitial_fluid_volume_VTS2" value="0" constant="false"/>
+      <parameter id="capillary_dynamics_TSP" value="279.945" constant="false"/>
+      <parameter id="capillary_dynamics_total_interstitial_protein_DPI" constant="false"/>
+      <parameter id="capillary_dynamics_PTCPR" constant="false"/>
+      <parameter id="capillary_dynamics_PTT" constant="false"/>
+      <parameter id="capillary_dynamics_CHY" constant="false"/>
+      <parameter id="capillary_dynamics_POSHYL" constant="false"/>
+      <parameter id="capillary_dynamics_PIF" constant="false"/>
+      <parameter id="capillary_dynamics_PTS" constant="false"/>
+      <parameter id="capillary_dynamics_lymph_flow_PLD1" constant="false"/>
+      <parameter id="capillary_dynamics_lymph_flow_PLD" constant="false"/>
+      <parameter id="capillary_dynamics_VG" constant="false"/>
+      <parameter id="capillary_dynamics_VIF" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="capillary_dynamics_PC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> RVS </ci>
+              <cn> 1.7 </cn>
+              <ci> BFN </ci>
+            </apply>
+            <ci> PVS </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_PGH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> capillary_dynamics_CHY </ci>
+              <ci> capillary_dynamics_PGHF </ci>
+            </apply>
+            <ci> capillary_dynamics_PTT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_PTC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> capillary_dynamics_POSHYL </ci>
+            <ci> capillary_dynamics_PTCPR </ci>
+            <ci> capillary_dynamics_GCOPF </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_PPC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <cn> 0.28 </cn>
+              <ci> capillary_dynamics_CPP </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn> 0.0019 </cn>
+              <apply>
+                <power/>
+                <ci> capillary_dynamics_CPP </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_VTCPL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <times/>
+              <ci> capillary_dynamics_plasma_leakage_PRCD </ci>
+              <ci> capillary_dynamics_CPK </ci>
+            </apply>
+            <ci> capillary_dynamics_PCE </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_VTC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <minus/>
+                    <ci> capillary_dynamics_PC </ci>
+                    <ci> capillary_dynamics_PPC </ci>
+                  </apply>
+                  <ci> capillary_dynamics_PGH </ci>
+                </apply>
+                <ci> capillary_dynamics_PTC </ci>
+              </apply>
+              <ci> capillary_dynamics_CFC </ci>
+            </apply>
+            <ci> capillary_dynamics_VTCPL </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_VTL"/>
+      <rateRule variable="capillary_dynamics_VP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> capillary_dynamics_plasma_volume_VPD </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="capillary_dynamics_plasma_volume_VPD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> capillary_dynamics_VTL </ci>
+                <ci> capillary_dynamics_VTC </ci>
+              </apply>
+              <ci> DFP </ci>
+            </apply>
+            <ci> capillary_dynamics_TRPL </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="capillary_dynamics_PRP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> capillary_dynamics_total_plasma_protein_DPP </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="capillary_dynamics_CPP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> capillary_dynamics_PRP </ci>
+            <ci> capillary_dynamics_VP </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_DLP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> capillary_dynamics_LPPR </ci>
+            <apply>
+              <times/>
+              <apply>
+                <power/>
+                <ci> capillary_dynamics_protein_destruction_and_formation_CPPD </ci>
+                <ci> capillary_dynamics_LPDE </ci>
+              </apply>
+              <ci> capillary_dynamics_LPK </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_protein_destruction_and_formation_CPPD"/>
+      <assignmentRule variable="capillary_dynamics_plasma_leakage_PRCD"/>
+      <assignmentRule variable="capillary_dynamics_CPI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> capillary_dynamics_TSP </ci>
+            <ci> capillary_dynamics_VTS </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_DPC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> capillary_dynamics_VTCPL </ci>
+              <ci> capillary_dynamics_CPP </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> capillary_dynamics_CPP </ci>
+                <ci> capillary_dynamics_CPI </ci>
+              </apply>
+              <cn> 0.00104 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_DPL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> capillary_dynamics_CPI </ci>
+            <ci> capillary_dynamics_VTL </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_total_plasma_protein_DPP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci> capillary_dynamics_DLP </ci>
+                  <ci> capillary_dynamics_DPL </ci>
+                </apply>
+                <ci> capillary_dynamics_DPC </ci>
+              </apply>
+              <ci> PPD </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> capillary_dynamics_TRPL </ci>
+              <cn type="integer"> 72 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_VTS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> VEC </ci>
+              <ci> capillary_dynamics_VP </ci>
+            </apply>
+            <ci> VPF </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_VTS1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> capillary_dynamics_VTS </ci>
+            <ci> capillary_dynamics_interstitial_fluid_volume_VTS2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="capillary_dynamics_interstitial_fluid_volume_VTS2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> capillary_dynamics_VTS </ci>
+                  <cn type="integer"> 12 </cn>
+                </apply>
+                <ci> capillary_dynamics_TSSLML </ci>
+              </apply>
+              <ci> capillary_dynamics_interstitial_fluid_volume_VTS2 </ci>
+            </apply>
+            <ci> capillary_dynamics_TSSLTC </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="capillary_dynamics_TSP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> capillary_dynamics_total_interstitial_protein_DPI </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="capillary_dynamics_total_interstitial_protein_DPI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> capillary_dynamics_DPC </ci>
+            <ci> capillary_dynamics_DPL </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_PTCPR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <cn> 0.28 </cn>
+              <ci> capillary_dynamics_CPI </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn> 0.0019 </cn>
+              <apply>
+                <power/>
+                <ci> capillary_dynamics_CPI </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_PTT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <power/>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <ci> capillary_dynamics_VTS1 </ci>
+                  <ci> capillary_dynamics_VTSF </ci>
+                </apply>
+                <ci> capillary_dynamics_VTSF </ci>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_CHY">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <divide/>
+              <apply>
+                <divide/>
+                <ci> capillary_dynamics_HYL </ci>
+                <ci> capillary_dynamics_VTS </ci>
+              </apply>
+              <cn type="integer"> 5 </cn>
+            </apply>
+            <ci> capillary_dynamics_CMPTSS </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_POSHYL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> capillary_dynamics_CHY </ci>
+            <cn type="integer"> 2 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_PIF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> capillary_dynamics_PGH </ci>
+            <ci> capillary_dynamics_POSHYL </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_PTS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> capillary_dynamics_PTT </ci>
+            <ci> capillary_dynamics_PIF </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_lymph_flow_PLD1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> capillary_dynamics_PIF </ci>
+              <ci> capillary_dynamics_PLDF </ci>
+            </apply>
+            <ci> capillary_dynamics_PTT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="capillary_dynamics_lymph_flow_PLD"/>
+      <assignmentRule variable="capillary_dynamics_VG"/>
+      <assignmentRule variable="capillary_dynamics_VIF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> capillary_dynamics_VTS </ci>
+            <ci> capillary_dynamics_VG </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

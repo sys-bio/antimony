@@ -1,0 +1,90 @@
+//Created by libAntimony v1.3
+model vilar_2006__environment(time_)
+end
+
+model vilar_2006__l(l, time_)
+
+  // Assignment Rules:
+  l := piecewise( 0.01 , time_ >= 2500 , 0.00003 );
+end
+
+model vilar_2006__l_RI_RII(l_RI_RII, l, RI, RII, ka, ki, kcd, klid, time_)
+
+  // Rate Rules:
+  l_RI_RII' = ka * l * RI * RII - ( kcd + klid + ki ) * l_RI_RII;
+
+  // Variable initializations:
+  l_RI_RII = 0.0;
+end
+
+model vilar_2006__RI(RI, l, RI_endo, RII, l_RI_RII_endo, ka, kcd, ki, kr, p_RI, alpha, time_)
+
+  // Rate Rules:
+  RI' = p_RI + kr * RI_endo + alpha * kr * l_RI_RII_endo - ( ka * l * RI * RII + ( kcd + ki ) * RI );
+
+  // Variable initializations:
+  RI = 20.0;
+end
+
+model vilar_2006__RII(RII, l, RII_endo, RI, l_RI_RII_endo, ka, kcd, ki, kr, p_RII, alpha, time_)
+
+  // Rate Rules:
+  RII' = p_RII + kr * RII_endo + alpha * kr * l_RI_RII_endo - ( ka * l * RI * RII + ( kcd + ki ) * RII );
+
+  // Variable initializations:
+  RII = 20.0;
+end
+
+model vilar_2006__l_RI_RII_endo(l_RI_RII_endo, l_RI_RII, ki, kr, time_)
+
+  // Rate Rules:
+  l_RI_RII_endo' = ki * l_RI_RII - kr * l_RI_RII_endo;
+
+  // Variable initializations:
+  l_RI_RII_endo = 40.0;
+end
+
+model vilar_2006__RI_endo(RI_endo, RI, ki, kr, time_)
+
+  // Rate Rules:
+  RI_endo' = ki * RI - kr * RI_endo;
+
+  // Variable initializations:
+  RI_endo = 0.0;
+end
+
+model vilar_2006__RII_endo(RII_endo, RII, ki, kr, time_)
+
+  // Rate Rules:
+  RII_endo' = ki * RII - kr * RII_endo;
+
+  // Variable initializations:
+  RII_endo = 0.0;
+end
+
+model vilar_2006__model_parameters(kr, kcd, klid, ka, ki, p_RI, p_RII, alpha)
+
+  // Variable initializations:
+  kr = 0.033333333;
+  kcd = 0.0277777778;
+  klid = 0.25;
+  ka = 1;
+  ki = 0.333333333;
+  p_RI = 8;
+  p_RII = 4;
+  alpha = 1;
+end
+
+model vilar_2006____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: vilar_2006__environment(time_);
+  l: vilar_2006__l(l0, time_);
+  l_RI_RII: vilar_2006__l_RI_RII(l_RI_RII0, l0, RI0, RII0, ka, ki, kcd, klid, time_);
+  RI: vilar_2006__RI(RI0, l0, RI_endo0, RII0, l_RI_RII_endo0, ka, kcd, ki, kr, p_RI, alpha, time_);
+  RII: vilar_2006__RII(RII0, l0, RII_endo0, RI0, l_RI_RII_endo0, ka, kcd, ki, kr, p_RII, alpha, time_);
+  l_RI_RII_endo: vilar_2006__l_RI_RII_endo(l_RI_RII_endo0, l_RI_RII0, ki, kr, time_);
+  RI_endo: vilar_2006__RI_endo(RI_endo0, RI0, ki, kr, time_);
+  RII_endo: vilar_2006__RII_endo(RII_endo0, RII0, ki, kr, time_);
+  model_parameters: vilar_2006__model_parameters(kr, kcd, klid, ka, ki, p_RI, p_RII, alpha);
+end

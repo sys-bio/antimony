@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="panerai_1980____main" name="panerai_1980____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="x" value="10"/>
+      <parameter id="n" value="0" constant="false"/>
+      <parameter id="A_c" value="1" constant="false"/>
+      <parameter id="f" constant="false"/>
+      <parameter id="g" constant="false"/>
+      <parameter id="h" value="12"/>
+      <parameter id="Crossbridges_attached_g_mod_g_1" value="40"/>
+      <parameter id="Crossbridges_attached_g_mod_g_2" value="240"/>
+      <parameter id="Crossbridges_attached_f_mod_f_1" value="70"/>
+      <parameter id="Ca_f" constant="false"/>
+      <parameter id="Ca_sarcoplasm_t_d" value="0.3"/>
+      <parameter id="Ca_sarcoplasm_a_1" value="200"/>
+      <parameter id="Ca_sarcoplasm_b_1" value="5"/>
+      <parameter id="Ca_sarcoplasm_Ca_0" value="4.5e-07"/>
+      <parameter id="Actin_free_c_1" value="200000000000000"/>
+      <parameter id="Actin_free_c_2" constant="false"/>
+      <parameter id="Actin_free_c_2_0" value="20"/>
+      <parameter id="Actin_free_k_i" value="30.9"/>
+      <parameter id="s_h0" constant="false"/>
+      <parameter id="Actin_free_q" value="1.45"/>
+      <parameter id="Actin_free_AT_0" value="2"/>
+      <parameter id="F_SE" constant="false"/>
+      <parameter id="alpha_s" value="0.1027"/>
+      <parameter id="beta_s" value="20"/>
+      <parameter id="x_s" constant="false"/>
+      <parameter id="x_so" value="0.0387"/>
+      <parameter id="x_m" constant="false"/>
+      <parameter id="L_max" value="1"/>
+      <parameter id="F_PE" constant="false"/>
+      <parameter id="alpha_p" value="0.00224"/>
+      <parameter id="beta_p" value="20"/>
+      <parameter id="x_p" constant="false"/>
+      <parameter id="x_po" value="0.221"/>
+      <parameter id="F_CE" constant="false"/>
+      <parameter id="s_h_F_PL" value="3"/>
+      <parameter id="X_S_0" constant="false"/>
+      <parameter id="X_0_F_PL" value="3"/>
+      <parameter id="t"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> f </ci>
+              <apply>
+                <minus/>
+                <ci> A_c </ci>
+                <ci> n </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> g </ci>
+              <ci> n </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="A_c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> Actin_free_c_1 </ci>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> Ca_f </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> Actin_free_AT_0 </ci>
+                <ci> A_c </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Actin_free_c_2 </ci>
+              <ci> A_c </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="f"/>
+      <assignmentRule variable="g"/>
+      <assignmentRule variable="Ca_f">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ca_sarcoplasm_Ca_0 </ci>
+            <apply>
+              <abs/>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <minus/>
+                      <ci> Ca_sarcoplasm_a_1 </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> t </ci>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> Ca_sarcoplasm_b_1 </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <ci> t </ci>
+                    <ci> Ca_sarcoplasm_t_d </ci>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Actin_free_c_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Actin_free_c_2_0 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <ci> Actin_free_k_i </ci>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> s_h0 </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <ci> Actin_free_q </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="s_h0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> x_po </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <cn type="integer"> 1 </cn>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <ln/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> s_h_F_PL </ci>
+                      <ci> alpha_p </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> beta_p </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F_SE">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> alpha_s </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> beta_s </ci>
+                    <ci> x_s </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="x_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> x_so </ci>
+              <ci> s_h0 </ci>
+              <ci> x_m </ci>
+            </apply>
+            <ci> L_max </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="x_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> X_S_0 </ci>
+                <ci> L_max </ci>
+              </apply>
+              <ci> s_h0 </ci>
+            </apply>
+            <ci> x_so </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F_PE">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> alpha_p </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> beta_p </ci>
+                    <ci> x_p </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="x_p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> x_po </ci>
+            <ci> s_h0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F_CE">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> F_SE </ci>
+            <ci> F_PE </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="X_S_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="integer"> 1 </cn>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <ln/>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> X_0_F_PL </ci>
+                    <ci> alpha_s </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <ci> beta_s </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

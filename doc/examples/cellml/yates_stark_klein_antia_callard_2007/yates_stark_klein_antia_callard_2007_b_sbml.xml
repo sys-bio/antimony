@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="yates_stark_klein_antia_callard_model_2007_version01____main" name="yates_stark_klein_antia_callard_model_2007_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="x0" constant="false"/>
+      <parameter id="d1" value="0.005"/>
+      <parameter id="a" value="0.03333"/>
+      <parameter id="r" value="1"/>
+      <parameter id="y0" value="0" constant="false"/>
+      <parameter id="kappa" value="1"/>
+      <parameter id="y_d2" constant="false"/>
+      <parameter id="p" value="200"/>
+      <parameter id="z0" value="0.01" constant="false"/>
+      <parameter id="z_v" value="0.5"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="x0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 10 <sep/> -1 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="x0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> r </ci>
+              <ci> y0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> a </ci>
+                <ci> x0 </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> x0 </ci>
+                    <ci> kappa </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> d1 </ci>
+                <ci> x0 </ci>
+                <apply>
+                  <divide/>
+                  <ci> x0 </ci>
+                  <ci> kappa </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="y0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> a </ci>
+              <ci> x0 </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> x0 </ci>
+                  <ci> kappa </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> r </ci>
+                  <ci> y_d2 </ci>
+                </apply>
+                <ci> y0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> p </ci>
+                <ci> z0 </ci>
+                <ci> y0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="y_d2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <cn> 99 </cn>
+                  <ci> a </ci>
+                  <ci> d1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> a </ci>
+                <ci> r </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> d1 </ci>
+                <ci> r </ci>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> a </ci>
+              <ci> d1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="z0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> p </ci>
+              <ci> z0 </ci>
+              <ci> y0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> z_v </ci>
+              <ci> z0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

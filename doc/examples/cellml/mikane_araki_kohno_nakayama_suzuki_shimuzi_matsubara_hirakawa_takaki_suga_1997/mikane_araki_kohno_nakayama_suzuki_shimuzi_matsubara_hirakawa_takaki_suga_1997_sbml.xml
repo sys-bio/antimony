@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="mikane_araki_kohno_nakayama_et_al_1997____main" name="mikane_araki_kohno_nakayama_et_al_1997____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="equations_Ca_t" value="0" constant="false"/>
+      <parameter id="equations_TnCa_t" value="0" constant="false"/>
+      <parameter id="equations_CB_on_t" value="0" constant="false"/>
+      <parameter id="equations_Ca_released" value="0" constant="false"/>
+      <parameter id="equations_Ca_sequestered" value="0" constant="false"/>
+      <parameter id="equations_cumCB_on_t" value="0" constant="false"/>
+      <parameter id="equations_cumCB_off_t" value="0" constant="false"/>
+      <parameter id="equations_Ca_release_rate" constant="false"/>
+      <parameter id="equations_dTnCa_t_dt" constant="false"/>
+      <parameter id="equations_Ca_tot_released" value="35"/>
+      <parameter id="equations_total_Tn" value="70"/>
+      <parameter id="equations_total_CB" value="150"/>
+      <parameter id="equations_k_1" value="5000000"/>
+      <parameter id="equations_k_2" value="10"/>
+      <parameter id="equations_k_3" value="1000"/>
+      <parameter id="equations_f" value="400000"/>
+      <parameter id="equations_g" value="10"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="equations_Ca_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> equations_Ca_release_rate </ci>
+              <apply>
+                <times/>
+                <ci> equations_k_3 </ci>
+                <ci> equations_Ca_t </ci>
+              </apply>
+            </apply>
+            <ci> equations_dTnCa_t_dt </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="equations_TnCa_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> equations_k_1 </ci>
+              <ci> equations_Ca_t </ci>
+              <apply>
+                <minus/>
+                <ci> equations_total_Tn </ci>
+                <ci> equations_TnCa_t </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> equations_k_2 </ci>
+              <ci> equations_TnCa_t </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="equations_CB_on_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> equations_f </ci>
+              <ci> equations_TnCa_t </ci>
+              <apply>
+                <minus/>
+                <ci> equations_total_CB </ci>
+                <ci> equations_CB_on_t </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> equations_g </ci>
+              <ci> equations_CB_on_t </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="equations_Ca_released">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> equations_Ca_release_rate </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="equations_Ca_sequestered">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_k_3 </ci>
+            <ci> equations_Ca_t </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="equations_cumCB_on_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_f </ci>
+            <ci> equations_TnCa_t </ci>
+            <apply>
+              <minus/>
+              <ci> equations_total_CB </ci>
+              <ci> equations_CB_on_t </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="equations_cumCB_off_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_g </ci>
+            <ci> equations_CB_on_t </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="equations_Ca_release_rate"/>
+      <assignmentRule variable="equations_dTnCa_t_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> equations_k_1 </ci>
+              <ci> equations_Ca_t </ci>
+              <apply>
+                <minus/>
+                <ci> equations_total_Tn </ci>
+                <ci> equations_TnCa_t </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> equations_k_2 </ci>
+              <ci> equations_TnCa_t </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

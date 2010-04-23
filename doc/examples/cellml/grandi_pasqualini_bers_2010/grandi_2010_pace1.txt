@@ -1,0 +1,528 @@
+//Created by libAntimony v1.3
+model grandi_2010_pace1__Protocol(I_app, time_)
+
+  // Assignment Rules:
+  I_app := piecewise( 9.5 , rem(time_, 1000 ) <= 5 , 0 );
+end
+
+model grandi_pasqualini_bers_2010__environment(time_)
+end
+
+model grandi_pasqualini_bers_2010__parameters(epi, R, Frdy, Temp, FoRT, Cmem, Qpow, cellLength, cellRadius, junctionLength, junctionRadius, distSLcyto, distJuncSL, DcaJuncSL, DcaSLcyto, DnaJuncSL, DnaSLcyto, Vcell, Vmyo, Vsr, Vsl, Vjunc, SAjunc, SAsl, J_ca_juncsl, J_ca_slmyo, J_na_juncsl, J_na_slmyo, Fjunc, Fsl, Fjunc_CaL, Fsl_CaL, Cli, Clo, Ko, Nao, Cao, Mgi, ena_junc, ena_sl, ek, eca_junc, eca_sl, ecl, GNa, GNaB, IbarNaK, KmNaip, KmKo, Q10NaK, Q10KmNai, pNaK, gkp, GClCa, GClB, KdClCa, pNa, pCa, pK, Q10CaL, IbarNCX, KmCai, KmCao, KmNai, KmNao, ksat, nu, Kdact, Q10NCX, IbarSLCaP, KmPCa, GCaB, Q10SLCaP, Q10SRCaP, Vmax_SRCaP, Kmf, Kmr, hillSRCaP, ks, koCa, kom, kiCa, kim, ec50SR, Bmax_Naj, Bmax_Nasl, koff_na, kon_na, Bmax_TnClow, koff_tncl, kon_tncl, Bmax_TnChigh, koff_tnchca, kon_tnchca, koff_tnchmg, kon_tnchmg, Bmax_CaM, koff_cam, kon_cam, Bmax_myosin, koff_myoca, kon_myoca, koff_myomg, kon_myomg, Bmax_SR, koff_sr, kon_sr, Bmax_SLlowsl, Bmax_SLlowj, koff_sll, kon_sll, Bmax_SLhighsl, Bmax_SLhighj, koff_slh, kon_slh, Bmax_Csqn, koff_csqn, kon_csqn, Na_j, Na_sl, K_i, Ca_j, Ca_sl)
+
+  // Assignment Rules:
+  epi := 1;
+  R := 8314;
+  Frdy := 96485;
+  Temp := 310;
+  FoRT := Frdy / (R * Temp);
+  Cmem := 1.381E-10;
+  Qpow := (Temp - 310 ) / 10;
+  cellLength := 100;
+  cellRadius := 10.25;
+  junctionLength := 160E-3;
+  junctionRadius := 15E-3;
+  distSLcyto := 0.45;
+  distJuncSL := 0.5;
+  DcaJuncSL := 1.64E-6;
+  DcaSLcyto := 1.22E-6;
+  DnaJuncSL := 1.09E-5;
+  DnaSLcyto := 1.79E-5;
+  Vcell := pi * power(cellRadius, 2 ) * cellLength * 1E-15;
+  Vmyo := 0.65 * Vcell;
+  Vsr := 0.035 * Vcell;
+  Vsl := 0.02 * Vcell;
+  Vjunc := 0.0539 * 0.01 * Vcell;
+  SAjunc := 20150 * pi * 2 * junctionLength * junctionRadius;
+  SAsl := pi * 2 * cellRadius * cellLength;
+  J_ca_juncsl := 8.2413E-13;
+  J_ca_slmyo := 3.2743E-12;
+  J_na_juncsl := 1.8313E-14;
+  J_na_slmyo := 1.6386E-12;
+  Fjunc := 0.11;
+  Fsl := 1 - Fjunc;
+  Fjunc_CaL := 0.9;
+  Fsl_CaL := 1 - Fjunc_CaL;
+  Cli := 15;
+  Clo := 150;
+  Ko := 5.4;
+  Nao := 140;
+  Cao := 1.8;
+  Mgi := 1;
+  ena_junc := 1 / FoRT * ln(Nao / Na_j);
+  ena_sl := 1 / FoRT * ln(Nao / Na_sl);
+  ek := 1 / FoRT * ln(Ko / K_i);
+  eca_junc := 1 / FoRT / 2 * ln(Cao / Ca_j);
+  eca_sl := 1 / FoRT / 2 * ln(Cao / Ca_sl);
+  ecl := 1 / FoRT * ln(Cli / Clo);
+  GNa := 23;
+  GNaB := 0.597E-3;
+  IbarNaK := 1 * 1.8;
+  KmNaip := 11;
+  KmKo := 1.5;
+  Q10NaK := 1.63;
+  Q10KmNai := 1.39;
+  pNaK := 0.01833;
+  gkp := 2 * 0.001;
+  GClCa := 0.5 * 0.109625;
+  GClB := 1 * 9E-3;
+  KdClCa := 100E-3;
+  pNa := 0.5 * 1.5E-8;
+  pCa := 0.5 * 5.4E-4;
+  pK := 0.5 * 2.7E-7;
+  Q10CaL := 1.8;
+  IbarNCX := 1 * 4.5;
+  KmCai := 3.59E-3;
+  KmCao := 1.3;
+  KmNai := 12.29;
+  KmNao := 87.5;
+  ksat := 0.32;
+  nu := 0.27;
+  Kdact := 0.15E-3;
+  Q10NCX := 1.57;
+  IbarSLCaP := 0.0673;
+  KmPCa := 0.5E-3;
+  GCaB := 5.513E-4;
+  Q10SLCaP := 2.35;
+  Q10SRCaP := 2.6;
+  Vmax_SRCaP := 5.3114E-3;
+  Kmf := 0.246E-3;
+  Kmr := 1.7;
+  hillSRCaP := 1.787;
+  ks := 25;
+  koCa := 10;
+  kom := 0.06;
+  kiCa := 0.5;
+  kim := 0.005;
+  ec50SR := 0.45;
+  Bmax_Naj := 7.561;
+  Bmax_Nasl := 1.65;
+  koff_na := 1E-3;
+  kon_na := 0.1E-3;
+  Bmax_TnClow := 70E-3;
+  koff_tncl := 19.6E-3;
+  kon_tncl := 32.7;
+  Bmax_TnChigh := 140E-3;
+  koff_tnchca := 0.032E-3;
+  kon_tnchca := 2.37;
+  koff_tnchmg := 3.33E-3;
+  kon_tnchmg := 3E-3;
+  Bmax_CaM := 24E-3;
+  koff_cam := 238E-3;
+  kon_cam := 34;
+  Bmax_myosin := 140E-3;
+  koff_myoca := 0.46E-3;
+  kon_myoca := 13.8;
+  koff_myomg := 0.057E-3;
+  kon_myomg := 0.0157;
+  Bmax_SR := 19 * 0.9E-3;
+  koff_sr := 60E-3;
+  kon_sr := 100;
+  Bmax_SLlowsl := 37.4E-3 * Vmyo / Vsl;
+  Bmax_SLlowj := 4.6E-3 * Vmyo / Vjunc * 0.1;
+  koff_sll := 1300E-3;
+  kon_sll := 100;
+  Bmax_SLhighsl := 13.4E-3 * Vmyo / Vsl;
+  Bmax_SLhighj := 1.65E-3 * Vmyo / Vjunc * 0.1;
+  koff_slh := 30E-3;
+  kon_slh := 100;
+  Bmax_Csqn := 140E-3 * Vmyo / Vsr;
+  koff_csqn := 65;
+  kon_csqn := 100;
+end
+
+model grandi_pasqualini_bers_2010__I_Na(mss, taum, ah, bh, tauh, hss, aj, bj, tauj, jss, m, h, j, I_Na_junc, I_Na_sl, I_Na, V_m, time_, Fjunc, Fsl, GNa, ena_junc, ena_sl)
+
+  // Assignment Rules:
+  mss := 1 / power(1 + exp(-((56.86 + V_m)) / 9.03 ), 2 );
+  taum := 0.1292 * exp(-(power((V_m + 45.79 ) / 15.54 , 2 ))) + 0.06487 * exp(-(power((V_m - 4.823 ) / 51.12 , 2 )));
+  ah := piecewise( 0 , V_m >= -(40 ) , 0.057 * exp(-((V_m + 80 )) / 6.8 ) );
+  bh := piecewise( 0.77 / (0.13 * (1 + exp(-((V_m + 10.66 )) / 11.1 ))) , V_m >= -(40 ) , 2.7 * exp(0.079 * V_m) + 3.1E5 * exp(0.3485 * V_m) );
+  tauh := 1 / (ah + bh);
+  hss := 1 / power(1 + exp((V_m + 71.55 ) / 7.43 ), 2 );
+  aj := piecewise( 0 , V_m >= -(40 ) , (-(2.5428E4 ) * exp(0.2444 * V_m) - 6.948E-6 * exp(-(0.04391 ) * V_m)) * (V_m + 37.78 ) / (1 + exp(0.311 * (V_m + 79.23 ))) );
+  bj := piecewise( 0.6 * exp(0.057 * V_m) / (1 + exp(-(0.1 ) * (V_m + 32 ))) , V_m >= -(40 ) , 0.02424 * exp(-(0.01052 ) * V_m) / (1 + exp(-(0.1378 ) * (V_m + 40.14 ))) );
+  tauj := 1 / (aj + bj);
+  jss := 1 / power(1 + exp((V_m + 71.55 ) / 7.43 ), 2 );
+  I_Na_junc := Fjunc * GNa * power(m, 3 ) * h * j * (V_m - ena_junc);
+  I_Na_sl := Fsl * GNa * power(m, 3 ) * h * j * (V_m - ena_sl);
+  I_Na := I_Na_junc + I_Na_sl;
+
+  // Rate Rules:
+  m' = (mss - m) / taum;
+  h' = (hss - h) / tauh;
+  j' = (jss - j) / tauj;
+
+  // Variable initializations:
+  m = 1.405627e-3;
+  h = 9.867005e-1;
+  j = 9.91562e-1;
+end
+
+model grandi_pasqualini_bers_2010__I_NaBK(I_nabk_junc, I_nabk_sl, I_nabk, V_m, Fjunc, Fsl, GNaB, ena_junc, ena_sl)
+
+  // Assignment Rules:
+  I_nabk_junc := Fjunc * GNaB * (V_m - ena_junc);
+  I_nabk_sl := Fsl * GNaB * (V_m - ena_sl);
+  I_nabk := I_nabk_junc + I_nabk_sl;
+end
+
+model grandi_pasqualini_bers_2010__I_NaK(sigma, fnak, I_nak_junc, I_nak_sl, I_nak, V_m, Nao, Ko, FoRT, Fjunc, Fsl, IbarNaK, KmKo, KmNaip, Na_j, Na_sl)
+
+  // Assignment Rules:
+  sigma := (exp(Nao / 67.3 ) - 1 ) / 7;
+  fnak := 1 / (1 + 0.1245 * exp(-(0.1 ) * V_m * FoRT) + 0.0365 * sigma * exp(-(V_m) * FoRT));
+  I_nak_junc := Fjunc * IbarNaK * fnak * Ko / (1 + power(KmNaip / Na_j, 4 )) / (Ko + KmKo);
+  I_nak_sl := Fsl * IbarNaK * fnak * Ko / (1 + power(KmNaip / Na_sl, 4 )) / (Ko + KmKo);
+  I_nak := I_nak_junc + I_nak_sl;
+end
+
+model grandi_pasqualini_bers_2010__I_Kr(gkr, xrss, tauxr, x_kr, rkr, I_kr, V_m, time_, Ko, ek)
+
+  // Assignment Rules:
+  gkr := 0.035 * root(Ko / 5.4 );
+  xrss := 1 / (1 + exp(-((V_m + 10 )) / 5 ));
+  tauxr := 550 / (1 + exp((-(22 ) - V_m) / 9 )) * 6 / (1 + exp((V_m - -(11 )) / 9 )) + 230 / (1 + exp((V_m - -(40 )) / 20 ));
+  rkr := 1 / (1 + exp((V_m + 74 ) / 24 ));
+  I_kr := gkr * x_kr * rkr * (V_m - ek);
+
+  // Rate Rules:
+  x_kr' = (xrss - x_kr) / tauxr;
+
+  // Variable initializations:
+  x_kr = 8.641386e-3;
+end
+
+model grandi_pasqualini_bers_2010__I_Kp(kp_kp, I_kp_junc, I_kp_sl, I_kp, V_m, Fjunc, Fsl, ek, gkp)
+
+  // Assignment Rules:
+  kp_kp := 1 / (1 + exp(7.488 - V_m / 5.98 ));
+  I_kp_junc := Fjunc * gkp * kp_kp * (V_m - ek);
+  I_kp_sl := Fsl * gkp * kp_kp * (V_m - ek);
+  I_kp := I_kp_junc + I_kp_sl;
+end
+
+model grandi_pasqualini_bers_2010__I_Ks(eks, gks_junc, gks_sl, xsss, tauxs, x_ks, I_ks_junc, I_ks_sl, I_ks, V_m, time_, FoRT, Ko, Nao, pNaK, Fjunc, Fsl, K_i, Na_i)
+
+  // Assignment Rules:
+  eks := 1 / FoRT * ln((Ko + pNaK * Nao) / (K_i + pNaK * Na_i));
+  gks_junc := 0.0035;
+  gks_sl := 0.0035;
+  xsss := 1 / (1 + exp(-((V_m + 3.8 )) / 14.25 ));
+  tauxs := 990.1 / (1 + exp(-((V_m + 2.436 )) / 14.12 ));
+  I_ks_junc := Fjunc * gks_junc * power(x_ks, 2 ) * (V_m - eks);
+  I_ks_sl := Fsl * gks_sl * power(x_ks, 2 ) * (V_m - eks);
+  I_ks := I_ks_junc + I_ks_sl;
+
+  // Rate Rules:
+  x_ks' = (xsss - x_ks) / tauxs;
+
+  // Variable initializations:
+  x_ks = 5.412034e-3;
+end
+
+model grandi_pasqualini_bers_2010__I_to(GtoSlow, GtoFast, xtoss, ytoss, tauxtos, tauytos, x_to_s, y_to_s, I_tos, tauxtof, tauytof, x_to_f, y_to_f, I_tof, I_to, V_m, time_, epi, ek)
+
+  // Assignment Rules:
+  GtoSlow := piecewise( 1 * 0.13 * 0.12 , epi == 1 , 0.13 * 0.3 * 0.964 );
+  GtoFast := piecewise( 1 * 0.13 * 0.88 , epi == 1 , 0.13 * 0.3 * 0.036 );
+  xtoss := 1 / (1 + exp(-((V_m - 19 )) / 13 ));
+  ytoss := 1 / (1 + exp((V_m + 19.5 ) / 5 ));
+  tauxtos := 9 / (1 + exp((V_m + 3 ) / 15 )) + 0.5;
+  tauytos := 800 / (1 + exp((V_m + 60 ) / 10 )) + 30;
+  I_tos := GtoSlow * x_to_s * y_to_s * (V_m - ek);
+  tauxtof := 8.5 * exp(-(power((V_m + 45 ) / 50 , 2 ))) + 0.5;
+  tauytof := 85 * exp(-(power(V_m + 40 , 2 )) / 220 ) + 7;
+  I_tof := GtoFast * x_to_f * y_to_f * (V_m - ek);
+  I_to := I_tos + I_tof;
+
+  // Rate Rules:
+  x_to_s' = (xtoss - x_to_s) / tauxtos;
+  y_to_s' = (ytoss - y_to_s) / tauytos;
+  x_to_f' = (xtoss - x_to_f) / tauxtof;
+  y_to_f' = (ytoss - y_to_f) / tauytof;
+
+  // Variable initializations:
+  x_to_s = 4.051574e-3;
+  y_to_s = 9.945511e-1;
+  x_to_f = 4.051574e-3;
+  y_to_f = 9.945511e-1;
+end
+
+model grandi_pasqualini_bers_2010__I_Ki(aki, bki, kiss, I_ki, V_m, ek, Ko)
+
+  // Assignment Rules:
+  aki := 1.02 / (1 + exp(0.2385 * (V_m - ek - 59.215 )));
+  bki := (0.49124 * exp(0.08032 * (V_m + 5.476 - ek)) + exp(0.06175 * (V_m - ek - 594.31 ))) / (1 + exp(-(0.5143 ) * (V_m - ek + 4.753 )));
+  kiss := aki / (aki + bki);
+  I_ki := 1 * 0.35 * root(Ko / 5.4 ) * kiss * (V_m - ek);
+end
+
+model grandi_pasqualini_bers_2010__I_ClCa(I_ClCa_junc, I_ClCa_sl, I_ClCa, I_Clbk, V_m, ecl, Fjunc, Fsl, GClCa, GClB, KdClCa, Ca_sl, Ca_j)
+
+  // Assignment Rules:
+  I_ClCa_junc := Fjunc * GClCa / (1 + KdClCa / Ca_j) * (V_m - ecl);
+  I_ClCa_sl := Fsl * GClCa / (1 + KdClCa / Ca_sl) * (V_m - ecl);
+  I_ClCa := I_ClCa_junc + I_ClCa_sl;
+  I_Clbk := GClB * (V_m - ecl);
+end
+
+model grandi_pasqualini_bers_2010__I_Ca(fss, dss, taud, tauf, d, f, f_Ca_Bj, f_Ca_Bsl, fcaCaMSL, fcaCaj, ibarca_j, ibarca_sl, ibark, ibarna_j, ibarna_sl, I_Ca_junc, I_Ca_sl, I_Ca, I_CaK, I_CaNa_junc, I_CaNa_sl, I_CaNa, I_Catot, V_m, time_, FoRT, Frdy, Fjunc_CaL, Fsl_CaL, Q10CaL, Qpow, pCa, pK, pNa, Cao, Nao, Ko, Ca_j, Ca_sl, Na_j, Na_sl, K_i)
+
+  // Assignment Rules:
+  fss := 1 / (1 + exp((V_m + 35 ) / 9 )) + 0.6 / (1 + exp((50 - V_m) / 20 ));
+  dss := 1 / (1 + exp(-((V_m + 5 )) / 6 ));
+  taud := 1 * dss * (1 - exp(-((V_m + 5 )) / 6 )) / (0.035 * (V_m + 5 ));
+  tauf := 1 / (0.0197 * exp(-(power(0.0337 * (V_m + 14.5 ), 2 ))) + 0.02 );
+  fcaCaMSL := 0;
+  fcaCaj := 0;
+  ibarca_j := pCa * 4 * V_m * Frdy * FoRT * (0.341 * Ca_j * exp(2 * V_m * FoRT) - 0.341 * Cao) / (exp(2 * V_m * FoRT) - 1 );
+  ibarca_sl := pCa * 4 * V_m * Frdy * FoRT * (0.341 * Ca_sl * exp(2 * V_m * FoRT) - 0.341 * Cao) / (exp(2 * V_m * FoRT) - 1 );
+  ibark := pK * V_m * Frdy * FoRT * (0.75 * K_i * exp(V_m * FoRT) - 0.75 * Ko) / (exp(V_m * FoRT) - 1 );
+  ibarna_j := pNa * V_m * Frdy * FoRT * (0.75 * Na_j * exp(V_m * FoRT) - 0.75 * Nao) / (exp(V_m * FoRT) - 1 );
+  ibarna_sl := pNa * V_m * Frdy * FoRT * (0.75 * Na_sl * exp(V_m * FoRT) - 0.75 * Nao) / (exp(V_m * FoRT) - 1 );
+  I_Ca_junc := Fjunc_CaL * ibarca_j * d * f * (1 - f_Ca_Bj + fcaCaj) * power(Q10CaL, Qpow) * 0.45 * 1;
+  I_Ca_sl := Fsl_CaL * ibarca_sl * d * f * (1 - f_Ca_Bsl + fcaCaMSL) * power(Q10CaL, Qpow) * 0.45 * 1;
+  I_Ca := I_Ca_junc + I_Ca_sl;
+  I_CaK := ibark * d * f * (Fjunc_CaL * (fcaCaj + (1 - f_Ca_Bj)) + Fsl_CaL * (fcaCaMSL + (1 - f_Ca_Bsl))) * power(Q10CaL, Qpow) * 0.45 * 1;
+  I_CaNa_junc := Fjunc_CaL * ibarna_j * d * f * (1 - f_Ca_Bj + fcaCaj) * power(Q10CaL, Qpow) * 0.45 * 1;
+  I_CaNa_sl := Fsl_CaL * ibarna_sl * d * f * (1 - f_Ca_Bsl + fcaCaMSL) * power(Q10CaL, Qpow) * 0.45 * 1;
+  I_CaNa := I_CaNa_junc + I_CaNa_sl;
+  I_Catot := I_Ca + I_CaK + I_CaNa;
+
+  // Rate Rules:
+  d' = (dss - d) / taud;
+  f' = (fss - f) / tauf;
+  f_Ca_Bj' = 1.7 * Ca_j / 1 * (1 - f_Ca_Bj) - 11.9E-3 * f_Ca_Bj;
+  f_Ca_Bsl' = 1.7 * Ca_sl / 1 * (1 - f_Ca_Bsl) - 11.9E-3 * f_Ca_Bsl;
+
+  // Variable initializations:
+  d = 7.175662e-6;
+  f = 1.000681;
+  f_Ca_Bj = 2.421991e-2;
+  f_Ca_Bsl = 1.452605e-2;
+end
+
+model grandi_pasqualini_bers_2010__I_NCX(Ka_junc, Ka_sl, s1_junc, s1_sl, s2_junc, s3_junc, s2_sl, s3_sl, I_ncx_junc, I_ncx_sl, I_ncx, V_m, Cao, Nao, FoRT, ksat, Kdact, KmCai, KmCao, KmNai, KmNao, nu, Fjunc, Fsl, IbarNCX, Q10NCX, Qpow, Ca_sl, Ca_j, Na_j, Na_sl)
+
+  // Assignment Rules:
+  Ka_junc := 1 / (1 + power(Kdact / Ca_j, 2 ));
+  Ka_sl := 1 / (1 + power(Kdact / Ca_sl, 2 ));
+  s1_junc := exp(nu * V_m * FoRT) * power(Na_j, 3 ) * Cao;
+  s1_sl := exp(nu * V_m * FoRT) * power(Na_sl, 3 ) * Cao;
+  s2_junc := exp((nu - 1 ) * V_m * FoRT) * power(Nao, 3 ) * Ca_j;
+  s3_junc := KmCai * power(Nao, 3 ) * (1 + power(Na_j / KmNai, 3 )) + power(KmNao, 3 ) * Ca_j * (1 + Ca_j / KmCai) + KmCao * power(Na_j, 3 ) + power(Na_j, 3 ) * Cao + power(Nao, 3 ) * Ca_j;
+  s2_sl := exp((nu - 1 ) * V_m * FoRT) * power(Nao, 3 ) * Ca_sl;
+  s3_sl := KmCai * power(Nao, 3 ) * (1 + power(Na_sl / KmNai, 3 )) + power(KmNao, 3 ) * Ca_sl * (1 + Ca_sl / KmCai) + KmCao * power(Na_sl, 3 ) + power(Na_sl, 3 ) * Cao + power(Nao, 3 ) * Ca_sl;
+  I_ncx_junc := Fjunc * IbarNCX * power(Q10NCX, Qpow) * Ka_junc * (s1_junc - s2_junc) / s3_junc / (1 + ksat * exp((nu - 1 ) * V_m * FoRT));
+  I_ncx_sl := Fsl * IbarNCX * power(Q10NCX, Qpow) * Ka_sl * (s1_sl - s2_sl) / s3_sl / (1 + ksat * exp((nu - 1 ) * V_m * FoRT));
+  I_ncx := I_ncx_junc + I_ncx_sl;
+end
+
+model grandi_pasqualini_bers_2010__I_PCa(I_pca_junc, I_pca_sl, I_pca, IbarSLCaP, KmPCa, Fjunc, Fsl, Q10SLCaP, Qpow, Ca_sl, Ca_j)
+
+  // Assignment Rules:
+  I_pca_junc := Fjunc * power(Q10SLCaP, Qpow) * IbarSLCaP * power(Ca_j, 1.6 ) / (power(KmPCa, 1.6 ) + power(Ca_j, 1.6 ));
+  I_pca_sl := Fsl * power(Q10SLCaP, Qpow) * IbarSLCaP * power(Ca_sl, 1.6 ) / (power(KmPCa, 1.6 ) + power(Ca_sl, 1.6 ));
+  I_pca := I_pca_junc + I_pca_sl;
+end
+
+model grandi_pasqualini_bers_2010__I_CaBK(I_cabk_junc, I_cabk_sl, I_cabk, V_m, Fjunc, Fsl, GCaB, eca_junc, eca_sl)
+
+  // Assignment Rules:
+  I_cabk_junc := Fjunc * GCaB * (V_m - eca_junc);
+  I_cabk_sl := Fsl * GCaB * (V_m - eca_sl);
+  I_cabk := I_cabk_junc + I_cabk_sl;
+end
+
+model grandi_pasqualini_bers_2010__SR_Fluxes(MaxSR, MinSR, kCaSR, koSRCa, kiSRCa, RI, Ry_Rr, Ry_Ro, Ry_Ri, J_SRCarel, J_serca, J_SRleak, time_, ec50SR, koCa, kiCa, kim, kom, ks, Kmf, Kmr, Q10SRCaP, Qpow, Vmax_SRCaP, hillSRCaP, Ca_sr, Ca_j, Ca_i)
+
+  // Assignment Rules:
+  MaxSR := 15;
+  MinSR := 1;
+  kCaSR := MaxSR - (MaxSR - MinSR) / (1 + power(ec50SR / Ca_sr, 2.5 ));
+  koSRCa := koCa / kCaSR;
+  kiSRCa := kiCa * kCaSR;
+  RI := 1 - Ry_Rr - Ry_Ro - Ry_Ri;
+  J_SRCarel := ks * Ry_Ro / 1 * (Ca_sr - Ca_j);
+  J_serca := power(Q10SRCaP, Qpow) * Vmax_SRCaP * (power(Ca_i / Kmf, hillSRCaP) - power(Ca_sr / Kmr, hillSRCaP)) / (1 + power(Ca_i / Kmf, hillSRCaP) + power(Ca_sr / Kmr, hillSRCaP));
+  J_SRleak := 5.348E-6 * (Ca_sr - Ca_j);
+
+  // Rate Rules:
+  Ry_Rr' = kim * RI - kiSRCa * Ca_j * Ry_Rr - (koSRCa * power(Ca_j, 2 ) * Ry_Rr - kom * Ry_Ro);
+  Ry_Ro' = koSRCa * power(Ca_j, 2 ) * Ry_Rr - kom * Ry_Ro - (kiSRCa * Ca_j * Ry_Ro - kim * Ry_Ri);
+  Ry_Ri' = kiSRCa * Ca_j * Ry_Ro - kim * Ry_Ri - (kom * Ry_Ri - koSRCa * power(Ca_j, 2 ) * RI);
+
+  // Variable initializations:
+  Ry_Rr = 8.884332e-1;
+  Ry_Ro = 8.156628e-7;
+  Ry_Ri = 1.024274e-7;
+end
+
+model grandi_pasqualini_bers_2010__Na_Buffers(Na_Bj, Na_Bsl, dNa_Bj_dt, dNa_Bsl_dt, time_, kon_na, koff_na, Bmax_Naj, Bmax_Nasl, Na_j, Na_sl)
+
+  // Assignment Rules:
+  dNa_Bj_dt := kon_na * Na_j * (Bmax_Naj - Na_Bj) - koff_na * Na_Bj;
+  dNa_Bsl_dt := kon_na * Na_sl * (Bmax_Nasl - Na_Bsl) - koff_na * Na_Bsl;
+
+  // Rate Rules:
+  Na_Bj' = dNa_Bj_dt;
+  Na_Bsl' = dNa_Bsl_dt;
+
+  // Variable initializations:
+  Na_Bj = 3.539892;
+  Na_Bsl = 7.720854e-1;
+end
+
+model grandi_pasqualini_bers_2010__Cytosolic_Ca_Buffers(Tn_CL, Tn_CHc, Tn_CHm, CaM, Myo_c, Myo_m, SRB, J_CaB_cytosol, time_, Bmax_TnClow, Bmax_CaM, Bmax_TnChigh, Bmax_myosin, Bmax_SR, kon_cam, koff_cam, kon_tncl, koff_tncl, kon_tnchca, koff_tnchca, kon_tnchmg, koff_tnchmg, kon_myomg, koff_myomg, kon_myoca, koff_myoca, kon_sr, koff_sr, Mgi, Ca_i)
+
+  // Assignment Rules:
+  J_CaB_cytosol := kon_tncl * Ca_i * (Bmax_TnClow - Tn_CL) - koff_tncl * Tn_CL + kon_tnchca * Ca_i * (Bmax_TnChigh - Tn_CHc - Tn_CHm) - koff_tnchca * Tn_CHc + kon_tnchmg * Mgi * (Bmax_TnChigh - Tn_CHc - Tn_CHm) - koff_tnchmg * Tn_CHm + kon_cam * Ca_i * (Bmax_CaM - CaM) - koff_cam * CaM + kon_myoca * Ca_i * (Bmax_myosin - Myo_c - Myo_m) - koff_myoca * Myo_c + kon_myomg * Mgi * (Bmax_myosin - Myo_c - Myo_m) - koff_myomg * Myo_m + (kon_sr * Ca_i * (Bmax_SR - SRB) - koff_sr * SRB);
+
+  // Rate Rules:
+  Tn_CL' = kon_tncl * Ca_i * (Bmax_TnClow - Tn_CL) - koff_tncl * Tn_CL;
+  Tn_CHc' = kon_tnchca * Ca_i * (Bmax_TnChigh - Tn_CHc - Tn_CHm) - koff_tnchca * Tn_CHc;
+  Tn_CHm' = kon_tnchmg * Mgi * (Bmax_TnChigh - Tn_CHc - Tn_CHm) - koff_tnchmg * Tn_CHm;
+  CaM' = kon_cam * Ca_i * (Bmax_CaM - CaM) - koff_cam * CaM;
+  Myo_c' = kon_myoca * Ca_i * (Bmax_myosin - Myo_c - Myo_m) - koff_myoca * Myo_c;
+  Myo_m' = kon_myomg * Mgi * (Bmax_myosin - Myo_c - Myo_m) - koff_myomg * Myo_m;
+  SRB' = kon_sr * Ca_i * (Bmax_SR - SRB) - koff_sr * SRB;
+
+  // Variable initializations:
+  Tn_CL = 8.773191e-3;
+  Tn_CHc = 1.078283e-1;
+  Tn_CHm = 1.524002e-2;
+  CaM = 2.911916e-4;
+  Myo_c = 1.298754e-3;
+  Myo_m = 1.381982e-1;
+  SRB = 2.143165e-3;
+end
+
+model grandi_pasqualini_bers_2010__Junctional_and_SL_Ca_Buffers(SLL_j, SLL_sl, SLH_j, SLH_sl, J_CaB_junction, J_CaB_sl, time_, Bmax_SLlowj, Bmax_SLlowsl, Bmax_SLhighj, Bmax_SLhighsl, kon_sll, koff_sll, kon_slh, koff_slh, Ca_j, Ca_sl)
+
+  // Assignment Rules:
+  J_CaB_junction := kon_sll * Ca_j * (Bmax_SLlowj - SLL_j) - koff_sll * SLL_j + (kon_slh * Ca_j * (Bmax_SLhighj - SLH_j) - koff_slh * SLH_j);
+  J_CaB_sl := kon_sll * Ca_sl * (Bmax_SLlowsl - SLL_sl) - koff_sll * SLL_sl + (kon_slh * Ca_sl * (Bmax_SLhighsl - SLH_sl) - koff_slh * SLH_sl);
+
+  // Rate Rules:
+  SLL_j' = kon_sll * Ca_j * (Bmax_SLlowj - SLL_j) - koff_sll * SLL_j;
+  SLL_sl' = kon_sll * Ca_sl * (Bmax_SLlowsl - SLL_sl) - koff_sll * SLL_sl;
+  SLH_j' = kon_slh * Ca_j * (Bmax_SLhighj - SLH_j) - koff_slh * SLH_j;
+  SLH_sl' = kon_slh * Ca_sl * (Bmax_SLhighsl - SLH_sl) - koff_slh * SLH_sl;
+
+  // Variable initializations:
+  SLL_j = 9.566355e-3;
+  SLL_sl = 1.110363e-1;
+  SLH_j = 7.347888e-3;
+  SLH_sl = 7.297378e-2;
+end
+
+model grandi_pasqualini_bers_2010__SR_Ca_Concentrations(Csqn_b, Ca_sr, time_, Bmax_Csqn, kon_csqn, koff_csqn, Vmyo, Vsr, J_serca, J_SRleak, J_SRCarel)
+
+  // Rate Rules:
+  Csqn_b' = kon_csqn * Ca_sr * (Bmax_Csqn - Csqn_b) - koff_csqn * Csqn_b;
+  Ca_sr' = J_serca - (J_SRleak * Vmyo / Vsr + J_SRCarel) - (kon_csqn * Ca_sr * (Bmax_Csqn - Csqn_b) - koff_csqn * Csqn_b);
+
+  // Variable initializations:
+  Csqn_b = 1.242988;
+  Ca_sr = 0.1e-1;
+end
+
+model grandi_pasqualini_bers_2010__Na_Concentrations(I_Na_tot_junc, I_Na_tot_sl, I_Na_tot_sl2, I_Na_tot_junc2, Na_j, Na_sl, Na_i, time_, Cmem, Frdy, J_na_juncsl, J_na_slmyo, Vjunc, Vsl, Vmyo, I_Na_junc, I_nabk_junc, I_ncx_junc, I_nak_junc, I_CaNa_junc, I_Na_sl, I_nabk_sl, I_ncx_sl, I_nak_sl, I_CaNa_sl, dNa_Bj_dt, dNa_Bsl_dt)
+
+  // Assignment Rules:
+  I_Na_tot_junc := I_Na_junc + I_nabk_junc + 3 * I_ncx_junc + 3 * I_nak_junc + I_CaNa_junc;
+  I_Na_tot_sl := I_Na_sl + I_nabk_sl + 3 * I_ncx_sl + 3 * I_nak_sl + I_CaNa_sl;
+  I_Na_tot_sl2 := 3 * I_ncx_sl + 3 * I_nak_sl + I_CaNa_sl;
+  I_Na_tot_junc2 := 3 * I_ncx_junc + 3 * I_nak_junc + I_CaNa_junc;
+
+  // Rate Rules:
+  Na_j' = -(I_Na_tot_junc) * Cmem / (Vjunc * Frdy) + J_na_juncsl / Vjunc * (Na_sl - Na_j) - dNa_Bj_dt;
+  Na_sl' = -(I_Na_tot_sl) * Cmem / (Vsl * Frdy) + J_na_juncsl / Vsl * (Na_j - Na_sl) + J_na_slmyo / Vsl * (Na_i - Na_sl) - dNa_Bsl_dt;
+  Na_i' = J_na_slmyo / Vmyo * (Na_sl - Na_i);
+
+  // Variable initializations:
+  Na_j = 9.06;
+  Na_sl = 9.06;
+  Na_i = 9.06;
+end
+
+model grandi_pasqualini_bers_2010__K_Concentration(I_K_tot, K_i, time_, I_to, I_kr, I_ks, I_ki, I_nak, I_CaK, I_kp)
+
+  // Assignment Rules:
+  I_K_tot := I_to + I_kr + I_ks + I_ki - 2 * I_nak + I_CaK + I_kp;
+
+  // Rate Rules:
+  K_i' = 0;
+
+  // Variable initializations:
+  K_i = 120;
+end
+
+model grandi_pasqualini_bers_2010__Ca_Concentrations(I_Ca_tot_junc, I_Ca_tot_sl, Ca_j, Ca_sl, Ca_i, time_, I_Ca_junc, I_cabk_junc, I_pca_junc, I_ncx_junc, I_Ca_sl, I_cabk_sl, I_pca_sl, I_ncx_sl, Cmem, Vjunc, Vsl, Vsr, Vmyo, Frdy, J_CaB_junction, J_SRCarel, J_ca_juncsl, J_CaB_sl, J_ca_slmyo, J_serca, J_SRleak, J_CaB_cytosol)
+
+  // Assignment Rules:
+  I_Ca_tot_junc := I_Ca_junc + I_cabk_junc + I_pca_junc - 2 * I_ncx_junc;
+  I_Ca_tot_sl := I_Ca_sl + I_cabk_sl + I_pca_sl - 2 * I_ncx_sl;
+
+  // Rate Rules:
+  Ca_j' = -(I_Ca_tot_junc) * Cmem / (Vjunc * 2 * Frdy) + J_ca_juncsl / Vjunc * (Ca_sl - Ca_j) - J_CaB_junction + J_SRCarel * Vsr / Vjunc + J_SRleak * Vmyo / Vjunc;
+  Ca_sl' = -(I_Ca_tot_sl) * Cmem / (Vsl * 2 * Frdy) + J_ca_juncsl / Vsl * (Ca_j - Ca_sl) + J_ca_slmyo / Vsl * (Ca_i - Ca_sl) - J_CaB_sl;
+  Ca_i' = -(J_serca) * Vsr / Vmyo - J_CaB_cytosol + J_ca_slmyo / Vmyo * (Ca_sl - Ca_i);
+
+  // Variable initializations:
+  Ca_j = 1.737475e-4;
+  Ca_sl = 1.031812e-4;
+  Ca_i = 8.597401e-5;
+end
+
+model grandi_pasqualini_bers_2010__membrane_potential(V_m, I_app, time_, I_Na_tot_junc, I_Na_tot_sl, I_ClCa, I_Clbk, I_Ca_tot_junc, I_Ca_tot_sl, I_K_tot)
+
+  // Assignment Rules:
+  I_Na_tot := I_Na_tot_junc + I_Na_tot_sl;
+  I_Cl_tot := I_ClCa + I_Clbk;
+  I_Ca_tot := I_Ca_tot_junc + I_Ca_tot_sl;
+  I_tot := I_Na_tot + I_Cl_tot + I_Ca_tot + I_K_tot;
+
+  // Rate Rules:
+  V_m' = -((I_tot - I_app));
+
+  // Variable initializations:
+  V_m = -8.09763e1;
+end
+
+model grandi_pasqualini_bers_2010__interface(time_, V_m, I_app)
+
+  // Sub-modules, and any changes to those submodules:
+  environment: grandi_pasqualini_bers_2010__environment(time_);
+  parameters: grandi_pasqualini_bers_2010__parameters(epi, R, Frdy, Temp, FoRT, Cmem, Qpow, cellLength, cellRadius, junctionLength, junctionRadius, distSLcyto, distJuncSL, DcaJuncSL, DcaSLcyto, DnaJuncSL, DnaSLcyto, Vcell, Vmyo, Vsr, Vsl, Vjunc, SAjunc, SAsl, J_ca_juncsl, J_ca_slmyo, J_na_juncsl, J_na_slmyo, Fjunc, Fsl, Fjunc_CaL, Fsl_CaL, Cli, Clo, Ko, Nao, Cao, Mgi, ena_junc, ena_sl, ek, eca_junc, eca_sl, ecl, GNa, GNaB, IbarNaK, KmNaip, KmKo, Q10NaK, Q10KmNai, pNaK, gkp, GClCa, GClB, KdClCa, pNa, pCa, pK, Q10CaL, IbarNCX, KmCai, KmCao, KmNai, KmNao, ksat, nu, Kdact, Q10NCX, IbarSLCaP, KmPCa, GCaB, Q10SLCaP, Q10SRCaP, Vmax_SRCaP, Kmf, Kmr, hillSRCaP, ks, koCa, kom, kiCa, kim, ec50SR, Bmax_Naj, Bmax_Nasl, koff_na, kon_na, Bmax_TnClow, koff_tncl, kon_tncl, Bmax_TnChigh, koff_tnchca, kon_tnchca, koff_tnchmg, kon_tnchmg, Bmax_CaM, koff_cam, kon_cam, Bmax_myosin, koff_myoca, kon_myoca, koff_myomg, kon_myomg, Bmax_SR, koff_sr, kon_sr, Bmax_SLlowsl, Bmax_SLlowj, koff_sll, kon_sll, Bmax_SLhighsl, Bmax_SLhighj, koff_slh, kon_slh, Bmax_Csqn, koff_csqn, kon_csqn, Na_j, Na_sl, K_i, Ca_j, Ca_sl);
+  I_Na: grandi_pasqualini_bers_2010__I_Na(mss, taum, ah, bh, tauh, hss, aj, bj, tauj, jss, m, h, j, I_Na_junc, I_Na_sl, I_Na0, V_m, time_, Fjunc, Fsl, GNa, ena_junc, ena_sl);
+  I_NaBK: grandi_pasqualini_bers_2010__I_NaBK(I_nabk_junc, I_nabk_sl, I_nabk, V_m, Fjunc, Fsl, GNaB, ena_junc, ena_sl);
+  I_NaK: grandi_pasqualini_bers_2010__I_NaK(sigma, fnak, I_nak_junc, I_nak_sl, I_nak, V_m, Nao, Ko, FoRT, Fjunc, Fsl, IbarNaK, KmKo, KmNaip, Na_j, Na_sl);
+  I_Kr: grandi_pasqualini_bers_2010__I_Kr(gkr, xrss, tauxr, x_kr, rkr, I_kr, V_m, time_, Ko, ek);
+  I_Kp: grandi_pasqualini_bers_2010__I_Kp(kp_kp, I_kp_junc, I_kp_sl, I_kp, V_m, Fjunc, Fsl, ek, gkp);
+  I_Ks: grandi_pasqualini_bers_2010__I_Ks(eks, gks_junc, gks_sl, xsss, tauxs, x_ks, I_ks_junc, I_ks_sl, I_ks, V_m, time_, FoRT, Ko, Nao, pNaK, Fjunc, Fsl, K_i, Na_i);
+  I_to: grandi_pasqualini_bers_2010__I_to(GtoSlow, GtoFast, xtoss, ytoss, tauxtos, tauytos, x_to_s, y_to_s, I_tos, tauxtof, tauytof, x_to_f, y_to_f, I_tof, I_to0, V_m, time_, epi, ek);
+  I_Ki: grandi_pasqualini_bers_2010__I_Ki(aki, bki, kiss, I_ki, V_m, ek, Ko);
+  I_ClCa: grandi_pasqualini_bers_2010__I_ClCa(I_ClCa_junc, I_ClCa_sl, I_ClCa0, I_Clbk, V_m, ecl, Fjunc, Fsl, GClCa, GClB, KdClCa, Ca_sl, Ca_j);
+  I_Ca: grandi_pasqualini_bers_2010__I_Ca(fss, dss, taud, tauf, d, f, f_Ca_Bj, f_Ca_Bsl, fcaCaMSL, fcaCaj, ibarca_j, ibarca_sl, ibark, ibarna_j, ibarna_sl, I_Ca_junc, I_Ca_sl, I_Ca0, I_CaK, I_CaNa_junc, I_CaNa_sl, I_CaNa, I_Catot, V_m, time_, FoRT, Frdy, Fjunc_CaL, Fsl_CaL, Q10CaL, Qpow, pCa, pK, pNa, Cao, Nao, Ko, Ca_j, Ca_sl, Na_j, Na_sl, K_i);
+  I_NCX: grandi_pasqualini_bers_2010__I_NCX(Ka_junc, Ka_sl, s1_junc, s1_sl, s2_junc, s3_junc, s2_sl, s3_sl, I_ncx_junc, I_ncx_sl, I_ncx, V_m, Cao, Nao, FoRT, ksat, Kdact, KmCai, KmCao, KmNai, KmNao, nu, Fjunc, Fsl, IbarNCX, Q10NCX, Qpow, Ca_sl, Ca_j, Na_j, Na_sl);
+  I_PCa: grandi_pasqualini_bers_2010__I_PCa(I_pca_junc, I_pca_sl, I_pca, IbarSLCaP, KmPCa, Fjunc, Fsl, Q10SLCaP, Qpow, Ca_sl, Ca_j);
+  I_CaBK: grandi_pasqualini_bers_2010__I_CaBK(I_cabk_junc, I_cabk_sl, I_cabk, V_m, Fjunc, Fsl, GCaB, eca_junc, eca_sl);
+  SR_Fluxes: grandi_pasqualini_bers_2010__SR_Fluxes(MaxSR, MinSR, kCaSR, koSRCa, kiSRCa, RI, Ry_Rr, Ry_Ro, Ry_Ri, J_SRCarel, J_serca, J_SRleak, time_, ec50SR, koCa, kiCa, kim, kom, ks, Kmf, Kmr, Q10SRCaP, Qpow, Vmax_SRCaP, hillSRCaP, Ca_sr, Ca_j, Ca_i);
+  Na_Buffers: grandi_pasqualini_bers_2010__Na_Buffers(Na_Bj, Na_Bsl, dNa_Bj_dt, dNa_Bsl_dt, time_, kon_na, koff_na, Bmax_Naj, Bmax_Nasl, Na_j, Na_sl);
+  Cytosolic_Ca_Buffers: grandi_pasqualini_bers_2010__Cytosolic_Ca_Buffers(Tn_CL, Tn_CHc, Tn_CHm, CaM, Myo_c, Myo_m, SRB, J_CaB_cytosol, time_, Bmax_TnClow, Bmax_CaM, Bmax_TnChigh, Bmax_myosin, Bmax_SR, kon_cam, koff_cam, kon_tncl, koff_tncl, kon_tnchca, koff_tnchca, kon_tnchmg, koff_tnchmg, kon_myomg, koff_myomg, kon_myoca, koff_myoca, kon_sr, koff_sr, Mgi, Ca_i);
+  Junctional_and_SL_Ca_Buffers: grandi_pasqualini_bers_2010__Junctional_and_SL_Ca_Buffers(SLL_j, SLL_sl, SLH_j, SLH_sl, J_CaB_junction, J_CaB_sl, time_, Bmax_SLlowj, Bmax_SLlowsl, Bmax_SLhighj, Bmax_SLhighsl, kon_sll, koff_sll, kon_slh, koff_slh, Ca_j, Ca_sl);
+  SR_Ca_Concentrations: grandi_pasqualini_bers_2010__SR_Ca_Concentrations(Csqn_b, Ca_sr, time_, Bmax_Csqn, kon_csqn, koff_csqn, Vmyo, Vsr, J_serca, J_SRleak, J_SRCarel);
+  Na_Concentrations: grandi_pasqualini_bers_2010__Na_Concentrations(I_Na_tot_junc, I_Na_tot_sl, I_Na_tot_sl2, I_Na_tot_junc2, Na_j, Na_sl, Na_i, time_, Cmem, Frdy, J_na_juncsl, J_na_slmyo, Vjunc, Vsl, Vmyo, I_Na_junc, I_nabk_junc, I_ncx_junc, I_nak_junc, I_CaNa_junc, I_Na_sl, I_nabk_sl, I_ncx_sl, I_nak_sl, I_CaNa_sl, dNa_Bj_dt, dNa_Bsl_dt);
+  K_Concentration: grandi_pasqualini_bers_2010__K_Concentration(I_K_tot, K_i, time_, I_to0, I_kr, I_ks, I_ki, I_nak, I_CaK, I_kp);
+  Ca_Concentrations: grandi_pasqualini_bers_2010__Ca_Concentrations(I_Ca_tot_junc, I_Ca_tot_sl, Ca_j, Ca_sl, Ca_i, time_, I_Ca_junc, I_cabk_junc, I_pca_junc, I_ncx_junc, I_Ca_sl, I_cabk_sl, I_pca_sl, I_ncx_sl, Cmem, Vjunc, Vsl, Vsr, Vmyo, Frdy, J_CaB_junction, J_SRCarel, J_ca_juncsl, J_CaB_sl, J_ca_slmyo, J_serca, J_SRleak, J_CaB_cytosol);
+  membrane_potential: grandi_pasqualini_bers_2010__membrane_potential(V_m, I_app, time_, I_Na_tot_junc, I_Na_tot_sl, I_ClCa0, I_Clbk, I_Ca_tot_junc, I_Ca_tot_sl, I_K_tot);
+end
+
+model grandi_2010_pace1____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Protocol: grandi_2010_pace1__Protocol(I_app, time_);
+  interface: grandi_pasqualini_bers_2010__interface(time_, V_m, I_app);
+end

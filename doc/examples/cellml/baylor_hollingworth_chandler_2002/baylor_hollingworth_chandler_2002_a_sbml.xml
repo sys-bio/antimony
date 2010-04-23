@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="baylor_model_f_2002____main" name="baylor_model_f_2002____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Ca0" value="0.05" constant="false"/>
+      <parameter id="k1"/>
+      <parameter id="k1_" value="34461"/>
+      <parameter id="ATP0" value="8000" constant="false"/>
+      <parameter id="CaATP0" value="1" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="k1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.566 <sep/> 7 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="Ca0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k1_ </ci>
+              <ci> CaATP0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Ca0 </ci>
+              <ci> ATP0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="ATP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k1_ </ci>
+              <ci> CaATP0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Ca0 </ci>
+              <ci> ATP0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CaATP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> Ca0 </ci>
+              <ci> ATP0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k1_ </ci>
+              <ci> CaATP0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

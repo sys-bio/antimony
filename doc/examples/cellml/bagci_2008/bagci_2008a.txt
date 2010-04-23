@@ -1,0 +1,148 @@
+//Created by libAntimony v1.3
+model bagci_2008a__environment(time_)
+end
+
+model bagci_2008a__NO(NO, O_2m, N2O3, GSNO, CcOX, FeLn, r_4NO, r_12bNOp, r_12bNOm, r_14NO, r_15NO, r_16NO, k_1NO, k_4NO, k_12aNO, k_12bNOp, k_12bNOm, k_14NO, k_15NO, k_16NO, time_)
+
+  // Assignment Rules:
+  r_1NO := k_1NO;
+  r_4NO := k_4NO * NO * O_2m;
+  r_12aNO := k_12aNO * power(NO, 2 ) * O_2;
+  r_12bNOp := k_12bNOp * NO_2 * NO;
+  r_12bNOm := k_12bNOm * N2O3;
+  r_14NO := k_14NO * GSNO;
+  r_15NO := k_15NO * CcOX * NO;
+  r_16NO := k_16NO * FeLn * NO;
+
+  // Rate Rules:
+  NO' = r_1NO - r_4NO - 2 * r_12aNO - r_12bNOp + r_12bNOm + r_14NO - r_15NO - r_16NO;
+  NO_2' = 2 * r_12aNO - r_12bNOp + r_12bNOm;
+  CcOX' = -(r_15NO);
+
+  // Variable initializations:
+  NO = 0;
+  O_2 = 35;
+  NO_2 = 0;
+  CcOX = 0.1;
+end
+
+model bagci_2008a__O_2m(O_2m, SOD, GSNO, r_4NO, r_5NO, r_10NO, k_2NO, k_5NO, k_10NO, time_)
+
+  // Assignment Rules:
+  r_2NO := k_2NO;
+  r_5NO := k_5NO * SOD * O_2m;
+  r_10NO := k_10NO * power(GSNO, 2 ) * O_2m;
+
+  // Rate Rules:
+  O_2m' = r_2NO - r_4NO - r_5NO - r_10NO;
+
+  // Variable initializations:
+  O_2m = 0;
+  SOD = 10;
+end
+
+model bagci_2008a__ONOO_m(ONOO_m, GSH, r_4NO, r_6NO, r_7NO, r_8NO, r_9NO, k_6NO, k_7NO, k_8NO, k_9NO, time_)
+
+  // Assignment Rules:
+  r_6NO := k_6NO * ONOO_m * GSH;
+  r_7NO := k_7NO * ONOO_m * GPX;
+  r_8NO := k_8NO * ONOO_m * CO_2;
+  r_9NO := k_9NO * ONOO_m * Cyt_c;
+
+  // Rate Rules:
+  ONOO_m' = r_4NO - r_6NO - r_7NO - r_8NO - r_9NO;
+
+  // Variable initializations:
+  ONOO_m = 0;
+  GPX = 5.8;
+  CO_2 = 1000;
+  Cyt_c = 400;
+end
+
+model bagci_2008a__GSH(GSH, N2O3, FeLn, FeLn_0, GSH_0, GSNO, r_6NO, r_11NO, r_17NO, k_11NO, v_m, k_m, k_17NO, time_)
+
+  // Assignment Rules:
+  GSSG := (GSH_0 - GSH - GSNO) / 2;
+  FeLnNO := FeLn_0 - FeLn;
+  r_11NO := k_11NO * N2O3 * GSH;
+  r_m := v_m * GSSG / (k_m + GSSG);
+  r_17NO := k_17NO * FeLnNO * GSH;
+
+  // Rate Rules:
+  GSH' = -(r_6NO) - r_11NO + 2 * r_m - r_17NO;
+
+  // Variable initializations:
+  GSH = 10000;
+end
+
+model bagci_2008a__GSNO(GSNO, r_6NO, r_10NO, r_11NO, r_14NO, r_17NO, time_)
+
+  // Rate Rules:
+  GSNO' = r_6NO - 2 * r_10NO + r_11NO - r_14NO + r_17NO;
+
+  // Variable initializations:
+  GSNO = 0;
+end
+
+model bagci_2008a__N2O3(N2O3, r_11NO, r_12bNOp, r_12bNOm, k_13NO, time_)
+
+  // Assignment Rules:
+  r_13NO := k_13NO * N2O3;
+
+  // Rate Rules:
+  N2O3' = -(r_11NO) + r_12bNOp - r_12bNOm - r_13NO;
+
+  // Variable initializations:
+  N2O3 = 0;
+end
+
+model bagci_2008a__FeLn(FeLn, r_16NO, r_17NO, time_)
+
+  // Rate Rules:
+  FeLn' = -(r_16NO) + r_17NO;
+
+  // Variable initializations:
+  FeLn = 0.05;
+end
+
+model bagci_2008a__model_constant(k_1NO, k_2NO, k_4NO, k_5NO, k_6NO, k_7NO, k_8NO, k_9NO, k_10NO, k_11NO, k_12aNO, k_12bNOm, k_12bNOp, k_13NO, v_m, k_m, k_14NO, k_15NO, k_16NO, k_17NO, k_17bNO, FeLn_0, GSH_0)
+
+  // Variable initializations:
+  k_1NO = 1;
+  k_2NO = 0.1;
+  k_4NO = 6700;
+  k_5NO = 2400;
+  k_6NO = 0.00135;
+  k_7NO = 2;
+  k_8NO = 0.058;
+  k_9NO = 0.025;
+  k_10NO = 0.0006;
+  k_11NO = 66;
+  k_12aNO = 0.000006;
+  k_12bNOm = 81000;
+  k_12bNOp = 1100;
+  k_13NO = 1600;
+  v_m = 320;
+  k_m = 50;
+  k_14NO = 0.0002;
+  k_15NO = 100;
+  k_16NO = 1.21;
+  k_17NO = 66;
+  k_17bNO = 0.0002;
+  FeLn_0 = 0.05;
+  GSH_0 = 10000;
+end
+
+model bagci_2008a____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: bagci_2008a__environment(time_);
+  NO: bagci_2008a__NO(NO0, O_2m0, N2O30, GSNO0, CcOX, FeLn0, r_4NO, r_12bNOp, r_12bNOm, r_14NO, r_15NO, r_16NO, k_1NO, k_4NO, k_12aNO, k_12bNOp, k_12bNOm, k_14NO, k_15NO, k_16NO, time_);
+  O_2m: bagci_2008a__O_2m(O_2m0, SOD, GSNO0, r_4NO, r_5NO, r_10NO, k_2NO, k_5NO, k_10NO, time_);
+  ONOO_m: bagci_2008a__ONOO_m(ONOO_m0, GSH0, r_4NO, r_6NO, r_7NO, r_8NO, r_9NO, k_6NO, k_7NO, k_8NO, k_9NO, time_);
+  GSH: bagci_2008a__GSH(GSH0, N2O30, FeLn0, FeLn_0, GSH_0, GSNO0, r_6NO, r_11NO, r_17NO, k_11NO, v_m, k_m, k_17NO, time_);
+  GSNO: bagci_2008a__GSNO(GSNO0, r_6NO, r_10NO, r_11NO, r_14NO, r_17NO, time_);
+  N2O3: bagci_2008a__N2O3(N2O30, r_11NO, r_12bNOp, r_12bNOm, k_13NO, time_);
+  FeLn: bagci_2008a__FeLn(FeLn0, r_16NO, r_17NO, time_);
+  model_constant: bagci_2008a__model_constant(k_1NO, k_2NO, k_4NO, k_5NO, k_6NO, k_7NO, k_8NO, k_9NO, k_10NO, k_11NO, k_12aNO, k_12bNOm, k_12bNOp, k_13NO, v_m, k_m, k_14NO, k_15NO, k_16NO, k_17NO, k_17bNO, FeLn_0, GSH_0);
+end

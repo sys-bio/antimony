@@ -1,0 +1,68 @@
+//Created by libAntimony v1.3
+model BestPractice_Cdecoupled__time(t)
+end
+
+model BestPractice_Cdecoupled__geometry(R)
+
+  // Variable initializations:
+  R = 5;
+end
+
+model BestPractice_Cdecoupled__C_interface(JPlusRx1, JMinusRx2, JTotal, R)
+
+  // Assignment Rules:
+  Cpc := R / 602.2;
+  JTotal := JPlusRx1 - Cpc * JMinusRx2;
+end
+
+model BestPractice_Cdecoupled__C(C, JGain, t)
+
+  // Rate Rules:
+  C' = JGain;
+
+  // Variable initializations:
+  C = 0;
+end
+
+model BestPractice_Cdecoupled__Cformation(J1, C, t)
+
+  // Assignment Rules:
+  J1 := kf1 * A * B - kr1 * C;
+
+  // Rate Rules:
+  A' = -(J1);
+  B' = -(J1);
+
+  // Variable initializations:
+  A = 10;
+  B = 5;
+  kf1 = 0.2;
+  kr1 = 0.05;
+end
+
+model BestPractice_Cdecoupled__Eformation(J2, C, t)
+
+  // Assignment Rules:
+  J2 := kf2 * C * D - kr2 * E;
+
+  // Rate Rules:
+  D' = -(J2);
+  E' = J2;
+
+  // Variable initializations:
+  D = 4;
+  E = 0;
+  kf2 = 0.006;
+  kr2 = 0.001;
+end
+
+model BestPractice_Cdecoupled____main()
+
+  // Sub-modules, and any changes to those submodules:
+  time_: BestPractice_Cdecoupled__time(t);
+  geometry: BestPractice_Cdecoupled__geometry(R);
+  C_interface: BestPractice_Cdecoupled__C_interface(JPlusRx1, JMinusRx2, JGain, R);
+  C: BestPractice_Cdecoupled__C(C0, JGain, t);
+  Cformation: BestPractice_Cdecoupled__Cformation(JPlusRx1, C0, t);
+  Eformation: BestPractice_Cdecoupled__Eformation(JMinusRx2, C0, t);
+end

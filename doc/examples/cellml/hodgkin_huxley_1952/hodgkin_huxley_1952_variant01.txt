@@ -1,0 +1,103 @@
+//Created by libAntimony v1.3
+model hodgkin_huxley_squid_axon_model_1952_original__environment(time_)
+end
+
+model hodgkin_huxley_squid_axon_model_1952_original__membrane(V, E_R, time_, i_Na, i_K, i_L)
+
+  // Assignment Rules:
+  i_Stim := piecewise( -(20 ) , ( time_ >= 10) && (time_ <= 10.5 ), 0 );
+
+  // Rate Rules:
+  V' = -((-(i_Stim) + i_Na + i_K + i_L)) / Cm;
+
+  // Variable initializations:
+  V = 0;
+  E_R = 0;
+  Cm = 1;
+end
+
+model hodgkin_huxley_squid_axon_model_1952_original__sodium_channel_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := 0.1 * (V + 25 ) / (exp((V + 25 ) / 10 ) - 1 );
+  beta_m := 4 * exp(V / 18 );
+
+  // Rate Rules:
+  m' = alpha_m * (1 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.05;
+end
+
+model hodgkin_huxley_squid_axon_model_1952_original__sodium_channel_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := 0.07 * exp(V / 20 );
+  beta_h := 1 / (exp((V + 30 ) / 10 ) + 1 );
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.6;
+end
+
+model hodgkin_huxley_squid_axon_model_1952_original__sodium_channel(i_Na, time_, V, E_R, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_channel_m_gate: hodgkin_huxley_squid_axon_model_1952_original__sodium_channel_m_gate(m, V, time_);
+  sodium_channel_h_gate: hodgkin_huxley_squid_axon_model_1952_original__sodium_channel_h_gate(h, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * (V - E_Na);
+  E_Na := E_R - 115;
+
+  // Variable initializations:
+  g_Na = 120;
+end
+
+model hodgkin_huxley_squid_axon_model_1952_original__potassium_channel_n_gate(n, V, time_)
+
+  // Assignment Rules:
+  alpha_n := 0.01 * (V + 10 ) / (exp((V + 10 ) / 10 ) - 1 );
+  beta_n := 0.125 * exp(V / 80 );
+
+  // Rate Rules:
+  n' = alpha_n * (1 - n) - beta_n * n;
+
+  // Variable initializations:
+  n = 0.325;
+end
+
+model hodgkin_huxley_squid_axon_model_1952_original__potassium_channel(i_K, time_, V, E_R, n)
+
+  // Sub-modules, and any changes to those submodules:
+  potassium_channel_n_gate: hodgkin_huxley_squid_axon_model_1952_original__potassium_channel_n_gate(n, V, time_);
+
+  // Assignment Rules:
+  i_K := g_K * power(n, 4 ) * (V - E_K);
+  E_K := E_R + 12;
+
+  // Variable initializations:
+  g_K = 36;
+end
+
+model hodgkin_huxley_squid_axon_model_1952_original__leakage_current(i_L, time_, V, E_R)
+
+  // Assignment Rules:
+  i_L := g_L * (V - E_L);
+  E_L := E_R - 10.613;
+
+  // Variable initializations:
+  g_L = 0.3;
+end
+
+model hodgkin_huxley_squid_axon_model_1952_original____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: hodgkin_huxley_squid_axon_model_1952_original__environment(time_);
+  membrane: hodgkin_huxley_squid_axon_model_1952_original__membrane(V, E_R, time_, i_Na, i_K, i_L);
+  sodium_channel: hodgkin_huxley_squid_axon_model_1952_original__sodium_channel(i_Na, time_, V, E_R, m, h);
+  potassium_channel: hodgkin_huxley_squid_axon_model_1952_original__potassium_channel(i_K, time_, V, E_R, n);
+  leakage_current: hodgkin_huxley_squid_axon_model_1952_original__leakage_current(i_L, time_, V, E_R);
+end

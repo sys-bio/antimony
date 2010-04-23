@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="atrial_natriuretic_peptide_CellML1_0_model____main" name="atrial_natriuretic_peptide_CellML1_0_model____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="PLA" value="2"/>
+      <parameter id="PRA" value="0.00852183"/>
+      <parameter id="atrial_natriuretic_peptide_ANPKNS" value="0"/>
+      <parameter id="atrial_natriuretic_peptide_ANPINF" value="0"/>
+      <parameter id="atrial_natriuretic_peptide_ANPTC" value="4"/>
+      <parameter id="atrial_natriuretic_peptide_ANPXUL" value="10"/>
+      <parameter id="atrial_natriuretic_peptide_ANP" constant="false"/>
+      <parameter id="atrial_natriuretic_peptide_total_ANP_secreted_ANPL" constant="false"/>
+      <parameter id="atrial_natriuretic_peptide_total_ANP_secreted_ANPR2" constant="false"/>
+      <parameter id="atrial_natriuretic_peptide_ANP1" constant="false"/>
+      <parameter id="atrial_natriuretic_peptide_ANPC" value="1" constant="false"/>
+      <parameter id="atrial_natriuretic_peptide_ANPX" constant="false"/>
+      <parameter id="atrial_natriuretic_peptide_ANP_effect_on_renal_afferent_arteriolar_resistance_ANPX1" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="atrial_natriuretic_peptide_ANP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> atrial_natriuretic_peptide_total_ANP_secreted_ANPL </ci>
+              <ci> atrial_natriuretic_peptide_total_ANP_secreted_ANPR2 </ci>
+            </apply>
+            <cn type="integer"> 3 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="atrial_natriuretic_peptide_total_ANP_secreted_ANPL"/>
+      <assignmentRule variable="atrial_natriuretic_peptide_total_ANP_secreted_ANPR2"/>
+      <assignmentRule variable="atrial_natriuretic_peptide_ANP1"/>
+      <rateRule variable="atrial_natriuretic_peptide_ANPC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> atrial_natriuretic_peptide_ANP1 </ci>
+              <ci> atrial_natriuretic_peptide_ANPC </ci>
+            </apply>
+            <ci> atrial_natriuretic_peptide_ANPTC </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="atrial_natriuretic_peptide_ANPX"/>
+      <assignmentRule variable="atrial_natriuretic_peptide_ANP_effect_on_renal_afferent_arteriolar_resistance_ANPX1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> atrial_natriuretic_peptide_ANPXUL </ci>
+            <apply>
+              <divide/>
+              <ci> atrial_natriuretic_peptide_ANPXUL </ci>
+              <apply>
+                <times/>
+                <cn> 0.5555556 </cn>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> atrial_natriuretic_peptide_ANPC </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

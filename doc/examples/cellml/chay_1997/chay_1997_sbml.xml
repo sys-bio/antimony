@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="chay_1997____main" name="chay_1997____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="V" value="-38.34146" constant="false"/>
+      <parameter id="R" value="8314"/>
+      <parameter id="T" value="310"/>
+      <parameter id="F" value="96485"/>
+      <parameter id="membrane_Cm" value="1"/>
+      <parameter id="i_K_dr" constant="false"/>
+      <parameter id="i_K_Ca" constant="false"/>
+      <parameter id="i_K_ATP" constant="false"/>
+      <parameter id="i_fast" constant="false"/>
+      <parameter id="i_Ca" constant="false"/>
+      <parameter id="i_NS" constant="false"/>
+      <parameter id="i_NaL" constant="false"/>
+      <parameter id="fast_current_g_fast" value="600"/>
+      <parameter id="fast_current_V_fast" value="80"/>
+      <parameter id="m_infinity" constant="false"/>
+      <parameter id="h" value="0.214723" constant="false"/>
+      <parameter id="fast_current_fast_current_m_gate_Vm" value="-25"/>
+      <parameter id="fast_current_fast_current_m_gate_Sm" value="9"/>
+      <parameter id="fast_current_fast_current_h_gate_lamda_h" value="12.5"/>
+      <parameter id="fast_current_fast_current_h_gate_tau_h" constant="false"/>
+      <parameter id="fast_current_fast_current_h_gate_h_infinity" constant="false"/>
+      <parameter id="fast_current_fast_current_h_gate_Vh" value="-48"/>
+      <parameter id="fast_current_fast_current_h_gate_Sh" value="-7"/>
+      <parameter id="K_Ca" value="1"/>
+      <parameter id="calcium_current_P_Ca" value="2"/>
+      <parameter id="calcium_current_Ca_o" value="2500"/>
+      <parameter id="Ca_i" value="0.6959466" constant="false"/>
+      <parameter id="f_infinity" constant="false"/>
+      <parameter id="d" value="0.0031711238" constant="false"/>
+      <parameter id="calcium_current_calcium_current_d_gate_lamda_d" value="2.5"/>
+      <parameter id="calcium_current_calcium_current_d_gate_tau_d" constant="false"/>
+      <parameter id="calcium_current_calcium_current_d_gate_d_infinity" constant="false"/>
+      <parameter id="calcium_current_calcium_current_d_gate_Vd" value="-10"/>
+      <parameter id="calcium_current_calcium_current_d_gate_Sd" value="5"/>
+      <parameter id="cationic_nonselective_inward_current_g_NS" value="5"/>
+      <parameter id="cationic_nonselective_inward_current_K_NS" value="50"/>
+      <parameter id="cationic_nonselective_inward_current_VNS" value="-20"/>
+      <parameter id="Ca_lum" value="102.686" constant="false"/>
+      <parameter id="V_K" value="-75"/>
+      <parameter id="delayed_rectifier_K_channel_current_g_K_dr" value="600"/>
+      <parameter id="n" value="0.1836403" constant="false"/>
+      <parameter id="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_lamda_n" value="12.5"/>
+      <parameter id="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_Vn" value="-18"/>
+      <parameter id="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_Sn" value="14"/>
+      <parameter id="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_n_infinity" constant="false"/>
+      <parameter id="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_tau_n" constant="false"/>
+      <parameter id="Ca_sensitive_K_current_g_K_Ca" value="5"/>
+      <parameter id="ATP_sensitive_K_current_g_K_ATP" value="2"/>
+      <parameter id="Na_leak_current_g_NaL" value="0.3"/>
+      <parameter id="Na_leak_current_V_Na" value="80"/>
+      <parameter id="cytosolic_calcium_k_rel" value="0.2"/>
+      <parameter id="cytosolic_calcium_k_Ca" value="7"/>
+      <parameter id="cytosolic_calcium_k_pump" value="30"/>
+      <parameter id="cytosolic_calcium_omega" value="0.2"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> i_K_dr </ci>
+                <ci> i_K_Ca </ci>
+                <ci> i_K_ATP </ci>
+                <ci> i_fast </ci>
+                <ci> i_Ca </ci>
+                <ci> i_NS </ci>
+                <ci> i_NaL </ci>
+              </apply>
+            </apply>
+            <ci> membrane_Cm </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="i_K_dr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> delayed_rectifier_K_channel_current_g_K_dr </ci>
+            <apply>
+              <power/>
+              <ci> n </ci>
+              <cn type="integer"> 4 </cn>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_K_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Ca_sensitive_K_current_g_K_Ca </ci>
+                <apply>
+                  <power/>
+                  <ci> Ca_i </ci>
+                  <cn type="integer"> 3 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> K_Ca </ci>
+                  <cn type="integer"> 3 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> Ca_i </ci>
+                  <cn type="integer"> 3 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_K_ATP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ATP_sensitive_K_current_g_K_ATP </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_fast">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> fast_current_g_fast </ci>
+            <apply>
+              <power/>
+              <ci> m_infinity </ci>
+              <cn type="integer"> 3 </cn>
+            </apply>
+            <ci> h </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> fast_current_V_fast </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> calcium_current_P_Ca </ci>
+                  <ci> d </ci>
+                  <ci> f_infinity </ci>
+                  <cn type="integer"> 2 </cn>
+                  <ci> F </ci>
+                  <ci> V </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> R </ci>
+                  <ci> T </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> calcium_current_Ca_o </ci>
+                <apply>
+                  <times/>
+                  <ci> Ca_i </ci>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <cn type="integer"> 2 </cn>
+                        <ci> F </ci>
+                        <ci> V </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 2 </cn>
+                    <ci> F </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_NS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> cationic_nonselective_inward_current_g_NS </ci>
+                <apply>
+                  <power/>
+                  <ci> cationic_nonselective_inward_current_K_NS </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> cationic_nonselective_inward_current_K_NS </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> Ca_lum </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <ci> V </ci>
+                  <ci> cationic_nonselective_inward_current_VNS </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <times/>
+                      <cn> 0.1 </cn>
+                      <apply>
+                        <minus/>
+                        <ci> cationic_nonselective_inward_current_VNS </ci>
+                        <ci> V </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 10 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_NaL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Na_leak_current_g_NaL </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> Na_leak_current_V_Na </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="m_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> fast_current_fast_current_m_gate_Vm </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> fast_current_fast_current_m_gate_Sm </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> fast_current_fast_current_h_gate_h_infinity </ci>
+              <ci> h </ci>
+            </apply>
+            <ci> fast_current_fast_current_h_gate_tau_h </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="fast_current_fast_current_h_gate_tau_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <times/>
+              <ci> fast_current_fast_current_h_gate_lamda_h </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> fast_current_fast_current_h_gate_Vh </ci>
+                      <ci> V </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 2 </cn>
+                      <ci> fast_current_fast_current_h_gate_Sh </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> V </ci>
+                      <ci> fast_current_fast_current_h_gate_Vh </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 2 </cn>
+                      <ci> fast_current_fast_current_h_gate_Sh </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="fast_current_fast_current_h_gate_h_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> fast_current_fast_current_h_gate_Vh </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> fast_current_fast_current_h_gate_Sh </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> cytosolic_calcium_k_rel </ci>
+              <apply>
+                <minus/>
+                <ci> Ca_lum </ci>
+                <ci> Ca_i </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> cytosolic_calcium_omega </ci>
+                <ci> i_Ca </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> cytosolic_calcium_k_Ca </ci>
+                <ci> Ca_i </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> cytosolic_calcium_k_pump </ci>
+                <ci> Ca_i </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="f_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> K_Ca </ci>
+            <apply>
+              <plus/>
+              <ci> K_Ca </ci>
+              <ci> Ca_i </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> calcium_current_calcium_current_d_gate_d_infinity </ci>
+              <ci> d </ci>
+            </apply>
+            <ci> calcium_current_calcium_current_d_gate_tau_d </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="calcium_current_calcium_current_d_gate_tau_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <times/>
+              <ci> calcium_current_calcium_current_d_gate_lamda_d </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> calcium_current_calcium_current_d_gate_Vd </ci>
+                      <ci> V </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 2 </cn>
+                      <ci> calcium_current_calcium_current_d_gate_Sd </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> V </ci>
+                      <ci> calcium_current_calcium_current_d_gate_Vd </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 2 </cn>
+                      <ci> calcium_current_calcium_current_d_gate_Sd </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="calcium_current_calcium_current_d_gate_d_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> calcium_current_calcium_current_d_gate_Vd </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> calcium_current_calcium_current_d_gate_Sd </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_lum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> cytosolic_calcium_k_rel </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> Ca_lum </ci>
+                <ci> Ca_i </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> cytosolic_calcium_k_pump </ci>
+              <ci> Ca_i </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_n_infinity </ci>
+              <ci> n </ci>
+            </apply>
+            <ci> delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_tau_n </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_n_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_Vn </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_Sn </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_tau_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <times/>
+              <ci> delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_lamda_n </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_Vn </ci>
+                      <ci> V </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 2 </cn>
+                      <ci> delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_Sn </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> V </ci>
+                      <ci> delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_Vn </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 2 </cn>
+                      <ci> delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_Sn </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

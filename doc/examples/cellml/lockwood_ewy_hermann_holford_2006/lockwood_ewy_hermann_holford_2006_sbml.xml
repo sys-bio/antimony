@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="lockwood_2006____main" name="lockwood_2006____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="population_pharmacodynamics_model_S" constant="false"/>
+      <parameter id="population_pharmacodynamics_model_S0" value="30"/>
+      <parameter id="population_pharmacodynamics_model_alpha" value="0.0164"/>
+      <parameter id="population_pharmacodynamics_model_epsilon" value="0"/>
+      <parameter id="ADAS_Cog_p" constant="false"/>
+      <parameter id="PD_CeA" constant="false"/>
+      <parameter id="placebo_response_model_beta_P" value="-3"/>
+      <parameter id="placebo_response_model_Keq_p" constant="false"/>
+      <parameter id="placebo_response_model_Kel_p" constant="false"/>
+      <parameter id="placebo_response_model_t_half_el_p" value="7"/>
+      <parameter id="placebo_response_model_t_half_eq_p" value="6"/>
+      <parameter id="CL" constant="false"/>
+      <parameter id="pharmacokinetic_model_smk" value="1"/>
+      <parameter id="pharmacokinetic_model_age" value="40"/>
+      <parameter id="drop_out_model_Sv" constant="false"/>
+      <parameter id="drug_response_model_beta_a" value="-0.047"/>
+      <parameter id="drug_response_model_CeA" value="25"/>
+      <parameter id="drug_clearance_CC" value="0" constant="false"/>
+      <parameter id="drug_clearance_PC" value="0" constant="false"/>
+      <parameter id="drug_clearance_Vc" value="172"/>
+      <parameter id="drug_clearance_Vp" value="222"/>
+      <parameter id="drug_clearance_A_in" value="25" constant="false"/>
+      <parameter id="drug_clearance_k_ab" value="115.44"/>
+      <parameter id="drug_clearance_CL_ic" value="763.2"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="population_pharmacodynamics_model_S">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> population_pharmacodynamics_model_S0 </ci>
+            <apply>
+              <times/>
+              <ci> population_pharmacodynamics_model_alpha </ci>
+              <ci> time_ </ci>
+            </apply>
+            <ci> ADAS_Cog_p </ci>
+            <ci> PD_CeA </ci>
+            <ci> population_pharmacodynamics_model_epsilon </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ADAS_Cog_p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> placebo_response_model_beta_P </ci>
+                <ci> placebo_response_model_Keq_p </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> placebo_response_model_Keq_p </ci>
+                <ci> placebo_response_model_Kel_p </ci>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> placebo_response_model_Kel_p </ci>
+                  </apply>
+                  <ci> time_ </ci>
+                </apply>
+              </apply>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> placebo_response_model_Keq_p </ci>
+                  </apply>
+                  <ci> time_ </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="PD_CeA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> drug_response_model_beta_a </ci>
+            <ci> drug_response_model_CeA </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="placebo_response_model_Keq_p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <ci> placebo_response_model_t_half_eq_p </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="placebo_response_model_Kel_p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <ci> placebo_response_model_t_half_el_p </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="CL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 2268 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <cn> -0.0135 </cn>
+                <apply>
+                  <minus/>
+                  <ci> pharmacokinetic_model_age </ci>
+                  <cn type="integer"> 40 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <ci> pharmacokinetic_model_smk </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="drop_out_model_Sv">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <exp/>
+            <apply>
+              <times/>
+              <cn> -0.00145 </cn>
+              <ci> time_ </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="drug_clearance_CC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> drug_clearance_k_ab </ci>
+                <ci> drug_clearance_A_in </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> CL </ci>
+                  <ci> drug_clearance_CC </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> drug_clearance_CL_ic </ci>
+                  <apply>
+                    <minus/>
+                    <ci> drug_clearance_CC </ci>
+                    <ci> drug_clearance_PC </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <ci> drug_clearance_Vc </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="drug_clearance_PC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> drug_clearance_CL_ic </ci>
+              <apply>
+                <minus/>
+                <ci> drug_clearance_CC </ci>
+                <ci> drug_clearance_PC </ci>
+              </apply>
+            </apply>
+            <ci> drug_clearance_Vp </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="drug_clearance_A_in">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> -115.44 </cn>
+            <ci> drug_clearance_A_in </ci>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

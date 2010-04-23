@@ -1,0 +1,64 @@
+//Created by libAntimony v1.3
+model goldbeter_model_2006__environment(time_)
+end
+
+model goldbeter_model_2006__P(time_, P, Q)
+
+  // Rate Rules:
+  P' = a * Q - b * (P / (K + P));
+
+  // Variable initializations:
+  P = 0.0;
+  a = 0.1;
+  b = 0.1;
+  K = 0.2;
+end
+
+model goldbeter_model_2006__P_star(V_3, V_4, K_3, K_4)
+
+  // Assignment Rules:
+  P_star := V_4 / V_3 * ((1 + 2 * K_3) / (1 + 2 * K_4));
+end
+
+model goldbeter_model_2006__Q(time_, Q, R, V_1, V_2, K_1, K_2)
+
+  // Rate Rules:
+  Q' = V_1 * ((1 - Q) / (K_1 + (1 - Q))) - V_2 * R * (Q / (K_2 + Q));
+
+  // Variable initializations:
+  Q = 0.0;
+  V_1 = 1;
+  V_2 = 1.5;
+  K_1 = 0.01;
+  K_2 = 0.01;
+end
+
+model goldbeter_model_2006__R(time_, P, R, V_3, V_4, K_3, K_4)
+
+  // Rate Rules:
+  R' = P * V_3 * ((1 - R) / (K_3 + (1 - R))) - V_4 * (R / (K_4 + R));
+
+  // Variable initializations:
+  R = 0.0;
+  V_3 = 6;
+  V_4 = 2.5;
+  K_3 = 0.01;
+  K_4 = 0.01;
+end
+
+model goldbeter_model_2006__R_star(V_1, V_2, K_1, K_2)
+
+  // Assignment Rules:
+  R_star := V_1 / V_2 * ((1 + 2 * K_2) / (1 + 2 * K_1));
+end
+
+model goldbeter_model_2006____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: goldbeter_model_2006__environment(time_);
+  P: goldbeter_model_2006__P(time_, P0, Q0);
+  P_star: goldbeter_model_2006__P_star(V_3, V_4, K_3, K_4);
+  Q: goldbeter_model_2006__Q(time_, Q0, R0, V_1, V_2, K_1, K_2);
+  R: goldbeter_model_2006__R(time_, P0, R0, V_3, V_4, K_3, K_4);
+  R_star: goldbeter_model_2006__R_star(V_1, V_2, K_1, K_2);
+end

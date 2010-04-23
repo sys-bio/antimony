@@ -1,0 +1,35 @@
+//Created by libAntimony v1.3
+model goodwin_model_1965__environment(time_)
+end
+
+model goodwin_model_1965__Xi(Xi, Yi, time_)
+
+  // Rate Rules:
+  Xi' = ai / ( Ai + ki * Yi ) - bi;
+
+  // Variable initializations:
+  Xi = 7;
+  ai = 72;
+  bi = 2;
+  Ai = 36;
+  ki = 1;
+end
+
+model goodwin_model_1965__Yi(Yi, Xi, time_)
+
+  // Rate Rules:
+  Yi' = alpha_i * Xi - beta_i;
+
+  // Variable initializations:
+  Yi = -10;
+  beta_i = 0;
+  alpha_i = 1;
+end
+
+model goodwin_model_1965____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: goodwin_model_1965__environment(time_);
+  Xi: goodwin_model_1965__Xi(Xi0, Yi0, time_);
+  Yi: goodwin_model_1965__Yi(Yi0, Xi0, time_);
+end

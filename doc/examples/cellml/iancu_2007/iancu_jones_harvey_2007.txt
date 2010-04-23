@@ -1,0 +1,299 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "L_iso * R / K_L" to set the assignment rule for LR:  Loop detected:  LR's definition (L_iso * R / K_L) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "L_iso * R * G / (K_H * K_C)" to set the assignment rule for LRG:  Loop detected:  LRG's definition (L_iso * R * G / (K_H * K_C)) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "R * G / K_C" to set the assignment rule for RG:  Loop detected:  RG's definition (R * G / K_C) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "L_ach * R / K_L" to set the assignment rule for LR:  Loop detected:  LR's definition (L_ach * R / K_L) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "L_ach * R * G / (K_H * K_C)" to set the assignment rule for LRG:  Loop detected:  LRG's definition (L_ach * R * G / (K_H * K_C)) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "R * G / K_C" to set the assignment rule for RG:  Loop detected:  RG's definition (R * G / K_C) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "L_iso * R / K_L" to set the assignment rule for LR:  Loop detected:  LR's definition (L_iso * R / K_L) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "L_iso * R * G / (K_H * K_C)" to set the assignment rule for LRG:  Loop detected:  LRG's definition (L_iso * R * G / (K_H * K_C)) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "R * G / K_C" to set the assignment rule for RG:  Loop detected:  RG's definition (R * G / K_C) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "L_ach * R / K_L" to set the assignment rule for LR:  Loop detected:  LR's definition (L_ach * R / K_L) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "L_ach * R * G / (K_H * K_C)" to set the assignment rule for LRG:  Loop detected:  LRG's definition (L_ach * R * G / (K_H * K_C)) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "R * G / K_C" to set the assignment rule for RG:  Loop detected:  RG's definition (R * G / K_C) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+
+model iancu_jones_harvey_2007__environment(time_)
+end
+
+model iancu_jones_harvey_2007__beta_1_adrenergic_parameters(L_iso, K_H, K_L, K_C, time_)
+
+  // Assignment Rules:
+  L_iso := piecewise( 1 , ( time_ > 120) && (time_ <= 720 ), 1 );
+
+  // Variable initializations:
+  K_H = 0.035;
+  K_L = 0.386;
+  K_C = 8.809;
+end
+
+model iancu_jones_harvey_2007__muscarinic_parameters(L_ach, K_H, K_L, K_C, time_)
+
+  // Assignment Rules:
+  L_ach := piecewise( 0 , ( time_ > 240) && (time_ <= 540 ), 0 );
+
+  // Variable initializations:
+  K_H = 0.16;
+  K_L = 11;
+  K_C = 30;
+end
+
+model iancu_jones_harvey_2007__PDE_parameters(k_PDE2, Km_PDE2, k_PDE3, Km_PDE3, k_PDE4, Km_PDE4)
+
+  // Variable initializations:
+  k_PDE2 = 20;
+  Km_PDE2 = 50;
+  k_PDE3 = 1.25;
+  Km_PDE3 = 0.08;
+  k_PDE4 = 2.5;
+  Km_PDE4 = 2.2;
+end
+
+model iancu_jones_harvey_2007__G_s_parameters(k_act1, k_act2, k_hydr, k_reas)
+
+  // Variable initializations:
+  k_act1 = 5;
+  k_act2 = 0.1;
+  k_hydr = 0.8;
+  k_reas = 1.21e3;
+end
+
+model iancu_jones_harvey_2007__G_i_parameters(k_act1, k_act2, k_hydr, k_reas)
+
+  // Variable initializations:
+  k_act1 = 2.5;
+  k_act2 = 0.05;
+  k_hydr = 0.8;
+  k_reas = 1.21e3;
+end
+
+model iancu_jones_harvey_2007__caveolar_beta_1_adrenergic_receptor_module(LRG, RG, G, L_iso, K_H, K_L, K_C)
+
+  // Assignment Rules:
+  R := R_Total - LR - LRG - RG;
+
+  // Variable initializations:
+  R_Total = 0.633;
+end
+
+model iancu_jones_harvey_2007__caveolar_muscarinic_receptor_module(LRG, RG, G, L_ach, K_H, K_L, K_C)
+
+  // Assignment Rules:
+  R := R_Total - LR - LRG - RG;
+
+  // Variable initializations:
+  R_Total = 0.633;
+end
+
+model iancu_jones_harvey_2007__caveolar_G_s_protein_activation_module(Gs_alpha_GTP, Gs_beta_gamma, Gs_alpha_GDP, Gs_alpha_beta_gamma, Gs_Total, time_, RG, LRG, k_act1, k_act2, k_hydr, k_reas)
+
+  // Assignment Rules:
+  Gs_alpha_beta_gamma := Gs_Total - Gs_alpha_GTP - Gs_alpha_GDP;
+
+  // Rate Rules:
+  Gs_alpha_GTP' = RG * k_act2 + LRG * k_act1 - Gs_alpha_GTP * k_hydr;
+  Gs_beta_gamma' = RG * k_act2 + LRG * k_act1 - Gs_alpha_GDP * Gs_beta_gamma * k_reas;
+  Gs_alpha_GDP' = Gs_alpha_GTP * k_hydr - Gs_alpha_GDP * Gs_beta_gamma * k_reas;
+
+  // Variable initializations:
+  Gs_alpha_GTP = 0.041983438;
+  Gs_beta_gamma = 0.042634499;
+  Gs_alpha_GDP = 0.000651061;
+  Gs_Total = 10;
+end
+
+model iancu_jones_harvey_2007__caveolar_G_i_protein_activation_module(Gi_alpha_GTP, Gi_beta_gamma, Gi_alpha_GDP, Gi_alpha_beta_gamma, Gi_Total, time_, RG, LRG, k_act1, k_act2, k_hydr, k_reas)
+
+  // Assignment Rules:
+  Gi_alpha_beta_gamma := Gi_Total - Gi_alpha_GTP - Gi_alpha_GDP;
+
+  // Rate Rules:
+  Gi_alpha_GTP' = RG * k_act2 + LRG * k_act1 - Gi_alpha_GTP * k_hydr;
+  Gi_beta_gamma' = RG * k_act2 + LRG * k_act1 - Gi_alpha_GDP * Gi_beta_gamma * k_reas;
+  Gi_alpha_GDP' = Gi_alpha_GTP * k_hydr - Gi_alpha_GDP * Gi_beta_gamma * k_reas;
+
+  // Variable initializations:
+  Gi_alpha_GTP = 0.012644961;
+  Gi_beta_gamma = 0.013274751;
+  Gi_alpha_GDP = 0.00062979;
+  Gi_Total = 20;
+end
+
+model iancu_jones_harvey_2007__extracaveolar_beta_1_adrenergic_receptor_module(LRG, RG, G, L_iso, K_H, K_L, K_C)
+
+  // Assignment Rules:
+  R := R_Total - LR - LRG - RG;
+
+  // Variable initializations:
+  R_Total = 0.633;
+end
+
+model iancu_jones_harvey_2007__extracaveolar_muscarinic_receptor_module(LRG, RG, G, L_ach, K_H, K_L, K_C)
+
+  // Assignment Rules:
+  R := R_Total - LR - LRG - RG;
+
+  // Variable initializations:
+  R_Total = 0.633;
+end
+
+model iancu_jones_harvey_2007__extracaveolar_G_s_protein_activation_module(Gs_alpha_GTP, Gs_beta_gamma, Gs_alpha_GDP, Gs_alpha_beta_gamma, Gs_Total, time_, RG, LRG, k_act1, k_act2, k_hydr, k_reas)
+
+  // Assignment Rules:
+  Gs_alpha_beta_gamma := Gs_Total - Gs_alpha_GTP - Gs_alpha_GDP;
+
+  // Rate Rules:
+  Gs_alpha_GTP' = RG * k_act2 + LRG * k_act1 - Gs_alpha_GTP * k_hydr;
+  Gs_beta_gamma' = RG * k_act2 + LRG * k_act1 - Gs_alpha_GDP * Gs_beta_gamma * k_reas;
+  Gs_alpha_GDP' = Gs_alpha_GTP * k_hydr - Gs_alpha_GDP * Gs_beta_gamma * k_reas;
+
+  // Variable initializations:
+  Gs_alpha_GTP = 0.083866891;
+  Gs_beta_gamma = 0.084522918;
+  Gs_alpha_GDP = 0.000656025;
+  Gs_Total = 10;
+end
+
+model iancu_jones_harvey_2007__extracaveolar_G_i_protein_activation_module(Gi_alpha_GTP, Gi_beta_gamma, Gi_alpha_GDP, Gi_alpha_beta_gamma, Gi_Total, time_, RG, LRG, k_act1, k_act2, k_hydr, k_reas)
+
+  // Assignment Rules:
+  Gi_alpha_beta_gamma := Gi_Total - Gi_alpha_GTP - Gi_alpha_GDP;
+
+  // Rate Rules:
+  Gi_alpha_GTP' = RG * k_act2 + LRG * k_act1 - Gi_alpha_GTP * k_hydr;
+  Gi_beta_gamma' = RG * k_act2 + LRG * k_act1 - Gi_alpha_GDP * Gi_beta_gamma * k_reas;
+  Gi_alpha_GDP' = Gi_alpha_GTP * k_hydr - Gi_alpha_GDP * Gi_beta_gamma * k_reas;
+
+  // Variable initializations:
+  Gi_alpha_GTP = 0.001018705;
+  Gi_beta_gamma = 0.001475253;
+  Gi_alpha_GDP = 0.000456548;
+  Gi_Total = 1;
+end
+
+model iancu_jones_harvey_2007__AC56_module(dcAMP_AC_56_dt, Gs_alpha_GTP, Gi_alpha_GTP)
+
+  // Assignment Rules:
+  dcAMP_AC_56_dt := k_AC56 * AC_56 * AF56 * ATP / (Km_ATP + ATP);
+  k_AC56 := (0.7 + 3.8234 * power(Gs_alpha_GTP / 1 , 0.9787 ) / (0.1986 + power(Gs_alpha_GTP / 1 , 0.9787 ))) * (1 + 1 / 1.4432 * -(1.0061 ) * power(Gi_alpha_GTP / 1 , 0.8356 ) / (0.1918 + power(Gi_alpha_GTP / 1 , 0.8356 ))) * MW_AC56 / 60 * 0.001;
+
+  // Variable initializations:
+  AC_56 = 3.379;
+  AF56 = 500;
+  MW_AC56 = 130;
+  ATP = 5000;
+  Km_ATP = 315;
+end
+
+model iancu_jones_harvey_2007__AC47_ecav_module(dcAMP_AC_47_ecav_dt, Gs_alpha_GTP, Gi_beta_gamma)
+
+  // Assignment Rules:
+  dcAMP_AC_47_ecav_dt := k_AC47_ecav * AC_47_ecav * AF47 * ATP / (Km_ATP + ATP);
+  k_AC47_ecav := (0.063 + 2.01 * power(Gs_alpha_GTP * 1000 , 1.0043 ) / (31.544 + power(Gs_alpha_GTP * 1000 , 1.0043 ))) * (1 + 1 / 3.01 * 49.1 * power(Gi_beta_gamma * 1000 , 0.8921 ) / (25.44 + power(Gi_beta_gamma * 1000 , 0.8921 ))) * MW_AC47 / 60 * 0.001;
+
+  // Variable initializations:
+  AC_47_ecav = 0.2;
+  AF47 = 130;
+  MW_AC47 = 130;
+  ATP = 5000;
+  Km_ATP = 315;
+end
+
+model iancu_jones_harvey_2007__AC47_cyt_module(dcAMP_AC_47_cyt_dt)
+
+  // Assignment Rules:
+  dcAMP_AC_47_cyt_dt := k_AC47_cyt * AC_47_cyt * AF47 * ATP / (Km_ATP + ATP);
+
+  // Variable initializations:
+  k_AC47_cyt = 1.08e-3;
+  AC_47_cyt = 0.136;
+  AF47 = 130;
+  ATP = 5000;
+  Km_ATP = 315;
+end
+
+model iancu_jones_harvey_2007__caveolar_PDE_module(dcAMP_cav_PDE2_dt, dcAMP_cav_PDE3_dt, dcAMP_cav_PDE4_dt, cAMP_cav, k_PDE2, Km_PDE2, k_PDE3, Km_PDE3, k_PDE4, Km_PDE4)
+
+  // Assignment Rules:
+  dcAMP_cav_PDE2_dt := k_PDE2 * PDE2 * cAMP_cav / (Km_PDE2 + cAMP_cav);
+  dcAMP_cav_PDE3_dt := k_PDE3 * PDE3 * cAMP_cav / (Km_PDE3 + cAMP_cav);
+  dcAMP_cav_PDE4_dt := k_PDE4 * PDE4 * cAMP_cav / (Km_PDE4 + cAMP_cav);
+
+  // Variable initializations:
+  PDE2 = 4.5;
+  PDE3 = 5.6;
+  PDE4 = 2;
+end
+
+model iancu_jones_harvey_2007__extracaveolar_PDE_module(dcAMP_ecav_PDE2_dt, dcAMP_ecav_PDE4_dt, cAMP_ecav, k_PDE2, Km_PDE2, k_PDE4, Km_PDE4)
+
+  // Assignment Rules:
+  dcAMP_ecav_PDE2_dt := k_PDE2 * PDE2 * cAMP_ecav / (Km_PDE2 + cAMP_ecav);
+  dcAMP_ecav_PDE4_dt := k_PDE4 * PDE4 * cAMP_ecav / (Km_PDE4 + cAMP_ecav);
+
+  // Variable initializations:
+  PDE2 = 0.02;
+  PDE4 = 0.16;
+end
+
+model iancu_jones_harvey_2007__bulk_cytoplasmic_PDE_module(dcAMP_cyt_PDE2_dt, dcAMP_cyt_PDE3_dt, dcAMP_cyt_PDE4_dt, cAMP_cyt, k_PDE2, Km_PDE2, k_PDE3, Km_PDE3, k_PDE4, Km_PDE4)
+
+  // Assignment Rules:
+  dcAMP_cyt_PDE2_dt := k_PDE2 * PDE2 * cAMP_cyt / (Km_PDE2 + cAMP_cyt);
+  dcAMP_cyt_PDE3_dt := k_PDE3 * PDE3 * cAMP_cyt / (Km_PDE3 + cAMP_cyt);
+  dcAMP_cyt_PDE4_dt := k_PDE4 * PDE4 * cAMP_cyt / (Km_PDE4 + cAMP_cyt);
+
+  // Variable initializations:
+  PDE2 = 5e-3;
+  PDE3 = 7.5e-3;
+  PDE4 = 5e-3;
+end
+
+model iancu_jones_harvey_2007__cAMP_flux_module(cAMP_cav, cAMP_ecav, cAMP_cyt, time_, dcAMP_AC_56_dt, dcAMP_AC_47_ecav_dt, dcAMP_AC_47_cyt_dt, dcAMP_cav_PDE2_dt, dcAMP_cav_PDE3_dt, dcAMP_cav_PDE4_dt, dcAMP_ecav_PDE2_dt, dcAMP_ecav_PDE4_dt, dcAMP_cyt_PDE2_dt, dcAMP_cyt_PDE3_dt, dcAMP_cyt_PDE4_dt)
+
+  // Assignment Rules:
+  V_cav := 0.01 * V_cell;
+  V_ecav := 0.02 * V_cell;
+  V_cyt := 0.5 * V_cell;
+
+  // Rate Rules:
+  cAMP_cav' = dcAMP_AC_56_dt - (dcAMP_cav_PDE2_dt + dcAMP_cav_PDE3_dt + dcAMP_cav_PDE4_dt) - J_cav_ecav * (cAMP_cav - cAMP_ecav) / V_cav - J_cav_cyt * (cAMP_cav - cAMP_cyt) / V_cav;
+  cAMP_ecav' = dcAMP_AC_47_ecav_dt - (dcAMP_ecav_PDE2_dt + dcAMP_ecav_PDE4_dt) + J_cav_ecav * (cAMP_cav - cAMP_ecav) / V_ecav - J_ecav_cyt * (cAMP_ecav - cAMP_cyt) / V_ecav;
+  cAMP_cyt' = dcAMP_AC_47_cyt_dt - (dcAMP_cyt_PDE2_dt + dcAMP_cyt_PDE3_dt + dcAMP_cyt_PDE4_dt) + J_cav_cyt * (cAMP_cav - cAMP_cyt) / V_cyt + J_ecav_cyt * (cAMP_ecav - cAMP_cyt) / V_cyt;
+
+  // Variable initializations:
+  cAMP_cav = 0.11750433;
+  cAMP_ecav = 1.092200547;
+  cAMP_cyt = 0.992583576;
+  V_cell = 38e-12;
+  J_cav_ecav = 7.5e-15;
+  J_cav_cyt = 7.5e-14;
+  J_ecav_cyt = 1.5e-17;
+end
+
+model iancu_jones_harvey_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: iancu_jones_harvey_2007__environment(time_);
+  beta_1_adrenergic_parameters: iancu_jones_harvey_2007__beta_1_adrenergic_parameters(L_iso, K_H, K_L, K_C, time_);
+  muscarinic_parameters: iancu_jones_harvey_2007__muscarinic_parameters(L_ach, K_H0, K_L0, K_C0, time_);
+  PDE_parameters: iancu_jones_harvey_2007__PDE_parameters(k_PDE2, Km_PDE2, k_PDE3, Km_PDE3, k_PDE4, Km_PDE4);
+  G_s_parameters: iancu_jones_harvey_2007__G_s_parameters(k_act1, k_act2, k_hydr, k_reas);
+  G_i_parameters: iancu_jones_harvey_2007__G_i_parameters(k_act10, k_act20, k_hydr0, k_reas0);
+  caveolar_beta_1_adrenergic_receptor_module: iancu_jones_harvey_2007__caveolar_beta_1_adrenergic_receptor_module(LRG, RG, Gs_alpha_beta_gamma, L_iso, K_H, K_L, K_C);
+  caveolar_muscarinic_receptor_module: iancu_jones_harvey_2007__caveolar_muscarinic_receptor_module(LRG0, RG0, Gi_alpha_beta_gamma, L_ach, K_H0, K_L0, K_C0);
+  caveolar_G_s_protein_activation_module: iancu_jones_harvey_2007__caveolar_G_s_protein_activation_module(Gs_alpha_GTP, Gs_beta_gamma, Gs_alpha_GDP, Gs_alpha_beta_gamma, Gs_Total, time_, RG, LRG, k_act1, k_act2, k_hydr, k_reas);
+  caveolar_G_i_protein_activation_module: iancu_jones_harvey_2007__caveolar_G_i_protein_activation_module(Gi_alpha_GTP, Gi_beta_gamma0, Gi_alpha_GDP, Gi_alpha_beta_gamma, Gi_Total, time_, RG0, LRG0, k_act10, k_act20, k_hydr0, k_reas0);
+  extracaveolar_beta_1_adrenergic_receptor_module: iancu_jones_harvey_2007__extracaveolar_beta_1_adrenergic_receptor_module(LRG1, RG1, Gs_alpha_beta_gamma0, L_iso, K_H, K_L, K_C);
+  extracaveolar_muscarinic_receptor_module: iancu_jones_harvey_2007__extracaveolar_muscarinic_receptor_module(LRG2, RG2, Gi_alpha_beta_gamma0, L_ach, K_H0, K_L0, K_C0);
+  extracaveolar_G_s_protein_activation_module: iancu_jones_harvey_2007__extracaveolar_G_s_protein_activation_module(Gs_alpha_GTP0, Gs_beta_gamma0, Gs_alpha_GDP0, Gs_alpha_beta_gamma0, Gs_Total0, time_, RG1, LRG1, k_act1, k_act2, k_hydr, k_reas);
+  extracaveolar_G_i_protein_activation_module: iancu_jones_harvey_2007__extracaveolar_G_i_protein_activation_module(Gi_alpha_GTP0, Gi_beta_gamma, Gi_alpha_GDP0, Gi_alpha_beta_gamma0, Gi_Total0, time_, RG2, LRG2, k_act10, k_act20, k_hydr0, k_reas0);
+  AC56_module: iancu_jones_harvey_2007__AC56_module(dcAMP_AC_56_dt, Gs_alpha_GTP, Gi_alpha_GTP);
+  AC47_ecav_module: iancu_jones_harvey_2007__AC47_ecav_module(dcAMP_AC_47_ecav_dt, Gs_alpha_GTP0, Gi_beta_gamma);
+  AC47_cyt_module: iancu_jones_harvey_2007__AC47_cyt_module(dcAMP_AC_47_cyt_dt);
+  caveolar_PDE_module: iancu_jones_harvey_2007__caveolar_PDE_module(dcAMP_cav_PDE2_dt, dcAMP_cav_PDE3_dt, dcAMP_cav_PDE4_dt, cAMP_cav, k_PDE2, Km_PDE2, k_PDE3, Km_PDE3, k_PDE4, Km_PDE4);
+  extracaveolar_PDE_module: iancu_jones_harvey_2007__extracaveolar_PDE_module(dcAMP_ecav_PDE2_dt, dcAMP_ecav_PDE4_dt, cAMP_ecav, k_PDE2, Km_PDE2, k_PDE4, Km_PDE4);
+  bulk_cytoplasmic_PDE_module: iancu_jones_harvey_2007__bulk_cytoplasmic_PDE_module(dcAMP_cyt_PDE2_dt, dcAMP_cyt_PDE3_dt, dcAMP_cyt_PDE4_dt, cAMP_cyt, k_PDE2, Km_PDE2, k_PDE3, Km_PDE3, k_PDE4, Km_PDE4);
+  cAMP_flux_module: iancu_jones_harvey_2007__cAMP_flux_module(cAMP_cav, cAMP_ecav, cAMP_cyt, time_, dcAMP_AC_56_dt, dcAMP_AC_47_ecav_dt, dcAMP_AC_47_cyt_dt, dcAMP_cav_PDE2_dt, dcAMP_cav_PDE3_dt, dcAMP_cav_PDE4_dt, dcAMP_ecav_PDE2_dt, dcAMP_ecav_PDE4_dt, dcAMP_cyt_PDE2_dt, dcAMP_cyt_PDE3_dt, dcAMP_cyt_PDE4_dt);
+end

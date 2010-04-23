@@ -1,0 +1,47 @@
+//Created by libAntimony v1.3
+model ImportExample1__time(t)
+end
+
+model ImportExample1__Cformation(C, J2, t)
+
+  // Assignment Rules:
+  J1 := kf1 * A * B - kr1 * C;
+  Cpc := R / 602.2;
+
+  // Rate Rules:
+  A' = -(J1);
+  B' = -(J1);
+  C' = J1 - Cpc * J2;
+
+  // Variable initializations:
+  A = 10;
+  B = 5;
+  C = 0;
+  kf1 = 0.2;
+  kr1 = 0.05;
+  R = 5;
+end
+
+model ImportExample2__Eformation(J2, C, t)
+
+  // Assignment Rules:
+  J2 := kf2 * C * D - kr2 * E;
+
+  // Rate Rules:
+  D' = -(J2);
+  E' = J2;
+
+  // Variable initializations:
+  D = 4;
+  E = 0;
+  kf2 = 0.006;
+  kr2 = 0.001;
+end
+
+model ImportExample1____main()
+
+  // Sub-modules, and any changes to those submodules:
+  time_: ImportExample1__time(t);
+  Cformation: ImportExample1__Cformation(C, J2, t);
+  ImportedEformation: ImportExample2__Eformation(J2, C, t);
+end

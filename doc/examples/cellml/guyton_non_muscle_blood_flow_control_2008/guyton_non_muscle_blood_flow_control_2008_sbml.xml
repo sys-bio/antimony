@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model____main" name="non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="POT" value="35.1148"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_POR" value="35"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_POK" value="0.1"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_A1K" value="0.5"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_PON" value="0.1"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_A2K" value="60"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_A3K" value="40000"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_POZ" value="2"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_AUTOSN" value="0.9"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_POD" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_POB" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_AR1" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_NM_ST_time_delay_and_damping_AR1T" value="1.02127" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_POA" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_AR2" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_NM_I_time_delay_and_limit_AR2T" value="1.01179" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_POC" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_AR3" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_NM_LT_time_delay_and_limit_AR3T" value="1.1448" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_ARM1" constant="false"/>
+      <parameter id="non_muscle_autoregulatory_local_blood_flow_control_ARM" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="non_muscle_autoregulatory_local_blood_flow_control_POD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> POT </ci>
+            <ci> non_muscle_autoregulatory_local_blood_flow_control_POR </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="non_muscle_autoregulatory_local_blood_flow_control_POB">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> non_muscle_autoregulatory_local_blood_flow_control_POD </ci>
+              <ci> non_muscle_autoregulatory_local_blood_flow_control_POK </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="non_muscle_autoregulatory_local_blood_flow_control_AR1"/>
+      <rateRule variable="non_muscle_autoregulatory_local_blood_flow_control_NM_ST_time_delay_and_damping_AR1T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> non_muscle_autoregulatory_local_blood_flow_control_POB </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> non_muscle_autoregulatory_local_blood_flow_control_NM_ST_time_delay_and_damping_AR1T </ci>
+            </apply>
+            <ci> non_muscle_autoregulatory_local_blood_flow_control_A1K </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="non_muscle_autoregulatory_local_blood_flow_control_POA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> non_muscle_autoregulatory_local_blood_flow_control_PON </ci>
+              <ci> non_muscle_autoregulatory_local_blood_flow_control_POD </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="non_muscle_autoregulatory_local_blood_flow_control_AR2"/>
+      <rateRule variable="non_muscle_autoregulatory_local_blood_flow_control_NM_I_time_delay_and_limit_AR2T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> non_muscle_autoregulatory_local_blood_flow_control_POA </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> non_muscle_autoregulatory_local_blood_flow_control_NM_I_time_delay_and_limit_AR2T </ci>
+            </apply>
+            <ci> non_muscle_autoregulatory_local_blood_flow_control_A2K </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="non_muscle_autoregulatory_local_blood_flow_control_POC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> non_muscle_autoregulatory_local_blood_flow_control_POZ </ci>
+              <ci> non_muscle_autoregulatory_local_blood_flow_control_POD </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="non_muscle_autoregulatory_local_blood_flow_control_AR3"/>
+      <rateRule variable="non_muscle_autoregulatory_local_blood_flow_control_NM_LT_time_delay_and_limit_AR3T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> non_muscle_autoregulatory_local_blood_flow_control_POC </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> non_muscle_autoregulatory_local_blood_flow_control_NM_LT_time_delay_and_limit_AR3T </ci>
+            </apply>
+            <ci> non_muscle_autoregulatory_local_blood_flow_control_A3K </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="non_muscle_autoregulatory_local_blood_flow_control_ARM1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> non_muscle_autoregulatory_local_blood_flow_control_AR1 </ci>
+            <ci> non_muscle_autoregulatory_local_blood_flow_control_AR2 </ci>
+            <ci> non_muscle_autoregulatory_local_blood_flow_control_AR3 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="non_muscle_autoregulatory_local_blood_flow_control_ARM">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> non_muscle_autoregulatory_local_blood_flow_control_ARM1 </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> non_muscle_autoregulatory_local_blood_flow_control_AUTOSN </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

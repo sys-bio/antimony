@@ -1,0 +1,125 @@
+//Created by libAntimony v1.3
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__environment(time_)
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__parameter_values(POR, POK, A1K, PON, A2K, A3K, POZ, AUTOSN)
+
+  // Variable initializations:
+  POR = 35;
+  POK = 0.1;
+  A1K = 0.5;
+  PON = 0.1;
+  A2K = 60;
+  A3K = 40000;
+  POZ = 2;
+  AUTOSN = 0.9;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_autoregulatory_driving_force(POT, POD, POR)
+
+  // Assignment Rules:
+  POD := POT - POR;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_short_term_autoregulation()
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_ST_sensitivity_control(POD, POB, POK)
+
+  // Assignment Rules:
+  POB := POD * POK + 1;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_ST_time_delay_and_damping(POB, time_, AR1, A1K)
+
+  // Assignment Rules:
+  AR1 := piecewise( 0.5 , AR1T < 0.5 , AR1T );
+
+  // Rate Rules:
+  AR1T' = (POB * 1 - AR1T) / A1K;
+
+  // Variable initializations:
+  AR1T = 1.02127;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_intermediate_autoregulation()
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_I_sensitivity_control(POD, POA, PON)
+
+  // Assignment Rules:
+  POA := PON * POD + 1;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_I_time_delay_and_limit(POA, time_, AR2, A2K)
+
+  // Assignment Rules:
+  AR2 := piecewise( 0.5 , AR2T < 0.5 , AR2T );
+
+  // Rate Rules:
+  AR2T' = (POA * 1 - AR2T) / A2K;
+
+  // Variable initializations:
+  AR2T = 1.01179;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_long_term_autoregulation()
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_LT_sensitivity_control(POD, POC, POZ)
+
+  // Assignment Rules:
+  POC := POZ * POD + 1;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_LT_time_delay_and_limit(POC, time_, AR3, A3K)
+
+  // Assignment Rules:
+  AR3 := piecewise( 0.3 , AR3T < 0.3 , AR3T );
+
+  // Rate Rules:
+  AR3T' = (POC * 1 - AR3T) / A3K;
+
+  // Variable initializations:
+  AR3T = 1.1448;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__total_NM_autoregulation(AR1, AR2, AR3, ARM1)
+
+  // Assignment Rules:
+  ARM1 := AR1 * AR2 * AR3;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__global_NM_blood_flow_autoregulation_output(ARM1, ARM, AUTOSN)
+
+  // Assignment Rules:
+  ARM := (ARM1 - 1 ) * AUTOSN + 1;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__non_muscle_autoregulatory_local_blood_flow_control(time_, POT)
+
+  // Sub-modules, and any changes to those submodules:
+  parameter_values: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__parameter_values(POR, POK, A1K, PON, A2K, A3K, POZ, AUTOSN);
+  NM_autoregulatory_driving_force: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_autoregulatory_driving_force(POT, POD, POR);
+  NM_short_term_autoregulation: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_short_term_autoregulation();
+  NM_ST_sensitivity_control: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_ST_sensitivity_control(POD, POB, POK);
+  NM_ST_time_delay_and_damping: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_ST_time_delay_and_damping(POB, time_, AR1, A1K);
+  NM_intermediate_autoregulation: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_intermediate_autoregulation();
+  NM_I_sensitivity_control: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_I_sensitivity_control(POD, POA, PON);
+  NM_I_time_delay_and_limit: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_I_time_delay_and_limit(POA, time_, AR2, A2K);
+  NM_long_term_autoregulation: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_long_term_autoregulation();
+  NM_LT_sensitivity_control: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_LT_sensitivity_control(POD, POC, POZ);
+  NM_LT_time_delay_and_limit: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__NM_LT_time_delay_and_limit(POC, time_, AR3, A3K);
+  total_NM_autoregulation: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__total_NM_autoregulation(AR1, AR2, AR3, ARM1);
+  global_NM_blood_flow_autoregulation_output: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__global_NM_blood_flow_autoregulation_output(ARM1, ARM, AUTOSN);
+
+  // Variable initializations:
+  POT = 35.1148;
+end
+
+model non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__environment(time_);
+  non_muscle_autoregulatory_local_blood_flow_control: non_muscle_autoregulatory_local_blood_flow_control_CellML1_0_model__non_muscle_autoregulatory_local_blood_flow_control(time_, POT);
+end

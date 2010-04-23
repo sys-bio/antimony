@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="tabak_2007_b____main" name="tabak_2007_b____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="V" value="-60" constant="false"/>
+      <parameter id="membrane_C" value="10"/>
+      <parameter id="I_Ca0" constant="false"/>
+      <parameter id="I_K0" constant="false"/>
+      <parameter id="I_SK0" constant="false"/>
+      <parameter id="I_DA0" constant="false"/>
+      <parameter id="I_K_gK" value="4"/>
+      <parameter id="VK" value="-75"/>
+      <parameter id="n" value="0.1" constant="false"/>
+      <parameter id="I_K_n_mod_n_infinity" constant="false"/>
+      <parameter id="I_K_n_mod_lambda_" value="0.7"/>
+      <parameter id="I_K_n_mod_tau_n" value="30"/>
+      <parameter id="I_K_n_mod_vn" value="-5"/>
+      <parameter id="I_K_n_mod_sn" value="10"/>
+      <parameter id="I_Ca_gCa" value="2"/>
+      <parameter id="VCa" value="50"/>
+      <parameter id="m_infinity" constant="false"/>
+      <parameter id="I_Ca_m_vm" value="-20"/>
+      <parameter id="I_Ca_m_sm" value="12"/>
+      <parameter id="I_SK_gSK" value="1.7"/>
+      <parameter id="I_SK_s_infinity" constant="false"/>
+      <parameter id="I_SK_ks" value="0.5"/>
+      <parameter id="Ca0" value="0.1" constant="false"/>
+      <parameter id="I_DA_I_A" constant="false"/>
+      <parameter id="I_DA_gA" value="25"/>
+      <parameter id="a_infinity" constant="false"/>
+      <parameter id="h" value="0.1" constant="false"/>
+      <parameter id="I_DA_a_va" value="-20"/>
+      <parameter id="I_DA_a_sa" value="10"/>
+      <parameter id="I_DA_h_mod_h_infinity" constant="false"/>
+      <parameter id="I_DA_h_mod_tau_h" value="20"/>
+      <parameter id="I_DA_h_mod_vh" value="-60"/>
+      <parameter id="I_DA_h_mod_sh" value="5"/>
+      <parameter id="Ca_fc" value="0.01"/>
+      <parameter id="Ca_alpha" value="0.0015"/>
+      <parameter id="Ca_kc" value="0.16"/>
+      <parameter id="PRL_PRL" constant="false"/>
+      <parameter id="PRL_kPRL" value="1"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> I_Ca0 </ci>
+                <ci> I_K0 </ci>
+                <ci> I_SK0 </ci>
+                <ci> I_DA0 </ci>
+              </apply>
+            </apply>
+            <ci> membrane_C </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="I_Ca0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> I_Ca_gCa </ci>
+            <ci> m_infinity </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> VCa </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_K0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> I_K_gK </ci>
+            <ci> n </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> VK </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_SK0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> I_SK_gSK </ci>
+            <ci> I_SK_s_infinity </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> VK </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_DA0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> I_DA_I_A </ci>
+        </math>
+      </assignmentRule>
+      <rateRule variable="n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> I_K_n_mod_lambda_ </ci>
+              <apply>
+                <minus/>
+                <ci> I_K_n_mod_n_infinity </ci>
+                <ci> n </ci>
+              </apply>
+            </apply>
+            <ci> I_K_n_mod_tau_n </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="I_K_n_mod_n_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> I_K_n_mod_vn </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> I_K_n_mod_sn </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="m_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> I_Ca_m_vm </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> I_Ca_m_sm </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_SK_s_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <ci> Ca0 </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> Ca0 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> I_SK_ks </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> Ca_fc </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Ca_alpha </ci>
+                <ci> I_Ca0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Ca_kc </ci>
+                <ci> Ca0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="I_DA_I_A">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> I_DA_gA </ci>
+            <ci> a_infinity </ci>
+            <ci> h </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> VK </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="a_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> I_DA_a_va </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> I_DA_a_sa </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> I_DA_h_mod_h_infinity </ci>
+              <ci> h </ci>
+            </apply>
+            <ci> I_DA_h_mod_tau_h </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="I_DA_h_mod_h_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> V </ci>
+                    <ci> I_DA_h_mod_vh </ci>
+                  </apply>
+                  <ci> I_DA_h_mod_sh </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="PRL_PRL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> PRL_kPRL </ci>
+            <apply>
+              <power/>
+              <ci> Ca0 </ci>
+              <cn type="integer"> 4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,182 @@
+//Created by libAntimony v1.3
+model novak_pataki_ciliberto_tyson_2001_version01__environment(time_)
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__Cdc13T(Cdc13T, k2_, k2__, k2___, M, Ste9, Slp1, time_)
+
+  // Rate Rules:
+  Cdc13T' = k1 * M - (k2_ + k2__ * Ste9 + k2___ * Slp1) * Cdc13T;
+
+  // Variable initializations:
+  Cdc13T = 0.2;
+  k1 = 0.03;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__preMPF(preMPF, k2_, k2__, k2___, Cdc13T, Ste9, MPF, Slp1, time_)
+
+  // Assignment Rules:
+  kwee := kwee_ + (kwee__ - kwee_) * 2 * Vawee * Jiwee / (Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee + root(power(Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee, 2 ) - 4 * Vawee * Jiwee * (Viwee * MPF - Vawee)));
+  k25 := k25_ + (k25__ - k25_) * 2 * Va25 * MPF * Ji25 / (Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25 + root(power(Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25, 2 ) - 4 * Va25 * MPF * Ji25 * (Vi25 - Va25 * MPF)));
+
+  // Rate Rules:
+  preMPF' = kwee * (Cdc13T - preMPF) - k25 * preMPF - (k2_ + k2__ * Ste9 + k2___ * Slp1) * preMPF;
+
+  // Variable initializations:
+  preMPF = 0;
+  kwee_ = 0.15;
+  kwee__ = 1.3;
+  Vawee = 0.25;
+  Viwee = 1;
+  Jawee = 0.01;
+  Jiwee = 0.01;
+  k25_ = 0.05;
+  k25__ = 5;
+  Va25 = 1;
+  Vi25 = 0.25;
+  Ja25 = 0.01;
+  Ji25 = 0.01;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__Ste9(Ste9, MPF, SK, Slp1, time_)
+
+  // Rate Rules:
+  Ste9' = (k3_ + k3__ * Slp1) * (1 - Ste9) / (J3 + 1 - Ste9) - (k4_ * SK + k4 * MPF) * Ste9 / (J4 + Ste9);
+
+  // Variable initializations:
+  Ste9 = 1;
+  k3_ = 1;
+  k3__ = 10;
+  k4 = 35;
+  k4_ = 2;
+  J3 = 0.01;
+  J4 = 0.01;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__Slp1T(Slp1T, k6, MPF, time_)
+
+  // Rate Rules:
+  Slp1T' = k5_ + k5__ * power(MPF, 4 ) / (power(J5, 4 ) + power(MPF, 4 )) - k6 * Slp1T;
+
+  // Variable initializations:
+  Slp1T = 0;
+  k5_ = 0.005;
+  k5__ = 0.3;
+  J5 = 0.3;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__Slp1(Slp1, k6, IEP, Slp1T, time_)
+
+  // Rate Rules:
+  Slp1' = k7 * IEP * (Slp1T - Slp1) / (J7 + Slp1T - Slp1) - (k8 * Slp1 / (J8 + Slp1) + k6 * Slp1);
+
+  // Variable initializations:
+  Slp1 = 2.2;
+  k7 = 1;
+  k8 = 0.25;
+  J7 = 0.001;
+  J8 = 0.001;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__IEP(IEP, MPF, time_)
+
+  // Rate Rules:
+  IEP' = k9 * MPF * (1 - IEP) / (J9 + 1 - IEP) - k10 * IEP / (J10 + IEP);
+
+  // Variable initializations:
+  IEP = 0;
+  k9 = 0.1;
+  k10 = 0.04;
+  J9 = 0.01;
+  J10 = 0.01;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__Rum1T(Rum1T, SK, MPF, time_)
+
+  // Rate Rules:
+  Rum1T' = k11 - (k12 + k12_ * SK + k12__ * MPF) * Rum1T;
+
+  // Variable initializations:
+  Rum1T = 0;
+  k11 = 0.1;
+  k12 = 0.01;
+  k12_ = 1;
+  k12__ = 3;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__SK(SK, TF, time_)
+
+  // Rate Rules:
+  SK' = k13 * TF - k14 * SK;
+
+  // Variable initializations:
+  SK = 0;
+  k13 = 0.1;
+  k14 = 0.1;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__M(M, time_)
+
+  // Rate Rules:
+  M' = mu * M;
+
+  // Variable initializations:
+  M = 1;
+  mu = 0.005;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__Trimer(Trimer, Cdc13T, Rum1T)
+
+  // Assignment Rules:
+  Trimer := 2 * Cdc13T * Rum1T / (sum + root(power(sum, 2 ) - 4 * Cdc13T * Rum1T));
+  sum := Cdc13T + Rum1T + Kdiss;
+
+  // Variable initializations:
+  Kdiss = 0.001;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__MPF(MPF, Cdc13T, preMPF, Trimer)
+
+  // Assignment Rules:
+  MPF := (Cdc13T - preMPF) * (Cdc13T - Trimer) / Cdc13T;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__TF(TF, M, MPF)
+
+  // Assignment Rules:
+  TF := 2 * k15 * M * J16 / (k16_ + k16__ * MPF - k15 * M + (k16_ + k16__ * MPF) * J15 + k15 * M * J16 + root(power(k16_ + k16__ * MPF - k15 * M + (k16_ + k16__ * MPF) * J15 + k15 * M * J16, 2 ) - 4 * k15 * M * J16 * (k16_ + k16__ * MPF - k15 * M)));
+
+  // Variable initializations:
+  k15 = 1.5;
+  k16_ = 1;
+  k16__ = 2;
+  J15 = 0.01;
+  J16 = 0.01;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01__kinetic_parameters(k2_, k2__, k2___, k6)
+
+  // Variable initializations:
+  k2_ = 0.03;
+  k2__ = 1;
+  k2___ = 0.1;
+  k6 = 0.1;
+end
+
+model novak_pataki_ciliberto_tyson_2001_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: novak_pataki_ciliberto_tyson_2001_version01__environment(time_);
+  Cdc13T: novak_pataki_ciliberto_tyson_2001_version01__Cdc13T(Cdc13T0, k2_, k2__, k2___, M0, Ste90, Slp10, time_);
+  preMPF: novak_pataki_ciliberto_tyson_2001_version01__preMPF(preMPF0, k2_, k2__, k2___, Cdc13T0, Ste90, MPF0, Slp10, time_);
+  Ste9: novak_pataki_ciliberto_tyson_2001_version01__Ste9(Ste90, MPF0, SK0, Slp10, time_);
+  Slp1T: novak_pataki_ciliberto_tyson_2001_version01__Slp1T(Slp1T0, k6, MPF0, time_);
+  Slp1: novak_pataki_ciliberto_tyson_2001_version01__Slp1(Slp10, k6, IEP0, Slp1T0, time_);
+  IEP: novak_pataki_ciliberto_tyson_2001_version01__IEP(IEP0, MPF0, time_);
+  Rum1T: novak_pataki_ciliberto_tyson_2001_version01__Rum1T(Rum1T0, SK0, MPF0, time_);
+  SK: novak_pataki_ciliberto_tyson_2001_version01__SK(SK0, TF0, time_);
+  M: novak_pataki_ciliberto_tyson_2001_version01__M(M0, time_);
+  Trimer: novak_pataki_ciliberto_tyson_2001_version01__Trimer(Trimer0, Cdc13T0, Rum1T0);
+  MPF: novak_pataki_ciliberto_tyson_2001_version01__MPF(MPF0, Cdc13T0, preMPF0, Trimer0);
+  TF: novak_pataki_ciliberto_tyson_2001_version01__TF(TF0, M0, MPF0);
+  kinetic_parameters: novak_pataki_ciliberto_tyson_2001_version01__kinetic_parameters(k2_, k2__, k2___, k6);
+end

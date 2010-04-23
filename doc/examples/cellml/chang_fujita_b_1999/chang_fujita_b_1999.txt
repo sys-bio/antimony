@@ -1,0 +1,232 @@
+//Created by libAntimony v1.3
+model chang_1999__environment(time_)
+end
+
+model chang_1999__constants(RT, F, C_s_Imp, psi_s)
+
+  // Variable initializations:
+  RT = 2.579;
+  F = 96.48;
+  C_s_Imp = 4.525E-2;
+  psi_s = 0.0;
+end
+
+model chang_1999__solute_concentrations(C_m_Na, C_m_K, C_m_Cl, C_c_Na, C_c_K, C_c_Cl, C_s_Na, C_s_K, C_s_Cl, J_mc_Na, J_ms_Na, J_sc_Na, J_mc_K, J_ms_K, J_sc_K, J_mc_Cl, J_ms_Cl, J_sc_Cl, time_)
+
+  // Rate Rules:
+  C_m_Na' = -(( J_mc_Na + J_ms_Na ));
+  C_m_K' = -(( J_mc_K + J_ms_K ));
+  C_m_Cl' = -(( J_mc_Cl + J_ms_Cl ));
+  C_c_Na' = J_mc_Na + J_sc_Na;
+  C_c_K' = J_mc_K + J_sc_K;
+  C_c_Cl' = J_mc_Cl + J_sc_Cl;
+  C_s_Na' = J_ms_Na - J_sc_Na;
+  C_s_K' = J_ms_K - J_sc_K;
+  C_s_Cl' = J_ms_Cl - J_sc_Cl;
+
+  // Variable initializations:
+  C_m_Na = 0.05;
+  C_m_K = 0.002;
+  C_m_Cl = 0.03;
+  C_c_Na = 0.0164;
+  C_c_K = 0.1637;
+  C_c_Cl = 0.0203;
+  C_s_Na = 1.438E-1;
+  C_s_K = 4.25E-3;
+  C_s_Cl = 1.12E-1;
+end
+
+model chang_1999__osmolarities(Osm_m, Osm_c, Osm_s, C_m_Na, C_m_Cl, C_m_K, C_m_Imp, C_c_Na, C_c_Cl, C_c_K, C_c_Imp, C_s_Na, C_s_Cl, C_s_K, C_s_Imp)
+
+  // Assignment Rules:
+  Osm_m := C_m_Na + C_m_K + C_m_Cl + C_m_Imp;
+  Osm_c := C_c_Na + C_c_K + C_c_Cl + C_c_Imp;
+  Osm_s := C_s_Na + C_s_K + C_s_Cl + C_s_Imp;
+end
+
+model chang_1999__mc_sodium_flux(J_mc_Na, J_mc_NaCl, time_, RT, F, C_m_Na, C_c_Na, C_m_Cl, C_c_Cl, psi_m, psi_c)
+
+  // Assignment Rules:
+  J_mc_Na := J_mc_NaCl + G_mc_Na;
+  J_mc_NaCl := J_mc_NaCl_max * (( C_m_Na / K_mc_Na_NaCl * ( C_m_Cl / K_mc_Cl_NaCl ) - C_c_Na / K_mc_Na_NaCl * ( C_c_Cl / K_mc_Cl_NaCl )) / (( 1.0 + C_m_Na / K_mc_Na_NaCl * ( C_m_Cl / K_mc_Cl_NaCl )) * ( 1.0 + C_c_Na / K_mc_Na_NaCl ) * ( 1.0 + C_c_Cl / K_mc_Cl_NaCl ) + ( 1.0 + C_c_Na / K_mc_Na_NaCl * ( C_c_Cl / K_mc_Cl_NaCl )) * ( 1.0 + C_m_Na / K_mc_Na_NaCl ) * ( 1.0 + C_m_Cl / K_mc_Cl_NaCl )));
+  G_mc_Na := P_mc_Na * ( F * ( psi_m - psi_c ) / RT ) * (( C_m_Na - C_c_Na * exp(-(( F / RT )) * ( psi_m - psi_c ))) / ( 1.0 - exp(-(( F / RT )) * ( psi_m - psi_c ))));
+
+  // Variable initializations:
+  P_mc_Na = 3.27E-6;
+  J_mc_NaCl_max = 3.21E-5;
+  K_mc_Na_NaCl = 5.11E-2;
+  K_mc_Cl_NaCl = 1.92E-2;
+end
+
+model chang_1999__mc_potassium_flux(J_mc_K, J_mc_KCl, time_, RT, F, C_m_K, C_c_K, C_m_Cl, C_c_Cl, psi_m, psi_c)
+
+  // Assignment Rules:
+  J_mc_K := J_mc_KCl + G_mc_K;
+  J_mc_KCl := J_mc_KCl_max * (( C_m_K / K_mc_K_KCl * ( C_m_Cl / K_mc_Cl_KCl ) - C_c_K / K_mc_K_KCl * ( C_c_Cl / K_mc_Cl_KCl )) / (( 1.0 + C_m_K / K_mc_K_KCl * ( C_m_Cl / K_mc_Cl_KCl )) * ( 1.0 + C_c_K / K_mc_K_KCl ) * ( 1.0 + C_c_Cl / K_mc_Cl_KCl ) + ( 1.0 + C_c_K / K_mc_K_KCl * ( C_c_Cl / K_mc_Cl_KCl )) * ( 1.0 + C_m_K / K_mc_K_KCl ) * ( 1.0 + C_m_Cl / K_mc_Cl_KCl )));
+  G_mc_K := P_mc_K * ( F * ( psi_m - psi_c ) / RT ) * (( C_m_K - C_c_K * exp(-(( F / RT )) * ( psi_m - psi_c ))) / ( 1.0 - exp(-(( F / RT )) * ( psi_m - psi_c ))));
+
+  // Variable initializations:
+  J_mc_KCl_max = 6.31E-8;
+  K_mc_K_KCl = 5.30E-2;
+  K_mc_Cl_KCl = 2.13E-2;
+  P_mc_K = 4.90E-7;
+end
+
+model chang_1999__mc_chloride_flux(J_mc_Cl, time_, J_mc_NaCl, J_mc_KCl, RT, F, C_m_Cl, C_c_Cl, psi_m, psi_c)
+
+  // Assignment Rules:
+  J_mc_Cl := J_mc_NaCl + J_mc_KCl + G_mc_Cl;
+  G_mc_Cl := P_mc_Cl * ( -1.0 * F * ( psi_m - psi_c ) / RT ) * (( C_m_Cl - C_c_Cl * exp(-(( -1.0 * F / RT )) * ( psi_m - psi_c ))) / ( 1.0 - exp(-(( -1.0 * F / RT )) * ( psi_m - psi_c ))));
+
+  // Variable initializations:
+  P_mc_Cl = 1.43E-6;
+end
+
+model chang_1999__sc_sodium_flux(J_a, J_sc_Na, time_, C_c_Na)
+
+  // Assignment Rules:
+  J_a := J_a_max * ( 1.0 / ( 1.0 + power( K_Na_ATPase / C_c_Na , 3.0 )));
+  J_sc_Na := -3.0 * J_a;
+
+  // Variable initializations:
+  J_a_max = 2.69E-6;
+  K_Na_ATPase = 1.20E-2;
+end
+
+model chang_1999__sc_potassium_flux(J_sc_K, J_a, time_, RT, F, C_s_K, C_c_K, psi_s, psi_c)
+
+  // Assignment Rules:
+  J_sc_K := 2.0 * J_a + G_sc_K;
+  G_sc_K := P_sc_K * ( F * ( psi_s - psi_c ) / RT ) * (( C_s_K - C_c_K * exp(-(( F / RT )) * ( psi_s - psi_c ))) / ( 1.0 - exp(-(( F / RT )) * ( psi_s - psi_c ))));
+
+  // Variable initializations:
+  P_sc_K = 4.74E-4;
+end
+
+model chang_1999__sc_chloride_flux(J_sc_Cl, time_, RT, F, C_s_Cl, C_c_Cl, psi_s, psi_c)
+
+  // Assignment Rules:
+  J_sc_Cl := G_sc_Cl;
+  G_sc_Cl := P_sc_Cl * ( -1.0 * F * ( psi_s - psi_c ) / RT ) * (( C_s_Cl - C_c_Cl * exp(-(( -1.0 * F / RT )) * ( psi_s - psi_c ))) / ( 1.0 - exp(-(( -1.0 * F / RT )) * ( psi_s - psi_c ))));
+
+  // Variable initializations:
+  P_sc_Cl = 9.16E-5;
+end
+
+model chang_1999__ms_sodium_flux(J_ms_Na, time_, RT, F, C_m_Na, C_s_Na, psi_m, psi_s)
+
+  // Assignment Rules:
+  J_ms_Na := G_ms_Na;
+  G_ms_Na := P_ms_Na * ( F * ( psi_m - psi_s ) / RT ) * (( C_m_Na - C_s_Na * exp(-(( F / RT )) * ( psi_m - psi_s ))) / ( 1.0 - exp(-(( F / RT )) * ( psi_m - psi_s ))));
+
+  // Variable initializations:
+  P_ms_Na = 4.80E-6;
+end
+
+model chang_1999__ms_potassium_flux(J_ms_K, time_, RT, F, C_m_K, C_s_K, psi_m, psi_s)
+
+  // Assignment Rules:
+  J_ms_K := G_ms_K;
+  G_ms_K := P_ms_K * ( F * ( psi_m - psi_s ) / RT ) * (( C_m_K - C_s_K * exp(-(( F / RT )) * ( psi_m - psi_s ))) / ( 1.0 - exp(-(( F / RT )) * ( psi_m - psi_s ))));
+
+  // Variable initializations:
+  P_ms_K = 4.80E-6;
+end
+
+model chang_1999__ms_chloride_flux(J_ms_Cl, time_, RT, F, C_m_Cl, C_s_Cl, psi_m, psi_s)
+
+  // Assignment Rules:
+  J_ms_Cl := G_ms_Cl;
+  G_ms_Cl := P_ms_Cl * ( -1.0 * F * ( psi_m - psi_s ) / RT ) * (( C_m_Cl - C_s_Cl * exp(-(( -1.0 * F / RT )) * ( psi_m - psi_s ))) / ( 1.0 - exp(-(( -1.0 * F / RT )) * ( psi_m - psi_s ))));
+
+  // Variable initializations:
+  P_ms_Cl = 2.40E-6;
+end
+
+model chang_1999__total_transepithelial_sodium_flux(J_mc_Na, J_ms_Na, time_)
+
+  // Assignment Rules:
+  J_Na := J_mc_Na + J_ms_Na;
+end
+
+model chang_1999__total_transepithelial_potassium_flux(J_mc_K, J_ms_K, time_)
+
+  // Assignment Rules:
+  J_K := J_mc_K + J_ms_K;
+end
+
+model chang_1999__total_transepithelial_chloride_flux(J_mc_Cl, J_ms_Cl, time_)
+
+  // Assignment Rules:
+  J_Cl := J_mc_Cl + J_ms_Cl;
+end
+
+model chang_1999__mc_transepithelial_volume_flux(J_mc_v, Osm_m, Osm_c, time_, RT)
+
+  // Assignment Rules:
+  J_mc_v := L_mc_v * RT * ( Osm_m - Osm_c );
+
+  // Variable initializations:
+  L_mc_v = 5.22E-9;
+end
+
+model chang_1999__ms_transepithelial_volume_flux(J_ms_v, Osm_m, Osm_s, time_, RT)
+
+  // Assignment Rules:
+  J_ms_v := L_ms_v * RT * ( Osm_m - Osm_s );
+
+  // Variable initializations:
+  L_ms_v = 0.0;
+end
+
+model chang_1999__sc_transepithelial_volume_flux(Osm_s, Osm_c, time_, RT)
+
+  // Assignment Rules:
+  J_sc_v := L_sc_v * RT * ( Osm_s - Osm_c );
+
+  // Variable initializations:
+  L_sc_v = 5.22E-7;
+end
+
+model chang_1999__total_transepithelial_volume_flux(J_mc_v, J_ms_v, time_)
+
+  // Assignment Rules:
+  J_v := J_mc_v + J_ms_v;
+end
+
+model chang_1999__imported_variables(C_m_Imp, C_c_Imp, psi_m, psi_c)
+
+  // Sub-modules, and any changes to those submodules:
+  environment: chang_1999__environment(time_);
+  constants: chang_1999__constants(RT, F, C_s_Imp, psi_s);
+  solute_concentrations: chang_1999__solute_concentrations(C_m_Na, C_m_K, C_m_Cl, C_c_Na, C_c_K, C_c_Cl, C_s_Na, C_s_K, C_s_Cl, J_mc_Na, J_ms_Na, J_sc_Na, J_mc_K, J_ms_K, J_sc_K, J_mc_Cl, J_ms_Cl, J_sc_Cl, time_);
+  osmolarities: chang_1999__osmolarities(Osm_m, Osm_c, Osm_s, C_m_Na, C_m_Cl, C_m_K, C_m_Imp, C_c_Na, C_c_Cl, C_c_K, C_c_Imp, C_s_Na, C_s_Cl, C_s_K, C_s_Imp);
+  mc_sodium_flux: chang_1999__mc_sodium_flux(J_mc_Na, J_mc_NaCl, time_, RT, F, C_m_Na, C_c_Na, C_m_Cl, C_c_Cl, psi_m, psi_c);
+  mc_potassium_flux: chang_1999__mc_potassium_flux(J_mc_K, J_mc_KCl, time_, RT, F, C_m_K, C_c_K, C_m_Cl, C_c_Cl, psi_m, psi_c);
+  mc_chloride_flux: chang_1999__mc_chloride_flux(J_mc_Cl, time_, J_mc_NaCl, J_mc_KCl, RT, F, C_m_Cl, C_c_Cl, psi_m, psi_c);
+  sc_sodium_flux: chang_1999__sc_sodium_flux(J_a, J_sc_Na, time_, C_c_Na);
+  sc_potassium_flux: chang_1999__sc_potassium_flux(J_sc_K, J_a, time_, RT, F, C_s_K, C_c_K, psi_s, psi_c);
+  sc_chloride_flux: chang_1999__sc_chloride_flux(J_sc_Cl, time_, RT, F, C_s_Cl, C_c_Cl, psi_s, psi_c);
+  ms_sodium_flux: chang_1999__ms_sodium_flux(J_ms_Na, time_, RT, F, C_m_Na, C_s_Na, psi_m, psi_s);
+  ms_potassium_flux: chang_1999__ms_potassium_flux(J_ms_K, time_, RT, F, C_m_K, C_s_K, psi_m, psi_s);
+  ms_chloride_flux: chang_1999__ms_chloride_flux(J_ms_Cl, time_, RT, F, C_m_Cl, C_s_Cl, psi_m, psi_s);
+  total_transepithelial_sodium_flux: chang_1999__total_transepithelial_sodium_flux(J_mc_Na, J_ms_Na, time_);
+  total_transepithelial_potassium_flux: chang_1999__total_transepithelial_potassium_flux(J_mc_K, J_ms_K, time_);
+  total_transepithelial_chloride_flux: chang_1999__total_transepithelial_chloride_flux(J_mc_Cl, J_ms_Cl, time_);
+  mc_transepithelial_volume_flux: chang_1999__mc_transepithelial_volume_flux(J_mc_v, Osm_m, Osm_c, time_, RT);
+  ms_transepithelial_volume_flux: chang_1999__ms_transepithelial_volume_flux(J_ms_v, Osm_m, Osm_s, time_, RT);
+  sc_transepithelial_volume_flux: chang_1999__sc_transepithelial_volume_flux(Osm_s, Osm_c, time_, RT);
+  total_transepithelial_volume_flux: chang_1999__total_transepithelial_volume_flux(J_mc_v, J_ms_v, time_);
+
+  // Variable initializations:
+  C_m_Imp = 0.1033;
+  C_c_Imp = 0.1124;
+  psi_m = -28.0;
+  psi_c = -86.4;
+end
+
+model chang_1999____main()
+
+  // Sub-modules, and any changes to those submodules:
+  imported_variables: chang_1999__imported_variables(C_m_Imp, C_c_Imp, psi_m, psi_c);
+end

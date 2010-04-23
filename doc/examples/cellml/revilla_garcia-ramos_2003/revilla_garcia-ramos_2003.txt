@@ -1,0 +1,75 @@
+//Created by libAntimony v1.3
+model revilla_2003__environment(time_)
+end
+
+model revilla_2003__x(x, beta, v, time_)
+
+  // Rate Rules:
+  x' = 1 * lamda - ( d * x + 1 * beta * x * v );
+
+  // Variable initializations:
+  x = 3;
+  lamda = 2.0;
+  d = 0.01;
+end
+
+model revilla_2003__y(y, beta, alpha, v, w, x, time_)
+
+  // Rate Rules:
+  y' = 1 * beta * x * v - ( a * y + 1 * alpha * w * y );
+
+  // Variable initializations:
+  y = 6;
+  a = 0.33;
+end
+
+model revilla_2003__z(z, alpha, y, w, time_)
+
+  // Rate Rules:
+  z' = 1 * alpha * w * y - b * z;
+
+  // Variable initializations:
+  z = 0;
+  b = 2.0;
+end
+
+model revilla_2003__v(v, y, time_)
+
+  // Rate Rules:
+  v' = k * y - u * v;
+
+  // Variable initializations:
+  v = 149;
+  k = 50.0;
+  u = 2.0;
+end
+
+model revilla_2003__w(w, z, time_)
+
+  // Rate Rules:
+  w' = c * z - q * w;
+
+  // Variable initializations:
+  w = 1;
+  c = 2000.0;
+  q = 2.0;
+end
+
+model revilla_2003__model_parameters(alpha, beta)
+
+  // Variable initializations:
+  alpha = 0.004;
+  beta = 0.004;
+end
+
+model revilla_2003____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: revilla_2003__environment(time_);
+  x: revilla_2003__x(x0, beta, v0, time_);
+  y: revilla_2003__y(y0, beta, alpha, v0, w0, x0, time_);
+  z: revilla_2003__z(z0, alpha, y0, w0, time_);
+  v: revilla_2003__v(v0, y0, time_);
+  w: revilla_2003__w(w0, z0, time_);
+  model_parameters: revilla_2003__model_parameters(alpha, beta);
+end

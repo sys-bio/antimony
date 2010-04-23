@@ -1,0 +1,82 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to translate an assignment to "del( v )/del( time )" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del( v )/del( x )" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(degree( 2.0  ),  v )/del( x ,  2.0  )" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+
+model surkis_peskin_tranchina_leonard_1998_version01__environment(time_)
+end
+
+model surkis_peskin_tranchina_leonard_1998_version01__membrane(v, time_, i_A, i_H)
+
+  // Rate Rules:
+  a' = a_x;
+
+  // Variable initializations:
+  Cm = 1.0;
+  Gm = 50.0;
+  Gsh = 3.2;
+  Ri = 400.0;
+  Em = -60.0;
+  Esh = -70.0;
+end
+
+model surkis_peskin_tranchina_leonard_1998_version01__H_current_m_gate(mH, v, time_)
+
+  // Assignment Rules:
+  mH_infinity := 1.0 / ( 1.0 + exp(( v + 75.0 ) / 5.5 ));
+  tau_mH := 1.0 / (exp(-( 14.06 ) - 0.86 * v ) + exp(-( 1.87 ) + 0.070 * v ));
+end
+
+model surkis_peskin_tranchina_leonard_1998_version01__H_current(i_H, time_, v, mH)
+
+  // Sub-modules, and any changes to those submodules:
+  H_current_m_gate: surkis_peskin_tranchina_leonard_1998_version01__H_current_m_gate(mH, v, time_);
+
+  // Assignment Rules:
+  i_H := GH * mH * ( v - EH );
+
+  // Variable initializations:
+  EH = -40.0;
+end
+
+model surkis_peskin_tranchina_leonard_1998_version01__A_current_m_gate(mA, v, time_)
+
+  // Assignment Rules:
+  mA_infinity := 1.0 / ( 1.0 + exp(( v + 39.0 ) / -5.6 ));
+
+  // Variable initializations:
+  tau_mA = 0.7;
+end
+
+model surkis_peskin_tranchina_leonard_1998_version01__A_current_h_gate(hA, v, time_)
+
+  // Assignment Rules:
+  hA_infinity := 1.0 / ( 1.0 + exp(( v + 57.0 ) / 4.8 ));
+
+  // Variable initializations:
+  tau_hA = 18.0;
+end
+
+model surkis_peskin_tranchina_leonard_1998_version01__A_current(i_A, time_, v, mA, hA)
+
+  // Sub-modules, and any changes to those submodules:
+  A_current_m_gate: surkis_peskin_tranchina_leonard_1998_version01__A_current_m_gate(mA, v, time_);
+  A_current_h_gate: surkis_peskin_tranchina_leonard_1998_version01__A_current_h_gate(hA, v, time_);
+
+  // Assignment Rules:
+  i_A := GA * mA * hA * ( v - EA );
+
+  // Variable initializations:
+  EA = -97.0;
+end
+
+model surkis_peskin_tranchina_leonard_1998_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: surkis_peskin_tranchina_leonard_1998_version01__environment(time_);
+  membrane: surkis_peskin_tranchina_leonard_1998_version01__membrane(v, time_, i_A, i_H);
+  H_current: surkis_peskin_tranchina_leonard_1998_version01__H_current(i_H, time_, v, mH);
+  A_current: surkis_peskin_tranchina_leonard_1998_version01__A_current(i_A, time_, v, mA, hA);
+end

@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="tolic_mosekilde_sturis_2000_version03____main" name="tolic_mosekilde_sturis_2000_version03____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Vp" value="3"/>
+      <parameter id="Vi" value="11"/>
+      <parameter id="Vg" value="10"/>
+      <parameter id="E" value="0.2"/>
+      <parameter id="Ip" constant="false"/>
+      <parameter id="plasma_insulin_tp" value="6"/>
+      <parameter id="plasma_insulin_f1_G" constant="false"/>
+      <parameter id="plasma_insulin_Rm" value="210"/>
+      <parameter id="plasma_insulin_C1" value="2000"/>
+      <parameter id="plasma_insulin_a1" value="300"/>
+      <parameter id="Ii" constant="false"/>
+      <parameter id="G" constant="false"/>
+      <parameter id="ti" value="100"/>
+      <parameter id="glucose_Gin" value="216"/>
+      <parameter id="glucose_f2_G" constant="false"/>
+      <parameter id="glucose_f3_G" constant="false"/>
+      <parameter id="glucose_f4_Ii" constant="false"/>
+      <parameter id="glucose_f5_x3" constant="false"/>
+      <parameter id="glucose_f6_G" constant="false"/>
+      <parameter id="glucose_f7_G" constant="false"/>
+      <parameter id="glucose_C2" value="144"/>
+      <parameter id="glucose_C3" value="1000"/>
+      <parameter id="glucose_C4" value="80"/>
+      <parameter id="glucose_C5" value="26"/>
+      <parameter id="glucose_C6" value="2"/>
+      <parameter id="glucose_C7" value="2"/>
+      <parameter id="glucose_U0" value="40"/>
+      <parameter id="glucose_Um" value="940"/>
+      <parameter id="glucose_Ub" value="72"/>
+      <parameter id="glucose_beta" value="1.77"/>
+      <parameter id="glucose_Rg" value="180"/>
+      <parameter id="glucose_alpha" value="0.29"/>
+      <parameter id="glucose_gamma" value="5"/>
+      <parameter id="glucose_delta" value="-2.4"/>
+      <parameter id="glucose_Sb" value="20"/>
+      <parameter id="glucose_Sm" value="140"/>
+      <parameter id="x3" constant="false"/>
+      <parameter id="delay__td" value="36"/>
+      <parameter id="delay__x1" constant="false"/>
+      <parameter id="delay__x2" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Ip">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> plasma_insulin_f1_G </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> E </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <ci> Ip </ci>
+                    <ci> Vp </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <ci> Ii </ci>
+                    <ci> Vi </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> Ip </ci>
+                <ci> plasma_insulin_tp </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="plasma_insulin_f1_G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> plasma_insulin_Rm </ci>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> plasma_insulin_C1 </ci>
+                      <ci> G </ci>
+                    </apply>
+                    <ci> Vg </ci>
+                  </apply>
+                  <ci> plasma_insulin_a1 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ii">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> E </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <ci> Ip </ci>
+                  <ci> Vp </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> Ii </ci>
+                  <ci> Vi </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <ci> Ii </ci>
+              <ci> ti </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> glucose_Gin </ci>
+            <apply>
+              <times/>
+              <ci> glucose_f5_x3 </ci>
+              <ci> glucose_f6_G </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> glucose_f2_G </ci>
+                <apply>
+                  <times/>
+                  <ci> glucose_f3_G </ci>
+                  <ci> glucose_f4_Ii </ci>
+                </apply>
+                <ci> glucose_f7_G </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="glucose_f2_G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> glucose_Ub </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> G </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> glucose_C2 </ci>
+                    <ci> Vg </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="glucose_f3_G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> G </ci>
+            <apply>
+              <times/>
+              <ci> glucose_C3 </ci>
+              <ci> Vg </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="glucose_f4_Ii">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> glucose_U0 </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <ci> glucose_Um </ci>
+                <ci> glucose_U0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <times/>
+                      <ci> glucose_beta </ci>
+                      <apply>
+                        <ln/>
+                        <apply>
+                          <divide/>
+                          <ci> Ii </ci>
+                          <apply>
+                            <times/>
+                            <ci> glucose_C4 </ci>
+                            <apply>
+                              <divide/>
+                              <cn> 1 </cn>
+                              <apply>
+                                <plus/>
+                                <ci> Vi </ci>
+                                <apply>
+                                  <divide/>
+                                  <cn> 1 </cn>
+                                  <apply>
+                                    <times/>
+                                    <ci> E </ci>
+                                    <ci> ti </ci>
+                                  </apply>
+                                </apply>
+                              </apply>
+                            </apply>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="glucose_f5_x3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> glucose_Rg </ci>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> glucose_alpha </ci>
+                  <apply>
+                    <divide/>
+                    <ci> x3 </ci>
+                    <apply>
+                      <minus/>
+                      <ci> Vp </ci>
+                      <ci> glucose_C5 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="glucose_f6_G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> glucose_gamma </ci>
+                  <apply>
+                    <divide/>
+                    <ci> G </ci>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <times/>
+                        <ci> glucose_C3 </ci>
+                        <ci> Vg </ci>
+                      </apply>
+                      <ci> glucose_C6 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="glucose_f7_G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> glucose_Sb </ci>
+            <apply>
+              <minus/>
+              <ci> glucose_Sm </ci>
+              <ci> glucose_Sb </ci>
+            </apply>
+            <cn> 1 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <ci> glucose_delta </ci>
+                <apply>
+                  <divide/>
+                  <ci> G </ci>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <times/>
+                      <ci> glucose_C3 </ci>
+                      <ci> Vg </ci>
+                    </apply>
+                    <ci> glucose_C7 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 3 </cn>
+              <ci> delay__td </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> delay__x2 </ci>
+              <ci> x3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="delay__x1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 3 </cn>
+              <ci> delay__td </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> Ip </ci>
+              <ci> delay__x1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="delay__x2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 3 </cn>
+              <ci> delay__td </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> delay__x1 </ci>
+              <ci> delay__x2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

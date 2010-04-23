@@ -1,0 +1,436 @@
+//Created by libAntimony v1.3
+model tentusscher_panfilov_2006_endo_cell__environment(time_)
+end
+
+model tentusscher_panfilov_2006_endo_cell__membrane(V, R, T, F, Cm, V_c, time_, i_K1, i_to, i_Kr, i_Ks, i_CaL, i_NaK, i_Na, i_b_Na, i_NaCa, i_b_Ca, i_p_K, i_p_Ca, i_Stim)
+
+  // Assignment Rules:
+  i_Stim := piecewise( -(52 ) , ( time_ >= 100) && (time_ <= 101 ), 0 );
+
+  // Rate Rules:
+  V' = -(1 ) / 1 * (i_K1 + i_to + i_Kr + i_Ks + i_CaL + i_NaK + i_Na + i_b_Na + i_NaCa + i_b_Ca + i_p_K + i_p_Ca + i_Stim);
+
+  // Variable initializations:
+  V = -86.709;
+  R = 8314.472;
+  T = 310;
+  F = 96485.3415;
+  Cm = 0.185;
+  V_c = 0.016404;
+end
+
+model tentusscher_panfilov_2006_endo_cell__reversal_potentials(E_Na, E_K, E_Ks, E_Ca, K_o, Na_o, K_i, Na_i, Ca_o, Ca_i, R, F, T, time_)
+
+  // Assignment Rules:
+  E_Na := R * T / F * ln(Na_o / Na_i);
+  E_K := R * T / F * ln(K_o / K_i);
+  E_Ks := R * T / F * ln((K_o + P_kna * Na_o) / (K_i + P_kna * Na_i));
+  E_Ca := 0.5 * R * T / F * ln(Ca_o / Ca_i);
+
+  // Variable initializations:
+  P_kna = 0.03;
+end
+
+model tentusscher_panfilov_2006_endo_cell__inward_rectifier_potassium_current(i_K1, V, K_o, E_K, time_)
+
+  // Assignment Rules:
+  i_K1 := g_K1 * xK1_inf * root(K_o / 5.4 ) * (V - E_K);
+  xK1_inf := alpha_K1 / (alpha_K1 + beta_K1);
+  alpha_K1 := 0.1 / (1 + exp(0.06 * (V - E_K - 200 )));
+  beta_K1 := (3 * exp(0.0002 * (V - E_K + 100 )) + exp(0.1 * (V - E_K - 10 ))) / (1 + exp(-(0.5 ) * (V - E_K)));
+
+  // Variable initializations:
+  g_K1 = 5.405;
+end
+
+model tentusscher_panfilov_2006_endo_cell__rapid_time_dependent_potassium_current_Xr1_gate(Xr1, V, time_)
+
+  // Assignment Rules:
+  xr1_inf := 1 / (1 + exp((-(26 ) - V) / 7 ));
+  alpha_xr1 := 450 / (1 + exp((-(45 ) - V) / 10 ));
+  beta_xr1 := 6 / (1 + exp((V + 30 ) / 11.5 ));
+  tau_xr1 := 1 * alpha_xr1 * beta_xr1;
+
+  // Rate Rules:
+  Xr1' = (xr1_inf - Xr1) / tau_xr1;
+
+  // Variable initializations:
+  Xr1 = 0.00448;
+end
+
+model tentusscher_panfilov_2006_endo_cell__rapid_time_dependent_potassium_current_Xr2_gate(Xr2, V, time_)
+
+  // Assignment Rules:
+  xr2_inf := 1 / (1 + exp((V + 88 ) / 24 ));
+  alpha_xr2 := 3 / (1 + exp((-(60 ) - V) / 20 ));
+  beta_xr2 := 1.12 / (1 + exp((V - 60 ) / 20 ));
+  tau_xr2 := 1 * alpha_xr2 * beta_xr2;
+
+  // Rate Rules:
+  Xr2' = (xr2_inf - Xr2) / tau_xr2;
+
+  // Variable initializations:
+  Xr2 = 0.476;
+end
+
+model tentusscher_panfilov_2006_endo_cell__rapid_time_dependent_potassium_current(i_Kr, E_K, K_o, time_, V, Xr1, Xr2)
+
+  // Sub-modules, and any changes to those submodules:
+  rapid_time_dependent_potassium_current_Xr1_gate: tentusscher_panfilov_2006_endo_cell__rapid_time_dependent_potassium_current_Xr1_gate(Xr1, V, time_);
+  rapid_time_dependent_potassium_current_Xr2_gate: tentusscher_panfilov_2006_endo_cell__rapid_time_dependent_potassium_current_Xr2_gate(Xr2, V, time_);
+
+  // Assignment Rules:
+  i_Kr := g_Kr * root(K_o / 5.4 ) * Xr1 * Xr2 * (V - E_K);
+
+  // Variable initializations:
+  g_Kr = 0.153;
+end
+
+model tentusscher_panfilov_2006_endo_cell__slow_time_dependent_potassium_current_Xs_gate(Xs, V, time_)
+
+  // Assignment Rules:
+  xs_inf := 1 / (1 + exp((-(5 ) - V) / 14 ));
+  alpha_xs := 1400 / root(1 + exp((5 - V) / 6 ));
+  beta_xs := 1 / (1 + exp((V - 35 ) / 15 ));
+  tau_xs := 1 * alpha_xs * beta_xs + 80;
+
+  // Rate Rules:
+  Xs' = (xs_inf - Xs) / tau_xs;
+
+  // Variable initializations:
+  Xs = 0.0087;
+end
+
+model tentusscher_panfilov_2006_endo_cell__slow_time_dependent_potassium_current(i_Ks, E_Ks, time_, V, Xs)
+
+  // Sub-modules, and any changes to those submodules:
+  slow_time_dependent_potassium_current_Xs_gate: tentusscher_panfilov_2006_endo_cell__slow_time_dependent_potassium_current_Xs_gate(Xs, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks * power(Xs, 2 ) * (V - E_Ks);
+
+  // Variable initializations:
+  g_Ks = 0.392;
+end
+
+model tentusscher_panfilov_2006_endo_cell__fast_sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  m_inf := 1 / power(1 + exp((-(56.86 ) - V) / 9.03 ), 2 );
+  alpha_m := 1 / (1 + exp((-(60 ) - V) / 5 ));
+  beta_m := 0.1 / (1 + exp((V + 35 ) / 5 )) + 0.1 / (1 + exp((V - 50 ) / 200 ));
+  tau_m := 1 * alpha_m * beta_m;
+
+  // Rate Rules:
+  m' = (m_inf - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.00155;
+end
+
+model tentusscher_panfilov_2006_endo_cell__fast_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  h_inf := 1 / power(1 + exp((V + 71.55 ) / 7.43 ), 2 );
+  alpha_h := piecewise( 0.057 * exp(-((V + 80 )) / 6.8 ) , V < -(40 ) , 0 );
+  beta_h := piecewise( 2.7 * exp(0.079 * V) + 310000 * exp(0.3485 * V) , V < -(40 ) , 0.77 / (0.13 * (1 + exp((V + 10.66 ) / -(11.1 )))) );
+  tau_h := 1 / (alpha_h + beta_h);
+
+  // Rate Rules:
+  h' = (h_inf - h) / tau_h;
+
+  // Variable initializations:
+  h = 0.7573;
+end
+
+model tentusscher_panfilov_2006_endo_cell__fast_sodium_current_j_gate(j, V, time_)
+
+  // Assignment Rules:
+  j_inf := 1 / power(1 + exp((V + 71.55 ) / 7.43 ), 2 );
+  alpha_j := piecewise( (-(25428 ) * exp(0.2444 * V) - 6.948E-6 * exp(-(0.04391 ) * V)) * (V + 37.78 ) / 1 / (1 + exp(0.311 * (V + 79.23 ))) , V < -(40 ) , 0 );
+  beta_j := piecewise( 0.02424 * exp(-(0.01052 ) * V) / (1 + exp(-(0.1378 ) * (V + 40.14 ))) , V < -(40 ) , 0.6 * exp(0.057 * V) / (1 + exp(-(0.1 ) * (V + 32 ))) );
+  tau_j := 1 / (alpha_j + beta_j);
+
+  // Rate Rules:
+  j' = (j_inf - j) / tau_j;
+
+  // Variable initializations:
+  j = 0.7225;
+end
+
+model tentusscher_panfilov_2006_endo_cell__fast_sodium_current(i_Na, E_Na, time_, V, m, h, j)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: tentusscher_panfilov_2006_endo_cell__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: tentusscher_panfilov_2006_endo_cell__fast_sodium_current_h_gate(h, V, time_);
+  fast_sodium_current_j_gate: tentusscher_panfilov_2006_endo_cell__fast_sodium_current_j_gate(j, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * j * (V - E_Na);
+
+  // Variable initializations:
+  g_Na = 14.838;
+end
+
+model tentusscher_panfilov_2006_endo_cell__sodium_background_current(i_b_Na, E_Na, time_, V)
+
+  // Assignment Rules:
+  i_b_Na := g_bna * (V - E_Na);
+
+  // Variable initializations:
+  g_bna = 0.00029;
+end
+
+model tentusscher_panfilov_2006_endo_cell__L_type_Ca_current_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  d_inf := 1 / (1 + exp((-(8 ) - V) / 7.5 ));
+  alpha_d := 1.4 / (1 + exp((-(35 ) - V) / 13 )) + 0.25;
+  beta_d := 1.4 / (1 + exp((V + 5 ) / 5 ));
+  gamma_d := 1 / (1 + exp((50 - V) / 20 ));
+  tau_d := 1 * alpha_d * beta_d + gamma_d;
+
+  // Rate Rules:
+  d' = (d_inf - d) / tau_d;
+
+  // Variable initializations:
+  d = 3.164e-5;
+end
+
+model tentusscher_panfilov_2006_endo_cell__L_type_Ca_current_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  f_inf := 1 / (1 + exp((V + 20 ) / 7 ));
+  tau_f := 1102.5 * exp(-(power(V + 27 , 2 )) / 225 ) + 200 / (1 + exp((13 - V) / 10 )) + 180 / (1 + exp((V + 30 ) / 10 )) + 20;
+
+  // Rate Rules:
+  f' = (f_inf - f) / tau_f;
+
+  // Variable initializations:
+  f = 0.8009;
+end
+
+model tentusscher_panfilov_2006_endo_cell__L_type_Ca_current_f2_gate(f2, V, time_)
+
+  // Assignment Rules:
+  f2_inf := 0.67 / (1 + exp((V + 35 ) / 7 )) + 0.33;
+  tau_f2 := 562 * exp(-(power(V + 27 , 2 )) / 240 ) + 31 / (1 + exp((25 - V) / 10 )) + 80 / (1 + exp((V + 30 ) / 10 ));
+
+  // Rate Rules:
+  f2' = (f2_inf - f2) / tau_f2;
+
+  // Variable initializations:
+  f2 = 0.9778;
+end
+
+model tentusscher_panfilov_2006_endo_cell__L_type_Ca_current_fCass_gate(fCass, Ca_ss, V, time_)
+
+  // Assignment Rules:
+  fCass_inf := 0.6 / (1 + power(Ca_ss / 0.05 , 2 )) + 0.4;
+  tau_fCass := 80 / (1 + power(Ca_ss / 0.05 , 2 )) + 2;
+
+  // Rate Rules:
+  fCass' = (fCass_inf - fCass) / tau_fCass;
+
+  // Variable initializations:
+  fCass = 0.9953;
+end
+
+model tentusscher_panfilov_2006_endo_cell__L_type_Ca_current(i_CaL, Ca_o, Ca_ss, R, F, T, time_, V, d, f, f2, fCass)
+
+  // Sub-modules, and any changes to those submodules:
+  L_type_Ca_current_d_gate: tentusscher_panfilov_2006_endo_cell__L_type_Ca_current_d_gate(d, V, time_);
+  L_type_Ca_current_f_gate: tentusscher_panfilov_2006_endo_cell__L_type_Ca_current_f_gate(f, V, time_);
+  L_type_Ca_current_f2_gate: tentusscher_panfilov_2006_endo_cell__L_type_Ca_current_f2_gate(f2, V, time_);
+  L_type_Ca_current_fCass_gate: tentusscher_panfilov_2006_endo_cell__L_type_Ca_current_fCass_gate(fCass, Ca_ss, V, time_);
+
+  // Assignment Rules:
+  i_CaL := g_CaL * d * f * f2 * fCass * 4 * (V - 15 ) * power(F, 2 ) / (R * T) * (0.25 * Ca_ss * exp(2 * (V - 15 ) * F / (R * T)) - Ca_o) / (exp(2 * (V - 15 ) * F / (R * T)) - 1 );
+
+  // Variable initializations:
+  g_CaL = 0.0000398;
+end
+
+model tentusscher_panfilov_2006_endo_cell__calcium_background_current(i_b_Ca, E_Ca, time_, V)
+
+  // Assignment Rules:
+  i_b_Ca := g_bca * (V - E_Ca);
+
+  // Variable initializations:
+  g_bca = 0.000592;
+end
+
+model tentusscher_panfilov_2006_endo_cell__transient_outward_current_s_gate(s, V, time_)
+
+  // Assignment Rules:
+  s_inf := 1 / (1 + exp((V + 28 ) / 5 ));
+  tau_s := 1000 * exp(-(power(V + 67 , 2 )) / 1000 ) + 8;
+
+  // Rate Rules:
+  s' = (s_inf - s) / tau_s;
+
+  // Variable initializations:
+  s = 0.3212;
+end
+
+model tentusscher_panfilov_2006_endo_cell__transient_outward_current_r_gate(r, V, time_)
+
+  // Assignment Rules:
+  r_inf := 1 / (1 + exp((20 - V) / 6 ));
+  tau_r := 9.5 * exp(-(power(V + 40 , 2 )) / 1800 ) + 0.8;
+
+  // Rate Rules:
+  r' = (r_inf - r) / tau_r;
+
+  // Variable initializations:
+  r = 2.235e-8;
+end
+
+model tentusscher_panfilov_2006_endo_cell__transient_outward_current(i_to, E_K, V, time_, s, r)
+
+  // Sub-modules, and any changes to those submodules:
+  transient_outward_current_s_gate: tentusscher_panfilov_2006_endo_cell__transient_outward_current_s_gate(s, V, time_);
+  transient_outward_current_r_gate: tentusscher_panfilov_2006_endo_cell__transient_outward_current_r_gate(r, V, time_);
+
+  // Assignment Rules:
+  i_to := g_to * r * s * (V - E_K);
+
+  // Variable initializations:
+  g_to = 0.073;
+end
+
+model tentusscher_panfilov_2006_endo_cell__sodium_potassium_pump_current(i_NaK, K_o, Na_i, time_, R, F, T, V)
+
+  // Assignment Rules:
+  i_NaK := P_NaK * K_o / (K_o + K_mk) * Na_i / (Na_i + K_mNa) / (1 + 0.1245 * exp(-(0.1 ) * V * F / (R * T)) + 0.0353 * exp(-(V) * F / (R * T)));
+
+  // Variable initializations:
+  P_NaK = 2.724;
+  K_mk = 1;
+  K_mNa = 40;
+end
+
+model tentusscher_panfilov_2006_endo_cell__sodium_calcium_exchanger_current(i_NaCa, Na_i, Na_o, Ca_i, Ca_o, R, F, T, V, time_)
+
+  // Assignment Rules:
+  i_NaCa := K_NaCa * (exp(gamma * V * F / (R * T)) * power(Na_i, 3 ) * Ca_o - exp((gamma - 1 ) * V * F / (R * T)) * power(Na_o, 3 ) * Ca_i * alpha) / ((power(Km_Nai, 3 ) + power(Na_o, 3 )) * (Km_Ca + Ca_o) * (1 + K_sat * exp((gamma - 1 ) * V * F / (R * T))));
+
+  // Variable initializations:
+  K_NaCa = 1000;
+  K_sat = 0.1;
+  alpha = 2.5;
+  gamma = 0.35;
+  Km_Ca = 1.38;
+  Km_Nai = 87.5;
+end
+
+model tentusscher_panfilov_2006_endo_cell__calcium_pump_current(i_p_Ca, Ca_i)
+
+  // Assignment Rules:
+  i_p_Ca := g_pCa * Ca_i / (Ca_i + K_pCa);
+
+  // Variable initializations:
+  g_pCa = 0.1238;
+  K_pCa = 0.0005;
+end
+
+model tentusscher_panfilov_2006_endo_cell__potassium_pump_current(i_p_K, E_K, V)
+
+  // Assignment Rules:
+  i_p_K := g_pK * (V - E_K) / (1 + exp((25 - V) / 5.98 ));
+
+  // Variable initializations:
+  g_pK = 0.0146;
+end
+
+model tentusscher_panfilov_2006_endo_cell__calcium_dynamics(Ca_i, Ca_o, Ca_ss, V, V_c, time_, d, F, Cm, i_CaL, i_NaCa, i_p_Ca, i_b_Ca)
+
+  // Assignment Rules:
+  i_rel := V_rel * O * (Ca_SR - Ca_ss);
+  i_up := Vmax_up / (1 + power(K_up, 2 ) / power(Ca_i, 2 ));
+  i_leak := V_leak * (Ca_SR - Ca_i);
+  i_xfer := V_xfer * (Ca_ss - Ca_i);
+  O := k1 * power(Ca_ss, 2 ) * R_prime / (k3 + k1 * power(Ca_ss, 2 ));
+  k1 := k1_prime / kcasr;
+  k2 := k2_prime * kcasr;
+  kcasr := max_sr - (max_sr - min_sr) / (1 + power(EC / Ca_SR, 2 ));
+  Ca_i_bufc := 1 / (1 + Buf_c * K_buf_c / power(Ca_i + K_buf_c, 2 ));
+  Ca_sr_bufsr := 1 / (1 + Buf_sr * K_buf_sr / power(Ca_SR + K_buf_sr, 2 ));
+  Ca_ss_bufss := 1 / (1 + Buf_ss * K_buf_ss / power(Ca_ss + K_buf_ss, 2 ));
+
+  // Rate Rules:
+  Ca_i' = Ca_i_bufc * ((i_leak - i_up) * V_sr / V_c + i_xfer - 1 * (i_b_Ca + i_p_Ca - 2 * i_NaCa) * Cm / (2 * 1 * V_c * F));
+  Ca_SR' = Ca_sr_bufsr * (i_up - (i_rel + i_leak));
+  Ca_ss' = Ca_ss_bufss * (-(1 ) * i_CaL * Cm / (2 * 1 * V_ss * F) + i_rel * V_sr / V_ss - i_xfer * V_c / V_ss);
+  R_prime' = -(k2) * Ca_ss * R_prime + k4 * (1 - R_prime);
+
+  // Variable initializations:
+  Ca_i = 0.00013;
+  Ca_o = 2;
+  Ca_SR = 3.715;
+  Ca_ss = 0.00036;
+  R_prime = 0.9068;
+  k1_prime = 0.15;
+  k2_prime = 0.045;
+  k3 = 0.06;
+  k4 = 0.005;
+  EC = 1.5;
+  max_sr = 2.5;
+  min_sr = 1;
+  V_rel = 0.102;
+  V_xfer = 0.0038;
+  K_up = 0.00025;
+  V_leak = 0.00036;
+  Vmax_up = 0.006375;
+  Buf_c = 0.2;
+  K_buf_c = 0.001;
+  Buf_sr = 10;
+  K_buf_sr = 0.3;
+  Buf_ss = 0.4;
+  K_buf_ss = 0.00025;
+  V_sr = 0.001094;
+  V_ss = 0.00005468;
+end
+
+model tentusscher_panfilov_2006_endo_cell__sodium_dynamics(Na_i, Na_o, time_, F, Cm, V_c, i_Na, i_NaCa, i_NaK, i_b_Na)
+
+  // Rate Rules:
+  Na_i' = -(1 ) * (i_Na + i_b_Na + 3 * i_NaK + 3 * i_NaCa) / (1 * V_c * F) * Cm;
+
+  // Variable initializations:
+  Na_i = 10.355;
+  Na_o = 140;
+end
+
+model tentusscher_panfilov_2006_endo_cell__potassium_dynamics(K_i, K_o, time_, F, Cm, V_c, i_K1, i_to, i_NaK, i_Kr, i_Ks, i_p_K, i_Stim)
+
+  // Rate Rules:
+  K_i' = -(1 ) * (i_K1 + i_to + i_Kr + i_Ks + i_p_K + i_Stim - 2 * i_NaK) / (1 * V_c * F) * Cm;
+
+  // Variable initializations:
+  K_i = 138.4;
+  K_o = 5.4;
+end
+
+model tentusscher_panfilov_2006_endo_cell____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: tentusscher_panfilov_2006_endo_cell__environment(time_);
+  membrane: tentusscher_panfilov_2006_endo_cell__membrane(V, R, T, F, Cm, V_c, time_, i_K1, i_to, i_Kr, i_Ks, i_CaL, i_NaK, i_Na, i_b_Na, i_NaCa, i_b_Ca, i_p_K, i_p_Ca, i_Stim);
+  reversal_potentials: tentusscher_panfilov_2006_endo_cell__reversal_potentials(E_Na, E_K, E_Ks, E_Ca, K_o, Na_o, K_i, Na_i, Ca_o, Ca_i, R, F, T, time_);
+  inward_rectifier_potassium_current: tentusscher_panfilov_2006_endo_cell__inward_rectifier_potassium_current(i_K1, V, K_o, E_K, time_);
+  rapid_time_dependent_potassium_current: tentusscher_panfilov_2006_endo_cell__rapid_time_dependent_potassium_current(i_Kr, E_K, K_o, time_, V, Xr1, Xr2);
+  slow_time_dependent_potassium_current: tentusscher_panfilov_2006_endo_cell__slow_time_dependent_potassium_current(i_Ks, E_Ks, time_, V, Xs);
+  fast_sodium_current: tentusscher_panfilov_2006_endo_cell__fast_sodium_current(i_Na, E_Na, time_, V, m, h, j);
+  sodium_background_current: tentusscher_panfilov_2006_endo_cell__sodium_background_current(i_b_Na, E_Na, time_, V);
+  L_type_Ca_current: tentusscher_panfilov_2006_endo_cell__L_type_Ca_current(i_CaL, Ca_o, Ca_ss, R, F, T, time_, V, d, f, f2, fCass);
+  calcium_background_current: tentusscher_panfilov_2006_endo_cell__calcium_background_current(i_b_Ca, E_Ca, time_, V);
+  transient_outward_current: tentusscher_panfilov_2006_endo_cell__transient_outward_current(i_to, E_K, V, time_, s, r);
+  sodium_potassium_pump_current: tentusscher_panfilov_2006_endo_cell__sodium_potassium_pump_current(i_NaK, K_o, Na_i, time_, R, F, T, V);
+  sodium_calcium_exchanger_current: tentusscher_panfilov_2006_endo_cell__sodium_calcium_exchanger_current(i_NaCa, Na_i, Na_o, Ca_i, Ca_o, R, F, T, V, time_);
+  calcium_pump_current: tentusscher_panfilov_2006_endo_cell__calcium_pump_current(i_p_Ca, Ca_i);
+  potassium_pump_current: tentusscher_panfilov_2006_endo_cell__potassium_pump_current(i_p_K, E_K, V);
+  calcium_dynamics: tentusscher_panfilov_2006_endo_cell__calcium_dynamics(Ca_i, Ca_o, Ca_ss, V, V_c, time_, d, F, Cm, i_CaL, i_NaCa, i_p_Ca, i_b_Ca);
+  sodium_dynamics: tentusscher_panfilov_2006_endo_cell__sodium_dynamics(Na_i, Na_o, time_, F, Cm, V_c, i_Na, i_NaCa, i_NaK, i_b_Na);
+  potassium_dynamics: tentusscher_panfilov_2006_endo_cell__potassium_dynamics(K_i, K_o, time_, F, Cm, V_c, i_K1, i_to, i_NaK, i_Kr, i_Ks, i_p_K, i_Stim);
+end

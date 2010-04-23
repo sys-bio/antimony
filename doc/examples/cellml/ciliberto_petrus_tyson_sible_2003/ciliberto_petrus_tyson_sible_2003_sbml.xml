@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="ciliberto_petrus_tyson_sible_2003_version01____main" name="ciliberto_petrus_tyson_sible_2003_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Cdk2_CycE0" value="0.06" constant="false"/>
+      <parameter id="kwee" value="1.5"/>
+      <parameter id="kon" value="0.02"/>
+      <parameter id="k25A" value="0.1"/>
+      <parameter id="koff" value="0.0001"/>
+      <parameter id="kassoc" value="0.1"/>
+      <parameter id="kdissoc" value="0.001"/>
+      <parameter id="phi" constant="false"/>
+      <parameter id="Wee1_a0" value="1.02" constant="false"/>
+      <parameter id="PCdk2_CycE0" value="0.94" constant="false"/>
+      <parameter id="Xic0" value="3" constant="false"/>
+      <parameter id="Cdk2_CycErem0" value="0" constant="false"/>
+      <parameter id="Xic_Cdk2_CycE0" value="0" constant="false"/>
+      <parameter id="PCdk2_CycErem0" value="0" constant="false"/>
+      <parameter id="Xic_PCdk2_CycE0" value="0" constant="false"/>
+      <parameter id="Wee1_a_Jwact" value="0.01"/>
+      <parameter id="Wee1_a_Jwinact" value="0.01"/>
+      <parameter id="Wee1_a_Wee1_total" value="8"/>
+      <parameter id="Wee1_a_kwact" value="0.75"/>
+      <parameter id="Wee1_a_kwinact" value="1.5"/>
+      <parameter id="Kin_a0" value="0.6" constant="false"/>
+      <parameter id="Kin_a_Jiact" value="0.01"/>
+      <parameter id="Kin_a_Jiinact" value="0.01"/>
+      <parameter id="Kin_a_kiact" value="0.15"/>
+      <parameter id="Kin_a_kiinact" value="0.6"/>
+      <parameter id="kedeg" value="0.017"/>
+      <parameter id="kxdeg" value="0.01"/>
+      <parameter id="Deg_a0" value="0" constant="false"/>
+      <parameter id="Xic_Cdk2_CycErem0" value="0" constant="false"/>
+      <parameter id="Xic_PCdk2_CycErem0" value="0" constant="false"/>
+      <parameter id="Deg_a_Heav" constant="false"/>
+      <parameter id="Deg_a_kdact" value="0.023"/>
+      <parameter id="Deg_a_theta" value="0.3"/>
+      <parameter id="Deg_a_x" constant="false"/>
+      <parameter id="Deg" value="0"/>
+      <parameter id="Xicrem0" value="0" constant="false"/>
+      <parameter id="Cyc_total0" constant="false"/>
+      <parameter id="Xic_total0" constant="false"/>
+      <parameter id="kinetic_parameters_epsilon" value="0.001"/>
+      <parameter id="pool" constant="false"/>
+      <parameter id="kinetic_parameters_n" value="4"/>
+      <parameter id="kinetic_parameters_L" value="0.4"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Cdk2_CycE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k25A </ci>
+                <ci> PCdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> koff </ci>
+                <ci> Cdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdissoc </ci>
+                <ci> Xic_Cdk2_CycE0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kwee </ci>
+                <ci> Wee1_a0 </ci>
+                <ci> Cdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kon </ci>
+                <ci> phi </ci>
+                <ci> Cdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kassoc </ci>
+                <ci> Xic0 </ci>
+                <ci> Cdk2_CycE0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="phi">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> kinetic_parameters_epsilon </ci>
+              <apply>
+                <power/>
+                <ci> pool </ci>
+                <ci> kinetic_parameters_n </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> kinetic_parameters_L </ci>
+                <ci> kinetic_parameters_n </ci>
+              </apply>
+              <apply>
+                <power/>
+                <ci> pool </ci>
+                <ci> kinetic_parameters_n </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Wee1_a0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Wee1_a_kwact </ci>
+                <apply>
+                  <minus/>
+                  <ci> Wee1_a_Wee1_total </ci>
+                  <ci> Wee1_a0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci> Wee1_a_Jwact </ci>
+                  <ci> Wee1_a_Wee1_total </ci>
+                </apply>
+                <ci> Wee1_a0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Wee1_a_kwinact </ci>
+                <ci> Kin_a0 </ci>
+                <ci> Wee1_a0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Wee1_a_Jwinact </ci>
+                <ci> Wee1_a0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PCdk2_CycE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kwee </ci>
+                <ci> Wee1_a0 </ci>
+                <ci> Cdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> koff </ci>
+                <ci> PCdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdissoc </ci>
+                <ci> Xic_PCdk2_CycE0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k25A </ci>
+                <ci> PCdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kon </ci>
+                <ci> phi </ci>
+                <ci> PCdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kassoc </ci>
+                <ci> Xic0 </ci>
+                <ci> PCdk2_CycE0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Xic0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kdissoc </ci>
+              <apply>
+                <plus/>
+                <ci> Xic_Cdk2_CycE0 </ci>
+                <ci> Xic_PCdk2_CycE0 </ci>
+                <ci> Xic_Cdk2_CycErem0 </ci>
+                <ci> Xic_PCdk2_CycErem0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kassoc </ci>
+              <ci> Xic0 </ci>
+              <apply>
+                <plus/>
+                <ci> Cdk2_CycE0 </ci>
+                <ci> PCdk2_CycE0 </ci>
+                <ci> Cdk2_CycErem0 </ci>
+                <ci> PCdk2_CycErem0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Cdk2_CycErem0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kon </ci>
+                <ci> phi </ci>
+                <ci> Cdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kxdeg </ci>
+                <ci> Xic_Cdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdissoc </ci>
+                <ci> Xic_Cdk2_CycErem0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> koff </ci>
+                <ci> Cdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kedeg </ci>
+                <ci> Deg_a0 </ci>
+                <ci> Cdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kassoc </ci>
+                <ci> Xic0 </ci>
+                <ci> Cdk2_CycErem0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Xic_Cdk2_CycE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kassoc </ci>
+                <ci> Xic0 </ci>
+                <ci> Cdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> koff </ci>
+                <ci> Xic_Cdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k25A </ci>
+                <ci> Xic_PCdk2_CycE0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kdissoc </ci>
+                <ci> Xic_Cdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kon </ci>
+                <ci> phi </ci>
+                <ci> Xic_Cdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kwee </ci>
+                <ci> Wee1_a0 </ci>
+                <ci> Xic_Cdk2_CycE0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PCdk2_CycErem0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kon </ci>
+                <ci> phi </ci>
+                <ci> PCdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kxdeg </ci>
+                <ci> Xic_PCdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdissoc </ci>
+                <ci> Xic_PCdk2_CycErem0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> koff </ci>
+                <ci> PCdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kedeg </ci>
+                <ci> Deg_a0 </ci>
+                <ci> PCdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kassoc </ci>
+                <ci> Xic0 </ci>
+                <ci> PCdk2_CycErem0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Xic_PCdk2_CycE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kassoc </ci>
+                <ci> Xic0 </ci>
+                <ci> PCdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> koff </ci>
+                <ci> Xic_PCdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kwee </ci>
+                <ci> Wee1_a0 </ci>
+                <ci> Xic_Cdk2_CycE0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kdissoc </ci>
+                <ci> Xic_PCdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kon </ci>
+                <ci> phi </ci>
+                <ci> Xic_PCdk2_CycE0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k25A </ci>
+                <ci> Xic_PCdk2_CycE0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Kin_a0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kin_a_kiact </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Kin_a0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci> Kin_a_Jiact </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <ci> Kin_a0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Kin_a_kiinact </ci>
+                <ci> Cdk2_CycE0 </ci>
+                <ci> Kin_a0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Kin_a_Jiinact </ci>
+                <ci> Kin_a0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Deg_a0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Deg_a_kdact </ci>
+            <ci> Deg_a_Heav </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Xic_Cdk2_CycErem0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kassoc </ci>
+                <ci> Xic0 </ci>
+                <ci> Cdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kon </ci>
+                <ci> phi </ci>
+                <ci> Xic_Cdk2_CycE0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kdissoc </ci>
+                <ci> Xic_Cdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> koff </ci>
+                <ci> Xic_Cdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kedeg </ci>
+                <ci> Deg_a0 </ci>
+                <ci> Xic_Cdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kxdeg </ci>
+                <ci> Xic_Cdk2_CycErem0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Xic_PCdk2_CycErem0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kassoc </ci>
+                <ci> Xic0 </ci>
+                <ci> PCdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kon </ci>
+                <ci> phi </ci>
+                <ci> Xic_PCdk2_CycE0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kdissoc </ci>
+                <ci> Xic_PCdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> koff </ci>
+                <ci> Xic_PCdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kedeg </ci>
+                <ci> Deg </ci>
+                <ci> Xic_PCdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kxdeg </ci>
+                <ci> Xic_PCdk2_CycErem0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Deg_a_Heav"/>
+      <assignmentRule variable="Deg_a_x">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Cdk2_CycErem0 </ci>
+            <ci> Deg_a_theta </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Xicrem0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kedeg </ci>
+                <ci> Deg_a0 </ci>
+                <ci> Xic_Cdk2_CycErem0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kedeg </ci>
+                <ci> Deg_a0 </ci>
+                <ci> Xic_PCdk2_CycErem0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kxdeg </ci>
+              <ci> Xicrem0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Cyc_total0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> Xic_PCdk2_CycE0 </ci>
+            <ci> Xic_Cdk2_CycE0 </ci>
+            <ci> Xic_PCdk2_CycErem0 </ci>
+            <ci> Xic_Cdk2_CycErem0 </ci>
+            <ci> PCdk2_CycErem0 </ci>
+            <ci> Cdk2_CycErem0 </ci>
+            <ci> Cdk2_CycE0 </ci>
+            <ci> PCdk2_CycE0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Xic_total0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> Xic0 </ci>
+              <ci> Xic_PCdk2_CycE0 </ci>
+              <ci> Xic_Cdk2_CycE0 </ci>
+              <ci> Xic_PCdk2_CycErem0 </ci>
+              <ci> Xic_Cdk2_CycErem0 </ci>
+              <ci> Xicrem0 </ci>
+            </apply>
+            <cn type="integer"> 3 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pool">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> Cdk2_CycErem0 </ci>
+            <ci> PCdk2_CycErem0 </ci>
+            <ci> Xic_Cdk2_CycErem0 </ci>
+            <ci> Xic_PCdk2_CycErem0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

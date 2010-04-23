@@ -1,0 +1,134 @@
+//Created by libAntimony v1.3
+model irvine_model_1999__environment(time_)
+end
+
+model irvine_model_1999__membrane(V)
+
+  // Variable initializations:
+  V = -0.12;
+end
+
+model irvine_model_1999__sodium_current(i_Na, time_, V, P_open)
+
+  // Assignment Rules:
+  i_Na := g_Na * P_open * ( V - E_Na );
+
+  // Variable initializations:
+  E_Na = 0.044675;
+  g_Na = 0.0131;
+end
+
+model irvine_model_1999__Markov_model(P_open, alpha, beta, cf, cn_, of, on, eta, gamma, delta, epsilon, omega, v, gamma_gamma, delta_delta, time_)
+
+  // Assignment Rules:
+  P_open := O1 + O2;
+
+  // Rate Rules:
+  O1' = gamma * C4 + omega * O2 + of * I - (delta + epsilon + on) * O1;
+  O2' = epsilon * O1 + eta * C4 - (v + omega) * O2;
+  C0' = beta * C1 + cf * C0I - (cn_ + 4 * alpha) * C0;
+  C1' = 2 * beta * C2 + 4 * alpha * C0 + cf / a * C1I - (beta + 3 * alpha + cn_ * a) * C1;
+  C2' = 3 * beta * C3 + 3 * alpha * C1 + cf / power(a, 2 ) * C2I - (2 * beta + 2 * alpha + cn_ * power(a, 2 )) * C2;
+  C3' = 4 * beta * C4 + 2 * alpha * C2 + cf / power(a, 3 ) * C3I - (3 * beta + alpha + cn_ * power(a, 3 )) * C3;
+  C4' = delta * O1 + v * O2 + alpha * C3 + cf / power(a, 4 ) * C4I - (4 * beta + gamma + eta + cn_ * power(a, 4 )) * C4;
+  C0I' = beta / a * C1I + cn_ * C0 - (cf + 4 * alpha * a) * C0I;
+  C1I' = 2 * beta / a * C2I + 4 * alpha * a * C0I + cn_ * a * C1 - (beta / a + 3 * alpha * a + cf / a) * C1I;
+  C2I' = 3 * beta / a * C3I + 3 * alpha * a * C1I + cn_ * power(a, 2 ) * C2 - (2 * beta / a + 2 * alpha * a + cf / power(a, 2 )) * C2I;
+  C3I' = 4 * beta / a * C4I + 2 * alpha * a * C2I + cn_ * power(a, 3 ) * C3 - (3 * beta / a + alpha * a + cf / power(a, 3 )) * C3I;
+  C4I' = delta_delta * I + alpha * a * C3I + cn_ * power(a, 4 ) * C4 - (4 * beta / a + gamma_gamma + cf / power(a, 4 )) * C4I;
+  I' = gamma_gamma * C4I + on * O1 - (delta_delta + of) * I;
+
+  // Variable initializations:
+  O1 = 0.0;
+  O2 = 0.0;
+  C0 = 1.0;
+  C1 = 0.0;
+  C2 = 0.0;
+  C3 = 0.0;
+  C4 = 0.0;
+  C0I = 0.0;
+  C1I = 0.0;
+  C2I = 0.0;
+  C3I = 0.0;
+  C4I = 0.0;
+  I = 0.0;
+  a = 2.5218;
+end
+
+model irvine_model_1999__rate_constants(alpha, beta, cf, cn_, of, on, eta, gamma, delta, epsilon, omega, v, gamma_gamma, delta_delta, time_, V)
+
+  // Assignment Rules:
+  alpha := k * T / h * exp(-( delta_H_alpha ) / ( R * T ) + delta_S_alpha / R + z_alpha * F * V / ( R * T ));
+  beta := k * T / h * exp(-( delta_H_beta ) / ( R * T ) + delta_S_beta / R + z_beta * F * V / ( R * T ));
+  cf := k * T / h * exp(-( delta_H_cf ) / ( R * T ) + delta_S_cf / R + z_cf * F * V / ( R * T ));
+  cn_ := k * T / h * exp(-( delta_H_cn ) / ( R * T ) + delta_S_cn / R + z_cn * F * V / ( R * T ));
+  of := k * T / h * exp(-( delta_H_of ) / ( R * T ) + delta_S_of / R + z_of * F * V / ( R * T ));
+  on := k * T / h * exp(-( delta_H_on ) / ( R * T ) + delta_S_on / R + z_on * F * V / ( R * T ));
+  eta := k * T / h * exp(-( delta_H_eta ) / ( R * T ) + delta_S_eta / R + z_eta * F * V / ( R * T ));
+  gamma := k * T / h * exp(-( delta_H_gamma ) / ( R * T ) + delta_S_gamma / R + z_gamma * F * V / ( R * T ));
+  delta := k * T / h * exp(-( delta_H_delta ) / ( R * T ) + delta_S_delta / R + z_delta * F * V / ( R * T ));
+  epsilon := k * T / h * exp(-( delta_H_epsilon ) / ( R * T ) + delta_S_epsilon / R + z_epsilon * F * V / ( R * T ));
+  omega := k * T / h * exp(-( delta_H_omega ) / ( R * T ) + delta_S_omega / R + z_omega * F * V / ( R * T ));
+  v := k * T / h * exp(-( delta_H_v ) / ( R * T ) + delta_S_v / R + z_v * F * V / ( R * T ));
+  gamma_gamma := k * T / h * exp(-( delta_H_gamma_gamma ) / ( R * T ) + delta_S_gamma_gamma / R + z_gamma_gamma * F * V / ( R * T ));
+  delta_delta := k * T / h * exp(-( delta_H_delta_delta ) / ( R * T ) + delta_S_delta_delta / R + z_delta_delta * F * V / ( R * T ));
+
+  // Variable initializations:
+  R = 8.314472;
+  T = 286.0;
+  F = 96500.0;
+  k = 1.3806504E-23;
+  h = 6.62607095E-31;
+  z_alpha = 0;
+  z_beta = -0.9701;
+  z_gamma = 1.5703;
+  z_delta = -1.3266;
+  z_on = 0.6625;
+  z_of = 0;
+  z_gamma_gamma = 0;
+  z_delta_delta = -3.5596;
+  z_epsilon = 0;
+  z_omega = 0;
+  z_eta = 1.5717;
+  z_v = -1.3281;
+  z_cn = 0;
+  z_cf = 0;
+  delta_H_alpha = 116900;
+  delta_H_beta = 263870;
+  delta_H_cf = 57533;
+  delta_H_cn = 293270;
+  delta_H_of = 79035;
+  delta_H_on = 62385;
+  delta_H_eta = 150333;
+  delta_H_gamma = 200240;
+  delta_H_delta = 127970;
+  delta_H_epsilon = 79183;
+  delta_H_omega = 123020;
+  delta_H_v = 121900;
+  delta_H_gamma_gamma = -99967;
+  delta_H_delta_delta = 62555;
+  delta_S_alpha = 224.114;
+  delta_S_beta = 708.146;
+  delta_S_cf = 0.00711;
+  delta_S_cn = 786.217;
+  delta_S_of = 1.510;
+  delta_S_on = 39.295;
+  delta_S_eta = 338.915;
+  delta_S_gamma = 529.952;
+  delta_S_delta = 229.205;
+  delta_S_epsilon = 70.078;
+  delta_S_omega = 225.175;
+  delta_S_v = 193.265;
+  delta_S_gamma_gamma = -578.317;
+  delta_S_delta_delta = -130.639;
+end
+
+model irvine_model_1999____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: irvine_model_1999__environment(time_);
+  membrane: irvine_model_1999__membrane(V);
+  sodium_current: irvine_model_1999__sodium_current(i_Na, time_, V, P_open);
+  Markov_model: irvine_model_1999__Markov_model(P_open, alpha, beta, cf, cn_, of, on, eta, gamma, delta, epsilon, omega, v, gamma_gamma, delta_delta, time_);
+  rate_constants: irvine_model_1999__rate_constants(alpha, beta, cf, cn_, of, on, eta, gamma, delta, epsilon, omega, v, gamma_gamma, delta_delta, time_, V);
+end

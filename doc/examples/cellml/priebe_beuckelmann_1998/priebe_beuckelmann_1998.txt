@@ -1,0 +1,429 @@
+//Created by libAntimony v1.3
+model priebe_beuckelmann_1998__environment(time_)
+end
+
+model priebe_beuckelmann_1998__cell(V, R, T, F, FonRT, Cm, time_, failing, i_Na, i_Ca, i_to, i_Kr, i_Ks, i_K1, i_NaCa, i_NaK, i_b_Na, i_b_Ca, dVdt, i_Stim)
+
+  // Assignment Rules:
+  FonRT := F / (R * T);
+  dVdt := piecewise( (V_hold - V) / 1 , (( V_clamp == 1) && ((time_ <= 500) || (time_ > 800 ) )), (V_step - V) / 1 , (( V_clamp == 1) && (time_ > 500) && (time_ <= 800 )), -(1 ) * I_tot );
+  I_tot := i_Na + i_Ca + i_to + i_Kr + i_Ks + i_K1 + i_NaCa + i_NaK + i_b_Na + i_b_Ca + i_Stim;
+  i_Stim := piecewise( stim_amplitude , ( time_ - past >= stim_offset) && (time_ - past <= stim_offset + stim_duration ), 0 );
+  past := floor(time_ / stim_period) * stim_period;
+
+  // Rate Rules:
+  V' = dVdt;
+
+  // Variable initializations:
+  V = -90.7796417483135;
+  R = 8.3143;
+  T = 310.15;
+  F = 96.4867;
+  Cm = 153.4;
+  failing = 0;
+  stim_offset = 0;
+  stim_period = 1000;
+  stim_duration = 3;
+  stim_amplitude = -15;
+  V_clamp = 0;
+  V_hold = -60;
+  V_step = 0;
+end
+
+model priebe_beuckelmann_1998__INa_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := piecewise( 0.32 * (V + 47.13 ) / (1 - exp(-(0.1 ) * (V + 47.13 ))) , abs(V + 47.13 ) > 0.001 , 3.2 );
+  beta_m := 0.08 * exp(-(V) / 11 );
+
+  // Rate Rules:
+  m' = alpha_m * (1 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.000585525582501575;
+end
+
+model priebe_beuckelmann_1998__INa_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := piecewise( 0.135 * exp((80 + V) / -(6.8 )) , V < -(40 ) , 0 );
+  beta_h := piecewise( 3.56 * exp(0.079 * V) + 3.1E5 * exp(0.35 * V) , V < -(40 ) , 1 / (0.13 * (1 + exp(-((V + 10.66 )) / 11.1 ))) );
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.995865529216237;
+end
+
+model priebe_beuckelmann_1998__INa_j_gate(j, V, time_)
+
+  // Assignment Rules:
+  alpha_j := piecewise( (-(127140 ) * exp(0.244 * V) - 3.474E-5 * exp(-(0.04391 ) * V)) * (V + 37.78 ) / (1 + exp(0.311 * (V + 79.23 ))) , V < -(40 ) , 0 );
+  beta_j := piecewise( 0.1212 * exp(-(0.01052 ) * V) / (1 + exp(-(0.1378 ) * (V + 40.14 ))) , V < -(40 ) , 0.3 * exp(-(2.535E-7 ) * V) / (1 + exp(-(0.1 ) * (V + 32 ))) );
+
+  // Rate Rules:
+  j' = alpha_j * (1 - j) - beta_j * j;
+
+  // Variable initializations:
+  j = 0.997011204496203;
+end
+
+model priebe_beuckelmann_1998__INa(i_Na, E_Na, time_, V, FonRT, Nai, Nao, m, h, j)
+
+  // Sub-modules, and any changes to those submodules:
+  INa_m_gate: priebe_beuckelmann_1998__INa_m_gate(m, V, time_);
+  INa_h_gate: priebe_beuckelmann_1998__INa_h_gate(h, V, time_);
+  INa_j_gate: priebe_beuckelmann_1998__INa_j_gate(j, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * j * (V - E_Na);
+  E_Na := ln(Nao / Nai) / FonRT;
+
+  // Variable initializations:
+  g_Na = 16;
+end
+
+model priebe_beuckelmann_1998__ICa_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  alpha_d := 14.9859 / (16.6813 * root(2 * pi )) * exp(-(power((V - 22.36 ) / 16.6813 , 2 )) / 2 );
+  beta_d := 0.1471 - 5.3 / (14.93 * root(2 * pi )) * exp(-(power((V - 6.2744 ) / 14.93 , 2 )) / 2 );
+
+  // Rate Rules:
+  d' = alpha_d * (1 - d) - beta_d * d;
+
+  // Variable initializations:
+  d = 2.50653215966786e-10;
+end
+
+model priebe_beuckelmann_1998__ICa_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  alpha_f := 6.872E-3 / (1 + exp((V - 6.1546 ) / 6.1223 ));
+  beta_f := (0.0687 * exp(-(0.1081 ) * (V + 9.8255 )) + 0.0112 ) / (1 + exp(-(0.2779 ) * (V + 9.8255 ))) + 5.474E-4;
+
+  // Rate Rules:
+  f' = alpha_f * (1 - f) - beta_f * f;
+
+  // Variable initializations:
+  f = 0.92130376850548;
+end
+
+model priebe_beuckelmann_1998__ICa_f_Ca_gate(f_Ca, V, time_, Cai)
+
+  // Assignment Rules:
+  f_Ca := Km_Ca / (Km_Ca + Cai);
+
+  // Variable initializations:
+  Km_Ca = 0.0006;
+end
+
+model priebe_beuckelmann_1998__ICa(i_Ca, E_Ca, time_, V, Cai, FonRT, Cao, d, f, f_Ca)
+
+  // Sub-modules, and any changes to those submodules:
+  ICa_d_gate: priebe_beuckelmann_1998__ICa_d_gate(d, V, time_);
+  ICa_f_gate: priebe_beuckelmann_1998__ICa_f_gate(f, V, time_);
+  ICa_f_Ca_gate: priebe_beuckelmann_1998__ICa_f_Ca_gate(f_Ca, V, time_, Cai);
+
+  // Assignment Rules:
+  i_Ca := g_Ca_max * d * f * f_Ca * (V - E_Ca);
+  E_Ca := ln(Cao / Cai) / (2 * FonRT);
+
+  // Variable initializations:
+  g_Ca_max = 0.064;
+end
+
+model priebe_beuckelmann_1998__Ito_r_gate(r, V, time_)
+
+  // Assignment Rules:
+  alpha_r := 0.5266 * exp(-(0.0166 ) * (V - 42.2912 )) / (1 + exp(-(0.0943 ) * (V - 42.2912 )));
+  beta_r := (5.186E-5 * V + 0.5149 * exp(-(0.1344 ) * (V - 5.0027 ))) / (1 + exp(-(0.1348 ) * (V - 5.186E-5 )));
+
+  // Rate Rules:
+  r' = alpha_r * (1 - r) - beta_r * r;
+
+  // Variable initializations:
+  r = 1.75032478501027e-5;
+end
+
+model priebe_beuckelmann_1998__Ito_t_gate(t, V, time_)
+
+  // Assignment Rules:
+  alpha_t := (5.612E-5 * V + 0.0721 * exp(-(0.173 ) * (V + 34.2531 ))) / (1 + exp(-(0.1732 ) * (V + 34.2531 )));
+  beta_t := (1.215E-4 * V + 0.0767 * exp(-(1.66E-9 ) * (V + 34.0235 ))) / (1 + exp(-(0.1604 ) * (V + 34.0235 )));
+
+  // Rate Rules:
+  t' = alpha_t * (1 - t) - beta_t * t;
+
+  // Variable initializations:
+  t = 0.999897251531651;
+end
+
+model priebe_beuckelmann_1998__Ito(i_to, Nai, Nao, Ki, Ko, FonRT, V, time_, failing, t, r)
+
+  // Sub-modules, and any changes to those submodules:
+  Ito_r_gate: priebe_beuckelmann_1998__Ito_r_gate(r, V, time_);
+  Ito_t_gate: priebe_beuckelmann_1998__Ito_t_gate(t, V, time_);
+
+  // Assignment Rules:
+  i_to := g_to_max * r * t * (V - E_to);
+  g_to_max := piecewise( 0.3 , failing == 0 , 0.191 );
+  E_to := ln((0.043 * Nao + Ko) / (0.043 * Nai + Ki)) / FonRT;
+end
+
+model priebe_beuckelmann_1998__IKs_Xs_gate(Xs, V, time_)
+
+  // Assignment Rules:
+  alpha_Xs := 3.013E-3 / (1 + exp((7.4454 - (V + 10 )) / 14.3171 ));
+  beta_Xs := 5.87E-3 / (1 + exp((5.95 + V + 10 ) / 15.82 ));
+
+  // Rate Rules:
+  Xs' = alpha_Xs * (1 - Xs) - beta_Xs * Xs;
+
+  // Variable initializations:
+  Xs = 0.00885658064818147;
+end
+
+model priebe_beuckelmann_1998__IKs(i_Ks, Ki, Ko, Nai, Nao, FonRT, time_, V, Xs)
+
+  // Sub-modules, and any changes to those submodules:
+  IKs_Xs_gate: priebe_beuckelmann_1998__IKs_Xs_gate(Xs, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks_max * power(Xs, 2 ) * (V - E_Ks);
+  E_Ks := ln((0.01833 * Nao + Ko) / (0.01833 * Nai + Ki)) / FonRT;
+
+  // Variable initializations:
+  g_Ks_max = 0.02;
+end
+
+model priebe_beuckelmann_1998__IKr_Xr_gate(Xr, V, time_)
+
+  // Assignment Rules:
+  alpha_Xr := 0.005 * exp(5.266E-4 * (V + 4.067 )) / (1 + exp(-(0.1262 ) * (V + 4.067 )));
+  beta_Xr := 0.016 * exp(1.6E-3 * (V + 65.66 )) / (1 + exp(0.0783 * (V + 65.66 )));
+
+  // Rate Rules:
+  Xr' = alpha_Xr * (1 - Xr) - beta_Xr * Xr;
+
+  // Variable initializations:
+  Xr = 0.000215523048438941;
+end
+
+model priebe_beuckelmann_1998__IKr(i_Kr, Ki, Ko, FonRT, time_, V, Xr)
+
+  // Sub-modules, and any changes to those submodules:
+  IKr_Xr_gate: priebe_beuckelmann_1998__IKr_Xr_gate(Xr, V, time_);
+
+  // Assignment Rules:
+  i_Kr := g_Kr_max * Xr * rik * (V - E_K);
+  rik := 1 / (1 + exp((V + 26 ) / 23 ));
+  E_K := ln(Ko / Ki) / FonRT;
+
+  // Variable initializations:
+  g_Kr_max = 0.015;
+end
+
+model priebe_beuckelmann_1998__IK1_K1_gate(K1_infinity, E_K1, V, time_)
+
+  // Assignment Rules:
+  K1_infinity := alpha_K1 / (alpha_K1 + beta_K1);
+  alpha_K1 := 0.1 / (1 + exp(0.06 * (V - (E_K1 + 200 ))));
+  beta_K1 := (3 * exp(2E-4 * (V + 100 + -(E_K1))) + 1 * exp(0.1 * (V - (10 + E_K1)))) / (1 + exp(-(0.5 ) * (V - E_K1)));
+end
+
+model priebe_beuckelmann_1998__IK1(i_K1, E_K1, Ki, Ko, FonRT, time_, V, K1_infinity, failing)
+
+  // Sub-modules, and any changes to those submodules:
+  IK1_K1_gate: priebe_beuckelmann_1998__IK1_K1_gate(K1_infinity, E_K1, V, time_);
+
+  // Assignment Rules:
+  i_K1 := g_K1_max * K1_infinity * (V - E_K1);
+  E_K1 := ln(Ko / Ki) / FonRT;
+  g_K1_max := piecewise( 2.5 , failing == 0 , 2 );
+end
+
+model priebe_beuckelmann_1998__ICab(i_b_Ca, E_Ca, time_, V, failing)
+
+  // Assignment Rules:
+  i_b_Ca := g_b_Ca_max * (V - E_Ca);
+  g_b_Ca_max := piecewise( 0.00085 , failing == 0 , 0.0013 );
+end
+
+model priebe_beuckelmann_1998__INab(i_b_Na, E_Na, time_, V, failing)
+
+  // Assignment Rules:
+  i_b_Na := g_b_Na_max * (V - E_Na);
+  g_b_Na_max := piecewise( 0.001 , failing == 0 , 0 );
+end
+
+model priebe_beuckelmann_1998__INaK(i_NaK, time_, V, FonRT, Nai, Nao, Ko, failing)
+
+  // Assignment Rules:
+  i_NaK := I_NaK_max * f_NaK * 1 / (1 + power(K_mNai / Nai, 1.5 )) * Ko / (Ko + K_mKo);
+  I_NaK_max := piecewise( 1.3 , failing == 0 , 0.75 );
+  f_NaK := 1 / (1 + 0.1245 * exp(-(0.1 ) * V * FonRT) + 0.0365 * sigma * exp(-(V) * FonRT));
+  sigma := 1 / 7 * (exp(Nao / 67.3 ) - 1 );
+
+  // Variable initializations:
+  K_mNai = 10;
+  K_mKo = 1.5;
+end
+
+model priebe_beuckelmann_1998__INaCa(i_NaCa, time_, V, FonRT, Nai, Nao, Cai, Cao, failing)
+
+  // Assignment Rules:
+  i_NaCa := K_NaCa * 1 / (power(K_mNa, 3 ) + power(Nao, 3 )) * 1 / (K_mCa + Cao) * 1 / (1 + K_sat * exp((eta - 1 ) * V * FonRT)) * (exp(eta * V * FonRT) * power(Nai, 3 ) * Cao - exp((eta - 1 ) * V * FonRT) * power(Nao, 3 ) * Cai);
+  K_NaCa := piecewise( 1000 , failing == 0 , 1650 );
+
+  // Variable initializations:
+  K_mNa = 87.5;
+  K_mCa = 1.38;
+  K_sat = 0.1;
+  eta = 0.35;
+end
+
+model priebe_beuckelmann_1998__Irel(i_rel, K_mCSQN, time_, F, Cai, Ca_JSR, V_myo, V_JSR, i_NaCa, i_Ca, i_b_Ca, dVdt, i_Stim, Cm)
+
+  // Assignment Rules:
+  i_rel := G_rel * (Ca_JSR - Cai);
+  G_rel := piecewise( 1 * G_rel_max * (Cainfluxtrack - delta_Ca_ith) / (K_mrel + Cainfluxtrack - delta_Ca_ith) * (1 - APtrack2) * APtrack2 , Cainfluxtrack > delta_Ca_ith , 0 * G_rel_overload * (1 - OVRLDtrack2) * OVRLDtrack2 , ( Cainfluxtrack <= delta_Ca_ith) && (OVRLDtrack2 > 0 ), 0 );
+
+  // Rate Rules:
+  APtrack' = piecewise( 100 * (1 - APtrack) - 0.5 * APtrack , dVdt > 150 , -(0.5 ) * APtrack );
+  APtrack2' = piecewise( 100 * (1 - APtrack2) - 0.5 * APtrack2 , ( APtrack < 0.2) && (APtrack > 0.18 ), -(0.5 ) * APtrack2 );
+  APtrack3' = piecewise( 100 * (1 - APtrack3) - 0.5 * APtrack3 , ( APtrack < 0.2) && (APtrack > 0.18 ), -(0.01 ) * APtrack3 );
+  Cainfluxtrack' = piecewise( -(Cm) * (i_Ca - i_NaCa + i_b_Ca) / (2 * V_myo * F) , APtrack > 0.2 , 0 , ( APtrack2 > 0.01) && (APtrack <= 0.2 ), -(0.5 ) * Cainfluxtrack );
+  OVRLDtrack' = piecewise( 0 * 50 * (1 - OVRLDtrack) , (( 1 / (1 + K_mCSQN / Ca_JSR) > CSQNthresh) && (OVRLDtrack3 < 0.37) && (APtrack3 < 0.37 )), -(0 ) * 0.5 * OVRLDtrack );
+  OVRLDtrack2' = piecewise( 0 * 50 * (1 - OVRLDtrack2) , ( OVRLDtrack > Logicthresh) && (OVRLDtrack2 < Logicthresh ), -(0 ) * 0.5 * OVRLDtrack2 );
+  OVRLDtrack3' = piecewise( 0 * 50 * (1 - OVRLDtrack3) , ( OVRLDtrack > Logicthresh) && (OVRLDtrack3 < Logicthresh ), -(0 ) * 0.01 * OVRLDtrack3 );
+
+  // Variable initializations:
+  G_rel_max = 22;
+  G_rel_overload = 3;
+  K_mrel = 0.0008;
+  delta_Ca_ith = 5e-6;
+  APtrack = -1.372158997089e-136;
+  APtrack2 = -7.58517896402761e-136;
+  APtrack3 = 4.82035353592764e-5;
+  Cainfluxtrack = -7.71120176147331e-138;
+  OVRLDtrack = 1e-6;
+  OVRLDtrack2 = 1e-6;
+  OVRLDtrack3 = 1e-6;
+  CSQNthresh = 0.7;
+  Logicthresh = 0.98;
+end
+
+model priebe_beuckelmann_1998__Iup(i_up, time_, Cai, failing)
+
+  // Assignment Rules:
+  i_up := I_up_max * Cai / (Cai + K_mup);
+  I_up_max := piecewise( 0.0045 , failing == 0 , 0.0015 );
+
+  // Variable initializations:
+  K_mup = 0.00092;
+end
+
+model priebe_beuckelmann_1998__Ileak(i_leak, time_, Ca_NSR, failing)
+
+  // Assignment Rules:
+  i_leak := K_leak * Ca_NSR;
+  K_leak := piecewise( 0.00026 , failing == 0 , 0.00017 );
+end
+
+model priebe_beuckelmann_1998__Itr(i_tr, time_, Ca_JSR, Ca_NSR)
+
+  // Assignment Rules:
+  i_tr := 1 * (Ca_NSR - Ca_JSR) / tau_tr;
+
+  // Variable initializations:
+  tau_tr = 180;
+end
+
+model priebe_beuckelmann_1998__calcium_buffers_in_the_myoplasm(Cai, Cai_bufc)
+
+  // Assignment Rules:
+  Cai_bufc := 1 / (1 + buffon * (CMDN_max * K_mCMDN / power(K_mCMDN + Cai, 2 ) + Tn_max * K_mTn / power(K_mTn + Cai, 2 )));
+
+  // Variable initializations:
+  K_mTn = 0.0005;
+  K_mCMDN = 0.00238;
+  Tn_max = 0.07;
+  CMDN_max = 0.05;
+  buffon = 1;
+end
+
+model priebe_beuckelmann_1998__calcium_buffers_in_the_JSR(K_mCSQN, Ca_JSR, Ca_JSR_bufc)
+
+  // Assignment Rules:
+  Ca_JSR_bufc := 1 / (1 + CSQN_max * K_mCSQN / power(K_mCSQN + Ca_JSR, 2 ));
+
+  // Variable initializations:
+  CSQN_max = 10;
+  K_mCSQN = 0.8;
+end
+
+model priebe_beuckelmann_1998__Ionic_concentrations(Nai, Nao, Cai, Cao, Ki, Ko, Ca_JSR, Ca_NSR, V_myo, V_JSR, time_, F, i_Na, i_b_Na, i_NaCa, i_NaK, i_Ca, i_b_Ca, i_Kr, i_K1, i_Ks, i_to, i_Stim, i_tr, i_rel, i_leak, i_up, Cm, Cai_bufc, Ca_JSR_bufc)
+
+  // Assignment Rules:
+  volume := pi * preplength * power(radius, 2 );
+  V_myo := 0.68 * volume;
+  V_JSR := 0.0048 * volume;
+  V_NSR := 0.0552 * volume;
+
+  // Rate Rules:
+  Nai' = -(1 ) * Cm * (i_Na + i_b_Na + i_NaCa * 3 + i_NaK * 3 ) / (V_myo * F);
+  Cai' = Cai_bufc * (-(Cm) * (i_Ca - 2 * i_NaCa + i_b_Ca) / (2 * V_myo * F) + i_rel * V_JSR / V_myo + (i_leak - i_up) * V_NSR / V_myo);
+  Ki' = -(1 ) * Cm * (i_to + i_Kr + i_K1 + i_Stim + i_Ks - 2 * i_NaK) / (V_myo * F);
+  Ca_JSR' = Ca_JSR_bufc * (i_tr - i_rel);
+  Ca_NSR' = -(1 ) * (i_leak + V_JSR / V_NSR * i_tr - i_up);
+
+  // Variable initializations:
+  Nai = 10;
+  Nao = 138;
+  Cai = 0.0002;
+  Cao = 2;
+  Ki = 140;
+  Ko = 4;
+  Ca_JSR = 2.5;
+  Ca_NSR = 2.5;
+  preplength = 100;
+  radius = 11;
+end
+
+model priebe_beuckelmann_1998__transmembrane_currents()
+end
+
+model priebe_beuckelmann_1998__intracellular_currents()
+end
+
+model priebe_beuckelmann_1998__Ions_n_reversal_potentials()
+end
+
+model priebe_beuckelmann_1998____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: priebe_beuckelmann_1998__environment(time_);
+  cell: priebe_beuckelmann_1998__cell(V, R, T, F, FonRT, Cm, time_, failing, i_Na, i_Ca, i_to, i_Kr, i_Ks, i_K1, i_NaCa, i_NaK, i_b_Na, i_b_Ca, dVdt, i_Stim);
+  INa: priebe_beuckelmann_1998__INa(i_Na, E_Na, time_, V, FonRT, Nai, Nao, m, h, j);
+  ICa: priebe_beuckelmann_1998__ICa(i_Ca, E_Ca, time_, V, Cai, FonRT, Cao, d, f, f_Ca);
+  Ito: priebe_beuckelmann_1998__Ito(i_to, Nai, Nao, Ki, Ko, FonRT, V, time_, failing, t, r);
+  IKs: priebe_beuckelmann_1998__IKs(i_Ks, Ki, Ko, Nai, Nao, FonRT, time_, V, Xs);
+  IKr: priebe_beuckelmann_1998__IKr(i_Kr, Ki, Ko, FonRT, time_, V, Xr);
+  IK1: priebe_beuckelmann_1998__IK1(i_K1, E_K1, Ki, Ko, FonRT, time_, V, K1_infinity, failing);
+  ICab: priebe_beuckelmann_1998__ICab(i_b_Ca, E_Ca, time_, V, failing);
+  INab: priebe_beuckelmann_1998__INab(i_b_Na, E_Na, time_, V, failing);
+  INaK: priebe_beuckelmann_1998__INaK(i_NaK, time_, V, FonRT, Nai, Nao, Ko, failing);
+  INaCa: priebe_beuckelmann_1998__INaCa(i_NaCa, time_, V, FonRT, Nai, Nao, Cai, Cao, failing);
+  Irel: priebe_beuckelmann_1998__Irel(i_rel, K_mCSQN, time_, F, Cai, Ca_JSR, V_myo, V_JSR, i_NaCa, i_Ca, i_b_Ca, dVdt, i_Stim, Cm);
+  Iup: priebe_beuckelmann_1998__Iup(i_up, time_, Cai, failing);
+  Ileak: priebe_beuckelmann_1998__Ileak(i_leak, time_, Ca_NSR, failing);
+  Itr: priebe_beuckelmann_1998__Itr(i_tr, time_, Ca_JSR, Ca_NSR);
+  calcium_buffers_in_the_myoplasm: priebe_beuckelmann_1998__calcium_buffers_in_the_myoplasm(Cai, Cai_bufc);
+  calcium_buffers_in_the_JSR: priebe_beuckelmann_1998__calcium_buffers_in_the_JSR(K_mCSQN, Ca_JSR, Ca_JSR_bufc);
+  Ionic_concentrations: priebe_beuckelmann_1998__Ionic_concentrations(Nai, Nao, Cai, Cao, Ki, Ko, Ca_JSR, Ca_NSR, V_myo, V_JSR, time_, F, i_Na, i_b_Na, i_NaCa, i_NaK, i_Ca, i_b_Ca, i_Kr, i_K1, i_Ks, i_to, i_Stim, i_tr, i_rel, i_leak, i_up, Cm, Cai_bufc, Ca_JSR_bufc);
+  transmembrane_currents: priebe_beuckelmann_1998__transmembrane_currents();
+  intracellular_currents: priebe_beuckelmann_1998__intracellular_currents();
+  Ions_n_reversal_potentials: priebe_beuckelmann_1998__Ions_n_reversal_potentials();
+end

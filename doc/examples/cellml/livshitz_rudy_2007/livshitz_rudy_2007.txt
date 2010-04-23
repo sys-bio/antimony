@@ -1,0 +1,371 @@
+//Created by libAntimony v1.3
+model LivshitzRudy2007__Environment(time_, F, FonRT, K_o, Na_o, Ca_o)
+
+  // Assignment Rules:
+  FonRT := F / Temp / R;
+
+  // Variable initializations:
+  F = 96485;
+  R = 8314;
+  Temp = 310;
+  K_o = 4.5;
+  Na_o = 140;
+  Ca_o = 1.8;
+end
+
+model LivshitzRudy2007__cell(time_, V, F, ilca, icab, ipca, inaca, icat, ina, inab, ilcana, inak, ikr, iks, IK1, ikp, ilcak, caiont, naiont, kiont, AF, vmyo, vnsr, vjsr, i_Stim)
+
+  // Assignment Rules:
+  caiont := ilca + icab + ipca - 2 * inaca + icat;
+  naiont := ina + inab + 3 * inaca + ilcana + 3 * inak;
+  kiont := ikr + iks + IK1 + ikp + ilcak - 2 * inak + i_Stim;
+  vcell := 1000 * pi * ra * ra * l;
+  ageo := 2 * pi * ra * ra + 2 * pi * ra * l;
+  Acap := ageo * 2;
+  AF := Acap / F;
+  vmyo := vcell * 0.68;
+  vmito := vcell * 0.24;
+  vsr := vcell * 0.06;
+  vnsr := vcell * 0.0552;
+  vjsr := vcell * 0.0048;
+  vss := vcell * 0.02;
+  i_Stim := piecewise( stim_amplitude , ( time_ - past >= stim_offset) && (time_ - past <= stim_offset + stim_duration ), 0 );
+  past := floor(time_ / stim_period) * stim_period;
+
+  // Rate Rules:
+  V' = -((naiont + kiont + caiont));
+
+  // Variable initializations:
+  V = -89.4356034692784;
+  l = 0.01;
+  ra = 0.0011;
+  stim_offset = 0;
+  stim_period = 400;
+  stim_duration = 3;
+  stim_amplitude = -15;
+end
+
+model LivshitzRudy2007__INa(V, time_, ENa, ina)
+
+  // Assignment Rules:
+  a := 1 - 1 / (1 + exp(-((V + 40 )) / 0.024 ));
+  aH := a * 0.135 * exp((80 + V) / -(6.8 ));
+  bH := (1 - a) / (0.13 * (1 + exp((V + 10.66 ) / -(11.1 )))) + a * (3.56 * exp(0.079 * V) + 3.1 * 1e5 * exp(0.35 * V));
+  aj := a * (-(1.2714e5 ) * exp(0.2444 * V) - 3.474e-5 * exp(-(0.04391 ) * V)) * 1 * (V + 37.78 ) / (1 + exp(0.311 * (V + 79.23 )));
+  bj := (1 - a) * 0.3 * exp(-(2.535e-7 ) * V) / (1 + exp(-(0.1 ) * (V + 32 ))) + a * 0.1212 * exp(-(0.01052 ) * V) / (1 + exp(-(0.1378 ) * (V + 40.14 )));
+  am := 0.32 * 1 * (V + 47.13 ) / (1 - exp(-(0.1 ) * (V + 47.13 )));
+  bm := 0.08 * exp(-(V) / 11 );
+  ina := GNa * m * m * m * H * J * (V - ENa);
+
+  // Rate Rules:
+  H' = aH * (1 - H) - bH * H;
+  m' = am * (1 - m) - bm * m;
+  J' = aj * (1 - J) - bj * J;
+
+  // Variable initializations:
+  H = 0.994401369032678;
+  m = 0.000734780346592185;
+  J = 0.996100688673679;
+  GNa = 16;
+end
+
+model LivshitzRudy2007__ICaL(V, F, FonRT, time_, Ca_o, Ca_i, Na_o, Na_i, K_o, K_i, ilca, ilcana, ilcak)
+
+  // Assignment Rules:
+  dss0 := 1 / (1 + exp(-((V + 10 )) / 6.24 ));
+  taud := dss0 * 1 * (1 - exp(-((V + 10 )) / 6.24 )) / (0.035 * (V + 10 ));
+  dss1 := 1 / (1 + exp(-((V + 60 )) / 0.024 ));
+  dss := dss0 * dss1;
+  fss := 1 / (1 + exp((V + 32 ) / 8 )) + 0.6 / (1 + exp((50 - V) / 20 ));
+  tauf := 1 / (0.0197 * exp(-(power(0.0337 * (V + 10 ), 2 ))) + 0.02 );
+  ibarca := pca * 4 * V * F * FonRT * (gacai * Ca_i * exp(2 * V * FonRT) - gacao * Ca_o) / (exp(2 * V * FonRT) - 1 );
+  ibarna := pna * V * F * FonRT * (ganai * Na_i * exp(V * FonRT) - ganao * Na_o) / (exp(V * FonRT) - 1 );
+  ibark := pk * V * F * FonRT * (gaki * K_i * exp(V * FonRT) - gako * K_o) / (exp(V * FonRT) - 1 );
+  fca := 1 / (1 + Ca_i / kmca);
+  ilca := d * f * fca * ibarca;
+  ilcana := d * f * fca * ibarna;
+  ilcak := d * f * fca * ibark;
+
+  // Rate Rules:
+  d' = (dss - d) / taud;
+  f' = (fss - f) / tauf;
+
+  // Variable initializations:
+  d = 3.2514786721066e-27;
+  f = 0.997404948824816;
+  gacai = 1;
+  gacao = 0.341;
+  kmca = 0.0006;
+  pca = 0.00054;
+  pna = 6.75e-7;
+  ganai = 0.75;
+  ganao = 0.75;
+  pk = 1.93e-7;
+  gaki = 0.75;
+  gako = 0.75;
+end
+
+model LivshitzRudy2007__IK1(V, EK, K_o, IK1)
+
+  // Assignment Rules:
+  GK1_ := GK1max * root(K_o / 5.4 );
+  ak1 := 1.02 / (1 + exp(0.2385 * (V - EK - 59.215 )));
+  bk1 := (0.49124 * exp(0.08032 * (V - EK + 5.476 )) + 1 * exp(0.06175 * (V - EK - 594.31 ))) / (1 + exp(-(0.5143 ) * (V - EK + 4.753 )));
+  gK1 := GK1_ * ak1 / (ak1 + bk1);
+  IK1 := gK1 * (V - EK);
+
+  // Variable initializations:
+  GK1max = 0.75;
+end
+
+model LivshitzRudy2007__IKr(time_, V, EK, K_o, ikr)
+
+  // Assignment Rules:
+  r := 1 / (1 + exp((V + 9 ) / 22.4 ));
+  xrss := 1 / (1 + exp(-((V + 10.085 )) / 4.25 ));
+  tauxr := 1 / (0.00138 * (V + 14.2 ) / (1 - exp(-(0.123 ) * (V + 14.2 ))) + 0.00061 * (V + 38.9 ) / (exp(0.145 * (V + 38.9 )) - 1 ));
+  ikr := gkrmax * root(K_o / 5.4 ) * xr * r * (V - EK);
+
+  // Rate Rules:
+  xr' = (xrss - xr) / tauxr;
+
+  // Variable initializations:
+  gkrmax = 0.02614;
+  xr = 0.000162194715543637;
+end
+
+model LivshitzRudy2007__IKs(V, Ca_i, time_, EKs, iks)
+
+  // Assignment Rules:
+  gks := GKsmax * (1 + 0.6 / (1 + power(3.8e-5 / Ca_i, 1.4 )));
+  xss := 1 / (1 + exp(-((V - 1.5 )) / 16.7 ));
+  tauxs := 1 / (0.0000719 * (V + 30 ) / (1 - exp(-(0.148 ) * (V + 30 ))) + 0.000131 * (V + 30 ) / (exp(0.0687 * (V + 30 )) - 1 ));
+  iks := gks * xs1 * xs2 * (V - EKs);
+
+  // Rate Rules:
+  xs1' = (xss - xs1) / tauxs;
+  xs2' = (xss - xs2) / tauxs / 4;
+
+  // Variable initializations:
+  GKsmax = 0.433;
+  xs1 = 0.0285147332973946;
+  xs2 = 0.0764114040188678;
+end
+
+model LivshitzRudy2007__INaK(V, Na_i, Na_o, K_o, FonRT, inak)
+
+  // Assignment Rules:
+  fnak := 1 / (1 + 0.1245 * exp(-(0.1 ) * V * FonRT) + 0.0365 * sigma * exp(-(V) * FonRT));
+  sigma := (exp(Na_o / 67.3 ) - 1 ) / 7;
+  inak := ibarnak * fnak / (1 + power(kmnai / Na_i, 2 )) / (1 + kmko / K_o);
+
+  // Variable initializations:
+  kmnai = 10;
+  kmko = 1.5;
+  ibarnak = 2.25;
+end
+
+model LivshitzRudy2007__INaCa(V, FonRT, Ca_i, Ca_o, Na_i, Na_o, inaca)
+
+  // Assignment Rules:
+  inaca := c1 * exp((gammas - 1 ) * V * FonRT) * (exp(V * FonRT) * power(Na_i, 3 ) * Ca_o - power(Na_o, 3 ) * Ca_i) / (1 + c2 * exp((gammas - 1 ) * V * FonRT) * (exp(V * FonRT) * power(Na_i, 3 ) * Ca_o + power(Na_o, 3 ) * Ca_i));
+
+  // Variable initializations:
+  c1 = 0.00025;
+  c2 = 0.0001;
+  gammas = 0.15;
+end
+
+model LivshitzRudy2007__IKp(V, EK, ikp)
+
+  // Assignment Rules:
+  ikp := GKpmax * (V - EK) / (1 + exp((7.488 - V) / 5.98 ));
+
+  // Variable initializations:
+  GKpmax = 0.00552;
+end
+
+model LivshitzRudy2007__IpCa(Ca_i, ipca)
+
+  // Assignment Rules:
+  ipca := ibarpca * Ca_i / (kmpca + Ca_i);
+
+  // Variable initializations:
+  ibarpca = 1.15;
+  kmpca = 0.0005;
+end
+
+model LivshitzRudy2007__ICab(V, FonRT, Ca_i, Ca_o, icab)
+
+  // Assignment Rules:
+  icab := gcab * (V - ln(Ca_o / Ca_i) / (2 * FonRT));
+
+  // Variable initializations:
+  gcab = 0.003016;
+end
+
+model LivshitzRudy2007__INab(V, ENa, inab)
+
+  // Assignment Rules:
+  inab := GNab * (V - ENa);
+
+  // Variable initializations:
+  GNab = 0.004;
+end
+
+model LivshitzRudy2007__ICaT(time_, V, ECa, icat)
+
+  // Assignment Rules:
+  bss := 1 / (1 + exp(-((V + 14 )) / 10.8 ));
+  taub := 3.7 + 6.1 / (1 + exp((V + 25 ) / 4.5 ));
+  gss := 1 / (1 + exp((V + 60 ) / 5.6 ));
+  aa := 1 - 1 / (1 + exp(-(V) / 0.0024 ));
+  taug := aa * 1 * (-(0.875 ) * V + 12 ) + 12 * (1 - aa);
+  icat := gcat * b * b * g * (V - ECa);
+
+  // Rate Rules:
+  b' = (bss - b) / taub;
+  g' = (gss - g) / taug;
+
+  // Variable initializations:
+  b = 0.000927461915392873;
+  g = 0.952834331760863;
+  gcat = 0.05;
+end
+
+model LivshitzRudy2007__reversal_potentials(Na_i, Na_o, Ca_i, Ca_o, K_o, K_i, FonRT, ENa, ECa, EK, EKs)
+
+  // Assignment Rules:
+  ENa := ln(Na_o / Na_i) / FonRT;
+  ECa := ln(Ca_o / Ca_i) / 2 / FonRT;
+  EK := ln(K_o / K_i) / FonRT;
+  EKs := ln((K_o + prnak * Na_o) / (K_i + prnak * Na_i)) / FonRT;
+
+  // Variable initializations:
+  prnak = 0.01833;
+end
+
+model LivshitzRudy2007__Irel(time_, Ca_JSR_T, Rel, Ca_JSR_free, ilca)
+
+  // Assignment Rules:
+  Rel_ss := ilca * alpha_Rel / (1 + power(K_Relss / Ca_JSR_free, qn));
+  tau_Rel := tau / (1 + 0.0123 / Ca_JSR_free);
+  alpha_Rel := tau * kappa;
+  Ca_JSR_free := -(bbb) / 2 + root(power(bbb, 2 ) + 4 * c) / 2;
+  bbb := csqnbar + kmcsqn - Ca_JSR_T;
+  c := Ca_JSR_T * kmcsqn;
+
+  // Rate Rules:
+  Rel' = -((Rel_ss + Rel)) / tau_Rel;
+
+  // Variable initializations:
+  Rel = 1.06874246141923e-23;
+  K_Relss = 1;
+  tau = 4.75;
+  kappa = 0.125;
+  qn = 9;
+  kmcsqn = 0.8;
+  csqnbar = 10;
+end
+
+model LivshitzRudy2007__Iup_Ileak(Ca_i, Ca_NSR, iup, ileak)
+
+  // Assignment Rules:
+  iup := iupbar * Ca_i / (Ca_i + kmup);
+  ileak := iupbar * Ca_NSR / nsrbar;
+
+  // Variable initializations:
+  kmup = 0.00092;
+  iupbar = 0.00875;
+  nsrbar = 15;
+end
+
+model LivshitzRudy2007__Itr(Ca_NSR, Ca_JSR_free, itr)
+
+  // Assignment Rules:
+  itr := (Ca_NSR - Ca_JSR_free) / tautr;
+
+  // Variable initializations:
+  tautr = 120;
+end
+
+model LivshitzRudy2007__Na(time_, Na_i, AF, vmyo, naiont)
+
+  // Rate Rules:
+  Na_i' = -(naiont) * AF / vmyo;
+
+  // Variable initializations:
+  Na_i = 16.612739313555;
+end
+
+model LivshitzRudy2007__K(time_, K_i, AF, vmyo, kiont)
+
+  // Rate Rules:
+  K_i' = -(kiont) * AF / vmyo;
+
+  // Variable initializations:
+  K_i = 139.730914103161;
+end
+
+model LivshitzRudy2007__Ca(time_, AF, vmyo, vjsr, vnsr, caiont, Ca_JSR_T, Ca_NSR, iup, itr, ileak, Rel, Ca_i)
+
+  // Assignment Rules:
+  bmyo := cmdnbar + trpnbar - Ca_T + kmtrpn + kmcmdn;
+  cmyo := kmcmdn * kmtrpn - Ca_T * (kmtrpn + kmcmdn) + trpnbar * kmcmdn + cmdnbar * kmtrpn;
+  dmyo := -(kmtrpn) * kmcmdn * Ca_T;
+  Ca_i := 2 * root(bmyo * bmyo - 3 * cmyo) / 3 * cos(arccos((9 * bmyo * cmyo - 2 * bmyo * bmyo * bmyo - 27 * dmyo) / (2 * power(bmyo * bmyo - 3 * cmyo, 1.5 ))) / 3 ) - bmyo / 3;
+
+  // Rate Rules:
+  Ca_T' = -(caiont) * AF / (vmyo * 2 ) + (ileak - iup) * vnsr / vmyo + Rel * vjsr / vmyo;
+  Ca_JSR_T' = itr - Rel;
+  Ca_NSR' = iup - itr * vjsr / vnsr - ileak;
+  Over' = 0;
+
+  // Variable initializations:
+  Ca_T = 0.0257059808595638;
+  Ca_JSR_T = 7.87371650296567;
+  Ca_NSR = 2.71518235696672;
+  Over = 1e-12;
+  cmdnbar = 0.05;
+  trpnbar = 0.07;
+  kmcmdn = 0.00238;
+  kmtrpn = 0.0005;
+end
+
+model LivshitzRudy2007__intracellular_currents()
+end
+
+model LivshitzRudy2007__transmembrane_currents()
+end
+
+model LivshitzRudy2007__Ions_n_reversal_potentials()
+end
+
+model LivshitzRudy2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Environment: LivshitzRudy2007__Environment(time_, F, FonRT, K_o, Na_o, Ca_o);
+  cell: LivshitzRudy2007__cell(time_, V, F, ilca, icab, ipca, inaca, icat, ina, inab, ilcana, inak, ikr, iks, IK10, ikp, ilcak, caiont, naiont, kiont, AF, vmyo, vnsr, vjsr, i_Stim);
+  INa: LivshitzRudy2007__INa(V, time_, ENa, ina);
+  ICaL: LivshitzRudy2007__ICaL(V, F, FonRT, time_, Ca_o, Ca_i, Na_o, Na_i, K_o, K_i, ilca, ilcana, ilcak);
+  IK1: LivshitzRudy2007__IK1(V, EK, K_o, IK10);
+  IKr: LivshitzRudy2007__IKr(time_, V, EK, K_o, ikr);
+  IKs: LivshitzRudy2007__IKs(V, Ca_i, time_, EKs, iks);
+  INaK: LivshitzRudy2007__INaK(V, Na_i, Na_o, K_o, FonRT, inak);
+  INaCa: LivshitzRudy2007__INaCa(V, FonRT, Ca_i, Ca_o, Na_i, Na_o, inaca);
+  IKp: LivshitzRudy2007__IKp(V, EK, ikp);
+  IpCa: LivshitzRudy2007__IpCa(Ca_i, ipca);
+  ICab: LivshitzRudy2007__ICab(V, FonRT, Ca_i, Ca_o, icab);
+  INab: LivshitzRudy2007__INab(V, ENa, inab);
+  ICaT: LivshitzRudy2007__ICaT(time_, V, ECa, icat);
+  reversal_potentials: LivshitzRudy2007__reversal_potentials(Na_i, Na_o, Ca_i, Ca_o, K_o, K_i, FonRT, ENa, ECa, EK, EKs);
+  Irel: LivshitzRudy2007__Irel(time_, Ca_JSR_T, Rel, Ca_JSR_free, ilca);
+  Iup_Ileak: LivshitzRudy2007__Iup_Ileak(Ca_i, Ca_NSR, iup, ileak);
+  Itr: LivshitzRudy2007__Itr(Ca_NSR, Ca_JSR_free, itr);
+  Na: LivshitzRudy2007__Na(time_, Na_i, AF, vmyo, naiont);
+  K: LivshitzRudy2007__K(time_, K_i, AF, vmyo, kiont);
+  Ca: LivshitzRudy2007__Ca(time_, AF, vmyo, vjsr, vnsr, caiont, Ca_JSR_T, Ca_NSR, iup, itr, ileak, Rel, Ca_i);
+  intracellular_currents: LivshitzRudy2007__intracellular_currents();
+  transmembrane_currents: LivshitzRudy2007__transmembrane_currents();
+  Ions_n_reversal_potentials: LivshitzRudy2007__Ions_n_reversal_potentials();
+end

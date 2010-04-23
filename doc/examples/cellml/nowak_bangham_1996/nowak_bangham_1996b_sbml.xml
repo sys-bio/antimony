@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="nowak_1996b____main" name="nowak_1996b____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="uninfected_lambda_" value="1"/>
+      <parameter id="uninfected_d" value="0.01"/>
+      <parameter id="beta" value="0.02"/>
+      <parameter id="v" value="10" constant="false"/>
+      <parameter id="x" value="100" constant="false"/>
+      <parameter id="infected_a" value="0.5"/>
+      <parameter id="infected_p" value="1"/>
+      <parameter id="z" value="1" constant="false"/>
+      <parameter id="y" value="0" constant="false"/>
+      <parameter id="virus_k" value="1"/>
+      <parameter id="virus_u" value="1"/>
+      <parameter id="CTL_c" value="1"/>
+      <parameter id="CTL_b" value="0.05"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="v">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> virus_k </ci>
+              <ci> y </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> virus_u </ci>
+              <ci> v </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> uninfected_lambda_ </ci>
+              <apply>
+                <times/>
+                <ci> uninfected_d </ci>
+                <ci> x </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> beta </ci>
+              <ci> x </ci>
+              <ci> v </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="z">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> CTL_c </ci>
+              <ci> y </ci>
+              <ci> z </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> CTL_b </ci>
+              <ci> z </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="y">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> beta </ci>
+                <ci> x </ci>
+                <ci> v </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> infected_a </ci>
+                <ci> y </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> infected_p </ci>
+              <ci> y </ci>
+              <ci> z </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

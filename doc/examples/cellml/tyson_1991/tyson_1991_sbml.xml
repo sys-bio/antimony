@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="tyson_1991____main" name="tyson_1991____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="C20" value="0.001" constant="false"/>
+      <parameter id="k6" value="1"/>
+      <parameter id="k8" constant="false"/>
+      <parameter id="k9" value="100"/>
+      <parameter id="M0" value="0.001" constant="false"/>
+      <parameter id="P" value="1"/>
+      <parameter id="CP0" value="0.001" constant="false"/>
+      <parameter id="k3" constant="false"/>
+      <parameter id="Y0" value="0.001" constant="false"/>
+      <parameter id="pM0" value="0.001" constant="false"/>
+      <parameter id="k5" constant="false"/>
+      <parameter id="F" constant="false"/>
+      <parameter id="k1" constant="false"/>
+      <parameter id="k2" value="0"/>
+      <parameter id="aa" value="1"/>
+      <parameter id="YP0" value="0.001" constant="false"/>
+      <parameter id="k7" value="0.6"/>
+      <parameter id="k4" value="180"/>
+      <parameter id="reaction_constants_k4_" value="0.018"/>
+      <parameter id="reaction_constants_CT" constant="false"/>
+      <parameter id="reaction_constants_YT" constant="false"/>
+      <parameter id="reaction_constants_YT_CT" constant="false"/>
+      <parameter id="reaction_constants_M_CT" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="C20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k6 </ci>
+                <ci> M0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k9 </ci>
+                <ci> CP0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k8 </ci>
+              <ci> P </ci>
+              <ci> C20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> k9 </ci>
+            <ci> P </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="M0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> pM0 </ci>
+              <ci> F </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k5 </ci>
+                <ci> P </ci>
+                <ci> M0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k6 </ci>
+                <ci> M0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k8 </ci>
+              <ci> P </ci>
+              <ci> C20 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k9 </ci>
+                <ci> CP0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> CP0 </ci>
+                <ci> Y0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 200 </cn>
+            <ci> reaction_constants_CT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Y0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> aa </ci>
+              <ci> k1 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> CP0 </ci>
+                <ci> Y0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k2 </ci>
+                <ci> Y0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="pM0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> CP0 </ci>
+                <ci> Y0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k5 </ci>
+                <ci> P </ci>
+                <ci> M0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> pM0 </ci>
+              <ci> F </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 0 </cn>
+            <ci> P </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> reaction_constants_k4_ </ci>
+            <apply>
+              <times/>
+              <ci> k4 </ci>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> M0 </ci>
+                  <ci> reaction_constants_CT </ci>
+                </apply>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.015 </cn>
+              <ci> reaction_constants_CT </ci>
+            </apply>
+            <ci> aa </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="YP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k6 </ci>
+              <ci> M0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k7 </ci>
+              <ci> YP0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="reaction_constants_CT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> C20 </ci>
+            <ci> CP0 </ci>
+            <ci> pM0 </ci>
+            <ci> M0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="reaction_constants_YT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> Y0 </ci>
+            <ci> YP0 </ci>
+            <ci> pM0 </ci>
+            <ci> M0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="reaction_constants_YT_CT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> reaction_constants_YT </ci>
+            <ci> reaction_constants_CT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="reaction_constants_M_CT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> M0 </ci>
+            <ci> reaction_constants_CT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

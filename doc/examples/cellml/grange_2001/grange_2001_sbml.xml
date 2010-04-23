@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="grange_holford_guentert_2001____main" name="grange_holford_guentert_2001____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="F_b_dopa" constant="false"/>
+      <parameter id="A_dopa_b" value="101" constant="false"/>
+      <parameter id="ka_b_dopa" value="2.11"/>
+      <parameter id="gastrointestinal_compartment_L_dopa_F_G" value="0.244" constant="false"/>
+      <parameter id="gastrointestinal_compartment_L_dopa_F_H" constant="false"/>
+      <parameter id="gastrointestinal_compartment_L_dopa_CL_H" constant="false"/>
+      <parameter id="gastrointestinal_compartment_L_dopa_Q" value="0.828"/>
+      <parameter id="gastrointestinal_compartment_L_dopa_f_H" value="0.13"/>
+      <parameter id="CL_dopa_0" value="0.823"/>
+      <parameter id="C_dopa_b" value="0" constant="false"/>
+      <parameter id="body_compartment_L_dopa_V_dopa" value="0.496"/>
+      <parameter id="CL_dopa" constant="false"/>
+      <parameter id="body_compartment_3_OMD_C_OMD_b" value="0" constant="false"/>
+      <parameter id="body_compartment_3_OMD_CL_OMD_b" value="0.012"/>
+      <parameter id="body_compartment_3_OMD_V_OMD_b" value="0.196"/>
+      <parameter id="CL_COMT" constant="false"/>
+      <parameter id="L_dopa_clearance_CL_AADC" constant="false"/>
+      <parameter id="L_dopa_clearance_CL_AADC0" constant="false"/>
+      <parameter id="C_Ro_central" value="0" constant="false"/>
+      <parameter id="L_dopa_clearance_CL_REST" constant="false"/>
+      <parameter id="L_dopa_clearance_ki" value="0.00246"/>
+      <parameter id="A_bens" value="19.51" constant="false"/>
+      <parameter id="ka_Bens" value="0.94"/>
+      <parameter id="F_Bens" value="0.022"/>
+      <parameter id="C_bens_central" value="0" constant="false"/>
+      <parameter id="central_compartment_benserazide_V1_B" value="0.202"/>
+      <parameter id="CLd_B" value="0.072"/>
+      <parameter id="C_bens_peripheral" value="0" constant="false"/>
+      <parameter id="CL_bens_total" constant="false"/>
+      <parameter id="peripheral_compartment_benserazide_V2_B" value="0.127"/>
+      <parameter id="CL_Ro" constant="false"/>
+      <parameter id="benserazide_clearance_CL_B" value="1.67"/>
+      <parameter id="benserazide_clearance_fm" value="0.15"/>
+      <parameter id="A_Ro" value="1.3658" constant="false"/>
+      <parameter id="ka_M" value="2.47"/>
+      <parameter id="F_Ro" value="1"/>
+      <parameter id="central_compartment_Ro_V1_M" value="0.0691"/>
+      <parameter id="CLd_M" value="1.06"/>
+      <parameter id="central_compartment_Ro_CL_M" value="4.29"/>
+      <parameter id="C_Ro_peripheral" value="0" constant="false"/>
+      <parameter id="peripheral_compartment_Ro_V2_M" value="3.2"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="F_b_dopa">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> gastrointestinal_compartment_L_dopa_F_H </ci>
+            <ci> gastrointestinal_compartment_L_dopa_F_G </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="A_dopa_b">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> ka_b_dopa </ci>
+            </apply>
+            <ci> A_dopa_b </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="gastrointestinal_compartment_L_dopa_F_G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 0.244 </cn>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gastrointestinal_compartment_L_dopa_F_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> gastrointestinal_compartment_L_dopa_CL_H </ci>
+              <ci> gastrointestinal_compartment_L_dopa_Q </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gastrointestinal_compartment_L_dopa_CL_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> gastrointestinal_compartment_L_dopa_f_H </ci>
+            <ci> CL_dopa_0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_dopa_b">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> body_compartment_L_dopa_V_dopa </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> ka_b_dopa </ci>
+                <ci> A_dopa_b </ci>
+                <ci> F_b_dopa </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> CL_dopa </ci>
+                <ci> C_dopa_b </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="CL_dopa">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> L_dopa_clearance_CL_AADC </ci>
+            <ci> CL_COMT </ci>
+            <ci> L_dopa_clearance_CL_REST </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="body_compartment_3_OMD_C_OMD_b">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> body_compartment_3_OMD_V_OMD_b </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> CL_COMT </ci>
+                <ci> C_dopa_b </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> body_compartment_3_OMD_CL_OMD_b </ci>
+                <ci> body_compartment_3_OMD_C_OMD_b </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="CL_COMT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> CL_dopa_0 </ci>
+            <cn> 0.1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="L_dopa_clearance_CL_AADC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> L_dopa_clearance_CL_AADC0 </ci>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> C_Ro_central </ci>
+                <ci> L_dopa_clearance_ki </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="L_dopa_clearance_CL_AADC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> CL_dopa_0 </ci>
+            <cn> 0.69 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_Ro_central">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> central_compartment_Ro_V1_M </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> ka_M </ci>
+                  <ci> A_Ro </ci>
+                  <ci> F_Ro </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> central_compartment_Ro_CL_M </ci>
+                  <ci> C_Ro_central </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> CL_Ro </ci>
+                <ci> C_bens_central </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> CLd_M </ci>
+                <apply>
+                  <minus/>
+                  <ci> C_Ro_peripheral </ci>
+                  <ci> C_Ro_central </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="L_dopa_clearance_CL_REST">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> CL_dopa_0 </ci>
+            <cn> 0.21 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="A_bens">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> ka_Bens </ci>
+            </apply>
+            <ci> A_bens </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C_bens_central">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> central_compartment_benserazide_V1_B </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> ka_Bens </ci>
+                  <ci> A_bens </ci>
+                  <ci> F_Bens </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> CL_bens_total </ci>
+                  <ci> C_bens_central </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> CLd_B </ci>
+                <apply>
+                  <minus/>
+                  <ci> C_bens_peripheral </ci>
+                  <ci> C_bens_central </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C_bens_peripheral">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> peripheral_compartment_benserazide_V2_B </ci>
+            </apply>
+            <ci> CLd_B </ci>
+            <apply>
+              <minus/>
+              <ci> C_bens_central </ci>
+              <ci> C_bens_peripheral </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="CL_bens_total">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> benserazide_clearance_CL_B </ci>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <ci> benserazide_clearance_fm </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="CL_Ro">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> CL_bens_total </ci>
+            <ci> benserazide_clearance_fm </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="A_Ro">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> ka_M </ci>
+            </apply>
+            <ci> A_Ro </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C_Ro_peripheral">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> peripheral_compartment_Ro_V2_M </ci>
+            </apply>
+            <ci> CLd_M </ci>
+            <apply>
+              <minus/>
+              <ci> C_Ro_central </ci>
+              <ci> C_Ro_peripheral </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

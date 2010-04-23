@@ -1,0 +1,112 @@
+//Created by libAntimony v1.3
+model weinstein_1998_version02__environment(time_)
+end
+
+model weinstein_1998_version02__K_E1(K_E1, k1, k1_, k9, k9_, K_E2, K_E1_ATP, ATP, time_)
+
+  // Rate Rules:
+  K_E1' = k9 * K_E2 + k1_ * K_E1_ATP - ( k9_ * K_E1 + k1 * ATP * K_E1 );
+end
+
+model weinstein_1998_version02__K_E1_ATP(K_E1_ATP, k1, k1_, k2, k2_, k11, k11_, K_E2_ATP, K_E1, E1_ATP, K, ATP, time_)
+
+  // Rate Rules:
+  K_E1_ATP' = k1 * ATP * K_E1 + k11 * K_E2_ATP + k2_ * K * E1_ATP - ( k11_ * K_E1_ATP + k1_ * K_E1_ATP + k2 * K_E1_ATP );
+end
+
+model weinstein_1998_version02__E1_ATP(E1_ATP, k2, k2_, k3, k3_, H_E1_ATP, K_E1_ATP, K, H, time_)
+
+  // Rate Rules:
+  E1_ATP' = k2 * K_E1_ATP + k3_ * H_E1_ATP - ( k2_ * K * E1_ATP + k3 * H * E1_ATP );
+end
+
+model weinstein_1998_version02__H_E1_ATP(H_E1_ATP, k4, k4_, k3, k3_, E1_ATP, H_E1_P, ADP, H, time_)
+
+  // Rate Rules:
+  H_E1_ATP' = k3 * H * E1_ATP + k4_ * ADP * H_E1_P - ( k3_ * H_E1_ATP + k4 * H_E1_ATP );
+end
+
+model weinstein_1998_version02__H_E1_P(H_E1_P, k4, k4_, k5, k5_, H_E2_P, H_E1_ATP, ADP, time_)
+
+  // Rate Rules:
+  H_E1_P' = k4 * H_E1_ATP + k5_ * H_E2_P - ( k4_ * ADP * H_E1_P + k5 * H_E1_P );
+end
+
+model weinstein_1998_version02__H_E2_P(H_E2_P, k6, k6_, k5, k5_, H_E1_P, E2_P, H, time_)
+
+  // Rate Rules:
+  H_E2_P' = k6_ * H * E2_P + k5 * H_E1_P - ( k6 * H_E2_P + k5_ * H_E2_P );
+end
+
+model weinstein_1998_version02__E2_P(E2_P, k6, k6_, k7, k7_, H_E2_P, K_E2_P, H, K, time_)
+
+  // Rate Rules:
+  E2_P' = k7_ * K_E2_P + k6 * H_E2_P - ( k6_ * H * E2_P + k7 * K * E2_P );
+end
+
+model weinstein_1998_version02__K_E2_P(K_E2_P, k8, k8_, k7, k7_, E2_P, K_E2, P, K, time_)
+
+  // Rate Rules:
+  K_E2_P' = k7 * K * E2_P + k8_ * P * K_E2 - ( k8 * K_E2_P + k7_ * K_E2_P );
+end
+
+model weinstein_1998_version02__K_E2(K_E2, k8, k8_, k9, k9_, k10, k10_, K_E2_ATP, K_E1, K_E2_P, P, ATP, time_)
+
+  // Rate Rules:
+  K_E2' = k8 * K_E2_P + k10_ * K_E2_ATP + k9_ * K_E1 - ( k8_ * P * K_E2 + k10 * ATP * K_E2 + k9 * K_E2 );
+end
+
+model weinstein_1998_version02__K_E2_ATP(K_E2_ATP, k11, k11_, k10, k10_, K_E1_ATP, K_E2, ATP, time_)
+
+  // Rate Rules:
+  K_E2_ATP' = k10 * ATP * K_E2 + k11_ * K_E1_ATP - ( k10_ * K_E2_ATP + k11 * K_E2_ATP );
+end
+
+model weinstein_1998_version02__reaction_constants(K, H, P, ATP, ADP, k1, k1_, k2, k2_, k3, k3_, k4, k4_, k5, k5_, k6, k6_, k7, k7_, k8, k8_, k9, k9_, k10, k10_, k11, k11_)
+
+  // Variable initializations:
+  K = 20.0;
+  H = 4.0;
+  P = 5.0;
+  ATP = 2.0;
+  ADP = 0.04;
+  k1 = 1.3E7;
+  k1_ = 6.5;
+  k2 = 4E3;
+  k2_ = 4E4;
+  k3 = 1.3E9;
+  k3_ = 5E2;
+  k4 = 5E1;
+  k4_ = 2.5E6;
+  k5 = 4E1;
+  k5_ = 2E2;
+  k6 = 5E7;
+  k6_ = 5E10;
+  k7 = 2E10;
+  k7_ = 3.4E7;
+  k8 = 5.4E1;
+  k8_ = 3.2E1;
+  k9 = 1.75E0;
+  k9_ = 3.5E1;
+  k10 = 5E4;
+  k10_ = 5E1;
+  k11 = 5E2;
+  k11_ = 5E0;
+end
+
+model weinstein_1998_version02____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: weinstein_1998_version02__environment(time_);
+  K_E1: weinstein_1998_version02__K_E1(K_E10, k1, k1_, k9, k9_, K_E20, K_E1_ATP0, ATP, time_);
+  K_E1_ATP: weinstein_1998_version02__K_E1_ATP(K_E1_ATP0, k1, k1_, k2, k2_, k11, k11_, K_E2_ATP0, K_E10, E1_ATP0, K, ATP, time_);
+  E1_ATP: weinstein_1998_version02__E1_ATP(E1_ATP0, k2, k2_, k3, k3_, H_E1_ATP0, K_E1_ATP0, K, H, time_);
+  H_E1_ATP: weinstein_1998_version02__H_E1_ATP(H_E1_ATP0, k4, k4_, k3, k3_, E1_ATP0, H_E1_P0, ADP, H, time_);
+  H_E1_P: weinstein_1998_version02__H_E1_P(H_E1_P0, k4, k4_, k5, k5_, H_E2_P0, H_E1_ATP0, ADP, time_);
+  H_E2_P: weinstein_1998_version02__H_E2_P(H_E2_P0, k6, k6_, k5, k5_, H_E1_P0, E2_P0, H, time_);
+  E2_P: weinstein_1998_version02__E2_P(E2_P0, k6, k6_, k7, k7_, H_E2_P0, K_E2_P0, H, K, time_);
+  K_E2_P: weinstein_1998_version02__K_E2_P(K_E2_P0, k8, k8_, k7, k7_, E2_P0, K_E20, P, K, time_);
+  K_E2: weinstein_1998_version02__K_E2(K_E20, k8, k8_, k9, k9_, k10, k10_, K_E2_ATP0, K_E10, K_E2_P0, P, ATP, time_);
+  K_E2_ATP: weinstein_1998_version02__K_E2_ATP(K_E2_ATP0, k11, k11_, k10, k10_, K_E1_ATP0, K_E20, ATP, time_);
+  reaction_constants: weinstein_1998_version02__reaction_constants(K, H, P, ATP, ADP, k1, k1_, k2, k2_, k3, k3_, k4, k4_, k5, k5_, k6, k6_, k7, k7_, k8, k8_, k9, k9_, k10, k10_, k11, k11_);
+end

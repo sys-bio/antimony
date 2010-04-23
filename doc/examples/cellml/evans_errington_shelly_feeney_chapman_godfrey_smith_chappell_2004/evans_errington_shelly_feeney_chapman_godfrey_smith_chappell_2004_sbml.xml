@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="evans_errington_shelly_feeney_chapman_godfrey_smith_chappell_2004____main" name="evans_errington_shelly_feeney_chapman_godfrey_smith_chappell_2004____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Lm0" value="10" constant="false"/>
+      <parameter id="ko_m"/>
+      <parameter id="kc_m"/>
+      <parameter id="ki"/>
+      <parameter id="ke" value="1.014"/>
+      <parameter id="Hm0" value="0" constant="false"/>
+      <parameter id="Lc0" value="0" constant="false"/>
+      <parameter id="v1" constant="false"/>
+      <parameter id="ko_c"/>
+      <parameter id="kc_c"/>
+      <parameter id="kb"/>
+      <parameter id="kd" value="4.4489"/>
+      <parameter id="BT"/>
+      <parameter id="Hc0" value="0" constant="false"/>
+      <parameter id="Ln_0" value="0" constant="false"/>
+      <parameter id="v2" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="kinetic_parameters_Vm"/>
+      <parameter id="kinetic_parameters_Vn"/>
+      <parameter id="kinetic_parameters_Vc"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="ko_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.89 <sep/> -2 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kc_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.06 <sep/> -4 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="ki">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3.09 <sep/> -4 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="ko_c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.6553 <sep/> -2 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kc_c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.8637 <sep/> -1 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="kb">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 8.5341 <sep/> -4 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="BT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.89 <sep/> 1 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="Lm0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kc_m </ci>
+                <ci> Hm0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> ke </ci>
+                  <ci> v1 </ci>
+                </apply>
+                <ci> Lc0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> ko_m </ci>
+                <ci> ki </ci>
+              </apply>
+              <ci> Lm0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Hm0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> ko_m </ci>
+              <ci> Lm0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kc_m </ci>
+              <ci> Hm0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Lc0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> ki </ci>
+                <ci> v1 </ci>
+                <ci> Lm0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kc_c </ci>
+                <ci> Hc0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> v2 </ci>
+                <ci> kd </ci>
+                <ci> Ln_0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> ke </ci>
+                  <ci> ko_c </ci>
+                </apply>
+                <ci> Lc0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kb </ci>
+                <apply>
+                  <minus/>
+                  <ci> BT </ci>
+                  <ci> Ln_0 </ci>
+                </apply>
+                <ci> Lc0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> kinetic_parameters_Vm </ci>
+            <ci> kinetic_parameters_Vc </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Hc0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> ko_c </ci>
+              <ci> Lc0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kc_c </ci>
+              <ci> Hc0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ln_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <ci> kb </ci>
+                <ci> v2 </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> BT </ci>
+                <ci> Ln_0 </ci>
+              </apply>
+              <ci> Lc0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kd </ci>
+              <ci> Ln_0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> kinetic_parameters_Vn </ci>
+            <ci> kinetic_parameters_Vc </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

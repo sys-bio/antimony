@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="elowitz_leibler_2000____main" name="elowitz_leibler_2000____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="n" value="2"/>
+      <parameter id="alpha_0" constant="false"/>
+      <parameter id="alpha" constant="false"/>
+      <parameter id="beta" constant="false"/>
+      <parameter id="K_m" value="40"/>
+      <parameter id="efficiency" value="20"/>
+      <parameter id="mRNA_halflife" value="2"/>
+      <parameter id="t_ave" constant="false"/>
+      <parameter id="kd_prot" constant="false"/>
+      <parameter id="kd_mRNA" constant="false"/>
+      <parameter id="prot_halflife" value="10"/>
+      <parameter id="tps_repr" value="0.0005"/>
+      <parameter id="tps_active" value="0.5"/>
+      <parameter id="k_tl" constant="false"/>
+      <parameter id="a_tr" constant="false"/>
+      <parameter id="a0_tr" constant="false"/>
+      <parameter id="M_lacl0" value="0" constant="false"/>
+      <parameter id="P_cl0" value="0" constant="false"/>
+      <parameter id="M_tetR0" value="20" constant="false"/>
+      <parameter id="P_lacl0" value="0" constant="false"/>
+      <parameter id="M_cl0" value="0" constant="false"/>
+      <parameter id="P_tetR0" value="0" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="alpha_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> a0_tr </ci>
+              <ci> efficiency </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kd_prot </ci>
+              <ci> K_m </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="alpha">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> a_tr </ci>
+              <ci> efficiency </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kd_prot </ci>
+              <ci> K_m </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="beta">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> kd_prot </ci>
+            <ci> kd_mRNA </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="t_ave">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> mRNA_halflife </ci>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="kd_prot">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <ci> prot_halflife </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="kd_mRNA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <ci> mRNA_halflife </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_tl">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> efficiency </ci>
+            <ci> kd_mRNA </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="a_tr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> tps_active </ci>
+              <ci> tps_repr </ci>
+            </apply>
+            <cn type="integer"> 60 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="a0_tr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> tps_repr </ci>
+            <cn type="integer"> 60 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="M_lacl0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> a0_tr </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> a_tr </ci>
+                  <apply>
+                    <power/>
+                    <ci> K_m </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> K_m </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> P_cl0 </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kd_mRNA </ci>
+              <ci> M_lacl0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="P_cl0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_tl </ci>
+              <ci> M_cl0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kd_prot </ci>
+              <ci> P_cl0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="M_tetR0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> a_tr </ci>
+                  <apply>
+                    <power/>
+                    <ci> K_m </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> K_m </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> P_lacl0 </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> a0_tr </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kd_mRNA </ci>
+              <ci> M_tetR0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="P_lacl0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_tl </ci>
+              <ci> M_lacl0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kd_prot </ci>
+              <ci> P_lacl0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="M_cl0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> a_tr </ci>
+                  <apply>
+                    <power/>
+                    <ci> K_m </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> K_m </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> P_tetR0 </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> a0_tr </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kd_mRNA </ci>
+              <ci> M_cl0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="P_tetR0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_tl </ci>
+              <ci> M_tetR0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kd_prot </ci>
+              <ci> P_tetR0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

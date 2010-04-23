@@ -1,0 +1,116 @@
+//Created by libAntimony v1.3
+model cronwright_rohwer_prior_2002_version01__environment(time_)
+end
+
+model cronwright_rohwer_prior_2002_version01__F16BP(F16BP, V_Gpd_p, time_)
+
+  // Rate Rules:
+  F16BP' = V_Gpd_p;
+
+  // Variable initializations:
+  F16BP = 0.5;
+end
+
+model cronwright_rohwer_prior_2002_version01__G3P(G3P, V_Gpd_p, V_Gpp_p, time_)
+
+  // Rate Rules:
+  G3P' = V_Gpp_p + V_Gpd_p;
+
+  // Variable initializations:
+  G3P = 24.0;
+end
+
+model cronwright_rohwer_prior_2002_version01__DHAP(DHAP, V_Gpd_p, time_)
+
+  // Rate Rules:
+  DHAP' = V_Gpd_p;
+
+  // Variable initializations:
+  DHAP = 0.4;
+end
+
+model cronwright_rohwer_prior_2002_version01__ATP(ATP, V_Gpd_p, time_)
+
+  // Rate Rules:
+  ATP' = V_Gpd_p;
+
+  // Variable initializations:
+  ATP = 0.04;
+end
+
+model cronwright_rohwer_prior_2002_version01__ADP(ADP, V_Gpd_p, time_)
+
+  // Rate Rules:
+  ADP' = V_Gpd_p;
+
+  // Variable initializations:
+  ADP = 0.4;
+end
+
+model cronwright_rohwer_prior_2002_version01__NADH(NADH, V_Gpd_p, time_)
+
+  // Rate Rules:
+  NADH' = V_Gpd_p;
+
+  // Variable initializations:
+  NADH = 0.23;
+end
+
+model cronwright_rohwer_prior_2002_version01__NAD(NAD, V_Gpd_p, time_)
+
+  // Rate Rules:
+  NAD' = V_Gpd_p;
+
+  // Variable initializations:
+  NAD = 0.8;
+end
+
+model cronwright_rohwer_prior_2002_version01__Pi(Pi_, V_Gpp_p, time_)
+
+  // Rate Rules:
+  Pi_' = V_Gpp_p;
+end
+
+model cronwright_rohwer_prior_2002_version01__V_Gpd_p(V_Gpd_p, NAD, NADH, ADP, ATP, G3P, DHAP, F16BP)
+
+  // Assignment Rules:
+  V_Gpd_p := Vf / ( K_NADH * K_DHAP ) * ( NADH * DHAP - NAD * G3P / K_eq ) / (( 1.0 + F16BP / K_F16BP + ATP / K_ATP + ADP / K_ADP ) * ( 1.0 + NADH / K_NADH + NAD / K_NAD ) * ( 1.0 + DHAP / K_DHAP + G3P / K_G3P ));
+
+  // Variable initializations:
+  K_F16BP = 4.8;
+  K_ATP = 0.73;
+  K_ADP = 2.0;
+  K_NAD = 0.93;
+  K_NADH = 0.023;
+  K_G3P = 1.2;
+  K_DHAP = 0.54;
+  K_eq = 1.0E4;
+  Vf = 36.0;
+end
+
+model cronwright_rohwer_prior_2002_version01__V_Gpp_p(V_Gpp_p, G3P, Pi_)
+
+  // Assignment Rules:
+  V_Gpp_p := V * ( G3P / K_G3P ) / (( 1.0 + G3P / K_G3P ) * ( 1.0 + Pi_ / K_Pi ));
+
+  // Variable initializations:
+  K_G3P = 3.5;
+  K_Pi = 1.0;
+  V = 18.0;
+end
+
+model cronwright_rohwer_prior_2002_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cronwright_rohwer_prior_2002_version01__environment(time_);
+  F16BP: cronwright_rohwer_prior_2002_version01__F16BP(F16BP0, V_Gpd_p0, time_);
+  G3P: cronwright_rohwer_prior_2002_version01__G3P(G3P0, V_Gpd_p0, V_Gpp_p0, time_);
+  DHAP: cronwright_rohwer_prior_2002_version01__DHAP(DHAP0, V_Gpd_p0, time_);
+  ATP: cronwright_rohwer_prior_2002_version01__ATP(ATP0, V_Gpd_p0, time_);
+  ADP: cronwright_rohwer_prior_2002_version01__ADP(ADP0, V_Gpd_p0, time_);
+  NADH: cronwright_rohwer_prior_2002_version01__NADH(NADH0, V_Gpd_p0, time_);
+  NAD: cronwright_rohwer_prior_2002_version01__NAD(NAD0, V_Gpd_p0, time_);
+  Pi_: cronwright_rohwer_prior_2002_version01__Pi(Pi_0, V_Gpp_p0, time_);
+  V_Gpd_p: cronwright_rohwer_prior_2002_version01__V_Gpd_p(V_Gpd_p0, NAD0, NADH0, ADP0, ATP0, G3P0, DHAP0, F16BP0);
+  V_Gpp_p: cronwright_rohwer_prior_2002_version01__V_Gpp_p(V_Gpp_p0, G3P0, Pi_0);
+end

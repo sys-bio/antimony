@@ -1,0 +1,168 @@
+//Created by libAntimony v1.3
+model chang_fujita_2001_version01__environment(time_)
+end
+
+model chang_fujita_2001_version01__E_e(E_e, delta_E_e_rxn0, delta_E_e_rxn1, time_)
+
+  // Rate Rules:
+  E_e' = delta_E_e_rxn0 + delta_E_e_rxn1;
+
+  // Variable initializations:
+  E_e = 1.0;
+end
+
+model chang_fujita_2001_version01__E_i(E_i, delta_E_i_rxn2, delta_E_i_rxn3, time_)
+
+  // Rate Rules:
+  E_i' = delta_E_i_rxn2 + delta_E_i_rxn3;
+
+  // Variable initializations:
+  E_i = 1.0;
+end
+
+model chang_fujita_2001_version01__Cl_e(Cl_e, delta_Cl_e_rxn0, time_)
+
+  // Rate Rules:
+  Cl_e' = delta_Cl_e_rxn0;
+
+  // Variable initializations:
+  Cl_e = 1.0;
+end
+
+model chang_fujita_2001_version01__Cl_i(Cl_i, delta_Cl_i_rxn2, time_)
+
+  // Rate Rules:
+  Cl_i' = delta_Cl_i_rxn2;
+
+  // Variable initializations:
+  Cl_i = 1.0;
+end
+
+model chang_fujita_2001_version01__ECl_e(ECl_e, delta_ECl_e_rxn0, delta_ECl_e_rxn4, time_)
+
+  // Rate Rules:
+  ECl_e' = delta_ECl_e_rxn0 + delta_ECl_e_rxn4;
+
+  // Variable initializations:
+  ECl_e = 1.0;
+end
+
+model chang_fujita_2001_version01__J_Cl_influx(J_Cl_influx, delta_ECl_i_rxn4, delta_ECl_e_rxn4, Cl_i, HCO3_i, time_)
+
+  // Assignment Rules:
+  J_Cl_influx := (delta_ECl_i_rxn4 + delta_ECl_e_rxn4) * power( 1.0 + Cl_i / Ki_Cl + HCO3_i / Ki_HCO3 , -1.0 );
+
+  // Variable initializations:
+  Ki_Cl = 0.528;
+  Ki_HCO3 = 0.423;
+end
+
+model chang_fujita_2001_version01__ECl_i(ECl_i, delta_ECl_i_rxn2, delta_ECl_i_rxn4, time_)
+
+  // Rate Rules:
+  ECl_i' = delta_ECl_i_rxn2 + delta_ECl_i_rxn4;
+
+  // Variable initializations:
+  ECl_i = 1.0;
+end
+
+model chang_fujita_2001_version01__HCO3_e(HCO3_e, delta_HCO3_e_rxn1, time_)
+
+  // Rate Rules:
+  HCO3_e' = delta_HCO3_e_rxn1;
+
+  // Variable initializations:
+  HCO3_e = 1.0;
+end
+
+model chang_fujita_2001_version01__EHCO3_e(EHCO3_e, delta_EHCO3_e_rxn1, delta_EHCO3_e_rxn5, time_)
+
+  // Rate Rules:
+  EHCO3_e' = delta_EHCO3_e_rxn1 + delta_EHCO3_e_rxn5;
+
+  // Variable initializations:
+  EHCO3_e = 1.0;
+end
+
+model chang_fujita_2001_version01__HCO3_i(HCO3_i, delta_HCO3_i_rxn3, time_)
+
+  // Rate Rules:
+  HCO3_i' = delta_HCO3_i_rxn3;
+
+  // Variable initializations:
+  HCO3_i = 1.0;
+end
+
+model chang_fujita_2001_version01__EHCO3_i(EHCO3_i, delta_EHCO3_i_rxn3, delta_EHCO3_i_rxn5, time_)
+
+  // Rate Rules:
+  EHCO3_i' = delta_EHCO3_i_rxn3 + delta_EHCO3_i_rxn5;
+
+  // Variable initializations:
+  EHCO3_i = 1.0;
+end
+
+model chang_fujita_2001_version01__reaction0(ECl_e, Cl_e, E_e, delta_ECl_e_rxn0, delta_Cl_e_rxn0, delta_E_e_rxn0)
+
+  // Variable initializations:
+  k0 = 1.0E8;
+  k0_ = 7870000.0;
+end
+
+model chang_fujita_2001_version01__reaction1(E_e, HCO3_e, EHCO3_e, delta_E_e_rxn1, delta_HCO3_e_rxn1, delta_EHCO3_e_rxn1)
+
+  // Variable initializations:
+  k1 = 1.0E8;
+  k1_ = 8280000.0;
+end
+
+model chang_fujita_2001_version01__reaction2(E_i, Cl_i, ECl_i, delta_E_i_rxn2, delta_Cl_i_rxn2, delta_ECl_i_rxn2)
+
+  // Variable initializations:
+  k2 = 1.0E8;
+  k2_ = 7870000.0;
+end
+
+model chang_fujita_2001_version01__reaction3(E_i, HCO3_i, EHCO3_i, delta_E_i_rxn3, delta_HCO3_i_rxn3, delta_EHCO3_i_rxn3)
+
+  // Variable initializations:
+  k3 = 1.0E8;
+  k3_ = 8280000.0;
+end
+
+model chang_fujita_2001_version01__reaction4(ECl_e, ECl_i, delta_ECl_e_rxn4, delta_ECl_i_rxn4)
+
+  // Variable initializations:
+  k4 = 514000.0;
+  k4_ = 92600.0;
+end
+
+model chang_fujita_2001_version01__reaction5(EHCO3_e, EHCO3_i, delta_EHCO3_e_rxn5, delta_EHCO3_i_rxn5)
+
+  // Variable initializations:
+  k5 = 324000.0;
+  k5_ = 58300.0;
+end
+
+model chang_fujita_2001_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: chang_fujita_2001_version01__environment(time_);
+  E_e: chang_fujita_2001_version01__E_e(E_e0, delta_E_e_rxn0, delta_E_e_rxn1, time_);
+  E_i: chang_fujita_2001_version01__E_i(E_i0, delta_E_i_rxn2, delta_E_i_rxn3, time_);
+  Cl_e: chang_fujita_2001_version01__Cl_e(Cl_e0, delta_Cl_e_rxn0, time_);
+  Cl_i: chang_fujita_2001_version01__Cl_i(Cl_i0, delta_Cl_i_rxn2, time_);
+  ECl_e: chang_fujita_2001_version01__ECl_e(ECl_e0, delta_ECl_e_rxn0, delta_ECl_e_rxn4, time_);
+  J_Cl_influx: chang_fujita_2001_version01__J_Cl_influx(J_Cl_influx0, delta_ECl_i_rxn4, delta_ECl_e_rxn4, Cl_i0, HCO3_i0, time_);
+  ECl_i: chang_fujita_2001_version01__ECl_i(ECl_i0, delta_ECl_i_rxn2, delta_ECl_i_rxn4, time_);
+  HCO3_e: chang_fujita_2001_version01__HCO3_e(HCO3_e0, delta_HCO3_e_rxn1, time_);
+  EHCO3_e: chang_fujita_2001_version01__EHCO3_e(EHCO3_e0, delta_EHCO3_e_rxn1, delta_EHCO3_e_rxn5, time_);
+  HCO3_i: chang_fujita_2001_version01__HCO3_i(HCO3_i0, delta_HCO3_i_rxn3, time_);
+  EHCO3_i: chang_fujita_2001_version01__EHCO3_i(EHCO3_i0, delta_EHCO3_i_rxn3, delta_EHCO3_i_rxn5, time_);
+  reaction0: chang_fujita_2001_version01__reaction0(ECl_e0, Cl_e0, E_e0, delta_ECl_e_rxn0, delta_Cl_e_rxn0, delta_E_e_rxn0);
+  reaction1: chang_fujita_2001_version01__reaction1(E_e0, HCO3_e0, EHCO3_e0, delta_E_e_rxn1, delta_HCO3_e_rxn1, delta_EHCO3_e_rxn1);
+  reaction2: chang_fujita_2001_version01__reaction2(E_i0, Cl_i0, ECl_i0, delta_E_i_rxn2, delta_Cl_i_rxn2, delta_ECl_i_rxn2);
+  reaction3: chang_fujita_2001_version01__reaction3(E_i0, HCO3_i0, EHCO3_i0, delta_E_i_rxn3, delta_HCO3_i_rxn3, delta_EHCO3_i_rxn3);
+  reaction4: chang_fujita_2001_version01__reaction4(ECl_e0, ECl_i0, delta_ECl_e_rxn4, delta_ECl_i_rxn4);
+  reaction5: chang_fujita_2001_version01__reaction5(EHCO3_e0, EHCO3_i0, delta_EHCO3_e_rxn5, delta_EHCO3_i_rxn5);
+end

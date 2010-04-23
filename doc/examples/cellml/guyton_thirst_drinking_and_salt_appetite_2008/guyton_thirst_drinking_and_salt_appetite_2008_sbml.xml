@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="thirst_drinking_and_salt_appetite_CellML1_0_model____main" name="thirst_drinking_and_salt_appetite_CellML1_0_model____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="ADHC" value="1"/>
+      <parameter id="ANM" value="0.987545"/>
+      <parameter id="POT" value="35.1148"/>
+      <parameter id="thirst_drinking_and_salt_appetite_Z10" value="45"/>
+      <parameter id="thirst_drinking_and_salt_appetite_Z11" value="0.01"/>
+      <parameter id="thirst_drinking_and_salt_appetite_ANMSLT" value="2"/>
+      <parameter id="thirst_drinking_and_salt_appetite_AHTHM" value="2"/>
+      <parameter id="thirst_drinking_and_salt_appetite_ANMTM" value="1.5"/>
+      <parameter id="thirst_drinking_and_salt_appetite_DR" value="0"/>
+      <parameter id="thirst_drinking_and_salt_appetite_TVDDL" value="30"/>
+      <parameter id="thirst_drinking_and_salt_appetite_STH" constant="false"/>
+      <parameter id="thirst_drinking_and_salt_appetite_effect_of_salt_appetite_stimulation_on_thirst_ANMSML" constant="false"/>
+      <parameter id="thirst_drinking_and_salt_appetite_effect_of_salt_appetite_stimulation_on_thirst_STH1" constant="false"/>
+      <parameter id="thirst_drinking_and_salt_appetite_AHCM" constant="false"/>
+      <parameter id="thirst_drinking_and_salt_appetite_ANMTH" constant="false"/>
+      <parameter id="thirst_drinking_and_salt_appetite_TVD" value="0.000980838" constant="false"/>
+      <parameter id="thirst_drinking_and_salt_appetite_rate_of_fluid_intake_AHTH" constant="false"/>
+      <parameter id="thirst_drinking_and_salt_appetite_rate_of_fluid_intake_AHTH1" constant="false"/>
+      <parameter id="thirst_drinking_and_salt_appetite_rate_of_fluid_intake_TVZ" constant="false"/>
+      <parameter id="thirst_drinking_and_salt_appetite_rate_of_fluid_intake_TVZ1" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="thirst_drinking_and_salt_appetite_STH"/>
+      <assignmentRule variable="thirst_drinking_and_salt_appetite_effect_of_salt_appetite_stimulation_on_thirst_ANMSML">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> ANM </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> thirst_drinking_and_salt_appetite_ANMSLT </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="thirst_drinking_and_salt_appetite_effect_of_salt_appetite_stimulation_on_thirst_STH1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <power/>
+              <apply>
+                <minus/>
+                <ci> thirst_drinking_and_salt_appetite_Z10 </ci>
+                <ci> POT </ci>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <ci> thirst_drinking_and_salt_appetite_Z11 </ci>
+            <ci> thirst_drinking_and_salt_appetite_effect_of_salt_appetite_stimulation_on_thirst_ANMSML </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="thirst_drinking_and_salt_appetite_AHCM">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> ADHC </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> thirst_drinking_and_salt_appetite_AHTHM </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="thirst_drinking_and_salt_appetite_ANMTH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> ANM </ci>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <ci> thirst_drinking_and_salt_appetite_ANMTM </ci>
+            <cn> 0.001 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="thirst_drinking_and_salt_appetite_TVD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> thirst_drinking_and_salt_appetite_rate_of_fluid_intake_TVZ </ci>
+                <ci> thirst_drinking_and_salt_appetite_DR </ci>
+              </apply>
+              <ci> thirst_drinking_and_salt_appetite_TVD </ci>
+            </apply>
+            <ci> thirst_drinking_and_salt_appetite_TVDDL </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="thirst_drinking_and_salt_appetite_rate_of_fluid_intake_AHTH"/>
+      <assignmentRule variable="thirst_drinking_and_salt_appetite_rate_of_fluid_intake_AHTH1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> thirst_drinking_and_salt_appetite_AHCM </ci>
+            <ci> thirst_drinking_and_salt_appetite_STH </ci>
+            <cn> 0.001 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="thirst_drinking_and_salt_appetite_rate_of_fluid_intake_TVZ"/>
+      <assignmentRule variable="thirst_drinking_and_salt_appetite_rate_of_fluid_intake_TVZ1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <ci> thirst_drinking_and_salt_appetite_ANMTH </ci>
+              <ci> thirst_drinking_and_salt_appetite_rate_of_fluid_intake_AHTH </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

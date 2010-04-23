@@ -1,0 +1,608 @@
+//Created by libAntimony v1.3
+model Pandit_Hinch_Niederer_Model__environment(time_)
+end
+
+model Pandit_Hinch_Niederer_Model__membrane(V, R, T, F, time_, I_Stim, I_Na, I_t, I_ss, I_f, I_K1, I_B_Na, I_B_K, I_NaK, I_LCC, I_NaCa, I_pCa, I_CaB, FVRT, FVRT_Ca)
+
+  // Assignment Rules:
+  I_Stim := piecewise( stim_amplitude , ( time_ - floor(time_ / stim_period) * stim_period >= 0) && (time_ - floor(time_ / stim_period) * stim_period <= stim_duration ), 0 );
+  FVRT := F * V / (R * T);
+  FVRT_Ca := 2 * FVRT;
+
+  // Rate Rules:
+  V' = -((I_Na + I_t + I_ss + I_f + I_K1 + I_B_Na + I_B_K + I_NaK + I_Stim + I_CaB + I_NaCa + I_pCa + I_LCC)) / Cm;
+
+  // Variable initializations:
+  V = -80.50146;
+  R = 8314.5;
+  T = 295;
+  F = 96487;
+  Cm = 0.0001;
+  stim_period = 1e3;
+  stim_duration = 10;
+  stim_amplitude = -0.6e-3;
+end
+
+model Pandit_Hinch_Niederer_Model__cell_geometry(V_myo, V_SR, V_myo_uL, V_SR_uL)
+
+  // Variable initializations:
+  V_myo = 25.85e3;
+  V_SR = 2.098e3;
+  V_myo_uL = 25.85e-6;
+  V_SR_uL = 2.098e-6;
+end
+
+model Pandit_Hinch_Niederer_Model__convert_hinch(F, V_myo_uL, hinch_I_LCC, hinch_I_NaCa, hinch_I_pCa, hinch_I_CaB, hinch_I_RyR, I_LCC, I_NaCa, I_pCa, I_CaB, I_RyR)
+
+  // Assignment Rules:
+  I_LCC := -(1.5 ) * hinch_I_LCC * 2 * V_myo_uL * F;
+  I_NaCa := hinch_I_NaCa * V_myo_uL * F;
+  I_pCa := hinch_I_pCa * 2 * V_myo_uL * F;
+  I_CaB := -(hinch_I_CaB) * 2 * V_myo_uL * F;
+  I_RyR := 1.5 * hinch_I_RyR;
+end
+
+model Pandit_Hinch_Niederer_Model__sodium_potassium_pump(i_NaK, K_o, Na_o, Na_i, R, F, T, V)
+
+  // Assignment Rules:
+  i_NaK := i_NaK_max * 1 / (1 + 0.1245 * exp(-(0.1 ) * V * F / (R * T)) + 0.0365 * sigma * exp(-(V) * F / (R * T))) * K_o / (K_o + K_m_K) * 1 / (1 + power(K_m_Na / Na_i, 4 ));
+  sigma := (exp(Na_o / 67.3 ) - 1 ) / 7;
+
+  // Variable initializations:
+  i_NaK_max = 0.95e-4;
+  K_m_K = 1.5;
+  K_m_Na = 10;
+end
+
+model Pandit_Hinch_Niederer_Model__intracellular_ion_concentrations(Na_i, Ca_i, Ca_SR, K_i, TRPN, V_myo_uL, V_SR_uL, time_, F, I_Na, I_B_Na, I_B_K, I_NaK, I_f_Na, I_f_K, I_K1, I_t, I_ss, I_Stim, I_RyR, I_LCC, I_NaCa, I_SERCA, I_pCa, I_CaB, I_SR, Ca_b, Ca_TRPN_Max, I_TRPN, beta_CMDN)
+
+  // Assignment Rules:
+  Ca_b := Ca_TRPN_Max - TRPN;
+
+  // Rate Rules:
+  Na_i' = -((I_Na + I_B_Na + I_NaCa * 3 + I_NaK * 3 + I_f_Na)) * 1 / (V_myo_uL * F);
+  Ca_i' = beta_CMDN * (I_RyR - I_SERCA + I_SR + I_TRPN - (-(2 ) * I_NaCa + I_pCa + I_CaB + I_LCC) / (2 * V_myo_uL * F));
+  Ca_SR' = V_myo_uL / V_SR_uL * (-(I_RyR) + I_SERCA - I_SR);
+  K_i' = -((I_Stim + I_ss + I_B_K + I_t + I_K1 + I_f_K + I_NaK * -(2 ))) * 1 / (V_myo_uL * F);
+  TRPN' = I_TRPN;
+
+  // Variable initializations:
+  Na_i = 10.73519;
+  Ca_i = 0.00007901351;
+  Ca_SR = 700.0e-3;
+  K_i = 139.2751;
+  TRPN = 0.067593139865;
+end
+
+model pandit_et_al_2001_endo__sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp((V + 45 ) / -(6.5 )));
+  tau_m := 0.00136 / (0.32 * (V + 47.13 ) / (1 - exp(-(0.1 ) * (V + 47.13 ))) + 0.08 * exp(-(V) / 11 ));
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.004164108;
+end
+
+model pandit_et_al_2001_endo__sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  h_infinity := 1 / (1 + exp((V + 76.1 ) / 6.07 ));
+  tau_h := piecewise( 0.0004537 * (1 + exp(-((V + 10.66 )) / 11.1 )) , V >= -(40 ) , 0.00349 / (0.135 * exp(-((V + 80 )) / 6.8 ) + 3.56 * exp(0.079 * V) + 310000 * exp(0.35 * V)) );
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  h = 0.6735613;
+end
+
+model pandit_et_al_2001_endo__sodium_current_j_gate(j, V, time_)
+
+  // Assignment Rules:
+  j_infinity := 1 / (1 + exp((V + 76.1 ) / 6.07 ));
+  tau_j := piecewise( 0.01163 * (1 + exp(-(0.1 ) * (V + 32 ))) / exp(-(0.0000002535 ) * V) , V >= -(40 ) , 0.00349 / ((V + 37.78 ) / (1 + exp(0.311 * (V + 79.23 ))) * (-(127140 ) * exp(0.2444 * V) - 0.00003474 * exp(-(0.04391 ) * V)) + 0.1212 * exp(-(0.01052 ) * V) / (1 + exp(-(0.1378 ) * (V + 40.14 )))) );
+
+  // Rate Rules:
+  j' = (j_infinity - j) / tau_j;
+
+  // Variable initializations:
+  j = 0.6729362;
+end
+
+model pandit_et_al_2001_endo__sodium_current(i_Na, E_Na, Na_i, Na_o, R, F, T, time_, V, m, h, j)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current_m_gate: pandit_et_al_2001_endo__sodium_current_m_gate(m, V, time_);
+  sodium_current_h_gate: pandit_et_al_2001_endo__sodium_current_h_gate(h, V, time_);
+  sodium_current_j_gate: pandit_et_al_2001_endo__sodium_current_j_gate(j, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na_endo * power(m, 3 ) * h * j * (V - E_Na);
+  E_Na := R * T / F * ln(Na_o / Na_i);
+  g_Na_endo := 1.33 * g_Na;
+
+  // Variable initializations:
+  g_Na = 0.8;
+end
+
+model pandit_et_al_2001_endo__Ca_independent_transient_outward_K_current_r_gate(r, V, time_)
+
+  // Assignment Rules:
+  tau_r := 1 / (45.16 * exp(0.03577 * (V + 50 )) + 98.9 * exp(-(0.1 ) * (V + 38 )));
+  r_infinity := 1 / (1 + exp((V + 10.6 ) / -(11.42 )));
+
+  // Rate Rules:
+  r' = (r_infinity - r) / tau_r;
+
+  // Variable initializations:
+  r = 0.002191519;
+end
+
+model pandit_et_al_2001_endo__Ca_independent_transient_outward_K_current_s_gate(s, V, time_)
+
+  // Assignment Rules:
+  tau_s_endo := 0.55 * exp(-(power((V + 70 ) / 25 , 2 ))) + 0.049;
+  s_infinity := 1 / (1 + exp((V + 45.3 ) / 6.8841 ));
+
+  // Rate Rules:
+  s' = (s_infinity - s) / tau_s_endo;
+
+  // Variable initializations:
+  s = 0.9842542;
+end
+
+model pandit_et_al_2001_endo__Ca_independent_transient_outward_K_current_s_slow_gate(s_slow, V, time_)
+
+  // Assignment Rules:
+  tau_s_slow_endo := 3.3 * exp(-((V + 70 )) / 30 * (V + 70 ) / 30 ) + 0.049;
+  s_slow_infinity := 1 / (1 + exp((V + 45.3 ) / 6.8841 ));
+
+  // Rate Rules:
+  s_slow' = (s_slow_infinity - s_slow) / tau_s_slow_endo;
+
+  // Variable initializations:
+  s_slow = 0.6421196;
+end
+
+model pandit_et_al_2001_endo__Ca_independent_transient_outward_K_current(i_t, E_K, time_, V, R, F, T, K_o, K_i, r, s, s_slow)
+
+  // Sub-modules, and any changes to those submodules:
+  Ca_independent_transient_outward_K_current_r_gate: pandit_et_al_2001_endo__Ca_independent_transient_outward_K_current_r_gate(r, V, time_);
+  Ca_independent_transient_outward_K_current_s_gate: pandit_et_al_2001_endo__Ca_independent_transient_outward_K_current_s_gate(s, V, time_);
+  Ca_independent_transient_outward_K_current_s_slow_gate: pandit_et_al_2001_endo__Ca_independent_transient_outward_K_current_s_slow_gate(s_slow, V, time_);
+
+  // Assignment Rules:
+  i_t := g_t_endo * r * (a_endo * s + b_endo * s_slow) * (V - E_K);
+  E_K := R * T / F * ln(K_o / K_i);
+  g_t_endo := 0.4647 * g_t;
+
+  // Variable initializations:
+  g_t = 0.035;
+  a_endo = 0.583;
+  b_endo = 0.417;
+end
+
+model pandit_et_al_2001_endo__steady_state_outward_K_current_r_ss_gate(r_ss, V, time_)
+
+  // Assignment Rules:
+  tau_r_ss := 10 / (45.16 * exp(0.03577 * (V + 50 )) + 98.9 * exp(-(0.1 ) * (V + 38 )));
+  r_ss_infinity := 1 / (1 + exp((V + 11.5 ) / -(11.82 )));
+
+  // Rate Rules:
+  r_ss' = (r_ss_infinity - r_ss) / tau_r_ss;
+
+  // Variable initializations:
+  r_ss = 0.002907171;
+end
+
+model pandit_et_al_2001_endo__steady_state_outward_K_current_s_ss_gate(s_ss, V, time_)
+
+  // Assignment Rules:
+  tau_s_ss := 2.1;
+  s_ss_infinity := 1 / (1 + exp((V + 87.5 ) / 10.3 ));
+
+  // Rate Rules:
+  s_ss' = (s_ss_infinity - s_ss) / tau_s_ss;
+
+  // Variable initializations:
+  s_ss = 0.3142767;
+end
+
+model pandit_et_al_2001_endo__steady_state_outward_K_current(i_ss, time_, V, E_K, r_ss, s_ss)
+
+  // Sub-modules, and any changes to those submodules:
+  steady_state_outward_K_current_r_ss_gate: pandit_et_al_2001_endo__steady_state_outward_K_current_r_ss_gate(r_ss, V, time_);
+  steady_state_outward_K_current_s_ss_gate: pandit_et_al_2001_endo__steady_state_outward_K_current_s_ss_gate(s_ss, V, time_);
+
+  // Assignment Rules:
+  i_ss := g_ss * r_ss * s_ss * (V - E_K);
+
+  // Variable initializations:
+  g_ss = 0.007;
+end
+
+model pandit_et_al_2001_endo__inward_rectifier(i_K1, V, R, F, T, K_o, K_i, E_K)
+
+  // Assignment Rules:
+  i_K1 := (48 / (exp((V + 37 ) / 25 ) + exp((V + 37 ) / -(25 ))) + 10 ) * 0.001 / (1 + exp((V - (E_K + 76.77 )) / -(17 ))) + g_K1 * (V - (E_K + 1.73 )) / ((1 + exp(1.613 * F * (V - (E_K + 1.73 )) / (R * T))) * (1 + exp((K_o - 0.9988 ) / -(0.124 ))));
+
+  // Variable initializations:
+  g_K1 = 0.024;
+end
+
+model pandit_et_al_2001_endo__hyperpolarisation_activated_current_y_gate(y, V, time_)
+
+  // Assignment Rules:
+  tau_y := 1 / (0.11885 * exp((V + 80 ) / 28.37 ) + 0.5623 * exp((V + 80 ) / -(14.19 )));
+  y_infinity := 1 / (1 + exp((V + 138.6 ) / 10.48 ));
+
+  // Rate Rules:
+  y' = (y_infinity - y) / tau_y;
+
+  // Variable initializations:
+  y = 0.003578708;
+end
+
+model pandit_et_al_2001_endo__hyperpolarisation_activated_current(i_f, i_f_Na, i_f_K, time_, V, E_K, E_Na, y)
+
+  // Sub-modules, and any changes to those submodules:
+  hyperpolarisation_activated_current_y_gate: pandit_et_al_2001_endo__hyperpolarisation_activated_current_y_gate(y, V, time_);
+
+  // Assignment Rules:
+  i_f := i_f_Na + i_f_K;
+  i_f_Na := g_f * y * f_Na * (V - E_Na);
+  i_f_K := g_f * y * f_K * (V - E_K);
+  f_K := 1 - f_Na;
+
+  // Variable initializations:
+  g_f = 0.00145;
+  f_Na = 0.2;
+end
+
+model pandit_et_al_2001_endo__background_currents(i_B, i_B_Na, i_B_Ca, i_B_K, E_Na, E_K, Ca_o, Ca_i, R, T, F, V)
+
+  // Assignment Rules:
+  i_B := i_B_Na + i_B_Ca + i_B_K;
+  i_B_Na := g_B_Na * (V - E_Na);
+  i_B_Ca := g_B_Ca * (V - E_Ca);
+  i_B_K := g_B_K * (V - E_K);
+
+  // Variable initializations:
+  g_B_Na = 0.00008015;
+  g_B_Ca = 0.0000324;
+  g_B_K = 0.000138;
+  E_Ca = 65;
+end
+
+model pandit_et_al_2001_endo__standard_ionic_concentrations(Na_o, Ca_o, K_o)
+
+  // Variable initializations:
+  Na_o = 140;
+  Ca_o = 1.2;
+  K_o = 5.4;
+end
+
+model Hinch_et_al_2004__CaRU_Transitions(V, C_oc, C_co, Ca_i, alpha_p, alpha_m, beta_poc, beta_pcc, beta_m, epsilon_pco, epsilon_pcc, epsilon_m, mu_poc, mu_pcc, mu_moc, mu_mcc)
+
+  // Assignment Rules:
+  t_R := 1.17 * t_L;
+  expVL := exp((V - V_L) / del_VL);
+  alpha_p := expVL / (t_L * (expVL + 1 ));
+  alpha_m := phi_L / t_L;
+  beta_poc := power(C_oc, 2 ) / (t_R * (power(C_oc, 2 ) + power(K_RyR, 2 )));
+  beta_pcc := power(Ca_i, 2 ) / (t_R * (power(Ca_i, 2 ) + power(K_RyR, 2 )));
+  beta_m := phi_R / t_R;
+  epsilon_pco := C_co * (expVL + a) / (tau_L * K_L * (expVL + 1 ));
+  epsilon_pcc := Ca_i * (expVL + a) / (tau_L * K_L * (expVL + 1 ));
+  epsilon_m := b * (expVL + a) / (tau_L * (b * expVL + a));
+  mu_poc := (power(C_oc, 2 ) + c * power(K_RyR, 2 )) / (tau_R * (power(C_oc, 2 ) + power(K_RyR, 2 )));
+  mu_pcc := (power(Ca_i, 2 ) + c * power(K_RyR, 2 )) / (tau_R * (power(Ca_i, 2 ) + power(K_RyR, 2 )));
+  mu_moc := theta_R * d * (power(C_oc, 2 ) + c * power(K_RyR, 2 )) / (tau_R * (d * power(C_oc, 2 ) + c * power(K_RyR, 2 )));
+  mu_mcc := theta_R * d * (power(Ca_i, 2 ) + c * power(K_RyR, 2 )) / (tau_R * (d * power(Ca_i, 2 ) + c * power(K_RyR, 2 )));
+
+  // Variable initializations:
+  V_L = -2;
+  del_VL = 7;
+  phi_L = 2.35;
+  t_L = 1;
+  tau_L = 650;
+  tau_R = 2.43;
+  phi_R = 0.05;
+  theta_R = 0.012;
+  K_RyR = 41e-3;
+  K_L = 0.22e-3;
+  a = 0.0625;
+  b = 14;
+  c = 0.01;
+  d = 100;
+end
+
+model Hinch_et_al_2004__CaRU_states(alpha_p, alpha_m, beta_pcc, beta_poc, beta_m, y_oc, y_co, y_oo, y_cc, y_ci, y_oi, y_ic, y_io, y_ii)
+
+  // Assignment Rules:
+  denom := (alpha_p + alpha_m) * ((alpha_m + beta_m + beta_poc) * (beta_m + beta_pcc) + alpha_p * (beta_m + beta_poc));
+  y_oc := alpha_p * beta_m * (alpha_p + alpha_m + beta_m + beta_pcc) / denom;
+  y_co := alpha_m * (beta_pcc * (alpha_m + beta_m + beta_poc) + beta_poc * alpha_p) / denom;
+  y_oo := alpha_p * (beta_poc * (alpha_p + beta_m + beta_pcc) + beta_pcc * alpha_m) / denom;
+  y_cc := alpha_m * beta_m * (alpha_m + alpha_p + beta_m + beta_poc) / denom;
+  y_ci := alpha_m / (alpha_p + alpha_m);
+  y_oi := alpha_p / (alpha_p + alpha_m);
+  y_ic := beta_m / (beta_pcc + beta_m);
+  y_io := beta_pcc / (beta_pcc + beta_m);
+  y_ii := 1 - y_oc - y_co - y_oo - y_cc - y_ci - y_ic - y_oi - y_io;
+end
+
+model Hinch_et_al_2004__CaRU_reduced_states(y_oc, y_cc, y_co, alpha_p, alpha_m, beta_pcc, beta_m, epsilon_pco, epsilon_pcc, epsilon_m, mu_poc, mu_pcc, mu_moc, mu_mcc, r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, z_1, z_2, z_3, z_4, time_)
+
+  // Assignment Rules:
+  r_1 := y_oc * mu_poc + y_cc * mu_pcc;
+  r_2 := (alpha_p * mu_moc + alpha_m * mu_mcc) / (alpha_p + alpha_m);
+  r_3 := beta_m * mu_pcc / (beta_m + beta_pcc);
+  r_4 := mu_mcc;
+  r_5 := y_co * epsilon_pco + y_cc * epsilon_pcc;
+  r_6 := epsilon_m;
+  r_7 := alpha_m * epsilon_pcc / (alpha_p + alpha_m);
+  r_8 := epsilon_m;
+  z_4 := 1 - z_1 - z_2 - z_3;
+
+  // Rate Rules:
+  z_1' = -((r_1 + r_5)) * z_1 + r_2 * z_2 + r_6 * z_3;
+  z_2' = r_1 * z_1 - (r_2 + r_7) * z_2 + r_8 * z_4;
+  z_3' = r_5 * z_1 - (r_6 + r_3) * z_3 + r_4 * z_4;
+
+  // Variable initializations:
+  z_1 = 0.98859;
+  z_2 = 0.0087302;
+  z_3 = 0.0026566;
+end
+
+model Hinch_et_al_2004__DS_Calcium_Concentrations(Ca_i, Ca_SR, Ca_o, FVRT_Ca, g_D, J_R, J_L, C_cc, C_oc, C_co, C_oo)
+
+  // Assignment Rules:
+  C_cc := Ca_i;
+  C_oc := piecewise( (Ca_i + J_L / g_D * Ca_o * FVRT_Ca * exp(-(FVRT_Ca)) / (1 - exp(-(FVRT_Ca)))) / (1 + J_L / g_D * FVRT_Ca / (1 - exp(-(FVRT_Ca)))) , abs(FVRT_Ca) > 0.000000001 , (Ca_i + J_L / g_D * Ca_o) / (1 + J_L / g_D) );
+  C_co := (Ca_i + J_R / g_D * Ca_SR) / (1 + J_R / g_D);
+  C_oo := piecewise( (Ca_i + J_R / g_D * Ca_SR + J_L / g_D * Ca_o * FVRT_Ca * exp(-(FVRT_Ca)) / (1 - exp(-(FVRT_Ca)))) / (1 + J_R / g_D + J_L / g_D * FVRT_Ca / (1 - exp(-(FVRT_Ca)))) , abs(FVRT_Ca) > 0.000000001 , (Ca_i + J_R / g_D * Ca_SR + J_L / g_D * Ca_o) / (1 + J_R / g_D + J_L / g_D) );
+end
+
+model Hinch_et_al_2004__LCC_and_RyR_fluxes(g_D, J_R, J_L, Ca_i, Ca_SR, Ca_o, FVRT_Ca, J_Loo, J_Loc, J_Rco, J_Roo)
+
+  // Assignment Rules:
+  J_Loo := piecewise( J_L * FVRT_Ca / (1 - exp(-(FVRT_Ca))) * (Ca_o * exp(-(FVRT_Ca)) - Ca_i + J_R / g_D * (Ca_o * exp(-(FVRT_Ca)) - Ca_SR)) / (1 + J_R / g_D + J_L / g_D * FVRT_Ca / (1 - exp(FVRT_Ca))) , abs(FVRT_Ca) > 0.00001 , J_L * 0.00001 / (1 - exp(-(0.00001 ))) * (Ca_o * exp(-(0.00001 )) - Ca_i + J_R / g_D * (Ca_o * exp(-(0.00001 )) - Ca_SR)) / (1 + J_R / g_D + J_L / g_D * 0.00001 / (1 - exp(-(0.00001 )))) );
+  J_Loc := piecewise( J_L * FVRT_Ca / (1 - exp(-(FVRT_Ca))) * (Ca_o * exp(-(FVRT_Ca)) - Ca_i) / (1 + J_L / g_D * FVRT_Ca / (1 - exp(-(FVRT_Ca)))) , abs(FVRT_Ca) > 0.00001 , J_L * 0.00001 / (1 - exp(-(0.00001 ))) * (Ca_o * exp(-(0.00001 )) - Ca_i) / (1 + J_L / g_D * 0.00001 / (1 - exp(-(0.00001 )))) );
+  J_Rco := J_R * (Ca_SR - Ca_i) / (1 + J_R / g_D);
+  J_Roo := piecewise( J_R * (Ca_SR - Ca_i + J_L / g_D * FVRT_Ca / (1 - exp(-(FVRT_Ca))) * (Ca_SR - Ca_o * exp(-(FVRT_Ca)))) / (1 + J_R / g_D + J_L / g_D * FVRT_Ca / (1 - exp(-(FVRT_Ca)))) , abs(FVRT_Ca) > 0.00001 , J_R * (Ca_SR - Ca_i + J_L / g_D * 0.00001 / (1 - exp(-(0.00001 ))) * (Ca_SR - Ca_o * exp(-(0.00001 )))) / (1 + J_R / g_D + J_L / g_D * 0.00001 / (1 - exp(-(0.00001 )))) );
+end
+
+model Hinch_et_al_2004__RyR_current(y_oo, y_co, y_oc, beta_pcc, beta_m, J_Roo, J_Rco, z_1, z_3, V_myo, N, J_R1, J_R3, I_RyR)
+
+  // Assignment Rules:
+  J_R1 := y_oo * J_Roo + J_Rco * y_co;
+  J_R3 := J_Rco * beta_pcc / (beta_m + beta_pcc);
+  I_RyR := (z_1 * J_R1 + z_3 * J_R3) * N / V_myo;
+end
+
+model Hinch_et_al_2004__LCC_current(y_oo, y_oc, alpha_p, alpha_m, J_Loo, J_Loc, z_1, z_2, V_myo, N, J_L1, J_L2, I_LCC)
+
+  // Assignment Rules:
+  J_L1 := J_Loo * y_oo + J_Loc * y_oc;
+  J_L2 := J_Loc * alpha_p / (alpha_p + alpha_m);
+  I_LCC := (z_1 * J_L1 + z_2 * J_L2) * N / V_myo;
+end
+
+model Hinch_et_al_2004__CaRU(g_D, J_R, J_L, V_myo, N, V, Ca_i, Ca_o, Ca_SR, time_, FVRT_Ca, I_RyR, I_LCC)
+
+  // Sub-modules, and any changes to those submodules:
+  CaRU_Transitions: Hinch_et_al_2004__CaRU_Transitions(V, C_oc, C_co, Ca_i, alpha_p, alpha_m, beta_poc, beta_pcc, beta_m, epsilon_pco, epsilon_pcc, epsilon_m, mu_poc, mu_pcc, mu_moc, mu_mcc);
+  CaRU_states: Hinch_et_al_2004__CaRU_states(alpha_p, alpha_m, beta_pcc, beta_poc, beta_m, y_oc, y_co, y_oo, y_cc, y_ci, y_oi, y_ic, y_io, y_ii);
+  CaRU_reduced_states: Hinch_et_al_2004__CaRU_reduced_states(y_oc, y_cc, y_co, alpha_p, alpha_m, beta_pcc, beta_m, epsilon_pco, epsilon_pcc, epsilon_m, mu_poc, mu_pcc, mu_moc, mu_mcc, r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, z_1, z_2, z_3, z_4, time_);
+  DS_Calcium_Concentrations: Hinch_et_al_2004__DS_Calcium_Concentrations(Ca_i, Ca_SR, Ca_o, FVRT_Ca, g_D, J_R, J_L, C_cc, C_oc, C_co, C_oo);
+  LCC_and_RyR_fluxes: Hinch_et_al_2004__LCC_and_RyR_fluxes(g_D, J_R, J_L, Ca_i, Ca_SR, Ca_o, FVRT_Ca, J_Loo, J_Loc, J_Rco, J_Roo);
+  RyR_current: Hinch_et_al_2004__RyR_current(y_oo, y_co, y_oc, beta_pcc, beta_m, J_Roo, J_Rco, z_1, z_3, V_myo, N, J_R1, J_R3, I_RyR);
+  LCC_current: Hinch_et_al_2004__LCC_current(y_oo, y_oc, alpha_p, alpha_m, J_Loo, J_Loc, z_1, z_2, V_myo, N, J_L1, J_L2, I_LCC);
+
+  // Variable initializations:
+  g_D = 0.065;
+  J_R = 0.02;
+  J_L = 9.13e-4;
+  N = 50000;
+end
+
+model Hinch_et_al_2004__Na_Ca_Exchanger(FVRT, Na_i, Na_o, Ca_i, Ca_o, I_NaCa)
+
+  // Assignment Rules:
+  I_NaCa := g_NCX * (exp(eta * FVRT) * power(Na_i, 3 ) * Ca_o - exp((eta - 1 ) * FVRT) * power(Na_o, 3 ) * Ca_i) / ((power(Na_o, 3 ) + power(K_mNa, 3 )) * (Ca_o + K_mCa) * (1 + k_sat * exp((eta - 1 ) * FVRT)));
+
+  // Variable initializations:
+  K_mNa = 87.5;
+  K_mCa = 1.38;
+  eta = 0.35;
+  k_sat = 0.1;
+  g_NCX = 38.5e-3;
+end
+
+model Hinch_et_al_2004__SERCA(I_SERCA, Ca_i)
+
+  // Assignment Rules:
+  I_SERCA := g_SERCA * power(Ca_i, 2 ) / (power(K_SERCA, 2 ) + power(Ca_i, 2 ));
+
+  // Variable initializations:
+  g_SERCA = 0.45e-3;
+  K_SERCA = 0.5e-3;
+end
+
+model Hinch_et_al_2004__Sarcolemmal_Ca_pump(Ca_i, I_pCa)
+
+  // Assignment Rules:
+  I_pCa := g_pCa * Ca_i / (K_mpCa + Ca_i);
+
+  // Variable initializations:
+  g_pCa = 0.0035e-3;
+  K_mpCa = 0.5e-3;
+end
+
+model Hinch_et_al_2004__Background_Ca_current(V, R, T, F, Ca_i, Ca_o, E_Ca, I_CaB)
+
+  // Assignment Rules:
+  E_Ca := R * T / (2 * F) * ln(Ca_o / Ca_i);
+  I_CaB := g_CaB * (E_Ca - V);
+
+  // Variable initializations:
+  g_CaB = 2.6875e-8;
+end
+
+model Hinch_et_al_2004__SR_Ca_leak_current(Ca_i, Ca_SR, I_SR)
+
+  // Assignment Rules:
+  I_SR := g_SRl * (Ca_SR - Ca_i);
+
+  // Variable initializations:
+  g_SRl = 1.8951e-5;
+end
+
+model Hinch_et_al_2004__calmodulin_Ca_buffer(Ca_i, beta_CMDN)
+
+  // Assignment Rules:
+  beta_CMDN := power(1 + k_CMDN * B_CMDN / power(k_CMDN + Ca_i, 2 ), -(1 ));
+
+  // Variable initializations:
+  k_CMDN = 2.382e-3;
+  B_CMDN = 50e-3;
+end
+
+model Niederer_et_al_2006__thinfilaments()
+end
+
+model Niederer_et_al_2006__tropomyosin(z, z_max, time_, k_on, k_Ref_off, gamma_trpn, Ca_TRPN_Max, beta_0, Ca_b, lambda_)
+
+  // Assignment Rules:
+  z_max := (alpha_0 / power(Ca_TRPN_50 / Ca_TRPN_Max, n_Hill) - K_2) / (alpha_r1 + K_1 + alpha_0 / power(Ca_TRPN_50 / Ca_TRPN_Max, n_Hill));
+  Ca_50 := Ca_50ref * (1 + beta_1 * (lambda_ - 1 ));
+  Ca_TRPN_50 := Ca_50 * Ca_TRPN_Max / (Ca_50 + k_Ref_off / k_on * (1 - (1 + beta_0 * (lambda_ - 1 )) * 0.5 / gamma_trpn));
+  K_2 := alpha_r2 * power(z_p, n_Rel) / (power(z_p, n_Rel) + power(K_z, n_Rel)) * (1 - n_Rel * power(K_z, n_Rel) / (power(z_p, n_Rel) + power(K_z, n_Rel)));
+  K_1 := alpha_r2 * power(z_p, n_Rel - 1 ) * n_Rel * power(K_z, n_Rel) / power(power(z_p, n_Rel) + power(K_z, n_Rel), 2 );
+  alpha_Tm := alpha_0 * power(Ca_b / Ca_TRPN_50, n_Hill);
+  beta_Tm := alpha_r1 + alpha_r2 * power(z, n_Rel - 1 ) / (power(z, n_Rel) + power(K_z, n_Rel));
+
+  // Rate Rules:
+  z' = alpha_Tm * (1 - z) - beta_Tm * z;
+
+  // Variable initializations:
+  z = 0.014417937837;
+  alpha_0 = 8e-3;
+  alpha_r1 = 2e-3;
+  alpha_r2 = 1.75e-3;
+  n_Rel = 3;
+  K_z = 0.15;
+  n_Hill = 3;
+  Ca_50ref = 1.05e-3;
+  z_p = 0.85;
+  beta_1 = -4;
+end
+
+model Niederer_et_al_2006__troponin(J_TRPN, Ca_TRPN_Max, TRPN, Ca_i, k_on, k_Ref_off, gamma_trpn, Tension, T_ref)
+
+  // Assignment Rules:
+  J_TRPN := (Ca_TRPN_Max - TRPN) * k_off - Ca_i * TRPN * k_on;
+  k_off := piecewise( k_Ref_off * (1 - Tension / (gamma_trpn * T_ref)) , 1 - Tension / (gamma_trpn * T_ref) > 0.1 , k_Ref_off * 0.1 );
+
+  // Variable initializations:
+  Ca_TRPN_Max = 70e-3;
+  k_on = 100;
+  k_Ref_off = 0.2;
+  gamma_trpn = 2;
+end
+
+model Niederer_et_al_2006__Myofilaments(time_, lambda_, ExtensionRatio, dExtensionRatiodt, lambda_prev)
+
+  // Assignment Rules:
+  lambda_ := piecewise( ExtensionRatio , ( ExtensionRatio > 0.8) && (ExtensionRatio <= 1.15 ), 1.15 , ExtensionRatio > 1.15 , 0.8 );
+  ExtensionRatio := piecewise( 1 , time_ > 3E5 , 1 );
+  dExtensionRatiodt := 0;
+  lambda_prev := ExtensionRatio;
+end
+
+model Niederer_et_al_2006__filament_overlap(lambda_, overlap, beta_0)
+
+  // Assignment Rules:
+  overlap := 1 + beta_0 * (lambda_ - 1 );
+
+  // Variable initializations:
+  beta_0 = 4.9;
+end
+
+model Niederer_et_al_2006__length_independent_tension(T_ref, T_Base, z, z_max)
+
+  // Assignment Rules:
+  T_Base := T_ref * z / z_max;
+
+  // Variable initializations:
+  T_ref = 56.2;
+end
+
+model Niederer_et_al_2006__isometric_tension(T_0, T_Base, overlap)
+
+  // Assignment Rules:
+  T_0 := T_Base * overlap;
+end
+
+model Niederer_et_al_2006__Cross_Bridges(time_, dExtensionRatiodt, T_0, Tension)
+
+  // Assignment Rules:
+  Q := Q_1 + Q_2 + Q_3;
+  Tension := piecewise( T_0 * (a * Q + 1 ) / (1 - Q) , Q < 0 , T_0 * (1 + (a + 2 ) * Q) / (1 + Q) );
+
+  // Rate Rules:
+  Q_1' = A_1 * dExtensionRatiodt - alpha_1 * Q_1;
+  Q_2' = A_2 * dExtensionRatiodt - alpha_2 * Q_2;
+  Q_3' = A_3 * dExtensionRatiodt - alpha_3 * Q_3;
+
+  // Variable initializations:
+  a = 0.35;
+  Q_1 = 0;
+  Q_2 = 0;
+  Q_3 = 0;
+  A_1 = -29;
+  A_2 = 138;
+  A_3 = 129;
+  alpha_1 = 0.03;
+  alpha_2 = 0.13;
+  alpha_3 = 0.625;
+end
+
+model Pandit_Hinch_Niederer_Model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: Pandit_Hinch_Niederer_Model__environment(time_);
+  membrane: Pandit_Hinch_Niederer_Model__membrane(V, R, T, F, time_, I_Stim, I_Na, I_t, I_ss, I_f, I_K1, I_B_Na, I_B_K, I_NaK, I_LCC, I_NaCa, I_pCa, I_CaB, FVRT, FVRT_Ca);
+  cell_geometry: Pandit_Hinch_Niederer_Model__cell_geometry(V_myo, V_SR, V_myo_uL, V_SR_uL);
+  convert_hinch: Pandit_Hinch_Niederer_Model__convert_hinch(F, V_myo_uL, hinch_I_LCC, hinch_I_NaCa, hinch_I_pCa, hinch_I_CaB, hinch_I_RyR, I_LCC, I_NaCa, I_pCa, I_CaB, I_RyR);
+  sodium_potassium_pump: Pandit_Hinch_Niederer_Model__sodium_potassium_pump(I_NaK, K_o, Na_o, Na_i, R, F, T, V);
+  intracellular_ion_concentrations: Pandit_Hinch_Niederer_Model__intracellular_ion_concentrations(Na_i, Ca_i, Ca_SR, K_i, TRPN, V_myo_uL, V_SR_uL, time_, F, I_Na, I_B_Na, I_B_K, I_NaK, I_f_Na, I_f_K, I_K1, I_t, I_ss, I_Stim, I_RyR, I_LCC, I_NaCa, I_SERCA, I_pCa, I_CaB, I_SR, Ca_b, Ca_TRPN_Max, I_TRPN, beta_CMDN);
+  pandit_sodium_current: pandit_et_al_2001_endo__sodium_current(I_Na, E_Na, Na_i, Na_o, R, F, T, time_, V, m, h, j);
+  pandit_Ca_independent_transient_outward_K_current: pandit_et_al_2001_endo__Ca_independent_transient_outward_K_current(I_t, E_K, time_, V, R, F, T, K_o, K_i, r, s, s_slow);
+  pandit_steady_state_outward_K_current: pandit_et_al_2001_endo__steady_state_outward_K_current(I_ss, time_, V, E_K, r_ss, s_ss);
+  pandit_inward_rectifier: pandit_et_al_2001_endo__inward_rectifier(I_K1, V, R, F, T, K_o, K_i, E_K);
+  pandit_hyperpolarisation_activated_current: pandit_et_al_2001_endo__hyperpolarisation_activated_current(I_f, I_f_Na, I_f_K, time_, V, E_K, E_Na, y);
+  pandit_background_currents: pandit_et_al_2001_endo__background_currents(i_B, I_B_Na, i_B_Ca, I_B_K, E_Na, E_K, Ca_o, Ca_i, R, T, F, V);
+  pandit_standard_ionic_concentrations: pandit_et_al_2001_endo__standard_ionic_concentrations(Na_o, Ca_o, K_o);
+  hinch_CaRU: Hinch_et_al_2004__CaRU(g_D, J_R, J_L, V_myo, N, V, Ca_i, Ca_o, Ca_SR, time_, FVRT_Ca, hinch_I_RyR, hinch_I_LCC);
+  hinch_Na_Ca_Exchanger: Hinch_et_al_2004__Na_Ca_Exchanger(FVRT, Na_i, Na_o, Ca_i, Ca_o, hinch_I_NaCa);
+  hinch_SERCA: Hinch_et_al_2004__SERCA(I_SERCA, Ca_i);
+  hinch_Sarcolemmal_Ca_pump: Hinch_et_al_2004__Sarcolemmal_Ca_pump(Ca_i, hinch_I_pCa);
+  hinch_Background_Ca_current: Hinch_et_al_2004__Background_Ca_current(V, R, T, F, Ca_i, Ca_o, E_Ca, hinch_I_CaB);
+  hinch_SR_Ca_leak_current: Hinch_et_al_2004__SR_Ca_leak_current(Ca_i, Ca_SR, I_SR);
+  hinch_calmodulin_Ca_current: Hinch_et_al_2004__calmodulin_Ca_buffer(Ca_i, beta_CMDN);
+  niederer_thinfilaments: Niederer_et_al_2006__thinfilaments();
+  niederer_tropomyosin: Niederer_et_al_2006__tropomyosin(z, z_max, time_, k_on, k_Ref_off, gamma_trpn, Ca_TRPN_Max, beta_0, Ca_b, lambda_);
+  niederer_troponin: Niederer_et_al_2006__troponin(I_TRPN, Ca_TRPN_Max, TRPN, Ca_i, k_on, k_Ref_off, gamma_trpn, Tension, T_ref);
+  niederer_Myofilaments: Niederer_et_al_2006__Myofilaments(time_, lambda_, ExtensionRatio, dExtensionRatiodt, lambda_prev);
+  niederer_filament_overlap: Niederer_et_al_2006__filament_overlap(lambda_, overlap, beta_0);
+  niederer_length_independent_tension: Niederer_et_al_2006__length_independent_tension(T_ref, T_Base, z, z_max);
+  niederer_isometric_tension: Niederer_et_al_2006__isometric_tension(T_0, T_Base, overlap);
+  niederer_Cross_Bridges: Niederer_et_al_2006__Cross_Bridges(time_, dExtensionRatiodt, T_0, Tension);
+end

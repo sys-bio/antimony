@@ -1,0 +1,165 @@
+//Created by libAntimony v1.3
+model beeler_reuter_1977_version06__environment(time_)
+end
+
+model beeler_reuter_1977_version06__membrane(V, time_, i_Na, i_s, i_x1, i_K1, Istim)
+
+  // Rate Rules:
+  V' = (Istim - (i_Na + i_s + i_x1 + i_K1)) / C;
+
+  // Variable initializations:
+  V = -84.624;
+  C = 0.01;
+end
+
+model beeler_reuter_1977_version06__sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := -(1 ) * (V + 47 ) / (exp(-(0.1 ) * (V + 47 )) - 1 );
+  beta_m := 40 * exp(-(0.056 ) * (V + 72 ));
+
+  // Rate Rules:
+  m' = alpha_m * (1 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.011;
+end
+
+model beeler_reuter_1977_version06__sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := 0.126 * exp(-(0.25 ) * (V + 77 ));
+  beta_h := 1.7 / (exp(-(0.082 ) * (V + 22.5 )) + 1 );
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.988;
+end
+
+model beeler_reuter_1977_version06__sodium_current_j_gate(j, V, time_)
+
+  // Assignment Rules:
+  alpha_j := 0.055 * exp(-(0.25 ) * (V + 78 )) / (exp(-(0.2 ) * (V + 78 )) + 1 );
+  beta_j := 0.3 / (exp(-(0.1 ) * (V + 32 )) + 1 );
+
+  // Rate Rules:
+  j' = alpha_j * (1 - j) - beta_j * j;
+
+  // Variable initializations:
+  j = 0.975;
+end
+
+model beeler_reuter_1977_version06__sodium_current(i_Na, time_, V, m, h, j)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current_m_gate: beeler_reuter_1977_version06__sodium_current_m_gate(m, V, time_);
+  sodium_current_h_gate: beeler_reuter_1977_version06__sodium_current_h_gate(h, V, time_);
+  sodium_current_j_gate: beeler_reuter_1977_version06__sodium_current_j_gate(j, V, time_);
+
+  // Assignment Rules:
+  i_Na := (g_Na * power(m, 3 ) * h * j + g_Nac) * (V - E_Na);
+
+  // Variable initializations:
+  g_Na = 4e-2;
+  E_Na = 50;
+  g_Nac = 3e-5;
+end
+
+model beeler_reuter_1977_version06__slow_inward_current_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  alpha_d := 0.095 * exp(-((V - 5 )) / 100 ) / (1 + exp(-((V - 5 )) / 13.89 ));
+  beta_d := 0.07 * exp(-((V + 44 )) / 59 ) / (1 + exp((V + 44 ) / 20 ));
+
+  // Rate Rules:
+  d' = alpha_d * (1 - d) - beta_d * d;
+
+  // Variable initializations:
+  d = 0.003;
+end
+
+model beeler_reuter_1977_version06__slow_inward_current_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  alpha_f := 0.012 * exp(-((V + 28 )) / 125 ) / (1 + exp((V + 28 ) / 6.67 ));
+  beta_f := 0.0065 * exp(-((V + 30 )) / 50 ) / (1 + exp(-((V + 30 )) / 5 ));
+
+  // Rate Rules:
+  f' = alpha_f * (1 - f) - beta_f * f;
+
+  // Variable initializations:
+  f = 0.994;
+end
+
+model beeler_reuter_1977_version06__slow_inward_current(i_s, time_, V, d, f)
+
+  // Sub-modules, and any changes to those submodules:
+  slow_inward_current_d_gate: beeler_reuter_1977_version06__slow_inward_current_d_gate(d, V, time_);
+  slow_inward_current_f_gate: beeler_reuter_1977_version06__slow_inward_current_f_gate(f, V, time_);
+
+  // Assignment Rules:
+  i_s := g_s * d * f * (V - E_s);
+  E_s := -(82.3 ) - 13.0287 * ln(Cai * 0.001 );
+
+  // Rate Rules:
+  Cai' = -(0.01 ) * i_s / 1 + 0.07 * (0.0001 - Cai);
+
+  // Variable initializations:
+  g_s = 9e-4;
+  Cai = 1e-4;
+end
+
+model beeler_reuter_1977_version06__time_dependent_outward_current_x1_gate(x1, V, time_)
+
+  // Assignment Rules:
+  alpha_x1 := 5e-4 * exp((V + 50 ) / 12.1 ) / (1 + exp((V + 50 ) / 17.5 ));
+  beta_x1 := 0.0013 * exp(-((V + 20 )) / 16.67 ) / (1 + exp(-((V + 20 )) / 25 ));
+
+  // Rate Rules:
+  x1' = alpha_x1 * (1 - x1) - beta_x1 * x1;
+
+  // Variable initializations:
+  x1 = 0.0001;
+end
+
+model beeler_reuter_1977_version06__time_dependent_outward_current(i_x1, time_, V, x1)
+
+  // Sub-modules, and any changes to those submodules:
+  time_dependent_outward_current_x1_gate: beeler_reuter_1977_version06__time_dependent_outward_current_x1_gate(x1, V, time_);
+
+  // Assignment Rules:
+  i_x1 := x1 * 8e-3 * (exp(0.04 * (V + 77 )) - 1 ) / exp(0.04 * (V + 35 ));
+end
+
+model beeler_reuter_1977_version06__time_independent_outward_current(i_K1, time_, V)
+
+  // Assignment Rules:
+  i_K1 := 0.0035 * (4 * (exp(0.04 * (V + 85 )) - 1 ) / (exp(0.08 * (V + 53 )) + exp(0.04 * (V + 53 ))) + 0.2 * (V + 23 ) / (1 - exp(-(0.04 ) * (V + 23 ))));
+end
+
+model beeler_reuter_1977_version06__stimulus_protocol(Istim, time_)
+
+  // Assignment Rules:
+  Istim := piecewise( IstimAmplitude , (( time_ >= IstimStart) && (time_ <= IstimEnd) && (time_ - IstimStart - floor((time_ - IstimStart) / IstimPeriod) * IstimPeriod <= IstimPulseDuration )), 0 );
+
+  // Variable initializations:
+  IstimStart = 10;
+  IstimEnd = 50000;
+  IstimAmplitude = 0.5;
+  IstimPeriod = 1000;
+  IstimPulseDuration = 1;
+end
+
+model beeler_reuter_1977_version06____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: beeler_reuter_1977_version06__environment(time_);
+  membrane: beeler_reuter_1977_version06__membrane(V, time_, i_Na, i_s, i_x1, i_K1, Istim);
+  sodium_current: beeler_reuter_1977_version06__sodium_current(i_Na, time_, V, m, h, j);
+  slow_inward_current: beeler_reuter_1977_version06__slow_inward_current(i_s, time_, V, d, f);
+  time_dependent_outward_current: beeler_reuter_1977_version06__time_dependent_outward_current(i_x1, time_, V, x1);
+  time_independent_outward_current: beeler_reuter_1977_version06__time_independent_outward_current(i_K1, time_, V);
+  stimulus_protocol: beeler_reuter_1977_version06__stimulus_protocol(Istim, time_);
+end

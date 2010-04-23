@@ -1,0 +1,82 @@
+//Created by libAntimony v1.3
+model rice_winslow_hunter_1999_version05__environment(time_)
+end
+
+model rice_winslow_hunter_1999_version05__T(T, TCa)
+
+  // Assignment Rules:
+  T := 1.0 - TCa;
+end
+
+model rice_winslow_hunter_1999_version05__TCa(TCa, kon, koff, T, Ca, time_)
+
+  // Rate Rules:
+  TCa' = kon * Ca * T - koff * TCa;
+end
+
+model rice_winslow_hunter_1999_version05__N0(N0, P0, N1, P1)
+
+  // Assignment Rules:
+  N0 := 1.0 - ( P0 + N1 + P1 );
+end
+
+model rice_winslow_hunter_1999_version05__N1(N1, k1, k1_, g, N0, P1, time_)
+
+  // Rate Rules:
+  N1' = k1_ * P1 - ( g * N1 + k1 * N1 );
+end
+
+model rice_winslow_hunter_1999_version05__P0(P0, k1, k1_, f, g, N0, P1, time_)
+
+  // Rate Rules:
+  P0' = k1 * N0 + g * P1 - ( k1_ * P0 + f * P0 );
+end
+
+model rice_winslow_hunter_1999_version05__P1(P1, k1, k1_, f, g, N1, P0, time_)
+
+  // Rate Rules:
+  P1' = k1 * N1 + f * P0 - ( k1_ * P1 + g * P1 );
+end
+
+model rice_winslow_hunter_1999_version05__constants(Ca, kon, koff, k1, k1_, f, g, TCa)
+
+  // Assignment Rules:
+  k1 := k1_ * power( TCa / K_1_2 , N );
+  K_1_2 := 1.0 / ( 1.0 + K_Ca / ( 1.5 - SL_norm * 1.0 ));
+  N := 7.0 + 3.0 * SL_norm;
+  SL_norm := ( SL - 1.7 ) / ( 2.3 - 1.7 );
+
+  // Variable initializations:
+  Ca = 1.0;
+  kon = 40.0;
+  koff = 20.0;
+  k1_ = 45.0;
+  f = 10.0;
+  g = 20.0;
+  K_Ca = 1.64;
+  SL = 1.7;
+end
+
+model rice_winslow_hunter_1999_version05__force(P1, N1, f, g)
+
+  // Assignment Rules:
+  F := alpha * ( P1 + N1 ) / Fmax;
+  Fmax := f / ( f + g );
+
+  // Variable initializations:
+  alpha = 1.0;
+end
+
+model rice_winslow_hunter_1999_version05____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: rice_winslow_hunter_1999_version05__environment(time_);
+  T: rice_winslow_hunter_1999_version05__T(T0, TCa0);
+  TCa: rice_winslow_hunter_1999_version05__TCa(TCa0, kon, koff, T0, Ca, time_);
+  N0: rice_winslow_hunter_1999_version05__N0(N00, P00, N10, P10);
+  N1: rice_winslow_hunter_1999_version05__N1(N10, k1, k1_, g, N00, P10, time_);
+  P0: rice_winslow_hunter_1999_version05__P0(P00, k1, k1_, f, g, N00, P10, time_);
+  P1: rice_winslow_hunter_1999_version05__P1(P10, k1, k1_, f, g, N10, P00, time_);
+  constants: rice_winslow_hunter_1999_version05__constants(Ca, kon, koff, k1, k1_, f, g, TCa0);
+  force: rice_winslow_hunter_1999_version05__force(P10, N10, f, g);
+end

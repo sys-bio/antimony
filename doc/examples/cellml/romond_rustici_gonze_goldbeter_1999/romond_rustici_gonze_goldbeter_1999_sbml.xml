@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="romond_rustici_gonze_goldbeter_1999_version01____main" name="romond_rustici_gonze_goldbeter_1999_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="H_1" value="0.01"/>
+      <parameter id="H_2" value="0.01"/>
+      <parameter id="H_3" value="0.01"/>
+      <parameter id="H_4" value="0.01"/>
+      <parameter id="K_1" value="0.01"/>
+      <parameter id="K_2" value="0.01"/>
+      <parameter id="K_3" value="0.01"/>
+      <parameter id="K_4" value="0.01"/>
+      <parameter id="V_M1" value="0.3"/>
+      <parameter id="V_M3" value="0.1"/>
+      <parameter id="U_M1" value="0.3"/>
+      <parameter id="U_M3" value="0.1"/>
+      <parameter id="V_2" value="0.15"/>
+      <parameter id="V_4" value="0.05"/>
+      <parameter id="U_2" value="0.15"/>
+      <parameter id="U_4" value="0.05"/>
+      <parameter id="K_c1" value="0.5"/>
+      <parameter id="K_c2" value="0.5"/>
+      <parameter id="K_d1" value="0.02"/>
+      <parameter id="K_d2" value="0.02"/>
+      <parameter id="v_d1" value="0.025"/>
+      <parameter id="v_d2" value="0.025"/>
+      <parameter id="v_i1" value="0.05"/>
+      <parameter id="v_i2" value="0.05"/>
+      <parameter id="k_d1" value="0.001"/>
+      <parameter id="k_d2" value="0.001"/>
+      <parameter id="K_im1" value="0.03"/>
+      <parameter id="K_im2" value="0.03"/>
+      <parameter id="C_10" value="2" constant="false"/>
+      <parameter id="M_20" value="0" constant="false"/>
+      <parameter id="X_10" value="0" constant="false"/>
+      <parameter id="M_10" value="1" constant="false"/>
+      <parameter id="V_10" constant="false"/>
+      <parameter id="V_30" constant="false"/>
+      <parameter id="C_20" value="0" constant="false"/>
+      <parameter id="X_20" value="0" constant="false"/>
+      <parameter id="U_10" constant="false"/>
+      <parameter id="U_30" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="C_10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> v_i1 </ci>
+                  <ci> K_im1 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> K_im1 </ci>
+                  <ci> M_20 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> v_d1 </ci>
+                  <ci> X_10 </ci>
+                  <ci> C_10 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> K_d1 </ci>
+                  <ci> C_10 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_d1 </ci>
+              <ci> C_10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="M_20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> U_10 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> M_20 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> H_1 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> M_20 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> U_2 </ci>
+                <ci> M_20 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> H_2 </ci>
+                <ci> M_20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="X_10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V_30 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> X_10 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K_3 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> X_10 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V_4 </ci>
+                <ci> X_10 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K_4 </ci>
+                <ci> X_10 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="M_10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V_10 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> M_10 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K_1 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> M_10 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V_2 </ci>
+                <ci> M_10 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K_2 </ci>
+                <ci> M_10 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> C_10 </ci>
+              <apply>
+                <plus/>
+                <ci> K_c1 </ci>
+                <ci> C_10 </ci>
+              </apply>
+            </apply>
+            <ci> V_M1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> M_10 </ci>
+            <ci> V_M3 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> v_i2 </ci>
+                  <ci> K_im2 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> K_im2 </ci>
+                  <ci> M_10 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> v_d2 </ci>
+                  <ci> X_20 </ci>
+                  <ci> C_20 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> K_d2 </ci>
+                  <ci> C_20 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_d2 </ci>
+              <ci> C_20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="X_20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> U_30 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> X_20 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> H_3 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> X_20 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> U_4 </ci>
+                <ci> X_20 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> H_4 </ci>
+                <ci> X_20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="U_10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> C_20 </ci>
+              <apply>
+                <plus/>
+                <ci> K_c2 </ci>
+                <ci> C_20 </ci>
+              </apply>
+            </apply>
+            <ci> U_M1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="U_30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> M_20 </ci>
+            <ci> U_M3 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

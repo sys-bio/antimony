@@ -1,0 +1,92 @@
+//Created by libAntimony v1.3
+model schuster_2003__environment(time_)
+end
+
+model schuster_2003__membrane(Vm, time_, i_K, i_R)
+
+  // Rate Rules:
+  Vm' = -(( 1.0 / C )) * ( i_K + i_R );
+
+  // Variable initializations:
+  Vm = -31.1;
+  C = 1.0;
+end
+
+model schuster_2003__IP3(IP3, time_)
+
+  // Rate Rules:
+  IP3' = A * ( 1.0 + tanh(( m3IP3 - time_ ) / m4IP3 )) - kIP3 * IP3;
+
+  // Variable initializations:
+  IP3 = 1.0;
+  m3IP3 = 4.0;
+  m4IP3 = 55.0;
+  kIP3 = 0.1733;
+  A = 0.211;
+end
+
+model schuster_2003__Ca(Ca, time_, IP3)
+
+  // Rate Rules:
+  Ca' = kSR_rel / 2.0 * ( 1.0 + tanh(( IP3 - m3SR ) / m4SR )) - kPMCA / 2.0 * ( 1.0 + tanh((log( Ca ) - m3PMCA ) / m4PMCA ));
+
+  // Variable initializations:
+  Ca = 50.0;
+  m3SR = 1.1;
+  m4SR = 0.3;
+  m3PMCA = -6.19;
+  m4PMCA = 0.39;
+  kSR_rel = 180.0;
+  kPMCA = 0.679;
+end
+
+model schuster_2003__Jcat(Jcat, Ca, Vm)
+
+  // Assignment Rules:
+  Jcat := Gcat * ( ECa - Vm ) * ( 0.5 * ( 1.0 + tanh((log( Ca ) - m3cat ) / m4cat )));
+
+  // Variable initializations:
+  ECa = 50.0;
+  Gcat = 0.66;
+  m3cat = -6.18;
+  m4cat = 0.37;
+end
+
+model schuster_2003__potassium_current(i_K, Vm, Ca)
+
+  // Assignment Rules:
+  i_K := Gtot * ( Vm - E_K ) * ( 0.4 * PoBKCa + 0.6 * PoSKCa );
+  PoBKCa := 0.5 * ( 1.0 + tanh(((log( Ca ) - c ) * ( Vm - b ) - a ) / ( m3 * power( Vm + a * (log( Ca ) - c ) - b , 2.0 ) + m4 )));
+
+  // Variable initializations:
+  Gtot = 6927;
+  PoSKCa = 0.5;
+  E_K = -80.0;
+  a = 53.3;
+  b = -80.8;
+  c = -6.4;
+  m3 = 1.32E-3;
+  m4 = 0.30;
+end
+
+model schuster_2003__repolarising_current(i_R, Vm)
+
+  // Assignment Rules:
+  i_R := GR * ( Vm - Vrest );
+
+  // Variable initializations:
+  GR = 955.0;
+  Vrest = -31.1;
+end
+
+model schuster_2003____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: schuster_2003__environment(time_);
+  membrane: schuster_2003__membrane(Vm, time_, i_K, i_R);
+  IP3: schuster_2003__IP3(IP30, time_);
+  Ca: schuster_2003__Ca(Ca0, time_, IP30);
+  Jcat: schuster_2003__Jcat(Jcat0, Ca0, Vm);
+  potassium_current: schuster_2003__potassium_current(i_K, Vm, Ca0);
+  repolarising_current: schuster_2003__repolarising_current(i_R, Vm);
+end

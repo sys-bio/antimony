@@ -1,0 +1,147 @@
+//Created by libAntimony v1.3
+model butera_rinzel_smith_1999_version01__environment(time_)
+end
+
+model butera_rinzel_smith_1999_version01__membrane(V, time_, i_NaP, i_Na, i_K, i_L, i_tonic_e)
+
+  // Rate Rules:
+  V' = (-(( i_NaP + i_Na + i_K + i_L + i_tonic_e )) + i_app ) / C;
+
+  // Variable initializations:
+  C = 21.0;
+  i_app = 0.0;
+end
+
+model butera_rinzel_smith_1999_version01__fast_sodium_current_m_gate(m_infinity, V)
+
+  // Assignment Rules:
+  m_infinity := 1.0 / ( 1.0 + exp(( V - theta_m ) / omega_m ));
+
+  // Variable initializations:
+  theta_m = -34.0;
+  omega_m = -5.0;
+end
+
+model butera_rinzel_smith_1999_version01__fast_sodium_current_n_gate(n, V, time_)
+
+  // Assignment Rules:
+  n_infinity := 1.0 / ( 1.0 + exp(( V - theta_n ) / omega_n ));
+  tau_n := tau_n_max / cosh(( V - theta_n ) / ( 2.0 * omega_n ));
+
+  // Rate Rules:
+  n' = ( n_infinity - n ) / tau_n;
+
+  // Variable initializations:
+  tau_n_max = 10.0;
+  theta_n = -29.0;
+  omega_n = -4.0;
+end
+
+model butera_rinzel_smith_1999_version01__fast_sodium_current(i_Na, E_Na, time_, V, m_infinity, n)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: butera_rinzel_smith_1999_version01__fast_sodium_current_m_gate(m_infinity, V);
+  fast_sodium_current_n_gate: butera_rinzel_smith_1999_version01__fast_sodium_current_n_gate(n, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power( m_infinity , 3.0 ) * ( 1.0 - n ) * ( V - E_Na );
+
+  // Variable initializations:
+  E_Na = 50.0;
+  g_Na = 28.0;
+end
+
+model butera_rinzel_smith_1999_version01__potassium_current_n_gate(n, V, time_)
+
+  // Assignment Rules:
+  n_infinity := 1.0 / ( 1.0 + exp(( V - theta_n ) / omega_n ));
+  tau_n := tau_n_max / cosh(( V - theta_n ) / ( 2.0 * omega_n ));
+
+  // Rate Rules:
+  n' = ( n_infinity - n ) / tau_n;
+
+  // Variable initializations:
+  tau_n_max = 10.0;
+  theta_n = -29.0;
+  omega_n = -4.0;
+end
+
+model butera_rinzel_smith_1999_version01__potassium_current(i_K, time_, V, n)
+
+  // Sub-modules, and any changes to those submodules:
+  potassium_current_n_gate: butera_rinzel_smith_1999_version01__potassium_current_n_gate(n, V, time_);
+
+  // Assignment Rules:
+  i_K := g_K * power( n , 4.0 ) * ( V - E_K );
+
+  // Variable initializations:
+  g_K = 11.2;
+  E_K = -85.0;
+end
+
+model butera_rinzel_smith_1999_version01__persistent_sodium_current_m_gate(m_infinity, V)
+
+  // Assignment Rules:
+  m_infinity := 1.0 / ( 1.0 + exp(( V - theta_m ) / omega_m ));
+
+  // Variable initializations:
+  theta_m = -40.0;
+  omega_m = -6.0;
+end
+
+model butera_rinzel_smith_1999_version01__persistent_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  h_infinity := 1.0 / ( 1.0 + exp(( V - theta_h ) / omega_h ));
+  tau_h := tau_h_max / cosh(( V - theta_h ) / ( 2.0 * omega_h ));
+
+  // Rate Rules:
+  h' = ( h_infinity - h ) / tau_h;
+
+  // Variable initializations:
+  tau_h_max = 10000.0;
+  theta_h = -48.0;
+  omega_h = 6.0;
+end
+
+model butera_rinzel_smith_1999_version01__persistent_sodium_current(i_NaP, time_, V, E_Na, m_infinity, h)
+
+  // Sub-modules, and any changes to those submodules:
+  persistent_sodium_current_m_gate: butera_rinzel_smith_1999_version01__persistent_sodium_current_m_gate(m_infinity, V);
+  persistent_sodium_current_h_gate: butera_rinzel_smith_1999_version01__persistent_sodium_current_h_gate(h, V, time_);
+
+  // Assignment Rules:
+  i_NaP := g_NaP * m_infinity * h * ( V - E_Na );
+
+  // Variable initializations:
+  g_NaP = 2.8;
+end
+
+model butera_rinzel_smith_1999_version01__leakage_current(i_L, time_, V)
+
+  // Assignment Rules:
+  i_L := g_L * ( V - E_L );
+
+  // Variable initializations:
+  g_L = 2.8;
+  E_L = -65.0;
+end
+
+model butera_rinzel_smith_1999_version01__tonic_current(i_tonic_e, time_, V)
+
+  // Variable initializations:
+  g_tonic_e = 0.0;
+  E_syn_e = 0.0;
+end
+
+model butera_rinzel_smith_1999_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: butera_rinzel_smith_1999_version01__environment(time_);
+  membrane: butera_rinzel_smith_1999_version01__membrane(V, time_, i_NaP, i_Na, i_K, i_L, i_tonic_e);
+  fast_sodium_current: butera_rinzel_smith_1999_version01__fast_sodium_current(i_Na, E_Na, time_, V, m_infinity, n);
+  potassium_current: butera_rinzel_smith_1999_version01__potassium_current(i_K, time_, V, n0);
+  persistent_sodium_current: butera_rinzel_smith_1999_version01__persistent_sodium_current(i_NaP, time_, V, E_Na, m_infinity0, h);
+  leakage_current: butera_rinzel_smith_1999_version01__leakage_current(i_L, time_, V);
+  tonic_current: butera_rinzel_smith_1999_version01__tonic_current(i_tonic_e, time_, V);
+end

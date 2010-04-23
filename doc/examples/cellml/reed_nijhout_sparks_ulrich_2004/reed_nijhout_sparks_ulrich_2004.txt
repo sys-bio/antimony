@@ -1,0 +1,131 @@
+//Created by libAntimony v1.3
+model reed_nijhout_sparks_ulrich_2004_version01__environment(time_)
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__Met(Met, V_MS, V_BHMT, V_MATI, V_MATIII, time_)
+
+  // Rate Rules:
+  Met' = V_MS + V_BHMT + Metin - (V_MATI + V_MATIII);
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__AdoMet(AdoMet, V_METH, V_GNMT, V_MATI, V_MATIII, time_)
+
+  // Rate Rules:
+  AdoMet' = V_MATI + V_MATIII - (V_METH + V_GNMT);
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__AdoHcy(AdoHcy, V_METH, V_GNMT, V_AH, time_)
+
+  // Rate Rules:
+  AdoHcy' = V_METH + V_GNMT - V_AH;
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__Hcy(Hcy, V_AH, V_CBS, V_MS, V_BHMT, time_)
+
+  // Rate Rules:
+  Hcy' = V_AH - (V_CBS + V_MS + V_BHMT);
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__V_MATI(V_MATI, Met, AdoMet)
+
+  // Assignment Rules:
+  V_MATI := V_MATImax / ( 1.0 + Km_MATI / Met * ( 1.0 + AdoMet / Ki_MATI ));
+
+  // Variable initializations:
+  V_MATImax = 561.0;
+  Km_MATI = 41.0;
+  Ki_MATI = 50.0;
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__V_MATIII(V_MATIII, AdoMet, Met)
+
+  // Assignment Rules:
+  V_MATIII := V_MATIIImax / ( 1.0 + Km1_MATIII * Km2_MATIII / (power( Met , 2.0 ) + Met * Km2_MATIII ));
+  Km1_MATIII := 20000.0 / ( 1.0 + 5.7 * power( AdoMet / ( AdoMet + 600.0 ), 2.0 ));
+
+  // Variable initializations:
+  V_MATIIImax = 22870.0;
+  Km2_MATIII = 21.1;
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__V_GNMT(V_GNMT, AdoMet, AdoHcy)
+
+  // Assignment Rules:
+  V_GNMT := V_GNMTmax / ( 1.0 + power( Km_GNMT / AdoMet , 2.3 )) * ( 1.0 / ( 1.0 + AdoHcy / Ki_GNMT ));
+
+  // Variable initializations:
+  V_GNMTmax = 10600.0;
+  Km_GNMT = 4500.0;
+  Ki_GNMT = 20.0;
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__V_METH(V_METH, AdoMet, AdoHcy)
+
+  // Assignment Rules:
+  V_METH := V_METHmax / ( 1.0 + Km1_METH / AdoMet + Km2_METH_A + Km2_METH_A * ( Km1_METH / AdoMet ));
+  Km1_METH := 10.0 * ( 1.0 + AdoHcy / 4.0 );
+
+  // Variable initializations:
+  V_METHmax = 4521.0;
+  Km2_METH_A = 10.0;
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__V_MS(V_MS, Hcy)
+
+  // Assignment Rules:
+  V_MS := V_MSmax * five_mTHF * Hcy / ( Kd_MS * Km_Hcy_MS + Km_Hcy_MS * five_mTHF + Km_five_mTHF_MS * Hcy + five_mTHF * Hcy );
+
+  // Variable initializations:
+  V_MSmax = 500.0;
+  Kd_MS = 1.0;
+  Km_Hcy_MS = 0.1;
+  Km_five_mTHF_MS = 25.0;
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__V_AH(V_AH, AdoHcy, Hcy)
+
+  // Assignment Rules:
+  V_AH := alpha1 * AdoHcy - alpha2 * Hcy;
+
+  // Variable initializations:
+  alpha1 = 100.0;
+  alpha2 = 10.0;
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__V_CBS(V_CBS, AdoHcy, Hcy, AdoMet)
+
+  // Assignment Rules:
+  V_CBS := ( beta1 * ( AdoMet + AdoHcy ) - beta2 ) * Hcy;
+
+  // Variable initializations:
+  beta1 = 1.7;
+  beta2 = 30.0;
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01__V_BHMT(V_BHMT, AdoMet, AdoHcy, Hcy)
+
+  // Assignment Rules:
+  V_BHMT := ( 0.7 - 0.025 * ( AdoMet + AdoHcy - 150.0 )) * ( V_BHMTmax * Hcy / ( Km_BHMT + Hcy ));
+
+  // Variable initializations:
+  V_BHMTmax = 2500.0;
+  Km_BHMT = 12.0;
+end
+
+model reed_nijhout_sparks_ulrich_2004_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: reed_nijhout_sparks_ulrich_2004_version01__environment(time_);
+  Met: reed_nijhout_sparks_ulrich_2004_version01__Met(Met0, V_MS0, V_BHMT0, V_MATI0, V_MATIII0, time_);
+  AdoMet: reed_nijhout_sparks_ulrich_2004_version01__AdoMet(AdoMet0, V_METH0, V_GNMT0, V_MATI0, V_MATIII0, time_);
+  AdoHcy: reed_nijhout_sparks_ulrich_2004_version01__AdoHcy(AdoHcy0, V_METH0, V_GNMT0, V_AH0, time_);
+  Hcy: reed_nijhout_sparks_ulrich_2004_version01__Hcy(Hcy0, V_AH0, V_CBS0, V_MS0, V_BHMT0, time_);
+  V_MATI: reed_nijhout_sparks_ulrich_2004_version01__V_MATI(V_MATI0, Met0, AdoMet0);
+  V_MATIII: reed_nijhout_sparks_ulrich_2004_version01__V_MATIII(V_MATIII0, AdoMet0, Met0);
+  V_GNMT: reed_nijhout_sparks_ulrich_2004_version01__V_GNMT(V_GNMT0, AdoMet0, AdoHcy0);
+  V_METH: reed_nijhout_sparks_ulrich_2004_version01__V_METH(V_METH0, AdoMet0, AdoHcy0);
+  V_MS: reed_nijhout_sparks_ulrich_2004_version01__V_MS(V_MS0, Hcy0);
+  V_AH: reed_nijhout_sparks_ulrich_2004_version01__V_AH(V_AH0, AdoHcy0, Hcy0);
+  V_CBS: reed_nijhout_sparks_ulrich_2004_version01__V_CBS(V_CBS0, AdoHcy0, Hcy0, AdoMet0);
+  V_BHMT: reed_nijhout_sparks_ulrich_2004_version01__V_BHMT(V_BHMT0, AdoMet0, AdoHcy0, Hcy0);
+end

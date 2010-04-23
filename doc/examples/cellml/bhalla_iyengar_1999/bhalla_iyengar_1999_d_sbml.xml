@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="bi_model_1999_version01____main" name="bi_model_1999_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="RAF_kf5" value="4e-05"/>
+      <parameter id="RAF_kb5" value="0.5"/>
+      <parameter id="RAF_km1" value="66.666666667"/>
+      <parameter id="RAF_km2" value="25.64166667"/>
+      <parameter id="RAF_km3" value="15.6565"/>
+      <parameter id="RAF_km4" value="15.6565"/>
+      <parameter id="RAF_Vmax1" value="4"/>
+      <parameter id="RAF_Vmax2" value="10"/>
+      <parameter id="RAF_Vmax3" value="6"/>
+      <parameter id="RAF_Vmax4" value="6"/>
+      <parameter id="PKC" value="0.1"/>
+      <parameter id="RAF_PP2A" value="0.224"/>
+      <parameter id="MAPK_star" value="0" constant="false"/>
+      <parameter id="RAF_Raf" value="0.1" constant="false"/>
+      <parameter id="RAF_Raf_star" value="0" constant="false"/>
+      <parameter id="RAF_Raf_star_star" value="0" constant="false"/>
+      <parameter id="RAF_GTPRas" value="0.1" constant="false"/>
+      <parameter id="GTPRasRaf_star" value="0" constant="false"/>
+      <parameter id="MAPKK_km6" value="0.159091667"/>
+      <parameter id="MAPKK_km7" value="0.159091667"/>
+      <parameter id="MAPKK_km8" value="15.6565"/>
+      <parameter id="MAPKK_km9" value="15.6565"/>
+      <parameter id="MAPKK_Vmax6" value="0.105"/>
+      <parameter id="MAPKK_Vmax7" value="0.105"/>
+      <parameter id="MAPKK_Vmax8" value="6"/>
+      <parameter id="MAPKK_Vmax9" value="6"/>
+      <parameter id="MAPKK_PP2A" value="0.224"/>
+      <parameter id="MAPKK_MAPKK" value="0.18" constant="false"/>
+      <parameter id="MAPKK_MAPKK_star" value="0" constant="false"/>
+      <parameter id="MAPKK_star_star" value="0" constant="false"/>
+      <parameter id="MAPK_km10" value="0.046296667"/>
+      <parameter id="MAPK_km11" value="0.046296667"/>
+      <parameter id="MAPK_km12" value="0.066666667"/>
+      <parameter id="MAPK_km13" value="0.066666667"/>
+      <parameter id="MAPK_Vmax10" value="0.15"/>
+      <parameter id="MAPK_Vmax11" value="0.15"/>
+      <parameter id="MAPK_Vmax12" value="1"/>
+      <parameter id="MAPK_Vmax13" value="1"/>
+      <parameter id="MAPK_MAPK" value="0.36" constant="false"/>
+      <parameter id="MAPK_MAPK_tyr" value="0" constant="false"/>
+      <parameter id="MAPK_MKP1" value="0.032"/>
+      <parameter id="t"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="MAPK_star">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> MAPK_MAPK_tyr </ci>
+                <ci> MAPK_Vmax11 </ci>
+                <ci> MAPKK_star_star </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> MAPK_km11 </ci>
+                <ci> MAPK_MAPK_tyr </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> MAPK_star </ci>
+                <ci> MAPK_Vmax13 </ci>
+                <ci> MAPK_MKP1 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> MAPK_km13 </ci>
+                <ci> MAPK_star </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RAF_Raf">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> PKC </ci>
+                </apply>
+                <ci> RAF_Raf </ci>
+                <ci> RAF_Vmax1 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> RAF_km1 </ci>
+                <ci> RAF_Raf </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> RAF_Raf_star </ci>
+                <ci> RAF_PP2A </ci>
+                <ci> RAF_Vmax3 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> RAF_km3 </ci>
+                <ci> RAF_Raf_star </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RAF_Raf_star">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> PKC </ci>
+                    <ci> RAF_Raf </ci>
+                    <ci> RAF_Vmax1 </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> RAF_km1 </ci>
+                    <ci> RAF_Raf </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> RAF_Raf_star </ci>
+                    <ci> RAF_PP2A </ci>
+                    <ci> RAF_Vmax3 </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> RAF_km3 </ci>
+                    <ci> RAF_Raf_star </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> RAF_Raf_star </ci>
+                  <ci> MAPK_star </ci>
+                  <ci> RAF_Vmax2 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> RAF_km2 </ci>
+                  <ci> RAF_Raf_star </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> RAF_Raf_star_star </ci>
+                <ci> RAF_PP2A </ci>
+                <ci> RAF_Vmax4 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> RAF_km4 </ci>
+                <ci> RAF_Raf_star_star </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RAF_Raf_star_star">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> RAF_Raf_star </ci>
+                <ci> MAPK_star </ci>
+                <ci> RAF_Vmax2 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> RAF_km2 </ci>
+                <ci> RAF_Raf_star </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> RAF_Raf_star_star </ci>
+                <ci> RAF_PP2A </ci>
+                <ci> RAF_Vmax4 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> RAF_km4 </ci>
+                <ci> RAF_Raf_star_star </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RAF_GTPRas">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> RAF_GTPRas </ci>
+              </apply>
+              <ci> RAF_Raf_star </ci>
+              <ci> RAF_kf5 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> GTPRasRaf_star </ci>
+              <ci> RAF_kb5 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GTPRasRaf_star">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> RAF_GTPRas </ci>
+              <ci> RAF_Raf_star </ci>
+              <ci> RAF_kf5 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> GTPRasRaf_star </ci>
+              <ci> RAF_kb5 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="MAPKK_MAPKK">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> MAPKK_MAPKK </ci>
+                </apply>
+                <ci> MAPKK_Vmax6 </ci>
+                <ci> GTPRasRaf_star </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> MAPKK_km6 </ci>
+                <ci> MAPKK_MAPKK </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> MAPKK_MAPKK_star </ci>
+                <ci> MAPKK_Vmax8 </ci>
+                <ci> MAPKK_PP2A </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> MAPKK_km8 </ci>
+                <ci> MAPKK_MAPKK_star </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="MAPKK_MAPKK_star">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> MAPKK_MAPKK </ci>
+                    <ci> MAPKK_Vmax6 </ci>
+                    <ci> GTPRasRaf_star </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> MAPKK_km6 </ci>
+                    <ci> MAPKK_MAPKK </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> MAPKK_MAPKK_star </ci>
+                    <ci> MAPKK_Vmax8 </ci>
+                    <ci> MAPKK_PP2A </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> MAPKK_km8 </ci>
+                    <ci> MAPKK_MAPKK_star </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> MAPKK_MAPKK_star </ci>
+                  <ci> MAPKK_Vmax7 </ci>
+                  <ci> GTPRasRaf_star </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> MAPKK_km7 </ci>
+                  <ci> MAPKK_MAPKK_star </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> MAPKK_star_star </ci>
+                <ci> MAPKK_Vmax9 </ci>
+                <ci> MAPKK_PP2A </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> MAPKK_km9 </ci>
+                <ci> MAPKK_star_star </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="MAPKK_star_star">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> MAPKK_MAPKK_star </ci>
+                <ci> MAPKK_Vmax7 </ci>
+                <ci> GTPRasRaf_star </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> MAPKK_km7 </ci>
+                <ci> MAPKK_MAPKK_star </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> MAPKK_star_star </ci>
+                <ci> MAPKK_Vmax9 </ci>
+                <ci> MAPKK_PP2A </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> MAPKK_km9 </ci>
+                <ci> MAPKK_star_star </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="MAPK_MAPK">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> MAPK_MAPK </ci>
+                </apply>
+                <ci> MAPK_Vmax10 </ci>
+                <ci> MAPKK_star_star </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> MAPK_km10 </ci>
+                <ci> MAPK_MAPK </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> MAPK_MAPK_tyr </ci>
+                <ci> MAPK_Vmax12 </ci>
+                <ci> MAPK_MKP1 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> MAPK_km12 </ci>
+                <ci> MAPK_MAPK_tyr </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="MAPK_MAPK_tyr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> MAPK_MAPK </ci>
+                    <ci> MAPK_Vmax10 </ci>
+                    <ci> MAPKK_star_star </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> MAPK_km10 </ci>
+                    <ci> MAPK_MAPK </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> MAPK_MAPK_tyr </ci>
+                    <ci> MAPK_Vmax12 </ci>
+                    <ci> MAPK_MKP1 </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> MAPK_km12 </ci>
+                    <ci> MAPK_MAPK_tyr </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> MAPK_MAPK_tyr </ci>
+                  <ci> MAPK_Vmax11 </ci>
+                  <ci> MAPKK_star_star </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> MAPK_km11 </ci>
+                  <ci> MAPK_MAPK_tyr </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> MAPK_star </ci>
+                <ci> MAPK_Vmax13 </ci>
+                <ci> MAPK_MKP1 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> MAPK_km13 </ci>
+                <ci> MAPK_star </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

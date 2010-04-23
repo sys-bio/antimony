@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="heart_hypertrophy_or_deterioration_CellML1_0_model____main" name="heart_hypertrophy_or_deterioration_CellML1_0_model____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="QAO" value="5.00707"/>
+      <parameter id="PA" value="103.525"/>
+      <parameter id="POT" value="35.1148"/>
+      <parameter id="PPA" value="15.6376"/>
+      <parameter id="heart_hypertrophy_or_deterioration_HSL" value="1"/>
+      <parameter id="heart_hypertrophy_or_deterioration_Z13" value="0.625"/>
+      <parameter id="heart_hypertrophy_or_deterioration_HSR" value="1"/>
+      <parameter id="heart_hypertrophy_or_deterioration_DHDTR" value="0.05"/>
+      <parameter id="heart_hypertrophy_or_deterioration_HPL" value="1.00163" constant="false"/>
+      <parameter id="heart_hypertrophy_or_deterioration_HPR" value="1.00237" constant="false"/>
+      <parameter id="heart_hypertrophy_or_deterioration_HMD" constant="false"/>
+      <parameter id="heart_hypertrophy_or_deterioration_heart_deterioration_HMD1" value="1" constant="false"/>
+      <parameter id="heart_hypertrophy_or_deterioration_heart_deterioration_DHM" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="heart_hypertrophy_or_deterioration_HPL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> PA </ci>
+                    <ci> QAO </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 500 </cn>
+                    <ci> heart_hypertrophy_or_deterioration_HSL </ci>
+                  </apply>
+                </apply>
+                <ci> heart_hypertrophy_or_deterioration_Z13 </ci>
+              </apply>
+              <ci> heart_hypertrophy_or_deterioration_HPL </ci>
+            </apply>
+            <cn type="integer"> 57600 </cn>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="heart_hypertrophy_or_deterioration_HPR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> PPA </ci>
+                    <ci> QAO </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 75 </cn>
+                    <ci> heart_hypertrophy_or_deterioration_HSR </ci>
+                  </apply>
+                </apply>
+                <ci> heart_hypertrophy_or_deterioration_Z13 </ci>
+              </apply>
+              <ci> heart_hypertrophy_or_deterioration_HPR </ci>
+            </apply>
+            <cn type="integer"> 57600 </cn>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="heart_hypertrophy_or_deterioration_HMD"/>
+      <rateRule variable="heart_hypertrophy_or_deterioration_heart_deterioration_HMD1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> heart_hypertrophy_or_deterioration_heart_deterioration_DHM </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="heart_hypertrophy_or_deterioration_heart_deterioration_DHM">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> POT </ci>
+              <cn type="integer"> 10 </cn>
+            </apply>
+            <ci> heart_hypertrophy_or_deterioration_DHDTR </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

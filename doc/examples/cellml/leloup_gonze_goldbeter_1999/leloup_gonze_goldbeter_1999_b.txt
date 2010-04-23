@@ -1,0 +1,53 @@
+//Created by libAntimony v1.3
+model leloup_gonze_goldbeter_1999_version02__environment(time_)
+end
+
+model leloup_gonze_goldbeter_1999_version02__M(M, FN, time_)
+
+  // Rate Rules:
+  M' = vs * (power( KI , n ) / (power( KI , n ) + power( FN , n ))) - vm * ( M / ( Km + M ));
+
+  // Variable initializations:
+  vs = 1.6;
+  vm = 0.505;
+  Km = 0.5;
+  KI = 1.0;
+  n = 4.0;
+end
+
+model leloup_gonze_goldbeter_1999_version02__FC(FC, k1, k2, FN, M, time_)
+
+  // Assignment Rules:
+  Ft := FC + FN;
+
+  // Rate Rules:
+  FC' = ks * M + k2 * FN - ( vd * ( FC / ( Kd + FC )) + k1 * FC );
+
+  // Variable initializations:
+  ks = 0.5;
+  vd = 1.4;
+  Kd = 0.13;
+end
+
+model leloup_gonze_goldbeter_1999_version02__FN(FN, k1, k2, FC, time_)
+
+  // Rate Rules:
+  FN' = k1 * FC - k2 * FN;
+end
+
+model leloup_gonze_goldbeter_1999_version02__parameters(k1, k2)
+
+  // Variable initializations:
+  k1 = 0.5;
+  k2 = 0.6;
+end
+
+model leloup_gonze_goldbeter_1999_version02____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: leloup_gonze_goldbeter_1999_version02__environment(time_);
+  M: leloup_gonze_goldbeter_1999_version02__M(M0, FN0, time_);
+  FC: leloup_gonze_goldbeter_1999_version02__FC(FC0, k1, k2, FN0, M0, time_);
+  FN: leloup_gonze_goldbeter_1999_version02__FN(FN0, k1, k2, FC0, time_);
+  parameters: leloup_gonze_goldbeter_1999_version02__parameters(k1, k2);
+end

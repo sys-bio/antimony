@@ -1,0 +1,21 @@
+//Created by libAntimony v1.3
+model Template_RxR1P1__Template_RxR1P1(concentration, k, J)
+
+  // Assignment Rules:
+  J := k * concentration;
+end
+
+model Bioenvironment_Degradation_TF__Bioenvironment_Degradation_TF(concentration, kDecay, J)
+
+  // Sub-modules, and any changes to those submodules:
+  Template_RxR1P1: Template_RxR1P1__Template_RxR1P1(concentration, kDecay, J);
+
+  // Variable initializations:
+  kDecay = 5.8e-3;
+end
+
+model Bioenvironment_Degradation_TF____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Bioenvironment_Degradation_TF: Bioenvironment_Degradation_TF__Bioenvironment_Degradation_TF(concentration, kDecay, J);
+end

@@ -1,0 +1,60 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    The units of "tau" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+//    The units of "tau" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+
+model jelic_cupic_kolaranic_2005_Fig4__environment(time_, tau, C_0)
+
+  // Assignment Rules:
+  time_ := tau / C_0;
+end
+
+model jelic_cupic_kolaranic_2005_Fig4__a(a, alpha, beta, K, C_1, g, tau)
+
+  // Assignment Rules:
+  A := C_1 * a;
+
+  // Variable initializations:
+  a = 4.39927;
+end
+
+model jelic_cupic_kolaranic_2005_Fig4__g(g, alpha, gamma, L, C_2, a, tau)
+
+  // Assignment Rules:
+  G := C_2 * g;
+
+  // Variable initializations:
+  g = 1.96477;
+end
+
+model jelic_cupic_kolaranic_2005_Fig4__reaction_constants(alpha, beta, gamma, L, K, time_, C_0, C_1, C_2)
+
+  // Assignment Rules:
+  C_0 := k2;
+  C_1 := root(k2 / k4);
+  C_2 := root(k2 / k4);
+
+  // Variable initializations:
+  alpha = 0.008;
+  beta = 1.485;
+  gamma = 11.385;
+  L = 0.1;
+  k2 = 6e-4;
+  k3 = 0.0000048;
+  k6 = 0.000891;
+  k7 = 0.006831;
+  k0 = 8.7831e-11;
+  k4 = 2.1e12;
+  km = 6.9001e-14;
+  K = 30;
+end
+
+model jelic_cupic_kolaranic_2005_Fig4____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: jelic_cupic_kolaranic_2005_Fig4__environment(time_, tau, C_0);
+  a: jelic_cupic_kolaranic_2005_Fig4__a(a0, alpha, beta, K, C_1, g0, tau);
+  g: jelic_cupic_kolaranic_2005_Fig4__g(g0, alpha, gamma, L, C_2, a0, tau);
+  reaction_constants: jelic_cupic_kolaranic_2005_Fig4__reaction_constants(alpha, beta, gamma, L, K, time_, C_0, C_1, C_2);
+end

@@ -1,0 +1,56 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+
+model rattanakul_model_2003__environment(time_)
+end
+
+model rattanakul_model_2003__x(x, a1, k1, b1, y, time_)
+
+  // Variable initializations:
+  x = 2.0;
+end
+
+model rattanakul_model_2003__y(y, epsilon, a2, a3, k2, b2, kc, x, z, time_)
+
+  // Variable initializations:
+  y = 1.0;
+end
+
+model rattanakul_model_2003__z(z, epsilon, delta, a4, a5, k3, b3, x, time_)
+
+  // Variable initializations:
+  z = 0.15;
+end
+
+model rattanakul_model_2003__model_parameters(epsilon, delta, a1, a2, a3, a4, a5, b1, b2, b3, k1, k2, k3, kc)
+
+  // Variable initializations:
+  epsilon = 0.1;
+  delta = 0.9;
+  a1 = 0.05;
+  a2 = 0.009;
+  a3 = 0.675;
+  a4 = 0.01;
+  a5 = 0.005;
+  b1 = 0.1;
+  b2 = 0.3;
+  b3 = 0.01;
+  k1 = 0.1;
+  k2 = 0.5;
+  k3 = 0.025;
+  kc = 0.2;
+end
+
+model rattanakul_model_2003____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: rattanakul_model_2003__environment(time_);
+  x: rattanakul_model_2003__x(x0, a1, k1, b1, y0, time_);
+  y: rattanakul_model_2003__y(y0, epsilon, a2, a3, k2, b2, kc, x0, z0, time_);
+  z: rattanakul_model_2003__z(z0, epsilon, delta, a4, a5, k3, b3, x0, time_);
+  model_parameters: rattanakul_model_2003__model_parameters(epsilon, delta, a1, a2, a3, a4, a5, b1, b2, b3, k1, k2, k3, kc);
+end

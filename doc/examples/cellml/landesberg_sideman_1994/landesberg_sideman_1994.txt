@@ -1,0 +1,164 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "Abar_n * alpha * L_m" to set the assignment rule for A_n:  Loop detected:  A_n's definition (Abar_n * alpha * L_m) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+
+model landesberg_sideman_1994__environment(time_)
+end
+
+model landesberg_sideman_1994__parameters(L_a, L_prime_m, L_b, L_z, L_m, Troponin, k_h, k_minus_h, k_1, k_m, K_1, K_m, f, g_0, g_prime_0, g_1, g_prime_1, k_minus_1, k_minus_m, Ca)
+
+  // Assignment Rules:
+  L_m := L_prime_m - L_b;
+  k_m := k_1;
+  K_1 := k_1 * Ca;
+  K_m := k_m * Ca;
+  g_prime_0 := g_0;
+  g_prime_1 := g_1;
+  k_minus_1 := k_1 / K_max;
+  k_minus_m := k_minus_1;
+
+  // Variable initializations:
+  L_a = 1.15;
+  L_prime_m = 1.5;
+  L_b = 0.1;
+  L_z = 0.1;
+  Troponin = 60;
+  k_h = 1e8;
+  k_minus_h = 0.33;
+  k_1 = 4e7;
+  K_max = 2e6;
+  f = 40;
+  g_0 = 12;
+  g_1 = 15;
+end
+
+model landesberg_sideman_1994__non_overlap(R_n, Rbar_n, A_n, Abar_n, L_m, alpha, k_minus_1, K_1)
+
+  // Assignment Rules:
+  R_n := Rbar_n * alpha * L_m;
+  Rbar_n := A_n * k_minus_1 / (1 + K_1);
+  Abar_n := R_n * K_1 / (1 + k_minus_1);
+end
+
+model landesberg_sideman_1994__single_overlap(R_s, A_s, T_s, U_s, time_, Rbar_d, Abar_d, Tbar_d, Ubar_d, f, g_0, g_1, g_prime_0, g_prime_1, L_m, alpha, V, K_1, K_m, k_minus_1, k_minus_m)
+
+  // Assignment Rules:
+  dRbar_s_dt := -(K_1) * R_s + k_minus_1 * A_s + (g_prime_0 + g_prime_1 * V) * U_s;
+  dAbar_s_dt := K_1 * R_s + (-(f) - k_minus_1) * A_s + (g_0 + g_1 * V) * T_s;
+  dTbar_s_dt := f * A_s + (-(g_0) - g_1 * V - k_minus_m) * T_s + K_m * U_s;
+  dUbar_s_dt := k_minus_m * T_s + (-(K_m) - g_prime_0 - g_prime_1 * V) * U_s;
+
+  // Rate Rules:
+  R_s' = piecewise( dRbar_s_dt * alpha * L_m - Rbar_s * L_m * V , V > 0 , dRbar_s_dt * alpha * L_m + (2 * Rbar_d - Rbar_s) * L_m * abs(V) , V < 0 , dRbar_s_dt * alpha * L_m );
+  Rbar_s' = dRbar_s_dt;
+  A_s' = piecewise( dAbar_s_dt * alpha * L_m - Abar_s * L_m * V , V > 0 , dAbar_s_dt * alpha * L_m + (2 * Abar_d - Abar_s) * L_m * abs(V) , V < 0 , dAbar_s_dt * alpha * L_m );
+  Abar_s' = dAbar_s_dt;
+  T_s' = piecewise( dTbar_s_dt * alpha * L_m - Tbar_s * L_m * V , V > 0 , dTbar_s_dt * alpha * L_m + (2 * Tbar_d - Tbar_s) * L_m * abs(V) , V < 0 , dTbar_s_dt * alpha * L_m );
+  Tbar_s' = dTbar_s_dt;
+  U_s' = piecewise( dUbar_s_dt * alpha * L_m - Ubar_s * L_m * V , V > 0 , dUbar_s_dt * alpha * L_m + (2 * Ubar_d - Ubar_s) * L_m * abs(V) , V < 0 , dUbar_s_dt * alpha * L_m );
+  Ubar_s' = dUbar_s_dt;
+
+  // Variable initializations:
+  R_s = 0;
+  Rbar_s = 0;
+  A_s = 0;
+  Abar_s = 0;
+  T_s = 0;
+  Tbar_s = 0;
+  U_s = 0;
+  Ubar_s = 0;
+end
+
+model landesberg_sideman_1994__double_overlap(R_d, Rbar_d, A_d, Abar_d, T_d, Tbar_d, U_d, Ubar_d, time_, alpha, L_m, V, K_1, K_m, k_minus_1, k_minus_m, f, g_0, g_1, g_prime_0, g_prime_1)
+
+  // Assignment Rules:
+  R_d := Rbar_d * alpha * L_m;
+  A_d := Abar_d * alpha * L_m;
+  T_d := Tbar_d * alpha * L_m;
+  U_d := Ubar_d * alpha * L_m;
+
+  // Rate Rules:
+  Rbar_d' = -(K_1) * R_d + k_minus_1 * A_d + (g_prime_0 + g_prime_1 * V) * U_d;
+  Abar_d' = K_1 * R_d + (-(f) - k_minus_1) * A_d + (g_0 + g_1 * V) * T_d;
+  Tbar_d' = f * A_d + (-(g_0) - g_1 * V - k_minus_m) * T_d + K_m * U_d;
+  Ubar_d' = k_minus_m * T_d + (-(K_m) - g_prime_0 - g_prime_1 * V) * U_d;
+
+  // Variable initializations:
+  Rbar_d = 0;
+  Abar_d = 0;
+  Tbar_d = 0;
+  Ubar_d = 0;
+end
+
+model landesberg_sideman_1994__calcium_flux(Ca, time_)
+
+  // Assignment Rules:
+  I_o := Q_o * Ca;
+  I_s := Q_s * ((1 - exp(-(time_) / tau_SR)) * exp(-(time_) / tau_SF) + I_l) * Ca_0;
+  I_i := Q_i * ((1 - exp(-(time_) / tau_iR)) * exp(-(time_) / tau_iF) + I_l) * Ca_r;
+  I_u := Q_u * Ca / (K_mu + Ca);
+
+  // Rate Rules:
+  Ca' = I_s + I_i - (I_o + I_u);
+
+  // Variable initializations:
+  Ca = 0;
+  Ca_0 = 2000;
+  Q_o = 30;
+  Q_s = 0.3;
+  tau_SR = 0.002;
+  tau_SF = 0.02;
+  Q_i = 0.6;
+  tau_iR = 0.002;
+  tau_iF = 0.1;
+  Q_u = 1000;
+  K_mu = 1;
+  I_l = 0;
+  Ca_r = 0;
+end
+
+model landesberg_sideman_1994__bound_calcium(BCa_L, BCa_h, time_, TRo, Ca, A_s, T_s, A_d, T_d, A_n, k_h, k_minus_h)
+
+  // Assignment Rules:
+  BCa_L := A_s + T_s + A_d + T_d + A_n;
+
+  // Rate Rules:
+  BCa_h' = (2 * TRo - BCa_h) * Ca * k_h - BCa_h * k_minus_h;
+
+  // Variable initializations:
+  BCa_h = 0;
+end
+
+model landesberg_sideman_1994__force_equations(V, V_SL)
+
+  // Assignment Rules:
+  F := F_CE + F_PE;
+  F_CB := F_bar - eta * V;
+  F_CE := (T_s + U_s) * F_CB;
+  F_PE := piecewise( E * (exp(D * (SL / Sp_0 - 1 )) - 1 ) + eta_PE * V_SL , SL >= Sp_0 , -(B) * (1 - SL / Sp_0) + eta_PE * V_SL );
+end
+
+model landesberg_sideman_1994__input(alpha, V)
+
+  // Assignment Rules:
+  V := d_alpha_dt;
+
+  // Variable initializations:
+  alpha = 1;
+  d_alpha_dt = 0;
+end
+
+model landesberg_sideman_1994____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: landesberg_sideman_1994__environment(time_);
+  parameters: landesberg_sideman_1994__parameters(L_a, L_prime_m, L_b, L_z, L_m, TRo, k_h, k_minus_h, k_1, k_m, K_1, K_m, f, g_0, g_prime_0, g_1, g_prime_1, k_minus_1, k_minus_m, Ca);
+  non_overlap: landesberg_sideman_1994__non_overlap(R_n, Rbar_n, A_n, Abar_n, L_m, alpha, k_minus_1, K_1);
+  single_overlap: landesberg_sideman_1994__single_overlap(R_s, A_s, T_s, U_s, time_, Rbar_d, Abar_d, Tbar_d, Ubar_d, f, g_0, g_1, g_prime_0, g_prime_1, L_m, alpha, V, K_1, K_m, k_minus_1, k_minus_m);
+  double_overlap: landesberg_sideman_1994__double_overlap(R_d, Rbar_d, A_d, Abar_d, T_d, Tbar_d, U_d, Ubar_d, time_, alpha, L_m, V, K_1, K_m, k_minus_1, k_minus_m, f, g_0, g_1, g_prime_0, g_prime_1);
+  calcium_flux: landesberg_sideman_1994__calcium_flux(Ca, time_);
+  bound_calcium: landesberg_sideman_1994__bound_calcium(BCa_L, BCa_h, time_, TRo, Ca, A_s, T_s, A_d, T_d, A_n, k_h, k_minus_h);
+  force_equations: landesberg_sideman_1994__force_equations(V, V);
+  input: landesberg_sideman_1994__input(alpha, V);
+end

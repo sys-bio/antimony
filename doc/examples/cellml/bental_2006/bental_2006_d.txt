@@ -1,0 +1,58 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "delta_PL" to set the rate rule for PL:  The variable 'PL' is associated with an assignment rule, and may not additionally have a rate rule.
+//    The units of "po" ('mmHg') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+
+model bental_D_2005__environment(time_)
+end
+
+model bental_D_2005__equations(time_)
+
+  // Assignment Rules:
+  QA := q + Dc * ( pc - pac ) + Do * ( po - pao );
+  PL := Pm - ( R * omega * ( VT / 2.0 ) * sin( time_ * omega ) + E * ( 2.5 - VT / 2.0 * cos( time_ * omega )));
+  foi := piecewise( fo , VT < VD , ( fo * VD + fom * ( VT - VD )) / VT );
+  fci := piecewise( fc , VT < VD , ( fc * VD + fcm * ( VT - VD )) / VT );
+  omega := 2.0 * 3.141 / 5.0;
+
+  // Rate Rules:
+  PA' = Pm * E / PA * QA + delta_PL;
+  pc' = Dc / ( sigma_c * Vc ) * ( pac - pc ) + delta * l2 / sigma_c * h * z - delta * r2 * pc;
+  po' = Do / ( sigma * Vc * power( 2.0 + 4.0 * Th / sigma * df_dpo , 1.0 ) * -(( fo * ( PA - pw ) * po )));
+  fo' = 1.0 / VA * ( Do * ( po - pao ) + qi * ( foi - fo ) - fo * ( Dc * ( pc - pac ) + Do * ( po - pao )));
+  fc' = 1.0 / VA * ( Dc * ( pc - pac ) + qi * ( fci - fc ) - fc * ( Do * ( po - pao ) + Dc * ( pc - pac )));
+  z' = delta * r2 * sigma_c * pc - delta * l2 * h * z;
+
+  // Variable initializations:
+  PA = 760.0;
+  Pm = 760.0;
+  R = 1.0;
+  E = 2.5;
+  Do = 1.56E-5;
+  Dc = 7.08E-4;
+  pc = 46.0;
+  pao = 104.0;
+  po = 40.0;
+  pac = 37.5;
+  q = 0.0;
+  fo = 0.1368;
+  fom = 0.21;
+  fcm = 0.0;
+  VD = 0.15;
+  VT = 0.4;
+  fc = 0.05263;
+  sigma = 1.4E-6;
+  sigma_c = 3.3E-5;
+  l2 = 164E3;
+  r2 = 0.12;
+  Th = 2.0E-3;
+  Vc = 0.07;
+end
+
+model bental_D_2005____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: bental_D_2005__environment(time_);
+  equations: bental_D_2005__equations(time_);
+end

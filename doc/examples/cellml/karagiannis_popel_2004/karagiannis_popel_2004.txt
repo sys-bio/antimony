@@ -1,0 +1,75 @@
+//Created by libAntimony v1.3
+model karagiannis_model_2004__environment(time_)
+end
+
+model karagiannis_model_2004__main(time_, kshed_eff, kon_MT1T2, ki_MT1T2, kon_MT1T2M2P, koff_MT1T2M2P, kact_eff_m2, kon_M2T2, ki_M2T2, kiso_M2T2, k_iso_M2T2, kon_M2C1, koff_M2C1, kcat_M2C1, kcat_MT1C1, km_MT1C1)
+
+  // Assignment Rules:
+  v1 := kshed_eff * MT1 * MT1;
+  v2 := kon_MT1T2 * MT1 * T2 - ki_MT1T2 * kon_MT1T2 * MT1T2;
+  v3 := kon_MT1T2M2P * MT1T2 * M2P - koff_MT1T2M2P * MT1T2M2P;
+  v4 := kact_eff_m2 * MT1 * MT1T2M2P;
+  v5 := kon_M2T2 * M2 * T2 - kon_M2T2 * ki_M2T2 * M2T2;
+  v6 := kiso_M2T2 * M2T2 - k_iso_M2T2 * M2T2star;
+  v7 := kon_M2C1 * M2 * C1 - koff_M2C1 * M2C1;
+  v8 := kcat_M2C1 * M2C1;
+  v9 := kcat_MT1C1 / km_MT1C1 * MT1 * C1;
+
+  // Rate Rules:
+  MT1' = -(v1) - v2;
+  MT1cat' = v1;
+  MT1T2' = v2 - v3;
+  MT1T2M2P' = v3 - v4;
+  M2P' = -(v3);
+  M2' = v4 - v5 - v7;
+  M2T2' = v5 - v6;
+  M2T2star' = v6;
+  M2C1' = v7 - v8;
+  C1' = -(v7) - v9;
+  C1dmt1' = v9;
+  C1dm2' = v8;
+  T2' = -(v2) - v5;
+
+  // Variable initializations:
+  MT1 = 100e-9;
+  MT1cat = 0;
+  MT1T2 = 0;
+  MT1T2M2P = 0;
+  M2P = 50e-9;
+  M2 = 0;
+  M2T2 = 0;
+  M2T2star = 0;
+  M2C1 = 0;
+  C1 = 1e-6;
+  C1dmt1 = 0;
+  C1dm2 = 0;
+  T2 = 50e-9;
+end
+
+model karagiannis_model_2004__model_parameters(kshed_eff, kon_MT1T2, ki_MT1T2, kon_MT1T2M2P, koff_MT1T2M2P, kact_eff_m2, kon_M2T2, ki_M2T2, kiso_M2T2, k_iso_M2T2, kon_M2C1, koff_M2C1, kcat_M2C1, kcat_MT1C1, km_MT1C1)
+
+  // Variable initializations:
+  kshed_eff = 2.8e3;
+  kon_MT1T2 = 3.54e6;
+  ki_MT1T2 = 4.9e-9;
+  kon_MT1T2M2P = 0.14e6;
+  koff_MT1T2M2P = 4.7e-3;
+  kact_eff_m2 = 2.8e3;
+  kon_M2T2 = 5.9e6;
+  ki_M2T2 = 1.07e-6;
+  kiso_M2T2 = 33;
+  k_iso_M2T2 = 2e-8;
+  kon_M2C1 = 2.6e3;
+  koff_M2C1 = 2.1e-3;
+  kcat_M2C1 = 4.5e-3;
+  kcat_MT1C1 = 1.97e-3;
+  km_MT1C1 = 2.9e-6;
+end
+
+model karagiannis_model_2004____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: karagiannis_model_2004__environment(time_);
+  main: karagiannis_model_2004__main(time_, kshed_eff, kon_MT1T2, ki_MT1T2, kon_MT1T2M2P, koff_MT1T2M2P, kact_eff_m2, kon_M2T2, ki_M2T2, kiso_M2T2, k_iso_M2T2, kon_M2C1, koff_M2C1, kcat_M2C1, kcat_MT1C1, km_MT1C1);
+  model_parameters: karagiannis_model_2004__model_parameters(kshed_eff, kon_MT1T2, ki_MT1T2, kon_MT1T2M2P, koff_MT1T2M2P, kact_eff_m2, kon_M2T2, ki_M2T2, kiso_M2T2, k_iso_M2T2, kon_M2C1, koff_M2C1, kcat_M2C1, kcat_MT1C1, km_MT1C1);
+end

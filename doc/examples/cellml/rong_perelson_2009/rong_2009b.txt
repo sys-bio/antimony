@@ -1,0 +1,83 @@
+//Created by libAntimony v1.3
+model rong_2009b__environment(time_)
+end
+
+model rong_2009b__uninfected(time_, efficacy, k, V, T)
+
+  // Rate Rules:
+  T' = lambda_ - d_T * T - (1 - efficacy) * k * V * T;
+
+  // Variable initializations:
+  lambda_ = 1E4;
+  d_T = 0.01;
+  k = 2.4E-8;
+  T = 600000;
+end
+
+model rong_2009b__latently_infected(time_, eta, efficacy, k, V, T, f, a, rho, L_a, L_0)
+
+  // Rate Rules:
+  L_0' = eta * (1 - efficacy) * k * V * T - d_0 * L_0 - f * a * L_0 + (1 - f) * rho * L_a;
+
+  // Variable initializations:
+  eta = 0.001;
+  d_0 = 0.001;
+  a = 0.03;
+  rho = 0.01;
+  L_0 = 2;
+end
+
+model rong_2009b__activated(time_, a, L_0, rho, a_L, f, L_a)
+
+  // Assignment Rules:
+  f := piecewise( 0 , T_off < time_ , 0 , time_ < T_on , 1 );
+
+  // Rate Rules:
+  L_a' = f * (a * L_0 + p * L_a) - (1 - f) * (a + rho) * L_a - a_L * L_a;
+
+  // Variable initializations:
+  p = 1.4;
+  a_L = 0.1;
+  T_off = 54;
+  T_on = 50;
+  L_a = 0;
+end
+
+model rong_2009b__productively_infected(time_, eta, efficacy, k, V, T, a_L, L_a, T_star)
+
+  // Rate Rules:
+  T_star' = (1 - eta) * (1 - efficacy) * k * V * T - 1 * delta * T_star * T_star + a_L * L_a;
+
+  // Variable initializations:
+  delta = 1;
+  T_star = 0.3;
+end
+
+model rong_2009b__viral_load(time_, T_star, V)
+
+  // Rate Rules:
+  V' = p_v * T_star - c * V;
+
+  // Variable initializations:
+  p_v = 2000;
+  c = 23;
+  V = 50;
+end
+
+model rong_2009b__drug_efficacy(efficacy)
+
+  // Variable initializations:
+  efficacy = 0.85;
+end
+
+model rong_2009b____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: rong_2009b__environment(time_);
+  uninfected: rong_2009b__uninfected(time_, efficacy, k, V, T);
+  latently_infected: rong_2009b__latently_infected(time_, eta, efficacy, k, V, T, f, a, rho, L_a, L_0);
+  activated: rong_2009b__activated(time_, a, L_0, rho, a_L, f, L_a);
+  productively_infected: rong_2009b__productively_infected(time_, eta, efficacy, k, V, T, a_L, L_a, T_star);
+  viral_load: rong_2009b__viral_load(time_, T_star, V);
+  drug_efficacy: rong_2009b__drug_efficacy(efficacy);
+end

@@ -1,0 +1,128 @@
+//Created by libAntimony v1.3
+model leloup_1998b__environment(time_)
+end
+
+model leloup_1998b__nucleus(time_, k_d, k_1, k_2, C, M_P, M_T, C_N)
+
+  // Rate Rules:
+  M_P' = v_sP * (power(K_IP, n) / (power(K_IP, n) + power(C_N, n))) - v_mP * (M_P / (K_mP + M_P)) - k_d * M_P;
+  M_T' = v_sT * (power(K_IT, n) / (power(K_IT, n) + power(C_N, n))) - v_mT * (M_T / (K_mT + M_T)) - k_d * M_T;
+  C_N' = k_1 * C - k_2 * C_N - k_dN * C_N;
+
+  // Variable initializations:
+  v_sP = 0.8;
+  v_mP = 0.8;
+  K_IP = 1;
+  K_mP = 0.2;
+  v_sT = 1;
+  v_mT = 0.7;
+  K_IT = 1;
+  K_mT = 0.2;
+  n = 4;
+  k_dN = 0.01;
+  M_P = 0.09107;
+  M_T = 1.427;
+  C_N = 1.203;
+end
+
+model leloup_1998b__PER(time_, k_d, k_3, k_4, M_P, T_2, C, P_0, P_1, P_2)
+
+  // Rate Rules:
+  P_0' = k_sP * M_P - V_1P * (P_0 / (K_1P + P_0)) + V_2P * (P_1 / (K_2P + P_1)) - k_d * P_0;
+  P_1' = V_1P * (P_0 / (K_1P + P_0)) - V_2P * (P_1 / (K_2P + P_1)) - V_3P * (P_1 / (K_3P + P_1)) + V_4P * (P_2 / (K_4P + P_2)) - k_d * P_1;
+  P_2' = V_3P * (P_1 / (K_3P + P_1)) - V_4P * (P_2 / (K_4P + P_2)) - k_3 * P_2 * T_2 + k_4 * C - v_dP * (P_2 / (K_dP + P_2)) - k_d * P_2;
+
+  // Variable initializations:
+  V_1P = 8;
+  V_2P = 1;
+  V_3P = 8;
+  V_4P = 1;
+  K_1P = 2;
+  K_2P = 2;
+  K_3P = 2;
+  K_4P = 2;
+  K_dP = 0.2;
+  v_dP = 2;
+  k_sP = 0.9;
+  P_0 = 0.02324;
+  P_1 = 0.02210;
+  P_2 = 0.01251;
+end
+
+model leloup_1998b__LD_cycle(time_, v_dT)
+
+  // Assignment Rules:
+  v_dT := piecewise( v_dT_dark , sin(PI_ * time_ / 12 ) <= 0 , v_dT_light );
+
+  // Variable initializations:
+  PI_ = 3.141592653589793;
+  v_dT_dark = 2;
+  v_dT_light = 4;
+end
+
+model leloup_1998b__TIM(time_, v_dT, k_d, k_3, k_4, M_T, P_2, C, T_0, T_1, T_2)
+
+  // Sub-modules, and any changes to those submodules:
+  LD_cycle: leloup_1998b__LD_cycle(time_, v_dT);
+
+  // Rate Rules:
+  T_0' = k_sT * M_T - V_1T * (T_0 / (K_1T + T_0)) + V_2T * (T_1 / (K_2T + T_1)) - k_d * T_0;
+  T_1' = V_1T * (T_0 / (K_1T + T_0)) - V_2T * (T_1 / (K_2T + T_1)) - V_3T * (T_1 / (K_3T + T_1)) + V_4T * (T_2 / (K_4T + T_2)) - k_d * T_1;
+  T_2' = V_3T * (T_1 / (K_3T + T_1)) - V_4T * (T_2 / (K_4T + T_2)) - k_3 * P_2 * T_2 + k_4 * C - v_dT * (T_2 / (K_dT + T_2)) - k_d * T_2;
+
+  // Variable initializations:
+  V_1T = 8;
+  V_2T = 1;
+  V_3T = 8;
+  V_4T = 1;
+  K_1T = 2;
+  K_2T = 2;
+  K_3T = 2;
+  K_4T = 2;
+  K_dT = 0.2;
+  k_sT = 0.9;
+  T_0 = 0.5420;
+  T_1 = 0.8000;
+  T_2 = 4.733;
+end
+
+model leloup_1998b__cytosol(time_, k_1, k_2, k_3, k_4, k_d, P_0, P_1, P_2, T_0, T_1, T_2, M_P, M_T, C_N, C)
+
+  // Sub-modules, and any changes to those submodules:
+  PER: leloup_1998b__PER(time_, k_d, k_3, k_4, M_P, T_2, C, P_0, P_1, P_2);
+  TIM: leloup_1998b__TIM(time_, v_dT, k_d, k_3, k_4, M_T, P_2, C, T_0, T_1, T_2);
+
+  // Rate Rules:
+  C' = k_3 * P_2 * T_2 - k_4 * C - k_1 * C + k_2 * C_N - k_dC * C;
+
+  // Variable initializations:
+  k_1 = 1.2;
+  k_2 = 0.2;
+  k_3 = 1.2;
+  k_4 = 0.6;
+  k_d = 0.01;
+  k_dC = 0.01;
+  C = 0.1790;
+end
+
+model leloup_1998b__PER_total(P_0, P_1, P_2, C, C_N)
+
+  // Assignment Rules:
+  P_t := P_0 + P_1 + P_2 + C + C_N;
+end
+
+model leloup_1998b__TIM_total(T_0, T_1, T_2, C, C_N)
+
+  // Assignment Rules:
+  T_t := T_0 + T_1 + T_2 + C + C_N;
+end
+
+model leloup_1998b____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: leloup_1998b__environment(time_);
+  nucleus: leloup_1998b__nucleus(time_, k_d, k_1, k_2, C, M_P, M_T, C_N);
+  cytosol: leloup_1998b__cytosol(time_, k_1, k_2, k_3, k_4, k_d, P_0, P_1, P_2, T_0, T_1, T_2, M_P, M_T, C_N, C);
+  PER_total: leloup_1998b__PER_total(P_0, P_1, P_2, C, C_N);
+  TIM_total: leloup_1998b__TIM_total(T_0, T_1, T_2, C, C_N);
+end

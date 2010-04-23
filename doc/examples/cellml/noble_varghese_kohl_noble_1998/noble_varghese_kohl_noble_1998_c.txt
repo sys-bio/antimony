@@ -1,0 +1,589 @@
+//Created by libAntimony v1.3
+model noble_varghese_kohl_noble_1998_stretch__environment(time_)
+end
+
+model noble_varghese_kohl_noble_1998_stretch__membrane(V, R, T, F, time_, i_K1, i_to, i_Kr, i_Ks, i_K_ATP, i_K_ACh, i_Ca_L_K_cyt, i_Ca_L_K_ds, i_NaK, i_Na, i_b_Na, i_p_Na, i_Ca_L_Na_cyt, i_Ca_L_Na_ds, i_NaCa_cyt, i_NaCa_ds, i_Ca_L_Ca_cyt, i_Ca_L_Ca_ds, i_b_Ca, i_stretch)
+
+  // Assignment Rules:
+  i_Stim := piecewise( stim_amplitude , (( time_ >= stim_start) && (time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration )), 0 );
+
+  // Rate Rules:
+  V' = -(1 ) / Cm * (i_Stim + i_K1 + i_to + i_Kr + i_Ks + i_K_ATP + i_K_ACh + i_NaK + i_Na + i_b_Na + i_p_Na + i_Ca_L_Na_cyt + i_Ca_L_Na_ds + i_NaCa_cyt + i_NaCa_ds + i_Ca_L_Ca_cyt + i_Ca_L_Ca_ds + i_Ca_L_K_cyt + i_Ca_L_K_ds + i_b_Ca + i_stretch);
+
+  // Variable initializations:
+  V = -92.849333;
+  R = 8314.472;
+  T = 310;
+  F = 96485.3415;
+  Cm = 9.5e-5;
+  stim_start = 0.1;
+  stim_end = 10000;
+  stim_period = 1;
+  stim_duration = 0.003;
+  stim_amplitude = -3;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__reversal_potentials(E_Na, E_K, E_Ks, E_Ca, E_mh, K_o, Na_o, K_i, Na_i, Ca_o, Ca_i, R, F, T, time_)
+
+  // Assignment Rules:
+  E_Na := R * T / F * ln(Na_o / Na_i);
+  E_K := R * T / F * ln(K_o / K_i);
+  E_Ks := R * T / F * ln((K_o + P_kna * Na_o) / (K_i + P_kna * Na_i));
+  E_Ca := 0.5 * R * T / F * ln(Ca_o / Ca_i);
+  E_mh := R * T / F * ln((Na_o + 0.12 * K_o) / (Na_i + 0.12 * K_i));
+
+  // Variable initializations:
+  P_kna = 0.03;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__time_independent_potassium_current(i_K1, K_mk1, K_o, V, E_K, R, F, T, time_)
+
+  // Assignment Rules:
+  i_K1 := g_K1 * K_o / (K_o + K_mk1) * (V - E_K) / (1 + exp((V - E_K - 10 ) * F * 1.25 / (R * T)));
+
+  // Variable initializations:
+  K_mk1 = 10;
+  g_K1 = 0.5;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__rapid_delayed_rectifier_potassium_current_xr1_gate(xr1, V, time_)
+
+  // Assignment Rules:
+  alpha_xr1 := 50 / (1 + exp(-((V - 5 )) / 9 ));
+  beta_xr1 := 0.05 * exp(-((V - 20 )) / 15 );
+
+  // Rate Rules:
+  xr1' = alpha_xr1 * (1 - xr1) - beta_xr1 * xr1;
+
+  // Variable initializations:
+  xr1 = 1.03e-5;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__rapid_delayed_rectifier_potassium_current_xr2_gate(xr2, V, time_)
+
+  // Assignment Rules:
+  alpha_xr2 := 50 / (1 + exp(-((V - 5 )) / 9 ));
+  beta_xr2 := 0.4 * exp(-(power((V + 30 ) / 30 , 3 )));
+
+  // Rate Rules:
+  xr2' = alpha_xr2 * (1 - xr2) - beta_xr2 * xr2;
+
+  // Variable initializations:
+  xr2 = 2e-7;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__rapid_delayed_rectifier_potassium_current(i_Kr, E_K, time_, V, xr1, xr2)
+
+  // Sub-modules, and any changes to those submodules:
+  rapid_delayed_rectifier_potassium_current_xr1_gate: noble_varghese_kohl_noble_1998_stretch__rapid_delayed_rectifier_potassium_current_xr1_gate(xr1, V, time_);
+  rapid_delayed_rectifier_potassium_current_xr2_gate: noble_varghese_kohl_noble_1998_stretch__rapid_delayed_rectifier_potassium_current_xr2_gate(xr2, V, time_);
+
+  // Assignment Rules:
+  i_Kr := (g_Kr1 * xr1 + g_Kr2 * xr2) * 1 / (1 + exp((V + 9 ) / 22.4 )) * (V - E_K);
+
+  // Variable initializations:
+  g_Kr1 = 0.0021;
+  g_Kr2 = 0.0013;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__slow_delayed_rectifier_potassium_current_xs_gate(xs, V, time_)
+
+  // Assignment Rules:
+  alpha_xs := 14 / (1 + exp(-((V - 40 )) / 9 ));
+  beta_xs := 1 * exp(-(V) / 45 );
+
+  // Rate Rules:
+  xs' = alpha_xs * (1 - xs) - beta_xs * xs;
+
+  // Variable initializations:
+  xs = 0.001302;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__slow_delayed_rectifier_potassium_current(i_Ks, E_Ks, time_, V, xs)
+
+  // Sub-modules, and any changes to those submodules:
+  slow_delayed_rectifier_potassium_current_xs_gate: noble_varghese_kohl_noble_1998_stretch__slow_delayed_rectifier_potassium_current_xs_gate(xs, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks * power(xs, 2 ) * (V - E_Ks);
+
+  // Variable initializations:
+  g_Ks = 0.0026;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__ATP_dependent_potassium_current(i_K_ATP, V, time_)
+
+  // Assignment Rules:
+  i_K_ATP := g_K_ATP * (V + 80 ) / (1 + power(ATP / K_ATP, 2 ));
+
+  // Variable initializations:
+  g_K_ATP = 0;
+  K_ATP = 0.1;
+  ATP = 0;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__sodium_activated_potassium_current(i_KNa, Na_i, E_K, V, time_)
+
+  // Assignment Rules:
+  i_KNa := g_K_Na * Na_i / (Na_i + K_kna) * (V - E_K);
+
+  // Variable initializations:
+  g_K_Na = 0;
+  K_kna = 20;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__fast_sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := piecewise( 2000 , abs(E0_m) < delta_m , 200 * E0_m / (1 - exp(-(0.1 ) * E0_m)) );
+  beta_m := 8000 * exp(-(0.056 ) * (V + 66 ));
+  E0_m := V + 41;
+
+  // Rate Rules:
+  m' = alpha_m * (1 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.0016203;
+  delta_m = 1e-5;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__fast_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := 20 * exp(-(0.125 ) * (V + 75 ));
+  beta_h := 2000 / (1 + 320 * exp(-(0.1 ) * (V + 75 )));
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.9944036;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__fast_sodium_current(i_Na, E_mh, time_, V, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: noble_varghese_kohl_noble_1998_stretch__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: noble_varghese_kohl_noble_1998_stretch__fast_sodium_current_h_gate(h, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * (V - E_mh);
+
+  // Variable initializations:
+  g_Na = 2.5;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__persistent_sodium_current(i_p_Na, E_Na, time_, V)
+
+  // Assignment Rules:
+  i_p_Na := g_pna * 1 / (1 + exp(-((V + 52 )) / 8 )) * (V - E_Na);
+
+  // Variable initializations:
+  g_pna = 0.004;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__sodium_background_current(i_b_Na, Na_i, E_Na, time_, V)
+
+  // Assignment Rules:
+  i_b_Na := g_bna * (V - E_Na);
+
+  // Variable initializations:
+  g_bna = 0.0006;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__L_type_Ca_channel_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  alpha_d := piecewise( 120 , abs(E0_d) < 0.0001 , 30 * E0_d / (1 - exp(-(E0_d) / 4 )) );
+  beta_d := piecewise( 120 , abs(E0_d) < 0.0001 , 12 * E0_d / (exp(E0_d / 10 ) - 1 ) );
+  E0_d := V + 24 - 5;
+
+  // Rate Rules:
+  d' = speed_d * (alpha_d * (1 - d) - beta_d * d);
+
+  // Variable initializations:
+  d = 0;
+  speed_d = 3;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__L_type_Ca_channel_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  alpha_f := piecewise( 25 , abs(E0_f) < delta_f , 6.25 * E0_f / (exp(E0_f / 4 ) - 1 ) );
+  beta_f := 12 / (1 + exp(-(1 ) * (V + 34 ) / 4 ));
+  E0_f := V + 34;
+
+  // Rate Rules:
+  f' = speed_f * (alpha_f * (1 - f) - beta_f * f);
+
+  // Variable initializations:
+  f = 1;
+  speed_f = 0.3;
+  delta_f = 0.0001;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__L_type_Ca_channel_f2_gate(f2, Km_f2, Ca_i, V, time_)
+
+  // Rate Rules:
+  f2' = 1 - 1 * (Ca_i / (Km_f2 + Ca_i) + f2);
+
+  // Variable initializations:
+  f2 = 0.9349197;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__L_type_Ca_channel_f2ds_gate(f2ds, Km_f2ds, R_decay, Ca_ds, V, time_)
+
+  // Rate Rules:
+  f2ds' = R_decay * (1 - (Ca_ds / (Km_f2ds + Ca_ds) + f2ds));
+
+  // Variable initializations:
+  f2ds = 0.9651958;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__L_type_Ca_channel(i_Ca_L_Ca_cyt, i_Ca_L_K_cyt, i_Ca_L_Na_cyt, i_Ca_L_Ca_ds, i_Ca_L_K_ds, i_Ca_L_Na_ds, i_Ca_L, Ca_o, Ca_i, Ca_ds, K_o, K_i, Na_o, Na_i, R, F, T, time_, V, d, f, f2, f2ds, Km_f2, Km_f2ds, R_decay)
+
+  // Sub-modules, and any changes to those submodules:
+  L_type_Ca_channel_d_gate: noble_varghese_kohl_noble_1998_stretch__L_type_Ca_channel_d_gate(d, V, time_);
+  L_type_Ca_channel_f_gate: noble_varghese_kohl_noble_1998_stretch__L_type_Ca_channel_f_gate(f, V, time_);
+  L_type_Ca_channel_f2_gate: noble_varghese_kohl_noble_1998_stretch__L_type_Ca_channel_f2_gate(f2, Km_f2, Ca_i, V, time_);
+  L_type_Ca_channel_f2ds_gate: noble_varghese_kohl_noble_1998_stretch__L_type_Ca_channel_f2ds_gate(f2ds, Km_f2ds, R_decay, Ca_ds, V, time_);
+
+  // Assignment Rules:
+  i_Ca_L_Ca_cyt := (1 - FrICa) * 4 * P_Ca_L * d * f * f2 * (V - 50 ) * F / (R * T) / (1 - exp(-((V - 50 )) * F * 2 / (R * T))) * (Ca_i * exp(100 * F / (R * T)) - Ca_o * exp(-((V - 50 )) * F * 2 / (R * T)));
+  i_Ca_L_K_cyt := (1 - FrICa) * P_CaK * P_Ca_L * d * f * f2 * (V - 50 ) * F / (R * T) / (1 - exp(-((V - 50 )) * F / (R * T))) * (K_i * exp(50 * F / (R * T)) - K_o * exp(-((V - 50 )) * F / (R * T)));
+  i_Ca_L_Na_cyt := (1 - FrICa) * P_CaNa * P_Ca_L * d * f * f2 * (V - 50 ) * F / (R * T) / (1 - exp(-((V - 50 )) * F / (R * T))) * (Na_i * exp(50 * F / (R * T)) - Na_o * exp(-((V - 50 )) * F / (R * T)));
+  i_Ca_L_Ca_ds := FrICa * 4 * P_Ca_L * d * f * f2ds * (V - 50 ) * F / (R * T) / (1 - exp(-((V - 50 )) * F * 2 / (R * T))) * (Ca_i * exp(100 * F / (R * T)) - Ca_o * exp(-((V - 50 )) * F * 2 / (R * T)));
+  i_Ca_L_K_ds := FrICa * P_CaK * P_Ca_L * d * f * f2ds * (V - 50 ) * F / (R * T) / (1 - exp(-((V - 50 )) * F / (R * T))) * (K_i * exp(50 * F / (R * T)) - K_o * exp(-((V - 50 )) * F / (R * T)));
+  i_Ca_L_Na_ds := FrICa * P_CaNa * P_Ca_L * d * f * f2ds * (V - 50 ) * F / (R * T) / (1 - exp(-((V - 50 )) * F / (R * T))) * (Na_i * exp(50 * F / (R * T)) - Na_o * exp(-((V - 50 )) * F / (R * T)));
+  i_Ca_L := i_Ca_L_Ca_cyt + i_Ca_L_K_cyt + i_Ca_L_Na_cyt + i_Ca_L_Ca_ds + i_Ca_L_K_ds + i_Ca_L_Na_ds;
+
+  // Variable initializations:
+  P_Ca_L = 0.1;
+  P_CaK = 0.002;
+  P_CaNa = 0.01;
+  Km_f2 = 100000;
+  Km_f2ds = 0.001;
+  R_decay = 20;
+  FrICa = 1;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__calcium_background_current(i_b_Ca, E_Ca, time_, V)
+
+  // Assignment Rules:
+  i_b_Ca := g_bca * (V - E_Ca);
+
+  // Variable initializations:
+  g_bca = 0.00025;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__transient_outward_current_s_gate(s, V, time_)
+
+  // Assignment Rules:
+  alpha_s := 0.033 * exp(-(V) / 17 );
+  beta_s := 33 / (1 + exp(-(0.125 ) * (V + 10 )));
+
+  // Rate Rules:
+  s' = alpha_s * (1 - s) - beta_s * s;
+
+  // Variable initializations:
+  s = 0.9948645;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__transient_outward_current_r_gate(r, V, time_)
+
+  // Rate Rules:
+  r' = 333 * (1 / (1 + exp(-((V + 4 )) / 5 )) - r);
+
+  // Variable initializations:
+  r = 0;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__transient_outward_current(i_to, E_K, V, time_, s, r)
+
+  // Sub-modules, and any changes to those submodules:
+  transient_outward_current_s_gate: noble_varghese_kohl_noble_1998_stretch__transient_outward_current_s_gate(s, V, time_);
+  transient_outward_current_r_gate: noble_varghese_kohl_noble_1998_stretch__transient_outward_current_r_gate(r, V, time_);
+
+  // Assignment Rules:
+  i_to := g_to * (g_tos + s * (1 - g_tos)) * r * (V - E_K);
+
+  // Variable initializations:
+  g_to = 0.005;
+  g_tos = 0;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__ACh_dependent_potassium_current_xACh_gate(x_ACh, time_)
+
+  // Rate Rules:
+  x_ACh' = alpha_ACh * (1 - x_ACh) - beta_ACh * x_ACh;
+
+  // Variable initializations:
+  x_ACh = 0;
+  alpha_ACh = 0.5;
+  beta_ACh = 0.5;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__ACh_dependent_potassium_current(i_K_ACh, E_K, K_o, K_mk1, R, F, T, V, time_, x_ACh)
+
+  // Sub-modules, and any changes to those submodules:
+  ACh_dependent_potassium_current_xACh_gate: noble_varghese_kohl_noble_1998_stretch__ACh_dependent_potassium_current_xACh_gate(x_ACh, time_);
+
+  // Assignment Rules:
+  i_K_ACh := g_KACh * (K_o / (K_o + K_mk1)) * x_ACh * (1 / (1 + power(K_D / ACh, 2 ))) * (V - E_K) / (1 + exp(2 * F * (V - (E_K + 10 )) / (R * T)));
+
+  // Variable initializations:
+  g_KACh = 0;
+  ACh = 5;
+  K_D = 0.00013;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__sodium_potassium_pump(i_NaK, K_o, Na_i, time_)
+
+  // Assignment Rules:
+  i_NaK := i_NaK_max * K_o / (K_mK + K_o) * Na_i / (K_mNa + Na_i);
+
+  // Variable initializations:
+  i_NaK_max = 0.7;
+  K_mK = 1;
+  K_mNa = 40;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__sodium_calcium_exchanger(i_NaCa, i_NaCa_cyt, i_NaCa_ds, Na_i, Na_o, Ca_i, Ca_ds, Ca_o, R, F, T, V, time_)
+
+  // Assignment Rules:
+  i_NaCa := i_NaCa_cyt + i_NaCa_ds;
+  i_NaCa_cyt := (1 - FRiNaCa) * k_NaCa * (exp(gamma * (n_NaCa - 2 ) * V * F / (R * T)) * power(Na_i, n_NaCa) * Ca_o - exp((gamma - 1 ) * (n_NaCa - 2 ) * V * F / (R * T)) * power(Na_o, n_NaCa) * Ca_i) / ((1 + d_NaCa * (Ca_i * power(Na_o, n_NaCa) + Ca_o * power(Na_i, n_NaCa))) * (1 + Ca_i / 0.0069 ));
+  i_NaCa_ds := FRiNaCa * k_NaCa * (exp(gamma * (n_NaCa - 2 ) * V * F / (R * T)) * power(Na_i, n_NaCa) * Ca_o - exp((gamma - 1 ) * (n_NaCa - 2 ) * V * F / (R * T)) * power(Na_o, n_NaCa) * Ca_ds) / ((1 + d_NaCa * (Ca_ds * power(Na_o, n_NaCa) + Ca_o * power(Na_i, n_NaCa))) * (1 + Ca_ds / 0.0069 ));
+
+  // Variable initializations:
+  k_NaCa = 0.0005;
+  n_NaCa = 3;
+  d_NaCa = 0;
+  gamma = 0.5;
+  FRiNaCa = 0.001;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__sarcoplasmic_reticulum_calcium_pump(i_up, Ca_i, Ca_up, time_)
+
+  // Assignment Rules:
+  i_up := Ca_i / K_2 * alpha_up - Ca_up * K_1 / K_2 * beta_up;
+  K_1 := K_cyca * K_xcs / K_srca;
+  K_2 := Ca_i + Ca_up * K_1 + K_cyca * K_xcs + K_cyca;
+
+  // Variable initializations:
+  K_cyca = 0.0003;
+  K_xcs = 0.4;
+  K_srca = 0.5;
+  alpha_up = 0.4;
+  beta_up = 0.03;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__calcium_translocation(i_trans, Ca_rel, Ca_up, time_)
+
+  // Assignment Rules:
+  i_trans := 50 * (Ca_up - Ca_rel);
+end
+
+model noble_varghese_kohl_noble_1998_stretch__calcium_release(i_rel, time_, V, Ca_i, Ca_ds, Ca_rel, isometric_tension, sarcomere_length)
+
+  // Assignment Rules:
+  i_rel := (power(ActFrac / (ActFrac + 0.25 ), 2 ) * K_m_rel + SRLeak) * Ca_rel;
+  VoltDep := exp(0.08 * (V - 40 ));
+  RegBindSite := CaiReg + (1 - CaiReg) * CadsReg;
+  CaiReg := Ca_i / (Ca_i + K_m_Ca_cyt);
+  CadsReg := Ca_ds / (Ca_ds + K_m_Ca_ds);
+  ActRate := 0 * VoltDep + 500 * power(RegBindSite, 2 );
+  InactRate := 60 + 500 * power(RegBindSite, 2 );
+  SRLeak := piecewise( K_leak_rate * exp(gama_SR_IT * isometric_tension) , isometric_tension > 0 , K_leak_rate * exp(gama_SR_SL * sarcomere_length) );
+  PrecFrac := 1 - ActFrac - ProdFrac;
+  SpeedRel := piecewise( 5 , V < -(50 ) , 1 );
+
+  // Rate Rules:
+  ActFrac' = PrecFrac * SpeedRel * ActRate - ActFrac * SpeedRel * InactRate;
+  ProdFrac' = ActFrac * SpeedRel * InactRate - SpeedRel * 1 * ProdFrac;
+
+  // Variable initializations:
+  K_leak_rate = 0.005;
+  K_m_rel = 250;
+  K_m_Ca_cyt = 0.0005;
+  K_m_Ca_ds = 0.01;
+  ActFrac = 0.001914;
+  ProdFrac = 0.2854569;
+  gama_SR_SL = 2.5;
+  gama_SR_IT = 2.5;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__extracellular_sodium_concentration(Na_o)
+
+  // Variable initializations:
+  Na_o = 140;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__intracellular_sodium_concentration(Na_i, V_i, time_, F, i_Na, i_b_Na, i_p_Na, i_Ca_L_Na_cyt, i_Ca_L_Na_ds, i_NaK, i_NaCa_cyt)
+
+  // Rate Rules:
+  Na_i' = -(1 ) / (1 * V_i * F) * (i_Na + i_p_Na + i_b_Na + 3 * i_NaK + 3 * i_NaCa_cyt + i_Ca_L_Na_cyt + i_Ca_L_Na_ds);
+
+  // Variable initializations:
+  Na_i = 7.3321223;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__extracellular_calcium_concentration(Ca_o)
+
+  // Variable initializations:
+  Ca_o = 2;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__extracellular_potassium_concentration(K_o)
+
+  // Variable initializations:
+  K_o = 4;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__intracellular_potassium_concentration(K_i, V_i, i_K1, i_Kr, i_Ks, i_Ca_L_K_cyt, i_Ca_L_K_ds, i_to, i_NaK, time_, F)
+
+  // Rate Rules:
+  K_i' = -(1 ) / (1 * V_i * F) * (i_K1 + i_Kr + i_Ks + i_Ca_L_K_cyt + i_Ca_L_K_ds + i_to - 2 * i_NaK);
+
+  // Variable initializations:
+  K_i = 136.5644281;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__intracellular_calcium_concentration(Ca_i, Ca_ds, Ca_up, Ca_rel, Ca_Calmod, Ca_Trop, Calmod, Trop, V_i, i_up, i_trans, i_rel, i_NaCa_cyt, i_NaCa_ds, i_Ca_L_Ca_cyt, i_Ca_L_Ca_ds, i_b_Ca, F, isometric_tension, sarcomere_length, time_)
+
+  // Assignment Rules:
+  alpha_Trop := KTrop * exp(gama_Trop_SL * sarcomere_length);
+  V_i := V_Cell * V_i_ratio;
+  V_Cell := 3.141592654 * power(radius / 1000 , 2 ) * length / 1000;
+  V_i_ratio := 1 - V_e_ratio - V_up_ratio - V_rel_ratio;
+
+  // Rate Rules:
+  Ca_i' = -(1 ) / (2 * 1 * V_i * F) * (i_Ca_L_Ca_cyt + i_b_Ca - 2 * i_NaCa_cyt - 2 * i_NaCa_ds) + Ca_ds * V_ds_ratio * Kdecay + i_rel * V_rel_ratio / V_i_ratio - d(Ca_Calmod)/d(time_) - d(Ca_Trop)/d(time_) - i_up;
+  Ca_ds' = -(1 ) * i_Ca_L_Ca_ds / (2 * 1 * V_ds_ratio * V_i * F) - Ca_ds * Kdecay;
+  Ca_up' = V_i_ratio / V_up_ratio * i_up - i_trans;
+  Ca_rel' = V_up_ratio / V_rel_ratio * i_trans - i_rel;
+  Ca_Calmod' = alpha_Calmod * Ca_i * (Calmod - Ca_Calmod) - beta_Calmod * Ca_Calmod;
+  Ca_Trop' = alpha_Trop * Ca_i * (Trop - Ca_Trop) - beta_Trop * Ca_Trop;
+
+  // Variable initializations:
+  Ca_i = 1.4e-5;
+  Ca_ds = 1.88e-5;
+  Ca_up = 0.4531889;
+  Ca_rel = 0.4481927;
+  Ca_Calmod = 0.0005555;
+  Ca_Trop = 0.0002;
+  Calmod = 0.02;
+  Trop = 0.05;
+  alpha_Calmod = 100000;
+  beta_Calmod = 50;
+  beta_Trop = 200;
+  gama_Trop_SL = 1.5;
+  KTrop = 5000;
+  radius = 12;
+  length = 74;
+  V_ds_ratio = 0.1;
+  V_rel_ratio = 0.1;
+  V_e_ratio = 0.4;
+  V_up_ratio = 0.01;
+  Kdecay = 10;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__contraction(sarcomere_length, isometric_tension, Ca_Calmod, Ca_Trop, Calmod, Trop, time_)
+
+  // Assignment Rules:
+  XCont2 := Ca_Calmod / Calmod;
+  XCont1 := Ca_Trop / Trop;
+  tension_rest := 2e-4 * exp(2 * sarcomere_length);
+  tension_active := piecewise( 1 - exp(-(3 ) * (sarcomere_length - 1 )) , sarcomere_length > 1 , 0 );
+  overlap := piecewise( 1 - 0.625 * (sarcomere_length - 2 ) , sarcomere_length > 2 , 1 );
+  cross_bridge_availability := tension_active * overlap * cross_bridge_density;
+  isometric_tension := cross_bridge * cross_bridge_availability + tension_rest;
+
+  // Rate Rules:
+  light_chain' = KCont1 * power(XCont1, 2 ) * XCont2 * (1 - light_chain) - KCont2 * light_chain;
+  cross_bridge' = KCont3 * light_chain * (1 - cross_bridge) - KCont4 * cross_bridge;
+
+  // Variable initializations:
+  light_chain = 3.32e-5;
+  cross_bridge = 8.09e-5;
+  KCont1 = 12000;
+  KCont2 = 100;
+  KCont3 = 60;
+  KCont4 = 25;
+  sarcomere_length = 2;
+  cross_bridge_density = 0.05;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__stretch_current(i_stretch, isometric_tension, sarcomere_length, E_Ca, E_K, E_Na, V, time_)
+
+  // Assignment Rules:
+  i_stretch := i_Ca_stretch + i_Na_stretch + i_K_stretch + i_An_stretch;
+  i_Ca_stretch := g_Ca_stretch * f_stretch * (V - E_Ca);
+  i_K_stretch := g_K_stretch * f_stretch * (V - E_K);
+  i_Na_stretch := g_Na_stretch * f_stretch * (V - E_Na);
+  i_An_stretch := g_An_stretch * f_stretch * (V - E_An_stretch);
+  f_stretch := piecewise( 1 / (1 + exp(-(2 ) * gama_SAC_IT * (isometric_tension - ITHST))) , isometric_tension > 0 , 1 / (1 + exp(-(2 ) * gama_SAC_SL * (sarcomere_length - SLHST))) );
+
+  // Variable initializations:
+  gama_SAC_SL = 2.5;
+  gama_SAC_IT = 2.5;
+  SLHST = 2;
+  ITHST = 1;
+  g_Ca_stretch = 0.01;
+  g_K_stretch = 0.01;
+  g_Na_stretch = 0.01;
+  g_An_stretch = 0.01;
+  E_An_stretch = -20;
+end
+
+model noble_varghese_kohl_noble_1998_stretch__fibroblast(V, time_)
+
+  // Assignment Rules:
+  i_fibro := g_fibro * (V_fibro + 20 ) + g_fibro_stretch * (V_fibro - E_fibro_stretch);
+  i_fibro_junct := -(g_fibro_junct) * (V - V_fibro);
+
+  // Rate Rules:
+  V_fibro' = -((i_fibro + i_fibro_junct)) / c_fibro;
+
+  // Variable initializations:
+  g_fibro_junct = 2.9e-4;
+  g_fibro = 2e-4;
+  c_fibro = 1e-5;
+  g_fibro_stretch = 0;
+  E_fibro_stretch = 0;
+  V_fibro = -20;
+end
+
+model noble_varghese_kohl_noble_1998_stretch____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: noble_varghese_kohl_noble_1998_stretch__environment(time_);
+  membrane: noble_varghese_kohl_noble_1998_stretch__membrane(V, R, T, F, time_, i_K1, i_to, i_Kr, i_Ks, i_K_ATP, i_K_ACh, i_Ca_L_K_cyt, i_Ca_L_K_ds, i_NaK, i_Na, i_b_Na, i_p_Na, i_Ca_L_Na_cyt, i_Ca_L_Na_ds, i_NaCa_cyt, i_NaCa_ds, i_Ca_L_Ca_cyt, i_Ca_L_Ca_ds, i_b_Ca, i_stretch);
+  reversal_potentials: noble_varghese_kohl_noble_1998_stretch__reversal_potentials(E_Na, E_K, E_Ks, E_Ca, E_mh, K_o, Na_o, K_i, Na_i, Ca_o, Ca_i, R, F, T, time_);
+  time_independent_potassium_current: noble_varghese_kohl_noble_1998_stretch__time_independent_potassium_current(i_K1, K_mk1, K_o, V, E_K, R, F, T, time_);
+  rapid_delayed_rectifier_potassium_current: noble_varghese_kohl_noble_1998_stretch__rapid_delayed_rectifier_potassium_current(i_Kr, E_K, time_, V, xr1, xr2);
+  slow_delayed_rectifier_potassium_current: noble_varghese_kohl_noble_1998_stretch__slow_delayed_rectifier_potassium_current(i_Ks, E_Ks, time_, V, xs);
+  ATP_dependent_potassium_current: noble_varghese_kohl_noble_1998_stretch__ATP_dependent_potassium_current(i_K_ATP, V, time_);
+  sodium_activated_potassium_current: noble_varghese_kohl_noble_1998_stretch__sodium_activated_potassium_current(i_KNa, Na_i, E_K, V, time_);
+  fast_sodium_current: noble_varghese_kohl_noble_1998_stretch__fast_sodium_current(i_Na, E_mh, time_, V, m, h);
+  persistent_sodium_current: noble_varghese_kohl_noble_1998_stretch__persistent_sodium_current(i_p_Na, E_Na, time_, V);
+  sodium_background_current: noble_varghese_kohl_noble_1998_stretch__sodium_background_current(i_b_Na, Na_i, E_Na, time_, V);
+  L_type_Ca_channel: noble_varghese_kohl_noble_1998_stretch__L_type_Ca_channel(i_Ca_L_Ca_cyt, i_Ca_L_K_cyt, i_Ca_L_Na_cyt, i_Ca_L_Ca_ds, i_Ca_L_K_ds, i_Ca_L_Na_ds, i_Ca_L, Ca_o, Ca_i, Ca_ds, K_o, K_i, Na_o, Na_i, R, F, T, time_, V, d, f, f2, f2ds, Km_f2, Km_f2ds, R_decay);
+  calcium_background_current: noble_varghese_kohl_noble_1998_stretch__calcium_background_current(i_b_Ca, E_Ca, time_, V);
+  transient_outward_current: noble_varghese_kohl_noble_1998_stretch__transient_outward_current(i_to, E_K, V, time_, s, r);
+  ACh_dependent_potassium_current: noble_varghese_kohl_noble_1998_stretch__ACh_dependent_potassium_current(i_K_ACh, E_K, K_o, K_mk1, R, F, T, V, time_, x_ACh);
+  sodium_potassium_pump: noble_varghese_kohl_noble_1998_stretch__sodium_potassium_pump(i_NaK, K_o, Na_i, time_);
+  sodium_calcium_exchanger: noble_varghese_kohl_noble_1998_stretch__sodium_calcium_exchanger(i_NaCa, i_NaCa_cyt, i_NaCa_ds, Na_i, Na_o, Ca_i, Ca_ds, Ca_o, R, F, T, V, time_);
+  sarcoplasmic_reticulum_calcium_pump: noble_varghese_kohl_noble_1998_stretch__sarcoplasmic_reticulum_calcium_pump(i_up, Ca_i, Ca_up, time_);
+  calcium_translocation: noble_varghese_kohl_noble_1998_stretch__calcium_translocation(i_trans, Ca_rel, Ca_up, time_);
+  calcium_release: noble_varghese_kohl_noble_1998_stretch__calcium_release(i_rel, time_, V, Ca_i, Ca_ds, Ca_rel, isometric_tension, sarcomere_length);
+  extracellular_sodium_concentration: noble_varghese_kohl_noble_1998_stretch__extracellular_sodium_concentration(Na_o);
+  intracellular_sodium_concentration: noble_varghese_kohl_noble_1998_stretch__intracellular_sodium_concentration(Na_i, V_i, time_, F, i_Na, i_b_Na, i_p_Na, i_Ca_L_Na_cyt, i_Ca_L_Na_ds, i_NaK, i_NaCa_cyt);
+  extracellular_calcium_concentration: noble_varghese_kohl_noble_1998_stretch__extracellular_calcium_concentration(Ca_o);
+  extracellular_potassium_concentration: noble_varghese_kohl_noble_1998_stretch__extracellular_potassium_concentration(K_o);
+  intracellular_potassium_concentration: noble_varghese_kohl_noble_1998_stretch__intracellular_potassium_concentration(K_i, V_i, i_K1, i_Kr, i_Ks, i_Ca_L_K_cyt, i_Ca_L_K_ds, i_to, i_NaK, time_, F);
+  intracellular_calcium_concentration: noble_varghese_kohl_noble_1998_stretch__intracellular_calcium_concentration(Ca_i, Ca_ds, Ca_up, Ca_rel, Ca_Calmod, Ca_Trop, Calmod, Trop, V_i, i_up, i_trans, i_rel, i_NaCa_cyt, i_NaCa_ds, i_Ca_L_Ca_cyt, i_Ca_L_Ca_ds, i_b_Ca, F, isometric_tension, sarcomere_length, time_);
+  contraction: noble_varghese_kohl_noble_1998_stretch__contraction(sarcomere_length, isometric_tension, Ca_Calmod, Ca_Trop, Calmod, Trop, time_);
+  stretch_current: noble_varghese_kohl_noble_1998_stretch__stretch_current(i_stretch, isometric_tension, sarcomere_length, E_Ca, E_K, E_Na, V, time_);
+  fibroblast: noble_varghese_kohl_noble_1998_stretch__fibroblast(V, time_);
+end

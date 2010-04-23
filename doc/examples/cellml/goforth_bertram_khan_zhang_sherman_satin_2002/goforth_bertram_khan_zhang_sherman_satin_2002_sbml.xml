@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="goforth_bertram_khan_zhang_sherman_satin_2002_version02____main" name="goforth_bertram_khan_zhang_sherman_satin_2002_version02____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="V" value="-65" constant="false"/>
+      <parameter id="membrane_Cm" value="5300"/>
+      <parameter id="i_Ca" constant="false"/>
+      <parameter id="i_K" constant="false"/>
+      <parameter id="i_KATP" constant="false"/>
+      <parameter id="i_KCa" constant="false"/>
+      <parameter id="i_Leak" constant="false"/>
+      <parameter id="calcium_current_V_Ca" value="30"/>
+      <parameter id="calcium_current_g_Ca" value="1450"/>
+      <parameter id="m_infinity" constant="false"/>
+      <parameter id="calcium_current_calcium_current_m_gate_Vm" value="-13"/>
+      <parameter id="calcium_current_calcium_current_m_gate_Sm" value="8"/>
+      <parameter id="V_K" value="-70"/>
+      <parameter id="rapidly_activating_K_current_g_K" value="2500"/>
+      <parameter id="n" value="0.0001" constant="false"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_n_infinity" constant="false"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_tau_n" value="10.8"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_Vn" value="-15"/>
+      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_Sn" value="5.6"/>
+      <parameter id="Ca_activated_K_current_g_KCa" value="1200"/>
+      <parameter id="c_SS" value="0.29" constant="false"/>
+      <parameter id="w" constant="false"/>
+      <parameter id="Ca_activated_K_current_Ca_activated_K_current_w_gate_Kd" value="0.7"/>
+      <parameter id="Ca_activated_K_current_Ca_activated_K_current_w_gate_q" value="8"/>
+      <parameter id="ATP_dependent_K_current_g_KATP" value="63"/>
+      <parameter id="leak_current_g_Leak" value="14"/>
+      <parameter id="leak_current_V_Leak" value="-30"/>
+      <parameter id="c" value="0.027" constant="false"/>
+      <parameter id="c_ER" value="111.17" constant="false"/>
+      <parameter id="calcium_concentrations_f_CYT" value="0.01"/>
+      <parameter id="calcium_concentrations_f_ER" value="0.005"/>
+      <parameter id="calcium_concentrations_f_SS" value="0.04"/>
+      <parameter id="calcium_concentrations_alpha" constant="false"/>
+      <parameter id="calcium_concentrations_F" value="96845"/>
+      <parameter id="calcium_concentrations_V_CYT" constant="false"/>
+      <parameter id="calcium_concentrations_V_SS" constant="false"/>
+      <parameter id="J_PMCA" constant="false"/>
+      <parameter id="J_SERCA" constant="false"/>
+      <parameter id="J_RELEASE" constant="false"/>
+      <parameter id="J_X" constant="false"/>
+      <parameter id="calcium_fluxes_k_PMCA" value="0.18"/>
+      <parameter id="calcium_fluxes_k_SERCA" value="0.1"/>
+      <parameter id="calcium_fluxes_p_ER" value="0.0015"/>
+      <parameter id="calcium_fluxes_p_X" value="0.025"/>
+      <parameter id="time_"/>
+      <parameter id="calcium_concentrations_V_ER"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> i_Ca </ci>
+                <ci> i_K </ci>
+                <ci> i_KATP </ci>
+                <ci> i_KCa </ci>
+                <ci> i_Leak </ci>
+              </apply>
+            </apply>
+            <ci> membrane_Cm </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="i_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_current_g_Ca </ci>
+            <ci> m_infinity </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> calcium_current_V_Ca </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_K">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> rapidly_activating_K_current_g_K </ci>
+            <ci> n </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_KATP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ATP_dependent_K_current_g_KATP </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_KCa">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ca_activated_K_current_g_KCa </ci>
+            <ci> w </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_Leak">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> leak_current_g_Leak </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> leak_current_V_Leak </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="m_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> calcium_current_calcium_current_m_gate_Vm </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> calcium_current_calcium_current_m_gate_Sm </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_n_infinity </ci>
+              <ci> n </ci>
+            </apply>
+            <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_tau_n </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_n_infinity">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_Vn </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <ci> rapidly_activating_K_current_rapidly_activating_K_current_n_gate_Sn </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="c_SS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_concentrations_f_SS </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> calcium_concentrations_V_ER </ci>
+                  <ci> calcium_concentrations_V_SS </ci>
+                </apply>
+                <ci> J_RELEASE </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> calcium_concentrations_V_CYT </ci>
+                  <ci> calcium_concentrations_V_SS </ci>
+                </apply>
+                <ci> J_X </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="w">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <ci> c_SS </ci>
+              <ci> Ca_activated_K_current_Ca_activated_K_current_w_gate_q </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> c_SS </ci>
+                <ci> Ca_activated_K_current_Ca_activated_K_current_w_gate_q </ci>
+              </apply>
+              <apply>
+                <power/>
+                <ci> Ca_activated_K_current_Ca_activated_K_current_w_gate_Kd </ci>
+                <ci> Ca_activated_K_current_Ca_activated_K_current_w_gate_q </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_concentrations_f_CYT </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> calcium_concentrations_alpha </ci>
+                    <ci> i_Ca </ci>
+                  </apply>
+                  <ci> J_PMCA </ci>
+                  <ci> J_SERCA </ci>
+                </apply>
+              </apply>
+              <ci> J_X </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="c_ER">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_concentrations_f_ER </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> calcium_concentrations_V_CYT </ci>
+                  <ci> calcium_concentrations_V_ER </ci>
+                </apply>
+                <ci> J_SERCA </ci>
+              </apply>
+              <ci> J_RELEASE </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="calcium_concentrations_alpha">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> calcium_concentrations_F </ci>
+              <ci> calcium_concentrations_V_CYT </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="calcium_concentrations_V_CYT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 25 </cn>
+            <ci> calcium_concentrations_V_ER </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="calcium_concentrations_V_SS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.4 </cn>
+            <ci> calcium_concentrations_V_CYT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_PMCA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_fluxes_k_PMCA </ci>
+            <ci> c </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_SERCA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_fluxes_k_SERCA </ci>
+            <ci> c </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_RELEASE">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_fluxes_p_ER </ci>
+            <apply>
+              <minus/>
+              <ci> c_ER </ci>
+              <ci> c_SS </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_X">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_fluxes_p_X </ci>
+            <apply>
+              <minus/>
+              <ci> c_SS </ci>
+              <ci> c </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,200 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "C1 * beta + C_Ca0 * omega - ( C0 * 4.0 * alpha + C0 * gamma )" to set the assignment rule for C0:  Loop detected:  C0's definition (C1 * beta + C_Ca0 * omega - ( C0 * 4.0 * alpha + C0 * gamma )) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C0 * 4.0 * alpha + C2 * 2.0 * beta + C_Ca1 * ( omega / b ) - ( C1 * beta + C1 * 3.0 * alpha + C1 * gamma * a )" to set the assignment rule for C1:  Loop detected:  C1's definition (C0 * 4.0 * alpha + C2 * 2.0 * beta + C_Ca1 * ( omega / b ) - ( C1 * beta + C1 * 3.0 * alpha + C1 * gamma * a )) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C1 * 3.0 * alpha + C3 * 3.0 * beta + C_Ca2 * ( omega / power( b , 2.0 )) - ( C2 * 2.0 * beta + C2 * 2.0 * alpha + C2 * gamma * power( a , 2.0 ))" to set the assignment rule for C2:  Loop detected:  C2's definition (C1 * 3.0 * alpha + C3 * 3.0 * beta + C_Ca2 * ( omega / power( b , 2.0 )) - ( C2 * 2.0 * beta + C2 * 2.0 * alpha + C2 * gamma * power( a , 2.0 ))) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C2 * 2.0 * alpha + C4 * 4.0 * beta + C_Ca3 * ( omega / power( b , 3.0 )) - ( C3 * 3.0 * beta + C3 * alpha + C3 * gamma * power( a , 3.0 ))" to set the assignment rule for C3:  Loop detected:  C3's definition (C2 * 2.0 * alpha + C4 * 4.0 * beta + C_Ca3 * ( omega / power( b , 3.0 )) - ( C3 * 3.0 * beta + C3 * alpha + C3 * gamma * power( a , 3.0 ))) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C3 * alpha + O * g + C_Ca4 * ( omega / power( b , 4.0 )) - ( C4 * 4.0 * beta + C4 * f + C4 * gamma * power( a , 4.0 ))" to set the assignment rule for C4:  Loop detected:  C4's definition (C3 * alpha + O * g + C_Ca4 * ( omega / power( b , 4.0 )) - ( C4 * 4.0 * beta + C4 * f + C4 * gamma * power( a , 4.0 ))) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C4 * f - O * g" to set the assignment rule for O:  Loop detected:  O's definition (C4 * f - O * g) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C0 * gamma + C_Ca1 * beta_ - ( C_Ca0 * 4.0 * alpha_ + C_Ca0 * omega )" to set the assignment rule for C_Ca0:  Loop detected:  C_Ca0's definition (C0 * gamma + C_Ca1 * beta_ - ( C_Ca0 * 4.0 * alpha_ + C_Ca0 * omega )) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C_Ca0 * 4.0 * alpha_ + C_Ca2 * 2.0 * beta_ + C1 * gamma * a - ( C_Ca1 * beta_ + C_Ca1 * 3.0 * alpha_ + C_Ca1 * ( omega / b ))" to set the assignment rule for C_Ca1:  Loop detected:  C_Ca1's definition (C_Ca0 * 4.0 * alpha_ + C_Ca2 * 2.0 * beta_ + C1 * gamma * a - ( C_Ca1 * beta_ + C_Ca1 * 3.0 * alpha_ + C_Ca1 * ( omega / b ))) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C_Ca1 * 3.0 * alpha_ + C_Ca3 * 3.0 * beta_ + C2 * gamma * power( a , 2.0 ) - ( C_Ca2 * 2.0 * beta_ + C_Ca2 * 2.0 * alpha_ + C_Ca2 * ( omega / power( b , 2.0 )))" to set the assignment rule for C_Ca2:  Loop detected:  C_Ca2's definition (C_Ca1 * 3.0 * alpha_ + C_Ca3 * 3.0 * beta_ + C2 * gamma * power( a , 2.0 ) - ( C_Ca2 * 2.0 * beta_ + C_Ca2 * 2.0 * alpha_ + C_Ca2 * ( omega / power( b , 2.0 )))) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C_Ca2 * 2.0 * alpha_ + C_Ca4 * 4.0 * beta_ + C3 * gamma * power( a , 3.0 ) - ( C_Ca3 * 3.0 * beta_ + C_Ca3 * alpha_ + C_Ca3 * ( omega / power( b , 3.0 )))" to set the assignment rule for C_Ca3:  Loop detected:  C_Ca3's definition (C_Ca2 * 2.0 * alpha_ + C_Ca4 * 4.0 * beta_ + C3 * gamma * power( a , 3.0 ) - ( C_Ca3 * 3.0 * beta_ + C_Ca3 * alpha_ + C_Ca3 * ( omega / power( b , 3.0 )))) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C_Ca3 * alpha_ + O_Ca * g_ + C4 * gamma * power( a , 4.0 ) - ( C_Ca4 * 4.0 * beta_ + C_Ca4 * f_ + C_Ca4 * ( omega / power( b , 4.0 )))" to set the assignment rule for C_Ca4:  Loop detected:  C_Ca4's definition (C_Ca3 * alpha_ + O_Ca * g_ + C4 * gamma * power( a , 4.0 ) - ( C_Ca4 * 4.0 * beta_ + C_Ca4 * f_ + C_Ca4 * ( omega / power( b , 4.0 )))) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "C_Ca4 * f_ - O_Ca * g_" to set the assignment rule for O_Ca:  Loop detected:  O_Ca's definition (C_Ca4 * f_ - O_Ca * g_) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "P_C2 * k21 - P_C1 * k12" to set the assignment rule for P_C1:  Loop detected:  P_C1's definition (P_C2 * k21 - P_C1 * k12) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "P_C1 * k12 + P_O3 * k32 + P_C5 * k52 - ( P_C2 * k21 + P_C2 * k23 + P_C2 * k25 )" to set the assignment rule for P_C2:  Loop detected:  P_C2's definition (P_C1 * k12 + P_O3 * k32 + P_C5 * k52 - ( P_C2 * k21 + P_C2 * k23 + P_C2 * k25 )) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "P_C2 * k23 + P_O4 * k43 - ( P_O3 * k32 + P_O3 * k34 )" to set the assignment rule for P_O3:  Loop detected:  P_O3's definition (P_C2 * k23 + P_O4 * k43 - ( P_O3 * k32 + P_O3 * k34 )) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "P_O3 * k34 + P_C5 * k54 - ( P_O4 * k43 + P_O4 * k45 )" to set the assignment rule for P_O4:  Loop detected:  P_O4's definition (P_O3 * k34 + P_C5 * k54 - ( P_O4 * k43 + P_O4 * k45 )) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "P_C2 * k25 + P_O4 * k45 + P_C6 * k65 - ( P_C5 * k52 + P_C5 * k54 + P_C5 * k56 )" to set the assignment rule for P_C5:  Loop detected:  P_C5's definition (P_C2 * k25 + P_O4 * k45 + P_C6 * k65 - ( P_C5 * k52 + P_C5 * k54 + P_C5 * k56 )) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "P_C6 * k65 - P_C5 * k56" to set the assignment rule for P_C6:  Loop detected:  P_C6's definition (P_C6 * k65 - P_C5 * k56) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+
+model rice_winslow_jafri_1999_version01__environment(time_)
+end
+
+model rice_winslow_jafri_1999_version01__sarcolemma(V, R, T, F, Ca_o)
+
+  // Variable initializations:
+  V = -84.624;
+  R = 8.314;
+  T = 310.0;
+  F = 96500.0;
+  Ca_o = 1.8;
+end
+
+model rice_winslow_jafri_1999_version01__subspace(V_SS, J_RyR, Ca_SS, V, time_, R, T, F, Ca_o, O, O_Ca, P_O3, P_O4, Ca_JSR)
+
+  // Assignment Rules:
+  J_RyR := sum(bvar( i ), lowlimit( 1.0 ), uplimit( 8.0 ), J_RyR_perm * RyR_open * ( Ca_JSR - Ca_SS ));
+  J_DHPR := I_DHPR * DHPR_open / ( 2.0 * F * V_SS );
+  DHPR_open := piecewise( 1.0 , ( i == O) || (i == O_Ca ), 0.0 );
+  RyR_open := piecewise( 1.0 , ( i == P_O3) || (i == P_O4 ), 0.0 );
+  I_DHPR := P_Ca * 4.0 * ( V * power( F , 2.0 ) / ( R * T )) * (( 0.001 * exp( 2.0 * V * F / ( R * T )) - 0.341 * Ca_o ) / (exp( 2.0 * V * F / ( R * T )) - 1.0 ));
+  beta_SS := power( 1.0 + B_SR * K_BSR / power( K_BSR + Ca_SS , 2.0 ) + B_SL * K_BSL / power( K_BSL + Ca_SS , 2.0 ), -1.0 );
+  J_xfer := 1.0 / tau_xfer * ( Ca_SS - Ca_myo );
+
+  // Rate Rules:
+  Ca_SS' = beta_SS * ( J_DHPR + J_RyR + V_myo / V_SS * J_xfer );
+
+  // Variable initializations:
+  V_SS = 2.03E-12;
+  J_RyR_perm = 3960.0;
+  B_SR = 47.0;
+  K_BSR = 0.87;
+  B_SL = 1124.0;
+  K_BSL = 8.7;
+  P_Ca = 1.51E-11;
+  tau_xfer = 0.0007;
+  Ca_myo = 0.1;
+  i = 0.0;
+  V_myo = 0.1;
+end
+
+model rice_winslow_jafri_1999_version01__sarcoplasmic_reticulum(Ca_JSR, J_RyR, V_SS, time_)
+
+  // Assignment Rules:
+  beta_JSR := power( 1.0 + CSQN_tot * K_CSQN / power( K_CSQN + Ca_JSR , 2.0 ), -1.0 );
+  J_tr := 1.0 / tau_tr * ( Ca_NSR - Ca_JSR );
+
+  // Rate Rules:
+  Ca_JSR' = beta_JSR * ( J_tr - V_SS / V_JSR * J_RyR );
+
+  // Variable initializations:
+  V_JSR = 2.03E-12;
+  CSQN_tot = 15.0;
+  K_CSQN = 0.8;
+  tau_tr = 0.005;
+  Ca_NSR = 800.0;
+end
+
+model rice_winslow_jafri_1999_version01__C0(C0, C1, C_Ca0, alpha, beta, omega, gamma)
+end
+
+model rice_winslow_jafri_1999_version01__C1(C1, C0, C2, C_Ca1, alpha, beta, omega, gamma, a, b)
+end
+
+model rice_winslow_jafri_1999_version01__C2(C2, C1, C3, C_Ca2, alpha, beta, omega, gamma, a, b)
+end
+
+model rice_winslow_jafri_1999_version01__C3(C3, C2, C4, C_Ca3, alpha, beta, omega, gamma, a, b)
+end
+
+model rice_winslow_jafri_1999_version01__C4(C4, C3, O, C_Ca4, alpha, beta, omega, gamma, a, b, f, g)
+end
+
+model rice_winslow_jafri_1999_version01__O(O, C4, f, g)
+end
+
+model rice_winslow_jafri_1999_version01__C_Ca0(C_Ca0, C0, C_Ca1, alpha_, beta_, omega, gamma)
+end
+
+model rice_winslow_jafri_1999_version01__C_Ca1(C_Ca1, C_Ca0, C_Ca2, C1, alpha_, beta_, omega, gamma, a, b)
+end
+
+model rice_winslow_jafri_1999_version01__C_Ca2(C_Ca2, C_Ca1, C_Ca3, C2, alpha_, beta_, omega, gamma, a, b)
+end
+
+model rice_winslow_jafri_1999_version01__C_Ca3(C_Ca3, C_Ca2, C_Ca4, C3, alpha_, beta_, omega, gamma, a, b)
+end
+
+model rice_winslow_jafri_1999_version01__C_Ca4(C_Ca4, C_Ca3, O_Ca, C4, alpha_, beta_, omega, gamma, a, b, f_, g_)
+end
+
+model rice_winslow_jafri_1999_version01__O_Ca(O_Ca, C_Ca4, f_, g_)
+end
+
+model rice_winslow_jafri_1999_version01__P_C1(P_C1, k12, k21, P_C2)
+end
+
+model rice_winslow_jafri_1999_version01__P_C2(P_C2, k12, k21, k23, k32, k25, k52, P_C1, P_O3, P_C5)
+end
+
+model rice_winslow_jafri_1999_version01__P_O3(P_O3, k23, k32, k34, k43, P_C2, P_O4)
+end
+
+model rice_winslow_jafri_1999_version01__P_O4(P_O4, k45, k54, k34, k43, P_C5, P_O3)
+end
+
+model rice_winslow_jafri_1999_version01__P_C5(P_C5, k45, k54, k56, k65, k25, k52, P_C2, P_O4, P_C6)
+end
+
+model rice_winslow_jafri_1999_version01__P_C6(P_C6, k56, k65, P_C5)
+end
+
+model rice_winslow_jafri_1999_version01__DHPR_transition_probabilities(alpha, gamma, beta, alpha_, beta_, omega, a, b, f, g, f_, g_, V, Ca_SS)
+
+  // Assignment Rules:
+  alpha := 0.4 * exp(( V + 6.0 ) / 25.0 );
+  gamma := Ca_SS * 0.1875;
+  beta := 0.05 * exp(-(( V + 6.0 )) / 29.0 );
+  alpha_ := alpha * a;
+  beta_ := beta / b;
+
+  // Variable initializations:
+  omega = 10.0;
+  a = 2.0;
+  b = 2.0;
+  f = 300.0;
+  g = 2000.0;
+  f_ = 5.0;
+  g_ = 7000.0;
+end
+
+model rice_winslow_jafri_1999_version01__RyR_transition_probabilities(k12, k21, k23, k32, k34, k43, k54, k45, k25, k52, k56, k65, Ca_SS)
+
+  // Assignment Rules:
+  k12 := 3.0E6 * power( Ca_SS , 4.0 ) / (power( 2.68 , 4.0 ) + power( Ca_SS , 4.0 ));
+  k23 := 3.0E7 * power( Ca_SS , 4.0 ) / (power( 2.68 , 4.0 ) + power( Ca_SS , 4.0 ));
+  k34 := 3.0E6 * power( Ca_SS , 4.0 ) / (power( 2.68 , 4.0 ) + power( Ca_SS , 4.0 ));
+  k54 := 198.0 * power( Ca_SS , 4.0 ) / (power( 2.68 , 4.0 ) + power( Ca_SS , 4.0 ));
+  k25 := 3.0E5 * power( Ca_SS , 4.0 ) / (power( 2.68 , 4.0 ) + power( Ca_SS , 4.0 ));
+  k56 := 3.0E6 * power( Ca_SS , 4.0 ) / (power( 2.68 , 4.0 ) + power( Ca_SS , 4.0 ));
+
+  // Variable initializations:
+  k21 = 2.5E5;
+  k32 = 9.6E3;
+  k43 = 1.3E4;
+  k45 = 66.67;
+  k52 = 1.235;
+  k65 = 3.0E6;
+end
+
+model rice_winslow_jafri_1999_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: rice_winslow_jafri_1999_version01__environment(time_);
+  sarcolemma: rice_winslow_jafri_1999_version01__sarcolemma(V, R, T, F, Ca_o);
+  subspace: rice_winslow_jafri_1999_version01__subspace(V_SS, J_RyR, Ca_SS, V, time_, R, T, F, Ca_o, O0, O_Ca0, P_O30, P_O40, Ca_JSR);
+  sarcoplasmic_reticulum: rice_winslow_jafri_1999_version01__sarcoplasmic_reticulum(Ca_JSR, J_RyR, V_SS, time_);
+  C0: rice_winslow_jafri_1999_version01__C0(C00, C10, C_Ca00, alpha, beta, omega, gamma);
+  C1: rice_winslow_jafri_1999_version01__C1(C10, C00, C20, C_Ca10, alpha, beta, omega, gamma, a, b);
+  C2: rice_winslow_jafri_1999_version01__C2(C20, C10, C30, C_Ca20, alpha, beta, omega, gamma, a, b);
+  C3: rice_winslow_jafri_1999_version01__C3(C30, C20, C40, C_Ca30, alpha, beta, omega, gamma, a, b);
+  C4: rice_winslow_jafri_1999_version01__C4(C40, C30, O0, C_Ca40, alpha, beta, omega, gamma, a, b, f, g);
+  O: rice_winslow_jafri_1999_version01__O(O0, C40, f, g);
+  C_Ca0: rice_winslow_jafri_1999_version01__C_Ca0(C_Ca00, C00, C_Ca10, alpha_, beta_, omega, gamma);
+  C_Ca1: rice_winslow_jafri_1999_version01__C_Ca1(C_Ca10, C_Ca00, C_Ca20, C10, alpha_, beta_, omega, gamma, a, b);
+  C_Ca2: rice_winslow_jafri_1999_version01__C_Ca2(C_Ca20, C_Ca10, C_Ca30, C20, alpha_, beta_, omega, gamma, a, b);
+  C_Ca3: rice_winslow_jafri_1999_version01__C_Ca3(C_Ca30, C_Ca20, C_Ca40, C30, alpha_, beta_, omega, gamma, a, b);
+  C_Ca4: rice_winslow_jafri_1999_version01__C_Ca4(C_Ca40, C_Ca30, O_Ca0, C40, alpha_, beta_, omega, gamma, a, b, f_, g_);
+  O_Ca: rice_winslow_jafri_1999_version01__O_Ca(O_Ca0, C_Ca40, f_, g_);
+  P_C1: rice_winslow_jafri_1999_version01__P_C1(P_C10, k12, k21, P_C20);
+  P_C2: rice_winslow_jafri_1999_version01__P_C2(P_C20, k12, k21, k23, k32, k25, k52, P_C10, P_O30, P_C50);
+  P_O3: rice_winslow_jafri_1999_version01__P_O3(P_O30, k23, k32, k34, k43, P_C20, P_O40);
+  P_O4: rice_winslow_jafri_1999_version01__P_O4(P_O40, k45, k54, k34, k43, P_C50, P_O30);
+  P_C5: rice_winslow_jafri_1999_version01__P_C5(P_C50, k45, k54, k56, k65, k25, k52, P_C20, P_O40, P_C60);
+  P_C6: rice_winslow_jafri_1999_version01__P_C6(P_C60, k56, k65, P_C50);
+  DHPR_transition_probabilities: rice_winslow_jafri_1999_version01__DHPR_transition_probabilities(alpha, gamma, beta, alpha_, beta_, omega, a, b, f, g, f_, g_, V, Ca_SS);
+  RyR_transition_probabilities: rice_winslow_jafri_1999_version01__RyR_transition_probabilities(k12, k21, k23, k32, k34, k43, k54, k45, k25, k52, k56, k65, Ca_SS);
+end

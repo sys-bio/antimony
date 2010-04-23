@@ -1,0 +1,331 @@
+//Created by libAntimony v1.3
+model noble_difrancesco_denyer_1989__environment(time_)
+end
+
+model noble_difrancesco_denyer_1989__membrane(V, R, T, F, RTONF, time_, i_f, i_K, i_K1, i_Na_b, i_Ca_b, i_p, i_NaCa, i_Na, i_si)
+
+  // Assignment Rules:
+  RTONF := R * T / F;
+
+  // Rate Rules:
+  V' = -((i_f + i_K + i_K1 + i_Na_b + i_Ca_b + i_p + i_NaCa + i_Na + i_si)) / C;
+
+  // Variable initializations:
+  V = -67.797059970601;
+  R = 8314.472;
+  T = 310;
+  F = 96485.3415;
+  C = 6e-5;
+end
+
+model noble_difrancesco_denyer_1989__hyperpolarising_activated_current_y_gate(y, V, time_)
+
+  // Assignment Rules:
+  alpha_y := 0.014 * exp(-(V) / 16 );
+  beta_y := 9.75 * exp(V / 19 );
+
+  // Rate Rules:
+  y' = speed_y * (alpha_y * (1 - y) - beta_y * y);
+
+  // Variable initializations:
+  y = 0.0743464067197738;
+  speed_y = 2;
+end
+
+model noble_difrancesco_denyer_1989__hyperpolarising_activated_current(i_f, i_fNa, E_Na, E_K, i_fK, time_, V, RTONF, Kc, Ki, Nai, Nao, y)
+
+  // Sub-modules, and any changes to those submodules:
+  hyperpolarising_activated_current_y_gate: noble_difrancesco_denyer_1989__hyperpolarising_activated_current_y_gate(y, V, time_);
+
+  // Assignment Rules:
+  i_f := i_fNa + i_fK;
+  i_fNa := power(y, 2 ) * Kc / (Kc + Km_f) * g_f_Na * (V - E_Na);
+  E_Na := RTONF * ln(Nao / Nai);
+  E_K := RTONF * ln(Kc / Ki);
+  i_fK := power(y, 2 ) * Kc / (Kc + Km_f) * g_f_K * (V - E_K);
+
+  // Variable initializations:
+  g_f_Na = 0.06;
+  g_f_K = 0.06;
+  Km_f = 45;
+end
+
+model noble_difrancesco_denyer_1989__time_dependent_potassium_current_x_gate(x, time_, V)
+
+  // Assignment Rules:
+  alpha_x := 2.1 * exp(V / 28 );
+  beta_x := 0.96 * exp(-(V) / 24 );
+
+  // Rate Rules:
+  x' = alpha_x * (1 - x) - beta_x * x;
+
+  // Variable initializations:
+  x = 0.129303443591363;
+end
+
+model noble_difrancesco_denyer_1989__time_dependent_potassium_current(i_K, time_, V, RTONF, Ki, Kc, x)
+
+  // Sub-modules, and any changes to those submodules:
+  time_dependent_potassium_current_x_gate: noble_difrancesco_denyer_1989__time_dependent_potassium_current_x_gate(x, time_, V);
+
+  // Assignment Rules:
+  i_K := x * I_K;
+  I_K := i_K_max * (Ki - Kc * exp(-(V) / RTONF)) / 140;
+
+  // Variable initializations:
+  i_K_max = 0.8;
+end
+
+model noble_difrancesco_denyer_1989__time_independent_potassium_current(i_K1, time_, V, E_K, Kc, RTONF)
+
+  // Assignment Rules:
+  i_K1 := g_K1 * Kc / (Kc + Km_K1) * (V - E_K) / (1 + exp((V + 10 - E_K) * 2 / RTONF));
+
+  // Variable initializations:
+  g_K1 = 0.0075;
+  Km_K1 = 10;
+end
+
+model noble_difrancesco_denyer_1989__sodium_background_current(i_Na_b, time_, V, E_Na)
+
+  // Assignment Rules:
+  i_Na_b := g_Nab * (V - E_Na);
+
+  // Variable initializations:
+  g_Nab = 0.0007;
+end
+
+model noble_difrancesco_denyer_1989__calcium_background_current(i_Ca_b, E_Ca, time_, V, RTONF, Cai, Cao)
+
+  // Assignment Rules:
+  i_Ca_b := g_Cab * (V - E_Ca);
+  E_Ca := 0.5 * RTONF * ln(Cao / Cai);
+
+  // Variable initializations:
+  g_Cab = 0.0001;
+end
+
+model noble_difrancesco_denyer_1989__sodium_potassium_pump(i_p, time_, V, Nai, Kc)
+
+  // Assignment Rules:
+  i_p := I_p * Kc / (K_mK + Kc) * Nai / (K_mNa + Nai);
+
+  // Variable initializations:
+  I_p = 0.45;
+  K_mK = 1;
+  K_mNa = 40;
+end
+
+model noble_difrancesco_denyer_1989__Na_Ca_exchanger(i_NaCa, n_NaCa, time_, V, RTONF, Cao, Cai, Nai, Nao)
+
+  // Assignment Rules:
+  i_NaCa := K_NaCa * (exp(gamma * (n_NaCa - 2 ) * V / RTONF) * power(Nai, n_NaCa) * Cao - exp((gamma - 1 ) * (n_NaCa - 2 ) * V / RTONF) * power(Nao, n_NaCa) * Cai) / ((1 + d_NaCa * (Cai * power(Nao, n_NaCa) + Cao * power(Nai, n_NaCa))) * (1 + Cai / 0.0069 ));
+
+  // Variable initializations:
+  n_NaCa = 3;
+  K_NaCa = 2e-5;
+  d_NaCa = 0.0001;
+  gamma = 0.5;
+end
+
+model noble_difrancesco_denyer_1989__fast_sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := piecewise( 2000 , abs(E0_m) < delta_m , 200 * E0_m / (1 - exp(-(0.1 ) * E0_m)) );
+  beta_m := 8000 * exp(-(0.056 ) * (V + 66 ));
+  E0_m := V + 41;
+
+  // Rate Rules:
+  m' = alpha_m * (1 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.042697621819783;
+  delta_m = 1e-5;
+end
+
+model noble_difrancesco_denyer_1989__fast_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := 20 * exp(-(0.125 ) * (V + 75 ));
+  beta_h := 2000 / (320 * exp(-(0.1 ) * (V + 75 )) + 1 );
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.138105285882671;
+end
+
+model noble_difrancesco_denyer_1989__fast_sodium_current(i_Na, time_, V, RTONF, Nao, Nai, Kc, Ki, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: noble_difrancesco_denyer_1989__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: noble_difrancesco_denyer_1989__fast_sodium_current_h_gate(h, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * (V - E_mh);
+  E_mh := RTONF * ln((Nao + 0.12 * Kc) / (Nai + 0.12 * Ki));
+
+  // Variable initializations:
+  g_Na = 0.0125;
+end
+
+model noble_difrancesco_denyer_1989__second_inward_current_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  alpha_d := piecewise( 120 , abs(E0_d) < delta_d , 30 * E0_d / (1 - exp(-(1 ) * E0_d / 4 )) );
+  beta_d := piecewise( 120 , abs(E0_d) < delta_d , 12 * E0_d / (exp(E0_d / 10 ) - 1 ) );
+  E0_d := V + 24 - 5;
+
+  // Rate Rules:
+  d' = alpha_d * (1 - d) - beta_d * d;
+
+  // Variable initializations:
+  d = 1.26333192869164e-5;
+  delta_d = 0.0001;
+end
+
+model noble_difrancesco_denyer_1989__second_inward_current_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  alpha_f := piecewise( 25 , abs(E0_f) < delta_f , 6.25 * E0_f / (exp(E0_f / 4 ) - 1 ) );
+  beta_f := 50 / (1 + exp(-(1 ) * (V + 34 ) / 4 ));
+  E0_f := V + 34;
+
+  // Rate Rules:
+  f' = alpha_f * (1 - f) - beta_f * f;
+
+  // Variable initializations:
+  f = 0.999507224159629;
+  delta_f = 0.0001;
+end
+
+model noble_difrancesco_denyer_1989__second_inward_current_f2_gate(f2, V, time_, Cai)
+
+  // Assignment Rules:
+  beta_f2 := Cai * alpha_f2 / K_mf2;
+
+  // Rate Rules:
+  f2' = alpha_f2 - f2 * (alpha_f2 + beta_f2);
+
+  // Variable initializations:
+  f2 = 0.485471180273736;
+  alpha_f2 = 10;
+  K_mf2 = 0.0005;
+end
+
+model noble_difrancesco_denyer_1989__second_inward_current(i_si, i_siCa, i_siK, i_siNa, time_, V, RTONF, Nao, Nai, Kc, Ki, Cao, Cai, d, f, f2)
+
+  // Sub-modules, and any changes to those submodules:
+  second_inward_current_d_gate: noble_difrancesco_denyer_1989__second_inward_current_d_gate(d, V, time_);
+  second_inward_current_f_gate: noble_difrancesco_denyer_1989__second_inward_current_f_gate(f, V, time_);
+  second_inward_current_f2_gate: noble_difrancesco_denyer_1989__second_inward_current_f2_gate(f2, V, time_, Cai);
+
+  // Assignment Rules:
+  i_si := i_siCa + i_siK + i_siNa;
+  i_siCa := 4 * P_si * (V - 50 ) / (RTONF * (1 - exp(-(1 ) * (V - 50 ) * 2 / RTONF))) * (Cai * exp(100 / RTONF) - Cao * exp(-(2 ) * (V - 50 ) / RTONF)) * d * f * f2;
+  i_siK := 0.01 * P_si * (V - 50 ) / (RTONF * (1 - exp(-(1 ) * (V - 50 ) / RTONF))) * (Ki * exp(50 / RTONF) - Kc * exp(-(1 ) * (V - 50 ) / RTONF)) * d * f * f2;
+  i_siNa := 0.01 * P_si * (V - 50 ) / (RTONF * (1 - exp(-(1 ) * (V - 50 ) / RTONF))) * (Nai * exp(50 / RTONF) - Nao * exp(-(1 ) * (V - 50 ) / RTONF)) * d * f * f2;
+
+  // Variable initializations:
+  P_si = 0.12;
+end
+
+model noble_difrancesco_denyer_1989__extracellular_sodium_concentration(Nao)
+
+  // Variable initializations:
+  Nao = 140;
+end
+
+model noble_difrancesco_denyer_1989__intracellular_sodium_concentration(Nai, Vi, time_, F, i_Na, i_Na_b, i_siNa, i_p, i_fNa, i_NaCa, n_NaCa)
+
+  // Assignment Rules:
+  V_Cell := 3.141592654 * power(radius, 2 ) * length;
+  Vi := V_Cell * (1 - V_e_ratio);
+
+  // Rate Rules:
+  Nai' = -(1 ) * (i_Na + i_Na_b + i_fNa + i_siNa + i_p * 3 + i_NaCa * n_NaCa / (n_NaCa - 2 )) / (1 * Vi * F);
+
+  // Variable initializations:
+  Nai = 7.51007221193712;
+  radius = 0.008;
+  length = 0.11;
+  V_e_ratio = 0.1;
+end
+
+model noble_difrancesco_denyer_1989__extracellular_calcium_concentration(Cao)
+
+  // Variable initializations:
+  Cao = 2;
+end
+
+model noble_difrancesco_denyer_1989__intracellular_calcium_concentration(Cai, Vi, time_, V, F, i_Ca_b, i_siCa, i_NaCa, n_NaCa)
+
+  // Assignment Rules:
+  V_up := Vi * 0.05;
+  V_rel := Vi * 0.02;
+  i_up := 2 * 1 * Vi * F / (1 * tau_up * Ca_up_max) * Cai * (Ca_up_max - Ca_up);
+  i_tr := 2 * 1 * V_rel * F / (1 * tau_rep) * p * (Ca_up - Ca_rel);
+  i_rel := 2 * 1 * V_rel * F / (1 * tau_rel) * Ca_rel * power(Cai, rCa) / (power(Cai, rCa) + power(K_mCa, rCa));
+  alpha_p := 0.625 * E0_p / (exp(E0_p / 4 ) - 1 );
+  beta_p := 5 / (1 + exp(-(1 ) * E0_p / 4 ));
+  E0_p := V + 34 - -(30 );
+
+  // Rate Rules:
+  Cai' = -(1 ) * (i_siCa + i_Ca_b - 2 * i_NaCa / (n_NaCa - 2 ) - i_rel + i_up) / (2 * 1 * Vi * F);
+  Ca_up' = 1 * (i_up - i_tr) / (2 * 1 * V_up * F);
+  Ca_rel' = 1 * (i_tr - i_rel) / (2 * 1 * V_rel * F);
+  p' = alpha_p * (1 - p) - beta_p * p;
+
+  // Variable initializations:
+  Cai = 5.84191784887783e-5;
+  Ca_up = 3.70806465918854;
+  Ca_rel = 0.177741556496929;
+  Ca_up_max = 5;
+  K_mCa = 0.002;
+  p = 0.176207580044253;
+  tau_up = 0.005;
+  tau_rep = 0.2;
+  tau_rel = 0.01;
+  rCa = 2;
+end
+
+model noble_difrancesco_denyer_1989__extracellular_potassium_concentration(Kc)
+
+  // Variable initializations:
+  Kc = 3;
+end
+
+model noble_difrancesco_denyer_1989__intracellular_potassium_concentration(Ki, Vi, i_K1, i_K, i_fK, i_siK, i_p, time_, F)
+
+  // Assignment Rules:
+  i_mK := i_K1 + i_K + i_fK + i_siK - 2 * i_p;
+
+  // Rate Rules:
+  Ki' = -(1 ) * i_mK / (1 * Vi * F);
+
+  // Variable initializations:
+  Ki = 139.859968229045;
+end
+
+model noble_difrancesco_denyer_1989____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: noble_difrancesco_denyer_1989__environment(time_);
+  membrane: noble_difrancesco_denyer_1989__membrane(V, R, T, F, RTONF, time_, i_f, i_K, i_K1, i_Na_b, i_Ca_b, i_p, i_NaCa, i_Na, i_si);
+  hyperpolarising_activated_current: noble_difrancesco_denyer_1989__hyperpolarising_activated_current(i_f, i_fNa, E_Na, E_K, i_fK, time_, V, RTONF, Kc, Ki, Nai, Nao, y);
+  time_dependent_potassium_current: noble_difrancesco_denyer_1989__time_dependent_potassium_current(i_K, time_, V, RTONF, Ki, Kc, x);
+  time_independent_potassium_current: noble_difrancesco_denyer_1989__time_independent_potassium_current(i_K1, time_, V, E_K, Kc, RTONF);
+  sodium_background_current: noble_difrancesco_denyer_1989__sodium_background_current(i_Na_b, time_, V, E_Na);
+  calcium_background_current: noble_difrancesco_denyer_1989__calcium_background_current(i_Ca_b, E_Ca, time_, V, RTONF, Cai, Cao);
+  sodium_potassium_pump: noble_difrancesco_denyer_1989__sodium_potassium_pump(i_p, time_, V, Nai, Kc);
+  Na_Ca_exchanger: noble_difrancesco_denyer_1989__Na_Ca_exchanger(i_NaCa, n_NaCa, time_, V, RTONF, Cao, Cai, Nai, Nao);
+  fast_sodium_current: noble_difrancesco_denyer_1989__fast_sodium_current(i_Na, time_, V, RTONF, Nao, Nai, Kc, Ki, m, h);
+  second_inward_current: noble_difrancesco_denyer_1989__second_inward_current(i_si, i_siCa, i_siK, i_siNa, time_, V, RTONF, Nao, Nai, Kc, Ki, Cao, Cai, d, f, f2);
+  extracellular_sodium_concentration: noble_difrancesco_denyer_1989__extracellular_sodium_concentration(Nao);
+  intracellular_sodium_concentration: noble_difrancesco_denyer_1989__intracellular_sodium_concentration(Nai, Vi, time_, F, i_Na, i_Na_b, i_siNa, i_p, i_fNa, i_NaCa, n_NaCa);
+  extracellular_calcium_concentration: noble_difrancesco_denyer_1989__extracellular_calcium_concentration(Cao);
+  intracellular_calcium_concentration: noble_difrancesco_denyer_1989__intracellular_calcium_concentration(Cai, Vi, time_, V, F, i_Ca_b, i_siCa, i_NaCa, n_NaCa);
+  extracellular_potassium_concentration: noble_difrancesco_denyer_1989__extracellular_potassium_concentration(Kc);
+  intracellular_potassium_concentration: noble_difrancesco_denyer_1989__intracellular_potassium_concentration(Ki, Vi, i_K1, i_K, i_fK, i_siK, i_p, time_, F);
+end

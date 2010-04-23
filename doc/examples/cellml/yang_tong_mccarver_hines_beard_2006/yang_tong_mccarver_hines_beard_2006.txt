@@ -1,0 +1,74 @@
+//Created by libAntimony v1.3
+model yang_tong_mccarver_hines_beard_2006_version01__environment(time_)
+end
+
+model yang_tong_mccarver_hines_beard_2006_version01__B(B, F, Cp)
+
+  // Assignment Rules:
+  B := F * n2 * K2 * Cp / (1 + K2 * F);
+
+  // Variable initializations:
+  F = 0.48;
+  n2 = 1;
+  K2 = 0.8532;
+end
+
+model yang_tong_mccarver_hines_beard_2006_version01__R(R, C, B, F)
+
+  // Assignment Rules:
+  R := ISF * Vmax * fu * C / (Km + fu * C);
+  fu := F / (F + B);
+  ISF := -(8.3212 ) + 2.0401 * age + 4.1962 * log(age * 365 );
+
+  // Variable initializations:
+  Vmax = 9.433e-3;
+  Km = 198;
+  age = 5;
+end
+
+model yang_tong_mccarver_hines_beard_2006_version01__Ca(Ca, Qc, Cv, time_)
+
+  // Rate Rules:
+  Ca' = Qc * (Cv - Ca) / (Va + Vv);
+
+  // Variable initializations:
+  Ca = 6.6685;
+  Va = 2148;
+  Vv = 3431;
+end
+
+model yang_tong_mccarver_hines_beard_2006_version01__Cv(Cv, Q, P, C, Qc)
+
+  // Assignment Rules:
+  Cv := Q * C / P / Qc;
+end
+
+model yang_tong_mccarver_hines_beard_2006_version01__C(C, Q, P, Ca, R, time_)
+
+  // Rate Rules:
+  C' = (Q * (Ca - C / P) - R * 1 ) / V;
+
+  // Variable initializations:
+  C = 0;
+  V = 1454;
+end
+
+model yang_tong_mccarver_hines_beard_2006_version01__model_constants(Q, P, Qc)
+
+  // Variable initializations:
+  Q = 1221.34;
+  P = 15.61;
+  Qc = 6445.65;
+end
+
+model yang_tong_mccarver_hines_beard_2006_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: yang_tong_mccarver_hines_beard_2006_version01__environment(time_);
+  B: yang_tong_mccarver_hines_beard_2006_version01__B(B0, F, Ca0);
+  R: yang_tong_mccarver_hines_beard_2006_version01__R(R0, C0, B0, F);
+  Ca: yang_tong_mccarver_hines_beard_2006_version01__Ca(Ca0, Qc, Cv0, time_);
+  Cv: yang_tong_mccarver_hines_beard_2006_version01__Cv(Cv0, Q, P, C0, Qc);
+  C: yang_tong_mccarver_hines_beard_2006_version01__C(C0, Q, P, Ca0, R0, time_);
+  model_constants: yang_tong_mccarver_hines_beard_2006_version01__model_constants(Q, P, Qc);
+end

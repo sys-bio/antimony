@@ -1,0 +1,89 @@
+//Created by libAntimony v1.3
+model chay_model_1995_version02__environment(time_)
+end
+
+model chay_model_1995_version02__G_alpha_GTP(G_alpha_GTP, kp, KD, PLC, DAG, G_alpha_GDP, time_)
+
+  // Assignment Rules:
+  kp := kp_ * (power( DAG , 2.0 ) / (power( KD , 2.0 ) + power( DAG , 2.0 )));
+
+  // Rate Rules:
+  G_alpha_GTP' = kg * G_alpha_GDP - ( 4.0 * kp * power(G_alpha_GTP, 4.0 ) * PLC + hg * G_alpha_GTP);
+
+  // Variable initializations:
+  KD = 25.0;
+  kg = 0.005;
+  kp_ = 2.0E-7;
+  hg = 0.0;
+end
+
+model chay_model_1995_version02__DAG(DAG, KD, PLC_active, time_)
+
+  // Assignment Rules:
+  kd := kd_ * (power( DAG , 2.0 ) / (power( KD , 2.0 ) + power( DAG , 2.0 )));
+
+  // Rate Rules:
+  DAG' = kd * PLC_active - hd * DAG + ld;
+
+  // Variable initializations:
+  kd_ = 700.0;
+  hd = 100.0;
+  ld = 250.0;
+end
+
+model chay_model_1995_version02__Ca_i(DAG, time_)
+
+  // Assignment Rules:
+  IP3 := DAG;
+
+  // Rate Rules:
+  Ca_i' = rho_kc * (power( IP3 , 3.0 ) / (power( Ks , 3.0 ) + power( IP3 , 3.0 ))) - rho_hc * Ca_i + rho_lc;
+
+  // Variable initializations:
+  rho_kc = 90000.0;
+  rho_hc = 1.0;
+  rho_lc = 200.0;
+  Ks = 300.0;
+end
+
+model chay_model_1995_version02__PLC_active(PLC_active, kp, KD, G_alpha_GTP, PLC, DAG, time_)
+
+  // Assignment Rules:
+  hp := hp_ * (power( DAG , 2.0 ) / (power( KD , 2.0 ) + power( DAG , 2.0 )));
+
+  // Rate Rules:
+  PLC_active' = kp * power(G_alpha_GTP, 4.0 ) * PLC - hp * PLC_active;
+
+  // Variable initializations:
+  hp_ = 0.5;
+end
+
+model chay_model_1995_version02__PLC(PLC, PLC_active)
+
+  // Assignment Rules:
+  PLC := PLC_total - PLC_active;
+
+  // Variable initializations:
+  PLC_total = 10.0;
+end
+
+model chay_model_1995_version02__G_alpha_GDP(G_alpha_GDP, G_alpha_GTP, PLC_active, time_)
+
+  // Rate Rules:
+  G_alpha_GDP' = G_total - (G_alpha_GTP + 4.0 * PLC_active);
+
+  // Variable initializations:
+  G_total = 200.0;
+end
+
+model chay_model_1995_version02____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: chay_model_1995_version02__environment(time_);
+  G_alpha_GTP: chay_model_1995_version02__G_alpha_GTP(G_alpha_GTP0, kp, KD, PLC0, DAG0, G_alpha_GDP0, time_);
+  DAG: chay_model_1995_version02__DAG(DAG0, KD, PLC_active0, time_);
+  Ca_i: chay_model_1995_version02__Ca_i(DAG0, time_);
+  PLC_active: chay_model_1995_version02__PLC_active(PLC_active0, kp, KD, G_alpha_GTP0, PLC0, DAG0, time_);
+  PLC: chay_model_1995_version02__PLC(PLC0, PLC_active0);
+  G_alpha_GDP: chay_model_1995_version02__G_alpha_GDP(G_alpha_GDP0, G_alpha_GTP0, PLC_active0, time_);
+end

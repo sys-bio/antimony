@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="bental_C_2005____main" name="bental_C_2005____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="equations_PA" value="760" constant="false"/>
+      <parameter id="equations_Pm" value="760"/>
+      <parameter id="equations_R" value="1"/>
+      <parameter id="equations_E" value="2.5"/>
+      <parameter id="equations_QA" constant="false"/>
+      <parameter id="equations_Do"/>
+      <parameter id="equations_Dc"/>
+      <parameter id="equations_pc" value="46"/>
+      <parameter id="equations_pao" value="97.5"/>
+      <parameter id="equations_po" value="40"/>
+      <parameter id="equations_pac" value="37.5"/>
+      <parameter id="equations_q" value="0"/>
+      <parameter id="equations_PL" constant="false"/>
+      <parameter id="equations_fo" value="0.1368" constant="false"/>
+      <parameter id="equations_foi" constant="false"/>
+      <parameter id="equations_fom" value="0.21"/>
+      <parameter id="equations_fcm" value="0"/>
+      <parameter id="equations_VD" value="0.15"/>
+      <parameter id="equations_VT" value="0.4"/>
+      <parameter id="equations_fc" value="0.05263" constant="false"/>
+      <parameter id="equations_fci" constant="false"/>
+      <parameter id="equations_omega" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="equations_VA"/>
+      <parameter id="equations_delta_PL"/>
+      <parameter id="equations_qi"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="equations_Do">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3.5 <sep/> -4 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="equations_Dc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 7.08 <sep/> -4 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="equations_PA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> equations_Pm </ci>
+                  <ci> equations_E </ci>
+                </apply>
+                <ci> equations_PA </ci>
+              </apply>
+              <ci> equations_QA </ci>
+            </apply>
+            <ci> equations_delta_PL </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="equations_QA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> equations_q </ci>
+            <apply>
+              <times/>
+              <ci> equations_Dc </ci>
+              <apply>
+                <minus/>
+                <ci> equations_pc </ci>
+                <ci> equations_pac </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> equations_Do </ci>
+              <apply>
+                <minus/>
+                <ci> equations_po </ci>
+                <ci> equations_pao </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_PL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> equations_Pm </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> equations_R </ci>
+                <ci> equations_omega </ci>
+                <apply>
+                  <divide/>
+                  <ci> equations_VT </ci>
+                  <cn> 2 </cn>
+                </apply>
+                <apply>
+                  <sin/>
+                  <apply>
+                    <times/>
+                    <ci> time_ </ci>
+                    <ci> equations_omega </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> equations_E </ci>
+                <apply>
+                  <minus/>
+                  <cn> 2.5 </cn>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <divide/>
+                      <ci> equations_VT </ci>
+                      <cn> 2 </cn>
+                    </apply>
+                    <apply>
+                      <cos/>
+                      <apply>
+                        <times/>
+                        <ci> time_ </ci>
+                        <ci> equations_omega </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="equations_fo">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 1 </cn>
+              <ci> equations_VA </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> equations_Do </ci>
+                  <apply>
+                    <minus/>
+                    <ci> equations_po </ci>
+                    <ci> equations_pao </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> equations_qi </ci>
+                  <apply>
+                    <minus/>
+                    <ci> equations_foi </ci>
+                    <ci> equations_fo </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> equations_fo </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> equations_Dc </ci>
+                    <apply>
+                      <minus/>
+                      <ci> equations_pc </ci>
+                      <ci> equations_pac </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> equations_Do </ci>
+                    <apply>
+                      <minus/>
+                      <ci> equations_po </ci>
+                      <ci> equations_pao </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="equations_foi"/>
+      <rateRule variable="equations_fc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 1 </cn>
+              <ci> equations_VA </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> equations_Dc </ci>
+                  <apply>
+                    <minus/>
+                    <ci> equations_pc </ci>
+                    <ci> equations_pac </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> equations_qi </ci>
+                  <apply>
+                    <minus/>
+                    <ci> equations_fci </ci>
+                    <ci> equations_fc </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> equations_fc </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> equations_Do </ci>
+                    <apply>
+                      <minus/>
+                      <ci> equations_po </ci>
+                      <ci> equations_pao </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> equations_Dc </ci>
+                    <apply>
+                      <minus/>
+                      <ci> equations_pc </ci>
+                      <ci> equations_pac </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="equations_fci"/>
+      <assignmentRule variable="equations_omega">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <cn> 3.141 </cn>
+            </apply>
+            <cn> 5 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

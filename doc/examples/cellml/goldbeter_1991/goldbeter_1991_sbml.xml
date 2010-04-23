@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="goldbeter_1991____main" name="goldbeter_1991____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="C0" value="0.01" constant="false"/>
+      <parameter id="X0" value="0.01" constant="false"/>
+      <parameter id="kd" value="0.01"/>
+      <parameter id="Kd" value="0.02"/>
+      <parameter id="vi" value="0.025"/>
+      <parameter id="vd" value="0.25"/>
+      <parameter id="M0" value="0.01" constant="false"/>
+      <parameter id="M_star0" constant="false"/>
+      <parameter id="V1" constant="false"/>
+      <parameter id="V2" value="1.5"/>
+      <parameter id="K1" value="0.005"/>
+      <parameter id="K2" value="0.005"/>
+      <parameter id="X_star0" constant="false"/>
+      <parameter id="V3" constant="false"/>
+      <parameter id="V4" value="0.5"/>
+      <parameter id="K3" value="0.005"/>
+      <parameter id="K4" value="0.005"/>
+      <parameter id="Kc" value="0.5"/>
+      <parameter id="VM1" value="3"/>
+      <parameter id="VM3" value="1"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="C0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> vi </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> vd </ci>
+                  <ci> X0 </ci>
+                  <ci> C0 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Kd </ci>
+                  <ci> C0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kd </ci>
+              <ci> C0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="X0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V3 </ci>
+                <ci> X_star0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K3 </ci>
+                <ci> X_star0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V4 </ci>
+                <ci> X0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K4 </ci>
+                <ci> X0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="M0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V1 </ci>
+                <ci> M_star0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K1 </ci>
+                <ci> M_star0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V2 </ci>
+                <ci> M0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K2 </ci>
+                <ci> M0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="M_star0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <ci> M0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> VM1 </ci>
+              <ci> C0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> Kc </ci>
+              <ci> C0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="X_star0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn type="integer"> 1 </cn>
+            <ci> X0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> M0 </ci>
+            <ci> VM3 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

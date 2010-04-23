@@ -1,0 +1,178 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to translate an assignment to "del( c )/del( time )" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del(degree( 2.0  ),  c )/del( x ,  2.0  )" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__environment(time_)
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__R(R, O, phi_1, phi_2, phi_2_, k_1_, l_2_, I_1, p, time_)
+
+  // Rate Rules:
+  R' = phi_2_ * O - ( phi_2 * p * R + phi_1 * R ) + ( l_2_ + k_1_ ) * I_1;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__O(O, R, A, S, phi_2, phi_2_, phi_3, phi_4, phi_4_, k_3_, p, time_)
+
+  // Rate Rules:
+  O' = phi_2 * p * R - ( phi_2_ + phi_4 + phi_3 ) * O + phi_4_ * A + k_3_ * S;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__A(A, O, I_2, phi_4, phi_4_, phi_5, k_1_, l_2_, time_)
+
+  // Rate Rules:
+  A' = phi_4 * O - ( phi_4_ * A + phi_5 * A ) + ( k_1_ + l_2_ ) * I_2;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__I_1(I_1, R, phi_1, k_1_, l_2_, time_)
+
+  // Rate Rules:
+  I_1' = phi_1 * R - ( k_1_ + l_2_ ) * I_1;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__I_2(I_2, A, phi_5, k_1_, l_2_, time_)
+
+  // Rate Rules:
+  I_2' = phi_5 * A - ( k_1_ + l_2_ ) * I_2;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__S(S, O, phi_3, k_3_, time_)
+
+  // Rate Rules:
+  S' = phi_3 * O - k_3_ * S;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__P_IPR(P_IPR, O, A)
+
+  // Assignment Rules:
+  P_IPR := power( 0.1 * O + 0.9 * A , 4.0 );
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__IPR_parameters(phi_1, phi_2, phi_2_, phi_3, phi_4, phi_4_, phi_5, k_1_, k_3_, l_2_, p, c)
+
+  // Assignment Rules:
+  phi_1 := ( k_1 * L_1 + l_2 ) * c / ( L_1 + c * ( 1.0 + L_1 / L_3 ));
+  phi_2 := ( k_2 * L_3 + l_4 * c ) / ( L_3 + c * ( 1.0 + L_3 / L_1 ));
+  phi_2_ := ( k_2_ + l_4_ * c ) / ( 1.0 + c / L_5 );
+  phi_3 := k_3 * L_5 / ( c + L_5 );
+  phi_4 := ( k_4 * L_5 + l_6 ) * c / ( c + L_5 );
+  phi_4_ := ( k_1 * L_1 + l_2 ) * c / ( c + L_1 );
+  phi_5 := L_1 * ( k_4_ + l_6_ ) * c / ( c + L_1 );
+
+  // Variable initializations:
+  k_1 = 0.64;
+  k_1_ = 0.04;
+  k_2 = 37.4;
+  k_2_ = 1.4;
+  k_3 = 0.11;
+  k_3_ = 29.8;
+  k_4 = 4.0;
+  k_4_ = 0.54;
+  l_2 = 1.7;
+  l_2_ = 0.8;
+  l_4 = 1.7;
+  l_4_ = 2.5;
+  l_6 = 4707.0;
+  l_6_ = 11.4;
+  L_1 = 0.12;
+  L_3 = 0.025;
+  L_5 = 54.7;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__P_RyR(P_RyR, c, time_)
+
+  // Assignment Rules:
+  P_RyR := w * ( 1.0 + power( c / Kb , 3.0 )) / ( 1.0 + power( Ka / c , 4.0 ) + power( c / Kb , 3.0 ));
+  w_infinity_c := ( 1.0 + power( Ka / c , 4.0 ) + power( c / Kb , 3.0 )) / ( 1.0 + 1.0 / Kc + power( Ka / c , 4.0 ) + power( c / Kb , 3.0 ));
+  Ka := ka_minus / ka_plus;
+  Kb := kb_minus / kb_plus;
+  Kc := kc_minus / kc_plus;
+
+  // Rate Rules:
+  w' = kc_minus * ( w_infinity_c - w ) / w_infinity_c;
+
+  // Variable initializations:
+  ka_plus = 1500.0;
+  kb_plus = 1500.0;
+  ka_minus = 28.8;
+  kb_minus = 385.9;
+  kc_plus = 1.75;
+  kc_minus = 0.1;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__calcium(c, c_e, P_IPR, P_RyR, J_pm, J_in, J_serca, J_mito, p, time_)
+
+  // Rate Rules:
+  c_e' = gamma * ( J_serca - ( k_f * P_IPR + v_1 * P_RyR + J_er ) * ( c_e - c ));
+
+  // Variable initializations:
+  Dc = 20.0;
+  k_f = 0.71;
+  v_1 = 0.098;
+  gamma = 5.405;
+  delta = 0.1;
+  J_er = 0.002;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__plasma_membrane_calcium_pump(J_pm, c, time_)
+
+  // Assignment Rules:
+  J_pm := V_pm * power( c , 2.0 ) / (power( K_pm , 2.0 ) + power( c , 2.0 ));
+
+  // Variable initializations:
+  K_pm = 0.425;
+  V_pm = 28.0;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__SERCA_pump(J_serca, c, c_e, time_)
+
+  // Assignment Rules:
+  J_serca := V_serca * c / ( K_serca + c ) * ( 1.0 / c_e );
+
+  // Variable initializations:
+  K_serca = 0.18;
+  V_serca = 120.0;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__mitochondrial_uptake(J_mito, c, time_)
+
+  // Assignment Rules:
+  J_mito := V_mito * c / ( 1.0 + power( 1.0 / c , 2.0 ));
+
+  // Variable initializations:
+  V_mito = 0.0;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__influx_from_outside_the_cell(J_in, p, time_)
+
+  // Assignment Rules:
+  J_in := 0.2 + 0.05 * p;
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__IP3_dynamics(p, time_)
+
+  // Assignment Rules:
+  p := p0 * exp( -0.8 * time_ );
+end
+
+model sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__environment(time_);
+  R: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__R(R0, O0, phi_1, phi_2, phi_2_, k_1_, l_2_, I_10, p, time_);
+  O: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__O(O0, R0, A0, S0, phi_2, phi_2_, phi_3, phi_4, phi_4_, k_3_, p, time_);
+  A: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__A(A0, O0, I_20, phi_4, phi_4_, phi_5, k_1_, l_2_, time_);
+  I_1: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__I_1(I_10, R0, phi_1, k_1_, l_2_, time_);
+  I_2: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__I_2(I_20, A0, phi_5, k_1_, l_2_, time_);
+  S: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__S(S0, O0, phi_3, k_3_, time_);
+  P_IPR: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__P_IPR(P_IPR0, O0, A0);
+  IPR_parameters: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__IPR_parameters(phi_1, phi_2, phi_2_, phi_3, phi_4, phi_4_, phi_5, k_1_, k_3_, l_2_, p, c);
+  P_RyR: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__P_RyR(P_RyR0, c, time_);
+  calcium: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__calcium(c, c_e, P_IPR0, P_RyR0, J_pm, J_in, J_serca, J_mito, p, time_);
+  plasma_membrane_calcium_pump: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__plasma_membrane_calcium_pump(J_pm, c, time_);
+  SERCA_pump: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__SERCA_pump(J_serca, c, c_e, time_);
+  mitochondrial_uptake: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__mitochondrial_uptake(J_mito, c, time_);
+  influx_from_outside_the_cell: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__influx_from_outside_the_cell(J_in, p, time_);
+  IP3_dynamics: sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01__IP3_dynamics(p, time_);
+end

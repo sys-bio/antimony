@@ -1,0 +1,42 @@
+//Created by libAntimony v1.3
+model yates_stark_klein_antia_callard_model_2007_version01__environment(time_)
+end
+
+model yates_stark_klein_antia_callard_model_2007_version01__x(x, d1, a, r, y, kappa, time_)
+
+  // Rate Rules:
+  x' = 2.0 * r * y - ( a * x * ( 1.0 - x / kappa ) + d1 * x * ( x / kappa ));
+
+  // Variable initializations:
+  x = 10E-1;
+end
+
+model yates_stark_klein_antia_callard_model_2007_version01__y(y, d2, a, r, x, kappa, time_)
+
+  // Rate Rules:
+  y' = a * x * ( 1.0 - x / kappa ) - ( r + d2 ) * y;
+
+  // Variable initializations:
+  y = 0.0;
+end
+
+model yates_stark_klein_antia_callard_model_2007_version01__model_parameters(a, d1, r, d2, kappa)
+
+  // Assignment Rules:
+  d2 := (-(( 99.0 * a * d1 )) + a * r + d1 * r ) / ( a - d1 );
+
+  // Variable initializations:
+  a = 0.03333;
+  d1 = 0.005;
+  r = 1.0;
+  kappa = 1.0;
+end
+
+model yates_stark_klein_antia_callard_model_2007_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: yates_stark_klein_antia_callard_model_2007_version01__environment(time_);
+  x: yates_stark_klein_antia_callard_model_2007_version01__x(x0, d1, a, r, y0, kappa, time_);
+  y: yates_stark_klein_antia_callard_model_2007_version01__y(y0, d2, a, r, x0, kappa, time_);
+  model_parameters: yates_stark_klein_antia_callard_model_2007_version01__model_parameters(a, d1, r, d2, kappa);
+end

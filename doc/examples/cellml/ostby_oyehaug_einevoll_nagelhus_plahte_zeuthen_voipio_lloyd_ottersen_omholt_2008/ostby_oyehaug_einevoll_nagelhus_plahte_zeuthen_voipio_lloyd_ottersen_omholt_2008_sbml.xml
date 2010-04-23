@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="ostby_model_2008____main" name="ostby_model_2008____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="wi0" value="0.061" constant="false"/>
+      <parameter id="Lp" value="0.00021"/>
+      <parameter id="Xi" value="12.41"/>
+      <parameter id="Nao" constant="false"/>
+      <parameter id="Ko" constant="false"/>
+      <parameter id="Clo" constant="false"/>
+      <parameter id="HCO3o" constant="false"/>
+      <parameter id="Nai" constant="false"/>
+      <parameter id="Ki" constant="false"/>
+      <parameter id="Cli" constant="false"/>
+      <parameter id="HCO3i" constant="false"/>
+      <parameter id="wo0" constant="false"/>
+      <parameter id="wo_w_tot" value="0.0879"/>
+      <parameter id="N_Nai0" value="0.99796" constant="false"/>
+      <parameter id="dN_Nai_dt" constant="false"/>
+      <parameter id="gNa" value="0.0001314"/>
+      <parameter id="ENa" constant="false"/>
+      <parameter id="Vm" constant="false"/>
+      <parameter id="J_NaKATPase0" constant="false"/>
+      <parameter id="F" value="96490"/>
+      <parameter id="theta_NKCC1" value="1"/>
+      <parameter id="J_NKCC10" constant="false"/>
+      <parameter id="theta_NBC" value="1"/>
+      <parameter id="J_NBC0" constant="false"/>
+      <parameter id="N_Ki0" value="5.52782" constant="false"/>
+      <parameter id="dN_Ki_dt" constant="false"/>
+      <parameter id="gK" value="0.004"/>
+      <parameter id="EK" constant="false"/>
+      <parameter id="theta_KCC1" value="1"/>
+      <parameter id="J_KCC10" constant="false"/>
+      <parameter id="N_HCO3i0" value="0.58804" constant="false"/>
+      <parameter id="dN_HCO3i_dt" constant="false"/>
+      <parameter id="N_Cli0" value="0.32879" constant="false"/>
+      <parameter id="N_Nao0" value="4.301041" constant="false"/>
+      <parameter id="y" constant="false"/>
+      <parameter id="kc" value="0.0735"/>
+      <parameter id="N_Ko0" value="0.0807" constant="false"/>
+      <parameter id="N_HCO3o0" value="0.432552" constant="false"/>
+      <parameter id="N_Clo0" constant="false"/>
+      <parameter id="ECl" constant="false"/>
+      <parameter id="T" value="300"/>
+      <parameter id="R" value="8.315"/>
+      <parameter id="J_KCC1_gKCC1" value="1e-06"/>
+      <parameter id="J_KCC1_ft" constant="false"/>
+      <parameter id="gNBC" value="9.03e-05"/>
+      <parameter id="ENBC0" constant="false"/>
+      <parameter id="J_NKCC1_gNKCC1" value="5.54e-06"/>
+      <parameter id="J_NKCC1_ft" constant="false"/>
+      <parameter id="ENBC_zNBC" value="-1"/>
+      <parameter id="gCl" value="8.797e-05"/>
+      <parameter id="J_NaKATPase_Pmax" value="1.4207e-10"/>
+      <parameter id="J_NaKATPase_K_Nai" value="10"/>
+      <parameter id="J_NaKATPase_K_Ko" value="1.5"/>
+      <parameter id="I_K0" constant="false"/>
+      <parameter id="nA" value="6.0221415e+23"/>
+      <parameter id="elementary_charge" value="1.6e-19"/>
+      <parameter id="I_Cl0" constant="false"/>
+      <parameter id="I_Na0" constant="false"/>
+      <parameter id="model_parameters_t0" value="10"/>
+      <parameter id="model_parameters_t1" value="20"/>
+      <parameter id="model_parameters_t2" value="30"/>
+      <parameter id="model_parameters_alpha" value="2"/>
+      <parameter id="model_parameters_beta" value="14"/>
+      <parameter id="model_parameters_deltaT" constant="false"/>
+      <parameter id="model_parameters_gamma_alpha_beta" constant="false"/>
+      <parameter id="model_parameters_gamma_alpha" constant="false"/>
+      <parameter id="model_parameters_gamma_beta" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="wi0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <ci> Lp </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> Nai </ci>
+                <ci> Ki </ci>
+                <ci> Cli </ci>
+                <ci> HCO3i </ci>
+                <apply>
+                  <divide/>
+                  <ci> Xi </ci>
+                  <ci> wi0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Nao </ci>
+                <ci> Ko </ci>
+                <ci> Clo </ci>
+                <ci> HCO3o </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Nao"/>
+      <assignmentRule variable="Ko"/>
+      <assignmentRule variable="Clo"/>
+      <assignmentRule variable="HCO3o"/>
+      <assignmentRule variable="Nai"/>
+      <assignmentRule variable="Ki"/>
+      <assignmentRule variable="Cli"/>
+      <assignmentRule variable="HCO3i"/>
+      <assignmentRule variable="wo0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> wo_w_tot </ci>
+            <ci> wi0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="N_Nai0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> dN_Nai_dt </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="dN_Nai_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> theta_NKCC1 </ci>
+                <ci> J_NKCC10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> theta_NBC </ci>
+                <ci> J_NBC0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 1 <sep/> 10 </cn>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> gNa </ci>
+                    <ci> F </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> Vm </ci>
+                    <ci> ENa </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 3 </cn>
+                  <ci> J_NaKATPase0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ENa">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> R </ci>
+                <ci> T </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn type="integer"> 1 </cn>
+                <ci> F </ci>
+              </apply>
+            </apply>
+            <apply>
+              <ln/>
+              <apply>
+                <divide/>
+                <ci> Nao </ci>
+                <ci> Nai </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Vm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> gNa </ci>
+                  <ci> ENa </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> gK </ci>
+                  <ci> EK </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> gCl </ci>
+                  <ci> ECl </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> theta_NBC </ci>
+                  <ci> gNBC </ci>
+                  <ci> ENBC0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> J_NaKATPase0 </ci>
+                <ci> F </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> gNa </ci>
+              <ci> gK </ci>
+              <ci> gCl </ci>
+              <apply>
+                <times/>
+                <ci> theta_NBC </ci>
+                <ci> gNBC </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_NaKATPase0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> J_NaKATPase_Pmax </ci>
+                  <apply>
+                    <power/>
+                    <ci> Nai </ci>
+                    <cn> 1.5 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> Nai </ci>
+                    <cn> 1.5 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> J_NaKATPase_K_Nai </ci>
+                    <cn> 1.5 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> Ko </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> Ko </ci>
+              <ci> J_NaKATPase_K_Ko </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_NKCC10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <cn type="e-notation"> 1 <sep/> 10 </cn>
+                    <ci> J_NKCC1_gNKCC1 </ci>
+                    <ci> J_NKCC1_ft </ci>
+                  </apply>
+                  <ci> F </ci>
+                </apply>
+                <ci> R </ci>
+                <ci> T </ci>
+              </apply>
+              <ci> F </ci>
+            </apply>
+            <apply>
+              <ln/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <divide/>
+                      <ci> Nao </ci>
+                      <ci> Nai </ci>
+                    </apply>
+                    <ci> Ko </ci>
+                  </apply>
+                  <ci> Ki </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> Clo </ci>
+                    <ci> Cli </ci>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_NBC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <cn type="e-notation"> 1 <sep/> 10 </cn>
+                <ci> gNBC </ci>
+              </apply>
+              <ci> F </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> Vm </ci>
+              <ci> ENBC0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="N_Ki0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> dN_Ki_dt </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="dN_Ki_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> theta_NKCC1 </ci>
+                <ci> J_NKCC10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> theta_KCC1 </ci>
+                <ci> J_KCC10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn type="e-notation"> 1 <sep/> 10 </cn>
+                <cn type="integer"> 2 </cn>
+                <ci> J_NaKATPase0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn type="e-notation"> 1 <sep/> 10 </cn>
+                  <ci> gK </ci>
+                </apply>
+                <ci> F </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> Vm </ci>
+                <ci> EK </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="EK">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> R </ci>
+                <ci> T </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn type="integer"> 1 </cn>
+                <ci> F </ci>
+              </apply>
+            </apply>
+            <apply>
+              <ln/>
+              <apply>
+                <divide/>
+                <ci> Ko </ci>
+                <ci> Ki </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_KCC10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <cn type="e-notation"> 1 <sep/> 10 </cn>
+                    <ci> J_KCC1_gKCC1 </ci>
+                    <ci> J_KCC1_ft </ci>
+                  </apply>
+                  <ci> F </ci>
+                </apply>
+                <ci> R </ci>
+                <ci> T </ci>
+              </apply>
+              <ci> F </ci>
+            </apply>
+            <apply>
+              <ln/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> Ko </ci>
+                  <ci> Clo </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Ki </ci>
+                  <ci> Cli </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="N_HCO3i0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> dN_HCO3i_dt </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="dN_HCO3i_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 2 </cn>
+            <ci> theta_NBC </ci>
+            <ci> J_NBC0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="N_Cli0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> dN_Ki_dt </ci>
+            <ci> dN_Nai_dt </ci>
+            <ci> dN_HCO3i_dt </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="N_Nao0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 1 <sep/> 10 </cn>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> gNa </ci>
+                    <ci> F </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> Vm </ci>
+                    <ci> ENa </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 3 </cn>
+                  <ci> J_NaKATPase0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> theta_NKCC1 </ci>
+                <ci> J_NKCC10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> theta_NBC </ci>
+                <ci> J_NBC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kc </ci>
+                <ci> y </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="y"/>
+      <rateRule variable="N_Ko0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <cn type="e-notation"> 1 <sep/> 10 </cn>
+                    <ci> gK </ci>
+                  </apply>
+                  <ci> F </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <ci> Vm </ci>
+                  <ci> EK </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kc </ci>
+                <ci> y </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> theta_NKCC1 </ci>
+                <ci> J_NKCC10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> theta_KCC1 </ci>
+                <ci> J_KCC10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn type="e-notation"> 1 <sep/> 10 </cn>
+                <cn type="integer"> 2 </cn>
+                <ci> J_NaKATPase0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="N_HCO3o0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> -2 </cn>
+            <ci> theta_NBC </ci>
+            <ci> J_NBC0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="N_Clo0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> N_Nao0 </ci>
+              <ci> N_Ko0 </ci>
+            </apply>
+            <ci> N_HCO3o0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ECl">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> R </ci>
+                <ci> T </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn type="integer"> -1 </cn>
+                <ci> F </ci>
+              </apply>
+            </apply>
+            <apply>
+              <ln/>
+              <apply>
+                <divide/>
+                <ci> Clo </ci>
+                <ci> Cli </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_KCC1_ft"/>
+      <assignmentRule variable="ENBC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> R </ci>
+                <ci> T </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ENBC_zNBC </ci>
+                <ci> F </ci>
+              </apply>
+            </apply>
+            <apply>
+              <ln/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> Nao </ci>
+                    <ci> Nai </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> HCO3o </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> HCO3i </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_NKCC1_ft"/>
+      <assignmentRule variable="I_K0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <cn type="e-notation"> 1 <sep/> 10 </cn>
+                <cn type="integer"> 2 </cn>
+                <ci> J_NaKATPase0 </ci>
+                <ci> F </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> elementary_charge </ci>
+                <ci> nA </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn type="e-notation"> 1 <sep/> 10 </cn>
+                  <ci> gK </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> elementary_charge </ci>
+                  <ci> nA </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> Vm </ci>
+                <ci> EK </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_Cl0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <cn type="e-notation"> 1 <sep/> 10 </cn>
+                <ci> gCl </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> elementary_charge </ci>
+                <ci> nA </ci>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> Vm </ci>
+              <ci> ECl </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_Na0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> J_NBC0 </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <cn type="e-notation"> 1 <sep/> 10 </cn>
+                    <ci> gNa </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> elementary_charge </ci>
+                    <ci> nA </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <minus/>
+                  <ci> Vm </ci>
+                  <ci> ENa </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn type="e-notation"> 1 <sep/> 10 </cn>
+                  <cn type="integer"> 3 </cn>
+                  <ci> J_NaKATPase0 </ci>
+                  <ci> F </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> elementary_charge </ci>
+                  <ci> nA </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_deltaT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> model_parameters_t1 </ci>
+            <ci> model_parameters_t0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_gamma_alpha_beta">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <factorial/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> model_parameters_alpha </ci>
+                <ci> model_parameters_beta </ci>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_gamma_alpha">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <factorial/>
+            <apply>
+              <minus/>
+              <ci> model_parameters_alpha </ci>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_gamma_beta">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <factorial/>
+            <apply>
+              <minus/>
+              <ci> model_parameters_beta </ci>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

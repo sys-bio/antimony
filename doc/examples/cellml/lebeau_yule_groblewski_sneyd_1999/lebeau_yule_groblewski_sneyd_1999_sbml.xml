@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="lebeau_yule_groblewski_sneyd_1999_version01____main" name="lebeau_yule_groblewski_sneyd_1999_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="O0" constant="false"/>
+      <parameter id="O_S" constant="false"/>
+      <parameter id="I10" constant="false"/>
+      <parameter id="I20" constant="false"/>
+      <parameter id="p" value="3"/>
+      <parameter id="k1" constant="false"/>
+      <parameter id="k1_" value="0.88"/>
+      <parameter id="k2" value="0.5"/>
+      <parameter id="k3" value="0.5"/>
+      <parameter id="k4" constant="false"/>
+      <parameter id="k5" value="0.02"/>
+      <parameter id="c0" constant="false"/>
+      <parameter id="c_J_rel" constant="false"/>
+      <parameter id="c_J_pump" constant="false"/>
+      <parameter id="c_J_influx" value="0.4"/>
+      <parameter id="c_V_p" value="2.6"/>
+      <parameter id="c_K_p" value="0.54"/>
+      <parameter id="c_k_flux" value="28"/>
+      <parameter id="constants_alpha_1" value="40"/>
+      <parameter id="constants_beta_1" value="0.8"/>
+      <parameter id="constants_alpha_4" value="0.06"/>
+      <parameter id="constants_beta_4" value="0.01"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="O0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> p </ci>
+              <ci> O_S </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k1_ </ci>
+                <ci> O0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k2 </ci>
+                <ci> O0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="O_S">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> 4 </cn>
+            <apply>
+              <plus/>
+              <ci> O0 </ci>
+              <ci> I10 </ci>
+              <ci> I20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="I10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <ci> O0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k3 </ci>
+                <ci> k4 </ci>
+              </apply>
+              <ci> I10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="I20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k4 </ci>
+              <ci> I10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k5 </ci>
+              <ci> I20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> constants_alpha_1 </ci>
+              <apply>
+                <power/>
+                <ci> c0 </ci>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> constants_beta_1 </ci>
+                <cn> 3 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> c0 </ci>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> constants_alpha_4 </ci>
+              <ci> p </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> constants_beta_4 </ci>
+              <ci> p </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="c0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <ci> c_J_rel </ci>
+              <ci> c_J_pump </ci>
+            </apply>
+            <ci> c_J_influx </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="c_J_rel">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> c_k_flux </ci>
+            <apply>
+              <power/>
+              <ci> O0 </ci>
+              <cn> 4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="c_J_pump">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> c_V_p </ci>
+              <apply>
+                <power/>
+                <ci> c0 </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> c_K_p </ci>
+                <cn> 2 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> c0 </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="BidirectionalExample____main" name="BidirectionalExample____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="BidirectionalExampleComponent_A" value="10" constant="false"/>
+      <parameter id="BidirectionalExampleComponent_B" value="5" constant="false"/>
+      <parameter id="BidirectionalExampleComponent_C" value="0" constant="false"/>
+      <parameter id="BidirectionalExampleComponent_J" constant="false"/>
+      <parameter id="BidirectionalExampleComponent_kf" value="0.2"/>
+      <parameter id="BidirectionalExampleComponent_kr" value="0.05"/>
+      <parameter id="BidirectionalExampleComponent_t"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="BidirectionalExampleComponent_A">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> BidirectionalExampleComponent_J </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="BidirectionalExampleComponent_B">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> BidirectionalExampleComponent_J </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="BidirectionalExampleComponent_C">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> BidirectionalExampleComponent_J </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="BidirectionalExampleComponent_J">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> BidirectionalExampleComponent_kf </ci>
+              <ci> BidirectionalExampleComponent_A </ci>
+              <ci> BidirectionalExampleComponent_B </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> BidirectionalExampleComponent_kr </ci>
+              <ci> BidirectionalExampleComponent_C </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

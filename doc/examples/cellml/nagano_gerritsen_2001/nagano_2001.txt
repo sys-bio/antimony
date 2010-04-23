@@ -1,0 +1,41 @@
+//Created by libAntimony v1.3
+model nagano_2001__environment(time_)
+end
+
+model nagano_2001__contraction(time_)
+
+  // Assignment Rules:
+  F_isom := c * power(L_ce / L_ce_opt, 2 ) - 2 * c * L_ce / L_ce_opt + c + 1;
+  c := -(1 ) / power(width, 2 );
+  L := piecewise( 1 , time_ <= 1 , 0.92 , ( time_ > 1) && (time_ < 5 ), 0.9 );
+  v_ce := -(Factor) * L_ce * ((F_isom + A_REL) * B_REL / (1 * (F / (F_max * q)) + A_REL) - B_REL);
+  F := alpha * (L_see - L_slack);
+  c1 := Factor * B_REL * power(F_isom + c2, 2 ) / ((F_isom + A_REL) * slope);
+  c2 := F_isom * F_asympt;
+  c3 := c1 / (F_isom + c2);
+  L_see := L - L_ce;
+
+  // Rate Rules:
+  L_ce' = v_ce;
+
+  // Variable initializations:
+  L_ce = 0.05;
+  L_ce_opt = 0.055;
+  width = 0.888;
+  Factor = 1;
+  A_REL = 0.41;
+  B_REL = 5.2;
+  F_max = 3277.4;
+  q = 1;
+  slope = 2;
+  F_asympt = 1.5;
+  L_slack = 0.42;
+  alpha = 1449.027;
+end
+
+model nagano_2001____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: nagano_2001__environment(time_);
+  contraction: nagano_2001__contraction(time_);
+end

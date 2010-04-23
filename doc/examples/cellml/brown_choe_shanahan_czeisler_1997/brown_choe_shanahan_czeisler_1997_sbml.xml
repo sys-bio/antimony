@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="brown_model_1997____main" name="brown_model_1997____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="H10" value="0.05" constant="false"/>
+      <parameter id="A0" constant="false"/>
+      <parameter id="beta_I" constant="false"/>
+      <parameter id="H20" value="1" constant="false"/>
+      <parameter id="beta_C" constant="false"/>
+      <parameter id="A_t_on" value="1316"/>
+      <parameter id="A_t_off" value="1792"/>
+      <parameter id="A_A_max" value="6.51"/>
+      <parameter id="alpha" constant="false"/>
+      <parameter id="lamda" constant="false"/>
+      <parameter id="model_parameters_tau_I" value="2.82"/>
+      <parameter id="model_parameters_tau_C" value="23.67"/>
+      <parameter id="model_parameters_tau_alpha" value="25.92"/>
+      <parameter id="model_parameters_tau_lamda" value="24.04"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="H10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> beta_I </ci>
+                <ci> H10 </ci>
+              </apply>
+            </apply>
+            <ci> A0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="A0"/>
+      <assignmentRule variable="beta_I">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+            <ci> model_parameters_tau_I </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="H20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> beta_I </ci>
+              <ci> H10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> beta_C </ci>
+              <ci> H20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="beta_C">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+            <ci> model_parameters_tau_C </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="alpha">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+            <ci> model_parameters_tau_alpha </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="lamda">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+            <ci> model_parameters_tau_lamda </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

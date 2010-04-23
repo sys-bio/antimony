@@ -1,0 +1,117 @@
+//Created by libAntimony v1.3
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__environment(time_)
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__kinetic_parameters(k, c, p, q, b, a)
+
+  // Variable initializations:
+  k = 2.76;
+  q = 3.0;
+  b = 1.0;
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__S(S, a, b, c, V, time_)
+
+  // Rate Rules:
+  S' = a - ( b * S + c * S * V );
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I1(I1, c, k, V, S, time_)
+
+  // Rate Rules:
+  I1' = c * S * V - k * I1;
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I2(I2, k, I1, time_)
+
+  // Rate Rules:
+  I2' = k * ( I1 - I2 );
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I3(I3, k, I2, time_)
+
+  // Rate Rules:
+  I3' = k * ( I2 - I3 );
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I4(I4, k, I3, time_)
+
+  // Rate Rules:
+  I4' = k * ( I3 - I4 );
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I5(I5, k, I4, time_)
+
+  // Rate Rules:
+  I5' = k * ( I4 - I5 );
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__V(V, p, q, I5, time_)
+
+  // Rate Rules:
+  V' = p * I5 - q * V;
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__Se(Se, q, k, p, c)
+
+  // Assignment Rules:
+  Se := q * k / ( p * c );
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__Ve(Ve, a, b, p, c, q, k)
+
+  // Assignment Rules:
+  Ve := b / c * ( R0 - 1.0 );
+  R0 := a * p * c / ( b * q * k );
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I1e(I1e, q, p, Ve)
+
+  // Assignment Rules:
+  I1e := q / p * Ve;
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I2e(I2e, q, p, Ve)
+
+  // Assignment Rules:
+  I2e := q / p * Ve;
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I3e(I3e, q, p, Ve)
+
+  // Assignment Rules:
+  I3e := q / p * Ve;
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I4e(I4e, q, p, Ve)
+
+  // Assignment Rules:
+  I4e := q / p * Ve;
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I5e(I5e, q, p, Ve)
+
+  // Assignment Rules:
+  I5e := q / p * Ve;
+end
+
+model grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__environment(time_);
+  kinetic_parameters: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__kinetic_parameters(k, c, p, q, b, a);
+  S: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__S(S0, a, b, c, V0, time_);
+  I1: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I1(I10, c, k, V0, S0, time_);
+  I2: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I2(I20, k, I10, time_);
+  I3: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I3(I30, k, I20, time_);
+  I4: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I4(I40, k, I30, time_);
+  I5: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I5(I50, k, I40, time_);
+  V: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__V(V0, p, q, I50, time_);
+  Se: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__Se(Se0, q, k, p, c);
+  Ve: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__Ve(Ve0, a, b, p, c, q, k);
+  I1e: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I1e(I1e0, q, p, Ve0);
+  I2e: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I2e(I2e0, q, p, Ve0);
+  I3e: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I3e(I3e0, q, p, Ve0);
+  I4e: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I4e(I4e0, q, p, Ve0);
+  I5e: grossman_feinberg_kuznetsov_dimitrov_paul_1998_version01__I5e(I5e0, q, p, Ve0);
+end

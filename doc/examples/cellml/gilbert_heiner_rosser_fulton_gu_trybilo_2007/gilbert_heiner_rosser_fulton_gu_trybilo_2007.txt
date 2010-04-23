@@ -1,0 +1,88 @@
+//Created by libAntimony v1.3
+model Electroblue2007__temporalExistence(time_)
+end
+
+model Electroblue2007__Device_TFgenerator(time_, JTF, TFS)
+
+  // Assignment Rules:
+  JTF := alphaTF;
+
+  // Variable initializations:
+  alphaTF = 0.05;
+end
+
+model Electroblue2007__BioEnv_TFSAssociation_interface(Jgain_TF, Jgain_TFS, JTF, JTF2)
+
+  // Assignment Rules:
+  Jgain_TF := JTF + JTF2;
+  Jgain_TFS := 0;
+end
+
+model Electroblue2007__BioEnv_TFSAssociation(time_, TFS, TF, Jgain_TFS, Jgain_TF)
+
+  // Assignment Rules:
+  Jassociation := betaTFS * s * TF - kd * TFS;
+
+  // Rate Rules:
+  TFS' = Jassociation - deltaTFS * TFS + Jgain_TFS;
+  TF' = -(Jassociation) + Jgain_TF - deltaTF * TF;
+
+  // Variable initializations:
+  TFS = 0;
+  TF = 8.6207;
+  s = 5;
+  betaTFS = 1e6;
+  kd = 4e6;
+  deltaTFS = 3.851e-4;
+  deltaTF = 5.8e-3;
+end
+
+model Electroblue2007__Device_PhzMSgenerator(time_, JPhzMS, TFS, JTF)
+
+  // Assignment Rules:
+  JPhzMS := betaPhzMS * TFS / (gammaPhzMS + TFS);
+  JTF := piecewise( betaTF * TFS / (gammaTF + TFS) , feedbackOn <> 0 , 0 );
+
+  // Variable initializations:
+  gammaPhzMS = 5;
+  betaPhzMS = 0.1;
+  gammaTF = 4;
+  betaTF = 0.07;
+  feedbackOn = 1;
+end
+
+model Electroblue2007__BioEnv_PhzMStoPYO_interface(Jgain_PhzMS, Jgain_PYO, JPhzMS)
+
+  // Assignment Rules:
+  Jgain_PhzMS := JPhzMS;
+  Jgain_PYO := 0;
+end
+
+model Electroblue2007__BioEnv_PhzMStoPYO(time_, PhzMS, PYO, Jgain_PhzMS, Jgain_PYO)
+
+  // Assignment Rules:
+  JPYOformation := alphaPYO * PhzMS;
+
+  // Rate Rules:
+  PhzMS' = Jgain_PhzMS - deltaPhzMS * PhzMS;
+  PYO' = Jgain_PYO - deltaPYO * PYO + JPYOformation;
+
+  // Variable initializations:
+  PhzMS = 0;
+  PYO = 0;
+  deltaPhzMS = 8.0225e-6;
+  alphaPYO = 1.3;
+  deltaPYO = 5.8e-1;
+end
+
+model Electroblue2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  temporalExistence: Electroblue2007__temporalExistence(time_);
+  Device_TFgenerator: Electroblue2007__Device_TFgenerator(time_, JTF, TFS);
+  BioEnv_TFSAssociation_interface: Electroblue2007__BioEnv_TFSAssociation_interface(Jgain_TF, Jgain_TFS, JTF, JTF2);
+  BioEnv_TFSAssociation: Electroblue2007__BioEnv_TFSAssociation(time_, TFS, TF, Jgain_TFS, Jgain_TF);
+  Device_PhzMSgenerator: Electroblue2007__Device_PhzMSgenerator(time_, JPhzMS, TFS, JTF2);
+  BioEnv_PhzMStoPYO_interface: Electroblue2007__BioEnv_PhzMStoPYO_interface(Jgain_PhzMS, Jgain_PYO, JPhzMS);
+  BioEnv_PhzMStoPYO: Electroblue2007__BioEnv_PhzMStoPYO(time_, PhzMS, PYO, Jgain_PhzMS, Jgain_PYO);
+end

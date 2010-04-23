@@ -1,0 +1,26 @@
+//Created by libAntimony v1.3
+model MultienvironmentExample__MultienvironmentExampleComponent()
+
+  // Assignment Rules:
+  J := C * D * kf - kr * E;
+  Cpc := R / 602.2;
+
+  // Rate Rules:
+  C' = -(Cpc) * J;
+  D' = -(J);
+  E' = J;
+
+  // Variable initializations:
+  C = 200;
+  D = 4;
+  E = 0;
+  kf = 6e-3;
+  kr = 1e-3;
+  R = 5;
+end
+
+model MultienvironmentExample____main()
+
+  // Sub-modules, and any changes to those submodules:
+  MultienvironmentExampleComponent: MultienvironmentExample__MultienvironmentExampleComponent();
+end

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="moss_model_2009____main" name="moss_model_2009____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="C_A" value="57"/>
+      <parameter id="C_E" value="5.8"/>
+      <parameter id="t" constant="false"/>
+      <parameter id="delta_t" value="1" constant="false"/>
+      <parameter id="R_A_H_A" value="0.5"/>
+      <parameter id="R_A_gamma" value="3.3"/>
+      <parameter id="P_G_P_A" value="108.5"/>
+      <parameter id="P_G_P_V" value="5"/>
+      <parameter id="P_G_R_E" value="0.0298"/>
+      <parameter id="phi_epsilon_max" value="0.057"/>
+      <parameter id="phi_psi" value="0.02"/>
+      <parameter id="phi_kappa" value="33.6"/>
+      <parameter id="phi_D_TGF" value="0.1"/>
+      <parameter id="phi_Na_half" value="44"/>
+      <parameter id="epsilon_omega" value="0.2"/>
+      <parameter id="epsilon_delta" value="1"/>
+      <parameter id="epsilon_zeta" value="0.9"/>
+      <parameter id="pi_G0" constant="false"/>
+      <parameter id="pi__a" value="0.1631"/>
+      <parameter id="pi__b" value="0.00294"/>
+      <parameter id="pi__C" value="58"/>
+      <parameter id="SNGFR0" constant="false"/>
+      <parameter id="SNGFR_Kf" value="2.5"/>
+      <parameter id="SNGFR_P_BC" value="1"/>
+      <parameter id="Na_R0" constant="false"/>
+      <parameter id="H2O_R0" constant="false"/>
+      <parameter id="H2O_A0" value="100"/>
+      <parameter id="Na_G0" constant="false"/>
+      <parameter id="H2O_M_A0" constant="false"/>
+      <parameter id="Na_M_A0" constant="false"/>
+      <parameter id="H2O_I_IF0" value="100"/>
+      <parameter id="Na_I_IF0" value="100"/>
+      <parameter id="R_ADH0" constant="false"/>
+      <parameter id="R_ADH_ADH_I" value="100"/>
+      <parameter id="R_ALD0" constant="false"/>
+      <parameter id="R_ALD_ALD_I" value="100"/>
+      <parameter id="Na_R_Na_max" value="100"/>
+      <parameter id="time_"/>
+      <parameter id="R_A0"/>
+      <parameter id="epsilon0"/>
+      <parameter id="R_A_selector"/>
+      <parameter id="P_G0"/>
+      <parameter id="P_G_selector"/>
+      <parameter id="phi0"/>
+      <parameter id="Na_M0"/>
+      <parameter id="phi_selector"/>
+      <parameter id="epsilon_selector"/>
+      <parameter id="pi_0"/>
+      <parameter id="Na_I0"/>
+      <parameter id="Na_I_selector"/>
+      <parameter id="H2O_I0"/>
+      <parameter id="H2O_I_selector"/>
+      <parameter id="H2O_D_M0"/>
+      <parameter id="H2O_D_M_selector"/>
+      <parameter id="Na_D_M0"/>
+      <parameter id="Na_D_M_selector"/>
+      <parameter id="Na_D0"/>
+      <parameter id="H2O_D0"/>
+      <parameter id="H2O_M0"/>
+      <parameter id="Na_D_selector"/>
+      <parameter id="Na_A0"/>
+      <parameter id="Na_M_selector"/>
+      <parameter id="H2O_D_selector"/>
+      <parameter id="H2O_M_selector"/>
+      <parameter id="Na_A_selector"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> time_ </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="delta_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 1 </cn>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pi_G0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> pi_0 </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <ci> C_A </ci>
+                <ci> C_E </ci>
+              </apply>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SNGFR0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> SNGFR_Kf </ci>
+            <apply>
+              <minus/>
+              <ci> P_G0 </ci>
+              <apply>
+                <plus/>
+                <ci> SNGFR_P_BC </ci>
+                <ci> pi_G0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> R_ALD0 </ci>
+            <ci> Na_R_Na_max </ci>
+            <ci> Na_I0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="H2O_R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> R_ADH0 </ci>
+            <apply>
+              <minus/>
+              <ci> H2O_I0 </ci>
+              <apply>
+                <times/>
+                <ci> Na_I0 </ci>
+                <apply>
+                  <divide/>
+                  <ci> H2O_I_IF0 </ci>
+                  <ci> Na_I_IF0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_G0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Na_M0 </ci>
+            <ci> Na_A0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="H2O_M_A0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> H2O_M0 </ci>
+            <ci> H2O_A0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Na_M_A0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> Na_M0 </ci>
+            <ci> Na_A0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="R_ADH0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <apply>
+                <times/>
+                <ci> R_ADH_ADH_I </ci>
+                <cn type="e-notation"> 1 <sep/> 12 </cn>
+              </apply>
+            </apply>
+            <cn> 2 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="R_ALD0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <apply>
+                <times/>
+                <ci> R_ALD_ALD_I </ci>
+                <cn type="e-notation"> 1 <sep/> 11 </cn>
+              </apply>
+            </apply>
+            <cn> 3 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

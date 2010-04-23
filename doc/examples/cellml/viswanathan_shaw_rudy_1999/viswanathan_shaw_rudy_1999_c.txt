@@ -1,0 +1,506 @@
+//Created by libAntimony v1.3
+model viswanathan_1999__environment(time_)
+end
+
+model viswanathan_1999__membrane(V, R, T, F, time_, i_Na, i_Ca_L, i_Ca_T, i_Kr, i_Ks, i_K_ATP, i_to, i_K1, i_Kp, i_p_Ca, i_Na_b, i_Ca_b, i_NaK, i_NaCa, i_ns_Ca, dVdt)
+
+  // Assignment Rules:
+  I_st := piecewise( stim_amplitude , (( time_ >= stim_start) && (time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration )), 0 );
+  dVdt := -(1 ) / Cm * (i_Na + i_Ca_L + i_Ca_T + i_Kr + i_Ks + i_K_ATP + i_to + i_K1 + i_Kp + i_p_Ca + i_Na_b + i_Ca_b + i_NaK + i_NaCa + i_ns_Ca + I_st);
+
+  // Rate Rules:
+  V' = -(1 ) / Cm * (i_Na + i_Ca_L + i_Ca_T + i_Kr + i_Ks + i_K_ATP + i_to + i_K1 + i_Kp + i_p_Ca + i_Na_b + i_Ca_b + i_NaK + i_NaCa + i_ns_Ca + I_st);
+
+  // Variable initializations:
+  V = -88.5004;
+  R = 8314;
+  T = 310;
+  F = 96485;
+  Cm = 0.001;
+  stim_start = 0.1;
+  stim_end = 9;
+  stim_period = 1;
+  stim_duration = 0.002;
+  stim_amplitude = -25.5;
+end
+
+model viswanathan_1999__fast_sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := piecewise( 320 * E0_m / (1 - exp(-(0.1 ) * E0_m)) , abs(E0_m) >= delta_m , 3200 );
+  beta_m := 80 * exp(-(V) / 11 );
+  E0_m := V + 47.13;
+
+  // Rate Rules:
+  m' = alpha_m * (1 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.0008601;
+  delta_m = 1e-5;
+end
+
+model viswanathan_1999__fast_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := piecewise( 135 * exp((80 + V) / -(6.8 )) , V < -(40 ) , 0 );
+  beta_h := piecewise( 3560 * exp(0.079 * V) + 310000000 * exp(0.35 * V) , V < -(40 ) , 1 / (0.00013 * (1 + exp((V + 10.66 ) / -(11.1 )))) );
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.9930853;
+end
+
+model viswanathan_1999__fast_sodium_current_j_gate(j, V, time_)
+
+  // Assignment Rules:
+  alpha_j := piecewise( 1000 * -((127140 * exp(0.2444 * V) + 3.474e-5 * exp(-(0.04391 ) * V))) * (V + 37.78 ) / (1 + exp(0.311 * (V + 79.23 ))) , V < -(40 ) , 0 );
+  beta_j := piecewise( 121.2 * exp(-(0.01052 ) * V) / (1 + exp(-(0.1378 ) * (V + 40.14 ))) , V < -(40 ) , 300 * exp(-(2.535e-7 ) * V) / (1 + exp(-(0.1 ) * (V + 32 ))) );
+
+  // Rate Rules:
+  j' = alpha_j * (1 - j) - beta_j * j;
+
+  // Variable initializations:
+  j = 0.995289;
+end
+
+model viswanathan_1999__fast_sodium_current(i_Na, E_Na, time_, V, R, F, T, Nai, Nao, m, h, j)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: viswanathan_1999__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: viswanathan_1999__fast_sodium_current_h_gate(h, V, time_);
+  fast_sodium_current_j_gate: viswanathan_1999__fast_sodium_current_j_gate(j, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * j * (V - E_Na);
+  E_Na := R * T / F * ln(Nao / Nai);
+
+  // Variable initializations:
+  g_Na = 16;
+end
+
+model viswanathan_1999__L_type_Ca_channel_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  alpha_d := d_infinity / tau_d;
+  beta_d := (1 - d_infinity) / tau_d;
+  d_infinity := 1 / (1 + exp(-(E0_d) / 6.24 ));
+  tau_d := piecewise( 0.001 / (0.035 * 6.24 ) , abs(E0_d) < 1e-5 , 0.001 * d_infinity * (1 - exp(-(E0_d) / 6.24 )) / (0.035 * E0_d) );
+  E0_d := V + 10;
+
+  // Rate Rules:
+  d' = alpha_d * (1 - d) - beta_d * d;
+
+  // Variable initializations:
+  d = 3.440359e-6;
+end
+
+model viswanathan_1999__L_type_Ca_channel_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  alpha_f := f_infinity / tau_f;
+  beta_f := (1 - f_infinity) / tau_f;
+  f_infinity := 1 / (1 + exp((V + 32 ) / 8 )) + 0.6 / (1 + exp((50 - V) / 20 ));
+  tau_f := 0.001 / (0.0197 * exp(-(power(0.0337 * (V + 10 ), 2 ))) + 0.02 );
+
+  // Rate Rules:
+  f' = alpha_f * (1 - f) - beta_f * f;
+
+  // Variable initializations:
+  f = 0.9996579;
+end
+
+model viswanathan_1999__L_type_Ca_channel_f_Ca_gate(f_Ca, V, Cai)
+
+  // Assignment Rules:
+  f_Ca := 1 / (1 + Cai / Km_Ca);
+
+  // Variable initializations:
+  Km_Ca = 0.0006;
+end
+
+model viswanathan_1999__L_type_Ca_channel(i_Ca_L, i_CaCa, i_CaK, i_CaNa, gamma_Nai, gamma_Nao, gamma_Ki, gamma_Ko, time_, V, Cai, R, T, F, Cao, Nao, Ko, Nai, Ki, d, f, f_Ca)
+
+  // Sub-modules, and any changes to those submodules:
+  L_type_Ca_channel_d_gate: viswanathan_1999__L_type_Ca_channel_d_gate(d, V, time_);
+  L_type_Ca_channel_f_gate: viswanathan_1999__L_type_Ca_channel_f_gate(f, V, time_);
+  L_type_Ca_channel_f_Ca_gate: viswanathan_1999__L_type_Ca_channel_f_Ca_gate(f_Ca, V, Cai);
+
+  // Assignment Rules:
+  i_Ca_L := i_CaCa + i_CaK + i_CaNa;
+  i_CaCa := d * f * f_Ca * I_CaCa;
+  i_CaK := d * f * f_Ca * I_CaK;
+  i_CaNa := d * f * f_Ca * I_CaNa;
+  I_CaCa := P_Ca * power(2 , 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Cai * Cai * exp(2 * V * F / (R * T)) - gamma_Cao * Cao) / (exp(2 * V * F / (R * T)) - 1 );
+  I_CaK := P_K * power(1 , 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Ki * Ki * exp(1 * V * F / (R * T)) - gamma_Ko * Ko) / (exp(1 * V * F / (R * T)) - 1 );
+  I_CaNa := P_Na * power(1 , 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Nai * Nai * exp(1 * V * F / (R * T)) - gamma_Nao * Nao) / (exp(1 * V * F / (R * T)) - 1 );
+
+  // Variable initializations:
+  gamma_Nai = 0.75;
+  gamma_Nao = 0.75;
+  gamma_Ki = 0.75;
+  gamma_Ko = 0.75;
+  P_Ca = 0.00054;
+  P_Na = 6.75e-7;
+  P_K = 1.93e-7;
+  gamma_Cai = 1;
+  gamma_Cao = 0.341;
+end
+
+model viswanathan_1999__T_type_Ca_channel_b_gate(b, V, time_)
+
+  // Assignment Rules:
+  b_inf := 1 / (1 + exp(-((V + 14 )) / 10.8 ));
+  tau_b := 0.0037 + 0.0061 / (1 + exp((V + 25 ) / 4.5 ));
+
+  // Rate Rules:
+  b' = (b_inf - b) / tau_b;
+
+  // Variable initializations:
+  b = 0.001013;
+end
+
+model viswanathan_1999__T_type_Ca_channel_g_gate(g, V, time_)
+
+  // Assignment Rules:
+  g_inf := 1 / (1 + exp((V + 60 ) / 5.6 ));
+  tau_g := piecewise( -(0.000875 ) * V + 0.012 , V <= 0 , 0.012 );
+
+  // Rate Rules:
+  g' = (g_inf - g) / tau_g;
+
+  // Variable initializations:
+  g = 0.9455647;
+end
+
+model viswanathan_1999__T_type_Ca_channel(i_Ca_T, E_Ca, time_, V, b, g)
+
+  // Sub-modules, and any changes to those submodules:
+  T_type_Ca_channel_b_gate: viswanathan_1999__T_type_Ca_channel_b_gate(b, V, time_);
+  T_type_Ca_channel_g_gate: viswanathan_1999__T_type_Ca_channel_g_gate(g, V, time_);
+
+  // Assignment Rules:
+  i_Ca_T := g_CaT * b * b * g * (V - E_Ca);
+
+  // Variable initializations:
+  g_CaT = 0.05;
+end
+
+model viswanathan_1999__rapid_delayed_rectifier_potassium_current_xr_gate(xr, V, time_)
+
+  // Assignment Rules:
+  xr_infinity := 1 / (1 + exp(-((V + 21.5 )) / 7.5 ));
+  tau_xr := 0.001 / (0.00138 * (V + 14.2 ) / (1 - exp(-(0.123 ) * (V + 14.2 ))) + 0.00061 * (V + 38.9 ) / (exp(0.145 * (V + 38.9 )) - 1 ));
+
+  // Rate Rules:
+  xr' = (xr_infinity - xr) / tau_xr;
+
+  // Variable initializations:
+  xr = 0.000481554;
+end
+
+model viswanathan_1999__rapid_delayed_rectifier_potassium_current(i_Kr, E_K, time_, V, Ko, xr)
+
+  // Sub-modules, and any changes to those submodules:
+  rapid_delayed_rectifier_potassium_current_xr_gate: viswanathan_1999__rapid_delayed_rectifier_potassium_current_xr_gate(xr, V, time_);
+
+  // Assignment Rules:
+  i_Kr := g_Kr * xr * Rect * (V - E_K);
+  g_Kr := 0.02614 * root(Ko / 5.4 );
+  Rect := 1 / (1 + exp((V + 9 ) / 22.4 ));
+end
+
+model viswanathan_1999__slow_delayed_rectifier_potassium_current_xs1_gate(xs1, V, time_)
+
+  // Assignment Rules:
+  xs1_infinity := 1 / (1 + exp(-((V - 1.5 )) / 16.7 ));
+  tau_xs1 := 0.001 / (7.19e-5 * (V + 30 ) / (1 - exp(-(0.148 ) * (V + 30 ))) + 0.000131 * (V + 30 ) / (exp(0.0687 * (V + 30 )) - 1 ));
+
+  // Rate Rules:
+  xs1' = (xs1_infinity - xs1) / tau_xs1;
+
+  // Variable initializations:
+  xs1 = 0.034295;
+end
+
+model viswanathan_1999__slow_delayed_rectifier_potassium_current_xs2_gate(xs2, V, time_)
+
+  // Assignment Rules:
+  xs2_infinity := 1 / (1 + exp(-((V - 1.5 )) / 16.7 ));
+  tau_xs2 := 4 * 0.001 / (7.19e-5 * (V + 30 ) / (1 - exp(-(0.148 ) * (V + 30 ))) + 0.000131 * (V + 30 ) / (exp(0.0687 * (V + 30 )) - 1 ));
+
+  // Rate Rules:
+  xs2' = (xs2_infinity - xs2) / tau_xs2;
+
+  // Variable initializations:
+  xs2 = 0.075988;
+end
+
+model viswanathan_1999__slow_delayed_rectifier_potassium_current(i_Ks, time_, V, R, T, F, Ko, Ki, Nao, Nai, Cai, xs1, xs2)
+
+  // Sub-modules, and any changes to those submodules:
+  slow_delayed_rectifier_potassium_current_xs1_gate: viswanathan_1999__slow_delayed_rectifier_potassium_current_xs1_gate(xs1, V, time_);
+  slow_delayed_rectifier_potassium_current_xs2_gate: viswanathan_1999__slow_delayed_rectifier_potassium_current_xs2_gate(xs2, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks * xs1 * xs2 * (V - E_Ks);
+  g_Ks := 0.289 * (1 + 0.6 / (1 + power(3.8e-5 / Cai, 1.4 )));
+  E_Ks := R * T / F * ln((Ko + PNaK * Nao) / (Ki + PNaK * Nai));
+
+  // Variable initializations:
+  PNaK = 0.01833;
+end
+
+model viswanathan_1999__time_independent_potassium_current_K1_gate(K1_infinity, V, E_K)
+
+  // Assignment Rules:
+  K1_infinity := alpha_K1 / (alpha_K1 + beta_K1);
+  alpha_K1 := 1020 / (1 + exp(0.2385 * (V - E_K - 59.215 )));
+  beta_K1 := 1000 * (0.49124 * exp(0.08032 * (V - E_K + 5.476 )) + exp(0.06175 * (V - E_K - 594.31 ))) / (1 + exp(-(0.5143 ) * (V - E_K + 4.753 )));
+end
+
+model viswanathan_1999__time_independent_potassium_current(i_K1, E_K, V, Ko, Ki, R, T, F, K1_infinity)
+
+  // Sub-modules, and any changes to those submodules:
+  time_independent_potassium_current_K1_gate: viswanathan_1999__time_independent_potassium_current_K1_gate(K1_infinity, V, E_K);
+
+  // Assignment Rules:
+  i_K1 := g_K1 * K1_infinity * (V - E_K);
+  E_K := R * T / F * ln(Ko / Ki);
+  g_K1 := 0.75 * root(Ko / 5.4 );
+end
+
+model viswanathan_1999__plateau_potassium_current(i_Kp, V, E_K)
+
+  // Assignment Rules:
+  i_Kp := g_Kp * Kp * (V - E_K);
+  Kp := 1 / (1 + exp((7.488 - V) / 5.98 ));
+
+  // Variable initializations:
+  g_Kp = 0.00552;
+end
+
+model viswanathan_1999__ATP_sensitive_potassium_current(i_K_ATP, V, Ko, E_K)
+
+  // Assignment Rules:
+  i_K_ATP := GKbaraATP * (V - E_K);
+  g_K_ATP := 0.000193 / nicholsarea;
+  pATP := 1 / (1 + power(ATPi / kATP, hATP));
+  GKbaraATP := g_K_ATP * pATP * power(Ko / 4 , nATP);
+
+  // Variable initializations:
+  nATP = 0.24;
+  nicholsarea = 5e-5;
+  ATPi = 3;
+  hATP = 2;
+  kATP = 0.00025;
+end
+
+model viswanathan_1999__transient_outward_current_zdv_gate(zdv, V, time_)
+
+  // Assignment Rules:
+  alpha_zdv := 10000 * exp((V - 40 ) / 25 ) / (1 + exp((V - 40 ) / 25 ));
+  beta_zdv := 10000 * exp(-((V + 90 )) / 25 ) / (1 + exp(-((V + 90 )) / 25 ));
+  tau_zdv := 1 / (alpha_zdv + beta_zdv);
+  zdv_ss := alpha_zdv / (alpha_zdv + beta_zdv);
+
+  // Rate Rules:
+  zdv' = (zdv_ss - zdv) / tau_zdv;
+
+  // Variable initializations:
+  zdv = 0.01186516;
+end
+
+model viswanathan_1999__transient_outward_current_ydv_gate(ydv, V, time_)
+
+  // Assignment Rules:
+  alpha_ydv := 15 / (1 + exp((V + 60 ) / 5 ));
+  beta_ydv := 100 * exp((V + 25 ) / 5 ) / (1 + exp((V + 25 ) / 5 ));
+  tau_ydv := 1 / (alpha_ydv + beta_ydv);
+  ydv_ss := alpha_ydv / (alpha_ydv + beta_ydv);
+
+  // Rate Rules:
+  ydv' = (ydv_ss - ydv) / tau_ydv;
+
+  // Variable initializations:
+  ydv = 0.9811852;
+end
+
+model viswanathan_1999__transient_outward_current(i_to, E_K, V, time_, zdv, ydv)
+
+  // Sub-modules, and any changes to those submodules:
+  transient_outward_current_zdv_gate: viswanathan_1999__transient_outward_current_zdv_gate(zdv, V, time_);
+  transient_outward_current_ydv_gate: viswanathan_1999__transient_outward_current_ydv_gate(ydv, V, time_);
+
+  // Assignment Rules:
+  i_to := g_to * power(zdv, 3 ) * ydv * rvdv * (V - E_K);
+  g_to := 0 * 0.5;
+  rvdv := exp(V / 100 );
+end
+
+model viswanathan_1999__sarcolemmal_calcium_pump(i_p_Ca, Cai)
+
+  // Assignment Rules:
+  i_p_Ca := I_pCa * Cai / (K_mpCa + Cai);
+
+  // Variable initializations:
+  K_mpCa = 0.0005;
+  I_pCa = 1.15;
+end
+
+model viswanathan_1999__sodium_background_current(i_Na_b, V, E_Na)
+
+  // Assignment Rules:
+  i_Na_b := g_Nab * (V - E_Na);
+
+  // Variable initializations:
+  g_Nab = 0.004;
+end
+
+model viswanathan_1999__calcium_background_current(i_Ca_b, E_Ca, V, R, T, F, Cai, Cao)
+
+  // Assignment Rules:
+  i_Ca_b := g_Cab * (V - E_Ca);
+  E_Ca := R * T / (2 * F) * ln(Cao / Cai);
+
+  // Variable initializations:
+  g_Cab = 0.003016;
+end
+
+model viswanathan_1999__sodium_potassium_pump(i_NaK, V, R, T, F, Nai, Nao, Ko)
+
+  // Assignment Rules:
+  i_NaK := I_NaK * f_NaK * 1 / (1 + power(K_mNai / Nai, 2 )) * Ko / (Ko + K_mKo);
+  f_NaK := 1 / (1 + 0.1245 * exp(-(0.1 ) * V * F / (R * T)) + 0.0365 * sigma * exp(-(V) * F / (R * T)));
+  sigma := 1 / 7 * (exp(Nao / 67.3 ) - 1 );
+
+  // Variable initializations:
+  I_NaK = 2;
+  K_mNai = 10;
+  K_mKo = 1.5;
+end
+
+model viswanathan_1999__non_specific_calcium_activated_current(i_ns_Ca, i_ns_Na, i_ns_K, gamma_Nai, gamma_Nao, gamma_Ki, gamma_Ko, R, T, F, Cao, Nao, Ko, Nai, Ki, time_, Cai, V)
+
+  // Assignment Rules:
+  i_ns_Ca := i_ns_Na + i_ns_K;
+  i_ns_Na := I_ns_Na * 1 / (1 + power(K_m_ns_Ca / Cai, 3 ));
+  i_ns_K := I_ns_K * 1 / (1 + power(K_m_ns_Ca / Cai, 3 ));
+  P_ns_Ca := 0 * 1.75e-7;
+  I_ns_Na := P_ns_Ca * power(1 , 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Nai * Nai * exp(1 * V * F / (R * T)) - gamma_Nao * Nao) / (exp(1 * V * F / (R * T)) - 1 );
+  I_ns_K := P_ns_Ca * power(1 , 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Ki * Ki * exp(1 * V * F / (R * T)) - gamma_Ko * Ko) / (exp(1 * V * F / (R * T)) - 1 );
+
+  // Variable initializations:
+  K_m_ns_Ca = 0.0012;
+end
+
+model viswanathan_1999__Na_Ca_exchanger(i_NaCa, V, R, T, F, Nai, Nao, Cai, Cao, n_NaCa)
+
+  // Assignment Rules:
+  i_NaCa := K_NaCa * (exp(gamma * (n_NaCa - 2 ) * V * F / (R * T)) * power(Nai, n_NaCa) * Cao - exp((gamma - 1 ) * (n_NaCa - 2 ) * V * F / (R * T)) * power(Nao, n_NaCa) * Cai) / ((1 + d_NaCa * (Cai * power(Nao, n_NaCa) + Cao * power(Nai, n_NaCa))) * (1 + Cai / 0.0069 ));
+
+  // Variable initializations:
+  n_NaCa = 3;
+  K_NaCa = 0.002;
+  d_NaCa = 0.001;
+  gamma = 0.5;
+end
+
+model viswanathan_1999__calcium_dynamics(i_rel, i_up, i_leak, i_tr, time_, F, Cai, Cao, Ca_JSR, Ca_NSR, V_myo, A_cap, i_NaCa, i_CaCa, i_p_Ca, i_Ca_b, i_Ca_T, dVdt)
+
+  // Assignment Rules:
+  i_rel := G_rel * (Ca_JSR - Cai);
+  i_up := I_up * Cai / (Cai + K_mup);
+  i_leak := K_leak * Ca_NSR;
+  i_tr := (Ca_NSR - Ca_JSR) / tau_tr;
+  G_rel := piecewise( G_rel_max * (Cainfluxtrack - delta_Ca_ith) / (K_mrel + Cainfluxtrack - delta_Ca_ith) * (1 - APtrack2) * APtrack2 , Cainfluxtrack > delta_Ca_ith , G_rel_overload * (1 - OVRLDtrack2) * OVRLDtrack2 , ( Cainfluxtrack <= delta_Ca_ith) && (OVRLDtrack2 > 0 ), 0 );
+  K_leak := I_up / Ca_NSR_max;
+  V_JSR := 0.0048 / 0.68 * V_myo;
+  V_NSR := 0.0552 / 0.68 * V_myo;
+
+  // Rate Rules:
+  Cai' = 1 / (1 + CMDN_max * K_mCMDN / power(K_mCMDN + Cai, 2 ) + Tn_max * K_mTn / power(K_mTn + Cai, 2 )) * (-(A_cap) * (i_CaCa + i_Ca_T - i_NaCa + i_p_Ca + i_Ca_b) / (2 * V_myo * F) + i_rel * V_JSR / V_myo + (i_leak - i_up) * V_NSR / V_myo);
+  Ca_JSR' = 1 / (1 + CSQN_max * K_mCSQN / power(K_mCSQN + Ca_JSR, 2 )) * (i_tr - i_rel);
+  Ca_NSR' = -(i_tr) * V_JSR / V_NSR - i_leak + i_up;
+  APtrack' = piecewise( 100000 * (1 - APtrack) - 500 * APtrack , dVdt > 150000 , -(500 ) * APtrack );
+  APtrack2' = piecewise( 100000 * (1 - APtrack2) - 500 * APtrack2 , ( APtrack < 0.2) && (APtrack > 0.18 ), -(500 ) * APtrack2 );
+  APtrack3' = piecewise( 100000 * (1 - APtrack3) - 500 * APtrack3 , ( APtrack < 0.2) && (APtrack > 0.18 ), -(10 ) * APtrack3 );
+  Cainfluxtrack' = piecewise( -(A_cap) * (i_CaCa + i_Ca_T - i_NaCa + i_p_Ca + i_Ca_b) / (2 * V_myo * F) , APtrack > 0.2 , 0 , ( APtrack2 > 0.01) && (APtrack <= 0.2 ), -(500 ) * Cainfluxtrack );
+  OVRLDtrack' = piecewise( 50000 * (1 - OVRLDtrack) , (( 1 / (1 + K_mCSQN / Ca_JSR) > CSQNthresh) && (OVRLDtrack3 < 0.37) && (APtrack3 < 0.37 )), -(500 ) * OVRLDtrack );
+  OVRLDtrack2' = piecewise( 50000 * (1 - OVRLDtrack2) , ( OVRLDtrack > Logicthresh) && (OVRLDtrack2 < Logicthresh ), -(500 ) * OVRLDtrack2 );
+  OVRLDtrack3' = piecewise( 50000 * (1 - OVRLDtrack3) , ( OVRLDtrack > Logicthresh) && (OVRLDtrack3 < Logicthresh ), -(10 ) * OVRLDtrack3 );
+
+  // Variable initializations:
+  G_rel_max = 60000;
+  G_rel_overload = 4000;
+  tau_tr = 0.18;
+  K_mrel = 0.0008;
+  delta_Ca_ith = 0.00018;
+  CSQN_max = 10;
+  K_mCSQN = 0.8;
+  K_mup = 0.00092;
+  I_up = 5;
+  Ca_NSR_max = 15;
+  Cai = 0.0003308;
+  Cao = 1.8;
+  Ca_JSR = 0.7795849;
+  Ca_NSR = 2.7043732;
+  K_mTn = 0.0005;
+  K_mCMDN = 0.00238;
+  Tn_max = 0.07;
+  CMDN_max = 0.05;
+  APtrack = 4.0504e-87;
+  APtrack2 = 2.239e-86;
+  APtrack3 = 0.019244;
+  Cainfluxtrack = 1.834114e-87;
+  OVRLDtrack = 0;
+  OVRLDtrack2 = 0;
+  OVRLDtrack3 = 0;
+  CSQNthresh = 0.7;
+  Logicthresh = 0.98;
+end
+
+model viswanathan_1999__ionic_concentrations(Nai, Nao, Ki, Ko, A_cap, V_myo, time_, F, i_Na, i_CaNa, i_Na_b, i_ns_Na, i_NaCa, i_NaK, i_CaK, i_Kr, i_Ks, i_K1, i_Kp, i_K_ATP, i_ns_K, i_to)
+
+  // Assignment Rules:
+  volume := pi * preplength * power(radius, 2 );
+  V_myo := 0.68 * volume;
+
+  // Rate Rules:
+  Nai' = -((i_Na + i_CaNa + i_Na_b + i_ns_Na + i_NaCa * 3 + i_NaK * 3 )) * A_cap / (V_myo * F);
+  Ki' = -((i_CaK + i_Kr + i_Ks + i_K1 + i_Kp + i_K_ATP + i_to + i_ns_K + -(i_NaK) * 2 )) * A_cap / (V_myo * F);
+
+  // Variable initializations:
+  Nai = 14.44858;
+  Nao = 132;
+  Ki = 138.1024;
+  Ko = 4.5;
+  A_cap = 1.434e-7;
+  preplength = 0.001;
+  radius = 1.1e-4;
+end
+
+model viswanathan_1999____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: viswanathan_1999__environment(time_);
+  membrane: viswanathan_1999__membrane(V, R, T, F, time_, i_Na, i_Ca_L, i_Ca_T, i_Kr, i_Ks, i_K_ATP, i_to, i_K1, i_Kp, i_p_Ca, i_Na_b, i_Ca_b, i_NaK, i_NaCa, i_ns_Ca, dVdt);
+  fast_sodium_current: viswanathan_1999__fast_sodium_current(i_Na, E_Na, time_, V, R, F, T, Nai, Nao, m, h, j);
+  L_type_Ca_channel: viswanathan_1999__L_type_Ca_channel(i_Ca_L, i_CaCa, i_CaK, i_CaNa, gamma_Nai, gamma_Nao, gamma_Ki, gamma_Ko, time_, V, Cai, R, T, F, Cao, Nao, Ko, Nai, Ki, d, f, f_Ca);
+  T_type_Ca_channel: viswanathan_1999__T_type_Ca_channel(i_Ca_T, E_Ca, time_, V, b, g);
+  rapid_delayed_rectifier_potassium_current: viswanathan_1999__rapid_delayed_rectifier_potassium_current(i_Kr, E_K, time_, V, Ko, xr);
+  slow_delayed_rectifier_potassium_current: viswanathan_1999__slow_delayed_rectifier_potassium_current(i_Ks, time_, V, R, T, F, Ko, Ki, Nao, Nai, Cai, xs1, xs2);
+  time_independent_potassium_current: viswanathan_1999__time_independent_potassium_current(i_K1, E_K, V, Ko, Ki, R, T, F, K1_infinity);
+  plateau_potassium_current: viswanathan_1999__plateau_potassium_current(i_Kp, V, E_K);
+  ATP_sensitive_potassium_current: viswanathan_1999__ATP_sensitive_potassium_current(i_K_ATP, V, Ko, E_K);
+  transient_outward_current: viswanathan_1999__transient_outward_current(i_to, E_K, V, time_, zdv, ydv);
+  sarcolemmal_calcium_pump: viswanathan_1999__sarcolemmal_calcium_pump(i_p_Ca, Cai);
+  sodium_background_current: viswanathan_1999__sodium_background_current(i_Na_b, V, E_Na);
+  calcium_background_current: viswanathan_1999__calcium_background_current(i_Ca_b, E_Ca, V, R, T, F, Cai, Cao);
+  sodium_potassium_pump: viswanathan_1999__sodium_potassium_pump(i_NaK, V, R, T, F, Nai, Nao, Ko);
+  non_specific_calcium_activated_current: viswanathan_1999__non_specific_calcium_activated_current(i_ns_Ca, i_ns_Na, i_ns_K, gamma_Nai, gamma_Nao, gamma_Ki, gamma_Ko, R, T, F, Cao, Nao, Ko, Nai, Ki, time_, Cai, V);
+  Na_Ca_exchanger: viswanathan_1999__Na_Ca_exchanger(i_NaCa, V, R, T, F, Nai, Nao, Cai, Cao, n_NaCa);
+  calcium_dynamics: viswanathan_1999__calcium_dynamics(i_rel, i_up, i_leak, i_tr, time_, F, Cai, Cao, Ca_JSR, Ca_NSR, V_myo, A_cap, i_NaCa, i_CaCa, i_p_Ca, i_Ca_b, i_Ca_T, dVdt);
+  ionic_concentrations: viswanathan_1999__ionic_concentrations(Nai, Nao, Ki, Ko, A_cap, V_myo, time_, F, i_Na, i_CaNa, i_Na_b, i_ns_Na, i_NaCa, i_NaK, i_CaK, i_Kr, i_Ks, i_K1, i_Kp, i_K_ATP, i_ns_K, i_to);
+end

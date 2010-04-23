@@ -1,0 +1,73 @@
+//Created by libAntimony v1.3
+model nash_panfilov_2004_version01__membrane_potential(t, Cm, Vr, Vth, Vp, Istim, Iion, Vm, u, a)
+
+  // Assignment Rules:
+  u := (Vm - Vr) / (Vp - Vr);
+  a := (Vth - Vr) / (Vp - Vr);
+
+  // Rate Rules:
+  Vm' = (Istim - Iion) / Cm;
+
+  // Variable initializations:
+  Vm = -85;
+end
+
+model nash_panfilov_2004_version01__ionic_current(Vr, Vth, Vp, k, r, u, a, Iion)
+
+  // Assignment Rules:
+  Iion := k * u * (u - a) * (u - 1.0 ) + r * u;
+end
+
+model nash_panfilov_2004_version01__recovery_variable(t, k, epsilon, mu1, mu2, u, a, r)
+
+  // Assignment Rules:
+  eps := epsilon + mu1 * r / (mu2 + u);
+
+  // Rate Rules:
+  r' = eps * (-(r) - k * u * (u - (a + 1.0 )));
+
+  // Variable initializations:
+  r = 0.0;
+end
+
+model nash_panfilov_2004_version01__active_tension(t, u, e0, kTa, Ta)
+
+  // Assignment Rules:
+  e := piecewise( 10.0 * e0 , u < 0.05 , 1.0 * e0 );
+
+  // Rate Rules:
+  Ta' = e * (kTa * u - Ta);
+
+  // Variable initializations:
+  Ta = 0.0;
+end
+
+model nash_panfilov_2004_version01__interface(t, Cm, Vr, Vth, Vp, k, epsilon, mu1, mu2, e0, kTa, Istim, Vm, Iion, r, Ta, IStimC)
+
+  // Sub-modules, and any changes to those submodules:
+  membrane_potential: nash_panfilov_2004_version01__membrane_potential(t, Cm, Vr, Vth, Vp, Istim, Iion, Vm, u, a);
+  ionic_current: nash_panfilov_2004_version01__ionic_current(Vr, Vth, Vp, k, r, u, a, Iion);
+  recovery_variable: nash_panfilov_2004_version01__recovery_variable(t, k, epsilon, mu1, mu2, u, a, r);
+  active_tension: nash_panfilov_2004_version01__active_tension(t, u, e0, kTa, Ta);
+
+  // Assignment Rules:
+  IStimC := Istim;
+
+  // Variable initializations:
+  Cm = 1.0;
+  Vr = -80.0;
+  Vth = -70.0;
+  Vp = 20.0;
+  k = 8.0;
+  epsilon = 0.01;
+  mu1 = 0.2;
+  mu2 = 0.3;
+  e0 = 1.0;
+  kTa = 47.9;
+end
+
+model nash_panfilov_2004_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  interface: nash_panfilov_2004_version01__interface(t, Cm, Vr, Vth, Vp, k, epsilon, mu1, mu2, e0, kTa, Istim, Vm, Iion, r, Ta, IStimC);
+end

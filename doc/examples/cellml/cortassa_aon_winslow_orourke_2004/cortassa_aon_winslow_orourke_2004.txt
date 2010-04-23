@@ -1,0 +1,596 @@
+//Created by libAntimony v1.3
+model cortassa_aon_marban_winslow_orourke_2004_version01__environment(time_)
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__ADP_m(ADP_m, V_ANT, V_ATPase, V_SL, time_)
+
+  // Rate Rules:
+  ADP_m' = V_ANT - (V_ATPase + V_SL);
+
+  // Variable initializations:
+  ADP_m = 0.1;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__NADH(NADH, V_O2, V_IDH, V_KGDH, V_MDH, time_)
+
+  // Rate Rules:
+  NADH' = -(V_O2) + V_IDH + V_KGDH + V_MDH;
+
+  // Variable initializations:
+  NADH = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__ISOC(ISOC, V_ACO, V_IDH, time_)
+
+  // Rate Rules:
+  ISOC' = V_ACO - V_IDH;
+
+  // Variable initializations:
+  ISOC = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__alpha_KG(alpha_KG, V_IDH, V_KGDH, V_AAT, time_)
+
+  // Rate Rules:
+  alpha_KG' = V_AAT + V_IDH + -(V_KGDH);
+
+  // Variable initializations:
+  alpha_KG = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__SCoA(SCoA, V_KGDH, V_SL, time_)
+
+  // Rate Rules:
+  SCoA' = V_KGDH - V_SL;
+
+  // Variable initializations:
+  SCoA = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__Suc(Suc, V_SL, V_SDH, time_)
+
+  // Rate Rules:
+  Suc' = V_SL - V_SDH;
+
+  // Variable initializations:
+  Suc = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__FUM(FUM, V_SDH, V_FH, time_)
+
+  // Rate Rules:
+  FUM' = V_SDH - V_FH;
+
+  // Variable initializations:
+  FUM = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__MAL(MAL, V_FH, V_MDH, time_)
+
+  // Rate Rules:
+  MAL' = V_FH - V_MDH;
+
+  // Variable initializations:
+  MAL = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__OAA(OAA, V_MDH, V_CS, V_AAT, time_)
+
+  // Rate Rules:
+  OAA' = V_MDH - (V_CS + V_AAT);
+
+  // Variable initializations:
+  OAA = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__ASP(ASP, V_AAT, V_C_ASP, time_)
+
+  // Rate Rules:
+  ASP' = V_AAT - V_C_ASP;
+
+  // Variable initializations:
+  ASP = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__Ca_m(Ca_m, V_uni, V_NaCa, time_)
+
+  // Rate Rules:
+  Ca_m' = f * 1 * (V_uni - V_NaCa);
+
+  // Variable initializations:
+  Ca_m = 0.01;
+  f = 0.0003;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__Ca_i(Ca_i, time_)
+
+  // Assignment Rules:
+  Ca_i := piecewise( pulse_value , (( time_ >= stim_start) && (time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration )), 0.1 );
+  stim_period := piecewise( 0.5 , ( time_ >= 100) && (time_ < 300 ), 4 );
+
+  // Variable initializations:
+  stim_start = 0;
+  stim_end = 10000;
+  stim_duration = 0.4;
+  pulse_value = 1;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__Na_i(Na_i)
+
+  // Variable initializations:
+  Na_i = 10.0;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__ATP_i(ATP_i)
+
+  // Variable initializations:
+  ATP_i = 6.5;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__ATP_m(ATP_m, ADP_m)
+
+  // Assignment Rules:
+  ATP_m := Cm - ADP_m;
+
+  // Variable initializations:
+  Cm = 15.0;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__ADP_i(ADP_i, time_)
+
+  // Assignment Rules:
+  ADP_i := piecewise( pulse_value , ( time_ >= 100) && (time_ < 300 ), 0.05 );
+
+  // Variable initializations:
+  pulse_value = 0.15;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__GLU(GLU)
+
+  // Variable initializations:
+  GLU = 20;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__Mg(Mg)
+
+  // Variable initializations:
+  Mg = 0.4;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__H(H)
+
+  // Variable initializations:
+  H = 2.5E-5;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__Pi(Pi_)
+
+  // Variable initializations:
+  Pi_ = 20.0;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__CoA(CoA)
+
+  // Variable initializations:
+  CoA = 0.02;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__AcCoA(AcCoA)
+
+  // Variable initializations:
+  AcCoA = 0.0002;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__FAD(FAD)
+
+  // Variable initializations:
+  FAD = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__FADH2(FADH2)
+
+  // Variable initializations:
+  FADH2 = 1.24;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__NAD(NAD, NADH)
+
+  // Assignment Rules:
+  NAD := C_PN - NADH;
+
+  // Variable initializations:
+  C_PN = 10.0;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__NADPH(NADPH)
+
+  // Variable initializations:
+  NADPH = 1.0;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__O2_m(O2_m, V_O2, VTr_ROS, time_)
+
+  // Rate Rules:
+  O2_m' = shunt * V_O2 - VTr_ROS;
+
+  // Variable initializations:
+  O2_m = 0.01;
+  shunt = 0.05;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__O2_i(O2_i, V_SOD, VTr_ROS, time_)
+
+  // Rate Rules:
+  O2_i' = VTr_ROS - V_SOD;
+
+  // Variable initializations:
+  O2_i = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__H2O2(H2O2, V_SOD, V_CAT, V_GPX, time_)
+
+  // Rate Rules:
+  H2O2' = V_SOD - ( V_CAT + V_GPX );
+
+  // Variable initializations:
+  H2O2 = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__GSH(GSH, V_GR, V_GPX, time_)
+
+  // Rate Rules:
+  GSH' = V_GR - V_GPX;
+
+  // Variable initializations:
+  GSH = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__GSSG(GSSG, GSH)
+
+  // Assignment Rules:
+  GSSG := 2.0 * ( GT_ - GSH );
+
+  // Variable initializations:
+  GT_ = 1.0;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__CIT(CIT, ISOC, alpha_KG, SCoA, Suc, FUM, MAL, OAA)
+
+  // Assignment Rules:
+  CIT := C_Kint - ( ISOC + alpha_KG + SCoA + Suc + FUM + MAL + OAA );
+
+  // Variable initializations:
+  C_Kint = 1.0;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__mitochondrial_membrane(delta_psi_m, R, T, F, V_He, V_He_F, V_Hu, V_ANT, V_Hleak, V_NaCa, V_uni, time_)
+
+  // Rate Rules:
+  delta_psi_m' = ( V_He + V_He_F + -(( V_Hu + V_ANT + V_Hleak + V_NaCa + 2.0 * V_uni ))) / C_mito;
+
+  // Variable initializations:
+  delta_psi_m = 0.01;
+  R = 8.315;
+  T = 310.16;
+  F = 96480;
+  C_mito = 1.812;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_CS(V_CS, OAA, AcCoA)
+
+  // Assignment Rules:
+  V_CS := Kcat_CS * ET_CS / ( 1.0 + Km_AcCoA / AcCoA + Km_OAA / OAA + Km_AcCoA / AcCoA * ( Km_OAA / OAA ));
+
+  // Variable initializations:
+  Km_AcCoA = 1.26E-2;
+  Km_OAA = 6.4E-4;
+  Kcat_CS = 3.2;
+  ET_CS = 0.4;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_ACO(V_ACO, CIT, ISOC)
+
+  // Assignment Rules:
+  V_ACO := Kf_ACO * ( CIT - ISOC / KE_ACO );
+
+  // Variable initializations:
+  Kf_ACO = 12.5;
+  KE_ACO = 2.22;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_IDH(V_IDH, NAD, NADH, ADP_m, Ca_m, H, ISOC)
+
+  // Assignment Rules:
+  V_IDH := Kcat_IDH * ET_IDH / ( 1.0 + H / Kh_1 + Kh_2 / H + power( Km_ISOC / ISOC , ni ) / (( 1.0 + ADP_m / Ka_ADP ) * ( 1.0 + Ca_m / Ka_Ca )) + Km_NAD / NAD * ( 1.0 + NADH / Ki_NADH ) + power( Km_ISOC / ISOC , ni ) * ( Km_NAD / NAD ) * ( 1.0 + NADH / Ki_NADH ) / (( 1.0 + ADP_m / Ka_ADP ) * ( 1.0 + Ca_m / Ka_Ca )));
+
+  // Variable initializations:
+  Kh_1 = 8.1E-5;
+  Kh_2 = 5.98E-5;
+  Km_ISOC = 1.52;
+  Ka_ADP = 6.2E-2;
+  Ka_Ca = 1.41;
+  Km_NAD = 0.923;
+  Ki_NADH = 0.19;
+  Kcat_IDH = 1.94;
+  ET_IDH = 0.109;
+  ni = 1;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_KGDH(V_KGDH, Mg, Ca_m, NAD, alpha_KG)
+
+  // Assignment Rules:
+  V_KGDH := Kcat_KGDH * ET_KGDH / ( 1.0 + power( Km_alpha_KG / alpha_KG , n_alpha_KG ) / (( 1.0 + Mg / Kd_Mg ) * ( 1.0 + Ca_m / Kd_Ca )) + Km_NAD / NAD / (( 1.0 + Mg / Kd_Mg ) * ( 1.0 + Ca_m / Kd_Ca )));
+
+  // Variable initializations:
+  Km_alpha_KG = 1.94;
+  Kcat_KGDH = 0.15;
+  ET_KGDH = 0.5;
+  Kd_Mg = 0.0308;
+  Kd_Ca = 1.27;
+  n_alpha_KG = 1.2;
+  Km_NAD = 38.7;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_SL(V_SL, SCoA, ADP_m, Suc, ATP_m, CoA)
+
+  // Assignment Rules:
+  V_SL := kf_SL * ( SCoA * ADP_m - Suc * ATP_m * CoA / Ke_SL );
+
+  // Variable initializations:
+  kf_SL = 0.127;
+  Ke_SL = 3.115;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_SDH(V_SDH, Suc, FUM, OAA)
+
+  // Assignment Rules:
+  V_SDH := Kcat_SDH * ET_SDH / ( 1.0 + Km_Suc / Suc * ( 1.0 + OAA / Kisdh_OAA ) * ( 1.0 + FUM / Ki_FUM ));
+
+  // Variable initializations:
+  Kisdh_OAA = 0.15;
+  Kcat_SDH = 1.0;
+  ET_SDH = 0.5;
+  Km_Suc = 3.0E-2;
+  Ki_FUM = 1.3;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_MDH(V_MDH, MAL, OAA, NAD, H)
+
+  // Assignment Rules:
+  V_MDH := Kcat_MDH * ET_MDH * fh_a * fh_i / ( 1.0 + Km_MAL / MAL * ( 1.0 + OAA / Ki_OAA ) + Km_NAD / NAD + Km_MAL / MAL * ( 1.0 + OAA / Ki_OAA ) * ( Km_NAD / NAD ));
+  fh_a := 1.0 / ( 1.0 + H / kh1 + power( H , 2.0 ) / ( kh1 * kh2 )) + k_offset;
+  fh_i := power( 1.0 / ( 1.0 + kh3 / H + kh3 * kh4 / power( H , 2.0 )), 2.0 );
+
+  // Variable initializations:
+  Km_MAL = 1.493;
+  Kcat_MDH = 2.775E1;
+  ET_MDH = 0.154;
+  Ki_OAA = 3.1E-3;
+  Km_NAD = 0.2244;
+  kh1 = 1.13E-5;
+  kh2 = 26.7;
+  kh3 = 6.68E-9;
+  kh4 = 5.62E-6;
+  k_offset = 3.99E-2;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_FH(V_FH, MAL, FUM)
+
+  // Assignment Rules:
+  V_FH := kf_FH * ( FUM - MAL / Ke_FH );
+
+  // Variable initializations:
+  Ke_FH = 1.0;
+  kf_FH = 0.83;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_AAT(V_AAT, OAA, GLU, ASP, alpha_KG)
+
+  // Assignment Rules:
+  V_AAT := kf_AAT * ( OAA * GLU - alpha_KG * ASP / Ke_AAT );
+
+  // Variable initializations:
+  Ke_AAT = 6.6;
+  kf_AAT = 0.644;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_C_ASP(V_C_ASP, ASP)
+
+  // Assignment Rules:
+  V_C_ASP := k_C_ASP * ASP;
+
+  // Variable initializations:
+  k_C_ASP = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_SOD(V_SOD, O2_i, H2O2)
+
+  // Assignment Rules:
+  V_SOD := 2.0 * k1_SOD * k5_SOD * ( k1_SOD + k3_SOD * ( 1.0 + H2O2 / Ki_H2O2 )) * ET_SOD * O2_i / ( k5_SOD * ( 2.0 * k1_SOD + k3_SOD * ( 1.0 + H2O2 / Ki_H2O2 )) + O2_i * k1_SOD * k3_SOD * ( 1.0 + H2O2 / Ki_H2O2 ));
+
+  // Variable initializations:
+  k1_SOD = 2.4E6;
+  k3_SOD = 4.8E4;
+  k5_SOD = 5.0E-1;
+  ET_SOD = 0.4E-3;
+  Ki_H2O2 = 0.5;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_CAT(V_CAT, H2O2)
+
+  // Assignment Rules:
+  V_CAT := 2.0 * k1_CAT * ET_CAT * H2O2 * exp(-( fr ) * H2O2 );
+
+  // Variable initializations:
+  k1_CAT = 1.7E4;
+  ET_CAT = 0.001;
+  fr = 50.0;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_GPX(V_GPX, H2O2, GSH)
+
+  // Assignment Rules:
+  V_GPX := ET_GPX * H2O2 * GSH / ( phi1_GPX * GSH + phi2_GPX * H2O2 );
+
+  // Variable initializations:
+  phi1_GPX = 0.15;
+  phi2_GPX = 0.5;
+  ET_GPX = 0.00141;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_GR(V_GR, NADPH, GSSG)
+
+  // Assignment Rules:
+  V_GR := k1_GR * ET_GR / ( 1.0 + KM_GSSG / GSSG + KM_NADPH / NADPH + KM_GSSG / GSSG * ( KM_NADPH / NADPH ));
+
+  // Variable initializations:
+  k1_GR = 0.0308;
+  KM_GSSG = 1.94;
+  KM_NADPH = 38.7;
+  ET_GR = 1.27E-3;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__V_IMAC(V_IMAC, delta_psi_m, O2_i, GSSG)
+
+  // Assignment Rules:
+  V_IMAC := ( a + b / ( 1.0 + Kcc / O2_i )) * ( GL + Gmax / ( 1.0 + exp( kappa * ( delta_psi_bm - delta_psi_m )))) * delta_psi_m;
+
+  // Variable initializations:
+  Gmax = 7.82;
+  GL = 0.0782;
+  a = 1.0E-3;
+  b = 1.0E4;
+  kappa = 70.0;
+  delta_psi_bm = 0.004;
+  Kcc = 0.01;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__VTr_ROS(VTr_ROS, R, T, F, O2_i, O2_m, V_IMAC, delta_psi_m)
+
+  // Assignment Rules:
+  VTr_ROS := j * ( V_IMAC / delta_psi_m ) * ( delta_psi_m - R * T / F * log( O2_m / O2_i ));
+
+  // Variable initializations:
+  j = 0.12;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__oxidative_phosphorylation(V_O2, V_He, V_He_F, V_ATPase, V_Hu, V_Hleak, R, T, F, NAD, NADH, FAD, FADH2, ADP_m, ATP_m, Pi_, delta_psi_m)
+
+  // Assignment Rules:
+  V_O2 := 0.5 * rho_res * ((( ra + rc1 * exp( 6.0 * F * delta_psi_B / ( R * T ))) * exp( Ares * F / ( R * T )) - ra * exp( g * 6.0 * F * delta_mu_H / ( R * T )) + rc2 * exp( Ares * F / ( R * T )) * exp( g * 6.0 * F * delta_mu_H / ( R * T ))) / (( 1.0 + r1 * exp( F * Ares / ( R * T ))) * exp( 6.0 * F * delta_psi_B / ( R * T )) + ( r2 + r3 * exp( F * Ares / ( R * T ))) * exp( g * 6.0 * F * delta_mu_H / ( R * T ))));
+  V_He := 6.0 * rho_res * (( ra * exp( F * Ares / ( R * T )) - ( ra + rb ) * exp( g * 6.0 * F * delta_mu_H / ( R * T ))) / (( 1.0 + r1 * exp( F * Ares / ( R * T ))) * exp( 6.0 * F * delta_psi_B / ( R * T )) + ( r2 + r3 * exp( F * Ares / ( R * T ))) * exp( g * 6.0 * F * delta_mu_H / ( R * T ))));
+  V_He_F := 6.0 * rho_res_F * (( ra * exp( F * Ares_F / ( R * T )) - ( ra + rb ) * exp( g * 6.0 * F * delta_mu_H / ( R * T ))) / (( 1.0 + r1 * exp( F * Ares_F / ( R * T ))) * exp( 6.0 * F * delta_psi_B / ( R * T )) + ( r2 + r3 * exp( F * Ares_F / ( R * T ))) * exp( g * 6.0 * F * delta_mu_H / ( R * T ))));
+  V_ATPase := -( rho_F1 ) * ((( 100.0 * pa + pc1 * exp( 3.0 * F * delta_psi_B / ( R * T ))) * exp( AF1 * F / ( R * T )) - ( pa * exp( 3.0 * F * delta_mu_H / ( R * T )) + pc2 * exp( AF1 * F / ( R * T )) * exp( 3.0 * F * delta_mu_H / ( R * T )))) / (( 1.0 + p1 * exp( F * AF1 / ( R * T ))) * exp( 3.0 * F * delta_psi_B / ( R * T )) + ( p2 + p3 * exp( F * AF1 / ( R * T ))) * exp( 3.0 * F * delta_mu_H / ( R * T ))));
+  V_Hu := -3.0 * rho_F1 * (( 100.0 * pa * ( 1.0 + exp( F * AF1 / ( R * T ))) - ( pa + pb ) * exp( 3.0 * F * delta_mu_H / ( R * T ))) / (( 1.0 + p1 * exp( F * AF1 / ( R * T ))) * exp( 3.0 * F * delta_psi_B / ( R * T )) + ( p2 + p3 * exp( F * AF1 / ( R * T ))) * exp( 3.0 * F * delta_mu_H / ( R * T ))));
+  V_Hleak := gH * delta_mu_H;
+  Ares := R * T / F * ln( Kres * power( NADH / NAD , 0.5 ));
+  Ares_F := R * T / F * ln( Kres_F * power( FADH2 / FAD , 0.5 ));
+  delta_mu_H := R * T / F * delta_pH + delta_psi_m;
+  AF1 := R * T / F * ln( KF1 * ( ATP_m / ( ADP_m * Pi_ )));
+
+  // Variable initializations:
+  rho_res = 0.0006;
+  rho_res_F = 0.0045;
+  ra = 6.394E-10;
+  rc1 = 2.656E-19;
+  r1 = 2.077E-18;
+  r2 = 1.728E-9;
+  r3 = 1.059E-26;
+  rb = 1.762E-13;
+  rc2 = 8.632E-27;
+  Kres = 1.35E18;
+  Kres_F = 5.765E13;
+  gH = 0.01;
+  delta_psi_B = 0.05;
+  g = 0.85;
+  delta_pH = -0.6;
+  rho_F1 = 0.06;
+  pa = 1.656E-5;
+  pc1 = 9.651E-14;
+  p1 = 1.346E-8;
+  p2 = 7.739E-7;
+  p3 = 6.65E-15;
+  pb = 3.373E-7;
+  pc2 = 4.585E-14;
+  KF1 = 1.71E6;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01__calcium_dynamics(V_ANT, V_uni, V_NaCa, ADP_i, ATP_i, ADP_m, ATP_m, Ca_i, Ca_m, Na_i, R, T, F, delta_psi_m)
+
+  // Assignment Rules:
+  V_ANT := Vmax_ANT * (( 1.0 - 0.05 * ATP_i * 0.45 * 0.8 * ADP_m / ( 0.45 * ADP_i * 0.05 * ATP_m )) / (( 1.0 + 0.05 * ATP_i / ( 0.45 * ADP_i ) * exp(-( h ) * F * delta_psi_0 / ( R * T ))) * ( 1.0 + 0.45 * 0.8 * ADP_m / ( 0.05 * ATP_m ))));
+  V_uni := Vmax_uni * ( Ca_i / K_trans * power( 1.0 + Ca_i / K_trans , 3.0 ) * ( 2.0 * F * ( delta_psi_m - delta_psi_0 ) / ( R * T )) / (power( 1.0 + Ca_i / K_trans , 4.0 ) + L / power( 1.0 + Ca_i / K_act , na ) * ( 1.0 - exp( -2.0 * F * ( delta_psi_m - delta_psi_0 ) / ( R * T )))));
+  V_NaCa := Vmax_NaCa * (exp( b * F * ( delta_psi_m - delta_psi_0 ) / ( R * T )) * exp(ln( Ca_i / Ca_m )) / (power( 1.0 + KNa / Na_i , n ) * ( 1.0 + KCa / Ca_m )));
+
+  // Variable initializations:
+  h = 0.5;
+  delta_psi_0 = 0.091;
+  Vmax_ANT = 0.05;
+  L = 110.0;
+  na = 2.8;
+  Vmax_uni = 0.000625;
+  K_act = 0.38;
+  K_trans = 19.0;
+  n = 3.0;
+  Vmax_NaCa = 0.005;
+  KNa = 9.4;
+  KCa = 3.75E-1;
+  b = 0.5;
+end
+
+model cortassa_aon_marban_winslow_orourke_2004_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cortassa_aon_marban_winslow_orourke_2004_version01__environment(time_);
+  ADP_m: cortassa_aon_marban_winslow_orourke_2004_version01__ADP_m(ADP_m0, V_ANT, V_ATPase, V_SL0, time_);
+  NADH: cortassa_aon_marban_winslow_orourke_2004_version01__NADH(NADH0, V_O2, V_IDH0, V_KGDH0, V_MDH0, time_);
+  ISOC: cortassa_aon_marban_winslow_orourke_2004_version01__ISOC(ISOC0, V_ACO0, V_IDH0, time_);
+  alpha_KG: cortassa_aon_marban_winslow_orourke_2004_version01__alpha_KG(alpha_KG0, V_IDH0, V_KGDH0, V_AAT0, time_);
+  SCoA: cortassa_aon_marban_winslow_orourke_2004_version01__SCoA(SCoA0, V_KGDH0, V_SL0, time_);
+  Suc: cortassa_aon_marban_winslow_orourke_2004_version01__Suc(Suc0, V_SL0, V_SDH0, time_);
+  FUM: cortassa_aon_marban_winslow_orourke_2004_version01__FUM(FUM0, V_SDH0, V_FH0, time_);
+  MAL: cortassa_aon_marban_winslow_orourke_2004_version01__MAL(MAL0, V_FH0, V_MDH0, time_);
+  OAA: cortassa_aon_marban_winslow_orourke_2004_version01__OAA(OAA0, V_MDH0, V_CS0, V_AAT0, time_);
+  ASP: cortassa_aon_marban_winslow_orourke_2004_version01__ASP(ASP0, V_AAT0, V_C_ASP0, time_);
+  Ca_m: cortassa_aon_marban_winslow_orourke_2004_version01__Ca_m(Ca_m0, V_uni, V_NaCa, time_);
+  Ca_i: cortassa_aon_marban_winslow_orourke_2004_version01__Ca_i(Ca_i0, time_);
+  Na_i: cortassa_aon_marban_winslow_orourke_2004_version01__Na_i(Na_i0);
+  ATP_i: cortassa_aon_marban_winslow_orourke_2004_version01__ATP_i(ATP_i0);
+  ATP_m: cortassa_aon_marban_winslow_orourke_2004_version01__ATP_m(ATP_m0, ADP_m0);
+  ADP_i: cortassa_aon_marban_winslow_orourke_2004_version01__ADP_i(ADP_i0, time_);
+  GLU: cortassa_aon_marban_winslow_orourke_2004_version01__GLU(GLU0);
+  Mg: cortassa_aon_marban_winslow_orourke_2004_version01__Mg(Mg0);
+  H: cortassa_aon_marban_winslow_orourke_2004_version01__H(H0);
+  Pi_: cortassa_aon_marban_winslow_orourke_2004_version01__Pi(Pi_0);
+  CoA: cortassa_aon_marban_winslow_orourke_2004_version01__CoA(CoA0);
+  AcCoA: cortassa_aon_marban_winslow_orourke_2004_version01__AcCoA(AcCoA0);
+  FAD: cortassa_aon_marban_winslow_orourke_2004_version01__FAD(FAD0);
+  FADH2: cortassa_aon_marban_winslow_orourke_2004_version01__FADH2(FADH20);
+  NAD: cortassa_aon_marban_winslow_orourke_2004_version01__NAD(NAD0, NADH0);
+  NADPH: cortassa_aon_marban_winslow_orourke_2004_version01__NADPH(NADPH0);
+  O2_m: cortassa_aon_marban_winslow_orourke_2004_version01__O2_m(O2_m0, V_O2, VTr_ROS0, time_);
+  O2_i: cortassa_aon_marban_winslow_orourke_2004_version01__O2_i(O2_i0, V_SOD0, VTr_ROS0, time_);
+  H2O2: cortassa_aon_marban_winslow_orourke_2004_version01__H2O2(H2O20, V_SOD0, V_CAT0, V_GPX0, time_);
+  GSH: cortassa_aon_marban_winslow_orourke_2004_version01__GSH(GSH0, V_GR0, V_GPX0, time_);
+  GSSG: cortassa_aon_marban_winslow_orourke_2004_version01__GSSG(GSSG0, GSH0);
+  CIT: cortassa_aon_marban_winslow_orourke_2004_version01__CIT(CIT0, ISOC0, alpha_KG0, SCoA0, Suc0, FUM0, MAL0, OAA0);
+  mitochondrial_membrane: cortassa_aon_marban_winslow_orourke_2004_version01__mitochondrial_membrane(delta_psi_m, R, T, F, V_He, V_He_F, V_Hu, V_ANT, V_Hleak, V_NaCa, V_uni, time_);
+  V_CS: cortassa_aon_marban_winslow_orourke_2004_version01__V_CS(V_CS0, OAA0, AcCoA0);
+  V_ACO: cortassa_aon_marban_winslow_orourke_2004_version01__V_ACO(V_ACO0, CIT0, ISOC0);
+  V_IDH: cortassa_aon_marban_winslow_orourke_2004_version01__V_IDH(V_IDH0, NAD0, NADH0, ADP_m0, Ca_m0, H0, ISOC0);
+  V_KGDH: cortassa_aon_marban_winslow_orourke_2004_version01__V_KGDH(V_KGDH0, Mg0, Ca_m0, NAD0, alpha_KG0);
+  V_SL: cortassa_aon_marban_winslow_orourke_2004_version01__V_SL(V_SL0, SCoA0, ADP_m0, Suc0, ATP_m0, CoA0);
+  V_SDH: cortassa_aon_marban_winslow_orourke_2004_version01__V_SDH(V_SDH0, Suc0, FUM0, OAA0);
+  V_MDH: cortassa_aon_marban_winslow_orourke_2004_version01__V_MDH(V_MDH0, MAL0, OAA0, NAD0, H0);
+  V_FH: cortassa_aon_marban_winslow_orourke_2004_version01__V_FH(V_FH0, MAL0, FUM0);
+  V_AAT: cortassa_aon_marban_winslow_orourke_2004_version01__V_AAT(V_AAT0, OAA0, GLU0, ASP0, alpha_KG0);
+  V_C_ASP: cortassa_aon_marban_winslow_orourke_2004_version01__V_C_ASP(V_C_ASP0, ASP0);
+  V_SOD: cortassa_aon_marban_winslow_orourke_2004_version01__V_SOD(V_SOD0, O2_i0, H2O20);
+  V_CAT: cortassa_aon_marban_winslow_orourke_2004_version01__V_CAT(V_CAT0, H2O20);
+  V_GPX: cortassa_aon_marban_winslow_orourke_2004_version01__V_GPX(V_GPX0, H2O20, GSH0);
+  V_GR: cortassa_aon_marban_winslow_orourke_2004_version01__V_GR(V_GR0, NADPH0, GSSG0);
+  V_IMAC: cortassa_aon_marban_winslow_orourke_2004_version01__V_IMAC(V_IMAC0, delta_psi_m, O2_i0, GSSG0);
+  VTr_ROS: cortassa_aon_marban_winslow_orourke_2004_version01__VTr_ROS(VTr_ROS0, R, T, F, O2_i0, O2_m0, V_IMAC0, delta_psi_m);
+  oxidative_phosphorylation: cortassa_aon_marban_winslow_orourke_2004_version01__oxidative_phosphorylation(V_O2, V_He, V_He_F, V_ATPase, V_Hu, V_Hleak, R, T, F, NAD0, NADH0, FAD0, FADH20, ADP_m0, ATP_m0, Pi_0, delta_psi_m);
+  calcium_dynamics: cortassa_aon_marban_winslow_orourke_2004_version01__calcium_dynamics(V_ANT, V_uni, V_NaCa, ADP_i0, ATP_i0, ADP_m0, ATP_m0, Ca_i0, Ca_m0, Na_i0, R, T, F, delta_psi_m);
+end

@@ -1,0 +1,114 @@
+//Created by libAntimony v1.3
+model kyrylov_severyanova_vieira_model_2005_version01__environment(time_)
+end
+
+model kyrylov_severyanova_vieira_model_2005_version01__y0(y0, y2, a00, a02, c0, e0, epsilon, time_)
+
+  // Assignment Rules:
+  g0 := h0 * r0;
+  r0 := piecewise( 1.0 - exp( S0 * power( y0 , 2.0 ) / (( a00 * y0 + a02 * y2 ) * power( epsilon - y0 , 2.0 ))) , ( y0 < epsilon) && (a00 * y0 + a02 * y2 < 0.0 ), 1.0 );
+  h0 := piecewise( ( a00 * y0 + a02 * y2 ) / ( 1.0 + ( a00 * y0 + a02 * y2 ) / S0 * ( 1.0 - exp(-((( a00 * y0 + a02 * y2 ) / S0 ))))) , a00 * y0 + a02 * y2 > 0.0 , a00 * y0 + a02 * y2 , a00 * y0 + a02 * y2 <= 0.0 );
+
+  // Rate Rules:
+  y0' = g0 + c0 + e0;
+
+  // Variable initializations:
+  y0 = 0.4;
+  S0 = 0.010;
+end
+
+model kyrylov_severyanova_vieira_model_2005_version01__y1(y1, y0, a10, y2, a12, a11, e1, epsilon, time_)
+
+  // Assignment Rules:
+  g1 := h1 * r1;
+  r1 := piecewise( 1.0 - exp( S1 * power( y1 , 2.0 ) / (( a10 * y0 + a11 * y1 + a12 * y2 ) * power( epsilon - y1 , 2.0 ))) , ( y1 < epsilon) && (a10 * y0 + a11 * y1 + a12 * y2 < 0.0 ), 1.0 );
+  h1 := piecewise( ( a10 * y0 + a11 * y1 + a12 * y2 ) / ( 1.0 + ( a10 * y0 + a11 * y1 + a12 * y2 ) / S1 * ( 1.0 - exp(-((( a10 * y0 + a11 * y1 + a12 * y2 ) / S1 ))))) , a10 * y0 + a11 * y1 + a12 * y2 > 0.0 , a10 * y0 + a11 * y1 + a12 * y2 , a10 * y0 + a11 * y1 + a12 * y2 <= 0.0 );
+
+  // Rate Rules:
+  y1' = g1 + e1;
+
+  // Variable initializations:
+  y1 = 1.4;
+  S1 = 0.010;
+end
+
+model kyrylov_severyanova_vieira_model_2005_version01__y2(y2, y0, y1, y3, y4, a23, a24, a20, a21, a22, e2, epsilon, time_)
+
+  // Assignment Rules:
+  g2 := h2 * r2;
+  r2 := piecewise( 1.0 - exp( S2 * power( y2 , 2.0 ) / (( a20 * y0 + a21 * y1 + a22 * y2 + a23 * y3 + a24 * y4 ) * power( epsilon - y2 , 2.0 ))) , ( y2 < epsilon) && (a20 * y0 + a21 * y1 + a22 * y2 + a23 * y3 + a24 * y4 < 0.0 ), 1.0 );
+  h2 := piecewise( ( a20 * y0 + a21 * y1 + a22 * y2 + a23 * y3 + a24 * y4 ) / ( 1.0 + ( a20 * y0 + a21 * y1 + a22 * y2 + a23 * y3 + a24 * y4 ) / S2 * ( 1.0 - exp(-((( a20 * y0 + a21 * y1 + a22 * y2 + a23 * y3 + a24 * y4 ) / S2 ))))) , a20 * y0 + a21 * y1 + a22 * y2 + a23 * y3 + a24 * y4 > 0.0 , a20 * y0 + a21 * y1 + a22 * y2 + a23 * y3 + a24 * y4 , a20 * y0 + a21 * y1 + a22 * y2 + a23 * y3 + a24 * y4 <= 0.0 );
+
+  // Rate Rules:
+  y2' = g2 + e2;
+
+  // Variable initializations:
+  y2 = 1.17;
+  S2 = 0.010;
+end
+
+model kyrylov_severyanova_vieira_model_2005_version01__y3(y3, y2, a32, a33, epsilon, time_)
+
+  // Assignment Rules:
+  g3 := h3 * r3;
+  r3 := piecewise( 1.0 - exp( S3 * power( y3 , 2.0 ) / (( a32 * y2 + a33 * y3 ) * power( epsilon - y3 , 2.0 ))) , ( y3 < epsilon) && (a32 * y2 + a33 * y3 < 0.0 ), 1.0 );
+  h3 := piecewise( ( a32 * y2 + a33 * y3 ) / ( 1.0 + ( a32 * y2 + a33 * y3 ) / S3 * ( 1.0 - exp(-((( a32 * y2 + a33 * y3 ) / S3 ))))) , a32 * y2 + a33 * y3 > 0.0 , a32 * y2 + a33 * y3 , a32 * y2 + a33 * y3 <= 0.0 );
+
+  // Rate Rules:
+  y3' = g3;
+
+  // Variable initializations:
+  y3 = 0.95;
+  S3 = 0.010;
+end
+
+model kyrylov_severyanova_vieira_model_2005_version01__y4(y4, y2, a42, a44, epsilon, time_)
+
+  // Assignment Rules:
+  g4 := h4 * r4;
+  r4 := piecewise( 1.0 - exp( S4 * power( y4 , 2.0 ) / (( a42 * y2 + a44 * y4 ) * power( epsilon - y4 , 2.0 ))) , ( y4 < epsilon) && (a42 * y2 + a44 * y4 < 0.0 ), 1.0 );
+  h4 := piecewise( ( a42 * y2 + a44 * y4 ) / ( 1.0 + ( a42 * y2 + a44 * y4 ) / S4 * ( 1.0 - exp(-((( a42 * y2 + a44 * y4 ) / S4 ))))) , a42 * y2 + a44 * y4 > 0.0 , a42 * y2 + a44 * y4 , a42 * y2 + a44 * y4 <= 0.0 );
+
+  // Rate Rules:
+  y4' = g4;
+
+  // Variable initializations:
+  y4 = 0.65;
+  S4 = 0.010;
+end
+
+model kyrylov_severyanova_vieira_model_2005_version01__model_parameters(a00, a02, a10, a11, a12, a20, a21, a22, a23, a24, a32, a33, a42, a44, c0, e0, e1, e2, epsilon)
+
+  // Variable initializations:
+  a00 = -0.00843;
+  a02 = -0.440;
+  a10 = 0.082;
+  a11 = -0.0040;
+  a12 = -0.0668;
+  a20 = 0.0;
+  a21 = 0.0310;
+  a22 = -0.0957;
+  a23 = 0.0576;
+  a24 = 3.25E-4;
+  a32 = 0.00869;
+  a33 = -0.00857;
+  a42 = 1.39E-4;
+  a44 = -1.43E-4;
+  c0 = 0.443;
+  e0 = 0.0;
+  e1 = 0.0;
+  e2 = 0.0;
+  epsilon = 0.50;
+end
+
+model kyrylov_severyanova_vieira_model_2005_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: kyrylov_severyanova_vieira_model_2005_version01__environment(time_);
+  y0: kyrylov_severyanova_vieira_model_2005_version01__y0(y00, y20, a00, a02, c0, e0, epsilon, time_);
+  y1: kyrylov_severyanova_vieira_model_2005_version01__y1(y10, y00, a10, y20, a12, a11, e1, epsilon, time_);
+  y2: kyrylov_severyanova_vieira_model_2005_version01__y2(y20, y00, y10, y30, y40, a23, a24, a20, a21, a22, e2, epsilon, time_);
+  y3: kyrylov_severyanova_vieira_model_2005_version01__y3(y30, y20, a32, a33, epsilon, time_);
+  y4: kyrylov_severyanova_vieira_model_2005_version01__y4(y40, y20, a42, a44, epsilon, time_);
+  model_parameters: kyrylov_severyanova_vieira_model_2005_version01__model_parameters(a00, a02, a10, a11, a12, a20, a21, a22, a23, a24, a32, a33, a42, a44, c0, e0, e1, e2, epsilon);
+end

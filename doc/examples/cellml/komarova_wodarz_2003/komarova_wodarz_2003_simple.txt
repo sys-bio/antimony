@@ -1,0 +1,51 @@
+//Created by libAntimony v1.3
+model komarova_2003__environment(time_)
+end
+
+model komarova_2003__S(S, rs, epsilon_s, alpha, u, beta, phi, time_)
+
+  // Rate Rules:
+  S' = rs * S * (1 - u * 1 + beta * epsilon_s * u / 1 ) + alpha * u * rs * S / 1 * (1 - epsilon_s) - phi * S * 1;
+
+  // Variable initializations:
+  S = 0.5;
+end
+
+model komarova_2003__M(M, rm, epsilon_m, alpha, u, beta, phi, time_)
+
+  // Rate Rules:
+  M' = rm * M * (1 - u / 1 + beta * epsilon_m * u / 1 ) + alpha * u * rm * M / 1 * (1 - epsilon_m) - phi * M * 1;
+
+  // Variable initializations:
+  M = 0.5;
+end
+
+model komarova_2003__phi(phi, alpha, u, beta, S, M, rs, rm, epsilon_s, epsilon_m, a)
+
+  // Assignment Rules:
+  phi := S * rs / 1 * (1 - u / 1 * (1 - beta * epsilon_s / 1 - alpha / 1 * (1 - epsilon_s / 1 ))) + M * rm / 1 * (1 - u / 1 * (1 - beta * epsilon_m / 1 - alpha / 1 * (1 - epsilon_m / 1 )));
+  growth_rate := (rs + rm) * (1 - a / 1 );
+end
+
+model komarova_2003__kinetic_parameters(alpha, u, beta, rm, epsilon_m, rs, epsilon_s, a)
+
+  // Variable initializations:
+  alpha = 0.1;
+  u = 0.07;
+  beta = 0.2;
+  rm = 1.3;
+  epsilon_m = 0.1;
+  rs = 1;
+  epsilon_s = 0.99;
+  a = 0.5;
+end
+
+model komarova_2003____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: komarova_2003__environment(time_);
+  S: komarova_2003__S(S0, rs, epsilon_s, alpha, u, beta, phi0, time_);
+  M: komarova_2003__M(M0, rm, epsilon_m, alpha, u, beta, phi0, time_);
+  phi: komarova_2003__phi(phi0, alpha, u, beta, S0, M0, rs, rm, epsilon_s, epsilon_m, a);
+  kinetic_parameters: komarova_2003__kinetic_parameters(alpha, u, beta, rm, epsilon_m, rs, epsilon_s, a);
+end

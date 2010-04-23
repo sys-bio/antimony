@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="cui_kaandorp_lloyd_b_2008_version01____main" name="cui_kaandorp_lloyd_b_2008_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Py0" value="25" constant="false"/>
+      <parameter id="Zn0" value="10000" constant="false"/>
+      <parameter id="Py10" value="0" constant="false"/>
+      <parameter id="r3"/>
+      <parameter id="r4"/>
+      <parameter id="Dw0" value="4" constant="false"/>
+      <parameter id="Qw20" value="0" constant="false"/>
+      <parameter id="k_1" value="0.9"/>
+      <parameter id="k1a" value="1"/>
+      <parameter id="Qw10" value="0" constant="false"/>
+      <parameter id="Rw0" value="50" constant="false"/>
+      <parameter id="k2" value="0.02"/>
+      <parameter id="k_2" value="0.3"/>
+      <parameter id="k3" constant="false"/>
+      <parameter id="Mw0" value="0" constant="false"/>
+      <parameter id="Px0" value="50" constant="false"/>
+      <parameter id="Px10" value="0" constant="false"/>
+      <parameter id="Dz0" value="2" constant="false"/>
+      <parameter id="Qz40" value="0" constant="false"/>
+      <parameter id="r1"/>
+      <parameter id="r2"/>
+      <parameter id="k1b"/>
+      <parameter id="Qz20" value="0" constant="false"/>
+      <parameter id="k1" value="0.025"/>
+      <parameter id="Tp0" value="10000" constant="false"/>
+      <parameter id="Tp10" value="0" constant="false"/>
+      <parameter id="r5"/>
+      <parameter id="r6"/>
+      <parameter id="Qz10" value="0" constant="false"/>
+      <parameter id="Rz0" value="100" constant="false"/>
+      <parameter id="k2a" value="5e-05"/>
+      <parameter id="Qz30" value="0" constant="false"/>
+      <parameter id="Qz50" value="0" constant="false"/>
+      <parameter id="k2b" value="0.0002"/>
+      <parameter id="k2c" value="0.0037"/>
+      <parameter id="Mz0" value="0" constant="false"/>
+      <parameter id="model_parameters_td0" value="1800"/>
+      <parameter id="model_parameters_td" value="2700"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="r3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 4.41 <sep/> 10 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 9 <sep/> -3 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.73 <sep/> 2 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3.437 <sep/> -4 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="k1b">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.253 <sep/> -2 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3 <sep/> 4 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.506 <sep/> -2 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="Py0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> r4 </ci>
+              <ci> Py10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> r3 </ci>
+              <apply>
+                <power/>
+                <ci> Zn0 </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <ci> Py0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Zn0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> r2 </ci>
+                <ci> Px10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> r6 </ci>
+                <ci> Tp10 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> r1 </ci>
+                <ci> Zn0 </ci>
+                <ci> Px0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> r5 </ci>
+                <ci> Zn0 </ci>
+                <ci> Tp0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Py10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> r3 </ci>
+                <apply>
+                  <power/>
+                  <ci> Zn0 </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+                <ci> Py0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> Qw20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> r4 </ci>
+                <ci> Py10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k1a </ci>
+                <ci> Dw0 </ci>
+                <ci> Py10 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Dw0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> Qw20 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qw10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qw10 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k1a </ci>
+                <ci> Dw0 </ci>
+                <ci> Py10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k2 </ci>
+                <ci> Dw0 </ci>
+                <ci> Rw0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Qw20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k1a </ci>
+              <ci> Dw0 </ci>
+              <ci> Py10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_1 </ci>
+              <ci> Qw20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Qw10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <ci> Dw0 </ci>
+              <ci> Rw0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qw10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qw10 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Rw0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qw10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qw10 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <ci> Dw0 </ci>
+              <ci> Rw0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k3"/>
+      <rateRule variable="Mw0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k3 </ci>
+            <ci> Qw10 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Px0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> r2 </ci>
+                <ci> Px10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> Qz40 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> r1 </ci>
+                <ci> Zn0 </ci>
+                <ci> Px0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k1b </ci>
+                <ci> Dz0 </ci>
+                <ci> Px0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Px10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> r1 </ci>
+                <ci> Zn0 </ci>
+                <ci> Px0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> Qz20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> r2 </ci>
+                <ci> Px10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> Dz0 </ci>
+                <ci> Px10 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Dz0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> Qz20 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qz10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qz10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> Qz40 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k1b </ci>
+                <ci> Dz0 </ci>
+                <ci> Px0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> Dz0 </ci>
+                <ci> Px10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k2a </ci>
+                <ci> Dz0 </ci>
+                <ci> Rz0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Qz40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k1b </ci>
+                <ci> Dz0 </ci>
+                <ci> Px0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qz50 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qz50 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> Qz40 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k2b </ci>
+                <ci> Qz40 </ci>
+                <ci> Rz0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Qz20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> Dz0 </ci>
+                <ci> Px10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qz30 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qz30 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> Qz20 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k2c </ci>
+                <ci> Qz20 </ci>
+                <ci> Rz0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Tp0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> r6 </ci>
+              <ci> Tp10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> r5 </ci>
+              <ci> Zn0 </ci>
+              <ci> Tp0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Tp10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> r5 </ci>
+              <ci> Zn0 </ci>
+              <ci> Tp0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> r6 </ci>
+              <ci> Tp10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Qz10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k2a </ci>
+              <ci> Dz0 </ci>
+              <ci> Rz0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qz10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qz10 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Rz0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qz10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qz10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qz30 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qz30 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qz50 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qz50 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k2a </ci>
+                <ci> Dz0 </ci>
+                <ci> Rz0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k2b </ci>
+                <ci> Qz40 </ci>
+                <ci> Rz0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k2c </ci>
+                <ci> Qz20 </ci>
+                <ci> Rz0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Qz30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k2c </ci>
+              <ci> Qz20 </ci>
+              <ci> Rz0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qz30 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qz30 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Qz50">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k2b </ci>
+              <ci> Qz40 </ci>
+              <ci> Rz0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> Qz50 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> Qz50 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Mz0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k3 </ci>
+              <ci> Qz10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k3 </ci>
+              <ci> Qz30 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k3 </ci>
+              <ci> Qz50 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,128 @@
+//Created by libAntimony v1.3
+model wierschem_2004__environment(time_)
+end
+
+model wierschem_2004__membrane(time_, I_Ca, I_K, I_KCa, I_KATP, V)
+
+  // Rate Rules:
+  V' = -((I_Ca + I_K + I_KCa + I_KATP)) / C_m;
+
+  // Variable initializations:
+  C_m = 5300;
+  V = -67.018;
+end
+
+model wierschem_2004__Ca_current(V, I_Ca)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp((v_m - V) / s_m));
+  I_Ca := g_Ca_ * m_infinity * (V - V_Ca);
+
+  // Variable initializations:
+  g_Ca_ = 1200;
+  V_Ca = 25;
+  v_m = -20;
+  s_m = 12;
+end
+
+model wierschem_2004__K_channel_activation(time_, V, n)
+
+  // Assignment Rules:
+  n_infinity := 1 / (1 + exp((v_n - V) / s_n));
+
+  // Rate Rules:
+  n' = (n_infinity - n) / tau_n;
+
+  // Variable initializations:
+  tau_n = 16;
+  v_n = -16;
+  s_n = 5.6;
+  n = 0.00011;
+end
+
+model wierschem_2004__K_current(time_, V_K, n, V, I_K)
+
+  // Sub-modules, and any changes to those submodules:
+  K_channel_activation: wierschem_2004__K_channel_activation(time_, V, n);
+
+  // Assignment Rules:
+  I_K := g_K_ * n * (V - V_K);
+
+  // Variable initializations:
+  g_K_ = 3000;
+  V_K = -75;
+end
+
+model wierschem_2004__Ca_activated_K_current(V_K, c, V, I_KCa)
+
+  // Assignment Rules:
+  omega := 1 / (1 + k_D / c);
+  I_KCa := g_KCa_ * omega * (V - V_K);
+
+  // Variable initializations:
+  g_KCa_ = 300;
+  k_D = 0.3;
+end
+
+model wierschem_2004__nucleotides(time_, ATP)
+
+  // Assignment Rules:
+  phi := ATP * power(1 + k * ADP, 2 );
+
+  // Rate Rules:
+  ADP' = (phi - eta * ADP) / (1000 * tau_c);
+  ATP' = (v - phi) / (1000 * tau_c);
+
+  // Variable initializations:
+  tau_c = 1200;
+  eta = 185;
+  v = 10;
+  k = 20;
+  ADP = 0.085817;
+  ATP = 2.1047;
+end
+
+model wierschem_2004__ATP_sensitive_K_current(time_, V_K, ATP, V, I_KATP)
+
+  // Sub-modules, and any changes to those submodules:
+  nucleotides: wierschem_2004__nucleotides(time_, ATP);
+
+  // Assignment Rules:
+  I_KATP := (V - V_K) * g_KATP_ / ATP;
+
+  // Variable initializations:
+  g_KATP_ = 350;
+end
+
+model wierschem_2004__cytosolic_Ca(time_, J_mem, c)
+
+  // Rate Rules:
+  c' = J_mem;
+
+  // Variable initializations:
+  c = 0.15666;
+end
+
+model wierschem_2004__Ca_influx(I_Ca, c, J_mem)
+
+  // Assignment Rules:
+  J_mem := -(f) * (alpha * I_Ca + k_c * c);
+
+  // Variable initializations:
+  f = 0.001;
+  alpha = 0.00000225;
+  k_c = 0.1;
+end
+
+model wierschem_2004____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: wierschem_2004__environment(time_);
+  membrane: wierschem_2004__membrane(time_, I_Ca, I_K, I_KCa, I_KATP, V);
+  Ca_current: wierschem_2004__Ca_current(V, I_Ca);
+  K_current: wierschem_2004__K_current(time_, V_K, n, V, I_K);
+  Ca_activated_K_current: wierschem_2004__Ca_activated_K_current(V_K, c, V, I_KCa);
+  ATP_sensitive_K_current: wierschem_2004__ATP_sensitive_K_current(time_, V_K, ATP, V, I_KATP);
+  cytosolic_Ca: wierschem_2004__cytosolic_Ca(time_, J_mem, c);
+  Ca_influx: wierschem_2004__Ca_influx(I_Ca, c, J_mem);
+end

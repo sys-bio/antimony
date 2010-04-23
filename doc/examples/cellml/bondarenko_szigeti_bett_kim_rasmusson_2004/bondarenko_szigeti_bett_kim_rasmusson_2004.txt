@@ -1,0 +1,432 @@
+//Created by libAntimony v1.3
+model bondarenko_model_2004_apex__environment(time_)
+end
+
+model bondarenko_model_2004_apex__membrane(V, Cm, Vmyo, VJSR, VNSR, Vss, Acap, Ko, Nao, Cao, R, T, F, time_, i_CaL, i_pCa, i_NaCa, i_Cab, i_Na, i_Nab, i_NaK, i_Kto_f, i_Kto_s, i_K1, i_Ks, i_Kur, i_Kss, i_ClCa, i_Kr)
+
+  // Assignment Rules:
+  i_stim := piecewise( stim_amplitude , (( time_ >= stim_start) && (time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration )), 0 );
+
+  // Rate Rules:
+  V' = -((i_CaL + i_pCa + i_NaCa + i_Cab + i_Na + i_Nab + i_NaK + i_Kto_f + i_Kto_s + i_K1 + i_Ks + i_Kur + i_Kss + i_Kr + i_ClCa + i_stim));
+
+  // Variable initializations:
+  V = -82.4202;
+  Cm = 1;
+  Vmyo = 25.84e-6;
+  VJSR = 0.12e-6;
+  VNSR = 2.098e-6;
+  Vss = 1.485e-9;
+  Acap = 1.534e-4;
+  Ko = 5400;
+  Nao = 140000;
+  Cao = 1800;
+  R = 8.314;
+  T = 298;
+  F = 96.5;
+  stim_start = 20;
+  stim_end = 100000;
+  stim_period = 71.43;
+  stim_duration = 0.5;
+  stim_amplitude = -80;
+end
+
+model bondarenko_model_2004_apex__calcium_concentration(Cai, Cass, CaJSR, CaNSR, Acap, Vmyo, VJSR, Vss, VNSR, V, Cm, time_, F, i_Cab, i_CaL, i_NaCa, i_pCa, J_leak, J_rel, J_up, J_tr, J_trpn, J_xfer)
+
+  // Assignment Rules:
+  Bi := power(1 + CMDN_tot * Km_CMDN / power(Km_CMDN + Cai, 2 ), -(1 ));
+  Bss := power(1 + CMDN_tot * Km_CMDN / power(Km_CMDN + Cass, 2 ), -(1 ));
+  BJSR := power(1 + CSQN_tot * Km_CSQN / power(Km_CSQN + CaJSR, 2 ), -(1 ));
+
+  // Rate Rules:
+  Cai' = Bi * (J_leak + J_xfer - (J_up + J_trpn + (i_Cab + i_pCa - 2 * i_NaCa) * Acap * Cm / (2 * Vmyo * F)));
+  Cass' = Bss * (J_rel * VJSR / Vss - (J_xfer * Vmyo / Vss + i_CaL * Acap * Cm / (2 * Vss * F)));
+  CaJSR' = BJSR * (J_tr - J_rel);
+  CaNSR' = (J_up - J_leak) * Vmyo / VNSR - J_tr * VJSR / VNSR;
+
+  // Variable initializations:
+  Cai = 0.115001;
+  Cass = 0.115001;
+  CaJSR = 1299.5;
+  CaNSR = 1299.5;
+  CMDN_tot = 50;
+  CSQN_tot = 15000;
+  Km_CMDN = 0.238;
+  Km_CSQN = 800;
+end
+
+model bondarenko_model_2004_apex__calcium_fluxes(J_leak, J_rel, J_up, J_tr, J_trpn, J_xfer, k_plus_htrpn, k_minus_htrpn, k_plus_ltrpn, k_minus_ltrpn, LTRPN_tot, HTRPN_tot, LTRPN_Ca, HTRPN_Ca, V, time_, i_CaL_max, i_CaL, Cai, Cass, CaJSR, CaNSR, P_O1, P_O2)
+
+  // Assignment Rules:
+  J_leak := v2 * (CaNSR - Cai);
+  J_rel := v1 * (P_O1 + P_O2) * (CaJSR - Cass) * P_RyR;
+  J_up := v3 * power(Cai, 2 ) / (power(Km_up, 2 ) + power(Cai, 2 ));
+  J_tr := (CaNSR - CaJSR) / tau_tr;
+  J_trpn := k_plus_htrpn * Cai * (HTRPN_tot - HTRPN_Ca) + k_plus_ltrpn * Cai * (LTRPN_tot - LTRPN_Ca) - (k_minus_htrpn * HTRPN_Ca + k_minus_ltrpn * LTRPN_Ca);
+  J_xfer := (Cass - Cai) / tau_xfer;
+
+  // Rate Rules:
+  P_RyR' = -(0.04 ) * P_RyR - 0.1 * i_CaL / i_CaL_max * exp(-(power(V - 5 , 2 )) / 648 );
+
+  // Variable initializations:
+  k_plus_htrpn = 0.00237;
+  k_minus_htrpn = 3.2e-5;
+  k_plus_ltrpn = 0.0327;
+  k_minus_ltrpn = 0.0196;
+  P_RyR = 0;
+  v1 = 4.5;
+  tau_tr = 20;
+  v2 = 1.74e-5;
+  tau_xfer = 8;
+  v3 = 0.45;
+  Km_up = 0.5;
+end
+
+model bondarenko_model_2004_apex__calcium_buffering(LTRPN_tot, HTRPN_tot, LTRPN_Ca, HTRPN_Ca, time_, Cai, k_plus_htrpn, k_minus_htrpn, k_plus_ltrpn, k_minus_ltrpn)
+
+  // Rate Rules:
+  LTRPN_Ca' = k_plus_ltrpn * Cai * (LTRPN_tot - LTRPN_Ca) - k_minus_ltrpn * LTRPN_Ca;
+  HTRPN_Ca' = k_plus_htrpn * Cai * (HTRPN_tot - HTRPN_Ca) - k_minus_htrpn * HTRPN_Ca;
+
+  // Variable initializations:
+  LTRPN_tot = 70;
+  HTRPN_tot = 140;
+  LTRPN_Ca = 11.2684;
+  HTRPN_Ca = 125.29;
+end
+
+model bondarenko_model_2004_apex__ryanodine_receptors(P_O1, P_O2, P_C1, P_C2, time_, Cass)
+
+  // Assignment Rules:
+  P_C1 := 1 - (P_C2 + P_O1 + P_O2);
+
+  // Rate Rules:
+  P_O1' = k_plus_a * power(Cass, n) * P_C1 + k_minus_b * P_O2 + k_minus_c * P_C2 - (k_minus_a * P_O1 + k_plus_b * power(Cass, m) * P_O1 + k_plus_c * P_O1);
+  P_O2' = k_plus_b * power(Cass, m) * P_O1 - k_minus_b * P_O2;
+  P_C2' = k_plus_c * P_O1 - k_minus_c * P_C2;
+
+  // Variable initializations:
+  P_O1 = 0.149102e-4;
+  P_O2 = 0.951726e-10;
+  P_C2 = 0.16774e-3;
+  k_plus_a = 0.006075;
+  k_minus_a = 0.07125;
+  k_plus_b = 0.00405;
+  k_minus_b = 0.965;
+  k_plus_c = 0.009;
+  k_minus_c = 0.0008;
+  m = 3;
+  n = 4;
+end
+
+model bondarenko_model_2004_apex__L_type_calcium_current(i_CaL, i_CaL_max, E_CaL, time_, V, Cass)
+
+  // Assignment Rules:
+  i_CaL := g_CaL * O * (V - E_CaL);
+  C1 := 1 - (O + C2 + C2 + C3 + C4 + I1 + I2 + I3);
+  alpha := 0.4 * exp((V + 12 ) / 10 ) * (1 + 0.7 * exp(-(power(V + 40 , 2 )) / 10 ) - 0.75 * exp(-(power(V + 20 , 2 )) / 400 )) / (1 + 0.12 * exp((V + 12 ) / 10 ));
+  beta := 0.05 * exp(-((V + 12 )) / 13 );
+  gamma := Kpc_max * Cass / (Kpc_half + Cass);
+  Kpcf := 13 * (1 - exp(-(power(V + 14.5 , 2 )) / 100 ));
+
+  // Rate Rules:
+  O' = alpha * C4 + Kpcb * I1 + 0.001 * (alpha * I2 - Kpcf * O) - (4 * beta * O + gamma * O);
+  C2' = 4 * alpha * C1 + 2 * beta * C3 - (beta * C2 + 3 * alpha * C2);
+  C3' = 3 * alpha * C2 + 3 * beta * C4 - (2 * beta * C3 + 2 * alpha * C3);
+  C4' = 2 * alpha * C3 + 4 * beta * O + 0.01 * (4 * Kpcb * beta * I1 - alpha * gamma * C4) + 0.002 * (4 * beta * I2 - Kpcf * C4) + 4 * beta * Kpcb * I3 - (3 * beta * C4 + alpha * C4 + 1 * gamma * Kpcf * C4);
+  I1' = gamma * O + 0.001 * (alpha * I3 - Kpcf * I1) + 0.01 * (alpha * gamma * C4 - 4 * beta * Kpcf * I1) - Kpcb * I1;
+  I2' = 0.001 * (Kpcf * O - alpha * I2) + Kpcb * I3 + 0.002 * (Kpcf * C4 - 4 * beta * I2) - gamma * I2;
+  I3' = 0.001 * (Kpcf * I1 - alpha * I3) + gamma * I2 + 1 * gamma * Kpcf * C4 - (4 * beta * Kpcb * I3 + Kpcb * I3);
+
+  // Variable initializations:
+  i_CaL_max = 7;
+  E_CaL = 63;
+  g_CaL = 0.1729;
+  O = 0.930308e-18;
+  C2 = 0.124216e-3;
+  C3 = 0.578679e-8;
+  C4 = 0.119816e-12;
+  I1 = 0.497923e-18;
+  I2 = 0.345847e-13;
+  I3 = 0.185106e-13;
+  Kpcb = 0.0005;
+  Kpc_max = 0.23324;
+  Kpc_half = 20;
+end
+
+model bondarenko_model_2004_apex__calcium_pump_current(i_pCa, Cai)
+
+  // Assignment Rules:
+  i_pCa := i_pCa_max * power(Cai, 2 ) / (power(Km_pCa, 2 ) + power(Cai, 2 ));
+
+  // Variable initializations:
+  i_pCa_max = 1;
+  Km_pCa = 0.5;
+end
+
+model bondarenko_model_2004_apex__sodium_calcium_exchange_current(i_NaCa, V, R, T, F, Nai, Nao, Cai, Cao)
+
+  // Assignment Rules:
+  i_NaCa := k_NaCa * 1 / (power(K_mNa, 3 ) + power(Nao, 3 )) * 1 / (K_mCa + Cao) * 1 / (1 + k_sat * exp((eta - 1 ) * V * F / (R * T))) * (exp(eta * V * F / (R * T)) * power(Nai, 3 ) * Cao - exp((eta - 1 ) * V * F / (R * T)) * power(Nao, 3 ) * Cai);
+
+  // Variable initializations:
+  k_NaCa = 292.8;
+  K_mNa = 87500;
+  K_mCa = 1380;
+  k_sat = 0.1;
+  eta = 0.35;
+end
+
+model bondarenko_model_2004_apex__calcium_background_current(i_Cab, V, R, T, F, Cai, Cao)
+
+  // Assignment Rules:
+  i_Cab := g_Cab * (V - E_CaN);
+  E_CaN := R * T / (2 * F) * ln(Cao / Cai);
+
+  // Variable initializations:
+  g_Cab = 0.000367;
+end
+
+model bondarenko_model_2004_apex__sodium_concentration(Nai, time_, F, Vmyo, Cm, Acap, i_Na, i_NaCa, i_NaK, i_Nab)
+
+  // Rate Rules:
+  Nai' = -((i_Na + i_Nab + 3 * i_NaK + 3 * i_NaCa)) * Acap * Cm / (Vmyo * F);
+
+  // Variable initializations:
+  Nai = 14237.1;
+end
+
+model bondarenko_model_2004_apex__fast_sodium_current(i_Na, E_Na, time_, V, R, T, F, Nao, Nai, Ko, Ki)
+
+  // Assignment Rules:
+  i_Na := g_Na * O_Na * (V - E_Na);
+  E_Na := R * T / F * ln((0.9 * Nao + 0.1 * Ko) / (0.9 * Nai + 0.1 * Ki));
+  C_Na3 := 1 - (O_Na + C_Na1 + C_Na2 + IF_Na + I1_Na + I2_Na + IC_Na2 + IC_Na3);
+  alpha_Na11 := 3.802 / (0.1027 * exp(-((V + 2.5 )) / 17 ) + 0.2 * exp(-((V + 2.5 )) / 150 ));
+  beta_Na11 := 0.1917 * exp(-((V + 2.5 )) / 20.3 );
+  alpha_Na12 := 3.802 / (0.1027 * exp(-((V + 2.5 )) / 15 ) + 0.23 * exp(-((V + 2.5 )) / 150 ));
+  beta_Na12 := 0.2 * exp(-((V - 2.5 )) / 20.3 );
+  alpha_Na13 := 3.802 / (0.1027 * exp(-((V + 2.5 )) / 12 ) + 0.25 * exp(-((V + 2.5 )) / 150 ));
+  beta_Na13 := 0.22 * exp(-((V - 7.5 )) / 20.3 );
+  alpha_Na3 := 7e-7 * exp(-((V + 7 )) / 7.7 );
+  beta_Na3 := 0.0084 + 0.00002 * (V + 7 );
+  alpha_Na2 := 1 / (0.188495 * exp(-((V + 7 )) / 16.6 ) + 0.393956 );
+  beta_Na2 := alpha_Na13 * alpha_Na2 * alpha_Na3 / (beta_Na13 * beta_Na3);
+  alpha_Na4 := alpha_Na2 / 1000;
+  beta_Na4 := alpha_Na3;
+  alpha_Na5 := alpha_Na2 / 95000;
+  beta_Na5 := alpha_Na3 / 50;
+
+  // Rate Rules:
+  O_Na' = alpha_Na13 * C_Na1 + beta_Na2 * IF_Na - (beta_Na13 * O_Na + alpha_Na2 * O_Na);
+  C_Na1' = alpha_Na12 * C_Na2 + beta_Na13 * O_Na + alpha_Na3 * IF_Na - (beta_Na12 * C_Na1 + alpha_Na13 * C_Na1 + beta_Na3 * C_Na1);
+  C_Na2' = alpha_Na11 * C_Na3 + beta_Na12 * C_Na1 + alpha_Na3 * IC_Na2 - (beta_Na11 * C_Na2 + alpha_Na12 * C_Na2 + beta_Na3 * C_Na2);
+  I1_Na' = alpha_Na4 * IF_Na + beta_Na5 * I2_Na - (beta_Na4 * I1_Na + alpha_Na5 * I1_Na);
+  I2_Na' = alpha_Na5 * I1_Na - beta_Na5 * I2_Na;
+  IF_Na' = alpha_Na2 * O_Na + beta_Na3 * C_Na1 + beta_Na4 * I1_Na + alpha_Na12 * IC_Na2 - (beta_Na2 * IF_Na + alpha_Na3 * IF_Na + alpha_Na4 * IF_Na + beta_Na12 * IF_Na);
+  IC_Na2' = alpha_Na11 * IC_Na3 + beta_Na12 * IF_Na + beta_Na3 * IC_Na2 - (beta_Na11 * IC_Na2 + alpha_Na12 * IC_Na2 + alpha_Na3 * IC_Na2);
+  IC_Na3' = beta_Na11 * IC_Na2 + beta_Na3 * C_Na3 - (alpha_Na11 * IC_Na3 + alpha_Na3 * IC_Na3);
+
+  // Variable initializations:
+  g_Na = 13;
+  O_Na = 0.713483e-6;
+  C_Na1 = 0.279132e-3;
+  C_Na2 = 0.020752;
+  I1_Na = 0.673345e-6;
+  I2_Na = 0.155787e-8;
+  IF_Na = 0.153176e-3;
+  IC_Na2 = 0.0113879;
+  IC_Na3 = 0.34278;
+end
+
+model bondarenko_model_2004_apex__sodium_background_current(i_Nab, E_Na, V)
+
+  // Assignment Rules:
+  i_Nab := g_Nab * (V - E_Na);
+
+  // Variable initializations:
+  g_Nab = 0.0026;
+end
+
+model bondarenko_model_2004_apex__potassium_concentration(Ki, time_, F, Vmyo, Cm, Acap, i_Kto_f, i_Kto_s, i_K1, i_Ks, i_Kss, i_Kur, i_Kr, i_NaK)
+
+  // Rate Rules:
+  Ki' = -((i_Kto_f + i_Kto_s + i_K1 + i_Ks + i_Kss + i_Kur + i_Kr - 2 * i_NaK)) * Acap * Cm / (Vmyo * F);
+
+  // Variable initializations:
+  Ki = 143720;
+end
+
+model bondarenko_model_2004_apex__fast_transient_outward_potassium_current(i_Kto_f, E_K, V, R, T, F, Ki, Ko, time_)
+
+  // Assignment Rules:
+  i_Kto_f := g_Kto_f * power(ato_f, 3 ) * ito_f * (V - E_K);
+  E_K := R * T / F * ln(Ko / Ki);
+  alpha_a := 0.18064 * exp(0.03577 * (V + 30 ));
+  beta_a := 0.3956 * exp(-(0.06237 ) * (V + 30 ));
+  alpha_i := 0.000152 * exp(-((V + 13.5 )) / 7 ) / (0.0067083 * exp(-((V + 33.5 )) / 7 ) + 1 );
+  beta_i := 0.00095 * exp((V + 33.5 ) / 7 ) / (0.051335 * exp((V + 33.5 ) / 7 ) + 1 );
+
+  // Rate Rules:
+  ato_f' = alpha_a * (1 - ato_f) - beta_a * ato_f;
+  ito_f' = alpha_i * (1 - ito_f) - beta_i * ito_f;
+
+  // Variable initializations:
+  g_Kto_f = 0.4067;
+  ato_f = 0.265563e-2;
+  ito_f = 0.999977;
+end
+
+model bondarenko_model_2004_apex__slow_transient_outward_potassium_current(i_Kto_s, ass, iss, E_K, V, time_)
+
+  // Assignment Rules:
+  i_Kto_s := g_Kto_s * ato_s * ito_s * (V - E_K);
+  ass := 1 / (1 + exp(-((V + 22.5 )) / 7.7 ));
+  iss := 1 / (1 + exp((V + 45.2 ) / 5.7 ));
+  tau_ta_s := 0.493 * exp(-(0.0629 ) * V) + 2.058;
+  tau_ti_s := 270 + 1050 / (1 + exp((V + 45.2 ) / 5.7 ));
+
+  // Rate Rules:
+  ato_s' = (ass - ato_s) / tau_ta_s;
+  ito_s' = (iss - ito_s) / tau_ti_s;
+
+  // Variable initializations:
+  g_Kto_s = 0;
+  ato_s = 0.417069e-3;
+  ito_s = 0.998543;
+end
+
+model bondarenko_model_2004_apex__time_independent_potassium_current(i_K1, Ko, E_K, V, time_)
+
+  // Assignment Rules:
+  i_K1 := 0.2938 * Ko / (Ko + 210 ) * (V - E_K) / (1 + exp(0.0896 * (V - E_K)));
+end
+
+model bondarenko_model_2004_apex__slow_delayed_rectifier_potassium_current(i_Ks, E_K, V, time_)
+
+  // Assignment Rules:
+  i_Ks := g_Ks * power(nKs, 2 ) * (V - E_K);
+  alpha_n := 0.00000481333 * (V + 26.5 ) / (1 - exp(-(0.128 ) * (V + 26.5 )));
+  beta_n := 0.0000953333 * exp(-(0.038 ) * (V + 26.5 ));
+
+  // Rate Rules:
+  nKs' = alpha_n * (1 - nKs) - beta_n * nKs;
+
+  // Variable initializations:
+  g_Ks = 0.00575;
+  nKs = 0.262753e-3;
+end
+
+model bondarenko_model_2004_apex__ultra_rapidly_activating_delayed_rectifier_potassium_current(i_Kur, E_K, V, time_, ass, iss)
+
+  // Assignment Rules:
+  i_Kur := g_Kur * aur * iur * (V - E_K);
+  tau_aur := 0.493 * exp(-(0.0629 ) * V) + 2.058;
+  tau_iur := 1200 - 170 / (1 + exp((V + 45.2 ) / 5.7 ));
+
+  // Rate Rules:
+  aur' = (ass - aur) / tau_aur;
+  iur' = (iss - iur) / tau_iur;
+
+  // Variable initializations:
+  g_Kur = 0.16;
+  aur = 0.417069e-3;
+  iur = 0.998543;
+end
+
+model bondarenko_model_2004_apex__non_inactivating_steady_state_potassium_current(i_Kss, E_K, V, time_, ass)
+
+  // Assignment Rules:
+  i_Kss := g_Kss * aKss * iKss * (V - E_K);
+  tau_Kss := 39.3 * exp(-(0.0862 ) * V) + 13.17;
+
+  // Rate Rules:
+  aKss' = (ass - aKss) / tau_Kss;
+  iKss' = 0;
+
+  // Variable initializations:
+  g_Kss = 0.05;
+  aKss = 0.417069e-3;
+  iKss = 1;
+end
+
+model bondarenko_model_2004_apex__rapid_delayed_rectifier_potassium_current(i_Kr, time_, V, R, T, F, Nao, Nai, Ko, Ki)
+
+  // Assignment Rules:
+  i_Kr := g_Kr * O_K * (V - R * T / F * ln((0.98 * Ko + 0.02 * Nao) / (0.98 * Ki + 0.02 * Nai)));
+  C_K0 := 1 - (C_K1 + C_K2 + O_K + I_K);
+  alpha_a0 := 0.022348 * exp(0.01176 * V);
+  beta_a0 := 0.047002 * exp(-(0.0631 ) * V);
+  alpha_a1 := 0.013733 * exp(0.038198 * V);
+  beta_a1 := 0.0000689 * exp(-(0.04178 ) * V);
+  alpha_i := 0.090821 * exp(0.023391 * (V + 5 ));
+  beta_i := 0.006497 * exp(-(0.03268 ) * (V + 5 ));
+
+  // Rate Rules:
+  O_K' = alpha_a1 * C_K2 + beta_i * I_K - (beta_a1 * O_K + alpha_i * O_K);
+  C_K1' = alpha_a0 * C_K0 + kb * C_K2 - (beta_a0 * C_K1 + kf * C_K1);
+  C_K2' = kf * C_K1 + beta_a1 * O_K - (kb * C_K2 + alpha_a1 * C_K2);
+  I_K' = alpha_i * O_K - beta_i * I_K;
+
+  // Variable initializations:
+  g_Kr = 0.078;
+  O_K = 0.175298e-3;
+  C_K1 = 0.992513e-3;
+  C_K2 = 0.641229e-3;
+  I_K = 0.319129e-4;
+  kb = 0.036778;
+  kf = 0.023761;
+end
+
+model bondarenko_model_2004_apex__sodium_potassium_pump_current(i_NaK, V, R, T, F, Nai, Nao, Ko)
+
+  // Assignment Rules:
+  i_NaK := i_NaK_max * f_NaK * 1 / (1 + power(Km_Nai / Nai, 1.5 )) * Ko / (Ko + Km_Ko);
+  f_NaK := 1 / (1 + 0.1245 * exp(-(0.1 ) * V * F / (R * T)) + 0.0365 * sigma * exp(-(V) * F / (R * T)));
+  sigma := 1 / 7 * (exp(Nao / 67300 ) - 1 );
+
+  // Variable initializations:
+  i_NaK_max = 0.88;
+  Km_Nai = 21000;
+  Km_Ko = 1500;
+end
+
+model bondarenko_model_2004_apex__calcium_activated_chloride_current(i_ClCa, V, Cai)
+
+  // Assignment Rules:
+  i_ClCa := g_ClCa * O_ClCa * Cai / (Cai + Km_Cl) * (V - E_Cl);
+  O_ClCa := 0.2 / (1 + exp(-((V - 46.7 )) / 7.8 ));
+
+  // Variable initializations:
+  g_ClCa = 10;
+  E_Cl = -40;
+  Km_Cl = 10;
+end
+
+model bondarenko_model_2004_apex____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: bondarenko_model_2004_apex__environment(time_);
+  membrane: bondarenko_model_2004_apex__membrane(V, Cm, Vmyo, VJSR, VNSR, Vss, Acap, Ko, Nao, Cao, R, T, F, time_, i_CaL, i_pCa, i_NaCa, i_Cab, i_Na, i_Nab, i_NaK, i_Kto_f, i_Kto_s, i_K1, i_Ks, i_Kur, i_Kss, i_ClCa, i_Kr);
+  calcium_concentration: bondarenko_model_2004_apex__calcium_concentration(Cai, Cass, CaJSR, CaNSR, Acap, Vmyo, VJSR, Vss, VNSR, V, Cm, time_, F, i_Cab, i_CaL, i_NaCa, i_pCa, J_leak, J_rel, J_up, J_tr, J_trpn, J_xfer);
+  calcium_fluxes: bondarenko_model_2004_apex__calcium_fluxes(J_leak, J_rel, J_up, J_tr, J_trpn, J_xfer, k_plus_htrpn, k_minus_htrpn, k_plus_ltrpn, k_minus_ltrpn, LTRPN_tot, HTRPN_tot, LTRPN_Ca, HTRPN_Ca, V, time_, i_CaL_max, i_CaL, Cai, Cass, CaJSR, CaNSR, P_O1, P_O2);
+  calcium_buffering: bondarenko_model_2004_apex__calcium_buffering(LTRPN_tot, HTRPN_tot, LTRPN_Ca, HTRPN_Ca, time_, Cai, k_plus_htrpn, k_minus_htrpn, k_plus_ltrpn, k_minus_ltrpn);
+  ryanodine_receptors: bondarenko_model_2004_apex__ryanodine_receptors(P_O1, P_O2, P_C1, P_C2, time_, Cass);
+  L_type_calcium_current: bondarenko_model_2004_apex__L_type_calcium_current(i_CaL, i_CaL_max, E_CaL, time_, V, Cass);
+  calcium_pump_current: bondarenko_model_2004_apex__calcium_pump_current(i_pCa, Cai);
+  sodium_calcium_exchange_current: bondarenko_model_2004_apex__sodium_calcium_exchange_current(i_NaCa, V, R, T, F, Nai, Nao, Cai, Cao);
+  calcium_background_current: bondarenko_model_2004_apex__calcium_background_current(i_Cab, V, R, T, F, Cai, Cao);
+  sodium_concentration: bondarenko_model_2004_apex__sodium_concentration(Nai, time_, F, Vmyo, Cm, Acap, i_Na, i_NaCa, i_NaK, i_Nab);
+  fast_sodium_current: bondarenko_model_2004_apex__fast_sodium_current(i_Na, E_Na, time_, V, R, T, F, Nao, Nai, Ko, Ki);
+  sodium_background_current: bondarenko_model_2004_apex__sodium_background_current(i_Nab, E_Na, V);
+  potassium_concentration: bondarenko_model_2004_apex__potassium_concentration(Ki, time_, F, Vmyo, Cm, Acap, i_Kto_f, i_Kto_s, i_K1, i_Ks, i_Kss, i_Kur, i_Kr, i_NaK);
+  fast_transient_outward_potassium_current: bondarenko_model_2004_apex__fast_transient_outward_potassium_current(i_Kto_f, E_K, V, R, T, F, Ki, Ko, time_);
+  slow_transient_outward_potassium_current: bondarenko_model_2004_apex__slow_transient_outward_potassium_current(i_Kto_s, ass, iss, E_K, V, time_);
+  time_independent_potassium_current: bondarenko_model_2004_apex__time_independent_potassium_current(i_K1, Ko, E_K, V, time_);
+  slow_delayed_rectifier_potassium_current: bondarenko_model_2004_apex__slow_delayed_rectifier_potassium_current(i_Ks, E_K, V, time_);
+  ultra_rapidly_activating_delayed_rectifier_potassium_current: bondarenko_model_2004_apex__ultra_rapidly_activating_delayed_rectifier_potassium_current(i_Kur, E_K, V, time_, ass, iss);
+  non_inactivating_steady_state_potassium_current: bondarenko_model_2004_apex__non_inactivating_steady_state_potassium_current(i_Kss, E_K, V, time_, ass);
+  rapid_delayed_rectifier_potassium_current: bondarenko_model_2004_apex__rapid_delayed_rectifier_potassium_current(i_Kr, time_, V, R, T, F, Nao, Nai, Ko, Ki);
+  sodium_potassium_pump_current: bondarenko_model_2004_apex__sodium_potassium_pump_current(i_NaK, V, R, T, F, Nai, Nao, Ko);
+  calcium_activated_chloride_current: bondarenko_model_2004_apex__calcium_activated_chloride_current(i_ClCa, V, Cai);
+end

@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="rice_winslow_jafri_1999_version01____main" name="rice_winslow_jafri_1999_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="V" value="-84.624"/>
+      <parameter id="R" value="8.314"/>
+      <parameter id="T" value="310"/>
+      <parameter id="F" value="96500"/>
+      <parameter id="Ca_o" value="1.8"/>
+      <parameter id="V_SS"/>
+      <parameter id="J_RyR" constant="false"/>
+      <parameter id="Ca_SS" constant="false"/>
+      <parameter id="subspace_J_DHPR" constant="false"/>
+      <parameter id="subspace_DHPR_open" constant="false"/>
+      <parameter id="subspace_RyR_open" constant="false"/>
+      <parameter id="subspace_I_DHPR" constant="false"/>
+      <parameter id="subspace_J_RyR_perm" value="3960"/>
+      <parameter id="subspace_beta_SS" constant="false"/>
+      <parameter id="subspace_B_SR" value="47"/>
+      <parameter id="subspace_K_BSR" value="0.87"/>
+      <parameter id="subspace_B_SL" value="1124"/>
+      <parameter id="subspace_K_BSL" value="8.7"/>
+      <parameter id="subspace_P_Ca"/>
+      <parameter id="subspace_J_xfer" constant="false"/>
+      <parameter id="subspace_tau_xfer" value="0.0007"/>
+      <parameter id="subspace_Ca_myo" value="0.1"/>
+      <parameter id="subspace_i" value="0"/>
+      <parameter id="subspace_V_myo" value="0.1"/>
+      <parameter id="Ca_JSR" constant="false"/>
+      <parameter id="sarcoplasmic_reticulum_V_JSR"/>
+      <parameter id="sarcoplasmic_reticulum_beta_JSR" constant="false"/>
+      <parameter id="sarcoplasmic_reticulum_CSQN_tot" value="15"/>
+      <parameter id="sarcoplasmic_reticulum_K_CSQN" value="0.8"/>
+      <parameter id="sarcoplasmic_reticulum_J_tr" constant="false"/>
+      <parameter id="sarcoplasmic_reticulum_tau_tr" value="0.005"/>
+      <parameter id="sarcoplasmic_reticulum_Ca_NSR" value="800"/>
+      <parameter id="alpha" constant="false"/>
+      <parameter id="beta" constant="false"/>
+      <parameter id="omega" value="10"/>
+      <parameter id="gamma" constant="false"/>
+      <parameter id="a" value="2"/>
+      <parameter id="b" value="2"/>
+      <parameter id="f" value="300"/>
+      <parameter id="g" value="2000"/>
+      <parameter id="alpha_" constant="false"/>
+      <parameter id="beta_" constant="false"/>
+      <parameter id="f_" value="5"/>
+      <parameter id="g_" value="7000"/>
+      <parameter id="k12" constant="false"/>
+      <parameter id="k21"/>
+      <parameter id="k23" constant="false"/>
+      <parameter id="k32"/>
+      <parameter id="k25" constant="false"/>
+      <parameter id="k52" value="1.235"/>
+      <parameter id="k34" constant="false"/>
+      <parameter id="k43"/>
+      <parameter id="k45" value="66.67"/>
+      <parameter id="k54" constant="false"/>
+      <parameter id="k56" constant="false"/>
+      <parameter id="k65"/>
+      <parameter id="time_"/>
+      <parameter id="O0"/>
+      <parameter id="O_Ca0"/>
+      <parameter id="P_O30"/>
+      <parameter id="P_O40"/>
+      <parameter id="subspace_sum"/>
+      <parameter id="subspace_lowlimit"/>
+      <parameter id="subspace_uplimit"/>
+      <parameter id="C00"/>
+      <parameter id="C10"/>
+      <parameter id="C_Ca00"/>
+      <parameter id="C20"/>
+      <parameter id="C_Ca10"/>
+      <parameter id="C30"/>
+      <parameter id="C_Ca20"/>
+      <parameter id="C40"/>
+      <parameter id="C_Ca30"/>
+      <parameter id="C_Ca40"/>
+      <parameter id="P_C10"/>
+      <parameter id="P_C20"/>
+      <parameter id="P_C50"/>
+      <parameter id="P_C60"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="V_SS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.03 <sep/> -12 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="subspace_P_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.51 <sep/> -11 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="sarcoplasmic_reticulum_V_JSR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.03 <sep/> -12 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="k21">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.5 <sep/> 5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="k32">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 9.6 <sep/> 3 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="k43">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.3 <sep/> 4 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="k65">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3 <sep/> 6 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <assignmentRule variable="J_RyR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> subspace_sum </ci>
+            <apply>
+              <ci> bvar </ci>
+              <ci> subspace_i </ci>
+            </apply>
+            <apply>
+              <ci> subspace_lowlimit </ci>
+              <cn> 1 </cn>
+            </apply>
+            <apply>
+              <ci> subspace_uplimit </ci>
+              <cn> 8 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <ci> subspace_J_RyR_perm </ci>
+              <ci> subspace_RyR_open </ci>
+              <apply>
+                <minus/>
+                <ci> Ca_JSR </ci>
+                <ci> Ca_SS </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_SS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> subspace_beta_SS </ci>
+            <apply>
+              <plus/>
+              <ci> subspace_J_DHPR </ci>
+              <ci> J_RyR </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> subspace_V_myo </ci>
+                  <ci> V_SS </ci>
+                </apply>
+                <ci> subspace_J_xfer </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="subspace_J_DHPR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> subspace_I_DHPR </ci>
+              <ci> subspace_DHPR_open </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> F </ci>
+              <ci> V_SS </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="subspace_DHPR_open"/>
+      <assignmentRule variable="subspace_RyR_open"/>
+      <assignmentRule variable="subspace_I_DHPR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> subspace_P_Ca </ci>
+            <cn> 4 </cn>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <apply>
+                  <power/>
+                  <ci> F </ci>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> R </ci>
+                <ci> T </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <cn> 0.001 </cn>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <cn> 2 </cn>
+                        <ci> V </ci>
+                        <ci> F </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn> 0.341 </cn>
+                  <ci> Ca_o </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <cn> 2 </cn>
+                      <ci> V </ci>
+                      <ci> F </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> R </ci>
+                      <ci> T </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <cn> 1 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="subspace_beta_SS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> subspace_B_SR </ci>
+                  <ci> subspace_K_BSR </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <ci> subspace_K_BSR </ci>
+                    <ci> Ca_SS </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> subspace_B_SL </ci>
+                  <ci> subspace_K_BSL </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <ci> subspace_K_BSL </ci>
+                    <ci> Ca_SS </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <cn> -1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="subspace_J_xfer">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 1 </cn>
+              <ci> subspace_tau_xfer </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> Ca_SS </ci>
+              <ci> subspace_Ca_myo </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_JSR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> sarcoplasmic_reticulum_beta_JSR </ci>
+            <apply>
+              <minus/>
+              <ci> sarcoplasmic_reticulum_J_tr </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> V_SS </ci>
+                  <ci> sarcoplasmic_reticulum_V_JSR </ci>
+                </apply>
+                <ci> J_RyR </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="sarcoplasmic_reticulum_beta_JSR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> sarcoplasmic_reticulum_CSQN_tot </ci>
+                  <ci> sarcoplasmic_reticulum_K_CSQN </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <ci> sarcoplasmic_reticulum_K_CSQN </ci>
+                    <ci> Ca_JSR </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <cn> -1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="sarcoplasmic_reticulum_J_tr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 1 </cn>
+              <ci> sarcoplasmic_reticulum_tau_tr </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> sarcoplasmic_reticulum_Ca_NSR </ci>
+              <ci> Ca_JSR </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="alpha">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.4 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <plus/>
+                  <ci> V </ci>
+                  <cn> 6 </cn>
+                </apply>
+                <cn> 25 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="beta">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.05 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <plus/>
+                    <ci> V </ci>
+                    <cn> 6 </cn>
+                  </apply>
+                </apply>
+                <cn> 29 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gamma">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ca_SS </ci>
+            <cn> 0.1875 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="alpha_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> alpha </ci>
+            <ci> a </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="beta_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> beta </ci>
+            <ci> b </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 3 <sep/> 6 </cn>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <cn> 2.68 </cn>
+                <cn> 4 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k23">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 3 <sep/> 7 </cn>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <cn> 2.68 </cn>
+                <cn> 4 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k25">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 3 <sep/> 5 </cn>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <cn> 2.68 </cn>
+                <cn> 4 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k34">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 3 <sep/> 6 </cn>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <cn> 2.68 </cn>
+                <cn> 4 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k54">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 198 </cn>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <cn> 2.68 </cn>
+                <cn> 4 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k56">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 3 <sep/> 6 </cn>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <cn> 2.68 </cn>
+                <cn> 4 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

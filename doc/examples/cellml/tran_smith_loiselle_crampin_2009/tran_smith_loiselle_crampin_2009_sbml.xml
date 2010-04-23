@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="tran_model_2009____main" name="tran_model_2009____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="SERCA_k_p1" value="25900"/>
+      <parameter id="SERCA_k_p2" value="2540"/>
+      <parameter id="SERCA_k_p3" value="20.5"/>
+      <parameter id="SERCA_k_m1" value="16"/>
+      <parameter id="SERCA_k_m2" value="67200"/>
+      <parameter id="SERCA_k_m3" value="149"/>
+      <parameter id="SERCA_kdcai" value="0.9"/>
+      <parameter id="SERCA_kdcasr" value="2.24"/>
+      <parameter id="SERCA_kdh1" value="1.09e-05"/>
+      <parameter id="SERCA_kdhi" value="0.00354"/>
+      <parameter id="SERCA_kdhsr" value="1.05e-08"/>
+      <parameter id="SERCA_kdh" value="7.24e-05"/>
+      <parameter id="SERCA_n" value="2"/>
+      <parameter id="SERCA_Ca_i" value="0.00015"/>
+      <parameter id="SERCA_Ca_sr" value="0" constant="false"/>
+      <parameter id="SERCA_H_i" value="0.0001"/>
+      <parameter id="SERCA_ATP" value="5"/>
+      <parameter id="SERCA_ADP" value="0.0363"/>
+      <parameter id="SERCA_P_i" value="1"/>
+      <parameter id="SERCA_T_Cai" constant="false"/>
+      <parameter id="SERCA_T_Casr" constant="false"/>
+      <parameter id="SERCA_T_H1" constant="false"/>
+      <parameter id="SERCA_T_Hi" constant="false"/>
+      <parameter id="SERCA_T_Hsr" constant="false"/>
+      <parameter id="SERCA_T_H" constant="false"/>
+      <parameter id="SERCA_a_p1" constant="false"/>
+      <parameter id="SERCA_a_p2" constant="false"/>
+      <parameter id="SERCA_a_p3" constant="false"/>
+      <parameter id="SERCA_a_m1" constant="false"/>
+      <parameter id="SERCA_a_m2" constant="false"/>
+      <parameter id="SERCA_a_m3" constant="false"/>
+      <parameter id="SERCA_s1" constant="false"/>
+      <parameter id="SERCA_s2" constant="false"/>
+      <parameter id="SERCA_s3" constant="false"/>
+      <parameter id="SERCA_v_cycle" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="SERCA_Ca_sr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 1 </cn>
+        </math>
+      </rateRule>
+      <assignmentRule variable="SERCA_T_Cai">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> SERCA_Ca_i </ci>
+            <ci> SERCA_kdcai </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_T_Casr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> SERCA_Ca_sr </ci>
+            <ci> SERCA_kdcasr </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_T_H1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> SERCA_H_i </ci>
+            <ci> SERCA_kdh1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_T_Hi">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <ci> SERCA_H_i </ci>
+              <ci> SERCA_n </ci>
+            </apply>
+            <ci> SERCA_kdhi </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_T_Hsr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <ci> SERCA_H_i </ci>
+              <ci> SERCA_n </ci>
+            </apply>
+            <ci> SERCA_kdhsr </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_T_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> SERCA_H_i </ci>
+            <ci> SERCA_kdh </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_a_p1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> SERCA_k_p1 </ci>
+            <ci> SERCA_ATP </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_a_p2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> SERCA_k_p2 </ci>
+              <apply>
+                <power/>
+                <ci> SERCA_T_Cai </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> SERCA_T_Cai </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <power/>
+                  <ci> SERCA_T_Cai </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+                <ci> SERCA_T_Hi </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> SERCA_T_Hi </ci>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> SERCA_T_H1 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_a_p3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> SERCA_k_p3 </ci>
+              <ci> SERCA_T_Hsr </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <power/>
+                  <ci> SERCA_T_Casr </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+                <ci> SERCA_T_H </ci>
+              </apply>
+              <ci> SERCA_T_H </ci>
+              <apply>
+                <times/>
+                <ci> SERCA_T_Hsr </ci>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> SERCA_T_H </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_a_m1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> SERCA_k_m1 </ci>
+              <ci> SERCA_T_Hi </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> SERCA_T_Cai </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <power/>
+                  <ci> SERCA_T_Cai </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+                <ci> SERCA_T_Hi </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> SERCA_T_Hi </ci>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> SERCA_T_H1 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_a_m2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> SERCA_k_m2 </ci>
+              <ci> SERCA_ADP </ci>
+              <apply>
+                <power/>
+                <ci> SERCA_T_Casr </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <ci> SERCA_T_H </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <power/>
+                  <ci> SERCA_T_Casr </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+                <ci> SERCA_T_H </ci>
+              </apply>
+              <ci> SERCA_T_H </ci>
+              <apply>
+                <times/>
+                <ci> SERCA_T_Hsr </ci>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> SERCA_T_H </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_a_m3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> SERCA_k_m3 </ci>
+            <ci> SERCA_P_i </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_s1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> SERCA_a_p2 </ci>
+              <ci> SERCA_a_p3 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> SERCA_a_m1 </ci>
+              <ci> SERCA_a_p3 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> SERCA_a_m1 </ci>
+              <ci> SERCA_a_m2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_s2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> SERCA_a_p1 </ci>
+              <ci> SERCA_a_p3 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> SERCA_a_m2 </ci>
+              <ci> SERCA_a_p1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> SERCA_a_m2 </ci>
+              <ci> SERCA_a_m3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_s3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> SERCA_a_p1 </ci>
+              <ci> SERCA_a_p2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> SERCA_a_m3 </ci>
+              <ci> SERCA_a_m1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> SERCA_a_m3 </ci>
+              <ci> SERCA_a_p2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SERCA_v_cycle">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> SERCA_a_p1 </ci>
+                <ci> SERCA_a_p2 </ci>
+                <ci> SERCA_a_p3 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> SERCA_a_m1 </ci>
+                <ci> SERCA_a_m2 </ci>
+                <ci> SERCA_a_m3 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> SERCA_s1 </ci>
+              <ci> SERCA_s2 </ci>
+              <ci> SERCA_s3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

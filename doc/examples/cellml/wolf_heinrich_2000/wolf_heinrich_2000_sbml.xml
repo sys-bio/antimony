@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="wolf_2001____main" name="wolf_2001____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="S10" value="5.8" constant="false"/>
+      <parameter id="Jo" value="3"/>
+      <parameter id="v10" constant="false"/>
+      <parameter id="S20" value="0.9" constant="false"/>
+      <parameter id="v20" constant="false"/>
+      <parameter id="v60" constant="false"/>
+      <parameter id="S30" value="0.2" constant="false"/>
+      <parameter id="v30" constant="false"/>
+      <parameter id="S40" value="0.2" constant="false"/>
+      <parameter id="v40" constant="false"/>
+      <parameter id="J" constant="false"/>
+      <parameter id="S4_ex0" value="0.1" constant="false"/>
+      <parameter id="S4_ex_phi" value="0.1"/>
+      <parameter id="v70" constant="false"/>
+      <parameter id="A30" value="2.4" constant="false"/>
+      <parameter id="v50" constant="false"/>
+      <parameter id="A2_A" value="4"/>
+      <parameter id="A20" constant="false"/>
+      <parameter id="N20" value="0.1" constant="false"/>
+      <parameter id="N1_N" value="1"/>
+      <parameter id="N10" constant="false"/>
+      <parameter id="v1_K_I" value="0.52"/>
+      <parameter id="v1_k_1" value="100"/>
+      <parameter id="v1_q" value="4"/>
+      <parameter id="v1_f_A3" constant="false"/>
+      <parameter id="v2_k_2" value="6"/>
+      <parameter id="v3_k_3" value="16"/>
+      <parameter id="v4_k_4" value="100"/>
+      <parameter id="v5_k_5" value="1.28"/>
+      <parameter id="v6_k_6" value="12"/>
+      <parameter id="v7_k" value="1.3"/>
+      <parameter id="S4_flux_rate_across_the_plasma_membrane_kappa" value="13"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="S10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Jo </ci>
+            <ci> v10 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> v1_k_1 </ci>
+            <ci> S10 </ci>
+            <ci> A30 </ci>
+            <ci> v1_f_A3 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="S20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> v10 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> v20 </ci>
+              <ci> v60 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> v2_k_2 </ci>
+            <ci> S20 </ci>
+            <ci> N10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v60">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> v6_k_6 </ci>
+            <ci> S20 </ci>
+            <ci> N20 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="S30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> v20 </ci>
+            <ci> v30 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> v3_k_3 </ci>
+            <ci> S30 </ci>
+            <ci> A20 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="S40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> v30 </ci>
+            <apply>
+              <plus/>
+              <ci> v40 </ci>
+              <ci> J </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> v4_k_4 </ci>
+            <ci> S40 </ci>
+            <ci> N20 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> S4_flux_rate_across_the_plasma_membrane_kappa </ci>
+            <apply>
+              <minus/>
+              <ci> S40 </ci>
+              <ci> S4_ex0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="S4_ex0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> S4_ex_phi </ci>
+              <ci> J </ci>
+            </apply>
+            <ci> v70 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v70">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> v7_k </ci>
+            <ci> S4_ex0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="A30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> v30 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn> 2 </cn>
+                <ci> v10 </ci>
+              </apply>
+              <ci> v50 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v50">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> v5_k_5 </ci>
+            <ci> A30 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="A20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> A2_A </ci>
+            <ci> A30 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="N20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> v20 </ci>
+            <apply>
+              <plus/>
+              <ci> v40 </ci>
+              <ci> v60 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="N10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> N1_N </ci>
+            <ci> N20 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v1_f_A3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> A30 </ci>
+                  <ci> v1_K_I </ci>
+                </apply>
+                <ci> v1_q </ci>
+              </apply>
+            </apply>
+            <cn> -1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

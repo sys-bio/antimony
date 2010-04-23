@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="nagerl_novo_mody_vergara_2000_version01____main" name="nagerl_novo_mody_vergara_2000_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Ca0" constant="false"/>
+      <parameter id="CaD0" constant="false"/>
+      <parameter id="CaDM10" constant="false"/>
+      <parameter id="CaDM20" constant="false"/>
+      <parameter id="CaBi0" constant="false"/>
+      <parameter id="DM_T0" value="5"/>
+      <parameter id="DM10" constant="false"/>
+      <parameter id="alpha" value="0.5"/>
+      <parameter id="DM1_T0" constant="false"/>
+      <parameter id="DM20" constant="false"/>
+      <parameter id="DM2_T0" constant="false"/>
+      <parameter id="D_D_T" value="100"/>
+      <parameter id="D0" constant="false"/>
+      <parameter id="Bi_Bi_T" constant="false"/>
+      <parameter id="kon_DM" value="0.03"/>
+      <parameter id="koff_DM" value="6e-05"/>
+      <parameter id="k_trans" constant="false"/>
+      <parameter id="t_pulse" value="1"/>
+      <parameter id="kon_D" value="0.124"/>
+      <parameter id="koff_D" value="5.6"/>
+      <parameter id="kon_Bi" value="1"/>
+      <parameter id="koff_Bi" value="1"/>
+      <parameter id="constants_koff_DM_" value="75"/>
+      <parameter id="constants_tau_photolysis" value="20"/>
+      <parameter id="time_"/>
+      <parameter id="Ca_Ca_T"/>
+      <parameter id="Bi0"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="Ca0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Ca_Ca_T </ci>
+            <apply>
+              <plus/>
+              <ci> CaD0 </ci>
+              <ci> CaDM10 </ci>
+              <ci> CaDM20 </ci>
+              <ci> CaBi0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="CaD0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_D </ci>
+              <ci> Ca0 </ci>
+              <ci> D0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_D </ci>
+              <ci> CaD0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CaDM10"/>
+      <rateRule variable="CaDM20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_DM </ci>
+              <ci> Ca0 </ci>
+              <ci> DM20 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_DM </ci>
+              <ci> CaDM20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CaBi0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_Bi </ci>
+              <ci> Ca0 </ci>
+              <ci> Bi0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_Bi </ci>
+              <ci> CaBi0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="DM10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> DM_T0 </ci>
+              <ci> alpha </ci>
+            </apply>
+            <ci> CaDM10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="DM1_T0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> DM10 </ci>
+            <ci> CaDM10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="DM20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> DM_T0 </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> alpha </ci>
+              </apply>
+            </apply>
+            <ci> CaDM20 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="DM2_T0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> DM20 </ci>
+            <ci> CaDM20 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="D0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> D_D_T </ci>
+            <ci> CaD0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Bi_Bi_T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> Bi0 </ci>
+            <ci> CaBi0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_trans">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> koff_DM </ci>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> constants_koff_DM_ </ci>
+                <ci> koff_DM </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <minus/>
+                        <ci> time_ </ci>
+                        <ci> t_pulse </ci>
+                      </apply>
+                    </apply>
+                    <ci> constants_tau_photolysis </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>
