@@ -1,0 +1,148 @@
+//Created by libAntimony v1.3
+model panerai_1980__environment(t, x)
+
+  // Variable initializations:
+  x = 10;
+end
+
+model panerai_1980__g(g, x, h)
+
+  // Assignment Rules:
+  g := piecewise( g_2 , x < 0 , g_1 * x / h , ( x >= 0) && (x < h ), g_1 * x / h );
+
+  // Variable initializations:
+  g_1 = 40;
+  g_2 = 240;
+end
+
+model panerai_1980__f(f, x, h)
+
+  // Assignment Rules:
+  f := piecewise( 0 , x < 0 , f_1 * x / h , ( x >= 0) && (x < h ), 0 );
+
+  // Variable initializations:
+  f_1 = 70;
+end
+
+model panerai_1980__Crossbridges_attached(n, t, A_c, f, g, h, x)
+
+  // Sub-modules, and any changes to those submodules:
+  g_mod: panerai_1980__g(g, x, h);
+  f_mod: panerai_1980__f(f, x, h);
+
+  // Rate Rules:
+  n' = f * (A_c - n) - g * n;
+
+  // Variable initializations:
+  n = 0;
+  h = 12;
+end
+
+model panerai_1980__Ca_sarcoplasm(Ca_f, t)
+
+  // Assignment Rules:
+  Ca_f := Ca_0 * abs(1 - exp(-(a_1) * power(t, 2 ))) * exp(-(b_1) * power(t - t_d, 2 ));
+
+  // Variable initializations:
+  t_d = 0.3;
+  a_1 = 200;
+  b_1 = 5;
+  Ca_0 = 0.45e-6;
+end
+
+model panerai_1980__Actin_free(A_c, t, s_h, Ca_f)
+
+  // Assignment Rules:
+  c_2 := c_2_0 * exp(k_i * power(s_h / 1 , q));
+
+  // Rate Rules:
+  A_c' = c_1 * power(Ca_f / 1 , 2 ) * (AT_0 - A_c) - c_2 * A_c;
+
+  // Variable initializations:
+  A_c = 1;
+  c_1 = 200e12;
+  c_2_0 = 20;
+  k_i = 30.9;
+  q = 1.45;
+  AT_0 = 2;
+end
+
+model panerai_1980__SE_constants(x_s, x_so, s_h, x_m, L_max)
+
+  // Assignment Rules:
+  x_s := x_so + s_h + x_m - L_max;
+end
+
+model panerai_1980__Series_Elastic_Element(F_SE, alpha_s, beta_s, x_s, x_so, s_h, x_m, L_max)
+
+  // Sub-modules, and any changes to those submodules:
+  SE_constants: panerai_1980__SE_constants(x_s, x_so, s_h, x_m, L_max);
+
+  // Assignment Rules:
+  F_SE := alpha_s * (exp(beta_s * x_s / (1 * 1 )) - 1 );
+
+  // Variable initializations:
+  alpha_s = 0.1027;
+  beta_s = 20;
+  x_so = 0.0387;
+  L_max = 1;
+end
+
+model panerai_1980__PE_constants(x_p, x_po, s_h)
+
+  // Assignment Rules:
+  x_p := x_po - s_h;
+end
+
+model panerai_1980__Parallel_Elastic_Element(F_PE, alpha_p, beta_p, x_p, x_po, s_h)
+
+  // Sub-modules, and any changes to those submodules:
+  PE_constants: panerai_1980__PE_constants(x_p, x_po, s_h);
+
+  // Assignment Rules:
+  F_PE := alpha_p * (exp(beta_p * x_p / (1 * 1 )) - 1 );
+
+  // Variable initializations:
+  alpha_p = 0.00224;
+  beta_p = 20;
+  x_po = 0.221;
+end
+
+model panerai_1980__Contractile_Element(F_CE, F_SE, F_PE)
+
+  // Assignment Rules:
+  F_CE := F_SE - F_PE;
+end
+
+model panerai_1980__s_h(s_h, x_po, alpha_p, beta_p)
+
+  // Assignment Rules:
+  s_h := x_po - 1 * 1 * log(1 + F_PL / alpha_p) / beta_p;
+
+  // Variable initializations:
+  F_PL = 3;
+end
+
+model panerai_1980__X_0(X_S_0, X_M_0, alpha_s, beta_s, L_max, s_h, x_so)
+
+  // Assignment Rules:
+  X_S_0 := 1 * 1 * log(1 + F_PL / alpha_s) / beta_s;
+  X_M_0 := X_S_0 + L_max - s_h - x_so;
+
+  // Variable initializations:
+  F_PL = 3;
+end
+
+model panerai_1980____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: panerai_1980__environment(t, x);
+  Crossbridges_attached: panerai_1980__Crossbridges_attached(n, t, A_c, f, g, h, x);
+  Ca_sarcoplasm: panerai_1980__Ca_sarcoplasm(Ca_f, t);
+  Actin_free: panerai_1980__Actin_free(A_c, t, s_h0, Ca_f);
+  Series_Elastic_Element: panerai_1980__Series_Elastic_Element(F_SE, alpha_s, beta_s, x_s, x_so, s_h0, x_m, L_max);
+  Parallel_Elastic_Element: panerai_1980__Parallel_Elastic_Element(F_PE, alpha_p, beta_p, x_p, x_po, s_h0);
+  Contractile_Element: panerai_1980__Contractile_Element(F_CE, F_SE, F_PE);
+  s_h: panerai_1980__s_h(s_h0, x_po, alpha_p, beta_p);
+  X_0: panerai_1980__X_0(X_S_0, x_m, alpha_s, beta_s, L_max, s_h0, x_so);
+end

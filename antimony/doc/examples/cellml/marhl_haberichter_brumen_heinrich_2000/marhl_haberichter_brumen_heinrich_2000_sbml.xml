@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="marhl_2000____main" name="marhl_2000____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Ca_Pr" constant="false"/>
+      <parameter id="total_calcium_Ca_tot" value="90"/>
+      <parameter id="rho_ER" value="0.01"/>
+      <parameter id="beta_ER" value="0.0025"/>
+      <parameter id="rho_m" value="0.01"/>
+      <parameter id="beta_m" value="0.0025"/>
+      <parameter id="Ca_cyt" value="0.05" constant="false"/>
+      <parameter id="Ca_ER" value="1" constant="false"/>
+      <parameter id="Ca_m" value="0.4" constant="false"/>
+      <parameter id="Pr" constant="false"/>
+      <parameter id="total_protein_Pr_tot" value="120"/>
+      <parameter id="cytosolic_calcium_k_plus" value="0.1"/>
+      <parameter id="cytosolic_calcium_k_minus" value="0.01"/>
+      <parameter id="J_ch" constant="false"/>
+      <parameter id="J_leak" constant="false"/>
+      <parameter id="J_pump" constant="false"/>
+      <parameter id="J_out" constant="false"/>
+      <parameter id="J_in" constant="false"/>
+      <parameter id="ATP_dependent_Ca_uptake_into_the_ER_k_pump" value="20"/>
+      <parameter id="Ca_efflux_from_the_ER_k_ch" value="4100"/>
+      <parameter id="Ca_efflux_from_the_ER_K1" value="5"/>
+      <parameter id="Ca_leak_flux_from_the_ER_k_leak" value="0.05"/>
+      <parameter id="mitochondrial_Ca_uptake_k_in" value="300"/>
+      <parameter id="mitochondrial_Ca_uptake_K2" value="0.8"/>
+      <parameter id="mitochondrial_Ca_release_k_out" value="125"/>
+      <parameter id="mitochondrial_Ca_release_k_m" value="0.00625"/>
+      <parameter id="mitochondrial_Ca_release_K3" value="5"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="Ca_Pr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> total_calcium_Ca_tot </ci>
+            <apply>
+              <plus/>
+              <ci> Ca_cyt </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> rho_ER </ci>
+                  <ci> beta_ER </ci>
+                </apply>
+                <ci> Ca_ER </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> rho_m </ci>
+                  <ci> beta_m </ci>
+                </apply>
+                <ci> Ca_m </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_cyt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> J_ch </ci>
+              <ci> J_leak </ci>
+              <ci> J_out </ci>
+              <apply>
+                <times/>
+                <ci> cytosolic_calcium_k_minus </ci>
+                <ci> Ca_Pr </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> J_pump </ci>
+              <ci> J_in </ci>
+              <apply>
+                <times/>
+                <ci> cytosolic_calcium_k_plus </ci>
+                <ci> Ca_cyt </ci>
+                <ci> Pr </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_ER">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> beta_ER </ci>
+              <ci> rho_ER </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> J_pump </ci>
+              <apply>
+                <plus/>
+                <ci> J_ch </ci>
+                <ci> J_leak </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> beta_m </ci>
+              <ci> rho_m </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> J_in </ci>
+              <ci> J_out </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Pr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> total_protein_Pr_tot </ci>
+            <ci> Ca_Pr </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_ch">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ca_efflux_from_the_ER_k_ch </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <ci> Ca_cyt </ci>
+                <cn> 2 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> Ca_efflux_from_the_ER_K1 </ci>
+                  <cn> 2 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> Ca_cyt </ci>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> Ca_ER </ci>
+              <ci> Ca_cyt </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_leak">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ca_leak_flux_from_the_ER_k_leak </ci>
+            <apply>
+              <minus/>
+              <ci> Ca_ER </ci>
+              <ci> Ca_cyt </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_pump">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ATP_dependent_Ca_uptake_into_the_ER_k_pump </ci>
+            <ci> Ca_cyt </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_out">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> mitochondrial_Ca_release_k_out </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <power/>
+                    <ci> Ca_cyt </ci>
+                    <cn> 2 </cn>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> mitochondrial_Ca_release_K3 </ci>
+                      <cn> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> Ca_cyt </ci>
+                      <cn> 2 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> mitochondrial_Ca_release_k_m </ci>
+            </apply>
+            <ci> Ca_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_in">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> mitochondrial_Ca_uptake_k_in </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <ci> Ca_cyt </ci>
+                <cn> 8 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> mitochondrial_Ca_uptake_K2 </ci>
+                  <cn> 8 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> Ca_cyt </ci>
+                  <cn> 8 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

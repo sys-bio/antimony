@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="weinstein_2000_AE1____main" name="weinstein_2000_AE1____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="HCO3_i" value="0" constant="false"/>
+      <parameter id="HCO3_e" value="26"/>
+      <parameter id="Cl_i" value="29"/>
+      <parameter id="Cl_e" value="114"/>
+      <parameter id="Concentrations_x_Tmax" value="1"/>
+      <parameter id="x_T" constant="false"/>
+      <parameter id="K_I" value="172"/>
+      <parameter id="Kc_p" value="50"/>
+      <parameter id="Kc_pp" value="50"/>
+      <parameter id="Kb_p" value="198"/>
+      <parameter id="Kb_pp" value="198"/>
+      <parameter id="Pc_p" value="562"/>
+      <parameter id="Pc_pp" value="61"/>
+      <parameter id="Pb_p" value="1247"/>
+      <parameter id="Pb_pp" value="135"/>
+      <parameter id="AE1_beta_p" constant="false"/>
+      <parameter id="AE1_beta_pp" constant="false"/>
+      <parameter id="AE1_gamma_p" constant="false"/>
+      <parameter id="AE1_gamma_pp" constant="false"/>
+      <parameter id="AE1_sigma" constant="false"/>
+      <parameter id="AE1_x_p" constant="false"/>
+      <parameter id="AE1_x_pp" constant="false"/>
+      <parameter id="J_HCO3" constant="false"/>
+      <parameter id="J_Cl" constant="false"/>
+      <parameter id="Jb_influx" constant="false"/>
+      <parameter id="Jc_influx" constant="false"/>
+      <parameter id="AE1_Jo_bm" constant="false"/>
+      <parameter id="AE1_Ji_bm" constant="false"/>
+      <parameter id="AE1_Js_bm" constant="false"/>
+      <parameter id="AE1_Jo_cm" constant="false"/>
+      <parameter id="AE1_Ji_cm" constant="false"/>
+      <parameter id="AE1_Js_cm" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="HCO3_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="integer"> 60 </cn>
+        </math>
+      </rateRule>
+      <assignmentRule variable="x_T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> Concentrations_x_Tmax </ci>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> HCO3_i </ci>
+                <ci> K_I </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_beta_p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> HCO3_e </ci>
+            <ci> Kb_p </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_beta_pp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> HCO3_i </ci>
+            <ci> Kb_pp </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_gamma_p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> Cl_e </ci>
+            <ci> Kc_p </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_gamma_pp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> Cl_i </ci>
+            <ci> Kc_pp </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_sigma">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> AE1_beta_p </ci>
+                <ci> AE1_gamma_p </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Pb_pp </ci>
+                  <ci> AE1_beta_pp </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Pc_pp </ci>
+                  <ci> AE1_gamma_pp </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> AE1_beta_pp </ci>
+                <ci> AE1_gamma_pp </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Pb_p </ci>
+                  <ci> AE1_beta_p </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Pc_p </ci>
+                  <ci> AE1_gamma_p </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_x_p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> x_T </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Pb_pp </ci>
+                  <ci> AE1_beta_pp </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Pc_pp </ci>
+                  <ci> AE1_gamma_pp </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> AE1_sigma </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_x_pp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> x_T </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> Pb_p </ci>
+                  <ci> AE1_beta_p </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Pc_p </ci>
+                  <ci> AE1_gamma_p </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> AE1_sigma </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_HCO3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> x_T </ci>
+              <ci> AE1_sigma </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> Pb_pp </ci>
+                <ci> AE1_beta_pp </ci>
+                <ci> Pc_p </ci>
+                <ci> AE1_gamma_p </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Pb_p </ci>
+                <ci> AE1_beta_p </ci>
+                <ci> Pc_pp </ci>
+                <ci> AE1_gamma_pp </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_Cl">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> J_HCO3 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Jb_influx">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> x_T </ci>
+              <ci> AE1_sigma </ci>
+            </apply>
+            <ci> Pb_p </ci>
+            <ci> AE1_beta_p </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Pb_pp </ci>
+                <ci> AE1_beta_pp </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Pc_pp </ci>
+                <ci> AE1_gamma_pp </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Jc_influx">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> x_T </ci>
+              <ci> AE1_sigma </ci>
+            </apply>
+            <ci> Pc_p </ci>
+            <ci> AE1_gamma_p </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Pb_pp </ci>
+                <ci> AE1_beta_pp </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Pc_pp </ci>
+                <ci> AE1_gamma_pp </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_Jo_bm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <cn type="integer"> 1 </cn>
+                <ci> x_T </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pb_p </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pb_pp </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> Kb_pp </ci>
+                  <apply>
+                    <times/>
+                    <ci> Pb_pp </ci>
+                    <ci> HCO3_i </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <cn type="integer"> -1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_Ji_bm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <cn type="integer"> 1 </cn>
+                <ci> x_T </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pb_p </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pb_pp </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> Kb_p </ci>
+                  <apply>
+                    <times/>
+                    <ci> Pb_p </ci>
+                    <ci> HCO3_e </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <cn type="integer"> -1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_Js_bm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <cn type="integer"> 1 </cn>
+                <ci> x_T </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pb_p </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pb_pp </ci>
+                </apply>
+              </apply>
+            </apply>
+            <cn type="integer"> -1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_Jo_cm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <cn type="integer"> 1 </cn>
+                <ci> x_T </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pc_p </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pc_pp </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> Kc_pp </ci>
+                  <apply>
+                    <times/>
+                    <ci> Pc_pp </ci>
+                    <ci> Cl_i </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <cn type="integer"> -1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_Ji_cm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <cn type="integer"> 1 </cn>
+                <ci> x_T </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pc_p </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pc_pp </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> Kc_p </ci>
+                  <apply>
+                    <times/>
+                    <ci> Pc_p </ci>
+                    <ci> Cl_e </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <cn type="integer"> -1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AE1_Js_cm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <cn type="integer"> 1 </cn>
+                <ci> x_T </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pc_p </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Pc_pp </ci>
+                </apply>
+              </apply>
+            </apply>
+            <cn type="integer"> -1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

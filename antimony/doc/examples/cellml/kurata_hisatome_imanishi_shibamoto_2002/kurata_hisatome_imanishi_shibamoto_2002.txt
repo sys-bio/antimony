@@ -1,0 +1,472 @@
+//Created by libAntimony v1.3
+model kurata_hisatome_imanishi_shibamoto_2002_version02__environment(time_)
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__membrane(V, R, T, F, Cm, time_, i_CaT, i_CaL, i_Kr, i_Ks, i_to, i_sus, i_h, i_st, i_b_Na, i_NaCa, i_NaK, i_K_ACh)
+
+  // Rate Rules:
+  V' = -((i_CaL + i_CaT + i_Kr + i_Ks + i_to + i_sus + i_h + i_st + i_b_Na + i_K_ACh + i_NaK + i_NaCa)) / 1;
+
+  // Variable initializations:
+  V = -58.600291137693;
+  R = 8314400000000000;
+  T = 310.15;
+  F = 96485000000000000;
+  Cm = 32;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__reversal_potentials(E_Na, E_K, R, T, F, Nai, Nao, Ki, Ko)
+
+  // Assignment Rules:
+  E_Na := R * T / F * ln(Nao / Nai);
+  E_K := R * T / F * ln(Ko / Ki);
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__L_type_calcium_channel_current_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  d_infinity := 1 / (1 + exp(-((V + 14.1 )) / 6 ));
+  tau_d := 1 / (alpha_d + beta_d);
+  alpha_d := -(0.02839 ) * (V + 35 ) / (exp(-((V + 35 )) / 2.5 ) - 1 ) - 0.0849 * V / (exp(-(V) / 4.808 ) - 1 );
+  beta_d := 0.01143 * (V - 5 ) / (exp((V - 5 ) / 2.5 ) - 1 );
+
+  // Rate Rules:
+  d' = (d_infinity - d) / tau_d;
+
+  // Variable initializations:
+  d = 0.000602055134;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__L_type_calcium_channel_current_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  f_infinity := 1 / (1 + exp((V + 30 ) / 5 ));
+  tau_f := 44.3 + 257.1 * exp(-(power((V + 32.5 ) / 13.9 , 2 )));
+
+  // Rate Rules:
+  f' = (f_infinity - f) / tau_f;
+
+  // Variable initializations:
+  f = 0.626999773853;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__L_type_calcium_channel_current_fCa_gate(fCa, V, Ca_sub, time_)
+
+  // Assignment Rules:
+  alpha_fCa := Km_fCa * beta_fCa;
+  fCa_infinity := Km_fCa / (Km_fCa + Ca_sub);
+  tau_fCa := fCa_infinity / alpha_fCa;
+
+  // Rate Rules:
+  fCa' = (fCa_infinity - fCa) / tau_fCa;
+
+  // Variable initializations:
+  fCa = 0.589580408056;
+  beta_fCa = 60;
+  Km_fCa = 0.00035;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__L_type_calcium_channel_current(i_CaL, Cm, time_, V, Ca_sub, d, f, fCa)
+
+  // Sub-modules, and any changes to those submodules:
+  L_type_calcium_channel_current_d_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__L_type_calcium_channel_current_d_gate(d, V, time_);
+  L_type_calcium_channel_current_f_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__L_type_calcium_channel_current_f_gate(f, V, time_);
+  L_type_calcium_channel_current_fCa_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__L_type_calcium_channel_current_fCa_gate(fCa, V, Ca_sub, time_);
+
+  // Assignment Rules:
+  i_CaL := g_CaL * (V - E_CaL) * d * f * fCa;
+
+  // Variable initializations:
+  g_CaL = 0.58;
+  E_CaL = 45;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__T_type_calcium_channel_current_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  d_infinity := 1 / (1 + exp(-((V + 26.3 )) / 6 ));
+  tau_d := 1 / (1.068 * exp((V + 26.3 ) / 30 ) + 1.068 * exp(-((V + 26.3 )) / 30 ));
+
+  // Rate Rules:
+  d' = (d_infinity - d) / tau_d;
+
+  // Variable initializations:
+  d = 0.004571884917;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__T_type_calcium_channel_current_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  f_infinity := 1 / (1 + exp((V + 61.7 ) / 5.6 ));
+  tau_f := 1 / (0.0153 * exp(-((V + 61.7 )) / 83.3 ) + 0.015 * exp((V + 61.7 ) / 15.38 ));
+
+  // Rate Rules:
+  f' = (f_infinity - f) / tau_f;
+
+  // Variable initializations:
+  f = 0.249637570396;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__T_type_calcium_channel_current(i_CaT, Cm, time_, V, d, f)
+
+  // Sub-modules, and any changes to those submodules:
+  T_type_calcium_channel_current_d_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__T_type_calcium_channel_current_d_gate(d, V, time_);
+  T_type_calcium_channel_current_f_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__T_type_calcium_channel_current_f_gate(f, V, time_);
+
+  // Assignment Rules:
+  i_CaT := g_CaT * (V - E_CaT) * d * f;
+
+  // Variable initializations:
+  g_CaT = 0.458;
+  E_CaT = 45;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__rapidly_activating_delayed_rectifier_potassium_current_pa_gate(paS, paF, V, time_)
+
+  // Assignment Rules:
+  pa_infinity := 1 / (1 + exp(-((V + 23.2 )) / 10.6 ));
+  tau_paS := 0.84655354 / (0.0042 * exp(V / 17 ) + 0.00015 * exp(-(V) / 21.6 ));
+  tau_paF := 0.84655354 / (0.0372 * exp(V / 15.9 ) + 0.00096 * exp(-(V) / 22.5 ));
+
+  // Rate Rules:
+  paS' = (pa_infinity - paS) / tau_paS;
+  paF' = (pa_infinity - paF) / tau_paF;
+
+  // Variable initializations:
+  paS = 0.629323128348;
+  paF = 0.3493633709533;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__rapidly_activating_delayed_rectifier_potassium_current_pi_gate(piy, V, time_)
+
+  // Assignment Rules:
+  pi_infinity := 1 / (1 + exp((V + 28.6 ) / 17.1 ));
+  tau_pi := 1 / (0.1 * exp(-(V) / 54.645 ) + 0.656 * exp(V / 106.157 ));
+
+  // Rate Rules:
+  piy' = (pi_infinity - piy) / tau_pi;
+
+  // Variable initializations:
+  piy = 0.852396631172;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__rapidly_activating_delayed_rectifier_potassium_current(i_Kr, Cm, time_, V, E_K, Ko, paS, paF, piy)
+
+  // Sub-modules, and any changes to those submodules:
+  rapidly_activating_delayed_rectifier_potassium_current_pa_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__rapidly_activating_delayed_rectifier_potassium_current_pa_gate(paS, paF, V, time_);
+  rapidly_activating_delayed_rectifier_potassium_current_pi_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__rapidly_activating_delayed_rectifier_potassium_current_pi_gate(piy, V, time_);
+
+  // Assignment Rules:
+  i_Kr := g_Kr * (V - E_K) * (0.6 * paF + 0.4 * paS) * piy;
+  g_Kr := 0.025 * power(Ko / 1 , 0.59 );
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__slowly_activating_delayed_rectifier_potassium_current_n_gate(n, V, time_)
+
+  // Assignment Rules:
+  n_infinity := alpha_n / (alpha_n + beta_n);
+  tau_n := 1 / (alpha_n + beta_n);
+  alpha_n := 0.014 / (1 + exp(-((V - 40 )) / 9 ));
+  beta_n := 0.001 * exp(-(V) / 45 );
+
+  // Rate Rules:
+  n' = (n_infinity - n) / tau_n;
+
+  // Variable initializations:
+  n = 0.054409723782;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__slowly_activating_delayed_rectifier_potassium_current(i_Ks, Cm, time_, V, Ki, Ko, Nai, Nao, R, T, F, n)
+
+  // Sub-modules, and any changes to those submodules:
+  slowly_activating_delayed_rectifier_potassium_current_n_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__slowly_activating_delayed_rectifier_potassium_current_n_gate(n, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks * (V - E_Ks) * power(n, 2 );
+  E_Ks := R * T / F * ln((Ko + 0.12 * Nao) / (Ki + 0.12 * Nai));
+
+  // Variable initializations:
+  g_Ks = 0.0259;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__AP_sensitive_currents_q_gate(q, V, time_)
+
+  // Assignment Rules:
+  q_infinity := 1 / (1 + exp((V + 49 ) / 13 ));
+  tau_q := 0.6 * (65.17 / (0.57 * exp(-(0.08 ) * (V + 44 )) + 0.065 * exp(0.1 * (V + 45.93 ))) + 10.1 );
+
+  // Rate Rules:
+  q' = (q_infinity - q) / tau_q;
+
+  // Variable initializations:
+  q = 0.531446952485;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__AP_sensitive_currents_r_gate(r, V, time_)
+
+  // Assignment Rules:
+  r_infinity := 1 / (1 + exp(-((V - 19.3 )) / 15 ));
+  tau_r := 0.66 * 1.4 * (15.59 / (1.037 * exp(0.09 * (V + 30.61 )) + 0.369 * exp(-(0.12 ) * (V + 23.84 ))) + 2.98 );
+
+  // Rate Rules:
+  r' = (r_infinity - r) / tau_r;
+
+  // Variable initializations:
+  r = 0.005550489445;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__AP_sensitive_currents(i_to, i_sus, Cm, E_K, time_, V, q, r)
+
+  // Sub-modules, and any changes to those submodules:
+  AP_sensitive_currents_q_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__AP_sensitive_currents_q_gate(q, V, time_);
+  AP_sensitive_currents_r_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__AP_sensitive_currents_r_gate(r, V, time_);
+
+  // Assignment Rules:
+  i_to := g_to * (V - E_K) * q * r;
+  i_sus := g_sus * (V - E_K) * r;
+
+  // Variable initializations:
+  g_to = 0.18;
+  g_sus = 0.02;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__hyperpolarisation_activated_current_y_gate(y, V, time_)
+
+  // Assignment Rules:
+  y_infinity := 1 / (1 + exp((V + 64 ) / 13.5 ));
+  tau_y := 0.7166529 / (exp(-((V + 386.9 )) / 45.302 ) + exp((V - 73.08 ) / 19.231 ));
+
+  // Rate Rules:
+  y' = (y_infinity - y) / tau_y;
+
+  // Variable initializations:
+  y = 0.067156687129;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__hyperpolarisation_activated_current(i_h, i_h_Na, i_h_K, Cm, E_K, E_Na, time_, V, y)
+
+  // Sub-modules, and any changes to those submodules:
+  hyperpolarisation_activated_current_y_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__hyperpolarisation_activated_current_y_gate(y, V, time_);
+
+  // Assignment Rules:
+  i_h := i_h_Na + i_h_K;
+  i_h_Na := g_h_Na * (V - E_Na) * power(y, 2 );
+  i_h_K := g_h_K * (V - E_K) * power(y, 2 );
+
+  // Variable initializations:
+  g_h_Na = 0.1437375;
+  g_h_K = 0.2312625;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__sustained_inward_current_qa_gate(qa, V, time_)
+
+  // Assignment Rules:
+  qa_infinity := 1 / (1 + exp(-((V + 57 )) / 5 ));
+  tau_qa := 1 / (alpha_qa + beta_qa);
+  alpha_qa := 1 / (0.15 * exp(-(V) / 11 ) + 0.2 * exp(-(V) / 700 ));
+  beta_qa := 1 / (16 * exp(V / 8 ) + 15 * exp(V / 50 ));
+
+  // Rate Rules:
+  qa' = (qa_infinity - qa) / tau_qa;
+
+  // Variable initializations:
+  qa = 0.426018100136;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__sustained_inward_current_qi_gate(qi, V, time_)
+
+  // Assignment Rules:
+  qi_infinity := alpha_qi / (alpha_qi + beta_qi);
+  tau_qi := 6.65 / (alpha_qi + beta_qi);
+  alpha_qi := 1 / (3100 * exp(V / 13 ) + 700 * exp(V / 70 ));
+  beta_qi := 1 / (95 * exp(-(V) / 10 ) + 50 * exp(-(V) / 700 )) + 0.000229 / (1 + exp(-(V) / 5 ));
+
+  // Rate Rules:
+  qi' = (qi_infinity - qi) / tau_qi;
+
+  // Variable initializations:
+  qi = 0.333330378068;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__sustained_inward_current(i_st, Cm, time_, V, qa, qi)
+
+  // Sub-modules, and any changes to those submodules:
+  sustained_inward_current_qa_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__sustained_inward_current_qa_gate(qa, V, time_);
+  sustained_inward_current_qi_gate: kurata_hisatome_imanishi_shibamoto_2002_version02__sustained_inward_current_qi_gate(qi, V, time_);
+
+  // Assignment Rules:
+  i_st := g_st * (V - E_st) * qa * qi;
+
+  // Variable initializations:
+  g_st = 0.015;
+  E_st = 37.4;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__sodium_dependent_background_current(i_b_Na, Cm, E_Na, time_, V)
+
+  // Assignment Rules:
+  i_b_Na := g_b_Na * (V - E_Na);
+
+  // Variable initializations:
+  g_b_Na = 0.0054;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__background_muscarinic_potassium_channel_current(i_K_ACh, Cm, time_, V, Ki, Ko, R, T, F)
+
+  // Assignment Rules:
+  i_K_ACh := g_K_ACh * (Ki - Ko * exp(-(V) * F / (R * T))) / 1;
+  g_K_ACh := 0.0011 * power(Ko / 1 , 0.41 );
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__sodium_potassium_pump_current(i_NaK, Cm, Nai, Ko, V, E_Na, time_)
+
+  // Assignment Rules:
+  i_NaK := i_NaK_max * power(1 + power(Km_Kp / Ko, 1.2 ), -(1 )) * power(1 + power(Km_Nap / Nai, 1.3 ), -(1 )) * power(1 + exp(-((V - E_Na + 120 )) / 30 ), -(1 ));
+
+  // Variable initializations:
+  Km_Kp = 1.4;
+  Km_Nap = 14;
+  i_NaK_max = 3.6;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__sodium_calcium_exchange_current(i_NaCa, Cm, Cao, Nao, Ca_sub, Nai, time_, R, T, F, V)
+
+  // Assignment Rules:
+  i_NaCa := kNaCa * (x2 * k21 - x1 * k12) / (x1 + x2 + x3 + x4);
+  x1 := k41 * k34 * (k23 + k21) + k21 * k32 * (k43 + k41);
+  x2 := k32 * k43 * (k14 + k12) + k41 * k12 * (k34 + k32);
+  x3 := k14 * k43 * (k23 + k21) + k12 * k23 * (k43 + k41);
+  x4 := k23 * k34 * (k14 + k12) + k14 * k21 * (k34 + k32);
+  k41 := exp(-(Qn) * V * F / (2 * R * T));
+  k34 := Nao / (K3no + Nao);
+  k23 := Nao / K1no * Nao / K2no * (1 + Nao / K3no) * exp(-(Qn) * V * F / (2 * R * T)) / do;
+  k21 := Cao / Kco * exp(Qco * V * F / (R * T)) / do;
+  k32 := exp(Qn * V * F / (2 * R * T));
+  k43 := Nai / (K3ni + Nai);
+  k12 := Ca_sub / Kci * exp(-(Qci) * V * F / (R * T)) / di;
+  k14 := Nai / K1ni * Nai / K2ni * (1 + Nai / K3ni) * exp(Qn * V * F / (2 * R * T)) / di;
+  do := 1 + Cao / Kco * (1 + exp(Qco * V * F / (R * T))) + Nao / K1no * (1 + Nao / K2no) * (1 + Nao / K3no);
+  di := 1 + Ca_sub / Kci * (1 + exp(-(Qci) * V * F / (R * T)) + Nai / Kcni) + Nai / K1ni * (1 + Nai / K2ni * (1 + Nai / K3ni));
+
+  // Variable initializations:
+  kNaCa = 125;
+  Qci = 0.1369;
+  Qn = 0.4315;
+  Qco = 0;
+  K3ni = 26.44;
+  Kci = 0.0207;
+  K1ni = 395.3;
+  K2ni = 2.289;
+  Kcni = 26.44;
+  K3no = 4.663;
+  K1no = 1628;
+  K2no = 561.4;
+  Kco = 3.663;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__intracellular_calcium_dynamics(j_Ca_dif, j_rel, j_up, j_tr, Ca_up, Cai, Ca_sub, Ca_rel)
+
+  // Assignment Rules:
+  j_Ca_dif := (Ca_sub - Cai) / tau_dif_Ca;
+  j_rel := P_rel * (Ca_rel - Ca_sub) / (1 + power(K_rel / Ca_sub, 2 ));
+  j_up := P_up / (1 + K_up / Cai);
+  j_tr := (Ca_up - Ca_rel) / tau_tr;
+
+  // Variable initializations:
+  tau_dif_Ca = 0.04;
+  tau_tr = 60;
+  K_rel = 0.0012;
+  P_up = 0.005;
+  P_rel = 0.5;
+  K_up = 0.0006;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__intracellular_ion_concentrations(Cai, Cao, Ca_up, Ca_rel, Ca_sub, Nai, Nao, Ki, Ko, Mgi, time_, F, Cm, i_b_Na, i_CaL, i_CaT, i_NaCa, j_rel, j_Ca_dif, j_tr, j_up, i_h_Na, i_st, i_NaK, i_Kr, i_Ks, i_to, i_sus, i_h_K, i_K_ACh, TMC_tot, CM_tot, TC_tot, CQ_tot, delta_fTMC, delta_fCMi, delta_fCMs, delta_fTC, delta_fCQ)
+
+  // Rate Rules:
+  Cai' = (j_Ca_dif * V_sub - j_up * V_up) / V_i - (CM_tot * delta_fCMi + TC_tot * delta_fTC + TMC_tot * delta_fTMC);
+  Ca_up' = j_up - j_tr * V_rel / V_up;
+  Ca_rel' = j_tr - (j_rel + CQ_tot * delta_fCQ);
+  Ca_sub' = (-((i_CaL + i_CaT - 2 * i_NaCa)) * Cm / (1 * 2 * F) + j_rel * V_rel) / V_sub - (j_Ca_dif + CM_tot * delta_fCMs);
+  Nai' = -((i_h_Na + i_st + i_b_Na + 3 * i_NaK + 3 * i_NaCa)) * Cm / (1 * F * (V_i + V_sub));
+  Ki' = -((i_Kr + i_Ks + i_to + i_sus + i_h_K + i_K_ACh + -(2 ) * i_NaK)) * Cm / (1 * F * (V_i + V_sub));
+
+  // Variable initializations:
+  Cai = 0.000312494921;
+  Cao = 2;
+  Ca_up = 1.462338380106;
+  Ca_rel = 0.296742023718;
+  Ca_sub = 0.00019074741;
+  Nai = 9.438646305915;
+  Nao = 140;
+  Ki = 139.984146485614;
+  Ko = 5.4;
+  Mgi = 2.5;
+  V_i = 0.0000000000015835;
+  V_rel = 0.0000000000000042223;
+  V_up = 0.000000000000040816;
+  V_sub = 0.000000000000035098;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02__calcium_buffering(TC_tot, TMC_tot, CM_tot, CQ_tot, delta_fTC, delta_fTMC, delta_fCMs, delta_fCMi, delta_fCQ, time_, Mgi, Cai, Ca_sub, Ca_rel)
+
+  // Assignment Rules:
+  delta_fTC := kf_TC * Cai * (1 - fTC) - kb_TC * fTC;
+  delta_fTMC := kf_TMC * Cai * (1 - (fTMC + fTMM)) - kb_TMC * fTMC;
+  delta_fCMs := kf_CM * Ca_sub * (1 - fCMs) - kb_CM * fCMs;
+  delta_fCMi := kf_CM * Cai * (1 - fCMi) - kb_CM * fCMi;
+  delta_fCQ := kf_CQ * Ca_rel * (1 - fCQ) - kb_CQ * fCQ;
+  delta_fTMM := kf_TMM * Mgi * (1 - (fTMC + fTMM)) - kb_TMM * fTMM;
+
+  // Rate Rules:
+  fTMM' = delta_fTMM;
+  fCMi' = delta_fCMi;
+  fCMs' = delta_fCMs;
+  fTC' = delta_fTC;
+  fTMC' = delta_fTMC;
+  fCQ' = delta_fCQ;
+
+  // Variable initializations:
+  TC_tot = 0.031;
+  TMC_tot = 0.062;
+  CM_tot = 0.045;
+  CQ_tot = 10;
+  fTMM = 0.350600895635;
+  fCMi = 0.116947220413;
+  fCMs = 0.074631965653;
+  fTC = 0.059206293446;
+  fTMC = 0.602955114871;
+  fCQ = 0.260317260703;
+  kf_TC = 88.8;
+  kf_TMM = 2.277;
+  kf_TMC = 227.7;
+  kf_CM = 227.7;
+  kf_CQ = 0.534;
+  kb_TC = 0.446;
+  kb_TMC = 0.00751;
+  kb_TMM = 0.751;
+  kb_CM = 0.542;
+  kb_CQ = 0.445;
+end
+
+model kurata_hisatome_imanishi_shibamoto_2002_version02____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: kurata_hisatome_imanishi_shibamoto_2002_version02__environment(time_);
+  membrane: kurata_hisatome_imanishi_shibamoto_2002_version02__membrane(V, R, T, F, Cm, time_, i_CaT, i_CaL, i_Kr, i_Ks, i_to, i_sus, i_h, i_st, i_b_Na, i_NaCa, i_NaK, i_K_ACh);
+  reversal_potentials: kurata_hisatome_imanishi_shibamoto_2002_version02__reversal_potentials(E_Na, E_K, R, T, F, Nai, Nao, Ki, Ko);
+  L_type_calcium_channel_current: kurata_hisatome_imanishi_shibamoto_2002_version02__L_type_calcium_channel_current(i_CaL, Cm, time_, V, Ca_sub, d, f, fCa);
+  T_type_calcium_channel_current: kurata_hisatome_imanishi_shibamoto_2002_version02__T_type_calcium_channel_current(i_CaT, Cm, time_, V, d0, f0);
+  rapidly_activating_delayed_rectifier_potassium_current: kurata_hisatome_imanishi_shibamoto_2002_version02__rapidly_activating_delayed_rectifier_potassium_current(i_Kr, Cm, time_, V, E_K, Ko, paS, paF, piy);
+  slowly_activating_delayed_rectifier_potassium_current: kurata_hisatome_imanishi_shibamoto_2002_version02__slowly_activating_delayed_rectifier_potassium_current(i_Ks, Cm, time_, V, Ki, Ko, Nai, Nao, R, T, F, n);
+  AP_sensitive_currents: kurata_hisatome_imanishi_shibamoto_2002_version02__AP_sensitive_currents(i_to, i_sus, Cm, E_K, time_, V, q, r);
+  hyperpolarisation_activated_current: kurata_hisatome_imanishi_shibamoto_2002_version02__hyperpolarisation_activated_current(i_h, i_h_Na, i_h_K, Cm, E_K, E_Na, time_, V, y);
+  sustained_inward_current: kurata_hisatome_imanishi_shibamoto_2002_version02__sustained_inward_current(i_st, Cm, time_, V, qa, qi);
+  sodium_dependent_background_current: kurata_hisatome_imanishi_shibamoto_2002_version02__sodium_dependent_background_current(i_b_Na, Cm, E_Na, time_, V);
+  background_muscarinic_potassium_channel_current: kurata_hisatome_imanishi_shibamoto_2002_version02__background_muscarinic_potassium_channel_current(i_K_ACh, Cm, time_, V, Ki, Ko, R, T, F);
+  sodium_potassium_pump_current: kurata_hisatome_imanishi_shibamoto_2002_version02__sodium_potassium_pump_current(i_NaK, Cm, Nai, Ko, V, E_Na, time_);
+  sodium_calcium_exchange_current: kurata_hisatome_imanishi_shibamoto_2002_version02__sodium_calcium_exchange_current(i_NaCa, Cm, Cao, Nao, Ca_sub, Nai, time_, R, T, F, V);
+  intracellular_calcium_dynamics: kurata_hisatome_imanishi_shibamoto_2002_version02__intracellular_calcium_dynamics(j_Ca_dif, j_rel, j_up, j_tr, Ca_up, Cai, Ca_sub, Ca_rel);
+  intracellular_ion_concentrations: kurata_hisatome_imanishi_shibamoto_2002_version02__intracellular_ion_concentrations(Cai, Cao, Ca_up, Ca_rel, Ca_sub, Nai, Nao, Ki, Ko, Mgi, time_, F, Cm, i_b_Na, i_CaL, i_CaT, i_NaCa, j_rel, j_Ca_dif, j_tr, j_up, i_h_Na, i_st, i_NaK, i_Kr, i_Ks, i_to, i_sus, i_h_K, i_K_ACh, TMC_tot, CM_tot, TC_tot, CQ_tot, delta_fTMC, delta_fCMi, delta_fCMs, delta_fTC, delta_fCQ);
+  calcium_buffering: kurata_hisatome_imanishi_shibamoto_2002_version02__calcium_buffering(TC_tot, TMC_tot, CM_tot, CQ_tot, delta_fTC, delta_fTMC, delta_fCMs, delta_fCMi, delta_fCQ, time_, Mgi, Cai, Ca_sub, Ca_rel);
+end

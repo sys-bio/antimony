@@ -1,0 +1,112 @@
+//Created by libAntimony v1.3
+model riccobene_model_1999__environment(time_)
+end
+
+model riccobene_model_1999__R(R, L, LR, R_star, kf, kr, kfR, Kact, time_)
+
+  // Rate Rules:
+  R' = kr * LR + kfR / Kact * R_star - ( kf * L * R + kfR * R );
+
+  // Variable initializations:
+  R = 0.01;
+end
+
+model riccobene_model_1999__R_star(R_star, L, LR_star, R, kf, kr, kfR, Kact, alpha, time_)
+
+  // Rate Rules:
+  R_star' = kr * LR_star + kfR * R - ( alpha * kf * L * R_star + kfR / Kact * R_star );
+
+  // Variable initializations:
+  R_star = 0.01;
+end
+
+model riccobene_model_1999__LR(LR, L, R, LR_star, kf, kr, kfR, Kact, alpha, time_)
+
+  // Rate Rules:
+  LR' = kf * L * R + kfR / ( alpha * Kact ) * LR_star - ( kr * LR + kfR * LR );
+
+  // Variable initializations:
+  LR = 0.01;
+end
+
+model riccobene_model_1999__LR_star(LR_star, L, R_star, LR, kf, kr, kds, kfR, Kact, alpha, time_)
+
+  // Rate Rules:
+  LR_star' = kfR * LR + alpha * kf * L * R_star - ( kfR / ( alpha * Kact ) * LR_star + kds * LR_star + kr * LR_star );
+
+  // Variable initializations:
+  LR_star = 0.01;
+end
+
+model riccobene_model_1999__LR_ds(LR_ds, LR_star, R_ds, L, kf2, kr2, kds, time_)
+
+  // Rate Rules:
+  LR_ds' = kds * LR_star + kf2 * L * R_ds - kr2 * LR_ds;
+
+  // Variable initializations:
+  LR_ds = 0.01;
+end
+
+model riccobene_model_1999__R_ds(R_ds, LR_ds, L, kf2, kr2, time_)
+
+  // Rate Rules:
+  R_ds' = kr2 * LR_ds - kf2 * L * R_ds;
+
+  // Variable initializations:
+  R_ds = 0.01;
+end
+
+model riccobene_model_1999__G_star(G_star, LR_star, R_star, G, ka, ki, time_)
+
+  // Rate Rules:
+  G_star' = ka * G * ( LR_star + R_star ) - ki * G_star;
+
+  // Variable initializations:
+  G_star = 0.01;
+end
+
+model riccobene_model_1999__G(G, LR_star, R_star, G_star, ka, ki, time_)
+
+  // Rate Rules:
+  G' = ki * G_star - ka * G * ( LR_star + R_star );
+
+  // Variable initializations:
+  G = 0.01;
+end
+
+model riccobene_model_1999__L(L)
+
+  // Variable initializations:
+  L = 1E-12;
+end
+
+model riccobene_model_1999__model_parameters(kr, kf, kr2, kf2, kds, kfR, ka, ki, Kact, alpha)
+
+  // Variable initializations:
+  kr = 0.37;
+  kf = 8.4E7;
+  kr2 = 4.6E-3;
+  kf2 = 8.4E7;
+  kds = 1E-4;
+  kfR = 10;
+  ka = 1E-7;
+  ki = 2E-1;
+  Kact = 1E-4;
+  alpha = 1E1;
+end
+
+model riccobene_model_1999____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: riccobene_model_1999__environment(time_);
+  R: riccobene_model_1999__R(R0, L0, LR0, R_star0, kf, kr, kfR, Kact, time_);
+  R_star: riccobene_model_1999__R_star(R_star0, L0, LR_star0, R0, kf, kr, kfR, Kact, alpha, time_);
+  LR: riccobene_model_1999__LR(LR0, L0, R0, LR_star0, kf, kr, kfR, Kact, alpha, time_);
+  LR_star: riccobene_model_1999__LR_star(LR_star0, L0, R_star0, LR0, kf, kr, kds, kfR, Kact, alpha, time_);
+  LR_ds: riccobene_model_1999__LR_ds(LR_ds0, LR_star0, R_ds0, L0, kf2, kr2, kds, time_);
+  R_ds: riccobene_model_1999__R_ds(R_ds0, LR_ds0, L0, kf2, kr2, time_);
+  G_star: riccobene_model_1999__G_star(G_star0, LR_star0, R_star0, G0, ka, ki, time_);
+  G: riccobene_model_1999__G(G0, LR_star0, R_star0, G_star0, ka, ki, time_);
+  L: riccobene_model_1999__L(L0);
+  model_parameters: riccobene_model_1999__model_parameters(kr, kf, kr2, kf2, kds, kfR, ka, ki, Kact, alpha);
+end

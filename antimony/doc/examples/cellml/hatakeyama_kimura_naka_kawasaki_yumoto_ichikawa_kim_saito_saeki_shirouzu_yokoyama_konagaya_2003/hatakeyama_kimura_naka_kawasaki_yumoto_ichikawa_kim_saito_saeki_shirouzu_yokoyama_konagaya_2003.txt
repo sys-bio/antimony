@@ -1,0 +1,203 @@
+//Created by libAntimony v1.3
+model hatakeyama_model_2003__environment(time_)
+end
+
+model hatakeyama_model_2003__PI3K(time_, ShGS, PI3Kstar)
+
+  // Rate Rules:
+  R' = -(kf1) * R * HRG + kb1 * R_HRG;
+  Shc' = -((kf5 * RP * Shc - kb5 * R_Shc)) + V10 * ShP / (k10 + ShP);
+  PI3K' = -((kf23 * RP * PI3K - kb23 * R_PI3K)) + V26 * PI3Kstar / (k26 + PI3Kstar);
+  HRG' = -(kf1) * R * HRG + kb1 * R_HRG;
+  R_HRG' = kf1 * R * HRG - kb1 * R_HRG - two * (kf2 * R_HRG * R_HRG - kb2 * R_HRG2);
+  R_HRG2' = kf2 * R_HRG * R_HRG - kb2 * R_HRG2 - (kf3 * R_HRG2 - kb3 * RP) + V4 * RP / (k4 + RP);
+  Internalisation' = kf34 * RP - kb34 * Internalisation;
+  RP' = kf3 * R_HRG2 - kb3 * RP - V4 * RP / (k4 + RP) - (kf5 * RP * Shc - kb5 * R_Shc) + (kf8 * R_ShP - kb8 * ShGS * RP) - (kf23 * RP * PI3K - kb23 * R_PI3K) + (kf25 * R_PI3Kstar - kb25 * RP * PI3Kstar) - (kf34 * RP - kb34 * Internalisation);
+  R_Shc' = kf5 * RP * Shc - kb5 * R_Shc - (kf6 * R_Shc - kb6 * R_ShP);
+  R_ShP' = kf6 * R_Shc - kb6 * R_ShP - (kf7 * R_ShP - kb7 * R_ShGS);
+  ShP' = kf9 * ShGS - kb9 * GS * ShP - V10 * ShP / (k10 + ShP);
+  R_ShGS' = kf7 * R_ShP - kb7 * R_ShGS - (kf8 * R_ShP - kb8 * ShGS * RP);
+  ShGS' = kf8 * R_ShP - kb8 * ShGS * RP - (kf9 * ShGS - kb9 * GS * ShP);
+  GS' = -((kf7 * R_ShP - kb7 * R_ShGS)) + (kf9 * ShGS - kb9 * GS * ShP);
+  R_PI3K' = kf23 * RP * PI3K - kb23 * R_PI3K - (kf24 * R_PI3K - kb24 * R_PI3Kstar);
+  R_PI3Kstar' = kf24 * R_PI3K - kb24 * R_PI3Kstar - (kf25 * R_PI3Kstar - kb25 * RP * PI3Kstar);
+  PI3Kstar' = kf25 * R_PI3Kstar - kb25 * RP * PI3Kstar - V26 * PI3Kstar / (k26 + PI3Kstar);
+
+  // Variable initializations:
+  kf1 = 0.0012;
+  kb1 = 0.00076;
+  kf2 = 0.01;
+  kb2 = 0.1;
+  kf3 = 1;
+  kb3 = 0.01;
+  kf34 = 0.001;
+  kb34 = 0;
+  V4 = 62.5;
+  k4 = 50;
+  kf5 = 0.1;
+  kb5 = 1;
+  kf6 = 20;
+  kb6 = 5;
+  kf7 = 60;
+  kb7 = 546;
+  kf8 = 2040;
+  kb8 = 15700;
+  kf9 = 40.8;
+  kb9 = 0;
+  V10 = 0.0154;
+  k10 = 340;
+  kf23 = 0.1;
+  kb23 = 2;
+  kf24 = 9.85;
+  kb24 = 0.0985;
+  kf25 = 45.8;
+  kb25 = 0.047;
+  V26 = 2620;
+  k26 = 3680;
+  R = 80;
+  Shc = 1000;
+  PI3K = 10;
+  HRG = 10;
+  R_HRG = 0;
+  R_HRG2 = 0;
+  Internalisation = 0;
+  RP = 0;
+  R_Shc = 0;
+  R_ShP = 0;
+  ShP = 0;
+  R_ShGS = 0;
+  ShGS = 0;
+  GS = 10;
+  R_PI3K = 0;
+  R_PI3Kstar = 0;
+  PI3Kstar = 0;
+  two = 2;
+end
+
+model hatakeyama_model_2003__RasGDPtoRasGTP(time_, ShGS, RasGTP)
+
+  // Rate Rules:
+  RasGTP' = kf11 * ShGS * RasGDP / (k11 + RasGDP) - V12 * RasGTP / (k12 + RasGTP);
+  RasGDP' = -((kf11 * ShGS * RasGDP / (k11 + RasGDP))) + V12 * RasGTP / (k12 + RasGTP);
+
+  // Variable initializations:
+  RasGTP = 0;
+  kf11 = 0.222;
+  k11 = 0.181;
+  V12 = 0.289;
+  k12 = 0.0571;
+  RasGDP = 120;
+end
+
+model hatakeyama_model_2003__RAF(time_, RasGTP, Akt_PIPP, RAF_star)
+
+  // Rate Rules:
+  RAF_star' = -((kf14 * (Akt_PIPP + E) * RAF_star / (k14 + RAF_star))) + kf13 * RasGTP * RAF / (k13 + RAF);
+  RAF' = kf14 * (Akt_PIPP + E) * RAF_star / (k14 + RAF_star) - kf13 * RasGTP * RAF / (k13 + RAF);
+
+  // Variable initializations:
+  RAF_star = 100;
+  kf13 = 1.53;
+  k13 = 11.7;
+  kf14 = 0.00673;
+  k14 = 8.07;
+  E = 7;
+  RAF = 0;
+end
+
+model hatakeyama_model_2003__Akt(time_, PI3Kstar, Akt_PIPP, MEKP, MEKPP, Akt_PIP)
+
+  // Rate Rules:
+  Akt_PIPP' = V32 * Akt_PIP / (k32 * (one + Akt_PIP3 / k30) + Akt_PIP) - kf33 * PP2A * Akt_PIPP / (k33 * (one + MEKP / k16 + MEKPP / k18 + Akt_PIP / k31) + Akt_PIPP);
+  P' = V28 * PIP3 / (k28 + PIP3) - kf27 * PI3Kstar * P / (k27 + P);
+  PIP3' = -((V28 * PIP3 / (k28 + PIP3))) + kf27 * PI3Kstar * P / (k27 + P) - (kf29 * PIP3 * Akt - kb29 * Akt_PIP3);
+  Akt' = -((kf29 * PIP3 * Akt - kb29 * Akt_PIP3));
+  Akt_PIP3' = kf29 * PIP3 * Akt - kb29 * Akt_PIP3 - V30 * Akt_PIP3 / (k30 * (one + Akt_PIP / k32) + Akt_PIP3) + kf31 * PP2A * Akt_PIP / (k31 * (one + MEKP / k16 + MEKPP / k18 + Akt_PIPP / k33) + Akt_PIP);
+  Akt_PIP' = V30 * Akt_PIP3 / (k30 * (one + Akt_PIP / k32) + Akt_PIP3) - kf31 * PP2A * Akt_PIP / (k31 * (one + MEKP / k16 + MEKPP / k18 + Akt_PIPP / k33) + Akt_PIP) - V32 * Akt_PIP / (k32 * (one + Akt_PIP3 / k30) + Akt_PIP) + kf33 * PP2A * Akt_PIPP / (k33 * (one + MEKP / k16 + MEKPP / k18 + Akt_PIP / k31) + Akt_PIPP);
+
+  // Variable initializations:
+  Akt_PIPP = 0.0;
+  kf27 = 16.9;
+  k27 = 39.1;
+  V28 = 17000;
+  k28 = 9.02;
+  kf29 = 507;
+  kb29 = 234;
+  V30 = 20000;
+  k30 = 80000;
+  kf31 = 0.107;
+  k31 = 4.35;
+  V32 = 20000;
+  k32 = 80000;
+  kf33 = 0.211;
+  k33 = 12;
+  k16 = 2200;
+  k18 = 60;
+  P = 800;
+  PIP3 = 0;
+  Akt = 10;
+  Akt_PIP3 = 0;
+  Akt_PIP = 0;
+  PP2A = 11.4;
+  one = 1;
+end
+
+model hatakeyama_model_2003__MEK(time_, RAF_star, MEKPP, MEKP, Akt_PIP, Akt_PIPP)
+
+  // Rate Rules:
+  MEKPP' = kf17 * RAF_star * MEKP / (k17 * (one + MEK / k15) + MEKP) - kf18 * PP2A * MEKPP / (k18 * (one + MEKP / k16 + Akt_PIP / k31 + Akt_PIPP / k33) + MEKPP);
+  MEKP' = kf15 * RAF_star * MEK / (k15 * (one + MEKP / k17) + MEK) - kf16 * PP2A * MEKP / (k16 * (one + MEKPP / k18 + Akt_PIP / k31 + Akt_PIPP / k33) + MEKP) - kf17 * RAF_star * MEKP / (k17 * (one + MEK / k15) + MEKP) + kf18 * PP2A * MEKPP / (k18 * (one + MEKP / k16 + Akt_PIP / k31 + Akt_PIPP / k33) + MEKPP);
+  MEK' = -((kf15 * RAF_star * MEK / (k15 * (one + MEKP / k17) + MEK))) + kf16 * PP2A * MEKP / (k16 * (one + MEKPP / k18 + Akt_PIP / k31 + Akt_PIPP / k33) + MEKP);
+
+  // Variable initializations:
+  MEKPP = 0;
+  PP2A = 11.4;
+  MEKP = 0;
+  MEK = 120;
+  kf15 = 3.5;
+  k15 = 317;
+  kf16 = 0.058;
+  k16 = 2200;
+  kf17 = 2.9;
+  k17 = 317;
+  kf18 = 0.058;
+  k18 = 60;
+  k31 = 4.35;
+  k33 = 12;
+  one = 1;
+end
+
+model hatakeyama_model_2003__ERK(time_, MEKPP)
+
+  // Rate Rules:
+  ERK' = -((kf19 * MEKPP * ERK / (k19 * (one + ERKP / k21) + ERK))) + kf20 * MKP3 * ERKP / (k20 * (one + ERKPP / k22) + ERKP);
+  ERKP' = kf19 * MEKPP * ERK / (k19 * (one + ERKP / k21) + ERK) - kf20 * MKP3 * ERKP / (k20 * (one + ERKPP / k22) + ERKP) - kf21 * MEKPP * ERKP / (k21 * (one + ERK / k19) + ERKP) + kf22 * MKP3 * ERKPP / (k22 * (one + ERKP / k20) + ERKPP);
+  ERKPP' = kf21 * MEKPP * ERKP / (k21 * (one + ERK / k19) + ERKP) - kf22 * MKP3 * ERKPP / (k22 * (one + ERKP / k20) + ERKPP);
+
+  // Variable initializations:
+  MKP3 = 2.4;
+  ERK = 1000;
+  ERKP = 0;
+  ERKPP = 0;
+  kf19 = 9.5;
+  k19 = 146000;
+  kf20 = 0.3;
+  k20 = 160;
+  kf21 = 16;
+  k21 = 146000;
+  kf22 = 0.27;
+  k22 = 60;
+  one = 1;
+end
+
+model hatakeyama_model_2003____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: hatakeyama_model_2003__environment(time_);
+  PI3K: hatakeyama_model_2003__PI3K(time_, ShGS, PI3Kstar);
+  RasGDPtoRasGTP: hatakeyama_model_2003__RasGDPtoRasGTP(time_, ShGS, RasGTP);
+  RAF: hatakeyama_model_2003__RAF(time_, RasGTP, Akt_PIPP, RAF_star);
+  Akt: hatakeyama_model_2003__Akt(time_, PI3Kstar, Akt_PIPP, MEKP, MEKPP, Akt_PIP);
+  MEK: hatakeyama_model_2003__MEK(time_, RAF_star, MEKPP, MEKP, Akt_PIP, Akt_PIPP);
+  ERK: hatakeyama_model_2003__ERK(time_, MEKPP);
+end

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="wodarz_hamer_model_2007_version01____main" name="wodarz_hamer_model_2007_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="x0" value="0.1" constant="false"/>
+      <parameter id="r" value="1"/>
+      <parameter id="v0" value="1" constant="false"/>
+      <parameter id="y0" value="0" constant="false"/>
+      <parameter id="k" value="10"/>
+      <parameter id="d" value="0.1"/>
+      <parameter id="beta" value="0.2"/>
+      <parameter id="a" value="0.2"/>
+      <parameter id="u" value="0.5"/>
+      <parameter id="eta" value="1"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="x0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> r </ci>
+              <ci> x0 </ci>
+              <ci> v0 </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> x0 </ci>
+                    <ci> y0 </ci>
+                  </apply>
+                  <ci> k </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> d </ci>
+                <ci> x0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> beta </ci>
+                <ci> x0 </ci>
+                <ci> v0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="v0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> eta </ci>
+              <ci> y0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> u </ci>
+              <ci> v0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="y0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> beta </ci>
+                <ci> x0 </ci>
+                <ci> v0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> r </ci>
+                <ci> y0 </ci>
+                <ci> v0 </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <ci> x0 </ci>
+                      <ci> y0 </ci>
+                    </apply>
+                    <ci> k </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> a </ci>
+              <ci> y0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

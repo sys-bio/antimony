@@ -1,0 +1,23 @@
+//Created by libAntimony v1.3
+model fitzhugh_arimoto_yoshizawa_1961__Main()
+
+  // Assignment Rules:
+  I := piecewise( -(80 ) , ( t >= 0) && (t <= 0.5 ), 0 );
+
+  // Rate Rules:
+  v' = 1 * (v * (v - alpha) * (1 - v) - w + I);
+  w' = 1 * epsilon * (v - gamma * w);
+
+  // Variable initializations:
+  v = 0;
+  w = 0;
+  alpha = -0.08;
+  gamma = 3;
+  epsilon = 0.005;
+end
+
+model fitzhugh_arimoto_yoshizawa_1961____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Main: fitzhugh_arimoto_yoshizawa_1961__Main();
+end

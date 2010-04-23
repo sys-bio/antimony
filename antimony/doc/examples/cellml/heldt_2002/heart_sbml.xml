@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="heldt_heart_2002____main" name="heldt_heart_2002____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="HR" value="70"/>
+      <parameter id="hrf" constant="false"/>
+      <parameter id="LVTiming_PRint" value="0.00012"/>
+      <parameter id="time_" constant="false"/>
+      <parameter id="LVElastanceFunction_Esys" value="5.6"/>
+      <parameter id="LVElastanceFunction_Edia" value="0.19"/>
+      <parameter id="LVElastanceFunction_TsK" value="0.35"/>
+      <parameter id="LVElastanceFunction_Ts" constant="false"/>
+      <parameter id="E_LV" constant="false"/>
+      <parameter id="dummy_dummy" value="10" constant="false"/>
+      <parameter id="realtime"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="hrf">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> HR </ci>
+            <cn type="integer"> 60 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="time_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> realtime </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <floor/>
+                  <apply>
+                    <divide/>
+                    <ci> realtime </ci>
+                    <ci> hrf </ci>
+                  </apply>
+                </apply>
+                <ci> hrf </ci>
+              </apply>
+            </apply>
+            <ci> LVTiming_PRint </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="LVElastanceFunction_Ts">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> LVElastanceFunction_TsK </ci>
+            <apply>
+              <root/>
+              <apply>
+                <times/>
+                <cn type="integer"> 1 </cn>
+                <ci> hrf </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="E_LV"/>
+      <rateRule variable="dummy_dummy">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> dummy_dummy </ci>
+            <cn type="integer"> -3 </cn>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

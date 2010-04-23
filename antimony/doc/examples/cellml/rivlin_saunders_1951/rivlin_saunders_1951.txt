@@ -1,0 +1,27 @@
+//Created by libAntimony v1.3
+model rivlin_saunders_1951_version01__equations(E11, E22, E33, E12, E13, E23, c1, c2, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23)
+
+  // Assignment Rules:
+  Tdev11 := 2.0 * c1 + 4.0 * c2 * (E22 + E33) + 4 * c2;
+  Tdev22 := 2.0 * c1 + 4.0 * c2 * (E11 + E33) + 4 * c2;
+  Tdev33 := 2.0 * c1 + 4.0 * c2 * (E11 + E22) + 4 * c2;
+  Tdev12 := -((4.0 * E12 * c2));
+  Tdev13 := -((4.0 * E13 * c2));
+  Tdev23 := -((4.0 * E23 * c2));
+end
+
+model rivlin_saunders_1951_version01__interface(E11, E22, E33, E12, E13, E23, c1, c2, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23)
+
+  // Sub-modules, and any changes to those submodules:
+  equations: rivlin_saunders_1951_version01__equations(E11, E22, E33, E12, E13, E23, c1, c2, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23);
+
+  // Variable initializations:
+  c1 = 0;
+  c2 = 0;
+end
+
+model rivlin_saunders_1951_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  interface: rivlin_saunders_1951_version01__interface(E11, E22, E33, E12, E13, E23, c1, c2, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23);
+end

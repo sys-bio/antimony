@@ -1,0 +1,452 @@
+//Created by libAntimony v1.3
+model teusink_model_2000__environment(time_)
+end
+
+model teusink_model_2000__GLCo(GLCo)
+
+  // Variable initializations:
+  GLCo = 50.0;
+end
+
+model teusink_model_2000__GLCi(GLCi, v_GLT, v_GLK, time_)
+
+  // Rate Rules:
+  GLCi' = v_GLT - v_GLK;
+
+  // Variable initializations:
+  GLCi = 0.087;
+end
+
+model teusink_model_2000__G6P(G6P, v_GLK, v_PGI, v_trehalose, v_glycogen, time_)
+
+  // Rate Rules:
+  G6P' = v_GLK - ( v_PGI + 2.0 * v_trehalose + v_glycogen );
+
+  // Variable initializations:
+  G6P = 2.45;
+end
+
+model teusink_model_2000__F6P(F6P, v_PGI, v_PFK, time_)
+
+  // Rate Rules:
+  F6P' = v_PGI - v_PFK;
+
+  // Variable initializations:
+  F6P = 0.62;
+end
+
+model teusink_model_2000__F16P(F16P, v_PFK, v_ALD, time_)
+
+  // Rate Rules:
+  F16P' = v_PFK - v_ALD;
+
+  // Variable initializations:
+  F16P = 5.51;
+end
+
+model teusink_model_2000__F26P(F26P)
+
+  // Variable initializations:
+  F26P = 0.02;
+end
+
+model teusink_model_2000__TRIO(TRIO, v_ALD, v_GAPDH, v_G3PDH, time_)
+
+  // Rate Rules:
+  TRIO' = 2.0 * v_ALD - ( v_GAPDH + v_G3PDH );
+
+  // Variable initializations:
+  TRIO = 0.96;
+end
+
+model teusink_model_2000__BPG(BPG, v_GAPDH, v_PGK, time_)
+
+  // Rate Rules:
+  BPG' = v_GAPDH - v_PGK;
+
+  // Variable initializations:
+  BPG = 0.0;
+end
+
+model teusink_model_2000__P3G(P3G, v_PGK, v_PGM, time_)
+
+  // Rate Rules:
+  P3G' = v_PGK - v_PGM;
+
+  // Variable initializations:
+  P3G = 0.9;
+end
+
+model teusink_model_2000__P2G(P2G, v_PGM, v_ENO, time_)
+
+  // Rate Rules:
+  P2G' = v_PGM - v_ENO;
+
+  // Variable initializations:
+  P2G = 0.12;
+end
+
+model teusink_model_2000__PEP(PEP, v_ENO, v_PYK, time_)
+
+  // Rate Rules:
+  PEP' = v_ENO - v_PYK;
+
+  // Variable initializations:
+  PEP = 0.07;
+end
+
+model teusink_model_2000__PYR(PYR, v_PYK, v_PDC, time_)
+
+  // Rate Rules:
+  PYR' = v_PYK - v_PDC;
+
+  // Variable initializations:
+  PYR = 1.85;
+end
+
+model teusink_model_2000__ACE(ACE, v_PDC, v_ADH, v_succinate, time_)
+
+  // Rate Rules:
+  ACE' = v_PDC - (v_ADH + 2.0 * v_succinate);
+
+  // Variable initializations:
+  ACE = 0.17;
+end
+
+model teusink_model_2000__P(P, v_GLK, v_PFK, v_PGK, v_PYK, v_ATP, v_trehalose, v_glycogen, v_succinate, time_)
+
+  // Rate Rules:
+  P' = v_PGK + v_PYK - ( v_GLK + v_PFK + v_ATP + v_trehalose + v_glycogen + 4.0 * v_succinate);
+
+  // Variable initializations:
+  P = 6.31;
+end
+
+model teusink_model_2000__NADH(NADH, v_GAPDH, v_ADH, v_G3PDH, v_succinate, time_)
+
+  // Rate Rules:
+  NADH' = v_GAPDH + 3.0 * v_succinate - (v_ADH + v_G3PDH);
+
+  // Variable initializations:
+  NADH = 0.39;
+end
+
+model teusink_model_2000__NAD(NAD, v_GAPDH, v_ADH, v_G3PDH, v_succinate, time_)
+
+  // Rate Rules:
+  NAD' = v_ADH + v_G3PDH - (v_GAPDH + 3.0 * v_succinate);
+
+  // Variable initializations:
+  NAD = 1.20;
+end
+
+model teusink_model_2000__DHAP(DHAP, Keq_TPI, TRIO)
+
+  // Assignment Rules:
+  DHAP := TRIO / ( 1.0 + Keq_TPI);
+
+  // Variable initializations:
+  Keq_TPI = 0.045;
+end
+
+model teusink_model_2000__GAP(GAP, Keq_TPI, TRIO)
+
+  // Assignment Rules:
+  GAP := TRIO * Keq_TPI / ( 1.0 + Keq_TPI);
+end
+
+model teusink_model_2000__ADP(ADP, SUM_P, P)
+
+  // Assignment Rules:
+  ADP := (SUM_P - root(power(P, 2 ) * ( 1.0 - 4.0 * Keq_AK) + 2 * SUM_P * P * ( 4.0 * Keq_AK - 1.0 ) + power(SUM_P, 2 ))) / ( 1.0 - 4.0 * Keq_AK);
+
+  // Variable initializations:
+  SUM_P = 4.1;
+  Keq_AK = 0.450;
+end
+
+model teusink_model_2000__ATP(ATP, P, ADP)
+
+  // Assignment Rules:
+  ATP := (P - ADP) / 2;
+end
+
+model teusink_model_2000__AMP(AMP, SUM_P, ADP, ATP)
+
+  // Assignment Rules:
+  AMP := SUM_P - (ATP + ADP);
+end
+
+model teusink_model_2000__ETOH(ETOH)
+
+  // Variable initializations:
+  ETOH = 50.0;
+end
+
+model teusink_model_2000__GLY(GLY)
+
+  // Variable initializations:
+  GLY = 0.15;
+end
+
+model teusink_model_2000__v_PGI(v_PGI, G6P, F6P)
+
+  // Assignment Rules:
+  v_PGI := v_max / Km_G6P * ( G6P - F6P / Keq_PGI ) / ( 1.0 + G6P / Km_G6P + F6P / Km_F6P );
+
+  // Variable initializations:
+  Km_G6P = 1.4;
+  Km_F6P = 0.3;
+  Keq_PGI = 0.314;
+  v_max = 339.677;
+end
+
+model teusink_model_2000__v_PGM(v_PGM, P2G, P3G)
+
+  // Assignment Rules:
+  v_PGM := v_max / Km_P3G * ( P3G - P2G / Keq_PGM ) / ( 1.0 + P3G / Km_P3G + P2G / Km_P2G );
+
+  // Variable initializations:
+  Km_P3G = 1.2;
+  Km_P2G = 0.08;
+  Keq_PGM = 0.19;
+  v_max = 2525.81;
+end
+
+model teusink_model_2000__v_ENO(v_ENO, PEP, P2G)
+
+  // Assignment Rules:
+  v_ENO := v_max / Km_P2G * ( P2G - PEP / Keq_ENO ) / ( 1.0 + P2G / Km_P2G + PEP / Km_PEP );
+
+  // Variable initializations:
+  Km_P2G = 0.04;
+  Km_PEP = 0.5;
+  Keq_ENO = 6.7;
+  v_max = 365.806;
+end
+
+model teusink_model_2000__v_GLK(v_GLK, G6P, GLCi, ATP, ADP)
+
+  // Assignment Rules:
+  v_GLK := v_max / ( Km_GLCi * Km_ATP ) * ( GLCi * ATP - G6P * ADP / Keq_GLK ) / (( 1.0 + GLCi / Km_GLCi + G6P / Km_G6P ) * ( 1.0 + ATP / Km_ATP + ADP / Km_ADP ));
+
+  // Variable initializations:
+  Km_GLCi = 0.08;
+  Km_G6P = 30.0;
+  Km_ATP = 0.15;
+  Km_ADP = 0.23;
+  Keq_GLK = 3800;
+  v_max = 226.452;
+end
+
+model teusink_model_2000__v_GAPDH(v_GAPDH, Keq_TPI, BPG, TRIO, NAD, NADH)
+
+  // Assignment Rules:
+  v_GAPDH := ( v_max_f * ( Keq_TPI / ( 1.0 + Keq_TPI )) * TRIO * NAD / ( Km_GAP * Km_NAD ) - v_max_r * BPG * NADH / ( Km_BPG * Km_NADH )) / (( 1.0 + Keq_TPI / ( 1.0 + Keq_TPI ) * TRIO / Km_GAP + BPG / Km_BPG ) * ( 1.0 + NAD / Km_NAD + NADH / Km_NADH ));
+
+  // Variable initializations:
+  Km_GAP = 0.21;
+  Km_BPG = 0.0098;
+  Km_NAD = 0.09;
+  Km_NADH = 0.06;
+  v_max_f = 1184.52;
+  v_max_r = 6549.68;
+end
+
+model teusink_model_2000__v_PGK(v_PGK, P3G, BPG, ATP, ADP)
+
+  // Assignment Rules:
+  v_PGK := v_max / ( Km_P3G * Km_ATP ) * ( Keq_PGK * BPG * ADP - P3G * ATP ) / (( 1.0 + BPG / Km_BPG + P3G / Km_P3G ) * ( 1.0 + ATP / Km_ATP + ADP / Km_ADP ));
+
+  // Variable initializations:
+  Km_BPG = 0.003;
+  Km_P3G = 0.53;
+  Km_ADP = 0.2;
+  Km_ATP = 0.3;
+  Keq_PGK = 3200;
+  v_max = 1306.45;
+end
+
+model teusink_model_2000__v_PYK(v_PYK, PYR, PEP, ADP, ATP)
+
+  // Assignment Rules:
+  v_PYK := v_max / ( Km_PEP * Km_ADP ) * ( PEP * ADP - PYR * ATP / Keq_PYK ) / (( 1.0 + PEP / Km_PEP + PYR / Km_PYR ) * ( 1.0 + ATP / Km_ATP + ADP / Km_ADP ));
+
+  // Variable initializations:
+  Km_PEP = 0.14;
+  Km_PYR = 21.0;
+  Km_ADP = 0.53;
+  Km_ATP = 1.5;
+  Keq_PYK = 6500;
+  v_max = 1088.71;
+end
+
+model teusink_model_2000__v_GLT(v_GLT, GLCo, GLCi)
+
+  // Assignment Rules:
+  v_GLT := v_max * ( GLCo - GLCi / Keq_Glc ) / ( Km_Glco * ( 1.0 + GLCo / Km_Glco + GLCi / Km_Glci + 0.91 * GLCo * GLCi / ( Km_Glci * Km_Glco )));
+
+  // Variable initializations:
+  Km_Glco = 1.1918;
+  Km_Glci = 1.1918;
+  Keq_Glc = 1;
+  v_max = 97.264;
+end
+
+model teusink_model_2000__v_ALD(v_ALD, Keq_TPI, TRIO, F16P)
+
+  // Assignment Rules:
+  v_ALD := v_max / Km_F16P * ( F16P - Keq_TPI / ( 1.0 + Keq_TPI ) * TRIO * ( 1.0 / ( 1.0 + Keq_TPI )) * TRIO / Keq_ALD ) / ( 1.0 + F16P / Km_F16P + Keq_TPI / ( 1.0 + Keq_TPI ) * TRIO / Km_GAP + 1.0 / ( 1.0 + Keq_TPI ) * TRIO / Km_DHAP + Keq_TPI / ( 1.0 + Keq_TPI ) * TRIO * ( 1.0 / ( 1.0 + Keq_TPI )) * TRIO / ( Km_GAP * Km_DHAP ) + F16P * ( Keq_TPI / ( 1.0 + Keq_TPI )) * TRIO / ( Km_GAPi * Km_F16P ));
+
+  // Variable initializations:
+  Km_F16P = 0.3;
+  Km_GAP = 2.0;
+  Km_GAPi = 10.0;
+  Km_DHAP = 2.4;
+  Keq_ALD = 0.069;
+  v_max = 322.258;
+end
+
+model teusink_model_2000__v_PDC(v_PDC, PYR)
+
+  // Assignment Rules:
+  v_PDC := v_max * (power( PYR , nPDC ) / power( Km_PYR , nPDC )) / ( 1.0 + power( PYR , nPDC ) / power( Km_PYR , nPDC ));
+
+  // Variable initializations:
+  nPDC = 1.9;
+  Km_PYR = 4.33;
+  v_max = 174.194;
+end
+
+model teusink_model_2000__v_ADH(v_ADH, ETOH, ACE, NADH, NAD)
+
+  // Assignment Rules:
+  v_ADH := -(( v_max / ( Ki_NAD * Km_ETOH ) * (( NAD * ETOH - NADH * ACE / Keq_ADH ) / ( 1.0 + NAD / Ki_NAD + Km_NAD * ETOH / ( Ki_NAD * Km_ETOH ) + Km_NADH * ACE / ( Ki_NADH * Km_ACE ) + NADH / Ki_NADH + NAD * ETOH / ( Ki_NAD * Km_ETOH ) + Km_NADH * NAD * ACE / ( Ki_NAD * Ki_NADH * Km_ACE ) + Km_NAD * ETOH * NADH / ( Ki_NAD * Km_ETOH * Ki_NADH ) + NADH * ACE / ( Ki_NADH * Km_ACE ) + NAD * ETOH * ACE / ( Ki_NAD * Km_ETOH * Ki_ACE ) + ETOH * NADH * ACE / ( Ki_ETOH * Ki_NADH * Km_ACE )))));
+
+  // Variable initializations:
+  Km_NAD = 0.17;
+  Km_NADH = 0.11;
+  Km_ACE = 1.11;
+  Km_ETOH = 17.0;
+  Ki_NADH = 0.031;
+  Ki_NAD = 0.92;
+  Ki_ACE = 1.1;
+  Ki_ETOH = 90.0;
+  v_max = 810.0;
+  Keq_ADH = 0.000069;
+end
+
+model teusink_model_2000__v_ATP(v_ATP, ATP)
+
+  // Assignment Rules:
+  v_ATP := Km_ATPase * ATP;
+
+  // Variable initializations:
+  Km_ATPase = 33.7;
+end
+
+model teusink_model_2000__v_PFK(v_PFK, F6P, F16P, F26P, ATP, AMP)
+
+  // Assignment Rules:
+  v_PFK := v_max * gR * ( F6P / Km_F6P ) * ( ATP / Km_ATP ) * ( R / (power( R , 2 ) + L * power( T , 2 )));
+  L := L0 * power(( 1.0 + Ci_ATP * ( ATP / Ki_ATP )) / ( 1.0 + ATP / Ki_ATP ), 2.0 ) * power(( 1.0 + CAMP * ( AMP / Km_AMP )) / ( 1.0 + AMP / Km_AMP ), 2.0 ) * power(( 1.0 + CF26BP * ( F26P / Km_F26BP ) + CF16BP * ( F16P / Km_F16BP )) / ( 1.0 + F26P / Km_F26BP + F16P / Km_F16BP ), 2 );
+  R := 1.0 + F6P / Km_F6P + ATP / Km_ATP + gR * ( F6P / Km_F6P ) * ( ATP / Km_ATP );
+  T := 1.0 + CATP * ( ATP / Km_ATP );
+
+  // Variable initializations:
+  v_max = 182.903;
+  gR = 5.12;
+  L0 = 0.66;
+  Km_F6P = 0.1;
+  Km_ATP = 0.71;
+  CATP = 3.0;
+  Km_AMP = 0.0995;
+  CAMP = 0.0845;
+  Ki_ATP = 0.65;
+  Ci_ATP = 100.0;
+  Km_F26BP = 0.000682;
+  CF26BP = 0.0174;
+  Km_F16BP = 0.111;
+  CF16BP = 0.397;
+end
+
+model teusink_model_2000__v_G3PDH(v_G3PDH, Keq_TPI, TRIO, GLY, NADH, NAD)
+
+  // Assignment Rules:
+  v_G3PDH := v_max / ( Km_DHAP * Km_NADH ) * ( 1.0 / ( 1.0 + Keq_TPI ) * TRIO * NADH - GLY * NAD / Keq_G3PDH ) / (( 1.0 + 1.0 / ( 1.0 + Keq_TPI ) * TRIO / Km_DHAP + GLY / Km_GLY ) * ( 1.0 + NADH / Km_NADH + NAD / Km_NAD ));
+
+  // Variable initializations:
+  Km_DHAP = 0.4;
+  Km_GLY = 1;
+  Km_NADH = 0.023;
+  Km_NAD = 0.93;
+  Keq_G3PDH = 4300;
+  v_max = 70.15;
+end
+
+model teusink_model_2000__v_succinate(v_succinate, ACE)
+
+  // Assignment Rules:
+  v_succinate := Km_succinate * ACE;
+
+  // Variable initializations:
+  Km_succinate = 21.4;
+end
+
+model teusink_model_2000__v_glycogen(v_glycogen)
+
+  // Variable initializations:
+  v_glycogen = 6.0;
+end
+
+model teusink_model_2000__v_trehalose(v_trehalose)
+
+  // Variable initializations:
+  v_trehalose = 2.4;
+end
+
+model teusink_model_2000____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: teusink_model_2000__environment(time_);
+  GLCo: teusink_model_2000__GLCo(GLCo0);
+  GLCi: teusink_model_2000__GLCi(GLCi0, v_GLT0, v_GLK0, time_);
+  G6P: teusink_model_2000__G6P(G6P0, v_GLK0, v_PGI0, v_trehalose0, v_glycogen0, time_);
+  F6P: teusink_model_2000__F6P(F6P0, v_PGI0, v_PFK0, time_);
+  F16P: teusink_model_2000__F16P(F16P0, v_PFK0, v_ALD0, time_);
+  F26P: teusink_model_2000__F26P(F26P0);
+  TRIO: teusink_model_2000__TRIO(TRIO0, v_ALD0, v_GAPDH0, v_G3PDH0, time_);
+  BPG: teusink_model_2000__BPG(BPG0, v_GAPDH0, v_PGK0, time_);
+  P3G: teusink_model_2000__P3G(P3G0, v_PGK0, v_PGM0, time_);
+  P2G: teusink_model_2000__P2G(P2G0, v_PGM0, v_ENO0, time_);
+  PEP: teusink_model_2000__PEP(PEP0, v_ENO0, v_PYK0, time_);
+  PYR: teusink_model_2000__PYR(PYR0, v_PYK0, v_PDC0, time_);
+  ACE: teusink_model_2000__ACE(ACE0, v_PDC0, v_ADH0, v_succinate0, time_);
+  P: teusink_model_2000__P(P0, v_GLK0, v_PFK0, v_PGK0, v_PYK0, v_ATP0, v_trehalose0, v_glycogen0, v_succinate0, time_);
+  NADH: teusink_model_2000__NADH(NADH0, v_GAPDH0, v_ADH0, v_G3PDH0, v_succinate0, time_);
+  NAD: teusink_model_2000__NAD(NAD0, v_GAPDH0, v_ADH0, v_G3PDH0, v_succinate0, time_);
+  DHAP: teusink_model_2000__DHAP(DHAP0, Keq_TPI, TRIO0);
+  GAP: teusink_model_2000__GAP(GAP0, Keq_TPI, TRIO0);
+  ADP: teusink_model_2000__ADP(ADP0, SUM_P, P0);
+  ATP: teusink_model_2000__ATP(ATP0, P0, ADP0);
+  AMP: teusink_model_2000__AMP(AMP0, SUM_P, ADP0, ATP0);
+  ETOH: teusink_model_2000__ETOH(ETOH0);
+  GLY: teusink_model_2000__GLY(GLY0);
+  v_PGI: teusink_model_2000__v_PGI(v_PGI0, G6P0, F6P0);
+  v_PGM: teusink_model_2000__v_PGM(v_PGM0, P2G0, P3G0);
+  v_ENO: teusink_model_2000__v_ENO(v_ENO0, PEP0, P2G0);
+  v_GLK: teusink_model_2000__v_GLK(v_GLK0, G6P0, GLCi0, ATP0, ADP0);
+  v_GAPDH: teusink_model_2000__v_GAPDH(v_GAPDH0, Keq_TPI, BPG0, TRIO0, NAD0, NADH0);
+  v_PGK: teusink_model_2000__v_PGK(v_PGK0, P3G0, BPG0, ATP0, ADP0);
+  v_PYK: teusink_model_2000__v_PYK(v_PYK0, PYR0, PEP0, ADP0, ATP0);
+  v_GLT: teusink_model_2000__v_GLT(v_GLT0, GLCo0, GLCi0);
+  v_ALD: teusink_model_2000__v_ALD(v_ALD0, Keq_TPI, TRIO0, F16P0);
+  v_PDC: teusink_model_2000__v_PDC(v_PDC0, PYR0);
+  v_ADH: teusink_model_2000__v_ADH(v_ADH0, ETOH0, ACE0, NADH0, NAD0);
+  v_ATP: teusink_model_2000__v_ATP(v_ATP0, ATP0);
+  v_PFK: teusink_model_2000__v_PFK(v_PFK0, F6P0, F16P0, F26P0, ATP0, AMP0);
+  v_G3PDH: teusink_model_2000__v_G3PDH(v_G3PDH0, Keq_TPI, TRIO0, GLY0, NADH0, NAD0);
+  v_succinate: teusink_model_2000__v_succinate(v_succinate0, ACE0);
+  v_glycogen: teusink_model_2000__v_glycogen(v_glycogen0);
+  v_trehalose: teusink_model_2000__v_trehalose(v_trehalose0);
+end

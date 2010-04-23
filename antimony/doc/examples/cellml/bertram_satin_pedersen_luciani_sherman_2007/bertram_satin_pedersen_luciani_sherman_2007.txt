@@ -1,0 +1,501 @@
+//Created by libAntimony v1.3
+model bertram_model_2007_version01__environment(time_)
+end
+
+model bertram_model_2007_version01__membrane(Vm, Ica, Ik, Ikca, Ikatp, time_)
+
+  // Rate Rules:
+  Vm' = -(( Ik + Ica + Ikca + Ikatp )) / cm;
+
+  // Variable initializations:
+  Vm = -60.0;
+  cm = 5300.0;
+end
+
+model bertram_model_2007_version01__n(n, time_, Vm)
+
+  // Assignment Rules:
+  n_infinity := 1.0 / ( 1.0 + exp(( vn - Vm ) / sn ));
+
+  // Rate Rules:
+  n' = ( n_infinity - n ) / tau_n;
+
+  // Variable initializations:
+  n = 0.0;
+  tau_n = 20.0;
+  vn = -16.0;
+  sn = 5.0;
+end
+
+model bertram_model_2007_version01__Ik(Ik, time_, VK, Vm, n)
+
+  // Sub-modules, and any changes to those submodules:
+  n_mod: bertram_model_2007_version01__n(n, time_, Vm);
+
+  // Assignment Rules:
+  Ik := gK * n * ( Vm - VK );
+
+  // Variable initializations:
+  gK = 2700.0;
+end
+
+model bertram_model_2007_version01__m(m_infinity, Vm)
+
+  // Assignment Rules:
+  m_infinity := 1.0 / ( 1.0 + exp(( v - Vm ) / sm ));
+
+  // Variable initializations:
+  v = -20.0;
+  sm = 12.0;
+end
+
+model bertram_model_2007_version01__Ica(Ica, time_, VCa, Vm, m_infinity)
+
+  // Sub-modules, and any changes to those submodules:
+  m: bertram_model_2007_version01__m(m_infinity, Vm);
+
+  // Assignment Rules:
+  Ica := gCa * m_infinity * ( Vm - VCa );
+
+  // Variable initializations:
+  gCa = 1000.0;
+end
+
+model bertram_model_2007_version01__Ikca(Ikca, time_, VK, c, Vm)
+
+  // Assignment Rules:
+  Ikca := gkCa / ( 1.0 + power( kd / c , 2.0 )) * ( Vm - VK );
+
+  // Variable initializations:
+  gkCa = 300.0;
+  kd = 0.5;
+end
+
+model bertram_model_2007_version01__Ikatp(Ikatp, time_, VK, atp, adp, Vm)
+
+  // Assignment Rules:
+  Ikatp := gkATP_ * katpo * ( Vm - VK );
+  katpo := topo / bottomo;
+  topo := 0.08 * ( 1.0 + 2.0 * mgadp / 17.0 ) + 0.89 * power( mgadp / 17.0 , 2.0 );
+  bottomo := power( 1.0 + mgadp / 17.0 , 2.0 ) * ( 1.0 + adp3m / 26.0 + atp4m / 1.0 );
+  mgadp := 0.165 * adp;
+  adp3m := 0.135 * adp;
+  atp4m := 0.05 * atp;
+
+  // Variable initializations:
+  gkATP_ = 16000.0;
+end
+
+model bertram_model_2007_version01__JGPDH(JGPDH, FBP)
+
+  // Assignment Rules:
+  JGPDH := kGPDH * root(abs( FBP / 1 ));
+
+  // Variable initializations:
+  kGPDH = 0.0005;
+end
+
+model bertram_model_2007_version01__G6P(G6P, JGK_ms, JPFK_ms, time_)
+
+  // Rate Rules:
+  G6P' = JGK_ms - JPFK_ms;
+
+  // Variable initializations:
+  G6P = 301.0;
+end
+
+model bertram_model_2007_version01__FBP(FBP, JPFK_ms, JGPDH, time_)
+
+  // Rate Rules:
+  FBP' = JPFK_ms - 0.5 * JGPDH;
+
+  // Variable initializations:
+  FBP = 2.16;
+end
+
+model bertram_model_2007_version01__F6P(F6P, G6P)
+
+  // Assignment Rules:
+  F6P := 0.3 * G6P;
+end
+
+model bertram_model_2007_version01__JPFK(JPFK, JPFK_ms, atp, F6P, FBP, AMP, kappa)
+
+  // Assignment Rules:
+  JPFK := (lambda_ * VmaxPFK * topa16 + VmaxPFK * topb) / bottom16;
+  JPFK_ms := kappa * JPFK;
+  weight2 := power(atp, 2 ) / (k4 * 1 );
+  topa2 := topa1;
+  bottom2 := bottom1 + weight2;
+  topa3 := topa2 + weight3;
+  weight3 := power(F6P, 2 ) / (k3 * 1 );
+  bottom3 := bottom2 + weight3;
+  weight4 := power(F6P * atp, 2 ) / (f43 * k3 * k4 * power(1 , 2 ));
+  topa4 := topa3 + weight4;
+  bottom4 := bottom3 + weight4;
+  weight5 := FBP / k2;
+  topa5 := topa4;
+  bottom5 := bottom4 + weight5;
+  weight6 := FBP * power(atp, 2 ) / (k2 * k4 * f42 * 1 );
+  topa6 := topa5;
+  bottom6 := bottom5 + weight6;
+  weight7 := FBP * power(F6P, 2 ) / (k2 * k3 * f23 * 1 );
+  topa7 := topa6 + weight7;
+  bottom7 := bottom6 + weight7;
+  weight8 := FBP * power(F6P, 2 ) * power(atp, 2 ) / (k2 * k3 * k4 * f23 * f42 * f43 * power(1 , 2 ));
+  topa8 := topa7 + weight8;
+  bottom8 := bottom7 + weight8;
+  weight9 := AMP / k1;
+  topa9 := topa8;
+  bottom9 := bottom8 + weight9;
+  weight10 := AMP * power(atp, 2 ) / (k1 * k4 * f41 * 1 );
+  topa10 := topa9;
+  bottom10 := bottom9 + weight10;
+  weight11 := AMP * power(F6P, 2 ) / (k1 * k3 * f13 * 1 );
+  topa11 := topa10 + weight11;
+  bottom11 := bottom10 + weight11;
+  weight12 := AMP * power(F6P, 2 ) * power(atp, 2 ) / (k1 * k3 * k4 * f13 * f41 * f43 * power(1 , 2 ));
+  topa12 := topa11 + weight12;
+  bottom12 := bottom11 + weight12;
+  weight13 := AMP * FBP / (k1 * k2);
+  topa13 := topa12;
+  bottom13 := bottom12 + weight13;
+  weight14 := AMP * FBP * power(atp, 2 ) / (k1 * k2 * k4 * f42 * f41 * 1 );
+  topa14 := topa13;
+  bottom14 := bottom13 + weight14;
+  weight15 := AMP * FBP * power(F6P, 2 ) / (k1 * k2 * k3 * f23 * f13 * 1 );
+  topa15 := topa14;
+  bottom15 := bottom14 + weight15;
+  weight16 := AMP * FBP * power(F6P, 2 ) * power(atp, 2 ) / (k1 * k2 * k3 * k4 * f23 * f13 * f42 * f41 * f43 * power(1 , 2 ));
+  topa16 := topa15 + weight16;
+  bottom16 := bottom15 + weight16;
+  topb := weight15;
+
+  // Variable initializations:
+  bottom1 = 1;
+  topa1 = 0;
+  k1 = 30;
+  k2 = 1;
+  k3 = 50000;
+  k4 = 1000;
+  VmaxPFK = 5.0;
+  f13 = 0.02;
+  f43 = 20;
+  f23 = 0.2;
+  f42 = 20;
+  f41 = 20;
+  lambda_ = 0.06;
+end
+
+model bertram_model_2007_version01__JPDH(JPDH, NADm, Cam, NADHm, JGPDH)
+
+  // Assignment Rules:
+  JPDH := p1 / ( p2 + NADHm / NADm ) * ( Cam / ( p3 + Cam )) * ( JGPDH + JGPDHbas );
+
+  // Variable initializations:
+  p1 = 400.0;
+  p2 = 1.0;
+  p3 = 0.01;
+  JGPDHbas = 0.0005;
+end
+
+model bertram_model_2007_version01__NADHm(NADHm, gamma, JPDH, JO, time_)
+
+  // Rate Rules:
+  NADHm' = gamma * ( JPDH - JO );
+
+  // Variable initializations:
+  NADHm = 0.4;
+end
+
+model bertram_model_2007_version01__JO(JO, NADHm, delta_psi)
+
+  // Assignment Rules:
+  JO := p4 * ( NADHm / ( p5 + NADHm )) / ( 1.0 + exp(( delta_psi - p6 ) / p7 ));
+
+  // Variable initializations:
+  p4 = 0.6;
+  p5 = 0.1;
+  p6 = 177.0;
+  p7 = 5.0;
+end
+
+model bertram_model_2007_version01__NADm(NADm, NADHm)
+
+  // Assignment Rules:
+  NADm := NADmtot - NADHm;
+
+  // Variable initializations:
+  NADmtot = 10.0;
+end
+
+model bertram_model_2007_version01__delta_psi(delta_psi, JHres, JHatp, JANT, JHleak, JNaCa, Juni, time_)
+
+  // Rate Rules:
+  delta_psi' = ( JHres - ( JHatp + JANT + JHleak + JNaCa + 2.0 * Juni )) / Cmito;
+
+  // Variable initializations:
+  delta_psi = 164.0;
+  Cmito = 1.8;
+end
+
+model bertram_model_2007_version01__JHres(JHres, NADHm, delta_psi)
+
+  // Assignment Rules:
+  JHres := p8 * ( NADHm / ( p9 + NADHm )) / ( 1.0 + exp(( delta_psi - p10 ) / p11 ));
+
+  // Variable initializations:
+  p8 = 7.0;
+  p9 = 0.1;
+  p10 = 177.0;
+  p11 = 5.0;
+end
+
+model bertram_model_2007_version01__JF1F0(JF1F0, ATPm, delta_psi)
+
+  // Assignment Rules:
+  JF1F0 := p16 * p13 / ( p13 + ATPm ) / ( 1.0 + exp(( p14 - delta_psi ) / p15 ));
+
+  // Variable initializations:
+  p13 = 10.0;
+  p14 = 190.0;
+  p15 = 8.5;
+  p16 = 35.0;
+end
+
+model bertram_model_2007_version01__JHatp(JHatp, JF1F0)
+
+  // Assignment Rules:
+  JHatp := 3.0 * JF1F0;
+end
+
+model bertram_model_2007_version01__JGK(JGK_ms, kappa)
+
+  // Assignment Rules:
+  JGK_ms := kappa * JGK;
+
+  // Variable initializations:
+  JGK = 0.4;
+end
+
+model bertram_model_2007_version01__JHleak(JHleak, delta_psi)
+
+  // Assignment Rules:
+  JHleak := p17 * delta_psi + p18;
+
+  // Variable initializations:
+  p17 = 0.002;
+  p18 = -0.03;
+end
+
+model bertram_model_2007_version01__JANT(JANT, RATm, delta_psi)
+
+  // Assignment Rules:
+  JANT := p19 * ( RATm / ( RATm + p20 ) / exp( -0.5 * FRT * delta_psi ));
+
+  // Variable initializations:
+  p19 = 0.35;
+  p20 = 2.0;
+  FRT = 0.037410133;
+end
+
+model bertram_model_2007_version01__RATm(RATm, ATPm, ADPm)
+
+  // Assignment Rules:
+  RATm := ATPm / ADPm;
+end
+
+model bertram_model_2007_version01__Juni(Juni, c, delta_psi)
+
+  // Assignment Rules:
+  Juni := ( p21 * delta_psi - p22 ) * power( c , 2.0 );
+
+  // Variable initializations:
+  p21 = 0.04;
+  p22 = 1.1;
+end
+
+model bertram_model_2007_version01__JNaCa(JNaCa, c, Cam, delta_psi)
+
+  // Assignment Rules:
+  JNaCa := p23 / c * Cam * exp( p24 * delta_psi );
+
+  // Variable initializations:
+  p23 = 0.01;
+  p24 = 0.016;
+end
+
+model bertram_model_2007_version01__Cam(Cam, Jmito, time_)
+
+  // Rate Rules:
+  Cam' = -( fmito ) * Jmito;
+
+  // Variable initializations:
+  Cam = 0.2;
+  fmito = 0.01;
+end
+
+model bertram_model_2007_version01__Jmito(Jmito, JNaCa, Juni)
+
+  // Assignment Rules:
+  Jmito := JNaCa - Juni;
+end
+
+model bertram_model_2007_version01__ADPm(ADPm, gamma, JANT, JF1F0, time_)
+
+  // Rate Rules:
+  ADPm' = gamma * ( JANT - JF1F0 );
+
+  // Variable initializations:
+  ADPm = 11.1;
+end
+
+model bertram_model_2007_version01__ATPm(ATPm, ADPm)
+
+  // Assignment Rules:
+  ATPm := Amtot - ADPm;
+
+  // Variable initializations:
+  Amtot = 15.0;
+end
+
+model bertram_model_2007_version01__adp(adp, delta, Jhyd, JANT, time_)
+
+  // Rate Rules:
+  adp' = -( delta ) * JANT + Jhyd;
+
+  // Variable initializations:
+  adp = 1137.0;
+end
+
+model bertram_model_2007_version01__Jhyd(Jhyd, c, atp)
+
+  // Assignment Rules:
+  Jhyd := ( khyd * c + khydbas ) * atp;
+
+  // Variable initializations:
+  khyd = 0.00005;
+  khydbas = 0.00005;
+end
+
+model bertram_model_2007_version01__atp(atp, adp)
+
+  // Assignment Rules:
+  atp := atot - adp;
+
+  // Variable initializations:
+  atot = 2500.0;
+end
+
+model bertram_model_2007_version01__c(c, delta, Jer, Jmem, Jmito, time_)
+
+  // Rate Rules:
+  c' = fcyt * ( Jmem + Jer + delta * Jmito );
+
+  // Variable initializations:
+  c = 0.17;
+  fcyt = 0.01;
+end
+
+model bertram_model_2007_version01__Jmem(Jmem, c, Ica)
+
+  // Assignment Rules:
+  Jmem := -(( alpha * Ica + kPMCA * ( c - Cbas )));
+
+  // Variable initializations:
+  kPMCA = 0.1;
+  alpha = 4.5E-6;
+  Cbas = 0.05;
+end
+
+model bertram_model_2007_version01__Jleak(Jleak, c, Caer)
+
+  // Assignment Rules:
+  Jleak := pleak * ( Caer - c );
+
+  // Variable initializations:
+  pleak = 0.0002;
+end
+
+model bertram_model_2007_version01__JSERCA(JSERCA, c)
+
+  // Assignment Rules:
+  JSERCA := kSERCA * c;
+
+  // Variable initializations:
+  kSERCA = 0.4;
+end
+
+model bertram_model_2007_version01__Jer(Jer, Jleak, JSERCA)
+
+  // Assignment Rules:
+  Jer := Jleak - JSERCA;
+end
+
+model bertram_model_2007_version01__Caer(Caer, Jer, time_)
+
+  // Rate Rules:
+  Caer' = -( fer ) * Vc_Ver * Jer;
+
+  // Variable initializations:
+  Caer = 345.0;
+  fer = 0.01;
+  Vc_Ver = 31.0;
+end
+
+model bertram_model_2007_version01__model_parameters(gamma, kappa, delta, VK, VCa, AMP)
+
+  // Assignment Rules:
+  delta := 3.9 / 53.2;
+
+  // Variable initializations:
+  gamma = 0.001;
+  kappa = 0.001;
+  VK = -75.0;
+  VCa = 25.0;
+  AMP = 500.0;
+end
+
+model bertram_model_2007_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: bertram_model_2007_version01__environment(time_);
+  membrane: bertram_model_2007_version01__membrane(Vm, Ica0, Ik0, Ikca0, Ikatp0, time_);
+  Ik: bertram_model_2007_version01__Ik(Ik0, time_, VK, Vm, n);
+  Ica: bertram_model_2007_version01__Ica(Ica0, time_, VCa, Vm, m_infinity);
+  Ikca: bertram_model_2007_version01__Ikca(Ikca0, time_, VK, c0, Vm);
+  Ikatp: bertram_model_2007_version01__Ikatp(Ikatp0, time_, VK, atp0, adp0, Vm);
+  JGPDH: bertram_model_2007_version01__JGPDH(JGPDH0, FBP0);
+  G6P: bertram_model_2007_version01__G6P(G6P0, JGK_ms, JPFK_ms, time_);
+  FBP: bertram_model_2007_version01__FBP(FBP0, JPFK_ms, JGPDH0, time_);
+  F6P: bertram_model_2007_version01__F6P(F6P0, G6P0);
+  JPFK: bertram_model_2007_version01__JPFK(JPFK0, JPFK_ms, atp0, F6P0, FBP0, AMP, kappa);
+  JPDH: bertram_model_2007_version01__JPDH(JPDH0, NADm0, Cam0, NADHm0, JGPDH0);
+  NADHm: bertram_model_2007_version01__NADHm(NADHm0, gamma, JPDH0, JO0, time_);
+  JO: bertram_model_2007_version01__JO(JO0, NADHm0, delta_psi0);
+  NADm: bertram_model_2007_version01__NADm(NADm0, NADHm0);
+  delta_psi: bertram_model_2007_version01__delta_psi(delta_psi0, JHres0, JHatp0, JANT0, JHleak0, JNaCa0, Juni0, time_);
+  JHres: bertram_model_2007_version01__JHres(JHres0, NADHm0, delta_psi0);
+  JF1F0: bertram_model_2007_version01__JF1F0(JF1F00, ATPm0, delta_psi0);
+  JHatp: bertram_model_2007_version01__JHatp(JHatp0, JF1F00);
+  JGK: bertram_model_2007_version01__JGK(JGK_ms, kappa);
+  JHleak: bertram_model_2007_version01__JHleak(JHleak0, delta_psi0);
+  JANT: bertram_model_2007_version01__JANT(JANT0, RATm0, delta_psi0);
+  RATm: bertram_model_2007_version01__RATm(RATm0, ATPm0, ADPm0);
+  Juni: bertram_model_2007_version01__Juni(Juni0, c0, delta_psi0);
+  JNaCa: bertram_model_2007_version01__JNaCa(JNaCa0, c0, Cam0, delta_psi0);
+  Cam: bertram_model_2007_version01__Cam(Cam0, Jmito0, time_);
+  Jmito: bertram_model_2007_version01__Jmito(Jmito0, JNaCa0, Juni0);
+  ADPm: bertram_model_2007_version01__ADPm(ADPm0, gamma, JANT0, JF1F00, time_);
+  ATPm: bertram_model_2007_version01__ATPm(ATPm0, ADPm0);
+  adp: bertram_model_2007_version01__adp(adp0, delta, Jhyd0, JANT0, time_);
+  Jhyd: bertram_model_2007_version01__Jhyd(Jhyd0, c0, atp0);
+  atp: bertram_model_2007_version01__atp(atp0, adp0);
+  c: bertram_model_2007_version01__c(c0, delta, Jer0, Jmem0, Jmito0, time_);
+  Jmem: bertram_model_2007_version01__Jmem(Jmem0, c0, Ica0);
+  Jleak: bertram_model_2007_version01__Jleak(Jleak0, c0, Caer0);
+  JSERCA: bertram_model_2007_version01__JSERCA(JSERCA0, c0);
+  Jer: bertram_model_2007_version01__Jer(Jer0, Jleak0, JSERCA0);
+  Caer: bertram_model_2007_version01__Caer(Caer0, Jer0, time_);
+  model_parameters: bertram_model_2007_version01__model_parameters(gamma, kappa, delta, VK, VCa, AMP);
+end

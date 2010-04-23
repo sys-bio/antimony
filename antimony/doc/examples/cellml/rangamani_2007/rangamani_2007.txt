@@ -1,0 +1,146 @@
+//Created by libAntimony v1.3
+model rangamani_2007__environment(time_)
+end
+
+model rangamani_2007__constants(k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k110, k120, k130, k140, p, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k28, k29, d_6, k_14, k_m1)
+
+  // Variable initializations:
+  k1 = 185e-6;
+  k2 = 1.25e-6;
+  k3 = 185e-6;
+  k4 = 1.25e-6;
+  k5 = 185e-6;
+  k6 = 1.25e-6;
+  k7 = 185e-6;
+  k8 = 1.25e-6;
+  k9 = 185e-6;
+  k10 = 1.25e-6;
+  k110 = 370e-6;
+  k120 = 14e-6;
+  k130 = 1.25e-6;
+  k140 = 370e-6;
+  p = 1750e-6;
+  k15 = 185e-6;
+  k16 = 1.25e-6;
+  k17 = 370e-6;
+  k18 = 500e-6;
+  k19 = 200e-6;
+  k20 = 100e-6;
+  k21 = 100e-6;
+  k22 = 60e-6;
+  k23 = 100000e-6;
+  k24 = 185e-6;
+  k25 = 1.25e-6;
+  k26 = 370e-6;
+  k28 = 500e-6;
+  k29 = 750000e-6;
+  d_6 = 2.83e-4;
+  k_14 = 41.6;
+  k_m1 = 10e5;
+end
+
+model rangamani_2007__Js(J1, J2, J3, J4, J5, J6, J7, J8, J9, J10, J11, J12, J13, J14, J15, J16, J17, J18, J19, v14, deg_no, k_14, k_m1, d_6, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k110, k120, k130, k140, p, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k28, k29, R_NOS2, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, time_)
+
+  // Assignment Rules:
+  J1 := k1 * c1 * c2 - k2 * c3;
+  J2 := k3 * c3 * c4 - k4 * c5;
+  J3 := k5 * c5 * c6 - k6 * c7;
+  J4 := k7 * c7 * c8 - k8 * c9;
+  J5 := k9 * c10 * c9 - k10 * c11;
+  J6 := k110 * c11;
+  J7 := k120 * c12 * c13 - k130 * c14;
+  J8 := k140 * c14;
+  J9 := k15 * c9 * c17 - k16 * c18;
+  J10 := k17 * c18;
+  J11 := k18 * c19 * c20 - k19 * c21;
+  J12 := k20 * c21;
+  J13 := k21 * c22 * c23 - k22 * c24;
+  J14 := k23 * c24;
+  J15 := k24 * c25 * c29 - k25 * c30;
+  J16 := k26 * c30;
+  J17 := p * c16;
+  J18 := k28 * c27 * c25;
+  J19 := k29 * c16 * c31;
+  v14 := k_14 * power(c16, 2 ) / (k_m1 + power(c16, 2 ));
+  deg_no := d_6 * R_NOS2;
+end
+
+model rangamani_2007__cs(v14, deg_no, J1, J2, J3, J4, J5, J6, J7, J8, J9, J10, J11, J12, J13, J14, J15, J16, J17, J18, J19, k_14, k_m1, d_6, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k110, k120, k130, k140, p, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k28, k29, R_NOS2, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, time_)
+
+  // Rate Rules:
+  R_NOS2' = v14 - deg_no;
+  c1' = -(J1);
+  c2' = -(J1) + J10 + J6;
+  c3' = J1 - J2;
+  c4' = -(J2) + J6 + J12;
+  c5' = J2 - J3;
+  c6' = -(J3) + J6 + J12;
+  c7' = J3 - J4;
+  c8' = -(J4) + J6 + J12;
+  c9' = J4 - J5 - J9;
+  c10' = -(J5) + J8;
+  c11' = J5 - J6;
+  c12' = -(J7) + J6;
+  c13' = -(J7) + J19;
+  c14' = J7 - J8;
+  c15' = J8;
+  c16' = J8 - J19;
+  c17' = -(J9) + J12;
+  c18' = J9 - J10;
+  c19' = J10 - J11;
+  c20' = -(J11);
+  c21' = J11 - J12;
+  c22' = J12 - J13 + J14;
+  c23' = -(J13);
+  c24' = J13 - J14;
+  c25' = J14 - J18 - J15 + J16;
+  c26' = J16;
+  c27' = J17 - J18;
+  c28' = J18;
+  c29' = -(J15);
+  c30' = J15 - J16;
+  c31' = J17 - J19;
+
+  // Variable initializations:
+  R_NOS2 = 0.616;
+  c1 = 0;
+  c2 = 100;
+  c3 = 0;
+  c4 = 150;
+  c5 = 0;
+  c6 = 100;
+  c7 = 0;
+  c8 = 100;
+  c9 = 0;
+  c10 = 100;
+  c11 = 0;
+  c12 = 0;
+  c13 = 250;
+  c14 = 0;
+  c15 = 0;
+  c16 = 0;
+  c17 = 100;
+  c18 = 0;
+  c19 = 0;
+  c20 = 80;
+  c21 = 0;
+  c22 = 0;
+  c23 = 200;
+  c24 = 0;
+  c25 = 0;
+  c26 = 0;
+  c27 = 0;
+  c28 = 0;
+  c29 = 800;
+  c30 = 0;
+  c31 = 0;
+end
+
+model rangamani_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: rangamani_2007__environment(time_);
+  constants: rangamani_2007__constants(k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k110, k120, k130, k140, p, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k28, k29, d_6, k_14, k_m1);
+  Js: rangamani_2007__Js(J1, J2, J3, J4, J5, J6, J7, J8, J9, J10, J11, J12, J13, J14, J15, J16, J17, J18, J19, v14, deg_no, k_14, k_m1, d_6, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k110, k120, k130, k140, p, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k28, k29, R_NOS2, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, time_);
+  cs: rangamani_2007__cs(v14, deg_no, J1, J2, J3, J4, J5, J6, J7, J8, J9, J10, J11, J12, J13, J14, J15, J16, J17, J18, J19, k_14, k_m1, d_6, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k110, k120, k130, k140, p, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k28, k29, R_NOS2, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20, c21, c22, c23, c24, c25, c26, c27, c28, c29, c30, c31, time_);
+end

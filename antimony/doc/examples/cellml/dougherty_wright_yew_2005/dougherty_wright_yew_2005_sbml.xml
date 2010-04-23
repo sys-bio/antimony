@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="dougherty_wright_yew_2005____main" name="dougherty_wright_yew_2005____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="cap" value="0.004"/>
+      <parameter id="cc1lin" value="0.88"/>
+      <parameter id="cc_2" value="26"/>
+      <parameter id="ck1lin" value="13"/>
+      <parameter id="ck_2" value="0.9"/>
+      <parameter id="clmax" value="1"/>
+      <parameter id="cnmax" value="1"/>
+      <parameter id="cx1lin" value="1"/>
+      <parameter id="cx2" value="13"/>
+      <parameter id="ef" value="2"/>
+      <parameter id="gl" value="6"/>
+      <parameter id="hmc_1" value="2"/>
+      <parameter id="hmc_2" value="3"/>
+      <parameter id="inf" value="1.9"/>
+      <parameter id="inhmax" value="5"/>
+      <parameter id="k_1" value="0.06"/>
+      <parameter id="k_2" value="20"/>
+      <parameter id="kI" value="0.7"/>
+      <parameter id="kinh" value="2"/>
+      <parameter id="kinhcng" value="1"/>
+      <parameter id="n_1" value="2"/>
+      <parameter id="n_2" value="2"/>
+      <parameter id="nI" value="2"/>
+      <parameter id="ninh" value="1.5"/>
+      <parameter id="ninhcng" value="1.3"/>
+      <parameter id="pd" value="20"/>
+      <parameter id="r_1" value="10"/>
+      <parameter id="r_2" value="5"/>
+      <parameter id="smax" value="71"/>
+      <parameter id="V_Cl" value="-50"/>
+      <parameter id="V_cng" value="0"/>
+      <parameter id="V_l" value="-70"/>
+      <parameter id="F_vol" constant="false"/>
+      <parameter id="parameters_F" value="96490"/>
+      <parameter id="parameters_C_vol" value="1e-13"/>
+      <parameter id="O_stim0" constant="false"/>
+      <parameter id="O_stim_od" value="20"/>
+      <parameter id="O_stim_t_0" value="0.5"/>
+      <parameter id="O_stim_t_1" value="1.5"/>
+      <parameter id="O_stim_H_0" constant="false"/>
+      <parameter id="O_stim_H_1" constant="false"/>
+      <parameter id="bLR0" value="0" constant="false"/>
+      <parameter id="bLR_R_tot" value="1"/>
+      <parameter id="aG0" value="0" constant="false"/>
+      <parameter id="aG_G_tot" value="1"/>
+      <parameter id="k_G" constant="false"/>
+      <parameter id="r_G" constant="false"/>
+      <parameter id="cAMP0" value="1.35648992164649e-88" constant="false"/>
+      <parameter id="synth" constant="false"/>
+      <parameter id="degrad" constant="false"/>
+      <parameter id="aCaMK0" value="6.60756525051462e-08" constant="false"/>
+      <parameter id="Ca0" value="5.09073088043779e-12" constant="false"/>
+      <parameter id="I_CNG0" constant="false"/>
+      <parameter id="J_NCX" constant="false"/>
+      <parameter id="cc_1" constant="false"/>
+      <parameter id="CaCaM0" value="1.86113118246926e-13" constant="false"/>
+      <parameter id="ck_1" constant="false"/>
+      <parameter id="V0" value="-70" constant="false"/>
+      <parameter id="I_ClCa0" constant="false"/>
+      <parameter id="I_NCX0" constant="false"/>
+      <parameter id="I_other0" constant="false"/>
+      <parameter id="inhcng" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="F_vol">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="e-notation"> 1 <sep/> 12 </cn>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <cn type="integer"> 1000 </cn>
+            </apply>
+            <ci> parameters_F </ci>
+            <ci> parameters_C_vol </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="O_stim0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> O_stim_od </ci>
+            <apply>
+              <minus/>
+              <ci> O_stim_H_0 </ci>
+              <ci> O_stim_H_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="O_stim_H_0"/>
+      <assignmentRule variable="O_stim_H_1"/>
+      <rateRule variable="bLR0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_1 </ci>
+              <ci> O_stim0 </ci>
+              <apply>
+                <minus/>
+                <ci> bLR_R_tot </ci>
+                <ci> bLR0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> r_1 </ci>
+              <ci> bLR0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="aG0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_G </ci>
+              <apply>
+                <minus/>
+                <ci> aG_G_tot </ci>
+                <ci> aG0 </ci>
+              </apply>
+            </apply>
+            <ci> r_G </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k_G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_2 </ci>
+            <ci> bLR0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="r_G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> r_2 </ci>
+            <ci> aG0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="cAMP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> synth </ci>
+            <ci> degrad </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="synth">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> aG0 </ci>
+              <ci> smax </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> aCaMK0 </ci>
+                  <ci> kinh </ci>
+                </apply>
+                <ci> ninh </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="degrad">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> pd </ci>
+            <ci> cAMP0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="aCaMK0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> ck_1 </ci>
+            <apply>
+              <times/>
+              <ci> ck_2 </ci>
+              <ci> aCaMK0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1000 </cn>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <infinity/>
+                <ci> I_CNG0 </ci>
+              </apply>
+              <ci> J_NCX </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> cc_1 </ci>
+              <apply>
+                <times/>
+                <ci> cc_2 </ci>
+                <ci> CaCaM0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="I_CNG0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> cnmax </ci>
+                <apply>
+                  <power/>
+                  <ci> cAMP0 </ci>
+                  <ci> n_1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> cAMP0 </ci>
+                  <ci> n_1 </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <times/>
+                    <ci> inhcng </ci>
+                    <ci> hmc_1 </ci>
+                  </apply>
+                  <ci> n_1 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <cn type="integer"> 1000 </cn>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> V_cng </ci>
+              <ci> V0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_NCX">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ef </ci>
+            <ci> Ca0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="cc_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> cc1lin </ci>
+            <ci> Ca0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="CaCaM0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> cc_1 </ci>
+            <apply>
+              <times/>
+              <ci> cc_2 </ci>
+              <ci> CaCaM0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="ck_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ck1lin </ci>
+            <ci> CaCaM0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="V0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1000 </cn>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> cap </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> I_CNG0 </ci>
+              <ci> I_ClCa0 </ci>
+              <ci> I_NCX0 </ci>
+              <ci> I_other0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="I_ClCa0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> clmax </ci>
+                <apply>
+                  <power/>
+                  <ci> Ca0 </ci>
+                  <ci> n_2 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> Ca0 </ci>
+                  <ci> n_2 </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> hmc_2 </ci>
+                  <ci> n_2 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <cn type="integer"> 1000 </cn>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> V_Cl </ci>
+              <ci> V0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_NCX0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <cn type="integer"> 1000 </cn>
+            </apply>
+            <ci> F_vol </ci>
+            <ci> J_NCX </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_other0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> gl </ci>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <cn type="integer"> 1000 </cn>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> V_l </ci>
+              <ci> V0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="inhcng">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> inhmax </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> CaCaM0 </ci>
+                  <ci> ninhcng </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> CaCaM0 </ci>
+                  <ci> ninhcng </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> kinhcng </ci>
+                  <ci> ninhcng </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

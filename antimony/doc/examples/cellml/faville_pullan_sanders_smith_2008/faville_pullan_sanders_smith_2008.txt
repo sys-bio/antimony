@@ -1,0 +1,245 @@
+//Created by libAntimony v1.3
+model faville_model_2008__environment(time_)
+end
+
+model faville_model_2008__membrane(Vm, I_iCa, I_iNa, I_Ca, I_Na, I_NSCC_Ca, I_PM, I_NSCC_Na, time_)
+
+  // Assignment Rules:
+  I_iCa := I_Ca + I_NSCC_Ca + I_PM;
+  I_iNa := I_NSCC_Na + I_Na;
+
+  // Rate Rules:
+  Vm' = -((( I_iCa + I_iNa ) / Cm ));
+
+  // Variable initializations:
+  Vm = -70.1;
+  Cm = 20.0;
+end
+
+model faville_model_2008__I_Ca(I_Ca, Vm, T, R, F, CO, CS1)
+
+  // Assignment Rules:
+  I_Ca := gCa * ( Vm - ECa );
+  ECa := R * T / ( 2.0 * F ) * ln( CO / CS1 );
+
+  // Variable initializations:
+  gCa = 0.01;
+end
+
+model faville_model_2008__I_NSCC_Ca(I_NSCC_Ca, hNSCC, Vm, ENSCC, KNSCC, CS1)
+
+  // Assignment Rules:
+  I_NSCC_Ca := gNSCC_Ca * ( Vm - ENSCC );
+  gNSCC_Ca := gNSCC_Ca_ * (power( KNSCC , hNSCC ) / (power( KNSCC , hNSCC ) + power( CS1 , hNSCC )));
+
+  // Variable initializations:
+  gNSCC_Ca_ = 0.12;
+end
+
+model faville_model_2008__I_NSCC_Na(I_NSCC_Na, hNSCC, Vm, ENSCC, KNSCC, CS1)
+
+  // Assignment Rules:
+  I_NSCC_Na := gNSCC_Na * ( Vm - ENSCC );
+  gNSCC_Na := gNSCC_Na_ * (power( KNSCC , hNSCC ) / (power( KNSCC , hNSCC ) + power( CS1 , hNSCC )));
+
+  // Variable initializations:
+  gNSCC_Na_ = 220.0;
+end
+
+model faville_model_2008__I_PM(I_PM, CS1)
+
+  // Assignment Rules:
+  I_PM := gPM * (power( CS1 , 2.0 ) / (power( KPM , 2.0 ) + power( CS1 , 2.0 )));
+
+  // Variable initializations:
+  gPM = 420.0;
+  KPM = 1.0;
+end
+
+model faville_model_2008__I_Na(I_Na, NS1)
+
+  // Assignment Rules:
+  I_Na := gNa * (power( NS1 , hNa ) / (power( KNa , hNa ) + power( NS1 , hNa )));
+
+  // Variable initializations:
+  gNa = 1.5E4;
+  KNa = 1.0E4;
+  hNa = 4.0;
+end
+
+model faville_model_2008__JSERCA(JSERCA, CER, CS1)
+
+  // Assignment Rules:
+  JSERCA := VSERCA * ( CS1 - A2 * CER ) / ( 1.0 + A4 * CS1 + A5 * CER + A6 * CS1 * CER );
+
+  // Variable initializations:
+  VSERCA = 1.0E5;
+  A2 = 6E-4;
+  A4 = 3.57;
+  A5 = 2.7E-5;
+  A6 = 2.31E-5;
+end
+
+model faville_model_2008__JMCU(JMCU, CS2, CMT)
+
+  // Assignment Rules:
+  JMCU := VMCU * (power( CS2 , 2.0 ) / (power( KMCU , 2.0 ) + power( CS2 , 2.0 ))) * epsilon_INH;
+  epsilon_INH := power( KINH , hINH ) / (power( KINH , hINH ) + power( CMT , hINH ));
+
+  // Variable initializations:
+  VMCU = 800.0;
+  KMCU = 10.0;
+  KINH = 10.0;
+  hINH = 4.0;
+end
+
+model faville_model_2008__JNCX(JNCX, CMT)
+
+  // Assignment Rules:
+  JNCX := VNCX * ( CMT / ( CMT + KNCX ));
+
+  // Variable initializations:
+  VNCX = 0.5;
+  KNCX = 0.3;
+end
+
+model faville_model_2008__JS1S2(JS1S2, CS1, CS2)
+
+  // Assignment Rules:
+  JS1S2 := mu_S1S2 * ( CS2 - CS1 );
+
+  // Variable initializations:
+  mu_S1S2 = 0.04;
+end
+
+model faville_model_2008__JIPR(JIPR, CER, CS2, P, time_)
+
+  // Assignment Rules:
+  JIPR := kIPR * power( P * phi1 * H / ( P * phi1 + phi_1 ), 4.0 ) * ( CER - CS2 );
+  phi1 := ( k1 * R1 + r2 * CS2 ) / ( R1 + CS2 );
+  phi_1 := ( k_1 + r_2 ) * R3 / ( R3 + CS2 );
+  phi2 := ( k2 * R3 + r4 * CS2 ) / ( R3 + CS2 );
+  alpha_phi3 := g_alpha;
+  beta_phi3 := g_beta * (power( CS2 , h_beta ) / (power( K_beta , h_beta ) + power( CS2 , h_beta )));
+
+  // Rate Rules:
+  phi3' = alpha_phi3 - beta_phi3 * phi3;
+  H' = phi3 * ( 1.0 - H ) - P * phi1 * phi2 / ( P * phi1 + phi_1 ) * H;
+
+  // Variable initializations:
+  kIPR = 2000.0;
+  k_1 = 6.4;
+  k1 = 0.0;
+  k2 = 4.0;
+  r2 = 200.0;
+  r_2 = 0.0;
+  r4 = 750.0;
+  R1 = 36.0;
+  R3 = 300.0;
+  phi3 = 0.306;
+  H = 0.787;
+  g_beta = 300.0;
+  h_beta = 2.0;
+  g_alpha = 0.02;
+  K_beta = 2.0;
+end
+
+model faville_model_2008__CS1(CS1, JS1S2, JNCX, JSERCA, I_iCa, delta_s, gamma_S1, gamma_MT, gamma_ER, time_)
+
+  // Assignment Rules:
+  lambda_MT_S1 := gamma_MT / gamma_S1;
+  lambda_ER_S1 := gamma_ER / gamma_S1;
+
+  // Rate Rules:
+  CS1' = JS1S2 + lambda_MT_S1 * JNCX - ( delta_s / 2.0 * I_iCa + lambda_ER_S1 * JSERCA );
+
+  // Variable initializations:
+  CS1 = 0.120;
+end
+
+model faville_model_2008__CS2(CS2, JS1S2, JMCU, JIPR, gamma_S1, gamma_S2, gamma_MT, gamma_ER, time_)
+
+  // Assignment Rules:
+  lambda_MT_S2 := gamma_MT / gamma_S2;
+  lambda_ER_S2 := gamma_ER / gamma_S2;
+  lambda_S1_S2 := gamma_S1 / gamma_S2;
+
+  // Rate Rules:
+  CS2' = lambda_ER_S2 * JIPR - ( lambda_S1_S2 * JS1S2 + lambda_MT_S2 * JMCU );
+
+  // Variable initializations:
+  CS2 = 0.023;
+end
+
+model faville_model_2008__CER(CER, JSERCA, JIPR, time_)
+
+  // Rate Rules:
+  CER' = JSERCA - JIPR;
+
+  // Variable initializations:
+  CER = 203.0;
+end
+
+model faville_model_2008__CMT(CMT, JMCU, JNCX, time_)
+
+  // Assignment Rules:
+  fm := 1.0 / ( 1.0 + Km * Bm / power( Km + CMT , 2.0 ));
+
+  // Rate Rules:
+  CMT' = fm * ( JMCU - JNCX );
+
+  // Variable initializations:
+  CMT = 0.220;
+  Km = 0.01;
+  Bm = 100.0;
+end
+
+model faville_model_2008__NS1(NS1, delta_s, I_iNa, time_)
+
+  // Rate Rules:
+  NS1' = -(( delta_s / 1.0 )) * I_iNa;
+
+  // Variable initializations:
+  NS1 = 1.01E4;
+end
+
+model faville_model_2008__model_parameters(R, F, T, CO, P, delta_s, gamma_S1, gamma_S2, gamma_MT, gamma_ER, KNSCC, ENSCC, hNSCC)
+
+  // Variable initializations:
+  R = 8.314E-3;
+  F = 0.09649;
+  T = 310.16;
+  CO = 1.8E3;
+  P = 1.0;
+  delta_s = 26.0;
+  gamma_S1 = 100.0;
+  gamma_S2 = 1.0;
+  gamma_MT = 200.0;
+  gamma_ER = 20.0;
+  KNSCC = 0.12;
+  ENSCC = 0.0;
+  hNSCC = 3.0;
+end
+
+model faville_model_2008____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: faville_model_2008__environment(time_);
+  membrane: faville_model_2008__membrane(Vm, I_iCa, I_iNa, I_Ca0, I_Na0, I_NSCC_Ca0, I_PM0, I_NSCC_Na0, time_);
+  I_Ca: faville_model_2008__I_Ca(I_Ca0, Vm, T, R, F, CO, CS10);
+  I_NSCC_Ca: faville_model_2008__I_NSCC_Ca(I_NSCC_Ca0, hNSCC, Vm, ENSCC, KNSCC, CS10);
+  I_NSCC_Na: faville_model_2008__I_NSCC_Na(I_NSCC_Na0, hNSCC, Vm, ENSCC, KNSCC, CS10);
+  I_PM: faville_model_2008__I_PM(I_PM0, CS10);
+  I_Na: faville_model_2008__I_Na(I_Na0, NS10);
+  JSERCA: faville_model_2008__JSERCA(JSERCA0, CER0, CS10);
+  JMCU: faville_model_2008__JMCU(JMCU0, CS20, CMT0);
+  JNCX: faville_model_2008__JNCX(JNCX0, CMT0);
+  JS1S2: faville_model_2008__JS1S2(JS1S20, CS10, CS20);
+  JIPR: faville_model_2008__JIPR(JIPR0, CER0, CS20, P, time_);
+  CS1: faville_model_2008__CS1(CS10, JS1S20, JNCX0, JSERCA0, I_iCa, delta_s, gamma_S1, gamma_MT, gamma_ER, time_);
+  CS2: faville_model_2008__CS2(CS20, JS1S20, JMCU0, JIPR0, gamma_S1, gamma_S2, gamma_MT, gamma_ER, time_);
+  CER: faville_model_2008__CER(CER0, JSERCA0, JIPR0, time_);
+  CMT: faville_model_2008__CMT(CMT0, JMCU0, JNCX0, time_);
+  NS1: faville_model_2008__NS1(NS10, delta_s, I_iNa, time_);
+  model_parameters: faville_model_2008__model_parameters(R, F, T, CO, P, delta_s, gamma_S1, gamma_S2, gamma_MT, gamma_ER, KNSCC, ENSCC, hNSCC);
+end

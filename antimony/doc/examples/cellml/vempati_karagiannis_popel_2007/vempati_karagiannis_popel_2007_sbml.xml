@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="vempati_model_2007____main" name="vempati_model_2007____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="v110" constant="false"/>
+      <parameter id="pM90" value="3e-07" constant="false"/>
+      <parameter id="M30" value="5e-08" constant="false"/>
+      <parameter id="M3_pM90" value="0" constant="false"/>
+      <parameter id="kon_M3pM9" value="10000"/>
+      <parameter id="koff_M3pM9" value="0.001"/>
+      <parameter id="v21" constant="false"/>
+      <parameter id="kact_M3pM9" value="0.0019"/>
+      <parameter id="v30" constant="false"/>
+      <parameter id="M3_T10" value="0" constant="false"/>
+      <parameter id="T10" value="3e-07" constant="false"/>
+      <parameter id="kon_M3T1" value="1900000"/>
+      <parameter id="koff_M3T1" value="0.000126"/>
+      <parameter id="v40" constant="false"/>
+      <parameter id="pM9_T10" value="0" constant="false"/>
+      <parameter id="kon_pM9T1" value="34000"/>
+      <parameter id="koff_pM9T1" value="7.48e-05"/>
+      <parameter id="v50" constant="false"/>
+      <parameter id="M3_pM9_T10" value="0" constant="false"/>
+      <parameter id="kon_M3pM9T1" value="10000"/>
+      <parameter id="koff_M3pM9T1" value="0.001"/>
+      <parameter id="v60" constant="false"/>
+      <parameter id="kact_M3pM9T1" value="0.00057"/>
+      <parameter id="v70" constant="false"/>
+      <parameter id="M9_T1_star0" value="0" constant="false"/>
+      <parameter id="M90" value="0" constant="false"/>
+      <parameter id="kon_M9T1_star" value="5600000"/>
+      <parameter id="koff_M9T1_star" value="1.6e-05"/>
+      <parameter id="v80" constant="false"/>
+      <parameter id="M9_T10" value="0" constant="false"/>
+      <parameter id="kon_M9T1" value="0.00063"/>
+      <parameter id="koff_M9T1" value="0.00025"/>
+      <parameter id="v90" constant="false"/>
+      <parameter id="M9_T1_M30" value="0" constant="false"/>
+      <parameter id="kon_M9_M3T1" value="7.48e-05"/>
+      <parameter id="koff_M9_M3T1" value="34000"/>
+      <parameter id="v100" constant="false"/>
+      <parameter id="pM9_T1_M30" value="0" constant="false"/>
+      <parameter id="kon_M3_pM9T1" value="1900000"/>
+      <parameter id="koff_M3_pM9T1" value="0.000126"/>
+      <parameter id="v111" constant="false"/>
+      <parameter id="kon_pM9T1M3" value="34000"/>
+      <parameter id="koff_pM9T1M3" value="7.48e-05"/>
+      <parameter id="v120" constant="false"/>
+      <parameter id="M3_pM9_T1_M30" value="0" constant="false"/>
+      <parameter id="kon_M3pM9T1M3" value="10000"/>
+      <parameter id="koff_M3pM9T1M3" value="0.001"/>
+      <parameter id="v130" constant="false"/>
+      <parameter id="kact_M3pM9T1M3" value="0.00057"/>
+      <parameter id="v140" constant="false"/>
+      <parameter id="kact_M9T1M3" value="0.000126"/>
+      <parameter id="v150" constant="false"/>
+      <parameter id="Tr0" value="1e-07" constant="false"/>
+      <parameter id="Tr_pM90" value="0" constant="false"/>
+      <parameter id="kon_TrpM9" value="10000"/>
+      <parameter id="koff_TrpM9" value="0.007"/>
+      <parameter id="v160" constant="false"/>
+      <parameter id="kact_TrpM9" value="0.002"/>
+      <parameter id="v170" constant="false"/>
+      <parameter id="Tr_pM9_T10" value="0" constant="false"/>
+      <parameter id="kon_TrpM9T1" value="10000"/>
+      <parameter id="koff_TrpM9T1" value="0.007"/>
+      <parameter id="v180" constant="false"/>
+      <parameter id="kact_TrpM9T1" value="0.0006"/>
+      <parameter id="v190" constant="false"/>
+      <parameter id="Tr_pM9_T1_M30" value="0" constant="false"/>
+      <parameter id="kon_TrpM9T1M3" value="10000"/>
+      <parameter id="koff_TrpM9T1M3" value="0.007"/>
+      <parameter id="v200" constant="false"/>
+      <parameter id="kact_TrpM9T1M3" value="0.0006"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="v110">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_M3pM9 </ci>
+              <ci> M30 </ci>
+              <ci> pM90 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_M3pM9 </ci>
+              <ci> M3_pM90 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="pM90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> v110 </ci>
+              <ci> v40 </ci>
+              <ci> v150 </ci>
+              <ci> v111 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="M30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> v21 </ci>
+              <ci> v60 </ci>
+              <ci> v130 </ci>
+              <ci> v140 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> v110 </ci>
+              <ci> v30 </ci>
+              <ci> v50 </ci>
+              <ci> v100 </ci>
+              <ci> v120 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="M3_pM90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> v110 </ci>
+            <ci> v21 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v21">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kact_M3pM9 </ci>
+            <ci> M3_pM90 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_M3T1 </ci>
+              <ci> M30 </ci>
+              <ci> T10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_M3T1 </ci>
+              <ci> M3_T10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="M3_T10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> v30 </ci>
+              <ci> v90 </ci>
+            </apply>
+            <ci> v111 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="T10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> v30 </ci>
+              <ci> v40 </ci>
+              <ci> v70 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_pM9T1 </ci>
+              <ci> pM90 </ci>
+              <ci> T10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_pM9T1 </ci>
+              <ci> pM9_T10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="pM9_T10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> v40 </ci>
+            <apply>
+              <plus/>
+              <ci> v50 </ci>
+              <ci> v100 </ci>
+              <ci> v170 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v50">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_M3pM9T1 </ci>
+              <ci> pM9_T10 </ci>
+              <ci> M30 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_M3pM9T1 </ci>
+              <ci> M3_pM9_T10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="M3_pM9_T10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> v50 </ci>
+            <ci> v60 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v60">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kact_M3pM9T1 </ci>
+            <ci> M3_pM9_T10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v70">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_M9T1_star </ci>
+              <ci> T10 </ci>
+              <ci> M90 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_M9T1_star </ci>
+              <ci> M9_T1_star0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="M9_T1_star0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> v70 </ci>
+              <ci> v140 </ci>
+            </apply>
+            <ci> v80 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="M90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> v21 </ci>
+              <ci> v90 </ci>
+              <ci> v160 </ci>
+            </apply>
+            <ci> v70 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v80">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_M9T1 </ci>
+              <ci> M9_T1_star0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_M9T1 </ci>
+              <ci> M9_T10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="M9_T10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> v80 </ci>
+            <ci> v180 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_M9_M3T1 </ci>
+              <ci> M9_T1_M30 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_M9_M3T1 </ci>
+              <ci> M90 </ci>
+              <ci> M3_T10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="M9_T1_M30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> v130 </ci>
+              <ci> v200 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> v140 </ci>
+              <ci> v90 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v100">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_M3_pM9T1 </ci>
+              <ci> pM9_T10 </ci>
+              <ci> M30 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_M3_pM9T1 </ci>
+              <ci> pM9_T1_M30 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="pM9_T1_M30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> v100 </ci>
+              <ci> v111 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> v120 </ci>
+              <ci> v190 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v111">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_pM9T1M3 </ci>
+              <ci> pM90 </ci>
+              <ci> M3_T10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_pM9T1M3 </ci>
+              <ci> pM9_T1_M30 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v120">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_M3pM9T1M3 </ci>
+              <ci> M30 </ci>
+              <ci> pM9_T1_M30 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_M3pM9T1M3 </ci>
+              <ci> M3_pM9_T1_M30 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="M3_pM9_T1_M30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> v120 </ci>
+            <ci> v130 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v130">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kact_M3pM9T1M3 </ci>
+            <ci> M3_pM9_T1_M30 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v140">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kact_M9T1M3 </ci>
+            <ci> M9_T1_M30 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v150">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_TrpM9 </ci>
+              <ci> Tr0 </ci>
+              <ci> pM90 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_TrpM9 </ci>
+              <ci> Tr_pM90 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Tr0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> v160 </ci>
+              <ci> v180 </ci>
+              <ci> v200 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> v150 </ci>
+              <ci> v170 </ci>
+              <ci> v190 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Tr_pM90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> v150 </ci>
+            <ci> v160 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v160">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kact_TrpM9 </ci>
+            <ci> Tr_pM90 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v170">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_TrpM9T1 </ci>
+              <ci> pM9_T10 </ci>
+              <ci> Tr0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_TrpM9T1 </ci>
+              <ci> Tr_pM9_T10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Tr_pM9_T10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> v170 </ci>
+            <ci> v180 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v180">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kact_TrpM9T1 </ci>
+            <ci> Tr_pM9_T10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v190">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kon_TrpM9T1M3 </ci>
+              <ci> Tr0 </ci>
+              <ci> pM9_T1_M30 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> koff_TrpM9T1M3 </ci>
+              <ci> Tr_pM9_T1_M30 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Tr_pM9_T1_M30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> v190 </ci>
+            <ci> v200 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v200">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kact_TrpM9T1M3 </ci>
+            <ci> Tr_pM9_T1_M30 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

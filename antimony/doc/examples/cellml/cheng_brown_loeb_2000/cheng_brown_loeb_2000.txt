@@ -1,0 +1,216 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "piecewise( T_f1 * power(L, 2 ) + T_f2 * f_env , df_eff_dt >= 0 , (T_f3 + T_f4 * Af) / L )" to set the assignment rule for T_f:  Loop detected:  T_f's definition (piecewise( T_f1 * power(L, 2 ) + T_f2 * f_env , df_eff_dt >= 0 , (T_f3 + T_f4 * Af) / L )) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+
+model cheng_model_2000__environment(time_)
+end
+
+model cheng_model_2000__F_SE(F_SE, LT_, F_max)
+
+  // Assignment Rules:
+  F_SE := cT * F_max * kT * ln(exp((LT_ - LT_r) / kT) + 1 );
+
+  // Variable initializations:
+  cT = 27.8;
+  kT = 0.0047;
+  LT_r = 0.964;
+end
+
+model cheng_model_2000__F_PE1(F_PE1, L, L_max, V)
+
+  // Assignment Rules:
+  F_PE1 := c1 * k1 * ln(exp((L / L_max - L_r1) / k1) + 1 ) + eta * V;
+
+  // Variable initializations:
+  c1 = 23;
+  k1 = 0.046;
+  L_r1 = 1.17;
+  eta = 0.001;
+end
+
+model cheng_model_2000__F_PE2(F_PE2, L)
+
+  // Assignment Rules:
+  F_PE2 := c2 * (exp(k2 * (L - L_r2)) - 1 );
+
+  // Variable initializations:
+  c2 = 23;
+  k2 = 0.046;
+  L_r2 = 1.17;
+end
+
+model cheng_model_2000__FL(FL, L)
+
+  // Assignment Rules:
+  FL := exp(-(power(abs((power(L, beta) - 1 ) / omega), rho)));
+
+  // Variable initializations:
+  beta = 1.55;
+  omega = 0.75;
+  rho = 2.12;
+end
+
+model cheng_model_2000__FV(FV, L, V)
+
+  // Assignment Rules:
+  FV := piecewise( (V_max - V) / (V_max + (cv0 + cv1 * L) * V) , V <= 0 , (bv - (av0 + av1 * L + av2 * power(L, 2 )) * V) / (bv + V) );
+
+  // Variable initializations:
+  av0 = -1.53;
+  av1 = 0;
+  av2 = 0;
+  cv0 = -5.7;
+  cv1 = 9.18;
+  bv = 0.69;
+  V_max = -9.15;
+end
+
+model cheng_model_2000__Af(Af, Y, S, f_eff, L_eff)
+
+  // Assignment Rules:
+  Af := 1 - exp(-(power(Y * S * f_eff / (af * nf), nf)));
+
+  // Variable initializations:
+  af = 0.56;
+  nf0 = 2.1;
+  nf1 = 3.3;
+  nf = 1;
+end
+
+model cheng_model_2000__F0(F0, Af, FL, FV, F_PE1, F_PE2)
+
+  // Assignment Rules:
+  F0 := Af * (FL + FV + F_PE2) + F_PE1;
+end
+
+model cheng_model_2000__F_CE(F_CE, F0, F_max)
+
+  // Assignment Rules:
+  F_CE := F0 * F_max;
+end
+
+model cheng_model_2000__F_total(F_total, F_SE, F_CE)
+
+  // Assignment Rules:
+  F_total := F_SE - F_CE;
+end
+
+model cheng_model_2000__L_eff(L_eff, Af, L, time_)
+
+  // Rate Rules:
+  L_eff' = power(L - L_eff, 3 ) / (T_L * (1 - Af));
+
+  // Variable initializations:
+  L_eff = 0.1497;
+  T_L = 0.088;
+end
+
+model cheng_model_2000__S(S, f_eff, time_)
+
+  // Assignment Rules:
+  as_ := piecewise( as1 , f_eff < 0.1 , as2 );
+
+  // Rate Rules:
+  S' = (as_ - S) / T_s;
+
+  // Variable initializations:
+  S = 1;
+  T_s = 43;
+  as1 = 1.76;
+  as2 = 0.96;
+end
+
+model cheng_model_2000__Y(Y, V, time_)
+
+  // Rate Rules:
+  Y' = (1 - (c_Y * (1 - exp(-(abs(V)) / V_Y)) + Y)) / T_Y;
+
+  // Variable initializations:
+  Y = 1;
+  c_Y = 0.35;
+  V_Y = 0.1;
+  T_Y = 200;
+end
+
+model cheng_model_2000__rise_and_fall_time(f_eff, f_int, f_env, Af, L, time_)
+
+  // Assignment Rules:
+  df_eff_dt := (f_int - f_eff) / T_f;
+
+  // Rate Rules:
+  f_eff' = df_eff_dt;
+  f_int' = (f_env - f_int) / T_f;
+
+  // Variable initializations:
+  f_eff = 0;
+  f_int = 0;
+  T_f1 = 0.35;
+  T_f2 = 0.1;
+  T_f3 = 200;
+  T_f4 = 200;
+end
+
+model cheng_model_2000__V(V, F_total, time_)
+
+  // Rate Rules:
+  V' = F_total / mass;
+
+  // Variable initializations:
+  V = 0.09314;
+  mass = 0.005;
+end
+
+model cheng_model_2000__V0(V0, V, L_max)
+
+  // Assignment Rules:
+  V0 := V / L_max;
+end
+
+model cheng_model_2000__L0(L0, L, L_max)
+
+  // Assignment Rules:
+  L0 := L / L_max;
+end
+
+model cheng_model_2000__L(L, V, time_)
+
+  // Rate Rules:
+  L' = V;
+
+  // Variable initializations:
+  L = 0.15;
+end
+
+model cheng_model_2000__user_defined_constants(LT_, L_max, F_max, f_env)
+
+  // Variable initializations:
+  LT_ = 0.02;
+  L_max = 0.13;
+  F_max = 23;
+  f_env = 1;
+end
+
+model cheng_model_2000____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cheng_model_2000__environment(time_);
+  F_SE: cheng_model_2000__F_SE(F_SE0, LT_, F_max);
+  F_PE1: cheng_model_2000__F_PE1(F_PE10, L1, L_max, V1);
+  F_PE2: cheng_model_2000__F_PE2(F_PE20, L1);
+  FL: cheng_model_2000__FL(FL0, L1);
+  FV: cheng_model_2000__FV(FV0, L1, V1);
+  Af: cheng_model_2000__Af(Af0, Y0, S0, f_eff, L_eff0);
+  F0: cheng_model_2000__F0(F00, Af0, FL0, FV0, F_PE10, F_PE20);
+  F_CE: cheng_model_2000__F_CE(F_CE0, F00, F_max);
+  F_total: cheng_model_2000__F_total(F_total0, F_SE0, F_CE0);
+  L_eff: cheng_model_2000__L_eff(L_eff0, Af0, L1, time_);
+  S: cheng_model_2000__S(S0, f_eff, time_);
+  Y: cheng_model_2000__Y(Y0, V1, time_);
+  rise_and_fall_time: cheng_model_2000__rise_and_fall_time(f_eff, f_int, f_env, Af0, L1, time_);
+  V: cheng_model_2000__V(V1, F_total0, time_);
+  V0: cheng_model_2000__V0(V00, V1, L_max);
+  L0: cheng_model_2000__L0(L00, L1, L_max);
+  L: cheng_model_2000__L(L1, V1, time_);
+  user_defined_constants: cheng_model_2000__user_defined_constants(LT_, L_max, F_max, f_env);
+end

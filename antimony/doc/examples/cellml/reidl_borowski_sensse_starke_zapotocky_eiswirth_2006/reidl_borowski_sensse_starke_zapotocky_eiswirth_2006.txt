@@ -1,0 +1,95 @@
+//Created by libAntimony v1.3
+model reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__environment(time_)
+end
+
+model reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__parameters(sigma, CNG_tot, CaM_tot, km_CNG_0, km_CaM4, kp_CaM4, kp_CNG_i, km_CNG_i, i_Ca, k_Ca, K_Ca, kp_act, time_)
+
+  // Assignment Rules:
+  kp_act := piecewise( 5.5 , ( time_ > 0.1) && (time_ < 0.2 ), 5.5 , ( time_ > 4.1) && (time_ < 4.2 ), 1.6e-5 );
+
+  // Variable initializations:
+  sigma = 5e-7;
+  CNG_tot = 1.3e-13;
+  CaM_tot = 2e-5;
+  km_CNG_0 = 1e-2;
+  km_CaM4 = 2.5;
+  kp_CaM4 = 1.1e9;
+  kp_CNG_i = 2.1e6;
+  km_CNG_i = 3.4e-1;
+  i_Ca = 2e4;
+  k_Ca = 1e-10;
+  K_Ca = 1.2e-7;
+end
+
+model reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCNG_o_dt(CNG_o, CNG_tot, CNG_i, CaM4, time_, kp_act, km_CNG_0, kp_CNG_i)
+
+  // Assignment Rules:
+  CNG_o_normalized := CNG_o / CNG_tot;
+
+  // Rate Rules:
+  CNG_o' = kp_act * (CNG_tot - CNG_o - CNG_i) - km_CNG_0 * CNG_o - kp_CNG_i * CNG_o * CaM4;
+
+  // Variable initializations:
+  CNG_o = 0;
+end
+
+model reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCa_dt(Ca, CNG_o, CNG_i, CaM4, CaM_tot, time_, sigma, i_Ca, k_Ca, K_Ca, kp_CaM4, km_CaM4)
+
+  // Assignment Rules:
+  Ca_normalized := Ca * 10000;
+
+  // Rate Rules:
+  Ca' = CNG_o / sigma * i_Ca - k_Ca / sigma * Ca / (Ca + K_Ca) - 4 * (kp_CaM4 * power(Ca, 2 ) * (CaM_tot - CaM4 - CNG_i / sigma) - km_CaM4 * CaM4);
+
+  // Variable initializations:
+  Ca = 0;
+end
+
+model reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCaM4_dt(CaM4, CNG_o, CNG_i, CNG_tot, Ca, CaM_tot, time_, sigma, kp_CaM4, km_CaM4, kp_CNG_i, km_CNG_i)
+
+  // Assignment Rules:
+  CaM4_normalized := CaM4 / CaM_tot;
+
+  // Rate Rules:
+  CaM4' = kp_CaM4 * power(Ca, 2 ) * (CaM_tot - CaM4 - CNG_i / sigma) - km_CaM4 * CaM4 - kp_CNG_i / sigma * CaM4 * (CNG_tot - CNG_o) + km_CNG_i / sigma * CNG_i;
+
+  // Variable initializations:
+  CaM4 = 0;
+end
+
+model reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCNG_i_dt(CNG_i, CNG_tot, CaM4, time_, km_CNG_i, kp_CNG_i)
+
+  // Assignment Rules:
+  CNG_i_normalized := CNG_i / CNG_tot;
+
+  // Rate Rules:
+  CNG_i' = -(km_CNG_i) * CNG_i + kp_CNG_i * CaM4 * (CNG_tot - CNG_i);
+
+  // Variable initializations:
+  CNG_i = 0;
+end
+
+model reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCNG_c_dt(CNG_c, CNG_tot, CNG_o, CNG_i)
+
+  // Assignment Rules:
+  CNG_c := CNG_tot - CNG_o - CNG_i;
+end
+
+model reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCaM_dt(CaM, CNG_i, CaM4, CaM_tot, sigma)
+
+  // Assignment Rules:
+  CaM := CaM_tot - CaM4 - 1 / sigma * CNG_i;
+end
+
+model reidl_borowski_sensse_starke_zapotocky_eiswirth_2006____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__environment(time_);
+  parameters: reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__parameters(sigma, CNG_tot, CaM_tot, km_CNG_0, km_CaM4, kp_CaM4, kp_CNG_i, km_CNG_i, i_Ca, k_Ca, K_Ca, kp_act, time_);
+  dCNG_o_dt: reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCNG_o_dt(CNG_o, CNG_tot, CNG_i, CaM4, time_, kp_act, km_CNG_0, kp_CNG_i);
+  dCa_dt: reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCa_dt(Ca, CNG_o, CNG_i, CaM4, CaM_tot, time_, sigma, i_Ca, k_Ca, K_Ca, kp_CaM4, km_CaM4);
+  dCaM4_dt: reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCaM4_dt(CaM4, CNG_o, CNG_i, CNG_tot, Ca, CaM_tot, time_, sigma, kp_CaM4, km_CaM4, kp_CNG_i, km_CNG_i);
+  dCNG_i_dt: reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCNG_i_dt(CNG_i, CNG_tot, CaM4, time_, km_CNG_i, kp_CNG_i);
+  dCNG_c_dt: reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCNG_c_dt(CNG_c, CNG_tot, CNG_o, CNG_i);
+  dCaM_dt: reidl_borowski_sensse_starke_zapotocky_eiswirth_2006__dCaM_dt(CaM, CNG_i, CaM4, CaM_tot, sigma);
+end

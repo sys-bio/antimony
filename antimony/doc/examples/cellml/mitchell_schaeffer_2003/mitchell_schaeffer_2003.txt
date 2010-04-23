@@ -1,0 +1,68 @@
+//Created by libAntimony v1.3
+model mitchell_2003__environment(time_)
+end
+
+model mitchell_2003__J_stim(J_stim, time_)
+
+  // Assignment Rules:
+  J_stim := piecewise( IstimAmplitude , (( time_ >= IstimStart) && (time_ <= IstimEnd) && (time_ - IstimStart - floor((time_ - IstimStart) / IstimPeriod) * IstimPeriod <= IstimPulseDuration )), 0 );
+
+  // Variable initializations:
+  IstimStart = 0;
+  IstimEnd = 50000;
+  IstimAmplitude = 0.2;
+  IstimPeriod = 500;
+  IstimPulseDuration = 1;
+end
+
+model mitchell_2003__membrane(Vm, time_, J_in, J_out, J_stim)
+
+  // Rate Rules:
+  Vm' = J_in + J_out + J_stim;
+
+  // Variable initializations:
+  Vm = 0.00000820413566106744;
+end
+
+model mitchell_2003__J_in_h_gate(h, Vm, time_)
+
+  // Rate Rules:
+  h' = piecewise( (1 - h) / tau_open , Vm < V_gate , -(h) / tau_close );
+
+  // Variable initializations:
+  h = 0.8789655121804799;
+  tau_open = 120.0;
+  tau_close = 150.0;
+  V_gate = 0.13;
+end
+
+model mitchell_2003__J_in(J_in, time_, Vm, h)
+
+  // Sub-modules, and any changes to those submodules:
+  J_in_h_gate: mitchell_2003__J_in_h_gate(h, Vm, time_);
+
+  // Assignment Rules:
+  J_in := h * (power(Vm, 2 ) * (1 - Vm)) / tau_in;
+
+  // Variable initializations:
+  tau_in = 0.3;
+end
+
+model mitchell_2003__J_out(J_out, Vm)
+
+  // Assignment Rules:
+  J_out := -((Vm / tau_out));
+
+  // Variable initializations:
+  tau_out = 6.0;
+end
+
+model mitchell_2003____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: mitchell_2003__environment(time_);
+  J_stim: mitchell_2003__J_stim(J_stim0, time_);
+  membrane: mitchell_2003__membrane(Vm, time_, J_in0, J_out0, J_stim0);
+  J_in: mitchell_2003__J_in(J_in0, time_, Vm, h);
+  J_out: mitchell_2003__J_out(J_out0, Vm);
+end

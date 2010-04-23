@@ -1,0 +1,109 @@
+//Created by libAntimony v1.3
+model pulmonary_O2_uptake_CellML1_0_model__environment(time_)
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__parameter_values(PO2AMB, PL2, VPTISS, VNTSTM)
+
+  // Variable initializations:
+  PO2AMB = 150;
+  PL2 = 1.8;
+  VPTISS = 0.0175;
+  VNTSTM = 1;
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__total_O2_utilization(DOB, RMO, O2UTIL)
+
+  // Assignment Rules:
+  O2UTIL := DOB + RMO;
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__alveolar_ventilation(O2UTIL, O2VAD2, O2VTS2, ALVENT, VNTSTM)
+
+  // Assignment Rules:
+  ALVENT := O2UTIL * VNTSTM * 0.026667 * O2VTS2 * O2VAD2;
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__alveolar_PO2(O2UTIL, ALVENT, PO2ALV, PO2AMB)
+
+  // Assignment Rules:
+  PO2ALV := PO2AMB - O2UTIL / ALVENT / 0.761;
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__respiratory_O2_diffusion_into_capillaries(PO2ALV, PO2ART, VPF, O2DFS, PL2, VPTISS)
+
+  // Assignment Rules:
+  O2DFS := (PO2ALV - PO2ART) * RSPDFC;
+  RSPDFC := PL2 / (VPTISS + VPF);
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__O2_volume_of_arterial_blood(O2DFS, O2UTIL, QRO, time_, OVA)
+
+  // Assignment Rules:
+  DOVA := (O2DFS - O2UTIL) / (QRO * 1.0 );
+
+  // Rate Rules:
+  OVA' = DOVA;
+
+  // Variable initializations:
+  OVA = 204.497;
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__arterial_PO2(OVA, HM, PO2ART, OSA)
+
+  // Assignment Rules:
+  PO2ART := piecewise( 114 + (OSA - 1 ) * 6667 , OSA > 1 , 74 + (OSA - 0.936 ) * 625 , ( OSA > 0.936) && (OSA <= 1 ), 46 + (OSA - 0.8 ) * 205.882 , ( OSA > 0.8) && (OSA <= 0.936 ), OSA * 57.5 );
+  OSA := OVA / HM / 5.25;
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__chemoreceptor_adaptation_of_alveolar_ventilation()
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__acute_chemoreceptor_adaptation_of_alveolar_ventilation(PO2ART, O2VTS2)
+
+  // Assignment Rules:
+  O2VTS2 := 1 / O2VTST;
+  O2VTST := piecewise( 1 , O2VTST1 > 1 , 0.6 , O2VTST1 < 0.6 , O2VTST1 );
+  O2VTST1 := (PO2ART - 67 ) / 30;
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__progressive_chemoreceptor_adaptation_of_alveolar_ventilation(O2VTS2, time_, O2VAD2)
+
+  // Assignment Rules:
+  O2VAD2 := O2VAD1 + 1;
+  DO2VAD := ((O2VTS2 - 1 ) * 3 - O2VAD1) * 0.0005;
+
+  // Rate Rules:
+  O2VAD1' = DO2VAD;
+
+  // Variable initializations:
+  O2VAD1 = 2.368e-07;
+end
+
+model pulmonary_O2_uptake_CellML1_0_model__pulmonary_O2_uptake(time_, VPF, DOB, QRO, RMO, HM)
+
+  // Sub-modules, and any changes to those submodules:
+  parameter_values: pulmonary_O2_uptake_CellML1_0_model__parameter_values(PO2AMB, PL2, VPTISS, VNTSTM);
+  total_O2_utilization: pulmonary_O2_uptake_CellML1_0_model__total_O2_utilization(DOB, RMO, O2UTIL);
+  alveolar_ventilation: pulmonary_O2_uptake_CellML1_0_model__alveolar_ventilation(O2UTIL, O2VAD2, O2VTS2, ALVENT, VNTSTM);
+  alveolar_PO2: pulmonary_O2_uptake_CellML1_0_model__alveolar_PO2(O2UTIL, ALVENT, PO2ALV, PO2AMB);
+  respiratory_O2_diffusion_into_capillaries: pulmonary_O2_uptake_CellML1_0_model__respiratory_O2_diffusion_into_capillaries(PO2ALV, PO2ART, VPF, O2DFS, PL2, VPTISS);
+  O2_volume_of_arterial_blood: pulmonary_O2_uptake_CellML1_0_model__O2_volume_of_arterial_blood(O2DFS, O2UTIL, QRO, time_, OVA);
+  arterial_PO2: pulmonary_O2_uptake_CellML1_0_model__arterial_PO2(OVA, HM, PO2ART, OSA);
+  chemoreceptor_adaptation_of_alveolar_ventilation: pulmonary_O2_uptake_CellML1_0_model__chemoreceptor_adaptation_of_alveolar_ventilation();
+  acute_chemoreceptor_adaptation_of_alveolar_ventilation: pulmonary_O2_uptake_CellML1_0_model__acute_chemoreceptor_adaptation_of_alveolar_ventilation(PO2ART, O2VTS2);
+  progressive_chemoreceptor_adaptation_of_alveolar_ventilation: pulmonary_O2_uptake_CellML1_0_model__progressive_chemoreceptor_adaptation_of_alveolar_ventilation(O2VTS2, time_, O2VAD2);
+
+  // Variable initializations:
+  VPF = 0.0123238;
+  DOB = 163.508;
+  QRO = 4.97838;
+  RMO = 56.8057;
+  HM = 40.0381;
+end
+
+model pulmonary_O2_uptake_CellML1_0_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: pulmonary_O2_uptake_CellML1_0_model__environment(time_);
+  pulmonary_O2_uptake: pulmonary_O2_uptake_CellML1_0_model__pulmonary_O2_uptake(time_, VPF, DOB, QRO, RMO, HM);
+end

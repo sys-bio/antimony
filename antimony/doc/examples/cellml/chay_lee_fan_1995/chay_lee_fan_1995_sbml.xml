@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="chay_model_1995_version02____main" name="chay_model_1995_version02____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="G_alpha_GTP0" constant="false"/>
+      <parameter id="kp" constant="false"/>
+      <parameter id="KD" value="25"/>
+      <parameter id="G_alpha_GTP_kg" value="0.005"/>
+      <parameter id="G_alpha_GTP_kp_"/>
+      <parameter id="G_alpha_GTP_hg" value="0"/>
+      <parameter id="PLC0" constant="false"/>
+      <parameter id="DAG0" constant="false"/>
+      <parameter id="G_alpha_GDP0" constant="false"/>
+      <parameter id="DAG_kd" constant="false"/>
+      <parameter id="DAG_kd_" value="700"/>
+      <parameter id="DAG_hd" value="100"/>
+      <parameter id="DAG_ld" value="250"/>
+      <parameter id="PLC_active0" constant="false"/>
+      <parameter id="Ca_i_Ca_i" constant="false"/>
+      <parameter id="Ca_i_rho_kc" value="90000"/>
+      <parameter id="Ca_i_rho_hc" value="1"/>
+      <parameter id="Ca_i_rho_lc" value="200"/>
+      <parameter id="Ca_i_IP3" constant="false"/>
+      <parameter id="Ca_i_Ks" value="300"/>
+      <parameter id="PLC_active_hp" constant="false"/>
+      <parameter id="PLC_active_hp_" value="0.5"/>
+      <parameter id="PLC_PLC_total" value="10"/>
+      <parameter id="G_alpha_GDP_G_total" value="200"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="G_alpha_GTP_kp_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2 <sep/> -7 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="G_alpha_GTP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> G_alpha_GTP_kg </ci>
+              <ci> G_alpha_GDP0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn> 4 </cn>
+                <ci> kp </ci>
+                <apply>
+                  <power/>
+                  <ci> G_alpha_GTP0 </ci>
+                  <cn> 4 </cn>
+                </apply>
+                <ci> PLC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> G_alpha_GTP_hg </ci>
+                <ci> G_alpha_GTP0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="kp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> G_alpha_GTP_kp_ </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <ci> DAG0 </ci>
+                <cn> 2 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> KD </ci>
+                  <cn> 2 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> DAG0 </ci>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="PLC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> PLC_PLC_total </ci>
+            <ci> PLC_active0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="DAG0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> DAG_kd </ci>
+                <ci> PLC_active0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> DAG_hd </ci>
+                <ci> DAG0 </ci>
+              </apply>
+            </apply>
+            <ci> DAG_ld </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="G_alpha_GDP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> G_alpha_GDP_G_total </ci>
+            <apply>
+              <plus/>
+              <ci> G_alpha_GTP0 </ci>
+              <apply>
+                <times/>
+                <cn> 4 </cn>
+                <ci> PLC_active0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="DAG_kd">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> DAG_kd_ </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <ci> DAG0 </ci>
+                <cn> 2 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> KD </ci>
+                  <cn> 2 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> DAG0 </ci>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="PLC_active0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kp </ci>
+              <apply>
+                <power/>
+                <ci> G_alpha_GTP0 </ci>
+                <cn> 4 </cn>
+              </apply>
+              <ci> PLC0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PLC_active_hp </ci>
+              <ci> PLC_active0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_i_Ca_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> Ca_i_rho_kc </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <power/>
+                    <ci> Ca_i_IP3 </ci>
+                    <cn> 3 </cn>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> Ca_i_Ks </ci>
+                      <cn> 3 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> Ca_i_IP3 </ci>
+                      <cn> 3 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Ca_i_rho_hc </ci>
+                <ci> Ca_i_Ca_i </ci>
+              </apply>
+            </apply>
+            <ci> Ca_i_rho_lc </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Ca_i_IP3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> DAG0 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="PLC_active_hp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> PLC_active_hp_ </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <ci> DAG0 </ci>
+                <cn> 2 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> KD </ci>
+                  <cn> 2 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> DAG0 </ci>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

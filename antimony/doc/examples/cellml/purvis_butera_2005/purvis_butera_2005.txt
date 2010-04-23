@@ -1,0 +1,398 @@
+//Created by libAntimony v1.3
+model butera_purvis_2004__environment(time_)
+end
+
+model butera_purvis_2004__membrane(V, time_, i_Na, i_NaP, i_K, i_leak, i_T, i_N, i_P, i_SK, i_A, i_H, i_app)
+
+  // Rate Rules:
+  V' = (-((i_Na + i_NaP + i_K + i_leak + i_T + i_N + i_P + i_SK + i_A + i_H)) + i_app) / C;
+
+  // Variable initializations:
+  V = -71.847;
+  C = 0.04;
+end
+
+model butera_purvis_2004__sodium_current_h_gate(V, time_, h)
+
+  // Assignment Rules:
+  tau_h := 3.5 / (exp((V + theta_1) / sigma_1) + exp(-((V + theta_1)) / sigma_2)) + 1;
+  h_infinity := 1 / (1 + exp((V + theta_h) / sigma_h));
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  h = 0.981;
+  theta_h = 44.1;
+  sigma_h = 7;
+  theta_1 = 35;
+  sigma_1 = 4;
+  sigma_2 = 25;
+end
+
+model butera_purvis_2004__sodium_current_m_gate(V, time_, m)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp((V + theta_m) / -(sigma_m)));
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.015;
+  theta_m = 36;
+  sigma_m = 8.5;
+  tau_m = 0.1;
+end
+
+model butera_purvis_2004__sodium_current(i_Na, E_Na, V, time_, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current_h_gate: butera_purvis_2004__sodium_current_h_gate(V, time_, h);
+  sodium_current_m_gate: butera_purvis_2004__sodium_current_m_gate(V, time_, m);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * (V - E_Na);
+
+  // Variable initializations:
+  g_Na = 0.7;
+  E_Na = 60;
+end
+
+model butera_purvis_2004__persistent_sodium_current_h_gate(V, time_, h)
+
+  // Assignment Rules:
+  h_infinity := 1 / (1 + exp((V + theta_h) / sigma_h));
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  h = 0.797;
+  theta_h = 65;
+  sigma_h = 5;
+  tau_h = 150;
+end
+
+model butera_purvis_2004__persistent_sodium_current_m_gate(V, time_, m)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp(-((V + theta_m)) / sigma_m));
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.002;
+  theta_m = 47.1;
+  sigma_m = 4.1;
+  tau_m = 0.1;
+end
+
+model butera_purvis_2004__persistent_sodium_current(i_NaP, E_Na, V, time_, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  persistent_sodium_current_h_gate: butera_purvis_2004__persistent_sodium_current_h_gate(V, time_, h);
+  persistent_sodium_current_m_gate: butera_purvis_2004__persistent_sodium_current_m_gate(V, time_, m);
+
+  // Assignment Rules:
+  i_NaP := g_NaP * m * h * (V - E_Na);
+
+  // Variable initializations:
+  g_NaP = 0.05;
+end
+
+model butera_purvis_2004__delayed_rectifier_current_n_gate(V, time_, n)
+
+  // Assignment Rules:
+  tau_n := 2.5 / (exp((V + theta_1) / sigma_1) + exp(-((V + theta_1)) / sigma_2)) + 0.01;
+  n_infinity := 1 / (1 + exp(-((V + theta_n)) / sigma_n));
+
+  // Rate Rules:
+  n' = (n_infinity - n) / tau_n;
+
+  // Variable initializations:
+  n = 0.158;
+  theta_n = 30;
+  sigma_n = 25;
+  theta_1 = 30;
+  sigma_1 = 40;
+  sigma_2 = 50;
+end
+
+model butera_purvis_2004__delayed_rectifier_current(i_K, E_K, V, time_, n)
+
+  // Sub-modules, and any changes to those submodules:
+  delayed_rectifier_current_n_gate: butera_purvis_2004__delayed_rectifier_current_n_gate(V, time_, n);
+
+  // Assignment Rules:
+  i_K := g_K * power(n, 4 ) * (V - E_K);
+
+  // Variable initializations:
+  g_K = 1.3;
+  E_K = -80;
+end
+
+model butera_purvis_2004__leak_current(i_leak, V, time_)
+
+  // Assignment Rules:
+  i_leak := g_leak * (V - E_leak);
+
+  // Variable initializations:
+  g_leak = 0.005;
+  E_leak = -50;
+end
+
+model butera_purvis_2004__LVA_calcium_current_h_gate(V, time_, h)
+
+  // Assignment Rules:
+  tau_h := 20 / (exp((V + theta_1) / sigma_1) + exp(-((V + theta_1)) / sigma_1)) + 1;
+  h_infinity := 1 / (1 + exp((V + theta_h) / sigma_h));
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  h = 0.562;
+  theta_h = 70.1;
+  sigma_h = 7;
+  theta_1 = 70;
+  sigma_1 = 65;
+end
+
+model butera_purvis_2004__LVA_calcium_current_m_gate(V, time_, m)
+
+  // Assignment Rules:
+  tau_m := 5 / (exp((V + theta_1) / sigma_1) + exp(-((V + theta_1)) / sigma_2)) + 2;
+  m_infinity := 1 / (1 + exp(-((V + theta_m)) / sigma_m));
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.001;
+  theta_m = 38;
+  sigma_m = 5;
+  theta_1 = 28;
+  sigma_1 = 25;
+  sigma_2 = 70;
+end
+
+model butera_purvis_2004__LVA_calcium_current(i_T, E_Ca, V, time_, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  LVA_calcium_current_h_gate: butera_purvis_2004__LVA_calcium_current_h_gate(V, time_, h);
+  LVA_calcium_current_m_gate: butera_purvis_2004__LVA_calcium_current_m_gate(V, time_, m);
+
+  // Assignment Rules:
+  i_T := g_T * m * h * (V - E_Ca);
+
+  // Variable initializations:
+  g_T = 0.1;
+  E_Ca = 40;
+end
+
+model butera_purvis_2004__N_HVA_calcium_current_h_gate(V, time_, h)
+
+  // Assignment Rules:
+  h_infinity := 1 / (1 + exp((V + theta_h) / sigma_h));
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  h = 0.649;
+  theta_h = 70;
+  sigma_h = 3;
+  tau_h = 25;
+end
+
+model butera_purvis_2004__N_HVA_calcium_current_m_gate(V, time_, m)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp(-((V + theta_m)) / sigma_m));
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.001;
+  theta_m = 30;
+  sigma_m = 6;
+  tau_m = 5;
+end
+
+model butera_purvis_2004__N_HVA_calcium_current(i_N, E_Ca, V, time_, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  N_HVA_calcium_current_h_gate: butera_purvis_2004__N_HVA_calcium_current_h_gate(V, time_, h);
+  N_HVA_calcium_current_m_gate: butera_purvis_2004__N_HVA_calcium_current_m_gate(V, time_, m);
+
+  // Assignment Rules:
+  i_N := g_N * m * h * (V - E_Ca);
+
+  // Variable initializations:
+  g_N = 0.05;
+end
+
+model butera_purvis_2004__P_HVA_calcium_current_m_gate(V, time_, m)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp(-((V + theta_m)) / sigma_m));
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0;
+  theta_m = 17;
+  sigma_m = 3;
+  tau_m = 10;
+end
+
+model butera_purvis_2004__P_HVA_calcium_current(i_P, E_Ca, V, time_, m)
+
+  // Sub-modules, and any changes to those submodules:
+  P_HVA_calcium_current_m_gate: butera_purvis_2004__P_HVA_calcium_current_m_gate(V, time_, m);
+
+  // Assignment Rules:
+  i_P := g_P * m * (V - E_Ca);
+
+  // Variable initializations:
+  g_P = 0.05;
+end
+
+model butera_purvis_2004__calcium_dependent_potassium_current_z_gate(V, time_, i_T, i_N, i_P, z)
+
+  // Assignment Rules:
+  z_infinity := 1 / (1 + power(0.003 / Ca_conc, 2 ));
+
+  // Rate Rules:
+  z' = (z_infinity - z) / tau_z;
+  Ca_conc' = 1 / 1000 * K1 * (i_T + i_N + i_P) - K2 * Ca_conc;
+
+  // Variable initializations:
+  z = 0;
+  K1 = -500;
+  K2 = 0.04;
+  Ca_conc = 0.0604;
+  tau_z = 1;
+end
+
+model butera_purvis_2004__calcium_dependent_potassium_current(i_SK, E_K, V, time_, i_T, i_N, i_P, z)
+
+  // Sub-modules, and any changes to those submodules:
+  calcium_dependent_potassium_current_z_gate: butera_purvis_2004__calcium_dependent_potassium_current_z_gate(V, time_, i_T, i_N, i_P, z);
+
+  // Assignment Rules:
+  i_SK := g_SK * power(z, 2 ) * (V - E_K);
+
+  // Variable initializations:
+  g_SK = 0.3;
+end
+
+model butera_purvis_2004__fast_transient_potassium_current_h_gate(V, time_, h)
+
+  // Assignment Rules:
+  h_infinity := 1 / (1 + exp((V + theta_h) / sigma_h));
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  h = 0.287;
+  theta_h = 80;
+  sigma_h = 11;
+  tau_h = 20;
+end
+
+model butera_purvis_2004__fast_transient_potassium_current_m_gate(V, time_, m)
+
+  // Assignment Rules:
+  tau_m := 1 / (exp((V + theta_1) / sigma_1) + exp(-((V + theta_2)) / sigma_2)) + 0.37;
+  m_infinity := 1 / (1 + exp(-((V + theta_m)) / sigma_m));
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.057;
+  theta_m = 27;
+  sigma_m = 16;
+  theta_1 = 40;
+  theta_2 = 74;
+  sigma_1 = 5;
+  sigma_2 = 7.5;
+end
+
+model butera_purvis_2004__fast_transient_potassium_current(i_A, E_K, V, time_, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_transient_potassium_current_h_gate: butera_purvis_2004__fast_transient_potassium_current_h_gate(V, time_, h);
+  fast_transient_potassium_current_m_gate: butera_purvis_2004__fast_transient_potassium_current_m_gate(V, time_, m);
+
+  // Assignment Rules:
+  i_A := g_A * m * h * (V - E_K);
+
+  // Variable initializations:
+  g_A = 1;
+end
+
+model butera_purvis_2004__hyperpolarization_activated_current_m_gate(V, time_, m)
+
+  // Assignment Rules:
+  tau_m := 1 / (exp((V + theta_1) / sigma_1) + exp(-((V + theta_1)) / sigma_1)) + 50;
+  m_infinity := 1 / (1 + exp((V + theta_m) / sigma_m));
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.182;
+  theta_m = 79.8;
+  sigma_m = 5.3;
+  theta_1 = 70;
+  sigma_1 = 11;
+end
+
+model butera_purvis_2004__hyperpolarization_activated_current(i_H, V, time_, m)
+
+  // Sub-modules, and any changes to those submodules:
+  hyperpolarization_activated_current_m_gate: butera_purvis_2004__hyperpolarization_activated_current_m_gate(V, time_, m);
+
+  // Assignment Rules:
+  i_H := g_H * m * (V - E_H);
+
+  // Variable initializations:
+  g_H = 0.005;
+  E_H = -38.8;
+end
+
+model butera_purvis_2004__stimulus_protocol(i_app, time_)
+
+  // Assignment Rules:
+  i_app := piecewise( i_stimAmplitude , ( time_ >= i_stimStart) && (time_ <= i_stimEnd ), 0 );
+
+  // Variable initializations:
+  i_stimStart = 10;
+  i_stimEnd = 11;
+  i_stimAmplitude = 10;
+end
+
+model butera_purvis_2004____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: butera_purvis_2004__environment(time_);
+  membrane: butera_purvis_2004__membrane(V, time_, i_Na, i_NaP, i_K, i_leak, i_T, i_N, i_P, i_SK, i_A, i_H, i_app);
+  sodium_current: butera_purvis_2004__sodium_current(i_Na, E_Na, V, time_, m, h);
+  persistent_sodium_current: butera_purvis_2004__persistent_sodium_current(i_NaP, E_Na, V, time_, m0, h0);
+  delayed_rectifier_current: butera_purvis_2004__delayed_rectifier_current(i_K, E_K, V, time_, n);
+  leak_current: butera_purvis_2004__leak_current(i_leak, V, time_);
+  LVA_calcium_current: butera_purvis_2004__LVA_calcium_current(i_T, E_Ca, V, time_, m1, h1);
+  N_HVA_calcium_current: butera_purvis_2004__N_HVA_calcium_current(i_N, E_Ca, V, time_, m2, h2);
+  P_HVA_calcium_current: butera_purvis_2004__P_HVA_calcium_current(i_P, E_Ca, V, time_, m3);
+  calcium_dependent_potassium_current: butera_purvis_2004__calcium_dependent_potassium_current(i_SK, E_K, V, time_, i_T, i_N, i_P, z);
+  fast_transient_potassium_current: butera_purvis_2004__fast_transient_potassium_current(i_A, E_K, V, time_, m4, h3);
+  hyperpolarization_activated_current: butera_purvis_2004__hyperpolarization_activated_current(i_H, V, time_, m5);
+  stimulus_protocol: butera_purvis_2004__stimulus_protocol(i_app, time_);
+end

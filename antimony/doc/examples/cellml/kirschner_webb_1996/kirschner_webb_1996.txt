@@ -1,0 +1,68 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "s  - ( muT  +  kv  *  T  *  V ) +  r  *  T  * ( V  / ( C  +  V )) + definite_integral( gamma  *  Ti ,  a ,  0  ,  a1 )" to define 'd(T)/d(time)' because Antimony does not handle definite integrals.
+//    Unable to translate an assignment to "del(Ti)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to translate an assignment to "del( Ti )/del( a )" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+//    Unable to use the formula "N  *  r  * ( V  / ( C  +  V )) * definite_integral(ci(),  a ,  0  ,  amax ) -  kT  *  T  *  V  +  gV  *  V  / ( b  +  V )" to define 'del(V)/del(time)' because Antimony does not handle definite integrals.
+
+model kirschner_webb_1996_version02__environment(time_)
+end
+
+model kirschner_webb_1996_version02__T(T, a, gamma, a1, r, V, Ti, C, time_)
+
+  // Assignment Rules:
+  s := 5.0 + 5.0 / ( 1.0 + V );
+
+  // Variable initializations:
+  T = 2000.0;
+  muT = 0.02;
+  kv = 2.4E-5;
+end
+
+model kirschner_webb_1996_version02__Ti(Ti, gamma, a, r, V, C, time_)
+
+  // Variable initializations:
+  Ti = 0.0;
+  muTi = 0.24;
+end
+
+model kirschner_webb_1996_version02__V(V, a, a1, r, Ti, T, C, time_)
+
+  // Variable initializations:
+  V = 1.0E-3;
+  N = 1000.0;
+  kT = 7.4E-4;
+  gV = 5.0;
+  b = 10.0;
+  amax = 12.0;
+end
+
+model kirschner_webb_1996_version02__gamma(gamma, a, a1, time_)
+
+  // Assignment Rules:
+  gamma := piecewise( c * p / ( 1.0 - exp(-(( k * p )))) * exp(-(( k * time_ ))) , ((( a >= 0.0) && (a <= a1) && (( time_ >= 0.0) && (time_ <= p ) ))), c * p / ( 1.0 - exp(-(( k * p )))) * exp(-(( k * ( time_ - p )))) , ((( a >= 0.0) && (a <= a1) && (( time_ >= p) && (time_ <= 2.0 * p ) ))), 1.0 , a > a1 );
+
+  // Variable initializations:
+  p = 0.1;
+  k = 16.66;
+end
+
+model kirschner_webb_1996_version02__model_parameters(a, a1, r, C)
+
+  // Variable initializations:
+  a1 = 0.25;
+  r = 0.01;
+  C = 100.0;
+end
+
+model kirschner_webb_1996_version02____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: kirschner_webb_1996_version02__environment(time_);
+  T: kirschner_webb_1996_version02__T(T0, a, gamma0, a1, r, V0, Ti0, C, time_);
+  Ti: kirschner_webb_1996_version02__Ti(Ti0, gamma0, a, r, V0, C, time_);
+  V: kirschner_webb_1996_version02__V(V0, a, a1, r, Ti0, T0, C, time_);
+  gamma: kirschner_webb_1996_version02__gamma(gamma0, a, a1, time_);
+  model_parameters: kirschner_webb_1996_version02__model_parameters(a, a1, r, C);
+end

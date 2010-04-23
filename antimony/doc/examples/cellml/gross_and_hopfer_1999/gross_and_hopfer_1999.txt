@@ -1,0 +1,123 @@
+//Created by libAntimony v1.3
+model Gross_and_Hopfer_1999_pH7_25__environment(time_)
+end
+
+model Gross_and_Hopfer_1999_pH7_25__parameters(f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, F, R, T, V, u)
+
+  // Assignment Rules:
+  b0_6 := f0_1 * f0_2 * f0_3 * f0_4 * f0_5 * f0_6 / (b0_1 * b0_2 * b0_3 * b0_4 * b0_5);
+  delta_m := 1 - beta_p - beta_pp;
+  delta_n := 1 - alpha_p - alpha_pp;
+  u := F * V / (R * T);
+
+  // Variable initializations:
+  f0_1 = 65e-3;
+  b0_1 = 1.4;
+  f0_2 = 1.9e-2;
+  b0_2 = 4.5e4;
+  f0_3 = 7e3;
+  b0_3 = 2.5e3;
+  f0_4 = 1.7e3;
+  b0_4 = 1.3e-3;
+  f0_5 = 1.3;
+  b0_5 = 61e-3;
+  f0_6 = 0.5;
+  delta_z = 1.3;
+  alpha_p = 0.04;
+  alpha_pp = 0.04;
+  beta_p = 0.1;
+  beta_pp = 0.1;
+  C_T = 0.2;
+  n = 1;
+  m = 3;
+  F = 96485.34e-3;
+  R = 8.314;
+  T = 310;
+end
+
+model Gross_and_Hopfer_1999_pH7_25__ion_concentrations(V, Na_i, Na_o, HCO3_i, HCO3_o)
+
+  // Variable initializations:
+  V = -60;
+  Na_i = 10;
+  Na_o = 10;
+  HCO3_i = 18;
+  HCO3_o = 18;
+end
+
+model Gross_and_Hopfer_1999_pH7_25__rate_constants(Na_i, Na_o, HCO3_i, HCO3_o, f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, u)
+
+  // Assignment Rules:
+  f_1 := f0_1 * power(Na_i, n) * exp(n * alpha_p * u / 2 );
+  b_1 := b0_1 * exp(-(n) * alpha_p * u / 2 );
+  f_2 := f0_2 * power(HCO3_i, m) * exp(-(m) * beta_p * u / 2 );
+  b_2 := b0_2 * exp(m * beta_p * u / 2 );
+  f_3 := f0_3 * exp((delta_z + n * delta_n - m * delta_m) * u / 2 );
+  b_3 := b0_3 * exp(-((delta_z + n * delta_n - m * delta_m)) * u / 2 );
+  f_4 := f0_4 * exp(-(m) * beta_pp * u / 2 );
+  b_4 := b0_4 * power(HCO3_o, m) * exp(m * beta_pp * u / 2 );
+  f_5 := f0_5 * exp(n * alpha_pp * u / 2 );
+  b_5 := b0_5 * power(Na_o, n) * exp(-(n) * alpha_pp * u / 2 );
+  f_6 := f0_6 * exp(-(delta_z) * u / 2 );
+  b_6 := b0_6 * exp(delta_z * u / 2 );
+end
+
+model Gross_and_Hopfer_1999_pH7_25__kinetic_equations(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_1, C_2, C_3, C_4, C_5, C_6, C_6_temp, C_T, time_)
+
+  // Assignment Rules:
+  C_6 := C_T - (C_1 + C_2 + C_3 + C_4 + C_5);
+
+  // Rate Rules:
+  C_1' = b_1 * C_2 + f_6 * C_6 - (f_1 + b_6) * C_1;
+  C_2' = f_1 * C_1 + b_2 * C_3 - (b_1 + f_2) * C_2;
+  C_3' = f_2 * C_2 + b_3 * C_4 - (b_2 + f_3) * C_3;
+  C_4' = f_3 * C_3 + b_4 * C_5 - (b_3 + f_4) * C_4;
+  C_5' = f_4 * C_4 + b_5 * C_6 - (b_4 + f_5) * C_5;
+  C_6_temp' = f_5 * C_5 + b_6 * C_1 - (b_5 + f_6) * C_6;
+
+  // Variable initializations:
+  C_1 = 1.02165;
+  C_2 = 0.089633;
+  C_3 = 0.0004173;
+  C_4 = 0.001504;
+  C_5 = 0.5685776;
+  C_6_temp = 0.318217;
+end
+
+model Gross_and_Hopfer_1999_pH7_25__king_altman_states(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_T, C1, C2, C3, C4, C5, C6)
+
+  // Assignment Rules:
+  C1_sum := f_2 * f_3 * f_4 * f_5 * f_6 + b_1 * f_3 * f_4 * f_5 * f_6 + b_1 * b_2 * f_4 * f_5 * f_6 + b_1 * b_2 * b_3 * f_5 * f_6 + b_1 * b_2 * b_3 * b_4 * f_6 + b_1 * b_2 * b_3 * b_4 * b_5;
+  C2_sum := f_1 * f_3 * f_4 * f_5 * f_6 + b_2 * f_1 * f_4 * f_5 * f_6 + b_2 * b_3 * f_1 * f_5 * f_6 + b_2 * b_3 * b_4 * f_1 * f_6 + b_2 * b_3 * b_4 * b_5 * f_1 + b_2 * b_3 * b_4 * b_5 * b_6;
+  C3_sum := f_1 * f_2 * f_4 * f_5 * f_6 + b_3 * f_1 * f_2 * f_5 * f_6 + b_3 * b_4 * f_1 * f_2 * f_6 + b_3 * b_4 * b_5 * f_1 * f_2 + b_3 * b_4 * b_5 * b_6 * f_2 + b_1 * b_3 * b_4 * b_5 * b_6;
+  C4_sum := f_1 * f_2 * f_3 * f_5 * f_6 + b_4 * f_1 * f_2 * f_3 * f_6 + b_4 * b_5 * f_1 * f_2 * f_3 + b_4 * b_5 * b_6 * f_2 * f_3 + b_1 * b_4 * b_5 * b_6 * f_3 + b_1 * b_2 * b_4 * b_5 * b_6;
+  C5_sum := f_1 * f_2 * f_3 * f_4 * f_6 + b_5 * f_1 * f_2 * f_3 * f_4 + b_5 * b_6 * f_2 * f_3 * f_4 + b_1 * b_5 * b_6 * f_3 * f_4 + b_1 * b_2 * b_5 * b_6 * f_4 + b_1 * b_2 * b_3 * b_5 * b_6;
+  C6_sum := f_1 * f_2 * f_3 * f_4 * f_5 + b_6 * f_2 * f_3 * f_4 * f_5 + b_1 * b_6 * f_3 * f_4 * f_5 + b_1 * b_2 * b_6 * f_4 * f_5 + b_1 * b_2 * b_3 * b_6 * f_5 + b_1 * b_2 * b_3 * b_4 * b_6;
+  C_sum := C1_sum + C2_sum + C3_sum + C4_sum + C5_sum + C6_sum;
+  C1 := C_T * C1_sum / C_sum;
+  C2 := C_T * C2_sum / C_sum;
+  C3 := C_T * C3_sum / C_sum;
+  C4 := C_T * C4_sum / C_sum;
+  C5 := C_T * C5_sum / C_sum;
+  C6 := C_T * C6_sum / C_sum;
+end
+
+model Gross_and_Hopfer_1999_pH7_25__NBC_current(f_3, b_3, f_6, b_6, C_1, C_3, C_4, C_6, C1, C3, C4, C6, delta_z, n, m, F, I_NBC, I_NBC_SS, I_NBC_micro)
+
+  // Assignment Rules:
+  I_NBC := -(F) * (delta_z * (b_6 * C_1 - f_6 * C_6) + (delta_z + n - m) * (f_3 * C_3 - b_3 * C_4));
+  I_NBC_SS := -(F) * (delta_z * (b_6 * C1 - f_6 * C6) + (delta_z + n - m) * (f_3 * C3 - b_3 * C4));
+  I_NBC_micro := 1E-3 * -(F) * (delta_z * (b_6 * C_1 - f_6 * C_6) + (delta_z + n - m) * (f_3 * C_3 - b_3 * C_4));
+end
+
+model Gross_and_Hopfer_1999_pH7_25____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: Gross_and_Hopfer_1999_pH7_25__environment(time_);
+  parameters: Gross_and_Hopfer_1999_pH7_25__parameters(f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, F, R, T, V, u);
+  ion_concentrations: Gross_and_Hopfer_1999_pH7_25__ion_concentrations(V, Na_i, Na_o, HCO3_i, HCO3_o);
+  rate_constants: Gross_and_Hopfer_1999_pH7_25__rate_constants(Na_i, Na_o, HCO3_i, HCO3_o, f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, u);
+  kinetic_equations: Gross_and_Hopfer_1999_pH7_25__kinetic_equations(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_1, C_2, C_3, C_4, C_5, C_6, C_6_temp, C_T, time_);
+  king_altman_states: Gross_and_Hopfer_1999_pH7_25__king_altman_states(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_T, C1, C2, C3, C4, C5, C6);
+  NBC_current: Gross_and_Hopfer_1999_pH7_25__NBC_current(f_3, b_3, f_6, b_6, C_1, C_3, C_4, C_6, C1, C3, C4, C6, delta_z, n, m, F, I_NBC, I_NBC_SS, I_NBC_micro);
+end

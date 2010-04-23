@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="Template_Promoter_Constitutive____main" name="Template_Promoter_Constitutive____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="JRNA" constant="false"/>
+      <parameter id="Template_Promoter_Constitutive_avogadrosConstant" value="6.0221415e+23"/>
+      <parameter id="localVolume"/>
+      <parameter id="k"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="JRNA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> k </ci>
+              <cn type="e-notation"> 1 <sep/> 9 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <ci> localVolume </ci>
+              <cn type="e-notation"> 1 <sep/> -15 </cn>
+              <ci> Template_Promoter_Constitutive_avogadrosConstant </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

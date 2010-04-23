@@ -1,0 +1,114 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to translate an assignment to "del(s1)/del(time)" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).
+
+model nevo_2004__environment(time_)
+end
+
+model nevo_2004__h(h, Tn, Tp, time_)
+
+  // Rate Rules:
+  h' = -(( Tn + Tp ));
+end
+
+model nevo_2004__n(n, Tn, time_)
+
+  // Rate Rules:
+  n' = Tn - lamda_n * n;
+
+  // Variable initializations:
+  lamda_n = 1.0;
+end
+
+model nevo_2004__p(p, Tp, time_)
+
+  // Rate Rules:
+  p' = Tp - lamda_p * p;
+
+  // Variable initializations:
+  lamda_p = 1.0;
+end
+
+model nevo_2004__s1(s1, n, time_)
+
+  // Variable initializations:
+  K1 = 1.0;
+  D1 = 0.4;
+  lamda_1 = 0.05;
+end
+
+model nevo_2004__s2(s2, n, time_)
+
+  // Rate Rules:
+  s2' = K2 * n - lamda_2 * s2 + D2 * s2;
+
+  // Variable initializations:
+  K2 = 1.0;
+  D2 = 0.4;
+  lamda_2 = 0.05;
+end
+
+model nevo_2004__Tn(Tn, s1, h)
+
+  // Assignment Rules:
+  Tn := piecewise( eta_n * h * ( s1 - s1_min ) , s1_min < s1 , 0.0 );
+
+  // Variable initializations:
+  eta_n = 0.2;
+  s1_min = 0.01;
+end
+
+model nevo_2004__Tp(Tp, E, s2, h)
+
+  // Assignment Rules:
+  Tp := eta_p * h * E * s2;
+
+  // Variable initializations:
+  eta_p = 0.2;
+end
+
+model nevo_2004__E(E, fw, s2_, time_)
+
+  // Rate Rules:
+  E' = fw * ( s2_ - s2_min ) - lamda_E * E;
+
+  // Variable initializations:
+  lamda_E = 0.005;
+  s2_min = 0.01;
+end
+
+model nevo_2004__fw(fw, x)
+
+  // Assignment Rules:
+  fw := 1.0 / ( 1.0 + exp(-(( x - c )) / w ));
+
+  // Variable initializations:
+  w = 1000.0;
+end
+
+model nevo_2004__s2_(s2_, s2)
+
+  // Assignment Rules:
+  s2_ := s2;
+end
+
+model nevo_2004__model_parameters(x)
+end
+
+model nevo_2004____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: nevo_2004__environment(time_);
+  h: nevo_2004__h(h0, Tn0, Tp0, time_);
+  n: nevo_2004__n(n0, Tn0, time_);
+  p: nevo_2004__p(p0, Tp0, time_);
+  s1: nevo_2004__s1(s10, n0, time_);
+  s2: nevo_2004__s2(s20, n0, time_);
+  Tn: nevo_2004__Tn(Tn0, s10, h0);
+  Tp: nevo_2004__Tp(Tp0, E0, s20, h0);
+  E: nevo_2004__E(E0, fw0, s2_0, time_);
+  fw: nevo_2004__fw(fw0, x);
+  s2_: nevo_2004__s2_(s2_0, s20);
+  model_parameters: nevo_2004__model_parameters(x);
+end

@@ -1,0 +1,227 @@
+//Created by libAntimony v1.3
+model kongas_model_2001__environment(time_)
+end
+
+model kongas_model_2001__ATP(ATP, V_hyd, V_MMCK, J_ATP, V_cyt, time_)
+
+  // Rate Rules:
+  ATP' = (J_ATP - (V_hyd + V_MMCK)) / V_cyt;
+
+  // Variable initializations:
+  ATP = 9644.425;
+end
+
+model kongas_model_2001__ADP(ADP, V_hyd, V_MMCK, J_ADP, V_cyt, time_)
+
+  // Rate Rules:
+  ADP' = (J_ADP + V_hyd + V_MMCK) / V_cyt;
+
+  // Variable initializations:
+  ADP = 60.0;
+end
+
+model kongas_model_2001__PCr(PCr, V_MMCK, J_PCr, V_cyt, time_)
+
+  // Rate Rules:
+  PCr' = (J_PCr + V_MMCK) / V_cyt;
+
+  // Variable initializations:
+  PCr = 12500.0;
+end
+
+model kongas_model_2001__Cr(Cr, V_MMCK, J_Cr, V_cyt, time_)
+
+  // Rate Rules:
+  Cr' = (J_Cr - V_MMCK) / V_cyt;
+
+  // Variable initializations:
+  Cr = 13500.0;
+end
+
+model kongas_model_2001__Pi(Pi_, V_hyd, J_Pi, V_cyt, time_)
+
+  // Rate Rules:
+  Pi_' = (J_Pi + V_hyd) / V_cyt;
+
+  // Variable initializations:
+  Pi_ = 8000.0;
+end
+
+model kongas_model_2001__ATP_i(ATP_i, V_MiCK, V_syn, J_ATP, V_ims, time_)
+
+  // Rate Rules:
+  ATP_i' = -((J_ATP + V_syn + V_MiCK)) / V_ims;
+
+  // Variable initializations:
+  ATP_i = 9644.425;
+end
+
+model kongas_model_2001__ADP_i(ADP_i, V_MiCK, V_syn, J_ADP, V_ims, time_)
+
+  // Rate Rules:
+  ADP_i' = (V_syn + V_MiCK - J_ADP) / V_ims;
+
+  // Variable initializations:
+  ADP_i = 2.5;
+end
+
+model kongas_model_2001__PCr_i(PCr_i, V_MiCK, J_PCr, V_ims, time_)
+
+  // Rate Rules:
+  PCr_i' = (V_MiCK - J_PCr) / V_ims;
+
+  // Variable initializations:
+  PCr_i = 12500.0;
+end
+
+model kongas_model_2001__Cr_i(Cr_i, V_MiCK, J_Cr, V_ims, time_)
+
+  // Rate Rules:
+  Cr_i' = -((V_MiCK + J_Cr)) / V_ims;
+
+  // Variable initializations:
+  Cr_i = 13500.0;
+end
+
+model kongas_model_2001__Pi_i(Pi_i, V_syn, J_Pi, V_ims, time_)
+
+  // Rate Rules:
+  Pi_i' = (V_syn - J_Pi) / V_ims;
+
+  // Variable initializations:
+  Pi_i = 8000.0;
+end
+
+model kongas_model_2001__V_MMCK(V_MMCK, ATP, ADP, PCr, Cr)
+
+  // Assignment Rules:
+  V_MMCK := ( Vf * ( ATP * Cr / ( Kia * Kb )) - Vb * ( ADP * PCr / ( Kic * Kd ))) / Den_MMCK;
+  Den_MMCK := 1.0 + Cr / Kib + PCr / Kid + ATP * ( 1.0 / Kia + Cr / ( Kia * Kb )) + ADP * ( 1.0 / Kic + PCr / ( Kid * Kc ) + Cr / ( Kic * KIb ));
+  KIb := Kib;
+  Kc := Kic * Kd / Kid;
+
+  // Variable initializations:
+  Kia = 9.0E2;
+  Kb = 1.55E4;
+  Kib = 3.49E4;
+  Kic = 2.224E2;
+  Kd = 1.67E3;
+  Kid = 4.73E3;
+  Vf = 6.966E3;
+  Vb = 2.925E4;
+end
+
+model kongas_model_2001__V_MiCK(V_MiCK, ATP_i, ADP_i, PCr_i, Cr_i)
+
+  // Assignment Rules:
+  V_MiCK := ( Vf * ( ATP_i * Cr_i / ( Kia * Kb )) - Vb * ( ADP_i * PCr_i / ( Kic * Kd ))) / Den_MiCK;
+  Den_MiCK := 1.0 + Cr_i / Kib + PCr_i / Kid + ATP_i * ( 1.0 / Kia + Cr_i / ( Kia * Kb )) + ADP_i * ( 1.0 / Kic + PCr_i / ( Kid * Kc ) + Cr_i / ( Kic * KIb ));
+  KIb := Kib;
+  Kc := Kic * Kd / Kid;
+
+  // Variable initializations:
+  Kia = 7.5E2;
+  Kb = 5.2E3;
+  Kib = 2.88E4;
+  Kic = 2.048E2;
+  Kd = 5.0E2;
+  Kid = 1.6E3;
+  Vf = 2.658E3;
+  Vb = 1.116E4;
+end
+
+model kongas_model_2001__V_hyd(V_hyd)
+
+  // Variable initializations:
+  V_hyd = 4.6E3;
+end
+
+model kongas_model_2001__V_syn(V_syn, Pi_i, ADP_i)
+
+  // Assignment Rules:
+  V_syn := V_syn_max * ( ADP_i * Pi_i / ( KPi * KADP * Den_syn ));
+  Den_syn := 1.0 + ADP_i / KADP + Pi_i / KPi + ADP_i * Pi_i / ( KADP * KPi );
+
+  // Variable initializations:
+  KPi = 20.0;
+  KADP = 8.0E2;
+  V_syn_max = 4.6E3;
+end
+
+model kongas_model_2001__J_ATP(J_ATP, ATP_i, ATP)
+
+  // Assignment Rules:
+  J_ATP := R_ATP * ( ATP_i - ATP );
+
+  // Variable initializations:
+  R_ATP = 8.16;
+end
+
+model kongas_model_2001__J_ADP(J_ADP, ADP_i, ADP)
+
+  // Assignment Rules:
+  J_ADP := R_ADP * ( ADP_i - ADP );
+
+  // Variable initializations:
+  R_ADP = 8.16;
+end
+
+model kongas_model_2001__J_PCr(J_PCr, PCr_i, PCr)
+
+  // Assignment Rules:
+  J_PCr := R_PCr * ( PCr_i - PCr );
+
+  // Variable initializations:
+  R_PCr = 14.6;
+end
+
+model kongas_model_2001__J_Cr(J_Cr, Cr_i, Cr)
+
+  // Assignment Rules:
+  J_Cr := R_Cr * ( Cr_i - Cr );
+
+  // Variable initializations:
+  R_Cr = 14.6;
+end
+
+model kongas_model_2001__J_Pi(J_Pi, Pi_i, Pi_)
+
+  // Assignment Rules:
+  J_Pi := R_Pi * ( Pi_i - Pi_ );
+
+  // Variable initializations:
+  R_Pi = 18.4;
+end
+
+model kongas_model_2001__fractional_volumes(V_cyt, V_ims)
+
+  // Variable initializations:
+  V_cyt = 0.75;
+  V_ims = 0.0625;
+end
+
+model kongas_model_2001____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: kongas_model_2001__environment(time_);
+  ATP: kongas_model_2001__ATP(ATP0, V_hyd0, V_MMCK0, J_ATP0, V_cyt, time_);
+  ADP: kongas_model_2001__ADP(ADP0, V_hyd0, V_MMCK0, J_ADP0, V_cyt, time_);
+  PCr: kongas_model_2001__PCr(PCr0, V_MMCK0, J_PCr0, V_cyt, time_);
+  Cr: kongas_model_2001__Cr(Cr0, V_MMCK0, J_Cr0, V_cyt, time_);
+  Pi_: kongas_model_2001__Pi(Pi_0, V_hyd0, J_Pi0, V_cyt, time_);
+  ATP_i: kongas_model_2001__ATP_i(ATP_i0, V_MiCK0, V_syn0, J_ATP0, V_ims, time_);
+  ADP_i: kongas_model_2001__ADP_i(ADP_i0, V_MiCK0, V_syn0, J_ADP0, V_ims, time_);
+  PCr_i: kongas_model_2001__PCr_i(PCr_i0, V_MiCK0, J_PCr0, V_ims, time_);
+  Cr_i: kongas_model_2001__Cr_i(Cr_i0, V_MiCK0, J_Cr0, V_ims, time_);
+  Pi_i: kongas_model_2001__Pi_i(Pi_i0, V_syn0, J_Pi0, V_ims, time_);
+  V_MMCK: kongas_model_2001__V_MMCK(V_MMCK0, ATP0, ADP0, PCr0, Cr0);
+  V_MiCK: kongas_model_2001__V_MiCK(V_MiCK0, ATP_i0, ADP_i0, PCr_i0, Cr_i0);
+  V_hyd: kongas_model_2001__V_hyd(V_hyd0);
+  V_syn: kongas_model_2001__V_syn(V_syn0, Pi_i0, ADP_i0);
+  J_ATP: kongas_model_2001__J_ATP(J_ATP0, ATP_i0, ATP0);
+  J_ADP: kongas_model_2001__J_ADP(J_ADP0, ADP_i0, ADP0);
+  J_PCr: kongas_model_2001__J_PCr(J_PCr0, PCr_i0, PCr0);
+  J_Cr: kongas_model_2001__J_Cr(J_Cr0, Cr_i0, Cr0);
+  J_Pi: kongas_model_2001__J_Pi(J_Pi0, Pi_i0, Pi_0);
+  fractional_volumes: kongas_model_2001__fractional_volumes(V_cyt, V_ims);
+end

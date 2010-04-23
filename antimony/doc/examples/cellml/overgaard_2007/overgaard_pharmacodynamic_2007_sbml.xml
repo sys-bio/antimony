@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="overgaard_pharmacodynamic_2007____main" name="overgaard_pharmacodynamic_2007____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="T_a" value="21"/>
+      <parameter id="T_b" value="38"/>
+      <parameter id="delta_T" value="1.57"/>
+      <parameter id="kinc" value="0.0258"/>
+      <parameter id="tdose1" value="24"/>
+      <parameter id="tdose2" value="72"/>
+      <parameter id="tdose3" value="120"/>
+      <parameter id="M_c0" constant="false"/>
+      <parameter id="M_c_t_day" value="17.5"/>
+      <parameter id="M_c_t_night" value="6.73"/>
+      <parameter id="M_c_tprime" constant="false"/>
+      <parameter id="M_c_day_length" value="86400"/>
+      <parameter id="M_day0" constant="false"/>
+      <parameter id="M_night0" constant="false"/>
+      <parameter id="M0" value="3.5" constant="false"/>
+      <parameter id="M_km" value="1.1375"/>
+      <parameter id="T0" value="38.785" constant="false"/>
+      <parameter id="T_c" value="3.47"/>
+      <parameter id="k0" constant="false"/>
+      <parameter id="k_BR" value="0" constant="false"/>
+      <parameter id="k_pEtot" value="0.144"/>
+      <parameter id="k_kR" value="5.35"/>
+      <parameter id="k_AMT_dose" value="3"/>
+      <parameter id="k_pEf1" value="1"/>
+      <parameter id="k_pEs1" value="0.2"/>
+      <parameter id="k_pEf2" value="3.57"/>
+      <parameter id="k_pEs2" value="2.43"/>
+      <parameter id="k_pEf3" value="8"/>
+      <parameter id="k_pEs3" value="50"/>
+      <parameter id="k_E_slow" constant="false"/>
+      <parameter id="k_E_fast" constant="false"/>
+      <parameter id="k_f2_drug" value="0" constant="false"/>
+      <parameter id="kb0" constant="false"/>
+      <parameter id="f_prime" constant="false"/>
+      <parameter id="gNsTs1" constant="false"/>
+      <parameter id="gNsTs2" constant="false"/>
+      <parameter id="gNsTs3" constant="false"/>
+      <parameter id="gNfTf1" constant="false"/>
+      <parameter id="gNfTf2" constant="false"/>
+      <parameter id="gNfTf3" constant="false"/>
+      <parameter id="T_day0" constant="false"/>
+      <parameter id="T_night0" constant="false"/>
+      <parameter id="kb_M_b" value="3"/>
+      <parameter id="M_night_t_prime" value="45.12"/>
+      <parameter id="M_night_alpha" value="0.2229166"/>
+      <parameter id="M_night_delta_high_dose" value="1"/>
+      <parameter id="M_night_M_night_baseline" constant="false"/>
+      <parameter id="gNT_Ns" value="4"/>
+      <parameter id="gNT_Nf" value="4"/>
+      <parameter id="gNT_Ts" value="2.45"/>
+      <parameter id="gNT_Tf" value="0.368"/>
+      <parameter id="gNT_X1" constant="false"/>
+      <parameter id="gNT_X2" constant="false"/>
+      <parameter id="gNT_X3" constant="false"/>
+      <parameter id="gNT_Kf" constant="false"/>
+      <parameter id="gNT_Ks" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="M_c_rem"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="M_c0"/>
+      <assignmentRule variable="M_c_tprime">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> M_c_rem </ci>
+            <apply>
+              <times/>
+              <ci> time_ </ci>
+              <cn type="integer"> 3600 </cn>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <ci> M_c_day_length </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="M_day0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <ci> kb0 </ci>
+              <apply>
+                <times/>
+                <ci> kinc </ci>
+                <apply>
+                  <minus/>
+                  <ci> T_day0 </ci>
+                  <ci> T_b </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> T_day0 </ci>
+              <ci> T_a </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="M_night0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> f_prime </ci>
+              </apply>
+              <ci> M_night_M_night_baseline </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> f_prime </ci>
+              <ci> M_day0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="M0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> M_km </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> M0 </ci>
+              <ci> M_c0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="T0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <power/>
+              <ci> T_c </ci>
+              <cn type="integer"> -1 </cn>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> M0 </ci>
+              <apply>
+                <times/>
+                <ci> k0 </ci>
+                <apply>
+                  <minus/>
+                  <ci> T0 </ci>
+                  <ci> T_a </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> kb0 </ci>
+            <apply>
+              <times/>
+              <ci> kinc </ci>
+              <apply>
+                <minus/>
+                <ci> T0 </ci>
+                <apply>
+                  <times/>
+                  <ci> T_b </ci>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <times/>
+                      <ci> k_pEtot </ci>
+                      <ci> k_BR </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <ci> k_f2_drug </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="k_BR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> f_prime </ci>
+              <apply>
+                <plus/>
+                <ci> k_E_slow </ci>
+                <ci> k_E_fast </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> k_BR </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_kR </ci>
+              <ci> k_BR </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k_E_slow">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_AMT_dose </ci>
+            <ci> k_pEs2 </ci>
+            <apply>
+              <plus/>
+              <ci> gNsTs1 </ci>
+              <ci> gNsTs2 </ci>
+              <ci> gNsTs3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_E_fast">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_pEf2 </ci>
+            <apply>
+              <plus/>
+              <ci> gNfTf1 </ci>
+              <ci> gNfTf2 </ci>
+              <ci> gNfTf3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_f2_drug">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="integer"> 0 </cn>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="kb0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> kb_M_b </ci>
+            <apply>
+              <minus/>
+              <ci> T_b </ci>
+              <ci> T_a </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="f_prime">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> M_night_delta_high_dose </ci>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <minus/>
+                      <ci> M_night_alpha </ci>
+                    </apply>
+                    <apply>
+                      <minus/>
+                      <ci> time_ </ci>
+                      <apply>
+                        <plus/>
+                        <ci> tdose1 </ci>
+                        <ci> M_night_t_prime </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> -1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gNsTs1"/>
+      <assignmentRule variable="gNsTs2"/>
+      <assignmentRule variable="gNsTs3"/>
+      <assignmentRule variable="gNfTf1"/>
+      <assignmentRule variable="gNfTf2"/>
+      <assignmentRule variable="gNfTf3"/>
+      <assignmentRule variable="T_day0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> T_b </ci>
+            <apply>
+              <divide/>
+              <ci> delta_T </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="T_night0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> T_b </ci>
+            <apply>
+              <divide/>
+              <ci> delta_T </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="M_night_M_night_baseline">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <ci> kb0 </ci>
+              <apply>
+                <times/>
+                <ci> kinc </ci>
+                <apply>
+                  <minus/>
+                  <ci> T_night0 </ci>
+                  <ci> T_b </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> T_night0 </ci>
+              <ci> T_a </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gNT_X1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> time_ </ci>
+              <ci> tdose1 </ci>
+            </apply>
+            <cn type="integer"> 24 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gNT_X2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> time_ </ci>
+              <ci> tdose2 </ci>
+            </apply>
+            <cn type="integer"> 24 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gNT_X3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> time_ </ci>
+              <ci> tdose3 </ci>
+            </apply>
+            <cn type="integer"> 24 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gNT_Kf">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> gNT_Nf </ci>
+            <ci> gNT_Tf </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gNT_Ks">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> gNT_Ns </ci>
+            <ci> gNT_Ts </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

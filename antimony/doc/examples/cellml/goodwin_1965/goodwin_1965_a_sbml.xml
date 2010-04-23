@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="goodwin_model_1965____main" name="goodwin_model_1965____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Xi0" value="7" constant="false"/>
+      <parameter id="Xi_ai" value="72"/>
+      <parameter id="Xi_bi" value="2"/>
+      <parameter id="Xi_Ai" value="36"/>
+      <parameter id="Xi_ki" value="1"/>
+      <parameter id="Yi0" value="-10" constant="false"/>
+      <parameter id="Yi_beta_i" value="0"/>
+      <parameter id="Yi_alpha_i" value="1"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Xi0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <ci> Xi_ai </ci>
+              <apply>
+                <plus/>
+                <ci> Xi_Ai </ci>
+                <apply>
+                  <times/>
+                  <ci> Xi_ki </ci>
+                  <ci> Yi0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> Xi_bi </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Yi0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> Yi_alpha_i </ci>
+              <ci> Xi0 </ci>
+            </apply>
+            <ci> Yi_beta_i </ci>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

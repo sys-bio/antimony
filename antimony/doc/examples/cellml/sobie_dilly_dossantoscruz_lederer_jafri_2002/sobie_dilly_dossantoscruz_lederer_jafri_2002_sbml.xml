@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="sobie_dilly_dossantoscruz_lederer_jafri_2002_version01____main" name="sobie_dilly_dossantoscruz_lederer_jafri_2002_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Ca_SS" constant="false"/>
+      <parameter id="J_RyR" constant="false"/>
+      <parameter id="J_buf" constant="false"/>
+      <parameter id="V_SS"/>
+      <parameter id="subspace_Ca_myo" value="0.1"/>
+      <parameter id="subspace_F" value="96480"/>
+      <parameter id="subspace_J_release" constant="false"/>
+      <parameter id="subspace_J_DHPR" constant="false"/>
+      <parameter id="subspace_J_efflux" constant="false"/>
+      <parameter id="subspace_i" value="0"/>
+      <parameter id="subspace_N" value="50"/>
+      <parameter id="subspace_I_DHPR" value="-0.5"/>
+      <parameter id="subspace_D_RyR" value="4000"/>
+      <parameter id="subspace_Ca_B_SR_tot" value="47"/>
+      <parameter id="subspace_Ca_B_CaM_tot" value="24"/>
+      <parameter id="subspace_Ca_B_SL_tot" value="1124"/>
+      <parameter id="subspace_Ca_B_trpnC_tot" value="70"/>
+      <parameter id="subspace_Ca_B_SR" constant="false"/>
+      <parameter id="subspace_Ca_B_CaM" constant="false"/>
+      <parameter id="subspace_Ca_B_SL" constant="false"/>
+      <parameter id="subspace_Ca_B_trpnC" constant="false"/>
+      <parameter id="subspace_k_on_SR" value="115"/>
+      <parameter id="subspace_k_off_SR" value="100"/>
+      <parameter id="subspace_k_on_CaM" value="100"/>
+      <parameter id="subspace_k_off_CaM" value="38"/>
+      <parameter id="subspace_k_on_trpnC" value="39"/>
+      <parameter id="subspace_k_off_trpnC" value="20"/>
+      <parameter id="subspace_k_on_SL" value="115"/>
+      <parameter id="subspace_k_off_SL" value="1000"/>
+      <parameter id="subspace_tau_efflux"/>
+      <parameter id="subspace_RyR_open" constant="false"/>
+      <parameter id="Ca_lumen" constant="false"/>
+      <parameter id="lumen_J_refill" constant="false"/>
+      <parameter id="lumen_tau_refill" value="0.01"/>
+      <parameter id="lumen_Ca_NSR" value="1"/>
+      <parameter id="lumen_V_JSR"/>
+      <parameter id="lumen_CSQ_tot" value="10"/>
+      <parameter id="lumen_K_CSQ" value="0.8"/>
+      <parameter id="lumen_beta_JSR" constant="false"/>
+      <parameter id="RyR_receptor_gating_k_coop" value="1"/>
+      <parameter id="RyR_receptor_gating_k_close" constant="false"/>
+      <parameter id="RyR_receptor_gating_k_open" constant="false"/>
+      <parameter id="RyR_receptor_gating_CF_close" constant="false"/>
+      <parameter id="RyR_receptor_gating_CF_open" constant="false"/>
+      <parameter id="RyR_receptor_gating_K_m" constant="false"/>
+      <parameter id="spark_model_Ca" constant="false"/>
+      <parameter id="spark_model_Ca_F" constant="false"/>
+      <parameter id="spark_model_DC" value="250"/>
+      <parameter id="spark_model_DF" value="20"/>
+      <parameter id="spark_model_F_T" value="50"/>
+      <parameter id="spark_model_J_pump" constant="false"/>
+      <parameter id="spark_model_J_leak" constant="false"/>
+      <parameter id="spark_model_J_dye" constant="false"/>
+      <parameter id="spark_model_Vmax_pump" value="208"/>
+      <parameter id="spark_model_Km_pump" value="0.184"/>
+      <parameter id="spark_model_m" value="3.9"/>
+      <parameter id="spark_model_C_infinity" value="100"/>
+      <parameter id="spark_model_k_F_plus" value="80"/>
+      <parameter id="spark_model_k_F_minus" value="40"/>
+      <parameter id="time_"/>
+      <parameter id="subspace_sum"/>
+      <parameter id="subspace_lowlimit"/>
+      <parameter id="lumen_CSQ"/>
+      <parameter id="RyR_receptor_gating_N_closed"/>
+      <parameter id="RyR_receptor_gating_N_open"/>
+      <parameter id="spark_model_Ca_trpnC"/>
+      <parameter id="spark_model_Ca_CaM"/>
+      <parameter id="spark_model_J_n"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="V_SS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> -13 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="subspace_tau_efflux">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 7 <sep/> -7 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="lumen_V_JSR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> -11 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="Ca_SS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> subspace_J_release </ci>
+            <ci> subspace_J_DHPR </ci>
+            <ci> subspace_J_efflux </ci>
+            <ci> J_buf </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="J_RyR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> subspace_D_RyR </ci>
+            <apply>
+              <minus/>
+              <ci> Ca_lumen </ci>
+              <ci> Ca_SS </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_buf">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> subspace_k_on_CaM </ci>
+                <ci> Ca_SS </ci>
+                <ci> subspace_Ca_B_CaM </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> subspace_k_off_CaM </ci>
+                <apply>
+                  <minus/>
+                  <ci> subspace_Ca_B_CaM_tot </ci>
+                  <ci> subspace_Ca_B_CaM </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> subspace_k_on_trpnC </ci>
+                <ci> Ca_SS </ci>
+                <ci> subspace_Ca_B_trpnC </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> subspace_k_off_trpnC </ci>
+                <apply>
+                  <minus/>
+                  <ci> subspace_Ca_B_trpnC_tot </ci>
+                  <ci> subspace_Ca_B_trpnC </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> subspace_k_on_SR </ci>
+                <ci> Ca_SS </ci>
+                <ci> subspace_Ca_B_SR </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> subspace_k_off_SR </ci>
+                <apply>
+                  <minus/>
+                  <ci> subspace_Ca_B_SR_tot </ci>
+                  <ci> subspace_Ca_B_SR </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> subspace_k_on_SL </ci>
+                <ci> Ca_SS </ci>
+                <ci> subspace_Ca_B_SL </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> subspace_k_off_SL </ci>
+                <apply>
+                  <minus/>
+                  <ci> subspace_Ca_B_SL_tot </ci>
+                  <ci> subspace_Ca_B_SL </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="subspace_J_release">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> subspace_sum </ci>
+            <apply>
+              <ci> bvar </ci>
+              <ci> subspace_i </ci>
+            </apply>
+            <apply>
+              <ci> subspace_lowlimit </ci>
+              <cn> 1 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <ci> subspace_RyR_open </ci>
+              <ci> J_RyR </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="subspace_J_DHPR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <ci> subspace_I_DHPR </ci>
+              <apply>
+                <times/>
+                <cn> 2 </cn>
+                <ci> subspace_F </ci>
+                <ci> V_SS </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="subspace_J_efflux">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> subspace_Ca_myo </ci>
+              <ci> Ca_SS </ci>
+            </apply>
+            <ci> subspace_tau_efflux </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="subspace_Ca_B_SR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> subspace_k_on_SR </ci>
+              <ci> Ca_SS </ci>
+              <ci> subspace_Ca_B_SR </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> subspace_k_off_SR </ci>
+              <apply>
+                <minus/>
+                <ci> subspace_Ca_B_SR_tot </ci>
+                <ci> subspace_Ca_B_SR </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="subspace_Ca_B_CaM">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> subspace_k_on_CaM </ci>
+              <ci> Ca_SS </ci>
+              <ci> subspace_Ca_B_CaM </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> subspace_k_off_CaM </ci>
+              <apply>
+                <minus/>
+                <ci> subspace_Ca_B_CaM_tot </ci>
+                <ci> subspace_Ca_B_CaM </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="subspace_Ca_B_SL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> subspace_k_on_SL </ci>
+              <ci> Ca_SS </ci>
+              <ci> subspace_Ca_B_SL </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> subspace_k_off_SL </ci>
+              <apply>
+                <minus/>
+                <ci> subspace_Ca_B_SL_tot </ci>
+                <ci> subspace_Ca_B_SL </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="subspace_Ca_B_trpnC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> subspace_k_on_trpnC </ci>
+              <ci> Ca_SS </ci>
+              <ci> subspace_Ca_B_trpnC </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> subspace_k_off_trpnC </ci>
+              <apply>
+                <minus/>
+                <ci> subspace_Ca_B_trpnC_tot </ci>
+                <ci> subspace_Ca_B_trpnC </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="subspace_RyR_open"/>
+      <rateRule variable="Ca_lumen">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> lumen_beta_JSR </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> J_RyR </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> V_SS </ci>
+                  <ci> lumen_V_JSR </ci>
+                </apply>
+              </apply>
+              <ci> lumen_J_refill </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="lumen_J_refill">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> lumen_Ca_NSR </ci>
+              <ci> Ca_lumen </ci>
+            </apply>
+            <ci> lumen_tau_refill </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="lumen_beta_JSR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> lumen_CSQ_tot </ci>
+                  <ci> lumen_K_CSQ </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <ci> lumen_CSQ </ci>
+                    <ci> lumen_K_CSQ </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <cn> -1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="RyR_receptor_gating_k_close">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> RyR_receptor_gating_CF_close </ci>
+            <cn> 480 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="RyR_receptor_gating_k_open">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> RyR_receptor_gating_CF_open </ci>
+            <cn> 30000 </cn>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <ci> Ca_SS </ci>
+                <cn> 4 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> Ca_SS </ci>
+                  <cn> 4 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> RyR_receptor_gating_K_m </ci>
+                  <cn> 4 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="RyR_receptor_gating_CF_close">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> RyR_receptor_gating_k_coop </ci>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <plus/>
+                  <ci> RyR_receptor_gating_N_closed </ci>
+                  <cn> 1 </cn>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> RyR_receptor_gating_N_open </ci>
+                  <ci> RyR_receptor_gating_N_closed </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="RyR_receptor_gating_CF_open">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 1 </cn>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <ci> RyR_receptor_gating_N_open </ci>
+                <cn> 1 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> RyR_receptor_gating_N_open </ci>
+                <ci> RyR_receptor_gating_N_closed </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="RyR_receptor_gating_K_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> 6 </cn>
+            <apply>
+              <times/>
+              <cn> 0.0024 </cn>
+              <ci> Ca_lumen </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="spark_model_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> spark_model_DC </ci>
+              <ci> spark_model_Ca </ci>
+            </apply>
+            <ci> spark_model_J_dye </ci>
+            <ci> J_buf </ci>
+            <ci> spark_model_J_pump </ci>
+            <ci> spark_model_J_leak </ci>
+            <ci> J_RyR </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="spark_model_Ca_F">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> spark_model_DF </ci>
+              <ci> spark_model_Ca_F </ci>
+            </apply>
+            <ci> spark_model_J_dye </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="spark_model_J_pump">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> spark_model_Vmax_pump </ci>
+              <apply>
+                <power/>
+                <ci> spark_model_Ca </ci>
+                <ci> spark_model_m </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> spark_model_Km_pump </ci>
+              <apply>
+                <power/>
+                <ci> spark_model_Ca </ci>
+                <ci> spark_model_m </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="spark_model_J_leak">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> spark_model_Vmax_pump </ci>
+                <apply>
+                  <power/>
+                  <ci> spark_model_C_infinity </ci>
+                  <ci> spark_model_m </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> spark_model_Km_pump </ci>
+                <apply>
+                  <power/>
+                  <ci> spark_model_C_infinity </ci>
+                  <ci> spark_model_m </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="spark_model_J_dye">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> spark_model_k_F_plus </ci>
+              </apply>
+              <ci> spark_model_Ca </ci>
+              <apply>
+                <minus/>
+                <ci> spark_model_F_T </ci>
+                <ci> spark_model_Ca_F </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> spark_model_k_F_minus </ci>
+              <ci> spark_model_Ca_F </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

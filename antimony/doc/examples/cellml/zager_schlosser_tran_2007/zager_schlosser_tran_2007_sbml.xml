@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="zager_model_2007____main" name="zager_model_2007____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Cgen_pp0" value="0" constant="false"/>
+      <parameter id="Qpp" constant="false"/>
+      <parameter id="Ppp" value="0.59"/>
+      <parameter id="H_Cgen_pp" constant="false"/>
+      <parameter id="Cgen_pp_Vpp" value="0.188"/>
+      <parameter id="H_Cgen_B" constant="false"/>
+      <parameter id="Qt" constant="false"/>
+      <parameter id="Cgen_B0" constant="false"/>
+      <parameter id="Cgen_rp0" value="0" constant="false"/>
+      <parameter id="Prp" value="1.94"/>
+      <parameter id="Qrp" constant="false"/>
+      <parameter id="H_Cgen_rp" constant="false"/>
+      <parameter id="Cgen_rp_Vrp" value="0.012"/>
+      <parameter id="Cgen_rp_kgen_urine" value="9.5"/>
+      <parameter id="Cgen_l0" value="0" constant="false"/>
+      <parameter id="Ql" constant="false"/>
+      <parameter id="H_Cgen_l" constant="false"/>
+      <parameter id="Vl" value="0.0092"/>
+      <parameter id="Pl" value="3.61"/>
+      <parameter id="Vmax" value="25.25"/>
+      <parameter id="Km" value="0.6231"/>
+      <parameter id="vinf" constant="false"/>
+      <parameter id="H_Cgen_GI" constant="false"/>
+      <parameter id="QGI" constant="false"/>
+      <parameter id="Cgen_GI0" value="0" constant="false"/>
+      <parameter id="Cgen_GI_VGI" value="0.011"/>
+      <parameter id="Ccon_l0" value="0" constant="false"/>
+      <parameter id="H_Ccon_l" constant="false"/>
+      <parameter id="kbile" value="111.72"/>
+      <parameter id="H_Ccon_ROB" constant="false"/>
+      <parameter id="Ccon_ROB0" value="0" constant="false"/>
+      <parameter id="Ccon_ROB_VROB" value="0.2408"/>
+      <parameter id="Ccon_ROB_kcon_urine" value="0"/>
+      <parameter id="Acon_b0" value="0" constant="false"/>
+      <parameter id="Acon_b_d_t_Cgen_l" constant="false"/>
+      <parameter id="Acon_b_tbasal" value="0.0865"/>
+      <parameter id="Acon_b_ct" value="1.0107"/>
+      <parameter id="Acon_b_cgen" value="0.06561"/>
+      <parameter id="model_parameters_cv" value="1"/>
+      <parameter id="model_parameters_F" constant="false"/>
+      <parameter id="model_parameters_G" value="1" constant="false"/>
+      <parameter id="model_parameters_H" constant="false"/>
+      <parameter id="model_parameters_I" value="0" constant="false"/>
+      <parameter id="model_parameters_epsilon" value="0.1"/>
+      <parameter id="model_parameters_m_rat" value="0.25"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Cgen_pp0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> Qpp </ci>
+                <ci> H_Cgen_B </ci>
+                <ci> Cgen_B0 </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> Qpp </ci>
+                  <ci> H_Cgen_pp </ci>
+                  <ci> Cgen_pp0 </ci>
+                </apply>
+                <ci> Ppp </ci>
+              </apply>
+            </apply>
+            <ci> Cgen_pp_Vpp </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Qpp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.528 </cn>
+            <ci> Qt </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="H_Cgen_pp"/>
+      <assignmentRule variable="H_Cgen_B"/>
+      <assignmentRule variable="Qt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 14.1 </cn>
+            <apply>
+              <power/>
+              <ci> model_parameters_m_rat </ci>
+              <cn> 0.75 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Cgen_B0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> Qrp </ci>
+                  <ci> H_Cgen_rp </ci>
+                  <ci> Cgen_rp0 </ci>
+                </apply>
+                <ci> Prp </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> Qpp </ci>
+                  <ci> H_Cgen_pp </ci>
+                  <ci> Cgen_pp0 </ci>
+                </apply>
+                <ci> Ppp </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> Ql </ci>
+                    <ci> QGI </ci>
+                  </apply>
+                  <ci> H_Cgen_l </ci>
+                  <ci> Cgen_l0 </ci>
+                </apply>
+                <ci> Pl </ci>
+              </apply>
+            </apply>
+            <ci> Qt </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Cgen_rp0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> Qrp </ci>
+                  <ci> H_Cgen_B </ci>
+                  <ci> Cgen_B0 </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> Qrp </ci>
+                    <ci> H_Cgen_rp </ci>
+                    <ci> Cgen_rp0 </ci>
+                  </apply>
+                  <ci> Prp </ci>
+                </apply>
+              </apply>
+              <ci> Cgen_rp_Vrp </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Cgen_rp_kgen_urine </ci>
+              <ci> H_Cgen_rp </ci>
+              <ci> Cgen_rp0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Qrp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.289 </cn>
+            <ci> Qt </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="H_Cgen_rp"/>
+      <rateRule variable="Cgen_l0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> Ql </ci>
+                    <ci> H_Cgen_B </ci>
+                    <ci> Cgen_B0 </ci>
+                  </apply>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <plus/>
+                        <ci> Ql </ci>
+                        <ci> QGI </ci>
+                      </apply>
+                      <ci> H_Cgen_l </ci>
+                      <ci> Cgen_l0 </ci>
+                    </apply>
+                    <ci> Pl </ci>
+                  </apply>
+                </apply>
+                <ci> vinf </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> QGI </ci>
+                    <ci> H_Cgen_GI </ci>
+                    <ci> Cgen_GI0 </ci>
+                  </apply>
+                  <ci> Prp </ci>
+                </apply>
+              </apply>
+              <ci> Vl </ci>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vmax </ci>
+                <ci> H_Cgen_l </ci>
+                <ci> Cgen_l0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <apply>
+                  <times/>
+                  <ci> H_Cgen_l </ci>
+                  <ci> Cgen_l0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Ql">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.03 </cn>
+            <ci> Qt </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="H_Cgen_l"/>
+      <assignmentRule variable="vinf"/>
+      <assignmentRule variable="H_Cgen_GI"/>
+      <assignmentRule variable="QGI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.153 </cn>
+            <ci> Qt </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Cgen_GI0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> QGI </ci>
+                <ci> H_Cgen_B </ci>
+                <ci> Cgen_B0 </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> QGI </ci>
+                  <ci> H_Cgen_GI </ci>
+                  <ci> Cgen_GI0 </ci>
+                </apply>
+                <ci> Prp </ci>
+              </apply>
+            </apply>
+            <ci> Cgen_GI_VGI </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ccon_l0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Vmax </ci>
+                <ci> H_Cgen_l </ci>
+                <ci> Cgen_l0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Km </ci>
+                <apply>
+                  <times/>
+                  <ci> H_Cgen_l </ci>
+                  <ci> Cgen_l0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kbile </ci>
+                <ci> H_Ccon_l </ci>
+                <ci> Ccon_l0 </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> Ql </ci>
+                    <ci> QGI </ci>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <times/>
+                      <ci> H_Ccon_l </ci>
+                      <ci> Ccon_l0 </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> H_Ccon_ROB </ci>
+                      <ci> Ccon_ROB0 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <ci> Vl </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="H_Ccon_l"/>
+      <assignmentRule variable="H_Ccon_ROB"/>
+      <rateRule variable="Ccon_ROB0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> Ql </ci>
+                  <ci> QGI </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> H_Ccon_l </ci>
+                    <ci> Ccon_l0 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> H_Ccon_ROB </ci>
+                    <ci> Ccon_ROB0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> Ccon_ROB_VROB </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Ccon_ROB_kcon_urine </ci>
+              <ci> H_Ccon_ROB </ci>
+              <ci> Ccon_ROB0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Acon_b0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kbile </ci>
+            <ci> H_Ccon_l </ci>
+            <ci> Ccon_l0 </ci>
+            <ci> Vl </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Acon_b_d_t_Cgen_l">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> Acon_b_tbasal </ci>
+            <apply>
+              <times/>
+              <ci> Acon_b_cgen </ci>
+              <ci> H_Cgen_l </ci>
+              <ci> Cgen_l0 </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <ci> time_ </ci>
+                    <ci> Acon_b_ct </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_F">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <cn> -2 </cn>
+                <apply>
+                  <power/>
+                  <ci> model_parameters_epsilon </ci>
+                  <cn> 3 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <power/>
+                <ci> time_ </ci>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <cn> 3 </cn>
+                <apply>
+                  <power/>
+                  <ci> model_parameters_epsilon </ci>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <power/>
+                <ci> time_ </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 1 </cn>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_H">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <cn> 3 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <cn> 1 </cn>
+                    <ci> time_ </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <power/>
+                <ci> model_parameters_epsilon </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <cn> 2 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <cn> 1 </cn>
+                    <ci> time_ </ci>
+                  </apply>
+                  <cn> 3 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <power/>
+                <ci> model_parameters_epsilon </ci>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_I">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 0 </cn>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

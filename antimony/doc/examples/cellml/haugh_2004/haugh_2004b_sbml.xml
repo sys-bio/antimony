@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="haugh_model_2004b____main" name="haugh_model_2004b____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="C0" constant="false"/>
+      <parameter id="kf1" value="0.1"/>
+      <parameter id="kr1" constant="false"/>
+      <parameter id="k_x1" constant="false"/>
+      <parameter id="kt" value="0.005"/>
+      <parameter id="ke" value="0.1"/>
+      <parameter id="L" value="0.01"/>
+      <parameter id="K_X" constant="false"/>
+      <parameter id="D0" constant="false"/>
+      <parameter id="kx2" value="4.83"/>
+      <parameter id="k_x2" value="0.016"/>
+      <parameter id="R0" constant="false"/>
+      <parameter id="R_initial" value="2000"/>
+      <parameter id="krec" value="0"/>
+      <parameter id="kdeg" value="0.05"/>
+      <parameter id="Ri0" value="200" constant="false"/>
+      <parameter id="signal_signal" constant="false"/>
+      <parameter id="kappaE" value="0.2"/>
+      <parameter id="Vs" value="10"/>
+      <parameter id="model_parameters_KD" value="1"/>
+      <parameter id="time_"/>
+      <parameter id="R1"/>
+      <parameter id="D1"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="C0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> kf1 </ci>
+              <ci> L </ci>
+              <ci> R1 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> kr1 </ci>
+              <ci> kt </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> k_x1 </ci>
+                  <ci> ke </ci>
+                </apply>
+                <ci> K_X </ci>
+                <ci> R1 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="kr1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_KD </ci>
+            <ci> kf1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_x1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.01 </cn>
+            <ci> kr1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="K_X">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> kx2 </ci>
+            <apply>
+              <plus/>
+              <ci> k_x2 </ci>
+              <ci> k_x1 </ci>
+              <ci> ke </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="D0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> K_X </ci>
+            <ci> R0 </ci>
+            <ci> C0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> R_initial </ci>
+            <apply>
+              <plus/>
+              <ci> C0 </ci>
+              <apply>
+                <times/>
+                <cn> 2 </cn>
+                <apply>
+                  <divide/>
+                  <ci> ke </ci>
+                  <ci> kt </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> krec </ci>
+                    <ci> kdeg </ci>
+                  </apply>
+                </apply>
+                <ci> D1 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ri0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kt </ci>
+              <apply>
+                <plus/>
+                <ci> R0 </ci>
+                <ci> C0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> krec </ci>
+                <ci> kdeg </ci>
+              </apply>
+              <ci> Ri0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="signal_signal">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <cn> 2 </cn>
+                <ci> D0 </ci>
+              </apply>
+              <cn> 200 </cn>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> kappaE </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn> 2 </cn>
+                  <ci> D0 </ci>
+                </apply>
+                <cn> 200 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

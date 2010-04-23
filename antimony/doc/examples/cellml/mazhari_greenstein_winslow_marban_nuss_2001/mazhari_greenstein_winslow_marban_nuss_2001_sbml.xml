@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="mazhari_greenstein_winslow_marban_nuss_2001_version01____main" name="mazhari_greenstein_winslow_marban_nuss_2001_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Vm" value="-80"/>
+      <parameter id="C10" constant="false"/>
+      <parameter id="alpha_0" constant="false"/>
+      <parameter id="beta_0" constant="false"/>
+      <parameter id="C20" constant="false"/>
+      <parameter id="Kf" value="0.0266"/>
+      <parameter id="Kb" value="0.1348"/>
+      <parameter id="C30" constant="false"/>
+      <parameter id="alpha_1" constant="false"/>
+      <parameter id="beta_1" constant="false"/>
+      <parameter id="alpha_i3" constant="false"/>
+      <parameter id="psi" constant="false"/>
+      <parameter id="I0" constant="false"/>
+      <parameter id="O0" constant="false"/>
+      <parameter id="alpha_i" constant="false"/>
+      <parameter id="beta_i" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="C10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> beta_0 </ci>
+              <ci> C20 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alpha_0 </ci>
+              <ci> C10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="alpha_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.0069 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <cn> 0.0272 </cn>
+                <ci> Vm </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="beta_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.0227 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <cn> -0.0431 </cn>
+                <ci> Vm </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> alpha_0 </ci>
+                <ci> C10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Kb </ci>
+                <ci> C30 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> beta_0 </ci>
+                <ci> C20 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Kf </ci>
+                <ci> C20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> beta_1 </ci>
+                <ci> O0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Kf </ci>
+                <ci> C20 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> psi </ci>
+                <ci> I0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> alpha_i3 </ci>
+                <ci> C30 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> alpha_1 </ci>
+                <ci> C30 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Kb </ci>
+                <ci> C30 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="alpha_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.0218 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <cn> 0.0262 </cn>
+                <ci> Vm </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="beta_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.0009 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <cn> -0.0269 </cn>
+                <ci> Vm </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="alpha_i3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="e-notation"> 1.29 <sep/> -5 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <cn type="e-notation"> 2.71 <sep/> -6 </cn>
+                <ci> Vm </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="psi">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> beta_1 </ci>
+              <ci> beta_i </ci>
+              <ci> alpha_i3 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> alpha_1 </ci>
+              <ci> alpha_i </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="I0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> alpha_i </ci>
+                <ci> O0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> alpha_i3 </ci>
+                <ci> C30 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> beta_i </ci>
+                <ci> I0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> psi </ci>
+                <ci> I0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="O0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> alpha_1 </ci>
+                <ci> C30 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> beta_i </ci>
+                <ci> I0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> beta_1 </ci>
+                <ci> O0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> alpha_i </ci>
+                <ci> O0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="alpha_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.0622 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <cn> 0.012 </cn>
+                <ci> Vm </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="beta_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.0059 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <cn> -0.0443 </cn>
+                <ci> Vm </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

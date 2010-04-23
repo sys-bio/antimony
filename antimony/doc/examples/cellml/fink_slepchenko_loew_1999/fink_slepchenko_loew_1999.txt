@@ -1,0 +1,79 @@
+//Created by libAntimony v1.3
+model fink_slepchenko_loew_1999_version01__environment(time_)
+end
+
+model fink_slepchenko_loew_1999_version01__Calcium_dynamics(Ca, time_, J_channel, J_pump, J_leak, beta)
+
+  // Rate Rules:
+  Ca' = beta * ( J_channel - J_pump + J_leak );
+
+  // Variable initializations:
+  Ca = 0.05;
+end
+
+model fink_slepchenko_loew_1999_version01__ER(Ca_ER)
+
+  // Variable initializations:
+  Ca_ER = 400.0;
+end
+
+model fink_slepchenko_loew_1999_version01__Channel_kinetics(J_channel, time_, Ca, Ca_ER)
+
+  // Assignment Rules:
+  J_channel := J_max * power( I / ( I + K_I ) * ( Ca / ( Ca + K_act )) * h , 3.0 ) * ( 1.0 - Ca / Ca_ER );
+
+  // Rate Rules:
+  h' = k_on * ( K_inh - h * ( Ca + K_inh ));
+
+  // Variable initializations:
+  J_max = 2880.0;
+  h = 0.667;
+  K_act = 0.17;
+  K_I = 0.03;
+  K_inh = 0.1;
+  k_on = 8.0;
+  I = 0.01;
+end
+
+model fink_slepchenko_loew_1999_version01__SERCA_pump_kinetics(J_pump, time_, Ca)
+
+  // Assignment Rules:
+  J_pump := V_max * (power( Ca , 2.0 ) / (power( Ca , 2.0 ) + power( K_p , 2.0 )));
+
+  // Variable initializations:
+  V_max = 5.85;
+  K_p = 0.24;
+end
+
+model fink_slepchenko_loew_1999_version01__Calcium_buffering(beta, time_)
+
+  // Assignment Rules:
+  beta := power( 1.0 + B_end / K_end + B_ex * K_ex / power( Ca_ex + K_ex , 2.0 ), -1.0 );
+
+  // Variable initializations:
+  B_end = 12.0;
+  B_ex = 11.35;
+  K_end = 0.3;
+  K_ex = 0.26;
+end
+
+model fink_slepchenko_loew_1999_version01__Leak(J_leak, time_, Ca, Ca_ER)
+
+  // Assignment Rules:
+  J_leak := L * ( 1.0 - Ca / Ca_ER );
+
+  // Variable initializations:
+  L = 0.0804;
+end
+
+model fink_slepchenko_loew_1999_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: fink_slepchenko_loew_1999_version01__environment(time_);
+  Calcium_dynamics: fink_slepchenko_loew_1999_version01__Calcium_dynamics(Ca, time_, J_channel, J_pump, J_leak, beta);
+  ER: fink_slepchenko_loew_1999_version01__ER(Ca_ER);
+  Channel_kinetics: fink_slepchenko_loew_1999_version01__Channel_kinetics(J_channel, time_, Ca, Ca_ER);
+  SERCA_pump_kinetics: fink_slepchenko_loew_1999_version01__SERCA_pump_kinetics(J_pump, time_, Ca);
+  Calcium_buffering: fink_slepchenko_loew_1999_version01__Calcium_buffering(beta, time_);
+  Leak: fink_slepchenko_loew_1999_version01__Leak(J_leak, time_, Ca, Ca_ER);
+end

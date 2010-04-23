@@ -1,0 +1,215 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to translate the equation "0  = e_t * E_es_spt * (V_spt - V_d_spt) + (one - e_t) * P_0_spt * (exp(lambda_spt * (V_spt - V_0_spt)) - one) - e_t * E_es_lvf * (V_lv - V_spt) - (1  - e_t) * P_0_lvf * (exp(lambda_lvf * (V_lv - V_spt)) - 1 ) + e_t * E_es_rvf * (V_rv + V_spt) + (1  - e_t) * P_0_rvf * (exp(lambda_rvf * (V_rv + V_spt)) - 1 )" because Antimony does not handle algebraic rules.
+
+model smith_chase_nokes_shaw_wake_2004__environment(time_)
+end
+
+model smith_chase_nokes_shaw_wake_2004__heart_parameters(R_mt, R_av, R_tc, R_pv, R_pul, R_sys, L_tc, L_pv, L_mt, L_av, V_tot, P_th)
+
+  // Variable initializations:
+  R_mt = 0.0158;
+  R_av = 0.0180;
+  R_tc = 0.0237;
+  R_pv = 0.0055;
+  R_pul = 0.1552;
+  R_sys = 1.0889;
+  L_tc = 8.0093e-5;
+  L_pv = 1.4868e-4;
+  L_mt = 7.6968e-5;
+  L_av = 1.2189e-4;
+  V_tot = 5.5;
+  P_th = -4;
+end
+
+model smith_chase_nokes_shaw_wake_2004__driver_function(e_t, time_)
+
+  // Assignment Rules:
+  e_t := A * exp(-(B) * power(tau - C, 2 ));
+  tau := piecewise( time_ , time_ <= period , time_ - period , time_ <= period * 2 , time_ - period * 2 , time_ <= period * 3 , time_ - period * 3 , time_ <= period * 4 , time_ - period * 4 , time_ <= period * 5 , time_ - period * 5 , time_ <= period * 6 , time_ - period * 6 , time_ <= period * 7 , time_ - period * 7 , time_ <= period * 8 , time_ - period * 8 , time_ <= period * 9 , time_ - period * 9 , time_ <= period * 10 , time_ - period * 10 , time_ <= period * 11 , time_ - period * 11 , time_ <= period * 12 , time_ - period * 12 , time_ <= period * 13 );
+
+  // Variable initializations:
+  A = 1;
+  B = 80;
+  C = 0.375;
+  period = 0.75;
+end
+
+model smith_chase_nokes_shaw_wake_2004__pericardium(V_pcd, P_pcd, P_peri, V_lv, V_rv, P_th)
+
+  // Assignment Rules:
+  V_pcd := V_lv + V_rv;
+  P_pcd := P_0_pcd * (exp(lambda_pcd * (V_pcd - V_0_pcd)) - 1 );
+  P_peri := P_pcd + P_th;
+
+  // Variable initializations:
+  P_0_pcd = 0.5003;
+  V_0_pcd = 200;
+  lambda_pcd = 0.03;
+end
+
+model smith_chase_nokes_shaw_wake_2004__lvf_calculator(P_es_lvf, P_ed_lvf, E_es_lvf, V_lvf, P_0_lvf, lambda_lvf)
+
+  // Assignment Rules:
+  P_es_lvf := E_es_lvf * (V_lvf - V_d_lvf);
+  P_ed_lvf := P_0_lvf * (exp(lambda_lvf * (V_lvf - V_0_lvf)) - 1 );
+
+  // Variable initializations:
+  E_es_lvf = 2.8798;
+  V_d_lvf = 0;
+  P_0_lvf = 0.1203;
+  lambda_lvf = 0.033;
+  V_0_lvf = 0;
+end
+
+model smith_chase_nokes_shaw_wake_2004__left_ventricle(V_lvf, P_lvf, P_lv, V_lv, time_, V_spt, e_t, P_peri, P_es_lvf, P_ed_lvf, R_mt, R_av, P_pu, P_ao, E_es_lvf, lambda_lvf, P_0_lvf, Q_mt, Q_av)
+
+  // Sub-modules, and any changes to those submodules:
+  lvf_calculator: smith_chase_nokes_shaw_wake_2004__lvf_calculator(P_es_lvf, P_ed_lvf, E_es_lvf, V_lvf, P_0_lvf, lambda_lvf);
+
+  // Assignment Rules:
+  V_lvf := V_lv - V_spt;
+  P_lvf := e_t * P_es_lvf + (1 - e_t) * P_ed_lvf;
+  P_lv := P_lvf + P_peri;
+
+  // Rate Rules:
+  V_lv' = piecewise( 0 , ( Q_mt < 0) && (Q_av < 0 ), -(Q_av) , Q_mt < 0 , Q_mt , Q_av < 0 , Q_mt - Q_av );
+
+  // Variable initializations:
+  V_lv = 94.6812;
+end
+
+model smith_chase_nokes_shaw_wake_2004__rvf_calculator(P_es_rvf, P_ed_rvf, E_es_rvf, V_rvf, P_0_rvf, lambda_rvf)
+
+  // Assignment Rules:
+  P_es_rvf := E_es_rvf * (V_rvf - V_d_rvf);
+  P_ed_rvf := P_0_rvf * (exp(lambda_rvf * (V_rvf - V_0_rvf)) - 1 );
+
+  // Variable initializations:
+  E_es_rvf = 0.585;
+  V_d_rvf = 0;
+  P_0_rvf = 0.2157;
+  lambda_rvf = 0.023;
+  V_0_rvf = 0;
+end
+
+model smith_chase_nokes_shaw_wake_2004__right_ventricle(V_rvf, P_rvf, P_rv, V_rv, time_, V_spt, e_t, P_peri, P_es_rvf, P_ed_rvf, R_tc, R_pv, P_pa, P_vc, E_es_rvf, lambda_rvf, P_0_rvf, Q_tc, Q_pv)
+
+  // Sub-modules, and any changes to those submodules:
+  rvf_calculator: smith_chase_nokes_shaw_wake_2004__rvf_calculator(P_es_rvf, P_ed_rvf, E_es_rvf, V_rvf, P_0_rvf, lambda_rvf);
+
+  // Assignment Rules:
+  V_rvf := V_rv + V_spt;
+  P_rvf := e_t * P_es_rvf + (1 - e_t) * P_ed_rvf;
+  P_rv := P_rvf + P_peri;
+
+  // Rate Rules:
+  V_rv' = piecewise( 0 , ( Q_tc < 0) && (Q_pv < 0 ), -(Q_pv) , Q_tc < 0 , Q_tc , Q_pv < 0 , Q_tc - Q_pv );
+
+  // Variable initializations:
+  V_rv = 90.7302;
+end
+
+model smith_chase_nokes_shaw_wake_2004__septum(V_spt, P_lv, P_rv, e_t, E_es_lvf, P_0_lvf, lambda_lvf, V_lv, E_es_rvf, P_0_rvf, V_rv, lambda_rvf)
+
+  // Variable initializations:
+  E_es_spt = 48.754;
+  V_d_spt = 2;
+  P_0_spt = 1.1101;
+  lambda_spt = 0.435;
+  V_0_spt = 2;
+  one = 1;
+end
+
+model smith_chase_nokes_shaw_wake_2004__pulmonary_artery(P_pa, time_, R_pv, R_pul, P_th, P_rv, P_pu, Q_pul, Q_pv)
+
+  // Assignment Rules:
+  P_pa := E_es_pa * (V_pa - V_d_pa) + P_th;
+
+  // Rate Rules:
+  V_pa' = piecewise( -(Q_pul) , Q_pv < 0 , Q_pv - Q_pul );
+
+  // Variable initializations:
+  E_es_pa = 0.369;
+  V_pa = 43.0123;
+  V_d_pa = 0;
+end
+
+model smith_chase_nokes_shaw_wake_2004__pulmonary_vein(P_pu, time_, R_pul, R_mt, P_th, P_pa, P_lv, Q_mt, Q_pul)
+
+  // Assignment Rules:
+  P_pu := E_es_pu * (V_pu - V_d_pu) + P_th;
+
+  // Rate Rules:
+  V_pu' = piecewise( Q_pul , Q_mt < 0 , Q_pul - Q_mt );
+
+  // Variable initializations:
+  E_es_pu = 0.0073;
+  V_pu = 808.4579;
+  V_d_pu = 0;
+end
+
+model smith_chase_nokes_shaw_wake_2004__aorta(P_ao, time_, R_av, R_sys, P_lv, P_vc, Q_av, Q_sys)
+
+  // Assignment Rules:
+  P_ao := E_es_ao * (V_ao - V_d_ao);
+
+  // Rate Rules:
+  V_ao' = piecewise( -(Q_sys) , Q_av < 0 , Q_av - Q_sys );
+
+  // Variable initializations:
+  E_es_ao = 0.6913;
+  V_ao = 133.3381;
+  V_d_ao = 0;
+end
+
+model smith_chase_nokes_shaw_wake_2004__vena_cava(P_vc, time_, R_sys, R_tc, P_ao, P_rv, Q_sys, Q_tc)
+
+  // Assignment Rules:
+  P_vc := E_es_vc * (V_vc - V_d_vc);
+
+  // Rate Rules:
+  V_vc' = piecewise( Q_sys , Q_tc < 0 , Q_sys - Q_tc );
+
+  // Variable initializations:
+  E_es_vc = 0.0059;
+  V_vc = 329.7803;
+  V_d_vc = 0;
+end
+
+model smith_chase_nokes_shaw_wake_2004__flow(Q_sys, Q_pul, Q_mt, Q_av, Q_tc, Q_pv, time_, P_ao, P_vc, P_pa, P_pu, P_rv, P_lv, R_sys, R_pul, R_mt, R_av, R_tc, R_pv, L_mt, L_av, L_tc, L_pv)
+
+  // Assignment Rules:
+  Q_sys := (P_ao - P_vc) / R_sys;
+  Q_pul := (P_pa - P_pu) / R_pul;
+
+  // Rate Rules:
+  Q_mt' = piecewise( 0 , ( P_pu - P_lv < 0) && (Q_mt < 0 ), (P_pu - P_lv - Q_mt * R_mt) / L_mt );
+  Q_av' = piecewise( 0 , ( P_lv - P_ao < 0) && (Q_av < 0 ), (P_lv - P_ao - Q_av * R_av) / L_av );
+  Q_tc' = piecewise( 0 , ( P_vc - P_rv < 0) && (Q_tc < 0 ), (P_vc - P_rv - Q_tc * R_tc) / L_tc );
+  Q_pv' = piecewise( 0 , ( P_rv - P_pa < 0) && (Q_pv < 0 ), (P_rv - P_pa - Q_pv * R_pv) / L_pv );
+
+  // Variable initializations:
+  Q_mt = 245.5813;
+  Q_av = 0;
+  Q_tc = 190.0661;
+  Q_pv = 0;
+end
+
+model smith_chase_nokes_shaw_wake_2004____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: smith_chase_nokes_shaw_wake_2004__environment(time_);
+  heart_parameters: smith_chase_nokes_shaw_wake_2004__heart_parameters(R_mt, R_av, R_tc, R_pv, R_pul, R_sys, L_tc, L_pv, L_mt, L_av, V_tot, P_th);
+  driver_function: smith_chase_nokes_shaw_wake_2004__driver_function(e_t, time_);
+  pericardium: smith_chase_nokes_shaw_wake_2004__pericardium(V_pcd, P_pcd, P_peri, V_lv, V_rv, P_th);
+  left_ventricle: smith_chase_nokes_shaw_wake_2004__left_ventricle(V_lvf, P_lvf, P_lv, V_lv, time_, V_spt, e_t, P_peri, P_es_lvf, P_ed_lvf, R_mt, R_av, P_pu, P_ao, E_es_lvf, lambda_lvf, P_0_lvf, Q_mt, Q_av);
+  right_ventricle: smith_chase_nokes_shaw_wake_2004__right_ventricle(V_rvf, P_rvf, P_rv, V_rv, time_, V_spt, e_t, P_peri, P_es_rvf, P_ed_rvf, R_tc, R_pv, P_pa, P_vc, E_es_rvf, lambda_rvf, P_0_rvf, Q_tc, Q_pv);
+  septum: smith_chase_nokes_shaw_wake_2004__septum(V_spt, P_lv, P_rv, e_t, E_es_lvf, P_0_lvf, lambda_lvf, V_lv, E_es_rvf, P_0_rvf, V_rv, lambda_rvf);
+  pulmonary_artery: smith_chase_nokes_shaw_wake_2004__pulmonary_artery(P_pa, time_, R_pv, R_pul, P_th, P_rv, P_pu, Q_pul, Q_pv);
+  pulmonary_vein: smith_chase_nokes_shaw_wake_2004__pulmonary_vein(P_pu, time_, R_pul, R_mt, P_th, P_pa, P_lv, Q_mt, Q_pul);
+  aorta: smith_chase_nokes_shaw_wake_2004__aorta(P_ao, time_, R_av, R_sys, P_lv, P_vc, Q_av, Q_sys);
+  vena_cava: smith_chase_nokes_shaw_wake_2004__vena_cava(P_vc, time_, R_sys, R_tc, P_ao, P_rv, Q_sys, Q_tc);
+  flow: smith_chase_nokes_shaw_wake_2004__flow(Q_sys, Q_pul, Q_mt, Q_av, Q_tc, Q_pv, time_, P_ao, P_vc, P_pa, P_pu, P_rv, P_lv, R_sys, R_pul, R_mt, R_av, R_tc, R_pv, L_mt, L_av, L_tc, L_pv);
+end

@@ -1,0 +1,81 @@
+//Created by libAntimony v1.3
+model goldbeter_model_1990__environment(time_)
+end
+
+model goldbeter_model_1990__v_2(Z, v_2)
+
+  // Assignment Rules:
+  v_2 := V_M2 * (power(Z, n) / (power(K_2, n) + power(Z, n)));
+
+  // Variable initializations:
+  V_M2 = 65;
+  K_2 = 1;
+  n = 2;
+end
+
+model goldbeter_model_1990__v_3(Z, Y, v_3)
+
+  // Assignment Rules:
+  v_3 := V_M3 * (power(Y, m) / (power(K_R, m) + power(Y, m))) * (power(Z, p) / (power(K_A, p) + power(Z, p)));
+
+  // Variable initializations:
+  V_M3 = 500;
+  K_R = 2;
+  K_A = 0.9;
+  m = 2;
+  p = 4;
+end
+
+model goldbeter_model_1990__Ca(time_, Z, Y, v_2, v_3)
+
+  // Sub-modules, and any changes to those submodules:
+  v_2_mod: goldbeter_model_1990__v_2(Z, v_2);
+  v_3_mod: goldbeter_model_1990__v_3(Z, Y, v_3);
+
+  // Rate Rules:
+  Z' = v_0 + v_1 * beta + -(v_2) + v_3 + k_f * Y + -((k * Z));
+  Y' = v_2 + -(v_3) + -((k_f * Y));
+
+  // Variable initializations:
+  Z = 0.5;
+  Y = 1.75;
+  v_0 = 1;
+  v_1 = 7.3;
+  k = 10;
+  k_f = 1;
+  beta = 0.301;
+end
+
+model goldbeter_model_1990__v_K(Z, v_K)
+
+  // Assignment Rules:
+  v_K := V_MK * (Z / (K_a + Z));
+
+  // Variable initializations:
+  V_MK = 40;
+  K_a = 2.5;
+end
+
+model goldbeter_model_1990__W_star(time_, Z, v_K)
+
+  // Sub-modules, and any changes to those submodules:
+  v_K_mod: goldbeter_model_1990__v_K(Z, v_K);
+
+  // Rate Rules:
+  W_star' = v_P / W_T * (v_K / v_P * ((1 - W_star) / (K_1 + 1 + -(W_star))) - W_star / (K_2 + W_star));
+
+  // Variable initializations:
+  W_star = 0;
+  W_T = 1;
+  v_P = 5;
+  K_1 = 0.1;
+  K_2 = 0.1;
+end
+
+model goldbeter_model_1990____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: goldbeter_model_1990__environment(time_);
+  Ca: goldbeter_model_1990__Ca(time_, Z, Y, v_2, v_3);
+  W_star: goldbeter_model_1990__W_star(time_, Z, v_K);
+end

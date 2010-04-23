@@ -1,0 +1,92 @@
+//Created by libAntimony v1.3
+model li_1996__environment(time_)
+end
+
+model li_1996__soma_compartment(time_, C_m, V_s, V_Na, V_D, g_c, p, n, h, m_infinity)
+
+  // Assignment Rules:
+  I_Na := g_Na * h * (V_s - V_Na) * power(m_infinity, 3 );
+  I_soma := I_Na + I_K_DR + I_h;
+  I_h := g_h * h * (V_s + 30 );
+  I_K_DR := g_K_DR * (V_s - V_K) * power(n, 2 );
+
+  // Rate Rules:
+  V_s' = (-(I_soma) - g_c / p * (V_D - V_s)) / C_m;
+
+  // Variable initializations:
+  V_s = -64;
+  V_Na = 55;
+  V_K = -85;
+  g_K_DR = 3.2;
+  g_Na = 3.2;
+  g_h = 0.1;
+end
+
+model li_1996__dendritic_compartment(time_, C_m, V_D, V_Na, V_s, g_c, p, n)
+
+  // Assignment Rules:
+  I_D := I_NMDA + I_pump - I_pump_ss + I_L;
+  I_L := g_L * (V_D - V_L);
+  I_pump := R_pump * p / (1 - p) * power(V_D * 1 + Na, 3 ) / (power(K_p, 3 ) + power(V_D * 1 + Na, 3 ));
+  I_pump_ss := R_pump * p / (1 - p) * power(Na_eq, 3 ) / (power(K_Na, 3 ) + power(Na_eq, 3 ));
+  I_NMDA := g_NMDA * f_NMDA * V_D;
+  I_Na_NMDA := g_Na_NMDA * f_NMDA * (V_D - V_Na);
+  R_pump := 18 * (p / (1 - p));
+  f_NMDA := 1 / (1 + 0.141 * exp(-(V_D) / q));
+  g_NMDA := 1.25 * (p / (1 - p));
+  g_Na_NMDA := 1 * (p / (1 - p));
+  g_L := 0.18 * (p / (1 - p));
+
+  // Rate Rules:
+  V_D' = (-(I_D) + g_c / (1 - p) * (V_s - V_D)) / C_m;
+  Na' = alpha * (-(I_Na_NMDA) - 3 * (I_pump - I_pump_ss));
+
+  // Variable initializations:
+  V_D = -77;
+  V_L = -50;
+  alpha = 0.173;
+  Na = 5.09;
+  Na_eq = 8;
+  K_p = 15;
+  K_Na = 15;
+  q = 12.5;
+end
+
+model li_1996__model_parameters(C_m, g_c, p)
+
+  // Variable initializations:
+  C_m = 1;
+  g_c = 0.1;
+  p = 0.5;
+end
+
+model li_1996__gating_variables(m_infinity, n, h, time_, V_s, V_D)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp(-((V_s + 35 )) / 6.2 ));
+  n_infinity := 1 / (1 + exp(-((V_s + 31 )) / 5.3 ));
+  h_infinity := 1 / (1 + exp((V_s + 30 ) / 8.3 ));
+  r_infinity := 1 / (1 + exp((V_s + 80 ) / 8 ));
+  tau_h := 0.43 + 0.86 / (1 + exp((V_s + 25 ) / 5 ));
+  tau_n := (0.8 + 1.6 / (1 + exp(0.1 * (V_s + 25 )))) / (1 + exp(-(0.1 ) * (V_s + 70 )));
+  tau_mL := 0.4 / (5 * exp(-((V_D + 11 )) / 8.3 ) + -((V_D + 11 )) / 8.3 / (exp(-((V_D + 11 )) / 8.3 ) - 1 ));
+  tau_r := 190;
+
+  // Rate Rules:
+  n' = (n_infinity - n) / tau_n;
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  n = 0.002;
+  h = 1;
+end
+
+model li_1996____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: li_1996__environment(time_);
+  soma_compartment: li_1996__soma_compartment(time_, C_m, V_s, V_Na, V_D, g_c, p, n, h, m_infinity);
+  dendritic_compartment: li_1996__dendritic_compartment(time_, C_m, V_D, V_Na, V_s, g_c, p, n);
+  model_parameters: li_1996__model_parameters(C_m, g_c, p);
+  gating_variables: li_1996__gating_variables(m_infinity, n, h, time_, V_s, V_D);
+end

@@ -1,0 +1,76 @@
+//Created by libAntimony v1.3
+model wodarz_hamer_model_2007_version01__environment(time_)
+end
+
+model wodarz_hamer_model_2007_version01__T(T, delta, gamma, lambda_, v, time_)
+
+  // Rate Rules:
+  T' = lambda_ - ( delta * T + gamma * T * v );
+
+  // Variable initializations:
+  T = 1000.0;
+end
+
+model wodarz_hamer_model_2007_version01__I(I, alpha, gamma, T, v, time_)
+
+  // Rate Rules:
+  I' = gamma * T * v - alpha * I;
+
+  // Variable initializations:
+  I = 0.0001;
+end
+
+model wodarz_hamer_model_2007_version01__x(x, r, v, y, k, d, beta, time_)
+
+  // Rate Rules:
+  x' = r * x * v * ( 1.0 - ( x + y ) / k ) - ( d * x + beta * x * v );
+
+  // Variable initializations:
+  x = 10.0;
+end
+
+model wodarz_hamer_model_2007_version01__y(y, r, v, x, k, a, beta, time_)
+
+  // Rate Rules:
+  y' = beta * x * v + r * y * v * ( 1.0 - ( x + y ) / k ) - a * y;
+
+  // Variable initializations:
+  y = 0.0;
+end
+
+model wodarz_hamer_model_2007_version01__v(v, u, eta, y, I, time_)
+
+  // Rate Rules:
+  v' = eta * ( y + I ) - u * v;
+
+  // Variable initializations:
+  v = 0.0001;
+end
+
+model wodarz_hamer_model_2007_version01__model_parameters(r, k, d, beta, a, eta, u, alpha, gamma, delta, lambda_)
+
+  // Variable initializations:
+  r = 1.0;
+  k = 10.0;
+  d = 0.001;
+  beta = 0.3;
+  a = 0.2;
+  eta = 1.0;
+  u = 1.0;
+  alpha = 0.2;
+  gamma = 0.005;
+  delta = 0.01;
+  lambda_ = 1.0;
+end
+
+model wodarz_hamer_model_2007_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: wodarz_hamer_model_2007_version01__environment(time_);
+  T: wodarz_hamer_model_2007_version01__T(T0, delta, gamma, lambda_, v0, time_);
+  I: wodarz_hamer_model_2007_version01__I(I0, alpha, gamma, T0, v0, time_);
+  x: wodarz_hamer_model_2007_version01__x(x0, r, v0, y0, k, d, beta, time_);
+  y: wodarz_hamer_model_2007_version01__y(y0, r, v0, x0, k, a, beta, time_);
+  v: wodarz_hamer_model_2007_version01__v(v0, u, eta, y0, I0, time_);
+  model_parameters: wodarz_hamer_model_2007_version01__model_parameters(r, k, d, beta, a, eta, u, alpha, gamma, delta, lambda_);
+end

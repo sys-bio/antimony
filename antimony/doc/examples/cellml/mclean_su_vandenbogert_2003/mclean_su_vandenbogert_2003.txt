@@ -1,0 +1,167 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    In module 'mclean_2003____main', the variables g_V_CE0 and V_CE.g_V_CE were unable to be set as equivalent:  Loop detected:  'V_CE.g_V_CE' may not be set to be equal to 'g_V_CE0' because g_V_CE0's definition already includes V_CE.g_V_CE either directly or by proxy.
+
+model mclean_2003__environment(time_)
+end
+
+model mclean_2003__F_CE(F_CE, f_L_CE, g_V_CE, a)
+
+  // Assignment Rules:
+  F_CE := f_L_CE * g_V_CE * a;
+end
+
+model mclean_2003__f_L_CE(f_L_CE, F_min, F_max, L_CE, L_CE_opt)
+
+  // Assignment Rules:
+  f_L_CE := F_max * (1 * (1 - L_CE) - power(L_CE_opt, 2 )) / (power(W, 2 ) * power(L_CE_opt, 2 ));
+
+  // Variable initializations:
+  F_min = 10;
+  W = 0.63;
+end
+
+model mclean_2003__g_V_CE(g_V_CE, lambda_a, V_CE, d1, d2, d3)
+
+  // Assignment Rules:
+  g_V_CE := piecewise( (lambda_a * V_max + V_CE) / (lambda_a * V_max - V_CE / A) , V_CE <= 0 , (g_max * V_CE + d1) / (V_CE + d1) , ( 0 < V_CE) && (V_CE <= gamma * d1 ), d3 + d2 * V_CE , V_CE > gamma * d1 );
+
+  // Variable initializations:
+  V_max = 0.93;
+  A = 0.25;
+  g_max = 1.5;
+  gamma = 5.67;
+end
+
+model mclean_2003__d1(d1)
+
+  // Assignment Rules:
+  d1 := V_max * A * (g_max - 1 ) / (S * (A + 1 ));
+
+  // Variable initializations:
+  V_max = 0.93;
+  A = 0.25;
+  g_max = 1.5;
+  S = 2;
+end
+
+model mclean_2003__d2(d2)
+
+  // Assignment Rules:
+  d2 := S * (A + 1 ) / (V_max * A * power(gamma + 1 , 2 ));
+
+  // Variable initializations:
+  S = 2;
+  A = 0.25;
+  V_max = 0.93;
+  gamma = 5.67;
+end
+
+model mclean_2003__d3(d3)
+
+  // Assignment Rules:
+  d3 := (g_max - 1 ) * power(gamma, 2 ) / power(gamma + 1 , 2 ) + 1;
+
+  // Variable initializations:
+  g_max = 1.5;
+  gamma = 5.67;
+end
+
+model mclean_2003__F_SEE(F_SEE, L_SEE)
+
+  // Assignment Rules:
+  F_SEE := piecewise( 0 , L_SEE <= L_slack , k_SEE * power(L_SEE - L_slack, 2 ) );
+
+  // Variable initializations:
+  k_SEE = 1000000;
+  L_slack = 0.0025;
+end
+
+model mclean_2003__F_PEE(F_PEE, k_PEE, L_CE)
+
+  // Assignment Rules:
+  F_PEE := piecewise( 0 , L_CE <= L_slack , k_PEE * power(L_CE - L_slack, 2 ) );
+
+  // Variable initializations:
+  L_slack = 0.0025;
+end
+
+model mclean_2003__k_PEE(k_PEE, F_max)
+
+  // Assignment Rules:
+  k_PEE := F_max / power(W * L_CE_opt, 2 );
+
+  // Variable initializations:
+  W = 0.63;
+  L_CE_opt = 0.01;
+end
+
+model mclean_2003__V_CE(V_CE, g_V_CE, F_SEE, L_m, L_CE, F_PEE, a, f_L_CE)
+
+  // Assignment Rules:
+  V_CE := 1 * (1 / g_V_CE * (F_SEE * (L_m - L_CE) - F_PEE * L_CE) / (a * f_L_CE));
+end
+
+model mclean_2003__F_m(F_m, F_SEE, L_m, L_CE)
+
+  // Assignment Rules:
+  F_m := F_SEE;
+end
+
+model mclean_2003__user_defined_constants(a, F_max, L_CE_opt)
+
+  // Variable initializations:
+  a = 0.8;
+  F_max = 7000;
+  L_CE_opt = 0.093;
+end
+
+model mclean_2003__lambda_a(a, lambda_a)
+
+  // Assignment Rules:
+  lambda_a := 1 * (1 - exp(-(3.82 ) * a) + a * exp(-(3.82 )));
+end
+
+model mclean_2003__L_CE(L_CE, V_CE, time_)
+
+  // Rate Rules:
+  L_CE' = 1 * V_CE;
+
+  // Variable initializations:
+  L_CE = 0.038;
+end
+
+model mclean_2003__L_SEE(L_SEE, L_m, L_CE)
+
+  // Assignment Rules:
+  L_SEE := L_m - L_CE;
+end
+
+model mclean_2003__L_m(L_m, time_)
+
+  // Assignment Rules:
+  L_m := piecewise( 0.038 , time_ <= 1 , 0.038 + 0.002 * (time_ - 1 ) , ( time_ > 1) && (time_ < 2 ), 0.04 );
+end
+
+model mclean_2003____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: mclean_2003__environment(time_);
+  F_CE: mclean_2003__F_CE(F_CE0, f_L_CE0, g_V_CE0, a);
+  f_L_CE: mclean_2003__f_L_CE(f_L_CE0, F_min, F_max, L_CE0, L_CE_opt);
+  g_V_CE: mclean_2003__g_V_CE(g_V_CE0, lambda_a0, V_CE0, d10, d20, d30);
+  d1: mclean_2003__d1(d10);
+  d2: mclean_2003__d2(d20);
+  d3: mclean_2003__d3(d30);
+  F_SEE: mclean_2003__F_SEE(F_SEE0, L_SEE0);
+  F_PEE: mclean_2003__F_PEE(F_PEE0, k_PEE0, L_CE0);
+  k_PEE: mclean_2003__k_PEE(k_PEE0, F_max);
+  V_CE: mclean_2003__V_CE(V_CE0, g_V_CE1, F_SEE0, L_m0, L_CE0, F_PEE0, a, f_L_CE0);
+  F_m: mclean_2003__F_m(F_m0, F_SEE0, L_m0, L_CE0);
+  user_defined_constants: mclean_2003__user_defined_constants(a, F_max, L_CE_opt);
+  lambda_a: mclean_2003__lambda_a(a, lambda_a0);
+  L_CE: mclean_2003__L_CE(L_CE0, V_CE0, time_);
+  L_SEE: mclean_2003__L_SEE(L_SEE0, L_m0, L_CE0);
+  L_m: mclean_2003__L_m(L_m0, time_);
+end

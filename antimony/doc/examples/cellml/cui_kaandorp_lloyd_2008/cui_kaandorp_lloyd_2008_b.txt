@@ -1,0 +1,235 @@
+//Created by libAntimony v1.3
+model cui_kaandorp_lloyd_b_2008_version01__environment(time_)
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Py(Py, Zn, Py1, r3, r4, time_)
+
+  // Rate Rules:
+  Py' = r4 * Py1 - r3 * power( Zn , 2 ) * Py;
+
+  // Variable initializations:
+  Py = 25.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Py1(Py1, Zn, Py, Dw, Qw2, r3, r4, k_1, k1a, time_)
+
+  // Rate Rules:
+  Py1' = r3 * power( Zn , 2 ) * Py + k_1 * Qw2 - ( r4 * Py1 + k1a * Dw * Py1 );
+
+  // Variable initializations:
+  Py1 = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Dw(Dw, Qw2, Py1, Qw1, Rw, k1a, k_1, k2, k_2, k3, time_)
+
+  // Rate Rules:
+  Dw' = k_1 * Qw2 + k3 * Qw1 + k_2 * Qw1 - ( k1a * Dw * Py1 + k2 * Dw * Rw );
+
+  // Variable initializations:
+  Dw = 4.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Rw(Rw, Dw, Qw1, k2, k_2, k3, time_)
+
+  // Rate Rules:
+  Rw' = k3 * Qw1 + k_2 * Qw1 - k2 * Dw * Rw;
+
+  // Variable initializations:
+  Rw = 50.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Qw1(Qw1, Dw, Rw, k2, k_2, k3, time_)
+
+  // Rate Rules:
+  Qw1' = k2 * Dw * Rw - ( k3 * Qw1 + k_2 * Qw1 );
+
+  // Variable initializations:
+  Qw1 = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Qw2(Qw2, Dw, Py1, k1a, k_1, time_)
+
+  // Rate Rules:
+  Qw2' = k1a * Dw * Py1 - k_1 * Qw2;
+
+  // Variable initializations:
+  Qw2 = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Mw(Mw, Qw1, k3, time_)
+
+  // Rate Rules:
+  Mw' = k3 * Qw1;
+
+  // Variable initializations:
+  Mw = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Px(Px, Zn, Px1, Dz, Qz4, r1, r2, k1b, k_1, time_)
+
+  // Rate Rules:
+  Px' = r2 * Px1 + k_1 * Qz4 - ( r1 * Zn * Px + k1b * Dz * Px );
+
+  // Variable initializations:
+  Px = 50.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Px1(Px1, Zn, Px, Dz, Qz2, r1, r2, k1, k_1, time_)
+
+  // Rate Rules:
+  Px1' = r1 * Zn * Px + k_1 * Qz2 - ( r2 * Px1 + k1 * Dz * Px1 );
+
+  // Variable initializations:
+  Px1 = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Tp(Tp, Zn, Tp1, r5, r6, time_)
+
+  // Rate Rules:
+  Tp' = r6 * Tp1 - r5 * Zn * Tp;
+
+  // Variable initializations:
+  Tp = 10000.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Tp1(Tp1, Zn, Tp, r5, r6, time_)
+
+  // Rate Rules:
+  Tp1' = r5 * Zn * Tp - r6 * Tp1;
+
+  // Variable initializations:
+  Tp1 = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Zn(Zn, Tp, Tp1, Px, Px1, r1, r2, r5, r6, time_)
+
+  // Rate Rules:
+  Zn' = r2 * Px1 + r6 * Tp1 - ( r1 * Zn * Px + r5 * Zn * Tp );
+
+  // Variable initializations:
+  Zn = 10000.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Dz(Dz, Qz2, Px, Qz1, Px1, Qz4, Rz, k1, k1b, k_1, k2a, k_2, k3, time_)
+
+  // Rate Rules:
+  Dz' = k_1 * Qz2 + k3 * Qz1 + k_2 * Qz1 + k_1 * Qz4 - ( k1b * Dz * Px + k1 * Dz * Px1 + k2a * Dz * Rz );
+
+  // Variable initializations:
+  Dz = 2.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Rz(Rz, Qz1, Dz, Qz3, Qz4, Qz5, Qz2, k2b, k2c, k2a, k_2, k3, time_)
+
+  // Rate Rules:
+  Rz' = k3 * Qz1 + k_2 * Qz1 + k3 * Qz3 + k_2 * Qz3 + k3 * Qz5 + k_2 * Qz5 - ( k2a * Dz * Rz + k2b * Qz4 * Rz + k2c * Qz2 * Rz );
+
+  // Variable initializations:
+  Rz = 100.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Qz1(Qz1, Dz, Rz, k2a, k_2, k3, time_)
+
+  // Rate Rules:
+  Qz1' = k2a * Dz * Rz - ( k3 * Qz1 + k_2 * Qz1 );
+
+  // Variable initializations:
+  Qz1 = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Qz2(Qz2, Dz, Rz, Qz3, Px1, k1, k_1, k2c, k3, k_2, time_)
+
+  // Rate Rules:
+  Qz2' = k1 * Dz * Px1 + k3 * Qz3 + k_2 * Qz3 - ( k_1 * Qz2 + k2c * Qz2 * Rz );
+
+  // Variable initializations:
+  Qz2 = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Qz3(Qz3, Qz2, Rz, k2c, k_2, k3, time_)
+
+  // Rate Rules:
+  Qz3' = k2c * Qz2 * Rz - ( k3 * Qz3 + k_2 * Qz3 );
+
+  // Variable initializations:
+  Qz3 = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Qz4(Qz4, Dz, Rz, Qz5, Px, k1b, k_1, k2b, k3, k_2, time_)
+
+  // Rate Rules:
+  Qz4' = k1b * Dz * Px + k3 * Qz5 + k_2 * Qz5 - ( k_1 * Qz4 + k2b * Qz4 * Rz );
+
+  // Variable initializations:
+  Qz4 = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Qz5(Qz5, Qz4, Rz, k2b, k_2, k3, time_)
+
+  // Rate Rules:
+  Qz5' = k2b * Qz4 * Rz - ( k3 * Qz5 + k_2 * Qz5 );
+
+  // Variable initializations:
+  Qz5 = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__Mz(Mz, Qz1, Qz3, Qz5, k3, time_)
+
+  // Rate Rules:
+  Mz' = k3 * Qz1 + k3 * Qz3 + k3 * Qz5;
+
+  // Variable initializations:
+  Mz = 0.0;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01__model_parameters(r1, r2, r3, r4, r5, r6, k1, k1a, k1b, k_1, k2, k2a, k2b, k2c, k_2, k3, time_)
+
+  // Assignment Rules:
+  k3 := piecewise( 0.0 , ( time_ >= 0.0) && (time_ < td0 ), 0.011 , ( time_ >= td0) && (time_ < td ) );
+
+  // Variable initializations:
+  r1 = 2.73E2;
+  r2 = 3.437E-4;
+  r3 = 4.41E10;
+  r4 = 9E-3;
+  r5 = 3E4;
+  r6 = 1.506E-2;
+  k1 = 0.025;
+  k1a = 1.0;
+  k1b = 1.253E-2;
+  k_1 = 0.9;
+  k2 = 0.02;
+  k2a = 0.00005;
+  k2b = 0.0002;
+  k2c = 0.0037;
+  k_2 = 0.3;
+  td0 = 1800.0;
+  td = 2700;
+end
+
+model cui_kaandorp_lloyd_b_2008_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cui_kaandorp_lloyd_b_2008_version01__environment(time_);
+  Py: cui_kaandorp_lloyd_b_2008_version01__Py(Py0, Zn0, Py10, r3, r4, time_);
+  Py1: cui_kaandorp_lloyd_b_2008_version01__Py1(Py10, Zn0, Py0, Dw0, Qw20, r3, r4, k_1, k1a, time_);
+  Dw: cui_kaandorp_lloyd_b_2008_version01__Dw(Dw0, Qw20, Py10, Qw10, Rw0, k1a, k_1, k2, k_2, k3, time_);
+  Rw: cui_kaandorp_lloyd_b_2008_version01__Rw(Rw0, Dw0, Qw10, k2, k_2, k3, time_);
+  Qw1: cui_kaandorp_lloyd_b_2008_version01__Qw1(Qw10, Dw0, Rw0, k2, k_2, k3, time_);
+  Qw2: cui_kaandorp_lloyd_b_2008_version01__Qw2(Qw20, Dw0, Py10, k1a, k_1, time_);
+  Mw: cui_kaandorp_lloyd_b_2008_version01__Mw(Mw0, Qw10, k3, time_);
+  Px: cui_kaandorp_lloyd_b_2008_version01__Px(Px0, Zn0, Px10, Dz0, Qz40, r1, r2, k1b, k_1, time_);
+  Px1: cui_kaandorp_lloyd_b_2008_version01__Px1(Px10, Zn0, Px0, Dz0, Qz20, r1, r2, k1, k_1, time_);
+  Tp: cui_kaandorp_lloyd_b_2008_version01__Tp(Tp0, Zn0, Tp10, r5, r6, time_);
+  Tp1: cui_kaandorp_lloyd_b_2008_version01__Tp1(Tp10, Zn0, Tp0, r5, r6, time_);
+  Zn: cui_kaandorp_lloyd_b_2008_version01__Zn(Zn0, Tp0, Tp10, Px0, Px10, r1, r2, r5, r6, time_);
+  Dz: cui_kaandorp_lloyd_b_2008_version01__Dz(Dz0, Qz20, Px0, Qz10, Px10, Qz40, Rz0, k1, k1b, k_1, k2a, k_2, k3, time_);
+  Rz: cui_kaandorp_lloyd_b_2008_version01__Rz(Rz0, Qz10, Dz0, Qz30, Qz40, Qz50, Qz20, k2b, k2c, k2a, k_2, k3, time_);
+  Qz1: cui_kaandorp_lloyd_b_2008_version01__Qz1(Qz10, Dz0, Rz0, k2a, k_2, k3, time_);
+  Qz2: cui_kaandorp_lloyd_b_2008_version01__Qz2(Qz20, Dz0, Rz0, Qz30, Px10, k1, k_1, k2c, k3, k_2, time_);
+  Qz3: cui_kaandorp_lloyd_b_2008_version01__Qz3(Qz30, Qz20, Rz0, k2c, k_2, k3, time_);
+  Qz4: cui_kaandorp_lloyd_b_2008_version01__Qz4(Qz40, Dz0, Rz0, Qz50, Px0, k1b, k_1, k2b, k3, k_2, time_);
+  Qz5: cui_kaandorp_lloyd_b_2008_version01__Qz5(Qz50, Qz40, Rz0, k2b, k_2, k3, time_);
+  Mz: cui_kaandorp_lloyd_b_2008_version01__Mz(Mz0, Qz10, Qz30, Qz50, k3, time_);
+  model_parameters: cui_kaandorp_lloyd_b_2008_version01__model_parameters(r1, r2, r3, r4, r5, r6, k1, k1a, k1b, k_1, k2, k2a, k2b, k2c, k_2, k3, time_);
+end

@@ -1,0 +1,433 @@
+//Created by libAntimony v1.3
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__environment(time_)
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__membrane(V, R, T, F, time_, i_Na, i_Ca_L, i_t, i_sus, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_NaK, i_CaP, i_NaCa)
+
+  // Assignment Rules:
+  i_Stim := piecewise( stim_amplitude , (( time_ >= stim_start) && (time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration )), 0 );
+
+  // Rate Rules:
+  V' = -(1 ) / Cm * (i_Stim + i_Na + i_Ca_L + i_t + i_sus + i_K1 + i_Kr + i_Ks + i_B_Na + i_B_Ca + i_NaK + i_CaP + i_NaCa);
+
+  // Variable initializations:
+  V = -74.2525;
+  R = 8314;
+  T = 306.15;
+  F = 96487;
+  Cm = 0.05;
+  stim_start = 0.1;
+  stim_end = 100000000;
+  stim_period = 1;
+  stim_duration = 0.006;
+  stim_amplitude = -280;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp((V + 27.12 ) / -(8.21 )));
+  tau_m := 4.2E-5 * exp(-(power((V + 25.57 ) / 28.8 , 2 ))) + 2.4E-5;
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.0032017;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__sodium_current_h1_gate(h1, h_infinity, V, time_)
+
+  // Assignment Rules:
+  h_infinity := 1 / (1 + exp((V + 63.6 ) / 5.3 ));
+  tau_h1 := 0.03 / (1 + exp((V + 35.1 ) / 3.2 )) + 0.0003;
+
+  // Rate Rules:
+  h1' = (h_infinity - h1) / tau_h1;
+
+  // Variable initializations:
+  h1 = 0.8814;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__sodium_current_h2_gate(h2, h_infinity, V, time_)
+
+  // Assignment Rules:
+  tau_h2 := 0.12 / (1 + exp((V + 35.1 ) / 3.2 )) + 0.003;
+
+  // Rate Rules:
+  h2' = (h_infinity - h2) / tau_h2;
+
+  // Variable initializations:
+  h2 = 0.8742;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__sodium_current(i_Na, E_Na, time_, V, Na_c, Na_i, R, F, T, m, h1, h2)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current_m_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__sodium_current_m_gate(m, V, time_);
+  sodium_current_h1_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__sodium_current_h1_gate(h1, h_infinity, V, time_);
+  sodium_current_h2_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__sodium_current_h2_gate(h2, h_infinity, V, time_);
+
+  // Assignment Rules:
+  i_Na := P_Na * power(m, 3 ) * (0.9 * h1 + 0.1 * h2) * Na_c * V * power(F, 2 ) / (R * T) * (exp((V - E_Na) * F / (R * T)) - 1 ) / (exp(V * F / (R * T)) - 1 );
+  E_Na := R * T / F * ln(Na_c / Na_i);
+
+  // Variable initializations:
+  P_Na = 0.0016;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__L_type_Ca_channel_d_L_gate(d_L, V, time_)
+
+  // Assignment Rules:
+  d_L_infinity := 1 / (1 + exp((V + 9 ) / -(5.8 )));
+  tau_d_L := 0.0027 * exp(-(power((V + 35 ) / 30 , 2 ))) + 0.002;
+
+  // Rate Rules:
+  d_L' = (d_L_infinity - d_L) / tau_d_L;
+
+  // Variable initializations:
+  d_L = 1.3005e-5;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__L_type_Ca_channel_f_L1_gate(f_L_1, f_L_infinity, V, time_)
+
+  // Assignment Rules:
+  f_L_infinity := 1 / (1 + exp((V + 27.4 ) / 7.1 ));
+  tau_f_L1 := 0.161 * exp(-(power((V + 40 ) / 14.4 , 2 ))) + 0.01;
+
+  // Rate Rules:
+  f_L_1' = (f_L_infinity - f_L_1) / tau_f_L1;
+
+  // Variable initializations:
+  f_L_1 = 0.9986;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__L_type_Ca_channel_f_L2_gate(f_L_2, f_L_infinity, V, time_)
+
+  // Assignment Rules:
+  tau_f_L2 := 1.3323 * exp(-(power((V + 40 ) / 14.2 , 2 ))) + 0.0626;
+
+  // Rate Rules:
+  f_L_2' = (f_L_infinity - f_L_2) / tau_f_L2;
+
+  // Variable initializations:
+  f_L_2 = 0.9986;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__L_type_Ca_channel(i_Ca_L, time_, V, Ca_d, d_L, f_L_1, f_L_2)
+
+  // Sub-modules, and any changes to those submodules:
+  L_type_Ca_channel_d_L_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__L_type_Ca_channel_d_L_gate(d_L, V, time_);
+  L_type_Ca_channel_f_L1_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__L_type_Ca_channel_f_L1_gate(f_L_1, f_L_infinity, V, time_);
+  L_type_Ca_channel_f_L2_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__L_type_Ca_channel_f_L2_gate(f_L_2, f_L_infinity, V, time_);
+
+  // Assignment Rules:
+  i_Ca_L := g_Ca_L * d_L * (f_Ca * f_L_1 + (1 - f_Ca) * f_L_2) * (V - E_Ca_app);
+  f_Ca := Ca_d / (Ca_d + k_Ca);
+
+  // Variable initializations:
+  g_Ca_L = 6.75;
+  E_Ca_app = 60;
+  k_Ca = 0.025;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__Ca_independent_transient_outward_K_current_r_gate(r, V, time_)
+
+  // Assignment Rules:
+  tau_r := 0.0035 * exp(-(power(V / 30 , 2 ))) + 0.0015;
+  r_infinity := 1 / (1 + exp((V - 1 ) / -(11 )));
+
+  // Rate Rules:
+  r' = (r_infinity - r) / tau_r;
+
+  // Variable initializations:
+  r = 0.0010678;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__Ca_independent_transient_outward_K_current_s_gate(s, V, time_)
+
+  // Assignment Rules:
+  tau_s := 0.4812 * exp(-(power((V + 52.45 ) / 14.97 , 2 ))) + 0.01414;
+  s_infinity := 1 / (1 + exp((V + 40.5 ) / 11.5 ));
+
+  // Rate Rules:
+  s' = (s_infinity - s) / tau_s;
+
+  // Variable initializations:
+  s = 0.949;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__Ca_independent_transient_outward_K_current(i_t, E_K, time_, V, R, F, T, K_c, K_i, r, s)
+
+  // Sub-modules, and any changes to those submodules:
+  Ca_independent_transient_outward_K_current_r_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__Ca_independent_transient_outward_K_current_r_gate(r, V, time_);
+  Ca_independent_transient_outward_K_current_s_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__Ca_independent_transient_outward_K_current_s_gate(s, V, time_);
+
+  // Assignment Rules:
+  i_t := g_t * r * s * (V - E_K);
+  E_K := R * T / F * ln(K_c / K_i);
+
+  // Variable initializations:
+  g_t = 7.5;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__sustained_outward_K_current_r_sus_gate(r_sus, V, time_)
+
+  // Assignment Rules:
+  tau_r_sus := 0.009 / (1 + exp((V + 5 ) / 12 )) + 0.0005;
+  r_sus_infinity := 1 / (1 + exp((V + 4.3 ) / -(8 )));
+
+  // Rate Rules:
+  r_sus' = (r_sus_infinity - r_sus) / tau_r_sus;
+
+  // Variable initializations:
+  r_sus = 0.00015949;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__sustained_outward_K_current_s_sus_gate(s_sus, V, time_)
+
+  // Assignment Rules:
+  tau_s_sus := 0.047 / (1 + exp((V + 60 ) / 10 )) + 0.3;
+  s_sus_infinity := 0.4 / (1 + exp((V + 20 ) / 10 )) + 0.6;
+
+  // Rate Rules:
+  s_sus' = (s_sus_infinity - s_sus) / tau_s_sus;
+
+  // Variable initializations:
+  s_sus = 0.9912;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__sustained_outward_K_current(i_sus, time_, V, E_K, r_sus, s_sus)
+
+  // Sub-modules, and any changes to those submodules:
+  sustained_outward_K_current_r_sus_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__sustained_outward_K_current_r_sus_gate(r_sus, V, time_);
+  sustained_outward_K_current_s_sus_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__sustained_outward_K_current_s_sus_gate(s_sus, V, time_);
+
+  // Assignment Rules:
+  i_sus := g_sus * r_sus * s_sus * (V - E_K);
+
+  // Variable initializations:
+  g_sus = 2.75;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__delayed_rectifier_K_currents_n_gate(n, V, time_)
+
+  // Assignment Rules:
+  tau_n := 0.7 + 0.4 * exp(-(power((V - 20 ) / 20 , 2 )));
+  n_infinity := 1 / (1 + exp((V - 19.9 ) / -(12.7 )));
+
+  // Rate Rules:
+  n' = (n_infinity - n) / tau_n;
+
+  // Variable initializations:
+  n = 0.0048357;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__delayed_rectifier_K_currents_pa_gate(p_a, V, time_)
+
+  // Assignment Rules:
+  tau_p_a := 0.03118 + 0.21718 * exp(-(power((V + 20.1376 ) / 22.1996 , 2 )));
+  p_a_infinity := 1 / (1 + exp((V + 15 ) / -(6 )));
+
+  // Rate Rules:
+  p_a' = (p_a_infinity - p_a) / tau_p_a;
+
+  // Variable initializations:
+  p_a = 0.0001;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__delayed_rectifier_K_currents_pi_gate(p_i, V, time_)
+
+  // Assignment Rules:
+  p_i := 1 / (1 + exp((V + 55 ) / 24 ));
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__delayed_rectifier_K_currents(i_Ks, i_Kr, time_, V, E_K, n, p_a, p_i)
+
+  // Sub-modules, and any changes to those submodules:
+  delayed_rectifier_K_currents_n_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__delayed_rectifier_K_currents_n_gate(n, V, time_);
+  delayed_rectifier_K_currents_pa_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__delayed_rectifier_K_currents_pa_gate(p_a, V, time_);
+  delayed_rectifier_K_currents_pi_gate: nygren_fiset_firek_clark_lindblad_clark_giles_1998__delayed_rectifier_K_currents_pi_gate(p_i, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks * n * (V - E_K);
+  i_Kr := g_Kr * p_a * p_i * (V - E_K);
+
+  // Variable initializations:
+  g_Ks = 1;
+  g_Kr = 0.5;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__inward_rectifier(i_K1, time_, V, R, F, T, K_c, E_K)
+
+  // Assignment Rules:
+  i_K1 := g_K1 * power(K_c / 1 , 0.4457 ) * (V - E_K) / (1 + exp(1.5 * (V - E_K + 3.6 ) * F / (R * T)));
+
+  // Variable initializations:
+  g_K1 = 3;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__background_currents(i_B_Na, i_B_Ca, E_Na, R, F, T, Ca_c, Ca_i, time_, V)
+
+  // Assignment Rules:
+  i_B_Na := g_B_Na * (V - E_Na);
+  i_B_Ca := g_B_Ca * (V - E_Ca);
+  E_Ca := R * T / (2 * F) * ln(Ca_c / Ca_i);
+
+  // Variable initializations:
+  g_B_Na = 0.060599;
+  g_B_Ca = 0.078681;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__sodium_potassium_pump(i_NaK, K_c, Na_i, V, time_)
+
+  // Assignment Rules:
+  i_NaK := i_NaK_max * K_c / (K_c + k_NaK_K) * power(Na_i, 1.5 ) / (power(Na_i, 1.5 ) + power(k_NaK_Na, 1.5 )) * (V + 150 ) / (V + 200 );
+
+  // Variable initializations:
+  k_NaK_K = 1;
+  k_NaK_Na = 11;
+  i_NaK_max = 70.8253;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__sarcolemmal_calcium_pump_current(i_CaP, Ca_i, time_)
+
+  // Assignment Rules:
+  i_CaP := i_CaP_max * Ca_i / (Ca_i + k_CaP);
+
+  // Variable initializations:
+  i_CaP_max = 4;
+  k_CaP = 0.0002;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__Na_Ca_ion_exchanger_current(i_NaCa, Na_i, Na_c, Ca_i, Ca_c, R, F, T, V, time_)
+
+  // Assignment Rules:
+  i_NaCa := k_NaCa * (power(Na_i, 3 ) * Ca_c * exp(gamma * F * V / (R * T)) - power(Na_c, 3 ) * Ca_i * exp((gamma - 1 ) * V * F / (R * T))) / (1 + d_NaCa * (power(Na_c, 3 ) * Ca_i + power(Na_i, 3 ) * Ca_c));
+
+  // Variable initializations:
+  k_NaCa = 0.0374842;
+  d_NaCa = 0.0003;
+  gamma = 0.45;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__intracellular_ion_concentrations(Na_i, Ca_i, K_i, Ca_d, phi_Na_en, Vol_i, time_, F, i_Na, i_Ca_L, i_B_Na, i_NaCa, i_NaK, i_Ks, i_Kr, i_K1, i_t, i_sus, i_CaP, i_B_Ca, i_up, i_rel, dOCdt, dOTCdt, dOTMgCdt)
+
+  // Assignment Rules:
+  Vol_d := 0.02 * Vol_i;
+  i_di := (Ca_d - Ca_i) * 2 * F * Vol_d / tau_di;
+
+  // Rate Rules:
+  Na_i' = -((i_Na + i_B_Na + 3 * i_NaK + 3 * i_NaCa + phi_Na_en)) / (Vol_i * F);
+  Ca_i' = -((-(i_di) + i_B_Ca + i_CaP - 2 * i_NaCa + i_up - i_rel)) / (2 * Vol_i * F) - (0.08 * dOTCdt + 0.16 * dOTMgCdt + 0.045 * dOCdt);
+  K_i' = -((i_t + i_sus + i_K1 + i_Kr + i_Ks - 2 * i_NaK)) / (Vol_i * F);
+  Ca_d' = -((i_Ca_L + i_di)) / (2 * Vol_d * F);
+
+  // Variable initializations:
+  Na_i = 8.5547;
+  Ca_i = 6.729e-5;
+  K_i = 129.435;
+  Ca_d = 7.2495e-5;
+  phi_Na_en = -1.68;
+  Vol_i = 0.005884;
+  tau_di = 0.01;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__intracellular_Ca_buffering(dOCdt, dOTCdt, dOTMgCdt, Ca_i, time_)
+
+  // Assignment Rules:
+  dOCdt := d(O_C)/d(time_);
+  dOTCdt := d(O_TC)/d(time_);
+  dOTMgCdt := d(O_TMgC)/d(time_);
+
+  // Rate Rules:
+  O_C' = 200000 * Ca_i * (1 - O_C) - 476 * O_C;
+  O_TC' = 78400 * Ca_i * (1 - O_TC) - 392 * O_TC;
+  O_TMgC' = 200000 * Ca_i * (1 - O_TMgC - O_TMgMg) - 6.6 * O_TMgC;
+  O_TMgMg' = 2000 * Mg_i * (1 - O_TMgC - O_TMgMg) - 666 * O_TMgMg;
+
+  // Variable initializations:
+  O_C = 0.0275;
+  O_TC = 0.0133;
+  O_TMgC = 0.1961;
+  O_TMgMg = 0.7094;
+  Mg_i = 2.5;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__cleft_space_ion_concentrations(Na_c, Ca_c, K_c, Vol_i, time_, F, i_Na, i_Ca_L, i_B_Na, i_NaCa, i_NaK, i_Ks, i_Kr, i_K1, i_t, i_sus, i_CaP, i_B_Ca, phi_Na_en)
+
+  // Assignment Rules:
+  Vol_c := 0.136 * Vol_i;
+
+  // Rate Rules:
+  Na_c' = (Na_b - Na_c) / tau_Na + (i_Na + i_B_Na + 3 * i_NaK + 3 * i_NaCa + phi_Na_en) / (Vol_c * F);
+  Ca_c' = (Ca_b - Ca_c) / tau_Ca + (i_Ca_L + i_B_Ca + i_CaP - 2 * i_NaCa) / (2 * Vol_c * F);
+  K_c' = (K_b - K_c) / tau_K + (i_t + i_sus + i_K1 + i_Kr + i_Ks - 2 * i_NaK) / (Vol_c * F);
+
+  // Variable initializations:
+  Na_c = 130.011;
+  Ca_c = 1.8147;
+  K_c = 5.3581;
+  tau_Na = 14.3;
+  tau_K = 10;
+  tau_Ca = 24.7;
+  Na_b = 130;
+  Ca_b = 1.8;
+  K_b = 5.4;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998__Ca_handling_by_the_SR(i_rel, i_up, time_, Ca_i, Ca_d, F)
+
+  // Assignment Rules:
+  i_rel := alpha_rel * power(F2 / (F2 + 0.25 ), 2 ) * (Ca_rel - Ca_i);
+  i_up := I_up_max * (Ca_i / k_cyca - power(k_xcs, 2 ) * Ca_up / k_srca) / ((Ca_i + k_cyca) / k_cyca + k_xcs * (Ca_up + k_srca) / k_srca);
+  i_tr := (Ca_up - Ca_rel) * 2 * F * Vol_rel / tau_tr;
+  r_act := 203.8 * (power(Ca_i / (Ca_i + k_rel_i), 4 ) + power(Ca_d / (Ca_d + k_rel_d), 4 ));
+  r_inact := 33.96 + 339.6 * power(Ca_i / (Ca_i + k_rel_i), 4 );
+
+  // Rate Rules:
+  Ca_rel' = (i_tr - i_rel) / (2 * Vol_rel * F) - 31 * d(O_Calse)/d(time_);
+  Ca_up' = (i_up - i_tr) / (2 * Vol_up * F);
+  O_Calse' = 480 * Ca_rel * (1 - O_Calse) - 400 * O_Calse;
+  F1' = r_recov * (1 - F1 - F2) - r_act * F1;
+  F2' = r_act * F1 - r_inact * F2;
+
+  // Variable initializations:
+  I_up_max = 2800;
+  k_cyca = 0.0003;
+  k_srca = 0.5;
+  k_xcs = 0.4;
+  alpha_rel = 200000;
+  Ca_rel = 0.6465;
+  Ca_up = 0.6646;
+  Vol_up = 0.0003969;
+  Vol_rel = 4.41e-5;
+  r_recov = 0.815;
+  O_Calse = 0.4369;
+  F1 = 0.4284;
+  F2 = 0.0028;
+  tau_tr = 0.01;
+  k_rel_i = 0.0003;
+  k_rel_d = 0.003;
+end
+
+model nygren_fiset_firek_clark_lindblad_clark_giles_1998____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: nygren_fiset_firek_clark_lindblad_clark_giles_1998__environment(time_);
+  membrane: nygren_fiset_firek_clark_lindblad_clark_giles_1998__membrane(V, R, T, F, time_, i_Na, i_Ca_L, i_t, i_sus, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_NaK, i_CaP, i_NaCa);
+  sodium_current: nygren_fiset_firek_clark_lindblad_clark_giles_1998__sodium_current(i_Na, E_Na, time_, V, Na_c, Na_i, R, F, T, m, h1, h2);
+  L_type_Ca_channel: nygren_fiset_firek_clark_lindblad_clark_giles_1998__L_type_Ca_channel(i_Ca_L, time_, V, Ca_d, d_L, f_L_1, f_L_2);
+  Ca_independent_transient_outward_K_current: nygren_fiset_firek_clark_lindblad_clark_giles_1998__Ca_independent_transient_outward_K_current(i_t, E_K, time_, V, R, F, T, K_c, K_i, r, s);
+  sustained_outward_K_current: nygren_fiset_firek_clark_lindblad_clark_giles_1998__sustained_outward_K_current(i_sus, time_, V, E_K, r_sus, s_sus);
+  delayed_rectifier_K_currents: nygren_fiset_firek_clark_lindblad_clark_giles_1998__delayed_rectifier_K_currents(i_Ks, i_Kr, time_, V, E_K, n, p_a, p_i);
+  inward_rectifier: nygren_fiset_firek_clark_lindblad_clark_giles_1998__inward_rectifier(i_K1, time_, V, R, F, T, K_c, E_K);
+  background_currents: nygren_fiset_firek_clark_lindblad_clark_giles_1998__background_currents(i_B_Na, i_B_Ca, E_Na, R, F, T, Ca_c, Ca_i, time_, V);
+  sodium_potassium_pump: nygren_fiset_firek_clark_lindblad_clark_giles_1998__sodium_potassium_pump(i_NaK, K_c, Na_i, V, time_);
+  sarcolemmal_calcium_pump_current: nygren_fiset_firek_clark_lindblad_clark_giles_1998__sarcolemmal_calcium_pump_current(i_CaP, Ca_i, time_);
+  Na_Ca_ion_exchanger_current: nygren_fiset_firek_clark_lindblad_clark_giles_1998__Na_Ca_ion_exchanger_current(i_NaCa, Na_i, Na_c, Ca_i, Ca_c, R, F, T, V, time_);
+  intracellular_ion_concentrations: nygren_fiset_firek_clark_lindblad_clark_giles_1998__intracellular_ion_concentrations(Na_i, Ca_i, K_i, Ca_d, phi_Na_en, Vol_i, time_, F, i_Na, i_Ca_L, i_B_Na, i_NaCa, i_NaK, i_Ks, i_Kr, i_K1, i_t, i_sus, i_CaP, i_B_Ca, i_up, i_rel, dOCdt, dOTCdt, dOTMgCdt);
+  intracellular_Ca_buffering: nygren_fiset_firek_clark_lindblad_clark_giles_1998__intracellular_Ca_buffering(dOCdt, dOTCdt, dOTMgCdt, Ca_i, time_);
+  cleft_space_ion_concentrations: nygren_fiset_firek_clark_lindblad_clark_giles_1998__cleft_space_ion_concentrations(Na_c, Ca_c, K_c, Vol_i, time_, F, i_Na, i_Ca_L, i_B_Na, i_NaCa, i_NaK, i_Ks, i_Kr, i_K1, i_t, i_sus, i_CaP, i_B_Ca, phi_Na_en);
+  Ca_handling_by_the_SR: nygren_fiset_firek_clark_lindblad_clark_giles_1998__Ca_handling_by_the_SR(i_rel, i_up, time_, Ca_i, Ca_d, F);
+end

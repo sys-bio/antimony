@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="razumova_bukatina_campbell_2000____main" name="razumova_bukatina_campbell_2000____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="main_F" constant="false"/>
+      <parameter id="main_R_T" value="1"/>
+      <parameter id="main_R_off" constant="false"/>
+      <parameter id="main_D" value="0" constant="false"/>
+      <parameter id="main_A_1" value="0" constant="false"/>
+      <parameter id="main_A_2" value="0" constant="false"/>
+      <parameter id="main_lambda_off" constant="false"/>
+      <parameter id="lambda_on" constant="false"/>
+      <parameter id="main_lambda_D" constant="false"/>
+      <parameter id="main_lambda_A_1" constant="false"/>
+      <parameter id="lambda_A_2" constant="false"/>
+      <parameter id="main_lambda_A2_cyc" constant="false"/>
+      <parameter id="Ca" constant="false"/>
+      <parameter id="Ca_50" constant="false"/>
+      <parameter id="k_on" constant="false"/>
+      <parameter id="k_off" constant="false"/>
+      <parameter id="k_0_on" value="0"/>
+      <parameter id="k_0_off" value="100"/>
+      <parameter id="k_Ca_on" value="120"/>
+      <parameter id="k_Ca_off" value="50"/>
+      <parameter id="f" constant="false"/>
+      <parameter id="f_prime" constant="false"/>
+      <parameter id="f_0" value="50"/>
+      <parameter id="f_prime_0" value="400"/>
+      <parameter id="main_h" value="8"/>
+      <parameter id="main_h_prime" value="6"/>
+      <parameter id="main_g" value="4"/>
+      <parameter id="main_n_H" value="1"/>
+      <parameter id="u" value="1"/>
+      <parameter id="w" value="1"/>
+      <parameter id="v" value="1"/>
+      <parameter id="k_u_on" constant="false"/>
+      <parameter id="k_u_off" constant="false"/>
+      <parameter id="k_w_on" constant="false"/>
+      <parameter id="k_w_off" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="main_F">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> Ca </ci>
+                  <ci> Ca_50 </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <ci> main_n_H </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_R_off">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> main_R_T </ci>
+            <apply>
+              <plus/>
+              <ci> main_D </ci>
+              <ci> main_A_1 </ci>
+              <ci> main_A_2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="main_D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_on </ci>
+                <ci> main_R_off </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> f_prime </ci>
+                <ci> main_A_1 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> main_g </ci>
+                <ci> main_A_2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k_off </ci>
+                <ci> f </ci>
+              </apply>
+              <ci> main_D </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="main_A_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> f </ci>
+                <ci> main_D </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> main_h_prime </ci>
+                <ci> main_A_2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> f_prime </ci>
+                <ci> main_h </ci>
+              </apply>
+              <ci> main_A_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="main_A_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> main_h </ci>
+              <ci> main_A_1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> main_h_prime </ci>
+                <ci> main_g </ci>
+              </apply>
+              <ci> main_A_2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="main_lambda_off">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> main_R_off </ci>
+            <ci> main_R_T </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="lambda_on">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> main_D </ci>
+              <ci> main_A_1 </ci>
+              <ci> main_A_2 </ci>
+            </apply>
+            <ci> main_R_T </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_lambda_D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> main_D </ci>
+            <ci> main_R_T </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_lambda_A_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> main_A_1 </ci>
+            <ci> main_R_T </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="lambda_A_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> main_A_2 </ci>
+            <ci> main_R_T </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="main_lambda_A2_cyc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> main_A_2 </ci>
+            <apply>
+              <plus/>
+              <ci> main_D </ci>
+              <ci> main_A_1 </ci>
+              <ci> main_A_2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ca_50 </ci>
+            <cn type="integer"> 100 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Ca_50">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> k_Ca_off </ci>
+            <ci> k_Ca_on </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_on">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_w_on </ci>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> lambda_A_2 </ci>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <minus/>
+                        <ci> w </ci>
+                        <cn type="integer"> 1 </cn>
+                      </apply>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_off">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_w_off </ci>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> lambda_A_2 </ci>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <minus/>
+                        <apply>
+                          <minus/>
+                          <ci> w </ci>
+                          <cn type="integer"> 1 </cn>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="f">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> f_0 </ci>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> lambda_A_2 </ci>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <minus/>
+                        <ci> v </ci>
+                        <cn type="integer"> 1 </cn>
+                      </apply>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="f_prime">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> f_prime_0 </ci>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> lambda_A_2 </ci>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <minus/>
+                        <apply>
+                          <minus/>
+                          <ci> v </ci>
+                          <cn type="integer"> 1 </cn>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_u_on">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> k_0_on </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> k_Ca_on </ci>
+                  <ci> k_0_on </ci>
+                </apply>
+                <ci> Ca </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Ca_50 </ci>
+                <ci> Ca </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_u_off">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> k_0_off </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> k_Ca_off </ci>
+                  <ci> k_0_off </ci>
+                </apply>
+                <ci> Ca </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Ca_50 </ci>
+                <ci> Ca </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_w_on">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_u_on </ci>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> lambda_on </ci>
+                  <apply>
+                    <minus/>
+                    <ci> u </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_w_off">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_u_off </ci>
+            <apply>
+              <power/>
+              <apply>
+                <minus/>
+                <ci> u </ci>
+                <apply>
+                  <times/>
+                  <ci> lambda_on </ci>
+                  <apply>
+                    <minus/>
+                    <ci> u </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

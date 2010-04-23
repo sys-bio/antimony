@@ -1,0 +1,289 @@
+//Created by libAntimony v1.3
+model fridlyand_tamarina_philipson_2003_version01__environment(time_)
+end
+
+model fridlyand_tamarina_philipson_2003_version01__membrane(V, time_, i_VCa, i_Ca_pump, i_NaCa, i_CRAN, i_Na, i_NaK, i_KDr, i_KCa, i_KATP)
+
+  // Rate Rules:
+  V' = ( i_VCa + i_Ca_pump + i_NaCa + i_CRAN + i_Na + i_NaK + i_KDr + i_KCa + i_KATP ) / -( Cm );
+
+  // Variable initializations:
+  V = -84.624;
+  Cm = 6158.0;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__whole_cell_calcium_current_p_VCa_gate(p_VCa, V)
+
+  // Assignment Rules:
+  p_VCa := 1.0 / ( 1.0 + exp(( V_Cah - V ) / K_Cah ));
+
+  // Variable initializations:
+  V_Cah = -19.0;
+  K_Cah = 9.5;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__whole_cell_calcium_current(i_VCa, V, R, F, T, Cai, Cao, p_VCa)
+
+  // Sub-modules, and any changes to those submodules:
+  whole_cell_calcium_current_p_VCa_gate: fridlyand_tamarina_philipson_2003_version01__whole_cell_calcium_current_p_VCa_gate(p_VCa, V);
+
+  // Assignment Rules:
+  i_VCa := gm_VCa * p_VCa * ( V - V_Ca );
+  V_Ca := R * T / ( 2.0 * F ) * ln( Cao / Cai );
+
+  // Variable initializations:
+  gm_VCa = 770.0;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__PM_calcium_pumps(i_Ca_pump, Cai)
+
+  // Assignment Rules:
+  i_Ca_pump := Pm_Cap * (power( Cai , 2.0 ) / (power( K_Cap , 2.0 ) + power( Cai , 2.0 )));
+
+  // Variable initializations:
+  Pm_Cap = 2000.0;
+  K_Cap = 0.1;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__sodium_calcium_exchanger(i_NaCa, V, R, F, T, Cai, Cao, Nai, Nao)
+
+  // Assignment Rules:
+  i_NaCa := g_NaCa * (power( Cai , 5.0 ) / (power( Cai , 5.0 ) + power( K_NaCa , 5.0 ))) * ( V - V_NaCa );
+  V_NaCa := R * T / F * ( 3.0 * ln( Nao / Nai ) - ln( Cao / Cai ));
+
+  // Variable initializations:
+  g_NaCa = 271.0;
+  K_NaCa = 0.75;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__nonselective_cation_current(i_CRAN, V, V_Na, CaER)
+
+  // Assignment Rules:
+  i_CRAN := f_CRAN * P_CRAN * ( V - V_Na );
+  f_CRAN := -( gm_CRAN ) / ( 1.0 + exp(( CaER - K_Car ) / 3.0 ));
+  P_CRAN := V - V_CRAN;
+
+  // Variable initializations:
+  V_CRAN = 0.0;
+  gm_CRAN = 0.7;
+  K_Car = 200.0;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__sodium_current_p_Na_gate(p_Na, V)
+
+  // Assignment Rules:
+  p_Na := 1.0 / ( 1.0 + exp(( 104.0 + V ) / 8.0 ));
+end
+
+model fridlyand_tamarina_philipson_2003_version01__sodium_current(i_Na, V_Na, V, R, F, T, Nai, Nao, p_Na)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current_p_Na_gate: fridlyand_tamarina_philipson_2003_version01__sodium_current_p_Na_gate(p_Na, V);
+
+  // Assignment Rules:
+  i_Na := gm_Na * p_Na * ( V - V_Na );
+  V_Na := R * T / F * ln( Nao / Nai );
+
+  // Variable initializations:
+  gm_Na = 1200.0;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__sodium_potassium_active_transport(i_NaK, V, R, F, T, Nai, Nao, ATPi, ADPi, Ko)
+
+  // Assignment Rules:
+  i_NaK := P_NaK * (( F1 * f2 * f3 * F4 * F5 * f6 - b1 * B2 * B3 * B4 * b5 * B6 ) / D );
+  F1 := f1 * power( Nai , 3.0 );
+  F4 := f4 * power( Ko , 2.0 );
+  F5 := f5 * ATPi;
+  f5 := f5_ * exp( V * F / ( 2.0 * R * T ));
+  b5 := b5_ * exp(-(( V * F )) / ( 2.0 * R * T ));
+  B2 := b2 * ATPi;
+  B3 := b3 * power( Nai , 3.0 );
+  B4 := b4 * P;
+  B6 := b6 * power( K_supi , 2.0 );
+  D := f2 * f3 * F4 * F5 * f6 + b1 * f3 * F4 * F5 * f6 + b1 * B2 * F4 * F5 * f6 + b1 * B2 * B3 * F5 * f6 + b1 * B2 * B3 * B4 * f6 + b1 * B2 * B3 * B4 * b5;
+
+  // Variable initializations:
+  P_NaK = 600.0;
+  P = 4950.0;
+  f1 = 2.5E-10;
+  f2 = 10.0;
+  f3 = 0.172;
+  f4 = 1.5E-8;
+  f5_ = 0.002;
+  f6 = 11.5;
+  b1 = 100.0;
+  b2 = 0.0001;
+  b3 = 1.72E-17;
+  b4 = 0.0002;
+  b5_ = 0.03;
+  b6 = 6.0E-7;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__voltage_dependent_potassium_current_n_gate(n, V, time_)
+
+  // Assignment Rules:
+  tau_n := c / (exp(( V - Vtau ) / a ) + exp(( Vtau - V ) / b ));
+  n_infinity := 1.0 / ( 1.0 + exp(( Vn - V ) / Sn ));
+
+  // Rate Rules:
+  n' = ( n_infinity - n ) / tau_n;
+
+  // Variable initializations:
+  n = 0.00123;
+  Vn = -14.0;
+  Vtau = -75.0;
+  Sn = 7.0;
+  a = 65.0;
+  b = 20.0;
+  c = 20.0;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__voltage_dependent_potassium_current(i_KDr, V_K, time_, V, R, F, T, Ki, Ko, n)
+
+  // Sub-modules, and any changes to those submodules:
+  voltage_dependent_potassium_current_n_gate: fridlyand_tamarina_philipson_2003_version01__voltage_dependent_potassium_current_n_gate(n, V, time_);
+
+  // Assignment Rules:
+  i_KDr := gm_KDr * n * ( V - V_K );
+  V_K := R * T / F * ln( Ko / Ki );
+
+  // Variable initializations:
+  gm_KDr = 3000.0;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__calcium_dependent_potassium_current_fCa_gate(fCa, Cai)
+
+  // Assignment Rules:
+  fCa := power( Cai , 4.0 ) / (power( Cai , 4.0 ) + power( K_KCa , 4.0 ));
+
+  // Variable initializations:
+  K_KCa = 0.1;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__calcium_dependent_potassium_current(i_KCa, V_K, V, Cai, fCa)
+
+  // Sub-modules, and any changes to those submodules:
+  calcium_dependent_potassium_current_fCa_gate: fridlyand_tamarina_philipson_2003_version01__calcium_dependent_potassium_current_fCa_gate(fCa, Cai);
+
+  // Assignment Rules:
+  i_KCa := gm_KCa * fCa * ( V - V_K );
+
+  // Variable initializations:
+  gm_KCa = 130.0;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__ATP_dependent_potassium_current(i_KATP, V, V_K, ADPi, ATPi)
+
+  // Assignment Rules:
+  i_KATP := gm_KATP * O_KATP * ( V - V_K );
+  O_KATP := ( 0.08 * ( 1.0 + 0.33 * ADPi / Kdd ) + 0.89 * power( 0.165 + ADPi / Kdd , 2.0 )) / (power( 0.165 + ADPi / Kdd , 2.0 ) * ( 1.0 + 0.135 * ADPi / Ktd + 0.05 * ATPi / Ktt ));
+
+  // Variable initializations:
+  gm_KATP = 24000.0;
+  Kdd = 17.0;
+  Ktd = 26.0;
+  Ktt = 1.0;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__SERCA_pump(Jer_p, Cai)
+
+  // Assignment Rules:
+  Jer_p := P_CaER * (power( Cai , 2.0 ) / (power( Cai , 2.0 ) + power( K_Carp , 2.0 )));
+
+  // Variable initializations:
+  P_CaER = 0.105;
+  K_Carp = 0.5;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__IP3_metabolism(IP3i, Cai, time_)
+
+  // Rate Rules:
+  IP3i' = kIP * (power( Cai , 2.0 ) / (power( Cai , 2.0 ) + power( K_IPCa , 2.0 ))) - kdIP * IP3i;
+
+  // Variable initializations:
+  IP3i = 0.33;
+  kIP = 0.0003;
+  kdIP = 0.00004;
+  K_IPCa = 0.4;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__CaER_mobilisation(J_out, IP3i, Cai, CaER)
+
+  // Assignment Rules:
+  J_out := ( P_leak + P_IP3 * O_infinity ) * ( CaER - Cai );
+  O_infinity := Cai / ( Cai + K_RCa ) * (power( IP3i , 3.0 ) / (power( IP3i , 3.0 ) + power( K_IP3 , 3.0 )));
+
+  // Variable initializations:
+  P_leak = 0.0001;
+  P_IP3 = 0.0012;
+  K_RCa = 3.2;
+  K_IP3 = 0.077;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__calcium_and_sodium_dynamics(Cai, CaER, Nai, Vi, i_VCa, i_NaCa, i_Ca_pump, i_NaK, i_Na, i_CRAN, F, J_out, Jer_p, time_)
+
+  // Rate Rules:
+  Cai' = fi * ((-( i_VCa ) + i_NaCa * 2.0 - i_Ca_pump * 2.0 ) / ( 2.0 * F * Vi ) - Jer_p + J_out / Vi ) - ksg * Cai;
+  CaER' = fer / Ver * ( Jer_p * Vi - J_out );
+  Nai' = -(( 3.0 * i_NaCa + 3.0 * i_NaK + i_Na + i_CRAN )) / ( Vi * F );
+
+  // Variable initializations:
+  Cai = 0.085;
+  CaER = 22.8;
+  Nai = 9858.0;
+  fi = 0.01;
+  fer = 0.03;
+  ksg = 0.0001;
+  Ver = 0.280;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__ATP_homeostasis(ATPi, ADPi, Vi, Cai, i_Ca_pump, i_CRAN, i_NaK, F, Jer_p, time_)
+
+  // Assignment Rules:
+  ADPi := Ao - ATPi;
+
+  // Rate Rules:
+  ATPi' = k_ADP * ADPi - (( i_NaK + i_CRAN ) / ( Vi * F ) + Jer_p / 2.0 + ( k_ATP_Ca * Cai + k_ATP ) * ATPi );
+
+  // Variable initializations:
+  ATPi = 932.1;
+  k_ATP = 0.00005;
+  k_ATP_Ca = 0.00005;
+  Ao = 4000.0;
+end
+
+model fridlyand_tamarina_philipson_2003_version01__cell_and_external_parameters(Cao, Nao, Ko, Ki, R, T, F, Vi)
+
+  // Variable initializations:
+  Cao = 2.6;
+  Nao = 140.0;
+  Ko = 8.0;
+  Ki = 132.4;
+  R = 8314.0;
+  T = 310.0;
+  F = 96500.0;
+  Vi = 0.764;
+end
+
+model fridlyand_tamarina_philipson_2003_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: fridlyand_tamarina_philipson_2003_version01__environment(time_);
+  membrane: fridlyand_tamarina_philipson_2003_version01__membrane(V, time_, i_VCa, i_Ca_pump, i_NaCa, i_CRAN, i_Na, i_NaK, i_KDr, i_KCa, i_KATP);
+  whole_cell_calcium_current: fridlyand_tamarina_philipson_2003_version01__whole_cell_calcium_current(i_VCa, V, R, F, T, Cai, Cao, p_VCa);
+  PM_calcium_pumps: fridlyand_tamarina_philipson_2003_version01__PM_calcium_pumps(i_Ca_pump, Cai);
+  sodium_calcium_exchanger: fridlyand_tamarina_philipson_2003_version01__sodium_calcium_exchanger(i_NaCa, V, R, F, T, Cai, Cao, Nai, Nao);
+  nonselective_cation_current: fridlyand_tamarina_philipson_2003_version01__nonselective_cation_current(i_CRAN, V, V_Na, CaER);
+  sodium_current: fridlyand_tamarina_philipson_2003_version01__sodium_current(i_Na, V_Na, V, R, F, T, Nai, Nao, p_Na);
+  sodium_potassium_active_transport: fridlyand_tamarina_philipson_2003_version01__sodium_potassium_active_transport(i_NaK, V, R, F, T, Nai, Nao, ATPi, ADPi, Ko);
+  voltage_dependent_potassium_current: fridlyand_tamarina_philipson_2003_version01__voltage_dependent_potassium_current(i_KDr, V_K, time_, V, R, F, T, Ki, Ko, n);
+  calcium_dependent_potassium_current: fridlyand_tamarina_philipson_2003_version01__calcium_dependent_potassium_current(i_KCa, V_K, V, Cai, fCa);
+  ATP_dependent_potassium_current: fridlyand_tamarina_philipson_2003_version01__ATP_dependent_potassium_current(i_KATP, V, V_K, ADPi, ATPi);
+  SERCA_pump: fridlyand_tamarina_philipson_2003_version01__SERCA_pump(Jer_p, Cai);
+  IP3_metabolism: fridlyand_tamarina_philipson_2003_version01__IP3_metabolism(IP3i, Cai, time_);
+  CaER_mobilisation: fridlyand_tamarina_philipson_2003_version01__CaER_mobilisation(J_out, IP3i, Cai, CaER);
+  calcium_and_sodium_dynamics: fridlyand_tamarina_philipson_2003_version01__calcium_and_sodium_dynamics(Cai, CaER, Nai, Vi, i_VCa, i_NaCa, i_Ca_pump, i_NaK, i_Na, i_CRAN, F, J_out, Jer_p, time_);
+  ATP_homeostasis: fridlyand_tamarina_philipson_2003_version01__ATP_homeostasis(ATPi, ADPi, Vi, Cai, i_Ca_pump, i_CRAN, i_NaK, F, Jer_p, time_);
+  cell_and_external_parameters: fridlyand_tamarina_philipson_2003_version01__cell_and_external_parameters(Cao, Nao, Ko, Ki, R, T, F, Vi);
+end

@@ -1,0 +1,96 @@
+//Created by libAntimony v1.3
+model aldosterone_CellML1_0_model__environment(time_)
+end
+
+model aldosterone_CellML1_0_model__parameter_values(ANMALD, AMKMUL, ALDINF, ALDKNS, AMT, AM1UL, AM1LL, AMCSNS, ALDMM, AMKM, AMNAM, AMNAUL, AMNALL)
+
+  // Variable initializations:
+  ANMALD = 2.5;
+  AMKMUL = 12;
+  ALDINF = 0;
+  ALDKNS = 0;
+  AMT = 60;
+  AM1UL = 5;
+  AM1LL = 0;
+  AMCSNS = 0.65;
+  ALDMM = 2.5;
+  AMKM = 0.5;
+  AMNAM = 0.8;
+  AMNAUL = 15;
+  AMNALL = 0.04;
+end
+
+model aldosterone_CellML1_0_model__angiotensin_control_of_aldosterone_secretion(ANM, ANMAL, ANMALD)
+
+  // Assignment Rules:
+  ANMAL := (ANM - 1 ) * ANMALD + 1;
+end
+
+model aldosterone_CellML1_0_model__osmotic_control_of_aldosterone_secretion(CKE, OSMAL)
+
+  // Assignment Rules:
+  OSMAL := (CKE - 3.3 ) / 1.0;
+end
+
+model aldosterone_CellML1_0_model__aldosterone_secretion(ANMAL, OSMAL, AMR1, AMKMUL, ALDINF, ALDKNS)
+
+  // Assignment Rules:
+  AMR1 := piecewise( ALDKNS , ALDKNS > 0 , AMR + ALDINF );
+  AMRBSC := ANMAL * 0.909 * OSMAL;
+  AMRT := (AMRBSC - 1 ) * AMKMUL + 1;
+  AMR := piecewise( 0 , AMRT < 0 , AMRT );
+end
+
+model aldosterone_CellML1_0_model__aldosterone_concentration(AMR1, time_, AMC, AMT)
+
+  // Rate Rules:
+  AMC' = (AMR1 - AMC) / AMT;
+
+  // Variable initializations:
+  AMC = 1.0;
+end
+
+model aldosterone_CellML1_0_model__general_aldosterone_multiplier(AMC, AM, AM1UL, AM1LL, AMCSNS, ALDMM)
+
+  // Assignment Rules:
+  AM := (AM1 - 1 ) * ALDMM + 1;
+  AM1 := AM1UL - (AM1UL - 1 ) / ((AM1LL - 1 ) / (AM1LL - AM1UL) * (AMC - 1 ) * AMCSNS + 1 );
+end
+
+model aldosterone_CellML1_0_model__aldosterone_effect_on_cell_membrane_K_transport(AM, AMK, AMKM)
+
+  // Assignment Rules:
+  AMK := piecewise( 0.2 , AMKT < 0.2 , AMKT );
+  AMKT := (AM - 1 ) * AMKM + 1;
+end
+
+model aldosterone_CellML1_0_model__aldosterone_effect_on_cell_membrane_Na_transport(AM, AMNA, AMNAM, AMNAUL, AMNALL)
+
+  // Assignment Rules:
+  AMNA := piecewise( AMNALL , AMNAT < AMNALL , AMNAUL , AMNAT > AMNAUL , AMNAT );
+  AMNAT := (AM - 1 ) * AMNAM + 1;
+end
+
+model aldosterone_CellML1_0_model__aldosterone(time_, ANM, CKE)
+
+  // Sub-modules, and any changes to those submodules:
+  parameter_values: aldosterone_CellML1_0_model__parameter_values(ANMALD, AMKMUL, ALDINF, ALDKNS, AMT, AM1UL, AM1LL, AMCSNS, ALDMM, AMKM, AMNAM, AMNAUL, AMNALL);
+  angiotensin_control_of_aldosterone_secretion: aldosterone_CellML1_0_model__angiotensin_control_of_aldosterone_secretion(ANM, ANMAL, ANMALD);
+  osmotic_control_of_aldosterone_secretion: aldosterone_CellML1_0_model__osmotic_control_of_aldosterone_secretion(CKE, OSMAL);
+  aldosterone_secretion: aldosterone_CellML1_0_model__aldosterone_secretion(ANMAL, OSMAL, AMR1, AMKMUL, ALDINF, ALDKNS);
+  aldosterone_concentration: aldosterone_CellML1_0_model__aldosterone_concentration(AMR1, time_, AMC, AMT);
+  general_aldosterone_multiplier: aldosterone_CellML1_0_model__general_aldosterone_multiplier(AMC, AM, AM1UL, AM1LL, AMCSNS, ALDMM);
+  aldosterone_effect_on_cell_membrane_K_transport: aldosterone_CellML1_0_model__aldosterone_effect_on_cell_membrane_K_transport(AM, AMK, AMKM);
+  aldosterone_effect_on_cell_membrane_Na_transport: aldosterone_CellML1_0_model__aldosterone_effect_on_cell_membrane_Na_transport(AM, AMNA, AMNAM, AMNAUL, AMNALL);
+
+  // Variable initializations:
+  ANM = 0.987545;
+  CKE = 4.44092;
+end
+
+model aldosterone_CellML1_0_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: aldosterone_CellML1_0_model__environment(time_);
+  aldosterone: aldosterone_CellML1_0_model__aldosterone(time_, ANM, CKE);
+end

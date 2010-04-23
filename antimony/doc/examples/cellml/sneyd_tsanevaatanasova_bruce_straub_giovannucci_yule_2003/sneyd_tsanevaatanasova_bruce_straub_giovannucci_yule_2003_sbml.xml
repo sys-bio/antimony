@@ -1,0 +1,749 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01____main" name="sneyd_tsaneva_atanasova_bruce_straub_giovannucci_yule_2003_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="R0" constant="false"/>
+      <parameter id="O0" constant="false"/>
+      <parameter id="phi_1" constant="false"/>
+      <parameter id="phi_2" constant="false"/>
+      <parameter id="phi_2_" constant="false"/>
+      <parameter id="k_1_" value="0.04"/>
+      <parameter id="l_2_" value="0.8"/>
+      <parameter id="I_10" constant="false"/>
+      <parameter id="p" constant="false"/>
+      <parameter id="A0" constant="false"/>
+      <parameter id="S0" constant="false"/>
+      <parameter id="phi_3" constant="false"/>
+      <parameter id="phi_4" constant="false"/>
+      <parameter id="phi_4_" constant="false"/>
+      <parameter id="k_3_" value="29.8"/>
+      <parameter id="I_20" constant="false"/>
+      <parameter id="phi_5" constant="false"/>
+      <parameter id="P_IPR0" constant="false"/>
+      <parameter id="IPR_parameters_k_1" value="0.64"/>
+      <parameter id="IPR_parameters_k_2" value="37.4"/>
+      <parameter id="IPR_parameters_k_2_" value="1.4"/>
+      <parameter id="IPR_parameters_k_3" value="0.11"/>
+      <parameter id="IPR_parameters_k_4" value="4"/>
+      <parameter id="IPR_parameters_k_4_" value="0.54"/>
+      <parameter id="IPR_parameters_l_2" value="1.7"/>
+      <parameter id="IPR_parameters_l_4" value="1.7"/>
+      <parameter id="IPR_parameters_l_4_" value="2.5"/>
+      <parameter id="IPR_parameters_l_6" value="4707"/>
+      <parameter id="IPR_parameters_l_6_" value="11.4"/>
+      <parameter id="IPR_parameters_L_1" value="0.12"/>
+      <parameter id="IPR_parameters_L_3" value="0.025"/>
+      <parameter id="IPR_parameters_L_5" value="54.7"/>
+      <parameter id="P_RyR0" constant="false"/>
+      <parameter id="P_RyR_w" constant="false"/>
+      <parameter id="P_RyR_w_infinity_c" constant="false"/>
+      <parameter id="P_RyR_Ka" constant="false"/>
+      <parameter id="P_RyR_Kb" constant="false"/>
+      <parameter id="P_RyR_Kc" constant="false"/>
+      <parameter id="P_RyR_ka_plus" value="1500"/>
+      <parameter id="P_RyR_kb_plus" value="1500"/>
+      <parameter id="P_RyR_ka_minus" value="28.8"/>
+      <parameter id="P_RyR_kb_minus" value="385.9"/>
+      <parameter id="P_RyR_kc_plus" value="1.75"/>
+      <parameter id="P_RyR_kc_minus" value="0.1"/>
+      <parameter id="c_e" constant="false"/>
+      <parameter id="calcium_Dc" value="20"/>
+      <parameter id="calcium_k_f" value="0.71"/>
+      <parameter id="calcium_v_1" value="0.098"/>
+      <parameter id="calcium_gamma" value="5.405"/>
+      <parameter id="calcium_delta" value="0.1"/>
+      <parameter id="calcium_J_er" value="0.002"/>
+      <parameter id="J_pm" constant="false"/>
+      <parameter id="J_in" constant="false"/>
+      <parameter id="J_serca" constant="false"/>
+      <parameter id="J_mito" constant="false"/>
+      <parameter id="plasma_membrane_calcium_pump_K_pm" value="0.425"/>
+      <parameter id="plasma_membrane_calcium_pump_V_pm" value="28"/>
+      <parameter id="SERCA_pump_K_serca" value="0.18"/>
+      <parameter id="SERCA_pump_V_serca" value="120"/>
+      <parameter id="mitochondrial_uptake_V_mito" value="0"/>
+      <parameter id="time_"/>
+      <parameter id="c"/>
+      <parameter id="calcium_c_x2"/>
+      <parameter id="calcium_x"/>
+      <parameter id="IP3_dynamics_p0"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> phi_2_ </ci>
+                <ci> O0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> phi_2 </ci>
+                  <ci> p </ci>
+                  <ci> R0 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> phi_1 </ci>
+                  <ci> R0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> l_2_ </ci>
+                <ci> k_1_ </ci>
+              </apply>
+              <ci> I_10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="O0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> phi_2 </ci>
+                <ci> p </ci>
+                <ci> R0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> phi_2_ </ci>
+                  <ci> phi_4 </ci>
+                  <ci> phi_3 </ci>
+                </apply>
+                <ci> O0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> phi_4_ </ci>
+              <ci> A0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_3_ </ci>
+              <ci> S0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="phi_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> IPR_parameters_k_1 </ci>
+                  <ci> IPR_parameters_L_1 </ci>
+                </apply>
+                <ci> IPR_parameters_l_2 </ci>
+              </apply>
+              <ci> c </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> IPR_parameters_L_1 </ci>
+              <apply>
+                <times/>
+                <ci> c </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> IPR_parameters_L_1 </ci>
+                    <ci> IPR_parameters_L_3 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="phi_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> IPR_parameters_k_2 </ci>
+                <ci> IPR_parameters_L_3 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> IPR_parameters_l_4 </ci>
+                <ci> c </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> IPR_parameters_L_3 </ci>
+              <apply>
+                <times/>
+                <ci> c </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> IPR_parameters_L_3 </ci>
+                    <ci> IPR_parameters_L_1 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="phi_2_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> IPR_parameters_k_2_ </ci>
+              <apply>
+                <times/>
+                <ci> IPR_parameters_l_4_ </ci>
+                <ci> c </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> c </ci>
+                <ci> IPR_parameters_L_5 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="I_10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> phi_1 </ci>
+              <ci> R0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k_1_ </ci>
+                <ci> l_2_ </ci>
+              </apply>
+              <ci> I_10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> IP3_dynamics_p0 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <cn> -0.8 </cn>
+                <ci> time_ </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="A0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> phi_4 </ci>
+                <ci> O0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> phi_4_ </ci>
+                  <ci> A0 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> phi_5 </ci>
+                  <ci> A0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k_1_ </ci>
+                <ci> l_2_ </ci>
+              </apply>
+              <ci> I_20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="S0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> phi_3 </ci>
+              <ci> O0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_3_ </ci>
+              <ci> S0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="phi_3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> IPR_parameters_k_3 </ci>
+              <ci> IPR_parameters_L_5 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> c </ci>
+              <ci> IPR_parameters_L_5 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="phi_4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> IPR_parameters_k_4 </ci>
+                  <ci> IPR_parameters_L_5 </ci>
+                </apply>
+                <ci> IPR_parameters_l_6 </ci>
+              </apply>
+              <ci> c </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> c </ci>
+              <ci> IPR_parameters_L_5 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="phi_4_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> IPR_parameters_k_1 </ci>
+                  <ci> IPR_parameters_L_1 </ci>
+                </apply>
+                <ci> IPR_parameters_l_2 </ci>
+              </apply>
+              <ci> c </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> c </ci>
+              <ci> IPR_parameters_L_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="I_20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> phi_5 </ci>
+              <ci> A0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k_1_ </ci>
+                <ci> l_2_ </ci>
+              </apply>
+              <ci> I_20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="phi_5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> IPR_parameters_L_1 </ci>
+              <apply>
+                <plus/>
+                <ci> IPR_parameters_k_4_ </ci>
+                <ci> IPR_parameters_l_6_ </ci>
+              </apply>
+              <ci> c </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> c </ci>
+              <ci> IPR_parameters_L_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_IPR0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn> 0.1 </cn>
+                <ci> O0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn> 0.9 </cn>
+                <ci> A0 </ci>
+              </apply>
+            </apply>
+            <cn> 4 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_RyR0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> P_RyR_w </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> c </ci>
+                    <ci> P_RyR_Kb </ci>
+                  </apply>
+                  <cn> 3 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> P_RyR_Ka </ci>
+                  <ci> c </ci>
+                </apply>
+                <cn> 4 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> c </ci>
+                  <ci> P_RyR_Kb </ci>
+                </apply>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="P_RyR_w">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> P_RyR_kc_minus </ci>
+              <apply>
+                <minus/>
+                <ci> P_RyR_w_infinity_c </ci>
+                <ci> P_RyR_w </ci>
+              </apply>
+            </apply>
+            <ci> P_RyR_w_infinity_c </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="P_RyR_w_infinity_c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> P_RyR_Ka </ci>
+                  <ci> c </ci>
+                </apply>
+                <cn> 4 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> c </ci>
+                  <ci> P_RyR_Kb </ci>
+                </apply>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <cn> 1 </cn>
+                <ci> P_RyR_Kc </ci>
+              </apply>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> P_RyR_Ka </ci>
+                  <ci> c </ci>
+                </apply>
+                <cn> 4 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> c </ci>
+                  <ci> P_RyR_Kb </ci>
+                </apply>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_RyR_Ka">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> P_RyR_ka_minus </ci>
+            <ci> P_RyR_ka_plus </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_RyR_Kb">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> P_RyR_kb_minus </ci>
+            <ci> P_RyR_kb_plus </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_RyR_Kc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> P_RyR_kc_minus </ci>
+            <ci> P_RyR_kc_plus </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="c_e">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_gamma </ci>
+            <apply>
+              <minus/>
+              <ci> J_serca </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> calcium_k_f </ci>
+                    <ci> P_IPR0 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> calcium_v_1 </ci>
+                    <ci> P_RyR0 </ci>
+                  </apply>
+                  <ci> calcium_J_er </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <ci> c_e </ci>
+                  <ci> c </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="J_pm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> plasma_membrane_calcium_pump_V_pm </ci>
+              <apply>
+                <power/>
+                <ci> c </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> plasma_membrane_calcium_pump_K_pm </ci>
+                <cn> 2 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> c </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_in">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 0.2 </cn>
+            <apply>
+              <times/>
+              <cn> 0.05 </cn>
+              <ci> p </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_serca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> SERCA_pump_V_serca </ci>
+                <ci> c </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> SERCA_pump_K_serca </ci>
+                <ci> c </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn> 1 </cn>
+              <ci> c_e </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_mito">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> mitochondrial_uptake_V_mito </ci>
+              <ci> c </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <cn> 1 </cn>
+                  <ci> c </ci>
+                </apply>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="hodgkin_huxley_squid_axon_model_1952_original____main" name="hodgkin_huxley_squid_axon_model_1952_original____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="V" value="0" constant="false"/>
+      <parameter id="E_R" value="0"/>
+      <parameter id="membrane_Cm" value="1"/>
+      <parameter id="i_Na" constant="false"/>
+      <parameter id="i_K" constant="false"/>
+      <parameter id="i_L" constant="false"/>
+      <parameter id="membrane_i_Stim" constant="false"/>
+      <parameter id="sodium_channel_g_Na" value="120"/>
+      <parameter id="sodium_channel_E_Na" constant="false"/>
+      <parameter id="m" value="0.05" constant="false"/>
+      <parameter id="h" value="0.6" constant="false"/>
+      <parameter id="sodium_channel_sodium_channel_m_gate_alpha_m" constant="false"/>
+      <parameter id="sodium_channel_sodium_channel_m_gate_beta_m" constant="false"/>
+      <parameter id="sodium_channel_sodium_channel_h_gate_alpha_h" constant="false"/>
+      <parameter id="sodium_channel_sodium_channel_h_gate_beta_h" constant="false"/>
+      <parameter id="potassium_channel_g_K" value="36"/>
+      <parameter id="potassium_channel_E_K" constant="false"/>
+      <parameter id="n" value="0.325" constant="false"/>
+      <parameter id="potassium_channel_potassium_channel_n_gate_alpha_n" constant="false"/>
+      <parameter id="potassium_channel_potassium_channel_n_gate_beta_n" constant="false"/>
+      <parameter id="leakage_current_g_L" value="0.3"/>
+      <parameter id="leakage_current_E_L" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <ci> membrane_i_Stim </ci>
+                </apply>
+                <ci> i_Na </ci>
+                <ci> i_K </ci>
+                <ci> i_L </ci>
+              </apply>
+            </apply>
+            <ci> membrane_Cm </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="i_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> sodium_channel_g_Na </ci>
+            <apply>
+              <power/>
+              <ci> m </ci>
+              <cn type="integer"> 3 </cn>
+            </apply>
+            <ci> h </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> sodium_channel_E_Na </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_K">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> potassium_channel_g_K </ci>
+            <apply>
+              <power/>
+              <ci> n </ci>
+              <cn type="integer"> 4 </cn>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> potassium_channel_E_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_L">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> leakage_current_g_L </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> leakage_current_E_L </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="membrane_i_Stim"/>
+      <assignmentRule variable="sodium_channel_E_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> E_R </ci>
+            <cn type="integer"> 115 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> sodium_channel_sodium_channel_m_gate_alpha_m </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> m </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> sodium_channel_sodium_channel_m_gate_beta_m </ci>
+              <ci> m </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> sodium_channel_sodium_channel_h_gate_alpha_h </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> h </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> sodium_channel_sodium_channel_h_gate_beta_h </ci>
+              <ci> h </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="sodium_channel_sodium_channel_m_gate_alpha_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.1 </cn>
+              <apply>
+                <plus/>
+                <ci> V </ci>
+                <cn type="integer"> 25 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> V </ci>
+                    <cn type="integer"> 25 </cn>
+                  </apply>
+                  <cn type="integer"> 10 </cn>
+                </apply>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="sodium_channel_sodium_channel_m_gate_beta_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 4 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <ci> V </ci>
+                <cn type="integer"> 18 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="sodium_channel_sodium_channel_h_gate_alpha_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.07 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <ci> V </ci>
+                <cn type="integer"> 20 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="sodium_channel_sodium_channel_h_gate_beta_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> V </ci>
+                    <cn type="integer"> 30 </cn>
+                  </apply>
+                  <cn type="integer"> 10 </cn>
+                </apply>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="potassium_channel_E_K">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> E_R </ci>
+            <cn type="integer"> 12 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> potassium_channel_potassium_channel_n_gate_alpha_n </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> n </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> potassium_channel_potassium_channel_n_gate_beta_n </ci>
+              <ci> n </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="potassium_channel_potassium_channel_n_gate_alpha_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.01 </cn>
+              <apply>
+                <plus/>
+                <ci> V </ci>
+                <cn type="integer"> 10 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> V </ci>
+                    <cn type="integer"> 10 </cn>
+                  </apply>
+                  <cn type="integer"> 10 </cn>
+                </apply>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="potassium_channel_potassium_channel_n_gate_beta_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.125 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <ci> V </ci>
+                <cn type="integer"> 80 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="leakage_current_E_L">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> E_R </ci>
+            <cn> 10.613 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

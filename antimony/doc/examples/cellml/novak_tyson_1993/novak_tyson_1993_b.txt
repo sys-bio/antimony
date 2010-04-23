@@ -1,0 +1,161 @@
+//Created by libAntimony v1.3
+model novak_tyson_1993_version01__environment(time_)
+end
+
+model novak_tyson_1993_version01__rate_constants(k1AA, k3, kinh, kcak, kbPPase, kfPPase, khPPase, kd_antiIE, ka, kc, ke, kg, V2_, V2__, V25_, V25__, Vwee_, Vwee__, K_a, K_b, K_c, K_d, K_e, K_f, K_g, K_h, Cdc25_T, Cdc25_P, Wee1_P, Wee1_T, UbE_T, UbE, k25, kwee, k2)
+
+  // Assignment Rules:
+  k25 := V25_ * (Cdc25_T - Cdc25_P) + V25__ * Cdc25_P;
+  kwee := Vwee_ * Wee1_P + Vwee__ * (Wee1_T - Wee1_P);
+  k2 := V2_ * (UbE_T - UbE) + V2__ * UbE;
+
+  // Variable initializations:
+  k1AA = 1;
+  k3 = 0.01;
+  kinh = 0.025;
+  kcak = 0.25;
+  kbPPase = 0.125;
+  kfPPase = 0.1;
+  khPPase = 0.087;
+  kd_antiIE = 0.095;
+  ka = 0.01;
+  kc = 0.1;
+  ke = 0.0133;
+  kg = 0.0065;
+  V2_ = 0.015;
+  V2__ = 1;
+  V25_ = 0.1;
+  V25__ = 2;
+  Vwee_ = 0.1;
+  Vwee__ = 1;
+  K_a = 0.1;
+  K_b = 0.1;
+  K_c = 0.01;
+  K_d = 0.01;
+  K_e = 0.3;
+  K_f = 0.3;
+  K_g = 0.01;
+  K_h = 0.01;
+end
+
+model novak_tyson_1993_version01__concentration_variables(Cdc2_T, Cdc25_T, Wee1_T, IE_T, UbE_T)
+
+  // Variable initializations:
+  Cdc2_T = 100;
+  Cdc25_T = 1;
+  Wee1_T = 1;
+  IE_T = 1;
+  UbE_T = 1;
+end
+
+model novak_tyson_1993_version01__cyclin(cyclin, k1AA, k2, k3, Cdc2, time_)
+
+  // Rate Rules:
+  cyclin' = k1AA - k2 * cyclin - k3 * cyclin * Cdc2;
+
+  // Variable initializations:
+  cyclin = 1;
+end
+
+model novak_tyson_1993_version01__cyclin_Cdc2(cyclin_Cdc2, kinh, kwee, kcak, k25, k3, k2, MPF_active, Tyr15P_dimer, cyclin, Cdc2, time_)
+
+  // Rate Rules:
+  cyclin_Cdc2' = kinh * MPF_active - (kwee + kcak + k2) * cyclin_Cdc2 + k25 * Tyr15P_dimer + k3 * cyclin * Cdc2;
+
+  // Variable initializations:
+  cyclin_Cdc2 = 0;
+end
+
+model novak_tyson_1993_version01__Tyr15P_dimer(Tyr15P_dimer, kwee, k25, kcak, k2, kinh, cyclin_Cdc2, MPF_pre, time_)
+
+  // Rate Rules:
+  Tyr15P_dimer' = kwee * cyclin_Cdc2 - (k25 + kcak + k2) * Tyr15P_dimer + kinh * MPF_pre;
+
+  // Variable initializations:
+  Tyr15P_dimer = 0;
+end
+
+model novak_tyson_1993_version01__MPF_pre(MPF_pre, kwee, kinh, k2, k25, kcak, MPF_active, Tyr15P_dimer, time_)
+
+  // Rate Rules:
+  MPF_pre' = kwee * MPF_active - (kinh + k25 + k2) * MPF_pre + kcak * Tyr15P_dimer;
+
+  // Variable initializations:
+  MPF_pre = 0;
+end
+
+model novak_tyson_1993_version01__MPF_active(MPF_active, kcak, kinh, kwee, k2, k25, cyclin_Cdc2, MPF_pre, time_)
+
+  // Rate Rules:
+  MPF_active' = kcak * cyclin_Cdc2 - (kinh + kwee + k2) * MPF_active + k25 * MPF_pre;
+
+  // Variable initializations:
+  MPF_active = 0;
+end
+
+model novak_tyson_1993_version01__Cdc2(Cdc2, Tyr15P_dimer, cyclin_Cdc2, MPF_active, MPF_pre, Cdc2_T)
+
+  // Assignment Rules:
+  Cdc2 := Cdc2_T - (cyclin_Cdc2 + MPF_active + MPF_pre + Tyr15P_dimer);
+end
+
+model novak_tyson_1993_version01__cyclin_T(cyclin_T, cyclin, Tyr15P_dimer, cyclin_Cdc2, MPF_active, MPF_pre)
+
+  // Assignment Rules:
+  cyclin_T := cyclin + cyclin_Cdc2 + MPF_active + MPF_pre + Tyr15P_dimer;
+end
+
+model novak_tyson_1993_version01__Cdc25_P(Cdc25_P, ka, kbPPase, K_b, K_a, MPF_active, Cdc25_T, time_)
+
+  // Rate Rules:
+  Cdc25_P' = ka * MPF_active * (Cdc25_T - Cdc25_P) / (K_a + Cdc25_T - Cdc25_P) - kbPPase * Cdc25_P / (K_b + Cdc25_P);
+
+  // Variable initializations:
+  Cdc25_P = 0;
+end
+
+model novak_tyson_1993_version01__Wee1_P(Wee1_P, ke, kfPPase, K_e, K_f, MPF_active, Wee1_T, time_)
+
+  // Rate Rules:
+  Wee1_P' = ke * MPF_active * (Wee1_T - Wee1_P) / (K_e + Wee1_T - Wee1_P) - kfPPase * Wee1_P / (K_f + Wee1_P);
+
+  // Variable initializations:
+  Wee1_P = 0;
+end
+
+model novak_tyson_1993_version01__IE_P(IE_P, kg, khPPase, K_g, K_h, MPF_active, IE_T, time_)
+
+  // Rate Rules:
+  IE_P' = kg * MPF_active * (IE_T - IE_P) / (K_g + IE_T - IE_P) - khPPase * IE_P / (K_h + IE_P);
+
+  // Variable initializations:
+  IE_P = 0;
+end
+
+model novak_tyson_1993_version01__UbE(UbE, kc, kd_antiIE, K_c, K_d, IE_P, UbE_T, time_)
+
+  // Rate Rules:
+  UbE' = kc * IE_P * (UbE_T - UbE) / (K_c + UbE_T - UbE) - kd_antiIE * UbE / (K_d + UbE);
+
+  // Variable initializations:
+  UbE = 0;
+end
+
+model novak_tyson_1993_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: novak_tyson_1993_version01__environment(time_);
+  rate_constants: novak_tyson_1993_version01__rate_constants(k1AA, k3, kinh, kcak, kbPPase, kfPPase, khPPase, kd_antiIE, ka, kc, ke, kg, V2_, V2__, V25_, V25__, Vwee_, Vwee__, K_a, K_b, K_c, K_d, K_e, K_f, K_g, K_h, Cdc25_T, Cdc25_P0, Wee1_P0, Wee1_T, UbE_T, UbE0, k25, kwee, k2);
+  concentration_variables: novak_tyson_1993_version01__concentration_variables(Cdc2_T, Cdc25_T, Wee1_T, IE_T, UbE_T);
+  cyclin: novak_tyson_1993_version01__cyclin(cyclin0, k1AA, k2, k3, Cdc20, time_);
+  cyclin_Cdc2: novak_tyson_1993_version01__cyclin_Cdc2(cyclin_Cdc20, kinh, kwee, kcak, k25, k3, k2, MPF_active0, Tyr15P_dimer0, cyclin0, Cdc20, time_);
+  Tyr15P_dimer: novak_tyson_1993_version01__Tyr15P_dimer(Tyr15P_dimer0, kwee, k25, kcak, k2, kinh, cyclin_Cdc20, MPF_pre0, time_);
+  MPF_pre: novak_tyson_1993_version01__MPF_pre(MPF_pre0, kwee, kinh, k2, k25, kcak, MPF_active0, Tyr15P_dimer0, time_);
+  MPF_active: novak_tyson_1993_version01__MPF_active(MPF_active0, kcak, kinh, kwee, k2, k25, cyclin_Cdc20, MPF_pre0, time_);
+  Cdc2: novak_tyson_1993_version01__Cdc2(Cdc20, Tyr15P_dimer0, cyclin_Cdc20, MPF_active0, MPF_pre0, Cdc2_T);
+  cyclin_T: novak_tyson_1993_version01__cyclin_T(cyclin_T0, cyclin0, Tyr15P_dimer0, cyclin_Cdc20, MPF_active0, MPF_pre0);
+  Cdc25_P: novak_tyson_1993_version01__Cdc25_P(Cdc25_P0, ka, kbPPase, K_b, K_a, MPF_active0, Cdc25_T, time_);
+  Wee1_P: novak_tyson_1993_version01__Wee1_P(Wee1_P0, ke, kfPPase, K_e, K_f, MPF_active0, Wee1_T, time_);
+  IE_P: novak_tyson_1993_version01__IE_P(IE_P0, kg, khPPase, K_g, K_h, MPF_active0, IE_T, time_);
+  UbE: novak_tyson_1993_version01__UbE(UbE0, kc, kd_antiIE, K_c, K_d, IE_P0, UbE_T, time_);
+end

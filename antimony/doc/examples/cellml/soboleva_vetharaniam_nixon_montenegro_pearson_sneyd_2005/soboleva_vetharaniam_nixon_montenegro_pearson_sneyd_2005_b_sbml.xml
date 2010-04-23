@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="soboleva_model_2005_version01____main" name="soboleva_model_2005_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="R0" value="1" constant="false"/>
+      <parameter id="R_delta_R" value="1.905"/>
+      <parameter id="R_logR" constant="false"/>
+      <parameter id="f10" constant="false"/>
+      <parameter id="U0" value="1" constant="false"/>
+      <parameter id="U_delta_U" value="7.5"/>
+      <parameter id="U_logU" constant="false"/>
+      <parameter id="alpha0" value="4.15"/>
+      <parameter id="alpha1" value="3.02"/>
+      <parameter id="d01" value="13"/>
+      <parameter id="d12"/>
+      <parameter id="B10" value="1" constant="false"/>
+      <parameter id="B20" value="1" constant="false"/>
+      <parameter id="P0" constant="false"/>
+      <parameter id="f20" constant="false"/>
+      <parameter id="B1_delta_b1" value="7.5"/>
+      <parameter id="B1_logB1" constant="false"/>
+      <parameter id="B2_delta_b2" value="50"/>
+      <parameter id="B2_logB2" constant="false"/>
+      <parameter id="P_PE" value="20.55"/>
+      <parameter id="P_q" constant="false"/>
+      <parameter id="P_G" value="35.6"/>
+      <parameter id="P_ti" value="1"/>
+      <parameter id="P_T" value="9"/>
+      <parameter id="P00" value="0.25"/>
+      <parameter id="f1_a"/>
+      <parameter id="f1_a0"/>
+      <parameter id="f1_b" value="100"/>
+      <parameter id="f1_b0" value="263"/>
+      <parameter id="x0" value="0" constant="false"/>
+      <parameter id="x_P1" value="20"/>
+      <parameter id="x_s"/>
+      <parameter id="x_delta_x" value="0.207"/>
+      <parameter id="f2_kappa"/>
+      <parameter id="f2_kappa0"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="d12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 4.72 <sep/> 3 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="f1_a">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3.58 <sep/> 5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="f1_a0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.33 <sep/> 4 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="x_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3.71 <sep/> 5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="f2_kappa">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.4 <sep/> 5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="f2_kappa0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 6.55 <sep/> 3 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> f10 </ci>
+            <apply>
+              <times/>
+              <ci> R_delta_R </ci>
+              <ci> R0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="R_logR">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ln/>
+            <ci> R0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="f10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> f1_a0 </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> B20 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> f1_b </ci>
+                    <ci> B20 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> x0 </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <minus/>
+                        <ci> x0 </ci>
+                      </apply>
+                      <ci> f1_a </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <ci> B20 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> f1_b0 </ci>
+                <ci> B20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="U0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> f20 </ci>
+              <apply>
+                <times/>
+                <ci> d01 </ci>
+                <ci> B10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> d12 </ci>
+                <ci> B20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> U_delta_U </ci>
+                <ci> U0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> alpha0 </ci>
+                <ci> P0 </ci>
+                <ci> U0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> alpha1 </ci>
+                <ci> B10 </ci>
+                <ci> U0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="U_logU">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ln/>
+            <ci> U0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="B10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> alpha0 </ci>
+                <ci> P0 </ci>
+                <ci> U0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> d12 </ci>
+                <ci> B20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> d01 </ci>
+                <ci> B10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> B1_delta_b1 </ci>
+                <ci> B10 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> alpha1 </ci>
+                <ci> B10 </ci>
+                <ci> U0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="B20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> alpha1 </ci>
+              <ci> B10 </ci>
+              <ci> U0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> d12 </ci>
+                <ci> B20 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> B2_delta_b2 </ci>
+                <ci> B20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> P00 </ci>
+            <apply>
+              <times/>
+              <ci> P_PE </ci>
+              <ci> P_q </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="f20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> f2_kappa </ci>
+              <ci> R0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> f2_kappa0 </ci>
+              <ci> R0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="B1_logB1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ln/>
+            <ci> B10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="B2_logB2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ln/>
+            <ci> B20 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_q"/>
+      <rateRule variable="x0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> x_s </ci>
+                <apply>
+                  <minus/>
+                  <ci> P0 </ci>
+                  <ci> P00 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> P0 </ci>
+                <ci> x_P1 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> x_delta_x </ci>
+              <ci> x0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

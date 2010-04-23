@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="vaseghi_baumeister_rizzi_reuss_1999_version01____main" name="vaseghi_baumeister_rizzi_reuss_1999_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="C_6PG0" value="0.25" constant="false"/>
+      <parameter id="mu" value="1"/>
+      <parameter id="rG6PDH0" constant="false"/>
+      <parameter id="r6PGDH0" constant="false"/>
+      <parameter id="C_Ru5P0" value="0.033" constant="false"/>
+      <parameter id="rRu5PE0" constant="false"/>
+      <parameter id="rR5PI0" constant="false"/>
+      <parameter id="C_R5P0" value="0.118" constant="false"/>
+      <parameter id="rTKL10" constant="false"/>
+      <parameter id="rRPPK0" constant="false"/>
+      <parameter id="C_X5P0" value="0.041" constant="false"/>
+      <parameter id="rTKL20" constant="false"/>
+      <parameter id="C_S7P0" value="0.082" constant="false"/>
+      <parameter id="rTAL0" constant="false"/>
+      <parameter id="C_E4P0" value="0.029" constant="false"/>
+      <parameter id="rPKDA0" constant="false"/>
+      <parameter id="C_G6P0" value="0.9" constant="false"/>
+      <parameter id="dC_G6P_dt" constant="false"/>
+      <parameter id="C_NADP0" value="0.168" constant="false"/>
+      <parameter id="C_NADPH0" value="0.168" constant="false"/>
+      <parameter id="C_MgATP0" value="2.3" constant="false"/>
+      <parameter id="rG6PDH_K_NADP_1" value="0.116"/>
+      <parameter id="rG6PDH_Ki_NADPH_1" value="1.702"/>
+      <parameter id="rG6PDH_Ki_MgATP_1" value="0.33"/>
+      <parameter id="rG6PDH_I_NADPH_1" constant="false"/>
+      <parameter id="rG6PDH_I_MgATP_1" constant="false"/>
+      <parameter id="rG6PDH_rmax_G6PDH" value="44.19"/>
+      <parameter id="r6PGDH_K_NADP_2" value="1.848"/>
+      <parameter id="r6PGDH_Ki_NADPH_2" value="0.055"/>
+      <parameter id="r6PGDH_Ki_MgATP_2" value="0.109"/>
+      <parameter id="r6PGDH_I_NADPH_2" constant="false"/>
+      <parameter id="r6PGDH_I_MgATP_2" constant="false"/>
+      <parameter id="r6PGDH_rmax_6PGDH" value="0.654"/>
+      <parameter id="rR5PI_rmax_R5PI" value="0.57"/>
+      <parameter id="rRu5PE_rmax_Ru5PE" value="0.85"/>
+      <parameter id="rTKL1_rmax_TKL1" value="3.24"/>
+      <parameter id="C_GAP" value="0.064"/>
+      <parameter id="rTAL_rmax_TAL" value="3"/>
+      <parameter id="rTKL2_rmax_TKL2" value="10.5"/>
+      <parameter id="rPKDA_K_PKDA" value="0.0032"/>
+      <parameter id="rPKDA_rmax_PKDA" value="0.004"/>
+      <parameter id="rRPPK_K_RPPK" value="0.0034"/>
+      <parameter id="rRPPK_rmax_RPPK" value="0.003"/>
+      <parameter id="rHK_rHK" constant="false"/>
+      <parameter id="qs" constant="false"/>
+      <parameter id="rPGI0" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="C_6PG0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> rG6PDH0 </ci>
+            <apply>
+              <plus/>
+              <ci> r6PGDH0 </ci>
+              <apply>
+                <times/>
+                <ci> mu </ci>
+                <ci> C_6PG0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="rG6PDH0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> rG6PDH_rmax_G6PDH </ci>
+            <apply>
+              <divide/>
+              <ci> C_NADP0 </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> C_NADP0 </ci>
+                  <apply>
+                    <times/>
+                    <ci> rG6PDH_K_NADP_1 </ci>
+                    <ci> rG6PDH_I_NADPH_1 </ci>
+                  </apply>
+                </apply>
+                <ci> rG6PDH_I_MgATP_1 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="r6PGDH0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> r6PGDH_rmax_6PGDH </ci>
+            <apply>
+              <divide/>
+              <ci> C_NADP0 </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> C_NADP0 </ci>
+                  <apply>
+                    <times/>
+                    <ci> r6PGDH_K_NADP_2 </ci>
+                    <ci> r6PGDH_I_NADPH_2 </ci>
+                  </apply>
+                </apply>
+                <ci> r6PGDH_I_MgATP_2 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_Ru5P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> r6PGDH0 </ci>
+            <apply>
+              <plus/>
+              <ci> rR5PI0 </ci>
+              <ci> rRu5PE0 </ci>
+              <apply>
+                <times/>
+                <ci> mu </ci>
+                <ci> C_Ru5P0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="rRu5PE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <ci> rRu5PE_rmax_Ru5PE </ci>
+            <ci> C_Ru5P0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="rR5PI0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <ci> rR5PI_rmax_R5PI </ci>
+            <ci> C_Ru5P0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_R5P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> rR5PI0 </ci>
+            <apply>
+              <plus/>
+              <ci> rTKL10 </ci>
+              <ci> rRPPK0 </ci>
+              <apply>
+                <times/>
+                <ci> mu </ci>
+                <ci> C_R5P0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="rTKL10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <ci> rTKL1_rmax_TKL1 </ci>
+            <ci> C_X5P0 </ci>
+            <ci> C_R5P0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="rRPPK0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <ci> rRPPK_rmax_RPPK </ci>
+            <apply>
+              <divide/>
+              <ci> C_R5P0 </ci>
+              <apply>
+                <plus/>
+                <ci> C_R5P0 </ci>
+                <ci> rRPPK_K_RPPK </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_X5P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> rRu5PE0 </ci>
+            <apply>
+              <plus/>
+              <ci> rTKL10 </ci>
+              <ci> rTKL20 </ci>
+              <apply>
+                <times/>
+                <ci> mu </ci>
+                <ci> C_X5P0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="rTKL20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <ci> rTKL2_rmax_TKL2 </ci>
+            <ci> C_E4P0 </ci>
+            <ci> C_X5P0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_S7P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> rTKL10 </ci>
+            <apply>
+              <plus/>
+              <ci> rTAL0 </ci>
+              <apply>
+                <times/>
+                <ci> mu </ci>
+                <ci> C_S7P0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="rTAL0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <ci> rTAL_rmax_TAL </ci>
+            <ci> C_GAP </ci>
+            <ci> C_S7P0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_E4P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> rTAL0 </ci>
+            <apply>
+              <plus/>
+              <ci> rTKL20 </ci>
+              <ci> rPKDA0 </ci>
+              <apply>
+                <times/>
+                <ci> mu </ci>
+                <ci> C_E4P0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="rPKDA0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <ci> rPKDA_rmax_PKDA </ci>
+            <apply>
+              <divide/>
+              <ci> C_E4P0 </ci>
+              <apply>
+                <plus/>
+                <ci> C_E4P0 </ci>
+                <ci> rPKDA_K_PKDA </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_G6P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> dC_G6P_dt </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="dC_G6P_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <cn> 44.1 </cn>
+              <apply>
+                <plus/>
+                <cn type="integer"> 48 </cn>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> time_ </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn> 0.45 </cn>
+                  <apply>
+                    <power/>
+                    <ci> time_ </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn> 44.1 </cn>
+                  <ci> time_ </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 48 </cn>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> time_ </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn> 0.45 </cn>
+                      <apply>
+                        <power/>
+                        <ci> time_ </ci>
+                        <cn type="integer"> 2 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 48 </cn>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 1 </cn>
+                      <ci> time_ </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn> 0.45 </cn>
+                      <apply>
+                        <power/>
+                        <ci> time_ </ci>
+                        <cn type="integer"> 2 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <cn> 0.9 </cn>
+                  <ci> time_ </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_NADP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <cn> -1.48 </cn>
+              <apply>
+                <plus/>
+                <cn> 9.17 </cn>
+                <apply>
+                  <times/>
+                  <cn> 16.1 </cn>
+                  <ci> time_ </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn> 0.48 </cn>
+                  <apply>
+                    <power/>
+                    <ci> time_ </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn> 1.48 </cn>
+                  <ci> time_ </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn> 9.17 </cn>
+                    <apply>
+                      <times/>
+                      <cn> 16.1 </cn>
+                      <ci> time_ </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn> 0.48 </cn>
+                      <apply>
+                        <power/>
+                        <ci> time_ </ci>
+                        <cn type="integer"> 2 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 9.17 </cn>
+                    <apply>
+                      <times/>
+                      <cn> 16.1 </cn>
+                      <ci> time_ </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn> 0.48 </cn>
+                      <apply>
+                        <power/>
+                        <ci> time_ </ci>
+                        <cn type="integer"> 2 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 16.1 </cn>
+                <apply>
+                  <times/>
+                  <cn> 0.96 </cn>
+                  <ci> time_ </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C_NADPH0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <cn> 0.516 </cn>
+              <apply>
+                <plus/>
+                <cn> 25.39 </cn>
+                <apply>
+                  <times/>
+                  <cn> 0.37 </cn>
+                  <ci> time_ </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn> 0.5 </cn>
+                  <apply>
+                    <power/>
+                    <ci> time_ </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn> 0.516 </cn>
+                  <ci> time_ </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn> 25.39 </cn>
+                    <apply>
+                      <times/>
+                      <cn> 0.37 </cn>
+                      <ci> time_ </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn> 0.5 </cn>
+                      <apply>
+                        <power/>
+                        <ci> time_ </ci>
+                        <cn type="integer"> 2 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 25.39 </cn>
+                    <apply>
+                      <times/>
+                      <cn> 0.37 </cn>
+                      <ci> time_ </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn> 0.5 </cn>
+                      <apply>
+                        <power/>
+                        <ci> time_ </ci>
+                        <cn type="integer"> 2 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 0.37 </cn>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> time_ </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C_MgATP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <cn> 29.83 </cn>
+              <apply>
+                <plus/>
+                <cn> 29.77 </cn>
+                <apply>
+                  <times/>
+                  <cn> 13.42 </cn>
+                  <ci> time_ </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn> 0.05 </cn>
+                  <apply>
+                    <power/>
+                    <ci> time_ </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn> 29.83 </cn>
+                  <ci> time_ </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <cn> 29.77 </cn>
+                    <apply>
+                      <times/>
+                      <cn> 13.42 </cn>
+                      <ci> time_ </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn> 0.05 </cn>
+                      <apply>
+                        <power/>
+                        <ci> time_ </ci>
+                        <cn type="integer"> 2 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn> 29.77 </cn>
+                    <apply>
+                      <times/>
+                      <cn> 13.42 </cn>
+                      <ci> time_ </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <cn> 0.05 </cn>
+                      <apply>
+                        <power/>
+                        <ci> time_ </ci>
+                        <cn type="integer"> 2 </cn>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 13.42 </cn>
+                <apply>
+                  <times/>
+                  <cn> 0.1 </cn>
+                  <ci> time_ </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="rG6PDH_I_NADPH_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> C_NADPH0 </ci>
+              <ci> rG6PDH_Ki_NADPH_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="rG6PDH_I_MgATP_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> C_MgATP0 </ci>
+              <ci> rG6PDH_Ki_MgATP_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="r6PGDH_I_NADPH_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> C_NADPH0 </ci>
+              <ci> r6PGDH_Ki_NADPH_2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="r6PGDH_I_MgATP_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 1 </cn>
+            <apply>
+              <divide/>
+              <ci> C_MgATP0 </ci>
+              <ci> r6PGDH_Ki_MgATP_2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="rHK_rHK">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> qs </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="qs"/>
+      <assignmentRule variable="rPGI0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> qs </ci>
+            <apply>
+              <plus/>
+              <ci> rG6PDH0 </ci>
+              <apply>
+                <times/>
+                <ci> mu </ci>
+                <ci> C_G6P0 </ci>
+              </apply>
+              <ci> dC_G6P_dt </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

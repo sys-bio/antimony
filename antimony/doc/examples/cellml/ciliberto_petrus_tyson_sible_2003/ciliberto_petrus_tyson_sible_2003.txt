@@ -1,0 +1,190 @@
+//Created by libAntimony v1.3
+model ciliberto_petrus_tyson_sible_2003_version01__environment(time_)
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Cdk2_CycE(Cdk2_CycE, kwee, kon, k25A, koff, kassoc, kdissoc, phi, Wee1_a, PCdk2_CycE, Xic, Cdk2_CycErem, Xic_Cdk2_CycE, time_)
+
+  // Rate Rules:
+  Cdk2_CycE' = k25A * PCdk2_CycE + koff * Cdk2_CycErem + kdissoc * Xic_Cdk2_CycE - (kwee * Wee1_a * Cdk2_CycE + kon * phi * Cdk2_CycE + kassoc * Xic * Cdk2_CycE);
+
+  // Variable initializations:
+  Cdk2_CycE = 0.06;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__PCdk2_CycE(PCdk2_CycE, kwee, kon, k25A, koff, kassoc, kdissoc, phi, Wee1_a, Cdk2_CycE, Xic, PCdk2_CycErem, Xic_PCdk2_CycE, time_)
+
+  // Rate Rules:
+  PCdk2_CycE' = kwee * Wee1_a * Cdk2_CycE + koff * PCdk2_CycErem + kdissoc * Xic_PCdk2_CycE - (k25A * PCdk2_CycE + kon * phi * PCdk2_CycE + kassoc * Xic * PCdk2_CycE);
+
+  // Variable initializations:
+  PCdk2_CycE = 0.94;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Wee1_a(Wee1_a, Kin_a, time_)
+
+  // Rate Rules:
+  Wee1_a' = kwact * (Wee1_total - Wee1_a) / (Jwact + Wee1_total - Wee1_a) - kwinact * Kin_a * Wee1_a / (Jwinact + Wee1_a);
+
+  // Variable initializations:
+  Wee1_a = 1.02;
+  Jwact = 0.01;
+  Jwinact = 0.01;
+  Wee1_total = 8;
+  kwact = 0.75;
+  kwinact = 1.5;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Kin_a(Kin_a, Cdk2_CycE, time_)
+
+  // Rate Rules:
+  Kin_a' = kiact * (1 - Kin_a) / (Jiact + 1 - Kin_a) - kiinact * Cdk2_CycE * Kin_a / (Jiinact + Kin_a);
+
+  // Variable initializations:
+  Kin_a = 0.6;
+  Jiact = 0.01;
+  Jiinact = 0.01;
+  kiact = 0.15;
+  kiinact = 0.6;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Cdk2_CycErem(Cdk2_CycErem, kedeg, kon, kxdeg, koff, kassoc, kdissoc, phi, Deg_a, Cdk2_CycE, Xic, Xic_Cdk2_CycErem, time_)
+
+  // Rate Rules:
+  Cdk2_CycErem' = kon * phi * Cdk2_CycE + kxdeg * Xic_Cdk2_CycErem + kdissoc * Xic_Cdk2_CycErem - (koff * Cdk2_CycErem + kedeg * Deg_a * Cdk2_CycErem + kassoc * Xic * Cdk2_CycErem);
+
+  // Variable initializations:
+  Cdk2_CycErem = 0;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__PCdk2_CycErem(PCdk2_CycErem, kedeg, kon, kxdeg, koff, kassoc, kdissoc, phi, Deg_a, PCdk2_CycE, Xic, Xic_PCdk2_CycErem, time_)
+
+  // Rate Rules:
+  PCdk2_CycErem' = kon * phi * PCdk2_CycE + kxdeg * Xic_PCdk2_CycErem + kdissoc * Xic_PCdk2_CycErem - (koff * PCdk2_CycErem + kedeg * Deg_a * PCdk2_CycErem + kassoc * Xic * PCdk2_CycErem);
+
+  // Variable initializations:
+  PCdk2_CycErem = 0;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Deg_a(Deg_a, Cdk2_CycErem, time_)
+
+  // Assignment Rules:
+  Heav := piecewise( 0 , x < 0 , 1 );
+  x := Cdk2_CycErem - theta;
+
+  // Rate Rules:
+  Deg_a' = kdact * Heav;
+
+  // Variable initializations:
+  Deg_a = 0;
+  kdact = 0.023;
+  theta = 0.3;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Xic(Xic, kassoc, kdissoc, Cdk2_CycE, Cdk2_CycErem, PCdk2_CycErem, PCdk2_CycE, Xic_PCdk2_CycE, Xic_Cdk2_CycE, Xic_PCdk2_CycErem, Xic_Cdk2_CycErem, time_)
+
+  // Rate Rules:
+  Xic' = kdissoc * (Xic_Cdk2_CycE + Xic_PCdk2_CycE + Xic_Cdk2_CycErem + Xic_PCdk2_CycErem) - kassoc * Xic * (Cdk2_CycE + PCdk2_CycE + Cdk2_CycErem + PCdk2_CycErem);
+
+  // Variable initializations:
+  Xic = 3;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Xic_Cdk2_CycE(Xic_Cdk2_CycE, kwee, kon, k25A, koff, kassoc, kdissoc, phi, Xic, Cdk2_CycE, Xic_Cdk2_CycErem, Xic_PCdk2_CycE, Wee1_a, time_)
+
+  // Rate Rules:
+  Xic_Cdk2_CycE' = kassoc * Xic * Cdk2_CycE + koff * Xic_Cdk2_CycErem + k25A * Xic_PCdk2_CycE - (kdissoc * Xic_Cdk2_CycE + kon * phi * Xic_Cdk2_CycE + kwee * Wee1_a * Xic_Cdk2_CycE);
+
+  // Variable initializations:
+  Xic_Cdk2_CycE = 0;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Xic_PCdk2_CycE(Xic_PCdk2_CycE, kwee, kon, k25A, koff, kassoc, kdissoc, phi, Xic, PCdk2_CycE, Xic_PCdk2_CycErem, Xic_Cdk2_CycE, Wee1_a, time_)
+
+  // Rate Rules:
+  Xic_PCdk2_CycE' = kassoc * Xic * PCdk2_CycE + koff * Xic_PCdk2_CycErem + kwee * Wee1_a * Xic_Cdk2_CycE - (kdissoc * Xic_PCdk2_CycE + kon * phi * Xic_PCdk2_CycE + k25A * Xic_PCdk2_CycE);
+
+  // Variable initializations:
+  Xic_PCdk2_CycE = 0;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Xic_Cdk2_CycErem(Xic_Cdk2_CycErem, kedeg, kon, kxdeg, koff, kassoc, kdissoc, phi, Deg_a, Xic, Cdk2_CycErem, Xic_Cdk2_CycE, time_)
+
+  // Rate Rules:
+  Xic_Cdk2_CycErem' = kassoc * Xic * Cdk2_CycErem + kon * phi * Xic_Cdk2_CycE - (kdissoc * Xic_Cdk2_CycErem + koff * Xic_Cdk2_CycErem + kedeg * Deg_a * Xic_Cdk2_CycErem + kxdeg * Xic_Cdk2_CycErem);
+
+  // Variable initializations:
+  Xic_Cdk2_CycErem = 0;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Xic_PCdk2_CycErem(Xic_PCdk2_CycErem, kedeg, kon, kxdeg, koff, kassoc, kdissoc, phi, Deg, Xic, PCdk2_CycErem, Xic_PCdk2_CycE, time_)
+
+  // Rate Rules:
+  Xic_PCdk2_CycErem' = kassoc * Xic * PCdk2_CycErem + kon * phi * Xic_PCdk2_CycE - (kdissoc * Xic_PCdk2_CycErem + koff * Xic_PCdk2_CycErem + kedeg * Deg * Xic_PCdk2_CycErem + kxdeg * Xic_PCdk2_CycErem);
+
+  // Variable initializations:
+  Xic_PCdk2_CycErem = 0;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Xicrem(Xicrem, kedeg, kxdeg, Deg_a, Xic_Cdk2_CycErem, Xic_PCdk2_CycErem, time_)
+
+  // Rate Rules:
+  Xicrem' = kedeg * Deg_a * Xic_Cdk2_CycErem + kedeg * Deg_a * Xic_PCdk2_CycErem - kxdeg * Xicrem;
+
+  // Variable initializations:
+  Xicrem = 0;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Cyc_total(Cyc_total, Xic_PCdk2_CycE, Xic_Cdk2_CycE, Cdk2_CycE, PCdk2_CycE, Cdk2_CycErem, PCdk2_CycErem, Xic_PCdk2_CycErem, Xic_Cdk2_CycErem, time_)
+
+  // Assignment Rules:
+  Cyc_total := Xic_PCdk2_CycE + Xic_Cdk2_CycE + Xic_PCdk2_CycErem + Xic_Cdk2_CycErem + PCdk2_CycErem + Cdk2_CycErem + Cdk2_CycE + PCdk2_CycE;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__Xic_total(Xic_total, Xic, Xic_PCdk2_CycE, Xic_Cdk2_CycE, Xic_PCdk2_CycErem, Xic_Cdk2_CycErem, Xicrem, time_)
+
+  // Assignment Rules:
+  Xic_total := (Xic + Xic_PCdk2_CycE + Xic_Cdk2_CycE + Xic_PCdk2_CycErem + Xic_Cdk2_CycErem + Xicrem) / 3;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01__kinetic_parameters(kwee, k25A, kon, koff, kassoc, kdissoc, kedeg, kxdeg, phi, Deg, pool, Cdk2_CycErem, PCdk2_CycErem, Xic_Cdk2_CycErem, Xic_PCdk2_CycErem)
+
+  // Assignment Rules:
+  phi := (epsilon + power(pool, n)) / (power(L, n) + power(pool, n));
+  pool := Cdk2_CycErem + PCdk2_CycErem + Xic_Cdk2_CycErem + Xic_PCdk2_CycErem;
+
+  // Variable initializations:
+  kwee = 1.5;
+  k25A = 0.1;
+  kon = 0.02;
+  koff = 0.0001;
+  kassoc = 0.1;
+  kdissoc = 0.001;
+  kedeg = 0.017;
+  kxdeg = 0.01;
+  Deg = 0;
+  epsilon = 0.001;
+  n = 4;
+  L = 0.4;
+end
+
+model ciliberto_petrus_tyson_sible_2003_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: ciliberto_petrus_tyson_sible_2003_version01__environment(time_);
+  Cdk2_CycE: ciliberto_petrus_tyson_sible_2003_version01__Cdk2_CycE(Cdk2_CycE0, kwee, kon, k25A, koff, kassoc, kdissoc, phi, Wee1_a0, PCdk2_CycE0, Xic0, Cdk2_CycErem0, Xic_Cdk2_CycE0, time_);
+  PCdk2_CycE: ciliberto_petrus_tyson_sible_2003_version01__PCdk2_CycE(PCdk2_CycE0, kwee, kon, k25A, koff, kassoc, kdissoc, phi, Wee1_a0, Cdk2_CycE0, Xic0, PCdk2_CycErem0, Xic_PCdk2_CycE0, time_);
+  Wee1_a: ciliberto_petrus_tyson_sible_2003_version01__Wee1_a(Wee1_a0, Kin_a0, time_);
+  Kin_a: ciliberto_petrus_tyson_sible_2003_version01__Kin_a(Kin_a0, Cdk2_CycE0, time_);
+  Cdk2_CycErem: ciliberto_petrus_tyson_sible_2003_version01__Cdk2_CycErem(Cdk2_CycErem0, kedeg, kon, kxdeg, koff, kassoc, kdissoc, phi, Deg_a0, Cdk2_CycE0, Xic0, Xic_Cdk2_CycErem0, time_);
+  PCdk2_CycErem: ciliberto_petrus_tyson_sible_2003_version01__PCdk2_CycErem(PCdk2_CycErem0, kedeg, kon, kxdeg, koff, kassoc, kdissoc, phi, Deg_a0, PCdk2_CycE0, Xic0, Xic_PCdk2_CycErem0, time_);
+  Deg_a: ciliberto_petrus_tyson_sible_2003_version01__Deg_a(Deg_a0, Cdk2_CycErem0, time_);
+  Xic: ciliberto_petrus_tyson_sible_2003_version01__Xic(Xic0, kassoc, kdissoc, Cdk2_CycE0, Cdk2_CycErem0, PCdk2_CycErem0, PCdk2_CycE0, Xic_PCdk2_CycE0, Xic_Cdk2_CycE0, Xic_PCdk2_CycErem0, Xic_Cdk2_CycErem0, time_);
+  Xic_Cdk2_CycE: ciliberto_petrus_tyson_sible_2003_version01__Xic_Cdk2_CycE(Xic_Cdk2_CycE0, kwee, kon, k25A, koff, kassoc, kdissoc, phi, Xic0, Cdk2_CycE0, Xic_Cdk2_CycErem0, Xic_PCdk2_CycE0, Wee1_a0, time_);
+  Xic_PCdk2_CycE: ciliberto_petrus_tyson_sible_2003_version01__Xic_PCdk2_CycE(Xic_PCdk2_CycE0, kwee, kon, k25A, koff, kassoc, kdissoc, phi, Xic0, PCdk2_CycE0, Xic_PCdk2_CycErem0, Xic_Cdk2_CycE0, Wee1_a0, time_);
+  Xic_Cdk2_CycErem: ciliberto_petrus_tyson_sible_2003_version01__Xic_Cdk2_CycErem(Xic_Cdk2_CycErem0, kedeg, kon, kxdeg, koff, kassoc, kdissoc, phi, Deg_a0, Xic0, Cdk2_CycErem0, Xic_Cdk2_CycE0, time_);
+  Xic_PCdk2_CycErem: ciliberto_petrus_tyson_sible_2003_version01__Xic_PCdk2_CycErem(Xic_PCdk2_CycErem0, kedeg, kon, kxdeg, koff, kassoc, kdissoc, phi, Deg, Xic0, PCdk2_CycErem0, Xic_PCdk2_CycE0, time_);
+  Xicrem: ciliberto_petrus_tyson_sible_2003_version01__Xicrem(Xicrem0, kedeg, kxdeg, Deg_a0, Xic_Cdk2_CycErem0, Xic_PCdk2_CycErem0, time_);
+  Cyc_total: ciliberto_petrus_tyson_sible_2003_version01__Cyc_total(Cyc_total0, Xic_PCdk2_CycE0, Xic_Cdk2_CycE0, Cdk2_CycE0, PCdk2_CycE0, Cdk2_CycErem0, PCdk2_CycErem0, Xic_PCdk2_CycErem0, Xic_Cdk2_CycErem0, time_);
+  Xic_total: ciliberto_petrus_tyson_sible_2003_version01__Xic_total(Xic_total0, Xic0, Xic_PCdk2_CycE0, Xic_Cdk2_CycE0, Xic_PCdk2_CycErem0, Xic_Cdk2_CycErem0, Xicrem0, time_);
+  kinetic_parameters: ciliberto_petrus_tyson_sible_2003_version01__kinetic_parameters(kwee, k25A, kon, koff, kassoc, kdissoc, kedeg, kxdeg, phi, Deg, pool, Cdk2_CycErem0, PCdk2_CycErem0, Xic_Cdk2_CycErem0, Xic_PCdk2_CycErem0);
+end

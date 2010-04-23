@@ -1,0 +1,155 @@
+//Created by libAntimony v1.3
+model tabak_2007_a__environment(time_)
+end
+
+model tabak_2007_a__membrane(V, I_Ca, I_K, I_SK, I_DA, time_)
+
+  // Rate Rules:
+  V' = -((I_Ca + I_K + I_SK + I_DA)) / C;
+
+  // Variable initializations:
+  V = -60;
+  C = 10;
+end
+
+model tabak_2007_a__n(n, time_, V)
+
+  // Assignment Rules:
+  n_infinity := 1 / (1 + exp((vn - V) / sn));
+
+  // Rate Rules:
+  n' = lambda_ * (n_infinity - n) / tau_n;
+
+  // Variable initializations:
+  n = 0.1;
+  lambda_ = 0.7;
+  tau_n = 30;
+  vn = -5;
+  sn = 10;
+end
+
+model tabak_2007_a__I_K(I_K, time_, VK, V, n)
+
+  // Sub-modules, and any changes to those submodules:
+  n_mod: tabak_2007_a__n(n, time_, V);
+
+  // Assignment Rules:
+  I_K := gK * n * (V - VK);
+
+  // Variable initializations:
+  gK = 4;
+end
+
+model tabak_2007_a__m(m_infinity, V)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp((vm - V) / sm));
+
+  // Variable initializations:
+  vm = -20;
+  sm = 12;
+end
+
+model tabak_2007_a__I_Ca(I_Ca, time_, VCa, V, m_infinity)
+
+  // Sub-modules, and any changes to those submodules:
+  m: tabak_2007_a__m(m_infinity, V);
+
+  // Assignment Rules:
+  I_Ca := gCa * m_infinity * (V - VCa);
+
+  // Variable initializations:
+  gCa = 2;
+end
+
+model tabak_2007_a__I_SK(I_SK, time_, VK, Ca, V)
+
+  // Assignment Rules:
+  I_SK := gSK * s_infinity * (V - VK);
+  s_infinity := power(Ca, 2 ) / (power(Ca, 2 ) + power(ks, 2 ));
+
+  // Variable initializations:
+  gSK = 1.7;
+  ks = 0.5;
+end
+
+model tabak_2007_a__f(f_infinity, V)
+
+  // Assignment Rules:
+  f_infinity := 1 / (1 + exp((vf - V) / sf));
+
+  // Variable initializations:
+  vf = -20;
+  sf = 5.6;
+end
+
+model tabak_2007_a__h(h, time_, V)
+
+  // Assignment Rules:
+  h_infinity := 1 / (1 + exp((V - vh) / sh));
+
+  // Rate Rules:
+  h' = (h_infinity - h) / tau_h;
+
+  // Variable initializations:
+  h = 0.1;
+  tau_h = 20;
+  vh = -60;
+  sh = 5;
+end
+
+model tabak_2007_a__I_DA(I_DA, time_, VK, V, f_infinity)
+
+  // Sub-modules, and any changes to those submodules:
+  f: tabak_2007_a__f(f_infinity, V);
+  h: tabak_2007_a__h(h0, time_, V);
+
+  // Assignment Rules:
+  I_DA := I_BK;
+  I_BK := gBK * f_infinity * (V - VK);
+
+  // Variable initializations:
+  gBK = 0.2;
+end
+
+model tabak_2007_a__Ca(Ca, I_Ca, time_)
+
+  // Rate Rules:
+  Ca' = -(fc) * (alpha * I_Ca + kc * Ca);
+
+  // Variable initializations:
+  Ca = 0.1;
+  fc = 0.01;
+  alpha = 0.0015;
+  kc = 0.16;
+end
+
+model tabak_2007_a__PRL(Ca)
+
+  // Assignment Rules:
+  PRL := kPRL * power(Ca, 4 );
+
+  // Variable initializations:
+  kPRL = 1;
+end
+
+model tabak_2007_a__model_parameters(VK, VCa)
+
+  // Variable initializations:
+  VK = -75;
+  VCa = 50;
+end
+
+model tabak_2007_a____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: tabak_2007_a__environment(time_);
+  membrane: tabak_2007_a__membrane(V, I_Ca0, I_K0, I_SK0, I_DA0, time_);
+  I_K: tabak_2007_a__I_K(I_K0, time_, VK, V, n);
+  I_Ca: tabak_2007_a__I_Ca(I_Ca0, time_, VCa, V, m_infinity);
+  I_SK: tabak_2007_a__I_SK(I_SK0, time_, VK, Ca0, V);
+  I_DA: tabak_2007_a__I_DA(I_DA0, time_, VK, V, f_infinity);
+  Ca: tabak_2007_a__Ca(Ca0, I_Ca0, time_);
+  PRL: tabak_2007_a__PRL(Ca0);
+  model_parameters: tabak_2007_a__model_parameters(VK, VCa);
+end

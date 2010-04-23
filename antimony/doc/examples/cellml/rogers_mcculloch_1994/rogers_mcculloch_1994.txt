@@ -1,0 +1,54 @@
+//Created by libAntimony v1.3
+model rogers_mcculloch_1994_version01__membrane_potential(t, Cm, Vr, Vth, Vp, Istim, Iion, Vm, u)
+
+  // Assignment Rules:
+  u := (Vm - Vr) / (Vp - Vr);
+
+  // Rate Rules:
+  Vm' = (Istim - Iion) / Cm;
+
+  // Variable initializations:
+  Vm = -85;
+end
+
+model rogers_mcculloch_1994_version01__ionic_current(Vr, Vth, Vp, c1, c2, v, u, Iion)
+
+  // Assignment Rules:
+  Iion := c1 * u * (u - (Vth - Vr) / (Vp - Vr)) * (u - 1.0 ) + c2 * u * v;
+end
+
+model rogers_mcculloch_1994_version01__recovery_variable(t, b, d, u, v)
+
+  // Rate Rules:
+  v' = b * (u - d * v);
+
+  // Variable initializations:
+  v = 0.0;
+end
+
+model rogers_mcculloch_1994_version01__interface(t, Cm, Vr, Vth, Vp, c1, c2, b, d, Istim, Vm, v, Iion, IStimC)
+
+  // Sub-modules, and any changes to those submodules:
+  membrane_potential: rogers_mcculloch_1994_version01__membrane_potential(t, Cm, Vr, Vth, Vp, Istim, Iion, Vm, u);
+  ionic_current: rogers_mcculloch_1994_version01__ionic_current(Vr, Vth, Vp, c1, c2, v, u, Iion);
+  recovery_variable: rogers_mcculloch_1994_version01__recovery_variable(t, b, d, u, v);
+
+  // Assignment Rules:
+  IStimC := Istim;
+
+  // Variable initializations:
+  Cm = 0.01;
+  Vr = -85.0;
+  Vth = -75.0;
+  Vp = 15.0;
+  c1 = 0.26;
+  c2 = 0.1;
+  b = 0.013;
+  d = 0.8;
+end
+
+model rogers_mcculloch_1994_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  interface: rogers_mcculloch_1994_version01__interface(t, Cm, Vr, Vth, Vp, c1, c2, b, d, Istim, Vm, v, Iion, IStimC);
+end

@@ -1,0 +1,84 @@
+//Created by libAntimony v1.3
+model wang_model_2007__environment(time_)
+end
+
+model wang_model_2007__G(G, f2_G, f3_G, f4_I, f5_I, time_)
+
+  // Assignment Rules:
+  Gin := piecewise( 0.05 + 5.0 / 15.0 * time_ , ( time_ < 15.0) && (time_ >= 0.0 ), 0.05 + 5.0 * (( 45.0 - time_ ) / ( 45.0 - 15.0 )) , ( time_ < 45.0) && (time_ >= 15.0 ), 0.05 , ( time_ <= 240.0) && (time_ >= 45.0 ), 0.05 + 5.0 / 255.0 * time_ , ( time_ > 240.0) && (time_ < 255.0 ), 0.05 + 5.0 * (( 285.0 - time_ ) / ( 285.0 - 255.0 )) , ( time_ < 285.0) && (time_ >= 255.0 ), 0.05 , ( time_ <= 480.0) && (time_ >= 285.0 ), 0.05 + 5.0 / 495.0 * time_ , ( time_ < 495.0) && (time_ > 480.0 ), 0.05 + 5.0 * (( 525.0 - time_ ) / ( 525.0 - 495.0 )) , ( time_ < 525.0) && (time_ >= 495.0 ), 0.05 , ( time_ <= 720.0) && (time_ >= 525.0 ), 0.05 + 5.0 / 735.0 * time_ , ( time_ > 720.0) && (time_ < 735.0 ), 0.05 + 5.0 * (( 765.0 - time_ ) / ( 765.0 - 735.0 )) , ( time_ < 765.0) && (time_ >= 735.0 ), 0.05 , ( time_ <= 960.0) && (time_ >= 765.0 ) );
+
+  // Rate Rules:
+  G' = Gin + 1 * f5_I - ( 1 * f2_G + f3_G * f4_I );
+
+  // Variable initializations:
+  G = 150.0;
+end
+
+model wang_model_2007__I(I, di, time_)
+
+  // Assignment Rules:
+  Iin := piecewise( 0.25 , ( time_ <= 30.0) && (time_ >= 0.0 ), 0.25 + 1.0 * ( 1.0 + ( time_ - 120.0 ) / 90.0 ) , ( time_ < 120.0) && (time_ >= 30.0 ), 0.25 + 1.0 * ( 1.0 - 0.5 * (( time_ - 120.0 ) / 120.0 )) , ( time_ < 240.0) && (time_ >= 120.0 ), 0.25 + 0.5 * ( 1.0 - ( time_ - 240.0 ) / 240.0 ) , ( time_ <= 480.0) && (time_ >= 240.0 ), 0.25 , ( time_ < 530.0) && (time_ > 480.0 ), 0.25 + 1.0 * ( 1.0 + ( time_ - 620.0 ) / 90.0 ) , ( time_ < 620.0) && (time_ >= 530.0 ), 0.25 + 1.0 * ( 1.0 - 0.5 * (( time_ - 620.0 ) / 120.0 )) , ( time_ < 740.0) && (time_ >= 620.0 ), 0.25 + 0.5 * ( 1.0 - ( time_ - 740.0 ) / 240.0 ) , ( time_ <= 980.0) && (time_ >= 740.0 ) );
+
+  // Rate Rules:
+  I' = Iin - di * I;
+
+  // Variable initializations:
+  I = 5.0;
+end
+
+model wang_model_2007__f2_G(f2_G, G, C2, Ub, Vg)
+
+  // Assignment Rules:
+  f2_G := Ub * ( 1.0 - exp(-( G ) / ( C2 * Vg * 1.0 )));
+end
+
+model wang_model_2007__f3_G(f3_G, G, C3, Vg)
+
+  // Assignment Rules:
+  f3_G := G / ( C3 * Vg );
+end
+
+model wang_model_2007__f4_I(f4_I, I, C4, Vi, U0, Um, beta, ti)
+
+  // Assignment Rules:
+  f4_I := U0 + ( Um - U0 ) / ( 1.0 + exp(-( beta ) * ln( I / ( C4 * ( 1.0 / Vi + 1.0 / ( 0.2 * ti ))))));
+end
+
+model wang_model_2007__f5_I(f5_I, Vp, I, C5, Rg, alpha)
+
+  // Assignment Rules:
+  f5_I := Rg / ( 1.0 + exp( alpha * ( I / ( 1.0 * ( 1.0 * Vp - C5 )))));
+end
+
+model wang_model_2007__model_parameters(Vg, Vp, Vi, ti, U0, Um, alpha, beta, C2, C3, C4, C5, Ub, Rg, di)
+
+  // Variable initializations:
+  Vg = 10.0;
+  Vp = 3.0;
+  Vi = 11.0;
+  ti = 100.0;
+  U0 = 40.0;
+  Um = 940.0;
+  alpha = 0.29;
+  beta = 1.77;
+  C2 = 144;
+  C3 = 1000.0;
+  C4 = 80.0;
+  C5 = 26.0;
+  Ub = 72.0;
+  Rg = 180.0;
+  di = 0.0107;
+end
+
+model wang_model_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: wang_model_2007__environment(time_);
+  G: wang_model_2007__G(G0, f2_G0, f3_G0, f4_I0, f5_I0, time_);
+  I: wang_model_2007__I(I0, di, time_);
+  f2_G: wang_model_2007__f2_G(f2_G0, G0, C2, Ub, Vg);
+  f3_G: wang_model_2007__f3_G(f3_G0, G0, C3, Vg);
+  f4_I: wang_model_2007__f4_I(f4_I0, I0, C4, Vi, U0, Um, beta, ti);
+  f5_I: wang_model_2007__f5_I(f5_I0, Vp, I0, C5, Rg, alpha);
+  model_parameters: wang_model_2007__model_parameters(Vg, Vp, Vi, ti, U0, Um, alpha, beta, C2, C3, C4, C5, Ub, Rg, di);
+end

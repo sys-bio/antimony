@@ -1,0 +1,149 @@
+//Created by libAntimony v1.3
+model autonomics_CellML1_0_model__environment(time_)
+end
+
+model autonomics_CellML1_0_model__parameter_values(VV9, AUL, AULPM, AUY, AUV, AUS, O2A, AUM1, AUM2, AUDMP, AUMAX, AUMIN, AUSLP, EXC, EXCML, EXCXP, AUN1, MDMP, BAROTC, AUK, AUX, O2CHMO, AUC1, CRRFLX, EXE)
+
+  // Variable initializations:
+  VV9 = 2.51;
+  AUL = 1.5;
+  AULPM = 0;
+  AUY = 0;
+  AUV = 0.55;
+  AUS = 1;
+  O2A = 0.1;
+  AUM1 = 3;
+  AUM2 = 1;
+  AUDMP = 0.3;
+  AUMAX = 5.0;
+  AUMIN = 0.4;
+  AUSLP = 1.5;
+  EXC = 1;
+  EXCML = 0.01;
+  EXCXP = 1.0;
+  AUN1 = 0.5;
+  MDMP = 0;
+  BAROTC = 0.16;
+  AUK = 0.004;
+  AUX = 1;
+  O2CHMO = 0.01;
+  AUC1 = 0.3;
+  CRRFLX = 0;
+  EXE = 0;
+end
+
+model autonomics_CellML1_0_model__pressure_driving_autonomic_receptors(PA, PA1, CRRFLX, EXE)
+
+  // Assignment Rules:
+  PA1 := piecewise( CRRFLX , CRRFLX > 0.0000001 , PA - EXE );
+end
+
+model autonomics_CellML1_0_model__chemoreceptors_effect_of_PA(PA1, AUC, AUC1)
+
+  // Assignment Rules:
+  AUC := piecewise( 0.005 * (80 - PA1) * AUC1 , ( PA1 < 80) && (PA1 >= 40 ), 0.2 * AUC1 , PA1 < 40 , 0 );
+end
+
+model autonomics_CellML1_0_model__chemoreceptors_effect_of_art_PO2(PO2ART, AUC, AUC3, O2CHMO)
+
+  // Assignment Rules:
+  AUC3 := AUC + AUC2;
+  AUC2 := piecewise( O2CHMO * (80 - PO2ART) , ( PO2ART < 80) && (PO2ART >= 40 ), O2CHMO * 40 , PO2ART < 40 , 0 );
+end
+
+model autonomics_CellML1_0_model__arterial_baroreceptor_reflex(PA1, time_, AU6C, AUX, AUK, BAROTC)
+
+  // Assignment Rules:
+  AU6C := AU6;
+  AUB := piecewise( 0.016667 * (160 - PA1) , ( PA1 < 160) && (PA1 >= 80 ), 1.3336 , PA1 < 80 , 0 );
+  A1B := (AUB - 1 ) * AUX + 1;
+  AU6A := A1B - AU4;
+
+  // Rate Rules:
+  AU6' = (AU6A - AU6) / BAROTC;
+
+  // Variable initializations:
+  AU4 = -0.060024;
+  AU6 = 1.00132;
+end
+
+model autonomics_CellML1_0_model__CNS_ischemic_reflex(PA1, AUN, AUN1)
+
+  // Assignment Rules:
+  AUN := piecewise( 0.04 * (40 - PA1) * AUN1 , PA1 < 40 , 0 );
+end
+
+model autonomics_CellML1_0_model__autonomic_response_to_vasculature_pressure(PLA, PRA, PPA, AULP, AULPM)
+
+  // Assignment Rules:
+  AULP := (15 / (PLA + PRA + PPA) - 1 ) * AULPM + 1;
+end
+
+model autonomics_CellML1_0_model__autonomic_response_to_exercise(AUEX, EXC, EXCXP)
+
+  // Assignment Rules:
+  AUEX := power(EXC, EXCXP);
+end
+
+model autonomics_CellML1_0_model__total_autonomic_stimulation(AUC3, AU6C, AUN, AULP, AUEX, AUTTL, EXCML)
+
+  // Assignment Rules:
+  AUTTL := piecewise( 0 , AUTTL1 < 0 , AUTTL1 );
+  AUTTL1 := (AUEX * AULP * (AUC3 + AU6C + AUN) - 1 ) * EXCML + 1;
+end
+
+model autonomics_CellML1_0_model__actual_autonomic_stimulation(AUTTL, time_, AU, AUDMP, AUMAX, AUMIN, AUSLP)
+
+  // Assignment Rules:
+  AU := piecewise( AUMIN , AUT < AUMIN , AUT );
+  DAU := (AUTTL - AU1) / AUDMP;
+  AUT := AUMAX - (AUMAX - 1 ) / exp(AUSLP * (AU1 - 1 ));
+
+  // Rate Rules:
+  AU1' = DAU;
+
+  // Variable initializations:
+  AU1 = 1.00007;
+end
+
+model autonomics_CellML1_0_model__autonomic_drive_on_target_organs_and_tissues(AU, VVR, AUH, AUR, AOM, AUM, AVE, VV9, AUL, AUV, AUS, O2A, AUM1, AUM2, AUY)
+
+  // Assignment Rules:
+  VVR := VV9 - AU * AUL + AUL;
+  AUH := AUO * AUV + 1;
+  AUR := AUO * AUS + 1;
+  AOM := AUO * O2A + 1;
+  AUM := power(AUO * AUM1 + 1 , AUM2);
+  AVE := AUO * AUY + 1;
+  AUO := AU - 1;
+end
+
+model autonomics_CellML1_0_model__autonomics(time_, PA, PO2ART, PLA, PRA, PPA)
+
+  // Sub-modules, and any changes to those submodules:
+  parameter_values: autonomics_CellML1_0_model__parameter_values(VV9, AUL, AULPM, AUY, AUV, AUS, O2A, AUM1, AUM2, AUDMP, AUMAX, AUMIN, AUSLP, EXC, EXCML, EXCXP, AUN1, MDMP, BAROTC, AUK, AUX, O2CHMO, AUC1, CRRFLX, EXE);
+  pressure_driving_autonomic_receptors: autonomics_CellML1_0_model__pressure_driving_autonomic_receptors(PA, PA1, CRRFLX, EXE);
+  chemoreceptors_effect_of_PA: autonomics_CellML1_0_model__chemoreceptors_effect_of_PA(PA1, AUC, AUC1);
+  chemoreceptors_effect_of_art_PO2: autonomics_CellML1_0_model__chemoreceptors_effect_of_art_PO2(PO2ART, AUC, AUC3, O2CHMO);
+  arterial_baroreceptor_reflex: autonomics_CellML1_0_model__arterial_baroreceptor_reflex(PA1, time_, AU6C, AUX, AUK, BAROTC);
+  CNS_ischemic_reflex: autonomics_CellML1_0_model__CNS_ischemic_reflex(PA1, AUN, AUN1);
+  autonomic_response_to_vasculature_pressure: autonomics_CellML1_0_model__autonomic_response_to_vasculature_pressure(PLA, PRA, PPA, AULP, AULPM);
+  autonomic_response_to_exercise: autonomics_CellML1_0_model__autonomic_response_to_exercise(AUEX, EXC, EXCXP);
+  total_autonomic_stimulation: autonomics_CellML1_0_model__total_autonomic_stimulation(AUC3, AU6C, AUN, AULP, AUEX, AUTTL, EXCML);
+  actual_autonomic_stimulation: autonomics_CellML1_0_model__actual_autonomic_stimulation(AUTTL, time_, AU, AUDMP, AUMAX, AUMIN, AUSLP);
+  autonomic_drive_on_target_organs_and_tissues: autonomics_CellML1_0_model__autonomic_drive_on_target_organs_and_tissues(AU, VVR, AUH, AUR, AOM, AUM, AVE, VV9, AUL, AUV, AUS, O2A, AUM1, AUM2, AUY);
+
+  // Variable initializations:
+  PA = 103.525;
+  PO2ART = 97.0439;
+  PLA = 2;
+  PRA = 0.00852183;
+  PPA = 15.6376;
+end
+
+model autonomics_CellML1_0_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: autonomics_CellML1_0_model__environment(time_);
+  autonomics: autonomics_CellML1_0_model__autonomics(time_, PA, PO2ART, PLA, PRA, PPA);
+end

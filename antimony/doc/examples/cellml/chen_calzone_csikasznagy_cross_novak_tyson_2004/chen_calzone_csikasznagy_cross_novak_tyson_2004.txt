@@ -1,0 +1,699 @@
+//Created by libAntimony v1.3
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__environment(time_)
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__mass(mass, kg, time_)
+
+  // Rate Rules:
+  mass' = mass * kg;
+
+  // Variable initializations:
+  mass = 1.206;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cln2(Cln2, ks_n2_, ks_n2__, kd_n2, mass, SBF, time_)
+
+  // Rate Rules:
+  Cln2' = (ks_n2_ + ks_n2__ * SBF) * mass - kd_n2 * Cln2;
+
+  // Variable initializations:
+  Cln2 = 0.0652;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Clb5(Clb5, ks_b5_, ks_b5__, kdi_f5, kdi_b5, kas_b5, kas_f5, kd3_f6, kd3_c1, Vd_b5, mass, MBF, C5P, C5, F5P, F5, Sic1, Cdc6, time_)
+
+  // Rate Rules:
+  Clb5' = (ks_b5_ + ks_b5__ * MBF) * mass + kd3_c1 * C5P + kdi_b5 * C5 + kd3_f6 * F5P + kdi_f5 * F5 - (Vd_b5 + kas_b5 * Sic1 + kas_f5 * Cdc6) * Clb5;
+
+  // Variable initializations:
+  Clb5 = 0.0518;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Clb2(Clb2, ks_b2_, ks_b2__, kdi_b2, kdi_f2, kas_b2, kas_f2, kd3_f6, kd3_c1, Vd_b2, mass, Mcm1, C2P, C2, F2P, F2, Sic1, Cdc6, time_)
+
+  // Rate Rules:
+  Clb2' = (ks_b2_ + ks_b2__ * Mcm1) * mass + kd3_c1 * C2P + kdi_b2 * C2 + kd3_f6 * F2P + kdi_f2 * F2 - (Vd_b2 + kas_b2 * Sic1 + kas_f2 * Cdc6) * Clb2;
+
+  // Variable initializations:
+  Clb2 = 0.1469;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Sic1(Sic1, ks_c1_, ks_c1__, kdi_b2, kdi_b5, kpp_c1, kas_b2, kas_b5, Vd_b2, Vd_b5, Vkp_c1, Swi5, C2, C5, Cdc14, Sic1P, Clb2, Clb5, time_)
+
+  // Rate Rules:
+  Sic1' = ks_c1_ + ks_c1__ * Swi5 + (Vd_b2 + kdi_b2) * C2 + (Vd_b5 + kdi_b5) * C5 + kpp_c1 * Cdc14 * Sic1P - (kas_b2 * Clb2 + kas_b5 * Clb5 + Vkp_c1) * Sic1;
+
+  // Variable initializations:
+  Sic1 = 0.0229;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Sic1P(Sic1P, kpp_c1, kd3_c1, Vd_b2, Vd_b5, Vkp_c1, C2P, C5P, Cdc14, Sic1, time_)
+
+  // Rate Rules:
+  Sic1P' = Vkp_c1 * Sic1 - (kpp_c1 * Cdc14 + kd3_c1) * Sic1P + Vd_b2 * C2P + Vd_b5 * C5P;
+
+  // Variable initializations:
+  Sic1P = 0.0064;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__C2(C2, kpp_c1, kas_b2, kdi_b2, Vd_b2, Vkp_c1, C2P, Clb2, Cdc14, Sic1, time_)
+
+  // Rate Rules:
+  C2' = kas_b2 * Clb2 * Sic1 + kpp_c1 * Cdc14 * C2P - (kdi_b2 + Vd_b2 + Vkp_c1) * C2;
+
+  // Variable initializations:
+  C2 = 0.2384;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__C5(C5, kpp_c1, kas_b5, kdi_b5, Vd_b5, Vkp_c1, C5P, Clb5, Cdc14, Sic1, time_)
+
+  // Rate Rules:
+  C5' = kas_b5 * Clb5 * Sic1 + kpp_c1 * Cdc14 * C5P - (kdi_b5 + Vd_b5 + Vkp_c1) * C5;
+
+  // Variable initializations:
+  C5 = 0.0701;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__C2P(C2P, kpp_c1, kd3_c1, Vd_b2, Vkp_c1, C2, Cdc14, time_)
+
+  // Rate Rules:
+  C2P' = Vkp_c1 * C2 - (kpp_c1 * Cdc14 + kd3_c1 + Vd_b2) * C2P;
+
+  // Variable initializations:
+  C2P = 0.024;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__C5P(C5P, kpp_c1, kd3_c1, Vd_b5, Vkp_c1, C5, Cdc14, time_)
+
+  // Rate Rules:
+  C5P' = Vkp_c1 * C5 - (kpp_c1 * Cdc14 + kd3_c1 + Vd_b5) * C5P;
+
+  // Variable initializations:
+  C5P = 0.0069;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc6(Cdc6, ks_f6_, ks_f6__, ks_f6___, kdi_f2, kdi_f5, kpp_f6, kas_f2, kas_f5, Vd_b2, Vd_b5, Vkp_f6, Swi5, SBF, F2, F5, Cdc14, Cdc6P, Clb2, Clb5, time_)
+
+  // Rate Rules:
+  Cdc6' = ks_f6_ + ks_f6__ * Swi5 + ks_f6___ * SBF + (Vd_b2 + kdi_f2) * F2 + (Vd_b5 + kdi_f5) * F5 + kpp_f6 * Cdc14 * Cdc6P - (kas_f2 * Clb2 + kas_f5 * Clb5 + Vkp_f6) * Cdc6;
+
+  // Variable initializations:
+  Cdc6 = 0.1076;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc6P(Cdc6P, kd3_f6, kpp_f6, Vd_b2, Vd_b5, Vkp_f6, F2P, F5P, Cdc14, Cdc6, time_)
+
+  // Rate Rules:
+  Cdc6P' = Vkp_f6 * Cdc6 - (kpp_f6 * Cdc14 + kd3_f6) * Cdc6P + Vd_b2 * F2P + Vd_b5 * F5P;
+
+  // Variable initializations:
+  Cdc6P = 0.0155;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__F2(F2, kas_f2, kpp_f6, Vd_b2, kdi_f2, Vkp_f6, Clb2, F2P, Cdc14, Cdc6, time_)
+
+  // Rate Rules:
+  F2' = kas_f2 * Clb2 * Cdc6 + kpp_f6 * Cdc14 * F2P - (kdi_f2 + Vd_b2 + Vkp_f6) * F2;
+
+  // Variable initializations:
+  F2 = 0.2361;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Pds1(Pds1, ks_pds_, ks1_pds__, ks2_pds__, kdi_esp, Vd_pds, kas_esp, SBF, Mcm1, PE, Esp1, time_)
+
+  // Rate Rules:
+  Pds1' = ks_pds_ + ks1_pds__ * SBF + ks2_pds__ * Mcm1 + kdi_esp * PE - (Vd_pds + kas_esp * Esp1) * Pds1;
+
+  // Variable initializations:
+  Pds1 = 0.0256;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Esp1(Esp1, kdi_esp, Vd_pds, kas_esp, Pds1, PE, time_)
+
+  // Rate Rules:
+  Esp1' = -(kas_esp) * Pds1 * Esp1 + (kdi_esp + Vd_pds) * PE;
+
+  // Variable initializations:
+  Esp1 = 0.3013;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__ORI(ORI, ks_ori, kd_ori, epsilon_ori_b5, epsilon_ori_b2, Clb2, Clb5, time_)
+
+  // Rate Rules:
+  ORI' = ks_ori * (epsilon_ori_b5 * Clb5 + epsilon_ori_b2 * Clb2) - kd_ori * ORI;
+
+  // Variable initializations:
+  ORI = 0.0009;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__BUD(BUD, ks_bud, kd_bud, epsilon_bud_n2, epsilon_bud_n3, epsilon_bud_b5, Cln2, Cln3, Clb5, time_)
+
+  // Rate Rules:
+  BUD' = ks_bud * (epsilon_bud_n2 * Cln2 + epsilon_bud_n3 * Cln3 + epsilon_bud_b5 * Clb5) - kd_bud * BUD;
+
+  // Variable initializations:
+  BUD = 0.0085;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__SPN(SPN, ks_spn, kd_spn, Jspn, Clb2, time_)
+
+  // Rate Rules:
+  SPN' = ks_spn * Clb2 / (Jspn + Clb2) - kd_spn * SPN;
+
+  // Variable initializations:
+  SPN = 0.0305;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__G_sbf(G_sbf, Ji_sbf, Ja_sbf, Vi_sbf, Va_sbf)
+
+  // Assignment Rules:
+  G_sbf := 2 * Ji_sbf * Va_sbf / (Vi_sbf + Ja_sbf * Vi_sbf + Ji_sbf * Va_sbf + root(power(Vi_sbf + Ja_sbf * Vi_sbf + Ji_sbf * Va_sbf - Va_sbf, 2 ) - 4 * (Vi_sbf - Va_sbf) * Ji_sbf * Va_sbf) - Va_sbf);
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__G_mcm(G_mcm, Ji_mcm, Ja_mcm, ki_mcm, ka_mcm, Clb2)
+
+  // Assignment Rules:
+  G_mcm := 2 * Ji_mcm * ka_mcm * Clb2 / (ki_mcm + Ja_mcm * ki_mcm + Ji_mcm * ka_mcm * Clb2 + root(power(ki_mcm + Ja_mcm * ki_mcm + Ji_mcm * ka_mcm * Clb2 - ka_mcm * Clb2, 2 ) - 4 * (ki_mcm - ka_mcm * Clb2) * Ji_mcm * ka_mcm * Clb2) - ka_mcm * Clb2);
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__SBF_MBF(SBF, MBF, G_sbf)
+
+  // Assignment Rules:
+  SBF := MBF;
+  MBF := G_sbf;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Mcm1(Mcm1, G_mcm)
+
+  // Assignment Rules:
+  Mcm1 := G_mcm;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cln3(Cln3, C0, Dn3, Jn3, mass)
+
+  // Assignment Rules:
+  Cln3 := C0 * Dn3 * mass / (Jn3 + Dn3 * mass);
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Bck2(Bck2, B0, mass)
+
+  // Assignment Rules:
+  Bck2 := B0 * mass;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Clb5_T(Clb5_T, Clb5, C5, C5P, F5, F5P)
+
+  // Assignment Rules:
+  Clb5_T := Clb5 + C5 + C5P + F5 + F5P;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Clb2_T(Clb2_T, Clb2, C2, C2P, F2, F2P)
+
+  // Assignment Rules:
+  Clb2_T := Clb2 + C2 + C2P + F2 + F2P;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Sic1_T(Sic1_T, Sic1, Sic1P, C2, C2P, C5, C5P)
+
+  // Assignment Rules:
+  Sic1_T := Sic1 + Sic1P + C2 + C2P + C5 + C5P;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__F5(F5, kas_f5, kpp_f6, kdi_f5, Vkp_f6, Vd_b5, Clb5, Cdc6, Cdc14, F5P, time_)
+
+  // Rate Rules:
+  F5' = kas_f5 * Clb5 * Cdc6 + kpp_f6 * Cdc14 * F5P - (kdi_f5 + Vd_b5 + Vkp_f6) * F5;
+
+  // Variable initializations:
+  F5 = 7.2e-5;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__F2P(F2P, kd3_f6, kpp_f6, Vkp_f6, Vd_b2, F2, Cdc14, time_)
+
+  // Rate Rules:
+  F2P' = Vkp_f6 * F2 - (kpp_f6 * Cdc14 + kd3_f6 + Vd_b2) * F2P;
+
+  // Variable initializations:
+  F2P = 0.0274;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__F5P(F5P, kd3_f6, kpp_f6, Vkp_f6, Vd_b5, F5, Cdc14, time_)
+
+  // Rate Rules:
+  F5P' = Vkp_f6 * F5 - (kpp_f6 * Cdc14 + kd3_f6 + Vd_b5) * F5P;
+
+  // Variable initializations:
+  F5P = 7.9e-6;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Swi5_T(Swi5_T, ks_swi_, ks_swi__, kd_swi, Mcm1, time_)
+
+  // Rate Rules:
+  Swi5_T' = ks_swi_ + ks_swi__ * Mcm1 - kd_swi * Swi5_T;
+
+  // Variable initializations:
+  Swi5_T = 0.9765;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Swi5(Swi5, ks_swi_, ks_swi__, kd_swi, ka_swi, ki_swi, Mcm1, Cdc14, Swi5_T, Clb2, time_)
+
+  // Rate Rules:
+  Swi5' = ks_swi_ + ks_swi__ * Mcm1 + ka_swi * Cdc14 * (Swi5_T - Swi5) - (kd_swi + ki_swi * Clb2) * Swi5;
+
+  // Variable initializations:
+  Swi5 = 0.9562;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__APC_P(APC_P, ka_apc, ki_apc, Ja_apc, Ji_apc, Clb2, time_)
+
+  // Rate Rules:
+  APC_P' = ka_apc * Clb2 * (1 - APC_P) / (Ja_apc + 1 - APC_P) - ki_apc * APC_P / (Ji_apc + APC_P);
+
+  // Variable initializations:
+  APC_P = 0.1015;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc20_T(Cdc20_T, ks_20_, ks_20__, kd_20, Mcm1, time_)
+
+  // Rate Rules:
+  Cdc20_T' = ks_20_ + ks_20__ * Mcm1 - kd_20 * Cdc20_T;
+
+  // Variable initializations:
+  Cdc20_T = 1.9163;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc20_A(Cdc20_A, ka_20_, ka_20__, kd_20, kmad2, APC_P, Cdc20_T, time_)
+
+  // Rate Rules:
+  Cdc20_A' = (ka_20_ + ka_20__ * APC_P) * (Cdc20_T - Cdc20_A) - (kmad2 + kd_20) * Cdc20_A;
+
+  // Variable initializations:
+  Cdc20_A = 0.4443;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdh1_T(Cdh1_T, ks_cdh, kd_cdh, time_)
+
+  // Rate Rules:
+  Cdh1_T' = ks_cdh - kd_cdh * Cdh1_T;
+
+  // Variable initializations:
+  Cdh1_T = 1;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdh1(Cdh1, ks_cdh, kd_cdh, Ja_cdh, Ji_cdh, Va_cdh, Vi_cdh, Cdh1_T, time_)
+
+  // Rate Rules:
+  Cdh1' = ks_cdh + Va_cdh * (Cdh1_T - Cdh1) / (Ja_cdh + Cdh1_T - Cdh1) - (kd_cdh * Cdh1 + Vi_cdh * Cdh1 / (Ji_cdh + Cdh1));
+
+  // Variable initializations:
+  Cdh1 = 0.9305;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Tem1(Tem1, kbub2, klte1, Ja_tem, Ji_tem, Tem1_T, time_)
+
+  // Rate Rules:
+  Tem1' = klte1 * (Tem1_T - Tem1) / (Ja_tem + Tem1_T - Tem1) - kbub2 * Tem1 / (Ji_tem + Tem1);
+
+  // Variable initializations:
+  Tem1 = 0.9039;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc15(Cdc15, ka_15_, ka_15__, ka_15___, ki_15, Tem1, Tem1_T, Cdc14, Cdc15_T, time_)
+
+  // Rate Rules:
+  Cdc15' = (ka_15_ * (Tem1_T - Tem1) + ka_15__ * Tem1 + ka_15___ * Cdc14) * (Cdc15_T - Cdc15) - ki_15 * Cdc15;
+
+  // Variable initializations:
+  Cdc15 = 0.6565;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc14_T(Cdc14_T, ks_14, kd_14, time_)
+
+  // Rate Rules:
+  Cdc14_T' = ks_14 - kd_14 * Cdc14_T;
+
+  // Variable initializations:
+  Cdc14_T = 2;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc14(Cdc14, ks_14, kd_14, kd_net, kdi_rent, kdi_rentp, kas_rent, kas_rentp, RENT, RENTP, Net1, Net1P, time_)
+
+  // Rate Rules:
+  Cdc14' = ks_14 + kd_net * (RENT + RENTP) + kdi_rent * RENT + kdi_rentp * RENTP - (kd_14 * Cdc14 + (kas_rent * Net1 + kas_rentp * Net1P) * Cdc14);
+
+  // Variable initializations:
+  Cdc14 = 0.4683;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Net1_T(Net1_T, ks_net, kd_net, time_)
+
+  // Rate Rules:
+  Net1_T' = ks_net - kd_net * Net1_T;
+
+  // Variable initializations:
+  Net1_T = 2.8;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc6_T(Cdc6_T, Cdc6, Cdc6P, F2, F2P, F5, F5P)
+
+  // Assignment Rules:
+  Cdc6_T := Cdc6 + Cdc6P + F2 + F2P + F5 + F5P;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__CKI_T(CKI_T, Sic1_T, Cdc6_T)
+
+  // Assignment Rules:
+  CKI_T := Sic1_T + Cdc6_T;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__RENTP(RENTP, Cdc14_T, Cdc14, RENT)
+
+  // Assignment Rules:
+  RENTP := Cdc14_T - (RENT + Cdc14);
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Net1P(Net1P, Net1_T, Cdc14_T, Cdc14, Net1)
+
+  // Assignment Rules:
+  Net1P := Net1_T + Cdc14 - (Net1 + Cdc14_T);
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__PE(PE, Esp1_T, Esp1)
+
+  // Assignment Rules:
+  PE := Esp1_T - Esp1;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vd_b5(Vd_b5, kd_b5_, kd_b5__, Cdc20_A)
+
+  // Assignment Rules:
+  Vd_b5 := kd_b5_ + kd_b5__ * Cdc20_A;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vd_b2(Vd_b2, kd_b2_, kd_b2__, kd_b2p, Cdh1, Cdc20_A)
+
+  // Assignment Rules:
+  Vd_b2 := kd_b2_ + kd_b2__ * Cdh1 + kd_b2p * Cdc20_A;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Va_sbf(Va_sbf, ka_sbf, epsilon_sbf_n2, epsilon_sbf_n3, epsilon_sbf_b5, Cln2, Clb5, Cln3, Bck2)
+
+  // Assignment Rules:
+  Va_sbf := ka_sbf * (epsilon_sbf_n2 * Cln2 + epsilon_sbf_n3 * (Cln3 + Bck2) + epsilon_sbf_b5 * Clb5);
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vi_sbf(Vi_sbf, ki_sbf_, ki_sbf__, Clb2)
+
+  // Assignment Rules:
+  Vi_sbf := ki_sbf_ + ki_sbf__ * Clb2;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vkp_c1(Vkp_c1, kd1_c1, kd2_c1, Jd2_c1, epsilon_c1_n2, epsilon_c1_n3, epsilon_c1_k2, epsilon_c1_b5, epsilon_c1_b2, Cln2, Clb5, Cln3, Bck2, Clb2, Sic1_T)
+
+  // Assignment Rules:
+  Vkp_c1 := kd1_c1 + kd2_c1 * (epsilon_c1_n3 * Cln3 + epsilon_c1_k2 * Bck2 + epsilon_c1_n2 * Cln2 + epsilon_c1_b5 * Clb5 + epsilon_c1_b2 * Clb2) / (Jd2_c1 + Sic1_T);
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vkp_f6(Vkp_f6, Jd2_f6, kd1_f6, kd2_f6, epsilon_f6_n2, epsilon_f6_n3, epsilon_f6_k2, epsilon_f6_b5, epsilon_f6_b2, Cln2, Clb5, Cln3, Bck2, Clb2, Cdc6_T)
+
+  // Assignment Rules:
+  Vkp_f6 := kd1_f6 + kd2_f6 * (epsilon_f6_n3 * Cln3 + epsilon_f6_k2 * Bck2 + epsilon_f6_n2 * Cln2 + epsilon_f6_b5 * Clb5 + epsilon_f6_b2 * Clb2) / (Jd2_f6 + Cdc6_T);
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Va_cdh(Va_cdh, ka_cdh_, ka_cdh__, Cdc14)
+
+  // Assignment Rules:
+  Va_cdh := ka_cdh_ + ka_cdh__ * Cdc14;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vi_cdh(Vi_cdh, ki_cdh_, ki_cdh__, epsilon_cdh_n2, epsilon_cdh_n3, epsilon_cdh_b5, epsilon_cdh_b2, Cln2, Clb5, Cln3, Clb2)
+
+  // Assignment Rules:
+  Vi_cdh := ki_cdh_ + ki_cdh__ * (epsilon_cdh_n3 * Cln3 + epsilon_cdh_n2 * Cln2 + epsilon_cdh_b5 * Clb5 + epsilon_cdh_b2 * Clb2);
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vpp_net(Vpp_net, kpp_net_, kpp_net__, PPX)
+
+  // Assignment Rules:
+  Vpp_net := kpp_net_ + kpp_net__ * PPX;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vkp_net(Vkp_net, kkp_net_, kkp_net__, Cdc15, mass)
+
+  // Assignment Rules:
+  Vkp_net := (kkp_net_ + kkp_net__ * Cdc15) * mass;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Net1(Net1, ks_net, kd_net, kd_14, kdi_rent, Vpp_net, kas_rent, Vkp_net, RENT, Cdc14, Net1P, time_)
+
+  // Rate Rules:
+  Net1' = ks_net + kd_14 * RENT + kdi_rent * RENT + Vpp_net * Net1P - (kd_net * Net1 + kas_rent * Cdc14 * Net1 + Vkp_net * Net1);
+
+  // Variable initializations:
+  Net1 = 0.0186;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__RENT(RENT, ks_net, kd_net, kd_14, kdi_rent, Vpp_net, kas_rent, Vkp_net, Net1, Cdc14, RENTP, time_)
+
+  // Rate Rules:
+  RENT' = kas_rent * Cdc14 * Net1 + Vpp_net * RENTP - ((kd_14 + kd_net) * RENT + kdi_rent * RENT + Vkp_net * RENT);
+
+  // Variable initializations:
+  RENT = 1.0495;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__PPX(PPX, ks_ppx, Vd_ppx, time_)
+
+  // Rate Rules:
+  PPX' = ks_ppx - Vd_ppx * PPX;
+
+  // Variable initializations:
+  PPX = 0.1232;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vd_ppx(Vd_ppx, kd_ppx_, kd_ppx__, Pds1, Cdc20_A, Jpds, J20_ppx)
+
+  // Assignment Rules:
+  Vd_ppx := kd_ppx_ + kd_ppx__ * (J20_ppx + Cdc20_A) * Jpds / (Jpds + Pds1);
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vd_pds(Vd_pds, kd1_pds_, kd2_pds__, kd3_pds__, Cdh1, Cdc20_A)
+
+  // Assignment Rules:
+  Vd_pds := kd1_pds_ + kd2_pds__ * Cdc20_A + kd3_pds__ * Cdh1;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__model_parameters(kg, ks_n2_, ks_n2__, kd_n2, ks_b5_, ks_b5__, kd_b5_, kd_b5__, ks_b2_, ks_b2__, kd_b2_, kd_b2__, kd_b2p, ks_c1_, ks_c1__, kd1_c1, kd2_c1, kd3_c1, kpp_c1, ks_f6_, ks_f6__, ks_f6___, kd1_f6, kd2_f6, kd3_f6, kpp_f6, kas_b5, kdi_b5, kas_f5, kdi_f5, kas_b2, kdi_b2, kas_f2, kdi_f2, ks_swi_, ks_swi__, kd_swi, ka_swi, ki_swi, ka_apc, ki_apc, ks_20_, ks_20__, kd_20, ka_20_, ka_20__, ks_cdh, kd_cdh, ka_cdh_, ka_cdh__, ki_cdh_, ki_cdh__, ks_14, kd_14, ks_net, kd_net, ka_15_, ka_15__, ka_15___, ki_15, kpp_net_, kpp_net__, kkp_net_, kkp_net__, kas_rent, kas_rentp, kdi_rent, kdi_rentp, ks_ppx, kd_ppx_, kd_ppx__, ks_pds_, ks1_pds__, ks2_pds__, kd1_pds_, kd2_pds__, kd3_pds__, kas_esp, kdi_esp, ks_ori, kd_ori, ks_bud, kd_bud, ks_spn, kd_spn, ka_sbf, ki_sbf_, ki_sbf__, ka_mcm, ki_mcm, kmad2, kbub2, klte1, epsilon_sbf_n2, epsilon_sbf_n3, epsilon_sbf_b5, epsilon_c1_n3, epsilon_c1_n2, epsilon_c1_k2, epsilon_c1_b5, epsilon_c1_b2, epsilon_f6_n3, epsilon_f6_n2, epsilon_f6_k2, epsilon_f6_b5, epsilon_f6_b2, epsilon_cdh_n2, epsilon_cdh_n3, epsilon_cdh_b5, epsilon_cdh_b2, epsilon_ori_b5, epsilon_ori_b2, epsilon_bud_n3, epsilon_bud_n2, epsilon_bud_b5, C0, Dn3, B0, Tem1_T, Cdc15_T, Esp1_T, Jd2_c1, Jd2_f6, Ja_apc, Ji_apc, Ja_cdh, Ji_cdh, Ja_tem, Ji_tem, Ja_sbf, Ji_sbf, Ja_mcm, Ji_mcm, Jspn, Jn3, J20_ppx, Jpds, Kez, Kez2, ORI, SPN, Clb2)
+
+  // Assignment Rules:
+  kmad2 := piecewise( 8 , ( ORI > 1) && (SPN < 1 ), 0.01 );
+  kbub2 := piecewise( 1 , ( ORI > 1) && (SPN < 1 ), 0.2 );
+  klte1 := piecewise( 1 , ( SPN > 1) && (Clb2 > Kez ), 0.1 );
+
+  // Variable initializations:
+  kg = 0.007702;
+  ks_n2_ = 0;
+  ks_n2__ = 0.15;
+  kd_n2 = 0.12;
+  ks_b5_ = 0.0008;
+  ks_b5__ = 0.005;
+  kd_b5_ = 0.01;
+  kd_b5__ = 0.16;
+  ks_b2_ = 0.001;
+  ks_b2__ = 0.04;
+  kd_b2_ = 0.003;
+  kd_b2__ = 0.4;
+  kd_b2p = 0.15;
+  ks_c1_ = 0.012;
+  ks_c1__ = 0.12;
+  kd1_c1 = 0.01;
+  kd2_c1 = 1;
+  kd3_c1 = 1;
+  kpp_c1 = 4;
+  ks_f6_ = 0.024;
+  ks_f6__ = 0.12;
+  ks_f6___ = 0.004;
+  kd1_f6 = 0.01;
+  kd2_f6 = 1;
+  kd3_f6 = 1;
+  kpp_f6 = 4;
+  kas_b5 = 50;
+  kdi_b5 = 0.06;
+  kas_f5 = 0.01;
+  kdi_f5 = 0.01;
+  kas_b2 = 50;
+  kdi_b2 = 0.05;
+  kas_f2 = 15;
+  kdi_f2 = 0.5;
+  ks_swi_ = 0.005;
+  ks_swi__ = 0.08;
+  kd_swi = 0.08;
+  ka_swi = 2;
+  ki_swi = 0.05;
+  ka_apc = 0.1;
+  ki_apc = 0.15;
+  ks_20_ = 0.006;
+  ks_20__ = 0.6;
+  kd_20 = 0.3;
+  ka_20_ = 0.05;
+  ka_20__ = 0.2;
+  ks_cdh = 0.01;
+  kd_cdh = 0.01;
+  ka_cdh_ = 0.01;
+  ka_cdh__ = 0.8;
+  ki_cdh_ = 0.001;
+  ki_cdh__ = 0.08;
+  ks_14 = 0.2;
+  kd_14 = 0.1;
+  ks_net = 0.084;
+  kd_net = 0.03;
+  ka_15_ = 0.002;
+  ka_15__ = 1;
+  ka_15___ = 0.001;
+  ki_15 = 0.5;
+  kpp_net_ = 0.05;
+  kpp_net__ = 3;
+  kkp_net_ = 0.01;
+  kkp_net__ = 0.6;
+  kas_rent = 200;
+  kas_rentp = 1;
+  kdi_rent = 1;
+  kdi_rentp = 2;
+  ks_ppx = 0.1;
+  kd_ppx_ = 0.17;
+  kd_ppx__ = 2;
+  ks_pds_ = 0;
+  ks1_pds__ = 0.03;
+  ks2_pds__ = 0.055;
+  kd1_pds_ = 0.01;
+  kd2_pds__ = 0.2;
+  kd3_pds__ = 0.04;
+  kas_esp = 50;
+  kdi_esp = 0.5;
+  ks_ori = 2;
+  kd_ori = 0.06;
+  ks_bud = 0.2;
+  kd_bud = 0.06;
+  ks_spn = 0.1;
+  kd_spn = 0.06;
+  ka_sbf = 0.38;
+  ki_sbf_ = 0.6;
+  ki_sbf__ = 8;
+  ka_mcm = 1;
+  ki_mcm = 0.15;
+  epsilon_sbf_n2 = 2;
+  epsilon_sbf_n3 = 10;
+  epsilon_sbf_b5 = 2;
+  epsilon_c1_n3 = 0.3;
+  epsilon_c1_n2 = 0.06;
+  epsilon_c1_k2 = 0.03;
+  epsilon_c1_b5 = 0.1;
+  epsilon_c1_b2 = 0.45;
+  epsilon_f6_n3 = 0.3;
+  epsilon_f6_n2 = 0.06;
+  epsilon_f6_k2 = 0.03;
+  epsilon_f6_b5 = 0.1;
+  epsilon_f6_b2 = 0.55;
+  epsilon_cdh_n2 = 0.4;
+  epsilon_cdh_n3 = 0.25;
+  epsilon_cdh_b5 = 8;
+  epsilon_cdh_b2 = 1.2;
+  epsilon_ori_b5 = 0.9;
+  epsilon_ori_b2 = 0.45;
+  epsilon_bud_n3 = 0.05;
+  epsilon_bud_n2 = 0.25;
+  epsilon_bud_b5 = 1;
+  C0 = 0.4;
+  Dn3 = 1;
+  B0 = 0.054;
+  Tem1_T = 1;
+  Cdc15_T = 1;
+  Esp1_T = 1;
+  Jd2_c1 = 0.05;
+  Jd2_f6 = 0.05;
+  Ja_apc = 0.1;
+  Ji_apc = 0.1;
+  Ja_cdh = 0.03;
+  Ji_cdh = 0.03;
+  Ja_tem = 0.1;
+  Ji_tem = 0.1;
+  Ja_sbf = 0.01;
+  Ji_sbf = 0.01;
+  Ja_mcm = 0.1;
+  Ji_mcm = 0.1;
+  Jspn = 0.14;
+  Jn3 = 6;
+  J20_ppx = 0.15;
+  Jpds = 0.04;
+  Kez = 0.3;
+  Kez2 = 0.2;
+end
+
+model chen_calzone_csikasznagy_cross_novak_tyson_2004_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__environment(time_);
+  mass: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__mass(mass0, kg, time_);
+  Cln2: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cln2(Cln20, ks_n2_, ks_n2__, kd_n2, mass0, SBF, time_);
+  Clb5: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Clb5(Clb50, ks_b5_, ks_b5__, kdi_f5, kdi_b5, kas_b5, kas_f5, kd3_f6, kd3_c1, Vd_b50, mass0, MBF, C5P0, C50, F5P0, F50, Sic10, Cdc60, time_);
+  Clb2: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Clb2(Clb20, ks_b2_, ks_b2__, kdi_b2, kdi_f2, kas_b2, kas_f2, kd3_f6, kd3_c1, Vd_b20, mass0, Mcm10, C2P0, C20, F2P0, F20, Sic10, Cdc60, time_);
+  Sic1: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Sic1(Sic10, ks_c1_, ks_c1__, kdi_b2, kdi_b5, kpp_c1, kas_b2, kas_b5, Vd_b20, Vd_b50, Vkp_c10, Swi50, C20, C50, Cdc140, Sic1P0, Clb20, Clb50, time_);
+  Sic1P: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Sic1P(Sic1P0, kpp_c1, kd3_c1, Vd_b20, Vd_b50, Vkp_c10, C2P0, C5P0, Cdc140, Sic10, time_);
+  C2: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__C2(C20, kpp_c1, kas_b2, kdi_b2, Vd_b20, Vkp_c10, C2P0, Clb20, Cdc140, Sic10, time_);
+  C5: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__C5(C50, kpp_c1, kas_b5, kdi_b5, Vd_b50, Vkp_c10, C5P0, Clb50, Cdc140, Sic10, time_);
+  C2P: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__C2P(C2P0, kpp_c1, kd3_c1, Vd_b20, Vkp_c10, C20, Cdc140, time_);
+  C5P: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__C5P(C5P0, kpp_c1, kd3_c1, Vd_b50, Vkp_c10, C50, Cdc140, time_);
+  Cdc6: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc6(Cdc60, ks_f6_, ks_f6__, ks_f6___, kdi_f2, kdi_f5, kpp_f6, kas_f2, kas_f5, Vd_b20, Vd_b50, Vkp_f60, Swi50, SBF, F20, F50, Cdc140, Cdc6P0, Clb20, Clb50, time_);
+  Cdc6P: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc6P(Cdc6P0, kd3_f6, kpp_f6, Vd_b20, Vd_b50, Vkp_f60, F2P0, F5P0, Cdc140, Cdc60, time_);
+  F2: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__F2(F20, kas_f2, kpp_f6, Vd_b20, kdi_f2, Vkp_f60, Clb20, F2P0, Cdc140, Cdc60, time_);
+  Pds1: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Pds1(Pds10, ks_pds_, ks1_pds__, ks2_pds__, kdi_esp, Vd_pds0, kas_esp, SBF, Mcm10, PE0, Esp10, time_);
+  Esp1: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Esp1(Esp10, kdi_esp, Vd_pds0, kas_esp, Pds10, PE0, time_);
+  ORI: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__ORI(ORI0, ks_ori, kd_ori, epsilon_ori_b5, epsilon_ori_b2, Clb20, Clb50, time_);
+  BUD: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__BUD(BUD0, ks_bud, kd_bud, epsilon_bud_n2, epsilon_bud_n3, epsilon_bud_b5, Cln20, Cln30, Clb50, time_);
+  SPN: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__SPN(SPN0, ks_spn, kd_spn, Jspn, Clb20, time_);
+  G_sbf: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__G_sbf(G_sbf0, Ji_sbf, Ja_sbf, Vi_sbf0, Va_sbf0);
+  G_mcm: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__G_mcm(G_mcm0, Ji_mcm, Ja_mcm, ki_mcm, ka_mcm, Clb20);
+  SBF_MBF: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__SBF_MBF(SBF, MBF, G_sbf0);
+  Mcm1: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Mcm1(Mcm10, G_mcm0);
+  Cln3: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cln3(Cln30, C0, Dn3, Jn3, mass0);
+  Bck2: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Bck2(Bck20, B0, mass0);
+  Clb5_T: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Clb5_T(Clb5_T0, Clb50, C50, C5P0, F50, F5P0);
+  Clb2_T: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Clb2_T(Clb2_T0, Clb20, C20, C2P0, F20, F2P0);
+  Sic1_T: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Sic1_T(Sic1_T0, Sic10, Sic1P0, C20, C2P0, C50, C5P0);
+  F5: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__F5(F50, kas_f5, kpp_f6, kdi_f5, Vkp_f60, Vd_b50, Clb50, Cdc60, Cdc140, F5P0, time_);
+  F2P: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__F2P(F2P0, kd3_f6, kpp_f6, Vkp_f60, Vd_b20, F20, Cdc140, time_);
+  F5P: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__F5P(F5P0, kd3_f6, kpp_f6, Vkp_f60, Vd_b50, F50, Cdc140, time_);
+  Swi5_T: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Swi5_T(Swi5_T0, ks_swi_, ks_swi__, kd_swi, Mcm10, time_);
+  Swi5: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Swi5(Swi50, ks_swi_, ks_swi__, kd_swi, ka_swi, ki_swi, Mcm10, Cdc140, Swi5_T0, Clb20, time_);
+  APC_P: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__APC_P(APC_P0, ka_apc, ki_apc, Ja_apc, Ji_apc, Clb20, time_);
+  Cdc20_T: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc20_T(Cdc20_T0, ks_20_, ks_20__, kd_20, Mcm10, time_);
+  Cdc20_A: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc20_A(Cdc20_A0, ka_20_, ka_20__, kd_20, kmad2, APC_P0, Cdc20_T0, time_);
+  Cdh1_T: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdh1_T(Cdh1_T0, ks_cdh, kd_cdh, time_);
+  Cdh1: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdh1(Cdh10, ks_cdh, kd_cdh, Ja_cdh, Ji_cdh, Va_cdh0, Vi_cdh0, Cdh1_T0, time_);
+  Tem1: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Tem1(Tem10, kbub2, klte1, Ja_tem, Ji_tem, Tem1_T, time_);
+  Cdc15: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc15(Cdc150, ka_15_, ka_15__, ka_15___, ki_15, Tem10, Tem1_T, Cdc140, Cdc15_T, time_);
+  Cdc14_T: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc14_T(Cdc14_T0, ks_14, kd_14, time_);
+  Cdc14: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc14(Cdc140, ks_14, kd_14, kd_net, kdi_rent, kdi_rentp, kas_rent, kas_rentp, RENT0, RENTP0, Net10, Net1P0, time_);
+  Net1_T: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Net1_T(Net1_T0, ks_net, kd_net, time_);
+  Cdc6_T: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Cdc6_T(Cdc6_T0, Cdc60, Cdc6P0, F20, F2P0, F50, F5P0);
+  CKI_T: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__CKI_T(CKI_T0, Sic1_T0, Cdc6_T0);
+  RENTP: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__RENTP(RENTP0, Cdc14_T0, Cdc140, RENT0);
+  Net1P: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Net1P(Net1P0, Net1_T0, Cdc14_T0, Cdc140, Net10);
+  PE: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__PE(PE0, Esp1_T, Esp10);
+  Vd_b5: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vd_b5(Vd_b50, kd_b5_, kd_b5__, Cdc20_A0);
+  Vd_b2: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vd_b2(Vd_b20, kd_b2_, kd_b2__, kd_b2p, Cdh10, Cdc20_A0);
+  Va_sbf: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Va_sbf(Va_sbf0, ka_sbf, epsilon_sbf_n2, epsilon_sbf_n3, epsilon_sbf_b5, Cln20, Clb50, Cln30, Bck20);
+  Vi_sbf: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vi_sbf(Vi_sbf0, ki_sbf_, ki_sbf__, Clb20);
+  Vkp_c1: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vkp_c1(Vkp_c10, kd1_c1, kd2_c1, Jd2_c1, epsilon_c1_n2, epsilon_c1_n3, epsilon_c1_k2, epsilon_c1_b5, epsilon_c1_b2, Cln20, Clb50, Cln30, Bck20, Clb20, Sic1_T0);
+  Vkp_f6: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vkp_f6(Vkp_f60, Jd2_f6, kd1_f6, kd2_f6, epsilon_f6_n2, epsilon_f6_n3, epsilon_f6_k2, epsilon_f6_b5, epsilon_f6_b2, Cln20, Clb50, Cln30, Bck20, Clb20, Cdc6_T0);
+  Va_cdh: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Va_cdh(Va_cdh0, ka_cdh_, ka_cdh__, Cdc140);
+  Vi_cdh: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vi_cdh(Vi_cdh0, ki_cdh_, ki_cdh__, epsilon_cdh_n2, epsilon_cdh_n3, epsilon_cdh_b5, epsilon_cdh_b2, Cln20, Clb50, Cln30, Clb20);
+  Vpp_net: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vpp_net(Vpp_net0, kpp_net_, kpp_net__, PPX0);
+  Vkp_net: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vkp_net(Vkp_net0, kkp_net_, kkp_net__, Cdc150, mass0);
+  Net1: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Net1(Net10, ks_net, kd_net, kd_14, kdi_rent, Vpp_net0, kas_rent, Vkp_net0, RENT0, Cdc140, Net1P0, time_);
+  RENT: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__RENT(RENT0, ks_net, kd_net, kd_14, kdi_rent, Vpp_net0, kas_rent, Vkp_net0, Net10, Cdc140, RENTP0, time_);
+  PPX: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__PPX(PPX0, ks_ppx, Vd_ppx0, time_);
+  Vd_ppx: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vd_ppx(Vd_ppx0, kd_ppx_, kd_ppx__, Pds10, Cdc20_A0, Jpds, J20_ppx);
+  Vd_pds: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__Vd_pds(Vd_pds0, kd1_pds_, kd2_pds__, kd3_pds__, Cdh10, Cdc20_A0);
+  model_parameters: chen_calzone_csikasznagy_cross_novak_tyson_2004_version01__model_parameters(kg, ks_n2_, ks_n2__, kd_n2, ks_b5_, ks_b5__, kd_b5_, kd_b5__, ks_b2_, ks_b2__, kd_b2_, kd_b2__, kd_b2p, ks_c1_, ks_c1__, kd1_c1, kd2_c1, kd3_c1, kpp_c1, ks_f6_, ks_f6__, ks_f6___, kd1_f6, kd2_f6, kd3_f6, kpp_f6, kas_b5, kdi_b5, kas_f5, kdi_f5, kas_b2, kdi_b2, kas_f2, kdi_f2, ks_swi_, ks_swi__, kd_swi, ka_swi, ki_swi, ka_apc, ki_apc, ks_20_, ks_20__, kd_20, ka_20_, ka_20__, ks_cdh, kd_cdh, ka_cdh_, ka_cdh__, ki_cdh_, ki_cdh__, ks_14, kd_14, ks_net, kd_net, ka_15_, ka_15__, ka_15___, ki_15, kpp_net_, kpp_net__, kkp_net_, kkp_net__, kas_rent, kas_rentp, kdi_rent, kdi_rentp, ks_ppx, kd_ppx_, kd_ppx__, ks_pds_, ks1_pds__, ks2_pds__, kd1_pds_, kd2_pds__, kd3_pds__, kas_esp, kdi_esp, ks_ori, kd_ori, ks_bud, kd_bud, ks_spn, kd_spn, ka_sbf, ki_sbf_, ki_sbf__, ka_mcm, ki_mcm, kmad2, kbub2, klte1, epsilon_sbf_n2, epsilon_sbf_n3, epsilon_sbf_b5, epsilon_c1_n3, epsilon_c1_n2, epsilon_c1_k2, epsilon_c1_b5, epsilon_c1_b2, epsilon_f6_n3, epsilon_f6_n2, epsilon_f6_k2, epsilon_f6_b5, epsilon_f6_b2, epsilon_cdh_n2, epsilon_cdh_n3, epsilon_cdh_b5, epsilon_cdh_b2, epsilon_ori_b5, epsilon_ori_b2, epsilon_bud_n3, epsilon_bud_n2, epsilon_bud_b5, C0, Dn3, B0, Tem1_T, Cdc15_T, Esp1_T, Jd2_c1, Jd2_f6, Ja_apc, Ji_apc, Ja_cdh, Ji_cdh, Ja_tem, Ji_tem, Ja_sbf, Ji_sbf, Ja_mcm, Ji_mcm, Jspn, Jn3, J20_ppx, Jpds, Kez, Kez2, ORI0, SPN0, Clb20);
+end

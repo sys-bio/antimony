@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="aguda_1999_b_version01____main" name="aguda_1999_b_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="k1" value="1"/>
+      <parameter id="kn1" value="10"/>
+      <parameter id="k2" value="0.1"/>
+      <parameter id="kn2" value="0.01"/>
+      <parameter id="k2_" value="0.1"/>
+      <parameter id="k3_" value="100"/>
+      <parameter id="kn3_" value="0"/>
+      <parameter id="k4" value="0"/>
+      <parameter id="k5" value="1"/>
+      <parameter id="k6" value="0.01"/>
+      <parameter id="k7" value="1"/>
+      <parameter id="kn7" value="0.01"/>
+      <parameter id="k8" value="0.1"/>
+      <parameter id="kn8" value="0.01"/>
+      <parameter id="k8_" value="0"/>
+      <parameter id="k9" value="1"/>
+      <parameter id="kn9" value="1"/>
+      <parameter id="k9_" value="0"/>
+      <parameter id="k10" value="0"/>
+      <parameter id="k11" value="1"/>
+      <parameter id="k12" value="0.1"/>
+      <parameter id="k13" value="1"/>
+      <parameter id="k14" value="0.0005"/>
+      <parameter id="k14_" value="1"/>
+      <parameter id="k15" value="0.01"/>
+      <parameter id="k16" value="0.0002"/>
+      <parameter id="k17" value="0.1"/>
+      <parameter id="k18" value="1"/>
+      <parameter id="kn18" value="0.01"/>
+      <parameter id="k20" value="0.1"/>
+      <parameter id="k21" value="0.01"/>
+      <parameter id="k22" value="0.1"/>
+      <parameter id="k23" value="0.1"/>
+      <parameter id="kn23" value="1"/>
+      <parameter id="kPlk1" value="0"/>
+      <parameter id="kPlk1_" value="0"/>
+      <parameter id="kctak1" value="0"/>
+      <parameter id="kctak1_" value="0"/>
+      <parameter id="kex" value="1"/>
+      <parameter id="Chk1P0" value="1e-06" constant="false"/>
+      <parameter id="V_n10" constant="false"/>
+      <parameter id="V_19" constant="false"/>
+      <parameter id="Rad30" value="0" constant="false"/>
+      <parameter id="V_40" constant="false"/>
+      <parameter id="V_50" constant="false"/>
+      <parameter id="p530" value="0" constant="false"/>
+      <parameter id="V_100" constant="false"/>
+      <parameter id="V_110" constant="false"/>
+      <parameter id="preMPF0" value="1e-06" constant="false"/>
+      <parameter id="V_140" constant="false"/>
+      <parameter id="V_n90" constant="false"/>
+      <parameter id="V_90" constant="false"/>
+      <parameter id="MPF0" value="1e-08" constant="false"/>
+      <parameter id="V_n230" constant="false"/>
+      <parameter id="V_230" constant="false"/>
+      <parameter id="V_150" constant="false"/>
+      <parameter id="p210" value="0" constant="false"/>
+      <parameter id="V_210" constant="false"/>
+      <parameter id="V_200" constant="false"/>
+      <parameter id="V_220" constant="false"/>
+      <parameter id="p21_MPF0" value="0" constant="false"/>
+      <parameter id="iCdc250" value="1e-06" constant="false"/>
+      <parameter id="V_n70" constant="false"/>
+      <parameter id="V_n3_0" constant="false"/>
+      <parameter id="V_70" constant="false"/>
+      <parameter id="V_2_0" constant="false"/>
+      <parameter id="V_in0" value="1e-05"/>
+      <parameter id="iCdc25Ps2160" value="2e-05" constant="false"/>
+      <parameter id="V_n180" constant="false"/>
+      <parameter id="V_180" constant="false"/>
+      <parameter id="V_3_0" constant="false"/>
+      <parameter id="iCdc25Ps216_protein14330" value="0.03" constant="false"/>
+      <parameter id="V_ex0" constant="false"/>
+      <parameter id="aCdc250" value="1e-06" constant="false"/>
+      <parameter id="V_n20" constant="false"/>
+      <parameter id="V_24" constant="false"/>
+      <parameter id="aCdc25Ps2160" value="0" constant="false"/>
+      <parameter id="protein14330" value="2" constant="false"/>
+      <parameter id="V_60" constant="false"/>
+      <parameter id="V_130" constant="false"/>
+      <parameter id="V_120" constant="false"/>
+      <parameter id="Wee10" value="0.001" constant="false"/>
+      <parameter id="V_160" constant="false"/>
+      <parameter id="V_n80" constant="false"/>
+      <parameter id="V_80" constant="false"/>
+      <parameter id="Wee1P0" value="0" constant="false"/>
+      <parameter id="V_170" constant="false"/>
+      <parameter id="aCdc25_T0" constant="false"/>
+      <parameter id="V_1_Chk1" constant="false"/>
+      <parameter id="V_1_Chk1_T" value="1"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Chk1P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V_19 </ci>
+            <ci> V_n10 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_n10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kn1 </ci>
+            <ci> Chk1P0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_19">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k1 </ci>
+            <ci> V_1_Chk1 </ci>
+            <ci> Rad30 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Rad30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V_40 </ci>
+            <ci> V_50 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> k4 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_50">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k5 </ci>
+            <ci> Rad30 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="p530">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V_100 </ci>
+            <ci> V_110 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_100">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> k10 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_110">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k11 </ci>
+            <ci> p530 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="preMPF0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> V_140 </ci>
+              <ci> V_n90 </ci>
+            </apply>
+            <ci> V_90 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_140">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> k14 </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> k14_ </ci>
+                  <ci> p530 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_n90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kn9 </ci>
+            <ci> MPF0 </ci>
+            <ci> Wee10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k9 </ci>
+              <apply>
+                <plus/>
+                <ci> aCdc250 </ci>
+                <ci> aCdc25Ps2160 </ci>
+              </apply>
+              <ci> preMPF0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k9_ </ci>
+              <ci> preMPF0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="MPF0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> V_90 </ci>
+              <ci> V_n230 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> V_n90 </ci>
+              <ci> V_230 </ci>
+              <ci> V_150 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_n230">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kn23 </ci>
+            <ci> p21_MPF0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_230">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k23 </ci>
+            <ci> MPF0 </ci>
+            <ci> p210 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_150">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k15 </ci>
+            <apply>
+              <power/>
+              <ci> MPF0 </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="p210">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> V_200 </ci>
+              <ci> V_210 </ci>
+              <ci> V_n230 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> V_220 </ci>
+              <ci> V_230 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_210">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> k21 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_200">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k20 </ci>
+            <ci> p530 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_220">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k22 </ci>
+            <ci> p210 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="p21_MPF0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V_230 </ci>
+            <ci> V_n230 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="iCdc250">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> V_n70 </ci>
+              <ci> V_n3_0 </ci>
+              <ci> V_in0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> V_70 </ci>
+              <ci> V_2_0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_n70">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kn7 </ci>
+            <ci> aCdc250 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_n3_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kn3_ </ci>
+            <ci> iCdc25Ps216_protein14330 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_70">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k7 </ci>
+              <ci> MPF0 </ci>
+              <ci> iCdc250 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kPlk1 </ci>
+              <ci> iCdc250 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_2_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k2_ </ci>
+              <ci> Chk1P0 </ci>
+              <ci> iCdc250 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kctak1_ </ci>
+              <ci> iCdc250 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="iCdc25Ps2160">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> V_2_0 </ci>
+              <ci> V_n180 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> V_180 </ci>
+              <ci> V_3_0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_n180">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kn18 </ci>
+            <ci> aCdc25Ps2160 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_180">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k18 </ci>
+              <ci> MPF0 </ci>
+              <ci> iCdc25Ps2160 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kPlk1_ </ci>
+              <ci> iCdc25Ps2160 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_3_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k3_ </ci>
+            <ci> iCdc25Ps2160 </ci>
+            <ci> protein14330 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="iCdc25Ps216_protein14330">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V_3_0 </ci>
+            <apply>
+              <plus/>
+              <ci> V_n3_0 </ci>
+              <ci> V_ex0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_ex0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kex </ci>
+            <ci> iCdc25Ps216_protein14330 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="aCdc250">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> V_70 </ci>
+              <ci> V_n20 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> V_n70 </ci>
+              <ci> V_24 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_n20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kn2 </ci>
+            <ci> aCdc25Ps2160 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_24">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <ci> Chk1P0 </ci>
+              <ci> aCdc250 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kctak1 </ci>
+              <ci> aCdc250 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="aCdc25Ps2160">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> V_24 </ci>
+              <ci> V_180 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> V_n20 </ci>
+              <ci> V_n180 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="protein14330">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> V_60 </ci>
+              <ci> V_130 </ci>
+              <ci> V_n3_0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> V_3_0 </ci>
+              <ci> V_120 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_60">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k6 </ci>
+            <ci> p530 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_130">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> k13 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_120">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k12 </ci>
+            <ci> protein14330 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Wee10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> V_160 </ci>
+              <ci> V_n80 </ci>
+            </apply>
+            <ci> V_80 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_160">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> k16 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_n80">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kn8 </ci>
+            <ci> Wee1P0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_80">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k8 </ci>
+              <ci> MPF0 </ci>
+              <ci> Wee10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k8_ </ci>
+              <ci> Wee10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Wee1P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V_80 </ci>
+            <apply>
+              <plus/>
+              <ci> V_n80 </ci>
+              <ci> V_170 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_170">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k17 </ci>
+            <ci> Wee1P0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aCdc25_T0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> aCdc250 </ci>
+            <ci> aCdc25Ps2160 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_1_Chk1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V_1_Chk1_T </ci>
+            <ci> Chk1P0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

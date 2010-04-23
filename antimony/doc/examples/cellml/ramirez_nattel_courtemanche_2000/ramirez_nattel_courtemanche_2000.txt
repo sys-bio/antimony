@@ -1,0 +1,501 @@
+//Created by libAntimony v1.3
+model ramirez_2000__environment(time_)
+end
+
+model ramirez_2000__membrane(V, R, T, F, time_, i_Na, i_K1, i_to, i_Kur_d, i_Kr, i_Ks, i_Ca, i_Cl_Ca, i_p_Ca, i_NaK, i_NaCa, i_B_Na, i_B_Ca)
+
+  // Rate Rules:
+  V' = -(( i_Na + i_K1 + i_to + i_Kur_d + i_Kr + i_Ks + i_Ca + i_Cl_Ca + i_p_Ca + i_NaCa + i_NaK + i_B_Na + i_B_Ca + i_stim )) / Cm;
+
+  // Variable initializations:
+  V = -83.53;
+  R = 8.3143;
+  T = 310.0;
+  F = 96.4867;
+  Cm = 100.0;
+  i_stim = -2900.0;
+end
+
+model ramirez_2000__fast_sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := 0.32 * (( V + 47.13 ) / ( 1.0 - exp( -0.1 * ( V + 47.13 ))));
+  beta_m := 0.08 * exp( V / -11.0 );
+
+  // Rate Rules:
+  m' = alpha_m * ( 1.0 - m ) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.001972;
+end
+
+model ramirez_2000__fast_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := piecewise( 0.135 * exp(( V + 80.0 ) / -6.8 ) , V < -40.0 , 0.0 );
+  beta_h := piecewise( 3.56 * exp( 0.079 * V ) + 310000.0 * exp( 0.35 * V ) , V < -40.0 , 1.0 / ( 0.13 * ( 1.0 + exp(( V + 10.66 ) / -11.1 ))) );
+
+  // Rate Rules:
+  h' = alpha_h * ( 1.0 - h ) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.9791;
+end
+
+model ramirez_2000__fast_sodium_current_j_gate(j, V, time_)
+
+  // Assignment Rules:
+  alpha_j := piecewise( ( -127140.0 * exp( 0.2444 * V ) - 0.00003474 * exp( -0.04391 * V )) / ( 1.0 + exp( 0.311 * ( V + 79.23 ))) * ( V + 37.78 ) , V < -40.0 , 0.0 );
+  beta_j := piecewise( 0.1212 * exp( -0.01052 * V ) / ( 1.0 + exp( -0.1378 * ( V + 40.14 ))) , V < -40.0 , 0.3 * exp( -0.0000002535 * V ) / ( 1.0 + exp( -0.1 * ( V + 32.0 ))) );
+
+  // Rate Rules:
+  j' = alpha_j * ( 1.0 - j ) - beta_j * j;
+
+  // Variable initializations:
+  j = 0.9869;
+end
+
+model ramirez_2000__fast_sodium_current(i_Na, E_Na, time_, V, Na_i, Na_o, R, F, T, m, h, j)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: ramirez_2000__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: ramirez_2000__fast_sodium_current_h_gate(h, V, time_);
+  fast_sodium_current_j_gate: ramirez_2000__fast_sodium_current_j_gate(j, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power( m , 3.0 ) * h * j * ( V - E_Na );
+  E_Na := R * T / F * ln( Na_o / Na_i );
+
+  // Variable initializations:
+  g_Na = 7.8;
+end
+
+model ramirez_2000__time_independent_potassium_current(i_K1, E_K, time_, V, K_o, R, F, T, K_i)
+
+  // Assignment Rules:
+  i_K1 := g_K1 * ( V - E_K ) / ( 1.0 + exp( 0.07 * ( V + 80.0 )));
+  E_K := R * T / F * ln( K_o / K_i );
+
+  // Variable initializations:
+  g_K1 = 0.15;
+end
+
+model ramirez_2000__transient_outward_K_current_oa_gate(oa, V, time_)
+
+  // Assignment Rules:
+  alpha_oa := 0.65 * power(exp(( V + 18.0 ) / -8.5 ) + exp(( V - 16.0 ) / -59.0 ), -1.0 );
+  beta_oa := 1.2 * power( 2.2 + exp(( V + 75.0 ) / 18.0 ), -1.0 );
+  tau_oa := power( alpha_oa + beta_oa , -1.0 );
+  oa_infinity := power( 1.0 + exp(( V + 0.5 ) / -10.5 ), -(( 1.0 / 3.0 )));
+
+  // Rate Rules:
+  oa' = ( oa_infinity - oa ) / tau_oa;
+
+  // Variable initializations:
+  oa = 0.07164;
+end
+
+model ramirez_2000__transient_outward_K_current_oi_gate(oi, V, time_)
+
+  // Assignment Rules:
+  alpha_oi := power( 6.2 + exp(( V + 105.2 ) / 9.85 ), -1.0 );
+  beta_oi := power( 7.54 + exp(( V - 8.89 ) / -12.87 ), -1.0 );
+  tau_oi := power( alpha_oi + beta_oi , -1.0 );
+  oi_infinity := power( 1.0 + exp(( V + 43.377 ) / 6.45 ), -1.0 );
+
+  // Rate Rules:
+  oi' = ( oi_infinity - oi ) / tau_oi;
+
+  // Variable initializations:
+  oi = 0.9980;
+end
+
+model ramirez_2000__transient_outward_K_current(i_to, E_K, time_, V, oa, oi)
+
+  // Sub-modules, and any changes to those submodules:
+  transient_outward_K_current_oa_gate: ramirez_2000__transient_outward_K_current_oa_gate(oa, V, time_);
+  transient_outward_K_current_oi_gate: ramirez_2000__transient_outward_K_current_oi_gate(oi, V, time_);
+
+  // Assignment Rules:
+  i_to := g_to * power( oa , 3.0 ) * oi * ( V - E_K );
+
+  // Variable initializations:
+  g_to = 0.19824;
+end
+
+model ramirez_2000__ultrarapid_delayed_rectifier_K_current_ua_gate(ua, V, time_)
+
+  // Assignment Rules:
+  alpha_ua := 1.47 * power(exp(( V + 33.2 ) / -30.63 ) + exp(( V - 27.6 ) / -30.65 ), -1.0 );
+  beta_ua := 0.42 * power(exp(( V + 26.64 ) / 2.49 ) + exp(( V + 44.41 ) / 20.36 ), -1.0 );
+  tau_ua := power( alpha_ua + beta_ua , -1.0 );
+  ua_infinity := power( 1.0 + exp(( V + 2.81 ) / -9.49 ), -(( 1.0 / 3.0 )));
+
+  // Rate Rules:
+  ua' = ( ua_infinity - ua ) / tau_ua;
+
+  // Variable initializations:
+  ua = 0.05869;
+end
+
+model ramirez_2000__ultrarapid_delayed_rectifier_K_current_ui_gate(ui, V, time_)
+
+  // Assignment Rules:
+  alpha_ui := power( 21.0 + exp(( V - 185.0 ) / -28.0 ), -1.0 );
+  beta_ui := exp(( V - 158.0 ) / 16.0 );
+  tau_ui := power( alpha_ui + beta_ui , -1.0 );
+  ui_infinity := power( 1.0 + exp(( V - 99.45 ) / 27.48 ), -1.0 );
+
+  // Rate Rules:
+  ui' = ( ui_infinity - ui ) / tau_ui;
+
+  // Variable initializations:
+  ui = 0.9987;
+end
+
+model ramirez_2000__ultrarapid_delayed_rectifier_K_current(i_Kur_d, time_, V, E_K, ua, ui)
+
+  // Sub-modules, and any changes to those submodules:
+  ultrarapid_delayed_rectifier_K_current_ua_gate: ramirez_2000__ultrarapid_delayed_rectifier_K_current_ua_gate(ua, V, time_);
+  ultrarapid_delayed_rectifier_K_current_ui_gate: ramirez_2000__ultrarapid_delayed_rectifier_K_current_ui_gate(ui, V, time_);
+
+  // Assignment Rules:
+  i_Kur_d := g_Kur_d * power( ua , 3.0 ) * ui * ( V - E_K );
+  g_Kur_d := 0.00855 + 0.0779 / ( 1.0 + exp(( V + 11.0 ) / -16.0 ));
+end
+
+model ramirez_2000__rapid_delayed_rectifier_K_current_xr_gate(xr, V, time_)
+
+  // Assignment Rules:
+  alpha_xr := 0.04 * (( V - 248.0 ) / ( 1.0 - exp(( V - 248.0 ) / -28.0 )));
+  beta_xr := 0.028 * (( V + 163.0 ) / (exp(( V + 163.0 ) / 21.0 ) - 1.0 ));
+  tau_xr := power( alpha_xr + beta_xr , -1.0 );
+  xr_infinity := power( 1.0 + exp(( V + 7.654 ) / -5.377 ), -1.0 );
+
+  // Rate Rules:
+  xr' = ( xr_infinity - xr ) / tau_xr;
+
+  // Variable initializations:
+  xr = 0.0000007433;
+end
+
+model ramirez_2000__rapid_delayed_rectifier_K_current(i_Kr, time_, V, E_K, xr)
+
+  // Sub-modules, and any changes to those submodules:
+  rapid_delayed_rectifier_K_current_xr_gate: ramirez_2000__rapid_delayed_rectifier_K_current_xr_gate(xr, V, time_);
+
+  // Assignment Rules:
+  i_Kr := g_Kr * xr * ( 0.07 + 0.58 / ( 1.0 + exp(( V + 15.0 ) / 22.4 ))) * ( V - E_K );
+
+  // Variable initializations:
+  g_Kr = 0.06984;
+end
+
+model ramirez_2000__slow_delayed_rectifier_K_current_xs_gate(xs, V, time_)
+
+  // Assignment Rules:
+  alpha_xs := 0.00001 * (( V + 28.5 ) / ( 1.0 - exp(( V + 28.5 ) / -115.0 )));
+  beta_xs := 0.00023 * (( V + 28.5 ) / (exp(( V + 28.5 ) / 3.3 ) - 1.0 ));
+  tau_xs := power( alpha_xs + beta_xs , -1.0 );
+  xs_infinity := power( 1.0 + exp(( V - 13.0 ) / -12.0 ), -0.5 );
+
+  // Rate Rules:
+  xs' = ( xs_infinity - xs ) / tau_xs;
+
+  // Variable initializations:
+  xs = 0.01791;
+end
+
+model ramirez_2000__slow_delayed_rectifier_K_current(i_Ks, time_, V, E_K, xs)
+
+  // Sub-modules, and any changes to those submodules:
+  slow_delayed_rectifier_K_current_xs_gate: ramirez_2000__slow_delayed_rectifier_K_current_xs_gate(xs, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks * power( xs , 2.0 ) * ( V - E_K );
+
+  // Variable initializations:
+  g_Ks = 0.0561;
+end
+
+model ramirez_2000__sarcolemmal_Ca_current_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  d_infinity := power( 1.0 + exp(( V + 10.0 ) / -6.0 ), -1.0 );
+  tau_d := ( 1.0 - exp(( V + 10.0 ) / -6.24 )) / ( 0.035 * ( V + 10.0 ) * ( 1.0 + exp(( V + 10.0 ) / -6.24 )));
+
+  // Rate Rules:
+  d' = ( d_infinity - d ) / tau_d;
+
+  // Variable initializations:
+  d = 0.000004757;
+end
+
+model ramirez_2000__sarcolemmal_Ca_current_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  f_infinity := power( 1.0 + exp(( V + 24.6 ) / 6.2 ), -1.0 );
+  tau_f := 400.0 * power( 1.0 + 4.5 * exp( -0.0007 * power( V - 9.0 , 2.0 )), -1.0 );
+
+  // Rate Rules:
+  f' = ( f_infinity - f ) / tau_f;
+
+  // Variable initializations:
+  f = 0.9999;
+end
+
+model ramirez_2000__sarcolemmal_Ca_current_f_Ca_gate(f_Ca, Ca_i, V, time_)
+
+  // Assignment Rules:
+  f_Ca_infinity := 0.29 + 0.8 * power( 1.0 + exp(( Ca_i - 0.00012 ) / 0.00006 ), -1.0 );
+
+  // Rate Rules:
+  f_Ca' = ( f_Ca_infinity - f_Ca ) / tau_f_Ca;
+
+  // Variable initializations:
+  f_Ca = 0.7484;
+  tau_f_Ca = 2.0;
+end
+
+model ramirez_2000__sarcolemmal_Ca_current(i_Ca, time_, V, Ca_i, d, f, f_Ca)
+
+  // Sub-modules, and any changes to those submodules:
+  sarcolemmal_Ca_current_d_gate: ramirez_2000__sarcolemmal_Ca_current_d_gate(d, V, time_);
+  sarcolemmal_Ca_current_f_gate: ramirez_2000__sarcolemmal_Ca_current_f_gate(f, V, time_);
+  sarcolemmal_Ca_current_f_Ca_gate: ramirez_2000__sarcolemmal_Ca_current_f_Ca_gate(f_Ca, Ca_i, V, time_);
+
+  // Assignment Rules:
+  i_Ca := g_Ca * d * f * f_Ca * ( V - 65.0 );
+
+  // Variable initializations:
+  g_Ca = 0.24;
+end
+
+model ramirez_2000__Ca_activated_Cl_current_q_Ca_gate(q_Ca, Fn, V, time_)
+
+  // Assignment Rules:
+  q_Ca_infinity := 1.0 - power( 1.0 + power( Fn / 0.00000000011 , 3.0 ), -1.0 );
+
+  // Variable initializations:
+  q_Ca = 0.0;
+end
+
+model ramirez_2000__Ca_activated_Cl_current(i_Cl_Ca, E_Cl, time_, V, Fn, R, F, T, Cl_i, Cl_o, q_Ca)
+
+  // Sub-modules, and any changes to those submodules:
+  Ca_activated_Cl_current_q_Ca_gate: ramirez_2000__Ca_activated_Cl_current_q_Ca_gate(q_Ca, Fn, V, time_);
+
+  // Assignment Rules:
+  i_Cl_Ca := g_Cl_Ca * q_Ca * ( V - E_Cl );
+  E_Cl := R * T / ( -1.0 * F ) * ln( Cl_o / Cl_i );
+
+  // Variable initializations:
+  g_Cl_Ca = 0.3;
+end
+
+model ramirez_2000__sodium_potassium_pump(i_NaK, K_o, Na_i, Na_o, V, R, T, F, time_)
+
+  // Assignment Rules:
+  i_NaK := i_NaK_max * f_NaK * ( 1.0 / ( 1.0 + power( Km_Na_i / Na_i , 1.5 ))) * ( K_o / ( K_o + Km_K_o ));
+  f_NaK := power( 1.0 + 0.1245 * exp( -0.1 * ( F * V / ( R * T ))) + 0.0365 * sigma * exp(-(( F * V / ( R * T )))), -1.0 );
+  sigma := 1.0 / 7.0 * (exp( Na_o / 67.3 ) - 1.0 );
+
+  // Variable initializations:
+  Km_Na_i = 10.0;
+  Km_K_o = 1.5;
+  i_NaK_max = 0.6;
+end
+
+model ramirez_2000__Na_Ca_exchanger_current(i_NaCa, time_, V, R, T, F, Na_i, Na_o, Ca_i, Ca_o)
+
+  // Assignment Rules:
+  i_NaCa := I_NaCa_max * (exp( 0.35 * F * V / ( R * T )) * power( Na_i , 3.0 ) * Ca_o - exp( -0.65 * F * V / ( R * T )) * power( Na_o , 3.0 ) * Ca_i ) / ((power( K_mNa , 3.0 ) + power( Na_o , 3.0 )) * ( K_mCa + Ca_o ) * ( 1.0 + K_sat * exp( -0.65 * V * F / ( R * T ))));
+
+  // Variable initializations:
+  I_NaCa_max = 1600.0;
+  K_mNa = 87.5;
+  K_mCa = 1.38;
+  K_sat = 0.1;
+end
+
+model ramirez_2000__background_currents(i_B_Na, i_B_Ca, E_K, E_Na, time_, V, Ca_i, Ca_o, R, F, T)
+
+  // Assignment Rules:
+  i_B_Na := g_B_Na * ( V - E_Na );
+  i_B_Ca := g_B_Ca * ( V - E_Ca );
+  E_Ca := R * T / ( 2.0 * F ) * ln( Ca_o / Ca_i );
+
+  // Variable initializations:
+  g_B_Na = 0.000674;
+  g_B_Ca = 0.00113;
+end
+
+model ramirez_2000__Ca_pump_current(i_p_Ca, Ca_i, time_)
+
+  // Assignment Rules:
+  i_p_Ca := i_p_Ca_max * ( Ca_i / ( 0.0005 + Ca_i ));
+
+  // Variable initializations:
+  i_p_Ca_max = 0.275;
+end
+
+model ramirez_2000__Ca_release_current_from_JSR_u_gate(u, V, time_, Fn)
+
+  // Assignment Rules:
+  tau_u := 8.0;
+  u_infinity := power( 1.0 + exp(( Fn - 0.00000000000034175 ) / -0.000000000000001367 ), -1.0 );
+
+  // Rate Rules:
+  u' = ( u_infinity - u ) / tau_u;
+
+  // Variable initializations:
+  u = 0.0;
+end
+
+model ramirez_2000__Ca_release_current_from_JSR_v_gate(v, V, time_, Fn)
+
+  // Assignment Rules:
+  tau_v := 1.91 + 2.09 * power( 1.0 + exp(( Fn - 0.00000000000034175 ) / -0.000000000000001367 ), -1.0 );
+  v_infinity := 1.0 - power( 1.0 + exp(( Fn - 6.835E-14 ) / -0.000000000000001367 ), -1.0 );
+
+  // Rate Rules:
+  v' = ( v_infinity - v ) / tau_v;
+
+  // Variable initializations:
+  v = 1.0;
+end
+
+model ramirez_2000__Ca_release_current_from_JSR_w_gate(w, V, time_)
+
+  // Assignment Rules:
+  tau_w := ( 6.0 - 6.0 * exp(( V - 7.9 ) / -5.0 )) / (( 1.0 + 0.3 * exp(( V - 7.9 ) / -5.0 )) * ( V - 7.9 ));
+  w_infinity := 1.0 - power( 1.0 + exp(( V - 40.0 ) / -17.0 ), -1.0 );
+
+  // Rate Rules:
+  w' = ( w_infinity - w ) / tau_w;
+
+  // Variable initializations:
+  w = 0.9993;
+end
+
+model ramirez_2000__Ca_release_current_from_JSR(i_rel, Fn, time_, V, Ca_i, Ca_rel, i_Ca, i_NaCa, F, u, v, w)
+
+  // Sub-modules, and any changes to those submodules:
+  Ca_release_current_from_JSR_u_gate: ramirez_2000__Ca_release_current_from_JSR_u_gate(u, V, time_, Fn);
+  Ca_release_current_from_JSR_v_gate: ramirez_2000__Ca_release_current_from_JSR_v_gate(v, V, time_, Fn);
+  Ca_release_current_from_JSR_w_gate: ramirez_2000__Ca_release_current_from_JSR_w_gate(w, V, time_);
+
+  // Assignment Rules:
+  i_rel := K_rel * power( u , 2.0 ) * v * w * ( Ca_rel - Ca_i );
+  Fn := 0.000000000001 * V_rel * i_rel - 0.0000000000005 * ( 1.0 / ( 2.0 * F ) * i_Ca - 1.0 / ( 5.0 * F ) * i_NaCa );
+
+  // Variable initializations:
+  K_rel = 30.0;
+  V_rel = 96.48;
+end
+
+model ramirez_2000__transfer_current_from_NSR_to_JSR(i_tr, time_, Ca_rel, Ca_up)
+
+  // Assignment Rules:
+  i_tr := ( Ca_up - Ca_rel ) / tau_tr;
+
+  // Variable initializations:
+  tau_tr = 180.0;
+end
+
+model ramirez_2000__Ca_uptake_current_by_the_NSR(I_up_max, i_up, time_, Ca_i)
+
+  // Assignment Rules:
+  i_up := I_up_max / ( 1.0 + K_up / Ca_i );
+
+  // Variable initializations:
+  I_up_max = 0.005;
+  K_up = 0.00092;
+end
+
+model ramirez_2000__Ca_leak_current_by_the_NSR(i_up_leak, time_, Ca_up, I_up_max)
+
+  // Assignment Rules:
+  i_up_leak := I_up_max * ( Ca_up / Ca_up_max );
+
+  // Variable initializations:
+  Ca_up_max = 15.0;
+end
+
+model ramirez_2000__Ca_buffers(CMDN_max, TRPN_max, CSQN_max, J_Ca_CMDN, J_Ca_TRPN, J_Ca_CSQN, time_, Ca_i, Ca_rel)
+
+  // Assignment Rules:
+  J_Ca_CMDN := d( Ca_CMDN )/d( time_ );
+  J_Ca_TRPN := d( Ca_TRPN )/d( time_ );
+  J_Ca_CSQN := d( Ca_CSQN )/d( time_ );
+
+  // Rate Rules:
+  Ca_CMDN' = 200.0 * Ca_i * ( 1.0 - Ca_CMDN / CMDN_max ) - 0.476 * ( Ca_CMDN / CMDN_max );
+  Ca_TRPN' = 78.4 * Ca_i * ( 1.0 - Ca_TRPN / TRPN_max ) - 0.392 * ( Ca_TRPN / TRPN_max );
+  Ca_CSQN' = 0.48 * Ca_rel * ( 1.0 - Ca_CSQN / CSQN_max ) - 0.4 * ( Ca_CSQN / CSQN_max );
+
+  // Variable initializations:
+  CMDN_max = 0.045;
+  TRPN_max = 0.35;
+  CSQN_max = 10.0;
+  Ca_CMDN = 0.001856;
+  Ca_TRPN = 0.007022;
+  Ca_CSQN = 6.432;
+end
+
+model ramirez_2000__intracellular_ion_concentrations(Na_i, Ca_i, Cl_i, K_i, Ca_rel, Ca_up, time_, F, i_NaK, i_NaCa, i_B_Na, i_Na, i_K1, i_to, i_Kur_d, i_Kr, i_Ks, i_p_Ca, i_Ca, i_Cl_Ca, i_B_Ca, i_up, i_up_leak, i_tr, i_rel, CMDN_max, CSQN_max, TRPN_max, J_Ca_CMDN, J_Ca_CSQN, J_Ca_TRPN)
+
+  // Rate Rules:
+  Na_i' = ( -3.0 * i_NaK - ( 3.0 * i_NaCa + i_B_Na + i_Na )) / ( V_i * F );
+  Ca_i' = ( 2.0 * i_NaCa - ( i_p_Ca + i_Ca + i_B_Ca )) / ( 2.0 * V_i * F ) + ( V_up * ( i_up_leak - i_up ) + i_rel * V_rel ) / V_i - ( TRPN_max * J_Ca_TRPN + CMDN_max * J_Ca_CMDN );
+  Cl_i' = i_Cl_Ca / ( V_i * F );
+  K_i' = ( 2.0 * i_NaK - ( i_K1 + i_to + i_Kur_d + i_Kr + i_Ks )) / ( V_i * F );
+  Ca_rel' = i_tr - ( i_rel + 31.0 * J_Ca_CSQN );
+  Ca_up' = i_up - ( i_up_leak + i_tr * ( V_rel / V_up ));
+
+  // Variable initializations:
+  Na_i = 11.75;
+  Ca_i = 0.0001024;
+  Cl_i = 29.26;
+  K_i = 138.4;
+  Ca_rel = 1.502;
+  Ca_up = 1.502;
+  V_i = 13668.0;
+  V_rel = 96.48;
+  V_up = 1109.52;
+end
+
+model ramirez_2000__standard_ionic_concentrations(Na_o, Ca_o, K_o, Cl_o)
+
+  // Variable initializations:
+  Na_o = 140.0;
+  Ca_o = 1.8;
+  K_o = 5.4;
+  Cl_o = 132.0;
+end
+
+model ramirez_2000____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: ramirez_2000__environment(time_);
+  membrane: ramirez_2000__membrane(V, R, T, F, time_, i_Na, i_K1, i_to, i_Kur_d, i_Kr, i_Ks, i_Ca, i_Cl_Ca, i_p_Ca, i_NaK, i_NaCa, i_B_Na, i_B_Ca);
+  fast_sodium_current: ramirez_2000__fast_sodium_current(i_Na, E_Na, time_, V, Na_i, Na_o, R, F, T, m, h, j);
+  time_independent_potassium_current: ramirez_2000__time_independent_potassium_current(i_K1, E_K, time_, V, K_o, R, F, T, K_i);
+  transient_outward_K_current: ramirez_2000__transient_outward_K_current(i_to, E_K, time_, V, oa, oi);
+  ultrarapid_delayed_rectifier_K_current: ramirez_2000__ultrarapid_delayed_rectifier_K_current(i_Kur_d, time_, V, E_K, ua, ui);
+  rapid_delayed_rectifier_K_current: ramirez_2000__rapid_delayed_rectifier_K_current(i_Kr, time_, V, E_K, xr);
+  slow_delayed_rectifier_K_current: ramirez_2000__slow_delayed_rectifier_K_current(i_Ks, time_, V, E_K, xs);
+  sarcolemmal_Ca_current: ramirez_2000__sarcolemmal_Ca_current(i_Ca, time_, V, Ca_i, d, f, f_Ca);
+  Ca_activated_Cl_current: ramirez_2000__Ca_activated_Cl_current(i_Cl_Ca, E_Cl, time_, V, Fn, R, F, T, Cl_i, Cl_o, q_Ca);
+  sodium_potassium_pump: ramirez_2000__sodium_potassium_pump(i_NaK, K_o, Na_i, Na_o, V, R, T, F, time_);
+  Na_Ca_exchanger_current: ramirez_2000__Na_Ca_exchanger_current(i_NaCa, time_, V, R, T, F, Na_i, Na_o, Ca_i, Ca_o);
+  background_currents: ramirez_2000__background_currents(i_B_Na, i_B_Ca, E_K, E_Na, time_, V, Ca_i, Ca_o, R, F, T);
+  Ca_pump_current: ramirez_2000__Ca_pump_current(i_p_Ca, Ca_i, time_);
+  Ca_release_current_from_JSR: ramirez_2000__Ca_release_current_from_JSR(i_rel, Fn, time_, V, Ca_i, Ca_rel, i_Ca, i_NaCa, F, u, v, w);
+  transfer_current_from_NSR_to_JSR: ramirez_2000__transfer_current_from_NSR_to_JSR(i_tr, time_, Ca_rel, Ca_up);
+  Ca_uptake_current_by_the_NSR: ramirez_2000__Ca_uptake_current_by_the_NSR(I_up_max, i_up, time_, Ca_i);
+  Ca_leak_current_by_the_NSR: ramirez_2000__Ca_leak_current_by_the_NSR(i_up_leak, time_, Ca_up, I_up_max);
+  Ca_buffers: ramirez_2000__Ca_buffers(CMDN_max, TRPN_max, CSQN_max, J_Ca_CMDN, J_Ca_TRPN, J_Ca_CSQN, time_, Ca_i, Ca_rel);
+  intracellular_ion_concentrations: ramirez_2000__intracellular_ion_concentrations(Na_i, Ca_i, Cl_i, K_i, Ca_rel, Ca_up, time_, F, i_NaK, i_NaCa, i_B_Na, i_Na, i_K1, i_to, i_Kur_d, i_Kr, i_Ks, i_p_Ca, i_Ca, i_Cl_Ca, i_B_Ca, i_up, i_up_leak, i_tr, i_rel, CMDN_max, CSQN_max, TRPN_max, J_Ca_CMDN, J_Ca_CSQN, J_Ca_TRPN);
+  standard_ionic_concentrations: ramirez_2000__standard_ionic_concentrations(Na_o, Ca_o, K_o, Cl_o);
+end

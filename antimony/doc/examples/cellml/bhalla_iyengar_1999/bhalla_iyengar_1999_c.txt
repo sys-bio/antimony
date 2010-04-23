@@ -1,0 +1,83 @@
+//Created by libAntimony v1.3
+model bi_model_1999_version01__environment(t)
+end
+
+model bi_model_1999_version01__EGF_EGFRtoEGFEGFR(t, EGF, EGFR, EGF_EGFR, EGF_EGFR_INTERNAL)
+
+  // Rate Rules:
+  EGF' = -(kf1) * EGF * EGFR + kb1 * EGF_EGFR;
+  EGFR' = -(kf1) * EGF * EGFR + kb1 * EGF_EGFR;
+  EGF_EGFR' = kf1 * EGF * EGFR - kb1 * EGF_EGFR - kf2 * EGF_EGFR + kb2 * EGF_EGFR_INTERNAL;
+  EGF_EGFR_INTERNAL' = kf2 * EGF_EGFR - kb2 * EGF_EGFR_INTERNAL;
+
+  // Variable initializations:
+  kf1 = 0.000007;
+  kb1 = 0.25;
+  kf2 = 0.002;
+  kb2 = 0.00033;
+  EGF = 0.16667;
+  EGFR = 0.16667;
+  EGF_EGFR = 0;
+  EGF_EGFR_INTERNAL = 0;
+end
+
+model bi_model_1999_version01__SHCtoSHCStar(t, EGF_EGFR, SHCstar, SHCstar_SOS_GRB2, SOSstar_GRB2)
+
+  // Rate Rules:
+  SHC' = kf4 * SHCstar - kb4 * SHC - EGF_EGFR * Vmax3 * SHC / (km3 + SHC);
+  SHCstar' = EGF_EGFR * Vmax3 * SHC / (km3 + SHC) - kf6 * SHCstar * SOS_GRB2 + kb6 * SHCstar_SOS_GRB2;
+  SHCstar_SOS_GRB2' = kf6 * SHCstar * SOS_GRB2 - kb6 * SHCstar_SOS_GRB2;
+  SOS_GRB2' = -(kf6) * SHCstar * SOS_GRB2 + kb6 * SHCstar_SOS_GRB2 - kb5 * SOS_GRB2 + kf5 * SOS * GRB2;
+  SOS' = kf8 * SOSstar - kb8 * SOS - MAPK * Vmax9 * SOS / (km9 + SOS);
+  SOSstar' = -(kf8) * SOSstar + kb8 * SOS + MAPK * Vmax9 * SOS / (km9 + SOS) - kf10 * SOSstar * GRB2 + kb10 * SOSstar_GRB2;
+  SOSstar_GRB2' = kf10 * SOSstar * GRB2 - kb10 * SOSstar_GRB2;
+
+  // Variable initializations:
+  km3 = 0.83333333333;
+  kf4 = 0.0016667;
+  kb4 = 0;
+  kf5 = 0.000000041667;
+  kb5 = 0.0168;
+  kf6 = 0.0000008333;
+  kb6 = 0.1;
+  kf8 = 0.001;
+  kb8 = 0;
+  kf10 = 0.000000041667;
+  kb10 = 0.0168;
+  km7 = 0.40404;
+  km9 = 2.564166667;
+  Vmax7 = 0.02;
+  Vmax3 = 0.2;
+  Vmax9 = 10;
+  SHC = 0.5;
+  SHCstar = 0;
+  SHCstar_SOS_GRB2 = 0;
+  SOS_GRB2 = 0;
+  SOS = 0.1;
+  GRB2 = 1;
+  MAPK = 0.36;
+  SOSstar = 0;
+  SOSstar_GRB2 = 0;
+end
+
+model bi_model_1999_version01__GDPrasToGTPras(t, SOSstar_GRB2)
+
+  // Rate Rules:
+  GDP_ras' = -(SOSstar_GRB2) * Vmax7 * GDP_ras / (km7 + GDP_ras);
+  GTP_ras' = SOSstar_GRB2 * Vmax7 * GDP_ras / (km7 + GDP_ras);
+
+  // Variable initializations:
+  km7 = 0.50505;
+  Vmax7 = 0.02;
+  GDP_ras = 1;
+  GTP_ras = 0;
+end
+
+model bi_model_1999_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: bi_model_1999_version01__environment(t);
+  EGF_EGFRtoEGFEGFR: bi_model_1999_version01__EGF_EGFRtoEGFEGFR(t, EGF, EGFR, EGF_EGFR, EGF_EGFR_INTERNAL);
+  SHCtoSHCStar: bi_model_1999_version01__SHCtoSHCStar(t, EGF_EGFR, SHCstar, SHCstar_SOS_GRB2, SOSstar_GRB2);
+  GDPrasToGTPras: bi_model_1999_version01__GDPrasToGTPras(t, SOSstar_GRB2);
+end

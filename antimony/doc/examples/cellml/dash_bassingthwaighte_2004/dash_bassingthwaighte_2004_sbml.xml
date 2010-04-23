@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="dash_bassingthwaighte_model_2004_version01____main" name="dash_bassingthwaighte_model_2004_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="SHbO20" constant="false"/>
+      <parameter id="KHbO20" constant="false"/>
+      <parameter id="O20" constant="false"/>
+      <parameter id="SHbCO20" constant="false"/>
+      <parameter id="KHbCO20" constant="false"/>
+      <parameter id="CO20" constant="false"/>
+      <parameter id="Hrbc" constant="false"/>
+      <parameter id="K2" value="29.5"/>
+      <parameter id="K2_"/>
+      <parameter id="K3" value="25.1"/>
+      <parameter id="K3_"/>
+      <parameter id="K40" constant="false"/>
+      <parameter id="K5_"/>
+      <parameter id="K6_"/>
+      <parameter id="O2_S" value="146"/>
+      <parameter id="H_S" value="57.5"/>
+      <parameter id="n1" value="1.06"/>
+      <parameter id="n2" value="0.12"/>
+      <parameter id="CO2_S" value="1.31"/>
+      <parameter id="K4_" value="202123"/>
+      <parameter id="n0" value="1.7"/>
+      <parameter id="alpha_O20" constant="false"/>
+      <parameter id="PO2" value="100"/>
+      <parameter id="alpha_CO20" constant="false"/>
+      <parameter id="PCO2" value="40"/>
+      <parameter id="Wpl" value="0.94"/>
+      <parameter id="T" value="37"/>
+      <parameter id="Rrbc" value="0.69"/>
+      <parameter id="model_parameters_Hpl" constant="false"/>
+      <parameter id="model_parameters_pHpl" value="7.24"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="K2_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> -6 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="K3_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> -6 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="K5_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.63 <sep/> -8 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="K6_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.91 <sep/> -8 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <assignmentRule variable="SHbO20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> KHbO20 </ci>
+              <ci> O20 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <times/>
+                <ci> KHbO20 </ci>
+                <ci> O20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="KHbO20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> K40 </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> K3 </ci>
+                  <ci> CO20 </ci>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> K3_ </ci>
+                      <ci> Hrbc </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> Hrbc </ci>
+                  <ci> K6_ </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> K2 </ci>
+                <ci> CO20 </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> K2_ </ci>
+                    <ci> Hrbc </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> Hrbc </ci>
+                <ci> K5_ </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="O20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> alpha_O20 </ci>
+            <ci> PO2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="SHbCO20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> KHbCO20 </ci>
+              <ci> CO20 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <times/>
+                <ci> KHbCO20 </ci>
+                <ci> CO20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="KHbCO20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> K2 </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> K2_ </ci>
+                    <ci> Hrbc </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> K3 </ci>
+                <ci> K40 </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> K3_ </ci>
+                    <ci> Hrbc </ci>
+                  </apply>
+                </apply>
+                <ci> O20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> Hrbc </ci>
+                <ci> K5_ </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> K40 </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> Hrbc </ci>
+                    <ci> K6_ </ci>
+                  </apply>
+                </apply>
+                <ci> O20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="CO20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> alpha_CO20 </ci>
+            <ci> PCO2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Hrbc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> model_parameters_Hpl </ci>
+            <ci> Rrbc </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="K40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> K4_ </ci>
+            <apply>
+              <power/>
+              <apply>
+                <divide/>
+                <ci> O20 </ci>
+                <ci> O2_S </ci>
+              </apply>
+              <ci> n0 </ci>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <divide/>
+                <ci> Hrbc </ci>
+                <ci> H_S </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> n1 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <divide/>
+                <ci> CO20 </ci>
+                <ci> CO2_S </ci>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> n2 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="alpha_O20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <cn> 1.37 </cn>
+                <apply>
+                  <times/>
+                  <cn> 0.0137 </cn>
+                  <apply>
+                    <minus/>
+                    <ci> T </ci>
+                    <cn> 37 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <cn> 0.00058 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <ci> T </ci>
+                    <cn> 37 </cn>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="e-notation"> 1 <sep/> -6 </cn>
+              <ci> Wpl </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="alpha_CO20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <cn> 3.07 </cn>
+                <apply>
+                  <times/>
+                  <cn> 0.057 </cn>
+                  <apply>
+                    <minus/>
+                    <ci> T </ci>
+                    <cn> 37 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <cn> 0.002 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <ci> T </ci>
+                    <cn> 37 </cn>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="e-notation"> 1 <sep/> -5 </cn>
+              <ci> Wpl </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_Hpl">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <cn> 10 </cn>
+            <apply>
+              <minus/>
+              <ci> model_parameters_pHpl </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

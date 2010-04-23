@@ -1,0 +1,538 @@
+//Created by libAntimony v1.3
+model michailova_2001__environment(time_)
+end
+
+model michailova_2001__membrane(V, R, T, F, C_sc, i_Stim, time_, i_Na, i_Ca, i_Ca_K, i_Kr, i_Ks, i_to1, i_K1, i_Kp, i_NaCa, i_NaK, i_p_Ca, i_Ca_b, i_Na_b)
+
+  // Assignment Rules:
+  i_Stim := piecewise( stim_amplitude , (( time_ >= stim_start) && (time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration )), 0 );
+
+  // Rate Rules:
+  V' = -(1 ) * 1 * (i_Na + i_Ca + i_Ca_K + i_Kr + i_Ks + i_to1 + i_K1 + i_Kp + i_NaCa + i_NaK + i_p_Ca + i_Na_b + i_Ca_b + i_Stim) / C_sc;
+
+  // Variable initializations:
+  V = -96.1638;
+  R = 8.314472;
+  T = 310;
+  F = 96.4853415;
+  C_sc = 0.001;
+  stim_start = 0.1;
+  stim_end = 100000000;
+  stim_period = 1;
+  stim_duration = 0.0005;
+  stim_amplitude = -100.0;
+end
+
+model michailova_2001__fast_sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := piecewise( 320 / (0.1 - 0.005 * E0_m) , abs(E0_m) < 0.00001 , 320 * E0_m / (1 - exp(-(0.1 ) * E0_m)) );
+  beta_m := 80 * exp(-(V) / 11 );
+  E0_m := V + 47.13;
+
+  // Rate Rules:
+  m' = piecewise( alpha_m * (1 - m) - beta_m * m , V >= -(90 ) , 0 );
+
+  // Variable initializations:
+  m = 0.0328302;
+end
+
+model michailova_2001__fast_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := piecewise( 135 * exp((80 + V) / -(6.8 )) , V < -(40 ) , 0 );
+  beta_h := piecewise( 3560 * exp(0.079 * V) + 310000 * exp(0.35 * V) , V < -(40 ) , 1000 / (0.13 * (1 + exp((V + 10.66 ) / -(11.1 )))) );
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.988354;
+end
+
+model michailova_2001__fast_sodium_current_j_gate(j, V, time_)
+
+  // Assignment Rules:
+  alpha_j := piecewise( 1000 * -((127140 * exp(0.2444 * V) + 0.00003474 * exp(-(0.04391 ) * V))) * (V + 37.78 ) / (1 + exp(0.311 * (V + 79.23 ))) , V < -(40 ) , 0 );
+  beta_j := piecewise( 121.2 * exp(-(0.01052 ) * V) / (1 + exp(-(0.1378 ) * (V + 40.14 ))) , V < -(40 ) , 300 * exp(-(0.0000002535 ) * V) / (1 + exp(-(0.1 ) * (V + 32 ))) );
+
+  // Rate Rules:
+  j' = alpha_j * (1 - j) - beta_j * j;
+
+  // Variable initializations:
+  j = 0.99254;
+end
+
+model michailova_2001__fast_sodium_current(i_Na, E_Na, time_, V, Na_o, Na_i, R, F, T, m, h, j)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: michailova_2001__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: michailova_2001__fast_sodium_current_h_gate(h, V, time_);
+  fast_sodium_current_j_gate: michailova_2001__fast_sodium_current_j_gate(j, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * j * (V - E_Na);
+  E_Na := R * T / F * ln(Na_o / Na_i);
+
+  // Variable initializations:
+  g_Na = 12.8;
+end
+
+model michailova_2001__rapid_activating_delayed_rectifiyer_K_current_X_kr_gate(X_kr, V, time_)
+
+  // Assignment Rules:
+  K12 := exp(-(5.495 ) + 0.1691 * V);
+  K21 := exp(-(7.677 ) - 0.0128 * V);
+  X_kr_inf := K12 / (K12 + K21);
+  tau_X_kr := 0.001 / (K12 + K21) + tau_factor * 0.027;
+
+  // Rate Rules:
+  X_kr' = (X_kr_inf - X_kr) / tau_X_kr;
+
+  // Variable initializations:
+  X_kr = 0.51;
+  tau_factor = 1;
+end
+
+model michailova_2001__rapid_activating_delayed_rectifiyer_K_current(i_Kr, E_K, time_, V, K_o, K_i, R, T, F, X_kr)
+
+  // Sub-modules, and any changes to those submodules:
+  rapid_activating_delayed_rectifiyer_K_current_X_kr_gate: michailova_2001__rapid_activating_delayed_rectifiyer_K_current_X_kr_gate(X_kr, V, time_);
+
+  // Assignment Rules:
+  i_Kr := g_Kr * f_K_o * R_V * X_kr * (V - E_K);
+  E_K := R * T / F * ln(K_o / K_i);
+  f_K_o := root(K_o / 4 );
+  R_V := 1 / (1 + 1.4945 * exp(0.0446 * V));
+
+  // Variable initializations:
+  g_Kr = 0.0034;
+end
+
+model michailova_2001__slow_activating_delayed_rectifiyer_K_current_X_ks_gate(X_ks, V, time_)
+
+  // Assignment Rules:
+  tau_X_ks := 0.001 / (0.0000719 * (V - 10 ) / (1 - exp(-(0.148 ) * (V - 10 ))) + 0.000131 * (V - 10 ) / (exp(0.0687 * (V - 10 )) - 1 ));
+  X_ks_infinity := 1 / (1 + exp(-((V - 24.7 )) / 13.6 ));
+
+  // Rate Rules:
+  X_ks' = (X_ks_infinity - X_ks) / tau_X_ks;
+
+  // Variable initializations:
+  X_ks = 0.264;
+end
+
+model michailova_2001__slow_activating_delayed_rectifiyer_K_current(i_Ks, time_, V, K_o, K_i, Na_o, Na_i, R, T, F, X_ks)
+
+  // Sub-modules, and any changes to those submodules:
+  slow_activating_delayed_rectifiyer_K_current_X_ks_gate: michailova_2001__slow_activating_delayed_rectifiyer_K_current_X_ks_gate(X_ks, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks * power(X_ks, 2 ) * (V - E_Ks);
+  E_Ks := R * T / F * ln((K_o + 0.01833 * Na_o) / (K_i + 0.01833 * Na_i));
+
+  // Variable initializations:
+  g_Ks = 0.0027134;
+end
+
+model michailova_2001__transient_outward_potassium_current_X_to1_gate(X_to1, V, time_)
+
+  // Assignment Rules:
+  alpha_X_to1 := 45.16 * exp(0.03577 * V);
+  beta_X_to1 := 98.9 * exp(-(0.06237 ) * V);
+
+  // Rate Rules:
+  X_to1' = alpha_X_to1 * (1 - X_to1) - beta_X_to1 * X_to1;
+
+  // Variable initializations:
+  X_to1 = 2.63;
+end
+
+model michailova_2001__transient_outward_potassium_current_Y_to1_gate(Y_to1, V, time_)
+
+  // Assignment Rules:
+  alpha_Y_to1 := 5.415 * exp(-((V + 33.5 )) / 5 ) / (1 + 0.051335 * exp(-((V + 33.5 )) / 5 ));
+  beta_Y_to1 := 5.415 * exp((V + 33.5 ) / 5 ) / (1 + 0.051335 * exp((V + 33.5 ) / 5 ));
+
+  // Rate Rules:
+  Y_to1' = alpha_Y_to1 * (1 - Y_to1) - beta_Y_to1 * Y_to1;
+
+  // Variable initializations:
+  Y_to1 = 0.99;
+end
+
+model michailova_2001__transient_outward_potassium_current(i_to1, time_, V, E_K, X_to1, Y_to1)
+
+  // Sub-modules, and any changes to those submodules:
+  transient_outward_potassium_current_X_to1_gate: michailova_2001__transient_outward_potassium_current_X_to1_gate(X_to1, V, time_);
+  transient_outward_potassium_current_Y_to1_gate: michailova_2001__transient_outward_potassium_current_Y_to1_gate(Y_to1, V, time_);
+
+  // Assignment Rules:
+  i_to1 := g_to1 * X_to1 * Y_to1 * (V - E_K);
+
+  // Variable initializations:
+  g_to1 = 0.23815;
+end
+
+model michailova_2001__time_independent_potassium_current_K1_gate(K1_infinity_V, V, time_, E_K, R, T, F)
+
+  // Assignment Rules:
+  K1_infinity_V := 1 / (2 + exp(1.5 * F / (R * T) * (V - E_K)));
+end
+
+model michailova_2001__time_independent_potassium_current(i_K1, time_, V, R, T, F, E_K, K_o, K1_infinity_V)
+
+  // Sub-modules, and any changes to those submodules:
+  time_independent_potassium_current_K1_gate: michailova_2001__time_independent_potassium_current_K1_gate(K1_infinity_V, V, time_, E_K, R, T, F);
+
+  // Assignment Rules:
+  i_K1 := g_K1 * K1_infinity_V * K_o / (K_o + K_mK1) * (V - E_K);
+
+  // Variable initializations:
+  g_K1 = 2.8;
+  K_mK1 = 13;
+end
+
+model michailova_2001__plateau_potassium_current_Kp_gate(Kp_V, V, time_)
+
+  // Assignment Rules:
+  Kp_V := 1 / (1 + exp((7.488 - V) / 5.98 ));
+end
+
+model michailova_2001__plateau_potassium_current(i_Kp, time_, V, E_K, Kp_V)
+
+  // Sub-modules, and any changes to those submodules:
+  plateau_potassium_current_Kp_gate: michailova_2001__plateau_potassium_current_Kp_gate(Kp_V, V, time_);
+
+  // Assignment Rules:
+  i_Kp := g_Kp * Kp_V * (V - E_K);
+
+  // Variable initializations:
+  g_Kp = 0.002216;
+end
+
+model michailova_2001__Na_Ca_exchanger(i_NaCa, time_, V, R, T, F, Na_i, Na_o, Ca_i, Ca_o)
+
+  // Assignment Rules:
+  i_NaCa := K_NaCa * 5000 / ((power(K_mNa, 3 ) + power(Na_o, 3 )) * (K_mCa + Ca_o) * (1 + K_sat * exp((eta - 1 ) * V * F / (R * T)))) * (exp(eta * V * F / (R * T)) * power(Na_i, 3 ) * Ca_o - exp((eta - 1 ) * V * F / (R * T)) * power(Na_o, 3 ) * Ca_i);
+
+  // Variable initializations:
+  K_mCa = 1.38;
+  K_mNa = 87.5;
+  K_NaCa = 0.3;
+  K_sat = 0.2;
+  eta = 0.35;
+end
+
+model michailova_2001__sodium_potassium_pump(i_NaK, time_, V, R, T, F, Na_i, Na_o, K_o, MgATP_i, MgATP_i0)
+
+  // Assignment Rules:
+  i_NaK := MgATP_i / MgATP_i0 * i_NaK_winslow;
+  i_NaK_winslow := I_NaK * f_NaK / (1 + power(K_mNa_i / Na_i, 1.5 )) * K_o / (K_o + K_mK_o);
+  f_NaK := 1 / (1 + 0.1245 * exp(-(0.1 ) * V * F / (R * T)) + 0.0365 * sigma * exp(-(V) * F / (R * T)));
+  sigma := 1 / 7 * (exp(Na_o / 67.3 ) - 1 );
+
+  // Variable initializations:
+  I_NaK = 0.693;
+  K_mNa_i = 10;
+  K_mK_o = 1.5;
+end
+
+model michailova_2001__sarcolemmal_calcium_pump(i_p_Ca, time_, Ca_i, MgATP_i, MgATP_i0)
+
+  // Assignment Rules:
+  i_p_Ca := MgATP_i / MgATP_i0 * i_p_Ca_winslow;
+  i_p_Ca_winslow := I_pCa * Ca_i / (K_mpCa + Ca_i);
+
+  // Variable initializations:
+  K_mpCa = 0.00005;
+  I_pCa = 0.05;
+end
+
+model michailova_2001__calcium_background_current(i_Ca_b, time_, V, R, T, F, Ca_i, Ca_o)
+
+  // Assignment Rules:
+  i_Ca_b := g_Cab * (V - E_Ca);
+  E_Ca := R * T / (2 * F) * ln(Ca_o / Ca_i);
+
+  // Variable initializations:
+  g_Cab = 0.0003842;
+end
+
+model michailova_2001__sodium_background_current(i_Na_b, time_, V, E_Na)
+
+  // Assignment Rules:
+  i_Na_b := g_Nab * (V - E_Na);
+
+  // Variable initializations:
+  g_Nab = 0.0031;
+end
+
+model michailova_2001__L_type_Ca_current_y_gate(y, V, time_)
+
+  // Assignment Rules:
+  y_infinity := 0.8 / (1 + exp((V + 12.5 ) / 5 )) + 0.2;
+  tau_y := (20 + 600 / (1 + exp((V + 20 ) / 9.5 ))) / 1000;
+
+  // Rate Rules:
+  y' = (y_infinity - y) / tau_y;
+
+  // Variable initializations:
+  y = 0.798;
+end
+
+model michailova_2001__L_type_Ca_current(i_Ca, i_Ca_K, time_, V, C_sc, Ca_ss, Ca_o, K_o, K_i, R, T, F, y)
+
+  // Sub-modules, and any changes to those submodules:
+  L_type_Ca_current_y_gate: michailova_2001__L_type_Ca_current_y_gate(y, V, time_);
+
+  // Assignment Rules:
+  i_Ca := i_Ca_max * y * (O + O_Ca);
+  i_Ca_K := p_prime_k / (1 * 1 ) * y * (O + O_Ca) * V * power(F, 2 ) / (R * T) * (K_i * exp(V * F / (R * T)) - K_o) / (exp(V * F / (R * T)) - 1 );
+  p_prime_k := P_K / (1 + i_Ca_max / i_Ca_half);
+  i_Ca_max := P_Ca / (1 * 1 ) * 4 * V * power(F, 2 ) * 1000 / (R * T) * (0.001 * exp(2 * V * F / (R * T)) - 0.341 * Ca_o) / (exp(2 * V * F / (R * T)) - 1 );
+  alpha := 400 * exp((V + 2 ) / 10 );
+  beta := 50 * exp(-((V + 2 )) / 13 );
+  gamma := 103.75 * Ca_ss / 1;
+  alpha_a := alpha * a;
+  beta_b := beta / b;
+
+  // Rate Rules:
+  O' = f * C4 - g * O;
+  O_Ca' = fprime * C_Ca4 - gprime * O_Ca;
+  C0' = beta * C1 + omega * C_Ca0 - (4 * alpha + gamma) * C0;
+  C1' = 4 * alpha * C0 + 2 * beta * C2 + omega / b * C_Ca1 - (beta + 3 * alpha + gamma * a) * C1;
+  C2' = 3 * alpha * C1 + 3 * beta * C3 + omega / power(b, 2 ) * C_Ca2 - (beta * 2 + 2 * alpha + gamma * power(a, 2 )) * C2;
+  C3' = 2 * alpha * C2 + 4 * beta * C4 + omega / power(b, 3 ) * C_Ca3 - (beta * 3 + alpha + gamma * power(a, 3 )) * C3;
+  C4' = alpha * C3 + g * O + omega / power(b, 4 ) * C_Ca4 - (beta * 4 + f + gamma * power(a, 4 )) * C4;
+  C_Ca0' = beta_b * C_Ca1 + gamma * C0 - (4 * alpha_a + omega) * C_Ca0;
+  C_Ca1' = 4 * alpha_a * C_Ca0 + 2 * beta_b * C_Ca2 + gamma * a * C1 - (beta_b + 3 * alpha_a + omega / b) * C_Ca1;
+  C_Ca2' = 3 * alpha_a * C_Ca1 + 3 * beta_b * C_Ca3 + gamma * power(a, 2 ) * C2 - (beta_b * 2 + 2 * alpha_a + omega / power(b, 2 )) * C_Ca2;
+  C_Ca3' = 2 * alpha_a * C_Ca2 + 4 * beta_b * C_Ca4 + gamma * power(a, 3 ) * C3 - (beta_b * 3 + alpha_a + omega / power(b, 3 )) * C_Ca3;
+  C_Ca4' = alpha_a * C_Ca3 + gprime * O_Ca + gamma * power(a, 4 ) * C4 - (beta_b * 4 + fprime + omega / power(b, 4 )) * C_Ca4;
+
+  // Variable initializations:
+  P_Ca = 3.125e-4;
+  P_K = 5.79e-7;
+  i_Ca_half = -0.265;
+  O = 9.84546e-21;
+  O_Ca = 0;
+  a = 2;
+  b = 2;
+  g = 2000;
+  f = 300;
+  gprime = 7000;
+  fprime = 7;
+  omega = 10;
+  C0 = 0.997208;
+  C1 = 6.38897e-5;
+  C2 = 1.535e-9;
+  C3 = 1.63909e-14;
+  C4 = 6.56337e-20;
+  C_Ca0 = 0.00272826;
+  C_Ca1 = 6.99215e-7;
+  C_Ca2 = 6.71989e-11;
+  C_Ca3 = 2.87031e-15;
+  C_Ca4 = 4.59752e-20;
+end
+
+model michailova_2001__RyR_channel(J_rel, time_, Ca_ss, Ca_JSR)
+
+  // Assignment Rules:
+  J_rel := v1 * (P_O1 + P_O2) * (Ca_JSR - Ca_ss);
+
+  // Rate Rules:
+  P_O1' = k_a_plus * power(Ca_ss, n) * P_C1 - (k_a_minus * P_O1 + k_b_plus * power(Ca_ss, m) * P_O1 + k_c_plus * P_O1) + k_b_minus * P_O2 + k_c_minus * P_C2;
+  P_O2' = k_b_plus * power(Ca_ss, m) * P_O1 - k_b_minus * P_O2;
+  P_C1' = -(k_a_plus) * power(Ca_ss, n) * P_C1 + k_a_minus * P_O1;
+  P_C2' = k_c_plus * P_O1 - k_c_minus * P_C2;
+
+  // Variable initializations:
+  v1 = 1800;
+  k_a_plus = 1.215e13;
+  k_a_minus = 576;
+  k_b_plus = 4.05e9;
+  k_b_minus = 1930;
+  k_c_plus = 100;
+  k_c_minus = 0.8;
+  P_O1 = 0;
+  P_O2 = 0;
+  P_C1 = 0.47;
+  P_C2 = 0.53;
+  n = 4;
+  m = 3;
+end
+
+model michailova_2001__SERCA2a_pump(J_up, time_, Ca_i, Ca_NSR, MgATP_i, MgATP_i0)
+
+  // Assignment Rules:
+  J_up := MgATP_i / MgATP_i0 * J_up_winslow;
+  J_up_winslow := K_SR * (Vmaxf * fb - Vmaxr * rb) / (1 + fb + rb);
+  fb := power(Ca_i / K_fb, N_fb);
+  rb := power(Ca_NSR / K_rb, N_rb);
+
+  // Variable initializations:
+  K_fb = 0.000168;
+  K_rb = 3.29;
+  Vmaxf = 0.0813;
+  Vmaxr = 0.318;
+  K_SR = 1;
+  N_fb = 1.2;
+  N_rb = 1;
+end
+
+model michailova_2001__intracellular_Ca_fluxes(J_tr, J_xfer, J_trpn, time_, Ca_ss, Ca_i, Ca_NSR, Ca_JSR)
+
+  // Assignment Rules:
+  J_tr := (Ca_NSR - Ca_JSR) / tau_tr;
+  J_xfer := (Ca_ss - Ca_i) / tau_xfer;
+  J_trpn := HTRPN_tot * J_HTRPNCa + LTRPN_tot * J_LTRPNCa;
+  J_HTRPNCa := d(HTRPNCa)/d(time_);
+  J_LTRPNCa := d(LTRPNCa)/d(time_);
+
+  // Rate Rules:
+  HTRPNCa' = k_htrpn_plus * Ca_i * (1 - HTRPNCa) - k_htrpn_minus * HTRPNCa;
+  LTRPNCa' = k_ltrpn_plus * Ca_i * (1 - LTRPNCa) - k_ltrpn_minus * LTRPNCa;
+
+  // Variable initializations:
+  tau_tr = 0.0005747;
+  tau_xfer = 0.0267;
+  HTRPNCa = 0.98;
+  LTRPNCa = 0.078;
+  HTRPN_tot = 0.14;
+  LTRPN_tot = 0.07;
+  k_htrpn_plus = 20000;
+  k_htrpn_minus = 0.066;
+  k_ltrpn_plus = 40000;
+  k_ltrpn_minus = 40;
+end
+
+model michailova_2001__intracellular_ion_concentrations(Na_i, Ca_i, K_i, Ca_ss, Ca_JSR, Ca_NSR, time_, F, C_sc, i_Na, i_Ca, i_Na_b, i_NaCa, i_NaK, i_Ca_K, i_Kr, i_Ks, i_K1, i_Kp, i_to1, i_p_Ca, i_Ca_b, J_up, J_rel, J_xfer, J_trpn, J_tr, k_plus_CaATP, k_minus_CaATP, k_plus_CaADP, k_minus_CaADP, CaADP_i, CaADP_ss, CaATP_ss, ATP_i, ADP_i, ADP_ss, ATP_ss, CaATP_i)
+
+  // Assignment Rules:
+  beta_i := 1 / (1 + CMDN_tot * K_mCMDN / power(K_mCMDN + Ca_i, 2 ) + EGTA_tot * K_mEGTA / power(K_mEGTA + Ca_i, 2 ));
+  beta_SS := 1 / (1 + CMDN_tot * K_mCMDN / power(K_mCMDN + Ca_ss, 2 ) + EGTA_tot * K_mEGTA / power(K_mEGTA + Ca_ss, 2 ));
+  beta_JSR := 1 / (1 + CSQN_tot * K_mCSQN / power(K_mCSQN + Ca_JSR, 2 ));
+
+  // Rate Rules:
+  Na_i' = -(0 ) * (i_Na + i_Na_b + i_NaCa * 3 + i_NaK * 3 ) * A_cap * 1 / (V_myo * F);
+  Ca_i' = beta_i * (J_xfer - (J_up + J_trpn) + -(((i_p_Ca + i_Ca_b - 2 * i_NaCa) * (A_cap * C_sc / (2 * V_myo * F)))) + ( k_minus_CaATP * CaATP_i + k_minus_CaADP * CaADP_i - ( k_plus_CaATP * Ca_i * ATP_i + k_plus_CaADP * Ca_i * ADP_i )));
+  K_i' = -(0 ) * (i_Ca_K + i_Kr + i_Ks + i_K1 + i_Kp + i_to1 + i_NaK * -(2 )) * A_cap * 1 / (V_myo * F);
+  Ca_ss' = beta_SS * (J_rel * V_JSR / V_ss + k_minus_CaATP * CaATP_ss + k_minus_CaADP * CaADP_ss - (J_xfer * V_myo / V_ss + i_Ca * (A_cap * 1 / (2 * V_ss * F)) + k_plus_CaATP * Ca_ss * ATP_ss + k_plus_CaADP * Ca_ss * ADP_ss));
+  Ca_JSR' = beta_JSR * (J_tr - J_rel);
+  Ca_NSR' = J_up * V_myo / V_NSR - J_tr * V_JSR / V_NSR;
+
+  // Variable initializations:
+  Na_i = 10;
+  Ca_i = 8.464E-5;
+  K_i = 159.48;
+  Ca_ss = 1.315E-4;
+  Ca_JSR = 0.2616;
+  Ca_NSR = 0.2620;
+  A_cap = 0.0001534;
+  V_myo = 0.00002584;
+  V_JSR = 0.00000016;
+  V_NSR = 0.0000021;
+  V_ss = 0.0000000012;
+  K_mCMDN = 0.00238;
+  K_mEGTA = 0.00015;
+  K_mCSQN = 0.8;
+  CMDN_tot = 0.05;
+  EGTA_tot = 0;
+  CSQN_tot = 15;
+end
+
+model michailova_2001__Ca_and_Mg_buffering_by_ATP(CaATP_ss, ATP_ss, MgATP_i, MgATP_i0, k_plus_CaATP, k_minus_CaATP, k_plus_CaADP, k_minus_CaADP, CaADP_i, CaADP_ss, ATP_i, ADP_i, ADP_ss, CaATP_i, time_, Ca_ss, Ca_i, V_myo, V_ss)
+
+  // Assignment Rules:
+  ATP_ss := ATP_tot - ( CaATP_ss + MgATP_ss );
+  ATP_i := ATP_tot - ( CaATP_i + MgATP_i );
+  ADP_i := ADP_tot - ( CaADP_i + MgADP_i );
+  ADP_ss := ADP_tot - ( CaADP_ss + MgADP_ss );
+  Jxfer_CaATP := ( CaATP_ss - CaATP_i ) / tau_xfer_CaATP;
+  Jxfer_MgATP := ( MgATP_ss - MgATP_i ) / tau_xfer_MgATP;
+  Jxfer_Mg := ( Mg_ss - Mg_i ) / tau_xfer_Mg;
+  Jxfer_CaADP := ( CaADP_ss - CaADP_i ) / tau_xfer_CaADP;
+  Jxfer_MgADP := ( MgADP_ss - MgADP_i ) / tau_xfer_MgADP;
+
+  // Rate Rules:
+  CaATP_ss' = k_plus_CaATP * Ca_ss * ATP_ss - ( Jxfer_CaATP * ( V_myo / V_ss ) + k_minus_CaATP * CaATP_ss );
+  MgATP_i' = Jxfer_MgATP + k_plus_MgATP * Mg_i * ATP_i - k_minus_MgATP * MgATP_i;
+  CaADP_i' = Jxfer_CaADP + k_plus_CaADP * Ca_i * ADP_i - k_minus_CaADP * CaADP_i;
+  CaADP_ss' = k_plus_CaADP * Ca_ss * ADP_ss - ( Jxfer_CaADP * ( V_myo / V_ss ) + k_minus_CaADP * CaADP_ss );
+  CaATP_i' = Jxfer_CaATP + k_plus_CaATP * Ca_i * ATP_i - k_minus_CaATP * CaATP_i;
+  Mg_ss' = k_minus_MgATP * MgATP_ss + k_minus_MgADP * MgADP_ss - ( k_plus_MgATP * Mg_ss * ATP_ss + k_plus_MgADP * Mg_ss * ADP_ss + Jxfer_Mg * ( V_myo / V_ss ));
+  Mg_i' = Jxfer_Mg + k_minus_MgATP * MgATP_i + k_minus_MgADP * MgADP_i - ( k_plus_MgATP * Mg_i * ATP_i + k_plus_MgADP * Mg_i * ADP_i );
+  MgADP_i' = Jxfer_MgADP + k_plus_MgADP * Mg_i * ADP_i - k_minus_MgADP * MgADP_i;
+  MgADP_ss' = k_plus_MgADP * Mg_ss * ADP_ss - ( Jxfer_MgADP * ( V_myo / V_ss ) + k_minus_MgADP * MgADP_ss );
+  MgATP_ss' = k_plus_MgATP * Mg_ss * ATP_ss - ( Jxfer_MgATP * ( V_myo / V_ss ) + k_minus_MgATP * MgATP_ss );
+
+  // Variable initializations:
+  CaATP_ss = 0.25E-3;
+  MgATP_i = 6.4395;
+  MgATP_i0 = 2.888;
+  k_plus_CaATP = 225000.0;
+  k_minus_CaATP = 45000.0;
+  k_plus_CaADP = 125000.0;
+  k_minus_CaADP = 193500;
+  CaADP_i = 0.11E-6;
+  CaADP_ss = 0.13E-6;
+  CaATP_i = 0.237E-3;
+  Mg_ss = 1.0;
+  Mg_i = 1.0;
+  MgADP_i = 0.298E-2;
+  MgADP_ss = 0.298E-2;
+  MgATP_ss = 6.4395;
+  ATP_tot = 7.0;
+  k_plus_MgATP = 125000.0;
+  k_minus_MgATP = 10875.0;
+  tau_xfer_CaATP = 0.0534;
+  tau_xfer_MgATP = 0.0534;
+  tau_xfer_Mg = 0.0267;
+  ADP_tot = 0.005;
+  k_plus_MgADP = 125000.0;
+  k_minus_MgADP = 84500.0;
+  tau_xfer_CaADP = 0.0534;
+  tau_xfer_MgADP = 0.0534;
+end
+
+model michailova_2001__extracellular_ion_concentrations(Na_o, Ca_o, K_o)
+
+  // Variable initializations:
+  Na_o = 138;
+  Ca_o = 2;
+  K_o = 4;
+end
+
+model michailova_2001__model_parameters(V_myo, V_ss)
+
+  // Variable initializations:
+  V_myo = 0.00002584;
+  V_ss = 0.0000000012;
+end
+
+model michailova_2001____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: michailova_2001__environment(time_);
+  membrane: michailova_2001__membrane(V, R, T, F, C_sc, i_Stim, time_, i_Na, i_Ca, i_Ca_K, i_Kr, i_Ks, i_to1, i_K1, i_Kp, i_NaCa, i_NaK, i_p_Ca, i_Ca_b, i_Na_b);
+  fast_sodium_current: michailova_2001__fast_sodium_current(i_Na, E_Na, time_, V, Na_o, Na_i, R, F, T, m, h, j);
+  rapid_activating_delayed_rectifiyer_K_current: michailova_2001__rapid_activating_delayed_rectifiyer_K_current(i_Kr, E_K, time_, V, K_o, K_i, R, T, F, X_kr);
+  slow_activating_delayed_rectifiyer_K_current: michailova_2001__slow_activating_delayed_rectifiyer_K_current(i_Ks, time_, V, K_o, K_i, Na_o, Na_i, R, T, F, X_ks);
+  transient_outward_potassium_current: michailova_2001__transient_outward_potassium_current(i_to1, time_, V, E_K, X_to1, Y_to1);
+  time_independent_potassium_current: michailova_2001__time_independent_potassium_current(i_K1, time_, V, R, T, F, E_K, K_o, K1_infinity_V);
+  plateau_potassium_current: michailova_2001__plateau_potassium_current(i_Kp, time_, V, E_K, Kp_V);
+  Na_Ca_exchanger: michailova_2001__Na_Ca_exchanger(i_NaCa, time_, V, R, T, F, Na_i, Na_o, Ca_i, Ca_o);
+  sodium_potassium_pump: michailova_2001__sodium_potassium_pump(i_NaK, time_, V, R, T, F, Na_i, Na_o, K_o, MgATP_i, MgATP_i0);
+  sarcolemmal_calcium_pump: michailova_2001__sarcolemmal_calcium_pump(i_p_Ca, time_, Ca_i, MgATP_i, MgATP_i0);
+  calcium_background_current: michailova_2001__calcium_background_current(i_Ca_b, time_, V, R, T, F, Ca_i, Ca_o);
+  sodium_background_current: michailova_2001__sodium_background_current(i_Na_b, time_, V, E_Na);
+  L_type_Ca_current: michailova_2001__L_type_Ca_current(i_Ca, i_Ca_K, time_, V, C_sc, Ca_ss, Ca_o, K_o, K_i, R, T, F, y);
+  RyR_channel: michailova_2001__RyR_channel(J_rel, time_, Ca_ss, Ca_JSR);
+  SERCA2a_pump: michailova_2001__SERCA2a_pump(J_up, time_, Ca_i, Ca_NSR, MgATP_i, MgATP_i0);
+  intracellular_Ca_fluxes: michailova_2001__intracellular_Ca_fluxes(J_tr, J_xfer, J_trpn, time_, Ca_ss, Ca_i, Ca_NSR, Ca_JSR);
+  intracellular_ion_concentrations: michailova_2001__intracellular_ion_concentrations(Na_i, Ca_i, K_i, Ca_ss, Ca_JSR, Ca_NSR, time_, F, C_sc, i_Na, i_Ca, i_Na_b, i_NaCa, i_NaK, i_Ca_K, i_Kr, i_Ks, i_K1, i_Kp, i_to1, i_p_Ca, i_Ca_b, J_up, J_rel, J_xfer, J_trpn, J_tr, k_plus_CaATP, k_minus_CaATP, k_plus_CaADP, k_minus_CaADP, CaADP_i, CaADP_ss, CaATP_ss, ATP_i, ADP_i, ADP_ss, ATP_ss, CaATP_i);
+  Ca_and_Mg_buffering_by_ATP: michailova_2001__Ca_and_Mg_buffering_by_ATP(CaATP_ss, ATP_ss, MgATP_i, MgATP_i0, k_plus_CaATP, k_minus_CaATP, k_plus_CaADP, k_minus_CaADP, CaADP_i, CaADP_ss, ATP_i, ADP_i, ADP_ss, CaATP_i, time_, Ca_ss, Ca_i, V_myo, V_ss);
+  extracellular_ion_concentrations: michailova_2001__extracellular_ion_concentrations(Na_o, Ca_o, K_o);
+  model_parameters: michailova_2001__model_parameters(V_myo, V_ss);
+end

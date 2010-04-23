@@ -1,0 +1,22 @@
+//Created by libAntimony v1.3
+model Template_RxR1P1MM__Template_RxR1P1MM(J, reactant, catalyst, k, Km)
+
+  // Assignment Rules:
+  J := k * catalyst * reactant / (reactant + Km);
+end
+
+model Bioenvironment_RxR1P1MM_PYOFormation__Bioenvironment_RxR1P1MM_PYOFormation(J, reactant, catalyst, k, Km)
+
+  // Sub-modules, and any changes to those submodules:
+  Template_RxR1P1MM: Template_RxR1P1MM__Template_RxR1P1MM(J, reactant, catalyst, k, Km);
+
+  // Variable initializations:
+  k = 1;
+  Km = 0.1;
+end
+
+model Bioenvironment_RxR1P1MM_PYOFormation____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Bioenvironment_RxR1P1MM_PYOFormation: Bioenvironment_RxR1P1MM_PYOFormation__Bioenvironment_RxR1P1MM_PYOFormation(J, reactant, catalyst, k, Km);
+end

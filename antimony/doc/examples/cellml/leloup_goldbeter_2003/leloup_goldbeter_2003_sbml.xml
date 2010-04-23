@@ -1,0 +1,1133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="leloup_model_2004____main" name="leloup_model_2004____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="MP0" constant="false"/>
+      <parameter id="MP_vsP" value="2.4"/>
+      <parameter id="MP_vmP" value="2.2"/>
+      <parameter id="MP_kdmp" value="0.02"/>
+      <parameter id="MP_KAP" value="0.6"/>
+      <parameter id="MP_KmP" value="0.3"/>
+      <parameter id="n" value="2"/>
+      <parameter id="BN0" constant="false"/>
+      <parameter id="MC0" constant="false"/>
+      <parameter id="MC_vsC" value="2.2"/>
+      <parameter id="MC_vmC" value="2"/>
+      <parameter id="MC_kdmc" value="0.02"/>
+      <parameter id="MC_KAC" value="0.6"/>
+      <parameter id="MC_KmC" value="0.4"/>
+      <parameter id="MB0" constant="false"/>
+      <parameter id="MB_vsB" value="1.8"/>
+      <parameter id="MB_vmB" value="1.3"/>
+      <parameter id="MB_kdmb" value="0.02"/>
+      <parameter id="MB_KIB" value="2.2"/>
+      <parameter id="MB_KmB" value="0.4"/>
+      <parameter id="m" value="2"/>
+      <parameter id="RN0" constant="false"/>
+      <parameter id="MR0" constant="false"/>
+      <parameter id="MR_vsR" value="1.6"/>
+      <parameter id="MR_vmR" value="1.6"/>
+      <parameter id="MR_kdmr" value="0.02"/>
+      <parameter id="MR_KAR" value="0.6"/>
+      <parameter id="MR_KmR" value="0.4"/>
+      <parameter id="h" value="2"/>
+      <parameter id="PC0" constant="false"/>
+      <parameter id="ksP" value="1.2"/>
+      <parameter id="Kp" value="1.006"/>
+      <parameter id="Kdp" value="0.1"/>
+      <parameter id="k3" value="0.8"/>
+      <parameter id="k4" value="0.4"/>
+      <parameter id="kdn" value="0.02"/>
+      <parameter id="V1P" value="9.6"/>
+      <parameter id="V2P" value="0.6"/>
+      <parameter id="PCP0" constant="false"/>
+      <parameter id="PCC0" constant="false"/>
+      <parameter id="CC0" constant="false"/>
+      <parameter id="ksC" value="3.2"/>
+      <parameter id="kdnc" value="0.02"/>
+      <parameter id="V1C" value="1.2"/>
+      <parameter id="V2C" value="0.2"/>
+      <parameter id="CCP0" constant="false"/>
+      <parameter id="RC0" constant="false"/>
+      <parameter id="ksR" value="1.7"/>
+      <parameter id="Kd" value="0.3"/>
+      <parameter id="k9" value="0.8"/>
+      <parameter id="k10" value="0.4"/>
+      <parameter id="vdRC" value="4.4"/>
+      <parameter id="vdPC" value="3.4"/>
+      <parameter id="vdCC" value="1.4"/>
+      <parameter id="k1" value="0.8"/>
+      <parameter id="k2" value="0.4"/>
+      <parameter id="V1PC" value="2.4"/>
+      <parameter id="V2PC" value="0.2"/>
+      <parameter id="PCCP0" constant="false"/>
+      <parameter id="PCN0" constant="false"/>
+      <parameter id="k7" value="1"/>
+      <parameter id="k8" value="0.2"/>
+      <parameter id="V3PC" value="2.4"/>
+      <parameter id="V4PC" value="0.2"/>
+      <parameter id="PCNP0" constant="false"/>
+      <parameter id="IN_0" constant="false"/>
+      <parameter id="vdRN" value="0.8"/>
+      <parameter id="vdPCC" value="1.4"/>
+      <parameter id="vdPCN" value="1.4"/>
+      <parameter id="BC0" constant="false"/>
+      <parameter id="ksB" value="0.32"/>
+      <parameter id="k5" value="0.8"/>
+      <parameter id="k6" value="0.4"/>
+      <parameter id="V1B" value="1.4"/>
+      <parameter id="V2B" value="0.2"/>
+      <parameter id="BCP0" constant="false"/>
+      <parameter id="vdBC" value="3"/>
+      <parameter id="V3B" value="1.4"/>
+      <parameter id="V4B" value="0.4"/>
+      <parameter id="BNP0" constant="false"/>
+      <parameter id="vdBN" value="3"/>
+      <parameter id="vdIN" value="1.6"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="MP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> MP_vsP </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <ci> BN0 </ci>
+                  <ci> n </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> MP_KAP </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> BN0 </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> MP_vmP </ci>
+                <apply>
+                  <divide/>
+                  <ci> MP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> MP_KmP </ci>
+                    <ci> MP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> MP_kdmp </ci>
+                <ci> MP0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="BN0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V4B </ci>
+                <apply>
+                  <divide/>
+                  <ci> BNP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> BNP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k5 </ci>
+                <ci> BC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k8 </ci>
+                <ci> IN_0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V3B </ci>
+                <apply>
+                  <divide/>
+                  <ci> BN0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kp </ci>
+                    <ci> BN0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k6 </ci>
+                <ci> BN0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k7 </ci>
+                <ci> BN0 </ci>
+                <ci> PCN0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> BN0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="MC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> MC_vsC </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <ci> BN0 </ci>
+                  <ci> n </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> MC_KAC </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> BN0 </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> MC_vmC </ci>
+                <apply>
+                  <divide/>
+                  <ci> MC0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> MC_KmC </ci>
+                    <ci> MC0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> MC_kdmc </ci>
+                <ci> MC0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="MB0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> MB_vsB </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <ci> MB_KIB </ci>
+                  <ci> m </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> MB_KIB </ci>
+                    <ci> m </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> RN0 </ci>
+                    <ci> m </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> MB_vmB </ci>
+                <apply>
+                  <divide/>
+                  <ci> MB0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> MB_KmB </ci>
+                    <ci> MB0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> MB_kdmb </ci>
+                <ci> MB0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RN0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k9 </ci>
+              <ci> RC0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k10 </ci>
+                <ci> RN0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> vdRN </ci>
+                <apply>
+                  <divide/>
+                  <ci> RN0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kd </ci>
+                    <ci> RN0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> RN0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="MR0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> MR_vsR </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <ci> BN0 </ci>
+                  <ci> h </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> MR_KAR </ci>
+                    <ci> h </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> BN0 </ci>
+                    <ci> h </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> MR_vmR </ci>
+                <apply>
+                  <divide/>
+                  <ci> MR0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> MR_KmR </ci>
+                    <ci> MR0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> MR_kdmr </ci>
+                <ci> MR0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> ksP </ci>
+                <ci> MP0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> V2P </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> PCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k4 </ci>
+                <ci> PCC0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V1P </ci>
+                <apply>
+                  <divide/>
+                  <ci> PC0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kp </ci>
+                    <ci> PC0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> PC0 </ci>
+                <ci> CC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> PC0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PCP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V1P </ci>
+              <apply>
+                <divide/>
+                <ci> PC0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> Kp </ci>
+                  <ci> PC0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V2P </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> PCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> vdPC </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kd </ci>
+                    <ci> PCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> PCP0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PCC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V2PC </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> PCCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> PC0 </ci>
+                <ci> CC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k2 </ci>
+                <ci> PCN0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V1PC </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCC0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kp </ci>
+                    <ci> PCC0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k4 </ci>
+                <ci> PCC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> PCC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> PCC0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> ksC </ci>
+                <ci> MC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> V2C </ci>
+                <apply>
+                  <divide/>
+                  <ci> CCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> CCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k4 </ci>
+                <ci> PCC0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V1C </ci>
+                <apply>
+                  <divide/>
+                  <ci> CC0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kp </ci>
+                    <ci> CC0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> PC0 </ci>
+                <ci> CC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdnc </ci>
+                <ci> CC0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CCP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V1C </ci>
+              <apply>
+                <divide/>
+                <ci> CC0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> Kp </ci>
+                  <ci> CC0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V2C </ci>
+                <apply>
+                  <divide/>
+                  <ci> CCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> CCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> vdCC </ci>
+                <apply>
+                  <divide/>
+                  <ci> CCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kd </ci>
+                    <ci> CCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> CCP0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> ksR </ci>
+                <ci> MR0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k10 </ci>
+                <ci> RN0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k9 </ci>
+                <ci> RC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> vdRC </ci>
+                <apply>
+                  <divide/>
+                  <ci> RC0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kd </ci>
+                    <ci> RC0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> RC0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PCCP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V1PC </ci>
+              <apply>
+                <divide/>
+                <ci> PCC0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> Kp </ci>
+                  <ci> PCC0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V2PC </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> PCCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> vdPCC </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kd </ci>
+                    <ci> PCCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> PCCP0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PCN0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V4PC </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCNP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> PCNP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> PCC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k8 </ci>
+                <ci> IN_0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V3PC </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCN0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kp </ci>
+                    <ci> PCN0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k2 </ci>
+                <ci> PCN0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k7 </ci>
+                <ci> BN0 </ci>
+                <ci> PCN0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> PCN0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PCNP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V3PC </ci>
+              <apply>
+                <divide/>
+                <ci> PCN0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> Kp </ci>
+                  <ci> PCN0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V4PC </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCNP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> PCNP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> vdPCN </ci>
+                <apply>
+                  <divide/>
+                  <ci> PCNP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kd </ci>
+                    <ci> PCNP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> PCNP0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="IN_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k7 </ci>
+              <ci> BN0 </ci>
+              <ci> PCN0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k8 </ci>
+                <ci> IN_0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> vdIN </ci>
+                <apply>
+                  <divide/>
+                  <ci> IN_0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kd </ci>
+                    <ci> IN_0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> IN_0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="BC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V2B </ci>
+                <apply>
+                  <divide/>
+                  <ci> BCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> BCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k6 </ci>
+                <ci> BN0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ksB </ci>
+                <ci> MB0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V1B </ci>
+                <apply>
+                  <divide/>
+                  <ci> BC0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kp </ci>
+                    <ci> BC0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k5 </ci>
+                <ci> BC0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> BC0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="BCP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V1B </ci>
+              <apply>
+                <divide/>
+                <ci> BC0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> Kp </ci>
+                  <ci> BC0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V2B </ci>
+                <apply>
+                  <divide/>
+                  <ci> BCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> BCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> vdBC </ci>
+                <apply>
+                  <divide/>
+                  <ci> BCP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kd </ci>
+                    <ci> BCP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> BCP0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="BNP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V3B </ci>
+              <apply>
+                <divide/>
+                <ci> BN0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> Kp </ci>
+                  <ci> BN0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> V4B </ci>
+                <apply>
+                  <divide/>
+                  <ci> BNP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kdp </ci>
+                    <ci> BNP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> vdBN </ci>
+                <apply>
+                  <divide/>
+                  <ci> BNP0 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> Kd </ci>
+                    <ci> BNP0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kdn </ci>
+                <ci> BNP0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

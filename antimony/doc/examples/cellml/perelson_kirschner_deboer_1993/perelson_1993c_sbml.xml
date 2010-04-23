@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="perelson_1993c____main" name="perelson_1993c____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="uninfected_s" value="10"/>
+      <parameter id="uninfected_r" value="0.03"/>
+      <parameter id="uninfected_T_max" value="1500"/>
+      <parameter id="mu_T" value="0.02"/>
+      <parameter id="uninfected_theta" value="1"/>
+      <parameter id="k_1"/>
+      <parameter id="T_1" value="0" constant="false"/>
+      <parameter id="T_2" value="0" constant="false"/>
+      <parameter id="V" constant="false"/>
+      <parameter id="uninfected_s_V" constant="false"/>
+      <parameter id="T" value="1000" constant="false"/>
+      <parameter id="k_2"/>
+      <parameter id="mu_b" value="0.24"/>
+      <parameter id="free_virus_particle_mu_V" value="2.4"/>
+      <parameter id="N" constant="false"/>
+      <parameter id="T_cell_population_T_tot" constant="false"/>
+      <parameter id="AZT_tau" value="1096"/>
+      <parameter id="AZT_N_initial" value="1400"/>
+      <parameter id="AZT_N_AZT" value="1050"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="k_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.4 <sep/> -5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> -3 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="k_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 3 <sep/> -3 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="T_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> V </ci>
+                <ci> T </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> mu_T </ci>
+                <ci> T_1 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_2 </ci>
+              <ci> T_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="T_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_2 </ci>
+              <ci> T_1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> mu_b </ci>
+              <ci> T_2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> N </ci>
+                <ci> mu_b </ci>
+                <ci> T_2 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> V </ci>
+                <ci> T </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> free_virus_particle_mu_V </ci>
+              <ci> V </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="uninfected_s_V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> uninfected_theta </ci>
+              <ci> uninfected_s </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> uninfected_theta </ci>
+              <ci> V </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <ci> uninfected_s_V </ci>
+                <apply>
+                  <times/>
+                  <ci> mu_T </ci>
+                  <ci> T </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> uninfected_r </ci>
+                <ci> T </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <ci> T </ci>
+                      <ci> T_1 </ci>
+                      <ci> T_2 </ci>
+                    </apply>
+                    <ci> uninfected_T_max </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_1 </ci>
+              <ci> V </ci>
+              <ci> T </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="N"/>
+      <assignmentRule variable="T_cell_population_T_tot">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> T </ci>
+            <ci> T_1 </ci>
+            <ci> T_2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="de_paor_model_1986_version03____main" name="de_paor_model_1986_version03____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="f0" constant="false"/>
+      <parameter id="f_a" value="1"/>
+      <parameter id="r0" value="0.5"/>
+      <parameter id="p" value="1.05"/>
+      <parameter id="r_beta" value="1"/>
+      <parameter id="r_alpha" value="1"/>
+      <parameter id="ur00" constant="false"/>
+      <parameter id="m0" constant="false"/>
+      <parameter id="r00" value="0.5"/>
+      <parameter id="y0" constant="false"/>
+      <parameter id="r1" value="1.2"/>
+      <parameter id="ur10" constant="false"/>
+      <parameter id="z0" constant="false"/>
+      <parameter id="t1" value="0.1"/>
+      <parameter id="x10" value="0"/>
+      <parameter id="q0" constant="false"/>
+      <parameter id="q_d" value="5"/>
+      <parameter id="q_k" value="10.5"/>
+      <parameter id="uz0" constant="false"/>
+      <parameter id="x20" value="0"/>
+      <parameter id="t2" value="0.5"/>
+      <parameter id="x30" value="0"/>
+      <parameter id="phi0" constant="false"/>
+      <parameter id="h0" value="0"/>
+      <parameter id="t4" value="20"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="f0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> f_a </ci>
+            <ci> p </ci>
+            <apply>
+              <power/>
+              <ci> r0 </ci>
+              <cn> 4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ur00"/>
+      <assignmentRule variable="m0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> x30 </ci>
+            <ci> phi0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="y0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> r0 </ci>
+              <ci> r1 </ci>
+            </apply>
+            <ci> ur10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ur10"/>
+      <assignmentRule variable="z0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> y0 </ci>
+              <ci> x10 </ci>
+            </apply>
+            <ci> t1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="q0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> q_k </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> q_d </ci>
+                    <ci> z0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <ci> uz0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="uz0"/>
+      <assignmentRule variable="phi0"/>
+    </listOfRules>
+  </model>
+</sbml>

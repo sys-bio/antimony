@@ -1,0 +1,341 @@
+//Created by libAntimony v1.3
+model spiro_model_1997__environment(time_)
+end
+
+model spiro_model_1997__T2(T2, LT2, T2R, R, T3, L, Bp, T2p, Y0, Yp, B0, k5, k_5, k8, k_1, ky, kb, k1a, k1b, k1c, time_)
+
+  // Assignment Rules:
+  Vmax := k1c * ( R + T2R );
+  KR := ( k1a + k1c ) / k1b;
+
+  // Rate Rules:
+  T2' = k_5 * LT2 + k_1 * Bp * T3 + ky * T2p * ( Y0 - Yp ) + kb * T2p * ( B0 - Bp ) - ( k5 * L * T2 + k8 * T2 + Vmax * ( T2 / ( KR + T2 )));
+
+  // Variable initializations:
+  T2 = 0.01;
+end
+
+model spiro_model_1997__T3(T3, LT3, T3R, R, T4, L, Bp, T3p, Y0, Yp, B0, k6, k_6, k9, k_2, ky, kb, k2a, k2b, k2c, time_)
+
+  // Assignment Rules:
+  Vmax := k2c * ( R + T3R );
+  KR := ( k2a + k2c ) / k2b;
+
+  // Rate Rules:
+  T3' = k_6 * LT3 + k_2 * Bp * T4 + ky * T3p * ( Y0 - Yp ) + kb * T3p * ( B0 - Bp ) - ( k6 * L * T3 + k9 * T3 + Vmax * ( T3 / ( KR + T3 )));
+
+  // Variable initializations:
+  T3 = 0.01;
+end
+
+model spiro_model_1997__T4(T4, LT4, L, Bp, T4p, Y0, Yp, B0, k7, k_7, k10, ky, kb, time_)
+
+  // Rate Rules:
+  T4' = k_7 * LT4 + ky * T4p * ( Y0 - Yp ) + kb * T4p * ( B0 - Bp ) - ( k7 * L * T4 + k10 * T4 );
+
+  // Variable initializations:
+  T4 = 0.01;
+end
+
+model spiro_model_1997__T2p(T2p, LT2p, T2pR, R, T3p, L, Bp, T2, Y0, Yp, B0, k5, k_5, k8, k_1, ky, kb, k1a, k1b, k1c, time_)
+
+  // Assignment Rules:
+  Vmax := k1c * ( R + T2pR );
+  KR := ( k1a + k1c ) / k1b;
+
+  // Rate Rules:
+  T2p' = k_5 * LT2p + k_1 * Bp * T3p + ky * T2 * ( Y0 - Yp ) + kb * T2 * ( B0 - Bp ) - ( k5 * L * T2p + k8 * T2p + Vmax * ( T2p / ( KR + T2p )));
+
+  // Variable initializations:
+  T2p = 0.01;
+end
+
+model spiro_model_1997__T3p(T3p, LT3p, T3pR, R, T4p, L, Bp, T3, Y0, Yp, B0, k6, k_6, k9, k_2, ky, kb, k2a, k2b, k2c, time_)
+
+  // Assignment Rules:
+  Vmax := k2c * ( R + T3pR );
+  KR := ( k2a + k2c ) / k2b;
+
+  // Rate Rules:
+  T3p' = k_6 * LT3p + k_2 * Bp * T4p + ky * T3 * ( Y0 - Yp ) + kb * T3 * ( B0 - Bp ) - ( k6 * L * T3p + k9 * T3p + Vmax * ( T3p / ( KR + T3p )));
+
+  // Variable initializations:
+  T3p = 0.01;
+end
+
+model spiro_model_1997__T4p(T4p, LT4p, L, Bp, T4, Y0, Yp, B0, k7, k_7, k10, ky, kb, time_)
+
+  // Rate Rules:
+  T4p' = k_7 * LT4p + ky * T4 * ( Y0 - Yp ) + kb * T4 * ( B0 - Bp ) - ( k7 * L * T4p + k10 * T4p );
+
+  // Variable initializations:
+  T4p = 0.01;
+end
+
+model spiro_model_1997__LT2(LT2, T2, LT2R, R, LT3, L, Bp, LT2p, Y0, Yp, B0, k5, k_5, k11, k_3, ky, kb, k3a, k3b, k3c, time_)
+
+  // Assignment Rules:
+  Vmax := k3c * ( R + LT2R );
+  KR := ( k3a + k3c ) / k3b;
+
+  // Rate Rules:
+  LT2' = k_5 * T2 + k_3 * Bp * LT3 + ky * LT2p * ( Y0 - Yp ) + kb * LT2p * ( B0 - Bp ) - ( k5 * L * LT2 + k11 * LT2 + Vmax * ( LT2 / ( KR + LT2 )));
+
+  // Variable initializations:
+  LT2 = 0.01;
+end
+
+model spiro_model_1997__LT3(LT3, T3, LT3R, R, LT4, L, Bp, LT3p, Y0, Yp, B0, k6, k_6, k12, k_4, ky, kb, k4a, k4b, k4c, time_)
+
+  // Assignment Rules:
+  Vmax := k4c * ( R + LT3R );
+  KR := ( k4a + k4c ) / k4b;
+
+  // Rate Rules:
+  LT3' = k_6 * T3 + k_4 * Bp * LT4 + ky * LT3p * ( Y0 - Yp ) + kb * LT3p * ( B0 - Bp ) - ( k6 * L * LT3 + k12 * LT3 + Vmax * ( LT3 / ( KR + LT3 )));
+
+  // Variable initializations:
+  LT3 = 0.01;
+end
+
+model spiro_model_1997__LT4(LT4, T4, L, Bp, LT4p, Y0, Yp, B0, k7, k_7, k13, ky, kb, time_)
+
+  // Rate Rules:
+  LT4' = k_7 * T4 + ky * LT4p * ( Y0 - Yp ) + kb * LT4p * ( B0 - Bp ) - ( k7 * L * LT4 + k13 * LT4 );
+
+  // Variable initializations:
+  LT4 = 0.01;
+end
+
+model spiro_model_1997__LT2p(LT2p, T2p, LT2pR, R, LT3p, L, Bp, LT2, Y0, Yp, B0, k5, k_5, k11, k_3, ky, kb, k3a, k3b, k3c, time_)
+
+  // Assignment Rules:
+  Vmax := k3c * ( R + LT2pR );
+  KR := ( k3a + k3c ) / k3b;
+
+  // Rate Rules:
+  LT2p' = k_5 * T2p + k_3 * Bp * LT3p + ky * LT2 * ( Y0 - Yp ) + kb * LT2 * ( B0 - Bp ) - ( k5 * L * LT2p + k11 * LT2p + Vmax * ( LT2p / ( KR + LT2p )));
+
+  // Variable initializations:
+  LT2p = 0.01;
+end
+
+model spiro_model_1997__LT3p(LT3p, T3p, LT3pR, R, LT4p, L, Bp, LT3, Y0, Yp, B0, k6, k_6, k12, k_4, ky, kb, k4a, k4b, k4c, time_)
+
+  // Assignment Rules:
+  Vmax := k4c * ( R + LT3pR );
+  KR := ( k4a + k4c ) / k4b;
+
+  // Rate Rules:
+  LT3p' = k_6 * T3p + k_4 * Bp * LT4p + ky * LT3 * ( Y0 - Yp ) + kb * LT3 * ( B0 - Bp ) - ( k6 * L * LT3p + k12 * LT3p + Vmax * ( LT3p / ( KR + LT3p )));
+
+  // Variable initializations:
+  LT3p = 0.01;
+end
+
+model spiro_model_1997__LT4p(LT4p, T4p, L, Bp, LT4, Y0, Yp, B0, k7, k_7, k13, ky, kb, time_)
+
+  // Rate Rules:
+  LT4p' = k_7 * T4p + ky * LT4p * ( Y0 - Yp ) + kb * LT4p * ( B0 - Bp ) - ( k7 * L * LT4p + k13 * LT4p );
+
+  // Variable initializations:
+  LT4p = 0.01;
+end
+
+model spiro_model_1997__Yp(Yp, P, Z, Y0, ky, k_y, time_)
+
+  // Rate Rules:
+  Yp' = ky * P * ( Y0 - Yp ) - k_y * Z * Yp;
+
+  // Variable initializations:
+  Yp = 0.01;
+end
+
+model spiro_model_1997__Bp(Bp, P, B0, kb, k_b, time_)
+
+  // Rate Rules:
+  Bp' = kb * P * ( B0 - Bp ) - k_b * Bp;
+
+  // Variable initializations:
+  Bp = 0.01;
+end
+
+model spiro_model_1997__P(P, T2p, LT2p, T3p, LT3p, T4p, LT4p)
+
+  // Assignment Rules:
+  P := T2p + LT2p + T3p + LT3p + T4p + LT4p;
+end
+
+model spiro_model_1997__T2R(T2R, T2, R, k1a, k1b, k1c, time_)
+
+  // Rate Rules:
+  T2R' = k1b * T2 * R - ( k1a * T2R + k1c * T2R );
+
+  // Variable initializations:
+  T2R = 0.01;
+end
+
+model spiro_model_1997__T3R(T3R, T3, R, k2a, k2b, k2c, time_)
+
+  // Rate Rules:
+  T3R' = k2b * T3 * R - ( k2a * T3R + k2c * T3R );
+
+  // Variable initializations:
+  T3R = 0.01;
+end
+
+model spiro_model_1997__T2pR(T2pR, T2p, R, k1a, k1b, k1c, time_)
+
+  // Rate Rules:
+  T2pR' = k1b * T2p * R - ( k1a * T2pR + k1c * T2pR );
+
+  // Variable initializations:
+  T2pR = 0.01;
+end
+
+model spiro_model_1997__T3pR(T3pR, T3p, R, k2a, k2b, k2c, time_)
+
+  // Rate Rules:
+  T3pR' = k2b * T3p * R - ( k2a * T3pR + k2c * T3pR );
+
+  // Variable initializations:
+  T3pR = 0.01;
+end
+
+model spiro_model_1997__LT2R(LT2R, LT2, R, k3a, k3b, k3c, time_)
+
+  // Rate Rules:
+  LT2R' = k3b * LT2 * R - ( k3a * LT2R + k3c * LT2R );
+
+  // Variable initializations:
+  LT2R = 0.01;
+end
+
+model spiro_model_1997__LT3R(LT3R, LT3, R, k4a, k4b, k4c, time_)
+
+  // Rate Rules:
+  LT3R' = k4b * LT3 * R - ( k4a * LT3R + k4c * LT3R );
+
+  // Variable initializations:
+  LT3R = 0.01;
+end
+
+model spiro_model_1997__LT2pR(LT2pR, LT2p, R, k3a, k3b, k3c, time_)
+
+  // Rate Rules:
+  LT2pR' = k3b * LT2p * R - ( k3a * LT2pR + k3c * LT2pR );
+
+  // Variable initializations:
+  LT2pR = 0.01;
+end
+
+model spiro_model_1997__LT3pR(LT3pR, LT3p, R, k4a, k4b, k4c, time_)
+
+  // Rate Rules:
+  LT3pR' = k4b * LT3p * R - ( k4a * LT3pR + k4c * LT3pR );
+
+  // Variable initializations:
+  LT3pR = 0.01;
+end
+
+model spiro_model_1997__L(L)
+
+  // Variable initializations:
+  L = 3.0;
+end
+
+model spiro_model_1997__R(R)
+
+  // Variable initializations:
+  R = 0.3;
+end
+
+model spiro_model_1997__Z(Z)
+
+  // Variable initializations:
+  Z = 40.0;
+end
+
+model spiro_model_1997__Y0(Y0)
+
+  // Variable initializations:
+  Y0 = 20.0;
+end
+
+model spiro_model_1997__B0(B0)
+
+  // Variable initializations:
+  B0 = 1.7;
+end
+
+model spiro_model_1997__model_parameters(k1c, k2c, k3c, k4c, k1a, k2a, k3a, k4a, k1b, k2b, k3b, k4b, k_1, k_2, k_3, k_4, k5, k6, k7, k_5, k_6, k_7, k8, k9, k10, k11, k12, k13, kb, ky, k_b, k_y)
+
+  // Variable initializations:
+  k1c = 0.17;
+  k2c = 0.017;
+  k3c = 5.1;
+  k4c = 0.51;
+  k1a = 10;
+  k2a = 10;
+  k3a = 10;
+  k4a = 10;
+  k1b = 17;
+  k2b = 17;
+  k3b = 17;
+  k4b = 17;
+  k_1 = 4E5;
+  k_2 = 3E4;
+  k_3 = 4E5;
+  k_4 = 3E4;
+  k5 = 7E7;
+  k6 = 7E7;
+  k7 = 7E7;
+  k_5 = 70.0;
+  k_6 = 70.0;
+  k_7 = 70.0;
+  k8 = 15.0;
+  k9 = 45.0;
+  k10 = 48.0;
+  k11 = 0.0;
+  k12 = 16.5;
+  k13 = 34.56;
+  kb = 8E5;
+  ky = 3E7;
+  k_b = 0.35;
+  k_y = 5E5;
+end
+
+model spiro_model_1997____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: spiro_model_1997__environment(time_);
+  T2: spiro_model_1997__T2(T20, LT20, T2R0, R0, T30, L0, Bp0, T2p0, Y00, Yp0, B00, k5, k_5, k8, k_1, ky, kb, k1a, k1b, k1c, time_);
+  T3: spiro_model_1997__T3(T30, LT30, T3R0, R0, T40, L0, Bp0, T3p0, Y00, Yp0, B00, k6, k_6, k9, k_2, ky, kb, k2a, k2b, k2c, time_);
+  T4: spiro_model_1997__T4(T40, LT40, L0, Bp0, T4p0, Y00, Yp0, B00, k7, k_7, k10, ky, kb, time_);
+  T2p: spiro_model_1997__T2p(T2p0, LT2p0, T2pR0, R0, T3p0, L0, Bp0, T20, Y00, Yp0, B00, k5, k_5, k8, k_1, ky, kb, k1a, k1b, k1c, time_);
+  T3p: spiro_model_1997__T3p(T3p0, LT3p0, T3pR0, R0, T4p0, L0, Bp0, T30, Y00, Yp0, B00, k6, k_6, k9, k_2, ky, kb, k2a, k2b, k2c, time_);
+  T4p: spiro_model_1997__T4p(T4p0, LT4p0, L0, Bp0, T40, Y00, Yp0, B00, k7, k_7, k10, ky, kb, time_);
+  LT2: spiro_model_1997__LT2(LT20, T20, LT2R0, R0, LT30, L0, Bp0, LT2p0, Y00, Yp0, B00, k5, k_5, k11, k_3, ky, kb, k3a, k3b, k3c, time_);
+  LT3: spiro_model_1997__LT3(LT30, T30, LT3R0, R0, LT40, L0, Bp0, LT3p0, Y00, Yp0, B00, k6, k_6, k12, k_4, ky, kb, k4a, k4b, k4c, time_);
+  LT4: spiro_model_1997__LT4(LT40, T40, L0, Bp0, LT4p0, Y00, Yp0, B00, k7, k_7, k13, ky, kb, time_);
+  LT2p: spiro_model_1997__LT2p(LT2p0, T2p0, LT2pR0, R0, LT3p0, L0, Bp0, LT20, Y00, Yp0, B00, k5, k_5, k11, k_3, ky, kb, k3a, k3b, k3c, time_);
+  LT3p: spiro_model_1997__LT3p(LT3p0, T3p0, LT3pR0, R0, LT4p0, L0, Bp0, LT30, Y00, Yp0, B00, k6, k_6, k12, k_4, ky, kb, k4a, k4b, k4c, time_);
+  LT4p: spiro_model_1997__LT4p(LT4p0, T4p0, L0, Bp0, LT40, Y00, Yp0, B00, k7, k_7, k13, ky, kb, time_);
+  Yp: spiro_model_1997__Yp(Yp0, P0, Z0, Y00, ky, k_y, time_);
+  Bp: spiro_model_1997__Bp(Bp0, P0, B00, kb, k_b, time_);
+  P: spiro_model_1997__P(P0, T2p0, LT2p0, T3p0, LT3p0, T4p0, LT4p0);
+  T2R: spiro_model_1997__T2R(T2R0, T20, R0, k1a, k1b, k1c, time_);
+  T3R: spiro_model_1997__T3R(T3R0, T30, R0, k2a, k2b, k2c, time_);
+  T2pR: spiro_model_1997__T2pR(T2pR0, T2p0, R0, k1a, k1b, k1c, time_);
+  T3pR: spiro_model_1997__T3pR(T3pR0, T3p0, R0, k2a, k2b, k2c, time_);
+  LT2R: spiro_model_1997__LT2R(LT2R0, LT20, R0, k3a, k3b, k3c, time_);
+  LT3R: spiro_model_1997__LT3R(LT3R0, LT30, R0, k4a, k4b, k4c, time_);
+  LT2pR: spiro_model_1997__LT2pR(LT2pR0, LT2p0, R0, k3a, k3b, k3c, time_);
+  LT3pR: spiro_model_1997__LT3pR(LT3pR0, LT3p0, R0, k4a, k4b, k4c, time_);
+  L: spiro_model_1997__L(L0);
+  R: spiro_model_1997__R(R0);
+  Z: spiro_model_1997__Z(Z0);
+  Y0: spiro_model_1997__Y0(Y00);
+  B0: spiro_model_1997__B0(B00);
+  model_parameters: spiro_model_1997__model_parameters(k1c, k2c, k3c, k4c, k1a, k2a, k3a, k4a, k1b, k2b, k3b, k4b, k_1, k_2, k_3, k_4, k5, k6, k7, k_5, k_6, k_7, k8, k9, k10, k11, k12, k13, kb, ky, k_b, k_y);
+end

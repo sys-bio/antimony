@@ -1,0 +1,57 @@
+//Created by libAntimony v1.3
+model cambell_chandra_2006__environment(time_)
+end
+
+model cambell_chandra_2006__equations(time_, x_0, epsilon, beta, g, f, k_off, k_on, L, L_0, dL_dt)
+
+  // Assignment Rules:
+  F := A * epsilon * x;
+  D := 1 - A;
+  k_XB := k_a * A;
+
+  // Rate Rules:
+  R_on' = -(((k_off + k_XB + alpha * k_on) / (1 + alpha) + f * D)) * R_on + (g - (k_XB + alpha * k_on) / (1 + alpha)) * A + (k_XB + alpha * k_on / (1 + alpha)) * beta * (L - L_0);
+  A' = f * D * R_on - g * A;
+  x' = -(g) * (x - x_0) + dL_dt;
+
+  // Variable initializations:
+  R_on = 1;
+  A = 0;
+  alpha = 0.1;
+  k_a = 0;
+  x = 1;
+end
+
+model cambell_chandra_2006__undefined_parameters(x_0, epsilon, beta, g, f, k_off, k_on)
+
+  // Variable initializations:
+  x_0 = 1;
+  epsilon = 1;
+  beta = 2;
+  g = 1;
+  f = 1;
+  k_off = 1;
+  k_on = 1;
+end
+
+model cambell_chandra_2006__parameters_stelzer_et_al(L, L_0, dL_dt, time_)
+
+  // Assignment Rules:
+  dL_dt := piecewise( 10.6 , ( 0.001 < time_) && (time_ <= 0.003 ), 0 );
+
+  // Rate Rules:
+  L' = dL_dt;
+
+  // Variable initializations:
+  L = 2.12;
+  L_0 = 2.12;
+end
+
+model cambell_chandra_2006____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: cambell_chandra_2006__environment(time_);
+  equations: cambell_chandra_2006__equations(time_, x_0, epsilon, beta, g, f, k_off, k_on, L, L_0, dL_dt);
+  undefined_parameters: cambell_chandra_2006__undefined_parameters(x_0, epsilon, beta, g, f, k_off, k_on);
+  parameters_stelzer_et_al: cambell_chandra_2006__parameters_stelzer_et_al(L, L_0, dL_dt, time_);
+end

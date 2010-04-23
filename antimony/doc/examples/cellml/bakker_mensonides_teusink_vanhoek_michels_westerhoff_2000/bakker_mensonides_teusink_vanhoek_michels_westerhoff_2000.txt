@@ -1,0 +1,396 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "sumc5 * DHAP / (sumc4 + sumc5 - (BPGA13 + 2 * Fru16BP + Fru6P + GAP + Glc6P + P))" to set the assignment rule for DHAP:  Loop detected:  DHAP's definition (sumc5 * DHAP / (sumc4 + sumc5 - (BPGA13 + 2 * Fru16BP + Fru6P + GAP + Glc6P + P))) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    In module 'bakker_2000____main', the variables PGA3.PGA3 and PGA30 were unable to be set as equivalent:  Loop detected:  'PGA3.PGA3' may not be set to be equal to 'PGA30' because PGA3.PGA3's definition already includes PGA30 either directly or by proxy.
+
+model bakker_2000__environment(time_)
+end
+
+model bakker_2000__GlcI(GlcI, vHK, vGlcTr, time_)
+
+  // Rate Rules:
+  GlcI' = vGlcTr - vHK;
+
+  // Variable initializations:
+  GlcI = 0.0340009;
+end
+
+model bakker_2000__hexose_P(hexose_P, vHK, vPFK, time_)
+
+  // Rate Rules:
+  hexose_P' = vHK - vPFK;
+
+  // Variable initializations:
+  hexose_P = 2.583763;
+end
+
+model bakker_2000__Fru16BP(Fru16BP, vPFK, vALD, time_)
+
+  // Rate Rules:
+  Fru16BP' = vPFK - vALD;
+
+  // Variable initializations:
+  Fru16BP = 16.5371;
+end
+
+model bakker_2000__triose_P(triose_P, vALD, vGAPDH, vGDH, vGPO, time_)
+
+  // Rate Rules:
+  triose_P' = 2.0 * vALD + vGPO - (vGAPDH + vGDH);
+
+  // Variable initializations:
+  triose_P = 3.9391429;
+end
+
+model bakker_2000__BPGA13(BPGA13, vGAPDH, vPGK, time_)
+
+  // Rate Rules:
+  BPGA13' = vGAPDH - vPGK;
+
+  // Variable initializations:
+  BPGA13 = 0.0326745;
+end
+
+model bakker_2000__N(N, vPGK, vPK, time_)
+
+  // Rate Rules:
+  N' = vPGK - vPK;
+
+  // Variable initializations:
+  N = 1.59603;
+end
+
+model bakker_2000__Pyr(Pyr, vPK, vPyrTr, time_)
+
+  // Rate Rules:
+  Pyr' = vPK - vPyrTr;
+
+  // Variable initializations:
+  Pyr = 4.77413;
+end
+
+model bakker_2000__NADH(NADH, vGAPDH, vGDH, time_)
+
+  // Rate Rules:
+  NADH' = vGAPDH - vGDH;
+
+  // Variable initializations:
+  NADH = 0.0448639;
+end
+
+model bakker_2000__NAD(NAD, vGAPDH, vGDH, time_)
+
+  // Rate Rules:
+  NAD' = vGDH - vGAPDH;
+
+  // Variable initializations:
+  NAD = 0.0448639;
+end
+
+model bakker_2000__Gly3P(Gly3P, vGlyK, vGDH, vGPO, time_)
+
+  // Rate Rules:
+  Gly3P' = vGDH - (vGlyK + vGPO);
+
+  // Variable initializations:
+  Gly3P = 0.0;
+end
+
+model bakker_2000__Gly(Gly, vGlyK, time_)
+
+  // Rate Rules:
+  Gly' = vGlyK;
+
+  // Variable initializations:
+  Gly = 0.0;
+end
+
+model bakker_2000__P(P, vHK, vPGK, vPFK, vGlyK, vPK, vATPase, time_)
+
+  // Rate Rules:
+  P' = vPGK + vGlyK + vPK - (vHK + vPFK + vATPase);
+
+  // Variable initializations:
+  P = 7.63936;
+end
+
+model bakker_2000__ATP(ATP, P)
+
+  // Assignment Rules:
+  ATP := (P * ( 1.0 - 4.0 * Keq_AK) - sumA + power(power(sumA - ( 1.0 - 4.0 * Keq_AK) * P, 2.0 ) + 4.0 * ( 1.0 - 4.0 * Keq_AK) * (-(Keq_AK) * power(P, 2.0 )), 0.5 )) / ( 2.0 * ( 1.0 - 4.0 * Keq_AK));
+
+  // Variable initializations:
+  sumA = 3.9;
+  Keq_AK = 0.442;
+end
+
+model bakker_2000__ADP(ADP, ATP, P)
+
+  // Assignment Rules:
+  ADP := P - 2.0 * ATP;
+end
+
+model bakker_2000__DHAP(DHAP, Fru16BP, Fru6P, P, BPGA13, GAP, Glc6P)
+
+  // Variable initializations:
+  sumc4 = 45.0;
+  sumc5 = 5.0;
+end
+
+model bakker_2000__GAP(GAP, triose_P, DHAP)
+
+  // Assignment Rules:
+  GAP := triose_P - DHAP;
+end
+
+model bakker_2000__GlcE(GlcE)
+
+  // Variable initializations:
+  GlcE = 0.05;
+end
+
+model bakker_2000__Glc6P(Glc6P, vHK, vPGI, time_)
+
+  // Rate Rules:
+  Glc6P' = vHK - vPGI;
+
+  // Variable initializations:
+  Glc6P = 2.07199;
+end
+
+model bakker_2000__Fru6P(Fru6P, Glc6P, hexose_P)
+
+  // Assignment Rules:
+  Fru6P := hexose_P - Glc6P;
+end
+
+model bakker_2000__PGA3(PGA3, N, PEP)
+
+  // Assignment Rules:
+  PGA3 := N - PEP;
+end
+
+model bakker_2000__PEP(PEP, PGA3)
+
+  // Assignment Rules:
+  PEP := Keq_ENO * Keq_PGM * PGA3;
+
+  // Variable initializations:
+  Keq_ENO = 6.7;
+  Keq_PGM = 0.187;
+end
+
+model bakker_2000__vGlcTr(vGlcTr, GlcE, GlcI)
+
+  // Assignment Rules:
+  vGlcTr := vGlcTr_max * (( GlcE - GlcI ) / ( K_Glc + GlcE + GlcI + alpha * GlcE * ( GlcI / K_Glc )));
+
+  // Variable initializations:
+  K_Glc = 2.0;
+  alpha = 0.75;
+  vGlcTr_max = 106.2;
+end
+
+model bakker_2000__vHK(vHK, GlcI, Glc6P, ATP, ADP)
+
+  // Assignment Rules:
+  vHK := vHK_max * GlcI * ATP / ( K_ATP * K_GlcI * ( 1.0 + Glc6P / K_Glc6P + GlcI / K_GlcI ) * ( 1.0 + ATP / K_ATP + ADP / K_ADP ));
+
+  // Variable initializations:
+  K_GlcI = 0.1;
+  K_Glc6P = 12.0;
+  K_ATP = 0.116;
+  K_ADP = 0.126;
+  vHK_max = 625.0;
+end
+
+model bakker_2000__vPGI(vPGI, Glc6P, Fru6P)
+
+  // Assignment Rules:
+  vPGI := vPGI_max * ( Glc6P / K_Glc6P - Fru6P / K_Fru6P ) / (1 + Glc6P / K_Glc6P + Fru6P / K_Fru6P );
+
+  // Variable initializations:
+  K_Glc6P = 0.4;
+  K_Fru6P = 0.12;
+  vPGI_max = 848.0;
+end
+
+model bakker_2000__vPFK(vPFK, Fru6P, Fru16BP, ATP)
+
+  // Assignment Rules:
+  vPFK := Ki_1 * vPFK_max * Fru6P * ATP / ( KM_ATP * KM_Fru6P * ( Fru16BP + Ki_1 ) * ( 1.0 + Fru16BP / Ki_2 + Fru6P / KM_Fru6P ) * ( 1.0 + ATP / KM_ATP ));
+
+  // Variable initializations:
+  Ki_1 = 15.8;
+  Ki_2 = 10.7;
+  KM_Fru6P = 0.82;
+  KM_ATP = 0.026;
+  vPFK_max = 780.0;
+end
+
+model bakker_2000__vALD(vALD, Fru16BP, GAP, DHAP, ATP, ADP)
+
+  // Assignment Rules:
+  vALD := ( vALD_max_forward * Fru16BP / (0.009 * (1 + ATP / 0.68 + ADP / 1.51 + (sumA - ( ATP + ADP )) / 3.65 )) - vALD_max_reverse * GAP * DHAP / ( KM_DHAP * KM_GAP )) / (1 + GAP / KM_GAP + DHAP / KM_DHAP + GAP * DHAP / ( KM_DHAP * KM_GAP ) + Fru16BP / (0.009 * (1 + ATP / 0.68 + ADP / 1.51 + (sumA - ( ATP + ADP )) / 3.65 )) + Fru16BP * GAP / ( Ki_GAP * 0.009 * (1 + ATP / 0.68 + ADP / 1.51 + (sumA - ( ATP + ADP )) / 3.65 )));
+
+  // Variable initializations:
+  sumA = 6.0;
+  KM_GAP = 0.067;
+  Ki_GAP = 0.098;
+  KM_DHAP = 0.015;
+  vALD_max_forward = 184.5;
+  vALD_max_reverse = 219.555;
+end
+
+model bakker_2000__vTPI(vTPI, DHAP, GAP)
+
+  // Assignment Rules:
+  vTPI := vTPI_max * ( DHAP / K_DHAP - 5.7 * GAP / K_GAP ) / ( 1.0 + GAP / K_GAP + DHAP / K_DHAP );
+
+  // Variable initializations:
+  K_DHAP = 1.2;
+  K_GAP = 0.25;
+  vTPI_max = 842.0;
+end
+
+model bakker_2000__vGAPDH(vGAPDH, NAD, GAP, BPGA13, NADH)
+
+  // Assignment Rules:
+  vGAPDH := vGAPDH_max * ( vGAPDH_max_forward * ( GAP * ( NAD / K_GAP / K_NAD ) - vGAPDH_max_reverse / vGAPDH_max_forward * ( BPGA13 * NADH / K_BPGA13 / K_NADH )) / ((1 + GAP / K_GAP + BPGA13 / K_BPGA13 ) * (1 + NAD / K_NAD + NADH / K_NADH )));
+
+  // Variable initializations:
+  K_NAD = 0.45;
+  K_GAP = 0.15;
+  K_BPGA13 = 0.1;
+  K_NADH = 0.02;
+  vGAPDH_max_forward = 1470.0;
+  vGAPDH_max_reverse = 984.9;
+  vGAPDH_max = 1.0;
+end
+
+model bakker_2000__vGDH(vGDH, NADH, Gly3P, DHAP, NAD)
+
+  // Assignment Rules:
+  vGDH := vGDH_max * vGDH_max_forward * ( NADH * DHAP / ( K_NADH * K_DHAP ) - vGDH_max_reverse * NAD * Gly3P / ( K_Gly3P * K_NAD * vGDH_max_forward )) / ((1 + NAD / K_NAD + NADH / K_NADH ) * (1 + DHAP / K_DHAP + Gly3P / K_Gly3P ));
+
+  // Variable initializations:
+  K_NADH = 0.01;
+  K_Gly3P = 2.0;
+  K_DHAP = 0.1;
+  K_NAD = 0.4;
+  vGDH_max_forward = 533.0;
+  vGDH_max_reverse = 149.24;
+  vGDH_max = 1.0;
+end
+
+model bakker_2000__vGPO(vGPO, Gly3P)
+
+  // Assignment Rules:
+  vGPO := vGPO_max * Gly3P / ( Gly3P + K_Gly3P );
+
+  // Variable initializations:
+  K_Gly3P = 1.7;
+  vGPO_max = 368.0;
+end
+
+model bakker_2000__vPyrTr(vPyrTr, Pyr)
+
+  // Assignment Rules:
+  vPyrTr := vPyrTr_max * Pyr / K_pyruvate / ( 1.0 + Pyr / K_pyruvate );
+
+  // Variable initializations:
+  K_pyruvate = 1.96;
+  vPyrTr_max = 200.0;
+end
+
+model bakker_2000__vPGK(vPGK, ADP, BPGA13, PGA3, ATP)
+
+  // Assignment Rules:
+  vPGK := vPGK_max * vPGK_max_forward * (-( vPGK_max_reverse ) * PGA3 * ATP / ( K_ATP * K_PGA3 * vPGK_max_forward ) + BPGA13 * ADP / ( K_BPGA13 * K_ADP )) / ((1 + BPGA13 / K_BPGA13 + PGA3 / K_PGA3 ) * (1 + ADP / K_ADP + ATP / K_ATP ));
+
+  // Variable initializations:
+  K_ADP = 0.1;
+  K_BPGA13 = 0.05;
+  K_PGA3 = 1.62;
+  K_ATP = 0.29;
+  vPGK_max_forward = 640.0;
+  vPGK_max_reverse = 18.56;
+  vPGK_max = 1.0;
+end
+
+model bakker_2000__vPK(vPK, PEP, ADP, ATP)
+
+  // Assignment Rules:
+  vPK := vPK_max * power( PEP / (0.34 * (1 + ATP / 0.57 + ADP / 0.64 )), n ) * ADP / KM_ADP / ((1 + power( PEP / (0.34 * (1 + ATP / 0.57 + ADP / 0.64 )), n )) * (1 + ADP / KM_ADP ));
+
+  // Variable initializations:
+  KM_ADP = 0.114;
+  n = 2.5;
+  vPK_max = 2600;
+end
+
+model bakker_2000__vATPase(vATPase, ATP, ADP)
+
+  // Assignment Rules:
+  vATPase := k * ATP / ADP;
+
+  // Variable initializations:
+  k = 50;
+end
+
+model bakker_2000__vGlyK(vGlyK, ADP, Gly3P, Gly, ATP)
+
+  // Assignment Rules:
+  vGlyK := vGlyK_max * ( vGlyK_max_forward * ADP * Gly3P / ( K_ADP * K_Gly3P ) - vGlyK_max_reverse * ATP * Gly / ( K_ATP * K_Gly )) / ((1 + Gly3P / K_Gly3P + Gly / K_Gly ) * (1 + ADP / K_ADP + ATP / K_ATP ));
+
+  // Variable initializations:
+  K_ADP = 0.12;
+  K_Gly3P = 5.1;
+  K_Gly = 0.12;
+  K_ATP = 0.19;
+  vGlyK_max_forward = 220.0;
+  vGlyK_max_reverse = 334000.0;
+  vGlyK_max = 1.0;
+end
+
+model bakker_2000____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: bakker_2000__environment(time_);
+  GlcI: bakker_2000__GlcI(GlcI0, vHK0, vGlcTr0, time_);
+  hexose_P: bakker_2000__hexose_P(hexose_P0, vHK0, vPFK0, time_);
+  Fru16BP: bakker_2000__Fru16BP(Fru16BP0, vPFK0, vALD0, time_);
+  triose_P: bakker_2000__triose_P(triose_P0, vALD0, vGAPDH0, vGDH0, vGPO0, time_);
+  BPGA13: bakker_2000__BPGA13(BPGA130, vGAPDH0, vPGK0, time_);
+  N: bakker_2000__N(N0, vPGK0, vPK0, time_);
+  Pyr: bakker_2000__Pyr(Pyr0, vPK0, vPyrTr0, time_);
+  NADH: bakker_2000__NADH(NADH0, vGAPDH0, vGDH0, time_);
+  NAD: bakker_2000__NAD(NAD0, vGAPDH0, vGDH0, time_);
+  Gly3P: bakker_2000__Gly3P(Gly3P0, vGlyK0, vGDH0, vGPO0, time_);
+  Gly: bakker_2000__Gly(Gly0, vGlyK0, time_);
+  P: bakker_2000__P(P0, vHK0, vPGK0, vPFK0, vGlyK0, vPK0, vATPase0, time_);
+  ATP: bakker_2000__ATP(ATP0, P0);
+  ADP: bakker_2000__ADP(ADP0, ATP0, P0);
+  DHAP: bakker_2000__DHAP(DHAP0, Fru16BP0, Fru6P0, P0, BPGA130, GAP0, Glc6P0);
+  GAP: bakker_2000__GAP(GAP0, triose_P0, DHAP0);
+  GlcE: bakker_2000__GlcE(GlcE0);
+  Glc6P: bakker_2000__Glc6P(Glc6P0, vHK0, vPGI0, time_);
+  Fru6P: bakker_2000__Fru6P(Fru6P0, Glc6P0, hexose_P0);
+  PGA3: bakker_2000__PGA3(PGA31, N0, PEP0);
+  PEP: bakker_2000__PEP(PEP0, PGA30);
+  vGlcTr: bakker_2000__vGlcTr(vGlcTr0, GlcE0, GlcI0);
+  vHK: bakker_2000__vHK(vHK0, GlcI0, Glc6P0, ATP0, ADP0);
+  vPGI: bakker_2000__vPGI(vPGI0, Glc6P0, Fru6P0);
+  vPFK: bakker_2000__vPFK(vPFK0, Fru6P0, Fru16BP0, ATP0);
+  vALD: bakker_2000__vALD(vALD0, Fru16BP0, GAP0, DHAP0, ATP0, ADP0);
+  vTPI: bakker_2000__vTPI(vTPI0, DHAP0, GAP0);
+  vGAPDH: bakker_2000__vGAPDH(vGAPDH0, NAD0, GAP0, BPGA130, NADH0);
+  vGDH: bakker_2000__vGDH(vGDH0, NADH0, Gly3P0, DHAP0, NAD0);
+  vGPO: bakker_2000__vGPO(vGPO0, Gly3P0);
+  vPyrTr: bakker_2000__vPyrTr(vPyrTr0, Pyr0);
+  vPGK: bakker_2000__vPGK(vPGK0, ADP0, BPGA130, PGA31, ATP0);
+  vPK: bakker_2000__vPK(vPK0, PEP0, ADP0, ATP0);
+  vATPase: bakker_2000__vATPase(vATPase0, ATP0, ADP0);
+  vGlyK: bakker_2000__vGlyK(vGlyK0, ADP0, Gly3P0, Gly0, ATP0);
+end

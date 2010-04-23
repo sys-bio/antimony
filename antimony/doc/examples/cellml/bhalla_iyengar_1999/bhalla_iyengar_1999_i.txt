@@ -1,0 +1,89 @@
+//Created by libAntimony v1.3
+model bi_model_1999_version01__environment(t)
+end
+
+model bi_model_1999_version01__GEF(t, GEF_inact, PKA, PKC, CaM_GEF, Gby_GEF)
+
+  // Rate Rules:
+  GEF_inact' = PKA * Vmax1 * GEF / (km1 + GEF) + PKC * Vmax6 * GEF / (km6 + GEF) - kf2 * GEF_inact - kf7 * GEF_inact;
+  GEF' = -((PKA * Vmax1 * GEF / (km1 + GEF) + PKC * Vmax6 * GEF / (km6 + GEF) - kf2 * GEF_inact - kf7 * GEF_inact)) - kf5 * Ca4CAM * GEF + kb5 * CaM_GEF - kf8 * GEF * Gby + kb8 * Gby_GEF;
+  Ca4CAM' = -((-(kb5) * CaM_GEF + kf5 * GEF * Ca4CAM));
+  Gby' = -(kf8) * GEF * Gby + kb8 * Gby_GEF;
+  CaM_GEF' = -(kb5) * CaM_GEF + kf5 * GEF * Ca4CAM;
+  Gby_GEF' = -((-(kf8) * GEF * Gby + kb8 * Gby_GEF));
+
+  // Variable initializations:
+  kf2 = 1;
+  kb2 = 0;
+  kf5 = 0.0001;
+  kb5 = 1;
+  kf7 = 1;
+  kb7 = 0;
+  kf8 = 0.00001;
+  kb8 = 1;
+  km1 = 7.5;
+  Vmax1 = 9;
+  km6 = 3.33333333333;
+  Vmax6 = 4;
+  GEF_inact = 0.1;
+  GEF = 0;
+  Ca4CAM = 1;
+  Gby = 1;
+  CaM_GEF = 0;
+  Gby_GEF = 0;
+end
+
+model bi_model_1999_version01__GTPRAS(t, GAP, GEF_inact, Gby_GEF, CaM_GEF)
+
+  // Rate Rules:
+  GTP_RAS' = -(GAP) * Vmax13 * GTP_RAS / (km13 + GTP_RAS) - kf12 * GTP_RAS + GEF_inact * Vmax10 * GDP_RAS / (km10 + GDP_RAS) + Gby_GEF * Vmax11 * GDP_RAS / (km11 + GDP_RAS) + CaM_GEF * Vmax9 * GDP_RAS / (km9 + GDP_RAS);
+  GDP_RAS' = -((-(GAP) * Vmax13 * GTP_RAS / (km13 + GTP_RAS) - kf12 * GTP_RAS + GEF_inact * Vmax10 * GDP_RAS / (km10 + GDP_RAS) + Gby_GEF * Vmax11 * GDP_RAS / (km11 + GDP_RAS) + CaM_GEF * Vmax9 * GDP_RAS / (km9 + GDP_RAS)));
+
+  // Variable initializations:
+  kf12 = 0.0001;
+  kb12 = 0;
+  km9 = 0.50505;
+  Vmax9 = 0.02;
+  km10 = 0.50505;
+  Vmax10 = 0.02;
+  km11 = 0.50505;
+  Vmax11 = 0.02;
+  km13 = 1.0104;
+  Vmax13 = 10;
+  GTP_RAS = 0;
+  GDP_RAS = 0.2;
+end
+
+model bi_model_1999_version01__GAP(t, GAP, PKC)
+
+  // Rate Rules:
+  GAP' = -(PKC) * Vmax3 * GAP / (km3 + GAP) + kf4 * GAPstar;
+  GAPstar' = PKC * Vmax3 * GAP / (km3 + GAP) - kf4 * GAPstar;
+
+  // Variable initializations:
+  kf4 = 0.1;
+  kb4 = 0;
+  km3 = 3.33333333333;
+  Vmax3 = 4;
+  GAP = 0.002;
+  GAPstar = 0;
+end
+
+model bi_model_1999_version01__undefinedVariables(t, Ca4CAM, Gby, PKA, PKC)
+
+  // Variable initializations:
+  Ca4CAM = 1;
+  Gby = 1;
+  PKA = 1;
+  PKC = 1;
+end
+
+model bi_model_1999_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: bi_model_1999_version01__environment(t);
+  GEF: bi_model_1999_version01__GEF(t, GEF_inact, PKA, PKC, CaM_GEF, Gby_GEF);
+  GTPRAS: bi_model_1999_version01__GTPRAS(t, GAP0, GEF_inact, Gby_GEF, CaM_GEF);
+  GAP: bi_model_1999_version01__GAP(t, GAP0, PKC);
+  undefinedVariables: bi_model_1999_version01__undefinedVariables(t, Ca4CAM, Gby, PKA, PKC);
+end

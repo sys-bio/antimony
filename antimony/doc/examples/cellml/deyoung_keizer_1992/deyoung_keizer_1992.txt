@@ -1,0 +1,125 @@
+//Created by libAntimony v1.3
+model deyoung_keizer_1992_version01__environment(time_)
+end
+
+model deyoung_keizer_1992_version01__Ca_i(Ca_i, c1, Ca_ER, P_open, time_)
+
+  // Assignment Rules:
+  J1 := c1 * ( v1 * P_open + v2 ) * ( Ca_ER - Ca_i );
+  J2 := v3 * power( Ca_i , 2.0 ) / (power( Ca_i , 2.0 ) + power( k3 , 2.0 ));
+
+  // Rate Rules:
+  Ca_i' = J1 - J2;
+
+  // Variable initializations:
+  v1 = 6.0;
+  v2 = 0.11;
+  v3 = 0.9;
+  k3 = 0.1;
+end
+
+model deyoung_keizer_1992_version01__Ca_ER(Ca_ER, c1, Ca_i, time_)
+
+  // Assignment Rules:
+  Ca_ER := ( c0 - Ca_i ) / c1;
+
+  // Variable initializations:
+  c0 = 2.0;
+end
+
+model deyoung_keizer_1992_version01__IP3(IP3, Ca_i, time_)
+
+  // Rate Rules:
+  IP3' = v4 * (( Ca_i + ( 1.0 - alpha ) * k4 ) / ( Ca_i + k4 )) - Ir * IP3;
+
+  // Variable initializations:
+  k4 = 1.1;
+  alpha = 0.5;
+  Ir = 1.0;
+  v4 = 1.2;
+end
+
+model deyoung_keizer_1992_version01__receptor_dissociation_constants(d1, d2, d3, d4, d5, a5, b5, a2, b2, a3, b3, a4, b4)
+
+  // Assignment Rules:
+  d1 := K_d1 - IP3_cold;
+  d2 := b2 / a2;
+  d3 := (K_d2 - IP3_cold) * (1 + d2) - d1 * d2;
+  d4 := d1 * d2 / d3;
+  d5 := b5 / a5;
+
+  // Variable initializations:
+  IP3_cold = 15.0;
+end
+
+model deyoung_keizer_1992_version01__probability_of_an_open_IP3_receptor_channel(P_open, Ca_i, IP3, d1, d2, d3, d5)
+
+  // Assignment Rules:
+  P_open := power( Ca_i * IP3 * d2 / (( Ca_i * IP3 + IP3 * d2 + d1 * d2 + Ca_i * d3 ) * ( Ca_i + d5 )), 3.0 );
+end
+
+model deyoung_keizer_1992_version01__x_000(x_000, V1, V3, time_)
+
+  // Rate Rules:
+  x_000' = -( V1 ) - V3;
+end
+
+model deyoung_keizer_1992_version01__x_001(x_001, V1, V4, time_)
+
+  // Rate Rules:
+  x_001' = V1 - V4;
+end
+
+model deyoung_keizer_1992_version01__x_010(x_010, V2, V3, time_)
+
+  // Rate Rules:
+  x_010' = V3 - V2;
+end
+
+model deyoung_keizer_1992_version01__x_011(x_011, x_000, x_001, x_010)
+
+  // Assignment Rules:
+  x_011 := 1.0 - ( x_000 + x_001 + x_010 );
+end
+
+model deyoung_keizer_1992_version01__fluxes(V1, V2, V3, V4, x_000, x_001, x_011, x_010, Ca_i, a4, d4, a5, d5, time_)
+
+  // Assignment Rules:
+  V1 := a4 * ( Ca_i * x_000 - d4 * x_001 );
+  V2 := a4 * ( Ca_i * x_010 - d4 * x_011 );
+  V3 := a5 * ( Ca_i * x_000 - d5 * x_010 );
+  V4 := a5 * ( Ca_i * x_001 - d5 * x_011 );
+end
+
+model deyoung_keizer_1992_version01__constants(a1, b1, a2, b2, a3, b3, a4, b4, a5, b5, c1, d1, d3, d4)
+
+  // Assignment Rules:
+  b1 := d1 * a1;
+  b3 := d3 * a3;
+  b4 := d4 * a4;
+
+  // Variable initializations:
+  a1 = 400.0;
+  a2 = 0.2;
+  a3 = 400.0;
+  a4 = 0.2;
+  a5 = 20.0;
+  c1 = 0.185;
+end
+
+model deyoung_keizer_1992_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: deyoung_keizer_1992_version01__environment(time_);
+  Ca_i: deyoung_keizer_1992_version01__Ca_i(Ca_i0, c1, Ca_ER0, P_open, time_);
+  Ca_ER: deyoung_keizer_1992_version01__Ca_ER(Ca_ER0, c1, Ca_i0, time_);
+  IP3: deyoung_keizer_1992_version01__IP3(IP30, Ca_i0, time_);
+  receptor_dissociation_constants: deyoung_keizer_1992_version01__receptor_dissociation_constants(d1, d2, d3, d4, d5, a5, b5, a2, b2, a3, b3, a4, b4);
+  probability_of_an_open_IP3_receptor_channel: deyoung_keizer_1992_version01__probability_of_an_open_IP3_receptor_channel(P_open, Ca_i0, IP30, d1, d2, d3, d5);
+  x_000: deyoung_keizer_1992_version01__x_000(x_0000, V1, V3, time_);
+  x_001: deyoung_keizer_1992_version01__x_001(x_0010, V1, V4, time_);
+  x_010: deyoung_keizer_1992_version01__x_010(x_0100, V2, V3, time_);
+  x_011: deyoung_keizer_1992_version01__x_011(x_0110, x_0000, x_0010, x_0100);
+  fluxes: deyoung_keizer_1992_version01__fluxes(V1, V2, V3, V4, x_0000, x_0010, x_0110, x_0100, Ca_i0, a4, d4, a5, d5, time_);
+  constants: deyoung_keizer_1992_version01__constants(a1, b1, a2, b2, a3, b3, a4, b4, a5, b5, c1, d1, d3, d4);
+end

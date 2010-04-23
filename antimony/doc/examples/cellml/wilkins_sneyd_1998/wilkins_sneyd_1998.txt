@@ -1,0 +1,46 @@
+//Created by libAntimony v1.3
+model wilkins_1998__environment(time_)
+end
+
+model wilkins_1998__calcium_concentration(c, time_, j_flux, j_pump)
+
+  // Variable initializations:
+  Dc = 20.0;
+end
+
+model wilkins_1998__calcium_pump(j_pump, c)
+
+  // Assignment Rules:
+  j_pump := gamma * c / ( k_gamma + c );
+
+  // Variable initializations:
+  gamma = 2.0;
+  k_gamma = 0.1;
+end
+
+model wilkins_1998__calcium_flux(j_flux, c, time_)
+
+  // Assignment Rules:
+  j_flux := kf * mu_p * ( b + ( 1.0 - b ) * c / ( k1 + c )) * h;
+
+  // Rate Rules:
+  h' = (power( k2 , 2.0 ) / (power( k2 , 2.0 ) + power( c , 2.0 )) - h ) / tau_h;
+  mu_p' = p / ( k_mu + p );
+
+  // Variable initializations:
+  b = 0.111;
+  k1 = 0.7;
+  k2 = 0.7;
+  k_mu = 0.7;
+  tau_h = 2.0;
+  kf = 16.2;
+end
+
+model wilkins_1998____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: wilkins_1998__environment(time_);
+  calcium_concentration: wilkins_1998__calcium_concentration(c, time_, j_flux, j_pump);
+  calcium_pump: wilkins_1998__calcium_pump(j_pump, c);
+  calcium_flux: wilkins_1998__calcium_flux(j_flux, c, time_);
+end

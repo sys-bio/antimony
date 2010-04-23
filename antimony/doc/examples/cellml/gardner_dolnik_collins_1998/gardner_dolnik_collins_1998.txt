@@ -1,0 +1,102 @@
+//Created by libAntimony v1.3
+model gardner_dolnik_collins_1998__environment(time_)
+end
+
+model gardner_dolnik_collins_1998__C(vi, k1, X, C, K5, kd, time_, Ctot, Z)
+
+  // Assignment Rules:
+  Ctot := C + Z;
+
+  // Rate Rules:
+  C' = vi - k1 * X * C / (C + K5) - kd * C;
+end
+
+model gardner_dolnik_collins_1998__M(time_, V1, M, K1, V2, K2, M_)
+
+  // Assignment Rules:
+  M_ := 1 - M;
+
+  // Rate Rules:
+  M' = V1 * M_ / (M_ + K1) - V2 * M / (M + K2);
+end
+
+model gardner_dolnik_collins_1998__X(time_, X, V3, K3, V4, K4, X_)
+
+  // Assignment Rules:
+  X_ := 1 - X;
+
+  // Rate Rules:
+  X' = V3 * X_ / (X_ + K3) - V4 * X / (X + K4);
+end
+
+model gardner_dolnik_collins_1998__V1(V1, C, K6, V1_dash)
+
+  // Assignment Rules:
+  V1 := C * V1_dash / (C + K6);
+end
+
+model gardner_dolnik_collins_1998__V3(V3, M, V3_dash)
+
+  // Assignment Rules:
+  V3 := M * V3_dash;
+end
+
+model gardner_dolnik_collins_1998__Y(vs, d1, Y, a1, a2, alpha, kd, Z, C, time_, Ytot)
+
+  // Assignment Rules:
+  Ytot := Y + Z;
+
+  // Rate Rules:
+  Y' = vs - d1 * Y - a1 * C * Y + (a2 + alpha * kd) * Z;
+end
+
+model gardner_dolnik_collins_1998__Z(time_, Z, a1, C, Y, a2, alpha, kd, d1)
+
+  // Rate Rules:
+  Z' = a1 * C * Y - (a2 + alpha * kd + alpha * d1) * Z;
+end
+
+model gardner_dolnik_collins_1998__BP(BP, Kd, Ytot, C)
+
+  // Assignment Rules:
+  BP := 1 + Kd * Ytot / power(C + Kd, 2);
+end
+
+model gardner_dolnik_collins_1998__rxn_constants(vi, k1, K5, kd, K1, K2, V2, K3, V4, K4, K6, V1_dash, V3_dash, vs, d1, a1, a2, alpha, Kd)
+
+  // Variable initializations:
+  vi = 0.1;
+  k1 = 0.5;
+  K5 = 0.02;
+  kd = 0.02;
+  K1 = 0.02;
+  K2 = 0.02;
+  V2 = 0.25;
+  K3 = 0.1;
+  V4 = 0.1;
+  K4 = 0.1;
+  K6 = 0.3;
+  V1_dash = 0.75;
+  V3_dash = 0.3;
+  vs = 0.1;
+  d1 = 0.05;
+  a1 = 1.5;
+  a2 = 1.5;
+  alpha = 0.1;
+  Kd = 1;
+end
+
+model gardner_dolnik_collins_1998____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: gardner_dolnik_collins_1998__environment(time_);
+  C: gardner_dolnik_collins_1998__C(vi, k1, X0, C0, K5, kd, time_, Ctot, Z0);
+  M: gardner_dolnik_collins_1998__M(time_, V10, M0, K1, V2, K2, M_);
+  X: gardner_dolnik_collins_1998__X(time_, X0, V30, K3, V4, K4, X_);
+  V1: gardner_dolnik_collins_1998__V1(V10, C0, K6, V1_dash);
+  V3: gardner_dolnik_collins_1998__V3(V30, M0, V3_dash);
+  Y: gardner_dolnik_collins_1998__Y(vs, d1, Y0, a1, a2, alpha, kd, Z0, C0, time_, Ytot);
+  Z: gardner_dolnik_collins_1998__Z(time_, Z0, a1, C0, Y0, a2, alpha, kd, d1);
+  BP: gardner_dolnik_collins_1998__BP(BP0, Kd, Ytot, C0);
+  rxn_constants: gardner_dolnik_collins_1998__rxn_constants(vi, k1, K5, kd, K1, K2, V2, K3, V4, K4, K6, V1_dash, V3_dash, vs, d1, a1, a2, alpha, Kd);
+end

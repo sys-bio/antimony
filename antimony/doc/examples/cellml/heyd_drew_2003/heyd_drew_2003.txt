@@ -1,0 +1,155 @@
+//Created by libAntimony v1.3
+model heyd_2003__environment(time_)
+end
+
+model heyd_2003__kinetic_constants(k11, k11_, k71, k72, k12, k12_, k51, k52, k41, k31, k32, k42, k22, k22_, k21, k21_)
+
+  // Variable initializations:
+  k11 = 110.0;
+  k11_ = 25.0;
+  k71 = 0.1;
+  k72 = 60.0;
+  k12 = 110.0;
+  k12_ = 0.2;
+  k51 = 7.0;
+  k52 = 0.0;
+  k41 = 60.0;
+  k31 = 500.0;
+  k32 = 50.0;
+  k42 = 70.0;
+  k22 = 100.0;
+  k22_ = 17.0;
+  k21 = 100.0;
+  k21_ = 0.2;
+end
+
+model heyd_2003__PB(PB, k11, k11_, k71, k72, k12, k12_, kreset1, A1, A2, PC1, PF1, PG1, PC2, PF2, time_)
+
+  // Rate Rules:
+  PB' = k11_ * PC1 + k71 * PF1 + kreset1 * PG1 + k12_ * PC2 + k72 * PF2 - ( k11 * A1 * PB + k12 * A2 * PB );
+
+  // Variable initializations:
+  PB = 0.1;
+end
+
+model heyd_2003__A1(A1, k11, k11_, PC1, PB, time_)
+
+  // Rate Rules:
+  A1' = k11_ * PC1 - k11 * A1 * PB;
+
+  // Variable initializations:
+  A1 = 0.1;
+end
+
+model heyd_2003__A2(A2, k12, k12_, PC2, PB, time_)
+
+  // Rate Rules:
+  A2' = k12_ * PC2 - k12 * A2 * PB;
+
+  // Variable initializations:
+  A2 = 0.1;
+end
+
+model heyd_2003__PC1(PC1, k11, k11_, k21, k21_, A1, PB, PD1, time_)
+
+  // Rate Rules:
+  PC1' = k11 * A1 * PB - ( k11_ + k21 ) * PC1 + k21_ * PD1;
+
+  // Variable initializations:
+  PC1 = 0.1;
+end
+
+model heyd_2003__PD1(PD1, k21, k21_, k31, PC1, time_)
+
+  // Rate Rules:
+  PD1' = k21 * PC1 - ( k21_ + k31 ) * PD1;
+
+  // Variable initializations:
+  PD1 = 0.1;
+end
+
+model heyd_2003__PE1(PE1, k31, k41, PD1, time_)
+
+  // Rate Rules:
+  PE1' = k31 * PD1 - k41 * PE1;
+
+  // Variable initializations:
+  PE1 = 0.1;
+end
+
+model heyd_2003__PF1(PF1, k41, k51, k71, PE1, time_)
+
+  // Rate Rules:
+  PF1' = k41 * PE1 - ( k51 + k71 ) * PF1;
+
+  // Variable initializations:
+  PF1 = 0.1;
+end
+
+model heyd_2003__PG1(PG1, kreset1, k51, PF1, time_)
+
+  // Rate Rules:
+  PG1' = k51 * PF1 - kreset1 * PG1;
+
+  // Variable initializations:
+  PG1 = 0.1;
+end
+
+model heyd_2003__PC2(PC2, k12, k12_, k22, k22_, A2, PB, PD2, time_)
+
+  // Rate Rules:
+  PC2' = k12 * A2 * PB - ( k12_ + k22 ) * PC2 + k22_ * PD2;
+
+  // Variable initializations:
+  PC2 = 0.1;
+end
+
+model heyd_2003__PD2(PD2, k22, k22_, k32, PC2, time_)
+
+  // Rate Rules:
+  PD2' = k22 * PC2 - ( k22_ + k32 ) * PD2;
+
+  // Variable initializations:
+  PD2 = 0.1;
+end
+
+model heyd_2003__PE2(PE2, k32, k42, PD2, time_)
+
+  // Variable initializations:
+  PE2 = 0.1;
+end
+
+model heyd_2003__PF2(PF2, k42, k52, k72, PE2, time_)
+
+  // Rate Rules:
+  PF2' = k42 * PE2 - ( k52 + k72 ) * PF2;
+
+  // Variable initializations:
+  PF2 = 0.1;
+end
+
+model heyd_2003__kreset1(kreset1)
+
+  // Variable initializations:
+  kreset1 = 35.0;
+end
+
+model heyd_2003____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: heyd_2003__environment(time_);
+  kinetic_constants: heyd_2003__kinetic_constants(k11, k11_, k71, k72, k12, k12_, k51, k52, k41, k31, k32, k42, k22, k22_, k21, k21_);
+  PB: heyd_2003__PB(PB0, k11, k11_, k71, k72, k12, k12_, kreset10, A10, A20, PC10, PF10, PG10, PC20, PF20, time_);
+  A1: heyd_2003__A1(A10, k11, k11_, PC10, PB0, time_);
+  A2: heyd_2003__A2(A20, k12, k12_, PC20, PB0, time_);
+  PC1: heyd_2003__PC1(PC10, k11, k11_, k21, k21_, A10, PB0, PD10, time_);
+  PD1: heyd_2003__PD1(PD10, k21, k21_, k31, PC10, time_);
+  PE1: heyd_2003__PE1(PE10, k31, k41, PD10, time_);
+  PF1: heyd_2003__PF1(PF10, k41, k51, k71, PE10, time_);
+  PG1: heyd_2003__PG1(PG10, kreset10, k51, PF10, time_);
+  PC2: heyd_2003__PC2(PC20, k12, k12_, k22, k22_, A20, PB0, PD20, time_);
+  PD2: heyd_2003__PD2(PD20, k22, k22_, k32, PC20, time_);
+  PE2: heyd_2003__PE2(PE20, k32, k42, PD20, time_);
+  PF2: heyd_2003__PF2(PF20, k42, k52, k72, PE20, time_);
+  kreset1: heyd_2003__kreset1(kreset10);
+end

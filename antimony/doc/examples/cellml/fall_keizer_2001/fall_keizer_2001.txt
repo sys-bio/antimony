@@ -1,0 +1,228 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "total_NAD_m - NADH_m" to set the assignment rule for NAD_m:  Loop detected:  NAD_m's definition (total_NAD_m - NADH_m) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "total_mitochondrial_adenosine_phosphate - ADP_m" to set the assignment rule for ATP_m:  Loop detected:  ATP_m's definition (total_mitochondrial_adenosine_phosphate - ADP_m) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+
+model fall_keizer_2001__environment(time_)
+end
+
+model fall_keizer_2001__membrane(V, V_B, R, T, F, delta_pH, proton_motive_force, g_H, JH_res, JH_leak, JH_F1, J_ant, J_uni, time_)
+
+  // Assignment Rules:
+  delta_pH := pH_i - pH_m;
+  proton_motive_force := V - 2.303 * R * T / F * delta_pH;
+
+  // Rate Rules:
+  V' = -1.0 / C * ( JH_F1 + J_ant + JH_leak + J_uni * 2.0 - JH_res );
+
+  // Variable initializations:
+  V_B = 50.0;
+  R = 8314.0;
+  T = 310.0;
+  F = 96845.0;
+  g_H = 0.2;
+  C = 0.00145;
+end
+
+model fall_keizer_2001__Ca_uniporter(J_uni, V_offset, Ca_i, R, F, T, V, time_)
+
+  // Assignment Rules:
+  J_uni := Jmax_uni * ( Ca_i / K_trans * power( 1.0 + Ca_i / K_trans , 3.0 ) / (power( 1.0 + Ca_i / K_trans , 4.0 ) + L / power( 1.0 + Ca_i / K_act , na ))) * ( 2.0 * F * ( V - V_offset ) / ( R * T ) / ( 1.0 - exp( -2.0 * F * ( V - V_offset ) / ( R * T ))));
+
+  // Variable initializations:
+  V_offset = 91.0;
+  Jmax_uni = 300.0;
+  K_trans = 19.0;
+  K_act = 0.38;
+  L = 110.0;
+  na = 2.8;
+end
+
+model fall_keizer_2001__Na_Ca_exchanger(K_Ca, J_Na_Ca, Ca_m, V_offset, R, F, T, V, time_)
+
+  // Assignment Rules:
+  J_Na_Ca := Jmax_Na_Ca * (exp( b * F * ( V - V_offset ) / ( R * T )) / (power( 1.0 + K_Na / Na_i , n ) * ( 1.0 + K_Ca / Ca_m )));
+
+  // Variable initializations:
+  K_Ca = 0.003;
+  Jmax_Na_Ca = 25.0;
+  Na_i = 30.0;
+  K_Na = 9.4;
+  b = 0.0;
+  n = 2.0;
+end
+
+model fall_keizer_2001__proton_pump(JH_res, Jo, delta_pH, NAD_m, NADH_m, R, F, T, V, V_B, time_)
+
+  // Assignment Rules:
+  JH_res := 360.0 * rho_res * (( ra * power( 10.0 , 6.0 * delta_pH ) * exp( F * A_res / ( R * T )) + rb * power( 10.0 , 6.0 * delta_pH ) - ( ra + rb ) * exp( g * 6.0 * F * V / ( R * T ))) / (( 1.0 + r1 * exp( F * A_res / ( R * T ))) * exp( 6.0 * F * V_B / ( R * T )) + ( r2 + r3 * exp( F * A_res / ( R * T ))) * exp( g * 6.0 * F * V / ( R * T ))));
+  Jo := 30.0 * rho_res * ((( ra * power( 10.0 , 6.0 * delta_pH ) + rc1 * exp( 6.0 * F * V_B / ( R * T ))) * exp( F * A_res / ( R * T )) - ra * exp( g * 6.0 * F * V / ( R * T )) + rc2 * exp( F * A_res / ( R * T )) * exp( g * 6.0 * F * V / ( R * T ))) / (( 1.0 + r1 * exp( F * A_res / ( R * T ))) * exp( 6.0 * F * V_B / ( R * T )) + ( r2 + r3 * exp( F * A_res / ( R * T ))) * exp( g * 6.0 * F * V / ( R * T ))));
+  A_res := R * T / F * ln( K_res * root( NADH_m ) / root( NAD_m ));
+
+  // Variable initializations:
+  K_res = 13500000000000000.0;
+  rho_res = 0.4;
+  r1 = 0.000000000000000002077;
+  r2 = 0.000000001728;
+  r3 = 0.00000000000000000000000001059;
+  ra = 0.0000000006394;
+  rb = 0.0000000000001762;
+  rc1 = 0.0000000000000000002656;
+  rc2 = 0.000000000000000000000000008632;
+  g = 0.85;
+end
+
+model fall_keizer_2001__proton_leak(JH_leak, g_H, proton_motive_force, time_)
+
+  // Assignment Rules:
+  JH_leak := g_H * proton_motive_force;
+end
+
+model fall_keizer_2001__F0_F1_ATPase(JH_F1, Jp_F1, ATP_m, ADP_m, delta_pH, R, F, T, V, V_B, time_)
+
+  // Assignment Rules:
+  JH_F1 := -180.0 * rho_F1 * (( pa * power( 10.0 , 3.0 * delta_pH ) * exp( F * A_F1 / ( R * T )) + pb * power( 10.0 , 3.0 * delta_pH ) - ( pa + pb ) * exp( 3.0 * F * V / ( R * T ))) / (( 1.0 + p1 * exp( F * A_F1 / ( R * T ))) * exp( 3.0 * F * V_B / ( R * T )) + ( p2 + p3 * exp( F * A_F1 / ( R * T ))) * exp( 3.0 * F * V / ( R * T ))));
+  Jp_F1 := -60.0 * rho_F1 * ((( pa * power( 10.0 , 3.0 * delta_pH ) + pc1 * exp( 3.0 * F * V_B / ( R * T ))) * exp( F * A_F1 / ( R * T )) - pa * exp( 3.0 * F * V / ( R * T )) + pc2 * exp( F * A_F1 / ( R * T )) * exp( 3.0 * F * V / ( R * T ))) / (( 1.0 + p1 * exp( F * A_F1 / ( R * T ))) * exp( 3.0 * F * V_B / ( R * T )) + ( p2 + p3 * exp( F * A_F1 / ( R * T ))) * exp( 3.0 * F * V / ( R * T ))));
+  A_F1 := R * T / F * ln( K_F1 * ATP_m / ( ADP_m_free * Pi_m ));
+  ADP_m_free := 0.8 * ADP_m;
+
+  // Variable initializations:
+  rho_F1 = 0.7;
+  K_F1 = 1710000.0;
+  Pi_m = 20.0;
+  p1 = 0.00000001346;
+  p2 = 0.0000007739;
+  p3 = 0.00000000000000665;
+  pa = 0.00001656;
+  pb = 0.0000003373;
+  pc1 = 0.00000000000009651;
+  pc2 = 0.0000000000000000004845;
+end
+
+model fall_keizer_2001__ATP_ADP_exchange(J_ant, ADP_i, ADP_m, ATP_i, ATP_m, Jp_F1, R, F, T, V, time_)
+
+  // Assignment Rules:
+  J_ant := Jmax_ant * (( 1.0 - ATP_i * ADP_m / ( ADP_i * ATP_m ) * exp(-( F ) * V / ( R * T ))) / (( 1.0 + ATP_i / ADP_i * exp(-( f ) * F * V / ( R * T ))) * ( 1.0 + ADP_m / ATP_m )));
+
+  // Variable initializations:
+  Jmax_ant = 1000.0;
+  f = 0.5;
+end
+
+model fall_keizer_2001__NAD_reduction(J_red, J_red_basal, f_PDHa, J_gly_tot, K_Ca, Ca_m, time_)
+
+  // Assignment Rules:
+  J_red := J_red_basal + 7.36 * f_PDHa * J_gly_tot;
+  f_PDHa := 1.0 / ( 1.0 + u2 * ( 1.0 + u1 * power( 1.0 + Ca_m / K_Ca , -2.0 )));
+
+  // Variable initializations:
+  J_red_basal = 20.0;
+  u1 = 15.0;
+  u2 = 1.1;
+end
+
+model fall_keizer_2001__TCA_cycle_ADP_phosphorylation(J_ptca, f_PDHa, J_red_basal, J_gly_tot, time_)
+
+  // Assignment Rules:
+  J_ptca := J_red_basal / 3.0 + 0.84 * f_PDHa * J_gly_tot;
+end
+
+model fall_keizer_2001__glycolytic_phosphorylation_of_ADP(J_gly_tot, Glc, ATP_i, time_)
+
+  // Assignment Rules:
+  J_gly_tot := beta_max * ( 1.0 + beta_1 * Glc ) * Glc * ATP_i / ( 1.0 + beta_3 * ATP_i + ( 1.0 + beta_4 * ATP_i )) * ( beta_5 * Glc + ( 1.0 + beta_6 * ATP_i ) + beta_7 * power( Glc , 2.0 ));
+
+  // Variable initializations:
+  Glc = 25.0;
+  beta_max = 126.0;
+  beta_1 = 1.66;
+  beta_3 = 4.0;
+  beta_4 = 2.83;
+  beta_5 = 1.3;
+  beta_6 = 2.66;
+  beta_7 = 0.16;
+end
+
+model fall_keizer_2001__hydrolysis_of_ATP(J_hyd, Glc, ATP_i, time_)
+
+  // Assignment Rules:
+  J_hyd := k_hyd * ATP_i + J_hyd_ss;
+  J_hyd_ss := Jmax_hyd / ( 1.0 + power( K_Glc / Glc , n_hyd ));
+
+  // Variable initializations:
+  Jmax_hyd = 30.1;
+  K_Glc = 8.7;
+  n_hyd = 2.7;
+end
+
+model fall_keizer_2001__Ca_release_from_the_ER(J_erout, h, JH_leak, Ca_i, Ca_ER, time_)
+
+  // Assignment Rules:
+  J_erout := ( Jmax_IP3 * power( IP3 / ( IP3 + d_IP3 ), 3.0 ) * power( Ca_i / ( Ca_i + d_ACT ), 3.0 ) * power( h , 3.0 ) + JH_leak ) * ( Ca_ER - Ca_i );
+
+  // Variable initializations:
+  Jmax_IP3 = 3000.0;
+  d_IP3 = 0.25;
+  d_ACT = 1.0;
+end
+
+model fall_keizer_2001__pumping_Ca_into_the_ER(J_serca, Ca_i, time_)
+
+  // Assignment Rules:
+  J_serca := Jmax_serca * (power( Ca_i , 2.0 ) / (power( k_serca , 2.0 ) + power( Ca_i , 2.0 )));
+
+  // Variable initializations:
+  Jmax_serca = 110.0;
+  k_serca = 0.4;
+end
+
+model fall_keizer_2001__differential_equations(NADH_m, NAD_m, ADP_m, ATP_m, ADP_i, ATP_i, Ca_m, Ca_ER, Ca_i, h, J_red, Jo, J_ant, J_ptca, Jp_F1, J_hyd, J_gly_tot, JH_res, JH_F1, JH_leak, J_uni, J_Na_Ca, J_serca, J_erout, time_)
+
+  // Assignment Rules:
+  ATP_i := 2.0 - ADP_i;
+  total_mitochondrial_adenosine_phosphate := ATP_m + ADP_m;
+  total_NAD_m := NADH_m + NAD_m;
+
+  // Rate Rules:
+  NADH_m' = M * ( J_red - Jo ) / Vm;
+  ADP_m' = M * ( J_ant - ( J_ptca + Jp_F1 )) / Vm;
+  ADP_i' = (-( M ) * J_ant + C * ( J_hyd - J_gly_tot )) / Vc;
+  Ca_m' = fm * M * ( J_uni - J_Na_Ca ) / Vm;
+  Ca_ER' = fe * E * ( J_serca - J_erout ) / Ve;
+  Ca_i' = fc * ( M * ( J_Na_Ca - J_uni ) - E * ( J_serca - J_erout )) / Vc;
+  h' = ( d_INH - ( Ca_i + d_INH ) * h ) / tau;
+
+  // Variable initializations:
+  C = 37.5;
+  M = 50.0;
+  E = 100.0;
+  Vc = 0.5;
+  Vm = 0.05;
+  Ve = 0.1;
+  fc = 0.01;
+  fm = 0.0003;
+  fe = 0.01;
+  d_INH = 1.4;
+  tau = 4.0;
+end
+
+model fall_keizer_2001____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: fall_keizer_2001__environment(time_);
+  membrane: fall_keizer_2001__membrane(V, V_B, R, T, F, delta_pH, proton_motive_force, g_H, JH_res, JH_leak, JH_F1, J_ant, J_uni, time_);
+  Ca_uniporter: fall_keizer_2001__Ca_uniporter(J_uni, V_offset, Ca_i, R, F, T, V, time_);
+  Na_Ca_exchanger: fall_keizer_2001__Na_Ca_exchanger(K_Ca, J_Na_Ca, Ca_m, V_offset, R, F, T, V, time_);
+  proton_pump: fall_keizer_2001__proton_pump(JH_res, Jo, delta_pH, NAD_m, NADH_m, R, F, T, V, V_B, time_);
+  proton_leak: fall_keizer_2001__proton_leak(JH_leak, g_H, proton_motive_force, time_);
+  F0_F1_ATPase: fall_keizer_2001__F0_F1_ATPase(JH_F1, Jp_F1, ATP_m, ADP_m, delta_pH, R, F, T, V, V_B, time_);
+  ATP_ADP_exchange: fall_keizer_2001__ATP_ADP_exchange(J_ant, ADP_i, ADP_m, ATP_i, ATP_m, Jp_F1, R, F, T, V, time_);
+  NAD_reduction: fall_keizer_2001__NAD_reduction(J_red, J_red_basal, f_PDHa, J_gly_tot, K_Ca, Ca_m, time_);
+  TCA_cycle_ADP_phosphorylation: fall_keizer_2001__TCA_cycle_ADP_phosphorylation(J_ptca, f_PDHa, J_red_basal, J_gly_tot, time_);
+  glycolytic_phosphorylation_of_ADP: fall_keizer_2001__glycolytic_phosphorylation_of_ADP(J_gly_tot, Glc, ATP_i, time_);
+  hydrolysis_of_ATP: fall_keizer_2001__hydrolysis_of_ATP(J_hyd, Glc, ATP_i, time_);
+  Ca_release_from_the_ER: fall_keizer_2001__Ca_release_from_the_ER(J_erout, h, JH_leak, Ca_i, Ca_ER, time_);
+  pumping_Ca_into_the_ER: fall_keizer_2001__pumping_Ca_into_the_ER(J_serca, Ca_i, time_);
+  differential_equations: fall_keizer_2001__differential_equations(NADH_m, NAD_m, ADP_m, ATP_m, ADP_i, ATP_i, Ca_m, Ca_ER, Ca_i, h, J_red, Jo, J_ant, J_ptca, Jp_F1, J_hyd, J_gly_tot, JH_res, JH_F1, JH_leak, J_uni, J_Na_Ca, J_serca, J_erout, time_);
+end

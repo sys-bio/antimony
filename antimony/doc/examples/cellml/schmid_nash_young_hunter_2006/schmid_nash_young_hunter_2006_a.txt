@@ -1,0 +1,37 @@
+//Created by libAntimony v1.3
+model guccione_mcculloch_waldman_1991_version04__equations(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23)
+
+  // Assignment Rules:
+  Tdev11 := exp(bff * power(E11, 2 )) * aff * bff * E11;
+  Tdev22 := exp(bss * power(E22, 2 )) * ass * bss * E22;
+  Tdev33 := exp(bnn * power(E33, 2 )) * ann * bnn * E33;
+  Tdev12 := exp(bfs * power(E12, 2 )) * afs * bfs * E12;
+  Tdev13 := exp(bfn * power(E13, 2 )) * afn * bfn * E13;
+  Tdev23 := exp(bns * power(E23, 2 )) * ans * bns * E23;
+end
+
+model guccione_mcculloch_waldman_1991_version04__interface(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23)
+
+  // Sub-modules, and any changes to those submodules:
+  equations: guccione_mcculloch_waldman_1991_version04__equations(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23);
+
+  // Variable initializations:
+  aff = 0;
+  afn = 0;
+  afs = 0;
+  ann = 0;
+  ans = 0;
+  ass = 0;
+  bff = 0;
+  bfn = 0;
+  bfs = 0;
+  bnn = 0;
+  bns = 0;
+  bss = 0;
+end
+
+model guccione_mcculloch_waldman_1991_version04____main()
+
+  // Sub-modules, and any changes to those submodules:
+  interface: guccione_mcculloch_waldman_1991_version04__interface(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23);
+end

@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="ogden_gasser_holzapfel_2005_version02____main" name="ogden_gasser_holzapfel_2005_version02____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="c11" value="0"/>
+      <parameter id="c12" value="0"/>
+      <parameter id="c21" value="0"/>
+      <parameter id="c22" value="0"/>
+      <parameter id="c41" value="0"/>
+      <parameter id="c42" value="0"/>
+      <parameter id="c81" value="0"/>
+      <parameter id="c82" value="0"/>
+      <parameter id="kappa1" value="0"/>
+      <parameter id="kappa2" value="0"/>
+      <parameter id="Tdevmm" constant="false"/>
+      <parameter id="Tdevmn" constant="false"/>
+      <parameter id="Tdevms" constant="false"/>
+      <parameter id="Tdevnn" constant="false"/>
+      <parameter id="Tdevns" constant="false"/>
+      <parameter id="Tdevss" constant="false"/>
+      <parameter id="interface_equations_I1" constant="false"/>
+      <parameter id="interface_equations_I2" constant="false"/>
+      <parameter id="interface_equations_I4" constant="false"/>
+      <parameter id="interface_equations_I6" constant="false"/>
+      <parameter id="interface_equations_I8" constant="false"/>
+      <parameter id="Emm"/>
+      <parameter id="Emn"/>
+      <parameter id="Ems"/>
+      <parameter id="Enn"/>
+      <parameter id="Ens"/>
+      <parameter id="Ess"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="Tdevmm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> c11 </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> c12 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <ci> interface_equations_I1 </ci>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> interface_equations_I1 </ci>
+                <cn type="integer"> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 4 </cn>
+              <ci> c21 </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> c22 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <ci> interface_equations_I2 </ci>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> interface_equations_I2 </ci>
+                <cn type="integer"> 3 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> Enn </ci>
+                <ci> Ess </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> c41 </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> c42 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <times/>
+                        <ci> interface_equations_I4 </ci>
+                        <apply>
+                          <minus/>
+                          <cn type="integer"> 1 </cn>
+                          <apply>
+                            <times/>
+                            <cn type="integer"> 3 </cn>
+                            <ci> kappa1 </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 1 </cn>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> interface_equations_I4 </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 3 </cn>
+                      <ci> kappa1 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 3 </cn>
+                  <ci> kappa1 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Tdevmn">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> -4 </cn>
+            <ci> c21 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <ci> c22 </ci>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <ci> interface_equations_I2 </ci>
+                    <cn type="integer"> 3 </cn>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> interface_equations_I2 </ci>
+              <cn type="integer"> 3 </cn>
+            </apply>
+            <ci> Emn </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Tdevms">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> -4 </cn>
+            <ci> c21 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <ci> c22 </ci>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <ci> interface_equations_I2 </ci>
+                    <cn type="integer"> 3 </cn>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> interface_equations_I2 </ci>
+              <cn type="integer"> 3 </cn>
+            </apply>
+            <ci> Ems </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Tdevnn">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> c11 </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> c12 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <ci> interface_equations_I1 </ci>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> interface_equations_I1 </ci>
+                <cn type="integer"> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 4 </cn>
+              <ci> c21 </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> c22 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <ci> interface_equations_I2 </ci>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> interface_equations_I2 </ci>
+                <cn type="integer"> 3 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> Emm </ci>
+                <ci> Ess </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Tdevns">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> -4 </cn>
+            <ci> c21 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <ci> c22 </ci>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <ci> interface_equations_I2 </ci>
+                    <cn type="integer"> 3 </cn>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> interface_equations_I2 </ci>
+              <cn type="integer"> 3 </cn>
+            </apply>
+            <ci> Ens </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Tdevss">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> c11 </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> c12 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <ci> interface_equations_I1 </ci>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> interface_equations_I1 </ci>
+                <cn type="integer"> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 4 </cn>
+              <ci> c21 </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> c22 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <ci> interface_equations_I2 </ci>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <ci> interface_equations_I2 </ci>
+                <cn type="integer"> 3 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> Emm </ci>
+                <ci> Enn </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> c81 </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> c82 </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <times/>
+                        <ci> interface_equations_I8 </ci>
+                        <apply>
+                          <minus/>
+                          <cn type="integer"> 1 </cn>
+                          <apply>
+                            <times/>
+                            <cn type="integer"> 3 </cn>
+                            <ci> kappa2 </ci>
+                          </apply>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 1 </cn>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> interface_equations_I8 </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 3 </cn>
+                      <ci> kappa2 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 3 </cn>
+                  <ci> kappa2 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_equations_I1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn type="integer"> 3 </cn>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> Emm </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> Enn </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> Ess </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_equations_I2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn type="integer"> 3 </cn>
+            <apply>
+              <times/>
+              <cn type="integer"> -4 </cn>
+              <ci> Emn </ci>
+              <ci> Emn </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 4 </cn>
+              <ci> Enn </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> -4 </cn>
+              <ci> Ems </ci>
+              <ci> Ems </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> -4 </cn>
+              <ci> Ens </ci>
+              <ci> Ens </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 4 </cn>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> Enn </ci>
+              </apply>
+              <ci> Ess </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 4 </cn>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> Enn </ci>
+              </apply>
+              <ci> Ess </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 4 </cn>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> Enn </ci>
+                <ci> Ess </ci>
+              </apply>
+              <ci> Emm </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_equations_I4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> Emm </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_equations_I6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> Enn </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_equations_I8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> Ess </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

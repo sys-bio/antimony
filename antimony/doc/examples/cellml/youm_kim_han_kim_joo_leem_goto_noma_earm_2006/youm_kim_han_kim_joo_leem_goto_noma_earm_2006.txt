@@ -1,0 +1,380 @@
+//Created by libAntimony v1.3
+model youm_model_2006__environment(time_)
+end
+
+model youm_model_2006__membrane(Vm, I_Ki, I_CaL, I_VDDR, I_AI, I_NaCa, I_NaK, I_PMCA, time_)
+
+  // Assignment Rules:
+  I_tot := I_NaCa + I_NaK + I_PMCA + I_VDDR + I_AI + I_Ki + I_CaL;
+
+  // Rate Rules:
+  Vm' = -(( I_tot + I_ext )) / Cm;
+
+  // Variable initializations:
+  Vm = -68.0;
+  I_ext = 0.0;
+  Cm = 25.0;
+end
+
+model youm_model_2006__internal_ion_concentrations(Na_i, K_i, Ca_i, Na_CF, K_CF, Ca_CF, I_Ki, I_CaL_Na, I_CaL_K, I_CaL_Ca, I_VDDR, I_AI_Na, I_AI_K, I_AI_Ca, I_NaCa, I_NaK, I_PMCA, I_IP3R, I_up, I_leak, Vi, Vm, T, R, F, Na_o, K_o, Ca_o, ZNa, ZK, ZCa, time_)
+
+  // Assignment Rules:
+  Ca_i := piecewise( 0.000000000001 , Cai_A <= 0.0 , Cai_A );
+  Na_CF := ZNa * F * Vm / ( R * T ) * (( Na_i - Na_o * exp(-( ZNa ) * F * Vm / ( R * T ))) / ( 1.0 - exp(-( ZNa ) * F * Vm / ( R * T ))));
+  K_CF := ZK * F * Vm / ( R * T ) * (( K_i - K_o * exp(-( ZK ) * F * Vm / ( R * T ))) / ( 1.0 - exp(-( ZK ) * F * Vm / ( R * T ))));
+  Ca_CF := ZCa * F * Vm / ( R * T ) * (( Ca_i - Ca_o * exp(-( ZCa ) * F * Vm / ( R * T ))) / ( 1.0 - exp(-( ZCa ) * F * Vm / ( R * T ))));
+  Inet_Na := I_CaL_Na + I_AI_Na + 3.0 * I_NaK + 3.0 * I_NaCa;
+  Inet_K := I_Ki + I_CaL_K + I_AI_K - 2.0 * I_NaK;
+  Inet_Ca := I_CaL_Ca + I_VDDR + I_AI_Ca + I_PMCA - 2.0 * I_NaCa;
+
+  // Rate Rules:
+  Na_i' = -( Inet_Na ) / ( ZNa * F * Vi );
+  K_i' = -( Inet_K ) / ( ZK * F * Vi );
+  Cai_A' = -(( Inet_Ca + I_up - ( I_IP3R + I_leak ))) / ( ZCa * F * Vi );
+
+  // Variable initializations:
+  Na_i = 5.4;
+  K_i = 140.0;
+  Cai_A = 0.0035;
+end
+
+model youm_model_2006__I_Ki_n_gate(n, fU, Vm, E_K, time_)
+
+  // Assignment Rules:
+  n := n_2 / (( n_2 + n_3 ) * power( 1.0 - fU , 3.0 ));
+  n_1 := 1.0 / ( 1.0 + 0.1 * exp(( Vm - E_K ) / 15.0 ) + 0.048 * exp(( Vm - E_K ) / 7.0 ));
+  n_2 := n_1 * AB;
+  n_3 := AB - n_2;
+  a := 2.5 / ( 4.7 * exp(( Vm - E_K ) / 28.7 ));
+  b := 2.5 / ( 6.0 * exp(( E_K - Vm ) / 25.8 ));
+  AB := a + b;
+end
+
+model youm_model_2006__I_Ki(I_Ki, fU, E_K, time_, Vm, K_o, K_i, T, R, F, n)
+
+  // Sub-modules, and any changes to those submodules:
+  I_Ki_n_gate: youm_model_2006__I_Ki_n_gate(n, fU, Vm, E_K, time_);
+
+  // Assignment Rules:
+  I_Ki := g_Ki * power( K_o / 5.4 , 0.62 ) * ( Vm - E_K ) * n * fU;
+  fU := mu / ( mu + lambda_ );
+  E_K := R * T / ( 1.0 * F ) * ln( K_o / K_i );
+  mu := 3.3 * exp(( Vm - ( E_K + 6.0 )) / 15.0 );
+  lambda_ := 26.0 * exp(( Vm - ( E_K + 6.0 )) / 52.0 );
+
+  // Variable initializations:
+  g_Ki = 4.32;
+end
+
+model youm_model_2006__I_CaL_m_gate(m, Vm, time_)
+
+  // Assignment Rules:
+  alpha_m := piecewise( 0.002175 * (( Vm + 30.0 ) / ( 1.0 - exp(( Vm + 30.0 ) / -( 2.5 )))) , Vm == -30.0 , 0.004189268 );
+  beta_m := piecewise( 0.001578959 , Vm == 0.0 , 0.0006315 * ( Vm / (exp( Vm / 2.5 ) - 1.0 )) );
+
+  // Rate Rules:
+  m' = alpha_m * ( 1.0 - m ) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.0;
+end
+
+model youm_model_2006__I_CaL_h_gate(h, Ca_i, Vm, time_)
+
+  // Assignment Rules:
+  alpha_h := piecewise( 0.000010001 , Vm == -34.0 , 1.775E-6 * (( Vm + 34.0 ) / (exp(( Vm + 34.0 ) / 5.633 ) - 1.0 )) );
+  beta_h := 0.427 * Ca_i * (( Vm + 64.0 ) / (exp(( Vm + 44.0 ) / -( 4.16 )) + 1.0 ));
+
+  // Rate Rules:
+  h' = alpha_h * ( 1.0 - h ) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.0;
+end
+
+model youm_model_2006__I_CaL(I_CaL, I_CaL_Ca, I_CaL_Na, I_CaL_K, Na_CF, K_CF, Ca_CF, time_, Ca_i, Vm, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  I_CaL_m_gate: youm_model_2006__I_CaL_m_gate(m, Vm, time_);
+  I_CaL_h_gate: youm_model_2006__I_CaL_h_gate(h, Ca_i, Vm, time_);
+
+  // Assignment Rules:
+  I_CaL := I_CaL_Ca + I_CaL_K + I_CaL_Na;
+  I_CaL_Ca := PCaL * Ca_CF * m * h;
+  I_CaL_Na := 0.00005 * PCaL * Na_CF * m * h;
+  I_CaL_K := 0.001 * PCaL * K_CF * m * h;
+
+  // Variable initializations:
+  PCaL = 5.76;
+end
+
+model youm_model_2006__I_VDDR_m_gate(m, Vm)
+
+  // Assignment Rules:
+  m := alpha_m / ( alpha_m + beta_m );
+  alpha_m := m2 / ( m3 + power( 10.0 , -20.0 ));
+  beta_m := ( 1.0 - m2 ) / ( m3 + power( 10.0 , -20.0 ));
+  m2 := 1.0 / ( 1.0 + exp(-(( Vm + 23.0 )) / 6.0999999 ));
+  m3 := ( 4.4299998 - 0.660000003 ) * exp(-(power( Vm + 150.0 , 2.0 )) / 7118.0 ) + 0.660000003;
+end
+
+model youm_model_2006__I_VDDR_h_gate(h, Vm)
+
+  // Assignment Rules:
+  h := alpha_h / ( alpha_h + beta_h );
+  alpha_h := h2 / ( h3 + power( 10.0 , -20.0 ));
+  beta_h := ( 1.0 - h2 ) / ( h3 + power( 10.0 , -20.0 ));
+  h2 := 1.0 / ( 1.0 + exp(-(( Vm + 75.0 )) / -( 6.5999999 )));
+  h3 := ( 40.799999 - 0.83999997 ) * exp(-(power( Vm + 106.0 , 2.0 )) / 2292.0 ) + 0.8399997;
+end
+
+model youm_model_2006__I_VDDR(I_VDDR, Ca_CF, Vm, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  I_VDDR_m_gate: youm_model_2006__I_VDDR_m_gate(m, Vm);
+  I_VDDR_h_gate: youm_model_2006__I_VDDR_h_gate(h, Vm);
+
+  // Assignment Rules:
+  I_VDDR := PVDDR * Ca_CF * m * h;
+
+  // Variable initializations:
+  PVDDR = 7.92;
+end
+
+model youm_model_2006__I_AI(I_AI, I_AI_Ca, I_AI_Na, I_AI_K, Na_CF, K_CF, Ca_CF, Ca_i)
+
+  // Assignment Rules:
+  I_AI := I_AI_Ca + I_AI_K + I_AI_Na;
+  I_AI_Ca := PAI * Ca_CF * po;
+  I_AI_Na := 0.4 * PAI * Na_CF * po;
+  I_AI_K := 0.36 * PAI * K_CF * po;
+  po := 0.0017 + ( 1.0 - 0.0017 ) / ( 1.0 + Km_Ca_i / Ca_i );
+
+  // Variable initializations:
+  PAI = 15.61;
+  Km_Ca_i = 0.003;
+end
+
+model youm_model_2006__I_NaCa_y_gate(y, m, h, T, R, F, Vm, time_, p_E1Na, p_E2Na, p_E1Ca, p_E2Ca)
+
+  // Assignment Rules:
+  m := p_E1Na * exp( 0.32 * ( Vm / ( R * T / F )));
+  h := p_E2Na * exp(( 0.32 - 1.0 ) * ( Vm / ( R * T / F )));
+  alpha_y := 1.0 * ( h + p_E2Ca );
+  beta_y := 1.0 * ( m + p_E1Ca );
+
+  // Rate Rules:
+  y' = alpha_y * ( 1.0 - y ) - beta_y * y;
+
+  // Variable initializations:
+  y = 0.9459136;
+end
+
+model youm_model_2006__I_NaCa(I_NaCa, p_E2Na, p_E1Na, p_E1Ca, p_E2Ca, Na_i, Na_o, Ca_i, Ca_o, T, R, F, Vm, time_, y, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  I_NaCa_y_gate: youm_model_2006__I_NaCa_y_gate(y, m, h, T, R, F, Vm, time_, p_E1Na, p_E2Na, p_E1Ca, p_E2Ca);
+
+  // Assignment Rules:
+  I_NaCa := PNaCa * ( m * y - h * ( 1.0 - y ));
+  p_E2Na := 1.0 / ( 1.0 + ( 1.0 + Ca_o / Km_Ca_o ) / (power( Na_o , 3.0 ) / Km_Na_o ));
+  p_E1Na := 1.0 / ( 1.0 + ( 1.0 + Ca_i / Km_Ca_i ) / (power( Na_i , 3.0 ) / Km_Na_i ));
+  p_E1Ca := 1.0 / ( 1.0 + ( 1.0 + power( Na_i , 3.0 ) / Km_Na_i ) / ( Ca_i / Km_Ca_i ));
+  p_E2Ca := 1.0 / ( 1.0 + ( 1.0 + power( Na_o , 3.0 ) / Km_Na_o ) / ( Ca_o / Km_Ca_o ));
+
+  // Variable initializations:
+  PNaCa = 8.458;
+  Km_Na_i = 670.0;
+  Km_Na_o = 670000.0;
+  Km_Ca_i = 0.00138;
+  Km_Ca_o = 1.38;
+end
+
+model youm_model_2006__I_NaK(I_NaK, Na_i, K_o, Vm)
+
+  // Assignment Rules:
+  I_NaK := pNaK / ( 1.0 + power( Km_Na_i / Na_i , 1.36 )) * (( 1.0 - power(( Vm + 50.0 ) / 250.0 , 2.0 )) / ( 1.0 + Km_K_o / K_o ));
+
+  // Variable initializations:
+  pNaK = 79.0;
+  Km_Na_i = 11.0;
+  Km_K_o = 0.27;
+end
+
+model youm_model_2006__I_PMCA(I_PMCA, Ca_i)
+
+  // Assignment Rules:
+  I_PMCA := pPMCA / ( 1.0 + power( Km_Ca_i / Ca_i , 2.0 ));
+
+  // Variable initializations:
+  pPMCA = 927.4;
+  Km_Ca_i = 0.008;
+end
+
+model youm_model_2006__I_up_y_gate(y, time_, p_E1, p_E2, p_E1Ca, p_E2Ca)
+
+  // Assignment Rules:
+  alpha_y := p_E2Ca + p_E2;
+  beta_y := p_E1Ca + p_E1;
+
+  // Rate Rules:
+  y' = alpha_y * ( 1.0 - y ) - beta_y * y;
+
+  // Variable initializations:
+  y = 0.1;
+end
+
+model youm_model_2006__I_up(I_up, p_E2, p_E1, p_E1Ca, p_E2Ca, time_, Ca_up, Ca_i, y)
+
+  // Sub-modules, and any changes to those submodules:
+  I_up_y_gate: youm_model_2006__I_up_y_gate(y, time_, p_E1, p_E2, p_E1Ca, p_E2Ca);
+
+  // Assignment Rules:
+  I_up := 1.5 * Pup * ( p_E2Ca * ( 1.0 - y ) - p_E1Ca * y );
+  p_E2 := 0.01 / ( 1.0 + Ca_i / Km_Ca_o );
+  p_E1 := 1.0 / ( 1.0 + Ca_up / Km_Ca_i );
+  p_E1Ca := 0.01 / ( 1.0 + Km_Ca_i / Ca_up );
+  p_E2Ca := 1.0 / ( 1.0 + Km_Ca_o / Ca_i );
+
+  // Variable initializations:
+  Pup = 7728.0;
+  Km_Ca_i = 0.08;
+  Km_Ca_o = 0.002;
+end
+
+model youm_model_2006__I_tr(I_tr, Ca_up, Ca_rel)
+
+  // Assignment Rules:
+  I_tr := 2.8 * ptr * ( Ca_up - Ca_rel );
+
+  // Variable initializations:
+  ptr = 20.5;
+end
+
+model youm_model_2006__I_leak(I_leak, Ca_up, Ca_i)
+
+  // Assignment Rules:
+  I_leak := pleak * ( Ca_up - Ca_i );
+
+  // Variable initializations:
+  pleak = 0.45;
+end
+
+model youm_model_2006__I_IP3R(I_IP3R, Ca_rel, Ca_i, IP3, time_)
+
+  // Assignment Rules:
+  I_IP3R := PIP3R * ( Ca_rel - Ca_i ) * m;
+  kco := 0.147 * power( Ca_i / 0.000057 , 3 );
+  kic := 0.025 * power( IP3 / 0.001 , 3 ) * ( Ca_rel / 1.0 );
+  SC_0 := ( state_bf + power(abs( state_sbf ), 0.5 )) / 2.0;
+  SC_3 := ( state_c1 * state_d3 - state_c3 * state_d1 ) / ( state_c2 * state_d1 - state_c1 * state_d2 );
+  SC_2 := ( state_c2 * state_d3 - state_c3 * state_d2 ) / ( state_c1 * state_d2 - state_c2 * state_d1 );
+  SC_1 := ( state_bf - power(abs( state_sbf ), 0.5 )) / 2.0;
+  m_original := stO * exp(-( SC_0 ) * dt ) + ndO * exp(-( SC_1 ) * dt ) + SC_2;
+  h_original := stA * exp(-( SC_0 ) * dt ) + ndA * exp(-( SC_1 ) * dt ) + SC_3;
+  stO := ( OrgO_N4 + SC_1 * m - SC_2 * SC_1 ) / ( SC_1 - SC_0 );
+  stA := ( OrgA_N4 + SC_1 * h - SC_3 * SC_1 ) / ( SC_1 - SC_0 );
+  ndO := ( OrgO_N4 + SC_0 * m - SC_2 * SC_0 ) / ( SC_0 - SC_1 );
+  ndA := ( OrgA_N4 + SC_0 * h - SC_3 * SC_0 ) / ( SC_0 - SC_1 );
+  OrgO_N4 := kco * h - koi * m;
+  OrgA_N4 := kic * ( 1.0 - ( h + m )) - ( kci + kco ) * h;
+  state_c1 := kac - kbc;
+  state_c2 := -(( kbc + kcb + kca ));
+  state_c3 := kbc;
+  state_d1 := -(( kba + kab + kac ));
+  state_d2 := kca - kba;
+  state_d3 := kba;
+  state_bf := kab + kba + kac + kca + kbc + kcb;
+  state_sbf := power( state_bf , 2.0 ) - 4.0 * (( kbc + kcb + kca ) * ( kba + kab + kac ) - ( kac - kbc ) * ( kca + kba ));
+  kab := koi;
+  kba := 0;
+  kbc := kic;
+  kcb := kci;
+  kac := 0;
+  kca := kco;
+
+  // Rate Rules:
+  m' = ( m_original - m ) / dt_CellML;
+  h' = ( h_original - h ) / dt_CellML;
+
+  // Variable initializations:
+  PIP3R = 217.2;
+  koi = 0.02;
+  kci = 0.000849;
+  m = 0.0;
+  h = 1.0;
+  dt = 0.2;
+  dt_CellML = 0.01;
+end
+
+model youm_model_2006__calcium_concentrations_in_the_SR(Ca_up, Ca_rel, I_up, I_tr, I_leak, I_IP3R, ZCa, Vup, Vrel, F, time_)
+
+  // Rate Rules:
+  Ca_up' = ( I_up - ( I_tr + I_leak )) / ( ZCa * Vup * F );
+  Ca_rel' = ( I_tr - I_IP3R ) / ( ZCa * Vrel * F );
+
+  // Variable initializations:
+  Ca_up = 4.6;
+  Ca_rel = 13.1;
+end
+
+model youm_model_2006__IP3_metabolism(IP3, PIP2, Vm, Ca_i, time_)
+
+  // Assignment Rules:
+  PIP2_IP3 := 0.2 * exp(( Vm + 48.5 ) / 18.1 ) * ( Ca_i / ( Ca_i + Km_Ca_i ));
+  IP3_PIP2 := 0.5 * exp(( Vm + 100.0 ) / -28.5 );
+  IP4_PIP2 := 0.0035 * exp(( Vm + 100.0 ) / -25.5 );
+
+  // Rate Rules:
+  IP3' = PIP2_IP3 * PIP2 - ( IP3_PIP2 + IP3_IP4 ) * IP3;
+  PIP2' = IP3_PIP2 * IP3 + IP4_PIP2 * ( IP3total - ( IP3 + PIP2 )) - ( PIP2_IP4 + PIP2_IP3 ) * PIP2;
+
+  // Variable initializations:
+  IP3 = 0.0002682;
+  PIP2 = 0.002664;
+  IP3_IP4 = 0.004;
+  PIP2_IP4 = 0.00;
+  IP3total = 0.0033;
+  Km_Ca_i = 0.00001;
+end
+
+model youm_model_2006__model_parameters(T, R, F, Na_o, K_o, Ca_o, Vi, Vup, Vrel, ZNa, ZK, ZCa)
+
+  // Assignment Rules:
+  Vup := 0.1 * Vi;
+  Vrel := 0.01 * Vi;
+
+  // Variable initializations:
+  T = 309.15;
+  R = 8.314;
+  F = 96.485;
+  Na_o = 140.0;
+  K_o = 5.4;
+  Ca_o = 1.8;
+  Vi = 715.5;
+  ZNa = 1.0;
+  ZK = 1.0;
+  ZCa = 2.0;
+end
+
+model youm_model_2006____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: youm_model_2006__environment(time_);
+  membrane: youm_model_2006__membrane(Vm, I_Ki0, I_CaL0, I_VDDR0, I_AI0, I_NaCa0, I_NaK0, I_PMCA0, time_);
+  internal_ion_concentrations: youm_model_2006__internal_ion_concentrations(Na_i, K_i, Ca_i, Na_CF, K_CF, Ca_CF, I_Ki0, I_CaL_Na, I_CaL_K, I_CaL_Ca, I_VDDR0, I_AI_Na, I_AI_K, I_AI_Ca, I_NaCa0, I_NaK0, I_PMCA0, I_IP3R0, I_up0, I_leak0, Vi, Vm, T, R, F, Na_o, K_o, Ca_o, ZNa, ZK, ZCa, time_);
+  I_Ki: youm_model_2006__I_Ki(I_Ki0, fU, E_K, time_, Vm, K_o, K_i, T, R, F, n);
+  I_CaL: youm_model_2006__I_CaL(I_CaL0, I_CaL_Ca, I_CaL_Na, I_CaL_K, Na_CF, K_CF, Ca_CF, time_, Ca_i, Vm, m, h);
+  I_VDDR: youm_model_2006__I_VDDR(I_VDDR0, Ca_CF, Vm, m0, h0);
+  I_AI: youm_model_2006__I_AI(I_AI0, I_AI_Ca, I_AI_Na, I_AI_K, Na_CF, K_CF, Ca_CF, Ca_i);
+  I_NaCa: youm_model_2006__I_NaCa(I_NaCa0, p_E2Na, p_E1Na, p_E1Ca, p_E2Ca, Na_i, Na_o, Ca_i, Ca_o, T, R, F, Vm, time_, y, m1, h1);
+  I_NaK: youm_model_2006__I_NaK(I_NaK0, Na_i, K_o, Vm);
+  I_PMCA: youm_model_2006__I_PMCA(I_PMCA0, Ca_i);
+  I_up: youm_model_2006__I_up(I_up0, p_E2, p_E1, p_E1Ca0, p_E2Ca0, time_, Ca_up, Ca_i, y0);
+  I_tr: youm_model_2006__I_tr(I_tr0, Ca_up, Ca_rel);
+  I_leak: youm_model_2006__I_leak(I_leak0, Ca_up, Ca_i);
+  I_IP3R: youm_model_2006__I_IP3R(I_IP3R0, Ca_rel, Ca_i, IP3, time_);
+  calcium_concentrations_in_the_SR: youm_model_2006__calcium_concentrations_in_the_SR(Ca_up, Ca_rel, I_up0, I_tr0, I_leak0, I_IP3R0, ZCa, Vup, Vrel, F, time_);
+  IP3_metabolism: youm_model_2006__IP3_metabolism(IP3, PIP2, Vm, Ca_i, time_);
+  model_parameters: youm_model_2006__model_parameters(T, R, F, Na_o, K_o, Ca_o, Vi, Vup, Vrel, ZNa, ZK, ZCa);
+end

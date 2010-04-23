@@ -1,0 +1,70 @@
+//Created by libAntimony v1.3
+model waugh_model_2006__environment(time_)
+end
+
+model waugh_model_2006__phi_I(phi_I, alpha, k1, k2, k3, d1, phi_R, K_T, time_)
+
+  // Assignment Rules:
+  total_macrophages := phi_R + phi_I;
+
+  // Rate Rules:
+  phi_I' = alpha * K_T + k1 * k2 * phi_I * ( 1.0 - k3 * ( phi_I + phi_R )) - d1 * phi_I;
+
+  // Variable initializations:
+  phi_I = 200.0;
+end
+
+model waugh_model_2006__phi_R(phi_R, alpha, k1, k2, k3, d1, phi_I, K_T, time_)
+
+  // Rate Rules:
+  phi_R' = ( 1.0 - alpha ) * K_T + k1 * k2 * phi_R * ( 1.0 - k3 * ( phi_I + phi_R )) - d1 * phi_R;
+
+  // Variable initializations:
+  phi_R = 200.0;
+end
+
+model waugh_model_2006__T(T, k4, d2, phi_I, time_)
+
+  // Rate Rules:
+  T' = k4 * phi_I - d2 * T;
+
+  // Variable initializations:
+  T = 6.0;
+end
+
+model waugh_model_2006__K_T(K_T, T)
+
+  // Assignment Rules:
+  K_T := tau1 * power( T , 3.0 ) + tau2 * power( T , 2.0 ) + tau3 * T + tau4;
+
+  // Variable initializations:
+  tau1 = -2.47;
+  tau2 = 21.94;
+  tau3 = 6.41;
+  tau4 = 1.75;
+end
+
+model waugh_model_2006__model_parameters(alpha, k1, k2, k3, k4, d1, d2, time_)
+
+  // Assignment Rules:
+  alpha := piecewise( 0.8 , ( time_ >= 0.0) && (time_ <= 10.0 ), 0.2 );
+
+  // Variable initializations:
+  k1 = 0.05;
+  k2 = 0.693;
+  k3 = 0.002;
+  k4 = 0.07;
+  d1 = 0.2;
+  d2 = 9.1;
+end
+
+model waugh_model_2006____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: waugh_model_2006__environment(time_);
+  phi_I: waugh_model_2006__phi_I(phi_I0, alpha, k1, k2, k3, d1, phi_R0, K_T0, time_);
+  phi_R: waugh_model_2006__phi_R(phi_R0, alpha, k1, k2, k3, d1, phi_I0, K_T0, time_);
+  T: waugh_model_2006__T(T0, k4, d2, phi_I0, time_);
+  K_T: waugh_model_2006__K_T(K_T0, T0);
+  model_parameters: waugh_model_2006__model_parameters(alpha, k1, k2, k3, k4, d1, d2, time_);
+end

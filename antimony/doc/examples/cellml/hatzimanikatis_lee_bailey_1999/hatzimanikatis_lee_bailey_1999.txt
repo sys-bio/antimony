@@ -1,0 +1,169 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    In module 'hatzimanikatis_model_1999____main', the variables E.RE and RE0 were unable to be set as equivalent:  Loop detected:  'E.RE' may not be set to be equal to 'RE0' because RE0's definition already includes E.RE either directly or by proxy.
+//    In module 'hatzimanikatis_model_1999____main', the variables KPI.KP and KP0 were unable to be set as equivalent:  Loop detected:  'KPI.KP' may not be set to be equal to 'KP0' because KP0's definition already includes KPI.KP either directly or by proxy.
+//    In module 'hatzimanikatis_model_1999____main', the variables I.I and I0 were unable to be set as equivalent:  Loop detected:  'I.I' may not be set to be equal to 'I0' because I.I's definition already includes I0 either directly or by proxy.
+//    In module 'hatzimanikatis_model_1999____main', the variables RE0 and R.RE were unable to be set as equivalent:  Loop detected:  'R.RE' may not be set to be equal to 'RE0' because RE0's definition already includes R.RE either directly or by proxy.
+
+model hatzimanikatis_model_1999__environment(time_)
+end
+
+model hatzimanikatis_model_1999__C(C, Vs, V1, V2, Vd, time_)
+
+  // Rate Rules:
+  C' = Vs + gamma * V2 - ( gamma * V1 + Vd );
+
+  // Variable initializations:
+  C = 0.38;
+  gamma = 1.0;
+end
+
+model hatzimanikatis_model_1999__K(K, V1, V2, time_)
+
+  // Rate Rules:
+  K' = V2 - V1;
+
+  // Variable initializations:
+  K = 0.1;
+end
+
+model hatzimanikatis_model_1999__RP(RP, V3, V4, time_)
+
+  // Rate Rules:
+  RP' = V3 - V4;
+
+  // Variable initializations:
+  RP = 1.0;
+end
+
+model hatzimanikatis_model_1999__E(E, RE)
+
+  // Assignment Rules:
+  E := 1.0 - sigma * RE;
+
+  // Variable initializations:
+  sigma = 10;
+end
+
+model hatzimanikatis_model_1999__KP(KP, KPI, K)
+
+  // Assignment Rules:
+  KP := 1.0 - ( KPI + K );
+end
+
+model hatzimanikatis_model_1999__KPI(KPI, KP, I)
+
+  // Assignment Rules:
+  KPI := thetaI * KP * I;
+
+  // Variable initializations:
+  thetaI = 1.0;
+end
+
+model hatzimanikatis_model_1999__I(I, KPI)
+
+  // Assignment Rules:
+  I := 1.0 - lambda_ * KPI;
+
+  // Variable initializations:
+  lambda_ = 1.0;
+end
+
+model hatzimanikatis_model_1999__RE(RE, R, E)
+
+  // Assignment Rules:
+  RE := thetaE * R * E;
+
+  // Variable initializations:
+  thetaE = 0.01;
+end
+
+model hatzimanikatis_model_1999__R(R, RP, RE)
+
+  // Assignment Rules:
+  R := 1.0 - ( RP + RE );
+end
+
+model hatzimanikatis_model_1999__Vs(Vs, E)
+
+  // Assignment Rules:
+  Vs := VCs + Vsm * ( E / ( KsE + E ));
+
+  // Variable initializations:
+  VCs = 1.0;
+  Vsm = 1.0;
+  KsE = 0.1;
+end
+
+model hatzimanikatis_model_1999__V1(V1, C, K)
+
+  // Assignment Rules:
+  V1 := V1m * ( C / ( K1C + C )) * ( K / ( K1 + K ));
+
+  // Variable initializations:
+  V1m = 50.0;
+  K1C = 0.1;
+  K1 = 0.0001;
+end
+
+model hatzimanikatis_model_1999__V2(V2, KP)
+
+  // Assignment Rules:
+  V2 := V2m * ( KP / ( K2 + KP ));
+
+  // Variable initializations:
+  V2m = 40;
+  K2 = 0.0001;
+end
+
+model hatzimanikatis_model_1999__V3(V3, KP, RE)
+
+  // Assignment Rules:
+  V3 := V3m * KP * ( RE / ( K3 + RE ));
+
+  // Variable initializations:
+  V3m = 3000;
+  K3 = 0.0001;
+end
+
+model hatzimanikatis_model_1999__V4(V4, RP)
+
+  // Assignment Rules:
+  V4 := V4m * ( RP / ( K4 + RP ));
+
+  // Variable initializations:
+  V4m = 3.0;
+  K4 = 0.0001;
+end
+
+model hatzimanikatis_model_1999__Vd(Vd, C, E)
+
+  // Assignment Rules:
+  Vd := C + VdEm * E * ( C / ( KdC + C ));
+
+  // Variable initializations:
+  VdEm = 1000.0;
+  KdC = 0.005;
+end
+
+model hatzimanikatis_model_1999____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: hatzimanikatis_model_1999__environment(time_);
+  C: hatzimanikatis_model_1999__C(C0, Vs0, V10, V20, Vd0, time_);
+  K: hatzimanikatis_model_1999__K(K0, V10, V20, time_);
+  RP: hatzimanikatis_model_1999__RP(RP0, V30, V40, time_);
+  E: hatzimanikatis_model_1999__E(E0, RE1);
+  KP: hatzimanikatis_model_1999__KP(KP0, KPI0, K0);
+  KPI: hatzimanikatis_model_1999__KPI(KPI0, KP1, I0);
+  I: hatzimanikatis_model_1999__I(I1, KPI0);
+  RE: hatzimanikatis_model_1999__RE(RE0, R0, E0);
+  R: hatzimanikatis_model_1999__R(R0, RP0, RE2);
+  Vs: hatzimanikatis_model_1999__Vs(Vs0, E0);
+  V1: hatzimanikatis_model_1999__V1(V10, C0, K0);
+  V2: hatzimanikatis_model_1999__V2(V20, KP0);
+  V3: hatzimanikatis_model_1999__V3(V30, KP0, RE0);
+  V4: hatzimanikatis_model_1999__V4(V40, RP0);
+  Vd: hatzimanikatis_model_1999__Vd(Vd0, C0, E0);
+end

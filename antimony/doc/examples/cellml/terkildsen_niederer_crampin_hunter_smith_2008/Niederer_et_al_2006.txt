@@ -1,0 +1,131 @@
+//Created by libAntimony v1.3
+model Niederer_et_al_2006__environment(time_)
+end
+
+model Niederer_et_al_2006__intracellular_ion_concentrations(time_, Ca_i, Ca_b, TRPN, Ca_TRPN_Max, J_TRPN)
+
+  // Assignment Rules:
+  Ca_i := piecewise( 1000 * 1.8433E-7 , time_ < 1 , 1000 * (1.055 * power(time_ / 1000 , 3 ) - 0.03507 * power(time_ / 1000 , 2 ) + 0.0003992 * time_ / 1000 - 1.356E-6 ) , ( time_ >= 10) && (time_ < 15 ), 1000 * (0.014 * power(time_ / 1000 , 3 ) - 0.002555 * power(time_ / 1000 , 2 ) + 0.0001494 * time_ / 1000 - 1.428E-6 ) , ( time_ >= 15) && (time_ < 55 ), 1000 * (1.739E-5 * power(time_ / 1000 , 3 ) - 3.209E-6 * power(time_ / 1000 , 2 ) - 5.689E-6 * time_ / 1000 + 1.719E-6 ) , ( time_ >= 55) && (time_ < 250 ), 1000 * (0.0001321 * power(time_ / 1000 , 4 ) - 0.0002197 * power(time_ / 1000 , 3 ) + 0.0001374 * power(time_ / 1000 , 2 ) - 3.895E-5 * time_ / 1000 + 4.441E-6 ) , ( time_ >= 250) && (time_ < 490 ), 1000 * 1.2148E-7 );
+  Ca_b := Ca_TRPN_Max - TRPN;
+
+  // Rate Rules:
+  TRPN' = J_TRPN;
+
+  // Variable initializations:
+  TRPN = 0.067593139865;
+end
+
+model Niederer_et_al_2006__thinfilaments()
+end
+
+model Niederer_et_al_2006__tropomyosin(z, z_max, time_, k_on, k_Ref_off, gamma_trpn, Ca_TRPN_Max, beta_0, Ca_b, lambda_)
+
+  // Assignment Rules:
+  z_max := (alpha_0 / power(Ca_TRPN_50 / Ca_TRPN_Max, n_Hill) - K_2) / (alpha_r1 + K_1 + alpha_0 / power(Ca_TRPN_50 / Ca_TRPN_Max, n_Hill));
+  Ca_50 := Ca_50ref * (1 + beta_1 * (lambda_ - 1 ));
+  Ca_TRPN_50 := Ca_50 * Ca_TRPN_Max / (Ca_50 + k_Ref_off / k_on * (1 - (1 + beta_0 * (lambda_ - 1 )) * 0.5 / gamma_trpn));
+  K_2 := alpha_r2 * power(z_p, n_Rel) / (power(z_p, n_Rel) + power(K_z, n_Rel)) * (1 - n_Rel * power(K_z, n_Rel) / (power(z_p, n_Rel) + power(K_z, n_Rel)));
+  K_1 := alpha_r2 * power(z_p, n_Rel - 1 ) * n_Rel * power(K_z, n_Rel) / power(power(z_p, n_Rel) + power(K_z, n_Rel), 2 );
+  alpha_Tm := alpha_0 * power(Ca_b / Ca_TRPN_50, n_Hill);
+  beta_Tm := alpha_r1 + alpha_r2 * power(z, n_Rel - 1 ) / (power(z, n_Rel) + power(K_z, n_Rel));
+
+  // Rate Rules:
+  z' = alpha_Tm * (1 - z) - beta_Tm * z;
+
+  // Variable initializations:
+  z = 0.014417937837;
+  alpha_0 = 8e-3;
+  alpha_r1 = 2e-3;
+  alpha_r2 = 1.75e-3;
+  n_Rel = 3;
+  K_z = 0.15;
+  n_Hill = 3;
+  Ca_50ref = 1.05e-3;
+  z_p = 0.85;
+  beta_1 = -4;
+end
+
+model Niederer_et_al_2006__troponin(J_TRPN, Ca_TRPN_Max, TRPN, Ca_i, k_on, k_Ref_off, gamma_trpn, Tension, T_ref)
+
+  // Assignment Rules:
+  J_TRPN := (Ca_TRPN_Max - TRPN) * k_off - Ca_i * TRPN * k_on;
+  k_off := piecewise( k_Ref_off * (1 - Tension / (gamma_trpn * T_ref)) , 1 - Tension / (gamma_trpn * T_ref) > 0.1 , k_Ref_off * 0.1 );
+
+  // Variable initializations:
+  Ca_TRPN_Max = 70e-3;
+  k_on = 100;
+  k_Ref_off = 0.2;
+  gamma_trpn = 2;
+end
+
+model Niederer_et_al_2006__Myofilaments(time_, lambda_, ExtensionRatio, dExtensionRatiodt, lambda_prev)
+
+  // Assignment Rules:
+  lambda_ := piecewise( ExtensionRatio , ( ExtensionRatio > 0.8) && (ExtensionRatio <= 1.15 ), 1.15 , ExtensionRatio > 1.15 , 0.8 );
+  ExtensionRatio := piecewise( 1 , time_ > 3E5 , 1 );
+  dExtensionRatiodt := 0;
+  lambda_prev := ExtensionRatio;
+end
+
+model Niederer_et_al_2006__filament_overlap(lambda_, overlap, beta_0)
+
+  // Assignment Rules:
+  overlap := 1 + beta_0 * (lambda_ - 1 );
+
+  // Variable initializations:
+  beta_0 = 4.9;
+end
+
+model Niederer_et_al_2006__length_independent_tension(T_ref, T_Base, z, z_max)
+
+  // Assignment Rules:
+  T_Base := T_ref * z / z_max;
+
+  // Variable initializations:
+  T_ref = 56.2;
+end
+
+model Niederer_et_al_2006__isometric_tension(T_0, T_Base, overlap)
+
+  // Assignment Rules:
+  T_0 := T_Base * overlap;
+end
+
+model Niederer_et_al_2006__Cross_Bridges(time_, dExtensionRatiodt, T_0, Tension)
+
+  // Assignment Rules:
+  Q := Q_1 + Q_2 + Q_3;
+  Tension := piecewise( T_0 * (a * Q + 1 ) / (1 - Q) , Q < 0 , T_0 * (1 + (a + 2 ) * Q) / (1 + Q) );
+
+  // Rate Rules:
+  Q_1' = A_1 * dExtensionRatiodt - alpha_1 * Q_1;
+  Q_2' = A_2 * dExtensionRatiodt - alpha_2 * Q_2;
+  Q_3' = A_3 * dExtensionRatiodt - alpha_3 * Q_3;
+
+  // Variable initializations:
+  a = 0.35;
+  Q_1 = 0;
+  Q_2 = 0;
+  Q_3 = 0;
+  A_1 = -29;
+  A_2 = 138;
+  A_3 = 129;
+  alpha_1 = 0.03;
+  alpha_2 = 0.13;
+  alpha_3 = 0.625;
+end
+
+model Niederer_et_al_2006____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: Niederer_et_al_2006__environment(time_);
+  intracellular_ion_concentrations: Niederer_et_al_2006__intracellular_ion_concentrations(time_, Ca_i, Ca_b, TRPN, Ca_TRPN_Max, J_TRPN);
+  thinfilaments: Niederer_et_al_2006__thinfilaments();
+  tropomyosin: Niederer_et_al_2006__tropomyosin(z, z_max, time_, k_on, k_Ref_off, gamma_trpn, Ca_TRPN_Max, beta_0, Ca_b, lambda_);
+  troponin: Niederer_et_al_2006__troponin(J_TRPN, Ca_TRPN_Max, TRPN, Ca_i, k_on, k_Ref_off, gamma_trpn, Tension, T_ref);
+  Myofilaments: Niederer_et_al_2006__Myofilaments(time_, lambda_, ExtensionRatio, dExtensionRatiodt, lambda_prev);
+  filament_overlap: Niederer_et_al_2006__filament_overlap(lambda_, overlap, beta_0);
+  length_independent_tension: Niederer_et_al_2006__length_independent_tension(T_ref, T_Base, z, z_max);
+  isometric_tension: Niederer_et_al_2006__isometric_tension(T_0, T_Base, overlap);
+  Cross_Bridges: Niederer_et_al_2006__Cross_Bridges(time_, dExtensionRatiodt, T_0, Tension);
+end

@@ -1,0 +1,300 @@
+//Created by libAntimony v1.3
+model pasek_model_2006_surface_membrane__membrane(Vm_s, Cms, i_circ, i_Kext, time_, i_Na_s, i_Ca_s, i_Kto_s, i_Kss_s, i_f_s, i_K1_s, i_B_s, i_NaK_s, i_NaCa_s, i_CaP_s)
+
+  // Rate Rules:
+  Vm_s' = 1000 * ((i_Kext + i_circ - (i_Na_s + i_Ca_s + i_Kto_s + i_Kss_s + i_f_s + i_K1_s + i_B_s + i_NaK_s + i_NaCa_s + i_CaP_s)) / Cms);
+
+  // Variable initializations:
+  Vm_s = -7.9709547e1;
+end
+
+model pasek_model_2006_surface_membrane__sodium_current_m_gate(m, Vm_s, time_)
+
+  // Assignment Rules:
+  alpha_m := 117.26 * (Vm_s + 59.3 ) / (1 - exp(-(0.55 ) * (Vm_s + 59.3 )));
+  beta_m := 3800 * exp(-(0.072 ) * (Vm_s + 61 ));
+
+  // Rate Rules:
+  m' = alpha_m * (1 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 2.1832558e-6;
+end
+
+model pasek_model_2006_surface_membrane__sodium_current_h_gate(h, Vm_s, time_)
+
+  // Assignment Rules:
+  alpha_h := 284.4 / (1 + exp(0.0812 * (Vm_s + 115.9 )));
+  beta_h := 18.77 * (Vm_s + 64.4 ) / (1 - exp(-(0.22 ) * (Vm_s + 64.4 )));
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 5.8232781e-1;
+end
+
+model pasek_model_2006_surface_membrane__sodium_current(i_Na_s, E_Na, Sms, Smt, Na_i, Na_e, K_i, K_e, R, F, T, time_, Vm_s, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current_m_gate: pasek_model_2006_surface_membrane__sodium_current_m_gate(m, Vm_s, time_);
+  sodium_current_h_gate: pasek_model_2006_surface_membrane__sodium_current_h_gate(h, Vm_s, time_);
+
+  // Assignment Rules:
+  i_Na_s := g_Nas * power(m, 3 ) * h * (Vm_s - log((Na_e + 0.12 * K_e) / (Na_i + 0.12 * K_i)) * (R * T / F));
+  E_Na := R * T / F * ln(Na_e / Na_i);
+  g_Nas := g_Na * (Sms + Smt) * (1 - fNat);
+
+  // Variable initializations:
+  g_Na = 10.0;
+  fNat = 0.56;
+end
+
+model pasek_model_2006_surface_membrane__calcium_current(i_Ca_s, Sms, Smt, time_, R, T, F, Vm_s, Ca_ss, Ca_e)
+
+  // Assignment Rules:
+  i_Ca_s := g_Cas * 4 * (Vm_s * power(F, 2 ) / (R * T)) * ((Ca_ss * exp(2 * Vm_s * power(F, 2 ) / (R * T)) - 0.341 * Ca_e) / (exp(2 * Vm_s * power(F, 2 ) / (R * T)) - 1 )) * Co * ((0.9 + C_cast / 10.0 ) * C1 + (0.1 + C_cast / 10.0 ) * C2);
+  tauCo := 0.00305 * exp(-(0.0045 ) * power(Vm_s + 7 , 2 )) + 0.00105 * exp(-(0.002 ) * power(Vm_s - 18 , 2 )) + 0.00025;
+  tauC1 := 0.105 * exp(-(power((Vm_s + 45 ) / 12 , 2 ))) + 0.04 / (1 + exp((-(Vm_s) + 25 ) / 25 )) + 0.015 / (1 + exp((Vm_s + 75 ) / 25 )) + 0.0017;
+  tauC2 := 0.041 * exp(-(power((Vm_s + 47 ) / 12 , 2 ))) + 0.08 / (1 + exp((Vm_s + 55 ) / -(5 ))) + 0.015 / (1 + exp((Vm_s + 75 ) / 25 )) + 0.0017;
+  Co_inf := 1 / (1 + exp((Vm_s + 15.3 ) / -(5 )));
+  C_cast_inf := 1 / (1 + Ca_ss / 0.01 );
+  C1_inf := 1 / (1 + exp((Vm_s + 26.7 ) / 5.4 ));
+  C2_inf := 1 / (1 + exp((Vm_s + 26.7 ) / 5.4 ));
+  g_Cas := g_Ca * (Sms + Smt) * (1 - fCat);
+
+  // Rate Rules:
+  Co' = (Co_inf - Co) / tauCo;
+  C_cast' = (C_cast_inf - C_cast) / tauC_cast;
+  C1' = (C1_inf - C1) / tauC1;
+  C2' = (C2_inf - C2) / tauC2;
+
+  // Variable initializations:
+  Co = 2.5436465e-6;
+  C_cast = 9.9570063e-1;
+  C1 = 9.9994546e-1;
+  C2 = 9.9994546e-1;
+  tauC_cast = 0.009;
+  g_Ca = 0.00021;
+  fCat = 0.87;
+end
+
+model pasek_model_2006_surface_membrane__Ca_independent_transient_outward_K_current_r_gate(r, Vm_s, time_)
+
+  // Assignment Rules:
+  tau_r := 1 / (45.16 * exp(0.03577 * (Vm_s + 50 )) + 98.9 * exp(-(0.1 ) * (Vm_s + 38 )));
+  r_max := 1 / (1 + exp((Vm_s + 10.6 ) / -(11.42 )));
+
+  // Rate Rules:
+  r' = (r_max - r) / tau_r;
+
+  // Variable initializations:
+  r = 2.3485072e-3;
+end
+
+model pasek_model_2006_surface_membrane__Ca_independent_transient_outward_K_current_s_gate(s, Vm_s, time_)
+
+  // Assignment Rules:
+  tau_s := 0.35 * exp(-(power(0.0666 * (Vm_s + 70 ), 2 ))) + 0.035;
+  s_max := 1 / (1 + exp((Vm_s + 45.3 ) / 6.8841 ));
+
+  // Rate Rules:
+  s' = (s_max - s) / tau_s;
+
+  // Variable initializations:
+  s = 9.8315843e-1;
+end
+
+model pasek_model_2006_surface_membrane__Ca_independent_transient_outward_K_current_s_slow_gate(s_slow, Vm_s, time_)
+
+  // Assignment Rules:
+  tau_s_slow := 3.7 * exp(-(power(0.0333 * (Vm_s + 70 ), 2 ))) + 0.035;
+  s_slow_max := 1 / (1 + exp((Vm_s + 45.3 ) / 6.8841 ));
+
+  // Rate Rules:
+  s_slow' = (s_slow_max - s_slow) / tau_s_slow;
+
+  // Variable initializations:
+  s_slow = 6.7483370e-1;
+end
+
+model pasek_model_2006_surface_membrane__Ca_independent_transient_outward_K_current(i_Kto_s, E_K, Sms, Smt, time_, Vm_s, R, F, T, K_e, K_i, r, s, s_slow)
+
+  // Sub-modules, and any changes to those submodules:
+  Ca_independent_transient_outward_K_current_r_gate: pasek_model_2006_surface_membrane__Ca_independent_transient_outward_K_current_r_gate(r, Vm_s, time_);
+  Ca_independent_transient_outward_K_current_s_gate: pasek_model_2006_surface_membrane__Ca_independent_transient_outward_K_current_s_gate(s, Vm_s, time_);
+  Ca_independent_transient_outward_K_current_s_slow_gate: pasek_model_2006_surface_membrane__Ca_independent_transient_outward_K_current_s_slow_gate(s_slow, Vm_s, time_);
+
+  // Assignment Rules:
+  i_Kto_s := g_Ktos * r * (a * s + b * s_slow) * (Vm_s - E_K);
+  E_K := R * T / F * ln(K_e / K_i);
+  g_Ktos := g_Kto * (Sms + Smt) * (1 - fKtot);
+
+  // Variable initializations:
+  a = 0.886;
+  b = 0.114;
+  g_Kto = 0.35;
+  fKtot = 0.56;
+end
+
+model pasek_model_2006_surface_membrane__steady_state_outward_K_current_r_ss_gate(r_ss, Vm_s, time_)
+
+  // Assignment Rules:
+  tau_r_ss := 10 / (45.16 * exp(0.03577 * (Vm_s + 50 )) + 98.9 * exp(-(0.1 ) * (Vm_s + 38 )));
+  r_ss_max := 1 / (1 + exp(-((Vm_s + 11.5 )) / 11.82 ));
+
+  // Rate Rules:
+  r_ss' = (r_ss_max - r_ss) / tau_r_ss;
+
+  // Variable initializations:
+  r_ss = 3.1079213e-3;
+end
+
+model pasek_model_2006_surface_membrane__steady_state_outward_K_current_s_ss_gate(s_ss, Vm_s, time_)
+
+  // Assignment Rules:
+  tau_s_ss := 2.1;
+  s_ss_max := 1 / (1 + exp((Vm_s + 87.5 ) / 10.3 ));
+
+  // Rate Rules:
+  s_ss' = (s_ss_max - s_ss) / tau_s_ss;
+
+  // Variable initializations:
+  s_ss = 3.0773393e-1;
+end
+
+model pasek_model_2006_surface_membrane__steady_state_outward_K_current(i_Kss_s, Sms, Smt, time_, Vm_s, E_K, r_ss, s_ss)
+
+  // Sub-modules, and any changes to those submodules:
+  steady_state_outward_K_current_r_ss_gate: pasek_model_2006_surface_membrane__steady_state_outward_K_current_r_ss_gate(r_ss, Vm_s, time_);
+  steady_state_outward_K_current_s_ss_gate: pasek_model_2006_surface_membrane__steady_state_outward_K_current_s_ss_gate(s_ss, Vm_s, time_);
+
+  // Assignment Rules:
+  i_Kss_s := g_Ksss * r_ss * s_ss * (Vm_s - E_K);
+  g_Ksss := g_Kss * (Sms + Smt) * (1 - fKsst);
+
+  // Variable initializations:
+  g_Kss = 0.07;
+  fKsst = 0.76;
+end
+
+model pasek_model_2006_surface_membrane__inward_rectifier(i_K1_s, Sms, Smt, time_, Vm_s, R, F, T, K_e, E_K)
+
+  // Assignment Rules:
+  i_K1_s := g_K1s * (Vm_s - (E_K + 1.73 )) / (1 + exp(1.613 * F / (R * T) * (Vm_s - (E_K + 1.73 )))) * (1 + exp(-((K_e - 0.9988 )) / 0.124 ));
+  g_K1s := g_K1 * (Sms + Smt) * (1 - fK1t);
+
+  // Variable initializations:
+  g_K1 = 0.24;
+  fK1t = 0.56;
+end
+
+model pasek_model_2006_surface_membrane__hyperpolarisation_activated_current_y_gate(y, Vm_s, time_)
+
+  // Assignment Rules:
+  tau_y := 1 / (0.11885 * exp((Vm_s + 80 ) / 28.37 ) + 0.5623 * exp((Vm_s + 80 ) / -(14.19 )));
+  y_infinity := 1 / (1 + exp((Vm_s + 138.6 ) / 10.48 ));
+
+  // Rate Rules:
+  y' = (y_infinity - y) / tau_y;
+
+  // Variable initializations:
+  y = 3.4357356e-3;
+end
+
+model pasek_model_2006_surface_membrane__hyperpolarisation_activated_current(i_f_s, i_fNa_s, i_fK_s, Sms, Smt, time_, Vm_s, E_K, E_Na, y)
+
+  // Sub-modules, and any changes to those submodules:
+  hyperpolarisation_activated_current_y_gate: pasek_model_2006_surface_membrane__hyperpolarisation_activated_current_y_gate(y, Vm_s, time_);
+
+  // Assignment Rules:
+  i_f_s := g_fs * y * (0.2 * (Vm_s - E_Na) + 0.8 * (Vm_s - E_K));
+  i_fNa_s := g_fs * y * f_Na * (Vm_s - E_Na);
+  i_fK_s := g_fs * y * f_K * (Vm_s - E_K);
+  g_fs := g_f * (Sms + Smt) * (1 - fft);
+  f_K := 1 - f_Na;
+
+  // Variable initializations:
+  g_f = 0.0145;
+  fft = 0.56;
+  f_Na = 0.2;
+end
+
+model pasek_model_2006_surface_membrane__background_currents(i_B_s, i_BNa_s, i_BCa_s, i_BK_s, Sms, Smt, E_Na, E_K, Ca_e, Ca_i, R, T, F, Vm_s)
+
+  // Assignment Rules:
+  i_B_s := i_BNa_s + i_BCa_s + i_BK_s;
+  i_BNa_s := g_B_Nas * (Vm_s - E_Na);
+  i_BCa_s := g_B_Cas * (Vm_s - E_Ca);
+  i_BK_s := g_B_Ks * (Vm_s - E_K);
+  g_B_Cas := g_B_Ca * (Sms + Smt) * (1 - fCabt);
+  g_B_Nas := g_B_Na * (Sms + Smt) * (1 - fNabt);
+  g_B_Ks := g_B_K * (Sms + Smt) * (1 - fKbt);
+
+  // Variable initializations:
+  g_B_Ca = 0.000648;
+  g_B_Na = 0.0008015;
+  g_B_K = 0.00138;
+  fCabt = 0.56;
+  fNabt = 0.56;
+  fKbt = 0.56;
+  E_Ca = 65;
+end
+
+model pasek_model_2006_surface_membrane__sodium_potassium_pump(i_NaK_s, Sms, Smt, K_e, Na_e, Na_i, R, F, T, Vm_s)
+
+  // Assignment Rules:
+  i_NaK_s := i_NaK_max_s / (1 + 0.1245 * exp(-(0.1 ) * Vm_s * F / (R * T)) + 0.0365 * sigma * exp(-(Vm_s) * F / (R * T))) * K_e / (K_e + K_m_K) / (1 + power(K_m_Na / Na_i, 1.5 ));
+  i_NaK_max_s := i_NaK_max * (Sms + Smt) * (1 - fNaKt);
+  sigma := (exp(Na_e / 67.3 ) - 1 ) / 7;
+
+  // Variable initializations:
+  i_NaK_max = 1;
+  fNaKt = 0.59;
+  K_m_K = 1.5;
+  K_m_Na = 10;
+end
+
+model pasek_model_2006_surface_membrane__sarcolemmal_calcium_pump_current(i_CaP_s, Sms, Smt, Ca_i, time_)
+
+  // Assignment Rules:
+  i_CaP_s := i_CaP_max_s * Ca_i / (Ca_i + 0.0004 );
+  i_CaP_max_s := i_CaP_max * (Sms + Smt) * (1 - fCaPt);
+
+  // Variable initializations:
+  i_CaP_max = 0.85;
+  fCaPt = 0.56;
+end
+
+model pasek_model_2006_surface_membrane__Na_Ca_ion_exchanger_current(i_NaCa_s, Sms, Smt, Na_i, Na_e, Ca_i, Ca_e, Vm_s, time_)
+
+  // Assignment Rules:
+  i_NaCa_s := i_NaCa_max_s * (exp(0.0187 * Vm_s) * power(Na_i, 3 ) * Ca_e - exp(-0.0187 * Vm_s) * power(Na_e, 3 ) * Ca_i) / (1 + 0.0001 * (Ca_i * power(Na_e, 3 ) + Ca_e * power(Na_i, 3 )));
+  i_NaCa_max_s := i_NaCa_max * (Sms + Smt) * (1 - fNaCat);
+
+  // Variable initializations:
+  i_NaCa_max = 1.8e-4;
+  fNaCat = 0.81;
+end
+
+model pasek_model_2006_surface_membrane__surface_membrane(Vm_s, i_Na_s, i_Ca_s, i_Kto_s, i_Kss_s, i_fNa_s, i_fK_s, i_K1_s, i_BNa_s, i_BK_s, i_BCa_s, i_NaK_s, i_NaCa_s, i_CaP_s, time_, R, T, F, Na_e, Ca_e, K_e, Na_i, Ca_i, Ca_ss, K_i, i_circ, i_Kext, Cms, Sms, Smt)
+
+  // Sub-modules, and any changes to those submodules:
+  membrane: pasek_model_2006_surface_membrane__membrane(Vm_s, Cms, i_circ, i_Kext, time_, i_Na_s, i_Ca_s, i_Kto_s, i_Kss_s, i_f_s, i_K1_s, i_B_s, i_NaK_s, i_NaCa_s, i_CaP_s);
+  sodium_current: pasek_model_2006_surface_membrane__sodium_current(i_Na_s, E_Na, Sms, Smt, Na_i, Na_e, K_i, K_e, R, F, T, time_, Vm_s, m, h);
+  calcium_current: pasek_model_2006_surface_membrane__calcium_current(i_Ca_s, Sms, Smt, time_, R, T, F, Vm_s, Ca_ss, Ca_e);
+  Ca_independent_transient_outward_K_current: pasek_model_2006_surface_membrane__Ca_independent_transient_outward_K_current(i_Kto_s, E_K, Sms, Smt, time_, Vm_s, R, F, T, K_e, K_i, r, s, s_slow);
+  steady_state_outward_K_current: pasek_model_2006_surface_membrane__steady_state_outward_K_current(i_Kss_s, Sms, Smt, time_, Vm_s, E_K, r_ss, s_ss);
+  inward_rectifier: pasek_model_2006_surface_membrane__inward_rectifier(i_K1_s, Sms, Smt, time_, Vm_s, R, F, T, K_e, E_K);
+  hyperpolarisation_activated_current: pasek_model_2006_surface_membrane__hyperpolarisation_activated_current(i_f_s, i_fNa_s, i_fK_s, Sms, Smt, time_, Vm_s, E_K, E_Na, y);
+  background_currents: pasek_model_2006_surface_membrane__background_currents(i_B_s, i_BNa_s, i_BCa_s, i_BK_s, Sms, Smt, E_Na, E_K, Ca_e, Ca_i, R, T, F, Vm_s);
+  sodium_potassium_pump: pasek_model_2006_surface_membrane__sodium_potassium_pump(i_NaK_s, Sms, Smt, K_e, Na_e, Na_i, R, F, T, Vm_s);
+  sarcolemmal_calcium_pump_current: pasek_model_2006_surface_membrane__sarcolemmal_calcium_pump_current(i_CaP_s, Sms, Smt, Ca_i, time_);
+  Na_Ca_ion_exchanger_current: pasek_model_2006_surface_membrane__Na_Ca_ion_exchanger_current(i_NaCa_s, Sms, Smt, Na_i, Na_e, Ca_i, Ca_e, Vm_s, time_);
+end
+
+model pasek_model_2006_surface_membrane____main()
+
+  // Sub-modules, and any changes to those submodules:
+  surface_membrane: pasek_model_2006_surface_membrane__surface_membrane(Vm_s, i_Na_s, i_Ca_s, i_Kto_s, i_Kss_s, i_fNa_s, i_fK_s, i_K1_s, i_BNa_s, i_BK_s, i_BCa_s, i_NaK_s, i_NaCa_s, i_CaP_s, time_, R, T, F, Na_e, Ca_e, K_e, Na_i, Ca_i, Ca_ss, K_i, i_circ, i_Kext, Cms, Sms, Smt);
+end

@@ -1,0 +1,84 @@
+//Created by libAntimony v1.3
+model curien_ravanel_dumas_2003_version01__environment(time_)
+end
+
+model curien_ravanel_dumas_2003_version01__v_cystathionine(v_cystathionine, Cys, CGS, Pi_, Phser)
+
+  // Assignment Rules:
+  v_cystathionine := kcat_CGS_Cys * CGS * Cys / ( Km_CGS_Cys + Cys );
+  Km_CGS_Cys := km_CGS_Cys / ( 1.0 + Km_CGS_Phser / Phser * ( 1.0 + Pi_ / Ki_CGS_Pi ));
+  kcat_CGS_Cys := kcat_CGS / ( 1.0 + Km_CGS_Phser / Phser * ( 1.0 + Pi_ / Ki_CGS_Pi ));
+
+  // Variable initializations:
+  kcat_CGS = 30.0;
+  Km_CGS_Phser = 2500.0;
+  Ki_CGS_Pi = 2500.0;
+end
+
+model curien_ravanel_dumas_2003_version01__v_Thr(v_Thr, TS, AdoMet, Pi_, Phser)
+
+  // Assignment Rules:
+  v_Thr := TS * kcat_TS * Phser / ( Km_TS + Phser );
+  Km_TS := 250.0 * (( 1.0 + AdoMet / 0.5 ) / ( 1.0 + AdoMet / 1.1 )) / ( 1.0 + power( AdoMet , 2.0 ) / 140.0 ) * ( 1.0 + Pi_ / Ki_TS_Pi );
+  kcat_TS := ( kcat_TS_noAdoMet + kcat_TS_AdoMet * (power( AdoMet , 2.0 ) / K1K2 )) / ( 1.0 + power( AdoMet , 2.0 ) / K1K2 );
+
+  // Variable initializations:
+  kcat_TS_noAdoMet = 0.42;
+  kcat_TS_AdoMet = 3.5;
+  K1K2 = 73.0;
+  Ki_TS_Pi = 1000.0;
+end
+
+model curien_ravanel_dumas_2003_version01__J_Phser(v_cystathionine, v_Thr)
+
+  // Assignment Rules:
+  J_Phser := v_cystathionine + v_Thr;
+end
+
+model curien_ravanel_dumas_2003_version01__CGS(CGS)
+
+  // Variable initializations:
+  CGS = 0.7;
+end
+
+model curien_ravanel_dumas_2003_version01__Phser(Phser)
+end
+
+model curien_ravanel_dumas_2003_version01__AdoMet(AdoMet)
+
+  // Variable initializations:
+  AdoMet = 20.0;
+end
+
+model curien_ravanel_dumas_2003_version01__Cys(Cys)
+
+  // Variable initializations:
+  Cys = 15.0;
+end
+
+model curien_ravanel_dumas_2003_version01__Pi(Pi_)
+
+  // Variable initializations:
+  Pi_ = 10.0;
+end
+
+model curien_ravanel_dumas_2003_version01__TS(TS)
+
+  // Variable initializations:
+  TS = 5.0;
+end
+
+model curien_ravanel_dumas_2003_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: curien_ravanel_dumas_2003_version01__environment(time_);
+  v_cystathionine: curien_ravanel_dumas_2003_version01__v_cystathionine(v_cystathionine0, Cys0, CGS0, Pi_0, Phser0);
+  v_Thr: curien_ravanel_dumas_2003_version01__v_Thr(v_Thr0, TS0, AdoMet0, Pi_0, Phser0);
+  J_Phser: curien_ravanel_dumas_2003_version01__J_Phser(v_cystathionine0, v_Thr0);
+  CGS: curien_ravanel_dumas_2003_version01__CGS(CGS0);
+  Phser: curien_ravanel_dumas_2003_version01__Phser(Phser0);
+  AdoMet: curien_ravanel_dumas_2003_version01__AdoMet(AdoMet0);
+  Cys: curien_ravanel_dumas_2003_version01__Cys(Cys0);
+  Pi_: curien_ravanel_dumas_2003_version01__Pi(Pi_0);
+  TS: curien_ravanel_dumas_2003_version01__TS(TS0);
+end

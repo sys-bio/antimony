@@ -1,0 +1,393 @@
+//Created by libAntimony v1.3
+model mahajan_shiferaw_2008_version01__Environment(time_, F, K_o, Ca_o, Na_o, FonRT)
+
+  // Assignment Rules:
+  FonRT := F / (R * T);
+
+  // Variable initializations:
+  R = 8.314472;
+  T = 308;
+  F = 96.4853415;
+  K_o = 5.4;
+  Ca_o = 1.8;
+  Na_o = 136;
+end
+
+model mahajan_shiferaw_2008_version01__cell(time_, V, xik1, xito, xiNaK, wca, xiNaCa, xica, xina, xikr, xiks, i_Stim)
+
+  // Assignment Rules:
+  Itotal := -((xina + xik1 + xikr + xiks + xito + xiNaCa + xica + xiNaK + i_Stim));
+  i_Stim := piecewise( stim_amplitude , ( time_ - past >= stim_offset) && (time_ - past <= stim_offset + stim_duration ), 0 );
+  past := floor(time_ / stim_period) * stim_period;
+
+  // Rate Rules:
+  V' = Itotal;
+
+  // Variable initializations:
+  V = -87.169816169406;
+  wca = 8;
+  stim_offset = 0;
+  stim_period = 400;
+  stim_duration = 3;
+  stim_amplitude = -15;
+end
+
+model mahajan_shiferaw_2008_version01__INa(V, time_, ena, xina)
+
+  // Assignment Rules:
+  am := piecewise( 0.32 * 1 * (V + 47.13 ) / (1 - exp(-(0.1 ) * (V + 47.13 ))) , abs(V + 47.13 ) > 0.001 , 3.2 );
+  bm := 0.08 * exp(-(V) / 11 );
+  ah := piecewise( 0.135 * exp((80 + V) / -(6.8 )) , V < -(40 ) , 0 );
+  bh := piecewise( 3.56 * exp(0.079 * V) + 310000 * exp(0.35 * V) , V < -(40 ) , 1 / (0.13 * (1 + exp((V + 10.66 ) / -(11.1 )))) );
+  aj := piecewise( (-(127140 ) * exp(0.2444 * V) - 0.00003474 * exp(-(0.04391 ) * V)) * 1 * (V + 37.78 ) / (1 + exp(0.311 * (V + 79.23 ))) , V < -(40 ) , 0 );
+  bj := piecewise( 0.1212 * exp(-(0.01052 ) * V) / (1 + exp(-(0.1378 ) * (V + 40.14 ))) , V < -(40 ) , 0.3 * exp(-(0.0000002535 ) * V) / (1 + exp(-(0.1 ) * (V + 32 ))) );
+  xina := gna * xh * xj * xm * xm * xm * (V - ena);
+
+  // Rate Rules:
+  xm' = am * (1 - xm) - bm * xm;
+  xh' = ah * (1 - xh) - bh * xh;
+  xj' = aj * (1 - xj) - bj * xj;
+
+  // Variable initializations:
+  xm = 0.001075453357;
+  xh = 0.990691306716;
+  xj = 0.993888937283;
+  gna = 12;
+end
+
+model mahajan_shiferaw_2008_version01__ICaL(V, time_, Ca_o, Ca_dyad, csm, wca, F, FonRT, xica, po, rxa, jca)
+
+  // Assignment Rules:
+  xica := 2 * wca * jca;
+  za := V * 2 * FonRT;
+  poinf := 1 / (1 + exp(-((V - vth)) / s6));
+  fca := 1 / (1 + power(cat / Ca_dyad, 3 ));
+  alpha := poinf / taupo;
+  beta := (1 - poinf) / taupo;
+  k1 := 0.024168 * fca;
+  k3 := (1 - poi) / tau3;
+  k3t := k3;
+  k6 := fca * Ps / tauca;
+  k5 := (1 - Ps) / tauca;
+  k6t := Ps / tauba;
+  k5t := (1 - Ps) / tauba;
+  k4 := k3 * alpha / beta * k1 / k2 * k5 / k6;
+  k4t := k3t * alpha / beta * k1t / k2t * k5t / k6t;
+  s1 := 0.0182688 * fca;
+  s2 := s1 * r1 / r2 * k2 / k1;
+  s2t := s1t * r1 / r2 * k2t / k1t;
+  recov := 10 + 4954 * exp(V / 15.6 );
+  tau_ca := tca / (1 + power(Ca_dyad / cpt, 4 )) + 0.1;
+  tauca := (recov - tau_ca) * Pr + tau_ca;
+  tauba := (recov - 450 ) * Pr + 450;
+  Pr := 1 - 1 / (1 + exp(-((V - vy)) / sy));
+  Ps := 1 / (1 + exp(-((V - vyr)) / syr));
+  poi := 1 / (1 + exp(-((V - vx)) / sx));
+  po := 1 - xi1ca - xi2ca - xi1ba - xi2ba - c1 - c2;
+  rxa := piecewise( 4 * pca * F * FonRT * (csm * exp(za) - 0.341 * Ca_o) / (2 * FonRT) , abs(za) < 0.001 , 4 * pca * V * F * FonRT * (csm * exp(za) - 0.341 * Ca_o) / (exp(za) - 1 ) );
+  jca := gca * po * rxa;
+
+  // Rate Rules:
+  c1' = alpha * c2 + k2 * xi1ca + k2t * xi1ba + r2 * po - (beta + r1 + k1t + k1) * c1;
+  c2' = beta * c1 + k5 * xi2ca + k5t * xi2ba - (k6 + k6t + alpha) * c2;
+  xi1ca' = k1 * c1 + k4 * xi2ca + s1 * po - (k3 + k2 + s2) * xi1ca;
+  xi1ba' = k1t * c1 + k4t * xi2ba + s1t * po - (k3t + k2t + s2t) * xi1ba;
+  xi2ca' = k3 * xi1ca + k6 * c2 - (k5 + k4) * xi2ca;
+  xi2ba' = k3t * xi1ba + k6t * c2 - (k5t + k4t) * xi2ba;
+
+  // Variable initializations:
+  c1 = 0.000018211252;
+  c2 = 0.979322592773;
+  xi1ca = 0.001208153482;
+  xi1ba = 0.000033616596;
+  xi2ca = 0.004173008466;
+  xi2ba = 0.015242594688;
+  gca = 182;
+  pca = 0.00054;
+  vth = 0;
+  s6 = 8;
+  vx = -40;
+  sx = 3;
+  vy = -40;
+  sy = 4;
+  vyr = -40;
+  syr = 11.32;
+  cat = 3;
+  cpt = 6.09365;
+  k2 = 1.03615e-4;
+  k1t = 0.00413;
+  k2t = 0.00224;
+  r1 = 0.3;
+  r2 = 3;
+  s1t = 0.00195;
+  tca = 78.0329;
+  taupo = 1;
+  tau3 = 3;
+end
+
+model mahajan_shiferaw_2008_version01__IK1(V, ek, K_o, xik1)
+
+  // Assignment Rules:
+  aki := 1.02 / (1 + exp(0.2385 * (V - ek - 59.215 )));
+  bki := (0.49124 * exp(0.08032 * (V - ek + 5.476 )) + 1 * exp(0.06175 * (V - ek - 594.31 ))) / (1 + exp(-(0.5143 ) * (V - ek + 4.753 )));
+  xkin := aki / (aki + bki);
+  xik1 := gkix * root(K_o / 5.4 ) * xkin * (V - ek);
+
+  // Variable initializations:
+  gkix = 0.3;
+end
+
+model mahajan_shiferaw_2008_version01__IKr(V, ek, time_, K_o, xikr)
+
+  // Assignment Rules:
+  xkrv1 := piecewise( 0.00138 * 1 * (V + 7 ) / (1 - exp(-(0.123 ) * (V + 7 ))) , abs(V + 7 ) > 0.001 , 0.00138 / 0.123 );
+  xkrv2 := piecewise( 0.00061 * 1 * (V + 10 ) / (exp(0.145 * (V + 10 )) - 1 ) , abs(V + 10 ) > 0.001 , 0.00061 / 0.145 );
+  taukr := 1 / (xkrv1 + xkrv2);
+  xkrinf := 1 / (1 + exp(-((V + 50 )) / 7.5 ));
+  rg := 1 / (1 + exp((V + 33 ) / 22.4 ));
+  xikr := gkr * root(K_o / 5.4 ) * xr * rg * (V - ek);
+
+  // Rate Rules:
+  xr' = (xkrinf - xr) / taukr;
+
+  // Variable initializations:
+  xr = 0.007074239331;
+  gkr = 0.0125;
+end
+
+model mahajan_shiferaw_2008_version01__IKs(V, Ca_i, time_, eks, xiks)
+
+  // Assignment Rules:
+  xs1ss := 1 / (1 + exp(-((V - 1.5 )) / 16.7 ));
+  xs2ss := xs1ss;
+  tauxs1 := piecewise( 1 / (0.0000719 / 0.148 + 0.000131 / 0.0687 ) , abs(V + 30 ) < 0.001 / 0.0687 , 1 / (0.0000719 * (V + 30 ) / (1 - exp(-(0.148 ) * (V + 30 ))) + 0.000131 * (V + 30 ) / (exp(0.0687 * (V + 30 )) - 1 )) );
+  tauxs2 := 4 * tauxs1;
+  gksx := 1 + 0.8 / (1 + power(0.5 / Ca_i, 3 ));
+  xiks := gks * gksx * xs1 * xs2 * (V - eks);
+
+  // Rate Rules:
+  xs1' = (xs1ss - xs1) / tauxs1;
+  xs2' = (xs2ss - xs2) / tauxs2;
+
+  // Variable initializations:
+  gks = 0.1386;
+  xs1 = 0.048267587131;
+  xs2 = 0.105468807033;
+end
+
+model mahajan_shiferaw_2008_version01__Ito(V, ek, time_, xito)
+
+  // Assignment Rules:
+  xito := xitos + xitof;
+  xitos := gtos * xtos * (ytos + 0.5 * rs_inf) * (V - ek);
+  xitof := gtof * xtof * ytof * (V - ek);
+  rt1 := -((V + 3 )) / 15;
+  rt2 := (V + 33.5 ) / 10;
+  rt3 := (V + 60 ) / 10;
+  rt4 := -(V) / 30 * V / 30;
+  rt5 := (V + 33.5 ) / 10;
+  xtos_inf := 1 / (1 + exp(rt1));
+  ytos_inf := 1 / (1 + exp(rt2));
+  xtof_inf := xtos_inf;
+  ytof_inf := ytos_inf;
+  rs_inf := 1 / (1 + exp(rt2));
+  txs := 9 / (1 + exp(-(rt1))) + 0.5;
+  tys := 3000 / (1 + exp(rt3)) + 30;
+  txf := 3.5 * exp(rt4) + 1.5;
+  tyf := 20 / (1 + exp(rt5)) + 20;
+
+  // Rate Rules:
+  xtos' = (xtos_inf - xtos) / txs;
+  ytos' = (ytos_inf - ytos) / tys;
+  xtof' = (xtof_inf - xtof) / txf;
+  ytof' = (ytof_inf - ytof) / tyf;
+
+  // Variable initializations:
+  xtos = 0.00364776906;
+  ytos = 0.174403618112;
+  xtof = 0.003643592594;
+  ytof = 0.993331326442;
+  gtos = 0.04;
+  gtof = 0.11;
+end
+
+model mahajan_shiferaw_2008_version01__INaK(V, Na_i, Na_o, K_o, FonRT, xiNaK)
+
+  // Assignment Rules:
+  xiNaK := gNaK * fNaK * Na_i / (Na_i + xkmnai) * K_o / (K_o + xkmko);
+  sigma := (exp(Na_o / 67.3 ) - 1 ) / 7;
+  fNaK := 1 / (1 + 0.1245 * exp(-(0.1 ) * V * FonRT) + 0.0365 * sigma * exp(-(V) * FonRT));
+
+  // Variable initializations:
+  gNaK = 1.5;
+  xkmko = 1.5;
+  xkmnai = 12;
+end
+
+model mahajan_shiferaw_2008_version01__INaCa(V, FonRT, Ca_submem, Ca_o, Na_i, Na_o, csm, wca, jNaCa, xiNaCa)
+
+  // Assignment Rules:
+  aloss := 1 / (1 + power(xkdna / Ca_submem, 3 ));
+  yz1 := xmcao * power(Na_i, 3 ) + power(xmnao, 3 ) * csm;
+  yz2 := power(xmnai, 3 ) * Ca_o * (1 + csm / xmcai);
+  yz3 := xmcai * power(Na_o, 3 ) * (1 + power(Na_i / xmnai, 3 ));
+  yz4 := power(Na_i, 3 ) * Ca_o + power(Na_o, 3 ) * csm;
+  zw3 := power(Na_i, 3 ) * Ca_o * exp(V * 0.35 * FonRT) - power(Na_o, 3 ) * csm * exp(V * (0.35 - 1 ) * FonRT);
+  zw4 := 1 + 0.2 * exp(V * (0.35 - 1 ) * FonRT);
+  zw8 := yz1 + yz2 + yz3 + yz4;
+  jNaCa := gNaCa * aloss * zw3 / (zw4 * zw8);
+  xiNaCa := wca * jNaCa;
+
+  // Variable initializations:
+  gNaCa = 0.84;
+  xkdna = 0.3;
+  xmcao = 1.3;
+  xmnao = 87.5;
+  xmnai = 12.3;
+  xmcai = 0.0036;
+end
+
+model mahajan_shiferaw_2008_version01__Irel(V, time_, Ca_NSR, dCa_JSR, po, rxa, xiryr, xir)
+
+  // Assignment Rules:
+  bv := (1 - av) * cstar - 50;
+  Qr0 := piecewise( (Ca_JSR - 50 ) / 1 , ( Ca_JSR > 50) && (Ca_JSR < cstar ), av * Ca_JSR + bv , Ca_JSR >= cstar , 0 );
+  Qr := Ca_NSR * Qr0 / cstar;
+  sparkV := exp(-(ay) * (V + 30 )) / (1 + exp(-(ay) * (V + 30 )));
+  spark_rate := gryr / 1 * po * abs(rxa) * sparkV;
+  xirp := po * Qr * abs(rxa) * gbarsr / 1 * exp(-(ax) * (V + 30 )) / (1 + exp(-(ax) * (V + 30 )));
+  xicap := po * gdyad * abs(rxa);
+  xiryr := xirp + xicap;
+
+  // Rate Rules:
+  Ca_JSR' = (Ca_NSR - Ca_JSR) / taua;
+  xir' = spark_rate * Qr - xir * (1 - taur * dCa_JSR / Ca_NSR) / taur;
+
+  // Variable initializations:
+  cstar = 90;
+  Ca_JSR = 97.505463697266;
+  gryr = 2.58079;
+  gbarsr = 26841.8;
+  gdyad = 9000;
+  ax = 0.3576;
+  ay = 0.05;
+  av = 11.3;
+  taua = 100;
+  taur = 30;
+  xir = 0.006679257264;
+end
+
+model mahajan_shiferaw_2008_version01__Ileak_Iup_Ixfer(Ca_i, Ca_NSR, jup, jleak)
+
+  // Assignment Rules:
+  jup := vup * Ca_i * Ca_i / (Ca_i * Ca_i + cup * cup);
+  jleak := gleak * Ca_NSR * Ca_NSR / (Ca_NSR * Ca_NSR + kj * kj) * (Ca_NSR * 16.667 - Ca_i);
+
+  // Variable initializations:
+  cup = 0.5;
+  kj = 50;
+  vup = 0.4;
+  gleak = 0.00002069;
+end
+
+model mahajan_shiferaw_2008_version01__Na(time_, wca, Na_i, xina, xiNaK, xiNaCa)
+
+  // Rate Rules:
+  Na_i' = -((xina + 3 * xiNaK + 3 * xiNaCa)) / (wca * 1000 );
+
+  // Variable initializations:
+  Na_i = 11.441712311614;
+end
+
+model mahajan_shiferaw_2008_version01__Ca(time_, xiryr, Ca_dyad, Ca_submem, Ca_i, Ca_NSR, csm, jup, jleak, jNaCa, xir, jca, dCa_JSR)
+
+  // Assignment Rules:
+  csm := Ca_submem / 1000;
+  bpxs := bcal * xkcal / ((xkcal + Ca_submem) * (xkcal + Ca_submem));
+  spxs := srmax * srkd / ((srkd + Ca_submem) * (srkd + Ca_submem));
+  mempxs := bmem * kmem / ((kmem + Ca_submem) * (kmem + Ca_submem));
+  sarpxs := bsar * ksar / ((ksar + Ca_submem) * (ksar + Ca_submem));
+  dcsib := 1 / (1 + bpxs + spxs + mempxs + sarpxs);
+  bpxi := bcal * xkcal / ((xkcal + Ca_i) * (xkcal + Ca_i));
+  spxi := srmax * srkd / ((srkd + Ca_i) * (srkd + Ca_i));
+  mempxi := bmem * kmem / ((kmem + Ca_i) * (kmem + Ca_i));
+  sarpxi := bsar * ksar / ((ksar + Ca_i) * (ksar + Ca_i));
+  dciib := 1 / (1 + bpxi + spxi + mempxi + sarpxi);
+  xbi := xkon * Ca_i * (btrop - tropi) - xkoff * tropi;
+  xbs := xkon * Ca_submem * (btrop - trops) - xkoff * trops;
+  jd := (Ca_submem - Ca_i) / taud;
+  dCa_JSR := -(xir) + jup - jleak;
+
+  // Rate Rules:
+  Ca_dyad' = xiryr - (Ca_dyad - Ca_submem) / taups;
+  Ca_submem' = dcsib * (50 * (xir - jd - jca + jNaCa) - xbs);
+  Ca_i' = dciib * (jd - jup + jleak - xbi);
+  Ca_NSR' = dCa_JSR;
+  tropi' = xbi;
+  trops' = xbs;
+
+  // Variable initializations:
+  Ca_dyad = 1.716573130685;
+  Ca_submem = 0.226941113355;
+  Ca_i = 0.256752008084;
+  Ca_NSR = 104.450004990523;
+  bcal = 24;
+  xkcal = 7;
+  srmax = 47;
+  srkd = 0.6;
+  bmem = 15;
+  kmem = 0.3;
+  bsar = 42;
+  ksar = 13;
+  xkon = 0.0327;
+  xkoff = 0.0196;
+  btrop = 70;
+  tropi = 22.171689894953;
+  trops = 19.864701949854;
+  taud = 4;
+  taups = 0.5;
+end
+
+model mahajan_shiferaw_2008_version01__reversal_potentials(ek, eks, ena, K_o, Na_i, Na_o, FonRT)
+
+  // Assignment Rules:
+  ek := 1 / FonRT * ln(K_o / K_i);
+  eks := 1 / FonRT * ln((K_o + prNaK * Na_o) / (K_i + prNaK * Na_i));
+  ena := 1 / FonRT * ln(Na_o / Na_i);
+
+  // Variable initializations:
+  K_i = 140;
+  prNaK = 0.01833;
+end
+
+model mahajan_shiferaw_2008_version01__intracellular_currents()
+end
+
+model mahajan_shiferaw_2008_version01__transmembrane_currents()
+end
+
+model mahajan_shiferaw_2008_version01__Ions_n_reversal_potentials()
+end
+
+model mahajan_shiferaw_2008_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Environment: mahajan_shiferaw_2008_version01__Environment(time_, F, K_o, Ca_o, Na_o, FonRT);
+  cell: mahajan_shiferaw_2008_version01__cell(time_, V, xik1, xito, xiNaK, wca, xiNaCa, xica, xina, xikr, xiks, i_Stim);
+  INa: mahajan_shiferaw_2008_version01__INa(V, time_, ena, xina);
+  ICaL: mahajan_shiferaw_2008_version01__ICaL(V, time_, Ca_o, Ca_dyad, csm, wca, F, FonRT, xica, po, rxa, jca);
+  IK1: mahajan_shiferaw_2008_version01__IK1(V, ek, K_o, xik1);
+  IKr: mahajan_shiferaw_2008_version01__IKr(V, ek, time_, K_o, xikr);
+  IKs: mahajan_shiferaw_2008_version01__IKs(V, Ca_i, time_, eks, xiks);
+  Ito: mahajan_shiferaw_2008_version01__Ito(V, ek, time_, xito);
+  INaK: mahajan_shiferaw_2008_version01__INaK(V, Na_i, Na_o, K_o, FonRT, xiNaK);
+  INaCa: mahajan_shiferaw_2008_version01__INaCa(V, FonRT, Ca_submem, Ca_o, Na_i, Na_o, csm, wca, jNaCa, xiNaCa);
+  Irel: mahajan_shiferaw_2008_version01__Irel(V, time_, Ca_NSR, dCa_JSR, po, rxa, xiryr, xir);
+  Ileak_Iup_Ixfer: mahajan_shiferaw_2008_version01__Ileak_Iup_Ixfer(Ca_i, Ca_NSR, jup, jleak);
+  Na: mahajan_shiferaw_2008_version01__Na(time_, wca, Na_i, xina, xiNaK, xiNaCa);
+  Ca: mahajan_shiferaw_2008_version01__Ca(time_, xiryr, Ca_dyad, Ca_submem, Ca_i, Ca_NSR, csm, jup, jleak, jNaCa, xir, jca, dCa_JSR);
+  reversal_potentials: mahajan_shiferaw_2008_version01__reversal_potentials(ek, eks, ena, K_o, Na_i, Na_o, FonRT);
+  intracellular_currents: mahajan_shiferaw_2008_version01__intracellular_currents();
+  transmembrane_currents: mahajan_shiferaw_2008_version01__transmembrane_currents();
+  Ions_n_reversal_potentials: mahajan_shiferaw_2008_version01__Ions_n_reversal_potentials();
+end

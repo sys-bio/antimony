@@ -1,0 +1,58 @@
+//Created by libAntimony v1.3
+model rivlin_saunders_1951_version02__equations(E11, E22, E33, E12, E13, E23, k11, a11, b11, k22, a22, b22, k33, a33, b33, k12, a12, b12, k13, a13, b13, k23, a23, b23, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23)
+
+  // Assignment Rules:
+  Tdev11 := piecewise( 2.0 * k11 * E11 / power(a11, b11) , E11 <= 0.0 , k11 * Elim11 / power(a11 - Elim11, b11) * (2.0 + b11 * Elim11 / (a11 - Elim11)) + k11 / power(a11 - Elim11, b11) * (2.0 + 4.0 * b11 * Elim11 / (a11 - Elim11) + b11 * power(Elim11, 2.0 ) * (b11 + 1.0 ) / power(a11 - Elim11, 2.0 )) * (E11 - Elim11) , E11 > Elim11 , k11 * E11 / power(a11 - E11, b11) * (2.0 + b11 * E11 / (a11 - E11)) );
+  Tdev22 := piecewise( 2.0 * k22 * E22 / power(a22, b22) , E22 <= 0.0 , k22 * Elim22 / power(a22 - Elim22, b22) * (2.0 + b22 * Elim22 / (a22 - Elim22)) + k22 / power(a22 - Elim22, b22) * (2.0 + 4.0 * b22 * Elim22 / (a22 - Elim22) + b22 * power(Elim22, 2.0 ) * (b22 + 1.0 ) / power(a22 - Elim22, 2.0 )) * (E22 - Elim22) , E22 > Elim22 , k22 * E22 / power(a22 - E22, b22) * (2.0 + b22 * E22 / (a22 - E22)) );
+  Tdev33 := piecewise( 2.0 * k33 * E33 / power(a33, b33) , E33 <= 0.0 , k33 * Elim33 / power(a33 - Elim33, b33) * (2.0 + b33 * Elim33 / (a33 - Elim33)) + k33 / power(a33 - Elim33, b33) * (2.0 + 4.0 * b33 * Elim33 / (a33 - Elim33) + b33 * power(Elim33, 2.0 ) * (b33 + 1.0 ) / power(a33 - Elim33, 2.0 )) * (E33 - Elim33) , E33 > Elim33 , k33 * E33 / power(a33 - E33, b33) * (2.0 + b33 * E33 / (a33 - E33)) );
+  Tdev12 := Sign12 * piecewise( k12 * Elim12 / power(a12 - Elim12, b12) * (2.0 + b12 * Elim12 / (a12 - Elim12)) + k12 / power(a12 - Elim12, b12) * (2.0 + 4.0 * b12 * Elim12 / (a12 - Elim12) + b12 * power(Elim12, 2.0 ) * (b12 + 1.0 ) / power(a12 - Elim12, 2.0 )) * (Eabs12 - Elim12) , Eabs12 > Elim12 , k12 * Eabs12 / power(a12 - Eabs12, b12) * (2.0 + b12 * Eabs12 / (a12 - Eabs12)) );
+  Tdev13 := Sign13 * piecewise( k13 * Elim13 / power(a13 - Elim13, b13) * (2.0 + b13 * Elim13 / (a13 - Elim13)) + k13 / power(a13 - Elim13, b13) * (2.0 + 4.0 * b13 * Elim13 / (a13 - Elim13) + b13 * power(Elim13, 2.0 ) * (b13 + 1.0 ) / power(a13 - Elim13, 2.0 )) * (Eabs13 - Elim13) , Eabs13 > Elim13 , k13 * Eabs13 / power(a13 - Eabs13, b13) * (2.0 + b13 * Eabs13 / (a13 - Eabs13)) );
+  Tdev23 := Sign23 * piecewise( k23 * Elim23 / power(a23 - Elim23, b23) * (2.0 + b23 * Elim23 / (a23 - Elim23)) + k23 / power(a23 - Elim23, b23) * (2.0 + 4.0 * b23 * Elim23 / (a23 - Elim23) + b23 * power(Elim23, 2.0 ) * (b23 + 1.0 ) / power(a23 - Elim23, 2.0 )) * (Eabs23 - Elim23) , Eabs23 > Elim23 , k23 * Eabs23 / power(a23 - Eabs23, b23) * (2.0 + b23 * Eabs23 / (a23 - Eabs23)) );
+  Elim11 := Tol * a11;
+  Elim22 := Tol * a22;
+  Elim33 := Tol * a33;
+  Elim12 := Tol * a12;
+  Elim13 := Tol * a13;
+  Elim23 := Tol * a23;
+  Sign12 := piecewise( 1.0 , E12 >= 0.0 , -1.0 );
+  Sign13 := piecewise( 1.0 , E13 >= 0.0 , -1.0 );
+  Sign23 := piecewise( 1.0 , E23 >= 0.0 , -1.0 );
+  Eabs12 := piecewise( E12 , E12 >= 0.0 , -1.0 * E12 );
+  Eabs13 := piecewise( E13 , E13 >= 0.0 , -1.0 * E13 );
+  Eabs23 := piecewise( E23 , E23 >= 0.0 , -1.0 * E23 );
+
+  // Variable initializations:
+  Tol = 0.9;
+end
+
+model rivlin_saunders_1951_version02__interface(E11, E22, E33, E12, E13, E23, k11, a11, b11, k22, a22, b22, k33, a33, b33, k12, a12, b12, k13, a13, b13, k23, a23, b23, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23)
+
+  // Sub-modules, and any changes to those submodules:
+  equations: rivlin_saunders_1951_version02__equations(E11, E22, E33, E12, E13, E23, k11, a11, b11, k22, a22, b22, k33, a33, b33, k12, a12, b12, k13, a13, b13, k23, a23, b23, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23);
+
+  // Variable initializations:
+  k11 = 0;
+  a11 = 0;
+  b11 = 0;
+  k22 = 0;
+  a22 = 0;
+  b22 = 0;
+  k33 = 0;
+  a33 = 0;
+  b33 = 0;
+  k12 = 0;
+  a12 = 0;
+  b12 = 0;
+  k13 = 0;
+  a13 = 0;
+  b13 = 0;
+  k23 = 0;
+  a23 = 0;
+  b23 = 0;
+end
+
+model rivlin_saunders_1951_version02____main()
+
+  // Sub-modules, and any changes to those submodules:
+  interface: rivlin_saunders_1951_version02__interface(E11, E22, E33, E12, E13, E23, k11, a11, b11, k22, a22, b22, k33, a33, b33, k12, a12, b12, k13, a13, b13, k23, a23, b23, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23);
+end

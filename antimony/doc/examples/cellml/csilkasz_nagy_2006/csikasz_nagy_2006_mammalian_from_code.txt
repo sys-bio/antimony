@@ -1,0 +1,468 @@
+//Created by libAntimony v1.3
+model csikasz_nagy_2006__environment(time_)
+end
+
+model csikasz_nagy_2006__CycA(CycA, k_assa, k_dissa, V_di, V_sa, V_da, Tri_A, CKI, time_)
+
+  // Rate Rules:
+  CycA' = k_dissa * Tri_A + V_di * Tri_A + V_sa - V_da * CycA - k_assa * CKI * CycA;
+
+  // Variable initializations:
+  CycA = 0.009940445423126221;
+end
+
+model csikasz_nagy_2006__CycB(CycB, k_assb, k_dissb, V_sb, V_db, V_25, V_wee, V_di, pB, CKI, BCKI, time_)
+
+  // Rate Rules:
+  CycB' = V_sb - V_db * CycB + V_25 * pB - V_wee * CycB - k_assb * CycB * CKI + k_dissb * BCKI + V_di * BCKI;
+
+  // Variable initializations:
+  CycB = 0.1668413728475571;
+end
+
+model csikasz_nagy_2006__CycE(CycE, k_disse, k_asse, V_di, V_se, V_de, Tri_E, CKI, time_)
+
+  // Rate Rules:
+  CycE' = k_disse * Tri_E + V_di * Tri_E + V_se - V_de * CycE - k_asse * CKI * CycE;
+
+  // Variable initializations:
+  CycE = 0.07760512828826904;
+end
+
+model csikasz_nagy_2006__CycD(CycD, mass)
+
+  // Assignment Rules:
+  CycD := CycD_0 * mass;
+
+  // Variable initializations:
+  CycD_0 = 0.05;
+end
+
+model csikasz_nagy_2006__Cdc20_A(Cdc20_A, k_a20, k_i20, k_d20, APCP, Cdc20_i, time_)
+
+  // Rate Rules:
+  Cdc20_A' = k_a20 * APCP * Cdc20_i / (J_a20 + Cdc20_i) - Cdc20_A * k_i20 / (J_i20 + Cdc20_A) - Cdc20_A * k_d20;
+
+  // Variable initializations:
+  Cdc20_A = 0.6605867147445679;
+  J_a20 = 0.005;
+  J_i20 = 0.005;
+end
+
+model csikasz_nagy_2006__Cdc20_i(Cdc20_i, Cdc20_A, k_a20, k_i20, k_d20, k_s20p, k_s20pp, CycB, APCP, time_)
+
+  // Rate Rules:
+  Cdc20_i' = (k_s20p + k_s20pp * power(CycB, n20)) / (power(J_20, n20) + power(CycB, n20)) + Cdc20_A * k_i20 / (J_i20 + Cdc20_A) - k_d20 * Cdc20_i - k_a20 * APCP * Cdc20_i / (J_a20 + Cdc20_i);
+
+  // Variable initializations:
+  Cdc20_i = 0.01855352707207203;
+  n20 = 1;
+  J_20 = 1;
+  J_a20 = 0.005;
+  J_i20 = 0.005;
+end
+
+model csikasz_nagy_2006__APC(APC, APCP)
+
+  // Assignment Rules:
+  APC := (APC_T - APCP) / 1;
+
+  // Variable initializations:
+  APC_T = 1;
+end
+
+model csikasz_nagy_2006__APCP(APCP, k_aie, k_iie, CycB, APC, time_)
+
+  // Rate Rules:
+  APCP' = k_aie * CycB * APC / (J_aie + APC) - k_iie * APCP / (J_iie + APCP);
+
+  // Variable initializations:
+  APCP = 0.6716265678405762;
+  J_aie = 0.01;
+  J_iie = 0.01;
+end
+
+model csikasz_nagy_2006__pB(pB, k_assb, k_dissb, V_wee, V_25, V_db, V_di, CycB, CKI, pBCKI, time_)
+
+  // Rate Rules:
+  pB' = V_wee * CycB - V_db * pB - k_assb * pB * CKI + k_dissb * pBCKI + V_di * pBCKI - V_25 * pB;
+
+  // Variable initializations:
+  pB = 0.009814870543777943;
+end
+
+model csikasz_nagy_2006__BCKI(BCKI, k_assb, k_dissb, V_wee, V_25, V_db, V_di, CycB, CKI, pBCKI, time_)
+
+  // Rate Rules:
+  BCKI' = k_assb * CycB * CKI - k_dissb * BCKI + V_25 * pBCKI - V_wee * BCKI - V_db * BCKI - V_di * BCKI;
+
+  // Variable initializations:
+  BCKI = 0;
+end
+
+model csikasz_nagy_2006__pBCKI(pBCKI, k_assb, k_dissb, V_wee, V_25, V_db, V_di, pB, CKI, BCKI, time_)
+
+  // Rate Rules:
+  pBCKI' = k_assb * pB * CKI - k_dissb * pBCKI - V_25 * pBCKI + V_wee * BCKI - V_db * pBCKI - V_di * pBCKI;
+
+  // Variable initializations:
+  pBCKI = 0;
+end
+
+model csikasz_nagy_2006__Tri_A(Tri_A, k_assa, k_dissa, CycA, CKI, V_da, V_di, time_)
+
+  // Rate Rules:
+  Tri_A' = k_assa * CKI * CycA - k_dissa * Tri_A - V_di * Tri_A - V_da * Tri_A;
+
+  // Variable initializations:
+  Tri_A = 0.01715379953384399;
+end
+
+model csikasz_nagy_2006__Tri_E(Tri_E, k_asse, k_disse, CycE, CKI, V_de, V_di, time_)
+
+  // Rate Rules:
+  Tri_E' = k_asse * CKI * CycE - k_disse * Tri_E - V_di * Tri_E - V_de * Tri_E;
+
+  // Variable initializations:
+  Tri_E = 0.3117263317108154;
+end
+
+model csikasz_nagy_2006__CKI(CKI, k_assb, k_dissb, k_assa, k_dissa, k_asse, k_disse, V_db, V_si, V_da, V_di, V_de, CycB, BCKI, pB, Tri_E, pBCKI, CycA, CycE, Tri_A, time_)
+
+  // Rate Rules:
+  CKI' = -(k_assb) * CycB * CKI + k_dissb * BCKI - k_assb * pB * CKI + k_dissb * pBCKI + V_db * BCKI + V_db * pBCKI + V_si - V_di * CKI - k_assa * CKI * CycA + k_dissa * Tri_A + V_da * Tri_A - k_asse * CKI * CycE + k_disse * Tri_E + V_de * Tri_E;
+
+  // Variable initializations:
+  CKI = 0.2954076826572418;
+end
+
+model csikasz_nagy_2006__Cdh1_i(Cdh1_i, Cdh1)
+
+  // Assignment Rules:
+  Cdh1_i := (Cdh1_T - Cdh1) / 1;
+
+  // Variable initializations:
+  Cdh1_T = 1;
+end
+
+model csikasz_nagy_2006__Cdh1(Cdh1, V_ah1, V_ih1, Cdh1_i, time_)
+
+  // Rate Rules:
+  Cdh1' = Cdh1_i * V_ah1 / (J_ah1 + Cdh1_i) - Cdh1 * V_ih1 / (J_ih1 + Cdh1);
+
+  // Variable initializations:
+  Cdh1 = 0.9992357492446899;
+  J_ah1 = 0.01;
+  J_ih1 = 0.01;
+end
+
+model csikasz_nagy_2006__mass(mass, time_)
+
+  // Rate Rules:
+  mass' = mu * mass * (1 - mass / maxmass);
+
+  // Variable initializations:
+  mass = 1.174216866493225;
+  mu = 0.004951;
+  maxmass = 10000;
+end
+
+model csikasz_nagy_2006__V_atf(V_atf, k_atfp, k_atfapp, k_atfepp, k_atfdpp, CycA, CycE, CycD)
+
+  // Assignment Rules:
+  V_atf := k_atfp + k_atfapp * CycA + k_atfepp * CycE + k_atfdpp * CycD;
+end
+
+model csikasz_nagy_2006__V_itf(V_itf, k_itfp, k_itfapp, k_itfbpp, CycA, CycB)
+
+  // Assignment Rules:
+  V_itf := k_itfp + k_itfapp * CycA + k_itfbpp * CycB;
+end
+
+model csikasz_nagy_2006__TF_E(TF_E, V_atf, V_itf)
+
+  // Assignment Rules:
+  TF_E := 2 * V_atf * J_itf / (V_itf - V_atf + J_atf * V_itf + J_itf * V_atf + root(power(V_itf - V_atf + J_atf * V_itf + J_itf * V_atf, 2 ) - 4 * (V_itf - V_atf) * J_itf * V_atf));
+
+  // Variable initializations:
+  J_itf = 0.01;
+  J_atf = 0.01;
+end
+
+model csikasz_nagy_2006__V_de(V_de, k_dep, k_deepp, k_deapp, k_debpp, CycA, CycE, CycB)
+
+  // Assignment Rules:
+  V_de := k_dep + k_deepp * CycE + k_deapp * CycA + k_debpp * CycB;
+end
+
+model csikasz_nagy_2006__V_da(V_da, k_dap, k_dapp, k_dappp, Cdc20_A, Cdc20_i)
+
+  // Assignment Rules:
+  V_da := k_dap + (k_dapp + k_dappp) * Cdc20_A + k_dappp * Cdc20_i;
+end
+
+model csikasz_nagy_2006__TF_I(TF_I, k_afi, k_ifip, k_ifibpp, Cdc14, CycB, Cdc20_A)
+
+  // Assignment Rules:
+  TF_I := 2 * k_afi * Cdc14 * J_ifi / (k_ifip + k_ifibpp * CycB - k_afi * Cdc14 + J_afi * (k_ifip + k_ifibpp * CycB) + J_ifi * k_afi * Cdc14 + root(power(k_ifip + k_ifibpp * CycB - k_afi * Cdc14 + J_afi * (k_ifip + k_ifibpp * CycB) + J_ifi * k_afi * Cdc14, 2 ) - 4 * (k_ifip + k_ifibpp * CycB - k_afi * Cdc14) * J_ifi * k_afi * Cdc14));
+  Cdc14 := Cdc20_A;
+
+  // Variable initializations:
+  J_ifi = 88;
+  J_afi = 88;
+end
+
+model csikasz_nagy_2006__V_ah1(V_ah1, k_ah1p, k_ah1pp, Cdc14)
+
+  // Assignment Rules:
+  V_ah1 := k_ah1p + k_ah1pp * Cdc14;
+end
+
+model csikasz_nagy_2006__V_ih1(V_ih1, k_ih1p, k_ih1app, k_ih1bpp, k_ih1epp, k_ih1dpp, CycA, CycB, CycE, CycD)
+
+  // Assignment Rules:
+  V_ih1 := k_ih1p + k_ih1app * CycA + k_ih1bpp * CycB + k_ih1epp * CycE + k_ih1dpp * CycD;
+end
+
+model csikasz_nagy_2006__V_si(V_si, k_sip, k_sipp, TF_I)
+
+  // Assignment Rules:
+  V_si := k_sip + k_sipp * TF_I;
+end
+
+model csikasz_nagy_2006__V_di(V_di, k_dip, k_diapp, k_diepp, k_didpp, k_dibpp, k_14di, CycA, CycB, CycE, CycD, Cdc14)
+
+  // Assignment Rules:
+  V_di := (k_dip + k_diapp * CycA + k_dibpp * CycB + k_diepp * CycE + k_didpp * CycD) / (1 + k_14di * Cdc14);
+end
+
+model csikasz_nagy_2006__preMPF(preMPF, pB, BCKI)
+
+  // Assignment Rules:
+  preMPF := pB + BCKI;
+end
+
+model csikasz_nagy_2006__CycBT(CycBT, CycB, pB, BCKI, pBCKI)
+
+  // Assignment Rules:
+  CycBT := CycB + pB + BCKI + pBCKI;
+end
+
+model csikasz_nagy_2006__CycAT(CycAT, CycA, Tri_A)
+
+  // Assignment Rules:
+  CycAT := CycA + Tri_A;
+end
+
+model csikasz_nagy_2006__CycET(CycET, CycE, Tri_E)
+
+  // Assignment Rules:
+  CycET := CycE + Tri_E;
+end
+
+model csikasz_nagy_2006__Tri_B(Tri_B, BCKI, pBCKI)
+
+  // Assignment Rules:
+  Tri_B := BCKI + pBCKI;
+end
+
+model csikasz_nagy_2006__CKIT(CKIT, CKI, BCKI, pBCKI, Tri_A, Tri_E)
+
+  // Assignment Rules:
+  CKIT := CKI + BCKI + pBCKI + Tri_A + Tri_E;
+end
+
+model csikasz_nagy_2006__Cdc20_T(Cdc20_T, Cdc20_i, Cdc20_A)
+
+  // Assignment Rules:
+  Cdc20_T := Cdc20_i + Cdc20_A;
+end
+
+model csikasz_nagy_2006__TF_B(TF_B, k_afb, k_ifb, CycB)
+
+  // Assignment Rules:
+  TF_B := 2 * k_afb * CycB * J_ifb / (k_ifb - k_afb * CycB + J_afb * k_ifb + J_ifb * k_afb * CycB + root(power(k_ifb - k_afb * CycB + J_afb * k_ifb + J_ifb * k_afb * CycB, 2 ) - 4 * (k_ifb - k_afb * CycB) * k_afb * CycB * J_ifb));
+
+  // Variable initializations:
+  J_ifb = 0.1;
+  J_afb = 0.1;
+end
+
+model csikasz_nagy_2006__V_sb(V_sb, k_sbp, k_sbpp, TF_B, mass)
+
+  // Assignment Rules:
+  V_sb := mass * (k_sbp + k_sbpp * TF_B);
+end
+
+model csikasz_nagy_2006__V_sa(V_sa, k_sap, k_sapp, TF_E, mass)
+
+  // Assignment Rules:
+  V_sa := mass * (k_sap + k_sapp * TF_E);
+end
+
+model csikasz_nagy_2006__V_se(V_se, k_sep, k_sepp, TF_E, mass)
+
+  // Assignment Rules:
+  V_se := mass * (k_sep + k_sepp * TF_E);
+end
+
+model csikasz_nagy_2006__V_db(V_db, k_dbp, k_dbhpp, k_dbcpp, Cdc20_A, Cdh1)
+
+  // Assignment Rules:
+  V_db := k_dbp + k_dbhpp * Cdh1 + k_dbcpp * Cdc20_A;
+end
+
+model csikasz_nagy_2006__Wee1(Wee1, k_aweep, k_aweepp, k_iweep, k_iweepp, Cdc14, CycB)
+
+  // Assignment Rules:
+  Wee1 := 2 * (k_aweep + k_aweepp * Cdc14) * J_iwee / (k_iweep + k_iweepp * CycB - (k_aweep + k_aweepp * Cdc14) + J_awee * (k_iweep + k_iweepp * CycB) + J_iwee * (k_aweep + k_aweepp * Cdc14) + root(power(k_iweep + k_iweepp * CycB - (k_aweep + k_aweepp * Cdc14) + J_awee * (k_iweep + k_iweepp * CycB) + J_iwee * (k_aweep + k_aweepp * Cdc14), 2 ) - 4 * (k_iweep + k_iweepp * CycB - (k_aweep + k_aweepp * Cdc14)) * (k_aweep + k_aweepp * Cdc14) * J_iwee));
+
+  // Variable initializations:
+  J_iwee = 0.05;
+  J_awee = 0.05;
+end
+
+model csikasz_nagy_2006__V_wee(V_wee, k_weep, k_weepp, Wee1)
+
+  // Assignment Rules:
+  V_wee := k_weep + k_weepp * Wee1;
+end
+
+model csikasz_nagy_2006__Cdc25(Cdc25, k_a25p, k_a25pp, k_i25p, k_i25pp, Cdc14, CycB)
+
+  // Assignment Rules:
+  Cdc25 := 2 * (k_a25p + k_a25pp * CycB) * J_i25 / (k_i25p + k_i25pp * Cdc14 - (k_a25p + k_a25pp * CycB) + J_a25 * (k_i25p + k_i25pp * Cdc14) + (k_a25p + k_a25pp * CycB) * J_i25 + root(power(k_i25p + k_i25pp * Cdc14 - (k_a25p + k_a25pp * CycB) + J_a25 * (k_i25p + k_i25pp * Cdc14) + (k_a25p + k_a25pp * CycB) * J_i25, 2 ) - 4 * (k_i25p + k_i25pp * Cdc14 - (k_a25p + k_a25pp * CycB)) * (k_a25p + k_a25pp * CycB) * J_i25));
+
+  // Variable initializations:
+  J_i25 = 0.1;
+  J_a25 = 0.1;
+end
+
+model csikasz_nagy_2006__V_25(V_25, k_25p, k_25pp, Cdc25)
+
+  // Assignment Rules:
+  V_25 := k_25p + k_25pp * Cdc25;
+end
+
+model csikasz_nagy_2006__kinetic_parameters(k_25p, k_25pp, k_14di, k_a20, k_a25p, k_a25pp, k_afb, k_afi, k_ah1p, k_ah1pp, k_aie, k_assa, k_assb, k_asse, k_atfp, k_atfapp, k_atfdpp, k_atfepp, k_aweep, k_aweepp, k_d20, k_dap, k_dapp, k_dappp, k_dbp, k_dbhpp, k_dbcpp, k_dep, k_deapp, k_debpp, k_deepp, k_dip, k_diapp, k_dibpp, k_didpp, k_diepp, k_disse, k_dissb, k_dissa, k_i20, k_i25p, k_i25pp, k_ifb, k_ifip, k_ifibpp, k_ih1p, k_ih1app, k_ih1bpp, k_ih1dpp, k_ih1epp, k_iie, k_itfp, k_itfapp, k_itfbpp, k_iweep, k_iweepp, k_s20p, k_s20pp, k_sap, k_sapp, k_sbp, k_sbpp, k_sep, k_sepp, k_sip, k_sipp, k_weep, k_weepp)
+
+  // Variable initializations:
+  k_25p = 0.01;
+  k_25pp = 5;
+  k_14di = 0;
+  k_a20 = 0.5;
+  k_a25p = 0;
+  k_a25pp = 1;
+  k_afb = 1;
+  k_afi = 88;
+  k_ah1p = 0.18;
+  k_ah1pp = 3.5;
+  k_aie = 0.07;
+  k_assa = 25;
+  k_assb = 0;
+  k_asse = 50;
+  k_atfp = 0;
+  k_atfapp = 0.2;
+  k_atfdpp = 3;
+  k_atfepp = 0.5;
+  k_aweep = 0.3;
+  k_aweepp = 0;
+  k_d20 = 0.15;
+  k_dap = 0.02;
+  k_dapp = 2;
+  k_dappp = 0;
+  k_dbp = 0.005;
+  k_dbhpp = 2;
+  k_dbcpp = 0.1;
+  k_dep = 0.01;
+  k_deapp = 0.5;
+  k_debpp = 0.5;
+  k_deepp = 0.1;
+  k_dip = 0.8;
+  k_diapp = 5;
+  k_dibpp = 5;
+  k_didpp = 0;
+  k_diepp = 5;
+  k_disse = 1;
+  k_dissb = 0;
+  k_dissa = 1;
+  k_i20 = 0.25;
+  k_i25p = 0.3;
+  k_i25pp = 0;
+  k_ifb = 0.1;
+  k_ifip = 88;
+  k_ifibpp = 88;
+  k_ih1p = 0;
+  k_ih1app = 0.2;
+  k_ih1bpp = 1;
+  k_ih1dpp = 0;
+  k_ih1epp = 0.1;
+  k_iie = 0.18;
+  k_itfp = 0.25;
+  k_itfapp = 0.1;
+  k_itfbpp = 0.1;
+  k_iweep = 0;
+  k_iweepp = 1;
+  k_s20p = 0;
+  k_s20pp = 0.15;
+  k_sap = 0;
+  k_sapp = 0.025;
+  k_sbp = 0.01;
+  k_sbpp = 0.03;
+  k_sep = 0.01;
+  k_sepp = 0.18;
+  k_sip = 1.8;
+  k_sipp = 0;
+  k_weep = 0.02;
+  k_weepp = 0.2;
+end
+
+model csikasz_nagy_2006____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: csikasz_nagy_2006__environment(time_);
+  CycA: csikasz_nagy_2006__CycA(CycA0, k_assa, k_dissa, V_di0, V_sa0, V_da0, Tri_A0, CKI0, time_);
+  CycB: csikasz_nagy_2006__CycB(CycB0, k_assb, k_dissb, V_sb0, V_db0, V_250, V_wee0, V_di0, pB0, CKI0, BCKI0, time_);
+  CycE: csikasz_nagy_2006__CycE(CycE0, k_disse, k_asse, V_di0, V_se0, V_de0, Tri_E0, CKI0, time_);
+  CycD: csikasz_nagy_2006__CycD(CycD0, mass0);
+  Cdc20_A: csikasz_nagy_2006__Cdc20_A(Cdc20_A0, k_a20, k_i20, k_d20, APCP0, Cdc20_i0, time_);
+  Cdc20_i: csikasz_nagy_2006__Cdc20_i(Cdc20_i0, Cdc20_A0, k_a20, k_i20, k_d20, k_s20p, k_s20pp, CycB0, APCP0, time_);
+  APC: csikasz_nagy_2006__APC(APC0, APCP0);
+  APCP: csikasz_nagy_2006__APCP(APCP0, k_aie, k_iie, CycB0, APC0, time_);
+  pB: csikasz_nagy_2006__pB(pB0, k_assb, k_dissb, V_wee0, V_250, V_db0, V_di0, CycB0, CKI0, pBCKI0, time_);
+  BCKI: csikasz_nagy_2006__BCKI(BCKI0, k_assb, k_dissb, V_wee0, V_250, V_db0, V_di0, CycB0, CKI0, pBCKI0, time_);
+  pBCKI: csikasz_nagy_2006__pBCKI(pBCKI0, k_assb, k_dissb, V_wee0, V_250, V_db0, V_di0, pB0, CKI0, BCKI0, time_);
+  Tri_A: csikasz_nagy_2006__Tri_A(Tri_A0, k_assa, k_dissa, CycA0, CKI0, V_da0, V_di0, time_);
+  Tri_E: csikasz_nagy_2006__Tri_E(Tri_E0, k_asse, k_disse, CycE0, CKI0, V_de0, V_di0, time_);
+  CKI: csikasz_nagy_2006__CKI(CKI0, k_assb, k_dissb, k_assa, k_dissa, k_asse, k_disse, V_db0, V_si0, V_da0, V_di0, V_de0, CycB0, BCKI0, pB0, Tri_E0, pBCKI0, CycA0, CycE0, Tri_A0, time_);
+  Cdh1_i: csikasz_nagy_2006__Cdh1_i(Cdh1_i0, Cdh10);
+  Cdh1: csikasz_nagy_2006__Cdh1(Cdh10, V_ah10, V_ih10, Cdh1_i0, time_);
+  mass: csikasz_nagy_2006__mass(mass0, time_);
+  V_atf: csikasz_nagy_2006__V_atf(V_atf0, k_atfp, k_atfapp, k_atfepp, k_atfdpp, CycA0, CycE0, CycD0);
+  V_itf: csikasz_nagy_2006__V_itf(V_itf0, k_itfp, k_itfapp, k_itfbpp, CycA0, CycB0);
+  TF_E: csikasz_nagy_2006__TF_E(TF_E0, V_atf0, V_itf0);
+  V_de: csikasz_nagy_2006__V_de(V_de0, k_dep, k_deepp, k_deapp, k_debpp, CycA0, CycE0, CycB0);
+  V_da: csikasz_nagy_2006__V_da(V_da0, k_dap, k_dapp, k_dappp, Cdc20_A0, Cdc20_i0);
+  TF_I: csikasz_nagy_2006__TF_I(TF_I0, k_afi, k_ifip, k_ifibpp, Cdc14, CycB0, Cdc20_A0);
+  V_ah1: csikasz_nagy_2006__V_ah1(V_ah10, k_ah1p, k_ah1pp, Cdc14);
+  V_ih1: csikasz_nagy_2006__V_ih1(V_ih10, k_ih1p, k_ih1app, k_ih1bpp, k_ih1epp, k_ih1dpp, CycA0, CycB0, CycE0, CycD0);
+  V_si: csikasz_nagy_2006__V_si(V_si0, k_sip, k_sipp, TF_I0);
+  V_di: csikasz_nagy_2006__V_di(V_di0, k_dip, k_diapp, k_diepp, k_didpp, k_dibpp, k_14di, CycA0, CycB0, CycE0, CycD0, Cdc14);
+  preMPF: csikasz_nagy_2006__preMPF(preMPF0, pB0, BCKI0);
+  CycBT: csikasz_nagy_2006__CycBT(CycBT0, CycB0, pB0, BCKI0, pBCKI0);
+  CycAT: csikasz_nagy_2006__CycAT(CycAT0, CycA0, Tri_A0);
+  CycET: csikasz_nagy_2006__CycET(CycET0, CycE0, Tri_E0);
+  Tri_B: csikasz_nagy_2006__Tri_B(Tri_B0, BCKI0, pBCKI0);
+  CKIT: csikasz_nagy_2006__CKIT(CKIT0, CKI0, BCKI0, pBCKI0, Tri_A0, Tri_E0);
+  Cdc20_T: csikasz_nagy_2006__Cdc20_T(Cdc20_T0, Cdc20_i0, Cdc20_A0);
+  TF_B: csikasz_nagy_2006__TF_B(TF_B0, k_afb, k_ifb, CycB0);
+  V_sb: csikasz_nagy_2006__V_sb(V_sb0, k_sbp, k_sbpp, TF_B0, mass0);
+  V_sa: csikasz_nagy_2006__V_sa(V_sa0, k_sap, k_sapp, TF_E0, mass0);
+  V_se: csikasz_nagy_2006__V_se(V_se0, k_sep, k_sepp, TF_E0, mass0);
+  V_db: csikasz_nagy_2006__V_db(V_db0, k_dbp, k_dbhpp, k_dbcpp, Cdc20_A0, Cdh10);
+  Wee1: csikasz_nagy_2006__Wee1(Wee10, k_aweep, k_aweepp, k_iweep, k_iweepp, Cdc14, CycB0);
+  V_wee: csikasz_nagy_2006__V_wee(V_wee0, k_weep, k_weepp, Wee10);
+  Cdc25: csikasz_nagy_2006__Cdc25(Cdc250, k_a25p, k_a25pp, k_i25p, k_i25pp, Cdc14, CycB0);
+  V_25: csikasz_nagy_2006__V_25(V_250, k_25p, k_25pp, Cdc250);
+  kinetic_parameters: csikasz_nagy_2006__kinetic_parameters(k_25p, k_25pp, k_14di, k_a20, k_a25p, k_a25pp, k_afb, k_afi, k_ah1p, k_ah1pp, k_aie, k_assa, k_assb, k_asse, k_atfp, k_atfapp, k_atfdpp, k_atfepp, k_aweep, k_aweepp, k_d20, k_dap, k_dapp, k_dappp, k_dbp, k_dbhpp, k_dbcpp, k_dep, k_deapp, k_debpp, k_deepp, k_dip, k_diapp, k_dibpp, k_didpp, k_diepp, k_disse, k_dissb, k_dissa, k_i20, k_i25p, k_i25pp, k_ifb, k_ifip, k_ifibpp, k_ih1p, k_ih1app, k_ih1bpp, k_ih1dpp, k_ih1epp, k_iie, k_itfp, k_itfapp, k_itfbpp, k_iweep, k_iweepp, k_s20p, k_s20pp, k_sap, k_sapp, k_sbp, k_sbpp, k_sep, k_sepp, k_sip, k_sipp, k_weep, k_weepp);
+end

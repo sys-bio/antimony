@@ -1,0 +1,106 @@
+//Created by libAntimony v1.3
+model rice_winslow_hunter_1999_version05__environment(time_)
+end
+
+model rice_winslow_hunter_1999_version05__T(T, TCa)
+
+  // Assignment Rules:
+  T := 1.0 - TCa;
+end
+
+model rice_winslow_hunter_1999_version05__TCa(TCa, kon, koff, T, Ca, time_)
+
+  // Rate Rules:
+  TCa' = kon * Ca * T - koff * TCa;
+end
+
+model rice_winslow_hunter_1999_version05__N0(N0, P0, N1, P1)
+
+  // Assignment Rules:
+  N0 := 1.0 - ( P0 + N1 + P1 );
+end
+
+model rice_winslow_hunter_1999_version05__N1(N1, k1, k1_, g10, N0, P1, time_)
+
+  // Rate Rules:
+  N1' = k1_ * P1 - ( g10 * N1 + k1 * N1 );
+end
+
+model rice_winslow_hunter_1999_version05__P0(P0, k1, k1_, f01, g10, N0, P1, time_)
+
+  // Rate Rules:
+  P0' = k1 * N0 + g10 * P1 - ( k1_ * P0 + f01 * P0 );
+end
+
+model rice_winslow_hunter_1999_version05__P1(P1, k1, k1_, f01, g10, f12, g21, N1, P2, P0, time_)
+
+  // Rate Rules:
+  P1' = k1 * N1 + f01 * P0 + g21 * P2 - ( k1_ * P1 + g10 * P1 + f12 * P1 );
+end
+
+model rice_winslow_hunter_1999_version05__P2(P2, f23, g32, f12, g21, P1, P3, time_)
+
+  // Rate Rules:
+  P2' = f12 * P1 + g32 * P3 - ( f23 * P2 + g21 * P2 );
+end
+
+model rice_winslow_hunter_1999_version05__P3(P3, f23, g32, P2, time_)
+
+  // Rate Rules:
+  P3' = f23 * P2 - g32 * P3;
+end
+
+model rice_winslow_hunter_1999_version05__constants(Ca, kon, koff, k1, k1_, f01, g10, f12, g21, f23, g32, TCa)
+
+  // Assignment Rules:
+  k1 := k1_ * power( TCa / K_1_2 , N );
+  f01 := 3.0 * f;
+  g10 := 1.0 * gSL;
+  f12 := 10.0 * f;
+  g21 := 2.0 * gSL;
+  f23 := 7.0 * f;
+  g32 := 3.0 * gSL;
+  gSL := g * ( 2.0 - power( SL_norm , 1.6 ));
+  K_1_2 := 1.0 / ( 1.0 + K_Ca / ( 1.5 - SL_norm * 1.0 ));
+  N := 5.0 + 3.0 * SL_norm;
+  SL_norm := ( SL - 1.7 ) / ( 2.3 - 1.7 );
+
+  // Variable initializations:
+  Ca = 1.0;
+  kon = 20.0;
+  koff = 40.0;
+  k1_ = 45.0;
+  f = 10.0;
+  g = 30.0;
+  K_Ca = 1.47;
+  SL = 1.7;
+end
+
+model rice_winslow_hunter_1999_version05__force(P1, N1, P2, P3, f01, g10, f12, g21, f23, g32)
+
+  // Assignment Rules:
+  F := alpha * ( P1 + N1 + 2.0 * P2 + 3.0 * P3 ) / Fmax;
+  Fmax := P1_max + 2.0 * P2_max + 3.0 * P3_max;
+  P1_max := f01 * g21 * g32 / ( g10 * g21 * g32 + f01 * g21 * g32 + f01 * f12 * g32 + f01 * f12 * f23 );
+  P2_max := f01 * f12 * g32 / ( g10 * g21 * g32 + f01 * g21 * g32 + f01 * f12 * g32 + f01 * f12 * f23 );
+  P3_max := f01 * f12 * f23 / ( g10 * g21 * g32 + f01 * g21 * g32 + f01 * f12 * g32 + f01 * f12 * f23 );
+
+  // Variable initializations:
+  alpha = 1.0;
+end
+
+model rice_winslow_hunter_1999_version05____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: rice_winslow_hunter_1999_version05__environment(time_);
+  T: rice_winslow_hunter_1999_version05__T(T0, TCa0);
+  TCa: rice_winslow_hunter_1999_version05__TCa(TCa0, kon, koff, T0, Ca, time_);
+  N0: rice_winslow_hunter_1999_version05__N0(N00, P00, N10, P10);
+  N1: rice_winslow_hunter_1999_version05__N1(N10, k1, k1_, g10, N00, P10, time_);
+  P0: rice_winslow_hunter_1999_version05__P0(P00, k1, k1_, f01, g10, N00, P10, time_);
+  P1: rice_winslow_hunter_1999_version05__P1(P10, k1, k1_, f01, g10, f12, g21, N10, P20, P00, time_);
+  P2: rice_winslow_hunter_1999_version05__P2(P20, f23, g32, f12, g21, P10, P30, time_);
+  P3: rice_winslow_hunter_1999_version05__P3(P30, f23, g32, P20, time_);
+  constants: rice_winslow_hunter_1999_version05__constants(Ca, kon, koff, k1, k1_, f01, g10, f12, g21, f23, g32, TCa0);
+  force: rice_winslow_hunter_1999_version05__force(P10, N10, P20, P30, f01, g10, f12, g21, f23, g32);
+end

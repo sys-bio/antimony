@@ -1,0 +1,303 @@
+//Created by libAntimony v1.3
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__environment(time_)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__PYR(PYR, V_GLYC, V_LDH, V_PDH, V_ALS, time_)
+
+  // Rate Rules:
+  PYR' = V_GLYC - (V_LDH + V_PDH + 2.0 * V_ALS);
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ACP(ACP, V_PTA, V_ACK, time_)
+
+  // Rate Rules:
+  ACP' = V_PTA - V_ACK;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ACAL(ACAL, V_ACALDH, V_ADH, time_)
+
+  // Rate Rules:
+  ACAL' = V_ACALDH - V_ADH;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ACLAC(ACLAC, V_ALS, V_ALDC, V_NEALC, time_)
+
+  // Rate Rules:
+  ACLAC' = V_ALS - (V_ALDC + V_NEALC);
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ACET(ACET, V_ALDC, V_NEALC, V_ACETDH, V_ACETEFF, time_)
+
+  // Rate Rules:
+  ACET' = V_ALDC + V_NEALC - (V_ACETDH + V_ACETEFF);
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ATP(ATP, V_GLYC, V_ACK, V_ATPase, time_)
+
+  // Rate Rules:
+  ATP' = V_GLYC + V_ACK - V_ATPase;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ADP(ADP)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__NADH(NADH, V_GLYC, V_PDH, V_LDH, V_ACALDH, V_ADH, V_ACETDH, V_NOX, time_)
+
+  // Rate Rules:
+  NADH' = V_GLYC + V_PDH - (V_LDH + V_ACALDH + V_ADH + V_ACETDH + V_NOX);
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__NAD(NAD)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ACCOA(ACCOA, V_PDH, V_ACALDH, V_PTA, time_)
+
+  // Rate Rules:
+  ACCOA' = V_PDH - (V_ACALDH + V_PTA);
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__COA(COA)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__AC(AC)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__BUT(BUT)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ETOH(ETOH)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__GLC(GLC)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__LAC(LAC)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__O(O)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__P(P)
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_GLYC(V_GLYC, GLC, NAD, ADP, ATP, PYR, NADH)
+
+  // Assignment Rules:
+  V_GLYC := V_GLYC_max * ( GLC / Km_GLC ) * ( NAD / Km_NAD ) * ( ADP / Km_ADP ) / (( 1.0 + GLC / Km_GLC + PYR / Km_PYR ) * ( 1.0 + NAD / Km_NAD + NADH / Km_NADH ) * ( 1.0 + ADP / Km_ADP + ATP / Km_ATP ));
+
+  // Variable initializations:
+  Km_GLC = 0.1;
+  Km_NAD = 0.14;
+  Km_ADP = 0.047;
+  Km_PYR = 25.0;
+  Km_NADH = 0.09;
+  Km_ATP = 0.019;
+  V_GLYC_max = 2397.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_LDH(V_LDH, LAC, NAD, PYR, NADH)
+
+  // Assignment Rules:
+  V_LDH := V_LDH_max * ( 1.0 / ( Km_PYR * Km_NADH )) * ( PYR * NADH - LAC * NAD / Keq ) / (( 1.0 + PYR / Km_PYR + LAC / Km_LAC ) * ( 1.0 + NADH / Km_NADH + NAD / Km_NAD ));
+
+  // Variable initializations:
+  Keq = 21120.7;
+  Km_LAC = 100.0;
+  Km_NAD = 2.4;
+  Km_PYR = 1.5;
+  Km_NADH = 0.08;
+  V_LDH_max = 5118.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_PDH(V_PDH, NAD, COA, ACCOA, PYR, NADH)
+
+  // Assignment Rules:
+  V_PDH := V_PDH_max * ( 1.0 / ( 1.0 + Ki * ( NADH / NAD ))) * ( PYR / Km_PYR ) * ( NAD / Km_NAD ) * ( COA / Km_COA ) / (( 1.0 + PYR / Km_PYR ) * ( 1.0 + NAD / Km_NAD + NADH / Km_NADH ) * ( 1.0 + COA / Km_COA + ACCOA / Km_ACCOA ));
+
+  // Variable initializations:
+  Ki = 46.4;
+  Km_NAD = 0.4;
+  Km_COA = 0.014;
+  Km_PYR = 1.0;
+  Km_NADH = 0.1;
+  Km_ACCOA = 0.008;
+  V_PDH_max = 21120.7;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_PTA(V_PTA, P, COA, ACCOA, ACP)
+
+  // Assignment Rules:
+  V_PTA := V_PTA_max * ( 1.0 / ( Ki_ACCOA * Km_P )) * ( ACCOA * P - ACP * COA / Keq ) / ( 1.0 + ACCOA / Ki_ACCOA + P / Ki_P + ACP / Ki_ACP + COA / Ki_COA + ACCOA * P / ( Ki_ACCOA * Km_P ) + ACP * COA / ( Km_ACP * Ki_COA ));
+
+  // Variable initializations:
+  Keq = 0.0281;
+  Km_P = 2.6;
+  Ki_P = 2.6;
+  Km_COA = 0.12;
+  Ki_COA = 0.029;
+  Km_ACP = 0.7;
+  Ki_ACP = 0.2;
+  Ki_ACCOA = 0.2;
+  V_PTA_max = 259.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ACK(V_ACK, AC, ATP, ADP, ACP)
+
+  // Assignment Rules:
+  V_ACK := V_ACK_max * ( 1.0 / ( Km_ADP * Km_ACP )) * ( ACP * ADP - AC * ATP / Keq ) / (( 1.0 + ACP / Km_ACP + AC / Km_AC ) * ( 1.0 + ADP / Km_ADP + ATP / Km_ATP ));
+
+  // Variable initializations:
+  Keq = 174.2;
+  Km_AC = 7.0;
+  Km_ATP = 0.07;
+  Km_ADP = 0.5;
+  Km_ACP = 0.16;
+  V_ACK_max = 42.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ACALDH(V_ACALDH, NAD, NADH, COA, ACCOA, ACAL)
+
+  // Assignment Rules:
+  V_ACALDH := V_ACALDH_max * ( 1.0 / ( Km_ACCOA * Km_NADH )) * ( ACCOA * NADH - NAD * COA * ACAL / Keq ) / (( 1.0 + NAD / Km_NAD + NADH / Km_NADH ) * ( 1.0 + ACCOA / Km_ACCOA + COA / Km_COA + ACAL / Km_ACAL + ACAL * COA / ( Km_ACAL * Km_COA )));
+
+  // Variable initializations:
+  Keq = 1.0;
+  Km_NAD = 0.08;
+  Km_NADH = 0.025;
+  Km_COA = 0.008;
+  Km_ACCOA = 0.007;
+  Km_ACAL = 10.0;
+  V_ACALDH_max = 97.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ADH(V_ADH, NAD, NADH, ETOH, ACAL)
+
+  // Assignment Rules:
+  V_ADH := V_ADH_max * ( 1.0 / ( Km_ACAL * Km_NADH )) * ( ACAL * NADH - ETOH * NAD / Keq ) / (( 1.0 + NAD / Km_NAD + NADH / Km_NADH ) * ( 1.0 + ACAL / Km_ACAL + ETOH / Km_ETOH ));
+
+  // Variable initializations:
+  Keq = 12354.9;
+  Km_NAD = 0.08;
+  Km_NADH = 0.05;
+  Km_ETOH = 1.0;
+  Km_ACAL = 0.03;
+  V_ADH_max = 162.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ALS(V_ALS, ACLAC, PYR)
+
+  // Assignment Rules:
+  V_ALS := V_ALS_max * ( PYR / Km_PYR ) * ( 1.0 - ACLAC / ( PYR * Keq )) * power( PYR / Km_PYR + ACLAC / Km_ACLAC , N - 1.0 ) / ( 1.0 + power( PYR / Km_PYR + ACLAC / Km_ACLAC , N ));
+
+  // Variable initializations:
+  N = 2.4;
+  Keq = 9.0E12;
+  Km_ACLAC = 100.0;
+  Km_PYR = 50.0;
+  V_ALS_max = 600.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ALDC(V_ALDC, ACLAC, ACET)
+
+  // Assignment Rules:
+  V_ALDC := V_ALDC_max * ( ACLAC / Km_ACLAC ) / ( 1.0 + ACLAC / Km_ACLAC + ACET / Km_ACET );
+
+  // Variable initializations:
+  Km_ACLAC = 10.0;
+  Km_ACET = 100.0;
+  V_ALDC_max = 106.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ACETEFF(V_ACETEFF, ACET)
+
+  // Assignment Rules:
+  V_ACETEFF := V_ACETEFF_max * ( ACET / Km_ACET ) / ( 1.0 + ACET / Km_ACET );
+
+  // Variable initializations:
+  Km_ACET = 5.0;
+  V_ACETEFF_max = 200.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ACETDH(V_ACETDH, NAD, NADH, BUT, ACET)
+
+  // Assignment Rules:
+  V_ACETDH := V_ACETDH_max * ( 1.0 / ( Km_ACET * Km_NADH )) * ( ACET * NADH - BUT * NAD / Keq ) / (( 1.0 + ACET / Km_ACET + BUT / Km_BUT ) * ( 1.0 + NADH / Km_NADH + NAD / Km_NAD ));
+
+  // Variable initializations:
+  Keq = 1400.0;
+  Km_NAD = 0.16;
+  Km_NADH = 0.02;
+  Km_BUT = 2.6;
+  Km_ACET = 0.06;
+  V_ACETDH_max = 105.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ATPase(V_ATPase, ADP, ATP)
+
+  // Assignment Rules:
+  V_ATPase := V_ATPase_max * power( ATP / ( ADP * Km_ATP ), N ) / ( 1.0 + power( ATP / ( ADP * Km_ATP ), N ));
+
+  // Variable initializations:
+  N = 2.6;
+  Km_ATP = 6.2;
+  V_ATPase_max = 900.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_NOX(V_NOX, NAD, NADH, O)
+
+  // Assignment Rules:
+  V_NOX := V_NOX_max * ( NADH * O / ( Km_NADH * Km_O )) / (( 1.0 + NADH / Km_NADH + NAD / Km_NAD ) * ( 1.0 + O / Km_O ));
+
+  // Variable initializations:
+  Km_NAD = 1.0;
+  Km_NADH = 0.041;
+  Km_O = 0.01;
+  V_NOX_max = 4117.0;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_NEALC(V_NEALC, ACLAC)
+
+  // Assignment Rules:
+  V_NEALC := k * ACLAC;
+
+  // Variable initializations:
+  k = 0.0003;
+end
+
+model hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__environment(time_);
+  PYR: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__PYR(PYR0, V_GLYC0, V_LDH0, V_PDH0, V_ALS0, time_);
+  ACP: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ACP(ACP0, V_PTA0, V_ACK0, time_);
+  ACAL: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ACAL(ACAL0, V_ACALDH0, V_ADH0, time_);
+  ACLAC: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ACLAC(ACLAC0, V_ALS0, V_ALDC0, V_NEALC0, time_);
+  ACET: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ACET(ACET0, V_ALDC0, V_NEALC0, V_ACETDH0, V_ACETEFF0, time_);
+  ATP: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ATP(ATP0, V_GLYC0, V_ACK0, V_ATPase0, time_);
+  ADP: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ADP(ADP0);
+  NADH: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__NADH(NADH0, V_GLYC0, V_PDH0, V_LDH0, V_ACALDH0, V_ADH0, V_ACETDH0, V_NOX0, time_);
+  NAD: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__NAD(NAD0);
+  ACCOA: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ACCOA(ACCOA0, V_PDH0, V_ACALDH0, V_PTA0, time_);
+  COA: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__COA(COA0);
+  AC: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__AC(AC0);
+  BUT: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__BUT(BUT0);
+  ETOH: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__ETOH(ETOH0);
+  GLC: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__GLC(GLC0);
+  LAC: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__LAC(LAC0);
+  O: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__O(O0);
+  P: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__P(P0);
+  V_GLYC: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_GLYC(V_GLYC0, GLC0, NAD0, ADP0, ATP0, PYR0, NADH0);
+  V_LDH: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_LDH(V_LDH0, LAC0, NAD0, PYR0, NADH0);
+  V_PDH: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_PDH(V_PDH0, NAD0, COA0, ACCOA0, PYR0, NADH0);
+  V_PTA: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_PTA(V_PTA0, P0, COA0, ACCOA0, ACP0);
+  V_ACK: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ACK(V_ACK0, AC0, ATP0, ADP0, ACP0);
+  V_ACALDH: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ACALDH(V_ACALDH0, NAD0, NADH0, COA0, ACCOA0, ACAL0);
+  V_ADH: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ADH(V_ADH0, NAD0, NADH0, ETOH0, ACAL0);
+  V_ALS: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ALS(V_ALS0, ACLAC0, PYR0);
+  V_ALDC: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ALDC(V_ALDC0, ACLAC0, ACET0);
+  V_ACETEFF: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ACETEFF(V_ACETEFF0, ACET0);
+  V_ACETDH: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ACETDH(V_ACETDH0, NAD0, NADH0, BUT0, ACET0);
+  V_ATPase: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_ATPase(V_ATPase0, ADP0, ATP0);
+  V_NOX: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_NOX(V_NOX0, NAD0, NADH0, O0);
+  V_NEALC: hoefnagel_starrenburg_martens_hugenholtz_kleerebezem_vanswam_bongers_westerhoff_snoep_2002_version01__V_NEALC(V_NEALC0, ACLAC0);
+end

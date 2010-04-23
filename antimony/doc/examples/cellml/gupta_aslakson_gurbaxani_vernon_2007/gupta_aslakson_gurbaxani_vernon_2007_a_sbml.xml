@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="gupta_model_2007____main" name="gupta_model_2007____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="c0" value="0.6" constant="false"/>
+      <parameter id="c_f" constant="false"/>
+      <parameter id="kcd" value="1"/>
+      <parameter id="ki1" value="0.1"/>
+      <parameter id="o0" value="0.055" constant="false"/>
+      <parameter id="a0" value="0.055" constant="false"/>
+      <parameter id="kad" value="10"/>
+      <parameter id="ki2" value="0.1"/>
+      <parameter id="r0" value="0.08" constant="false"/>
+      <parameter id="kcr" value="0.05"/>
+      <parameter id="krd" value="0.9"/>
+      <parameter id="k" value="0.001"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="c0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <ci> c_f </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> o0 </ci>
+                    <ci> ki1 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kcd </ci>
+              <ci> c0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="c_f"/>
+      <rateRule variable="o0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 1 </cn>
+            <apply>
+              <minus/>
+              <ci> a0 </ci>
+              <ci> o0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="a0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <ci> c0 </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> o0 </ci>
+                    <ci> r0 </ci>
+                  </apply>
+                  <ci> ki2 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kad </ci>
+              <ci> a0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="r0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <times/>
+                    <ci> o0 </ci>
+                    <ci> r0 </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <plus/>
+                    <ci> k </ci>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <times/>
+                        <ci> o0 </ci>
+                        <ci> r0 </ci>
+                      </apply>
+                      <cn> 2 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> kcr </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> krd </ci>
+              <ci> r0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

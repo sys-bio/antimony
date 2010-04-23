@@ -1,0 +1,723 @@
+//Created by libAntimony v1.3
+model IyerHajjarArmoundas2007__environment(time_, iso, CSQN2, RyR2)
+
+  // Variable initializations:
+  iso = 0;
+  CSQN2 = 0;
+  RyR2 = 0;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_CONCENTRATION_AND_VOLTAGE_DERIVATIVES(Faraday, Rgas, RT_over_F, Nai, Ki, Cai, CaSS, CaJSR, CaNSR, V, INa, INab, INaCa, INaK, IKv14_Na, IKr, IKs, IK1, ICaK, ICa, Ito1, i_Stim, IKv43, IKv14_K, ICab, IpCa, Jxfer, Jup, Jtrpn, Jrel, Jtr, time_, beta_SS, beta_JSR, beta_i, Ko, Nao, Cao)
+
+  // Assignment Rules:
+  a1 := C / (Vmyo * Faraday);
+  a2 := C / (2 * VSS * Faraday);
+  RT_over_F := Rgas * Temp / Faraday;
+  C := Acap * 1E-3;
+  i_tot := INa + ICa + ICaK + IKr + IKs + IK1 + INaCa + INaK + Ito1 + IpCa + ICab + INab + i_Stim;
+
+  // Rate Rules:
+  Nai' = -((INa + INab + 3 * (INaCa + INaK) + IKv14_Na)) * a1;
+  Ki' = -((IKr + IKs + IK1 + ICaK + i_Stim - 2 * INaK + IKv43 + IKv14_K)) * a1;
+  Cai' = beta_i * (Jxfer - Jup - Jtrpn - (ICab - 2 * INaCa + IpCa) * 0.5 * a1);
+  CaSS' = beta_SS * (Jrel * VJSR / VSS - Jxfer * Vmyo / VSS - ICa * a2);
+  CaJSR' = beta_JSR * (Jtr - Jrel);
+  CaNSR' = Jup * Vmyo / VNSR - Jtr * VJSR / VNSR;
+  V' = -(i_tot);
+
+  // Variable initializations:
+  Faraday = 96.5;
+  Temp = 310;
+  Rgas = 8.315;
+  Acap = 0.0001534;
+  Vmyo = 2.584e-5;
+  VJSR = 1.6e-7;
+  VNSR = 2.1e-6;
+  VSS = 1.2e-9;
+  Nai = 9.85573275838928;
+  Ki = 125.427082712469;
+  Cai = 0.000363968672182656;
+  CaSS = 0.000506604278037024;
+  CaJSR = 0.421936980515042;
+  CaNSR = 0.423551621440241;
+  V = -86.7261544519706;
+  Ko = 4;
+  Nao = 138;
+  Cao = 2;
+end
+
+model IyerHajjarArmoundas2007__I_stimulus(i_Stim, time_)
+
+  // Assignment Rules:
+  i_Stim := piecewise( stim_amplitude , ( time_ - past >= stim_offset) && (time_ - past <= stim_offset + stim_duration ), 0 );
+  past := floor(time_ / stim_period) * stim_period;
+
+  // Variable initializations:
+  stim_period = 500;
+  stim_duration = 3;
+  stim_amplitude = -15;
+  stim_offset = 100;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_INTRACELLULAR_CALCIUM_FLUXES(Cai, CaNSR, Jup, Jrel, O1_RyR, O2_RyR, CaJSR, CaSS, Jtr, Jxfer, iso)
+
+  // Assignment Rules:
+  fb := power(Cai / Kfb, Nfb);
+  rb := power(CaNSR / Krb, Nrb);
+  Jup := piecewise( KSR * (vmaxf * fb - vmaxr * rb) / (1 + fb + rb) , iso == 0 , 1.5 * KSR * (vmaxf * fb - vmaxr * rb) / (1 + fb + rb) );
+  Jrel := v1 * (O1_RyR + O2_RyR) * (CaJSR - CaSS);
+  Jtr := (CaNSR - CaJSR) / tautr;
+  Jxfer := (CaSS - Cai) / tauxfer;
+
+  // Variable initializations:
+  Kfb = 0.000168;
+  Nfb = 1.2;
+  Krb = 3.29;
+  Nrb = 1;
+  KSR = 1.2;
+  vmaxf = 7.48e-5;
+  vmaxr = 0.000318;
+  v1 = 1.8;
+  tautr = 0.5747;
+  tauxfer = 26.7;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_Jtrpn_and_BUFFER_SCALE_FACTORS(Cai, Jtrpn, CaSS, beta_SS, beta_JSR, beta_i, CaJSR, LTRPNCa, HTRPNCa, time_, CSQN2, RyR2)
+
+  // Assignment Rules:
+  CSQNtot := piecewise( 15 , RyR2 == 1 , 0.5 * 15 );
+  dLTRPNCa := kltrpn_plus * Cai * (1 - LTRPNCa) - kltrpn_minus * LTRPNCa;
+  dHTRPNCa := khtrpn_plus * Cai * (1 - HTRPNCa) - khtrpn_minus * HTRPNCa;
+  Jtrpn := LTRPNtot * dLTRPNCa + HTRPNtot * dHTRPNCa;
+  beta_SS := 1 / (1 + CMDNtot * KmCMDN / power(CaSS + KmCMDN, 2 ) + EGTAtot * KmEGTA / power(CaSS + KmEGTA, 2 ));
+  beta_JSR := 1 / (1 + CSQNtot * KmCSQN / power(CaJSR + KmCSQN, 2 ));
+  beta_i := 1 / (1 + CMDNtot * KmCMDN / power(Cai + KmCMDN, 2 ) + EGTAtot * KmEGTA / power(Cai + KmEGTA, 2 ));
+
+  // Rate Rules:
+  LTRPNCa' = dLTRPNCa;
+  HTRPNCa' = dHTRPNCa;
+
+  // Variable initializations:
+  LTRPNtot = 0.07;
+  HTRPNtot = 0.14;
+  khtrpn_plus = 20;
+  khtrpn_minus = 6.6e-5;
+  kltrpn_plus = 40;
+  kltrpn_minus = 0.04;
+  CMDNtot = 0.05;
+  EGTAtot = 0;
+  KmCMDN = 0.00238;
+  KmCSQN = 0.8;
+  KmEGTA = 0.00015;
+  LTRPNCa = 0.280466039150394;
+  HTRPNCa = 0.99347761599363;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_DERIVATIVES_OF_RyR_RECEPTOR_STATES(CaSS, CaJSR, time_, C1_RyR, O2_RyR, C2_RyR, O1_RyR, CSQN2, RyR2)
+
+  // Assignment Rules:
+  klumenC1O1 := HmaxC1O1 - (HmaxC1O1 - Hmin) / (1 + power(H50C1O1 / CaJSR, HN));
+  klumenO1C2 := HmaxO1C2 - (HmaxO1C2 - Hmin) / (1 + power(H50O1C2 / CaJSR, HN));
+  klumenC2O1 := HmaxC2O1 - (HmaxC2O1 - Hmin) / (1 + power(H50C2O1 / CaJSR, HN));
+  HmaxO1C2 := piecewise( 0.2 , CSQN2 == 1 , 0.5 );
+  H50C2O1 := piecewise( 0.5 , CSQN2 == 1 , 1 );
+  dC1_RyR := -(kaplus) * klumenC1O1 * power(CaSS * 1000 , ncoop * kryr) * C1_RyR + kaminus * O1_RyR;
+  dO2_RyR := kbplus * power(CaSS * 1000 , mcoop * kryr) * O1_RyR - kbminus * O2_RyR;
+  dC2_RyR := kcplus / klumenO1C2 * O1_RyR - kcminus * klumenC2O1 * C2_RyR;
+  dO1_RyR := -((dC1_RyR + dO2_RyR + dC2_RyR));
+
+  // Rate Rules:
+  C1_RyR' = dC1_RyR;
+  O2_RyR' = dO2_RyR;
+  C2_RyR' = dC2_RyR;
+  O1_RyR' = dO1_RyR;
+
+  // Variable initializations:
+  kaplus = 0.01215;
+  kaminus = 0.576;
+  kbplus = 0.00405;
+  kbminus = 1.93;
+  kcplus = 0.1;
+  kcminus = 0.0008;
+  ncoop = 4;
+  mcoop = 3;
+  kryr = 1;
+  HmaxC1O1 = 0.5;
+  HmaxC2O1 = 0.5;
+  Hmin = 5;
+  H50C1O1 = 1;
+  H50O1C2 = 1;
+  HN = 2.5;
+  C1_RyR = 0.132070890861418;
+  O2_RyR = 3.11350788541838e-7;
+  C2_RyR = 0.866791951404883;
+  O1_RyR = 0.00113684728532807;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_DERIVATIVES_OF_LTYPE_CHANNEL_STATES(V, CaSS, time_, Open, yCa)
+
+  // Assignment Rules:
+  C0_to_C1 := 4 * alpha;
+  C1_to_C2 := 3 * alpha;
+  C2_to_C3 := 2 * alpha;
+  C3_to_C4 := alpha;
+  C1_to_C0 := beta;
+  C2_to_C1 := 2 * beta;
+  C3_to_C2 := 3 * beta;
+  C4_to_C3 := 4 * beta;
+  CCa0_to_CCa1 := 4 * alpha_prime;
+  CCa1_to_CCa2 := 3 * alpha_prime;
+  CCa2_to_CCa3 := 2 * alpha_prime;
+  CCa3_to_CCa4 := alpha_prime;
+  CCa1_to_CCa0 := beta_prime;
+  CCa2_to_CCa1 := 2 * beta_prime;
+  CCa3_to_CCa2 := 3 * beta_prime;
+  CCa4_to_CCa3 := 4 * beta_prime;
+  C0_to_CCa0 := gamma;
+  C1_to_CCa1 := aL * C0_to_CCa0;
+  C2_to_CCa2 := aL * C1_to_CCa1;
+  C3_to_CCa3 := aL * C2_to_CCa2;
+  C4_to_CCa4 := aL * C3_to_CCa3;
+  CCa0_to_C0 := omega;
+  CCa1_to_C1 := CCa0_to_C0 / bL;
+  CCa2_to_C2 := CCa1_to_C1 / bL;
+  CCa3_to_C3 := CCa2_to_C2 / bL;
+  CCa4_to_C4 := CCa3_to_C3 / bL;
+  alpha := 4 * 1.2 * 0.416 * exp(0.012 * (V - 35 ));
+  beta := 4 * 0.45 * 0.049 * exp(-(0.065 ) * (V - 22 ));
+  alpha_prime := aL * alpha;
+  beta_prime := beta / bL;
+  gamma := 0.6 * 0.09233 * CaSS;
+  omega := 0.25 * 0.01;
+  a1_Ca0 := (CCa0_to_CCa1 + CCa0_to_C0) * CCa0;
+  a2_Ca0 := CCa1_to_CCa0 * CCa1 + C0_to_CCa0 * C0;
+  a1_Ca1 := (CCa1_to_CCa0 + CCa1_to_CCa2 + CCa1_to_C1) * CCa1;
+  a2_Ca1 := CCa0_to_CCa1 * CCa0 + CCa2_to_CCa1 * CCa2 + C1_to_CCa1 * C1;
+  a1_Ca2 := (CCa2_to_CCa1 + CCa2_to_CCa3 + CCa2_to_C2) * CCa2;
+  a2_Ca2 := CCa1_to_CCa2 * CCa1 + CCa3_to_CCa2 * CCa3 + C2_to_CCa2 * C2;
+  a1_Ca3 := (CCa3_to_CCa2 + CCa3_to_CCa4 + CCa3_to_C3) * CCa3;
+  a2_Ca3 := CCa2_to_CCa3 * CCa2 + CCa4_to_CCa3 * CCa4 + C3_to_CCa3 * C3;
+  a1_Ca4 := (CCa4_to_CCa3 + CCa4_to_C4) * CCa4;
+  a2_Ca4 := CCa3_to_CCa4 * CCa3 + C4_to_CCa4 * C4;
+  a1_C0 := (C0_to_C1 + C0_to_CCa0) * C0;
+  a2_C0 := C1_to_C0 * C1 + CCa0_to_C0 * CCa0;
+  a1_C1 := (C1_to_C0 + C1_to_C2 + C1_to_CCa1) * C1;
+  a2_C1 := C0_to_C1 * C0 + C2_to_C1 * C2 + CCa1_to_C1 * CCa1;
+  a1_C2 := (C2_to_C1 + C2_to_C3 + C2_to_CCa2) * C2;
+  a2_C2 := C1_to_C2 * C1 + C3_to_C2 * C3 + CCa2_to_C2 * CCa2;
+  a1_C3 := (C3_to_C2 + C3_to_C4 + C3_to_CCa3) * C3;
+  a2_C3 := C2_to_C3 * C2 + C4_to_C3 * C4 + CCa3_to_C3 * CCa3;
+  a1_C4 := (C4_to_C3 + fL + C4_to_CCa4) * C4;
+  a2_C4 := C3_to_C4 * C3 + gL * Open + CCa4_to_C4 * CCa4;
+  a1_Cainf := 0.82;
+  yCa_inf := a1_Cainf / (1 + exp((V + 28.5 ) / 7.8 )) + 1 - a1_Cainf;
+  tau_yCa := 1 / (0.00336336209452 / (0.5 + exp(V / -(5.53899874036055 ))) + 0.00779046570737 * exp(V / -(49.51039631160386 )));
+
+  // Rate Rules:
+  C0' = a2_C0 - a1_C0;
+  C1' = a2_C1 - a1_C1;
+  C2' = a2_C2 - a1_C2;
+  C3' = a2_C3 - a1_C3;
+  C4' = a2_C4 - a1_C4;
+  CCa0' = a2_Ca0 - a1_Ca0;
+  CCa1' = a2_Ca1 - a1_Ca1;
+  CCa2' = a2_Ca2 - a1_Ca2;
+  CCa3' = a2_Ca3 - a1_Ca3;
+  CCa4' = a2_Ca4 - a1_Ca4;
+  Open' = fL * C4 - gL * Open;
+  yCa' = (yCa_inf - yCa) / tau_yCa;
+
+  // Variable initializations:
+  fL = 0.3;
+  gL = 4;
+  bL = 2;
+  aL = 2;
+  C0 = 0.465679150104636;
+  C1 = 0.00834457719966281;
+  C2 = 5.60736209083906e-5;
+  C3 = 1.6747092904465e-7;
+  C4 = 1.87571666668874e-10;
+  CCa0 = 0.489846779190386;
+  CCa1 = 0.035111008610982;
+  CCa2 = 0.000943745917866092;
+  CCa3 = 1.12741202215634e-5;
+  CCa4 = 5.05056944609524e-8;
+  Open = 1.40806027419488e-11;
+  yCa = 0.995434385054729;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_DERIVATIVES_OF_Kv4_3_CHANNEL_STATES(V, C0Kv43, C1Kv43, C2Kv43, C3Kv43, OKv43, CI0Kv43, CI1Kv43, CI2Kv43, CI3Kv43, OIKv43, time_)
+
+  // Assignment Rules:
+  alpha_act43 := alphaa0Kv43 * exp(aaKv43 * V);
+  beta_act43 := betaa0Kv43 * exp(-(baKv43) * V);
+  alpha_inact43 := alphai0Kv43 * exp(-(aiKv43) * V);
+  beta_inact43 := betai0Kv43 * exp(biKv43 * V);
+  C0Kv43_to_C1Kv43 := 4 * alpha_act43;
+  C1Kv43_to_C2Kv43 := 3 * alpha_act43;
+  C2Kv43_to_C3Kv43 := 2 * alpha_act43;
+  C3Kv43_to_OKv43 := alpha_act43;
+  CI0Kv43_to_CI1Kv43 := 4 * b1Kv43 * alpha_act43;
+  CI1Kv43_to_CI2Kv43 := 3 * b2Kv43 * alpha_act43 / b1Kv43;
+  CI2Kv43_to_CI3Kv43 := 2 * b3Kv43 * alpha_act43 / b2Kv43;
+  CI3Kv43_to_OIKv43 := b4Kv43 * alpha_act43 / b3Kv43;
+  C1Kv43_to_C0Kv43 := beta_act43;
+  C2Kv43_to_C1Kv43 := 2 * beta_act43;
+  C3Kv43_to_C2Kv43 := 3 * beta_act43;
+  OKv43_to_C3Kv43 := 4 * beta_act43;
+  CI1Kv43_to_CI0Kv43 := beta_act43 / f1Kv43;
+  CI2Kv43_to_CI1Kv43 := 2 * f1Kv43 * beta_act43 / f2Kv43;
+  CI3Kv43_to_CI2Kv43 := 3 * f2Kv43 * beta_act43 / f3Kv43;
+  OIKv43_to_CI3Kv43 := 4 * f3Kv43 * beta_act43 / f4Kv43;
+  C0Kv43_to_CI0Kv43 := beta_inact43;
+  C1Kv43_to_CI1Kv43 := f1Kv43 * beta_inact43;
+  C2Kv43_to_CI2Kv43 := f2Kv43 * beta_inact43;
+  C3Kv43_to_CI3Kv43 := f3Kv43 * beta_inact43;
+  OKv43_to_OIKv43 := f4Kv43 * beta_inact43;
+  CI0Kv43_to_C0Kv43 := alpha_inact43;
+  CI1Kv43_to_C1Kv43 := alpha_inact43 / b1Kv43;
+  CI2Kv43_to_C2Kv43 := alpha_inact43 / b2Kv43;
+  CI3Kv43_to_C3Kv43 := alpha_inact43 / b3Kv43;
+  OIKv43_to_OKv43 := alpha_inact43 / b4Kv43;
+  a1_C043 := (C0Kv43_to_C1Kv43 + C0Kv43_to_CI0Kv43) * C0Kv43;
+  a2_C043 := C1Kv43_to_C0Kv43 * C1Kv43 + CI0Kv43_to_C0Kv43 * CI0Kv43;
+  a1_C143 := (C1Kv43_to_C2Kv43 + C1Kv43_to_C0Kv43 + C1Kv43_to_CI1Kv43) * C1Kv43;
+  a2_C143 := C2Kv43_to_C1Kv43 * C2Kv43 + CI1Kv43_to_C1Kv43 * CI1Kv43 + C0Kv43_to_C1Kv43 * C0Kv43;
+  a1_C243 := (C2Kv43_to_C3Kv43 + C2Kv43_to_C1Kv43 + C2Kv43_to_CI2Kv43) * C2Kv43;
+  a2_C243 := C3Kv43_to_C2Kv43 * C3Kv43 + CI2Kv43_to_C2Kv43 * CI2Kv43 + C1Kv43_to_C2Kv43 * C1Kv43;
+  a1_C343 := (C3Kv43_to_OKv43 + C3Kv43_to_C2Kv43 + C3Kv43_to_CI3Kv43) * C3Kv43;
+  a2_C343 := OKv43_to_C3Kv43 * OKv43 + CI3Kv43_to_C3Kv43 * CI3Kv43 + C2Kv43_to_C3Kv43 * C2Kv43;
+  a1_O43 := (OKv43_to_C3Kv43 + OKv43_to_OIKv43) * OKv43;
+  a2_O43 := C3Kv43_to_OKv43 * C3Kv43 + OIKv43_to_OKv43 * OIKv43;
+  a1_I043 := (CI0Kv43_to_C0Kv43 + CI0Kv43_to_CI1Kv43) * CI0Kv43;
+  a2_I043 := C0Kv43_to_CI0Kv43 * C0Kv43 + CI1Kv43_to_CI0Kv43 * CI1Kv43;
+  a1_I143 := (CI1Kv43_to_CI2Kv43 + CI1Kv43_to_C1Kv43 + CI1Kv43_to_CI0Kv43) * CI1Kv43;
+  a2_I143 := CI2Kv43_to_CI1Kv43 * CI2Kv43 + C1Kv43_to_CI1Kv43 * C1Kv43 + CI0Kv43_to_CI1Kv43 * CI0Kv43;
+  a1_I243 := (CI2Kv43_to_CI3Kv43 + CI2Kv43_to_C2Kv43 + CI2Kv43_to_CI1Kv43) * CI2Kv43;
+  a2_I243 := CI3Kv43_to_CI2Kv43 * CI3Kv43 + C2Kv43_to_CI2Kv43 * C2Kv43 + CI1Kv43_to_CI2Kv43 * CI1Kv43;
+  a1_I343 := (CI3Kv43_to_OIKv43 + CI3Kv43_to_C3Kv43 + CI3Kv43_to_CI2Kv43) * CI3Kv43;
+  a2_I343 := OIKv43_to_CI3Kv43 * OIKv43 + C3Kv43_to_CI3Kv43 * C3Kv43 + CI2Kv43_to_CI3Kv43 * CI2Kv43;
+  a1_OI43 := (OIKv43_to_OKv43 + OIKv43_to_CI3Kv43) * OIKv43;
+  a2_OI43 := OKv43_to_OIKv43 * OKv43 + CI3Kv43_to_OIKv43 * CI3Kv43;
+
+  // Rate Rules:
+  C0Kv43' = a2_C043 - a1_C043;
+  C1Kv43' = a2_C143 - a1_C143;
+  C2Kv43' = a2_C243 - a1_C243;
+  C3Kv43' = a2_C343 - a1_C343;
+  OKv43' = a2_O43 - a1_O43;
+  CI0Kv43' = a2_I043 - a1_I043;
+  CI1Kv43' = a2_I143 - a1_I143;
+  CI2Kv43' = a2_I243 - a1_I243;
+  CI3Kv43' = a2_I343 - a1_I343;
+  OIKv43' = a2_OI43 - a1_OI43;
+
+  // Variable initializations:
+  C0Kv43 = 0.908189132330738;
+  C1Kv43 = 0.0343385704915328;
+  C2Kv43 = 0.000487654173162347;
+  C3Kv43 = 3.11550715247964e-6;
+  OKv43 = 7.42911977991342e-9;
+  CI0Kv43 = 0.0349937004781012;
+  CI1Kv43 = 0.0171163265867255;
+  CI2Kv43 = 0.00428471710061031;
+  CI3Kv43 = 0.000564724236640674;
+  OIKv43 = 2.19603439704397e-5;
+  alphaa0Kv43 = 0.543708;
+  aaKv43 = 0.028983;
+  betaa0Kv43 = 0.080185;
+  baKv43 = 0.0468437;
+  alphai0Kv43 = 0.0498424;
+  aiKv43 = 0.000373016;
+  betai0Kv43 = 0.000819482;
+  biKv43 = 5.374e-8;
+  f1Kv43 = 1.8936;
+  f2Kv43 = 14.224647456;
+  f3Kv43 = 158.574378389;
+  f4Kv43 = 142.936645351;
+  b1Kv43 = 6.77348;
+  b2Kv43 = 15.6212705152;
+  b3Kv43 = 28.7532603313;
+  b4Kv43 = 524.576206679;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_DERIVATIVES_OF_Kv1_4_CHANNEL_STATES(C0Kv14, C1Kv14, C2Kv14, C3Kv14, OKv14, CI0Kv14, CI1Kv14, CI2Kv14, CI3Kv14, OIKv14, time_, V)
+
+  // Assignment Rules:
+  alpha_act14 := alphaa0Kv14 * exp(aaKv14 * V);
+  beta_act14 := betaa0Kv14 * exp(-(baKv14) * V);
+  alpha_inact14 := alphai0Kv14;
+  beta_inact14 := betai0Kv14;
+  C0Kv14_to_C1Kv14 := 4 * alpha_act14;
+  C1Kv14_to_C2Kv14 := 3 * alpha_act14;
+  C2Kv14_to_C3Kv14 := 2 * alpha_act14;
+  C3Kv14_to_OKv14 := alpha_act14;
+  CI0Kv14_to_CI1Kv14 := 4 * b1Kv14 * alpha_act14;
+  CI1Kv14_to_CI2Kv14 := 3 * b2Kv14 * alpha_act14 / b1Kv14;
+  CI2Kv14_to_CI3Kv14 := 2 * b3Kv14 * alpha_act14 / b2Kv14;
+  CI3Kv14_to_OIKv14 := b4Kv14 * alpha_act14 / b3Kv14;
+  C1Kv14_to_C0Kv14 := beta_act14;
+  C2Kv14_to_C1Kv14 := 2 * beta_act14;
+  C3Kv14_to_C2Kv14 := 3 * beta_act14;
+  OKv14_to_C3Kv14 := 4 * beta_act14;
+  CI1Kv14_to_CI0Kv14 := beta_act14 / f1Kv14;
+  CI2Kv14_to_CI1Kv14 := 2 * f1Kv14 * beta_act14 / f2Kv14;
+  CI3Kv14_to_CI2Kv14 := 3 * f2Kv14 * beta_act14 / f3Kv14;
+  OIKv14_to_CI3Kv14 := 4 * f3Kv14 * beta_act14 / f4Kv14;
+  C0Kv14_to_CI0Kv14 := beta_inact14;
+  C1Kv14_to_CI1Kv14 := f1Kv14 * beta_inact14;
+  C2Kv14_to_CI2Kv14 := f2Kv14 * beta_inact14;
+  C3Kv14_to_CI3Kv14 := f3Kv14 * beta_inact14;
+  OKv14_to_OIKv14 := f4Kv14 * beta_inact14;
+  CI0Kv14_to_C0Kv14 := alpha_inact14;
+  CI1Kv14_to_C1Kv14 := alpha_inact14 / b1Kv14;
+  CI2Kv14_to_C2Kv14 := alpha_inact14 / b2Kv14;
+  CI3Kv14_to_C3Kv14 := alpha_inact14 / b3Kv14;
+  OIKv14_to_OKv14 := alpha_inact14 / b4Kv14;
+  a1_C0 := (C0Kv14_to_C1Kv14 + C0Kv14_to_CI0Kv14) * C0Kv14;
+  a2_C0 := C1Kv14_to_C0Kv14 * C1Kv14 + CI0Kv14_to_C0Kv14 * CI0Kv14;
+  a1_C1 := (C1Kv14_to_C2Kv14 + C1Kv14_to_C0Kv14 + C1Kv14_to_CI1Kv14) * C1Kv14;
+  a2_C1 := C2Kv14_to_C1Kv14 * C2Kv14 + CI1Kv14_to_C1Kv14 * CI1Kv14 + C0Kv14_to_C1Kv14 * C0Kv14;
+  a1_C2 := (C2Kv14_to_C3Kv14 + C2Kv14_to_C1Kv14 + C2Kv14_to_CI2Kv14) * C2Kv14;
+  a2_C2 := C3Kv14_to_C2Kv14 * C3Kv14 + CI2Kv14_to_C2Kv14 * CI2Kv14 + C1Kv14_to_C2Kv14 * C1Kv14;
+  a1_C3 := (C3Kv14_to_OKv14 + C3Kv14_to_C2Kv14 + C3Kv14_to_CI3Kv14) * C3Kv14;
+  a2_C3 := OKv14_to_C3Kv14 * OKv14 + CI3Kv14_to_C3Kv14 * CI3Kv14 + C2Kv14_to_C3Kv14 * C2Kv14;
+  a1_O := (OKv14_to_C3Kv14 + OKv14_to_OIKv14) * OKv14;
+  a2_O := C3Kv14_to_OKv14 * C3Kv14 + OIKv14_to_OKv14 * OIKv14;
+  a1_CI0 := (CI0Kv14_to_C0Kv14 + CI0Kv14_to_CI1Kv14) * CI0Kv14;
+  a2_CI0 := C0Kv14_to_CI0Kv14 * C0Kv14 + CI1Kv14_to_CI0Kv14 * CI1Kv14;
+  a1_CI1 := (CI1Kv14_to_CI2Kv14 + CI1Kv14_to_C1Kv14 + CI1Kv14_to_CI0Kv14) * CI1Kv14;
+  a2_CI1 := CI2Kv14_to_CI1Kv14 * CI2Kv14 + C1Kv14_to_CI1Kv14 * C1Kv14 + CI0Kv14_to_CI1Kv14 * CI0Kv14;
+  a1_CI2 := (CI2Kv14_to_CI3Kv14 + CI2Kv14_to_C2Kv14 + CI2Kv14_to_CI1Kv14) * CI2Kv14;
+  a2_CI2 := CI3Kv14_to_CI2Kv14 * CI3Kv14 + C2Kv14_to_CI2Kv14 * C2Kv14 + CI1Kv14_to_CI2Kv14 * CI1Kv14;
+  a1_CI3 := (CI3Kv14_to_OIKv14 + CI3Kv14_to_C3Kv14 + CI3Kv14_to_CI2Kv14) * CI3Kv14;
+  a2_CI3 := OIKv14_to_CI3Kv14 * OIKv14 + C3Kv14_to_CI3Kv14 * C3Kv14 + CI2Kv14_to_CI3Kv14 * CI2Kv14;
+  a1_OI := (OIKv14_to_OKv14 + OIKv14_to_CI3Kv14) * OIKv14;
+  a2_OI := OKv14_to_OIKv14 * OKv14 + CI3Kv14_to_OIKv14 * CI3Kv14;
+
+  // Rate Rules:
+  C0Kv14' = a2_C0 - a1_C0;
+  C1Kv14' = a2_C1 - a1_C1;
+  C2Kv14' = a2_C2 - a1_C2;
+  C3Kv14' = a2_C3 - a1_C3;
+  OKv14' = a2_O - a1_O;
+  CI0Kv14' = a2_CI0 - a1_CI0;
+  CI1Kv14' = a2_CI1 - a1_CI1;
+  CI2Kv14' = a2_CI2 - a1_CI2;
+  CI3Kv14' = a2_CI3 - a1_CI3;
+  OIKv14' = a2_OI - a1_OI;
+
+  // Variable initializations:
+  f1Kv14 = 0.52465073996;
+  f2Kv14 = 17.51885408639;
+  f3Kv14 = 938.58764534556;
+  f4Kv14 = 54749.194733326;
+  b1Kv14 = 1.00947847105;
+  b2Kv14 = 1.17100540567;
+  b3Kv14 = 0.63902768758;
+  b4Kv14 = 2.12035379095;
+  alphaa0Kv14 = 1.84002414554;
+  aaKv14 = 0.00768548031;
+  betaa0Kv14 = 0.0108174834;
+  baKv14 = 0.07793378174;
+  alphai0Kv14 = 0.00305767916;
+  betai0Kv14 = 2.44936e-6;
+  C0Kv14 = 0.149374350989705;
+  C1Kv14 = 0.0606794865684932;
+  C2Kv14 = 0.00930314185504921;
+  C3Kv14 = 0.000676403999474111;
+  OKv14 = 3.85187206387239e-5;
+  CI0Kv14 = 0.0442722560882536;
+  CI1Kv14 = 0.00952432663172288;
+  CI2Kv14 = 0.0567396669678271;
+  CI3Kv14 = 0.113122845136053;
+  OIKv14 = 0.556269044084734;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_REVERSAL_POTENTIALS(ENa, EK, EKs, ECa, RT_over_F, Nao, Nai, Ko, Ki, Cao, Cai)
+
+  // Assignment Rules:
+  ENa := RT_over_F * ln(Nao / Nai);
+  EK := RT_over_F * ln(Ko / Ki);
+  EKs := RT_over_F * ln(a1 / a2);
+  ECa := 0.5 * RT_over_F * ln(Cao / Cai);
+  a1 := Ko + 0.01833 * Nao;
+  a2 := Ki + 0.01833 * Nai;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_INa_IKr_IKs_Ito1_IK1_INab_IKp(OKv14, na6, na7, V, ENa, Ko, OHerg, O1ks, O2ks, OKv43, RT_over_F, Faraday, Ki, EK, IKr, IKs, IKv43, IKv14_K, Nai, Nao, IKv14_Na, IKv14, Ito1, IK1, INab, INa)
+
+  // Assignment Rules:
+  GKv43 := Kv43Frac * KvScale * 0.1;
+  PKv14 := (1 - Kv43Frac) * KvScale * 4.2986E-7;
+  fKo := root(Ko / 4 );
+  VF_over_RT := V / RT_over_F;
+  VFsq_over_RT := 1000 * Faraday * VF_over_RT;
+  a1_K := Ki * exp(VF_over_RT) - Ko;
+  a2 := exp(VF_over_RT) - 1;
+  a1_Na := Nai * exp(VF_over_RT) - Nao;
+  K1_inf := 1 / (0.94 + exp(1.26 / RT_over_F * (V - EK)));
+  IKr := GKr * fKo * OHerg * (V - EK);
+  IKs := GKs * (O1ks + O2ks) * (V - EK);
+  IKv43 := GKv43 * OKv43 * (V - EK);
+  IKv14_K := PKv14 * OKv14 * VFsq_over_RT * a1_K / a2;
+  IKv14_Na := 0.02 * PKv14 * OKv14 * VFsq_over_RT * a1_Na / a2;
+  IKv14 := IKv14_K + IKv14_Na;
+  Ito1 := IKv43 + IKv14;
+  IK1 := GK1 * root(Ko / 1 ) * K1_inf * (V - EK);
+  INab := GNab * (V - ENa);
+  INa := GNa * (na6 + na7) * (V - ENa);
+
+  // Variable initializations:
+  GKr = 0.0186;
+  GKs = 0.0035;
+  GK1 = 0.125305126118808;
+  GNa = 56.32;
+  GNab = 0.001;
+  KvScale = 0.872;
+  Kv43Frac = 0.889;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_INaK_INaCa_ICab_IpCa(V, ECa, RT_over_F, Nai, Nao, Ko, Cai, Cao, INaK, INaCa, ICab, IpCa)
+
+  // Assignment Rules:
+  VF_over_RT := V / RT_over_F;
+  sigma := (exp(Nao / 67.3 ) - 1 ) / 7;
+  a1_Na := 1 + 0.1245 * exp(-(0.1 ) * VF_over_RT);
+  a2_Na := 0.0365 * sigma * exp(-(1.33 ) * VF_over_RT);
+  fNaK := 1 / (a1_Na + a2_Na);
+  a1_K := Ko / (Ko + KmKo);
+  a2_K := 1 + power(KmNai / Nai, 1.5 );
+  INaK := INaKmax * fNaK * a1_K / a2_K;
+  a1_ncx := exp(eta * VF_over_RT) * power(Nai, 3 ) * Cao;
+  a2_ncx := exp((eta - 1 ) * VF_over_RT) * power(Nao, 3 ) * Cai;
+  a3_ncx := 1 + ksat * exp((eta - 1 ) * VF_over_RT);
+  a4_ncx := KmCa + Cao;
+  a5_ncx := (power(KmNa, 3 ) + power(Nao, 3 )) / 5000;
+  INaCa := kNaCa * (a1_ncx - a2_ncx) / (a4_ncx * a3_ncx * a5_ncx);
+  ICab := GCab * (V - ECa);
+  IpCa := IpCamax * Cai / (KmpCa + Cai);
+
+  // Variable initializations:
+  kNaCa = 0.44;
+  KmNa = 87.5;
+  KmCa = 1.38;
+  ksat = 0.2;
+  eta = 0.35;
+  INaKmax = 2.387;
+  KmNai = 20;
+  KmKo = 1.5;
+  IpCamax = 0.05;
+  KmpCa = 0.0005;
+  GCab = 7.684e-5;
+end
+
+model IyerHajjarArmoundas2007__COMPUTE_ICa_ICaK(Ko, Ki, RT_over_F, Cai, Cao, V, yCa, Open, Faraday, ICa, ICaK, iso)
+
+  // Assignment Rules:
+  PKprime := PK / (1 + Icabar / ICahalf);
+  VF_over_RT := V / RT_over_F;
+  VFsq_over_RT := 1000 * Faraday * VF_over_RT;
+  a1_Ca := 1E-3 * exp(2 * VF_over_RT) - Cao * 0.341;
+  a2_Ca := exp(2 * VF_over_RT) - 1;
+  a1_K := Ki * exp(VF_over_RT) - Ko;
+  a2_K := exp(VF_over_RT) - 1;
+  ICa := ICamax * yCa * Open;
+  ICaK := PKprime * Open * yCa * VFsq_over_RT * a1_K / a2_K;
+  ICamax := PCa * 4 * VFsq_over_RT * a1_Ca / a2_Ca;
+  Icabar := piecewise( 0 , ICamax >= 0 , ICamax );
+  PCa := piecewise( Pscale * 2.469E-4 , iso == 0 , 1.5 * Pscale * 2.469E-4 );
+  PK := Pscale * 4.574E-7;
+
+  // Variable initializations:
+  ICahalf = -0.265;
+  Pscale = 7;
+end
+
+model IyerHajjarArmoundas2007__INa(V, time_, na1, na2, na3, na4, na5, na6, na7, na8, na9, na10, na11, na12, na13, RToverF, Faraday, Rgas)
+
+  // Assignment Rules:
+  Temp_Scale := 1.38862291252871;
+  alpha1 := Temp_Scale * KToverH * exp(-(114007.462700232 ) / RTNa + 224.114 / Rgas + 0.286374268596235 * V / RTNaF);
+  beta1 := Temp_Scale * KToverH * exp(-(272470.273489681 ) / RTNa + 708.146 / Rgas + -(2.28528417586424 ) * V / RTNaF);
+  gamma1 := Temp_Scale * KToverH * exp(-(196336.575735923 ) / RTNa + 529.952 / Rgas + 2.78084918596045 * V / RTNaF);
+  Delta1 := Temp_Scale * KToverH * exp(-(133689.9304091 ) / RTNa + 229.205 / Rgas + -(1.55804214553883 ) * V / RTNaF);
+  On := Temp_Scale * KToverH * exp(-(62123.0784380481 ) / RTNa + 39.295 / Rgas + 0.288816042743232 * V / RTNaF);
+  Of := Temp_Scale * KToverH * exp(-(97657.8497137015 ) / RTNa + 1.51 / Rgas + 0.0684861993100685 * V / RTNaF);
+  GammaGamma := Temp_Scale * KToverH * exp(116431.142142348 / RTNa + -(578.317 ) / Rgas + 0.764126011745707 * V / RTNaF);
+  DeltaDelta := Temp_Scale * KToverH * exp(-(55700.6624658307 ) / RTNa + -(130.639 ) / Rgas + -(3.64981672927078 ) * V / RTNaF);
+  epsilon := Temp_Scale * KToverH * exp(-(85800.3675578326 ) / RTNa + 70.078 / Rgas);
+  omega_na := Temp_Scale * KToverH * exp(-(121955.166154864 ) / RTNa + 225.175 / Rgas);
+  rho := Temp_Scale * KToverH * exp(-(147813.990005035 ) / RTNa + 338.915 / Rgas + 2.1360043702126 * V / RTNaF);
+  mu := Temp_Scale * KToverH * exp(-(121322.143275242 ) / RTNa + 193.265 / Rgas + -(1.74290267020903 ) * V / RTNaF);
+  Cn_ := Temp_Scale * KToverH * exp(-(287913.446530953 ) / RTNa + 786.217 / Rgas);
+  Cf := Temp_Scale * KToverH * exp(-(59565.2236284584 ) / RTNa + 0.00711 / Rgas);
+  parameter_a := 1.40042625477401;
+  k12 := 4 * alpha1;
+  k23 := 3 * alpha1;
+  k34 := 2 * alpha1;
+  k45 := alpha1;
+  k56 := gamma1;
+  k67 := epsilon;
+  k89 := k12 * parameter_a;
+  k910 := k23 * parameter_a;
+  k1011 := k34 * parameter_a;
+  k1112 := k45 * parameter_a;
+  k1213 := GammaGamma;
+  k57 := rho;
+  k21 := beta1;
+  k32 := 2 * beta1;
+  k43 := 3 * beta1;
+  k54 := 4 * beta1;
+  k65 := Delta1;
+  k76 := omega_na;
+  k98 := k21 / parameter_a;
+  k109 := k32 / parameter_a;
+  k1110 := k43 / parameter_a;
+  k1211 := k54 / parameter_a;
+  k1312 := DeltaDelta;
+  k75 := mu;
+  k81 := Cf;
+  k92 := k81 / parameter_a;
+  k103 := k92 / parameter_a;
+  k114 := k103 / parameter_a;
+  k125 := k114 / parameter_a;
+  k136 := Of;
+  k18 := Cn_;
+  k29 := k18 * parameter_a;
+  k310 := k29 * parameter_a;
+  k411 := k310 * parameter_a;
+  k512 := k411 * parameter_a;
+  k613 := On;
+  KToverH := 1.381E-23 * TNa / 6.626E-31;
+  FoverRT := 1 / RToverF;
+  RTNa := Rgas * TNa;
+  RTNaF := Rgas * TNa / Faraday;
+
+  // Rate Rules:
+  na1' = -((k18 + k12)) * na1 + k21 * na2 + k81 * na8;
+  na2' = k12 * na1 - (k21 + k23 + k29) * na2 + k32 * na3 + k92 * na9;
+  na3' = k23 * na2 - (k32 + k34 + k310) * na3 + k43 * na4 + k103 * na10;
+  na4' = k34 * na3 - (k43 + k45 + k411) * na4 + k54 * na5 + k114 * na11;
+  na5' = k45 * na4 - (k54 + k56 + k57 + k512) * na5 + k65 * na6 + k75 * na7 + k125 * na12;
+  na6' = k56 * na5 - (k65 + k67 + k613) * na6 + k76 * na7 + k136 * na13;
+  na7' = k57 * na5 + k67 * na6 - (k75 + k76) * na7;
+  na8' = k18 * na1 - (k81 + k89) * na8 + k98 * na9;
+  na9' = k29 * na2 + k89 * na8 - (k98 + k92 + k910) * na9 + k109 * na10;
+  na10' = k310 * na3 + k910 * na9 - (k1011 + k103 + k109) * na10 + k1110 * na11;
+  na11' = k411 * na4 + k1011 * na10 - (k1110 + k114 + k1112) * na11 + k1211 * na12;
+  na12' = k512 * na5 + k1112 * na11 - (k1211 + k125 + k1213) * na12 + k1312 * na13;
+  na13' = k613 * na6 + k1213 * na12 - (k1312 + k136) * na13;
+
+  // Variable initializations:
+  na1 = 0.111284526171411;
+  na2 = 0.0481019786429977;
+  na3 = 0.00779692701457915;
+  na4 = 0.000561699600929369;
+  na5 = 1.51746424723121e-5;
+  na6 = 1.02118700961583e-7;
+  na7 = 1.93499158844817e-8;
+  na8 = 0.368582741846592;
+  na9 = 0.312463212648791;
+  na10 = 0.0993398770493615;
+  na11 = 0.0140431688972267;
+  na12 = 0.000750073829883749;
+  na13 = 0.0370604970714329;
+  TNa = 294.16;
+end
+
+model IyerHajjarArmoundas2007__IKr(V, C1Herg, C2Herg, C3Herg, OHerg, IHerg, time_)
+
+  // Assignment Rules:
+  C2H_to_C3H := T_Const_HERG * 0.02608362043337;
+  C3H_to_C2H := T_Const_HERG * 0.14832978132145;
+  C1H_to_C2H := T_Const_HERG * A0_HERG * exp(B0_HERG * V);
+  C2H_to_C1H := T_Const_HERG * A1_HERG * exp(B1_HERG * V);
+  C3H_to_OH := T_Const_HERG * A2_HERG * exp(B2_HERG * V);
+  OH_to_C3H := T_Const_HERG * A3_HERG * exp(B3_HERG * V);
+  OH_to_IH := T_Const_HERG * A4_HERG * exp(B4_HERG * V);
+  IH_to_OH := T_Const_HERG * A5_HERG * exp(B5_HERG * V);
+  C3H_to_IH := T_Const_HERG * A6_HERG * exp(B6_HERG * V);
+  IH_to_C3H := OH_to_C3H * IH_to_OH * C3H_to_IH / (C3H_to_OH * OH_to_IH);
+  a1_C2 := C1H_to_C2H * C1Herg + C3H_to_C2H * C3Herg;
+  a2_C2 := (C2H_to_C1H + C2H_to_C3H) * C2Herg;
+  a1_C3 := C2H_to_C3H * C2Herg + OH_to_C3H * OHerg + IH_to_C3H * IHerg;
+  a2_C3 := (C3H_to_IH + C3H_to_OH + C3H_to_C2H) * C3Herg;
+  a1_O := C3H_to_OH * C3Herg + IH_to_OH * IHerg;
+  a2_O := (OH_to_C3H + OH_to_IH) * OHerg;
+  a1_I := C3H_to_IH * C3Herg + OH_to_IH * OHerg;
+  a2_I := (IH_to_C3H + IH_to_OH) * IHerg;
+
+  // Rate Rules:
+  C1Herg' = C2H_to_C1H * C2Herg - C1H_to_C2H * C1Herg;
+  C2Herg' = a1_C2 - a2_C2;
+  C3Herg' = a1_C3 - a2_C3;
+  OHerg' = a1_O - a2_O;
+  IHerg' = a1_I - a2_I;
+
+  // Variable initializations:
+  T_Const_HERG = 5.320000001;
+  A0_HERG = 0.017147641733086;
+  B0_HERG = 0.03304608038835;
+  A1_HERG = 0.03969328381141;
+  B1_HERG = -0.0430605416398;
+  A2_HERG = 0.02057448605977;
+  B2_HERG = 0.02617412715118;
+  A3_HERG = 0.00134366604423;
+  B3_HERG = -0.02691385498399;
+  A4_HERG = 0.10666316491288;
+  B4_HERG = 0.00568908859717;
+  A5_HERG = 0.00646393910049;
+  B5_HERG = -0.04536642959543;
+  A6_HERG = 8.039374403e-5;
+  B6_HERG = 6.9808924e-7;
+  C1Herg = 0.994948338598163;
+  C2Herg = 0.000595653663190548;
+  C3Herg = 0.000228183228829573;
+  OHerg = 0.00120284688677794;
+  IHerg = 0.000243789721526602;
+end
+
+model IyerHajjarArmoundas2007__IKs(C0ks, C1ks, O1ks, O2ks, V, time_)
+
+  // Assignment Rules:
+  C0ks_C1ks := 0.00795600798004;
+  C1ks_O1ks := 0.03966720676071;
+  O1ks_O2ks := 0.00767254363063 * exp(0.08662945914655 * V);
+  O1ks_C1ks := 0.00700806628929 * exp(-(0.14999754700285 ) * V);
+  O2ks_O1ks := 0.00379737998368 * exp(-(0.01425668126881 ) * V);
+  C1ks_C0ks := 0.2162557589585 * exp(-(0.00001889123021 ) * V);
+
+  // Rate Rules:
+  C0ks' = -(C0ks_C1ks) * C0ks + C1ks_C0ks * C1ks;
+  C1ks' = C0ks_C1ks * C0ks - (C1ks_C0ks + C1ks_O1ks) * C1ks + O1ks_C1ks * O1ks;
+  O1ks' = C1ks_O1ks * C1ks - (O1ks_C1ks + O1ks_O2ks) * O1ks + O2ks_O1ks * O2ks;
+  O2ks' = O1ks_O2ks * O1ks - O2ks_O1ks * O2ks;
+
+  // Variable initializations:
+  C0ks = 0.938064990549233;
+  C1ks = 0.0360525668093578;
+  O1ks = 5.65460174551007e-7;
+  O2ks = 0.0258818770122187;
+end
+
+model IyerHajjarArmoundas2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: IyerHajjarArmoundas2007__environment(time_, iso, CSQN2, RyR2);
+  COMPUTE_CONCENTRATION_AND_VOLTAGE_DERIVATIVES: IyerHajjarArmoundas2007__COMPUTE_CONCENTRATION_AND_VOLTAGE_DERIVATIVES(Faraday, Rgas, RToverF, Nai, Ki, Cai, CaSS, CaJSR, CaNSR, V, INa0, INab, INaCa, INaK, IKv14_Na, IKr0, IKs0, IK1, ICaK, ICa, Ito1, i_Stim, IKv43, IKv14_K, ICab, IpCa, Jxfer, Jup, Jtrpn, Jrel, Jtr, time_, beta_SS, beta_JSR, beta_i, Ko, Nao, Cao);
+  I_stimulus: IyerHajjarArmoundas2007__I_stimulus(i_Stim, time_);
+  COMPUTE_INTRACELLULAR_CALCIUM_FLUXES: IyerHajjarArmoundas2007__COMPUTE_INTRACELLULAR_CALCIUM_FLUXES(Cai, CaNSR, Jup, Jrel, O1_RyR, O2_RyR, CaJSR, CaSS, Jtr, Jxfer, iso);
+  COMPUTE_Jtrpn_and_BUFFER_SCALE_FACTORS: IyerHajjarArmoundas2007__COMPUTE_Jtrpn_and_BUFFER_SCALE_FACTORS(Cai, Jtrpn, CaSS, beta_SS, beta_JSR, beta_i, CaJSR, LTRPNCa, HTRPNCa, time_, CSQN2, RyR2);
+  COMPUTE_DERIVATIVES_OF_RyR_RECEPTOR_STATES: IyerHajjarArmoundas2007__COMPUTE_DERIVATIVES_OF_RyR_RECEPTOR_STATES(CaSS, CaJSR, time_, C1_RyR, O2_RyR, C2_RyR, O1_RyR, CSQN2, RyR2);
+  COMPUTE_DERIVATIVES_OF_LTYPE_CHANNEL_STATES: IyerHajjarArmoundas2007__COMPUTE_DERIVATIVES_OF_LTYPE_CHANNEL_STATES(V, CaSS, time_, Open, yCa);
+  COMPUTE_DERIVATIVES_OF_Kv4_3_CHANNEL_STATES: IyerHajjarArmoundas2007__COMPUTE_DERIVATIVES_OF_Kv4_3_CHANNEL_STATES(V, C0Kv43, C1Kv43, C2Kv43, C3Kv43, OKv43, CI0Kv43, CI1Kv43, CI2Kv43, CI3Kv43, OIKv43, time_);
+  COMPUTE_DERIVATIVES_OF_Kv1_4_CHANNEL_STATES: IyerHajjarArmoundas2007__COMPUTE_DERIVATIVES_OF_Kv1_4_CHANNEL_STATES(C0Kv14, C1Kv14, C2Kv14, C3Kv14, OKv14, CI0Kv14, CI1Kv14, CI2Kv14, CI3Kv14, OIKv14, time_, V);
+  COMPUTE_REVERSAL_POTENTIALS: IyerHajjarArmoundas2007__COMPUTE_REVERSAL_POTENTIALS(ENa, EK, EKs, ECa, RToverF, Nao, Nai, Ko, Ki, Cao, Cai);
+  COMPUTE_INa_IKr_IKs_Ito1_IK1_INab_IKp: IyerHajjarArmoundas2007__COMPUTE_INa_IKr_IKs_Ito1_IK1_INab_IKp(OKv14, na6, na7, V, ENa, Ko, OHerg, O1ks, O2ks, OKv43, RToverF, Faraday, Ki, EK, IKr0, IKs0, IKv43, IKv14_K, Nai, Nao, IKv14_Na, IKv14, Ito1, IK1, INab, INa0);
+  COMPUTE_INaK_INaCa_ICab_IpCa: IyerHajjarArmoundas2007__COMPUTE_INaK_INaCa_ICab_IpCa(V, ECa, RToverF, Nai, Nao, Ko, Cai, Cao, INaK, INaCa, ICab, IpCa);
+  COMPUTE_ICa_ICaK: IyerHajjarArmoundas2007__COMPUTE_ICa_ICaK(Ko, Ki, RToverF, Cai, Cao, V, yCa, Open, Faraday, ICa, ICaK, iso);
+  INa: IyerHajjarArmoundas2007__INa(V, time_, na1, na2, na3, na4, na5, na6, na7, na8, na9, na10, na11, na12, na13, RToverF, Faraday, Rgas);
+  IKr: IyerHajjarArmoundas2007__IKr(V, C1Herg, C2Herg, C3Herg, OHerg, IHerg, time_);
+  IKs: IyerHajjarArmoundas2007__IKs(C0ks, C1ks, O1ks, O2ks, V, time_);
+end

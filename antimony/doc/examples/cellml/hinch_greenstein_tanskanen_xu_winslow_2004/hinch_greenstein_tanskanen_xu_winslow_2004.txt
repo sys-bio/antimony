@@ -1,0 +1,265 @@
+//Created by libAntimony v1.3
+model Hinch__environment(time_)
+end
+
+model Hinch__cell_geometry(V_myo, V_SR, A_cap)
+
+  // Variable initializations:
+  V_myo = 25.84e3;
+  V_SR = 2.098e3;
+  A_cap = 1.534e4;
+end
+
+model Hinch__membrane(V, R, T, F, time_, FVRT, FVRT_Ca)
+
+  // Assignment Rules:
+  V := piecewise( 0 , ( time_ >= 0) && (time_ <= 200 ), -(80 ) );
+  FVRT := F * V / (R * T);
+  FVRT_Ca := 2 * FVRT;
+
+  // Variable initializations:
+  R = 8314.5;
+  T = 295;
+  F = 96487;
+end
+
+model Hinch__CaRU_Transitions(V, C_oc, C_co, Ca_i, alpha_p, alpha_m, beta_poc, beta_pcc, beta_m, epsilon_pco, epsilon_pcc, epsilon_m, mu_poc, mu_pcc, mu_moc, mu_mcc)
+
+  // Assignment Rules:
+  t_R := 1.17 * t_L;
+  expVL := exp((V - V_L) / del_VL);
+  alpha_p := expVL / (t_L * (expVL + 1 ));
+  alpha_m := phi_L / t_L;
+  beta_poc := power(C_oc, 2 ) / (t_R * (power(C_oc, 2 ) + power(K_RyR, 2 )));
+  beta_pcc := power(Ca_i, 2 ) / (t_R * (power(Ca_i, 2 ) + power(K_RyR, 2 )));
+  beta_m := phi_R / t_R;
+  epsilon_pco := C_co * (expVL + a) / (tau_L * K_L * (expVL + 1 ));
+  epsilon_pcc := Ca_i * (expVL + a) / (tau_L * K_L * (expVL + 1 ));
+  epsilon_m := b * (expVL + a) / (tau_L * (b * expVL + a));
+  mu_poc := (power(C_oc, 2 ) + c * power(K_RyR, 2 )) / (tau_R * (power(C_oc, 2 ) + power(K_RyR, 2 )));
+  mu_pcc := (power(Ca_i, 2 ) + c * power(K_RyR, 2 )) / (tau_R * (power(Ca_i, 2 ) + power(K_RyR, 2 )));
+  mu_moc := theta_R * d * (power(C_oc, 2 ) + c * power(K_RyR, 2 )) / (tau_R * (d * power(C_oc, 2 ) + c * power(K_RyR, 2 )));
+  mu_mcc := theta_R * d * (power(Ca_i, 2 ) + c * power(K_RyR, 2 )) / (tau_R * (d * power(Ca_i, 2 ) + c * power(K_RyR, 2 )));
+
+  // Variable initializations:
+  V_L = -2;
+  del_VL = 7;
+  phi_L = 2.35;
+  t_L = 1;
+  tau_L = 650;
+  tau_R = 2.43;
+  phi_R = 0.05;
+  theta_R = 0.012;
+  K_RyR = 41e-3;
+  K_L = 0.22e-3;
+  a = 0.0625;
+  b = 14;
+  c = 0.01;
+  d = 100;
+end
+
+model Hinch__CaRU_states(alpha_p, alpha_m, beta_pcc, beta_poc, beta_m, y_oc, y_co, y_oo, y_cc, y_ci, y_oi, y_ic, y_io, y_ii)
+
+  // Assignment Rules:
+  denom := (alpha_p + alpha_m) * ((alpha_m + beta_m + beta_poc) * (beta_m + beta_pcc) + alpha_p * (beta_m + beta_poc));
+  y_oc := alpha_p * beta_m * (alpha_p + alpha_m + beta_m + beta_pcc) / denom;
+  y_co := alpha_m * (beta_pcc * (alpha_m + beta_m + beta_poc) + beta_poc * alpha_p) / denom;
+  y_oo := alpha_p * (beta_poc * (alpha_p + beta_m + beta_pcc) + beta_pcc * alpha_m) / denom;
+  y_cc := alpha_m * beta_m * (alpha_m + alpha_p + beta_m + beta_poc) / denom;
+  y_ci := alpha_m / (alpha_p + alpha_m);
+  y_oi := alpha_p / (alpha_p + alpha_m);
+  y_ic := beta_m / (beta_pcc + beta_m);
+  y_io := beta_pcc / (beta_pcc + beta_m);
+  y_ii := 1 - y_oc - y_co - y_oo - y_cc - y_ci - y_ic - y_oi - y_io;
+end
+
+model Hinch__CaRU_reduced_states(y_oc, y_cc, y_co, alpha_p, alpha_m, beta_pcc, beta_m, epsilon_pco, epsilon_pcc, epsilon_m, mu_poc, mu_pcc, mu_moc, mu_mcc, r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, z_1, z_2, z_3, z_4, time_)
+
+  // Assignment Rules:
+  r_1 := y_oc * mu_poc + y_cc * mu_pcc;
+  r_2 := (alpha_p * mu_moc + alpha_m * mu_mcc) / (alpha_p + alpha_m);
+  r_3 := beta_m * mu_pcc / (beta_m + beta_pcc);
+  r_4 := mu_mcc;
+  r_5 := y_co * epsilon_pco + y_cc * epsilon_pcc;
+  r_6 := epsilon_m;
+  r_7 := alpha_m * epsilon_pcc / (alpha_p + alpha_m);
+  r_8 := epsilon_m;
+  z_4 := 1 - z_1 - z_2 - z_3;
+
+  // Rate Rules:
+  z_1' = -((r_1 + r_5)) * z_1 + r_2 * z_2 + r_6 * z_3;
+  z_2' = r_1 * z_1 - (r_2 + r_7) * z_2 + r_8 * z_4;
+  z_3' = r_5 * z_1 - (r_6 + r_3) * z_3 + r_4 * z_4;
+
+  // Variable initializations:
+  z_1 = 0.98859;
+  z_2 = 0.0087302;
+  z_3 = 0.0026566;
+end
+
+model Hinch__DS_Calcium_Concentrations(Ca_i, Ca_SR, Ca_o, FVRT_Ca, g_D, J_R, J_L, C_cc, C_oc, C_co, C_oo)
+
+  // Assignment Rules:
+  C_cc := Ca_i;
+  C_oc := piecewise( (Ca_i + J_L / g_D * Ca_o * FVRT_Ca * exp(-(FVRT_Ca)) / (1 - exp(-(FVRT_Ca)))) / (1 + J_L / g_D * FVRT_Ca / (1 - exp(-(FVRT_Ca)))) , abs(FVRT_Ca) > 0.000000001 , (Ca_i + J_L / g_D * Ca_o) / (1 + J_L / g_D) );
+  C_co := (Ca_i + J_R / g_D * Ca_SR) / (1 + J_R / g_D);
+  C_oo := piecewise( (Ca_i + J_R / g_D * Ca_SR + J_L / g_D * Ca_o * FVRT_Ca * exp(-(FVRT_Ca)) / (1 - exp(-(FVRT_Ca)))) / (1 + J_R / g_D + J_L / g_D * FVRT_Ca / (1 - exp(-(FVRT_Ca)))) , abs(FVRT_Ca) > 0.000000001 , (Ca_i + J_R / g_D * Ca_SR + J_L / g_D * Ca_o) / (1 + J_R / g_D + J_L / g_D) );
+end
+
+model Hinch__LCC_and_RyR_fluxes(g_D, J_R, J_L, Ca_i, Ca_SR, Ca_o, FVRT_Ca, J_Loo, J_Loc, J_Rco, J_Roo)
+
+  // Assignment Rules:
+  J_Loo := piecewise( J_L * FVRT_Ca / (1 - exp(-(FVRT_Ca))) * (Ca_o * exp(-(FVRT_Ca)) - Ca_i + J_R / g_D * (Ca_o * exp(-(FVRT_Ca)) - Ca_SR)) / (1 + J_R / g_D + J_L / g_D * FVRT_Ca / (1 - exp(FVRT_Ca))) , abs(FVRT_Ca) > 0.00001 , J_L * 0.00001 / (1 - exp(-(0.00001 ))) * (Ca_o * exp(-(0.00001 )) - Ca_i + J_R / g_D * (Ca_o * exp(-(0.00001 )) - Ca_SR)) / (1 + J_R / g_D + J_L / g_D * 0.00001 / (1 - exp(-(0.00001 )))) );
+  J_Loc := piecewise( J_L * FVRT_Ca / (1 - exp(-(FVRT_Ca))) * (Ca_o * exp(-(FVRT_Ca)) - Ca_i) / (1 + J_L / g_D * FVRT_Ca / (1 - exp(-(FVRT_Ca)))) , abs(FVRT_Ca) > 0.00001 , J_L * 0.00001 / (1 - exp(-(0.00001 ))) * (Ca_o * exp(-(0.00001 )) - Ca_i) / (1 + J_L / g_D * 0.00001 / (1 - exp(-(0.00001 )))) );
+  J_Rco := J_R * (Ca_SR - Ca_i) / (1 + J_R / g_D);
+  J_Roo := piecewise( J_R * (Ca_SR - Ca_i + J_L / g_D * FVRT_Ca / (1 - exp(-(FVRT_Ca))) * (Ca_SR - Ca_o * exp(-(FVRT_Ca)))) / (1 + J_R / g_D + J_L / g_D * FVRT_Ca / (1 - exp(-(FVRT_Ca)))) , abs(FVRT_Ca) > 0.00001 , J_R * (Ca_SR - Ca_i + J_L / g_D * 0.00001 / (1 - exp(-(0.00001 ))) * (Ca_SR - Ca_o * exp(-(0.00001 )))) / (1 + J_R / g_D + J_L / g_D * 0.00001 / (1 - exp(-(0.00001 )))) );
+end
+
+model Hinch__RyR_current(y_oo, y_co, y_oc, beta_pcc, beta_m, J_Roo, J_Rco, z_1, z_3, V_myo, N, J_R1, J_R3, I_RyR)
+
+  // Assignment Rules:
+  J_R1 := y_oo * J_Roo + J_Rco * y_co;
+  J_R3 := J_Rco * beta_pcc / (beta_m + beta_pcc);
+  I_RyR := (z_1 * J_R1 + z_3 * J_R3) * N / V_myo;
+end
+
+model Hinch__LCC_current(y_oo, y_oc, alpha_p, alpha_m, J_Loo, J_Loc, z_1, z_2, V_myo, N, J_L1, J_L2, I_LCC)
+
+  // Assignment Rules:
+  J_L1 := J_Loo * y_oo + J_Loc * y_oc;
+  J_L2 := J_Loc * alpha_p / (alpha_p + alpha_m);
+  I_LCC := (z_1 * J_L1 + z_2 * J_L2) * N / V_myo;
+end
+
+model Hinch__CaRU(g_D, J_R, J_L, V_myo, N, V, Ca_i, Ca_o, Ca_SR, time_, FVRT_Ca, I_RyR, I_LCC)
+
+  // Sub-modules, and any changes to those submodules:
+  CaRU_Transitions: Hinch__CaRU_Transitions(V, C_oc, C_co, Ca_i, alpha_p, alpha_m, beta_poc, beta_pcc, beta_m, epsilon_pco, epsilon_pcc, epsilon_m, mu_poc, mu_pcc, mu_moc, mu_mcc);
+  CaRU_states: Hinch__CaRU_states(alpha_p, alpha_m, beta_pcc, beta_poc, beta_m, y_oc, y_co, y_oo, y_cc, y_ci, y_oi, y_ic, y_io, y_ii);
+  CaRU_reduced_states: Hinch__CaRU_reduced_states(y_oc, y_cc, y_co, alpha_p, alpha_m, beta_pcc, beta_m, epsilon_pco, epsilon_pcc, epsilon_m, mu_poc, mu_pcc, mu_moc, mu_mcc, r_1, r_2, r_3, r_4, r_5, r_6, r_7, r_8, z_1, z_2, z_3, z_4, time_);
+  DS_Calcium_Concentrations: Hinch__DS_Calcium_Concentrations(Ca_i, Ca_SR, Ca_o, FVRT_Ca, g_D, J_R, J_L, C_cc, C_oc, C_co, C_oo);
+  LCC_and_RyR_fluxes: Hinch__LCC_and_RyR_fluxes(g_D, J_R, J_L, Ca_i, Ca_SR, Ca_o, FVRT_Ca, J_Loo, J_Loc, J_Rco, J_Roo);
+  RyR_current: Hinch__RyR_current(y_oo, y_co, y_oc, beta_pcc, beta_m, J_Roo, J_Rco, z_1, z_3, V_myo, N, J_R1, J_R3, I_RyR);
+  LCC_current: Hinch__LCC_current(y_oo, y_oc, alpha_p, alpha_m, J_Loo, J_Loc, z_1, z_2, V_myo, N, J_L1, J_L2, I_LCC);
+
+  // Variable initializations:
+  g_D = 0.065;
+  J_R = 0.02;
+  J_L = 9.13e-4;
+  N = 50000;
+end
+
+model Hinch__Na_Ca_Exchanger(FVRT, Na_i, Na_o, Ca_i, Ca_o, I_NaCa)
+
+  // Assignment Rules:
+  I_NaCa := g_NCX * (exp(eta * FVRT) * power(Na_i, 3 ) * Ca_o - exp((eta - 1 ) * FVRT) * power(Na_o, 3 ) * Ca_i) / ((power(Na_o, 3 ) + power(K_mNa, 3 )) * (Ca_o + K_mCa) * (1 + k_sat * exp((eta - 1 ) * FVRT)));
+
+  // Variable initializations:
+  K_mNa = 87.5;
+  K_mCa = 1.38;
+  eta = 0.35;
+  k_sat = 0.1;
+  g_NCX = 38.5e-3;
+end
+
+model Hinch__SERCA(I_SERCA, Ca_i)
+
+  // Assignment Rules:
+  I_SERCA := g_SERCA * power(Ca_i, 2 ) / (power(K_SERCA, 2 ) + power(Ca_i, 2 ));
+
+  // Variable initializations:
+  g_SERCA = 0.45e-3;
+  K_SERCA = 0.5e-3;
+end
+
+model Hinch__Sarcolemmal_Ca_pump(Ca_i, I_pCa)
+
+  // Assignment Rules:
+  I_pCa := g_pCa * Ca_i / (K_mpCa + Ca_i);
+
+  // Variable initializations:
+  g_pCa = 0.0035e-3;
+  K_mpCa = 0.5e-3;
+end
+
+model Hinch__Background_Ca_current(V, R, T, F, Ca_i, Ca_o, E_Ca, I_CaB)
+
+  // Assignment Rules:
+  E_Ca := R * T / (2 * F) * ln(Ca_o / Ca_i);
+  I_CaB := g_CaB * (E_Ca - V);
+
+  // Variable initializations:
+  g_CaB = 2.6875e-8;
+end
+
+model Hinch__SR_Ca_leak_current(Ca_i, Ca_SR, I_SR)
+
+  // Assignment Rules:
+  I_SR := g_SRl * (Ca_SR - Ca_i);
+
+  // Variable initializations:
+  g_SRl = 1.8951e-5;
+end
+
+model Hinch__troponin_Ca_buffer(TRPN, Ca_i, I_TRPN)
+
+  // Assignment Rules:
+  I_TRPN := k_m_TRPN * (B_TRPN - TRPN) - k_p_TRPN * TRPN * Ca_i;
+
+  // Variable initializations:
+  k_m_TRPN = 0.04;
+  k_p_TRPN = 0.04e3;
+  B_TRPN = 70e-3;
+end
+
+model Hinch__calmodulin_Ca_buffer(Ca_i, beta_CMDN)
+
+  // Assignment Rules:
+  beta_CMDN := power(1 + k_CMDN * B_CMDN / power(k_CMDN + Ca_i, 2 ), -(1 ));
+
+  // Variable initializations:
+  k_CMDN = 2.382e-3;
+  B_CMDN = 50e-3;
+end
+
+model Hinch__intracellular_ion_concentrations(Na_i, Ca_i, Ca_SR, TRPN, time_, V_myo, V_SR, beta_CMDN, I_SERCA, I_pCa, I_CaB, I_TRPN, I_SR, I_NaCa, I_RyR, I_LCC)
+
+  // Assignment Rules:
+  CaSR_plot := Ca_SR * V_SR / V_myo;
+
+  // Rate Rules:
+  Ca_i' = beta_CMDN * (I_LCC + I_RyR - I_SERCA + I_SR + I_NaCa - I_pCa + I_CaB + I_TRPN);
+  Ca_SR' = V_myo / V_SR * (-(I_RyR) + I_SERCA - I_SR);
+  TRPN' = I_TRPN;
+
+  // Variable initializations:
+  Na_i = 10;
+  Ca_i = 0.0001;
+  Ca_SR = 700e-3;
+  TRPN = 0.0636364;
+end
+
+model Hinch__extracellular_ion_concentrations(Na_o, Ca_o)
+
+  // Variable initializations:
+  Na_o = 140;
+  Ca_o = 1;
+end
+
+model Hinch____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: Hinch__environment(time_);
+  cell_geometry: Hinch__cell_geometry(V_myo, V_SR, A_cap);
+  membrane: Hinch__membrane(V, R, T, F, time_, FVRT, FVRT_Ca);
+  CaRU: Hinch__CaRU(g_D, J_R, J_L, V_myo, N, V, Ca_i, Ca_o, Ca_SR, time_, FVRT_Ca, I_RyR, I_LCC);
+  Na_Ca_Exchanger: Hinch__Na_Ca_Exchanger(FVRT, Na_i, Na_o, Ca_i, Ca_o, I_NaCa);
+  SERCA: Hinch__SERCA(I_SERCA, Ca_i);
+  Sarcolemmal_Ca_pump: Hinch__Sarcolemmal_Ca_pump(Ca_i, I_pCa);
+  Background_Ca_current: Hinch__Background_Ca_current(V, R, T, F, Ca_i, Ca_o, E_Ca, I_CaB);
+  SR_Ca_leak_current: Hinch__SR_Ca_leak_current(Ca_i, Ca_SR, I_SR);
+  troponin_Ca_buffer: Hinch__troponin_Ca_buffer(TRPN, Ca_i, I_TRPN);
+  calmodulin_Ca_buffer: Hinch__calmodulin_Ca_buffer(Ca_i, beta_CMDN);
+  intracellular_ion_concentrations: Hinch__intracellular_ion_concentrations(Na_i, Ca_i, Ca_SR, TRPN, time_, V_myo, V_SR, beta_CMDN, I_SERCA, I_pCa, I_CaB, I_TRPN, I_SR, I_NaCa, I_RyR, I_LCC);
+  extracellular_ion_concentrations: Hinch__extracellular_ion_concentrations(Na_o, Ca_o);
+end

@@ -1,0 +1,48 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "(v_max - v_cc) / (v_max + v_cc * curv)" to set the assignment rule for f_v:  Loop detected:  f_v's definition ((v_max - v_cc) / (v_max + v_cc * curv)) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+
+model siebert_2008__environment(time_)
+end
+
+model siebert_2008__contraction(time_)
+
+  // Assignment Rules:
+  v_cc := 1 / f_v * (f_sec / (A * f_L * F_im));
+  f_L := piecewise( f_c / (L_2 - L_1) * (L_cc - L_1) , ( L_cc >= L_1) && (L_cc <= L_2 ), (1 - f_c) / -(L_2) * (L_cc - L_2) , ( L_cc > L_2) && (L_cc <= 0 ), 1 , ( L_cc > 0) && (L_cc <= L_3 ), -(1 ) / (L_4 - L_3) * (L_cc - L_3) , ( L_cc > L_3) && (L_cc <= L_4 ) );
+  f_sec := piecewise( F_1 / (exp(k_sh) - 1 ) * (exp(k_sh * delta_L_sec / delta_L_sec1) - 1 ) , ( delta_L_sec > 0) && (delta_L_sec < delta_L_sec1 ), F_1 + k * (delta_L_sec - delta_L_sec1) , delta_L_sec <= delta_L_sec1 );
+  delta_L_sec := L_mtc - L_cc - L_m;
+  L_mtc := piecewise( 0.29 , time_ <= 1 , 0.22 , ( time_ > 1) && (time_ < 5 ), 0.19 );
+
+  // Rate Rules:
+  L_cc' = v_cc;
+
+  // Variable initializations:
+  L_1 = -24;
+  L_2 = -14;
+  L_3 = 4;
+  L_4 = 14;
+  f_c = 0.51;
+  v_max = -152;
+  curv = 9.5;
+  k_1 = 0.0064;
+  k_2 = 0.414;
+  F_1 = 8.9;
+  d_LSEC1 = 2.9;
+  k_sh = 2.5;
+  L_m = 2.6;
+  F_im = 20.6;
+  tau = 0.065;
+  delta_L_sec1 = 4.1;
+  k = 8.2;
+  L_cc = 0.2;
+  A = 1;
+end
+
+model siebert_2008____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: siebert_2008__environment(time_);
+  contraction: siebert_2008__contraction(time_);
+end

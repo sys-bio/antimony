@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="bi_model_1999_version01____main" name="bi_model_1999_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="PIPtoDAG_kf8" value="0.15"/>
+      <parameter id="PIPtoDAG_kf9" value="2.5"/>
+      <parameter id="PIPtoDAG_km6" value="5"/>
+      <parameter id="PIPtoDAG_Vmax6" value="48"/>
+      <parameter id="PIPtoDAG_km7" value="19.84166667"/>
+      <parameter id="PIPtoDAG_Vmax7" value="10"/>
+      <parameter id="PIPtoDAG_PIP2" value="10" constant="false"/>
+      <parameter id="PIPtoDAG_DAG" value="0" constant="false"/>
+      <parameter id="PIPtoDAG_IP3" value="0" constant="false"/>
+      <parameter id="CaPLC" value="0" constant="false"/>
+      <parameter id="CaGqPLC" value="0" constant="false"/>
+      <parameter id="PIPtoDAG_Inositol" value="0" constant="false"/>
+      <parameter id="PIPtoDAG_PC" value="0" constant="false"/>
+      <parameter id="PLC_kf1" value="5e-06"/>
+      <parameter id="PLC_kb1" value="1"/>
+      <parameter id="PLC_kf2" value="4.2e-06"/>
+      <parameter id="PLC_kb2" value="1"/>
+      <parameter id="PLC_kf3" value="5e-05"/>
+      <parameter id="PLC_kb3" value="1"/>
+      <parameter id="PLC_kf4" value="4.2e-06"/>
+      <parameter id="PLC_kb4" value="1"/>
+      <parameter id="PLC_kf5" value="0.0133"/>
+      <parameter id="PLC_PLC" value="0.8" constant="false"/>
+      <parameter id="PLC_Gq" value="0.15" constant="false"/>
+      <parameter id="PLC_Ca" value="0.1" constant="false"/>
+      <parameter id="PLC_GqPLC" value="0" constant="false"/>
+      <parameter id="t"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="PIPtoDAG_PIP2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> CaPLC </ci>
+                </apply>
+                <ci> PIPtoDAG_Vmax7 </ci>
+                <ci> PIPtoDAG_PIP2 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> PIPtoDAG_km7 </ci>
+                <ci> PIPtoDAG_PIP2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> CaGqPLC </ci>
+                <ci> PIPtoDAG_Vmax6 </ci>
+                <ci> PIPtoDAG_PIP2 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> PIPtoDAG_km6 </ci>
+                <ci> PIPtoDAG_PIP2 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PIPtoDAG_DAG">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> CaPLC </ci>
+                <ci> PIPtoDAG_Vmax7 </ci>
+                <ci> PIPtoDAG_PIP2 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> PIPtoDAG_km7 </ci>
+                <ci> PIPtoDAG_PIP2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PIPtoDAG_kf8 </ci>
+              <ci> PIPtoDAG_DAG </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PIPtoDAG_IP3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> CaGqPLC </ci>
+                <ci> PIPtoDAG_Vmax6 </ci>
+                <ci> PIPtoDAG_PIP2 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> PIPtoDAG_km6 </ci>
+                <ci> PIPtoDAG_PIP2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PIPtoDAG_kf9 </ci>
+              <ci> PIPtoDAG_IP3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CaPLC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> PLC_PLC </ci>
+                  <ci> PLC_Ca </ci>
+                  <ci> PLC_kf1 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> CaPLC </ci>
+                  <ci> PLC_kb1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> CaGqPLC </ci>
+                <ci> PLC_kf5 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> CaGqPLC </ci>
+                <ci> PLC_kb4 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> CaPLC </ci>
+              <ci> PLC_Gq </ci>
+              <ci> PLC_kf4 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CaGqPLC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> PLC_GqPLC </ci>
+                    <ci> PLC_Ca </ci>
+                    <ci> PLC_kf3 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> CaGqPLC </ci>
+                    <ci> PLC_kb3 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> CaPLC </ci>
+                  <ci> PLC_Gq </ci>
+                  <ci> PLC_kf4 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> CaGqPLC </ci>
+                <ci> PLC_kb4 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> CaGqPLC </ci>
+              <ci> PLC_kf5 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PIPtoDAG_Inositol">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> PIPtoDAG_kf9 </ci>
+            <ci> PIPtoDAG_IP3 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PIPtoDAG_PC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> PIPtoDAG_kf8 </ci>
+            <ci> PIPtoDAG_DAG </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PLC_PLC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> PLC_PLC </ci>
+                  </apply>
+                  <ci> PLC_Ca </ci>
+                  <ci> PLC_kf1 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> CaPLC </ci>
+                  <ci> PLC_kb1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PLC_PLC </ci>
+                <ci> PLC_Gq </ci>
+                <ci> PLC_kf2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PLC_GqPLC </ci>
+              <ci> PLC_kb2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PLC_Gq">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> PLC_PLC </ci>
+                </apply>
+                <ci> PLC_Gq </ci>
+                <ci> PLC_kf2 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PLC_GqPLC </ci>
+                <ci> PLC_kb2 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> CaGqPLC </ci>
+                <ci> PLC_kb4 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> CaPLC </ci>
+              <ci> PLC_Gq </ci>
+              <ci> PLC_kf4 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PLC_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> PLC_PLC </ci>
+                  </apply>
+                  <ci> PLC_Ca </ci>
+                  <ci> PLC_kf1 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> CaPLC </ci>
+                  <ci> PLC_kb1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PLC_Ca </ci>
+                <ci> PLC_GqPLC </ci>
+                <ci> PLC_kf3 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> CaGqPLC </ci>
+              <ci> PLC_kb3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PLC_GqPLC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> PLC_PLC </ci>
+                  <ci> PLC_Gq </ci>
+                  <ci> PLC_kf2 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> PLC_GqPLC </ci>
+                  <ci> PLC_kb2 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> PLC_Ca </ci>
+                <ci> PLC_GqPLC </ci>
+                <ci> PLC_kf3 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> CaGqPLC </ci>
+              <ci> PLC_kb3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

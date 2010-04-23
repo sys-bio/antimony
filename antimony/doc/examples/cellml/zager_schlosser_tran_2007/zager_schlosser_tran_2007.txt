@@ -1,0 +1,145 @@
+//Created by libAntimony v1.3
+model zager_model_2007__environment(time_)
+end
+
+model zager_model_2007__Cgen_pp(Cgen_pp, Qpp, Ppp, H_Cgen_pp, H_Cgen_B, Qt, Cgen_B, time_)
+
+  // Assignment Rules:
+  Qpp := 0.528 * Qt;
+  H_Cgen_pp := piecewise( 0.0 , Cgen_pp < 0.0 , 1.0 );
+
+  // Rate Rules:
+  Cgen_pp' = ( Qpp * H_Cgen_B * Cgen_B - Qpp * H_Cgen_pp * Cgen_pp / Ppp ) / Vpp;
+
+  // Variable initializations:
+  Cgen_pp = 0;
+  Ppp = 0.59;
+  Vpp = 0.188;
+end
+
+model zager_model_2007__Cgen_rp(Cgen_rp, Prp, Qrp, H_Cgen_rp, H_Cgen_B, Qt, Cgen_B, time_)
+
+  // Assignment Rules:
+  Qrp := 0.289 * Qt;
+  H_Cgen_rp := piecewise( 0.0 , Cgen_rp < 0.0 , 1.0 );
+
+  // Rate Rules:
+  Cgen_rp' = ( Qrp * H_Cgen_B * Cgen_B - Qrp * H_Cgen_rp * Cgen_rp / Prp ) / Vrp - kgen_urine * H_Cgen_rp * Cgen_rp;
+
+  // Variable initializations:
+  Cgen_rp = 0;
+  Prp = 1.94;
+  Vrp = 0.012;
+  kgen_urine = 9.5;
+end
+
+model zager_model_2007__Cgen_l(Cgen_l, Ql, H_Cgen_l, Vl, Pl, Vmax, Km, vinf, Prp, H_Cgen_GI, H_Cgen_B, Qt, QGI, Cgen_B, Cgen_GI, time_)
+
+  // Assignment Rules:
+  Ql := 0.03 * Qt;
+  H_Cgen_l := piecewise( 0.0 , Cgen_l < 0.0 , 1.0 );
+
+  // Rate Rules:
+  Cgen_l' = ( Ql * H_Cgen_B * Cgen_B - ( Ql + QGI ) * H_Cgen_l * Cgen_l / Pl + vinf + QGI * H_Cgen_GI * Cgen_GI / Prp ) / Vl - Vmax * H_Cgen_l * Cgen_l / ( Km + H_Cgen_l * Cgen_l );
+
+  // Variable initializations:
+  Cgen_l = 0;
+  Vl = 0.0092;
+  Pl = 3.61;
+end
+
+model zager_model_2007__Cgen_GI(Cgen_GI, H_Cgen_GI, QGI, Prp, H_Cgen_B, Qt, Cgen_B, time_)
+
+  // Assignment Rules:
+  H_Cgen_GI := piecewise( 0.0 , Cgen_GI < 0.0 , 1.0 );
+  QGI := 0.153 * Qt;
+
+  // Rate Rules:
+  Cgen_GI' = ( QGI * H_Cgen_B * Cgen_B - QGI * H_Cgen_GI * Cgen_GI / Prp ) / VGI;
+
+  // Variable initializations:
+  Cgen_GI = 0;
+  VGI = 0.011;
+end
+
+model zager_model_2007__Ccon_l(Ccon_l, H_Ccon_l, Vl, kbile, Ql, H_Cgen_l, Vmax, Km, H_Ccon_ROB, Qt, QGI, Cgen_l, Ccon_ROB, time_)
+
+  // Assignment Rules:
+  H_Ccon_l := piecewise( 0.0 , Ccon_l < 0.0 , 1.0 );
+
+  // Rate Rules:
+  Ccon_l' = Vmax * H_Cgen_l * Cgen_l / ( Km + H_Cgen_l * Cgen_l ) - ( kbile * H_Ccon_l * Ccon_l + ( Ql + QGI ) * ( H_Ccon_l * Ccon_l - H_Ccon_ROB * Ccon_ROB ) / Vl );
+
+  // Variable initializations:
+  Ccon_l = 0;
+end
+
+model zager_model_2007__Ccon_ROB(Ccon_ROB, H_Ccon_ROB, H_Ccon_l, Ql, QGI, Ccon_l, time_)
+
+  // Assignment Rules:
+  H_Ccon_ROB := piecewise( 0.0 , Ccon_ROB < 0.0 , 1.0 );
+
+  // Rate Rules:
+  Ccon_ROB' = ( Ql + QGI ) * ( H_Ccon_l * Ccon_l - H_Ccon_ROB * Ccon_ROB ) / VROB - kcon_urine * H_Ccon_ROB * Ccon_ROB;
+
+  // Variable initializations:
+  Ccon_ROB = 0;
+  VROB = 0.2408;
+  kcon_urine = 0.0;
+end
+
+model zager_model_2007__Acon_b(Acon_b, Vl, kbile, H_Ccon_l, H_Cgen_l, Ccon_l, Cgen_l, time_)
+
+  // Assignment Rules:
+  d_t_Cgen_l := tbasal + cgen * H_Cgen_l * Cgen_l * exp(-(( time_ / ct )));
+
+  // Rate Rules:
+  Acon_b' = kbile * H_Ccon_l * Ccon_l * Vl;
+
+  // Variable initializations:
+  Acon_b = 0;
+  tbasal = 0.0865;
+  ct = 1.0107;
+  cgen = 0.06561;
+end
+
+model zager_model_2007__Cgen_B(Cgen_B, H_Cgen_B, Prp, Ppp, Pl, Qrp, Qpp, QGI, Ql, Qt, H_Cgen_rp, H_Cgen_pp, H_Cgen_l, Cgen_rp, Cgen_pp, Cgen_l)
+
+  // Assignment Rules:
+  Cgen_B := ( Qrp * H_Cgen_rp * Cgen_rp / Prp + Qpp * H_Cgen_pp * Cgen_pp / Ppp + ( Ql + QGI ) * H_Cgen_l * Cgen_l / Pl ) / Qt;
+  H_Cgen_B := piecewise( 0.0 , Cgen_B < 0.0 , 1.0 );
+end
+
+model zager_model_2007__model_parameters(vinf, Qt, Vmax, Km, kbile, time_)
+
+  // Assignment Rules:
+  vinf := piecewise( cv * F , ( time_ < epsilon) && (time_ >= 0.0 ), cv * G , ( time_ <= 1.0 - epsilon) && (time_ >= epsilon ), cv * H , ( time_ <= 1.0) && (time_ > 1.0 - epsilon ), cv * I , ( time_ <= 1.0 + 5.0 / 60.0) && (time_ > 1.0 ) );
+  Qt := 14.1 * power( m_rat , 0.75 );
+  F := -2.0 / power( epsilon , 3.0 ) * power( time_ , 3.0 ) + 3.0 / power( epsilon , 2.0 ) * power( time_ , 2.0 );
+  G := 1.0;
+  H := 3.0 * power( 1.0 - time_ , 2.0 ) / power( epsilon , 2.0 ) - 2.0 * power( 1.0 - time_ , 3.0 ) / power( epsilon , 3.0 );
+  I := 0.0;
+
+  // Variable initializations:
+  Vmax = 25.25;
+  Km = 0.6231;
+  kbile = 111.72;
+  cv = 1.0;
+  epsilon = 0.1;
+  m_rat = 0.25;
+end
+
+model zager_model_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: zager_model_2007__environment(time_);
+  Cgen_pp: zager_model_2007__Cgen_pp(Cgen_pp0, Qpp, Ppp, H_Cgen_pp, H_Cgen_B, Qt, Cgen_B0, time_);
+  Cgen_rp: zager_model_2007__Cgen_rp(Cgen_rp0, Prp, Qrp, H_Cgen_rp, H_Cgen_B, Qt, Cgen_B0, time_);
+  Cgen_l: zager_model_2007__Cgen_l(Cgen_l0, Ql, H_Cgen_l, Vl, Pl, Vmax, Km, vinf, Prp, H_Cgen_GI, H_Cgen_B, Qt, QGI, Cgen_B0, Cgen_GI0, time_);
+  Cgen_GI: zager_model_2007__Cgen_GI(Cgen_GI0, H_Cgen_GI, QGI, Prp, H_Cgen_B, Qt, Cgen_B0, time_);
+  Ccon_l: zager_model_2007__Ccon_l(Ccon_l0, H_Ccon_l, Vl, kbile, Ql, H_Cgen_l, Vmax, Km, H_Ccon_ROB, Qt, QGI, Cgen_l0, Ccon_ROB0, time_);
+  Ccon_ROB: zager_model_2007__Ccon_ROB(Ccon_ROB0, H_Ccon_ROB, H_Ccon_l, Ql, QGI, Ccon_l0, time_);
+  Acon_b: zager_model_2007__Acon_b(Acon_b0, Vl, kbile, H_Ccon_l, H_Cgen_l, Ccon_l0, Cgen_l0, time_);
+  Cgen_B: zager_model_2007__Cgen_B(Cgen_B0, H_Cgen_B, Prp, Ppp, Pl, Qrp, Qpp, QGI, Ql, Qt, H_Cgen_rp, H_Cgen_pp, H_Cgen_l, Cgen_rp0, Cgen_pp0, Cgen_l0);
+  model_parameters: zager_model_2007__model_parameters(vinf, Qt, Vmax, Km, kbile, time_);
+end

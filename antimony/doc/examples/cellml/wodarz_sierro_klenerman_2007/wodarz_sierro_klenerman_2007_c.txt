@@ -1,0 +1,204 @@
+//Created by libAntimony v1.3
+model wodarz_2007c__environment(time_)
+end
+
+model wodarz_2007c__x(x, d, gamma, lambda_, beta, v, time_)
+
+  // Rate Rules:
+  x' = lambda_ - (d * x + beta * x * v + gamma * x * v);
+
+  // Variable initializations:
+  x = 1;
+end
+
+model wodarz_2007c__y0(y0, beta, x, a0, eta, phi, L, v, pa, za, p_i, zi, time_)
+
+  // Rate Rules:
+  y0' = beta * x * v - (a0 * y0 + eta * y0 + pa * y0 * za + p_i * y0 * zi) + phi * L;
+
+  // Variable initializations:
+  y0 = 0;
+end
+
+model wodarz_2007c__y1(y1, a1, eta, y0, pa, za, p_i, zi, time_)
+
+  // Rate Rules:
+  y1' = eta * y0 - (a1 * y1 + pa * y1 * za + p_i * y1 * zi);
+
+  // Variable initializations:
+  y1 = 0;
+end
+
+model wodarz_2007c__L(L, gamma, x, v, phi, d, time_)
+
+  // Rate Rules:
+  L' = gamma * x * v - (phi * L + d * L);
+
+  // Variable initializations:
+  L = 0;
+end
+
+model wodarz_2007c__v(v, k, y1, u, time_)
+
+  // Rate Rules:
+  v' = k * y1 - u * v;
+
+  // Variable initializations:
+  v = 1;
+end
+
+model wodarz_2007c__m_8(m_8, r, m_7, time_)
+
+  // Rate Rules:
+  m_8' = 2 * r * m_7 - r * m_8;
+
+  // Variable initializations:
+  m_8 = 0;
+end
+
+model wodarz_2007c__m_7(m_7, r, m_6, time_)
+
+  // Rate Rules:
+  m_7' = 2 * r * m_6 - r * m_7;
+
+  // Variable initializations:
+  m_7 = 0;
+end
+
+model wodarz_2007c__m_6(m_6, r, m_5, time_)
+
+  // Rate Rules:
+  m_6' = 2 * r * m_5 - r * m_6;
+
+  // Variable initializations:
+  m_6 = 0;
+end
+
+model wodarz_2007c__m_5(m_5, r, m_4, time_)
+
+  // Rate Rules:
+  m_5' = 2 * r * m_4 - r * m_5;
+
+  // Variable initializations:
+  m_5 = 0;
+end
+
+model wodarz_2007c__m_4(m_4, r, m_3, time_)
+
+  // Rate Rules:
+  m_4' = 2 * r * m_3 - r * m_4;
+
+  // Variable initializations:
+  m_4 = 0;
+end
+
+model wodarz_2007c__m_3(m_3, r, m_2, time_)
+
+  // Rate Rules:
+  m_3' = 2 * r * m_2 - r * m_3;
+
+  // Variable initializations:
+  m_3 = 0;
+end
+
+model wodarz_2007c__m_2(m_2, r, m_1, time_)
+
+  // Rate Rules:
+  m_2' = 2 * r * m_1 - r * m_2;
+
+  // Variable initializations:
+  m_2 = 0;
+end
+
+model wodarz_2007c__m_1(m_1, r, m_0, time_)
+
+  // Rate Rules:
+  m_1' = 2 * r * m_0 - r * m_1;
+
+  // Variable initializations:
+  m_1 = 0;
+end
+
+model wodarz_2007c__m_0(m_0, r, time_)
+
+  // Rate Rules:
+  m_0' = -(r) * m_0;
+
+  // Variable initializations:
+  m_0 = 0;
+end
+
+model wodarz_2007c__za(za, alpha, m_8, ca, y0, y1, ba, time_)
+
+  // Rate Rules:
+  za' = alpha * m_8 + ca * (y0 + y1) * za - ba * za;
+
+  // Variable initializations:
+  za = 1;
+end
+
+model wodarz_2007c__zi(zi, xi, ci, y0, y1, bi, time_)
+
+  // Assignment Rules:
+  log_zi := log(zi);
+
+  // Rate Rules:
+  zi' = xi + ci * (y0 + y1) * zi - bi * zi;
+
+  // Variable initializations:
+  zi = 0.1;
+end
+
+model wodarz_2007c__R0(gamma, lambda_, eta, a1, a0, beta, phi, d)
+
+  // Assignment Rules:
+  R0 := lambda_ * eta / (d * a1 * (a0 + eta)) * (beta + gamma * phi / (phi + d));
+end
+
+model wodarz_2007c__model_parameters(a0, a1, k, u, lambda_, d, beta, gamma, alpha, phi, eta, pa, ca, r, ba, p_i, ci, bi, xi)
+
+  // Variable initializations:
+  a0 = 0.1;
+  a1 = 0.2;
+  k = 1;
+  u = 1;
+  lambda_ = 10;
+  d = 0.1;
+  beta = 0.1;
+  gamma = 0.5;
+  alpha = 0.2;
+  phi = 0.1;
+  eta = 0.01;
+  pa = 0.000001;
+  ca = 15.5;
+  r = 1;
+  ba = 0.1;
+  p_i = 1;
+  ci = 12;
+  bi = 0.1;
+  xi = 0.01;
+end
+
+model wodarz_2007c____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: wodarz_2007c__environment(time_);
+  x: wodarz_2007c__x(x0, d, gamma, lambda_, beta, v0, time_);
+  y0: wodarz_2007c__y0(y00, beta, x0, a0, eta, phi, L0, v0, pa, za0, p_i, zi0, time_);
+  y1: wodarz_2007c__y1(y10, a1, eta, y00, pa, za0, p_i, zi0, time_);
+  L: wodarz_2007c__L(L0, gamma, x0, v0, phi, d, time_);
+  v: wodarz_2007c__v(v0, k, y10, u, time_);
+  m_8: wodarz_2007c__m_8(m_80, r, m_70, time_);
+  m_7: wodarz_2007c__m_7(m_70, r, m_60, time_);
+  m_6: wodarz_2007c__m_6(m_60, r, m_50, time_);
+  m_5: wodarz_2007c__m_5(m_50, r, m_40, time_);
+  m_4: wodarz_2007c__m_4(m_40, r, m_30, time_);
+  m_3: wodarz_2007c__m_3(m_30, r, m_20, time_);
+  m_2: wodarz_2007c__m_2(m_20, r, m_10, time_);
+  m_1: wodarz_2007c__m_1(m_10, r, m_00, time_);
+  m_0: wodarz_2007c__m_0(m_00, r, time_);
+  za: wodarz_2007c__za(za0, alpha, m_80, ca, y00, y10, ba, time_);
+  zi: wodarz_2007c__zi(zi0, xi, ci, y00, y10, bi, time_);
+  R0: wodarz_2007c__R0(gamma, lambda_, eta, a1, a0, beta, phi, d);
+  model_parameters: wodarz_2007c__model_parameters(a0, a1, k, u, lambda_, d, beta, gamma, alpha, phi, eta, pa, ca, r, ba, p_i, ci, bi, xi);
+end

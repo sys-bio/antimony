@@ -1,0 +1,81 @@
+//Created by libAntimony v1.3
+model razumova_bukatina_campbell_2000__environment(time_)
+end
+
+model razumova_bukatina_campbell_2000__main(lambda_on, lambda_A_2, time_, Ca, Ca_50, k_on, k_off, k_0_on, k_0_off, k_Ca_on, k_Ca_off, f, f_prime, f_0, f_prime_0, u, w, v)
+
+  // Assignment Rules:
+  F := 1 / (1 + power(Ca / Ca_50, -(n_H)));
+  R_off := R_T - (D + A_1 + A_2);
+  lambda_off := R_off / R_T;
+  lambda_on := (D + A_1 + A_2) / R_T;
+  lambda_D := D / R_T;
+  lambda_A_1 := A_1 / R_T;
+  lambda_A_2 := A_2 / R_T;
+  lambda_A2_cyc := A_2 / (D + A_1 + A_2);
+  Ca := Ca_50 * 100;
+  Ca_50 := k_Ca_off / k_Ca_on;
+
+  // Rate Rules:
+  D' = k_on * R_off + f_prime * A_1 + g * A_2 - (k_off + f) * D;
+  A_1' = f * D + h_prime * A_2 - (f_prime + h) * A_1;
+  A_2' = h * A_1 - (h_prime + g) * A_2;
+
+  // Variable initializations:
+  R_T = 1;
+  D = 0;
+  A_1 = 0;
+  A_2 = 0;
+  k_0_on = 0;
+  k_0_off = 100;
+  k_Ca_on = 120;
+  k_Ca_off = 50;
+  f_0 = 50;
+  f_prime_0 = 400;
+  h = 8;
+  h_prime = 6;
+  g = 4;
+  n_H = 1;
+  u = 1;
+  w = 1;
+  v = 1;
+end
+
+model razumova_bukatina_campbell_2000__RU_rate_constant(k_u_on, k_u_off, k_0_on, k_0_off, k_Ca_on, k_Ca_off, Ca, Ca_50)
+
+  // Assignment Rules:
+  k_u_on := k_0_on + (k_Ca_on - k_0_on) * Ca / (Ca_50 + Ca);
+  k_u_off := k_0_off + (k_Ca_off - k_0_off) * Ca / (Ca_50 + Ca);
+end
+
+model razumova_bukatina_campbell_2000__RU_RU_interaction(k_w_on, k_w_off, k_u_on, k_u_off, lambda_on, u)
+
+  // Assignment Rules:
+  k_w_on := k_u_on * power(1 + lambda_on * (u - 1 ), 2 );
+  k_w_off := k_u_off * power(u - lambda_on * (u - 1 ), 2 );
+end
+
+model razumova_bukatina_campbell_2000__XB_XB_interaction(f, f_prime, f_0, f_prime_0, lambda_A_2, v)
+
+  // Assignment Rules:
+  f := f_0 * power(1 + lambda_A_2 * (exp(v - 1 ) - 1 ), 2 );
+  f_prime := f_prime_0 * power(1 + lambda_A_2 * (exp(-((v - 1 ))) - 1 ), 2 );
+end
+
+model razumova_bukatina_campbell_2000__XB_RU_interaction(k_on, k_off, k_w_on, k_w_off, lambda_A_2, w)
+
+  // Assignment Rules:
+  k_on := k_w_on * power(1 + lambda_A_2 * (exp(w - 1 ) - 1 ), 2 );
+  k_off := k_w_off * power(1 + lambda_A_2 * (exp(-((w - 1 ))) - 1 ), 2 );
+end
+
+model razumova_bukatina_campbell_2000____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: razumova_bukatina_campbell_2000__environment(time_);
+  main: razumova_bukatina_campbell_2000__main(lambda_on, lambda_A_2, time_, Ca, Ca_50, k_on, k_off, k_0_on, k_0_off, k_Ca_on, k_Ca_off, f, f_prime, f_0, f_prime_0, u, w, v);
+  RU_rate_constant: razumova_bukatina_campbell_2000__RU_rate_constant(k_u_on, k_u_off, k_0_on, k_0_off, k_Ca_on, k_Ca_off, Ca, Ca_50);
+  RU_RU_interaction: razumova_bukatina_campbell_2000__RU_RU_interaction(k_w_on, k_w_off, k_u_on, k_u_off, lambda_on, u);
+  XB_XB_interaction: razumova_bukatina_campbell_2000__XB_XB_interaction(f, f_prime, f_0, f_prime_0, lambda_A_2, v);
+  XB_RU_interaction: razumova_bukatina_campbell_2000__XB_RU_interaction(k_on, k_off, k_w_on, k_w_off, lambda_A_2, w);
+end

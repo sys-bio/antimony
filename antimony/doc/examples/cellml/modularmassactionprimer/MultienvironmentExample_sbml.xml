@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="MultienvironmentExample____main" name="MultienvironmentExample____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="MultienvironmentExampleComponent_C" value="200" constant="false"/>
+      <parameter id="MultienvironmentExampleComponent_D" value="4" constant="false"/>
+      <parameter id="MultienvironmentExampleComponent_E" value="0" constant="false"/>
+      <parameter id="MultienvironmentExampleComponent_kf" value="0.006"/>
+      <parameter id="MultienvironmentExampleComponent_kr" value="0.001"/>
+      <parameter id="MultienvironmentExampleComponent_J" constant="false"/>
+      <parameter id="MultienvironmentExampleComponent_R" value="5"/>
+      <parameter id="MultienvironmentExampleComponent_Cpc" constant="false"/>
+      <parameter id="MultienvironmentExampleComponent_t"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="MultienvironmentExampleComponent_C">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> MultienvironmentExampleComponent_Cpc </ci>
+            </apply>
+            <ci> MultienvironmentExampleComponent_J </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="MultienvironmentExampleComponent_D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> MultienvironmentExampleComponent_J </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="MultienvironmentExampleComponent_E">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> MultienvironmentExampleComponent_J </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="MultienvironmentExampleComponent_J">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> MultienvironmentExampleComponent_C </ci>
+              <ci> MultienvironmentExampleComponent_D </ci>
+              <ci> MultienvironmentExampleComponent_kf </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> MultienvironmentExampleComponent_kr </ci>
+              <ci> MultienvironmentExampleComponent_E </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="MultienvironmentExampleComponent_Cpc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> MultienvironmentExampleComponent_R </ci>
+            <cn> 602.2 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="smith_crampin_2004_version01____main" name="smith_crampin_2004_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Vm" value="-150" constant="false"/>
+      <parameter id="cMgADP" value="0.01" constant="false"/>
+      <parameter id="cNa_i" value="50" constant="false"/>
+      <parameter id="v_cyc" constant="false"/>
+      <parameter id="net_free_energy" constant="false"/>
+      <parameter id="interface_body_temp" value="310"/>
+      <parameter id="interface_gas_const" value="8.314"/>
+      <parameter id="interface_faraday_const" value="96485"/>
+      <parameter id="interface_NaK_pump_k1" value="1050"/>
+      <parameter id="interface_NaK_pump_minus_k1" value="172.1"/>
+      <parameter id="interface_NaK_pump_k2" value="481"/>
+      <parameter id="interface_NaK_pump_minus_k2" value="40.1"/>
+      <parameter id="interface_NaK_pump_k3" value="2000"/>
+      <parameter id="interface_NaK_pump_minus_k3" value="79287.1"/>
+      <parameter id="interface_NaK_pump_k4" value="320"/>
+      <parameter id="interface_NaK_pump_minus_k4" value="40.1"/>
+      <parameter id="interface_NaK_pump_eq_Na_base_e" value="15.5"/>
+      <parameter id="interface_NaK_pump_eq_Na_base_i" value="2.49"/>
+      <parameter id="interface_NaK_pump_eq_K_e" value="0.213"/>
+      <parameter id="interface_NaK_pump_eq_K_i" value="0.5"/>
+      <parameter id="interface_NaK_pump_eq_MgATP" value="2.51"/>
+      <parameter id="interface_NaK_pump_eq_HPi" value="0.000169"/>
+      <parameter id="interface_NaK_pump_eq_KPi" value="292"/>
+      <parameter id="interface_NaK_pump_eq_NaPi" value="224"/>
+      <parameter id="interface_NaK_pump_dimless_Na_e" constant="false"/>
+      <parameter id="interface_NaK_pump_dimless_Na_i" constant="false"/>
+      <parameter id="interface_NaK_pump_dimless_K_e" constant="false"/>
+      <parameter id="interface_NaK_pump_dimless_K_i" constant="false"/>
+      <parameter id="interface_NaK_pump_dimless_MgATP" constant="false"/>
+      <parameter id="interface_NaK_pump_alpha1" constant="false"/>
+      <parameter id="interface_NaK_pump_alpha2" constant="false"/>
+      <parameter id="interface_NaK_pump_alpha3" constant="false"/>
+      <parameter id="interface_NaK_pump_alpha4" constant="false"/>
+      <parameter id="interface_NaK_pump_minus_alpha1" constant="false"/>
+      <parameter id="interface_NaK_pump_minus_alpha2" constant="false"/>
+      <parameter id="interface_NaK_pump_minus_alpha3" constant="false"/>
+      <parameter id="interface_NaK_pump_minus_alpha4" constant="false"/>
+      <parameter id="interface_NaK_pump_cNa_e" value="150"/>
+      <parameter id="interface_NaK_pump_cK_e" value="5.4"/>
+      <parameter id="interface_NaK_pump_cK_i" value="140"/>
+      <parameter id="interface_NaK_pump_cMgATP" value="9.8"/>
+      <parameter id="interface_NaK_pump_cPi_sum" value="4.2"/>
+      <parameter id="interface_NaK_pump_cPi" constant="false"/>
+      <parameter id="interface_NaK_pump_cH" value="8.1283e-05"/>
+      <parameter id="interface_NaK_pump_dG_Na" constant="false"/>
+      <parameter id="interface_NaK_pump_dG_K" constant="false"/>
+      <parameter id="interface_NaK_pump_dG_pump" constant="false"/>
+      <parameter id="interface_NaK_pump_dG_ATP" constant="false"/>
+      <parameter id="interface_NaK_pump_partition_factor" value="-0.0312886923809844"/>
+      <parameter id="interface_NaK_pump_diagram_sum" constant="false"/>
+      <parameter id="t"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Vm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 1 </cn>
+        </math>
+      </rateRule>
+      <rateRule variable="cMgADP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 0 </cn>
+        </math>
+      </rateRule>
+      <rateRule variable="cNa_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 0 </cn>
+        </math>
+      </rateRule>
+      <assignmentRule variable="v_cyc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> interface_NaK_pump_alpha1 </ci>
+                <ci> interface_NaK_pump_alpha2 </ci>
+                <ci> interface_NaK_pump_alpha3 </ci>
+                <ci> interface_NaK_pump_alpha4 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> interface_NaK_pump_minus_alpha1 </ci>
+                <ci> interface_NaK_pump_minus_alpha2 </ci>
+                <ci> interface_NaK_pump_minus_alpha3 </ci>
+                <ci> interface_NaK_pump_minus_alpha4 </ci>
+              </apply>
+            </apply>
+            <ci> interface_NaK_pump_diagram_sum </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="net_free_energy">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> interface_NaK_pump_dG_ATP </ci>
+            <ci> interface_NaK_pump_dG_pump </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_dimless_Na_e">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> interface_NaK_pump_cNa_e </ci>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_eq_Na_base_e </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <plus/>
+                      <cn> 1 </cn>
+                      <ci> interface_NaK_pump_partition_factor </ci>
+                    </apply>
+                    <ci> interface_faraday_const </ci>
+                    <cn> 0.001 </cn>
+                    <ci> Vm </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn> 3 </cn>
+                    <ci> interface_gas_const </ci>
+                    <ci> interface_body_temp </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_dimless_Na_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> cNa_i </ci>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_eq_Na_base_i </ci>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> interface_NaK_pump_partition_factor </ci>
+                    <ci> interface_faraday_const </ci>
+                    <cn> 0.001 </cn>
+                    <ci> Vm </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn> 3 </cn>
+                    <ci> interface_gas_const </ci>
+                    <ci> interface_body_temp </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_dimless_K_e">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> interface_NaK_pump_cK_e </ci>
+            <ci> interface_NaK_pump_eq_K_e </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_dimless_K_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> interface_NaK_pump_cK_i </ci>
+            <ci> interface_NaK_pump_eq_K_i </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_dimless_MgATP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> interface_NaK_pump_cMgATP </ci>
+            <ci> interface_NaK_pump_eq_MgATP </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_alpha1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_k1 </ci>
+              <apply>
+                <power/>
+                <ci> interface_NaK_pump_dimless_Na_i </ci>
+                <cn type="integer"> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <ci> interface_NaK_pump_dimless_Na_i </ci>
+                  </apply>
+                  <cn type="integer"> 3 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <ci> interface_NaK_pump_dimless_K_i </ci>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+              <cn> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_alpha2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> interface_NaK_pump_k2 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_alpha3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_k3 </ci>
+              <apply>
+                <power/>
+                <ci> interface_NaK_pump_dimless_K_e </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <ci> interface_NaK_pump_dimless_Na_e </ci>
+                  </apply>
+                  <cn type="integer"> 3 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <ci> interface_NaK_pump_dimless_K_e </ci>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+              <cn> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_alpha4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_k4 </ci>
+              <ci> interface_NaK_pump_dimless_MgATP </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <ci> interface_NaK_pump_dimless_MgATP </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_minus_alpha1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> interface_NaK_pump_minus_k1 </ci>
+            <ci> cMgADP </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_minus_alpha2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_k2 </ci>
+              <apply>
+                <power/>
+                <ci> interface_NaK_pump_dimless_Na_e </ci>
+                <cn type="integer"> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <ci> interface_NaK_pump_dimless_Na_e </ci>
+                  </apply>
+                  <cn type="integer"> 3 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <ci> interface_NaK_pump_dimless_K_e </ci>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+              <cn> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_minus_alpha3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_k3 </ci>
+              <ci> interface_NaK_pump_cPi </ci>
+              <ci> interface_NaK_pump_cH </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <ci> interface_NaK_pump_dimless_MgATP </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_minus_alpha4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_k4 </ci>
+              <apply>
+                <power/>
+                <ci> interface_NaK_pump_dimless_K_i </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <ci> interface_NaK_pump_dimless_Na_i </ci>
+                  </apply>
+                  <cn type="integer"> 3 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn> 1 </cn>
+                    <ci> interface_NaK_pump_dimless_K_i </ci>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+              <cn> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_cPi">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> interface_NaK_pump_cPi_sum </ci>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> interface_NaK_pump_cK_i </ci>
+                <ci> interface_NaK_pump_eq_KPi </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> interface_NaK_pump_cH </ci>
+                <ci> interface_NaK_pump_eq_HPi </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> cNa_i </ci>
+                <ci> interface_NaK_pump_eq_NaPi </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_dG_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> interface_gas_const </ci>
+              <ci> interface_body_temp </ci>
+              <apply>
+                <ln/>
+                <apply>
+                  <divide/>
+                  <ci> interface_NaK_pump_cNa_e </ci>
+                  <ci> cNa_i </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_faraday_const </ci>
+              <cn> 0.001 </cn>
+              <ci> Vm </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_dG_K">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> interface_gas_const </ci>
+              <ci> interface_body_temp </ci>
+              <apply>
+                <ln/>
+                <apply>
+                  <divide/>
+                  <ci> interface_NaK_pump_cK_i </ci>
+                  <ci> interface_NaK_pump_cK_e </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_faraday_const </ci>
+              <cn> 0.001 </cn>
+              <ci> Vm </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_dG_pump">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> interface_NaK_pump_dG_K </ci>
+            </apply>
+            <apply>
+              <times/>
+              <cn> 3 </cn>
+              <ci> interface_NaK_pump_dG_Na </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_dG_ATP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> -29600 </cn>
+            <apply>
+              <times/>
+              <ci> interface_gas_const </ci>
+              <ci> interface_body_temp </ci>
+              <apply>
+                <ln/>
+                <apply>
+                  <divide/>
+                  <ci> interface_NaK_pump_cMgATP </ci>
+                  <apply>
+                    <times/>
+                    <cn> 0.001 </cn>
+                    <ci> cMgADP </ci>
+                    <ci> interface_NaK_pump_cPi </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="interface_NaK_pump_diagram_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_alpha3 </ci>
+              <ci> interface_NaK_pump_minus_alpha2 </ci>
+              <ci> interface_NaK_pump_minus_alpha1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_alpha4 </ci>
+              <ci> interface_NaK_pump_minus_alpha2 </ci>
+              <ci> interface_NaK_pump_minus_alpha1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_alpha4 </ci>
+              <ci> interface_NaK_pump_alpha2 </ci>
+              <ci> interface_NaK_pump_alpha3 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_alpha4 </ci>
+              <ci> interface_NaK_pump_minus_alpha1 </ci>
+              <ci> interface_NaK_pump_alpha3 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_alpha3 </ci>
+              <ci> interface_NaK_pump_minus_alpha2 </ci>
+              <ci> interface_NaK_pump_alpha1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_alpha4 </ci>
+              <ci> interface_NaK_pump_minus_alpha2 </ci>
+              <ci> interface_NaK_pump_alpha1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_alpha4 </ci>
+              <ci> interface_NaK_pump_alpha1 </ci>
+              <ci> interface_NaK_pump_alpha3 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_alpha3 </ci>
+              <ci> interface_NaK_pump_alpha1 </ci>
+              <ci> interface_NaK_pump_alpha2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_alpha4 </ci>
+              <ci> interface_NaK_pump_alpha1 </ci>
+              <ci> interface_NaK_pump_alpha2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_alpha1 </ci>
+              <ci> interface_NaK_pump_alpha2 </ci>
+              <ci> interface_NaK_pump_alpha3 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_alpha4 </ci>
+              <ci> interface_NaK_pump_minus_alpha3 </ci>
+              <ci> interface_NaK_pump_minus_alpha1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_alpha4 </ci>
+              <ci> interface_NaK_pump_minus_alpha3 </ci>
+              <ci> interface_NaK_pump_alpha2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_alpha4 </ci>
+              <ci> interface_NaK_pump_minus_alpha3 </ci>
+              <ci> interface_NaK_pump_minus_alpha2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_alpha4 </ci>
+              <ci> interface_NaK_pump_minus_alpha1 </ci>
+              <ci> interface_NaK_pump_minus_alpha2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_alpha4 </ci>
+              <ci> interface_NaK_pump_alpha2 </ci>
+              <ci> interface_NaK_pump_alpha3 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> interface_NaK_pump_minus_alpha4 </ci>
+              <ci> interface_NaK_pump_minus_alpha1 </ci>
+              <ci> interface_NaK_pump_alpha3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

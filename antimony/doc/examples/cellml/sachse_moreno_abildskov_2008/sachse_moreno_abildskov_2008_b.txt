@@ -1,0 +1,111 @@
+//Created by libAntimony v1.3
+model sachse_model_2007__environment(time_)
+end
+
+model sachse_model_2007__membrane(Vm, I_b, I_Kir, I_Shkr, I_stim, time_)
+
+  // Assignment Rules:
+  Vm := piecewise( 1e-7 , abs(VmReal) < 1e-7 , VmReal );
+
+  // Rate Rules:
+  VmReal' = -((I_Kir + I_Shkr + I_b - I_stim)) / Cm;
+
+  // Variable initializations:
+  Cm = 4.5e-6;
+  VmReal = -58.00;
+end
+
+model sachse_model_2007__I_Kir(I_Kir, time_, Vm, R, T, F, Ko, Ki)
+
+  // Assignment Rules:
+  I_Kir := GKir * OKir * root(Ko * 1e-3 ) * (Vm - EK);
+  EK := R * T / F * ln(Ko / Ki);
+  OKir := 1 / (aKir + exp(bKir * (Vm - EK) * F / (R * T)));
+
+  // Variable initializations:
+  GKir = 1e-3;
+  aKir = 0.94;
+  bKir = 1.26;
+end
+
+model sachse_model_2007__I_Shkr(I_Shkr, time_, Vm, R, T, F, Ko, Ki)
+
+  // Assignment Rules:
+  I_Shkr := PShkr * OShkr * Vm * power(F, 2 ) / (R * T) * (Ki - Ko * exp(-(Vm) * F / (R * T))) / (1 - exp(-(Vm) * F / (R * T)));
+  C0Shkr := piecewise( 0 , C0ShkrReal < 0 , 1 , C0ShkrReal > 1 , C0ShkrReal );
+  C1Shkr := piecewise( 0 , C1ShkrReal < 0 , 1 , C1ShkrReal > 1 , C1ShkrReal );
+  C2Shkr := piecewise( 0 , C2ShkrReal < 0 , 1 , C2ShkrReal > 1 , C2ShkrReal );
+  C3Shkr := piecewise( 0 , C3ShkrReal < 0 , 1 , C3ShkrReal > 1 , C3ShkrReal );
+  C4Shkr := piecewise( 0 , C4ShkrReal < 0 , 1 , C4ShkrReal > 1 , C4ShkrReal );
+  OShkr := piecewise( 0 , OShkrReal < 0 , 1 , OShkrReal > 1 , OShkrReal );
+  kv := kv0 * exp(Vm * zv * F / (R * T));
+  k_v := k_v0 * exp(Vm * z_v * F / (R * T));
+
+  // Rate Rules:
+  C0ShkrReal' = k_v * C1Shkr - 4 * kv * C0Shkr;
+  C1ShkrReal' = 2 * k_v * C2Shkr + 4 * kv * C0Shkr - (3 * kv + k_v) * C1Shkr;
+  C2ShkrReal' = 3 * k_v * C3Shkr + 3 * kv * C1Shkr - (2 * kv + 2 * k_v) * C2Shkr;
+  C3ShkrReal' = 4 * k_v * C4Shkr + 2 * kv * C2Shkr - (kv + 3 * k_v) * C3Shkr;
+  C4ShkrReal' = k_o * OShkr + kv * C3Shkr - (ko + 4 * k_v) * C4Shkr;
+  OShkrReal' = ko * C4Shkr - k_o * OShkr;
+
+  // Variable initializations:
+  PShkr = 5.4e-9;
+  C0ShkrReal = 9.11e-1;
+  C1ShkrReal = 8.57e-2;
+  C2ShkrReal = 3.02e-3;
+  C3ShkrReal = 4.74e-5;
+  C4ShkrReal = 2.79e-7;
+  OShkrReal = 0;
+  kv0 = 30;
+  zv = 1.28;
+  k_v0 = 2;
+  z_v = -1.53;
+  ko = 77;
+  k_o = 18;
+end
+
+model sachse_model_2007__I_b(I_b, time_, Vm)
+
+  // Assignment Rules:
+  I_b := Gb * (Vm - Eb);
+
+  // Variable initializations:
+  Gb = 6.9e-6;
+  Eb = 0;
+end
+
+model sachse_model_2007__I_stim(I_stim, time_, Vm)
+
+  // Assignment Rules:
+  I_stim := piecewise( stim_amplitude , (( time_ >= stim_start) && ((time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration) )), 0 );
+
+  // Variable initializations:
+  stim_start = 0.1;
+  stim_end = 10;
+  stim_period = 1;
+  stim_duration = 0.001;
+  stim_amplitude = 0.1;
+end
+
+model sachse_model_2007__model_parameters(R, T, F, Ki, Ko)
+
+  // Variable initializations:
+  R = 8310;
+  T = 295;
+  F = 9.65e4;
+  Ki = 140;
+  Ko = 5;
+end
+
+model sachse_model_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: sachse_model_2007__environment(time_);
+  membrane: sachse_model_2007__membrane(Vm, I_b0, I_Kir0, I_Shkr0, I_stim0, time_);
+  I_Kir: sachse_model_2007__I_Kir(I_Kir0, time_, Vm, R, T, F, Ko, Ki);
+  I_Shkr: sachse_model_2007__I_Shkr(I_Shkr0, time_, Vm, R, T, F, Ko, Ki);
+  I_b: sachse_model_2007__I_b(I_b0, time_, Vm);
+  I_stim: sachse_model_2007__I_stim(I_stim0, time_, Vm);
+  model_parameters: sachse_model_2007__model_parameters(R, T, F, Ki, Ko);
+end

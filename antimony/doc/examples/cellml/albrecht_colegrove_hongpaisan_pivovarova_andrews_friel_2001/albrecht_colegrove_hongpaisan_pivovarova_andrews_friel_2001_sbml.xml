@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="albrecht_colegrove_hongpaisan_pivovarova_andrews_friel_2001_version01____main" name="albrecht_colegrove_hongpaisan_pivovarova_andrews_friel_2001_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="J_ICa" constant="false"/>
+      <parameter id="total_cytoplasmic_Ca_flux_F" value="96.5"/>
+      <parameter id="J_pm" constant="false"/>
+      <parameter id="Ca_extrusion_across_the_plasma_membrane_J_extru" constant="false"/>
+      <parameter id="Ca_extrusion_across_the_plasma_membrane_k_leak" value="1.5e-07"/>
+      <parameter id="Ca_extrusion_across_the_plasma_membrane_Vmax_extru" value="25"/>
+      <parameter id="Ca_extrusion_across_the_plasma_membrane_EC50_extru" value="386"/>
+      <parameter id="Ca_extrusion_across_the_plasma_membrane_n_extru" value="2.4"/>
+      <parameter id="Ca_extrusion_across_the_plasma_membrane_Ca_o" value="2"/>
+      <parameter id="Ca_i" constant="false"/>
+      <parameter id="J_SERCA" constant="false"/>
+      <parameter id="Ca_uptake_by_SR_Ca_ATPase_Vmax_SERCA" value="70"/>
+      <parameter id="Ca_uptake_by_SR_Ca_ATPase_EC50_SERCA" value="700"/>
+      <parameter id="Ca_uptake_by_SR_Ca_ATPase_n_SERCA" value="1"/>
+      <parameter id="J_ER" constant="false"/>
+      <parameter id="ER_Ca_release_P_ER" constant="false"/>
+      <parameter id="ER_Ca_release_P_basal" value="1.78e-05"/>
+      <parameter id="ER_Ca_release_Pmax_RyR" value="0.0009"/>
+      <parameter id="ER_Ca_release_EC50_RyR" value="1"/>
+      <parameter id="ER_Ca_release_n_RyR" value="1"/>
+      <parameter id="ER_Ca_release_J_release" constant="false"/>
+      <parameter id="Ca_ER" constant="false"/>
+      <parameter id="cytoplasmic_calcium_J_i" constant="false"/>
+      <parameter id="intraluminal_calcium_gamma_ER" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="v_i"/>
+      <parameter id="k_i"/>
+      <parameter id="total_cytoplasmic_Ca_flux_I_Ca"/>
+      <parameter id="intraluminal_calcium_v_ER"/>
+      <parameter id="intraluminal_calcium_k_ER"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="J_ICa">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> total_cytoplasmic_Ca_flux_I_Ca </ci>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> total_cytoplasmic_Ca_flux_F </ci>
+              <ci> v_i </ci>
+              <ci> k_i </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_pm">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> Ca_extrusion_across_the_plasma_membrane_J_extru </ci>
+            <ci> J_ICa </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Ca_extrusion_across_the_plasma_membrane_J_extru">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> Ca_extrusion_across_the_plasma_membrane_k_leak </ci>
+              <apply>
+                <minus/>
+                <ci> Ca_i </ci>
+                <ci> Ca_extrusion_across_the_plasma_membrane_Ca_o </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <ci> Ca_extrusion_across_the_plasma_membrane_Vmax_extru </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> Ca_extrusion_across_the_plasma_membrane_EC50_extru </ci>
+                    <ci> Ca_i </ci>
+                  </apply>
+                  <ci> Ca_extrusion_across_the_plasma_membrane_n_extru </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> cytoplasmic_calcium_J_i </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="J_SERCA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> Ca_uptake_by_SR_Ca_ATPase_Vmax_SERCA </ci>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> Ca_uptake_by_SR_Ca_ATPase_EC50_SERCA </ci>
+                  <ci> Ca_i </ci>
+                </apply>
+                <ci> Ca_uptake_by_SR_Ca_ATPase_n_SERCA </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_ER">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> J_SERCA </ci>
+            <ci> ER_Ca_release_J_release </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ER_Ca_release_P_ER">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> ER_Ca_release_P_basal </ci>
+            <apply>
+              <divide/>
+              <ci> ER_Ca_release_Pmax_RyR </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> ER_Ca_release_EC50_RyR </ci>
+                    <ci> Ca_i </ci>
+                  </apply>
+                  <ci> ER_Ca_release_n_RyR </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ER_Ca_release_J_release">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ER_Ca_release_P_ER </ci>
+            <apply>
+              <minus/>
+              <ci> Ca_i </ci>
+              <ci> Ca_ER </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_ER">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> J_ER </ci>
+            <ci> intraluminal_calcium_gamma_ER </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="cytoplasmic_calcium_J_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> J_pm </ci>
+            <ci> J_ER </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="intraluminal_calcium_gamma_ER">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> intraluminal_calcium_v_ER </ci>
+              <ci> intraluminal_calcium_k_ER </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> v_i </ci>
+              <ci> k_i </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="nagano_2001____main" name="nagano_2001____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="contraction_F_isom" constant="false"/>
+      <parameter id="contraction_c" constant="false"/>
+      <parameter id="contraction_L_ce" value="0.05" constant="false"/>
+      <parameter id="contraction_L_ce_opt" value="0.055"/>
+      <parameter id="contraction_L" constant="false"/>
+      <parameter id="contraction_width" value="0.888"/>
+      <parameter id="contraction_Factor" value="1"/>
+      <parameter id="contraction_A_REL" value="0.41"/>
+      <parameter id="contraction_B_REL" value="5.2"/>
+      <parameter id="contraction_v_ce" constant="false"/>
+      <parameter id="contraction_F" constant="false"/>
+      <parameter id="contraction_F_max" value="3277.4"/>
+      <parameter id="contraction_q" value="1"/>
+      <parameter id="contraction_c1" constant="false"/>
+      <parameter id="contraction_c2" constant="false"/>
+      <parameter id="contraction_c3" constant="false"/>
+      <parameter id="contraction_slope" value="2"/>
+      <parameter id="contraction_F_asympt" value="1.5"/>
+      <parameter id="contraction_L_see" constant="false"/>
+      <parameter id="contraction_L_slack" value="0.42"/>
+      <parameter id="contraction_alpha" value="1449.027"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="contraction_F_isom">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> contraction_c </ci>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> contraction_L_ce </ci>
+                    <ci> contraction_L_ce_opt </ci>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 2 </cn>
+                  <ci> contraction_c </ci>
+                  <ci> contraction_L_ce </ci>
+                </apply>
+                <ci> contraction_L_ce_opt </ci>
+              </apply>
+            </apply>
+            <ci> contraction_c </ci>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="contraction_c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> -1 </cn>
+            <apply>
+              <power/>
+              <ci> contraction_width </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="contraction_L_ce">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> contraction_v_ce </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="contraction_L"/>
+      <assignmentRule variable="contraction_v_ce">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> contraction_Factor </ci>
+            </apply>
+            <ci> contraction_L_ce </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> contraction_F_isom </ci>
+                    <ci> contraction_A_REL </ci>
+                  </apply>
+                  <ci> contraction_B_REL </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <ci> contraction_F </ci>
+                      <apply>
+                        <times/>
+                        <ci> contraction_F_max </ci>
+                        <ci> contraction_q </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                  <ci> contraction_A_REL </ci>
+                </apply>
+              </apply>
+              <ci> contraction_B_REL </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="contraction_F">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> contraction_alpha </ci>
+            <apply>
+              <minus/>
+              <ci> contraction_L_see </ci>
+              <ci> contraction_L_slack </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="contraction_c1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> contraction_Factor </ci>
+              <ci> contraction_B_REL </ci>
+              <apply>
+                <power/>
+                <apply>
+                  <plus/>
+                  <ci> contraction_F_isom </ci>
+                  <ci> contraction_c2 </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> contraction_F_isom </ci>
+                <ci> contraction_A_REL </ci>
+              </apply>
+              <ci> contraction_slope </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="contraction_c2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> contraction_F_isom </ci>
+            <ci> contraction_F_asympt </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="contraction_c3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> contraction_c1 </ci>
+            <apply>
+              <plus/>
+              <ci> contraction_F_isom </ci>
+              <ci> contraction_c2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="contraction_L_see">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> contraction_L </ci>
+            <ci> contraction_L_ce </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

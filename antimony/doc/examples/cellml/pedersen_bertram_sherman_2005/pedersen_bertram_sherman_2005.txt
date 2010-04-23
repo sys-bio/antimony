@@ -1,0 +1,352 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    In module 'pedersen_model_2005____main', the variables ATP.AMP and AMP0 were unable to be set as equivalent:  Loop detected:  'ATP.AMP' may not be set to be equal to 'AMP0' because AMP0's definition already includes ATP.AMP either directly or by proxy.
+
+model pedersen_model_2005__environment(time_)
+end
+
+model pedersen_model_2005__Gi(Gi, Jglut, Jgk, time_)
+
+  // Rate Rules:
+  Gi' = Jglut - Jgk;
+
+  // Variable initializations:
+  Gi = 0;
+end
+
+model pedersen_model_2005__Ge(Ge, I, time_)
+
+  // Assignment Rules:
+  G_infinity := Gmin + (Gmax - Gmin) / (1 + exp((I - I_) / SG));
+
+  // Rate Rules:
+  Ge' = (G_infinity - Ge) / tau_G;
+
+  // Variable initializations:
+  Ge = 7;
+  tau_G = 450000;
+  Gmax = 15;
+  Gmin = 1;
+  SG = 1;
+  I_ = 5;
+end
+
+model pedersen_model_2005__G6P(G6P, kappa, JPFK, Jgk, time_)
+
+  // Rate Rules:
+  G6P' = kappa * (Jgk - JPFK);
+
+  // Variable initializations:
+  G6P = 200;
+end
+
+model pedersen_model_2005__FBP(FBP, kappa, JPFK, JGPDH, time_)
+
+  // Rate Rules:
+  FBP' = kappa * (JPFK - 0.5 * JGPDH);
+
+  // Variable initializations:
+  FBP = 40;
+end
+
+model pedersen_model_2005__F6P(F6P, G6P)
+
+  // Assignment Rules:
+  F6P := 0.3 * G6P;
+end
+
+model pedersen_model_2005__Jglut(Jglut, Gi, Ge)
+
+  // Assignment Rules:
+  Jglut := Vglut * (Ge - Gi) * Kglut / ((Kglut + Ge) * (Kglut + Gi));
+
+  // Variable initializations:
+  Kglut = 7;
+  Vglut = 8;
+end
+
+model pedersen_model_2005__Jgk(Jgk, Gi)
+
+  // Assignment Rules:
+  Jgk := Vgk * power(Gi, ngk) / (power(Kgk, ngk) + power(Gi, ngk));
+
+  // Variable initializations:
+  Kgk = 7;
+  Vgk = 0.8;
+  ngk = 4;
+end
+
+model pedersen_model_2005__JGPDH(JGPDH, FBP)
+
+  // Assignment Rules:
+  JGPDH := 0.2 * root(FBP / 1 );
+end
+
+model pedersen_model_2005__JPFK(JPFK, w0000, w1000, w0100, w0010, w0001, w1100, w1010, w1001, w0101, w0011, w0110, w1110, w0111, w1011, w1101, w1111)
+
+  // Assignment Rules:
+  JPFK := Vmax * ((1 - lambda_) * w1110 + lambda_ * (w0010 + w1010 + w0011 + w1110 + w0111 + w1011 + w0110 + w1111)) / (w0000 + w1000 + w0100 + w0010 + w0001 + w1100 + w1010 + w1001 + w0101 + w0011 + w0110 + w1110 + w0111 + w1011 + w1101 + w1111);
+
+  // Variable initializations:
+  lambda_ = 0.06;
+  Vmax = 2;
+end
+
+model pedersen_model_2005__w(w0000, w1000, w0100, w0010, w0001, w1100, w1010, w1001, w0101, w0011, w1110, w0111, w1011, w1101, w1111, w0110, AMP, FBP, F6P, ATP)
+
+  // Assignment Rules:
+  w0000 := 1;
+  w1000 := power(AMP / K1, 1 );
+  w0100 := power(FBP / K2, 1 );
+  w0010 := power(power(F6P, 2 ) / K3, 1 );
+  w0001 := power(power(ATP, 2 ) / K4, 1 );
+  w1100 := power(AMP / K1, 1 ) * power(FBP / K2, 1 );
+  w1010 := 1 / power(f13, 1 * 1 ) * power(AMP / K1, 1 ) * power(power(F6P, 2 ) / K3, 1 );
+  w1001 := 1 / power(f41, 1 * 1 ) * power(AMP / K1, 1 ) * power(power(ATP, 2 ) / K4, 1 );
+  w0101 := 1 / power(f42, 1 * 1 ) * power(FBP / K2, 1 ) * power(power(ATP, 2 ) / K4, 1 );
+  w0011 := 1 / power(f43, 1 * 1 ) * power(power(F6P, 2 ) / K3, 1 ) * power(power(ATP, 2 ) / K4, 1 );
+  w1110 := 1 / (power(f13, 1 * 1 ) * power(f23, 1 * 1 )) * power(AMP / K1, 1 ) * power(FBP / K2, 1 ) * power(power(F6P, 2 ) / K3, 1 );
+  w0111 := 1 / (power(f23, 1 * 1 ) * power(f42, 1 * 1 ) * power(f43, 1 * 1 )) * power(FBP / K2, 1 ) * power(power(F6P, 2 ) / K3, 1 ) * power(power(ATP, 2 ) / K4, 1 );
+  w1011 := 1 / (power(f13, 1 * 1 ) * power(f41, 1 * 1 ) * power(f43, 1 * 1 )) * power(AMP / K1, 1 ) * power(power(F6P, 2 ) / K3, 1 ) * power(power(ATP, 2 ) / K4, 1 );
+  w1101 := 1 / (power(f41, 1 * 1 ) * power(f42, 1 * 1 )) * power(AMP / K1, 1 ) * power(FBP / K2, 1 ) * power(power(ATP, 2 ) / K4, 1 );
+  w1111 := 1 / (power(f13, 1 * 1 ) * power(f23, 1 * 1 ) * power(f41, 1 * 1 ) * power(f42, 1 * 1 ) * power(f43, 1 * 1 )) * power(AMP / K1, 1 ) * power(FBP / K2, 1 ) * power(power(F6P, 2 ) / K3, 1 ) * power(power(ATP, 2 ) / K4, 1 );
+  w0110 := 1 / power(f23, 1 * 1 ) * power(FBP / K2, 1 ) * power(power(F6P, 2 ) / K3, 1 );
+
+  // Variable initializations:
+  f13 = 0.02;
+  f23 = 0.2;
+  f41 = 20;
+  f42 = 20;
+  f43 = 20;
+  K1 = 30;
+  K2 = 1;
+  K3 = 50000;
+  K4 = 1000;
+end
+
+model pedersen_model_2005__ATP(ATP, ADP, AMP)
+
+  // Assignment Rules:
+  ATP := Atot - (ADP + AMP);
+
+  // Variable initializations:
+  Atot = 3000;
+end
+
+model pedersen_model_2005__AMP(AMP, ATP, ADP)
+
+  // Assignment Rules:
+  AMP := power(ADP, 2 ) / ATP;
+end
+
+model pedersen_model_2005__ADP(ADP, gamma, Ca, ATP, time_)
+
+  // Rate Rules:
+  ADP' = 1 / tau_a * (ATP - ADP * exp((r + gamma) * (1 - Ca / r1)));
+
+  // Variable initializations:
+  ADP = 780;
+  tau_a = 300000;
+  r = 0.5;
+  r1 = 0.35;
+end
+
+model pedersen_model_2005__gamma(gamma, JGPDH)
+
+  // Assignment Rules:
+  gamma := v_gamma * JGPDH / (k_gamma + JGPDH);
+
+  // Variable initializations:
+  v_gamma = 2.2;
+  k_gamma = 0.1;
+end
+
+model pedersen_model_2005__membrane(v, I_Ca, I_K, I_K_Ca, I_K_ATP, time_)
+
+  // Rate Rules:
+  v' = -((I_K + I_Ca + I_K_Ca + I_K_ATP)) / cm;
+
+  // Variable initializations:
+  v = -60;
+  cm = 5300;
+end
+
+model pedersen_model_2005__n(n, time_, v)
+
+  // Assignment Rules:
+  n_infinity := 1 / (1 + exp(-((v + 16 )) / 5.6 ));
+  tau_n := 1 / (0.035 * cosh((v + 16 ) / 22.4 ));
+
+  // Rate Rules:
+  n' = (n_infinity - n) / tau_n;
+
+  // Variable initializations:
+  n = 0;
+end
+
+model pedersen_model_2005__I_K(I_K, time_, vK, v, n)
+
+  // Sub-modules, and any changes to those submodules:
+  n_mod: pedersen_model_2005__n(n, time_, v);
+
+  // Assignment Rules:
+  I_K := gK_ * n * (v - vK);
+
+  // Variable initializations:
+  gK_ = 2700;
+end
+
+model pedersen_model_2005__m(m_infinity, v)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp(-((v + 20 )) / 12 ));
+end
+
+model pedersen_model_2005__I_Ca(I_Ca, time_, vCa, v, m_infinity)
+
+  // Sub-modules, and any changes to those submodules:
+  m: pedersen_model_2005__m(m_infinity, v);
+
+  // Assignment Rules:
+  I_Ca := gCa_ * m_infinity * (v - vCa);
+
+  // Variable initializations:
+  gCa_ = 1000;
+end
+
+model pedersen_model_2005__I_K_Ca(I_K_Ca, time_, vK, Ca, v)
+
+  // Assignment Rules:
+  I_K_Ca := gkCa * (v - vK);
+  gkCa := gkCa_ * power(Ca, 2 ) / (power(KD, 2 ) + power(Ca, 2 ));
+
+  // Variable initializations:
+  gkCa_ = 400;
+  KD = 0.5;
+end
+
+model pedersen_model_2005__I_K_ATP(I_K_ATP, time_, vK, ATP, ADP, v)
+
+  // Assignment Rules:
+  I_K_ATP := gkATP * (v - vK);
+  gkATP := gkATP_ * o_infinity;
+  o_infinity := (0.08 * (1 + 2 * MgADP / 17 ) + 0.89 * power(MgADP / 17 , 2 )) / (power(1 + MgADP / 17 , 2 ) * (1 + ADP3_ / 26 + ATP4_ / 1 ));
+  MgADP := 0.165 * ADP;
+  ADP3_ := 0.135 * ADP;
+  ATP4_ := 0.005 * ATP;
+
+  // Variable initializations:
+  gkATP_ = 40000;
+end
+
+model pedersen_model_2005__Ca(Ca, Jmem, Jer, time_)
+
+  // Rate Rules:
+  Ca' = fcyt * (Jmem + Jer);
+
+  // Variable initializations:
+  Ca = 0.1;
+  fcyt = 0.01;
+end
+
+model pedersen_model_2005__Caer(Caer, Jer, time_)
+
+  // Rate Rules:
+  Caer' = -(fer) * Vcyt_Ver * Jer;
+
+  // Variable initializations:
+  Caer = 185;
+  fer = 0.01;
+  Vcyt_Ver = 31;
+end
+
+model pedersen_model_2005__Jmem(Jmem, Ca, I_Ca)
+
+  // Assignment Rules:
+  Jmem := -((alpha * I_Ca + kPMCA * Ca));
+
+  // Variable initializations:
+  kPMCA = 0.18;
+  alpha = 4.5e-6;
+end
+
+model pedersen_model_2005__Jer(Jer, Jleak, JSERCA)
+
+  // Assignment Rules:
+  Jer := Jleak - JSERCA;
+end
+
+model pedersen_model_2005__JSERCA(JSERCA, Ca)
+
+  // Assignment Rules:
+  JSERCA := kSERCA * Ca;
+
+  // Variable initializations:
+  kSERCA = 0.4;
+end
+
+model pedersen_model_2005__Jleak(Jleak, Ca, Caer)
+
+  // Assignment Rules:
+  Jleak := pleak * (Caer - Ca);
+
+  // Variable initializations:
+  pleak = 0.0002;
+end
+
+model pedersen_model_2005__I(I, Ca, time_)
+
+  // Assignment Rules:
+  I_infinity := piecewise( I_slope * (Ca - Canull) , Ca >= Canull , 0 , Ca < Canull );
+
+  // Rate Rules:
+  I' = (I_infinity - I) / tau_I;
+
+  // Variable initializations:
+  I = 0;
+  tau_I = 10000;
+  I_slope = 210;
+  Canull = 0.055;
+end
+
+model pedersen_model_2005__model_parameters(kappa, vK, vCa)
+
+  // Variable initializations:
+  kappa = 0.005;
+  vK = -75;
+  vCa = 25;
+end
+
+model pedersen_model_2005____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: pedersen_model_2005__environment(time_);
+  Gi: pedersen_model_2005__Gi(Gi0, Jglut0, Jgk0, time_);
+  Ge: pedersen_model_2005__Ge(Ge0, I0, time_);
+  G6P: pedersen_model_2005__G6P(G6P0, kappa, JPFK0, Jgk0, time_);
+  FBP: pedersen_model_2005__FBP(FBP0, kappa, JPFK0, JGPDH0, time_);
+  F6P: pedersen_model_2005__F6P(F6P0, G6P0);
+  Jglut: pedersen_model_2005__Jglut(Jglut0, Gi0, Ge0);
+  Jgk: pedersen_model_2005__Jgk(Jgk0, Gi0);
+  JGPDH: pedersen_model_2005__JGPDH(JGPDH0, FBP0);
+  JPFK: pedersen_model_2005__JPFK(JPFK0, w0000, w1000, w0100, w0010, w0001, w1100, w1010, w1001, w0101, w0011, w0110, w1110, w0111, w1011, w1101, w1111);
+  w: pedersen_model_2005__w(w0000, w1000, w0100, w0010, w0001, w1100, w1010, w1001, w0101, w0011, w1110, w0111, w1011, w1101, w1111, w0110, AMP0, FBP0, F6P0, ATP0);
+  ATP: pedersen_model_2005__ATP(ATP0, ADP0, AMP1);
+  AMP: pedersen_model_2005__AMP(AMP0, ATP0, ADP0);
+  ADP: pedersen_model_2005__ADP(ADP0, gamma0, Ca0, ATP0, time_);
+  gamma: pedersen_model_2005__gamma(gamma0, JGPDH0);
+  membrane: pedersen_model_2005__membrane(v, I_Ca0, I_K0, I_K_Ca0, I_K_ATP0, time_);
+  I_K: pedersen_model_2005__I_K(I_K0, time_, vK, v, n);
+  I_Ca: pedersen_model_2005__I_Ca(I_Ca0, time_, vCa, v, m_infinity);
+  I_K_Ca: pedersen_model_2005__I_K_Ca(I_K_Ca0, time_, vK, Ca0, v);
+  I_K_ATP: pedersen_model_2005__I_K_ATP(I_K_ATP0, time_, vK, ATP0, ADP0, v);
+  Ca: pedersen_model_2005__Ca(Ca0, Jmem0, Jer0, time_);
+  Caer: pedersen_model_2005__Caer(Caer0, Jer0, time_);
+  Jmem: pedersen_model_2005__Jmem(Jmem0, Ca0, I_Ca0);
+  Jer: pedersen_model_2005__Jer(Jer0, Jleak0, JSERCA0);
+  JSERCA: pedersen_model_2005__JSERCA(JSERCA0, Ca0);
+  Jleak: pedersen_model_2005__Jleak(Jleak0, Ca0, Caer0);
+  I: pedersen_model_2005__I(I0, Ca0, time_);
+  model_parameters: pedersen_model_2005__model_parameters(kappa, vK, vCa);
+end

@@ -1,0 +1,43 @@
+//Created by libAntimony v1.3
+model mikane_araki_kohno_nakayama_et_al_1997__environment(time_)
+end
+
+model mikane_araki_kohno_nakayama_et_al_1997__equations(time_)
+
+  // Assignment Rules:
+  Ca_release_rate := piecewise( 0 , time_ > 0.1 , 20 * Ca_tot_released * (1 - 10 * time_) );
+  dTnCa_t_dt := k_1 * Ca_t * (total_Tn - TnCa_t) - k_2 * TnCa_t;
+
+  // Rate Rules:
+  Ca_t' = Ca_release_rate - k_3 * Ca_t - dTnCa_t_dt;
+  TnCa_t' = k_1 * Ca_t * (total_Tn - TnCa_t) - k_2 * TnCa_t;
+  CB_on_t' = f * TnCa_t * (total_CB - CB_on_t) - g * CB_on_t;
+  Ca_released' = Ca_release_rate;
+  Ca_sequestered' = k_3 * Ca_t;
+  cumCB_on_t' = f * TnCa_t * (total_CB - CB_on_t);
+  cumCB_off_t' = g * CB_on_t;
+
+  // Variable initializations:
+  Ca_t = 0;
+  TnCa_t = 0;
+  CB_on_t = 0;
+  Ca_released = 0;
+  Ca_sequestered = 0;
+  cumCB_on_t = 0;
+  cumCB_off_t = 0;
+  Ca_tot_released = 35;
+  total_Tn = 70;
+  total_CB = 150;
+  k_1 = 5e6;
+  k_2 = 10;
+  k_3 = 1000;
+  f = 0.4e6;
+  g = 10;
+end
+
+model mikane_araki_kohno_nakayama_et_al_1997____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: mikane_araki_kohno_nakayama_et_al_1997__environment(time_);
+  equations: mikane_araki_kohno_nakayama_et_al_1997__equations(time_);
+end

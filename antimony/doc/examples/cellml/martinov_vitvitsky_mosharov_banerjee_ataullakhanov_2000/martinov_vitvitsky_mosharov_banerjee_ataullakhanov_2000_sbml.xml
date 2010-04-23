@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01____main" name="martinov_vitvitsky_mosharov_banerjee_ataullakhanov_2000_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Ado0" value="1"/>
+      <parameter id="Met0" value="45"/>
+      <parameter id="Hcy0" constant="false"/>
+      <parameter id="AdoHcy0" value="3" constant="false"/>
+      <parameter id="K_AHC0" constant="false"/>
+      <parameter id="AdoMet0" value="60" constant="false"/>
+      <parameter id="V_MET0" constant="false"/>
+      <parameter id="V_GNMT0" constant="false"/>
+      <parameter id="V_MATI0" constant="false"/>
+      <parameter id="V_MATIII0" constant="false"/>
+      <parameter id="V_D0" constant="false"/>
+      <parameter id="V_MATI_V_MATImax" value="561"/>
+      <parameter id="V_MATI_Km_MATI" value="41"/>
+      <parameter id="V_MATI_Ki_MATI" value="50"/>
+      <parameter id="V_MATIII_V_MATIIImax" value="22870"/>
+      <parameter id="V_MATIII_Km1_MATIII" constant="false"/>
+      <parameter id="V_MATIII_Km2_MATIII" value="21.1"/>
+      <parameter id="V_MET_V_METmax" value="4544"/>
+      <parameter id="V_MET_Km1_MET" constant="false"/>
+      <parameter id="V_MET_Km2_MET_A" value="0.1"/>
+      <parameter id="V_GNMT_V_GNMTmax" value="10600"/>
+      <parameter id="V_GNMT_Km_GNMT" value="4500"/>
+      <parameter id="V_GNMT_Ki_GNMT" value="20"/>
+      <parameter id="V_D_alphad" value="1333"/>
+      <parameter id="time_"/>
+      <parameter id="K_AHC1"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="Hcy0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> AdoHcy0 </ci>
+            <apply>
+              <divide/>
+              <ci> K_AHC1 </ci>
+              <ci> Ado0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="AdoHcy0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> V_MET0 </ci>
+                <ci> V_GNMT0 </ci>
+              </apply>
+              <ci> V_D0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> K_AHC0 </ci>
+                <ci> Ado0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="K_AHC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> Ado0 </ci>
+              <ci> Hcy0 </ci>
+            </apply>
+            <ci> AdoHcy0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="AdoMet0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> V_MATI0 </ci>
+              <ci> V_MATIII0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> V_MET0 </ci>
+              <ci> V_GNMT0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_MET0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> V_MET_V_METmax </ci>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> V_MET_Km1_MET </ci>
+                <ci> AdoMet0 </ci>
+              </apply>
+              <ci> V_MET_Km2_MET_A </ci>
+              <apply>
+                <times/>
+                <ci> V_MET_Km2_MET_A </ci>
+                <apply>
+                  <divide/>
+                  <ci> V_MET_Km1_MET </ci>
+                  <ci> AdoMet0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_GNMT0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> V_GNMT_V_GNMTmax </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> V_GNMT_Km_GNMT </ci>
+                    <ci> AdoMet0 </ci>
+                  </apply>
+                  <cn> 2.3 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn> 1 </cn>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> AdoHcy0 </ci>
+                  <ci> V_GNMT_Ki_GNMT </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_MATI0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> V_MATI_V_MATImax </ci>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> V_MATI_Km_MATI </ci>
+                  <ci> Met0 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> AdoMet0 </ci>
+                    <ci> V_MATI_Ki_MATI </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_MATIII0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> V_MATIII_V_MATIIImax </ci>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> V_MATIII_Km1_MATIII </ci>
+                  <ci> V_MATIII_Km2_MATIII </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> Met0 </ci>
+                    <cn> 2 </cn>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> Met0 </ci>
+                    <ci> V_MATIII_Km2_MATIII </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_D0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V_D_alphad </ci>
+            <ci> Hcy0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_MATIII_Km1_MATIII">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 20000 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <times/>
+                <cn> 5.7 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> AdoMet0 </ci>
+                    <apply>
+                      <plus/>
+                      <ci> AdoMet0 </ci>
+                      <cn> 600 </cn>
+                    </apply>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_MET_Km1_MET">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 10 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> AdoHcy0 </ci>
+                <cn> 4 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

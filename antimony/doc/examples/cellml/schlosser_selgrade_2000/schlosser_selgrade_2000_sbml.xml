@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="schlosser_model_2000____main" name="schlosser_model_2000____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="rel_LH_E2_P4_RP_LH" constant="false"/>
+      <parameter id="RP_LH_RP_LH" value="467" constant="false"/>
+      <parameter id="RP_LH_syn_LH_E2_P4" constant="false"/>
+      <parameter id="RP_LH_V0_LH" value="1400"/>
+      <parameter id="RP_LH_V1_LH" value="95900"/>
+      <parameter id="RP_LH_h" value="8"/>
+      <parameter id="RP_LH_Km_LH" value="360"/>
+      <parameter id="RP_LH_Ki_LHP" value="26"/>
+      <parameter id="RP_LH_kLH_rel" value="3"/>
+      <parameter id="RP_LH_CLH_P" value="0.024"/>
+      <parameter id="RP_LH_CLH_E" value="0.008"/>
+      <parameter id="E20" constant="false"/>
+      <parameter id="E2_dE0" constant="false"/>
+      <parameter id="P40" constant="false"/>
+      <parameter id="P4_dP0" constant="false"/>
+      <parameter id="LH_LH" value="40" constant="false"/>
+      <parameter id="LH_v_dis" value="2.5"/>
+      <parameter id="LH_clear_LH" constant="false"/>
+      <parameter id="LH_kLH_cl" value="14"/>
+      <parameter id="rel_FSH_E2_P4_RP_FSH" constant="false"/>
+      <parameter id="RP_FSH_RP_FSH" value="0" constant="false"/>
+      <parameter id="RP_FSH_syn_FSH_Ih" constant="false"/>
+      <parameter id="RP_FSH_V_FSH" value="4400"/>
+      <parameter id="RP_FSH_Ki_FSH_Ih" value="1176.5"/>
+      <parameter id="RP_FSH_kFSH_rel" value="45"/>
+      <parameter id="RP_FSH_CFSH_P" value="3"/>
+      <parameter id="RP_FSH_CFSH_E" value="0.005"/>
+      <parameter id="Ih_dIh0" constant="false"/>
+      <parameter id="FSH_FSH" value="150" constant="false"/>
+      <parameter id="FSH_v_dis" value="2.5"/>
+      <parameter id="FSH_clear_FSH" constant="false"/>
+      <parameter id="FSH_kFSH_cl" value="8.21"/>
+      <parameter id="E2_dE_dE" value="0.42"/>
+      <parameter id="P4_dP_dP" value="2.9"/>
+      <parameter id="Ih0" constant="false"/>
+      <parameter id="Ih_dIh_dIh" value="2"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="rel_LH_E2_P4_RP_LH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> RP_LH_kLH_rel </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> RP_LH_CLH_P </ci>
+                  <ci> P40 </ci>
+                </apply>
+              </apply>
+              <ci> RP_LH_RP_LH </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <times/>
+                <ci> RP_LH_CLH_E </ci>
+                <ci> E20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="RP_LH_RP_LH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> RP_LH_syn_LH_E2_P4 </ci>
+            <ci> rel_LH_E2_P4_RP_LH </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="RP_LH_syn_LH_E2_P4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> RP_LH_V0_LH </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> RP_LH_V1_LH </ci>
+                  <apply>
+                    <power/>
+                    <ci> E2_dE0 </ci>
+                    <ci> RP_LH_h </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> RP_LH_Km_LH </ci>
+                    <ci> RP_LH_h </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> E2_dE0 </ci>
+                    <ci> RP_LH_h </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> P4_dP0 </ci>
+                <ci> RP_LH_Ki_LHP </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="E20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <cn> 300 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn> 240 </cn>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <ci> time_ </ci>
+                      <cn> 1 </cn>
+                    </apply>
+                    <cn> 2 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 3 </cn>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <ci> time_ </ci>
+                      <cn> 1 </cn>
+                    </apply>
+                    <cn> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn> 90 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <minus/>
+                        <ci> time_ </ci>
+                        <cn> 8 </cn>
+                      </apply>
+                      <cn> 2 </cn>
+                    </apply>
+                    <cn> 10 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="E2_dE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <cn> 300 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <cn> 240 </cn>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <plus/>
+                        <ci> time_ </ci>
+                        <cn> 1 </cn>
+                      </apply>
+                      <ci> E2_dE_dE </ci>
+                    </apply>
+                    <cn> 2 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn> 3 </cn>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <apply>
+                        <plus/>
+                        <ci> time_ </ci>
+                        <cn> 1 </cn>
+                      </apply>
+                      <ci> E2_dE_dE </ci>
+                    </apply>
+                    <cn> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn> 90 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <minus/>
+                        <ci> time_ </ci>
+                        <apply>
+                          <plus/>
+                          <ci> E2_dE_dE </ci>
+                          <cn> 8 </cn>
+                        </apply>
+                      </apply>
+                      <cn> 2 </cn>
+                    </apply>
+                    <cn> 10 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 52 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <ci> time_ </ci>
+                      <cn> 7 </cn>
+                    </apply>
+                    <cn> 2 </cn>
+                  </apply>
+                  <cn> 18 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P4_dP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 52 </cn>
+            <apply>
+              <exp/>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <minus/>
+                      <ci> time_ </ci>
+                      <apply>
+                        <plus/>
+                        <ci> P4_dP_dP </ci>
+                        <cn> 7 </cn>
+                      </apply>
+                    </apply>
+                    <cn> 2 </cn>
+                  </apply>
+                  <cn> 18 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="LH_LH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <ci> rel_LH_E2_P4_RP_LH </ci>
+              <ci> LH_v_dis </ci>
+            </apply>
+            <ci> LH_clear_LH </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="LH_clear_LH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> LH_kLH_cl </ci>
+            <ci> LH_LH </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="rel_FSH_E2_P4_RP_FSH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> RP_FSH_kFSH_rel </ci>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> RP_FSH_CFSH_P </ci>
+                  <ci> P40 </ci>
+                </apply>
+              </apply>
+              <ci> RP_FSH_RP_FSH </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <times/>
+                <ci> RP_FSH_CFSH_E </ci>
+                <apply>
+                  <power/>
+                  <ci> E20 </ci>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="RP_FSH_RP_FSH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> RP_FSH_syn_FSH_Ih </ci>
+            <ci> rel_FSH_E2_P4_RP_FSH </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="RP_FSH_syn_FSH_Ih">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> RP_FSH_V_FSH </ci>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <divide/>
+                <ci> Ih_dIh0 </ci>
+                <ci> RP_FSH_Ki_FSH_Ih </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Ih_dIh0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 300 </cn>
+            <apply>
+              <times/>
+              <cn> 1330 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <minus/>
+                        <ci> time_ </ci>
+                        <apply>
+                          <plus/>
+                          <cn> 7 </cn>
+                          <ci> Ih_dIh_dIh </ci>
+                        </apply>
+                      </apply>
+                      <cn> 2 </cn>
+                    </apply>
+                    <cn> 19 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="FSH_FSH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <ci> rel_FSH_E2_P4_RP_FSH </ci>
+              <ci> FSH_v_dis </ci>
+            </apply>
+            <ci> FSH_clear_FSH </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="FSH_clear_FSH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> FSH_kFSH_cl </ci>
+            <ci> FSH_FSH </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Ih0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 300 </cn>
+            <apply>
+              <times/>
+              <cn> 1330 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <minus/>
+                        <ci> time_ </ci>
+                        <cn> 7 </cn>
+                      </apply>
+                      <cn> 2 </cn>
+                    </apply>
+                    <cn> 19 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

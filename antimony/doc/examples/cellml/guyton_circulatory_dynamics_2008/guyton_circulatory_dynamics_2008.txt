@@ -1,0 +1,434 @@
+//Created by libAntimony v1.3
+model circulatory_dynamics_CellML1_0_model__environment(time_)
+end
+
+model circulatory_dynamics_CellML1_0_model__parameter_values(HTAUML, QRF, HSR, HSL, ANY, CV, PR1LL, RVSM, CN2, CN7, PAEX, RAR, RMULT1, RAM, FIS)
+
+  // Variable initializations:
+  HTAUML = 0.4;
+  QRF = 0.15;
+  HSR = 1;
+  HSL = 1;
+  ANY = -0.2;
+  CV = 0.1;
+  PR1LL = 0;
+  RVSM = 1;
+  CN2 = 0.0212;
+  CN7 = 0.2;
+  PAEX = 2;
+  RAR = 30.52;
+  RMULT1 = 1;
+  RAM = 96.3;
+  FIS = 0;
+end
+
+model circulatory_dynamics_CellML1_0_model__total_blood_volume_change(VP, VRC, VVS1, VAS1, VLA1, VPA1, VRA1, VBD)
+
+  // Assignment Rules:
+  VBD := (VP + VRC - VVS1 - VAS1 - VLA1 - VPA1 - VRA1) / 2;
+end
+
+model circulatory_dynamics_CellML1_0_model__right_atrium()
+end
+
+model circulatory_dynamics_CellML1_0_model__right_atrial_blood_volume(QVO, QRO, VBD, time_, VRA, VRA1)
+
+  // Assignment Rules:
+  VRA := VRA1 + VBD * 0.0574;
+  DRA := QVO - QRO;
+
+  // Rate Rules:
+  VRA1' = DRA;
+
+  // Variable initializations:
+  VRA1 = 0.100043;
+end
+
+model circulatory_dynamics_CellML1_0_model__right_atrial_pressure(VRA, PRA)
+
+  // Assignment Rules:
+  PRA := VRE / 0.005;
+  VRE := VRA - 0.1;
+end
+
+model circulatory_dynamics_CellML1_0_model__autonomic_stimulation_effect_on_right_atrial_pressure(PRA, AU, PRA1, HTAUML)
+
+  // Assignment Rules:
+  PRA1 := (PRA + 8 ) * (HTAUML * (AU - 1 ) + 1 ) - 8;
+end
+
+model circulatory_dynamics_CellML1_0_model__right_ventricle()
+end
+
+model circulatory_dynamics_CellML1_0_model__pressure_effect_on_right_ventricular_pumping(PPA, AUH, OSA, RVM)
+
+  // Assignment Rules:
+  RVM := piecewise( 1.06 , PP2 <= 0 , 1.06 + (0.97 - 1.06 ) * (PP2 - 0 ) / (32 - 0 ) , ( PP2 > 0) && (PP2 <= 32 ), 0.97 + (0.93 - 0.97 ) * (PP2 - 32 ) / (38.4 - 32 ) , ( PP2 > 32) && (PP2 <= 38.4 ), 0.93 + (0.8 - 0.93 ) * (PP2 - 38.4 ) / (48 - 38.4 ) , ( PP2 > 38.4) && (PP2 <= 48 ), 0.8 + (0.46 - 0.8 ) * (PP2 - 48 ) / (60.8 - 48 ) , ( PP2 > 48) && (PP2 <= 60.8 ), 0.46 + (0 - 0.46 ) * (PP2 - 60.8 ) / (72 - 60.8 ) , ( PP2 > 60.8) && (PP2 <= 72 ), 0 );
+  PP2 := PPA / AUH / OSA;
+end
+
+model circulatory_dynamics_CellML1_0_model__pumping_effectiveness_of_right_ventricle(AUH, RVM, HMD, HPR, QLO, QLN, HPEF, QRF, HSR)
+
+  // Assignment Rules:
+  HPEF := (1 - QRF) * AUH * RVM * HSR * HMD * HPR + QRF * QLO / QLN;
+end
+
+model circulatory_dynamics_CellML1_0_model__right_ventricular_output(PRA1, HPEF, QRO)
+
+  // Assignment Rules:
+  QRO := QRN * HPEF;
+  QRN := piecewise( 0 , PRA1 <= -(8 ) , 0 + (0.75 - 0 ) * (PRA1 - -(8 )) / (-(6 ) - -(8 )) , ( PRA1 > -(8 )) && (PRA1 <= -(6 ) ), 0.75 + (2.6 - 0.75 ) * (PRA1 - -(6 )) / (-(2 ) - -(6 )) , ( PRA1 > -(6 )) && (PRA1 <= -(2 ) ), 2.6 + (9.8 - 2.6 ) * (PRA1 - -(2 )) / (4 - -(2 )) , ( PRA1 > -(2 )) && (PRA1 <= 4 ), 9.8 + (13.5 - 9.8 ) * (PRA1 - 4 ) / (12 - 4 ) , ( PRA1 > 4) && (PRA1 <= 12 ), 13.5 );
+end
+
+model circulatory_dynamics_CellML1_0_model__pulmonary_vasculature()
+end
+
+model circulatory_dynamics_CellML1_0_model__pulmonary_vasculature_blood_volume(QRO, QPO, VBD, time_, VPA, VPA1)
+
+  // Assignment Rules:
+  VPA := VPA1 + VBD * 0.155;
+  DPA := QRO - QPO;
+
+  // Rate Rules:
+  VPA1' = DPA;
+
+  // Variable initializations:
+  VPA1 = 0.38131;
+end
+
+model circulatory_dynamics_CellML1_0_model__pulmonary_vasculature_pressure(VPA, PPA)
+
+  // Assignment Rules:
+  PPA := VPE / 0.0048;
+  VPE := VPA - 0.30625;
+end
+
+model circulatory_dynamics_CellML1_0_model__pulmonary_arterial_resistance(PPA, RPA)
+
+  // Assignment Rules:
+  RPA := 1 / CPA;
+  PP1T := 0.026 * PPA;
+  PP1 := piecewise( 0.00001 , PP1T < 0.00001 , PP1T );
+  CPA := power(PP1, 0.5 );
+end
+
+model circulatory_dynamics_CellML1_0_model__pulmonary_venous_resistance(PLA, RPV)
+
+  // Assignment Rules:
+  RPV := 1 / (PL1 * 0.0357 );
+  PL1 := PLA + 18;
+end
+
+model circulatory_dynamics_CellML1_0_model__total_pulmonary_vascular_resistance(RPV, RPA, RPT)
+
+  // Assignment Rules:
+  RPT := RPV + RPA;
+end
+
+model circulatory_dynamics_CellML1_0_model__pressure_gradient_through_the_lungs(PPA, PLA, PGL)
+
+  // Assignment Rules:
+  PGL := PPA - PLA;
+end
+
+model circulatory_dynamics_CellML1_0_model__rate_of_blood_flow_from_pulmonary_veins_to_left_atrium(PGL, RPT, QLO, QPO)
+
+  // Assignment Rules:
+  QPO := PGL / RPT;
+end
+
+model circulatory_dynamics_CellML1_0_model__left_atrium()
+end
+
+model circulatory_dynamics_CellML1_0_model__left_atrial_blood_volume(QPO, QLO, VBD, time_, VLA, VLA1)
+
+  // Assignment Rules:
+  VLA := VLA1 + VBD * 0.128;
+  DLA := QPO - QLO;
+
+  // Rate Rules:
+  VLA1' = DLA;
+
+  // Variable initializations:
+  VLA1 = 0.379883;
+end
+
+model circulatory_dynamics_CellML1_0_model__left_atrial_pressure(VLA, PLA)
+
+  // Assignment Rules:
+  PLA := VLE / 0.01;
+  VLE := VLA - 0.38;
+end
+
+model circulatory_dynamics_CellML1_0_model__autonomic_stimulation_effect_on_left_atrial_pressure(PLA, AU, PLA1, HTAUML)
+
+  // Assignment Rules:
+  PLA1 := (PLA + 4 ) * (HTAUML * (AU - 1 ) + 1 ) - 4;
+end
+
+model circulatory_dynamics_CellML1_0_model__left_ventricle()
+end
+
+model circulatory_dynamics_CellML1_0_model__pumping_effectiveness_of_left_ventricle(PA, AUH, OSA, LVM)
+
+  // Assignment Rules:
+  LVM := piecewise( 1.04 , PA2 <= 0 , 1.04 + (1.025 - 1.04 ) * (PA2 - 0 ) / (60 - 0 ) , ( PA2 > 0) && (PA2 <= 60 ), 1.025 + (0.97 - 1.025 ) * (PA2 - 60 ) / (125 - 60 ) , ( PA2 > 60) && (PA2 <= 125 ), 0.97 + (0.88 - 0.97 ) * (PA2 - 125 ) / (160 - 125 ) , ( PA2 > 125) && (PA2 <= 160 ), 0.88 + (0.59 - 0.88 ) * (PA2 - 160 ) / (200 - 160 ) , ( PA2 > 160) && (PA2 <= 200 ), 0.59 + (0 - 0.59 ) * (PA2 - 200 ) / (240 - 200 ) , ( PA2 > 200) && (PA2 <= 240 ), 0 );
+  PA2 := PA / (AUH * OSA);
+end
+
+model circulatory_dynamics_CellML1_0_model__left_ventricular_output(PLA1, LVM, AUH, HMD, HPL, PLA, PA, QLO, QLOT, QLN, HSL)
+
+  // Assignment Rules:
+  QLO := piecewise( QLOT + QLO1 , QLO1 > 0 , QLOT );
+  QLOT := LVM * QLN * AUH * HSL * HMD * HPL;
+  QLN := piecewise( 0.01 , PLA1 <= -(2 ) , 0.01 + (3.6 - 0.01 ) * (PLA1 - -(2 )) / (1 - -(2 )) , ( PLA1 > -(2 )) && (PLA1 <= 1 ), 3.6 + (9.4 - 3.6 ) * (PLA1 - 1 ) / (5 - 1 ) , ( PLA1 > 1) && (PLA1 <= 5 ), 9.4 + (11.6 - 9.4 ) * (PLA1 - 5 ) / (8 - 5 ) , ( PLA1 > 5) && (PLA1 <= 8 ), 11.6 + (13.5 - 11.6 ) * (PLA1 - 8 ) / (12 - 8 ) , ( PLA1 > 8) && (PLA1 <= 12 ), 13.5 );
+  QLO1 := (PLA - PA) / 3;
+end
+
+model circulatory_dynamics_CellML1_0_model__systemic_venous_system()
+end
+
+model circulatory_dynamics_CellML1_0_model__venous_blood_volume(QAO, QVO, VBD, time_, VVS, VVS1)
+
+  // Assignment Rules:
+  VVS := VVS1 + VBD * 0.3986;
+  DVS := QAO - QVO;
+
+  // Rate Rules:
+  VVS1' = DVS;
+
+  // Variable initializations:
+  VVS1 = 3.28246;
+end
+
+model circulatory_dynamics_CellML1_0_model__angiotensin_induced_venous_constriction(ANU, VVA, ANY)
+
+  // Assignment Rules:
+  VVA := (ANU - 1 ) * ANY;
+end
+
+model circulatory_dynamics_CellML1_0_model__venous_excess_volume(VVS, VVR, VVA, VV6, VV7, ATRVFB, VVE)
+
+  // Assignment Rules:
+  VVE := piecewise( 0.0001 , VVE1 < 0.0001 , VVE1 );
+  VVE1 := VVS - VVR - VVA - VV7 - VV6 - ATRVFB;
+end
+
+model circulatory_dynamics_CellML1_0_model__venous_average_pressure(VVE, PVS, CV)
+
+  // Assignment Rules:
+  PVS := piecewise( 0.0001 , PVS1 < 0.0001 , PVS1 );
+  PVS1 := 3.7 + (VVE - 0.74 ) / CV;
+end
+
+model circulatory_dynamics_CellML1_0_model__venous_outflow_pressure_into_heart(PRA, PR1, PR1LL)
+
+  // Assignment Rules:
+  PR1 := piecewise( PR1LL , PRA < PR1LL , PRA );
+end
+
+model circulatory_dynamics_CellML1_0_model__resistance_from_veins_to_right_atrium(PVS, VIM, RVG)
+
+  // Assignment Rules:
+  RVG := 0.74 / power(PVS / (VIM * 3.7 ), 0.5 );
+end
+
+model circulatory_dynamics_CellML1_0_model__rate_of_blood_flow_from_veins_to_right_atrium(PVS, PR1, RVG, QRO, QVO)
+
+  // Assignment Rules:
+  QVO := PGV / RVG;
+  PGV := PVS - PR1;
+end
+
+model circulatory_dynamics_CellML1_0_model__venous_resistance(PC, VIM, AVE, ANUVN, RVS, CN7, CN2, RVSM)
+
+  // Assignment Rules:
+  RVS := AVE * RV1 * VIM * ANUVN;
+  CN3 := ((PC - 17 ) * CN7 + 17 ) * CN2;
+  RV1 := RVSM / CN3;
+end
+
+model circulatory_dynamics_CellML1_0_model__NM_NR_venous_resistance(RVS, NNRVR)
+
+  // Assignment Rules:
+  NNRVR := RVS * 1.79;
+end
+
+model circulatory_dynamics_CellML1_0_model__systemic_arterial_system()
+end
+
+model circulatory_dynamics_CellML1_0_model__arterial_blood_volume(QLO, QAO, VBD, time_, VAS, VAS1)
+
+  // Assignment Rules:
+  VAS := VAS1 + VBD * 0.261;
+  DAS := QLO - QAO;
+
+  // Rate Rules:
+  VAS1' = DAS;
+
+  // Variable initializations:
+  VAS1 = 0.862514;
+end
+
+model circulatory_dynamics_CellML1_0_model__arterial_pressure_and_pressure_gradient(VAS, PRA, PA, PAG)
+
+  // Assignment Rules:
+  PA := VAE / 0.00355;
+  PAG := PA - PRA;
+  VAE := VAS - 0.495;
+end
+
+model circulatory_dynamics_CellML1_0_model__pressure_effect_on_arterial_distention(PA, PAM, PAEX)
+
+  // Assignment Rules:
+  PAM := power(PA / 100 , PAEX);
+end
+
+model circulatory_dynamics_CellML1_0_model__non_renal_systemic_arterial_resistance_multiplier(ANU, ADHMV, AUM, VIM, PAMK, PAM, ATRRFB, R1)
+
+  // Assignment Rules:
+  R1 := ANU * ADHMV * AUM * VIM * PAMK / PAM / ATRRFB;
+end
+
+model circulatory_dynamics_CellML1_0_model__NM_NR_arterial_resistance(R1, ARM, MYOGRS, NNRAR, RAR, RMULT1)
+
+  // Assignment Rules:
+  NNRAR := RAR * ARM * R1 * MYOGRS * RMULT1;
+end
+
+model circulatory_dynamics_CellML1_0_model__pressure_gradient_from_arteries_to_veins(PA, PVS, PGS)
+
+  // Assignment Rules:
+  PGS := PA - PVS;
+end
+
+model circulatory_dynamics_CellML1_0_model__M_systemic_resistance(R1, AMM, MYOGRS, RSM, RAM, RMULT1)
+
+  // Assignment Rules:
+  RSM := RAM * AMM * R1 * MYOGRS * RMULT1;
+end
+
+model circulatory_dynamics_CellML1_0_model__total_NM_NR_systemic_resistance(NNRAR, NNRVR, RSN)
+
+  // Assignment Rules:
+  RSN := NNRAR + NNRVR;
+end
+
+model circulatory_dynamics_CellML1_0_model__blood_flow_through_M_tissues(PGS, RSM, BFM)
+
+  // Assignment Rules:
+  BFM := PGS / RSM;
+end
+
+model circulatory_dynamics_CellML1_0_model__blood_flow_through_NM_NR_tissues(PGS, RSN, BFN)
+
+  // Assignment Rules:
+  BFN := PGS / RSN;
+end
+
+model circulatory_dynamics_CellML1_0_model__blood_flow_through_AV_fistulas(PAG, FISFLO, FIS)
+
+  // Assignment Rules:
+  FISFLO := PAG * FIS;
+end
+
+model circulatory_dynamics_CellML1_0_model__systemic_blood_flow(BFM, BFN, RBF, FISFLO, SYSFLO, QAO)
+
+  // Assignment Rules:
+  SYSFLO := BFM + BFN + RBF;
+  QAO := SYSFLO + FISFLO;
+end
+
+model circulatory_dynamics_CellML1_0_model__total_peripheral_resistance(PAG, QAO, RTP)
+
+  // Assignment Rules:
+  RTP := PAG / QAO;
+end
+
+model circulatory_dynamics_CellML1_0_model__circulatory_dynamics(time_, ADHMV, AMM, ANU, ANUVN, ARM, ATRRFB, ATRVFB, AU, AUH, AUM, AVE, HMD, HPL, HPR, MYOGRS, OSA, PAMK, PC, RBF, VIM, VP, VRC, VV6, VV7, VVR)
+
+  // Sub-modules, and any changes to those submodules:
+  parameter_values: circulatory_dynamics_CellML1_0_model__parameter_values(HTAUML, QRF, HSR, HSL, ANY, CV, PR1LL, RVSM, CN2, CN7, PAEX, RAR, RMULT1, RAM, FIS);
+  total_blood_volume_change: circulatory_dynamics_CellML1_0_model__total_blood_volume_change(VP, VRC, VVS1, VAS1, VLA1, VPA1, VRA1, VBD);
+  right_atrium: circulatory_dynamics_CellML1_0_model__right_atrium();
+  right_atrial_blood_volume: circulatory_dynamics_CellML1_0_model__right_atrial_blood_volume(QVO, QRO, VBD, time_, VRA, VRA1);
+  right_atrial_pressure: circulatory_dynamics_CellML1_0_model__right_atrial_pressure(VRA, PRA);
+  autonomic_stimulation_effect_on_right_atrial_pressure: circulatory_dynamics_CellML1_0_model__autonomic_stimulation_effect_on_right_atrial_pressure(PRA, AU, PRA1, HTAUML);
+  right_ventricle: circulatory_dynamics_CellML1_0_model__right_ventricle();
+  pressure_effect_on_right_ventricular_pumping: circulatory_dynamics_CellML1_0_model__pressure_effect_on_right_ventricular_pumping(PPA, AUH, OSA, RVM);
+  pumping_effectiveness_of_right_ventricle: circulatory_dynamics_CellML1_0_model__pumping_effectiveness_of_right_ventricle(AUH, RVM, HMD, HPR, QLO, QLN, HPEF, QRF, HSR);
+  right_ventricular_output: circulatory_dynamics_CellML1_0_model__right_ventricular_output(PRA1, HPEF, QRO);
+  pulmonary_vasculature: circulatory_dynamics_CellML1_0_model__pulmonary_vasculature();
+  pulmonary_vasculature_blood_volume: circulatory_dynamics_CellML1_0_model__pulmonary_vasculature_blood_volume(QRO, QPO, VBD, time_, VPA, VPA1);
+  pulmonary_vasculature_pressure: circulatory_dynamics_CellML1_0_model__pulmonary_vasculature_pressure(VPA, PPA);
+  pulmonary_arterial_resistance: circulatory_dynamics_CellML1_0_model__pulmonary_arterial_resistance(PPA, RPA);
+  pulmonary_venous_resistance: circulatory_dynamics_CellML1_0_model__pulmonary_venous_resistance(PLA, RPV);
+  total_pulmonary_vascular_resistance: circulatory_dynamics_CellML1_0_model__total_pulmonary_vascular_resistance(RPV, RPA, RPT);
+  pressure_gradient_through_the_lungs: circulatory_dynamics_CellML1_0_model__pressure_gradient_through_the_lungs(PPA, PLA, PGL);
+  rate_of_blood_flow_from_pulmonary_veins_to_left_atrium: circulatory_dynamics_CellML1_0_model__rate_of_blood_flow_from_pulmonary_veins_to_left_atrium(PGL, RPT, QLO, QPO);
+  left_atrium: circulatory_dynamics_CellML1_0_model__left_atrium();
+  left_atrial_blood_volume: circulatory_dynamics_CellML1_0_model__left_atrial_blood_volume(QPO, QLO, VBD, time_, VLA, VLA1);
+  left_atrial_pressure: circulatory_dynamics_CellML1_0_model__left_atrial_pressure(VLA, PLA);
+  autonomic_stimulation_effect_on_left_atrial_pressure: circulatory_dynamics_CellML1_0_model__autonomic_stimulation_effect_on_left_atrial_pressure(PLA, AU, PLA1, HTAUML);
+  left_ventricle: circulatory_dynamics_CellML1_0_model__left_ventricle();
+  pumping_effectiveness_of_left_ventricle: circulatory_dynamics_CellML1_0_model__pumping_effectiveness_of_left_ventricle(PA, AUH, OSA, LVM);
+  left_ventricular_output: circulatory_dynamics_CellML1_0_model__left_ventricular_output(PLA1, LVM, AUH, HMD, HPL, PLA, PA, QLO, QLOT, QLN, HSL);
+  systemic_venous_system: circulatory_dynamics_CellML1_0_model__systemic_venous_system();
+  venous_blood_volume: circulatory_dynamics_CellML1_0_model__venous_blood_volume(QAO, QVO, VBD, time_, VVS, VVS1);
+  angiotensin_induced_venous_constriction: circulatory_dynamics_CellML1_0_model__angiotensin_induced_venous_constriction(ANU, VVA, ANY);
+  venous_excess_volume: circulatory_dynamics_CellML1_0_model__venous_excess_volume(VVS, VVR, VVA, VV6, VV7, ATRVFB, VVE);
+  venous_average_pressure: circulatory_dynamics_CellML1_0_model__venous_average_pressure(VVE, PVS, CV);
+  venous_outflow_pressure_into_heart: circulatory_dynamics_CellML1_0_model__venous_outflow_pressure_into_heart(PRA, PR1, PR1LL);
+  resistance_from_veins_to_right_atrium: circulatory_dynamics_CellML1_0_model__resistance_from_veins_to_right_atrium(PVS, VIM, RVG);
+  rate_of_blood_flow_from_veins_to_right_atrium: circulatory_dynamics_CellML1_0_model__rate_of_blood_flow_from_veins_to_right_atrium(PVS, PR1, RVG, QRO, QVO);
+  venous_resistance: circulatory_dynamics_CellML1_0_model__venous_resistance(PC, VIM, AVE, ANUVN, RVS, CN7, CN2, RVSM);
+  NM_NR_venous_resistance: circulatory_dynamics_CellML1_0_model__NM_NR_venous_resistance(RVS, NNRVR);
+  systemic_arterial_system: circulatory_dynamics_CellML1_0_model__systemic_arterial_system();
+  arterial_blood_volume: circulatory_dynamics_CellML1_0_model__arterial_blood_volume(QLO, QAO, VBD, time_, VAS, VAS1);
+  arterial_pressure_and_pressure_gradient: circulatory_dynamics_CellML1_0_model__arterial_pressure_and_pressure_gradient(VAS, PRA, PA, PAG);
+  pressure_effect_on_arterial_distention: circulatory_dynamics_CellML1_0_model__pressure_effect_on_arterial_distention(PA, PAM, PAEX);
+  non_renal_systemic_arterial_resistance_multiplier: circulatory_dynamics_CellML1_0_model__non_renal_systemic_arterial_resistance_multiplier(ANU, ADHMV, AUM, VIM, PAMK, PAM, ATRRFB, R1);
+  NM_NR_arterial_resistance: circulatory_dynamics_CellML1_0_model__NM_NR_arterial_resistance(R1, ARM, MYOGRS, NNRAR, RAR, RMULT1);
+  pressure_gradient_from_arteries_to_veins: circulatory_dynamics_CellML1_0_model__pressure_gradient_from_arteries_to_veins(PA, PVS, PGS);
+  M_systemic_resistance: circulatory_dynamics_CellML1_0_model__M_systemic_resistance(R1, AMM, MYOGRS, RSM, RAM, RMULT1);
+  total_NM_NR_systemic_resistance: circulatory_dynamics_CellML1_0_model__total_NM_NR_systemic_resistance(NNRAR, NNRVR, RSN);
+  blood_flow_through_M_tissues: circulatory_dynamics_CellML1_0_model__blood_flow_through_M_tissues(PGS, RSM, BFM);
+  blood_flow_through_NM_NR_tissues: circulatory_dynamics_CellML1_0_model__blood_flow_through_NM_NR_tissues(PGS, RSN, BFN);
+  blood_flow_through_AV_fistulas: circulatory_dynamics_CellML1_0_model__blood_flow_through_AV_fistulas(PAG, FISFLO, FIS);
+  systemic_blood_flow: circulatory_dynamics_CellML1_0_model__systemic_blood_flow(BFM, BFN, RBF, FISFLO, SYSFLO, QAO);
+  total_peripheral_resistance: circulatory_dynamics_CellML1_0_model__total_peripheral_resistance(PAG, QAO, RTP);
+
+  // Variable initializations:
+  ADHMV = 1.0;
+  AMM = 1.0;
+  ANU = 0.925271;
+  ANUVN = 1.0;
+  ARM = 1.16463;
+  ATRRFB = 1.0;
+  ATRVFB = 0.0;
+  AU = 1.00022;
+  AUH = 1.00012;
+  AUM = 1.00066;
+  AVE = 1.0;
+  HMD = 1.0;
+  HPL = 1.00163;
+  HPR = 1.00237;
+  MYOGRS = 1.0;
+  OSA = 0.97287;
+  PAMK = 1.0;
+  PC = 16.9144;
+  RBF = 1.22057;
+  VIM = 1.00076;
+  VP = 3.00449;
+  VRC = 2.00439;
+  VV6 = 0.0101913;
+  VV7 = 0.00366525;
+  VVR = 2.50967;
+end
+
+model circulatory_dynamics_CellML1_0_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: circulatory_dynamics_CellML1_0_model__environment(time_);
+  circulatory_dynamics: circulatory_dynamics_CellML1_0_model__circulatory_dynamics(time_, ADHMV, AMM, ANU, ANUVN, ARM, ATRRFB, ATRVFB, AU, AUH, AUM, AVE, HMD, HPL, HPR, MYOGRS, OSA, PAMK, PC, RBF, VIM, VP, VRC, VV6, VV7, VVR);
+end

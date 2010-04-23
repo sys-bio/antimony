@@ -1,0 +1,197 @@
+//Created by libAntimony v1.3
+model lemon_2003__environment(time_)
+end
+
+model lemon_2003__Parameters(R_T, K_1, K_2, k_r, k_p, k_e, xi, G_T, k_deg, k_a, k_d, PIP_2_T, r_r, delta, K_c, alpha, N_a, v, epsilon_r, d_1, d_2, d_3, d_5, a_2, B_e, K_e, B_ER, K_ER, B_x, K_x, k_3, eta_1, eta_2, eta_3, C_T)
+
+  // Variable initializations:
+  R_T = 2e4;
+  K_1 = 5;
+  K_2 = 100;
+  k_r = 1.75e-4;
+  k_p = 0.03;
+  k_e = 6e-3;
+  xi = 0.85;
+  G_T = 1e5;
+  k_deg = 1.25;
+  k_a = 0.017;
+  k_d = 0.15;
+  PIP_2_T = 5e7;
+  r_r = 10;
+  delta = 1.238e-3;
+  K_c = 0.4;
+  alpha = 2.781e-5;
+  N_a = 6.02252e17;
+  v = 5e-13;
+  epsilon_r = 0.185;
+  d_1 = 0.13;
+  d_2 = 1.05;
+  d_3 = 0.943;
+  d_5 = 0.0823;
+  a_2 = 0.2;
+  B_e = 150;
+  K_e = 10;
+  B_ER = 120000;
+  K_ER = 1200;
+  B_x = 50;
+  K_x = 0.2;
+  k_3 = 0.4;
+  eta_1 = 575;
+  eta_2 = 5.2;
+  eta_3 = 45;
+  C_T = 67;
+end
+
+model lemon_2003__ligand(L)
+
+  // Variable initializations:
+  L = 1000;
+end
+
+model lemon_2003__RS(RS, R_T, RS_p, L, K_1, k_r, k_p, time_)
+
+  // Rate Rules:
+  RS' = k_r * R_T - (k_r + k_p * L / (K_1 + L)) * RS - k_r * RS_p;
+
+  // Variable initializations:
+  RS = 1.7e4;
+end
+
+model lemon_2003__RS_p(RS_p, R_T, RS, L, K_1, K_2, k_r, k_p, k_e, time_)
+
+  // Rate Rules:
+  RS_p' = L * (k_p * RS / (K_1 + L) - k_e * RS_p / (K_2 + L));
+
+  // Variable initializations:
+  RS_p = 0;
+end
+
+model lemon_2003__G_GTP(G, G_T, delta, k_a, k_d, rho_r, time_)
+
+  // Rate Rules:
+  G' = k_a * (delta + rho_r) * (G_T - G) - k_d * G;
+
+  // Variable initializations:
+  G = 0;
+end
+
+model lemon_2003__IP_3(IP_3, PIP_2, r_h, k_deg, N_a, v, time_)
+
+  // Rate Rules:
+  IP_3' = r_h * PIP_2 / (N_a * v) - k_deg * IP_3;
+
+  // Variable initializations:
+  IP_3 = 0.01;
+end
+
+model lemon_2003__PIP_2(PIP_2, IP_3, r_h, r_r, PIP_2_T, k_deg, N_a, v, time_)
+
+  // Rate Rules:
+  PIP_2' = -((r_h + r_r)) * PIP_2 - r_r * N_a * v * IP_3 + r_r * PIP_2_T;
+
+  // Variable initializations:
+  PIP_2 = 49997000;
+end
+
+model lemon_2003__r_h(r_h, alpha, C, K_c, G)
+
+  // Assignment Rules:
+  r_h := alpha * C / (K_c + C) * G;
+end
+
+model lemon_2003__rho_r(rho_r, L, RS, R_T, K_1, xi)
+
+  // Assignment Rules:
+  rho_r := L * RS / (xi * R_T * (K_1 + L));
+end
+
+model lemon_2003__C(C, C_ER, beta, epsilon_r, eta_1, eta_2, eta_3, k_3, h, m_infinit, time_)
+
+  // Rate Rules:
+  C' = beta * (epsilon_r * (eta_1 * power(m_infinit, 3 ) * power(h, 3 ) + eta_2) * (C_ER - C) - eta_3 * power(C, 2 ) / (power(k_3, 2 ) + power(C, 2 )));
+
+  // Variable initializations:
+  C = 0.0961;
+end
+
+model lemon_2003__h(h, h_infinit, tau_h, time_)
+
+  // Rate Rules:
+  h' = (h_infinit - h) / tau_h;
+
+  // Variable initializations:
+  h = 0.6155;
+end
+
+model lemon_2003__tau_h(tau_h, a_2, zeta, C)
+
+  // Assignment Rules:
+  tau_h := power(a_2 * (zeta + C), -(1 ));
+end
+
+model lemon_2003__h_infinit(h_infinit, zeta, C)
+
+  // Assignment Rules:
+  h_infinit := zeta / (zeta + C);
+end
+
+model lemon_2003__zeta(zeta, d_1, d_2, d_3, IP_3)
+
+  // Assignment Rules:
+  zeta := d_2 * (IP_3 + d_1) / (IP_3 + d_3);
+end
+
+model lemon_2003__m_infinit(m_infinit, d_1, d_5, IP_3, C)
+
+  // Assignment Rules:
+  m_infinit := IP_3 / (d_1 + IP_3) * C / (d_5 + C);
+end
+
+model lemon_2003__beta(beta, K_e, B_e, K_x, B_x, C)
+
+  // Assignment Rules:
+  beta := power(1 + K_e * B_e / power(K_e + C, 2 ) + K_x * B_x / power(K_x + C, 2 ), -(1 ));
+end
+
+model lemon_2003__gamma(gamma, K_e, B_e, K_x, B_x, C)
+
+  // Assignment Rules:
+  gamma := power(1 + B_e / (K_e + C) + B_x / (K_x + C), -(1 ));
+end
+
+model lemon_2003__C_ER(C_ER, K_ER, B_ER, epsilon_r, C_T, C, gamma)
+
+  // Assignment Rules:
+  C_ER := K_ER / (B_ER * epsilon_r) * (C_T - C / gamma);
+end
+
+model lemon_2003__RS_E(RS_E, R_T, L, K_1, K_2, k_r, k_p, k_e, xi)
+
+  // Assignment Rules:
+  RS_E := k_r * (1 + k_p / k_e * (K_2 + L) / (K_1 + L)) / (k_r + k_p * L / (K_1 + L) + k_r * k_p / k_e * (K_2 + L) / (K_1 + L)) * xi * R_T + (1 - xi) * R_T;
+end
+
+model lemon_2003____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: lemon_2003__environment(time_);
+  Parameters: lemon_2003__Parameters(R_T, K_1, K_2, k_r, k_p, k_e, xi, G_T, k_deg, k_a, k_d, PIP_2_T, r_r, delta, K_c, alpha, N_a, v, epsilon_r, d_1, d_2, d_3, d_5, a_2, B_e, K_e, B_ER, K_ER, B_x, K_x, k_3, eta_1, eta_2, eta_3, C_T);
+  ligand: lemon_2003__ligand(L);
+  RS: lemon_2003__RS(RS0, R_T, RS_p0, L, K_1, k_r, k_p, time_);
+  RS_p: lemon_2003__RS_p(RS_p0, R_T, RS0, L, K_1, K_2, k_r, k_p, k_e, time_);
+  G_GTP: lemon_2003__G_GTP(G, G_T, delta, k_a, k_d, rho_r0, time_);
+  IP_3: lemon_2003__IP_3(IP_30, PIP_20, r_h0, k_deg, N_a, v, time_);
+  PIP_2: lemon_2003__PIP_2(PIP_20, IP_30, r_h0, r_r, PIP_2_T, k_deg, N_a, v, time_);
+  r_h: lemon_2003__r_h(r_h0, alpha, C0, K_c, G);
+  rho_r: lemon_2003__rho_r(rho_r0, L, RS0, R_T, K_1, xi);
+  C: lemon_2003__C(C0, C_ER0, beta0, epsilon_r, eta_1, eta_2, eta_3, k_3, h0, m_infinit0, time_);
+  h: lemon_2003__h(h0, h_infinit0, tau_h0, time_);
+  tau_h: lemon_2003__tau_h(tau_h0, a_2, zeta0, C0);
+  h_infinit: lemon_2003__h_infinit(h_infinit0, zeta0, C0);
+  zeta: lemon_2003__zeta(zeta0, d_1, d_2, d_3, IP_30);
+  m_infinit: lemon_2003__m_infinit(m_infinit0, d_1, d_5, IP_30, C0);
+  beta: lemon_2003__beta(beta0, K_e, B_e, K_x, B_x, C0);
+  gamma: lemon_2003__gamma(gamma0, K_e, B_e, K_x, B_x, C0);
+  C_ER: lemon_2003__C_ER(C_ER0, K_ER, B_ER, epsilon_r, C_T, C0, gamma0);
+  RS_E: lemon_2003__RS_E(RS_E0, R_T, L, K_1, K_2, k_r, k_p, k_e, xi);
+end

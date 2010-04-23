@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="aldosterone_CellML1_0_model____main" name="aldosterone_CellML1_0_model____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="ANM" value="0.987545"/>
+      <parameter id="CKE" value="4.44092"/>
+      <parameter id="aldosterone_ANMALD" value="2.5"/>
+      <parameter id="aldosterone_AMKMUL" value="12"/>
+      <parameter id="aldosterone_ALDINF" value="0"/>
+      <parameter id="aldosterone_ALDKNS" value="0"/>
+      <parameter id="aldosterone_AMT" value="60"/>
+      <parameter id="aldosterone_AM1UL" value="5"/>
+      <parameter id="aldosterone_AM1LL" value="0"/>
+      <parameter id="aldosterone_AMCSNS" value="0.65"/>
+      <parameter id="aldosterone_ALDMM" value="2.5"/>
+      <parameter id="aldosterone_AMKM" value="0.5"/>
+      <parameter id="aldosterone_AMNAM" value="0.8"/>
+      <parameter id="aldosterone_AMNAUL" value="15"/>
+      <parameter id="aldosterone_AMNALL" value="0.04"/>
+      <parameter id="aldosterone_ANMAL" constant="false"/>
+      <parameter id="aldosterone_OSMAL" constant="false"/>
+      <parameter id="aldosterone_AMR1" constant="false"/>
+      <parameter id="aldosterone_aldosterone_secretion_AMRBSC" constant="false"/>
+      <parameter id="aldosterone_aldosterone_secretion_AMRT" constant="false"/>
+      <parameter id="aldosterone_aldosterone_secretion_AMR" constant="false"/>
+      <parameter id="aldosterone_AMC" value="1" constant="false"/>
+      <parameter id="aldosterone_AM" constant="false"/>
+      <parameter id="aldosterone_general_aldosterone_multiplier_AM1" constant="false"/>
+      <parameter id="aldosterone_AMK" constant="false"/>
+      <parameter id="aldosterone_aldosterone_effect_on_cell_membrane_K_transport_AMKT" constant="false"/>
+      <parameter id="aldosterone_AMNA" constant="false"/>
+      <parameter id="aldosterone_aldosterone_effect_on_cell_membrane_Na_transport_AMNAT" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="aldosterone_ANMAL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> ANM </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> aldosterone_ANMALD </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldosterone_OSMAL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> CKE </ci>
+              <cn> 3.3 </cn>
+            </apply>
+            <cn> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldosterone_AMR1"/>
+      <assignmentRule variable="aldosterone_aldosterone_secretion_AMRBSC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> aldosterone_ANMAL </ci>
+            <cn> 0.909 </cn>
+            <ci> aldosterone_OSMAL </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldosterone_aldosterone_secretion_AMRT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> aldosterone_aldosterone_secretion_AMRBSC </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> aldosterone_AMKMUL </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldosterone_aldosterone_secretion_AMR"/>
+      <rateRule variable="aldosterone_AMC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> aldosterone_AMR1 </ci>
+              <ci> aldosterone_AMC </ci>
+            </apply>
+            <ci> aldosterone_AMT </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="aldosterone_AM">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> aldosterone_general_aldosterone_multiplier_AM1 </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> aldosterone_ALDMM </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldosterone_general_aldosterone_multiplier_AM1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> aldosterone_AM1UL </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <ci> aldosterone_AM1UL </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> aldosterone_AM1LL </ci>
+                      <cn type="integer"> 1 </cn>
+                    </apply>
+                    <apply>
+                      <minus/>
+                      <ci> aldosterone_AM1LL </ci>
+                      <ci> aldosterone_AM1UL </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <minus/>
+                    <ci> aldosterone_AMC </ci>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <ci> aldosterone_AMCSNS </ci>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldosterone_AMK"/>
+      <assignmentRule variable="aldosterone_aldosterone_effect_on_cell_membrane_K_transport_AMKT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> aldosterone_AM </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> aldosterone_AMKM </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="aldosterone_AMNA"/>
+      <assignmentRule variable="aldosterone_aldosterone_effect_on_cell_membrane_Na_transport_AMNAT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> aldosterone_AM </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> aldosterone_AMNAM </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

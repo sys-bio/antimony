@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="snyder_palmer_moore_2000_version01____main" name="snyder_palmer_moore_2000_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Ca_e" constant="false"/>
+      <parameter id="Ca_f" constant="false"/>
+      <parameter id="Ca_influx_across_the_SR_k1" value="0.2"/>
+      <parameter id="Ca_2_S1" constant="false"/>
+      <parameter id="Ca_S2" constant="false"/>
+      <parameter id="S1" constant="false"/>
+      <parameter id="S2" constant="false"/>
+      <parameter id="Ca_s" constant="false"/>
+      <parameter id="Ca_movement_through_the_SRRC_k_on1" value="2000000000"/>
+      <parameter id="Ca_movement_through_the_SRRC_k_off1" value="1400"/>
+      <parameter id="Ca_movement_through_the_SRRC_k_on2" value="13000000"/>
+      <parameter id="Ca_movement_through_the_SRRC_k_off2" value="3.9"/>
+      <parameter id="Ca_movement_through_the_SRRC_k_s" value="9"/>
+      <parameter id="Ca_movement_through_the_SRRC_cas1" constant="false"/>
+      <parameter id="Ca_movement_through_the_SRRC_cas2" constant="false"/>
+      <parameter id="Ca_movement_through_the_SRRC_r_o" constant="false"/>
+      <parameter id="Ca_efflux_across_the_SR_by_NaCa_exchange_Km_NaCaX" value="3.6e-05"/>
+      <parameter id="Ca_efflux_across_the_SR_by_NaCa_exchange_Vmax_NaCaX" value="0.0012"/>
+      <parameter id="Ca_c" value="1e-07" constant="false"/>
+      <parameter id="Ca_movement_between_the_fuzzy_space_and_cytosol_kf" value="2500"/>
+      <parameter id="Ca_uptake_by_SR_Ca_ATPase_Km_s" value="2.5e-07"/>
+      <parameter id="Ca_uptake_by_SR_Ca_ATPase_Vmax_s" value="0.000525"/>
+      <parameter id="Ca_CSQ" constant="false"/>
+      <parameter id="Ca_buffering_in_the_SR_K_ons" value="8772"/>
+      <parameter id="Ca_buffering_in_the_SR_K_offs" value="5.596536"/>
+      <parameter id="Ca_buffering_in_the_SR_Bmax_s" value="0.008"/>
+      <parameter id="fuzzy_space_calcium_Rt" value="1.5e-07"/>
+      <parameter id="fuzzy_space_calcium_Bmax_f1" value="0.0002"/>
+      <parameter id="fuzzy_space_calcium_Bmax_f2" value="0.0011"/>
+      <parameter id="fuzzy_space_calcium_Kb_f1" value="1.7e-05"/>
+      <parameter id="fuzzy_space_calcium_Kb_f2" value="1.3e-05"/>
+      <parameter id="fuzzy_space_calcium_V_f" value="0.0013"/>
+      <parameter id="cytosolic_calcium_Bmax_c" value="0.00012"/>
+      <parameter id="cytosolic_calcium_Kb_c" value="9.6e-07"/>
+      <parameter id="cytosolic_calcium_V_c" value="0.9287"/>
+      <parameter id="SR_calcium_V_s" value="0.07"/>
+      <parameter id="time_"/>
+      <parameter id="delta_Ca_e_rxn_1"/>
+      <parameter id="r_rxn_1"/>
+      <parameter id="delta_Ca_f_rxn_2"/>
+      <parameter id="delta_S1_rxn_2"/>
+      <parameter id="delta_Ca_2_S1_rxn_2"/>
+      <parameter id="delta_Ca_f_rxn_3"/>
+      <parameter id="delta_S2_rxn_3"/>
+      <parameter id="delta_Ca_S2_rxn_3"/>
+      <parameter id="dcas1_dt"/>
+      <parameter id="dcas2_dt"/>
+      <parameter id="Ca_movement_through_the_SRRC_r_rxn_2"/>
+      <parameter id="Ca_movement_through_the_SRRC_r_rxn_3"/>
+      <parameter id="r_rxn_4"/>
+      <parameter id="delta_Ca_e_rxn_5"/>
+      <parameter id="r_rxn_5"/>
+      <parameter id="r_rxn_6"/>
+      <parameter id="r_rxn_7"/>
+      <parameter id="delta_Ca_CSQ_rxn_8"/>
+      <parameter id="r_rxn_8"/>
+      <parameter id="fuzzy_space_calcium_Ca_f1"/>
+      <parameter id="fuzzy_space_calcium_Ca_f2"/>
+      <parameter id="cytosolic_calcium_dye_c"/>
+      <parameter id="cytosolic_calcium_Kb_dye"/>
+      <parameter id="cytosolic_calcium_Ca_f1"/>
+      <parameter id="cytosolic_calcium_Ca_f2"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Ca_e">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> delta_Ca_e_rxn_1 </ci>
+            <ci> delta_Ca_e_rxn_5 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_f">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <ci> r_rxn_4 </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> fuzzy_space_calcium_Rt </ci>
+                    <apply>
+                      <plus/>
+                      <ci> dcas1_dt </ci>
+                      <ci> dcas2_dt </ci>
+                    </apply>
+                  </apply>
+                  <ci> r_rxn_6 </ci>
+                  <ci> r_rxn_5 </ci>
+                </apply>
+              </apply>
+              <ci> r_rxn_1 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> fuzzy_space_calcium_Bmax_f1 </ci>
+                  <ci> fuzzy_space_calcium_Kb_f1 </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <ci> fuzzy_space_calcium_Ca_f1 </ci>
+                    <ci> fuzzy_space_calcium_Kb_f1 </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> fuzzy_space_calcium_Bmax_f2 </ci>
+                  <ci> fuzzy_space_calcium_Kb_f2 </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <ci> fuzzy_space_calcium_Ca_f2 </ci>
+                    <ci> fuzzy_space_calcium_Kb_f2 </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <ci> fuzzy_space_calcium_V_f </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_2_S1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> delta_Ca_2_S1_rxn_2 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_S2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> delta_Ca_S2_rxn_3 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="S1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> delta_S1_rxn_2 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="S2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> delta_S2_rxn_3 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> r_rxn_7 </ci>
+              <ci> r_rxn_4 </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> SR_calcium_V_s </ci>
+              <ci> r_rxn_8 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_movement_through_the_SRRC_cas1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> Ca_movement_through_the_SRRC_k_on1 </ci>
+              <ci> Ca_f </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> Ca_movement_through_the_SRRC_cas1 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <ci> Ca_movement_through_the_SRRC_k_off1 </ci>
+                  <cn> 2 </cn>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> Ca_movement_through_the_SRRC_k_on1 </ci>
+                  <ci> Ca_f </ci>
+                </apply>
+              </apply>
+              <ci> Ca_movement_through_the_SRRC_cas1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_movement_through_the_SRRC_cas2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> Ca_movement_through_the_SRRC_k_on2 </ci>
+              <ci> Ca_f </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> Ca_movement_through_the_SRRC_cas2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Ca_movement_through_the_SRRC_k_off2 </ci>
+              <ci> Ca_movement_through_the_SRRC_cas2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Ca_movement_through_the_SRRC_r_o">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ca_movement_through_the_SRRC_cas1 </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <ci> Ca_movement_through_the_SRRC_cas2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca_c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> r_rxn_6 </ci>
+              <ci> r_rxn_7 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> cytosolic_calcium_Bmax_c </ci>
+                  <ci> cytosolic_calcium_Kb_c </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <ci> Ca_c </ci>
+                    <ci> cytosolic_calcium_Kb_c </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> cytosolic_calcium_dye_c </ci>
+                  <ci> cytosolic_calcium_Kb_dye </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <ci> Ca_c </ci>
+                    <ci> cytosolic_calcium_Kb_dye </ci>
+                  </apply>
+                  <cn> 2 </cn>
+                </apply>
+              </apply>
+              <ci> cytosolic_calcium_V_c </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ca_CSQ">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> delta_Ca_CSQ_rxn_8 </ci>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

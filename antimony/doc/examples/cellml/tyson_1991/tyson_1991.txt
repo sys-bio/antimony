@@ -1,0 +1,94 @@
+//Created by libAntimony v1.3
+model tyson_1991__environment(time_)
+end
+
+model tyson_1991__C2(C2, k6, k8, k9, M, P, CP, time_)
+
+  // Rate Rules:
+  C2' = k6 * M + k9 * CP - k8 * P * C2;
+
+  // Variable initializations:
+  C2 = 0.001;
+end
+
+model tyson_1991__CP(CP, k3, k8, k9, Y, P, C2, time_)
+
+  // Rate Rules:
+  CP' = k8 * P * C2 - ( k9 * CP + k3 * CP * Y );
+
+  // Variable initializations:
+  CP = 0.001;
+end
+
+model tyson_1991__pM(pM, k3, k5, F, Y, P, M, CP, time_)
+
+  // Rate Rules:
+  pM' = k3 * CP * Y + k5 * P * M - pM * F;
+
+  // Variable initializations:
+  pM = 0.001;
+end
+
+model tyson_1991__M(M, k5, k6, F, pM, P, time_)
+
+  // Rate Rules:
+  M' = pM * F - ( k5 * P * M + k6 * M );
+
+  // Variable initializations:
+  M = 0.001;
+end
+
+model tyson_1991__Y(Y, k1, k2, k3, aa, CP, time_)
+
+  // Rate Rules:
+  Y' = aa * k1 - ( k3 * CP * Y + k2 * Y );
+
+  // Variable initializations:
+  Y = 0.001;
+end
+
+model tyson_1991__YP(YP, k6, k7, M, time_)
+
+  // Rate Rules:
+  YP' = k6 * M - k7 * YP;
+
+  // Variable initializations:
+  YP = 0.001;
+end
+
+model tyson_1991__reaction_constants(k1, k2, k3, k4, k5, k6, k7, k8, k9, F, aa, P, C2, CP, pM, M, Y, YP)
+
+  // Assignment Rules:
+  k1 := 0.015 * CT / aa;
+  k3 := 200.0 / CT;
+  k5 := 0.0 / P;
+  k8 := k9 / P;
+  F := k4_ + k4 * power( M / CT , 2.0 );
+  CT := C2 + CP + pM + M;
+  YT := Y + YP + pM + M;
+  YT_CT := YT / CT;
+  M_CT := M / CT;
+
+  // Variable initializations:
+  k2 = 0.0;
+  k4 = 180.0;
+  k6 = 1.0;
+  k7 = 0.6;
+  k9 = 100.0;
+  aa = 1.0;
+  P = 1.0;
+  k4_ = 0.018;
+end
+
+model tyson_1991____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: tyson_1991__environment(time_);
+  C2: tyson_1991__C2(C20, k6, k8, k9, M0, P, CP0, time_);
+  CP: tyson_1991__CP(CP0, k3, k8, k9, Y0, P, C20, time_);
+  pM: tyson_1991__pM(pM0, k3, k5, F, Y0, P, M0, CP0, time_);
+  M: tyson_1991__M(M0, k5, k6, F, pM0, P, time_);
+  Y: tyson_1991__Y(Y0, k1, k2, k3, aa, CP0, time_);
+  YP: tyson_1991__YP(YP0, k6, k7, M0, time_);
+  reaction_constants: tyson_1991__reaction_constants(k1, k2, k3, k4, k5, k6, k7, k8, k9, F, aa, P, C20, CP0, pM0, M0, Y0, YP0);
+end

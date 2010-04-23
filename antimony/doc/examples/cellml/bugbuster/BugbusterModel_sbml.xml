@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="BugbusterModel_SVBM____main" name="BugbusterModel_SVBM____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="concentration1" value="1000"/>
+      <parameter id="RNA10" value="0"/>
+      <parameter id="RNA20" value="0"/>
+      <parameter id="spaK0" value="0"/>
+      <parameter id="spaR0" value="0"/>
+      <parameter id="spaKactive0" value="0"/>
+      <parameter id="spaRactive0" value="0"/>
+      <parameter id="GFP0" value="0"/>
+      <parameter id="JRNA" constant="false"/>
+      <parameter id="JGain" constant="false"/>
+      <parameter id="J" constant="false"/>
+      <parameter id="J0" constant="false"/>
+      <parameter id="J4" constant="false"/>
+      <parameter id="J3" constant="false"/>
+      <parameter id="J1" constant="false"/>
+      <parameter id="J2" constant="false"/>
+      <parameter id="JGain0" constant="false"/>
+      <parameter id="J5" constant="false"/>
+      <parameter id="JGain1" constant="false"/>
+      <parameter id="J6" constant="false"/>
+      <parameter id="J7" constant="false"/>
+      <parameter id="J8" constant="false"/>
+      <parameter id="JGain2" constant="false"/>
+      <parameter id="J9" constant="false"/>
+      <parameter id="JGain3" constant="false"/>
+      <parameter id="JRNA0" constant="false"/>
+      <parameter id="JGain4" constant="false"/>
+      <parameter id="J10" constant="false"/>
+      <parameter id="J11" constant="false"/>
+      <parameter id="JGain5" constant="false"/>
+      <parameter id="J12" constant="false"/>
+      <parameter id="cellVolume" value="1"/>
+      <parameter id="k" value="0.04"/>
+      <parameter id="Bugbuster_Promoter1_Template_Promoter_Constitutive_avogadrosConstant" value="6.0221415e+23"/>
+      <parameter id="concentration" constant="false"/>
+      <parameter id="kDecay" value="0.0058"/>
+      <parameter id="RNARiPs" constant="false"/>
+      <parameter id="k0" value="0.1"/>
+      <parameter id="RNARiPs0" constant="false"/>
+      <parameter id="k1" value="0.1818"/>
+      <parameter id="concentration0" constant="false"/>
+      <parameter id="kDecay0" value="0.0012"/>
+      <parameter id="k2" value="0.0001"/>
+      <parameter id="concentration2" constant="false"/>
+      <parameter id="k3" value="0.1"/>
+      <parameter id="kDecay1" value="0.0012"/>
+      <parameter id="concentration3" constant="false"/>
+      <parameter id="kDecay2" value="0.0012"/>
+      <parameter id="k4" value="0.0001"/>
+      <parameter id="concentration4" constant="false"/>
+      <parameter id="k5" value="0.1"/>
+      <parameter id="kDecay3" value="0.0012"/>
+      <parameter id="k6" value="0.04"/>
+      <parameter id="n" value="2"/>
+      <parameter id="Km" value="320"/>
+      <parameter id="Bugbuster_Promoter2_Template_Promoter_Inductive_avogadrosConstant" value="6.0221415e+23"/>
+      <parameter id="concentration5" constant="false"/>
+      <parameter id="kDecay4" value="0.0058"/>
+      <parameter id="RNARiPs1" constant="false"/>
+      <parameter id="k7" value="0.145"/>
+      <parameter id="concentration6" constant="false"/>
+      <parameter id="kDecay5" value="0.0012"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="concentration">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> RNA10 </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="concentration0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> spaK0 </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="concentration2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> spaKactive0 </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="concentration3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> spaR0 </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="concentration4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> spaRactive0 </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="concentration5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> RNA20 </ci>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="concentration6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> GFP0 </ci>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <assignmentRule variable="JRNA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> k </ci>
+              <cn type="e-notation"> 1 <sep/> 9 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <ci> cellVolume </ci>
+              <cn type="e-notation"> 1 <sep/> -15 </cn>
+              <ci> Bugbuster_Promoter1_Template_Promoter_Constitutive_avogadrosConstant </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JGain">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> JRNA </ci>
+            <ci> J </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kDecay </ci>
+            <ci> concentration </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 1 <sep/> 6 </cn>
+              <ci> RNARiPs0 </ci>
+            </apply>
+            <ci> cellVolume </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> concentration2 </ci>
+            <ci> concentration3 </ci>
+            <ci> k4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k3 </ci>
+            <ci> concentration2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kDecay0 </ci>
+            <ci> concentration0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> concentration1 </ci>
+            <ci> concentration0 </ci>
+            <ci> k2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JGain0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> J0 </ci>
+              <ci> J4 </ci>
+              <ci> J3 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> J2 </ci>
+              <ci> J1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kDecay1 </ci>
+            <ci> concentration2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JGain1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> J2 </ci>
+            <apply>
+              <plus/>
+              <ci> J5 </ci>
+              <ci> J3 </ci>
+              <ci> J4 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 1 <sep/> 6 </cn>
+              <ci> RNARiPs </ci>
+            </apply>
+            <ci> cellVolume </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J7">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kDecay2 </ci>
+            <ci> concentration3 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k5 </ci>
+            <ci> concentration4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JGain2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> J6 </ci>
+              <ci> J8 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> J7 </ci>
+              <ci> J4 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J9">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kDecay3 </ci>
+            <ci> concentration4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JGain3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> J4 </ci>
+            <apply>
+              <plus/>
+              <ci> J9 </ci>
+              <ci> J8 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JRNA0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k6 </ci>
+                  <apply>
+                    <power/>
+                    <ci> concentration4 </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> Km </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> concentration4 </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="e-notation"> 1 <sep/> 9 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <ci> cellVolume </ci>
+              <cn type="e-notation"> 1 <sep/> -15 </cn>
+              <ci> Bugbuster_Promoter2_Template_Promoter_Inductive_avogadrosConstant </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JGain4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> JRNA0 </ci>
+            <ci> J10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kDecay4 </ci>
+            <ci> concentration5 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J11">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 1 <sep/> 6 </cn>
+              <ci> RNARiPs1 </ci>
+            </apply>
+            <ci> cellVolume </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="JGain5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> J11 </ci>
+            <ci> J12 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kDecay5 </ci>
+            <ci> concentration6 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="concentration">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> JGain </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="RNARiPs">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="e-notation"> 1 <sep/> 9 </cn>
+            <ci> k0 </ci>
+            <ci> concentration </ci>
+            <ci> cellVolume </ci>
+            <cn type="e-notation"> 1 <sep/> -15 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="RNARiPs0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="e-notation"> 1 <sep/> 9 </cn>
+            <ci> k1 </ci>
+            <ci> concentration </ci>
+            <ci> cellVolume </ci>
+            <cn type="e-notation"> 1 <sep/> -15 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="concentration0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> JGain0 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="concentration2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> JGain1 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="concentration3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> JGain2 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="concentration4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> JGain3 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="concentration5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> JGain4 </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="RNARiPs1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="e-notation"> 1 <sep/> 9 </cn>
+            <ci> k7 </ci>
+            <ci> concentration5 </ci>
+            <ci> cellVolume </ci>
+            <cn type="e-notation"> 1 <sep/> -15 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="concentration6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> JGain5 </ci>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

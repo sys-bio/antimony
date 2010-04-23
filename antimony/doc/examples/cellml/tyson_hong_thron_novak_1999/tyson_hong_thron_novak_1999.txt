@@ -1,0 +1,41 @@
+//Created by libAntimony v1.3
+model tyson_model_1999_version01__environment(time_)
+end
+
+model tyson_model_1999_version01__M(M, q, Pt, time_)
+
+  // Assignment Rules:
+  q := 2.0 / ( 1.0 + root( 1.0 + 8.0 * Keq * Pt ));
+
+  // Rate Rules:
+  M' = vm / ( 1.0 + power( Pt * ( 1.0 - q ) / ( 2.0 * Pcrit ), 2.0 )) - km * M;
+
+  // Variable initializations:
+  M = 0.0;
+  vm = 1.0;
+  km = 0.1;
+  Pcrit = 0.1;
+  Keq = 200.0;
+end
+
+model tyson_model_1999_version01__Pt(Pt, M, q, time_)
+
+  // Rate Rules:
+  Pt' = vp * M - (( kp1 * Pt * q + kp2 * Pt ) / ( Jp + Pt ) + kp3 * Pt );
+
+  // Variable initializations:
+  Pt = 0.0;
+  vp = 0.5;
+  kp1 = 10.0;
+  kp3 = 0.1;
+  kp2 = 0.03;
+  Jp = 0.05;
+end
+
+model tyson_model_1999_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: tyson_model_1999_version01__environment(time_);
+  M: tyson_model_1999_version01__M(M0, q, Pt0, time_);
+  Pt: tyson_model_1999_version01__Pt(Pt0, M0, q, time_);
+end

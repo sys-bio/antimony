@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="nelson_1995a____main" name="nelson_1995a____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="mu_T" value="0.02"/>
+      <parameter id="uninfected_CD4_r" value="0.03"/>
+      <parameter id="uninfected_CD4_T_max" value="1500"/>
+      <parameter id="uninfected_CD4_s_0" value="10"/>
+      <parameter id="uninfected_CD4_theta" value="1"/>
+      <parameter id="k_1"/>
+      <parameter id="k_1_"/>
+      <parameter id="T_1" value="0" constant="false"/>
+      <parameter id="V" constant="false"/>
+      <parameter id="V_" value="0" constant="false"/>
+      <parameter id="uninfected_CD4_s_V" constant="false"/>
+      <parameter id="T" value="1000" constant="false"/>
+      <parameter id="k_2" value="0.017"/>
+      <parameter id="k_1D"/>
+      <parameter id="mu_b" value="0.24"/>
+      <parameter id="D" value="0" constant="false"/>
+      <parameter id="T_2" value="0" constant="false"/>
+      <parameter id="k_s" value="0.24"/>
+      <parameter id="mu_bD" value="0.17"/>
+      <parameter id="T_D2" value="0" constant="false"/>
+      <parameter id="stably_coinfected_CD4_mu_TD" value="0.02"/>
+      <parameter id="T_D1" value="0" constant="false"/>
+      <parameter id="DIV_mu_D" value="2.4"/>
+      <parameter id="N_t" constant="false"/>
+      <parameter id="DIV_N_D_t" constant="false"/>
+      <parameter id="DIV_pi_D_t" constant="false"/>
+      <parameter id="mu_V" value="2.4"/>
+      <parameter id="HIV1_N_2_t" constant="false"/>
+      <parameter id="hybrid_HIV1_N_t_" constant="false"/>
+      <parameter id="hybrid_HIV1_pi_t_" constant="false"/>
+      <parameter id="production_function_N_0" value="300"/>
+      <parameter id="production_function_gamma" value="25"/>
+      <parameter id="production_function_t_c" value="7305"/>
+      <parameter id="cell_population_T_tot" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="k_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.4 <sep/> -5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="k_1_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.4 <sep/> -6 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> -3 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="k_1D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 2.4 <sep/> -6 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="T_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> k_1 </ci>
+                  <ci> V </ci>
+                  <ci> T </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k_1_ </ci>
+                  <ci> V_ </ci>
+                  <ci> T </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> mu_T </ci>
+                <ci> T_1 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_2 </ci>
+              <ci> T_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> N_t </ci>
+                  <ci> mu_b </ci>
+                  <ci> T_2 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> HIV1_N_2_t </ci>
+                  <ci> mu_bD </ci>
+                  <ci> T_D2 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> V </ci>
+                <ci> T </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> mu_V </ci>
+              <ci> V </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="V_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> hybrid_HIV1_N_t_ </ci>
+                  <ci> mu_bD </ci>
+                  <ci> T_D2 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> hybrid_HIV1_pi_t_ </ci>
+                  <ci> T_D1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> mu_V </ci>
+                <ci> V_ </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_1_ </ci>
+              <ci> T </ci>
+              <ci> V_ </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="uninfected_CD4_s_V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> uninfected_CD4_s_0 </ci>
+              <ci> uninfected_CD4_theta </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> uninfected_CD4_theta </ci>
+              <ci> V </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <ci> uninfected_CD4_s_V </ci>
+                  <apply>
+                    <times/>
+                    <ci> mu_T </ci>
+                    <ci> T </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> uninfected_CD4_r </ci>
+                  <ci> T </ci>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <plus/>
+                        <ci> T </ci>
+                        <ci> T_1 </ci>
+                      </apply>
+                      <ci> uninfected_CD4_T_max </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_1 </ci>
+                <ci> V </ci>
+                <ci> T </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_1_ </ci>
+              <ci> V_ </ci>
+              <ci> T </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> DIV_N_D_t </ci>
+                <ci> mu_bD </ci>
+                <ci> T_D2 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> DIV_pi_D_t </ci>
+                <ci> T_D1 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> DIV_mu_D </ci>
+              <ci> D </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="T_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> k_2 </ci>
+                <ci> T_1 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_1D </ci>
+                <ci> D </ci>
+                <ci> T_2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> mu_b </ci>
+              <ci> T_2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="T_D2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> k_1D </ci>
+                <ci> D </ci>
+                <ci> T_2 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_s </ci>
+                <ci> T_D2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> mu_bD </ci>
+              <ci> T_D2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="T_D1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_s </ci>
+              <ci> T_D2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> stably_coinfected_CD4_mu_TD </ci>
+              <ci> T_D1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="N_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> production_function_N_0 </ci>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <times/>
+                <ci> production_function_gamma </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <power/>
+                    <ci> time_ </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> time_ </ci>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> production_function_t_c </ci>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="DIV_N_D_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.2 </cn>
+            <ci> N_t </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="DIV_pi_D_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.3 </cn>
+            <ci> mu_b </ci>
+            <ci> N_t </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="HIV1_N_2_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.6 </cn>
+            <ci> N_t </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="hybrid_HIV1_N_t_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.2 </cn>
+            <ci> N_t </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="hybrid_HIV1_pi_t_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.1 </cn>
+            <ci> mu_b </ci>
+            <ci> N_t </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="cell_population_T_tot">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> T </ci>
+            <ci> T_1 </ci>
+            <ci> T_2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,462 @@
+//Created by libAntimony v1.3
+model Maleckar__environment(time_)
+end
+
+model Maleckar__membrane(V, R, T, F, Cm, time_, i_Na, i_Ca_L, i_t, i_Kur, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_NaK, i_CaP, i_NaCa, i_KACh, i_Stim)
+
+  // Assignment Rules:
+  Q_tot := 0.05 * V;
+  I := (i_Na + i_Ca_L + i_t + i_Kur + i_K1 + i_Kr + i_Ks + i_B_Na + i_B_Ca + i_NaK + i_CaP + i_NaCa + i_KACh) / Cm + i_Stim;
+  i_Stim := piecewise( stim_amplitude , ( time_ - past >= stim_offset) && (time_ - past <= stim_offset + stim_duration ), 0 );
+  past := floor(time_ / stim_period) * stim_period;
+
+  // Rate Rules:
+  V' = -(I) * 1000;
+
+  // Variable initializations:
+  V = -74.031982;
+  R = 8314;
+  T = 306.15;
+  F = 96487;
+  Cm = 50;
+  stim_offset = 0;
+  stim_period = 1;
+  stim_duration = 0.006;
+  stim_amplitude = -15;
+end
+
+model Maleckar__sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  m_infinity := 1 / (1 + exp((V + 27.12 ) / -(8.21 )));
+  m_factor := (V + 25.57 ) / 28.8;
+  tau_m := 0.000042 * exp(-(m_factor) * m_factor) + 0.000024;
+
+  // Rate Rules:
+  m' = (m_infinity - m) / tau_m;
+
+  // Variable initializations:
+  m = 0.003289;
+end
+
+model Maleckar__sodium_current_h1_gate(h1, h_infinity, h_factor, V, time_)
+
+  // Assignment Rules:
+  h_infinity := 1 / (1 + exp((V + 63.6 ) / 5.3 ));
+  h_factor := 1 / (1 + exp((V + 35.1 ) / 3.2 ));
+  tau_h1 := 0.03 * h_factor + 0.0003;
+
+  // Rate Rules:
+  h1' = (h_infinity - h1) / tau_h1;
+
+  // Variable initializations:
+  h1 = 0.877202;
+end
+
+model Maleckar__sodium_current_h2_gate(h2, h_infinity, h_factor, V, time_)
+
+  // Assignment Rules:
+  tau_h2 := 0.12 * h_factor + 0.003;
+
+  // Rate Rules:
+  h2' = (h_infinity - h2) / tau_h2;
+
+  // Variable initializations:
+  h2 = 0.873881;
+end
+
+model Maleckar__sodium_current(i_Na, E_Na, time_, V, Na_c, Na_i, R, F, T, m, h1, h2)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current_m_gate: Maleckar__sodium_current_m_gate(m, V, time_);
+  sodium_current_h1_gate: Maleckar__sodium_current_h1_gate(h1, h_infinity, h_factor, V, time_);
+  sodium_current_h2_gate: Maleckar__sodium_current_h2_gate(h2, h_infinity, h_factor, V, time_);
+
+  // Assignment Rules:
+  i_Na := P_Na * m * m * m * (0.9 * h1 + 0.1 * h2) * Na_c * V * F * F / (R * T) * (exp((V - E_Na) * F / (R * T)) - 1 ) / (exp(V * F / (R * T)) - 1 );
+  E_Na := R * T / F * ln(Na_c / Na_i);
+
+  // Variable initializations:
+  P_Na = 0.0018;
+end
+
+model Maleckar__L_type_Ca_channel_d_L_gate(d_L, V, time_)
+
+  // Assignment Rules:
+  d_L_infinity := 1 / (1 + exp((V + 9 ) / -(5.8 )));
+  d_L_factor := (V + 35 ) / 30;
+  tau_d_L := 0.0027 * exp(-(d_L_factor) * d_L_factor) + 0.002;
+
+  // Rate Rules:
+  d_L' = (d_L_infinity - d_L) / tau_d_L;
+
+  // Variable initializations:
+  d_L = 0.000014;
+end
+
+model Maleckar__L_type_Ca_channel_f_L1_gate(f_L1, f_L_infinity, f_L_factor, V, time_)
+
+  // Assignment Rules:
+  f_L_infinity := 1 / (1 + exp((V + 27.4 ) / 7.1 ));
+  f_L_factor := V + 40;
+  tau_f_L1 := 0.161 * exp(-(f_L_factor) * f_L_factor / 14.4 / 14.4 ) + 0.01;
+
+  // Rate Rules:
+  f_L1' = (f_L_infinity - f_L1) / tau_f_L1;
+
+  // Variable initializations:
+  f_L1 = 0.998597;
+end
+
+model Maleckar__L_type_Ca_channel_f_L2_gate(f_L2, f_L_infinity, f_L_factor, V, time_)
+
+  // Assignment Rules:
+  tau_f_L2 := 1.3323 * exp(-(f_L_factor) * f_L_factor / 14.2 / 14.2 ) + 0.0626;
+
+  // Rate Rules:
+  f_L2' = (f_L_infinity - f_L2) / tau_f_L2;
+
+  // Variable initializations:
+  f_L2 = 0.998586;
+end
+
+model Maleckar__L_type_Ca_channel(i_Ca_L, time_, V, Ca_d, d_L, f_L1, f_L2)
+
+  // Sub-modules, and any changes to those submodules:
+  L_type_Ca_channel_d_L_gate: Maleckar__L_type_Ca_channel_d_L_gate(d_L, V, time_);
+  L_type_Ca_channel_f_L1_gate: Maleckar__L_type_Ca_channel_f_L1_gate(f_L1, f_L_infinity, f_L_factor, V, time_);
+  L_type_Ca_channel_f_L2_gate: Maleckar__L_type_Ca_channel_f_L2_gate(f_L2, f_L_infinity, f_L_factor, V, time_);
+
+  // Assignment Rules:
+  i_Ca_L := g_Ca_L * d_L * (f_Ca * f_L1 + (1 - f_Ca) * f_L2) * (V - E_Ca_app);
+  f_Ca := Ca_d / (Ca_d + k_Ca);
+
+  // Variable initializations:
+  g_Ca_L = 6.75;
+  E_Ca_app = 60;
+  k_Ca = 0.025;
+end
+
+model Maleckar__Ca_independent_transient_outward_K_current_r_gate(r, V, time_)
+
+  // Assignment Rules:
+  tau_r := 0.0035 * exp(-(V) * V / 30 / 30 ) + 0.0015;
+  r_infinity := 1 / (1 + exp((V - 1 ) / -(11 )));
+
+  // Rate Rules:
+  r' = (r_infinity - r) / tau_r;
+
+  // Variable initializations:
+  r = 0.001089;
+end
+
+model Maleckar__Ca_independent_transient_outward_K_current_s_gate(s, V, time_)
+
+  // Assignment Rules:
+  tau_s := 0.025635 * exp(-(s_factor) * s_factor) + 0.01414;
+  s_infinity := 1 / (1 + exp((V + 40.5 ) / 11.5 ));
+  s_factor := (V + 52.45 ) / 15.8827;
+
+  // Rate Rules:
+  s' = (s_infinity - s) / tau_s;
+
+  // Variable initializations:
+  s = 0.948597;
+end
+
+model Maleckar__Ca_independent_transient_outward_K_current(i_t, E_K, time_, V, R, F, T, K_c, K_i, r, s)
+
+  // Sub-modules, and any changes to those submodules:
+  Ca_independent_transient_outward_K_current_r_gate: Maleckar__Ca_independent_transient_outward_K_current_r_gate(r, V, time_);
+  Ca_independent_transient_outward_K_current_s_gate: Maleckar__Ca_independent_transient_outward_K_current_s_gate(s, V, time_);
+
+  // Assignment Rules:
+  i_t := g_t * r * s * (V - E_K);
+  E_K := R * T / F * ln(K_c / K_i);
+
+  // Variable initializations:
+  g_t = 8.25;
+end
+
+model Maleckar__ultra_rapid_K_current_aur_gate(a_ur, V, time_)
+
+  // Assignment Rules:
+  a_ur_infinity := 1 / (1 + exp(-((V + 6 )) / 8.6 ));
+  tau_a_ur := 0.009 / (1 + exp((V + 5 ) / 12 )) + 0.0005;
+
+  // Rate Rules:
+  a_ur' = (a_ur_infinity - a_ur) / tau_a_ur;
+
+  // Variable initializations:
+  a_ur = 0.000367;
+end
+
+model Maleckar__ultra_rapid_K_current_iur_gate(i_ur, V, time_)
+
+  // Assignment Rules:
+  i_ur_infinity := 1 / (1 + exp((V + 7.5 ) / 10 ));
+  tau_i_ur := 0.59 / (1 + exp((V + 60 ) / 10 )) + 3.05;
+
+  // Rate Rules:
+  i_ur' = (i_ur_infinity - i_ur) / tau_i_ur;
+
+  // Variable initializations:
+  i_ur = 0.96729;
+end
+
+model Maleckar__ultra_rapid_K_current(i_Kur, E_K, time_, V, a_ur, i_ur)
+
+  // Sub-modules, and any changes to those submodules:
+  ultra_rapid_K_current_aur_gate: Maleckar__ultra_rapid_K_current_aur_gate(a_ur, V, time_);
+  ultra_rapid_K_current_iur_gate: Maleckar__ultra_rapid_K_current_iur_gate(i_ur, V, time_);
+
+  // Assignment Rules:
+  i_Kur := g_kur * a_ur * i_ur * (V - E_K);
+
+  // Variable initializations:
+  g_kur = 2.25;
+end
+
+model Maleckar__inward_rectifier(i_K1, time_, V, R, F, T, K_c, E_K)
+
+  // Assignment Rules:
+  i_K1 := g_K1 * power(K_c / 1 , 0.4457 ) * (V - E_K) / (1 + exp(1.5 * (V - E_K + 3.6 ) * F / (R * T)));
+
+  // Variable initializations:
+  g_K1 = 3.1;
+end
+
+model Maleckar__delayed_rectifier_K_currents_n_gate(n, V, time_)
+
+  // Assignment Rules:
+  tau_n := 0.7 + 0.4 * exp(-(n_factor) * n_factor);
+  n_infinity := 1 / (1 + exp((V - 19.9 ) / -(12.7 )));
+  n_factor := (V - 20 ) / 20;
+
+  // Rate Rules:
+  n' = (n_infinity - n) / tau_n;
+
+  // Variable initializations:
+  n = 0.004374;
+end
+
+model Maleckar__delayed_rectifier_K_currents_pa_gate(pa, V, time_)
+
+  // Assignment Rules:
+  tau_pa := 0.03118 + 0.21718 * exp(-(pa_factor) * pa_factor);
+  pa_factor := (V + 20.1376 ) / 22.1996;
+  p_a_infinity := 1 / (1 + exp((V + 15 ) / -(6 )));
+
+  // Rate Rules:
+  pa' = (p_a_infinity - pa) / tau_pa;
+
+  // Variable initializations:
+  pa = 0.000053;
+end
+
+model Maleckar__delayed_rectifier_K_currents_pi_gate(pip, V, time_)
+
+  // Assignment Rules:
+  pip := 1 / (1 + exp((V + 55 ) / 24 ));
+end
+
+model Maleckar__delayed_rectifier_K_currents(i_Ks, i_Kr, time_, V, E_K, n, pa, pip)
+
+  // Sub-modules, and any changes to those submodules:
+  delayed_rectifier_K_currents_n_gate: Maleckar__delayed_rectifier_K_currents_n_gate(n, V, time_);
+  delayed_rectifier_K_currents_pa_gate: Maleckar__delayed_rectifier_K_currents_pa_gate(pa, V, time_);
+  delayed_rectifier_K_currents_pi_gate: Maleckar__delayed_rectifier_K_currents_pi_gate(pip, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks * n * (V - E_K);
+  i_Kr := g_Kr * pa * pip * (V - E_K);
+
+  // Variable initializations:
+  g_Ks = 1;
+  g_Kr = 0.5;
+end
+
+model Maleckar__background_currents(i_B_Na, i_B_Ca, E_Na, R, F, T, Ca_c, Ca_i, time_, V)
+
+  // Assignment Rules:
+  i_B_Na := g_B_Na * (V - E_Na);
+  i_B_Ca := g_B_Ca * (V - E_Ca);
+  E_Ca := R * T / (2 * F) * ln(Ca_c / Ca_i);
+
+  // Variable initializations:
+  g_B_Na = 0.060599;
+  g_B_Ca = 0.078681;
+end
+
+model Maleckar__sodium_potassium_pump(i_NaK, K_c, Na_i, V, time_)
+
+  // Assignment Rules:
+  i_NaK := i_NaK_max * K_c / (K_c + K_NaK_K) * pow_Na_i_15 / (pow_Na_i_15 + pow_K_NaK_Na_15) * (V + 150 ) / (V + 200 );
+  pow_Na_i_15 := power(Na_i, 1.5 );
+
+  // Variable initializations:
+  K_NaK_K = 1;
+  i_NaK_max = 68.55;
+  pow_K_NaK_Na_15 = 36.4829;
+end
+
+model Maleckar__sarcolemmal_calcium_pump_current(i_CaP, Ca_i, time_)
+
+  // Assignment Rules:
+  i_CaP := i_CaP_max * Ca_i / (Ca_i + k_CaP);
+
+  // Variable initializations:
+  i_CaP_max = 4;
+  k_CaP = 0.0002;
+end
+
+model Maleckar__Na_Ca_ion_exchanger_current(i_NaCa, Na_i, Na_c, Ca_i, Ca_c, R, F, T, V, time_)
+
+  // Assignment Rules:
+  i_NaCa := K_NaCa * (Na_i * Na_i * Na_i * Ca_c * exp(F * V * gamma_Na / (R * T)) - Na_c * Na_c * Na_c * Ca_i * exp((gamma_Na - 1 ) * V * F / (R * T))) / (1 + d_NaCa * (Na_c * Na_c * Na_c * Ca_i + Na_i * Na_i * Na_i * Ca_c));
+
+  // Variable initializations:
+  K_NaCa = 0.0374842;
+  d_NaCa = 0.0003;
+  gamma_Na = 0.45;
+end
+
+model Maleckar__ACh_dependent_K_current(i_KACh, V, E_K, Cm)
+
+  // Assignment Rules:
+  i_KACh := 10 / (1 + 9.13652 * power(1 , 0.477811 ) / power(ACh, 0.477811 )) * (0.0517 + 0.4516 / (1 + exp((V + 59.53 ) / 17.18 ))) * (V - E_K) * Cm;
+
+  // Variable initializations:
+  ACh = 1e-24;
+end
+
+model Maleckar__intracellular_ion_concentrations(Na_i, Ca_i, K_i, Ca_d, phi_Na_en, Vol_i, time_, F, Cm, i_Na, i_Ca_L, i_t, i_Kur, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_NaK, i_CaP, i_NaCa, i_KACh, i_up, i_rel, i_Stim, J_O)
+
+  // Assignment Rules:
+  i_di := (Ca_d - Ca_i) * 2 * Vol_d * F / tau_di;
+
+  // Rate Rules:
+  Na_i' = -((i_Na + i_B_Na + 3 * i_NaCa + 3 * i_NaK + phi_Na_en)) / (Vol_i * F);
+  Ca_i' = -((i_B_Ca + i_CaP + i_up - (i_di + i_rel + 2 * i_NaCa))) / (2 * Vol_i * F) - 1 * J_O;
+  K_i' = -((i_t + i_Kur + i_K1 + i_Ks + i_Kr - 2 * i_NaK + i_Stim * Cm)) / (Vol_i * F);
+  Ca_d' = -((i_Ca_L + i_di)) / (2 * Vol_d * F);
+
+  // Variable initializations:
+  Na_i = 8.516766;
+  Ca_i = 6.5e-5;
+  K_i = 129.485991;
+  Ca_d = 7.1e-5;
+  phi_Na_en = 0;
+  Vol_i = 0.005884;
+  Vol_d = 0.00011768;
+  tau_di = 0.01;
+end
+
+model Maleckar__intracellular_Ca_buffering(J_O, Ca_i, time_)
+
+  // Assignment Rules:
+  J_O_C := 200000 * Ca_i * (1 - O_C) - 476 * O_C;
+  J_O_TC := 78400 * Ca_i * (1 - O_TC) - 392 * O_TC;
+  J_O_TMgC := 200000 * Ca_i * (1 - O_TMgC - O_TMgMg) - 6.6 * O_TMgC;
+  J_O_TMgMg := 2000 * Mg_i * (1 - O_TMgC - O_TMgMg) - 666 * O_TMgMg;
+  J_O := 0.08 * J_O_TC + 0.16 * J_O_TMgC + 0.045 * J_O_C;
+
+  // Rate Rules:
+  O_C' = J_O_C;
+  O_TC' = J_O_TC;
+  O_TMgC' = J_O_TMgC;
+  O_TMgMg' = J_O_TMgMg;
+  O' = J_O;
+
+  // Variable initializations:
+  O_C = 0.026766;
+  O_TC = 0.012922;
+  O_TMgC = 0.190369;
+  O_TMgMg = 0.714463;
+  O = 1.38222;
+  Mg_i = 2.5;
+end
+
+model Maleckar__cleft_space_ion_concentrations(Na_c, Ca_c, K_c, Vol_i, time_, F, i_Na, i_Ca_L, i_t, i_Kur, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_NaK, i_CaP, i_NaCa, i_KACh, phi_Na_en)
+
+  // Rate Rules:
+  Na_c' = (Na_b - Na_c) / tau_Na + (i_Na + i_B_Na + 3 * i_NaCa + 3 * i_NaK + phi_Na_en) / (Vol_c * F);
+  Ca_c' = (Ca_b - Ca_c) / tau_Ca + (i_Ca_L + i_B_Ca + i_CaP - 2 * i_NaCa) / (2 * Vol_c * F);
+  K_c' = (K_b - K_c) / tau_K + (i_t + i_Kur + i_K1 + i_Ks + i_Kr - 2 * i_NaK) / (Vol_c * F);
+
+  // Variable initializations:
+  Na_c = 130.022096;
+  Ca_c = 1.815768;
+  K_c = 5.560224;
+  Vol_c = 0.000800224;
+  tau_Na = 14.3;
+  tau_K = 10;
+  tau_Ca = 24.7;
+  Na_b = 130;
+  Ca_b = 1.8;
+  K_b = 5.4;
+end
+
+model Maleckar__Ca_handling_by_the_SR(i_rel, i_up, time_, Ca_i, Ca_d, F)
+
+  // Assignment Rules:
+  i_rel := alpha_rel * i_rel_factor * (Ca_rel - Ca_i);
+  i_up := I_up_max * (Ca_i / k_cyca - k_xcs * k_xcs * Ca_up / k_srca) / ((Ca_i + k_cyca) / k_cyca + k_xcs * (Ca_up + k_srca) / k_srca);
+  i_tr := (Ca_up - Ca_rel) * 2 * Vol_rel * F / tau_tr;
+  r_act := 203.8 * (r_Ca_i_factor + r_Ca_d_factor);
+  r_inact := 33.96 + 339.6 * r_Ca_i_factor;
+  r_Ca_d_term := Ca_d / (Ca_d + k_rel_d);
+  r_Ca_i_term := Ca_i / (Ca_i + k_rel_i);
+  r_Ca_d_factor := r_Ca_d_term * r_Ca_d_term * r_Ca_d_term * r_Ca_d_term;
+  r_Ca_i_factor := r_Ca_i_term * r_Ca_i_term * r_Ca_i_term * r_Ca_i_term;
+  i_rel_f2 := F2 / (F2 + 0.25 );
+  i_rel_factor := i_rel_f2 * i_rel_f2;
+  J_O_Calse := 480 * Ca_rel * (1 - O_Calse) - 400 * O_Calse;
+
+  // Rate Rules:
+  Ca_rel' = (i_tr - i_rel) / (2 * Vol_rel * F) - 31 * J_O_Calse;
+  Ca_up' = (i_up - i_tr) / (2 * Vol_up * F);
+  O_Calse' = J_O_Calse;
+  F1' = r_recov * (1 - F1 - F2) - r_act * F1;
+  F2' = r_act * F1 - r_inact * F2;
+
+  // Variable initializations:
+  I_up_max = 2800;
+  k_cyca = 0.0003;
+  k_srca = 0.5;
+  k_xcs = 0.4;
+  alpha_rel = 200000;
+  Ca_rel = 0.632613;
+  Ca_up = 0.649195;
+  Vol_up = 0.0003969;
+  Vol_rel = 0.0000441;
+  r_recov = 0.815;
+  O_Calse = 0.431547;
+  F1 = 0.470055;
+  F2 = 0.002814;
+  tau_tr = 0.01;
+  k_rel_i = 0.0003;
+  k_rel_d = 0.003;
+end
+
+model Maleckar____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: Maleckar__environment(time_);
+  membrane: Maleckar__membrane(V, R, T, F, Cm, time_, i_Na, i_Ca_L, i_t, i_Kur, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_NaK, i_CaP, i_NaCa, i_KACh, i_Stim);
+  sodium_current: Maleckar__sodium_current(i_Na, E_Na, time_, V, Na_c, Na_i, R, F, T, m, h1, h2);
+  L_type_Ca_channel: Maleckar__L_type_Ca_channel(i_Ca_L, time_, V, Ca_d, d_L, f_L1, f_L2);
+  Ca_independent_transient_outward_K_current: Maleckar__Ca_independent_transient_outward_K_current(i_t, E_K, time_, V, R, F, T, K_c, K_i, r, s);
+  ultra_rapid_K_current: Maleckar__ultra_rapid_K_current(i_Kur, E_K, time_, V, a_ur, i_ur);
+  inward_rectifier: Maleckar__inward_rectifier(i_K1, time_, V, R, F, T, K_c, E_K);
+  delayed_rectifier_K_currents: Maleckar__delayed_rectifier_K_currents(i_Ks, i_Kr, time_, V, E_K, n, pa, pip);
+  background_currents: Maleckar__background_currents(i_B_Na, i_B_Ca, E_Na, R, F, T, Ca_c, Ca_i, time_, V);
+  sodium_potassium_pump: Maleckar__sodium_potassium_pump(i_NaK, K_c, Na_i, V, time_);
+  sarcolemmal_calcium_pump_current: Maleckar__sarcolemmal_calcium_pump_current(i_CaP, Ca_i, time_);
+  Na_Ca_ion_exchanger_current: Maleckar__Na_Ca_ion_exchanger_current(i_NaCa, Na_i, Na_c, Ca_i, Ca_c, R, F, T, V, time_);
+  ACh_dependent_K_current: Maleckar__ACh_dependent_K_current(i_KACh, V, E_K, Cm);
+  intracellular_ion_concentrations: Maleckar__intracellular_ion_concentrations(Na_i, Ca_i, K_i, Ca_d, phi_Na_en, Vol_i, time_, F, Cm, i_Na, i_Ca_L, i_t, i_Kur, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_NaK, i_CaP, i_NaCa, i_KACh, i_up, i_rel, i_Stim, J_O);
+  intracellular_Ca_buffering: Maleckar__intracellular_Ca_buffering(J_O, Ca_i, time_);
+  cleft_space_ion_concentrations: Maleckar__cleft_space_ion_concentrations(Na_c, Ca_c, K_c, Vol_i, time_, F, i_Na, i_Ca_L, i_t, i_Kur, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_NaK, i_CaP, i_NaCa, i_KACh, phi_Na_en);
+  Ca_handling_by_the_SR: Maleckar__Ca_handling_by_the_SR(i_rel, i_up, time_, Ca_i, Ca_d, F);
+end

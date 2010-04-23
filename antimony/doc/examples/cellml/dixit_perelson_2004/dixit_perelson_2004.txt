@@ -1,0 +1,110 @@
+//Created by libAntimony v1.3
+model dixit_perelson_2004_version02__environment(time_)
+end
+
+model dixit_perelson_2004_version02__T(T, k, VI, time_)
+
+  // Rate Rules:
+  T' = lamda - (d * T + k * T * VI);
+
+  // Variable initializations:
+  T = 1e6;
+  lamda = 1e4;
+  d = 0.01;
+end
+
+model dixit_perelson_2004_version02__T_(T_, k, VI, T, delta, time_)
+
+  // Rate Rules:
+  T_' = k * T * (time_ - tau) * VI * (time_ - tau) * exp(-(m) * tau) - delta * T_;
+
+  // Variable initializations:
+  T_ = 1;
+  tau = 1.5;
+  m = 0.01;
+end
+
+model dixit_perelson_2004_version02__VI(VI, N, c, epsilon_PI, T_, delta, time_)
+
+  // Rate Rules:
+  VI' = N * delta * T_ * (1 - epsilon_PI) - c * VI;
+
+  // Variable initializations:
+  VI = 1;
+end
+
+model dixit_perelson_2004_version02__VNI(VNI, N, c, epsilon_PI, T_, delta, time_)
+
+  // Rate Rules:
+  VNI' = N * delta * T_ * epsilon_PI - c * VNI;
+
+  // Variable initializations:
+  VNI = 2;
+end
+
+model dixit_perelson_2004_version02__epsilon_PI(epsilon_PI, Cc)
+
+  // Assignment Rules:
+  epsilon_PI := Cc / (IC50 + Cc);
+
+  // Variable initializations:
+  IC50 = 9e-7;
+end
+
+model dixit_perelson_2004_version02__Cb(Cb, ka, ke, time_)
+
+  // Assignment Rules:
+  Cb := F * D / Vd * (ka / (ke - ka)) * (exp(-(ka) * time_) - exp(-(ke) * time_));
+
+  // Variable initializations:
+  Vd = 28000;
+  F = 1;
+  D = 600;
+end
+
+model dixit_perelson_2004_version02__Cc(Cc, time_, Cx)
+
+  // Rate Rules:
+  Cc' = kacell * Cx - kecell * Cc;
+
+  // Variable initializations:
+  Cc = 0;
+  kacell = 24000;
+  kecell = 1.1;
+end
+
+model dixit_perelson_2004_version02__Cx(Cx, Cb, Cc)
+
+  // Assignment Rules:
+  Cx := piecewise( (1 - fb) * H * Cb - Cc , (1 - fb) * H * Cb - Cc > 0 , 0 );
+
+  // Variable initializations:
+  H = 0.052;
+  fb = 0.99;
+end
+
+model dixit_perelson_2004_version02__kinetic_parameters(N, c, k, delta, ka, ke)
+
+  // Variable initializations:
+  N = 2500;
+  c = 23;
+  k = 2.4e-8;
+  delta = 0.01;
+  ka = 14.64;
+  ke = 6.86;
+end
+
+model dixit_perelson_2004_version02____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: dixit_perelson_2004_version02__environment(time_);
+  T: dixit_perelson_2004_version02__T(T0, k, VI0, time_);
+  T_: dixit_perelson_2004_version02__T_(T_0, k, VI0, T0, delta, time_);
+  VI: dixit_perelson_2004_version02__VI(VI0, N, c, epsilon_PI0, T_0, delta, time_);
+  VNI: dixit_perelson_2004_version02__VNI(VNI0, N, c, epsilon_PI0, T_0, delta, time_);
+  epsilon_PI: dixit_perelson_2004_version02__epsilon_PI(epsilon_PI0, Cc0);
+  Cb: dixit_perelson_2004_version02__Cb(Cb0, ka, ke, time_);
+  Cc: dixit_perelson_2004_version02__Cc(Cc0, time_, Cx0);
+  Cx: dixit_perelson_2004_version02__Cx(Cx0, Cb0, Cc0);
+  kinetic_parameters: dixit_perelson_2004_version02__kinetic_parameters(N, c, k, delta, ka, ke);
+end

@@ -1,0 +1,97 @@
+//Created by libAntimony v1.3
+model borghans_model_1997a__environment(time_)
+end
+
+model borghans_model_1997a__V_in(V_in, beta)
+
+  // Assignment Rules:
+  V_in := v_0 + v_1 * beta;
+
+  // Variable initializations:
+  v_0 = 1;
+  v_1 = 1;
+end
+
+model borghans_model_1997a__V_2(Z, V_2)
+
+  // Assignment Rules:
+  V_2 := V_M2 * (power(Z, 2 ) / (power(K_2, 2 ) + power(Z, 2 )));
+
+  // Variable initializations:
+  V_M2 = 6.5;
+  K_2 = 0.1;
+end
+
+model borghans_model_1997a__gamma(Z, gamma)
+
+  // Assignment Rules:
+  gamma := a / d * power(Z, 4 ) * 1;
+
+  // Variable initializations:
+  a = 10000.0;
+  d = 100.0;
+end
+
+model borghans_model_1997a__Ca_channels(time_, Z, gamma, R_plus)
+
+  // Sub-modules, and any changes to those submodules:
+  gamma_mod: borghans_model_1997a__gamma(Z, gamma);
+
+  // Assignment Rules:
+  R_plus := gamma * (rho / (1 + gamma));
+
+  // Rate Rules:
+  rho' = -((k_d * power(Z, 4 ) * rho * 1 )) + k_r * (1 - rho);
+
+  // Variable initializations:
+  rho = 0.2;
+  k_d = 5000.0;
+  k_r = 5.0;
+end
+
+model borghans_model_1997a__V_3(time_, Z, Y, V_3, beta, R_plus)
+
+  // Sub-modules, and any changes to those submodules:
+  Ca_channels: borghans_model_1997a__Ca_channels(time_, Z, gamma, R_plus);
+
+  // Assignment Rules:
+  V_3 := beta * R_plus * V_M3 * (power(Y, 2 ) / (power(K_y, 2 ) + power(Y, 2 )));
+
+  // Variable initializations:
+  K_y = 0.2;
+  V_M3 = 50;
+end
+
+model borghans_model_1997a__Ca_flux(time_, beta, Z, Y, V_in, V_2, V_3)
+
+  // Sub-modules, and any changes to those submodules:
+  V_in_mod: borghans_model_1997a__V_in(V_in, beta);
+  V_2_mod: borghans_model_1997a__V_2(Z, V_2);
+  V_3_mod: borghans_model_1997a__V_3(time_, Z, Y, V_3, beta, R_plus);
+
+  // Variable initializations:
+  beta = 1;
+end
+
+model borghans_model_1997a__Ca(time_, Z, Y, V_in, V_2, V_3)
+
+  // Sub-modules, and any changes to those submodules:
+  Ca_flux: borghans_model_1997a__Ca_flux(time_, beta, Z, Y, V_in, V_2, V_3);
+
+  // Rate Rules:
+  Z' = V_in - V_2 + V_3 + (K_f * Y - K * Z);
+  Y' = V_2 - V_3 - K_f * Y;
+
+  // Variable initializations:
+  Z = 0.3;
+  Y = 2.7;
+  K_f = 1;
+  K = 10;
+end
+
+model borghans_model_1997a____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: borghans_model_1997a__environment(time_);
+  Ca: borghans_model_1997a__Ca(time_, Z, Y, V_in, V_2, V_3);
+end

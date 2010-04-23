@@ -1,0 +1,87 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    In module 'muscle_O2_delivery_CellML1_0_model__muscle_O2_delivery', the variables delivery_of_O2_to_M_tissues.PVO and PVO were unable to be set as equivalent:  Loop detected:  'delivery_of_O2_to_M_tissues.PVO' may not be set to be equal to 'PVO' because PVO's definition already includes delivery_of_O2_to_M_tissues.PVO either directly or by proxy.
+
+model muscle_O2_delivery_CellML1_0_model__environment(time_)
+end
+
+model muscle_O2_delivery_CellML1_0_model__parameter_values(EXC, EXCXP2, OMM, PM5, PK2)
+
+  // Variable initializations:
+  EXC = 1;
+  EXCXP2 = 0.17;
+  OMM = 57.1;
+  PM5 = 30;
+  PK2 = 0.79167;
+end
+
+model muscle_O2_delivery_CellML1_0_model__M_O2_blood_supply(OVA, BFM, O2ARTM)
+
+  // Assignment Rules:
+  O2ARTM := OVA * BFM;
+end
+
+model muscle_O2_delivery_CellML1_0_model__M_venous_O2_content(O2ARTM, RMO, BFM, HM, time_, PVO, EXC, EXCXP2)
+
+  // Assignment Rules:
+  PVO := 57.14 * OVS * power(EXC, EXCXP2);
+  OVS := (O2ARTM - RMO) / (HM * 5.25 * BFM);
+end
+
+model muscle_O2_delivery_CellML1_0_model__metabolic_O2_consumption_by_M_tissue(PMO, AOM, MMO, P2O, OMM, EXC)
+
+  // Assignment Rules:
+  MMO := AOM * OMM * EXC * (1 - power(38.0001 - P2O, 3 ) / 54872 );
+  P2O := piecewise( 38 , PMO > 38 , PMO );
+end
+
+model muscle_O2_delivery_CellML1_0_model__delivery_of_O2_to_M_tissues(PMO, PVO, BFM, RMO, PM5)
+
+  // Assignment Rules:
+  RMO := (PVO - PMO) * PM5 * BFM;
+end
+
+model muscle_O2_delivery_CellML1_0_model__volume_of_O2_in_M_tissue(RMO, MMO, time_, QOM)
+
+  // Assignment Rules:
+  QOM := piecewise( 0.0001 , QOM1 < 0.0001 , QOM1 );
+  DO2M := RMO - MMO;
+
+  // Rate Rules:
+  QOM1' = DO2M;
+
+  // Variable initializations:
+  QOM1 = 48.0839;
+end
+
+model muscle_O2_delivery_CellML1_0_model__pressure_of_O2_in_M_tissue_cells(QOM, PMO, PK2)
+
+  // Assignment Rules:
+  PMO := PK2 * QOM;
+end
+
+model muscle_O2_delivery_CellML1_0_model__muscle_O2_delivery(time_, BFM, OVA, HM, AOM)
+
+  // Sub-modules, and any changes to those submodules:
+  parameter_values: muscle_O2_delivery_CellML1_0_model__parameter_values(EXC, EXCXP2, OMM, PM5, PK2);
+  M_O2_blood_supply: muscle_O2_delivery_CellML1_0_model__M_O2_blood_supply(OVA, BFM, O2ARTM);
+  M_venous_O2_content: muscle_O2_delivery_CellML1_0_model__M_venous_O2_content(O2ARTM, RMO, BFM, HM, time_, PVO, EXC, EXCXP2);
+  metabolic_O2_consumption_by_M_tissue: muscle_O2_delivery_CellML1_0_model__metabolic_O2_consumption_by_M_tissue(PMO, AOM, MMO, P2O, OMM, EXC);
+  delivery_of_O2_to_M_tissues: muscle_O2_delivery_CellML1_0_model__delivery_of_O2_to_M_tissues(PMO, PVO0, BFM, RMO, PM5);
+  volume_of_O2_in_M_tissue: muscle_O2_delivery_CellML1_0_model__volume_of_O2_in_M_tissue(RMO, MMO, time_, QOM);
+  pressure_of_O2_in_M_tissue_cells: muscle_O2_delivery_CellML1_0_model__pressure_of_O2_in_M_tissue_cells(QOM, PMO, PK2);
+
+  // Variable initializations:
+  BFM = 0.989949;
+  OVA = 204.497;
+  HM = 40.0381;
+  AOM = 1.00002;
+end
+
+model muscle_O2_delivery_CellML1_0_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: muscle_O2_delivery_CellML1_0_model__environment(time_);
+  muscle_O2_delivery: muscle_O2_delivery_CellML1_0_model__muscle_O2_delivery(time_, BFM, OVA, HM, AOM);
+end

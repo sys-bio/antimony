@@ -1,0 +1,72 @@
+//Created by libAntimony v1.3
+model thirst_drinking_and_salt_appetite_CellML1_0_model__environment(time_)
+end
+
+model thirst_drinking_and_salt_appetite_CellML1_0_model__parameter_values(Z10, Z11, ANMSLT, AHTHM, ANMTM, DR, TVDDL)
+
+  // Variable initializations:
+  Z10 = 45;
+  Z11 = 0.01;
+  ANMSLT = 2;
+  AHTHM = 2;
+  ANMTM = 1.5;
+  DR = 0;
+  TVDDL = 30;
+end
+
+model thirst_drinking_and_salt_appetite_CellML1_0_model__effect_of_salt_appetite_stimulation_on_thirst(ANM, POT, STH, ANMSLT, Z10, Z11)
+
+  // Assignment Rules:
+  STH := piecewise( 0.8 , STH1 < 0.8 , 8 , STH1 > 8 , STH1 );
+  ANMSML := (ANM - 1 ) * ANMSLT + 1;
+  STH1 := power(Z10 - POT, 2 ) * Z11 * ANMSML;
+end
+
+model thirst_drinking_and_salt_appetite_CellML1_0_model__effect_of_antidiuretic_hormone_on_thirst(ADHC, AHCM, AHTHM)
+
+  // Assignment Rules:
+  AHCM := (ADHC - 1 ) * AHTHM + 1;
+end
+
+model thirst_drinking_and_salt_appetite_CellML1_0_model__effect_of_angiotensin_on_thirst(ANM, ANMTH, ANMTM)
+
+  // Assignment Rules:
+  ANMTH := (ANM - 1 ) * ANMTM * 0.001;
+end
+
+model thirst_drinking_and_salt_appetite_CellML1_0_model__rate_of_fluid_intake(STH, AHCM, ANMTH, time_, TVD, DR, TVDDL)
+
+  // Assignment Rules:
+  AHTH := piecewise( 0 , AHTH1 < 0 , AHTH1 );
+  AHTH1 := AHCM * STH * 0.001;
+  TVZ := piecewise( 0 , TVZ1 < 0 , TVZ1 );
+  TVZ1 := (ANMTH + AHTH) * 1;
+
+  // Rate Rules:
+  TVD' = (TVZ + DR - TVD) / TVDDL;
+
+  // Variable initializations:
+  TVD = 0.000980838;
+end
+
+model thirst_drinking_and_salt_appetite_CellML1_0_model__thirst_drinking_and_salt_appetite(time_, ADHC, ANM, POT)
+
+  // Sub-modules, and any changes to those submodules:
+  parameter_values: thirst_drinking_and_salt_appetite_CellML1_0_model__parameter_values(Z10, Z11, ANMSLT, AHTHM, ANMTM, DR, TVDDL);
+  effect_of_salt_appetite_stimulation_on_thirst: thirst_drinking_and_salt_appetite_CellML1_0_model__effect_of_salt_appetite_stimulation_on_thirst(ANM, POT, STH, ANMSLT, Z10, Z11);
+  effect_of_antidiuretic_hormone_on_thirst: thirst_drinking_and_salt_appetite_CellML1_0_model__effect_of_antidiuretic_hormone_on_thirst(ADHC, AHCM, AHTHM);
+  effect_of_angiotensin_on_thirst: thirst_drinking_and_salt_appetite_CellML1_0_model__effect_of_angiotensin_on_thirst(ANM, ANMTH, ANMTM);
+  rate_of_fluid_intake: thirst_drinking_and_salt_appetite_CellML1_0_model__rate_of_fluid_intake(STH, AHCM, ANMTH, time_, TVD, DR, TVDDL);
+
+  // Variable initializations:
+  ADHC = 1.0;
+  ANM = 0.987545;
+  POT = 35.1148;
+end
+
+model thirst_drinking_and_salt_appetite_CellML1_0_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: thirst_drinking_and_salt_appetite_CellML1_0_model__environment(time_);
+  thirst_drinking_and_salt_appetite: thirst_drinking_and_salt_appetite_CellML1_0_model__thirst_drinking_and_salt_appetite(time_, ADHC, ANM, POT);
+end

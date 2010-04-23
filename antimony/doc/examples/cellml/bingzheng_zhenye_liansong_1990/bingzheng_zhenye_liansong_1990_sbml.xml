@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="bingzheng_model_1990____main" name="bingzheng_model_1990____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="X10" value="10" constant="false"/>
+      <parameter id="X1_a0" value="0.0014"/>
+      <parameter id="X1_a1" value="0.000517"/>
+      <parameter id="X1_a2" value="0.0164"/>
+      <parameter id="X1_b1" value="0.0598"/>
+      <parameter id="X30" value="0" constant="false"/>
+      <parameter id="X20" value="0" constant="false"/>
+      <parameter id="X2_a3" value="1.38"/>
+      <parameter id="X2_a4" value="0.6"/>
+      <parameter id="X2_a5" value="0.00498"/>
+      <parameter id="X2_b2" value="0.053"/>
+      <parameter id="X3_a6" value="0.0084"/>
+      <parameter id="X3_a7" value="0.0081"/>
+      <parameter id="X3_b3" value="0.0138"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="X10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> X1_a0 </ci>
+              <apply>
+                <divide/>
+                <ci> X1_a1 </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <times/>
+                    <ci> X1_a2 </ci>
+                    <ci> X30 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> X1_b1 </ci>
+              <ci> X10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="X30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> X3_a6 </ci>
+              <apply>
+                <times/>
+                <ci> X3_a7 </ci>
+                <ci> X20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> X3_b3 </ci>
+              <ci> X30 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="X20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <ci> X2_a3 </ci>
+                <apply>
+                  <times/>
+                  <ci> X2_a4 </ci>
+                  <ci> X10 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> X2_a5 </ci>
+                  <ci> X30 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> X2_b2 </ci>
+              <ci> X20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,525 @@
+//Created by libAntimony v1.3
+model clancy_rudy_2001_version01__environment(time_)
+end
+
+model clancy_rudy_2001_version01__membrane(V, R, T, F, time_, i_Na, i_Ca_L, i_Ca_T, i_Kr, i_Ks, i_K_Na, i_K_ATP, i_to, i_NaCa, i_K1, i_Kp, i_p_Ca, i_Na_b, i_Ca_b, i_NaK, i_ns_Ca, dVdt)
+
+  // Assignment Rules:
+  I_st := piecewise( stim_amplitude , (( time_ >= stim_start) && (time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration )), 0 );
+  dVdt := -(1 ) / Cm * (i_Na + i_Ca_L + i_Ca_T + i_Kr + i_Ks + i_K_Na + i_K_ATP + i_to + i_K1 + i_Kp + i_NaCa + i_p_Ca + i_Na_b + i_Ca_b + i_NaK + i_ns_Ca + I_st);
+
+  // Rate Rules:
+  V' = -(1 ) / Cm * (i_Na + i_Ca_L + i_Ca_T + i_Kr + i_Ks + i_K_Na + i_K_ATP + i_to + i_K1 + i_Kp + i_NaCa + i_p_Ca + i_Na_b + i_Ca_b + i_NaK + i_ns_Ca + I_st);
+
+  // Variable initializations:
+  V = -90;
+  R = 8314;
+  T = 310;
+  F = 96485;
+  Cm = 0.001;
+  stim_start = 0.1;
+  stim_end = 9;
+  stim_period = 1;
+  stim_duration = 0.002;
+  stim_amplitude = -25.5;
+end
+
+model clancy_rudy_2001_version01__Na_channel_states(P_O_Na, time_, V)
+
+  // Assignment Rules:
+  alpha_11 := 3802 / (0.1027 * exp(-(V) / 17 ) + 0.2 * exp(-(V) / 150 ));
+  beta_11 := 191.7 * exp(-(V) / 20.3 );
+  alpha_12 := 3802 / (0.1027 * exp(-(V) / 15 ) + 0.23 * exp(-(V) / 150 ));
+  beta_12 := 200 * exp(-((V - 5 )) / 20.3 );
+  alpha_13 := 3802 / (0.1027 * exp(-(V) / 12 ) + 0.25 * exp(-(V) / 150 ));
+  beta_13 := 220 * exp(-((V - 10 )) / 20.3 );
+  alpha_2 := 9178 * exp(V / 29.68 );
+  beta_2 := alpha_13 * alpha_2 * alpha_3 / (beta_13 * beta_3);
+  alpha_3 := 0.00000037933 * exp(-(V) / 5.2 );
+  beta_3 := 8.4 + 0.02 * V;
+  alpha_4 := alpha_2 / 100;
+  beta_4 := alpha_3;
+
+  // Rate Rules:
+  P_O_Na' = -((alpha_2 + beta_13)) * P_O_Na + beta_2 * P_IF + alpha_13 * P_C1;
+  P_C1' = -((beta_12 + alpha_13 + beta_3)) * P_C1 + alpha_12 * P_C2 + beta_13 * P_O_Na + alpha_3 * P_IF;
+  P_C2' = -((beta_11 + alpha_12)) * P_C2 + alpha_11 * P_C3 + beta_12 * P_C1;
+  P_C3' = beta_11 * P_C2 - alpha_11 * P_C3;
+  P_IF' = -((beta_2 + alpha_3 + alpha_4)) * P_IF + beta_3 * P_C1 + beta_4 * P_IS + alpha_2 * P_O_Na;
+  P_IS' = alpha_4 * P_IF - beta_4 * P_IS;
+
+  // Variable initializations:
+  P_O_Na = 1.78e-6;
+  P_C1 = 1.119e-4;
+  P_C2 = 0.0071021;
+  P_C3 = 0.8294071;
+  P_IF = 0.10199797;
+  P_IS = 0.0613826;
+end
+
+model clancy_rudy_2001_version01__fast_sodium_current(i_Na, E_Na, time_, V, R, T, F, Nao, Nai, P_O_Na)
+
+  // Sub-modules, and any changes to those submodules:
+  Na_channel_states: clancy_rudy_2001_version01__Na_channel_states(P_O_Na, time_, V);
+
+  // Assignment Rules:
+  i_Na := g_Na * P_O_Na * (V - E_Na);
+  E_Na := R * T / F * ln(Nao / Nai);
+
+  // Variable initializations:
+  g_Na = 18.5;
+end
+
+model clancy_rudy_2001_version01__L_type_Ca_channel_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  alpha_d := d_infinity / tau_d;
+  beta_d := (1 - d_infinity) / tau_d;
+  d_infinity := 1 / (1 + exp(-(E0_d) / 6.24 ));
+  tau_d := piecewise( 0.001 / (0.035 * 6.24 ) , abs(E0_d) < 1E-5 , 0.001 * d_infinity * (1 - exp(-(E0_d) / 6.24 )) / (0.035 * E0_d) );
+  E0_d := V + 10;
+
+  // Rate Rules:
+  d' = alpha_d * (1 - d) - beta_d * d;
+
+  // Variable initializations:
+  d = 3.210618e-6;
+end
+
+model clancy_rudy_2001_version01__L_type_Ca_channel_f_gate(f, V, time_)
+
+  // Assignment Rules:
+  alpha_f := f_infinity / tau_f;
+  beta_f := (1 - f_infinity) / tau_f;
+  f_infinity := 1 / (1 + exp((V + 32 ) / 8 )) + 0.6 / (1 + exp((50 - V) / 20 ));
+  tau_f := 0.001 / (0.0197 * exp(-(power(0.0337 * (V + 10 ), 2 ))) + 0.02 );
+
+  // Rate Rules:
+  f' = alpha_f * (1 - f) - beta_f * f;
+
+  // Variable initializations:
+  f = 0.999837;
+end
+
+model clancy_rudy_2001_version01__L_type_Ca_channel_f_Ca_gate(f_Ca, V, time_, Cai)
+
+  // Assignment Rules:
+  f_Ca := 1 / (1 + Cai / Km_Ca);
+
+  // Variable initializations:
+  Km_Ca = 0.0006;
+end
+
+model clancy_rudy_2001_version01__L_type_Ca_channel(i_Ca_L, i_CaCa, i_CaK, i_CaNa, gamma_Nai, gamma_Nao, gamma_Ki, gamma_Ko, time_, V, Cai, R, T, F, Cao, Nao, Ko, Nai, Ki, d, f, f_Ca)
+
+  // Sub-modules, and any changes to those submodules:
+  L_type_Ca_channel_d_gate: clancy_rudy_2001_version01__L_type_Ca_channel_d_gate(d, V, time_);
+  L_type_Ca_channel_f_gate: clancy_rudy_2001_version01__L_type_Ca_channel_f_gate(f, V, time_);
+  L_type_Ca_channel_f_Ca_gate: clancy_rudy_2001_version01__L_type_Ca_channel_f_Ca_gate(f_Ca, V, time_, Cai);
+
+  // Assignment Rules:
+  i_Ca_L := i_CaCa + i_CaK + i_CaNa;
+  i_CaCa := d * f * f_Ca * I_CaCa;
+  i_CaK := d * f * f_Ca * I_CaK;
+  i_CaNa := d * f * f_Ca * I_CaNa;
+  I_CaCa := P_Ca * power(2 , 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Cai * Cai * exp(2 * V * F / (R * T)) - gamma_Cao * Cao) / (exp(2 * V * F / (R * T)) - 1 );
+  I_CaK := P_K * power(1 , 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Ki * Ki * exp(1 * V * F / (R * T)) - gamma_Ko * Ko) / (exp(1 * V * F / (R * T)) - 1 );
+  I_CaNa := P_Na * power(1 , 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Nai * Nai * exp(1 * V * F / (R * T)) - gamma_Nao * Nao) / (exp(1 * V * F / (R * T)) - 1 );
+
+  // Variable initializations:
+  gamma_Nai = 0.75;
+  gamma_Nao = 0.75;
+  gamma_Ki = 0.75;
+  gamma_Ko = 0.75;
+  P_Ca = 0.00054;
+  P_Na = 6.75e-7;
+  P_K = 1.93e-7;
+  gamma_Cai = 1;
+  gamma_Cao = 0.341;
+end
+
+model clancy_rudy_2001_version01__T_type_Ca_channel_b_gate(b, V, time_)
+
+  // Assignment Rules:
+  b_inf := 1 / (1 + exp(-((V + 14 )) / 10.8 ));
+  tau_b := 0.0037 + 0.0061 / (1 + exp((V + 25 ) / 4.5 ));
+
+  // Rate Rules:
+  b' = (b_inf - b) / tau_b;
+
+  // Variable initializations:
+  b = 0.000970231;
+end
+
+model clancy_rudy_2001_version01__T_type_Ca_channel_g_gate(g, V, time_)
+
+  // Assignment Rules:
+  g_inf := 1 / (1 + exp((V + 60 ) / 5.6 ));
+  tau_g := piecewise( -(0.000875 ) * V + 0.012 , V <= 0 , 0.012 );
+
+  // Rate Rules:
+  g' = (g_inf - g) / tau_g;
+
+  // Variable initializations:
+  g = 0.994305;
+end
+
+model clancy_rudy_2001_version01__T_type_Ca_channel(i_Ca_T, E_Ca, time_, V, b, g)
+
+  // Sub-modules, and any changes to those submodules:
+  T_type_Ca_channel_b_gate: clancy_rudy_2001_version01__T_type_Ca_channel_b_gate(b, V, time_);
+  T_type_Ca_channel_g_gate: clancy_rudy_2001_version01__T_type_Ca_channel_g_gate(g, V, time_);
+
+  // Assignment Rules:
+  i_Ca_T := g_CaT * b * b * g * (V - E_Ca);
+
+  // Variable initializations:
+  g_CaT = 0.05;
+end
+
+model clancy_rudy_2001_version01__Kr_channel_states(P_O, time_, V, Ko)
+
+  // Assignment Rules:
+  alpha := 55.5 * exp(0.05547153 * (V - 12 ));
+  beta := 2.357 * exp(-(0.036588 ) * V);
+  alpha_alpha := 65.5 * exp(0.05547153 * (V - 36 ));
+  beta_beta := 2.9357 * exp(-(0.02158 ) * V);
+  alpha_i := 439 * exp(-(0.02352 ) * (V + 25 )) * 4.5 / Ko;
+  beta_i := 656 * exp(0.000942 * V) * power(4.5 / Ko, 0.3 );
+  mu := alpha_i * beta_beta * alpha_alpha / (alpha_alpha * beta_i);
+
+  // Rate Rules:
+  P_O' = -((beta_beta + beta_i)) * P_O + alpha_alpha * P_C1 + alpha_i * P_I;
+  P_C1' = -((beta_in + alpha_alpha + alpha_alpha)) * P_C1 + alpha_in * P_C2 + beta_beta * P_O + mu * P_I;
+  P_C2' = -((beta + alpha_in)) * P_C2 + alpha * P_C3 + beta_in * P_C1;
+  P_C3' = beta * P_C2 - alpha * P_C3;
+  P_I' = -((mu + alpha_i)) * P_I + alpha_alpha * P_C1 + beta_i * P_O;
+
+  // Variable initializations:
+  P_O = 0.000001;
+  P_C1 = 0.000001;
+  P_C2 = 0.000001;
+  P_C3 = 0.000001;
+  P_I = 0.000001;
+  alpha_in = 2172;
+  beta_in = 1077;
+end
+
+model clancy_rudy_2001_version01__rapid_delayed_rectifier_potassium_current(i_Kr, time_, V, Ko, Ki, R, T, F, P_O)
+
+  // Sub-modules, and any changes to those submodules:
+  Kr_channel_states: clancy_rudy_2001_version01__Kr_channel_states(P_O, time_, V, Ko);
+
+  // Assignment Rules:
+  i_Kr := g_Kr * P_O * (V - E_Kr);
+  g_Kr := 0.0135 * power(Ko, 0.59 );
+  E_Kr := R * T / F * ln(Ko / Ki);
+end
+
+model clancy_rudy_2001_version01__slow_delayed_rectifier_potassium_current_xs1_gate(xs1, V, time_)
+
+  // Assignment Rules:
+  xs1_infinity := 1 / (1 + exp(-((V - 1.5 )) / 16.7 ));
+  tau_xs1 := 0.001 / (7.19E-5 * (V + 30 ) / (1 - exp(-(0.148 ) * (V + 30 ))) + 0.000131 * (V + 30 ) / (exp(0.0687 * (V + 30 )) - 1 ));
+
+  // Rate Rules:
+  xs1' = (xs1_infinity - xs1) / tau_xs1;
+
+  // Variable initializations:
+  xs1 = 0.00445683;
+end
+
+model clancy_rudy_2001_version01__slow_delayed_rectifier_potassium_current_xs2_gate(xs2, V, time_)
+
+  // Assignment Rules:
+  xs2_infinity := 1 / (1 + exp(-((V - 1.5 )) / 16.7 ));
+  tau_xs2 := 4 * 0.001 / (7.19E-5 * (V + 30 ) / (1 - exp(-(0.148 ) * (V + 30 ))) + 0.000131 * (V + 30 ) / (exp(0.0687 * (V + 30 )) - 1 ));
+
+  // Rate Rules:
+  xs2' = (xs2_infinity - xs2) / tau_xs2;
+
+  // Variable initializations:
+  xs2 = 0.00445683;
+end
+
+model clancy_rudy_2001_version01__slow_delayed_rectifier_potassium_current(i_Ks, time_, V, R, T, F, Ko, Ki, Nao, Nai, Cai, xs1, xs2)
+
+  // Sub-modules, and any changes to those submodules:
+  slow_delayed_rectifier_potassium_current_xs1_gate: clancy_rudy_2001_version01__slow_delayed_rectifier_potassium_current_xs1_gate(xs1, V, time_);
+  slow_delayed_rectifier_potassium_current_xs2_gate: clancy_rudy_2001_version01__slow_delayed_rectifier_potassium_current_xs2_gate(xs2, V, time_);
+
+  // Assignment Rules:
+  i_Ks := g_Ks * xs1 * xs2 * (V - E_Ks);
+  g_Ks := 0.433 * (1 + 0.6 / (1 + power(3.8E-5 / Cai, 1.4 )));
+  E_Ks := R * T / F * ln((Ko + PNaK * Nao) / (Ki + PNaK * Nai));
+
+  // Variable initializations:
+  PNaK = 0.01833;
+end
+
+model clancy_rudy_2001_version01__time_independent_potassium_current_K1_gate(K1_infinity, V, time_, E_K)
+
+  // Assignment Rules:
+  K1_infinity := alpha_K1 / (alpha_K1 + beta_K1);
+  alpha_K1 := 1020 / (1 + exp(0.2385 * (V - E_K - 59.215 )));
+  beta_K1 := 1000 * (0.49124 * exp(0.08032 * (V - E_K + 5.476 )) + exp(0.06175 * (V - E_K - 594.31 ))) / (1 + exp(-(0.5143 ) * (V - E_K + 4.753 )));
+end
+
+model clancy_rudy_2001_version01__time_independent_potassium_current(i_K1, E_K, time_, V, Ko, Ki, R, T, F, K1_infinity)
+
+  // Sub-modules, and any changes to those submodules:
+  time_independent_potassium_current_K1_gate: clancy_rudy_2001_version01__time_independent_potassium_current_K1_gate(K1_infinity, V, time_, E_K);
+
+  // Assignment Rules:
+  i_K1 := g_K1 * K1_infinity * (V - E_K);
+  E_K := R * T / F * ln(Ko / Ki);
+  g_K1 := 0.75 * root(Ko / 5.4 );
+end
+
+model clancy_rudy_2001_version01__plateau_potassium_current(i_Kp, time_, V, E_K)
+
+  // Assignment Rules:
+  i_Kp := g_Kp * Kp * (V - E_K);
+  Kp := 1 / (1 + exp((7.488 - V) / 5.98 ));
+
+  // Variable initializations:
+  g_Kp = 0.00552;
+end
+
+model clancy_rudy_2001_version01__sodium_activated_potassium_current(i_K_Na, time_, V, Nai, E_K)
+
+  // Assignment Rules:
+  i_K_Na := g_K_Na * pona * pov * (V - E_K);
+  g_K_Na := 0 * 0.12848;
+  pona := 0.85 / (1 + power(kdKNa / Nai, nKNa));
+  pov := 0.8 - 0.65 / (1 + exp((V + 125 ) / 15 ));
+
+  // Variable initializations:
+  nKNa = 2.8;
+  kdKNa = 66;
+end
+
+model clancy_rudy_2001_version01__ATP_sensitive_potassium_current(i_K_ATP, time_, V, Ko, E_K)
+
+  // Assignment Rules:
+  i_K_ATP := GKbaraATP * (V - E_K);
+  g_K_ATP := i_K_ATP_on * 0.000193 / nicholsarea;
+  pATP := 1 / (1 + power(ATPi / kATP, hATP));
+  GKbaraATP := g_K_ATP * pATP * power(Ko / 4 , nATP);
+
+  // Variable initializations:
+  i_K_ATP_on = 1;
+  nATP = 0.24;
+  nicholsarea = 5e-5;
+  ATPi = 3;
+  hATP = 2;
+  kATP = 0.00025;
+end
+
+model clancy_rudy_2001_version01__transient_outward_current_zdv_gate(zdv, V, time_)
+
+  // Assignment Rules:
+  alpha_zdv := 10000 * exp((V - 40 ) / 25 ) / (1 + exp((V - 40 ) / 25 ));
+  beta_zdv := 10000 * exp(-((V + 90 )) / 25 ) / (1 + exp(-((V + 90 )) / 25 ));
+  tau_zdv := 1 / (alpha_zdv + beta_zdv);
+  zdv_ss := alpha_zdv / (alpha_zdv + beta_zdv);
+
+  // Rate Rules:
+  zdv' = (zdv_ss - zdv) / tau_zdv;
+
+  // Variable initializations:
+  zdv = 0.5;
+end
+
+model clancy_rudy_2001_version01__transient_outward_current_ydv_gate(ydv, V, time_)
+
+  // Assignment Rules:
+  alpha_ydv := 15 / (1 + exp((V + 60 ) / 5 ));
+  beta_ydv := 100 * exp((V + 25 ) / 5 ) / (1 + exp((V + 25 ) / 5 ));
+  tau_ydv := 1 / (alpha_ydv + beta_ydv);
+  ydv_ss := alpha_ydv / (alpha_ydv + beta_ydv);
+
+  // Rate Rules:
+  ydv' = (ydv_ss - ydv) / tau_ydv;
+
+  // Variable initializations:
+  ydv = 0.5;
+end
+
+model clancy_rudy_2001_version01__transient_outward_current(i_to, E_K, V, time_, zdv, ydv)
+
+  // Sub-modules, and any changes to those submodules:
+  transient_outward_current_zdv_gate: clancy_rudy_2001_version01__transient_outward_current_zdv_gate(zdv, V, time_);
+  transient_outward_current_ydv_gate: clancy_rudy_2001_version01__transient_outward_current_ydv_gate(ydv, V, time_);
+
+  // Assignment Rules:
+  i_to := g_to * power(zdv, 3 ) * ydv * rvdv * (V - E_K);
+  g_to := 0 * 0.5;
+  rvdv := exp(V / 100 );
+end
+
+model clancy_rudy_2001_version01__sarcolemmal_calcium_pump(i_p_Ca, time_, Cai)
+
+  // Assignment Rules:
+  i_p_Ca := I_pCa * Cai / (K_mpCa + Cai);
+
+  // Variable initializations:
+  K_mpCa = 0.0005;
+  I_pCa = 1.15;
+end
+
+model clancy_rudy_2001_version01__sodium_background_current(i_Na_b, time_, V, E_Na)
+
+  // Assignment Rules:
+  i_Na_b := g_Nab * (V - E_Na);
+
+  // Variable initializations:
+  g_Nab = 0.004;
+end
+
+model clancy_rudy_2001_version01__calcium_background_current(i_Ca_b, E_Ca, time_, V, R, T, F, Cai, Cao)
+
+  // Assignment Rules:
+  i_Ca_b := g_Cab * (V - E_Ca);
+  E_Ca := R * T / (2 * F) * ln(Cao / Cai);
+
+  // Variable initializations:
+  g_Cab = 0.003016;
+end
+
+model clancy_rudy_2001_version01__sodium_potassium_pump(i_NaK, time_, V, R, T, F, Nai, Nao, Ko)
+
+  // Assignment Rules:
+  i_NaK := I_NaK * f_NaK * 1 / (1 + power(K_mNai / Nai, 2 )) * Ko / (Ko + K_mKo);
+  f_NaK := 1 / (1 + 0.1245 * exp(-(0.1 ) * V * F / (R * T)) + 0.0365 * sigma * exp(-(V) * F / (R * T)));
+  sigma := 1 / 7 * (exp(Nao / 67.3 ) - 1 );
+
+  // Variable initializations:
+  I_NaK = 2.25;
+  K_mNai = 10;
+  K_mKo = 1.5;
+end
+
+model clancy_rudy_2001_version01__non_specific_calcium_activated_current(i_ns_Ca, i_ns_Na, i_ns_K, gamma_Nai, gamma_Nao, gamma_Ki, gamma_Ko, R, T, F, Cao, Nao, Ko, Nai, Ki, time_, Cai, V)
+
+  // Assignment Rules:
+  i_ns_Ca := i_ns_Na + i_ns_K;
+  i_ns_Na := I_ns_Na * 1 / (1 + power(K_m_ns_Ca / Cai, 3 ));
+  i_ns_K := I_ns_K * 1 / (1 + power(K_m_ns_Ca / Cai, 3 ));
+  P_ns_Ca := 0 * 1.75E-7;
+  I_ns_Na := P_ns_Ca * power(1 , 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Nai * Nai * exp(1 * V * F / (R * T)) - gamma_Nao * Nao) / (exp(1 * V * F / (R * T)) - 1 );
+  I_ns_K := P_ns_Ca * power(1 , 2 ) * V * power(F, 2 ) / (R * T) * (gamma_Ki * Ki * exp(1 * V * F / (R * T)) - gamma_Ko * Ko) / (exp(1 * V * F / (R * T)) - 1 );
+
+  // Variable initializations:
+  K_m_ns_Ca = 0.0012;
+end
+
+model clancy_rudy_2001_version01__Na_Ca_exchanger(i_NaCa, time_, V, R, T, F, Nai, Nao, Cai, Cao)
+
+  // Assignment Rules:
+  i_NaCa := c1 * exp((gamma - 1 ) * V * F / (R * T)) * (exp(V * F / (R * T)) * power(Nai, 3 ) * Cao - power(Nao, 3 ) * Cai) / (1 + c2 * exp((gamma - 1 ) * V * F / (R * T)) * (exp(V * F / (R * T)) * power(Nai, 3 ) * Cao + power(Nao, 3 ) * Cai));
+
+  // Variable initializations:
+  c1 = 0.00025;
+  c2 = 0.0001;
+  gamma = 0.15;
+end
+
+model clancy_rudy_2001_version01__calcium_dynamics(i_rel, i_up, i_leak, i_tr, time_, F, Cai, Cao, Ca_JSR, Ca_NSR, V_myo, A_cap, i_NaCa, i_CaCa, i_p_Ca, i_Ca_b, i_Ca_T, dVdt)
+
+  // Assignment Rules:
+  i_rel := G_rel * (Ca_JSR - Cai);
+  i_up := I_up * Cai / (Cai + K_mup);
+  i_leak := K_leak * Ca_NSR;
+  i_tr := (Ca_NSR - Ca_JSR) / tau_tr;
+  G_rel := piecewise( G_rel_max * (Cainfluxtrack - delta_Ca_ith) / (K_mrel + Cainfluxtrack - delta_Ca_ith) * (1 - APtrack2) * APtrack2 , Cainfluxtrack > delta_Ca_ith , G_rel_overload * (1 - OVRLDtrack2) * OVRLDtrack2 , ( Cainfluxtrack <= delta_Ca_ith) && (OVRLDtrack2 > 0 ), 0 );
+  K_leak := I_up / Ca_NSR_max;
+  V_JSR := 0.0048 / 0.68 * V_myo;
+  V_NSR := 0.0552 / 0.68 * V_myo;
+
+  // Rate Rules:
+  Cai' = 1 / (1 + CMDN_max * K_mCMDN / power(K_mCMDN + Cai, 2 ) + Tn_max * K_mTn / power(K_mTn + Cai, 2 )) * (-(A_cap) * (i_CaCa + i_Ca_T - 2 * i_NaCa + i_p_Ca + i_Ca_b) / (2 * V_myo * F) + i_rel * V_JSR / V_myo + (i_leak - i_up) * V_NSR / V_myo);
+  Ca_JSR' = 1 / (1 + CSQN_max * K_mCSQN / power(K_mCSQN + Ca_JSR, 2 )) * (i_tr - i_rel);
+  Ca_NSR' = -(i_tr) * V_JSR / V_NSR - i_leak + i_up;
+  APtrack' = piecewise( 100000 * (1 - APtrack) - 500 * APtrack , dVdt > 150000 , -(500 ) * APtrack );
+  APtrack2' = piecewise( 100000 * (1 - APtrack2) - 500 * APtrack2 , ( APtrack < 0.2) && (APtrack > 0.18 ), -(500 ) * APtrack2 );
+  APtrack3' = piecewise( 100000 * (1 - APtrack3) - 500 * APtrack3 , ( APtrack < 0.2) && (APtrack > 0.18 ), -(10 ) * APtrack3 );
+  Cainfluxtrack' = piecewise( -(A_cap) * (i_CaCa + i_Ca_T - i_NaCa + i_p_Ca + i_Ca_b) / (2 * V_myo * F) , APtrack > 0.2 , 0 , ( APtrack2 > 0.01) && (APtrack <= 0.2 ), -(500 ) * Cainfluxtrack );
+  OVRLDtrack' = piecewise( 50000 * (1 - OVRLDtrack) , (( 1 / (1 + K_mCSQN / Ca_NSR) > CSQNthresh) && (OVRLDtrack3 < 0.37) && (APtrack3 < 0.37 )), -(500 ) * OVRLDtrack );
+  OVRLDtrack2' = piecewise( 50000 * (1 - OVRLDtrack2) , ( OVRLDtrack > Logicthresh) && (OVRLDtrack2 < Logicthresh ), -(500 ) * OVRLDtrack2 );
+  OVRLDtrack3' = piecewise( 50000 * (1 - OVRLDtrack3) , ( OVRLDtrack > Logicthresh) && (OVRLDtrack3 < Logicthresh ), -(10 ) * OVRLDtrack3 );
+
+  // Variable initializations:
+  G_rel_max = 60000;
+  G_rel_overload = 4000;
+  tau_tr = 0.18;
+  K_mrel = 0.0008;
+  delta_Ca_ith = 0.00018;
+  CSQN_max = 10;
+  K_mCSQN = 0.8;
+  K_mup = 0.00092;
+  I_up = 8.75;
+  Ca_NSR_max = 15;
+  Cai = 6e-5;
+  Cao = 1.8;
+  Ca_JSR = 1.8;
+  Ca_NSR = 1.8;
+  K_mTn = 0.0005;
+  K_mCMDN = 0.00238;
+  Tn_max = 0.07;
+  CMDN_max = 0.05;
+  APtrack = 0;
+  APtrack2 = 0;
+  APtrack3 = 0;
+  Cainfluxtrack = 0;
+  OVRLDtrack = 0;
+  OVRLDtrack2 = 0;
+  OVRLDtrack3 = 0;
+  CSQNthresh = 0.7;
+  Logicthresh = 0.98;
+end
+
+model clancy_rudy_2001_version01__ionic_concentrations(Nai, Nao, Ki, Ko, A_cap, V_myo, time_, F, i_Na, i_CaNa, i_Na_b, i_ns_Na, i_NaCa, i_NaK, i_CaK, i_Kr, i_Ks, i_K1, i_Kp, i_K_Na, i_K_ATP, i_ns_K, i_to)
+
+  // Assignment Rules:
+  volume := pi * preplength * power(radius, 2 );
+  V_myo := 0.68 * volume;
+
+  // Rate Rules:
+  Nai' = -(0 ) * (i_Na + i_CaNa + i_Na_b + i_ns_Na + i_NaCa * 3 + i_NaK * 3 ) * A_cap / (V_myo * F);
+  Ki' = -(0 ) * (i_CaK + i_Kr + i_Ks + i_K1 + i_Kp + i_K_Na + i_K_ATP + i_to + i_ns_K + -(i_NaK) * 2 ) * A_cap / (V_myo * F);
+
+  // Variable initializations:
+  Nai = 9;
+  Nao = 132;
+  Ki = 141.2;
+  Ko = 4.5;
+  A_cap = 1.434e-7;
+  preplength = 0.001;
+  radius = 1.1e-4;
+end
+
+model clancy_rudy_2001_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: clancy_rudy_2001_version01__environment(time_);
+  membrane: clancy_rudy_2001_version01__membrane(V, R, T, F, time_, i_Na, i_Ca_L, i_Ca_T, i_Kr, i_Ks, i_K_Na, i_K_ATP, i_to, i_NaCa, i_K1, i_Kp, i_p_Ca, i_Na_b, i_Ca_b, i_NaK, i_ns_Ca, dVdt);
+  fast_sodium_current: clancy_rudy_2001_version01__fast_sodium_current(i_Na, E_Na, time_, V, R, T, F, Nao, Nai, P_O_Na);
+  L_type_Ca_channel: clancy_rudy_2001_version01__L_type_Ca_channel(i_Ca_L, i_CaCa, i_CaK, i_CaNa, gamma_Nai, gamma_Nao, gamma_Ki, gamma_Ko, time_, V, Cai, R, T, F, Cao, Nao, Ko, Nai, Ki, d, f, f_Ca);
+  T_type_Ca_channel: clancy_rudy_2001_version01__T_type_Ca_channel(i_Ca_T, E_Ca, time_, V, b, g);
+  rapid_delayed_rectifier_potassium_current: clancy_rudy_2001_version01__rapid_delayed_rectifier_potassium_current(i_Kr, time_, V, Ko, Ki, R, T, F, P_O);
+  slow_delayed_rectifier_potassium_current: clancy_rudy_2001_version01__slow_delayed_rectifier_potassium_current(i_Ks, time_, V, R, T, F, Ko, Ki, Nao, Nai, Cai, xs1, xs2);
+  time_independent_potassium_current: clancy_rudy_2001_version01__time_independent_potassium_current(i_K1, E_K, time_, V, Ko, Ki, R, T, F, K1_infinity);
+  plateau_potassium_current: clancy_rudy_2001_version01__plateau_potassium_current(i_Kp, time_, V, E_K);
+  sodium_activated_potassium_current: clancy_rudy_2001_version01__sodium_activated_potassium_current(i_K_Na, time_, V, Nai, E_K);
+  ATP_sensitive_potassium_current: clancy_rudy_2001_version01__ATP_sensitive_potassium_current(i_K_ATP, time_, V, Ko, E_K);
+  transient_outward_current: clancy_rudy_2001_version01__transient_outward_current(i_to, E_K, V, time_, zdv, ydv);
+  sarcolemmal_calcium_pump: clancy_rudy_2001_version01__sarcolemmal_calcium_pump(i_p_Ca, time_, Cai);
+  sodium_background_current: clancy_rudy_2001_version01__sodium_background_current(i_Na_b, time_, V, E_Na);
+  calcium_background_current: clancy_rudy_2001_version01__calcium_background_current(i_Ca_b, E_Ca, time_, V, R, T, F, Cai, Cao);
+  sodium_potassium_pump: clancy_rudy_2001_version01__sodium_potassium_pump(i_NaK, time_, V, R, T, F, Nai, Nao, Ko);
+  non_specific_calcium_activated_current: clancy_rudy_2001_version01__non_specific_calcium_activated_current(i_ns_Ca, i_ns_Na, i_ns_K, gamma_Nai, gamma_Nao, gamma_Ki, gamma_Ko, R, T, F, Cao, Nao, Ko, Nai, Ki, time_, Cai, V);
+  Na_Ca_exchanger: clancy_rudy_2001_version01__Na_Ca_exchanger(i_NaCa, time_, V, R, T, F, Nai, Nao, Cai, Cao);
+  calcium_dynamics: clancy_rudy_2001_version01__calcium_dynamics(i_rel, i_up, i_leak, i_tr, time_, F, Cai, Cao, Ca_JSR, Ca_NSR, V_myo, A_cap, i_NaCa, i_CaCa, i_p_Ca, i_Ca_b, i_Ca_T, dVdt);
+  ionic_concentrations: clancy_rudy_2001_version01__ionic_concentrations(Nai, Nao, Ki, Ko, A_cap, V_myo, time_, F, i_Na, i_CaNa, i_Na_b, i_ns_Na, i_NaCa, i_NaK, i_CaK, i_Kr, i_Ks, i_K1, i_Kp, i_K_Na, i_K_ATP, i_ns_K, i_to);
+end

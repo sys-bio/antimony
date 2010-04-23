@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="waugh_model_2007____main" name="waugh_model_2007____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="phi_I0" value="200" constant="false"/>
+      <parameter id="alpha" constant="false"/>
+      <parameter id="k1" value="0.05"/>
+      <parameter id="k2" value="0.693"/>
+      <parameter id="k3" value="0.002"/>
+      <parameter id="k5" value="0.0025"/>
+      <parameter id="k6" value="0.0004"/>
+      <parameter id="d1" value="0.2"/>
+      <parameter id="phi_R0" value="200" constant="false"/>
+      <parameter id="K_T0" constant="false"/>
+      <parameter id="F0" value="50" constant="false"/>
+      <parameter id="C0" value="10" constant="false"/>
+      <parameter id="T0" value="6" constant="false"/>
+      <parameter id="k4" value="0.07"/>
+      <parameter id="k7" value="0.004"/>
+      <parameter id="d2" value="9.1"/>
+      <parameter id="P0" value="2" constant="false"/>
+      <parameter id="k8" value="0.015"/>
+      <parameter id="k9" value="0.0015"/>
+      <parameter id="d3" value="4"/>
+      <parameter id="k10" value="0.924"/>
+      <parameter id="d4" value="2.5"/>
+      <parameter id="M_P0" constant="false"/>
+      <parameter id="k11" value="5"/>
+      <parameter id="f_T0" constant="false"/>
+      <parameter id="g_C0" constant="false"/>
+      <parameter id="d5"/>
+      <parameter id="H0" value="0.01" constant="false"/>
+      <parameter id="k12" value="0.001"/>
+      <parameter id="d6" value="0.7"/>
+      <parameter id="K_T_tau1" value="-2.47"/>
+      <parameter id="K_T_tau2" value="21.94"/>
+      <parameter id="K_T_tau3" value="6.41"/>
+      <parameter id="K_T_tau4" value="1.75"/>
+      <parameter id="M_P_tau1" value="15.333"/>
+      <parameter id="M_P_tau2" value="-167.21"/>
+      <parameter id="M_P_tau3" value="452.38"/>
+      <parameter id="M_P_tau4" value="2.6593"/>
+      <parameter id="f_T_tau1" value="0.0092"/>
+      <parameter id="f_T_tau2" value="-0.1552"/>
+      <parameter id="f_T_tau3" value="0.6279"/>
+      <parameter id="f_T_tau4" value="0.2527"/>
+      <parameter id="g_C_tau1"/>
+      <parameter id="g_C_tau2" value="9e-07"/>
+      <parameter id="g_C_tau3" value="-0.00055"/>
+      <parameter id="g_C_tau4" value="0.13"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="d5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1.5 <sep/> -5 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="g_C_tau1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> -4.33 <sep/> -10 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <rateRule variable="phi_I0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> alpha </ci>
+                <ci> K_T0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> k2 </ci>
+                <ci> phi_I0 </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> k3 </ci>
+                      <apply>
+                        <plus/>
+                        <ci> phi_I0 </ci>
+                        <ci> phi_R0 </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> k5 </ci>
+                      <ci> F0 </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> k6 </ci>
+                      <ci> C0 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> d1 </ci>
+              <ci> phi_I0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="alpha">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <cn> 0.197 </cn>
+                <apply>
+                  <ln/>
+                  <ci> H0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <cn> 0.4407 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="phi_R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <ci> alpha </ci>
+                </apply>
+                <ci> K_T0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> k2 </ci>
+                <ci> phi_R0 </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> k3 </ci>
+                      <apply>
+                        <plus/>
+                        <ci> phi_I0 </ci>
+                        <ci> phi_R0 </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> k5 </ci>
+                      <ci> F0 </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> k6 </ci>
+                      <ci> C0 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> d1 </ci>
+              <ci> phi_R0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="K_T0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> K_T_tau1 </ci>
+              <apply>
+                <power/>
+                <ci> T0 </ci>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> K_T_tau2 </ci>
+              <apply>
+                <power/>
+                <ci> T0 </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> K_T_tau3 </ci>
+              <ci> T0 </ci>
+            </apply>
+            <ci> K_T_tau4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="F0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> M_P0 </ci>
+              <apply>
+                <times/>
+                <ci> k10 </ci>
+                <ci> F0 </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> k3 </ci>
+                      <apply>
+                        <plus/>
+                        <ci> phi_I0 </ci>
+                        <ci> phi_R0 </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> k5 </ci>
+                      <ci> F0 </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> k6 </ci>
+                      <ci> C0 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> d4 </ci>
+              <ci> F0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k11 </ci>
+              <ci> F0 </ci>
+              <ci> f_T0 </ci>
+              <ci> g_C0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> d5 </ci>
+              <ci> F0 </ci>
+              <ci> C0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="T0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k4 </ci>
+                <ci> phi_I0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k7 </ci>
+                <ci> F0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> d2 </ci>
+              <ci> T0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k8 </ci>
+                <apply>
+                  <plus/>
+                  <ci> phi_I0 </ci>
+                  <ci> phi_R0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k9 </ci>
+                <ci> F0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> d3 </ci>
+              <ci> P0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="M_P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> M_P_tau1 </ci>
+              <apply>
+                <power/>
+                <ci> P0 </ci>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> M_P_tau2 </ci>
+              <apply>
+                <power/>
+                <ci> P0 </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> M_P_tau3 </ci>
+              <ci> P0 </ci>
+            </apply>
+            <ci> M_P_tau4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="f_T0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> f_T_tau1 </ci>
+              <apply>
+                <power/>
+                <ci> T0 </ci>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> f_T_tau2 </ci>
+              <apply>
+                <power/>
+                <ci> T0 </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> f_T_tau3 </ci>
+              <ci> T0 </ci>
+            </apply>
+            <ci> f_T_tau4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="g_C0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> g_C_tau1 </ci>
+              <apply>
+                <power/>
+                <ci> C0 </ci>
+                <cn> 3 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> g_C_tau2 </ci>
+              <apply>
+                <power/>
+                <ci> C0 </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> g_C_tau3 </ci>
+              <ci> C0 </ci>
+            </apply>
+            <ci> g_C_tau4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="H0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k12 </ci>
+              <ci> F0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> d6 </ci>
+              <ci> H0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

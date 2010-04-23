@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="deyoung_keizer_1992_version01____main" name="deyoung_keizer_1992_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Ca_i0" constant="false"/>
+      <parameter id="Ca_i_J1" constant="false"/>
+      <parameter id="Ca_i_J2" constant="false"/>
+      <parameter id="Ca_i_v1" value="6"/>
+      <parameter id="Ca_i_v2" value="0.11"/>
+      <parameter id="Ca_i_v3" value="0.9"/>
+      <parameter id="Ca_i_k3" value="0.1"/>
+      <parameter id="c1" value="0.185"/>
+      <parameter id="Ca_ER0" constant="false"/>
+      <parameter id="P_open" constant="false"/>
+      <parameter id="Ca_ER_c0" value="2"/>
+      <parameter id="IP30" constant="false"/>
+      <parameter id="IP3_k4" value="1.1"/>
+      <parameter id="IP3_alpha" value="0.5"/>
+      <parameter id="IP3_Ir" value="1"/>
+      <parameter id="IP3_v4" value="1.2"/>
+      <parameter id="d1" constant="false"/>
+      <parameter id="d2" constant="false"/>
+      <parameter id="d3" constant="false"/>
+      <parameter id="d4" constant="false"/>
+      <parameter id="d5" constant="false"/>
+      <parameter id="a5" value="20"/>
+      <parameter id="a2" value="0.2"/>
+      <parameter id="a3" value="400"/>
+      <parameter id="b3" constant="false"/>
+      <parameter id="a4" value="0.2"/>
+      <parameter id="b4" constant="false"/>
+      <parameter id="receptor_dissociation_constants_IP3_cold" value="15"/>
+      <parameter id="x_0000" constant="false"/>
+      <parameter id="V1" constant="false"/>
+      <parameter id="V3" constant="false"/>
+      <parameter id="x_0010" constant="false"/>
+      <parameter id="V4" constant="false"/>
+      <parameter id="x_0100" constant="false"/>
+      <parameter id="V2" constant="false"/>
+      <parameter id="x_0110" constant="false"/>
+      <parameter id="a1" value="400"/>
+      <parameter id="b1" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="b5"/>
+      <parameter id="b2"/>
+      <parameter id="receptor_dissociation_constants_K_d2"/>
+      <parameter id="receptor_dissociation_constants_K_d1"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Ca_i0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Ca_i_J1 </ci>
+            <ci> Ca_i_J2 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Ca_i_J1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> c1 </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Ca_i_v1 </ci>
+                <ci> P_open </ci>
+              </apply>
+              <ci> Ca_i_v2 </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> Ca_ER0 </ci>
+              <ci> Ca_i0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Ca_i_J2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> Ca_i_v3 </ci>
+              <apply>
+                <power/>
+                <ci> Ca_i0 </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> Ca_i0 </ci>
+                <cn> 2 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> Ca_i_k3 </ci>
+                <cn> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Ca_ER0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> Ca_ER_c0 </ci>
+              <ci> Ca_i0 </ci>
+            </apply>
+            <ci> c1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P_open">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Ca_i0 </ci>
+                <ci> IP30 </ci>
+                <ci> d2 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> Ca_i0 </ci>
+                    <ci> IP30 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> IP30 </ci>
+                    <ci> d2 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> d1 </ci>
+                    <ci> d2 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> Ca_i0 </ci>
+                    <ci> d3 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Ca_i0 </ci>
+                  <ci> d5 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <cn> 3 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="IP30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> IP3_v4 </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <plus/>
+                  <ci> Ca_i0 </ci>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <minus/>
+                      <cn> 1 </cn>
+                      <ci> IP3_alpha </ci>
+                    </apply>
+                    <ci> IP3_k4 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Ca_i0 </ci>
+                  <ci> IP3_k4 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> IP3_Ir </ci>
+              <ci> IP30 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="d1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> receptor_dissociation_constants_K_d1 </ci>
+            <ci> receptor_dissociation_constants_IP3_cold </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="d2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> b2 </ci>
+            <ci> a2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="d3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> receptor_dissociation_constants_K_d2 </ci>
+                <ci> receptor_dissociation_constants_IP3_cold </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <ci> d2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> d1 </ci>
+              <ci> d2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="d4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> d1 </ci>
+              <ci> d2 </ci>
+            </apply>
+            <ci> d3 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="d5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> b5 </ci>
+            <ci> a5 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="b3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> d3 </ci>
+            <ci> a3 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="b4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> d4 </ci>
+            <ci> a4 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x_0000">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> V1 </ci>
+            </apply>
+            <ci> V3 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> a4 </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> Ca_i0 </ci>
+                <ci> x_0000 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> d4 </ci>
+                <ci> x_0010 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> a5 </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> Ca_i0 </ci>
+                <ci> x_0000 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> d5 </ci>
+                <ci> x_0100 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x_0010">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V1 </ci>
+            <ci> V4 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> a5 </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> Ca_i0 </ci>
+                <ci> x_0010 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> d5 </ci>
+                <ci> x_0110 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x_0100">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V3 </ci>
+            <ci> V2 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> a4 </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> Ca_i0 </ci>
+                <ci> x_0100 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> d4 </ci>
+                <ci> x_0110 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="x_0110">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <ci> x_0000 </ci>
+              <ci> x_0010 </ci>
+              <ci> x_0100 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="b1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> d1 </ci>
+            <ci> a1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

@@ -1,0 +1,337 @@
+//Created by libAntimony v1.3
+model ciliberto_novak_tyson_2003_version01__environment(time_)
+end
+
+model ciliberto_novak_tyson_2003_version01__Clb2(Clb2, kd_clb_1, kd_clb_2, kd_clb_3, kswe, kmih, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, M, Mcm_a, Cdh1_a, Cdc20_a, Sic1, PClb2, Trim, Cln, time_)
+
+  // Rate Rules:
+  Clb2' = ks_clb * (epsilon + Mcm_a) * M / (1 + M / Jm) + kmih * PClb2 + kdiss * Trim + (kd_sic + kd_sic_1 * Cln + kd_sic_2 * Clb2) * Trim - ((kd_clb_1 + kd_clb_2 * Cdh1_a + kd_clb_3 * Cdc20_a) * Clb2 + kswe * Clb2 + kass * Sic1 * Clb2);
+
+  // Variable initializations:
+  Clb2 = 0.184;
+  epsilon = 0.5;
+  Jm = 10;
+  ks_clb = 0.015;
+end
+
+model ciliberto_novak_tyson_2003_version01__PClb2(PClb2, kd_clb_1, kd_clb_2, kd_clb_3, kswe, kmih, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, Cdh1_a, Cdc20_a, Sic1, Clb2, PTrim, Cln, time_)
+
+  // Rate Rules:
+  PClb2' = kswe * Clb2 + kdiss * PTrim + (kd_sic + kd_sic_1 * Cln + kd_sic_2 * Clb2) * PTrim - ((kd_clb_1 + kd_clb_2 * Cdh1_a + kd_clb_3 * Cdc20_a) * PClb2 + kmih * PClb2 + kass * Sic1 * PClb2);
+
+  // Variable initializations:
+  PClb2 = 0;
+end
+
+model ciliberto_novak_tyson_2003_version01__Trim(Trim, kd_clb_1, kd_clb_2, kd_clb_3, kswe, kmih, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, Cdh1_a, Cdc20_a, Sic1, Clb2, PTrim, Cln, time_)
+
+  // Rate Rules:
+  Trim' = kass * Sic1 * Clb2 + kmih * PTrim - (kdiss * Trim + (kd_sic + kd_sic_1 * Cln + kd_sic_2 * Clb2) * Trim + (kd_clb_1 + kd_clb_2 * Cdh1_a + kd_clb_3 * Cdc20_a) * Trim + kswe * Trim);
+
+  // Variable initializations:
+  Trim = 0.084;
+end
+
+model ciliberto_novak_tyson_2003_version01__PTrim(PTrim, kd_clb_1, kd_clb_2, kd_clb_3, kswe, kmih, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, Cdh1_a, Cdc20_a, Sic1, Clb2, PClb2, Trim, Cln, time_)
+
+  // Rate Rules:
+  PTrim' = kswe * Trim + kass * Sic1 * PClb2 - (kdiss * PTrim + (kd_sic + kd_sic_1 * Cln + kd_sic_2 * Clb2) * PTrim + (kd_clb_1 + kd_clb_2 * Cdh1_a + kd_clb_3 * Cdc20_a) * PTrim + kmih * PTrim);
+
+  // Variable initializations:
+  PTrim = 0;
+end
+
+model ciliberto_novak_tyson_2003_version01__Mcm_a(Mcm_a, Mcm, Clb2, time_)
+
+  // Rate Rules:
+  Mcm_a' = -(ki_mcm) * Mcm_a / (Ji_mcm + Mcm_a) + ka_mcm * Mcm * Clb2 / (Ja_mcm + Mcm);
+
+  // Variable initializations:
+  Mcm_a = 0.933;
+  Ji_mcm = 0.1;
+  Ja_mcm = 0.1;
+  ki_mcm = 0.15;
+  ka_mcm = 1;
+end
+
+model ciliberto_novak_tyson_2003_version01__Sic1(Sic1, kd_clb_1, kd_clb_2, kd_clb_3, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, Cdh1_a, Cdc20_a, Clb2, PClb2, Trim, PTrim, Cln, time_)
+
+  // Rate Rules:
+  Sic1' = ks_sic + kdiss * (PTrim + Trim) + (kd_clb_1 + kd_clb_2 * Cdh1_a + kd_clb_3 * Cdc20_a) * (PTrim + Trim) - ((kd_sic + kd_sic_1 * Cln + kd_sic_2 * Clb2) * Sic1 + kass * Sic1 * (Clb2 + PClb2));
+
+  // Variable initializations:
+  Sic1 = 0.003;
+  ks_sic = 0.1;
+end
+
+model ciliberto_novak_tyson_2003_version01__Mih1_a(Mih1_a, Mih1, Clb2, time_)
+
+  // Rate Rules:
+  Mih1_a' = -(Vi_mih) * Mih1_a / (Ji_mih + Mih1_a) + Va_mih * Clb2 * Mih1 / (Ja_mih + Mih1);
+
+  // Variable initializations:
+  Mih1_a = 0.808;
+  Ji_mih = 0.1;
+  Ja_mih = 0.1;
+  Vi_mih = 0.3;
+  Va_mih = 1;
+end
+
+model ciliberto_novak_tyson_2003_version01__IE_a(IE_a, IE, Clb2, time_)
+
+  // Rate Rules:
+  IE_a' = -(ki_ie) * IE_a / (Ji_ie + IE_a) + ka_ie * Clb2 * IE / (Ja_ie + IE);
+
+  // Variable initializations:
+  IE_a = 0.522;
+  Ji_ie = 0.01;
+  Ja_ie = 0.01;
+  ki_ie = 0.04;
+  ka_ie = 0.1;
+end
+
+model ciliberto_novak_tyson_2003_version01__Cdc20_a(Cdc20_a, Ji_cdc20, Ja_cdc20, ki_cdc20, kd_cdc20, ka_cdc20, Cdc20, IE_a, time_)
+
+  // Rate Rules:
+  Cdc20_a' = ka_cdc20 * IE_a * Cdc20 / (Ja_cdc20 + Cdc20) - (ki_cdc20 * Cdc20_a / (Ji_cdc20 + Cdc20_a) + kd_cdc20 * Cdc20_a);
+
+  // Variable initializations:
+  Cdc20_a = 1.438;
+end
+
+model ciliberto_novak_tyson_2003_version01__Cdc20(Cdc20, Ji_cdc20, Ja_cdc20, ki_cdc20, kd_cdc20, ka_cdc20, Cdc20_a, Clb2, IE_a, time_)
+
+  // Rate Rules:
+  Cdc20' = ks_cdc20_1 + ks_cdc20_2 * power(Clb2, 4 ) / (power(Js_cdc20, 4 ) + power(Clb2, 4 )) + ki_cdc20 * Cdc20_a / (Ji_cdc20 + Cdc20_a) - (ka_cdc20 * IE_a * Cdc20 / (Ja_cdc20 + Cdc20) + kd_cdc20 * Cdc20);
+
+  // Variable initializations:
+  Cdc20 = 1.172;
+  ks_cdc20_1 = 0.005;
+  ks_cdc20_2 = 0.3;
+  Js_cdc20 = 0.3;
+end
+
+model ciliberto_novak_tyson_2003_version01__Cdh1_a(Cdh1_a, Cln, Clb2, Cdh1, Cdc20_a, time_)
+
+  // Rate Rules:
+  Cdh1_a' = -((ki_cdh * Clb2 + ki_cdh_1 * Cln)) * Cdh1_a / (Ji_cdh + Cdh1_a) + (ka_cdh_1 + ka_cdh_2 * Cdc20_a) * Cdh1 / (Ja_cdh + Cdh1);
+
+  // Variable initializations:
+  Cdh1_a = 0.993;
+  Ji_cdh = 0.01;
+  Ja_cdh = 0.01;
+  ki_cdh = 35;
+  ka_cdh_1 = 1;
+  ki_cdh_1 = 2;
+  ka_cdh_2 = 10;
+end
+
+model ciliberto_novak_tyson_2003_version01__Cln(Cln, SBF_a, time_)
+
+  // Rate Rules:
+  Cln' = ks_cln * SBF_a - kd_cln * Cln;
+
+  // Variable initializations:
+  Cln = 0.054;
+  ks_cln = 0.1;
+  kd_cln = 0.1;
+end
+
+model ciliberto_novak_tyson_2003_version01__SBF_a(SBF_a, Cln, M, Clb2, SBF, time_)
+
+  // Rate Rules:
+  SBF_a' = -((ki_sbf_1 + ki_sbf_2 * Clb2)) * SBF_a / (Ji_sbf + SBF_a) + (ka_sbf_1 * M + ka_sbf_2 * Cln) * SBF / (Ja_sbf + SBF);
+
+  // Variable initializations:
+  SBF_a = 0.124;
+  Ji_sbf = 0.01;
+  Ja_sbf = 0.01;
+  ki_sbf_1 = 1;
+  ka_sbf_1 = 1;
+  ki_sbf_2 = 2;
+  ka_sbf_2 = 0;
+end
+
+model ciliberto_novak_tyson_2003_version01__Swe1(Swe1, khsl1, khsl1r, kd_swe_1, Ji_wee, Ja_wee, Vi_wee, Va_wee, SBF_a, Clb2, BUD, PSwe1, Swe1M, time_)
+
+  // Rate Rules:
+  Swe1' = ks_swe * SBF_a + ks_sweC + khsl1r * Swe1M + Va_wee * PSwe1 / (Ja_wee + PSwe1) - (khsl1 * BUD * Swe1 + Vi_wee * Clb2 * Swe1 / (Ji_wee + Swe1) + kd_swe_1 * Swe1);
+
+  // Variable initializations:
+  Swe1 = 0;
+  ks_swe = 0.0025;
+  ks_sweC = 0;
+end
+
+model ciliberto_novak_tyson_2003_version01__PSwe1(PSwe1, khsl1, khsl1r, kd_swe_1, Ja_wee, Va_wee, BUD, PSwe1M, Clb2, Ji_wee, Swe1, Vi_wee, time_)
+
+  // Rate Rules:
+  PSwe1' = khsl1r * PSwe1M + Vi_wee * Swe1 * Clb2 / (Ji_wee + Swe1) - (khsl1 * BUD * PSwe1 + Va_wee * PSwe1 / (Ja_wee + PSwe1) + kd_swe_1 * PSwe1);
+
+  // Variable initializations:
+  PSwe1 = 0;
+end
+
+model ciliberto_novak_tyson_2003_version01__Swe1M(Swe1M, khsl1, khsl1r, kd_swe_1, Ji_wee, Ja_wee, Vi_wee, Va_wee, Swe1, Clb2, BUD, PSwe1M, time_)
+
+  // Rate Rules:
+  Swe1M' = khsl1 * BUD * Swe1 + Va_wee * PSwe1M / (Ja_wee + PSwe1M) - (khsl1r * Swe1M + Vi_wee * Clb2 * Swe1M / (Ji_wee + Swe1M) + kd_swe_1 * Swe1M);
+
+  // Variable initializations:
+  Swe1M = 0.018;
+end
+
+model ciliberto_novak_tyson_2003_version01__PSwe1M(PSwe1M, kd_swe_1, khsl1, khsl1r, Ji_wee, Ja_wee, Vi_wee, Va_wee, Swe1M, Clb2, BUD, PSwe1, time_)
+
+  // Rate Rules:
+  PSwe1M' = khsl1 * BUD * PSwe1 + Vi_wee * Clb2 * Swe1M / (Ji_wee + Swe1M) - (khsl1r * PSwe1M + Va_wee * PSwe1M / (Ja_wee + PSwe1M) + kd_swe_2 * PSwe1M);
+
+  // Variable initializations:
+  PSwe1M = 0.013;
+  kd_swe_2 = 0.05;
+end
+
+model ciliberto_novak_tyson_2003_version01__BE(BE, Cln, time_)
+
+  // Rate Rules:
+  BE' = ks_bud * Cln - kd_bud * BE;
+
+  // Variable initializations:
+  BE = 0;
+  ks_bud = 0.1;
+  kd_bud = 0.1;
+end
+
+model ciliberto_novak_tyson_2003_version01__M(M, time_)
+
+  // Rate Rules:
+  M' = mu * M;
+
+  // Variable initializations:
+  M = 0.802;
+  mu = 0.005;
+end
+
+model ciliberto_novak_tyson_2003_version01__IE(IE, IE_a)
+
+  // Assignment Rules:
+  IE := IE_total - IE_a;
+
+  // Variable initializations:
+  IE_total = 1;
+end
+
+model ciliberto_novak_tyson_2003_version01__Cdh1(Cdh1, Cdh1_a)
+
+  // Assignment Rules:
+  Cdh1 := Cdh1_total - Cdh1_a;
+
+  // Variable initializations:
+  Cdh1_total = 1;
+end
+
+model ciliberto_novak_tyson_2003_version01__Mih1(Mih1, Mih1_a)
+
+  // Assignment Rules:
+  Mih1 := Mih1_total - Mih1_a;
+
+  // Variable initializations:
+  Mih1_total = 1;
+end
+
+model ciliberto_novak_tyson_2003_version01__Mcm(Mcm, Mcm_a)
+
+  // Assignment Rules:
+  Mcm := Mcm_total - Mcm_a;
+
+  // Variable initializations:
+  Mcm_total = 1;
+end
+
+model ciliberto_novak_tyson_2003_version01__SBF(SBF, SBF_a)
+
+  // Assignment Rules:
+  SBF := SBF_total - SBF_a;
+
+  // Variable initializations:
+  SBF_total = 1;
+end
+
+model ciliberto_novak_tyson_2003_version01__Swe1_total(Swe1_total, Swe1, PSwe1, Swe1M, PSwe1M)
+
+  // Assignment Rules:
+  Swe1_total := Swe1 + PSwe1 + Swe1M + PSwe1M;
+end
+
+model ciliberto_novak_tyson_2003_version01__BUD(BUD, BE, Clb2)
+
+  // Assignment Rules:
+  BUD := piecewise( 0 , ( BE <= 0.6) && (Clb2 < 0.2 ), 1 );
+end
+
+model ciliberto_novak_tyson_2003_version01__kinetic_parameters(Ji_cdc20, Ja_cdc20, ki_cdc20, kd_cdc20, ka_cdc20, khsl1, khsl1r, kd_swe_1, Ji_wee, Ja_wee, Vi_wee, Va_wee, kd_clb_1, kd_clb_2, kd_clb_3, kswe, kmih, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, Mih1_a, Mih1, Swe1, Swe1M, PSwe1, PSwe1M)
+
+  // Assignment Rules:
+  kswe := kswe_1 * Swe1 + kswe_2 * Swe1M + kswe_3 * PSwe1;
+  kmih := kmih_1 * Mih1_a + kmih_2 * Mih1;
+
+  // Variable initializations:
+  Ji_cdc20 = 0.001;
+  Ja_cdc20 = 0.001;
+  ki_cdc20 = 0.25;
+  kd_cdc20 = 0.1;
+  ka_cdc20 = 1;
+  khsl1 = 1;
+  khsl1r = 0.01;
+  kd_swe_1 = 0.007;
+  Ji_wee = 0.05;
+  Ja_wee = 0.05;
+  Vi_wee = 1;
+  Va_wee = 0.3;
+  kd_clb_1 = 0.015;
+  kd_clb_2 = 1;
+  kd_clb_3 = 0.1;
+  kass = 300;
+  kdiss = 0.1;
+  kd_sic = 0.01;
+  kd_sic_1 = 1;
+  kd_sic_2 = 3;
+  kswe_1 = 2;
+  kswe_2 = 0.01;
+  kswe_3 = 0.2;
+  kmih_1 = 5;
+  kmih_2 = 0.5;
+end
+
+model ciliberto_novak_tyson_2003_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: ciliberto_novak_tyson_2003_version01__environment(time_);
+  Clb2: ciliberto_novak_tyson_2003_version01__Clb2(Clb20, kd_clb_1, kd_clb_2, kd_clb_3, kswe, kmih, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, M0, Mcm_a0, Cdh1_a0, Cdc20_a0, Sic10, PClb20, Trim0, Cln0, time_);
+  PClb2: ciliberto_novak_tyson_2003_version01__PClb2(PClb20, kd_clb_1, kd_clb_2, kd_clb_3, kswe, kmih, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, Cdh1_a0, Cdc20_a0, Sic10, Clb20, PTrim0, Cln0, time_);
+  Trim: ciliberto_novak_tyson_2003_version01__Trim(Trim0, kd_clb_1, kd_clb_2, kd_clb_3, kswe, kmih, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, Cdh1_a0, Cdc20_a0, Sic10, Clb20, PTrim0, Cln0, time_);
+  PTrim: ciliberto_novak_tyson_2003_version01__PTrim(PTrim0, kd_clb_1, kd_clb_2, kd_clb_3, kswe, kmih, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, Cdh1_a0, Cdc20_a0, Sic10, Clb20, PClb20, Trim0, Cln0, time_);
+  Mcm_a: ciliberto_novak_tyson_2003_version01__Mcm_a(Mcm_a0, Mcm0, Clb20, time_);
+  Sic1: ciliberto_novak_tyson_2003_version01__Sic1(Sic10, kd_clb_1, kd_clb_2, kd_clb_3, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, Cdh1_a0, Cdc20_a0, Clb20, PClb20, Trim0, PTrim0, Cln0, time_);
+  Mih1_a: ciliberto_novak_tyson_2003_version01__Mih1_a(Mih1_a0, Mih10, Clb20, time_);
+  IE_a: ciliberto_novak_tyson_2003_version01__IE_a(IE_a0, IE0, Clb20, time_);
+  Cdc20_a: ciliberto_novak_tyson_2003_version01__Cdc20_a(Cdc20_a0, Ji_cdc20, Ja_cdc20, ki_cdc20, kd_cdc20, ka_cdc20, Cdc200, IE_a0, time_);
+  Cdc20: ciliberto_novak_tyson_2003_version01__Cdc20(Cdc200, Ji_cdc20, Ja_cdc20, ki_cdc20, kd_cdc20, ka_cdc20, Cdc20_a0, Clb20, IE_a0, time_);
+  Cdh1_a: ciliberto_novak_tyson_2003_version01__Cdh1_a(Cdh1_a0, Cln0, Clb20, Cdh10, Cdc20_a0, time_);
+  Cln: ciliberto_novak_tyson_2003_version01__Cln(Cln0, SBF_a0, time_);
+  SBF_a: ciliberto_novak_tyson_2003_version01__SBF_a(SBF_a0, Cln0, M0, Clb20, SBF0, time_);
+  Swe1: ciliberto_novak_tyson_2003_version01__Swe1(Swe10, khsl1, khsl1r, kd_swe_1, Ji_wee, Ja_wee, Vi_wee, Va_wee, SBF_a0, Clb20, BUD0, PSwe10, Swe1M0, time_);
+  PSwe1: ciliberto_novak_tyson_2003_version01__PSwe1(PSwe10, khsl1, khsl1r, kd_swe_1, Ja_wee, Va_wee, BUD0, PSwe1M0, Clb20, Ji_wee, Swe10, Vi_wee, time_);
+  Swe1M: ciliberto_novak_tyson_2003_version01__Swe1M(Swe1M0, khsl1, khsl1r, kd_swe_1, Ji_wee, Ja_wee, Vi_wee, Va_wee, Swe10, Clb20, BUD0, PSwe1M0, time_);
+  PSwe1M: ciliberto_novak_tyson_2003_version01__PSwe1M(PSwe1M0, kd_swe_1, khsl1, khsl1r, Ji_wee, Ja_wee, Vi_wee, Va_wee, Swe1M0, Clb20, BUD0, PSwe10, time_);
+  BE: ciliberto_novak_tyson_2003_version01__BE(BE0, Cln0, time_);
+  M: ciliberto_novak_tyson_2003_version01__M(M0, time_);
+  IE: ciliberto_novak_tyson_2003_version01__IE(IE0, IE_a0);
+  Cdh1: ciliberto_novak_tyson_2003_version01__Cdh1(Cdh10, Cdh1_a0);
+  Mih1: ciliberto_novak_tyson_2003_version01__Mih1(Mih10, Mih1_a0);
+  Mcm: ciliberto_novak_tyson_2003_version01__Mcm(Mcm0, Mcm_a0);
+  SBF: ciliberto_novak_tyson_2003_version01__SBF(SBF0, SBF_a0);
+  Swe1_total: ciliberto_novak_tyson_2003_version01__Swe1_total(Swe1_total0, Swe10, PSwe10, Swe1M0, PSwe1M0);
+  BUD: ciliberto_novak_tyson_2003_version01__BUD(BUD0, BE0, Clb20);
+  kinetic_parameters: ciliberto_novak_tyson_2003_version01__kinetic_parameters(Ji_cdc20, Ja_cdc20, ki_cdc20, kd_cdc20, ka_cdc20, khsl1, khsl1r, kd_swe_1, Ji_wee, Ja_wee, Vi_wee, Va_wee, kd_clb_1, kd_clb_2, kd_clb_3, kswe, kmih, kass, kdiss, kd_sic, kd_sic_1, kd_sic_2, Mih1_a0, Mih10, Swe10, Swe1M0, PSwe10, PSwe1M0);
+end

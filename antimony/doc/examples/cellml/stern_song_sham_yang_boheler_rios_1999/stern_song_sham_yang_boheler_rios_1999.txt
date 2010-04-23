@@ -1,0 +1,48 @@
+//Created by libAntimony v1.3
+model stern_song_sham_yang_boheler_rios_1999_version01__environment(time_)
+end
+
+model stern_song_sham_yang_boheler_rios_1999_version01__R(R, ki, ko, kim, kom, RI, O, Ca, time_)
+
+  // Rate Rules:
+  R' = kom * O + kim * RI - ( ko * power( Ca , 2.0 ) * R + ki * Ca * R );
+end
+
+model stern_song_sham_yang_boheler_rios_1999_version01__O(O, ki, ko, kim, kom, I, R, Ca, time_)
+
+  // Rate Rules:
+  O' = kim * I + ko * power( Ca , 2.0 ) * R - ( kom * O + ki * Ca * O );
+end
+
+model stern_song_sham_yang_boheler_rios_1999_version01__I(I, ki, ko, kim, kom, O, RI, Ca, time_)
+
+  // Rate Rules:
+  I' = ki * Ca * O + ko * power( Ca , 2.0 ) * RI - ( kim * I + kom * I );
+end
+
+model stern_song_sham_yang_boheler_rios_1999_version01__RI(RI, ki, ko, kim, kom, I, R, Ca, time_)
+
+  // Rate Rules:
+  RI' = ki * Ca * R + kom * I - ( kim * RI + ko * power( Ca , 2.0 ) * RI );
+end
+
+model stern_song_sham_yang_boheler_rios_1999_version01__reaction_constants(Ca, ki, ko, kim, kom)
+
+  // Variable initializations:
+  Ca = 0.0001;
+  ki = 0.5;
+  ko = 35.0;
+  kim = 0.005;
+  kom = 0.06;
+end
+
+model stern_song_sham_yang_boheler_rios_1999_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: stern_song_sham_yang_boheler_rios_1999_version01__environment(time_);
+  R: stern_song_sham_yang_boheler_rios_1999_version01__R(R0, ki, ko, kim, kom, RI0, O0, Ca, time_);
+  O: stern_song_sham_yang_boheler_rios_1999_version01__O(O0, ki, ko, kim, kom, I0, R0, Ca, time_);
+  I: stern_song_sham_yang_boheler_rios_1999_version01__I(I0, ki, ko, kim, kom, O0, RI0, Ca, time_);
+  RI: stern_song_sham_yang_boheler_rios_1999_version01__RI(RI0, ki, ko, kim, kom, I0, R0, Ca, time_);
+  reaction_constants: stern_song_sham_yang_boheler_rios_1999_version01__reaction_constants(Ca, ki, ko, kim, kom);
+end

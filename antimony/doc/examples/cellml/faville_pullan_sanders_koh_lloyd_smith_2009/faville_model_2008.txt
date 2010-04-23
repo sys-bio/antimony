@@ -1,0 +1,619 @@
+//Created by libAntimony v1.3
+model faville_pullan_sanders_koh_lloyd_smith_2009__environment(time_)
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_CaT_d_gate(dT, Vm, time_)
+
+  // Assignment Rules:
+  infinity_dT := 1.0 / ( 1.0 + exp( k_dT * ( Vm - V_dT )));
+  tau_dT1 := A_dT1;
+
+  // Rate Rules:
+  dT' = ( infinity_dT - dT ) / tau_dT1;
+
+  // Variable initializations:
+  dT = 0.010;
+  A_dT1 = 0.0025;
+  k_dT = -0.60;
+  V_dT = -53;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_CaT_f_gate(fT, Vm, time_)
+
+  // Assignment Rules:
+  infinity_fT := 1.0 / ( 1.0 + exp( k_fT * ( Vm - V_fT )));
+  tau_fT1 := A_fT1 + ( A_fT2 - A_fT1 ) / ( 1.0 + exp( A_fT3 * ( Vm - A_fT4 )));
+
+  // Rate Rules:
+  fT' = ( infinity_fT - fT ) / tau_fT1;
+
+  // Variable initializations:
+  fT = 0.001;
+  A_fT1 = 0.019;
+  A_fT2 = 6.75;
+  A_fT3 = 2;
+  A_fT4 = -40;
+  k_fT = 1;
+  V_fT = -65;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_CaT(I_CaT, time_, Vm, dT, fT)
+
+  // Sub-modules, and any changes to those submodules:
+  I_CaT_d_gate: faville_pullan_sanders_koh_lloyd_smith_2009__I_CaT_d_gate(dT, Vm, time_);
+  I_CaT_f_gate: faville_pullan_sanders_koh_lloyd_smith_2009__I_CaT_f_gate(fT, Vm, time_);
+
+  // Assignment Rules:
+  I_CaT := g_CaT * OCaT * ( Vm - ECaT );
+
+  // Rate Rules:
+  OCaT' = alpha_OT * dT * fT * ( 1.0 - OCaT ) - beta_OT * OCaT;
+
+  // Variable initializations:
+  g_CaT = 700.0;
+  ECaT = 17.0;
+  alpha_OT = 800.0;
+  beta_OT = 72;
+  OCaT = 0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_CaExt(I_CaExt, CCy)
+
+  // Assignment Rules:
+  I_CaExt := gCaExt * ( CCy / ( KCaExt + CCy ));
+
+  // Variable initializations:
+  gCaExt = 100.0;
+  KCaExt = 1.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_Kv1_1_d_gate(dv1_1, Vm, time_)
+
+  // Assignment Rules:
+  alpha_dv1_1 := A_dv1_11 * ( A_dv1_12 / ( 1.0 + exp( A_dv1_13 * ( Vm - A_dv1_14 ))) + ( 1.0 - A_dv1_12 ));
+  A_dv1_11 := A_dv1_11a + ( A_dv1_11b - A_dv1_11a ) / ( 1.0 + exp( A_dv1_11c * ( Vm - A_dv1_11d )));
+  beta_dv1_1 := A_dv1_11 * ( A_dv1_12 - A_dv1_12 / ( 1.0 + exp( A_dv1_13 * ( Vm - A_dv1_14 ))));
+
+  // Rate Rules:
+  dv1_1' = alpha_dv1_1 * ( 1.0 - dv1_1 ) - beta_dv1_1 * dv1_1;
+
+  // Variable initializations:
+  dv1_1 = 0.000;
+  A_dv1_11a = 0.0;
+  A_dv1_11b = 250.0;
+  A_dv1_11c = -0.077;
+  A_dv1_11d = -4.8;
+  A_dv1_12 = 0.80;
+  A_dv1_13 = -0.13;
+  A_dv1_14 = -25.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_Kv1_1_f_gate(fv1_1, Vm, time_)
+
+  // Assignment Rules:
+  alpha_fv1_1 := A_fv1_11 * ( A_fv1_12 / ( 1.0 + exp( A_fv1_13 * ( Vm - A_fv1_14 ))) + ( 1.0 - A_fv1_12 ));
+  beta_fv1_1 := A_fv1_11 * ( A_fv1_12 - A_fv1_12 / ( 1.0 + exp( A_fv1_13 * ( Vm - A_fv1_14 ))));
+
+  // Rate Rules:
+  fv1_1' = alpha_fv1_1 * ( 1.0 - fv1_1 ) - beta_fv1_1 * fv1_1;
+
+  // Variable initializations:
+  fv1_1 = 1.0;
+  A_fv1_11 = 333.0;
+  A_fv1_12 = 0.10;
+  A_fv1_13 = 0.23;
+  A_fv1_14 = -44.8;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_Kv1_1(I_Kv1_1, time_, Vm, EK, dv1_1, fv1_1)
+
+  // Sub-modules, and any changes to those submodules:
+  I_Kv1_1_d_gate: faville_pullan_sanders_koh_lloyd_smith_2009__I_Kv1_1_d_gate(dv1_1, Vm, time_);
+  I_Kv1_1_f_gate: faville_pullan_sanders_koh_lloyd_smith_2009__I_Kv1_1_f_gate(fv1_1, Vm, time_);
+
+  // Assignment Rules:
+  I_Kv1_1 := g_Kv1_1 * dv1_1 * fv1_1 * ( Vm - EK );
+
+  // Variable initializations:
+  g_Kv1_1 = 10.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_KERG_d_gate(dERG, Vm, time_)
+
+  // Assignment Rules:
+  alpha_dERG := A_dERG1 * ( A_dERG2 / ( 1.0 + exp( A_dERG3 * ( Vm - A_dERG4 ))) + ( 1.0 - A_dERG2 ));
+  beta_dERG := A_dERG1 * ( A_dERG2 - A_dERG2 / ( 1.0 + exp( A_dERG3 * ( Vm - A_dERG4 ))));
+
+  // Rate Rules:
+  dERG' = alpha_dERG * ( 1.0 - dERG ) - beta_dERG * dERG;
+
+  // Variable initializations:
+  dERG = 0.000;
+  A_dERG1 = 1000.0;
+  A_dERG2 = 0.70;
+  A_dERG3 = -0.56;
+  A_dERG4 = 30;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_KERG(I_KERG, time_, Vm, EK, dERG)
+
+  // Sub-modules, and any changes to those submodules:
+  I_KERG_d_gate: faville_pullan_sanders_koh_lloyd_smith_2009__I_KERG_d_gate(dERG, Vm, time_);
+
+  // Assignment Rules:
+  I_KERG := g_KERG * dERG * ( Vm - EK );
+
+  // Variable initializations:
+  g_KERG = 10.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_KB(I_KB, EK, Vm)
+
+  // Assignment Rules:
+  I_KB := g_KB * ( Vm - EK );
+
+  // Variable initializations:
+  g_KB = 6.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_Na_d_gate(dNa_, Vm, time_)
+
+  // Assignment Rules:
+  alpha_dNa := A_dNa1 * ( A_dNa2 / ( 1.0 + exp( A_dNa3 * ( Vm - A_dNa4 ))) + ( 1.0 - A_dNa2 ));
+  A_dNa1 := A_dNa1a + ( A_dNa1b - A_dNa1a ) / ( 1.0 + exp( A_dNa1c * ( Vm - A_dNa1d )));
+  beta_dNa := A_dNa1 * ( A_dNa2 - A_dNa2 / ( 1.0 + exp( A_dNa3 * ( Vm - A_dNa4 ))));
+
+  // Rate Rules:
+  dNa_' = alpha_dNa * ( 1.0 - dNa_ ) - beta_dNa * dNa_;
+
+  // Variable initializations:
+  dNa_ = 0.000;
+  A_dNa1a = 250.0;
+  A_dNa1b = 1000.0;
+  A_dNa1c = -0.2;
+  A_dNa1d = -15.0;
+  A_dNa2 = 1.0;
+  A_dNa3 = -0.147;
+  A_dNa4 = -35.3;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_Na_f_gate(fNa, Vm, time_)
+
+  // Assignment Rules:
+  alpha_fNa := A_fNa1 * ( A_fNa2 / ( 1.0 + exp( A_fNa3 * ( Vm - A_fNa4 ))) + ( 1.0 - A_fNa2 ));
+  A_fNa1 := A_fNa1a + ( A_fNa1b - A_fNa1a ) / ( 1.0 + exp( A_fNa1c * ( Vm - A_fNa1d )));
+  beta_fNa := A_fNa1 * ( A_fNa2 - A_fNa2 / ( 1.0 + exp( A_fNa3 * ( Vm - A_fNa4 ))));
+
+  // Rate Rules:
+  fNa' = alpha_fNa * ( 1.0 - fNa ) - beta_fNa * fNa;
+
+  // Variable initializations:
+  fNa = 0.100;
+  A_fNa1a = 10.0;
+  A_fNa1b = 50.0;
+  A_fNa1c = -0.036;
+  A_fNa1d = -38.0;
+  A_fNa2 = 1.00;
+  A_fNa3 = 0.167;
+  A_fNa4 = -83.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_Na(I_Na, time_, Vm, ENa_Cy, dNa_, fNa)
+
+  // Sub-modules, and any changes to those submodules:
+  I_Na_d_gate: faville_pullan_sanders_koh_lloyd_smith_2009__I_Na_d_gate(dNa_, Vm, time_);
+  I_Na_f_gate: faville_pullan_sanders_koh_lloyd_smith_2009__I_Na_f_gate(fNa, Vm, time_);
+
+  // Assignment Rules:
+  I_Na := g_Na * dNa_ * fNa * ( Vm - ENa_Cy );
+
+  // Variable initializations:
+  g_Na = 2000.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__I_L(I_L, Vm)
+
+  // Assignment Rules:
+  I_L := g_L * ( Vm - EL );
+
+  // Variable initializations:
+  g_L = 0.20;
+  EL = 0.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__membrane(Vm, I_ion_PU1, I_ion_PU2, I_ion_PU3, I_ion_PU4, I_ion_PU5, I_ion_PU6, I_ion_PU7, I_ion_PU8, I_ion_PU9, I_ion_PU10, I_CaT, I_CaExt, I_Kv1_1, I_KERG, I_KB, I_Na, I_L, time_)
+
+  // Assignment Rules:
+  I_ion_Cy := I_CaT + I_CaExt + I_Kv1_1 + I_KERG + I_KB + I_Na + I_L;
+
+  // Rate Rules:
+  Vm' = -(( 1.0 / Cm )) * ( I_ion_Cy + I_ion_PU1 + I_ion_PU2 + I_ion_PU3 + I_ion_PU4 + I_ion_PU5 + I_ion_PU6 + I_ion_PU7 + I_ion_PU8 + I_ion_PU9 + I_ion_PU10 );
+
+  // Variable initializations:
+  Vm = -70.0;
+  Cm = 20.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__Nerst_potentials(ECa_Cy, ENa_Cy, EK, Vm, T, R, F, CO, CCy, KO, Ki, NO, Ni)
+
+  // Assignment Rules:
+  ECa_Cy := R * T / ( 2.0 * F ) * ln( CO / CCy );
+  ENa_Cy := R * T / F * ln( NO / Ni );
+  EK := R * T / F * ln( KO / Ki );
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__CCy(CCy, JCy, JS2Cy1, JS2Cy2, JS2Cy3, JS2Cy4, JS2Cy5, JS2Cy6, JS2Cy7, JS2Cy8, JS2Cy9, JS2Cy10, I_CaT, I_CaExt, time_)
+
+  // Rate Rules:
+  CCy' = JCy - ( lambda_S2_Cy * JS2Cy1 + lambda_S2_Cy * JS2Cy2 + lambda_S2_Cy * JS2Cy3 + lambda_S2_Cy * JS2Cy4 + lambda_S2_Cy * JS2Cy5 + lambda_S2_Cy * JS2Cy6 + lambda_S2_Cy * JS2Cy7 + lambda_S2_Cy * JS2Cy8 + lambda_S2_Cy * JS2Cy9 + lambda_S2_Cy * JS2Cy10 + delta_SCy / 2.0 * ( I_CaT + I_CaExt ));
+
+  // Variable initializations:
+  CCy = 0.12;
+  lambda_S2_Cy = 1.0E-3;
+  delta_SCy = 0.002;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__JS2Cy(JS2Cy1, JS2Cy2, JS2Cy3, JS2Cy4, JS2Cy5, JS2Cy6, JS2Cy7, JS2Cy8, JS2Cy9, JS2Cy10, CCy, CS21, CS22, CS23, CS24, CS25, CS26, CS27, CS28, CS29, CS210)
+
+  // Assignment Rules:
+  JS2Cy1 := mu_S2Cy1 * ( CCy - CS21 );
+  JS2Cy2 := mu_S2Cy2 * ( CCy - CS22 );
+  JS2Cy3 := mu_S2Cy3 * ( CCy - CS23 );
+  JS2Cy4 := mu_S2Cy4 * ( CCy - CS24 );
+  JS2Cy5 := mu_S2Cy5 * ( CCy - CS25 );
+  JS2Cy6 := mu_S2Cy6 * ( CCy - CS26 );
+  JS2Cy7 := mu_S2Cy7 * ( CCy - CS27 );
+  JS2Cy8 := mu_S2Cy8 * ( CCy - CS28 );
+  JS2Cy9 := mu_S2Cy9 * ( CCy - CS29 );
+  JS2Cy10 := mu_S2Cy10 * ( CCy - CS210 );
+
+  // Variable initializations:
+  mu_S2Cy1 = 0.000;
+  mu_S2Cy2 = 0.3361;
+  mu_S2Cy3 = 0.3658;
+  mu_S2Cy4 = 0.4357;
+  mu_S2Cy5 = 0.5351;
+  mu_S2Cy6 = 0.6366;
+  mu_S2Cy7 = 0.7386;
+  mu_S2Cy8 = 0.8361;
+  mu_S2Cy9 = 0.9320;
+  mu_S2Cy10 = 1.0185;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__JS1S2(JS1S2_1, JS1S2_2, JS1S2_3, JS1S2_4, JS1S2_5, JS1S2_6, JS1S2_7, JS1S2_8, JS1S2_9, JS1S2_10, n_PU, CS11, CS12, CS13, CS14, CS15, CS16, CS17, CS18, CS19, CS110, CS21, CS22, CS23, CS24, CS25, CS26, CS27, CS28, CS29, CS210)
+
+  // Assignment Rules:
+  JS1S2_1 := mu_S1S2_1 * ( CS21 - CS11 );
+  JS1S2_2 := mu_S1S2_2 * ( CS22 - CS12 );
+  JS1S2_3 := mu_S1S2_3 * ( CS23 - CS13 );
+  JS1S2_4 := mu_S1S2_4 * ( CS24 - CS14 );
+  JS1S2_5 := mu_S1S2_5 * ( CS25 - CS15 );
+  JS1S2_6 := mu_S1S2_6 * ( CS26 - CS16 );
+  JS1S2_7 := mu_S1S2_7 * ( CS27 - CS17 );
+  JS1S2_8 := mu_S1S2_8 * ( CS28 - CS18 );
+  JS1S2_9 := mu_S1S2_9 * ( CS29 - CS19 );
+  JS1S2_10 := mu_S1S2_10 * ( CS210 - CS110 );
+  mu_S1S2_1 := mu_A + ( mu_B - mu_A ) * (( 1 - 1 ) / ( n_PU - 1 ));
+  mu_S1S2_2 := mu_A + ( mu_B - mu_A ) * (( 2 - 1 ) / ( n_PU - 1 ));
+  mu_S1S2_3 := mu_A + ( mu_B - mu_A ) * (( 3 - 1 ) / ( n_PU - 1 ));
+  mu_S1S2_4 := mu_A + ( mu_B - mu_A ) * (( 4 - 1 ) / ( n_PU - 1 ));
+  mu_S1S2_5 := mu_A + ( mu_B - mu_A ) * (( 5 - 1 ) / ( n_PU - 1 ));
+  mu_S1S2_6 := mu_A + ( mu_B - mu_A ) * (( 6 - 1 ) / ( n_PU - 1 ));
+  mu_S1S2_7 := mu_A + ( mu_B - mu_A ) * (( 7 - 1 ) / ( n_PU - 1 ));
+  mu_S1S2_8 := mu_A + ( mu_B - mu_A ) * (( 8 - 1 ) / ( n_PU - 1 ));
+  mu_S1S2_9 := mu_A + ( mu_B - mu_A ) * (( 9 - 1 ) / ( n_PU - 1 ));
+  mu_S1S2_10 := mu_A + ( mu_B - mu_A ) * (( 10 - 1 ) / ( n_PU - 1 ));
+
+  // Variable initializations:
+  mu_A = 0.30;
+  mu_B = 0.24;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__JCy(JCy, CCy)
+
+  // Assignment Rules:
+  JCy := mu_Cy * ( C_infinity - CCy );
+
+  // Variable initializations:
+  mu_Cy = 1.30;
+  C_infinity = 0.12;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009__model_parameters(R, F, T, CO, KO, Ki, NO, Ni, P, n_PU)
+
+  // Variable initializations:
+  R = 8.314E-3;
+  F = 0.09649;
+  T = 310.16;
+  CO = 1.8E3;
+  KO = 5400.0;
+  Ki = 145E3;
+  NO = 140E3;
+  Ni = 10E3;
+  P = 1.0;
+  n_PU = 10.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__PU_membrane(I_iCa, I_iNa, I_ion_PU, alpha_scale, I_Ca, I_Na, I_NaP, I_NSCC_Ca, I_PM, I_NSCC_Na)
+
+  // Assignment Rules:
+  I_iCa := alpha_scale * ( I_Ca + I_NSCC_Ca + I_PM );
+  I_iNa := alpha_scale * ( I_NSCC_Na + I_Na + I_NaP );
+  I_ion_PU := I_iCa + I_iNa;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_Ca(I_Ca, Vm, T, R, F, CO, CS1)
+
+  // Assignment Rules:
+  I_Ca := gCa * ( Vm - ECa_PU );
+  gCa := gCa_ * exp( kCa * Vm ) / ( 1.0 + exp( kVCa * ( Vm - VhCa )));
+  ECa_PU := R * T / ( 2.0 * F ) * ln( CO / CS1 );
+
+  // Variable initializations:
+  gCa_ = 0.074;
+  kCa = 0.013;
+  kVCa = -0.20;
+  VhCa = -85.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_Na(I_Na, Vm, T, R, F, NO, NS1)
+
+  // Assignment Rules:
+  I_Na := gNa * ( Vm - ENa_PU );
+  ENa_PU := R * T / F * ln( NO / NS1 );
+
+  // Variable initializations:
+  gNa = 13.5;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_NSCC_Ca(I_NSCC_Ca, hNSCC, Vm, ENSCC, KNSCC, CS1)
+
+  // Assignment Rules:
+  I_NSCC_Ca := gNSCC_Ca * ( Vm - ENSCC );
+  gNSCC_Ca := gNSCC_Ca_ * (power( KNSCC , hNSCC ) / (power( KNSCC , hNSCC ) + power( CS1 , hNSCC )));
+
+  // Variable initializations:
+  gNSCC_Ca_ = 0.10;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_NSCC_Na(I_NSCC_Na, hNSCC, Vm, ENSCC, KNSCC, CS1)
+
+  // Assignment Rules:
+  I_NSCC_Na := gNSCC_Na * ( Vm - ENSCC );
+  gNSCC_Na := gNSCC_Na_ * (power( KNSCC , hNSCC ) / (power( KNSCC , hNSCC ) + power( CS1 , hNSCC )));
+
+  // Variable initializations:
+  gNSCC_Na_ = 160.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_PM(I_PM, CS1)
+
+  // Assignment Rules:
+  I_PM := gPM * (power( CS1 , 2.0 ) / (power( KPM , 2.0 ) + power( CS1 , 2.0 )));
+
+  // Variable initializations:
+  gPM = 675.0;
+  KPM = 1.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_NaP(I_NaP, NS1, Vm)
+
+  // Assignment Rules:
+  I_NaP := gNaP * (power( NS1 , hNaP ) / (power( KNaP , hNaP ) + power( NS1 , hNaP ))) * ( ENaP - Vm );
+
+  // Variable initializations:
+  gNaP = 187.5;
+  KNaP = 1.0E4;
+  hNaP = 4.0;
+  ENaP = 10.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__JSERCA(JSERCA, CER, CS1)
+
+  // Assignment Rules:
+  JSERCA := VSERCA * ( CS1 - A2 * CER ) / ( 1.0 + A4 * CS1 + A5 * CER + A6 * CS1 * CER );
+
+  // Variable initializations:
+  VSERCA = 1.0E5;
+  A2 = 6E-4;
+  A4 = 3.57;
+  A5 = 2.7E-5;
+  A6 = 2.31E-5;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__JMCU(JMCU, CS2, CMT)
+
+  // Assignment Rules:
+  JMCU := VMCU * (power( CS2 , 2.0 ) / (power( KMCU , 2.0 ) + power( CS2 , 2.0 ))) * epsilon_INH;
+  epsilon_INH := power( KINH , hINH ) / (power( KINH , hINH ) + power( CMT , hINH ));
+
+  // Variable initializations:
+  VMCU = 800.0;
+  KMCU = 10.0;
+  KINH = 10.0;
+  hINH = 4.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__JIPR(JIPR, CER, CS2, P, time_)
+
+  // Assignment Rules:
+  JIPR := kIPR * power( P * phi1 * H / ( P * phi1 + phi_1 ), 4.0 ) * ( CER - CS2 );
+  phi1 := ( k1 * R1 + r2 * CS2 ) / ( R1 + CS2 );
+  phi_1 := ( k_1 + r_2 ) * R3 / ( R3 + CS2 );
+  phi2 := ( k2 * R3 + r4 * CS2 ) / ( R3 + CS2 );
+  phi3 := g_phi3 * zeta / (( 1.0 + power( K_phi3_act / CS2 , h_phi3_act )) * ( 1.0 + power( CS2 / K_phi3_inh , h_phi3_inh )));
+  alpha_zeta := g_alpha;
+  beta_zeta := g_beta / ( 1.0 + power( K_beta / CS2 , h_beta ));
+
+  // Rate Rules:
+  H' = phi3 * ( 1.0 - H ) - P * phi1 * phi2 / ( P * phi1 + phi_1 ) * H;
+  zeta' = alpha_zeta * ( 1.0 - zeta ) - beta_zeta * zeta;
+
+  // Variable initializations:
+  kIPR = 2000.0;
+  k_1 = 6.4;
+  k1 = 0.0;
+  k2 = 4.0;
+  r2 = 250.0;
+  r_2 = 0.0;
+  r4 = 750.0;
+  R1 = 36.0;
+  R3 = 300.0;
+  H = 0.200;
+  g_beta = 1500.0;
+  h_beta = 4.0;
+  g_alpha = 0.85;
+  K_beta = 0.35;
+  zeta = 0.300;
+  K_phi3_act = 0.1;
+  K_phi3_inh = 0.5;
+  h_phi3_act = 3.0;
+  h_phi3_inh = 3.0;
+  g_phi3 = 4.5;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__JNCX(JNCX, CMT)
+
+  // Assignment Rules:
+  JNCX := VNCX * ( CMT / ( CMT + KNCX ));
+
+  // Variable initializations:
+  VNCX = 3.0;
+  KNCX = 0.3;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__CS1(CS1, JS1S2, JNCX, JSERCA, I_iCa, delta_SPU, gamma_S1, gamma_MT, gamma_ER, alpha_scale, time_)
+
+  // Assignment Rules:
+  lambda_MT_S1 := gamma_MT / gamma_S1;
+  lambda_ER_S1 := gamma_ER / gamma_S1;
+
+  // Rate Rules:
+  CS1' = JS1S2 + lambda_MT_S1 * JNCX - ( delta_SPU / ( alpha_scale * 2.0 ) * I_iCa + lambda_ER_S1 * JSERCA );
+
+  // Variable initializations:
+  CS1 = 0.120;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__CS2(CS2, JS1S2, JS2Cy, JMCU, JIPR, gamma_S1, gamma_S2, gamma_MT, gamma_ER, time_)
+
+  // Assignment Rules:
+  lambda_MT_S2 := gamma_MT / gamma_S2;
+  lambda_ER_S2 := gamma_ER / gamma_S2;
+  lambda_S1_S2 := gamma_S1 / gamma_S2;
+
+  // Rate Rules:
+  CS2' = JS2Cy + lambda_ER_S2 * JIPR - ( lambda_S1_S2 * JS1S2 + lambda_MT_S2 * JMCU );
+
+  // Variable initializations:
+  CS2 = 0.023;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__CER(CER, JSERCA, JIPR, time_)
+
+  // Rate Rules:
+  CER' = JSERCA - JIPR;
+
+  // Variable initializations:
+  CER = 200.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__CMT(CMT, JMCU, JNCX, time_)
+
+  // Assignment Rules:
+  fm := 1.0 / ( 1.0 + Km * Bm / power( Km + CMT , 2.0 ));
+
+  // Rate Rules:
+  CMT' = fm * ( JMCU - JNCX );
+
+  // Variable initializations:
+  CMT = 0.200;
+  Km = 0.01;
+  Bm = 100.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__NS1(NS1, alpha_scale, delta_SPU, I_iNa, time_)
+
+  // Rate Rules:
+  NS1' = -(( delta_SPU / ( 1.0 * alpha_scale ))) * I_iNa;
+
+  // Variable initializations:
+  NS1 = 1.01E4;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__model_parameters(R, F, T, NO, CO, KO, Ki, P, delta_SPU, gamma_S1, gamma_S2, gamma_MT, gamma_ER, KNSCC, ENSCC, hNSCC, alpha_scale, n_PU)
+
+  // Assignment Rules:
+  alpha_scale := n_PU_base / n_PU;
+
+  // Variable initializations:
+  R = 8.314E-3;
+  F = 0.09649;
+  T = 310.16;
+  NO = 140.0E3;
+  CO = 1.8E3;
+  KO = 5400.0;
+  Ki = 145E3;
+  P = 1.0;
+  delta_SPU = 18.5;
+  gamma_S1 = 100.0;
+  gamma_S2 = 1.0;
+  gamma_MT = 200.0;
+  gamma_ER = 20.0;
+  KNSCC = 0.12;
+  ENSCC = 0.0;
+  hNSCC = 3.0;
+  n_PU_base = 50.0;
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU, CS1, CS2, n_PU, JS2Cy, JS1S2, Vm, time_)
+
+  // Sub-modules, and any changes to those submodules:
+  PU_membrane: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__PU_membrane(I_iCa, I_iNa, I_ion_PU, alpha_scale, I_Ca0, I_Na0, I_NaP0, I_NSCC_Ca0, I_PM0, I_NSCC_Na0);
+  I_Ca: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_Ca(I_Ca0, Vm, T, R, F, CO, CS1);
+  I_Na: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_Na(I_Na0, Vm, T, R, F, NO, NS10);
+  I_NSCC_Ca: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_NSCC_Ca(I_NSCC_Ca0, hNSCC, Vm, ENSCC, KNSCC, CS1);
+  I_NSCC_Na: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_NSCC_Na(I_NSCC_Na0, hNSCC, Vm, ENSCC, KNSCC, CS1);
+  I_PM: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_PM(I_PM0, CS1);
+  I_NaP: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__I_NaP(I_NaP0, NS10, Vm);
+  JSERCA: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__JSERCA(JSERCA0, CER0, CS1);
+  JMCU: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__JMCU(JMCU0, CS2, CMT0);
+  JIPR: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__JIPR(JIPR0, CER0, CS2, P, time_);
+  JNCX: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__JNCX(JNCX0, CMT0);
+  CS1_mod: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__CS1(CS1, JS1S2, JNCX0, JSERCA0, I_iCa, delta_SPU, gamma_S1, gamma_MT, gamma_ER, alpha_scale, time_);
+  CS2_mod: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__CS2(CS2, JS1S2, JS2Cy, JMCU0, JIPR0, gamma_S1, gamma_S2, gamma_MT, gamma_ER, time_);
+  CER: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__CER(CER0, JSERCA0, JIPR0, time_);
+  CMT: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__CMT(CMT0, JMCU0, JNCX0, time_);
+  NS1: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__NS1(NS10, alpha_scale, delta_SPU, I_iNa, time_);
+  model_parameters: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__model_parameters(R, F, T, NO, CO, KO, Ki, P, delta_SPU, gamma_S1, gamma_S2, gamma_MT, gamma_ER, KNSCC, ENSCC, hNSCC, alpha_scale, n_PU);
+end
+
+model faville_pullan_sanders_koh_lloyd_smith_2009____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: faville_pullan_sanders_koh_lloyd_smith_2009__environment(time_);
+  I_CaT: faville_pullan_sanders_koh_lloyd_smith_2009__I_CaT(I_CaT0, time_, Vm, dT, fT);
+  I_CaExt: faville_pullan_sanders_koh_lloyd_smith_2009__I_CaExt(I_CaExt0, CCy0);
+  I_Kv1_1: faville_pullan_sanders_koh_lloyd_smith_2009__I_Kv1_1(I_Kv1_10, time_, Vm, EK, dv1_1, fv1_1);
+  I_KERG: faville_pullan_sanders_koh_lloyd_smith_2009__I_KERG(I_KERG0, time_, Vm, EK, dERG);
+  I_KB: faville_pullan_sanders_koh_lloyd_smith_2009__I_KB(I_KB0, EK, Vm);
+  I_Na: faville_pullan_sanders_koh_lloyd_smith_2009__I_Na(I_Na0, time_, Vm, ENa_Cy, dNa_, fNa);
+  I_L: faville_pullan_sanders_koh_lloyd_smith_2009__I_L(I_L0, Vm);
+  membrane: faville_pullan_sanders_koh_lloyd_smith_2009__membrane(Vm, I_ion_PU1, I_ion_PU2, I_ion_PU3, I_ion_PU4, I_ion_PU5, I_ion_PU6, I_ion_PU7, I_ion_PU8, I_ion_PU9, I_ion_PU10, I_CaT0, I_CaExt0, I_Kv1_10, I_KERG0, I_KB0, I_Na0, I_L0, time_);
+  Nerst_potentials: faville_pullan_sanders_koh_lloyd_smith_2009__Nerst_potentials(ECa_Cy, ENa_Cy, EK, Vm, T, R, F, CO, CCy0, KO, Ki, NO, Ni);
+  CCy: faville_pullan_sanders_koh_lloyd_smith_2009__CCy(CCy0, JCy0, JS2Cy1, JS2Cy2, JS2Cy3, JS2Cy4, JS2Cy5, JS2Cy6, JS2Cy7, JS2Cy8, JS2Cy9, JS2Cy10, I_CaT0, I_CaExt0, time_);
+  JS2Cy: faville_pullan_sanders_koh_lloyd_smith_2009__JS2Cy(JS2Cy1, JS2Cy2, JS2Cy3, JS2Cy4, JS2Cy5, JS2Cy6, JS2Cy7, JS2Cy8, JS2Cy9, JS2Cy10, CCy0, CS21, CS22, CS23, CS24, CS25, CS26, CS27, CS28, CS29, CS210);
+  JS1S2: faville_pullan_sanders_koh_lloyd_smith_2009__JS1S2(JS1S2_1, JS1S2_2, JS1S2_3, JS1S2_4, JS1S2_5, JS1S2_6, JS1S2_7, JS1S2_8, JS1S2_9, JS1S2_10, n_PU, CS11, CS12, CS13, CS14, CS15, CS16, CS17, CS18, CS19, CS110, CS21, CS22, CS23, CS24, CS25, CS26, CS27, CS28, CS29, CS210);
+  JCy: faville_pullan_sanders_koh_lloyd_smith_2009__JCy(JCy0, CCy0);
+  model_parameters: faville_pullan_sanders_koh_lloyd_smith_2009__model_parameters(R, F, T, CO, KO, Ki, NO, Ni, P, n_PU);
+  pacemaker_unit_model1: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU1, CS11, CS21, n_PU, JS2Cy1, JS1S2_1, Vm, time_);
+  pacemaker_unit_model2: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU2, CS12, CS22, n_PU, JS2Cy2, JS1S2_2, Vm, time_);
+  pacemaker_unit_model3: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU3, CS13, CS23, n_PU, JS2Cy3, JS1S2_3, Vm, time_);
+  pacemaker_unit_model4: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU4, CS14, CS24, n_PU, JS2Cy4, JS1S2_4, Vm, time_);
+  pacemaker_unit_model5: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU5, CS15, CS25, n_PU, JS2Cy5, JS1S2_5, Vm, time_);
+  pacemaker_unit_model6: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU6, CS16, CS26, n_PU, JS2Cy6, JS1S2_6, Vm, time_);
+  pacemaker_unit_model7: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU7, CS17, CS27, n_PU, JS2Cy7, JS1S2_7, Vm, time_);
+  pacemaker_unit_model8: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU8, CS18, CS28, n_PU, JS2Cy8, JS1S2_8, Vm, time_);
+  pacemaker_unit_model9: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU9, CS19, CS29, n_PU, JS2Cy9, JS1S2_9, Vm, time_);
+  pacemaker_unit_model10: faville_pullan_sanders_koh_lloyd_smith_2009_pacemaker__pacemaker_unit_model(I_ion_PU10, CS110, CS210, n_PU, JS2Cy10, JS1S2_10, Vm, time_);
+end

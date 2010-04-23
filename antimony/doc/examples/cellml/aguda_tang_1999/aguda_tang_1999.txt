@@ -1,0 +1,311 @@
+//Created by libAntimony v1.3
+model aguda_tang_1999__environment(time_)
+end
+
+model aguda_tang_1999__rate_constants(k1, k1_, k1__, kn1, k2, kn2, k3, k3_, kn4, k5, kn6, k8, k9, k10, k17, k18, k19, k20, k21, k22, k24, k25, k25_, k26, k26_, k28, k29)
+
+  // Variable initializations:
+  k1 = 0.1;
+  k1_ = 0.5;
+  k1__ = 0.5;
+  kn1 = 0.001;
+  k2 = 0.1;
+  kn2 = 1;
+  k3 = 1.42;
+  k3_ = 0;
+  kn4 = 0.016;
+  k5 = 0.02;
+  kn6 = 5;
+  k8 = 2;
+  k9 = 2;
+  k10 = 0.035;
+  k17 = 3.5;
+  k18 = 0.0001;
+  k19 = 0.05;
+  k20 = 0.01;
+  k21 = 0.1;
+  k22 = 0.001;
+  k24 = 0.1;
+  k25 = 0.01;
+  k25_ = 0.02;
+  k26 = 0.01;
+  k26_ = 0.1;
+  k28 = 0.01;
+  k29 = 0.001;
+end
+
+model aguda_tang_1999__a_CyclinE_Cdk2(a_CyclinE_Cdk2, V_2, V_10, V_n2, V_9, V_21, time_)
+
+  // Rate Rules:
+  a_CyclinE_Cdk2' = V_2 + V_10 - (V_n2 + V_9 + V_21);
+
+  // Variable initializations:
+  a_CyclinE_Cdk2 = 0;
+end
+
+model aguda_tang_1999__i_CyclinE_Cdk2(i_CyclinE_Cdk2, V_3, V_2, V_n2, V_5, time_)
+
+  // Rate Rules:
+  i_CyclinE_Cdk2' = V_3 + V_n2 - (V_2 + V_5);
+
+  // Variable initializations:
+  i_CyclinE_Cdk2 = 0.01;
+end
+
+model aguda_tang_1999__pRB_E2F(pRB_E2F, V_n1, V_1, time_)
+
+  // Rate Rules:
+  pRB_E2F' = V_n1 - V_1;
+
+  // Variable initializations:
+  pRB_E2F = 1.95;
+end
+
+model aguda_tang_1999__E2F(E2F, V_1, V_18, V_n1, V_n4, time_)
+
+  // Rate Rules:
+  E2F' = V_1 + V_4 + V_18 - (V_n1 + V_n4);
+
+  // Variable initializations:
+  E2F = 0;
+  V_4 = 0.000001;
+end
+
+model aguda_tang_1999__pRB(pRB, V_26, V_29, V_n1, V_28, time_)
+
+  // Rate Rules:
+  pRB' = V_27 + V_26 + V_29 - (V_n1 + V_28);
+
+  // Variable initializations:
+  pRB = 0.05;
+  V_27 = 0.01;
+end
+
+model aguda_tang_1999__CycD_Cdk4(CycD_Cdk4, V_20, V_n6, V_19, V_17, time_)
+
+  // Rate Rules:
+  CycD_Cdk4' = V_6 + V_20 - (V_n6 + V_19 + V_17);
+
+  // Variable initializations:
+  CycD_Cdk4 = 0;
+  V_6 = 0.018;
+end
+
+model aguda_tang_1999__p27(p27, V_10, V_20, V_8, V_9, V_19, V_22, time_)
+
+  // Rate Rules:
+  p27' = V_7 + V_10 + V_20 - (V_8 + V_9 + V_19 + V_22);
+
+  // Variable initializations:
+  p27 = 5;
+  V_7 = 0.0001;
+end
+
+model aguda_tang_1999__CycE_Cdk2_p27(CycE_Cdk2_p27, V_9, V_10, time_)
+
+  // Rate Rules:
+  CycE_Cdk2_p27' = V_9 - V_10;
+
+  // Variable initializations:
+  CycE_Cdk2_p27 = 1;
+end
+
+model aguda_tang_1999__CycD_Cdk4_p27(CycD_Cdk4_p27, V_19, V_20, time_)
+
+  // Rate Rules:
+  CycD_Cdk4_p27' = V_19 - V_20;
+
+  // Variable initializations:
+  CycD_Cdk4_p27 = 0;
+end
+
+model aguda_tang_1999__p16(p16, V_25, V_17, V_24, time_)
+
+  // Rate Rules:
+  p16' = V_23 + V_25 - (V_17 + V_24);
+
+  // Variable initializations:
+  p16 = 5;
+  V_23 = 0.2;
+end
+
+model aguda_tang_1999__pRB_P(pRB_P, V_1, V_29, time_)
+
+  // Rate Rules:
+  pRB_P' = V_1 - V_29;
+
+  // Variable initializations:
+  pRB_P = 0.01;
+end
+
+model aguda_tang_1999__V_1(V_1, k1, k1_, k1__, CycD_Cdk4, CycD_Cdk4_p27, a_CyclinE_Cdk2, pRB_E2F)
+
+  // Assignment Rules:
+  V_1 := k1_ * CycD_Cdk4 * pRB_E2F + k1__ * CycD_Cdk4_p27 * pRB_E2F + k1 * a_CyclinE_Cdk2 * pRB_E2F;
+end
+
+model aguda_tang_1999__V_n1(V_n1, kn1)
+
+  // Assignment Rules:
+  V_n1 := kn1;
+end
+
+model aguda_tang_1999__V_2(V_2, k2, a_CyclinE_Cdk2, i_CyclinE_Cdk2)
+
+  // Assignment Rules:
+  V_2 := k2 * a_CyclinE_Cdk2 * i_CyclinE_Cdk2;
+end
+
+model aguda_tang_1999__V_n2(V_n2, kn2, a_CyclinE_Cdk2)
+
+  // Assignment Rules:
+  V_n2 := kn2 * a_CyclinE_Cdk2;
+end
+
+model aguda_tang_1999__V_3(V_3, k3, k3_, E2F)
+
+  // Assignment Rules:
+  V_3 := k3 * E2F + k3_;
+end
+
+model aguda_tang_1999__V_n4(V_n4, kn4, E2F)
+
+  // Assignment Rules:
+  V_n4 := kn4 * E2F;
+end
+
+model aguda_tang_1999__V_5(V_5, k5, i_CyclinE_Cdk2)
+
+  // Assignment Rules:
+  V_5 := k5 * i_CyclinE_Cdk2;
+end
+
+model aguda_tang_1999__V_n6(V_n6, kn6, CycD_Cdk4)
+
+  // Assignment Rules:
+  V_n6 := kn6 * CycD_Cdk4;
+end
+
+model aguda_tang_1999__V_8(V_8, k8, p27, a_CyclinE_Cdk2)
+
+  // Assignment Rules:
+  V_8 := k8 * p27 * a_CyclinE_Cdk2;
+end
+
+model aguda_tang_1999__V_9(V_9, k9, p27, a_CyclinE_Cdk2)
+
+  // Assignment Rules:
+  V_9 := k9 * p27 * a_CyclinE_Cdk2;
+end
+
+model aguda_tang_1999__V_10(V_10, k10, CycE_Cdk2_p27)
+
+  // Assignment Rules:
+  V_10 := k10 * CycE_Cdk2_p27;
+end
+
+model aguda_tang_1999__V_17(V_17, k17, p16, CycD_Cdk4)
+
+  // Assignment Rules:
+  V_17 := k17 * p16 * CycD_Cdk4;
+end
+
+model aguda_tang_1999__V_18(V_18, k18, E2F)
+
+  // Assignment Rules:
+  V_18 := k18 * E2F;
+end
+
+model aguda_tang_1999__V_19(V_19, k19, CycD_Cdk4, p27)
+
+  // Assignment Rules:
+  V_19 := k19 * p27 * CycD_Cdk4;
+end
+
+model aguda_tang_1999__V_20(V_20, k20, CycD_Cdk4_p27)
+
+  // Assignment Rules:
+  V_20 := k20 * CycD_Cdk4_p27;
+end
+
+model aguda_tang_1999__V_21(V_21, k21, a_CyclinE_Cdk2)
+
+  // Assignment Rules:
+  V_21 := k21 * power(a_CyclinE_Cdk2, 2 );
+end
+
+model aguda_tang_1999__V_22(V_22, k22, p27)
+
+  // Assignment Rules:
+  V_22 := k22 * p27;
+end
+
+model aguda_tang_1999__V_24(V_24, k24, p16)
+
+  // Assignment Rules:
+  V_24 := k24 * p16;
+end
+
+model aguda_tang_1999__V_25(V_25, k25, k25_, pRB)
+
+  // Assignment Rules:
+  V_25 := k25 / ((1 + k25_ * pRB) * 1 );
+end
+
+model aguda_tang_1999__V_26(V_26, k26, k26_, p16)
+
+  // Assignment Rules:
+  V_26 := k26 / ((1 + k26_ * p16) * 1 );
+end
+
+model aguda_tang_1999__V_28(V_28, k28, pRB)
+
+  // Assignment Rules:
+  V_28 := k28 * pRB;
+end
+
+model aguda_tang_1999__V_29(V_29, k29, pRB_P)
+
+  // Assignment Rules:
+  V_29 := k29 * pRB_P;
+end
+
+model aguda_tang_1999____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: aguda_tang_1999__environment(time_);
+  rate_constants: aguda_tang_1999__rate_constants(k1, k1_, k1__, kn1, k2, kn2, k3, k3_, kn4, k5, kn6, k8, k9, k10, k17, k18, k19, k20, k21, k22, k24, k25, k25_, k26, k26_, k28, k29);
+  a_CyclinE_Cdk2: aguda_tang_1999__a_CyclinE_Cdk2(a_CyclinE_Cdk20, V_23, V_100, V_n20, V_90, V_210, time_);
+  i_CyclinE_Cdk2: aguda_tang_1999__i_CyclinE_Cdk2(i_CyclinE_Cdk20, V_30, V_23, V_n20, V_50, time_);
+  pRB_E2F: aguda_tang_1999__pRB_E2F(pRB_E2F0, V_n10, V_11, time_);
+  E2F: aguda_tang_1999__E2F(E2F0, V_11, V_180, V_n10, V_n40, time_);
+  pRB: aguda_tang_1999__pRB(pRB0, V_260, V_290, V_n10, V_280, time_);
+  CycD_Cdk4: aguda_tang_1999__CycD_Cdk4(CycD_Cdk40, V_200, V_n60, V_190, V_170, time_);
+  p27: aguda_tang_1999__p27(p270, V_100, V_200, V_80, V_90, V_190, V_220, time_);
+  CycE_Cdk2_p27: aguda_tang_1999__CycE_Cdk2_p27(CycE_Cdk2_p270, V_90, V_100, time_);
+  CycD_Cdk4_p27: aguda_tang_1999__CycD_Cdk4_p27(CycD_Cdk4_p270, V_190, V_200, time_);
+  p16: aguda_tang_1999__p16(p160, V_250, V_170, V_240, time_);
+  pRB_P: aguda_tang_1999__pRB_P(pRB_P0, V_11, V_290, time_);
+  V_1: aguda_tang_1999__V_1(V_11, k1, k1_, k1__, CycD_Cdk40, CycD_Cdk4_p270, a_CyclinE_Cdk20, pRB_E2F0);
+  V_n1: aguda_tang_1999__V_n1(V_n10, kn1);
+  V_2: aguda_tang_1999__V_2(V_23, k2, a_CyclinE_Cdk20, i_CyclinE_Cdk20);
+  V_n2: aguda_tang_1999__V_n2(V_n20, kn2, a_CyclinE_Cdk20);
+  V_3: aguda_tang_1999__V_3(V_30, k3, k3_, E2F0);
+  V_n4: aguda_tang_1999__V_n4(V_n40, kn4, E2F0);
+  V_5: aguda_tang_1999__V_5(V_50, k5, i_CyclinE_Cdk20);
+  V_n6: aguda_tang_1999__V_n6(V_n60, kn6, CycD_Cdk40);
+  V_8: aguda_tang_1999__V_8(V_80, k8, p270, a_CyclinE_Cdk20);
+  V_9: aguda_tang_1999__V_9(V_90, k9, p270, a_CyclinE_Cdk20);
+  V_10: aguda_tang_1999__V_10(V_100, k10, CycE_Cdk2_p270);
+  V_17: aguda_tang_1999__V_17(V_170, k17, p160, CycD_Cdk40);
+  V_18: aguda_tang_1999__V_18(V_180, k18, E2F0);
+  V_19: aguda_tang_1999__V_19(V_190, k19, CycD_Cdk40, p270);
+  V_20: aguda_tang_1999__V_20(V_200, k20, CycD_Cdk4_p270);
+  V_21: aguda_tang_1999__V_21(V_210, k21, a_CyclinE_Cdk20);
+  V_22: aguda_tang_1999__V_22(V_220, k22, p270);
+  V_24: aguda_tang_1999__V_24(V_240, k24, p160);
+  V_25: aguda_tang_1999__V_25(V_250, k25, k25_, pRB0);
+  V_26: aguda_tang_1999__V_26(V_260, k26, k26_, p160);
+  V_28: aguda_tang_1999__V_28(V_280, k28, pRB0);
+  V_29: aguda_tang_1999__V_29(V_290, k29, pRB_P0);
+end

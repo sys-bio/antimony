@@ -1,0 +1,471 @@
+//Created by libAntimony v1.3
+model wang_model_2008__environment(time_)
+end
+
+model wang_model_2008__membrane(V, Cm, Vmyo, VJSR, VNSR, Vss, Acap, Ko, Nao, Cao, Clo, Cli, R, T, F, time_, i_CaL, i_CaT, i_pCa, i_NaCa, i_Cab, i_Na, i_Nab, i_NaK, i_Kto_f, i_K1, i_Ks, i_Kur, i_Kss, i_ClCa, i_Kr)
+
+  // Assignment Rules:
+  i_stim := piecewise( stim_amplitude , (( time_ >= stim_start) && (time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration )), 0 );
+
+  // Rate Rules:
+  V' = -((i_CaL + i_CaT + i_pCa + i_NaCa + i_Cab + i_Na + i_Nab + i_NaK + i_Kto_f + i_K1 + i_Ks + i_Kur + i_Kss + i_Kr + i_ClCa + i_stim));
+
+  // Variable initializations:
+  V = -80.6475;
+  Cm = 1;
+  Vmyo = 2.2826e-6;
+  VJSR = 0.12e-8;
+  VNSR = 2.098e-7;
+  Vss = 3.0734e-8;
+  Acap = 1.5410e-5;
+  Ko = 5400;
+  Nao = 140000;
+  Cao = 1000;
+  Clo = 132000;
+  Cli = 30000;
+  R = 8.314;
+  T = 298;
+  F = 96.5;
+  stim_start = 20;
+  stim_end = 500000;
+  stim_period = 2000.0;
+  stim_duration = 0.5;
+  stim_amplitude = -80;
+end
+
+model wang_model_2008__calcium_concentration(Cai, Cass, CaJSR, CaNSR, Acap, Vmyo, VJSR, Vss, VNSR, V, Cm, time_, F, i_Cab, i_CaL, i_CaT, i_NaCa, i_pCa, J_leak, J_rel, J_up, J_tr, J_trpn, J_xfer)
+
+  // Assignment Rules:
+  Bi := power(1 + CMDN_tot * Km_CMDN / power(Km_CMDN + Cai, 2 ), -(1 ));
+  Bss := power(1 + CMDN_tot * Km_CMDN / power(Km_CMDN + Cass, 2 ), -(1 ));
+  BJSR := power(1 + CSQN_tot * Km_CSQN / power(Km_CSQN + CaJSR, 2 ), -(1 ));
+
+  // Rate Rules:
+  Cai' = Bi * (J_leak + J_xfer - (J_up + J_trpn));
+  Cass' = Bss * (J_rel * VJSR / Vss - (J_xfer * Vmyo / Vss + (i_CaL + i_Cab + i_pCa + i_CaT - 2 * i_CaT) * (Acap * Cm / (2 * Vss * F))));
+  CaJSR' = BJSR * (J_xfer - J_rel);
+  CaNSR' = (J_up - J_leak) * Vmyo / VNSR - J_tr * VJSR / VNSR;
+
+  // Variable initializations:
+  Cai = 0.2049;
+  Cass = 0.1867;
+  CaJSR = 705.5417;
+  CaNSR = 703.3063;
+  CMDN_tot = 25;
+  CSQN_tot = 15000;
+  Km_CMDN = 0.238;
+  Km_CSQN = 800;
+end
+
+model wang_model_2008__calcium_fluxes(J_leak, J_rel, J_up, J_tr, J_trpn, J_xfer, k_plus_htrpn, k_minus_htrpn, k_plus_ltrpn, k_minus_ltrpn, LTRPN_tot, HTRPN_tot, LTRPN_Ca, HTRPN_Ca, V, time_, i_CaL_max, i_CaL, Cai, Cass, CaJSR, CaNSR, P_O1, P_O2)
+
+  // Assignment Rules:
+  J_leak := v2 * (CaNSR - Cai);
+  J_rel := v1 * (P_O1 + P_O2) * (CaJSR - Cass) * P_RyR;
+  J_up := v3 * power(Cai, 2 ) / (power(Km_up, 2 ) + power(Cai, 2 ));
+  J_tr := (CaNSR - CaJSR) / tau_tr;
+  J_trpn := k_plus_htrpn * Cai * (HTRPN_tot - HTRPN_Ca) + k_plus_ltrpn * Cai * (LTRPN_tot - LTRPN_Ca) - (k_minus_htrpn * HTRPN_Ca + k_minus_ltrpn * LTRPN_Ca);
+  J_xfer := (Cass - Cai) / tau_xfer;
+
+  // Rate Rules:
+  P_RyR' = -(0.04 ) * P_RyR - 0.1 * i_CaL / i_CaL_max * exp(-(power(V - 5 , 2 )) / 648 );
+
+  // Variable initializations:
+  k_plus_htrpn = 0.00237;
+  k_minus_htrpn = 3.2e-5;
+  k_plus_ltrpn = 0.0327;
+  k_minus_ltrpn = 0.0196;
+  P_RyR = 2.8603e-14;
+  v1 = 0.45;
+  tau_tr = 20;
+  v2 = 2.088e-5;
+  tau_xfer = 8;
+  v3 = 0.09;
+  Km_up = 0.5;
+end
+
+model wang_model_2008__calcium_buffering(LTRPN_tot, HTRPN_tot, LTRPN_Ca, HTRPN_Ca, time_, Cai, k_plus_htrpn, k_minus_htrpn, k_plus_ltrpn, k_minus_ltrpn)
+
+  // Rate Rules:
+  LTRPN_Ca' = k_plus_ltrpn * Cai * (LTRPN_tot - LTRPN_Ca) - k_minus_ltrpn * LTRPN_Ca;
+  HTRPN_Ca' = k_plus_htrpn * Cai * (HTRPN_tot - HTRPN_Ca) - k_minus_htrpn * HTRPN_Ca;
+
+  // Variable initializations:
+  LTRPN_tot = 35;
+  HTRPN_tot = 70;
+  LTRPN_Ca = 8.9220;
+  HTRPN_Ca = 66.0407;
+end
+
+model wang_model_2008__ryanodine_receptors(P_O1, P_O2, P_C1, P_C2, time_, Cass)
+
+  // Assignment Rules:
+  P_C1 := 1 - (P_C2 + P_O1 + P_O2);
+
+  // Rate Rules:
+  P_O1' = k_plus_a * power(Cass, n) * P_C1 + k_minus_b * P_O2 + k_minus_c * P_C2 - (k_minus_a * P_O1 + k_plus_b * power(Cass, m) * P_O1 + k_plus_c * P_O1);
+  P_O2' = k_plus_b * power(Cass, m) * P_O1 - k_minus_b * P_O2;
+  P_C2' = k_plus_c * P_O1 - k_minus_c * P_C2;
+
+  // Variable initializations:
+  P_O1 = 1.1e-3;
+  P_O2 = 2.9799e-8;
+  P_C2 = 0.1003;
+  k_plus_a = 0.00608;
+  k_minus_a = 0.07125;
+  k_plus_b = 0.00405;
+  k_minus_b = 0.965;
+  k_plus_c = 0.009;
+  k_minus_c = 0.0008;
+  m = 3;
+  n = 4;
+end
+
+model wang_model_2008__L_type_calcium_current(i_CaL, i_CaL_max, E_CaL, time_, V, Cass)
+
+  // Assignment Rules:
+  i_CaL := g_CaL * O * (V - E_CaL);
+  C1 := 1 - (O + C2 + C2 + C3 + C4 + I1 + I2 + I3);
+  alpha := 0.4 * exp((V + 12 ) / 10 ) * (1 + 0.7 * exp(-(power(V + 40 , 2 )) / 10 ) - 0.75 * exp(-(power(V + 20 , 2 )) / 400 )) / (1 + 0.12 * exp((V + 12 ) / 10 ));
+  beta := 0.05 * exp(-((V + 12 )) / 13 );
+  gamma := Kpc_max * Cass / (Kpc_half + Cass);
+  Kpcf := 13 * (1 - exp(-(power(V + 14.5 , 2 )) / 100 ));
+
+  // Rate Rules:
+  O' = alpha * C4 + Kpcb * I1 + 0.001 * (alpha * I2 - Kpcf * O) - (4 * beta * O + gamma * O);
+  C2' = 4 * alpha * C1 + 2 * beta * C3 - (beta * C2 + 3 * alpha * C2);
+  C3' = 3 * alpha * C2 + 3 * beta * C4 - (2 * beta * C3 + 2 * alpha * C3);
+  C4' = 2 * alpha * C3 + 4 * beta * O + 0.01 * (4 * Kpcb * beta * I1 - alpha * gamma * C4) + 0.002 * (4 * beta * I2 - Kpcf * C4) + 4 * beta * Kpcb * I3 - (3 * beta * C4 + alpha * C4 + 1 * gamma * Kpcf * C4);
+  I1' = gamma * O + 0.001 * (alpha * I3 - Kpcf * I1) + 0.01 * (alpha * gamma * C4 - 4 * beta * Kpcf * I1) - Kpcb * I1;
+  I2' = 0.001 * (Kpcf * O - alpha * I2) + Kpcb * I3 + 0.002 * (Kpcf * C4 - 4 * beta * I2) - gamma * I2;
+  I3' = 0.001 * (Kpcf * I1 - alpha * I3) + gamma * I2 + 1 * gamma * Kpcf * C4 - (4 * beta * Kpcb * I3 + Kpcb * I3);
+
+  // Variable initializations:
+  i_CaL_max = 7;
+  E_CaL = 63;
+  g_CaL = 0.19019;
+  O = 4.4776e-12;
+  C2 = 1.6996e-4;
+  C3 = 1.1754e-8;
+  C4 = 6.1239e-10;
+  I1 = 1.5450e-9;
+  I2 = 6.4226e-8;
+  I3 = 6.5201e-7;
+  Kpcb = 0.0005;
+  Kpc_max = 0.23324;
+  Kpc_half = 20;
+end
+
+model wang_model_2008__T_type_calcium_current_b_gate(b, V, time_)
+
+  // Assignment Rules:
+  b_infinity := 1 / (1 + exp(-((V + 48 )) / 6.1 ));
+  tau_b := 0.1 + 5.4 / (1 + exp((V + 100 ) / 6.6 ));
+
+  // Rate Rules:
+  b' = (b_infinity - b) / tau_b;
+
+  // Variable initializations:
+  b = 0.0047;
+end
+
+model wang_model_2008__T_type_calcium_current_g_gate(g, V, time_)
+
+  // Assignment Rules:
+  g_infinity := 1 / (1 + exp((V + 66 ) / 6.6 ));
+  tau_g := 8 + 32 / (1 + exp((V + 65 ) / 5 ));
+
+  // Rate Rules:
+  g' = (g_infinity - g) / tau_g;
+
+  // Variable initializations:
+  g = 0.9020;
+end
+
+model wang_model_2008__T_type_calcium_current(i_CaT, time_, V, b, g)
+
+  // Sub-modules, and any changes to those submodules:
+  T_type_calcium_current_b_gate: wang_model_2008__T_type_calcium_current_b_gate(b, V, time_);
+  T_type_calcium_current_g_gate: wang_model_2008__T_type_calcium_current_g_gate(g, V, time_);
+
+  // Assignment Rules:
+  i_CaT := g_CaT * b * g * (V - E_CaT);
+
+  // Variable initializations:
+  E_CaT = 50;
+  g_CaT = 0.055;
+end
+
+model wang_model_2008__calcium_pump_current(i_pCa, Cai)
+
+  // Assignment Rules:
+  i_pCa := i_pCa_max * power(Cai, 2 ) / (power(Km_pCa, 2 ) + power(Cai, 2 ));
+
+  // Variable initializations:
+  i_pCa_max = 0.2;
+  Km_pCa = 0.5;
+end
+
+model wang_model_2008__sodium_calcium_exchange_current(i_NaCa, V, R, T, F, Nai, Nao, Cai, Cao)
+
+  // Assignment Rules:
+  i_NaCa := k_NaCa * 1 / (power(K_mNa, 3 ) + power(Nao, 3 )) * 1 / (K_mCa + Cao) * 1 / (1 + k_sat * exp((eta - 1 ) * V * F / (R * T))) * (exp(eta * V * F / (R * T)) * power(Nai, 3 ) * Cao - exp((eta - 1 ) * V * F / (R * T)) * power(Nao, 3 ) * Cai);
+
+  // Variable initializations:
+  k_NaCa = 907.68;
+  K_mNa = 87500;
+  K_mCa = 1380;
+  k_sat = 0.1;
+  eta = 0.35;
+end
+
+model wang_model_2008__calcium_background_current(i_Cab, V, R, T, F, Cai, Cao)
+
+  // Assignment Rules:
+  i_Cab := g_Cab * (V - E_CaN);
+  E_CaN := R * T / (2 * F) * ln(Cao / Cai);
+
+  // Variable initializations:
+  g_Cab = 0.00025;
+end
+
+model wang_model_2008__sodium_concentration(Nai, time_, F, Vmyo, Cm, Acap, i_Na, i_NaCa, i_NaK, i_Nab)
+
+  // Rate Rules:
+  Nai' = -((i_Na + i_Nab + 3 * i_NaK + 3 * i_NaCa)) * Acap * Cm / (Vmyo * F);
+
+  // Variable initializations:
+  Nai = 2.1747e4;
+end
+
+model wang_model_2008__fast_sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := 0.32 * (V + 47.13 ) / (1 - exp(-0.1 * (V + 47.13 )));
+  beta_m := 0.08 * exp(-(V) / 11 );
+
+  // Rate Rules:
+  m' = alpha_m - (alpha_m + beta_m) * m;
+
+  // Variable initializations:
+  m = 0.0032;
+end
+
+model wang_model_2008__fast_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := piecewise( 0.135 * exp((80 + V) / -(6.8 )) , V < -(40 ) , 0 );
+  beta_h := piecewise( 3.56 * exp(0.079 * V) + 310000 * exp(0.35 * V) , V < -(40 ) , 1 / (0.13 * (1 + exp((V + 10.66 ) / -(11.1 )))) );
+
+  // Rate Rules:
+  h' = alpha_h - (alpha_h + beta_h) * h;
+
+  // Variable initializations:
+  h = 0.9606;
+end
+
+model wang_model_2008__fast_sodium_current_j_gate(j, V, time_)
+
+  // Assignment Rules:
+  alpha_j := piecewise( -((127140 * exp(0.2444 * V) + 3.474e-5 * exp(-(0.04391 ) * V))) * (V + 37.78 ) / (1 + exp(0.311 * (V + 79.23 ))) , V < -(40 ) , 0 );
+  beta_j := piecewise( 0.1212 * exp(-(0.01052 ) * V) / (1 + exp(-(0.1378 ) * (V + 40.14 ))) , V < -(40 ) , 0.3 * exp(-(2.535e-7 ) * V) / (1 + exp(-(0.1 ) * (V + 32 ))) );
+
+  // Rate Rules:
+  j' = alpha_j - (alpha_j + beta_j) * j;
+
+  // Variable initializations:
+  j = 0.9744;
+end
+
+model wang_model_2008__fast_sodium_current(i_Na, E_Na, time_, V, R, T, F, Nao, Nai, m, h, j)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: wang_model_2008__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: wang_model_2008__fast_sodium_current_h_gate(h, V, time_);
+  fast_sodium_current_j_gate: wang_model_2008__fast_sodium_current_j_gate(j, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * j * (V - E_Na);
+  E_Na := R * T / F * ln(Nao / Nai);
+
+  // Variable initializations:
+  g_Na = 10;
+end
+
+model wang_model_2008__sodium_background_current(i_Nab, E_Na, V)
+
+  // Assignment Rules:
+  i_Nab := g_Nab * (V - E_Na);
+
+  // Variable initializations:
+  g_Nab = 0.0026;
+end
+
+model wang_model_2008__potassium_concentration(Ki, time_, F, Vmyo, Cm, Acap, i_Kto_f, i_K1, i_Ks, i_Kss, i_Kur, i_Kr, i_NaK)
+
+  // Rate Rules:
+  Ki' = -((i_Kto_f + i_K1 + i_Ks + i_Kss + i_Kur + i_Kr - 2 * i_NaK)) * Acap * Cm / (Vmyo * F);
+
+  // Variable initializations:
+  Ki = 1.3645e5;
+end
+
+model wang_model_2008__fast_transient_outward_potassium_current(i_Kto_f, E_K, V, R, T, F, Ki, Ko, time_)
+
+  // Assignment Rules:
+  i_Kto_f := g_Kto_f * power(ato_f, 6.5 ) * ito_f * (V - E_K);
+  E_K := R * T / F * ln(Ko / Ki);
+  ito_f_infinity := alpha_i / (alpha_i + beta_i);
+  tau_ito_f := 1 / (0.000152 * exp(-((V + 13.5 )) / 7 ) / (0.067083 * exp(-((V + 33.5 )) / 7 ) + 1 ) + 0.00095 * exp((V + 33.5 ) / 7 ) / (0.051335 * exp((V + 33.5 ) / 7 ) + 1 ));
+  alpha_a := 0.18064 * exp(0.03577 * (V + 30 ));
+  beta_a := 0.3956 * exp(-(0.06237 ) * (V + 30 ));
+  alpha_i := 0.000152 * exp(-((V - 3.81 )) / 15.75 ) / (0.0067083 * exp(-((V + 132.05 )) / 15.75 ) + 1 );
+  beta_i := 0.00095 * exp((V + 132.05 ) / 15.75 ) / (0.051335 * exp((V + 132.05 ) / 15.75 ) + 1 );
+
+  // Rate Rules:
+  ato_f' = alpha_a * (1 - ato_f) - beta_a * ato_f;
+  ito_f' = (ito_f_infinity - ito_f) / tau_ito_f;
+
+  // Variable initializations:
+  g_Kto_f = 0.1017;
+  ato_f = 0.0032;
+  ito_f = 0.7530;
+end
+
+model wang_model_2008__ultra_rapidly_activating_delayed_rectifier_potassium_current(i_Kur, ass, E_K, V, time_)
+
+  // Assignment Rules:
+  i_Kur := g_Kur * aur * iur * (V - E_K);
+  ass := 1 / (1 + exp(-((V + 22.5 )) / 7.7 ));
+  tau_aur := 0.493 * exp(-(0.0629 ) * V) + 2.058;
+  tau_iur := 1200 - 170 / (1 + exp((V + 45.2 ) / 5.7 ));
+  iss := 1 / (1 + exp((V + 45.2 ) / 5.7 ));
+
+  // Rate Rules:
+  aur' = (ass - aur) / tau_aur;
+  iur' = (iss - iur) / tau_iur;
+
+  // Variable initializations:
+  g_Kur = 0.0048;
+  aur = 5.2471e-4;
+  iur = 0.9866;
+end
+
+model wang_model_2008__non_inactivating_steady_state_potassium_current(i_Kss, E_K, V, time_, ass)
+
+  // Assignment Rules:
+  i_Kss := g_Kss * aKss * (V - E_K);
+  tau_Kss := 39.3 * exp(-(0.0862 ) * V) + 13.17;
+
+  // Rate Rules:
+  aKss' = (ass - aKss) / tau_Kss;
+
+  // Variable initializations:
+  g_Kss = 0.015;
+  aKss = 0.8500;
+end
+
+model wang_model_2008__time_independent_potassium_current(i_K1, Ko, E_K, V, time_)
+
+  // Assignment Rules:
+  i_K1 := g_K1 * (Ko / (Ko + 210 )) * ((V - E_K) / (1 + exp(0.0896 * (V - E_K))));
+
+  // Variable initializations:
+  g_K1 = 0.235;
+end
+
+model wang_model_2008__slow_delayed_rectifier_potassium_current(i_Ks, E_K, V, time_)
+
+  // Assignment Rules:
+  i_Ks := g_Ks * power(nKs, 2 ) * (V - E_K);
+  alpha_n := 0.00000481333 * (V + 26.5 ) / (1 - exp(-(0.128 ) * (V + 26.5 )));
+  beta_n := 0.0000953333 * exp(-(0.038 ) * (V + 26.5 ));
+
+  // Rate Rules:
+  nKs' = alpha_n * (1 - nKs) - beta_n * nKs;
+
+  // Variable initializations:
+  g_Ks = 0.046;
+  nKs = 0.0026;
+end
+
+model wang_model_2008__rapid_delayed_rectifier_potassium_current(i_Kr, time_, V, E_K)
+
+  // Assignment Rules:
+  i_Kr := g_Kr * O_K * (V - E_K);
+  C_K0 := 1 - (C_K1 + C_K2 + O_K + I_K);
+  alpha_a0 := 0.022348 * exp(0.01176 * V);
+  beta_a0 := 0.047002 * exp(-(0.0631 ) * V);
+  alpha_a1 := 0.013733 * exp(0.038198 * V);
+  beta_a1 := 0.0000689 * exp(-(0.04178 ) * V);
+  alpha_i := 0.090821 * exp(0.023391 * (V + 5 ));
+  beta_i := 0.006497 * exp(-(0.03268 ) * (V + 5 ));
+
+  // Rate Rules:
+  O_K' = alpha_a1 * C_K2 + beta_i * I_K - (beta_a1 * O_K + alpha_i * O_K);
+  C_K1' = alpha_a0 * C_K0 + kb * C_K2 - (beta_a0 * C_K1 + kf * C_K1);
+  C_K2' = kf * C_K1 + beta_a1 * O_K - (kb * C_K2 + alpha_a1 * C_K2);
+  I_K' = alpha_i * O_K - beta_i * I_K;
+
+  // Variable initializations:
+  g_Kr = 01.17;
+  O_K = 2.1e-3;
+  C_K1 = 1.1e-3;
+  C_K2 = 8.3641e-4;
+  I_K = 4.3522e-4;
+  kb = 0.036778;
+  kf = 0.023761;
+end
+
+model wang_model_2008__sodium_potassium_pump_current(i_NaK, V, R, T, F, Nai, Nao, Ko)
+
+  // Assignment Rules:
+  i_NaK := i_NaK_max * f_NaK * 1 / (1 + power(Km_Nai / Nai, 1.5 )) * Ko / (Ko + Km_Ko);
+  f_NaK := 1 / (1 + 0.1245 * exp(-(0.1 ) * V * F / (R * T)) + 0.0365 * sigma * exp(-(V) * F / (R * T)));
+  sigma := 1 / 7 * (exp(Nao / 67300 ) - 1 );
+
+  // Variable initializations:
+  i_NaK_max = 0.88;
+  Km_Nai = 21000;
+  Km_Ko = 1500;
+end
+
+model wang_model_2008__calcium_activated_chloride_current(i_ClCa, V, R, T, F, Cli, Clo, Cass)
+
+  // Assignment Rules:
+  i_ClCa := 1 * P_ClCa * f_ClCa * (V * power(F, 2 ) / (R * T)) * ((Clo * exp(V * F / (R * T)) - Cli) / (exp(V * F / (R * T)) - 1 ));
+  f_ClCa := power(Cass / (Km_Cl + Cass), n_ClCa);
+
+  // Variable initializations:
+  P_ClCa = 2.74e-7;
+  Km_Cl = 4;
+  n_ClCa = 3;
+end
+
+model wang_model_2008____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: wang_model_2008__environment(time_);
+  membrane: wang_model_2008__membrane(V, Cm, Vmyo, VJSR, VNSR, Vss, Acap, Ko, Nao, Cao, Clo, Cli, R, T, F, time_, i_CaL, i_CaT, i_pCa, i_NaCa, i_Cab, i_Na, i_Nab, i_NaK, i_Kto_f, i_K1, i_Ks, i_Kur, i_Kss, i_ClCa, i_Kr);
+  calcium_concentration: wang_model_2008__calcium_concentration(Cai, Cass, CaJSR, CaNSR, Acap, Vmyo, VJSR, Vss, VNSR, V, Cm, time_, F, i_Cab, i_CaL, i_CaT, i_NaCa, i_pCa, J_leak, J_rel, J_up, J_tr, J_trpn, J_xfer);
+  calcium_fluxes: wang_model_2008__calcium_fluxes(J_leak, J_rel, J_up, J_tr, J_trpn, J_xfer, k_plus_htrpn, k_minus_htrpn, k_plus_ltrpn, k_minus_ltrpn, LTRPN_tot, HTRPN_tot, LTRPN_Ca, HTRPN_Ca, V, time_, i_CaL_max, i_CaL, Cai, Cass, CaJSR, CaNSR, P_O1, P_O2);
+  calcium_buffering: wang_model_2008__calcium_buffering(LTRPN_tot, HTRPN_tot, LTRPN_Ca, HTRPN_Ca, time_, Cai, k_plus_htrpn, k_minus_htrpn, k_plus_ltrpn, k_minus_ltrpn);
+  ryanodine_receptors: wang_model_2008__ryanodine_receptors(P_O1, P_O2, P_C1, P_C2, time_, Cass);
+  L_type_calcium_current: wang_model_2008__L_type_calcium_current(i_CaL, i_CaL_max, E_CaL, time_, V, Cass);
+  T_type_calcium_current: wang_model_2008__T_type_calcium_current(i_CaT, time_, V, b, g);
+  calcium_pump_current: wang_model_2008__calcium_pump_current(i_pCa, Cai);
+  sodium_calcium_exchange_current: wang_model_2008__sodium_calcium_exchange_current(i_NaCa, V, R, T, F, Nai, Nao, Cai, Cao);
+  calcium_background_current: wang_model_2008__calcium_background_current(i_Cab, V, R, T, F, Cai, Cao);
+  sodium_concentration: wang_model_2008__sodium_concentration(Nai, time_, F, Vmyo, Cm, Acap, i_Na, i_NaCa, i_NaK, i_Nab);
+  fast_sodium_current: wang_model_2008__fast_sodium_current(i_Na, E_Na, time_, V, R, T, F, Nao, Nai, m, h, j);
+  sodium_background_current: wang_model_2008__sodium_background_current(i_Nab, E_Na, V);
+  potassium_concentration: wang_model_2008__potassium_concentration(Ki, time_, F, Vmyo, Cm, Acap, i_Kto_f, i_K1, i_Ks, i_Kss, i_Kur, i_Kr, i_NaK);
+  fast_transient_outward_potassium_current: wang_model_2008__fast_transient_outward_potassium_current(i_Kto_f, E_K, V, R, T, F, Ki, Ko, time_);
+  ultra_rapidly_activating_delayed_rectifier_potassium_current: wang_model_2008__ultra_rapidly_activating_delayed_rectifier_potassium_current(i_Kur, ass, E_K, V, time_);
+  non_inactivating_steady_state_potassium_current: wang_model_2008__non_inactivating_steady_state_potassium_current(i_Kss, E_K, V, time_, ass);
+  time_independent_potassium_current: wang_model_2008__time_independent_potassium_current(i_K1, Ko, E_K, V, time_);
+  slow_delayed_rectifier_potassium_current: wang_model_2008__slow_delayed_rectifier_potassium_current(i_Ks, E_K, V, time_);
+  rapid_delayed_rectifier_potassium_current: wang_model_2008__rapid_delayed_rectifier_potassium_current(i_Kr, time_, V, E_K);
+  sodium_potassium_pump_current: wang_model_2008__sodium_potassium_pump_current(i_NaK, V, R, T, F, Nai, Nao, Ko);
+  calcium_activated_chloride_current: wang_model_2008__calcium_activated_chloride_current(i_ClCa, V, R, T, F, Cli, Clo, Cass);
+end

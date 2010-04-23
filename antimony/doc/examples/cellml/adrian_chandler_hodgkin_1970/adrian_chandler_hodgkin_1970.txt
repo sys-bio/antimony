@@ -1,0 +1,154 @@
+//Created by libAntimony v1.3
+model adrian_model_1970__sodium_current_m_gate(t, Vm, m)
+
+  // Assignment Rules:
+  alpha_m := alpha_m_max * (Vm - Em) / (1.0 - exp((Em - Vm) / v_alpha_m));
+  beta_m := beta_m_max * exp((Em - Vm) / v_beta_m);
+
+  // Rate Rules:
+  m' = alpha_m * (1.0 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.0;
+  alpha_m_max = 0.208;
+  beta_m_max = 2.081;
+  Em = -42.0;
+  v_alpha_m = 10.0;
+  v_beta_m = 18.0;
+end
+
+model adrian_model_1970__sodium_current_h_gate(t, Vm, h)
+
+  // Assignment Rules:
+  alpha_h := alpha_h_max * exp((Eh - Vm) / v_alpha_h);
+  beta_h := beta_h_max / (1.0 + exp((Eh - Vm) / v_beta_h));
+
+  // Rate Rules:
+  h' = alpha_h * (1.0 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 1.0;
+  alpha_h_max = 0.0156;
+  beta_h_max = 3.382;
+  Eh = -41.0;
+  v_alpha_h = 14.7;
+  v_beta_h = 7.6;
+end
+
+model adrian_model_1970__sodium_current(t, Vm, INa, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current_m_gate: adrian_model_1970__sodium_current_m_gate(t, Vm, m);
+  sodium_current_h_gate: adrian_model_1970__sodium_current_h_gate(t, Vm, h);
+
+  // Assignment Rules:
+  INa := gNa_max * m * m * m * h * (Vm - ENa);
+
+  // Variable initializations:
+  gNa_max = 1.8;
+  ENa = 50.0;
+end
+
+model adrian_model_1970__potassium_current_n_gate(t, Vm, n)
+
+  // Assignment Rules:
+  alpha_n := alpha_n_max * (Vm - En) / (1.0 - exp((En - Vm) / v_alpha_n));
+  beta_n := beta_n_max * exp((En - Vm) / v_beta_n);
+
+  // Rate Rules:
+  n' = alpha_n * (1.0 - n) - beta_n * n;
+
+  // Variable initializations:
+  n = 0.0;
+  alpha_n_max = 0.0229;
+  beta_n_max = 0.09616;
+  En = -40.0;
+  v_alpha_n = 7.0;
+  v_beta_n = 40.0;
+end
+
+model adrian_model_1970__potassium_current(t, Vm, IK, n)
+
+  // Sub-modules, and any changes to those submodules:
+  potassium_current_n_gate: adrian_model_1970__potassium_current_n_gate(t, Vm, n);
+
+  // Assignment Rules:
+  IK := gK_max * n * n * n * n * (Vm - EK);
+
+  // Variable initializations:
+  gK_max = 0.415;
+  EK = -70.0;
+end
+
+model adrian_model_1970__leak_current(Vm, IL)
+
+  // Assignment Rules:
+  IL := gL_max * (Vm - EL);
+
+  // Variable initializations:
+  EL = -95.0;
+  gL_max = 0.0024;
+end
+
+model adrian_model_1970__Ttubular_current_Vt_var(t, Vm, Rs, Vt)
+
+  // Rate Rules:
+  Vt' = (Vm - Vt) / (Rs * Ct);
+
+  // Variable initializations:
+  Vt = -95.0;
+  Ct = 0.04;
+end
+
+model adrian_model_1970__Ttubular_current(t, Vm, IT, Vt, Rs)
+
+  // Sub-modules, and any changes to those submodules:
+  Ttubular_current_Vt_var: adrian_model_1970__Ttubular_current_Vt_var(t, Vm, Rs, Vt);
+
+  // Assignment Rules:
+  IT := (Vm - Vt) / Rs;
+
+  // Variable initializations:
+  Rs = 15.0;
+end
+
+model adrian_model_1970__membrane(t, Cm, Am, Istim, Vm, m, h, n, INa, IK, IL, IT, Vt)
+
+  // Sub-modules, and any changes to those submodules:
+  sodium_current: adrian_model_1970__sodium_current(t, Vm, INa, m, h);
+  potassium_current: adrian_model_1970__potassium_current(t, Vm, IK, n);
+  leak_current: adrian_model_1970__leak_current(Vm, IL);
+  Ttubular_current: adrian_model_1970__Ttubular_current(t, Vm, IT, Vt, Rs);
+
+  // Rate Rules:
+  Vm' = (Istim - (INa + IK + IL + IT)) / Cm;
+
+  // Variable initializations:
+  Vm = -95.0;
+end
+
+model adrian_model_1970__interface(t, Cm, Am, Istim, Vm, Vt, m, h, n, INa, IK, IL, IT, IStimC, AmC)
+
+  // Sub-modules, and any changes to those submodules:
+  membrane: adrian_model_1970__membrane(t, Cm, Am, Istim, Vm, m, h, n, INa, IK, IL, IT, Vt);
+
+  // Assignment Rules:
+  Istim := piecewise( IstimAmplitude , (( t >= IstimStart) && (t <= IstimEnd) && (t - IstimStart - floor((t - IstimStart) / IstimPeriod) * IstimPeriod <= IstimPulseDuration )), 0 );
+  IStimC := Istim;
+  AmC := Am;
+
+  // Variable initializations:
+  Cm = 0.009;
+  Am = 200.0;
+  IstimStart = 10;
+  IstimEnd = 50000;
+  IstimAmplitude = 0.5;
+  IstimPeriod = 1000;
+  IstimPulseDuration = 1;
+end
+
+model adrian_model_1970____main()
+
+  // Sub-modules, and any changes to those submodules:
+  interface: adrian_model_1970__interface(t, Cm, Am, Istim, Vm, Vt, m, h, n, INa, IK, IL, IT, IStimC, AmC);
+end

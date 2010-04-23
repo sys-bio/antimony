@@ -1,0 +1,57 @@
+//Created by libAntimony v1.3
+model lenbury_ruktamatakul_amornsamarnkul_model_2001_version01__environment(time_)
+end
+
+model lenbury_ruktamatakul_amornsamarnkul_model_2001_version01__x(x, z, y, time_)
+
+  // Rate Rules:
+  x' = z * ( r1 * y + -(( r2 * x )) + c1 );
+
+  // Variable initializations:
+  r1 = 0.2;
+  r2 = 0.1;
+  c1 = 0.1;
+end
+
+model lenbury_ruktamatakul_amornsamarnkul_model_2001_version01__y(y, epsilon, z, x, time_)
+
+  // Rate Rules:
+  y' = epsilon * ( r3 / z + -(( r4 * x )) + c2 );
+
+  // Variable initializations:
+  r3 = 0.1;
+  r4 = 0.1;
+  c2 = 0.1;
+end
+
+model lenbury_ruktamatakul_amornsamarnkul_model_2001_version01__z(z, y, time_)
+
+  // Assignment Rules:
+  z := piecewise( 1e-7 , abs( zReal ) < 1e-7 , zReal );
+
+  // Rate Rules:
+  zReal' = r5 * ( y - y_ ) * ( z_ - z ) + r6 * z * ( z_ - z ) - r7 * z;
+
+  // Variable initializations:
+  r5 = 0.1;
+  r6 = 0.1;
+  r7 = 0.05;
+  z_ = 2.0;
+  y_ = 1.24;
+end
+
+model lenbury_ruktamatakul_amornsamarnkul_model_2001_version01__model_constants(epsilon)
+
+  // Variable initializations:
+  epsilon = 0.1;
+end
+
+model lenbury_ruktamatakul_amornsamarnkul_model_2001_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: lenbury_ruktamatakul_amornsamarnkul_model_2001_version01__environment(time_);
+  x: lenbury_ruktamatakul_amornsamarnkul_model_2001_version01__x(x0, z0, y0, time_);
+  y: lenbury_ruktamatakul_amornsamarnkul_model_2001_version01__y(y0, epsilon, z0, x0, time_);
+  z: lenbury_ruktamatakul_amornsamarnkul_model_2001_version01__z(z0, y0, time_);
+  model_constants: lenbury_ruktamatakul_amornsamarnkul_model_2001_version01__model_constants(epsilon);
+end

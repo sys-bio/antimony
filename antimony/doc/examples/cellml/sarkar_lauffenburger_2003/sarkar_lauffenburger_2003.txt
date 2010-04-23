@@ -1,0 +1,117 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    In module 'sarkar_lauffenburger_2003_version03____main', the variables N.n and n were unable to be set as equivalent:  Cannot synchronize N.n with n:  The variable 'n' is associated with an assignment rule, and may not additionally have a rate rule.
+
+model sarkar_lauffenburger_2003_version03__environment(time_)
+end
+
+model sarkar_lauffenburger_2003_version03__Rs(Rs, keR, kr, kf, Vs, Cs, N, L, time_)
+
+  // Rate Rules:
+  Rs' = ( kr * Cs + Vs - ( kf * L * Rs + keR * Rs )) * N;
+end
+
+model sarkar_lauffenburger_2003_version03__Cs(Cs, keC, kr, kf, Rs, N, L, time_)
+
+  // Rate Rules:
+  Cs' = -(( kf * L * Cs + kr * Cs + keC * Cs )) * N;
+end
+
+model sarkar_lauffenburger_2003_version03__Li(Li, krec, kri, kfi, Ve, Ci, N, NA, Ri, time_)
+
+  // Rate Rules:
+  Li' = (( kri * Ci - kfi * Li * Ri ) * ( 1.0 / ( NA * Ve )) - krec * Li ) * N;
+end
+
+model sarkar_lauffenburger_2003_version03__Ri(Ri, kdeg, keR, kri, kfi, Ci, Rs, N, Li, time_)
+
+  // Rate Rules:
+  Ri' = ( kri * Ci + keR * Rs - ( kfi * Li * Ri + kdeg * Ri )) * N;
+end
+
+model sarkar_lauffenburger_2003_version03__Ci(Ci, kdeg, keC, kri, kfi, Ri, Rs, Cs, N, Li, time_)
+
+  // Rate Rules:
+  Ci' = ( kfi * Li * Ri + keC * Cs - ( kri * Ci + kdeg * Rs )) * N;
+end
+
+model sarkar_lauffenburger_2003_version03__L(L, kl_WT, krec, kr, kf, Ve, Rs, Cs, N, NA, Li, time_)
+
+  // Rate Rules:
+  L' = ( krec * Li * Ve * NA + kr * Cs - kf * L * Rs ) * ( N / NA ) - kl_WT * L;
+
+  // Variable initializations:
+  L = 0.0001;
+end
+
+model sarkar_lauffenburger_2003_version03__Ld(Ld, kdeg, Ci, N, time_)
+
+  // Rate Rules:
+  Ld' = kdeg * Ci * N;
+end
+
+model sarkar_lauffenburger_2003_version03__parameters(kr, kf, kri, kfi, keR, keC, kdeg, krec, kl_WT, Vs, Ve, N, NA, n)
+
+  // Assignment Rules:
+  n := N;
+
+  // Variable initializations:
+  kr = 0.03;
+  kf = 2.0E8;
+  kri = 3.0;
+  kfi = 235294117.6;
+  keR = 0.005;
+  keC = 0.10;
+  kdeg = 0.059;
+  krec = 0.15;
+  kl_WT = 4.17E-5;
+  Vs = 25.0;
+  Ve = 1.0E-14;
+  NA = 6.02E23;
+end
+
+model sarkar_lauffenburger_2003_version03__N(L, time_, n)
+
+  // Rate Rules:
+  n' = Kin * (1 + emax * power(L * kdiwt / kd, gamma) / (power(ec50, gamma) + power(L * kdiwt / kd, gamma))) - kout * n;
+
+  // Variable initializations:
+  Kin = 3.13E-6;
+  emax = 12.7;
+  ec50 = 2.53E-10;
+  kdiwt = 1.275E-8;
+  kd = 1.5E-10;
+  gamma = 1.34;
+  kout = 7.57E-4;
+end
+
+model sarkar_lauffenburger_2003_version03__PKPD(time_, L)
+
+  // Rate Rules:
+  L4' = Q / V4 * (L - L4);
+  n1' = k13 * n1;
+  n2' = k23 * n2;
+
+  // Variable initializations:
+  V4 = 0.249;
+  Q = 4.65E-4;
+  k13 = 0.0044;
+  k23 = 0.0033;
+end
+
+model sarkar_lauffenburger_2003_version03____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: sarkar_lauffenburger_2003_version03__environment(time_);
+  Rs: sarkar_lauffenburger_2003_version03__Rs(Rs0, keR, kr, kf, Vs, Cs0, N0, L0, time_);
+  Cs: sarkar_lauffenburger_2003_version03__Cs(Cs0, keC, kr, kf, Rs0, N0, L0, time_);
+  Li: sarkar_lauffenburger_2003_version03__Li(Li0, krec, kri, kfi, Ve, Ci0, N0, NA, Ri0, time_);
+  Ri: sarkar_lauffenburger_2003_version03__Ri(Ri0, kdeg, keR, kri, kfi, Ci0, Rs0, N0, Li0, time_);
+  Ci: sarkar_lauffenburger_2003_version03__Ci(Ci0, kdeg, keC, kri, kfi, Ri0, Rs0, Cs0, N0, Li0, time_);
+  L: sarkar_lauffenburger_2003_version03__L(L0, kl_WT, krec, kr, kf, Ve, Rs0, Cs0, N0, NA, Li0, time_);
+  Ld: sarkar_lauffenburger_2003_version03__Ld(Ld0, kdeg, Ci0, N0, time_);
+  parameters: sarkar_lauffenburger_2003_version03__parameters(kr, kf, kri, kfi, keR, keC, kdeg, krec, kl_WT, Vs, Ve, N0, NA, n);
+  N: sarkar_lauffenburger_2003_version03__N(L0, time_, n0);
+  PKPD: sarkar_lauffenburger_2003_version03__PKPD(time_, L0);
+end

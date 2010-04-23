@@ -1,0 +1,1872 @@
+//Created by libAntimony v1.3
+model wu_yang_vinnakota_beard_2007__Environment(time_, ExpType, StateType)
+
+  // Variable initializations:
+  ExpType = 1;
+  StateType = 2;
+end
+
+model wu_yang_vinnakota_beard_2007__parameters(F, V_cyto, V_mito, W_x, W_i, W_c, gamma, rho_m, n_A, p_PI, p_A, p_TI, k_mADP, theta, k_O2, NAD_tot, Q_tot, cytC_tot, A_tot, CR_tot, CO2_tot_x, FAD_tot, C_IM, X_pdh, X_cits, X_acon, X_isod, X_akgd, K_ir_akgd, X_scoas, X_sdh, X_fum, X_mdh, X_ndk, X_got, X_PYRH, X_GLUH, X_CITMAL, X_AKGMAL, X_SUCMAL, X_MALPI, X_ASPGLU, X_C1, X_C3, k_PI_1, k_PI_2, X_C4, X_F1, X_ANT, X_PiHt, k_PiHt, X_KH, X_Hle, X_HK, J_AtC, ExpType, StateType)
+
+  // Assignment Rules:
+  V_cyto := piecewise( 0.6801 , ExpType == 3 , 0.894 , ExpType == 4 , 1 );
+  V_mito := piecewise( 0.2882 , ExpType == 3 , 0.056 , ExpType == 4 , 0 );
+  W_c := piecewise( 80 , ExpType == 1 , 800 , ExpType == 2 , 0.807 * 1.044 , ( ExpType == 3) || (ExpType == 4 ), 80 );
+  X_HK := piecewise( 0.10710811279097 , ( ExpType == 1) && (StateType == 3 ), 0 );
+
+  // Variable initializations:
+  F = 0.096484;
+  W_x = 0.651384;
+  W_i = 0.072376;
+  gamma = 5.99;
+  rho_m = 2.725e5;
+  n_A = 3;
+  p_PI = 327;
+  p_A = 85;
+  p_TI = 85;
+  k_mADP = 3.5e-6;
+  theta = 0.6;
+  k_O2 = 1.2e-4;
+  NAD_tot = 2.97e-3;
+  Q_tot = 1.35e-3;
+  cytC_tot = 2.7e-3;
+  A_tot = 10e-3;
+  CR_tot = 42.7e-3;
+  CO2_tot_x = 21.4e-3;
+  FAD_tot = 1e-4;
+  C_IM = 6.75e-6;
+  X_pdh = 0.205093643103884;
+  X_cits = 9.82530750761898;
+  X_acon = 0.027665411180519;
+  X_isod = 0.492047553306503;
+  X_akgd = 0.087630003425524;
+  K_ir_akgd = 6.04e-7;
+  X_scoas = 0.448520452008943;
+  X_sdh = 0.08578867843174;
+  X_fum = 0.00707728025683;
+  X_mdh = 0.077060004692409;
+  X_ndk = 0.025543515147654;
+  X_got = 4.551391837332316;
+  X_PYRH = 2.996779273769102e8;
+  X_GLUH = 2.725114215177993e8;
+  X_CITMAL = 80.432110322866379;
+  X_AKGMAL = 0.282091450119444;
+  X_SUCMAL = 96.995618247389871;
+  X_MALPI = 16.062441848715917;
+  X_ASPGLU = 5.865621634754698e-5;
+  X_C1 = 3.236481869934019e4;
+  X_C3 = 0.790813746051711;
+  k_PI_1 = 3.248913595933763e-5;
+  k_PI_2 = 0.003474542589709;
+  X_C4 = 1.076088893810943e-4;
+  X_F1 = 8.120393248498723e3;
+  X_ANT = 0.007522124149343;
+  X_PiHt = 3.335568500871044e7;
+  k_PiHt = 0.00161251709168;
+  X_KH = 4.758023126099895e6;
+  X_Hle = 3.02092849850504e2;
+  J_AtC = 0;
+end
+
+model wu_yang_vinnakota_beard_2007__thermodynamic_data(RT, dGf1_H2O, dGf1_O2, dGf1_NADH, dGf1_NAD, dGf1_QH2, dGf1_COQ, dGf1_ATP, dGf1_ADP, dGf1_AMP, dGf1_GTP, dGf1_GDP, dGf1_Cred, dGf1_Cox, dGf1_Pi, dGf1_PCr, dGf1_Cr, dGf1_FADH2, dGf1_FAD, dGf1_COASH, dGf1_ACCOA, dGf1_OAA, dGf1_CIT, dGf1_ICIT, dGf1_AKG, dGf1_SCOA, dGf1_SUC, dGf1_FUM, dGf1_MAL, dGf1_ASP, dGf1_GLU, dGf1_CO2_tot, dGf1_PYR, dGf1_GLC, dGf1_G6P, ExpType)
+
+  // Assignment Rules:
+  RT := piecewise( 8.314 * (28 + 273.15 ) / 1E3 , ExpType == 1 , 8.314 * (37 + 273.15 ) / 1E3 );
+
+  // Variable initializations:
+  dGf1_H2O = -235.74;
+  dGf1_O2 = 16.4;
+  dGf1_NADH = 39.31;
+  dGf1_NAD = 18.1;
+  dGf1_QH2 = -23.3;
+  dGf1_COQ = 65.17;
+  dGf1_ATP = -2771;
+  dGf1_ADP = -1903.96;
+  dGf1_AMP = -1034.66;
+  dGf1_GTP = -2771;
+  dGf1_GDP = -1903.96;
+  dGf1_Cred = -27.41;
+  dGf1_Cox = -6.52;
+  dGf1_Pi = -1098.27;
+  dGf1_PCr = 0;
+  dGf1_Cr = -252.68;
+  dGf1_FADH2 = -67.6;
+  dGf1_FAD = 19.55;
+  dGf1_COASH = -0.72;
+  dGf1_ACCOA = -178.19;
+  dGf1_OAA = -794.74;
+  dGf1_CIT = -1165.59;
+  dGf1_ICIT = -1158.94;
+  dGf1_AKG = -793.41;
+  dGf1_SCOA = -507.55;
+  dGf1_SUC = -690.44;
+  dGf1_FUM = -603.32;
+  dGf1_MAL = -842.66;
+  dGf1_ASP = -692.26;
+  dGf1_GLU = -692.4;
+  dGf1_CO2_tot = -530.71;
+  dGf1_PYR = -470.82;
+  dGf1_GLC = -907.21;
+  dGf1_G6P = -1758.87;
+end
+
+model wu_yang_vinnakota_beard_2007__P_ATP(P_ATP_x, P_ATP_i, P_ATP_c, uATP_x, mATP_c, K_H, K_Mg, K_K, ATP_x, H_x, Mg_x, K_x, H_i, Mg_i, K_i, ATP_c, H_c, Mg_c, K_c)
+
+  // Assignment Rules:
+  P_ATP_x := 1 + H_x / K_H + Mg_x / K_Mg + K_x / K_K;
+  P_ATP_i := 1 + H_i / K_H + Mg_i / K_Mg + K_i / K_K;
+  P_ATP_c := 1 + H_c / K_H + Mg_c / K_Mg + K_c / K_K;
+  uATP_x := ATP_x * (1 + H_x / K_H) / P_ATP_x;
+  mATP_c := ATP_c * Mg_c / K_Mg / P_ATP_c;
+  K_H := 1 * power(10 , -(6.59 ));
+  K_Mg := 1 * power(10 , -(3.82 ));
+  K_K := 1 * power(10 , -(1.013 ));
+end
+
+model wu_yang_vinnakota_beard_2007__P_ADP(P_ADP_x, P_ADP_i, P_ADP_c, uADP_x, mADP_c, K_H, K_Mg, K_K, ADP_x, H_x, Mg_x, K_x, H_i, Mg_i, K_i, ADP_c, H_c, Mg_c, K_c)
+
+  // Assignment Rules:
+  P_ADP_x := 1 + H_x / K_H + Mg_x / K_Mg + K_x / K_K;
+  P_ADP_i := 1 + H_i / K_H + Mg_i / K_Mg + K_i / K_K;
+  P_ADP_c := 1 + H_c / K_H + Mg_c / K_Mg + K_c / K_K;
+  uADP_x := ADP_x * (1 + H_x / K_H) / P_ADP_x;
+  mADP_c := ADP_c * Mg_c / K_Mg / P_ADP_c;
+  K_H := 1 * power(10 , -(6.42 ));
+  K_Mg := 1 * power(10 , -(2.79 ));
+  K_K := 1 * power(10 , -(0.882 ));
+end
+
+model wu_yang_vinnakota_beard_2007__P_AMP(P_AMP_x, P_AMP_i, P_AMP_c, uAMP_x, K_H, K_Mg, K_K, AMP_x, H_x, Mg_x, K_x, H_i, Mg_i, K_i, H_c, Mg_c, K_c)
+
+  // Assignment Rules:
+  P_AMP_x := 1 + H_x / K_H + Mg_x / K_Mg + K_x / K_K;
+  P_AMP_i := 1 + H_i / K_H + Mg_i / K_Mg + K_i / K_K;
+  P_AMP_c := 1 + H_c / K_H + Mg_c / K_Mg + K_c / K_K;
+  uAMP_x := AMP_x * (1 + H_x / K_H) / P_AMP_x;
+  K_H := 1 * power(10 , -(6.22 ));
+  K_Mg := 1 * power(10 , -(1.86 ));
+  K_K := 1 * power(10 , -(0.6215 ));
+end
+
+model wu_yang_vinnakota_beard_2007__P_GTP(P_GTP_x, P_ATP_x, P_GTP_i, P_ATP_i, P_GTP_c, P_ATP_c, uGTP_x, K_H, K_Mg, K_K, GTP_x, H_x, K_H_ATP, K_Mg_ATP, K_K_ATP)
+
+  // Assignment Rules:
+  P_GTP_x := P_ATP_x;
+  P_GTP_i := P_ATP_i;
+  P_GTP_c := P_ATP_c;
+  uGTP_x := GTP_x * (1 + H_x / K_H) / P_GTP_x;
+  K_H := K_H_ATP;
+  K_Mg := K_Mg_ATP;
+  K_K := K_K_ATP;
+end
+
+model wu_yang_vinnakota_beard_2007__P_GDP(P_GDP_x, P_ADP_x, P_GDP_i, P_ADP_i, P_GDP_c, P_ADP_c, uGDP_x, K_H, K_Mg, K_K, GDP_x, H_x, K_H_ADP, K_Mg_ADP, K_K_ADP)
+
+  // Assignment Rules:
+  P_GDP_x := P_ADP_x;
+  P_GDP_i := P_ADP_i;
+  P_GDP_c := P_ADP_c;
+  uGDP_x := GDP_x * (1 + H_x / K_H) / P_GDP_x;
+  K_H := K_H_ADP;
+  K_Mg := K_Mg_ADP;
+  K_K := K_K_ADP;
+end
+
+model wu_yang_vinnakota_beard_2007__P_PI(P_PI_x, P_PI_i, P_PI_c, hPI_x, hPI_i, PI_x, H_x, Mg_x, K_x, PI_i, H_i, Mg_i, K_i, H_c, Mg_c, K_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_PI_x := 1 + H_x / K_H + Mg_x / K_Mg + K_x / K_K;
+  P_PI_i := 1 + H_i / K_H + Mg_i / K_Mg + K_i / K_K;
+  P_PI_c := 1 + H_c / K_H + Mg_c / K_Mg + K_c / K_K;
+  hPI_x := PI_x * H_x / K_H / P_PI_x;
+  hPI_i := PI_i * H_i / K_H / P_PI_i;
+  K_H := 1 * power(10 , -(6.71 ));
+  K_Mg := 1 * power(10 , -(1.69 ));
+  K_K := 1 * power(10 , 0.0074 );
+end
+
+model wu_yang_vinnakota_beard_2007__P_COASH(P_COASH_x, P_COASH_i, P_COASH_c, H_x, H_i, H_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_COASH_x := 1 + H_x / K_H;
+  P_COASH_i := 1 + H_i / K_H;
+  P_COASH_c := 1 + H_c / K_H;
+  K_H := 1 * power(10 , -(8.13 ));
+
+  // Variable initializations:
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_OAA(P_OAA_x, P_OAA_i, P_OAA_c, Mg_x, Mg_i, Mg_c, K_Mg, K_H, K_K)
+
+  // Assignment Rules:
+  P_OAA_x := 1 + Mg_x / K_Mg;
+  P_OAA_i := 1 + Mg_i / K_Mg;
+  P_OAA_c := 1 + Mg_c / K_Mg;
+  K_Mg := 1 * power(10 , -(0.8629 ));
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_CIT(P_CIT_x, P_CIT_i, P_CIT_c, uCIT_x, uCIT_i, hCIT_x, hCIT_i, CIT_x, H_x, Mg_x, K_x, CIT_i, H_i, Mg_i, K_i, H_c, Mg_c, K_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_CIT_x := 1 + H_x / K_H + Mg_x / K_Mg + K_x / K_K;
+  P_CIT_i := 1 + H_i / K_H + Mg_i / K_Mg + K_i / K_K;
+  P_CIT_c := 1 + H_c / K_H + Mg_c / K_Mg + K_c / K_K;
+  uCIT_x := CIT_x * (1 + H_x / K_H) / P_CIT_x;
+  uCIT_i := CIT_i * (1 + H_i / K_H) / P_CIT_i;
+  hCIT_x := CIT_x * H_x / K_H / P_CIT_x;
+  hCIT_i := CIT_i * H_i / K_H / P_CIT_i;
+  K_H := 1 * power(10 , -(5.63 ));
+  K_Mg := 1 * power(10 , -(3.37 ));
+  K_K := 1 * power(10 , -(0.339 ));
+end
+
+model wu_yang_vinnakota_beard_2007__P_ICIT(P_ICIT_x, P_ICIT_i, P_ICIT_c, H_x, Mg_x, H_i, Mg_i, H_c, Mg_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_ICIT_x := 1 + H_x / K_H + Mg_x / K_Mg;
+  P_ICIT_i := 1 + H_i / K_H + Mg_i / K_Mg;
+  P_ICIT_c := 1 + H_c / K_H + Mg_c / K_Mg;
+  K_H := 1 * power(10 , -(5.64 ));
+  K_Mg := 1 * power(10 , -(2.46 ));
+
+  // Variable initializations:
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_SCOA(P_SCOA_x, P_SCOA_i, P_SCOA_c, H_x, H_i, H_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_SCOA_x := 1 + H_x / K_H;
+  P_SCOA_i := 1 + H_i / K_H;
+  P_SCOA_c := 1 + H_c / K_H;
+  K_H := 1 * power(10 , -(3.96 ));
+
+  // Variable initializations:
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_SUC(P_SUC_x, P_SUC_i, P_SUC_c, H_x, Mg_x, K_x, H_i, Mg_i, K_i, H_c, Mg_c, K_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_SUC_x := 1 + H_x / K_H + Mg_x / K_Mg + K_x / K_K;
+  P_SUC_i := 1 + H_i / K_H + Mg_i / K_Mg + K_i / K_K;
+  P_SUC_c := 1 + H_c / K_H + Mg_c / K_Mg + K_c / K_K;
+  K_H := 1 * power(10 , -(5.13 ));
+  K_Mg := 1 * power(10 , -(1.17 ));
+  K_K := 1 * power(10 , -(0.3525 ));
+end
+
+model wu_yang_vinnakota_beard_2007__P_FUM(P_FUM_x, P_FUM_i, P_FUM_c, H_x, H_i, H_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_FUM_x := 1 + H_x / K_H;
+  P_FUM_i := 1 + H_i / K_H;
+  P_FUM_c := 1 + H_c / K_H;
+  K_H := 1 * power(10 , -(4.1 ));
+
+  // Variable initializations:
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_MAL(P_MAL_x, P_MAL_i, P_MAL_c, H_x, Mg_x, K_x, H_i, Mg_i, K_i, H_c, Mg_c, K_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_MAL_x := 1 + H_x / K_H + Mg_x / K_Mg + K_x / K_K;
+  P_MAL_i := 1 + H_i / K_H + Mg_i / K_Mg + K_i / K_K;
+  P_MAL_c := 1 + H_c / K_H + Mg_c / K_Mg + K_c / K_K;
+  K_H := 1 * power(10 , -(4.75 ));
+  K_Mg := 1 * power(10 , -(1.55 ));
+  K_K := 1 * power(10 , 0.107 );
+end
+
+model wu_yang_vinnakota_beard_2007__P_CO2_tot(P_CO2_tot_x, P_CO2_tot_i, P_CO2_tot_c, H_x, H_i, H_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_CO2_tot_x := 1 + H_x / K_H;
+  P_CO2_tot_i := 1 + H_i / K_H;
+  P_CO2_tot_c := 1 + H_c / K_H;
+  K_H := 1 * power(10 , -(9.82 ));
+
+  // Variable initializations:
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_PYR(P_PYR_x, P_PYR_i, P_PYR_c, Mg_x, Mg_i, Mg_c, K_Mg, K_H, K_K)
+
+  // Assignment Rules:
+  P_PYR_x := 1 + Mg_x / K_Mg;
+  P_PYR_i := 1 + Mg_i / K_Mg;
+  P_PYR_c := 1 + Mg_c / K_Mg;
+  K_Mg := 1 * power(10 , -(1.02 ));
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_G6P(P_G6P_x, P_G6P_i, P_G6P_c, H_x, H_i, H_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_G6P_x := 1 + H_x / K_H;
+  P_G6P_i := 1 + H_i / K_H;
+  P_G6P_c := 1 + H_c / K_H;
+  K_H := 1 * power(10 , -(5.91 ));
+
+  // Variable initializations:
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_GLU(P_GLU_x, P_GLU_i, P_GLU_c, H_x, Mg_x, H_i, Mg_i, H_c, Mg_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_GLU_x := 1 + H_x / K_H + Mg_x / K_Mg;
+  P_GLU_i := 1 + H_i / K_H + Mg_i / K_Mg;
+  P_GLU_c := 1 + H_c / K_H + Mg_c / K_Mg;
+  K_H := 1 * power(10 , -(4.06 ));
+  K_Mg := 1 * power(10 , -(1.82 ));
+
+  // Variable initializations:
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_ASP(P_ASP_x, P_ASP_i, P_ASP_c, H_x, Mg_x, H_i, Mg_i, H_c, Mg_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_ASP_x := 1 + H_x / K_H + Mg_x / K_Mg;
+  P_ASP_i := 1 + H_i / K_H + Mg_i / K_Mg;
+  P_ASP_c := 1 + H_c / K_H + Mg_c / K_Mg;
+  K_H := 1 * power(10 , -(3.65 ));
+  K_Mg := 1 * power(10 , -(2.32 ));
+
+  // Variable initializations:
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_GLC(P_GLC_c, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_GLC_c := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_NAD(P_NAD_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_NAD_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_NADH(P_NADH_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_NADH_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_QH2(P_QH2_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_QH2_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_COQ(P_COQ_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_COQ_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_ACCOA(P_ACCOA_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_ACCOA_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_AKG(P_AKG_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_AKG_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_O2(P_O2_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_O2_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_FADH2(P_FADH2_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_FADH2_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_FAD(P_FAD_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_FAD_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_H(P_H_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_H_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_Mg(P_Mg_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_Mg_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__P_K(P_K_x, K_H, K_Mg, K_K)
+
+  // Assignment Rules:
+  P_K_x := 1;
+
+  // Variable initializations:
+  K_H = 1e20;
+  K_Mg = 1e20;
+  K_K = 1e20;
+end
+
+model wu_yang_vinnakota_beard_2007__J_pdh(J_pdh, PYR_x, COASH_x, NAD_x, CO2_tot_x, ACCOA_x, NADH_x, H_x, P_CO2_tot_x, P_ACCOA_x, P_NADH_x, P_PYR_x, P_COASH_x, P_NAD_x, V_mf, RT, dGf1_CO2_tot, dGf1_ACCOA, dGf1_NADH, dGf1_PYR, dGf1_COASH, dGf1_NAD, dGf1_H2O)
+
+  // Assignment Rules:
+  J_pdh := piecewise( V_mf * (PYR_x * COASH_x * NAD_x - CO2_tot_x * ACCOA_x * NADH_x / K_eq_pdh) / (K_mC * alpha_i2 * PYR_x * COASH_x + K_mB * alpha_i1 * PYR_x * NAD_x + K_mA * COASH_x * NAD_x + PYR_x * COASH_x * NAD_x) , (( PYR_x > minCon) && (COASH_x > minCon) && (NAD_x > minCon )), 0 );
+  K_eq_pdh := K0_eq_pdh * P_CO2_tot_x * P_ACCOA_x * P_NADH_x / (H_x * P_PYR_x * P_COASH_x * P_NAD_x);
+  K0_eq_pdh := 1 * exp(-(dGr0_pdh) / RT);
+  dGr0_pdh := dGf1_CO2_tot + dGf1_ACCOA + dGf1_NADH - dGf1_PYR - dGf1_COASH - dGf1_NAD - dGf1_H2O;
+  alpha_i1 := 1 + ACCOA_x / K_iACCOA;
+  alpha_i2 := 1 + NADH_x / K_iNADH;
+
+  // Variable initializations:
+  K_mA = 38.3e-6;
+  K_mB = 9.9e-6;
+  K_mC = 60.7e-6;
+  K_iACCOA = 40.2e-6;
+  K_iNADH = 40e-6;
+  minCon = 1e-32;
+end
+
+model wu_yang_vinnakota_beard_2007__J_cits(J_cits, OAA_x, ACCOA_x, COASH_x, CIT_x, ATP_x, ADP_x, AMP_x, SCOA_x, H_x, uATP_x, uADP_x, uAMP_x, uCIT_x, P_CIT_x, P_COASH_x, P_ACCOA_x, P_OAA_x, V_mf, RT, dGf1_ACCOA, dGf1_COASH, dGf1_CIT, dGf1_OAA, dGf1_H2O)
+
+  // Assignment Rules:
+  J_cits := V_mf * (ACCOA_x * OAA_x - COASH_x * CIT_x / K_eq_cits) / (K_ia * K_mB * alpha_i1 + K_mA * alpha_i1 * ACCOA_x + K_mB * alpha_i2 * OAA_x + OAA_x * ACCOA_x);
+  K_eq_cits := K0_eq_cits * P_CIT_x * P_COASH_x / (power(H_x, 2 ) * P_ACCOA_x * P_OAA_x);
+  K0_eq_cits := 1 * exp(-(dGr0_cits) / RT);
+  dGr0_cits := dGf1_COASH + dGf1_CIT - dGf1_ACCOA - dGf1_OAA - dGf1_H2O;
+  alpha_i1 := 1 + uCIT_x / K_iCIT;
+  alpha_i2 := 1 + uATP_x / K_iATP + uADP_x / K_iADP + uAMP_x / K_iAMP + COASH_x / K_iCOASH + SCOA_x / K_iSCOA;
+
+  // Variable initializations:
+  K_mA = 4e-6;
+  K_mB = 14e-6;
+  K_ia = 3.33e-6;
+  K_iCIT = 1600e-6;
+  K_iATP = 900e-6;
+  K_iADP = 1800e-6;
+  K_iAMP = 6000e-6;
+  K_iCOASH = 67e-6;
+  K_iSCOA = 140e-6;
+end
+
+model wu_yang_vinnakota_beard_2007__J_acon(J_acon, CIT_x, ICIT_x, P_CIT_x, P_ICIT_x, V_mf, RT, dGf1_ICIT, dGf1_CIT)
+
+  // Assignment Rules:
+  J_acon := V_mf * V_mr * (CIT_x - ICIT_x / K_eq_acon) / (K_mA * V_mr + V_mr * CIT_x + V_mf * ICIT_x / K_eq_acon);
+  V_mr := V_mf * K_mP / (K_mA * K_eq_acon);
+  K_eq_acon := K0_eq_acon * P_ICIT_x / P_CIT_x;
+  K0_eq_acon := exp(-(dGr0_acon) / RT);
+  dGr0_acon := dGf1_ICIT - dGf1_CIT;
+
+  // Variable initializations:
+  K_mA = 1161e-6;
+  K_mP = 434e-6;
+end
+
+model wu_yang_vinnakota_beard_2007__J_isod(J_isod, NAD_x, ICIT_x, AKG_x, NADH_x, CO2_tot_x, fATP_x, fADP_x, H_x, P_CO2_tot_x, P_AKG_x, P_NADH_x, P_NAD_x, P_ICIT_x, V_mf, RT, dGf1_AKG, dGf1_NADH, dGf1_CO2_tot, dGf1_ICIT, dGf1_NAD, dGf1_H2O)
+
+  // Assignment Rules:
+  J_isod := piecewise( V_mf * (1 - CO2_tot_x * AKG_x * NADH_x / (K_eq_isod * NAD_x * ICIT_x)) / (1 + power(K_mB / ICIT_x, n_H) * alpha_i + K_mA / NAD_x * (1 + power(K_ib / ICIT_x, n_H) * alpha_i + NADH_x * alpha_i / K_iq)) , ( NAD_x > minCon) && (ICIT_x > minCon ), 0 );
+  K_eq_isod := K0_eq_isod * P_CO2_tot_x * P_AKG_x * P_NADH_x / (power(H_x, 2 ) * P_NAD_x * P_ICIT_x);
+  K0_eq_isod := 1 * exp(-(dGr0_isod) / RT);
+  dGr0_isod := dGf1_AKG + dGf1_NADH + dGf1_CO2_tot - dGf1_ICIT - dGf1_NAD - dGf1_H2O;
+  alpha_i := 1 + K_aADP / fADP_x * (1 + fATP_x / K_iATP);
+
+  // Variable initializations:
+  K_mA = 74e-6;
+  K_mB = 183e-6;
+  K_ib = 23.8e-6;
+  K_iq = 29e-6;
+  n_H = 3;
+  K_iATP = 91e-6;
+  K_aADP = 50e-6;
+  minCon = 1e-32;
+end
+
+model wu_yang_vinnakota_beard_2007__J_akgd(J_akgd, AKG_x, COASH_x, NAD_x, CO2_tot_x, SCOA_x, NADH_x, H_x, fATP_x, fADP_x, P_CO2_tot_x, P_SCOA_x, P_NADH_x, P_AKG_x, P_COASH_x, P_NAD_x, V_mf, RT, dGf1_CO2_tot, dGf1_SCOA, dGf1_NADH, dGf1_AKG, dGf1_COASH, dGf1_NAD, dGf1_H2O)
+
+  // Assignment Rules:
+  J_akgd := piecewise( V_mf * (1 - CO2_tot_x * SCOA_x * NADH_x / (K_eq_akgd * AKG_x * COASH_x * NAD_x)) / (1 + K_mA / AKG_x * alpha_i + K_mB / COASH_x * (1 + SCOA_x / K_iq) + K_mC / NAD_x * (1 + NADH_x / K_ir1)) / (1 + NADH_x / K_ir2) , (( AKG_x > minCon) && (COASH_x > minCon) && (NAD_x > minCon )), 0 );
+  K_eq_akgd := K0_eq_akgd * P_CO2_tot_x * P_SCOA_x * P_NADH_x / (H_x * P_COASH_x * P_AKG_x * P_NAD_x);
+  K0_eq_akgd := 1 * exp(-(dGr0_akgd) / RT);
+  dGr0_akgd := dGf1_CO2_tot + dGf1_SCOA + dGf1_NADH - dGf1_AKG - dGf1_COASH - dGf1_NAD - dGf1_H2O;
+  alpha_i := 1 + K_aADP / fADP_x * (1 + fATP_x / K_iATP);
+
+  // Variable initializations:
+  K_mA = 80e-6;
+  K_mB = 55e-6;
+  K_mC = 21e-6;
+  K_iq = 6.9e-6;
+  K_ir1 = 6.010527470838273e-7;
+  K_ir2 = 1e3;
+  K_iATP = 50e-6;
+  K_aADP = 100e-6;
+  minCon = 1e-32;
+end
+
+model wu_yang_vinnakota_beard_2007__J_scoas(J_scoas, GDP_x, SCOA_x, PI_x, COASH_x, SUC_x, GTP_x, H_x, P_COASH_x, P_SUC_x, P_GTP_x, P_GDP_x, P_SCOA_x, P_PI_x, V_mf, RT, dGf1_COASH, dGf1_SUC, dGf1_GTP, dGf1_GDP, dGf1_SCOA, dGf1_Pi)
+
+  // Assignment Rules:
+  J_scoas := V_mf * V_mr * (GDP_x * SCOA_x * PI_x - COASH_x * SUC_x * GTP_x / K_eq_scoas) / (V_mr * K_ia * K_ib * K_mC + V_mr * K_ib * K_mC * GDP_x + V_mr * K_ia * K_mB * PI_x + V_mr * K_mC * GDP_x * SCOA_x + V_mr * K_mB * GDP_x * PI_x + V_mr * K_mA * SCOA_x * PI_x + V_mr * GDP_x * SCOA_x * PI_x + V_mf * K_ir * K_mQ * COASH_x / K_eq_scoas + V_mf * K_iq * K_mP * GTP_x / K_eq_scoas + V_mf * K_mR * COASH_x * SUC_x / K_eq_scoas + V_mf * K_mQ * COASH_x * GTP_x / K_eq_scoas + V_mf * K_mP * SUC_x * GTP_x / K_eq_scoas + V_mf * COASH_x * SUC_x * GTP_x / K_eq_scoas + V_mf * K_mQ * K_ir * GDP_x * COASH_x / (K_ia * K_eq_scoas) + V_mr * K_ia * K_mB * PI_x * GTP_x / K_ir + V_mf * K_mQ * K_ir * GDP_x * SCOA_x * COASH_x / (K_ia * K_ib * K_eq_scoas) + V_mr * K_mA * SCOA_x * PI_x * GTP_x / K_ir + V_mf * K_mR * GDP_x * COASH_x * SUC_x / (K_ia * K_eq_scoas) + V_mr * K_ia * K_mB * PI_x * SUC_x * GTP_x / (K_iq * K_ir) + V_mf * K_ir * K_mQ * GDP_x * SCOA_x * PI_x * COASH_x / (K_ia * K_ib * K_ic * K_eq_scoas) + V_mf * K_ip * K_mR * GDP_x * SCOA_x * PI_x * SUC_x / (K_ia * K_ib * K_ic * K_eq_scoas) + V_mf * K_mR * GDP_x * SCOA_x * COASH_x * SUC_x / (K_ia * K_ib * K_eq_scoas) + V_mr * K_mA * SCOA_x * PI_x * SUC_x * GTP_x / (K_iq * K_ir) + V_mr * K_mA * K_ic * SCOA_x * COASH_x * SUC_x * GTP_x / (K_ip * K_iq * K_ir) + V_mr * K_ia * K_mB * PI_x * COASH_x * SUC_x * GTP_x / (K_ip * K_iq * K_ir) + V_mf * K_mR * GDP_x * SCOA_x * PI_x * COASH_x * SUC_x / (K_ia * K_ib * K_ic * K_eq_scoas) + V_mr * K_mA * SCOA_x * PI_x * COASH_x * SUC_x * GTP_x / (K_ip * K_iq * K_ir));
+  K_eq_scoas := K0_eq_scoas * P_COASH_x * P_SUC_x * P_GTP_x / (H_x * P_GDP_x * P_SCOA_x * P_PI_x);
+  K0_eq_scoas := 1 * exp(-(dGr0_scoas) / RT);
+  dGr0_scoas := dGf1_COASH + dGf1_SUC + dGf1_GTP - dGf1_GDP - dGf1_SCOA - dGf1_Pi;
+  V_mr := V_mf * K_mP * K_iq * K_ir / (K_eq_scoas * K_ia * K_ib * K_mC);
+
+  // Variable initializations:
+  K_ia = 5.5e-6;
+  K_ib = 100e-6;
+  K_ic = 2000e-6;
+  K_ip = 20e-6;
+  K_iq = 3000e-6;
+  K_ir = 11.1e-6;
+  K_mA = 16e-6;
+  K_mB = 55e-6;
+  K_mC = 660e-6;
+  K_mP = 20e-6;
+  K_mQ = 880e-6;
+  K_mR = 11.1e-6;
+end
+
+model wu_yang_vinnakota_beard_2007__J_sdh(J_sdh, SUC_x, COQ_x, QH2_x, FUM_x, OAA_x, P_FUM_x, P_QH2_x, P_COQ_x, P_SUC_x, V_mf, RT, dGf1_QH2, dGf1_FUM, dGf1_SUC, dGf1_COQ)
+
+  // Assignment Rules:
+  J_sdh := V_mf * V_mr * (SUC_x * COQ_x - QH2_x * FUM_x / K_eq_sdh) / (V_mr * K_ia * K_mCOQ * alpha_i + V_mr * K_mCOQ * SUC_x + V_mr * K_mSUC * alpha_i * COQ_x + V_mf * K_mFUM * alpha_i * QH2_x / K_eq_sdh + V_mf * K_mQH2 * FUM_x / K_eq_sdh + V_mr * SUC_x * COQ_x + V_mf * K_mFUM * SUC_x * QH2_x / (K_eq_sdh * K_ia) + V_mr * K_mSUC * COQ_x * FUM_x / K_iq + V_mf * QH2_x * FUM_x / K_eq_sdh);
+  K_eq_sdh := K0_eq_sdh * P_FUM_x * P_QH2_x / (P_SUC_x * P_COQ_x);
+  K0_eq_sdh := exp(-(dGr0_sdh) / RT);
+  dGr0_sdh := dGf1_QH2 + dGf1_FUM - dGf1_SUC - dGf1_COQ;
+  V_mr := V_mf * K_mQH2 * K_iq / (K_eq_sdh * K_ia * K_mCOQ);
+  alpha_i := (1 + OAA_x / K_iOAA + SUC_x / K_aSUC + FUM_x / K_aFUM) / (1 + SUC_x / K_aSUC + FUM_x / K_aFUM);
+
+  // Variable initializations:
+  K_ia = 120e-6;
+  K_iq = 1275e-6;
+  K_mSUC = 467e-6;
+  K_mCOQ = 480e-6;
+  K_mQH2 = 2.45e-6;
+  K_mFUM = 1200e-6;
+  K_iOAA = 1.5e-6;
+  K_aSUC = 450e-6;
+  K_aFUM = 375e-6;
+end
+
+model wu_yang_vinnakota_beard_2007__J_fum(J_fum, FUM_x, MAL_x, CIT_x, fATP_x, fADP_x, fGTP_x, fGDP_x, P_MAL_x, P_FUM_x, V_mf, RT, dGf1_MAL, dGf1_FUM, dGf1_H2O)
+
+  // Assignment Rules:
+  J_fum := V_mr * V_mf * (FUM_x - MAL_x / K_eq_fum) / (K_mFUM * V_mr * alpha_i + V_mr * FUM_x + V_mf * MAL_x / K_eq_fum);
+  K_eq_fum := K0_eq_fum * P_MAL_x / P_FUM_x;
+  K0_eq_fum := exp(-(dGr0_fum) / RT);
+  dGr0_fum := dGf1_MAL - dGf1_FUM - dGf1_H2O;
+  V_mr := V_mf * K_mMAL / (K_eq_fum * K_mFUM);
+  alpha_i := 1 + CIT_x / K_iCIT + fATP_x / K_iATP + fADP_x / K_iADP + fGTP_x / K_iGTP + fGDP_x / K_iGDP;
+
+  // Variable initializations:
+  K_mFUM = 44.7e-6;
+  K_mMAL = 197.7e-6;
+  K_iCIT = 3500e-6;
+  K_iATP = 40e-6;
+  K_iADP = 400e-6;
+  K_iGTP = 80e-6;
+  K_iGDP = 330e-6;
+end
+
+model wu_yang_vinnakota_beard_2007__J_mdh(J_mdh, NAD_x, MAL_x, OAA_x, NADH_x, H_x, fATP_x, fADP_x, fAMP_x, P_OAA_x, P_NADH_x, P_MAL_x, P_NAD_x, V_mf, RT, dGf1_OAA, dGf1_NADH, dGf1_NAD, dGf1_MAL)
+
+  // Assignment Rules:
+  J_mdh := V_mf * V_mr * (NAD_x * MAL_x - OAA_x * NADH_x / K_eq_mdh) / (V_mr * K_ia * K_mMAL * alpha_i + V_mr * K_mMAL * NAD_x + V_mr * K_mNAD * alpha_i * MAL_x + V_mf * K_mNADH * alpha_i * OAA_x / K_eq_mdh + V_mf * K_mOAA * NADH_x / K_eq_mdh + V_mr * NAD_x * MAL_x + V_mf * K_mNADH * NAD_x * OAA_x / (K_eq_mdh * K_ia) + V_mf * OAA_x * NADH_x / K_eq_mdh + V_mr * K_mNAD * MAL_x * NADH_x / K_iq + V_mr * NAD_x * MAL_x * OAA_x / K_ip + V_mf * MAL_x * OAA_x * NADH_x / (K_ib * K_eq_mdh));
+  K_eq_mdh := K0_eq_mdh * P_OAA_x * P_NADH_x / (H_x * P_MAL_x * P_NAD_x);
+  K0_eq_mdh := 1 * exp(-(dGr0_mdh) / RT);
+  dGr0_mdh := dGf1_OAA + dGf1_NADH - dGf1_NAD - dGf1_MAL;
+  V_mr := V_mf * K_iq * K_mOAA / (K_eq_mdh * K_ia * K_mMAL);
+  alpha_i := 1 + fATP_x / K_iATP + fADP_x / K_iADP + fAMP_x / K_iAMP;
+
+  // Variable initializations:
+  K_ia = 279e-6;
+  K_ib = 360e-6;
+  K_ip = 5.5e-6;
+  K_iq = 3.18e-6;
+  K_mNAD = 90.55e-6;
+  K_mMAL = 250e-6;
+  K_mOAA = 6.128e-6;
+  K_mNADH = 2.58e-6;
+  K_iATP = 183.2e-6;
+  K_iADP = 394.4e-6;
+  K_iAMP = 420e-6;
+end
+
+model wu_yang_vinnakota_beard_2007__J_ndk(J_ndk_f, J_ndk, GTP_x, ADP_x, GDP_x, ATP_x, fAMP_x, V_mf, P_GTP_x, P_ATP_x, P_GDP_x, P_ADP_x, RT, dGf1_GDP, dGf1_ATP, dGf1_GTP, dGf1_ADP)
+
+  // Assignment Rules:
+  J_ndk_f := piecewise( V_mf * V_mr / alpha_i * GTP_x * ADP_x / (V_mr * K_mB * GTP_x + V_mr * K_mA * ADP_x + V_mf * K_mQ * GDP_x / K_eq_ndk + V_mf * K_mP * ATP_x / K_eq_ndk + V_mr * GTP_x * ADP_x + V_mf * K_mQ * GTP_x * GDP_x / (K_eq_ndk * K_ia) + V_mf * GDP_x * ATP_x / K_eq_ndk + V_mr * K_mA * ADP_x * ATP_x / K_iq) , ( GTP_x > minCon) && (ADP_x > minCon ), 0 );
+  J_ndk := piecewise( J_ndk_f - V_mf * V_mr / alpha_i * GDP_x * ATP_x / K_eq_ndk / (V_mr * K_mB * GTP_x + V_mr * K_mA * ADP_x + V_mf * K_mQ * GDP_x / K_eq_ndk + V_mf * K_mP * ATP_x / K_eq_ndk + V_mr * GTP_x * ADP_x + V_mf * K_mQ * GTP_x * GDP_x / (K_eq_ndk * K_ia) + V_mf * GDP_x * ATP_x / K_eq_ndk + V_mr * K_mA * ADP_x * ATP_x / K_iq) , ( GDP_x > minCon) && (ATP_x > minCon ), J_ndk_f );
+  K_eq_ndk := K0_eq_ndk * P_GDP_x * P_ATP_x / (P_GTP_x * P_ADP_x);
+  K0_eq_ndk := exp(-(dGr0_ndk) / RT);
+  dGr0_ndk := dGf1_GDP + dGf1_ATP - dGf1_GTP - dGf1_ADP;
+  V_mr := V_mf * K_mQ * K_ip / (K_eq_ndk * K_ia * K_mB);
+  alpha_i := 1 + fAMP_x / K_iAMP;
+
+  // Variable initializations:
+  K_ia = 170e-6;
+  K_ib = 143.6e-6;
+  K_ip = 146.6e-6;
+  K_iq = 156.5e-6;
+  K_mA = 111e-6;
+  K_mB = 100e-6;
+  K_mP = 260e-6;
+  K_mQ = 278e-6;
+  K_iAMP = 650e-6;
+  minCon = 1e-32;
+end
+
+model wu_yang_vinnakota_beard_2007__J_got(J_got_f, J_got, ASP_x, AKG_x, OAA_x, GLU_x, P_OAA_x, P_ASP_x, P_GLU_x, P_AKG_x, V_mf, RT, dGf1_OAA, dGf1_GLU, dGf1_ASP, dGf1_AKG)
+
+  // Assignment Rules:
+  J_got_f := piecewise( V_mf * V_mr * ASP_x * AKG_x / (V_mr * K_mB * ASP_x + V_mr * K_mA * alpha_i * AKG_x + V_mf * K_mQ * alpha_i * OAA_x / K_eq_got + V_mf * K_mP * GLU_x / K_eq_got + V_mr * ASP_x * AKG_x + V_mf * K_mQ * ASP_x * OAA_x / (K_eq_got * K_ia) + V_mf * OAA_x * GLU_x / K_eq_got + V_mr * K_mA * AKG_x * GLU_x / K_iq) , ( ASP_x > minCon) && (AKG_x > minCon ), 0 );
+  J_got := piecewise( J_got_f - V_mf * V_mr * OAA_x * GLU_x / K_eq_got / (V_mr * K_mB * ASP_x + V_mr * K_mA * alpha_i * AKG_x + V_mf * K_mQ * alpha_i * OAA_x / K_eq_got + V_mf * K_mP * GLU_x / K_eq_got + V_mr * ASP_x * AKG_x + V_mf * K_mQ * ASP_x * OAA_x / (K_eq_got * K_ia) + V_mf * OAA_x * GLU_x / K_eq_got + V_mr * K_mA * AKG_x * GLU_x / K_iq) , ( OAA_x > minCon) && (GLU_x > minCon ), J_got_f );
+  K_eq_got := K0_eq_got * P_GLU_x * P_OAA_x / (P_ASP_x * P_AKG_x);
+  K0_eq_got := exp(-(dGr0_got) / RT);
+  dGr0_got := dGf1_OAA + dGf1_GLU - dGf1_ASP - dGf1_AKG;
+  V_mr := V_mf * K_mQ * K_ip / (K_eq_got * K_ia * K_mB);
+  alpha_i := 1 + AKG_x / K_iAKG;
+
+  // Variable initializations:
+  K_ia = 3480e-6;
+  K_ib = 710e-6;
+  K_ip = 50e-6;
+  K_iq = 8400e-6;
+  K_mA = 3900e-6;
+  K_mB = 430e-6;
+  K_mP = 88e-6;
+  K_mQ = 8900e-6;
+  K_iAKG = 16.6e-3;
+  minCon = 1e-32;
+end
+
+model wu_yang_vinnakota_beard_2007__J_PYRH(J_PYRH, X_PYRH, PYR_i, H_i, P_PYR_i, PYR_x, H_x, P_PYR_x)
+
+  // Assignment Rules:
+  J_PYRH := X_PYRH * (PYR_i / P_PYR_i * H_i - PYR_x / P_PYR_x * H_x);
+end
+
+model wu_yang_vinnakota_beard_2007__J_GLUH(J_GLUH, X_GLUH, GLU_i, H_i, P_GLU_i, GLU_x, H_x, P_GLU_x)
+
+  // Assignment Rules:
+  J_GLUH := X_GLUH * (GLU_i / P_GLU_i * H_i - GLU_x / P_GLU_x * H_x);
+end
+
+model wu_yang_vinnakota_beard_2007__J_CITMAL(J_CITMAL, X_CITMAL, hCIT_i, MAL_i, P_MAL_i, hCIT_x, MAL_x, P_MAL_x)
+
+  // Assignment Rules:
+  J_CITMAL := X_CITMAL * (hCIT_i * MAL_x / P_MAL_x - hCIT_x * MAL_i / P_MAL_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_AKGMAL(J_AKGMAL, X_AKGMAL, AKG_i, MAL_i, AKG_x, MAL_x)
+
+  // Assignment Rules:
+  J_AKGMAL := X_AKGMAL * (AKG_i * MAL_x - AKG_x * MAL_i) / (K_mAKGi * K_mMALx * (2 + MAL_i / K_mMALi + MAL_x / K_mMALx + AKG_i / K_mAKGi + AKG_x / K_mAKGx + MAL_i * AKG_x / (K_mMALi * K_mAKGx) + MAL_x * AKG_i / (K_mMALx * K_mAKGi)));
+
+  // Variable initializations:
+  K_mAKGi = 0.3e-3;
+  K_mAKGx = 0.17e-3;
+  K_mMALi = 1.4e-3;
+  K_mMALx = 0.7e-3;
+end
+
+model wu_yang_vinnakota_beard_2007__J_MALPI(J_MALPI, X_MALPI, PI_i, P_PI_i, MAL_i, P_MAL_i, PI_x, P_PI_x, MAL_x, P_MAL_x)
+
+  // Assignment Rules:
+  J_MALPI := X_MALPI * (MAL_i / P_MAL_i * PI_x / P_PI_x - MAL_x / P_MAL_x * PI_i / P_PI_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_ASPGLU(J_ASPGLU, X_ASPGLU, ASP_i, GLU_i, H_i, ASP_x, GLU_x, H_x, F, dPsi, RT, P_ASP_x, P_ASP_i, P_GLU_x, P_GLU_i)
+
+  // Assignment Rules:
+  J_ASPGLU := X_ASPGLU * (K_eqASPGLU * ASP_i * GLU_x * H_x - ASP_x * GLU_i * H_i) / (K_eqASPGLU * K_iASPi * K_iGLUx * K_hASPGLU * (2 * m + m * ASP_i / K_iASPi + ASP_i * GLU_x * H_x / (K_iASPi * K_iGLUx * K_hASPGLU) + m * ASP_x * H_i / (K_iASPx * K_hASPGLU) + ASP_x * GLU_i * H_i / (K_iASPx * K_iGLUi * K_hASPGLU) + m * ASP_x / K_iASPx + m * ASP_i * H_x / (K_iASPi * K_hASPGLU) + m * H_x / K_hASPGLU + m * GLU_i * H_i / (K_iGLUi * K_hASPGLU) + m * H_i / K_hASPGLU + m * GLU_x * H_x / (K_iGLUx * K_hASPGLU)));
+  K_eqASPGLU := exp(-(F) * dPsi / RT) * P_ASP_x * P_GLU_i / (P_ASP_i * P_GLU_x);
+  K_hASPGLU := 1 * power(10 , -(pKa_ASPGLU));
+
+  // Variable initializations:
+  K_iASPi = 28e-6;
+  K_iASPx = 2.8e-3;
+  K_iGLUi = 180e-6;
+  K_iGLUx = 1.6e-3;
+  m = 1.8;
+  pKa_ASPGLU = 6.5;
+end
+
+model wu_yang_vinnakota_beard_2007__J_SUCMAL(J_SUCMAL, X_SUCMAL, SUC_i, P_SUC_i, MAL_i, P_MAL_i, SUC_x, P_SUC_x, MAL_x, P_MAL_x)
+
+  // Assignment Rules:
+  J_SUCMAL := X_SUCMAL * (SUC_i / P_SUC_i * MAL_x / P_MAL_x - SUC_x / P_SUC_x * MAL_i / P_MAL_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_PYRt(J_PYRt, gamma, p_TI, PYR_c, PYR_i)
+
+  // Assignment Rules:
+  J_PYRt := gamma * p_TI * (PYR_c - PYR_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_CITt(J_CITt, gamma, p_TI, CIT_c, CIT_i)
+
+  // Assignment Rules:
+  J_CITt := gamma * p_TI * (CIT_c - CIT_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_MALt(J_MALt, gamma, p_TI, MAL_c, MAL_i)
+
+  // Assignment Rules:
+  J_MALt := gamma * p_TI * (MAL_c - MAL_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_AKGt(J_AKGt, gamma, p_TI, AKG_c, AKG_i)
+
+  // Assignment Rules:
+  J_AKGt := gamma * p_TI * (AKG_c - AKG_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_SUCt(J_SUCt, gamma, p_TI, SUC_c, SUC_i)
+
+  // Assignment Rules:
+  J_SUCt := gamma * p_TI * (SUC_c - SUC_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_GLUt(J_GLUt, gamma, p_TI, GLU_c, GLU_i)
+
+  // Assignment Rules:
+  J_GLUt := gamma * p_TI * (GLU_c - GLU_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_ASPt(J_ASPt, gamma, p_TI, ASP_c, ASP_i)
+
+  // Assignment Rules:
+  J_ASPt := gamma * p_TI * (ASP_c - ASP_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_FUMt(J_FUMt, gamma, FUM_c, FUM_i)
+
+  // Assignment Rules:
+  J_FUMt := gamma * zero * (FUM_c - FUM_i);
+
+  // Variable initializations:
+  zero = 0;
+end
+
+model wu_yang_vinnakota_beard_2007__J_ICITt(J_ICITt, gamma, p_TI, ICIT_c, ICIT_i)
+
+  // Assignment Rules:
+  J_ICITt := gamma * p_TI * (ICIT_c - ICIT_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_ADPt(J_ADPt, gamma, p_A, ADP_c, ADP_i)
+
+  // Assignment Rules:
+  J_ADPt := gamma * p_A * (ADP_c - ADP_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_ATPt(J_ATPt, gamma, p_A, ATP_c, ATP_i)
+
+  // Assignment Rules:
+  J_ATPt := gamma * p_A * (ATP_c - ATP_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_AMPt(J_AMPt, gamma, p_A, AMP_c, AMP_i)
+
+  // Assignment Rules:
+  J_AMPt := gamma * p_A * (AMP_c - AMP_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_PIt(J_PIt, gamma, p_PI, PI_c, PI_i)
+
+  // Assignment Rules:
+  J_PIt := gamma * p_PI * (PI_c - PI_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_C1(J_C1, X_C1, H_x, H_i, dPsi, F, RT, NAD_x, NADH_x, QH2_x, COQ_x, dGf1_NAD, dGf1_QH2, dGf1_NADH, dGf1_COQ)
+
+  // Assignment Rules:
+  J_C1 := X_C1 * (K_app_C1 * NADH_x * COQ_x - NAD_x * QH2_x);
+  dGr0_C1 := dGf1_NAD + dGf1_QH2 - dGf1_NADH - dGf1_COQ;
+  K_eq_C1 := 1 * exp(-((dGr0_C1 + 4 * F * dPsi)) / RT);
+  K_app_C1 := K_eq_C1 * power(H_x, 5 ) / power(H_i, 4 );
+end
+
+model wu_yang_vinnakota_beard_2007__J_C3(J_C3, X_C3, k_PI_1, k_PI_2, H_x, H_i, dPsi, F, RT, PI_x, QH2_x_in, COQ_x_in, Cred_i, Cox_i, dGf1_COQ, dGf1_Cred, dGf1_QH2, dGf1_Cox)
+
+  // Assignment Rules:
+  J_C3 := X_C3 * (1 + PI_x / k_PI_1) / (1 + PI_x / k_PI_2) * (root(K_app_C3) * Cox_i * root(QH2_x) - Cred_i * root(COQ_x));
+  dGr0_C3 := dGf1_COQ + 2 * dGf1_Cred - dGf1_QH2 - 2 * dGf1_Cox;
+  K_eq_C3 := 1 * exp(-((dGr0_C3 + 2 * F * dPsi)) / RT);
+  K_app_C3 := K_eq_C3 * power(H_x, 2 ) / power(H_x, 4 );
+  QH2_x := piecewise( QH2_x_in , QH2_x_in > minCon , minCon );
+  COQ_x := piecewise( COQ_x_in , COQ_x_in > minCon , minCon );
+
+  // Variable initializations:
+  minCon = 1e-32;
+end
+
+model wu_yang_vinnakota_beard_2007__J_C4(J_C4, X_C4, H_x, H_i, dPsi, F, RT, O2_x_in, k_O2, cytC_tot, Cred_i, Cox_i, dGf1_Cox, dGf1_H2O, dGf1_Cred, dGf1_O2)
+
+  // Assignment Rules:
+  J_C4 := X_C4 * (O2_x / (O2_x + k_O2) * exp(F * dPsi / RT) * (Cred_i / cytC_tot)) * (power(K_app_C4, 1 / 2 ) * Cred_i * power(O2_x / 1 , 1 / 4 ) - Cox_i);
+  dGr0_C4 := 2 * dGf1_Cox + dGf1_H2O - 2 * dGf1_Cred - 0.5 * dGf1_O2;
+  K_eq_C4 := exp(-((dGr0_C4 + 4 * F * dPsi)) / RT);
+  K_app_C4 := K_eq_C4 * power(H_x, 4 ) / (power(H_i, 2 ) * power(1 , 2 ));
+  O2_x := piecewise( O2_x_in , O2_x_in > minCon , minCon );
+
+  // Variable initializations:
+  minCon = 1e-32;
+end
+
+model wu_yang_vinnakota_beard_2007__J_F1(J_F1, X_F1, H_x, H_i, P_ATP_x, P_ADP_x, P_PI_x, dPsi, F, RT, n_A, ATP_x, ADP_x, PI_x, dGf1_ATP, dGf1_H2O, dGf1_ADP, dGf1_PI)
+
+  // Assignment Rules:
+  J_F1 := X_F1 * (K_app_F1 * ADP_x * PI_x - ATP_x);
+  dGr0_F1 := dGf1_ATP + dGf1_H2O - dGf1_ADP - dGf1_PI;
+  K_eq_F1 := exp(-((dGr0_F1 - n_A * F * dPsi)) / RT) / 1;
+  K_app_F1 := K_eq_F1 * power(H_i, n_A) / power(H_x, n_A - 1 ) * P_ATP_x / (P_ADP_x * P_PI_x);
+end
+
+model wu_yang_vinnakota_beard_2007__J_ANT(J_ANT, theta, X_ANT, k_mADP, ADP_i, P_ADP_i, ATP_i, P_ATP_i, ADP_x, P_ADP_x, ATP_x, P_ATP_x, dPsi, F, RT)
+
+  // Assignment Rules:
+  J_ANT := piecewise( X_ANT * (ADP_i / P_ADP_i / (ADP_i / P_ADP_i + ATP_i / P_ATP_i * exp(theta * F * dPsi / RT)) - ADP_x / P_ADP_x / (ADP_x / P_ADP_x + ATP_x / P_ATP_x * exp(theta * (F - 1 ) * dPsi / RT))) * (ADP_i / P_ADP_i / (ADP_i / P_ADP_i + k_mADP)) , ( ADP_i > minCond) && (ATP_x > minCond ), 0 );
+
+  // Variable initializations:
+  minCond = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__J_PIHt(J_PIHt, X_PIHt, k_PIHt, hPI_i, H_i, hPI_x, H_x)
+
+  // Assignment Rules:
+  J_PIHt := X_PIHt * (hPI_i * H_i - hPI_x * H_x) / (k_PIHt * (1 + hPI_i / k_PIHt) * (1 + hPI_x / k_PIHt));
+end
+
+model wu_yang_vinnakota_beard_2007__J_Hle(J_Hle, X_Hle, dPsi, F, RT, n_A, H_i, H_x)
+
+  // Assignment Rules:
+  J_Hle := piecewise( X_Hle * dPsi * (H_i * exp(F * dPsi / RT) - H_x) / (exp(F * dPsi / RT) - 1 ) , abs(dPsi) > minCond , X_Hle * RT * (H_i - H_x) / F );
+
+  // Variable initializations:
+  minCond = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__J_KH(J_KH, X_KH, K_i, H_i, K_x, H_x)
+
+  // Assignment Rules:
+  J_KH := X_KH * (K_i * H_x - K_x * H_i);
+end
+
+model wu_yang_vinnakota_beard_2007__J_HK(J_HK, X_HK, mATP_c, mADP_c, GLC_c, G6P_c, H_c, RT, P_ATP_c, P_ADP_c, P_G6P_c, P_GLC_c, KMg_ATP, KMg_ADP, dGf1_G6P, dGf1_ADP, dGf1_GLC, dGf1_ATP)
+
+  // Assignment Rules:
+  J_HK := X_HK / (K_ib * K_mA) * (mATP_c * GLC_c - G6P_c * mADP_c / Kapp_HK_m) / (1 + mATP_c / K_ia + GLC_c / K_ib + mATP_c * GLC_c / (K_ib * K_mA) + G6P_c / K_ip + mADP_c / K_iq + G6P_c * mADP_c / (K_iq * K_mP) + G6P_c * GLC_c / (Ki_G6P * K_ib));
+  dGr0_HK := dGf1_G6P + dGf1_ADP - dGf1_GLC - dGf1_ATP;
+  K_eq_HK := 1 * exp(-(dGr0_HK) / RT);
+  Kapp_HK := K_eq_HK * P_G6P_c * P_ADP_c / (H_c * P_ATP_c * P_GLC_c);
+  Kapp_HK_m := Kapp_HK * KMg_ATP * P_ATP_c / (KMg_ADP * P_ADP_c);
+
+  // Variable initializations:
+  K_ia = 1e-3;
+  K_ib = 47e-6;
+  K_ip = 47e-6;
+  K_iq = 1e-3;
+  K_mA = 1e-3;
+  K_mB = 47e-6;
+  K_mP = 47e-6;
+  K_mQ = 1e-3;
+  Ki_G6P = 10e-6;
+end
+
+model wu_yang_vinnakota_beard_2007__J_CKc(J_CKc, ATP_c, ADP_c, AMP_c, H_c, PCr_c, CR_tot, RT, P_ATP_c, P_ADP_c, ExpType)
+
+  // Assignment Rules:
+  J_CKc := piecewise( 0 , (( ExpType == 1) || (ExpType == 2) || (ExpType == 5 )), X_CK * (K_CK * ADP_c / P_ADP_c * PCr_c * H_c - ATP_c / P_ATP_c * Cr_c) );
+  K_CK := exp(50.78 / RT) / 1;
+  Cr_c := CR_tot - PCr_c;
+
+  // Variable initializations:
+  X_CK = 1e7;
+end
+
+model wu_yang_vinnakota_beard_2007__J_AK(J_AKi, J_AKc, ATP_i, ADP_i, AMP_i, P_ATP_i, P_ADP_i, P_AMP_i, ATP_c, ADP_c, AMP_c, P_ATP_c, P_ADP_c, P_AMP_c, ExpType, RT, dGf1_ATP, dGf1_ADP, dGf1_AMP)
+
+  // Assignment Rules:
+  J_AKi := piecewise( 0 , (( ExpType == 1) || (ExpType == 2) || (ExpType == 5 )), X_AK * (Kapp_AKi * ADP_i * ADP_i - AMP_i * ATP_i) );
+  J_AKc := piecewise( 0 , (( ExpType == 1) || (ExpType == 2) || (ExpType == 5 )), X_AK * (Kapp_AKc * ADP_c * ADP_c - AMP_c * ATP_c) );
+  dGr0_AK := dGf1_ATP + dGf1_AMP - 2 * dGf1_ADP;
+  K_eq_AK := exp(-(dGr0_AK) / RT);
+  Kapp_AKi := K_eq_AK * P_ATP_i * P_AMP_i / (P_ADP_i * P_ADP_i);
+  Kapp_AKc := K_eq_AK * P_ATP_c * P_AMP_c / (P_ADP_c * P_ADP_c);
+
+  // Variable initializations:
+  X_AK = 1e7;
+end
+
+model wu_yang_vinnakota_beard_2007__ddPsi_dt(dPsi, time_, C_IM, J_C1, J_C3, J_C4, J_F1, J_ANT, J_Hle, J_ASPGLU, n_A)
+
+  // Rate Rules:
+  dPsi' = (4 * J_C1 + 2 * J_C3 + 4 * J_C4 - n_A * J_F1 - J_ANT - J_Hle + J_ASPGLU) / C_IM;
+
+  // Variable initializations:
+  dPsi = -14.087;
+end
+
+model wu_yang_vinnakota_beard_2007__dNAD_x_dt(NAD_x, dNAD_x_dt, NAD_tot, NADH_x, dNADH_x_dt)
+
+  // Assignment Rules:
+  NAD_x := NAD_tot - NADH_x;
+  dNAD_x_dt := -(dNADH_x_dt);
+end
+
+model wu_yang_vinnakota_beard_2007__dCOQ_x_dt(COQ_x, dCOQ_x_dt, Q_tot, QH2_x, dQH2_x_dt)
+
+  // Assignment Rules:
+  COQ_x := Q_tot - QH2_x;
+  dCOQ_x_dt := -(dQH2_x_dt);
+end
+
+model wu_yang_vinnakota_beard_2007__dCox_i_dt(Cox_i, cytC_tot, Cred_i)
+
+  // Assignment Rules:
+  Cox_i := cytC_tot - Cred_i;
+end
+
+model wu_yang_vinnakota_beard_2007__dATP_x_dt(ATP_x, dATP_x_dt, time_, W_x, J_ndk, J_F1, J_ANT)
+
+  // Assignment Rules:
+  dATP_x_dt := (J_ndk + J_F1 - J_ANT) / W_x;
+
+  // Rate Rules:
+  ATP_x' = (J_ndk + J_F1 - J_ANT) / W_x;
+
+  // Variable initializations:
+  ATP_x = 1.025e-11;
+end
+
+model wu_yang_vinnakota_beard_2007__dADP_x_dt(ADP_x, dADP_x_dt, time_, W_x, J_ndk, J_F1, J_ANT)
+
+  // Assignment Rules:
+  dADP_x_dt := (-(J_ndk) - J_F1 + J_ANT) / W_x;
+
+  // Rate Rules:
+  ADP_x' = (-(J_ndk) - J_F1 + J_ANT) / W_x;
+
+  // Variable initializations:
+  ADP_x = 0.01;
+end
+
+model wu_yang_vinnakota_beard_2007__dAMP_x_dt(AMP_x, dAMP_x_dt, time_)
+
+  // Rate Rules:
+  AMP_x' = 0;
+
+  // Variable initializations:
+  AMP_x = 1e-6;
+  dAMP_x_dt = 0;
+end
+
+model wu_yang_vinnakota_beard_2007__dGTP_x_dt(GTP_x, dGTP_x_dt, time_, W_x, J_ndk, J_scoas)
+
+  // Assignment Rules:
+  dGTP_x_dt := (J_scoas - J_ndk) / W_x;
+
+  // Rate Rules:
+  GTP_x' = (J_scoas - J_ndk) / W_x;
+
+  // Variable initializations:
+  GTP_x = 2.7157e-10;
+end
+
+model wu_yang_vinnakota_beard_2007__dGDP_x_dt(GDP_x, dGDP_x_dt, time_, W_x, J_ndk, J_scoas)
+
+  // Assignment Rules:
+  dGDP_x_dt := (-(J_scoas) + J_ndk) / W_x;
+
+  // Rate Rules:
+  GDP_x' = (-(J_scoas) + J_ndk) / W_x;
+
+  // Variable initializations:
+  GDP_x = 0.005;
+end
+
+model wu_yang_vinnakota_beard_2007__dPI_x_dt(PI_x, dPI_x_dt, time_, W_x, J_F1, J_scoas, J_PIHt, J_MALPI)
+
+  // Assignment Rules:
+  dPI_x_dt := (-(J_scoas) - J_F1 + J_PIHt - J_MALPI) / W_x;
+
+  // Rate Rules:
+  PI_x' = (-(J_scoas) - J_F1 + J_PIHt - J_MALPI) / W_x;
+
+  // Variable initializations:
+  PI_x = 2.9918e-4;
+end
+
+model wu_yang_vinnakota_beard_2007__dNADH_x_dt(NADH_x, dNADH_x_dt, time_, W_x, J_pdh, J_isod, J_akgd, J_mdh, J_C1)
+
+  // Assignment Rules:
+  dNADH_x_dt := (J_pdh + J_isod + J_akgd + J_mdh - J_C1) / W_x;
+
+  // Rate Rules:
+  NADH_x' = (J_pdh + J_isod + J_akgd + J_mdh - J_C1) / W_x;
+
+  // Variable initializations:
+  NADH_x = 8.484200000000001e-21;
+end
+
+model wu_yang_vinnakota_beard_2007__dQH2_x_dt(QH2_x, dQH2_x_dt, time_, W_x, J_sdh, J_C1, J_C3)
+
+  // Assignment Rules:
+  dQH2_x_dt := (J_sdh + J_C1 - J_C3) / W_x;
+
+  // Rate Rules:
+  QH2_x' = (J_sdh + J_C1 - J_C3) / W_x;
+
+  // Variable initializations:
+  QH2_x = 0;
+end
+
+model wu_yang_vinnakota_beard_2007__dPYR_x_dt(PYR_x, dPYR_x_dt, time_, W_x, J_pdh, J_PYRH)
+
+  // Assignment Rules:
+  dPYR_x_dt := (-(J_pdh) + J_PYRH) / W_x;
+
+  // Rate Rules:
+  PYR_x' = (-(J_pdh) + J_PYRH) / W_x;
+
+  // Variable initializations:
+  PYR_x = 1.2076e-11;
+end
+
+model wu_yang_vinnakota_beard_2007__dACCOA_x_dt(ACCOA_x, dACCOA_x_dt, time_, W_x, J_pdh, J_cits)
+
+  // Assignment Rules:
+  dACCOA_x_dt := (J_pdh - J_cits) / W_x;
+
+  // Rate Rules:
+  ACCOA_x' = (J_pdh - J_cits) / W_x;
+
+  // Variable initializations:
+  ACCOA_x = 2.5507e-12;
+end
+
+model wu_yang_vinnakota_beard_2007__dCIT_x_dt(CIT_x, dCIT_x_dt, time_, W_x, J_acon, J_cits, J_CITMAL)
+
+  // Assignment Rules:
+  dCIT_x_dt := (-(J_acon) + J_CITMAL + J_cits) / W_x;
+
+  // Rate Rules:
+  CIT_x' = (-(J_acon) + J_CITMAL + J_cits) / W_x;
+
+  // Variable initializations:
+  CIT_x = 6.815100000000001e-5;
+end
+
+model wu_yang_vinnakota_beard_2007__dICIT_x_dt(ICIT_x, dICIT_x_dt, time_, W_x, J_acon, J_isod)
+
+  // Assignment Rules:
+  dICIT_x_dt := (J_acon - J_isod) / W_x;
+
+  // Rate Rules:
+  ICIT_x' = (J_acon - J_isod) / W_x;
+
+  // Variable initializations:
+  ICIT_x = 9.3558e-7;
+end
+
+model wu_yang_vinnakota_beard_2007__dAKG_x_dt(AKG_x, dAKG_x_dt, time_, W_x, J_isod, J_akgd, J_got, J_AKGMAL)
+
+  // Assignment Rules:
+  dAKG_x_dt := (J_isod - J_akgd - J_got + J_AKGMAL) / W_x;
+
+  // Rate Rules:
+  AKG_x' = (J_isod - J_akgd - J_got + J_AKGMAL) / W_x;
+
+  // Variable initializations:
+  AKG_x = 4.7979e-11;
+end
+
+model wu_yang_vinnakota_beard_2007__dSCOA_x_dt(SCOA_x, dSCOA_x_dt, time_, W_x, J_akgd, J_scoas)
+
+  // Assignment Rules:
+  dSCOA_x_dt := (J_akgd - J_scoas) / W_x;
+
+  // Rate Rules:
+  SCOA_x' = (J_akgd - J_scoas) / W_x;
+
+  // Variable initializations:
+  SCOA_x = 6.9627e-10;
+end
+
+model wu_yang_vinnakota_beard_2007__dCOASH_x_dt(COASH_x, dCOASH_x_dt, time_, W_x, J_pdh, J_akgd, J_scoas, J_cits)
+
+  // Assignment Rules:
+  dCOASH_x_dt := (-(J_pdh) - J_akgd + J_scoas + J_cits) / W_x;
+
+  // Rate Rules:
+  COASH_x' = (-(J_pdh) - J_akgd + J_scoas + J_cits) / W_x;
+
+  // Variable initializations:
+  COASH_x = 0.0030107;
+end
+
+model wu_yang_vinnakota_beard_2007__dSUC_x_dt(SUC_x, dSUC_x_dt, time_, W_x, J_scoas, J_sdh, J_SUCMAL)
+
+  // Assignment Rules:
+  dSUC_x_dt := (J_scoas - J_sdh + J_SUCMAL) / W_x;
+
+  // Rate Rules:
+  SUC_x' = (J_scoas - J_sdh + J_SUCMAL) / W_x;
+
+  // Variable initializations:
+  SUC_x = 2.1681e-7;
+end
+
+model wu_yang_vinnakota_beard_2007__dFUM_x_dt(FUM_x, dFUM_x_dt, time_, W_x, J_sdh, J_fum)
+
+  // Assignment Rules:
+  dFUM_x_dt := (J_sdh - J_fum) / W_x;
+
+  // Rate Rules:
+  FUM_x' = (J_sdh - J_fum) / W_x;
+
+  // Variable initializations:
+  FUM_x = 7.8476e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dMAL_x_dt(MAL_x, dMAL_x_dt, time_, W_x, J_fum, J_mdh, J_MALPI, J_AKGMAL, J_CITMAL, J_SUCMAL)
+
+  // Assignment Rules:
+  dMAL_x_dt := (J_fum - J_mdh + J_MALPI - J_AKGMAL - J_CITMAL - J_SUCMAL) / W_x;
+
+  // Rate Rules:
+  MAL_x' = (J_fum - J_mdh + J_MALPI - J_AKGMAL - J_CITMAL - J_SUCMAL) / W_x;
+
+  // Variable initializations:
+  MAL_x = 3.2191e-8;
+end
+
+model wu_yang_vinnakota_beard_2007__dOAA_x_dt(OAA_x, dOAA_x_dt, time_, W_x, J_cits, J_mdh, J_got)
+
+  // Assignment Rules:
+  dOAA_x_dt := (-(J_cits) + J_mdh + J_got) / W_x;
+
+  // Rate Rules:
+  OAA_x' = (-(J_cits) + J_mdh + J_got) / W_x;
+
+  // Variable initializations:
+  OAA_x = 8.9236e-4;
+end
+
+model wu_yang_vinnakota_beard_2007__dGLU_x_dt(GLU_x, dGLU_x_dt, time_, W_x, J_got, J_GLUH, J_ASPGLU)
+
+  // Assignment Rules:
+  dGLU_x_dt := (J_got + J_GLUH - J_ASPGLU) / W_x;
+
+  // Rate Rules:
+  GLU_x' = (J_got + J_GLUH - J_ASPGLU) / W_x;
+
+  // Variable initializations:
+  GLU_x = 9.9311e-12;
+end
+
+model wu_yang_vinnakota_beard_2007__dASP_x_dt(ASP_x, dASP_x_dt, time_, W_x, J_got, J_ASPGLU)
+
+  // Assignment Rules:
+  dASP_x_dt := (-(J_got) + J_ASPGLU) / W_x;
+
+  // Rate Rules:
+  ASP_x' = (-(J_got) + J_ASPGLU) / W_x;
+
+  // Variable initializations:
+  ASP_x = 1.0217e-4;
+end
+
+model wu_yang_vinnakota_beard_2007__dO2_x_dt(O2_x, dO2_x_dt, time_)
+
+  // Rate Rules:
+  O2_x' = 0;
+
+  // Variable initializations:
+  O2_x = 6.499999999999999e-5;
+  dO2_x_dt = 0;
+end
+
+model wu_yang_vinnakota_beard_2007__dCO2_tot_x_dt(CO2_tot_x, dCO2_tot_x_dt, time_)
+
+  // Rate Rules:
+  CO2_tot_x' = 0;
+
+  // Variable initializations:
+  CO2_tot_x = 0.0214;
+  dCO2_tot_x_dt = 0;
+end
+
+model wu_yang_vinnakota_beard_2007__dCred_i_dt(Cred_i, time_, W_i, J_C3, J_C4)
+
+  // Rate Rules:
+  Cred_i' = (2 * J_C3 - 2 * J_C4) / W_i;
+
+  // Variable initializations:
+  Cred_i = 9.6996e-8;
+end
+
+model wu_yang_vinnakota_beard_2007__dATP_i_dt(ATP_i, time_, W_i, J_ATPt, J_ANT, J_AKi)
+
+  // Rate Rules:
+  ATP_i' = (J_ATPt + J_ANT + J_AKi) / W_i;
+
+  // Variable initializations:
+  ATP_i = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dADP_i_dt(ADP_i, time_, W_i, J_ADPt, J_ANT, J_AKi)
+
+  // Rate Rules:
+  ADP_i' = (J_ADPt - J_ANT - 2 * J_AKi) / W_i;
+
+  // Variable initializations:
+  ADP_i = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dAMP_i_dt(AMP_i, time_, W_i, J_AMPt, J_AKi)
+
+  // Rate Rules:
+  AMP_i' = (J_AMPt + J_AKi) / W_i;
+
+  // Variable initializations:
+  AMP_i = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dPI_i_dt(PI_i, time_, W_i, J_PIHt, J_PIt, J_MALPI)
+
+  // Rate Rules:
+  PI_i' = (-(J_PIHt) + J_PIt + J_MALPI) / W_i;
+
+  // Variable initializations:
+  PI_i = 1.1574e-4;
+end
+
+model wu_yang_vinnakota_beard_2007__dPYR_i_dt(PYR_i, time_, W_i, J_PYRH, J_PYRt)
+
+  // Rate Rules:
+  PYR_i' = (-(J_PYRH) + J_PYRt) / W_i;
+
+  // Variable initializations:
+  PYR_i = 9.1804e-10;
+end
+
+model wu_yang_vinnakota_beard_2007__dCIT_i_dt(CIT_i, time_, W_i, J_CITMAL, J_CITt)
+
+  // Rate Rules:
+  CIT_i' = (-(J_CITMAL) + J_CITt) / W_i;
+
+  // Variable initializations:
+  CIT_i = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dICIT_i_dt(ICIT_i, time_, W_i, J_ICITt)
+
+  // Rate Rules:
+  ICIT_i' = J_ICITt / W_i;
+
+  // Variable initializations:
+  ICIT_i = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dAKG_i_dt(AKG_i, time_, W_i, J_AKGMAL, J_AKGt)
+
+  // Rate Rules:
+  AKG_i' = (-(J_AKGMAL) + J_AKGt) / W_i;
+
+  // Variable initializations:
+  AKG_i = 9.999500000000001e-10;
+end
+
+model wu_yang_vinnakota_beard_2007__dSUC_i_dt(SUC_i, time_, W_i, J_SUCt, J_SUCMAL)
+
+  // Rate Rules:
+  SUC_i' = (J_SUCt - J_SUCMAL) / W_i;
+
+  // Variable initializations:
+  SUC_i = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dFUM_i_dt(FUM_i, time_, J_FUMt, W_i)
+
+  // Rate Rules:
+  FUM_i' = J_FUMt / W_i;
+
+  // Variable initializations:
+  FUM_i = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dMAL_i_dt(MAL_i, time_, W_i, J_MALPI, J_MALt, J_AKGMAL, J_CITMAL, J_SUCMAL)
+
+  // Rate Rules:
+  MAL_i' = (-(J_MALPI) + J_MALt + J_AKGMAL + J_CITMAL + J_SUCMAL) / W_i;
+
+  // Variable initializations:
+  MAL_i = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dGLU_i_dt(GLU_i, time_, W_i, J_GLUH, J_ASPGLU, J_GLUt)
+
+  // Rate Rules:
+  GLU_i' = (-(J_GLUH) + J_ASPGLU + J_GLUt) / W_i;
+
+  // Variable initializations:
+  GLU_i = 5.7539e-12;
+end
+
+model wu_yang_vinnakota_beard_2007__dASP_i_dt(ASP_i, time_, W_i, J_ASPGLU, J_ASPt)
+
+  // Rate Rules:
+  ASP_i' = (-(J_ASPGLU) + J_ASPt) / W_i;
+
+  // Variable initializations:
+  ASP_i = 4.4404e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dH_i_dt(H_i, H_c)
+
+  // Assignment Rules:
+  H_i := H_c;
+end
+
+model wu_yang_vinnakota_beard_2007__dMg_i_dt(Mg_i, Mg_c)
+
+  // Assignment Rules:
+  Mg_i := Mg_c;
+end
+
+model wu_yang_vinnakota_beard_2007__dK_i_dt(K_i, K_c)
+
+  // Assignment Rules:
+  K_i := K_c;
+end
+
+model wu_yang_vinnakota_beard_2007__dPYR_c_dt(PYR_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_PYRt)
+
+  // Assignment Rules:
+  Rm_cyto := piecewise( 0 , ((( StateType == 0) || (ExpType == 3) || (ExpType == 4) || (ExpType == 5 ))), 1 , (( ExpType == 1) || (ExpType == 2) || (ExpType == 6 )), V_mito / V_cyto );
+
+  // Rate Rules:
+  PYR_c' = -(Rm_cyto) * J_PYRt / W_c;
+
+  // Variable initializations:
+  PYR_c = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dCIT_c_dt(CIT_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_CITt)
+
+  // Assignment Rules:
+  Rm_cyto := piecewise( 0 , ( StateType == 0) || (ExpType == 5 ), 1 , (( ExpType == 1) || (ExpType == 2) || (ExpType == 6 )), V_mito / V_cyto );
+
+  // Rate Rules:
+  CIT_c' = -(Rm_cyto) * J_CITt / W_c;
+
+  // Variable initializations:
+  CIT_c = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dICIT_c_dt(ICIT_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_ICITt)
+
+  // Assignment Rules:
+  Rm_cyto := piecewise( 0 , ( StateType == 0) || (ExpType == 5 ), 1 , (( ExpType == 1) || (ExpType == 2) || (ExpType == 6 )), V_mito / V_cyto );
+
+  // Rate Rules:
+  ICIT_c' = -(Rm_cyto) * J_ICITt / W_c;
+
+  // Variable initializations:
+  ICIT_c = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dAKG_c_dt(AKG_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_AKGt)
+
+  // Assignment Rules:
+  Rm_cyto := piecewise( 0 , ( StateType == 0) || (ExpType == 5 ), 1 , (( ExpType == 1) || (ExpType == 2) || (ExpType == 6 )), V_mito / V_cyto );
+
+  // Rate Rules:
+  AKG_c' = -(Rm_cyto) * J_AKGt / W_c;
+
+  // Variable initializations:
+  AKG_c = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dSUC_c_dt(SUC_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_SUCt)
+
+  // Assignment Rules:
+  Rm_cyto := piecewise( 0 , ( StateType == 0) || (ExpType == 5 ), 1 , (( ExpType == 1) || (ExpType == 2) || (ExpType == 6 )), V_mito / V_cyto );
+
+  // Rate Rules:
+  SUC_c' = -(Rm_cyto) * J_SUCt / W_c;
+
+  // Variable initializations:
+  SUC_c = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dFUM_c_dt(FUM_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_FUMt)
+
+  // Assignment Rules:
+  Rm_cyto := piecewise( 0 , ( StateType == 0) || (ExpType == 5 ), 1 , (( ExpType == 1) || (ExpType == 2) || (ExpType == 6 )), V_mito / V_cyto );
+
+  // Rate Rules:
+  FUM_c' = -(Rm_cyto) * J_FUMt / W_c;
+
+  // Variable initializations:
+  FUM_c = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dMAL_c_dt(MAL_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_MALt)
+
+  // Assignment Rules:
+  Rm_cyto := piecewise( 0 , ( StateType == 0) || (ExpType == 5 ), 1 , (( ExpType == 1) || (ExpType == 2) || (ExpType == 6 )), V_mito / V_cyto );
+
+  // Rate Rules:
+  MAL_c' = -(Rm_cyto) * J_MALt / W_c;
+
+  // Variable initializations:
+  MAL_c = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dGLU_c_dt(GLU_c, time_, ExpType, W_c, V_cyto, V_mito, J_GLUt)
+
+  // Assignment Rules:
+  Rm_cyto := piecewise( 1 , ((( ExpType == 1) || (ExpType == 2) || (ExpType == 5) || (ExpType == 6 ))), V_mito / V_cyto );
+
+  // Rate Rules:
+  GLU_c' = -(Rm_cyto) * J_GLUt / W_c;
+
+  // Variable initializations:
+  GLU_c = 5.754e-12;
+end
+
+model wu_yang_vinnakota_beard_2007__dASP_c_dt(ASP_c, time_, ExpType, W_c, V_cyto, V_mito, J_ASPt)
+
+  // Assignment Rules:
+  Rm_cyto := piecewise( 1 , ((( ExpType == 1) || (ExpType == 2) || (ExpType == 5) || (ExpType == 6 ))), V_mito / V_cyto );
+
+  // Rate Rules:
+  ASP_c' = -(Rm_cyto) * J_ASPt / W_c;
+
+  // Variable initializations:
+  ASP_c = 4.4404e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dH_c_dt(H_c, time_)
+
+  // Rate Rules:
+  H_c' = 0;
+
+  // Variable initializations:
+  H_c = 1e-7;
+end
+
+model wu_yang_vinnakota_beard_2007__dMg_c_dt(Mg_c, time_)
+
+  // Rate Rules:
+  Mg_c' = 0;
+
+  // Variable initializations:
+  Mg_c = 0.005;
+end
+
+model wu_yang_vinnakota_beard_2007__dK_c_dt(K_c, time_)
+
+  // Rate Rules:
+  K_c' = 0;
+
+  // Variable initializations:
+  K_c = 0.15;
+end
+
+model wu_yang_vinnakota_beard_2007__dPI_c_dt(PI_c, time_, ExpType, W_c, V_cyto, V_mito, J_AtC, J_PIt)
+
+  // Assignment Rules:
+  Rm_cyto := V_mito / V_cyto;
+
+  // Rate Rules:
+  PI_c' = piecewise( -(J_PIt) * conversion_factor / W_c , ((( ExpType == 1) || (ExpType == 2) || (ExpType == 5) || (ExpType == 6 ))), (Rm_cyto * J_PIt + J_AtC) / W_c );
+
+  // Variable initializations:
+  PI_c = 1.1574e-4;
+  conversion_factor = 1;
+end
+
+model wu_yang_vinnakota_beard_2007__dATP_c_dt(ATP_c, time_, ExpType, W_c, V_cyto, V_mito, J_ATPt, J_CKc, J_AKc, J_AtC, J_HK)
+
+  // Assignment Rules:
+  Rm_cyto := V_mito / V_cyto;
+
+  // Rate Rules:
+  ATP_c' = piecewise( (-((1 + W_c / 1 )) * J_HK - conversion_factor * J_ATPt) / W_c , ((( ExpType == 1) || (ExpType == 2) || (ExpType == 5) || (ExpType == 6 ))), (-(Rm_cyto) * J_ATPt + J_CKc + conversion_factor * J_AKc - J_AtC) / W_c );
+
+  // Variable initializations:
+  ATP_c = 1e-9;
+  conversion_factor = 1;
+end
+
+model wu_yang_vinnakota_beard_2007__dADP_c_dt(ADP_c, time_, ExpType, W_c, V_cyto, V_mito, J_ADPt, J_CKc, J_AKc, J_AtC, J_HK)
+
+  // Assignment Rules:
+  Rm_cyto := V_mito / V_cyto;
+
+  // Rate Rules:
+  ADP_c' = piecewise( ((1 + W_c / 1 ) * J_HK - conversion_factor * J_ADPt) / W_c , ((( ExpType == 1) || (ExpType == 2) || (ExpType == 5) || (ExpType == 6 ))), (-(Rm_cyto) * J_ADPt - J_CKc - 2 * conversion_factor * J_AKc + J_AtC) / W_c );
+
+  // Variable initializations:
+  ADP_c = 1e-9;
+  conversion_factor = 1;
+end
+
+model wu_yang_vinnakota_beard_2007__dGLC_c_dt(GLC_c, time_, ExpType, W_c, J_HK)
+
+  // Rate Rules:
+  GLC_c' = piecewise( -((1 + W_c / 1 )) * J_HK / W_c , ((( ExpType == 1) || (ExpType == 2) || (ExpType == 5) || (ExpType == 6 ))), 0 );
+
+  // Variable initializations:
+  GLC_c = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dG6P_c_dt(G6P_c, time_, ExpType, W_c, J_HK)
+
+  // Rate Rules:
+  G6P_c' = piecewise( (1 + W_c / 1 ) * J_HK / W_c , ((( ExpType == 1) || (ExpType == 2) || (ExpType == 5) || (ExpType == 6 ))), 0 );
+
+  // Variable initializations:
+  G6P_c = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dPCr_c_dt(PCr_c, time_, ExpType, W_c, J_CKc)
+
+  // Rate Rules:
+  PCr_c' = piecewise( 0 , ((( ExpType == 1) || (ExpType == 2) || (ExpType == 5) || (ExpType == 6 ))), -(J_CKc) / W_c );
+
+  // Variable initializations:
+  PCr_c = 1e-9;
+end
+
+model wu_yang_vinnakota_beard_2007__dAMP_c_dt(AMP_c, time_, ExpType, W_c, V_cyto, V_mito, J_AMPt, J_AKc)
+
+  // Assignment Rules:
+  Rm_cyto := V_mito / V_cyto;
+
+  // Rate Rules:
+  AMP_c' = piecewise( 0 , ((( ExpType == 1) || (ExpType == 2) || (ExpType == 5) || (ExpType == 6 ))), (-(Rm_cyto) * J_AMPt + conversion_factor * J_AKc) / W_c );
+
+  // Variable initializations:
+  AMP_c = 1e-9;
+  conversion_factor = 1;
+end
+
+model wu_yang_vinnakota_beard_2007__dFAD_x_dt(FAD_x, dFAD_x_dt, dFADH2_x_dt, FADH2_x, FAD_tot)
+
+  // Assignment Rules:
+  FAD_x := FAD_tot - FADH2_x;
+  FADH2_x := FAD_tot / 2;
+
+  // Variable initializations:
+  dFAD_x_dt = 0;
+  dFADH2_x_dt = 0;
+end
+
+model wu_yang_vinnakota_beard_2007__dH_x_dt(H_x, dH_x_dt, time_, D, phi_H, phi_Mg, phi_K, dHB_dMg, dHB_dK, dMgB_dK, dKB_dMg, alpha_K, alpha_Mg)
+
+  // Assignment Rules:
+  dH_x_dt := 0;
+
+  // Rate Rules:
+  H_x' = ((dKB_dMg * dMgB_dK - alpha_Mg * alpha_K) * phi_H + (alpha_K * dHB_dMg - dHB_dK * dKB_dMg) * phi_Mg + (alpha_Mg * dHB_dK - dHB_dMg * dMgB_dK) * phi_K) / D;
+
+  // Variable initializations:
+  H_x = 5.7919e-8;
+end
+
+model wu_yang_vinnakota_beard_2007__dMg_x_dt(Mg_x, dMg_x_dt, time_, D, alpha_H, alpha_K, phi_H, phi_Mg, phi_K, dHB_dK, dKB_dH, dMgB_dK, dMgB_dH)
+
+  // Assignment Rules:
+  dMg_x_dt := 0;
+
+  // Rate Rules:
+  Mg_x' = ((alpha_K * dMgB_dH - dKB_dH * dMgB_dK) * phi_H + (dKB_dH * dHB_dK - alpha_H * alpha_K) * phi_Mg + (alpha_H * dMgB_dK - dHB_dK * dMgB_dH) * phi_K) / D;
+
+  // Variable initializations:
+  Mg_x = 0.0046388;
+end
+
+model wu_yang_vinnakota_beard_2007__dK_x_dt(K_x, dK_x_dt, time_, D, alpha_H, alpha_Mg, phi_H, phi_Mg, phi_K, dHB_dMg, dMgB_dH, dKB_dMg, dKB_dH)
+
+  // Assignment Rules:
+  dK_x_dt := 0;
+
+  // Rate Rules:
+  K_x' = ((alpha_Mg * dKB_dH - dKB_dMg * dMgB_dH) * phi_H + (alpha_H * dKB_dMg - dKB_dH * dHB_dMg) * phi_Mg + (dMgB_dH * dHB_dMg - alpha_H * alpha_Mg) * phi_K) / D;
+
+  // Variable initializations:
+  K_x = 0.086878;
+end
+
+model wu_yang_vinnakota_beard_2007__BINDING_IONS(dHB_dMg, dHB_dK, dHB_dH, dMgB_dH, dMgB_dK, dMgB_dMg, dKB_dH, dKB_dMg, dKB_dK, J_H_t, J_Mg_t, J_K_t, phi_H, phi_Mg, phi_K, alpha_H, alpha_Mg, alpha_K, D, W_x, n_A, J_pdh, J_cits, J_akgd, J_scoas, J_mdh, J_PYRH, J_GLUH, J_CITMAL, J_ASPGLU, J_C1, J_C3, J_C4, J_F1, J_PIHt, J_Hle, J_KH, H_x, ATP_x, ADP_x, AMP_x, GTP_x, GDP_x, PI_x, NADH_x, NAD_x, QH2_x, COQ_x, PYR_x, OAA_x, ACCOA_x, CIT_x, ICIT_x, AKG_x, SCOA_x, COASH_x, SUC_x, FUM_x, MAL_x, GLU_x, ASP_x, K_x, Mg_x, O2_x, FADH2_x, FAD_x, CO2_tot_x, P_H_x, P_ATP_x, P_ADP_x, P_AMP_x, P_GTP_x, P_GDP_x, P_PI_x, P_NADH_x, P_NAD_x, P_QH2_x, P_COQ_x, P_PYR_x, P_OAA_x, P_ACCOA_x, P_CIT_x, P_ICIT_x, P_AKG_x, P_SCOA_x, P_COASH_x, P_SUC_x, P_FUM_x, P_MAL_x, P_GLU_x, P_ASP_x, P_K_x, P_Mg_x, P_O2_x, P_FADH2_x, P_FAD_x, P_CO2_tot_x, KH_H_x, KH_ATP_x, KH_ADP_x, KH_AMP_x, KH_GTP_x, KH_GDP_x, KH_PI_x, KH_NADH_x, KH_NAD_x, KH_QH2_x, KH_COQ_x, KH_PYR_x, KH_OAA_x, KH_ACCOA_x, KH_CIT_x, KH_ICIT_x, KH_AKG_x, KH_SCOA_x, KH_COASH_x, KH_SUC_x, KH_FUM_x, KH_MAL_x, KH_GLU_x, KH_ASP_x, KH_K_x, KH_Mg_x, KH_O2_x, KH_FADH2_x, KH_FAD_x, KH_CO2_tot_x, KMg_H_x, KMg_ATP_x, KMg_ADP_x, KMg_AMP_x, KMg_GTP_x, KMg_GDP_x, KMg_PI_x, KMg_NADH_x, KMg_NAD_x, KMg_QH2_x, KMg_COQ_x, KMg_PYR_x, KMg_OAA_x, KMg_ACCOA_x, KMg_CIT_x, KMg_ICIT_x, KMg_AKG_x, KMg_SCOA_x, KMg_COASH_x, KMg_SUC_x, KMg_FUM_x, KMg_MAL_x, KMg_GLU_x, KMg_ASP_x, KMg_K_x, KMg_Mg_x, KMg_O2_x, KMg_FADH2_x, KMg_FAD_x, KMg_CO2_tot_x, KK_H_x, KK_ATP_x, KK_ADP_x, KK_AMP_x, KK_GTP_x, KK_GDP_x, KK_PI_x, KK_NADH_x, KK_NAD_x, KK_QH2_x, KK_COQ_x, KK_PYR_x, KK_OAA_x, KK_ACCOA_x, KK_CIT_x, KK_ICIT_x, KK_AKG_x, KK_SCOA_x, KK_COASH_x, KK_SUC_x, KK_FUM_x, KK_MAL_x, KK_GLU_x, KK_ASP_x, KK_K_x, KK_Mg_x, KK_O2_x, KK_FADH2_x, KK_FAD_x, KK_CO2_tot_x, dH_x_dt, dATP_x_dt, dADP_x_dt, dAMP_x_dt, dGTP_x_dt, dGDP_x_dt, dPI_x_dt, dNADH_x_dt, dNAD_x_dt, dQH2_x_dt, dCOQ_x_dt, dPYR_x_dt, dOAA_x_dt, dACCOA_x_dt, dCIT_x_dt, dICIT_x_dt, dAKG_x_dt, dSCOA_x_dt, dCOASH_x_dt, dSUC_x_dt, dFUM_x_dt, dMAL_x_dt, dGLU_x_dt, dASP_x_dt, dK_x_dt, dMg_x_dt, dO2_x_dt, dFADH2_x_dt, dFAD_x_dt, dCO2_tot_x_dt)
+
+  // Assignment Rules:
+  dHB_dMg := -((H_x * H_x / (KH_H_x * KMg_H_x * power(P_H_x, 2 )) + H_x * ATP_x / (KH_ATP_x * KMg_ATP_x * power(P_ATP_x, 2 )) + H_x * ADP_x / (KH_ADP_x * KMg_ADP_x * power(P_ADP_x, 2 )) + H_x * AMP_x / (KH_AMP_x * KMg_AMP_x * power(P_AMP_x, 2 )) + H_x * GTP_x / (KH_GTP_x * KMg_GTP_x * power(P_GTP_x, 2 )) + H_x * GDP_x / (KH_GDP_x * KMg_GDP_x * power(P_GDP_x, 2 )) + H_x * PI_x / (KH_PI_x * KMg_PI_x * power(P_PI_x, 2 )) + H_x * NADH_x / (KH_NADH_x * KMg_NADH_x * power(P_NADH_x, 2 )) + H_x * NAD_x / (KH_NAD_x * KMg_NAD_x * power(P_NAD_x, 2 )) + H_x * QH2_x / (KH_QH2_x * KMg_QH2_x * power(P_QH2_x, 2 )) + H_x * COQ_x / (KH_COQ_x * KMg_COQ_x * power(P_COQ_x, 2 )) + H_x * PYR_x / (KH_PYR_x * KMg_PYR_x * power(P_PYR_x, 2 )) + H_x * OAA_x / (KH_OAA_x * KMg_OAA_x * power(P_OAA_x, 2 )) + H_x * ACCOA_x / (KH_ACCOA_x * KMg_ACCOA_x * power(P_ACCOA_x, 2 )) + H_x * CIT_x / (KH_CIT_x * KMg_CIT_x * power(P_CIT_x, 2 )) + H_x * ICIT_x / (KH_ICIT_x * KMg_ICIT_x * power(P_ICIT_x, 2 )) + H_x * AKG_x / (KH_AKG_x * KMg_AKG_x * power(P_AKG_x, 2 )) + H_x * SCOA_x / (KH_SCOA_x * KMg_SCOA_x * power(P_SCOA_x, 2 )) + H_x * COASH_x / (KH_COASH_x * KMg_COASH_x * power(P_COASH_x, 2 )) + H_x * SUC_x / (KH_SUC_x * KMg_SUC_x * power(P_SUC_x, 2 )) + H_x * FUM_x / (KH_FUM_x * KMg_FUM_x * power(P_FUM_x, 2 )) + H_x * MAL_x / (KH_MAL_x * KMg_MAL_x * power(P_MAL_x, 2 )) + H_x * GLU_x / (KH_GLU_x * KMg_GLU_x * power(P_GLU_x, 2 )) + H_x * ASP_x / (KH_ASP_x * KMg_ASP_x * power(P_ASP_x, 2 )) + H_x * K_x / (KH_K_x * KMg_K_x * power(P_K_x, 2 )) + H_x * Mg_x / (KH_Mg_x * KMg_Mg_x * power(P_Mg_x, 2 )) + H_x * O2_x / (KH_O2_x * KMg_O2_x * power(P_O2_x, 2 )) + H_x * FADH2_x / (KH_FADH2_x * KMg_FADH2_x * power(P_FADH2_x, 2 )) + H_x * FAD_x / (KH_FAD_x * KMg_FAD_x * power(P_FAD_x, 2 )) + H_x * CO2_tot_x / (KH_CO2_tot_x * KMg_CO2_tot_x * power(P_CO2_tot_x, 2 ))));
+  dHB_dK := -((H_x * H_x / (KH_H_x * KK_H_x * power(P_H_x, 2 )) + H_x * ATP_x / (KH_ATP_x * KK_ATP_x * power(P_ATP_x, 2 )) + H_x * ADP_x / (KH_ADP_x * KK_ADP_x * power(P_ADP_x, 2 )) + H_x * AMP_x / (KH_AMP_x * KK_AMP_x * power(P_AMP_x, 2 )) + H_x * GTP_x / (KH_GTP_x * KK_GTP_x * power(P_GTP_x, 2 )) + H_x * GDP_x / (KH_GDP_x * KK_GDP_x * power(P_GDP_x, 2 )) + H_x * PI_x / (KH_PI_x * KK_PI_x * power(P_PI_x, 2 )) + H_x * NADH_x / (KH_NADH_x * KK_NADH_x * power(P_NADH_x, 2 )) + H_x * NAD_x / (KH_NAD_x * KK_NAD_x * power(P_NAD_x, 2 )) + H_x * QH2_x / (KH_QH2_x * KK_QH2_x * power(P_QH2_x, 2 )) + H_x * COQ_x / (KH_COQ_x * KK_COQ_x * power(P_COQ_x, 2 )) + H_x * PYR_x / (KH_PYR_x * KK_PYR_x * power(P_PYR_x, 2 )) + H_x * OAA_x / (KH_OAA_x * KK_OAA_x * power(P_OAA_x, 2 )) + H_x * ACCOA_x / (KH_ACCOA_x * KK_ACCOA_x * power(P_ACCOA_x, 2 )) + H_x * CIT_x / (KH_CIT_x * KK_CIT_x * power(P_CIT_x, 2 )) + H_x * ICIT_x / (KH_ICIT_x * KK_ICIT_x * power(P_ICIT_x, 2 )) + H_x * AKG_x / (KH_AKG_x * KK_AKG_x * power(P_AKG_x, 2 )) + H_x * SCOA_x / (KH_SCOA_x * KK_SCOA_x * power(P_SCOA_x, 2 )) + H_x * COASH_x / (KH_COASH_x * KK_COASH_x * power(P_COASH_x, 2 )) + H_x * SUC_x / (KH_SUC_x * KK_SUC_x * power(P_SUC_x, 2 )) + H_x * FUM_x / (KH_FUM_x * KK_FUM_x * power(P_FUM_x, 2 )) + H_x * MAL_x / (KH_MAL_x * KK_MAL_x * power(P_MAL_x, 2 )) + H_x * GLU_x / (KH_GLU_x * KK_GLU_x * power(P_GLU_x, 2 )) + H_x * ASP_x / (KH_ASP_x * KK_ASP_x * power(P_ASP_x, 2 )) + H_x * K_x / (KH_K_x * KK_K_x * power(P_K_x, 2 )) + H_x * Mg_x / (KH_Mg_x * KK_Mg_x * power(P_Mg_x, 2 )) + H_x * O2_x / (KH_O2_x * KK_O2_x * power(P_O2_x, 2 )) + H_x * FADH2_x / (KH_FADH2_x * KK_FADH2_x * power(P_FADH2_x, 2 )) + H_x * FAD_x / (KH_FAD_x * KK_FAD_x * power(P_FAD_x, 2 )) + H_x * CO2_tot_x / (KH_CO2_tot_x * KK_CO2_tot_x * power(P_CO2_tot_x, 2 ))));
+  dHB_dH := (1 + Mg_x / KMg_H_x + K_x / KK_H_x) * H_x / (KH_H_x * power(P_H_x, 2 )) + (1 + Mg_x / KMg_ATP_x + K_x / KK_ATP_x) * ATP_x / (KH_ATP_x * power(P_ATP_x, 2 )) + (1 + Mg_x / KMg_ADP_x + K_x / KK_ADP_x) * ADP_x / (KH_ADP_x * power(P_ADP_x, 2 )) + (1 + Mg_x / KMg_AMP_x + K_x / KK_AMP_x) * AMP_x / (KH_AMP_x * power(P_AMP_x, 2 )) + (1 + Mg_x / KMg_GTP_x + K_x / KK_GTP_x) * GTP_x / (KH_GTP_x * power(P_GTP_x, 2 )) + (1 + Mg_x / KMg_GDP_x + K_x / KK_GDP_x) * GDP_x / (KH_GDP_x * power(P_GDP_x, 2 )) + (1 + Mg_x / KMg_PI_x + K_x / KK_PI_x) * PI_x / (KH_PI_x * power(P_PI_x, 2 )) + (1 + Mg_x / KMg_NADH_x + K_x / KK_NADH_x) * NADH_x / (KH_NADH_x * power(P_NADH_x, 2 )) + (1 + Mg_x / KMg_NAD_x + K_x / KK_NAD_x) * NAD_x / (KH_NAD_x * power(P_NAD_x, 2 )) + (1 + Mg_x / KMg_QH2_x + K_x / KK_QH2_x) * QH2_x / (KH_QH2_x * power(P_QH2_x, 2 )) + (1 + Mg_x / KMg_COQ_x + K_x / KK_COQ_x) * COQ_x / (KH_COQ_x * power(P_COQ_x, 2 )) + (1 + Mg_x / KMg_PYR_x + K_x / KK_PYR_x) * PYR_x / (KH_PYR_x * power(P_PYR_x, 2 )) + (1 + Mg_x / KMg_OAA_x + K_x / KK_OAA_x) * OAA_x / (KH_OAA_x * power(P_OAA_x, 2 )) + (1 + Mg_x / KMg_ACCOA_x + K_x / KK_ACCOA_x) * ACCOA_x / (KH_ACCOA_x * power(P_ACCOA_x, 2 )) + (1 + Mg_x / KMg_CIT_x + K_x / KK_CIT_x) * CIT_x / (KH_CIT_x * power(P_CIT_x, 2 )) + (1 + Mg_x / KMg_ICIT_x + K_x / KK_ICIT_x) * ICIT_x / (KH_ICIT_x * power(P_ICIT_x, 2 )) + (1 + Mg_x / KMg_AKG_x + K_x / KK_AKG_x) * AKG_x / (KH_AKG_x * power(P_AKG_x, 2 )) + (1 + Mg_x / KMg_SCOA_x + K_x / KK_SCOA_x) * SCOA_x / (KH_SCOA_x * power(P_SCOA_x, 2 )) + (1 + Mg_x / KMg_COASH_x + K_x / KK_COASH_x) * COASH_x / (KH_COASH_x * power(P_COASH_x, 2 )) + (1 + Mg_x / KMg_SUC_x + K_x / KK_SUC_x) * SUC_x / (KH_SUC_x * power(P_SUC_x, 2 )) + (1 + Mg_x / KMg_FUM_x + K_x / KK_FUM_x) * FUM_x / (KH_FUM_x * power(P_FUM_x, 2 )) + (1 + Mg_x / KMg_MAL_x + K_x / KK_MAL_x) * MAL_x / (KH_MAL_x * power(P_MAL_x, 2 )) + (1 + Mg_x / KMg_GLU_x + K_x / KK_GLU_x) * GLU_x / (KH_GLU_x * power(P_GLU_x, 2 )) + (1 + Mg_x / KMg_ASP_x + K_x / KK_ASP_x) * ASP_x / (KH_ASP_x * power(P_ASP_x, 2 )) + (1 + Mg_x / KMg_K_x + K_x / KK_K_x) * K_x / (KH_K_x * power(P_K_x, 2 )) + (1 + Mg_x / KMg_Mg_x + K_x / KK_Mg_x) * Mg_x / (KH_Mg_x * power(P_Mg_x, 2 )) + (1 + Mg_x / KMg_O2_x + K_x / KK_O2_x) * O2_x / (KH_O2_x * power(P_O2_x, 2 )) + (1 + Mg_x / KMg_FADH2_x + K_x / KK_FADH2_x) * FADH2_x / (KH_FADH2_x * power(P_FADH2_x, 2 )) + (1 + Mg_x / KMg_FAD_x + K_x / KK_FAD_x) * FAD_x / (KH_FAD_x * power(P_FAD_x, 2 )) + (1 + Mg_x / KMg_CO2_tot_x + K_x / KK_CO2_tot_x) * CO2_tot_x / (KH_CO2_tot_x * power(P_CO2_tot_x, 2 ));
+  dMgB_dH := -((Mg_x * H_x / (KMg_H_x * KH_H_x * power(P_H_x, 2 )) + Mg_x * ATP_x / (KMg_ATP_x * KH_ATP_x * power(P_ATP_x, 2 )) + Mg_x * ADP_x / (KMg_ADP_x * KH_ADP_x * power(P_ADP_x, 2 )) + Mg_x * AMP_x / (KMg_AMP_x * KH_AMP_x * power(P_AMP_x, 2 )) + Mg_x * GTP_x / (KMg_GTP_x * KH_GTP_x * power(P_GTP_x, 2 )) + Mg_x * GDP_x / (KMg_GDP_x * KH_GDP_x * power(P_GDP_x, 2 )) + Mg_x * PI_x / (KMg_PI_x * KH_PI_x * power(P_PI_x, 2 )) + Mg_x * NADH_x / (KMg_NADH_x * KH_NADH_x * power(P_NADH_x, 2 )) + Mg_x * NAD_x / (KMg_NAD_x * KH_NAD_x * power(P_NAD_x, 2 )) + Mg_x * QH2_x / (KMg_QH2_x * KH_QH2_x * power(P_QH2_x, 2 )) + Mg_x * COQ_x / (KMg_COQ_x * KH_COQ_x * power(P_COQ_x, 2 )) + Mg_x * PYR_x / (KMg_PYR_x * KH_PYR_x * power(P_PYR_x, 2 )) + Mg_x * OAA_x / (KMg_OAA_x * KH_OAA_x * power(P_OAA_x, 2 )) + Mg_x * ACCOA_x / (KMg_ACCOA_x * KH_ACCOA_x * power(P_ACCOA_x, 2 )) + Mg_x * CIT_x / (KMg_CIT_x * KH_CIT_x * power(P_CIT_x, 2 )) + Mg_x * ICIT_x / (KMg_ICIT_x * KH_ICIT_x * power(P_ICIT_x, 2 )) + Mg_x * AKG_x / (KMg_AKG_x * KH_AKG_x * power(P_AKG_x, 2 )) + Mg_x * SCOA_x / (KMg_SCOA_x * KH_SCOA_x * power(P_SCOA_x, 2 )) + Mg_x * COASH_x / (KMg_COASH_x * KH_COASH_x * power(P_COASH_x, 2 )) + Mg_x * SUC_x / (KMg_SUC_x * KH_SUC_x * power(P_SUC_x, 2 )) + Mg_x * FUM_x / (KMg_FUM_x * KH_FUM_x * power(P_FUM_x, 2 )) + Mg_x * MAL_x / (KMg_MAL_x * KH_MAL_x * power(P_MAL_x, 2 )) + Mg_x * GLU_x / (KMg_GLU_x * KH_GLU_x * power(P_GLU_x, 2 )) + Mg_x * ASP_x / (KMg_ASP_x * KH_ASP_x * power(P_ASP_x, 2 )) + Mg_x * K_x / (KMg_K_x * KH_K_x * power(P_K_x, 2 )) + Mg_x * Mg_x / (KMg_Mg_x * KH_Mg_x * power(P_Mg_x, 2 )) + Mg_x * O2_x / (KMg_O2_x * KH_O2_x * power(P_O2_x, 2 )) + Mg_x * FADH2_x / (KMg_FADH2_x * KH_FADH2_x * power(P_FADH2_x, 2 )) + Mg_x * FAD_x / (KMg_FAD_x * KH_FAD_x * power(P_FAD_x, 2 )) + Mg_x * CO2_tot_x / (KMg_CO2_tot_x * KH_CO2_tot_x * power(P_CO2_tot_x, 2 ))));
+  dMgB_dK := -((Mg_x * H_x / (KMg_H_x * KK_H_x * power(P_H_x, 2 )) + Mg_x * ATP_x / (KMg_ATP_x * KK_ATP_x * power(P_ATP_x, 2 )) + Mg_x * ADP_x / (KMg_ADP_x * KK_ADP_x * power(P_ADP_x, 2 )) + Mg_x * AMP_x / (KMg_AMP_x * KK_AMP_x * power(P_AMP_x, 2 )) + Mg_x * GTP_x / (KMg_GTP_x * KK_GTP_x * power(P_GTP_x, 2 )) + Mg_x * GDP_x / (KMg_GDP_x * KK_GDP_x * power(P_GDP_x, 2 )) + Mg_x * PI_x / (KMg_PI_x * KK_PI_x * power(P_PI_x, 2 )) + Mg_x * NADH_x / (KMg_NADH_x * KK_NADH_x * power(P_NADH_x, 2 )) + Mg_x * NAD_x / (KMg_NAD_x * KK_NAD_x * power(P_NAD_x, 2 )) + Mg_x * QH2_x / (KMg_QH2_x * KK_QH2_x * power(P_QH2_x, 2 )) + Mg_x * COQ_x / (KMg_COQ_x * KK_COQ_x * power(P_COQ_x, 2 )) + Mg_x * PYR_x / (KMg_PYR_x * KK_PYR_x * power(P_PYR_x, 2 )) + Mg_x * OAA_x / (KMg_OAA_x * KK_OAA_x * power(P_OAA_x, 2 )) + Mg_x * ACCOA_x / (KMg_ACCOA_x * KK_ACCOA_x * power(P_ACCOA_x, 2 )) + Mg_x * CIT_x / (KMg_CIT_x * KK_CIT_x * power(P_CIT_x, 2 )) + Mg_x * ICIT_x / (KMg_ICIT_x * KK_ICIT_x * power(P_ICIT_x, 2 )) + Mg_x * AKG_x / (KMg_AKG_x * KK_AKG_x * power(P_AKG_x, 2 )) + Mg_x * SCOA_x / (KMg_SCOA_x * KK_SCOA_x * power(P_SCOA_x, 2 )) + Mg_x * COASH_x / (KMg_COASH_x * KK_COASH_x * power(P_COASH_x, 2 )) + Mg_x * SUC_x / (KMg_SUC_x * KK_SUC_x * power(P_SUC_x, 2 )) + Mg_x * FUM_x / (KMg_FUM_x * KK_FUM_x * power(P_FUM_x, 2 )) + Mg_x * MAL_x / (KMg_MAL_x * KK_MAL_x * power(P_MAL_x, 2 )) + Mg_x * GLU_x / (KMg_GLU_x * KK_GLU_x * power(P_GLU_x, 2 )) + Mg_x * ASP_x / (KMg_ASP_x * KK_ASP_x * power(P_ASP_x, 2 )) + Mg_x * K_x / (KMg_K_x * KK_K_x * power(P_K_x, 2 )) + Mg_x * Mg_x / (KMg_Mg_x * KK_Mg_x * power(P_Mg_x, 2 )) + Mg_x * O2_x / (KMg_O2_x * KK_O2_x * power(P_O2_x, 2 )) + Mg_x * FADH2_x / (KMg_FADH2_x * KK_FADH2_x * power(P_FADH2_x, 2 )) + Mg_x * FAD_x / (KMg_FAD_x * KK_FAD_x * power(P_FAD_x, 2 )) + Mg_x * CO2_tot_x / (KMg_CO2_tot_x * KK_CO2_tot_x * power(P_CO2_tot_x, 2 ))));
+  dMgB_dMg := (1 + H_x / KH_H_x + K_x / KK_H_x) * H_x / (KMg_H_x * power(P_H_x, 2 )) + (1 + H_x / KH_ATP_x + K_x / KK_ATP_x) * ATP_x / (KMg_ATP_x * power(P_ATP_x, 2 )) + (1 + H_x / KH_ADP_x + K_x / KK_ADP_x) * ADP_x / (KMg_ADP_x * power(P_ADP_x, 2 )) + (1 + H_x / KH_AMP_x + K_x / KK_AMP_x) * AMP_x / (KMg_AMP_x * power(P_AMP_x, 2 )) + (1 + H_x / KH_GTP_x + K_x / KK_GTP_x) * GTP_x / (KMg_GTP_x * power(P_GTP_x, 2 )) + (1 + H_x / KH_GDP_x + K_x / KK_GDP_x) * GDP_x / (KMg_GDP_x * power(P_GDP_x, 2 )) + (1 + H_x / KH_PI_x + K_x / KK_PI_x) * PI_x / (KMg_PI_x * power(P_PI_x, 2 )) + (1 + H_x / KH_NADH_x + K_x / KK_NADH_x) * NADH_x / (KMg_NADH_x * power(P_NADH_x, 2 )) + (1 + H_x / KH_NAD_x + K_x / KK_NAD_x) * NAD_x / (KMg_NAD_x * power(P_NAD_x, 2 )) + (1 + H_x / KH_QH2_x + K_x / KK_QH2_x) * QH2_x / (KMg_QH2_x * power(P_QH2_x, 2 )) + (1 + H_x / KH_COQ_x + K_x / KK_COQ_x) * COQ_x / (KMg_COQ_x * power(P_COQ_x, 2 )) + (1 + H_x / KH_PYR_x + K_x / KK_PYR_x) * PYR_x / (KMg_PYR_x * power(P_PYR_x, 2 )) + (1 + H_x / KH_OAA_x + K_x / KK_OAA_x) * OAA_x / (KMg_OAA_x * power(P_OAA_x, 2 )) + (1 + H_x / KH_ACCOA_x + K_x / KK_ACCOA_x) * ACCOA_x / (KMg_ACCOA_x * power(P_ACCOA_x, 2 )) + (1 + H_x / KH_CIT_x + K_x / KK_CIT_x) * CIT_x / (KMg_CIT_x * power(P_CIT_x, 2 )) + (1 + H_x / KH_ICIT_x + K_x / KK_ICIT_x) * ICIT_x / (KMg_ICIT_x * power(P_ICIT_x, 2 )) + (1 + H_x / KH_AKG_x + K_x / KK_AKG_x) * AKG_x / (KMg_AKG_x * power(P_AKG_x, 2 )) + (1 + H_x / KH_SCOA_x + K_x / KK_SCOA_x) * SCOA_x / (KMg_SCOA_x * power(P_SCOA_x, 2 )) + (1 + H_x / KH_COASH_x + K_x / KK_COASH_x) * COASH_x / (KMg_COASH_x * power(P_COASH_x, 2 )) + (1 + H_x / KH_SUC_x + K_x / KK_SUC_x) * SUC_x / (KMg_SUC_x * power(P_SUC_x, 2 )) + (1 + H_x / KH_FUM_x + K_x / KK_FUM_x) * FUM_x / (KMg_FUM_x * power(P_FUM_x, 2 )) + (1 + H_x / KH_MAL_x + K_x / KK_MAL_x) * MAL_x / (KMg_MAL_x * power(P_MAL_x, 2 )) + (1 + H_x / KH_GLU_x + K_x / KK_GLU_x) * GLU_x / (KMg_GLU_x * power(P_GLU_x, 2 )) + (1 + H_x / KH_ASP_x + K_x / KK_ASP_x) * ASP_x / (KMg_ASP_x * power(P_ASP_x, 2 )) + (1 + H_x / KH_K_x + K_x / KK_K_x) * K_x / (KMg_K_x * power(P_K_x, 2 )) + (1 + H_x / KH_Mg_x + K_x / KK_Mg_x) * Mg_x / (KMg_Mg_x * power(P_Mg_x, 2 )) + (1 + H_x / KH_O2_x + K_x / KK_O2_x) * O2_x / (KMg_O2_x * power(P_O2_x, 2 )) + (1 + H_x / KH_FADH2_x + K_x / KK_FADH2_x) * FADH2_x / (KMg_FADH2_x * power(P_FADH2_x, 2 )) + (1 + H_x / KH_FAD_x + K_x / KK_FAD_x) * FAD_x / (KMg_FAD_x * power(P_FAD_x, 2 )) + (1 + H_x / KH_CO2_tot_x + K_x / KK_CO2_tot_x) * CO2_tot_x / (KMg_CO2_tot_x * power(P_CO2_tot_x, 2 ));
+  dKB_dH := -((K_x * H_x / (KK_H_x * KH_H_x * power(P_H_x, 2 )) + K_x * ATP_x / (KK_ATP_x * KH_ATP_x * power(P_ATP_x, 2 )) + K_x * ADP_x / (KK_ADP_x * KH_ADP_x * power(P_ADP_x, 2 )) + K_x * AMP_x / (KK_AMP_x * KH_AMP_x * power(P_AMP_x, 2 )) + K_x * GTP_x / (KK_GTP_x * KH_GTP_x * power(P_GTP_x, 2 )) + K_x * GDP_x / (KK_GDP_x * KH_GDP_x * power(P_GDP_x, 2 )) + K_x * PI_x / (KK_PI_x * KH_PI_x * power(P_PI_x, 2 )) + K_x * NADH_x / (KK_NADH_x * KH_NADH_x * power(P_NADH_x, 2 )) + K_x * NAD_x / (KK_NAD_x * KH_NAD_x * power(P_NAD_x, 2 )) + K_x * QH2_x / (KK_QH2_x * KH_QH2_x * power(P_QH2_x, 2 )) + K_x * COQ_x / (KK_COQ_x * KH_COQ_x * power(P_COQ_x, 2 )) + K_x * PYR_x / (KK_PYR_x * KH_PYR_x * power(P_PYR_x, 2 )) + K_x * OAA_x / (KK_OAA_x * KH_OAA_x * power(P_OAA_x, 2 )) + K_x * ACCOA_x / (KK_ACCOA_x * KH_ACCOA_x * power(P_ACCOA_x, 2 )) + K_x * CIT_x / (KK_CIT_x * KH_CIT_x * power(P_CIT_x, 2 )) + K_x * ICIT_x / (KK_ICIT_x * KH_ICIT_x * power(P_ICIT_x, 2 )) + K_x * AKG_x / (KK_AKG_x * KH_AKG_x * power(P_AKG_x, 2 )) + K_x * SCOA_x / (KK_SCOA_x * KH_SCOA_x * power(P_SCOA_x, 2 )) + K_x * COASH_x / (KK_COASH_x * KH_COASH_x * power(P_COASH_x, 2 )) + K_x * SUC_x / (KK_SUC_x * KH_SUC_x * power(P_SUC_x, 2 )) + K_x * FUM_x / (KK_FUM_x * KH_FUM_x * power(P_FUM_x, 2 )) + K_x * MAL_x / (KK_MAL_x * KH_MAL_x * power(P_MAL_x, 2 )) + K_x * GLU_x / (KK_GLU_x * KH_GLU_x * power(P_GLU_x, 2 )) + K_x * ASP_x / (KK_ASP_x * KH_ASP_x * power(P_ASP_x, 2 )) + K_x * K_x / (KK_K_x * KH_K_x * power(P_K_x, 2 )) + K_x * Mg_x / (KK_Mg_x * KH_Mg_x * power(P_Mg_x, 2 )) + K_x * O2_x / (KK_O2_x * KH_O2_x * power(P_O2_x, 2 )) + K_x * FADH2_x / (KK_FADH2_x * KH_FADH2_x * power(P_FADH2_x, 2 )) + K_x * FAD_x / (KK_FAD_x * KH_FAD_x * power(P_FAD_x, 2 )) + K_x * CO2_tot_x / (KK_CO2_tot_x * KH_CO2_tot_x * power(P_CO2_tot_x, 2 ))));
+  dKB_dMg := -((K_x * H_x / (KK_H_x * KMg_H_x * power(P_H_x, 2 )) + K_x * ATP_x / (KK_ATP_x * KMg_ATP_x * power(P_ATP_x, 2 )) + K_x * ADP_x / (KK_ADP_x * KMg_ADP_x * power(P_ADP_x, 2 )) + K_x * AMP_x / (KK_AMP_x * KMg_AMP_x * power(P_AMP_x, 2 )) + K_x * GTP_x / (KK_GTP_x * KMg_GTP_x * power(P_GTP_x, 2 )) + K_x * GDP_x / (KK_GDP_x * KMg_GDP_x * power(P_GDP_x, 2 )) + K_x * PI_x / (KK_PI_x * KMg_PI_x * power(P_PI_x, 2 )) + K_x * NADH_x / (KK_NADH_x * KMg_NADH_x * power(P_NADH_x, 2 )) + K_x * NAD_x / (KK_NAD_x * KMg_NAD_x * power(P_NAD_x, 2 )) + K_x * QH2_x / (KK_QH2_x * KMg_QH2_x * power(P_QH2_x, 2 )) + K_x * COQ_x / (KK_COQ_x * KMg_COQ_x * power(P_COQ_x, 2 )) + K_x * PYR_x / (KK_PYR_x * KMg_PYR_x * power(P_PYR_x, 2 )) + K_x * OAA_x / (KK_OAA_x * KMg_OAA_x * power(P_OAA_x, 2 )) + K_x * ACCOA_x / (KK_ACCOA_x * KMg_ACCOA_x * power(P_ACCOA_x, 2 )) + K_x * CIT_x / (KK_CIT_x * KMg_CIT_x * power(P_CIT_x, 2 )) + K_x * ICIT_x / (KK_ICIT_x * KMg_ICIT_x * power(P_ICIT_x, 2 )) + K_x * AKG_x / (KK_AKG_x * KMg_AKG_x * power(P_AKG_x, 2 )) + K_x * SCOA_x / (KK_SCOA_x * KMg_SCOA_x * power(P_SCOA_x, 2 )) + K_x * COASH_x / (KK_COASH_x * KMg_COASH_x * power(P_COASH_x, 2 )) + K_x * SUC_x / (KK_SUC_x * KMg_SUC_x * power(P_SUC_x, 2 )) + K_x * FUM_x / (KK_FUM_x * KMg_FUM_x * power(P_FUM_x, 2 )) + K_x * MAL_x / (KK_MAL_x * KMg_MAL_x * power(P_MAL_x, 2 )) + K_x * GLU_x / (KK_GLU_x * KMg_GLU_x * power(P_GLU_x, 2 )) + K_x * ASP_x / (KK_ASP_x * KMg_ASP_x * power(P_ASP_x, 2 )) + K_x * K_x / (KK_K_x * KMg_K_x * power(P_K_x, 2 )) + K_x * Mg_x / (KK_Mg_x * KMg_Mg_x * power(P_Mg_x, 2 )) + K_x * O2_x / (KK_O2_x * KMg_O2_x * power(P_O2_x, 2 )) + K_x * FADH2_x / (KK_FADH2_x * KMg_FADH2_x * power(P_FADH2_x, 2 )) + K_x * FAD_x / (KK_FAD_x * KMg_FAD_x * power(P_FAD_x, 2 )) + K_x * CO2_tot_x / (KK_CO2_tot_x * KMg_CO2_tot_x * power(P_CO2_tot_x, 2 ))));
+  dKB_dK := (1 + H_x / KH_H_x + Mg_x / KMg_H_x) * H_x / (KK_H_x * power(P_H_x, 2 )) + (1 + H_x / KH_ATP_x + Mg_x / KMg_ATP_x) * ATP_x / (KK_ATP_x * power(P_ATP_x, 2 )) + (1 + H_x / KH_ADP_x + Mg_x / KMg_ADP_x) * ADP_x / (KK_ADP_x * power(P_ADP_x, 2 )) + (1 + H_x / KH_AMP_x + Mg_x / KMg_AMP_x) * AMP_x / (KK_AMP_x * power(P_AMP_x, 2 )) + (1 + H_x / KH_GTP_x + Mg_x / KMg_GTP_x) * GTP_x / (KK_GTP_x * power(P_GTP_x, 2 )) + (1 + H_x / KH_GDP_x + Mg_x / KMg_GDP_x) * GDP_x / (KK_GDP_x * power(P_GDP_x, 2 )) + (1 + H_x / KH_PI_x + Mg_x / KMg_PI_x) * PI_x / (KK_PI_x * power(P_PI_x, 2 )) + (1 + H_x / KH_NADH_x + Mg_x / KMg_NADH_x) * NADH_x / (KK_NADH_x * power(P_NADH_x, 2 )) + (1 + H_x / KH_NAD_x + Mg_x / KMg_NAD_x) * NAD_x / (KK_NAD_x * power(P_NAD_x, 2 )) + (1 + H_x / KH_QH2_x + Mg_x / KMg_QH2_x) * QH2_x / (KK_QH2_x * power(P_QH2_x, 2 )) + (1 + H_x / KH_COQ_x + Mg_x / KMg_COQ_x) * COQ_x / (KK_COQ_x * power(P_COQ_x, 2 )) + (1 + H_x / KH_PYR_x + Mg_x / KMg_PYR_x) * PYR_x / (KK_PYR_x * power(P_PYR_x, 2 )) + (1 + H_x / KH_OAA_x + Mg_x / KMg_OAA_x) * OAA_x / (KK_OAA_x * power(P_OAA_x, 2 )) + (1 + H_x / KH_ACCOA_x + Mg_x / KMg_ACCOA_x) * ACCOA_x / (KK_ACCOA_x * power(P_ACCOA_x, 2 )) + (1 + H_x / KH_CIT_x + Mg_x / KMg_CIT_x) * CIT_x / (KK_CIT_x * power(P_CIT_x, 2 )) + (1 + H_x / KH_ICIT_x + Mg_x / KMg_ICIT_x) * ICIT_x / (KK_ICIT_x * power(P_ICIT_x, 2 )) + (1 + H_x / KH_AKG_x + Mg_x / KMg_AKG_x) * AKG_x / (KK_AKG_x * power(P_AKG_x, 2 )) + (1 + H_x / KH_SCOA_x + Mg_x / KMg_SCOA_x) * SCOA_x / (KK_SCOA_x * power(P_SCOA_x, 2 )) + (1 + H_x / KH_COASH_x + Mg_x / KMg_COASH_x) * COASH_x / (KK_COASH_x * power(P_COASH_x, 2 )) + (1 + H_x / KH_SUC_x + Mg_x / KMg_SUC_x) * SUC_x / (KK_SUC_x * power(P_SUC_x, 2 )) + (1 + H_x / KH_FUM_x + Mg_x / KMg_FUM_x) * FUM_x / (KK_FUM_x * power(P_FUM_x, 2 )) + (1 + H_x / KH_MAL_x + Mg_x / KMg_MAL_x) * MAL_x / (KK_MAL_x * power(P_MAL_x, 2 )) + (1 + H_x / KH_GLU_x + Mg_x / KMg_GLU_x) * GLU_x / (KK_GLU_x * power(P_GLU_x, 2 )) + (1 + H_x / KH_ASP_x + Mg_x / KMg_ASP_x) * ASP_x / (KK_ASP_x * power(P_ASP_x, 2 )) + (1 + H_x / KH_K_x + Mg_x / KMg_K_x) * K_x / (KK_K_x * power(P_K_x, 2 )) + (1 + H_x / KH_Mg_x + Mg_x / KMg_Mg_x) * Mg_x / (KK_Mg_x * power(P_Mg_x, 2 )) + (1 + H_x / KH_O2_x + Mg_x / KMg_O2_x) * O2_x / (KK_O2_x * power(P_O2_x, 2 )) + (1 + H_x / KH_FADH2_x + Mg_x / KMg_FADH2_x) * FADH2_x / (KK_FADH2_x * power(P_FADH2_x, 2 )) + (1 + H_x / KH_FAD_x + Mg_x / KMg_FAD_x) * FAD_x / (KK_FAD_x * power(P_FAD_x, 2 )) + (1 + H_x / KH_CO2_tot_x + Mg_x / KMg_CO2_tot_x) * CO2_tot_x / (KK_CO2_tot_x * power(P_CO2_tot_x, 2 ));
+  J_H_t := (-(J_pdh) + 2 * J_cits - J_akgd + J_scoas + J_mdh + J_PYRH + J_GLUH + J_CITMAL - J_ASPGLU - 5 * J_C1 - 2 * J_C3 - 4 * J_C4 + (n_A - 1 ) * J_F1 + 2 * J_PIHt + J_Hle - J_KH) / W_x;
+  J_Mg_t := 0;
+  J_K_t := J_KH / W_x;
+  phi_H := -((H_x * dH_x_dt / (KH_H_x * P_H_x) + H_x * dATP_x_dt / (KH_ATP_x * P_ATP_x) + H_x * dADP_x_dt / (KH_ADP_x * P_ADP_x) + H_x * dAMP_x_dt / (KH_AMP_x * P_AMP_x) + H_x * dGTP_x_dt / (KH_GTP_x * P_GTP_x) + H_x * dGDP_x_dt / (KH_GDP_x * P_GDP_x) + H_x * dPI_x_dt / (KH_PI_x * P_PI_x) + H_x * dNADH_x_dt / (KH_NADH_x * P_NADH_x) + H_x * dNAD_x_dt / (KH_NAD_x * P_NAD_x) + H_x * dQH2_x_dt / (KH_QH2_x * P_QH2_x) + H_x * dCOQ_x_dt / (KH_COQ_x * P_COQ_x) + H_x * dPYR_x_dt / (KH_PYR_x * P_PYR_x) + H_x * dOAA_x_dt / (KH_OAA_x * P_OAA_x) + H_x * dACCOA_x_dt / (KH_ACCOA_x * P_ACCOA_x) + H_x * dCIT_x_dt / (KH_CIT_x * P_CIT_x) + H_x * dICIT_x_dt / (KH_ICIT_x * P_ICIT_x) + H_x * dAKG_x_dt / (KH_AKG_x * P_AKG_x) + H_x * dSCOA_x_dt / (KH_SCOA_x * P_SCOA_x) + H_x * dCOASH_x_dt / (KH_COASH_x * P_COASH_x) + H_x * dSUC_x_dt / (KH_SUC_x * P_SUC_x) + H_x * dFUM_x_dt / (KH_FUM_x * P_FUM_x) + H_x * dMAL_x_dt / (KH_MAL_x * P_MAL_x) + H_x * dGLU_x_dt / (KH_GLU_x * P_GLU_x) + H_x * dASP_x_dt / (KH_ASP_x * P_ASP_x) + H_x * dK_x_dt / (KH_K_x * P_K_x) + H_x * dMg_x_dt / (KH_Mg_x * P_Mg_x) + H_x * dO2_x_dt / (KH_O2_x * P_O2_x) + H_x * dFADH2_x_dt / (KH_FADH2_x * P_FADH2_x) + H_x * dFAD_x_dt / (KH_FAD_x * P_FAD_x) + H_x * dCO2_tot_x_dt / (KH_CO2_tot_x * P_CO2_tot_x))) + J_H_t;
+  phi_Mg := -((Mg_x * dH_x_dt / (KMg_H_x * P_H_x) + Mg_x * dATP_x_dt / (KMg_ATP_x * P_ATP_x) + Mg_x * dADP_x_dt / (KMg_ADP_x * P_ADP_x) + Mg_x * dAMP_x_dt / (KMg_AMP_x * P_AMP_x) + Mg_x * dGTP_x_dt / (KMg_GTP_x * P_GTP_x) + Mg_x * dGDP_x_dt / (KMg_GDP_x * P_GDP_x) + Mg_x * dPI_x_dt / (KMg_PI_x * P_PI_x) + Mg_x * dNADH_x_dt / (KMg_NADH_x * P_NADH_x) + Mg_x * dNAD_x_dt / (KMg_NAD_x * P_NAD_x) + Mg_x * dQH2_x_dt / (KMg_QH2_x * P_QH2_x) + Mg_x * dCOQ_x_dt / (KMg_COQ_x * P_COQ_x) + Mg_x * dPYR_x_dt / (KMg_PYR_x * P_PYR_x) + Mg_x * dOAA_x_dt / (KMg_OAA_x * P_OAA_x) + Mg_x * dACCOA_x_dt / (KMg_ACCOA_x * P_ACCOA_x) + Mg_x * dCIT_x_dt / (KMg_CIT_x * P_CIT_x) + Mg_x * dICIT_x_dt / (KMg_ICIT_x * P_ICIT_x) + Mg_x * dAKG_x_dt / (KMg_AKG_x * P_AKG_x) + Mg_x * dSCOA_x_dt / (KMg_SCOA_x * P_SCOA_x) + Mg_x * dCOASH_x_dt / (KMg_COASH_x * P_COASH_x) + Mg_x * dSUC_x_dt / (KMg_SUC_x * P_SUC_x) + Mg_x * dFUM_x_dt / (KMg_FUM_x * P_FUM_x) + Mg_x * dMAL_x_dt / (KMg_MAL_x * P_MAL_x) + Mg_x * dGLU_x_dt / (KMg_GLU_x * P_GLU_x) + Mg_x * dASP_x_dt / (KMg_ASP_x * P_ASP_x) + Mg_x * dK_x_dt / (KMg_K_x * P_K_x) + Mg_x * dMg_x_dt / (KMg_Mg_x * P_Mg_x) + Mg_x * dO2_x_dt / (KMg_O2_x * P_O2_x) + Mg_x * dFADH2_x_dt / (KMg_FADH2_x * P_FADH2_x) + Mg_x * dFAD_x_dt / (KMg_FAD_x * P_FAD_x) + Mg_x * dCO2_tot_x_dt / (KMg_CO2_tot_x * P_CO2_tot_x))) + J_Mg_t;
+  phi_K := -((K_x * dH_x_dt / (KK_H_x * P_H_x) + K_x * dATP_x_dt / (KK_ATP_x * P_ATP_x) + K_x * dADP_x_dt / (KK_ADP_x * P_ADP_x) + K_x * dAMP_x_dt / (KK_AMP_x * P_AMP_x) + K_x * dGTP_x_dt / (KK_GTP_x * P_GTP_x) + K_x * dGDP_x_dt / (KK_GDP_x * P_GDP_x) + K_x * dPI_x_dt / (KK_PI_x * P_PI_x) + K_x * dNADH_x_dt / (KK_NADH_x * P_NADH_x) + K_x * dNAD_x_dt / (KK_NAD_x * P_NAD_x) + K_x * dQH2_x_dt / (KK_QH2_x * P_QH2_x) + K_x * dCOQ_x_dt / (KK_COQ_x * P_COQ_x) + K_x * dPYR_x_dt / (KK_PYR_x * P_PYR_x) + K_x * dOAA_x_dt / (KK_OAA_x * P_OAA_x) + K_x * dACCOA_x_dt / (KK_ACCOA_x * P_ACCOA_x) + K_x * dCIT_x_dt / (KK_CIT_x * P_CIT_x) + K_x * dICIT_x_dt / (KK_ICIT_x * P_ICIT_x) + K_x * dAKG_x_dt / (KK_AKG_x * P_AKG_x) + K_x * dSCOA_x_dt / (KK_SCOA_x * P_SCOA_x) + K_x * dCOASH_x_dt / (KK_COASH_x * P_COASH_x) + K_x * dSUC_x_dt / (KK_SUC_x * P_SUC_x) + K_x * dFUM_x_dt / (KK_FUM_x * P_FUM_x) + K_x * dMAL_x_dt / (KK_MAL_x * P_MAL_x) + K_x * dGLU_x_dt / (KK_GLU_x * P_GLU_x) + K_x * dASP_x_dt / (KK_ASP_x * P_ASP_x) + K_x * dK_x_dt / (KK_K_x * P_K_x) + K_x * dMg_x_dt / (KK_Mg_x * P_Mg_x) + K_x * dO2_x_dt / (KK_O2_x * P_O2_x) + K_x * dFADH2_x_dt / (KK_FADH2_x * P_FADH2_x) + K_x * dFAD_x_dt / (KK_FAD_x * P_FAD_x) + K_x * dCO2_tot_x_dt / (KK_CO2_tot_x * P_CO2_tot_x))) + J_K_t;
+  alpha_H := 1 + dHB_dH + B_x / (K_BX * power(1 + H_x / K_BX, 2 ));
+  alpha_Mg := 1 + dMgB_dMg;
+  alpha_K := 1 + dKB_dK;
+  D := alpha_H * dKB_dMg * dMgB_dK + alpha_K * dHB_dMg * dMgB_dH + alpha_Mg * dHB_dK * dKB_dH - alpha_Mg * alpha_K * alpha_H - dHB_dK * dKB_dMg * dMgB_dH - dHB_dMg * dMgB_dK * dKB_dH;
+
+  // Variable initializations:
+  B_x = 0.02;
+  K_BX = 1e-7;
+end
+
+model wu_yang_vinnakota_beard_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Environment: wu_yang_vinnakota_beard_2007__Environment(time_, ExpType, StateType);
+  parameters: wu_yang_vinnakota_beard_2007__parameters(F, V_cyto, V_mito, W_x, W_i, W_c, gamma, rho_m, n_A, p_PI, p_A, p_TI, k_mADP, theta, k_O2, NAD_tot, Q_tot, cytC_tot, A_tot, CR_tot, CO2_tot_x0, FAD_tot, C_IM, V_mf, V_mf0, V_mf1, V_mf2, V_mf3, K_ir_akgd, V_mf4, V_mf5, V_mf6, V_mf7, V_mf8, V_mf9, X_PYRH, X_GLUH, X_CITMAL, X_AKGMAL, X_SUCMAL, X_MALPI, X_ASPGLU, X_C1, X_C3, k_PI_1, k_PI_2, X_C4, X_F1, X_ANT, X_PIHt, k_PIHt, X_KH, X_Hle, X_HK, J_AtC, ExpType, StateType);
+  thermodynamic_data: wu_yang_vinnakota_beard_2007__thermodynamic_data(RT, dGf1_H2O, dGf1_O2, dGf1_NADH, dGf1_NAD, dGf1_QH2, dGf1_COQ, dGf1_ATP, dGf1_ADP, dGf1_AMP, dGf1_GTP, dGf1_GDP, dGf1_Cred, dGf1_Cox, dGf1_Pi, dGf1_PCr, dGf1_Cr, dGf1_FADH2, dGf1_FAD, dGf1_COASH, dGf1_ACCOA, dGf1_OAA, dGf1_CIT, dGf1_ICIT, dGf1_AKG, dGf1_SCOA, dGf1_SUC, dGf1_FUM, dGf1_MAL, dGf1_ASP, dGf1_GLU, dGf1_CO2_tot, dGf1_PYR, dGf1_GLC, dGf1_G6P, ExpType);
+  P_ATP: wu_yang_vinnakota_beard_2007__P_ATP(P_ATP_x, P_ATP_i, P_ATP_c, uATP_x, mATP_c, K_H_ATP, K_Mg_ATP, K_K_ATP, ATP_x, H_x, Mg_x, K_x, H_i, Mg_i, K_i, ATP_c, H_c, Mg_c, K_c);
+  P_ADP: wu_yang_vinnakota_beard_2007__P_ADP(P_ADP_x, P_ADP_i, P_ADP_c, uADP_x, mADP_c, K_H_ADP, K_Mg_ADP, K_K_ADP, ADP_x, H_x, Mg_x, K_x, H_i, Mg_i, K_i, ADP_c, H_c, Mg_c, K_c);
+  P_AMP: wu_yang_vinnakota_beard_2007__P_AMP(P_AMP_x, P_AMP_i, P_AMP_c, uAMP_x, K_H0, K_Mg0, K_K0, AMP_x, H_x, Mg_x, K_x, H_i, Mg_i, K_i, H_c, Mg_c, K_c);
+  P_GTP: wu_yang_vinnakota_beard_2007__P_GTP(P_GTP_x, P_ATP_x, P_GTP_i, P_ATP_i, P_GTP_c, P_ATP_c, fGTP_x, K_H25, K_Mg25, K_K25, GTP_x, H_x, K_H_ATP, K_Mg_ATP, K_K_ATP);
+  P_GDP: wu_yang_vinnakota_beard_2007__P_GDP(P_GDP_x, P_ADP_x, P_GDP_i, P_ADP_i, P_GDP_c, P_ADP_c, fGDP_x, K_H26, K_Mg26, K_K26, GDP_x, H_x, K_H_ADP, K_Mg_ADP, K_K_ADP);
+  P_PI: wu_yang_vinnakota_beard_2007__P_PI(P_PI_x, P_PI_i, P_PI_c, hPI_x, hPI_i, PI_x, H_x, Mg_x, K_x, PI_i, H_i, Mg_i, K_i, H_c, Mg_c, K_c, K_H1, K_Mg1, K_K1);
+  P_COASH: wu_yang_vinnakota_beard_2007__P_COASH(P_COASH_x, P_COASH_i, P_COASH_c, H_x, H_i, H_c, K_H13, K_Mg13, K_K13);
+  P_OAA: wu_yang_vinnakota_beard_2007__P_OAA(P_OAA_x, P_OAA_i, P_OAA_c, Mg_x, Mg_i, Mg_c, K_Mg7, K_H7, K_K7);
+  P_CIT: wu_yang_vinnakota_beard_2007__P_CIT(P_CIT_x, P_CIT_i, P_CIT_c, uCIT_x, uCIT_i, hCIT_x, hCIT_i, CIT_x, H_x, Mg_x, K_x, CIT_i, H_i, Mg_i, K_i, H_c, Mg_c, K_c, K_H9, K_Mg9, K_K9);
+  P_ICIT: wu_yang_vinnakota_beard_2007__P_ICIT(P_ICIT_x, P_ICIT_i, P_ICIT_c, H_x, Mg_x, H_i, Mg_i, H_c, Mg_c, K_H10, K_Mg10, K_K10);
+  P_SCOA: wu_yang_vinnakota_beard_2007__P_SCOA(P_SCOA_x, P_SCOA_i, P_SCOA_c, H_x, H_i, H_c, K_H12, K_Mg12, K_K12);
+  P_SUC: wu_yang_vinnakota_beard_2007__P_SUC(P_SUC_x, P_SUC_i, P_SUC_c, H_x, Mg_x, K_x, H_i, Mg_i, K_i, H_c, Mg_c, K_c, K_H14, K_Mg14, K_K14);
+  P_FUM: wu_yang_vinnakota_beard_2007__P_FUM(P_FUM_x, P_FUM_i, P_FUM_c, H_x, H_i, H_c, K_H15, K_Mg15, K_K15);
+  P_MAL: wu_yang_vinnakota_beard_2007__P_MAL(P_MAL_x, P_MAL_i, P_MAL_c, H_x, Mg_x, K_x, H_i, Mg_i, K_i, H_c, Mg_c, K_c, K_H16, K_Mg16, K_K16);
+  P_CO2_tot: wu_yang_vinnakota_beard_2007__P_CO2_tot(P_CO2_tot_x, P_CO2_tot_i, P_CO2_tot_c, H_x, H_i, H_c, K_H24, K_Mg24, K_K24);
+  P_PYR: wu_yang_vinnakota_beard_2007__P_PYR(P_PYR_x, P_PYR_i, P_PYR_c, Mg_x, Mg_i, Mg_c, K_Mg6, K_H6, K_K6);
+  P_G6P: wu_yang_vinnakota_beard_2007__P_G6P(P_G6P_x, P_G6P_i, P_G6P_c, H_x, H_i, H_c, K_H27, K_Mg27, K_K27);
+  P_GLU: wu_yang_vinnakota_beard_2007__P_GLU(P_GLU_x, P_GLU_i, P_GLU_c, H_x, Mg_x, H_i, Mg_i, H_c, Mg_c, K_H17, K_Mg17, K_K17);
+  P_ASP: wu_yang_vinnakota_beard_2007__P_ASP(P_ASP_x, P_ASP_i, P_ASP_c, H_x, Mg_x, H_i, Mg_i, H_c, Mg_c, K_H18, K_Mg18, K_K18);
+  P_GLC: wu_yang_vinnakota_beard_2007__P_GLC(P_GLC_c, K_H28, K_Mg28, K_K28);
+  P_NAD: wu_yang_vinnakota_beard_2007__P_NAD(P_NAD_x, K_H3, K_Mg3, K_K3);
+  P_NADH: wu_yang_vinnakota_beard_2007__P_NADH(P_NADH_x, K_H2, K_Mg2, K_K2);
+  P_QH2: wu_yang_vinnakota_beard_2007__P_QH2(P_QH2_x, K_H4, K_Mg4, K_K4);
+  P_COQ: wu_yang_vinnakota_beard_2007__P_COQ(P_COQ_x, K_H5, K_Mg5, K_K5);
+  P_ACCOA: wu_yang_vinnakota_beard_2007__P_ACCOA(P_ACCOA_x, K_H8, K_Mg8, K_K8);
+  P_AKG: wu_yang_vinnakota_beard_2007__P_AKG(P_AKG_x, K_H11, K_Mg11, K_K11);
+  P_O2: wu_yang_vinnakota_beard_2007__P_O2(P_O2_x, K_H21, K_Mg21, K_K21);
+  P_FADH2: wu_yang_vinnakota_beard_2007__P_FADH2(P_FADH2_x, K_H23, K_Mg23, K_K23);
+  P_FAD: wu_yang_vinnakota_beard_2007__P_FAD(P_FAD_x, K_H22, K_Mg22, K_K22);
+  P_H: wu_yang_vinnakota_beard_2007__P_H(P_H_x, K_H, K_Mg, K_K);
+  P_Mg: wu_yang_vinnakota_beard_2007__P_Mg(P_Mg_x, K_H20, K_Mg20, K_K20);
+  P_K: wu_yang_vinnakota_beard_2007__P_K(P_K_x, K_H19, K_Mg19, K_K19);
+  J_pdh: wu_yang_vinnakota_beard_2007__J_pdh(J_pdh0, PYR_x, COASH_x, NAD_x, CO2_tot_x, ACCOA_x, NADH_x, H_x, P_CO2_tot_x, P_ACCOA_x, P_NADH_x, P_PYR_x, P_COASH_x, P_NAD_x, V_mf, RT, dGf1_CO2_tot, dGf1_ACCOA, dGf1_NADH, dGf1_PYR, dGf1_COASH, dGf1_NAD, dGf1_H2O);
+  J_cits: wu_yang_vinnakota_beard_2007__J_cits(J_cits0, OAA_x, ACCOA_x, COASH_x, CIT_x, ATP_x, ADP_x, AMP_x, SCOA_x, H_x, uATP_x, uADP_x, uAMP_x, uCIT_x, P_CIT_x, P_COASH_x, P_ACCOA_x, P_OAA_x, V_mf0, RT, dGf1_ACCOA, dGf1_COASH, dGf1_CIT, dGf1_OAA, dGf1_H2O);
+  J_acon: wu_yang_vinnakota_beard_2007__J_acon(J_acon0, CIT_x, ICIT_x, P_CIT_x, P_ICIT_x, V_mf1, RT, dGf1_ICIT, dGf1_CIT);
+  J_isod: wu_yang_vinnakota_beard_2007__J_isod(J_isod0, NAD_x, ICIT_x, AKG_x, NADH_x, CO2_tot_x, uATP_x, uADP_x, H_x, P_CO2_tot_x, P_AKG_x, P_NADH_x, P_NAD_x, P_ICIT_x, V_mf2, RT, dGf1_AKG, dGf1_NADH, dGf1_CO2_tot, dGf1_ICIT, dGf1_NAD, dGf1_H2O);
+  J_akgd: wu_yang_vinnakota_beard_2007__J_akgd(J_akgd0, AKG_x, COASH_x, NAD_x, CO2_tot_x, SCOA_x, NADH_x, H_x, uATP_x, uADP_x, P_CO2_tot_x, P_SCOA_x, P_NADH_x, P_AKG_x, P_COASH_x, P_NAD_x, V_mf3, RT, dGf1_CO2_tot, dGf1_SCOA, dGf1_NADH, dGf1_AKG, dGf1_COASH, dGf1_NAD, dGf1_H2O);
+  J_scoas: wu_yang_vinnakota_beard_2007__J_scoas(J_scoas0, GDP_x, SCOA_x, PI_x, COASH_x, SUC_x, GTP_x, H_x, P_COASH_x, P_SUC_x, P_GTP_x, P_GDP_x, P_SCOA_x, P_PI_x, V_mf4, RT, dGf1_COASH, dGf1_SUC, dGf1_GTP, dGf1_GDP, dGf1_SCOA, dGf1_Pi);
+  J_sdh: wu_yang_vinnakota_beard_2007__J_sdh(J_sdh0, SUC_x, COQ_x, QH2_x, FUM_x, OAA_x, P_FUM_x, P_QH2_x, P_COQ_x, P_SUC_x, V_mf5, RT, dGf1_QH2, dGf1_FUM, dGf1_SUC, dGf1_COQ);
+  J_fum: wu_yang_vinnakota_beard_2007__J_fum(J_fum0, FUM_x, MAL_x, CIT_x, uATP_x, uADP_x, fGTP_x, fGDP_x, P_MAL_x, P_FUM_x, V_mf6, RT, dGf1_MAL, dGf1_FUM, dGf1_H2O);
+  J_mdh: wu_yang_vinnakota_beard_2007__J_mdh(J_mdh0, NAD_x, MAL_x, OAA_x, NADH_x, H_x, uATP_x, uADP_x, uAMP_x, P_OAA_x, P_NADH_x, P_MAL_x, P_NAD_x, V_mf7, RT, dGf1_OAA, dGf1_NADH, dGf1_NAD, dGf1_MAL);
+  J_ndk: wu_yang_vinnakota_beard_2007__J_ndk(J_ndk_f, J_ndk0, GTP_x, ADP_x, GDP_x, ATP_x, uAMP_x, V_mf8, P_GTP_x, P_ATP_x, P_GDP_x, P_ADP_x, RT, dGf1_GDP, dGf1_ATP, dGf1_GTP, dGf1_ADP);
+  J_got: wu_yang_vinnakota_beard_2007__J_got(J_got_f, J_got0, ASP_x, AKG_x, OAA_x, GLU_x, P_OAA_x, P_ASP_x, P_GLU_x, P_AKG_x, V_mf9, RT, dGf1_OAA, dGf1_GLU, dGf1_ASP, dGf1_AKG);
+  J_PYRH: wu_yang_vinnakota_beard_2007__J_PYRH(J_PYRH0, X_PYRH, PYR_i, H_i, P_PYR_i, PYR_x, H_x, P_PYR_x);
+  J_GLUH: wu_yang_vinnakota_beard_2007__J_GLUH(J_GLUH0, X_GLUH, GLU_i, H_i, P_GLU_i, GLU_x, H_x, P_GLU_x);
+  J_CITMAL: wu_yang_vinnakota_beard_2007__J_CITMAL(J_CITMAL0, X_CITMAL, hCIT_i, MAL_i, P_MAL_i, hCIT_x, MAL_x, P_MAL_x);
+  J_AKGMAL: wu_yang_vinnakota_beard_2007__J_AKGMAL(J_AKGMAL0, X_AKGMAL, AKG_i, MAL_i, AKG_x, MAL_x);
+  J_MALPI: wu_yang_vinnakota_beard_2007__J_MALPI(J_MALPI0, X_MALPI, PI_i, P_PI_i, MAL_i, P_MAL_i, PI_x, P_PI_x, MAL_x, P_MAL_x);
+  J_ASPGLU: wu_yang_vinnakota_beard_2007__J_ASPGLU(J_ASPGLU0, X_ASPGLU, ASP_i, GLU_i, H_i, ASP_x, GLU_x, H_x, F, dPsi, RT, P_ASP_x, P_ASP_i, P_GLU_x, P_GLU_i);
+  J_SUCMAL: wu_yang_vinnakota_beard_2007__J_SUCMAL(J_SUCMAL0, X_SUCMAL, SUC_i, P_SUC_i, MAL_i, P_MAL_i, SUC_x, P_SUC_x, MAL_x, P_MAL_x);
+  J_PYRt: wu_yang_vinnakota_beard_2007__J_PYRt(J_PYRt0, gamma, p_TI, PYR_c, PYR_i);
+  J_CITt: wu_yang_vinnakota_beard_2007__J_CITt(J_CITt0, gamma, p_TI, CIT_c, CIT_i);
+  J_MALt: wu_yang_vinnakota_beard_2007__J_MALt(J_MALt0, gamma, p_TI, MAL_c, MAL_i);
+  J_AKGt: wu_yang_vinnakota_beard_2007__J_AKGt(J_AKGt0, gamma, p_TI, AKG_c, AKG_i);
+  J_SUCt: wu_yang_vinnakota_beard_2007__J_SUCt(J_SUCt0, gamma, p_TI, SUC_c, SUC_i);
+  J_GLUt: wu_yang_vinnakota_beard_2007__J_GLUt(J_GLUt0, gamma, p_TI, GLU_c, GLU_i);
+  J_ASPt: wu_yang_vinnakota_beard_2007__J_ASPt(J_ASPt0, gamma, p_TI, ASP_c, ASP_i);
+  J_FUMt: wu_yang_vinnakota_beard_2007__J_FUMt(J_FUMt0, gamma, FUM_c, FUM_i);
+  J_ICITt: wu_yang_vinnakota_beard_2007__J_ICITt(J_ICITt0, gamma, p_TI, ICIT_c, ICIT_i);
+  J_ADPt: wu_yang_vinnakota_beard_2007__J_ADPt(J_ADPt0, gamma, p_A, ADP_c, ADP_i);
+  J_ATPt: wu_yang_vinnakota_beard_2007__J_ATPt(J_ATPt0, gamma, p_A, ATP_c, ATP_i);
+  J_AMPt: wu_yang_vinnakota_beard_2007__J_AMPt(J_AMPt0, gamma, p_A, AMP_c, AMP_i);
+  J_PIt: wu_yang_vinnakota_beard_2007__J_PIt(J_PIt0, gamma, p_PI, PI_c, PI_i);
+  J_C1: wu_yang_vinnakota_beard_2007__J_C1(J_C10, X_C1, H_x, H_i, dPsi, F, RT, NAD_x, NADH_x, QH2_x, COQ_x, dGf1_NAD, dGf1_QH2, dGf1_NADH, dGf1_COQ);
+  J_C3: wu_yang_vinnakota_beard_2007__J_C3(J_C30, X_C3, k_PI_1, k_PI_2, H_x, H_i, dPsi, F, RT, PI_x, QH2_x, COQ_x, Cred_i, Cox_i, dGf1_COQ, dGf1_Cred, dGf1_QH2, dGf1_Cox);
+  J_C4: wu_yang_vinnakota_beard_2007__J_C4(J_C40, X_C4, H_x, H_i, dPsi, F, RT, O2_x_in, k_O2, cytC_tot, Cred_i, Cox_i, dGf1_Cox, dGf1_H2O, dGf1_Cred, dGf1_O2);
+  J_F1: wu_yang_vinnakota_beard_2007__J_F1(J_F10, X_F1, H_x, H_i, P_ATP_x, P_ADP_x, P_PI_x, dPsi, F, RT, n_A, ATP_x, ADP_x, PI_x, dGf1_ATP, dGf1_H2O, dGf1_ADP, dGf1_Pi);
+  J_ANT: wu_yang_vinnakota_beard_2007__J_ANT(J_ANT0, theta, X_ANT, k_mADP, ADP_i, P_ADP_i, ATP_i, P_ATP_i, ADP_x, P_ADP_x, ATP_x, P_ATP_x, dPsi, F, RT);
+  J_PIHt: wu_yang_vinnakota_beard_2007__J_PIHt(J_PIHt0, X_PIHt, k_PIHt, hPI_i, H_i, hPI_x, H_x);
+  J_Hle: wu_yang_vinnakota_beard_2007__J_Hle(J_Hle0, X_Hle, dPsi, F, RT, n_A, H_i, H_x);
+  J_KH: wu_yang_vinnakota_beard_2007__J_KH(J_KH0, X_KH, K_i, H_i, K_x, H_x);
+  J_HK: wu_yang_vinnakota_beard_2007__J_HK(J_HK0, X_HK, mATP_c, mADP_c, GLC_c, G6P_c, H_c, RT, P_ATP_c, P_ADP_c, P_G6P_c, P_GLC_c, K_Mg_ATP, K_Mg_ADP, dGf1_G6P, dGf1_ADP, dGf1_GLC, dGf1_ATP);
+  J_CKc: wu_yang_vinnakota_beard_2007__J_CKc(J_CKc0, ATP_c, ADP_c, AMP_c, H_c, PCr_c, CR_tot, RT, P_ATP_c, P_ADP_c, ExpType);
+  J_AK: wu_yang_vinnakota_beard_2007__J_AK(J_AKi, J_AKc, ATP_i, ADP_i, AMP_i, P_ATP_i, P_ADP_i, P_AMP_i, ATP_c, ADP_c, AMP_c, P_ATP_c, P_ADP_c, P_AMP_c, ExpType, RT, dGf1_ATP, dGf1_ADP, dGf1_AMP);
+  ddPsi_dt: wu_yang_vinnakota_beard_2007__ddPsi_dt(dPsi, time_, C_IM, J_C10, J_C30, J_C40, J_F10, J_ANT0, J_Hle0, J_ASPGLU0, n_A);
+  dNAD_x_dt: wu_yang_vinnakota_beard_2007__dNAD_x_dt(NAD_x, dNAD_x_dt0, NAD_tot, NADH_x, dNADH_x_dt0);
+  dCOQ_x_dt: wu_yang_vinnakota_beard_2007__dCOQ_x_dt(COQ_x, dCOQ_x_dt0, Q_tot, QH2_x, dQH2_x_dt0);
+  dCox_i_dt: wu_yang_vinnakota_beard_2007__dCox_i_dt(Cox_i, cytC_tot, Cred_i);
+  dATP_x_dt: wu_yang_vinnakota_beard_2007__dATP_x_dt(ATP_x, dATP_x_dt0, time_, W_x, J_ndk0, J_F10, J_ANT0);
+  dADP_x_dt: wu_yang_vinnakota_beard_2007__dADP_x_dt(ADP_x, dADP_x_dt0, time_, W_x, J_ndk0, J_F10, J_ANT0);
+  dAMP_x_dt: wu_yang_vinnakota_beard_2007__dAMP_x_dt(AMP_x, dAMP_x_dt0, time_);
+  dGTP_x_dt: wu_yang_vinnakota_beard_2007__dGTP_x_dt(GTP_x, dGTP_x_dt0, time_, W_x, J_ndk0, J_scoas0);
+  dGDP_x_dt: wu_yang_vinnakota_beard_2007__dGDP_x_dt(GDP_x, dGDP_x_dt0, time_, W_x, J_ndk0, J_scoas0);
+  dPI_x_dt: wu_yang_vinnakota_beard_2007__dPI_x_dt(PI_x, dPI_x_dt0, time_, W_x, J_F10, J_scoas0, J_PIHt0, J_MALPI0);
+  dNADH_x_dt: wu_yang_vinnakota_beard_2007__dNADH_x_dt(NADH_x, dNADH_x_dt0, time_, W_x, J_pdh0, J_isod0, J_akgd0, J_mdh0, J_C10);
+  dQH2_x_dt: wu_yang_vinnakota_beard_2007__dQH2_x_dt(QH2_x, dQH2_x_dt0, time_, W_x, J_sdh0, J_C10, J_C30);
+  dPYR_x_dt: wu_yang_vinnakota_beard_2007__dPYR_x_dt(PYR_x, dPYR_x_dt0, time_, W_x, J_pdh0, J_PYRH0);
+  dACCOA_x_dt: wu_yang_vinnakota_beard_2007__dACCOA_x_dt(ACCOA_x, dACCOA_x_dt0, time_, W_x, J_pdh0, J_cits0);
+  dCIT_x_dt: wu_yang_vinnakota_beard_2007__dCIT_x_dt(CIT_x, dCIT_x_dt0, time_, W_x, J_acon0, J_cits0, J_CITMAL0);
+  dICIT_x_dt: wu_yang_vinnakota_beard_2007__dICIT_x_dt(ICIT_x, dICIT_x_dt0, time_, W_x, J_acon0, J_isod0);
+  dAKG_x_dt: wu_yang_vinnakota_beard_2007__dAKG_x_dt(AKG_x, dAKG_x_dt0, time_, W_x, J_isod0, J_akgd0, J_got0, J_AKGMAL0);
+  dSCOA_x_dt: wu_yang_vinnakota_beard_2007__dSCOA_x_dt(SCOA_x, dSCOA_x_dt0, time_, W_x, J_akgd0, J_scoas0);
+  dCOASH_x_dt: wu_yang_vinnakota_beard_2007__dCOASH_x_dt(COASH_x, dCOASH_x_dt0, time_, W_x, J_pdh0, J_akgd0, J_scoas0, J_cits0);
+  dSUC_x_dt: wu_yang_vinnakota_beard_2007__dSUC_x_dt(SUC_x, dSUC_x_dt0, time_, W_x, J_scoas0, J_sdh0, J_SUCMAL0);
+  dFUM_x_dt: wu_yang_vinnakota_beard_2007__dFUM_x_dt(FUM_x, dFUM_x_dt0, time_, W_x, J_sdh0, J_fum0);
+  dMAL_x_dt: wu_yang_vinnakota_beard_2007__dMAL_x_dt(MAL_x, dMAL_x_dt0, time_, W_x, J_fum0, J_mdh0, J_MALPI0, J_AKGMAL0, J_CITMAL0, J_SUCMAL0);
+  dOAA_x_dt: wu_yang_vinnakota_beard_2007__dOAA_x_dt(OAA_x, dOAA_x_dt0, time_, W_x, J_cits0, J_mdh0, J_got0);
+  dGLU_x_dt: wu_yang_vinnakota_beard_2007__dGLU_x_dt(GLU_x, dGLU_x_dt0, time_, W_x, J_got0, J_GLUH0, J_ASPGLU0);
+  dASP_x_dt: wu_yang_vinnakota_beard_2007__dASP_x_dt(ASP_x, dASP_x_dt0, time_, W_x, J_got0, J_ASPGLU0);
+  dO2_x_dt: wu_yang_vinnakota_beard_2007__dO2_x_dt(O2_x_in, dO2_x_dt0, time_);
+  dCO2_tot_x_dt: wu_yang_vinnakota_beard_2007__dCO2_tot_x_dt(CO2_tot_x, dCO2_tot_x_dt0, time_);
+  dCred_i_dt: wu_yang_vinnakota_beard_2007__dCred_i_dt(Cred_i, time_, W_i, J_C30, J_C40);
+  dATP_i_dt: wu_yang_vinnakota_beard_2007__dATP_i_dt(ATP_i, time_, W_i, J_ATPt0, J_ANT0, J_AKi);
+  dADP_i_dt: wu_yang_vinnakota_beard_2007__dADP_i_dt(ADP_i, time_, W_i, J_ADPt0, J_ANT0, J_AKi);
+  dAMP_i_dt: wu_yang_vinnakota_beard_2007__dAMP_i_dt(AMP_i, time_, W_i, J_AMPt0, J_AKi);
+  dPI_i_dt: wu_yang_vinnakota_beard_2007__dPI_i_dt(PI_i, time_, W_i, J_PIHt0, J_PIt0, J_MALPI0);
+  dPYR_i_dt: wu_yang_vinnakota_beard_2007__dPYR_i_dt(PYR_i, time_, W_i, J_PYRH0, J_PYRt0);
+  dCIT_i_dt: wu_yang_vinnakota_beard_2007__dCIT_i_dt(CIT_i, time_, W_i, J_CITMAL0, J_CITt0);
+  dICIT_i_dt: wu_yang_vinnakota_beard_2007__dICIT_i_dt(ICIT_i, time_, W_i, J_ICITt0);
+  dAKG_i_dt: wu_yang_vinnakota_beard_2007__dAKG_i_dt(AKG_i, time_, W_i, J_AKGMAL0, J_AKGt0);
+  dSUC_i_dt: wu_yang_vinnakota_beard_2007__dSUC_i_dt(SUC_i, time_, W_i, J_SUCt0, J_SUCMAL0);
+  dFUM_i_dt: wu_yang_vinnakota_beard_2007__dFUM_i_dt(FUM_i, time_, J_FUMt0, W_i);
+  dMAL_i_dt: wu_yang_vinnakota_beard_2007__dMAL_i_dt(MAL_i, time_, W_i, J_MALPI0, J_MALt0, J_AKGMAL0, J_CITMAL0, J_SUCMAL0);
+  dGLU_i_dt: wu_yang_vinnakota_beard_2007__dGLU_i_dt(GLU_i, time_, W_i, J_GLUH0, J_ASPGLU0, J_GLUt0);
+  dASP_i_dt: wu_yang_vinnakota_beard_2007__dASP_i_dt(ASP_i, time_, W_i, J_ASPGLU0, J_ASPt0);
+  dH_i_dt: wu_yang_vinnakota_beard_2007__dH_i_dt(H_i, H_c);
+  dMg_i_dt: wu_yang_vinnakota_beard_2007__dMg_i_dt(Mg_i, Mg_c);
+  dK_i_dt: wu_yang_vinnakota_beard_2007__dK_i_dt(K_i, K_c);
+  dPYR_c_dt: wu_yang_vinnakota_beard_2007__dPYR_c_dt(PYR_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_PYRt0);
+  dCIT_c_dt: wu_yang_vinnakota_beard_2007__dCIT_c_dt(CIT_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_CITt0);
+  dICIT_c_dt: wu_yang_vinnakota_beard_2007__dICIT_c_dt(ICIT_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_ICITt0);
+  dAKG_c_dt: wu_yang_vinnakota_beard_2007__dAKG_c_dt(AKG_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_AKGt0);
+  dSUC_c_dt: wu_yang_vinnakota_beard_2007__dSUC_c_dt(SUC_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_SUCt0);
+  dFUM_c_dt: wu_yang_vinnakota_beard_2007__dFUM_c_dt(FUM_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_FUMt0);
+  dMAL_c_dt: wu_yang_vinnakota_beard_2007__dMAL_c_dt(MAL_c, time_, ExpType, StateType, W_c, V_cyto, V_mito, J_MALt0);
+  dGLU_c_dt: wu_yang_vinnakota_beard_2007__dGLU_c_dt(GLU_c, time_, ExpType, W_c, V_cyto, V_mito, J_GLUt0);
+  dASP_c_dt: wu_yang_vinnakota_beard_2007__dASP_c_dt(ASP_c, time_, ExpType, W_c, V_cyto, V_mito, J_ASPt0);
+  dH_c_dt: wu_yang_vinnakota_beard_2007__dH_c_dt(H_c, time_);
+  dMg_c_dt: wu_yang_vinnakota_beard_2007__dMg_c_dt(Mg_c, time_);
+  dK_c_dt: wu_yang_vinnakota_beard_2007__dK_c_dt(K_c, time_);
+  dPI_c_dt: wu_yang_vinnakota_beard_2007__dPI_c_dt(PI_c, time_, ExpType, W_c, V_cyto, V_mito, J_AtC, J_PIt0);
+  dATP_c_dt: wu_yang_vinnakota_beard_2007__dATP_c_dt(ATP_c, time_, ExpType, W_c, V_cyto, V_mito, J_ATPt0, J_CKc0, J_AKc, J_AtC, J_HK0);
+  dADP_c_dt: wu_yang_vinnakota_beard_2007__dADP_c_dt(ADP_c, time_, ExpType, W_c, V_cyto, V_mito, J_ADPt0, J_CKc0, J_AKc, J_AtC, J_HK0);
+  dGLC_c_dt: wu_yang_vinnakota_beard_2007__dGLC_c_dt(GLC_c, time_, ExpType, W_c, J_HK0);
+  dG6P_c_dt: wu_yang_vinnakota_beard_2007__dG6P_c_dt(G6P_c, time_, ExpType, W_c, J_HK0);
+  dPCr_c_dt: wu_yang_vinnakota_beard_2007__dPCr_c_dt(PCr_c, time_, ExpType, W_c, J_CKc0);
+  dAMP_c_dt: wu_yang_vinnakota_beard_2007__dAMP_c_dt(AMP_c, time_, ExpType, W_c, V_cyto, V_mito, J_AMPt0, J_AKc);
+  dFAD_x_dt: wu_yang_vinnakota_beard_2007__dFAD_x_dt(FAD_x, dFAD_x_dt0, dFADH2_x_dt, FADH2_x, FAD_tot);
+  dH_x_dt: wu_yang_vinnakota_beard_2007__dH_x_dt(H_x, dH_x_dt0, time_, D, phi_H, phi_Mg, phi_K, dHB_dMg, dHB_dK, dMgB_dK, dKB_dMg, alpha_K, alpha_Mg);
+  dMg_x_dt: wu_yang_vinnakota_beard_2007__dMg_x_dt(Mg_x, dMg_x_dt0, time_, D, alpha_H, alpha_K, phi_H, phi_Mg, phi_K, dHB_dK, dKB_dH, dMgB_dK, dMgB_dH);
+  dK_x_dt: wu_yang_vinnakota_beard_2007__dK_x_dt(K_x, dK_x_dt0, time_, D, alpha_H, alpha_Mg, phi_H, phi_Mg, phi_K, dHB_dMg, dMgB_dH, dKB_dMg, dKB_dH);
+  BINDING_IONS: wu_yang_vinnakota_beard_2007__BINDING_IONS(dHB_dMg, dHB_dK, dHB_dH, dMgB_dH, dMgB_dK, dMgB_dMg, dKB_dH, dKB_dMg, dKB_dK, J_H_t, J_Mg_t, J_K_t, phi_H, phi_Mg, phi_K, alpha_H, alpha_Mg, alpha_K, D, W_x, n_A, J_pdh0, J_cits0, J_akgd0, J_scoas0, J_mdh0, J_PYRH0, J_GLUH0, J_CITMAL0, J_ASPGLU0, J_C10, J_C30, J_C40, J_F10, J_PIHt0, J_Hle0, J_KH0, H_x, ATP_x, ADP_x, AMP_x, GTP_x, GDP_x, PI_x, NADH_x, NAD_x, QH2_x, COQ_x, PYR_x, OAA_x, ACCOA_x, CIT_x, ICIT_x, AKG_x, SCOA_x, COASH_x, SUC_x, FUM_x, MAL_x, GLU_x, ASP_x, K_x, Mg_x, O2_x_in, FADH2_x, FAD_x, CO2_tot_x, P_H_x, P_ATP_x, P_ADP_x, P_AMP_x, P_GTP_x, P_GDP_x, P_PI_x, P_NADH_x, P_NAD_x, P_QH2_x, P_COQ_x, P_PYR_x, P_OAA_x, P_ACCOA_x, P_CIT_x, P_ICIT_x, P_AKG_x, P_SCOA_x, P_COASH_x, P_SUC_x, P_FUM_x, P_MAL_x, P_GLU_x, P_ASP_x, P_K_x, P_Mg_x, P_O2_x, P_FADH2_x, P_FAD_x, P_CO2_tot_x, K_H, K_H_ATP, K_H_ADP, K_H0, K_H_ATP, K_H_ADP, K_H1, K_H2, K_H3, K_H4, K_H5, K_H6, K_H7, K_H8, K_H9, K_H10, K_H11, K_H12, K_H13, K_H14, K_H15, K_H16, K_H17, K_H18, K_H19, K_H20, K_H21, K_H23, K_H22, K_H24, K_Mg, K_Mg_ATP, K_Mg_ADP, K_Mg0, K_Mg_ATP, K_Mg_ADP, K_Mg1, K_Mg2, K_Mg3, K_Mg4, K_Mg5, K_Mg6, K_Mg7, K_Mg8, K_Mg9, K_Mg10, K_Mg11, K_Mg12, K_Mg13, K_Mg14, K_Mg15, K_Mg16, K_Mg17, K_Mg18, K_Mg19, K_Mg20, K_Mg21, K_Mg23, K_Mg22, K_Mg24, K_K, K_K_ATP, K_K_ADP, K_K0, K_K_ATP, K_K_ADP, K_K1, K_K2, K_K3, K_K4, K_K5, K_K6, K_K7, K_K8, K_K9, K_K10, K_K11, K_K12, K_K13, K_K14, K_K15, K_K16, K_K17, K_K18, K_K19, K_K20, K_K21, K_K23, K_K22, K_K24, dH_x_dt0, dATP_x_dt0, dADP_x_dt0, dAMP_x_dt0, dGTP_x_dt0, dGDP_x_dt0, dPI_x_dt0, dNADH_x_dt0, dNAD_x_dt0, dQH2_x_dt0, dCOQ_x_dt0, dPYR_x_dt0, dOAA_x_dt0, dACCOA_x_dt0, dCIT_x_dt0, dICIT_x_dt0, dAKG_x_dt0, dSCOA_x_dt0, dCOASH_x_dt0, dSUC_x_dt0, dFUM_x_dt0, dMAL_x_dt0, dGLU_x_dt0, dASP_x_dt0, dK_x_dt0, dMg_x_dt0, dO2_x_dt0, dFADH2_x_dt, dFAD_x_dt0, dCO2_tot_x_dt0);
+end

@@ -1,0 +1,116 @@
+//Created by libAntimony v1.3
+model marwan_2003_version01__environment(time_)
+end
+
+model marwan_2003_version01__Pfr(Pfr, Pr, Ifr_sigma_fr_phi_fr, Ir_sigma_r_phi_r, time_)
+
+  // Rate Rules:
+  Pfr' = Ir_sigma_r_phi_r * Pr - Ifr_sigma_fr_phi_fr * Pfr;
+
+  // Variable initializations:
+  Pfr = 10.0;
+end
+
+model marwan_2003_version01__Pr(Pr, Ifr_sigma_fr_phi_fr, Ir_sigma_r_phi_r, Pfr, time_)
+
+  // Rate Rules:
+  Pr' = Ifr_sigma_fr_phi_fr * Pr - ( Ir_sigma_r_phi_r * Pr + kd * Pr );
+
+  // Variable initializations:
+  Pr = 0.0;
+  kd = 0.1;
+end
+
+model marwan_2003_version01__Xi(Xi, Pr, Xa, kia, kai, time_)
+
+  // Rate Rules:
+  Xi' = kai * Xa - kia * Pr * Xi;
+
+  // Variable initializations:
+  Xi = 6.0;
+end
+
+model marwan_2003_version01__Xa(Xa, Pr, Xi, kia, kai, time_)
+
+  // Rate Rules:
+  Xa' = kia * Pr * Xi - kai * Xa;
+
+  // Variable initializations:
+  Xa = 0.0;
+end
+
+model marwan_2003_version01__prepreS(prepreS, Xa, kx, time_)
+
+  // Rate Rules:
+  prepreS' = -(( kx * Xa * prepreS ));
+
+  // Variable initializations:
+  prepreS = 200.0;
+end
+
+model marwan_2003_version01__preS(preS, prepreS, Xa, Ya, kx, ky, time_)
+
+  // Rate Rules:
+  preS' = kx * Xa * prepreS - ky * Ya * preS;
+
+  // Variable initializations:
+  preS = 0.0;
+end
+
+model marwan_2003_version01__S(S, preS, Ya, V, ky, time_)
+
+  // Rate Rules:
+  S' = ky * Ya * preS + alpha1 / ( 1.0 + power( V , 3.0 )) - S;
+
+  // Variable initializations:
+  S = 0.0;
+  alpha1 = 30.0;
+end
+
+model marwan_2003_version01__V(V, S, time_)
+
+  // Rate Rules:
+  V' = alpha2 / ( 1.0 + power( S , 3.0 )) - V;
+
+  // Variable initializations:
+  V = 50.0;
+  alpha2 = 50.0;
+end
+
+model marwan_2003_version01__Ya(Ya, glucose, time_)
+
+  // Rate Rules:
+  Ya' = -(( kG * glucose * Ya ));
+
+  // Variable initializations:
+  Ya = 0.9;
+  kG = 0.1;
+end
+
+model marwan_2003_version01__model_parameters(Ifr_sigma_fr_phi_fr, Ir_sigma_r_phi_r, kia, kai, kx, ky, glucose)
+
+  // Variable initializations:
+  Ifr_sigma_fr_phi_fr = 0.1;
+  Ir_sigma_r_phi_r = 0.0;
+  kia = 0.1;
+  kai = 0.8;
+  kx = 0.2;
+  ky = 1.0;
+  glucose = 1.0;
+end
+
+model marwan_2003_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: marwan_2003_version01__environment(time_);
+  Pfr: marwan_2003_version01__Pfr(Pfr0, Pr0, Ifr_sigma_fr_phi_fr, Ir_sigma_r_phi_r, time_);
+  Pr: marwan_2003_version01__Pr(Pr0, Ifr_sigma_fr_phi_fr, Ir_sigma_r_phi_r, Pfr0, time_);
+  Xi: marwan_2003_version01__Xi(Xi0, Pr0, Xa0, kia, kai, time_);
+  Xa: marwan_2003_version01__Xa(Xa0, Pr0, Xi0, kia, kai, time_);
+  prepreS: marwan_2003_version01__prepreS(prepreS0, Xa0, kx, time_);
+  preS: marwan_2003_version01__preS(preS0, prepreS0, Xa0, Ya0, kx, ky, time_);
+  S: marwan_2003_version01__S(S0, preS0, Ya0, V0, ky, time_);
+  V: marwan_2003_version01__V(V0, S0, time_);
+  Ya: marwan_2003_version01__Ya(Ya0, glucose, time_);
+  model_parameters: marwan_2003_version01__model_parameters(Ifr_sigma_fr_phi_fr, Ir_sigma_r_phi_r, kia, kai, kx, ky, glucose);
+end

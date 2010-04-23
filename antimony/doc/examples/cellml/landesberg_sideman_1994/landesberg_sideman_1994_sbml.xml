@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="landesberg_sideman_1994____main" name="landesberg_sideman_1994____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="L_a" value="1.15"/>
+      <parameter id="L_prime_m" value="1.5"/>
+      <parameter id="L_b" value="0.1"/>
+      <parameter id="L_z" value="0.1"/>
+      <parameter id="L_m" constant="false"/>
+      <parameter id="TRo" value="60"/>
+      <parameter id="k_h" value="100000000"/>
+      <parameter id="k_minus_h" value="0.33"/>
+      <parameter id="k_1" value="40000000"/>
+      <parameter id="k_m" constant="false"/>
+      <parameter id="K_1" constant="false"/>
+      <parameter id="K_m" constant="false"/>
+      <parameter id="parameters_K_max" value="2000000"/>
+      <parameter id="f" value="40"/>
+      <parameter id="g_0" value="12"/>
+      <parameter id="g_prime_0" constant="false"/>
+      <parameter id="g_1" value="15"/>
+      <parameter id="g_prime_1" constant="false"/>
+      <parameter id="k_minus_1" constant="false"/>
+      <parameter id="k_minus_m" constant="false"/>
+      <parameter id="Ca" value="0" constant="false"/>
+      <parameter id="R_n" constant="false"/>
+      <parameter id="Rbar_n" constant="false"/>
+      <parameter id="Abar_n" constant="false"/>
+      <parameter id="alpha" value="1"/>
+      <parameter id="R_s" value="0" constant="false"/>
+      <parameter id="single_overlap_Rbar_s" value="0" constant="false"/>
+      <parameter id="single_overlap_dRbar_s_dt" constant="false"/>
+      <parameter id="A_s" value="0" constant="false"/>
+      <parameter id="single_overlap_Abar_s" value="0" constant="false"/>
+      <parameter id="single_overlap_dAbar_s_dt" constant="false"/>
+      <parameter id="T_s" value="0" constant="false"/>
+      <parameter id="single_overlap_Tbar_s" value="0" constant="false"/>
+      <parameter id="single_overlap_dTbar_s_dt" constant="false"/>
+      <parameter id="U_s" value="0" constant="false"/>
+      <parameter id="single_overlap_Ubar_s" value="0" constant="false"/>
+      <parameter id="single_overlap_dUbar_s_dt" constant="false"/>
+      <parameter id="Rbar_d" value="0" constant="false"/>
+      <parameter id="Abar_d" value="0" constant="false"/>
+      <parameter id="Tbar_d" value="0" constant="false"/>
+      <parameter id="Ubar_d" value="0" constant="false"/>
+      <parameter id="V" constant="false"/>
+      <parameter id="R_d" constant="false"/>
+      <parameter id="A_d" constant="false"/>
+      <parameter id="T_d" constant="false"/>
+      <parameter id="U_d" constant="false"/>
+      <parameter id="calcium_flux_Ca_0" value="2000"/>
+      <parameter id="calcium_flux_I_o" constant="false"/>
+      <parameter id="calcium_flux_I_s" constant="false"/>
+      <parameter id="calcium_flux_I_i" constant="false"/>
+      <parameter id="calcium_flux_I_u" constant="false"/>
+      <parameter id="calcium_flux_Q_o" value="30"/>
+      <parameter id="calcium_flux_Q_s" value="0.3"/>
+      <parameter id="calcium_flux_tau_SR" value="0.002"/>
+      <parameter id="calcium_flux_tau_SF" value="0.02"/>
+      <parameter id="calcium_flux_Q_i" value="0.6"/>
+      <parameter id="calcium_flux_tau_iR" value="0.002"/>
+      <parameter id="calcium_flux_tau_iF" value="0.1"/>
+      <parameter id="calcium_flux_Q_u" value="1000"/>
+      <parameter id="calcium_flux_K_mu" value="1"/>
+      <parameter id="calcium_flux_I_l" value="0"/>
+      <parameter id="calcium_flux_Ca_r" value="0"/>
+      <parameter id="BCa_L" constant="false"/>
+      <parameter id="BCa_h" value="0" constant="false"/>
+      <parameter id="force_equations_F" constant="false"/>
+      <parameter id="force_equations_F_CB" constant="false"/>
+      <parameter id="force_equations_F_CE" constant="false"/>
+      <parameter id="force_equations_F_PE" constant="false"/>
+      <parameter id="input_d_alpha_dt" value="0"/>
+      <parameter id="time_"/>
+      <parameter id="A_n"/>
+      <parameter id="force_equations_F_bar"/>
+      <parameter id="force_equations_eta"/>
+      <parameter id="force_equations_eta_PE"/>
+      <parameter id="force_equations_T_s"/>
+      <parameter id="force_equations_U_s"/>
+      <parameter id="force_equations_E"/>
+      <parameter id="force_equations_D"/>
+      <parameter id="force_equations_B"/>
+      <parameter id="force_equations_SL"/>
+      <parameter id="force_equations_Sp_0"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="L_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> L_prime_m </ci>
+            <ci> L_b </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> k_1 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="K_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_1 </ci>
+            <ci> Ca </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="K_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_m </ci>
+            <ci> Ca </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="g_prime_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> g_0 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="g_prime_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> g_1 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_minus_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> k_1 </ci>
+            <ci> parameters_K_max </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_minus_m">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> k_minus_1 </ci>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> calcium_flux_I_s </ci>
+              <ci> calcium_flux_I_i </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> calcium_flux_I_o </ci>
+              <ci> calcium_flux_I_u </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="R_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Rbar_n </ci>
+            <ci> alpha </ci>
+            <ci> L_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Rbar_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> A_n </ci>
+              <ci> k_minus_1 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <ci> K_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Abar_n">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> R_n </ci>
+              <ci> K_1 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <ci> k_minus_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="R_s"/>
+      <rateRule variable="single_overlap_Rbar_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> single_overlap_dRbar_s_dt </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="single_overlap_dRbar_s_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> K_1 </ci>
+              </apply>
+              <ci> R_s </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_minus_1 </ci>
+              <ci> A_s </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> g_prime_0 </ci>
+                <apply>
+                  <times/>
+                  <ci> g_prime_1 </ci>
+                  <ci> V </ci>
+                </apply>
+              </apply>
+              <ci> U_s </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="A_s"/>
+      <rateRule variable="single_overlap_Abar_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> single_overlap_dAbar_s_dt </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="single_overlap_dAbar_s_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> K_1 </ci>
+              <ci> R_s </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <minus/>
+                  <ci> f </ci>
+                </apply>
+                <ci> k_minus_1 </ci>
+              </apply>
+              <ci> A_s </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> g_0 </ci>
+                <apply>
+                  <times/>
+                  <ci> g_1 </ci>
+                  <ci> V </ci>
+                </apply>
+              </apply>
+              <ci> T_s </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="T_s"/>
+      <rateRule variable="single_overlap_Tbar_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> single_overlap_dTbar_s_dt </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="single_overlap_dTbar_s_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> f </ci>
+              <ci> A_s </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <minus/>
+                    <ci> g_0 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> g_1 </ci>
+                    <ci> V </ci>
+                  </apply>
+                </apply>
+                <ci> k_minus_m </ci>
+              </apply>
+              <ci> T_s </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> K_m </ci>
+              <ci> U_s </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="U_s"/>
+      <rateRule variable="single_overlap_Ubar_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> single_overlap_dUbar_s_dt </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="single_overlap_dUbar_s_dt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k_minus_m </ci>
+              <ci> T_s </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <minus/>
+                    <ci> K_m </ci>
+                  </apply>
+                  <ci> g_prime_0 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> g_prime_1 </ci>
+                  <ci> V </ci>
+                </apply>
+              </apply>
+              <ci> U_s </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Rbar_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> K_1 </ci>
+              </apply>
+              <ci> R_d </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_minus_1 </ci>
+              <ci> A_d </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> g_prime_0 </ci>
+                <apply>
+                  <times/>
+                  <ci> g_prime_1 </ci>
+                  <ci> V </ci>
+                </apply>
+              </apply>
+              <ci> U_d </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Abar_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> K_1 </ci>
+              <ci> R_d </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <minus/>
+                  <ci> f </ci>
+                </apply>
+                <ci> k_minus_1 </ci>
+              </apply>
+              <ci> A_d </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> g_0 </ci>
+                <apply>
+                  <times/>
+                  <ci> g_1 </ci>
+                  <ci> V </ci>
+                </apply>
+              </apply>
+              <ci> T_d </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Tbar_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> f </ci>
+              <ci> A_d </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <minus/>
+                    <ci> g_0 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> g_1 </ci>
+                    <ci> V </ci>
+                  </apply>
+                </apply>
+                <ci> k_minus_m </ci>
+              </apply>
+              <ci> T_d </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> K_m </ci>
+              <ci> U_d </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ubar_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k_minus_m </ci>
+              <ci> T_d </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <minus/>
+                    <ci> K_m </ci>
+                  </apply>
+                  <ci> g_prime_0 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> g_prime_1 </ci>
+                  <ci> V </ci>
+                </apply>
+              </apply>
+              <ci> U_d </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> input_d_alpha_dt </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="R_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Rbar_d </ci>
+            <ci> alpha </ci>
+            <ci> L_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="A_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Abar_d </ci>
+            <ci> alpha </ci>
+            <ci> L_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="T_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Tbar_d </ci>
+            <ci> alpha </ci>
+            <ci> L_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="U_d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ubar_d </ci>
+            <ci> alpha </ci>
+            <ci> L_m </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="calcium_flux_I_o">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_flux_Q_o </ci>
+            <ci> Ca </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="calcium_flux_I_s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_flux_Q_s </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <minus/>
+                        <ci> time_ </ci>
+                      </apply>
+                      <ci> calcium_flux_tau_SR </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> time_ </ci>
+                    </apply>
+                    <ci> calcium_flux_tau_SF </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> calcium_flux_I_l </ci>
+            </apply>
+            <ci> calcium_flux_Ca_0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="calcium_flux_I_i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> calcium_flux_Q_i </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <exp/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <minus/>
+                        <ci> time_ </ci>
+                      </apply>
+                      <ci> calcium_flux_tau_iR </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <minus/>
+                      <ci> time_ </ci>
+                    </apply>
+                    <ci> calcium_flux_tau_iF </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> calcium_flux_I_l </ci>
+            </apply>
+            <ci> calcium_flux_Ca_r </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="calcium_flux_I_u">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> calcium_flux_Q_u </ci>
+              <ci> Ca </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> calcium_flux_K_mu </ci>
+              <ci> Ca </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="BCa_L">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> A_s </ci>
+            <ci> T_s </ci>
+            <ci> A_d </ci>
+            <ci> T_d </ci>
+            <ci> A_n </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="BCa_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 2 </cn>
+                  <ci> TRo </ci>
+                </apply>
+                <ci> BCa_h </ci>
+              </apply>
+              <ci> Ca </ci>
+              <ci> k_h </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> BCa_h </ci>
+              <ci> k_minus_h </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="force_equations_F">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> force_equations_F_CE </ci>
+            <ci> force_equations_F_PE </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="force_equations_F_CB">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> force_equations_F_bar </ci>
+            <apply>
+              <times/>
+              <ci> force_equations_eta </ci>
+              <ci> V </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="force_equations_F_CE">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <ci> force_equations_T_s </ci>
+              <ci> force_equations_U_s </ci>
+            </apply>
+            <ci> force_equations_F_CB </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="force_equations_F_PE"/>
+    </listOfRules>
+  </model>
+</sbml>

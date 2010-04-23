@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="nevo_2004____main" name="nevo_2004____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="h0" constant="false"/>
+      <parameter id="Tn0" constant="false"/>
+      <parameter id="Tp0" constant="false"/>
+      <parameter id="n0" constant="false"/>
+      <parameter id="n_lamda_n" value="1"/>
+      <parameter id="p0" constant="false"/>
+      <parameter id="p_lamda_p" value="1"/>
+      <parameter id="s1_K1" value="1"/>
+      <parameter id="s1_D1" value="0.4"/>
+      <parameter id="s1_lamda_1" value="0.05"/>
+      <parameter id="s20" constant="false"/>
+      <parameter id="s2_K2" value="1"/>
+      <parameter id="s2_D2" value="0.4"/>
+      <parameter id="s2_lamda_2" value="0.05"/>
+      <parameter id="Tn_eta_n" value="0.2"/>
+      <parameter id="Tn_s1_min" value="0.01"/>
+      <parameter id="Tp_eta_p" value="0.2"/>
+      <parameter id="E0" constant="false"/>
+      <parameter id="E_lamda_E" value="0.005"/>
+      <parameter id="E_s2_min" value="0.01"/>
+      <parameter id="fw0" constant="false"/>
+      <parameter id="s2_0" constant="false"/>
+      <parameter id="fw_w" value="1000"/>
+      <parameter id="time_"/>
+      <parameter id="s10"/>
+      <parameter id="fw_c"/>
+      <parameter id="x"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="h0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> Tn0 </ci>
+              <ci> Tp0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Tn0"/>
+      <assignmentRule variable="Tp0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Tp_eta_p </ci>
+            <ci> h0 </ci>
+            <ci> E0 </ci>
+            <ci> s20 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="n0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Tn0 </ci>
+            <apply>
+              <times/>
+              <ci> n_lamda_n </ci>
+              <ci> n0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="p0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Tp0 </ci>
+            <apply>
+              <times/>
+              <ci> p_lamda_p </ci>
+              <ci> p0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="s20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> s2_K2 </ci>
+                <ci> n0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> s2_lamda_2 </ci>
+                <ci> s20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> s2_D2 </ci>
+              <ci> s20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="E0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> fw0 </ci>
+              <apply>
+                <minus/>
+                <ci> s2_0 </ci>
+                <ci> E_s2_min </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> E_lamda_E </ci>
+              <ci> E0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="fw0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn> 1 </cn>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <minus/>
+                      <ci> x </ci>
+                      <ci> fw_c </ci>
+                    </apply>
+                  </apply>
+                  <ci> fw_w </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="s2_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> s20 </ci>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

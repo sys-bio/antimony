@@ -1,0 +1,22 @@
+//Created by libAntimony v1.3
+model Template_RxR2P1Rev__Template_RxR2P1Rev(J, reactant1, reactant2, kf, kb, product)
+
+  // Assignment Rules:
+  J := reactant1 * reactant2 * kf - kb * product;
+end
+
+model Bioenvironment_RxR2P1Rev_TFSFormation__Bioenvironment_RxR2P1Rev_TFSFormation(J, reactant1, reactant2, kf, kb, product)
+
+  // Sub-modules, and any changes to those submodules:
+  Template_RxR2P1Rev: Template_RxR2P1Rev__Template_RxR2P1Rev(J, reactant1, reactant2, kf, kb, product);
+
+  // Variable initializations:
+  kf = 1e3;
+  kb = 4e6;
+end
+
+model Bioenvironment_RxR2P1Rev_TFSFormation____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Bioenvironment_RxR2P1Rev_TFSFormation: Bioenvironment_RxR2P1Rev_TFSFormation__Bioenvironment_RxR2P1Rev_TFSFormation(J, reactant1, reactant2, kf, kb, product);
+end

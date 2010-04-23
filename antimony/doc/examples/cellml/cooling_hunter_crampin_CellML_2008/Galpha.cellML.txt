@@ -1,0 +1,21 @@
+//Created by libAntimony v1.3
+model Galpha__Galpha(t, Gd, J_gain_Gd, Gt_, J_gain_Gt)
+
+  // Assignment Rules:
+  J1 := kf1 * Gt_;
+
+  // Rate Rules:
+  Gd' = J1 + J_gain_Gd;
+  Gt_' = J_gain_Gt - J1;
+
+  // Variable initializations:
+  Gd = 10000;
+  Gt_ = 0.00;
+  kf1 = 0.150;
+end
+
+model Galpha____main()
+
+  // Sub-modules, and any changes to those submodules:
+  Galpha: Galpha__Galpha(t, Gd, J_gain_Gd, Gt_, J_gain_Gt);
+end

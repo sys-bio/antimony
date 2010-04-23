@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="mclean_2003____main" name="mclean_2003____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="F_CE0" constant="false"/>
+      <parameter id="f_L_CE0" constant="false"/>
+      <parameter id="g_V_CE0" constant="false"/>
+      <parameter id="a" value="0.8"/>
+      <parameter id="F_min" value="10"/>
+      <parameter id="F_max" value="7000"/>
+      <parameter id="L_CE0" value="0.038" constant="false"/>
+      <parameter id="L_CE_opt" value="0.093"/>
+      <parameter id="f_L_CE_W" value="0.63"/>
+      <parameter id="lambda_a0" constant="false"/>
+      <parameter id="g_V_CE_V_max" value="0.93"/>
+      <parameter id="V_CE0" constant="false"/>
+      <parameter id="g_V_CE_A" value="0.25"/>
+      <parameter id="g_V_CE_g_max" value="1.5"/>
+      <parameter id="d10" constant="false"/>
+      <parameter id="d20" constant="false"/>
+      <parameter id="d30" constant="false"/>
+      <parameter id="g_V_CE_gamma" value="5.67"/>
+      <parameter id="d1_V_max" value="0.93"/>
+      <parameter id="d1_A" value="0.25"/>
+      <parameter id="d1_g_max" value="1.5"/>
+      <parameter id="d1_S" value="2"/>
+      <parameter id="d2_S" value="2"/>
+      <parameter id="d2_A" value="0.25"/>
+      <parameter id="d2_V_max" value="0.93"/>
+      <parameter id="d2_gamma" value="5.67"/>
+      <parameter id="d3_g_max" value="1.5"/>
+      <parameter id="d3_gamma" value="5.67"/>
+      <parameter id="F_SEE0" constant="false"/>
+      <parameter id="F_SEE_k_SEE" value="1000000"/>
+      <parameter id="L_SEE0" constant="false"/>
+      <parameter id="F_SEE_L_slack" value="0.0025"/>
+      <parameter id="F_PEE0" constant="false"/>
+      <parameter id="k_PEE0" constant="false"/>
+      <parameter id="F_PEE_L_slack" value="0.0025"/>
+      <parameter id="k_PEE_W" value="0.63"/>
+      <parameter id="k_PEE_L_CE_opt" value="0.01"/>
+      <parameter id="L_m0" constant="false"/>
+      <parameter id="F_m0" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="g_V_CE1"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="F_CE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> f_L_CE0 </ci>
+            <ci> g_V_CE0 </ci>
+            <ci> a </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="f_L_CE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> F_max </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <minus/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> L_CE0 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> L_CE_opt </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <power/>
+                <ci> f_L_CE_W </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+              <apply>
+                <power/>
+                <ci> L_CE_opt </ci>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="g_V_CE0"/>
+      <rateRule variable="L_CE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <ci> V_CE0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="lambda_a0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <times/>
+                    <cn> -3.82 </cn>
+                    <ci> a </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> a </ci>
+                <apply>
+                  <exp/>
+                  <cn> -3.82 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_CE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> g_V_CE1 </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> F_SEE0 </ci>
+                    <apply>
+                      <minus/>
+                      <ci> L_m0 </ci>
+                      <ci> L_CE0 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> F_PEE0 </ci>
+                    <ci> L_CE0 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> a </ci>
+                <ci> f_L_CE0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="d10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> d1_V_max </ci>
+              <ci> d1_A </ci>
+              <apply>
+                <minus/>
+                <ci> d1_g_max </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> d1_S </ci>
+              <apply>
+                <plus/>
+                <ci> d1_A </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="d20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> d2_S </ci>
+              <apply>
+                <plus/>
+                <ci> d2_A </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> d2_V_max </ci>
+              <ci> d2_A </ci>
+              <apply>
+                <power/>
+                <apply>
+                  <plus/>
+                  <ci> d2_gamma </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="d30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> d3_g_max </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> d3_gamma </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <power/>
+                <apply>
+                  <plus/>
+                  <ci> d3_gamma </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F_SEE0"/>
+      <assignmentRule variable="L_SEE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> L_m0 </ci>
+            <ci> L_CE0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="F_PEE0"/>
+      <assignmentRule variable="k_PEE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> F_max </ci>
+            <apply>
+              <power/>
+              <apply>
+                <times/>
+                <ci> k_PEE_W </ci>
+                <ci> k_PEE_L_CE_opt </ci>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="L_m0"/>
+      <assignmentRule variable="F_m0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> F_SEE0 </ci>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

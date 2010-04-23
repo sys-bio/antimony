@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="pulmonary_fluid_dynamics_CellML1_0_model____main" name="pulmonary_fluid_dynamics_CellML1_0_model____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="PPC" value="29.9941"/>
+      <parameter id="PPA" value="15.6376"/>
+      <parameter id="PLA" value="2"/>
+      <parameter id="CPP" value="71.9719"/>
+      <parameter id="RPV" value="1.55719"/>
+      <parameter id="RPA" value="1.5683"/>
+      <parameter id="pulmonary_fluid_dynamics_CPF" value="0.0003"/>
+      <parameter id="pulmonary_fluid_dynamics_PCP" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_POS" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_PPI" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_PFI" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_PLF" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_DFP" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_VPF" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_pulmonary_interstitial_free_fluid_volume_DFZ" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_pulmonary_interstitial_free_fluid_volume_VPF1" value="0.0123238" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_PPO" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_PPN" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_PPD" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_CPN" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_concentration_of_protein_in_pulmonary_interstitium_PPZ" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_concentration_of_protein_in_pulmonary_interstitium_PPR1" value="0.419998" constant="false"/>
+      <parameter id="pulmonary_fluid_dynamics_concentration_of_protein_in_pulmonary_interstitium_PPR" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="pulmonary_fluid_dynamics_PCP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> PPA </ci>
+                  <ci> PLA </ci>
+                </apply>
+                <ci> RPV </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> RPV </ci>
+                <ci> RPA </ci>
+              </apply>
+            </apply>
+            <ci> PLA </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_POS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> pulmonary_fluid_dynamics_CPN </ci>
+            <cn> 0.4 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_PPI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn type="integer"> 2 </cn>
+            <apply>
+              <divide/>
+              <cn> 0.15 </cn>
+              <ci> pulmonary_fluid_dynamics_VPF </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_PFI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <minus/>
+                  <ci> pulmonary_fluid_dynamics_PCP </ci>
+                  <ci> pulmonary_fluid_dynamics_PPI </ci>
+                </apply>
+                <ci> pulmonary_fluid_dynamics_POS </ci>
+              </apply>
+              <ci> PPC </ci>
+            </apply>
+            <ci> pulmonary_fluid_dynamics_CPF </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_PLF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <ci> pulmonary_fluid_dynamics_PPI </ci>
+              <cn type="integer"> 11 </cn>
+            </apply>
+            <cn> 0.0003 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_DFP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> pulmonary_fluid_dynamics_pulmonary_interstitial_free_fluid_volume_DFZ </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_VPF"/>
+      <assignmentRule variable="pulmonary_fluid_dynamics_pulmonary_interstitial_free_fluid_volume_DFZ">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> pulmonary_fluid_dynamics_PFI </ci>
+            <ci> pulmonary_fluid_dynamics_PLF </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="pulmonary_fluid_dynamics_pulmonary_interstitial_free_fluid_volume_VPF1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> pulmonary_fluid_dynamics_DFP </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_PPO">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> pulmonary_fluid_dynamics_PLF </ci>
+            <ci> pulmonary_fluid_dynamics_CPN </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_PPN">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> CPP </ci>
+              <ci> pulmonary_fluid_dynamics_CPN </ci>
+            </apply>
+            <cn> 0.000225 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_PPD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> pulmonary_fluid_dynamics_concentration_of_protein_in_pulmonary_interstitium_PPZ </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_CPN">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> pulmonary_fluid_dynamics_concentration_of_protein_in_pulmonary_interstitium_PPR </ci>
+            <ci> pulmonary_fluid_dynamics_VPF </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_concentration_of_protein_in_pulmonary_interstitium_PPZ">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> pulmonary_fluid_dynamics_PPN </ci>
+            <ci> pulmonary_fluid_dynamics_PPO </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="pulmonary_fluid_dynamics_concentration_of_protein_in_pulmonary_interstitium_PPR1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> pulmonary_fluid_dynamics_PPD </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="pulmonary_fluid_dynamics_concentration_of_protein_in_pulmonary_interstitium_PPR"/>
+    </listOfRules>
+  </model>
+</sbml>

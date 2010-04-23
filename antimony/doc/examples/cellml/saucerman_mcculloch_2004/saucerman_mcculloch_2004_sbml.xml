@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="saucerman_mcculloch_2004_version01____main" name="saucerman_mcculloch_2004_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="PKACII_RyR_PKACII_RyRtot" value="0.034"/>
+      <parameter id="Ks_RyR_PKAC" value="21"/>
+      <parameter id="epsilon" value="10"/>
+      <parameter id="PP1_RyR_PP1_RyRtot" value="0.034"/>
+      <parameter id="Ks_RyR_PP1" value="7"/>
+      <parameter id="PP2A_RyR_PP2A_RyRtot" value="0.034"/>
+      <parameter id="Ks_RyR_PP2A" value="4.1"/>
+      <parameter id="RyRtot0" constant="false"/>
+      <parameter id="RyRptot0" constant="false"/>
+      <parameter id="RyRsum" value="0.135"/>
+      <parameter id="RyRptot_kPKA_RyR" value="54"/>
+      <parameter id="RyRptot_kPP1_RyR" value="8.52"/>
+      <parameter id="RyRptot_kPP2A_RyR" value="10.1"/>
+      <parameter id="KMrel0" constant="false"/>
+      <parameter id="TnI0" constant="false"/>
+      <parameter id="TnItot" value="70"/>
+      <parameter id="TnIp0" constant="false"/>
+      <parameter id="TnIp_kPKA_TnI" value="54"/>
+      <parameter id="TnIp_kPP2A_TnI" value="10.1"/>
+      <parameter id="TnIp_KM_PKA_TnI" value="21"/>
+      <parameter id="TnIp_KM_PP2A_TnI" value="3"/>
+      <parameter id="KMTnC0" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="PKACII_RyR0"/>
+      <parameter id="RyR0"/>
+      <parameter id="PP1_RyR0"/>
+      <parameter id="RyRp0"/>
+      <parameter id="PP2A_RyR0"/>
+      <parameter id="KMrel_KMrel0"/>
+      <parameter id="TnIp_PKAC"/>
+      <parameter id="TnIp_PP2A"/>
+      <parameter id="KMTnC_KMTnC0"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="RyRtot0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> RyRsum </ci>
+            <ci> RyRptot0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="RyRptot0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> RyRptot_kPKA_RyR </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> epsilon </ci>
+                  <ci> RyR0 </ci>
+                  <ci> PKACII_RyR0 </ci>
+                </apply>
+                <ci> Ks_RyR_PKAC </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> RyRptot_kPP1_RyR </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> epsilon </ci>
+                    <ci> RyRp0 </ci>
+                    <ci> PP1_RyR0 </ci>
+                  </apply>
+                  <ci> Ks_RyR_PP1 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> RyRptot_kPP2A_RyR </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> epsilon </ci>
+                    <ci> RyRp0 </ci>
+                    <ci> PP2A_RyR0 </ci>
+                  </apply>
+                  <ci> Ks_RyR_PP2A </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="KMrel0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 1.64 </cn>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> RyRptot0 </ci>
+                  <ci> RyRsum </ci>
+                </apply>
+              </apply>
+            </apply>
+            <ci> KMrel_KMrel0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="TnI0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> TnItot </ci>
+            <ci> TnIp0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="TnIp0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> TnIp_kPKA_TnI </ci>
+                <ci> TnIp_PKAC </ci>
+                <ci> TnI0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> TnIp_KM_PKA_TnI </ci>
+                <ci> TnIp0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> TnIp_kPP2A_TnI </ci>
+                <ci> TnIp_PP2A </ci>
+                <ci> TnIp0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> TnIp_KM_PP2A_TnI </ci>
+                <ci> TnIp0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="KMTnC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <cn> 0.45 </cn>
+              <apply>
+                <divide/>
+                <ci> TnIp0 </ci>
+                <ci> TnItot </ci>
+              </apply>
+            </apply>
+            <ci> KMTnC_KMTnC0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

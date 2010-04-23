@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="nelson_2000____main" name="nelson_2000____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="tau" value="1"/>
+      <parameter id="delta" value="0.5"/>
+      <parameter id="np" value="1"/>
+      <parameter id="c" value="3"/>
+      <parameter id="k" value="3.43e-05"/>
+      <parameter id="N" value="480"/>
+      <parameter id="m" value="0.01"/>
+      <parameter id="T" value="180" constant="false"/>
+      <parameter id="T_star" value="3.6" constant="false"/>
+      <parameter id="VI" value="134000" constant="false"/>
+      <parameter id="infectious_virus_log_VI" constant="false"/>
+      <parameter id="VNI" value="0" constant="false"/>
+      <parameter id="total_virus_virus_total" constant="false"/>
+      <parameter id="total_virus_log_virus_total" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 180 </cn>
+        </math>
+      </assignmentRule>
+      <rateRule variable="T_star">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k </ci>
+              <ci> T </ci>
+              <ci> VI </ci>
+              <apply>
+                <minus/>
+                <ci> time_ </ci>
+                <ci> tau </ci>
+              </apply>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> m </ci>
+                  </apply>
+                  <ci> tau </ci>
+                </apply>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <ci> delta </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <ci> T_star </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="VI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> np </ci>
+                </apply>
+                <ci> N </ci>
+                <ci> delta </ci>
+                <ci> T_star </ci>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> c </ci>
+                <ci> VI </ci>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="infectious_virus_log_VI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ln/>
+            <apply>
+              <divide/>
+              <ci> VI </ci>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="VNI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> np </ci>
+                <ci> N </ci>
+                <ci> delta </ci>
+                <ci> T_star </ci>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> c </ci>
+                <ci> VNI </ci>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="total_virus_virus_total">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> VI </ci>
+            <ci> VNI </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="total_virus_log_virus_total">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ln/>
+            <apply>
+              <divide/>
+              <ci> total_virus_virus_total </ci>
+              <cn type="integer"> 1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

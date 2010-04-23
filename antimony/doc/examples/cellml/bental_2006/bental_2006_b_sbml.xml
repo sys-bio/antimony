@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="bental_B_2005____main" name="bental_B_2005____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="equations_PA" value="760" constant="false"/>
+      <parameter id="equations_Pm" value="760"/>
+      <parameter id="equations_PL" constant="false"/>
+      <parameter id="equations_R" value="1"/>
+      <parameter id="equations_VA" constant="false"/>
+      <parameter id="equations_E" constant="false"/>
+      <parameter id="equations_omega" constant="false"/>
+      <parameter id="equations_VT" value="0.4"/>
+      <parameter id="equations_V0" constant="false"/>
+      <parameter id="equations_RA" constant="false"/>
+      <parameter id="equations_IA" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="equations_delta_VA"/>
+      <parameter id="equations_delta2_VA"/>
+      <parameter id="equations_ks"/>
+      <parameter id="equations_s"/>
+      <parameter id="equations_mu"/>
+      <parameter id="equations_m"/>
+      <parameter id="equations_x0"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="equations_PA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 1 </cn>
+              <ci> equations_VA </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> equations_Pm </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> equations_Pm </ci>
+                    <ci> equations_PA </ci>
+                  </apply>
+                  <ci> equations_R </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> equations_PA </ci>
+                <ci> equations_delta_VA </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="equations_PL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> equations_Pm </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> equations_R </ci>
+                <ci> equations_omega </ci>
+                <apply>
+                  <divide/>
+                  <ci> equations_VT </ci>
+                  <cn> 2 </cn>
+                </apply>
+                <apply>
+                  <sin/>
+                  <apply>
+                    <times/>
+                    <ci> time_ </ci>
+                    <ci> equations_omega </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> equations_E </ci>
+                <apply>
+                  <minus/>
+                  <cn> 2.5 </cn>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <divide/>
+                      <ci> equations_VT </ci>
+                      <cn> 2 </cn>
+                    </apply>
+                    <apply>
+                      <cos/>
+                      <apply>
+                        <times/>
+                        <ci> time_ </ci>
+                        <ci> equations_omega </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="equations_VA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> equations_delta2_VA </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="equations_E">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> equations_ks </ci>
+            <apply>
+              <power/>
+              <ci> equations_s </ci>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_omega">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <cn> 3.141 </cn>
+            </apply>
+            <cn> 5 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_V0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_x0 </ci>
+            <ci> equations_s </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_RA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> equations_mu </ci>
+            <apply>
+              <power/>
+              <ci> equations_s </ci>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_IA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> equations_m </ci>
+            <apply>
+              <power/>
+              <ci> equations_s </ci>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

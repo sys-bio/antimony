@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="yamaguchi_takaki_matsubara_yasuhara_suga_1996____main" name="yamaguchi_takaki_matsubara_yasuhara_suga_1996____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="D_Ca" value="0.1"/>
+      <parameter id="k_1" value="40"/>
+      <parameter id="k_2" value="20"/>
+      <parameter id="f" value="10"/>
+      <parameter id="g" value="10"/>
+      <parameter id="Ca_max" value="1"/>
+      <parameter id="Total_Tn" value="1"/>
+      <parameter id="Total_CB" value="1"/>
+      <parameter id="Ca_t0" constant="false"/>
+      <parameter id="TnCa0" value="0" constant="false"/>
+      <parameter id="CB_on0" value="0" constant="false"/>
+      <parameter id="CumCB_on" value="0" constant="false"/>
+      <parameter id="CumCB_off" value="0" constant="false"/>
+      <parameter id="force_development_F" constant="false"/>
+      <parameter id="force_development_FTI" value="0" constant="false"/>
+      <parameter id="FLA" constant="false"/>
+      <parameter id="phi" value="1"/>
+      <parameter id="force_development_s" value="1"/>
+      <parameter id="force_development_L" value="1"/>
+      <parameter id="force_development_L_0" value="0"/>
+      <parameter id="force_development_F_max" value="0.228"/>
+      <parameter id="ATP_ATP" constant="false"/>
+      <parameter id="ATP_energy" constant="false"/>
+      <parameter id="epsilon" value="1"/>
+      <parameter id="ATP_CumCB_on_end" value="1"/>
+      <parameter id="equations_main_Efficiency" constant="false"/>
+      <parameter id="equations_main_Economy" constant="false"/>
+      <parameter id="t"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="Ca_t0"/>
+      <rateRule variable="TnCa0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_1 </ci>
+              <ci> Ca_t0 </ci>
+              <apply>
+                <minus/>
+                <ci> Total_Tn </ci>
+                <ci> TnCa0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_2 </ci>
+              <ci> TnCa0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CB_on0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> f </ci>
+              <ci> TnCa0 </ci>
+              <apply>
+                <minus/>
+                <ci> Total_CB </ci>
+                <ci> CB_on0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> g </ci>
+              <ci> CB_on0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CumCB_on">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> f </ci>
+            <ci> TnCa0 </ci>
+            <apply>
+              <minus/>
+              <ci> Total_CB </ci>
+              <ci> CB_on0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="CumCB_off">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> g </ci>
+            <ci> CB_on0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="force_development_F">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> CB_on0 </ci>
+            <ci> phi </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="force_development_FTI">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> force_development_F </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="FLA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> force_development_F_max </ci>
+            <ci> force_development_s </ci>
+            <apply>
+              <minus/>
+              <ci> force_development_L </ci>
+              <ci> force_development_L_0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ATP_ATP">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> ATP_CumCB_on_end </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ATP_energy">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ATP_ATP </ci>
+            <ci> epsilon </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_main_Efficiency">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> FLA </ci>
+            <ci> ATP_energy </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_main_Economy">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> phi </ci>
+              <ci> epsilon </ci>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> g </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

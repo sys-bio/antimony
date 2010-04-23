@@ -1,0 +1,97 @@
+//Created by libAntimony v1.3
+model dash_bassingthwaighte_model_2004_version01__SHbO2(SHbO2, KHbO2, O2)
+
+  // Assignment Rules:
+  SHbO2 := KHbO2 * O2 / ( 1.0 + KHbO2 * O2 );
+end
+
+model dash_bassingthwaighte_model_2004_version01__SHbCO2(SHbCO2, KHbCO2, CO2)
+
+  // Assignment Rules:
+  SHbCO2 := KHbCO2 * CO2 / ( 1.0 + KHbCO2 * CO2 );
+end
+
+model dash_bassingthwaighte_model_2004_version01__KHbO2(KHbO2, CO2, Hrbc, K2, K2_, K3, K3_, K4, K5_, K6_)
+
+  // Assignment Rules:
+  KHbO2 := K4 * ( K3 * CO2 * ( 1.0 + K3_ / Hrbc ) + ( 1.0 + Hrbc / K6_ )) / ( K2 * CO2 * ( 1.0 + K2_ / Hrbc ) + ( 1.0 + Hrbc / K5_ ));
+end
+
+model dash_bassingthwaighte_model_2004_version01__KHbCO2(KHbCO2, O2, Hrbc, K2, K2_, K3, K3_, K4, K5_, K6_)
+
+  // Assignment Rules:
+  KHbCO2 := ( K2 * ( 1.0 + K2_ / Hrbc ) + K3 * K4 * ( 1.0 + K3_ / Hrbc ) * O2 ) / ( 1.0 + Hrbc / K5_ + K4 * ( 1.0 + Hrbc / K6_ ) * O2 );
+end
+
+model dash_bassingthwaighte_model_2004_version01__K4(K4, O2_S, H_S, n1, n2, CO2_S, K4_, n0, O2, CO2, Hrbc)
+
+  // Assignment Rules:
+  K4 := K4_ * power( O2 / O2_S , n0 ) * power( Hrbc / H_S , -( n1 )) * power( CO2 / CO2_S , -( n2 ));
+end
+
+model dash_bassingthwaighte_model_2004_version01__O2(O2, alpha_O2, PO2)
+
+  // Assignment Rules:
+  O2 := alpha_O2 * PO2;
+end
+
+model dash_bassingthwaighte_model_2004_version01__CO2(CO2, alpha_CO2, PCO2)
+
+  // Assignment Rules:
+  CO2 := alpha_CO2 * PCO2;
+end
+
+model dash_bassingthwaighte_model_2004_version01__alpha_O2(alpha_O2, Wpl, T)
+
+  // Assignment Rules:
+  alpha_O2 := ( 1.37 - 0.0137 * ( T - 37.0 ) + 0.00058 * power( T - 37.0 , 2.0 )) * ( 1E-6 / Wpl );
+end
+
+model dash_bassingthwaighte_model_2004_version01__alpha_CO2(alpha_CO2, Wpl, T)
+
+  // Assignment Rules:
+  alpha_CO2 := ( 3.07 - 0.057 * ( T - 37.0 ) + 0.002 * power( T - 37.0 , 2.0 )) * ( 1E-5 / Wpl );
+end
+
+model dash_bassingthwaighte_model_2004_version01__model_parameters(Wpl, T, K2, K2_, K3, K3_, K4_, K5_, K6_, Rrbc, O2_S, CO2_S, H_S, n0, n1, n2, Hrbc, PO2, PCO2)
+
+  // Assignment Rules:
+  Hrbc := Hpl / Rrbc;
+  Hpl := power( 10.0 , -( pHpl ));
+
+  // Variable initializations:
+  Wpl = 0.94;
+  T = 37.0;
+  K2 = 29.5;
+  K2_ = 1E-6;
+  K3 = 25.1;
+  K3_ = 1E-6;
+  K4_ = 202123.0;
+  K5_ = 2.63E-8;
+  K6_ = 1.91E-8;
+  Rrbc = 0.69;
+  O2_S = 146.0;
+  CO2_S = 1.31;
+  H_S = 57.5;
+  n0 = 1.7;
+  n1 = 1.06;
+  n2 = 0.12;
+  PO2 = 100.0;
+  PCO2 = 40.0;
+  pHpl = 7.24;
+end
+
+model dash_bassingthwaighte_model_2004_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  SHbO2: dash_bassingthwaighte_model_2004_version01__SHbO2(SHbO20, KHbO20, O20);
+  SHbCO2: dash_bassingthwaighte_model_2004_version01__SHbCO2(SHbCO20, KHbCO20, CO20);
+  KHbO2: dash_bassingthwaighte_model_2004_version01__KHbO2(KHbO20, CO20, Hrbc, K2, K2_, K3, K3_, K40, K5_, K6_);
+  KHbCO2: dash_bassingthwaighte_model_2004_version01__KHbCO2(KHbCO20, O20, Hrbc, K2, K2_, K3, K3_, K40, K5_, K6_);
+  K4: dash_bassingthwaighte_model_2004_version01__K4(K40, O2_S, H_S, n1, n2, CO2_S, K4_, n0, O20, CO20, Hrbc);
+  O2: dash_bassingthwaighte_model_2004_version01__O2(O20, alpha_O20, PO2);
+  CO2: dash_bassingthwaighte_model_2004_version01__CO2(CO20, alpha_CO20, PCO2);
+  alpha_O2: dash_bassingthwaighte_model_2004_version01__alpha_O2(alpha_O20, Wpl, T);
+  alpha_CO2: dash_bassingthwaighte_model_2004_version01__alpha_CO2(alpha_CO20, Wpl, T);
+  model_parameters: dash_bassingthwaighte_model_2004_version01__model_parameters(Wpl, T, K2, K2_, K3, K3_, K4_, K5_, K6_, Rrbc, O2_S, CO2_S, H_S, n0, n1, n2, Hrbc, PO2, PCO2);
+end

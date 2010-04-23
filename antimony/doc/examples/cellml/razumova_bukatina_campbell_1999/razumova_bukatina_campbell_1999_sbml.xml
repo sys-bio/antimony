@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="razumova_bukatina_campbell_1999____main" name="razumova_bukatina_campbell_1999____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="equations_D" value="0.005" constant="false"/>
+      <parameter id="equations_A_1" value="0.005" constant="false"/>
+      <parameter id="equations_A_2" value="0.005" constant="false"/>
+      <parameter id="equations_R_off" constant="false"/>
+      <parameter id="equations_x_0" value="1e-16"/>
+      <parameter id="equations_x_1" value="1e-16" constant="false"/>
+      <parameter id="equations_x_2" value="1e-16" constant="false"/>
+      <parameter id="equations_g" constant="false"/>
+      <parameter id="equations_f" constant="false"/>
+      <parameter id="equations_h" constant="false"/>
+      <parameter id="equations_lambda_A1" constant="false"/>
+      <parameter id="equations_lambda_A2" constant="false"/>
+      <parameter id="equations_F_t" constant="false"/>
+      <parameter id="equations_E_1" constant="false"/>
+      <parameter id="equations_E_2" constant="false"/>
+      <parameter id="equations_dSL_dt" constant="false"/>
+      <parameter id="equations_SL" value="2" constant="false"/>
+      <parameter id="equations_k_on" value="120"/>
+      <parameter id="equations_k_off" value="50"/>
+      <parameter id="equations_f_r" value="50"/>
+      <parameter id="equations_f_prime" constant="false"/>
+      <parameter id="equations_f_prime_0" value="400"/>
+      <parameter id="equations_h_0" value="8"/>
+      <parameter id="equations_h_prime" constant="false"/>
+      <parameter id="equations_h_prime_0" value="6"/>
+      <parameter id="equations_g_0" value="4"/>
+      <parameter id="equations_nu" value="3"/>
+      <parameter id="equations_sigma" constant="false"/>
+      <parameter id="equations_sigma_minus" value="1"/>
+      <parameter id="equations_sigma_plus" value="8"/>
+      <parameter id="equations_R_T" value="1"/>
+      <parameter id="equations_e_cb" value="1.5"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="equations_D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> equations_k_on </ci>
+                <ci> equations_R_off </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> equations_f_prime </ci>
+                <ci> equations_A_1 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> equations_g </ci>
+                <ci> equations_A_2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> equations_k_off </ci>
+                <ci> equations_f </ci>
+              </apply>
+              <ci> equations_D </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="equations_A_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> equations_f </ci>
+                <ci> equations_D </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> equations_h_prime </ci>
+                <ci> equations_A_2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> equations_f_prime </ci>
+                <ci> equations_h </ci>
+              </apply>
+              <ci> equations_A_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="equations_A_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> equations_h </ci>
+              <ci> equations_A_1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> equations_h_prime </ci>
+                <ci> equations_g </ci>
+              </apply>
+              <ci> equations_A_2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="equations_R_off">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> equations_R_T </ci>
+                <ci> equations_D </ci>
+              </apply>
+              <ci> equations_A_1 </ci>
+            </apply>
+            <ci> equations_A_2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="equations_x_1"/>
+      <rateRule variable="equations_x_2"/>
+      <assignmentRule variable="equations_g">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_g_0 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <ci> equations_sigma </ci>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <ci> equations_x_2 </ci>
+                    <ci> equations_x_0 </ci>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_f">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_f_r </ci>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> equations_lambda_A1 </ci>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <times/>
+                        <apply>
+                          <divide/>
+                          <ci> equations_x_1 </ci>
+                          <ci> equations_x_0 </ci>
+                        </apply>
+                        <apply>
+                          <minus/>
+                          <ci> equations_nu </ci>
+                          <cn type="integer"> 1 </cn>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> equations_lambda_A2 </ci>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <exp/>
+                      <apply>
+                        <times/>
+                        <apply>
+                          <divide/>
+                          <ci> equations_x_2 </ci>
+                          <ci> equations_x_0 </ci>
+                        </apply>
+                        <apply>
+                          <minus/>
+                          <ci> equations_nu </ci>
+                          <cn type="integer"> 1 </cn>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_h_0 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <ci> equations_sigma </ci>
+                <apply>
+                  <power/>
+                  <ci> equations_x_1 </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_lambda_A1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> equations_A_1 </ci>
+            <ci> equations_R_T </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_lambda_A2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> equations_A_2 </ci>
+            <ci> equations_R_T </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_F_t">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> equations_E_1 </ci>
+              <ci> equations_x_1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> equations_E_2 </ci>
+              <ci> equations_x_2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_E_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_e_cb </ci>
+            <ci> equations_A_1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_E_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_e_cb </ci>
+            <ci> equations_A_2 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_dSL_dt"/>
+      <rateRule variable="equations_SL">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> equations_dSL_dt </ci>
+        </math>
+      </rateRule>
+      <assignmentRule variable="equations_f_prime">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_f_prime_0 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <ci> equations_sigma </ci>
+                <apply>
+                  <power/>
+                  <ci> equations_x_1 </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_h_prime">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> equations_h_prime_0 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <times/>
+                <ci> equations_sigma </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <power/>
+                    <ci> equations_x_2 </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> equations_x_1 </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="equations_sigma"/>
+    </listOfRules>
+  </model>
+</sbml>

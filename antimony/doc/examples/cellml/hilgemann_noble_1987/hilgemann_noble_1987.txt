@@ -1,0 +1,324 @@
+//Created by libAntimony v1.3
+model hilgemann_noble_1987__environment(time_)
+end
+
+model hilgemann_noble_1987__membrane(V, R, T, F, RTONF, time_, i_K1, i_b_Na, i_b_Ca, i_b_K, i_NaK, i_NaCa, i_Na, i_si)
+
+  // Assignment Rules:
+  RTONF := R * T / F;
+  i_Stim := piecewise( stim_amplitude , (( time_ >= stim_start) && (time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration )), 0 );
+
+  // Rate Rules:
+  V' = -((i_Stim + i_K1 + i_b_Na + i_b_Ca + i_b_K + i_NaK + i_NaCa + i_Na + i_si)) / C_m;
+
+  // Variable initializations:
+  V = -88;
+  R = 8314.472;
+  T = 310;
+  F = 96485.3415;
+  C_m = 0.006;
+  stim_start = 0.1;
+  stim_end = 10000;
+  stim_period = 1;
+  stim_duration = 0.002;
+  stim_amplitude = -200;
+end
+
+model hilgemann_noble_1987__fast_sodium_current_m_gate(m, V, time_)
+
+  // Assignment Rules:
+  alpha_m := piecewise( 2000 , abs(E0_m) < delta_m , 200 * E0_m / (1 - exp(-(0.1 ) * E0_m)) );
+  beta_m := 8000 * exp(-(0.056 ) * (V + 66 ));
+  E0_m := V + 41;
+
+  // Rate Rules:
+  m' = alpha_m * (1 - m) - beta_m * m;
+
+  // Variable initializations:
+  m = 0.076;
+  delta_m = 1e-5;
+end
+
+model hilgemann_noble_1987__fast_sodium_current_h_gate(h, V, time_)
+
+  // Assignment Rules:
+  alpha_h := 20 * exp(-(0.125 ) * (V + 75 ));
+  beta_h := 2000 / (1 + 320 * exp(-(0.1 ) * (V + 75 )));
+
+  // Rate Rules:
+  h' = alpha_h * (1 - h) - beta_h * h;
+
+  // Variable initializations:
+  h = 0.015;
+end
+
+model hilgemann_noble_1987__fast_sodium_current(i_Na, time_, V, RTONF, Na_o, Na_i, K_c, K_i, m, h)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_sodium_current_m_gate: hilgemann_noble_1987__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: hilgemann_noble_1987__fast_sodium_current_h_gate(h, V, time_);
+
+  // Assignment Rules:
+  i_Na := g_Na * power(m, 3 ) * h * (V - E_mh);
+  E_mh := RTONF * ln((Na_o + 0.12 * K_c) / (Na_i + 0.12 * K_i));
+
+  // Variable initializations:
+  g_Na = 50;
+end
+
+model hilgemann_noble_1987__sodium_potassium_pump(i_NaK, time_, V, Na_i, K_c)
+
+  // Assignment Rules:
+  i_NaK := i_NaK_max * K_c / (K_mK + K_c) * Na_i / (K_mNa + Na_i);
+
+  // Variable initializations:
+  i_NaK_max = 14;
+  K_mK = 1;
+  K_mNa = 40;
+end
+
+model hilgemann_noble_1987__sodium_background_current(E_Na, i_b_Na, time_, V, RTONF, Na_i, Na_o)
+
+  // Assignment Rules:
+  E_Na := RTONF * ln(Na_o / Na_i);
+  i_b_Na := g_b_Na * (V - E_Na);
+
+  // Variable initializations:
+  g_b_Na = 0.012;
+end
+
+model hilgemann_noble_1987__calcium_background_current(E_Ca, i_b_Ca, time_, V, RTONF, Ca_o, Ca_i)
+
+  // Assignment Rules:
+  E_Ca := 0.5 * RTONF * ln(Ca_o / Ca_i);
+  i_b_Ca := g_b_Ca * (V - E_Ca);
+
+  // Variable initializations:
+  g_b_Ca = 0.005;
+end
+
+model hilgemann_noble_1987__Na_Ca_exchanger(i_NaCa, time_, V, RTONF, Ca_o, Ca_i, Na_i, Na_o)
+
+  // Assignment Rules:
+  i_NaCa := k_NaCa * (exp(gamma * (n_NaCa - 2 ) * V / RTONF) * power(Na_i, n_NaCa) * Ca_o - exp((gamma - 1 ) * (n_NaCa - 2 ) * V / RTONF) * power(Na_o, n_NaCa) * Ca_i) / ((1 + d_NaCa * (Ca_i * power(Na_o, n_NaCa) + Ca_o * power(Na_i, n_NaCa))) * (1 + Ca_i / 0.0069 ));
+
+  // Variable initializations:
+  k_NaCa = 0.01;
+  n_NaCa = 3;
+  d_NaCa = 0.0001;
+  gamma = 0.5;
+end
+
+model hilgemann_noble_1987__potassium_background_current(E_K, i_b_K, time_, V)
+
+  // Assignment Rules:
+  i_b_K := g_b_K * (V - E_K);
+
+  // Variable initializations:
+  g_b_K = 0.17;
+end
+
+model hilgemann_noble_1987__time_independent_potassium_current(i_K1, E_K, time_, V, RTONF, K_c, K_i)
+
+  // Assignment Rules:
+  i_K1 := g_K1 * K_c / (K_c + K_m_K1) * (V - E_K) / (1 + exp((V - E_K - 10 ) * 2 / RTONF));
+  E_K := RTONF * ln(K_c / K_i);
+
+  // Variable initializations:
+  g_K1 = 1.7;
+  K_m_K1 = 10;
+end
+
+model hilgemann_noble_1987__second_inward_calcium_current_d_gate(d, V, time_)
+
+  // Assignment Rules:
+  alpha_d := piecewise( 120 , abs(E0_d) < delta_d , 30 * E0_d / (1 - exp(-(1 ) * E0_d / 4 )) );
+  beta_d := piecewise( 120 , abs(E0_d) < delta_d , 12 * E0_d / (exp(E0_d / 10 ) - 1 ) );
+  E0_d := V + 24 - 5;
+
+  // Rate Rules:
+  d' = alpha_d * (1 - d) - beta_d * d;
+
+  // Variable initializations:
+  d = 0.0011;
+  delta_d = 0.0001;
+end
+
+model hilgemann_noble_1987__second_inward_calcium_current_f_Ca_gate(f_Ca, CaChon, V, time_, Ca_i)
+
+  // Assignment Rules:
+  alpha_f_Ca := piecewise( 25 , abs(E0_f) < delta_f , 6.25 * E0_f / (exp(E0_f / 4 ) - 1 ) );
+  beta_f_Ca := 12 / (1 + exp(-(E0_f) / 4 ));
+  CaChoff := Ca_i / (0.001 + Ca_i);
+  CaChon := (1 - f_Ca) * (1 - CaChoff);
+  E0_f := V + 34;
+
+  // Rate Rules:
+  f_Ca' = (120 * (1 - f_Ca) * CaChoff + (1 - f_Ca) * (1 - CaChoff)) * beta_f_Ca - alpha_f_Ca * f_Ca;
+
+  // Variable initializations:
+  f_Ca = 0.785;
+  delta_f = 0.0001;
+end
+
+model hilgemann_noble_1987__second_inward_calcium_current(i_si, i_siCa, i_siK, i_siNa, time_, V, Ca_i, RTONF, Na_i, Na_o, Ca_o, K_i, K_c, d, f_Ca, CaChon)
+
+  // Sub-modules, and any changes to those submodules:
+  second_inward_calcium_current_d_gate: hilgemann_noble_1987__second_inward_calcium_current_d_gate(d, V, time_);
+  second_inward_calcium_current_f_Ca_gate: hilgemann_noble_1987__second_inward_calcium_current_f_Ca_gate(f_Ca, CaChon, V, time_, Ca_i);
+
+  // Assignment Rules:
+  i_si := i_siCa + i_siK + i_siNa;
+  i_siCa := 4 * P_si * d * CaChon * (V - 50 ) / RTONF / (1 - exp(-(1 ) * (V - 50 ) * 2 / RTONF)) * (Ca_i * exp(100 / RTONF) - Ca_o * exp(-(2 ) * (V - 50 ) / RTONF));
+  i_siK := 0.002 * P_si * d * CaChon * (V - 50 ) / RTONF / (1 - exp(-(1 ) * (V - 50 ) / RTONF)) * (K_i * exp(50 / RTONF) - K_c * exp(-(1 ) * (V - 50 ) / RTONF));
+  i_siNa := 0.01 * P_si * d * CaChon * (V - 50 ) / RTONF / (1 - exp(-(1 ) * (V - 50 ) / RTONF)) * (Na_i * exp(50 / RTONF) - Na_o * exp(-(1 ) * (V - 50 ) / RTONF));
+
+  // Variable initializations:
+  P_si = 5;
+end
+
+model hilgemann_noble_1987__sarcoplasmic_reticulum_calcium_pump(i_up, Ca_up, time_, Ca_i)
+
+  // Assignment Rules:
+  i_up := Ca_i / K_2 * alpha_up - Ca_up * K_1 / K_2 * beta_up;
+  K_1 := K_cyca * K_xcs / K_srca;
+  K_2 := Ca_i + Ca_up * K_1 + K_cyca * K_xcs + K_cyca;
+
+  // Variable initializations:
+  K_cyca = 0.0003;
+  K_xcs = 0.4;
+  K_srca = 0.5;
+  alpha_up = 3;
+  beta_up = 0.23;
+end
+
+model hilgemann_noble_1987__calcium_release(i_rel, time_, V, Ca_i, Ca_rel)
+
+  // Assignment Rules:
+  i_rel := (power(ActFrac / (ActFrac + 0.25 ), 2 ) * K_m_rel + K_leak_rate) * Ca_rel;
+  VoltDep := exp(0.08 * (V - 40 ));
+  RegBindSite := power(Ca_i / (Ca_i + 0.0005 ), 2 );
+  ActRate := 600 * VoltDep + 500 * RegBindSite;
+  InactRate := 60 + 500 * RegBindSite;
+  PrecFrac := 1 - ActFrac - ProdFrac;
+
+  // Rate Rules:
+  ActFrac' = PrecFrac * ActRate - ActFrac * InactRate;
+  ProdFrac' = ActFrac * InactRate - 0.6 * ProdFrac;
+
+  // Variable initializations:
+  K_leak_rate = 0;
+  K_m_rel = 250;
+  ActFrac = 0;
+  ProdFrac = 0;
+end
+
+model hilgemann_noble_1987__calcium_translocation(i_trans, Ca_rel, Ca_up, time_)
+
+  // Assignment Rules:
+  i_trans := (Ca_up - Ca_rel) * alpha_tr;
+
+  // Variable initializations:
+  alpha_tr = 50;
+end
+
+model hilgemann_noble_1987__extracellular_sodium_concentration(Na_o)
+
+  // Variable initializations:
+  Na_o = 140;
+end
+
+model hilgemann_noble_1987__intracellular_sodium_concentration(Na_i, V_i, time_, F, i_Na, i_b_Na, i_siNa, i_NaK, i_NaCa)
+
+  // Rate Rules:
+  Na_i' = -(1 ) / (1 * V_i * F) * (i_Na + i_b_Na + i_NaK * 3 + i_NaCa * 3 + i_siNa);
+
+  // Variable initializations:
+  Na_i = 6.5;
+end
+
+model hilgemann_noble_1987__extracellular_calcium_concentration(Ca_o, i_NaCa, Ve, F, time_, i_siCa, i_b_Ca)
+
+  // Rate Rules:
+  Ca_o' = (Cab - Ca_o) * K_diff - 1 * (i_siCa + i_NaCa + i_b_Ca) / (2 * 1 * Ve * F);
+
+  // Variable initializations:
+  Ca_o = 2;
+  Cab = 2;
+  K_diff = 0.0005;
+end
+
+model hilgemann_noble_1987__extracellular_potassium_concentration(K_c)
+
+  // Variable initializations:
+  K_c = 4;
+end
+
+model hilgemann_noble_1987__intracellular_potassium_concentration(K_i, V_i, i_K1, i_siK, i_b_K, i_NaK, time_, F)
+
+  // Rate Rules:
+  K_i' = -(1 ) / (1 * V_i * F) * (i_K1 + i_siK + i_b_K - 2 * i_NaK);
+
+  // Variable initializations:
+  K_i = 140;
+end
+
+model hilgemann_noble_1987__intracellular_calcium_concentration(Ca_i, Ca_up, Ca_rel, V_i, Ve, i_up, i_trans, i_rel, i_NaCa, i_siCa, i_b_Ca, F, time_)
+
+  // Assignment Rules:
+  V_i := V_Cell * V_i_ratio;
+  Ve := V_Cell * V_e_ratio;
+  V_Cell := 3.141592654 * power(radius, 2 ) * length;
+  V_i_ratio := 1 - V_e_ratio - V_up_ratio - V_rel_ratio;
+  dCaCalmoddt := alpha_Calmod * Ca_i * (Calmod - Ca_Calmod) - beta_Calmod * Ca_Calmod;
+  dCaTropdt := alpha_Trop * Ca_i * (Trop - Ca_Trop) - beta_Trop * Ca_Trop;
+
+  // Rate Rules:
+  Ca_i' = -(1 ) / (2 * 1 * V_i * F) * (i_siCa + i_b_Ca - 2 * i_NaCa) + i_rel * V_rel_ratio / V_i_ratio - dCaCalmoddt - dCaTropdt - i_up;
+  Ca_up' = V_i_ratio / V_up_ratio * i_up - i_trans;
+  Ca_rel' = V_up_ratio / V_rel_ratio * i_trans - i_rel;
+  Ca_Calmod' = alpha_Calmod * Ca_i * (Calmod - Ca_Calmod) - beta_Calmod * Ca_Calmod;
+  Ca_Trop' = alpha_Trop * Ca_i * (Trop - Ca_Trop) - beta_Trop * Ca_Trop;
+
+  // Variable initializations:
+  Ca_i = 1e-5;
+  Ca_up = 0.3;
+  Ca_rel = 0.3;
+  Ca_Calmod = 0.0005;
+  Ca_Trop = 0.0015;
+  Calmod = 0.02;
+  Trop = 0.15;
+  alpha_Calmod = 100000;
+  beta_Calmod = 50;
+  alpha_Trop = 100000;
+  beta_Trop = 200;
+  radius = 0.08;
+  length = 0.08;
+  V_rel_ratio = 0.1;
+  V_e_ratio = 0.4;
+  V_up_ratio = 0.01;
+end
+
+model hilgemann_noble_1987____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: hilgemann_noble_1987__environment(time_);
+  membrane: hilgemann_noble_1987__membrane(V, R, T, F, RTONF, time_, i_K1, i_b_Na, i_b_Ca, i_b_K, i_NaK, i_NaCa, i_Na, i_si);
+  fast_sodium_current: hilgemann_noble_1987__fast_sodium_current(i_Na, time_, V, RTONF, Na_o, Na_i, K_c, K_i, m, h);
+  sodium_potassium_pump: hilgemann_noble_1987__sodium_potassium_pump(i_NaK, time_, V, Na_i, K_c);
+  sodium_background_current: hilgemann_noble_1987__sodium_background_current(E_Na, i_b_Na, time_, V, RTONF, Na_i, Na_o);
+  calcium_background_current: hilgemann_noble_1987__calcium_background_current(E_Ca, i_b_Ca, time_, V, RTONF, Ca_o, Ca_i);
+  Na_Ca_exchanger: hilgemann_noble_1987__Na_Ca_exchanger(i_NaCa, time_, V, RTONF, Ca_o, Ca_i, Na_i, Na_o);
+  potassium_background_current: hilgemann_noble_1987__potassium_background_current(E_K, i_b_K, time_, V);
+  time_independent_potassium_current: hilgemann_noble_1987__time_independent_potassium_current(i_K1, E_K, time_, V, RTONF, K_c, K_i);
+  second_inward_calcium_current: hilgemann_noble_1987__second_inward_calcium_current(i_si, i_siCa, i_siK, i_siNa, time_, V, Ca_i, RTONF, Na_i, Na_o, Ca_o, K_i, K_c, d, f_Ca, CaChon);
+  sarcoplasmic_reticulum_calcium_pump: hilgemann_noble_1987__sarcoplasmic_reticulum_calcium_pump(i_up, Ca_up, time_, Ca_i);
+  calcium_release: hilgemann_noble_1987__calcium_release(i_rel, time_, V, Ca_i, Ca_rel);
+  calcium_translocation: hilgemann_noble_1987__calcium_translocation(i_trans, Ca_rel, Ca_up, time_);
+  extracellular_sodium_concentration: hilgemann_noble_1987__extracellular_sodium_concentration(Na_o);
+  intracellular_sodium_concentration: hilgemann_noble_1987__intracellular_sodium_concentration(Na_i, V_i, time_, F, i_Na, i_b_Na, i_siNa, i_NaK, i_NaCa);
+  extracellular_calcium_concentration: hilgemann_noble_1987__extracellular_calcium_concentration(Ca_o, i_NaCa, Ve, F, time_, i_siCa, i_b_Ca);
+  extracellular_potassium_concentration: hilgemann_noble_1987__extracellular_potassium_concentration(K_c);
+  intracellular_potassium_concentration: hilgemann_noble_1987__intracellular_potassium_concentration(K_i, V_i, i_K1, i_siK, i_b_K, i_NaK, time_, F);
+  intracellular_calcium_concentration: hilgemann_noble_1987__intracellular_calcium_concentration(Ca_i, Ca_up, Ca_rel, V_i, Ve, i_up, i_trans, i_rel, i_NaCa, i_siCa, i_b_Ca, F, time_);
+end

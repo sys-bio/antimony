@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="wodarz_hamer_model_2007_version01____main" name="wodarz_hamer_model_2007_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="T0" value="1000" constant="false"/>
+      <parameter id="delta" value="0.01"/>
+      <parameter id="gamma" value="0.01"/>
+      <parameter id="lambda_" value="1"/>
+      <parameter id="v0" value="0.0001" constant="false"/>
+      <parameter id="I0" value="0.0001" constant="false"/>
+      <parameter id="alpha" value="0.2"/>
+      <parameter id="p" value="45"/>
+      <parameter id="z0" value="0" constant="false"/>
+      <parameter id="w0" value="0" constant="false"/>
+      <parameter id="x0" value="10" constant="false"/>
+      <parameter id="r" value="1"/>
+      <parameter id="y0" value="0" constant="false"/>
+      <parameter id="k" value="10"/>
+      <parameter id="d" value="0.001"/>
+      <parameter id="beta" value="0.3"/>
+      <parameter id="a" value="0.2"/>
+      <parameter id="u" value="1"/>
+      <parameter id="eta" value="1"/>
+      <parameter id="xi" value="0.01"/>
+      <parameter id="rho" value="0.3"/>
+      <parameter id="phi" value="1.5"/>
+      <parameter id="m_90" value="0" constant="false"/>
+      <parameter id="m_80" value="0" constant="false"/>
+      <parameter id="m_70" value="0" constant="false"/>
+      <parameter id="m_60" value="0" constant="false"/>
+      <parameter id="m_50" value="0" constant="false"/>
+      <parameter id="m_40" value="0" constant="false"/>
+      <parameter id="m_30" value="0" constant="false"/>
+      <parameter id="m_20" value="0" constant="false"/>
+      <parameter id="m_10" value="0" constant="false"/>
+      <parameter id="m_00" value="0.1" constant="false"/>
+      <parameter id="b" value="0.1"/>
+      <parameter id="epsilon" value="1"/>
+      <parameter id="c" value="1"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="T0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> lambda_ </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> delta </ci>
+                <ci> T0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> gamma </ci>
+                <ci> T0 </ci>
+                <ci> v0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="v0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> eta </ci>
+              <apply>
+                <plus/>
+                <ci> y0 </ci>
+                <ci> I0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> u </ci>
+              <ci> v0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="I0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> gamma </ci>
+              <ci> T0 </ci>
+              <ci> v0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> alpha </ci>
+                <ci> I0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> p </ci>
+                <ci> I0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> z0 </ci>
+                  <ci> w0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="z0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> xi </ci>
+                <ci> w0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> c </ci>
+                <ci> x0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> y0 </ci>
+                  <ci> I0 </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <ci> z0 </ci>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <times/>
+                      <ci> epsilon </ci>
+                      <ci> x0 </ci>
+                    </apply>
+                    <cn> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> b </ci>
+              <ci> z0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="w0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m_90 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> xi </ci>
+                <ci> w0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> phi </ci>
+                <ci> w0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> r </ci>
+              <ci> x0 </ci>
+              <ci> v0 </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <plus/>
+                    <ci> x0 </ci>
+                    <ci> y0 </ci>
+                  </apply>
+                  <ci> k </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> d </ci>
+                <ci> x0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> beta </ci>
+                <ci> x0 </ci>
+                <ci> v0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="y0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> beta </ci>
+                <ci> x0 </ci>
+                <ci> v0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> r </ci>
+                <ci> y0 </ci>
+                <ci> v0 </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <plus/>
+                      <ci> x0 </ci>
+                      <ci> y0 </ci>
+                    </apply>
+                    <ci> k </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> a </ci>
+                <ci> y0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> p </ci>
+                <ci> y0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> z0 </ci>
+                  <ci> w0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="m_90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m_80 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> m_90 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="m_80">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m_70 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> m_80 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="m_70">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m_60 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> m_70 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="m_60">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m_50 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> m_60 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="m_50">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m_40 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> m_50 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="m_40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m_30 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> m_40 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="m_30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m_20 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> m_30 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="m_20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m_10 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> m_20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="m_10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m_00 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> m_10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="m_00">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> m_00 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

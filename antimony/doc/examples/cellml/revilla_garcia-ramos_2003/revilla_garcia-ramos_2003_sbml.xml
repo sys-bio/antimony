@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="revilla_2003____main" name="revilla_2003____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="x0" value="3" constant="false"/>
+      <parameter id="x_lamda" value="2"/>
+      <parameter id="x_d" value="0.01"/>
+      <parameter id="beta" value="0.004"/>
+      <parameter id="v0" value="149" constant="false"/>
+      <parameter id="y0" value="6" constant="false"/>
+      <parameter id="y_a" value="0.33"/>
+      <parameter id="alpha" value="0.004"/>
+      <parameter id="w0" value="1" constant="false"/>
+      <parameter id="z0" value="0" constant="false"/>
+      <parameter id="z_b" value="2"/>
+      <parameter id="v_k" value="50"/>
+      <parameter id="v_u" value="2"/>
+      <parameter id="w_c" value="2000"/>
+      <parameter id="w_q" value="2"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="x0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn type="integer"> 1 </cn>
+              <ci> x_lamda </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> x_d </ci>
+                <ci> x0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn type="integer"> 1 </cn>
+                <ci> beta </ci>
+                <ci> x0 </ci>
+                <ci> v0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="v0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> v_k </ci>
+              <ci> y0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> v_u </ci>
+              <ci> v0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="y0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn type="integer"> 1 </cn>
+              <ci> beta </ci>
+              <ci> x0 </ci>
+              <ci> v0 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> y_a </ci>
+                <ci> y0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn type="integer"> 1 </cn>
+                <ci> alpha </ci>
+                <ci> w0 </ci>
+                <ci> y0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="w0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> w_c </ci>
+              <ci> z0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> w_q </ci>
+              <ci> w0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="z0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn type="integer"> 1 </cn>
+              <ci> alpha </ci>
+              <ci> w0 </ci>
+              <ci> y0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> z_b </ci>
+              <ci> z0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

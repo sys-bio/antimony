@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="fallon_lauffenburger_2000____main" name="fallon_lauffenburger_2000____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Rs0" value="1500" constant="false"/>
+      <parameter id="L0" value="10" constant="false"/>
+      <parameter id="Cs0" value="1" constant="false"/>
+      <parameter id="Vs" value="11"/>
+      <parameter id="kf" constant="false"/>
+      <parameter id="kr" value="0.0138"/>
+      <parameter id="kt" value="0.007"/>
+      <parameter id="ksyn" value="0.0011"/>
+      <parameter id="ke" value="0.04"/>
+      <parameter id="Ri0" value="300" constant="false"/>
+      <parameter id="Li0" value="0.01" constant="false"/>
+      <parameter id="Ci0" value="1" constant="false"/>
+      <parameter id="kfe" constant="false"/>
+      <parameter id="kre" constant="false"/>
+      <parameter id="kh" value="0.035"/>
+      <parameter id="kx" value="0.15"/>
+      <parameter id="Ve" value="1e-14"/>
+      <parameter id="NA" value="602200000000"/>
+      <parameter id="Ld0" value="1" constant="false"/>
+      <parameter id="Y0" value="250000000" constant="false"/>
+      <parameter id="model_parameters_IL2" value="1"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Rs0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> kr </ci>
+                  <ci> ksyn </ci>
+                </apply>
+                <ci> Cs0 </ci>
+              </apply>
+              <ci> Vs </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kf </ci>
+                <ci> L0 </ci>
+                <ci> Rs0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kt </ci>
+                <ci> Rs0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="L0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> kr </ci>
+                    <ci> Cs0 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> kx </ci>
+                    <ci> Li0 </ci>
+                    <ci> Ve </ci>
+                    <ci> NA </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> kf </ci>
+                  <ci> L0 </ci>
+                  <ci> Rs0 </ci>
+                </apply>
+              </apply>
+              <ci> Y0 </ci>
+            </apply>
+            <ci> NA </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Cs0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> kf </ci>
+              <ci> L0 </ci>
+              <ci> Rs0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> kr </ci>
+                <ci> ke </ci>
+              </apply>
+              <ci> Cs0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="kf"/>
+      <rateRule variable="Ri0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kre </ci>
+                <ci> Ci0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kt </ci>
+                <ci> Rs0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kfe </ci>
+                <ci> Li0 </ci>
+                <ci> Ri0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> kh </ci>
+                <ci> Ri0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Li0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> kre </ci>
+                  <ci> Ci0 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> kfe </ci>
+                  <ci> Li0 </ci>
+                  <ci> Ri0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Ve </ci>
+                <ci> NA </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> kx </ci>
+              <ci> Li0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ci0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kfe </ci>
+                <ci> Li0 </ci>
+                <ci> Ri0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ke </ci>
+                <ci> Cs0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> kre </ci>
+                <ci> kh </ci>
+              </apply>
+              <ci> Ci0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="kfe"/>
+      <assignmentRule variable="kre"/>
+      <rateRule variable="Ld0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> kh </ci>
+            <ci> Ci0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Y0"/>
+    </listOfRules>
+  </model>
+</sbml>

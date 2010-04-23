@@ -1,0 +1,116 @@
+//Created by libAntimony v1.3
+model wang_2006__environment(time_)
+end
+
+model wang_2006__Constants(k_0, k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, C_PLC_T, K_D, K_P, K_R, K_G, K_S, K_ER, K_C1, K_C2, beta, lambda_, rho, n, m, w)
+
+  // Variable initializations:
+  k_0 = 1e-4;
+  k_1 = 3.4;
+  k_2 = 4;
+  k_3 = 4.5;
+  k_4 = 1.2;
+  k_5 = 0.12;
+  k_6 = 14;
+  k_7 = 2;
+  k_8 = 10.5;
+  k_9 = 0.6;
+  k_10 = 3;
+  k_11 = 0.26;
+  C_PLC_T = 0.01;
+  K_D = 0.01;
+  K_P = 0.004;
+  K_R = 0.2;
+  K_G = 0.025;
+  K_S = 0.025;
+  K_ER = 0.075;
+  K_C1 = 1;
+  K_C2 = 2;
+  beta = 0.05;
+  lambda_ = 0.001;
+  rho = 0.2;
+  n = 4;
+  m = 2;
+  w = 3;
+end
+
+model wang_2006__R_values(R_APLC, R_PKC, R_G, R_DG, R_IP_3, R_Cyt1, R_Cyt2, R_ER, APLC, DG, C_cyt, G, IP_3, C_ER, K_P, K_D, K_R, K_G, K_S, K_C1, K_C2, K_ER, n, m, w)
+
+  // Assignment Rules:
+  R_APLC := APLC / (K_P + APLC);
+  R_PKC := DG / (K_D + DG) * C_cyt / (K_R + C_cyt);
+  R_G := power(G, n) / (power(K_G, n) + power(G, n));
+  R_DG := power(DG, m) / (power(K_D, m) + power(DG, m));
+  R_IP_3 := power(IP_3, 3 ) / (power(K_S, 3 ) + power(IP_3, 3 ));
+  R_Cyt1 := C_cyt / (K_C1 + C_cyt);
+  R_Cyt2 := C_cyt / (K_C2 + C_cyt);
+  R_ER := power(C_ER, w) / (power(K_ER, w) + power(C_ER, w));
+end
+
+model wang_2006__G_GTP(G, k_0, k_1, k_2, k_3, R_APLC, R_PKC, time_)
+
+  // Rate Rules:
+  G' = k_0 + k_1 * G - k_2 * R_APLC * G - k_3 * R_PKC * G;
+
+  // Variable initializations:
+  G = 0.001;
+end
+
+model wang_2006__APLC(APLC, C_PLC_T, k_4, k_5, R_G, R_DG, time_)
+
+  // Assignment Rules:
+  PLC := C_PLC_T - APLC;
+
+  // Rate Rules:
+  APLC' = k_4 * R_G * R_DG * PLC - k_5 * APLC;
+
+  // Variable initializations:
+  APLC = 0.001;
+end
+
+model wang_2006__IP_3(IP_3, k_6, k_7, APLC, time_)
+
+  // Rate Rules:
+  IP_3' = k_6 * APLC - k_7 * IP_3;
+
+  // Variable initializations:
+  IP_3 = 0.001;
+end
+
+model wang_2006__DG(DG, IP_3)
+
+  // Assignment Rules:
+  DG := IP_3;
+end
+
+model wang_2006__C_cyt(C_cyt, beta, rho, k_8, k_9, k_10, k_11, R_IP_3, R_ER, R_Cyt1, R_Cyt2, time_)
+
+  // Rate Rules:
+  C_cyt' = beta * (rho * (k_8 * R_IP_3 * R_ER - k_9 * R_Cyt1) - k_10 * R_Cyt2 + k_11);
+
+  // Variable initializations:
+  C_cyt = 0.2;
+end
+
+model wang_2006__C_ER(C_ER, lambda_, k_8, k_9, R_IP_3, R_ER, R_Cyt1, time_)
+
+  // Rate Rules:
+  C_ER' = lambda_ * (-(k_8) * R_IP_3 * R_ER + k_9 * R_Cyt1);
+
+  // Variable initializations:
+  C_ER = 1;
+end
+
+model wang_2006____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: wang_2006__environment(time_);
+  Constants: wang_2006__Constants(k_0, k_1, k_2, k_3, k_4, k_5, k_6, k_7, k_8, k_9, k_10, k_11, C_PLC_T, K_D, K_P, K_R, K_G, K_S, K_ER, K_C1, K_C2, beta, lambda_, rho, n, m, w);
+  R_values: wang_2006__R_values(R_APLC, R_PKC, R_G, R_DG, R_IP_3, R_Cyt1, R_Cyt2, R_ER, APLC0, DG0, C_cyt0, G, IP_30, C_ER0, K_P, K_D, K_R, K_G, K_S, K_C1, K_C2, K_ER, n, m, w);
+  G_GTP: wang_2006__G_GTP(G, k_0, k_1, k_2, k_3, R_APLC, R_PKC, time_);
+  APLC: wang_2006__APLC(APLC0, C_PLC_T, k_4, k_5, R_G, R_DG, time_);
+  IP_3: wang_2006__IP_3(IP_30, k_6, k_7, APLC0, time_);
+  DG: wang_2006__DG(DG0, IP_30);
+  C_cyt: wang_2006__C_cyt(C_cyt0, beta, rho, k_8, k_9, k_10, k_11, R_IP_3, R_ER, R_Cyt1, R_Cyt2, time_);
+  C_ER: wang_2006__C_ER(C_ER0, lambda_, k_8, k_9, R_IP_3, R_ER, R_Cyt1, time_);
+end

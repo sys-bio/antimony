@@ -1,0 +1,125 @@
+//Created by libAntimony v1.3
+model fenton_karma_1998_GP__environment(time_)
+end
+
+model fenton_karma_1998_GP__membrane(u, Cm, time_, J_fi, J_so, J_si, J_stim)
+
+  // Assignment Rules:
+  Vm := V_0 + u * (V_fi - V_0);
+
+  // Rate Rules:
+  u' = -((J_fi + J_so + J_si + J_stim));
+
+  // Variable initializations:
+  u = 0;
+  Cm = 1;
+  V_0 = -85;
+  V_fi = 15;
+end
+
+model fenton_karma_1998_GP__p(p, u_c, u, time_)
+
+  // Assignment Rules:
+  p := piecewise( 0 , u < u_c , 1 );
+
+  // Variable initializations:
+  u_c = 0.13;
+end
+
+model fenton_karma_1998_GP__q(q, u, time_)
+
+  // Assignment Rules:
+  q := piecewise( 0 , u < u_v , 1 );
+
+  // Variable initializations:
+  u_v = 0.025;
+end
+
+model fenton_karma_1998_GP__fast_inward_current_v_gate(v, q, p, u, time_)
+
+  // Assignment Rules:
+  tau_v_minus := q * tau_v1_minus + (1 - q) * tau_v2_minus;
+
+  // Rate Rules:
+  v' = (1 - p) * (1 - v) / tau_v_minus - p * v / tau_v_plus;
+
+  // Variable initializations:
+  v = 1;
+  tau_v1_minus = 333;
+  tau_v2_minus = 40;
+  tau_v_plus = 10;
+end
+
+model fenton_karma_1998_GP__fast_inward_current(J_fi, Cm, p, q, u_c, time_, u, v)
+
+  // Sub-modules, and any changes to those submodules:
+  fast_inward_current_v_gate: fenton_karma_1998_GP__fast_inward_current_v_gate(v, q, p, u, time_);
+
+  // Assignment Rules:
+  J_fi := -(v) * p * (1 - u) * (u - u_c) / tau_d;
+  tau_d := Cm / g_fi_max;
+
+  // Variable initializations:
+  g_fi_max = 8.7;
+end
+
+model fenton_karma_1998_GP__slow_outward_current(J_so, p, time_, u)
+
+  // Assignment Rules:
+  J_so := u * (1 - p) / tau_0 + p / tau_r;
+
+  // Variable initializations:
+  tau_0 = 12.5;
+  tau_r = 25;
+end
+
+model fenton_karma_1998_GP__slow_inward_current_w_gate(w, p, u, time_)
+
+  // Rate Rules:
+  w' = (1 - p) * (1 - w) / tau_w_minus - p * w / tau_w_plus;
+
+  // Variable initializations:
+  w = 1;
+  tau_w_minus = 65;
+  tau_w_plus = 1000;
+end
+
+model fenton_karma_1998_GP__slow_inward_current(J_si, p, time_, u, w)
+
+  // Sub-modules, and any changes to those submodules:
+  slow_inward_current_w_gate: fenton_karma_1998_GP__slow_inward_current_w_gate(w, p, u, time_);
+
+  // Assignment Rules:
+  J_si := -(w) * (1 + tanh(k * (u - u_csi))) / (2 * tau_si);
+
+  // Variable initializations:
+  tau_si = 22.22;
+  u_csi = 0.85;
+  k = 10;
+end
+
+model fenton_karma_1998_GP__stimulus_protocol(Istim, time_)
+
+  // Assignment Rules:
+  Istim := piecewise( IstimAmplitude , (( time_ >= IstimStart) && (time_ <= IstimEnd) && (time_ - IstimStart - floor((time_ - IstimStart) / IstimPeriod) * IstimPeriod <= IstimPulseDuration )), 0 );
+
+  // Variable initializations:
+  IstimStart = 10;
+  IstimEnd = 50000;
+  IstimAmplitude = -0.2;
+  IstimPeriod = 1000;
+  IstimPulseDuration = 1;
+end
+
+model fenton_karma_1998_GP____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: fenton_karma_1998_GP__environment(time_);
+  membrane: fenton_karma_1998_GP__membrane(u, Cm, time_, J_fi, J_so, J_si, Istim);
+  p: fenton_karma_1998_GP__p(p0, u_c, u, time_);
+  q: fenton_karma_1998_GP__q(q0, u, time_);
+  fast_inward_current: fenton_karma_1998_GP__fast_inward_current(J_fi, Cm, p0, q0, u_c, time_, u, v);
+  slow_outward_current: fenton_karma_1998_GP__slow_outward_current(J_so, p0, time_, u);
+  slow_inward_current: fenton_karma_1998_GP__slow_inward_current(J_si, p0, time_, u, w);
+  stimulus_protocol: fenton_karma_1998_GP__stimulus_protocol(Istim, time_);
+end

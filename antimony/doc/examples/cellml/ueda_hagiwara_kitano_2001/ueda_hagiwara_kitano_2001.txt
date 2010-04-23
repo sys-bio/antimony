@@ -1,0 +1,176 @@
+//Created by libAntimony v1.3
+model ueda_2001__environment(time_)
+end
+
+model ueda_2001__Per_m(Per_m, PT_n, CC_n, time_, D0, a, r)
+
+  // Rate Rules:
+  Per_m' = C1 + S1 * ((power( CC_n / A1 , a ) + B1 ) / ( 1.0 + power( PT_n / R1 , r ) + power( CC_n / A1 , a ) + B1 )) - ( D1 * ( Per_m / ( L1 + Per_m )) + D0 * Per_m );
+
+  // Variable initializations:
+  Per_m = 0.5;
+  B1 = 0.0;
+  C1 = 0.0;
+  S1 = 1.45;
+  D1 = 0.94;
+  L1 = 0.3;
+  R1 = 1.02;
+  A1 = 0.45;
+end
+
+model ueda_2001__Per_c(Per_c, V1, V2, Per_m, Tim_c, PT_c, time_, D0)
+
+  // Rate Rules:
+  Per_c' = S2 * Per_m + V2 * PT_c - ( V1 * Per_c * Tim_c + D2 * Dbt_c * ( Per_c / ( L2 + Per_c )) + D0 * Per_c );
+
+  // Variable initializations:
+  Per_c = 0.6;
+  S2 = 0.48;
+  D2 = 0.44;
+  L2 = 0.2;
+  Dbt_c = 1.0;
+end
+
+model ueda_2001__Tim_m(Tim_m, PT_n, CC_n, time_, D0, a, r)
+
+  // Rate Rules:
+  Tim_m' = C2 + S3 * ((power( CC_n / A2 , a ) + B2 ) / ( 1.0 + power( PT_n / R2 , r ) + power( CC_n / A2 , a ) + B2 )) - ( D3 * ( Tim_m / ( L3 + Tim_m )) + D0 * Tim_m );
+
+  // Variable initializations:
+  Tim_m = 0.7;
+  B2 = 0.0;
+  C2 = 0.0;
+  S3 = 1.45;
+  D3 = 0.94;
+  L3 = 0.3;
+  R2 = 1.02;
+  A2 = 0.45;
+end
+
+model ueda_2001__Tim_c(Tim_c, V1, V2, Tim_m, Per_c, PT_c, time_, D0)
+
+  // Rate Rules:
+  Tim_c' = S4 * Tim_m + V2 * PT_c - ( V1 * Per_c * Tim_c + D4 * ( Tim_c / ( L4 + Tim_c )) + D0 * Tim_c );
+
+  // Variable initializations:
+  Tim_c = 0.8;
+  S4 = 0.48;
+  D4 = 0.44;
+  L4 = 0.2;
+end
+
+model ueda_2001__PT_c(PT_c, K1, K2, T1, T2, V1, V2, Tim_c, Per_c, PT_n, time_, D0)
+
+  // Rate Rules:
+  PT_c' = V1 * Per_c * Tim_c + T2 * ( PT_n / ( K2 + PT_n )) - ( V2 * PT_c + T1 * ( PT_c / ( K1 + PT_c )) + D5 * ( PT_c / ( L5 + PT_c )) + D0 * PT_c );
+
+  // Variable initializations:
+  PT_c = 0.9;
+  D5 = 0.44;
+  L5 = 0.2;
+end
+
+model ueda_2001__PT_n(PT_n, K1, K2, T1, T2, PT_c, time_, D0)
+
+  // Rate Rules:
+  PT_n' = T1 * ( PT_c / ( K1 + PT_c )) - ( T2 * ( PT_n / ( K2 + PT_n )) + D6 * ( PT_n / ( L6 + PT_n )) + D0 * PT_n );
+
+  // Variable initializations:
+  PT_n = 1.0;
+  D6 = 0.29;
+  L6 = 0.2;
+end
+
+model ueda_2001__Clk_m(Clk_m, CC_n, PT_n, time_, D0, a, r)
+
+  // Rate Rules:
+  Clk_m' = C3 + S5 * ((power( PT_n / A3 , a ) + B3 ) / ( 1.0 + power( CC_n / R3 , r ) + power( PT_n / A3 , a ) + B3 )) - ( D7 * ( Clk_m / ( L7 + Clk_m )) + D0 * Clk_m );
+
+  // Variable initializations:
+  Clk_m = 0.1;
+  B3 = 0.6;
+  C3 = 0.0;
+  S5 = 1.63;
+  D7 = 0.54;
+  L7 = 0.13;
+  R3 = 0.89;
+  A3 = 0.8;
+end
+
+model ueda_2001__Clk_c(Clk_c, V3, V4, Clk_m, Cyc_c, CC_c, time_, D0)
+
+  // Rate Rules:
+  Clk_c' = S6 * Clk_m + V4 * CC_c - ( V3 * Clk_c * Cyc_c + D8 * ( Clk_c / ( L8 + Clk_c )) + D0 * Clk_c );
+
+  // Variable initializations:
+  Clk_c = 0.2;
+  S6 = 0.47;
+  D8 = 0.6;
+  L8 = 0.2;
+end
+
+model ueda_2001__Cyc_c(Cyc_c)
+
+  // Variable initializations:
+  Cyc_c = 1.0;
+end
+
+model ueda_2001__CC_c(CC_c, K3, K4, T3, T4, V3, V4, Cyc_c, Clk_c, CC_n, time_, D0)
+
+  // Rate Rules:
+  CC_c' = V3 * Clk_c * Cyc_c + T4 * ( CC_n / ( K4 + CC_n )) - ( V4 * CC_c + T3 * ( CC_c / ( K3 + CC_c )) + D9 * ( CC_c / ( L9 + CC_c )) + D0 * CC_c );
+
+  // Variable initializations:
+  CC_c = 0.3;
+  D9 = 0.6;
+  L9 = 0.2;
+end
+
+model ueda_2001__CC_n(CC_n, K3, K4, T3, T4, CC_c, time_, D0)
+
+  // Rate Rules:
+  CC_n' = T3 * ( CC_c / ( K3 + CC_c )) - ( T4 * ( CC_n / ( K4 + CC_n )) + D10 * ( CC_n / ( L10 + CC_n )) + D0 * CC_n );
+
+  // Variable initializations:
+  CC_n = 0.4;
+  D10 = 0.3;
+  L10 = 0.2;
+end
+
+model ueda_2001__parameters(K1, K2, K3, K4, V1, V2, V3, V4, T1, T2, T3, T4, a, r, D0)
+
+  // Variable initializations:
+  K1 = 2.0;
+  K2 = 2.0;
+  K3 = 2.0;
+  K4 = 2.0;
+  V1 = 1.45;
+  V2 = 1.45;
+  V3 = 1.63;
+  V4 = 1.63;
+  T1 = 1.73;
+  T2 = 0.72;
+  T3 = 1.63;
+  T4 = 0.52;
+  a = 1.0;
+  r = 4.0;
+  D0 = 0.012;
+end
+
+model ueda_2001____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: ueda_2001__environment(time_);
+  Per_m: ueda_2001__Per_m(Per_m0, PT_n0, CC_n0, time_, D0, a, r);
+  Per_c: ueda_2001__Per_c(Per_c0, V1, V2, Per_m0, Tim_c0, PT_c0, time_, D0);
+  Tim_m: ueda_2001__Tim_m(Tim_m0, PT_n0, CC_n0, time_, D0, a, r);
+  Tim_c: ueda_2001__Tim_c(Tim_c0, V1, V2, Tim_m0, Per_c0, PT_c0, time_, D0);
+  PT_c: ueda_2001__PT_c(PT_c0, K1, K2, T1, T2, V1, V2, Tim_c0, Per_c0, PT_n0, time_, D0);
+  PT_n: ueda_2001__PT_n(PT_n0, K1, K2, T1, T2, PT_c0, time_, D0);
+  Clk_m: ueda_2001__Clk_m(Clk_m0, CC_n0, PT_n0, time_, D0, a, r);
+  Clk_c: ueda_2001__Clk_c(Clk_c0, V3, V4, Clk_m0, Cyc_c0, CC_c0, time_, D0);
+  Cyc_c: ueda_2001__Cyc_c(Cyc_c0);
+  CC_c: ueda_2001__CC_c(CC_c0, K3, K4, T3, T4, V3, V4, Cyc_c0, Clk_c0, CC_n0, time_, D0);
+  CC_n: ueda_2001__CC_n(CC_n0, K3, K4, T3, T4, CC_c0, time_, D0);
+  parameters: ueda_2001__parameters(K1, K2, K3, K4, V1, V2, V3, V4, T1, T2, T3, T4, a, r, D0);
+end

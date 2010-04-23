@@ -1,0 +1,192 @@
+//Created by libAntimony v1.3
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__environment(time_)
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__heart_parameters(R_mt, R_av, R_tc, R_pv, R_pul, R_sys, HR, V_tot, P_pl)
+
+  // Variable initializations:
+  R_mt = 0.06;
+  R_av = 1.4;
+  R_tc = 0.18;
+  R_pv = 0.48;
+  R_pul = 19;
+  R_sys = 140;
+  HR = 80;
+  V_tot = 5.5;
+  P_pl = -0.533289474;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__driver_function(e_t, time_, HR)
+
+  // Assignment Rules:
+  e_t := A * exp(-(B) * power(tau * HR / 60 - C, 2 ));
+  tau := rem(time_, period);
+
+  // Variable initializations:
+  A = 1;
+  B = 80;
+  C = 0.27;
+  period = 0.405;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__pericardium(V_pcd, P_pcd, P_peri, V_lv, V_rv, P_pl)
+
+  // Assignment Rules:
+  V_pcd := V_lv + V_rv;
+  P_pcd := P_0_pcd * (exp(lambda_pcd * (V_pcd - V_0_pcd)) - 1 );
+  P_peri := P_pcd + P_pl;
+
+  // Variable initializations:
+  P_0_pcd = 0.067;
+  V_0_pcd = 0.2;
+  lambda_pcd = 30;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__lvf_calculator(P_es_lvf, P_ed_lvf, V_lvf)
+
+  // Assignment Rules:
+  P_es_lvf := E_es_lvf * (V_lvf - V_d_lvf);
+  P_ed_lvf := P_0_lvf * (exp(lambda_lvf * (V_lvf - V_0_lvf)) - 1 );
+
+  // Variable initializations:
+  E_es_lvf = 454;
+  V_d_lvf = 0.005;
+  P_0_lvf = 0.17;
+  lambda_lvf = 15;
+  V_0_lvf = 0.005;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__left_ventricle(V_lvf, P_lvf, P_lv, V_lv, time_, V_spt, e_t, P_peri, P_es_lvf, P_ed_lvf, R_mt, R_av, P_pu, P_ao)
+
+  // Sub-modules, and any changes to those submodules:
+  lvf_calculator: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__lvf_calculator(P_es_lvf, P_ed_lvf, V_lvf);
+
+  // Assignment Rules:
+  V_lvf := V_lv - V_spt;
+  P_lvf := e_t * P_es_lvf + (1 - e_t) * P_ed_lvf;
+  P_lv := P_lvf + P_peri;
+
+  // Rate Rules:
+  V_lv' = piecewise( 0 , ( P_pu - P_lv < 0) && (P_lv - P_ao < 0 ), -((P_lv - P_ao)) / R_av , P_pu - P_lv < 0 , (P_pu - P_lv) / R_mt , P_lv - P_ao < 0 , (P_pu - P_lv) / R_mt - (P_lv - P_ao) / R_av );
+
+  // Variable initializations:
+  V_lv = 0.005;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__rvf_calculator(P_es_rvf, P_ed_rvf, V_rvf)
+
+  // Assignment Rules:
+  P_es_rvf := E_es_rvf * (V_rvf - V_d_rvf);
+  P_ed_rvf := P_0_rvf * (exp(lambda_rvf * (V_rvf - V_0_rvf)) - 1 );
+
+  // Variable initializations:
+  E_es_rvf = 87;
+  V_d_rvf = 0.005;
+  P_0_rvf = 0.16;
+  lambda_rvf = 15;
+  V_0_rvf = 0.005;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__right_ventricle(V_rvf, P_rvf, P_rv, V_rv, time_, V_spt, e_t, P_peri, P_es_rvf, P_ed_rvf, R_tc, R_pv, P_pa, P_vc)
+
+  // Sub-modules, and any changes to those submodules:
+  rvf_calculator: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__rvf_calculator(P_es_rvf, P_ed_rvf, V_rvf);
+
+  // Assignment Rules:
+  V_rvf := V_rv + V_spt;
+  P_rvf := e_t * P_es_rvf + (1 - e_t) * P_ed_rvf;
+  P_rv := P_rvf + P_peri;
+
+  // Rate Rules:
+  V_rv' = piecewise( 0 , ( P_vc - P_rv < 0) && (P_rv - P_pa < 0 ), -((P_rv - P_pa)) / R_pv , P_vc - P_rv < 0 , (P_vc - P_rv) / R_tc , P_rv - P_pa < 0 , (P_vc - P_rv) / R_tc - (P_rv - P_pa) / R_pv );
+
+  // Variable initializations:
+  V_rv = 0.005;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__septum(V_spt, P_sept, P_lv, P_rv, P_lvf, P_rvf, e_t)
+
+  // Assignment Rules:
+  P_sept := P_lv - P_rv;
+  P_lvf := e_t * E_es_spt * (V_spt - V_d_spt) + (one - e_t) * P_0_spt * (exp(lambda_spt * (V_spt - V_0_spt)) - one) - P_rvf;
+
+  // Variable initializations:
+  E_es_spt = 6500;
+  V_d_spt = 0.002;
+  P_0_spt = 0.148;
+  lambda_spt = 435;
+  V_0_spt = 0.002;
+  one = 1;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__pulmonary_artery(P_pa, time_, R_pv, R_pul, P_rv, P_pu)
+
+  // Assignment Rules:
+  P_pa := E_es_pa * (V_pa - V_d_pa);
+
+  // Rate Rules:
+  V_pa' = piecewise( 0 , ( P_rv - P_pa < 0) && (P_pa - P_pu < 0 ), -((P_pa - P_pu)) / R_pul , P_rv - P_pa < 0 , (P_rv - P_pa) / R_pv , P_pa - P_pu < 0 , (P_rv - P_pa) / R_pv - (P_pa - P_pu) / R_pul );
+
+  // Variable initializations:
+  E_es_pa = 45;
+  V_pa = 0.16;
+  V_d_pa = 0.16;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__pulmonary_vein(P_pu, time_, R_pul, R_mt, P_pa, P_lv)
+
+  // Assignment Rules:
+  P_pu := E_es_pu * (V_pu - V_d_pu);
+
+  // Rate Rules:
+  V_pu' = piecewise( 0 , ( P_pa - P_pu < 0) && (P_pu - P_lv < 0 ), -((P_pu - P_lv)) / R_mt , P_pa - P_pu < 0 , (P_pa - P_pu) / R_pul , P_pu - P_lv < 0 , (P_pa - P_pu) / R_pul - (P_pu - P_lv) / R_mt );
+
+  // Variable initializations:
+  E_es_pu = 0.8;
+  V_pu = 0.2;
+  V_d_pu = 0.2;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__aorta(P_ao, time_, R_av, R_sys, P_lv, P_vc)
+
+  // Assignment Rules:
+  P_ao := E_es_ao * (V_ao - V_d_ao);
+
+  // Rate Rules:
+  V_ao' = piecewise( 0 , ( P_lv - P_ao < 0) && (P_ao - P_vc < 0 ), -((P_ao - P_vc)) / R_sys , P_lv - P_ao < 0 , (P_lv - P_ao) / R_av , P_ao - P_vc < 0 , (P_lv - P_ao) / R_av - (P_ao - P_vc) / R_sys );
+
+  // Variable initializations:
+  E_es_ao = 94;
+  V_ao = 0.8;
+  V_d_ao = 0.8;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__vena_cava(P_vc, time_, R_sys, R_tc, P_ao, P_rv)
+
+  // Assignment Rules:
+  P_vc := E_es_vc * (V_vc - V_d_vc);
+
+  // Rate Rules:
+  V_vc' = piecewise( 0 , ( P_ao - P_vc < 0) && (P_vc - P_rv < 0 ), -((P_vc - P_rv)) / R_tc , P_ao - P_vc < 0 , (P_ao - P_vc) / R_sys , P_vc - P_rv < 0 , (P_ao - P_vc) / R_sys - (P_vc - P_rv) / R_tc );
+
+  // Variable initializations:
+  E_es_vc = 1.5;
+  V_vc = 2.83;
+  V_d_vc = 2.83;
+end
+
+model shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__environment(time_);
+  heart_parameters: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__heart_parameters(R_mt, R_av, R_tc, R_pv, R_pul, R_sys, HR, V_tot, P_pl);
+  driver_function: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__driver_function(e_t, time_, HR);
+  pericardium: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__pericardium(V_pcd, P_pcd, P_peri, V_lv, V_rv, P_pl);
+  left_ventricle: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__left_ventricle(V_lvf, P_lvf, P_lv, V_lv, time_, V_spt, e_t, P_peri, P_es_lvf, P_ed_lvf, R_mt, R_av, P_pu, P_ao);
+  right_ventricle: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__right_ventricle(V_rvf, P_rvf, P_rv, V_rv, time_, V_spt, e_t, P_peri, P_es_rvf, P_ed_rvf, R_tc, R_pv, P_pa, P_vc);
+  septum: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__septum(V_spt, P_sept, P_lv, P_rv, P_lvf, P_rvf, e_t);
+  pulmonary_artery: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__pulmonary_artery(P_pa, time_, R_pv, R_pul, P_rv, P_pu);
+  pulmonary_vein: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__pulmonary_vein(P_pu, time_, R_pul, R_mt, P_pa, P_lv);
+  aorta: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__aorta(P_ao, time_, R_av, R_sys, P_lv, P_vc);
+  vena_cava: shaw_chase_starfinger_smith_hann_desaive_ghuysen_2007__vena_cava(P_vc, time_, R_sys, R_tc, P_ao, P_rv);
+end

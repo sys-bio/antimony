@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="iber_maini_2002_version01____main" name="iber_maini_2002_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="rho" constant="false"/>
+      <parameter id="d" constant="false"/>
+      <parameter id="pr" constant="false"/>
+      <parameter id="pr1" value="0.95" constant="false"/>
+      <parameter id="pr2" constant="false"/>
+      <parameter id="recycling_probability_eta" constant="false"/>
+      <parameter id="Ag" value="2500" constant="false"/>
+      <parameter id="K_AgAb" constant="false"/>
+      <parameter id="C1" constant="false"/>
+      <parameter id="C2" constant="false"/>
+      <parameter id="k_on"/>
+      <parameter id="antigens_k" value="0"/>
+      <parameter id="antigens_u"/>
+      <parameter id="C" constant="false"/>
+      <parameter id="Cs" constant="false"/>
+      <parameter id="Ab" constant="false"/>
+      <parameter id="antibodies_beta"/>
+      <parameter id="AFC" constant="false"/>
+      <parameter id="theta" constant="false"/>
+      <parameter id="s" constant="false"/>
+      <parameter id="s1" constant="false"/>
+      <parameter id="s2" constant="false"/>
+      <parameter id="selection_probability_of_centrocytes_h" value="0.07"/>
+      <parameter id="selection_probability_of_centrocytes_f" value="0.35"/>
+      <parameter id="selection_probability_of_centrocytes_sc" constant="false"/>
+      <parameter id="selection_probability_of_centrocytes_zeta" constant="false"/>
+      <parameter id="delta_c" constant="false"/>
+      <parameter id="m" value="0.72"/>
+      <parameter id="B" constant="false"/>
+      <parameter id="B1" constant="false"/>
+      <parameter id="B2" constant="false"/>
+      <parameter id="Cs1" constant="false"/>
+      <parameter id="Cs2" constant="false"/>
+      <parameter id="centrocytes_mu" constant="false"/>
+      <parameter id="centrocytes_mu1" constant="false"/>
+      <parameter id="centrocytes_mu2" constant="false"/>
+      <parameter id="centrocytes_M11" constant="false"/>
+      <parameter id="centrocytes_M12" constant="false"/>
+      <parameter id="memory_cells_M" constant="false"/>
+      <parameter id="memory_cells_M1" constant="false"/>
+      <parameter id="memory_cells_M2" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="n"/>
+      <parameter id="Ag_min"/>
+      <parameter id="centrocytes_M21"/>
+      <parameter id="centrocytes_M22"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="k_on">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 5 <sep/> -13 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="antigens_u">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> -4 </cn>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="antibodies_beta">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 1 <sep/> 8 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <assignmentRule variable="rho">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 24 </cn>
+              <cn> 6.5 </cn>
+            </apply>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 12 </cn>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 0.6 </cn>
+            <apply>
+              <times/>
+              <cn> 0.2 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <ci> Ag </ci>
+                  <ci> n </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <power/>
+                    <ci> Ag </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> Ag_min </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pr1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 0.95 </cn>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="pr2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.7 </cn>
+            <ci> recycling_probability_eta </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="recycling_probability_eta"/>
+      <rateRule variable="Ag">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> antigens_u </ci>
+                    <ci> antigens_k </ci>
+                    <ci> C </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> antigens_u </ci>
+                    <ci> Cs </ci>
+                    <apply>
+                      <minus/>
+                      <cn> 1 </cn>
+                      <ci> antigens_k </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> Ag </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_on </ci>
+              <ci> Ag </ci>
+              <ci> Ab </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="K_AgAb">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_on </ci>
+            <ci> Ag </ci>
+            <ci> Ab </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m </ci>
+              <apply>
+                <plus/>
+                <ci> centrocytes_M11 </ci>
+                <ci> B1 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> centrocytes_M12 </ci>
+                <ci> B2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> centrocytes_mu1 </ci>
+              <ci> C1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m </ci>
+              <apply>
+                <plus/>
+                <ci> centrocytes_M21 </ci>
+                <ci> B1 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> centrocytes_M22 </ci>
+                <ci> B2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> centrocytes_mu2 </ci>
+              <ci> C2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> rho </ci>
+              <ci> m </ci>
+              <ci> B </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> centrocytes_mu </ci>
+              <ci> C </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Cs">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> d </ci>
+              <ci> s </ci>
+              <ci> C </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> Cs </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ab">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> antibodies_beta </ci>
+              <ci> AFC </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_on </ci>
+              <ci> Ag </ci>
+              <ci> Ab </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="AFC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> theta </ci>
+            <ci> rho </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <ci> pr </ci>
+            </apply>
+            <ci> Cs </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="theta">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.3 </cn>
+            <apply>
+              <divide/>
+              <ci> Ag </ci>
+              <apply>
+                <plus/>
+                <ci> C1 </ci>
+                <ci> C2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <ci> Ag </ci>
+              <apply>
+                <plus/>
+                <ci> Ag </ci>
+                <ci> K_AgAb </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="s">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> selection_probability_of_centrocytes_sc </ci>
+            <apply>
+              <plus/>
+              <ci> selection_probability_of_centrocytes_h </ci>
+              <apply>
+                <times/>
+                <ci> selection_probability_of_centrocytes_f </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <power/>
+                    <ci> Ag_min </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <apply>
+                      <power/>
+                      <ci> Ag_min </ci>
+                      <ci> n </ci>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> Ag </ci>
+                      <ci> n </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="s1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 0.01 </cn>
+            <apply>
+              <times/>
+              <cn> 0.09 </cn>
+              <ci> selection_probability_of_centrocytes_zeta </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="s2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 0.1 </cn>
+            <apply>
+              <times/>
+              <cn> 0.85 </cn>
+              <ci> selection_probability_of_centrocytes_zeta </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="selection_probability_of_centrocytes_sc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> delta_c </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> d </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <cn> 2 </cn>
+                    <ci> pr </ci>
+                    <ci> m </ci>
+                  </apply>
+                  <cn> 1 </cn>
+                </apply>
+              </apply>
+              <ci> delta_c </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="selection_probability_of_centrocytes_zeta">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> Ag </ci>
+            <apply>
+              <plus/>
+              <ci> C1 </ci>
+              <ci> C2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="delta_c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 1.5 </cn>
+            <apply>
+              <ln/>
+              <cn> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="B">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> rho </ci>
+            <ci> B </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="B1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> pr1 </ci>
+              <ci> rho </ci>
+              <ci> Cs1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> B1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="B2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> pr2 </ci>
+              <ci> rho </ci>
+              <ci> Cs2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> B2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Cs1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> d </ci>
+              <ci> s1 </ci>
+              <ci> C1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> Cs1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Cs2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> d </ci>
+              <ci> s2 </ci>
+              <ci> C2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rho </ci>
+              <ci> Cs2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="centrocytes_mu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> d </ci>
+              <ci> s </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> delta_c </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> s </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="centrocytes_mu1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> d </ci>
+              <ci> s1 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> delta_c </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> s1 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="centrocytes_mu2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> d </ci>
+              <ci> s2 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> delta_c </ci>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> s2 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="centrocytes_M11">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> 1 </cn>
+            <ci> centrocytes_M21 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="centrocytes_M12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <cn> 1 </cn>
+            <ci> centrocytes_M22 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="memory_cells_M">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <ci> theta </ci>
+            </apply>
+            <ci> rho </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <ci> pr </ci>
+            </apply>
+            <ci> Cs </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="memory_cells_M1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <ci> pr1 </ci>
+            </apply>
+            <ci> Cs1 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="memory_cells_M2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <ci> pr2 </ci>
+            </apply>
+            <ci> Cs2 </ci>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

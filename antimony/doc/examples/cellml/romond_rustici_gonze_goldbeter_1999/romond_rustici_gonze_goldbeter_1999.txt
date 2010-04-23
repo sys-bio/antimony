@@ -1,0 +1,131 @@
+//Created by libAntimony v1.3
+model romond_rustici_gonze_goldbeter_1999_version01__environment(time_)
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__parameters(H_1, H_2, H_3, H_4, K_1, K_2, K_3, K_4, V_M1, V_M3, U_M1, U_M3, V_2, V_4, U_2, U_4, K_c1, K_c2, K_d1, K_d2, v_d1, v_d2, v_i1, v_i2, k_d1, k_d2, K_im1, K_im2)
+
+  // Variable initializations:
+  H_1 = 0.01;
+  H_2 = 0.01;
+  H_3 = 0.01;
+  H_4 = 0.01;
+  K_1 = 0.01;
+  K_2 = 0.01;
+  K_3 = 0.01;
+  K_4 = 0.01;
+  V_M1 = 0.3;
+  V_M3 = 0.1;
+  U_M1 = 0.3;
+  U_M3 = 0.1;
+  V_2 = 0.15;
+  V_4 = 0.05;
+  U_2 = 0.15;
+  U_4 = 0.05;
+  K_c1 = 0.5;
+  K_c2 = 0.5;
+  K_d1 = 0.02;
+  K_d2 = 0.02;
+  v_d1 = 0.025;
+  v_d2 = 0.025;
+  v_i1 = 0.05;
+  v_i2 = 0.05;
+  k_d1 = 0.001;
+  k_d2 = 0.001;
+  K_im1 = 0.03;
+  K_im2 = 0.03;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__C_1(C_1, v_i1, v_d1, k_d1, K_im1, M_2, X_1, K_d1, time_)
+
+  // Rate Rules:
+  C_1' = v_i1 * K_im1 / (K_im1 + M_2) - v_d1 * X_1 * C_1 / (K_d1 + C_1) - k_d1 * C_1;
+
+  // Variable initializations:
+  C_1 = 2;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__M_1(M_1, V_1, V_2, K_1, K_2, time_)
+
+  // Rate Rules:
+  M_1' = V_1 * (1 - M_1) / (K_1 + (1 - M_1)) - V_2 * M_1 / (K_2 + M_1);
+
+  // Variable initializations:
+  M_1 = 1;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__X_1(X_1, V_3, V_4, K_3, K_4, time_)
+
+  // Rate Rules:
+  X_1' = V_3 * (1 - X_1) / (K_3 + (1 - X_1)) - V_4 * X_1 / (K_4 + X_1);
+
+  // Variable initializations:
+  X_1 = 0;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__C_2(C_2, v_i2, v_d2, k_d2, K_im2, M_1, X_2, K_d2, time_)
+
+  // Rate Rules:
+  C_2' = v_i2 * K_im2 / (K_im2 + M_1) - v_d2 * X_2 * C_2 / (K_d2 + C_2) - k_d2 * C_2;
+
+  // Variable initializations:
+  C_2 = 0;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__M_2(M_2, U_1, U_2, H_1, H_2, time_)
+
+  // Rate Rules:
+  M_2' = U_1 * (1 - M_2) / (H_1 + (1 - M_2)) - U_2 * M_2 / (H_2 + M_2);
+
+  // Variable initializations:
+  M_2 = 0;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__X_2(X_2, U_3, U_4, H_3, H_4, time_)
+
+  // Rate Rules:
+  X_2' = U_3 * (1 - X_2) / (H_3 + (1 - X_2)) - U_4 * X_2 / (H_4 + X_2);
+
+  // Variable initializations:
+  X_2 = 0;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__V_1(V_1, V_M1, C_1, K_c1)
+
+  // Assignment Rules:
+  V_1 := C_1 / (K_c1 + C_1) * V_M1;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__V_3(V_3, V_M3, M_1)
+
+  // Assignment Rules:
+  V_3 := M_1 * V_M3;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__U_1(U_1, U_M1, C_2, K_c2)
+
+  // Assignment Rules:
+  U_1 := C_2 / (K_c2 + C_2) * U_M1;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01__U_3(U_3, U_M3, M_2)
+
+  // Assignment Rules:
+  U_3 := M_2 * U_M3;
+end
+
+model romond_rustici_gonze_goldbeter_1999_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: romond_rustici_gonze_goldbeter_1999_version01__environment(time_);
+  parameters: romond_rustici_gonze_goldbeter_1999_version01__parameters(H_1, H_2, H_3, H_4, K_1, K_2, K_3, K_4, V_M1, V_M3, U_M1, U_M3, V_2, V_4, U_2, U_4, K_c1, K_c2, K_d1, K_d2, v_d1, v_d2, v_i1, v_i2, k_d1, k_d2, K_im1, K_im2);
+  C_1: romond_rustici_gonze_goldbeter_1999_version01__C_1(C_10, v_i1, v_d1, k_d1, K_im1, M_20, X_10, K_d1, time_);
+  M_1: romond_rustici_gonze_goldbeter_1999_version01__M_1(M_10, V_10, V_2, K_1, K_2, time_);
+  X_1: romond_rustici_gonze_goldbeter_1999_version01__X_1(X_10, V_30, V_4, K_3, K_4, time_);
+  C_2: romond_rustici_gonze_goldbeter_1999_version01__C_2(C_20, v_i2, v_d2, k_d2, K_im2, M_10, X_20, K_d2, time_);
+  M_2: romond_rustici_gonze_goldbeter_1999_version01__M_2(M_20, U_10, U_2, H_1, H_2, time_);
+  X_2: romond_rustici_gonze_goldbeter_1999_version01__X_2(X_20, U_30, U_4, H_3, H_4, time_);
+  V_1: romond_rustici_gonze_goldbeter_1999_version01__V_1(V_10, V_M1, C_10, K_c1);
+  V_3: romond_rustici_gonze_goldbeter_1999_version01__V_3(V_30, V_M3, M_10);
+  U_1: romond_rustici_gonze_goldbeter_1999_version01__U_1(U_10, U_M1, C_20, K_c2);
+  U_3: romond_rustici_gonze_goldbeter_1999_version01__U_3(U_30, U_M3, M_20);
+end

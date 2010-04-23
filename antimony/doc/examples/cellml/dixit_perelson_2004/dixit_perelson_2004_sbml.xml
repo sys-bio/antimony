@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="dixit_perelson_2004_version02____main" name="dixit_perelson_2004_version02____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="T0" value="1000000" constant="false"/>
+      <parameter id="T_lamda" value="10000"/>
+      <parameter id="T_d" value="0.01"/>
+      <parameter id="k" value="2.4e-08"/>
+      <parameter id="VI0" value="1" constant="false"/>
+      <parameter id="T_0" value="1" constant="false"/>
+      <parameter id="T__tau" value="1.5"/>
+      <parameter id="T__m" value="0.01"/>
+      <parameter id="delta" value="0.01"/>
+      <parameter id="N" value="2500"/>
+      <parameter id="c" value="23"/>
+      <parameter id="epsilon_PI0" constant="false"/>
+      <parameter id="VNI0" value="2" constant="false"/>
+      <parameter id="epsilon_PI_IC50" value="9e-07"/>
+      <parameter id="Cc0" value="0" constant="false"/>
+      <parameter id="Cb0" constant="false"/>
+      <parameter id="Cb_Vd" value="28000"/>
+      <parameter id="Cb_F" value="1"/>
+      <parameter id="Cb_D" value="600"/>
+      <parameter id="ka" value="14.64"/>
+      <parameter id="ke" value="6.86"/>
+      <parameter id="Cc_kacell" value="24000"/>
+      <parameter id="Cc_kecell" value="1.1"/>
+      <parameter id="Cx0" constant="false"/>
+      <parameter id="Cx_H" value="0.052"/>
+      <parameter id="Cx_fb" value="0.99"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="T0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> T_lamda </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> T_d </ci>
+                <ci> T0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k </ci>
+                <ci> T0 </ci>
+                <ci> VI0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="VI0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> N </ci>
+              <ci> delta </ci>
+              <ci> T_0 </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> epsilon_PI0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> c </ci>
+              <ci> VI0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="T_0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k </ci>
+              <ci> T0 </ci>
+              <apply>
+                <minus/>
+                <ci> time_ </ci>
+                <ci> T__tau </ci>
+              </apply>
+              <ci> VI0 </ci>
+              <apply>
+                <minus/>
+                <ci> time_ </ci>
+                <ci> T__tau </ci>
+              </apply>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> T__m </ci>
+                  </apply>
+                  <ci> T__tau </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> delta </ci>
+              <ci> T_0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="epsilon_PI0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> Cc0 </ci>
+            <apply>
+              <plus/>
+              <ci> epsilon_PI_IC50 </ci>
+              <ci> Cc0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="VNI0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> N </ci>
+              <ci> delta </ci>
+              <ci> T_0 </ci>
+              <ci> epsilon_PI0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> c </ci>
+              <ci> VNI0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Cc0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> Cc_kacell </ci>
+              <ci> Cx0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Cc_kecell </ci>
+              <ci> Cc0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Cb0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> Cb_F </ci>
+                <ci> Cb_D </ci>
+              </apply>
+              <ci> Cb_Vd </ci>
+            </apply>
+            <apply>
+              <divide/>
+              <ci> ka </ci>
+              <apply>
+                <minus/>
+                <ci> ke </ci>
+                <ci> ka </ci>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> ka </ci>
+                  </apply>
+                  <ci> time_ </ci>
+                </apply>
+              </apply>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> ke </ci>
+                  </apply>
+                  <ci> time_ </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Cx0"/>
+    </listOfRules>
+  </model>
+</sbml>

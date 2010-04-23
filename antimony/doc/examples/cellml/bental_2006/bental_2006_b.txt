@@ -1,0 +1,36 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    Unable to use the formula "( Pm - PL ) / E" to set the assignment rule for VA:  The variable 'VA' is associated with a rate rule, and may not additionally have an assignment rule.
+//    Unable to figure out how to translate an assignment to "PA  -  PL" in the Antimony format.  This variable may have been left undefined in that component.
+
+model bental_B_2005__environment(time_)
+end
+
+model bental_B_2005__equations(time_)
+
+  // Assignment Rules:
+  PL := Pm - ( R * omega * ( VT / 2.0 ) * sin( time_ * omega ) + E * ( 2.5 - VT / 2.0 * cos( time_ * omega )));
+  E := ks / power( s , 2.0 );
+  omega := 2.0 * 3.141 / 5.0;
+  V0 := x0 * s;
+  RA := mu / power( s , 2.0 );
+  IA := m / power( s , 2.0 );
+
+  // Rate Rules:
+  PA' = 1.0 / VA * ( Pm * (( Pm - PA ) / R ) - PA * delta_VA );
+  VA' = delta2_VA;
+
+  // Variable initializations:
+  PA = 760.0;
+  Pm = 760.0;
+  R = 1.0;
+  VT = 0.4;
+end
+
+model bental_B_2005____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: bental_B_2005__environment(time_);
+  equations: bental_B_2005__equations(time_);
+end

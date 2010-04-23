@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="cloutier_2009b____main" name="cloutier_2009b____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="F6P0" value="0.2" constant="false"/>
+      <parameter id="V_hk0" constant="false"/>
+      <parameter id="V_pfk0" constant="false"/>
+      <parameter id="V_pfk20" constant="false"/>
+      <parameter id="F26P0" value="0.001" constant="false"/>
+      <parameter id="GAP0" value="0.0405" constant="false"/>
+      <parameter id="V_pk0" constant="false"/>
+      <parameter id="PYR0" value="0.1" constant="false"/>
+      <parameter id="V_ldh0" constant="false"/>
+      <parameter id="V_op0" constant="false"/>
+      <parameter id="LAC0" value="0.5" constant="false"/>
+      <parameter id="V_lac0" constant="false"/>
+      <parameter id="ATP0" value="2.402" constant="false"/>
+      <parameter id="V_ATPase0" constant="false"/>
+      <parameter id="V_ck0" constant="false"/>
+      <parameter id="dAMP_dATP0" constant="false"/>
+      <parameter id="PCr0" value="18.14" constant="false"/>
+      <parameter id="V_hk_Vmax_hk" value="2.5"/>
+      <parameter id="V_hk_Km_ATP_hk" value="0.5"/>
+      <parameter id="V_hk_KI_F6P" value="0.068"/>
+      <parameter id="V_pfk_Vmax_pfk" value="3.85"/>
+      <parameter id="V_pfk_Km_ATP_pfk" value="0.05"/>
+      <parameter id="V_pfk_Km_F6P_pfk" value="0.18"/>
+      <parameter id="V_pfk_Km_F26P_pfk" value="0.01"/>
+      <parameter id="AMP_act0" constant="false"/>
+      <parameter id="ATP_inh0" constant="false"/>
+      <parameter id="V_pfk2_Vmaxf_pfk2" value="0"/>
+      <parameter id="V_pfk2_Vmaxr_pfk2" value="0"/>
+      <parameter id="V_pfk2_Km_ATP_pfk2" value="0.05"/>
+      <parameter id="V_pfk2_Km_F6P_pfk2" value="0.01"/>
+      <parameter id="V_pfk2_Km_F26P_pfk2" value="0.0001"/>
+      <parameter id="AMP_pfk20" constant="false"/>
+      <parameter id="V_pk_Vmax_pk" value="5"/>
+      <parameter id="V_pk_Km_ADP_pk" value="0.005"/>
+      <parameter id="V_pk_Km_GAP_pk" value="0.4"/>
+      <parameter id="ADP0" constant="false"/>
+      <parameter id="V_op_Vmax_op" value="1"/>
+      <parameter id="V_op_Km_ADP_op" value="0.005"/>
+      <parameter id="V_op_Km_PYR_op" value="0.5"/>
+      <parameter id="V_ldh_kf_ldh" value="0"/>
+      <parameter id="V_ldh_kr_ldh" value="0"/>
+      <parameter id="V_ck_kf_ck" value="0"/>
+      <parameter id="V_ck_kr_ck" value="0"/>
+      <parameter id="Cr0" constant="false"/>
+      <parameter id="Cr_PCrtot" value="20"/>
+      <parameter id="V_ATPase_Vmax_ATPase" value="0.9355"/>
+      <parameter id="V_ATPase_Km_ATP" value="0.5"/>
+      <parameter id="v_stim0" constant="false"/>
+      <parameter id="V_lac_Vlac_0" value="0.355"/>
+      <parameter id="V_lac_K_LAC_eff" value="0.71"/>
+      <parameter id="V_lac_K_LAC" value="0.641"/>
+      <parameter id="u" constant="false"/>
+      <parameter id="ANP" value="2.51"/>
+      <parameter id="Q_adk" value="0.92"/>
+      <parameter id="AMP0" constant="false"/>
+      <parameter id="ATP_inh_nATP" value="0.4"/>
+      <parameter id="ATP_inh_KI_ATP" value="1"/>
+      <parameter id="AMP_act_nAMP" value="0.5"/>
+      <parameter id="AMP_act_Ka_AMP" value="0.05"/>
+      <parameter id="v_stim_unitpulseSB" constant="false"/>
+      <parameter id="v_stim_stim" value="1"/>
+      <parameter id="v_stim_to" value="50"/>
+      <parameter id="v_stim_tend" value="200"/>
+      <parameter id="v_stim_v1_n" value="0.5"/>
+      <parameter id="v_stim_v2_n" value="0"/>
+      <parameter id="v_stim_t_n_stim" value="2"/>
+      <parameter id="AMP_pfk2_Kamp_pfk2" value="0.005"/>
+      <parameter id="AMP_pfk2_nh_amp" value="2"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="F6P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V_hk0 </ci>
+            <apply>
+              <minus/>
+              <ci> V_pfk0 </ci>
+              <ci> V_pfk20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_hk0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V_hk_Vmax_hk </ci>
+            <apply>
+              <divide/>
+              <ci> ATP0 </ci>
+              <apply>
+                <plus/>
+                <ci> ATP0 </ci>
+                <ci> V_hk_Km_ATP_hk </ci>
+              </apply>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <power/>
+                  <apply>
+                    <divide/>
+                    <ci> F6P0 </ci>
+                    <ci> V_hk_KI_F6P </ci>
+                  </apply>
+                  <cn type="integer"> 4 </cn>
+                </apply>
+              </apply>
+              <cn type="integer"> -1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_pfk0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V_pfk_Vmax_pfk </ci>
+            <apply>
+              <divide/>
+              <ci> F6P0 </ci>
+              <apply>
+                <plus/>
+                <ci> F6P0 </ci>
+                <ci> V_pfk_Km_F6P_pfk </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <ci> ATP0 </ci>
+              <apply>
+                <plus/>
+                <ci> ATP0 </ci>
+                <ci> V_pfk_Km_ATP_pfk </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <ci> F26P0 </ci>
+              <apply>
+                <plus/>
+                <ci> F26P0 </ci>
+                <ci> V_pfk_Km_F26P_pfk </ci>
+              </apply>
+            </apply>
+            <ci> ATP_inh0 </ci>
+            <ci> AMP_act0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_pfk20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V_pfk2_Vmaxf_pfk2 </ci>
+              <apply>
+                <divide/>
+                <ci> ATP0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> ATP0 </ci>
+                  <ci> V_pfk2_Km_ATP_pfk2 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <divide/>
+                <ci> F6P0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> F6P0 </ci>
+                  <ci> V_pfk2_Km_F6P_pfk2 </ci>
+                </apply>
+              </apply>
+              <ci> AMP_pfk20 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V_pfk2_Vmaxr_pfk2 </ci>
+              <apply>
+                <divide/>
+                <ci> F26P0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> F26P0 </ci>
+                  <ci> V_pfk2_Km_F26P_pfk2 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="F26P0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> V_pfk20 </ci>
+        </math>
+      </rateRule>
+      <rateRule variable="GAP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 2 </cn>
+              <ci> V_pfk0 </ci>
+            </apply>
+            <ci> V_pk0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_pk0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V_pk_Vmax_pk </ci>
+            <apply>
+              <divide/>
+              <ci> GAP0 </ci>
+              <apply>
+                <plus/>
+                <ci> GAP0 </ci>
+                <ci> V_pk_Km_GAP_pk </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <ci> ADP0 </ci>
+              <apply>
+                <plus/>
+                <ci> ADP0 </ci>
+                <ci> V_pk_Km_ADP_pk </ci>
+              </apply>
+            </apply>
+            <ci> ATP_inh0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="PYR0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V_pk0 </ci>
+            <apply>
+              <plus/>
+              <ci> V_op0 </ci>
+              <ci> V_ldh0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_ldh0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V_ldh_kf_ldh </ci>
+              <ci> PYR0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V_ldh_kr_ldh </ci>
+              <ci> LAC0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_op0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V_op_Vmax_op </ci>
+            <apply>
+              <divide/>
+              <ci> PYR0 </ci>
+              <apply>
+                <plus/>
+                <ci> PYR0 </ci>
+                <ci> V_op_Km_PYR_op </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <ci> ADP0 </ci>
+              <apply>
+                <plus/>
+                <ci> ADP0 </ci>
+                <ci> V_op_Km_ADP_op </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <cn> 0.1 </cn>
+                  <cn type="integer"> 24 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="LAC0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <cn> 2.25 </cn>
+              <ci> V_ldh0 </ci>
+            </apply>
+            <ci> V_lac0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_lac0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V_lac_Vlac_0 </ci>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> v_stim0 </ci>
+                  <ci> V_lac_K_LAC </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V_lac_K_LAC_eff </ci>
+              <ci> LAC0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="ATP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn> 2 </cn>
+                  <ci> V_pk0 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn> 15 </cn>
+                  <ci> V_op0 </ci>
+                </apply>
+                <ci> V_ck0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> V_hk0 </ci>
+                <ci> V_pfk0 </ci>
+                <ci> V_pfk20 </ci>
+                <ci> V_ATPase0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> dAMP_dATP0 </ci>
+              </apply>
+              <cn type="integer"> -1 </cn>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="V_ATPase0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> V_ATPase_Vmax_ATPase </ci>
+            <apply>
+              <divide/>
+              <ci> ATP0 </ci>
+              <apply>
+                <plus/>
+                <ci> ATP0 </ci>
+                <ci> V_ATPase_Km_ATP </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <ci> v_stim0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="V_ck0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> V_ck_kf_ck </ci>
+              <ci> PCr0 </ci>
+              <ci> ADP0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> V_ck_kr_ck </ci>
+              <ci> Cr0 </ci>
+              <ci> ATP0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dAMP_dATP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn type="integer"> -1 </cn>
+            <apply>
+              <divide/>
+              <ci> Q_adk </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <cn> 0.5 </cn>
+                <apply>
+                  <root/>
+                  <ci> u </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Q_adk </ci>
+              <apply>
+                <divide/>
+                <ci> ANP </ci>
+                <apply>
+                  <times/>
+                  <ci> ATP0 </ci>
+                  <apply>
+                    <root/>
+                    <ci> u </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="PCr0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> V_ck0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="AMP_act0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> AMP0 </ci>
+                  <ci> AMP_act_Ka_AMP </ci>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> AMP_act_nAMP </ci>
+                  <apply>
+                    <divide/>
+                    <ci> AMP0 </ci>
+                    <ci> AMP_act_Ka_AMP </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <cn type="integer"> 4 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ATP_inh0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <divide/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <ci> ATP_inh_nATP </ci>
+                  <apply>
+                    <divide/>
+                    <ci> ATP0 </ci>
+                    <ci> ATP_inh_KI_ATP </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <divide/>
+                  <ci> ATP0 </ci>
+                  <ci> ATP_inh_KI_ATP </ci>
+                </apply>
+              </apply>
+            </apply>
+            <cn type="integer"> 4 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AMP_pfk20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <apply>
+                <divide/>
+                <ci> AMP0 </ci>
+                <ci> AMP_pfk2_Kamp_pfk2 </ci>
+              </apply>
+              <ci> AMP_pfk2_nh_amp </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <power/>
+                <apply>
+                  <divide/>
+                  <ci> AMP0 </ci>
+                  <ci> AMP_pfk2_Kamp_pfk2 </ci>
+                </apply>
+                <ci> AMP_pfk2_nh_amp </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ADP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> ATP0 </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <ci> Q_adk </ci>
+              </apply>
+              <apply>
+                <root/>
+                <ci> u </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Cr0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Cr_PCrtot </ci>
+            <ci> PCr0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v_stim0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> v_stim_stim </ci>
+            <apply>
+              <plus/>
+              <ci> v_stim_v1_n </ci>
+              <apply>
+                <times/>
+                <ci> v_stim_v2_n </ci>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> time_ </ci>
+                    <ci> v_stim_to </ci>
+                  </apply>
+                  <ci> v_stim_t_n_stim </ci>
+                </apply>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <times/>
+                      <apply>
+                        <minus/>
+                        <ci> time_ </ci>
+                        <ci> v_stim_to </ci>
+                      </apply>
+                      <apply>
+                        <divide/>
+                        <ci> v_stim_unitpulseSB </ci>
+                        <ci> v_stim_t_n_stim </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <ci> v_stim_unitpulseSB </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="u">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <power/>
+              <ci> Q_adk </ci>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 4 </cn>
+              <ci> Q_adk </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <divide/>
+                  <ci> ANP </ci>
+                  <ci> ATP0 </ci>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="AMP0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> ANP </ci>
+            <apply>
+              <plus/>
+              <ci> ATP0 </ci>
+              <ci> ADP0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="v_stim_unitpulseSB"/>
+    </listOfRules>
+  </model>
+</sbml>

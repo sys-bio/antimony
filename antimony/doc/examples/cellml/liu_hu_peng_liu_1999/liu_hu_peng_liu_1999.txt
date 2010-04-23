@@ -1,0 +1,103 @@
+//Created by libAntimony v1.3
+model liu_model_1999__environment(time_)
+end
+
+model liu_model_1999__x1(x1, lambda_1, x3, a1, a2, a3, a4, a5, a6, a7, a8, time_)
+
+  // Rate Rules:
+  x1' = a1 + (a2 + a3 * x1 + a4 * power(x1, 2 )) / (1 + a5 * x1 + a6 * power(x1, 2 ) + a7 * x3 + a8 * power(x3, 2 )) - lambda_1 * x1;
+
+  // Variable initializations:
+  x1 = 0.01067;
+end
+
+model liu_model_1999__x2(x2, lambda_2, x1, x3, a9, a10, a11, a12, a13, a14, a15, time_)
+
+  // Rate Rules:
+  x2' = (a9 + a10 * x1 + a11 * power(x1, 2 )) / (1 + a12 * x1 + a13 * power(x1, 2 ) + a14 * x3 + a15 * power(x3, 2 )) - lambda_2 * x2;
+
+  // Variable initializations:
+  x2 = 0.04665;
+end
+
+model liu_model_1999__x3(x3, lambda_3_, x1, x2, x4, x5, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, time_)
+
+  // Rate Rules:
+  x3' = a16 + (a17 * x1 + a18 * power(x1, 2 ) + a19 * x2 + a20 * power(x2, 2 )) / (1 + a21 * x1 + a22 * power(x1, 2 ) + a23 * x2 + a24 * power(x2, 2 )) + a25 * x4 + a26 * x5 - lambda_3_ * x3;
+
+  // Variable initializations:
+  x3 = 6.51;
+end
+
+model liu_model_1999__x4(x4, lambda_4_, x3, a27, time_)
+
+  // Rate Rules:
+  x4' = a27 * x3 - lambda_4_ * x4;
+
+  // Variable initializations:
+  x4 = 60.61;
+end
+
+model liu_model_1999__x5(x5, lambda_5_, x3, a28, time_)
+
+  // Rate Rules:
+  x5' = a28 * x3 - lambda_5_ * x5;
+
+  // Variable initializations:
+  x5 = 12.61;
+end
+
+model liu_model_1999__model_parameters(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, lambda_1, lambda_2, lambda_3_, lambda_4_, lambda_5_)
+
+  // Assignment Rules:
+  lambda_3_ := lambda_3 + a27 + a28;
+  lambda_4_ := lambda_4 + a25;
+  lambda_5_ := lambda_5 + a26;
+
+  // Variable initializations:
+  a1 = 0.000017;
+  a2 = 0.0023;
+  a3 = 0.6;
+  a4 = 45;
+  a5 = 36;
+  a6 = 216;
+  a7 = 0.28;
+  a8 = 0.36;
+  a9 = 0.0003;
+  a10 = 0.18;
+  a11 = 150;
+  a12 = 18;
+  a13 = 460;
+  a14 = 0.46;
+  a15 = 0.1;
+  a16 = 0.04;
+  a17 = 150;
+  a18 = 3800;
+  a19 = 57;
+  a20 = 2600;
+  a21 = 200;
+  a22 = 9400;
+  a23 = 10;
+  a24 = 320;
+  a25 = 0.04;
+  a26 = 0.00097;
+  a27 = 0.57;
+  a28 = 0.0017;
+  lambda_1 = 0.059;
+  lambda_2 = 0.028;
+  lambda_3 = 0.0986;
+  lambda_4 = 0.024;
+  lambda_5 = 3e-5;
+end
+
+model liu_model_1999____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: liu_model_1999__environment(time_);
+  x1: liu_model_1999__x1(x10, lambda_1, x30, a1, a2, a3, a4, a5, a6, a7, a8, time_);
+  x2: liu_model_1999__x2(x20, lambda_2, x10, x30, a9, a10, a11, a12, a13, a14, a15, time_);
+  x3: liu_model_1999__x3(x30, lambda_3_, x10, x20, x40, x50, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, time_);
+  x4: liu_model_1999__x4(x40, lambda_4_, x30, a27, time_);
+  x5: liu_model_1999__x5(x50, lambda_5_, x30, a28, time_);
+  model_parameters: liu_model_1999__model_parameters(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, lambda_1, lambda_2, lambda_3_, lambda_4_, lambda_5_);
+end

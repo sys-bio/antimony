@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="novak_tyson_1997_version01____main" name="novak_tyson_1997_version01____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="k1" value="0.015"/>
+      <parameter id="k2" constant="false"/>
+      <parameter id="k2_" value="0.05"/>
+      <parameter id="k3" value="0.09375"/>
+      <parameter id="k4" value="0.1875"/>
+      <parameter id="k5" value="0.00175"/>
+      <parameter id="k6" constant="false"/>
+      <parameter id="k6_" value="0"/>
+      <parameter id="k7" value="100"/>
+      <parameter id="k7r" value="0.1"/>
+      <parameter id="k8" value="10"/>
+      <parameter id="k8r" value="0.1"/>
+      <parameter id="kwee" constant="false"/>
+      <parameter id="k25" constant="false"/>
+      <parameter id="ku" value="0.2"/>
+      <parameter id="kp" value="3.25"/>
+      <parameter id="kur" value="0.1"/>
+      <parameter id="ku2" value="1"/>
+      <parameter id="kur2" value="0.3"/>
+      <parameter id="kc" value="1"/>
+      <parameter id="kcr" value="0.25"/>
+      <parameter id="kw" value="1"/>
+      <parameter id="kwr" value="0.25"/>
+      <parameter id="ki" value="0.4"/>
+      <parameter id="kir" value="0.1"/>
+      <parameter id="mu" value="0.00495"/>
+      <parameter id="Kmu2" value="0.05"/>
+      <parameter id="Kmur2" value="0.05"/>
+      <parameter id="Kmi" value="0.01"/>
+      <parameter id="Kmir" value="0.01"/>
+      <parameter id="Kmw" value="0.1"/>
+      <parameter id="Kmwr" value="0.1"/>
+      <parameter id="Kmu" value="0.01"/>
+      <parameter id="Kmur" value="0.01"/>
+      <parameter id="Kmc" value="0.1"/>
+      <parameter id="Kmcr" value="0.1"/>
+      <parameter id="Kmp" value="0.001"/>
+      <parameter id="rate_constants_V2" value="0.25"/>
+      <parameter id="rate_constants_V2_" value="0.0075"/>
+      <parameter id="rate_constants_V6" value="7.5"/>
+      <parameter id="rate_constants_V6_" value="0.0375"/>
+      <parameter id="rate_constants_V25" value="0.5"/>
+      <parameter id="rate_constants_V25_" value="0.025"/>
+      <parameter id="rate_constants_Vw" value="0.35"/>
+      <parameter id="rate_constants_Vw_" value="0.035"/>
+      <parameter id="Cdc250" value="0" constant="false"/>
+      <parameter id="UbE0" value="1" constant="false"/>
+      <parameter id="UbE20" value="0" constant="false"/>
+      <parameter id="Wee10" value="0" constant="false"/>
+      <parameter id="SPF" constant="false"/>
+      <parameter id="MPF" constant="false"/>
+      <parameter id="concentration_variables_alpha" value="0.25"/>
+      <parameter id="concentration_variables_beta" value="0.05"/>
+      <parameter id="G1K0" value="0" constant="false"/>
+      <parameter id="G2K0" value="0" constant="false"/>
+      <parameter id="PG20" value="0" constant="false"/>
+      <parameter id="G2R0" value="0" constant="false"/>
+      <parameter id="R0" value="0.4" constant="false"/>
+      <parameter id="G1R0" value="0" constant="false"/>
+      <parameter id="PG2R0" value="0" constant="false"/>
+      <parameter id="mass0" value="0.5" constant="false"/>
+      <parameter id="IE0" value="0" constant="false"/>
+      <parameter id="Cig2_total0" constant="false"/>
+      <parameter id="Rum1_total0" constant="false"/>
+      <parameter id="Cdc13_total0" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="k2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> rate_constants_V2_ </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> UbE0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rate_constants_V2 </ci>
+              <ci> UbE0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> rate_constants_V6_ </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> UbE20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rate_constants_V6 </ci>
+              <ci> UbE20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="kwee">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> rate_constants_Vw_ </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> Wee10 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rate_constants_Vw </ci>
+              <ci> Wee10 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k25">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> rate_constants_V25_ </ci>
+              <apply>
+                <minus/>
+                <cn type="integer"> 1 </cn>
+                <ci> Cdc250 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> rate_constants_V25 </ci>
+              <ci> Cdc250 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Cdc250">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> kc </ci>
+                <ci> MPF </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Cdc250 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci> Kmc </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <ci> Cdc250 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> kcr </ci>
+                <ci> Cdc250 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Kmcr </ci>
+                <ci> Cdc250 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="UbE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> ku </ci>
+                <ci> IE0 </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> UbE0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci> Kmu </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <ci> UbE0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> kur </ci>
+                <ci> UbE0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Kmur </ci>
+                <ci> UbE0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="UbE20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> ku2 </ci>
+                <ci> MPF </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> UbE20 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci> Kmu2 </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <ci> UbE20 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> kur2 </ci>
+                <ci> UbE20 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Kmur2 </ci>
+                <ci> UbE20 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Wee10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> kwr </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> Wee10 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci> Kmwr </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <ci> Wee10 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> kw </ci>
+                <ci> MPF </ci>
+                <ci> Wee10 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Kmw </ci>
+                <ci> Wee10 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="SPF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> MPF </ci>
+            <apply>
+              <times/>
+              <ci> concentration_variables_alpha </ci>
+              <ci> G1K0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="MPF">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> G2K0 </ci>
+            <apply>
+              <times/>
+              <ci> concentration_variables_beta </ci>
+              <ci> PG20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="G1K0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> k5 </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> k8r </ci>
+                  <ci> k4 </ci>
+                </apply>
+                <ci> G1R0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k6 </ci>
+                <apply>
+                  <times/>
+                  <ci> k8 </ci>
+                  <ci> R0 </ci>
+                </apply>
+              </apply>
+              <ci> G1K0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="G2K0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> k1 </ci>
+              <apply>
+                <times/>
+                <ci> k25 </ci>
+                <ci> PG20 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> k7r </ci>
+                  <ci> k4 </ci>
+                </apply>
+                <ci> G2R0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k2 </ci>
+                <ci> kwee </ci>
+                <apply>
+                  <times/>
+                  <ci> k7 </ci>
+                  <ci> R0 </ci>
+                </apply>
+              </apply>
+              <ci> G2K0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PG20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> kwee </ci>
+                <ci> G2K0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> k7r </ci>
+                  <ci> k4 </ci>
+                </apply>
+                <ci> PG2R0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k25 </ci>
+                <ci> k2 </ci>
+                <apply>
+                  <times/>
+                  <ci> k7 </ci>
+                  <ci> R0 </ci>
+                </apply>
+              </apply>
+              <ci> PG20 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="G2R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k7 </ci>
+              <ci> R0 </ci>
+              <ci> G2K0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k7r </ci>
+                <ci> k4 </ci>
+                <ci> k2 </ci>
+                <ci> k2_ </ci>
+              </apply>
+              <ci> G2R0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> k3 </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> k7r </ci>
+                  <ci> k2 </ci>
+                  <ci> k2_ </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> G2R0 </ci>
+                  <ci> PG2R0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> k8r </ci>
+                  <ci> k6_ </ci>
+                </apply>
+                <ci> G1R0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k4 </ci>
+                <ci> R0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k7 </ci>
+                <ci> R0 </ci>
+                <apply>
+                  <plus/>
+                  <ci> G2K0 </ci>
+                  <ci> PG20 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k8 </ci>
+                <ci> R0 </ci>
+                <ci> G1K0 </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> kp </ci>
+                  <ci> R0 </ci>
+                  <ci> SPF </ci>
+                  <ci> mass0 </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <ci> Kmp </ci>
+                  <ci> R0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="G1R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k8 </ci>
+              <ci> R0 </ci>
+              <ci> G1K0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k8r </ci>
+                <ci> k4 </ci>
+                <ci> k6_ </ci>
+              </apply>
+              <ci> G1R0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="PG2R0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k7 </ci>
+              <ci> R0 </ci>
+              <ci> PG20 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k7r </ci>
+                <ci> k4 </ci>
+                <ci> k2 </ci>
+                <ci> k2_ </ci>
+              </apply>
+              <ci> PG2R0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="mass0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> mu </ci>
+            <ci> mass0 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="IE0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> ki </ci>
+                <ci> MPF </ci>
+                <apply>
+                  <minus/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> IE0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci> Kmi </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <ci> IE0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> kir </ci>
+                <ci> IE0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> Kmir </ci>
+                <ci> IE0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Cig2_total0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> G1K0 </ci>
+            <ci> G1R0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Rum1_total0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> R0 </ci>
+            <ci> G1R0 </ci>
+            <ci> G2R0 </ci>
+            <ci> PG2R0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Cdc13_total0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> G2K0 </ci>
+            <ci> G2R0 </ci>
+            <ci> PG20 </ci>
+            <ci> PG2R0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

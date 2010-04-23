@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="muscle_O2_delivery_CellML1_0_model____main" name="muscle_O2_delivery_CellML1_0_model____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="BFM" value="0.989949"/>
+      <parameter id="OVA" value="204.497"/>
+      <parameter id="HM" value="40.0381"/>
+      <parameter id="AOM" value="1.00002"/>
+      <parameter id="muscle_O2_delivery_EXC" value="1"/>
+      <parameter id="muscle_O2_delivery_EXCXP2" value="0.17"/>
+      <parameter id="muscle_O2_delivery_OMM" value="57.1"/>
+      <parameter id="muscle_O2_delivery_PM5" value="30"/>
+      <parameter id="muscle_O2_delivery_PK2" value="0.79167"/>
+      <parameter id="muscle_O2_delivery_O2ARTM" constant="false"/>
+      <parameter id="muscle_O2_delivery_RMO" constant="false"/>
+      <parameter id="muscle_O2_delivery_PVO" constant="false"/>
+      <parameter id="muscle_O2_delivery_M_venous_O2_content_OVS" constant="false"/>
+      <parameter id="muscle_O2_delivery_PMO" constant="false"/>
+      <parameter id="muscle_O2_delivery_MMO" constant="false"/>
+      <parameter id="muscle_O2_delivery_P2O" constant="false"/>
+      <parameter id="muscle_O2_delivery_QOM" constant="false"/>
+      <parameter id="muscle_O2_delivery_volume_of_O2_in_M_tissue_DO2M" constant="false"/>
+      <parameter id="muscle_O2_delivery_volume_of_O2_in_M_tissue_QOM1" value="48.0839" constant="false"/>
+      <parameter id="time_"/>
+      <parameter id="muscle_O2_delivery_PVO0"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="muscle_O2_delivery_O2ARTM">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> OVA </ci>
+            <ci> BFM </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="muscle_O2_delivery_RMO">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> muscle_O2_delivery_PVO0 </ci>
+              <ci> muscle_O2_delivery_PMO </ci>
+            </apply>
+            <ci> muscle_O2_delivery_PM5 </ci>
+            <ci> BFM </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="muscle_O2_delivery_PVO">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 57.14 </cn>
+            <ci> muscle_O2_delivery_M_venous_O2_content_OVS </ci>
+            <apply>
+              <power/>
+              <ci> muscle_O2_delivery_EXC </ci>
+              <ci> muscle_O2_delivery_EXCXP2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="muscle_O2_delivery_M_venous_O2_content_OVS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> muscle_O2_delivery_O2ARTM </ci>
+              <ci> muscle_O2_delivery_RMO </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> HM </ci>
+              <cn> 5.25 </cn>
+              <ci> BFM </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="muscle_O2_delivery_PMO">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> muscle_O2_delivery_PK2 </ci>
+            <ci> muscle_O2_delivery_QOM </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="muscle_O2_delivery_MMO">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> AOM </ci>
+            <ci> muscle_O2_delivery_OMM </ci>
+            <ci> muscle_O2_delivery_EXC </ci>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <divide/>
+                <apply>
+                  <power/>
+                  <apply>
+                    <minus/>
+                    <cn> 38.0001 </cn>
+                    <ci> muscle_O2_delivery_P2O </ci>
+                  </apply>
+                  <cn type="integer"> 3 </cn>
+                </apply>
+                <cn type="integer"> 54872 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="muscle_O2_delivery_P2O"/>
+      <assignmentRule variable="muscle_O2_delivery_QOM"/>
+      <assignmentRule variable="muscle_O2_delivery_volume_of_O2_in_M_tissue_DO2M">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> muscle_O2_delivery_RMO </ci>
+            <ci> muscle_O2_delivery_MMO </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="muscle_O2_delivery_volume_of_O2_in_M_tissue_QOM1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> muscle_O2_delivery_volume_of_O2_in_M_tissue_DO2M </ci>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

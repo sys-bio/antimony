@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="wanant_2000____main" name="wanant_2000____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="x10" value="10" constant="false"/>
+      <parameter id="x20" value="0.1" constant="false"/>
+      <parameter id="x30" value="1" constant="false"/>
+      <parameter id="x40" value="1" constant="false"/>
+      <parameter id="x50" value="1" constant="false"/>
+      <parameter id="x60" value="1" constant="false"/>
+      <parameter id="x70" value="1" constant="false"/>
+      <parameter id="x80" value="1" constant="false"/>
+      <parameter id="x90" value="1" constant="false"/>
+      <parameter id="k1" value="1000000"/>
+      <parameter id="k1_" value="0.0004"/>
+      <parameter id="k2" value="1000000"/>
+      <parameter id="k2_" value="0.04"/>
+      <parameter id="k4" value="1000000"/>
+      <parameter id="k4_" value="0.0004"/>
+      <parameter id="k5" value="10000000"/>
+      <parameter id="k5_" value="0.004"/>
+      <parameter id="x1_scatchard" constant="false"/>
+      <parameter id="k3" value="1000000"/>
+      <parameter id="k3_" value="0.0004"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="x10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <plus/>
+                      <apply>
+                        <minus/>
+                        <apply>
+                          <times/>
+                          <ci> k1_ </ci>
+                          <ci> x30 </ci>
+                        </apply>
+                        <apply>
+                          <times/>
+                          <ci> k1 </ci>
+                          <ci> x10 </ci>
+                          <ci> x20 </ci>
+                        </apply>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> k2_ </ci>
+                        <ci> x40 </ci>
+                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> k2 </ci>
+                      <ci> x10 </ci>
+                      <ci> x30 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> k4_ </ci>
+                    <apply>
+                      <plus/>
+                      <ci> x60 </ci>
+                      <ci> x70 </ci>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k4 </ci>
+                  <ci> x10 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> x50 </ci>
+                    <ci> x90 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k5_ </ci>
+                <apply>
+                  <plus/>
+                  <ci> x70 </ci>
+                  <ci> x80 </ci>
+                  <ci> x90 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k5 </ci>
+              <ci> x10 </ci>
+              <apply>
+                <plus/>
+                <ci> x50 </ci>
+                <ci> x60 </ci>
+                <ci> x70 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> k1_ </ci>
+                  <ci> x30 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k1 </ci>
+                  <ci> x10 </ci>
+                  <ci> x20 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3_ </ci>
+                <apply>
+                  <plus/>
+                  <ci> x50 </ci>
+                  <ci> x90 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k3 </ci>
+              <ci> x20 </ci>
+              <apply>
+                <plus/>
+                <ci> x30 </ci>
+                <ci> x40 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <times/>
+                      <ci> k1 </ci>
+                      <ci> x10 </ci>
+                      <ci> x20 </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> k1_ </ci>
+                      <ci> x30 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> k2_ </ci>
+                    <ci> x40 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k2 </ci>
+                  <ci> x10 </ci>
+                  <ci> x30 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3_ </ci>
+                <ci> x50 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k3 </ci>
+              <ci> x20 </ci>
+              <ci> x30 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> k2 </ci>
+                  <ci> x10 </ci>
+                  <ci> x30 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k2_ </ci>
+                  <ci> x40 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3_ </ci>
+                <ci> x90 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <ci> x20 </ci>
+              <ci> x40 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x50">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <times/>
+                      <ci> k3 </ci>
+                      <ci> x20 </ci>
+                      <ci> x30 </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> k3_ </ci>
+                      <ci> x50 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> k4_ </ci>
+                    <ci> x60 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k4 </ci>
+                  <ci> x10 </ci>
+                  <ci> x50 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k5_ </ci>
+                <ci> x90 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k5 </ci>
+              <ci> x10 </ci>
+              <ci> x50 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x60">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> k4 </ci>
+                  <ci> x10 </ci>
+                  <ci> x50 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k4_ </ci>
+                  <ci> x60 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k5_ </ci>
+                <ci> x70 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k5 </ci>
+              <ci> x10 </ci>
+              <ci> x60 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x70">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> k4 </ci>
+                <ci> x10 </ci>
+                <ci> x90 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k4_ </ci>
+                <ci> x70 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k5_ </ci>
+              <apply>
+                <minus/>
+                <ci> x80 </ci>
+                <ci> x70 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k5 </ci>
+              <ci> x10 </ci>
+              <apply>
+                <minus/>
+                <ci> x60 </ci>
+                <ci> x70 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x80">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k5 </ci>
+              <ci> x10 </ci>
+              <ci> x70 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k5_ </ci>
+              <ci> x80 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <times/>
+                      <ci> k3 </ci>
+                      <ci> x20 </ci>
+                      <ci> x40 </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> k3_ </ci>
+                      <ci> x90 </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> k4_ </ci>
+                    <ci> x70 </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k4 </ci>
+                  <ci> x10 </ci>
+                  <ci> x90 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k5 </ci>
+                <ci> x10 </ci>
+                <ci> x50 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k5_ </ci>
+              <ci> x90 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="x1_scatchard">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> x30 </ci>
+              <ci> x40 </ci>
+              <ci> x70 </ci>
+              <ci> x80 </ci>
+              <ci> x90 </ci>
+            </apply>
+            <ci> x10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

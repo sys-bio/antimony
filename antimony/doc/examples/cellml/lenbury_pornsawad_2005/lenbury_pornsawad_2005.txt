@@ -1,0 +1,49 @@
+//Created by libAntimony v1.3
+
+//Warnings from automatic translation:
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+//    The units of "time" ('dimensionless') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.
+
+model lenbury_pornsawad_model_2005_version01__environment(time_)
+end
+
+model lenbury_pornsawad_model_2005_version01__x(x, y, beta, tau2, delta1, time_)
+
+  // Assignment Rules:
+  y_delay2 := y * ( time_ - tau2 );
+end
+
+model lenbury_pornsawad_model_2005_version01__y(y, x, z, beta, tau1, tau2, delta2, time_)
+
+  // Assignment Rules:
+  x_delay := x * ( time_ - tau1 );
+  z_delay := z * ( time_ - tau2 );
+end
+
+model lenbury_pornsawad_model_2005_version01__z(z, y, tau1, delta3, time_)
+
+  // Assignment Rules:
+  y_delay1 := y * ( time_ - tau1 );
+end
+
+model lenbury_pornsawad_model_2005_version01__model_parameters(delta1, delta2, delta3, beta, tau1, tau2)
+
+  // Variable initializations:
+  delta1 = 0.5;
+  delta2 = 0.38;
+  delta3 = 0.6;
+  beta = 1.091;
+  tau1 = 0.5;
+  tau2 = 0.77;
+end
+
+model lenbury_pornsawad_model_2005_version01____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: lenbury_pornsawad_model_2005_version01__environment(time_);
+  x: lenbury_pornsawad_model_2005_version01__x(x0, y0, beta, tau2, delta1, time_);
+  y: lenbury_pornsawad_model_2005_version01__y(y0, x0, z0, beta, tau1, tau2, delta2, time_);
+  z: lenbury_pornsawad_model_2005_version01__z(z0, y0, tau1, delta3, time_);
+  model_parameters: lenbury_pornsawad_model_2005_version01__model_parameters(delta1, delta2, delta3, beta, tau1, tau2);
+end

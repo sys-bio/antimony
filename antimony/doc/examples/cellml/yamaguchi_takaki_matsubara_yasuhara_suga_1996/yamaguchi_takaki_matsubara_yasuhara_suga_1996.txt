@@ -1,0 +1,101 @@
+//Created by libAntimony v1.3
+model yamaguchi_takaki_matsubara_yasuhara_suga_1996__environment(t)
+end
+
+model yamaguchi_takaki_matsubara_yasuhara_suga_1996__parameters(D_Ca, k_1, k_2, f, g, Ca_max, Total_Tn, Total_CB)
+
+  // Variable initializations:
+  D_Ca = 0.1;
+  k_1 = 40;
+  k_2 = 20;
+  f = 10;
+  g = 10;
+  Ca_max = 1;
+  Total_Tn = 1;
+  Total_CB = 1;
+end
+
+model yamaguchi_takaki_matsubara_yasuhara_suga_1996__Ca_t(Ca_t, t, D_Ca, Ca_max)
+
+  // Assignment Rules:
+  Ca_t := piecewise( Ca_max * (1 + sin(pi * (t / D_Ca - 0.15 ) / 0.3 )) / 2 , ( t >= 0) && (t < 0.3 * D_Ca ), Ca_max * (1 - sin(pi * (t / D_Ca - 0.65 ) / 0.7 )) / 2 , ( t >= 0.3 * D_Ca) && (t < D_Ca ), 0 );
+end
+
+model yamaguchi_takaki_matsubara_yasuhara_suga_1996__TnCa(TnCa, t, Ca_t, Total_Tn, k_1, k_2)
+
+  // Rate Rules:
+  TnCa' = k_1 * Ca_t * (Total_Tn - TnCa) - k_2 * TnCa;
+
+  // Variable initializations:
+  TnCa = 0;
+end
+
+model yamaguchi_takaki_matsubara_yasuhara_suga_1996__CB_on(CB_on, t, f, g, TnCa, Total_CB)
+
+  // Rate Rules:
+  CB_on' = f * TnCa * (Total_CB - CB_on) - g * CB_on;
+
+  // Variable initializations:
+  CB_on = 0;
+end
+
+model yamaguchi_takaki_matsubara_yasuhara_suga_1996__CumCB(CumCB_on, CumCB_off, t, f, g, CB_on, Total_CB, TnCa)
+
+  // Rate Rules:
+  CumCB_on' = f * TnCa * (Total_CB - CB_on);
+  CumCB_off' = g * CB_on;
+
+  // Variable initializations:
+  CumCB_on = 0;
+  CumCB_off = 0;
+end
+
+model yamaguchi_takaki_matsubara_yasuhara_suga_1996__force_development(FLA, t, phi, CB_on)
+
+  // Assignment Rules:
+  F := CB_on * phi;
+  FLA := F_max * s * (L - L_0);
+
+  // Rate Rules:
+  FTI' = F;
+
+  // Variable initializations:
+  FTI = 0;
+  phi = 1;
+  s = 1;
+  L = 1;
+  L_0 = 0;
+  F_max = 0.228;
+end
+
+model yamaguchi_takaki_matsubara_yasuhara_suga_1996__ATP(ATP_energy, epsilon)
+
+  // Assignment Rules:
+  ATP := CumCB_on_end;
+  ATP_energy := ATP * epsilon;
+
+  // Variable initializations:
+  epsilon = 1;
+  CumCB_on_end = 1;
+end
+
+model yamaguchi_takaki_matsubara_yasuhara_suga_1996__equations_main(FLA, ATP_energy, g, phi, epsilon)
+
+  // Assignment Rules:
+  Efficiency := FLA / ATP_energy;
+  Economy := phi / epsilon * (1 / g);
+end
+
+model yamaguchi_takaki_matsubara_yasuhara_suga_1996____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: yamaguchi_takaki_matsubara_yasuhara_suga_1996__environment(t);
+  parameters: yamaguchi_takaki_matsubara_yasuhara_suga_1996__parameters(D_Ca, k_1, k_2, f, g, Ca_max, Total_Tn, Total_CB);
+  Ca_t: yamaguchi_takaki_matsubara_yasuhara_suga_1996__Ca_t(Ca_t0, t, D_Ca, Ca_max);
+  TnCa: yamaguchi_takaki_matsubara_yasuhara_suga_1996__TnCa(TnCa0, t, Ca_t0, Total_Tn, k_1, k_2);
+  CB_on: yamaguchi_takaki_matsubara_yasuhara_suga_1996__CB_on(CB_on0, t, f, g, TnCa0, Total_CB);
+  CumCB: yamaguchi_takaki_matsubara_yasuhara_suga_1996__CumCB(CumCB_on, CumCB_off, t, f, g, CB_on0, Total_CB, TnCa0);
+  force_development: yamaguchi_takaki_matsubara_yasuhara_suga_1996__force_development(FLA, t, phi, CB_on0);
+  ATP: yamaguchi_takaki_matsubara_yasuhara_suga_1996__ATP(ATP_energy, epsilon);
+  equations_main: yamaguchi_takaki_matsubara_yasuhara_suga_1996__equations_main(FLA, ATP_energy, g, phi, epsilon);
+end

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="wang_model_2007____main" name="wang_model_2007____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="G0" value="150" constant="false"/>
+      <parameter id="G_Gin" constant="false"/>
+      <parameter id="f2_G0" constant="false"/>
+      <parameter id="f3_G0" constant="false"/>
+      <parameter id="f4_I0" constant="false"/>
+      <parameter id="f5_I0" constant="false"/>
+      <parameter id="I0" value="5" constant="false"/>
+      <parameter id="I_Iin" constant="false"/>
+      <parameter id="di" value="0.0107"/>
+      <parameter id="C2" value="144"/>
+      <parameter id="Ub" value="72"/>
+      <parameter id="Vg" value="10"/>
+      <parameter id="C3" value="1000"/>
+      <parameter id="C4" value="80"/>
+      <parameter id="Vi" value="11"/>
+      <parameter id="U0" value="40"/>
+      <parameter id="Um" value="940"/>
+      <parameter id="beta" value="1.77"/>
+      <parameter id="ti" value="100"/>
+      <parameter id="Vp" value="3"/>
+      <parameter id="C5" value="26"/>
+      <parameter id="Rg" value="180"/>
+      <parameter id="alpha" value="0.29"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="G0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> G_Gin </ci>
+              <apply>
+                <times/>
+                <cn type="integer"> 1 </cn>
+                <ci> f5_I0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn type="integer"> 1 </cn>
+                <ci> f2_G0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> f3_G0 </ci>
+                <ci> f4_I0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="G_Gin"/>
+      <assignmentRule variable="f2_G0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Ub </ci>
+            <apply>
+              <minus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> G0 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> C2 </ci>
+                    <ci> Vg </ci>
+                    <cn> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="f3_G0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> G0 </ci>
+            <apply>
+              <times/>
+              <ci> C3 </ci>
+              <ci> Vg </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="f4_I0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> U0 </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <minus/>
+                <ci> Um </ci>
+                <ci> U0 </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <cn> 1 </cn>
+                <apply>
+                  <exp/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <minus/>
+                      <ci> beta </ci>
+                    </apply>
+                    <apply>
+                      <ln/>
+                      <apply>
+                        <divide/>
+                        <ci> I0 </ci>
+                        <apply>
+                          <times/>
+                          <ci> C4 </ci>
+                          <apply>
+                            <plus/>
+                            <apply>
+                              <divide/>
+                              <cn> 1 </cn>
+                              <ci> Vi </ci>
+                            </apply>
+                            <apply>
+                              <divide/>
+                              <cn> 1 </cn>
+                              <apply>
+                                <times/>
+                                <cn> 0.2 </cn>
+                                <ci> ti </ci>
+                              </apply>
+                            </apply>
+                          </apply>
+                        </apply>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="f5_I0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> Rg </ci>
+            <apply>
+              <plus/>
+              <cn> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <times/>
+                  <ci> alpha </ci>
+                  <apply>
+                    <divide/>
+                    <ci> I0 </ci>
+                    <apply>
+                      <times/>
+                      <cn> 1 </cn>
+                      <apply>
+                        <minus/>
+                        <apply>
+                          <times/>
+                          <cn> 1 </cn>
+                          <ci> Vp </ci>
+                        </apply>
+                        <ci> C5 </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="I0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> I_Iin </ci>
+            <apply>
+              <times/>
+              <ci> di </ci>
+              <ci> I0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="I_Iin"/>
+    </listOfRules>
+  </model>
+</sbml>
