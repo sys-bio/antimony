@@ -82,6 +82,7 @@ public:
   Variable* GetCompartment() const;
   bool GetIsSetCompartment() const {return (m_compartment.size() != 0);};
   std::string GetNamespace() const {return m_module;};
+  void SetNamespace(const std::string& modname) {m_module = modname;};
   bool GetIsConst() const;
   const_type GetConstType() const {return m_const;};
   bool GetIsEquivalentTo(const Variable* var) const;

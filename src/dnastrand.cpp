@@ -2,7 +2,7 @@
 #include "dnastrand.h"
 #include "module.h"
 #include "registry.h"
-#include "sbmlx.h"
+#include "stringx.h"
 #include "typex.h"
 #include "variable.h"
 

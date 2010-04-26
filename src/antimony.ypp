@@ -125,8 +125,8 @@ spacedformula:  formula {$$ = $1;}
 
 variableexportlist:
                 /* empty */ {}
-        |       variable {g_registry.AddVariableToCurrentExportList($1); }
-        |       variableexportlist ',' variable { g_registry.AddVariableToCurrentExportList($3); }
+        |       variable {if (g_registry.AddVariableToCurrentExportList($1)) YYABORT; }
+        |       variableexportlist ',' variable { if (g_registry.AddVariableToCurrentExportList($3)) YYABORT; }
         ;
 
 variable:       WORD {$$ = g_registry.AddVariableToCurrent($1); }
@@ -207,14 +207,14 @@ formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
         |       FUNCTION '(' commaformula ')' {$$ = g_registry.NewBlankFormula(); $$->AddText($1); $$->AddMathThing('('); $$->AddFormula($3); $$->AddMathThing(')');}
         |       FUNCTION {$$ = g_registry.NewBlankFormula(); $$->AddText($1); }
         |       mathThing {$$ = g_registry.NewBlankFormula(); $$->AddMathThing($1); }
-        |       '(' formula ')' {$$ = $2; $$->AddParentheses();}
+        |       '(' commaformula ')' {$$ = $2; $$->AddParentheses();}
         |       formula ELLIPSES {$$ = $1; $1->AddEllipses();}
         |       formula variable {$$ = $1; $1->AddVariable($2); }
         |       formula NUM  {$$ = $1; $1->AddNum($2); }
         |       formula FUNCTION '(' commaformula ')' {$$ = $1; $1->AddText($2); $4->AddParentheses(); $$->AddFormula($4); }
         |       formula FUNCTION {$$ = $1; $1->AddText($2);}
         |       formula mathThing {$$ = $1; $1->AddMathThing($2); }
-        |       formula '(' formula ')' {$$ = $1; $3->AddParentheses(); $$->AddFormula($3); }
+        |       formula '(' commaformula ')' {$$ = $1; $3->AddParentheses(); $$->AddFormula($3); }
         |       formula '<' '=' {$$ = $1; $1->AddMathThing('<'); $1->AddMathThing('='); }
         |       formula '>' '=' {$$ = $1; $1->AddMathThing('>'); $1->AddMathThing('='); }
         |       formula '=' '=' {$$ = $1; $1->AddMathThing('='); $1->AddMathThing('='); }
@@ -496,7 +496,7 @@ int yylex(void)
   }
 
   // Parse numbers
-  if (isdigit(cc)) {
+  if (isdigit(cc) || (cc=='.' && isdigit(g_registry.input->peek()))) {
     double number;
     g_registry.input->unget();
     *g_registry.input >> number;

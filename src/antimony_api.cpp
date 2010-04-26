@@ -260,6 +260,7 @@ long CheckAndAddSBMLDoc(SBMLDocument* document)
   }
   g_registry.CurrentModule()->LoadSBML(document);
 
+  g_registry.FinalizeModules();
   return g_registry.SaveModules();
 }
 

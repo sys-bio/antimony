@@ -1133,7 +1133,7 @@ bool Variable::Synchronize(Variable* clone)
 
   if (m_type == varModule) {
     g_registry.SetError("Cannot set the modules '" + GetNameDelimitedBy('.') + "' and '" + clone->GetNameDelimitedBy('.') + "' to be the same thing--modules must be unique by definition.");
-    return false;
+    return true;
   }
 
   //Check to make sure we don't synchronize variables that are already in each other's formulas.
@@ -1307,7 +1307,11 @@ bool Variable::AnyCompartmentLoops(vector<const Variable*> lowercomps) const
 
 string Variable::ToString() const
 {
-  return GetNameDelimitedBy('.') + " (" + VarTypeToString(m_type) + ")";
+  string ret = GetNameDelimitedBy('.') + " (" + VarTypeToString(m_type) + ")";
+  if (GetFormula() != NULL) {
+    ret += ": " + GetFormula()->ToDelimitedStringWithEllipses('.');
+  }
+  return ret;
 }
 
 void Variable::FixNames()
