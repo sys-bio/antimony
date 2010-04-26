@@ -1,5 +1,5 @@
 #version number
-version = 1.3
+version = 1.4
 
 #mingw:
 #mingw = i586-mingw32msvc
@@ -192,6 +192,8 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)antimony-qt.html \
 	$(doc_dir)antimony-technical-spec.html \
 	$(doc_dir)antimony-why.html \
+	$(doc_dir)cellmllist_ant.html \
+	$(doc_dir)cellmllist_sbml.html \
 	$(doc_dir)doxygen.css \
 	$(doc_dir)doxygen.png \
 	$(doc_dir)enums_8h.html \
@@ -234,7 +236,8 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(ex_dir)ex_sbml_output_ringoscil_sbml.xml \
 	$(ex_dir)biomodels/BIOMD0000000001.txt \
 	$(ex_dir)biomodels/BIOMD0000000???.txt \
-	$(ex_dir)cellml/*.cellml.txt \
+	$(ex_dir)cellml/*/*.txt \
+	$(ex_dir)cellml/*/*_sbml.xml \
 
 DOCSRCFILES = \
 	$(doc_dir)antimony-biomodels.txt \
@@ -246,6 +249,7 @@ DOCSRCFILES = \
 	$(doc_dir)antimony-qt.txt \
 	$(doc_dir)antimony-technical-spec.txt \
 	$(doc_dir)antimony-why.txt \
+	$(doc_dir)cellml2html.pl \
 	$(doc_dir)doxygen.antimony.cfg \
 	$(doc_dir)technical_spec.html \
 	$(doc_dir)Screenshot-linux.png \
@@ -262,7 +266,8 @@ all : \
 	$(bin_dir)testantimony \
 	$(bin_dir)antimony2sbml \
 	$(bin_dir)sbml2antimony \
-	$(bin_dir)cellml2antimony 
+	$(bin_dir)cellml2antimony \
+	$(bin_dir)rehashantimony
 	@echo ""
 	@echo "Libary created:"
 	@echo "  lib/libantimony.a:  The libAntimony static library"
@@ -295,6 +300,10 @@ $(bin_dir)cellml2antimony : $(lib_dir)libantimony.a $(src_dir)cellml2antimony.o
 	echo "cd $(bin_dir);declare -x LD_LIBRARY_PATH=\"/home/lpsmith/xulrunner-sdk/lib/:/home/lpsmith/CellML/hg/cellml-opencell/opencellStage/components/\";cellml2antimony $1" > $(bin_dir)/cellml2antimony.bat
 	chmod a+x $(bin_dir)/cellml2antimony.bat
 
+$(bin_dir)rehashantimony : $(lib_dir)libantimony.a $(src_dir)rehashantimony.o
+	mkdir -p $(bin_dir)
+	$(CXX) -o $(bin_dir)rehashantimony $(src_dir)rehashantimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+
 
 #The distribution zip file.
 srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile
@@ -302,14 +311,19 @@ srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFI
 	gzip antimony_src_v$(version).tar
 
 #The documentation.
-docs : $(doc_dir)index.html
-	cd doc/;doxygen doxygen.antimony.cfg; cd ..;
+docs : $(doc_dir)index.html $(doc_dir)cellmllist_ant.html $(doc_dir)cellmllist_sbml.html
 	zip Antimony_documentation_v$(version).zip $(DOCFILES)
 
 dist : srcdist docs
 
 $(doc_dir)index.html : $(DOCSRCFILES)
-	cd doc/; doxygen doxygen.antimony.cfg;
+	cd doc/; doxygen doxygen.antimony.cfg; cd ..;
+
+$(doc_dir)cellmllist_ant.html : $(DOCSRCFILES)
+	cd doc/; cellml2html.pl examples/cellml/*/*.txt > cellmllist_ant.html; cd ..;
+
+$(doc_dir)cellmllist_sbml.html : $(DOCSRCFILES)
+	cd doc/; cellml2html.pl examples/cellml/*/*.xml > cellmllist_sbml.html; cd ..;
 
 $(ex_dir)/biomodels/BIOMD0000000001.txt : $(bin_dir)sbml2antimony
 	cd $(ex_dir)/biomodels/; ../../($bin_dir)/sbml2antimony ~/biomodels/curated/BIOMD0000000???.xml

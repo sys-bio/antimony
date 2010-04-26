@@ -58,13 +58,21 @@ int main(int argc, char** argv)
         system(command.c_str());
         size_t modnum = nummods-1;
         string antimonyname = "cellml/" + dirname + "/" + filename + ".txt";
+        string sbmlname     = "cellml/" + dirname + "/" + filename + "_sbml.xml";
         //antimonyname += ".txt";
+        retval = 0;
         if (writeAntimonyFile(antimonyname.c_str(), modnames[modnum])) {
-          cout << "Successfully wrote file " << antimonyname.c_str() << endl;
-          retval = 0;
+          cout << "Successfully wrote file " << antimonyname << endl;
         }
         else {
           cout << "Problem writing file " << antimonyname.c_str() << endl;
+          retval = 1;
+        }
+        if (writeSBMLFile(sbmlname.c_str(), modnames[modnum])) {
+          cout << "Successfully wrote file " << sbmlname << endl;
+        }
+        else {
+          cout << "Problem writing file " << sbmlname.c_str() << endl;
           retval = 1;
         }
         freeAll();

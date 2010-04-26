@@ -408,6 +408,7 @@ string Formula::ConvertOneSymbolToFunction(string formula) const
 vector<const Variable*> Formula::GetVariablesFrom(string formula, string module) const
 {
   vector<const Variable*> retval;
+  set<const Variable*> varset;
   string varname = "";
   bool foundname = false;
   for (size_t pos=0; pos<formula.size(); pos++) {
@@ -418,13 +419,16 @@ vector<const Variable*> Formula::GetVariablesFrom(string formula, string module)
       varname += formula[pos];
     }
     else if (foundname) {
-      retval.push_back(g_registry.GetModule(module)->GetVariableFromSymbol(varname));
+      varset.insert(g_registry.GetModule(module)->GetVariableFromSymbol(varname));
       foundname = false;
       varname = "";
     }
   }
   if (foundname) {
-    retval.push_back(g_registry.GetModule(module)->GetVariableFromSymbol(varname));
+    varset.insert(g_registry.GetModule(module)->GetVariableFromSymbol(varname));
+  }
+  for (set<const Variable*>::iterator var=varset.begin(); var != varset.end(); var++) {
+    retval.push_back(*var);
   }
   return retval;
 }

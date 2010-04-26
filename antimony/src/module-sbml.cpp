@@ -18,7 +18,7 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     }
     string formulastring(parseASTNodeToString(function->getBody()));
     Formula* formula = g_registry.NewBlankFormula();
-    setFormulaWithString(formulastring, formula);
+    setFormulaWithString(formulastring, formula, this);
     g_registry.SetUserFunction(formula);
     g_registry.GetNthUserFunction(g_registry.GetNumUserFunctions()-1)->FixNames();
   }
@@ -112,12 +112,12 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     //Set the trigger:
     string triggerstring(parseASTNodeToString(event->getTrigger()->getMath()));
     Formula trigger;
-    setFormulaWithString(triggerstring, &trigger);
+    setFormulaWithString(triggerstring, &trigger, this);
     Formula delay;
     const Delay* sbmldelay = event->getDelay();
     if (sbmldelay != NULL) {
       string delaystring(parseASTNodeToString(sbmldelay->getMath()));
-      setFormulaWithString(delaystring, &delay);
+      setFormulaWithString(delaystring, &delay, this);
     }
     AntimonyEvent antevent(delay, trigger,var);
     var->SetEvent(&antevent);
@@ -128,7 +128,7 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       string name = assignment->getVariable();
       Variable* asntvar = AddOrFindVariable(&name);
       Formula*  asntform = g_registry.NewBlankFormula();
-      setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform);
+      setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform, this);
       var->GetEvent()->AddResult(asntvar, asntform);
     }
   }
@@ -165,7 +165,7 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       }
       Formula* formula = g_registry.NewBlankFormula();
       string formulastring(parseASTNodeToString(initasnt->getMath()));
-      setFormulaWithString(formulastring, formula);
+      setFormulaWithString(formulastring, formula, this);
       var->SetFormula(formula);
     }
     else {
@@ -191,7 +191,7 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
     }
     Formula* formula = g_registry.NewBlankFormula();
     string formulastring(parseASTNodeToString(rule->getMath()));
-    setFormulaWithString(formulastring, formula);
+    setFormulaWithString(formulastring, formula, this);
     if (IsSpecies(var->GetType())) {
       //Any species in any rule must be 'const' (in Antimony), because this means it's a 'boundary species'
       var->SetIsConst(true);
@@ -263,7 +263,7 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       const KineticLaw* kl = reaction->getKineticLaw();
       var->SetUnits(kl->getSubstanceUnits() + "/(" + kl->getTimeUnits() + ")");
       formulastring = parseASTNodeToString(kl->getMath());
-      setFormulaWithString(formulastring, &formula);
+      setFormulaWithString(formulastring, &formula, this);
       for (unsigned int localp=0; localp<kl->getNumParameters(); localp++) {
         const Parameter* localparam = kl->getParameter(localp);
         vector<string> fullname;
@@ -278,7 +278,7 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
         fullname.push_back(sbmlname);
         Variable* foundvar = GetVariable(fullname);
         while (foundvar != NULL) {
-           //Just in case something weird happened and there was another one of *this* name, too.
+          //Just in case something weird happened and there was another one of *this* name, too.
           sbmlname = var->GetNameDelimitedBy('_') + "_" + sbmlname;
           fullname.clear();
           fullname.push_back(sbmlname);
@@ -300,23 +300,23 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
         localformula.AddNum(localparam->getValue());
         localvar->SetFormula(&localformula);
       }
-	}
-	else if (reaction->getNumModifiers() > 0) {
-		//If the kinetic law is empty, we can set some interactions, if there are any Modifiers.
-    ReactantList right;
-    right.AddReactant(var);
-    ReactantList left;
-		for (unsigned int mod=0; mod<reaction->getNumModifiers(); mod++) {
-			const ModifierSpeciesReference* msr = reaction->getModifier(mod);
-      string species = msr->getSpecies();
-      Variable* specvar = AddOrFindVariable(&species);
-      left.AddReactant(specvar);
-      sbmlname = getNameFromSBMLObject(msr, "_I");
     }
-    Variable* interaction = AddOrFindVariable(&sbmlname);
-    Formula blankform;
-    AddNewReaction(&left, rdInfluences, &right, &blankform, interaction);
-	}
+    else if (reaction->getNumModifiers() > 0) {
+      //If the kinetic law is empty, we can set some interactions, if there are any Modifiers.
+      ReactantList right;
+      right.AddReactant(var);
+      ReactantList left;
+      for (unsigned int mod=0; mod<reaction->getNumModifiers(); mod++) {
+        const ModifierSpeciesReference* msr = reaction->getModifier(mod);
+        string species = msr->getSpecies();
+        Variable* specvar = AddOrFindVariable(&species);
+        left.AddReactant(specvar);
+        sbmlname = getNameFromSBMLObject(msr, "_I");
+      }
+      Variable* interaction = AddOrFindVariable(&sbmlname);
+      Formula blankform;
+      AddNewReaction(&left, rdInfluences, &right, &blankform, interaction);
+    }
     //Put reactants, products, and the formula together:
     AddNewReaction(&reactants, rdBecomes, &products, &formula, var);
   }
@@ -522,14 +522,14 @@ void Module::CreateSBMLModel()
   size_t numinteractions = GetNumVariablesOfType(allInteractions);
   for (size_t irxn=0; irxn<numinteractions; irxn++) {
     const Variable* arxnvar = GetNthVariableOfType(allInteractions, irxn);
-	  const AntimonyReaction* arxn = arxnvar->GetReaction();
-	  Reaction* rxn = sbmlmod->getReaction(arxn->GetRight()->GetNthReactant(0)->GetNameDelimitedBy(cc));
+    const AntimonyReaction* arxn = arxnvar->GetReaction();
+    Reaction* rxn = sbmlmod->getReaction(arxn->GetRight()->GetNthReactant(0)->GetNameDelimitedBy(cc));
     if (rxn != NULL) {
-	    for (size_t interactor=0; interactor<arxn->GetLeft()->Size(); interactor++) {
-		    ModifierSpeciesReference* msr = rxn->createModifier();
-		    msr->setSpecies(arxn->GetLeft()->GetNthReactant(interactor)->GetNameDelimitedBy(cc));
+      for (size_t interactor=0; interactor<arxn->GetLeft()->Size(); interactor++) {
+        ModifierSpeciesReference* msr = rxn->createModifier();
+        msr->setSpecies(arxn->GetLeft()->GetNthReactant(interactor)->GetNameDelimitedBy(cc));
         msr->setName(arxnvar->GetNameDelimitedBy(cc));
-	    }
+      }
     }
   }
 

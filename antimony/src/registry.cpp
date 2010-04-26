@@ -65,7 +65,9 @@ Registry::Registry()
   nsCOMPtr<cellml_apiICellMLBootstrap> foo = do_CreateInstance(CELLML_BOOTSTRAP_CONTRACTID, &rv);
   if ( NS_FAILED(rv) )
   {
-    printf("Creating a cellml bootstrap instance returns [%x]:  your working directory must be the one with the 'components/' subdirectory.  I know, right?  Sigh.\n", rv);
+    ostringstream warning;
+    warning << "Creating a cellml bootstrap instance returns " << rv << ":  your working directory must be the one with the 'components/' subdirectory.  I know, right?  Sigh.";
+    g_registry.AddWarning(warning.str());
     return;
   }
 
@@ -213,7 +215,10 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
     const Model* sbml = document->getModel();
     string sbmlname = getNameFromSBMLObject(sbml, "file");
     if (sbmlname != MAINMODULE) {
-      NewCurrentModule(&sbmlname);
+      while (NewCurrentModule(&sbmlname)) {
+        //Duplicated module name
+        sbmlname += "_";
+      }
     }
     CurrentModule()->LoadSBML(document);
     if (sbmlname != MAINMODULE) {
@@ -266,7 +271,9 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
     FixName(cellmlname);
     Module* mod = GetModule(cellmlname);
     if (mod == NULL) {
-      NewCurrentModule(&cellmlname);
+      while (NewCurrentModule(&cellmlname)) {
+        cellmlname += "_";
+      }
       CurrentModule()->LoadCellMLComponent(component);
       RevertToPreviousModule();
     }
@@ -299,8 +306,10 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
   rv = model->GetName(cellmltext);
   cellmlname = ToThinString(cellmltext.get());
   FixName(cellmlname);
-  if (cellmlname != MAINMODULE) {
-    NewCurrentModule(&cellmlname);
+  cellmlname += "__" MAINMODULE;
+  while (NewCurrentModule(&cellmlname)) {
+    //Failure - duplicated name
+    cellmlname += "_";
   }
   CurrentModule()->LoadCellMLModel(model, top_components);
 
@@ -324,8 +333,10 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
   rv = model->GetConnections(getter_AddRefs(connections));
   LoadConnections(connections);
 
+  CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   //We've pulled a fast one here by inserting connections into models that were already copied into other models.  So, we need to go back through and pull those connections into the copied models.  We'll do this recursively by calling the routine on the top model.
-  CurrentModule()->ReloadSubmodelConnections();
+  CurrentModule()->ReloadSubmodelVariables(CurrentModule()->GetModuleName());
+  CurrentModule()->ReloadSubmodelConnections(CurrentModule());
   
   return false; //success
 }
@@ -358,6 +369,12 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
 
   nsCOMPtr<cellml_apiIModel> topmodel; //used when the encapsulation parent is null (in GetNameAccordingToEncapsulationParent)
   rv = connection->GetModelElement(getter_AddRefs(topmodel));
+  nsCOMPtr<cellml_apiICellMLElement> parentel;
+  rv = topmodel->GetParentElement(getter_AddRefs(parentel));
+  while (parentel != NULL) {
+    rv = parentel->GetModelElement(getter_AddRefs(topmodel));
+    rv = topmodel->GetParentElement(getter_AddRefs(parentel));
+  }
   //rv = topmodel->GetName(cellmltext);
   //cout << "Top model: " << ToThinString(cellmltext.get()) << endl;
   
@@ -447,7 +464,7 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
     if (firstvarname.size() > 1 && secondvarname.size() > 1) {
       //Create a local variable
       vector<string> newvarname;
-      newvarname.push_back(secondvarname[firstvarname.size()-1]);
+      newvarname.push_back(secondvarname[secondvarname.size()-1]);
       Variable* newvar = topmod->GetVariable(newvarname);
       if (newvar == NULL) {
         newvar = topmod->AddOrFindVariable(&newvarname[0]);
@@ -476,6 +493,14 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
 }  
 
 #endif
+
+void Registry::CreateLocalVariablesForSubmodelInterfaceIfNeeded()
+{
+  for (size_t mod=0; mod<m_modules.size(); mod++) {
+    m_modules[mod].CreateLocalVariablesForSubmodelInterfaceIfNeeded();
+  }
+}
+
 
 bool Registry::SwitchToPreviousFile()
 {
@@ -583,7 +608,7 @@ void Registry::SetupFunctions()
   }
 }
 
-void Registry::NewCurrentModule(const string* name)
+bool Registry::NewCurrentModule(const string* name)
 {
   string localname(*name);
   m_currentModules.push_back(localname);
@@ -593,12 +618,13 @@ void Registry::NewCurrentModule(const string* name)
       //assert(false); //Parsing disallows this condition, but translation allows it (though it's still an Antimony error).
       //cout << "duplicated name: " << localname << endl;
       SetError("Programming error:  Unable to create new module with the same name as an existing module (\"" + localname + "\").");
-      return;
+      return true;
     }
   }
   //Otherwise, create a new module with that name
   m_modules.push_back(Module(localname));
   m_modulemap.insert(make_pair(*name, m_modules.size()-1));
+  return false;
 }
 
 Module* Registry::CurrentModule()
@@ -613,13 +639,12 @@ void Registry::RevertToPreviousModule()
   assert(m_currentModules.size() > 0);
 }
 
-void Registry::AddVariableToCurrentExportList(Variable* export_var)
+bool Registry::AddVariableToCurrentExportList(Variable* export_var)
 {
   if (m_isfunction) {
-    m_userfunctions.back().AddVariableToExportList(export_var);
-    return;
+    return m_userfunctions.back().AddVariableToExportList(export_var);
   }
-  CurrentModule()->AddVariableToExportList(export_var);
+  return CurrentModule()->AddVariableToExportList(export_var);
 }
 
 void Registry::NewUserFunction(const std::string* name)
@@ -804,18 +829,18 @@ Module* Registry::GetModule(string modulename)
   if (found != m_modulemap.end()) {
     return &(m_modules[found->second]);
   }
+  //We don't store the user functions in a hash because there usually aren't that many of them.
+  for (size_t uf=0; uf<m_userfunctions.size(); uf++) {
+    if (modulename == m_userfunctions[uf].GetModuleName()) {
+      return &(m_userfunctions[uf]);
+    }
+  }
+  //In case we missed adding it to the hash:
   for (size_t mod=0; mod<m_modules.size(); mod++) {
     if (modulename == m_modules[mod].GetModuleName()) {
       assert(false);
       m_modulemap.insert(make_pair(modulename, mod));
       return &(m_modules[mod]);
-    }
-  }
-  for (size_t uf=0; uf<m_userfunctions.size(); uf++) {
-    if (modulename == m_userfunctions[uf].GetModuleName()) {
-      assert(false);
-      m_modulemap.insert(make_pair(modulename, uf));
-      return &(m_userfunctions[uf]);
     }
   }
   return NULL;

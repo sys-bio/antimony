@@ -120,6 +120,7 @@ string GetModuleNameFrom(nsCOMPtr<cellml_apiICellMLComponent> component)
   rv = component->GetModelElement(getter_AddRefs(mod));
   rv = mod->GetName(cellmltext);
   cellmlname = ToThinString(cellmltext.get()) + "__" + cellmlname;
+  FixName(cellmlname);
   return cellmlname;
 }
 

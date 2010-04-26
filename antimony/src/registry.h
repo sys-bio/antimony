@@ -89,12 +89,13 @@ public:
   bool   SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> connection);
   std::map<std::string, std::string> m_cellmlnames;
 #endif
+  void   CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   bool   SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};
   void   SetupFunctions();
 
   //Modules
-  void NewCurrentModule(const std::string* name);
+  bool NewCurrentModule(const std::string* name);
   Module* CurrentModule();
   void RevertToPreviousModule();
 
@@ -104,7 +105,7 @@ public:
 
   //Variables
   void SetConstness(const_type isconst) {m_constness = isconst;};
-  void AddVariableToCurrentExportList(Variable* export_var);
+  bool AddVariableToCurrentExportList(Variable* export_var);
   bool AddVariableToCurrentImportList(Variable* import_var);
   Variable* AddVariableToCurrent(const std::string* name);
   Variable* AddNewReactionToCurrent(rd_type divider, Formula* formula);

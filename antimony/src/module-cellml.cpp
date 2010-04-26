@@ -86,7 +86,7 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
     cellmlname = ToThinString(cellmltext.get());
     if (cellmlname != "") {
       Formula* formula = g_registry.NewBlankFormula();
-      setFormulaWithString(cellmlname, formula);
+      setFormulaWithString(cellmlname, formula, this);
       antvar->SetFormula(formula);
     }
     //Put it in the module interface if it has one:
@@ -94,6 +94,12 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
     rv = cmlvar->GetPublicInterface(&vi);
     if (vi != 2) {
       AddVariableToExportList(antvar);
+    }
+    else {
+      rv = cmlvar->GetPrivateInterface(&vi);
+      if (vi != 2) {
+        AddVariableToExportList(antvar);
+      }
     }
     
     rv = vsi->NextVariable(getter_AddRefs(cmlvar));
@@ -172,8 +178,13 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
         if ((idpos = equation.find("piecewise")) != string::npos) {
           equation = CellMLPiecewiseToSBML(equation);
         }
+        //Claim we can't handle definite integrals:
+        if ((idpos = equation.find("definite_integral")) != string::npos) {
+          g_registry.AddWarning("Unable to use the formula \"" + equation + "\" to define '" + variable + "' because Antimony does not handle definite integrals.");
+          continue;
+        }
         Formula* formula = g_registry.NewBlankFormula();
-        setFormulaWithString(Trim(equation), formula);
+        setFormulaWithString(Trim(equation), formula, this);
 
         //Find out what variable we're assigning to, and how we're assigning to it.
         //Remove '{unit: ...}' bits (for now)
@@ -206,6 +217,7 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
             continue;
           }
           variable.assign(variable, 2, timepos-6);
+          variable = Trim(variable);
           var = AddOrFindVariable(&variable);
           if (var->SetRateRule(formula)) {
             string warning = "Unable to use the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" to set the rate rule for " + var->GetNameDelimitedBy('.') + ":  " + getLastError();
@@ -214,7 +226,7 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
         }
         else if (variable.find("del(") != string::npos) {
           //It's a partial differential equation.
-          string warning = "Unable to translate an assignment to \"" + variable + "\" in the Antimony format because Antimony does not handle partial differential equations.";
+          string warning = "Unable to translate an assignment to \"" + variable + "\" in the Antimony format because Antimony does not handle partial differential equations (though neither do existing CellML tools).";
           g_registry.AddWarning(warning);
         }
         else if (variable.find("selector(") != string::npos) {
@@ -248,8 +260,6 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
 }
 
 void Module::SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> component) {
-  if (m_childrenadded) return;
-  m_childrenadded = true; //Since this is recursive, we may call some multiply-imported submodules multiple times otherwise.
   //Iterate over 'encapsulation' children and make them submodules.
   nsString cellmltext;
   string cellmlname;
@@ -259,7 +269,6 @@ void Module::SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> 
   nsCOMPtr<cellml_apiICellMLComponentIterator> childi;
   nsCOMPtr<cellml_apiICellMLComponent> child;
   
-  nsString namekey = ToNSString("AntimonyName");
   rv = children->IterateComponents(getter_AddRefs(childi));
   rv = childi->NextComponent(getter_AddRefs(child));
   while (child != NULL) {
@@ -272,21 +281,24 @@ void Module::SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> 
     vector<string> fullname;
     fullname.push_back(cellmlname);
     Variable* foundvar = GetVariable(fullname);
-    if (foundvar != NULL) {
+    if (foundvar != NULL && !(foundvar->GetType()==varModule && m_childrenadded)) {
       cellmlname = cellmlname + "_mod";
     }
     //Save the name, since it's not obvious whether the "_mod" was added or not.
     nsCString compmodid;
     nsCOMPtr<IWrappedPCM> cw(do_QueryInterface(child));
     rv = cw->GetObjid(compmodid);
-    g_registry.m_cellmlnames.insert(make_pair(compmodid.get(), cellmlname));
-    Variable* var = AddOrFindVariable(&cellmlname);
-    if(var->SetModule(&cellmlmodname)) {
-      assert(false);
-      return;
+    g_registry.m_cellmlnames.insert(make_pair(compmodid.get(), cellmlname)); //Even if we've already added this submodule, each time it's imported, the submodule gets its own component ID, and they all need to go in here.
+    if (!m_childrenadded) {
+      Variable* var = AddOrFindVariable(&cellmlname);
+      if(var->SetModule(&cellmlmodname)) {
+        assert(false);
+        return;
+      }
     }
     rv = childi->NextComponent(getter_AddRefs(child));
   }
+  m_childrenadded = true; //Since this is recursive, we may call some multiply-imported submodules multiple times otherwise.
 }
 
 
@@ -354,37 +366,85 @@ nsCOMPtr<cellml_apiICellMLComponent> Module::CreateCellMLComponentFor(nsCOMPtr<c
   return newc;
 }
 
-void Module::ReloadSubmodelConnections()
+void Module::ReloadSubmodelVariables(const string& modulename)
 {
   for (size_t var=0; var<m_variables.size(); var++) {
     Variable* variable = m_variables[var];
     if (variable->GetType() == varModule) {
       Module* modcopy = variable->GetModule();
       Module* submod = g_registry.GetModule(modcopy->GetModuleName());
-      submod->ReloadSubmodelConnections();
-      //Sometimes we've created new variables for synchronization that are not in our map:
+      submod->ReloadSubmodelVariables(submod->GetModuleName());
+      modcopy->ReloadSubmodelVariables(modulename);
+      modcopy->ResyncVariablesWith(submod, modulename, variable->GetName());
+    }
+  }
+}
+
+void Module::ResyncVariablesWith(const Module* twin, string modulename, vector<string> varname)
+{
+  assert (m_variables.size() <= twin->m_variables.size());
+  for (size_t var = m_variables.size(); var<twin->m_variables.size(); var++) {
+    //New variables
+    Variable* newsubvar = twin->m_variables[var];
+    Variable* newvar = new Variable(*newsubvar);
+    for (size_t name=varname.size(); name>0; name--) {
+      newvar->SetNewTopName(modulename, varname[name-1]);
+    }
+    //cout << "new subvar: " << ToStringFromVecDelimitedBy(newvar->GetName(), '.') << " for module " << ToStringFromVecDelimitedBy(m_variablename, '.') << endl;
+    assert(newvar->GetType() != varModule);
+    m_variables.push_back(newvar);
+    StoreVariable(newvar);
+  }
+}
+
+void Module::ReloadSubmodelConnections(Module* syncmod)
+{
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* variable = m_variables[var];
+    if (variable->GetType() == varModule) {
+      Module* modcopy = variable->GetModule();
+      Module* submod = g_registry.GetModule(modcopy->GetModuleName());
+      assert(modcopy != submod);
+      submod->ReloadSubmodelConnections(submod);
+      modcopy->ReloadSubmodelConnections(syncmod);
+      //cout << "reloading connections from " << submod->m_modulename << " to sync with " << variable->GetNameDelimitedBy('.') << endl;
       m_varmap.insert(submod->m_varmap.begin(), submod->m_varmap.end());
-      for (size_t var = modcopy->m_variables.size(); var<submod->m_variables.size(); var++) {
-        //There were variables added in the ur-module that were added (by synchronization-creation of a local variable through which to synchronize sub-variables) after we copied it
-        Variable* newsubvar = submod->m_variables[var];
-        assert(newsubvar->GetName().size() == 1);
-        Variable* newcopyvar = modcopy->AddOrFindVariable(&newsubvar->GetName()[0]);
-        newcopyvar->SetNewTopName(m_modulename, variable->GetName()[0]);
-      }
       for (size_t sync = modcopy->m_synchronized.size(); sync<submod->m_synchronized.size(); sync++) {
         //There are synchronizations in the ur-module that we didn't get when we copied it.
         vector<string> var1name = submod->m_synchronized[sync].first;
         vector<string> var2name = submod->m_synchronized[sync].second;
-        var1name.insert(var1name.begin(), variable->GetName()[0]);
-        var2name.insert(var2name.begin(), variable->GetName()[0]);
-        Variable* var1 = GetVariable(var1name);
-        Variable* var2 = GetVariable(var2name);
+        for (size_t vn=variable->GetName().size(); vn>0; vn--) {
+          var1name.insert(var1name.begin(), variable->GetName()[vn-1]);
+          var2name.insert(var2name.begin(), variable->GetName()[vn-1]);
+        }
+        Variable* var1 = syncmod->GetVariable(var1name);
+        Variable* var2 = syncmod->GetVariable(var2name);
+        size_t numsynced = syncmod->m_synchronized.size();
         assert(var1 != NULL && var2 != NULL);
+        if (var1->GetIsEquivalentTo(var2)) {
+          //Already synchronized.
+          continue;
+        }
         if (!var1->Synchronize(var2)) {
           //This adds the synchronization to the local list instead of the submodel's list.  So, move it!
-          pair<vector<string>, vector<string> > newsync = m_synchronized[m_synchronized.size()-1];
-          m_synchronized.pop_back();
+          assert(g_registry.GetModule(var1->GetNamespace()) == syncmod);
+          assert(numsynced == syncmod->m_synchronized.size()-1);
+          assert(syncmod->m_synchronized.size() > 0);
+          pair<vector<string>, vector<string> > newsync = syncmod->m_synchronized[syncmod->m_synchronized.size()-1];
+          syncmod->m_synchronized.pop_back();
           modcopy->m_synchronized.push_back(newsync);
+          /*
+          cout << ToStringFromVecDelimitedBy(var1name, '.') << " to "
+               << ToStringFromVecDelimitedBy(var2name, '.') << ": " << endl;
+          cout << ToStringFromVecDelimitedBy(var1->GetName(), '.') << " and "
+               << ToStringFromVecDelimitedBy(var2->GetName(), '.') << " now synchronized";
+          if (!var1->GetFormula()->IsEmpty()) {
+            cout << ": " << var1->GetFormula()->ToDelimitedStringWithEllipses('.') << endl;
+          }
+          else {
+            cout << "." << endl;
+          }
+          */
         }
         else {
           g_registry.AddWarning("In module '" + m_modulename + "', the variables " + var1->GetNameDelimitedBy('.') + " and " + var2->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
@@ -398,6 +458,7 @@ void Module::ReloadSubmodelConnections()
                  sync != m_synchronized.end(); sync++) {
               if ((sync1name == sync->first && sync2name == sync->second) ||
                   (sync2name == sync->first && sync1name == sync->second)) {
+                //cout << "Removing sync from " << m_modulename << ": " << ToStringFromVecDelimitedBy(sync1name, '.') << " with " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
                 m_synchronized.erase(sync);
                 foundorig = true;
                 //cout << "Found original!" << endl;
@@ -412,6 +473,7 @@ void Module::ReloadSubmodelConnections()
                  sync != m_synchronized.end(); sync++) {
               if ((sync1name == sync->first && sync2name == sync->second) ||
                   (sync2name == sync->first && sync1name == sync->second)) {
+                //cout << "Removing sync from " << m_modulename << ": " << ToStringFromVecDelimitedBy(sync1name, '.') << " with " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
                 m_synchronized.erase(sync);
                 foundorig = true;
                 //cout << "Found original!" << endl;
@@ -431,6 +493,7 @@ void Module::ReloadSubmodelConnections()
       }
     }
   }
+  //Finalize(); //Re-finalize to update m_origvars.
 }
 
 #endif

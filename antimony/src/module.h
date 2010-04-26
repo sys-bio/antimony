@@ -67,7 +67,7 @@ public:
   Variable* AddOrFindVariable(const std::string* name);
   Variable* AddNewNumberedVariable(const std::string name);
   void StoreVariable(Variable* var);
-  void AddVariableToExportList(Variable* var);
+  bool AddVariableToExportList(Variable* var);
   Variable* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula);
   Variable* AddNewReaction(ReactantList* left, rd_type divider, ReactantList* right, Formula* formula, Variable* var);
   bool SetFormula(Formula* formula);
@@ -76,6 +76,7 @@ public:
   void SetComponentCompartments(Variable* compartment);
   void AddSynchronizedPair(Variable* oldvar, Variable* newvar);
   void AddTimeToUserFunction(std::string function);
+  void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
 
   Variable* GetVariable(const std::vector<std::string>& name);
   void AddToVarMapFrom(const Module& submod);
@@ -134,21 +135,23 @@ public:
   const nsCOMPtr<cellml_apiIModel> GetCellMLModel();
   void  CreateCellMLModel();
   nsCOMPtr<cellml_apiICellMLComponent> CreateCellMLComponentFor(nsCOMPtr<cellml_apiIModel> model);
-  void  ReloadSubmodelConnections();
+  void  ResyncVariablesWith(const Module* twin, std::string modulename, std::vector<std::string> varname);
+  void  ReloadSubmodelVariables(const std::string& modname);
+  void  ReloadSubmodelConnections(Module* syncmod);
 #endif
 
   void  FixNames();
 
 private:
-  bool OrigFormulaIsAlready(const Variable* var, std::map<const Variable*, Variable> origmap, std::string formula) const;
-  bool OrigIsAlreadyCompartment(const Variable* var, std::map<const Variable*, Variable> origmap) const;
-  bool OrigIsAlreadyConstSpecies(const Variable* var, std::map<const Variable*, Variable> origmap, bool isconst) const;
-  bool OrigIsAlreadyDNAStrand(const Variable* var, std::map<const Variable*, Variable> origmap, std::string strand) const;
-  bool OrigIsAlreadyAssignmentRule(const Variable* var, std::map<const Variable*, Variable> origmap, std::string rule) const;
-  bool OrigIsAlreadyRateRule(const Variable* var, std::map<const Variable*, Variable> origmap, std::string rule) const;
-  bool OrigIsAlreadyReaction(const Variable* var, std::map<const Variable*, Variable> origmap, std::string rxn) const;
-  bool OrigIsAlreadyEvent(const Variable* var, std::map<const Variable*, Variable> origmap, std::string event) const;
-  bool OrigMatches(const Variable* var, std::map<const Variable*, Variable> origmap, var_type type, const_type isconst, const Variable* comp) const;
+  bool OrigFormulaIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string formula) const;
+  bool OrigIsAlreadyCompartment(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
+  bool OrigIsAlreadyConstSpecies(const Variable* var, const std::map<const Variable*, Variable>& origmap, bool isconst) const;
+  bool OrigIsAlreadyDNAStrand(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string strand) const;
+  bool OrigIsAlreadyAssignmentRule(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rule) const;
+  bool OrigIsAlreadyRateRule(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rule) const;
+  bool OrigIsAlreadyReaction(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rxn) const;
+  bool OrigIsAlreadyEvent(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string event) const;
+  bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
 };
 
 #include "userfunction.h"
