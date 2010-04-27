@@ -1,0 +1,102 @@
+//Created by libAntimony v1.3
+model Neumann2010_CD95Stimulation_NFkB_Apoptosis()
+
+  // Compartments and Species:
+  compartment default;
+  species L in default, L_RF in default, L_RF_C8 in default, L_RF_FL in default;
+  species L_RF_FS in default, p43_p41 in default, C3 in default, C8 in default;
+  species C8_star in default, C3_star in default, p43_FLIP in default, NF_kB_IkB in default;
+  species NF_kB_IkB_P in default, p43_FLIP_IKK_star in default, NF_kB_star in default;
+  species RF in default, FL in default, FS in default, IKK in default, L_RF_C8_FS in default;
+  species L_RF_FL_FL in default, L_RF_FL_FS in default, L_RF_FS_FS in default;
+
+  // Reactions:
+  reaction_1: L + RF -> L_RF; default * k1 * L * RF;
+  reaction_2: L_RF + C8 -> L_RF_C8; default * k2 * L_RF * C8;
+  reaction_3: L_RF + FL -> L_RF_FL; default * k3 * L_RF * FL;
+  reaction_4: L_RF + FS -> L_RF_FS; default * k4 * L_RF * FS;
+  reaction_5: L_RF_C8 + C8 -> p43_p41 + p43_p41; default * k5 * L_RF_C8 * C8;
+  reaction_6: L_RF_C8 + FL -> p43_FLIP; default * k6 * L_RF_C8 * FL;
+  reaction_7: L_RF_C8 + FS -> L_RF_C8_FS; default * k7 * L_RF_C8 * FS;
+  reaction_8: L_RF_FL + C8 -> p43_FLIP; default * k5 * L_RF_FL * C8;
+  reaction_9: L_RF_FL + FL -> L_RF_FL_FL; default * k6 * L_RF_FL * FL;
+  reaction_10: L_RF_FL + FS -> L_RF_FL_FS; default * k7 * L_RF_FL * FS;
+  reaction_11: L_RF_FS + C8 -> L_RF_C8_FS; default * k5 * L_RF_FS * C8;
+  reaction_12: L_RF_FS + FL -> L_RF_FL_FS; default * k6 * L_RF_FS * FL;
+  reaction_13: L_RF_FS + FS -> L_RF_FS_FS; default * k7 * L_RF_FS * FS;
+  reaction_14: p43_p41 + p43_p41 -> C8_star; default * k8 * p43_p41 * p43_p41;
+  reaction_15: C3 + C8_star -> C3_star + C8_star; default * k9 * C3 * C8_star;
+  reaction_16: C8 + C3_star -> p43_p41 + C3_star; default * k10 * C8 * C3_star;
+  reaction_17: C8_star -> ; default * k11 * C8_star;
+  reaction_18: C3_star -> ; default * k12 * C3_star;
+  reaction_19: p43_FLIP + IKK -> p43_FLIP_IKK_star; default * k13 * p43_FLIP * IKK;
+  reaction_20: NF_kB_IkB + p43_FLIP_IKK_star -> NF_kB_IkB_P + p43_FLIP_IKK_star; default * k14 * NF_kB_IkB * p43_FLIP_IKK_star;
+  reaction_21: NF_kB_IkB_P -> NF_kB_star; default * k15 * NF_kB_IkB_P;
+  reaction_22: p43_FLIP_IKK_star -> ; default * k16 * p43_FLIP_IKK_star;
+  reaction_23: NF_kB_star -> ; default * k17 * NF_kB_star;
+
+  // Species initializations:
+  L = 113.22;
+  L_RF = 0;
+  L_RF_C8 = 0;
+  L_RF_FL = 0;
+  L_RF_FS = 0;
+  p43_p41 = 0;
+  C3 = 1.443404;
+  C8 = 64.47652;
+  C8_star = 0;
+  C3_star = 0;
+  p43_FLIP = 0;
+  NF_kB_IkB = 4.739546;
+  NF_kB_IkB_P = 0;
+  p43_FLIP_IKK_star = 0;
+  NF_kB_star = 0;
+  RF = 91.26592;
+  FL = 7.398562;
+  FS = 5.083923;
+  IKK = 5.772825;
+  L_RF_C8_FS = 0;
+  L_RF_FL_FL = 0;
+  L_RF_FL_FS = 0;
+  L_RF_FS_FS = 0;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  k1 = 1;
+  k2 = 0.0001277248;
+  k3 = 0.6693316;
+  k4 = 1e-05;
+  k5 = 0.0005946569;
+  k6 = 0.9999999;
+  k7 = 0.8875063;
+  k8 = 0.0008044378;
+  k9 = 0.002249759;
+  k10 = 0.1205258;
+  k11 = 0.02891451;
+  k12 = 0.1502914;
+  k13 = 0.0007204261;
+  k14 = 0.3588224;
+  k15 = 3.684162;
+  k16 = 0.02229912;
+  k17 = 0.0064182;
+
+  //Display Names:
+  L_RF is "L:RF";
+  L_RF_C8 is "L:RF:C8";
+  L_RF_FL is "L:RF:FL";
+  L_RF_FS is "L:RF:FS";
+  p43_p41 is "p43/p41";
+  C8_star is "C8*";
+  C3_star is "C3*";
+  p43_FLIP is "p43-FLIP";
+  NF_kB_IkB is "NF-kB:IkB";
+  NF_kB_IkB_P is "NF-kB:IkB:P";
+  p43_FLIP_IKK_star is "p43-FLIP:IKK*";
+  NF_kB_star is "NF-kB*";
+  L_RF_C8_FS is "L:RF:C8:FS";
+  L_RF_FL_FL is "L:RF:FL:FL";
+  L_RF_FL_FS is "L:RF:FL:FS";
+  L_RF_FS_FS is "L:RF:FS:FS";
+end

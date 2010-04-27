@@ -10,12 +10,13 @@ model Huang1996_MAPK_ultrasens()
   species P_KKK_KK in compartment_, P_KKK_P_KK in compartment_, PP_KK_K in compartment_;
   species PP_KK_P_K in compartment_, KKPase_PP_KK in compartment_, KKPase_P_KK in compartment_;
   species KPase_PP_K in compartment_, KPase_P_K in compartment_, $K_PP_norm in compartment_;
-  species $KK_PP_norm in compartment_, $KKK_P_norm in compartment_;
+  species $KK_PP_norm in compartment_, $KKK_P_norm in compartment_, $rel_K_PP_max in compartment_;
 
   // Assignment Rules:
-  K_PP_norm := (PP_K + P_K + PP_KK_K + PP_KK_P_K + KPase_PP_K + KPase_P_K) / 1.2;
-  KK_PP_norm := (PP_KK + P_KK + PP_KK_K + PP_KK_P_K + KKPase_PP_KK + KKPase_P_KK) / 1.2;
-  KKK_P_norm := (P_KKK + P_KKK_KK + P_KKK_P_KK) / 0.003;
+  K_PP_norm := (PP_K + KPase_PP_K) / (PP_K + P_K + K + PP_KK_K + PP_KK_P_K + KPase_PP_K + KPase_P_K);
+  KK_PP_norm := (PP_KK + PP_KK_K + PP_KK_P_K + KKPase_PP_KK) / (PP_KK + P_KK + KK + PP_KK_K + PP_KK_P_K + P_KKK_KK + P_KKK_P_KK + KKPase_PP_KK + KKPase_P_KK);
+  KKK_P_norm := (P_KKK + P_KKK_KK + P_KKK_P_KK) / (KKK + P_KKK + P_KKK_KK + P_KKK_P_KK);
+  rel_K_PP_max := K_PP_norm / K_PP_norm_max;
 
   // Reactions:
   r1a: KKK + E1 -> E1_KKK; compartment_ * (r1a_a1 * E1 * KKK - r1a_d1 * E1_KKK);
@@ -67,6 +68,7 @@ model Huang1996_MAPK_ultrasens()
   compartment_ = 4e-12;
 
   // Variable initializations:
+  K_PP_norm_max = 0.900049;
   r1a_a1 = 1000;
   r1a_d1 = 150;
   r1b_k2 = 150;
@@ -121,6 +123,7 @@ model Huang1996_MAPK_ultrasens()
   KKPase_P_KK is "MAPKK-Pase_P-MAPKK";
   KPase_PP_K is "MAPK-Pase_PP-MAPK";
   KPase_P_K is "MAPK-Pase_P-MAPK";
+  rel_K_PP_max is "relative maximal K_PP";
   r1a is "binding of MAPKKK activator";
   r1b is "MAPKKK activation";
   r2a is "binding of MAPKKK inactivator";

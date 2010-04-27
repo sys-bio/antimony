@@ -1,0 +1,100 @@
+//Created by libAntimony v1.3
+model restif06()
+
+  // Compartments and Species:
+  compartment env;
+  species N in env, S in env, I_1 in env, I_2 in env, R_1 in env, R_2 in env;
+  species I_1p in env, I_2p in env, R_p in env;
+
+  // Assignment Rules:
+  mu := 1 / l_e;
+  beta_1 := R0_1 * gamma_1;
+  gamma_1 := 365 / tInf_1;
+  beta_2 := R0_2 * gamma_2;
+  gamma_2 := 365 / tInf_2;
+  sigma := 1 / tImm;
+  Lambda_1 := beta_1 * (I_1 + I_1p) / N;
+  Lambda_2 := beta_2 * (I_2 + I_2p) / N;
+  I_1_frac := (I_1 + I_1p) / N;
+  I_2_frac := (I_2 + I_2p) / N;
+  S_frac := S / N;
+  R1_frac := (R_1 + R_p) / N;
+  R2_frac := (R_2 + R_p) / N;
+  Rp_frac := R_p / N;
+
+  // Reactions:
+  r1:  -> S; mu * N;
+  r2: S -> ; mu * S;
+  r3: I_1 -> ; mu * I_1;
+  r4: I_2 -> ; mu * I_2;
+  r5: R_1 -> ; mu * R_1;
+  r6: R_2 -> ; mu * R_2;
+  r7: I_1p -> ; mu * I_1p;
+  r8: I_2p -> ; mu * I_2p;
+  r9: R_p -> ; mu * R_p;
+  r10: S -> I_1; beta_1 * ((I_1 + I_1p) / N) * S;
+  r11: S -> I_2; beta_2 * ((I_2 + I_2p) / N) * S;
+  r12: R_2 -> I_1p; (1 - psi) * beta_1 * (I_1 + I_1p) / N * R_2;
+  r13: R_1 -> I_2p; (1 - psi) * beta_2 * (I_2 + I_2p) / N * R_1;
+  r14: I_1 -> R_1; gamma_1 * I_1;
+  r15: I_2 -> R_2; gamma_2 * I_2;
+  r16: I_1p -> R_p; gamma_1 * I_1p;
+  r17: I_2p -> R_p; gamma_2 * I_2p;
+  r18: R_1 -> S; sigma * R_1;
+  r19: R_2 -> S; sigma * R_2;
+  r20: R_p -> S; sigma * R_p;
+
+  // Species initializations:
+  N = 1;
+  S = 0.0588912;
+  I_1 = 0.003775;
+  I_2 = 1e-06;
+  R_1 = 0.93733;
+  R_2 = 0;
+  I_1p = 0;
+  I_2p = 0;
+  R_p = 0;
+
+  // Compartment initializations:
+  env = 1;
+
+  // Variable initializations:
+  l_e = 50;
+  R0_1 = 17;
+  R0_2 = 17;
+  tInf_1 = 21;
+  tInf_2 = 21;
+  tImm = 20;
+  psi = 0.2;
+
+  //Other declarations:
+  var mu, beta_1, gamma_1, beta_2, gamma_2, sigma, Lambda_1, Lambda_2, I_1_frac;
+  var I_2_frac, S_frac, R1_frac, R2_frac, Rp_frac;
+
+  //Display Names:
+  env is "environment";
+  l_e is "life expectancy";
+  tInf_1 is "infectious period 1";
+  tInf_2 is "infectious period 2";
+  tImm is "immune period";
+  r1 is "Birth";
+  r2 is "Death in S";
+  r3 is "Death in I_1";
+  r4 is "Death in I_2";
+  r5 is "Death in R_1";
+  r6 is "Death in R_2";
+  r7 is "Death in I_1p";
+  r8 is "Death in I_2p";
+  r9 is "Death in R_p";
+  r10 is "Primary Infection with strain 1";
+  r11 is "Primary Infection with strain 2";
+  r12 is "Secondary Infection with strain 1";
+  r13 is "Secondary Infection with strain 2";
+  r14 is "Recovery (I_1)";
+  r15 is "Recovery (I_2)";
+  r16 is "Recovery (I_1p)";
+  r17 is "Recovery (I_2p)";
+  r18 is "Loss of Immunity (R_1)";
+  r19 is "Loss of Immunity (R_2)";
+  r20 is "Loss of Immunity (R_p)";
+end

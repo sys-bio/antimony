@@ -3,10 +3,15 @@ model Bhartiya2003_Tryptophan_operon()
 
   // Compartments and Species:
   compartment compartment_;
-  species Enz in compartment_, Ts in compartment_, $Tt in compartment_;
+  species Enz in compartment_, Ts in compartment_, $Tt in compartment_, $To in compartment_;
 
   // Assignment Rules:
-  Tt := (-f_val * e_val - f_val * Tex + Tex * Ts + pow(pow(f_val * (e_val + Tex) - Tex * Ts, 2) - 4 * f_val * Tex * (-e_val * Ts - Tex * Tomax - Tex * Ts), 0.5)) / (2 * Tex);
+  Tt := To + Ts;
+  To := Tomax * Tex / (Tex * (1 + Ts / f_val) + e_val);
+  Ts_norm := Ts / 82;
+  To_norm := To / 82;
+  Tt_norm := Tt / 82;
+  Enz_norm := Enz / 1;
 
   // Reactions:
   Enzyme_synthesis:  -> Enz; compartment_ * Enzyme_synthesis_k1 * pow(Enzyme_synthesis_ki1, Enzyme_synthesis_nH) * Enzyme_synthesis_Ot / (pow(Enzyme_synthesis_ki1, Enzyme_synthesis_nH) + pow(Tt, Enzyme_synthesis_nH));
@@ -38,11 +43,15 @@ model Bhartiya2003_Tryptophan_operon()
   tryptophan_consumption_Kg = 0.2;
   tryptophan_dilution_mu = 0.01;
 
+  //Other declarations:
+  var Ts_norm, To_norm, Tt_norm, Enz_norm;
+
   //Display Names:
   compartment_ is "cell";
   Enz is "Anthranilate synthase";
   Ts is "Synthesized tryptophan";
   Tt is "Total tryptophan";
+  To is "exog. Trp";
   Enzyme_synthesis is "Anthranilate synthase synthesis";
   Enzyme_dilution is "Enzyme dilution due to cell growth";
   tryptophan_synthesis is "Tryptophan synthesis";

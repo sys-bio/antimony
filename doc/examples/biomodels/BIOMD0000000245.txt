@@ -1,0 +1,135 @@
+//Created by libAntimony v1.3
+model lei2001()
+
+  // Compartments and Species:
+  compartment env, cell;
+  species s_glu in env, s_pyr in env, s_acetate in env, s_acetald in env;
+  species s_EtOH in env, x in env, $a in env, $AcDH in env, $CO2 in env, $Red in env;
+  species $S_f in env;
+
+  // Assignment Rules:
+  a := x * X_a;
+  AcDH := x * X_AcDH;
+  qO2 := 1000 / 32 * (0.178 * r1 + 0.908 * r2 + 0.363 * r4 + 1.066 * r5 - 0.363 * r6 + 0.063 * r7 + 0.214 * r8) / (x * env);
+  qCO2 := 1000 / 44.01 * (1.499 * r2 + 0.5 * r3 + 1.466 * r5 + 0.127 * r7 + 0.325 * r8) / (x * env);
+
+  // Rate Rules:
+  X_a' = ((0.732 * r7 + 0.619 * r8) * (1 - X_a) - r9 - r10) / (x * env);
+  X_AcDH' = (r9 - r11 - (0.732 * r7 + 0.619 * r8) * X_AcDH) / (x * env);
+
+  // Reactions:
+  r7: s_glu -> 0.732x + 0.127$CO2 + 0.063$Red; k_7 * s_glu / (s_glu + K_7) * x * X_a * env;
+  r8: s_acetate -> 0.619x + 0.325$CO2 + 0.214$Red; k_8 * s_acetate / ((s_acetate + K_5e) * (1 + K_5i * s_glu)) * x * X_a * env;
+  r9: $a -> $AcDH; ((k_9 * s_glu / (s_glu + K_9) + k_9e * s_EtOH / (s_EtOH + K_9e)) / (K_9i * s_glu + 1) + k_9c * s_glu / (s_glu + K_9)) * X_a * x * env;
+  r10: $a -> ; (k_10 * s_glu / (s_glu + K_10) + k_10e * s_EtOH / (s_EtOH + K_10e)) * X_a * x * env;
+  r11: $AcDH -> ; k_11 * X_AcDH * x * env;
+  r1: s_glu -> 0.978s_pyr + 0.178$Red; (k_1l * s_glu / (s_glu + K_1l) + k_1h * s_glu / (s_glu + K_1h) + k_1e * s_acetald * s_glu / (s_glu * (K_1i * s_acetald + 1) + K_1e)) * x * X_a * env;
+  r2: s_pyr -> 1.499$CO2 + 0.908$Red; k_2 * s_pyr / ((s_pyr + K_2) * (K_2i * s_glu + 1)) * x * X_a * env;
+  r4: s_acetald -> 1.363s_acetate + 0.363$Red; k_4 * s_acetald / (s_acetald + K_4) * x * X_a * X_AcDH * env;
+  r5: s_acetate -> 1.446$CO2 + 1.066$Red; (k_5 * s_acetate / (s_acetate + K_5) + k_5e * s_acetate / ((s_acetate + K_5e) * (1 + K_5i * s_glu))) * x * X_a * env;
+  r6: s_acetald + 0.363$Red -> 1.045s_EtOH; k_6 * (s_acetald - k_6r * s_EtOH) / (s_acetald + K_6 + K_6e * s_EtOH) * x * X_a * env;
+  r3: s_pyr -> 0.5s_acetald + 0.33$CO2; k_3 * pow(s_pyr, 4) / (pow(s_pyr, 4) + K_3) * x * X_a * env;
+  s_glu_in: $S_f -> s_glu; S_f * D * env;
+  s_glu_out: s_glu -> ; s_glu * D * env;
+  s_pyr_out: s_pyr -> ; s_pyr * D * env;
+  s_acetate_out: s_acetate -> ; s_acetate * D * env;
+  s_acetald_out: s_acetald -> ; s_acetald * D * env;
+  s_EtOH_out: s_EtOH -> ; s_EtOH * D * env;
+  a_out: $a -> ; a * D * env;
+  x_out: x -> ; x * D * env;
+  AcDH_out: $AcDH -> ; AcDH * D * env;
+
+  // Species initializations:
+  s_glu = 15;
+  s_pyr = 0;
+  s_acetate = 0;
+  s_acetald = 0;
+  s_EtOH = 0;
+  x = 0.002;
+  CO2 = 0;
+  Red = 0;
+  S_f = 15;
+
+  // Compartment initializations:
+  env = 1;
+  cell = 1;
+
+  // Variable initializations:
+  X_a = 0.1;
+  X_AcDH = 0.0075;
+  k_1h = 0.584;
+  K_1h = 0.0116;
+  k_1l = 1.43;
+  K_1l = 0.94;
+  k_1e = 47.1;
+  K_1e = 0.12;
+  K_1i = 14.2;
+  k_2 = 0.501;
+  K_2 = 2e-05;
+  K_2i = 0.101;
+  k_3 = 5.81;
+  K_3 = 5e-07;
+  k_4 = 4.8;
+  K_4 = 0.000264;
+  k_5 = 0.0104;
+  K_5 = 0.0102;
+  k_5e = 0.775;
+  K_5e = 0.1;
+  K_5i = 440;
+  k_6 = 2.82;
+  K_6 = 0.034;
+  k_6r = 0.0125;
+  K_6e = 0.057;
+  k_7 = 1.203;
+  K_7 = 0.0101;
+  k_8 = 0.589;
+  k_9 = 0.008;
+  K_9 = 1e-06;
+  k_9e = 0.0751;
+  K_9e = 13;
+  K_9i = 25;
+  k_9c = 0.00399;
+  k_10 = 0.392;
+  K_10 = 0.0023;
+  k_10e = 0.00339;
+  K_10e = 0.0018;
+  k_11 = 0.02;
+  D = 0.1;
+
+  //Other declarations:
+  var qO2, qCO2, X_a, X_AcDH;
+
+  //Display Names:
+  env is "environment";
+  s_glu is "Glucose";
+  s_pyr is "Pyruvate";
+  s_acetate is "Acetate";
+  s_acetald is "Acetaldehyde";
+  s_EtOH is "EtOH";
+  x is "BM";
+  a is "BM(active)";
+  AcDH is "BM(AcDH)";
+  Red is "Red. Equ. (NADH)";
+  S_f is "Glucose(feed)";
+  D is "Dilutionrate";
+  r7 is "BM growth (gluc)";
+  r8 is "BM growth (acetate)";
+  r9 is "Acdh production";
+  r10 is "active BM degradation";
+  r11 is "Acdh degradation";
+  r1 is "glycolysis";
+  r2 is "TCA (pyruvate)";
+  r4 is "Acetald. dehydrogenase";
+  r5 is "TCA (acetate)";
+  r6 is "ADH";
+  r3 is "Pyruvate Dehydrogenase";
+  s_glu_in is "Glucose inflow";
+  s_glu_out is "Glucose outflow";
+  s_pyr_out is "Pyruvate outflow";
+  s_acetate_out is "Acetate outflow";
+  s_acetald_out is "Acetaldehyde outflow";
+  s_EtOH_out is "EtOH outflow";
+  a_out is "active BM outflow";
+  x_out is "BM outflow";
+  AcDH_out is "AcDH BM outflow";
+end

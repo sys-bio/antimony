@@ -1,0 +1,95 @@
+//Created by libAntimony v1.3
+model Lai2007_O2_Transport_Metabolism()
+
+  // Compartments and Species:
+  compartment Capillary, Tissue;
+  species ATP in Tissue, PCr in Tissue, ADP in Tissue, Cr in Tissue, Pi_ in Tissue;
+  species CTcap in Capillary, CTtis in Tissue, $CFcap in Capillary, $CFtis in Tissue;
+
+  // Assignment Rules:
+  StO2m := 100 * (Hct * CrbcHb * KHb * pow(CFcap, nH) / (1 + KHb * pow(CFcap, nH)) * Capillary + Wmc * CmcMb * KMb * CFtis / (1 + KMb * CFtis) * Tissue) / (CrbcHb * Hct * Capillary + CmcMb * Wmc * Tissue);
+  RStO2m := StO2m / StO2mW - 1;
+  Katpase := piecewise(KatpaseW, leq(time, tE), KatpaseE);
+  Qm := piecewise(QWm, leq(time, tE), QWm + dQMm * (1 - exp((tE - time) / tauQm)));
+  PSm := PSR + (PSE - PSR) * (1 - exp((QRm - Qm) / Qc));
+  Vmax := piecewise(VmaxM, eq(exercise_level, 1), piecewise(VmaxH, eq(exercise_level, 2), VmaxVH));
+  KatpaseE := piecewise(KatpaseM, eq(exercise_level, 1), piecewise(KatpaseH, eq(exercise_level, 2), KatpaseVH));
+  dQMm := piecewise(dQMmM, eq(exercise_level, 1), piecewise(dQMmH, eq(exercise_level, 2), dQMmVH));
+  tauQm := piecewise(tauQmM, eq(exercise_level, 1), piecewise(tauQmH, eq(exercise_level, 2), tauQmVH));
+  ATPase_flux_mM := ATPase / Tissue;
+  CK_flux_mM := 1 * (CreatineKinase / Tissue);
+  oxygen_phosph := OxidativePhosphorylation / Tissue * 6;
+
+  // Rate Rules:
+  CFcap' = (Qm * (CTart - CTcap) - PSm * (CFcap - CFtis)) * (1 / Capillary) / (1 + 4 * Hct * CrbcHb * KHb * nH * pow(CFcap, nH - 1) / pow(1 + KHb * pow(CFcap, nH), 2));
+  CFtis' = (PSm * (CFcap - CFtis) / Tissue - Vmax * (CFtis / (Km + CFtis) * ADP / (Kadp + ADP))) / (1 + Wmc * CmcMb * KMb / pow(1 + KMb * CFtis, 2));
+
+  // Reactions:
+  ATPase: ATP -> ADP; Tissue * Katpase * ATP;
+  CreatineKinase: ADP + PCr -> ATP + Cr; Tissue * (VfCK * ADP * PCr / (Kb * Kia) - VrCK * Cr * ATP / (Kiq * Kp)) / ((Kia + ADP) / Kia + ATP / Kiq + PCr / Kib + ADP * PCr / (Kb * Kia) + Cr * ATP / (Kiq * Kp));
+  OxidativePhosphorylation: 6ADP + CTtis -> 6ATP; Tissue * Vmax * (CFtis / (Km + CFtis)) * ADP / (Kadp + ADP);
+  ConvectionTransport:  -> CTcap; Qm * (CTart - CTcap);
+  DiffusionTransport: CTcap -> CTtis; PSm * (CFcap - CFtis);
+
+  // Species initializations:
+  ATP = 8.198857;
+  PCr = 40.98942;
+  ADP = 0.001142;
+  Cr = 1.01056;
+  Pi_ = 0.5;
+  CTcap = 5.281527;
+  CTtis = 0.4084824;
+  CFcap = 0.03969;
+  CFtis = 0.0374;
+
+  // Compartment initializations:
+  Capillary = 2.0979;
+  Tissue = 27.8721;
+
+  // Variable initializations:
+  KatpaseW = 0.3207601;
+  Kadp = 0.058;
+  Kia = 0.135;
+  Kiq = 3.5;
+  Kib = 3.9;
+  Kp = 3.8;
+  Kb = 1.11;
+  Km = 0.0007;
+  VfCK = 6000;
+  VrCK = 3008.65837589001;
+  QRm = 0.688;
+  QWm = 3.118;
+  Qc = 8;
+  PSR = 134.2828;
+  PSE = 20000;
+  nH = 2.7;
+  Hct = 0.45;
+  Wmc = 0.8064;
+  CmcMb = 0.5;
+  CrbcHb = 5.18;
+  KMb = 308.642;
+  KHb = 7800.7;
+  tE = 3;
+  CTart = 9.199981;
+  VmaxM = 53.5150933;
+  VmaxH = 34.68714;
+  VmaxVH = 23.11702;
+  KatpaseM = 1.71080439028658;
+  KatpaseH = 2.2581564;
+  KatpaseVH = 3.3423645;
+  dQMmM = 7.9167374;
+  dQMmH = 9.42198;
+  dQMmVH = 12.74981;
+  tauQmM = 0.32;
+  tauQmH = 0.396;
+  tauQmVH = 0.42;
+  StO2mW = 81.17123516;
+  exercise_level = 3;
+
+  //Other declarations:
+  var StO2m, RStO2m, Katpase, Qm, PSm, Vmax, KatpaseE, dQMm, tauQm, ATPase_flux_mM;
+  var CK_flux_mM, oxygen_phosph;
+
+  //Display Names:
+  oxygen_phosph is "oxygen_phosphorilation_rate_mM";
+end

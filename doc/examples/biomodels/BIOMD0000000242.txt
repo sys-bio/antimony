@@ -1,0 +1,116 @@
+//Created by libAntimony v1.3
+function Mass_Action_2_1(k1, S1, S2)
+  k1 * S1 * S2;
+end
+
+model Bai2003_G1phaseRegulation()
+
+  // Compartments and Species:
+  compartment cell;
+  species D_1 in cell, E_1 in cell, R_1 in cell, RS_1 in cell, theta_1 in cell;
+  species X_1 in cell;
+
+  // Assignment Rules:
+  Rb_phos := RT_1 - RS_1 - R_1;
+
+  // Reactions:
+  _1:  -> D_1; cell * aD_1 * (GF_1 / (pow(k1_1, -1) + GF_1));
+  cyclinD_1: D_1 -> ; cell * dD_1 * E_1 * D_1;
+  cyclinEsynthesis_1:  -> E_1; cell * aE_1 * (GF_1 / (pow(k2_1, -1) + GF_1) + aF_1 * theta_1);
+  cyclinEdegradation_1: E_1 -> ; cell * dE_1 * X_1 * E_1;
+  pRBsynthesis_1:  -> R_1; cell * (pX_1 * (RT_1 - RS_1 - R_1) * X_1 / (qX_1 + RT_1 - RS_1 - R_1 + X_1));
+  pRBdeplation_1: R_1 + theta_1 -> RS_1; cell * Mass_Action_2_1(pS_1, R_1, theta_1);
+  _2: RS_1 -> theta_1; cell * (pD_1 * RS_1 * D_1 / (qD_1 + RS_1 + D_1));
+  null2_1: RS_1 -> theta_1; cell * (pE_1 * RS_1 * E_1 / (qE_1 + RS_1 + E_1));
+  null3_1:  -> theta_1; cell * atheta_1 * (GF_1 / (pow(k3_1, -1) + GF_1) + fC_1_1 * theta_1);
+  E2Fdegradationviacellcycleprogression_1: theta_1 -> ; cell * dtheta_1 * (X_1 / (qtheta_1 + X_1)) * theta_1;
+  cellcycleprogression_1:  -> X_1; cell * (aX_1 * E_1 + f_1 * theta_1 + g_1 * pow(X_1, 2) * E_1);
+  cellcycleprogressionslow_1: X_1 -> ; cell * dX_1 * X_1;
+
+  // Species initializations:
+  D_1 = 0;
+  E_1 = 0;
+  R_1 = 2.5;
+  RS_1 = 0;
+  theta_1 = 0;
+  X_1 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  GF_1 = 6.3;
+  k1_1 = 0.05;
+  dD_1 = 0.4;
+  aD_1 = 0.4;
+  aE_1 = 0.16;
+  k2_1 = 1000;
+  aF_1 = 0.9;
+  pX_1 = 0.48;
+  RT_1 = 2.5;
+  qX_1 = 0.8;
+  pS_1 = 0.6;
+  pD_1 = 0.48;
+  qD_1 = 0.6;
+  pE_1 = 0.096;
+  qE_1 = 0.6;
+  atheta_1 = 0.05;
+  k3_1 = 1.5;
+  dtheta_1 = 0.12;
+  qtheta_1 = 0.3;
+  aX_1 = 0.08;
+  f_1 = 0.35;
+  g_1 = 0.528;
+  dX_1 = 1.04;
+  dE_1 = 0.2;
+  fC_1_1 = 0.003;
+
+  //Other declarations:
+  var Rb_phos;
+
+  //Display Names:
+  D_1 is "D";
+  E_1 is "E";
+  R_1 is "R";
+  RS_1 is "RS";
+  theta_1 is "theta";
+  X_1 is "X";
+  GF_1 is "GF";
+  k1_1 is "k1";
+  dD_1 is "dD";
+  aD_1 is "aD";
+  aE_1 is "aE";
+  k2_1 is "k2";
+  aF_1 is "aF";
+  pX_1 is "pX";
+  RT_1 is "RT";
+  qX_1 is "qX";
+  pS_1 is "pS";
+  pD_1 is "pD";
+  qD_1 is "qD";
+  pE_1 is "pE";
+  qE_1 is "qE";
+  atheta_1 is "atheta";
+  k3_1 is "k3";
+  dtheta_1 is "dtheta";
+  qtheta_1 is "qtheta";
+  aX_1 is "aX";
+  f_1 is "f";
+  g_1 is "g";
+  dX_1 is "dX";
+  dE_1 is "dE";
+  fC_1_1 is "fe";
+  Rb_phos is "Rb_phosphorylated";
+  _1 is "cyclinD synthesis";
+  cyclinD_1 is "cyclinD degradation";
+  cyclinEsynthesis_1 is "cyclinE synthesis";
+  cyclinEdegradation_1 is "cyclinE degradation";
+  pRBsynthesis_1 is "pRB synthesis";
+  pRBdeplation_1 is "pRB/E2F complex association";
+  _2 is "pRB/E2F complex dissociation via cyclin D";
+  null2_1 is "pRB/E2F complex dissociation via cyclin E";
+  null3_1 is "E2F synthesis";
+  E2Fdegradationviacellcycleprogression_1 is "E2F degradation via cell cycle progression";
+  cellcycleprogression_1 is "cell cycle progression go";
+  cellcycleprogressionslow_1 is "cell cycle progression slow";
+end
