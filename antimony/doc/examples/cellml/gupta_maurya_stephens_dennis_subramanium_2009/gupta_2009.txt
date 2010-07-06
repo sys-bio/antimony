@@ -1,0 +1,85 @@
+//Created by libAntimony v1.4
+model gupta_2009__environment(time_)
+end
+
+model gupta_2009__main(time_)
+
+  // Assignment Rules:
+  v_1 := LPS * PIP_2 * k_1;
+  v_2 := PIP_2 * k_2;
+  v_3 := DG * k_3;
+  v_4 := AA * k_4;
+  v_5 := DG * GPCho * k_5;
+  v_6 := LPS * GPCho * k_6;
+  v_7 := GPCho * k_7;
+  v_8 := AA * k_8;
+  v_9 := HETE * k_9;
+  v_10 := DG * AA * k_10;
+  v_11 := LPS * AA * k_11;
+  v_12 := AA * k_12;
+  v_13 := PGH_2 * k_13;
+  v_14 := PGE_2 * k_14;
+  v_15 := PGH_2 * k_15;
+  v_16 := PGF_2a * k_16;
+  v_17 := PGH_2 * k_17;
+  v_18 := PGD_2 * k_18;
+  v_19 := PGD_2 * k_19;
+  v_20 := dPGD_2 * k_20;
+  v_21 := PGJ_2 * k_21;
+  v_22 := dPGJ_2 * k_22;
+  LPS := piecewise( time_ * 2 , time_ <= 0.5 , 1 - (time_ - 0.5 ) / 1.5 , ( time_ > 0.5) && (time_ < 2 ), 0 );
+
+  // Rate Rules:
+  AA' = v_1 + v_2 + v_3 - v_4 + v_5 + v_6 + v_7 - v_8 - v_10 - v_11 - v_12;
+  HETE' = v_8 - v_9;
+  PGH_2' = v_10 + v_11 + v_12 - v_13 - v_15 - v_17;
+  PGE_2' = v_13 - v_14;
+  PGF_2a' = v_15 - v_16;
+  PGD_2' = v_17 - v_18 - v_19;
+  PGJ_2' = v_18 - v_21;
+  dPGD_2' = v_19 - v_20;
+  dPGJ_2' = v_21 - v_22;
+
+  // Variable initializations:
+  k_1 = 355.637;
+  k_2 = 1e-15;
+  k_3 = 1e-15;
+  k_4 = 1e-15;
+  k_5 = 1e-15;
+  k_6 = 0.33;
+  k_7 = 1e-15;
+  k_8 = 0.007;
+  k_9 = 0.187;
+  k_10 = 0.024;
+  k_11 = 0.111;
+  k_12 = 0.098;
+  k_13 = 0.204;
+  k_14 = 1e-15;
+  k_15 = 0.061;
+  k_16 = 1e-15;
+  k_17 = 3.116;
+  k_18 = 0.054;
+  k_19 = 0.029;
+  k_20 = 0.014;
+  k_21 = 0.034;
+  k_22 = 0.116;
+  PIP_2 = 1;
+  DG = 0;
+  GPCho = 1;
+  AA = 25;
+  HETE = 0;
+  PGH_2 = 0;
+  PGE_2 = 0;
+  PGF_2a = 0;
+  PGD_2 = 0;
+  PGJ_2 = 0;
+  dPGD_2 = 0;
+  dPGJ_2 = 0;
+end
+
+model gupta_2009____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: gupta_2009__environment(time_);
+  main: gupta_2009__main(time_);
+end

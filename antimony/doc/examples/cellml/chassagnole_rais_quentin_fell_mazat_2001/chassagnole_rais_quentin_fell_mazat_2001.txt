@@ -1,83 +1,119 @@
-//Created by libAntimony v1.3
-model chassagnole_rais_quentin_fell_mazat_2001_version01__environment(time_)
+//Created by libAntimony v1.4
+model chassagnole_2001__environment(time_)
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__Asp(Asp, vAKI, vAKIII, time_)
+model chassagnole_2001__Asp(Asp, vAKI, vAKIII, time_)
 
   // Rate Rules:
-  Asp' = vAKI + vAKIII;
+  Asp' = -(vAKI) - vAKIII;
+
+  // Variable initializations:
+  Asp = 10;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__aspp(aspp, vAKI, vAKIII, vASD, time_)
+model chassagnole_2001__aspp(aspp, vAKI, vAKIII, vASD, time_)
 
   // Rate Rules:
-  aspp' = vAKI + vAKIII + vASD;
+  aspp' = vAKI + vAKIII - vASD;
+
+  // Variable initializations:
+  aspp = 0;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__ASA(ASA, vASD, vHDH, time_)
+model chassagnole_2001__ASA(ASA, vASD, vHDH, time_)
 
   // Rate Rules:
-  ASA' = vASD + vHDH;
+  ASA' = vASD - vHDH;
+
+  // Variable initializations:
+  ASA = 0;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__hs(hs, vHDH, vHK, time_)
+model chassagnole_2001__hs(hs, vHDH, vHK, time_)
 
   // Rate Rules:
-  hs' = vHDH + vHK;
+  hs' = vHDH - vHK;
+
+  // Variable initializations:
+  hs = 0;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__hsp(hsp, vTS, time_)
+model chassagnole_2001__hsp(hsp, vTS, vHK, time_)
 
   // Rate Rules:
-  hsp' = vTS;
+  hsp' = vHK + vTS;
+
+  // Variable initializations:
+  hsp = 0;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__Thr(Thr, vAKI, vHDH, vHK, time_)
+model chassagnole_2001__Thr(Thr, vTS, time_)
 
   // Rate Rules:
-  Thr' = vAKI + vHDH + vHK;
+  Thr' = vTS;
+
+  // Variable initializations:
+  Thr = 0;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__ATP(ATP, vAKI, vAKIII, vHK, time_)
+model chassagnole_2001__ATP(ATP, vAKI, vAKIII, vHK, time_)
 
   // Rate Rules:
-  ATP' = vAKI + vAKIII + vHK;
+  ATP' = -(vAKI) - vAKIII - vHK;
+
+  // Variable initializations:
+  ATP = 30;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__ADP(ADP, vAKI, vAKIII, time_)
+model chassagnole_2001__ADP(ADP, vAKI, vAKIII, vHK, time_)
 
   // Rate Rules:
-  ADP' = vAKI + vAKIII;
+  ADP' = vAKI + vAKIII + vHK;
+
+  // Variable initializations:
+  ADP = 0;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__NADPH(NADPH, vASD, vHDH, time_)
+model chassagnole_2001__NADPH(NADPH, vASD, vHDH, time_)
 
   // Rate Rules:
-  NADPH' = vASD + vHDH;
+  NADPH' = -(vASD) - vHDH;
+
+  // Variable initializations:
+  NADPH = 0;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__NADP(NADP, vASD, vHDH, time_)
+model chassagnole_2001__NADP(NADP, vASD, vHDH, time_)
 
   // Rate Rules:
   NADP' = vASD + vHDH;
+
+  // Variable initializations:
+  NADP = 0;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__Pi(Pi_, vASD, time_)
+model chassagnole_2001__Pi(Pi_, vASD, vTS, time_)
 
   // Rate Rules:
-  Pi_' = vASD;
+  Pi_' = vASD + vTS;
+
+  // Variable initializations:
+  Pi_ = 0;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__Lys(Lys, vAKIII, vHK, time_)
+model chassagnole_2001__Lys(Lys, time_)
 
   // Rate Rules:
-  Lys' = vAKIII + vHK;
+  Lys' = 0;
+
+  // Variable initializations:
+  Lys = 0;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__vAKI(vAKI, Asp, aspp, ATP, ADP, Thr)
+model chassagnole_2001__vAKI(vAKI, Asp, aspp, ATP, ADP, Thr)
 
   // Assignment Rules:
-  vAKI := V_max_AK_I * ( Asp * ATP - aspp * ADP / K_eq ) / (( K_asp * (( 1.0 + power( Thr / K_iThr , h_Thr )) / ( 1.0 + power( Thr / ( K_iThr * alpha ), h_Thr ))) + aspp * ( K_asp / K_aspp ) + Asp ) * ( K_ATP * ( 1.0 + ADP / K_ADP ) + ATP ));
+  vAKI := V_max_AK_I * (Asp * ATP - aspp * ADP / K_eq) / ((K_asp * (1 + power(Thr / K_iThr, h_Thr)) / (1 + power(Thr / (K_iThr * alpha), h_Thr)) + aspp * K_asp / K_aspp + Asp) * (K_ATP * (1 + ADP / K_ADP) + ATP));
 
   // Variable initializations:
   K_asp = 0.97;
@@ -88,13 +124,13 @@ model chassagnole_rais_quentin_fell_mazat_2001_version01__vAKI(vAKI, Asp, aspp, 
   alpha = 2.47;
   h_Thr = 4.09;
   K_eq = 0.00064;
-  V_max_AK_I = 463.00;
+  V_max_AK_I = 463;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__vASD(vASD, aspp, ASA, NADPH, NADP, Pi_)
+model chassagnole_2001__vASD(vASD, aspp, ASA, NADPH, NADP, Pi_)
 
   // Assignment Rules:
-  vASD := V_max_ASD * ( aspp * NADPH - ASA * NADP * Pi_ / K_eq ) / (( K_aspp * ( 1.0 + ASA / K_ASA ) * ( 1.0 + Pi_ / K_Pi ) + aspp ) * ( K_NADPH * ( 1.0 + NADP / K_NADP ) + NADPH ));
+  vASD := V_max_ASD * (aspp * NADPH - ASA * NADP * Pi_ / K_eq) / ((K_aspp * (1 + ASA / K_ASA) * (1 + Pi_ / K_Pi) + aspp) * (K_NADPH * (1 + NADP / K_NADP) + NADPH));
 
   // Variable initializations:
   K_aspp = 0.022;
@@ -102,14 +138,14 @@ model chassagnole_rais_quentin_fell_mazat_2001_version01__vASD(vASD, aspp, ASA, 
   K_ASA = 0.11;
   K_NADP = 0.144;
   K_Pi = 10.2;
-  K_eq = 284000.0;
-  V_max_ASD = 598.0;
+  K_eq = 284000;
+  V_max_ASD = 598;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__vHDH(vHDH, ASA, hs, NADPH, NADP, Thr)
+model chassagnole_2001__vHDH(vHDH, ASA, hs, NADPH, NADP, Thr)
 
   // Assignment Rules:
-  vHDH := V_max_HDH * ( ASA * NADPH - hs * NADP / K_eq ) / (( 1.0 + power( Thr / K_iThr , h )) / ( 1.0 + power( Thr / ( alpha * K_iThr ), h )) * ( K_ASA + hs * ( K_ASA / K_hs ) + ASA ) * ( K_NADPH * ( 1.0 + NADP / K_NADP ) + NADPH ));
+  vHDH := V_max_HDH * (ASA * NADPH - hs * NADP / K_eq) / ((1 + power(Thr / K_iThr, h)) / (1 + power(Thr / (alpha * K_iThr), h)) * (K_ASA + hs * K_ASA / K_hs + ASA) * (K_NADPH * (1 + NADP / K_NADP) + NADPH));
 
   // Variable initializations:
   K_ASA = 0.24;
@@ -119,14 +155,14 @@ model chassagnole_rais_quentin_fell_mazat_2001_version01__vHDH(vHDH, ASA, hs, NA
   K_iThr = 0.097;
   alpha = 3.93;
   h = 1.41;
-  K_eq = 100000000000.0;
-  V_max_HDH = 2585.00;
+  K_eq = 100000000000;
+  V_max_HDH = 2585;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__vHK(vHK, hs, ATP, Thr, Lys)
+model chassagnole_2001__vHK(vHK, hs, ATP, Thr, Lys)
 
   // Assignment Rules:
-  vHK := V_max_HK * hs * ATP / (( K_hs * (( 1.0 + ATP / K_iATP ) / ( 1.0 + Thr / K_iThr )) + hs ) * (( K_ATP * ( 1.0 + hs / K_ihs ) + ATP ) * ( 1.0 + Lys / K_iLys )));
+  vHK := V_max_HK * hs * ATP / ((K_hs * (1 + ATP / K_iATP) / (1 + Thr / K_iThr) + hs) * (K_ATP * (1 + hs / K_ihs) + ATP) * (1 + Lys / K_iLys));
 
   // Variable initializations:
   K_hs = 0.11;
@@ -135,23 +171,23 @@ model chassagnole_rais_quentin_fell_mazat_2001_version01__vHK(vHK, hs, ATP, Thr,
   K_iLys = 9.45;
   K_ihs = 4.7;
   K_iATP = 4.35;
-  V_max_HK = 483.0;
+  V_max_HK = 483;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__vTS(vTS, hsp)
+model chassagnole_2001__vTS(vTS, hsp)
 
   // Assignment Rules:
-  vTS := V_max_TS * hsp / ( K_hsp + hsp );
+  vTS := V_max_TS * hsp / (K_hsp + hsp);
 
   // Variable initializations:
   K_hsp = 0.31;
-  V_max_TS = 208.0;
+  V_max_TS = 208;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01__vAKIII(vAKIII, Asp, aspp, ATP, ADP, Lys)
+model chassagnole_2001__vAKIII(vAKIII, Asp, aspp, ATP, ADP, Lys)
 
   // Assignment Rules:
-  vAKIII := V_max_AK_III * ( Asp * ATP - aspp * ADP / K_eq ) / (( 1.0 + power( Lys / K_iLys , h_Lys )) * ( K_asp * ( 1.0 + aspp / K_aspp ) + Asp ) * ( K_ATP * ( 1.0 + ADP / K_ADP ) + ATP ));
+  vAKIII := V_max_AK_III * (Asp * ATP - aspp * ADP / K_eq) / ((1 + power(Lys / K_iLys, h_Lys)) * (K_asp * (1 + aspp / K_aspp) + Asp) * (K_ATP * (1 + ADP / K_ADP) + ATP));
 
   // Variable initializations:
   K_asp = 0.32;
@@ -161,29 +197,29 @@ model chassagnole_rais_quentin_fell_mazat_2001_version01__vAKIII(vAKIII, Asp, as
   K_iLys = 0.391;
   h_Lys = 2.8;
   K_eq = 0.00064;
-  V_max_AK_III = 299.0;
+  V_max_AK_III = 299;
 end
 
-model chassagnole_rais_quentin_fell_mazat_2001_version01____main()
+model chassagnole_2001____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: chassagnole_rais_quentin_fell_mazat_2001_version01__environment(time_);
-  Asp: chassagnole_rais_quentin_fell_mazat_2001_version01__Asp(Asp0, vAKI0, vAKIII0, time_);
-  aspp: chassagnole_rais_quentin_fell_mazat_2001_version01__aspp(aspp0, vAKI0, vAKIII0, vASD0, time_);
-  ASA: chassagnole_rais_quentin_fell_mazat_2001_version01__ASA(ASA0, vASD0, vHDH0, time_);
-  hs: chassagnole_rais_quentin_fell_mazat_2001_version01__hs(hs0, vHDH0, vHK0, time_);
-  hsp: chassagnole_rais_quentin_fell_mazat_2001_version01__hsp(hsp0, vTS0, time_);
-  Thr: chassagnole_rais_quentin_fell_mazat_2001_version01__Thr(Thr0, vAKI0, vHDH0, vHK0, time_);
-  ATP: chassagnole_rais_quentin_fell_mazat_2001_version01__ATP(ATP0, vAKI0, vAKIII0, vHK0, time_);
-  ADP: chassagnole_rais_quentin_fell_mazat_2001_version01__ADP(ADP0, vAKI0, vAKIII0, time_);
-  NADPH: chassagnole_rais_quentin_fell_mazat_2001_version01__NADPH(NADPH0, vASD0, vHDH0, time_);
-  NADP: chassagnole_rais_quentin_fell_mazat_2001_version01__NADP(NADP0, vASD0, vHDH0, time_);
-  Pi_: chassagnole_rais_quentin_fell_mazat_2001_version01__Pi(Pi_0, vASD0, time_);
-  Lys: chassagnole_rais_quentin_fell_mazat_2001_version01__Lys(Lys0, vAKIII0, vHK0, time_);
-  vAKI: chassagnole_rais_quentin_fell_mazat_2001_version01__vAKI(vAKI0, Asp0, aspp0, ATP0, ADP0, Thr0);
-  vASD: chassagnole_rais_quentin_fell_mazat_2001_version01__vASD(vASD0, aspp0, ASA0, NADPH0, NADP0, Pi_0);
-  vHDH: chassagnole_rais_quentin_fell_mazat_2001_version01__vHDH(vHDH0, ASA0, hs0, NADPH0, NADP0, Thr0);
-  vHK: chassagnole_rais_quentin_fell_mazat_2001_version01__vHK(vHK0, hs0, ATP0, Thr0, Lys0);
-  vTS: chassagnole_rais_quentin_fell_mazat_2001_version01__vTS(vTS0, hsp0);
-  vAKIII: chassagnole_rais_quentin_fell_mazat_2001_version01__vAKIII(vAKIII0, Asp0, aspp0, ATP0, ADP0, Lys0);
+  environment: chassagnole_2001__environment(time_);
+  Asp: chassagnole_2001__Asp(Asp0, vAKI0, vAKIII0, time_);
+  aspp: chassagnole_2001__aspp(aspp0, vAKI0, vAKIII0, vASD0, time_);
+  ASA: chassagnole_2001__ASA(ASA0, vASD0, vHDH0, time_);
+  hs: chassagnole_2001__hs(hs0, vHDH0, vHK0, time_);
+  hsp: chassagnole_2001__hsp(hsp0, vTS0, vHK0, time_);
+  Thr: chassagnole_2001__Thr(Thr0, vTS0, time_);
+  ATP: chassagnole_2001__ATP(ATP0, vAKI0, vAKIII0, vHK0, time_);
+  ADP: chassagnole_2001__ADP(ADP0, vAKI0, vAKIII0, vHK0, time_);
+  NADPH: chassagnole_2001__NADPH(NADPH0, vASD0, vHDH0, time_);
+  NADP: chassagnole_2001__NADP(NADP0, vASD0, vHDH0, time_);
+  Pi_: chassagnole_2001__Pi(Pi_0, vASD0, vTS0, time_);
+  Lys: chassagnole_2001__Lys(Lys0, time_);
+  vAKI: chassagnole_2001__vAKI(vAKI0, Asp0, aspp0, ATP0, ADP0, Thr0);
+  vASD: chassagnole_2001__vASD(vASD0, aspp0, ASA0, NADPH0, NADP0, Pi_0);
+  vHDH: chassagnole_2001__vHDH(vHDH0, ASA0, hs0, NADPH0, NADP0, Thr0);
+  vHK: chassagnole_2001__vHK(vHK0, hs0, ATP0, Thr0, Lys0);
+  vTS: chassagnole_2001__vTS(vTS0, hsp0);
+  vAKIII: chassagnole_2001__vAKIII(vAKIII0, Asp0, aspp0, ATP0, ADP0, Lys0);
 end

@@ -1,0 +1,82 @@
+//Created by libAntimony v1.4
+model calcium__calcium(t, Ca)
+
+  // Assignment Rules:
+  Ca := piecewise( (459 - 576 ) * t / 180 + 576 , ( t >= 0) && (t <= 180 ), (406 - 459 ) * (t - 180 ) / 180 + 459 , ( t > 180) && (t <= 360 ), (377 - 406 ) * (t - 360 ) / 180 + 406 , ( t > 360) && (t <= 540 ), (348 - 377 ) * (t - 540 ) / 180 + 377 , ( t > 540) && (t <= 720 ), (336 - 348 ) * (t - 720 ) / 180 + 348 , ( t > 720) && (t <= 900 ), (334 - 336 ) * (t - 900 ) / 180 + 336 , ( t > 900) && (t <= 1080 ), 334 , ( t > 1080) && (t <= stimEnd ), 60 );
+
+  // Variable initializations:
+  stimEnd = 1800;
+end
+
+model calcineurin__calcineurin(t, Ca, Ntot, act_N)
+
+  // Assignment Rules:
+  act_N := power(Ca, n) / (power(Ca, n) + power(K_mN, n) * (1 + K_dN / M));
+
+  // Variable initializations:
+  M = 6000;
+  Ntot = 1000;
+  K_mN = 535;
+  n = 2.92;
+  K_dN = 1760;
+end
+
+model NFATCycling__NFAT_Cycling(t, NFATN_n, NFATp_n, Ccn, Ntot, act_N)
+
+  // Assignment Rules:
+  J1 := k_f1 * NFATp_c * Ntot * act_N - k_r1 * NFATN_c * (1 - act_N);
+  J2 := k_f2 * NFATN_c;
+  J3 := k_f3 * NFATN_n * (1 - act_N) - k_r3 * NFATp_n * Ntot * act_N;
+  J4 := k_f4 * NFATp_n;
+
+  // Rate Rules:
+  NFATN_c' = J1 - J2;
+  NFATN_n' = J2 * Ccn - J3;
+  NFATp_c' = J4 / Ccn - J1;
+  NFATp_n' = J3 - J4;
+
+  // Variable initializations:
+  NFATN_c = 0.0004806012;
+  NFATN_n = 0.10902441;
+  NFATp_c = 0.9957805651;
+  NFATp_n = 0.077917275;
+  k_f1 = 7.68934e-6;
+  k_r1 = 0.019256;
+  k_f2 = 0.00144192;
+  k_f3 = 0.000361944;
+  k_r3 = 4.70813e-5;
+  k_f4 = 0.000444695;
+end
+
+model NFATMyocyte_TomidaProtocol__NFAT_Cycling_interface(NFATN_n, NFATp_n)
+
+  // Assignment Rules:
+  nuclearNFAT := NFATN_n + NFATp_n;
+end
+
+model NFATMyocyte_TomidaProtocol__geometry(Ccn)
+
+  // Sub-modules, and any changes to those submodules:
+  calcium: calcium__calcium(t, Ca);
+  calcineurin: calcineurin__calcineurin(t0, Ca, Ntot, act_N);
+  NFAT_Cycling: NFATCycling__NFAT_Cycling(t1, NFATN_n, NFATp_n, Ccn, Ntot, act_N);
+  NFAT_Cycling_interface: NFATMyocyte_TomidaProtocol__NFAT_Cycling_interface(NFATN_n, NFATp_n);
+
+  // Variable initializations:
+  Ccn = 50;
+end
+
+model NFATMyocyte_TomidaProtocol__environment(t)
+
+  // Sub-modules, and any changes to those submodules:
+  geometry: NFATMyocyte_TomidaProtocol__geometry(Ccn);
+  geometry.calcium.t is t;
+  geometry.calcineurin.t is t;
+  geometry.NFAT_Cycling.t is t;
+end
+
+model NFATMyocyte_TomidaProtocol____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: NFATMyocyte_TomidaProtocol__environment(t);
+end

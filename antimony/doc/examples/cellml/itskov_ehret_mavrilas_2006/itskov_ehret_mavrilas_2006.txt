@@ -1,5 +1,5 @@
-//Created by libAntimony v1.3
-model itskov_ehret_mavrilas_2005_version01__equations(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32)
+//Created by libAntimony v1.4
+model itskov_2006__equations(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32)
 
   // Assignment Rules:
   Tdev11 := 0.5 * (mu1 * (exp((i1tilde - 1 ) * a1) / x11denom + -(1 ) * exp((k1tilde - 1 ) * b1) * (power(k1, 2 ) / x11denom + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) * power(x11, 2 ) / (power(detc, 2 ) * x11denom * x21denom) + (-(4 ) * E22 * E13 + -(2 ) * E13 + 4 * E12 * E23) * (-(4 ) * E22 * E31 + -(2 ) * E31 + 4 * E21 * E32) * power(x11, 2 ) * power(x21, 2 ) / (power(detc, 2 ) * x11denom * x21denom))) + mu2 * (exp((i2tilde - 1 ) * a2) / x12denom + -(1 ) * exp((k2tilde - 1 ) * b2) * (power(k1, 2 ) / x12denom + (-(4 ) * E33 * E21 + -(2 ) * E21 + 4 * E23 * E31) * (-(4 ) * E33 * E12 + -(2 ) * E12 + 4 * E13 * E32) * power(x12, 2 ) / (power(detc, 2 ) * x12denom * x22denom) + (-(4 ) * E22 * E31 + -(2 ) * E13 + 4 * E12 * E23) * (-(4 ) * E22 * E31 + -(2 ) * E31 + 4 * E21 * E32) * power(x12, 2 ) * power(x22, 2 )) + power(detc, 2 ) * x12denom * x22denom));
@@ -28,10 +28,10 @@ model itskov_ehret_mavrilas_2005_version01__equations(E11, E22, E33, E12, E13, E
   k2tilde := k1 / x12denom + k2 * power(x12, 2 ) / (x12denom * x22denom) + k3 * power(x12, 2 ) * power(x22, 2 ) / (x12denom * x22denom);
 end
 
-model itskov_ehret_mavrilas_2005_version01__interface(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32)
+model itskov_2006__interface(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32)
 
   // Sub-modules, and any changes to those submodules:
-  equations: itskov_ehret_mavrilas_2005_version01__equations(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32);
+  equations: itskov_2006__equations(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32);
 
   // Variable initializations:
   mu1 = 0;
@@ -46,8 +46,8 @@ model itskov_ehret_mavrilas_2005_version01__interface(E11, E22, E33, E12, E13, E
   x22 = 0;
 end
 
-model itskov_ehret_mavrilas_2005_version01____main()
+model itskov_2006____main()
 
   // Sub-modules, and any changes to those submodules:
-  interface: itskov_ehret_mavrilas_2005_version01__interface(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32);
+  interface: itskov_2006__interface(E11, E22, E33, E12, E13, E21, E23, E31, E32, mu1, a1, b1, x11, x21, mu2, a2, b2, x12, x22, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev21, Tdev23, Tdev31, Tdev32);
 end

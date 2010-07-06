@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="TempIPump____main" name="TempIPump____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Qvi" constant="false"/>
+      <parameter id="Qvo" constant="false"/>
+      <parameter id="Wn" constant="false"/>
+      <parameter id="TempIPump_dPv" constant="false"/>
+      <parameter id="t"/>
+      <parameter id="Pvi"/>
+      <parameter id="Pvo"/>
+      <parameter id="Ts2"/>
+      <parameter id="T"/>
+      <parameter id="Kp0"/>
+      <parameter id="Kp1"/>
+      <parameter id="Kp2"/>
+      <parameter id="Kp3"/>
+      <parameter id="Kp4"/>
+      <parameter id="Kp5"/>
+      <parameter id="Kp6"/>
+      <parameter id="Wi"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="Qvi">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> -1 </cn>
+            <ci> Qvo </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Qvo">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <ci> Kp0 </ci>
+              <apply>
+                <times/>
+                <ci> Kp1 </ci>
+                <ci> Wn </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Kp2 </ci>
+                <ci> TempIPump_dPv </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Kp3 </ci>
+                <ci> Wn </ci>
+                <ci> TempIPump_dPv </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Kp4 </ci>
+                <apply>
+                  <power/>
+                  <ci> Wn </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+                <ci> TempIPump_dPv </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Kp5 </ci>
+                <ci> Wn </ci>
+                <apply>
+                  <power/>
+                  <ci> TempIPump_dPv </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> Kp6 </ci>
+                <apply>
+                  <power/>
+                  <ci> Wn </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> TempIPump_dPv </ci>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <cn> 16.6667 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Wn">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <ci> Wi </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="TempIPump_dPv">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> Pvo </ci>
+            <ci> Pvi </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

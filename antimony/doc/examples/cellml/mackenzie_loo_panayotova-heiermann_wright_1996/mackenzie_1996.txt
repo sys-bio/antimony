@@ -1,0 +1,150 @@
+//Created by libAntimony v1.4
+model mackenzie_1996__environment(time_)
+end
+
+model mackenzie_1996__parameters(k0_12, k0_21, k0_23, k0_32, k0_34, k0_43, k0_45, k0_54, k0_25, k0_52, k0_56, k0_65, k0_61, k0_16, delta, alpha_p, alpha_pp, C_T, n, z_c, z_Na, F, R, T, V, mu)
+
+  // Assignment Rules:
+  alpha_p := 1 - delta - alpha_pp;
+  C_T := 1E6 * N_C / N_Avo;
+  mu := F * V / (R * T);
+
+  // Variable initializations:
+  k0_12 = 20000;
+  k0_21 = 400;
+  k0_23 = 1e4;
+  k0_32 = 20;
+  k0_34 = 50;
+  k0_43 = 50;
+  k0_45 = 800;
+  k0_54 = 6.7e6;
+  k0_25 = 0.01;
+  k0_52 = 0.17;
+  k0_56 = 48;
+  k0_65 = 50;
+  k0_61 = 35;
+  k0_16 = 100;
+  delta = 0.7;
+  alpha_pp = 0;
+  N_C = 8.4e10;
+  N_Avo = 6.022e23;
+  area = 1e6;
+  n = 1;
+  z_c = -1;
+  z_Na = 1;
+  F = 96485.34;
+  R = 8.314;
+  T = 310;
+end
+
+model mackenzie_1996__ion_concentrations(V, Na_i, Na_o, glucose_i, glucose_o, time_)
+
+  // Rate Rules:
+  V' = 100E-6;
+
+  // Variable initializations:
+  V = -150e-3;
+  Na_i = 10e-3;
+  Na_o = 100e-3;
+  glucose_i = 0e-3;
+  glucose_o = 1e-3;
+end
+
+model mackenzie_1996__rate_constants(Na_i, Na_o, glucose_i, glucose_o, k_12, k_21, k_23, k_32, k_34, k_43, k_45, k_54, k_25, k_52, k_56, k_65, k_61, k_16, k0_12, ks_12, k0_21, k0_23, k0_32, k0_34, k0_43, k0_45, k0_54_temp, k0_54, k0_25, k_52_temp, k0_52, k0_56, k0_65, k0_61, k0_16, delta, n, z_c, z_Na, alpha_p, alpha_pp, C_T, mu)
+
+  // Assignment Rules:
+  k_12 := ks_12 * power(Na_o, n);
+  k_21 := k0_21 * exp(n * z_Na * alpha_p * mu / 2 );
+  k_23 := k0_23 * glucose_o;
+  k_32 := k0_32;
+  k_34 := k0_34 * exp(-((z_c + n)) * delta * mu / 2 );
+  k_43 := k0_43 * exp((z_c + n) * delta * mu / 2 );
+  k_45 := k0_45;
+  k_54 := k0_54_temp * glucose_i;
+  k_25 := k0_25 * exp(-((z_c + n)) * delta * mu / 2 );
+  k_52 := k0_12 * k_25 * k0_56 * k0_61 / (k0_21 * k0_16 * k0_65);
+  k_56 := k0_56 * exp(-(n) * z_Na * alpha_pp * mu / 2 );
+  k_65 := k0_65 * power(Na_i, n) * exp(n * z_Na * alpha_pp * mu / 2 );
+  k_61 := k0_61 * exp(z_c * delta * mu / 2 );
+  k_16 := k0_16 * exp(-(z_c) * delta * mu / 2 );
+  ks_12 := k0_12 * exp(-(n) * alpha_p * mu / 2 );
+  k0_54_temp := k0_23 * k_34 * k_45 * k_52 / (k_43 * k_32 * k_25);
+  k_52_temp := k0_52 * exp((z_c + n) * delta * mu / 2 );
+end
+
+model mackenzie_1996__kinetic_equations(k_12, k_21, k_23, k_32, k_34, k_43, k_45, k_54, k_25, k_52, k_56, k_65, k_61, k_16, C_1, C_2, C_3, C_4, C_5, C_6, C_6_temp, C_T, time_)
+
+  // Assignment Rules:
+  C_6 := C_T - (C_1 + C_2 + C_3 + C_4 + C_5);
+
+  // Rate Rules:
+  C_1' = k_21 * C_2 + k_61 * C_6 - (k_12 + k_16) * C_1;
+  C_2' = k_12 * C_1 + k_32 * C_3 + k_52 * C_5 - (k_21 + k_23 + k_25) * C_2;
+  C_3' = k_23 * C_2 + k_43 * C_4 - (k_32 + k_34) * C_3;
+  C_4' = k_34 * C_3 + k_54 * C_5 - (k_45 + k_43) * C_4;
+  C_5' = k_45 * C_4 + k_65 * C_6 + k_25 * C_2 - (k_54 + k_52 + k_56) * C_5;
+  C_6_temp' = k_16 * C_1 + k_56 * C_5 - (k_61 + k_65) * C_6_temp;
+
+  // Variable initializations:
+  C_1 = 3.923e-9;
+  C_2 = 1.016e-7;
+  C_3 = 1.515e-8;
+  C_4 = 8.912e-10;
+  C_5 = 1.485e-8;
+  C_6_temp = 3.06798e-9;
+end
+
+model mackenzie_1996__king_altman_states(k_12, k_21, k_23, k_32, k_34, k_43, k_45, k_54, k_25, k_52, k_56, k_65, k_61, k_16, C_T, C1, C2, C3, C4, C5, C6)
+
+  // Assignment Rules:
+  C1_sum := k_21 * k_32 * k_43 * k_54 * k_65 + k_21 * k_34 * k_45 * k_52 * k_65 + k_21 * k_32 * k_45 * k_52 * k_65 + k_21 * k_32 * k_43 * k_52 * k_65 + k_25 * k_34 * k_45 * k_56 * k_61 + k_23 * k_34 * k_45 * k_56 * k_61 + k_21 * k_34 * k_45 * k_56 * k_61 + k_25 * k_32 * k_45 * k_56 * k_61 + k_21 * k_32 * k_45 * k_56 * k_61 + k_25 * k_32 * k_43 * k_56 * k_61 + k_21 * k_32 * k_43 * k_56 * k_61 + k_21 * k_32 * k_43 * k_54 * k_61 + k_21 * k_34 * k_45 * k_52 * k_61 + k_21 * k_32 * k_45 * k_52 * k_61 + k_21 * k_32 * k_43 * k_52 * k_61;
+  C2_sum := k_16 * k_32 * k_43 * k_54 * k_65 + k_12 * k_32 * k_43 * k_54 * k_65 + k_16 * k_34 * k_45 * k_52 * k_65 + k_12 * k_34 * k_45 * k_52 * k_65 + k_16 * k_32 * k_45 * k_52 * k_65 + k_12 * k_32 * k_45 * k_52 * k_65 + k_16 * k_32 * k_43 * k_52 * k_65 + k_12 * k_32 * k_43 * k_52 * k_65 + k_12 * k_34 * k_45 * k_56 * k_61 + k_12 * k_32 * k_45 * k_56 * k_61 + k_12 * k_32 * k_43 * k_56 * k_61 + k_12 * k_32 * k_43 * k_54 * k_61 + k_12 * k_34 * k_45 * k_52 * k_61 + k_12 * k_32 * k_45 * k_52 * k_61 + k_12 * k_32 * k_43 * k_52 * k_61;
+  C3_sum := k_16 * k_25 * k_43 * k_54 * k_65 + k_12 * k_25 * k_43 * k_54 * k_65 + k_16 * k_23 * k_43 * k_54 * k_65 + k_12 * k_23 * k_43 * k_54 * k_65 + k_16 * k_21 * k_43 * k_54 * k_65 + k_16 * k_23 * k_45 * k_52 * k_65 + k_12 * k_23 * k_45 * k_52 * k_65 + k_16 * k_23 * k_43 * k_52 * k_65 + k_12 * k_23 * k_43 * k_52 * k_65 + k_12 * k_23 * k_45 * k_56 * k_61 + k_12 * k_23 * k_43 * k_56 * k_61 + k_12 * k_25 * k_43 * k_54 * k_61 + k_12 * k_23 * k_43 * k_54 * k_61 + k_12 * k_23 * k_45 * k_52 * k_61 + k_12 * k_23 * k_43 * k_52 * k_61;
+  C4_sum := k_16 * k_25 * k_34 * k_54 * k_65 + k_12 * k_25 * k_34 * k_54 * k_65 + k_16 * k_23 * k_34 * k_54 * k_65 + k_12 * k_23 * k_34 * k_54 * k_65 + k_16 * k_21 * k_34 * k_54 * k_65 + k_16 * k_25 * k_32 * k_54 * k_65 + k_12 * k_25 * k_32 * k_54 * k_65 + k_16 * k_21 * k_32 * k_54 * k_65 + k_16 * k_23 * k_34 * k_52 * k_65 + k_12 * k_23 * k_34 * k_52 * k_65 + k_12 * k_23 * k_34 * k_56 * k_61 + k_12 * k_25 * k_34 * k_54 * k_61 + k_12 * k_23 * k_34 * k_54 * k_61 + k_12 * k_25 * k_32 * k_54 * k_61 + k_12 * k_23 * k_34 * k_52 * k_61;
+  C5_sum := k_16 * k_25 * k_34 * k_45 * k_65 + k_12 * k_25 * k_34 * k_45 * k_65 + k_16 * k_23 * k_34 * k_45 * k_65 + k_12 * k_23 * k_34 * k_45 * k_65 + k_16 * k_21 * k_34 * k_45 * k_65 + k_16 * k_25 * k_32 * k_45 * k_65 + k_12 * k_25 * k_32 * k_45 * k_65 + k_16 * k_21 * k_32 * k_45 * k_65 + k_16 * k_25 * k_32 * k_43 * k_65 + k_12 * k_25 * k_32 * k_43 * k_65 + k_16 * k_21 * k_32 * k_43 * k_65 + k_12 * k_25 * k_34 * k_45 * k_61 + k_12 * k_23 * k_34 * k_45 * k_61 + k_12 * k_25 * k_32 * k_45 * k_61 + k_12 * k_25 * k_32 * k_43 * k_61;
+  C6_sum := k_16 * k_25 * k_34 * k_45 * k_56 + k_12 * k_25 * k_34 * k_45 * k_56 + k_16 * k_23 * k_34 * k_45 * k_56 + k_12 * k_23 * k_34 * k_45 * k_56 + k_16 * k_21 * k_34 * k_45 * k_56 + k_16 * k_25 * k_32 * k_45 * k_56 + k_12 * k_25 * k_32 * k_45 * k_56 + k_16 * k_21 * k_32 * k_45 * k_56 + k_16 * k_25 * k_32 * k_43 * k_56 + k_12 * k_25 * k_32 * k_43 * k_56 + k_16 * k_21 * k_32 * k_43 * k_56 + k_16 * k_21 * k_32 * k_43 * k_54 + k_16 * k_21 * k_34 * k_45 * k_52 + k_16 * k_21 * k_32 * k_45 * k_52 + k_16 * k_21 * k_32 * k_43 * k_52;
+  C_sum := C1_sum + C2_sum + C3_sum + C4_sum + C5_sum + C6_sum;
+  C1 := C_T * C1_sum / C_sum;
+  C2 := C_T * C2_sum / C_sum;
+  C3 := C_T * C3_sum / C_sum;
+  C4 := C_T * C4_sum / C_sum;
+  C5 := C_T * C5_sum / C_sum;
+  C6 := C_T * C6_sum / C_sum;
+end
+
+model mackenzie_1996__NBC_current(k_12, k_21, k_56, k_65, k_34, k_43, k_25, k_52, k_61, k_16, C_1, C_2, C_3, C_4, C_5, C_6, C1, C2, C3, C4, C5, C6, delta, alpha_p, alpha_pp, n, z_c, z_Na, F, I_NaGl_pSS, I_NaGl_SS, J_Na)
+
+  // Assignment Rules:
+  I_NaGl_pSS := -(F) * (n * z_Na * alpha_p * (k_12 * C_1 - k_21 * C_2) + z_c * delta * (k_16 * C_1 - k_61 * C_6) + n * z_Na * alpha_pp * (k_56 * C_5 - k_65 * C_6));
+  I_NaGl_SS := -(F) * (z_c * (k_16 * C1 - k_61 * C6) + (z_c + z_Na * n) * (k_25 * C2 - k_52 * C5) + (z_c + z_Na * n) * (k_34 * C3 - k_43 * C4));
+  J_Na := k_25 * C2 - k_52 * C5 + (k_34 * C3 - k_43 * C4);
+end
+
+model mackenzie_1996__phenomonological_constants(epsilon, lambda_, chi, alpha, beta, gamma, phi, k_12, k_21, k_23, k_32, k_34, k_43, k_45, k_54, k_25, k_52, k_56, k_65, k_61, k_16, ks_12, k0_23, C_T, F, Na_o, glucose_o, Imax_Na, Imax_gluc, Khalf_Na, Khalf_gluc)
+
+  // Assignment Rules:
+  epsilon := 1 / lambda_ * -(ks_12) * k0_23 * k_34 * k_45 * k_56 * k_61;
+  lambda_ := ks_12 * k0_23 * k_43 * k_54 * k_65 + ks_12 * k0_23 * k_34 * k_54 * k_65 + ks_12 * k0_23 * k_45 * k_52 * k_65 + ks_12 * k0_23 * k_43 * k_52 * k_65 + ks_12 * k0_23 * k_34 * k_52 * k_65 + ks_12 * k0_23 * k_34 * k_45 * k_65 + ks_12 * k0_23 * k_45 * k_56 * k_61 + ks_12 * k0_23 * k_43 * k_56 * k_61 + ks_12 * k0_23 * k_34 * k_56 * k_61 + ks_12 * k0_23 * k_43 * k_54 * k_61 + ks_12 * k0_23 * k_34 * k_54 * k_61 + ks_12 * k0_23 * k_45 * k_52 * k_61 + ks_12 * k0_23 * k_43 * k_52 * k_61 + ks_12 * k0_23 * k_34 * k_52 * k_61 + ks_12 * k0_23 * k_34 * k_45 * k_61 + ks_12 * k0_23 * k_34 * k_45 * k_56;
+  chi := 1 / lambda_ * (ks_12 * k_32 * k_43 * k_54 * k_65 + ks_12 * k_25 * k_43 * k_54 * k_65 + ks_12 * k_25 * k_34 * k_54 * k_65 + ks_12 * k_25 * k_32 * k_54 * k_65 + ks_12 * k_34 * k_45 * k_52 * k_65 + ks_12 * k_32 * k_45 * k_52 * k_65 + ks_12 * k_32 * k_43 * k_52 * k_65 + ks_12 * k_25 * k_34 * k_45 * k_65 + ks_12 * k_25 * k_32 * k_45 * k_65 + ks_12 * k_25 * k_32 * k_43 * k_65 + ks_12 * k_34 * k_45 * k_56 * k_61 + ks_12 * k_32 * k_45 * k_56 * k_61 + ks_12 * k_32 * k_43 * k_56 * k_61 + ks_12 * k_32 * k_43 * k_54 * k_61 + ks_12 * k_25 * k_43 * k_54 * k_61 + ks_12 * k_25 * k_34 * k_54 * k_61 + ks_12 * k_25 * k_32 * k_54 * k_61 + ks_12 * k_34 * k_45 * k_52 * k_61 + ks_12 * k_32 * k_45 * k_52 * k_61 + ks_12 * k_32 * k_43 * k_52 * k_61 + ks_12 * k_25 * k_34 * k_45 * k_61 + ks_12 * k_25 * k_32 * k_45 * k_61 + ks_12 * k_25 * k_32 * k_43 * k_61 + ks_12 * k_25 * k_34 * k_45 * k_56 + ks_12 * k_25 * k_32 * k_45 * k_56 + ks_12 * k_25 * k_32 * k_43 * k_56);
+  alpha := 1 / lambda_ * (k_21 * k_32 * k_43 * k_54 * k_65 + k_16 * k_32 * k_43 * k_54 * k_65 + k_16 * k_25 * k_43 * k_54 * k_65 + k_16 * k_21 * k_43 * k_54 * k_65 + k_16 * k_25 * k_34 * k_54 * k_65 + k_16 * k_21 * k_34 * k_54 * k_65 + k_16 * k_25 * k_32 * k_54 * k_65 + k_16 * k_21 * k_32 * k_54 * k_65 + k_21 * k_34 * k_45 * k_52 * k_65 + k_16 * k_34 * k_45 * k_52 * k_65 + k_21 * k_32 * k_45 * k_52 * k_65 + k_16 * k_32 * k_45 * k_52 * k_65 + k_21 * k_32 * k_43 * k_52 * k_65 + k_16 * k_32 * k_43 * k_52 * k_65 + k_16 * k_25 * k_34 * k_45 * k_65 + k_16 * k_21 * k_34 * k_45 * k_65 + k_16 * k_25 * k_32 * k_45 * k_65 + k_16 * k_21 * k_32 * k_45 * k_65 + k_16 * k_25 * k_32 * k_43 * k_65 + k_16 * k_21 * k_32 * k_43 * k_65 + k_25 * k_34 * k_45 * k_56 * k_61 + k_21 * k_34 * k_45 * k_56 * k_61 + k_25 * k_32 * k_45 * k_56 * k_61 + k_21 * k_32 * k_45 * k_56 * k_61 + k_25 * k_32 * k_43 * k_56 * k_61 + k_21 * k_32 * k_43 * k_56 * k_61 + k_21 * k_32 * k_43 * k_54 * k_61 + k_21 * k_34 * k_45 * k_52 * k_61 + k_21 * k_32 * k_45 * k_52 * k_61 + k_21 * k_32 * k_43 * k_52 * k_61 + k_16 * k_25 * k_34 * k_45 * k_56 + k_16 * k_21 * k_34 * k_45 * k_56 + k_16 * k_25 * k_32 * k_45 * k_56 + k_16 * k_21 * k_32 * k_45 * k_56 + k_16 * k_25 * k_32 * k_43 * k_56 + k_16 * k_21 * k_32 * k_43 * k_56 + k_16 * k_21 * k_32 * k_43 * k_54 + k_16 * k_21 * k_34 * k_45 * k_52 + k_16 * k_21 * k_32 * k_45 * k_52 + k_16 * k_21 * k_32 * k_43 * k_52);
+  beta := 1 / lambda_ * (k0_23 * k_16 * k_43 * k_54 * k_65 + k0_23 * k_16 * k_34 * k_54 * k_65 + k0_23 * k_16 * k_45 * k_52 * k_65 + k0_23 * k_16 * k_43 * k_52 * k_65 + k0_23 * k_16 * k_34 * k_52 * k_65 + k0_23 * k_16 * k_34 * k_45 * k_65 + k0_23 * k_34 * k_45 * k_56 * k_61 + k0_23 * k_16 * k_34 * k_45 * k_56);
+  gamma := 1 / lambda_ * (k_16 * k_21 * k_32 * k_43 * k_54 * k_65 + k_16 * k_21 * k_34 * k_45 * k_52 * k_65 + k_16 * k_21 * k_32 * k_45 * k_52 * k_65 + k_16 * k_21 * k_32 * k_43 * k_52 * k_65);
+  phi := 1 / lambda_ * (-(ks_12) * k_25 * k_34 * k_45 * k_56 * k_61 - ks_12 * k_25 * k_32 * k_45 * k_56 * k_61 - ks_12 * k_25 * k_32 * k_43 * k_56 * k_61);
+  Imax_Na := 2 * F * C_T * (phi + epsilon * glucose_o) / (chi + glucose_o);
+  Imax_gluc := 2 * F * C_T * epsilon * Na_o / (beta + Na_o);
+  Khalf_Na := (alpha + beta * glucose_o) / (chi + glucose_o);
+  Khalf_gluc := (alpha + chi * Na_o) / (beta + Na_o);
+end
+
+model mackenzie_1996____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: mackenzie_1996__environment(time_);
+  parameters: mackenzie_1996__parameters(k0_12, k0_21, k0_23, k0_32, k0_34, k0_43, k0_45, k0_54, k0_25, k0_52, k0_56, k0_65, k0_61, k0_16, delta, alpha_p, alpha_pp, C_T, n, z_c, z_Na, F, R, T, V, mu);
+  ion_concentrations: mackenzie_1996__ion_concentrations(V, Na_i, Na_o, glucose_i, glucose_o, time_);
+  rate_constants: mackenzie_1996__rate_constants(Na_i, Na_o, glucose_i, glucose_o, k_12, k_21, k_23, k_32, k_34, k_43, k_45, k_54, k_25, k_52, k_56, k_65, k_61, k_16, k0_12, ks_12, k0_21, k0_23, k0_32, k0_34, k0_43, k0_45, k0_54_temp, k0_54, k0_25, k_52_temp, k0_52, k0_56, k0_65, k0_61, k0_16, delta, n, z_c, z_Na, alpha_p, alpha_pp, C_T, mu);
+  kinetic_equations: mackenzie_1996__kinetic_equations(k_12, k_21, k_23, k_32, k_34, k_43, k_45, k_54, k_25, k_52, k_56, k_65, k_61, k_16, C_1, C_2, C_3, C_4, C_5, C_6, C_6_temp, C_T, time_);
+  king_altman_states: mackenzie_1996__king_altman_states(k_12, k_21, k_23, k_32, k_34, k_43, k_45, k_54, k_25, k_52, k_56, k_65, k_61, k_16, C_T, C1, C2, C3, C4, C5, C6);
+  NBC_current: mackenzie_1996__NBC_current(k_12, k_21, k_56, k_65, k_34, k_43, k_25, k_52, k_61, k_16, C_1, C_2, C_3, C_4, C_5, C_6, C1, C2, C3, C4, C5, C6, delta, alpha_p, alpha_pp, n, z_c, z_Na, F, I_NaGl_pSS, I_NaGl_SS, J_Na);
+  phenomonological_constants: mackenzie_1996__phenomonological_constants(epsilon, lambda_, chi, alpha, beta, gamma, phi, k_12, k_21, k_23, k_32, k_34, k_43, k_45, k_54, k_25, k_52, k_56, k_65, k_61, k_16, ks_12, k0_23, C_T, F, Na_o, glucose_o, Imax_Na, Imax_gluc, Khalf_Na, Khalf_gluc);
+end

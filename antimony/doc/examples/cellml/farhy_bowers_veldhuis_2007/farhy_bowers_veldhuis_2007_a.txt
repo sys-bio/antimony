@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model farhy_bowers_veldhuis_model_2007__environment(time_)
+//Created by libAntimony v1.4
+model farhy_model_2007__environment(time_)
 end
 
-model farhy_bowers_veldhuis_model_2007__GH(GH, GHS, SRIF_PeV, F1_GHS, GHRH, ghr_GHRH, time_)
+model farhy_model_2007__GH(GH, GHS, SRIF_PeV, F1_GHS, GHRH, ghr_GHRH, time_)
 
   // Rate Rules:
   GH' = kr1 * (power(( GHRH + ghr_GHRH ) / t1 , n1 ) / (power(( GHRH + ghr_GHRH ) / t1 , n1 ) + 1.0 ) + g0 * (power( GHS / tg0 , ng0 ) / ( 1.0 + power( GHS / tg0 , ng0 ))) + ( 1.0 + F1_GHS ) / ( 1.0 + power( SRIF_PeV / t2 , n2 ) + F1_GHS )) - k1 * GH;
@@ -21,7 +21,7 @@ model farhy_bowers_veldhuis_model_2007__GH(GH, GHS, SRIF_PeV, F1_GHS, GHRH, ghr_
   t2 = 10.0;
 end
 
-model farhy_bowers_veldhuis_model_2007__SRIF_PeV(SRIF_PeV, GH, time_)
+model farhy_model_2007__SRIF_PeV(SRIF_PeV, GH, time_)
 
   // Rate Rules:
   SRIF_PeV' = -(( k4 * SRIF_PeV )) + kr4 * (power( GH / t5 , n5 ) / (power( GH / t5 , n5 ) + 1.0 )) + S_basal;
@@ -35,7 +35,7 @@ model farhy_bowers_veldhuis_model_2007__SRIF_PeV(SRIF_PeV, GH, time_)
   S_basal = 900.0;
 end
 
-model farhy_bowers_veldhuis_model_2007__SRIF_ArC(SRIF_ArC, GHRH, ghr_GHRH, time_)
+model farhy_model_2007__SRIF_ArC(SRIF_ArC, GHRH, ghr_GHRH, time_)
 
   // Rate Rules:
   SRIF_ArC' = kr2 * (power(( GHRH + ghr_GHRH ) / t3 , n3 ) / ( 1.0 + power(( GHRH + ghr_GHRH ) / t3 , n3 ))) - k2 * SRIF_ArC;
@@ -48,7 +48,7 @@ model farhy_bowers_veldhuis_model_2007__SRIF_ArC(SRIF_ArC, GHRH, ghr_GHRH, time_
   n3 = 2.0;
 end
 
-model farhy_bowers_veldhuis_model_2007__GHRH(GHRH, SRIF_PeV, F2_GHS, SRIF_ArC, ghr_GHRH, time_)
+model farhy_model_2007__GHRH(GHRH, SRIF_PeV, F2_GHS, SRIF_ArC, ghr_GHRH, time_)
 
   // Rate Rules:
   GHRH' = kr3 * (( 1.0 + F2_GHS ) / ( 1.0 + power(( SRIF_PeV + SRIF_ArC ) / t4 , n4 ) + F2_GHS )) + ghr_GHRH * 1.0 - k3 * GHRH;
@@ -61,7 +61,7 @@ model farhy_bowers_veldhuis_model_2007__GHRH(GHRH, SRIF_PeV, F2_GHS, SRIF_ArC, g
   n4 = 5.0;
 end
 
-model farhy_bowers_veldhuis_model_2007__F(F1_GHS, F2_GHS, GHS)
+model farhy_model_2007__F(F1_GHS, F2_GHS, GHS)
 
   // Assignment Rules:
   F1_GHS := g1 * (power( GHS / tg1 , ng1 ) / ( 1.0 + power( GHS / tg1 , ng1 )));
@@ -76,7 +76,7 @@ model farhy_bowers_veldhuis_model_2007__F(F1_GHS, F2_GHS, GHS)
   ng2 = 2.0;
 end
 
-model farhy_bowers_veldhuis_model_2007__ghr_GHRH(ghr_GHRH, dghr_GHRH_dt, time_)
+model farhy_model_2007__ghr_GHRH(ghr_GHRH, dghr_GHRH_dt, time_)
 
   // Assignment Rules:
   dghr_GHRH_dt := inject - kghr * ghr_GHRH;
@@ -93,14 +93,14 @@ model farhy_bowers_veldhuis_model_2007__ghr_GHRH(ghr_GHRH, dghr_GHRH_dt, time_)
   duration = 0.2;
 end
 
-model farhy_bowers_veldhuis_model_2007____main()
+model farhy_model_2007____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: farhy_bowers_veldhuis_model_2007__environment(time_);
-  GH: farhy_bowers_veldhuis_model_2007__GH(GH0, GHS, SRIF_PeV0, F1_GHS, GHRH0, ghr_GHRH0, time_);
-  SRIF_PeV: farhy_bowers_veldhuis_model_2007__SRIF_PeV(SRIF_PeV0, GH0, time_);
-  SRIF_ArC: farhy_bowers_veldhuis_model_2007__SRIF_ArC(SRIF_ArC0, GHRH0, ghr_GHRH0, time_);
-  GHRH: farhy_bowers_veldhuis_model_2007__GHRH(GHRH0, SRIF_PeV0, F2_GHS, SRIF_ArC0, ghr_GHRH0, time_);
-  F: farhy_bowers_veldhuis_model_2007__F(F1_GHS, F2_GHS, GHS);
-  ghr_GHRH: farhy_bowers_veldhuis_model_2007__ghr_GHRH(ghr_GHRH0, dghr_GHRH_dt, time_);
+  environment: farhy_model_2007__environment(time_);
+  GH: farhy_model_2007__GH(GH0, GHS, SRIF_PeV0, F1_GHS, GHRH0, ghr_GHRH0, time_);
+  SRIF_PeV: farhy_model_2007__SRIF_PeV(SRIF_PeV0, GH0, time_);
+  SRIF_ArC: farhy_model_2007__SRIF_ArC(SRIF_ArC0, GHRH0, ghr_GHRH0, time_);
+  GHRH: farhy_model_2007__GHRH(GHRH0, SRIF_PeV0, F2_GHS, SRIF_ArC0, ghr_GHRH0, time_);
+  F: farhy_model_2007__F(F1_GHS, F2_GHS, GHS);
+  ghr_GHRH: farhy_model_2007__ghr_GHRH(ghr_GHRH0, dghr_GHRH_dt, time_);
 end

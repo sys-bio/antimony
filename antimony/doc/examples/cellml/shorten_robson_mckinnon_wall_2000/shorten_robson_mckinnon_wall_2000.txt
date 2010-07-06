@@ -1,5 +1,5 @@
-//Created by libAntimony v1.3
-model shorten_robson_mckinnon_wall_2000_version01__environment(time_, Ca_e, K_e, K_i, V_tau, k_tau)
+//Created by libAntimony v1.4
+model shorten_2000__environment(time_, Ca_e, K_e, K_i, V_tau, k_tau)
 
   // Variable initializations:
   Ca_e = 20.0;
@@ -9,7 +9,7 @@ model shorten_robson_mckinnon_wall_2000_version01__environment(time_, Ca_e, K_e,
   k_tau = 22.0;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__membrane(V, R, T, F, time_, i_Ca_L, i_Ca_T, i_K_DR, i_K_Ca, i_K_IR)
+model shorten_2000__membrane(V, R, T, F, time_, i_Ca_L, i_Ca_T, i_K_DR, i_K_Ca, i_K_IR)
 
   // Rate Rules:
   V' = -(( i_Ca_L + i_Ca_T + i_K_DR + i_K_Ca + i_K_IR )) / Cm;
@@ -21,7 +21,7 @@ model shorten_robson_mckinnon_wall_2000_version01__membrane(V, R, T, F, time_, i
   Cm = 7.0;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__L_type_calcium_current_m_gate(m_L, V, V_tau, k_tau, time_)
+model shorten_2000__L_type_calcium_current_m_gate(m_L, V, V_tau, k_tau, time_)
 
   // Assignment Rules:
   m_L_infinity := 1.0 / ( 1.0 + exp(( V_m_L - V ) / k_m_L ));
@@ -36,10 +36,10 @@ model shorten_robson_mckinnon_wall_2000_version01__L_type_calcium_current_m_gate
   k_m_L = 12.0;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__L_type_calcium_current(i_Ca_L, V_Ca, time_, V, V_tau, k_tau, R, T, F, Ca_e, Ca_i, m_L)
+model shorten_2000__L_type_calcium_current(i_Ca_L, V_Ca, time_, V, V_tau, k_tau, R, T, F, Ca_e, Ca_i, m_L)
 
   // Sub-modules, and any changes to those submodules:
-  L_type_calcium_current_m_gate: shorten_robson_mckinnon_wall_2000_version01__L_type_calcium_current_m_gate(m_L, V, V_tau, k_tau, time_);
+  L_type_calcium_current_m_gate: shorten_2000__L_type_calcium_current_m_gate(m_L, V, V_tau, k_tau, time_);
 
   // Assignment Rules:
   i_Ca_L := g_Ca_L * power( m_L , 2.0 ) * V_Ca;
@@ -49,7 +49,7 @@ model shorten_robson_mckinnon_wall_2000_version01__L_type_calcium_current(i_Ca_L
   g_Ca_L = 9.0;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__T_type_calcium_current_m_gate(m_T, V, V_tau, k_tau, time_)
+model shorten_2000__T_type_calcium_current_m_gate(m_T, V, V_tau, k_tau, time_)
 
   // Assignment Rules:
   m_T_infinity := 1.0 / ( 1.0 + exp(( V_m_T - V ) / k_m_T ));
@@ -64,7 +64,7 @@ model shorten_robson_mckinnon_wall_2000_version01__T_type_calcium_current_m_gate
   k_m_T = 10.5;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__T_type_calcium_current_h_gate(h_T, V, time_)
+model shorten_2000__T_type_calcium_current_h_gate(h_T, V, time_)
 
   // Assignment Rules:
   h_T_infinity := 1.0 / ( 1.0 + exp(( V - V_h_T ) / k_h_T ));
@@ -78,11 +78,11 @@ model shorten_robson_mckinnon_wall_2000_version01__T_type_calcium_current_h_gate
   k_h_T = 5.0;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__T_type_calcium_current(i_Ca_T, time_, V, V_tau, k_tau, V_Ca, m_T, h_T)
+model shorten_2000__T_type_calcium_current(i_Ca_T, time_, V, V_tau, k_tau, V_Ca, m_T, h_T)
 
   // Sub-modules, and any changes to those submodules:
-  T_type_calcium_current_m_gate: shorten_robson_mckinnon_wall_2000_version01__T_type_calcium_current_m_gate(m_T, V, V_tau, k_tau, time_);
-  T_type_calcium_current_h_gate: shorten_robson_mckinnon_wall_2000_version01__T_type_calcium_current_h_gate(h_T, V, time_);
+  T_type_calcium_current_m_gate: shorten_2000__T_type_calcium_current_m_gate(m_T, V, V_tau, k_tau, time_);
+  T_type_calcium_current_h_gate: shorten_2000__T_type_calcium_current_h_gate(h_T, V, time_);
 
   // Assignment Rules:
   i_Ca_T := g_Ca_T * power( m_T , 2.0 ) * h_T * V_Ca;
@@ -91,7 +91,7 @@ model shorten_robson_mckinnon_wall_2000_version01__T_type_calcium_current(i_Ca_T
   g_Ca_T = 10.0;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__voltage_sensitive_K_current_n_gate(n, V, time_)
+model shorten_2000__voltage_sensitive_K_current_n_gate(n, V, time_)
 
   // Assignment Rules:
   n_infinity := 1.0 / ( 1.0 + exp(( V_n - V ) / k_n ));
@@ -105,10 +105,10 @@ model shorten_robson_mckinnon_wall_2000_version01__voltage_sensitive_K_current_n
   k_n = 4.5;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__voltage_sensitive_K_current(i_K_DR, V_K, time_, V, R, T, F, K_e, K_i, n)
+model shorten_2000__voltage_sensitive_K_current(i_K_DR, V_K, time_, V, R, T, F, K_e, K_i, n)
 
   // Sub-modules, and any changes to those submodules:
-  voltage_sensitive_K_current_n_gate: shorten_robson_mckinnon_wall_2000_version01__voltage_sensitive_K_current_n_gate(n, V, time_);
+  voltage_sensitive_K_current_n_gate: shorten_2000__voltage_sensitive_K_current_n_gate(n, V, time_);
 
   // Assignment Rules:
   i_K_DR := g_K_DR * n * ( V - V_K );
@@ -118,7 +118,7 @@ model shorten_robson_mckinnon_wall_2000_version01__voltage_sensitive_K_current(i
   g_K_DR = 0.1;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__Ca_activated_K_current(i_K_Ca, time_, V, V_K, Ca_i)
+model shorten_2000__Ca_activated_K_current(i_K_Ca, time_, V, V_K, Ca_i)
 
   // Assignment Rules:
   i_K_Ca := g_K_Ca * (power( Ca_i , 4.0 ) / (power( Ca_i , 4.0 ) + power( Kc , 4.0 ))) * V_K;
@@ -128,7 +128,7 @@ model shorten_robson_mckinnon_wall_2000_version01__Ca_activated_K_current(i_K_Ca
   Kc = 0.5;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__inward_rectifier_current(i_K_IR, time_, V)
+model shorten_2000__inward_rectifier_current(i_K_IR, time_, V)
 
   // Assignment Rules:
   i_K_IR := piecewise( I_max * ( 1.0 - exp(( V_K_IR - V ) / ks )) , V > V_K_IR , g_K_IR * ( V - V_K_IR ) );
@@ -140,7 +140,7 @@ model shorten_robson_mckinnon_wall_2000_version01__inward_rectifier_current(i_K_
   ks = 6.5;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01__cytosolic_calcium(Ca_i, i_Ca_L, i_Ca_T, time_)
+model shorten_2000__cytosolic_calcium(Ca_i, i_Ca_L, i_Ca_T, time_)
 
   // Assignment Rules:
   J_in := -( alpha ) * ( i_Ca_L + i_Ca_T );
@@ -157,15 +157,15 @@ model shorten_robson_mckinnon_wall_2000_version01__cytosolic_calcium(Ca_i, i_Ca_
   beta = 0.4;
 end
 
-model shorten_robson_mckinnon_wall_2000_version01____main()
+model shorten_2000____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: shorten_robson_mckinnon_wall_2000_version01__environment(time_, Ca_e, K_e, K_i, V_tau, k_tau);
-  membrane: shorten_robson_mckinnon_wall_2000_version01__membrane(V, R, T, F, time_, i_Ca_L, i_Ca_T, i_K_DR, i_K_Ca, i_K_IR);
-  L_type_calcium_current: shorten_robson_mckinnon_wall_2000_version01__L_type_calcium_current(i_Ca_L, V_Ca, time_, V, V_tau, k_tau, R, T, F, Ca_e, Ca_i, m_L);
-  T_type_calcium_current: shorten_robson_mckinnon_wall_2000_version01__T_type_calcium_current(i_Ca_T, time_, V, V_tau, k_tau, V_Ca, m_T, h_T);
-  voltage_sensitive_K_current: shorten_robson_mckinnon_wall_2000_version01__voltage_sensitive_K_current(i_K_DR, V_K, time_, V, R, T, F, K_e, K_i, n);
-  Ca_activated_K_current: shorten_robson_mckinnon_wall_2000_version01__Ca_activated_K_current(i_K_Ca, time_, V, V_K, Ca_i);
-  inward_rectifier_current: shorten_robson_mckinnon_wall_2000_version01__inward_rectifier_current(i_K_IR, time_, V);
-  cytosolic_calcium: shorten_robson_mckinnon_wall_2000_version01__cytosolic_calcium(Ca_i, i_Ca_L, i_Ca_T, time_);
+  environment: shorten_2000__environment(time_, Ca_e, K_e, K_i, V_tau, k_tau);
+  membrane: shorten_2000__membrane(V, R, T, F, time_, i_Ca_L, i_Ca_T, i_K_DR, i_K_Ca, i_K_IR);
+  L_type_calcium_current: shorten_2000__L_type_calcium_current(i_Ca_L, V_Ca, time_, V, V_tau, k_tau, R, T, F, Ca_e, Ca_i, m_L);
+  T_type_calcium_current: shorten_2000__T_type_calcium_current(i_Ca_T, time_, V, V_tau, k_tau, V_Ca, m_T, h_T);
+  voltage_sensitive_K_current: shorten_2000__voltage_sensitive_K_current(i_K_DR, V_K, time_, V, R, T, F, K_e, K_i, n);
+  Ca_activated_K_current: shorten_2000__Ca_activated_K_current(i_K_Ca, time_, V, V_K, Ca_i);
+  inward_rectifier_current: shorten_2000__inward_rectifier_current(i_K_IR, time_, V);
+  cytosolic_calcium: shorten_2000__cytosolic_calcium(Ca_i, i_Ca_L, i_Ca_T, time_);
 end

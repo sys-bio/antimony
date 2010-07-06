@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="tabak_mascagni_bertram_2010____main" name="tabak_mascagni_bertram_2010____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="a0" value="0.1" constant="false"/>
+      <parameter id="a_ainf" constant="false"/>
+      <parameter id="a_w" value="0.8"/>
+      <parameter id="a_ka" value="-0.05"/>
+      <parameter id="a_th0" value="0.17"/>
+      <parameter id="a_n" value="0.01"/>
+      <parameter id="a_wi" value="0"/>
+      <parameter id="a_noise" constant="false"/>
+      <parameter id="s0" value="0.3" constant="false"/>
+      <parameter id="s_sinf" constant="false"/>
+      <parameter id="s_taus" value="250"/>
+      <parameter id="s_ks" value="0.05"/>
+      <parameter id="s_ths" value="0.2"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="a0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <ci> a_ainf </ci>
+                <ci> a0 </ci>
+              </apply>
+              <ci> a_noise </ci>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="a_ainf">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <times/>
+                      <ci> a_w </ci>
+                      <ci> s0 </ci>
+                      <ci> a0 </ci>
+                    </apply>
+                    <ci> a_th0 </ci>
+                  </apply>
+                  <ci> a_ka </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="a_noise">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> a_n </ci>
+            <ci> a_wi </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="s0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> s_sinf </ci>
+              <ci> s0 </ci>
+            </apply>
+            <ci> s_taus </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="s_sinf">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
+              <apply>
+                <exp/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <minus/>
+                    <ci> a0 </ci>
+                    <ci> s_ths </ci>
+                  </apply>
+                  <ci> s_ks </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

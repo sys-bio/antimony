@@ -1,17 +1,18 @@
-//Created by libAntimony v1.3
-model devries_sherman_2000_version01__environment(time_)
+//Created by libAntimony v1.4
+model devries_2000__environment(time_)
 end
 
-model devries_sherman_2000_version01__membrane(V, tau, time_, i_K, i_K_ATP, i_Ca, i_s)
+model devries_2000__membrane(V, tau, time_, i_K, i_K_ATP, i_Ca, i_s)
 
   // Rate Rules:
   V' = -(( i_Ca + i_K + i_K_ATP + i_s )) / tau;
 
   // Variable initializations:
+  V = -64.0;
   tau = 20.0;
 end
 
-model devries_sherman_2000_version01__calcium_current_m_gate(m_infinity, V)
+model devries_2000__calcium_current_m_gate(m_infinity, V)
 
   // Assignment Rules:
   m_infinity := 1.0 / ( 1.0 + exp(( V_m - V ) / theta_m ));
@@ -21,10 +22,10 @@ model devries_sherman_2000_version01__calcium_current_m_gate(m_infinity, V)
   theta_m = 12.0;
 end
 
-model devries_sherman_2000_version01__calcium_current(i_Ca, time_, V, m_infinity)
+model devries_2000__calcium_current(i_Ca, time_, V, m_infinity)
 
   // Sub-modules, and any changes to those submodules:
-  calcium_current_m_gate: devries_sherman_2000_version01__calcium_current_m_gate(m_infinity, V);
+  calcium_current_m_gate: devries_2000__calcium_current_m_gate(m_infinity, V);
 
   // Assignment Rules:
   i_Ca := g_Ca * m_infinity * ( V - V_Ca );
@@ -34,24 +35,25 @@ model devries_sherman_2000_version01__calcium_current(i_Ca, time_, V, m_infinity
   V_Ca = 25.0;
 end
 
-model devries_sherman_2000_version01__potassium_current_n_gate(n, V, tau, time_)
+model devries_2000__potassium_current_n_gate(n, V, tau, time_)
 
   // Assignment Rules:
   n_infinity := 1.0 / ( 1.0 + exp(( V_n - V ) / theta_n ));
 
   // Rate Rules:
-  n' = lamda * ( n_infinity - n ) / tau;
+  n' = lambda_ * ( n_infinity - n ) / tau;
 
   // Variable initializations:
+  n = 0.01;
   V_n = -17.0;
   theta_n = 5.6;
-  lamda = 0.8;
+  lambda_ = 0.9;
 end
 
-model devries_sherman_2000_version01__potassium_current(i_K, V_K, time_, V, tau, n)
+model devries_2000__potassium_current(i_K, V_K, time_, V, tau, n)
 
   // Sub-modules, and any changes to those submodules:
-  potassium_current_n_gate: devries_sherman_2000_version01__potassium_current_n_gate(n, V, tau, time_);
+  potassium_current_n_gate: devries_2000__potassium_current_n_gate(n, V, tau, time_);
 
   // Assignment Rules:
   i_K := g_K * n * ( V - V_K );
@@ -61,7 +63,7 @@ model devries_sherman_2000_version01__potassium_current(i_K, V_K, time_, V, tau,
   g_K = 10.0;
 end
 
-model devries_sherman_2000_version01__slow_current_s_gate(s, V, time_)
+model devries_2000__slow_current_s_gate(s, V, time_)
 
   // Assignment Rules:
   s_infinity := 1.0 / ( 1.0 + exp(( V_s - V ) / theta_s ));
@@ -70,15 +72,16 @@ model devries_sherman_2000_version01__slow_current_s_gate(s, V, time_)
   s' = ( s_infinity - s ) / tau_s;
 
   // Variable initializations:
+  s = 0.01;
   V_s = -22.0;
   theta_s = 8.0;
   tau_s = 20000.0;
 end
 
-model devries_sherman_2000_version01__slow_current(i_s, time_, V, V_K, s)
+model devries_2000__slow_current(i_s, time_, V, V_K, s)
 
   // Sub-modules, and any changes to those submodules:
-  slow_current_s_gate: devries_sherman_2000_version01__slow_current_s_gate(s, V, time_);
+  slow_current_s_gate: devries_2000__slow_current_s_gate(s, V, time_);
 
   // Assignment Rules:
   i_s := g_s * s * ( V - V_K );
@@ -87,7 +90,7 @@ model devries_sherman_2000_version01__slow_current(i_s, time_, V, V_K, s)
   g_s = 4.0;
 end
 
-model devries_sherman_2000_version01__ATP_sensitive_potassium_current(i_K_ATP, time_, V, V_K)
+model devries_2000__ATP_sensitive_potassium_current(i_K_ATP, time_, V, V_K)
 
   // Assignment Rules:
   i_K_ATP := g_K_ATP * p * ( V - V_K );
@@ -97,13 +100,13 @@ model devries_sherman_2000_version01__ATP_sensitive_potassium_current(i_K_ATP, t
   p = 0.5;
 end
 
-model devries_sherman_2000_version01____main()
+model devries_2000____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: devries_sherman_2000_version01__environment(time_);
-  membrane: devries_sherman_2000_version01__membrane(V, tau, time_, i_K, i_K_ATP, i_Ca, i_s);
-  calcium_current: devries_sherman_2000_version01__calcium_current(i_Ca, time_, V, m_infinity);
-  potassium_current: devries_sherman_2000_version01__potassium_current(i_K, V_K, time_, V, tau, n);
-  slow_current: devries_sherman_2000_version01__slow_current(i_s, time_, V, V_K, s);
-  ATP_sensitive_potassium_current: devries_sherman_2000_version01__ATP_sensitive_potassium_current(i_K_ATP, time_, V, V_K);
+  environment: devries_2000__environment(time_);
+  membrane: devries_2000__membrane(V, tau, time_, i_K, i_K_ATP, i_Ca, i_s);
+  calcium_current: devries_2000__calcium_current(i_Ca, time_, V, m_infinity);
+  potassium_current: devries_2000__potassium_current(i_K, V_K, time_, V, tau, n);
+  slow_current: devries_2000__slow_current(i_s, time_, V, V_K, s);
+  ATP_sensitive_potassium_current: devries_2000__ATP_sensitive_potassium_current(i_K_ATP, time_, V, V_K);
 end

@@ -1,0 +1,457 @@
+//Created by libAntimony v1.4
+model ralser_2007__environment(time_)
+end
+
+model ralser_2007__parameters(k_rel_TPI, k_rel_GAPDH, SUMAXP)
+
+  // Variable initializations:
+  k_rel_TPI = 1;
+  k_rel_GAPDH = 1;
+  SUMAXP = 4.1;
+end
+
+model ralser_2007__extracellular(CO2, ETOH, SUCC, GLY, GLCo)
+
+  // Variable initializations:
+  CO2 = 1;
+  ETOH = 50;
+  SUCC = 0.1;
+  GLY = 0.15;
+  GLCo = 50;
+end
+
+model ralser_2007__cytoplasm(cytoplasm, P, G6P, F6P, F16P, NADH, NAD, BPG, P3G, P2G, PEP, PYR, ACE, X, GA3P, DHAP, D6PGluconoLactone, D6PGluconate, NADP, NADPH, Ribulose5P, Ribose5P, Xyl5P, Seduhept7P, Erythrose4P, GLCi, F26BP, time_, vGLK, vPGI, vPFK, vALD, vG3PDH, vGAPDH, vPGK, vPGM, vENO, vPYK, vPDC, vSUC, vADH, vATP, vTPI, vG6PDH, v6PGL, vGluDH, vPPI, vTransk1, vR5PI, vTransald, vTransk2, vNADPH, vGLT)
+
+  // Rate Rules:
+  P' = (vPGK - (vGLK + vPFK) + vPYK - vATP) / cytoplasm;
+  G6P' = (vGLK - vPGI - vG6PDH) / cytoplasm;
+  F6P' = (vPGI - vPFK + vTransald + vTransk2) / cytoplasm;
+  F16P' = (vPFK - vALD) / cytoplasm;
+  NADH' = (vGAPDH - vG3PDH + 3 * vSUC - vADH) / cytoplasm;
+  NAD' = (vG3PDH - vGAPDH - 3 * vSUC + vADH) / cytoplasm;
+  BPG' = (vGAPDH - vPGK) / cytoplasm;
+  P3G' = (vPGK - vPGM) / cytoplasm;
+  P2G' = (vPGM - vENO) / cytoplasm;
+  PEP' = (vENO - vPYK) / cytoplasm;
+  PYR' = (vPYK - vPDC) / cytoplasm;
+  ACE' = (vPDC - 2 * vSUC - vADH) / cytoplasm;
+  GA3P' = (vALD - vGAPDH - vTPI + vTransk1 - vTransald + vTransk2) / cytoplasm;
+  DHAP' = (vALD - vG3PDH + vTPI) / cytoplasm;
+  D6PGluconoLactone' = (vG6PDH - v6PGL) / cytoplasm;
+  D6PGluconate' = (v6PGL - vGluDH) / cytoplasm;
+  NADP' = (vNADPH - (vG6PDH + vGluDH)) / cytoplasm;
+  NADPH' = (vG6PDH + vGluDH - vNADPH) / cytoplasm;
+  Ribulose5P' = (vGluDH - vPPI - vR5PI) / cytoplasm;
+  Ribose5P' = (vPPI - vTransk1) / cytoplasm;
+  Xyl5P' = (vR5PI - vTransk1 - vTransk2) / cytoplasm;
+  Seduhept7P' = (vTransk1 - vTransald) / cytoplasm;
+  Erythrose4P' = (vTransald - vTransk2) / cytoplasm;
+  GLCi' = (vGLT - vGLK) / cytoplasm;
+
+  // Variable initializations:
+  cytoplasm = 1;
+  P = 5;
+  G6P = 1.39;
+  F6P = 0.28;
+  F16P = 0.1;
+  NADH = 0.39;
+  NAD = 1.2;
+  BPG = 0.1;
+  P3G = 0.1;
+  P2G = 0.1;
+  PEP = 0.1;
+  PYR = 3.36;
+  ACE = 0.04;
+  X = 0.1;
+  GA3P = 0.05;
+  DHAP = 1;
+  D6PGluconoLactone = 0.1;
+  D6PGluconate = 0.1;
+  NADP = 0.4;
+  NADPH = 1.6;
+  Ribulose5P = 0.1;
+  Ribose5P = 0.1;
+  Xyl5P = 0.1;
+  Seduhept7P = 0.1;
+  Erythrose4P = 0;
+  GLCi = 0.087;
+  F26BP = 0.02;
+end
+
+model ralser_2007__rules(NADP, NADPH)
+
+  // Assignment Rules:
+  ratio_NADPH_NADP := NADPH / NADP;
+end
+
+model ralser_2007__vGLK(vGLK, cytoplasm, G6P, GLCi, P, SUMAXP)
+
+  // Assignment Rules:
+  vGLK := cytoplasm * VmGLK * (-(G6P) * (SUMAXP - root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((1 - 4 * KeqAK) * KeqGLK) + GLCi * (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / (2 - 8 * KeqAK)) / (KmGLKATP * KmGLKGLCi * (1 + G6P / KmGLKG6P + GLCi / KmGLKGLCi) * (1 + (SUMAXP - root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((1 - 4 * KeqAK) * KmGLKADP) + (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((2 - 8 * KeqAK) * KmGLKATP)));
+
+  // Variable initializations:
+  VmGLK = 226.452;
+  KeqAK = 0.45;
+  KeqGLK = 3800;
+  KmGLKATP = 0.15;
+  KmGLKGLCi = 0.08;
+  KmGLKG6P = 30;
+  KmGLKADP = 0.23;
+end
+
+model ralser_2007__vPGI(vPGI, cytoplasm, G6P, F6P)
+
+  // Assignment Rules:
+  vPGI := cytoplasm * VmPGI / KmPGIG6P * (G6P - F6P / KeqPGI) / (1 + G6P / KmPGIG6P + F6P / KmPGIF6P);
+
+  // Variable initializations:
+  VmPGI = 339.677;
+  KmPGIG6P = 1.4;
+  KeqPGI = 0.314;
+  KmPGIF6P = 0.3;
+end
+
+model ralser_2007__vPFK(vPFK, cytoplasm, F16P, F26BP, F6P, P, DHAP, SUMAXP)
+
+  // Assignment Rules:
+  vPFK := numerator1 * numerator2 / denominator;
+  numerator1 := cytoplasm * gR * VmPFK * F6P * (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 )));
+  numerator2 := 1 + F6P / KmPFKF6P + (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((2 - 8 * KeqAK) * KmPFKATP) + gR * F6P * (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((2 - 8 * KeqAK) * KmPFKATP * KmPFKF6P);
+  denominator := (2 - 8 * KeqAK) * KmPFKATP * KmPFKF6P * (L0 * denom1 * denom2 / denom3 + power(1 + F6P / KmPFKF6P + (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((2 - 8 * KeqAK) * KmPFKATP) + gR * F6P * (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((2 - 8 * KeqAK) * KmPFKATP * KmPFKF6P), 2 ));
+  denom1 := power(1 + CPFKF26BP * F26BP / KPFKF26BP + CPFKF16BP * F16P / KPFKF16BP, 2 ) * power(1 + 2 * CPFKAMP * KeqAK * power(SUMAXP - root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 )), 2 ) / ((-(1 ) + 4 * KeqAK) * KPFKAMP * (SUMAXP - P + 4 * KeqAK * P - root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 )))), 2 );
+  denom2 := power(1 + CiPFKATP * (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((2 - 8 * KeqAK) * KiPFKATP), 2 ) * power(1 + CPFKATP * (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((2 - 8 * KeqAK) * KmPFKATP), 2 );
+  denom3 := power(1 + F26BP / KPFKF26BP + F16P / KPFKF16BP, 2 ) * power(1 + 2 * KeqAK * power(SUMAXP - root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 )), 2 ) / ((-(1 ) + 4 * KeqAK) * KPFKAMP * (SUMAXP - P + 4 * KeqAK * P - root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 )))), 2 ) * power(1 + (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((2 - 8 * KeqAK) * KiPFKATP), 2 );
+
+  // Variable initializations:
+  gR = 5.12;
+  VmPFK = 182.903;
+  KeqAK = 0.45;
+  KmPFKF6P = 0.1;
+  KmPFKATP = 0.71;
+  L0 = 0.66;
+  CPFKF26BP = 0.0174;
+  KPFKF26BP = 0.000682;
+  CPFKF16BP = 0.397;
+  KPFKF16BP = 0.111;
+  CPFKAMP = 0.0845;
+  KPFKAMP = 0.0995;
+  CiPFKATP = 100;
+  KiPFKATP = 0.65;
+  CPFKATP = 3;
+end
+
+model ralser_2007__vALD(vALD, cytoplasm, F16P, GA3P, DHAP)
+
+  // Assignment Rules:
+  vALD := cytoplasm * VmALD * F16P / KmALDF16P * (1 - DHAP * GA3P / (F16P * KeqALD)) / (1 + F16P / KmALDF16P + DHAP / KmALDDHAP + GA3P / KmALDGAP + F16P * GA3P / (KmALDF16P * KmALDGAPi) + DHAP * GA3P / (KmALDDHAP * KmALDGAP));
+
+  // Variable initializations:
+  VmALD = 322.258;
+  KeqTPI = 0.045;
+  KeqALD = 0.069;
+  KmALDF16P = 0.3;
+  KmALDDHAP = 2.4;
+  KmALDGAP = 2;
+  KmALDGAPi = 10;
+end
+
+model ralser_2007__vG3PDH(vG3PDH, cytoplasm, GLY, NAD, NADH, DHAP)
+
+  // Assignment Rules:
+  vG3PDH := cytoplasm * VmG3PDH * (-(GLY) * NAD / KeqG3PDH + NADH * DHAP / (1 + KeqTPI)) / (KmG3PDHDHAP * KmG3PDHNADH * (1 + NAD / KmG3PDHNAD + NADH / KmG3PDHNADH) * (1 + GLY / KmG3PDHGLY + DHAP / ((1 + KeqTPI) * KmG3PDHDHAP)));
+
+  // Variable initializations:
+  VmG3PDH = 70.15;
+  KeqG3PDH = 4300;
+  KeqTPI = 0.045;
+  KmG3PDHDHAP = 0.4;
+  KmG3PDHNADH = 0.023;
+  KmG3PDHNAD = 0.93;
+  KmG3PDHGLY = 1;
+end
+
+model ralser_2007__vGAPDH(vGAPDH, cytoplasm, BPG, GA3P, NAD, NADH, k_rel_GAPDH)
+
+  // Assignment Rules:
+  vGAPDH := cytoplasm * k_rel_GAPDH * VmGAPDHf * GA3P * NAD / (KmGAPDHGAP * KmGAPDHNAD) * (1 - BPG * NADH / (GA3P * NAD * KeqGAPDH)) / ((1 + GA3P / KmGAPDHGAP + BPG / KmGAPDHBPG) * (1 + NAD / KmGAPDHNAD + NADH / KmGAPDHNADH));
+
+  // Variable initializations:
+  VmGAPDHr = 6549.68;
+  KmGAPDHBPG = 0.0098;
+  KmGAPDHNADH = 0.06;
+  KeqTPI = 0.045;
+  VmGAPDHf = 1184.52;
+  KmGAPDHGAP = 0.21;
+  KmGAPDHNAD = 0.09;
+  KeqGAPDH = 0.005;
+end
+
+model ralser_2007__vPGK(vPGK, cytoplasm, BPG, P, P3G, SUMAXP)
+
+  // Assignment Rules:
+  vPGK := 1 * cytoplasm * VmPGK * (KeqPGK * BPG * (SUMAXP - root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / (1 - 4 * KeqAK) - (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) * P3G / (2 - 8 * KeqAK)) / (KmPGKATP * KmPGKP3G * (1 + (SUMAXP - root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((1 - 4 * KeqAK) * KmPGKADP) + (-(SUMAXP) + P - 4 * KeqAK * P + root(power(SUMAXP, 2 ) - 2 * SUMAXP * P + 8 * KeqAK * SUMAXP * P + power(P, 2 ) - 4 * KeqAK * power(P, 2 ))) / ((2 - 8 * KeqAK) * KmPGKATP)) * (1 + BPG / KmPGKBPG + P3G / KmPGKP3G));
+
+  // Variable initializations:
+  VmPGK = 1306.45;
+  KeqPGK = 3200;
+  KeqAK = 0.45;
+  KmPGKATP = 0.3;
+  KmPGKP3G = 0.53;
+  KmPGKADP = 0.2;
+  KmPGKBPG = 0.003;
+end
+
+model ralser_2007__vPGM(vPGM, cytoplasm, P2G, P3G)
+
+  // Assignment Rules:
+  vPGM := cytoplasm * VmPGM / KmPGMP3G * (P3G - P2G / KeqPGM) / (1 + P3G / KmPGMP3G + P2G / KmPGMP2G);
+
+  // Variable initializations:
+  VmPGM = 2525.81;
+  KmPGMP3G = 1.2;
+  KeqPGM = 0.19;
+  KmPGMP2G = 0.08;
+end
+
+model ralser_2007__vENO(vENO, cytoplasm, P2G, PEP)
+
+  // Assignment Rules:
+  vENO := cytoplasm * VmENO / KmENOP2G * (P2G - PEP / KeqENO) / (1 + P2G / KmENOP2G + PEP / KmENOPEP);
+
+  // Variable initializations:
+  VmENO = 365.806;
+  KmENOP2G = 0.04;
+  KeqENO = 6.7;
+  KmENOPEP = 0.5;
+end
+
+model ralser_2007__vPYK(vPYK, cytoplasm, PEP, P, PYR, SUMAXP)
+
+  // Assignment Rules:
+  vPYK := cytoplasm * VmPYK / (KmPYKPEP * KmPYKADP) * (PEP * (SUMAXP - root(power(P, 2 ) - 4 * KeqAK * power(P, 2 ) - 2 * P * SUMAXP + 8 * KeqAK * P * SUMAXP + power(SUMAXP, 2 ))) / (1 - 4 * KeqAK) - PYR * (P - 4 * KeqAK * P - SUMAXP + root(power(P, 2 ) - 4 * KeqAK * power(P, 2 ) - 2 * P * SUMAXP + 8 * KeqAK * P * SUMAXP + power(SUMAXP, 2 ))) / (2 - 8 * KeqAK) / KeqPYK) / ((1 + PEP / KmPYKPEP + PYR / KmPYKPYR) * (1 + (P - 4 * KeqAK * P - SUMAXP + root(power(P, 2 ) - 4 * KeqAK * power(P, 2 ) - 2 * P * SUMAXP + 8 * KeqAK * P * SUMAXP + power(SUMAXP, 2 ))) / (2 - 8 * KeqAK) / KmPYKATP + (SUMAXP - root(power(P, 2 ) - 4 * KeqAK * power(P, 2 ) - 2 * P * SUMAXP + 8 * KeqAK * P * SUMAXP + power(SUMAXP, 2 ))) / (1 - 4 * KeqAK) / KmPYKADP));
+
+  // Variable initializations:
+  VmPYK = 1088.71;
+  KmPYKPEP = 0.14;
+  KmPYKADP = 0.53;
+  KeqAK = 0.45;
+  KeqPYK = 6500;
+  KmPYKPYR = 21;
+  KmPYKATP = 1.5;
+end
+
+model ralser_2007__vPDC(vPDC, cytoplasm, PYR)
+
+  // Assignment Rules:
+  vPDC := cytoplasm * VmPDC * power(PYR, nPDC) / power(KmPDCPYR, nPDC) / (1 + power(PYR, nPDC) / power(KmPDCPYR, nPDC));
+
+  // Variable initializations:
+  VmPDC = 174.194;
+  nPDC = 1.9;
+  KmPDCPYR = 4.33;
+end
+
+model ralser_2007__vSUC(vSUC, cytoplasm, ACE)
+
+  // Assignment Rules:
+  vSUC := cytoplasm * KSUCC * ACE;
+
+  // Variable initializations:
+  KSUCC = 21.4;
+end
+
+model ralser_2007__vADH(vADH, cytoplasm, ACE, ETOH, NAD, NADH)
+
+  // Assignment Rules:
+  vADH := cytoplasm * -(VmADH) / (KiADHNAD * KmADHETOH) * (NAD * ETOH - NADH * ACE / KeqADH) / (1 + NAD / KiADHNAD + KmADHNAD * ETOH / (KiADHNAD * KmADHETOH) + KmADHNADH * ACE / (KiADHNADH * KmADHACE) + NADH / KiADHNADH + NAD * ETOH / (KiADHNAD * KmADHETOH) + KmADHNADH * NAD * ACE / (KiADHNAD * KiADHNADH * KmADHACE) + KmADHNAD * ETOH * NADH / (KiADHNAD * KmADHETOH * KiADHNADH) + NADH * ACE / (KiADHNADH * KmADHACE) + NAD * ETOH * ACE / (KiADHNAD * KmADHETOH * KiADHACE) + ETOH * NADH * ACE / (KiADHETOH * KiADHNADH * KmADHACE));
+
+  // Variable initializations:
+  VmADH = 810;
+  KiADHNAD = 0.92;
+  KmADHETOH = 17;
+  KeqADH = 6.9e-5;
+  KmADHNAD = 0.17;
+  KmADHNADH = 0.11;
+  KiADHNADH = 0.031;
+  KmADHACE = 1.11;
+  KiADHACE = 1.1;
+  KiADHETOH = 90;
+end
+
+model ralser_2007__vATP(vATP, cytoplasm, P, SUMAXP)
+
+  // Assignment Rules:
+  vATP := cytoplasm * KATPASE * (P - 4 * KeqAK * P - SUMAXP + root(power(P, 2 ) - 4 * KeqAK * power(P, 2 ) - 2 * P * SUMAXP + 8 * KeqAK * P * SUMAXP + power(SUMAXP, 2 ))) / (2 - 8 * KeqAK);
+
+  // Variable initializations:
+  KATPASE = 39.5;
+  KeqAK = 0.45;
+end
+
+model ralser_2007__vTPI(vTPI, cytoplasm, DHAP, GA3P, k_rel_TPI)
+
+  // Assignment Rules:
+  vTPI := cytoplasm * k_rel_TPI * (VmDHAP * GA3P / KmGA3P - VmGA3P * DHAP / KmDHAP) / (1 + GA3P / KmGA3P + DHAP / KmDHAP);
+
+  // Variable initializations:
+  KmGA3P = 1.27;
+  KmDHAP = 1.23;
+  VmDHAP = 10900;
+  VmGA3P = 555;
+end
+
+model ralser_2007__vG6PDH(vG6PDH, cytoplasm, G6P, NADP, NADPH)
+
+  // Assignment Rules:
+  vG6PDH := cytoplasm * VmG6PDH * G6P * NADP / (KmG6P * KmNADP) / ((1 + G6P / KmG6P + NADPH / KiNADPH) * (1 + NADP / KmNADP));
+
+  // Variable initializations:
+  VmG6PDH = 4;
+  KmG6P = 0.04;
+  KmNADP = 0.02;
+  KiNADPH = 0.017;
+end
+
+model ralser_2007__v6PGL(v6PGL, cytoplasm, D6PGluconoLactone)
+
+  // Assignment Rules:
+  v6PGL := cytoplasm * Vm6PGL * D6PGluconoLactone / (Km6PGL + D6PGluconoLactone);
+
+  // Variable initializations:
+  Vm6PGL = 4;
+  Km6PGL = 0.8;
+end
+
+model ralser_2007__vGluDH(vGluDH, cytoplasm, D6PGluconate, NADP, NADPH)
+
+  // Assignment Rules:
+  vGluDH := cytoplasm * VmGluDH * D6PGluconate * NADP / (KmGluconate * KmNADP) / ((1 + D6PGluconate / KmGluconate + NADPH / KiNADPH) * (1 + NADP / KmNADP));
+
+  // Variable initializations:
+  VmGluDH = 4;
+  KmGluconate = 0.02;
+  KmNADP = 0.03;
+  KiNADPH = 0.03;
+end
+
+model ralser_2007__vPPI(vPPI, cytoplasm, Ribulose5P, Ribose5P)
+
+  // Assignment Rules:
+  vPPI := cytoplasm * (VmPPIf * Ribulose5P / KmRibu5P - VmPPIr * Ribose5P / KmRibo5P) / (1 + Ribulose5P / KmRibu5P + Ribose5P / KmRibo5P);
+
+  // Variable initializations:
+  VmPPIf = 3458;
+  VmPPIr = 3458;
+  KmRibu5P = 1.6;
+  KmRibo5P = 1.6;
+end
+
+model ralser_2007__vTransk1(vTransk1, cytoplasm, GA3P, Ribose5P, Seduhept7P, Xyl5P)
+
+  // Assignment Rules:
+  vTransk1 := cytoplasm * (VmTransk1f * Ribose5P * Xyl5P / (KmRibose5P * KmXyl5P) - VmTransk1r * GA3P * Seduhept7P / (KmGA3P * KmSeduhept)) / ((1 + Ribose5P / KmRibose5P + GA3P / KmGA3P) * (1 + Xyl5P / KmXyl5P + Seduhept7P / KmSeduhept));
+
+  // Variable initializations:
+  VmTransk1f = 4;
+  VmTransk1r = 2;
+  KmRibose5P = 0.1;
+  KmXyl5P = 0.15;
+  KmGA3P = 0.1;
+  KmSeduhept = 0.15;
+end
+
+model ralser_2007__vR5PI(vR5PI, cytoplasm, Ribulose5P, Xyl5P)
+
+  // Assignment Rules:
+  vR5PI := cytoplasm * (VmR5PIf * Ribulose5P / KmRibu5P - VmR5PIr * Xyl5P / KmXyl) / (1 + Ribulose5P / KmRibu5P + Xyl5P / KmXyl);
+
+  // Variable initializations:
+  VmR5PIf = 1039;
+  VmR5PIr = 1039;
+  KmRibu5P = 1.5;
+  KmXyl = 1.5;
+end
+
+model ralser_2007__vTransald(vTransald, cytoplasm, Erythrose4P, F6P, Seduhept7P, GA3P)
+
+  // Assignment Rules:
+  vTransald := cytoplasm * (VmTransaldf * GA3P * Seduhept7P / (KmGA3P * KmSeduhept) - VmTransaldr * F6P * Erythrose4P / (KmF6P * KmEry4P)) / ((1 + GA3P / KmGA3P + F6P / KmF6P) * (1 + Seduhept7P / KmSeduhept + Erythrose4P / KmEry4P));
+
+  // Variable initializations:
+  VmTransaldf = 55;
+  VmTransaldr = 10;
+  KmGA3P = 0.22;
+  KmSeduhept = 0.18;
+  KmF6P = 0.32;
+  KmEry4P = 0.018;
+end
+
+model ralser_2007__vTransk2(vTransk2, cytoplasm, Erythrose4P, F6P, Xyl5P, GA3P)
+
+  // Assignment Rules:
+  vTransk2 := cytoplasm * (VmTransk2f * Erythrose4P * Xyl5P / (KmEry4P * KmXyl5P) - VmTransk2r * F6P * GA3P / (KmF6P * KmGA3P)) / ((1 + Xyl5P / KmXyl5P + GA3P / KmGA3P) * (1 + Erythrose4P / KmEry4P + F6P / KmF6P));
+
+  // Variable initializations:
+  VmTransk2f = 3.2;
+  VmTransk2r = 43;
+  KmXyl5P = 0.16;
+  KmEry4P = 0.09;
+  KmF6P = 1.1;
+  KmGA3P = 2.1;
+end
+
+model ralser_2007__vNADPH(vNADPH, cytoplasm, NADPH)
+
+  // Assignment Rules:
+  vNADPH := cytoplasm * kNADPH * NADPH;
+
+  // Variable initializations:
+  kNADPH = 2;
+end
+
+model ralser_2007__vGLT(vGLT, cytoplasm, GLCi, GLCo)
+
+  // Assignment Rules:
+  vGLT := cytoplasm * VmGLT * (GLCo - GLCi / KeqGLT) / (KmGLTGLCo * (1 + GLCo / KmGLTGLCo + GLCi / KmGLTGLCi + 0.91 * GLCo * GLCi / (KmGLTGLCi * KmGLTGLCo)));
+
+  // Variable initializations:
+  VmGLT = 97.264;
+  KeqGLT = 1;
+  KmGLTGLCo = 1.1918;
+  KmGLTGLCi = 1.1918;
+end
+
+model ralser_2007____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: ralser_2007__environment(time_);
+  parameters: ralser_2007__parameters(k_rel_TPI, k_rel_GAPDH, SUMAXP);
+  extracellular: ralser_2007__extracellular(CO2, ETOH, SUCC, GLY, GLCo);
+  cytoplasm: ralser_2007__cytoplasm(cytoplasm0, P, G6P, F6P, F16P, NADH, NAD, BPG, P3G, P2G, PEP, PYR, ACE, X, GA3P, DHAP, D6PGluconoLactone, D6PGluconate, NADP, NADPH, Ribulose5P, Ribose5P, Xyl5P, Seduhept7P, Erythrose4P, GLCi, F26BP, time_, vGLK0, vPGI0, vPFK0, vALD0, vG3PDH0, vGAPDH0, vPGK0, vPGM0, vENO0, vPYK0, vPDC0, vSUC0, vADH0, vATP0, vTPI0, vG6PDH0, v6PGL0, vGluDH0, vPPI0, vTransk10, vR5PI0, vTransald0, vTransk20, vNADPH0, vGLT0);
+  rules: ralser_2007__rules(NADP, NADPH);
+  vGLK: ralser_2007__vGLK(vGLK0, cytoplasm0, G6P, GLCi, P, SUMAXP);
+  vPGI: ralser_2007__vPGI(vPGI0, cytoplasm0, G6P, F6P);
+  vPFK: ralser_2007__vPFK(vPFK0, cytoplasm0, F16P, F26BP, F6P, P, DHAP, SUMAXP);
+  vALD: ralser_2007__vALD(vALD0, cytoplasm0, F16P, GA3P, DHAP);
+  vG3PDH: ralser_2007__vG3PDH(vG3PDH0, cytoplasm0, GLY, NAD, NADH, DHAP);
+  vGAPDH: ralser_2007__vGAPDH(vGAPDH0, cytoplasm0, BPG, GA3P, NAD, NADH, k_rel_GAPDH);
+  vPGK: ralser_2007__vPGK(vPGK0, cytoplasm0, BPG, P, P3G, SUMAXP);
+  vPGM: ralser_2007__vPGM(vPGM0, cytoplasm0, P2G, P3G);
+  vENO: ralser_2007__vENO(vENO0, cytoplasm0, P2G, PEP);
+  vPYK: ralser_2007__vPYK(vPYK0, cytoplasm0, PEP, P, PYR, SUMAXP);
+  vPDC: ralser_2007__vPDC(vPDC0, cytoplasm0, PYR);
+  vSUC: ralser_2007__vSUC(vSUC0, cytoplasm0, ACE);
+  vADH: ralser_2007__vADH(vADH0, cytoplasm0, ACE, ETOH, NAD, NADH);
+  vATP: ralser_2007__vATP(vATP0, cytoplasm0, P, SUMAXP);
+  vTPI: ralser_2007__vTPI(vTPI0, cytoplasm0, DHAP, GA3P, k_rel_TPI);
+  vG6PDH: ralser_2007__vG6PDH(vG6PDH0, cytoplasm0, G6P, NADP, NADPH);
+  v6PGL: ralser_2007__v6PGL(v6PGL0, cytoplasm0, D6PGluconoLactone);
+  vGluDH: ralser_2007__vGluDH(vGluDH0, cytoplasm0, D6PGluconate, NADP, NADPH);
+  vPPI: ralser_2007__vPPI(vPPI0, cytoplasm0, Ribulose5P, Ribose5P);
+  vTransk1: ralser_2007__vTransk1(vTransk10, cytoplasm0, GA3P, Ribose5P, Seduhept7P, Xyl5P);
+  vR5PI: ralser_2007__vR5PI(vR5PI0, cytoplasm0, Ribulose5P, Xyl5P);
+  vTransald: ralser_2007__vTransald(vTransald0, cytoplasm0, Erythrose4P, F6P, Seduhept7P, GA3P);
+  vTransk2: ralser_2007__vTransk2(vTransk20, cytoplasm0, Erythrose4P, F6P, Xyl5P, GA3P);
+  vNADPH: ralser_2007__vNADPH(vNADPH0, cytoplasm0, NADPH);
+  vGLT: ralser_2007__vGLT(vGLT0, cytoplasm0, GLCi, GLCo);
+end

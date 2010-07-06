@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="EVentricle____main" name="EVentricle____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="E" constant="false"/>
+      <parameter id="EVentricle_mt" constant="false"/>
+      <parameter id="EVentricle_et" constant="false"/>
+      <parameter id="Emax"/>
+      <parameter id="Emin"/>
+      <parameter id="T"/>
+      <parameter id="Ts1"/>
+      <parameter id="Ts2"/>
+      <parameter id="t"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="E">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> Emin </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> EVentricle_et </ci>
+                <apply>
+                  <minus/>
+                  <ci> Emax </ci>
+                  <ci> Emin </ci>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="EVentricle_mt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> t </ci>
+            <apply>
+              <times/>
+              <ci> T </ci>
+              <apply>
+                <floor/>
+                <apply>
+                  <divide/>
+                  <ci> t </ci>
+                  <ci> T </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="EVentricle_et"/>
+    </listOfRules>
+  </model>
+</sbml>

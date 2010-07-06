@@ -1,0 +1,232 @@
+//Created by libAntimony v1.4
+model maurya_2005__environment(time_)
+end
+
+model maurya_2005__differentials(A, G, GA, T, R, GT_, GD, Pi_, D, RG, RGT, GAT, GAD, RGD, RGA, RGAT, RGAD, A2, A3, A5, R2, R3, R4, T1, T3, T4, P1, P2, P3, P4, D1, D2, D3, D4, time_)
+
+  // Rate Rules:
+  A' = -((A2 + A3 + A5));
+  G' = D1 - T1;
+  GA' = D2 - R4;
+  T' = -((T1 + T3 + T4));
+  R' = -((R2 + R3 + R4));
+  GT_' = T1 - P1 - R2 - A2;
+  GD' = P1 - D1 - A3 - R3;
+  Pi_' = P1 + P3 + P2 + P4;
+  D' = D1 + D3 + D2 + D4;
+  RG' = -(T3) + D3;
+  RGT' = T3 + R2 - P3 - A5;
+  GAT' = A2 - P2;
+  GAD' = A3 + P2 - D2;
+  RGD' = R3 + P3 - D3;
+  RGA' = R4 - T4 + D4;
+  RGAT' = T4 + A5 - P4;
+  RGAD' = P4 - D4;
+
+  // Variable initializations:
+  A = 0;
+  G = 0;
+  GA = 0;
+  T = 0.000468;
+  R = 0;
+  GT_ = 0;
+  GD = 1e-8;
+  Pi_ = 0.0044;
+  D = 0.000149;
+  RG = 0;
+  RGT = 0;
+  GAT = 0;
+  GAD = 0;
+  RGD = 0;
+  RGA = 0;
+  RGAT = 0;
+  RGAD = 0;
+end
+
+model maurya_2005__output(GT_, RGT, GAT, RGAT, P_minus1, P_minus2, P_minus3, P_minus4)
+
+  // Assignment Rules:
+  Z := (GT_ + RGT + RGAT + GAT) / G_tot;
+  v := (P_minus4 * RGAT + P_minus2 * GAT + P_minus3 * RGT + P_minus1 * GT_) / G_tot;
+
+  // Variable initializations:
+  G_tot = 1e-8;
+end
+
+model maurya_2005__T1(T1, G, T)
+
+  // Assignment Rules:
+  T1 := k1 * G * T;
+
+  // Variable initializations:
+  k1 = 529000;
+end
+
+model maurya_2005__P1(P1, k1, GT_)
+
+  // Assignment Rules:
+  P1 := k1 * GT_;
+
+  // Variable initializations:
+  k1 = 0.013;
+end
+
+model maurya_2005__D1(D1, GD)
+
+  // Assignment Rules:
+  D1 := k1 * GD;
+
+  // Variable initializations:
+  k1 = 0.0001;
+end
+
+model maurya_2005__T3(T3, T, RG)
+
+  // Assignment Rules:
+  T3 := k1 * RG * T;
+
+  // Variable initializations:
+  k1 = 853000;
+end
+
+model maurya_2005__R2(R2, RGT)
+
+  // Assignment Rules:
+  R2 := -(k2) * RGT;
+
+  // Variable initializations:
+  k2 = 1.28;
+end
+
+model maurya_2005__A2(A2, A, GT_)
+
+  // Assignment Rules:
+  A2 := k1 * GT_ * A;
+
+  // Variable initializations:
+  k1 = 386000;
+end
+
+model maurya_2005__A3(A3, GAD)
+
+  // Assignment Rules:
+  A3 := -(k2) * GAD;
+
+  // Variable initializations:
+  k2 = 0.95;
+end
+
+model maurya_2005__R3(R3, R, GD)
+
+  // Assignment Rules:
+  R3 := k1 * GD * R;
+
+  // Variable initializations:
+  k1 = 94700000;
+end
+
+model maurya_2005__P3(P3, k1, RGT)
+
+  // Assignment Rules:
+  P3 := k1 * RGT;
+
+  // Variable initializations:
+  k1 = 0.013;
+end
+
+model maurya_2005__D3(D3, RGD)
+
+  // Assignment Rules:
+  D3 := k1 * RGD;
+
+  // Variable initializations:
+  k1 = 2;
+end
+
+model maurya_2005__P2(P2, k1, GAT)
+
+  // Assignment Rules:
+  P2 := k1 * GAT;
+
+  // Variable initializations:
+  k1 = 25;
+end
+
+model maurya_2005__D2(D2, GAD)
+
+  // Assignment Rules:
+  D2 := k1 * GAD;
+
+  // Variable initializations:
+  k1 = 0.0001;
+end
+
+model maurya_2005__R4(R4, GA, R)
+
+  // Assignment Rules:
+  R4 := k1 * GA * R;
+
+  // Variable initializations:
+  k1 = 22800000;
+end
+
+model maurya_2005__T4(T4, T, RGA)
+
+  // Assignment Rules:
+  T4 := k1 * RGA * T;
+
+  // Variable initializations:
+  k1 = 1620000;
+end
+
+model maurya_2005__A5(A5, A, RGT)
+
+  // Assignment Rules:
+  A5 := k1 * RGT * A;
+
+  // Variable initializations:
+  k1 = 6300000;
+end
+
+model maurya_2005__P4(P4, k1, RGAT)
+
+  // Assignment Rules:
+  P4 := k1 * RGAT;
+
+  // Variable initializations:
+  k1 = 25;
+end
+
+model maurya_2005__D4(D4, RGAD)
+
+  // Assignment Rules:
+  D4 := k1 * RGAD;
+
+  // Variable initializations:
+  k1 = 2.75;
+end
+
+model maurya_2005____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: maurya_2005__environment(time_);
+  differentials: maurya_2005__differentials(A, G, GA, T, R, GT_, GD, Pi_, D, RG, RGT, GAT, GAD, RGD, RGA, RGAT, RGAD, A20, A30, A50, R20, R30, R40, T10, T30, T40, P10, P20, P30, P40, D10, D20, D30, D40, time_);
+  output: maurya_2005__output(GT_, RGT, GAT, RGAT, k1, k10, k11, k12);
+  T1: maurya_2005__T1(T10, G, T);
+  P1: maurya_2005__P1(P10, k1, GT_);
+  D1: maurya_2005__D1(D10, GD);
+  T3: maurya_2005__T3(T30, T, RG);
+  R2: maurya_2005__R2(R20, RGT);
+  A2: maurya_2005__A2(A20, A, GT_);
+  A3: maurya_2005__A3(A30, GAD);
+  R3: maurya_2005__R3(R30, R, GD);
+  P3: maurya_2005__P3(P30, k11, RGT);
+  D3: maurya_2005__D3(D30, RGD);
+  P2: maurya_2005__P2(P20, k10, GAT);
+  D2: maurya_2005__D2(D20, GAD);
+  R4: maurya_2005__R4(R40, GA, R);
+  T4: maurya_2005__T4(T40, T, RGA);
+  A5: maurya_2005__A5(A50, A, RGT);
+  P4: maurya_2005__P4(P40, k12, RGAT);
+  D4: maurya_2005__D4(D40, RGAD);
+end

@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model baylor_model_f_2002__environment(time_)
+//Created by libAntimony v1.4
+model baylor_2002a__environment(time_)
 end
 
-model baylor_model_f_2002__Ca(Ca, k1, k1_, ATP, CaATP, time_)
+model baylor_2002a__Ca(Ca, k1, k1_, ATP, CaATP, time_)
 
   // Rate Rules:
   Ca' = k1_ * CaATP - k1 * Ca * ATP;
@@ -11,7 +11,7 @@ model baylor_model_f_2002__Ca(Ca, k1, k1_, ATP, CaATP, time_)
   Ca = 0.05;
 end
 
-model baylor_model_f_2002__ATP(ATP, k1, k1_, Ca, CaATP, time_)
+model baylor_2002a__ATP(ATP, k1, k1_, Ca, CaATP, time_)
 
   // Rate Rules:
   ATP' = k1_ * CaATP - k1 * Ca * ATP;
@@ -20,7 +20,7 @@ model baylor_model_f_2002__ATP(ATP, k1, k1_, Ca, CaATP, time_)
   ATP = 8000.0;
 end
 
-model baylor_model_f_2002__CaATP(CaATP, k1, k1_, Ca, ATP, time_)
+model baylor_2002a__CaATP(CaATP, k1, k1_, Ca, ATP, time_)
 
   // Rate Rules:
   CaATP' = k1 * Ca * ATP - k1_ * CaATP;
@@ -29,19 +29,19 @@ model baylor_model_f_2002__CaATP(CaATP, k1, k1_, Ca, ATP, time_)
   CaATP = 1.0;
 end
 
-model baylor_model_f_2002__reaction_constants(k1, k1_)
+model baylor_2002a__reaction_constants(k1, k1_)
 
   // Variable initializations:
   k1 = 1.566E7;
   k1_ = 34461.0;
 end
 
-model baylor_model_f_2002____main()
+model baylor_2002a____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: baylor_model_f_2002__environment(time_);
-  Ca: baylor_model_f_2002__Ca(Ca0, k1, k1_, ATP0, CaATP0, time_);
-  ATP: baylor_model_f_2002__ATP(ATP0, k1, k1_, Ca0, CaATP0, time_);
-  CaATP: baylor_model_f_2002__CaATP(CaATP0, k1, k1_, Ca0, ATP0, time_);
-  reaction_constants: baylor_model_f_2002__reaction_constants(k1, k1_);
+  environment: baylor_2002a__environment(time_);
+  Ca: baylor_2002a__Ca(Ca0, k1, k1_, ATP0, CaATP0, time_);
+  ATP: baylor_2002a__ATP(ATP0, k1, k1_, Ca0, CaATP0, time_);
+  CaATP: baylor_2002a__CaATP(CaATP0, k1, k1_, Ca0, ATP0, time_);
+  reaction_constants: baylor_2002a__reaction_constants(k1, k1_);
 end

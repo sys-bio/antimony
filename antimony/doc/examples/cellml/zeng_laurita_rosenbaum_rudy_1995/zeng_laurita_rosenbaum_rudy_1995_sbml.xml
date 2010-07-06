@@ -3,7 +3,7 @@
   <model id="zeng_1995____main" name="zeng_1995____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
@@ -114,7 +114,7 @@
       <parameter id="sodium_potassium_pump_sigma" constant="false"/>
       <parameter id="i_ns_Na" constant="false"/>
       <parameter id="i_ns_K" constant="false"/>
-      <parameter id="non_specific_calcium_activated_current_P_ns_Ca"/>
+      <parameter id="non_specific_calcium_activated_current_P_ns_Ca" value="1.75e-07"/>
       <parameter id="non_specific_calcium_activated_current_I_ns_Na" constant="false"/>
       <parameter id="non_specific_calcium_activated_current_I_ns_K" constant="false"/>
       <parameter id="non_specific_calcium_activated_current_K_m_ns_Ca" value="1.2"/>
@@ -171,25 +171,15 @@
       <parameter id="ionic_concentrations_V_myo"/>
       <parameter id="ionic_concentrations_V_cleft"/>
     </listOfParameters>
-    <listOfInitialAssignments>
-      <initialAssignment symbol="non_specific_calcium_activated_current_P_ns_Ca">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <cn type="e-notation"> 1.75 <sep/> -7 </cn>
-        </math>
-      </initialAssignment>
-    </listOfInitialAssignments>
     <listOfRules>
       <rateRule variable="V">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <times/>
             <apply>
-              <minus/>
-              <apply>
-                <divide/>
-                <cn> 1 </cn>
-                <ci> membrane_Cm </ci>
-              </apply>
+              <divide/>
+              <cn type="integer"> -1 </cn>
+              <ci> membrane_Cm </ci>
             </apply>
             <apply>
               <plus/>
@@ -219,7 +209,7 @@
             <apply>
               <power/>
               <ci> m </ci>
-              <cn> 3 </cn>
+              <cn type="integer"> 3 </cn>
             </apply>
             <ci> h </ci>
             <ci> j </ci>
@@ -249,7 +239,7 @@
             <apply>
               <power/>
               <ci> b </ci>
-              <cn> 2 </cn>
+              <cn type="integer"> 2 </cn>
             </apply>
             <ci> g </ci>
             <apply>
@@ -283,7 +273,7 @@
             <apply>
               <power/>
               <ci> Xs </ci>
-              <cn> 2 </cn>
+              <cn type="integer"> 2 </cn>
             </apply>
             <apply>
               <minus/>
@@ -297,60 +287,69 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <times/>
-            <ci> Na_Ca_exchanger_K_NaCa </ci>
             <apply>
               <divide/>
-              <cn> 1 </cn>
               <apply>
-                <plus/>
+                <times/>
                 <apply>
-                  <power/>
-                  <ci> Na_Ca_exchanger_K_mNa </ci>
-                  <cn> 3 </cn>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> Na_Ca_exchanger_K_NaCa </ci>
+                        <cn type="integer"> 1 </cn>
+                      </apply>
+                      <apply>
+                        <plus/>
+                        <apply>
+                          <power/>
+                          <ci> Na_Ca_exchanger_K_mNa </ci>
+                          <cn type="integer"> 3 </cn>
+                        </apply>
+                        <apply>
+                          <power/>
+                          <ci> Nao </ci>
+                          <cn type="integer"> 3 </cn>
+                        </apply>
+                      </apply>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <ci> Na_Ca_exchanger_K_mCa </ci>
+                    <ci> Cao </ci>
+                  </apply>
                 </apply>
-                <apply>
-                  <power/>
-                  <ci> Nao </ci>
-                  <cn> 3 </cn>
-                </apply>
+                <cn type="integer"> 1 </cn>
               </apply>
-            </apply>
-            <apply>
-              <divide/>
-              <cn> 1 </cn>
               <apply>
                 <plus/>
-                <ci> Na_Ca_exchanger_K_mCa </ci>
-                <ci> Cao </ci>
-              </apply>
-            </apply>
-            <apply>
-              <divide/>
-              <cn> 1 </cn>
-              <apply>
-                <plus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <apply>
                   <times/>
                   <ci> Na_Ca_exchanger_K_sat </ci>
                   <apply>
                     <exp/>
                     <apply>
-                      <times/>
+                      <divide/>
                       <apply>
-                        <minus/>
-                        <ci> Na_Ca_exchanger_eta </ci>
-                        <cn> 1 </cn>
-                      </apply>
-                      <ci> V </ci>
-                      <apply>
-                        <divide/>
-                        <ci> F </ci>
+                        <times/>
                         <apply>
-                          <times/>
-                          <ci> R </ci>
-                          <ci> T </ci>
+                          <minus/>
+                          <ci> Na_Ca_exchanger_eta </ci>
+                          <cn type="integer"> 1 </cn>
                         </apply>
+                        <ci> V </ci>
+                        <ci> F </ci>
+                      </apply>
+                      <apply>
+                        <times/>
+                        <ci> R </ci>
+                        <ci> T </ci>
                       </apply>
                     </apply>
                   </apply>
@@ -364,24 +363,24 @@
                 <apply>
                   <exp/>
                   <apply>
-                    <times/>
-                    <ci> Na_Ca_exchanger_eta </ci>
-                    <ci> V </ci>
+                    <divide/>
                     <apply>
-                      <divide/>
+                      <times/>
+                      <ci> Na_Ca_exchanger_eta </ci>
+                      <ci> V </ci>
                       <ci> F </ci>
-                      <apply>
-                        <times/>
-                        <ci> R </ci>
-                        <ci> T </ci>
-                      </apply>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> R </ci>
+                      <ci> T </ci>
                     </apply>
                   </apply>
                 </apply>
                 <apply>
                   <power/>
                   <ci> Nai </ci>
-                  <cn> 3 </cn>
+                  <cn type="integer"> 3 </cn>
                 </apply>
                 <ci> Cao </ci>
               </apply>
@@ -390,28 +389,28 @@
                 <apply>
                   <exp/>
                   <apply>
-                    <times/>
+                    <divide/>
                     <apply>
-                      <minus/>
-                      <ci> Na_Ca_exchanger_eta </ci>
-                      <cn> 1 </cn>
-                    </apply>
-                    <ci> V </ci>
-                    <apply>
-                      <divide/>
-                      <ci> F </ci>
+                      <times/>
                       <apply>
-                        <times/>
-                        <ci> R </ci>
-                        <ci> T </ci>
+                        <minus/>
+                        <ci> Na_Ca_exchanger_eta </ci>
+                        <cn type="integer"> 1 </cn>
                       </apply>
+                      <ci> V </ci>
+                      <ci> F </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> R </ci>
+                      <ci> T </ci>
                     </apply>
                   </apply>
                 </apply>
                 <apply>
                   <power/>
                   <ci> Nao </ci>
-                  <cn> 3 </cn>
+                  <cn type="integer"> 3 </cn>
                 </apply>
                 <ci> Cai </ci>
               </apply>
@@ -450,16 +449,16 @@
       <assignmentRule variable="i_p_Ca">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> sarcolemmal_calcium_pump_I_pCa </ci>
+            <divide/>
             <apply>
-              <divide/>
+              <times/>
+              <ci> sarcolemmal_calcium_pump_I_pCa </ci>
               <ci> Cai </ci>
-              <apply>
-                <plus/>
-                <ci> sarcolemmal_calcium_pump_K_mpCa </ci>
-                <ci> Cai </ci>
-              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> sarcolemmal_calcium_pump_K_mpCa </ci>
+              <ci> Cai </ci>
             </apply>
           </apply>
         </math>
@@ -493,37 +492,40 @@
       <assignmentRule variable="i_NaK">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> sodium_potassium_pump_I_NaK </ci>
-            <ci> sodium_potassium_pump_f_NaK </ci>
+            <divide/>
             <apply>
-              <divide/>
-              <cn> 1 </cn>
+              <times/>
               <apply>
-                <plus/>
-                <cn> 1 </cn>
+                <divide/>
                 <apply>
-                  <root/>
+                  <times/>
+                  <ci> sodium_potassium_pump_I_NaK </ci>
+                  <ci> sodium_potassium_pump_f_NaK </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
                   <apply>
-                    <power/>
+                    <root/>
                     <apply>
-                      <divide/>
-                      <ci> sodium_potassium_pump_K_mNai </ci>
-                      <ci> Nai </ci>
+                      <power/>
+                      <apply>
+                        <divide/>
+                        <ci> sodium_potassium_pump_K_mNai </ci>
+                        <ci> Nai </ci>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
                     </apply>
-                    <cn> 3 </cn>
                   </apply>
                 </apply>
               </apply>
+              <ci> Ko </ci>
             </apply>
             <apply>
-              <divide/>
+              <plus/>
               <ci> Ko </ci>
-              <apply>
-                <plus/>
-                <ci> Ko </ci>
-                <ci> sodium_potassium_pump_K_mKo </ci>
-              </apply>
+              <ci> sodium_potassium_pump_K_mKo </ci>
             </apply>
           </apply>
         </math>
@@ -564,35 +566,35 @@
       <rateRule variable="Nai">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
+            <divide/>
             <apply>
-              <minus/>
+              <times/>
               <apply>
-                <plus/>
-                <ci> i_Na </ci>
-                <ci> i_CaNa </ci>
-                <ci> i_Na_b </ci>
-                <ci> i_ns_Na </ci>
+                <minus/>
                 <apply>
-                  <times/>
-                  <ci> i_NaCa </ci>
-                  <cn> 3 </cn>
-                </apply>
-                <apply>
-                  <times/>
-                  <ci> i_NaK </ci>
-                  <cn> 3 </cn>
+                  <plus/>
+                  <ci> i_Na </ci>
+                  <ci> i_CaNa </ci>
+                  <ci> i_Na_b </ci>
+                  <ci> i_ns_Na </ci>
+                  <apply>
+                    <times/>
+                    <ci> i_NaCa </ci>
+                    <cn type="integer"> 3 </cn>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> i_NaK </ci>
+                    <cn type="integer"> 3 </cn>
+                  </apply>
                 </apply>
               </apply>
+              <ci> ionic_concentrations_A_cap </ci>
             </apply>
             <apply>
-              <divide/>
-              <ci> ionic_concentrations_A_cap </ci>
-              <apply>
-                <times/>
-                <ci> ionic_concentrations_V_myo </ci>
-                <ci> F </ci>
-              </apply>
+              <times/>
+              <ci> ionic_concentrations_V_myo </ci>
+              <ci> F </ci>
             </apply>
           </apply>
         </math>
@@ -606,7 +608,7 @@
               <ci> fast_sodium_current_fast_sodium_current_m_gate_alpha_m </ci>
               <apply>
                 <minus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <ci> m </ci>
               </apply>
             </apply>
@@ -627,7 +629,7 @@
               <ci> fast_sodium_current_fast_sodium_current_h_gate_alpha_h </ci>
               <apply>
                 <minus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <ci> h </ci>
               </apply>
             </apply>
@@ -648,7 +650,7 @@
               <ci> fast_sodium_current_fast_sodium_current_j_gate_alpha_j </ci>
               <apply>
                 <minus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <ci> j </ci>
               </apply>
             </apply>
@@ -675,7 +677,7 @@
             </apply>
             <apply>
               <minus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -705,7 +707,7 @@
                   <minus/>
                   <ci> V </ci>
                 </apply>
-                <cn> 11 </cn>
+                <cn type="integer"> 11 </cn>
               </apply>
             </apply>
           </apply>
@@ -751,32 +753,32 @@
       <assignmentRule variable="L_type_Ca_channel_I_CaCa">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> L_type_Ca_channel_P_Ca </ci>
+            <divide/>
             <apply>
-              <power/>
-              <cn> 2 </cn>
-              <cn> 2 </cn>
-            </apply>
-            <apply>
-              <divide/>
+              <times/>
               <apply>
-                <times/>
-                <ci> V </ci>
+                <divide/>
                 <apply>
-                  <power/>
-                  <ci> F </ci>
-                  <cn> 2 </cn>
+                  <times/>
+                  <ci> L_type_Ca_channel_P_Ca </ci>
+                  <apply>
+                    <power/>
+                    <cn type="integer"> 2 </cn>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <ci> V </ci>
+                  <apply>
+                    <power/>
+                    <ci> F </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> R </ci>
+                  <ci> T </ci>
                 </apply>
               </apply>
-              <apply>
-                <times/>
-                <ci> R </ci>
-                <ci> T </ci>
-              </apply>
-            </apply>
-            <apply>
-              <divide/>
               <apply>
                 <minus/>
                 <apply>
@@ -789,7 +791,7 @@
                       <divide/>
                       <apply>
                         <times/>
-                        <cn> 2 </cn>
+                        <cn type="integer"> 2 </cn>
                         <ci> V </ci>
                         <ci> F </ci>
                       </apply>
@@ -807,27 +809,27 @@
                   <ci> Cao </ci>
                 </apply>
               </apply>
+            </apply>
+            <apply>
+              <minus/>
               <apply>
-                <minus/>
+                <exp/>
                 <apply>
-                  <exp/>
+                  <divide/>
                   <apply>
-                    <divide/>
-                    <apply>
-                      <times/>
-                      <cn> 2 </cn>
-                      <ci> V </ci>
-                      <ci> F </ci>
-                    </apply>
-                    <apply>
-                      <times/>
-                      <ci> R </ci>
-                      <ci> T </ci>
-                    </apply>
+                    <times/>
+                    <cn type="integer"> 2 </cn>
+                    <ci> V </ci>
+                    <ci> F </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
                   </apply>
                 </apply>
-                <cn> 1 </cn>
               </apply>
+              <cn type="integer"> 1 </cn>
             </apply>
           </apply>
         </math>
@@ -835,32 +837,32 @@
       <assignmentRule variable="L_type_Ca_channel_I_CaK">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> L_type_Ca_channel_P_K </ci>
+            <divide/>
             <apply>
-              <power/>
-              <cn> 1 </cn>
-              <cn> 2 </cn>
-            </apply>
-            <apply>
-              <divide/>
+              <times/>
               <apply>
-                <times/>
-                <ci> V </ci>
+                <divide/>
                 <apply>
-                  <power/>
-                  <ci> F </ci>
-                  <cn> 2 </cn>
+                  <times/>
+                  <ci> L_type_Ca_channel_P_K </ci>
+                  <apply>
+                    <power/>
+                    <cn type="integer"> 1 </cn>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <ci> V </ci>
+                  <apply>
+                    <power/>
+                    <ci> F </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> R </ci>
+                  <ci> T </ci>
                 </apply>
               </apply>
-              <apply>
-                <times/>
-                <ci> R </ci>
-                <ci> T </ci>
-              </apply>
-            </apply>
-            <apply>
-              <divide/>
               <apply>
                 <minus/>
                 <apply>
@@ -873,7 +875,7 @@
                       <divide/>
                       <apply>
                         <times/>
-                        <cn> 1 </cn>
+                        <cn type="integer"> 1 </cn>
                         <ci> V </ci>
                         <ci> F </ci>
                       </apply>
@@ -891,27 +893,27 @@
                   <ci> Ko </ci>
                 </apply>
               </apply>
+            </apply>
+            <apply>
+              <minus/>
               <apply>
-                <minus/>
+                <exp/>
                 <apply>
-                  <exp/>
+                  <divide/>
                   <apply>
-                    <divide/>
-                    <apply>
-                      <times/>
-                      <cn> 1 </cn>
-                      <ci> V </ci>
-                      <ci> F </ci>
-                    </apply>
-                    <apply>
-                      <times/>
-                      <ci> R </ci>
-                      <ci> T </ci>
-                    </apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> V </ci>
+                    <ci> F </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
                   </apply>
                 </apply>
-                <cn> 1 </cn>
               </apply>
+              <cn type="integer"> 1 </cn>
             </apply>
           </apply>
         </math>
@@ -919,32 +921,32 @@
       <assignmentRule variable="L_type_Ca_channel_I_CaNa">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> L_type_Ca_channel_P_Na </ci>
+            <divide/>
             <apply>
-              <power/>
-              <cn> 1 </cn>
-              <cn> 2 </cn>
-            </apply>
-            <apply>
-              <divide/>
+              <times/>
               <apply>
-                <times/>
-                <ci> V </ci>
+                <divide/>
                 <apply>
-                  <power/>
-                  <ci> F </ci>
-                  <cn> 2 </cn>
+                  <times/>
+                  <ci> L_type_Ca_channel_P_Na </ci>
+                  <apply>
+                    <power/>
+                    <cn type="integer"> 1 </cn>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <ci> V </ci>
+                  <apply>
+                    <power/>
+                    <ci> F </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> R </ci>
+                  <ci> T </ci>
                 </apply>
               </apply>
-              <apply>
-                <times/>
-                <ci> R </ci>
-                <ci> T </ci>
-              </apply>
-            </apply>
-            <apply>
-              <divide/>
               <apply>
                 <minus/>
                 <apply>
@@ -957,7 +959,7 @@
                       <divide/>
                       <apply>
                         <times/>
-                        <cn> 1 </cn>
+                        <cn type="integer"> 1 </cn>
                         <ci> V </ci>
                         <ci> F </ci>
                       </apply>
@@ -975,27 +977,27 @@
                   <ci> Nao </ci>
                 </apply>
               </apply>
+            </apply>
+            <apply>
+              <minus/>
               <apply>
-                <minus/>
+                <exp/>
                 <apply>
-                  <exp/>
+                  <divide/>
                   <apply>
-                    <divide/>
-                    <apply>
-                      <times/>
-                      <cn> 1 </cn>
-                      <ci> V </ci>
-                      <ci> F </ci>
-                    </apply>
-                    <apply>
-                      <times/>
-                      <ci> R </ci>
-                      <ci> T </ci>
-                    </apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> V </ci>
+                    <ci> F </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
                   </apply>
                 </apply>
-                <cn> 1 </cn>
               </apply>
+              <cn type="integer"> 1 </cn>
             </apply>
           </apply>
         </math>
@@ -1008,8 +1010,8 @@
               <times/>
               <apply>
                 <divide/>
-                <cn> 2 </cn>
-                <cn> 3 </cn>
+                <cn type="integer"> 2 </cn>
+                <cn type="integer"> 3 </cn>
               </apply>
               <apply>
                 <root/>
@@ -1018,11 +1020,11 @@
                   <apply>
                     <power/>
                     <ci> calcium_buffers_in_the_myoplasm_b </ci>
-                    <cn> 2 </cn>
+                    <cn type="integer"> 2 </cn>
                   </apply>
                   <apply>
                     <times/>
-                    <cn> 3 </cn>
+                    <cn type="integer"> 3 </cn>
                     <ci> calcium_buffers_in_the_myoplasm_c </ci>
                   </apply>
                 </apply>
@@ -1039,7 +1041,7 @@
                         <minus/>
                         <apply>
                           <times/>
-                          <cn> 9 </cn>
+                          <cn type="integer"> 9 </cn>
                           <ci> calcium_buffers_in_the_myoplasm_b </ci>
                           <ci> calcium_buffers_in_the_myoplasm_c </ci>
                         </apply>
@@ -1047,23 +1049,23 @@
                           <plus/>
                           <apply>
                             <times/>
-                            <cn> 2 </cn>
+                            <cn type="integer"> 2 </cn>
                             <apply>
                               <power/>
                               <ci> calcium_buffers_in_the_myoplasm_b </ci>
-                              <cn> 3 </cn>
+                              <cn type="integer"> 3 </cn>
                             </apply>
                           </apply>
                           <apply>
                             <times/>
-                            <cn> 27 </cn>
+                            <cn type="integer"> 27 </cn>
                             <ci> calcium_buffers_in_the_myoplasm_d </ci>
                           </apply>
                         </apply>
                       </apply>
                       <apply>
                         <times/>
-                        <cn> 2 </cn>
+                        <cn type="integer"> 2 </cn>
                         <apply>
                           <power/>
                           <apply>
@@ -1071,31 +1073,31 @@
                             <apply>
                               <power/>
                               <ci> calcium_buffers_in_the_myoplasm_b </ci>
-                              <cn> 2 </cn>
+                              <cn type="integer"> 2 </cn>
                             </apply>
                             <apply>
                               <times/>
-                              <cn> 3 </cn>
+                              <cn type="integer"> 3 </cn>
                               <ci> calcium_buffers_in_the_myoplasm_c </ci>
                             </apply>
                           </apply>
                           <apply>
                             <divide/>
-                            <cn> 3 </cn>
-                            <cn> 2 </cn>
+                            <cn type="integer"> 3 </cn>
+                            <cn type="integer"> 2 </cn>
                           </apply>
                         </apply>
                       </apply>
                     </apply>
                   </apply>
-                  <cn> 3 </cn>
+                  <cn type="integer"> 3 </cn>
                 </apply>
               </apply>
             </apply>
             <apply>
               <divide/>
               <ci> calcium_buffers_in_the_myoplasm_b </ci>
-              <cn> 3 </cn>
+              <cn type="integer"> 3 </cn>
             </apply>
           </apply>
         </math>
@@ -1103,42 +1105,9 @@
       <rateRule variable="Ko">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
+            <divide/>
             <apply>
-              <plus/>
-              <ci> i_CaK </ci>
-              <ci> i_Kr </ci>
-              <ci> i_Ks </ci>
-              <ci> i_K1 </ci>
-              <ci> i_Kp </ci>
-              <ci> i_ns_K </ci>
-              <apply>
-                <minus/>
-                <apply>
-                  <times/>
-                  <ci> i_NaK </ci>
-                  <cn> 2 </cn>
-                </apply>
-              </apply>
-            </apply>
-            <apply>
-              <divide/>
-              <ci> ionic_concentrations_A_cap </ci>
-              <apply>
-                <times/>
-                <ci> ionic_concentrations_V_cleft </ci>
-                <ci> F </ci>
-              </apply>
-            </apply>
-          </apply>
-        </math>
-      </rateRule>
-      <rateRule variable="Ki">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <times/>
-            <apply>
-              <minus/>
+              <times/>
               <apply>
                 <plus/>
                 <ci> i_CaK </ci>
@@ -1148,23 +1117,56 @@
                 <ci> i_Kp </ci>
                 <ci> i_ns_K </ci>
                 <apply>
-                  <minus/>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> i_NaK </ci>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+              </apply>
+              <ci> ionic_concentrations_A_cap </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ionic_concentrations_V_cleft </ci>
+              <ci> F </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Ki">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <apply>
+                  <plus/>
+                  <ci> i_CaK </ci>
+                  <ci> i_Kr </ci>
+                  <ci> i_Ks </ci>
+                  <ci> i_K1 </ci>
+                  <ci> i_Kp </ci>
+                  <ci> i_ns_K </ci>
                   <apply>
                     <times/>
-                    <ci> i_NaK </ci>
-                    <cn> 2 </cn>
+                    <apply>
+                      <minus/>
+                      <ci> i_NaK </ci>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
                   </apply>
                 </apply>
               </apply>
+              <ci> ionic_concentrations_A_cap </ci>
             </apply>
             <apply>
-              <divide/>
-              <ci> ionic_concentrations_A_cap </ci>
-              <apply>
-                <times/>
-                <ci> ionic_concentrations_V_myo </ci>
-                <ci> F </ci>
-              </apply>
+              <times/>
+              <ci> ionic_concentrations_V_myo </ci>
+              <ci> F </ci>
             </apply>
           </apply>
         </math>
@@ -1178,7 +1180,7 @@
               <ci> L_type_Ca_channel_L_type_Ca_channel_d_gate_alpha_d </ci>
               <apply>
                 <minus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <ci> d </ci>
               </apply>
             </apply>
@@ -1199,7 +1201,7 @@
               <ci> L_type_Ca_channel_L_type_Ca_channel_f_gate_alpha_f </ci>
               <apply>
                 <minus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <ci> f </ci>
               </apply>
             </apply>
@@ -1215,10 +1217,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <power/>
                 <apply>
@@ -1226,7 +1228,7 @@
                   <ci> Cai </ci>
                   <ci> L_type_Ca_channel_L_type_Ca_channel_f_Ca_gate_Km_Ca </ci>
                 </apply>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
               </apply>
             </apply>
           </apply>
@@ -1247,7 +1249,7 @@
             <divide/>
             <apply>
               <minus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <ci> L_type_Ca_channel_L_type_Ca_channel_d_gate_d_infinity </ci>
             </apply>
             <ci> L_type_Ca_channel_L_type_Ca_channel_d_gate_tau_d </ci>
@@ -1258,23 +1260,23 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
-                  <minus/>
+                  <divide/>
                   <apply>
-                    <divide/>
+                    <minus/>
                     <apply>
                       <plus/>
                       <ci> V </ci>
-                      <cn> 10 </cn>
+                      <cn type="integer"> 10 </cn>
                     </apply>
-                    <cn> 6.24 </cn>
                   </apply>
+                  <cn> 6.24 </cn>
                 </apply>
               </apply>
             </apply>
@@ -1284,37 +1286,37 @@
       <assignmentRule variable="L_type_Ca_channel_L_type_Ca_channel_d_gate_tau_d">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> L_type_Ca_channel_L_type_Ca_channel_d_gate_d_infinity </ci>
+            <divide/>
             <apply>
-              <divide/>
+              <times/>
+              <ci> L_type_Ca_channel_L_type_Ca_channel_d_gate_d_infinity </ci>
               <apply>
                 <minus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <apply>
                   <exp/>
                   <apply>
-                    <minus/>
+                    <divide/>
                     <apply>
-                      <divide/>
+                      <minus/>
                       <apply>
                         <plus/>
                         <ci> V </ci>
-                        <cn> 10 </cn>
+                        <cn type="integer"> 10 </cn>
                       </apply>
-                      <cn> 6.24 </cn>
                     </apply>
+                    <cn> 6.24 </cn>
                   </apply>
                 </apply>
               </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn> 0.035 </cn>
               <apply>
-                <times/>
-                <cn> 0.035 </cn>
-                <apply>
-                  <plus/>
-                  <ci> V </ci>
-                  <cn> 10 </cn>
-                </apply>
+                <plus/>
+                <ci> V </ci>
+                <cn type="integer"> 10 </cn>
               </apply>
             </apply>
           </apply>
@@ -1335,7 +1337,7 @@
             <divide/>
             <apply>
               <minus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <ci> L_type_Ca_channel_L_type_Ca_channel_f_gate_f_infinity </ci>
             </apply>
             <ci> L_type_Ca_channel_L_type_Ca_channel_f_gate_tau_f </ci>
@@ -1348,10 +1350,10 @@
             <plus/>
             <apply>
               <divide/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <plus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <apply>
                   <exp/>
                   <apply>
@@ -1371,17 +1373,17 @@
               <cn> 0.6 </cn>
               <apply>
                 <plus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <apply>
                   <exp/>
                   <apply>
                     <divide/>
                     <apply>
                       <minus/>
-                      <cn> 50 </cn>
+                      <cn type="integer"> 50 </cn>
                       <ci> V </ci>
                     </apply>
-                    <cn> 20 </cn>
+                    <cn type="integer"> 20 </cn>
                   </apply>
                 </apply>
               </apply>
@@ -1393,7 +1395,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
               <apply>
@@ -1411,10 +1413,10 @@
                         <apply>
                           <plus/>
                           <ci> V </ci>
-                          <cn> 10 </cn>
+                          <cn type="integer"> 10 </cn>
                         </apply>
                       </apply>
-                      <cn> 2 </cn>
+                      <cn type="integer"> 2 </cn>
                     </apply>
                   </apply>
                 </apply>
@@ -1437,7 +1439,7 @@
               </apply>
               <apply>
                 <times/>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
                 <ci> F </ci>
               </apply>
             </apply>
@@ -1482,23 +1484,23 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
-                  <minus/>
+                  <divide/>
                   <apply>
-                    <divide/>
+                    <minus/>
                     <apply>
                       <plus/>
                       <ci> V </ci>
-                      <cn> 14 </cn>
+                      <cn type="integer"> 14 </cn>
                     </apply>
-                    <cn> 10.8 </cn>
                   </apply>
+                  <cn> 10.8 </cn>
                 </apply>
               </apply>
             </apply>
@@ -1516,14 +1518,14 @@
             </apply>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
                   <divide/>
                   <apply>
                     <plus/>
-                    <cn> 25 </cn>
+                    <cn type="integer"> 25 </cn>
                     <ci> V </ci>
                   </apply>
                   <cn> 4.5 </cn>
@@ -1537,10 +1539,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -1548,7 +1550,7 @@
                   <apply>
                     <plus/>
                     <ci> V </ci>
-                    <cn> 60 </cn>
+                    <cn type="integer"> 60 </cn>
                   </apply>
                   <cn> 5.6 </cn>
                 </apply>
@@ -1615,10 +1617,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -1626,7 +1628,7 @@
                   <apply>
                     <plus/>
                     <ci> V </ci>
-                    <cn> 9 </cn>
+                    <cn type="integer"> 9 </cn>
                   </apply>
                   <cn> 22.4 </cn>
                 </apply>
@@ -1639,23 +1641,23 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
-                  <minus/>
+                  <divide/>
                   <apply>
-                    <divide/>
+                    <minus/>
                     <apply>
                       <plus/>
                       <ci> V </ci>
                       <cn> 21.5 </cn>
                     </apply>
-                    <cn> 7.5 </cn>
                   </apply>
+                  <cn> 7.5 </cn>
                 </apply>
               </apply>
             </apply>
@@ -1666,7 +1668,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
               <apply>
@@ -1682,7 +1684,7 @@
                 </apply>
                 <apply>
                   <minus/>
-                  <cn> 1 </cn>
+                  <cn type="integer"> 1 </cn>
                   <apply>
                     <exp/>
                     <apply>
@@ -1722,7 +1724,7 @@
                       </apply>
                     </apply>
                   </apply>
-                  <cn> 1 </cn>
+                  <cn type="integer"> 1 </cn>
                 </apply>
               </apply>
             </apply>
@@ -1740,7 +1742,7 @@
             </apply>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -1808,7 +1810,7 @@
                 <ci> Cai </ci>
               </apply>
             </apply>
-            <cn> 3 </cn>
+            <cn type="integer"> 3 </cn>
           </apply>
         </math>
       </assignmentRule>
@@ -1829,7 +1831,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
               <apply>
@@ -1840,12 +1842,12 @@
                   <apply>
                     <plus/>
                     <ci> V </ci>
-                    <cn> 30 </cn>
+                    <cn type="integer"> 30 </cn>
                   </apply>
                 </apply>
                 <apply>
                   <minus/>
-                  <cn> 1 </cn>
+                  <cn type="integer"> 1 </cn>
                   <apply>
                     <exp/>
                     <apply>
@@ -1854,7 +1856,7 @@
                       <apply>
                         <plus/>
                         <ci> V </ci>
-                        <cn> 30 </cn>
+                        <cn type="integer"> 30 </cn>
                       </apply>
                     </apply>
                   </apply>
@@ -1868,7 +1870,7 @@
                   <apply>
                     <plus/>
                     <ci> V </ci>
-                    <cn> 30 </cn>
+                    <cn type="integer"> 30 </cn>
                   </apply>
                 </apply>
                 <apply>
@@ -1881,11 +1883,11 @@
                       <apply>
                         <plus/>
                         <ci> V </ci>
-                        <cn> 30 </cn>
+                        <cn type="integer"> 30 </cn>
                       </apply>
                     </apply>
                   </apply>
-                  <cn> 1 </cn>
+                  <cn type="integer"> 1 </cn>
                 </apply>
               </apply>
             </apply>
@@ -1896,10 +1898,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -1979,7 +1981,7 @@
             <cn> 1.02 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -2045,7 +2047,7 @@
             </apply>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -2075,10 +2077,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -2113,7 +2115,7 @@
               </apply>
               <apply>
                 <times/>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
                 <ci> F </ci>
               </apply>
             </apply>
@@ -2132,30 +2134,27 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <times/>
                 <cn> 0.1245 </cn>
                 <apply>
                   <exp/>
                   <apply>
-                    <times/>
-                    <cn> -0.1 </cn>
+                    <divide/>
                     <apply>
-                      <divide/>
-                      <apply>
-                        <times/>
-                        <ci> V </ci>
-                        <ci> F </ci>
-                      </apply>
-                      <apply>
-                        <times/>
-                        <ci> R </ci>
-                        <ci> T </ci>
-                      </apply>
+                      <times/>
+                      <cn> -0.1 </cn>
+                      <ci> V </ci>
+                      <ci> F </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> R </ci>
+                      <ci> T </ci>
                     </apply>
                   </apply>
                 </apply>
@@ -2167,19 +2166,19 @@
                 <apply>
                   <exp/>
                   <apply>
-                    <minus/>
+                    <divide/>
                     <apply>
-                      <divide/>
+                      <times/>
                       <apply>
-                        <times/>
+                        <minus/>
                         <ci> V </ci>
-                        <ci> F </ci>
                       </apply>
-                      <apply>
-                        <times/>
-                        <ci> R </ci>
-                        <ci> T </ci>
-                      </apply>
+                      <ci> F </ci>
+                    </apply>
+                    <apply>
+                      <times/>
+                      <ci> R </ci>
+                      <ci> T </ci>
                     </apply>
                   </apply>
                 </apply>
@@ -2194,8 +2193,8 @@
             <times/>
             <apply>
               <divide/>
-              <cn> 1 </cn>
-              <cn> 7 </cn>
+              <cn type="integer"> 1 </cn>
+              <cn type="integer"> 7 </cn>
             </apply>
             <apply>
               <minus/>
@@ -2207,7 +2206,7 @@
                   <cn> 67.3 </cn>
                 </apply>
               </apply>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
             </apply>
           </apply>
         </math>
@@ -2215,23 +2214,23 @@
       <assignmentRule variable="i_ns_Na">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> non_specific_calcium_activated_current_I_ns_Na </ci>
+            <divide/>
             <apply>
-              <divide/>
-              <cn> 1 </cn>
+              <times/>
+              <ci> non_specific_calcium_activated_current_I_ns_Na </ci>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
               <apply>
-                <plus/>
-                <cn> 1 </cn>
+                <power/>
                 <apply>
-                  <power/>
-                  <apply>
-                    <divide/>
-                    <ci> non_specific_calcium_activated_current_K_m_ns_Ca </ci>
-                    <ci> Cai </ci>
-                  </apply>
-                  <cn> 3 </cn>
+                  <divide/>
+                  <ci> non_specific_calcium_activated_current_K_m_ns_Ca </ci>
+                  <ci> Cai </ci>
                 </apply>
+                <cn type="integer"> 3 </cn>
               </apply>
             </apply>
           </apply>
@@ -2240,23 +2239,23 @@
       <assignmentRule variable="i_ns_K">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> non_specific_calcium_activated_current_I_ns_K </ci>
+            <divide/>
             <apply>
-              <divide/>
-              <cn> 1 </cn>
+              <times/>
+              <ci> non_specific_calcium_activated_current_I_ns_K </ci>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <apply>
+              <plus/>
+              <cn type="integer"> 1 </cn>
               <apply>
-                <plus/>
-                <cn> 1 </cn>
+                <power/>
                 <apply>
-                  <power/>
-                  <apply>
-                    <divide/>
-                    <ci> non_specific_calcium_activated_current_K_m_ns_Ca </ci>
-                    <ci> Cai </ci>
-                  </apply>
-                  <cn> 3 </cn>
+                  <divide/>
+                  <ci> non_specific_calcium_activated_current_K_m_ns_Ca </ci>
+                  <ci> Cai </ci>
                 </apply>
+                <cn type="integer"> 3 </cn>
               </apply>
             </apply>
           </apply>
@@ -2265,32 +2264,32 @@
       <assignmentRule variable="non_specific_calcium_activated_current_I_ns_Na">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> non_specific_calcium_activated_current_P_ns_Ca </ci>
+            <divide/>
             <apply>
-              <power/>
-              <cn> 1 </cn>
-              <cn> 2 </cn>
-            </apply>
-            <apply>
-              <divide/>
+              <times/>
               <apply>
-                <times/>
-                <ci> V </ci>
+                <divide/>
                 <apply>
-                  <power/>
-                  <ci> F </ci>
-                  <cn> 2 </cn>
+                  <times/>
+                  <ci> non_specific_calcium_activated_current_P_ns_Ca </ci>
+                  <apply>
+                    <power/>
+                    <cn type="integer"> 1 </cn>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <ci> V </ci>
+                  <apply>
+                    <power/>
+                    <ci> F </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> R </ci>
+                  <ci> T </ci>
                 </apply>
               </apply>
-              <apply>
-                <times/>
-                <ci> R </ci>
-                <ci> T </ci>
-              </apply>
-            </apply>
-            <apply>
-              <divide/>
               <apply>
                 <minus/>
                 <apply>
@@ -2303,7 +2302,7 @@
                       <divide/>
                       <apply>
                         <times/>
-                        <cn> 1 </cn>
+                        <cn type="integer"> 1 </cn>
                         <ci> V </ci>
                         <ci> F </ci>
                       </apply>
@@ -2321,27 +2320,27 @@
                   <ci> Nao </ci>
                 </apply>
               </apply>
+            </apply>
+            <apply>
+              <minus/>
               <apply>
-                <minus/>
+                <exp/>
                 <apply>
-                  <exp/>
+                  <divide/>
                   <apply>
-                    <divide/>
-                    <apply>
-                      <times/>
-                      <cn> 1 </cn>
-                      <ci> V </ci>
-                      <ci> F </ci>
-                    </apply>
-                    <apply>
-                      <times/>
-                      <ci> R </ci>
-                      <ci> T </ci>
-                    </apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> V </ci>
+                    <ci> F </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
                   </apply>
                 </apply>
-                <cn> 1 </cn>
               </apply>
+              <cn type="integer"> 1 </cn>
             </apply>
           </apply>
         </math>
@@ -2349,32 +2348,32 @@
       <assignmentRule variable="non_specific_calcium_activated_current_I_ns_K">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> non_specific_calcium_activated_current_P_ns_Ca </ci>
+            <divide/>
             <apply>
-              <power/>
-              <cn> 1 </cn>
-              <cn> 2 </cn>
-            </apply>
-            <apply>
-              <divide/>
+              <times/>
               <apply>
-                <times/>
-                <ci> V </ci>
+                <divide/>
                 <apply>
-                  <power/>
-                  <ci> F </ci>
-                  <cn> 2 </cn>
+                  <times/>
+                  <ci> non_specific_calcium_activated_current_P_ns_Ca </ci>
+                  <apply>
+                    <power/>
+                    <cn type="integer"> 1 </cn>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <ci> V </ci>
+                  <apply>
+                    <power/>
+                    <ci> F </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> R </ci>
+                  <ci> T </ci>
                 </apply>
               </apply>
-              <apply>
-                <times/>
-                <ci> R </ci>
-                <ci> T </ci>
-              </apply>
-            </apply>
-            <apply>
-              <divide/>
               <apply>
                 <minus/>
                 <apply>
@@ -2387,7 +2386,7 @@
                       <divide/>
                       <apply>
                         <times/>
-                        <cn> 1 </cn>
+                        <cn type="integer"> 1 </cn>
                         <ci> V </ci>
                         <ci> F </ci>
                       </apply>
@@ -2405,27 +2404,27 @@
                   <ci> Ko </ci>
                 </apply>
               </apply>
+            </apply>
+            <apply>
+              <minus/>
               <apply>
-                <minus/>
+                <exp/>
                 <apply>
-                  <exp/>
+                  <divide/>
                   <apply>
-                    <divide/>
-                    <apply>
-                      <times/>
-                      <cn> 1 </cn>
-                      <ci> V </ci>
-                      <ci> F </ci>
-                    </apply>
-                    <apply>
-                      <times/>
-                      <ci> R </ci>
-                      <ci> T </ci>
-                    </apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> V </ci>
+                    <ci> F </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
                   </apply>
                 </apply>
-                <cn> 1 </cn>
               </apply>
+              <cn type="integer"> 1 </cn>
             </apply>
           </apply>
         </math>
@@ -2443,34 +2442,34 @@
                   <apply>
                     <power/>
                     <ci> calcium_buffers_in_the_myoplasm_b1 </ci>
-                    <cn> 2 </cn>
+                    <cn type="integer"> 2 </cn>
                   </apply>
                   <apply>
                     <times/>
-                    <cn> 4 </cn>
+                    <cn type="integer"> 4 </cn>
                     <ci> calcium_buffers_in_the_myoplasm_c1 </ci>
                   </apply>
                 </apply>
               </apply>
               <ci> calcium_buffers_in_the_myoplasm_b1 </ci>
             </apply>
-            <cn> 2 </cn>
+            <cn type="integer"> 2 </cn>
           </apply>
         </math>
       </assignmentRule>
       <assignmentRule variable="calcium_buffers_in_the_myoplasm_TRPN_buff">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> calcium_buffers_in_the_myoplasm_TRPN_max </ci>
+            <divide/>
             <apply>
-              <divide/>
+              <times/>
+              <ci> calcium_buffers_in_the_myoplasm_TRPN_max </ci>
               <ci> Cai </ci>
-              <apply>
-                <plus/>
-                <ci> Cai </ci>
-                <ci> calcium_buffers_in_the_myoplasm_K_mTRPN </ci>
-              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> Cai </ci>
+              <ci> calcium_buffers_in_the_myoplasm_K_mTRPN </ci>
             </apply>
           </apply>
         </math>
@@ -2478,16 +2477,16 @@
       <assignmentRule variable="calcium_buffers_in_the_myoplasm_CMDN_buff">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> calcium_buffers_in_the_myoplasm_CMDN_max </ci>
+            <divide/>
             <apply>
-              <divide/>
+              <times/>
+              <ci> calcium_buffers_in_the_myoplasm_CMDN_max </ci>
               <ci> Cai </ci>
-              <apply>
-                <plus/>
-                <ci> Cai </ci>
-                <ci> calcium_buffers_in_the_myoplasm_K_mCMDN </ci>
-              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> Cai </ci>
+              <ci> calcium_buffers_in_the_myoplasm_K_mCMDN </ci>
             </apply>
           </apply>
         </math>
@@ -2565,12 +2564,9 @@
             <times/>
             <apply>
               <minus/>
-              <apply>
-                <times/>
-                <ci> calcium_buffers_in_the_myoplasm_K_mTRPN </ci>
-                <ci> calcium_buffers_in_the_myoplasm_K_mCMDN </ci>
-              </apply>
+              <ci> calcium_buffers_in_the_myoplasm_K_mTRPN </ci>
             </apply>
+            <ci> calcium_buffers_in_the_myoplasm_K_mCMDN </ci>
             <ci> calcium_buffers_in_the_myoplasm_Ca_total </ci>
           </apply>
         </math>
@@ -2578,16 +2574,16 @@
       <assignmentRule variable="CSQN_buff">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> CSQN_max </ci>
+            <divide/>
             <apply>
-              <divide/>
+              <times/>
+              <ci> CSQN_max </ci>
               <ci> Ca_JSR_new </ci>
-              <apply>
-                <plus/>
-                <ci> Ca_JSR_new </ci>
-                <ci> K_mCSQN </ci>
-              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> Ca_JSR_new </ci>
+              <ci> K_mCSQN </ci>
             </apply>
           </apply>
         </math>
@@ -2608,16 +2604,16 @@
       <assignmentRule variable="i_up">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> calcium_fluxes_in_the_SR_I_up </ci>
+            <divide/>
             <apply>
-              <divide/>
+              <times/>
+              <ci> calcium_fluxes_in_the_SR_I_up </ci>
               <ci> Cai </ci>
-              <apply>
-                <plus/>
-                <ci> Cai </ci>
-                <ci> calcium_fluxes_in_the_SR_K_mup </ci>
-              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> Cai </ci>
+              <ci> calcium_fluxes_in_the_SR_K_mup </ci>
             </apply>
           </apply>
         </math>
@@ -2676,15 +2672,18 @@
           <apply>
             <times/>
             <apply>
-              <minus/>
-              <ci> i_CaCa </ci>
-            </apply>
-            <apply>
               <divide/>
-              <ci> ionic_concentrations_A_cap </ci>
               <apply>
                 <times/>
-                <cn> 2 </cn>
+                <apply>
+                  <minus/>
+                  <ci> i_CaCa </ci>
+                </apply>
+                <ci> ionic_concentrations_A_cap </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn type="integer"> 2 </cn>
                 <ci> ionic_concentrations_V_myo </ci>
                 <ci> F </ci>
               </apply>

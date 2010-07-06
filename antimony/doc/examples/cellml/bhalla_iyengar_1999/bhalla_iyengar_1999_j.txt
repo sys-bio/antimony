@@ -1,32 +1,32 @@
-//Created by libAntimony v1.3
-model bhalla_iyengar_1999_version10__global_variables(time_)
+//Created by libAntimony v1.4
+model bhalla_model_1999__global_variables(time_)
 end
 
-model bhalla_iyengar_1999_version10__DAG(DAG, delta_DAG_rxn2, delta_DAG_rxn3, delta_DAG_rxn0, time_)
+model bhalla_model_1999__DAG(DAG, delta_DAG_rxn2, delta_DAG_rxn3, delta_DAG_rxn0, time_)
 
   // Rate Rules:
   DAG' = delta_DAG_rxn2 + delta_DAG_rxn3 + delta_DAG_rxn0;
 end
 
-model bhalla_iyengar_1999_version10__PC(PC, delta_PC_rxn0, time_)
+model bhalla_model_1999__PC(PC, delta_PC_rxn0, time_)
 
   // Rate Rules:
   PC' = delta_PC_rxn0;
 end
 
-model bhalla_iyengar_1999_version10__IP3(IP3, delta_IP3_rxn2, delta_IP3_rxn3, delta_IP3_rxn1, time_)
+model bhalla_model_1999__IP3(IP3, delta_IP3_rxn2, delta_IP3_rxn3, delta_IP3_rxn1, time_)
 
   // Rate Rules:
   IP3' = delta_IP3_rxn2 + delta_IP3_rxn3 + delta_IP3_rxn1;
 end
 
-model bhalla_iyengar_1999_version10__Inositol(Inositol, delta_Inositol_rxn1, time_)
+model bhalla_model_1999__Inositol(Inositol, delta_Inositol_rxn1, time_)
 
   // Rate Rules:
   Inositol' = delta_Inositol_rxn1;
 end
 
-model bhalla_iyengar_1999_version10__PLC(PLC, delta_PLC_rxn4, delta_PLC_rxn5, time_)
+model bhalla_model_1999__PLC(PLC, delta_PLC_rxn4, delta_PLC_rxn5, time_)
 
   // Rate Rules:
   PLC' = delta_PLC_rxn4 + delta_PLC_rxn5;
@@ -35,7 +35,7 @@ model bhalla_iyengar_1999_version10__PLC(PLC, delta_PLC_rxn4, delta_PLC_rxn5, ti
   PLC = 0.8;
 end
 
-model bhalla_iyengar_1999_version10__Ca(Ca, delta_Ca_rxn4, time_)
+model bhalla_model_1999__Ca(Ca, delta_Ca_rxn4, time_)
 
   // Rate Rules:
   Ca' = delta_Ca_rxn4;
@@ -44,13 +44,13 @@ model bhalla_iyengar_1999_version10__Ca(Ca, delta_Ca_rxn4, time_)
   Ca = 1.0;
 end
 
-model bhalla_iyengar_1999_version10__Ca_PLC(Ca_PLC, delta_Ca_PLC_rxn4, delta_Ca_PLC_rxn8, delta_Ca_PLC_rxn7, time_)
+model bhalla_model_1999__Ca_PLC(Ca_PLC, delta_Ca_PLC_rxn4, delta_Ca_PLC_rxn8, delta_Ca_PLC_rxn7, time_)
 
   // Rate Rules:
   Ca_PLC' = delta_Ca_PLC_rxn4 + delta_Ca_PLC_rxn8 + delta_Ca_PLC_rxn7;
 end
 
-model bhalla_iyengar_1999_version10__PIP2(PIP2, delta_PIP2_rxn2, delta_PIP2_rxn3, time_)
+model bhalla_model_1999__PIP2(PIP2, delta_PIP2_rxn2, delta_PIP2_rxn3, time_)
 
   // Rate Rules:
   PIP2' = delta_PIP2_rxn2 + delta_PIP2_rxn3;
@@ -59,7 +59,7 @@ model bhalla_iyengar_1999_version10__PIP2(PIP2, delta_PIP2_rxn2, delta_PIP2_rxn3
   PIP2 = 10.0;
 end
 
-model bhalla_iyengar_1999_version10__Gq(Gq, delta_Gq_rxn8, delta_Gq_rxn5, delta_Gq_rxn6, delta_Gq_rxn7, time_)
+model bhalla_model_1999__Gq(Gq, delta_Gq_rxn8, delta_Gq_rxn5, delta_Gq_rxn6, delta_Gq_rxn7, time_)
 
   // Rate Rules:
   Gq' = delta_Gq_rxn8 + delta_Gq_rxn5 + delta_Gq_rxn6 + delta_Gq_rxn7;
@@ -68,13 +68,13 @@ model bhalla_iyengar_1999_version10__Gq(Gq, delta_Gq_rxn8, delta_Gq_rxn5, delta_
   Gq = 1.0;
 end
 
-model bhalla_iyengar_1999_version10__Gq_PLC(Gq_PLC, delta_Gq_PLC_rxn5, delta_Gq_PLC_rxn6, time_)
+model bhalla_model_1999__Gq_PLC(Gq_PLC, delta_Gq_PLC_rxn5, delta_Gq_PLC_rxn6, time_)
 
   // Rate Rules:
   Gq_PLC' = delta_Gq_PLC_rxn5 + delta_Gq_PLC_rxn6;
 end
 
-model bhalla_iyengar_1999_version10__Ca_Gq_PLC(Ca_Gq_PLC, delta_Ca_Gq_PLC_rxn6, delta_Ca_Gq_PLC_rxn7, delta_Ca_Gq_PLC_rxn8, time_)
+model bhalla_model_1999__Ca_Gq_PLC(Ca_Gq_PLC, delta_Ca_Gq_PLC_rxn6, delta_Ca_Gq_PLC_rxn7, delta_Ca_Gq_PLC_rxn8, time_)
 
   // Rate Rules:
   Ca_Gq_PLC' = delta_Ca_Gq_PLC_rxn6 + delta_Ca_Gq_PLC_rxn7 + delta_Ca_Gq_PLC_rxn8;
@@ -83,88 +83,88 @@ model bhalla_iyengar_1999_version10__Ca_Gq_PLC(Ca_Gq_PLC, delta_Ca_Gq_PLC_rxn6, 
   Ca_Gq_PLC = 1.0;
 end
 
-model bhalla_iyengar_1999_version10__reaction0(DAG, PC, delta_DAG_rxn0, delta_PC_rxn0)
+model bhalla_model_1999__reaction0(DAG, PC, delta_DAG_rxn0, delta_PC_rxn0)
 
   // Variable initializations:
   k0 = 0.15;
 end
 
-model bhalla_iyengar_1999_version10__reaction1(IP3, Inositol, delta_IP3_rxn1, delta_Inositol_rxn1)
+model bhalla_model_1999__reaction1(IP3, Inositol, delta_IP3_rxn1, delta_Inositol_rxn1)
 
   // Variable initializations:
   k1 = 2.5;
 end
 
-model bhalla_iyengar_1999_version10__reaction2(PIP2, DAG, IP3, Ca_PLC, delta_PIP2_rxn2, delta_DAG_rxn2, delta_IP3_rxn2)
+model bhalla_model_1999__reaction2(PIP2, DAG, IP3, Ca_PLC, delta_PIP2_rxn2, delta_DAG_rxn2, delta_IP3_rxn2)
 
   // Variable initializations:
   km2 = 5.0;
   vmax2 = 48.0;
 end
 
-model bhalla_iyengar_1999_version10__reaction3(PIP2, DAG, IP3, Ca_Gq_PLC, delta_PIP2_rxn3, delta_DAG_rxn3, delta_IP3_rxn3)
+model bhalla_model_1999__reaction3(PIP2, DAG, IP3, Ca_Gq_PLC, delta_PIP2_rxn3, delta_DAG_rxn3, delta_IP3_rxn3)
 
   // Variable initializations:
   km3 = 19.84166667;
   vmax3 = 10.0;
 end
 
-model bhalla_iyengar_1999_version10__reaction4(PLC, Ca, Ca_PLC, delta_PLC_rxn4, delta_Ca_rxn4, delta_Ca_PLC_rxn4)
+model bhalla_model_1999__reaction4(PLC, Ca, Ca_PLC, delta_PLC_rxn4, delta_Ca_rxn4, delta_Ca_PLC_rxn4)
 
   // Variable initializations:
   k4 = 0.000005;
   k4_ = 1.0;
 end
 
-model bhalla_iyengar_1999_version10__reaction5(PLC, Gq, Gq_PLC, delta_PLC_rxn5, delta_Gq_rxn5, delta_Gq_PLC_rxn5)
+model bhalla_model_1999__reaction5(PLC, Gq, Gq_PLC, delta_PLC_rxn5, delta_Gq_rxn5, delta_Gq_PLC_rxn5)
 
   // Variable initializations:
   k5 = 0.0000042;
   k5_ = 1.0;
 end
 
-model bhalla_iyengar_1999_version10__reaction6(Gq, Gq_PLC, Ca_Gq_PLC, delta_Gq_rxn6, delta_Gq_PLC_rxn6, delta_Ca_Gq_PLC_rxn6)
+model bhalla_model_1999__reaction6(Gq, Gq_PLC, Ca_Gq_PLC, delta_Gq_rxn6, delta_Gq_PLC_rxn6, delta_Ca_Gq_PLC_rxn6)
 
   // Variable initializations:
   k6 = 0.00005;
   k6_ = 1.0;
 end
 
-model bhalla_iyengar_1999_version10__reaction7(Ca_PLC, Gq, Ca_Gq_PLC, delta_Ca_PLC_rxn7, delta_Gq_rxn7, delta_Ca_Gq_PLC_rxn7)
+model bhalla_model_1999__reaction7(Ca_PLC, Gq, Ca_Gq_PLC, delta_Ca_PLC_rxn7, delta_Gq_rxn7, delta_Ca_Gq_PLC_rxn7)
 
   // Variable initializations:
   k7 = 0.000042;
   k7_ = 1.0;
 end
 
-model bhalla_iyengar_1999_version10__reaction8(Ca_Gq_PLC, Ca_PLC, Gq, delta_Ca_Gq_PLC_rxn8, delta_Ca_PLC_rxn8, delta_Gq_rxn8)
+model bhalla_model_1999__reaction8(Ca_Gq_PLC, Ca_PLC, Gq, delta_Ca_Gq_PLC_rxn8, delta_Ca_PLC_rxn8, delta_Gq_rxn8)
 
   // Variable initializations:
   k8 = 0.0133;
 end
 
-model bhalla_iyengar_1999_version10____main()
+model bhalla_model_1999____main()
 
   // Sub-modules, and any changes to those submodules:
-  global_variables: bhalla_iyengar_1999_version10__global_variables(time_);
-  DAG: bhalla_iyengar_1999_version10__DAG(DAG0, delta_DAG_rxn2, delta_DAG_rxn3, delta_DAG_rxn0, time_);
-  PC: bhalla_iyengar_1999_version10__PC(PC0, delta_PC_rxn0, time_);
-  IP3: bhalla_iyengar_1999_version10__IP3(IP30, delta_IP3_rxn2, delta_IP3_rxn3, delta_IP3_rxn1, time_);
-  Inositol: bhalla_iyengar_1999_version10__Inositol(Inositol0, delta_Inositol_rxn1, time_);
-  PLC: bhalla_iyengar_1999_version10__PLC(PLC0, delta_PLC_rxn4, delta_PLC_rxn5, time_);
-  Ca: bhalla_iyengar_1999_version10__Ca(Ca0, delta_Ca_rxn4, time_);
-  Ca_PLC: bhalla_iyengar_1999_version10__Ca_PLC(Ca_PLC0, delta_Ca_PLC_rxn4, delta_Ca_PLC_rxn8, delta_Ca_PLC_rxn7, time_);
-  PIP2: bhalla_iyengar_1999_version10__PIP2(PIP20, delta_PIP2_rxn2, delta_PIP2_rxn3, time_);
-  Gq: bhalla_iyengar_1999_version10__Gq(Gq0, delta_Gq_rxn8, delta_Gq_rxn5, delta_Gq_rxn6, delta_Gq_rxn7, time_);
-  Gq_PLC: bhalla_iyengar_1999_version10__Gq_PLC(Gq_PLC0, delta_Gq_PLC_rxn5, delta_Gq_PLC_rxn6, time_);
-  Ca_Gq_PLC: bhalla_iyengar_1999_version10__Ca_Gq_PLC(Ca_Gq_PLC0, delta_Ca_Gq_PLC_rxn6, delta_Ca_Gq_PLC_rxn7, delta_Ca_Gq_PLC_rxn8, time_);
-  reaction0: bhalla_iyengar_1999_version10__reaction0(DAG0, PC0, delta_DAG_rxn0, delta_PC_rxn0);
-  reaction1: bhalla_iyengar_1999_version10__reaction1(IP30, Inositol0, delta_IP3_rxn1, delta_Inositol_rxn1);
-  reaction2: bhalla_iyengar_1999_version10__reaction2(PIP20, DAG0, IP30, Ca_PLC0, delta_PIP2_rxn2, delta_DAG_rxn2, delta_IP3_rxn2);
-  reaction3: bhalla_iyengar_1999_version10__reaction3(PIP20, DAG0, IP30, Ca_Gq_PLC0, delta_PIP2_rxn3, delta_DAG_rxn3, delta_IP3_rxn3);
-  reaction4: bhalla_iyengar_1999_version10__reaction4(PLC0, Ca0, Ca_PLC0, delta_PLC_rxn4, delta_Ca_rxn4, delta_Ca_PLC_rxn4);
-  reaction5: bhalla_iyengar_1999_version10__reaction5(PLC0, Gq0, Gq_PLC0, delta_PLC_rxn5, delta_Gq_rxn5, delta_Gq_PLC_rxn5);
-  reaction6: bhalla_iyengar_1999_version10__reaction6(Gq0, Gq_PLC0, Ca_Gq_PLC0, delta_Gq_rxn6, delta_Gq_PLC_rxn6, delta_Ca_Gq_PLC_rxn6);
-  reaction7: bhalla_iyengar_1999_version10__reaction7(Ca_PLC0, Gq0, Ca_Gq_PLC0, delta_Ca_PLC_rxn7, delta_Gq_rxn7, delta_Ca_Gq_PLC_rxn7);
-  reaction8: bhalla_iyengar_1999_version10__reaction8(Ca_Gq_PLC0, Ca_PLC0, Gq0, delta_Ca_Gq_PLC_rxn8, delta_Ca_PLC_rxn8, delta_Gq_rxn8);
+  global_variables: bhalla_model_1999__global_variables(time_);
+  DAG: bhalla_model_1999__DAG(DAG0, delta_DAG_rxn2, delta_DAG_rxn3, delta_DAG_rxn0, time_);
+  PC: bhalla_model_1999__PC(PC0, delta_PC_rxn0, time_);
+  IP3: bhalla_model_1999__IP3(IP30, delta_IP3_rxn2, delta_IP3_rxn3, delta_IP3_rxn1, time_);
+  Inositol: bhalla_model_1999__Inositol(Inositol0, delta_Inositol_rxn1, time_);
+  PLC: bhalla_model_1999__PLC(PLC0, delta_PLC_rxn4, delta_PLC_rxn5, time_);
+  Ca: bhalla_model_1999__Ca(Ca0, delta_Ca_rxn4, time_);
+  Ca_PLC: bhalla_model_1999__Ca_PLC(Ca_PLC0, delta_Ca_PLC_rxn4, delta_Ca_PLC_rxn8, delta_Ca_PLC_rxn7, time_);
+  PIP2: bhalla_model_1999__PIP2(PIP20, delta_PIP2_rxn2, delta_PIP2_rxn3, time_);
+  Gq: bhalla_model_1999__Gq(Gq0, delta_Gq_rxn8, delta_Gq_rxn5, delta_Gq_rxn6, delta_Gq_rxn7, time_);
+  Gq_PLC: bhalla_model_1999__Gq_PLC(Gq_PLC0, delta_Gq_PLC_rxn5, delta_Gq_PLC_rxn6, time_);
+  Ca_Gq_PLC: bhalla_model_1999__Ca_Gq_PLC(Ca_Gq_PLC0, delta_Ca_Gq_PLC_rxn6, delta_Ca_Gq_PLC_rxn7, delta_Ca_Gq_PLC_rxn8, time_);
+  reaction0: bhalla_model_1999__reaction0(DAG0, PC0, delta_DAG_rxn0, delta_PC_rxn0);
+  reaction1: bhalla_model_1999__reaction1(IP30, Inositol0, delta_IP3_rxn1, delta_Inositol_rxn1);
+  reaction2: bhalla_model_1999__reaction2(PIP20, DAG0, IP30, Ca_PLC0, delta_PIP2_rxn2, delta_DAG_rxn2, delta_IP3_rxn2);
+  reaction3: bhalla_model_1999__reaction3(PIP20, DAG0, IP30, Ca_Gq_PLC0, delta_PIP2_rxn3, delta_DAG_rxn3, delta_IP3_rxn3);
+  reaction4: bhalla_model_1999__reaction4(PLC0, Ca0, Ca_PLC0, delta_PLC_rxn4, delta_Ca_rxn4, delta_Ca_PLC_rxn4);
+  reaction5: bhalla_model_1999__reaction5(PLC0, Gq0, Gq_PLC0, delta_PLC_rxn5, delta_Gq_rxn5, delta_Gq_PLC_rxn5);
+  reaction6: bhalla_model_1999__reaction6(Gq0, Gq_PLC0, Ca_Gq_PLC0, delta_Gq_rxn6, delta_Gq_PLC_rxn6, delta_Ca_Gq_PLC_rxn6);
+  reaction7: bhalla_model_1999__reaction7(Ca_PLC0, Gq0, Ca_Gq_PLC0, delta_Ca_PLC_rxn7, delta_Gq_rxn7, delta_Ca_Gq_PLC_rxn7);
+  reaction8: bhalla_model_1999__reaction8(Ca_Gq_PLC0, Ca_PLC0, Gq0, delta_Ca_Gq_PLC_rxn8, delta_Ca_PLC_rxn8, delta_Gq_rxn8);
 end

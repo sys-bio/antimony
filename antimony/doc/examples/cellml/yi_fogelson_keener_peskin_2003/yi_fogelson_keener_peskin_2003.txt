@@ -1,17 +1,17 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 
 //Warnings from automatic translation:
 //    Unable to use the formula "Qv * Na_v - Qa * Na_a" to set the assignment rule for Jv_Na:  Loop detected:  Jv_Na's definition (Qv * Na_v - Qa * Na_a) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
 //    Unable to use the formula "Qv * K_v - Qa * K_a" to set the assignment rule for Jv_K:  Loop detected:  Jv_K's definition (Qv * K_v - Qa * K_a) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
 //    Unable to use the formula "Qv * Cl_v - Qa * Cl_a" to set the assignment rule for Jv_Cl:  Loop detected:  Jv_Cl's definition (Qv * Cl_v - Qa * Cl_a) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
 //    Unable to use the formula "Qv - Qa" to set the assignment rule for Jv_H2O:  Loop detected:  Jv_H2O's definition (Qv - Qa) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
-//    In module 'yi_fogelson_keener_peskin_2003_version01____main', the variables capillary_space.Qa and Qa were unable to be set as equivalent:  Loop detected:  'capillary_space.Qa' may not be set to be equal to 'Qa' because Qa's definition already includes capillary_space.Qa either directly or by proxy.
-//    In module 'yi_fogelson_keener_peskin_2003_version01____main', the variables arterial_space.Pr_v and Pr_v were unable to be set as equivalent:  Loop detected:  'arterial_space.Pr_v' may not be set to be equal to 'Pr_v' because Pr_v's definition already includes arterial_space.Pr_v either directly or by proxy.
+//    In module 'yi_2003____main', the variables capillary_space.Qa and Qa were unable to be set as equivalent:  Loop detected:  'capillary_space.Qa' may not be set to be equal to 'Qa' because Qa's definition already includes capillary_space.Qa either directly or by proxy.
+//    In module 'yi_2003____main', the variables arterial_space.Pr_v and Pr_v were unable to be set as equivalent:  Loop detected:  'arterial_space.Pr_v' may not be set to be equal to 'Pr_v' because Pr_v's definition already includes arterial_space.Pr_v either directly or by proxy.
 
-model yi_fogelson_keener_peskin_2003_version01__environment(time_)
+model yi_2003__environment(time_)
 end
 
-model yi_fogelson_keener_peskin_2003_version01__intracellular_space(delta, delta_eq, V_i, R, T, F, C_m, Lie_p, pi_i, pi_e, P_h, delta_eh, X_e, time_, Na_e, Na_i, K_e, K_i, Cl_e, Cl_i, V_e, delta_e)
+model yi_2003__intracellular_space(delta, delta_eq, V_i, R, T, F, C_m, Lie_p, pi_i, pi_e, P_h, delta_eh, X_e, time_, Na_e, Na_i, K_e, K_i, Cl_e, Cl_i, V_e, delta_e)
 
   // Assignment Rules:
   pi_i := R * T * ( Na_i + K_i + Cl_i + X_i / V_i );
@@ -37,7 +37,7 @@ model yi_fogelson_keener_peskin_2003_version01__intracellular_space(delta, delta
   A_s = 7.67E-5;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__intracellular_sodium_m_gate(m_infinity, delta, delta_eq)
+model yi_2003__intracellular_sodium_m_gate(m_infinity, delta, delta_eq)
 
   // Assignment Rules:
   m_infinity := A_m / ( A_m + B_m );
@@ -45,7 +45,7 @@ model yi_fogelson_keener_peskin_2003_version01__intracellular_sodium_m_gate(m_in
   B_m := 4.0 * exp((-( delta ) + delta_eq ) / 18.0 );
 end
 
-model yi_fogelson_keener_peskin_2003_version01__intracellular_sodium_h_gate(h_infinity, delta, delta_eq)
+model yi_2003__intracellular_sodium_h_gate(h_infinity, delta, delta_eq)
 
   // Assignment Rules:
   h_infinity := A_h / ( A_h + B_h );
@@ -53,11 +53,11 @@ model yi_fogelson_keener_peskin_2003_version01__intracellular_sodium_h_gate(h_in
   B_h := 1.0 / (exp( 0.1 * ( 30.0 - delta + delta_eq )) + 1.0 );
 end
 
-model yi_fogelson_keener_peskin_2003_version01__intracellular_sodium(Na_i, g_Na, delta_Na, time_, Na_e, P, R, F, T, delta, delta_eq, m_infinity, h_infinity)
+model yi_2003__intracellular_sodium(Na_i, g_Na, delta_Na, time_, Na_e, P, R, F, T, delta, delta_eq, m_infinity, h_infinity)
 
   // Sub-modules, and any changes to those submodules:
-  intracellular_sodium_m_gate: yi_fogelson_keener_peskin_2003_version01__intracellular_sodium_m_gate(m_infinity, delta, delta_eq);
-  intracellular_sodium_h_gate: yi_fogelson_keener_peskin_2003_version01__intracellular_sodium_h_gate(h_infinity, delta, delta_eq);
+  intracellular_sodium_m_gate: yi_2003__intracellular_sodium_m_gate(m_infinity, delta, delta_eq);
+  intracellular_sodium_h_gate: yi_2003__intracellular_sodium_h_gate(h_infinity, delta, delta_eq);
 
   // Assignment Rules:
   g_Na := g_b_Na + g_Na_max * power( m_infinity , 3.0 ) * h_infinity;
@@ -72,7 +72,7 @@ model yi_fogelson_keener_peskin_2003_version01__intracellular_sodium(Na_i, g_Na,
   g_Na_max = 3.69E-2;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__intracellular_potassium_n_gate(n_infinity, delta, delta_eq)
+model yi_2003__intracellular_potassium_n_gate(n_infinity, delta, delta_eq)
 
   // Assignment Rules:
   n_infinity := A_n / ( A_n + B_n );
@@ -80,10 +80,10 @@ model yi_fogelson_keener_peskin_2003_version01__intracellular_potassium_n_gate(n
   B_n := 0.125 * exp((-( delta ) + delta_eq ) / 80.0 );
 end
 
-model yi_fogelson_keener_peskin_2003_version01__intracellular_potassium(K_i, g_K, delta_K, time_, K_e, P, R, F, T, delta, delta_eq, n_infinity)
+model yi_2003__intracellular_potassium(K_i, g_K, delta_K, time_, K_e, P, R, F, T, delta, delta_eq, n_infinity)
 
   // Sub-modules, and any changes to those submodules:
-  intracellular_potassium_n_gate: yi_fogelson_keener_peskin_2003_version01__intracellular_potassium_n_gate(n_infinity, delta, delta_eq);
+  intracellular_potassium_n_gate: yi_2003__intracellular_potassium_n_gate(n_infinity, delta, delta_eq);
 
   // Assignment Rules:
   g_K := g_b_K + g_K_max * power( n_infinity , 4.0 );
@@ -98,7 +98,7 @@ model yi_fogelson_keener_peskin_2003_version01__intracellular_potassium(K_i, g_K
   g_K_max = 1.28E-2;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__intracellular_chloride(Cl_i, g_Cl, delta_Cl, time_, Cl_e, R, F, T, delta)
+model yi_2003__intracellular_chloride(Cl_i, g_Cl, delta_Cl, time_, Cl_e, R, F, T, delta)
 
   // Assignment Rules:
   delta_Cl := R * T / ( -1.0 * F ) * ln( Cl_e / Cl_i );
@@ -111,7 +111,7 @@ model yi_fogelson_keener_peskin_2003_version01__intracellular_chloride(Cl_i, g_C
   g_Cl = 2.81E-4;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__extracellular_sodium(Na_e, delta_Na, time_, g_Na, P, R, F, T, delta, Jv_Na, Jh_Na)
+model yi_2003__extracellular_sodium(Na_e, delta_Na, time_, g_Na, P, R, F, T, delta, Jv_Na, Jh_Na)
 
   // Rate Rules:
   Na_e' = g_Na / F * ( delta - delta_Na ) + 3.0 * P - ( Jv_Na + Jh_Na );
@@ -120,7 +120,7 @@ model yi_fogelson_keener_peskin_2003_version01__extracellular_sodium(Na_e, delta
   Na_e = 140.0;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__extracellular_potassium(K_e, g_K, delta_K, time_, P, R, F, T, delta, Jv_K, Jh_K)
+model yi_2003__extracellular_potassium(K_e, g_K, delta_K, time_, P, R, F, T, delta, Jv_K, Jh_K)
 
   // Rate Rules:
   K_e' = g_K / F * ( delta - delta_K ) - 2.0 * P - ( Jv_K + Jh_K );
@@ -129,7 +129,7 @@ model yi_fogelson_keener_peskin_2003_version01__extracellular_potassium(K_e, g_K
   K_e = 5.4;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__extracellular_chloride(Cl_e, g_Cl, delta_Cl, time_, R, F, T, delta, Jv_Cl, Jh_Cl)
+model yi_2003__extracellular_chloride(Cl_e, g_Cl, delta_Cl, time_, R, F, T, delta, Jv_Cl, Jh_Cl)
 
   // Rate Rules:
   Cl_e' = -(( g_Cl / F * ( delta + delta_Cl ))) - ( Jv_Cl + Jh_Cl );
@@ -138,7 +138,7 @@ model yi_fogelson_keener_peskin_2003_version01__extracellular_chloride(Cl_e, g_C
   Cl_e = 110.0;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__extracellular_space(V_e, delta_e, X_e, Lie_p, pi_i, pi_e, time_, Jv_H2O, Jh_H2O, Cl_e, Na_e, K_e)
+model yi_2003__extracellular_space(V_e, delta_e, X_e, Lie_p, pi_i, pi_e, time_, Jv_H2O, Jh_H2O, Cl_e, Na_e, K_e)
 
   // Assignment Rules:
   X_e := V_e * ( Na_e + K_e - Cl_e ) / z_e;
@@ -151,7 +151,7 @@ model yi_fogelson_keener_peskin_2003_version01__extracellular_space(V_e, delta_e
   z_e = 85.4;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__water_flux(Jh_H2O, V_i, V_e, time_)
+model yi_2003__water_flux(Jh_H2O, V_i, V_e, time_)
 
   // Assignment Rules:
   Jh_H2O := -(( 1.0 / tau_1 * ( V_infinity_e - V_e ) + 1.0 / tau_2 * ( V_infinity_T - ( V_i + V_e ))));
@@ -161,28 +161,28 @@ model yi_fogelson_keener_peskin_2003_version01__water_flux(Jh_H2O, V_i, V_e, tim
   tau_2 = 33.0;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__sodium_flux(Jh_Na, Na_e, delta_eh, time_, R, T, F, P_h, Jh_H2O)
+model yi_2003__sodium_flux(Jh_Na, Na_e, delta_eh, time_, R, T, F, P_h, Jh_H2O)
 
   // Assignment Rules:
   Jh_Na := P_h * alpha_Na * (( Na_infinity_e - Na_e * exp( alpha_Na )) / ( 1.0 - exp( alpha_Na )));
   alpha_Na := Jh_H2O / P_h - 1.0 * F / ( R * T * delta_eh );
 end
 
-model yi_fogelson_keener_peskin_2003_version01__potassium_flux(Jh_K, K_e, delta_eh, time_, R, T, F, P_h, Jh_H2O)
+model yi_2003__potassium_flux(Jh_K, K_e, delta_eh, time_, R, T, F, P_h, Jh_H2O)
 
   // Assignment Rules:
   Jh_K := P_h * alpha_K * (( K_infinity_e - K_e * exp( alpha_K )) / ( 1.0 - exp( alpha_K )));
   alpha_K := Jh_H2O / P_h - 1.0 * F / ( R * T * delta_eh );
 end
 
-model yi_fogelson_keener_peskin_2003_version01__chloride_flux(Jh_Cl, Cl_e, delta_eh, time_, R, T, F, P_h, Jh_H2O)
+model yi_2003__chloride_flux(Jh_Cl, Cl_e, delta_eh, time_, R, T, F, P_h, Jh_H2O)
 
   // Assignment Rules:
   Jh_Cl := P_h * alpha_Cl * (( Cl_infinity_e - Cl_e * exp( alpha_Cl )) / ( 1.0 - exp( alpha_Cl )));
   alpha_Cl := Jh_H2O / P_h - -1.0 * F / ( R * T * delta_eh );
 end
 
-model yi_fogelson_keener_peskin_2003_version01__capillary_compartment_sodium(Na_v, delta_ev_Na, Jv_Na, time_, Na_a, Na_e, Qv, Qa, R, T, F)
+model yi_2003__capillary_compartment_sodium(Na_v, delta_ev_Na, Jv_Na, time_, Na_a, Na_e, Qv, Qa, R, T, F)
 
   // Assignment Rules:
   Na_v := ( Qa * Na_a + Jv_Na ) / Qv;
@@ -192,7 +192,7 @@ model yi_fogelson_keener_peskin_2003_version01__capillary_compartment_sodium(Na_
   Jv_Na = 0.0;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__capillary_compartment_potassium(K_v, delta_ev_K, Jv_K, time_, K_a, K_e, Qv, Qa, R, T, F)
+model yi_2003__capillary_compartment_potassium(K_v, delta_ev_K, Jv_K, time_, K_a, K_e, Qv, Qa, R, T, F)
 
   // Assignment Rules:
   K_v := ( Qa * K_a + Jv_K ) / Qv;
@@ -202,7 +202,7 @@ model yi_fogelson_keener_peskin_2003_version01__capillary_compartment_potassium(
   Jv_K = 0.0;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__capillary_compartment_chloride(Cl_v, delta_ev_Cl, Jv_Cl, time_, Cl_a, Cl_e, Qv, Qa, R, T, F)
+model yi_2003__capillary_compartment_chloride(Cl_v, delta_ev_Cl, Jv_Cl, time_, Cl_a, Cl_e, Qv, Qa, R, T, F)
 
   // Assignment Rules:
   Cl_v := ( Qa * Cl_a + Jv_Cl ) / Qv;
@@ -212,7 +212,7 @@ model yi_fogelson_keener_peskin_2003_version01__capillary_compartment_chloride(C
   Jv_Cl = 0.0;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__capillary_space(pi_v, Qv, Pr_v, Jv_H2O, Qa, Na_v, K_v, Cl_v, pi_e, time_)
+model yi_2003__capillary_space(pi_v, Qv, Pr_v, Jv_H2O, Qa, Na_v, K_v, Cl_v, pi_e, time_)
 
   // Assignment Rules:
   pi_v := Na_v + K_v + Cl_v + Pr_v;
@@ -223,7 +223,7 @@ model yi_fogelson_keener_peskin_2003_version01__capillary_space(pi_v, Qv, Pr_v, 
   z_v = 24.4;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__arterial_space(Qa, Na_a, K_a, Cl_a, time_, Pr_v, Qv)
+model yi_2003__arterial_space(Qa, Na_a, K_a, Cl_a, time_, Pr_v, Qv)
 
   // Assignment Rules:
   Qa := Qv * Pr_v / Pr_a;
@@ -235,7 +235,7 @@ model yi_fogelson_keener_peskin_2003_version01__arterial_space(Qa, Na_a, K_a, Cl
   Pr_a = 1.45;
 end
 
-model yi_fogelson_keener_peskin_2003_version01__pump_rate(P, time_, K_e, Na_i, Na_e, R, F, T, delta)
+model yi_2003__pump_rate(P, time_, K_e, Na_i, Na_e, R, F, T, delta)
 
   // Assignment Rules:
   P := a_t * P_max * f_NaK * ( 1.0 / ( 1.0 + power( Km_Na_i / Na_i , 1.5 ))) * ( K_e / ( Km_K_e + K_e ));
@@ -248,26 +248,26 @@ model yi_fogelson_keener_peskin_2003_version01__pump_rate(P, time_, K_e, Na_i, N
   Km_K_e = 1.5;
 end
 
-model yi_fogelson_keener_peskin_2003_version01____main()
+model yi_2003____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: yi_fogelson_keener_peskin_2003_version01__environment(time_);
-  intracellular_space: yi_fogelson_keener_peskin_2003_version01__intracellular_space(delta, delta_eq, V_i, R, T, F, C_m, Lie_p, pi_i, pi_e, P_h, delta_eh, X_e, time_, Na_e, Na_i, K_e, K_i, Cl_e, Cl_i, V_e, delta_e);
-  intracellular_sodium: yi_fogelson_keener_peskin_2003_version01__intracellular_sodium(Na_i, g_Na, delta_Na, time_, Na_e, P, R, F, T, delta, delta_eq, m_infinity, h_infinity);
-  intracellular_potassium: yi_fogelson_keener_peskin_2003_version01__intracellular_potassium(K_i, g_K, delta_K, time_, K_e, P, R, F, T, delta, delta_eq, n_infinity);
-  intracellular_chloride: yi_fogelson_keener_peskin_2003_version01__intracellular_chloride(Cl_i, g_Cl, delta_Cl, time_, Cl_e, R, F, T, delta);
-  extracellular_sodium: yi_fogelson_keener_peskin_2003_version01__extracellular_sodium(Na_e, delta_Na, time_, g_Na, P, R, F, T, delta, Jv_Na, Jh_Na);
-  extracellular_potassium: yi_fogelson_keener_peskin_2003_version01__extracellular_potassium(K_e, g_K, delta_K, time_, P, R, F, T, delta, Jv_K, Jh_K);
-  extracellular_chloride: yi_fogelson_keener_peskin_2003_version01__extracellular_chloride(Cl_e, g_Cl, delta_Cl, time_, R, F, T, delta, Jv_Cl, Jh_Cl);
-  extracellular_space: yi_fogelson_keener_peskin_2003_version01__extracellular_space(V_e, delta_e, X_e, Lie_p, pi_i, pi_e, time_, Jv_H2O, Jh_H2O, Cl_e, Na_e, K_e);
-  water_flux: yi_fogelson_keener_peskin_2003_version01__water_flux(Jh_H2O, V_i, V_e, time_);
-  sodium_flux: yi_fogelson_keener_peskin_2003_version01__sodium_flux(Jh_Na, Na_e, delta_eh, time_, R, T, F, P_h, Jh_H2O);
-  potassium_flux: yi_fogelson_keener_peskin_2003_version01__potassium_flux(Jh_K, K_e, delta_eh, time_, R, T, F, P_h, Jh_H2O);
-  chloride_flux: yi_fogelson_keener_peskin_2003_version01__chloride_flux(Jh_Cl, Cl_e, delta_eh, time_, R, T, F, P_h, Jh_H2O);
-  capillary_compartment_sodium: yi_fogelson_keener_peskin_2003_version01__capillary_compartment_sodium(Na_v, delta_ev_Na, Jv_Na, time_, Na_a, Na_e, Qv, Qa, R, T, F);
-  capillary_compartment_potassium: yi_fogelson_keener_peskin_2003_version01__capillary_compartment_potassium(K_v, delta_ev_K, Jv_K, time_, K_a, K_e, Qv, Qa, R, T, F);
-  capillary_compartment_chloride: yi_fogelson_keener_peskin_2003_version01__capillary_compartment_chloride(Cl_v, delta_ev_Cl, Jv_Cl, time_, Cl_a, Cl_e, Qv, Qa, R, T, F);
-  capillary_space: yi_fogelson_keener_peskin_2003_version01__capillary_space(pi_v, Qv, Pr_v, Jv_H2O, Qa0, Na_v, K_v, Cl_v, pi_e, time_);
-  arterial_space: yi_fogelson_keener_peskin_2003_version01__arterial_space(Qa, Na_a, K_a, Cl_a, time_, Pr_v0, Qv);
-  pump_rate: yi_fogelson_keener_peskin_2003_version01__pump_rate(P, time_, K_e, Na_i, Na_e, R, F, T, delta);
+  environment: yi_2003__environment(time_);
+  intracellular_space: yi_2003__intracellular_space(delta, delta_eq, V_i, R, T, F, C_m, Lie_p, pi_i, pi_e, P_h, delta_eh, X_e, time_, Na_e, Na_i, K_e, K_i, Cl_e, Cl_i, V_e, delta_e);
+  intracellular_sodium: yi_2003__intracellular_sodium(Na_i, g_Na, delta_Na, time_, Na_e, P, R, F, T, delta, delta_eq, m_infinity, h_infinity);
+  intracellular_potassium: yi_2003__intracellular_potassium(K_i, g_K, delta_K, time_, K_e, P, R, F, T, delta, delta_eq, n_infinity);
+  intracellular_chloride: yi_2003__intracellular_chloride(Cl_i, g_Cl, delta_Cl, time_, Cl_e, R, F, T, delta);
+  extracellular_sodium: yi_2003__extracellular_sodium(Na_e, delta_Na, time_, g_Na, P, R, F, T, delta, Jv_Na, Jh_Na);
+  extracellular_potassium: yi_2003__extracellular_potassium(K_e, g_K, delta_K, time_, P, R, F, T, delta, Jv_K, Jh_K);
+  extracellular_chloride: yi_2003__extracellular_chloride(Cl_e, g_Cl, delta_Cl, time_, R, F, T, delta, Jv_Cl, Jh_Cl);
+  extracellular_space: yi_2003__extracellular_space(V_e, delta_e, X_e, Lie_p, pi_i, pi_e, time_, Jv_H2O, Jh_H2O, Cl_e, Na_e, K_e);
+  water_flux: yi_2003__water_flux(Jh_H2O, V_i, V_e, time_);
+  sodium_flux: yi_2003__sodium_flux(Jh_Na, Na_e, delta_eh, time_, R, T, F, P_h, Jh_H2O);
+  potassium_flux: yi_2003__potassium_flux(Jh_K, K_e, delta_eh, time_, R, T, F, P_h, Jh_H2O);
+  chloride_flux: yi_2003__chloride_flux(Jh_Cl, Cl_e, delta_eh, time_, R, T, F, P_h, Jh_H2O);
+  capillary_compartment_sodium: yi_2003__capillary_compartment_sodium(Na_v, delta_ev_Na, Jv_Na, time_, Na_a, Na_e, Qv, Qa, R, T, F);
+  capillary_compartment_potassium: yi_2003__capillary_compartment_potassium(K_v, delta_ev_K, Jv_K, time_, K_a, K_e, Qv, Qa, R, T, F);
+  capillary_compartment_chloride: yi_2003__capillary_compartment_chloride(Cl_v, delta_ev_Cl, Jv_Cl, time_, Cl_a, Cl_e, Qv, Qa, R, T, F);
+  capillary_space: yi_2003__capillary_space(pi_v, Qv, Pr_v, Jv_H2O, Qa0, Na_v, K_v, Cl_v, pi_e, time_);
+  arterial_space: yi_2003__arterial_space(Qa, Na_a, K_a, Cl_a, time_, Pr_v0, Qv);
+  pump_rate: yi_2003__pump_rate(P, time_, K_e, Na_i, Na_e, R, F, T, delta);
 end

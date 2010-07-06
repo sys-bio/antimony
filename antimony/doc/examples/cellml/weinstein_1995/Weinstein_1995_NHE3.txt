@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model Proximal_Tubule_NHE3__environment(time_)
+//Created by libAntimony v1.4
+model weinstein_1995__environment(time_)
 end
 
-model Proximal_Tubule_NHE3__Concentrations(C_ext_Na, C_ext_H, C_ext_NH4, C_int_Na, C_int_H, C_int_NH4, time_)
+model weinstein_1995__Concentrations(C_ext_Na, C_ext_H, C_ext_NH4, C_int_Na, C_int_H, C_int_NH4, time_)
 
   // Rate Rules:
   C_ext_Na' = 10;
@@ -16,7 +16,7 @@ model Proximal_Tubule_NHE3__Concentrations(C_ext_Na, C_ext_H, C_ext_NH4, C_int_N
   C_int_NH4 = 0.23;
 end
 
-model Proximal_Tubule_NHE3__NHE3_Parameters(XTxP0_NHE3_Na, XTxP0_NHE3_H, XTxP0_NHE3_NH4, K_NHE3_Na, K_NHE3_H, K_NHE3_NH4)
+model weinstein_1995__NHE3_Parameters(XTxP0_NHE3_Na, XTxP0_NHE3_H, XTxP0_NHE3_NH4, K_NHE3_Na, K_NHE3_H, K_NHE3_NH4)
 
   // Variable initializations:
   XTxP0_NHE3_Na = 1.6e-3;
@@ -27,7 +27,7 @@ model Proximal_Tubule_NHE3__NHE3_Parameters(XTxP0_NHE3_Na, XTxP0_NHE3_H, XTxP0_N
   K_NHE3_NH4 = 0.027e3;
 end
 
-model Proximal_Tubule_NHE3__NHE3(C_ext_Na, C_ext_H, C_ext_NH4, C_int_Na, C_int_H, C_int_NH4, XTxP0_NHE3_Na, XTxP0_NHE3_H, XTxP0_NHE3_NH4, K_NHE3_Na, K_NHE3_H, K_NHE3_NH4, J_NHE3_Na, J_NHE3_H, J_NHE3_NH4)
+model weinstein_1995__NHE3(C_ext_Na, C_ext_H, C_ext_NH4, C_int_Na, C_int_H, C_int_NH4, XTxP0_NHE3_Na, XTxP0_NHE3_H, XTxP0_NHE3_NH4, K_NHE3_Na, K_NHE3_H, K_NHE3_NH4, J_NHE3_Na, J_NHE3_H, J_NHE3_NH4)
 
   // Assignment Rules:
   XTxP_NHE3_Na := XTxP0_NHE3_Na * 2 * C_int_H / (C_int_H + 1E-6 );
@@ -45,11 +45,11 @@ model Proximal_Tubule_NHE3__NHE3(C_ext_Na, C_ext_H, C_ext_NH4, C_int_Na, C_int_H
   J_NHE3_NH4 := XTxP_NHE3_Na * XTxP_NHE3_NH4 / sum_NHE3 * (alpha_int_Na * gamma_ext_NH4 - alpha_ext_Na * gamma_int_NH4) + XTxP_NHE3_H * XTxP_NHE3_NH4 / sum_NHE3 * (gamma_ext_NH4 * beta_int_H - beta_ext_H * gamma_int_NH4);
 end
 
-model Proximal_Tubule_NHE3____main()
+model weinstein_1995____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: Proximal_Tubule_NHE3__environment(time_);
-  Concentrations: Proximal_Tubule_NHE3__Concentrations(C_ext_Na, C_ext_H, C_ext_NH4, C_int_Na, C_int_H, C_int_NH4, time_);
-  NHE3_Parameters: Proximal_Tubule_NHE3__NHE3_Parameters(XTxP0_NHE3_Na, XTxP0_NHE3_H, XTxP0_NHE3_NH4, K_NHE3_Na, K_NHE3_H, K_NHE3_NH4);
-  NHE3: Proximal_Tubule_NHE3__NHE3(C_ext_Na, C_ext_H, C_ext_NH4, C_int_Na, C_int_H, C_int_NH4, XTxP0_NHE3_Na, XTxP0_NHE3_H, XTxP0_NHE3_NH4, K_NHE3_Na, K_NHE3_H, K_NHE3_NH4, J_NHE3_Na, J_NHE3_H, J_NHE3_NH4);
+  environment: weinstein_1995__environment(time_);
+  Concentrations: weinstein_1995__Concentrations(C_ext_Na, C_ext_H, C_ext_NH4, C_int_Na, C_int_H, C_int_NH4, time_);
+  NHE3_Parameters: weinstein_1995__NHE3_Parameters(XTxP0_NHE3_Na, XTxP0_NHE3_H, XTxP0_NHE3_NH4, K_NHE3_Na, K_NHE3_H, K_NHE3_NH4);
+  NHE3: weinstein_1995__NHE3(C_ext_Na, C_ext_H, C_ext_NH4, C_int_Na, C_int_H, C_int_NH4, XTxP0_NHE3_Na, XTxP0_NHE3_H, XTxP0_NHE3_NH4, K_NHE3_Na, K_NHE3_H, K_NHE3_NH4, J_NHE3_Na, J_NHE3_H, J_NHE3_NH4);
 end

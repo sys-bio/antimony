@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model stewart_zhang_2008_version01__environment(time_)
+//Created by libAntimony v1.4
+model stewart_2009__environment(time_)
 end
 
-model stewart_zhang_2008_version01__membrane(V, R, T, F, Cm, V_c, time_, i_K1, i_to, i_sus, i_Kr, i_Ks, i_CaL, i_NaK, i_Na, i_b_Na, i_NaCa, i_b_Ca, i_p_K, i_p_Ca, i_f)
+model stewart_2009__membrane(V, R, T, F, Cm, V_c, time_, i_K1, i_to, i_sus, i_Kr, i_Ks, i_CaL, i_NaK, i_Na, i_b_Na, i_NaCa, i_b_Ca, i_p_K, i_p_Ca, i_f)
 
   // Rate Rules:
   V' = -(1 ) / 1 * (i_K1 + i_to + i_sus + i_Kr + i_Ks + i_CaL + i_NaK + i_Na + i_b_Na + i_NaCa + i_b_Ca + i_p_K + i_p_Ca + i_f);
@@ -16,7 +16,7 @@ model stewart_zhang_2008_version01__membrane(V, R, T, F, Cm, V_c, time_, i_K1, i
   V_c = 0.016404;
 end
 
-model stewart_zhang_2008_version01__reversal_potentials(E_Na, E_K, E_Ks, E_Ca, K_o, Na_o, K_i, Na_i, Ca_o, Ca_i, R, F, T, time_)
+model stewart_2009__reversal_potentials(E_Na, E_K, E_Ks, E_Ca, K_o, Na_o, K_i, Na_i, Ca_o, Ca_i, R, F, T, time_)
 
   // Assignment Rules:
   E_Na := R * T / F * ln(Na_o / Na_i);
@@ -28,7 +28,7 @@ model stewart_zhang_2008_version01__reversal_potentials(E_Na, E_K, E_Ks, E_Ca, K
   P_kna = 0.03;
 end
 
-model stewart_zhang_2008_version01__hyperpolarization_activated_current_y_gate(y, V, time_)
+model stewart_2009__hyperpolarization_activated_current_y_gate(y, V, time_)
 
   // Assignment Rules:
   y_inf := 1 / (1 + exp((V + 80.6 ) / 6.8 ));
@@ -43,10 +43,10 @@ model stewart_zhang_2008_version01__hyperpolarization_activated_current_y_gate(y
   y = 0.00392566530520984;
 end
 
-model stewart_zhang_2008_version01__hyperpolarization_activated_current(i_f, i_f_Na, E_Na, E_K, i_f_K, time_, V, y)
+model stewart_2009__hyperpolarization_activated_current(i_f, i_f_Na, E_Na, E_K, i_f_K, time_, V, y)
 
   // Sub-modules, and any changes to those submodules:
-  hyperpolarization_activated_current_y_gate: stewart_zhang_2008_version01__hyperpolarization_activated_current_y_gate(y, V, time_);
+  hyperpolarization_activated_current_y_gate: stewart_2009__hyperpolarization_activated_current_y_gate(y, V, time_);
 
   // Assignment Rules:
   i_f := i_f_Na + i_f_K;
@@ -58,7 +58,7 @@ model stewart_zhang_2008_version01__hyperpolarization_activated_current(i_f, i_f
   g_f_K = 0.0234346;
 end
 
-model stewart_zhang_2008_version01__inward_rectifier_potassium_current(i_K1, V, K_o, E_K, time_)
+model stewart_2009__inward_rectifier_potassium_current(i_K1, V, K_o, E_K, time_)
 
   // Assignment Rules:
   i_K1 := g_K1 * xK1_inf * (V - 8 - E_K);
@@ -68,7 +68,7 @@ model stewart_zhang_2008_version01__inward_rectifier_potassium_current(i_K1, V, 
   g_K1 = 0.065;
 end
 
-model stewart_zhang_2008_version01__rapid_time_dependent_potassium_current_Xr1_gate(Xr1, V, time_)
+model stewart_2009__rapid_time_dependent_potassium_current_Xr1_gate(Xr1, V, time_)
 
   // Assignment Rules:
   xr1_inf := 1 / (1 + exp((-(26 ) - V) / 7 ));
@@ -83,7 +83,7 @@ model stewart_zhang_2008_version01__rapid_time_dependent_potassium_current_Xr1_g
   Xr1 = 0.542504219612442;
 end
 
-model stewart_zhang_2008_version01__rapid_time_dependent_potassium_current_Xr2_gate(Xr2, V, time_)
+model stewart_2009__rapid_time_dependent_potassium_current_Xr2_gate(Xr2, V, time_)
 
   // Assignment Rules:
   xr2_inf := 1 / (1 + exp((V + 88 ) / 24 ));
@@ -98,11 +98,11 @@ model stewart_zhang_2008_version01__rapid_time_dependent_potassium_current_Xr2_g
   Xr2 = 0.365247694844258;
 end
 
-model stewart_zhang_2008_version01__rapid_time_dependent_potassium_current(i_Kr, E_K, K_o, time_, V, Xr1, Xr2)
+model stewart_2009__rapid_time_dependent_potassium_current(i_Kr, E_K, K_o, time_, V, Xr1, Xr2)
 
   // Sub-modules, and any changes to those submodules:
-  rapid_time_dependent_potassium_current_Xr1_gate: stewart_zhang_2008_version01__rapid_time_dependent_potassium_current_Xr1_gate(Xr1, V, time_);
-  rapid_time_dependent_potassium_current_Xr2_gate: stewart_zhang_2008_version01__rapid_time_dependent_potassium_current_Xr2_gate(Xr2, V, time_);
+  rapid_time_dependent_potassium_current_Xr1_gate: stewart_2009__rapid_time_dependent_potassium_current_Xr1_gate(Xr1, V, time_);
+  rapid_time_dependent_potassium_current_Xr2_gate: stewart_2009__rapid_time_dependent_potassium_current_Xr2_gate(Xr2, V, time_);
 
   // Assignment Rules:
   i_Kr := g_Kr * root(K_o / 5.4 ) * Xr1 * Xr2 * (V - E_K);
@@ -111,7 +111,7 @@ model stewart_zhang_2008_version01__rapid_time_dependent_potassium_current(i_Kr,
   g_Kr = 0.0918;
 end
 
-model stewart_zhang_2008_version01__slow_time_dependent_potassium_current_Xs_gate(Xs, V, time_)
+model stewart_2009__slow_time_dependent_potassium_current_Xs_gate(Xs, V, time_)
 
   // Assignment Rules:
   xs_inf := 1 / (1 + exp((-(5 ) - V) / 14 ));
@@ -126,10 +126,10 @@ model stewart_zhang_2008_version01__slow_time_dependent_potassium_current_Xs_gat
   Xs = 0.0591727476586368;
 end
 
-model stewart_zhang_2008_version01__slow_time_dependent_potassium_current(i_Ks, E_Ks, time_, V, Xs)
+model stewart_2009__slow_time_dependent_potassium_current(i_Ks, E_Ks, time_, V, Xs)
 
   // Sub-modules, and any changes to those submodules:
-  slow_time_dependent_potassium_current_Xs_gate: stewart_zhang_2008_version01__slow_time_dependent_potassium_current_Xs_gate(Xs, V, time_);
+  slow_time_dependent_potassium_current_Xs_gate: stewart_2009__slow_time_dependent_potassium_current_Xs_gate(Xs, V, time_);
 
   // Assignment Rules:
   i_Ks := g_Ks * power(Xs, 2 ) * (V - E_Ks);
@@ -138,7 +138,7 @@ model stewart_zhang_2008_version01__slow_time_dependent_potassium_current(i_Ks, 
   g_Ks = 0.2352;
 end
 
-model stewart_zhang_2008_version01__fast_sodium_current_m_gate(m, V, time_)
+model stewart_2009__fast_sodium_current_m_gate(m, V, time_)
 
   // Assignment Rules:
   m_inf := 1 / power(1 + exp((-(56.86 ) - V) / 9.03 ), 2 );
@@ -153,7 +153,7 @@ model stewart_zhang_2008_version01__fast_sodium_current_m_gate(m, V, time_)
   m = 0.0145683559378387;
 end
 
-model stewart_zhang_2008_version01__fast_sodium_current_h_gate(h, V, time_)
+model stewart_2009__fast_sodium_current_h_gate(h, V, time_)
 
   // Assignment Rules:
   h_inf := 1 / power(1 + exp((V + 71.55 ) / 7.43 ), 2 );
@@ -168,7 +168,7 @@ model stewart_zhang_2008_version01__fast_sodium_current_h_gate(h, V, time_)
   h = 0.227796287677146;
 end
 
-model stewart_zhang_2008_version01__fast_sodium_current_j_gate(j, V, time_)
+model stewart_2009__fast_sodium_current_j_gate(j, V, time_)
 
   // Assignment Rules:
   j_inf := 1 / power(1 + exp((V + 71.55 ) / 7.43 ), 2 );
@@ -183,12 +183,12 @@ model stewart_zhang_2008_version01__fast_sodium_current_j_gate(j, V, time_)
   j = 0.042752581290848;
 end
 
-model stewart_zhang_2008_version01__fast_sodium_current(i_Na, E_Na, time_, V, m, h, j)
+model stewart_2009__fast_sodium_current(i_Na, E_Na, time_, V, m, h, j)
 
   // Sub-modules, and any changes to those submodules:
-  fast_sodium_current_m_gate: stewart_zhang_2008_version01__fast_sodium_current_m_gate(m, V, time_);
-  fast_sodium_current_h_gate: stewart_zhang_2008_version01__fast_sodium_current_h_gate(h, V, time_);
-  fast_sodium_current_j_gate: stewart_zhang_2008_version01__fast_sodium_current_j_gate(j, V, time_);
+  fast_sodium_current_m_gate: stewart_2009__fast_sodium_current_m_gate(m, V, time_);
+  fast_sodium_current_h_gate: stewart_2009__fast_sodium_current_h_gate(h, V, time_);
+  fast_sodium_current_j_gate: stewart_2009__fast_sodium_current_j_gate(j, V, time_);
 
   // Assignment Rules:
   i_Na := g_Na * power(m, 3 ) * h * j * (V - E_Na);
@@ -197,7 +197,7 @@ model stewart_zhang_2008_version01__fast_sodium_current(i_Na, E_Na, time_, V, m,
   g_Na = 130.5744;
 end
 
-model stewart_zhang_2008_version01__sodium_background_current(i_b_Na, E_Na, time_, V)
+model stewart_2009__sodium_background_current(i_b_Na, E_Na, time_, V)
 
   // Assignment Rules:
   i_b_Na := g_bna * (V - E_Na);
@@ -206,7 +206,7 @@ model stewart_zhang_2008_version01__sodium_background_current(i_b_Na, E_Na, time
   g_bna = 0.00029;
 end
 
-model stewart_zhang_2008_version01__L_type_Ca_current_d_gate(d, V, time_)
+model stewart_2009__L_type_Ca_current_d_gate(d, V, time_)
 
   // Assignment Rules:
   d_inf := 1 / (1 + exp((-(8 ) - V) / 7.5 ));
@@ -222,7 +222,7 @@ model stewart_zhang_2008_version01__L_type_Ca_current_d_gate(d, V, time_)
   d = 0.000135998943798924;
 end
 
-model stewart_zhang_2008_version01__L_type_Ca_current_f_gate(f, V, time_)
+model stewart_2009__L_type_Ca_current_f_gate(f, V, time_)
 
   // Assignment Rules:
   f_inf := 1 / (1 + exp((V + 20 ) / 7 ));
@@ -235,7 +235,7 @@ model stewart_zhang_2008_version01__L_type_Ca_current_f_gate(f, V, time_)
   f = 0.522414966076568;
 end
 
-model stewart_zhang_2008_version01__L_type_Ca_current_f2_gate(f2, V, time_)
+model stewart_2009__L_type_Ca_current_f2_gate(f2, V, time_)
 
   // Assignment Rules:
   f2_inf := 0.67 / (1 + exp((V + 35 ) / 7 )) + 0.33;
@@ -248,7 +248,7 @@ model stewart_zhang_2008_version01__L_type_Ca_current_f2_gate(f2, V, time_)
   f2 = 0.771494632989322;
 end
 
-model stewart_zhang_2008_version01__L_type_Ca_current_fCass_gate(fCass, Ca_ss, V, time_)
+model stewart_2009__L_type_Ca_current_fCass_gate(fCass, Ca_ss, V, time_)
 
   // Assignment Rules:
   fCass_inf := 0.6 / (1 + power(Ca_ss / 0.05 , 2 )) + 0.4;
@@ -261,13 +261,13 @@ model stewart_zhang_2008_version01__L_type_Ca_current_fCass_gate(fCass, Ca_ss, V
   fCass = 0.977536882751221;
 end
 
-model stewart_zhang_2008_version01__L_type_Ca_current(i_CaL, Ca_o, Ca_ss, R, F, T, time_, V, d, f, f2, fCass)
+model stewart_2009__L_type_Ca_current(i_CaL, Ca_o, Ca_ss, R, F, T, time_, V, d, f, f2, fCass)
 
   // Sub-modules, and any changes to those submodules:
-  L_type_Ca_current_d_gate: stewart_zhang_2008_version01__L_type_Ca_current_d_gate(d, V, time_);
-  L_type_Ca_current_f_gate: stewart_zhang_2008_version01__L_type_Ca_current_f_gate(f, V, time_);
-  L_type_Ca_current_f2_gate: stewart_zhang_2008_version01__L_type_Ca_current_f2_gate(f2, V, time_);
-  L_type_Ca_current_fCass_gate: stewart_zhang_2008_version01__L_type_Ca_current_fCass_gate(fCass, Ca_ss, V, time_);
+  L_type_Ca_current_d_gate: stewart_2009__L_type_Ca_current_d_gate(d, V, time_);
+  L_type_Ca_current_f_gate: stewart_2009__L_type_Ca_current_f_gate(f, V, time_);
+  L_type_Ca_current_f2_gate: stewart_2009__L_type_Ca_current_f2_gate(f2, V, time_);
+  L_type_Ca_current_fCass_gate: stewart_2009__L_type_Ca_current_fCass_gate(fCass, Ca_ss, V, time_);
 
   // Assignment Rules:
   i_CaL := g_CaL * d * f * f2 * fCass * 4 * (V - 15 ) * power(F, 2 ) / (R * T) * (0.25 * Ca_ss * exp(2 * (V - 15 ) * F / (R * T)) - Ca_o) / (exp(2 * (V - 15 ) * F / (R * T)) - 1 );
@@ -276,7 +276,7 @@ model stewart_zhang_2008_version01__L_type_Ca_current(i_CaL, Ca_o, Ca_ss, R, F, 
   g_CaL = 3.98e-5;
 end
 
-model stewart_zhang_2008_version01__calcium_background_current(i_b_Ca, E_Ca, time_, V)
+model stewart_2009__calcium_background_current(i_b_Ca, E_Ca, time_, V)
 
   // Assignment Rules:
   i_b_Ca := g_bca * (V - E_Ca);
@@ -285,7 +285,7 @@ model stewart_zhang_2008_version01__calcium_background_current(i_b_Ca, E_Ca, tim
   g_bca = 0.000592;
 end
 
-model stewart_zhang_2008_version01__transient_outward_current_s_gate(s, V, time_)
+model stewart_2009__transient_outward_current_s_gate(s, V, time_)
 
   // Assignment Rules:
   s_inf := 1 / (1 + exp((V + 27 ) / 13 ));
@@ -298,7 +298,7 @@ model stewart_zhang_2008_version01__transient_outward_current_s_gate(s, V, time_
   s = 0.857244799993594;
 end
 
-model stewart_zhang_2008_version01__transient_outward_current_r_gate(r, V, time_)
+model stewart_2009__transient_outward_current_r_gate(r, V, time_)
 
   // Assignment Rules:
   r_inf := 1 / (1 + exp((20 - V) / 13 ));
@@ -311,11 +311,11 @@ model stewart_zhang_2008_version01__transient_outward_current_r_gate(r, V, time_
   r = 0.00081180715479983;
 end
 
-model stewart_zhang_2008_version01__transient_outward_current(i_to, E_K, V, time_, s, r)
+model stewart_2009__transient_outward_current(i_to, E_K, V, time_, s, r)
 
   // Sub-modules, and any changes to those submodules:
-  transient_outward_current_s_gate: stewart_zhang_2008_version01__transient_outward_current_s_gate(s, V, time_);
-  transient_outward_current_r_gate: stewart_zhang_2008_version01__transient_outward_current_r_gate(r, V, time_);
+  transient_outward_current_s_gate: stewart_2009__transient_outward_current_s_gate(s, V, time_);
+  transient_outward_current_r_gate: stewart_2009__transient_outward_current_r_gate(r, V, time_);
 
   // Assignment Rules:
   i_to := g_to * r * s * (V - E_K);
@@ -324,7 +324,7 @@ model stewart_zhang_2008_version01__transient_outward_current(i_to, E_K, V, time
   g_to = 0.08184;
 end
 
-model stewart_zhang_2008_version01__sustained_outward_current(i_sus, E_K, V)
+model stewart_2009__sustained_outward_current(i_sus, E_K, V)
 
   // Assignment Rules:
   i_sus := g_sus * a * (V - E_K);
@@ -334,7 +334,7 @@ model stewart_zhang_2008_version01__sustained_outward_current(i_sus, E_K, V)
   g_sus = 0.0227;
 end
 
-model stewart_zhang_2008_version01__sodium_potassium_pump_current(i_NaK, K_o, Na_i, time_, R, F, T, V)
+model stewart_2009__sodium_potassium_pump_current(i_NaK, K_o, Na_i, time_, R, F, T, V)
 
   // Assignment Rules:
   i_NaK := P_NaK * K_o / (K_o + K_mk) * Na_i / (Na_i + K_mNa) / (1 + 0.1245 * exp(-(0.1 ) * V * F / (R * T)) + 0.0353 * exp(-(V) * F / (R * T)));
@@ -345,7 +345,7 @@ model stewart_zhang_2008_version01__sodium_potassium_pump_current(i_NaK, K_o, Na
   K_mNa = 40;
 end
 
-model stewart_zhang_2008_version01__sodium_calcium_exchanger_current(i_NaCa, Na_i, Na_o, Ca_i, Ca_o, R, F, T, V, time_)
+model stewart_2009__sodium_calcium_exchanger_current(i_NaCa, Na_i, Na_o, Ca_i, Ca_o, R, F, T, V, time_)
 
   // Assignment Rules:
   i_NaCa := K_NaCa * (exp(gamma * V * F / (R * T)) * power(Na_i, 3 ) * Ca_o - exp((gamma - 1 ) * V * F / (R * T)) * power(Na_o, 3 ) * Ca_i * alpha) / ((power(Km_Nai, 3 ) + power(Na_o, 3 )) * (Km_Ca + Ca_o) * (1 + K_sat * exp((gamma - 1 ) * V * F / (R * T))));
@@ -359,7 +359,7 @@ model stewart_zhang_2008_version01__sodium_calcium_exchanger_current(i_NaCa, Na_
   Km_Nai = 87.5;
 end
 
-model stewart_zhang_2008_version01__calcium_pump_current(i_p_Ca, Ca_i)
+model stewart_2009__calcium_pump_current(i_p_Ca, Ca_i)
 
   // Assignment Rules:
   i_p_Ca := g_pCa * Ca_i / (Ca_i + K_pCa);
@@ -369,7 +369,7 @@ model stewart_zhang_2008_version01__calcium_pump_current(i_p_Ca, Ca_i)
   K_pCa = 0.0005;
 end
 
-model stewart_zhang_2008_version01__potassium_pump_current(i_p_K, E_K, V)
+model stewart_2009__potassium_pump_current(i_p_K, E_K, V)
 
   // Assignment Rules:
   i_p_K := g_pK * (V - E_K) / (1 + exp((25 - V) / 5.98 ));
@@ -378,7 +378,7 @@ model stewart_zhang_2008_version01__potassium_pump_current(i_p_K, E_K, V)
   g_pK = 0.0146;
 end
 
-model stewart_zhang_2008_version01__calcium_dynamics(Ca_i, Ca_o, Ca_ss, V, V_c, time_, d, F, Cm, i_CaL, i_NaCa, i_p_Ca, i_b_Ca)
+model stewart_2009__calcium_dynamics(Ca_i, Ca_o, Ca_ss, V, V_c, time_, d, F, Cm, i_CaL, i_NaCa, i_p_Ca, i_b_Ca)
 
   // Assignment Rules:
   i_rel := V_rel * O * (Ca_SR - Ca_ss);
@@ -427,7 +427,7 @@ model stewart_zhang_2008_version01__calcium_dynamics(Ca_i, Ca_o, Ca_ss, V, V_c, 
   V_ss = 5.468e-5;
 end
 
-model stewart_zhang_2008_version01__sodium_dynamics(Na_i, Na_o, time_, F, Cm, V_c, i_Na, i_NaCa, i_NaK, i_b_Na, i_f_Na)
+model stewart_2009__sodium_dynamics(Na_i, Na_o, time_, F, Cm, V_c, i_Na, i_NaCa, i_NaK, i_b_Na, i_f_Na)
 
   // Rate Rules:
   Na_i' = -(1 ) * (i_Na + i_b_Na + i_f_Na + 3 * i_NaK + 3 * i_NaCa) / (1 * V_c * F) * Cm;
@@ -437,7 +437,7 @@ model stewart_zhang_2008_version01__sodium_dynamics(Na_i, Na_o, time_, F, Cm, V_
   Na_o = 140;
 end
 
-model stewart_zhang_2008_version01__potassium_dynamics(K_i, K_o, time_, F, Cm, V_c, i_K1, i_to, i_sus, i_NaK, i_Kr, i_Ks, i_p_K, i_f_K)
+model stewart_2009__potassium_dynamics(K_i, K_o, time_, F, Cm, V_c, i_K1, i_to, i_sus, i_NaK, i_Kr, i_Ks, i_p_K, i_f_K)
 
   // Rate Rules:
   K_i' = -(1 ) * (i_K1 + i_to + i_f_K + i_sus + i_Kr + i_Ks + i_p_K - 2 * i_NaK) / (1 * V_c * F) * Cm;
@@ -447,27 +447,27 @@ model stewart_zhang_2008_version01__potassium_dynamics(K_i, K_o, time_, F, Cm, V
   K_o = 5.4;
 end
 
-model stewart_zhang_2008_version01____main()
+model stewart_2009____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: stewart_zhang_2008_version01__environment(time_);
-  membrane: stewart_zhang_2008_version01__membrane(V, R, T, F, Cm, V_c, time_, i_K1, i_to, i_sus, i_Kr, i_Ks, i_CaL, i_NaK, i_Na, i_b_Na, i_NaCa, i_b_Ca, i_p_K, i_p_Ca, i_f);
-  reversal_potentials: stewart_zhang_2008_version01__reversal_potentials(E_Na, E_K, E_Ks, E_Ca, K_o, Na_o, K_i, Na_i, Ca_o, Ca_i, R, F, T, time_);
-  hyperpolarization_activated_current: stewart_zhang_2008_version01__hyperpolarization_activated_current(i_f, i_f_Na, E_Na, E_K, i_f_K, time_, V, y);
-  inward_rectifier_potassium_current: stewart_zhang_2008_version01__inward_rectifier_potassium_current(i_K1, V, K_o, E_K, time_);
-  rapid_time_dependent_potassium_current: stewart_zhang_2008_version01__rapid_time_dependent_potassium_current(i_Kr, E_K, K_o, time_, V, Xr1, Xr2);
-  slow_time_dependent_potassium_current: stewart_zhang_2008_version01__slow_time_dependent_potassium_current(i_Ks, E_Ks, time_, V, Xs);
-  fast_sodium_current: stewart_zhang_2008_version01__fast_sodium_current(i_Na, E_Na, time_, V, m, h, j);
-  sodium_background_current: stewart_zhang_2008_version01__sodium_background_current(i_b_Na, E_Na, time_, V);
-  L_type_Ca_current: stewart_zhang_2008_version01__L_type_Ca_current(i_CaL, Ca_o, Ca_ss, R, F, T, time_, V, d, f, f2, fCass);
-  calcium_background_current: stewart_zhang_2008_version01__calcium_background_current(i_b_Ca, E_Ca, time_, V);
-  transient_outward_current: stewart_zhang_2008_version01__transient_outward_current(i_to, E_K, V, time_, s, r);
-  sustained_outward_current: stewart_zhang_2008_version01__sustained_outward_current(i_sus, E_K, V);
-  sodium_potassium_pump_current: stewart_zhang_2008_version01__sodium_potassium_pump_current(i_NaK, K_o, Na_i, time_, R, F, T, V);
-  sodium_calcium_exchanger_current: stewart_zhang_2008_version01__sodium_calcium_exchanger_current(i_NaCa, Na_i, Na_o, Ca_i, Ca_o, R, F, T, V, time_);
-  calcium_pump_current: stewart_zhang_2008_version01__calcium_pump_current(i_p_Ca, Ca_i);
-  potassium_pump_current: stewart_zhang_2008_version01__potassium_pump_current(i_p_K, E_K, V);
-  calcium_dynamics: stewart_zhang_2008_version01__calcium_dynamics(Ca_i, Ca_o, Ca_ss, V, V_c, time_, d, F, Cm, i_CaL, i_NaCa, i_p_Ca, i_b_Ca);
-  sodium_dynamics: stewart_zhang_2008_version01__sodium_dynamics(Na_i, Na_o, time_, F, Cm, V_c, i_Na, i_NaCa, i_NaK, i_b_Na, i_f_Na);
-  potassium_dynamics: stewart_zhang_2008_version01__potassium_dynamics(K_i, K_o, time_, F, Cm, V_c, i_K1, i_to, i_sus, i_NaK, i_Kr, i_Ks, i_p_K, i_f_K);
+  environment: stewart_2009__environment(time_);
+  membrane: stewart_2009__membrane(V, R, T, F, Cm, V_c, time_, i_K1, i_to, i_sus, i_Kr, i_Ks, i_CaL, i_NaK, i_Na, i_b_Na, i_NaCa, i_b_Ca, i_p_K, i_p_Ca, i_f);
+  reversal_potentials: stewart_2009__reversal_potentials(E_Na, E_K, E_Ks, E_Ca, K_o, Na_o, K_i, Na_i, Ca_o, Ca_i, R, F, T, time_);
+  hyperpolarization_activated_current: stewart_2009__hyperpolarization_activated_current(i_f, i_f_Na, E_Na, E_K, i_f_K, time_, V, y);
+  inward_rectifier_potassium_current: stewart_2009__inward_rectifier_potassium_current(i_K1, V, K_o, E_K, time_);
+  rapid_time_dependent_potassium_current: stewart_2009__rapid_time_dependent_potassium_current(i_Kr, E_K, K_o, time_, V, Xr1, Xr2);
+  slow_time_dependent_potassium_current: stewart_2009__slow_time_dependent_potassium_current(i_Ks, E_Ks, time_, V, Xs);
+  fast_sodium_current: stewart_2009__fast_sodium_current(i_Na, E_Na, time_, V, m, h, j);
+  sodium_background_current: stewart_2009__sodium_background_current(i_b_Na, E_Na, time_, V);
+  L_type_Ca_current: stewart_2009__L_type_Ca_current(i_CaL, Ca_o, Ca_ss, R, F, T, time_, V, d, f, f2, fCass);
+  calcium_background_current: stewart_2009__calcium_background_current(i_b_Ca, E_Ca, time_, V);
+  transient_outward_current: stewart_2009__transient_outward_current(i_to, E_K, V, time_, s, r);
+  sustained_outward_current: stewart_2009__sustained_outward_current(i_sus, E_K, V);
+  sodium_potassium_pump_current: stewart_2009__sodium_potassium_pump_current(i_NaK, K_o, Na_i, time_, R, F, T, V);
+  sodium_calcium_exchanger_current: stewart_2009__sodium_calcium_exchanger_current(i_NaCa, Na_i, Na_o, Ca_i, Ca_o, R, F, T, V, time_);
+  calcium_pump_current: stewart_2009__calcium_pump_current(i_p_Ca, Ca_i);
+  potassium_pump_current: stewart_2009__potassium_pump_current(i_p_K, E_K, V);
+  calcium_dynamics: stewart_2009__calcium_dynamics(Ca_i, Ca_o, Ca_ss, V, V_c, time_, d, F, Cm, i_CaL, i_NaCa, i_p_Ca, i_b_Ca);
+  sodium_dynamics: stewart_2009__sodium_dynamics(Na_i, Na_o, time_, F, Cm, V_c, i_Na, i_NaCa, i_NaK, i_b_Na, i_f_Na);
+  potassium_dynamics: stewart_2009__potassium_dynamics(K_i, K_o, time_, F, Cm, V_c, i_K1, i_to, i_sus, i_NaK, i_Kr, i_Ks, i_p_K, i_f_K);
 end

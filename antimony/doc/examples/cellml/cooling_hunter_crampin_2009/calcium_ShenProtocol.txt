@@ -1,0 +1,18 @@
+//Created by libAntimony v1.4
+model calcium__calcium(t, Ca)
+
+  // Assignment Rules:
+  Ca := piecewise( 1000 * (timeInStim_modTrainPeriod - 5 ) * -(9.884615385 ) + 290.6923077 , (( timeInStim_modTrainPeriod >= 5) && (timeInStim_modTrainPeriod <= 5.02) && (t < stimEnd )), 1000 * timeInStim_modPulsePeriod * 51.89423077 + 290.6923077 , (( timeInStim_modTrainPeriod < 5) && (timeInStim_modPulsePeriod <= 0.016) && (t < stimEnd )), 1000 * (timeInStim_modPulsePeriod - 0.016 ) * -(9.884615385 ) + 1121 , (( timeInStim_modTrainPeriod < 5) && (timeInStim_modPulsePeriod > 0.016) && (t < stimEnd )), 93 );
+  timeInStim_modTrainPeriod := t - floor(t / trainPeriod) * trainPeriod;
+  timeInStim_modPulsePeriod := t - floor(t / 0.1 ) * 0.1;
+
+  // Variable initializations:
+  stimEnd = 3600;
+  trainPeriod = 50;
+end
+
+model calcium____main()
+
+  // Sub-modules, and any changes to those submodules:
+  calcium: calcium__calcium(t, Ca);
+end

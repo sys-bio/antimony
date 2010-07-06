@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="raposo_2002____main" name="raposo_2002____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="Q_Ca_p0" value="1" constant="false"/>
+      <parameter id="J_bp_Ca" value="3.3"/>
+      <parameter id="J_pb_Ca" constant="false"/>
+      <parameter id="J_pu_Ca" value="0.21"/>
+      <parameter id="J_ip_Ca" constant="false"/>
+      <parameter id="Q_P_p0" value="1" constant="false"/>
+      <parameter id="J_bp_P" constant="false"/>
+      <parameter id="J_pb_P" constant="false"/>
+      <parameter id="J_pu_P" value="1.27"/>
+      <parameter id="J_ip_P" constant="false"/>
+      <parameter id="J_pc_P" constant="false"/>
+      <parameter id="J_cp_P" constant="false"/>
+      <parameter id="Q_P_c0" value="3226" constant="false"/>
+      <parameter id="Q_PTH_p0" value="1" constant="false"/>
+      <parameter id="S_PTH" constant="false"/>
+      <parameter id="C_PTH_p" value="3.85"/>
+      <parameter id="k_PTH" value="100"/>
+      <parameter id="Q_Ca_b0" value="100" constant="false"/>
+      <parameter id="Q_P_b0" value="1" constant="false"/>
+      <parameter id="Q_E_k0" value="1" constant="false"/>
+      <parameter id="S_E" value="1"/>
+      <parameter id="k_E" value="0.05"/>
+      <parameter id="Q_D_p0" value="1" constant="false"/>
+      <parameter id="k_D" value="0.1"/>
+      <parameter id="Q_TCa_i0" value="1" constant="false"/>
+      <parameter id="k1_D" constant="false"/>
+      <parameter id="k2_D" constant="false"/>
+      <parameter id="Q_C_PT0" value="1" constant="false"/>
+      <parameter id="k3_D" constant="false"/>
+      <parameter id="k4_D" constant="false"/>
+      <parameter id="Q_TP_k0" value="1" constant="false"/>
+      <parameter id="k1_P" constant="false"/>
+      <parameter id="k2_P" value="1"/>
+      <parameter id="model_fluxes_J_P_ing" value="1"/>
+      <parameter id="model_fluxes_Stoic_Ca_P" value="0.464"/>
+      <parameter id="model_fluxes_k_Ca_i" value="1"/>
+      <parameter id="C_Ca_i" value="1"/>
+      <parameter id="C_Ca_p" value="2.4"/>
+      <parameter id="C_P_p" value="1.2"/>
+      <parameter id="k_Ca_b" value="1"/>
+      <parameter id="k3_P" value="1"/>
+      <parameter id="k4_P" value="51.8"/>
+      <parameter id="Y_Ca_i_2plus" constant="false"/>
+      <parameter id="Y_Ca_p_1minus" constant="false"/>
+      <parameter id="C_D_p" value="90"/>
+      <parameter id="model_parameters_Ca_thr" constant="false"/>
+      <parameter id="model_parameters_Ca_T" constant="false"/>
+      <parameter id="model_parameters_P_thr" constant="false"/>
+      <parameter id="model_parameters_P_T" constant="false"/>
+      <parameter id="model_parameters_Y_i_D_p_1plus" constant="false"/>
+      <parameter id="model_parameters_Y_PT_D_p_1plus" constant="false"/>
+      <parameter id="model_parameters_Y_k_Jext_1plus" constant="false"/>
+      <parameter id="model_parameters_Y_PTH_p_2plus" constant="false"/>
+      <parameter id="model_parameters_Y_PTH_p_2minus" constant="false"/>
+      <parameter id="model_parameters_Y_i_D_p_1minus" constant="false"/>
+      <parameter id="model_parameters_Y_PT_D_p_1minus" constant="false"/>
+      <parameter id="model_parameters_Y_Ca_i_2plus_Max" value="1"/>
+      <parameter id="model_parameters_Y_PTH_p_2plus_Max" value="1"/>
+      <parameter id="model_parameters_Y_PTH_p_2minus_Max" value="1"/>
+      <parameter id="model_parameters_Y_Ca_p_1plus_minus_Max" value="0.02"/>
+      <parameter id="model_parameters_Y_i_D_p_1plus_minus_Max" value="0.02"/>
+      <parameter id="model_parameters_Y_PT_D_p_1plus_minus_Max" value="0.01"/>
+      <parameter id="model_parameters_Y_k_Jext_1plus_minus_Max" value="0.01"/>
+      <parameter id="model_parameters_X_R_PTH_Ca" value="1"/>
+      <parameter id="model_parameters_X_R_i_Ca" value="1"/>
+      <parameter id="model_parameters_X_R_PTH_D" value="90"/>
+      <parameter id="model_parameters_X_R_E_PTH" value="3.85"/>
+      <parameter id="model_parameters_X_R_i_D" value="90"/>
+      <parameter id="model_parameters_X_R_P_k_PTH" value="90"/>
+      <parameter id="model_parameters_b_PTH_Ca" value="0.05"/>
+      <parameter id="model_parameters_b_PTH_D" value="0.03"/>
+      <parameter id="model_parameters_b_E_PTH" value="0.55"/>
+      <parameter id="model_parameters_b_i_D" value="0.03"/>
+      <parameter id="model_parameters_a" value="0.85"/>
+      <parameter id="model_parameters_d" value="0.15"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="Q_Ca_p0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> J_bp_Ca </ci>
+              <ci> J_ip_Ca </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> J_pb_Ca </ci>
+              <ci> J_pu_Ca </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="J_pb_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k_Ca_b </ci>
+            <ci> Q_Ca_b0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_ip_Ca">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> Y_Ca_i_2plus </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <ci> Q_TCa_i0 </ci>
+                </apply>
+                <cn> 1 </cn>
+                <ci> k1_D </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> model_fluxes_k_Ca_i </ci>
+                <cn> 1 </cn>
+                <apply>
+                  <minus/>
+                  <ci> C_Ca_i </ci>
+                  <ci> C_Ca_p </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Q_TCa_i0 </ci>
+              <ci> k2_D </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Q_P_p0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> J_bp_P </ci>
+              <ci> J_ip_P </ci>
+              <ci> J_cp_P </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> J_pb_P </ci>
+              <ci> J_pu_P </ci>
+              <ci> J_pc_P </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="J_bp_P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_fluxes_Stoic_Ca_P </ci>
+            <ci> J_bp_Ca </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_pb_P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_fluxes_Stoic_Ca_P </ci>
+            <ci> J_pb_Ca </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_ip_P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> model_fluxes_J_P_ing </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_pc_P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k4_P </ci>
+            <cn> 1 </cn>
+            <ci> C_P_p </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_cp_P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k3_P </ci>
+            <ci> Q_P_c0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Q_P_c0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> J_pc_P </ci>
+            <ci> J_cp_P </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Q_PTH_p0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> S_PTH </ci>
+            <apply>
+              <times/>
+              <ci> k_PTH </ci>
+              <cn> 1 </cn>
+              <ci> C_PTH_p </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="S_PTH">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 1 </cn>
+            <ci> Y_Ca_p_1minus </ci>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> k3_D </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <ci> Q_C_PT0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k4_D </ci>
+                <ci> Q_C_PT0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Q_Ca_b0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> J_pb_Ca </ci>
+            <ci> J_bp_Ca </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Q_P_b0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> J_pb_P </ci>
+            <ci> J_bp_P </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Q_E_k0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> S_E </ci>
+            <apply>
+              <times/>
+              <ci> k_E </ci>
+              <ci> Q_E_k0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Q_D_p0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <cn> 1 </cn>
+              <ci> Q_E_k0 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_D </ci>
+              <ci> Q_D_p0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Q_TCa_i0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> Q_TCa_i0 </ci>
+              </apply>
+              <ci> k1_D </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Q_TCa_i0 </ci>
+              <ci> k2_D </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k1_D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> model_parameters_Y_i_D_p_1plus </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k2_D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> model_parameters_Y_i_D_p_1minus </ci>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Q_C_PT0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> Q_C_PT0 </ci>
+              </apply>
+              <ci> k3_D </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Q_C_PT0 </ci>
+              <ci> k4_D </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k3_D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> model_parameters_Y_PT_D_p_1plus </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k4_D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> model_parameters_Y_PT_D_p_1minus </ci>
+        </math>
+      </assignmentRule>
+      <rateRule variable="Q_TP_k0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <cn> 1 </cn>
+                <ci> Q_TP_k0 </ci>
+              </apply>
+              <ci> k1_P </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> Q_TP_k0 </ci>
+              <ci> k2_P </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k1_P">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> model_parameters_Y_k_Jext_1plus </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Y_Ca_i_2plus">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_Y_Ca_i_2plus_Max </ci>
+            <apply>
+              <divide/>
+              <ci> C_Ca_i </ci>
+              <apply>
+                <plus/>
+                <ci> C_Ca_i </ci>
+                <ci> model_parameters_X_R_i_Ca </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Y_Ca_p_1minus">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_Y_Ca_p_1plus_minus_Max </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> model_parameters_a </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <tanh/>
+                    <apply>
+                      <times/>
+                      <ci> model_parameters_b_PTH_Ca </ci>
+                      <apply>
+                        <minus/>
+                        <ci> C_Ca_p </ci>
+                        <ci> model_parameters_X_R_PTH_Ca </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> model_parameters_d </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_Ca_thr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <cn> 1.95 </cn>
+            <ci> model_parameters_Y_PTH_p_2plus </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_Ca_T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> model_parameters_Ca_thr </ci>
+            <ci> C_Ca_p </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_P_thr">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_Y_PTH_p_2minus </ci>
+            <ci> Q_TP_k0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_P_T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> model_parameters_P_thr </ci>
+            <ci> C_P_p </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_Y_i_D_p_1plus">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_Y_i_D_p_1plus_minus_Max </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> model_parameters_a </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <tanh/>
+                    <apply>
+                      <times/>
+                      <ci> model_parameters_b_i_D </ci>
+                      <apply>
+                        <minus/>
+                        <ci> C_D_p </ci>
+                        <ci> model_parameters_X_R_i_D </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> model_parameters_d </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_Y_PT_D_p_1plus">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_Y_PT_D_p_1plus_minus_Max </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> model_parameters_a </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <tanh/>
+                    <apply>
+                      <times/>
+                      <ci> model_parameters_b_PTH_D </ci>
+                      <apply>
+                        <minus/>
+                        <ci> C_D_p </ci>
+                        <ci> model_parameters_X_R_PTH_D </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> model_parameters_d </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_Y_k_Jext_1plus">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_Y_k_Jext_1plus_minus_Max </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> model_parameters_a </ci>
+                <apply>
+                  <plus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <tanh/>
+                    <apply>
+                      <times/>
+                      <ci> model_parameters_b_E_PTH </ci>
+                      <apply>
+                        <minus/>
+                        <apply>
+                          <times/>
+                          <cn> 1 </cn>
+                          <ci> C_P_p </ci>
+                        </apply>
+                        <ci> model_parameters_X_R_E_PTH </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> model_parameters_d </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_Y_PTH_p_2plus">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_Y_PTH_p_2plus_Max </ci>
+            <apply>
+              <divide/>
+              <ci> C_PTH_p </ci>
+              <apply>
+                <plus/>
+                <ci> C_PTH_p </ci>
+                <apply>
+                  <times/>
+                  <cn> 1 </cn>
+                  <ci> model_parameters_X_R_P_k_PTH </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_Y_PTH_p_2minus">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_Y_PTH_p_2minus_Max </ci>
+            <apply>
+              <divide/>
+              <ci> model_parameters_X_R_P_k_PTH </ci>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn> 1 </cn>
+                  <ci> C_PTH_p </ci>
+                </apply>
+                <ci> model_parameters_X_R_P_k_PTH </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_Y_i_D_p_1minus">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_Y_i_D_p_1plus_minus_Max </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> model_parameters_a </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <tanh/>
+                    <apply>
+                      <times/>
+                      <ci> model_parameters_b_i_D </ci>
+                      <apply>
+                        <minus/>
+                        <ci> C_D_p </ci>
+                        <ci> model_parameters_X_R_i_D </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> model_parameters_d </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="model_parameters_Y_PT_D_p_1minus">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> model_parameters_Y_PT_D_p_1plus_minus_Max </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> model_parameters_a </ci>
+                <apply>
+                  <minus/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <tanh/>
+                    <apply>
+                      <times/>
+                      <ci> model_parameters_b_PTH_D </ci>
+                      <apply>
+                        <minus/>
+                        <ci> C_D_p </ci>
+                        <ci> model_parameters_X_R_PTH_D </ci>
+                      </apply>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> model_parameters_d </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

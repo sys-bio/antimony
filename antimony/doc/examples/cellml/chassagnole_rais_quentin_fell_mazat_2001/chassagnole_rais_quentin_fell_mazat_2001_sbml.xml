@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="chassagnole_rais_quentin_fell_mazat_2001_version01____main" name="chassagnole_rais_quentin_fell_mazat_2001_version01____main">
+  <model id="chassagnole_2001____main" name="chassagnole_2001____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
       <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
     </listOfCompartments>
     <listOfParameters>
-      <parameter id="Asp0" constant="false"/>
+      <parameter id="Asp0" value="10" constant="false"/>
       <parameter id="vAKI0" constant="false"/>
       <parameter id="vAKIII0" constant="false"/>
-      <parameter id="aspp0" constant="false"/>
+      <parameter id="aspp0" value="0" constant="false"/>
       <parameter id="vASD0" constant="false"/>
-      <parameter id="ASA0" constant="false"/>
+      <parameter id="ASA0" value="0" constant="false"/>
       <parameter id="vHDH0" constant="false"/>
-      <parameter id="hs0" constant="false"/>
+      <parameter id="hs0" value="0" constant="false"/>
       <parameter id="vHK0" constant="false"/>
-      <parameter id="hsp0" constant="false"/>
+      <parameter id="hsp0" value="0" constant="false"/>
       <parameter id="vTS0" constant="false"/>
-      <parameter id="Thr0" constant="false"/>
-      <parameter id="ATP0" constant="false"/>
-      <parameter id="ADP0" constant="false"/>
-      <parameter id="NADPH0" constant="false"/>
-      <parameter id="NADP0" constant="false"/>
-      <parameter id="Pi_0" constant="false"/>
-      <parameter id="Lys0" constant="false"/>
+      <parameter id="Thr0" value="0" constant="false"/>
+      <parameter id="ATP0" value="30" constant="false"/>
+      <parameter id="ADP0" value="0" constant="false"/>
+      <parameter id="NADPH0" value="0" constant="false"/>
+      <parameter id="NADP0" value="0" constant="false"/>
+      <parameter id="Pi_0" value="0" constant="false"/>
+      <parameter id="Lys0" value="0" constant="false"/>
       <parameter id="vAKI_K_asp" value="0.97"/>
       <parameter id="vAKI_K_ATP" value="0.98"/>
       <parameter id="vAKI_K_aspp" value="0.017"/>
@@ -76,8 +76,11 @@
       <rateRule variable="Asp0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <plus/>
-            <ci> vAKI0 </ci>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> vAKI0 </ci>
+            </apply>
             <ci> vAKIII0 </ci>
           </apply>
         </math>
@@ -112,13 +115,13 @@
               <apply>
                 <plus/>
                 <apply>
-                  <times/>
-                  <ci> vAKI_K_asp </ci>
+                  <divide/>
                   <apply>
-                    <divide/>
+                    <times/>
+                    <ci> vAKI_K_asp </ci>
                     <apply>
                       <plus/>
-                      <cn> 1 </cn>
+                      <cn type="integer"> 1 </cn>
                       <apply>
                         <power/>
                         <apply>
@@ -129,33 +132,33 @@
                         <ci> vAKI_h_Thr </ci>
                       </apply>
                     </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
                     <apply>
-                      <plus/>
-                      <cn> 1 </cn>
+                      <power/>
                       <apply>
-                        <power/>
+                        <divide/>
+                        <ci> Thr0 </ci>
                         <apply>
-                          <divide/>
-                          <ci> Thr0 </ci>
-                          <apply>
-                            <times/>
-                            <ci> vAKI_K_iThr </ci>
-                            <ci> vAKI_alpha </ci>
-                          </apply>
+                          <times/>
+                          <ci> vAKI_K_iThr </ci>
+                          <ci> vAKI_alpha </ci>
                         </apply>
-                        <ci> vAKI_h_Thr </ci>
                       </apply>
+                      <ci> vAKI_h_Thr </ci>
                     </apply>
                   </apply>
                 </apply>
                 <apply>
-                  <times/>
-                  <ci> aspp0 </ci>
+                  <divide/>
                   <apply>
-                    <divide/>
+                    <times/>
+                    <ci> aspp0 </ci>
                     <ci> vAKI_K_asp </ci>
-                    <ci> vAKI_K_aspp </ci>
                   </apply>
+                  <ci> vAKI_K_aspp </ci>
                 </apply>
                 <ci> Asp0 </ci>
               </apply>
@@ -166,7 +169,7 @@
                   <ci> vAKI_K_ATP </ci>
                   <apply>
                     <plus/>
-                    <cn> 1 </cn>
+                    <cn type="integer"> 1 </cn>
                     <apply>
                       <divide/>
                       <ci> ADP0 </ci>
@@ -209,7 +212,7 @@
               <times/>
               <apply>
                 <plus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <apply>
                   <power/>
                   <apply>
@@ -227,7 +230,7 @@
                   <ci> vAKIII_K_asp </ci>
                   <apply>
                     <plus/>
-                    <cn> 1 </cn>
+                    <cn type="integer"> 1 </cn>
                     <apply>
                       <divide/>
                       <ci> aspp0 </ci>
@@ -244,7 +247,7 @@
                   <ci> vAKIII_K_ATP </ci>
                   <apply>
                     <plus/>
-                    <cn> 1 </cn>
+                    <cn type="integer"> 1 </cn>
                     <apply>
                       <divide/>
                       <ci> ADP0 </ci>
@@ -261,9 +264,12 @@
       <rateRule variable="aspp0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <plus/>
-            <ci> vAKI0 </ci>
-            <ci> vAKIII0 </ci>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> vAKI0 </ci>
+              <ci> vAKIII0 </ci>
+            </apply>
             <ci> vASD0 </ci>
           </apply>
         </math>
@@ -303,7 +309,7 @@
                   <ci> vASD_K_aspp </ci>
                   <apply>
                     <plus/>
-                    <cn> 1 </cn>
+                    <cn type="integer"> 1 </cn>
                     <apply>
                       <divide/>
                       <ci> ASA0 </ci>
@@ -312,7 +318,7 @@
                   </apply>
                   <apply>
                     <plus/>
-                    <cn> 1 </cn>
+                    <cn type="integer"> 1 </cn>
                     <apply>
                       <divide/>
                       <ci> Pi_0 </ci>
@@ -329,7 +335,7 @@
                   <ci> vASD_K_NADPH </ci>
                   <apply>
                     <plus/>
-                    <cn> 1 </cn>
+                    <cn type="integer"> 1 </cn>
                     <apply>
                       <divide/>
                       <ci> NADP0 </ci>
@@ -346,7 +352,7 @@
       <rateRule variable="ASA0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <plus/>
+            <minus/>
             <ci> vASD0 </ci>
             <ci> vHDH0 </ci>
           </apply>
@@ -383,7 +389,7 @@
                 <divide/>
                 <apply>
                   <plus/>
-                  <cn> 1 </cn>
+                  <cn type="integer"> 1 </cn>
                   <apply>
                     <power/>
                     <apply>
@@ -396,7 +402,7 @@
                 </apply>
                 <apply>
                   <plus/>
-                  <cn> 1 </cn>
+                  <cn type="integer"> 1 </cn>
                   <apply>
                     <power/>
                     <apply>
@@ -416,13 +422,13 @@
                 <plus/>
                 <ci> vHDH_K_ASA </ci>
                 <apply>
-                  <times/>
-                  <ci> hs0 </ci>
+                  <divide/>
                   <apply>
-                    <divide/>
+                    <times/>
+                    <ci> hs0 </ci>
                     <ci> vHDH_K_ASA </ci>
-                    <ci> vHDH_K_hs </ci>
                   </apply>
+                  <ci> vHDH_K_hs </ci>
                 </apply>
                 <ci> ASA0 </ci>
               </apply>
@@ -433,7 +439,7 @@
                   <ci> vHDH_K_NADPH </ci>
                   <apply>
                     <plus/>
-                    <cn> 1 </cn>
+                    <cn type="integer"> 1 </cn>
                     <apply>
                       <divide/>
                       <ci> NADP0 </ci>
@@ -450,7 +456,7 @@
       <rateRule variable="hs0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <plus/>
+            <minus/>
             <ci> vHDH0 </ci>
             <ci> vHK0 </ci>
           </apply>
@@ -471,27 +477,27 @@
               <apply>
                 <plus/>
                 <apply>
-                  <times/>
-                  <ci> vHK_K_hs </ci>
+                  <divide/>
                   <apply>
-                    <divide/>
+                    <times/>
+                    <ci> vHK_K_hs </ci>
                     <apply>
                       <plus/>
-                      <cn> 1 </cn>
+                      <cn type="integer"> 1 </cn>
                       <apply>
                         <divide/>
                         <ci> ATP0 </ci>
                         <ci> vHK_K_iATP </ci>
                       </apply>
                     </apply>
+                  </apply>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
                     <apply>
-                      <plus/>
-                      <cn> 1 </cn>
-                      <apply>
-                        <divide/>
-                        <ci> Thr0 </ci>
-                        <ci> vHK_K_iThr </ci>
-                      </apply>
+                      <divide/>
+                      <ci> Thr0 </ci>
+                      <ci> vHK_K_iThr </ci>
                     </apply>
                   </apply>
                 </apply>
@@ -504,7 +510,7 @@
                   <ci> vHK_K_ATP </ci>
                   <apply>
                     <plus/>
-                    <cn> 1 </cn>
+                    <cn type="integer"> 1 </cn>
                     <apply>
                       <divide/>
                       <ci> hs0 </ci>
@@ -516,7 +522,7 @@
               </apply>
               <apply>
                 <plus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <apply>
                   <divide/>
                   <ci> Lys0 </ci>
@@ -529,7 +535,11 @@
       </assignmentRule>
       <rateRule variable="hsp0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> vTS0 </ci>
+          <apply>
+            <plus/>
+            <ci> vHK0 </ci>
+            <ci> vTS0 </ci>
+          </apply>
         </math>
       </rateRule>
       <assignmentRule variable="vTS0">
@@ -551,20 +561,21 @@
       </assignmentRule>
       <rateRule variable="Thr0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <plus/>
-            <ci> vAKI0 </ci>
-            <ci> vHDH0 </ci>
-            <ci> vHK0 </ci>
-          </apply>
+          <ci> vTS0 </ci>
         </math>
       </rateRule>
       <rateRule variable="ATP0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <plus/>
-            <ci> vAKI0 </ci>
-            <ci> vAKIII0 </ci>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> vAKI0 </ci>
+              </apply>
+              <ci> vAKIII0 </ci>
+            </apply>
             <ci> vHK0 </ci>
           </apply>
         </math>
@@ -575,14 +586,18 @@
             <plus/>
             <ci> vAKI0 </ci>
             <ci> vAKIII0 </ci>
+            <ci> vHK0 </ci>
           </apply>
         </math>
       </rateRule>
       <rateRule variable="NADPH0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <plus/>
-            <ci> vASD0 </ci>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> vASD0 </ci>
+            </apply>
             <ci> vHDH0 </ci>
           </apply>
         </math>
@@ -598,16 +613,16 @@
       </rateRule>
       <rateRule variable="Pi_0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <ci> vASD0 </ci>
+          <apply>
+            <plus/>
+            <ci> vASD0 </ci>
+            <ci> vTS0 </ci>
+          </apply>
         </math>
       </rateRule>
       <rateRule variable="Lys0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <plus/>
-            <ci> vAKIII0 </ci>
-            <ci> vHK0 </ci>
-          </apply>
+          <cn type="integer"> 0 </cn>
         </math>
       </rateRule>
     </listOfRules>

@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model bertram_previte_sherman_kinard_satin_2000_version01__environment(time_)
+//Created by libAntimony v1.4
+model bertram_2000_medium__environment(time_)
 end
 
-model bertram_previte_sherman_kinard_satin_2000_version01__membrane(time_, V, ICa, IK, Il, Is1, Is2)
+model bertram_2000_medium__membrane(time_, V, ICa, IK, Il, Is1, Is2)
 
   // Rate Rules:
   V' = -((ICa + IK + Il + Is1 + Is2)) / Cm;
@@ -12,7 +12,7 @@ model bertram_previte_sherman_kinard_satin_2000_version01__membrane(time_, V, IC
   V = -43;
 end
 
-model bertram_previte_sherman_kinard_satin_2000_version01__Ca_current(time_, V, ICa)
+model bertram_2000_medium__Ca_current(time_, V, ICa)
 
   // Assignment Rules:
   minf := 1 / (1 + exp((Vm - V) / sm));
@@ -25,7 +25,7 @@ model bertram_previte_sherman_kinard_satin_2000_version01__Ca_current(time_, V, 
   sm = 7.5;
 end
 
-model bertram_previte_sherman_kinard_satin_2000_version01__rapid_K_current(time_, IK, VK, V)
+model bertram_2000_medium__rapid_K_current(time_, IK, VK, V)
 
   // Assignment Rules:
   IK := gK * n * (V - VK);
@@ -45,7 +45,7 @@ model bertram_previte_sherman_kinard_satin_2000_version01__rapid_K_current(time_
   sn = 10;
 end
 
-model bertram_previte_sherman_kinard_satin_2000_version01__slow_K_current(time_, Is1, V, VK)
+model bertram_2000_medium__slow_K_current(time_, Is1, V, VK)
 
   // Assignment Rules:
   Is1 := gs1 * s1 * (V - VK);
@@ -62,7 +62,7 @@ model bertram_previte_sherman_kinard_satin_2000_version01__slow_K_current(time_,
   taus1 = 1000;
 end
 
-model bertram_previte_sherman_kinard_satin_2000_version01__very_slow_K_current(time_, V, VK, Is2)
+model bertram_2000_medium__very_slow_K_current(time_, V, VK, Is2)
 
   // Assignment Rules:
   s2inf := 1 / (1 + exp((Vs2 - V) / ss2));
@@ -79,7 +79,7 @@ model bertram_previte_sherman_kinard_satin_2000_version01__very_slow_K_current(t
   taus2 = 120000;
 end
 
-model bertram_previte_sherman_kinard_satin_2000_version01__leak_current(time_, Il, V)
+model bertram_2000_medium__leak_current(time_, Il, V)
 
   // Assignment Rules:
   Il := gl * (V - Vl);
@@ -89,14 +89,14 @@ model bertram_previte_sherman_kinard_satin_2000_version01__leak_current(time_, I
   Vl = -40;
 end
 
-model bertram_previte_sherman_kinard_satin_2000_version01____main()
+model bertram_2000_medium____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: bertram_previte_sherman_kinard_satin_2000_version01__environment(time_);
-  membrane: bertram_previte_sherman_kinard_satin_2000_version01__membrane(time_, V, ICa, IK, Il, Is1, Is2);
-  Ca_current: bertram_previte_sherman_kinard_satin_2000_version01__Ca_current(time_, V, ICa);
-  rapid_K_current: bertram_previte_sherman_kinard_satin_2000_version01__rapid_K_current(time_, IK, VK, V);
-  slow_K_current: bertram_previte_sherman_kinard_satin_2000_version01__slow_K_current(time_, Is1, V, VK);
-  very_slow_K_current: bertram_previte_sherman_kinard_satin_2000_version01__very_slow_K_current(time_, V, VK, Is2);
-  leak_current: bertram_previte_sherman_kinard_satin_2000_version01__leak_current(time_, Il, V);
+  environment: bertram_2000_medium__environment(time_);
+  membrane: bertram_2000_medium__membrane(time_, V, ICa, IK, Il, Is1, Is2);
+  Ca_current: bertram_2000_medium__Ca_current(time_, V, ICa);
+  rapid_K_current: bertram_2000_medium__rapid_K_current(time_, IK, VK, V);
+  slow_K_current: bertram_2000_medium__slow_K_current(time_, Is1, V, VK);
+  very_slow_K_current: bertram_2000_medium__very_slow_K_current(time_, V, VK, Is2);
+  leak_current: bertram_2000_medium__leak_current(time_, Il, V);
 end

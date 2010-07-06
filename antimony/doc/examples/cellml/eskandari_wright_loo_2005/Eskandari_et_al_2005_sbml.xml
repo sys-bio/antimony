@@ -3,7 +3,7 @@
   <model id="eskandari_2005____main" name="eskandari_2005____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
@@ -21,9 +21,15 @@
       <parameter id="k0_25" value="0.3"/>
       <parameter id="k0_52" value="0.00091"/>
       <parameter id="k0_56" value="10"/>
-      <parameter id="k0_65" value="4500"/>
-      <parameter id="k0_61" value="3"/>
-      <parameter id="k0_16" value="350"/>
+      <parameter id="parameters_k0_65_f" value="50"/>
+      <parameter id="parameters_k0_61_f" value="5"/>
+      <parameter id="parameters_k0_16_f" value="35"/>
+      <parameter id="parameters_k0_65_r" value="4500"/>
+      <parameter id="parameters_k0_61_r" value="3"/>
+      <parameter id="parameters_k0_16_r" value="350"/>
+      <parameter id="k0_65" constant="false"/>
+      <parameter id="k0_61" constant="false"/>
+      <parameter id="k0_16" constant="false"/>
       <parameter id="delta" value="0.7"/>
       <parameter id="alpha_p" constant="false"/>
       <parameter id="alpha_pp" value="0"/>
@@ -39,8 +45,8 @@
       <parameter id="T" value="310"/>
       <parameter id="V" value="-0.15" constant="false"/>
       <parameter id="mu" constant="false"/>
-      <parameter id="Na_i" value="0.5"/>
       <parameter id="Na_o" value="0.01"/>
+      <parameter id="Na_i" value="0.5"/>
       <parameter id="glucose_i" value="0.1"/>
       <parameter id="glucose_o" value="0"/>
       <parameter id="k_12" constant="false"/>
@@ -97,6 +103,9 @@
       <parameter id="time_"/>
     </listOfParameters>
     <listOfRules>
+      <assignmentRule variable="k0_65"/>
+      <assignmentRule variable="k0_61"/>
+      <assignmentRule variable="k0_16"/>
       <assignmentRule variable="alpha_p">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>

@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model bertram_model_2007_version01__environment(time_)
+//Created by libAntimony v1.4
+model bertram_2007__environment(time_)
 end
 
-model bertram_model_2007_version01__membrane(Vm, Ica, Ik, Ikca, Ikatp, time_)
+model bertram_2007__membrane(Vm, Ica, Ik, Ikca, Ikatp, time_)
 
   // Rate Rules:
   Vm' = -(( Ik + Ica + Ikca + Ikatp )) / cm;
@@ -12,7 +12,7 @@ model bertram_model_2007_version01__membrane(Vm, Ica, Ik, Ikca, Ikatp, time_)
   cm = 5300.0;
 end
 
-model bertram_model_2007_version01__n(n, time_, Vm)
+model bertram_2007__n(n, time_, Vm)
 
   // Assignment Rules:
   n_infinity := 1.0 / ( 1.0 + exp(( vn - Vm ) / sn ));
@@ -27,10 +27,10 @@ model bertram_model_2007_version01__n(n, time_, Vm)
   sn = 5.0;
 end
 
-model bertram_model_2007_version01__Ik(Ik, time_, VK, Vm, n)
+model bertram_2007__Ik(Ik, time_, VK, Vm, n)
 
   // Sub-modules, and any changes to those submodules:
-  n_mod: bertram_model_2007_version01__n(n, time_, Vm);
+  n_mod: bertram_2007__n(n, time_, Vm);
 
   // Assignment Rules:
   Ik := gK * n * ( Vm - VK );
@@ -39,7 +39,7 @@ model bertram_model_2007_version01__Ik(Ik, time_, VK, Vm, n)
   gK = 2700.0;
 end
 
-model bertram_model_2007_version01__m(m_infinity, Vm)
+model bertram_2007__m(m_infinity, Vm)
 
   // Assignment Rules:
   m_infinity := 1.0 / ( 1.0 + exp(( v - Vm ) / sm ));
@@ -49,10 +49,10 @@ model bertram_model_2007_version01__m(m_infinity, Vm)
   sm = 12.0;
 end
 
-model bertram_model_2007_version01__Ica(Ica, time_, VCa, Vm, m_infinity)
+model bertram_2007__Ica(Ica, time_, VCa, Vm, m_infinity)
 
   // Sub-modules, and any changes to those submodules:
-  m: bertram_model_2007_version01__m(m_infinity, Vm);
+  m: bertram_2007__m(m_infinity, Vm);
 
   // Assignment Rules:
   Ica := gCa * m_infinity * ( Vm - VCa );
@@ -61,7 +61,7 @@ model bertram_model_2007_version01__Ica(Ica, time_, VCa, Vm, m_infinity)
   gCa = 1000.0;
 end
 
-model bertram_model_2007_version01__Ikca(Ikca, time_, VK, c, Vm)
+model bertram_2007__Ikca(Ikca, time_, VK, c, Vm)
 
   // Assignment Rules:
   Ikca := gkCa / ( 1.0 + power( kd / c , 2.0 )) * ( Vm - VK );
@@ -71,7 +71,7 @@ model bertram_model_2007_version01__Ikca(Ikca, time_, VK, c, Vm)
   kd = 0.5;
 end
 
-model bertram_model_2007_version01__Ikatp(Ikatp, time_, VK, atp, adp, Vm)
+model bertram_2007__Ikatp(Ikatp, time_, VK, atp, adp, Vm)
 
   // Assignment Rules:
   Ikatp := gkATP_ * katpo * ( Vm - VK );
@@ -86,7 +86,7 @@ model bertram_model_2007_version01__Ikatp(Ikatp, time_, VK, atp, adp, Vm)
   gkATP_ = 16000.0;
 end
 
-model bertram_model_2007_version01__JGPDH(JGPDH, FBP)
+model bertram_2007__JGPDH(JGPDH, FBP)
 
   // Assignment Rules:
   JGPDH := kGPDH * root(abs( FBP / 1 ));
@@ -95,7 +95,7 @@ model bertram_model_2007_version01__JGPDH(JGPDH, FBP)
   kGPDH = 0.0005;
 end
 
-model bertram_model_2007_version01__G6P(G6P, JGK_ms, JPFK_ms, time_)
+model bertram_2007__G6P(G6P, JGK_ms, JPFK_ms, time_)
 
   // Rate Rules:
   G6P' = JGK_ms - JPFK_ms;
@@ -104,7 +104,7 @@ model bertram_model_2007_version01__G6P(G6P, JGK_ms, JPFK_ms, time_)
   G6P = 301.0;
 end
 
-model bertram_model_2007_version01__FBP(FBP, JPFK_ms, JGPDH, time_)
+model bertram_2007__FBP(FBP, JPFK_ms, JGPDH, time_)
 
   // Rate Rules:
   FBP' = JPFK_ms - 0.5 * JGPDH;
@@ -113,13 +113,13 @@ model bertram_model_2007_version01__FBP(FBP, JPFK_ms, JGPDH, time_)
   FBP = 2.16;
 end
 
-model bertram_model_2007_version01__F6P(F6P, G6P)
+model bertram_2007__F6P(F6P, G6P)
 
   // Assignment Rules:
   F6P := 0.3 * G6P;
 end
 
-model bertram_model_2007_version01__JPFK(JPFK, JPFK_ms, atp, F6P, FBP, AMP, kappa)
+model bertram_2007__JPFK(JPFK, JPFK_ms, atp, F6P, FBP, AMP, kappa)
 
   // Assignment Rules:
   JPFK := (lambda_ * VmaxPFK * topa16 + VmaxPFK * topb) / bottom16;
@@ -187,7 +187,7 @@ model bertram_model_2007_version01__JPFK(JPFK, JPFK_ms, atp, F6P, FBP, AMP, kapp
   lambda_ = 0.06;
 end
 
-model bertram_model_2007_version01__JPDH(JPDH, NADm, Cam, NADHm, JGPDH)
+model bertram_2007__JPDH(JPDH, NADm, Cam, NADHm, JGPDH)
 
   // Assignment Rules:
   JPDH := p1 / ( p2 + NADHm / NADm ) * ( Cam / ( p3 + Cam )) * ( JGPDH + JGPDHbas );
@@ -199,7 +199,7 @@ model bertram_model_2007_version01__JPDH(JPDH, NADm, Cam, NADHm, JGPDH)
   JGPDHbas = 0.0005;
 end
 
-model bertram_model_2007_version01__NADHm(NADHm, gamma, JPDH, JO, time_)
+model bertram_2007__NADHm(NADHm, gamma, JPDH, JO, time_)
 
   // Rate Rules:
   NADHm' = gamma * ( JPDH - JO );
@@ -208,7 +208,7 @@ model bertram_model_2007_version01__NADHm(NADHm, gamma, JPDH, JO, time_)
   NADHm = 0.4;
 end
 
-model bertram_model_2007_version01__JO(JO, NADHm, delta_psi)
+model bertram_2007__JO(JO, NADHm, delta_psi)
 
   // Assignment Rules:
   JO := p4 * ( NADHm / ( p5 + NADHm )) / ( 1.0 + exp(( delta_psi - p6 ) / p7 ));
@@ -220,7 +220,7 @@ model bertram_model_2007_version01__JO(JO, NADHm, delta_psi)
   p7 = 5.0;
 end
 
-model bertram_model_2007_version01__NADm(NADm, NADHm)
+model bertram_2007__NADm(NADm, NADHm)
 
   // Assignment Rules:
   NADm := NADmtot - NADHm;
@@ -229,7 +229,7 @@ model bertram_model_2007_version01__NADm(NADm, NADHm)
   NADmtot = 10.0;
 end
 
-model bertram_model_2007_version01__delta_psi(delta_psi, JHres, JHatp, JANT, JHleak, JNaCa, Juni, time_)
+model bertram_2007__delta_psi(delta_psi, JHres, JHatp, JANT, JHleak, JNaCa, Juni, time_)
 
   // Rate Rules:
   delta_psi' = ( JHres - ( JHatp + JANT + JHleak + JNaCa + 2.0 * Juni )) / Cmito;
@@ -239,7 +239,7 @@ model bertram_model_2007_version01__delta_psi(delta_psi, JHres, JHatp, JANT, JHl
   Cmito = 1.8;
 end
 
-model bertram_model_2007_version01__JHres(JHres, NADHm, delta_psi)
+model bertram_2007__JHres(JHres, NADHm, delta_psi)
 
   // Assignment Rules:
   JHres := p8 * ( NADHm / ( p9 + NADHm )) / ( 1.0 + exp(( delta_psi - p10 ) / p11 ));
@@ -251,7 +251,7 @@ model bertram_model_2007_version01__JHres(JHres, NADHm, delta_psi)
   p11 = 5.0;
 end
 
-model bertram_model_2007_version01__JF1F0(JF1F0, ATPm, delta_psi)
+model bertram_2007__JF1F0(JF1F0, ATPm, delta_psi)
 
   // Assignment Rules:
   JF1F0 := p16 * p13 / ( p13 + ATPm ) / ( 1.0 + exp(( p14 - delta_psi ) / p15 ));
@@ -263,13 +263,13 @@ model bertram_model_2007_version01__JF1F0(JF1F0, ATPm, delta_psi)
   p16 = 35.0;
 end
 
-model bertram_model_2007_version01__JHatp(JHatp, JF1F0)
+model bertram_2007__JHatp(JHatp, JF1F0)
 
   // Assignment Rules:
   JHatp := 3.0 * JF1F0;
 end
 
-model bertram_model_2007_version01__JGK(JGK_ms, kappa)
+model bertram_2007__JGK(JGK_ms, kappa)
 
   // Assignment Rules:
   JGK_ms := kappa * JGK;
@@ -278,7 +278,7 @@ model bertram_model_2007_version01__JGK(JGK_ms, kappa)
   JGK = 0.4;
 end
 
-model bertram_model_2007_version01__JHleak(JHleak, delta_psi)
+model bertram_2007__JHleak(JHleak, delta_psi)
 
   // Assignment Rules:
   JHleak := p17 * delta_psi + p18;
@@ -288,7 +288,7 @@ model bertram_model_2007_version01__JHleak(JHleak, delta_psi)
   p18 = -0.03;
 end
 
-model bertram_model_2007_version01__JANT(JANT, RATm, delta_psi)
+model bertram_2007__JANT(JANT, RATm, delta_psi)
 
   // Assignment Rules:
   JANT := p19 * ( RATm / ( RATm + p20 ) / exp( -0.5 * FRT * delta_psi ));
@@ -299,13 +299,13 @@ model bertram_model_2007_version01__JANT(JANT, RATm, delta_psi)
   FRT = 0.037410133;
 end
 
-model bertram_model_2007_version01__RATm(RATm, ATPm, ADPm)
+model bertram_2007__RATm(RATm, ATPm, ADPm)
 
   // Assignment Rules:
   RATm := ATPm / ADPm;
 end
 
-model bertram_model_2007_version01__Juni(Juni, c, delta_psi)
+model bertram_2007__Juni(Juni, c, delta_psi)
 
   // Assignment Rules:
   Juni := ( p21 * delta_psi - p22 ) * power( c , 2.0 );
@@ -315,7 +315,7 @@ model bertram_model_2007_version01__Juni(Juni, c, delta_psi)
   p22 = 1.1;
 end
 
-model bertram_model_2007_version01__JNaCa(JNaCa, c, Cam, delta_psi)
+model bertram_2007__JNaCa(JNaCa, c, Cam, delta_psi)
 
   // Assignment Rules:
   JNaCa := p23 / c * Cam * exp( p24 * delta_psi );
@@ -325,7 +325,7 @@ model bertram_model_2007_version01__JNaCa(JNaCa, c, Cam, delta_psi)
   p24 = 0.016;
 end
 
-model bertram_model_2007_version01__Cam(Cam, Jmito, time_)
+model bertram_2007__Cam(Cam, Jmito, time_)
 
   // Rate Rules:
   Cam' = -( fmito ) * Jmito;
@@ -335,13 +335,13 @@ model bertram_model_2007_version01__Cam(Cam, Jmito, time_)
   fmito = 0.01;
 end
 
-model bertram_model_2007_version01__Jmito(Jmito, JNaCa, Juni)
+model bertram_2007__Jmito(Jmito, JNaCa, Juni)
 
   // Assignment Rules:
   Jmito := JNaCa - Juni;
 end
 
-model bertram_model_2007_version01__ADPm(ADPm, gamma, JANT, JF1F0, time_)
+model bertram_2007__ADPm(ADPm, gamma, JANT, JF1F0, time_)
 
   // Rate Rules:
   ADPm' = gamma * ( JANT - JF1F0 );
@@ -350,7 +350,7 @@ model bertram_model_2007_version01__ADPm(ADPm, gamma, JANT, JF1F0, time_)
   ADPm = 11.1;
 end
 
-model bertram_model_2007_version01__ATPm(ATPm, ADPm)
+model bertram_2007__ATPm(ATPm, ADPm)
 
   // Assignment Rules:
   ATPm := Amtot - ADPm;
@@ -359,7 +359,7 @@ model bertram_model_2007_version01__ATPm(ATPm, ADPm)
   Amtot = 15.0;
 end
 
-model bertram_model_2007_version01__adp(adp, delta, Jhyd, JANT, time_)
+model bertram_2007__adp(adp, delta, Jhyd, JANT, time_)
 
   // Rate Rules:
   adp' = -( delta ) * JANT + Jhyd;
@@ -368,7 +368,7 @@ model bertram_model_2007_version01__adp(adp, delta, Jhyd, JANT, time_)
   adp = 1137.0;
 end
 
-model bertram_model_2007_version01__Jhyd(Jhyd, c, atp)
+model bertram_2007__Jhyd(Jhyd, c, atp)
 
   // Assignment Rules:
   Jhyd := ( khyd * c + khydbas ) * atp;
@@ -378,7 +378,7 @@ model bertram_model_2007_version01__Jhyd(Jhyd, c, atp)
   khydbas = 0.00005;
 end
 
-model bertram_model_2007_version01__atp(atp, adp)
+model bertram_2007__atp(atp, adp)
 
   // Assignment Rules:
   atp := atot - adp;
@@ -387,7 +387,7 @@ model bertram_model_2007_version01__atp(atp, adp)
   atot = 2500.0;
 end
 
-model bertram_model_2007_version01__c(c, delta, Jer, Jmem, Jmito, time_)
+model bertram_2007__c(c, delta, Jer, Jmem, Jmito, time_)
 
   // Rate Rules:
   c' = fcyt * ( Jmem + Jer + delta * Jmito );
@@ -397,7 +397,7 @@ model bertram_model_2007_version01__c(c, delta, Jer, Jmem, Jmito, time_)
   fcyt = 0.01;
 end
 
-model bertram_model_2007_version01__Jmem(Jmem, c, Ica)
+model bertram_2007__Jmem(Jmem, c, Ica)
 
   // Assignment Rules:
   Jmem := -(( alpha * Ica + kPMCA * ( c - Cbas )));
@@ -408,7 +408,7 @@ model bertram_model_2007_version01__Jmem(Jmem, c, Ica)
   Cbas = 0.05;
 end
 
-model bertram_model_2007_version01__Jleak(Jleak, c, Caer)
+model bertram_2007__Jleak(Jleak, c, Caer)
 
   // Assignment Rules:
   Jleak := pleak * ( Caer - c );
@@ -417,7 +417,7 @@ model bertram_model_2007_version01__Jleak(Jleak, c, Caer)
   pleak = 0.0002;
 end
 
-model bertram_model_2007_version01__JSERCA(JSERCA, c)
+model bertram_2007__JSERCA(JSERCA, c)
 
   // Assignment Rules:
   JSERCA := kSERCA * c;
@@ -426,13 +426,13 @@ model bertram_model_2007_version01__JSERCA(JSERCA, c)
   kSERCA = 0.4;
 end
 
-model bertram_model_2007_version01__Jer(Jer, Jleak, JSERCA)
+model bertram_2007__Jer(Jer, Jleak, JSERCA)
 
   // Assignment Rules:
   Jer := Jleak - JSERCA;
 end
 
-model bertram_model_2007_version01__Caer(Caer, Jer, time_)
+model bertram_2007__Caer(Caer, Jer, time_)
 
   // Rate Rules:
   Caer' = -( fer ) * Vc_Ver * Jer;
@@ -443,7 +443,7 @@ model bertram_model_2007_version01__Caer(Caer, Jer, time_)
   Vc_Ver = 31.0;
 end
 
-model bertram_model_2007_version01__model_parameters(gamma, kappa, delta, VK, VCa, AMP)
+model bertram_2007__model_parameters(gamma, kappa, delta, VK, VCa, AMP)
 
   // Assignment Rules:
   delta := 3.9 / 53.2;
@@ -456,46 +456,46 @@ model bertram_model_2007_version01__model_parameters(gamma, kappa, delta, VK, VC
   AMP = 500.0;
 end
 
-model bertram_model_2007_version01____main()
+model bertram_2007____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: bertram_model_2007_version01__environment(time_);
-  membrane: bertram_model_2007_version01__membrane(Vm, Ica0, Ik0, Ikca0, Ikatp0, time_);
-  Ik: bertram_model_2007_version01__Ik(Ik0, time_, VK, Vm, n);
-  Ica: bertram_model_2007_version01__Ica(Ica0, time_, VCa, Vm, m_infinity);
-  Ikca: bertram_model_2007_version01__Ikca(Ikca0, time_, VK, c0, Vm);
-  Ikatp: bertram_model_2007_version01__Ikatp(Ikatp0, time_, VK, atp0, adp0, Vm);
-  JGPDH: bertram_model_2007_version01__JGPDH(JGPDH0, FBP0);
-  G6P: bertram_model_2007_version01__G6P(G6P0, JGK_ms, JPFK_ms, time_);
-  FBP: bertram_model_2007_version01__FBP(FBP0, JPFK_ms, JGPDH0, time_);
-  F6P: bertram_model_2007_version01__F6P(F6P0, G6P0);
-  JPFK: bertram_model_2007_version01__JPFK(JPFK0, JPFK_ms, atp0, F6P0, FBP0, AMP, kappa);
-  JPDH: bertram_model_2007_version01__JPDH(JPDH0, NADm0, Cam0, NADHm0, JGPDH0);
-  NADHm: bertram_model_2007_version01__NADHm(NADHm0, gamma, JPDH0, JO0, time_);
-  JO: bertram_model_2007_version01__JO(JO0, NADHm0, delta_psi0);
-  NADm: bertram_model_2007_version01__NADm(NADm0, NADHm0);
-  delta_psi: bertram_model_2007_version01__delta_psi(delta_psi0, JHres0, JHatp0, JANT0, JHleak0, JNaCa0, Juni0, time_);
-  JHres: bertram_model_2007_version01__JHres(JHres0, NADHm0, delta_psi0);
-  JF1F0: bertram_model_2007_version01__JF1F0(JF1F00, ATPm0, delta_psi0);
-  JHatp: bertram_model_2007_version01__JHatp(JHatp0, JF1F00);
-  JGK: bertram_model_2007_version01__JGK(JGK_ms, kappa);
-  JHleak: bertram_model_2007_version01__JHleak(JHleak0, delta_psi0);
-  JANT: bertram_model_2007_version01__JANT(JANT0, RATm0, delta_psi0);
-  RATm: bertram_model_2007_version01__RATm(RATm0, ATPm0, ADPm0);
-  Juni: bertram_model_2007_version01__Juni(Juni0, c0, delta_psi0);
-  JNaCa: bertram_model_2007_version01__JNaCa(JNaCa0, c0, Cam0, delta_psi0);
-  Cam: bertram_model_2007_version01__Cam(Cam0, Jmito0, time_);
-  Jmito: bertram_model_2007_version01__Jmito(Jmito0, JNaCa0, Juni0);
-  ADPm: bertram_model_2007_version01__ADPm(ADPm0, gamma, JANT0, JF1F00, time_);
-  ATPm: bertram_model_2007_version01__ATPm(ATPm0, ADPm0);
-  adp: bertram_model_2007_version01__adp(adp0, delta, Jhyd0, JANT0, time_);
-  Jhyd: bertram_model_2007_version01__Jhyd(Jhyd0, c0, atp0);
-  atp: bertram_model_2007_version01__atp(atp0, adp0);
-  c: bertram_model_2007_version01__c(c0, delta, Jer0, Jmem0, Jmito0, time_);
-  Jmem: bertram_model_2007_version01__Jmem(Jmem0, c0, Ica0);
-  Jleak: bertram_model_2007_version01__Jleak(Jleak0, c0, Caer0);
-  JSERCA: bertram_model_2007_version01__JSERCA(JSERCA0, c0);
-  Jer: bertram_model_2007_version01__Jer(Jer0, Jleak0, JSERCA0);
-  Caer: bertram_model_2007_version01__Caer(Caer0, Jer0, time_);
-  model_parameters: bertram_model_2007_version01__model_parameters(gamma, kappa, delta, VK, VCa, AMP);
+  environment: bertram_2007__environment(time_);
+  membrane: bertram_2007__membrane(Vm, Ica0, Ik0, Ikca0, Ikatp0, time_);
+  Ik: bertram_2007__Ik(Ik0, time_, VK, Vm, n);
+  Ica: bertram_2007__Ica(Ica0, time_, VCa, Vm, m_infinity);
+  Ikca: bertram_2007__Ikca(Ikca0, time_, VK, c0, Vm);
+  Ikatp: bertram_2007__Ikatp(Ikatp0, time_, VK, atp0, adp0, Vm);
+  JGPDH: bertram_2007__JGPDH(JGPDH0, FBP0);
+  G6P: bertram_2007__G6P(G6P0, JGK_ms, JPFK_ms, time_);
+  FBP: bertram_2007__FBP(FBP0, JPFK_ms, JGPDH0, time_);
+  F6P: bertram_2007__F6P(F6P0, G6P0);
+  JPFK: bertram_2007__JPFK(JPFK0, JPFK_ms, atp0, F6P0, FBP0, AMP, kappa);
+  JPDH: bertram_2007__JPDH(JPDH0, NADm0, Cam0, NADHm0, JGPDH0);
+  NADHm: bertram_2007__NADHm(NADHm0, gamma, JPDH0, JO0, time_);
+  JO: bertram_2007__JO(JO0, NADHm0, delta_psi0);
+  NADm: bertram_2007__NADm(NADm0, NADHm0);
+  delta_psi: bertram_2007__delta_psi(delta_psi0, JHres0, JHatp0, JANT0, JHleak0, JNaCa0, Juni0, time_);
+  JHres: bertram_2007__JHres(JHres0, NADHm0, delta_psi0);
+  JF1F0: bertram_2007__JF1F0(JF1F00, ATPm0, delta_psi0);
+  JHatp: bertram_2007__JHatp(JHatp0, JF1F00);
+  JGK: bertram_2007__JGK(JGK_ms, kappa);
+  JHleak: bertram_2007__JHleak(JHleak0, delta_psi0);
+  JANT: bertram_2007__JANT(JANT0, RATm0, delta_psi0);
+  RATm: bertram_2007__RATm(RATm0, ATPm0, ADPm0);
+  Juni: bertram_2007__Juni(Juni0, c0, delta_psi0);
+  JNaCa: bertram_2007__JNaCa(JNaCa0, c0, Cam0, delta_psi0);
+  Cam: bertram_2007__Cam(Cam0, Jmito0, time_);
+  Jmito: bertram_2007__Jmito(Jmito0, JNaCa0, Juni0);
+  ADPm: bertram_2007__ADPm(ADPm0, gamma, JANT0, JF1F00, time_);
+  ATPm: bertram_2007__ATPm(ATPm0, ADPm0);
+  adp: bertram_2007__adp(adp0, delta, Jhyd0, JANT0, time_);
+  Jhyd: bertram_2007__Jhyd(Jhyd0, c0, atp0);
+  atp: bertram_2007__atp(atp0, adp0);
+  c: bertram_2007__c(c0, delta, Jer0, Jmem0, Jmito0, time_);
+  Jmem: bertram_2007__Jmem(Jmem0, c0, Ica0);
+  Jleak: bertram_2007__Jleak(Jleak0, c0, Caer0);
+  JSERCA: bertram_2007__JSERCA(JSERCA0, c0);
+  Jer: bertram_2007__Jer(Jer0, Jleak0, JSERCA0);
+  Caer: bertram_2007__Caer(Caer0, Jer0, time_);
+  model_parameters: bertram_2007__model_parameters(gamma, kappa, delta, VK, VCa, AMP);
 end

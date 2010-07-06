@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="vangoor_lebeau_krsmanovic_sherman_catt_stojilkovic_2000_version01____main" name="vangoor_lebeau_krsmanovic_sherman_catt_stojilkovic_2000_version01____main">
+  <model id="vangoor_2000____main" name="vangoor_2000____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
       <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
     </listOfCompartments>
     <listOfParameters>
-      <parameter id="V" constant="false"/>
+      <parameter id="V" value="-60" constant="false"/>
       <parameter id="membrane_Cm" value="14"/>
       <parameter id="membrane_i_app" value="15"/>
       <parameter id="i_Na" constant="false"/>
@@ -18,51 +18,51 @@
       <parameter id="i_Ca_T" constant="false"/>
       <parameter id="i_K_dr" constant="false"/>
       <parameter id="i_M" constant="false"/>
+      <parameter id="i_ir" constant="false"/>
       <parameter id="i_d" constant="false"/>
       <parameter id="sodium_current_g_Na" value="60"/>
       <parameter id="sodium_current_V_Na" value="60"/>
       <parameter id="sodium_current_O" constant="false"/>
-      <parameter id="A0" constant="false"/>
+      <parameter id="A0" value="1" constant="false"/>
       <parameter id="k1" value="0.3"/>
       <parameter id="k1_" value="0.03"/>
       <parameter id="alpha" constant="false"/>
       <parameter id="beta" constant="false"/>
-      <parameter id="D0" constant="false"/>
-      <parameter id="A_0" constant="false"/>
+      <parameter id="D0" value="0" constant="false"/>
+      <parameter id="A_0" value="0" constant="false"/>
       <parameter id="a" constant="false"/>
-      <parameter id="D_0" constant="false"/>
+      <parameter id="D_0" value="0" constant="false"/>
       <parameter id="k2" value="0.001"/>
       <parameter id="k2_" value="0.01"/>
       <parameter id="V_Ca" value="100"/>
       <parameter id="L_type_calcium_current_g_Ca_L" value="1.3"/>
-      <parameter id="m" constant="false"/>
+      <parameter id="m" value="0" constant="false"/>
       <parameter id="L_type_calcium_current_L_type_calcium_current_m_gate_m_infinity" constant="false"/>
       <parameter id="L_type_calcium_current_L_type_calcium_current_m_gate_tau_m" constant="false"/>
       <parameter id="L_type_calcium_current_L_type_calcium_current_m_gate_Vh" value="40"/>
       <parameter id="T_type_calcium_current_g_Ca_T" value="0.94"/>
-      <parameter id="m0" constant="false"/>
-      <parameter id="h" constant="false"/>
+      <parameter id="m0" value="0" constant="false"/>
+      <parameter id="h" value="0" constant="false"/>
       <parameter id="T_type_calcium_current_T_type_calcium_current_m_gate_m_infinity" constant="false"/>
       <parameter id="T_type_calcium_current_T_type_calcium_current_m_gate_tau_m" constant="false"/>
       <parameter id="T_type_calcium_current_T_type_calcium_current_h_gate_h_infinity" constant="false"/>
       <parameter id="T_type_calcium_current_T_type_calcium_current_h_gate_tau_h" value="22"/>
       <parameter id="V_K" value="-80"/>
       <parameter id="delayed_rectifier_K_channel_current_g_K_dr" value="20"/>
-      <parameter id="n" constant="false"/>
-      <parameter id="h0" constant="false"/>
+      <parameter id="n" value="0" constant="false"/>
+      <parameter id="h0" value="0" constant="false"/>
       <parameter id="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_n_infinity" constant="false"/>
       <parameter id="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_n_gate_tau_n" constant="false"/>
       <parameter id="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_h_gate_h_infinity" constant="false"/>
       <parameter id="delayed_rectifier_K_channel_current_delayed_rectifier_K_channel_current_h_gate_tau_h" value="1000"/>
       <parameter id="M_like_K_current_g_M" value="4"/>
-      <parameter id="n0" constant="false"/>
+      <parameter id="n0" value="0" constant="false"/>
       <parameter id="M_like_K_current_M_like_K_current_n_gate_n_infinity" constant="false"/>
       <parameter id="M_like_K_current_M_like_K_current_n_gate_tau_n" constant="false"/>
       <parameter id="inward_rectifier_K_current_g_ir" value="1.71"/>
       <parameter id="n_infinity" constant="false"/>
       <parameter id="inward_leak_current_g_d" value="0.044"/>
       <parameter id="time_"/>
-      <parameter id="i_ir"/>
     </listOfParameters>
     <listOfRules>
       <rateRule variable="V">
@@ -109,7 +109,7 @@
             <apply>
               <power/>
               <ci> m </ci>
-              <cn> 2 </cn>
+              <cn type="integer"> 2 </cn>
             </apply>
             <apply>
               <minus/>
@@ -127,7 +127,7 @@
             <apply>
               <power/>
               <ci> m0 </ci>
-              <cn> 2 </cn>
+              <cn type="integer"> 2 </cn>
             </apply>
             <ci> h </ci>
             <apply>
@@ -146,7 +146,7 @@
             <apply>
               <power/>
               <ci> n </ci>
-              <cn> 4 </cn>
+              <cn type="integer"> 4 </cn>
             </apply>
             <ci> h0 </ci>
             <apply>
@@ -163,6 +163,20 @@
             <times/>
             <ci> M_like_K_current_g_M </ci>
             <ci> n0 </ci>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> V_K </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="i_ir">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> inward_rectifier_K_current_g_ir </ci>
+            <ci> n_infinity </ci>
             <apply>
               <minus/>
               <ci> V </ci>
@@ -189,7 +203,7 @@
           <apply>
             <power/>
             <ci> A0 </ci>
-            <cn> 3 </cn>
+            <cn type="integer"> 3 </cn>
           </apply>
         </math>
       </assignmentRule>
@@ -230,10 +244,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 10 </cn>
+            <cn type="integer"> 10 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -243,10 +257,10 @@
                     <apply>
                       <plus/>
                       <ci> V </ci>
-                      <cn> 6 </cn>
+                      <cn type="integer"> 6 </cn>
                     </apply>
                   </apply>
-                  <cn> 10 </cn>
+                  <cn type="integer"> 10 </cn>
                 </apply>
               </apply>
             </apply>
@@ -257,10 +271,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 10 </cn>
+            <cn type="integer"> 10 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -351,7 +365,7 @@
       <assignmentRule variable="a">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <power/>
+            <root/>
             <apply>
               <divide/>
               <apply>
@@ -365,7 +379,6 @@
                 <ci> k2 </ci>
               </apply>
             </apply>
-            <cn> 0.5 </cn>
           </apply>
         </math>
       </assignmentRule>
@@ -424,10 +437,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -440,7 +453,7 @@
                       <ci> L_type_calcium_current_L_type_calcium_current_m_gate_Vh </ci>
                     </apply>
                   </apply>
-                  <cn> 12 </cn>
+                  <cn type="integer"> 12 </cn>
                 </apply>
               </apply>
             </apply>
@@ -451,7 +464,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 5 </cn>
+            <cn type="integer"> 5 </cn>
             <apply>
               <plus/>
               <apply>
@@ -461,9 +474,9 @@
                   <apply>
                     <plus/>
                     <ci> V </ci>
-                    <cn> 15 </cn>
+                    <cn type="integer"> 15 </cn>
                   </apply>
-                  <cn> 25 </cn>
+                  <cn type="integer"> 25 </cn>
                 </apply>
               </apply>
               <apply>
@@ -475,10 +488,10 @@
                     <apply>
                       <plus/>
                       <ci> V </ci>
-                      <cn> 15 </cn>
+                      <cn type="integer"> 15 </cn>
                     </apply>
                   </apply>
-                  <cn> 25 </cn>
+                  <cn type="integer"> 25 </cn>
                 </apply>
               </apply>
             </apply>
@@ -515,10 +528,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -531,7 +544,7 @@
                       <cn> 56.1 </cn>
                     </apply>
                   </apply>
-                  <cn> 10 </cn>
+                  <cn type="integer"> 10 </cn>
                 </apply>
               </apply>
             </apply>
@@ -544,7 +557,7 @@
             <plus/>
             <apply>
               <divide/>
-              <cn> 7 </cn>
+              <cn type="integer"> 7 </cn>
               <apply>
                 <plus/>
                 <apply>
@@ -554,9 +567,9 @@
                     <apply>
                       <plus/>
                       <ci> V </ci>
-                      <cn> 50 </cn>
+                      <cn type="integer"> 50 </cn>
                     </apply>
-                    <cn> 9 </cn>
+                    <cn type="integer"> 9 </cn>
                   </apply>
                 </apply>
                 <apply>
@@ -568,10 +581,10 @@
                       <apply>
                         <plus/>
                         <ci> V </ci>
-                        <cn> 50 </cn>
+                        <cn type="integer"> 50 </cn>
                       </apply>
                     </apply>
-                    <cn> 9 </cn>
+                    <cn type="integer"> 9 </cn>
                   </apply>
                 </apply>
               </apply>
@@ -584,10 +597,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -634,10 +647,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -647,10 +660,10 @@
                     <apply>
                       <plus/>
                       <ci> V </ci>
-                      <cn> 25 </cn>
+                      <cn type="integer"> 25 </cn>
                     </apply>
                   </apply>
-                  <cn> 15 </cn>
+                  <cn type="integer"> 15 </cn>
                 </apply>
               </apply>
             </apply>
@@ -663,7 +676,7 @@
             <plus/>
             <apply>
               <divide/>
-              <cn> 15 </cn>
+              <cn type="integer"> 15 </cn>
               <apply>
                 <plus/>
                 <apply>
@@ -673,9 +686,9 @@
                     <apply>
                       <plus/>
                       <ci> V </ci>
-                      <cn> 30 </cn>
+                      <cn type="integer"> 30 </cn>
                     </apply>
-                    <cn> 15 </cn>
+                    <cn type="integer"> 15 </cn>
                   </apply>
                 </apply>
                 <apply>
@@ -687,15 +700,15 @@
                       <apply>
                         <plus/>
                         <ci> V </ci>
-                        <cn> 30 </cn>
+                        <cn type="integer"> 30 </cn>
                       </apply>
                     </apply>
-                    <cn> 15 </cn>
+                    <cn type="integer"> 15 </cn>
                   </apply>
                 </apply>
               </apply>
             </apply>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
           </apply>
         </math>
       </assignmentRule>
@@ -708,7 +721,7 @@
               <cn> 0.7 </cn>
               <apply>
                 <plus/>
-                <cn> 1 </cn>
+                <cn type="integer"> 1 </cn>
                 <apply>
                   <exp/>
                   <apply>
@@ -718,10 +731,10 @@
                       <apply>
                         <plus/>
                         <ci> V </ci>
-                        <cn> 35 </cn>
+                        <cn type="integer"> 35 </cn>
                       </apply>
                     </apply>
-                    <cn> 10 </cn>
+                    <cn type="integer"> 10 </cn>
                   </apply>
                 </apply>
               </apply>
@@ -747,10 +760,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -760,10 +773,10 @@
                     <apply>
                       <plus/>
                       <ci> V </ci>
-                      <cn> 37 </cn>
+                      <cn type="integer"> 37 </cn>
                     </apply>
                   </apply>
-                  <cn> 4 </cn>
+                  <cn type="integer"> 4 </cn>
                 </apply>
               </apply>
             </apply>
@@ -774,7 +787,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 80 </cn>
+            <cn type="integer"> 80 </cn>
             <apply>
               <plus/>
               <apply>
@@ -784,9 +797,9 @@
                   <apply>
                     <plus/>
                     <ci> V </ci>
-                    <cn> 30 </cn>
+                    <cn type="integer"> 30 </cn>
                   </apply>
-                  <cn> 15 </cn>
+                  <cn type="integer"> 15 </cn>
                 </apply>
               </apply>
               <apply>
@@ -798,10 +811,10 @@
                     <apply>
                       <plus/>
                       <ci> V </ci>
-                      <cn> 30 </cn>
+                      <cn type="integer"> 30 </cn>
                     </apply>
                   </apply>
-                  <cn> 15 </cn>
+                  <cn type="integer"> 15 </cn>
                 </apply>
               </apply>
             </apply>
@@ -813,25 +826,25 @@
           <apply>
             <plus/>
             <apply>
-              <times/>
-              <cn> 0.8 </cn>
+              <divide/>
               <apply>
-                <divide/>
-                <cn> 1 </cn>
+                <times/>
+                <cn> 0.8 </cn>
+                <cn type="integer"> 1 </cn>
+              </apply>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
                 <apply>
-                  <plus/>
-                  <cn> 1 </cn>
+                  <exp/>
                   <apply>
-                    <exp/>
+                    <divide/>
                     <apply>
-                      <divide/>
-                      <apply>
-                        <plus/>
-                        <ci> V </ci>
-                        <cn> 80 </cn>
-                      </apply>
-                      <cn> 12 </cn>
+                      <plus/>
+                      <ci> V </ci>
+                      <cn type="integer"> 80 </cn>
                     </apply>
+                    <cn type="integer"> 12 </cn>
                   </apply>
                 </apply>
               </apply>

@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__environment(time_)
+//Created by libAntimony v1.4
+model sobie_2002__environment(time_)
 end
 
-model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__subspace(Ca_SS, J_RyR, J_buf, V_SS, Ca_lumen, time_)
+model sobie_2002__subspace(Ca_SS, J_RyR, J_buf, V_SS, Ca_lumen, time_)
 
   // Assignment Rules:
   J_RyR := D_RyR * ( Ca_lumen - Ca_SS );
@@ -42,7 +42,7 @@ model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__subspace(Ca_SS, J_
   tau_efflux = 7.0E-7;
 end
 
-model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__lumen(Ca_lumen, J_RyR, V_SS, time_)
+model sobie_2002__lumen(Ca_lumen, J_RyR, V_SS, time_)
 
   // Assignment Rules:
   J_refill := ( Ca_NSR - Ca_lumen ) / tau_refill;
@@ -59,7 +59,7 @@ model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__lumen(Ca_lumen, J_
   K_CSQ = 0.8;
 end
 
-model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__RyR_receptor_gating(time_, Ca_lumen, Ca_SS)
+model sobie_2002__RyR_receptor_gating(time_, Ca_lumen, Ca_SS)
 
   // Assignment Rules:
   k_close := CF_close * 480.0;
@@ -72,7 +72,7 @@ model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__RyR_receptor_gatin
   k_coop = 1.0;
 end
 
-model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__spark_model(time_, J_RyR, J_buf)
+model sobie_2002__spark_model(time_, J_RyR, J_buf)
 
   // Assignment Rules:
   J_pump := Vmax_pump * power( Ca , m ) / ( Km_pump + power( Ca , m ));
@@ -95,12 +95,12 @@ model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__spark_model(time_,
   k_F_minus = 40.0;
 end
 
-model sobie_dilly_dossantoscruz_lederer_jafri_2002_version01____main()
+model sobie_2002____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__environment(time_);
-  subspace: sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__subspace(Ca_SS, J_RyR, J_buf, V_SS, Ca_lumen, time_);
-  lumen: sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__lumen(Ca_lumen, J_RyR, V_SS, time_);
-  RyR_receptor_gating: sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__RyR_receptor_gating(time_, Ca_lumen, Ca_SS);
-  spark_model: sobie_dilly_dossantoscruz_lederer_jafri_2002_version01__spark_model(time_, J_RyR, J_buf);
+  environment: sobie_2002__environment(time_);
+  subspace: sobie_2002__subspace(Ca_SS, J_RyR, J_buf, V_SS, Ca_lumen, time_);
+  lumen: sobie_2002__lumen(Ca_lumen, J_RyR, V_SS, time_);
+  RyR_receptor_gating: sobie_2002__RyR_receptor_gating(time_, Ca_lumen, Ca_SS);
+  spark_model: sobie_2002__spark_model(time_, J_RyR, J_buf);
 end

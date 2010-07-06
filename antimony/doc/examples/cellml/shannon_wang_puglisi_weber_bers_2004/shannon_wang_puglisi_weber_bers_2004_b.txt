@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model shannon_wang_puglisi_weber_bers_2004__environment(time_)
+//Created by libAntimony v1.4
+model shannon_2004__environment(time_)
 end
 
-model shannon_wang_puglisi_weber_bers_2004__cell(V, time_, i_Na, i_Nab, i_NaK, i_Kr, i_Ks, i_tos, i_tof, i_K1, i_Kp, i_NaCa, i_Cl_Ca, i_Clb, i_CaL, i_Cab, i_Cap)
+model shannon_2004__cell(V, time_, i_Na, i_Nab, i_NaK, i_Kr, i_Ks, i_tos, i_tof, i_K1, i_Kp, i_NaCa, i_Cl_Ca, i_Clb, i_CaL, i_Cab, i_Cap)
 
   // Assignment Rules:
   i_Stim := piecewise( -(stim_amplitude) , ( time_ - floor(time_ / stim_period) * stim_period >= stim_start) && (time_ - floor(time_ / stim_period) * stim_period <= stim_start + stim_duration ), 0 );
@@ -18,7 +18,7 @@ model shannon_wang_puglisi_weber_bers_2004__cell(V, time_, i_Na, i_Nab, i_NaK, i
   stim_amplitude = 9.5;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__model_parameters(Ko, Nao, Cao, Clo, Ki, Mgi, Mgo, Cli, R, T, F, Cm, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, Vol_mito)
+model shannon_2004__model_parameters(Ko, Nao, Cao, Clo, Ki, Mgi, Mgo, Cli, R, T, F, Cm, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, Vol_mito)
 
   // Assignment Rules:
   Cm := Cm_per_area * 2 * cell_radius / 10000 * pi * cell_length / 10000;
@@ -49,7 +49,7 @@ model shannon_wang_puglisi_weber_bers_2004__model_parameters(Ko, Nao, Cao, Clo, 
   SL_depth = 0.045;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__reversal_potentials(E_Na_jct, E_Na_SL, E_Ca_jct, E_Ca_SL, E_K, E_Cl, R, T, F, Nai, Na_jct, Na_SL, Nao, Cai, Ca_jct, Ca_SL, Cao, Ki, Ko, Cli, Clo)
+model shannon_2004__reversal_potentials(E_Na_jct, E_Na_SL, E_Ca_jct, E_Ca_SL, E_K, E_Cl, R, T, F, Nai, Na_jct, Na_SL, Nao, Cai, Ca_jct, Ca_SL, Cao, Ki, Ko, Cli, Clo)
 
   // Assignment Rules:
   E_Na_jct := R * T / F * ln(Nao / Na_jct);
@@ -60,7 +60,7 @@ model shannon_wang_puglisi_weber_bers_2004__reversal_potentials(E_Na_jct, E_Na_S
   E_Cl := -(R) * T / F * ln(Clo / Cli);
 end
 
-model shannon_wang_puglisi_weber_bers_2004__INa_m_gate(m, V, time_)
+model shannon_2004__INa_m_gate(m, V, time_)
 
   // Assignment Rules:
   alpha_m := 0.32 * (V + 47.13 ) / 1 / (1 - exp(-(0.1 ) * (V + 47.13 )));
@@ -75,7 +75,7 @@ model shannon_wang_puglisi_weber_bers_2004__INa_m_gate(m, V, time_)
   m = 0.001370685156;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__INa_h_gate(h, V, time_)
+model shannon_2004__INa_h_gate(h, V, time_)
 
   // Assignment Rules:
   alpha_h := piecewise( 0.135 * exp((80 + V) / -(6.8 )) , V < -(40 ) , 0 );
@@ -90,7 +90,7 @@ model shannon_wang_puglisi_weber_bers_2004__INa_h_gate(h, V, time_)
   h = 0.987140350343;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__INa_j_gate(j, V, time_)
+model shannon_2004__INa_j_gate(j, V, time_)
 
   // Assignment Rules:
   alpha_j := piecewise( (-(1.2714e5 ) * exp(0.2444 * V) - 3.474e-5 * exp(-(0.04391 ) * V)) * (V + 37.78 ) / 1 / (1 + exp(0.311 * (V + 79.23 ))) , V < -(40 ) , 0 );
@@ -105,12 +105,12 @@ model shannon_wang_puglisi_weber_bers_2004__INa_j_gate(j, V, time_)
   j = 0.991822731369;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__INa(i_Na, i_Na_jct, i_Na_SL, time_, V, E_Na_jct, E_Na_SL, m, h, j)
+model shannon_2004__INa(i_Na, i_Na_jct, i_Na_SL, time_, V, E_Na_jct, E_Na_SL, m, h, j)
 
   // Sub-modules, and any changes to those submodules:
-  INa_m_gate: shannon_wang_puglisi_weber_bers_2004__INa_m_gate(m, V, time_);
-  INa_h_gate: shannon_wang_puglisi_weber_bers_2004__INa_h_gate(h, V, time_);
-  INa_j_gate: shannon_wang_puglisi_weber_bers_2004__INa_j_gate(j, V, time_);
+  INa_m_gate: shannon_2004__INa_m_gate(m, V, time_);
+  INa_h_gate: shannon_2004__INa_h_gate(h, V, time_);
+  INa_j_gate: shannon_2004__INa_j_gate(j, V, time_);
 
   // Assignment Rules:
   i_Na := i_Na_jct + i_Na_SL;
@@ -124,7 +124,7 @@ model shannon_wang_puglisi_weber_bers_2004__INa(i_Na, i_Na_jct, i_Na_SL, time_, 
   Fx_Na_SL = 0.89;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__INab(i_Nab, i_Nab_jct, i_Nab_SL, V, E_Na_jct, E_Na_SL)
+model shannon_2004__INab(i_Nab, i_Nab_jct, i_Nab_SL, V, E_Na_jct, E_Na_SL)
 
   // Assignment Rules:
   i_Nab := i_Nab_jct + i_Nab_SL;
@@ -137,7 +137,7 @@ model shannon_wang_puglisi_weber_bers_2004__INab(i_Nab, i_Nab_jct, i_Nab_SL, V, 
   Fx_NaBk_SL = 0.89;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__INaK(i_NaK, i_NaK_jct, i_NaK_SL, V, R, T, F, Nai, Na_jct, Na_SL, Nao, Ko)
+model shannon_2004__INaK(i_NaK, i_NaK_jct, i_NaK_SL, V, R, T, F, Nai, Na_jct, Na_SL, Nao, Ko)
 
   // Assignment Rules:
   i_NaK := i_NaK_jct + i_NaK_SL;
@@ -159,7 +159,7 @@ model shannon_wang_puglisi_weber_bers_2004__INaK(i_NaK, i_NaK_jct, i_NaK_SL, V, 
   Fx_NaK_SL = 0.89;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__IKr_Xr_gate(Xr, V, time_)
+model shannon_2004__IKr_Xr_gate(Xr, V, time_)
 
   // Assignment Rules:
   Xr_infinity := 1 / (1 + exp(-((50 + V)) / 7.5 ));
@@ -172,24 +172,24 @@ model shannon_wang_puglisi_weber_bers_2004__IKr_Xr_gate(Xr, V, time_)
   Xr = 0.008471550841;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__IKr_Rr_gate(Rr, V)
+model shannon_2004__IKr_Rr_gate(Rr, V)
 
   // Assignment Rules:
   Rr := 1 / (1 + exp((33 + V) / 22.4 ));
 end
 
-model shannon_wang_puglisi_weber_bers_2004__IKr(i_Kr, time_, V, E_K, Ko, Xr, Rr)
+model shannon_2004__IKr(i_Kr, time_, V, E_K, Ko, Xr, Rr)
 
   // Sub-modules, and any changes to those submodules:
-  IKr_Xr_gate: shannon_wang_puglisi_weber_bers_2004__IKr_Xr_gate(Xr, V, time_);
-  IKr_Rr_gate: shannon_wang_puglisi_weber_bers_2004__IKr_Rr_gate(Rr, V);
+  IKr_Xr_gate: shannon_2004__IKr_Xr_gate(Xr, V, time_);
+  IKr_Rr_gate: shannon_2004__IKr_Rr_gate(Rr, V);
 
   // Assignment Rules:
   i_Kr := G_IKr * Xr * Rr * (V - E_K);
   G_IKr := 0.03 * root(Ko / 5.4 );
 end
 
-model shannon_wang_puglisi_weber_bers_2004__IKs_Xs_gate(Xs, V, time_)
+model shannon_2004__IKs_Xs_gate(Xs, V, time_)
 
   // Assignment Rules:
   Xs_infinity := 1 / (1 + exp(-((V - 1.5 )) / 16.7 ));
@@ -202,10 +202,10 @@ model shannon_wang_puglisi_weber_bers_2004__IKs_Xs_gate(Xs, V, time_)
   Xs = 0.00687399199;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__IKs(i_Ks, R, T, F, Nai, Na_jct, Na_SL, Nao, Ki, Ca_jct, Ca_SL, Ko, time_, V, Xs)
+model shannon_2004__IKs(i_Ks, R, T, F, Nai, Na_jct, Na_SL, Nao, Ki, Ca_jct, Ca_SL, Ko, time_, V, Xs)
 
   // Sub-modules, and any changes to those submodules:
-  IKs_Xs_gate: shannon_wang_puglisi_weber_bers_2004__IKs_Xs_gate(Xs, V, time_);
+  IKs_Xs_gate: shannon_2004__IKs_Xs_gate(Xs, V, time_);
 
   // Assignment Rules:
   i_Ks := i_Ks_jct + i_Ks_SL;
@@ -225,7 +225,7 @@ model shannon_wang_puglisi_weber_bers_2004__IKs(i_Ks, R, T, F, Nai, Na_jct, Na_S
   pKNa = 0.01833;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Itos_X_gate(X_tos, V, time_)
+model shannon_2004__Itos_X_gate(X_tos, V, time_)
 
   // Assignment Rules:
   X_tos_infinity := 1 / (1 + exp(-((V + 3 )) / 15 ));
@@ -238,7 +238,7 @@ model shannon_wang_puglisi_weber_bers_2004__Itos_X_gate(X_tos, V, time_)
   X_tos = 0.004011272375;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Itos_Y_gate(Y_tos, V, time_)
+model shannon_2004__Itos_Y_gate(Y_tos, V, time_)
 
   // Assignment Rules:
   Y_tos_infinity := 1 / (1 + exp((V + 33.5 ) / 10 ));
@@ -251,7 +251,7 @@ model shannon_wang_puglisi_weber_bers_2004__Itos_Y_gate(Y_tos, V, time_)
   Y_tos = 0.293519921626;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Itos_R_gate(R_tos_other, R_tos, V, time_)
+model shannon_2004__Itos_R_gate(R_tos_other, R_tos, V, time_)
 
   // Assignment Rules:
   R_tos_infinity := 1 / (1 + exp((V + 33.5 ) / 10 ));
@@ -265,12 +265,12 @@ model shannon_wang_puglisi_weber_bers_2004__Itos_R_gate(R_tos_other, R_tos, V, t
   R_tos_other = 0.383430556383;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Itos(i_tos, V, time_, E_K, Y_tos, X_tos, R_tos)
+model shannon_2004__Itos(i_tos, V, time_, E_K, Y_tos, X_tos, R_tos)
 
   // Sub-modules, and any changes to those submodules:
-  Itos_X_gate: shannon_wang_puglisi_weber_bers_2004__Itos_X_gate(X_tos, V, time_);
-  Itos_Y_gate: shannon_wang_puglisi_weber_bers_2004__Itos_Y_gate(Y_tos, V, time_);
-  Itos_R_gate: shannon_wang_puglisi_weber_bers_2004__Itos_R_gate(R_tos_other, R_tos, V, time_);
+  Itos_X_gate: shannon_2004__Itos_X_gate(X_tos, V, time_);
+  Itos_Y_gate: shannon_2004__Itos_Y_gate(Y_tos, V, time_);
+  Itos_R_gate: shannon_2004__Itos_R_gate(R_tos_other, R_tos, V, time_);
 
   // Assignment Rules:
   i_tos := G_tos * X_tos * (Y_tos + 0.5 * R_tos) * (V - E_K);
@@ -279,7 +279,7 @@ model shannon_wang_puglisi_weber_bers_2004__Itos(i_tos, V, time_, E_K, Y_tos, X_
   G_tos = 0.02;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Itof_X_gate(X_tof, V, time_)
+model shannon_2004__Itof_X_gate(X_tof, V, time_)
 
   // Assignment Rules:
   X_tof_infinity := 1 / (1 + exp(-((V + 3 )) / 15 ));
@@ -292,7 +292,7 @@ model shannon_wang_puglisi_weber_bers_2004__Itof_X_gate(X_tof, V, time_)
   X_tof = 0.00401120993;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Itof_Y_gate(Y_tof, V, time_)
+model shannon_2004__Itof_Y_gate(Y_tof, V, time_)
 
   // Assignment Rules:
   Y_tof_infinity := 1 / (1 + exp((V + 33.5 ) / 10 ));
@@ -305,11 +305,11 @@ model shannon_wang_puglisi_weber_bers_2004__Itof_Y_gate(Y_tof, V, time_)
   Y_tof = 0.9946314893;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Itof(i_tof, V, time_, E_K, Y_tof, X_tof)
+model shannon_2004__Itof(i_tof, V, time_, E_K, Y_tof, X_tof)
 
   // Sub-modules, and any changes to those submodules:
-  Itof_X_gate: shannon_wang_puglisi_weber_bers_2004__Itof_X_gate(X_tof, V, time_);
-  Itof_Y_gate: shannon_wang_puglisi_weber_bers_2004__Itof_Y_gate(Y_tof, V, time_);
+  Itof_X_gate: shannon_2004__Itof_X_gate(X_tof, V, time_);
+  Itof_Y_gate: shannon_2004__Itof_Y_gate(Y_tof, V, time_);
 
   // Assignment Rules:
   i_tof := G_tof * X_tof * Y_tof * (V - E_K);
@@ -318,7 +318,7 @@ model shannon_wang_puglisi_weber_bers_2004__Itof(i_tof, V, time_, E_K, Y_tof, X_
   G_tof = 0.06;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__IK1_K1_gate(K1_infinity, E_K, V)
+model shannon_2004__IK1_K1_gate(K1_infinity, E_K, V)
 
   // Assignment Rules:
   K1_infinity := alpha_K1 / (alpha_K1 + beta_K1);
@@ -326,17 +326,17 @@ model shannon_wang_puglisi_weber_bers_2004__IK1_K1_gate(K1_infinity, E_K, V)
   beta_K1 := (0.49124 * exp(0.08032 * (V - E_K + 5.476 )) + 1 * exp(0.06175 * (V - (E_K + 594.31 )))) / (1 + exp(-(0.5143 ) * (V - E_K + 4.753 )));
 end
 
-model shannon_wang_puglisi_weber_bers_2004__IK1(i_K1, V, E_K, Ko, K1_infinity)
+model shannon_2004__IK1(i_K1, V, E_K, Ko, K1_infinity)
 
   // Sub-modules, and any changes to those submodules:
-  IK1_K1_gate: shannon_wang_puglisi_weber_bers_2004__IK1_K1_gate(K1_infinity, E_K, V);
+  IK1_K1_gate: shannon_2004__IK1_K1_gate(K1_infinity, E_K, V);
 
   // Assignment Rules:
   i_K1 := G_K1 * K1_infinity * (V - E_K);
   G_K1 := 0.9 * root(Ko / 5.4 );
 end
 
-model shannon_wang_puglisi_weber_bers_2004__IKp(i_Kp, E_K, V)
+model shannon_2004__IKp(i_Kp, E_K, V)
 
   // Assignment Rules:
   i_Kp := g_Kp * (V - E_K) / (1 + exp(7.488 - V / 5.98 ));
@@ -345,7 +345,7 @@ model shannon_wang_puglisi_weber_bers_2004__IKp(i_Kp, E_K, V)
   g_Kp = 0.001;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__ICl_Ca(i_Cl_Ca, V, E_Cl, Ca_jct, Ca_SL)
+model shannon_2004__ICl_Ca(i_Cl_Ca, V, E_Cl, Ca_jct, Ca_SL)
 
   // Assignment Rules:
   i_Cl_Ca := G_Cl * (V - E_Cl) * (Fx_Cl_jct / (1 + Kd_ClCa / Ca_jct) + Fx_Cl_SL / (1 + Kd_ClCa / Ca_SL));
@@ -357,7 +357,7 @@ model shannon_wang_puglisi_weber_bers_2004__ICl_Ca(i_Cl_Ca, V, E_Cl, Ca_jct, Ca_
   Fx_Cl_SL = 0.89;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__IClb(i_Clb, V, E_Cl)
+model shannon_2004__IClb(i_Clb, V, E_Cl)
 
   // Assignment Rules:
   i_Clb := G_ClBk * (V - E_Cl);
@@ -366,7 +366,7 @@ model shannon_wang_puglisi_weber_bers_2004__IClb(i_Clb, V, E_Cl)
   G_ClBk = 0.009;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__ICaL_d_gate(d, V, time_)
+model shannon_2004__ICaL_d_gate(d, V, time_)
 
   // Assignment Rules:
   d_infinity := 1 / (1 + exp(-((V + 14.5 )) / 6 ));
@@ -379,7 +379,7 @@ model shannon_wang_puglisi_weber_bers_2004__ICaL_d_gate(d, V, time_)
   d = 0.000006997531;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__ICaL_f_gate(f, V, time_)
+model shannon_2004__ICaL_f_gate(f, V, time_)
 
   // Assignment Rules:
   f_infinity := 1 / (1 + exp((V + 35.06 ) / 3.6 )) + 0.6 / (1 + exp((50 - V) / 20 ));
@@ -392,7 +392,7 @@ model shannon_wang_puglisi_weber_bers_2004__ICaL_f_gate(f, V, time_)
   f = 1.000675515962;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__ICaL_fCa_gate(fCa_SL, fCa_jct, fCaB_SL, fCaB_jct, Ca_SL, Ca_jct, time_)
+model shannon_2004__ICaL_fCa_gate(fCa_SL, fCa_jct, fCaB_SL, fCaB_jct, Ca_SL, Ca_jct, time_)
 
   // Assignment Rules:
   fCa_SL := 1 - fCaB_SL;
@@ -407,12 +407,12 @@ model shannon_wang_puglisi_weber_bers_2004__ICaL_fCa_gate(fCa_SL, fCa_jct, fCaB_
   fCaB_jct = 0.024609183734;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__ICaL(i_CaL, i_CaL_Ca_SL, i_CaL_Ca_jct, i_CaL_Na_SL, i_CaL_Na_jct, V, time_, Cai, Na_SL, Na_jct, Nao, Ca_SL, Ca_jct, Cao, Ki, Ko, R, T, F, d, f, fCa_SL, fCa_jct)
+model shannon_2004__ICaL(i_CaL, i_CaL_Ca_SL, i_CaL_Ca_jct, i_CaL_Na_SL, i_CaL_Na_jct, V, time_, Cai, Na_SL, Na_jct, Nao, Ca_SL, Ca_jct, Cao, Ki, Ko, R, T, F, d, f, fCa_SL, fCa_jct)
 
   // Sub-modules, and any changes to those submodules:
-  ICaL_d_gate: shannon_wang_puglisi_weber_bers_2004__ICaL_d_gate(d, V, time_);
-  ICaL_f_gate: shannon_wang_puglisi_weber_bers_2004__ICaL_f_gate(f, V, time_);
-  ICaL_fCa_gate: shannon_wang_puglisi_weber_bers_2004__ICaL_fCa_gate(fCa_SL, fCa_jct, fCaB_SL, fCaB_jct, Ca_SL, Ca_jct, time_);
+  ICaL_d_gate: shannon_2004__ICaL_d_gate(d, V, time_);
+  ICaL_f_gate: shannon_2004__ICaL_f_gate(f, V, time_);
+  ICaL_fCa_gate: shannon_2004__ICaL_fCa_gate(fCa_SL, fCa_jct, fCaB_SL, fCaB_jct, Ca_SL, Ca_jct, time_);
 
   // Assignment Rules:
   i_CaL := i_CaL_Ca_SL + i_CaL_Ca_jct + i_CaL_Na_SL + i_CaL_Na_jct + i_CaL_K;
@@ -439,7 +439,7 @@ model shannon_wang_puglisi_weber_bers_2004__ICaL(i_CaL, i_CaL_Ca_SL, i_CaL_Ca_jc
   Q10_CaL = 1.8;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__INaCa(i_NaCa, i_NaCa_SL, i_NaCa_jct, V, R, T, F, Nai, Na_SL, Na_jct, Nao, Cai, Ca_SL, Ca_jct, Cao)
+model shannon_2004__INaCa(i_NaCa, i_NaCa_SL, i_NaCa_jct, V, R, T, F, Nai, Na_SL, Na_jct, Nao, Cai, Ca_SL, Ca_jct, Cao)
 
   // Assignment Rules:
   i_NaCa := i_NaCa_jct + i_NaCa_SL;
@@ -466,7 +466,7 @@ model shannon_wang_puglisi_weber_bers_2004__INaCa(i_NaCa, i_NaCa_SL, i_NaCa_jct,
   HNa = 3;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__ICap(i_Cap, i_Cap_SL, i_Cap_jct, Cai, Ca_SL, Ca_jct, T, F, Vol_cytosol, Cm)
+model shannon_2004__ICap(i_Cap, i_Cap_SL, i_Cap_jct, Cai, Ca_SL, Ca_jct, T, F, Vol_cytosol, Cm)
 
   // Assignment Rules:
   i_Cap := i_Cap_jct + i_Cap_SL;
@@ -485,7 +485,7 @@ model shannon_wang_puglisi_weber_bers_2004__ICap(i_Cap, i_Cap_SL, i_Cap_jct, Cai
   V_maxAF = 0.0673;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__ICab(i_Cab, i_Cab_jct, i_Cab_SL, V, E_Ca_SL, E_Ca_jct)
+model shannon_2004__ICab(i_Cab, i_Cab_jct, i_Cab_SL, V, E_Ca_SL, E_Ca_jct)
 
   // Assignment Rules:
   i_Cab := i_Cab_SL + i_Cab_jct;
@@ -498,7 +498,7 @@ model shannon_wang_puglisi_weber_bers_2004__ICab(i_Cab, i_Cab_jct, i_Cab_SL, V, 
   Fx_CaBk_SL = 0.89;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Jrel_SR(j_rel_SR, R, I, O, Ca_jct, Ca_SR, time_)
+model shannon_2004__Jrel_SR(j_rel_SR, R, I, O, Ca_jct, Ca_SR, time_)
 
   // Assignment Rules:
   j_rel_SR := ks * O * (Ca_SR - Ca_jct);
@@ -527,7 +527,7 @@ model shannon_wang_puglisi_weber_bers_2004__Jrel_SR(j_rel_SR, R, I, O, Ca_jct, C
   HSR = 2.5;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Jleak_SR(j_leak_SR, Ca_jct, Ca_SR)
+model shannon_2004__Jleak_SR(j_leak_SR, Ca_jct, Ca_SR)
 
   // Assignment Rules:
   j_leak_SR := KSRleak * (Ca_SR - Ca_jct);
@@ -536,7 +536,7 @@ model shannon_wang_puglisi_weber_bers_2004__Jleak_SR(j_leak_SR, Ca_jct, Ca_SR)
   KSRleak = 5.348e-6;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Jpump_SR(j_pump_SR, Cai, Ca_SR, T, Vol_SR, Vol_cytosol)
+model shannon_2004__Jpump_SR(j_pump_SR, Cai, Ca_SR, T, Vol_SR, Vol_cytosol)
 
   // Assignment Rules:
   j_pump_SR := Q_SRCaP * V_max * Vol_cytosol / Vol_SR * (power(Cai / Kmf, H) - power(Ca_SR / Kmr, H)) / (1 + power(Cai / Kmf, H) + power(Ca_SR / Kmr, H));
@@ -550,7 +550,7 @@ model shannon_wang_puglisi_weber_bers_2004__Jpump_SR(j_pump_SR, Cai, Ca_SR, T, V
   H = 1.787;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__ion_diffusion(J_Na_jct_SL, J_Na_SL_cytosol, J_Ca_jct_SL, J_Ca_SL_cytosol, Na_SL, Na_jct, Nai, Ca_SL, Cai, Ca_jct)
+model shannon_2004__ion_diffusion(J_Na_jct_SL, J_Na_SL_cytosol, J_Ca_jct_SL, J_Ca_SL_cytosol, Na_SL, Na_jct, Nai, Ca_SL, Cai, Ca_jct)
 
   // Assignment Rules:
   J_Na_jct_SL := (Na_jct - Na_SL) * j_Na_jct_SL;
@@ -577,7 +577,7 @@ model shannon_wang_puglisi_weber_bers_2004__ion_diffusion(J_Na_jct_SL, J_Na_SL_c
   A_SL_cytosol = 1.3e-4;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Na_buffer(Na_SL, Na_jct, Na_SL_buf, Na_jct_buf, Nai, J_Na_jct_SL, J_Na_SL_cytosol, i_Na_jct, i_NaCa_jct, i_Nab_jct, i_NaK_jct, i_CaL_Na_jct, i_Na_SL, i_NaCa_SL, i_Nab_SL, i_NaK_SL, i_CaL_Na_SL, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, F, Cm, time_)
+model shannon_2004__Na_buffer(Na_SL, Na_jct, Na_SL_buf, Na_jct_buf, Nai, J_Na_jct_SL, J_Na_SL_cytosol, i_Na_jct, i_NaCa_jct, i_Nab_jct, i_NaK_jct, i_CaL_Na_jct, i_Na_SL, i_NaCa_SL, i_Nab_SL, i_NaK_SL, i_CaL_Na_SL, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, F, Cm, time_)
 
   // Assignment Rules:
   dNa_jct_buf := kon * Na_jct * (Bmax_jct - Na_jct_buf) - koff * Na_jct_buf;
@@ -602,7 +602,7 @@ model shannon_wang_puglisi_weber_bers_2004__Na_buffer(Na_SL, Na_jct, Na_SL_buf, 
   koff = 1e-3;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__cytosolic_Ca_buffer(Cai, Mgi, time_, Ca_TroponinC, Ca_TroponinC_Ca_Mg, Mg_TroponinC_Ca_Mg, Ca_Calmodulin, Ca_Myosin, Mg_Myosin, Ca_SRB, dCa_cytosol_tot_bound)
+model shannon_2004__cytosolic_Ca_buffer(Cai, Mgi, time_, Ca_TroponinC, Ca_TroponinC_Ca_Mg, Mg_TroponinC_Ca_Mg, Ca_Calmodulin, Ca_Myosin, Mg_Myosin, Ca_SRB, dCa_cytosol_tot_bound)
 
   // Assignment Rules:
   dCa_TroponinC := kon_TroponinC * Cai * (Bmax_TroponinC - Ca_TroponinC) - koff_TroponinC * Ca_TroponinC;
@@ -654,7 +654,7 @@ model shannon_wang_puglisi_weber_bers_2004__cytosolic_Ca_buffer(Cai, Mgi, time_,
   koff_SRB = 60e-3;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__indo_fluo_Ca_buffer_not_connected(Cai, Ca_SL, Ca_jct, time_, Vol_SL, Vol_jct, Vol_cytosol, Ca_Indo1_Cytosol, Ca_Indo1_SL, Ca_Indo1_jct, Ca_Fluo3_Cytosol, Ca_Fluo3_SL, Ca_Fluo3_jct, dCa_Indo1_Cytosol, dCa_Indo1_jct, dCa_Indo1_SL, dCa_Fluo3_Cytosol, dCa_Fluo3_jct, dCa_Fluo3_SL)
+model shannon_2004__indo_fluo_Ca_buffer_not_connected(Cai, Ca_SL, Ca_jct, time_, Vol_SL, Vol_jct, Vol_cytosol, Ca_Indo1_Cytosol, Ca_Indo1_SL, Ca_Indo1_jct, Ca_Fluo3_Cytosol, Ca_Fluo3_SL, Ca_Fluo3_jct, dCa_Indo1_Cytosol, dCa_Indo1_jct, dCa_Indo1_SL, dCa_Fluo3_Cytosol, dCa_Fluo3_jct, dCa_Fluo3_SL)
 
   // Assignment Rules:
   Indo1Bound := Ca_Indo1_Cytosol + Ca_Indo1_jct * Vol_jct / Vol_cytosol + Ca_Indo1_SL * Vol_SL / Vol_cytosol;
@@ -695,11 +695,11 @@ model shannon_wang_puglisi_weber_bers_2004__indo_fluo_Ca_buffer_not_connected(Ca
   koff_Fluo3 = 110e-3;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Ca_buffer(Ca_SR, Ca_SL, Ca_jct, Cai, Mgi, Ca_SLB_SL, Ca_SLB_jct, Ca_SLHigh_SL, Ca_SLHigh_jct, Ca_Calsequestrin, i_CaL_Ca_jct, i_NaCa_jct, i_Cab_jct, i_Cap_jct, i_CaL_Ca_SL, i_NaCa_SL, i_Cab_SL, i_Cap_SL, j_pump_SR, j_rel_SR, j_leak_SR, J_Ca_jct_SL, J_Ca_SL_cytosol, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, F, Cm, time_, dCa_cytosol_tot_bound)
+model shannon_2004__Ca_buffer(Ca_SR, Ca_SL, Ca_jct, Cai, Mgi, Ca_SLB_SL, Ca_SLB_jct, Ca_SLHigh_SL, Ca_SLHigh_jct, Ca_Calsequestrin, i_CaL_Ca_jct, i_NaCa_jct, i_Cab_jct, i_Cap_jct, i_CaL_Ca_SL, i_NaCa_SL, i_Cab_SL, i_Cap_SL, j_pump_SR, j_rel_SR, j_leak_SR, J_Ca_jct_SL, J_Ca_SL_cytosol, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, F, Cm, time_, dCa_cytosol_tot_bound)
 
   // Sub-modules, and any changes to those submodules:
-  cytosolic_Ca_buffer: shannon_wang_puglisi_weber_bers_2004__cytosolic_Ca_buffer(Cai, Mgi, time_, Ca_TroponinC, Ca_TroponinC_Ca_Mg, Mg_TroponinC_Ca_Mg, Ca_Calmodulin, Ca_Myosin, Mg_Myosin, Ca_SRB, dCa_cytosol_tot_bound);
-  indo_fluo_Ca_buffer_not_connected: shannon_wang_puglisi_weber_bers_2004__indo_fluo_Ca_buffer_not_connected(Cai, Ca_SL, Ca_jct, time_, Vol_SL, Vol_jct, Vol_cytosol, Ca_Indo1_Cytosol, Ca_Indo1_SL, Ca_Indo1_jct, Ca_Fluo3_Cytosol, Ca_Fluo3_SL, Ca_Fluo3_jct, dCa_Indo1_Cytosol, dCa_Indo1_jct, dCa_Indo1_SL, dCa_Fluo3_Cytosol, dCa_Fluo3_jct, dCa_Fluo3_SL);
+  cytosolic_Ca_buffer: shannon_2004__cytosolic_Ca_buffer(Cai, Mgi, time_, Ca_TroponinC, Ca_TroponinC_Ca_Mg, Mg_TroponinC_Ca_Mg, Ca_Calmodulin, Ca_Myosin, Mg_Myosin, Ca_SRB, dCa_cytosol_tot_bound);
+  indo_fluo_Ca_buffer_not_connected: shannon_2004__indo_fluo_Ca_buffer_not_connected(Cai, Ca_SL, Ca_jct, time_, Vol_SL, Vol_jct, Vol_cytosol, Ca_Indo1_Cytosol, Ca_Indo1_SL, Ca_Indo1_jct, Ca_Fluo3_Cytosol, Ca_Fluo3_SL, Ca_Fluo3_jct, dCa_Indo1_Cytosol, dCa_Indo1_jct, dCa_Indo1_SL, dCa_Fluo3_Cytosol, dCa_Fluo3_jct, dCa_Fluo3_SL);
 
   // Assignment Rules:
   dCalsequestrin := kon_Calsequestrin * Ca_SR * (Bmax_Calsequestrin * Vol_cytosol / Vol_SR - Ca_Calsequestrin) - koff_Calsequestrin * Ca_Calsequestrin;
@@ -745,44 +745,44 @@ model shannon_wang_puglisi_weber_bers_2004__Ca_buffer(Ca_SR, Ca_SL, Ca_jct, Cai,
   koff_Calsequestrin = 65;
 end
 
-model shannon_wang_puglisi_weber_bers_2004__Ions_n_reversal_potentials()
+model shannon_2004__Ions_n_reversal_potentials()
 end
 
-model shannon_wang_puglisi_weber_bers_2004__transmembrane_currents()
+model shannon_2004__transmembrane_currents()
 end
 
-model shannon_wang_puglisi_weber_bers_2004__intracellular_currents()
+model shannon_2004__intracellular_currents()
 end
 
-model shannon_wang_puglisi_weber_bers_2004____main()
+model shannon_2004____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: shannon_wang_puglisi_weber_bers_2004__environment(time_);
-  cell: shannon_wang_puglisi_weber_bers_2004__cell(V, time_, i_Na, i_Nab, i_NaK, i_Kr, i_Ks, i_tos, i_tof, i_K1, i_Kp, i_NaCa, i_Cl_Ca, i_Clb, i_CaL, i_Cab, i_Cap);
-  model_parameters: shannon_wang_puglisi_weber_bers_2004__model_parameters(Ko, Nao, Cao, Clo, Ki, Mgi, Mgo, Cli, R, T, F, Cm, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, Vol_mito);
-  reversal_potentials: shannon_wang_puglisi_weber_bers_2004__reversal_potentials(E_Na_jct, E_Na_SL, E_Ca_jct, E_Ca_SL, E_K, E_Cl, R, T, F, Nai, Na_jct, Na_SL, Nao, Cai, Ca_jct, Ca_SL, Cao, Ki, Ko, Cli, Clo);
-  INa: shannon_wang_puglisi_weber_bers_2004__INa(i_Na, i_Na_jct, i_Na_SL, time_, V, E_Na_jct, E_Na_SL, m, h, j);
-  INab: shannon_wang_puglisi_weber_bers_2004__INab(i_Nab, i_Nab_jct, i_Nab_SL, V, E_Na_jct, E_Na_SL);
-  INaK: shannon_wang_puglisi_weber_bers_2004__INaK(i_NaK, i_NaK_jct, i_NaK_SL, V, R, T, F, Nai, Na_jct, Na_SL, Nao, Ko);
-  IKr: shannon_wang_puglisi_weber_bers_2004__IKr(i_Kr, time_, V, E_K, Ko, Xr, Rr);
-  IKs: shannon_wang_puglisi_weber_bers_2004__IKs(i_Ks, R, T, F, Nai, Na_jct, Na_SL, Nao, Ki, Ca_jct, Ca_SL, Ko, time_, V, Xs);
-  Itos: shannon_wang_puglisi_weber_bers_2004__Itos(i_tos, V, time_, E_K, Y_tos, X_tos, R_tos);
-  Itof: shannon_wang_puglisi_weber_bers_2004__Itof(i_tof, V, time_, E_K, Y_tof, X_tof);
-  IK1: shannon_wang_puglisi_weber_bers_2004__IK1(i_K1, V, E_K, Ko, K1_infinity);
-  IKp: shannon_wang_puglisi_weber_bers_2004__IKp(i_Kp, E_K, V);
-  ICl_Ca: shannon_wang_puglisi_weber_bers_2004__ICl_Ca(i_Cl_Ca, V, E_Cl, Ca_jct, Ca_SL);
-  IClb: shannon_wang_puglisi_weber_bers_2004__IClb(i_Clb, V, E_Cl);
-  ICaL: shannon_wang_puglisi_weber_bers_2004__ICaL(i_CaL, i_CaL_Ca_SL, i_CaL_Ca_jct, i_CaL_Na_SL, i_CaL_Na_jct, V, time_, Cai, Na_SL, Na_jct, Nao, Ca_SL, Ca_jct, Cao, Ki, Ko, R, T, F, d, f, fCa_SL, fCa_jct);
-  INaCa: shannon_wang_puglisi_weber_bers_2004__INaCa(i_NaCa, i_NaCa_SL, i_NaCa_jct, V, R, T, F, Nai, Na_SL, Na_jct, Nao, Cai, Ca_SL, Ca_jct, Cao);
-  ICap: shannon_wang_puglisi_weber_bers_2004__ICap(i_Cap, i_Cap_SL, i_Cap_jct, Cai, Ca_SL, Ca_jct, T, F, Vol_cytosol, Cm);
-  ICab: shannon_wang_puglisi_weber_bers_2004__ICab(i_Cab, i_Cab_jct, i_Cab_SL, V, E_Ca_SL, E_Ca_jct);
-  Jrel_SR: shannon_wang_puglisi_weber_bers_2004__Jrel_SR(j_rel_SR, R0, I, O, Ca_jct, Ca_SR, time_);
-  Jleak_SR: shannon_wang_puglisi_weber_bers_2004__Jleak_SR(j_leak_SR, Ca_jct, Ca_SR);
-  Jpump_SR: shannon_wang_puglisi_weber_bers_2004__Jpump_SR(j_pump_SR, Cai, Ca_SR, T, Vol_SR, Vol_cytosol);
-  ion_diffusion: shannon_wang_puglisi_weber_bers_2004__ion_diffusion(J_Na_jct_SL, J_Na_SL_cytosol, J_Ca_jct_SL, J_Ca_SL_cytosol, Na_SL, Na_jct, Nai, Ca_SL, Cai, Ca_jct);
-  Na_buffer: shannon_wang_puglisi_weber_bers_2004__Na_buffer(Na_SL, Na_jct, Na_SL_buf, Na_jct_buf, Nai, J_Na_jct_SL, J_Na_SL_cytosol, i_Na_jct, i_NaCa_jct, i_Nab_jct, i_NaK_jct, i_CaL_Na_jct, i_Na_SL, i_NaCa_SL, i_Nab_SL, i_NaK_SL, i_CaL_Na_SL, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, F, Cm, time_);
-  Ca_buffer: shannon_wang_puglisi_weber_bers_2004__Ca_buffer(Ca_SR, Ca_SL, Ca_jct, Cai, Mgi, Ca_SLB_SL, Ca_SLB_jct, Ca_SLHigh_SL, Ca_SLHigh_jct, Ca_Calsequestrin, i_CaL_Ca_jct, i_NaCa_jct, i_Cab_jct, i_Cap_jct, i_CaL_Ca_SL, i_NaCa_SL, i_Cab_SL, i_Cap_SL, j_pump_SR, j_rel_SR, j_leak_SR, J_Ca_jct_SL, J_Ca_SL_cytosol, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, F, Cm, time_, dCa_cytosol_tot_bound);
-  Ions_n_reversal_potentials: shannon_wang_puglisi_weber_bers_2004__Ions_n_reversal_potentials();
-  transmembrane_currents: shannon_wang_puglisi_weber_bers_2004__transmembrane_currents();
-  intracellular_currents: shannon_wang_puglisi_weber_bers_2004__intracellular_currents();
+  environment: shannon_2004__environment(time_);
+  cell: shannon_2004__cell(V, time_, i_Na, i_Nab, i_NaK, i_Kr, i_Ks, i_tos, i_tof, i_K1, i_Kp, i_NaCa, i_Cl_Ca, i_Clb, i_CaL, i_Cab, i_Cap);
+  model_parameters: shannon_2004__model_parameters(Ko, Nao, Cao, Clo, Ki, Mgi, Mgo, Cli, R, T, F, Cm, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, Vol_mito);
+  reversal_potentials: shannon_2004__reversal_potentials(E_Na_jct, E_Na_SL, E_Ca_jct, E_Ca_SL, E_K, E_Cl, R, T, F, Nai, Na_jct, Na_SL, Nao, Cai, Ca_jct, Ca_SL, Cao, Ki, Ko, Cli, Clo);
+  INa: shannon_2004__INa(i_Na, i_Na_jct, i_Na_SL, time_, V, E_Na_jct, E_Na_SL, m, h, j);
+  INab: shannon_2004__INab(i_Nab, i_Nab_jct, i_Nab_SL, V, E_Na_jct, E_Na_SL);
+  INaK: shannon_2004__INaK(i_NaK, i_NaK_jct, i_NaK_SL, V, R, T, F, Nai, Na_jct, Na_SL, Nao, Ko);
+  IKr: shannon_2004__IKr(i_Kr, time_, V, E_K, Ko, Xr, Rr);
+  IKs: shannon_2004__IKs(i_Ks, R, T, F, Nai, Na_jct, Na_SL, Nao, Ki, Ca_jct, Ca_SL, Ko, time_, V, Xs);
+  Itos: shannon_2004__Itos(i_tos, V, time_, E_K, Y_tos, X_tos, R_tos);
+  Itof: shannon_2004__Itof(i_tof, V, time_, E_K, Y_tof, X_tof);
+  IK1: shannon_2004__IK1(i_K1, V, E_K, Ko, K1_infinity);
+  IKp: shannon_2004__IKp(i_Kp, E_K, V);
+  ICl_Ca: shannon_2004__ICl_Ca(i_Cl_Ca, V, E_Cl, Ca_jct, Ca_SL);
+  IClb: shannon_2004__IClb(i_Clb, V, E_Cl);
+  ICaL: shannon_2004__ICaL(i_CaL, i_CaL_Ca_SL, i_CaL_Ca_jct, i_CaL_Na_SL, i_CaL_Na_jct, V, time_, Cai, Na_SL, Na_jct, Nao, Ca_SL, Ca_jct, Cao, Ki, Ko, R, T, F, d, f, fCa_SL, fCa_jct);
+  INaCa: shannon_2004__INaCa(i_NaCa, i_NaCa_SL, i_NaCa_jct, V, R, T, F, Nai, Na_SL, Na_jct, Nao, Cai, Ca_SL, Ca_jct, Cao);
+  ICap: shannon_2004__ICap(i_Cap, i_Cap_SL, i_Cap_jct, Cai, Ca_SL, Ca_jct, T, F, Vol_cytosol, Cm);
+  ICab: shannon_2004__ICab(i_Cab, i_Cab_jct, i_Cab_SL, V, E_Ca_SL, E_Ca_jct);
+  Jrel_SR: shannon_2004__Jrel_SR(j_rel_SR, R0, I, O, Ca_jct, Ca_SR, time_);
+  Jleak_SR: shannon_2004__Jleak_SR(j_leak_SR, Ca_jct, Ca_SR);
+  Jpump_SR: shannon_2004__Jpump_SR(j_pump_SR, Cai, Ca_SR, T, Vol_SR, Vol_cytosol);
+  ion_diffusion: shannon_2004__ion_diffusion(J_Na_jct_SL, J_Na_SL_cytosol, J_Ca_jct_SL, J_Ca_SL_cytosol, Na_SL, Na_jct, Nai, Ca_SL, Cai, Ca_jct);
+  Na_buffer: shannon_2004__Na_buffer(Na_SL, Na_jct, Na_SL_buf, Na_jct_buf, Nai, J_Na_jct_SL, J_Na_SL_cytosol, i_Na_jct, i_NaCa_jct, i_Nab_jct, i_NaK_jct, i_CaL_Na_jct, i_Na_SL, i_NaCa_SL, i_Nab_SL, i_NaK_SL, i_CaL_Na_SL, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, F, Cm, time_);
+  Ca_buffer: shannon_2004__Ca_buffer(Ca_SR, Ca_SL, Ca_jct, Cai, Mgi, Ca_SLB_SL, Ca_SLB_jct, Ca_SLHigh_SL, Ca_SLHigh_jct, Ca_Calsequestrin, i_CaL_Ca_jct, i_NaCa_jct, i_Cab_jct, i_Cap_jct, i_CaL_Ca_SL, i_NaCa_SL, i_Cab_SL, i_Cap_SL, j_pump_SR, j_rel_SR, j_leak_SR, J_Ca_jct_SL, J_Ca_SL_cytosol, Vol_SR, Vol_SL, Vol_jct, Vol_cytosol, F, Cm, time_, dCa_cytosol_tot_bound);
+  Ions_n_reversal_potentials: shannon_2004__Ions_n_reversal_potentials();
+  transmembrane_currents: shannon_2004__transmembrane_currents();
+  intracellular_currents: shannon_2004__intracellular_currents();
 end

@@ -1,82 +1,82 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 
 //Warnings from automatic translation:
-//    Unable to use the formula "Kr1_ * R10 + Kr2_ * R01 - ( Kr1 * power( Ca_i , 2.0 ) + Kr2 * Ca_i ) * R00" to set the assignment rule for R00:  Loop detected:  R00's definition (Kr1_ * R10 + Kr2_ * R01 - ( Kr1 * power( Ca_i , 2.0 ) + Kr2 * Ca_i ) * R00) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
-//    Unable to use the formula "Kr1 * power( Ca_i , 2.0 ) * R00 + Kr2_ * R11 - ( Kr2 * Ca_i + Kr1_ ) * R10" to set the assignment rule for R10:  Loop detected:  R10's definition (Kr1 * power( Ca_i , 2.0 ) * R00 + Kr2_ * R11 - ( Kr2 * Ca_i + Kr1_ ) * R10) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
-//    Unable to use the formula "Kr1 * power( Ca_i , 2.0 ) * R01 + Kr2 * Ca_i * R10 - ( Kr2_ + Kr1_ ) * R11" to set the assignment rule for R11:  Loop detected:  R11's definition (Kr1 * power( Ca_i , 2.0 ) * R01 + Kr2 * Ca_i * R10 - ( Kr2_ + Kr1_ ) * R11) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
-//    Unable to use the formula "Kr1_ * R11 + Kr2 * Ca_i * R00 - ( Kr1 * power( Ca_i , 2.0 ) + Kr2_ ) * R01" to set the assignment rule for R01:  Loop detected:  R01's definition (Kr1_ * R11 + Kr2 * Ca_i * R00 - ( Kr1 * power( Ca_i , 2.0 ) + Kr2_ ) * R01) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "Kr1_ * R10 + Kr2_ * R01 - (Kr1 * power(Ca_i, 2 ) + Kr2 * Ca_i) * R00" to set the assignment rule for R00:  Loop detected:  R00's definition (Kr1_ * R10 + Kr2_ * R01 - (Kr1 * power(Ca_i, 2 ) + Kr2 * Ca_i) * R00) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "Kr1 * power(Ca_i, 2 ) * R00 + Kr2_ * R11 - (Kr2 * Ca_i + Kr1_) * R10" to set the assignment rule for R10:  Loop detected:  R10's definition (Kr1 * power(Ca_i, 2 ) * R00 + Kr2_ * R11 - (Kr2 * Ca_i + Kr1_) * R10) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "Kr1 * power(Ca_i, 2 ) * R01 + Kr2 * Ca_i * R10 - (Kr2_ + Kr1_) * R11" to set the assignment rule for R11:  Loop detected:  R11's definition (Kr1 * power(Ca_i, 2 ) * R01 + Kr2 * Ca_i * R10 - (Kr2_ + Kr1_) * R11) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "Kr1_ * R11 + Kr2 * Ca_i * R00 - (Kr1 * power(Ca_i, 2 ) + Kr2_) * R01" to set the assignment rule for R01:  Loop detected:  R01's definition (Kr1_ * R11 + Kr2 * Ca_i * R00 - (Kr1 * power(Ca_i, 2 ) + Kr2_) * R01) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
 //    Unable to use the formula "K2 * Mp + K7 * AM - K1 * M" to set the assignment rule for M:  Loop detected:  M's definition (K2 * Mp + K7 * AM - K1 * M) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
-//    Unable to use the formula "K1 * M + K4 * AMp - ( K2 + K3 ) * Mp" to set the assignment rule for Mp:  Loop detected:  Mp's definition (K1 * M + K4 * AMp - ( K2 + K3 ) * Mp) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
-//    Unable to use the formula "K6 * AM + K3 * Mp - ( K5 + K4 ) * AMp" to set the assignment rule for AMp:  Loop detected:  AMp's definition (K6 * AM + K3 * Mp - ( K5 + K4 ) * AMp) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
-//    Unable to use the formula "K5 * AMp - ( K7 + K6 ) * AM" to set the assignment rule for AM:  Loop detected:  AM's definition (K5 * AMp - ( K7 + K6 ) * AM) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "K1 * M + K4 * AMp - (K2 + K3) * Mp" to set the assignment rule for Mp:  Loop detected:  Mp's definition (K1 * M + K4 * AMp - (K2 + K3) * Mp) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "K6 * AM + K3 * Mp - (K5 + K4) * AMp" to set the assignment rule for AMp:  Loop detected:  AMp's definition (K6 * AM + K3 * Mp - (K5 + K4) * AMp) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
+//    Unable to use the formula "K5 * AMp - (K7 + K6) * AM" to set the assignment rule for AM:  Loop detected:  AM's definition (K5 * AMp - (K7 + K6) * AM) either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').
 
-model yang_clark_bryan_robertson_2003_version01__environment(time_)
+model yang_2003__environment(time_)
 end
 
-model yang_clark_bryan_robertson_2003_version01__membrane(V, R, T, F, time_, i_Ca_L, i_K, i_K_Ca, i_Ki, i_M, i_NaCa, i_NaK, i_CaP, i_B)
+model yang_2003__membrane(V, R, T, F, time_, i_Ca_L, i_K, i_K_Ca, i_Ki, i_M, i_NaCa, i_NaK, i_CaP, i_B)
 
   // Rate Rules:
-  V' = -(( 1.0 / Cm )) * ( i_Ca_L + i_K + i_K_Ca + i_Ki + i_M + i_NaCa + i_NaK + i_CaP + i_B );
+  V' = -(1 ) / Cm * (i_Ca_L + i_K + i_K_Ca + i_Ki + i_M + i_NaCa + i_NaK + i_CaP + i_B);
 
   // Variable initializations:
   V = -56.1257;
-  R = 8314.0;
-  T = 293.0;
-  F = 96487.0;
+  R = 8314;
+  T = 293;
+  F = 96487;
 end
 
-model yang_clark_bryan_robertson_2003_version01__L_type_calcium_current_d_gate(d, V, time_)
+model yang_2003__L_type_calcium_current_d_gate(d, V, time_)
 
   // Assignment Rules:
-  d_infinity := 1.0 / ( 1.0 + exp(-(( V + 1.878 )) / 7.5704 ));
-  tau_d := 2.8928 * exp(-(power(( V + 8.6344 ) / 12.3884 , 2.0 ))) + 2.4343;
+  d_infinity := 1 / (1 + exp(-((V + 1.878 )) / 7.5704 ));
+  tau_d := 2.8928 * exp(-(power((V + 8.6344 ) / 12.3884 , 2 ))) + 2.4343;
 
   // Rate Rules:
-  d' = ( d_infinity - d ) / tau_d;
+  d' = (d_infinity - d) / tau_d;
 
   // Variable initializations:
   d = 0.00046;
 end
 
-model yang_clark_bryan_robertson_2003_version01__L_type_calcium_current_f_gate(f, V, time_)
+model yang_2003__L_type_calcium_current_f_gate(f, V, time_)
 
   // Assignment Rules:
   f := 0.74 * ff + 0.26;
-  f_infinity := 1.0 / ( 1.0 + exp(( V + 29.3188 ) / 1.5389 ));
-  tau_ff := 295.5937 * exp(-(power(( V - 4.7187 ) / 112.545 , 2.0 ))) + 23.1907;
+  f_infinity := 1 / (1 + exp((V + 29.3188 ) / 1.5389 ));
+  tau_ff := 295.5937 * exp(-(power((V - 4.7187 ) / 112.545 , 2 ))) + 23.1907;
 
   // Rate Rules:
-  ff' = ( f_infinity - ff ) / tau_ff;
+  ff' = (f_infinity - ff) / tau_ff;
 
   // Variable initializations:
-  ff = 1.0;
+  ff = 1;
 end
 
-model yang_clark_bryan_robertson_2003_version01__L_type_calcium_current(i_Ca_L, Ca_i, Ca_o, R, F, T, time_, V, d, f)
+model yang_2003__L_type_calcium_current(i_Ca_L, Ca_i, Ca_o, R, F, T, time_, V, d, f)
 
   // Sub-modules, and any changes to those submodules:
-  L_type_calcium_current_d_gate: yang_clark_bryan_robertson_2003_version01__L_type_calcium_current_d_gate(d, V, time_);
-  L_type_calcium_current_f_gate: yang_clark_bryan_robertson_2003_version01__L_type_calcium_current_f_gate(f, V, time_);
+  L_type_calcium_current_d_gate: yang_2003__L_type_calcium_current_d_gate(d, V, time_);
+  L_type_calcium_current_f_gate: yang_2003__L_type_calcium_current_f_gate(f, V, time_);
 
   // Assignment Rules:
-  i_Ca_L := g_Ca_L * d * f * ( V - E_Ca_L );
-  E_Ca_L := R * T / ( 2.0 * F ) * ln( Ca_o / Ca_i );
+  i_Ca_L := g_Ca_L * d * f * (V - E_Ca_L);
+  E_Ca_L := R * T / (2 * F) * ln(Ca_o / Ca_i);
 
   // Variable initializations:
   g_Ca_L = 1.4151;
 end
 
-model yang_clark_bryan_robertson_2003_version01__calcium_activated_potassium_current_P_K_Ca_gate(P_K_Ca, Ca_i, V, time_)
+model yang_2003__calcium_activated_potassium_current_P_K_Ca_gate(P_K_Ca, Ca_i, V, time_)
 
   // Assignment Rules:
   P_K_Ca := 0.65 * Pf + 0.35 * Ps;
   Pf_infinity := Ps_infinity - Po_infinity;
-  Po_infinity := 1.0 / ( 1.0 + exp(-(( V - V_1_2_K_Ca )) / 21.70 ));
-  V_1_2_K_Ca := -(( 45.0 * log( Ca_i ))) - 198.55;
+  Po_infinity := 1 / (1 + exp(-((V - V_1_2_K_Ca)) / 21.7 ));
+  V_1_2_K_Ca := -(45 ) * log(Ca_i) - 198.55;
 
   // Rate Rules:
-  Ps' = ( Ps_infinity - Ps ) / tau_Ps;
-  Pf' = ( Pf_infinity - Pf ) / tau_Pf;
+  Ps' = (Ps_infinity - Ps) / tau_Ps;
+  Pf' = (Pf_infinity - Pf) / tau_Pf;
 
   // Variable initializations:
   Ps = 0.00032;
@@ -85,30 +85,30 @@ model yang_clark_bryan_robertson_2003_version01__calcium_activated_potassium_cur
   tau_Pf = 0.5;
 end
 
-model yang_clark_bryan_robertson_2003_version01__calcium_activated_potassium_current(i_K_Ca, E_K, Ca_i, K_i, K_o, R, F, T, time_, V, P_K_Ca)
+model yang_2003__calcium_activated_potassium_current(i_K_Ca, E_K, Ca_i, K_i, K_o, R, F, T, time_, V, P_K_Ca)
 
   // Sub-modules, and any changes to those submodules:
-  calcium_activated_potassium_current_P_K_Ca_gate: yang_clark_bryan_robertson_2003_version01__calcium_activated_potassium_current_P_K_Ca_gate(P_K_Ca, Ca_i, V, time_);
+  calcium_activated_potassium_current_P_K_Ca_gate: yang_2003__calcium_activated_potassium_current_P_K_Ca_gate(P_K_Ca, Ca_i, V, time_);
 
   // Assignment Rules:
-  i_K_Ca := g_K_Ca * P_K_Ca * ( V - E_K );
-  E_K := R * T / F * ln( K_o / K_i );
+  i_K_Ca := g_K_Ca * P_K_Ca * (V - E_K);
+  E_K := R * T / F * ln(K_o / K_i);
 
   // Variable initializations:
   g_K_Ca = 0.5;
 end
 
-model yang_clark_bryan_robertson_2003_version01__delayed_rectifier_current_Pk_gate(Pk, V, time_)
+model yang_2003__delayed_rectifier_current_Pk_gate(Pk, V, time_)
 
   // Assignment Rules:
   Pk := 0.58 * P1 + 0.42 * P2;
-  Pk_infinity := 1.0 / ( 1.0 + exp(-(( V - V_1_2 )) / k ));
-  tau_P1 := 210.9873 * exp(-(power(( V + 214.3355 ) / 195.3502 , 2.0 ))) - 20.5866;
-  tau_P2 := 821.3949 * exp(-(power(( V + 31.5891 ) / 27.4568 , 2.0 ))) - 0.1892;
+  Pk_infinity := 1 / (1 + exp(-((V - V_1_2)) / k));
+  tau_P1 := 210.9873 * exp(-(power((V + 214.3355 ) / 195.3502 , 2 ))) - 20.5866;
+  tau_P2 := 821.3949 * exp(-(power((V + 31.5891 ) / 27.4568 , 2 ))) - 0.1892;
 
   // Rate Rules:
-  P1' = ( Pk_infinity - P1 ) / tau_P1;
-  P2' = ( Pk_infinity - P2 ) / tau_P2;
+  P1' = (Pk_infinity - P1) / tau_P1;
+  P2' = (Pk_infinity - P2) / tau_P2;
 
   // Variable initializations:
   P1 = 0.0159;
@@ -117,38 +117,42 @@ model yang_clark_bryan_robertson_2003_version01__delayed_rectifier_current_Pk_ga
   k = 14.52;
 end
 
-model yang_clark_bryan_robertson_2003_version01__delayed_rectifier_current(i_K, E_K, time_, V, Pk)
+model yang_2003__delayed_rectifier_current(i_K, E_K, time_, V, Pk)
 
   // Sub-modules, and any changes to those submodules:
-  delayed_rectifier_current_Pk_gate: yang_clark_bryan_robertson_2003_version01__delayed_rectifier_current_Pk_gate(Pk, V, time_);
+  delayed_rectifier_current_Pk_gate: yang_2003__delayed_rectifier_current_Pk_gate(Pk, V, time_);
 
   // Assignment Rules:
-  i_K := g_K * power( Pk , 2.0 ) * ( V - E_K );
+  i_K := g_K * power(Pk, 2 ) * (V - E_K);
 
   // Variable initializations:
   g_K = 9.8325;
 end
 
-model yang_clark_bryan_robertson_2003_version01__stretch_sensitive_current(i_M, i_M_K, i_M_Na, i_M_Ca, E_K, V, R, T, F, Na_i, Na_o, K_i, K_o, Ca_i, Ca_o)
+model yang_2003__stretch_sensitive_current(i_M, i_M_K, i_M_Na, i_M_Ca, E_K, V, R, T, F, Na_i, Na_o, K_i, K_o, Ca_i, Ca_o)
 
   // Assignment Rules:
   i_M := i_M_K + i_M_Na + i_M_Ca;
-  i_M_K := Am * Pm * (power( F , 2.0 ) * V / ( R * T )) * P_K * (( K_o - K_i * exp( F * V / ( R * T ))) / ( 1.0 - exp( F * V / ( R * T ))));
-  i_M_Na := Am * Pm * (power( F , 2.0 ) * V / ( R * T )) * P_Na * (( Na_o - Na_i * exp( F * V / ( R * T ))) / ( 1.0 - exp( F * V / ( R * T ))));
-  i_M_Ca := Am * Pm * (power( F , 2.0 ) * V / ( R * T )) * power( 2.0 , 2.0 ) * P_Ca * (( Ca_o - Ca_i * exp( F * V / ( R * T ))) / ( 1.0 - exp( F * V / ( R * T ))));
-  Pm := 1.0 / ( 1.0 + exp(-(( sigma - sigma_1_2 )) / k_sigma ));
+  i_M_K := Am * Pm * power(F, 2 ) * V / (R * T) * P_K * (K_o - K_i * exp(F * V / (R * T))) / (1 - exp(F * V / (R * T)));
+  i_M_Na := Am * Pm * power(F, 2 ) * V / (R * T) * P_Na * (Na_o - Na_i * exp(F * V / (R * T))) / (1 - exp(F * V / (R * T)));
+  i_M_Ca := Am * Pm * power(F, 2 ) * V / (R * T) * power(2 , 2 ) * P_Ca * (Ca_o - Ca_i * exp(F * V / (R * T))) / (1 - exp(F * V / (R * T)));
+  Pm := 1 / (1 + exp(-((sigma - sigma_1_2)) / k_sigma));
 
   // Variable initializations:
-  sigma_1_2 = 204.0;
+  Am = 1.3863e-5;
+  P_Na = 2;
+  P_Ca = 1;
+  P_K = 3;
+  sigma_1_2 = 204;
   k_sigma = 2.03;
 end
 
-model yang_clark_bryan_robertson_2003_version01__inward_rectifier_current(i_Ki, E_K, V, K_o, K_i)
+model yang_2003__inward_rectifier_current(i_Ki, E_K, V, K_o, K_i)
 
   // Assignment Rules:
-  i_Ki := g_max_Ki * (( V - E_K ) / ( 1.0 + exp(-(( V - V_1_2_Ki )) / 28.89 )));
+  i_Ki := g_max_Ki * (V - E_K) / (1 + exp(-((V - V_1_2_Ki)) / 28.89 ));
   g_max_Ki := G_Ki * K_o * n_Ki;
-  V_1_2_Ki := A * log( K_i ) + B;
+  V_1_2_Ki := A * log(K_i) + B;
 
   // Variable initializations:
   G_Ki = 0.145;
@@ -157,35 +161,35 @@ model yang_clark_bryan_robertson_2003_version01__inward_rectifier_current(i_Ki, 
   B = 112.29;
 end
 
-model yang_clark_bryan_robertson_2003_version01__calcium_pump(i_CaP, K_CaCM, CaCM)
+model yang_2003__calcium_pump(i_CaP, K_CaCM, CaCM)
 
   // Assignment Rules:
-  i_CaP := I_Ca_P * ( CaCM / ( CaCM + K_CaCM ));
+  i_CaP := I_Ca_P * CaCM / (CaCM + K_CaCM);
 end
 
-model yang_clark_bryan_robertson_2003_version01__sodium_potassium_pump(i_NaK, V, Na_i, K_o)
+model yang_2003__sodium_potassium_pump(i_NaK, V, Na_i, K_o)
 
   // Assignment Rules:
-  i_NaK := I_NaK * ( K_o / ( K_o + Km_Ko )) * (power( Na_i , 1.5 ) / (power( Na_i , 1.5 ) + power( Km_Nai , 1.5 ))) * (( V + 150.0 ) / ( V + 200.0 ));
+  i_NaK := I_NaK * K_o / (K_o + Km_Ko) * power(Na_i, 1.5 ) / (power(Na_i, 1.5 ) + power(Km_Nai, 1.5 )) * (V + 150 ) / (V + 200 );
 end
 
-model yang_clark_bryan_robertson_2003_version01__sodium_calcium_exchanger(i_NaCa, V, R, T, F, Na_i, Na_o, Ca_i, Ca_o)
+model yang_2003__sodium_calcium_exchanger(i_NaCa, V, R, T, F, Na_i, Na_o, Ca_i, Ca_o)
 
   // Assignment Rules:
-  i_NaCa := g_NaCa * ((power( Na_i , 3.0 ) * Ca_o * phi_F - power( Na_o , 3.0 ) * Ca_i ) / ( 1.0 + power( Na_o , 3.0 ) * Ca_i * phi_R + power( Na_i , 3.0 ) * Ca_o ));
-  phi_R := exp(( 1.0 - gamma ) * V * F / ( R * T ));
-  phi_F := exp( gamma * V * F / ( R * T ));
+  i_NaCa := g_NaCa * (power(Na_i, 3 ) * Ca_o * phi_F - power(Na_o, 3 ) * Ca_i) / (1 + power(Na_o, 3 ) * Ca_i * phi_R + power(Na_i, 3 ) * Ca_o);
+  phi_R := exp((1 - gamma) * V * F / (R * T));
+  phi_F := exp(gamma * V * F / (R * T));
 end
 
-model yang_clark_bryan_robertson_2003_version01__background_currents(i_B, i_B_Na, i_B_Ca, i_B_K, V, R, T, F, E_K, Na_i, Na_o, Ca_i, Ca_o)
+model yang_2003__background_currents(i_B, i_B_Na, i_B_Ca, i_B_K, V, R, T, F, E_K, Na_i, Na_o, Ca_i, Ca_o)
 
   // Assignment Rules:
   i_B := i_B_Na + i_B_Ca + i_B_K;
-  i_B_Na := g_Nab * ( V - E_Na );
-  i_B_Ca := g_Cab * ( V - E_Ca );
-  i_B_K := g_Kb * ( V - E_K );
-  E_Na := R * T / F * ln( Na_o / Na_i );
-  E_Ca := R * T / ( 2.0 * F ) * ln( Ca_o / Ca_i );
+  i_B_Na := g_Nab * (V - E_Na);
+  i_B_Ca := g_Cab * (V - E_Ca);
+  i_B_K := g_Kb * (V - E_K);
+  E_Na := R * T / F * ln(Na_o / Na_i);
+  E_Ca := R * T / (2 * F) * ln(Ca_o / Ca_i);
 
   // Variable initializations:
   g_Nab = 0.01;
@@ -193,15 +197,15 @@ model yang_clark_bryan_robertson_2003_version01__background_currents(i_B, i_B_Na
   g_Kb = 0.01;
 end
 
-model yang_clark_bryan_robertson_2003_version01__extracellular_ionic_concentrations(Na_o, Ca_o, K_o)
+model yang_2003__extracellular_ionic_concentrations(Na_o, Ca_o, K_o)
 
   // Variable initializations:
-  Na_o = 140.0;
-  Ca_o = 2.0;
-  K_o = 5.0;
+  Na_o = 140;
+  Ca_o = 2;
+  K_o = 5;
 end
 
-model yang_clark_bryan_robertson_2003_version01__intracellular_ionic_concentrations(Na_i, Ca_i, K_i, CaCM, time_, F, i_B_Na, i_M_Na, i_NaCa, i_NaK, i_Ca_L, i_K_Ca, i_K, i_Ki, i_B_K, i_M_K, i_CaP, i_B_Ca, i_M_Ca, i_up, i_rel)
+model yang_2003__intracellular_ionic_concentrations(Na_i, Ca_i, K_i, CaCM, time_, F, i_B_Na, i_M_Na, i_NaCa, i_NaK, i_Ca_L, i_K_Ca, i_K, i_Ki, i_B_K, i_M_K, i_CaP, i_B_Ca, i_M_Ca, i_up, i_rel)
 
   // Assignment Rules:
   CaCM := S_CM_Ca - S_CM_cal;
@@ -211,9 +215,9 @@ model yang_clark_bryan_robertson_2003_version01__intracellular_ionic_concentrati
   delta_B_F_cal := k_d * CaB_F - kd * Ca_i * B_F_cal;
 
   // Rate Rules:
-  Na_i' = -((( 3.0 * i_NaK + 3.0 * i_NaCa + i_B_Na + i_M_Na ) / ( F * Vol_i )));
-  Ca_i' = -((( i_Ca_L + i_CaP + i_B_Ca + i_M_Ca + i_up - ( 2.0 * i_NaCa + i_rel )) / ( 2.0 * F * Vol_Ca ))) + delta_S_CM_cal + delta_B_F_cal;
-  K_i' = -((( i_K + i_K_Ca + i_Ki + i_B_K + i_M_K - 2.0 * i_NaK ) / ( F * Vol_i )));
+  Na_i' = -((3 * i_NaK + 3 * i_NaCa + i_B_Na + i_M_Na)) / (F * Vol_i);
+  Ca_i' = -((i_Ca_L + i_CaP + i_B_Ca + i_M_Ca + i_up - (2 * i_NaCa + i_rel))) / (2 * F * Vol_Ca) + delta_S_CM_cal + delta_B_F_cal;
+  K_i' = -((i_K + i_K_Ca + i_Ki + i_B_K + i_M_K - 2 * i_NaK)) / (F * Vol_i);
   S_CM_cal' = delta_S_CM_cal;
   B_F_cal' = delta_B_F_cal;
 
@@ -226,51 +230,51 @@ model yang_clark_bryan_robertson_2003_version01__intracellular_ionic_concentrati
   B_F_Ca = 0.4;
   B_F_cal = 0.336;
   Vol_Ca = 0.7;
-  Vol_i = 1.0;
+  Vol_i = 1;
 end
 
-model yang_clark_bryan_robertson_2003_version01__calcium_fluxes_in_the_SR(i_rel, i_up, time_, Ca_i, R10, F)
+model yang_2003__calcium_fluxes_in_the_SR(i_rel, i_up, time_, Ca_i, R10, F)
 
   // Assignment Rules:
-  i_rel := power( R10 , 2.0 ) * ( Ca_u - Ca_r ) * ( 2.0 * F * Vol_r / tau_rel );
-  i_up := I_up * ( Ca_i / ( Ca_i + Km_up ));
-  i_tr := ( Ca_u - Ca_r ) * ( 2.0 * F * Vol_u ) / tau_tr;
+  i_rel := power(R10, 2 ) * (Ca_u - Ca_r) * 2 * F * Vol_r / tau_rel;
+  i_up := I_up * Ca_i / (Ca_i + Km_up);
+  i_tr := (Ca_u - Ca_r) * 2 * F * Vol_u / tau_tr;
 
   // Rate Rules:
-  Ca_up' = ( i_up - i_tr ) / ( 2.0 * F * Vol_u );
-  Ca_r' = ( i_tr - i_rel ) / ( 2.0 * F * Vol_r );
+  Ca_up' = (i_up - i_tr) / (2 * F * Vol_u);
+  Ca_r' = (i_tr - i_rel) / (2 * F * Vol_r);
 
   // Variable initializations:
   Ca_up = 0.5687;
-  I_up = 200.0;
+  I_up = 200;
   tau_rel = 0.0333;
-  tau_tr = 1000.0;
+  tau_tr = 1000;
   Vol_u = 0.07;
   Vol_r = 0.07;
   Km_up = 0.08;
 end
 
-model yang_clark_bryan_robertson_2003_version01__CICR_mechanism_of_the_SR(R10, Ca_i)
+model yang_2003__CICR_mechanism_of_the_SR(R10, Ca_i)
 
   // Variable initializations:
   R10 = 0.0033;
   R00 = 0.001196;
   R01 = 0.9955;
-  R11 = 4.0E-6;
-  Kr1 = 2500.0;
+  R11 = 4e-6;
+  Kr1 = 2500;
   Kr2 = 1.05;
   Kr1_ = 0.0076;
   Kr2_ = 0.084;
 end
 
-model yang_clark_bryan_robertson_2003_version01__smooth_muscle_contraction(K_CaCM, AM, AMp, CaCM)
+model yang_2003__smooth_muscle_contraction(K_CaCM, AM, AMp, CaCM)
 
   // Assignment Rules:
   K1 := K6;
-  K6 := power( CaCM , 2.0 ) / (power( CaCM , 2.0 ) + power( K_CaCM , 2.0 ));
+  K6 := power(CaCM, 2 ) / (power(CaCM, 2 ) + power(K_CaCM, 2 ));
 
   // Variable initializations:
-  K_CaCM = 1.78E-7;
+  K_CaCM = 1.78e-7;
   AM = 0.2798;
   AMp = 0.0627;
   Mp = 0.0476;
@@ -282,45 +286,45 @@ model yang_clark_bryan_robertson_2003_version01__smooth_muscle_contraction(K_CaC
   K7 = 0.045;
 end
 
-model yang_clark_bryan_robertson_2003_version01__passive_force()
+model yang_2003__passive_force()
 
   // Assignment Rules:
-  Fp := kp * (exp( alpha_p * (( lc - l0 ) / l0 )) - 1.0 );
+  Fp := kp * (exp(alpha_p * (lc - l0) / l0) - 1 );
 
   // Variable initializations:
   kp = 0.1;
   alpha_p = 0.1;
-  l0 = 40.0;
+  l0 = 40;
 end
 
-model yang_clark_bryan_robertson_2003_version01__cross_bridge_elasticity(beta, la, lopt, AM, AMp)
+model yang_2003__cross_bridge_elasticity(beta, la, lopt, AM, AMp)
 
   // Assignment Rules:
-  Fx := ( kx1 * AMp + kx2 * AM ) * lx * exp(-( beta ) * power(( la - lopt ) / lopt , 2.0 ));
+  Fx := (kx1 * AMp + kx2 * AM) * lx * exp(-(beta) * power((la - lopt) / lopt, 2 ));
 
   // Variable initializations:
   beta = 7.5;
-  lopt = 100.0;
+  lopt = 100;
   kx1 = 12.5;
   kx2 = 8.8;
-  lx = 89.60;
+  lx = 89.6;
 end
 
-model yang_clark_bryan_robertson_2003_version01__active_force_generation(beta, la, lopt, AM, AMp)
+model yang_2003__active_force_generation(beta, la, lopt, AM, AMp)
 
   // Assignment Rules:
-  Fa := ( fAMp * AMp * ( vx + ia ) + fAM * AM * ia ) * exp(-( beta ) * power(( la - lopt ) / lopt , 2.0 ));
+  Fa := (fAMp * AMp * (vx + ia) + fAM * AM * ia) * exp(-(beta) * power((la - lopt) / lopt, 2 ));
 
   // Variable initializations:
-  vx = 5.0;
+  vx = 5;
   fAMp = 1.3;
   fAM = 85.5;
 end
 
-model yang_clark_bryan_robertson_2003_version01__series_viscoelastic_force(time_)
+model yang_2003__series_viscoelastic_force(time_)
 
   // Assignment Rules:
-  Fs := mu_s * delta_ls + ks * (exp( alpha_s * (( ls - ls0 ) / ls0 )) - 1.0 );
+  Fs := mu_s * delta_ls + ks * (exp(alpha_s * (ls - ls0) / ls0) - 1 );
 
   // Rate Rules:
   ls' = delta_ls;
@@ -329,31 +333,31 @@ model yang_clark_bryan_robertson_2003_version01__series_viscoelastic_force(time_
   ks = 0.2;
   alpha_s = 4.5;
   ls = 37.05;
-  ls0 = 30.0;
+  ls0 = 30;
   mu_s = 0.01;
 end
 
-model yang_clark_bryan_robertson_2003_version01____main()
+model yang_2003____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: yang_clark_bryan_robertson_2003_version01__environment(time_);
-  membrane: yang_clark_bryan_robertson_2003_version01__membrane(V, R, T, F, time_, i_Ca_L, i_K, i_K_Ca, i_Ki, i_M, i_NaCa, i_NaK, i_CaP, i_B);
-  L_type_calcium_current: yang_clark_bryan_robertson_2003_version01__L_type_calcium_current(i_Ca_L, Ca_i, Ca_o, R, F, T, time_, V, d, f);
-  calcium_activated_potassium_current: yang_clark_bryan_robertson_2003_version01__calcium_activated_potassium_current(i_K_Ca, E_K, Ca_i, K_i, K_o, R, F, T, time_, V, P_K_Ca);
-  delayed_rectifier_current: yang_clark_bryan_robertson_2003_version01__delayed_rectifier_current(i_K, E_K, time_, V, Pk);
-  stretch_sensitive_current: yang_clark_bryan_robertson_2003_version01__stretch_sensitive_current(i_M, i_M_K, i_M_Na, i_M_Ca, E_K, V, R, T, F, Na_i, Na_o, K_i, K_o, Ca_i, Ca_o);
-  inward_rectifier_current: yang_clark_bryan_robertson_2003_version01__inward_rectifier_current(i_Ki, E_K, V, K_o, K_i);
-  calcium_pump: yang_clark_bryan_robertson_2003_version01__calcium_pump(i_CaP, K_CaCM, CaCM);
-  sodium_potassium_pump: yang_clark_bryan_robertson_2003_version01__sodium_potassium_pump(i_NaK, V, Na_i, K_o);
-  sodium_calcium_exchanger: yang_clark_bryan_robertson_2003_version01__sodium_calcium_exchanger(i_NaCa, V, R, T, F, Na_i, Na_o, Ca_i, Ca_o);
-  background_currents: yang_clark_bryan_robertson_2003_version01__background_currents(i_B, i_B_Na, i_B_Ca, i_B_K, V, R, T, F, E_K, Na_i, Na_o, Ca_i, Ca_o);
-  extracellular_ionic_concentrations: yang_clark_bryan_robertson_2003_version01__extracellular_ionic_concentrations(Na_o, Ca_o, K_o);
-  intracellular_ionic_concentrations: yang_clark_bryan_robertson_2003_version01__intracellular_ionic_concentrations(Na_i, Ca_i, K_i, CaCM, time_, F, i_B_Na, i_M_Na, i_NaCa, i_NaK, i_Ca_L, i_K_Ca, i_K, i_Ki, i_B_K, i_M_K, i_CaP, i_B_Ca, i_M_Ca, i_up, i_rel);
-  calcium_fluxes_in_the_SR: yang_clark_bryan_robertson_2003_version01__calcium_fluxes_in_the_SR(i_rel, i_up, time_, Ca_i, R10, F);
-  CICR_mechanism_of_the_SR: yang_clark_bryan_robertson_2003_version01__CICR_mechanism_of_the_SR(R10, Ca_i);
-  smooth_muscle_contraction: yang_clark_bryan_robertson_2003_version01__smooth_muscle_contraction(K_CaCM, AM, AMp, CaCM);
-  passive_force: yang_clark_bryan_robertson_2003_version01__passive_force();
-  cross_bridge_elasticity: yang_clark_bryan_robertson_2003_version01__cross_bridge_elasticity(beta, la, lopt, AM, AMp);
-  active_force_generation: yang_clark_bryan_robertson_2003_version01__active_force_generation(beta, la, lopt, AM, AMp);
-  series_viscoelastic_force: yang_clark_bryan_robertson_2003_version01__series_viscoelastic_force(time_);
+  environment: yang_2003__environment(time_);
+  membrane: yang_2003__membrane(V, R, T, F, time_, i_Ca_L, i_K, i_K_Ca, i_Ki, i_M, i_NaCa, i_NaK, i_CaP, i_B);
+  L_type_calcium_current: yang_2003__L_type_calcium_current(i_Ca_L, Ca_i, Ca_o, R, F, T, time_, V, d, f);
+  calcium_activated_potassium_current: yang_2003__calcium_activated_potassium_current(i_K_Ca, E_K, Ca_i, K_i, K_o, R, F, T, time_, V, P_K_Ca);
+  delayed_rectifier_current: yang_2003__delayed_rectifier_current(i_K, E_K, time_, V, Pk);
+  stretch_sensitive_current: yang_2003__stretch_sensitive_current(i_M, i_M_K, i_M_Na, i_M_Ca, E_K, V, R, T, F, Na_i, Na_o, K_i, K_o, Ca_i, Ca_o);
+  inward_rectifier_current: yang_2003__inward_rectifier_current(i_Ki, E_K, V, K_o, K_i);
+  calcium_pump: yang_2003__calcium_pump(i_CaP, K_CaCM, CaCM);
+  sodium_potassium_pump: yang_2003__sodium_potassium_pump(i_NaK, V, Na_i, K_o);
+  sodium_calcium_exchanger: yang_2003__sodium_calcium_exchanger(i_NaCa, V, R, T, F, Na_i, Na_o, Ca_i, Ca_o);
+  background_currents: yang_2003__background_currents(i_B, i_B_Na, i_B_Ca, i_B_K, V, R, T, F, E_K, Na_i, Na_o, Ca_i, Ca_o);
+  extracellular_ionic_concentrations: yang_2003__extracellular_ionic_concentrations(Na_o, Ca_o, K_o);
+  intracellular_ionic_concentrations: yang_2003__intracellular_ionic_concentrations(Na_i, Ca_i, K_i, CaCM, time_, F, i_B_Na, i_M_Na, i_NaCa, i_NaK, i_Ca_L, i_K_Ca, i_K, i_Ki, i_B_K, i_M_K, i_CaP, i_B_Ca, i_M_Ca, i_up, i_rel);
+  calcium_fluxes_in_the_SR: yang_2003__calcium_fluxes_in_the_SR(i_rel, i_up, time_, Ca_i, R10, F);
+  CICR_mechanism_of_the_SR: yang_2003__CICR_mechanism_of_the_SR(R10, Ca_i);
+  smooth_muscle_contraction: yang_2003__smooth_muscle_contraction(K_CaCM, AM, AMp, CaCM);
+  passive_force: yang_2003__passive_force();
+  cross_bridge_elasticity: yang_2003__cross_bridge_elasticity(beta, la, lopt, AM, AMp);
+  active_force_generation: yang_2003__active_force_generation(beta, la, lopt, AM, AMp);
+  series_viscoelastic_force: yang_2003__series_viscoelastic_force(time_);
 end

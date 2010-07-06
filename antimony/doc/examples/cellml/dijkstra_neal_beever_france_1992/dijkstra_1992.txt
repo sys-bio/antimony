@@ -1,0 +1,630 @@
+//Created by libAntimony v1.4
+model dijkstra_1992__environment(time_)
+end
+
+model dijkstra_1992__Q_Pd(U_Pd_PdPs, time_, Q_Ma, Q_Mc, V_Ru, k_SoEx)
+
+  // Assignment Rules:
+  U_Pd_PdPs := v_PdPs / (1 + M_Pd_PdPs / C_Pd);
+  C_Pd := Q_Pd / V_Ru;
+  U_Pd_PdEx := k_PdEx * Q_Pd;
+  P_Pd_InPd := Y_Pd_InPd * D_Pd;
+  v_PdPs := v_PdPs_star * (Q_Ma + Q_Mc);
+  M_Pd_PdPs := M_Pd_PdPs_star * (T_Pd / T_Pd_star);
+  k_PdEx := k_SoEx;
+
+  // Rate Rules:
+  Q_Pd' = P_Pd_InPd - ( U_Pd_PdPs + U_Pd_PdEx );
+
+  // Variable initializations:
+  Q_Pd = 1.000;
+  v_PdPs_star = 0.0576;
+  M_Pd_PdPs_star = 0.264;
+  Y_Pd_InPd = 0.0091;
+  D_Pd = 1.000;
+  T_Pd = 1.000;
+  T_Pd_star = 0.66;
+end
+
+model dijkstra_1992__Q_Ps(C_Ps, U_McPs_PsAm, U_Ps_PsMa, U_Ps_PsMc, U_MaPs_PsAm, M_Ha_McMa, time_, Q_Ma, Q_Mc, V_Ru, U_Pd_PdPs, U_Mc_McEg, U_Ma_MaMd, U_Hc_PsMc, U_Ha_McMa, C_Ha, C_Hc, k_FlEx, J_Ha_McAm)
+
+  // Assignment Rules:
+  C_Ps := Q_Ps / V_Ru;
+  U_McPs_PsAm := v_Mc_PsAm / (1 + M_Ps_PsAm / C_Ps + C_Hc / J_Hc_PsAm);
+  U_Ps_PsMa := v_PsMa / (1 + M_Ps_PsMa / C_Ps + M_Ha_PsMa / C_Ha);
+  U_Ps_PsMc := v_PsMc / (1 + M_Ps_PsMc / C_Ps + M_Hc_PsMc / C_Hc);
+  U_MaPs_PsAm := v_Ma_PsAm / (1 + M_Ps_PsAm / C_Ps + C_Ha / J_Ha_PsAm);
+  P_Ps_InPs := Y_Ps_InPs * D_Ps;
+  P_Ps_SaPs := Y_Ps_SaPs * D_Ps;
+  P_Ps_PdPs := Y_Ps_PdPs * U_Pd_PdPs;
+  P_Ps_MaMd := Y_Ps_MaMd * U_Ma_MaMd;
+  P_Ps_McPs := Y_Ps_McPs * U_Mc_McPs;
+  U_Ps_PsEx := k_PsEx * Q_Ps;
+  U_Mc_McPs := U_Mc_McEg * (1 - (1 / (1 + C_Ha / J_Ha_McAm) + 1 / (1 + M_Ha_McMa / C_Ha)));
+  v_Ma_PsAm := v_PsAm_star * Q_Ma;
+  v_Mc_PsAm := v_PsAm_star * Q_Mc;
+  v_PsMa := v_PsMa_star * Q_Ma;
+  v_PsMc := v_PsMc_star * Q_Mc;
+  k_PsEx := k_FlEx;
+
+  // Rate Rules:
+  Q_Ps' = P_Ps_InPs + P_Ps_PdPs + P_Ps_MaMd + P_Ps_SaPs + P_Ps_McPs - ( U_MaPs_PsAm + U_McPs_PsAm + U_Ps_PsMa + U_Ps_PsMc + U_Ps_PsEx );
+
+  // Variable initializations:
+  M_Ha_McMa = 0.0248;
+  Q_Ps = 1.000;
+  v_PsAm_star = 0.0144;
+  v_PsMa_star = 0.0576;
+  v_PsMc_star = 0.0576;
+  Y_Ps_InPs = 0.0091;
+  Y_Ps_SaPs = 0.0010;
+  Y_Ps_PdPs = 1.0;
+  Y_Ps_MaMd = 0.0067;
+  Y_Ps_McPs = 0.0067;
+  D_Ps = 1.000;
+  M_Ps_PsAm = 0.0289;
+  M_Ps_PsMa = 0.0224;
+  M_Ps_PsMc = 0.0224;
+  M_Ha_PsMa = 0.0248;
+  M_Hc_PsMc = 0.0248;
+  J_Ha_PsAm = 0.0165;
+  J_Hc_PsAm = 0.0165;
+end
+
+model dijkstra_1992__Q_Pu(time_, V_Ru, k_SoEx)
+
+  // Assignment Rules:
+  C_Pu := Q_Pu / V_Ru;
+  P_Pu_InPu := Y_Pu_InPu * D_Pu;
+  U_Pu_PuEx := k_PuEx * Q_Pu;
+  k_PuEx := k_SoEx;
+
+  // Rate Rules:
+  Q_Pu' = P_Pu_InPu - U_Pu_PuEx;
+
+  // Variable initializations:
+  Q_Pu = 1.000;
+  Y_Pu_InPu = 0.0091;
+  D_Pu = 1.000;
+end
+
+model dijkstra_1992__Q_Am(C_Am, U_Am_AmMc, U_Am_AmMa, U_Mc_McAm, time_, Q_Ma, Q_Mc, V_Ru, pH, f_Po_Ma, f_Ni_Fe, U_McPs_PsAm, U_MaPs_PsAm, U_Mc_McEg, C_Ha, C_Hc, J_Ha_McAm, k_FlEx)
+
+  // Assignment Rules:
+  C_Am := Q_Am / V_Ru;
+  U_Am_AmMc := v_AmMc / (1 + M_Am_AmMc / C_Am + M_Hc_AmMc / C_Hc);
+  U_Am_AmMa := v_AmMa / (1 + M_Am_AmMa / C_Am + M_Ha_AmMa / C_Ha);
+  U_Mc_McAm := 1 * U_Mc_McEg / (1 + C_Ha / J_Ha_McAm);
+  P_Am_InAm := Y_Am_InAm * D_Am;
+  P_Am_UeAm := Y_Am_UeAm * v_UeAm;
+  P_MaAm_PsAm := Y_Am_PsAm * U_MaPs_PsAm;
+  P_McAm_PsAm := Y_Am_PsAm * U_McPs_PsAm;
+  P_Am_McAm := Y_Am_McAm * U_Mc_McAm;
+  U_Am_AmAb := v_AmAb / (1 + M_Am_AmAb / C_Am);
+  U_Am_AmEx := k_AmEx * Q_Am;
+  v_UeAm := v_UeAm_star * V_Ru * ( f_Ni_Fe / (1 + C_Am / J_Am_UeAm));
+  v_AmAb := v_AmAb_star * power(1.0 , 0.25 ) * power( V_Ru , 0.75 ) * (1 + power( M_pH_AmAb / pH , phi_pH_AmAb ));
+  v_AmMa := v_AmMa_star * Q_Ma * (1 - f_Po_Ma );
+  v_AmMc := v_AmMc_star * Q_Mc;
+  k_AmEx := k_FlEx;
+
+  // Rate Rules:
+  Q_Am' = P_Am_InAm + P_MaAm_PsAm + P_McAm_PsAm + P_Am_UeAm + P_Am_McAm - ( U_Am_AmAb + U_Am_AmMa + U_Am_AmMc + U_Am_AmEx );
+
+  // Variable initializations:
+  Q_Am = 1.000;
+  v_UeAm_star = 0.00165;
+  v_AmAb_star = 1.10;
+  v_AmMa_star = 0.0528;
+  v_AmMc_star = 0.0528;
+  Y_Am_InAm = 0.0588;
+  Y_Am_UeAm = 2.0;
+  Y_Am_PsAm = 1.257;
+  Y_Am_McAm = 0.0084;
+  M_Am_AmMa = 0.00135;
+  M_Am_AmMc = 0.00135;
+  M_Am_AmAb = 0.0132;
+  M_pH_AmAb = 7.5;
+  phi_pH_AmAb = 7.85;
+  M_Ha_AmMa = 0.0159;
+  M_Hc_AmMc = 0.0159;
+  J_Am_UeAm = 0.00621;
+  D_Am = 1.000;
+end
+
+model dijkstra_1992__Q_Li(time_, V_Ru, k_FlEx, U_Ma_MaMd)
+
+  // Assignment Rules:
+  C_Li := Q_Li / V_Ru;
+  P_Li_InLi := Y_Li_InLi * D_Li;
+  P_Li_MaMd := Y_Li_MaMd * U_Ma_MaMd;
+  U_Li_LiEx := k_LiEx * Q_Li;
+  k_LiEx := k_FlEx;
+
+  // Rate Rules:
+  Q_Li' = P_Li_InLi + P_Li_MaMd - U_Li_LiEx;
+
+  // Variable initializations:
+  Q_Li = 1.000;
+  Y_Li_InLi = 0.0015;
+  Y_Li_MaMd = 0.00021;
+  D_Li = 1.000;
+end
+
+model dijkstra_1992__Q_Sd(U_Sd_SdHa, time_, V_Ru, Q_Ma, k_SoEx)
+
+  // Assignment Rules:
+  U_Sd_SdHa := v_SdHa / (1 + M_Sd_SdHa / C_Sd);
+  C_Sd := Q_Sd / V_Ru;
+  P_Sd_InSd := Y_Sd_InSd * D_Sd;
+  U_Sd_SdEx := k_SdEx * Q_Sd;
+  k_SdEx := k_SoEx;
+  v_SdHa := v_SdHa_star * Q_Ma;
+  M_Sd_SdHa := M_Sd_SdHa_star * ( T_Sd / T_Sd_star );
+
+  // Rate Rules:
+  Q_Sd' = P_Sd_InSd - ( U_Sd_SdHa + U_Sd_SdEx );
+
+  // Variable initializations:
+  Q_Sd = 1.000;
+  Y_Sd_InSd = 0.0062;
+  D_Sd = 1.000;
+  v_SdHa_star = 0.2179;
+  M_Sd_SdHa_star = 0.416;
+  T_Sd = 1.000;
+  T_Sd_star = 1.04;
+end
+
+model dijkstra_1992__Q_Fd(U_Fd_FdHc, pm, f, time_, V_Ru, Q_Mc, k_SoEx)
+
+  // Assignment Rules:
+  U_Fd_FdHc := v_FdHc / (1 + M_Fd_FdHc / C_Fd);
+  C_Fd := Q_Fd / V_Ru;
+  P_Fd_InFd := Y_Fd_InFd * D_Fd;
+  U_Fd_FdEx := k_FdEx * Q_Fd;
+  k_FdEx := k_SoEx;
+  v_FdHc := v_FdHc_star * Q_Mc * (1 - time_ * f / 1.0 + time_ * f / 1.0 / (1 + power( M_pH_FdHc / pm , phi_pH_FdHc )));
+  M_Fd_FdHc := M_Fd_FdHc_star * ( T_Fd / T_Fd_star );
+
+  // Rate Rules:
+  Q_Fd' = P_Fd_InFd - ( U_Fd_FdHc + U_Fd_FdEx );
+
+  // Variable initializations:
+  Q_Fd = 1.000;
+  Y_Fd_InFd = 0.0062;
+  D_Fd = 1.000;
+  v_FdHc_star = 0.1646;
+  M_Fd_FdHc_star = 0.332;
+  T_Fd = 1.000;
+  T_Fd_star = 0.83;
+  phi_pH_FdHc = 22.9;
+  M_pH_FdHc = 5.97;
+end
+
+model dijkstra_1992__Q_Fu(time_, V_Ru, k_SoEx)
+
+  // Assignment Rules:
+  C_Fu := Q_Fu / V_Ru;
+  P_Fu_InFu := Y_Fu_InFu * D_Fu;
+  U_Fu_FuEx := k_FuEx * Q_Fu;
+  k_FuEx := k_SoEx;
+
+  // Rate Rules:
+  Q_Fu' = P_Fu_InFu - U_Fu_FuEx;
+
+  // Variable initializations:
+  Q_Fu = 1.000;
+  Y_Fu_InFu = 0.0062;
+  D_Fu = 1.000;
+end
+
+model dijkstra_1992__Q_Ha(C_Ha, U_Ha_HaAs, U_Ha_AmMa, U_Ha_PsMa, U_Ha_McMa, U_Ha_HaVa, P_Ha_WrHa, P_Ha_LaHa, P_Ha_SrHa, P_Ha_SdHa, P_Ha_MaMd, time_, Q_Ma, V_Ru, f_Po_Ma, U_Sd_SdHa, U_As_MaMd, U_Am_AmMa, U_Ps_PsMa, U_Mc_McMa, C_Am, C_Ps, k_FlEx)
+
+  // Assignment Rules:
+  C_Ha := Q_Ha / V_Ru;
+  U_Ha_HaAs := v_HaAs / (1 + M_Ha_HaAs / C_Ha);
+  U_Ha_AmMa := R_Ha_AmMa * U_Am_AmMa;
+  U_Ha_PsMa := R_Ha_PsMa * U_Ps_PsMa;
+  U_Ha_McMa := R_Ha_McMa * U_Mc_McMa;
+  U_Ha_HaVa := v_HaVa * ((1 - f_Po_Ma) / ((1 + M_Ha_HaVa / C_Ha) * (1 + C_Am / J_Am_HaVa ) * ( C_Ps / J_Ps_HaVa ))) + v_HaVa * f_Po_Ma / (1 + M_Ha_HaVa / C_Ha);
+  P_Ha_WrHa := Y_Ha_WrHa * D_Wr;
+  P_Ha_LaHa := Y_Ha_LaHa * D_La;
+  P_Ha_SrHa := Y_Ha_SrHa * D_Sr;
+  P_Ha_SdHa := Y_Ha_SdHa * U_Sd_SdHa;
+  P_Ha_MaMd := Y_Ha_MaMd * U_As_MaMd;
+  U_Ha_HaEx := k_HaEx * Q_Ha;
+  v_HaAs := v_HaAs_star * Q_Ma;
+  v_HaVa := v_HaVa_star * Q_Ma;
+  k_HaEx := k_FlEx;
+
+  // Rate Rules:
+  Q_Ha' = P_Ha_WrHa + P_Ha_SrHa + P_Ha_SdHa + P_Ha_MaMd + P_Ha_LaHa - ( U_Ha_AmMa + U_Ha_PsMa + U_Ha_McMa + U_Ha_HaAs + U_Ha_HaVa + U_Ha_HaEx );
+
+  // Variable initializations:
+  Q_Ha = 1.000;
+  R_Ha_AmMa = 1.793;
+  R_Ha_PsMa = 1.291;
+  R_Ha_McMa = 0.0086;
+  M_Ha_HaAs = 0.0268;
+  M_Ha_HaVa = 0.055;
+  v_HaAs_star = 0.053;
+  v_HaVa_star = 0.1646;
+  Y_Ha_WrHa = 0.0062;
+  Y_Ha_SrHa = 0.0062;
+  Y_Ha_LaHa = 0.0025;
+  Y_Ha_SdHa = 1.0;
+  Y_Ha_MaMd = 0.0062;
+  D_Wr = 1.000;
+  D_Sr = 1.000;
+  D_La = 1.000;
+  J_Am_HaVa = 0.00861;
+  J_Ps_HaVa = 0.01465;
+end
+
+model dijkstra_1992__Q_Hc(C_Hc, U_Hc_AmMc, U_Hc_HcVa, U_Hc_PsMc, time_, Q_Mc, V_Ru, U_Fd_FdHc, U_Am_AmMc, U_Ps_PsMc, C_Ps, C_Am, k_FlEx)
+
+  // Assignment Rules:
+  C_Hc := Q_Hc / V_Ru;
+  U_Hc_AmMc := R_Hc_AmMc * U_Am_AmMc;
+  U_Hc_HcVa := v_HcVa / ((1 + M_Hc_HcVa / C_Hc) * (1 + C_Am / J_Am_HcVa + C_Ps / J_Ps_HcVa ));
+  U_Hc_PsMc := R_Hc_PsMc * U_Ps_PsMc;
+  P_Hc_FdHc := Y_Hc_FdHc * U_Fd_FdHc;
+  U_Hc_HcEx := k_HcEx * Q_Hc;
+  v_HcVa := v_HcVa_star * Q_Mc;
+  k_HcEx := k_FlEx;
+
+  // Rate Rules:
+  Q_Hc' = P_Hc_FdHc - ( U_Hc_AmMc + U_Hc_PsMc + U_Hc_HcVa + U_Hc_HcEx );
+
+  // Variable initializations:
+  Q_Hc = 1.000;
+  R_Hc_AmMc = 1.793;
+  R_Hc_PsMc = 1.291;
+  v_HcVa_star = 0.1646;
+  Y_Hc_FdHc = 1.0;
+  M_Hc_HcVa = 0.055;
+  J_Am_HcVa = 0.00861;
+  J_Ps_HcVa = 0.01465;
+end
+
+model dijkstra_1992__Q_Ma(Q_Ma, C_Ma, U_Ma_MaMd, U_Mc_McMa, time_, V_Ru, M_Ha_McMa, f_Po_Ma, U_Am_AmMa, U_Ps_PsMa, U_Mc_McEg, C_Ha, k_FlEx, k_MaEx, k_PoEx)
+
+  // Assignment Rules:
+  C_Ma := Q_Ma / V_Ru;
+  U_Ma_MaMd := k_MaMd * Q_Ma * f_Po_Ma;
+  U_Mc_McMa := U_Mc_McEg / (1 + M_Ha_McMa / C_Ha);
+  P_Ma_AmMa := Y_Ma_AmMa * U_Am_AmMa;
+  P_Ma_PsMa := Y_Ma_PsMa * U_Ps_PsMa;
+  P_Ma_McMa := Y_Ma_McMa * U_Mc_McMa;
+  U_Ma_PoEx := k_PoEx * Q_Ma * f_Po_Ma;
+  U_Ma_MaEx := k_MaEx * Q_Ma * (1 - f_Po_Ma );
+  k_MaMd := k_MaEx - k_PoEx;
+
+  // Rate Rules:
+  Q_Ma' = P_Ma_AmMa + P_Ma_PsMa + P_Ma_McMa - ( U_Ma_MaMd + U_Mc_McMa + U_Ma_PoEx );
+
+  // Variable initializations:
+  Q_Ma = 1.000;
+  Y_Ma_AmMa = 118.91;
+  Y_Ma_PsMa = 149.48;
+  Y_Ma_McMa = 149.48;
+end
+
+model dijkstra_1992__Q_As(U_As_MaMd, time_, V_Ru, U_Ha_HaAs, f_Po_Ma, k_FlEx, k_MaEx, k_PoEx)
+
+  // Assignment Rules:
+  U_As_MaMd := k_AsMd * Q_As * f_Po_Ma;
+  C_As := Q_As / V_Ru;
+  P_As_HaAs := Y_As_HaAs * U_Ha_HaAs;
+  U_As_PoEx := k_PoEx * Q_As * f_Po_Ma;
+  U_As_AsEx := k_AsEx * Q_As * (1 - f_Po_Ma );
+  k_AsEx := k_FlEx;
+  k_AsMd := k_MaEx - k_PoEx;
+
+  // Rate Rules:
+  Q_As' = P_As_HaAs - ( U_As_MaMd + U_As_AsEx + U_As_PoEx );
+
+  // Variable initializations:
+  Q_As = 1.000;
+  Y_As_HaAs = 112.5;
+end
+
+model dijkstra_1992__Q_Mc(Q_Mc, U_Mc_McEg, time_, V_Ru, Q_Ma, C_Ma, U_Am_AmMc, U_Ps_PsMc, f_Po_Ma, k_SoEx)
+
+  // Assignment Rules:
+  U_Mc_McEg := v_McEg / (1 + M_Mc_McEg / ( C_Mc + C_Ma * (1 - f_Po_Ma )));
+  C_Mc := Q_Mc / V_Ru;
+  P_Mc_AmMc := Y_Mc_AmMc * U_Am_AmMc;
+  P_Mc_PsMc := Y_Mc_PsMc * U_Ps_PsMc;
+  U_Mc_McEx := k_McEx * Q_Mc;
+  k_McEx := k_SoEx;
+  v_McEg := v_McEg_star * Q_Ma * f_Po_Ma * C_Mc / ( C_Mc + C_Ma * (1 - f_Po_Ma ));
+
+  // Rate Rules:
+  Q_Mc' = P_Mc_AmMc + P_Mc_PsMc - ( U_Mc_McEg + U_Mc_McEx );
+
+  // Variable initializations:
+  Q_Mc = 1.000;
+  Y_Mc_AmMc = 118.91;
+  Y_Mc_PsMc = 149.48;
+  v_McEg_star = 15.439;
+  M_Mc_McEg = 34.694;
+end
+
+model dijkstra_1992__Q_Ac(time_, pH, V_Ru, k_FlEx, f_Hf_AmMa, f_Hf_AmMc, f_Hf_PsMa, f_Hf_PsMc, f_Hf_HaAs, f_Hf_McMa, f_Lc_Le, f_Ce_Fd, U_MaPs_PsAm, U_McPs_PsAm, U_Ha_HaAs, U_Ha_AmMa, U_Ha_PsMa, U_Hc_PsMc, U_Ha_McMa, U_Ha_HaVa, U_Hc_HcVa, U_Hc_AmMc, U_Mc_McAm, P_Ha_WrHa, P_Ha_LaHa, P_Ha_SrHa, P_Ha_SdHa, P_Ha_MaMd)
+
+  // Assignment Rules:
+  C_Ac := Q_Ac / V_Ru;
+  P_Ac_InAc := Y_Ac_InAc * D_Ac;
+  P_Ac_AmMa := Y_Ac_AmMa * U_Hf_AmMa;
+  P_Ac_AmMc := Y_Ac_AmMc * U_Hf_AmMc;
+  P_Ac_PsMa := Y_Ac_PsMa * U_Hf_PsMa;
+  P_Ac_PsMc := Y_Ac_PsMc * U_Hf_PsMc;
+  P_Ac_HaAs := Y_Ac_HaAs * U_Hf_HaAs;
+  P_Ac_HaVa := Y_Ac_HaVa * U_Ha_HaVa;
+  P_Ac_HcVa := Y_Ac_HcVa * U_Hc_HcVa;
+  P_MaAc_PsAm := Y_Ac_PsAm * U_MaPs_PsAm;
+  P_McAc_PsAm := Y_Ac_PsAm * U_McPs_PsAm;
+  P_Ac_McMa := Y_Ac_McMa * U_Hf_McMa;
+  P_Ac_McAm := Y_Ac_McAm * U_Mc_McAm;
+  U_Ac_AcAb := v_AcAb / (1 + M_Ac_AcAb / C_Ac);
+  U_Ac_AcEx := k_AcEx * Q_Ac;
+  U_Hf_AmMa := f_Hf_AmMa * U_Ha_AmMa;
+  U_Hf_AmMc := f_Hf_AmMc * U_Hc_AmMc;
+  U_Hf_PsMa := f_Hf_PsMa * U_Ha_PsMa;
+  U_Hf_PsMc := f_Hf_PsMc * U_Hc_PsMc;
+  U_Hf_HaAs := f_Hf_HaAs * U_Ha_HaAs;
+  U_Hf_McMa := f_Hf_McMa * U_Ha_McMa;
+  v_AcAb := v_AcAb_star * power(1.0 , 0.25 ) * (power(V_Ru, 0.75 ) / (1.0 + power(pH / J_pH_AcAb, phi_pH_AcAb)));
+  Y_Ac_LaAc := f_Lc_Le * Y_Ac_WrAc;
+  Y_Ac_HaVa := ( Y_Ac_WrAc * P_Ha_WrHa + Y_Ac_LaAc * P_Ha_LaHa + Y_Ac_StAc * ( P_Ha_SrHa + P_Ha_SdHa + P_Ha_MaMd )) / ( P_Ha_WrHa + P_Ha_LaHa + P_Ha_SrHa + P_Ha_SdHa + P_Ha_MaMd );
+  Y_Ac_PsVa := Y_Ac_PsAc;
+  Y_Ac_AmMa := Y_Ac_HaVa;
+  Y_Ac_AmMc := Y_Ac_HcVa;
+  Y_Ac_PsMa := Y_Ac_HaVa;
+  Y_Ac_PsMc := Y_Ac_HcVa;
+  Y_Ac_HaAs := Y_Ac_HaVa;
+  Y_Ac_McMa := Y_Ac_HcVa;
+  Y_Ac_PsAm := Y_Ac_PsVa;
+  Y_Ac_McAm := Y_Ac_PsVa;
+  Y_Ac_HcVa := f_Ce_Fd * Y_Ac_CeAc + (1 - f_Ce_Fd ) * Y_Ac_HeAc;
+  k_AcEx := k_FlEx;
+
+  // Rate Rules:
+  Q_Ac' = P_Ac_InAc + P_Ac_AmMa + P_Ac_AmMc + P_Ac_PsMa + P_Ac_PsMc + P_Ac_HaAs + P_Ac_HaVa + P_Ac_HcVa + P_MaAc_PsAm + P_McAc_PsAm + P_Ac_McMa + P_Ac_McAm - ( U_Ac_AcAb + U_Ac_AcEx );
+
+  // Variable initializations:
+  Q_Ac = 1.000;
+  M_Ac_AcAb = 0.338;
+  v_AcAb_star = 7.86;
+  Y_Ac_WrAc = 1.000;
+  Y_Ac_InAc = 0.0167;
+  Y_Ac_StAc = 1.000;
+  Y_Ac_CeAc = 1.000;
+  Y_Ac_HeAc = 1.000;
+  Y_Ac_PsAc = 1.000;
+  D_Ac = 1.000;
+  J_pH_AcAb = 6.45;
+  phi_pH_AcAb = 6.48;
+end
+
+model dijkstra_1992__Q_Pr(time_, pH, V_Ru, k_FlEx, f_Hf_AmMa, f_Hf_AmMc, f_Hf_PsMa, f_Hf_PsMc, f_Hf_HaAs, f_Hf_McMa, f_Lc_Le, f_Ce_Fd, U_MaPs_PsAm, U_McPs_PsAm, U_Ha_HaAs, U_Ha_AmMa, U_Ha_PsMa, U_Hc_PsMc, U_Ha_McMa, U_Ha_HaVa, U_Hc_HcVa, U_Mc_McAm, U_Hc_AmMc, P_Ha_WrHa, P_Ha_LaHa, P_Ha_SrHa, P_Ha_SdHa, P_Ha_MaMd)
+
+  // Assignment Rules:
+  C_Pr := Q_Pr / V_Ru;
+  P_Pr_InPr := Y_Pr_InPr * D_Pr;
+  P_Pr_AmMa := Y_Pr_AmMa * U_Hf_AmMa;
+  P_Pr_AmMc := Y_Pr_AmMc * U_Hf_AmMc;
+  P_Pr_PsMa := Y_Pr_PsMa * U_Hf_PsMa;
+  P_Pr_PsMc := Y_Pr_PsMc * U_Hf_PsMc;
+  P_Pr_HaAs := Y_Pr_HaAs * U_Hf_HaAs;
+  P_Pr_HaVa := Y_Pr_HaVa * U_Ha_HaVa;
+  P_Pr_HcVa := Y_Pr_HcVa * U_Hc_HcVa;
+  P_MaPr_PsAm := Y_Pr_PsAm * U_MaPs_PsAm;
+  P_McPr_PsAm := Y_Pr_PsAm * U_McPs_PsAm;
+  P_Pr_McMa := Y_Pr_McMa * U_Hf_McMa;
+  P_Pr_McAm := Y_Pr_McAm * U_Mc_McAm;
+  U_Pr_PrAb := v_PrAb / (1 + M_Pr_PrAb / C_Pr);
+  U_Pr_PrEx := k_PrEx * Q_Pr;
+  U_Hf_AmMa := f_Hf_AmMa * U_Ha_AmMa;
+  U_Hf_AmMc := f_Hf_AmMc * U_Hc_AmMc;
+  U_Hf_PsMa := f_Hf_PsMa * U_Ha_PsMa;
+  U_Hf_PsMc := f_Hf_PsMc * U_Hc_PsMc;
+  U_Hf_HaAs := f_Hf_HaAs * U_Ha_HaAs;
+  U_Hf_McMa := f_Hf_McMa * U_Ha_McMa;
+  v_PrAb := v_PrAb_star * power(1.0 , 0.25 ) * (power(V_Ru, 0.75 ) / (1.0 + power(pH / J_pH_PrAb, phi_pH_PrAb)));
+  Y_Pr_LaPr := f_Lc_Le * Y_Pr_WrPr;
+  Y_Pr_HaVa := ( Y_Pr_WrPr * P_Ha_WrHa + Y_Pr_LaPr * P_Ha_LaHa + Y_Pr_StPr * ( P_Ha_SrHa + P_Ha_SdHa + P_Ha_MaMd )) / ( P_Ha_WrHa + P_Ha_LaHa + P_Ha_SrHa + P_Ha_SdHa + P_Ha_MaMd );
+  Y_Pr_PsVa := Y_Pr_PsPr;
+  Y_Pr_AmMa := Y_Pr_HaVa;
+  Y_Pr_AmMc := Y_Pr_HcVa;
+  Y_Pr_PsMa := Y_Pr_HaVa;
+  Y_Pr_PsMc := Y_Pr_HcVa;
+  Y_Pr_HaAs := Y_Pr_HaVa;
+  Y_Pr_McMa := Y_Pr_HcVa;
+  Y_Pr_PsAm := Y_Pr_PsVa;
+  Y_Pr_McAm := Y_Pr_PsVa;
+  Y_Pr_HcVa := f_Ce_Fd * Y_Pr_CePr + (1 - f_Ce_Fd ) * Y_Pr_HePr;
+  k_PrEx := k_FlEx;
+
+  // Rate Rules:
+  Q_Pr' = P_Pr_InPr + P_Pr_AmMa + P_Pr_AmMc + P_Pr_PsMa + P_Pr_PsMc + P_Pr_HaAs + P_Pr_HaVa + P_Pr_HcVa + P_MaPr_PsAm + P_McPr_PsAm + P_Pr_McMa + P_Pr_McAm - ( U_Pr_PrAb + U_Pr_PrEx );
+
+  // Variable initializations:
+  Q_Pr = 1.000;
+  M_Pr_PrAb = 0.338;
+  v_PrAb_star = 7.86;
+  Y_Pr_WrPr = 1.000;
+  Y_Pr_InPr = 0.0135;
+  Y_Pr_StPr = 1.000;
+  Y_Pr_CePr = 1.000;
+  Y_Pr_HePr = 1.000;
+  Y_Pr_PsPr = 1.000;
+  D_Pr = 1.000;
+  phi_pH_PrAb = 6.48;
+  J_pH_PrAb = 6.45;
+end
+
+model dijkstra_1992__Q_Bu(time_, pH, V_Ru, k_FlEx, f_Hf_AmMa, f_Hf_AmMc, f_Hf_PsMa, f_Hf_PsMc, f_Hf_HaAs, f_Hf_McMa, f_Lc_Le, f_Ce_Fd, U_MaPs_PsAm, U_McPs_PsAm, U_Ha_HaAs, U_Ha_AmMa, U_Ha_PsMa, U_Hc_PsMc, U_Ha_McMa, U_Ha_HaVa, U_Hc_HcVa, U_Mc_McAm, U_Hc_AmMc, P_Ha_WrHa, P_Ha_LaHa, P_Ha_SrHa, P_Ha_SdHa, P_Ha_MaMd)
+
+  // Assignment Rules:
+  C_Bu := Q_Bu / V_Ru;
+  P_Bu_InBu := Y_Bu_InBu * D_Bu;
+  P_Bu_AmMa := Y_Bu_AmMa * U_Hf_AmMa;
+  P_Bu_AmMc := Y_Bu_AmMc * U_Hf_AmMc;
+  P_Bu_PsMa := Y_Bu_PsMa * U_Hf_PsMa;
+  P_Bu_PsMc := Y_Bu_PsMc * U_Hf_PsMc;
+  P_Bu_HaAs := Y_Bu_HaAs * U_Hf_HaAs;
+  P_Bu_HaVa := Y_Bu_HaVa * U_Ha_HaVa;
+  P_Bu_HcVa := Y_Bu_HcVa * U_Hc_HcVa;
+  P_MaBu_PsAm := Y_Bu_PsAm * U_MaPs_PsAm;
+  P_McBu_PsAm := Y_Bu_PsAm * U_McPs_PsAm;
+  P_Bu_McMa := Y_Bu_McMa * U_Hf_McMa;
+  P_Bu_McAm := Y_Bu_McAm * U_Mc_McAm;
+  U_Bu_BuAb := v_BuAb / (1 + M_Bu_BuAb / C_Bu);
+  U_Bu_BuEx := k_BuEx * Q_Bu;
+  U_Hf_AmMa := f_Hf_AmMa * U_Ha_AmMa;
+  U_Hf_AmMc := f_Hf_AmMc * U_Hc_AmMc;
+  U_Hf_PsMa := f_Hf_PsMa * U_Ha_PsMa;
+  U_Hf_PsMc := f_Hf_PsMc * U_Hc_PsMc;
+  U_Hf_HaAs := f_Hf_HaAs * U_Ha_HaAs;
+  U_Hf_McMa := f_Hf_McMa * U_Ha_McMa;
+  v_BuAb := v_BuAb_star * power(1.0 , 0.25 ) * (power(V_Ru, 0.75 ) / (1.0 + power(pH / J_pH_BuAb, phi_pH_BuAb)));
+  Y_Bu_LaBu := f_Lc_Le * Y_Bu_WrBu;
+  Y_Bu_HaVa := ( Y_Bu_WrBu * P_Ha_WrHa + Y_Bu_LaBu * P_Ha_LaHa + Y_Bu_StBu * ( P_Ha_SrHa + P_Ha_SdHa + P_Ha_MaMd )) / ( P_Ha_WrHa + P_Ha_LaHa + P_Ha_SrHa + P_Ha_SdHa + P_Ha_MaMd );
+  Y_Bu_PsVa := Y_Bu_PsBu;
+  Y_Bu_AmMa := Y_Bu_HaVa;
+  Y_Bu_AmMc := Y_Bu_HcVa;
+  Y_Bu_PsMa := Y_Bu_HaVa;
+  Y_Bu_PsMc := Y_Bu_HcVa;
+  Y_Bu_HaAs := Y_Bu_HaVa;
+  Y_Bu_McMa := Y_Bu_HcVa;
+  Y_Bu_PsAm := Y_Bu_PsVa;
+  Y_Bu_McAm := Y_Bu_PsVa;
+  Y_Bu_HcVa := f_Ce_Fd * Y_Bu_CeBu + (1 - f_Ce_Fd ) * Y_Bu_HeBu;
+  k_BuEx := k_FlEx;
+
+  // Rate Rules:
+  Q_Bu' = P_Bu_InBu + P_Bu_AmMa + P_Bu_AmMc + P_Bu_PsMa + P_Bu_PsMc + P_Bu_HaAs + P_Bu_HaVa + P_Bu_HcVa + P_MaBu_PsAm + P_McBu_PsAm + P_Bu_McMa + P_Bu_McAm - ( U_Bu_BuAb + U_Bu_BuEx );
+
+  // Variable initializations:
+  Q_Bu = 1.000;
+  M_Bu_BuAb = 0.338;
+  v_BuAb_star = 7.86;
+  Y_Bu_WrBu = 1.000;
+  Y_Bu_InBu = 0.0114;
+  Y_Bu_StBu = 1.000;
+  Y_Bu_CeBu = 1.000;
+  Y_Bu_HeBu = 1.000;
+  Y_Bu_PsBu = 1.000;
+  D_Bu = 1.000;
+  phi_pH_BuAb = 6.48;
+  J_pH_BuAb = 6.45;
+end
+
+model dijkstra_1992__Q_Vl(time_, pH, V_Ru, k_FlEx, f_Hf_AmMa, f_Hf_AmMc, f_Hf_PsMa, f_Hf_PsMc, f_Hf_HaAs, f_Hf_McMa, f_Lc_Le, f_Ce_Fd, U_MaPs_PsAm, U_McPs_PsAm, U_Ha_HaAs, U_Ha_AmMa, U_Ha_PsMa, U_Hc_PsMc, U_Ha_McMa, U_Ha_HaVa, U_Hc_HcVa, U_Mc_McAm, U_Hc_AmMc, P_Ha_WrHa, P_Ha_LaHa, P_Ha_SrHa, P_Ha_SdHa, P_Ha_MaMd)
+
+  // Assignment Rules:
+  C_Vl := Q_Vl / V_Ru;
+  P_Vl_InVl := Y_Vl_InVl * D_Vl;
+  P_Vl_AmMa := Y_Vl_AmMa * U_Hf_AmMa;
+  P_Vl_AmMc := Y_Vl_AmMc * U_Hf_AmMc;
+  P_Vl_PsMa := Y_Vl_PsMa * U_Hf_PsMa;
+  P_Vl_PsMc := Y_Vl_PsMc * U_Hf_PsMc;
+  P_Vl_HaAs := Y_Vl_HaAs * U_Hf_HaAs;
+  P_Vl_HaVa := Y_Vl_HaVa * U_Ha_HaVa;
+  P_Vl_HcVa := Y_Vl_HcVa * U_Hc_HcVa;
+  P_MaVl_PsAm := Y_Vl_PsAm * U_MaPs_PsAm;
+  P_McVl_PsAm := Y_Vl_PsAm * U_McPs_PsAm;
+  P_Vl_McMa := Y_Vl_McMa * U_Hf_McMa;
+  P_Vl_McAm := Y_Vl_McAm * U_Mc_McAm;
+  U_Vl_VlAb := v_VlAb / (1 + M_Vl_VlAb / C_Vl);
+  U_Vl_VlEx := k_VlEx * Q_Vl;
+  U_Hf_AmMa := f_Hf_AmMa * U_Ha_AmMa;
+  U_Hf_AmMc := f_Hf_AmMc * U_Hc_AmMc;
+  U_Hf_PsMa := f_Hf_PsMa * U_Ha_PsMa;
+  U_Hf_PsMc := f_Hf_PsMc * U_Hc_PsMc;
+  U_Hf_HaAs := f_Hf_HaAs * U_Ha_HaAs;
+  U_Hf_McMa := f_Hf_McMa * U_Ha_McMa;
+  v_VlAb := v_VlAb_star * power(1.0 , 0.25 ) * (power(V_Ru, 0.75 ) / (1.0 + power(pH / J_pH_VlAb, phi_pH_VlAb)));
+  Y_Vl_LaVl := f_Lc_Le * Y_Vl_WrVl;
+  Y_Vl_HaVa := ( Y_Vl_WrVl * P_Ha_WrHa + Y_Vl_LaVl * P_Ha_LaHa + Y_Vl_StVl * ( P_Ha_SrHa + P_Ha_SdHa + P_Ha_MaMd )) / ( P_Ha_WrHa + P_Ha_LaHa + P_Ha_SrHa + P_Ha_SdHa + P_Ha_MaMd );
+  Y_Vl_PsVa := Y_Vl_PsVl;
+  Y_Vl_AmMa := Y_Vl_HaVa;
+  Y_Vl_AmMc := Y_Vl_HcVa;
+  Y_Vl_PsMa := Y_Vl_HaVa;
+  Y_Vl_PsMc := Y_Vl_HcVa;
+  Y_Vl_HaAs := Y_Vl_HaVa;
+  Y_Vl_McMa := Y_Vl_HcVa;
+  Y_Vl_PsAm := Y_Vl_PsVa;
+  Y_Vl_McAm := Y_Vl_PsVa;
+  Y_Vl_HcVa := f_Ce_Fd * Y_Vl_CeVl + (1 - f_Ce_Fd ) * Y_Vl_HeVl;
+  k_VlEx := k_FlEx;
+
+  // Rate Rules:
+  Q_Vl' = P_Vl_InVl + P_Vl_AmMa + P_Vl_AmMc + P_Vl_PsMa + P_Vl_PsMc + P_Vl_HaAs + P_Vl_HaVa + P_Vl_HcVa + P_MaVl_PsAm + P_McVl_PsAm + P_Vl_McMa + P_Vl_McAm - ( U_Vl_VlAb + U_Vl_VlEx );
+
+  // Variable initializations:
+  Q_Vl = 1.000;
+  M_Vl_VlAb = 0.338;
+  v_VlAb_star = 7.86;
+  Y_Vl_WrVl = 1.000;
+  Y_Vl_InVl = 0.0098;
+  Y_Vl_StVl = 1.000;
+  Y_Vl_CeVl = 1.000;
+  Y_Vl_HeVl = 1.000;
+  Y_Vl_PsVl = 1.000;
+  D_Vl = 1.000;
+  phi_pH_VlAb = 6.48;
+  J_pH_VlAb = 6.45;
+end
+
+model dijkstra_1992__model_parameters(f_Hf_AmMa, f_Hf_AmMc, f_Hf_PsMa, f_Hf_PsMc, f_Hf_HaAs, f_Hf_McMa, f_Lc_Le, f_Ce_Fd, J_Ha_McAm, V_Ru, k_FlEx, k_SoEx, pH, pm, f, f_Po_Ma, f_Ni_Fe, k_MaEx, k_PoEx)
+
+  // Assignment Rules:
+  k_MaEx := k_FlEx;
+  k_PoEx := k_SoEx / 2;
+
+  // Variable initializations:
+  f_Hf_AmMa = 0.526;
+  f_Hf_AmMc = 0.526;
+  f_Hf_PsMa = 0.711;
+  f_Hf_PsMc = 0.711;
+  f_Hf_HaAs = 0.306;
+  f_Hf_McMa = 0.711;
+  f_Lc_Le = 2.250;
+  f_Ce_Fd = 1.000;
+  J_Ha_McAm = 0.0165;
+  V_Ru = 1.000;
+  k_FlEx = 1.000;
+  k_SoEx = 1.000;
+  pH = 7.000;
+  pm = 1.000;
+  f = 1.000;
+  f_Po_Ma = 0.35;
+  f_Ni_Fe = 1.000;
+end
+
+model dijkstra_1992____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: dijkstra_1992__environment(time_);
+  Q_Pd: dijkstra_1992__Q_Pd(U_Pd_PdPs, time_, Q_Ma0, Q_Mc0, V_Ru, k_SoEx);
+  Q_Ps: dijkstra_1992__Q_Ps(C_Ps, U_McPs_PsAm, U_Ps_PsMa, U_Ps_PsMc, U_MaPs_PsAm, M_Ha_McMa, time_, Q_Ma0, Q_Mc0, V_Ru, U_Pd_PdPs, U_Mc_McEg, U_Ma_MaMd, U_Hc_PsMc, U_Ha_McMa, C_Ha, C_Hc, k_FlEx, J_Ha_McAm);
+  Q_Pu: dijkstra_1992__Q_Pu(time_, V_Ru, k_SoEx);
+  Q_Am: dijkstra_1992__Q_Am(C_Am, U_Am_AmMc, U_Am_AmMa, U_Mc_McAm, time_, Q_Ma0, Q_Mc0, V_Ru, pH, f_Po_Ma, f_Ni_Fe, U_McPs_PsAm, U_MaPs_PsAm, U_Mc_McEg, C_Ha, C_Hc, J_Ha_McAm, k_FlEx);
+  Q_Li: dijkstra_1992__Q_Li(time_, V_Ru, k_FlEx, U_Ma_MaMd);
+  Q_Sd: dijkstra_1992__Q_Sd(U_Sd_SdHa, time_, V_Ru, Q_Ma0, k_SoEx);
+  Q_Fd: dijkstra_1992__Q_Fd(U_Fd_FdHc, pm, f, time_, V_Ru, Q_Mc0, k_SoEx);
+  Q_Fu: dijkstra_1992__Q_Fu(time_, V_Ru, k_SoEx);
+  Q_Ha: dijkstra_1992__Q_Ha(C_Ha, U_Ha_HaAs, U_Ha_AmMa, U_Ha_PsMa, U_Ha_McMa, U_Ha_HaVa, P_Ha_WrHa, P_Ha_LaHa, P_Ha_SrHa, P_Ha_SdHa, P_Ha_MaMd, time_, Q_Ma0, V_Ru, f_Po_Ma, U_Sd_SdHa, U_As_MaMd, U_Am_AmMa, U_Ps_PsMa, U_Mc_McMa, C_Am, C_Ps, k_FlEx);
+  Q_Hc: dijkstra_1992__Q_Hc(C_Hc, U_Hc_AmMc, U_Hc_HcVa, U_Hc_PsMc, time_, Q_Mc0, V_Ru, U_Fd_FdHc, U_Am_AmMc, U_Ps_PsMc, C_Ps, C_Am, k_FlEx);
+  Q_Ma: dijkstra_1992__Q_Ma(Q_Ma0, C_Ma, U_Ma_MaMd, U_Mc_McMa, time_, V_Ru, M_Ha_McMa, f_Po_Ma, U_Am_AmMa, U_Ps_PsMa, U_Mc_McEg, C_Ha, k_FlEx, k_MaEx, k_PoEx);
+  Q_As: dijkstra_1992__Q_As(U_As_MaMd, time_, V_Ru, U_Ha_HaAs, f_Po_Ma, k_FlEx, k_MaEx, k_PoEx);
+  Q_Mc: dijkstra_1992__Q_Mc(Q_Mc0, U_Mc_McEg, time_, V_Ru, Q_Ma0, C_Ma, U_Am_AmMc, U_Ps_PsMc, f_Po_Ma, k_SoEx);
+  Q_Ac: dijkstra_1992__Q_Ac(time_, pH, V_Ru, k_FlEx, f_Hf_AmMa, f_Hf_AmMc, f_Hf_PsMa, f_Hf_PsMc, f_Hf_HaAs, f_Hf_McMa, f_Lc_Le, f_Ce_Fd, U_MaPs_PsAm, U_McPs_PsAm, U_Ha_HaAs, U_Ha_AmMa, U_Ha_PsMa, U_Hc_PsMc, U_Ha_McMa, U_Ha_HaVa, U_Hc_HcVa, U_Hc_AmMc, U_Mc_McAm, P_Ha_WrHa, P_Ha_LaHa, P_Ha_SrHa, P_Ha_SdHa, P_Ha_MaMd);
+  Q_Pr: dijkstra_1992__Q_Pr(time_, pH, V_Ru, k_FlEx, f_Hf_AmMa, f_Hf_AmMc, f_Hf_PsMa, f_Hf_PsMc, f_Hf_HaAs, f_Hf_McMa, f_Lc_Le, f_Ce_Fd, U_MaPs_PsAm, U_McPs_PsAm, U_Ha_HaAs, U_Ha_AmMa, U_Ha_PsMa, U_Hc_PsMc, U_Ha_McMa, U_Ha_HaVa, U_Hc_HcVa, U_Mc_McAm, U_Hc_AmMc, P_Ha_WrHa, P_Ha_LaHa, P_Ha_SrHa, P_Ha_SdHa, P_Ha_MaMd);
+  Q_Bu: dijkstra_1992__Q_Bu(time_, pH, V_Ru, k_FlEx, f_Hf_AmMa, f_Hf_AmMc, f_Hf_PsMa, f_Hf_PsMc, f_Hf_HaAs, f_Hf_McMa, f_Lc_Le, f_Ce_Fd, U_MaPs_PsAm, U_McPs_PsAm, U_Ha_HaAs, U_Ha_AmMa, U_Ha_PsMa, U_Hc_PsMc, U_Ha_McMa, U_Ha_HaVa, U_Hc_HcVa, U_Mc_McAm, U_Hc_AmMc, P_Ha_WrHa, P_Ha_LaHa, P_Ha_SrHa, P_Ha_SdHa, P_Ha_MaMd);
+  Q_Vl: dijkstra_1992__Q_Vl(time_, pH, V_Ru, k_FlEx, f_Hf_AmMa, f_Hf_AmMc, f_Hf_PsMa, f_Hf_PsMc, f_Hf_HaAs, f_Hf_McMa, f_Lc_Le, f_Ce_Fd, U_MaPs_PsAm, U_McPs_PsAm, U_Ha_HaAs, U_Ha_AmMa, U_Ha_PsMa, U_Hc_PsMc, U_Ha_McMa, U_Ha_HaVa, U_Hc_HcVa, U_Mc_McAm, U_Hc_AmMc, P_Ha_WrHa, P_Ha_LaHa, P_Ha_SrHa, P_Ha_SdHa, P_Ha_MaMd);
+  model_parameters: dijkstra_1992__model_parameters(f_Hf_AmMa, f_Hf_AmMc, f_Hf_PsMa, f_Hf_PsMc, f_Hf_HaAs, f_Hf_McMa, f_Lc_Le, f_Ce_Fd, J_Ha_McAm, V_Ru, k_FlEx, k_SoEx, pH, pm, f, f_Po_Ma, f_Ni_Fe, k_MaEx, k_PoEx);
+end

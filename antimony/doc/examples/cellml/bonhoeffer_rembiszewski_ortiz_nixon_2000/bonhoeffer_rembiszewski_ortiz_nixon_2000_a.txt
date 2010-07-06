@@ -1,50 +1,53 @@
-//Created by libAntimony v1.3
-model bonhoeffer_rembiszewski_ortiz_nixon_2000_version01__environment(time_)
+//Created by libAntimony v1.4
+model bonhoeffer_1990__environment(time_)
 end
 
-model bonhoeffer_rembiszewski_ortiz_nixon_2000_version01__T(T, b, I, time_)
+model bonhoeffer_1990__T(T, b, I, time_)
 
   // Rate Rules:
   T' = s - ( dT * T + b * T * I );
 
   // Variable initializations:
+  T = 1.0;
   s = 10.0;
   dT = 0.01;
 end
 
-model bonhoeffer_rembiszewski_ortiz_nixon_2000_version01__I(I, b, T, E, time_)
+model bonhoeffer_1990__I(I, b, T, E, time_)
 
   // Rate Rules:
   I' = b * T * I - ( dI * I + p * I * E );
 
   // Variable initializations:
+  I = 1.0;
   p = 0.05;
   dI = 0.3;
 end
 
-model bonhoeffer_rembiszewski_ortiz_nixon_2000_version01__E(E, I, time_)
+model bonhoeffer_1990__E(E, I, time_)
 
   // Rate Rules:
-  E' = c * I * E / ( I + K ) - dE * E;
+  E' = c * I / (( I + K ) * E ) - dE * E;
 
   // Variable initializations:
+  E = 1.0;
   c = 0.05;
   dE = 0.1;
   K = 0.1;
 end
 
-model bonhoeffer_rembiszewski_ortiz_nixon_2000_version01__kinetic_parameters(b)
+model bonhoeffer_1990__kinetic_parameters(b)
 
   // Variable initializations:
   b = 0.001;
 end
 
-model bonhoeffer_rembiszewski_ortiz_nixon_2000_version01____main()
+model bonhoeffer_1990____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: bonhoeffer_rembiszewski_ortiz_nixon_2000_version01__environment(time_);
-  T: bonhoeffer_rembiszewski_ortiz_nixon_2000_version01__T(T0, b, I0, time_);
-  I: bonhoeffer_rembiszewski_ortiz_nixon_2000_version01__I(I0, b, T0, E0, time_);
-  E: bonhoeffer_rembiszewski_ortiz_nixon_2000_version01__E(E0, I0, time_);
-  kinetic_parameters: bonhoeffer_rembiszewski_ortiz_nixon_2000_version01__kinetic_parameters(b);
+  environment: bonhoeffer_1990__environment(time_);
+  T: bonhoeffer_1990__T(T0, b, I0, time_);
+  I: bonhoeffer_1990__I(I0, b, T0, E0, time_);
+  E: bonhoeffer_1990__E(E0, I0, time_);
+  kinetic_parameters: bonhoeffer_1990__kinetic_parameters(b);
 end

@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model westermark_lansner_2003_version01__environment(time_)
+//Created by libAntimony v1.4
+model westermark_2003__environment(time_)
 end
 
-model westermark_lansner_2003_version01__v_GK(v_GK, Glc)
+model westermark_2003__v_GK(v_GK, Glc)
 
   // Assignment Rules:
   v_GK := V_GK * power( Glc / S0_5_GK , h_GK ) / ( 1.0 + power( Glc / S0_5_GK , h_GK ));
@@ -13,7 +13,7 @@ model westermark_lansner_2003_version01__v_GK(v_GK, Glc)
   h_GK = 1.7;
 end
 
-model westermark_lansner_2003_version01__v_GPI(v_GPI, G6P, F6P)
+model westermark_2003__v_GPI(v_GPI, G6P, F6P)
 
   // Assignment Rules:
   v_GPI := Keq_GPI * G6P * F6P;
@@ -22,16 +22,16 @@ model westermark_lansner_2003_version01__v_GPI(v_GPI, G6P, F6P)
   Keq_GPI = 0.3;
 end
 
-model westermark_lansner_2003_version01__v_PFK(v_PFK, pi_, FBP, F6P, Glc)
+model westermark_2003__v_PFK(v_PFK, pi_pfk, FBP, F6P, Glc)
 
   // Assignment Rules:
   v_PFK := V_PFK * power( Glc / S0_5_PFK , h_PFK ) / ( 1.0 + power( Glc / S0_5_PFK , h_PFK ));
-  pi_ := FBP / ( S0_5_FBA * S0_5_PFK );
+  pi_pfk := FBP / ( S0_5_FBA * S0_5_PFK );
   S0_5_PFK := (power( 0.25 + 2.0 * V_PFK / k_cat_K_PFK , 0.5 ) + 0.5 ) / (power( KT , -1.0 ) + power( KO , -1.0 ) * (power( 0.25 + 2.0 * V_PFK / k_cat_K_PFK , 0.5 ) - 0.5 ));
   sigma := F6P / S0_5_PFK;
   alpha := 5.0 * h_PFK_;
   q := S0_5_FBA / X0_5;
-  h_PFK_ := h_PFK - ( h_PFK - h_act ) * ( q * pi_ / ( 1.0 + q * pi_ ));
+  h_PFK_ := h_PFK - ( h_PFK - h_act ) * ( q * pi_pfk / ( 1.0 + q * pi_pfk ));
   k_cat_K_PFK := V_PFK / 3.0;
 
   // Variable initializations:
@@ -44,10 +44,10 @@ model westermark_lansner_2003_version01__v_PFK(v_PFK, pi_, FBP, F6P, Glc)
   KO = 30.0;
 end
 
-model westermark_lansner_2003_version01__v_FBA(v_FBA, rho, pi_, Keq_TPI)
+model westermark_2003__v_FBA(v_FBA, rho, pi_pfk, Keq_TPI)
 
   // Assignment Rules:
-  v_FBA := V_FBA * pi_ * ( 1.0 - p * r * power( rho , 2.0 ) / ( pi_ * Keq_FBA )) / ( 1.0 + pi_ + r * rho + p * r * power( rho , 2.0 ));
+  v_FBA := V_FBA * pi_pfk * ( 1.0 - p * r * power( rho , 2.0 ) / ( pi_pfk * Keq_FBA )) / ( 1.0 + pi_pfk + r * rho + p * r * power( rho , 2.0 ));
   r := S0_5_GAPD / ( Q0_5_FBA * Keq_TPI );
   p := S0_5_GAPD / P0_5_FBA;
 
@@ -59,7 +59,7 @@ model westermark_lansner_2003_version01__v_FBA(v_FBA, rho, pi_, Keq_TPI)
   Keq_FBA = 0.1;
 end
 
-model westermark_lansner_2003_version01__v_TPI(v_TPI, Keq_TPI, DHAP, G3P)
+model westermark_2003__v_TPI(v_TPI, Keq_TPI, DHAP, G3P)
 
   // Assignment Rules:
   v_TPI := Keq_TPI * DHAP * G3P;
@@ -68,7 +68,7 @@ model westermark_lansner_2003_version01__v_TPI(v_TPI, Keq_TPI, DHAP, G3P)
   Keq_TPI = 0.045;
 end
 
-model westermark_lansner_2003_version01__v_GAPD(v_GAPD, rho)
+model westermark_2003__v_GAPD(v_GAPD, rho)
 
   // Assignment Rules:
   v_GAPD := V_GAPD * rho / ( 1.0 + rho );
@@ -77,56 +77,56 @@ model westermark_lansner_2003_version01__v_GAPD(v_GAPD, rho)
   V_GAPD = 250.0;
 end
 
-model westermark_lansner_2003_version01__Glc(Glc, v_GK, time_)
+model westermark_2003__Glc(Glc, v_GK, time_)
 
   // Rate Rules:
   Glc' = v_GK;
 end
 
-model westermark_lansner_2003_version01__G6P(G6P, v_GK, v_GPI, time_)
+model westermark_2003__G6P(G6P, v_GK, v_GPI, time_)
 
   // Rate Rules:
   G6P' = v_GK + v_GPI;
 end
 
-model westermark_lansner_2003_version01__F6P(F6P, v_PFK, v_GPI, time_)
+model westermark_2003__F6P(F6P, v_PFK, v_GPI, time_)
 
   // Rate Rules:
   F6P' = v_PFK + v_GPI;
 end
 
-model westermark_lansner_2003_version01__FBP(FBP, v_PFK, v_FBA, time_)
+model westermark_2003__FBP(FBP, v_PFK, v_FBA, time_)
 
   // Rate Rules:
   FBP' = v_PFK + v_FBA;
 end
 
-model westermark_lansner_2003_version01__DHAP(DHAP, v_TPI, v_FBA, time_)
+model westermark_2003__DHAP(DHAP, v_TPI, v_FBA, time_)
 
   // Rate Rules:
   DHAP' = v_TPI + v_FBA;
 end
 
-model westermark_lansner_2003_version01__G3P(G3P, v_TPI, v_GAPD, v_FBA, time_)
+model westermark_2003__G3P(G3P, v_TPI, v_GAPD, v_FBA, time_)
 
   // Rate Rules:
   G3P' = v_TPI + v_GAPD + v_FBA;
 end
 
-model westermark_lansner_2003_version01____main()
+model westermark_2003____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: westermark_lansner_2003_version01__environment(time_);
-  v_GK: westermark_lansner_2003_version01__v_GK(v_GK0, Glc0);
-  v_GPI: westermark_lansner_2003_version01__v_GPI(v_GPI0, G6P0, F6P0);
-  v_PFK: westermark_lansner_2003_version01__v_PFK(v_PFK0, pi_, FBP0, F6P0, Glc0);
-  v_FBA: westermark_lansner_2003_version01__v_FBA(v_FBA0, rho, pi_, Keq_TPI);
-  v_TPI: westermark_lansner_2003_version01__v_TPI(v_TPI0, Keq_TPI, DHAP0, G3P0);
-  v_GAPD: westermark_lansner_2003_version01__v_GAPD(v_GAPD0, rho);
-  Glc: westermark_lansner_2003_version01__Glc(Glc0, v_GK0, time_);
-  G6P: westermark_lansner_2003_version01__G6P(G6P0, v_GK0, v_GPI0, time_);
-  F6P: westermark_lansner_2003_version01__F6P(F6P0, v_PFK0, v_GPI0, time_);
-  FBP: westermark_lansner_2003_version01__FBP(FBP0, v_PFK0, v_FBA0, time_);
-  DHAP: westermark_lansner_2003_version01__DHAP(DHAP0, v_TPI0, v_FBA0, time_);
-  G3P: westermark_lansner_2003_version01__G3P(G3P0, v_TPI0, v_GAPD0, v_FBA0, time_);
+  environment: westermark_2003__environment(time_);
+  v_GK: westermark_2003__v_GK(v_GK0, Glc0);
+  v_GPI: westermark_2003__v_GPI(v_GPI0, G6P0, F6P0);
+  v_PFK: westermark_2003__v_PFK(v_PFK0, pi_pfk, FBP0, F6P0, Glc0);
+  v_FBA: westermark_2003__v_FBA(v_FBA0, rho, pi_pfk, Keq_TPI);
+  v_TPI: westermark_2003__v_TPI(v_TPI0, Keq_TPI, DHAP0, G3P0);
+  v_GAPD: westermark_2003__v_GAPD(v_GAPD0, rho);
+  Glc: westermark_2003__Glc(Glc0, v_GK0, time_);
+  G6P: westermark_2003__G6P(G6P0, v_GK0, v_GPI0, time_);
+  F6P: westermark_2003__F6P(F6P0, v_PFK0, v_GPI0, time_);
+  FBP: westermark_2003__FBP(FBP0, v_PFK0, v_FBA0, time_);
+  DHAP: westermark_2003__DHAP(DHAP0, v_TPI0, v_FBA0, time_);
+  G3P: westermark_2003__G3P(G3P0, v_TPI0, v_GAPD0, v_FBA0, time_);
 end

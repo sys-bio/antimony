@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="lenbury_pacheenburawana_model_1991_version01____main" name="lenbury_pacheenburawana_model_1991_version01____main">
+  <model id="lenbury_1991____main" name="lenbury_1991____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
       <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
     </listOfCompartments>
     <listOfParameters>
-      <parameter id="x0" constant="false"/>
+      <parameter id="x0" value="1.5" constant="false"/>
       <parameter id="x_alpha" value="0.5"/>
+      <parameter id="x_omega" value="2"/>
       <parameter id="x_D" value="0.8228"/>
       <parameter id="x_a" value="8.1252"/>
       <parameter id="b" value="1.091"/>
-      <parameter id="z0" constant="false"/>
-      <parameter id="u0" constant="false"/>
-      <parameter id="y0" constant="false"/>
+      <parameter id="z0" value="1" constant="false"/>
+      <parameter id="y0" value="0.95" constant="false"/>
       <parameter id="y_beta" value="0.38"/>
       <parameter id="z_gamma" value="0.6"/>
-      <parameter id="u_omega" value="2"/>
       <parameter id="time_"/>
     </listOfParameters>
     <listOfRules>
@@ -42,11 +41,11 @@
                       <ci> x_a </ci>
                       <apply>
                         <minus/>
-                        <cn> 1 </cn>
+                        <cn type="integer"> 1 </cn>
                         <apply>
                           <power/>
                           <ci> z0 </ci>
-                          <cn> 2 </cn>
+                          <cn type="integer"> 2 </cn>
                         </apply>
                       </apply>
                     </apply>
@@ -55,11 +54,11 @@
                       <ci> b </ci>
                       <apply>
                         <minus/>
-                        <cn> 1 </cn>
+                        <cn type="integer"> 1 </cn>
                         <apply>
                           <power/>
                           <ci> y0 </ci>
-                          <cn> 2 </cn>
+                          <cn type="integer"> 2 </cn>
                         </apply>
                       </apply>
                     </apply>
@@ -69,7 +68,14 @@
               <apply>
                 <times/>
                 <ci> x_D </ci>
-                <ci> u0 </ci>
+                <apply>
+                  <cos/>
+                  <apply>
+                    <times/>
+                    <ci> x_omega </ci>
+                    <ci> time_ </ci>
+                  </apply>
+                </apply>
               </apply>
             </apply>
             <apply>
@@ -97,18 +103,6 @@
           </apply>
         </math>
       </rateRule>
-      <assignmentRule variable="u0">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <cos/>
-            <apply>
-              <times/>
-              <ci> u_omega </ci>
-              <ci> time_ </ci>
-            </apply>
-          </apply>
-        </math>
-      </assignmentRule>
       <rateRule variable="y0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
@@ -124,11 +118,11 @@
                   <ci> b </ci>
                   <apply>
                     <minus/>
-                    <cn> 1 </cn>
+                    <cn type="integer"> 1 </cn>
                     <apply>
                       <power/>
                       <ci> z0 </ci>
-                      <cn> 2 </cn>
+                      <cn type="integer"> 2 </cn>
                     </apply>
                   </apply>
                 </apply>

@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="leloup_gonze_goldbeter_1999_version01____main" name="leloup_gonze_goldbeter_1999_version01____main">
+  <model id="leloup_1999____main" name="leloup_1999____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
       <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
     </listOfCompartments>
     <listOfParameters>
-      <parameter id="MP0" constant="false"/>
+      <parameter id="MP0" value="0.1" constant="false"/>
       <parameter id="MP_vsP" value="1"/>
       <parameter id="MP_vmP" value="0.7"/>
       <parameter id="MP_KmP" value="0.2"/>
       <parameter id="MP_KIP" value="1"/>
       <parameter id="kd" value="0.01"/>
-      <parameter id="CN_0" constant="false"/>
+      <parameter id="CN_0" value="1.25" constant="false"/>
       <parameter id="n" value="4"/>
-      <parameter id="P00" constant="false"/>
+      <parameter id="P00" value="0.1" constant="false"/>
       <parameter id="P0_ksP" value="0.9"/>
       <parameter id="V1P" value="8"/>
       <parameter id="V2P" value="1"/>
       <parameter id="K1P" value="2"/>
       <parameter id="K2P" value="2"/>
-      <parameter id="P10" constant="false"/>
+      <parameter id="P10" value="0.1" constant="false"/>
       <parameter id="V3P" value="8"/>
       <parameter id="V4P" value="1"/>
       <parameter id="K3P" value="2"/>
       <parameter id="K4P" value="1"/>
-      <parameter id="P20" constant="false"/>
+      <parameter id="P20" value="0.1" constant="false"/>
       <parameter id="P2_vdP" value="2"/>
       <parameter id="P2_KdP" value="0.2"/>
+      <parameter id="P2_Pt" constant="false"/>
       <parameter id="k3" value="1.2"/>
       <parameter id="k4" value="0.6"/>
-      <parameter id="T20" constant="false"/>
-      <parameter id="C0" constant="false"/>
-      <parameter id="P2_Pt" constant="false"/>
-      <parameter id="MT0" constant="false"/>
+      <parameter id="T20" value="0.1" constant="false"/>
+      <parameter id="C0" value="0.1" constant="false"/>
+      <parameter id="MT0" value="1.6" constant="false"/>
       <parameter id="MT_vsT" value="1"/>
       <parameter id="MT_vmT" value="0.7"/>
       <parameter id="MT_KmT" value="0.2"/>
       <parameter id="MT_KIT" value="1"/>
-      <parameter id="T00" constant="false"/>
+      <parameter id="T00" value="0.1" constant="false"/>
       <parameter id="T0_ksT" value="0.9"/>
       <parameter id="V1T" value="8"/>
       <parameter id="V2T" value="1"/>
       <parameter id="K1T" value="2"/>
       <parameter id="K2T" value="2"/>
-      <parameter id="T10" constant="false"/>
+      <parameter id="T10" value="0.1" constant="false"/>
       <parameter id="V3T" value="8"/>
       <parameter id="V4T" value="1"/>
       <parameter id="K3T" value="2"/>
@@ -327,6 +327,18 @@
           </apply>
         </math>
       </rateRule>
+      <assignmentRule variable="P2_Pt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> P00 </ci>
+            <ci> P10 </ci>
+            <ci> P20 </ci>
+            <ci> C0 </ci>
+            <ci> CN_0 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
       <rateRule variable="T20">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
@@ -434,18 +446,6 @@
           </apply>
         </math>
       </rateRule>
-      <assignmentRule variable="P2_Pt">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <plus/>
-            <ci> P00 </ci>
-            <ci> P10 </ci>
-            <ci> P20 </ci>
-            <ci> C0 </ci>
-            <ci> CN_0 </ci>
-          </apply>
-        </math>
-      </assignmentRule>
       <rateRule variable="MT0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>

@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model macgregor_leng_model_2005_version01__environment(time_)
+//Created by libAntimony v1.4
+model macgregor_model_2005__environment(time_)
 end
 
-model macgregor_leng_model_2005_version01__r(r, s, h_delta1, j1, time_)
+model macgregor_model_2005__r(r, s, h_delta1, j1, time_)
 
   // Assignment Rules:
   ract := 1.0 - power( s , n1 ) / (power( s , n1 ) + power( theta_1 , n1 ));
@@ -22,7 +22,7 @@ model macgregor_leng_model_2005_version01__r(r, s, h_delta1, j1, time_)
   theta_3 = 30.0;
 end
 
-model macgregor_leng_model_2005_version01__s(s, Is_, k7, g, time_)
+model macgregor_model_2005__s(s, Is_, k7, g, time_)
 
   // Rate Rules:
   s' = Is_ * g - k7 * s + Is2;
@@ -32,7 +32,7 @@ model macgregor_leng_model_2005_version01__s(s, Is_, k7, g, time_)
   Is2 = 50.0;
 end
 
-model macgregor_leng_model_2005_version01__se(se, k7, time_)
+model macgregor_model_2005__se(se, k7, time_)
 
   // Rate Rules:
   se' = Ise - k7 * se;
@@ -42,7 +42,7 @@ model macgregor_leng_model_2005_version01__se(se, k7, time_)
   Ise = 10.0;
 end
 
-model macgregor_leng_model_2005_version01__f(f, r, c, s, se, time_)
+model macgregor_model_2005__f(f, r, c, s, se, time_)
 
   // Assignment Rules:
   phi_b_s := 1.0 / ( 1.0 + exp(-((log( 1.0 * ( s + se )) - sb )) / delta_b ));
@@ -59,7 +59,7 @@ model macgregor_leng_model_2005_version01__f(f, r, c, s, se, time_)
   delta_b = 0.3;
 end
 
-model macgregor_leng_model_2005_version01__h(h, f, k8, j1, r, c, s, se, time_)
+model macgregor_model_2005__h(h, f, k8, j1, r, c, s, se, time_)
 
   // Assignment Rules:
   phi_r_s := 1.0 / ( 1.0 + exp(-((log( 1.0 * ( s + se )) - sr )) / delta_r ));
@@ -75,7 +75,7 @@ model macgregor_leng_model_2005_version01__h(h, f, k8, j1, r, c, s, se, time_)
   delta_r = 0.2;
 end
 
-model macgregor_leng_model_2005_version01__g(g, h_delta, Is_, j1, time_)
+model macgregor_model_2005__g(g, h_delta, Is_, j1, time_)
 
   // Assignment Rules:
   hact := power( h_delta , n2 ) / (power( h_delta , n2 ) + power( j1 * theta_2 , n2 ));
@@ -92,7 +92,7 @@ model macgregor_leng_model_2005_version01__g(g, h_delta, Is_, j1, time_)
   theta_2 = 30.0;
 end
 
-model macgregor_leng_model_2005_version01__hh(hh, j1, k8, time_)
+model macgregor_model_2005__hh(hh, j1, k8, time_)
 
   // Rate Rules:
   hh' = j1 * ( Ih - k8 * hh );
@@ -102,7 +102,7 @@ model macgregor_leng_model_2005_version01__hh(hh, j1, k8, time_)
   Ih = 50.0;
 end
 
-model macgregor_leng_model_2005_version01__model_parameters(h_delta, h_delta1, j1, k7, Is_, k8, c, h, hh, time_)
+model macgregor_model_2005__model_parameters(h_delta, h_delta1, j1, k7, Is_, k8, c, h, hh, time_)
 
   // Assignment Rules:
   h_delta := ( h + hh ) * delta;
@@ -118,16 +118,16 @@ model macgregor_leng_model_2005_version01__model_parameters(h_delta, h_delta1, j
   delta1 = 15.0;
 end
 
-model macgregor_leng_model_2005_version01____main()
+model macgregor_model_2005____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: macgregor_leng_model_2005_version01__environment(time_);
-  r: macgregor_leng_model_2005_version01__r(r0, s0, h_delta1, j1, time_);
-  s: macgregor_leng_model_2005_version01__s(s0, Is_, k7, g0, time_);
-  se: macgregor_leng_model_2005_version01__se(se0, k7, time_);
-  f: macgregor_leng_model_2005_version01__f(f0, r0, c, s0, se0, time_);
-  h: macgregor_leng_model_2005_version01__h(h0, f0, k8, j1, r0, c, s0, se0, time_);
-  g: macgregor_leng_model_2005_version01__g(g0, h_delta, Is_, j1, time_);
-  hh: macgregor_leng_model_2005_version01__hh(hh0, j1, k8, time_);
-  model_parameters: macgregor_leng_model_2005_version01__model_parameters(h_delta, h_delta1, j1, k7, Is_, k8, c, h0, hh0, time_);
+  environment: macgregor_model_2005__environment(time_);
+  r: macgregor_model_2005__r(r0, s0, h_delta1, j1, time_);
+  s: macgregor_model_2005__s(s0, Is_, k7, g0, time_);
+  se: macgregor_model_2005__se(se0, k7, time_);
+  f: macgregor_model_2005__f(f0, r0, c, s0, se0, time_);
+  h: macgregor_model_2005__h(h0, f0, k8, j1, r0, c, s0, se0, time_);
+  g: macgregor_model_2005__g(g0, h_delta, Is_, j1, time_);
+  hh: macgregor_model_2005__hh(hh0, j1, k8, time_);
+  model_parameters: macgregor_model_2005__model_parameters(h_delta, h_delta1, j1, k7, Is_, k8, c, h0, hh0, time_);
 end

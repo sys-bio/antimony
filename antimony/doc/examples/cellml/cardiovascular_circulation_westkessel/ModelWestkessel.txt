@@ -1,0 +1,42 @@
+//Created by libAntimony v1.4
+model TempR__TempR(Pi_, Po, Qi, Qo, R)
+
+  // Assignment Rules:
+  Pi_ := Po + R * Qi;
+  Qo := Qi;
+end
+
+model TempRC__TempRC(Pi_, Po, Qi, Qo, R, C, t, P0)
+
+  // Assignment Rules:
+  Qo := (Pi_ - Po) / R;
+
+  // Rate Rules:
+  Pi_' = (Qi - Qo) / C;
+
+  // Variable initializations:
+  Pi_ = P0;
+end
+
+model ParaWestkessel__ParaWestkessel(Rc, Cv, Rv, P0v)
+
+  // Variable initializations:
+  Rc = 0.005;
+  Cv = 2.6;
+  Rv = 0.65;
+  P0v = 0.;
+end
+
+model ModelWestkessel__ModelWestkessel(Pi_, Po, Qi, Qo, t)
+
+  // Sub-modules, and any changes to those submodules:
+  Zc: TempR__TempR(Pi_, Pi_0, Qi, Qi0, R);
+  Zv: TempRC__TempRC(Pi_0, Po, Qi0, Qo, R0, C, t, P0);
+  ParaWRCR: ParaWestkessel__ParaWestkessel(R, C, R0, P0);
+end
+
+model ModelWestkessel____main()
+
+  // Sub-modules, and any changes to those submodules:
+  ModelWestkessel: ModelWestkessel__ModelWestkessel(Pi_, Po, Qi, Qo, t);
+end

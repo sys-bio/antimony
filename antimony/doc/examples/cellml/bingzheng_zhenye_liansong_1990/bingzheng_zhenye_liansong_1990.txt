@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model bingzheng_model_1990__environment(time_)
+//Created by libAntimony v1.4
+model bingzheng_1990__environment(time_)
 end
 
-model bingzheng_model_1990__X1(X1, X3, time_)
+model bingzheng_1990__X1(X1, X3, time_)
 
   // Rate Rules:
   X1' = a0 + a1 / ( 1.0 + a2 * X3 ) - b1 * X1;
@@ -15,7 +15,7 @@ model bingzheng_model_1990__X1(X1, X3, time_)
   b1 = 0.0598;
 end
 
-model bingzheng_model_1990__X2(X2, X3, X1, time_)
+model bingzheng_1990__X2(X2, X3, X1, time_)
 
   // Rate Rules:
   X2' = ( a3 + a4 * X1 ) / ( 1.0 + a5 * X3 ) - b2 * X2;
@@ -28,7 +28,7 @@ model bingzheng_model_1990__X2(X2, X3, X1, time_)
   b2 = 0.053;
 end
 
-model bingzheng_model_1990__X3(X3, X2, time_)
+model bingzheng_1990__X3(X3, X2, time_)
 
   // Rate Rules:
   X3' = a6 + a7 * X2 - b3 * X3;
@@ -40,11 +40,11 @@ model bingzheng_model_1990__X3(X3, X2, time_)
   b3 = 0.0138;
 end
 
-model bingzheng_model_1990____main()
+model bingzheng_1990____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: bingzheng_model_1990__environment(time_);
-  X1: bingzheng_model_1990__X1(X10, X30, time_);
-  X2: bingzheng_model_1990__X2(X20, X30, X10, time_);
-  X3: bingzheng_model_1990__X3(X30, X20, time_);
+  environment: bingzheng_1990__environment(time_);
+  X1: bingzheng_1990__X1(X10, X30, time_);
+  X2: bingzheng_1990__X2(X20, X30, X10, time_);
+  X3: bingzheng_1990__X3(X30, X20, time_);
 end

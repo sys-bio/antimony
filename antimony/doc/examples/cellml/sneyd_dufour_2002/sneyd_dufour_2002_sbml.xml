@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="sneyd_dufour_2002_version01____main" name="sneyd_dufour_2002_version01____main">
+  <model id="sneyd_2002____main" name="sneyd_2002____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
       <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
     </listOfCompartments>
     <listOfParameters>
-      <parameter id="R0" value="0.16" constant="false"/>
+      <parameter id="R0" value="1" constant="false"/>
       <parameter id="phi_1" constant="false"/>
       <parameter id="phi_2" constant="false"/>
       <parameter id="phi_2b" constant="false"/>
       <parameter id="k_1b" value="0.04"/>
       <parameter id="l_2b" value="0.8"/>
-      <parameter id="I_10" value="0.16" constant="false"/>
-      <parameter id="O0" value="0.01" constant="false"/>
+      <parameter id="I_10" value="0" constant="false"/>
+      <parameter id="O0" value="0" constant="false"/>
       <parameter id="p" value="10"/>
       <parameter id="phi_3" constant="false"/>
       <parameter id="phi_4" constant="false"/>
       <parameter id="phi_4b" constant="false"/>
       <parameter id="k_3b" value="29.8"/>
-      <parameter id="A0" value="0.16" constant="false"/>
+      <parameter id="A0" value="0" constant="false"/>
       <parameter id="S0" constant="false"/>
-      <parameter id="I_20" value="0.16" constant="false"/>
+      <parameter id="I_20" value="0" constant="false"/>
       <parameter id="phi_5" constant="false"/>
+      <parameter id="open_probability_open_probability" constant="false"/>
       <parameter id="reaction_rate_constants_k_1a" value="0.64"/>
       <parameter id="reaction_rate_constants_k_2a" value="37.4"/>
       <parameter id="reaction_rate_constants_k_2b" value="1.4"/>
@@ -108,7 +109,7 @@
                 <ci> reaction_rate_constants_c </ci>
                 <apply>
                   <plus/>
-                  <cn> 1 </cn>
+                  <cn type="integer"> 1 </cn>
                   <apply>
                     <divide/>
                     <ci> reaction_rate_constants_L_1 </ci>
@@ -145,7 +146,7 @@
                 <ci> reaction_rate_constants_c </ci>
                 <apply>
                   <plus/>
-                  <cn> 1 </cn>
+                  <cn type="integer"> 1 </cn>
                   <apply>
                     <divide/>
                     <ci> reaction_rate_constants_L_3 </ci>
@@ -172,7 +173,7 @@
             </apply>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <divide/>
                 <ci> reaction_rate_constants_c </ci>
@@ -234,7 +235,7 @@
                 <ci> phi_4 </ci>
                 <apply>
                   <times/>
-                  <cn> 1 </cn>
+                  <cn type="integer"> 1 </cn>
                   <ci> phi_3 </ci>
                 </apply>
               </apply>
@@ -347,7 +348,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <minus/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
               <ci> R0 </ci>
@@ -402,6 +403,27 @@
               <ci> reaction_rate_constants_c </ci>
               <ci> reaction_rate_constants_L_1 </ci>
             </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="open_probability_open_probability">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn> 0.1 </cn>
+                <ci> O0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn> 0.9 </cn>
+                <ci> A0 </ci>
+              </apply>
+            </apply>
+            <cn type="integer"> 4 </cn>
           </apply>
         </math>
       </assignmentRule>

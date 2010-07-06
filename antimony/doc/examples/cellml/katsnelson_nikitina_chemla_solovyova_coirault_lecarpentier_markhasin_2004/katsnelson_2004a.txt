@@ -1,0 +1,199 @@
+//Created by libAntimony v1.4
+model katsnelson_2004__environment(time_)
+end
+
+model katsnelson_2004__parameters(isotonic, alpha_1, beta_1, alpha_2, beta_2, alpha_3, beta_3, lambda_, A_half, mu, chi, chi_0, m_0, v_max, a, d_h, alpha_P)
+
+  // Variable initializations:
+  isotonic = 0;
+  alpha_1 = 19;
+  beta_1 = 0.29;
+  alpha_2 = 14.6;
+  beta_2 = 0.000924;
+  alpha_3 = 48;
+  beta_3 = 0.01;
+  lambda_ = 96;
+  A_half = 0.6;
+  mu = 3;
+  chi = 0.705;
+  chi_0 = 3;
+  m_0 = 0.9;
+  v_max = 0.0056;
+  a = 0.25;
+  d_h = 0.5;
+  alpha_P = 4;
+end
+
+model katsnelson_2004__isotonic(time_, isotonic, l, F_muscle, isotonic_mode)
+
+  // Assignment Rules:
+  flag := piecewise( 0 , ( l >= l_0) && (time_ < 150 ), 1 );
+  isotonic_mode := piecewise( 0 , isotonic == 0 , 1 , ( isotonic == 1) && (F_muscle >= F_afterload ), 0 , (( isotonic == 1) && (l >= l_0) && (flag == 1 )) );
+
+  // Variable initializations:
+  F_afterload = 2;
+  l_0 = 0.527;
+end
+
+model katsnelson_2004__parameters_izakov_et_al_1991(S_0, q_v, q_4, v_star, v_1, alpha_G, a_on, a_off, k_A, v, v_max)
+
+  // Assignment Rules:
+  q_v := piecewise( q_1 - q_2 * v / v_max , v <= 0 , (q_4 - q_3) * v / v_star + q_3 , ( v <= v_star) && (0 < v ), q_4 / power(1 + beta_Q * (v - v_star) / v_max, alpha_Q) );
+  v_1 := v_max / 10;
+
+  // Variable initializations:
+  S_0 = 1.14;
+  q_1 = 0.0173;
+  q_2 = 0.259;
+  q_3 = 0.0173;
+  q_4 = 0.015;
+  v_star = 0.0053035675;
+  alpha_G = 1;
+  a_on = 2.3;
+  a_off = 0.29;
+  k_A = 2.8;
+  alpha_Q = 10;
+  beta_Q = 5000;
+end
+
+model katsnelson_2004__force(F_muscle, N, k_P_vis, k_S_vis, w, v, l_1, l_2, l_3, p_v, alpha_1, beta_1, alpha_2, beta_2, alpha_3, beta_3, lambda_)
+
+  // Assignment Rules:
+  F_CE := lambda_ * p_v * N;
+  F_muscle := F_XSE;
+  F_XSE := beta_3 * (exp(alpha_3 * l_3) - 1 );
+  F_SE := beta_1 * (exp(alpha_1 * (l_2 - l_1)) - 1 );
+  F_PE := beta_2 * (exp(alpha_2 * l_2) - 1 );
+end
+
+model katsnelson_2004__crossbridge_kinetics(N, K_chi, L_oz, time_, A, l_1, A_half, mu, chi, chi_0, m_0, S_0, q_v, v, v_star, G_star, P_star, q_4)
+
+  // Assignment Rules:
+  K_chi := k_p_v * M_A * n_1 * L_oz * (1 - N) - k_m_v * N;
+  M_A := power(A, mu) / (power(A, mu) + power(A_half, mu));
+  n_1 := 0.6 * l_1 + 0.5;
+  L_oz := (l_1 + S_0) / (0.46 + S_0);
+  k_p_v := chi * chi_0 * q_v * m_0 * G_star;
+  k_m_v := piecewise( chi_0 * q_v * (1 - chi * m_0 * G_star) , v <= v_star , chi_0 * (q_4 * (1 - chi * m_0 * G_star) + q_star * (v - v_star) / (v_0 - v_star)) );
+
+  // Rate Rules:
+  N' = K_chi;
+
+  // Variable initializations:
+  N = 0.0001;
+  v_0 = 0.0056;
+  q_star = 1;
+end
+
+model katsnelson_2004__length(dl_1_dt, l_1, dl_2_dt, l_2, dl_3_dt, l_3, time_, isotonic_mode, v, w, l, k_S_vis, phi_chi_2)
+
+  // Assignment Rules:
+  dl_1_dt := v;
+  dl_2_dt := piecewise( phi_chi_2 , k_S_vis == 0 , w );
+  dl_3_dt := piecewise( 0 , isotonic_mode == 1 , -(phi_chi_2) , ( isotonic_mode == 0) && (k_S_vis == 0 ), -(w) );
+  l := l_2 + l_3;
+
+  // Rate Rules:
+  l_1' = dl_1_dt;
+  l_2' = dl_2_dt;
+  l_3' = dl_3_dt;
+
+  // Variable initializations:
+  l_1 = 0.437;
+  l_2 = 0.439;
+  l_3 = 0.089;
+end
+
+model katsnelson_2004__CE_velocity(v, phi_chi, phi_chi_2, k_P_vis, k_S_vis, time_, w, K_chi, N, l_1, dl_1_dt, l_2, l_3, alpha_1, beta_1, alpha_2, beta_2, alpha_3, beta_3, lambda_, isotonic_mode, p_v, p_prime_v)
+
+  // Assignment Rules:
+  phi_chi := piecewise( -((lambda_ * K_chi * p_v + alp_p * k_P_vis * power(v, 2 ) + alpha_2 * beta_2 * exp(alpha_2 * l_2) * w)) / (lambda_ * N * p_prime_v + k_P_vis) , isotonic_mode == 1 , -((lambda_ * K_chi * p_v + alp_p * k_P_vis * power(v, 2 ) + (alpha_2 * beta_2 * exp(alpha_2 * l_2) + alpha_3 * beta_3 * exp(alpha_3 * l_3)) * w)) / (lambda_ * N * p_prime_v + k_P_vis) );
+  phi_chi_2 := piecewise( alpha_1 * beta_1 * exp(alpha_1 * (l_2 - l_1)) * v / (alpha_1 * beta_1 * exp(alpha_1 * (l_2 - l_1)) + alpha_2 * beta_2 * exp(alpha_2 * l_2)) , isotonic_mode == 1 , alpha_1 * beta_1 * exp(alpha_1 * (l_2 - l_1)) * v / (alpha_1 * beta_1 * exp(alpha_1 * (l_2 - l_1)) + alpha_2 * beta_2 * exp(alpha_2 * l_2) + alpha_3 * beta_3 * exp(alpha_3 * l_3)) );
+  k_P_vis := piecewise( beta_P_lengthening * exp(alpha_P_lengthening * l_1) , v <= 0 , beta_P_shortening * exp(alpha_P_shortening * l_1) );
+  alp_p := piecewise( alpha_P_lengthening , v <= 0 , alpha_P_shortening );
+
+  // Rate Rules:
+  v' = piecewise( (alpha_1 * beta_1 * exp(alpha_1 * (l_2 - l_1)) * (phi_chi_2 - v) - (lambda_ * K_chi * p_v + alp_p * k_P_vis * power(v, 2 ))) / (lambda_ * N * p_prime_v + k_P_vis) , k_S_vis == 0 , phi_chi );
+
+  // Variable initializations:
+  v = 0;
+  alpha_P_lengthening = 16;
+  beta_P_lengthening = 1.5;
+  alpha_P_shortening = 16;
+  beta_P_shortening = 1.5;
+end
+
+model katsnelson_2004__PE_velocity(w, k_S_vis, time_, v, phi_chi, l_1, dl_1_dt, l_2, dl_2_dt, l_3, alpha_1, beta_1, alpha_2, beta_2, alpha_3, beta_3, lambda_, isotonic_mode)
+
+  // Assignment Rules:
+  k_S_vis := piecewise( beta_S_lengthening * exp(alpha_S_lengthening * (l_2 - l_1)) , w <= v , beta_S_shortening * exp(alpha_S_shortening * (l_2 - l_1)) );
+  alp_s := piecewise( alpha_S_lengthening , w <= v , alpha_S_shortening );
+
+  // Rate Rules:
+  w' = piecewise( (k_S_vis * (phi_chi - alp_s * power(w - v, 2 )) - alpha_1 * beta_1 * exp(alpha_1 * (l_2 - l_1)) * (w - v) - alpha_2 * beta_2 * exp(alpha_2 * l_2) * w) / k_S_vis , isotonic_mode == 1 , phi_chi - alp_s * power(w - v, 2 ) - (alpha_1 * beta_1 * exp(alpha_1 * (l_2 - l_1)) * (w - v) + (alpha_2 * beta_2 * exp(alpha_2 * l_2) + alpha_3 * beta_3 * exp(alpha_3 * l_3)) * w) / k_S_vis );
+
+  // Variable initializations:
+  w = 0;
+  alpha_S_lengthening = 39;
+  beta_S_lengthening = 8;
+  alpha_S_shortening = 46;
+  beta_S_shortening = 6;
+end
+
+model katsnelson_2004__average_crossbridge_force(p_v, p_prime_v, P_star, G_star, v, phi_chi, v_1, v_max, a, d_h, alpha_G, alpha_P)
+
+  // Assignment Rules:
+  p_v := P_star / G_star;
+  p_prime_v := piecewise( case_1 , v <= -(v_max) , case_2 , ( -(v_max) < v) && (v <= 0 ), case_3 , ( 0 < v) && (v <= v_1 ), case_4 );
+  P_star := piecewise( a * (1 + v / v_max) / (a - v / v_max) , v <= 0 , 1 + d_h - power(d_h, 2 ) * a / (a * d_h / gamma * power(v / v_max, 2 ) + (a + 1 ) * v / v_max + a * d_h) );
+  G_star := piecewise( 1 + 0.6 * v / v_max , ( -(v_max) <= v) && (v <= 0 ), P_star / ((0.4 * a + 1 ) * v / (a * v_max) + 1 ) , ( 0 < v) && (v <= v_1 ), P_star * exp(-(alpha_G) * power((v - v_1) / v_max, alpha_P)) / ((0.4 * a + 1 ) * v / (a * v_max) + 1 ) );
+  gamma := a * d_h * power(v_1 / v_max, 2 ) / (3 * a * d_h - (a + 1 ) * v_1 / v_max);
+  case_1 := a * (0.4 + 0.4 * a) / (v_max * power((a + 1 ) * 0.4 , 2 ));
+  case_2 := a * 1 * (1 + 0.4 * a + 1.2 * v / v_max + 0.6 * power(v / v_max, 2 )) / (v_max * power((a - v / v_max) * (1 + 0.6 * v / v_max), 2 ));
+  case_3 := (0.4 * a + 1 ) / (a * v_max);
+  case_4 := 1 / v_max * exp(-(alpha_G) * power(v / v_max - v_1 / v_max, alpha_P)) * ((0.4 * a + 1 ) / a + alpha_G * alpha_P * (1 + (0.4 * a + 1 ) * v / (a * v_max)) * power(v / v_max - v_1 / v_max, alpha_P - 1 ));
+end
+
+model katsnelson_2004__calcium_handling(A, B, Ca_C, time_, N, a_on, a_off, k_A, L_oz)
+
+  // Assignment Rules:
+  dA_dt := a_on * (A_tot - A) * Ca_C - a_off * exp(-(k_A) * A) * pi_N_A * A;
+  N_A := N / (L_oz * A);
+  pi_N_A := piecewise( 1 , N_A >= 1 , power(0.02 , N_A) );
+  dB_dt := b_on * (B_tot - B) * Ca_C - b_off * B;
+
+  // Rate Rules:
+  A' = dA_dt;
+  B' = dB_dt;
+  Ca_C' = piecewise( 4 * a_c * Ca_m * time_ * (1 - exp(-(a_c) * power(time_, 2 ))) * exp(-(a_c) * power(time_, 2 )) , time_ < t_d , -(dA_dt) - dB_dt - r_Ca * exp(-(q_Ca) * Ca_C) * Ca_C );
+
+  // Variable initializations:
+  A = 0.01;
+  B = 0;
+  Ca_C = 0;
+  A_tot = 1;
+  B_tot = 0.4;
+  b_on = 2.6;
+  b_off = 0.182;
+  a_c = 0.0052;
+  r_Ca = 0.65;
+  q_Ca = 50;
+  t_d = 33;
+  Ca_m = 0.03;
+end
+
+model katsnelson_2004____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: katsnelson_2004__environment(time_);
+  parameters: katsnelson_2004__parameters(isotonic0, alpha_1, beta_1, alpha_2, beta_2, alpha_3, beta_3, lambda_, A_half, mu, chi, chi_0, m_0, v_max, a, d_h, alpha_P);
+  isotonic: katsnelson_2004__isotonic(time_, isotonic0, l, F_muscle, isotonic_mode);
+  parameters_izakov_et_al_1991: katsnelson_2004__parameters_izakov_et_al_1991(S_0, q_v, q_4, v_star, v_1, alpha_G, a_on, a_off, k_A, v, v_max);
+  force: katsnelson_2004__force(F_muscle, N, k_P_vis, k_S_vis, w, v, l_1, l_2, l_3, p_v, alpha_1, beta_1, alpha_2, beta_2, alpha_3, beta_3, lambda_);
+  crossbridge_kinetics: katsnelson_2004__crossbridge_kinetics(N, K_chi, L_oz, time_, A, l_1, A_half, mu, chi, chi_0, m_0, S_0, q_v, v, v_star, G_star, P_star, q_4);
+  length: katsnelson_2004__length(dl_1_dt, l_1, dl_2_dt, l_2, dl_3_dt, l_3, time_, isotonic_mode, v, w, l, k_S_vis, phi_chi_2);
+  CE_velocity: katsnelson_2004__CE_velocity(v, phi_chi, phi_chi_2, k_P_vis, k_S_vis, time_, w, K_chi, N, l_1, dl_1_dt, l_2, l_3, alpha_1, beta_1, alpha_2, beta_2, alpha_3, beta_3, lambda_, isotonic_mode, p_v, p_prime_v);
+  PE_velocity: katsnelson_2004__PE_velocity(w, k_S_vis, time_, v, phi_chi, l_1, dl_1_dt, l_2, dl_2_dt, l_3, alpha_1, beta_1, alpha_2, beta_2, alpha_3, beta_3, lambda_, isotonic_mode);
+  average_crossbridge_force: katsnelson_2004__average_crossbridge_force(p_v, p_prime_v, P_star, G_star, v, phi_chi, v_1, v_max, a, d_h, alpha_G, alpha_P);
+  calcium_handling: katsnelson_2004__calcium_handling(A, B, Ca_C, time_, N, a_on, a_off, k_A, L_oz);
+end

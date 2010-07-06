@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="lenbury_ruktamatakul_amornsamarnkul_model_2001_version01____main" name="lenbury_ruktamatakul_amornsamarnkul_model_2001_version01____main">
+  <model id="lenbury_2001____main" name="lenbury_2001____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
       <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
     </listOfCompartments>
     <listOfParameters>
-      <parameter id="x0" value="4.4" constant="false"/>
-      <parameter id="x_r1" value="0.2"/>
-      <parameter id="x_r2" value="0.1"/>
+      <parameter id="x0" value="5" constant="false"/>
+      <parameter id="x_r1" value="0.15"/>
+      <parameter id="x_r2" value="0.12"/>
       <parameter id="x_c1" value="0.1"/>
-      <parameter id="z0" constant="false"/>
-      <parameter id="y0" value="1.25" constant="false"/>
-      <parameter id="y_r3" value="0.1"/>
-      <parameter id="y_r4" value="0.1"/>
+      <parameter id="z0" value="1" constant="false"/>
+      <parameter id="y0" value="0" constant="false"/>
+      <parameter id="y_r3" value="0.05"/>
+      <parameter id="y_r4" value="0.03"/>
       <parameter id="y_c2" value="0.1"/>
       <parameter id="y_c3" value="0.005"/>
       <parameter id="epsilon" value="0.1"/>
-      <parameter id="u0" constant="false"/>
-      <parameter id="z_zReal" constant="false"/>
-      <parameter id="z_r5" value="0.1"/>
+      <parameter id="u0" value="1" constant="false"/>
+      <parameter id="z_r5" value="0.09"/>
       <parameter id="z_r6" value="0.1"/>
       <parameter id="z_r7" value="0.05"/>
-      <parameter id="z_z_" value="2"/>
-      <parameter id="z_y_" value="1.24"/>
+      <parameter id="z_z_" value="1.01"/>
+      <parameter id="z_y_" value="1.08"/>
       <parameter id="z_delta" value="0.01"/>
       <parameter id="u_omega" value="0.05"/>
-      <parameter id="u_v" constant="false"/>
+      <parameter id="u_v" value="0" constant="false"/>
       <parameter id="time_"/>
     </listOfParameters>
     <listOfRules>
@@ -47,62 +46,19 @@
                 <ci> y0 </ci>
               </apply>
               <apply>
-                <minus/>
+                <times/>
                 <apply>
-                  <times/>
+                  <minus/>
                   <ci> x_r2 </ci>
-                  <ci> x0 </ci>
                 </apply>
+                <ci> x0 </ci>
               </apply>
               <ci> x_c1 </ci>
             </apply>
           </apply>
         </math>
       </rateRule>
-      <assignmentRule variable="z0"/>
-      <rateRule variable="y0">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <times/>
-            <ci> epsilon </ci>
-            <apply>
-              <plus/>
-              <apply>
-                <divide/>
-                <ci> y_r3 </ci>
-                <ci> z0 </ci>
-              </apply>
-              <apply>
-                <minus/>
-                <apply>
-                  <times/>
-                  <ci> y_r4 </ci>
-                  <ci> x0 </ci>
-                </apply>
-              </apply>
-              <ci> y_c2 </ci>
-              <apply>
-                <times/>
-                <ci> y_c3 </ci>
-                <ci> u0 </ci>
-              </apply>
-            </apply>
-          </apply>
-        </math>
-      </rateRule>
-      <rateRule variable="u0">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <minus/>
-            <apply>
-              <times/>
-              <ci> u_omega </ci>
-              <ci> u_v </ci>
-            </apply>
-          </apply>
-        </math>
-      </rateRule>
-      <rateRule variable="z_zReal">
+      <rateRule variable="z0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <times/>
@@ -143,6 +99,48 @@
                 <ci> z0 </ci>
               </apply>
             </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="y0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> epsilon </ci>
+            <apply>
+              <plus/>
+              <apply>
+                <divide/>
+                <ci> y_r3 </ci>
+                <ci> z0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> y_r4 </ci>
+                </apply>
+                <ci> x0 </ci>
+              </apply>
+              <ci> y_c2 </ci>
+              <apply>
+                <times/>
+                <ci> y_c3 </ci>
+                <ci> u0 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="u0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> u_omega </ci>
+            </apply>
+            <ci> u_v </ci>
           </apply>
         </math>
       </rateRule>

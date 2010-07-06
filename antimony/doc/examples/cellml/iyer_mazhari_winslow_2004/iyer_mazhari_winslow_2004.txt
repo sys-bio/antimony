@@ -1,14 +1,14 @@
-//Created by libAntimony v1.3
-model iyer_mazhari_winslow_2004__environment(time_)
+//Created by libAntimony v1.4
+model iyer_2004__environment(time_)
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_CONCENTRATION_AND_VOLTAGE_DERIVATIVES(Faraday, Rgas, RT_over_F, Nai, Ki, Cai, CaSS, CaJSR, CaNSR, V, INa, INab, INaCa, INaK, IKv14_Na, IKr, IKs, IK1, ICaK, ICa, Ito1, i_Stim, IKv43, IKv14_K, ICab, IpCa, Jxfer, Jup, Jtrpn, Jrel, Jtr, time_, beta_SS, beta_JSR, beta_i, Ko, Nao, Cao)
+model iyer_2004__COMPUTE_CONCENTRATION_AND_VOLTAGE_DERIVATIVES(Faraday, Rgas, RT_over_F, Nai, Ki, Cai, CaSS, CaJSR, CaNSR, V, INa, INab, INaCa, INaK, IKv14_Na, IKr, IKs, IK1, ICaK, ICa, Ito1, i_Stim, IKv43, IKv14_K, ICab, IpCa, Jxfer, Jup, Jtrpn, Jrel, Jtr, time_, beta_SS, beta_JSR, beta_i, Ko, Nao, Cao)
 
   // Assignment Rules:
   a1 := C / (Vmyo * Faraday);
   a2 := C / (2 * VSS * Faraday);
   RT_over_F := Rgas * Temp / Faraday;
-  C := Acap * 1e-3;
+  C := Acap * 1.0E-3;
   i_tot := INa + ICa + ICaK + IKr + IKs + IK1 + INaCa + INaK + Ito1 + IpCa + ICab + INab + i_Stim;
 
   // Rate Rules:
@@ -41,7 +41,7 @@ model iyer_mazhari_winslow_2004__COMPUTE_CONCENTRATION_AND_VOLTAGE_DERIVATIVES(F
   Cao = 2;
 end
 
-model iyer_mazhari_winslow_2004__I_stimulus(i_Stim, time_)
+model iyer_2004__I_stimulus(i_Stim, time_)
 
   // Assignment Rules:
   i_Stim := piecewise( stim_amplitude , ( time_ - past >= stim_offset) && (time_ - past <= stim_offset + stim_duration ), 0 );
@@ -54,7 +54,7 @@ model iyer_mazhari_winslow_2004__I_stimulus(i_Stim, time_)
   stim_offset = 0;
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_INTRACELLULAR_CALCIUM_FLUXES(Cai, CaNSR, Jup, Jrel, O1_RyR, O2_RyR, CaJSR, CaSS, Jtr, Jxfer)
+model iyer_2004__COMPUTE_INTRACELLULAR_CALCIUM_FLUXES(Cai, CaNSR, Jup, Jrel, O1_RyR, O2_RyR, CaJSR, CaSS, Jtr, Jxfer)
 
   // Assignment Rules:
   fb := power(Cai / Kfb, Nfb);
@@ -77,7 +77,7 @@ model iyer_mazhari_winslow_2004__COMPUTE_INTRACELLULAR_CALCIUM_FLUXES(Cai, CaNSR
   tauxfer = 26.7;
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_Jtrpn_and_BUFFER_SCALE_FACTORS(Cai, Jtrpn, CaSS, beta_SS, beta_JSR, beta_i, CaJSR, LTRPNCa, HTRPNCa, time_)
+model iyer_2004__COMPUTE_Jtrpn_and_BUFFER_SCALE_FACTORS(Cai, Jtrpn, CaSS, beta_SS, beta_JSR, beta_i, CaJSR, LTRPNCa, HTRPNCa, time_)
 
   // Assignment Rules:
   dLTRPNCa := kltrpn_plus * Cai * (1 - LTRPNCa) - kltrpn_minus * LTRPNCa;
@@ -108,7 +108,7 @@ model iyer_mazhari_winslow_2004__COMPUTE_Jtrpn_and_BUFFER_SCALE_FACTORS(Cai, Jtr
   HTRPNCa = 0.9772152481;
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_RyR_RECEPTOR_STATES(CaSS, time_, C1_RyR, O2_RyR, C2_RyR, O1_RyR)
+model iyer_2004__COMPUTE_DERIVATIVES_OF_RyR_RECEPTOR_STATES(CaSS, time_, C1_RyR, O2_RyR, C2_RyR, O1_RyR)
 
   // Assignment Rules:
   dC1_RyR := -(kaplus) * power(CaSS * 1000 , ncoop) * C1_RyR + kaminus * O1_RyR;
@@ -137,7 +137,7 @@ model iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_RyR_RECEPTOR_STATES(CaSS
   O1_RyR = 0.6601783287e-3;
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_LTYPE_CHANNEL_STATES(V, CaSS, time_, Open, yCa)
+model iyer_2004__COMPUTE_DERIVATIVES_OF_LTYPE_CHANNEL_STATES(V, CaSS, time_, Open, yCa)
 
   // Assignment Rules:
   C0_to_C1 := 4 * alpha;
@@ -229,7 +229,7 @@ model iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_LTYPE_CHANNEL_STATES(V, 
   yCa = 0.9997157074;
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_Kv4_3_CHANNEL_STATES(V, C0Kv43, C1Kv43, C2Kv43, C3Kv43, OKv43, CI0Kv43, CI1Kv43, CI2Kv43, CI3Kv43, OIKv43, time_)
+model iyer_2004__COMPUTE_DERIVATIVES_OF_Kv4_3_CHANNEL_STATES(V, C0Kv43, C1Kv43, C2Kv43, C3Kv43, OKv43, CI0Kv43, CI1Kv43, CI2Kv43, CI3Kv43, OIKv43, time_)
 
   // Assignment Rules:
   alpha_act43 := alphaa0Kv43 * exp(aaKv43 * V);
@@ -324,7 +324,7 @@ model iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_Kv4_3_CHANNEL_STATES(V, 
   b4Kv43 = 524.576206679;
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_Kv1_4_CHANNEL_STATES(C0Kv14, C1Kv14, C2Kv14, C3Kv14, OKv14, CI0Kv14, CI1Kv14, CI2Kv14, CI3Kv14, OIKv14, time_, V)
+model iyer_2004__COMPUTE_DERIVATIVES_OF_Kv1_4_CHANNEL_STATES(C0Kv14, C1Kv14, C2Kv14, C3Kv14, OKv14, CI0Kv14, CI1Kv14, CI2Kv14, CI3Kv14, OIKv14, time_, V)
 
   // Assignment Rules:
   alpha_act14 := alphaa0Kv14 * exp(aaKv14 * V);
@@ -417,7 +417,7 @@ model iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_Kv1_4_CHANNEL_STATES(C0K
   OIKv14 = 0.1134082058;
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_REVERSAL_POTENTIALS(ENa, EK, EKs, ECa, RT_over_F, Nao, Nai, Ko, Ki, Cao, Cai)
+model iyer_2004__COMPUTE_REVERSAL_POTENTIALS(ENa, EK, EKs, ECa, RT_over_F, Nao, Nai, Ko, Ki, Cao, Cai)
 
   // Assignment Rules:
   ENa := RT_over_F * ln(Nao / Nai);
@@ -428,11 +428,11 @@ model iyer_mazhari_winslow_2004__COMPUTE_REVERSAL_POTENTIALS(ENa, EK, EKs, ECa, 
   a2 := Ki + 0.01833 * Nai;
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_INa_IKr_IKs_Ito1_IK1_INab_IKp(OKv14, na6, na7, V, ENa, Ko, OHerg, O1ks, O2ks, OKv43, RT_over_F, Faraday, Ki, EK, IKr, IKs, IKv43, IKv14_K, Nai, Nao, IKv14_Na, IKv14, Ito1, IK1, INab, INa)
+model iyer_2004__COMPUTE_INa_IKr_IKs_Ito1_IK1_INab_IKp(OKv14, na6, na7, V, ENa, Ko, OHerg, O1ks, O2ks, OKv43, RT_over_F, Faraday, Ki, EK, IKr, IKs, IKv43, IKv14_K, Nai, Nao, IKv14_Na, IKv14, Ito1, IK1, INab, INa)
 
   // Assignment Rules:
   GKv43 := Kv43Frac * KvScale * 0.1;
-  PKv14 := (1 - Kv43Frac) * KvScale * 4.2986e-7;
+  PKv14 := (1 - Kv43Frac) * KvScale * 4.2986E-7;
   fKo := root(Ko / 4 );
   VF_over_RT := V / RT_over_F;
   VFsq_over_RT := 1000 * Faraday * VF_over_RT;
@@ -461,7 +461,7 @@ model iyer_mazhari_winslow_2004__COMPUTE_INa_IKr_IKs_Ito1_IK1_INab_IKp(OKv14, na
   Kv43Frac = 0.889;
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_INaK_INaCa_ICab_IpCa(V, ECa, RT_over_F, Nai, Nao, Ko, Cai, Cao, INaK, INaCa, ICab, IpCa)
+model iyer_2004__COMPUTE_INaK_INaCa_ICab_IpCa(V, ECa, RT_over_F, Nai, Nao, Ko, Cai, Cao, INaK, INaCa, ICab, IpCa)
 
   // Assignment Rules:
   VF_over_RT := V / RT_over_F;
@@ -495,13 +495,13 @@ model iyer_mazhari_winslow_2004__COMPUTE_INaK_INaCa_ICab_IpCa(V, ECa, RT_over_F,
   GCab = 7.684e-5;
 end
 
-model iyer_mazhari_winslow_2004__COMPUTE_ICa_ICaK(Ko, Ki, RT_over_F, Cai, Cao, V, yCa, Open, Faraday, ICa, ICaK)
+model iyer_2004__COMPUTE_ICa_ICaK(Ko, Ki, RT_over_F, Cai, Cao, V, yCa, Open, Faraday, ICa, ICaK)
 
   // Assignment Rules:
   PKprime := PK / (1 + Icabar / ICahalf);
   VF_over_RT := V / RT_over_F;
   VFsq_over_RT := 1000 * Faraday * VF_over_RT;
-  a1_Ca := 1e-3 * exp(2 * VF_over_RT) - Cao * 0.341;
+  a1_Ca := 1.0E-3 * exp(2 * VF_over_RT) - Cao * 0.341;
   a2_Ca := exp(2 * VF_over_RT) - 1;
   a1_K := Ki * exp(VF_over_RT) - Ko;
   a2_K := exp(VF_over_RT) - 1;
@@ -509,15 +509,15 @@ model iyer_mazhari_winslow_2004__COMPUTE_ICa_ICaK(Ko, Ki, RT_over_F, Cai, Cao, V
   ICaK := PKprime * Open * yCa * VFsq_over_RT * a1_K / a2_K;
   ICamax := PCa * 4 * VFsq_over_RT * a1_Ca / a2_Ca;
   Icabar := piecewise( 0 , ICamax >= 0 , ICamax );
-  PCa := Pscale * 2.469e-4;
-  PK := Pscale * 4.574e-7;
+  PCa := Pscale * 2.469E-4;
+  PK := Pscale * 4.574E-7;
 
   // Variable initializations:
   ICahalf = -0.265;
   Pscale = 7;
 end
 
-model iyer_mazhari_winslow_2004__INa(V, time_, na1, na2, na3, na4, na5, na6, na7, na8, na9, na10, na11, na12, na13, RToverF, Faraday, Rgas)
+model iyer_2004__INa(V, time_, na1, na2, na3, na4, na5, na6, na7, na8, na9, na10, na11, na12, na13, RToverF, Faraday, Rgas)
 
   // Assignment Rules:
   Temp_Scale := 1.38862291252871;
@@ -572,7 +572,7 @@ model iyer_mazhari_winslow_2004__INa(V, time_, na1, na2, na3, na4, na5, na6, na7
   k411 := k310 * parameter_a;
   k512 := k411 * parameter_a;
   k613 := On;
-  KToverH := 1.381e-23 * TNa / 6.626e-31;
+  KToverH := 1.381E-23 * TNa / 6.626E-31;
   FoverRT := 1 / RToverF;
   RTNa := Rgas * TNa;
   RTNaF := Rgas * TNa / Faraday;
@@ -609,7 +609,7 @@ model iyer_mazhari_winslow_2004__INa(V, time_, na1, na2, na3, na4, na5, na6, na7
   TNa = 294.16;
 end
 
-model iyer_mazhari_winslow_2004__IKr(V, C1Herg, C2Herg, C3Herg, OHerg, IHerg, time_)
+model iyer_2004__IKr(V, C1Herg, C2Herg, C3Herg, OHerg, IHerg, time_)
 
   // Assignment Rules:
   C2H_to_C3H := T_Const_HERG * 0.02608362043337;
@@ -661,7 +661,7 @@ model iyer_mazhari_winslow_2004__IKr(V, C1Herg, C2Herg, C3Herg, OHerg, IHerg, ti
   IHerg = 1.533347007e-6;
 end
 
-model iyer_mazhari_winslow_2004__IKs(C0ks, C1ks, O1ks, O2ks, V, time_)
+model iyer_2004__IKs(C0ks, C1ks, O1ks, O2ks, V, time_)
 
   // Assignment Rules:
   C0ks_C1ks := 0.00795600798004;
@@ -684,39 +684,39 @@ model iyer_mazhari_winslow_2004__IKs(C0ks, C1ks, O1ks, O2ks, V, time_)
   O2ks = 1.298547822e-5;
 end
 
-model iyer_mazhari_winslow_2004__cell()
+model iyer_2004__cell()
 end
 
-model iyer_mazhari_winslow_2004__transmembrane_currents()
+model iyer_2004__transmembrane_currents()
 end
 
-model iyer_mazhari_winslow_2004__intracellular_currents()
+model iyer_2004__intracellular_currents()
 end
 
-model iyer_mazhari_winslow_2004__Ions_n_reversal_potentials()
+model iyer_2004__Ions_n_reversal_potentials()
 end
 
-model iyer_mazhari_winslow_2004____main()
+model iyer_2004____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: iyer_mazhari_winslow_2004__environment(time_);
-  COMPUTE_CONCENTRATION_AND_VOLTAGE_DERIVATIVES: iyer_mazhari_winslow_2004__COMPUTE_CONCENTRATION_AND_VOLTAGE_DERIVATIVES(Faraday, Rgas, RToverF, Nai, Ki, Cai, CaSS, CaJSR, CaNSR, V, INa0, INab, INaCa, INaK, IKv14_Na, IKr0, IKs0, IK1, ICaK, ICa, Ito1, i_Stim, IKv43, IKv14_K, ICab, IpCa, Jxfer, Jup, Jtrpn, Jrel, Jtr, time_, beta_SS, beta_JSR, beta_i, Ko, Nao, Cao);
-  I_stimulus: iyer_mazhari_winslow_2004__I_stimulus(i_Stim, time_);
-  COMPUTE_INTRACELLULAR_CALCIUM_FLUXES: iyer_mazhari_winslow_2004__COMPUTE_INTRACELLULAR_CALCIUM_FLUXES(Cai, CaNSR, Jup, Jrel, O1_RyR, O2_RyR, CaJSR, CaSS, Jtr, Jxfer);
-  COMPUTE_Jtrpn_and_BUFFER_SCALE_FACTORS: iyer_mazhari_winslow_2004__COMPUTE_Jtrpn_and_BUFFER_SCALE_FACTORS(Cai, Jtrpn, CaSS, beta_SS, beta_JSR, beta_i, CaJSR, LTRPNCa, HTRPNCa, time_);
-  COMPUTE_DERIVATIVES_OF_RyR_RECEPTOR_STATES: iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_RyR_RECEPTOR_STATES(CaSS, time_, C1_RyR, O2_RyR, C2_RyR, O1_RyR);
-  COMPUTE_DERIVATIVES_OF_LTYPE_CHANNEL_STATES: iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_LTYPE_CHANNEL_STATES(V, CaSS, time_, Open, yCa);
-  COMPUTE_DERIVATIVES_OF_Kv4_3_CHANNEL_STATES: iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_Kv4_3_CHANNEL_STATES(V, C0Kv43, C1Kv43, C2Kv43, C3Kv43, OKv43, CI0Kv43, CI1Kv43, CI2Kv43, CI3Kv43, OIKv43, time_);
-  COMPUTE_DERIVATIVES_OF_Kv1_4_CHANNEL_STATES: iyer_mazhari_winslow_2004__COMPUTE_DERIVATIVES_OF_Kv1_4_CHANNEL_STATES(C0Kv14, C1Kv14, C2Kv14, C3Kv14, OKv14, CI0Kv14, CI1Kv14, CI2Kv14, CI3Kv14, OIKv14, time_, V);
-  COMPUTE_REVERSAL_POTENTIALS: iyer_mazhari_winslow_2004__COMPUTE_REVERSAL_POTENTIALS(ENa, EK, EKs, ECa, RToverF, Nao, Nai, Ko, Ki, Cao, Cai);
-  COMPUTE_INa_IKr_IKs_Ito1_IK1_INab_IKp: iyer_mazhari_winslow_2004__COMPUTE_INa_IKr_IKs_Ito1_IK1_INab_IKp(OKv14, na6, na7, V, ENa, Ko, OHerg, O1ks, O2ks, OKv43, RToverF, Faraday, Ki, EK, IKr0, IKs0, IKv43, IKv14_K, Nai, Nao, IKv14_Na, IKv14, Ito1, IK1, INab, INa0);
-  COMPUTE_INaK_INaCa_ICab_IpCa: iyer_mazhari_winslow_2004__COMPUTE_INaK_INaCa_ICab_IpCa(V, ECa, RToverF, Nai, Nao, Ko, Cai, Cao, INaK, INaCa, ICab, IpCa);
-  COMPUTE_ICa_ICaK: iyer_mazhari_winslow_2004__COMPUTE_ICa_ICaK(Ko, Ki, RToverF, Cai, Cao, V, yCa, Open, Faraday, ICa, ICaK);
-  INa: iyer_mazhari_winslow_2004__INa(V, time_, na1, na2, na3, na4, na5, na6, na7, na8, na9, na10, na11, na12, na13, RToverF, Faraday, Rgas);
-  IKr: iyer_mazhari_winslow_2004__IKr(V, C1Herg, C2Herg, C3Herg, OHerg, IHerg, time_);
-  IKs: iyer_mazhari_winslow_2004__IKs(C0ks, C1ks, O1ks, O2ks, V, time_);
-  cell: iyer_mazhari_winslow_2004__cell();
-  transmembrane_currents: iyer_mazhari_winslow_2004__transmembrane_currents();
-  intracellular_currents: iyer_mazhari_winslow_2004__intracellular_currents();
-  Ions_n_reversal_potentials: iyer_mazhari_winslow_2004__Ions_n_reversal_potentials();
+  environment: iyer_2004__environment(time_);
+  COMPUTE_CONCENTRATION_AND_VOLTAGE_DERIVATIVES: iyer_2004__COMPUTE_CONCENTRATION_AND_VOLTAGE_DERIVATIVES(Faraday, Rgas, RToverF, Nai, Ki, Cai, CaSS, CaJSR, CaNSR, V, INa0, INab, INaCa, INaK, IKv14_Na, IKr0, IKs0, IK1, ICaK, ICa, Ito1, i_Stim, IKv43, IKv14_K, ICab, IpCa, Jxfer, Jup, Jtrpn, Jrel, Jtr, time_, beta_SS, beta_JSR, beta_i, Ko, Nao, Cao);
+  I_stimulus: iyer_2004__I_stimulus(i_Stim, time_);
+  COMPUTE_INTRACELLULAR_CALCIUM_FLUXES: iyer_2004__COMPUTE_INTRACELLULAR_CALCIUM_FLUXES(Cai, CaNSR, Jup, Jrel, O1_RyR, O2_RyR, CaJSR, CaSS, Jtr, Jxfer);
+  COMPUTE_Jtrpn_and_BUFFER_SCALE_FACTORS: iyer_2004__COMPUTE_Jtrpn_and_BUFFER_SCALE_FACTORS(Cai, Jtrpn, CaSS, beta_SS, beta_JSR, beta_i, CaJSR, LTRPNCa, HTRPNCa, time_);
+  COMPUTE_DERIVATIVES_OF_RyR_RECEPTOR_STATES: iyer_2004__COMPUTE_DERIVATIVES_OF_RyR_RECEPTOR_STATES(CaSS, time_, C1_RyR, O2_RyR, C2_RyR, O1_RyR);
+  COMPUTE_DERIVATIVES_OF_LTYPE_CHANNEL_STATES: iyer_2004__COMPUTE_DERIVATIVES_OF_LTYPE_CHANNEL_STATES(V, CaSS, time_, Open, yCa);
+  COMPUTE_DERIVATIVES_OF_Kv4_3_CHANNEL_STATES: iyer_2004__COMPUTE_DERIVATIVES_OF_Kv4_3_CHANNEL_STATES(V, C0Kv43, C1Kv43, C2Kv43, C3Kv43, OKv43, CI0Kv43, CI1Kv43, CI2Kv43, CI3Kv43, OIKv43, time_);
+  COMPUTE_DERIVATIVES_OF_Kv1_4_CHANNEL_STATES: iyer_2004__COMPUTE_DERIVATIVES_OF_Kv1_4_CHANNEL_STATES(C0Kv14, C1Kv14, C2Kv14, C3Kv14, OKv14, CI0Kv14, CI1Kv14, CI2Kv14, CI3Kv14, OIKv14, time_, V);
+  COMPUTE_REVERSAL_POTENTIALS: iyer_2004__COMPUTE_REVERSAL_POTENTIALS(ENa, EK, EKs, ECa, RToverF, Nao, Nai, Ko, Ki, Cao, Cai);
+  COMPUTE_INa_IKr_IKs_Ito1_IK1_INab_IKp: iyer_2004__COMPUTE_INa_IKr_IKs_Ito1_IK1_INab_IKp(OKv14, na6, na7, V, ENa, Ko, OHerg, O1ks, O2ks, OKv43, RToverF, Faraday, Ki, EK, IKr0, IKs0, IKv43, IKv14_K, Nai, Nao, IKv14_Na, IKv14, Ito1, IK1, INab, INa0);
+  COMPUTE_INaK_INaCa_ICab_IpCa: iyer_2004__COMPUTE_INaK_INaCa_ICab_IpCa(V, ECa, RToverF, Nai, Nao, Ko, Cai, Cao, INaK, INaCa, ICab, IpCa);
+  COMPUTE_ICa_ICaK: iyer_2004__COMPUTE_ICa_ICaK(Ko, Ki, RToverF, Cai, Cao, V, yCa, Open, Faraday, ICa, ICaK);
+  INa: iyer_2004__INa(V, time_, na1, na2, na3, na4, na5, na6, na7, na8, na9, na10, na11, na12, na13, RToverF, Faraday, Rgas);
+  IKr: iyer_2004__IKr(V, C1Herg, C2Herg, C3Herg, OHerg, IHerg, time_);
+  IKs: iyer_2004__IKs(C0ks, C1ks, O1ks, O2ks, V, time_);
+  cell: iyer_2004__cell();
+  transmembrane_currents: iyer_2004__transmembrane_currents();
+  intracellular_currents: iyer_2004__intracellular_currents();
+  Ions_n_reversal_potentials: iyer_2004__Ions_n_reversal_potentials();
 end

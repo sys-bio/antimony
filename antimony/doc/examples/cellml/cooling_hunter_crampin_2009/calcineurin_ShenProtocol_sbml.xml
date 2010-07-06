@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="calcineurin____main" name="calcineurin____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="calcineurin_M" value="6000"/>
+      <parameter id="Ntot" value="1000"/>
+      <parameter id="calcineurin_K_mN" value="535"/>
+      <parameter id="calcineurin_n" value="2.92"/>
+      <parameter id="calcineurin_K_dN" value="1760"/>
+      <parameter id="calcineurin_act_N" constant="false"/>
+      <parameter id="act_Napp" constant="false"/>
+      <parameter id="calcineurin_tau_actN" value="0.070059"/>
+      <parameter id="calcineurin_tNinhib" value="3600"/>
+      <parameter id="t"/>
+      <parameter id="Ca"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="calcineurin_act_N">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <power/>
+              <ci> Ca </ci>
+              <ci> calcineurin_n </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> Ca </ci>
+                <ci> calcineurin_n </ci>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <power/>
+                  <ci> calcineurin_K_mN </ci>
+                  <ci> calcineurin_n </ci>
+                </apply>
+                <apply>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
+                  <apply>
+                    <divide/>
+                    <ci> calcineurin_K_dN </ci>
+                    <ci> calcineurin_M </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="act_Napp"/>
+    </listOfRules>
+  </model>
+</sbml>
