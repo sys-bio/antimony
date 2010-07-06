@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model baylor_model_f_2002__environment(time_)
+//Created by libAntimony v1.4
+model baylor_2002d__environment(time_)
 end
 
-model baylor_model_f_2002__Ca(Ca, k1, k1_, k3, k3_, k4, k4_, E, CaE, Ca2E_, CaE_, time_)
+model baylor_2002d__Ca(Ca, k1, k1_, k3, k3_, k4, k4_, E, CaE, Ca2E_, CaE_, time_)
 
   // Rate Rules:
   Ca' = k1_ * CaE + k3_ * Ca2E_ + k4 * Ca2E_ - ( k1 * Ca * E + k3 * Ca * CaE_ + k4_ * 2.0 * Ca * E );
@@ -11,7 +11,7 @@ model baylor_model_f_2002__Ca(Ca, k1, k1_, k3, k3_, k4, k4_, E, CaE, Ca2E_, CaE_
   Ca = 0.05;
 end
 
-model baylor_model_f_2002__E(E, k1, k1_, k4, k4_, Ca, CaE, Ca2E_, time_)
+model baylor_2002d__E(E, k1, k1_, k4, k4_, Ca, CaE, Ca2E_, time_)
 
   // Rate Rules:
   E' = k1_ * CaE + k4 * Ca2E_ - ( k1 * Ca * E + k4_ * 2.0 * Ca * E );
@@ -20,48 +20,54 @@ model baylor_model_f_2002__E(E, k1, k1_, k4, k4_, Ca, CaE, Ca2E_, time_)
   E = 240.0;
 end
 
-model baylor_model_f_2002__CaE(CaE, k1, k1_, k2, k2_, Ca, E, CaE_, time_)
+model baylor_2002d__CaE(CaE, k1, k1_, k2, k2_, Ca, E, CaE_, time_)
 
   // Rate Rules:
   CaE' = k1 * Ca * E + k2_ * CaE_ - ( k1_ * CaE + k2 * CaE );
+
+  // Variable initializations:
+  CaE = 0.01;
 end
 
-model baylor_model_f_2002__Ca2E_(Ca2E_, k3, k3_, k4, k4_, Ca, CaE_, E, time_)
+model baylor_2002d__Ca2E_(Ca2E_, k3, k3_, k4, k4_, Ca, CaE_, E, time_)
 
   // Rate Rules:
-  Ca2E_' = k3 * CaE_ * Ca + k4_ * E - ( k3_ * Ca2E_ + k4 * 2.0 * Ca * Ca2E_ );
+  Ca2E_' = k3 * CaE_ * Ca + k4_ * E * 2.0 * Ca - ( k3_ * Ca2E_ + k4 * Ca2E_ );
 
   // Variable initializations:
   Ca2E_ = 1.0;
 end
 
-model baylor_model_f_2002__CaE_(CaE_, k3, k3_, k2, k2_, Ca, CaE, Ca2E_, time_)
+model baylor_2002d__CaE_(CaE_, k3, k3_, k2, k2_, Ca, CaE, Ca2E_, time_)
 
   // Rate Rules:
   CaE_' = k3_ * Ca2E_ + k2 * CaE - ( k2_ * CaE_ + k3 * Ca * CaE_ );
-end
-
-model baylor_model_f_2002__reaction_constants(k1, k1_, k2, k2_, k3, k3_, k4, k4_)
 
   // Variable initializations:
-  k1 = 1.0E8;
+  CaE_ = 0.01;
+end
+
+model baylor_2002d__reaction_constants(k1, k1_, k2, k2_, k3, k3_, k4, k4_)
+
+  // Variable initializations:
+  k1 = 1.0E14;
   k1_ = 1000.0;
   k2 = 500.0;
   k2_ = 1200.0;
-  k3 = 1.0E8;
+  k3 = 1.0E14;
   k3_ = 10.0;
   k4 = 20.0;
   k4_ = 0.0;
 end
 
-model baylor_model_f_2002____main()
+model baylor_2002d____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: baylor_model_f_2002__environment(time_);
-  Ca: baylor_model_f_2002__Ca(Ca0, k1, k1_, k3, k3_, k4, k4_, E0, CaE0, Ca2E_0, CaE_0, time_);
-  E: baylor_model_f_2002__E(E0, k1, k1_, k4, k4_, Ca0, CaE0, Ca2E_0, time_);
-  CaE: baylor_model_f_2002__CaE(CaE0, k1, k1_, k2, k2_, Ca0, E0, CaE_0, time_);
-  Ca2E_: baylor_model_f_2002__Ca2E_(Ca2E_0, k3, k3_, k4, k4_, Ca0, CaE_0, E0, time_);
-  CaE_: baylor_model_f_2002__CaE_(CaE_0, k3, k3_, k2, k2_, Ca0, CaE0, Ca2E_0, time_);
-  reaction_constants: baylor_model_f_2002__reaction_constants(k1, k1_, k2, k2_, k3, k3_, k4, k4_);
+  environment: baylor_2002d__environment(time_);
+  Ca: baylor_2002d__Ca(Ca0, k1, k1_, k3, k3_, k4, k4_, E0, CaE0, Ca2E_0, CaE_0, time_);
+  E: baylor_2002d__E(E0, k1, k1_, k4, k4_, Ca0, CaE0, Ca2E_0, time_);
+  CaE: baylor_2002d__CaE(CaE0, k1, k1_, k2, k2_, Ca0, E0, CaE_0, time_);
+  Ca2E_: baylor_2002d__Ca2E_(Ca2E_0, k3, k3_, k4, k4_, Ca0, CaE_0, E0, time_);
+  CaE_: baylor_2002d__CaE_(CaE_0, k3, k3_, k2, k2_, Ca0, CaE0, Ca2E_0, time_);
+  reaction_constants: baylor_2002d__reaction_constants(k1, k1_, k2, k2_, k3, k3_, k4, k4_);
 end

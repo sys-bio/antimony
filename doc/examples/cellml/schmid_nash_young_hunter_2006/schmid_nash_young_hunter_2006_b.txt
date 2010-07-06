@@ -1,5 +1,5 @@
-//Created by libAntimony v1.3
-model guccione_mcculloch_waldman_1991_version05__equations(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23)
+//Created by libAntimony v1.4
+model schmid_2006__equations(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23)
 
   // Assignment Rules:
   Tdev11 := aff * (bff * E11 + 1 / 3 * power(bff * E11, 3 ) + 2 / 15 * power(bff * E11, 5 ) + 17 / 315 * power(bff * E11, 7 ) + 62 / 2835 * power(bff * E11, 9 ));
@@ -10,10 +10,10 @@ model guccione_mcculloch_waldman_1991_version05__equations(E11, E22, E33, E12, E
   Tdev23 := ans * (bns * E23 + 1 / 3 * power(bns * E23, 3 ) + 2 / 15 * power(bns * E23, 5 ) + 17 / 315 * power(bns * E23, 7 ) + 62 / 2835 * power(bns * E23, 9 ));
 end
 
-model guccione_mcculloch_waldman_1991_version05__interface(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23)
+model schmid_2006__interface(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23)
 
   // Sub-modules, and any changes to those submodules:
-  equations: guccione_mcculloch_waldman_1991_version05__equations(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23);
+  equations: schmid_2006__equations(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23);
 
   // Variable initializations:
   aff = 0;
@@ -30,8 +30,8 @@ model guccione_mcculloch_waldman_1991_version05__interface(E11, E22, E33, E12, E
   bss = 0;
 end
 
-model guccione_mcculloch_waldman_1991_version05____main()
+model schmid_2006____main()
 
   // Sub-modules, and any changes to those submodules:
-  interface: guccione_mcculloch_waldman_1991_version05__interface(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23);
+  interface: schmid_2006__interface(E11, E22, E33, E12, E13, E23, aff, afn, afs, ann, ans, ass, bff, bfn, bfs, bnn, bns, bss, Tdev11, Tdev22, Tdev33, Tdev12, Tdev13, Tdev23);
 end

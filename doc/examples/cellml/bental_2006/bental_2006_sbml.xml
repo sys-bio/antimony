@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="bental_2005____main" name="bental_2005____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="P_L" constant="false"/>
+      <parameter id="dP_Ldt" constant="false"/>
+      <parameter id="PluralPressureFunction_P_m" value="760"/>
+      <parameter id="PluralPressureFunction_R" constant="false"/>
+      <parameter id="PluralPressureFunction_omega" value="1.256637"/>
+      <parameter id="PluralPressureFunction_V_T" value="0.41"/>
+      <parameter id="PluralPressureFunction_E" value="2.5"/>
+      <parameter id="lungMechanics_P_m" value="760"/>
+      <parameter id="V_A" value="1" constant="false"/>
+      <parameter id="lungMechanics_E" value="2.5"/>
+      <parameter id="P_A" value="760" constant="false"/>
+      <parameter id="lungMechanics_R" value="1"/>
+      <parameter id="Q_A" constant="false"/>
+      <parameter id="q" constant="false"/>
+      <parameter id="D_o" value="1.56e-05"/>
+      <parameter id="f_o" value="0.1368" constant="false"/>
+      <parameter id="gasExchange_f_oi" constant="false"/>
+      <parameter id="D_c" value="3.16e-05"/>
+      <parameter id="gasExchange_f_c" value="0.05263" constant="false"/>
+      <parameter id="gasExchange_f_ci" constant="false"/>
+      <parameter id="P_w" value="47"/>
+      <parameter id="gasExchange_p_ao" constant="false"/>
+      <parameter id="p_o" value="40" constant="false"/>
+      <parameter id="p_ac" constant="false"/>
+      <parameter id="gasExchange_f_om" value="0.21"/>
+      <parameter id="gasExchange_f_cm" value="0"/>
+      <parameter id="p_c" value="46" constant="false"/>
+      <parameter id="gasExchange_V_D" value="0.151"/>
+      <parameter id="gasExchange_V_T" value="0.41"/>
+      <parameter id="gasTransport_df_satdp" constant="false"/>
+      <parameter id="gasTransport_L" value="171200000"/>
+      <parameter id="gasTransport_K_T" value="10000"/>
+      <parameter id="gasTransport_K_R" value="3600000"/>
+      <parameter id="gasTransport_sigma" value="1.4e-06"/>
+      <parameter id="gasTransport_V_c" value="0.071"/>
+      <parameter id="gasTransport_T_h" value="0.002"/>
+      <parameter id="gasTransport_delta" constant="false"/>
+      <parameter id="gasTransport_h" constant="false"/>
+      <parameter id="gasTransport_l_2" value="164000"/>
+      <parameter id="gasTransport_r_2" value="0.12"/>
+      <parameter id="gasTransport_sigma_c" value="3.3e-05"/>
+      <parameter id="gasTransport_z" value="4.4219e-07" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="P_L">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <ci> PluralPressureFunction_P_m </ci>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> PluralPressureFunction_R </ci>
+                    <ci> PluralPressureFunction_omega </ci>
+                    <ci> PluralPressureFunction_V_T </ci>
+                  </apply>
+                  <cn type="integer"> 2 </cn>
+                </apply>
+                <apply>
+                  <sin/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> PluralPressureFunction_omega </ci>
+                      <ci> time_ </ci>
+                    </apply>
+                    <cn type="integer"> 1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PluralPressureFunction_E </ci>
+              <apply>
+                <minus/>
+                <cn> 2.5 </cn>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <ci> PluralPressureFunction_V_T </ci>
+                      <cn type="integer"> 1 </cn>
+                    </apply>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <cos/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> PluralPressureFunction_omega </ci>
+                        <ci> time_ </ci>
+                      </apply>
+                      <cn type="integer"> 1 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dP_Ldt">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> PluralPressureFunction_R </ci>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <ci> PluralPressureFunction_omega </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <ci> PluralPressureFunction_V_T </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 2 </cn>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+              </apply>
+              <apply>
+                <cos/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> PluralPressureFunction_omega </ci>
+                    <ci> time_ </ci>
+                  </apply>
+                  <cn type="integer"> 1 </cn>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> PluralPressureFunction_E </ci>
+              <apply>
+                <minus/>
+                <cn> 2.5 </cn>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <ci> PluralPressureFunction_V_T </ci>
+                    <cn type="integer"> 2 </cn>
+                  </apply>
+                  <apply>
+                    <sin/>
+                    <apply>
+                      <divide/>
+                      <apply>
+                        <times/>
+                        <ci> PluralPressureFunction_omega </ci>
+                        <ci> time_ </ci>
+                      </apply>
+                      <cn type="integer"> 1 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="PluralPressureFunction_R">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <pi/>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <cn type="integer"> 5 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="V_A">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> lungMechanics_P_m </ci>
+                <ci> P_L </ci>
+              </apply>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> V_A </ci>
+                  <ci> lungMechanics_E </ci>
+                </apply>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+            <ci> lungMechanics_R </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="P_A">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> lungMechanics_P_m </ci>
+                <ci> lungMechanics_E </ci>
+                <ci> Q_A </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> P_A </ci>
+                <cn type="integer"> 1 </cn>
+              </apply>
+            </apply>
+            <ci> dP_Ldt </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="Q_A">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> q </ci>
+            <apply>
+              <times/>
+              <cn type="integer"> 1 </cn>
+              <ci> D_c </ci>
+              <apply>
+                <minus/>
+                <ci> p_c </ci>
+                <ci> p_ac </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <cn type="integer"> 1 </cn>
+              <ci> D_o </ci>
+              <apply>
+                <minus/>
+                <ci> p_o </ci>
+                <ci> gasExchange_p_ao </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="q">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <ci> lungMechanics_P_m </ci>
+              <ci> P_A </ci>
+            </apply>
+            <ci> lungMechanics_R </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="f_o">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> V_A </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> D_o </ci>
+                  <apply>
+                    <minus/>
+                    <ci> p_o </ci>
+                    <ci> gasExchange_p_ao </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> gasExchange_f_oi </ci>
+                    <ci> f_o </ci>
+                  </apply>
+                  <ci> q </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> f_o </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> D_c </ci>
+                    <apply>
+                      <minus/>
+                      <ci> p_c </ci>
+                      <ci> p_ac </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> D_o </ci>
+                    <apply>
+                      <minus/>
+                      <ci> p_o </ci>
+                      <ci> gasExchange_p_ao </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="gasExchange_f_oi"/>
+      <rateRule variable="gasExchange_f_c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> V_A </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <cn type="integer"> 1 </cn>
+                  <ci> D_c </ci>
+                  <apply>
+                    <minus/>
+                    <ci> p_c </ci>
+                    <ci> p_ac </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> gasExchange_f_ci </ci>
+                    <ci> gasExchange_f_c </ci>
+                  </apply>
+                  <ci> q </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> gasExchange_f_c </ci>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> D_o </ci>
+                    <apply>
+                      <minus/>
+                      <ci> p_o </ci>
+                      <ci> gasExchange_p_ao </ci>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> D_c </ci>
+                    <apply>
+                      <minus/>
+                      <ci> p_c </ci>
+                      <ci> p_ac </ci>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="gasExchange_f_ci"/>
+      <assignmentRule variable="gasExchange_p_ao">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> f_o </ci>
+            <apply>
+              <minus/>
+              <ci> P_A </ci>
+              <ci> P_w </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="p_o">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <ci> D_o </ci>
+              <apply>
+                <times/>
+                <ci> gasTransport_sigma </ci>
+                <ci> gasTransport_V_c </ci>
+              </apply>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <times/>
+                  <apply>
+                    <divide/>
+                    <apply>
+                      <times/>
+                      <cn type="integer"> 4 </cn>
+                      <ci> gasTransport_T_h </ci>
+                    </apply>
+                    <ci> gasTransport_sigma </ci>
+                  </apply>
+                  <ci> gasTransport_df_satdp </ci>
+                </apply>
+              </apply>
+              <cn type="integer"> -1 </cn>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> f_o </ci>
+                <apply>
+                  <minus/>
+                  <ci> P_A </ci>
+                  <ci> P_w </ci>
+                </apply>
+              </apply>
+              <ci> p_o </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="p_ac">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> gasExchange_f_c </ci>
+            <apply>
+              <minus/>
+              <ci> P_A </ci>
+              <ci> P_w </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="p_c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <ci> D_c </ci>
+                  <apply>
+                    <times/>
+                    <ci> gasTransport_sigma_c </ci>
+                    <ci> gasTransport_V_c </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <minus/>
+                  <ci> p_ac </ci>
+                  <ci> p_c </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 1 </cn>
+                    <ci> gasTransport_delta </ci>
+                    <ci> gasTransport_l_2 </ci>
+                  </apply>
+                  <ci> gasTransport_sigma_c </ci>
+                </apply>
+                <ci> gasTransport_h </ci>
+                <ci> gasTransport_z </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> gasTransport_delta </ci>
+              <ci> gasTransport_r_2 </ci>
+              <ci> p_c </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="gasTransport_df_satdp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> gasTransport_L </ci>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <times/>
+                          <ci> gasTransport_K_T </ci>
+                          <ci> gasTransport_sigma </ci>
+                          <ci> p_o </ci>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 4 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <times/>
+                        <ci> gasTransport_K_R </ci>
+                        <ci> gasTransport_sigma </ci>
+                        <ci> p_o </ci>
+                      </apply>
+                    </apply>
+                    <cn type="integer"> 4 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 3 </cn>
+                    <ci> gasTransport_L </ci>
+                    <apply>
+                      <power/>
+                      <ci> gasTransport_K_T </ci>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> gasTransport_sigma </ci>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <ci> p_o </ci>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <times/>
+                          <ci> gasTransport_K_T </ci>
+                          <ci> gasTransport_sigma </ci>
+                          <ci> p_o </ci>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> gasTransport_L </ci>
+                    <ci> gasTransport_K_T </ci>
+                    <ci> gasTransport_sigma </ci>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <times/>
+                          <ci> gasTransport_K_T </ci>
+                          <ci> gasTransport_sigma </ci>
+                          <ci> p_o </ci>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 3 </cn>
+                    <apply>
+                      <power/>
+                      <ci> gasTransport_K_R </ci>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <apply>
+                      <power/>
+                      <ci> gasTransport_sigma </ci>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                    <ci> p_o </ci>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <times/>
+                          <ci> gasTransport_K_R </ci>
+                          <ci> gasTransport_sigma </ci>
+                          <ci> p_o </ci>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 2 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> gasTransport_K_R </ci>
+                    <ci> gasTransport_sigma </ci>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <times/>
+                          <ci> gasTransport_K_R </ci>
+                          <ci> gasTransport_sigma </ci>
+                          <ci> p_o </ci>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <ci> gasTransport_L </ci>
+                    <ci> gasTransport_K_T </ci>
+                    <ci> gasTransport_sigma </ci>
+                    <ci> p_o </ci>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <times/>
+                          <ci> gasTransport_K_T </ci>
+                          <ci> gasTransport_sigma </ci>
+                          <ci> p_o </ci>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> gasTransport_K_R </ci>
+                    <ci> gasTransport_sigma </ci>
+                    <ci> p_o </ci>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <times/>
+                          <ci> gasTransport_K_R </ci>
+                          <ci> gasTransport_sigma </ci>
+                          <ci> p_o </ci>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+                <apply>
+                  <plus/>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 4 </cn>
+                    <ci> gasTransport_L </ci>
+                    <ci> gasTransport_K_T </ci>
+                    <ci> gasTransport_sigma </ci>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <times/>
+                          <ci> gasTransport_K_T </ci>
+                          <ci> gasTransport_sigma </ci>
+                          <ci> p_o </ci>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <cn type="integer"> 4 </cn>
+                    <ci> gasTransport_K_R </ci>
+                    <ci> gasTransport_sigma </ci>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <power/>
+                      <apply>
+                        <plus/>
+                        <cn type="integer"> 1 </cn>
+                        <apply>
+                          <times/>
+                          <ci> gasTransport_K_R </ci>
+                          <ci> gasTransport_sigma </ci>
+                          <ci> p_o </ci>
+                        </apply>
+                      </apply>
+                      <cn type="integer"> 3 </cn>
+                    </apply>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <power/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> gasTransport_L </ci>
+                  <apply>
+                    <power/>
+                    <apply>
+                      <plus/>
+                      <cn type="integer"> 1 </cn>
+                      <apply>
+                        <times/>
+                        <ci> gasTransport_K_T </ci>
+                        <ci> gasTransport_sigma </ci>
+                        <ci> p_o </ci>
+                      </apply>
+                    </apply>
+                    <cn type="integer"> 4 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <apply>
+                    <plus/>
+                    <cn type="integer"> 1 </cn>
+                    <apply>
+                      <times/>
+                      <ci> gasTransport_K_R </ci>
+                      <ci> gasTransport_sigma </ci>
+                      <ci> p_o </ci>
+                    </apply>
+                  </apply>
+                  <cn type="integer"> 4 </cn>
+                </apply>
+              </apply>
+              <cn type="integer"> 2 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gasTransport_delta">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <power/>
+            <cn type="integer"> 10 </cn>
+            <cn> 1.9 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gasTransport_h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 1 </cn>
+            <apply>
+              <power/>
+              <cn type="integer"> 10 </cn>
+              <cn> -7.4 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="gasTransport_z">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> gasTransport_delta </ci>
+                <ci> gasTransport_r_2 </ci>
+                <ci> gasTransport_sigma_c </ci>
+                <ci> p_c </ci>
+              </apply>
+              <cn type="integer"> 1 </cn>
+            </apply>
+            <apply>
+              <times/>
+              <ci> gasTransport_delta </ci>
+              <ci> gasTransport_l_2 </ci>
+              <ci> gasTransport_h </ci>
+              <ci> gasTransport_z </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

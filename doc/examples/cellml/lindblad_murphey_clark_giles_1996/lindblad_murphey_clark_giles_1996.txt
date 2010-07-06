@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model lindblad_murphey_clark_giles_1996__environment(time_)
+//Created by libAntimony v1.4
+model lindblad_1996__environment(time_)
 end
 
-model lindblad_murphey_clark_giles_1996__membrane(V, R, T, F, time_, i_Na, i_Ca_L, i_Ca_T, i_to, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_B_Cl, i_p, i_CaP, i_NaCa)
+model lindblad_1996__membrane(V, R, T, F, time_, i_Na, i_Ca_L, i_Ca_T, i_to, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_B_Cl, i_p, i_CaP, i_NaCa)
 
   // Assignment Rules:
   i_Stim := piecewise( stim_amplitude , (( time_ >= stim_start) && (time_ <= stim_end) && (time_ - stim_start - floor((time_ - stim_start) / stim_period) * stim_period <= stim_duration )), 0 );
@@ -23,7 +23,7 @@ model lindblad_murphey_clark_giles_1996__membrane(V, R, T, F, time_, i_Na, i_Ca_
   stim_amplitude = -2;
 end
 
-model lindblad_murphey_clark_giles_1996__sodium_current_m_gate(m, V, time_)
+model lindblad_1996__sodium_current_m_gate(m, V, time_)
 
   // Assignment Rules:
   E0_m := V + 44.4;
@@ -37,7 +37,7 @@ model lindblad_murphey_clark_giles_1996__sodium_current_m_gate(m, V, time_)
   m = 0.01309;
 end
 
-model lindblad_murphey_clark_giles_1996__sodium_current_h1_gate(h1, h_infinity, V, time_)
+model lindblad_1996__sodium_current_h1_gate(h1, h_infinity, V, time_)
 
   // Assignment Rules:
   alpha_h := 44.9 * exp((V + 66.9 ) / -(5.57 ));
@@ -52,7 +52,7 @@ model lindblad_murphey_clark_giles_1996__sodium_current_h1_gate(h1, h_infinity, 
   h1 = 0.706;
 end
 
-model lindblad_murphey_clark_giles_1996__sodium_current_h2_gate(h2, h_infinity, V, time_)
+model lindblad_1996__sodium_current_h2_gate(h2, h_infinity, V, time_)
 
   // Assignment Rules:
   tau_h2 := 0.12 / (1 + exp((V + 60 ) / 2 )) + 0.00295;
@@ -64,12 +64,12 @@ model lindblad_murphey_clark_giles_1996__sodium_current_h2_gate(h2, h_infinity, 
   h2 = 0.61493;
 end
 
-model lindblad_murphey_clark_giles_1996__sodium_current(i_Na, E_Na, time_, V, Na_c, Na_i, R, F, T, m, h1, h2)
+model lindblad_1996__sodium_current(i_Na, E_Na, time_, V, Na_c, Na_i, R, F, T, m, h1, h2)
 
   // Sub-modules, and any changes to those submodules:
-  sodium_current_m_gate: lindblad_murphey_clark_giles_1996__sodium_current_m_gate(m, V, time_);
-  sodium_current_h1_gate: lindblad_murphey_clark_giles_1996__sodium_current_h1_gate(h1, h_infinity, V, time_);
-  sodium_current_h2_gate: lindblad_murphey_clark_giles_1996__sodium_current_h2_gate(h2, h_infinity, V, time_);
+  sodium_current_m_gate: lindblad_1996__sodium_current_m_gate(m, V, time_);
+  sodium_current_h1_gate: lindblad_1996__sodium_current_h1_gate(h1, h_infinity, V, time_);
+  sodium_current_h2_gate: lindblad_1996__sodium_current_h2_gate(h2, h_infinity, V, time_);
 
   // Assignment Rules:
   i_Na := P_Na * power(m, 3 ) * (0.635 * h1 + 0.365 * h2) * Na_c * V * power(F, 2 ) / (R * T) * (exp((V - E_Na) * F / (R * T)) - 1 ) / (exp(V * F / (R * T)) - 1 );
@@ -79,7 +79,7 @@ model lindblad_murphey_clark_giles_1996__sodium_current(i_Na, E_Na, time_, V, Na
   P_Na = 0.0000014;
 end
 
-model lindblad_murphey_clark_giles_1996__L_type_Ca_channel_d_L_gate(d_L, V, time_)
+model lindblad_1996__L_type_Ca_channel_d_L_gate(d_L, V, time_)
 
   // Assignment Rules:
   E0_alpha_d_L := V + 35;
@@ -96,7 +96,7 @@ model lindblad_murphey_clark_giles_1996__L_type_Ca_channel_d_L_gate(d_L, V, time
   d_L = 3e-5;
 end
 
-model lindblad_murphey_clark_giles_1996__L_type_Ca_channel_f_L_gate(f_L, f_L_infinity, V, time_)
+model lindblad_1996__L_type_Ca_channel_f_L_gate(f_L, f_L_infinity, V, time_)
 
   // Assignment Rules:
   E0_f_L := V + 28;
@@ -113,11 +113,11 @@ model lindblad_murphey_clark_giles_1996__L_type_Ca_channel_f_L_gate(f_L, f_L_inf
   f_L = 0.99981;
 end
 
-model lindblad_murphey_clark_giles_1996__L_type_Ca_channel(i_Ca_L, time_, V, d_L, f_L)
+model lindblad_1996__L_type_Ca_channel(i_Ca_L, time_, V, d_L, f_L)
 
   // Sub-modules, and any changes to those submodules:
-  L_type_Ca_channel_d_L_gate: lindblad_murphey_clark_giles_1996__L_type_Ca_channel_d_L_gate(d_L, V, time_);
-  L_type_Ca_channel_f_L_gate: lindblad_murphey_clark_giles_1996__L_type_Ca_channel_f_L_gate(f_L, f_L_infinity, V, time_);
+  L_type_Ca_channel_d_L_gate: lindblad_1996__L_type_Ca_channel_d_L_gate(d_L, V, time_);
+  L_type_Ca_channel_f_L_gate: lindblad_1996__L_type_Ca_channel_f_L_gate(f_L, f_L_infinity, V, time_);
 
   // Assignment Rules:
   i_Ca_L := g_Ca_L * d_L * f_L * d_prime * (V - E_Ca_app);
@@ -128,7 +128,7 @@ model lindblad_murphey_clark_giles_1996__L_type_Ca_channel(i_Ca_L, time_, V, d_L
   E_Ca_app = 60;
 end
 
-model lindblad_murphey_clark_giles_1996__T_type_Ca_channel_d_T_gate(d_T, V, time_)
+model lindblad_1996__T_type_Ca_channel_d_T_gate(d_T, V, time_)
 
   // Assignment Rules:
   E0_d_T := V + 23;
@@ -144,7 +144,7 @@ model lindblad_murphey_clark_giles_1996__T_type_Ca_channel_d_T_gate(d_T, V, time
   d_T = 4.6e-4;
 end
 
-model lindblad_murphey_clark_giles_1996__T_type_Ca_channel_f_T_gate(f_T, f_T_infinity, V, time_)
+model lindblad_1996__T_type_Ca_channel_f_T_gate(f_T, f_T_infinity, V, time_)
 
   // Assignment Rules:
   E0_f_T := V + 75;
@@ -160,11 +160,11 @@ model lindblad_murphey_clark_giles_1996__T_type_Ca_channel_f_T_gate(f_T, f_T_inf
   f_T = 0.30752;
 end
 
-model lindblad_murphey_clark_giles_1996__T_type_Ca_channel(i_Ca_T, time_, V, d_T, f_T)
+model lindblad_1996__T_type_Ca_channel(i_Ca_T, time_, V, d_T, f_T)
 
   // Sub-modules, and any changes to those submodules:
-  T_type_Ca_channel_d_T_gate: lindblad_murphey_clark_giles_1996__T_type_Ca_channel_d_T_gate(d_T, V, time_);
-  T_type_Ca_channel_f_T_gate: lindblad_murphey_clark_giles_1996__T_type_Ca_channel_f_T_gate(f_T, f_T_infinity, V, time_);
+  T_type_Ca_channel_d_T_gate: lindblad_1996__T_type_Ca_channel_d_T_gate(d_T, V, time_);
+  T_type_Ca_channel_f_T_gate: lindblad_1996__T_type_Ca_channel_f_T_gate(f_T, f_T_infinity, V, time_);
 
   // Assignment Rules:
   i_Ca_T := g_Ca_T * d_T * f_T * (V - E_Ca_T);
@@ -174,7 +174,7 @@ model lindblad_murphey_clark_giles_1996__T_type_Ca_channel(i_Ca_T, time_, V, d_T
   E_Ca_T = 38;
 end
 
-model lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_current_r_gate(r, V, time_)
+model lindblad_1996__Ca_independent_transient_outward_K_current_r_gate(r, V, time_)
 
   // Assignment Rules:
   alpha_r := 386.6 * exp(V / 12 );
@@ -189,7 +189,7 @@ model lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_curr
   r = 6e-5;
 end
 
-model lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_current_s1_gate(s1, V, time_)
+model lindblad_1996__Ca_independent_transient_outward_K_current_s1_gate(s1, V, time_)
 
   // Assignment Rules:
   tau_s1 := 0.5466 / (1 + exp((V + 32.8 ) / 0.1 )) + 0.0204;
@@ -202,7 +202,7 @@ model lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_curr
   s1 = 0.5753;
 end
 
-model lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_current_s2_gate(s2, V, time_)
+model lindblad_1996__Ca_independent_transient_outward_K_current_s2_gate(s2, V, time_)
 
   // Assignment Rules:
   tau_s2 := 5.75 / (1 + exp((V + 32.8 ) / 0.1 )) + 0.45 / (1 + exp((V - 13.54 ) / -(13.97 )));
@@ -215,7 +215,7 @@ model lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_curr
   s2 = 0.39871;
 end
 
-model lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_current_s3_gate(s3, V, time_)
+model lindblad_1996__Ca_independent_transient_outward_K_current_s3_gate(s3, V, time_)
 
   // Assignment Rules:
   tau_s3 := 7.5 / (1 + exp((V + 23 ) / 0.5 )) + 0.5;
@@ -228,13 +228,13 @@ model lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_curr
   s3 = 0.57363;
 end
 
-model lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_current(i_to, E_K, time_, V, R, F, T, K_c, K_i, r, s1, s2, s3)
+model lindblad_1996__Ca_independent_transient_outward_K_current(i_to, E_K, time_, V, R, F, T, K_c, K_i, r, s1, s2, s3)
 
   // Sub-modules, and any changes to those submodules:
-  Ca_independent_transient_outward_K_current_r_gate: lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_current_r_gate(r, V, time_);
-  Ca_independent_transient_outward_K_current_s1_gate: lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_current_s1_gate(s1, V, time_);
-  Ca_independent_transient_outward_K_current_s2_gate: lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_current_s2_gate(s2, V, time_);
-  Ca_independent_transient_outward_K_current_s3_gate: lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_current_s3_gate(s3, V, time_);
+  Ca_independent_transient_outward_K_current_r_gate: lindblad_1996__Ca_independent_transient_outward_K_current_r_gate(r, V, time_);
+  Ca_independent_transient_outward_K_current_s1_gate: lindblad_1996__Ca_independent_transient_outward_K_current_s1_gate(s1, V, time_);
+  Ca_independent_transient_outward_K_current_s2_gate: lindblad_1996__Ca_independent_transient_outward_K_current_s2_gate(s2, V, time_);
+  Ca_independent_transient_outward_K_current_s3_gate: lindblad_1996__Ca_independent_transient_outward_K_current_s3_gate(s3, V, time_);
 
   // Assignment Rules:
   i_to := g_to * r * (0.59 * power(s1, 3 ) + 0.41 * power(s2, 3 )) * (0.6 * power(s3, 6 ) + 0.4 ) * (V - E_K);
@@ -244,7 +244,7 @@ model lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_curr
   g_to = 0.050002;
 end
 
-model lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current_z_gate(z, V, time_)
+model lindblad_1996__delayed_rectifier_K_current_z_gate(z, V, time_)
 
   // Assignment Rules:
   alpha_z := 1.66 * exp(V / 69.452 );
@@ -259,7 +259,7 @@ model lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current_z_gate(z, V
   z = 0.02032;
 end
 
-model lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current_pa_gate(p_a, V, time_)
+model lindblad_1996__delayed_rectifier_K_current_pa_gate(p_a, V, time_)
 
   // Assignment Rules:
   alpha_p_a := 9 * exp(V / 25.371 );
@@ -274,7 +274,7 @@ model lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current_pa_gate(p_a
   p_a = 1.6e-4;
 end
 
-model lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current_pi_gate(p_i, V, time_)
+model lindblad_1996__delayed_rectifier_K_current_pi_gate(p_i, V, time_)
 
   // Assignment Rules:
   alpha_p_i := 100 * exp(V / -(54.645 ));
@@ -289,12 +289,12 @@ model lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current_pi_gate(p_i
   p_i = 0.76898;
 end
 
-model lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current(i_Ks, i_Kr, time_, V, E_K, z, p_a, p_i)
+model lindblad_1996__delayed_rectifier_K_current(i_Ks, i_Kr, time_, V, E_K, z, p_a, p_i)
 
   // Sub-modules, and any changes to those submodules:
-  delayed_rectifier_K_current_z_gate: lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current_z_gate(z, V, time_);
-  delayed_rectifier_K_current_pa_gate: lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current_pa_gate(p_a, V, time_);
-  delayed_rectifier_K_current_pi_gate: lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current_pi_gate(p_i, V, time_);
+  delayed_rectifier_K_current_z_gate: lindblad_1996__delayed_rectifier_K_current_z_gate(z, V, time_);
+  delayed_rectifier_K_current_pa_gate: lindblad_1996__delayed_rectifier_K_current_pa_gate(p_a, V, time_);
+  delayed_rectifier_K_current_pi_gate: lindblad_1996__delayed_rectifier_K_current_pi_gate(p_i, V, time_);
 
   // Assignment Rules:
   i_Ks := g_Ks * z * (V - E_K);
@@ -305,7 +305,7 @@ model lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current(i_Ks, i_Kr,
   g_Kr = 0.0035;
 end
 
-model lindblad_murphey_clark_giles_1996__inward_rectifier(i_K1, time_, V, R, F, T, K_c, E_K)
+model lindblad_1996__inward_rectifier(i_K1, time_, V, R, F, T, K_c, E_K)
 
   // Assignment Rules:
   i_K1 := g_K1 * (V - E_K) * power(K_c / (K_c + KmK1), 3 ) * 1 / (1 + exp(steepK1 * F * (V - E_K - shiftK1) / (R * T)));
@@ -317,7 +317,7 @@ model lindblad_murphey_clark_giles_1996__inward_rectifier(i_K1, time_, V, R, F, 
   shiftK1 = -3.6;
 end
 
-model lindblad_murphey_clark_giles_1996__background_currents(i_B_Na, i_B_Ca, i_B_Cl, E_Na, R, F, T, Ca_c, Ca_i, Cl_c, Cl_i, time_, V)
+model lindblad_1996__background_currents(i_B_Na, i_B_Ca, i_B_Cl, E_Na, R, F, T, Ca_c, Ca_i, Cl_c, Cl_i, time_, V)
 
   // Assignment Rules:
   i_B_Na := g_B_Na * (V - E_Na);
@@ -333,7 +333,7 @@ model lindblad_murphey_clark_giles_1996__background_currents(i_B_Na, i_B_Ca, i_B
   g_B_Cl = 1.2e-4;
 end
 
-model lindblad_murphey_clark_giles_1996__sodium_potassium_pump(i_p, K_c, Na_i, V, time_)
+model lindblad_1996__sodium_potassium_pump(i_p, K_c, Na_i, V, time_)
 
   // Assignment Rules:
   i_p := i_NaK_max * K_c / (K_c + k_NaK_K) * power(Na_i, 1.5 ) / (power(Na_i, 1.5 ) + power(k_NaK_Na, 1.5 )) * 1.6 / (1.5 + exp((V + 60 ) / -(40 )));
@@ -344,7 +344,7 @@ model lindblad_murphey_clark_giles_1996__sodium_potassium_pump(i_p, K_c, Na_i, V
   i_NaK_max = 0.06441;
 end
 
-model lindblad_murphey_clark_giles_1996__sarcolemmal_calcium_pump_current(i_CaP, Ca_i, time_)
+model lindblad_1996__sarcolemmal_calcium_pump_current(i_CaP, Ca_i, time_)
 
   // Assignment Rules:
   i_CaP := i_CaP_max * Ca_i / (Ca_i + k_CaP);
@@ -354,7 +354,7 @@ model lindblad_murphey_clark_giles_1996__sarcolemmal_calcium_pump_current(i_CaP,
   k_CaP = 2e-4;
 end
 
-model lindblad_murphey_clark_giles_1996__Na_Ca_ion_exchanger_current(i_NaCa, Na_i, Na_c, Ca_i, Ca_c, R, F, T, V, time_)
+model lindblad_1996__Na_Ca_ion_exchanger_current(i_NaCa, Na_i, Na_c, Ca_i, Ca_c, R, F, T, V, time_)
 
   // Assignment Rules:
   i_NaCa := k_NaCa * (power(Na_i, 3 ) * Ca_c * exp(gamma * F * V / (R * T)) - power(Na_c, 3 ) * Ca_i * exp((gamma - 1 ) * V * F / (R * T))) / (1 + d_NaCa * (power(Na_c, 3 ) * Ca_i + power(Na_i, 3 ) * Ca_c) * (1 + Ca_i / 0.0069 ));
@@ -365,7 +365,7 @@ model lindblad_murphey_clark_giles_1996__Na_Ca_ion_exchanger_current(i_NaCa, Na_
   gamma = 0.45;
 end
 
-model lindblad_murphey_clark_giles_1996__intracellular_ion_concentrations(Na_i, Ca_i, K_i, Cl_i, Vol_i, time_, F, i_Na, i_Ca_L, i_Ca_T, i_B_Na, i_NaCa, i_p, i_Kr, i_Ks, i_K1, i_to, i_CaP, i_B_Ca, i_up, i_rel, dOCdt, dOTCdt, dOTMgCdt)
+model lindblad_1996__intracellular_ion_concentrations(Na_i, Ca_i, K_i, Cl_i, Vol_i, time_, F, i_Na, i_Ca_L, i_Ca_T, i_B_Na, i_NaCa, i_p, i_Kr, i_Ks, i_K1, i_to, i_CaP, i_B_Ca, i_up, i_rel, dOCdt, dOTCdt, dOTMgCdt)
 
   // Rate Rules:
   Na_i' = -((i_Na + i_B_Na + 3 * i_p + 3 * i_NaCa)) / (Vol_i * F);
@@ -381,7 +381,7 @@ model lindblad_murphey_clark_giles_1996__intracellular_ion_concentrations(Na_i, 
   Vol_Ca = 5.884e-6;
 end
 
-model lindblad_murphey_clark_giles_1996__intracellular_Ca_buffering(dOCdt, dOTCdt, dOTMgCdt, O_TMgMg, Ca_i, time_)
+model lindblad_1996__intracellular_Ca_buffering(dOCdt, dOTCdt, dOTMgCdt, O_TMgMg, Ca_i, time_)
 
   // Assignment Rules:
   dOCdt := 200000 * Ca_i * (1 - O_C) - 476 * O_C;
@@ -402,7 +402,7 @@ model lindblad_murphey_clark_giles_1996__intracellular_Ca_buffering(dOCdt, dOTCd
   Mg_i = 2.5;
 end
 
-model lindblad_murphey_clark_giles_1996__cleft_space_ion_concentrations(Na_c, Ca_c, K_c, Cl_c)
+model lindblad_1996__cleft_space_ion_concentrations(Na_c, Ca_c, K_c, Cl_c)
 
   // Variable initializations:
   Na_c = 140;
@@ -411,7 +411,7 @@ model lindblad_murphey_clark_giles_1996__cleft_space_ion_concentrations(Na_c, Ca
   Cl_c = 132;
 end
 
-model lindblad_murphey_clark_giles_1996__Ca_handling_by_the_SR(i_rel, i_up, time_, Ca_i, V, F)
+model lindblad_1996__Ca_handling_by_the_SR(i_rel, i_up, time_, Ca_i, V, F)
 
   // Assignment Rules:
   i_rel := alpha_rel * power(F2 / (F2 + 0.25 ), 2 ) * (Ca_rel - Ca_i);
@@ -447,23 +447,23 @@ model lindblad_murphey_clark_giles_1996__Ca_handling_by_the_SR(i_rel, i_up, time
   k_F3 = 0.815;
 end
 
-model lindblad_murphey_clark_giles_1996____main()
+model lindblad_1996____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: lindblad_murphey_clark_giles_1996__environment(time_);
-  membrane: lindblad_murphey_clark_giles_1996__membrane(V, R, T, F, time_, i_Na, i_Ca_L, i_Ca_T, i_to, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_B_Cl, i_p, i_CaP, i_NaCa);
-  sodium_current: lindblad_murphey_clark_giles_1996__sodium_current(i_Na, E_Na, time_, V, Na_c, Na_i, R, F, T, m, h1, h2);
-  L_type_Ca_channel: lindblad_murphey_clark_giles_1996__L_type_Ca_channel(i_Ca_L, time_, V, d_L, f_L);
-  T_type_Ca_channel: lindblad_murphey_clark_giles_1996__T_type_Ca_channel(i_Ca_T, time_, V, d_T, f_T);
-  Ca_independent_transient_outward_K_current: lindblad_murphey_clark_giles_1996__Ca_independent_transient_outward_K_current(i_to, E_K, time_, V, R, F, T, K_c, K_i, r, s1, s2, s3);
-  delayed_rectifier_K_current: lindblad_murphey_clark_giles_1996__delayed_rectifier_K_current(i_Ks, i_Kr, time_, V, E_K, z, p_a, p_i);
-  inward_rectifier: lindblad_murphey_clark_giles_1996__inward_rectifier(i_K1, time_, V, R, F, T, K_c, E_K);
-  background_currents: lindblad_murphey_clark_giles_1996__background_currents(i_B_Na, i_B_Ca, i_B_Cl, E_Na, R, F, T, Ca_c, Ca_i, Cl_c, Cl_i, time_, V);
-  sodium_potassium_pump: lindblad_murphey_clark_giles_1996__sodium_potassium_pump(i_p, K_c, Na_i, V, time_);
-  sarcolemmal_calcium_pump_current: lindblad_murphey_clark_giles_1996__sarcolemmal_calcium_pump_current(i_CaP, Ca_i, time_);
-  Na_Ca_ion_exchanger_current: lindblad_murphey_clark_giles_1996__Na_Ca_ion_exchanger_current(i_NaCa, Na_i, Na_c, Ca_i, Ca_c, R, F, T, V, time_);
-  intracellular_ion_concentrations: lindblad_murphey_clark_giles_1996__intracellular_ion_concentrations(Na_i, Ca_i, K_i, Cl_i, Vol_i, time_, F, i_Na, i_Ca_L, i_Ca_T, i_B_Na, i_NaCa, i_p, i_Kr, i_Ks, i_K1, i_to, i_CaP, i_B_Ca, i_up, i_rel, dOCdt, dOTCdt, dOTMgCdt);
-  intracellular_Ca_buffering: lindblad_murphey_clark_giles_1996__intracellular_Ca_buffering(dOCdt, dOTCdt, dOTMgCdt, O_TMgMg, Ca_i, time_);
-  cleft_space_ion_concentrations: lindblad_murphey_clark_giles_1996__cleft_space_ion_concentrations(Na_c, Ca_c, K_c, Cl_c);
-  Ca_handling_by_the_SR: lindblad_murphey_clark_giles_1996__Ca_handling_by_the_SR(i_rel, i_up, time_, Ca_i, V, F);
+  environment: lindblad_1996__environment(time_);
+  membrane: lindblad_1996__membrane(V, R, T, F, time_, i_Na, i_Ca_L, i_Ca_T, i_to, i_K1, i_Kr, i_Ks, i_B_Na, i_B_Ca, i_B_Cl, i_p, i_CaP, i_NaCa);
+  sodium_current: lindblad_1996__sodium_current(i_Na, E_Na, time_, V, Na_c, Na_i, R, F, T, m, h1, h2);
+  L_type_Ca_channel: lindblad_1996__L_type_Ca_channel(i_Ca_L, time_, V, d_L, f_L);
+  T_type_Ca_channel: lindblad_1996__T_type_Ca_channel(i_Ca_T, time_, V, d_T, f_T);
+  Ca_independent_transient_outward_K_current: lindblad_1996__Ca_independent_transient_outward_K_current(i_to, E_K, time_, V, R, F, T, K_c, K_i, r, s1, s2, s3);
+  delayed_rectifier_K_current: lindblad_1996__delayed_rectifier_K_current(i_Ks, i_Kr, time_, V, E_K, z, p_a, p_i);
+  inward_rectifier: lindblad_1996__inward_rectifier(i_K1, time_, V, R, F, T, K_c, E_K);
+  background_currents: lindblad_1996__background_currents(i_B_Na, i_B_Ca, i_B_Cl, E_Na, R, F, T, Ca_c, Ca_i, Cl_c, Cl_i, time_, V);
+  sodium_potassium_pump: lindblad_1996__sodium_potassium_pump(i_p, K_c, Na_i, V, time_);
+  sarcolemmal_calcium_pump_current: lindblad_1996__sarcolemmal_calcium_pump_current(i_CaP, Ca_i, time_);
+  Na_Ca_ion_exchanger_current: lindblad_1996__Na_Ca_ion_exchanger_current(i_NaCa, Na_i, Na_c, Ca_i, Ca_c, R, F, T, V, time_);
+  intracellular_ion_concentrations: lindblad_1996__intracellular_ion_concentrations(Na_i, Ca_i, K_i, Cl_i, Vol_i, time_, F, i_Na, i_Ca_L, i_Ca_T, i_B_Na, i_NaCa, i_p, i_Kr, i_Ks, i_K1, i_to, i_CaP, i_B_Ca, i_up, i_rel, dOCdt, dOTCdt, dOTMgCdt);
+  intracellular_Ca_buffering: lindblad_1996__intracellular_Ca_buffering(dOCdt, dOTCdt, dOTMgCdt, O_TMgMg, Ca_i, time_);
+  cleft_space_ion_concentrations: lindblad_1996__cleft_space_ion_concentrations(Na_c, Ca_c, K_c, Cl_c);
+  Ca_handling_by_the_SR: lindblad_1996__Ca_handling_by_the_SR(i_rel, i_up, time_, Ca_i, V, F);
 end

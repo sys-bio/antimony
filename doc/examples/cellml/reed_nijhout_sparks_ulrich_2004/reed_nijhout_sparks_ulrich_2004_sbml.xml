@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="reed_nijhout_sparks_ulrich_2004_version01____main" name="reed_nijhout_sparks_ulrich_2004_version01____main">
+  <model id="reed_2004____main" name="reed_2004____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
       <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
     </listOfCompartments>
     <listOfParameters>
-      <parameter id="Met0" constant="false"/>
+      <parameter id="Metin" constant="false"/>
+      <parameter id="Met0" value="53.5" constant="false"/>
       <parameter id="V_MS0" constant="false"/>
       <parameter id="V_BHMT0" constant="false"/>
       <parameter id="V_MATI0" constant="false"/>
       <parameter id="V_MATIII0" constant="false"/>
-      <parameter id="AdoMet0" constant="false"/>
+      <parameter id="AdoMet0" value="137.6" constant="false"/>
       <parameter id="V_METH0" constant="false"/>
       <parameter id="V_GNMT0" constant="false"/>
-      <parameter id="AdoHcy0" constant="false"/>
+      <parameter id="AdoHcy0" value="13.2" constant="false"/>
       <parameter id="V_AH0" constant="false"/>
-      <parameter id="Hcy0" constant="false"/>
+      <parameter id="Hcy0" value="0.88" constant="false"/>
       <parameter id="V_CBS0" constant="false"/>
       <parameter id="V_MATI_V_MATImax" value="561"/>
       <parameter id="V_MATI_Km_MATI" value="41"/>
@@ -34,6 +35,7 @@
       <parameter id="V_METH_V_METHmax" value="4521"/>
       <parameter id="V_METH_Km1_METH" constant="false"/>
       <parameter id="V_METH_Km2_METH_A" value="10"/>
+      <parameter id="V_MS_five_mTHF" value="5.2"/>
       <parameter id="V_MS_V_MSmax" value="500"/>
       <parameter id="V_MS_Kd_MS" value="1"/>
       <parameter id="V_MS_Km_Hcy_MS" value="0.1"/>
@@ -45,10 +47,9 @@
       <parameter id="V_BHMT_V_BHMTmax" value="2500"/>
       <parameter id="V_BHMT_Km_BHMT" value="12"/>
       <parameter id="time_"/>
-      <parameter id="Met_Metin"/>
-      <parameter id="V_MS_five_mTHF"/>
     </listOfParameters>
     <listOfRules>
+      <assignmentRule variable="Metin"/>
       <rateRule variable="Met0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
@@ -57,7 +58,7 @@
               <plus/>
               <ci> V_MS0 </ci>
               <ci> V_BHMT0 </ci>
-              <ci> Met_Metin </ci>
+              <ci> Metin </ci>
             </apply>
             <apply>
               <plus/>
@@ -106,36 +107,33 @@
       <assignmentRule variable="V_BHMT0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
+            <divide/>
             <apply>
-              <minus/>
-              <cn> 0.7 </cn>
+              <times/>
               <apply>
-                <times/>
-                <cn> 0.025 </cn>
+                <minus/>
+                <cn> 0.7 </cn>
                 <apply>
-                  <minus/>
+                  <times/>
+                  <cn> 0.025 </cn>
                   <apply>
-                    <plus/>
-                    <ci> AdoMet0 </ci>
-                    <ci> AdoHcy0 </ci>
+                    <minus/>
+                    <apply>
+                      <plus/>
+                      <ci> AdoMet0 </ci>
+                      <ci> AdoHcy0 </ci>
+                    </apply>
+                    <cn type="integer"> 150 </cn>
                   </apply>
-                  <cn> 150 </cn>
                 </apply>
               </apply>
+              <ci> V_BHMT_V_BHMTmax </ci>
+              <ci> Hcy0 </ci>
             </apply>
             <apply>
-              <divide/>
-              <apply>
-                <times/>
-                <ci> V_BHMT_V_BHMTmax </ci>
-                <ci> Hcy0 </ci>
-              </apply>
-              <apply>
-                <plus/>
-                <ci> V_BHMT_Km_BHMT </ci>
-                <ci> Hcy0 </ci>
-              </apply>
+              <plus/>
+              <ci> V_BHMT_Km_BHMT </ci>
+              <ci> Hcy0 </ci>
             </apply>
           </apply>
         </math>
@@ -147,7 +145,7 @@
             <ci> V_MATI_V_MATImax </ci>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <times/>
                 <apply>
@@ -157,7 +155,7 @@
                 </apply>
                 <apply>
                   <plus/>
-                  <cn> 1 </cn>
+                  <cn type="integer"> 1 </cn>
                   <apply>
                     <divide/>
                     <ci> AdoMet0 </ci>
@@ -176,7 +174,7 @@
             <ci> V_MATIII_V_MATIIImax </ci>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <divide/>
                 <apply>
@@ -189,7 +187,7 @@
                   <apply>
                     <power/>
                     <ci> Met0 </ci>
-                    <cn> 2 </cn>
+                    <cn type="integer"> 2 </cn>
                   </apply>
                   <apply>
                     <times/>
@@ -226,7 +224,7 @@
             <ci> V_METH_V_METHmax </ci>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <divide/>
                 <ci> V_METH_Km1_METH </ci>
@@ -234,13 +232,13 @@
               </apply>
               <ci> V_METH_Km2_METH_A </ci>
               <apply>
-                <times/>
-                <ci> V_METH_Km2_METH_A </ci>
+                <divide/>
                 <apply>
-                  <divide/>
+                  <times/>
+                  <ci> V_METH_Km2_METH_A </ci>
                   <ci> V_METH_Km1_METH </ci>
-                  <ci> AdoMet0 </ci>
                 </apply>
+                <ci> AdoMet0 </ci>
               </apply>
             </apply>
           </apply>
@@ -249,35 +247,35 @@
       <assignmentRule variable="V_GNMT0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
+            <divide/>
             <apply>
-              <divide/>
-              <ci> V_GNMT_V_GNMTmax </ci>
+              <times/>
               <apply>
-                <plus/>
-                <cn> 1 </cn>
+                <divide/>
+                <ci> V_GNMT_V_GNMTmax </ci>
                 <apply>
-                  <power/>
+                  <plus/>
+                  <cn type="integer"> 1 </cn>
                   <apply>
-                    <divide/>
-                    <ci> V_GNMT_Km_GNMT </ci>
-                    <ci> AdoMet0 </ci>
+                    <power/>
+                    <apply>
+                      <divide/>
+                      <ci> V_GNMT_Km_GNMT </ci>
+                      <ci> AdoMet0 </ci>
+                    </apply>
+                    <cn> 2.3 </cn>
                   </apply>
-                  <cn> 2.3 </cn>
                 </apply>
               </apply>
+              <cn type="integer"> 1 </cn>
             </apply>
             <apply>
-              <divide/>
-              <cn> 1 </cn>
+              <plus/>
+              <cn type="integer"> 1 </cn>
               <apply>
-                <plus/>
-                <cn> 1 </cn>
-                <apply>
-                  <divide/>
-                  <ci> AdoHcy0 </ci>
-                  <ci> V_GNMT_Ki_GNMT </ci>
-                </apply>
+                <divide/>
+                <ci> AdoHcy0 </ci>
+                <ci> V_GNMT_Ki_GNMT </ci>
               </apply>
             </apply>
           </apply>
@@ -299,16 +297,16 @@
       <assignmentRule variable="V_AH0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <minus/>
+            <times/>
+            <ci> V_AH_alpha1 </ci>
             <apply>
-              <times/>
-              <ci> V_AH_alpha1 </ci>
+              <minus/>
               <ci> AdoHcy0 </ci>
-            </apply>
-            <apply>
-              <times/>
-              <ci> V_AH_alpha2 </ci>
-              <ci> Hcy0 </ci>
+              <apply>
+                <times/>
+                <ci> V_AH_alpha2 </ci>
+                <ci> Hcy0 </ci>
+              </apply>
             </apply>
           </apply>
         </math>
@@ -352,10 +350,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 20000 </cn>
+            <cn type="integer"> 20000 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <times/>
                 <cn> 5.7 </cn>
@@ -367,10 +365,10 @@
                     <apply>
                       <plus/>
                       <ci> AdoMet0 </ci>
-                      <cn> 600 </cn>
+                      <cn type="integer"> 600 </cn>
                     </apply>
                   </apply>
-                  <cn> 2 </cn>
+                  <cn type="integer"> 2 </cn>
                 </apply>
               </apply>
             </apply>
@@ -381,14 +379,14 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <times/>
-            <cn> 10 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <divide/>
                 <ci> AdoHcy0 </ci>
-                <cn> 4 </cn>
+                <cn type="integer"> 4 </cn>
               </apply>
             </apply>
           </apply>

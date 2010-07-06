@@ -1,0 +1,114 @@
+//Created by libAntimony v1.4
+model MainWindKessel__environment(t)
+end
+
+model TempCDv__TempCDv(Pi_, Po, Qi, Qo, CV, E, t, Pini, Vini, V0)
+
+  // Assignment Rules:
+  Pi_ := Pini + E * (V - Vini);
+  Qo := piecewise( CV * Tao * power(abs(Pi_ - Po), 0.5 ) , Pi_ >= Po , -1 * CV * Tao * power(abs(Po - Pi_), 0.5 ) , Pi_ < Po );
+  Tao := piecewise( 1 , Pi_ >= Po , 0 , Pi_ < Po );
+
+  // Rate Rules:
+  V' = Qi - Qo;
+
+  // Variable initializations:
+  V = V0;
+end
+
+model TempCDa__TempCDa(Pi_, Po, Qi, Qo, CV, E, t, Pini, Vini, Tao, V0)
+
+  // Assignment Rules:
+  Pi_ := Pini + E * (V - Vini);
+  Qo := piecewise( CV * Tao * power(abs(Pi_ - Po), 0.5 ) , Pi_ >= Po , -1 * CV * Tao * power(abs(Po - Pi_), 0.5 ) , Pi_ < Po );
+  Tao := piecewise( 1 , Pi_ >= Po , 0 , Pi_ < Po );
+
+  // Rate Rules:
+  V' = Qi - Qo;
+
+  // Variable initializations:
+  V = V0;
+end
+
+model EVentricle__EVentricle(Emax, Emin, T, Ts1, Ts2, E, t)
+
+  // Assignment Rules:
+  E := Emin + et * (Emax - Emin) / 2;
+  mt := t - T * floor(t / T);
+  et := piecewise( 1 - cos(3.14159 * mt / (Ts1 * T)) , ( mt >= 0) && (mt <= Ts1 * T ), 1 + cos(3.14159 * (mt - Ts1 * T) / ((Ts2 - Ts1) * T)) , ( mt > Ts1 * T) && (mt <= Ts2 * T ), 0 , ( mt > Ts2 * T) && (mt < T ) );
+end
+
+model EAtrium__EAtrium(Emax, Emin, T, Tpwb, Tpww, E, t)
+
+  // Assignment Rules:
+  E := Emin + et * (Emax - Emin) / 2;
+  mt := t - T * floor(t / T);
+  et := piecewise( 1 - cos(2 * 3.14159 * (mt - (Tpwb - 1 ) * T) / (Tpww * T)) , ( mt >= 0) && (mt <= (Tpwb + Tpww - 1 ) * T ), 0 , ( mt > (Tpwb + Tpww - 1 ) * T) && (mt <= Tpwb * T ), 1 - cos(2 * 3.14159 * (mt - Tpwb * T) / (Tpww * T)) , ( mt > Tpwb * T) && (mt <= T ) );
+end
+
+model ParaLeftHeart__ParaLeftHeart(ElaMax, ElaMin, PlaIni, VlaIni, ElvMax, ElvMin, PlvIni, VlvIni, T, Tpwb, Tpww, Ts1, Ts2, CVao, CVmi, Vlv0, Vla0)
+
+  // Variable initializations:
+  ElaMax = 0.25;
+  ElaMin = 0.15;
+  PlaIni = 1.0;
+  VlaIni = 4.0;
+  ElvMax = 2.5;
+  ElvMin = 0.1;
+  PlvIni = 1.0;
+  VlvIni = 5.0;
+  T = 1.0;
+  Tpwb = 0.92;
+  Tpww = 0.09;
+  Ts1 = 0.3;
+  Ts2 = 0.45;
+  CVao = 350.;
+  CVmi = 400.;
+  Vlv0 = 500;
+  Vla0 = 20;
+end
+
+model ModelLeftHeart__LeftHeart(Pi_, Po, Qi, Qo, t)
+
+  // Sub-modules, and any changes to those submodules:
+  LV: TempCDv__TempCDv(Pi_0, Po, Qi0, Qo, CV0, E0, t, Pini0, Vini0, V00);
+  LA: TempCDa__TempCDa(Pi_, Pi_0, Qi, Qi0, CV, E, t, Pini, Vini, Tao, V0);
+  Elv: EVentricle__EVentricle(Emax0, Emin0, T, Ts1, Ts2, E0, t);
+  Ela: EAtrium__EAtrium(Emax, Emin, T, Tpwb, Tpww, E, t);
+  ParaLHeart: ParaLeftHeart__ParaLeftHeart(Emax, Emin, Pini, Vini, Emax0, Emin0, Pini0, Vini0, T, Tpwb, Tpww, Ts1, Ts2, CV0, CV, V00, V0);
+end
+
+model TempRC__TempRC(Pi_, Po, Qi, Qo, R, C, t, P0)
+
+  // Assignment Rules:
+  Qo := (Pi_ - Po) / R;
+
+  // Rate Rules:
+  Pi_' = (Qi - Qo) / C;
+
+  // Variable initializations:
+  Pi_ = P0;
+end
+
+model ParaWindKessel__ParaWindKessel(Cwk, Rwk, P0)
+
+  // Variable initializations:
+  Cwk = 2.8;
+  Rwk = 0.55;
+  P0 = 0.;
+end
+
+model ModelWindKessel__ModelWindKessel(Pi_, Po, Qi, Qo, t)
+
+  // Sub-modules, and any changes to those submodules:
+  Zwk: TempRC__TempRC(Pi_, Po, Qi, Qo, R, C, t, P0);
+  ParaWindKessel: ParaWindKessel__ParaWindKessel(C, R, P0);
+end
+
+model MainWindKessel____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: MainWindKessel__environment(t);
+  LEFTHeart: ModelLeftHeart__LeftHeart(Po, Pi_, Qo, Qi, t);
+  Vessel: ModelWindKessel__ModelWindKessel(Pi_, Po, Qi, Qo, t);
+end

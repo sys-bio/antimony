@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="maurya_2005____main" name="maurya_2005____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="A" value="0" constant="false"/>
+      <parameter id="G" value="0" constant="false"/>
+      <parameter id="GA" value="0" constant="false"/>
+      <parameter id="T" value="0.000468" constant="false"/>
+      <parameter id="R" value="0" constant="false"/>
+      <parameter id="GT_" value="0" constant="false"/>
+      <parameter id="GD" value="1e-08" constant="false"/>
+      <parameter id="Pi_" value="0.0044" constant="false"/>
+      <parameter id="D" value="0.000149" constant="false"/>
+      <parameter id="RG" value="0" constant="false"/>
+      <parameter id="RGT" value="0" constant="false"/>
+      <parameter id="GAT" value="0" constant="false"/>
+      <parameter id="GAD" value="0" constant="false"/>
+      <parameter id="RGD" value="0" constant="false"/>
+      <parameter id="RGA" value="0" constant="false"/>
+      <parameter id="RGAT" value="0" constant="false"/>
+      <parameter id="RGAD" value="0" constant="false"/>
+      <parameter id="A20" constant="false"/>
+      <parameter id="A30" constant="false"/>
+      <parameter id="A50" constant="false"/>
+      <parameter id="R20" constant="false"/>
+      <parameter id="R30" constant="false"/>
+      <parameter id="R40" constant="false"/>
+      <parameter id="T10" constant="false"/>
+      <parameter id="T30" constant="false"/>
+      <parameter id="T40" constant="false"/>
+      <parameter id="P10" constant="false"/>
+      <parameter id="P20" constant="false"/>
+      <parameter id="P30" constant="false"/>
+      <parameter id="P40" constant="false"/>
+      <parameter id="D10" constant="false"/>
+      <parameter id="D20" constant="false"/>
+      <parameter id="D30" constant="false"/>
+      <parameter id="D40" constant="false"/>
+      <parameter id="output_Z" constant="false"/>
+      <parameter id="output_v" constant="false"/>
+      <parameter id="output_G_tot" value="1e-08"/>
+      <parameter id="k1" value="0.013"/>
+      <parameter id="k10" value="25"/>
+      <parameter id="k11" value="0.013"/>
+      <parameter id="k12" value="25"/>
+      <parameter id="T1_k1" value="529000"/>
+      <parameter id="D1_k1" value="0.0001"/>
+      <parameter id="T3_k1" value="853000"/>
+      <parameter id="R2_k2" value="1.28"/>
+      <parameter id="A2_k1" value="386000"/>
+      <parameter id="A3_k2" value="0.95"/>
+      <parameter id="R3_k1" value="94700000"/>
+      <parameter id="D3_k1" value="2"/>
+      <parameter id="D2_k1" value="0.0001"/>
+      <parameter id="R4_k1" value="22800000"/>
+      <parameter id="T4_k1" value="1620000"/>
+      <parameter id="A5_k1" value="6300000"/>
+      <parameter id="D4_k1" value="2.75"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="A">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> A20 </ci>
+              <ci> A30 </ci>
+              <ci> A50 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="G">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> D10 </ci>
+            <ci> T10 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> D20 </ci>
+            <ci> R40 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> T10 </ci>
+              <ci> T30 </ci>
+              <ci> T40 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="R">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> R20 </ci>
+              <ci> R30 </ci>
+              <ci> R40 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GT_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> T10 </ci>
+                <ci> P10 </ci>
+              </apply>
+              <ci> R20 </ci>
+            </apply>
+            <ci> A20 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <ci> P10 </ci>
+                <ci> D10 </ci>
+              </apply>
+              <ci> A30 </ci>
+            </apply>
+            <ci> R30 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="Pi_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> P10 </ci>
+            <ci> P30 </ci>
+            <ci> P20 </ci>
+            <ci> P40 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="D">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> D10 </ci>
+            <ci> D30 </ci>
+            <ci> D20 </ci>
+            <ci> D40 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RG">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <ci> T30 </ci>
+            </apply>
+            <ci> D30 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RGT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <apply>
+                <plus/>
+                <ci> T30 </ci>
+                <ci> R20 </ci>
+              </apply>
+              <ci> P30 </ci>
+            </apply>
+            <ci> A50 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GAT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> A20 </ci>
+            <ci> P20 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="GAD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> A30 </ci>
+              <ci> P20 </ci>
+            </apply>
+            <ci> D20 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RGD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> R30 </ci>
+              <ci> P30 </ci>
+            </apply>
+            <ci> D30 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RGA">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <ci> R40 </ci>
+              <ci> T40 </ci>
+            </apply>
+            <ci> D40 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RGAT">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> T40 </ci>
+              <ci> A50 </ci>
+            </apply>
+            <ci> P40 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="RGAD">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> P40 </ci>
+            <ci> D40 </ci>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="A20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> A2_k1 </ci>
+            <ci> GT_ </ci>
+            <ci> A </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="A30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> A3_k2 </ci>
+            </apply>
+            <ci> GAD </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="A50">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> A5_k1 </ci>
+            <ci> RGT </ci>
+            <ci> A </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="R20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> R2_k2 </ci>
+            </apply>
+            <ci> RGT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="R30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> R3_k1 </ci>
+            <ci> GD </ci>
+            <ci> R </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="R40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> R4_k1 </ci>
+            <ci> GA </ci>
+            <ci> R </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="T10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> T1_k1 </ci>
+            <ci> G </ci>
+            <ci> T </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="T30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> T3_k1 </ci>
+            <ci> RG </ci>
+            <ci> T </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="T40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> T4_k1 </ci>
+            <ci> RGA </ci>
+            <ci> T </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k1 </ci>
+            <ci> GT_ </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k10 </ci>
+            <ci> GAT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k11 </ci>
+            <ci> RGT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="P40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k12 </ci>
+            <ci> RGAT </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="D10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> D1_k1 </ci>
+            <ci> GD </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="D20">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> D2_k1 </ci>
+            <ci> GAD </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="D30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> D3_k1 </ci>
+            <ci> RGD </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="D40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> D4_k1 </ci>
+            <ci> RGAD </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="output_Z">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> GT_ </ci>
+              <ci> RGT </ci>
+              <ci> RGAT </ci>
+              <ci> GAT </ci>
+            </apply>
+            <ci> output_G_tot </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="output_v">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k12 </ci>
+                <ci> RGAT </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k10 </ci>
+                <ci> GAT </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k11 </ci>
+                <ci> RGT </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> GT_ </ci>
+              </apply>
+            </apply>
+            <ci> output_G_tot </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

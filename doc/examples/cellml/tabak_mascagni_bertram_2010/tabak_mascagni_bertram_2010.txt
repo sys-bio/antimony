@@ -1,0 +1,44 @@
+//Created by libAntimony v1.4
+model tabak_mascagni_bertram_2010__environment(time_)
+end
+
+model tabak_mascagni_bertram_2010__a(a, time_, s)
+
+  // Assignment Rules:
+  ainf := 1 / (1 + exp((w * s * a - th0) / ka));
+  noise := n * wi;
+
+  // Rate Rules:
+  a' = (ainf - a + noise) / 1;
+
+  // Variable initializations:
+  a = 0.1;
+  w = 0.8;
+  ka = -0.05;
+  th0 = 0.17;
+  n = 0.01;
+  wi = 0;
+end
+
+model tabak_mascagni_bertram_2010__s(s, time_, a)
+
+  // Assignment Rules:
+  sinf := 1 / (1 + exp((a - ths) / ks));
+
+  // Rate Rules:
+  s' = (sinf - s) / taus;
+
+  // Variable initializations:
+  s = 0.3;
+  taus = 250;
+  ks = 0.05;
+  ths = 0.2;
+end
+
+model tabak_mascagni_bertram_2010____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: tabak_mascagni_bertram_2010__environment(time_);
+  a: tabak_mascagni_bertram_2010__a(a0, time_, s0);
+  s: tabak_mascagni_bertram_2010__s(s0, time_, a0);
+end

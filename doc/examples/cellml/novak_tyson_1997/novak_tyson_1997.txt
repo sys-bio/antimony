@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model novak_tyson_1997_version01__environment(time_)
+//Created by libAntimony v1.4
+model novak_1997__environment(time_)
 end
 
-model novak_tyson_1997_version01__rate_constants(k1, k2, k2_, k3, k4, k5, k6, k6_, k7, k7r, k8, k8r, kwee, k25, ku, kp, kur, ku2, kur2, kc, kcr, kw, kwr, ki, kir, mu, Kmu2, Kmur2, Kmi, Kmir, Kmw, Kmwr, Kmu, Kmur, Kmc, Kmcr, Kmp, Cdc25, UbE, UbE2, Wee1)
+model novak_1997__rate_constants(k1, k2, k2_, k3, k4, k5, k6, k6_, k7, k7r, k8, k8r, kwee, k25, ku, kp, kur, ku2, kur2, kc, kcr, kw, kwr, ki, kir, mu, Kmu2, Kmur2, Kmi, Kmir, Kmw, Kmwr, Kmu, Kmur, Kmc, Kmcr, Kmp, Cdc25, UbE, UbE2, Wee1)
 
   // Assignment Rules:
   k2 := V2_ * (1 - UbE) + V2 * UbE;
@@ -54,7 +54,7 @@ model novak_tyson_1997_version01__rate_constants(k1, k2, k2_, k3, k4, k5, k6, k6
   Vw_ = 0.035;
 end
 
-model novak_tyson_1997_version01__concentration_variables(SPF, MPF, G1K, G2K, PG2)
+model novak_1997__concentration_variables(SPF, MPF, G1K, G2K, PG2)
 
   // Assignment Rules:
   SPF := MPF + alpha * G1K;
@@ -65,7 +65,7 @@ model novak_tyson_1997_version01__concentration_variables(SPF, MPF, G1K, G2K, PG
   beta = 0.05;
 end
 
-model novak_tyson_1997_version01__G2K(G2K, k1, k2, k4, k7, k7r, k25, kwee, PG2, G2R, R, time_)
+model novak_1997__G2K(G2K, k1, k2, k4, k7, k7r, k25, kwee, PG2, G2R, R, time_)
 
   // Rate Rules:
   G2K' = k1 + k25 * PG2 + (k7r + k4) * G2R - (k2 + kwee + k7 * R) * G2K;
@@ -74,7 +74,7 @@ model novak_tyson_1997_version01__G2K(G2K, k1, k2, k4, k7, k7r, k25, kwee, PG2, 
   G2K = 0;
 end
 
-model novak_tyson_1997_version01__R(R, k3, k4, kp, k7, k8, k8r, Kmp, k7r, k2, k2_, k6_, G1R, G2K, G1K, PG2, PG2R, G2R, SPF, mass, time_)
+model novak_1997__R(R, k3, k4, kp, k7, k8, k8r, Kmp, k7r, k2, k2_, k6_, G1R, G2K, G1K, PG2, PG2R, G2R, SPF, mass, time_)
 
   // Rate Rules:
   R' = k3 + (k7r + k2 + k2_) * (G2R + PG2R) + (k8r + k6_) * G1R - (k4 * R + k7 * R * (G2K + PG2) + k8 * R * G1K + kp * R * SPF * mass / (Kmp + R));
@@ -83,7 +83,7 @@ model novak_tyson_1997_version01__R(R, k3, k4, kp, k7, k8, k8r, Kmp, k7r, k2, k2
   R = 0.4;
 end
 
-model novak_tyson_1997_version01__G1K(G1K, k5, k6, k8, k4, k8r, G1R, R, time_)
+model novak_1997__G1K(G1K, k5, k6, k8, k4, k8r, G1R, R, time_)
 
   // Rate Rules:
   G1K' = k5 + (k8r + k4) * G1R - (k6 + k8 * R) * G1K;
@@ -92,7 +92,7 @@ model novak_tyson_1997_version01__G1K(G1K, k5, k6, k8, k4, k8r, G1R, R, time_)
   G1K = 0;
 end
 
-model novak_tyson_1997_version01__G2R(G2R, k7, k4, k2, k7r, k2_, G2K, R, time_)
+model novak_1997__G2R(G2R, k7, k4, k2, k7r, k2_, G2K, R, time_)
 
   // Rate Rules:
   G2R' = k7 * R * G2K - (k7r + k4 + k2 + k2_) * G2R;
@@ -101,7 +101,7 @@ model novak_tyson_1997_version01__G2R(G2R, k7, k4, k2, k7r, k2_, G2K, R, time_)
   G2R = 0;
 end
 
-model novak_tyson_1997_version01__IE(IE, ki, kir, Kmi, Kmir, MPF, time_)
+model novak_1997__IE(IE, ki, kir, Kmi, Kmir, MPF, time_)
 
   // Rate Rules:
   IE' = ki * MPF * (1 - IE) / (Kmi + 1 - IE) - kir * IE / (Kmir + IE);
@@ -110,7 +110,7 @@ model novak_tyson_1997_version01__IE(IE, ki, kir, Kmi, Kmir, MPF, time_)
   IE = 0;
 end
 
-model novak_tyson_1997_version01__UbE2(UbE2, ku2, kur2, Kmu2, Kmur2, MPF, time_)
+model novak_1997__UbE2(UbE2, ku2, kur2, Kmu2, Kmur2, MPF, time_)
 
   // Rate Rules:
   UbE2' = ku2 * MPF * (1 - UbE2) / (Kmu2 + 1 - UbE2) - kur2 * UbE2 / (Kmur2 + UbE2);
@@ -119,7 +119,7 @@ model novak_tyson_1997_version01__UbE2(UbE2, ku2, kur2, Kmu2, Kmur2, MPF, time_)
   UbE2 = 0;
 end
 
-model novak_tyson_1997_version01__Wee1(Wee1, kwr, kw, Kmwr, Kmw, MPF, time_)
+model novak_1997__Wee1(Wee1, kwr, kw, Kmwr, Kmw, MPF, time_)
 
   // Rate Rules:
   Wee1' = kwr * (1 - Wee1) / (Kmwr + 1 - Wee1) - kw * MPF * Wee1 / (Kmw + Wee1);
@@ -128,7 +128,7 @@ model novak_tyson_1997_version01__Wee1(Wee1, kwr, kw, Kmwr, Kmw, MPF, time_)
   Wee1 = 0;
 end
 
-model novak_tyson_1997_version01__PG2(PG2, k2, k7, k4, k25, kwee, k7r, PG2R, G2K, R, time_)
+model novak_1997__PG2(PG2, k2, k7, k4, k25, kwee, k7r, PG2R, G2K, R, time_)
 
   // Rate Rules:
   PG2' = kwee * G2K + (k7r + k4) * PG2R - (k25 + k2 + k7 * R) * PG2;
@@ -137,7 +137,7 @@ model novak_tyson_1997_version01__PG2(PG2, k2, k7, k4, k25, kwee, k7r, PG2R, G2K
   PG2 = 0;
 end
 
-model novak_tyson_1997_version01__G1R(G1R, k8, k4, k6_, k8r, G1K, R, time_)
+model novak_1997__G1R(G1R, k8, k4, k6_, k8r, G1K, R, time_)
 
   // Rate Rules:
   G1R' = k8 * R * G1K - (k8r + k4 + k6_) * G1R;
@@ -146,7 +146,7 @@ model novak_tyson_1997_version01__G1R(G1R, k8, k4, k6_, k8r, G1K, R, time_)
   G1R = 0;
 end
 
-model novak_tyson_1997_version01__PG2R(PG2R, k7, k4, k2, k2_, k7r, PG2, R, time_)
+model novak_1997__PG2R(PG2R, k7, k4, k2, k2_, k7r, PG2, R, time_)
 
   // Rate Rules:
   PG2R' = k7 * R * PG2 - (k7r + k4 + k2 + k2_) * PG2R;
@@ -155,7 +155,7 @@ model novak_tyson_1997_version01__PG2R(PG2R, k7, k4, k2, k2_, k7r, PG2, R, time_
   PG2R = 0;
 end
 
-model novak_tyson_1997_version01__UbE(UbE, kur, ku, Kmur, Kmu, IE, time_)
+model novak_1997__UbE(UbE, kur, ku, Kmur, Kmu, IE, time_)
 
   // Rate Rules:
   UbE' = ku * IE * (1 - UbE) / (Kmu + 1 - UbE) - kur * UbE / (Kmur + UbE);
@@ -164,7 +164,7 @@ model novak_tyson_1997_version01__UbE(UbE, kur, ku, Kmur, Kmu, IE, time_)
   UbE = 1;
 end
 
-model novak_tyson_1997_version01__mass(mass, mu, time_)
+model novak_1997__mass(mass, mu, time_)
 
   // Rate Rules:
   mass' = mu * mass;
@@ -173,7 +173,7 @@ model novak_tyson_1997_version01__mass(mass, mu, time_)
   mass = 0.5;
 end
 
-model novak_tyson_1997_version01__Cdc25(Cdc25, kcr, kc, Kmcr, Kmc, MPF, time_)
+model novak_1997__Cdc25(Cdc25, kcr, kc, Kmcr, Kmc, MPF, time_)
 
   // Rate Rules:
   Cdc25' = kc * MPF * (1 - Cdc25) / (Kmc + 1 - Cdc25) - kcr * Cdc25 / (Kmcr + Cdc25);
@@ -182,44 +182,44 @@ model novak_tyson_1997_version01__Cdc25(Cdc25, kcr, kc, Kmcr, Kmc, MPF, time_)
   Cdc25 = 0;
 end
 
-model novak_tyson_1997_version01__Cig2_total(Cig2_total, G1K, G1R, time_)
+model novak_1997__Cig2_total(Cig2_total, G1K, G1R, time_)
 
   // Assignment Rules:
   Cig2_total := G1K + G1R;
 end
 
-model novak_tyson_1997_version01__Rum1_total(Rum1_total, R, G1R, G2R, PG2R, time_)
+model novak_1997__Rum1_total(Rum1_total, R, G1R, G2R, PG2R, time_)
 
   // Assignment Rules:
   Rum1_total := R + G1R + G2R + PG2R;
 end
 
-model novak_tyson_1997_version01__Cdc13_total(Cdc13_total, G2K, G2R, PG2, PG2R, time_)
+model novak_1997__Cdc13_total(Cdc13_total, G2K, G2R, PG2, PG2R, time_)
 
   // Assignment Rules:
   Cdc13_total := G2K + G2R + PG2 + PG2R;
 end
 
-model novak_tyson_1997_version01____main()
+model novak_1997____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: novak_tyson_1997_version01__environment(time_);
-  rate_constants: novak_tyson_1997_version01__rate_constants(k1, k2, k2_, k3, k4, k5, k6, k6_, k7, k7r, k8, k8r, kwee, k25, ku, kp, kur, ku2, kur2, kc, kcr, kw, kwr, ki, kir, mu, Kmu2, Kmur2, Kmi, Kmir, Kmw, Kmwr, Kmu, Kmur, Kmc, Kmcr, Kmp, Cdc250, UbE0, UbE20, Wee10);
-  concentration_variables: novak_tyson_1997_version01__concentration_variables(SPF, MPF, G1K0, G2K0, PG20);
-  G2K: novak_tyson_1997_version01__G2K(G2K0, k1, k2, k4, k7, k7r, k25, kwee, PG20, G2R0, R0, time_);
-  R: novak_tyson_1997_version01__R(R0, k3, k4, kp, k7, k8, k8r, Kmp, k7r, k2, k2_, k6_, G1R0, G2K0, G1K0, PG20, PG2R0, G2R0, SPF, mass0, time_);
-  G1K: novak_tyson_1997_version01__G1K(G1K0, k5, k6, k8, k4, k8r, G1R0, R0, time_);
-  G2R: novak_tyson_1997_version01__G2R(G2R0, k7, k4, k2, k7r, k2_, G2K0, R0, time_);
-  IE: novak_tyson_1997_version01__IE(IE0, ki, kir, Kmi, Kmir, MPF, time_);
-  UbE2: novak_tyson_1997_version01__UbE2(UbE20, ku2, kur2, Kmu2, Kmur2, MPF, time_);
-  Wee1: novak_tyson_1997_version01__Wee1(Wee10, kwr, kw, Kmwr, Kmw, MPF, time_);
-  PG2: novak_tyson_1997_version01__PG2(PG20, k2, k7, k4, k25, kwee, k7r, PG2R0, G2K0, R0, time_);
-  G1R: novak_tyson_1997_version01__G1R(G1R0, k8, k4, k6_, k8r, G1K0, R0, time_);
-  PG2R: novak_tyson_1997_version01__PG2R(PG2R0, k7, k4, k2, k2_, k7r, PG20, R0, time_);
-  UbE: novak_tyson_1997_version01__UbE(UbE0, kur, ku, Kmur, Kmu, IE0, time_);
-  mass: novak_tyson_1997_version01__mass(mass0, mu, time_);
-  Cdc25: novak_tyson_1997_version01__Cdc25(Cdc250, kcr, kc, Kmcr, Kmc, MPF, time_);
-  Cig2_total: novak_tyson_1997_version01__Cig2_total(Cig2_total0, G1K0, G1R0, time_);
-  Rum1_total: novak_tyson_1997_version01__Rum1_total(Rum1_total0, R0, G1R0, G2R0, PG2R0, time_);
-  Cdc13_total: novak_tyson_1997_version01__Cdc13_total(Cdc13_total0, G2K0, G2R0, PG20, PG2R0, time_);
+  environment: novak_1997__environment(time_);
+  rate_constants: novak_1997__rate_constants(k1, k2, k2_, k3, k4, k5, k6, k6_, k7, k7r, k8, k8r, kwee, k25, ku, kp, kur, ku2, kur2, kc, kcr, kw, kwr, ki, kir, mu, Kmu2, Kmur2, Kmi, Kmir, Kmw, Kmwr, Kmu, Kmur, Kmc, Kmcr, Kmp, Cdc250, UbE0, UbE20, Wee10);
+  concentration_variables: novak_1997__concentration_variables(SPF, MPF, G1K0, G2K0, PG20);
+  G2K: novak_1997__G2K(G2K0, k1, k2, k4, k7, k7r, k25, kwee, PG20, G2R0, R0, time_);
+  R: novak_1997__R(R0, k3, k4, kp, k7, k8, k8r, Kmp, k7r, k2, k2_, k6_, G1R0, G2K0, G1K0, PG20, PG2R0, G2R0, SPF, mass0, time_);
+  G1K: novak_1997__G1K(G1K0, k5, k6, k8, k4, k8r, G1R0, R0, time_);
+  G2R: novak_1997__G2R(G2R0, k7, k4, k2, k7r, k2_, G2K0, R0, time_);
+  IE: novak_1997__IE(IE0, ki, kir, Kmi, Kmir, MPF, time_);
+  UbE2: novak_1997__UbE2(UbE20, ku2, kur2, Kmu2, Kmur2, MPF, time_);
+  Wee1: novak_1997__Wee1(Wee10, kwr, kw, Kmwr, Kmw, MPF, time_);
+  PG2: novak_1997__PG2(PG20, k2, k7, k4, k25, kwee, k7r, PG2R0, G2K0, R0, time_);
+  G1R: novak_1997__G1R(G1R0, k8, k4, k6_, k8r, G1K0, R0, time_);
+  PG2R: novak_1997__PG2R(PG2R0, k7, k4, k2, k2_, k7r, PG20, R0, time_);
+  UbE: novak_1997__UbE(UbE0, kur, ku, Kmur, Kmu, IE0, time_);
+  mass: novak_1997__mass(mass0, mu, time_);
+  Cdc25: novak_1997__Cdc25(Cdc250, kcr, kc, Kmcr, Kmc, MPF, time_);
+  Cig2_total: novak_1997__Cig2_total(Cig2_total0, G1K0, G1R0, time_);
+  Rum1_total: novak_1997__Rum1_total(Rum1_total0, R0, G1R0, G2R0, PG2R0, time_);
+  Cdc13_total: novak_1997__Cdc13_total(Cdc13_total0, G2K0, G2R0, PG20, PG2R0, time_);
 end

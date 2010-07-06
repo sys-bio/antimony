@@ -1,58 +1,52 @@
-//Created by libAntimony v1.3
-model lenbury_pacheenburawana_model_1991_version01__environment(time_)
+//Created by libAntimony v1.4
+model lenbury_1991__environment(time_)
 end
 
-model lenbury_pacheenburawana_model_1991_version01__x(x, b, z, u, y, time_)
+model lenbury_1991__x(x, b, z, y, time_)
 
   // Rate Rules:
-  x' = alpha * exp( a * ( 1.0 - power( z , 2.0 )) + b * ( 1.0 - power( y , 2.0 ))) + D * u - alpha * x;
+  x' = alpha * exp(a * (1 - power(z, 2 )) + b * (1 - power(y, 2 ))) + D * cos(omega * time_) - alpha * x;
 
   // Variable initializations:
+  x = 1.5;
   alpha = 0.5;
+  omega = 2;
   D = 0.8228;
   a = 8.1252;
 end
 
-model lenbury_pacheenburawana_model_1991_version01__y(y, b, z, x, time_)
+model lenbury_1991__y(y, b, z, x, time_)
 
   // Rate Rules:
-  y' = beta * x * exp( b * ( 1.0 - power( z , 2.0 ))) - beta * y;
+  y' = beta * x * exp(b * (1 - power(z, 2 ))) - beta * y;
 
   // Variable initializations:
+  y = 0.95;
   beta = 0.38;
 end
 
-model lenbury_pacheenburawana_model_1991_version01__z(z, y, time_)
+model lenbury_1991__z(z, y, time_)
 
   // Rate Rules:
   z' = gamma * y - gamma * z;
 
   // Variable initializations:
+  z = 1.0;
   gamma = 0.6;
 end
 
-model lenbury_pacheenburawana_model_1991_version01__u(u, time_)
-
-  // Assignment Rules:
-  u := cos( omega * time_ );
-
-  // Variable initializations:
-  omega = 2.0;
-end
-
-model lenbury_pacheenburawana_model_1991_version01__model_constants(b)
+model lenbury_1991__model_constants(b)
 
   // Variable initializations:
   b = 1.091;
 end
 
-model lenbury_pacheenburawana_model_1991_version01____main()
+model lenbury_1991____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: lenbury_pacheenburawana_model_1991_version01__environment(time_);
-  x: lenbury_pacheenburawana_model_1991_version01__x(x0, b, z0, u0, y0, time_);
-  y: lenbury_pacheenburawana_model_1991_version01__y(y0, b, z0, x0, time_);
-  z: lenbury_pacheenburawana_model_1991_version01__z(z0, y0, time_);
-  u: lenbury_pacheenburawana_model_1991_version01__u(u0, time_);
-  model_constants: lenbury_pacheenburawana_model_1991_version01__model_constants(b);
+  environment: lenbury_1991__environment(time_);
+  x: lenbury_1991__x(x0, b, z0, y0, time_);
+  y: lenbury_1991__y(y0, b, z0, x0, time_);
+  z: lenbury_1991__z(z0, y0, time_);
+  model_constants: lenbury_1991__model_constants(b);
 end

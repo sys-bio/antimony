@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model dokos_celler_lovell_1996__environment(time_)
+//Created by libAntimony v1.4
+model dokos_1996__environment(time_)
 end
 
-model dokos_celler_lovell_1996__constants(R, T, F)
+model dokos_1996__constants(R, T, F)
 
   // Variable initializations:
   R = 8314.472;
@@ -10,7 +10,7 @@ model dokos_celler_lovell_1996__constants(R, T, F)
   F = 96485.3415;
 end
 
-model dokos_celler_lovell_1996__membrane(E, time_, i_CaL, i_CaT, i_Na, i_K, i_f, i_p, i_NaCa, i_bNa, i_bK)
+model dokos_1996__membrane(E, time_, i_CaL, i_CaT, i_Na, i_K, i_f, i_p, i_NaCa, i_bNa, i_bK)
 
   // Assignment Rules:
   i_tot := i_CaL + i_CaT + i_Na + i_K + i_f + i_p + i_NaCa + i_bNa + i_bK;
@@ -23,7 +23,7 @@ model dokos_celler_lovell_1996__membrane(E, time_, i_CaL, i_CaT, i_Na, i_K, i_f,
   C = 3.2e-5;
 end
 
-model dokos_celler_lovell_1996__reversal_potentials(E_Ca, E_Na, E_K, R, T, F, Cai, Cao, Nai, Nao, Ki, Ko)
+model dokos_1996__reversal_potentials(E_Ca, E_Na, E_K, R, T, F, Cai, Cao, Nai, Nao, Ki, Ko)
 
   // Assignment Rules:
   E_Ca := R * T / (2 * F) * ln(Cao / Cai);
@@ -31,7 +31,7 @@ model dokos_celler_lovell_1996__reversal_potentials(E_Ca, E_Na, E_K, R, T, F, Ca
   E_K := R * T / F * ln(Ko / Ki);
 end
 
-model dokos_celler_lovell_1996__L_type_calcium_current_d_gate(dL, E, time_)
+model dokos_1996__L_type_calcium_current_d_gate(dL, E, time_)
 
   // Assignment Rules:
   dL_infinity := 1 / (1 + exp((E + 6.6 ) / -(6.6 )));
@@ -44,7 +44,7 @@ model dokos_celler_lovell_1996__L_type_calcium_current_d_gate(dL, E, time_)
   tau_dL = 0.002;
 end
 
-model dokos_celler_lovell_1996__L_type_calcium_current_f_gate(fL, E, time_)
+model dokos_1996__L_type_calcium_current_f_gate(fL, E, time_)
 
   // Assignment Rules:
   fL_infinity := 1 / (1 + exp((E + 25 ) / 6 ));
@@ -57,7 +57,7 @@ model dokos_celler_lovell_1996__L_type_calcium_current_f_gate(fL, E, time_)
   fL = 0.1505;
 end
 
-model dokos_celler_lovell_1996__L_type_calcium_current_f2_gate(fL2, E, Cai, time_)
+model dokos_1996__L_type_calcium_current_f2_gate(fL2, E, Cai, time_)
 
   // Rate Rules:
   fL2' = alpha_fL2 * (1 - fL2) - beta_fL2 * Cai * fL2;
@@ -68,12 +68,12 @@ model dokos_celler_lovell_1996__L_type_calcium_current_f2_gate(fL2, E, Cai, time
   beta_fL2 = 40000;
 end
 
-model dokos_celler_lovell_1996__L_type_calcium_current(i_CaL, E_Ca, time_, E, Cai, dL, fL, fL2)
+model dokos_1996__L_type_calcium_current(i_CaL, E_Ca, time_, E, Cai, dL, fL, fL2)
 
   // Sub-modules, and any changes to those submodules:
-  L_type_calcium_current_d_gate: dokos_celler_lovell_1996__L_type_calcium_current_d_gate(dL, E, time_);
-  L_type_calcium_current_f_gate: dokos_celler_lovell_1996__L_type_calcium_current_f_gate(fL, E, time_);
-  L_type_calcium_current_f2_gate: dokos_celler_lovell_1996__L_type_calcium_current_f2_gate(fL2, E, Cai, time_);
+  L_type_calcium_current_d_gate: dokos_1996__L_type_calcium_current_d_gate(dL, E, time_);
+  L_type_calcium_current_f_gate: dokos_1996__L_type_calcium_current_f_gate(fL, E, time_);
+  L_type_calcium_current_f2_gate: dokos_1996__L_type_calcium_current_f2_gate(fL2, E, Cai, time_);
 
   // Assignment Rules:
   i_CaL := g_CaL * dL * fL * fL2 * (E - E_Ca + 75 );
@@ -82,7 +82,7 @@ model dokos_celler_lovell_1996__L_type_calcium_current(i_CaL, E_Ca, time_, E, Ca
   g_CaL = 0.4;
 end
 
-model dokos_celler_lovell_1996__T_type_calcium_current_d_gate(dT, E, time_)
+model dokos_1996__T_type_calcium_current_d_gate(dT, E, time_)
 
   // Assignment Rules:
   dT_infinity := 1 / (1 + exp((E + 23 ) / -(6.1 )));
@@ -95,7 +95,7 @@ model dokos_celler_lovell_1996__T_type_calcium_current_d_gate(dT, E, time_)
   dT = 0.001;
 end
 
-model dokos_celler_lovell_1996__T_type_calcium_current_f_gate(fT, E, time_)
+model dokos_1996__T_type_calcium_current_f_gate(fT, E, time_)
 
   // Assignment Rules:
   fT_infinity := 1 / (1 + exp((E + 75 ) / 6.6 ));
@@ -108,11 +108,11 @@ model dokos_celler_lovell_1996__T_type_calcium_current_f_gate(fT, E, time_)
   fT = 0.1328;
 end
 
-model dokos_celler_lovell_1996__T_type_calcium_current(i_CaT, E_Ca, time_, E, dT, fT)
+model dokos_1996__T_type_calcium_current(i_CaT, E_Ca, time_, E, dT, fT)
 
   // Sub-modules, and any changes to those submodules:
-  T_type_calcium_current_d_gate: dokos_celler_lovell_1996__T_type_calcium_current_d_gate(dT, E, time_);
-  T_type_calcium_current_f_gate: dokos_celler_lovell_1996__T_type_calcium_current_f_gate(fT, E, time_);
+  T_type_calcium_current_d_gate: dokos_1996__T_type_calcium_current_d_gate(dT, E, time_);
+  T_type_calcium_current_f_gate: dokos_1996__T_type_calcium_current_f_gate(fT, E, time_);
 
   // Assignment Rules:
   i_CaT := g_CaT * dT * fT * (E - E_Ca + 75 );
@@ -121,7 +121,7 @@ model dokos_celler_lovell_1996__T_type_calcium_current(i_CaT, E_Ca, time_, E, dT
   g_CaT = 0.085;
 end
 
-model dokos_celler_lovell_1996__fast_sodium_current_m_gate(m, E, time_)
+model dokos_1996__fast_sodium_current_m_gate(m, E, time_)
 
   // Assignment Rules:
   alpha_m := 200 * (E + 34.3 ) / (1 - exp(-(0.09 ) * (E + 34.3 )));
@@ -134,7 +134,7 @@ model dokos_celler_lovell_1996__fast_sodium_current_m_gate(m, E, time_)
   m = 0.0139;
 end
 
-model dokos_celler_lovell_1996__fast_sodium_current_h_gate(h, E, time_)
+model dokos_1996__fast_sodium_current_h_gate(h, E, time_)
 
   // Assignment Rules:
   alpha_h := 32.4 * exp(-(0.14 ) * (E + 93.4 ));
@@ -147,11 +147,11 @@ model dokos_celler_lovell_1996__fast_sodium_current_h_gate(h, E, time_)
   h = 0.0087;
 end
 
-model dokos_celler_lovell_1996__fast_sodium_current(i_Na, E_Na, time_, E, m, h)
+model dokos_1996__fast_sodium_current(i_Na, E_Na, time_, E, m, h)
 
   // Sub-modules, and any changes to those submodules:
-  fast_sodium_current_m_gate: dokos_celler_lovell_1996__fast_sodium_current_m_gate(m, E, time_);
-  fast_sodium_current_h_gate: dokos_celler_lovell_1996__fast_sodium_current_h_gate(h, E, time_);
+  fast_sodium_current_m_gate: dokos_1996__fast_sodium_current_m_gate(m, E, time_);
+  fast_sodium_current_h_gate: dokos_1996__fast_sodium_current_h_gate(h, E, time_);
 
   // Assignment Rules:
   i_Na := g_Na * power(m, 3 ) * h * (E - E_Na);
@@ -160,7 +160,7 @@ model dokos_celler_lovell_1996__fast_sodium_current(i_Na, E_Na, time_, E, m, h)
   g_Na = 0.25;
 end
 
-model dokos_celler_lovell_1996__delayed_rectifying_potassium_current_x_gate(x, E, time_)
+model dokos_1996__delayed_rectifying_potassium_current_x_gate(x, E, time_)
 
   // Assignment Rules:
   x_infinity := 1 / (1 + exp((E + 25.1 ) / -(7.4 )));
@@ -173,10 +173,10 @@ model dokos_celler_lovell_1996__delayed_rectifying_potassium_current_x_gate(x, E
   x = 0.5682;
 end
 
-model dokos_celler_lovell_1996__delayed_rectifying_potassium_current(i_K, i_KK, i_KNa, R, T, F, Ko, Ki, Nao, Nai, time_, E, x)
+model dokos_1996__delayed_rectifying_potassium_current(i_K, i_KK, i_KNa, R, T, F, Ko, Ki, Nao, Nai, time_, E, x)
 
   // Sub-modules, and any changes to those submodules:
-  delayed_rectifying_potassium_current_x_gate: dokos_celler_lovell_1996__delayed_rectifying_potassium_current_x_gate(x, E, time_);
+  delayed_rectifying_potassium_current_x_gate: dokos_1996__delayed_rectifying_potassium_current_x_gate(x, E, time_);
 
   // Assignment Rules:
   i_K := i_KK + i_KNa;
@@ -188,7 +188,7 @@ model dokos_celler_lovell_1996__delayed_rectifying_potassium_current(i_K, i_KK, 
   P_KNa = 0.035;
 end
 
-model dokos_celler_lovell_1996__hyperpolarising_activated_current_y_gate(y, E, time_)
+model dokos_1996__hyperpolarising_activated_current_y_gate(y, E, time_)
 
   // Assignment Rules:
   alpha_y := 0.36 * (E + 137.8 ) / (exp(0.066 * (E + 137.8 )) - 1 );
@@ -201,10 +201,10 @@ model dokos_celler_lovell_1996__hyperpolarising_activated_current_y_gate(y, E, t
   y = 0.0287;
 end
 
-model dokos_celler_lovell_1996__hyperpolarising_activated_current(i_f, i_fNa, i_fK, E_Na, E_K, Ko, time_, E, y)
+model dokos_1996__hyperpolarising_activated_current(i_f, i_fNa, i_fK, E_Na, E_K, Ko, time_, E, y)
 
   // Sub-modules, and any changes to those submodules:
-  hyperpolarising_activated_current_y_gate: dokos_celler_lovell_1996__hyperpolarising_activated_current_y_gate(y, E, time_);
+  hyperpolarising_activated_current_y_gate: dokos_1996__hyperpolarising_activated_current_y_gate(y, E, time_);
 
   // Assignment Rules:
   i_f := i_fK + i_fNa;
@@ -217,7 +217,7 @@ model dokos_celler_lovell_1996__hyperpolarising_activated_current(i_f, i_fNa, i_
   g_fK = 0.0135;
 end
 
-model dokos_celler_lovell_1996__sodium_potassium_pump(i_p, Ko, Nai, time_, E)
+model dokos_1996__sodium_potassium_pump(i_p, Ko, Nai, time_, E)
 
   // Assignment Rules:
   i_p := i_pmax * Nai / (Nai + KmNa) * Ko / (Ko + KmK) * (1 - power((E - 40 ) / 211 , 2 ));
@@ -228,7 +228,7 @@ model dokos_celler_lovell_1996__sodium_potassium_pump(i_p, Ko, Nai, time_, E)
   i_pmax = 0.226;
 end
 
-model dokos_celler_lovell_1996__sodium_calcium_exchange_current(i_NaCa, Cao, Nao, Cai, Nai, time_, R, T, F, E)
+model dokos_1996__sodium_calcium_exchange_current(i_NaCa, Cao, Nao, Cai, Nai, time_, R, T, F, E)
 
   // Assignment Rules:
   i_NaCa := kNaCa * (x2 * k21 - x1 * k12) / (x1 + x2 + x3 + x4);
@@ -263,7 +263,7 @@ model dokos_celler_lovell_1996__sodium_calcium_exchange_current(i_NaCa, Cao, Nao
   Kco = 3.663;
 end
 
-model dokos_celler_lovell_1996__background_sodium_current(i_bNa, time_, E, E_Na)
+model dokos_1996__background_sodium_current(i_bNa, time_, E, E_Na)
 
   // Assignment Rules:
   i_bNa := g_Nab * (E - E_Na);
@@ -272,7 +272,7 @@ model dokos_celler_lovell_1996__background_sodium_current(i_bNa, time_, E, E_Na)
   g_Nab = 0.00024;
 end
 
-model dokos_celler_lovell_1996__background_potassium_current(i_bK, time_, E, R, T, F, Ki, Ko)
+model dokos_1996__background_potassium_current(i_bK, time_, E, R, T, F, Ki, Ko)
 
   // Assignment Rules:
   i_bK := KbK * power(Ko / 1 , 0.41 ) * (Ki - Ko * exp(-(E) * F / (R * T)));
@@ -281,7 +281,7 @@ model dokos_celler_lovell_1996__background_potassium_current(i_bK, time_, E, R, 
   KbK = 0.00007;
 end
 
-model dokos_celler_lovell_1996__sarcoplasmic_reticulum_kinetics(i_up, i_tr, i_rel, V_i, V_rel, V_up, time_, F, Cai, Caup, Carel)
+model dokos_1996__sarcoplasmic_reticulum_kinetics(i_up, i_tr, i_rel, V_i, V_rel, V_up, time_, F, Cai, Caup, Carel)
 
   // Assignment Rules:
   i_up := i_up_max * power(Cai, 2 ) / (power(Cai, 2 ) + power(KmCaup, 2 ));
@@ -298,7 +298,7 @@ model dokos_celler_lovell_1996__sarcoplasmic_reticulum_kinetics(i_up, i_tr, i_re
   tau_tr = 0.4;
 end
 
-model dokos_celler_lovell_1996__ion_concentrations(Cai, Cao, Caup, Carel, Nai, Nao, Ki, Ko, V_i, time_, F, i_bNa, i_fNa, i_Na, i_p, i_NaCa, i_KNa, i_KK, i_fK, i_bK, i_CaL, i_CaT, i_up, i_rel, i_tr, V_rel, V_up)
+model dokos_1996__ion_concentrations(Cai, Cao, Caup, Carel, Nai, Nao, Ki, Ko, V_i, time_, F, i_bNa, i_fNa, i_Na, i_p, i_NaCa, i_KNa, i_KK, i_fK, i_bK, i_CaL, i_CaT, i_up, i_rel, i_tr, V_rel, V_up)
 
   // Assignment Rules:
   V_e := 0.2 * V_i;
@@ -329,22 +329,22 @@ model dokos_celler_lovell_1996__ion_concentrations(Cai, Cao, Caup, Carel, Nai, N
   Kb = 5.4;
 end
 
-model dokos_celler_lovell_1996____main()
+model dokos_1996____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: dokos_celler_lovell_1996__environment(time_);
-  constants: dokos_celler_lovell_1996__constants(R, T, F);
-  membrane: dokos_celler_lovell_1996__membrane(E, time_, i_CaL, i_CaT, i_Na, i_K, i_f, i_p, i_NaCa, i_bNa, i_bK);
-  reversal_potentials: dokos_celler_lovell_1996__reversal_potentials(E_Ca, E_Na, E_K, R, T, F, Cai, Cao, Nai, Nao, Ki, Ko);
-  L_type_calcium_current: dokos_celler_lovell_1996__L_type_calcium_current(i_CaL, E_Ca, time_, E, Cai, dL, fL, fL2);
-  T_type_calcium_current: dokos_celler_lovell_1996__T_type_calcium_current(i_CaT, E_Ca, time_, E, dT, fT);
-  fast_sodium_current: dokos_celler_lovell_1996__fast_sodium_current(i_Na, E_Na, time_, E, m, h);
-  delayed_rectifying_potassium_current: dokos_celler_lovell_1996__delayed_rectifying_potassium_current(i_K, i_KK, i_KNa, R, T, F, Ko, Ki, Nao, Nai, time_, E, x);
-  hyperpolarising_activated_current: dokos_celler_lovell_1996__hyperpolarising_activated_current(i_f, i_fNa, i_fK, E_Na, E_K, Ko, time_, E, y);
-  sodium_potassium_pump: dokos_celler_lovell_1996__sodium_potassium_pump(i_p, Ko, Nai, time_, E);
-  sodium_calcium_exchange_current: dokos_celler_lovell_1996__sodium_calcium_exchange_current(i_NaCa, Cao, Nao, Cai, Nai, time_, R, T, F, E);
-  background_sodium_current: dokos_celler_lovell_1996__background_sodium_current(i_bNa, time_, E, E_Na);
-  background_potassium_current: dokos_celler_lovell_1996__background_potassium_current(i_bK, time_, E, R, T, F, Ki, Ko);
-  sarcoplasmic_reticulum_kinetics: dokos_celler_lovell_1996__sarcoplasmic_reticulum_kinetics(i_up, i_tr, i_rel, V_i, V_rel, V_up, time_, F, Cai, Caup, Carel);
-  ion_concentrations: dokos_celler_lovell_1996__ion_concentrations(Cai, Cao, Caup, Carel, Nai, Nao, Ki, Ko, V_i, time_, F, i_bNa, i_fNa, i_Na, i_p, i_NaCa, i_KNa, i_KK, i_fK, i_bK, i_CaL, i_CaT, i_up, i_rel, i_tr, V_rel, V_up);
+  environment: dokos_1996__environment(time_);
+  constants: dokos_1996__constants(R, T, F);
+  membrane: dokos_1996__membrane(E, time_, i_CaL, i_CaT, i_Na, i_K, i_f, i_p, i_NaCa, i_bNa, i_bK);
+  reversal_potentials: dokos_1996__reversal_potentials(E_Ca, E_Na, E_K, R, T, F, Cai, Cao, Nai, Nao, Ki, Ko);
+  L_type_calcium_current: dokos_1996__L_type_calcium_current(i_CaL, E_Ca, time_, E, Cai, dL, fL, fL2);
+  T_type_calcium_current: dokos_1996__T_type_calcium_current(i_CaT, E_Ca, time_, E, dT, fT);
+  fast_sodium_current: dokos_1996__fast_sodium_current(i_Na, E_Na, time_, E, m, h);
+  delayed_rectifying_potassium_current: dokos_1996__delayed_rectifying_potassium_current(i_K, i_KK, i_KNa, R, T, F, Ko, Ki, Nao, Nai, time_, E, x);
+  hyperpolarising_activated_current: dokos_1996__hyperpolarising_activated_current(i_f, i_fNa, i_fK, E_Na, E_K, Ko, time_, E, y);
+  sodium_potassium_pump: dokos_1996__sodium_potassium_pump(i_p, Ko, Nai, time_, E);
+  sodium_calcium_exchange_current: dokos_1996__sodium_calcium_exchange_current(i_NaCa, Cao, Nao, Cai, Nai, time_, R, T, F, E);
+  background_sodium_current: dokos_1996__background_sodium_current(i_bNa, time_, E, E_Na);
+  background_potassium_current: dokos_1996__background_potassium_current(i_bK, time_, E, R, T, F, Ki, Ko);
+  sarcoplasmic_reticulum_kinetics: dokos_1996__sarcoplasmic_reticulum_kinetics(i_up, i_tr, i_rel, V_i, V_rel, V_up, time_, F, Cai, Caup, Carel);
+  ion_concentrations: dokos_1996__ion_concentrations(Cai, Cao, Caup, Carel, Nai, Nao, Ki, Ko, V_i, time_, F, i_bNa, i_fNa, i_Na, i_p, i_NaCa, i_KNa, i_KK, i_fK, i_bK, i_CaL, i_CaT, i_up, i_rel, i_tr, V_rel, V_up);
 end

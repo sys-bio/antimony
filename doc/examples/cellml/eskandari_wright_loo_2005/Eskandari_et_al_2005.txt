@@ -1,10 +1,13 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model eskandari_2005__environment(time_)
 end
 
-model eskandari_2005__parameters(k0_12, k0_21, k0_23, k0_32, k0_34, k0_43, k0_45, k0_54, k0_25, k0_52, k0_56, k0_65, k0_61, k0_16, delta, alpha_p, alpha_pp, C_T, n, z_c, z_Na, F, R, T, V, mu)
+model eskandari_2005__parameters(k0_12, k0_21, k0_23, k0_32, k0_34, k0_43, k0_45, k0_54, k0_25, k0_52, k0_56, k0_65, k0_61, k0_16, delta, alpha_p, alpha_pp, C_T, n, z_c, z_Na, F, R, T, V, mu, Na_o)
 
   // Assignment Rules:
+  k0_65 := piecewise( k0_65_r , Na_o < 100E-3 , k0_65_f );
+  k0_61 := piecewise( k0_61_r , Na_o < 100E-3 , k0_61_f );
+  k0_16 := piecewise( k0_16_r , Na_o < 100E-3 , k0_16_f );
   alpha_p := 1 - delta - alpha_pp;
   C_T := 1E6 * N_C / N_Avo;
   mu := F * V / (R * T);
@@ -21,9 +24,12 @@ model eskandari_2005__parameters(k0_12, k0_21, k0_23, k0_32, k0_34, k0_43, k0_45
   k0_25 = 0.3;
   k0_52 = 9.1e-4;
   k0_56 = 10;
-  k0_65 = 4500;
-  k0_61 = 3;
-  k0_16 = 350;
+  k0_65_f = 50;
+  k0_61_f = 5;
+  k0_16_f = 35;
+  k0_65_r = 4500;
+  k0_61_r = 3;
+  k0_16_r = 350;
   delta = 0.7;
   alpha_pp = 0;
   N_C = 3e6;
@@ -140,7 +146,7 @@ model eskandari_2005____main()
 
   // Sub-modules, and any changes to those submodules:
   environment: eskandari_2005__environment(time_);
-  parameters: eskandari_2005__parameters(k0_12, k0_21, k0_23, k0_32, k0_34, k0_43, k0_45, k0_54, k0_25, k0_52, k0_56, k0_65, k0_61, k0_16, delta, alpha_p, alpha_pp, C_T, n, z_c, z_Na, F, R, T, V, mu);
+  parameters: eskandari_2005__parameters(k0_12, k0_21, k0_23, k0_32, k0_34, k0_43, k0_45, k0_54, k0_25, k0_52, k0_56, k0_65, k0_61, k0_16, delta, alpha_p, alpha_pp, C_T, n, z_c, z_Na, F, R, T, V, mu, Na_o);
   ion_concentrations: eskandari_2005__ion_concentrations(V, Na_i, Na_o, glucose_i, glucose_o, time_);
   rate_constants: eskandari_2005__rate_constants(Na_i, Na_o, glucose_i, glucose_o, k_12, k_21, k_23, k_32, k_34, k_43, k_45, k_54, k_25, k_52, k_56, k_65, k_61, k_16, k0_12, ks_12, k0_21, k0_23, k0_32, k0_34, k0_43, k0_45, k0_54_temp, k0_54, k0_25, k_52_temp, k0_52, k0_56, k0_65, k0_61, k0_16, delta, n, z_c, z_Na, alpha_p, alpha_pp, C_T, mu);
   kinetic_equations: eskandari_2005__kinetic_equations(k_12, k_21, k_23, k_32, k_34, k_43, k_45, k_54, k_25, k_52, k_56, k_65, k_61, k_16, C_1, C_2, C_3, C_4, C_5, C_6, C_6_temp, C_T, time_);

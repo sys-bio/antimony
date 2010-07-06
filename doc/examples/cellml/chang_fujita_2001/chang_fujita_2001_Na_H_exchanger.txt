@@ -1,0 +1,99 @@
+//Created by libAntimony v1.4
+model renal_Na_H_exchanger_model__environment(time_)
+end
+
+model renal_Na_H_exchanger_model__E(E, k1, k2, k3, k4, k5, k6, ENa, ENH4, EH, H, Na, NH4, time_)
+
+  // Rate Rules:
+  E' = k2 * ENa + k4 * EH + k6 * ENH4 - ( k1 * Na * E + k3 * H * E + k5 * NH4 * E );
+end
+
+model renal_Na_H_exchanger_model__ENa(ENa, k1, k2, k13, k14, ENa_, E, Na, time_)
+
+  // Rate Rules:
+  ENa' = k1 * E * Na + k14 * ENa_ - ( k2 * ENa + k13 * ENa );
+end
+
+model renal_Na_H_exchanger_model__EH(EH, k3, k4, k15, k16, EH_, E, H, time_)
+
+  // Rate Rules:
+  EH' = k3 * H * E + k16 * EH_ - ( k4 * EH + k15 * EH );
+end
+
+model renal_Na_H_exchanger_model__ENH4(ENH4, k5, k6, k17, k18, ENH4_, E, NH4, time_)
+
+  // Rate Rules:
+  ENH4' = k5 * NH4 * E + k18 * ENH4_ - ( k6 * ENH4 + k17 * ENH4 );
+end
+
+model renal_Na_H_exchanger_model__E_(E_, k7, k8, k9, k10, k11, k12, ENa_, ENH4_, EH_, H_, Na_, NH4_, time_)
+
+  // Rate Rules:
+  E_' = k8 * ENa_ + k10 * EH_ + k12 * ENH4_ - ( k7 * Na_ * E_ + k9 * H_ * E_ + k11 * NH4_ * E_ );
+end
+
+model renal_Na_H_exchanger_model__ENa_(ENa_, k7, k8, k13, k14, ENa, E_, Na_, time_)
+
+  // Rate Rules:
+  ENa_' = k7 * E_ * Na_ + k13 * ENa - ( k8 * ENa_ + k14 * ENa_ );
+end
+
+model renal_Na_H_exchanger_model__EH_(EH_, k9, k10, k15, k16, EH, E_, H_, time_)
+
+  // Rate Rules:
+  EH_' = k9 * H_ * E_ + k15 * EH - ( k10 * EH_ + k16 * EH_ );
+end
+
+model renal_Na_H_exchanger_model__ENH4_(ENH4_, k11, k12, k17, k18, ENH4, E_, NH4_, time_)
+
+  // Rate Rules:
+  ENH4_' = k11 * NH4_ * E_ + k17 * ENH4 - ( k12 * ENH4_ + k18 * ENH4_ );
+end
+
+model renal_Na_H_exchanger_model__reaction_constants(k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17, k18, H, Na, NH4, H_, Na_, NH4_)
+
+  // Assignment Rules:
+  k13 := 2.41E0 * W;
+  k14 := 2.41E0 * W;
+  k15 := 4.8E-1 * W;
+  k16 := 4.8E-1 * W;
+  k17 := 2.41E0 * W;
+  k18 := 2.41E0 * W;
+  W := H_ / ( H_ + KH );
+
+  // Variable initializations:
+  k1 = 1.0E8;
+  k2 = 3.27E6;
+  k3 = 1.0E8;
+  k4 = 3.52E0;
+  k5 = 1.0E8;
+  k6 = 7.13E5;
+  k7 = 1.0E8;
+  k8 = 3.27E6;
+  k9 = 1.0E8;
+  k10 = 3.52E0;
+  k11 = 1.0E8;
+  k12 = 7.13E5;
+  H = 1.0;
+  Na = 1.0;
+  NH4 = 1.0;
+  H_ = 1.0;
+  Na_ = 9.5;
+  NH4_ = 1.3;
+  KH = 1.0;
+end
+
+model renal_Na_H_exchanger_model____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: renal_Na_H_exchanger_model__environment(time_);
+  E: renal_Na_H_exchanger_model__E(E0, k1, k2, k3, k4, k5, k6, ENa0, ENH40, EH0, H, Na, NH4, time_);
+  ENa: renal_Na_H_exchanger_model__ENa(ENa0, k1, k2, k13, k14, ENa_0, E0, Na, time_);
+  EH: renal_Na_H_exchanger_model__EH(EH0, k3, k4, k15, k16, EH_0, E0, H, time_);
+  ENH4: renal_Na_H_exchanger_model__ENH4(ENH40, k5, k6, k17, k18, ENH4_0, E0, NH4, time_);
+  E_: renal_Na_H_exchanger_model__E_(E_0, k7, k8, k9, k10, k11, k12, ENa_0, ENH4_0, EH_0, H_, Na_, NH4_, time_);
+  ENa_: renal_Na_H_exchanger_model__ENa_(ENa_0, k7, k8, k13, k14, ENa0, E_0, Na_, time_);
+  EH_: renal_Na_H_exchanger_model__EH_(EH_0, k9, k10, k15, k16, EH0, E_0, H_, time_);
+  ENH4_: renal_Na_H_exchanger_model__ENH4_(ENH4_0, k11, k12, k17, k18, ENH40, E_0, NH4_, time_);
+  reaction_constants: renal_Na_H_exchanger_model__reaction_constants(k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17, k18, H, Na, NH4, H_, Na_, NH4_);
+end

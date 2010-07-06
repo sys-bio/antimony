@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model chen_popel_model_2006_version01__environment(time_)
+//Created by libAntimony v1.4
+model chen_2006__environment(time_)
 end
 
-model chen_popel_model_2006_version01__Arg(Arg, Fe3, Fe3_Arg, Fe2_Arg, Fe2, k1, k_1, k4, k_4, time_)
+model chen_2006__Arg(Arg, Fe3, Fe3_Arg, Fe2_Arg, Fe2, k1, k_1, k4, k_4, time_)
 
   // Assignment Rules:
   S := k1 * Arg * Fe3 + k4 * Arg * Fe2 - ( k_1 * Fe3_Arg + k_4 * Fe2_Arg );
@@ -14,7 +14,7 @@ model chen_popel_model_2006_version01__Arg(Arg, Fe3, Fe3_Arg, Fe2_Arg, Fe2, k1, 
   Arg = 100.0;
 end
 
-model chen_popel_model_2006_version01__Fe3(Fe3, Arg, Fe3_Arg, Fe3_NO, Fe2_NO, O2, Fe3_NOHA, NOHA, k1, k_1, k2, k13, k14, k8, k_8, time_)
+model chen_2006__Fe3(Fe3, Arg, Fe3_Arg, Fe3_NO, Fe2_NO, O2, Fe3_NOHA, NOHA, k1, k_1, k2, k13, k14, k8, k_8, time_)
 
   // Rate Rules:
   Fe3' = k_1 * Fe3_Arg + k14 * Fe3_NO + k13 * Fe2_NO * O2 + k8 * Fe3_NOHA - ( k1 * Arg * Fe3 + k2 * Fe3 + k_8 * NOHA * Fe3 );
@@ -23,7 +23,7 @@ model chen_popel_model_2006_version01__Fe3(Fe3, Arg, Fe3_Arg, Fe3_NO, Fe2_NO, O2
   Fe3 = 0.045;
 end
 
-model chen_popel_model_2006_version01__Fe3_Arg(Fe3_Arg, Arg, Fe3, k1, k_1, k3, time_)
+model chen_2006__Fe3_Arg(Fe3_Arg, Arg, Fe3, k1, k_1, k3, time_)
 
   // Rate Rules:
   Fe3_Arg' = k1 * Fe3 * Arg - ( k_1 * Fe3_Arg + k3 * Fe3_Arg );
@@ -32,7 +32,7 @@ model chen_popel_model_2006_version01__Fe3_Arg(Fe3_Arg, Arg, Fe3, k1, k_1, k3, t
   Fe3_Arg = 0.0;
 end
 
-model chen_popel_model_2006_version01__Fe2(Fe2, Arg, Fe3, Fe2_Arg, NOHA, Fe2_NOHA, k2, k_4, k4, k9, k_9, time_)
+model chen_2006__Fe2(Fe2, Arg, Fe3, Fe2_Arg, NOHA, Fe2_NOHA, k2, k_4, k4, k9, k_9, time_)
 
   // Rate Rules:
   Fe2' = k2 * Fe3 + k_4 * Fe2_Arg + k9 * Fe2_NOHA - ( k4 * Fe2 * Arg + k_9 * Fe2 * NOHA );
@@ -41,7 +41,7 @@ model chen_popel_model_2006_version01__Fe2(Fe2, Arg, Fe3, Fe2_Arg, NOHA, Fe2_NOH
   Fe2 = 0.0;
 end
 
-model chen_popel_model_2006_version01__Fe2_Arg(Fe2_Arg, Arg, Fe3_Arg, Fe2, Fe3_O2_Arg, O2, k4, k_4, k3, k5, k_5, time_)
+model chen_2006__Fe2_Arg(Fe2_Arg, Arg, Fe3_Arg, Fe2, Fe3_O2_Arg, O2, k4, k_4, k3, k5, k_5, time_)
 
   // Rate Rules:
   Fe2_Arg' = k3 * Fe3_Arg + k_5 * Fe3_O2_Arg + k4 * Fe2 * Arg - ( k5 * Fe2_Arg * O2 + k_4 * Fe2_Arg );
@@ -50,7 +50,7 @@ model chen_popel_model_2006_version01__Fe2_Arg(Fe2_Arg, Arg, Fe3_Arg, Fe2, Fe3_O
   Fe2_Arg = 0.0;
 end
 
-model chen_popel_model_2006_version01__Fe3_O2_Arg(Fe3_O2_Arg, Fe2_Arg, O2, k6, k5, k_5, time_)
+model chen_2006__Fe3_O2_Arg(Fe3_O2_Arg, Fe2_Arg, O2, k6, k5, k_5, time_)
 
   // Rate Rules:
   Fe3_O2_Arg' = k5 * Fe2_Arg * O2 - ( k6 * Fe3_O2_Arg + k_5 * Fe3_O2_Arg );
@@ -59,7 +59,7 @@ model chen_popel_model_2006_version01__Fe3_O2_Arg(Fe3_O2_Arg, Fe2_Arg, O2, k6, k
   Fe3_O2_Arg = 0.0;
 end
 
-model chen_popel_model_2006_version01__Fe3_NOHA(Fe3_NOHA, Fe3_O2_Arg, Fe3, NOHA, k6, k7, k8, k_8, time_)
+model chen_2006__Fe3_NOHA(Fe3_NOHA, Fe3_O2_Arg, Fe3, NOHA, k6, k7, k8, k_8, time_)
 
   // Rate Rules:
   Fe3_NOHA' = k6 * Fe3_O2_Arg + k_8 * Fe3 * NOHA - ( k7 * Fe3_NOHA + k8 * Fe3_NOHA );
@@ -68,7 +68,7 @@ model chen_popel_model_2006_version01__Fe3_NOHA(Fe3_NOHA, Fe3_O2_Arg, Fe3, NOHA,
   Fe3_NOHA = 0.0;
 end
 
-model chen_popel_model_2006_version01__Fe2_NOHA(Fe2_NOHA, Fe2, Fe3_NOHA, NOHA, Fe3_O2_NOHA, O2, k9, k7, k_9, k_10, k10, time_)
+model chen_2006__Fe2_NOHA(Fe2_NOHA, Fe2, Fe3_NOHA, NOHA, Fe3_O2_NOHA, O2, k9, k7, k_9, k_10, k10, time_)
 
   // Rate Rules:
   Fe2_NOHA' = k7 * Fe3_NOHA + k_10 * Fe3_O2_NOHA + k_9 * Fe2 * NOHA - ( k9 * Fe2_NOHA + k10 * Fe2_NOHA * O2 );
@@ -77,7 +77,7 @@ model chen_popel_model_2006_version01__Fe2_NOHA(Fe2_NOHA, Fe2, Fe3_NOHA, NOHA, F
   Fe2_NOHA = 0.0;
 end
 
-model chen_popel_model_2006_version01__Fe3_O2_NOHA(Fe3_O2_NOHA, Fe2_NOHA, O2, k11, k10, k_10, time_)
+model chen_2006__Fe3_O2_NOHA(Fe3_O2_NOHA, Fe2_NOHA, O2, k11, k10, k_10, time_)
 
   // Rate Rules:
   Fe3_O2_NOHA' = k10 * Fe2_NOHA * O2 - ( k11 * Fe3_O2_NOHA + k_10 * Fe3_O2_NOHA );
@@ -86,7 +86,7 @@ model chen_popel_model_2006_version01__Fe3_O2_NOHA(Fe3_O2_NOHA, Fe2_NOHA, O2, k1
   Fe3_O2_NOHA = 0.0;
 end
 
-model chen_popel_model_2006_version01__Fe3_NO(Fe3_NO, Fe3_O2_NOHA, k12, k14, k11, time_)
+model chen_2006__Fe3_NO(Fe3_NO, Fe3_O2_NOHA, k12, k14, k11, time_)
 
   // Rate Rules:
   Fe3_NO' = k11 * Fe3_O2_NOHA - ( k14 * Fe3_NO + k12 * Fe3_NO );
@@ -95,7 +95,7 @@ model chen_popel_model_2006_version01__Fe3_NO(Fe3_NO, Fe3_O2_NOHA, k12, k14, k11
   Fe3_NO = 0.0;
 end
 
-model chen_popel_model_2006_version01__Fe2_NO(Fe2_NO, Fe3_NO, O2, k13, k12, time_)
+model chen_2006__Fe2_NO(Fe2_NO, Fe3_NO, O2, k13, k12, time_)
 
   // Rate Rules:
   Fe2_NO' = k12 * Fe3_NO - k13 * Fe2_NO * O2;
@@ -104,7 +104,7 @@ model chen_popel_model_2006_version01__Fe2_NO(Fe2_NO, Fe3_NO, O2, k13, k12, time
   Fe2_NO = 0.0;
 end
 
-model chen_popel_model_2006_version01__NO(Fe3_NO, k14, time_)
+model chen_2006__NO(Fe3_NO, k14, time_)
 
   // Assignment Rules:
   dNOdt := k14 * Fe3_NO;
@@ -116,7 +116,7 @@ model chen_popel_model_2006_version01__NO(Fe3_NO, k14, time_)
   NO = 0.0;
 end
 
-model chen_popel_model_2006_version01__citrulline(Fe3_O2_NOHA, k11, time_)
+model chen_2006__citrulline(Fe3_O2_NOHA, k11, time_)
 
   // Rate Rules:
   citrulline' = k11 * Fe3_O2_NOHA;
@@ -125,7 +125,7 @@ model chen_popel_model_2006_version01__citrulline(Fe3_O2_NOHA, k11, time_)
   citrulline = 0.0;
 end
 
-model chen_popel_model_2006_version01__NO3(Fe2_NO, O2, k13, time_)
+model chen_2006__NO3(Fe2_NO, O2, k13, time_)
 
   // Rate Rules:
   NO3' = k13 * Fe2_NO * O2;
@@ -134,7 +134,7 @@ model chen_popel_model_2006_version01__NO3(Fe2_NO, O2, k13, time_)
   NO3 = 0.0;
 end
 
-model chen_popel_model_2006_version01__NOHA(NOHA, Fe2_NOHA, Fe2, Fe3_NOHA, Fe3, k_8, k8, k9, k_9, time_)
+model chen_2006__NOHA(NOHA, Fe2_NOHA, Fe2, Fe3_NOHA, Fe3, k_8, k8, k9, k_9, time_)
 
   // Rate Rules:
   NOHA' = k8 * Fe3_NOHA + k9 * Fe2_NOHA - ( k_8 * Fe3 * NOHA + k_9 * Fe2 * NOHA );
@@ -143,7 +143,7 @@ model chen_popel_model_2006_version01__NOHA(NOHA, Fe2_NOHA, Fe2, Fe3_NOHA, Fe3, 
   NOHA = 0.0;
 end
 
-model chen_popel_model_2006_version01__model_constants(O2, k1, k_1, k2, k3, k4, k_4, k5, k_5, k6, k7, k8, k_8, k9, k_9, k10, k_10, k11, k12, k13, k14)
+model chen_2006__model_constants(O2, k1, k_1, k2, k3, k4, k_4, k5, k_5, k6, k7, k8, k_8, k9, k_9, k10, k_10, k11, k12, k13, k14)
 
   // Variable initializations:
   O2 = 172.0;
@@ -169,24 +169,24 @@ model chen_popel_model_2006_version01__model_constants(O2, k1, k_1, k2, k3, k4, 
   k14 = 53.9;
 end
 
-model chen_popel_model_2006_version01____main()
+model chen_2006____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: chen_popel_model_2006_version01__environment(time_);
-  Arg: chen_popel_model_2006_version01__Arg(Arg0, Fe30, Fe3_Arg0, Fe2_Arg0, Fe20, k1, k_1, k4, k_4, time_);
-  Fe3: chen_popel_model_2006_version01__Fe3(Fe30, Arg0, Fe3_Arg0, Fe3_NO0, Fe2_NO0, O2, Fe3_NOHA0, NOHA0, k1, k_1, k2, k13, k14, k8, k_8, time_);
-  Fe3_Arg: chen_popel_model_2006_version01__Fe3_Arg(Fe3_Arg0, Arg0, Fe30, k1, k_1, k3, time_);
-  Fe2: chen_popel_model_2006_version01__Fe2(Fe20, Arg0, Fe30, Fe2_Arg0, NOHA0, Fe2_NOHA0, k2, k_4, k4, k9, k_9, time_);
-  Fe2_Arg: chen_popel_model_2006_version01__Fe2_Arg(Fe2_Arg0, Arg0, Fe3_Arg0, Fe20, Fe3_O2_Arg0, O2, k4, k_4, k3, k5, k_5, time_);
-  Fe3_O2_Arg: chen_popel_model_2006_version01__Fe3_O2_Arg(Fe3_O2_Arg0, Fe2_Arg0, O2, k6, k5, k_5, time_);
-  Fe3_NOHA: chen_popel_model_2006_version01__Fe3_NOHA(Fe3_NOHA0, Fe3_O2_Arg0, Fe30, NOHA0, k6, k7, k8, k_8, time_);
-  Fe2_NOHA: chen_popel_model_2006_version01__Fe2_NOHA(Fe2_NOHA0, Fe20, Fe3_NOHA0, NOHA0, Fe3_O2_NOHA0, O2, k9, k7, k_9, k_10, k10, time_);
-  Fe3_O2_NOHA: chen_popel_model_2006_version01__Fe3_O2_NOHA(Fe3_O2_NOHA0, Fe2_NOHA0, O2, k11, k10, k_10, time_);
-  Fe3_NO: chen_popel_model_2006_version01__Fe3_NO(Fe3_NO0, Fe3_O2_NOHA0, k12, k14, k11, time_);
-  Fe2_NO: chen_popel_model_2006_version01__Fe2_NO(Fe2_NO0, Fe3_NO0, O2, k13, k12, time_);
-  NO: chen_popel_model_2006_version01__NO(Fe3_NO0, k14, time_);
-  citrulline: chen_popel_model_2006_version01__citrulline(Fe3_O2_NOHA0, k11, time_);
-  NO3: chen_popel_model_2006_version01__NO3(Fe2_NO0, O2, k13, time_);
-  NOHA: chen_popel_model_2006_version01__NOHA(NOHA0, Fe2_NOHA0, Fe20, Fe3_NOHA0, Fe30, k_8, k8, k9, k_9, time_);
-  model_constants: chen_popel_model_2006_version01__model_constants(O2, k1, k_1, k2, k3, k4, k_4, k5, k_5, k6, k7, k8, k_8, k9, k_9, k10, k_10, k11, k12, k13, k14);
+  environment: chen_2006__environment(time_);
+  Arg: chen_2006__Arg(Arg0, Fe30, Fe3_Arg0, Fe2_Arg0, Fe20, k1, k_1, k4, k_4, time_);
+  Fe3: chen_2006__Fe3(Fe30, Arg0, Fe3_Arg0, Fe3_NO0, Fe2_NO0, O2, Fe3_NOHA0, NOHA0, k1, k_1, k2, k13, k14, k8, k_8, time_);
+  Fe3_Arg: chen_2006__Fe3_Arg(Fe3_Arg0, Arg0, Fe30, k1, k_1, k3, time_);
+  Fe2: chen_2006__Fe2(Fe20, Arg0, Fe30, Fe2_Arg0, NOHA0, Fe2_NOHA0, k2, k_4, k4, k9, k_9, time_);
+  Fe2_Arg: chen_2006__Fe2_Arg(Fe2_Arg0, Arg0, Fe3_Arg0, Fe20, Fe3_O2_Arg0, O2, k4, k_4, k3, k5, k_5, time_);
+  Fe3_O2_Arg: chen_2006__Fe3_O2_Arg(Fe3_O2_Arg0, Fe2_Arg0, O2, k6, k5, k_5, time_);
+  Fe3_NOHA: chen_2006__Fe3_NOHA(Fe3_NOHA0, Fe3_O2_Arg0, Fe30, NOHA0, k6, k7, k8, k_8, time_);
+  Fe2_NOHA: chen_2006__Fe2_NOHA(Fe2_NOHA0, Fe20, Fe3_NOHA0, NOHA0, Fe3_O2_NOHA0, O2, k9, k7, k_9, k_10, k10, time_);
+  Fe3_O2_NOHA: chen_2006__Fe3_O2_NOHA(Fe3_O2_NOHA0, Fe2_NOHA0, O2, k11, k10, k_10, time_);
+  Fe3_NO: chen_2006__Fe3_NO(Fe3_NO0, Fe3_O2_NOHA0, k12, k14, k11, time_);
+  Fe2_NO: chen_2006__Fe2_NO(Fe2_NO0, Fe3_NO0, O2, k13, k12, time_);
+  NO: chen_2006__NO(Fe3_NO0, k14, time_);
+  citrulline: chen_2006__citrulline(Fe3_O2_NOHA0, k11, time_);
+  NO3: chen_2006__NO3(Fe2_NO0, O2, k13, time_);
+  NOHA: chen_2006__NOHA(NOHA0, Fe2_NOHA0, Fe20, Fe3_NOHA0, Fe30, k_8, k8, k9, k_9, time_);
+  model_constants: chen_2006__model_constants(O2, k1, k_1, k2, k3, k4, k_4, k5, k_5, k6, k7, k8, k_8, k9, k_9, k10, k_10, k11, k12, k13, k14);
 end

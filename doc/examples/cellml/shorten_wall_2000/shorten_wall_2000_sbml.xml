@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="shorten_wall_2000_version01____main" name="shorten_wall_2000_version01____main">
+  <model id="shorten_2000____main" name="shorten_2000____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
@@ -16,8 +16,8 @@
       <parameter id="K_i" value="140"/>
       <parameter id="V_tau" value="-60"/>
       <parameter id="k_tau" value="22"/>
-      <parameter id="V" constant="false"/>
-      <parameter id="R" value="8.314"/>
+      <parameter id="V" value="-70" constant="false"/>
+      <parameter id="R" value="8314"/>
       <parameter id="T" value="310"/>
       <parameter id="F" value="96845"/>
       <parameter id="membrane_Cm" value="7"/>
@@ -26,18 +26,18 @@
       <parameter id="i_K_DR" constant="false"/>
       <parameter id="i_K_Ca" constant="false"/>
       <parameter id="i_leak" constant="false"/>
-      <parameter id="V_Ca" constant="false"/>
+      <parameter id="phi_Ca" constant="false"/>
       <parameter id="L_type_calcium_current_g_Ca_L" value="9"/>
-      <parameter id="Ca_i" constant="false"/>
-      <parameter id="m_L" constant="false"/>
+      <parameter id="Ca_i" value="0.00026" constant="false"/>
+      <parameter id="m_L" value="0" constant="false"/>
       <parameter id="L_type_calcium_current_L_type_calcium_current_m_gate_m_L_infinity" constant="false"/>
       <parameter id="L_type_calcium_current_L_type_calcium_current_m_gate_tau_m_L" constant="false"/>
       <parameter id="L_type_calcium_current_L_type_calcium_current_m_gate_tau_m_L_max" value="27"/>
       <parameter id="L_type_calcium_current_L_type_calcium_current_m_gate_V_m_L" value="-18"/>
       <parameter id="L_type_calcium_current_L_type_calcium_current_m_gate_k_m_L" value="12"/>
       <parameter id="T_type_calcium_current_g_Ca_T" value="10"/>
-      <parameter id="m_T" constant="false"/>
-      <parameter id="h_T" constant="false"/>
+      <parameter id="m_T" value="0" constant="false"/>
+      <parameter id="h_T" value="0" constant="false"/>
       <parameter id="T_type_calcium_current_T_type_calcium_current_m_gate_m_T_infinity" constant="false"/>
       <parameter id="T_type_calcium_current_T_type_calcium_current_m_gate_tau_m_T" constant="false"/>
       <parameter id="T_type_calcium_current_T_type_calcium_current_m_gate_tau_m_T_max" value="10"/>
@@ -47,32 +47,32 @@
       <parameter id="T_type_calcium_current_T_type_calcium_current_h_gate_tau_h_T" value="15"/>
       <parameter id="T_type_calcium_current_T_type_calcium_current_h_gate_V_h_T" value="-57"/>
       <parameter id="T_type_calcium_current_T_type_calcium_current_h_gate_k_h_T" value="5"/>
-      <parameter id="V_K" constant="false"/>
+      <parameter id="phi_K" constant="false"/>
       <parameter id="voltage_sensitive_K_current_g_K_DR" value="0.1"/>
-      <parameter id="n" constant="false"/>
+      <parameter id="n" value="0" constant="false"/>
       <parameter id="voltage_sensitive_K_current_voltage_sensitive_K_current_n_gate_n_infinity" constant="false"/>
       <parameter id="voltage_sensitive_K_current_voltage_sensitive_K_current_n_gate_tau_n" value="20"/>
       <parameter id="voltage_sensitive_K_current_voltage_sensitive_K_current_n_gate_V_n" value="-20"/>
       <parameter id="voltage_sensitive_K_current_voltage_sensitive_K_current_n_gate_k_n" value="4.5"/>
       <parameter id="Ca_activated_K_current_g_K_Ca" value="0.09"/>
-      <parameter id="Ca_activated_K_current_Kc" value="0.4"/>
-      <parameter id="leak_current_g_L" value="0.09"/>
+      <parameter id="Ca_activated_K_current_Kc" value="0.0004"/>
+      <parameter id="leak_current_g_L" value="0.3"/>
       <parameter id="leak_current_V_L" value="-67"/>
-      <parameter id="Ca_er" constant="false"/>
+      <parameter id="Ca_er" value="0.0172" constant="false"/>
       <parameter id="J_rel" constant="false"/>
       <parameter id="J_up" constant="false"/>
       <parameter id="ER_calcium_V_er" constant="false"/>
-      <parameter id="ER_calcium_K_er" value="0.2"/>
+      <parameter id="ER_calcium_K_er" value="0.0002"/>
       <parameter id="ER_calcium_f_er" value="0.0025"/>
       <parameter id="ER_calcium_P" value="0.0012"/>
-      <parameter id="ER_calcium_v_er" value="0.05"/>
+      <parameter id="ER_calcium_v_er" value="5e-05"/>
       <parameter id="cytosolic_calcium_V_c" constant="false"/>
-      <parameter id="cytosolic_calcium_K_p" value="0.08"/>
+      <parameter id="cytosolic_calcium_K_p" value="8e-05"/>
       <parameter id="cytosolic_calcium_f_cyt" value="0.01"/>
-      <parameter id="cytosolic_calcium_v_p" value="0.045"/>
+      <parameter id="cytosolic_calcium_v_p" value="4.5e-05"/>
       <parameter id="cytosolic_calcium_J_in" constant="false"/>
       <parameter id="cytosolic_calcium_J_eff" constant="false"/>
-      <parameter id="cytosolic_calcium_alpha" value="0.0074"/>
+      <parameter id="cytosolic_calcium_alpha" value="7.4e-06"/>
       <parameter id="cytosolic_calcium_beta" value="0.47"/>
       <parameter id="time_"/>
     </listOfParameters>
@@ -104,9 +104,9 @@
             <apply>
               <power/>
               <ci> m_L </ci>
-              <cn> 2 </cn>
+              <cn type="integer"> 2 </cn>
             </apply>
-            <ci> V_Ca </ci>
+            <ci> phi_Ca </ci>
           </apply>
         </math>
       </assignmentRule>
@@ -118,10 +118,10 @@
             <apply>
               <power/>
               <ci> m_T </ci>
-              <cn> 2 </cn>
+              <cn type="integer"> 2 </cn>
             </apply>
             <ci> h_T </ci>
-            <ci> V_Ca </ci>
+            <ci> phi_Ca </ci>
           </apply>
         </math>
       </assignmentRule>
@@ -131,11 +131,7 @@
             <times/>
             <ci> voltage_sensitive_K_current_g_K_DR </ci>
             <ci> n </ci>
-            <apply>
-              <minus/>
-              <ci> V </ci>
-              <ci> V_K </ci>
-            </apply>
+            <ci> phi_K </ci>
           </apply>
         </math>
       </assignmentRule>
@@ -143,29 +139,32 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <times/>
-            <ci> Ca_activated_K_current_g_K_Ca </ci>
             <apply>
               <divide/>
               <apply>
-                <power/>
-                <ci> Ca_i </ci>
-                <cn> 4 </cn>
+                <times/>
+                <ci> Ca_activated_K_current_g_K_Ca </ci>
+                <apply>
+                  <power/>
+                  <ci> Ca_i </ci>
+                  <cn type="integer"> 4 </cn>
+                </apply>
               </apply>
               <apply>
                 <plus/>
                 <apply>
                   <power/>
                   <ci> Ca_i </ci>
-                  <cn> 4 </cn>
+                  <cn type="integer"> 4 </cn>
                 </apply>
                 <apply>
                   <power/>
                   <ci> Ca_activated_K_current_Kc </ci>
-                  <cn> 4 </cn>
+                  <cn type="integer"> 4 </cn>
                 </apply>
               </apply>
             </apply>
-            <ci> V_K </ci>
+            <ci> phi_K </ci>
           </apply>
         </math>
       </assignmentRule>
@@ -182,62 +181,53 @@
           </apply>
         </math>
       </assignmentRule>
-      <assignmentRule variable="V_Ca">
+      <assignmentRule variable="phi_Ca">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> V </ci>
+            <divide/>
             <apply>
-              <divide/>
+              <times/>
+              <ci> V </ci>
               <apply>
-                <times/>
+                <minus/>
+                <ci> Ca_i </ci>
+                <ci> Ca_e </ci>
+              </apply>
+              <apply>
+                <exp/>
                 <apply>
-                  <minus/>
-                  <ci> Ca_i </ci>
-                  <ci> Ca_e </ci>
-                </apply>
-                <apply>
-                  <exp/>
+                  <divide/>
                   <apply>
                     <times/>
-                    <cn> -2 </cn>
-                    <apply>
-                      <divide/>
-                      <apply>
-                        <times/>
-                        <ci> F </ci>
-                        <ci> V </ci>
-                      </apply>
-                      <apply>
-                        <times/>
-                        <ci> R </ci>
-                        <ci> T </ci>
-                      </apply>
-                    </apply>
+                    <cn type="integer"> -2 </cn>
+                    <ci> F </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
                   </apply>
                 </apply>
               </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
               <apply>
-                <minus/>
-                <cn> 1 </cn>
+                <exp/>
                 <apply>
-                  <exp/>
+                  <divide/>
                   <apply>
                     <times/>
-                    <cn> -2 </cn>
-                    <apply>
-                      <divide/>
-                      <apply>
-                        <times/>
-                        <ci> F </ci>
-                        <ci> V </ci>
-                      </apply>
-                      <apply>
-                        <times/>
-                        <ci> R </ci>
-                        <ci> T </ci>
-                      </apply>
-                    </apply>
+                    <cn type="integer"> -2 </cn>
+                    <ci> F </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
                   </apply>
                 </apply>
               </apply>
@@ -266,11 +256,11 @@
               <times/>
               <ci> cytosolic_calcium_f_cyt </ci>
               <ci> cytosolic_calcium_beta </ci>
-            </apply>
-            <apply>
-              <minus/>
-              <ci> cytosolic_calcium_J_in </ci>
-              <ci> cytosolic_calcium_J_eff </ci>
+              <apply>
+                <minus/>
+                <ci> cytosolic_calcium_J_in </ci>
+                <ci> cytosolic_calcium_J_eff </ci>
+              </apply>
             </apply>
           </apply>
         </math>
@@ -292,10 +282,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -333,14 +323,14 @@
               </apply>
               <apply>
                 <times/>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
                 <apply>
                   <exp/>
                   <apply>
                     <divide/>
                     <apply>
                       <times/>
-                      <cn> 2 </cn>
+                      <cn type="integer"> 2 </cn>
                       <apply>
                         <minus/>
                         <ci> V_tau </ci>
@@ -385,10 +375,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -426,14 +416,14 @@
               </apply>
               <apply>
                 <times/>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
                 <apply>
                   <exp/>
                   <apply>
                     <divide/>
                     <apply>
                       <times/>
-                      <cn> 2 </cn>
+                      <cn type="integer"> 2 </cn>
                       <apply>
                         <minus/>
                         <ci> V_tau </ci>
@@ -452,10 +442,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -472,62 +462,53 @@
           </apply>
         </math>
       </assignmentRule>
-      <assignmentRule variable="V_K">
+      <assignmentRule variable="phi_K">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <times/>
-            <ci> V </ci>
+            <divide/>
             <apply>
-              <divide/>
+              <times/>
+              <ci> V </ci>
               <apply>
-                <times/>
+                <minus/>
+                <ci> K_i </ci>
+                <ci> K_e </ci>
+              </apply>
+              <apply>
+                <exp/>
                 <apply>
-                  <minus/>
-                  <ci> K_i </ci>
-                  <ci> K_e </ci>
-                </apply>
-                <apply>
-                  <exp/>
+                  <divide/>
                   <apply>
                     <times/>
-                    <cn> -1 </cn>
-                    <apply>
-                      <divide/>
-                      <apply>
-                        <times/>
-                        <ci> F </ci>
-                        <ci> V </ci>
-                      </apply>
-                      <apply>
-                        <times/>
-                        <ci> R </ci>
-                        <ci> T </ci>
-                      </apply>
-                    </apply>
+                    <cn type="integer"> -1 </cn>
+                    <ci> F </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
                   </apply>
                 </apply>
               </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
               <apply>
-                <minus/>
-                <cn> 1 </cn>
+                <exp/>
                 <apply>
-                  <exp/>
+                  <divide/>
                   <apply>
                     <times/>
-                    <cn> -1 </cn>
-                    <apply>
-                      <divide/>
-                      <apply>
-                        <times/>
-                        <ci> F </ci>
-                        <ci> V </ci>
-                      </apply>
-                      <apply>
-                        <times/>
-                        <ci> R </ci>
-                        <ci> T </ci>
-                      </apply>
-                    </apply>
+                    <cn type="integer"> -1 </cn>
+                    <ci> F </ci>
+                    <ci> V </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> R </ci>
+                    <ci> T </ci>
                   </apply>
                 </apply>
               </apply>
@@ -552,10 +533,10 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <divide/>
-            <cn> 1 </cn>
+            <cn type="integer"> 1 </cn>
             <apply>
               <plus/>
-              <cn> 1 </cn>
+              <cn type="integer"> 1 </cn>
               <apply>
                 <exp/>
                 <apply>
@@ -577,12 +558,12 @@
           <apply>
             <times/>
             <apply>
-              <minus/>
+              <divide/>
               <apply>
-                <divide/>
+                <minus/>
                 <ci> ER_calcium_f_er </ci>
-                <ci> ER_calcium_V_er </ci>
               </apply>
+              <ci> ER_calcium_V_er </ci>
             </apply>
             <apply>
               <minus/>
@@ -615,7 +596,7 @@
               <apply>
                 <power/>
                 <ci> Ca_i </ci>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
               </apply>
             </apply>
             <apply>
@@ -623,12 +604,12 @@
               <apply>
                 <power/>
                 <ci> Ca_i </ci>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
               </apply>
               <apply>
                 <power/>
                 <ci> ER_calcium_K_er </ci>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
               </apply>
             </apply>
           </apply>
@@ -678,7 +659,7 @@
               <apply>
                 <power/>
                 <ci> Ca_i </ci>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
               </apply>
             </apply>
             <apply>
@@ -686,12 +667,12 @@
               <apply>
                 <power/>
                 <ci> Ca_i </ci>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
               </apply>
               <apply>
                 <power/>
                 <ci> cytosolic_calcium_K_p </ci>
-                <cn> 2 </cn>
+                <cn type="integer"> 2 </cn>
               </apply>
             </apply>
           </apply>

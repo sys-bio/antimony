@@ -1,0 +1,280 @@
+//Created by libAntimony v1.4
+model sedaghat_2002_feedback__environment(time_)
+end
+
+model sedaghat_2002_feedback__x1(x1, time_)
+
+  // Assignment Rules:
+  x1 := piecewise( 1E-7 , time_ < 15 , 0 );
+end
+
+model sedaghat_2002_feedback__x2(x2, k1, k_minus1, k4, k_minus4, k_minus3, x1, x3, x5, x6, PTP, time_)
+
+  // Rate Rules:
+  x2' = k_minus1 * x3 + k_minus3 * PTP * x5 + k_minus4 * x6 - (k1 * x1 * x2 + k4 * x2);
+
+  // Variable initializations:
+  x2 = 9e-13;
+end
+
+model sedaghat_2002_feedback__x3(x3, k1, k_minus1, k3, x1, x2, time_)
+
+  // Rate Rules:
+  x3' = k1 * x1 * x2 - (k_minus1 * x3 + k3 * x3);
+
+  // Variable initializations:
+  x3 = 0;
+end
+
+model sedaghat_2002_feedback__x4(x4, k2, k_minus2, k4b, k_minus4b, x1, x5, x7, time_)
+
+  // Rate Rules:
+  x4' = k2 * x1 * x5 + k_minus4b * x7 - (k_minus2 * x4 + k4b * x4);
+
+  // Variable initializations:
+  x4 = 0;
+end
+
+model sedaghat_2002_feedback__x5(x5, k2, k_minus2, k3, k_minus3, k4b, k_minus4b, x1, x3, x4, x8, PTP, time_)
+
+  // Rate Rules:
+  x5' = k3 * x3 + k_minus2 * x4 + k_minus4b * x8 - (k2 * x1 * x5 + k_minus3 * PTP * x5 + k4b * x5);
+
+  // Variable initializations:
+  x5 = 0;
+end
+
+model sedaghat_2002_feedback__x6(x6, k4, k_minus4, k5, k_minus5, k6, x2, x7, x8, PTP, time_)
+
+  // Rate Rules:
+  x6' = k5 + k6 * PTP * (x7 + x8) + k4 * x2 - (k_minus5 * x6 + k_minus4 * x6);
+
+  // Variable initializations:
+  x6 = 1e-13;
+end
+
+model sedaghat_2002_feedback__x7(x7, k4b, k_minus4b, k6, x4, PTP, time_)
+
+  // Rate Rules:
+  x7' = k4b * x4 - (k_minus4b * x7 + k6 * PTP * x7);
+
+  // Variable initializations:
+  x7 = 0;
+end
+
+model sedaghat_2002_feedback__x8(x8, k4b, k_minus4b, k6, x5, PTP, time_)
+
+  // Rate Rules:
+  x8' = k4b * x5 - (k_minus4b * x8 + k6 * PTP * x8);
+
+  // Variable initializations:
+  x8 = 0;
+end
+
+model sedaghat_2002_feedback__x9(x9, k7, k_minus7, k7b, k_minus7b, x4, x5, x10, x10a, IRp, PTP, PKC, time_)
+
+  // Rate Rules:
+  x9' = k_minus7 * PTP * x10 - k7 * x9 * (x4 + x5) / IRp + k_minus7b * x10a - k7b * PKC * x9;
+
+  // Variable initializations:
+  x9 = 1e-12;
+end
+
+model sedaghat_2002_feedback__x10(x10, k7, k_minus7, k8, k_minus8, x4, x5, x9, x11, x12, IRp, PTP, time_)
+
+  // Rate Rules:
+  x10' = k7 * x9 * (x4 + x5) / IRp + k_minus8 * x12 - (k_minus7 * PTP + k8 * x11) * x10;
+
+  // Variable initializations:
+  x10 = 0;
+end
+
+model sedaghat_2002_feedback__x10a(x10a, k7b, k_minus7b, x9, PKC, time_)
+
+  // Rate Rules:
+  x10a' = k7b * PKC * x9 - k_minus7b * x10a;
+
+  // Variable initializations:
+  x10a = 0;
+end
+
+model sedaghat_2002_feedback__x11(x11, k8, k_minus8, x10, x12, time_)
+
+  // Rate Rules:
+  x11' = k_minus8 * x12 - k8 * x10 * x11;
+
+  // Variable initializations:
+  x11 = 1e-13;
+end
+
+model sedaghat_2002_feedback__x12(x12, k8, k_minus8, x10, x11, time_)
+
+  // Rate Rules:
+  x12' = k8 * x10 * x11 - k_minus8 * x12;
+
+  // Variable initializations:
+  x12 = 2.54e-15;
+end
+
+model sedaghat_2002_feedback__x13(x13, k9, k_minus9, k10, k_minus10, x14, x15, PTEN, SHIP, time_)
+
+  // Rate Rules:
+  x13' = k9 * x14 + k10 * x15 - (k_minus9 * PTEN + k_minus10 * SHIP) * x13;
+
+  // Variable initializations:
+  x13 = 0.31;
+end
+
+model sedaghat_2002_feedback__x14(x14, k9, k_minus9, x13, PTEN, time_)
+
+  // Rate Rules:
+  x14' = k_minus9 * PTEN * x13 - k9 * x14;
+
+  // Variable initializations:
+  x14 = 99.4;
+end
+
+model sedaghat_2002_feedback__x15(x15, k10, k_minus10, x13, SHIP, time_)
+
+  // Rate Rules:
+  x15' = k_minus10 * SHIP * x13 - k10 * x15;
+
+  // Variable initializations:
+  x15 = 0.29;
+end
+
+model sedaghat_2002_feedback__x16(x16, k11, k_minus11, x17, time_)
+
+  // Rate Rules:
+  x16' = k_minus11 * x17 - k11 * x16;
+
+  // Variable initializations:
+  x16 = 100;
+end
+
+model sedaghat_2002_feedback__x17(x17, k11, k_minus11, x16, time_)
+
+  // Rate Rules:
+  x17' = k11 * x16 - k_minus11 * x17;
+
+  // Variable initializations:
+  x17 = 0;
+end
+
+model sedaghat_2002_feedback__x18(x18, k12, k_minus12, x19, time_)
+
+  // Rate Rules:
+  x18' = k_minus12 * x19 - k12 * x18;
+
+  // Variable initializations:
+  x18 = 100;
+end
+
+model sedaghat_2002_feedback__x19(x19, k12, k_minus12, x18, time_)
+
+  // Rate Rules:
+  x19' = k12 * x18 - k_minus12 * x19;
+
+  // Variable initializations:
+  x19 = 0;
+end
+
+model sedaghat_2002_feedback__x20(x20, k13, k_minus13, k13b, k14, k_minus14, x21, time_)
+
+  // Rate Rules:
+  x20' = k_minus13 * x21 + k14 - ((k13 + k13b) * x20 + k_minus14 * x20);
+
+  // Variable initializations:
+  x20 = 96;
+end
+
+model sedaghat_2002_feedback__x21(x21, k13, k_minus13, k13b, x20, time_)
+
+  // Rate Rules:
+  x21' = -(k_minus13) * x21 + (k13 + k13b) * x20;
+
+  // Variable initializations:
+  x21 = 4;
+end
+
+model sedaghat_2002_feedback__reaction_constants(PTP, PKC, SHIP, PTEN, IRp, k1, k_minus1, k2, k_minus2, k3, k_minus3, k4, k_minus4, k4b, k_minus4b, k5, k_minus5, k6, k7, k_minus7, k7b, k_minus7b, k8, k_minus8, k9, k_minus9, k10, k_minus10, k11, k_minus11, k12, k_minus12, k13, k_minus13, k13b, k14, k_minus14, time_, x1, x6, x7, x8, x12, x13, x17, x19)
+
+  // Assignment Rules:
+  PTP := piecewise( 1 - 0.25 * x17 / (100 / 11 ) , ( x17 <= 400 / 11) || (x1 >= 1E-7 ), 0 );
+  PKC := V_max * power(x19, n) / (power(K_d, n) + power(x19, n));
+  k2 := k1;
+  k_minus2 := 100 * k_minus1;
+  k_minus3 := k_minus1 / 1;
+  k4 := k_minus4 / 9;
+  k5 := piecewise( 10 * k_minus5 , x6 + x7 + x8 > 1E-13 , 60 * k_minus5 );
+  k_minus7 := 2.5 / 7.45 * k7;
+  k7b := ln(2 ) / 2;
+  k_minus7b := k7b * 2.5 / 7.45 * 3.7E-13 / (6.27E-13 - 2.5 / 7.45 * 3.7E-13 );
+  k8 := k_minus8 * 5 / 70.775 * 1E12;
+  k9 := (k9_stimulated - k9_basal) * x12 / PI3K + k9_basal;
+  k_minus9 := 94 / 3.1 * k9_stimulated;
+  k10 := 3.1 / 2.9 * k_minus10;
+  k11 := 0.1 * k_minus11 * (x13 - 0.31 ) / (3.1 - 0.31 );
+  k_minus11 := 10 * ln(2 ) * 1;
+  k12 := 0.1 * k_minus12 * (x13 - 0.31 ) / (3.1 - 0.31 );
+  k_minus12 := 10 * ln(2 ) * 1;
+  k13 := 4 / 96 * k_minus13;
+  k13b := (40 / 60 - 4 / 96 ) * k_minus13 * effect;
+  k14 := k_minus14 / 96;
+  k9_basal := 0.31 / 99.4 * k_minus9;
+  effect := (0.2 * x17 + 0.8 * x19) / APequil;
+  PI3K := k8 * 3.7E-13 * 1E-13 / (k8 * 3.7E-13 + k_minus8);
+
+  // Variable initializations:
+  V_max = 20;
+  K_d = 12;
+  n = 4;
+  tau = 1.5;
+  SHIP = 1;
+  PTEN = 1;
+  IRp = 8.97e-13;
+  k1 = 6e7;
+  k_minus1 = 0.2;
+  k3 = 2500;
+  k_minus4 = 0.003;
+  k4b = 2.1e-3;
+  k_minus4b = 2.1e-4;
+  k_minus5 = 1.67e-18;
+  k6 = 0.461;
+  k7 = 4.16;
+  k_minus8 = 10;
+  k_minus10 = 2.77;
+  k_minus13 = 0.167;
+  k_minus14 = 0.001155;
+  k9_stimulated = 1.39;
+  APequil = 9.09;
+end
+
+model sedaghat_2002_feedback____main()
+
+  // Sub-modules, and any changes to those submodules:
+  environment: sedaghat_2002_feedback__environment(time_);
+  x1: sedaghat_2002_feedback__x1(x110, time_);
+  x2: sedaghat_2002_feedback__x2(x22, k1, k_minus1, k4, k_minus4, k_minus3, x110, x30, x50, x60, PTP, time_);
+  x3: sedaghat_2002_feedback__x3(x30, k1, k_minus1, k3, x110, x22, time_);
+  x4: sedaghat_2002_feedback__x4(x40, k2, k_minus2, k4b, k_minus4b, x110, x50, x70, time_);
+  x5: sedaghat_2002_feedback__x5(x50, k2, k_minus2, k3, k_minus3, k4b, k_minus4b, x110, x30, x40, x80, PTP, time_);
+  x6: sedaghat_2002_feedback__x6(x60, k4, k_minus4, k5, k_minus5, k6, x22, x70, x80, PTP, time_);
+  x7: sedaghat_2002_feedback__x7(x70, k4b, k_minus4b, k6, x40, PTP, time_);
+  x8: sedaghat_2002_feedback__x8(x80, k4b, k_minus4b, k6, x50, PTP, time_);
+  x9: sedaghat_2002_feedback__x9(x90, k7, k_minus7, k7b, k_minus7b, x40, x50, x100, x10a0, IRp, PTP, PKC, time_);
+  x10: sedaghat_2002_feedback__x10(x100, k7, k_minus7, k8, k_minus8, x40, x50, x90, x111, x120, IRp, PTP, time_);
+  x10a: sedaghat_2002_feedback__x10a(x10a0, k7b, k_minus7b, x90, PKC, time_);
+  x11: sedaghat_2002_feedback__x11(x111, k8, k_minus8, x100, x120, time_);
+  x12: sedaghat_2002_feedback__x12(x120, k8, k_minus8, x100, x111, time_);
+  x13: sedaghat_2002_feedback__x13(x130, k9, k_minus9, k10, k_minus10, x140, x150, PTEN, SHIP, time_);
+  x14: sedaghat_2002_feedback__x14(x140, k9, k_minus9, x130, PTEN, time_);
+  x15: sedaghat_2002_feedback__x15(x150, k10, k_minus10, x130, SHIP, time_);
+  x16: sedaghat_2002_feedback__x16(x160, k11, k_minus11, x170, time_);
+  x17: sedaghat_2002_feedback__x17(x170, k11, k_minus11, x160, time_);
+  x18: sedaghat_2002_feedback__x18(x180, k12, k_minus12, x190, time_);
+  x19: sedaghat_2002_feedback__x19(x190, k12, k_minus12, x180, time_);
+  x20: sedaghat_2002_feedback__x20(x200, k13, k_minus13, k13b, k14, k_minus14, x210, time_);
+  x21: sedaghat_2002_feedback__x21(x210, k13, k_minus13, k13b, x200, time_);
+  reaction_constants: sedaghat_2002_feedback__reaction_constants(PTP, PKC, SHIP, PTEN, IRp, k1, k_minus1, k2, k_minus2, k3, k_minus3, k4, k_minus4, k4b, k_minus4b, k5, k_minus5, k6, k7, k_minus7, k7b, k_minus7b, k8, k_minus8, k9, k_minus9, k10, k_minus10, k11, k_minus11, k12, k_minus12, k13, k_minus13, k13b, k14, k_minus14, time_, x110, x60, x70, x80, x120, x130, x170, x190);
+end

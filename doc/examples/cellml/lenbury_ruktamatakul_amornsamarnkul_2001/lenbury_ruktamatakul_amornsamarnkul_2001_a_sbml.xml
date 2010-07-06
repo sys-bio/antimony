@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="lenbury_ruktamatakul_amornsamarnkul_model_2001_version01____main" name="lenbury_ruktamatakul_amornsamarnkul_model_2001_version01____main">
+  <model id="lenbury_2001____main" name="lenbury_2001____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
       <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
     </listOfCompartments>
     <listOfParameters>
-      <parameter id="x0" constant="false"/>
-      <parameter id="x_r1" value="0.2"/>
-      <parameter id="x_r2" value="0.1"/>
-      <parameter id="x_c1" value="0.1"/>
-      <parameter id="z0" constant="false"/>
-      <parameter id="y0" constant="false"/>
-      <parameter id="y_r3" value="0.1"/>
-      <parameter id="y_r4" value="0.1"/>
-      <parameter id="y_c2" value="0.1"/>
+      <parameter id="x0" value="4" constant="false"/>
+      <parameter id="x_r_1" value="0.2"/>
+      <parameter id="x_r_2" value="0.1"/>
+      <parameter id="x_c_1" value="0.1"/>
+      <parameter id="z0" value="1" constant="false"/>
+      <parameter id="y0" value="0" constant="false"/>
+      <parameter id="y_r_3" value="0.1"/>
+      <parameter id="y_r_4" value="0.1"/>
+      <parameter id="y_c_2" value="0.1"/>
       <parameter id="epsilon" value="0.1"/>
-      <parameter id="z_r5" value="0.1"/>
-      <parameter id="z_zReal" constant="false"/>
-      <parameter id="z_r6" value="0.1"/>
-      <parameter id="z_r7" value="0.05"/>
-      <parameter id="z_z_" value="2"/>
-      <parameter id="z_y_" value="1.24"/>
+      <parameter id="z_r_5" value="0.1"/>
+      <parameter id="z_r_6" value="0.1"/>
+      <parameter id="z_r_7" value="0.05"/>
+      <parameter id="z_z_hat" value="2"/>
+      <parameter id="z_y_hat" value="1.24"/>
       <parameter id="time_"/>
     </listOfParameters>
     <listOfRules>
@@ -38,23 +37,61 @@
               <plus/>
               <apply>
                 <times/>
-                <ci> x_r1 </ci>
+                <ci> x_r_1 </ci>
                 <ci> y0 </ci>
               </apply>
               <apply>
-                <minus/>
+                <times/>
                 <apply>
-                  <times/>
-                  <ci> x_r2 </ci>
-                  <ci> x0 </ci>
+                  <minus/>
+                  <ci> x_r_2 </ci>
                 </apply>
+                <ci> x0 </ci>
               </apply>
-              <ci> x_c1 </ci>
+              <ci> x_c_1 </ci>
             </apply>
           </apply>
         </math>
       </rateRule>
-      <assignmentRule variable="z0"/>
+      <rateRule variable="z0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> z_r_5 </ci>
+                <apply>
+                  <minus/>
+                  <ci> y0 </ci>
+                  <ci> z_y_hat </ci>
+                </apply>
+                <apply>
+                  <minus/>
+                  <ci> z_z_hat </ci>
+                  <ci> z0 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> z_r_6 </ci>
+                <ci> z0 </ci>
+                <apply>
+                  <minus/>
+                  <ci> z_z_hat </ci>
+                  <ci> z0 </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> z_r_7 </ci>
+              <ci> z0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
       <rateRule variable="y0">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
@@ -63,58 +100,19 @@
             <apply>
               <plus/>
               <apply>
-                <divide/>
-                <ci> y_r3 </ci>
-                <ci> z0 </ci>
-              </apply>
-              <apply>
                 <minus/>
                 <apply>
+                  <divide/>
+                  <ci> y_r_3 </ci>
+                  <ci> z0 </ci>
+                </apply>
+                <apply>
                   <times/>
-                  <ci> y_r4 </ci>
+                  <ci> y_r_4 </ci>
                   <ci> x0 </ci>
                 </apply>
               </apply>
-              <ci> y_c2 </ci>
-            </apply>
-          </apply>
-        </math>
-      </rateRule>
-      <rateRule variable="z_zReal">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <minus/>
-            <apply>
-              <plus/>
-              <apply>
-                <times/>
-                <ci> z_r5 </ci>
-                <apply>
-                  <minus/>
-                  <ci> y0 </ci>
-                  <ci> z_y_ </ci>
-                </apply>
-                <apply>
-                  <minus/>
-                  <ci> z_z_ </ci>
-                  <ci> z0 </ci>
-                </apply>
-              </apply>
-              <apply>
-                <times/>
-                <ci> z_r6 </ci>
-                <ci> z0 </ci>
-                <apply>
-                  <minus/>
-                  <ci> z_z_ </ci>
-                  <ci> z0 </ci>
-                </apply>
-              </apply>
-            </apply>
-            <apply>
-              <times/>
-              <ci> z_r7 </ci>
-              <ci> z0 </ci>
+              <ci> y_c_2 </ci>
             </apply>
           </apply>
         </math>

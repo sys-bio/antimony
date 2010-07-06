@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model lemaire_tobin_greller_cho_suva_model_2004_version01__environment(time_)
+//Created by libAntimony v1.4
+model lemaire_model_2004__environment(time_)
 end
 
-model lemaire_tobin_greller_cho_suva_model_2004_version01__R(R, DR, pi_C, DB, time_)
+model lemaire_model_2004__R(R, DR, pi_C, DB, time_)
 
   // Assignment Rules:
   f := piecewise( 0.0001 , ( time_ > 20) && (time_ <= 80 ), 0 );
@@ -14,7 +14,7 @@ model lemaire_tobin_greller_cho_suva_model_2004_version01__R(R, DR, pi_C, DB, ti
   R = 0.00077;
 end
 
-model lemaire_tobin_greller_cho_suva_model_2004_version01__B(B, kB, pi_C, DB, R, time_)
+model lemaire_model_2004__B(B, kB, pi_C, DB, R, time_)
 
   // Rate Rules:
   B' = DB / pi_C * R - kB * B;
@@ -23,7 +23,7 @@ model lemaire_tobin_greller_cho_suva_model_2004_version01__B(B, kB, pi_C, DB, R,
   B = 0.00073;
 end
 
-model lemaire_tobin_greller_cho_suva_model_2004_version01__C(C, DC, pi_L, pi_C, DA, time_)
+model lemaire_model_2004__C(C, DC, pi_L, pi_C, DA, time_)
 
   // Rate Rules:
   C' = DC * pi_L - DA * pi_C * C;
@@ -32,7 +32,7 @@ model lemaire_tobin_greller_cho_suva_model_2004_version01__C(C, DC, pi_L, pi_C, 
   C = 0.00091;
 end
 
-model lemaire_tobin_greller_cho_suva_model_2004_version01__pi_L(pi_L, pi_P, B, R)
+model lemaire_model_2004__pi_L(pi_L, pi_P, B, R)
 
   // Assignment Rules:
   pi_L := k3 / k4 * (KLP / 1 ) * pi_P * B / (1 + k3 * K / k4 + k1 / (k2 * ko) * (KOP / (1 * pi_P) * R + Io)) * (1 + IL / rL);
@@ -51,7 +51,7 @@ model lemaire_tobin_greller_cho_suva_model_2004_version01__pi_L(pi_L, pi_P, B, R
   KLP = 3e6;
 end
 
-model lemaire_tobin_greller_cho_suva_model_2004_version01__model_parameters(DA, DB, DC, DR, kB, pi_C, pi_P, C)
+model lemaire_model_2004__model_parameters(DA, DB, DC, DR, kB, pi_C, pi_P, C)
 
   // Assignment Rules:
   DB := f0 * dB;
@@ -76,13 +76,13 @@ model lemaire_tobin_greller_cho_suva_model_2004_version01__model_parameters(DA, 
   k6 = 3;
 end
 
-model lemaire_tobin_greller_cho_suva_model_2004_version01____main()
+model lemaire_model_2004____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: lemaire_tobin_greller_cho_suva_model_2004_version01__environment(time_);
-  R: lemaire_tobin_greller_cho_suva_model_2004_version01__R(R0, DR, pi_C, DB, time_);
-  B: lemaire_tobin_greller_cho_suva_model_2004_version01__B(B0, kB, pi_C, DB, R0, time_);
-  C: lemaire_tobin_greller_cho_suva_model_2004_version01__C(C0, DC, pi_L0, pi_C, DA, time_);
-  pi_L: lemaire_tobin_greller_cho_suva_model_2004_version01__pi_L(pi_L0, pi_P, B0, R0);
-  model_parameters: lemaire_tobin_greller_cho_suva_model_2004_version01__model_parameters(DA, DB, DC, DR, kB, pi_C, pi_P, C0);
+  environment: lemaire_model_2004__environment(time_);
+  R: lemaire_model_2004__R(R0, DR, pi_C, DB, time_);
+  B: lemaire_model_2004__B(B0, kB, pi_C, DB, R0, time_);
+  C: lemaire_model_2004__C(C0, DC, pi_L0, pi_C, DA, time_);
+  pi_L: lemaire_model_2004__pi_L(pi_L0, pi_P, B0, R0);
+  model_parameters: lemaire_model_2004__model_parameters(DA, DB, DC, DR, kB, pi_C, pi_P, C0);
 end

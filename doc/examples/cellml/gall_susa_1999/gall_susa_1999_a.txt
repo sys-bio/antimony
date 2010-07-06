@@ -1,17 +1,18 @@
-//Created by libAntimony v1.3
-model gall_susa_1999_version01__environment(time_)
+//Created by libAntimony v1.4
+model gall_1999__environment(time_)
 end
 
-model gall_susa_1999_version01__membrane(V, time_, i_Ca, i_K, i_K_Ca, i_Na_Ca)
+model gall_1999__membrane(V, time_, i_Ca, i_K, i_K_Ca, i_Na_Ca)
 
   // Rate Rules:
   V' = -(( i_K + i_Ca + i_K_Ca + i_Na_Ca )) / Cm;
 
   // Variable initializations:
+  V = -76.0;
   Cm = 5310.0;
 end
 
-model gall_susa_1999_version01__rapidly_activating_K_current_n_gate(n, V, time_)
+model gall_1999__rapidly_activating_K_current_n_gate(n, V, time_)
 
   // Assignment Rules:
   n_infinity := 1.0 / ( 1.0 + exp(( V_n - V ) / S_n ));
@@ -21,6 +22,7 @@ model gall_susa_1999_version01__rapidly_activating_K_current_n_gate(n, V, time_)
   n' = lamda * (( n_infinity - n ) / tau_n );
 
   // Variable initializations:
+  n = 0.1;
   lamda = 1.6;
   V_n = -15.0;
   S_n = 5.6;
@@ -30,10 +32,10 @@ model gall_susa_1999_version01__rapidly_activating_K_current_n_gate(n, V, time_)
   V_ = -75.0;
 end
 
-model gall_susa_1999_version01__rapidly_activating_K_current(i_K, V_K, time_, V, n)
+model gall_1999__rapidly_activating_K_current(i_K, V_K, time_, V, n)
 
   // Sub-modules, and any changes to those submodules:
-  rapidly_activating_K_current_n_gate: gall_susa_1999_version01__rapidly_activating_K_current_n_gate(n, V, time_);
+  rapidly_activating_K_current_n_gate: gall_1999__rapidly_activating_K_current_n_gate(n, V, time_);
 
   // Assignment Rules:
   i_K := g_K * n * ( V - V_K );
@@ -43,7 +45,7 @@ model gall_susa_1999_version01__rapidly_activating_K_current(i_K, V_K, time_, V,
   g_K = 2500.0;
 end
 
-model gall_susa_1999_version01__calcium_current_m_gate(m_infinity, V, time_)
+model gall_1999__calcium_current_m_gate(m_infinity, V, time_)
 
   // Assignment Rules:
   m_infinity := 1.0 / ( 1.0 + exp(( V_m - V ) / S_m ));
@@ -53,7 +55,7 @@ model gall_susa_1999_version01__calcium_current_m_gate(m_infinity, V, time_)
   S_m = 14.0;
 end
 
-model gall_susa_1999_version01__calcium_current_h_gate(h, V, time_)
+model gall_1999__calcium_current_h_gate(h, V, time_)
 
   // Assignment Rules:
   h := 1.0 / ( 1.0 + exp(( V_h - V ) / S_h ));
@@ -63,11 +65,11 @@ model gall_susa_1999_version01__calcium_current_h_gate(h, V, time_)
   S_h = -10.0;
 end
 
-model gall_susa_1999_version01__calcium_current(i_Ca, time_, V, m_infinity, h)
+model gall_1999__calcium_current(i_Ca, time_, V, m_infinity, h)
 
   // Sub-modules, and any changes to those submodules:
-  calcium_current_m_gate: gall_susa_1999_version01__calcium_current_m_gate(m_infinity, V, time_);
-  calcium_current_h_gate: gall_susa_1999_version01__calcium_current_h_gate(h, V, time_);
+  calcium_current_m_gate: gall_1999__calcium_current_m_gate(m_infinity, V, time_);
+  calcium_current_h_gate: gall_1999__calcium_current_h_gate(h, V, time_);
 
   // Assignment Rules:
   i_Ca := g_Ca * m_infinity * h * ( V - V_Ca );
@@ -77,20 +79,20 @@ model gall_susa_1999_version01__calcium_current(i_Ca, time_, V, m_infinity, h)
   g_Ca = 1400.0;
 end
 
-model gall_susa_1999_version01__calcium_activated_K_current(i_K_Ca, V_K, time_, V, Ca_i)
+model gall_1999__calcium_activated_K_current(i_K_Ca, V_K, time_, V, Ca_i)
 
   // Assignment Rules:
-  i_K_Ca := g_K_Ca * ( Ca_i / (( K_d + Ca_i ) * ( V - V_K )));
+  i_K_Ca := g_K_Ca * ( Ca_i / ( K_d + Ca_i )) * ( V - V_K );
 
   // Variable initializations:
   g_K_Ca = 30000.0;
   K_d = 100.0;
 end
 
-model gall_susa_1999_version01__Na_Ca_exchanger_current(i_Na_Ca, time_, V, Ca_i, Ca_o, Na_i, Na_o)
+model gall_1999__Na_Ca_exchanger_current(i_Na_Ca, time_, V, Ca_i, Ca_o, Na_i, Na_o)
 
   // Assignment Rules:
-  i_Na_Ca := g_Na_Ca * (power( Ca_i , nH ) / ((power( K_1_2 , nH ) + power( Ca_i , nH )) * ( V - V_Na_Ca )));
+  i_Na_Ca := g_Na_Ca * (power( Ca_i , nH ) / (power( K_1_2 , nH ) + power( Ca_i , nH ))) * ( V - V_Na_Ca );
   V_Na_Ca := RT_F * ( 3.0 * ln( Na_o / Na_i - ln( Ca_o / Ca_i )));
 
   // Variable initializations:
@@ -100,12 +102,13 @@ model gall_susa_1999_version01__Na_Ca_exchanger_current(i_Na_Ca, time_, V, Ca_i,
   nH = 5.0;
 end
 
-model gall_susa_1999_version01__ionic_concentrations(Ca_i, Ca_o, Na_i, Na_o, time_, i_Ca, i_Na_Ca)
+model gall_1999__ionic_concentrations(Ca_i, Ca_o, Na_i, Na_o, time_, i_Ca, i_Na_Ca)
 
   // Rate Rules:
   Ca_i' = f * (-( alpha ) * ( i_Ca - 2.0 * i_Na_Ca ) - k_Ca * Ca_i );
 
   // Variable initializations:
+  Ca_i = 0.52;
   Ca_o = 2600.0;
   Na_i = 10.0;
   Na_o = 140.0;
@@ -114,14 +117,14 @@ model gall_susa_1999_version01__ionic_concentrations(Ca_i, Ca_o, Na_i, Na_o, tim
   alpha = 0.0000045055;
 end
 
-model gall_susa_1999_version01____main()
+model gall_1999____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: gall_susa_1999_version01__environment(time_);
-  membrane: gall_susa_1999_version01__membrane(V, time_, i_Ca, i_K, i_K_Ca, i_Na_Ca);
-  rapidly_activating_K_current: gall_susa_1999_version01__rapidly_activating_K_current(i_K, V_K, time_, V, n);
-  calcium_current: gall_susa_1999_version01__calcium_current(i_Ca, time_, V, m_infinity, h);
-  calcium_activated_K_current: gall_susa_1999_version01__calcium_activated_K_current(i_K_Ca, V_K, time_, V, Ca_i);
-  Na_Ca_exchanger_current: gall_susa_1999_version01__Na_Ca_exchanger_current(i_Na_Ca, time_, V, Ca_i, Ca_o, Na_i, Na_o);
-  ionic_concentrations: gall_susa_1999_version01__ionic_concentrations(Ca_i, Ca_o, Na_i, Na_o, time_, i_Ca, i_Na_Ca);
+  environment: gall_1999__environment(time_);
+  membrane: gall_1999__membrane(V, time_, i_Ca, i_K, i_K_Ca, i_Na_Ca);
+  rapidly_activating_K_current: gall_1999__rapidly_activating_K_current(i_K, V_K, time_, V, n);
+  calcium_current: gall_1999__calcium_current(i_Ca, time_, V, m_infinity, h);
+  calcium_activated_K_current: gall_1999__calcium_activated_K_current(i_K_Ca, V_K, time_, V, Ca_i);
+  Na_Ca_exchanger_current: gall_1999__Na_Ca_exchanger_current(i_Na_Ca, time_, V, Ca_i, Ca_o, Na_i, Na_o);
+  ionic_concentrations: gall_1999__ionic_concentrations(Ca_i, Ca_o, Na_i, Na_o, time_, i_Ca, i_Na_Ca);
 end

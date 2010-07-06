@@ -1,0 +1,1020 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="sedaghat_2002_feedback____main" name="sedaghat_2002_feedback____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="x110" constant="false"/>
+      <parameter id="x22" value="9e-13" constant="false"/>
+      <parameter id="k1" value="60000000"/>
+      <parameter id="k_minus1" value="0.2"/>
+      <parameter id="k4" constant="false"/>
+      <parameter id="k_minus4" value="0.003"/>
+      <parameter id="k_minus3" constant="false"/>
+      <parameter id="x30" value="0" constant="false"/>
+      <parameter id="x50" value="0" constant="false"/>
+      <parameter id="x60" value="1e-13" constant="false"/>
+      <parameter id="PTP" constant="false"/>
+      <parameter id="k3" value="2500"/>
+      <parameter id="x40" value="0" constant="false"/>
+      <parameter id="k2" constant="false"/>
+      <parameter id="k_minus2" constant="false"/>
+      <parameter id="k4b" value="0.0021"/>
+      <parameter id="k_minus4b" value="0.00021"/>
+      <parameter id="x70" value="0" constant="false"/>
+      <parameter id="x80" value="0" constant="false"/>
+      <parameter id="k5" constant="false"/>
+      <parameter id="k_minus5" value="1.67e-18"/>
+      <parameter id="k6" value="0.461"/>
+      <parameter id="x90" value="1e-12" constant="false"/>
+      <parameter id="k7" value="4.16"/>
+      <parameter id="k_minus7" constant="false"/>
+      <parameter id="k7b" constant="false"/>
+      <parameter id="k_minus7b" constant="false"/>
+      <parameter id="x100" value="0" constant="false"/>
+      <parameter id="x10a0" value="0" constant="false"/>
+      <parameter id="IRp" value="8.97e-13"/>
+      <parameter id="PKC" constant="false"/>
+      <parameter id="k8" constant="false"/>
+      <parameter id="k_minus8" value="10"/>
+      <parameter id="x111" value="1e-13" constant="false"/>
+      <parameter id="x120" value="2.54e-15" constant="false"/>
+      <parameter id="x130" value="0.31" constant="false"/>
+      <parameter id="k9" constant="false"/>
+      <parameter id="k_minus9" constant="false"/>
+      <parameter id="k10" constant="false"/>
+      <parameter id="k_minus10" value="2.77"/>
+      <parameter id="x140" value="99.4" constant="false"/>
+      <parameter id="x150" value="0.29" constant="false"/>
+      <parameter id="PTEN" value="1"/>
+      <parameter id="SHIP" value="1"/>
+      <parameter id="x160" value="100" constant="false"/>
+      <parameter id="k11" constant="false"/>
+      <parameter id="k_minus11" constant="false"/>
+      <parameter id="x170" value="0" constant="false"/>
+      <parameter id="x180" value="100" constant="false"/>
+      <parameter id="k12" constant="false"/>
+      <parameter id="k_minus12" constant="false"/>
+      <parameter id="x190" value="0" constant="false"/>
+      <parameter id="x200" value="96" constant="false"/>
+      <parameter id="k13" constant="false"/>
+      <parameter id="k_minus13" value="0.167"/>
+      <parameter id="k13b" constant="false"/>
+      <parameter id="k14" constant="false"/>
+      <parameter id="k_minus14" value="0.001155"/>
+      <parameter id="x210" value="4" constant="false"/>
+      <parameter id="reaction_constants_V_max" value="20"/>
+      <parameter id="reaction_constants_K_d" value="12"/>
+      <parameter id="reaction_constants_n" value="4"/>
+      <parameter id="reaction_constants_tau" value="1.5"/>
+      <parameter id="reaction_constants_k9_basal" constant="false"/>
+      <parameter id="reaction_constants_k9_stimulated" value="1.39"/>
+      <parameter id="reaction_constants_effect" constant="false"/>
+      <parameter id="reaction_constants_APequil" value="9.09"/>
+      <parameter id="reaction_constants_PI3K" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="x110"/>
+      <rateRule variable="x22">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_minus1 </ci>
+                <ci> x30 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_minus3 </ci>
+                <ci> PTP </ci>
+                <ci> x50 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_minus4 </ci>
+                <ci> x60 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> x110 </ci>
+                <ci> x22 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k4 </ci>
+                <ci> x22 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> k_minus4 </ci>
+            <cn type="integer"> 9 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_minus3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> k_minus1 </ci>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x30">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k1 </ci>
+              <ci> x110 </ci>
+              <ci> x22 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_minus1 </ci>
+                <ci> x30 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> x30 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x50">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k3 </ci>
+                <ci> x30 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_minus2 </ci>
+                <ci> x40 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_minus4b </ci>
+                <ci> x80 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k2 </ci>
+                <ci> x110 </ci>
+                <ci> x50 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_minus3 </ci>
+                <ci> PTP </ci>
+                <ci> x50 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k4b </ci>
+                <ci> x50 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x60">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <ci> k5 </ci>
+              <apply>
+                <times/>
+                <ci> k6 </ci>
+                <ci> PTP </ci>
+                <apply>
+                  <plus/>
+                  <ci> x70 </ci>
+                  <ci> x80 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k4 </ci>
+                <ci> x22 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_minus5 </ci>
+                <ci> x60 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_minus4 </ci>
+                <ci> x60 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="PTP"/>
+      <rateRule variable="x40">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k2 </ci>
+                <ci> x110 </ci>
+                <ci> x50 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_minus4b </ci>
+                <ci> x70 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_minus2 </ci>
+                <ci> x40 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k4b </ci>
+                <ci> x40 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> k1 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_minus2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 100 </cn>
+            <ci> k_minus1 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x70">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k4b </ci>
+              <ci> x40 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_minus4b </ci>
+                <ci> x70 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k6 </ci>
+                <ci> PTP </ci>
+                <ci> x70 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x80">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k4b </ci>
+              <ci> x50 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_minus4b </ci>
+                <ci> x80 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k6 </ci>
+                <ci> PTP </ci>
+                <ci> x80 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k5"/>
+      <rateRule variable="x90">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> k_minus7 </ci>
+                  <ci> PTP </ci>
+                  <ci> x100 </ci>
+                </apply>
+                <apply>
+                  <divide/>
+                  <apply>
+                    <times/>
+                    <ci> k7 </ci>
+                    <ci> x90 </ci>
+                    <apply>
+                      <plus/>
+                      <ci> x40 </ci>
+                      <ci> x50 </ci>
+                    </apply>
+                  </apply>
+                  <ci> IRp </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_minus7b </ci>
+                <ci> x10a0 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k7b </ci>
+              <ci> PKC </ci>
+              <ci> x90 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k_minus7">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 2.5 </cn>
+              <cn> 7.45 </cn>
+            </apply>
+            <ci> k7 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k7b">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <cn type="integer"> 2 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_minus7b">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k7b </ci>
+                  <cn> 2.5 </cn>
+                </apply>
+                <cn> 7.45 </cn>
+              </apply>
+              <cn type="e-notation"> 3.7 <sep/> -13 </cn>
+            </apply>
+            <apply>
+              <minus/>
+              <cn type="e-notation"> 6.27 <sep/> -13 </cn>
+              <apply>
+                <times/>
+                <apply>
+                  <divide/>
+                  <cn> 2.5 </cn>
+                  <cn> 7.45 </cn>
+                </apply>
+                <cn type="e-notation"> 3.7 <sep/> -13 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x100">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> k7 </ci>
+                  <ci> x90 </ci>
+                  <apply>
+                    <plus/>
+                    <ci> x40 </ci>
+                    <ci> x50 </ci>
+                  </apply>
+                </apply>
+                <ci> IRp </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_minus8 </ci>
+                <ci> x120 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> k_minus7 </ci>
+                  <ci> PTP </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k8 </ci>
+                  <ci> x111 </ci>
+                </apply>
+              </apply>
+              <ci> x100 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x10a0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k7b </ci>
+              <ci> PKC </ci>
+              <ci> x90 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_minus7b </ci>
+              <ci> x10a0 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="PKC">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> reaction_constants_V_max </ci>
+              <apply>
+                <power/>
+                <ci> x190 </ci>
+                <ci> reaction_constants_n </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <power/>
+                <ci> reaction_constants_K_d </ci>
+                <ci> reaction_constants_n </ci>
+              </apply>
+              <apply>
+                <power/>
+                <ci> x190 </ci>
+                <ci> reaction_constants_n </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k_minus8 </ci>
+                <cn type="integer"> 5 </cn>
+              </apply>
+              <cn> 70.775 </cn>
+            </apply>
+            <cn type="e-notation"> 1 <sep/> 12 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x111">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_minus8 </ci>
+              <ci> x120 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k8 </ci>
+              <ci> x100 </ci>
+              <ci> x111 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x120">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k8 </ci>
+              <ci> x100 </ci>
+              <ci> x111 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_minus8 </ci>
+              <ci> x120 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x130">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k9 </ci>
+                <ci> x140 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k10 </ci>
+                <ci> x150 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <apply>
+                  <times/>
+                  <ci> k_minus9 </ci>
+                  <ci> PTEN </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> k_minus10 </ci>
+                  <ci> SHIP </ci>
+                </apply>
+              </apply>
+              <ci> x130 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k9">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <apply>
+                  <minus/>
+                  <ci> reaction_constants_k9_stimulated </ci>
+                  <ci> reaction_constants_k9_basal </ci>
+                </apply>
+                <ci> x120 </ci>
+              </apply>
+              <ci> reaction_constants_PI3K </ci>
+            </apply>
+            <ci> reaction_constants_k9_basal </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_minus9">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 94 </cn>
+              <cn> 3.1 </cn>
+            </apply>
+            <ci> reaction_constants_k9_stimulated </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k10">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 3.1 </cn>
+              <cn> 2.9 </cn>
+            </apply>
+            <ci> k_minus10 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x140">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_minus9 </ci>
+              <ci> PTEN </ci>
+              <ci> x130 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k9 </ci>
+              <ci> x140 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x150">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_minus10 </ci>
+              <ci> SHIP </ci>
+              <ci> x130 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k10 </ci>
+              <ci> x150 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x160">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_minus11 </ci>
+              <ci> x170 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k11 </ci>
+              <ci> x160 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k11">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.1 </cn>
+              <ci> k_minus11 </ci>
+              <apply>
+                <minus/>
+                <ci> x130 </ci>
+                <cn> 0.31 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <cn> 3.1 </cn>
+              <cn> 0.31 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_minus11">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 10 </cn>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x170">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k11 </ci>
+              <ci> x160 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_minus11 </ci>
+              <ci> x170 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x180">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k_minus12 </ci>
+              <ci> x190 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k12 </ci>
+              <ci> x180 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn> 0.1 </cn>
+              <ci> k_minus12 </ci>
+              <apply>
+                <minus/>
+                <ci> x130 </ci>
+                <cn> 0.31 </cn>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <cn> 3.1 </cn>
+              <cn> 0.31 </cn>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_minus12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn type="integer"> 10 </cn>
+            <apply>
+              <ln/>
+              <cn type="integer"> 2 </cn>
+            </apply>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x190">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <times/>
+              <ci> k12 </ci>
+              <ci> x180 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_minus12 </ci>
+              <ci> x190 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="x200">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_minus13 </ci>
+                <ci> x210 </ci>
+              </apply>
+              <ci> k14 </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> k13 </ci>
+                  <ci> k13b </ci>
+                </apply>
+                <ci> x200 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_minus14 </ci>
+                <ci> x200 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="k13">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 4 </cn>
+              <cn type="integer"> 96 </cn>
+            </apply>
+            <ci> k_minus13 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k13b">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <apply>
+                <divide/>
+                <cn type="integer"> 40 </cn>
+                <cn type="integer"> 60 </cn>
+              </apply>
+              <apply>
+                <divide/>
+                <cn type="integer"> 4 </cn>
+                <cn type="integer"> 96 </cn>
+              </apply>
+            </apply>
+            <ci> k_minus13 </ci>
+            <ci> reaction_constants_effect </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k14">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> k_minus14 </ci>
+            <cn type="integer"> 96 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="x210">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <apply>
+                <minus/>
+                <ci> k_minus13 </ci>
+              </apply>
+              <ci> x210 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k13 </ci>
+                <ci> k13b </ci>
+              </apply>
+              <ci> x200 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="reaction_constants_k9_basal">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn> 0.31 </cn>
+              <cn> 99.4 </cn>
+            </apply>
+            <ci> k_minus9 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="reaction_constants_effect">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn> 0.2 </cn>
+                <ci> x170 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <cn> 0.8 </cn>
+                <ci> x190 </ci>
+              </apply>
+            </apply>
+            <ci> reaction_constants_APequil </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="reaction_constants_PI3K">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> k8 </ci>
+              <cn type="e-notation"> 3.7 <sep/> -13 </cn>
+              <cn type="e-notation"> 1 <sep/> -13 </cn>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k8 </ci>
+                <cn type="e-notation"> 3.7 <sep/> -13 </cn>
+              </apply>
+              <ci> k_minus8 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

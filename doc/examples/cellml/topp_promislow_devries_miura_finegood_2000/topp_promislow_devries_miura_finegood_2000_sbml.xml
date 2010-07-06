@@ -1,41 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="topp_promislow_devries_miura_finegood_2000_version01____main" name="topp_promislow_devries_miura_finegood_2000_version01____main">
+  <model id="topp_2000____main" name="topp_2000____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
       <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
     </listOfCompartments>
     <listOfParameters>
-      <parameter id="G" constant="false"/>
+      <parameter id="G" value="600" constant="false"/>
       <parameter id="glucose_dynamics_R0" value="846"/>
       <parameter id="glucose_dynamics_SI" value="0.72"/>
       <parameter id="glucose_dynamics_EG0" value="1.44"/>
-      <parameter id="I" constant="false"/>
+      <parameter id="I" value="0" constant="false"/>
       <parameter id="insulin_dynamics_alpha" value="2000"/>
       <parameter id="insulin_dynamics_sigma" value="43.2"/>
       <parameter id="insulin_dynamics_k" value="432"/>
-      <parameter id="beta" constant="false"/>
+      <parameter id="beta" value="0" constant="false"/>
       <parameter id="beta_cell_dynamics_d0" value="0.06"/>
-      <parameter id="beta_cell_dynamics_r1"/>
-      <parameter id="beta_cell_dynamics_r2"/>
+      <parameter id="beta_cell_dynamics_r1" value="0.00084"/>
+      <parameter id="beta_cell_dynamics_r2" value="2.4e-06"/>
       <parameter id="time_"/>
     </listOfParameters>
-    <listOfInitialAssignments>
-      <initialAssignment symbol="beta_cell_dynamics_r1">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <cn type="e-notation"> 0.84 <sep/> -3 </cn>
-        </math>
-      </initialAssignment>
-      <initialAssignment symbol="beta_cell_dynamics_r2">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <cn type="e-notation"> 0.24 <sep/> -5 </cn>
-        </math>
-      </initialAssignment>
-    </listOfInitialAssignments>
     <listOfRules>
       <rateRule variable="G">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -66,12 +54,16 @@
               <divide/>
               <apply>
                 <times/>
-                <ci> beta </ci>
+                <apply>
+                  <divide/>
+                  <ci> beta </ci>
+                  <cn type="integer"> 1 </cn>
+                </apply>
                 <ci> insulin_dynamics_sigma </ci>
                 <apply>
                   <power/>
                   <ci> G </ci>
-                  <cn> 2 </cn>
+                  <cn type="integer"> 2 </cn>
                 </apply>
               </apply>
               <apply>
@@ -80,7 +72,7 @@
                 <apply>
                   <power/>
                   <ci> G </ci>
-                  <cn> 2 </cn>
+                  <cn type="integer"> 2 </cn>
                 </apply>
               </apply>
             </apply>
@@ -108,15 +100,15 @@
                 <ci> beta_cell_dynamics_d0 </ci>
               </apply>
               <apply>
-                <minus/>
+                <times/>
                 <apply>
-                  <times/>
+                  <minus/>
                   <ci> beta_cell_dynamics_r2 </ci>
-                  <apply>
-                    <power/>
-                    <ci> G </ci>
-                    <cn> 2 </cn>
-                  </apply>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> G </ci>
+                  <cn type="integer"> 2 </cn>
                 </apply>
               </apply>
             </apply>

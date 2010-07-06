@@ -1,0 +1,18 @@
+//Created by libAntimony v1.4
+model TempRC__TempRC(Pi_, Po, Qi, Qo, R, C, t, P0)
+
+  // Assignment Rules:
+  Qo := (Pi_ - Po) / R;
+
+  // Rate Rules:
+  Pi_' = (Qi - Qo) / C;
+
+  // Variable initializations:
+  Pi_ = P0;
+end
+
+model TempRC____main()
+
+  // Sub-modules, and any changes to those submodules:
+  TempRC: TempRC__TempRC(Pi_, Po, Qi, Qo, R, C, t, P0);
+end

@@ -1,47 +1,62 @@
-//Created by libAntimony v1.3
-model saftenku_williams_sitsapesan_2001_version03__environment(time_)
+//Created by libAntimony v1.4
+model saftenku_2001__environment(time_)
 end
 
-model saftenku_williams_sitsapesan_2001_version03__C1(C1, C1C2, C2C1, C2, Ca, time_)
+model saftenku_2001__C1(C1, C1C2, C2C1, C2, Ca, time_)
 
   // Rate Rules:
   C1' = C2C1 * C2 - C1C2 * Ca * C2;
 
   // Variable initializations:
-  C1 = 1;
+  C1 = 0.1667;
 end
 
-model saftenku_williams_sitsapesan_2001_version03__C2(C2, C1C2, C2C1, C2C3, C3C2, C2O1, O1C2, C1, C3, O1, Ca, time_)
+model saftenku_2001__C2(C2, C1C2, C2C1, C2C3, C3C2, C2O1, O1C2, C1, C3, O1, Ca, time_)
 
   // Rate Rules:
-  C2' = C1C2 * C1 + C3C2 * C3 + O1C2 * O1 - ( C2C1 * Ca * C2 + C2C3 * Ca * C2 + C2O1 * Ca * O1 );
+  C2' = C1C2 * C1 * Ca + C3C2 * C3 + O1C2 * O1 - ( C2C1 * C2 + C2C3 * Ca * C2 + C2O1 * Ca * O1 );
+
+  // Variable initializations:
+  C2 = 0.1667;
 end
 
-model saftenku_williams_sitsapesan_2001_version03__C3(C3, C2C3, C3C2, O2C3, C3O2, C2, O2, Ca, time_)
+model saftenku_2001__C3(C3, C2C3, C3C2, O2C3, C3O2, C2, O2, Ca, time_)
 
   // Rate Rules:
   C3' = O2C3 * O2 + C2C3 * Ca * C2 - ( C3O2 * Ca * C3 + C3C2 * C3 );
+
+  // Variable initializations:
+  C3 = 0.1667;
 end
 
-model saftenku_williams_sitsapesan_2001_version03__C4(C4, O2C4, C4O2, O2, time_)
+model saftenku_2001__C4(C4, O2C4, C4O2, O2, time_)
 
   // Rate Rules:
   C4' = O2C4 * O2 - C4O2 * C4;
+
+  // Variable initializations:
+  C4 = 0.1667;
 end
 
-model saftenku_williams_sitsapesan_2001_version03__O1(O1, O1C2, C2O1, C2, Ca, time_)
+model saftenku_2001__O1(O1, O1C2, C2O1, C2, Ca, time_)
 
   // Rate Rules:
   O1' = C2O1 * C2 * Ca - O1C2 * O1;
+
+  // Variable initializations:
+  O1 = 0.1667;
 end
 
-model saftenku_williams_sitsapesan_2001_version03__O2(O2, C3O2, O2C3, O2C4, C4O2, C3, C4, Ca, time_)
+model saftenku_2001__O2(O2, C3O2, O2C3, O2C4, C4O2, C3, C4, Ca, time_)
 
   // Rate Rules:
   O2' = C3O2 * Ca * C3 + C4O2 * C4 - ( O2C3 * O2 + O2C4 * O2 );
+
+  // Variable initializations:
+  O2 = 0.1667;
 end
 
-model saftenku_williams_sitsapesan_2001_version03__reaction_constants(C1C2, C2C1, C2C3, C3C2, C2O1, O1C2, O2C4, C4O2, C3O2, O2C3, Ca)
+model saftenku_2001__reaction_constants(C1C2, C2C1, C2C3, C3C2, C2O1, O1C2, O2C4, C4O2, C3O2, O2C3, Ca)
 
   // Variable initializations:
   C1C2 = 3.26;
@@ -57,15 +72,15 @@ model saftenku_williams_sitsapesan_2001_version03__reaction_constants(C1C2, C2C1
   Ca = 50.0;
 end
 
-model saftenku_williams_sitsapesan_2001_version03____main()
+model saftenku_2001____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: saftenku_williams_sitsapesan_2001_version03__environment(time_);
-  C1: saftenku_williams_sitsapesan_2001_version03__C1(C10, C1C2, C2C1, C20, Ca, time_);
-  C2: saftenku_williams_sitsapesan_2001_version03__C2(C20, C1C2, C2C1, C2C3, C3C2, C2O1, O1C2, C10, C30, O10, Ca, time_);
-  C3: saftenku_williams_sitsapesan_2001_version03__C3(C30, C2C3, C3C2, O2C3, C3O2, C20, O20, Ca, time_);
-  C4: saftenku_williams_sitsapesan_2001_version03__C4(C40, O2C4, C4O2, O20, time_);
-  O1: saftenku_williams_sitsapesan_2001_version03__O1(O10, O1C2, C2O1, C20, Ca, time_);
-  O2: saftenku_williams_sitsapesan_2001_version03__O2(O20, C3O2, O2C3, O2C4, C4O2, C30, C40, Ca, time_);
-  reaction_constants: saftenku_williams_sitsapesan_2001_version03__reaction_constants(C1C2, C2C1, C2C3, C3C2, C2O1, O1C2, O2C4, C4O2, C3O2, O2C3, Ca);
+  environment: saftenku_2001__environment(time_);
+  C1: saftenku_2001__C1(C10, C1C2, C2C1, C20, Ca, time_);
+  C2: saftenku_2001__C2(C20, C1C2, C2C1, C2C3, C3C2, C2O1, O1C2, C10, C30, O10, Ca, time_);
+  C3: saftenku_2001__C3(C30, C2C3, C3C2, O2C3, C3O2, C20, O20, Ca, time_);
+  C4: saftenku_2001__C4(C40, O2C4, C4O2, O20, time_);
+  O1: saftenku_2001__O1(O10, O1C2, C2O1, C20, Ca, time_);
+  O2: saftenku_2001__O2(O20, C3O2, O2C3, O2C4, C4O2, C30, C40, Ca, time_);
+  reaction_constants: saftenku_2001__reaction_constants(C1C2, C2C1, C2C3, C3C2, C2O1, O1C2, O2C4, C4O2, C3O2, O2C3, Ca);
 end

@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model noble_1962_version04__environment(time_)
+//Created by libAntimony v1.4
+model noble_1962__environment(time_)
 end
 
-model noble_1962_version04__membrane(V, time_, i_Na, i_K, i_Leak)
+model noble_1962__membrane(V, time_, i_Na, i_K, i_Leak)
 
   // Rate Rules:
   V' = -((i_Na + i_K + i_Leak)) / Cm;
@@ -12,7 +12,7 @@ model noble_1962_version04__membrane(V, time_, i_Na, i_K, i_Leak)
   Cm = 12;
 end
 
-model noble_1962_version04__sodium_channel_m_gate(m, V, time_)
+model noble_1962__sodium_channel_m_gate(m, V, time_)
 
   // Assignment Rules:
   alpha_m := 100 * (-(V) - 48 ) / (exp((-(V) - 48 ) / 15 ) - 1 );
@@ -25,7 +25,7 @@ model noble_1962_version04__sodium_channel_m_gate(m, V, time_)
   m = 0.01;
 end
 
-model noble_1962_version04__sodium_channel_h_gate(h, V, time_)
+model noble_1962__sodium_channel_h_gate(h, V, time_)
 
   // Assignment Rules:
   alpha_h := 170 * exp((-(V) - 90 ) / 20 );
@@ -38,11 +38,11 @@ model noble_1962_version04__sodium_channel_h_gate(h, V, time_)
   h = 0.8;
 end
 
-model noble_1962_version04__sodium_channel(i_Na, time_, V, m, h)
+model noble_1962__sodium_channel(i_Na, time_, V, m, h)
 
   // Sub-modules, and any changes to those submodules:
-  sodium_channel_m_gate: noble_1962_version04__sodium_channel_m_gate(m, V, time_);
-  sodium_channel_h_gate: noble_1962_version04__sodium_channel_h_gate(h, V, time_);
+  sodium_channel_m_gate: noble_1962__sodium_channel_m_gate(m, V, time_);
+  sodium_channel_h_gate: noble_1962__sodium_channel_h_gate(h, V, time_);
 
   // Assignment Rules:
   i_Na := (g_Na + 140 ) * (V - E_Na);
@@ -53,7 +53,7 @@ model noble_1962_version04__sodium_channel(i_Na, time_, V, m, h)
   E_Na = 40;
 end
 
-model noble_1962_version04__potassium_channel_n_gate(n, V, time_)
+model noble_1962__potassium_channel_n_gate(n, V, time_)
 
   // Assignment Rules:
   alpha_n := 0.1 * (-(V) - 50 ) / (exp((-(V) - 50 ) / 10 ) - 1 );
@@ -66,10 +66,10 @@ model noble_1962_version04__potassium_channel_n_gate(n, V, time_)
   n = 0.01;
 end
 
-model noble_1962_version04__potassium_channel(i_K, time_, V, n)
+model noble_1962__potassium_channel(i_K, time_, V, n)
 
   // Sub-modules, and any changes to those submodules:
-  potassium_channel_n_gate: noble_1962_version04__potassium_channel_n_gate(n, V, time_);
+  potassium_channel_n_gate: noble_1962__potassium_channel_n_gate(n, V, time_);
 
   // Assignment Rules:
   i_K := (g_K1 + g_K2) * (V + 100 );
@@ -77,7 +77,7 @@ model noble_1962_version04__potassium_channel(i_K, time_, V, n)
   g_K2 := 1200 * power(n, 4 );
 end
 
-model noble_1962_version04__leakage_current(i_Leak, time_, V)
+model noble_1962__leakage_current(i_Leak, time_, V)
 
   // Assignment Rules:
   i_Leak := g_L * (V - E_L);
@@ -87,12 +87,12 @@ model noble_1962_version04__leakage_current(i_Leak, time_, V)
   E_L = -60;
 end
 
-model noble_1962_version04____main()
+model noble_1962____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: noble_1962_version04__environment(time_);
-  membrane: noble_1962_version04__membrane(V, time_, i_Na, i_K, i_Leak);
-  sodium_channel: noble_1962_version04__sodium_channel(i_Na, time_, V, m, h);
-  potassium_channel: noble_1962_version04__potassium_channel(i_K, time_, V, n);
-  leakage_current: noble_1962_version04__leakage_current(i_Leak, time_, V);
+  environment: noble_1962__environment(time_);
+  membrane: noble_1962__membrane(V, time_, i_Na, i_K, i_Leak);
+  sodium_channel: noble_1962__sodium_channel(i_Na, time_, V, m, h);
+  potassium_channel: noble_1962__potassium_channel(i_K, time_, V, n);
+  leakage_current: noble_1962__leakage_current(i_Leak, time_, V);
 end

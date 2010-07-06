@@ -1,0 +1,2700 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
+  <model id="mackenzie_1996____main" name="mackenzie_1996____main">
+    <notes>
+      <body xmlns="http://www.w3.org/1999/xhtml">
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
+      </body>
+    </notes>
+    <listOfCompartments>
+      <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
+    </listOfCompartments>
+    <listOfParameters>
+      <parameter id="k0_12" value="20000"/>
+      <parameter id="k0_21" value="400"/>
+      <parameter id="k0_23" value="10000"/>
+      <parameter id="k0_32" value="20"/>
+      <parameter id="k0_34" value="50"/>
+      <parameter id="k0_43" value="50"/>
+      <parameter id="k0_45" value="800"/>
+      <parameter id="k0_54" value="6700000"/>
+      <parameter id="k0_25" value="0.01"/>
+      <parameter id="k0_52" value="0.17"/>
+      <parameter id="k0_56" value="48"/>
+      <parameter id="k0_65" value="50"/>
+      <parameter id="k0_61" value="35"/>
+      <parameter id="k0_16" value="100"/>
+      <parameter id="delta" value="0.7"/>
+      <parameter id="alpha_p" constant="false"/>
+      <parameter id="alpha_pp" value="0"/>
+      <parameter id="parameters_N_C" value="84000000000"/>
+      <parameter id="parameters_N_Avo" value="6.022e+23"/>
+      <parameter id="parameters_area" value="1000000"/>
+      <parameter id="C_T" constant="false"/>
+      <parameter id="n" value="1"/>
+      <parameter id="z_c" value="-1"/>
+      <parameter id="z_Na" value="1"/>
+      <parameter id="F" value="96485.34"/>
+      <parameter id="R" value="8.314"/>
+      <parameter id="T" value="310"/>
+      <parameter id="V" value="-0.15" constant="false"/>
+      <parameter id="mu" constant="false"/>
+      <parameter id="Na_i" value="0.01"/>
+      <parameter id="Na_o" value="0.1"/>
+      <parameter id="glucose_i" value="0"/>
+      <parameter id="glucose_o" value="0.001"/>
+      <parameter id="k_12" constant="false"/>
+      <parameter id="k_21" constant="false"/>
+      <parameter id="k_23" constant="false"/>
+      <parameter id="k_32" constant="false"/>
+      <parameter id="k_34" constant="false"/>
+      <parameter id="k_43" constant="false"/>
+      <parameter id="k_45" constant="false"/>
+      <parameter id="k_54" constant="false"/>
+      <parameter id="k_25" constant="false"/>
+      <parameter id="k_52" constant="false"/>
+      <parameter id="k_56" constant="false"/>
+      <parameter id="k_65" constant="false"/>
+      <parameter id="k_61" constant="false"/>
+      <parameter id="k_16" constant="false"/>
+      <parameter id="ks_12" constant="false"/>
+      <parameter id="k0_54_temp" constant="false"/>
+      <parameter id="k_52_temp" constant="false"/>
+      <parameter id="C_1" value="3.923e-09" constant="false"/>
+      <parameter id="C_2" value="1.016e-07" constant="false"/>
+      <parameter id="C_3" value="1.515e-08" constant="false"/>
+      <parameter id="C_4" value="8.912e-10" constant="false"/>
+      <parameter id="C_5" value="1.485e-08" constant="false"/>
+      <parameter id="C_6" constant="false"/>
+      <parameter id="C_6_temp" value="3.06798e-09" constant="false"/>
+      <parameter id="king_altman_states_C1_sum" constant="false"/>
+      <parameter id="king_altman_states_C2_sum" constant="false"/>
+      <parameter id="king_altman_states_C3_sum" constant="false"/>
+      <parameter id="king_altman_states_C4_sum" constant="false"/>
+      <parameter id="king_altman_states_C5_sum" constant="false"/>
+      <parameter id="king_altman_states_C6_sum" constant="false"/>
+      <parameter id="king_altman_states_C_sum" constant="false"/>
+      <parameter id="C1" constant="false"/>
+      <parameter id="C2" constant="false"/>
+      <parameter id="C3" constant="false"/>
+      <parameter id="C4" constant="false"/>
+      <parameter id="C5" constant="false"/>
+      <parameter id="C6" constant="false"/>
+      <parameter id="I_NaGl_pSS" constant="false"/>
+      <parameter id="I_NaGl_SS" constant="false"/>
+      <parameter id="J_Na" constant="false"/>
+      <parameter id="epsilon" constant="false"/>
+      <parameter id="lambda_" constant="false"/>
+      <parameter id="chi" constant="false"/>
+      <parameter id="alpha" constant="false"/>
+      <parameter id="beta" constant="false"/>
+      <parameter id="gamma" constant="false"/>
+      <parameter id="phi" constant="false"/>
+      <parameter id="Imax_Na" constant="false"/>
+      <parameter id="Imax_gluc" constant="false"/>
+      <parameter id="Khalf_Na" constant="false"/>
+      <parameter id="Khalf_gluc" constant="false"/>
+      <parameter id="time_"/>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="alpha_p">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <minus/>
+              <cn type="integer"> 1 </cn>
+              <ci> delta </ci>
+            </apply>
+            <ci> alpha_pp </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="C_T">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="e-notation"> 1 <sep/> 6 </cn>
+              <ci> parameters_N_C </ci>
+            </apply>
+            <ci> parameters_N_Avo </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="V">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="e-notation"> 100 <sep/> -6 </cn>
+        </math>
+      </rateRule>
+      <assignmentRule variable="mu">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> F </ci>
+              <ci> V </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> R </ci>
+              <ci> T </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> ks_12 </ci>
+            <apply>
+              <power/>
+              <ci> Na_o </ci>
+              <ci> n </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_21">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_21 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> n </ci>
+                  <ci> z_Na </ci>
+                  <ci> alpha_p </ci>
+                  <ci> mu </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_23">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_23 </ci>
+            <ci> glucose_o </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_32">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> k0_32 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_34">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_34 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <plus/>
+                      <ci> z_c </ci>
+                      <ci> n </ci>
+                    </apply>
+                  </apply>
+                  <ci> delta </ci>
+                  <ci> mu </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_43">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_43 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> z_c </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <ci> delta </ci>
+                  <ci> mu </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_45">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <ci> k0_45 </ci>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_54">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_54_temp </ci>
+            <ci> glucose_i </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_25">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_25 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <apply>
+                      <plus/>
+                      <ci> z_c </ci>
+                      <ci> n </ci>
+                    </apply>
+                  </apply>
+                  <ci> delta </ci>
+                  <ci> mu </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_52">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> k0_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k0_56 </ci>
+              <ci> k0_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k0_21 </ci>
+              <ci> k0_16 </ci>
+              <ci> k0_65 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_56">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_56 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> n </ci>
+                  </apply>
+                  <ci> z_Na </ci>
+                  <ci> alpha_pp </ci>
+                  <ci> mu </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_65">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_65 </ci>
+            <apply>
+              <power/>
+              <ci> Na_i </ci>
+              <ci> n </ci>
+            </apply>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> n </ci>
+                  <ci> z_Na </ci>
+                  <ci> alpha_pp </ci>
+                  <ci> mu </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_61">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_61 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> z_c </ci>
+                  <ci> delta </ci>
+                  <ci> mu </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_16">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_16 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> z_c </ci>
+                  </apply>
+                  <ci> delta </ci>
+                  <ci> mu </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="ks_12">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_12 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> n </ci>
+                  </apply>
+                  <ci> alpha_p </ci>
+                  <ci> mu </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k0_54_temp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> k0_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_43 </ci>
+              <ci> k_32 </ci>
+              <ci> k_25 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="k_52_temp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> k0_52 </ci>
+            <apply>
+              <exp/>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <plus/>
+                    <ci> z_c </ci>
+                    <ci> n </ci>
+                  </apply>
+                  <ci> delta </ci>
+                  <ci> mu </ci>
+                </apply>
+                <cn type="integer"> 2 </cn>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> C_2 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_61 </ci>
+                <ci> C_6 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k_12 </ci>
+                <ci> k_16 </ci>
+              </apply>
+              <ci> C_1 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_12 </ci>
+                <ci> C_1 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_32 </ci>
+                <ci> C_3 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_52 </ci>
+                <ci> C_5 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k_21 </ci>
+                <ci> k_23 </ci>
+                <ci> k_25 </ci>
+              </apply>
+              <ci> C_2 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C_3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_23 </ci>
+                <ci> C_2 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_43 </ci>
+                <ci> C_4 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k_32 </ci>
+                <ci> k_34 </ci>
+              </apply>
+              <ci> C_3 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C_4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_34 </ci>
+                <ci> C_3 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_54 </ci>
+                <ci> C_5 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k_45 </ci>
+                <ci> k_43 </ci>
+              </apply>
+              <ci> C_4 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <rateRule variable="C_5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_45 </ci>
+                <ci> C_4 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_65 </ci>
+                <ci> C_6 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_25 </ci>
+                <ci> C_2 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k_54 </ci>
+                <ci> k_52 </ci>
+                <ci> k_56 </ci>
+              </apply>
+              <ci> C_5 </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="C_6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <ci> C_T </ci>
+            <apply>
+              <plus/>
+              <ci> C_1 </ci>
+              <ci> C_2 </ci>
+              <ci> C_3 </ci>
+              <ci> C_4 </ci>
+              <ci> C_5 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <rateRule variable="C_6_temp">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <minus/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> C_1 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_56 </ci>
+                <ci> C_5 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <times/>
+              <apply>
+                <plus/>
+                <ci> k_61 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <ci> C_6_temp </ci>
+            </apply>
+          </apply>
+        </math>
+      </rateRule>
+      <assignmentRule variable="king_altman_states_C1_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_25 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="king_altman_states_C2_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="king_altman_states_C3_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_25 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_23 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="king_altman_states_C4_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_25 </ci>
+              <ci> k_34 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_34 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_34 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_34 </ci>
+              <ci> k_54 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_54 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_54 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="king_altman_states_C5_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_25 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_61 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="king_altman_states_C6_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_25 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_12 </ci>
+              <ci> k_25 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_56 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> k_16 </ci>
+              <ci> k_21 </ci>
+              <ci> k_32 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="king_altman_states_C_sum">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <ci> king_altman_states_C1_sum </ci>
+            <ci> king_altman_states_C2_sum </ci>
+            <ci> king_altman_states_C3_sum </ci>
+            <ci> king_altman_states_C4_sum </ci>
+            <ci> king_altman_states_C5_sum </ci>
+            <ci> king_altman_states_C6_sum </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="C1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> C_T </ci>
+              <ci> king_altman_states_C1_sum </ci>
+            </apply>
+            <ci> king_altman_states_C_sum </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="C2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> C_T </ci>
+              <ci> king_altman_states_C2_sum </ci>
+            </apply>
+            <ci> king_altman_states_C_sum </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="C3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> C_T </ci>
+              <ci> king_altman_states_C3_sum </ci>
+            </apply>
+            <ci> king_altman_states_C_sum </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="C4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> C_T </ci>
+              <ci> king_altman_states_C4_sum </ci>
+            </apply>
+            <ci> king_altman_states_C_sum </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="C5">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> C_T </ci>
+              <ci> king_altman_states_C5_sum </ci>
+            </apply>
+            <ci> king_altman_states_C_sum </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="C6">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <ci> C_T </ci>
+              <ci> king_altman_states_C6_sum </ci>
+            </apply>
+            <ci> king_altman_states_C_sum </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_NaGl_pSS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> F </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> n </ci>
+                <ci> z_Na </ci>
+                <ci> alpha_p </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> k_12 </ci>
+                    <ci> C_1 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> k_21 </ci>
+                    <ci> C_2 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> z_c </ci>
+                <ci> delta </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> k_16 </ci>
+                    <ci> C_1 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> k_61 </ci>
+                    <ci> C_6 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> n </ci>
+                <ci> z_Na </ci>
+                <ci> alpha_pp </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> k_56 </ci>
+                    <ci> C_5 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> k_65 </ci>
+                    <ci> C_6 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="I_NaGl_SS">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <minus/>
+              <ci> F </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> z_c </ci>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> k_16 </ci>
+                    <ci> C1 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> k_61 </ci>
+                    <ci> C6 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> z_c </ci>
+                  <apply>
+                    <times/>
+                    <ci> z_Na </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> k_25 </ci>
+                    <ci> C2 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> k_52 </ci>
+                    <ci> C5 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <apply>
+                  <plus/>
+                  <ci> z_c </ci>
+                  <apply>
+                    <times/>
+                    <ci> z_Na </ci>
+                    <ci> n </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <minus/>
+                  <apply>
+                    <times/>
+                    <ci> k_34 </ci>
+                    <ci> C3 </ci>
+                  </apply>
+                  <apply>
+                    <times/>
+                    <ci> k_43 </ci>
+                    <ci> C4 </ci>
+                  </apply>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="J_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> k_25 </ci>
+                <ci> C2 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_52 </ci>
+                <ci> C5 </ci>
+              </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> k_34 </ci>
+                <ci> C3 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_43 </ci>
+                <ci> C4 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="epsilon">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> lambda_ </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> ks_12 </ci>
+            </apply>
+            <ci> k0_23 </ci>
+            <ci> k_34 </ci>
+            <ci> k_45 </ci>
+            <ci> k_56 </ci>
+            <ci> k_61 </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="lambda_">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_54 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_52 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_65 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_56 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_54 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_54 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_45 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_43 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_52 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_61 </ci>
+            </apply>
+            <apply>
+              <times/>
+              <ci> ks_12 </ci>
+              <ci> k0_23 </ci>
+              <ci> k_34 </ci>
+              <ci> k_45 </ci>
+              <ci> k_56 </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="chi">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> lambda_ </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_34 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_34 </ci>
+                <ci> k_54 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_54 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_52 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_56 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="alpha">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> lambda_ </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_25 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_25 </ci>
+                <ci> k_34 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_34 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_25 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_25 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_52 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_25 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_56 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_56 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_52 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="beta">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> lambda_ </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k0_23 </ci>
+                <ci> k_16 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k0_23 </ci>
+                <ci> k_16 </ci>
+                <ci> k_34 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k0_23 </ci>
+                <ci> k_16 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k0_23 </ci>
+                <ci> k_16 </ci>
+                <ci> k_43 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k0_23 </ci>
+                <ci> k_16 </ci>
+                <ci> k_34 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k0_23 </ci>
+                <ci> k_16 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k0_23 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k0_23 </ci>
+                <ci> k_16 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_56 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="gamma">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> lambda_ </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_54 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_34 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_45 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_16 </ci>
+                <ci> k_21 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_52 </ci>
+                <ci> k_65 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="phi">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <ci> lambda_ </ci>
+            </apply>
+            <apply>
+              <minus/>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <apply>
+                    <minus/>
+                    <ci> ks_12 </ci>
+                  </apply>
+                  <ci> k_25 </ci>
+                  <ci> k_34 </ci>
+                  <ci> k_45 </ci>
+                  <ci> k_56 </ci>
+                  <ci> k_61 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> ks_12 </ci>
+                  <ci> k_25 </ci>
+                  <ci> k_32 </ci>
+                  <ci> k_45 </ci>
+                  <ci> k_56 </ci>
+                  <ci> k_61 </ci>
+                </apply>
+              </apply>
+              <apply>
+                <times/>
+                <ci> ks_12 </ci>
+                <ci> k_25 </ci>
+                <ci> k_32 </ci>
+                <ci> k_43 </ci>
+                <ci> k_56 </ci>
+                <ci> k_61 </ci>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Imax_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> F </ci>
+              <ci> C_T </ci>
+              <apply>
+                <plus/>
+                <ci> phi </ci>
+                <apply>
+                  <times/>
+                  <ci> epsilon </ci>
+                  <ci> glucose_o </ci>
+                </apply>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> chi </ci>
+              <ci> glucose_o </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Imax_gluc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <times/>
+              <cn type="integer"> 2 </cn>
+              <ci> F </ci>
+              <ci> C_T </ci>
+              <ci> epsilon </ci>
+              <ci> Na_o </ci>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> beta </ci>
+              <ci> Na_o </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Khalf_Na">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> alpha </ci>
+              <apply>
+                <times/>
+                <ci> beta </ci>
+                <ci> glucose_o </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> chi </ci>
+              <ci> glucose_o </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="Khalf_gluc">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <ci> alpha </ci>
+              <apply>
+                <times/>
+                <ci> chi </ci>
+                <ci> Na_o </ci>
+              </apply>
+            </apply>
+            <apply>
+              <plus/>
+              <ci> beta </ci>
+              <ci> Na_o </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+  </model>
+</sbml>

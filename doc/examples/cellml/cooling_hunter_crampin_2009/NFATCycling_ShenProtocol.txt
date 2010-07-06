@@ -1,0 +1,33 @@
+//Created by libAntimony v1.4
+model NFATCycling__NFAT_Cycling(t, NFATN_n, NFATp_n, Ccn, act_N, Ntot)
+
+  // Assignment Rules:
+  J1 := k_f1 * NFATp_c * Ntot * act_N - k_r1 * NFATN_c * (1 - act_N);
+  J2 := k_f2 * NFATN_c;
+  J3 := k_f3 * NFATN_n * (1 - act_N) - k_r3 * NFATp_n * Ntot * act_N;
+  J4 := k_f4 * NFATp_n;
+
+  // Rate Rules:
+  NFATN_c' = J1 - J2;
+  NFATN_n' = J2 * Ccn - J3;
+  NFATp_c' = J4 / Ccn - J1;
+  NFATp_n' = J3 - J4;
+
+  // Variable initializations:
+  NFATN_c = 0.0017047398;
+  NFATN_n = 0.50910553;
+  NFATp_c = 0.9825855442;
+  NFATp_n = 0.27638027;
+  k_f1 = 7.68934e-6;
+  k_r1 = 0.019256;
+  k_f2 = 0.00144192;
+  k_f3 = 0.000361944;
+  k_r3 = 4.70813e-5;
+  k_f4 = 0.000444695;
+end
+
+model NFATCycling____main()
+
+  // Sub-modules, and any changes to those submodules:
+  NFAT_Cycling: NFATCycling__NFAT_Cycling(t, NFATN_n, NFATp_n, Ccn, act_N, Ntot);
+end

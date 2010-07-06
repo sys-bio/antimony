@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model Gross_and_Hopfer_1998__environment(time_)
+//Created by libAntimony v1.4
+model gross_1998__environment(time_)
 end
 
-model Gross_and_Hopfer_1998__parameters(f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, F, R, T, V, u)
+model gross_1998__parameters(f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, F, R, T, V, u)
 
   // Assignment Rules:
   b0_6 := f0_1 * f0_2 * f0_3 * f0_4 * f0_5 * f0_6 / (b0_1 * b0_2 * b0_3 * b0_4 * b0_5);
@@ -35,7 +35,7 @@ model Gross_and_Hopfer_1998__parameters(f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4
   T = 310;
 end
 
-model Gross_and_Hopfer_1998__ion_concentrations(V, Na_i, Na_o, HCO3_i, HCO3_o)
+model gross_1998__ion_concentrations(V, Na_i, Na_o, HCO3_i, HCO3_o)
 
   // Variable initializations:
   V = -60e-3;
@@ -45,7 +45,7 @@ model Gross_and_Hopfer_1998__ion_concentrations(V, Na_i, Na_o, HCO3_i, HCO3_o)
   HCO3_o = 0.6;
 end
 
-model Gross_and_Hopfer_1998__rate_constants(Na_i, Na_o, HCO3_i, HCO3_o, f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, u)
+model gross_1998__rate_constants(Na_i, Na_o, HCO3_i, HCO3_o, f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, u)
 
   // Assignment Rules:
   f_1 := f0_1 * power(Na_i, n) * exp(n * alpha_p * u / 2 );
@@ -62,7 +62,7 @@ model Gross_and_Hopfer_1998__rate_constants(Na_i, Na_o, HCO3_i, HCO3_o, f_1, b_1
   b_6 := b0_6 * exp(delta_z * u / 2 );
 end
 
-model Gross_and_Hopfer_1998__kinetic_equations(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_1, C_2, C_3, C_4, C_5, C_6, C_6_temp, C_T, time_)
+model gross_1998__kinetic_equations(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_1, C_2, C_3, C_4, C_5, C_6, C_6_temp, C_T, time_)
 
   // Assignment Rules:
   C_6 := C_T - (C_1 + C_2 + C_3 + C_4 + C_5);
@@ -84,7 +84,7 @@ model Gross_and_Hopfer_1998__kinetic_equations(f_1, b_1, f_2, b_2, f_3, b_3, f_4
   C_6_temp = 0.046227;
 end
 
-model Gross_and_Hopfer_1998__king_altman_states(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_T, C1, C2, C3, C4, C5, C6)
+model gross_1998__king_altman_states(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_T, C1, C2, C3, C4, C5, C6)
 
   // Assignment Rules:
   C1_sum := f_2 * f_3 * f_4 * f_5 * f_6 + b_1 * f_3 * f_4 * f_5 * f_6 + b_1 * b_2 * f_4 * f_5 * f_6 + b_1 * b_2 * b_3 * f_5 * f_6 + b_1 * b_2 * b_3 * b_4 * f_6 + b_1 * b_2 * b_3 * b_4 * b_5;
@@ -102,21 +102,21 @@ model Gross_and_Hopfer_1998__king_altman_states(f_1, b_1, f_2, b_2, f_3, b_3, f_
   C6 := C_T * C6_sum / C_sum;
 end
 
-model Gross_and_Hopfer_1998__NBC_current(f_3, b_3, f_6, b_6, C_1, C_3, C_4, C_6, C1, C3, C4, C6, delta_z, n, m, F, I_NBC, I_NBC_SS)
+model gross_1998__NBC_current(f_3, b_3, f_6, b_6, C_1, C_3, C_4, C_6, C1, C3, C4, C6, delta_z, n, m, F, I_NBC, I_NBC_SS)
 
   // Assignment Rules:
   I_NBC := -(F) * (delta_z * (b_6 * C_1 - f_6 * C_6) + (delta_z + n - m) * (f_3 * C_3 - b_3 * C_4));
   I_NBC_SS := -(F) * (delta_z * (b_6 * C1 - f_6 * C6) + (delta_z + n - m) * (f_3 * C3 - b_3 * C4));
 end
 
-model Gross_and_Hopfer_1998____main()
+model gross_1998____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: Gross_and_Hopfer_1998__environment(time_);
-  parameters: Gross_and_Hopfer_1998__parameters(f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, F, R, T, V, u);
-  ion_concentrations: Gross_and_Hopfer_1998__ion_concentrations(V, Na_i, Na_o, HCO3_i, HCO3_o);
-  rate_constants: Gross_and_Hopfer_1998__rate_constants(Na_i, Na_o, HCO3_i, HCO3_o, f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, u);
-  kinetic_equations: Gross_and_Hopfer_1998__kinetic_equations(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_1, C_2, C_3, C_4, C_5, C_6, C_6_temp, C_T, time_);
-  king_altman_states: Gross_and_Hopfer_1998__king_altman_states(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_T, C1, C2, C3, C4, C5, C6);
-  NBC_current: Gross_and_Hopfer_1998__NBC_current(f_3, b_3, f_6, b_6, C_1, C_3, C_4, C_6, C1, C3, C4, C6, delta_z, n, m, F, I_NBC, I_NBC_SS);
+  environment: gross_1998__environment(time_);
+  parameters: gross_1998__parameters(f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, F, R, T, V, u);
+  ion_concentrations: gross_1998__ion_concentrations(V, Na_i, Na_o, HCO3_i, HCO3_o);
+  rate_constants: gross_1998__rate_constants(Na_i, Na_o, HCO3_i, HCO3_o, f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, f0_1, b0_1, f0_2, b0_2, f0_3, b0_3, f0_4, b0_4, f0_5, b0_5, f0_6, b0_6, delta_z, delta_m, delta_n, alpha_p, alpha_pp, beta_p, beta_pp, C_T, n, m, u);
+  kinetic_equations: gross_1998__kinetic_equations(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_1, C_2, C_3, C_4, C_5, C_6, C_6_temp, C_T, time_);
+  king_altman_states: gross_1998__king_altman_states(f_1, b_1, f_2, b_2, f_3, b_3, f_4, b_4, f_5, b_5, f_6, b_6, C_T, C1, C2, C3, C4, C5, C6);
+  NBC_current: gross_1998__NBC_current(f_3, b_3, f_6, b_6, C_1, C_3, C_4, C_6, C1, C3, C4, C6, delta_z, n, m, F, I_NBC, I_NBC_SS);
 end

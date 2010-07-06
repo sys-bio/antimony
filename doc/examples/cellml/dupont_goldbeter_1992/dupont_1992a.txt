@@ -1,8 +1,8 @@
-//Created by libAntimony v1.3
-model Dupont_1992a__environment(time_)
+//Created by libAntimony v1.4
+model dupont_1992a__environment(time_)
 end
 
-model Dupont_1992a__parameters(kf, k, Y, Z, v2, v3)
+model dupont_1992a__parameters(kf, k, Y, Z, v2, v3)
 
   // Assignment Rules:
   v2 := VM2 * power(Z, n) / (power(KP, n) + power(Z, n));
@@ -21,7 +21,7 @@ model Dupont_1992a__parameters(kf, k, Y, Z, v2, v3)
   k = 10;
 end
 
-model Dupont_1992a__cytosol(time_, v2, v3, kf, k, Y, Z)
+model dupont_1992a__cytosol(time_, v2, v3, kf, k, Y, Z)
 
   // Rate Rules:
   Z' = v0 + v1beta - v2 + v3 + kf * Y - k * Z;
@@ -32,7 +32,7 @@ model Dupont_1992a__cytosol(time_, v2, v3, kf, k, Y, Z)
   Z = 0.26;
 end
 
-model Dupont_1992a__insensitive_pool(time_, v2, v3, kf, Y)
+model dupont_1992a__insensitive_pool(time_, v2, v3, kf, Y)
 
   // Rate Rules:
   Y' = v2 - v3 - kf * Y;
@@ -41,7 +41,7 @@ model Dupont_1992a__insensitive_pool(time_, v2, v3, kf, Y)
   Y = 1.7;
 end
 
-model Dupont_1992a__kinase_reaction(Z, vK)
+model dupont_1992a__kinase_reaction(Z, vK)
 
   // Assignment Rules:
   vK := vMK * (power(Z, q) / (power(Ka, q) + power(Z, q)));
@@ -52,10 +52,10 @@ model Dupont_1992a__kinase_reaction(Z, vK)
   q = 1;
 end
 
-model Dupont_1992a__phosphorylation(time_, vK, Z)
+model dupont_1992a__phosphorylation(time_, vK, Z)
 
   // Sub-modules, and any changes to those submodules:
-  kinase_reaction: Dupont_1992a__kinase_reaction(Z, vK);
+  kinase_reaction: dupont_1992a__kinase_reaction(Z, vK);
 
   // Rate Rules:
   Wstar' = vP / WT * (vK / vP * (1 - Wstar) / (K1 + 1 - Wstar) - Wstar / (K2 + Wstar));
@@ -68,12 +68,12 @@ model Dupont_1992a__phosphorylation(time_, vK, Z)
   Wstar = 0.37;
 end
 
-model Dupont_1992a____main()
+model dupont_1992a____main()
 
   // Sub-modules, and any changes to those submodules:
-  environment: Dupont_1992a__environment(time_);
-  parameters: Dupont_1992a__parameters(kf, k, Y, Z, v2, v3);
-  cytosol: Dupont_1992a__cytosol(time_, v2, v3, kf, k, Y, Z);
-  insensitive_pool: Dupont_1992a__insensitive_pool(time_, v2, v3, kf, Y);
-  phosphorylation: Dupont_1992a__phosphorylation(time_, vK, Z);
+  environment: dupont_1992a__environment(time_);
+  parameters: dupont_1992a__parameters(kf, k, Y, Z, v2, v3);
+  cytosol: dupont_1992a__cytosol(time_, v2, v3, kf, k, Y, Z);
+  insensitive_pool: dupont_1992a__insensitive_pool(time_, v2, v3, kf, Y);
+  phosphorylation: dupont_1992a__phosphorylation(time_, vK, Z);
 end

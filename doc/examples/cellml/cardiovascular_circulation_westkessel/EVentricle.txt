@@ -1,0 +1,14 @@
+//Created by libAntimony v1.4
+model EVentricle__EVentricle(Emax, Emin, T, Ts1, Ts2, E, t)
+
+  // Assignment Rules:
+  E := Emin + et * (Emax - Emin) / 2;
+  mt := t - T * floor(t / T);
+  et := piecewise( 1 - cos(3.14159 * mt / (Ts1 * T)) , ( mt >= 0) && (mt <= Ts1 * T ), 1 + cos(3.14159 * (mt - Ts1 * T) / ((Ts2 - Ts1) * T)) , ( mt > Ts1 * T) && (mt <= Ts2 * T ), 0 , ( mt > Ts2 * T) && (mt < T ) );
+end
+
+model EVentricle____main()
+
+  // Sub-modules, and any changes to those submodules:
+  EVentricle: EVentricle__EVentricle(Emax, Emin, T, Ts1, Ts2, E, t);
+end

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4">
-  <model id="gall_susa_1999_version02____main" name="gall_susa_1999_version02____main">
+  <model id="gall_1999____main" name="gall_1999____main">
     <notes>
       <body xmlns="http://www.w3.org/1999/xhtml">
-        <p> Originally created by libAntimony v1.3 (using libSBML 4.1.0-b2) </p>
+        <p> Originally created by libAntimony v1.4 (using libSBML 4.1.0-b2) </p>
       </body>
     </notes>
     <listOfCompartments>
       <compartment id="default_compartment" size="1" sboTerm="SBO:0000410"/>
     </listOfCompartments>
     <listOfParameters>
-      <parameter id="V" constant="false"/>
+      <parameter id="V" value="-76" constant="false"/>
       <parameter id="membrane_Cm" value="5310"/>
       <parameter id="i_Ca" constant="false"/>
       <parameter id="i_K" constant="false"/>
@@ -18,20 +18,19 @@
       <parameter id="i_Na_Ca" constant="false"/>
       <parameter id="V_K" value="-75"/>
       <parameter id="rapidly_activating_K_current_g_K" value="2700"/>
-      <parameter id="n" constant="false"/>
+      <parameter id="n" value="0.1" constant="false"/>
       <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_n_infinity" constant="false"/>
       <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_lamda" value="1"/>
       <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_tau_n" value="20"/>
       <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_V_n" value="-16"/>
       <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_S_n" value="5.6"/>
-      <parameter id="rapidly_activating_K_current_rapidly_activating_K_current_n_gate_V_" value="-75"/>
       <parameter id="calcium_current_V_Ca" value="25"/>
       <parameter id="calcium_current_g_Ca" value="1000"/>
       <parameter id="m_infinity" constant="false"/>
       <parameter id="calcium_current_calcium_current_m_gate_V_m" value="-20"/>
       <parameter id="calcium_current_calcium_current_m_gate_S_m" value="12"/>
       <parameter id="slow_K_current_g_s" value="200"/>
-      <parameter id="s" constant="false"/>
+      <parameter id="s" value="0.1" constant="false"/>
       <parameter id="slow_K_current_slow_K_current_s_gate_s_infinity" constant="false"/>
       <parameter id="slow_K_current_slow_K_current_s_gate_tau_s" value="12000"/>
       <parameter id="slow_K_current_slow_K_current_s_gate_V_s" value="-52"/>
@@ -43,11 +42,11 @@
       <parameter id="Na_Ca_exchanger_current_V_Na_Ca" constant="false"/>
       <parameter id="Na_Ca_exchanger_current_RT_F" value="26.54"/>
       <parameter id="Na_Ca_exchanger_current_nH" value="5"/>
-      <parameter id="Ca_i" constant="false"/>
+      <parameter id="Ca_i" value="0.52" constant="false"/>
       <parameter id="Ca_o" value="2600"/>
       <parameter id="Na_i" value="10"/>
       <parameter id="Na_o" value="140"/>
-      <parameter id="ionic_concentrations_Ca_ret" constant="false"/>
+      <parameter id="ionic_concentrations_Ca_ret" value="0.7" constant="false"/>
       <parameter id="ionic_concentrations_f" value="0.02"/>
       <parameter id="ionic_concentrations_k_Ca" value="0.64"/>
       <parameter id="ionic_concentrations_k_rel" value="0.0006"/>
@@ -129,26 +128,23 @@
                 <ci> Na_Ca_exchanger_current_nH </ci>
               </apply>
               <apply>
-                <times/>
+                <plus/>
                 <apply>
-                  <plus/>
-                  <apply>
-                    <power/>
-                    <ci> Na_Ca_exchanger_current_K_1_2 </ci>
-                    <ci> Na_Ca_exchanger_current_nH </ci>
-                  </apply>
-                  <apply>
-                    <power/>
-                    <ci> Ca_i </ci>
-                    <ci> Na_Ca_exchanger_current_nH </ci>
-                  </apply>
+                  <power/>
+                  <ci> Na_Ca_exchanger_current_K_1_2 </ci>
+                  <ci> Na_Ca_exchanger_current_nH </ci>
                 </apply>
                 <apply>
-                  <minus/>
-                  <ci> V </ci>
-                  <ci> Na_Ca_exchanger_current_V_Na_Ca </ci>
+                  <power/>
+                  <ci> Ca_i </ci>
+                  <ci> Na_Ca_exchanger_current_nH </ci>
                 </apply>
               </apply>
+            </apply>
+            <apply>
+              <minus/>
+              <ci> V </ci>
+              <ci> Na_Ca_exchanger_current_V_Na_Ca </ci>
             </apply>
           </apply>
         </math>
