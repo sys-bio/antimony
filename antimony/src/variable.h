@@ -10,6 +10,11 @@
 #include "reaction.h"
 #include "enums.h"
 
+#ifndef NCELLML
+#include <nsCOMPtr.h>
+#include "cellmlx.h"
+#endif
+
 class Module;
 
 class Variable
@@ -51,6 +56,11 @@ private:
 
   //If we came from SBML, we have a Unit
   std::string m_units;
+
+  //If we are using CellML, this is a link to the corresponding variable in that document.
+#ifndef NCELLML
+  nsCOMPtr<cellml_apiICellMLVariable> m_cellmlvariable;
+#endif
 
 public:
   Variable(const std::string name, const Module* module);
@@ -120,6 +130,14 @@ public:
   std::string ToString() const;
   void FixNames();
   void ClearSameName() {m_sameVariable.clear();};
+  bool StillMatchesOriginal(formula_type ftype) const;
+  const Variable* GetOriginal() const;
+
+
+#ifndef NCELLML
+  nsCOMPtr<cellml_apiICellMLVariable> GetCellMLVariable() {return m_cellmlvariable;};
+  void SetCellMLVariable(nsCOMPtr<cellml_apiICellMLVariable> cmlvar) {m_cellmlvariable = cmlvar;};
+#endif
 };
 
 

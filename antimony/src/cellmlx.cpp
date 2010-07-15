@@ -30,6 +30,11 @@ nsString ToNSString(const string& in)
   return nsDependentString(out, in.size());
 }
 
+nsCString ToNSCString(const string& in)
+{
+  return nsCString(in.c_str(), in.size());
+}
+
 string CellMLPiecewiseToSBML(const string& in)
 {
   string out = in;
@@ -222,6 +227,18 @@ string GetNameAccordingToEncapsulationParent(nsCOMPtr<cellml_apiICellMLComponent
 
   FixName(cellmlname);
   return cellmlname;
+}
+
+nsCOMPtr<cellml_apiICellMLComponent> GetCellMLComponentOf(nsCOMPtr<cellml_apiICellMLVariable> var)
+{
+  nsresult rv;
+  nsCOMPtr<cellml_apiICellMLElement> parentel;
+  rv = var->GetParentElement(getter_AddRefs(parentel));
+  
+  nsCOMPtr<cellml_apiICellMLComponent> comp;
+  nsIID nsiid = comp->GetIID();
+  rv = parentel->QueryInterface(nsiid, getter_AddRefs(comp));
+  return comp;
 }
 
 
