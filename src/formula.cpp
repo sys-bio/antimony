@@ -515,3 +515,33 @@ void Formula::ReplaceWith(const Variable* origvar, const Variable* newvar)
     }
   }
 }
+
+
+bool Formula::IsStraightCopyOf(const Formula* origform) const
+{
+  if (m_components.size() != origform->m_components.size()) {
+    //cout << "Different sizes" << endl;
+    return false;
+  }
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() > 0) {
+      vector<string> orig = origform->m_components[comp].second;
+      vector<string> copy = m_components[comp].second;
+      int diff = copy.size() - orig.size();
+      assert(diff > 0);
+      for (size_t element = 0; element<orig.size(); element++) {
+        if (orig[element] != copy[element+diff]) {
+          //cout << "Different variable in this spot" << endl;
+          return false;
+        }
+      }
+    }
+    else {
+      if (m_components[comp].first != origform->m_components[comp].first) {
+        //cout << "Different texts" << endl;
+        return false;
+      }
+    }
+  }
+  return true;
+}

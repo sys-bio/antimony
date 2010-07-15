@@ -207,14 +207,14 @@ LIB_EXTERN char* getSBMLString(const char* moduleName);
 
 #ifndef NCELLML
 /**
- * Writes out a CellML-formatted XML file to the file indicated.  For now, the output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libCellML's 'writeCellML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
+ * Writes out a CellML-formatted XML file to the file indicated.  For now, the output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns one on success and zero on failure.
  * NOTE:  This function is unavailable when libAntimony is compiled with the '-NCELLML' flag.
  *
  *@see getCellMLString
  */
 LIB_EXTERN int   writeCellMLFile(const char* filename, const char* moduleName);
 /**
- * Returns the same output as writeCellMLFile, but to a char* array instead of to a file.  Returns the output of libCellML's 'writeCellMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
+ * Returns the same output as writeCellMLFile, but to a char* array instead of to a file.  Returns the string on success (as translated to 'char' from CellML's native 'wchar') and NULL on failure."
  * NOTE:  This function is unavailable when libAntimony is compiled with the '-NCELLML' flag.
  *
  *@see writeCellMLToString

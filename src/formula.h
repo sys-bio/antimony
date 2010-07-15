@@ -56,6 +56,7 @@ public:
   void ChangeTimeTo(const Variable* timeref);
   void InsertTimeInFunction(std::string function);
   void ReplaceWith(const Variable* origvar, const Variable* newvar);
+  bool IsStraightCopyOf(const Formula* origform) const;
 };
 
 

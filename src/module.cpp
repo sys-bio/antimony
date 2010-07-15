@@ -79,7 +79,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
   CreateSBMLModel(); //It's either this or go through and rename every blasted thing in it, and libSBML doesn't provide an easy way to go through all elements at once.
 #endif
 #ifndef NCELLML
-  CreateCellMLModel(); //ditto
+  //CreateCellMLModel(); //ditto
 #endif
 }
 
@@ -1026,70 +1026,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
 
   //Now get the mapping of unique variables to original module variables--the latter will be the variables that are still hanging around in the ur-version of the module, not the ones we copied into the SubModule variable in this model.
   map<const Variable*, Variable > origmap;
-  map<const Variable*, Variable >::iterator origmapiter;
-  
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetType() == varModule) {
-      vector<string> mname = m_variables[var]->GetName();
-      assert(mname.size() == 1);
-      //cout << "Module " << mname[0] << endl;
-      const Module* submod = m_variables[var]->GetModule();
-      const Module* origmod = g_registry.GetModule(submod->GetModuleName());
-      for (size_t uniq=0; uniq<origmod->m_uniquevars.size(); uniq++) {
-        const Variable* origmodvar = origmod->m_uniquevars[uniq];
-        //cout << "Original: " << origmodvar->GetNameDelimitedBy('.') << ": " << FormulaTypeToString(origmodvar->GetFormulaType());
-        //if (origmodvar->GetFormula() != NULL) cout << ": " << origmodvar->GetFormula()->ToDelimitedStringWithEllipses('.');
-        //cout << endl;
-        assert(!origmodvar->IsPointer());
-        Variable copied(*(origmod->m_uniquevars[uniq]));
-        copied.ClearSameName();
-        copied.SetNewTopName(m_modulename, mname[0]);
-        const Variable* origvar = GetVariable(copied.GetName())->GetSameVariable();
-        assert(find(m_uniquevars.begin(), m_uniquevars.end(), origvar) != m_uniquevars.end());
-        origmapiter = origmap.find(origvar);
-        if (origmapiter == origmap.end()) {
-          origmap.insert(make_pair(origvar, copied));
-        }
-        else {
-          //Find out how the two variables were synchronized
-          bool synched = false;
-          for (size_t sync=0; sync<m_synchronized.size(); sync++) {
-            if ((m_synchronized[sync].first == copied.GetName()) &&
-                (m_synchronized[sync].second == origmapiter->second.GetName())) {
-              copied.Synchronize(&origmapiter->second);
-              if (origmapiter->second.IsPointer()) {
-                assert(!copied.IsPointer());
-                origmapiter->second = copied;
-              }
-              synched = true;
-              break;
-            }
-            if ((m_synchronized[sync].first == origmapiter->second.GetName()) &&
-                (m_synchronized[sync].second == copied.GetName())) {
-              origmapiter->second.Synchronize(&copied);
-              if (origmapiter->second.IsPointer()) {
-                assert(!copied.IsPointer());
-                origmapiter->second = copied;
-              }
-              synched = true;
-              break;
-            }
-          }
-          if (!synched) {
-            //Sync them randomly  LS DEBUG
-            //assert(false);
-            origmapiter->second.Synchronize(&copied);
-            //copied.Synchronize(&origmapiter->second);
-            if (!copied.IsPointer()) {
-              //The synchronization worked backwards from what we tried.
-              origmapiter->second = copied;
-            }
-          }
-          //cout << "Final: " << origmapiter->second.ToString() << endl;
-        }
-      }
-    }
-  }
+  FillInOrigmap(origmap);
 
   //List the compartments and the species (but don't define them yet) so that the order is preserved:
   vector<string> compartmentnames;
@@ -1439,6 +1376,73 @@ void Module::FixNames()
   FixName(m_varmap);
 }
 
+void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
+{
+  map<const Variable*, Variable >::iterator origmapiter;
+  
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() == varModule) {
+      vector<string> mname = m_variables[var]->GetName();
+      assert(mname.size() == 1);
+      //cout << "Module " << mname[0] << endl;
+      const Module* submod = m_variables[var]->GetModule();
+      const Module* origmod = g_registry.GetModule(submod->GetModuleName());
+      for (size_t uniq=0; uniq<origmod->m_uniquevars.size(); uniq++) {
+        const Variable* origmodvar = origmod->m_uniquevars[uniq];
+        //cout << "Original: " << origmodvar->GetNameDelimitedBy('.') << ": " << FormulaTypeToString(origmodvar->GetFormulaType());
+        //if (origmodvar->GetFormula() != NULL) cout << ": " << origmodvar->GetFormula()->ToDelimitedStringWithEllipses('.');
+        //cout << endl;
+        assert(!origmodvar->IsPointer());
+        Variable copied(*(origmod->m_uniquevars[uniq]));
+        copied.ClearSameName();
+        copied.SetNewTopName(m_modulename, mname[0]);
+        const Variable* origvar = GetVariable(copied.GetName())->GetSameVariable();
+        assert(find(m_uniquevars.begin(), m_uniquevars.end(), origvar) != m_uniquevars.end());
+        origmapiter = origmap.find(origvar);
+        if (origmapiter == origmap.end()) {
+          origmap.insert(make_pair(origvar, copied));
+        }
+        else {
+          //Find out how the two variables were synchronized
+          bool synched = false;
+          for (size_t sync=0; sync<m_synchronized.size(); sync++) {
+            if ((m_synchronized[sync].first == copied.GetName()) &&
+                (m_synchronized[sync].second == origmapiter->second.GetName())) {
+              copied.Synchronize(&origmapiter->second);
+              if (origmapiter->second.IsPointer()) {
+                assert(!copied.IsPointer());
+                origmapiter->second = copied;
+              }
+              synched = true;
+              break;
+            }
+            if ((m_synchronized[sync].first == origmapiter->second.GetName()) &&
+                (m_synchronized[sync].second == copied.GetName())) {
+              origmapiter->second.Synchronize(&copied);
+              if (origmapiter->second.IsPointer()) {
+                assert(!copied.IsPointer());
+                origmapiter->second = copied;
+              }
+              synched = true;
+              break;
+            }
+          }
+          if (!synched) {
+            //Sync them randomly  LS DEBUG
+            //assert(false);
+            origmapiter->second.Synchronize(&copied);
+            //copied.Synchronize(&origmapiter->second);
+            if (!copied.IsPointer()) {
+              //The synchronization worked backwards from what we tried.
+              origmapiter->second = copied;
+            }
+          }
+          //cout << "Final: " << origmapiter->second.ToString() << endl;
+        }
+      }
+    }
+  }
+}
 
 bool Module::OrigFormulaIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap, string formula) const
 {

@@ -1338,3 +1338,30 @@ void Variable::FixNames()
   m_valEvent.FixNames();
   m_valStrand.FixNames();
 }
+
+bool Variable::StillMatchesOriginal(formula_type ftype) const
+{
+  const Formula* formnow = GetFormula();
+  if (ftype==formulaRATE) {
+    formnow = GetRateRule();
+  }
+  if (m_name.size() == 1) return true; //It still is the original!
+  const Variable* origvar = GetOriginal();
+  const Formula* formthen = origvar->GetFormula();
+  if (ftype==formulaRATE) {
+    formthen = origvar->GetRateRule();
+  }
+  return formnow->IsStraightCopyOf(formthen);
+}
+
+const Variable* Variable::GetOriginal() const
+{
+  if (m_name.size()==1) return this;
+  vector<string> modname = m_name;
+  modname.pop_back();
+  Variable* modvar = g_registry.GetModule(m_module)->GetVariable(modname);
+  Module* origmod = g_registry.GetModule(modvar->GetModule()->GetModuleName());
+  vector<string> origname;
+  origname.push_back(m_name[m_name.size()-1]);
+  return origmod->GetVariable(origname);
+}

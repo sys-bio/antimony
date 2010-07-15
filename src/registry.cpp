@@ -409,18 +409,19 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
   }
   comp2moduleparents.insert(comp2moduleparents.begin(), CurrentModule()->GetModuleName());
 
+  //cout << "First component's parents: " << ToStringFromVecDelimitedBy(comp1moduleparents, '.') << endl << "Second component's parents: " << ToStringFromVecDelimitedBy(comp2moduleparents, '.') << endl;
+  //cout << "First component's names: " << ToStringFromVecDelimitedBy(comp1modulenames, '.') << endl << "Second component's names: " << ToStringFromVecDelimitedBy(comp2modulenames, '.') << endl;
   //Now figure out the 'lowest' common parent in the encapsulation tree:
   string commonparent = "";
-  for (size_t i=0; i<comp1moduleparents.size() && i<comp2moduleparents.size(); ++i) {
-    if (comp1moduleparents[i] == comp2moduleparents[i]) {
-      commonparent = comp1moduleparents[i];
-      if (i>0) {
-        comp1modulenames.erase(comp1modulenames.begin());
-        comp2modulenames.erase(comp2modulenames.begin());
-      }
-    }
-    else break;
+  assert(comp1moduleparents.size() > 0 && comp2moduleparents.size() > 0 && comp1moduleparents[0] == comp2moduleparents[0]);
+  size_t pnum = 0;
+  while (comp1modulenames.size() > 0 && comp2modulenames.size() > 0 &&
+         comp1modulenames[0] == comp2modulenames[0]) {
+    comp1modulenames.erase(comp1modulenames.begin());
+    comp2modulenames.erase(comp2modulenames.begin());
+    pnum++;
   }
+  commonparent = comp1moduleparents[pnum];
 
   //At this point, we have the name of the module where the encapsulation happens:
   Module* topmod = CurrentModule();
@@ -429,9 +430,9 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
   }
   assert(topmod != NULL);
 
-  //cout << "Top module: " << commonparent << endl;
-  //cout << "first compartment submodule name: " << ToStringFromVecDelimitedBy(comp1modulenames, '.') << endl;
-  //cout << "second compartment submodule name: " << ToStringFromVecDelimitedBy(comp2modulenames, '.') << endl;
+  // cout << "Top module: " << commonparent << endl;
+  // cout << "first compartment submodule name: " << ToStringFromVecDelimitedBy(comp1modulenames, '.') << endl;
+  // cout << "second compartment submodule name: " << ToStringFromVecDelimitedBy(comp2modulenames, '.') << endl;
 
   //And we have the full names of the submodules whose variables need to be synchronized.  But there might be multiple variables, so we go through them all:
   nsCOMPtr<cellml_apiIMapVariablesSet> mvs;

@@ -60,9 +60,9 @@ cellmlflag = -fshort-wchar
 
 generalcflags = -Wall -DVERSION_STRING="\"v$(version)\"" $(sbmlflag) $(cellmlflag) $(mingw_include) $(sbml_includes) $(cellml_includes)
 #For a debug version:
-#CPPFLAGS = -ggdb $(generalcflags)
+CPPFLAGS = -ggdb $(generalcflags)
 #For profiling:
-CPPFLAGS = -O3 -pg $(generalcflags)
+#CPPFLAGS = -O3 -pg $(generalcflags)
 #for nondebug version
 #CPPFLAGS = -O3 -DNDEBUG $(generalcflags)
 
@@ -98,6 +98,7 @@ CPPFILES = $(src_dir)antimony_api.cpp \
 	$(src_dir)userfunction.cpp \
 	$(src_dir)variable.cpp \
 	$(src_dir)antimony2sbml.cpp \
+	$(src_dir)antimony2cellml.cpp \
 	$(src_dir)sbml2antimony.cpp \
 	$(src_dir)cellml2antimony.cpp \
 	$(src_dir)testantimony.cpp \
@@ -137,11 +138,15 @@ LIBOFILES = $(src_dir)antimony_api.o \
 
 QMAKEFILES = antimony.pro \
 	antimony2sbml.pro \
+	antimony2cellml.pro \
 	sbml2antimony.pro \
 	testantimony.pro \
 	antimony2sbml/QMakeFile \
 	antimony2sbml/antimony2sbml.pro \
 	antimony2sbml/antimony2sbml.vcproj \
+	antimony2cellml/QMakeFile \
+	antimony2cellml/antimony2cellml.pro \
+	antimony2cellml/antimony2cellml.vcproj \
 	sbml2antimony/QMakeFile \
 	sbml2antimony/sbml2antimony.pro \
 	sbml2antimony/sbml2antimony.vcproj \
@@ -267,6 +272,7 @@ all : \
 	$(bin_dir)antimony2sbml \
 	$(bin_dir)sbml2antimony \
 	$(bin_dir)cellml2antimony \
+	$(bin_dir)antimony2cellml \
 	$(bin_dir)rehashantimony
 	@echo ""
 	@echo "Libary created:"
@@ -289,6 +295,10 @@ $(bin_dir)testantimony : $(lib_dir)libantimony.a $(src_dir)testantimony.o
 $(bin_dir)antimony2sbml : $(lib_dir)libantimony.a $(src_dir)antimony2sbml.o
 	mkdir -p $(bin_dir)
 	$(CXX) -o $(bin_dir)antimony2sbml $(src_dir)antimony2sbml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
+
+$(bin_dir)antimony2cellml : $(lib_dir)libantimony.a $(src_dir)antimony2cellml.o
+	mkdir -p $(bin_dir)
+	$(CXX) -o $(bin_dir)antimony2cellml $(src_dir)antimony2cellml.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 $(bin_dir)sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
 	mkdir -p $(bin_dir)
@@ -337,6 +347,8 @@ $(lib_dir)libantimony.a : $(LIBOFILES)
 #The .o files
 $(src_dir)antimony2sbml.o : $(src_dir)antimony2sbml.cpp
 
+$(src_dir)antimony2cellml.o : $(src_dir)antimony2cellml.cpp
+
 $(src_dir)sbml2antimony.o : $(src_dir)sbml2antimony.cpp
 
 $(src_dir)cellml2antimony.o : $(src_dir)cellml2antimony.cpp
@@ -378,4 +390,4 @@ $(src_dir)antimony.tab.cpp : $(src_dir)antimony.ypp $(src_dir)registry.h $(src_d
 	bison --verbose -o$(src_dir)antimony.tab.cpp $(src_dir)antimony.ypp
 
 clean :
-	rm -f src/*.o $(lib_dir)libantimony.a $(bin_dir)testantimony $(bin_dir)sbml2antimony $(bin_dir)cellml2antimony $(bin_dir)antimony2sbml antimony_src*.tar.gz Antimony_documentation*.zip
+	rm -f src/*.o $(lib_dir)libantimony.a $(bin_dir)testantimony $(bin_dir)sbml2antimony $(bin_dir)cellml2antimony $(bin_dir)antimony2sbml $(bin_dir)antimony2cellml antimony_src*.tar.gz Antimony_documentation*.zip

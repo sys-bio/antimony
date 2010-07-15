@@ -20,8 +20,7 @@
 
 class ReactionList;
 
-class Module
-{
+class Module{
 protected:
   std::string m_modulename;
   std::vector<std::vector<std::string> > m_exportlist;
@@ -50,6 +49,9 @@ private:
 #ifndef NCELLML
   nsCOMPtr<cellml_apiIModel> m_cellmlmodel;
   nsCOMPtr<cellml_apiICellMLComponent> m_cellmlcomponent;
+  std::map<std::vector<std::string>, std::string > m_cellmlnames;
+  std::set<std::string> m_uniquenames;
+  std::map<Variable*, std::vector<Variable*> > m_syncedvars;
   bool m_childrenadded;
 #endif
 
@@ -129,20 +131,34 @@ public:
 #endif
 
 #ifndef NCELLML
+  //Reading:
   void  LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model, std::vector<nsCOMPtr<cellml_apiICellMLComponent> > top_components);
   void  LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component);
   void  SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> component);
   const nsCOMPtr<cellml_apiIModel> GetCellMLModel();
-  void  CreateCellMLModel();
-  nsCOMPtr<cellml_apiICellMLComponent> CreateCellMLComponentFor(nsCOMPtr<cellml_apiIModel> model);
   void  ResyncVariablesWith(const Module* twin, std::string modulename, std::vector<std::string> varname);
   void  ReloadSubmodelVariables(const std::string& modname);
   void  ReloadSubmodelConnections(Module* syncmod);
+
+  //Creating:
+  void  CreateCellMLModel();
+  void  AddCellMLComponentsTo(nsCOMPtr<cellml_apiIModel> model, std::string topmod);
+  nsCOMPtr<cellml_apiICellMLComponent> GetCellMLComponent(std::string topmod);
+  void  CreateCellMLComponent(std::string topmod);
+  void  AddVariableToCellML(Variable* variable, nsCOMPtr<cellml_apiIModel> model);
+  void  AssignMathOnceFor(std::vector<Variable*> varlist);
+  Variable* WhichFirstDefined(std::vector<Variable*> varlist, formula_type ftype);
+  bool  InUnique(std::string name);
+  void  AddUnique(std::vector<std::string> fullname, std::string name);
+  void  AddConnectionsTo(nsCOMPtr<cellml_apiIModel> model, std::string topmodname);
+  void  AddOneConnection(nsCOMPtr<cellml_apiIModel> model, Variable* var, Module* topmod);
+  std::string GetCellMLNameOf(std::vector<std::string> name);
 #endif
 
   void  FixNames();
 
 private:
+  void FillInOrigmap(std::map<const Variable*, Variable >& origmap) const;
   bool OrigFormulaIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string formula) const;
   bool OrigIsAlreadyCompartment(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigIsAlreadyConstSpecies(const Variable* var, const std::map<const Variable*, Variable>& origmap, bool isconst) const;

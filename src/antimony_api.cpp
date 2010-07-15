@@ -351,6 +351,37 @@ LIB_EXTERN long loadCellMLString(const char* modelstring)
   }
   return CheckAndAddCellMLDoc(model);
 }
+
+LIB_EXTERN int writeCellMLFile(const char* filename, const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  nsCOMPtr<cellml_apiIModel> model = g_registry.GetModule(moduleName)->GetCellMLModel();
+  nsresult rv;
+  nsString cellmltext;
+  rv = model->GetSerialisedText(cellmltext);
+  string oldlocale = setlocale(LC_ALL, NULL);
+  setlocale(LC_ALL, "C");
+  ofstream afile(filename);
+  if (!afile.good()) {
+    string error = "Unable to open file ";
+    error += filename;
+    error += " for writing.";
+    g_registry.SetError(error);
+    setlocale(LC_ALL, oldlocale.c_str());
+    return 0;
+  }
+  string cellmlstring = ToThinString(cellmltext.get());
+  size_t gtpos;
+  while ((gtpos = cellmlstring.find("><")) != string::npos) {
+    cellmlstring.insert(gtpos+1, "\n");
+  }
+  afile << cellmlstring;
+  afile.close();
+  setlocale(LC_ALL, oldlocale.c_str());
+  return 1;
+}
+
+
 #endif
 
 LIB_EXTERN unsigned long getNumFiles()
