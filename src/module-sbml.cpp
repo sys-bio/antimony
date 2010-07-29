@@ -317,8 +317,12 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       Formula blankform;
       AddNewReaction(&left, rdInfluences, &right, &blankform, interaction);
     }
+    rd_type rxntype = rdBecomes;
+    if (!reaction->getReversible()) {
+      rxntype = rdBecomesIrreversibly;
+    }
     //Put reactants, products, and the formula together:
-    AddNewReaction(&reactants, rdBecomes, &products, &formula, var);
+    AddNewReaction(&reactants, rxntype, &products, &formula, var);
   }
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
   g_registry.FixTimeInFunctions();
@@ -447,6 +451,13 @@ void Module::CreateSBMLModel()
     sbmlrxn->setId(rxnvar->GetNameDelimitedBy(cc));
     if (rxnvar->GetDisplayName() != "") {
       sbmlrxn->setName(rxnvar->GetDisplayName());
+    }
+    if (reaction->GetType() == rdBecomes) {
+      sbmlrxn->setReversible(true);
+    }
+    else {
+      assert(reaction->GetType() == rdBecomesIrreversibly);
+      sbmlrxn->setReversible(false);
     }
     const Formula* formula = reaction->GetFormula();
     string formstring = formula->ToSBMLString(rxnvar->GetStrandVars());
