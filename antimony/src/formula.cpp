@@ -545,3 +545,36 @@ bool Formula::IsStraightCopyOf(const Formula* origform) const
   }
   return true;
 }
+
+void Formula::UseInstead(std::string newname, const Variable* oldvar)
+{
+  vector<string> newfullname;
+  newfullname.push_back(newname);
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() > 0) {
+      Module* module = g_registry.GetModule(m_components[comp].first);
+      assert(module != NULL);
+      Variable* subvar = module->GetVariable(m_components[comp].second);
+      if (subvar==NULL) continue; //Each time we do this, we break the scheme, so if it's broken, it's because of THIS EXACT FUNCTION a nanosecond ago.
+      if (subvar->GetIsEquivalentTo(oldvar)) {
+        m_components[comp].second = newfullname;
+      }
+    }
+  }
+}
+
+string Formula::ToCellML()
+{
+  string retval = "";
+  //Don't check the variables; just concatenate strings.
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() > 0) {
+      assert(m_components[comp].second.size()==1); //CellML formulas can't refer to subvariables.
+      retval += ToStringFromVecDelimitedBy(m_components[comp].second, '_');
+    }
+    else {
+      retval += m_components[comp].first;
+    }
+  }
+  return retval;
+}

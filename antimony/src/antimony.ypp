@@ -75,6 +75,7 @@
 %token  <word> VAR "'var'"
 %token  <word> CONST "'const'"
 %token  <word> DASHES "--"
+%token  <word> BECOMESIRREV "=>"
 %token  <word> ELLIPSES "..."
 %token  <word> FUNCTION "name of an existing function"
 %token  <word> IMPORT "'import'"
@@ -198,6 +199,8 @@ reactionDivider:
         |       '-' '|' {$$ = rdInhibits;}
         |       '-' '(' {$$ = rdInfluences;}
         |       '-' WORD {if (*$2 != "o") {g_registry.SetError("'-" + *$2 + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} $$ = rdActivates;}
+        |       BECOMESIRREV {$$ = rdBecomesIrreversibly;}
+        |       '<' BECOMESIRREV {$$ = rdBecomes;}
         ;
 
 formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
@@ -522,6 +525,17 @@ int yylex(void)
     }
     g_registry.input->unget();
     cc = '-';
+    return cc;
+  }
+
+  //Parse '=>'
+  if (cc == '=') {
+    g_registry.input->get(cc);
+    if (cc == '>') {
+      return BECOMESIRREV;
+    }
+    g_registry.input->unget();
+    cc = '=';
     return cc;
   }
 

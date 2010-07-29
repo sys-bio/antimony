@@ -32,6 +32,7 @@ bool IsInteraction(const rd_type rdtype)
 {
   switch(rdtype) {
   case rdBecomes:
+  case rdBecomesIrreversibly:
     return false;
   case rdActivates:
   case rdInhibits:
@@ -156,6 +157,7 @@ std::string RDToString(rd_type type)
 {
   switch(type) {
   case rdBecomes:    return "->";
+  case rdBecomesIrreversibly:  return "=>";
   case rdActivates:  return "-o";
   case rdInhibits:   return "-|";
   case rdInfluences: return "-(";

@@ -142,17 +142,29 @@ public:
 
   //Creating:
   void  CreateCellMLModel();
-  void  AddCellMLComponentsTo(nsCOMPtr<cellml_apiIModel> model, std::string topmod);
-  nsCOMPtr<cellml_apiICellMLComponent> GetCellMLComponent(std::string topmod);
-  void  CreateCellMLComponent(std::string topmod);
+  void  AddCellMLComponentsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod);
+  nsCOMPtr<cellml_apiICellMLComponent> GetCellMLComponent(Module* topmod);
+  void  CreateCellMLComponent(Module* topmod);
   void  AddVariableToCellML(Variable* variable, nsCOMPtr<cellml_apiIModel> model);
-  void  AssignMathOnceFor(std::vector<Variable*> varlist);
+  nsCOMPtr<cellml_apiICellMLVariable> AddVariableToCellML(std::string varname, nsCOMPtr<cellml_apiIModel> model);
+  void  AssignMathOnceFor(std::vector<Variable*> varlist, nsCOMPtr<domIDocument> doc);
+  bool  AddCellMLMathTo(std::string formula, Variable* targetvar, nsCOMPtr<domIDocument> doc);
+  void  AddTimeFor(nsCOMPtr<cellml_apiICellMLVariable> cmlvar);
+  nsCOMPtr<cellml_apiICellMLVariable>  AddTimeTo(nsCOMPtr<cellml_apiICellMLComponent> cmlcomp);
   Variable* WhichFirstDefined(std::vector<Variable*> varlist, formula_type ftype);
   bool  InUnique(std::string name);
   void  AddUnique(std::vector<std::string> fullname, std::string name);
-  void  AddConnectionsTo(nsCOMPtr<cellml_apiIModel> model, std::string topmodname);
-  void  AddOneConnection(nsCOMPtr<cellml_apiIModel> model, Variable* var, Module* topmod);
   std::string GetCellMLNameOf(std::vector<std::string> name);
+  void  AddEncapsulationTo(nsCOMPtr<cellml_apiIModel> model);
+  nsCOMPtr<cellml_apiIComponentRef> GetComponentRef(nsCOMPtr<cellml_apiIModel> model, std::string cmlname);
+  void  AddConnectionsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod);
+  void  AddOneConnection(nsCOMPtr<cellml_apiIModel> model, Variable* var, Module* topmod);
+  void  AddOneConnection(nsCOMPtr<cellml_apiIModel> model, nsCOMPtr<cellml_apiICellMLVariable> var1, nsCOMPtr<cellml_apiICellMLVariable> var2);
+  void  AddODEsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod);
+  void  GetAllSpeciesAndReactions(std::set<Variable*>& species, std::set<Variable*>& reactions);
+  Module* BestModuleToAdd(std::set<Variable*> involvedrxns, std::set<Variable*>& contains );
+  void  AddRateRuleInvolving(Variable* species, Formula form, std::set<Variable*> involvedrxns);
+  std::string FindOrCreateLocalVersionOf(Variable* variable, nsCOMPtr<cellml_apiICellMLVariable>& localvar);
 #endif
 
   void  FixNames();

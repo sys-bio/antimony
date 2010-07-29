@@ -9,12 +9,13 @@
   */
 /**
  * rd_types are the different types of reactions and interactions.
- * - rdBecomes: A reaction: ->
+ * - rdBecomes: A reversible reaction: -> or <=>
  * - rdActivates: An activation interaction: -o
  * - rdInhibits: An inhibition interaction: -|
  * - rdInfluences: A generic interaction: -(
+ * - rdBecomesIrreversibly: '=>'
  */
-enum rd_type {rdBecomes = 0, rdActivates, rdInhibits, rdInfluences};
+enum rd_type {rdBecomes = 0, rdActivates, rdInhibits, rdInfluences, rdBecomesIrreversibly};
 
 /**
  * var_types define internally what a symbol is; they are not used in the API anywhere.  But for the curious, they are:

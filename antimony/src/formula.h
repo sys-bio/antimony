@@ -57,6 +57,10 @@ public:
   void InsertTimeInFunction(std::string function);
   void ReplaceWith(const Variable* origvar, const Variable* newvar);
   bool IsStraightCopyOf(const Formula* origform) const;
+
+  //For CellMLStuff:
+  void UseInstead(std::string newname, const Variable* oldvar);
+  std::string ToCellML();
 };
 
 
