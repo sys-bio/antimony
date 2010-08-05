@@ -60,6 +60,7 @@ private:
   //If we are using CellML, this is a link to the corresponding variable in that document.
 #ifndef NCELLML
   nsCOMPtr<cellml_apiICellMLVariable> m_cellmlvariable;
+  Variable* m_canonvar;
 #endif
 
 public:
@@ -132,11 +133,14 @@ public:
   void ClearSameName() {m_sameVariable.clear();};
   bool StillMatchesOriginal(formula_type ftype) const;
   const Variable* GetOriginal() const;
+  Variable* GetParentVariable();
 
 
 #ifndef NCELLML
   nsCOMPtr<cellml_apiICellMLVariable> GetCellMLVariable() {return m_cellmlvariable;};
   void SetCellMLVariable(nsCOMPtr<cellml_apiICellMLVariable> cmlvar) {m_cellmlvariable = cmlvar;};
+  Variable* GetCanonicalVariable() {return m_canonvar;};
+  void SetCanonicalVariable(Variable* cvar) {m_canonvar = cvar;};
 #endif
 };
 

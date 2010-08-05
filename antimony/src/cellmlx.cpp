@@ -241,5 +241,37 @@ nsCOMPtr<cellml_apiICellMLComponent> GetCellMLComponentOf(nsCOMPtr<cellml_apiICe
   return comp;
 }
 
+nsCOMPtr<cellml_apiIConnection> GetOrCreateConnectionFor(nsCOMPtr<cellml_apiICellMLComponent>comp1, nsCOMPtr<cellml_apiICellMLComponent>comp2, nsCOMPtr<cellml_apiIModel> model)
+{
+  nsresult rv;
+  nsString comp1name;
+  nsString comp2name;
+  rv = comp1->GetName(comp1name);
+  rv = comp2->GetName(comp2name);
+  nsCOMPtr<cellml_apiIConnectionSet> conset;
+  rv = model->GetConnections(getter_AddRefs(conset));
+  nsCOMPtr<cellml_apiIConnectionIterator> coni;
+  rv = conset->IterateConnections(getter_AddRefs(coni));
+  nsCOMPtr<cellml_apiIConnection> connection;
+  rv = coni->NextConnection(getter_AddRefs(connection));
+  while (connection != NULL) {
+    nsCOMPtr<cellml_apiIMapComponents> mapcomp;
+    rv = connection->GetComponentMapping(getter_AddRefs(mapcomp));
+    nsString testcomp1name;
+    nsString testcomp2name;
+    rv = mapcomp->GetFirstComponentName(testcomp1name);
+    rv = mapcomp->GetSecondComponentName(testcomp2name);
+    if ((testcomp1name == comp1name && testcomp2name == comp2name) ||
+        (testcomp1name == comp2name && testcomp2name == comp1name)) {
+      cout << "Found match!" << endl;
+      return connection;
+    }
+    rv = coni->NextConnection(getter_AddRefs(connection));
+  }
+  //No connection found--create a new one
+  rv = model->CreateConnection(getter_AddRefs(connection));
+  rv = model->AddElement(connection);
+  return connection;
+}
 
 #endif

@@ -60,7 +60,7 @@ public:
 
   //For CellMLStuff:
   void UseInstead(std::string newname, const Variable* oldvar);
-  std::string ToCellML();
+  std::string ToCellML() const;
 };
 
 

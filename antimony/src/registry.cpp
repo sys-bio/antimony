@@ -246,12 +246,7 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
   NS_ENSURE_SUCCESS(rv, true);
 
   nsCOMPtr<cellml_servicesICeVAS> cevas;
-  try {
-    rv = cevasboot->CreateCeVASForModel(model, getter_AddRefs(cevas));
-  }
-  catch (...){
-    return true;
-  }
+  rv = cevasboot->CreateCeVASForModel(model, getter_AddRefs(cevas));
   if (NS_FAILED(rv)) {
     nsString error;
     cevas->GetModelError(error);

@@ -563,7 +563,7 @@ void Formula::UseInstead(std::string newname, const Variable* oldvar)
   }
 }
 
-string Formula::ToCellML()
+string Formula::ToCellML() const
 {
   string retval = "";
   //Don't check the variables; just concatenate strings.

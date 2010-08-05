@@ -12,6 +12,7 @@
 #ifndef NCELLML
 #include "ICellMLInputServices.h"
 #include <nsCOMPtr.h>
+enum tree_direction {td_UP, td_DOWN, td_SIDEWAYS};
 #endif
 
 #include "antimony_api.h"
@@ -145,8 +146,8 @@ public:
   void  AddCellMLComponentsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod);
   nsCOMPtr<cellml_apiICellMLComponent> GetCellMLComponent(Module* topmod);
   void  CreateCellMLComponent(Module* topmod);
-  void  AddVariableToCellML(Variable* variable, nsCOMPtr<cellml_apiIModel> model);
-  nsCOMPtr<cellml_apiICellMLVariable> AddVariableToCellML(std::string varname, nsCOMPtr<cellml_apiIModel> model);
+  void  AddNewVariableToCellML(Variable* variable, nsCOMPtr<cellml_apiIModel> model);
+  nsCOMPtr<cellml_apiICellMLVariable> AddNewVariableToCellML(std::string varname, nsCOMPtr<cellml_apiIModel> model);
   void  AssignMathOnceFor(std::vector<Variable*> varlist, nsCOMPtr<domIDocument> doc);
   bool  AddCellMLMathTo(std::string formula, Variable* targetvar, nsCOMPtr<domIDocument> doc);
   void  AddTimeFor(nsCOMPtr<cellml_apiICellMLVariable> cmlvar);
@@ -156,10 +157,17 @@ public:
   void  AddUnique(std::vector<std::string> fullname, std::string name);
   std::string GetCellMLNameOf(std::vector<std::string> name);
   void  AddEncapsulationTo(nsCOMPtr<cellml_apiIModel> model);
-  nsCOMPtr<cellml_apiIComponentRef> GetComponentRef(nsCOMPtr<cellml_apiIModel> model, std::string cmlname);
-  void  AddConnectionsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod);
-  void  AddOneConnection(nsCOMPtr<cellml_apiIModel> model, Variable* var, Module* topmod);
-  void  AddOneConnection(nsCOMPtr<cellml_apiIModel> model, nsCOMPtr<cellml_apiICellMLVariable> var1, nsCOMPtr<cellml_apiICellMLVariable> var2);
+  nsCOMPtr<cellml_apiIComponentRef> GetComponentRef(nsCOMPtr<cellml_apiIModel> model, std::string cmlname, Module* topmod);
+  void  SetCanonicalVars();
+  void  FindAndSetCanonical(std::vector<Variable*> varlist);
+  void  AddConnections();
+  void  SetupTree(std::map<Variable*, Variable*>& tree, Variable* thisvar);
+  void  AddConnectionsTo(std::vector<Variable*> varlist, const std::map<Variable*, Variable*>& tree);
+  Variable*  GetParent(Variable* child, const std::map<Variable*, Variable*>& tree);
+  Variable* GetSyncedVariable(Variable* mod, const std::map<Variable*, Variable*>& mod2var);
+  nsCOMPtr<cellml_apiICellMLVariable> GetLinkedCMLVar(Variable* mod, const std::map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> >& mod2linkedcellml);
+  void Connect(Variable* modin, Variable* canonmod, std::map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> >& mod2linkedcellml, const std::map<Variable*, Variable*>& mod2var, const std::set<Variable*>& canonparents, const std::map<Variable*, Variable*>& tree);
+  void  AddOneConnection(nsCOMPtr<cellml_apiICellMLVariable> varin, nsCOMPtr<cellml_apiICellMLVariable> varout, tree_direction td);
   void  AddODEsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod);
   void  GetAllSpeciesAndReactions(std::set<Variable*>& species, std::set<Variable*>& reactions);
   Module* BestModuleToAdd(std::set<Variable*> involvedrxns, std::set<Variable*>& contains );
