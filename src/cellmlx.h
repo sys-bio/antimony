@@ -39,6 +39,7 @@ std::string GetModuleNameFrom(nsCOMPtr<cellml_apiICellMLComponent> component);
 std::string GetModuleNameFrom(nsCOMPtr<cellml_apiIImportComponent> impcomponent);
 std::string GetNameAccordingToEncapsulationParent(nsCOMPtr<cellml_apiICellMLComponent> component, nsCOMPtr<cellml_apiIModel> topmodel);
 nsCOMPtr<cellml_apiICellMLComponent> GetCellMLComponentOf(nsCOMPtr<cellml_apiICellMLVariable> var);
+nsCOMPtr<cellml_apiIConnection> GetOrCreateConnectionFor(nsCOMPtr<cellml_apiICellMLComponent>comp1, nsCOMPtr<cellml_apiICellMLComponent>comp2, nsCOMPtr<cellml_apiIModel> model);
 
 
 #endif //NCELLML

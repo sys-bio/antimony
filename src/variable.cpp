@@ -1365,3 +1365,13 @@ const Variable* Variable::GetOriginal() const
   origname.push_back(m_name[m_name.size()-1]);
   return origmod->GetVariable(origname);
 }
+
+Variable* Variable::GetParentVariable()
+{
+  vector<string> parentname = m_name;
+  parentname.pop_back();
+  if (parentname.size()==0) {
+    return NULL;
+  }
+  return g_registry.GetModule(m_module)->GetVariable(parentname);  
+}

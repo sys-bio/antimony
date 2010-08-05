@@ -487,8 +487,11 @@ void Module::CreateCellMLModel()
   //Create encapsulation relationships
   AddEncapsulationTo(m_cellmlmodel);
 
+  //Figure out which variable in each set of synced variables needs to be the 'canonical' one
+  SetCanonicalVars(); //(uses m_syncedvars)
+
   //Create all connections
-  AddConnectionsTo(m_cellmlmodel, this);
+  AddConnections();
 
   //Add in the Math
   for (map<Variable*, vector<Variable*> >::iterator mapiter = m_syncedvars.begin();
@@ -527,7 +530,7 @@ void Module::CreateCellMLComponent(Module* topmod)
   //Establish a unique name in CellML, which is a different namespace than Antimony (which can distinguish X.y from Z.y--in CelML, we can no longer call both 'y', and it's awkward to call everything 'X_y', etc.)
   int nindex = static_cast<int>(m_variablename.size())-1;
   string name = m_modulename; //The top component needs a name here, too.
-  if (nindex > 0) {
+  if (nindex >= 0) {
     name = m_variablename[nindex];
     while (topmod->InUnique(name)) {
       assert(nindex>0);
@@ -560,7 +563,7 @@ void Module::CreateCellMLComponent(Module* topmod)
     case varCompartment:
     case varUndefined:
       //The above all become CellML variables:
-      AddVariableToCellML(variable, topmod->m_cellmlmodel);
+      AddNewVariableToCellML(variable, topmod->m_cellmlmodel);
       used = true;
       break;
     case varEvent:
@@ -585,15 +588,15 @@ void Module::CreateCellMLComponent(Module* topmod)
   }
 }
 
-void Module::AddVariableToCellML(Variable* variable, nsCOMPtr<cellml_apiIModel> model)
+void Module::AddNewVariableToCellML(Variable* variable, nsCOMPtr<cellml_apiIModel> model)
 {
   vector<string> varname = variable->GetName();
   assert(varname.size()>0);
-  nsCOMPtr<cellml_apiICellMLVariable> cmlvar = AddVariableToCellML(varname[varname.size()-1], model);
+  nsCOMPtr<cellml_apiICellMLVariable> cmlvar = AddNewVariableToCellML(varname[varname.size()-1], model);
   variable->SetCellMLVariable(cmlvar);
 }
 
-nsCOMPtr<cellml_apiICellMLVariable> Module::AddVariableToCellML(string varname, nsCOMPtr<cellml_apiIModel> model)
+nsCOMPtr<cellml_apiICellMLVariable> Module::AddNewVariableToCellML(string varname, nsCOMPtr<cellml_apiIModel> model)
 {
   assert(m_cellmlcomponent != NULL);
   nsresult rv;
@@ -602,15 +605,16 @@ nsCOMPtr<cellml_apiICellMLVariable> Module::AddVariableToCellML(string varname, 
   nsCOMPtr<cellml_apiICellMLVariable> cmlvar;
   nsString cmlvarst = ToNSString(varname);
   rv = cmlvarset->GetVariable(cmlvarst, getter_AddRefs(cmlvar));
-  if (cmlvar != NULL) {
-    //Already exists!
-    return cmlvar;
+  size_t varnum = 1;
+  while (cmlvar != NULL) {
+    //A variable with that name already exists; create a new one instead.
+    cmlvarst = ToNSString(varname + "_" + SizeTToString(varnum));
+    rv = cmlvarset->GetVariable(cmlvarst, getter_AddRefs(cmlvar));
+    varnum++;
   }
   rv = model->CreateCellMLVariable(getter_AddRefs(cmlvar));
   rv = m_cellmlcomponent->AddElement(cmlvar);
-  rv = cmlvar->SetName(ToNSString(varname));
-  rv = cmlvar->SetPublicInterface(1);
-  rv = cmlvar->SetPrivateInterface(0); //LS DEBUG: revisit this later
+  rv = cmlvar->SetName(cmlvarst);
   return cmlvar;
 }
 
@@ -621,12 +625,12 @@ void Module::AssignMathOnceFor(vector<Variable*> varlist, nsCOMPtr<domIDocument>
   const Formula* ia = finalvar->GetInitialAssignment();
   const Formula* ar = finalvar->GetAssignmentRuleOrKineticLaw();
   const Formula* rr = finalvar->GetRateRule();
-  //All three may have been initially defined in different modules
+  //'ia' and 'rr' may both exist and have been initially defined in different modules.  But that doesn't matter, since we need to define all three in the same CellML module, since that's the way they roll.
+  Variable* targetvar = varlist[0]->GetCanonicalVariable();
+  nsCOMPtr<cellml_apiICellMLVariable> cmlvar = targetvar->GetCellMLVariable();
   if (!ia->IsEmpty()) {
     if (ia->IsDouble()) {
-      Variable* targetvar = WhichFirstDefined(varlist, formulaINITIAL);
-      nsCOMPtr<cellml_apiICellMLVariable> cmlvar = targetvar->GetCellMLVariable();
-      rv = cmlvar->SetInitialValue(ToNSString(ia->ToDelimitedStringWithEllipses('_')));
+      rv = cmlvar->SetInitialValue(ToNSString(ia->ToCellML()));
       cout << "Successfully set initial value for " << targetvar->GetNameDelimitedBy('.') << endl;
     }
     else {
@@ -635,7 +639,6 @@ void Module::AssignMathOnceFor(vector<Variable*> varlist, nsCOMPtr<domIDocument>
     }
   }
   if (!ar->IsEmpty()) {
-    Variable* targetvar = WhichFirstDefined(varlist, formulaASSIGNMENT);
     const Variable* origtarget = targetvar->GetOriginal();
     vector<string> varname = origtarget->GetName();
     assert(varname.size()==1);
@@ -649,7 +652,6 @@ void Module::AssignMathOnceFor(vector<Variable*> varlist, nsCOMPtr<domIDocument>
     }
   }
   if (!rr->IsEmpty()) {
-    Variable* targetvar = WhichFirstDefined(varlist, formulaRATE);
     AddTimeFor(targetvar->GetCellMLVariable());
     const Variable* origtarget = targetvar->GetOriginal();
     vector<string> varname = origtarget->GetName();
@@ -707,14 +709,12 @@ nsCOMPtr<cellml_apiICellMLVariable> Module::AddTimeTo(nsCOMPtr<cellml_apiICellML
   rv = m_cellmlmodel->CreateCellMLVariable(getter_AddRefs(time));
   rv = cmlcomp->AddElement(time);
   rv = time->SetName(timest);
-  rv = time->SetPublicInterface(1);
-  rv = time->SetPrivateInterface(0); //LS DEBUG: revisit this later
 
   nsCOMPtr<cellml_apiICellMLComponent> parent;
   rv = cmlcomp->GetEncapsulationParent(getter_AddRefs(parent));
   if (parent != NULL) {
     nsCOMPtr<cellml_apiICellMLVariable> ptime = AddTimeTo(parent);
-    AddOneConnection(m_cellmlmodel, time, ptime);
+    AddOneConnection(time, ptime, td_UP);
   }
   return time;
 }
@@ -768,11 +768,11 @@ void Module::AddEncapsulationTo(nsCOMPtr<cellml_apiIModel> model)
   rv = group->AddElement(relref);
   rv = relref->SetRelationshipName(ToNSString(""), ToNSString("encapsulation"));
   vector<string> blank;
-  nsCOMPtr<cellml_apiIComponentRef> cr = GetComponentRef(m_cellmlmodel, GetCellMLNameOf(blank));
+  nsCOMPtr<cellml_apiIComponentRef> cr = GetComponentRef(m_cellmlmodel, GetCellMLNameOf(blank), this);
   rv = group->AddElement(cr);
 }
 
-nsCOMPtr<cellml_apiIComponentRef> Module::GetComponentRef(nsCOMPtr<cellml_apiIModel> model, string cmlname)
+nsCOMPtr<cellml_apiIComponentRef> Module::GetComponentRef(nsCOMPtr<cellml_apiIModel> model, string cmlname, Module* topmod)
 {
   nsresult rv;
   nsCOMPtr<cellml_apiIComponentRef> cr;
@@ -780,70 +780,217 @@ nsCOMPtr<cellml_apiIComponentRef> Module::GetComponentRef(nsCOMPtr<cellml_apiIMo
   rv = cr->SetComponentName(ToNSString(cmlname));
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
-      string subvarcmlname = GetCellMLNameOf(m_variables[var]->GetName());
-      nsCOMPtr<cellml_apiIComponentRef> subcr = m_variables[var]->GetModule()->GetComponentRef(model, subvarcmlname);
+      string subvarcmlname = topmod->GetCellMLNameOf(m_variables[var]->GetName());
+      nsCOMPtr<cellml_apiIComponentRef> subcr = m_variables[var]->GetModule()->GetComponentRef(model, subvarcmlname, topmod);
       rv = cr->AddElement(subcr);
     }
   }
   return cr;
 }
 
-void Module::AddConnectionsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod)
+void Module::SetCanonicalVars()
 {
-  for (size_t var=0; var<m_variables.size(); var++) {
-    Variable* var1 = m_variables[var];
-    if (var1->IsPointer()) {
-      AddOneConnection(model, var1, topmod);
-    }
-    else if (var1->GetType()==varModule) {
-      var1->GetModule()->AddConnectionsTo(model, topmod);
+  for (map<Variable*, vector<Variable*> >::iterator mapiter = m_syncedvars.begin();
+       mapiter != m_syncedvars.end(); mapiter++) {
+    FindAndSetCanonical(mapiter->second);
+  }
+}
+
+void Module::FindAndSetCanonical(vector<Variable*> varlist)
+{
+  formula_type ftype = varlist[0]->GetFormulaType();
+  Variable* canonvar = WhichFirstDefined(varlist, ftype);
+  for (size_t var=0; var<varlist.size(); var++) {
+    varlist[var]->SetCanonicalVariable(canonvar);
+  }
+}
+
+void Module::AddConnections()
+{
+  map<Variable*, Variable*> tree;
+  SetupTree(tree, NULL);
+  for (map<Variable*, vector<Variable*> >::iterator mapiter = m_syncedvars.begin();
+       mapiter != m_syncedvars.end(); mapiter++) {
+    if (mapiter->second.size() > 1) {
+      AddConnectionsTo(mapiter->second, tree);
     }
   }
 }
 
-void Module::AddOneConnection(nsCOMPtr<cellml_apiIModel> model, Variable* var, Module* topmod)
+void Module::SetupTree(map<Variable*, Variable*>& tree, Variable* thisvar)
 {
-  nsresult rv;
-  assert(var->IsPointer());
-  nsCOMPtr<cellml_apiIConnection> connection;
-  rv = model->CreateConnection(getter_AddRefs(connection));
-
-  //Variables
-  vector<string> var1name = var->GetName();
-  vector<string> var2name = var->GetSameVariable()->GetName();
-  string cellmlname1 = var1name[var1name.size()-1];
-  string cellmlname2 = var2name[var2name.size()-1];
-  nsCOMPtr<cellml_apiIMapVariables> mapvars;
-  rv = model->CreateMapVariables(getter_AddRefs(mapvars));
-  rv = connection->AddElement(mapvars);
-  rv = mapvars->SetFirstVariableName(ToNSString(cellmlname1));
-  rv = mapvars->SetSecondVariableName(ToNSString(cellmlname2));
-
-  //Components
-  vector<string> mod1name = var1name;
-  mod1name.pop_back();
-  vector<string> mod2name = var2name;
-  mod2name.pop_back();
-  string cellmlcomp1 = topmod->GetCellMLNameOf(mod1name);
-  string cellmlcomp2 = topmod->GetCellMLNameOf(mod2name);
-  nsCOMPtr<cellml_apiIMapComponents> compmap;
-  rv = connection->GetComponentMapping(getter_AddRefs(compmap));
-  rv = compmap->SetFirstComponentName(ToNSString(cellmlcomp1));
-  rv = compmap->SetSecondComponentName(ToNSString(cellmlcomp2));
-  rv = model->AddElement(connection);
+  for (size_t var=0; var<m_variables.size(); var++) {
+    if (m_variables[var]->GetType() == varModule) {
+      tree.insert(make_pair(m_variables[var], thisvar));
+      m_variables[var]->GetModule()->SetupTree(tree, m_variables[var]);
+    }
+  }
 }
 
-void Module::AddOneConnection(nsCOMPtr<cellml_apiIModel> model, nsCOMPtr<cellml_apiICellMLVariable> var1, nsCOMPtr<cellml_apiICellMLVariable> var2)
+void Module::AddConnectionsTo(vector<Variable*> varlist, const map<Variable*, Variable*>& tree)
+{
+  Variable* canonmod = varlist[0]->GetCanonicalVariable()->GetParentVariable();
+  map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> > mod2linkedcellml;
+  map<Variable*, Variable*> mod2var;
+  set<Variable*> canonparents;
+
+  //This sets up the linkage between modules and the pre-existing Antimony variables, all of which have corresponding CellML variables
+  for (size_t var=0; var<varlist.size(); var++) {
+    Variable* modvar = varlist[var]->GetParentVariable();
+    mod2var.insert(make_pair(modvar, varlist[var]));
+  }
+
+  //This sets up the list of direct parents of the 'canon' module.  This is used when connecting to know how to connect (up, down, or sideways)
+  Variable* cp = GetParent(canonmod, tree);
+  while (cp != NULL) {
+    canonparents.insert(cp);
+    cp = GetParent(cp, tree);
+  }
+  if (canonmod != NULL) {
+    canonparents.insert(NULL); //The top-level module may have a linked variable too
+  }
+  
+  //The first linked CellML variable we have is the canonical one:
+  nsCOMPtr<cellml_apiICellMLVariable> canoncml = GetSyncedVariable(canonmod, mod2var)->GetCellMLVariable();
+  mod2linkedcellml.insert(make_pair(canonmod, canoncml));
+
+  //Now go through the list and connect everything.  As things are linked, mod2linkedcellml is updated so we don't duplicate effort.
+  for (size_t var=0; var<varlist.size(); var++) {
+    Connect(varlist[var]->GetParentVariable(), canonmod, mod2linkedcellml, mod2var, canonparents, tree);
+  }
+}
+
+Variable* Module::GetParent(Variable* child, const map<Variable*, Variable*>& tree)
+{
+  if (child==NULL) return NULL;
+  map<Variable*, Variable*>::const_iterator branch = tree.find(child);
+  if (branch==tree.end()) {
+    assert(false); //We should put NULL in the tree specifically for top-level children
+    return NULL;
+  }
+  else {
+    return branch->second;
+  }
+}
+
+Variable* Module::GetSyncedVariable(Variable* mod, const map<Variable*, Variable*>& mod2var)
+{
+  map<Variable*, Variable*>::const_iterator branch = mod2var.find(mod);
+  if (branch==mod2var.end()) {
+    return NULL;
+  }
+  else {
+    return branch->second;
+  }
+}
+
+nsCOMPtr<cellml_apiICellMLVariable> Module::GetLinkedCMLVar(Variable* mod, const map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> >& mod2linkedcellml)
+{
+  map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> >::const_iterator branch = mod2linkedcellml.find(mod);
+  if (branch==mod2linkedcellml.end()) {
+    return NULL;
+  }
+  else {
+    return branch->second;
+  }
+}
+
+void Module::Connect(Variable* modin, Variable* canonmod, map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> >& mod2linkedcellml, const map<Variable*, Variable*>& mod2var, const set<Variable*>& canonparents, const map<Variable*, Variable*>& tree)
+{
+  Variable* canonvar = GetSyncedVariable(canonmod, mod2var);
+  nsCOMPtr<cellml_apiICellMLVariable> cmlin = NULL;
+  Variable* syncedvar = GetSyncedVariable(modin, mod2var);
+  if (syncedvar == NULL) {
+    cmlin = GetLinkedCMLVar(modin, mod2linkedcellml);
+    if (cmlin != NULL) {
+      //We already connected this, so we're done!
+      return;
+    }
+    vector<string> canonname = canonvar->GetName();
+    cmlin = modin->GetModule()->AddNewVariableToCellML(canonname[canonname.size()-1], m_cellmlmodel);
+  }
+  else {
+    cmlin = syncedvar->GetCellMLVariable();
+    if (GetLinkedCMLVar(modin, mod2linkedcellml) != NULL) {
+      //We already connected this, so we're done!
+      return;
+    }
+  }
+
+  //Put the new cmlin variable into the sync list before we forget:
+  mod2linkedcellml.insert(make_pair(modin, cmlin));
+  
+  //So, there are three options:
+  //  One, the modin is a direct parent of canonmod, so we link downwards towards it. 
+  //  Two, the modin is a direct child of a direct parent of canonmod, so we link sidways into the parent tree or to canonmod directly.
+  //  Three, we link to the variable in modin's parent.  All other cases reduce to this.
+  Variable* inparent = GetParent(modin, tree);
+  if (canonparents.find(modin) != canonparents.end()) {
+    //Option 1!
+    Variable* potential_child = canonmod;
+    Variable* parent = GetParent(potential_child, tree);
+    while (parent != modin) {
+      potential_child = parent;
+      parent = GetParent(potential_child, tree);
+    }
+    Connect(potential_child, canonmod, mod2linkedcellml, mod2var, canonparents, tree);
+    nsCOMPtr<cellml_apiICellMLVariable> cmlchild = GetLinkedCMLVar(potential_child, mod2linkedcellml);
+    assert(cmlchild != NULL);
+    AddOneConnection(cmlin, cmlchild, td_DOWN);
+  }
+  else if (canonparents.find(inparent) != canonparents.end()) {
+    //Option 2!
+    Variable* potential_sibling = canonmod;
+    Variable* parent = GetParent(potential_sibling, tree);
+    while (parent != inparent) {
+      potential_sibling = parent;
+      parent = GetParent(potential_sibling, tree);
+    }
+    Connect(potential_sibling, canonmod, mod2linkedcellml, mod2var, canonparents, tree);
+    nsCOMPtr<cellml_apiICellMLVariable> cmlsib = GetLinkedCMLVar(potential_sibling, mod2linkedcellml);
+    assert(cmlsib != NULL);
+    AddOneConnection(cmlin, cmlsib, td_SIDEWAYS);
+  }
+  else {
+    //Option 3!
+    Connect(inparent, canonmod, mod2linkedcellml, mod2var, canonparents, tree);
+    nsCOMPtr<cellml_apiICellMLVariable> cmlparent = GetLinkedCMLVar(inparent, mod2linkedcellml);
+    assert(cmlparent != NULL);
+    AddOneConnection(cmlin, cmlparent, td_UP);
+  }
+}
+
+void Module::AddOneConnection(nsCOMPtr<cellml_apiICellMLVariable> varin, nsCOMPtr<cellml_apiICellMLVariable> varout, tree_direction td)
 {
   nsresult rv;
-  nsCOMPtr<cellml_apiIConnection> connection;
-  rv = model->CreateConnection(getter_AddRefs(connection));
-  rv = model->AddElement(connection);
+  switch(td) {
+  case td_UP:
+    rv = varin->SetPublicInterface(0);
+    rv = varout->SetPrivateInterface(1);
+    break;
+  case td_DOWN:
+    rv = varin->SetPrivateInterface(0);
+    rv = varout->SetPublicInterface(1);
+    break;
+  case td_SIDEWAYS:
+    rv = varin->SetPublicInterface(0);
+    rv = varout->SetPublicInterface(1);
+    break;
+  }
+  nsCOMPtr<cellml_apiICellMLComponent> compin  = GetCellMLComponentOf(varin);
+  nsCOMPtr<cellml_apiICellMLComponent> compout = GetCellMLComponentOf(varout);
+  nsCOMPtr<cellml_apiIConnection> connection = GetOrCreateConnectionFor(compin, compout, m_cellmlmodel);
   nsCOMPtr<cellml_apiIMapVariables> mapvars;
-  rv = model->CreateMapVariables(getter_AddRefs(mapvars));
+  rv = m_cellmlmodel->CreateMapVariables(getter_AddRefs(mapvars));
   rv = connection->AddElement(mapvars);
-  rv = mapvars->SetFirstVariable(var1);
-  rv = mapvars->SetSecondVariable(var2);
+  rv = mapvars->SetFirstVariable(varin);
+  if (NS_FAILED(rv)) {
+    rv = mapvars->SetFirstVariable(varout);
+    rv = mapvars->SetSecondVariable(varin);
+  }
+  else {
+    rv = mapvars->SetSecondVariable(varout);
+  }
 }
 
 void Module::AddODEsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod)
@@ -957,8 +1104,8 @@ string Module::FindOrCreateLocalVersionOf(Variable* variable, nsCOMPtr<cellml_ap
           foundvar = m_variables[var]->GetModule()->GetModuleName() + "_" + foundvar;
           varname[0] = foundvar;
         }
-        localvar = AddVariableToCellML(foundvar, m_cellmlmodel);
-        AddOneConnection(m_cellmlmodel, localvar, subvar);
+        localvar = AddNewVariableToCellML(foundvar, m_cellmlmodel);
+        AddOneConnection(localvar, subvar, td_DOWN);
         return foundvar;
       }
     }
