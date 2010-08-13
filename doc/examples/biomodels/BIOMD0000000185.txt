@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Locke2008_Circadian_Clock()
 
   // Compartments and Species:
@@ -10,26 +10,26 @@ model Locke2008_Circadian_Clock()
   F := 1 / 2 * (V1 + V2);
 
   // Reactions:
-  R1:  -> X1; compartment_ * v_1 * pow(K1, n) / (pow(K1, n) + pow(Z1, n));
-  R2: X1 -> ; compartment_ * v_2 * X1 / (K2 + X1);
-  R3:  -> X1; compartment_ * vc * K * F / (Kc + K * F);
-  R4:  -> X1; compartment_ * L;
-  R5:  -> Y1; compartment_ * k3 * X1;
-  R6: Y1 -> ; compartment_ * v_4 * Y1 / (K4 + Y1);
-  R7:  -> Z1; compartment_ * k5 * Y1;
-  R8: Z1 -> ; compartment_ * v_6 * Z1 / (K6 + Z1);
-  R9:  -> V1; compartment_ * k7 * X1;
-  R10: V1 -> ; compartment_ * v_8 * V1 / (K8 + V1);
-  R11:  -> X2; compartment_ * v_1 * pow(K1, n) / (pow(K1, n) + pow(Z2, n));
-  R12: X2 -> ; compartment_ * v_2 * X2 / (K2 + X2);
-  R13:  -> X2; compartment_ * vc * K * F / (Kc + K * F);
-  R14:  -> X2; compartment_ * L;
-  R15:  -> Y2; compartment_ * k3 * X2;
-  R16: Y2 -> ; compartment_ * v_4 * Y2 / (K4 + Y2);
-  R17:  -> Z2; compartment_ * k5 * Y2;
-  R18: Z2 -> ; compartment_ * v_6 * Z2 / (K6 + Z2);
-  R19:  -> V2; compartment_ * k7 * X2;
-  R20: V2 -> ; compartment_ * v_8 * V2 / (K8 + V2);
+  R1:  => X1; compartment_ * v_1 * K1^n / (K1^n + Z1^n);
+  R2: X1 => ; compartment_ * v_2 * X1 / (K2 + X1);
+  R3:  => X1; compartment_ * vc * K * F / (Kc + K * F);
+  R4:  => X1; compartment_ * L;
+  R5:  => Y1; compartment_ * k3 * X1;
+  R6: Y1 => ; compartment_ * v_4 * Y1 / (K4 + Y1);
+  R7:  => Z1; compartment_ * k5 * Y1;
+  R8: Z1 => ; compartment_ * v_6 * Z1 / (K6 + Z1);
+  R9:  => V1; compartment_ * k7 * X1;
+  R10: V1 => ; compartment_ * v_8 * V1 / (K8 + V1);
+  R11:  => X2; compartment_ * v_1 * K1^n / (K1^n + Z2^n);
+  R12: X2 => ; compartment_ * v_2 * X2 / (K2 + X2);
+  R13:  => X2; compartment_ * vc * K * F / (Kc + K * F);
+  R14:  => X2; compartment_ * L;
+  R15:  => Y2; compartment_ * k3 * X2;
+  R16: Y2 => ; compartment_ * v_4 * Y2 / (K4 + Y2);
+  R17:  => Z2; compartment_ * k5 * Y2;
+  R18: Z2 => ; compartment_ * v_6 * Z2 / (K6 + Z2);
+  R19:  => V2; compartment_ * k7 * X2;
+  R20: V2 => ; compartment_ * v_8 * V2 / (K8 + V2);
 
   // Species initializations:
   X1 = 4.25;

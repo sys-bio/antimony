@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Folate2004()
 
   // Compartments and Species:
@@ -10,18 +10,18 @@ model Folate2004()
   species $NADPH in compartment_, $Hcy in compartment_;
 
   // Reactions:
-  V_NE: THF -> _5_10_CH2THF; HCOOH * NE_k1 * THF - NE_k2 * _5_10_CH2THF;
-  V_MS: _5mTHF -> THF; MS_Vmax * (_5mTHF / MS_Km_5mTHF) * (Hcy / MS_Km_Hcy) / (MS_Kd / MS_Km_5mTHF + _5mTHF / MS_Km_5mTHF + Hcy / MS_Km_Hcy + _5mTHF * Hcy / (MS_Km_5mTHF * MS_Km_Hcy));
-  V_MTHFR: _5_10_CH2THF -> _5mTHF; MTHFR_Vmax * (NADPH / (MTHFR_Km_NADPH + NADPH)) * (_5_10_CH2THF / (MTHFR_Km_5_10_CH2THF + _5_10_CH2THF));
-  V_FTD: _10fTHF -> THF; FTD_Vmax * (_10fTHF / (FTD_Km_10fTHF + _10fTHF));
-  V_FTS: THF -> _10fTHF; FTS_Vmax * (HCOOH / (FTS_Km_HCOOH + HCOOH)) * (THF / (FTS_Km_THF + THF));
-  V_AICART: _10fTHF -> THF; AICART_Vmax * (AICAR / (AICART_Km_AICAR + AICAR)) * (_10fTHF / (AICART_Km_10fTHF + _10fTHF));
-  V_PGT: _10fTHF -> THF; PGT_Vmax * (GAR / (PGT_Km_GAR + GAR)) * (_10fTHF / (PGT_Km_10fTHF + _10fTHF));
-  V_TS: _5_10_CH2THF -> DHF; TS_Vmax * (dUMP / (TS_Km_dUMP + dUMP)) * (_5_10_CH2THF / (TS_Km_5_10_CH2THF + _5_10_CH2THF));
-  V_DHFR: DHF -> THF; DHFR_Vmax * (NADPH / (DHFR_Km_NADPH + NADPH)) * (DHF / (DHFR_Km_DHF + DHF));
-  V_MTCH: _5_10_CHTHF -> _10fTHF; MTCH_VmaxF * (_5_10_CHTHF / (MTCH_Km_5_10_CHTHF + _5_10_CHTHF)) - MTCH_VmaxR * (_10fTHF / (MTCH_Km_10fTHF + _10fTHF));
-  V_SHMT: THF -> _5_10_CH2THF; SHMT_VmaxF * (Ser / (SHMT_Km_Ser + Ser)) * (THF / (SHMT_Km_THF + THF)) - SHMT_VmaxR * (Gly / (SHMT_Km_Ser + Gly)) * (_5_10_CH2THF / (SHMT_Km_THF + _5_10_CH2THF));
-  V_MTD: _5_10_CH2THF -> _5_10_CHTHF; MTD_VmaxF * (_5_10_CH2THF / (MTD_Km_5_10_CH2THF + _5_10_CH2THF)) - MTD_VmaxR * (_5_10_CHTHF / (MTD_Km_5_10_CHTHF + _5_10_CHTHF));
+  V_NE: THF => _5_10_CH2THF; HCOOH * NE_k1 * THF - NE_k2 * _5_10_CH2THF;
+  V_MS: _5mTHF => THF; MS_Vmax * (_5mTHF / MS_Km_5mTHF) * (Hcy / MS_Km_Hcy) / (MS_Kd / MS_Km_5mTHF + _5mTHF / MS_Km_5mTHF + Hcy / MS_Km_Hcy + _5mTHF * Hcy / (MS_Km_5mTHF * MS_Km_Hcy));
+  V_MTHFR: _5_10_CH2THF => _5mTHF; MTHFR_Vmax * (NADPH / (MTHFR_Km_NADPH + NADPH)) * (_5_10_CH2THF / (MTHFR_Km_5_10_CH2THF + _5_10_CH2THF));
+  V_FTD: _10fTHF => THF; FTD_Vmax * (_10fTHF / (FTD_Km_10fTHF + _10fTHF));
+  V_FTS: THF => _10fTHF; FTS_Vmax * (HCOOH / (FTS_Km_HCOOH + HCOOH)) * (THF / (FTS_Km_THF + THF));
+  V_AICART: _10fTHF => THF; AICART_Vmax * (AICAR / (AICART_Km_AICAR + AICAR)) * (_10fTHF / (AICART_Km_10fTHF + _10fTHF));
+  V_PGT: _10fTHF => THF; PGT_Vmax * (GAR / (PGT_Km_GAR + GAR)) * (_10fTHF / (PGT_Km_10fTHF + _10fTHF));
+  V_TS: _5_10_CH2THF => DHF; TS_Vmax * (dUMP / (TS_Km_dUMP + dUMP)) * (_5_10_CH2THF / (TS_Km_5_10_CH2THF + _5_10_CH2THF));
+  V_DHFR: DHF => THF; DHFR_Vmax * (NADPH / (DHFR_Km_NADPH + NADPH)) * (DHF / (DHFR_Km_DHF + DHF));
+  V_MTCH: _5_10_CHTHF => _10fTHF; MTCH_VmaxF * (_5_10_CHTHF / (MTCH_Km_5_10_CHTHF + _5_10_CHTHF)) - MTCH_VmaxR * (_10fTHF / (MTCH_Km_10fTHF + _10fTHF));
+  V_SHMT: THF => _5_10_CH2THF; SHMT_VmaxF * (Ser / (SHMT_Km_Ser + Ser)) * (THF / (SHMT_Km_THF + THF)) - SHMT_VmaxR * (Gly / (SHMT_Km_Ser + Gly)) * (_5_10_CH2THF / (SHMT_Km_THF + _5_10_CH2THF));
+  V_MTD: _5_10_CH2THF => _5_10_CHTHF; MTD_VmaxF * (_5_10_CH2THF / (MTD_Km_5_10_CH2THF + _5_10_CH2THF)) - MTD_VmaxR * (_5_10_CHTHF / (MTD_Km_5_10_CHTHF + _5_10_CHTHF));
 
   // Species initializations:
   _5mTHF = 5.16;

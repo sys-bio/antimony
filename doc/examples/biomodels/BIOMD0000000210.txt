@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model model_0000001()
 
   // Compartments and Species:
@@ -9,18 +9,18 @@ model model_0000001()
   species GATA6 in cell, CDX2 in cell, GCNF in cell, OCT4_SOX2 in cell, Protein in cell;
 
   // Reactions:
-  R1: $OCT4_Gene -> OCT4; (a0 + a1 * A + a2 * OCT4 * SOX2 + a3 * OCT4 * SOX2 * NANOG) / (1 + b0 * A + b1 * OCT4 + b2 * OCT4 * SOX2 + b3 * OCT4 * SOX2 * NANOG + b4 * CDX2 * OCT4 + b5 * GCNF);
-  R2: OCT4 -> $degradation; gamma1 * OCT4;
-  R3: $SOX2_Gene -> SOX2; (c0 + c1 * OCT4 * SOX2 + c2 * OCT4 * SOX2 * NANOG) / (1 + d0 * OCT4 + d1 * OCT4 * SOX2 + d2 * OCT4 * SOX2 * NANOG);
-  R4: SOX2 -> $degradation; gamma2 * SOX2;
-  R5: $NANOG_Gene -> NANOG; (a1 * OCT4_SOX2 + a2 * OCT4_SOX2 * NANOG) / (1 + b1 * OCT4_SOX2 + b2 * OCT4_SOX2 * NANOG + b3 * OCT4_SOX2 * GATA6);
-  R6: NANOG -> $degradation; gamman * NANOG;
-  R7: $CDX2_Gene -> CDX2; (g0 + g1 * CDX2) / (1 + h0 * CDX2 + h1 * CDX2 * OCT4);
-  R8: CDX2 -> $degradation; gamma4 * CDX2;
-  R9: $GCNF_Gene -> GCNF; (i0 + i1 * CDX2 + i2 * GATA6) / (1 + j0 * CDX2 + j1 * GATA6);
-  R10: GCNF -> $degradation; gamma5 * GCNF;
-  R11: $GATA6_Gene -> GATA6; (c1 * OCT4_SOX2 + c2 * GATA6) / (1 + d1 * OCT4_SOX2 + d2 * GATA6 + d3 * NANOG);
-  R12: GATA6 -> $degradation; gammag * GATA6;
+  R1: $OCT4_Gene => OCT4; (a0 + a1 * A + a2 * OCT4 * SOX2 + a3 * OCT4 * SOX2 * NANOG) / (1 + b0 * A + b1 * OCT4 + b2 * OCT4 * SOX2 + b3 * OCT4 * SOX2 * NANOG + b4 * CDX2 * OCT4 + b5 * GCNF);
+  R2: OCT4 => $degradation; gamma1 * OCT4;
+  R3: $SOX2_Gene => SOX2; (c0 + c1 * OCT4 * SOX2 + c2 * OCT4 * SOX2 * NANOG) / (1 + d0 * OCT4 + d1 * OCT4 * SOX2 + d2 * OCT4 * SOX2 * NANOG);
+  R4: SOX2 => $degradation; gamma2 * SOX2;
+  R5: $NANOG_Gene => NANOG; (a1 * OCT4_SOX2 + a2 * OCT4_SOX2 * NANOG) / (1 + b1 * OCT4_SOX2 + b2 * OCT4_SOX2 * NANOG + b3 * OCT4_SOX2 * GATA6);
+  R6: NANOG => $degradation; gamman * NANOG;
+  R7: $CDX2_Gene => CDX2; (g0 + g1 * CDX2) / (1 + h0 * CDX2 + h1 * CDX2 * OCT4);
+  R8: CDX2 => $degradation; gamma4 * CDX2;
+  R9: $GCNF_Gene => GCNF; (i0 + i1 * CDX2 + i2 * GATA6) / (1 + j0 * CDX2 + j1 * GATA6);
+  R10: GCNF => $degradation; gamma5 * GCNF;
+  R11: $GATA6_Gene => GATA6; (c1 * OCT4_SOX2 + c2 * GATA6) / (1 + d1 * OCT4_SOX2 + d2 * GATA6 + d3 * NANOG);
+  R12: GATA6 => $degradation; gammag * GATA6;
 
   // Species initializations:
   OCT4_Gene = 0;

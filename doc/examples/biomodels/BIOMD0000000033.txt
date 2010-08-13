@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Brown2004_NGF_EGF_signaling()
 
   // Compartments and Species:
@@ -14,10 +14,10 @@ model Brown2004_NGF_EGF_signaling()
   species $PP2AActive in cell, $Raf1PPtase in cell;
 
   // Reactions:
-  EGFBindingReaction: EGF + freeEGFReceptor -> boundEGFReceptor; cell * krbEGF * EGF * freeEGFReceptor;
-  EGFUnbindingReaction: boundEGFReceptor -> EGF + freeEGFReceptor; cell * kruEGF * boundEGFReceptor;
-  NGFBindingReaction: NGF + freeNGFReceptor -> boundNGFReceptor; krbNGF * NGF * freeNGFReceptor * cell;
-  NGFUnbindingReaction: boundNGFReceptor -> NGF + freeNGFReceptor; kruNGF * boundNGFReceptor * cell;
+  EGFBindingReaction: EGF + freeEGFReceptor => boundEGFReceptor; cell * krbEGF * EGF * freeEGFReceptor;
+  EGFUnbindingReaction: boundEGFReceptor => EGF + freeEGFReceptor; cell * kruEGF * boundEGFReceptor;
+  NGFBindingReaction: NGF + freeNGFReceptor => boundNGFReceptor; krbNGF * NGF * freeNGFReceptor * cell;
+  NGFUnbindingReaction: boundNGFReceptor => NGF + freeNGFReceptor; kruNGF * boundNGFReceptor * cell;
   SosActivationByEGFReaction: SosInactive -> SosActive; cell * (kEGF * boundEGFReceptor * SosInactive / (SosInactive + KmEGF));
   SosActivationByNGFReaction: SosInactive -> SosActive; cell * (kNGF * boundNGFReceptor * SosInactive / (SosInactive + KmNGF));
   SosDeactivationReaction: SosActive -> SosInactive; cell * (kdSos * P90RskActive * SosActive / (SosActive + KmdSos));

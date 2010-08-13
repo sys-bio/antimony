@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model MSAC_convey_controlled()
 
   // Compartments and Species:
@@ -10,13 +10,13 @@ model MSAC_convey_controlled()
 
   // Reactions:
   R1: Mad1_CMad2 + OMad2 -> Mad1_CMad2_OMad2; Cytoplasm * (u * k1f * Mad1_CMad2 * OMad2 - k1r * Mad1_CMad2_OMad2);
-  R2: Mad1_CMad2_OMad2 + Cdc20 -> Mad1_CMad2 + Cdc20_CMad2; u * k2f * Mad1_CMad2_OMad2 * Cdc20 * Cytoplasm;
-  R3: Cdc20_CMad2 -> Cdc20 + OMad2; k3f * Cdc20_CMad2 * Cytoplasm;
+  R2: Mad1_CMad2_OMad2 + Cdc20 => Mad1_CMad2 + Cdc20_CMad2; u * k2f * Mad1_CMad2_OMad2 * Cdc20 * Cytoplasm;
+  R3: Cdc20_CMad2 => Cdc20 + OMad2; k3f * Cdc20_CMad2 * Cytoplasm;
   R4: Cdc20_CMad2 + Bub3_BubR1 -> MCC; Cytoplasm * (u * k4f * Cdc20_CMad2 * Bub3_BubR1 - k4r * MCC);
   R5: Bub3_BubR1 + Cdc20 -> Bub3_BubR1_Cdc20; Cytoplasm * (u * k5f * Bub3_BubR1 * Cdc20 - k5r * Bub3_BubR1_Cdc20);
-  R6: OMad2 + Cdc20 -> Cdc20_CMad2; kf6 * OMad2 * Cdc20 * Cytoplasm;
-  R7: MCC + APC -> MCC_APC; u * k7f * MCC * APC * Cytoplasm;
-  R7b: MCC_APC -> OMad2 + Bub3_BubR1 + APC_Cdc20; u_prime * k7bf * MCC_APC * Cytoplasm;
+  R6: OMad2 + Cdc20 => Cdc20_CMad2; kf6 * OMad2 * Cdc20 * Cytoplasm;
+  R7: MCC + APC => MCC_APC; u * k7f * MCC * APC * Cytoplasm;
+  R7b: MCC_APC => OMad2 + Bub3_BubR1 + APC_Cdc20; u_prime * k7bf * MCC_APC * Cytoplasm;
   R8: APC + Cdc20 -> APC_Cdc20; Cytoplasm * (k8f * APC * Cdc20 - k8r * APC_Cdc20);
 
   // Events:

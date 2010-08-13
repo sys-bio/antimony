@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 function function_4(P, V3, R, k3)
   P * V3 * (1 - R) / (k3 + (1 - R));
 end
@@ -26,12 +26,12 @@ model Model_0()
   species P in body, R in body, Q in body;
 
   // Reactions:
-  reaction_0:  -> P; body * function_0(reaction_0_a, Q);
-  reaction_1: P -> ; function_1(reaction_1_V, P, reaction_1_Km);
-  reaction_2:  -> Q; function_2(reaction_2_V1, Q, reaction_2_K1);
-  reaction_3: Q -> ; function_3(reaction_3_V2, R, Q, reaction_3_K2);
-  reaction_4:  -> R; function_4(P, reaction_4_V3, R, reaction_4_k3);
-  reaction_5: R -> ; function_1(reaction_5_V, R, reaction_5_Km);
+  reaction_0:  => P; body * function_0(reaction_0_a, Q);
+  reaction_1: P => ; function_1(reaction_1_V, P, reaction_1_Km);
+  reaction_2:  => Q; function_2(reaction_2_V1, Q, reaction_2_K1);
+  reaction_3: Q => ; function_3(reaction_3_V2, R, Q, reaction_3_K2);
+  reaction_4:  => R; function_4(P, reaction_4_V3, R, reaction_4_k3);
+  reaction_5: R => ; function_1(reaction_5_V, R, reaction_5_Km);
 
   // Species initializations:
   P = 0.43;

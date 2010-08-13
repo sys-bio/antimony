@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Curto()
 
   // Compartments and Species:
@@ -9,43 +9,43 @@ model Curto()
   species UA in cell, $R5P in cell, $Pi_ in cell;
 
   // Reactions:
-  ada: ATP -> HX; ada_aada * pow(ATP, ada_fada4);
-  ade: Ade -> ; ade_aade * pow(Ade, ade_fade6);
-  adna: dATP -> DNA_; adna_aadna * pow(dATP, adna_fdnap9) * pow(dGTP, adna_fdnap10);
-  adrnr: ATP -> dATP; adrnr_aadrnr * pow(ATP, adrnr_fadrnr4) * pow(dATP, adrnr_fadrnr9) * pow(dGTP, adrnr_fadrnr10);
-  ampd: ATP -> IMP; ampd_aampd * pow(ATP, ampd_fampd4) * pow(GTP, ampd_fampd8) * pow(Pi_, ampd_fampd18);
-  aprt: PRPP + Ade -> ATP; aprt_aaprt * pow(PRPP, aprt_faprt1) * pow(ATP, aprt_faprt4) * pow(Ade, aprt_faprt6);
-  arna: ATP -> RNA; arna_aarna * pow(ATP, arna_frnap4) * pow(GTP, arna_frnap8);
-  asuc: IMP -> SAMP; asuc_aasuc * pow(IMP, asuc_fasuc2) * pow(ATP, asuc_fasuc4) * pow(GTP, asuc_fasuc8) * pow(Pi_, asuc_fasuc18);
-  asli: SAMP -> ATP; asli_aasli * pow(SAMP, asli_fasli3) * pow(ATP, asli_fasli4);
-  dada: dATP -> HX; dada_adada * pow(dATP, dada_fdada9);
-  den: PRPP -> IMP; den_aden * pow(PRPP, den_fden1) * pow(IMP, den_fden2) * pow(ATP, den_fden4) * pow(GTP, den_fden8) * pow(Pi_, den_fden18);
-  dgnuc: dGTP -> Gua; dgnuc_adgnuc * pow(dGTP, dgnuc_fdgnuc10);
-  dnaa: DNA_ -> dATP; dnaa_adnaa * pow(DNA_, dnaa_fdnan12);
-  dnag: DNA_ -> dGTP; dnag_adnag * pow(DNA_, dnag_fdnan12);
-  gdna: dGTP -> DNA_; gdna_agdna * pow(dATP, gdna_fdnap9) * pow(dGTP, gdna_fdnap10);
-  gdrnr: GTP -> dGTP; gdrnr_agdrnr * pow(GTP, gdrnr_fgdrnr8) * pow(dATP, gdrnr_fgdrnr9) * pow(dGTP, gdrnr_fgdrnr10);
-  gmpr: GTP -> IMP; gmpr_agmpr * pow(IMP, gmpr_fgmpr2) * pow(ATP, gmpr_fgmpr4) * pow(XMP, gmpr_fgmpr7) * pow(GTP, gmpr_fgmpr8);
-  gmps: XMP -> GTP; gmps_agmps * pow(ATP, gmps_fgmps4) * pow(XMP, gmps_fgmps7);
-  gnuc: GTP -> Gua; gnuc_agnuc * pow(GTP, gnuc_fgnuc8) * pow(Pi_, gnuc_fgnuc18);
-  gprt: Gua + PRPP -> GTP; gprt_agprt * pow(PRPP, gprt_fgprt1) * pow(GTP, gprt_fgprt8) * pow(Gua, gprt_fgprt15);
-  grna: GTP -> RNA; grna_agrna * pow(ATP, grna_frnap4) * pow(GTP, grna_frnap8);
-  gua: Gua -> Xa; gua_agua * pow(Gua, gua_fgua15);
-  hprt: HX + PRPP -> IMP; hprt_ahprt * pow(PRPP, hprt_fhprt1) * pow(IMP, hprt_fhprt2) * pow(HX, hprt_fhprt13);
-  hx: HX -> ; hx_ahx * pow(HX, hx_fhx13);
-  hxd: HX -> Xa; hxd_ahxd * pow(HX, hxd_fhxd13);
-  impd: IMP -> XMP; impd_aimpd * pow(IMP, impd_fimpd2) * pow(XMP, impd_fimpd7) * pow(GTP, impd_fimpd8);
-  inuc: IMP -> HX; inuc_ainuc * pow(IMP, inuc_finuc2) * pow(Pi_, inuc_finuc18);
-  mat: ATP -> SAM; mat_amat * pow(ATP, mat_fmat4) * pow(SAM, mat_fmat5);
-  polyam: SAM -> Ade; polyam_apolyam * pow(SAM, polyam_fpolyam5);
-  prpps: $R5P -> PRPP; prpps_aprpps * pow(PRPP, prpps_fprpps1) * pow(ATP, prpps_fprpps4) * pow(GTP, prpps_fprpps8) * pow(R5P, prpps_fprpps17) * pow(Pi_, prpps_fprpps18);
-  pyr: PRPP -> ; pyr_apyr * pow(PRPP, pyr_fpyr1);
-  rnaa: RNA -> ATP; rnaa_arnaa * pow(RNA, rnaa_frnan11);
-  rnag: RNA -> GTP; rnag_arnag * pow(RNA, rnag_frnan11);
-  trans: SAM -> ATP; trans_atrans * pow(SAM, trans_ftrans5);
-  ua: UA -> ; ua_aua * pow(UA, ua_fua16);
-  x: Xa -> ; x_ax * pow(Xa, x_fx14);
-  xd: Xa -> UA; xd_axd * pow(Xa, xd_fxd14);
+  ada: ATP => HX; ada_aada * ATP^ada_fada4;
+  ade: Ade => ; ade_aade * Ade^ade_fade6;
+  adna: dATP => DNA_; adna_aadna * dATP^adna_fdnap9 * dGTP^adna_fdnap10;
+  adrnr: ATP => dATP; adrnr_aadrnr * ATP^adrnr_fadrnr4 * dATP^adrnr_fadrnr9 * dGTP^adrnr_fadrnr10;
+  ampd: ATP => IMP; ampd_aampd * ATP^ampd_fampd4 * GTP^ampd_fampd8 * Pi_^ampd_fampd18;
+  aprt: PRPP + Ade => ATP; aprt_aaprt * PRPP^aprt_faprt1 * ATP^aprt_faprt4 * Ade^aprt_faprt6;
+  arna: ATP => RNA; arna_aarna * ATP^arna_frnap4 * GTP^arna_frnap8;
+  asuc: IMP => SAMP; asuc_aasuc * IMP^asuc_fasuc2 * ATP^asuc_fasuc4 * GTP^asuc_fasuc8 * Pi_^asuc_fasuc18;
+  asli: SAMP => ATP; asli_aasli * SAMP^asli_fasli3 * ATP^asli_fasli4;
+  dada: dATP => HX; dada_adada * dATP^dada_fdada9;
+  den: PRPP => IMP; den_aden * PRPP^den_fden1 * IMP^den_fden2 * ATP^den_fden4 * GTP^den_fden8 * Pi_^den_fden18;
+  dgnuc: dGTP => Gua; dgnuc_adgnuc * dGTP^dgnuc_fdgnuc10;
+  dnaa: DNA_ => dATP; dnaa_adnaa * DNA_^dnaa_fdnan12;
+  dnag: DNA_ => dGTP; dnag_adnag * DNA_^dnag_fdnan12;
+  gdna: dGTP => DNA_; gdna_agdna * dATP^gdna_fdnap9 * dGTP^gdna_fdnap10;
+  gdrnr: GTP => dGTP; gdrnr_agdrnr * GTP^gdrnr_fgdrnr8 * dATP^gdrnr_fgdrnr9 * dGTP^gdrnr_fgdrnr10;
+  gmpr: GTP => IMP; gmpr_agmpr * IMP^gmpr_fgmpr2 * ATP^gmpr_fgmpr4 * XMP^gmpr_fgmpr7 * GTP^gmpr_fgmpr8;
+  gmps: XMP => GTP; gmps_agmps * ATP^gmps_fgmps4 * XMP^gmps_fgmps7;
+  gnuc: GTP => Gua; gnuc_agnuc * GTP^gnuc_fgnuc8 * Pi_^gnuc_fgnuc18;
+  gprt: Gua + PRPP => GTP; gprt_agprt * PRPP^gprt_fgprt1 * GTP^gprt_fgprt8 * Gua^gprt_fgprt15;
+  grna: GTP => RNA; grna_agrna * ATP^grna_frnap4 * GTP^grna_frnap8;
+  gua: Gua => Xa; gua_agua * Gua^gua_fgua15;
+  hprt: HX + PRPP => IMP; hprt_ahprt * PRPP^hprt_fhprt1 * IMP^hprt_fhprt2 * HX^hprt_fhprt13;
+  hx: HX => ; hx_ahx * HX^hx_fhx13;
+  hxd: HX => Xa; hxd_ahxd * HX^hxd_fhxd13;
+  impd: IMP => XMP; impd_aimpd * IMP^impd_fimpd2 * XMP^impd_fimpd7 * GTP^impd_fimpd8;
+  inuc: IMP => HX; inuc_ainuc * IMP^inuc_finuc2 * Pi_^inuc_finuc18;
+  mat: ATP => SAM; mat_amat * ATP^mat_fmat4 * SAM^mat_fmat5;
+  polyam: SAM => Ade; polyam_apolyam * SAM^polyam_fpolyam5;
+  prpps: $R5P => PRPP; prpps_aprpps * PRPP^prpps_fprpps1 * ATP^prpps_fprpps4 * GTP^prpps_fprpps8 * R5P^prpps_fprpps17 * Pi_^prpps_fprpps18;
+  pyr: PRPP => ; pyr_apyr * PRPP^pyr_fpyr1;
+  rnaa: RNA => ATP; rnaa_arnaa * RNA^rnaa_frnan11;
+  rnag: RNA => GTP; rnag_arnag * RNA^rnag_frnan11;
+  trans: SAM => ATP; trans_atrans * SAM^trans_ftrans5;
+  ua: UA => ; ua_aua * UA^ua_fua16;
+  x: Xa => ; x_ax * Xa^x_fx14;
+  xd: Xa => UA; xd_axd * Xa^xd_fxd14;
 
   // Species initializations:
   PRPP = 5.01742;

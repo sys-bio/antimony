@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 function function_17(substrate, Km, V)
   V * substrate / (Km + substrate);
 end
@@ -16,7 +16,7 @@ function function_20(k, atpc, adpc)
 end
 
 function function_19(Vmax_v12, PEP, PK_n, ADPc, KADP_v12, ATPc)
-  Vmax_v12 * pow(PEP / (0.34 * (1 + ATPc / 0.57 + ADPc / 0.64)), PK_n) * (ADPc / KADP_v12) / ((1 + pow(PEP / (0.34 * (1 + ATPc / 0.57 + ADPc / 0.64)), PK_n)) * (1 + ADPc / KADP_v12));
+  Vmax_v12 * (PEP / (0.34 * (1 + ATPc / 0.57 + ADPc / 0.64)))^PK_n * (ADPc / KADP_v12) / ((1 + (PEP / (0.34 * (1 + ATPc / 0.57 + ADPc / 0.64)))^PK_n) * (1 + ADPc / KADP_v12));
 end
 
 function function_16(Vmax_v8, DHAPg, KDHAPg_v8, NADH, KNADH_v8, r_v8, NAD, KNAD_v8, Gly3Pg, KGly3Pg_v8)
@@ -74,11 +74,11 @@ model Model_1()
   vTPI: species_17 -> species_18; compartment_2 * function_12(species_17, species_18, vTPI_Kms, vTPI_Kmp, vTPI_Vf, vTPI_Vr);
   vGAPDH: species_18 + species_19 -> species_21 + species_20; compartment_2 * function_15(vGAPDH_Vmax_v7, species_18, vGAPDH_KGAP_v7, species_19, vGAPDH_KNAD_v7, vGAPDH_r_v7, species_21, vGAPDH_KBPGA13_v7, species_20, vGAPDH_KNADH_v7);
   vGPDH: species_17 + species_20 -> species_19 + species_22; compartment_2 * function_16(vGPDH_Vmax_v8, species_17, vGPDH_KDHAPg_v8, species_20, vGPDH_KNADH_v8, vGPDH_r_v8, species_19, vGPDH_KNAD_v8, species_22, vGPDH_KGly3Pg_v8);
-  vGPO: species_9 -> species_8; compartment_1 * function_17(species_9, vGPO_Km, vGPO_V);
-  vPT: species_1 -> $species_26; function_17(species_1, vPT_Km, vPT_V);
+  vGPO: species_9 => species_8; compartment_1 * function_17(species_9, vGPO_Km, vGPO_V);
+  vPT: species_1 => $species_26; function_17(species_1, vPT_Km, vPT_V);
   vPGK: species_21 + species_12 -> species_23 + species_11; compartment_2 * function_18(vPGK_Vmax_v11, species_21, vPGK_KBPGA13_v11, species_12, vPGK_KADPg_v11, vPGK_r_v11, species_23, vPGK_KPGA3_v11, species_11, vPGK_KATPg_v11);
   vPK: species_4 + species_2 -> species_1 + species_3; RaPYK * compartment_1 * function_19(vPK_Vmax_v12, species_4, vPK_PK_n, species_2, vPK_KADP_v12, species_3);
-  vAU: species_3 -> species_2; compartment_1 * function_20(vAU_k, species_3, species_2);
+  vAU: species_3 => species_2; compartment_1 * function_20(vAU_k, species_3, species_2);
   vGK: species_22 + species_12 -> species_24 + species_11; compartment_2 * function_21(vGK_Vmax_v14, species_22, vGK_KGly3Pg_v14, species_12, vGK_KADPg_v14, vGK_r_v14, species_24, vGK_KGlycerol_v14, species_11, vGK_KATPg_v14);
   vPGM: species_7 -> species_5; RaPGAM * compartment_1 * function_12(species_7, species_5, vPGM_Kms, vPGM_Kmp, vPGM_Vf, vPGM_Vr);
   vENO: species_5 -> species_4; RaENO * compartment_1 * function_12(species_5, species_4, vENO_Kms, vENO_Kmp, vENO_Vf, vENO_Vr);

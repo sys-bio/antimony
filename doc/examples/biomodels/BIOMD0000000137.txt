@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Sedaghat2002_InsulinSignalling_noFeedback()
 
   // Compartments and Species:
@@ -21,24 +21,24 @@ model Sedaghat2002_InsulinSignalling_noFeedback()
 
   // Reactions:
   R1: x2 -> x3; CellSurface * (k1 * x1 * x2 - kminus1 * x3);
-  R2: x3 -> x5; CellSurface * k3 * x3;
+  R2: x3 => x5; CellSurface * k3 * x3;
   R3: x5 -> x4; CellSurface * k2 * x1 * x5 - kminus2 * x4;
-  R4: x5 -> x2; CellSurface * kminus3 * PTP * x5;
+  R4: x5 => x2; CellSurface * kminus3 * PTP * x5;
   R5: x2 -> x6; CellSurface * (k4 * x2 - kminus4 * x6);
   R6: x4 -> x7; CellSurface * (k4prime * x4 - kminus4prime * x7);
   R7: x5 -> x8; CellSurface * (k4prime * x5 - kminus4prime * x8);
-  R8:  -> x6; Intracellular * k5;
-  R9: x6 -> ; Intracellular * kminus5 * x6;
-  R10: x7 -> x6; Intracellular * k6 * PTP * x7;
-  R11: x8 -> x6; Intracellular * k6 * PTP * x8;
+  R8:  => x6; Intracellular * k5;
+  R9: x6 => ; Intracellular * kminus5 * x6;
+  R10: x7 => x6; Intracellular * k6 * PTP * x7;
+  R11: x8 => x6; Intracellular * k6 * PTP * x8;
   R12: x9 -> x10; Intracellular * (k7 * x9 * (x4 + x5) / IRp - kminus7 * PTP * x10);
   R13: x11 + x10 -> x12; Intracellular * (k8 * x10 * x11 - kminus8 * x12);
   R14: x14 -> x13; Intracellular * (k9 * x14 - kminus9 * PTEN * x13);
   R15: x15 -> x13; Intracellular * (k10 * x15 - kminus10 * SHIP * x13);
   R16: x16 -> x17; Intracellular * (k11 * x16 - kminus11 * x17);
   R17: x18 -> x19; Intracellular * (k12 * x18 - kminus12 * x19);
-  R18:  -> x20; Intracellular * k14;
-  R19: x20 -> ; Intracellular * kminus14 * x20;
+  R18:  => x20; Intracellular * k14;
+  R19: x20 => ; Intracellular * kminus14 * x20;
   R20: x20 -> x21; Intracellular * ((k13 + k13prime) * x20 - kminus13 * x21);
 
   // Events:

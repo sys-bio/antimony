@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model model_0000001()
 
   // Compartments and Species:
@@ -7,13 +7,13 @@ model model_0000001()
   species x0 in compartment_0000001, y0 in compartment_0000001;
 
   // Reactions:
-  reaction_0000001:  -> x1; compartment_0000001 * a1 * x0;
-  reaction_0000002:  -> x1; compartment_0000001 * b1 * y0;
-  reaction_0000003:  -> x2; compartment_0000001 * x1 * a2;
-  reaction_0000004:  -> y2; compartment_0000001 * x1 * b2;
-  reaction_0000005: x1 -> ; compartment_0000001 * d1 * x1;
-  reaction_0000006: x2 -> ; compartment_0000001 * d2x * x2;
-  reaction_0000007: y2 -> ; compartment_0000001 * d2y * y2;
+  reaction_0000001:  => x1; compartment_0000001 * a1 * x0;
+  reaction_0000002:  => x1; compartment_0000001 * b1 * y0;
+  reaction_0000003:  => x2; compartment_0000001 * x1 * a2;
+  reaction_0000004:  => y2; compartment_0000001 * x1 * b2;
+  reaction_0000005: x1 => ; compartment_0000001 * d1 * x1;
+  reaction_0000006: x2 => ; compartment_0000001 * d2x * x2;
+  reaction_0000007: y2 => ; compartment_0000001 * d2y * y2;
 
   // Events:
   event_0000001: at gt(time, 1): x0 = 0;

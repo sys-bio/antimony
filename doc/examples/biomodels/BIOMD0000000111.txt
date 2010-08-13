@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Novak2001_FissionYeast_CellCycle()
 
   // Compartments and Species:
@@ -9,31 +9,31 @@ model Novak2001_FissionYeast_CellCycle()
   // Assignment Rules:
   MPF := (cdc13T - preMPF) * (cdc13T - Trimer) / cdc13T;
   sigma := cdc13T + rum1T + Kdiss;
-  Trimer := 2 * cdc13T * rum1T / (sigma + pow(pow(sigma, 2) - 4 * cdc13T * rum1T, 0.5));
-  TF := 2 * k15 * M * J16 / (k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16 + sqrt(pow(k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16, 2) - 4 * (k16_prime + k16_double_prime * MPF - k15 * M) * k15 * M * J16));
-  kwee := kwee_prime + (kwee_double_prime - kwee_prime) * (2 * Vawee * Jiwee / (Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee + sqrt(pow(Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee, 2) - 4 * (Viwee * MPF - Vawee) * Vawee * Jiwee)));
-  k25 := k25_prime + (k25_double_prime - k25_prime) * (2 * Va25 * MPF * Ji25 / (Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25 + sqrt(pow(Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25, 2) - 4 * (Vi25 - Va25 * MPF) * Va25 * MPF * Ji25)));
+  Trimer := 2 * cdc13T * rum1T / (sigma + (sigma^2 - 4 * cdc13T * rum1T)^0.5);
+  TF := 2 * k15 * M * J16 / (k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16 + sqrt((k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16)^2 - 4 * (k16_prime + k16_double_prime * MPF - k15 * M) * k15 * M * J16));
+  kwee := kwee_prime + (kwee_double_prime - kwee_prime) * (2 * Vawee * Jiwee / (Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee + sqrt((Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee)^2 - 4 * (Viwee * MPF - Vawee) * Vawee * Jiwee)));
+  k25 := k25_prime + (k25_double_prime - k25_prime) * (2 * Va25 * MPF * Ji25 / (Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25 + sqrt((Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25)^2 - 4 * (Vi25 - Va25 * MPF) * Va25 * MPF * Ji25)));
 
   // Reactions:
-  R1:  -> cdc13T; k1 * M;
-  R2: cdc13T -> ; (k2_prime + k2_double_prime * ste9 + k2_triple_prime * slp1) * cdc13T;
-  R3:  -> preMPF; kwee * (cdc13T - preMPF);
-  R4: preMPF -> ; k25 * preMPF;
-  R5: preMPF -> ; (k2_prime + k2_double_prime * ste9 + k2_triple_prime * slp1) * preMPF;
-  R6:  -> ste9; (k3_prime + k3_double_prime * slp1) * (1 - ste9) / (J3 + 1 - ste9);
-  R7: ste9 -> ; (k4_prime * SK + k4 * MPF) * ste9 / (J4 + ste9);
-  R8:  -> slp1T; k5_prime + k5_double_prime * pow(MPF, 4) / (pow(J5, 4) + pow(MPF, 4));
-  R9: slp1T -> ; k6 * slp1T;
-  R10:  -> slp1; k7 * IEP * (slp1T - slp1) / (J7 + slp1T - slp1);
-  R11: slp1 -> ; k8 * slp1 / (J8 + slp1);
-  R12: slp1 -> ; k6 * slp1;
-  R13:  -> IEP; k9 * MPF * (1 - IEP) / (J9 + 1 - IEP);
-  R14: IEP -> ; k10 * IEP / (J10 + IEP);
-  R15:  -> rum1T; k11;
-  R16: rum1T -> ; (k12 + k12_prime * SK + k12_double_prime * MPF) * rum1T;
-  R17:  -> SK; k13 * TF;
-  R18: SK -> ; k14 * SK;
-  R19:  -> M; mu * M;
+  R1:  => cdc13T; k1 * M;
+  R2: cdc13T => ; (k2_prime + k2_double_prime * ste9 + k2_triple_prime * slp1) * cdc13T;
+  R3:  => preMPF; kwee * (cdc13T - preMPF);
+  R4: preMPF => ; k25 * preMPF;
+  R5: preMPF => ; (k2_prime + k2_double_prime * ste9 + k2_triple_prime * slp1) * preMPF;
+  R6:  => ste9; (k3_prime + k3_double_prime * slp1) * (1 - ste9) / (J3 + 1 - ste9);
+  R7: ste9 => ; (k4_prime * SK + k4 * MPF) * ste9 / (J4 + ste9);
+  R8:  => slp1T; k5_prime + k5_double_prime * MPF^4 / (J5^4 + MPF^4);
+  R9: slp1T => ; k6 * slp1T;
+  R10:  => slp1; k7 * IEP * (slp1T - slp1) / (J7 + slp1T - slp1);
+  R11: slp1 => ; k8 * slp1 / (J8 + slp1);
+  R12: slp1 => ; k6 * slp1;
+  R13:  => IEP; k9 * MPF * (1 - IEP) / (J9 + 1 - IEP);
+  R14: IEP => ; k10 * IEP / (J10 + IEP);
+  R15:  => rum1T; k11;
+  R16: rum1T => ; (k12 + k12_prime * SK + k12_double_prime * MPF) * rum1T;
+  R17:  => SK; k13 * TF;
+  R18: SK => ; k14 * SK;
+  R19:  => M; mu * M;
 
   // Events:
   event_0000001: at and(leq(MPF, 0.1), eq(flag_MPF, 1)): flag_MPF = 0, M = M / 2;

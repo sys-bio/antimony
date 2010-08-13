@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model MorrisonAllegra()
 
   // Compartments and Species:
@@ -16,53 +16,53 @@ model MorrisonAllegra()
   DHFRtot := FH2b + DHFRf + MTX1b + MTX2b + MTX3b + MTX4b + MTX5b;
 
   // Reactions:
-  SHMT: FH4 + $serine -> CH2FH4; cell * (SHMT_Vm * (serine / SHMT_Km2 / (1 + serine / SHMT_Km2)) * (FH4 / SHMT_Km1) / (1 + FH4 / SHMT_Km1));
-  SHMTr: CH2FH4 -> FH4; cell * (SHMTr_Vm * (glycine / SHMTr_Km2 / (1 + glycine / SHMTr_Km2)) * (CH2FH4 / SHMTr_Km1) / (1 + CH2FH4 / SHMTr_Km1));
-  HCHOtoCH2FH4: FH4 + HCHO -> CH2FH4; cell * HCHOtoCH2FH4_hp * FH4 * HCHO;
-  CH2FH4toHCHO: CH2FH4 -> FH4 + HCHO; cell * CH2FH4toHCHO_hl * CH2FH4;
-  MTHFR: CH2FH4 + $NADPH -> CH3FH4; cell * (MTHFR_Vm * CH2FH4 * NADPH / (NADPH * CH2FH4 + CH2FH4 * MTHFR_Km2 + (NADPH + MTHFR_Km2) * MTHFR_Km1 * (1 + MTX1 / MTHFR_Ki21 + MTX2 / MTHFR_Ki22 + MTX3 / MTHFR_Ki23 + MTX4 / MTHFR_Ki24 + MTX5 / MTHFR_Ki25 + FH2f / MTHFR_Ki1)));
-  MTR: CH3FH4 + $homocysteine -> FH4; cell * (MTR_Vm * (homocysteine / MTR_Km2 / (1 + homocysteine / MTR_Km2)) * (CH3FH4 / MTR_Km1) / (1 + CH3FH4 / MTR_Km1));
-  HCOOHtoCHOFH4: FH4 + $formate + $ATP -> CHOFH4; cell * (HCOOHtoCHOFH4_Vm / ((1 + HCOOHtoCHOFH4_Km1 / FH4) * (1 + HCOOHtoCHOFH4_Km2 / ATP) * (1 + HCOOHtoCHOFH4_Km3 / formate)));
-  GARFT: CHOFH4 + $GAR -> FGAR + FH4; cell * (GARFT_Vm * CHOFH4 * GAR / (GAR * CHOFH4 + CHOFH4 * GARFT_Km2 + (GAR + GARFT_Km2) * GARFT_Km1 * (1 + MTX1 / GARFT_Ki21 + MTX2 / GARFT_Ki22 + MTX3 / GARFT_Ki23 + MTX4 / GARFT_Ki24 + MTX5 / GARFT_Ki25 + FH2f / GARFT_Ki1 + FFH2 / GARFT_Ki1f)));
-  ATIC7: CHOFH4 + AICAR -> FH4; cell * (ATIC7_Vm * CHOFH4 * AICAR / (AICAR * CHOFH4 + CHOFH4 * ATIC7_Km2 + (AICAR + ATIC7_Km2) * ATIC7_Km1 * (1 + MTX1 / ATIC7_Ki21 + MTX2 / ATIC7_Ki22 + MTX3 / ATIC7_Ki23 + MTX4 / ATIC7_Ki24 + MTX5 / ATIC7_Ki25 + FH2f / ATIC7_Ki1 + FFH2 / ATIC7_Ki1f)));
-  MTHFD: CH2FH4 + $NADP -> CHOFH4; cell * MTHFD_Vm * (CH2FH4 / MTHFD_Km1 / (1 + CH2FH4 / MTHFD_Km1)) * (NADP / MTHFD_Km2 / (1 + NADP / MTHFD_Km2));
-  TYMS: CH2FH4 + $dUMP -> FH2f; cell * (TYMS_Vm * CH2FH4 * dUMP / (dUMP * CH2FH4 * (1 + MTX1 / TYMS_Ki21 + MTX2 / TYMS_Ki22 + MTX3 / TYMS_Ki23 + MTX4 / TYMS_Ki24 + MTX5 / TYMS_Ki25 + FH2f / TYMS_Ki1) + TYMS_Km1 * dUMP * (FFH2 / TYMS_Ki1f * (MTX1 / TYMS_Ki21) + (1 + FFH2 / TYMS_Ki1f) * (1 + MTX2 / TYMS_Ki22 + MTX3 / TYMS_Ki23 + MTX4 / TYMS_Ki24 + MTX5 / TYMS_Ki25 + FH2f / TYMS_Ki1)) + TYMS_Km1 * TYMS_Km2 * (1 + MTX2 / TYMS_Ki22 + MTX3 / TYMS_Ki23 + MTX4 / TYMS_Ki24 + MTX5 / TYMS_Ki25 + FH2f / TYMS_Ki1)));
-  DHFReductase: FH2f -> FH4; cell * DHFReductase_kter * FH2b;
-  FFH2syn: FH2f -> FFH2; cell * FFH2syn_Vm * FH2f;
-  ATIC12: FFH2 + AICAR -> FH2f; cell * (ATIC12_Vm * FFH2 * AICAR / (AICAR * FFH2 + FFH2 * ATIC12_Km2 + (AICAR + ATIC12_Km2) * ATIC12_Km1 * (1 + MTX1 / ATIC12_Ki21 + MTX2 / ATIC12_Ki22 + MTX3 / ATIC12_Ki23 + MTX4 / ATIC12_Ki24 + MTX5 / ATIC12_Ki25 + FH2f / ATIC12_Ki1 + FFH2 / ATIC12_Ki1f)));
-  AICARsyn: FGAR -> AICAR; cell * AICARsyn_Vm * (glutamine / AICARsyn_Km1 / (1 + glutamine / AICARsyn_Km1)) * (FGAR / AICARsyn_Km2 / (1 + FGAR / AICARsyn_Km2));
-  FPGS12: MTX1 -> MTX2; cell * FPGS12_Vm * MTX1;
-  FPGS23: MTX2 -> MTX3; cell * FPGS23_Vm * MTX2;
-  FPGS34: MTX3 -> MTX4; cell * FPGS34_Vm * MTX3;
-  FPGS45: MTX4 -> MTX5; cell * FPGS45_Vm * MTX4;
-  GGH21: MTX2 -> MTX1; cell * GGH21_Vm * MTX2;
-  GGH32: MTX3 -> MTX2; cell * GGH32_Vm * MTX3;
-  GGH43: MTX4 -> MTX3; cell * GGH43_Vm * MTX4;
-  GGH54: MTX5 -> MTX4; cell * GGH54_Vm * MTX5;
-  RFC: $EMTX -> MTX1; ext_ * (RFC_Vm * EMTX / (RFC_Km + EMTX));
-  MTX1export: MTX1 -> ; cell * MTX1export_Vm * MTX1;
-  MTX2export: MTX2 -> ; cell * MTX2export_Vm * MTX2;
-  MTX3export: MTX3 -> ; cell * MTX3export_Vm * MTX3;
-  MTX4export: MTX4 -> ; cell * MTX4export_Vm * MTX4;
-  MTX5export: MTX5 -> ; cell * MTX5export_Vm * MTX5;
-  MTX1on: MTX1 + DHFRf -> MTX1b; cell * MTX1on_Vm * DHFRf * MTX1;
-  MTX2on: MTX2 + DHFRf -> MTX2b; cell * MTX2on_Vm * DHFRf * MTX2;
-  MTX3on: MTX3 + DHFRf -> MTX3b; cell * MTX3on_Vm * DHFRf * MTX3;
-  MTX4on: MTX4 + DHFRf -> MTX4b; cell * MTX4on_Vm * DHFRf * MTX4;
-  MTX5on: MTX5 + DHFRf -> MTX5b; cell * MTX5on_Vm * DHFRf * MTX5;
-  MTX1off: MTX1b -> MTX1 + DHFRf; cell * MTX1off_Vm * MTX1b;
-  MTX2off: MTX2b -> MTX2 + DHFRf; cell * MTX2off_Vm * MTX2b;
-  MTX3off: MTX3b -> MTX3 + DHFRf; cell * MTX3off_Vm * MTX3b;
-  MTX4off: MTX4b -> MTX4 + DHFRf; cell * MTX4off_Vm * MTX4b;
-  MTX5off: MTX5b -> MTX5 + DHFRf; cell * MTX5off_Vm * MTX5b;
-  DHFRfsyn:  -> DHFRf; cell * (DHFRfsyn_k0 + DHFRfsyn_k1 * EMTX);
-  DHFRdeg: DHFRf -> ; DHFRdeg_Vm * cell * (DHFRf + FH2b);
-  FH2bdeg:  -> FH2f; cell * FH2bdeg_Vm * FH2b;
-  MTX1deg: MTX1b -> MTX1; cell * MTX1deg_Vm * MTX1b;
-  MTX2deg: MTX2b -> MTX2; cell * MTX2deg_Vm * MTX2b;
-  MTX3deg: MTX3b -> MTX3; cell * MTX3deg_Vm * MTX3b;
-  MTX4deg: MTX4b -> MTX4; cell * MTX4deg_Vm * MTX4b;
-  MTX5deg: MTX5b -> MTX5; cell * MTX5deg_Vm * MTX5b;
+  SHMT: FH4 + $serine => CH2FH4; cell * (SHMT_Vm * (serine / SHMT_Km2 / (1 + serine / SHMT_Km2)) * (FH4 / SHMT_Km1) / (1 + FH4 / SHMT_Km1));
+  SHMTr: CH2FH4 => FH4; cell * (SHMTr_Vm * (glycine / SHMTr_Km2 / (1 + glycine / SHMTr_Km2)) * (CH2FH4 / SHMTr_Km1) / (1 + CH2FH4 / SHMTr_Km1));
+  HCHOtoCH2FH4: FH4 + HCHO => CH2FH4; cell * HCHOtoCH2FH4_hp * FH4 * HCHO;
+  CH2FH4toHCHO: CH2FH4 => FH4 + HCHO; cell * CH2FH4toHCHO_hl * CH2FH4;
+  MTHFR: CH2FH4 + $NADPH => CH3FH4; cell * (MTHFR_Vm * CH2FH4 * NADPH / (NADPH * CH2FH4 + CH2FH4 * MTHFR_Km2 + (NADPH + MTHFR_Km2) * MTHFR_Km1 * (1 + MTX1 / MTHFR_Ki21 + MTX2 / MTHFR_Ki22 + MTX3 / MTHFR_Ki23 + MTX4 / MTHFR_Ki24 + MTX5 / MTHFR_Ki25 + FH2f / MTHFR_Ki1)));
+  MTR: CH3FH4 + $homocysteine => FH4; cell * (MTR_Vm * (homocysteine / MTR_Km2 / (1 + homocysteine / MTR_Km2)) * (CH3FH4 / MTR_Km1) / (1 + CH3FH4 / MTR_Km1));
+  HCOOHtoCHOFH4: FH4 + $formate + $ATP => CHOFH4; cell * (HCOOHtoCHOFH4_Vm / ((1 + HCOOHtoCHOFH4_Km1 / FH4) * (1 + HCOOHtoCHOFH4_Km2 / ATP) * (1 + HCOOHtoCHOFH4_Km3 / formate)));
+  GARFT: CHOFH4 + $GAR => FGAR + FH4; cell * (GARFT_Vm * CHOFH4 * GAR / (GAR * CHOFH4 + CHOFH4 * GARFT_Km2 + (GAR + GARFT_Km2) * GARFT_Km1 * (1 + MTX1 / GARFT_Ki21 + MTX2 / GARFT_Ki22 + MTX3 / GARFT_Ki23 + MTX4 / GARFT_Ki24 + MTX5 / GARFT_Ki25 + FH2f / GARFT_Ki1 + FFH2 / GARFT_Ki1f)));
+  ATIC7: CHOFH4 + AICAR => FH4; cell * (ATIC7_Vm * CHOFH4 * AICAR / (AICAR * CHOFH4 + CHOFH4 * ATIC7_Km2 + (AICAR + ATIC7_Km2) * ATIC7_Km1 * (1 + MTX1 / ATIC7_Ki21 + MTX2 / ATIC7_Ki22 + MTX3 / ATIC7_Ki23 + MTX4 / ATIC7_Ki24 + MTX5 / ATIC7_Ki25 + FH2f / ATIC7_Ki1 + FFH2 / ATIC7_Ki1f)));
+  MTHFD: CH2FH4 + $NADP => CHOFH4; cell * MTHFD_Vm * (CH2FH4 / MTHFD_Km1 / (1 + CH2FH4 / MTHFD_Km1)) * (NADP / MTHFD_Km2 / (1 + NADP / MTHFD_Km2));
+  TYMS: CH2FH4 + $dUMP => FH2f; cell * (TYMS_Vm * CH2FH4 * dUMP / (dUMP * CH2FH4 * (1 + MTX1 / TYMS_Ki21 + MTX2 / TYMS_Ki22 + MTX3 / TYMS_Ki23 + MTX4 / TYMS_Ki24 + MTX5 / TYMS_Ki25 + FH2f / TYMS_Ki1) + TYMS_Km1 * dUMP * (FFH2 / TYMS_Ki1f * (MTX1 / TYMS_Ki21) + (1 + FFH2 / TYMS_Ki1f) * (1 + MTX2 / TYMS_Ki22 + MTX3 / TYMS_Ki23 + MTX4 / TYMS_Ki24 + MTX5 / TYMS_Ki25 + FH2f / TYMS_Ki1)) + TYMS_Km1 * TYMS_Km2 * (1 + MTX2 / TYMS_Ki22 + MTX3 / TYMS_Ki23 + MTX4 / TYMS_Ki24 + MTX5 / TYMS_Ki25 + FH2f / TYMS_Ki1)));
+  DHFReductase: FH2f => FH4; cell * DHFReductase_kter * FH2b;
+  FFH2syn: FH2f => FFH2; cell * FFH2syn_Vm * FH2f;
+  ATIC12: FFH2 + AICAR => FH2f; cell * (ATIC12_Vm * FFH2 * AICAR / (AICAR * FFH2 + FFH2 * ATIC12_Km2 + (AICAR + ATIC12_Km2) * ATIC12_Km1 * (1 + MTX1 / ATIC12_Ki21 + MTX2 / ATIC12_Ki22 + MTX3 / ATIC12_Ki23 + MTX4 / ATIC12_Ki24 + MTX5 / ATIC12_Ki25 + FH2f / ATIC12_Ki1 + FFH2 / ATIC12_Ki1f)));
+  AICARsyn: FGAR => AICAR; cell * AICARsyn_Vm * (glutamine / AICARsyn_Km1 / (1 + glutamine / AICARsyn_Km1)) * (FGAR / AICARsyn_Km2 / (1 + FGAR / AICARsyn_Km2));
+  FPGS12: MTX1 => MTX2; cell * FPGS12_Vm * MTX1;
+  FPGS23: MTX2 => MTX3; cell * FPGS23_Vm * MTX2;
+  FPGS34: MTX3 => MTX4; cell * FPGS34_Vm * MTX3;
+  FPGS45: MTX4 => MTX5; cell * FPGS45_Vm * MTX4;
+  GGH21: MTX2 => MTX1; cell * GGH21_Vm * MTX2;
+  GGH32: MTX3 => MTX2; cell * GGH32_Vm * MTX3;
+  GGH43: MTX4 => MTX3; cell * GGH43_Vm * MTX4;
+  GGH54: MTX5 => MTX4; cell * GGH54_Vm * MTX5;
+  RFC: $EMTX => MTX1; ext_ * (RFC_Vm * EMTX / (RFC_Km + EMTX));
+  MTX1export: MTX1 => ; cell * MTX1export_Vm * MTX1;
+  MTX2export: MTX2 => ; cell * MTX2export_Vm * MTX2;
+  MTX3export: MTX3 => ; cell * MTX3export_Vm * MTX3;
+  MTX4export: MTX4 => ; cell * MTX4export_Vm * MTX4;
+  MTX5export: MTX5 => ; cell * MTX5export_Vm * MTX5;
+  MTX1on: MTX1 + DHFRf => MTX1b; cell * MTX1on_Vm * DHFRf * MTX1;
+  MTX2on: MTX2 + DHFRf => MTX2b; cell * MTX2on_Vm * DHFRf * MTX2;
+  MTX3on: MTX3 + DHFRf => MTX3b; cell * MTX3on_Vm * DHFRf * MTX3;
+  MTX4on: MTX4 + DHFRf => MTX4b; cell * MTX4on_Vm * DHFRf * MTX4;
+  MTX5on: MTX5 + DHFRf => MTX5b; cell * MTX5on_Vm * DHFRf * MTX5;
+  MTX1off: MTX1b => MTX1 + DHFRf; cell * MTX1off_Vm * MTX1b;
+  MTX2off: MTX2b => MTX2 + DHFRf; cell * MTX2off_Vm * MTX2b;
+  MTX3off: MTX3b => MTX3 + DHFRf; cell * MTX3off_Vm * MTX3b;
+  MTX4off: MTX4b => MTX4 + DHFRf; cell * MTX4off_Vm * MTX4b;
+  MTX5off: MTX5b => MTX5 + DHFRf; cell * MTX5off_Vm * MTX5b;
+  DHFRfsyn:  => DHFRf; cell * (DHFRfsyn_k0 + DHFRfsyn_k1 * EMTX);
+  DHFRdeg: DHFRf => ; DHFRdeg_Vm * cell * (DHFRf + FH2b);
+  FH2bdeg:  => FH2f; cell * FH2bdeg_Vm * FH2b;
+  MTX1deg: MTX1b => MTX1; cell * MTX1deg_Vm * MTX1b;
+  MTX2deg: MTX2b => MTX2; cell * MTX2deg_Vm * MTX2b;
+  MTX3deg: MTX3b => MTX3; cell * MTX3deg_Vm * MTX3b;
+  MTX4deg: MTX4b => MTX4; cell * MTX4deg_Vm * MTX4b;
+  MTX5deg: MTX5b => MTX5; cell * MTX5deg_Vm * MTX5b;
 
   // Species initializations:
   FH2f = 0.0012;

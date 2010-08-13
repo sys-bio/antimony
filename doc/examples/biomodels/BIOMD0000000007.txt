@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model NovakTyson1997CellModel()
 
   // Compartments and Species:
@@ -29,26 +29,26 @@ model NovakTyson1997CellModel()
   Mass' = Mass * mu;
 
   // Reactions:
-  G2K_Creation:  -> G2K; k1;
-  G1K_Creation:  -> G1K; k5;
+  G2K_Creation:  => G2K; k1;
+  G1K_Creation:  => G1K; k5;
   Cdc2Phos: G2K -> PG2; G2K * kwee - k25 * PG2;
   G2R_Creation: G2K + R -> G2R; G2K * k7 * R - G2R * k7r;
   PG2R_Creation: PG2 + R -> PG2R; k7 * PG2 * R - k7r * PG2R;
-  Rum1DegInG2R: G2R -> G2K; G2R * k4;
-  Rum1Deg: R -> ; k4 * R;
-  Rum1DegInPG2R: PG2R -> PG2; k4 * PG2R;
-  RumDegInG1R: G1R -> G1K; G1R * k4;
-  G2K_dissoc: G2K -> ; G2K * k2;
-  PG2_dissoc: PG2 -> ; k2 * PG2;
-  G1K_Dissociation: G1K -> ; G1K * k6;
-  PG2R_Dissociation: PG2R -> R; k2prime * PG2R;
-  G2R_Dissociation: G2R -> R; G2R * k2prime;
-  G1R_Dissociation: G1R -> R; G1R * k6prime;
+  Rum1DegInG2R: G2R => G2K; G2R * k4;
+  Rum1Deg: R => ; k4 * R;
+  Rum1DegInPG2R: PG2R => PG2; k4 * PG2R;
+  RumDegInG1R: G1R => G1K; G1R * k4;
+  G2K_dissoc: G2K => ; G2K * k2;
+  PG2_dissoc: PG2 => ; k2 * PG2;
+  G1K_Dissociation: G1K => ; G1K * k6;
+  PG2R_Dissociation: PG2R => R; k2prime * PG2R;
+  G2R_Dissociation: G2R => R; G2R * k2prime;
+  G1R_Dissociation: G1R => R; G1R * k6prime;
   G1R_Binding: G1K + R -> G1R; G1K * k8 * R - G1R * k8r;
-  G2R_Dissociation_UbE: G2R -> R; G2R * k2;
-  PG2R_Dissociation_UbE: PG2R -> R; k2 * PG2R;
-  Rum1_Production:  -> R; k3;
-  Rum1_Deg_SPF: R -> ; kp * Mass * R * SPF / (Kmp + R);
+  G2R_Dissociation_UbE: G2R => R; G2R * k2;
+  PG2R_Dissociation_UbE: PG2R => R; k2 * PG2R;
+  Rum1_Production:  => R; k3;
+  Rum1_Deg_SPF: R => ; kp * Mass * R * SPF / (Kmp + R);
   IE_Reaction: $IEB -> IE; IEB * ki * MPF / (IEB + Kmi) - IE * kir / (IE + Kmir);
   UbE_Reaction: $UbEB -> UbE; IE * ku * UbEB / (Kmu + UbEB) - kur * UbE / (Kmur + UbE);
   UbE2_Reaction: $UbE2B -> UbE2; ku2 * MPF * UbE2B / (Kmu2 + UbE2B) - kur2 * UbE2 / (Kmur2 + UbE2);

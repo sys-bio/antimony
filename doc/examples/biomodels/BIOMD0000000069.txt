@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Src_MitoticActivation()
 
   // Compartments and Species:
@@ -15,10 +15,10 @@ model Src_MitoticActivation()
   v1: srci -> srco; (k2 * ptp_activity * srci - k1 * Cbp_P_CSK * srco) * default;
   v2: srco -> srca; (k3 * src_activity * srco - p1 * srca) * default;
   v3: srca -> srcc; (k1 * Cbp_P_CSK * srca - k2 * ptp_activity * srcc) * default;
-  v4: srcc -> srci; default * k4 * p1 * srcc;
+  v4: srcc => srci; default * k4 * p1 * srcc;
   CSK_translocation: CSK_cytoplasm + Cbp_P -> Cbp_P_CSK; (Cbp_P * kCSKon * CSK_cytoplasm - kCSKoff * Cbp_P_CSK) * default;
   PTP_phosphorylation: PTP -> PTP_pY789; default * ((kPTP * src_activity + p3) * PTP - p2 * PTP_pY789);
-  Cbp_phosphorylation: Cbp -> Cbp_P; kCbp * src_activity * Cbp * default;
+  Cbp_phosphorylation: Cbp => Cbp_P; kCbp * src_activity * Cbp * default;
 
   // Species initializations:
   srci = 1;

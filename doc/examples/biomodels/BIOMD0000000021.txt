@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Leloup1999_CircClock_periodic()
 
   // Compartments and Species:
@@ -11,30 +11,30 @@ model Leloup1999_CircClock_periodic()
   Tt := CC + Cn_ + T0 + T1 + T2;
 
   // Reactions:
-  P0_to_P1: P0 -> P1; Cell * P0_to_P1_V_1P * P0 / (P0_to_P1_K1_P + P0);
-  T0_to_T1: T0 -> T1; Cell * T0_to_T1_V_1T * T0 / (T0_to_T1_K_1T + T0);
-  P1_to_P0: P1 -> P0; Cell * P1_to_P0_V_2P * P1 / (P1_to_P0_K_2P + P1);
-  T1_to_T0: T1 -> T0; Cell * T1_to_T0_V_2T * T1 / (T1_to_T0_K_2T + T1);
-  P1_to_P2: P1 -> P2; Cell * P1_to_P2_V_3P * P1 / (P1_to_P2_K_3P + P1);
-  T1_to_T2: T1 -> T2; Cell * T1_to_T2_V_3T * T1 / (T1_to_T2_K_3T + T1);
-  P2_to_P1: P2 -> P1; Cell * P2_to_P1_V_4P * P2 / (P2_to_P1_K_4P + P2);
-  T2_to_T1: T2 -> T1; Cell * T2_to_T1_V_4T * T2 / (T2_to_T1_K_4T + T2);
-  P0_degradation: P0 -> ; Cell * P0_degradation_k_d * P0;
-  T0_degradation: T0 -> ; Cell * T0_degradation_k_d * T0;
-  P1_degradation: P1 -> ; Cell * P1_degradation_k_d * P1;
-  T1_degradation: T1 -> ; Cell * T1_degradation_k_d * T1;
-  P2_degradation: P2 -> ; Cell * P2_degradation_k_d * P2 + Cell * P2_degradation_V_dP * P2 / (P2_degradation_K_dP + P2);
-  T2_degradation: T2 -> ; Cell * T2_degradation_k_d * T2 + Cell * V_dT * T2 / (T2_degradation_K_dT + T2);
+  P0_to_P1: P0 => P1; Cell * P0_to_P1_V_1P * P0 / (P0_to_P1_K1_P + P0);
+  T0_to_T1: T0 => T1; Cell * T0_to_T1_V_1T * T0 / (T0_to_T1_K_1T + T0);
+  P1_to_P0: P1 => P0; Cell * P1_to_P0_V_2P * P1 / (P1_to_P0_K_2P + P1);
+  T1_to_T0: T1 => T0; Cell * T1_to_T0_V_2T * T1 / (T1_to_T0_K_2T + T1);
+  P1_to_P2: P1 => P2; Cell * P1_to_P2_V_3P * P1 / (P1_to_P2_K_3P + P1);
+  T1_to_T2: T1 => T2; Cell * T1_to_T2_V_3T * T1 / (T1_to_T2_K_3T + T1);
+  P2_to_P1: P2 => P1; Cell * P2_to_P1_V_4P * P2 / (P2_to_P1_K_4P + P2);
+  T2_to_T1: T2 => T1; Cell * T2_to_T1_V_4T * T2 / (T2_to_T1_K_4T + T2);
+  P0_degradation: P0 => ; Cell * P0_degradation_k_d * P0;
+  T0_degradation: T0 => ; Cell * T0_degradation_k_d * T0;
+  P1_degradation: P1 => ; Cell * P1_degradation_k_d * P1;
+  T1_degradation: T1 => ; Cell * T1_degradation_k_d * T1;
+  P2_degradation: P2 => ; Cell * P2_degradation_k_d * P2 + Cell * P2_degradation_V_dP * P2 / (P2_degradation_K_dP + P2);
+  T2_degradation: T2 => ; Cell * T2_degradation_k_d * T2 + Cell * V_dT * T2 / (T2_degradation_K_dT + T2);
   PT_complex_formation: P2 + T2 -> CC; Cell * PT_complex_formation_k3 * P2 * T2 - Cell * PT_complex_formation_k4 * CC;
   PT_complex_nucleation: CC -> Cn_; Cell * PT_complex_nucleation_k1 * CC - compartment_0000002 * PT_complex_nucleation_k2 * Cn_;
-  PT_complex_degradation: CC -> ; Cell * PT_complex_degradation_k_dC * CC;
-  PTnucl_complex_degradation: Cn_ -> ; compartment_0000002 * PTnucl_complex_degradation_k_dN * Cn_;
-  Mp_production:  -> Mp; Cell * Mp_production_v_sP * pow(Mp_production_K_IP, Mp_production_n) / (pow(Mp_production_K_IP, Mp_production_n) + pow(Cn_, Mp_production_n));
-  Mt_production:  -> Mt; Cell * Mt_production_V_sT * pow(Mt_production_K_IT, Mt_production_n) / (pow(Mt_production_K_IT, Mt_production_n) + pow(Cn_, Mt_production_n));
-  P0_production:  -> P0; Cell * P0_production_k_sP * Mp;
-  T0_production:  -> T0; Cell * T0_production_k_sT * Mt;
-  Mp_degradation: Mp -> ; Cell * Mp_degradation_k_d * Mp + Cell * Mp_degradation_V_mP * Mp / (Mp_degradation_K_mP + Mp);
-  Mt_degradation: Mt -> ; Cell * Mt_degradation_k_d * Mt + Cell * V_mT * Mt / (Mt_degradation_K_mT + Mt);
+  PT_complex_degradation: CC => ; Cell * PT_complex_degradation_k_dC * CC;
+  PTnucl_complex_degradation: Cn_ => ; compartment_0000002 * PTnucl_complex_degradation_k_dN * Cn_;
+  Mp_production:  => Mp; Cell * Mp_production_v_sP * Mp_production_K_IP^Mp_production_n / (Mp_production_K_IP^Mp_production_n + Cn_^Mp_production_n);
+  Mt_production:  => Mt; Cell * Mt_production_V_sT * Mt_production_K_IT^Mt_production_n / (Mt_production_K_IT^Mt_production_n + Cn_^Mt_production_n);
+  P0_production:  => P0; Cell * P0_production_k_sP * Mp;
+  T0_production:  => T0; Cell * T0_production_k_sT * Mt;
+  Mp_degradation: Mp => ; Cell * Mp_degradation_k_d * Mp + Cell * Mp_degradation_V_mP * Mp / (Mp_degradation_K_mP + Mp);
+  Mt_degradation: Mt => ; Cell * Mt_degradation_k_d * Mt + Cell * V_mT * Mt / (Mt_degradation_K_mT + Mt);
 
   // Species initializations:
   P0 = 0;

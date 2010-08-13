@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model model_0000001()
 
   // Compartments and Species:
@@ -6,13 +6,13 @@ model model_0000001()
   species x in ER, y in cytoplasm;
 
   // Assignment Rules:
-  fy := pow(y, n) / (pow(a, n) + pow(y, n));
+  fy := y^n / (a^n + y^n);
 
   // Reactions:
-  reaction_0000001:  -> y; gamma * cytoplasm;
+  reaction_0000001:  => y; gamma * cytoplasm;
   reaction_0000002: x -> y; k * x * cytoplasm - k1 * y * ER;
-  reaction_0000003: y -> ; beta * y * extracellular;
-  reaction_0000004: x -> y; alpha * fy * x * cytoplasm;
+  reaction_0000003: y => ; beta * y * extracellular;
+  reaction_0000004: x => y; alpha * fy * x * cytoplasm;
 
   // Species initializations:
   x = 1;

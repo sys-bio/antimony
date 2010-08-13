@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Sriram2007_CellCycle()
 
   // Compartments and Species:
@@ -7,24 +7,24 @@ model Sriram2007_CellCycle()
   species C2 in compartment_, C3 in compartment_;
 
   // Reactions:
-  R1:  -> T1; compartment_ * j1;
-  R2:  -> T1; compartment_ * vd1 * pow(T3, n) / (pow(km1, n) + pow(T3, n));
-  R3:  -> T1; compartment_ * kc1 * C1;
-  R4: T1 -> ; compartment_ * kd1 * T1;
-  R5:  -> T2; compartment_ * j2;
-  R6:  -> T2; compartment_ * vd2 * pow(T1, n) / (pow(km2, n) + pow(T1, n));
-  R7:  -> T2; compartment_ * kc2 * C2;
-  R8: T2 -> ; compartment_ * kd2 * T2;
-  R9:  -> T3; compartment_ * j3;
-  R10:  -> T3; compartment_ * vd3 * pow(T2, n) / (pow(km3, n) + pow(T2, n));
-  R11:  -> T3; compartment_ * kc3 * C3;
-  R12: T3 -> ; compartment_ * kd3 * T3;
-  R13:  -> C1; compartment_ * v12 * pow(T1, n) / (pow(k120, n) + pow(T1, n) + pow(C2, n));
-  R14: C1 -> ; compartment_ * kd4 * C1;
-  R15:  -> C2; compartment_ * v11 * pow(T2, n) / (pow(k110, n) + pow(T2, n) + pow(C3, n));
-  R16: C2 -> ; compartment_ * kd5 * C2;
-  R17:  -> C3; compartment_ * v10 * pow(T3, n) / (pow(k100, n) + pow(T3, n) + pow(C1, n));
-  R18: C3 -> ; compartment_ * kd6 * C3;
+  R1:  => T1; compartment_ * j1;
+  R2:  => T1; compartment_ * vd1 * T3^n / (km1^n + T3^n);
+  R3:  => T1; compartment_ * kc1 * C1;
+  R4: T1 => ; compartment_ * kd1 * T1;
+  R5:  => T2; compartment_ * j2;
+  R6:  => T2; compartment_ * vd2 * T1^n / (km2^n + T1^n);
+  R7:  => T2; compartment_ * kc2 * C2;
+  R8: T2 => ; compartment_ * kd2 * T2;
+  R9:  => T3; compartment_ * j3;
+  R10:  => T3; compartment_ * vd3 * T2^n / (km3^n + T2^n);
+  R11:  => T3; compartment_ * kc3 * C3;
+  R12: T3 => ; compartment_ * kd3 * T3;
+  R13:  => C1; compartment_ * v12 * T1^n / (k120^n + T1^n + C2^n);
+  R14: C1 => ; compartment_ * kd4 * C1;
+  R15:  => C2; compartment_ * v11 * T2^n / (k110^n + T2^n + C3^n);
+  R16: C2 => ; compartment_ * kd5 * C2;
+  R17:  => C3; compartment_ * v10 * T3^n / (k100^n + T3^n + C1^n);
+  R18: C3 => ; compartment_ * kd6 * C3;
 
   // Species initializations:
   T1 = 6;

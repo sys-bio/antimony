@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Dupont1992_Ca_dpt_protein_phospho()
 
   // Compartments and Species:
@@ -6,15 +6,15 @@ model Dupont1992_Ca_dpt_protein_phospho()
   species Z in cytosol, Y in store, Wt in cytosol, W_star in cytosol;
 
   // Assignment Rules:
-  vk := vMK * pow(Z, q) / (pow(Ka, q) + pow(Z, q));
+  vk := vMK * Z^q / (Ka^q + Z^q);
 
   // Reactions:
-  R0:  -> Z; cytosol * v0;
-  R1:  -> Z; cytosol * v1_beta;
-  R2: Z -> Y; cytosol * (Vm2 * pow(Z, n) / (pow(Kp, n) + pow(Z, n)));
-  R3: Y -> Z; store * (Vm3 * pow(Y, m) * pow(Z, p) / ((pow(Kr, m) + pow(Y, m)) * (pow(K_A, p) + pow(Z, p))));
-  Rf: Y -> Z; store * kf * Y;
-  R_eff: Z -> ; cytosol * k * Z;
+  R0:  => Z; cytosol * v0;
+  R1:  => Z; cytosol * v1_beta;
+  R2: Z => Y; cytosol * (Vm2 * Z^n / (Kp^n + Z^n));
+  R3: Y => Z; store * (Vm3 * Y^m * Z^p / ((Kr^m + Y^m) * (K_A^p + Z^p)));
+  Rf: Y => Z; store * kf * Y;
+  R_eff: Z => ; cytosol * k * Z;
   Protein_Phosphorylation:  -> W_star; cytosol * (vp / Wt) * (vk / vp * ((1 - W_star) / (K1 + 1 - W_star)) - W_star / (K2 + W_star));
 
   // Species initializations:

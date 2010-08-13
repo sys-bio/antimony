@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Bhartiya2003_Tryptophan_operon()
 
   // Compartments and Species:
@@ -14,7 +14,7 @@ model Bhartiya2003_Tryptophan_operon()
   Enz_norm := Enz / 1;
 
   // Reactions:
-  Enzyme_synthesis:  -> Enz; compartment_ * Enzyme_synthesis_k1 * pow(Enzyme_synthesis_ki1, Enzyme_synthesis_nH) * Enzyme_synthesis_Ot / (pow(Enzyme_synthesis_ki1, Enzyme_synthesis_nH) + pow(Tt, Enzyme_synthesis_nH));
+  Enzyme_synthesis:  -> Enz; compartment_ * Enzyme_synthesis_k1 * Enzyme_synthesis_ki1^Enzyme_synthesis_nH * Enzyme_synthesis_Ot / (Enzyme_synthesis_ki1^Enzyme_synthesis_nH + Tt^Enzyme_synthesis_nH);
   Enzyme_dilution: Enz -> ; compartment_ * Enzyme_dilution_mu * Enz;
   tryptophan_synthesis:  -> Ts; compartment_ * tryptophan_synthesis_k2 * Enz * tryptophan_synthesis_Ki2 / (tryptophan_synthesis_Ki2 + Tt);
   tryptophan_consumption: Ts -> ; compartment_ * tryptophan_consumption_g * Ts / (tryptophan_consumption_Kg + Ts);

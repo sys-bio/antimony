@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model vasalou2010()
 
   // Compartments and Species:
@@ -24,42 +24,42 @@ model vasalou2010()
   E_K := E_K_0 * (T + T_abs) / (T_room + T_abs);
   E_L := E_L_0 * (T + T_abs) / (T_room + T_abs);
   E_Ca := k_q * (T + T_abs) / 2 * log(Ca_ex / Ca_in) * 1000;
-  Cl_in := Cl_o + M_P / (K_Cl1 + M_P) * v_Cl1 + pow(GABA, n_Cl) / (K_Cl2 + pow(GABA, n_Cl)) * v_Cl2;
+  Cl_in := Cl_o + M_P / (K_Cl1 + M_P) * v_Cl1 + GABA^n_Cl / (K_Cl2 + GABA^n_Cl) * v_Cl2;
   E_inhib := -k_q * (T + T_abs) * log(Cl_ex / Cl_in) * 1000;
-  P_K := v_PK * pow(B_C, n_PK) / (K_PK + pow(B_C, n_PK));
+  P_K := v_PK * B_C^n_PK / (K_PK + B_C^n_PK);
   theta_Na := exp(E_Na / (k_q * (T + T_abs) * 1000));
   theta_K := exp(E_K / (k_q * (T + T_abs) * 1000));
-  alpha := 4 * P_Ca * Ca_in * pow(10, -3) + P_K * K_in + P_Na * Na_in + P_Cl * Cl_ex;
+  alpha := 4 * P_Ca * Ca_in * 10^-3 + P_K * K_in + P_Na * Na_in + P_Cl * Cl_ex;
   beta_a := P_K * K_in - P_K * K_ex + P_Na * Na_in - P_Na * Na_ex + P_Cl * Cl_ex - P_Cl * Cl_in;
-  c := -(4 * P_Ca * Ca_ex * pow(10, -3) + P_K * K_ex + P_Na * Na_ex + P_Cl * Cl_in);
-  psi := (sqrt(pow(beta_a, 2) - 4 * alpha * c) - beta_a) / (2 * alpha);
+  c := -(4 * P_Ca * Ca_ex * 10^-3 + P_K * K_ex + P_Na * Na_ex + P_Cl * Cl_in);
+  psi := (sqrt(beta_a^2 - 4 * alpha * c) - beta_a) / (2 * alpha);
   V_rest := R_g * (T + T_abs) / Faraday * log(psi) * 1000;
   theta := V_rest + V_theta;
   V_reset := V_rest + 4;
   R := V_R * V_rest / (K_R + V_rest);
   I_Na := g_Na * (V_rest - E_Na);
   g_K := g_K_0 + M_P / (K_gk + M_P) * v_gk;
-  I_Na_abs := sqrt(pow(I_Na, 2));
-  g_ex := V_ex1 * pow(I_Na_abs, n_ex1) / (K_ex1 + pow(I_Na_abs, n_ex1)) + pow(Ca_in, n_ex2) / (K_ex2 + pow(Ca_in, n_ex2)) * V_ex2;
+  I_Na_abs := sqrt(I_Na^2);
+  g_ex := V_ex1 * I_Na_abs^n_ex1 / (K_ex1 + I_Na_abs^n_ex1) + Ca_in^n_ex2 / (K_ex2 + Ca_in^n_ex2) * V_ex2;
   g_L := 1 / R;
-  g_Ca := v_Ca * (pow(M_P, n_Ca) / (K_Ca + pow(M_P, n_Ca)));
-  gK_Ca := VK_Ca * (pow(C_C, n_KCa) / (K_KCa + pow(C_C, n_KCa)));
+  g_Ca := v_Ca * (M_P^n_Ca / (K_Ca + M_P^n_Ca));
+  gK_Ca := VK_Ca * (C_C^n_KCa / (K_KCa + C_C^n_KCa));
   I_star := g_Na * E_Na + g_Ca * E_Ca + g_K * E_K + g_L * E_L + gK_Ca * E_K - g_inhib * E_inhib - g_ex * E_ex;
   R_star := 1 / (g_Na + g_K + g_L + g_Ca + gK_Ca - g_inhib - g_ex);
   tau_m := Cm * R_star;
 
   // Reactions:
-  vo:  -> 0.001Ca_in; 1000 * cytoplasm * (v_vo * pow(B_C, n_vo) / (K_vo + pow(B_C, n_vo)));
-  v_ca_out: 0.001Ca_in -> ; 1000 * cytoplasm * v_kk * pow(C_C, n_kk) / (K_kk + pow(C_C, n_kk)) * pow(Ca_in, n_kCa);
+  vo:  -> 0.001Ca_in; 1000 * cytoplasm * (v_vo * B_C^n_vo / (K_vo + B_C^n_vo));
+  v_ca_out: 0.001Ca_in -> ; 1000 * cytoplasm * v_kk * C_C^n_kk / (K_kk + C_C^n_kk) * Ca_in^n_kCa;
   v1:  -> 0.001Ca_in; 1000 * cytoplasm * V_M1 * beta_IP3;
-  v2: 0.001Ca_in -> 0.001Ca_store; 1000 * cytoplasm * V_M2 * pow(Ca_in, n_M2) / (pow(K_2, n_M2) + pow(Ca_in, n_M2));
-  v3: 0.001Ca_store -> 0.001Ca_in; 1000 * store * (V_M3 * pow(Ca_store, n_M3) / (pow(K_R_Ca, n_M3) + pow(Ca_store, n_M3))) * pow(Ca_in, p_A) / (pow(K_A, p_A) + pow(Ca_in, p_A));
+  v2: 0.001Ca_in -> 0.001Ca_store; 1000 * cytoplasm * V_M2 * Ca_in^n_M2 / (K_2^n_M2 + Ca_in^n_M2);
+  v3: 0.001Ca_store -> 0.001Ca_in; 1000 * store * (V_M3 * Ca_store^n_M3 / (K_R_Ca^n_M3 + Ca_store^n_M3)) * Ca_in^p_A / (K_A^p_A + Ca_in^p_A);
   v_Ca_leak: 0.001Ca_store -> 0.001Ca_in; 1000 * store * k_f * Ca_store;
-  MP_transcription:  -> M_P; cytoplasm * (v_sP0 + C_T * CB / (K_C + CB)) * pow(B_N, n_BN) / (pow(K_AP, n_BN) + pow(B_N, n_BN));
+  MP_transcription:  -> M_P; cytoplasm * (v_sP0 + C_T * CB / (K_C + CB)) * B_N^n_BN / (K_AP^n_BN + B_N^n_BN);
   MP_decay: M_P -> ; cytoplasm * (v_mP * M_P / (K_mP + M_P) + kd_mP * M_P);
-  MC_transcription:  -> M_C; cytoplasm * v_sC * pow(B_N, n_BN) / (pow(K_sC, n_BN) + pow(B_N, n_BN));
+  MC_transcription:  -> M_C; cytoplasm * v_sC * B_N^n_BN / (K_sC^n_BN + B_N^n_BN);
   MC_decay: M_C -> ; cytoplasm * (v_mC * M_C / (K_mC + M_C) + kd_mC * M_C);
-  MB_transcription:  -> M_B; cytoplasm * (v_sB * pow(K_IB, m_BN) / (pow(K_IB, m_BN) + pow(B_N, m_BN)));
+  MB_transcription:  -> M_B; cytoplasm * (v_sB * K_IB^m_BN / (K_IB^m_BN + B_N^m_BN));
   MB_decay: M_B -> ; cytoplasm * (v_mB * M_B / (K_mB + M_B) + kd_mB * M_B);
   PC_translation:  -> P_C; cytoplasm * ks_P * M_P;
   PC_degradation: P_C -> ; cytoplasm * kd_n * P_C;
@@ -88,8 +88,8 @@ model vasalou2010()
   BN_degradation: B_N -> ; nucleus * kd_n * B_N;
   BNP_degradation: B_NP -> ; nucleus * (vd_BN * B_NP / (Kd + B_NP) + kd_n * B_NP);
   CB_activation:  -> CB; cytoplasm * (v_K * (1 - CB) / (K_1_CB + 1 - CB) - vP * CB / (K_2_CB + CB)) / WT;
-  VIP_accumulation:  -> VIP; cytoplasm * v_VIP * pow(f_r, n_VIP) / (K_VIP + pow(f_r, n_VIP));
-  VIP_depletion: VIP -> ; cytoplasm * k_dVIP * pow(VIP, n_dVIP);
+  VIP_accumulation:  -> VIP; cytoplasm * v_VIP * f_r^n_VIP / (K_VIP + f_r^n_VIP);
+  VIP_depletion: VIP -> ; cytoplasm * k_dVIP * VIP^n_dVIP;
 
   // Species initializations:
   Ca_in = 0.1;

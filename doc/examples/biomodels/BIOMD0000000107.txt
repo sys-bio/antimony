@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Novak1993_M_phase_control()
 
   // Compartments and Species:
@@ -21,29 +21,29 @@ model Novak1993_M_phase_control()
   Y15P := p_dimer + p_dimer_p;
 
   // Reactions:
-  R1:  -> cyclin; k1AA;
-  R2: cyclin -> ; k2 * cyclin;
-  R3: cyclin -> dimer; k3 * cyclin * cdc2;
-  R4: dimer_p -> dimer; kinh * dimer_p;
-  R5: dimer -> p_dimer; kwee * dimer;
-  R6: dimer -> dimer_p; kcak * dimer;
-  R7: dimer -> ; k2 * dimer;
-  R8: p_dimer -> dimer; k25 * p_dimer;
-  R9: p_dimer -> p_dimer_p; kcak * p_dimer;
-  R10: p_dimer -> ; k2 * p_dimer;
-  R11: p_dimer_p -> p_dimer; kinh * p_dimer_p;
-  R12: dimer_p -> p_dimer_p; kwee * dimer_p;
-  R13: p_dimer_p -> dimer_p; k25 * p_dimer_p;
-  R14: p_dimer_p -> ; k2 * p_dimer_p;
-  R15: dimer_p -> ; k2 * dimer_p;
-  R17:  -> cdc25_p; ka * dimer_p * (total_cdc25 - cdc25_p) / (K_a + total_cdc25 - cdc25_p);
-  R18: cdc25_p -> ; kbPPase * cdc25_p / (K_b + cdc25_p);
-  R19:  -> wee1_p; ke * dimer_p * (total_wee1 - wee1_p) / (K_e + total_wee1 - wee1_p);
-  R20: wee1_p -> ; kfPPase * wee1_p / (K_f + wee1_p);
-  R21:  -> IE_p; kg * dimer_p * (total_IE - IE_p) / (K_g + total_IE - IE_p);
-  R22: IE_p -> ; khPPAse * IE_p / (K_h + IE_p);
-  R23:  -> UbE_star; kc * IE_p * (total_UbE - UbE_star) / (K_c + total_UbE - UbE_star);
-  R24: UbE_star -> ; kd_anti_IE * UbE_star / (K_d + UbE_star);
+  R1:  => cyclin; k1AA;
+  R2: cyclin => ; k2 * cyclin;
+  R3: cyclin => dimer; k3 * cyclin * cdc2;
+  R4: dimer_p => dimer; kinh * dimer_p;
+  R5: dimer => p_dimer; kwee * dimer;
+  R6: dimer => dimer_p; kcak * dimer;
+  R7: dimer => ; k2 * dimer;
+  R8: p_dimer => dimer; k25 * p_dimer;
+  R9: p_dimer => p_dimer_p; kcak * p_dimer;
+  R10: p_dimer => ; k2 * p_dimer;
+  R11: p_dimer_p => p_dimer; kinh * p_dimer_p;
+  R12: dimer_p => p_dimer_p; kwee * dimer_p;
+  R13: p_dimer_p => dimer_p; k25 * p_dimer_p;
+  R14: p_dimer_p => ; k2 * p_dimer_p;
+  R15: dimer_p => ; k2 * dimer_p;
+  R17:  => cdc25_p; ka * dimer_p * (total_cdc25 - cdc25_p) / (K_a + total_cdc25 - cdc25_p);
+  R18: cdc25_p => ; kbPPase * cdc25_p / (K_b + cdc25_p);
+  R19:  => wee1_p; ke * dimer_p * (total_wee1 - wee1_p) / (K_e + total_wee1 - wee1_p);
+  R20: wee1_p => ; kfPPase * wee1_p / (K_f + wee1_p);
+  R21:  => IE_p; kg * dimer_p * (total_IE - IE_p) / (K_g + total_IE - IE_p);
+  R22: IE_p => ; khPPAse * IE_p / (K_h + IE_p);
+  R23:  => UbE_star; kc * IE_p * (total_UbE - UbE_star) / (K_c + total_UbE - UbE_star);
+  R24: UbE_star => ; kd_anti_IE * UbE_star / (K_d + UbE_star);
 
   // Species initializations:
   cyclin = 100;

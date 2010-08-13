@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Weimann2004_CircadianOscillator()
 
   // Compartments and Species:
@@ -7,28 +7,28 @@ model Weimann2004_CircadianOscillator()
   species y5 in Cytoplasm, y6 in Nucleus, y7 in Nucleus;
 
   // Assignment Rules:
-  trans_per2_cry := v1b * (y7 + c) / (k1b * (1 + pow(y3 / k1i, hill_coeff)) + y7 + c);
-  trans_Bmal1 := v4b * pow(y3, r) / (pow(k4b, r) + pow(y3, r));
+  trans_per2_cry := v1b * (y7 + c) / (k1b * (1 + (y3 / k1i)^hill_coeff) + y7 + c);
+  trans_Bmal1 := v4b * y3^r / (k4b^r + y3^r);
   y5_y6_y7 := y5 + y6 + y7;
 
   // Reactions:
-  per2_cry_transcription:  -> y1; Cytoplasm * trans_per2_cry;
-  per2_cry_mRNA_degradation: y1 -> ; Cytoplasm * k1d * y1;
-  per2_cry_complex_formation:  -> y2; Cytoplasm * k2b * pow(y1, q);
-  cytoplasmic_per2_cry_complex_degradation: y2 -> ; Cytoplasm * k2d * y2;
-  per2_cry_nuclear_import: y2 -> y3; Cytoplasm * k2t * y2;
-  per2_cry_nuclear_export: y3 -> y2; Nucleus * k3t * y3;
-  nuclear_per2_cry_complex_degradation: y3 -> ; Nucleus * k3d * y3;
-  Bmal1_transcription:  -> y4; Cytoplasm * trans_Bmal1;
-  Bmal1_mRNA_degradation: y4 -> ; Cytoplasm * k4d * y4;
-  BMAL1_translation:  -> y5; Cytoplasm * k5b * y4;
-  cytoplasmic_BMAL1_degradation: y5 -> ; Cytoplasm * k5d * y5;
-  BMAL1_nuclear_import: y5 -> y6; Cytoplasm * k5t * y5;
-  BMAL1_nuclear_export: y6 -> y5; Nucleus * k6t * y6;
-  nuclear_BMAL1_degradation: y6 -> ; Nucleus * k6d * y6;
-  BMAL1_activation: y6 -> y7; Nucleus * k6a * y6;
-  BMAL1_deactivation: y7 -> y6; Nucleus * k7a * y7;
-  Active_BMAL1_degradation: y7 -> ; Nucleus * k7d * y7;
+  per2_cry_transcription:  => y1; Cytoplasm * trans_per2_cry;
+  per2_cry_mRNA_degradation: y1 => ; Cytoplasm * k1d * y1;
+  per2_cry_complex_formation:  => y2; Cytoplasm * k2b * y1^q;
+  cytoplasmic_per2_cry_complex_degradation: y2 => ; Cytoplasm * k2d * y2;
+  per2_cry_nuclear_import: y2 => y3; Cytoplasm * k2t * y2;
+  per2_cry_nuclear_export: y3 => y2; Nucleus * k3t * y3;
+  nuclear_per2_cry_complex_degradation: y3 => ; Nucleus * k3d * y3;
+  Bmal1_transcription:  => y4; Cytoplasm * trans_Bmal1;
+  Bmal1_mRNA_degradation: y4 => ; Cytoplasm * k4d * y4;
+  BMAL1_translation:  => y5; Cytoplasm * k5b * y4;
+  cytoplasmic_BMAL1_degradation: y5 => ; Cytoplasm * k5d * y5;
+  BMAL1_nuclear_import: y5 => y6; Cytoplasm * k5t * y5;
+  BMAL1_nuclear_export: y6 => y5; Nucleus * k6t * y6;
+  nuclear_BMAL1_degradation: y6 => ; Nucleus * k6d * y6;
+  BMAL1_activation: y6 => y7; Nucleus * k6a * y6;
+  BMAL1_deactivation: y7 => y6; Nucleus * k7a * y7;
+  Active_BMAL1_degradation: y7 => ; Nucleus * k7d * y7;
 
   // Species initializations:
   y1 = 0.2;

@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model KDM()
 
   // Compartments and Species:
@@ -9,11 +9,11 @@ model KDM()
 
   // Reactions:
   R1: Mad1_CMad2 + OMad2 -> Mad1_CMad2_OMad2; Cytoplasm * (u * k1f * Mad1_CMad2 * OMad2 - k1r * Mad1_CMad2_OMad2);
-  R2: Mad1_CMad2_OMad2 + Cdc20 -> Mad1_CMad2 + Cdc20_CMad2; Cytoplasm * u * k2f * Mad1_CMad2_OMad2 * Cdc20;
-  R3: Cdc20_CMad2 -> Cdc20 + OMad2; Cytoplasm * k3f * Cdc20_CMad2;
+  R2: Mad1_CMad2_OMad2 + Cdc20 => Mad1_CMad2 + Cdc20_CMad2; Cytoplasm * u * k2f * Mad1_CMad2_OMad2 * Cdc20;
+  R3: Cdc20_CMad2 => Cdc20 + OMad2; Cytoplasm * k3f * Cdc20_CMad2;
   R4: Cdc20_CMad2 + Bub3_BubR1 -> MCC; Cytoplasm * (u * k4f * Cdc20_CMad2 * Bub3_BubR1 - k4r * MCC);
   R5: Bub3_BubR1 + Cdc20 -> Bub3_BubR1_Cdc20; Cytoplasm * (u * k5f * Bub3_BubR1 * Cdc20 - k5r * Bub3_BubR1_Cdc20);
-  R6: OMad2 + Cdc20 -> Cdc20_CMad2; Cytoplasm * kf6 * OMad2 * Cdc20;
+  R6: OMad2 + Cdc20 => Cdc20_CMad2; Cytoplasm * kf6 * OMad2 * Cdc20;
 
   // Events:
   mt_attachment: at gt(time, 2000): u = const_val_0;

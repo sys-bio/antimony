@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Neumann2010_CD95Stimulation_NFkB_Apoptosis()
 
   // Compartments and Species:
@@ -11,29 +11,29 @@ model Neumann2010_CD95Stimulation_NFkB_Apoptosis()
   species L_RF_FL_FL in default, L_RF_FL_FS in default, L_RF_FS_FS in default;
 
   // Reactions:
-  reaction_1: L + RF -> L_RF; default * k1 * L * RF;
-  reaction_2: L_RF + C8 -> L_RF_C8; default * k2 * L_RF * C8;
-  reaction_3: L_RF + FL -> L_RF_FL; default * k3 * L_RF * FL;
-  reaction_4: L_RF + FS -> L_RF_FS; default * k4 * L_RF * FS;
-  reaction_5: L_RF_C8 + C8 -> p43_p41 + p43_p41; default * k5 * L_RF_C8 * C8;
-  reaction_6: L_RF_C8 + FL -> p43_FLIP; default * k6 * L_RF_C8 * FL;
-  reaction_7: L_RF_C8 + FS -> L_RF_C8_FS; default * k7 * L_RF_C8 * FS;
-  reaction_8: L_RF_FL + C8 -> p43_FLIP; default * k5 * L_RF_FL * C8;
-  reaction_9: L_RF_FL + FL -> L_RF_FL_FL; default * k6 * L_RF_FL * FL;
-  reaction_10: L_RF_FL + FS -> L_RF_FL_FS; default * k7 * L_RF_FL * FS;
-  reaction_11: L_RF_FS + C8 -> L_RF_C8_FS; default * k5 * L_RF_FS * C8;
-  reaction_12: L_RF_FS + FL -> L_RF_FL_FS; default * k6 * L_RF_FS * FL;
-  reaction_13: L_RF_FS + FS -> L_RF_FS_FS; default * k7 * L_RF_FS * FS;
-  reaction_14: p43_p41 + p43_p41 -> C8_star; default * k8 * p43_p41 * p43_p41;
-  reaction_15: C3 + C8_star -> C3_star + C8_star; default * k9 * C3 * C8_star;
-  reaction_16: C8 + C3_star -> p43_p41 + C3_star; default * k10 * C8 * C3_star;
-  reaction_17: C8_star -> ; default * k11 * C8_star;
-  reaction_18: C3_star -> ; default * k12 * C3_star;
-  reaction_19: p43_FLIP + IKK -> p43_FLIP_IKK_star; default * k13 * p43_FLIP * IKK;
-  reaction_20: NF_kB_IkB + p43_FLIP_IKK_star -> NF_kB_IkB_P + p43_FLIP_IKK_star; default * k14 * NF_kB_IkB * p43_FLIP_IKK_star;
-  reaction_21: NF_kB_IkB_P -> NF_kB_star; default * k15 * NF_kB_IkB_P;
-  reaction_22: p43_FLIP_IKK_star -> ; default * k16 * p43_FLIP_IKK_star;
-  reaction_23: NF_kB_star -> ; default * k17 * NF_kB_star;
+  reaction_1: L + RF => L_RF; default * k1 * L * RF;
+  reaction_2: L_RF + C8 => L_RF_C8; default * k2 * L_RF * C8;
+  reaction_3: L_RF + FL => L_RF_FL; default * k3 * L_RF * FL;
+  reaction_4: L_RF + FS => L_RF_FS; default * k4 * L_RF * FS;
+  reaction_5: L_RF_C8 + C8 => p43_p41 + p43_p41; default * k5 * L_RF_C8 * C8;
+  reaction_6: L_RF_C8 + FL => p43_FLIP; default * k6 * L_RF_C8 * FL;
+  reaction_7: L_RF_C8 + FS => L_RF_C8_FS; default * k7 * L_RF_C8 * FS;
+  reaction_8: L_RF_FL + C8 => p43_FLIP; default * k5 * L_RF_FL * C8;
+  reaction_9: L_RF_FL + FL => L_RF_FL_FL; default * k6 * L_RF_FL * FL;
+  reaction_10: L_RF_FL + FS => L_RF_FL_FS; default * k7 * L_RF_FL * FS;
+  reaction_11: L_RF_FS + C8 => L_RF_C8_FS; default * k5 * L_RF_FS * C8;
+  reaction_12: L_RF_FS + FL => L_RF_FL_FS; default * k6 * L_RF_FS * FL;
+  reaction_13: L_RF_FS + FS => L_RF_FS_FS; default * k7 * L_RF_FS * FS;
+  reaction_14: p43_p41 + p43_p41 => C8_star; default * k8 * p43_p41 * p43_p41;
+  reaction_15: C3 + C8_star => C3_star + C8_star; default * k9 * C3 * C8_star;
+  reaction_16: C8 + C3_star => p43_p41 + C3_star; default * k10 * C8 * C3_star;
+  reaction_17: C8_star => ; default * k11 * C8_star;
+  reaction_18: C3_star => ; default * k12 * C3_star;
+  reaction_19: p43_FLIP + IKK => p43_FLIP_IKK_star; default * k13 * p43_FLIP * IKK;
+  reaction_20: NF_kB_IkB + p43_FLIP_IKK_star => NF_kB_IkB_P + p43_FLIP_IKK_star; default * k14 * NF_kB_IkB * p43_FLIP_IKK_star;
+  reaction_21: NF_kB_IkB_P => NF_kB_star; default * k15 * NF_kB_IkB_P;
+  reaction_22: p43_FLIP_IKK_star => ; default * k16 * p43_FLIP_IKK_star;
+  reaction_23: NF_kB_star => ; default * k17 * NF_kB_star;
 
   // Species initializations:
   L = 113.22;

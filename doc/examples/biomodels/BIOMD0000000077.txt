@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Model_1()
 
   // Compartments and Species:
@@ -11,10 +11,10 @@ model Model_1()
 
   // Reactions:
   reaction_0: H + R -> HR; cell * (reaction_0_k1 * H * R - reaction_0_k2 * HR);
-  reaction_1: 2HR -> HRRH; cell * (reaction_1_k1 * pow(HR, 2) - reaction_1_k2 * HRRH);
+  reaction_1: 2HR -> HRRH; cell * (reaction_1_k1 * HR^2 - reaction_1_k2 * HRRH);
   reaction_2: HRRH + GQ -> E; cell * (reaction_2_k1 * HRRH * GQ - reaction_2_k2 * E);
-  reaction_3: IP3 -> ; cell * reaction_3_k1 * IP3;
-  reaction_4:  -> IP3; cell * reaction_4_k * E;
+  reaction_3: IP3 => ; cell * reaction_3_k1 * IP3;
+  reaction_4:  => IP3; cell * reaction_4_k * E;
 
   // Events:
   RemovalH: at gt(time, 5): H = 0;

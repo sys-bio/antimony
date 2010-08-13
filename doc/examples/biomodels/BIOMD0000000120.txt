@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Chan2004_TCell_receptor_activation()
 
   // Compartments and Species:
@@ -10,16 +10,16 @@ model Chan2004_TCell_receptor_activation()
   lck_total := lck_inactive + lck_active;
 
   // Reactions:
-  v1:  -> lck_inactive; r_l;
-  v2: lck_active -> lck_inactive; n1 * lck_active * phosphatase_active;
-  v3: lck_inactive -> lck_active; k1 * lck_inactive;
-  v4: lck_inactive -> lck_active; m1 * pow(lck_active, n) * lck_inactive;
-  v5: lck_inactive -> ; d0 * lck_inactive;
-  v6: lck_active -> ; d1 * lck_active;
-  v7: phosphatase_inactive -> phosphatase_active; k2 * phosphatase_inactive;
-  v8: phosphatase_inactive -> phosphatase_active; m2 * lck_active * phosphatase_inactive;
-  v9: phosphatase_active -> phosphatase_inactive; n2 * phosphatase_active;
-  v10: phosphatase_active -> ; d2 * phosphatase_active;
+  v1:  => lck_inactive; r_l;
+  v2: lck_active => lck_inactive; n1 * lck_active * phosphatase_active;
+  v3: lck_inactive => lck_active; k1 * lck_inactive;
+  v4: lck_inactive => lck_active; m1 * lck_active^n * lck_inactive;
+  v5: lck_inactive => ; d0 * lck_inactive;
+  v6: lck_active => ; d1 * lck_active;
+  v7: phosphatase_inactive => phosphatase_active; k2 * phosphatase_inactive;
+  v8: phosphatase_inactive => phosphatase_active; m2 * lck_active * phosphatase_inactive;
+  v9: phosphatase_active => phosphatase_inactive; n2 * phosphatase_active;
+  v10: phosphatase_active => ; d2 * phosphatase_active;
 
   // Events:
   event_0000001: at geq(time, 10): r_l = 1;

@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Tyson1991CellModel_6()
 
   // Compartments and Species:
@@ -11,15 +11,15 @@ model Tyson1991CellModel_6()
   CT := C2 + CP + M + pM;
 
   // Reactions:
-  Reaction1: M -> C2 + YP; cell * Reaction1_k6 * M;
-  Reaction2: C2 -> CP; cell * C2 * Reaction2_k8notP;
-  Reaction3: CP -> C2; cell * CP * Reaction3_k9;
-  Reaction4: CP + Y -> pM; cell * CP * Reaction4_k3 * Y;
-  Reaction5: M -> pM; cell * Reaction5_k5notP * M;
-  Reaction6: $EmptySet -> Y; cell * Reaction6_k1aa;
-  Reaction7: Y -> $EmptySet; cell * Reaction7_k2 * Y;
-  Reaction8: YP -> $EmptySet; cell * Reaction8_k7 * YP;
-  Reaction9: pM -> M; cell * pM * (Reaction9_k4prime + Reaction9_k4 * pow(M / CT, 2));
+  Reaction1: M => C2 + YP; cell * Reaction1_k6 * M;
+  Reaction2: C2 => CP; cell * C2 * Reaction2_k8notP;
+  Reaction3: CP => C2; cell * CP * Reaction3_k9;
+  Reaction4: CP + Y => pM; cell * CP * Reaction4_k3 * Y;
+  Reaction5: M => pM; cell * Reaction5_k5notP * M;
+  Reaction6: $EmptySet => Y; cell * Reaction6_k1aa;
+  Reaction7: Y => $EmptySet; cell * Reaction7_k2 * Y;
+  Reaction8: YP => $EmptySet; cell * Reaction8_k7 * YP;
+  Reaction9: pM => M; cell * pM * (Reaction9_k4prime + Reaction9_k4 * (M / CT)^2);
 
   // Species initializations:
   EmptySet = 0;

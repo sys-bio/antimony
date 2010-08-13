@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Hoffmann2002_WT_IkBNFkB_Signaling()
 
   // Compartments and Species:
@@ -19,54 +19,54 @@ model Hoffmann2002_WT_IkBNFkB_Signaling()
   Total_NFkBn := IkBbeta_nuc_NFkB_nuc + NFkB_nuc;
 
   // Rate Rules:
-  fr_after_trigger' = trigger_value * (-0.5 / pow(1 + (time - 2000), 2));
+  fr_after_trigger' = trigger_value * (-0.5 / (1 + (time - 2000))^2);
 
   // Reactions:
   v1: NFkB + IkBalpha -> IkBalpha_NFkB; cytoplasm * (a4 * IkBalpha * NFkB - d4 * IkBalpha_NFkB);
   v2: NFkB + IkBbeta -> IkBbeta_NFkB; cytoplasm * (a5 * IkBbeta * NFkB - d5 * IkBbeta_NFkB);
   v3: NFkB + IkBeps -> IkBeps_NFkB; cytoplasm * (a6 * IkBeps * NFkB - d6 * IkBeps_NFkB);
   v4: NFkB + IKK_IkBalpha -> IKK_IkBalpha_NFkB; cytoplasm * (a4 * IKK_IkBalpha * NFkB - d4 * IKK_IkBalpha_NFkB);
-  v5: IKK_IkBalpha_NFkB -> NFkB + IKK; cytoplasm * r4 * IKK_IkBalpha_NFkB;
+  v5: IKK_IkBalpha_NFkB => NFkB + IKK; cytoplasm * r4 * IKK_IkBalpha_NFkB;
   v6: NFkB + IKK_IkBbeta -> IKK_IkBbeta_NFkB; cytoplasm * (a5 * IKK_IkBbeta * NFkB - d5 * IKK_IkBbeta_NFkB);
-  v7: IKK_IkBbeta_NFkB -> NFkB + IKK; cytoplasm * r5 * IKK_IkBbeta_NFkB;
+  v7: IKK_IkBbeta_NFkB => NFkB + IKK; cytoplasm * r5 * IKK_IkBbeta_NFkB;
   v8: NFkB + IKK_IkBeps -> IKK_IkBeps_NFkB; cytoplasm * (a6 * IKK_IkBeps * NFkB - d6 * IKK_IkBeps_NFkB);
-  v9: IKK_IkBeps_NFkB -> NFkB + IKK; cytoplasm * r6 * IKK_IkBeps_NFkB;
-  v10: IkBalpha_NFkB -> NFkB; cytoplasm * deg4 * IkBalpha_NFkB;
-  v11: IkBbeta_NFkB -> NFkB; cytoplasm * deg4 * IkBbeta_NFkB;
-  v12: IkBeps_NFkB -> NFkB; cytoplasm * deg4 * IkBeps_NFkB;
+  v9: IKK_IkBeps_NFkB => NFkB + IKK; cytoplasm * r6 * IKK_IkBeps_NFkB;
+  v10: IkBalpha_NFkB => NFkB; cytoplasm * deg4 * IkBalpha_NFkB;
+  v11: IkBbeta_NFkB => NFkB; cytoplasm * deg4 * IkBbeta_NFkB;
+  v12: IkBeps_NFkB => NFkB; cytoplasm * deg4 * IkBeps_NFkB;
   v13: NFkB -> NFkB_nuc; cytoplasm * k1 * NFkB - nucleus * k01 * NFkB_nuc;
   v14: NFkB_nuc + IkBalpha_nuc -> IkBalpha_nuc_NFkB_nuc; nucleus * (a4 * IkBalpha_nuc * NFkB_nuc - d4 * IkBalpha_nuc_NFkB_nuc);
   v15: NFkB_nuc + IkBbeta_nuc -> IkBbeta_nuc_NFkB_nuc; nucleus * (a5 * IkBbeta_nuc * NFkB_nuc - d5 * IkBbeta_nuc_NFkB_nuc);
   v16: NFkB_nuc + IkBeps_nuc -> IkBeps_nuc_NFkB_nuc; nucleus * (a6 * IkBeps_nuc * NFkB_nuc - d6 * IkBeps_nuc_NFkB_nuc);
-  v17:  -> IkBalpha_transcript; nucleus * tr2a;
-  v18:  -> IkBalpha_transcript; nucleus * tr2 * pow(NFkB_nuc, 2);
-  v19: IkBalpha_transcript -> ; nucleus * tr3 * IkBalpha_transcript;
-  v20:  -> IkBbeta_transcript; nucleus * tr2b;
-  v21: IkBbeta_transcript -> ; nucleus * tr3 * IkBbeta_transcript;
-  v22:  -> IkBeps_transcript; nucleus * tr2e;
-  v23: IkBeps_transcript -> ; nucleus * tr3 * IkBeps_transcript;
+  v17:  => IkBalpha_transcript; nucleus * tr2a;
+  v18:  => IkBalpha_transcript; nucleus * tr2 * NFkB_nuc^2;
+  v19: IkBalpha_transcript => ; nucleus * tr3 * IkBalpha_transcript;
+  v20:  => IkBbeta_transcript; nucleus * tr2b;
+  v21: IkBbeta_transcript => ; nucleus * tr3 * IkBbeta_transcript;
+  v22:  => IkBeps_transcript; nucleus * tr2e;
+  v23: IkBeps_transcript => ; nucleus * tr3 * IkBeps_transcript;
   v24: IKK + IkBalpha -> IKK_IkBalpha; cytoplasm * (a1 * IkBalpha * IKK - d1 * IKK_IkBalpha);
-  v25:  -> IkBalpha; nucleus * tr1 * IkBalpha_transcript;
-  v26: IkBalpha -> ; cytoplasm * deg1 * IkBalpha;
+  v25:  => IkBalpha; nucleus * tr1 * IkBalpha_transcript;
+  v26: IkBalpha => ; cytoplasm * deg1 * IkBalpha;
   v27: IkBalpha -> IkBalpha_nuc; cytoplasm * tp1 * IkBalpha - nucleus * tp2 * IkBalpha_nuc;
   v28: IKK + IkBbeta -> IKK_IkBbeta; cytoplasm * (a2 * IkBbeta * IKK - d2 * IKK_IkBbeta);
-  v29:  -> IkBbeta; nucleus * tr1 * IkBbeta_transcript;
-  v30: IkBbeta -> ; cytoplasm * deg1 * IkBbeta;
+  v29:  => IkBbeta; nucleus * tr1 * IkBbeta_transcript;
+  v30: IkBbeta => ; cytoplasm * deg1 * IkBbeta;
   v31: IkBbeta -> IkBbeta_nuc; cytoplasm * 0.5 * tp1 * IkBbeta - nucleus * 0.5 * tp2 * IkBbeta_nuc;
   v32: IKK + IkBeps -> IKK_IkBeps; cytoplasm * (a3 * IkBeps * IKK - d3 * IKK_IkBeps);
-  v33:  -> IkBeps; nucleus * tr1 * IkBeps_transcript;
-  v34: IkBeps -> ; cytoplasm * deg1 * IkBeps;
+  v33:  => IkBeps; nucleus * tr1 * IkBeps_transcript;
+  v34: IkBeps => ; cytoplasm * deg1 * IkBeps;
   v35: IkBeps -> IkBeps_nuc; cytoplasm * 0.5 * tp1 * IkBeps - nucleus * 0.5 * tp2 * IkBeps_nuc;
   v36: IKK + IkBalpha_NFkB -> IKK_IkBalpha_NFkB; cytoplasm * (a7 * IKK * IkBalpha_NFkB - d1 * IKK_IkBalpha_NFkB);
-  v37: IkBalpha_nuc_NFkB_nuc -> IkBalpha_NFkB; nucleus * k2 * IkBalpha_nuc_NFkB_nuc;
+  v37: IkBalpha_nuc_NFkB_nuc => IkBalpha_NFkB; nucleus * k2 * IkBalpha_nuc_NFkB_nuc;
   v38: IKK + IkBbeta_NFkB -> IKK_IkBbeta_NFkB; cytoplasm * (a8 * IKK * IkBbeta_NFkB - d2 * IKK_IkBbeta_NFkB);
-  v39: IkBbeta_nuc_NFkB_nuc -> IkBbeta_NFkB; nucleus * v39_k2_IkBbeta_nuc_NFkB_nuc * (fr_after_trigger + flag_for_after_trigger) * IkBbeta_nuc_NFkB_nuc;
+  v39: IkBbeta_nuc_NFkB_nuc => IkBbeta_NFkB; nucleus * v39_k2_IkBbeta_nuc_NFkB_nuc * (fr_after_trigger + flag_for_after_trigger) * IkBbeta_nuc_NFkB_nuc;
   v40: IKK + IkBeps_NFkB -> IKK_IkBeps_NFkB; cytoplasm * (a9 * IKK * IkBeps_NFkB - d3 * IKK_IkBeps_NFkB);
-  v41: IkBeps_nuc_NFkB_nuc -> IkBeps_NFkB; nucleus * 0.5 * k2_eps * IkBeps_nuc_NFkB_nuc;
-  v42: IKK_IkBalpha -> IKK; cytoplasm * r1 * IKK_IkBalpha;
-  v43: IKK_IkBbeta -> IKK; cytoplasm * r2 * IKK_IkBbeta;
-  v44: IKK_IkBeps -> IKK; cytoplasm * r3 * IKK_IkBeps;
-  v45: IKK -> ; cytoplasm * k02 * IKK;
+  v41: IkBeps_nuc_NFkB_nuc => IkBeps_NFkB; nucleus * 0.5 * k2_eps * IkBeps_nuc_NFkB_nuc;
+  v42: IKK_IkBalpha => IKK; cytoplasm * r1 * IKK_IkBalpha;
+  v43: IKK_IkBbeta => IKK; cytoplasm * r2 * IKK_IkBbeta;
+  v44: IKK_IkBeps => IKK; cytoplasm * r3 * IKK_IkBeps;
+  v45: IKK => ; cytoplasm * k02 * IKK;
 
   // Events:
   event_0000001: at and(geq(time, 2000), eq(trigger_value, 0)): flag_for_after_trigger = 0, trigger_value = 1, IKK = 0.1;

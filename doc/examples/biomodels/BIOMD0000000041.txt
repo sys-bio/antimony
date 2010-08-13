@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Kongas___Van_Beek()
 
   // Compartments and Species:
@@ -10,7 +10,7 @@ model Kongas___Van_Beek()
   OxPhos: ADPi + Pi_ -> ATPi; IMS * (OxPhos_V_1 * ADPi * Pi_ / (OxPhos_Ka_1 * OxPhos_Kb_1 * (1 + ADPi / OxPhos_Ka_1 + Pi_ / OxPhos_Kb_1 + ADPi * Pi_ / (OxPhos_Ka_1 * OxPhos_Kb_1))));
   MiCK: ATPi + Cri -> ADPi + PCri; IMS * ((MiCK_Vf_2 * ATPi * Cri / (MiCK_Kia_2 * MiCK_Kb_2) - MiCK_Vb_2 * ADPi * PCri / (MiCK_Kic_2 * MiCK_Kd_2)) / (1 + Cri / MiCK_Kib_2 + PCri / MiCK_Kid_2 + ATPi * (1 / MiCK_Kia_2 + Cri / (MiCK_Kia_2 * MiCK_Kb_2)) + ADPi * (1 / MiCK_Kic_2 + Cri / (MiCK_Kic_2 * MiCK_Kib_2) + PCri / (MiCK_Kid_2 * (MiCK_Kic_2 * MiCK_Kd_2 / MiCK_Kid_2)))));
   MMCK: ATP + Cr -> PCr + ADP; CYT * ((MMCK_Vf_3 * ATP * Cr / (MMCK_Kia_3 * MMCK_Kb_3) - MMCK_Vb_3 * ADP * PCr / (MMCK_Kic_3 * MMCK_Kd_3)) / (1 + Cr / MMCK_Kib_3 + PCr / MMCK_Kid_3 + ATP * (1 / MMCK_Kia_3 + Cr / (MMCK_Kia_3 * MMCK_Kb_3)) + ADP * (1 / MMCK_Kic_3 + Cr / (MMCK_Kic_3 * MMCK_Kib_3) + PCr / (MMCK_Kid_3 * (MMCK_Kic_3 * MMCK_Kd_3 / MMCK_Kid_3)))));
-  ATPase: ATP -> ADP + P; CYT * ATPase_v_4 * ATP;
+  ATPase: ATP => ADP + P; CYT * ATPase_v_4 * ATP;
   Pi_diffusion: Pi_ -> P; IMS * Pi_diffusion_k2_5 * Pi_ - CYT * Pi_diffusion_k2_5 * P;
   Cr_diffusion: Cri -> Cr; IMS * Cr_diffusion_k1_6 * Cri - CYT * Cr_diffusion_k1_6 * Cr;
   ADP_diffusion: ADPi -> ADP; IMS * ADP_diffusion_k1_7 * ADPi - CYT * ADP_diffusion_k1_7 * ADP;

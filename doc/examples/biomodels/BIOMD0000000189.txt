@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model p53_Mdm2_System()
 
   // Compartments and Species:
@@ -14,20 +14,20 @@ model p53_Mdm2_System()
   totMdm2 := Mdm2 + Mdm2_p53 + ARF_Mdm2;
 
   // Reactions:
-  Mdm2Synthesis: Mdm2_mRNA -> Mdm2_mRNA + Mdm2 + mdm2syn; ksynMdm2 * Mdm2_mRNA;
-  Mdm2mRNASynthesis: p53 -> p53 + Mdm2_mRNA + Mdm2mRNAsyn; ksynMdm2mRNA * p53;
-  Mdm2mRNADegradation: Mdm2_mRNA -> $Sink + Mdm2mRNAdeg; kdegMdm2mRNA * Mdm2_mRNA;
-  Mdm2Degradation: Mdm2 -> $Sink + mdm2deg; kdegMdm2 * Mdm2 * kproteff;
-  p53Synthesis: $Source -> p53 + p53syn; ksynp53 * Source;
-  p53Degradation: Mdm2_p53 -> Mdm2 + p53deg; kdegp53 * Mdm2_p53 * kproteff;
-  P53_Mdm2Binding: p53 + Mdm2 -> Mdm2_p53; kbinMdm2p53 * p53 * Mdm2;
-  P53_Mdm2Release: Mdm2_p53 -> p53 + Mdm2; krelMdm2p53 * Mdm2_p53;
-  DNAdamage:  -> damDNA + totdamDNA; kdam * IR;
-  DNArepair: damDNA -> $Sink; krepair * damDNA;
-  ARFactivation: damDNA -> damDNA + ARF; kactARF * damDNA;
-  ARF_Mdm2Binding: ARF + Mdm2 -> ARF_Mdm2; kbinARFMdm2 * ARF * Mdm2;
-  ARF_Mdm2Degradation: ARF_Mdm2 -> ARF + mdm2deg; kdegARFMdm2 * ARF_Mdm2 * kproteff;
-  ARFDegradation: ARF -> $Sink; kdegARF * ARF * kproteff;
+  Mdm2Synthesis: Mdm2_mRNA => Mdm2_mRNA + Mdm2 + mdm2syn; ksynMdm2 * Mdm2_mRNA;
+  Mdm2mRNASynthesis: p53 => p53 + Mdm2_mRNA + Mdm2mRNAsyn; ksynMdm2mRNA * p53;
+  Mdm2mRNADegradation: Mdm2_mRNA => $Sink + Mdm2mRNAdeg; kdegMdm2mRNA * Mdm2_mRNA;
+  Mdm2Degradation: Mdm2 => $Sink + mdm2deg; kdegMdm2 * Mdm2 * kproteff;
+  p53Synthesis: $Source => p53 + p53syn; ksynp53 * Source;
+  p53Degradation: Mdm2_p53 => Mdm2 + p53deg; kdegp53 * Mdm2_p53 * kproteff;
+  P53_Mdm2Binding: p53 + Mdm2 => Mdm2_p53; kbinMdm2p53 * p53 * Mdm2;
+  P53_Mdm2Release: Mdm2_p53 => p53 + Mdm2; krelMdm2p53 * Mdm2_p53;
+  DNAdamage:  => damDNA + totdamDNA; kdam * IR;
+  DNArepair: damDNA => $Sink; krepair * damDNA;
+  ARFactivation: damDNA => damDNA + ARF; kactARF * damDNA;
+  ARF_Mdm2Binding: ARF + Mdm2 => ARF_Mdm2; kbinARFMdm2 * ARF * Mdm2;
+  ARF_Mdm2Degradation: ARF_Mdm2 => ARF + mdm2deg; kdegARFMdm2 * ARF_Mdm2 * kproteff;
+  ARFDegradation: ARF => $Sink; kdegARF * ARF * kproteff;
 
   // Events:
   stressCell: at geq(time, 3600): IR = 25;

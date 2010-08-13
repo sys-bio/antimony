@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Kim2007_Wnt_ERK_Crosstalk()
 
   // Compartments and Species:
@@ -15,39 +15,39 @@ model Kim2007_Wnt_ERK_Crosstalk()
   X13X14 := X13 + X14;
 
   // Reactions:
-  R1: X1 -> X2; cytoplasm * k1 * X1 * W;
-  R2: X2 -> X1; cytoplasm * k2 * X2;
-  R3: X4 -> X6 + X5; cytoplasm * k3 * X2 * X4;
-  R4: X4 -> X3; cytoplasm * k4 * X4;
-  R5: X3 -> X4; cytoplasm * k5 * X3;
+  R1: X1 => X2; cytoplasm * k1 * X1 * W;
+  R2: X2 => X1; cytoplasm * k2 * X2;
+  R3: X4 => X6 + X5; cytoplasm * k3 * X2 * X4;
+  R4: X4 => X3; cytoplasm * k4 * X4;
+  R5: X3 => X4; cytoplasm * k5 * X3;
   R6: X6 + X5 -> X4; cytoplasm * (k_plus6 * X5 * X6 - k_minus6 * X4);
   R7: X12 + X7 -> X6; cytoplasm * (k_plus7 * X7 * X12 - k_minus7 * X6);
   R8: X11 + X3 -> X8; cytoplasm * (k_plus8 * X3 * X11 - k_minus8 * X8);
-  R9: X8 -> X9; cytoplasm * k9 * X8;
-  R10: X9 -> X3 + X10; cytoplasm * k10 * X9;
-  R11: X10 -> ; cytoplasm * k11 * X10;
-  R12:  -> X11; cytoplasm * V12;
-  R13: X11 -> ; nucleus * k13 * X11;
-  R14:  -> X12; nucleus * (k14 + k21 * (X11 + X14));
-  R15: X12 -> ; cytoplasm * k15 * X12;
+  R9: X8 => X9; cytoplasm * k9 * X8;
+  R10: X9 => X3 + X10; cytoplasm * k10 * X9;
+  R11: X10 => ; cytoplasm * k11 * X10;
+  R12:  => X11; cytoplasm * V12;
+  R13: X11 => ; nucleus * k13 * X11;
+  R14:  => X12; nucleus * (k14 + k21 * (X11 + X14));
+  R15: X12 => ; cytoplasm * k15 * X12;
   R16: X13 + X11 -> X14; nucleus * (k_plus16 * X11 * X13 - k_minus16 * X14);
   R17: X11 + X7 -> X15; cytoplasm * (k_plus17 * X7 * X11 - k_minus17 * X15);
-  R18: X16 -> X17; cytoplasm * (Vmax1 * X16 * W / (Km1 + X16)) * (Ki / (Ki + X23));
-  R19: X17 -> X16; cytoplasm * (Vmax2 * X17 / (Km2 + X17));
-  R20: X18 -> X19; cytoplasm * (kcat1 * X17 * X18 / (Km3 + X18));
-  R21: X19 -> X18; cytoplasm * Vmax3 * X19 / (Km4 + X19);
-  R22: X20 -> X21; cytoplasm * kcat2 * X19 * X20 / (Km5 + X20);
-  R23: X21 -> X20; cytoplasm * Vmax4 * X21 / (Km6 + X21);
-  R24: X22 -> X23; cytoplasm * kcat3 * X21 * X22 / (Km7 + X22);
-  R25: X23 -> X22; cytoplasm * Vmax5 * X23 / (Km8 + X23);
-  R26: X24 -> X18 + X26; cytoplasm * kcat4 * X23 * X24 / (Km9 + X24);
+  R18: X16 => X17; cytoplasm * (Vmax1 * X16 * W / (Km1 + X16)) * (Ki / (Ki + X23));
+  R19: X17 => X16; cytoplasm * (Vmax2 * X17 / (Km2 + X17));
+  R20: X18 => X19; cytoplasm * (kcat1 * X17 * X18 / (Km3 + X18));
+  R21: X19 => X18; cytoplasm * Vmax3 * X19 / (Km4 + X19);
+  R22: X20 => X21; cytoplasm * kcat2 * X19 * X20 / (Km5 + X20);
+  R23: X21 => X20; cytoplasm * Vmax4 * X21 / (Km6 + X21);
+  R24: X22 => X23; cytoplasm * kcat3 * X21 * X22 / (Km7 + X22);
+  R25: X23 => X22; cytoplasm * Vmax5 * X23 / (Km8 + X23);
+  R26: X24 => X18 + X26; cytoplasm * kcat4 * X23 * X24 / (Km9 + X24);
   R27: X18 + X25 -> X24; cytoplasm * (k18 * X18 * X25 - k19 * X24);
-  R28: X26 -> X25; cytoplasm * Vmax6 * X26 / (Km10 + X26);
-  R29:  -> X27; cytoplasm * (kcat5 * pow(X14, n1) / (pow(Km11, n1) + pow(X14, n1)));
-  R30: X27 -> ; cytoplasm * k20 * X27;
-  R31: X18 -> X19; cytoplasm * (kcat6 * X27 * X18 / (Km12 + X18));
-  R32: X5 -> X28; cytoplasm * kcat7 * X23 * X5 / (Km13 + X5);
-  R33: X28 -> X5; cytoplasm * Vmax7 * X28 / (Km14 + X28);
+  R28: X26 => X25; cytoplasm * Vmax6 * X26 / (Km10 + X26);
+  R29:  => X27; cytoplasm * (kcat5 * X14^n1 / (Km11^n1 + X14^n1));
+  R30: X27 => ; cytoplasm * k20 * X27;
+  R31: X18 => X19; cytoplasm * (kcat6 * X27 * X18 / (Km12 + X18));
+  R32: X5 => X28; cytoplasm * kcat7 * X23 * X5 / (Km13 + X5);
+  R33: X28 => X5; cytoplasm * Vmax7 * X28 / (Km14 + X28);
 
   // Events:
   event_0000001: at and(geq(time, 500), leq(time, 1000)): W = 1;

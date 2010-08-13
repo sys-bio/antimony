@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model model_0000001()
 
   // Compartments and Species:
@@ -27,38 +27,38 @@ model model_0000001()
 
   // Reactions:
   reaction_0000001: R + HRG -> RHRG; compartment_0000001 * (k1 * R * HRG - k_1 * RHRG);
-  reaction_0000002: 2RHRG -> RHRG2; compartment_0000001 * (k2 * pow(RHRG, 2) - k_2 * RHRG2);
+  reaction_0000002: 2RHRG -> RHRG2; compartment_0000001 * (k2 * RHRG^2 - k_2 * RHRG2);
   reaction_0000003: RHRG2 -> RP; compartment_0000001 * (k3 * RHRG2 - k_3 * RP);
-  reaction_0000004: RP -> RHRG2; compartment_0000001 * V4 * RP / (K4 + RP);
+  reaction_0000004: RP => RHRG2; compartment_0000001 * V4 * RP / (K4 + RP);
   reaction_0000005: RP + Shc -> RShc; compartment_0000001 * (k5 * RP * Shc - k_5 * RShc);
   reaction_0000006: RShc -> RShP; compartment_0000001 * (k6 * RShc - k_6 * RShP);
   reaction_0000007: RShP + GS -> RShGS; compartment_0000001 * (k7 * RShP * GS - k_7 * RShGS);
   reaction_0000008: RShGS -> ShGS + RP; compartment_0000001 * (k8 * RShGS - k_8 * ShGS * RP);
   reaction_0000009: ShGS -> GS + ShP; compartment_0000001 * (k9 * ShGS - k_9 * GS * ShP);
-  reaction_0000010: ShP -> Shc; compartment_0000001 * V10 * ShP / (K10 + ShP);
-  reaction_0000011: RasGDP -> RasGTP; compartment_0000001 * (k11 * ShGS * RasGDP / (K11 + RasGDP));
-  reaction_0000012: RasGTP -> RasGDP; compartment_0000001 * (V12 * RasGTP / (K12 + RasGTP));
-  reaction_0000013: Raf -> Rafstar; compartment_0000001 * (k13 * RasGTP * Raf / (K13 + Raf));
-  reaction_0000014: Rafstar -> Raf; compartment_0000001 * k14 * (AktPIPP + E) * Rafstar / (K14 + Rafstar);
-  reaction_0000015: MEK -> MEKP; compartment_0000001 * k15 * Rafstar * MEK / (K15 * (1 + MEKP / K17) + MEK);
-  reaction_0000016: MEKP -> MEK; compartment_0000001 * k16 * PP2A * MEKP / (K16 * (1 + MEKPP / K18 + AktPIP / K31 + AktPIPP / K33) + MEKP);
-  reaction_0000017: MEKP -> MEKPP; compartment_0000001 * k17 * Rafstar * MEKP / (K17 * (1 + MEK / K15) + MEKP);
-  reaction_0000018: MEKPP -> MEKP; compartment_0000001 * k18 * PP2A * MEKPP / (K18 * (1 + MEKP / K16 + AktPIPP / K31 + AktPIPP / K33) + MEKPP);
-  reaction_0000019: ERK -> ERKP; compartment_0000001 * k19 * MEKPP * ERK / (K19 * (1 + ERKP / K21) + ERK);
-  reaction_0000020: ERKP -> ERK; compartment_0000001 * k20 * MKP3 * ERKP / (K20 * (1 + ERKPP / K22) + ERKP);
-  reaction_0000021: ERKP -> ERKPP; compartment_0000001 * k21 * MEKPP * ERKP / (K21 * (1 + ERK / K19) + ERKP);
-  reaction_0000022: ERKPP -> ERKP; compartment_0000001 * k22 * MKP3 * ERKPP / (K22 * (1 + ERKP / K20) + ERKPP);
+  reaction_0000010: ShP => Shc; compartment_0000001 * V10 * ShP / (K10 + ShP);
+  reaction_0000011: RasGDP => RasGTP; compartment_0000001 * (k11 * ShGS * RasGDP / (K11 + RasGDP));
+  reaction_0000012: RasGTP => RasGDP; compartment_0000001 * (V12 * RasGTP / (K12 + RasGTP));
+  reaction_0000013: Raf => Rafstar; compartment_0000001 * (k13 * RasGTP * Raf / (K13 + Raf));
+  reaction_0000014: Rafstar => Raf; compartment_0000001 * k14 * (AktPIPP + E) * Rafstar / (K14 + Rafstar);
+  reaction_0000015: MEK => MEKP; compartment_0000001 * k15 * Rafstar * MEK / (K15 * (1 + MEKP / K17) + MEK);
+  reaction_0000016: MEKP => MEK; compartment_0000001 * k16 * PP2A * MEKP / (K16 * (1 + MEKPP / K18 + AktPIP / K31 + AktPIPP / K33) + MEKP);
+  reaction_0000017: MEKP => MEKPP; compartment_0000001 * k17 * Rafstar * MEKP / (K17 * (1 + MEK / K15) + MEKP);
+  reaction_0000018: MEKPP => MEKP; compartment_0000001 * k18 * PP2A * MEKPP / (K18 * (1 + MEKP / K16 + AktPIPP / K31 + AktPIPP / K33) + MEKPP);
+  reaction_0000019: ERK => ERKP; compartment_0000001 * k19 * MEKPP * ERK / (K19 * (1 + ERKP / K21) + ERK);
+  reaction_0000020: ERKP => ERK; compartment_0000001 * k20 * MKP3 * ERKP / (K20 * (1 + ERKPP / K22) + ERKP);
+  reaction_0000021: ERKP => ERKPP; compartment_0000001 * k21 * MEKPP * ERKP / (K21 * (1 + ERK / K19) + ERKP);
+  reaction_0000022: ERKPP => ERKP; compartment_0000001 * k22 * MKP3 * ERKPP / (K22 * (1 + ERKP / K20) + ERKPP);
   reaction_0000023: RP + PI3K -> RPI3K; compartment_0000001 * (k23 * RP * PI3K - k_23 * RPI3K);
   reaction_0000024: RPI3K -> RPI3Kstar; compartment_0000001 * (k24 * RPI3K - k_24 * RPI3Kstar);
   reaction_0000025: RPI3Kstar -> RP + PI3Kstar; compartment_0000001 * (k25 * RPI3Kstar - k_25 * RP * PI3Kstar);
-  reaction_0000026: PI3Kstar -> PI3K; compartment_0000001 * V26 * PI3Kstar / (K26 + PI3Kstar);
+  reaction_0000026: PI3Kstar => PI3K; compartment_0000001 * V26 * PI3Kstar / (K26 + PI3Kstar);
   reaction_0000029: PIP3 + Akt -> AktPIP3; compartment_0000001 * (k29 * PIP3 * Akt - k_29 * AktPIP3);
-  reaction_0000028: PIP3 -> P_I; compartment_0000001 * (V28 * PIP3 / (K28 + PIP3));
-  reaction_0000027: P_I -> PIP3; compartment_0000001 * k27 * PI3Kstar * P_I / (K27 + P_I);
-  reaction_0000030: AktPIP3 -> AktPIP; compartment_0000001 * V30 * AktPIP3 / (K30 * (1 + AktPIP / K32) + AktPIP3);
-  reaction_0000031: AktPIP -> AktPIP3; compartment_0000001 * k31 * PP2A * AktPIP / (K31 * (1 + MEKP / K16 + MEKPP / K18 + AktPIPP / K33) + AktPIP);
-  reaction_0000032: AktPIP -> AktPIPP; compartment_0000001 * V32 * AktPIP / (K32 * (1 + AktPIP3 / K30) + AktPIP);
-  reaction_0000033: AktPIPP -> AktPIP; compartment_0000001 * k33 * PP2A * AktPIPP / (K33 * (1 + MEKP / K16 + MEKPP / K18 + AktPIP / K31) + AktPIPP);
+  reaction_0000028: PIP3 => P_I; compartment_0000001 * (V28 * PIP3 / (K28 + PIP3));
+  reaction_0000027: P_I => PIP3; compartment_0000001 * k27 * PI3Kstar * P_I / (K27 + P_I);
+  reaction_0000030: AktPIP3 => AktPIP; compartment_0000001 * V30 * AktPIP3 / (K30 * (1 + AktPIP / K32) + AktPIP3);
+  reaction_0000031: AktPIP => AktPIP3; compartment_0000001 * k31 * PP2A * AktPIP / (K31 * (1 + MEKP / K16 + MEKPP / K18 + AktPIPP / K33) + AktPIP);
+  reaction_0000032: AktPIP => AktPIPP; compartment_0000001 * V32 * AktPIP / (K32 * (1 + AktPIP3 / K30) + AktPIP);
+  reaction_0000033: AktPIPP => AktPIP; compartment_0000001 * k33 * PP2A * AktPIPP / (K33 * (1 + MEKP / K16 + MEKPP / K18 + AktPIP / K31) + AktPIPP);
   reaction_0000034: RP -> internalization; compartment_0000001 * (k34 * RP - k_34 * internalization);
 
   // Species initializations:

@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Deineko2003_CellCycle()
 
   // Compartments and Species:
@@ -10,21 +10,21 @@ model Deineko2003_CellCycle()
   F6 := piecewise(0.044, leq(time, 60), 0);
 
   // Reactions:
-  R1:  -> y1; emax * k1 * y1 / (k1 * y1 + (k1_prime + k1_double_prime * y1) * y2);
-  R2: y1 -> ; phi1 * y1;
-  R3:  -> y2; k2 * y1;
-  R4: y2 -> y3; k3 * y2 * y5;
-  R5: y2 -> ; phi2 * y2;
-  R6: y3 -> ; phi3 * y3;
-  R7:  -> y4; k4 * y1;
-  R8:  -> y4; k4_double_prime * y6;
-  R9: y4 -> y5; k4i * y4 * y5;
-  R10: y5 -> y4; k4a * y5;
-  R11: y4 -> ; phi4i * y4;
-  R12: y5 -> ; phi4a * y5;
-  R13:  -> y6; k6 * y1;
-  R14:  -> y6; F6;
-  R15: y6 -> ; phi6 * y6;
+  R1:  => y1; emax * k1 * y1 / (k1 * y1 + (k1_prime + k1_double_prime * y1) * y2);
+  R2: y1 => ; phi1 * y1;
+  R3:  => y2; k2 * y1;
+  R4: y2 => y3; k3 * y2 * y5;
+  R5: y2 => ; phi2 * y2;
+  R6: y3 => ; phi3 * y3;
+  R7:  => y4; k4 * y1;
+  R8:  => y4; k4_double_prime * y6;
+  R9: y4 => y5; k4i * y4 * y5;
+  R10: y5 => y4; k4a * y5;
+  R11: y4 => ; phi4i * y4;
+  R12: y5 => ; phi4a * y5;
+  R13:  => y6; k6 * y1;
+  R14:  => y6; F6;
+  R15: y6 => ; phi6 * y6;
 
   // Species initializations:
   y1 = 0.014;

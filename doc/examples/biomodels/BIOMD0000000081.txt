@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Suh2004_KCNQ_regulation()
 
   // Compartments and Species:
@@ -18,7 +18,7 @@ model Suh2004_KCNQ_regulation()
   OxoSat := 1 * (1 / (1 + Koxom * (1 / (1.000000e-05 + oxoM_EX))));
   Gactive := GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M;
   ATPSat1000 := 1 * (1 / (1 + 1000 * (1 / (0.5 + ATP_C))));
-  I_KCNQ := 1.33 * pow(0.025 * PIP2xKCNQ_M, nHill);
+  I_KCNQ := 1.33 * (0.025 * PIP2xKCNQ_M)^nHill;
   fGactive := (GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M) / 200;
 
   // Reactions:

@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Wilhelm2009_BistableReaction()
 
   // Compartments and Species:
@@ -6,10 +6,10 @@ model Wilhelm2009_BistableReaction()
   species $S in batch, $P in batch, X in batch, Y in batch;
 
   // Reactions:
-  r1: $S + Y -> 2X; r1_k1 * S * Y;
-  r2: 2X -> X + Y; r2_k2 * pow(X, 2);
-  r3: X + Y -> $P + Y; r3_k3 * X * Y;
-  r4: X -> $P; r4_k4 * X;
+  r1: $S + Y => 2X; r1_k1 * S * Y;
+  r2: 2X => X + Y; r2_k2 * X^2;
+  r3: X + Y => $P + Y; r3_k3 * X * Y;
+  r4: X => $P; r4_k4 * X;
 
   // Species initializations:
   S = 1;

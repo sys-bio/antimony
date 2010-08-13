@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Swat2004_Mammalian_G1_S_Transition()
 
   // Compartments and Species:
@@ -7,28 +7,28 @@ model Swat2004_Mammalian_G1_S_Transition()
   species AP1 in cell, pRBpp in cell, CycEi in cell, CycEa in cell;
 
   // Reactions:
-  pRB_synthesis:  -> pRB; cell * k1 * (E2F1 / (Km1 + E2F1)) * (J11 / (J11 + pRB)) * (J61 / (J61 + pRBp));
-  pRB_phosphorylation: pRB -> pRBp; cell * k16 * pRB * CycDa;
-  pRBp_dephosphorylation: pRBp -> pRB; cell * k61 * pRBp;
-  pRB_degradation: pRB -> ; cell * phi_pRB * pRB;
-  E2F1_synthesis:  -> E2F1; cell * (kp + k2 * (pow(a, 2) + pow(E2F1, 2)) / (pow(Km2, 2) + pow(E2F1, 2)) * (J12 / (J12 + pRB)) * (J62 / (J62 + pRBp)));
-  E2F1_degradation: E2F1 -> ; cell * phi_E2F1 * E2F1;
-  CycD_synthesis:  -> CycDi; cell * (k3 * AP1 + k23 * E2F1 * (J13 / (J13 + pRB)) * (J63 / (J63 + pRBp)));
-  CycD_inibition: CycDa -> CycDi; cell * k43 * CycDa;
-  CycD_activation: CycDi -> CycDa; cell * k34 * CycDi * (CycDa / (Km4 + CycDa));
-  CycD_degradation: CycDi -> ; cell * phi_CycDi * CycDi;
-  CycD_degradation2: CycDa -> ; cell * phi_CycDa * CycDa;
-  AP1_synthesis:  -> AP1; cell * (Fm + k25 * E2F1 * (J15 / (J15 + pRB)) * (J65 / (J65 + pRBp)));
-  Ap1_degradation: AP1 -> ; cell * phi_AP1 * AP1;
-  pRBp_phosphorylation: pRBp -> pRBpp; cell * k67 * pRBp * CycEa;
-  pRBpp_dephosphorylation: pRBpp -> pRBp; cell * k76 * pRBpp;
-  pRBpp_degradation: pRBpp -> ; cell * phi_pRBpp * pRBpp;
-  pRBp_degradation: pRBp -> ; cell * phi_pRBp * pRBp;
-  CycE_synthesis:  -> CycEi; cell * k28 * E2F1 * (J18 / (J18 + pRB)) * (J68 / (J68 + pRBp));
-  CycE_activation: CycEi -> CycEa; cell * k89 * CycEi * CycEa / (Km9 + CycEa);
-  CycE_inibition: CycEa -> CycEi; cell * k98 * CycEa;
-  CycE_degradation: CycEi -> ; cell * phi_CycEi * CycEi;
-  CycE_degradation2: CycEa -> ; cell * phi_CycEa * CycEa;
+  pRB_synthesis:  => pRB; cell * k1 * (E2F1 / (Km1 + E2F1)) * (J11 / (J11 + pRB)) * (J61 / (J61 + pRBp));
+  pRB_phosphorylation: pRB => pRBp; cell * k16 * pRB * CycDa;
+  pRBp_dephosphorylation: pRBp => pRB; cell * k61 * pRBp;
+  pRB_degradation: pRB => ; cell * phi_pRB * pRB;
+  E2F1_synthesis:  => E2F1; cell * (kp + k2 * (a^2 + E2F1^2) / (Km2^2 + E2F1^2) * (J12 / (J12 + pRB)) * (J62 / (J62 + pRBp)));
+  E2F1_degradation: E2F1 => ; cell * phi_E2F1 * E2F1;
+  CycD_synthesis:  => CycDi; cell * (k3 * AP1 + k23 * E2F1 * (J13 / (J13 + pRB)) * (J63 / (J63 + pRBp)));
+  CycD_inibition: CycDa => CycDi; cell * k43 * CycDa;
+  CycD_activation: CycDi => CycDa; cell * k34 * CycDi * (CycDa / (Km4 + CycDa));
+  CycD_degradation: CycDi => ; cell * phi_CycDi * CycDi;
+  CycD_degradation2: CycDa => ; cell * phi_CycDa * CycDa;
+  AP1_synthesis:  => AP1; cell * (Fm + k25 * E2F1 * (J15 / (J15 + pRB)) * (J65 / (J65 + pRBp)));
+  Ap1_degradation: AP1 => ; cell * phi_AP1 * AP1;
+  pRBp_phosphorylation: pRBp => pRBpp; cell * k67 * pRBp * CycEa;
+  pRBpp_dephosphorylation: pRBpp => pRBp; cell * k76 * pRBpp;
+  pRBpp_degradation: pRBpp => ; cell * phi_pRBpp * pRBpp;
+  pRBp_degradation: pRBp => ; cell * phi_pRBp * pRBp;
+  CycE_synthesis:  => CycEi; cell * k28 * E2F1 * (J18 / (J18 + pRB)) * (J68 / (J68 + pRBp));
+  CycE_activation: CycEi => CycEa; cell * k89 * CycEi * CycEa / (Km9 + CycEa);
+  CycE_inibition: CycEa => CycEi; cell * k98 * CycEa;
+  CycE_degradation: CycEi => ; cell * phi_CycEi * CycEi;
+  CycE_degradation2: CycEa => ; cell * phi_CycEa * CycEa;
 
   // Species initializations:
   pRB = 0.1;

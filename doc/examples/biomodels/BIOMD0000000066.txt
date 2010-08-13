@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Chassagnole2001_Threonine_Synthesis()
 
   // Compartments and Species:
@@ -9,9 +9,9 @@ model Chassagnole2001_Threonine_Synthesis()
   species atp in compartment_;
 
   // Reactions:
-  vak: atp + asp -> aspp + adp; compartment_ * (vak_vm11 * (asp * atp - aspp * adp / vak_keqak) / ((vak_k11 * (1 + pow(thr / vak_k1thr, vak_nak1)) / (1 + pow(thr / (vak_alpha * vak_k1thr), vak_nak1)) + vak_k11 * aspp / vak_k1aspp + asp) * (vak_k1atp * (1 + adp / vak_k1adp) + atp)) + vak_vm13 * (asp * atp - aspp * adp / vak_keqak) / ((1 + pow(vak_lys / vak_k1lys, vak_nak3)) * (vak_k13 * (1 + aspp / vak_k13aspp) + asp) * (vak_k13atp * (1 + adp / vak_k13adp) + atp)));
+  vak: atp + asp -> aspp + adp; compartment_ * (vak_vm11 * (asp * atp - aspp * adp / vak_keqak) / ((vak_k11 * (1 + (thr / vak_k1thr)^vak_nak1) / (1 + (thr / (vak_alpha * vak_k1thr))^vak_nak1) + vak_k11 * aspp / vak_k1aspp + asp) * (vak_k1atp * (1 + adp / vak_k1adp) + atp)) + vak_vm13 * (asp * atp - aspp * adp / vak_keqak) / ((1 + (vak_lys / vak_k1lys)^vak_nak3) * (vak_k13 * (1 + aspp / vak_k13aspp) + asp) * (vak_k13atp * (1 + adp / vak_k13adp) + atp)));
   vasd: nadph + aspp -> nadp + phos + asa; compartment_ * (vasd_vm2f * (aspp * nadph - asa * nadp * phos / vasd_k2eq) / ((vasd_k2aspp * (1 + asa / vasd_k2asa) * (1 + phos / vasd_k2p) + aspp) * (vasd_k2nadph * (1 + nadp / vasd_k2nadp) + nadph)));
-  vhdh: nadph + asa -> hs + nadp; compartment_ * (vhdh_vm3f * (asa * nadph - hs * nadp / vhdh_k3eq) / ((1 + pow(thr / vhdh_k3thr, vhdh_nhdh1)) / (1 + pow(thr / (vhdh_alpha3 * vhdh_k3thr), vhdh_nhdh1)) * (vhdh_k3asa + asa + hs * vhdh_k3asa / vhdh_k3hs) * (vhdh_k3nadph * (1 + nadp / vhdh_k3nadp) + nadph)));
+  vhdh: nadph + asa -> hs + nadp; compartment_ * (vhdh_vm3f * (asa * nadph - hs * nadp / vhdh_k3eq) / ((1 + (thr / vhdh_k3thr)^vhdh_nhdh1) / (1 + (thr / (vhdh_alpha3 * vhdh_k3thr))^vhdh_nhdh1) * (vhdh_k3asa + asa + hs * vhdh_k3asa / vhdh_k3hs) * (vhdh_k3nadph * (1 + nadp / vhdh_k3nadp) + nadph)));
   vtsy: hsp -> thr + phos; compartment_ * vtsy_vm5 * hsp / (hsp + vtsy_k5hsp);
   vhk: hs + atp -> hsp + adp; compartment_ * (vhk_vm4f * hs * atp / ((1 + vhk_lys / vhk_k4lys) * (atp + vhk_k4atp * (1 + hs / vhk_k4ihs)) * (hs + vhk_k4hs * (1 + thr / vhk_k4thr) * (1 + atp / vhk_k4iatp))));
   vnadph_endo: nadph -> nadp; compartment_ * vnadph_endo_prot * vnadph_endo_knadph * nadph;

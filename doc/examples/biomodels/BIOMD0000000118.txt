@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 function GAMMAF(VV, theta, sigma)
   1 / (1 + exp(-(VV - theta) / sigma));
 end
@@ -9,10 +9,10 @@ model model_0000001()
   compartment compartment_0000001;
 
   // Assignment Rules:
-  INa := gNa * pow(Minfs, pms) * hhs * (V - VNa);
+  INa := gNa * Minfs^pms * hhs * (V - VNa);
   INaP := gNaP * Pinfs * (V - VNa);
-  IKdr := gKdr * pow(nns, pns) * (V - VK);
-  IA := gA * pow(Ainfs, 3) * bbs * (V - VK);
+  IKdr := gKdr * nns^pns * (V - VK);
+  IA := gA * Ainfs^3 * bbs * (V - VK);
   Iz := gZ * zzs * (V - VK);
   Minfs := GAMMAF(V, thetam, sigmam);
   Pinfs := GAMMAF(V, thetap, sigmap);

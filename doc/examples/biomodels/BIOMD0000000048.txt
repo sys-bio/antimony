@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Kholodenko1999_EGFRsignaling()
 
   // Compartments and Species:
@@ -15,11 +15,11 @@ model Kholodenko1999_EGFRsignaling()
   v1: R + EGF -> Ra; (v1_k1f * R * EGF - v1_k1b * Ra) * compartment_;
   v2: 2Ra -> R2; (v2_k2f * Ra * Ra - v2_k2b * R2) * compartment_;
   v3: R2 -> RP; (v3_k3f * R2 - v3_k3b * RP) * compartment_;
-  v4: RP -> R2; v4_V4 * RP / (v4_K4 + RP) * compartment_;
+  v4: RP => R2; v4_V4 * RP / (v4_K4 + RP) * compartment_;
   v5: RP + PLCg -> RPLCg; (v5_k5f * RP * PLCg - v5_k5b * RPLCg) * compartment_;
   v6: RPLCg -> RPLCgP; (v6_k6f * RPLCg - v6_k6b * RPLCgP) * compartment_;
   v7: RPLCgP -> PLCgP + RP; (v7_k7f * RPLCgP - v7_k7b * RP * PLCgP) * compartment_;
-  v8: PLCgP -> PLCg; v8_V8 * PLCgP / (v8_K8 + PLCgP) * compartment_;
+  v8: PLCgP => PLCg; v8_V8 * PLCgP / (v8_K8 + PLCgP) * compartment_;
   v9: Grb + RP -> RG; (v9_k9f * RP * Grb - v9_k9b * RG) * compartment_;
   v10: RG + SOS -> RGS; (v10_k10f * RG * SOS - v10_k10b * RGS) * compartment_;
   v11: RGS -> GS + RP; (v11_k11f * RGS - v11_k11b * RP * GS) * compartment_;
@@ -27,7 +27,7 @@ model Kholodenko1999_EGFRsignaling()
   v13: Shc + RP -> RSh; (v13_k13f * RP * Shc - v13_k13b * RSh) * compartment_;
   v14: RSh -> RShP; (v14_k14f * RSh - v14_k14b * RShP) * compartment_;
   v15: RShP -> RP + ShP; (v15_k15f * RShP - v15_k15b * ShP * RP) * compartment_;
-  v16: ShP -> Shc; v16_V16 * ShP / (v16_K16 + ShP) * compartment_;
+  v16: ShP => Shc; v16_V16 * ShP / (v16_K16 + ShP) * compartment_;
   v17: RShP + Grb -> RShG; (v17_k17f * RShP * Grb - v17_k17b * RShG) * compartment_;
   v18: RShG -> ShG + RP; (v18_k18f * RShG - v18_k18b * RP * ShG) * compartment_;
   v19: SOS + RShG -> RShGS; (v19_k19f * RShG * SOS - v19_k19b * RShGS) * compartment_;
