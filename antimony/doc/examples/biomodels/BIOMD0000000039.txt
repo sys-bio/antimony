@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins()
 
   // Compartments and Species:
@@ -7,13 +7,13 @@ model Marhl_Calcium_Oscillations_role_of_mitochondria_and_cytosolic_proteins()
   species CaPr in Cytosol, Pr in Cytosol;
 
   // Reactions:
-  v1: 0.25CaER -> Ca_cyt; Cytosol * (v1_Kch * pow(Ca_cyt, 2) * (CaER - Ca_cyt) / (pow(v1_K1, 2) + pow(Ca_cyt, 2)));
-  v3: 0.25CaER -> Ca_cyt; Cytosol * v3_Kleak * (CaER - Ca_cyt);
-  v5: Ca_cyt -> 0.25CaER; Endoplasmic_Reticulum * v5_Kpump * Ca_cyt;
-  v7: 0.25CaM -> Ca_cyt; Cytosol * CaM * (v7_Kout * pow(Ca_cyt, 2) / (pow(v7_K3, 2) + pow(Ca_cyt, 2)) + v7_Km);
-  v9: Ca_cyt -> 0.25CaM; Mitochondria * (v9_Kin * pow(Ca_cyt, 8) / (pow(v9_K2, 8) + pow(Ca_cyt, 8)));
-  v11: CaPr -> Pr + Ca_cyt; Cytosol * v11_Kminus * CaPr;
-  v12: Pr + Ca_cyt -> CaPr; Cytosol * v12_Kplus * Ca_cyt * Pr;
+  v1: 0.25CaER => Ca_cyt; Cytosol * (v1_Kch * Ca_cyt^2 * (CaER - Ca_cyt) / (v1_K1^2 + Ca_cyt^2));
+  v3: 0.25CaER => Ca_cyt; Cytosol * v3_Kleak * (CaER - Ca_cyt);
+  v5: Ca_cyt => 0.25CaER; Endoplasmic_Reticulum * v5_Kpump * Ca_cyt;
+  v7: 0.25CaM => Ca_cyt; Cytosol * CaM * (v7_Kout * Ca_cyt^2 / (v7_K3^2 + Ca_cyt^2) + v7_Km);
+  v9: Ca_cyt => 0.25CaM; Mitochondria * (v9_Kin * Ca_cyt^8 / (v9_K2^8 + Ca_cyt^8));
+  v11: CaPr => Pr + Ca_cyt; Cytosol * v11_Kminus * CaPr;
+  v12: Pr + Ca_cyt => CaPr; Cytosol * v12_Kplus * Ca_cyt * Pr;
 
   // Species initializations:
   Ca_cyt = 0.35;

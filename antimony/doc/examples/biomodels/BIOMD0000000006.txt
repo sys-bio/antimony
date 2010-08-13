@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Tyson1991CellModel_2()
 
   // Compartments and Species:
@@ -6,9 +6,9 @@ model Tyson1991CellModel_2()
   species $EmptySet in cell, u in cell, z in cell;
 
   // Reactions:
-  Reaction1: $EmptySet -> z; Reaction1_kappa;
-  Reaction2: u -> $EmptySet; Reaction2_k6 * u;
-  Reaction3: z -> u; Reaction3_k4 * z * (Reaction3_k4prime / Reaction3_k4 + pow(u, 2));
+  Reaction1: $EmptySet => z; Reaction1_kappa;
+  Reaction2: u => $EmptySet; Reaction2_k6 * u;
+  Reaction3: z => u; Reaction3_k4 * z * (Reaction3_k4prime / Reaction3_k4 + u^2);
 
   // Species initializations:
   EmptySet = 1;

@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Akman2008_Circadian_Clock_Model2()
 
   // Compartments and Species:
@@ -15,30 +15,30 @@ model Akman2008_Circadian_Clock_Model2()
   WC1_tot := PW + PWL + E1W + E2W;
 
   // Reactions:
-  MFtrn:  -> MF; a1 * pow(PWL, n) / ((1 + (PF + PFp) / b1) * (pow(PWL, n) + pow(b2, n))) + a2 * pow(PW, m) / ((1 + (PF + PFp) / b3) * (pow(PW, m) + pow(b4, m)));
-  MFdeg: MF -> ; d1 * MF / (MF + b5);
-  E1Ftrl:  -> E1F; a3 * MF;
-  E1Fdeg: E1F -> ; gam1 * E1F;
-  E2Ftrl: E1F -> E2F; f1 * E1F;
-  E2Fdeg: E2F -> ; gam1 * E2F;
-  PFtrl: E2F -> PF; f1 * E2F;
-  PFdeg: PF -> ; d2 * PF;
-  MWtrn:  -> MW; a4 + a5 * pow(PWL, k) / (pow(PWL, k) + pow(b7, k));
-  MWdeg: MW -> ; d3 * MW / (MW + b8);
-  E1Wtrl:  -> E1W; (a6 + a7 * (PF + PFp)) * MW;
-  E1Wdeg: E1W -> ; gam2 * E1W;
-  E2Wtrl: E1W -> E2W; f2 * E1W;
-  E2Wdeg: E2W -> ; gam2 * E2W;
-  PWtrl: E2W -> PW; f2 * E2W;
-  PWdeg: PW -> ; d4 * PW / (PW + b9);
+  MFtrn:  => MF; a1 * PWL^n / ((1 + (PF + PFp) / b1) * (PWL^n + b2^n)) + a2 * PW^m / ((1 + (PF + PFp) / b3) * (PW^m + b4^m));
+  MFdeg: MF => ; d1 * MF / (MF + b5);
+  E1Ftrl:  => E1F; a3 * MF;
+  E1Fdeg: E1F => ; gam1 * E1F;
+  E2Ftrl: E1F => E2F; f1 * E1F;
+  E2Fdeg: E2F => ; gam1 * E2F;
+  PFtrl: E2F => PF; f1 * E2F;
+  PFdeg: PF => ; d2 * PF;
+  MWtrn:  => MW; a4 + a5 * PWL^k / (PWL^k + b7^k);
+  MWdeg: MW => ; d3 * MW / (MW + b8);
+  E1Wtrl:  => E1W; (a6 + a7 * (PF + PFp)) * MW;
+  E1Wdeg: E1W => ; gam2 * E1W;
+  E2Wtrl: E1W => E2W; f2 * E1W;
+  E2Wdeg: E2W => ; gam2 * E2W;
+  PWtrl: E2W => PW; f2 * E2W;
+  PWdeg: PW => ; d4 * PW / (PW + b9);
   PWtrs: PW -> PWL; r1 * amp * PW * (1 + tanh(24 * (time - 24 * floor(time / 24) - dawn))) * (1 - tanh(24 * (time - 24 * floor(time / 24) - dusk))) / 4 - r2 * PWL;
-  PWLdeg: PWL -> ; d5 * PWL / (PWL + b10);
-  E1Fptrl:  -> E1Fp; a3p * MF;
-  E1Fpdeg: E1Fp -> ; gam1p * E1Fp;
-  E2Fptrl: E1Fp -> E2Fp; f1p * E1Fp;
-  E2Fpdeg: E2Fp -> ; gam1p * E2Fp;
-  PFptrl: E2Fp -> PFp; f1p * E2Fp;
-  PFpdeg: PFp -> ; d2p * PFp;
+  PWLdeg: PWL => ; d5 * PWL / (PWL + b10);
+  E1Fptrl:  => E1Fp; a3p * MF;
+  E1Fpdeg: E1Fp => ; gam1p * E1Fp;
+  E2Fptrl: E1Fp => E2Fp; f1p * E1Fp;
+  E2Fpdeg: E2Fp => ; gam1p * E2Fp;
+  PFptrl: E2Fp => PFp; f1p * E2Fp;
+  PFpdeg: PFp => ; d2p * PFp;
 
   // Species initializations:
   E1F = 0.43076;

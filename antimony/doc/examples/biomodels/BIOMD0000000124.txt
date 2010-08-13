@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model model_0000001()
 
   // Compartments and Species:
@@ -22,7 +22,7 @@ model model_0000001()
   minf := 1 / (1 + exp((vm - V) / sm));
   ninf := 1 / (1 + exp((vn - V) / sn));
   ainf := 1 / (1 + exp((r - c) / sa));
-  w := pow(c, 5) / (pow(c, 5) + pow(kd, 5));
+  w := c^5 / (c^5 + kd^5);
   jmem := -(alpha * ica + kpmca * c);
   jserca := kserca * c;
   jleak := pleak * (cer - c);
@@ -38,8 +38,8 @@ model model_0000001()
   rIR' = (rIRinf - rIR) / tauIRr;
 
   // Reactions:
-  reaction_0000005:  -> c; cell * fcyt * (jmem + jer);
-  reaction_0000006:  -> cer; -fer * vcytver * jer * cell;
+  reaction_0000005:  => c; cell * fcyt * (jmem + jer);
+  reaction_0000006:  => cer; -fer * vcytver * jer * cell;
 
   // Events:
   event_0000001: at gt(time, 3.000000e+04): gkatp = 530;

@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Zatorsky2006_p53_Model5()
 
   // Compartments and Species:
@@ -6,10 +6,10 @@ model Zatorsky2006_p53_Model5()
   species x in compartment_, y in compartment_, y0 in compartment_;
 
   // Reactions:
-  R1:  -> x; compartment_ * Theta * x * psi;
-  R3: x -> ; compartment_ * alpha_xy * y * x;
-  R4:  -> y0; compartment_ * beta_y * x * psi;
-  R5: y0 -> y; compartment_ * alpha_0 * y0;
+  R1:  => x; compartment_ * Theta * x * psi;
+  R3: x => ; compartment_ * alpha_xy * y * x;
+  R4:  => y0; compartment_ * beta_y * x * psi;
+  R5: y0 => y; compartment_ * alpha_0 * y0;
   R6: y -> ; compartment_ * alpha_y * y;
 
   // Species initializations:

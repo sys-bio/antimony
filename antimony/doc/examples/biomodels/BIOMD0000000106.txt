@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Yang2007_ArachidonicAcid()
 
   // Compartments and Species:
@@ -10,7 +10,7 @@ model Yang2007_ArachidonicAcid()
   species x6 in cell, x7 in cell, x8 in cell, x9 in cell;
 
   // Reactions:
-  R1:  -> x1; cell * K15 * x15 * lin * (1 + x4 / KI19 + x2 / KI20 + x13 / KI21 + x11 / KI22) / (lin + k15 * (1 + x1 / ks));
+  R1:  => x1; cell * K15 * x15 * lin * (1 + x4 / KI19 + x2 / KI20 + x13 / KI21 + x11 / KI22) / (lin + k15 * (1 + x1 / ks));
   R2: x1 -> x2; cell * K16 * x16 * x1 / (x1 + k16 * (1 + x2 / ks));
   R3: x2 -> x3; cell * K24 * x24 * x2 / (x2 + k24 * (1 + x3 / ks));
   R4: x1 -> x4; cell * K17 * x17 * x1 / (x1 + k17 * (1 + x4 / ki18 + x3 / ki16 + x4 / ks));
@@ -18,30 +18,30 @@ model Yang2007_ArachidonicAcid()
   R6: x1 -> x6; cell * K18 * x18 * x1 / (x1 + k18 * (1 + x7 / ki3 + x6 / ks));
   R7: x6 -> x7; cell * K19 * x19 * x6 / (x6 + k19 * (1 + x1 / ki1 + x3 / ki2 + x7 / ks));
   R8: x6 -> x8; cell * K20 * x20 * x6 / (x6 + k20 * (1 + x8 / ks));
-  R9:  -> x9; kd8 * x8 * cell;
+  R9:  => x9; kd8 * x8 * cell;
   R10: x1 -> x10; cell * K21 * x21 * x1 / (x1 + k21 * (1 + x5 / ki7 + x3 / ki8 + x7 / ki11 + x11 / ki12 + x10 / ks));
   R11: x10 -> x11; cell * K24 * x24 * x10 / (x10 + k24 * (1 + x11 / ks));
   R12: x10 -> x12; cell * K21 * x21 * x10 / (x10 + k21 * (1 + x5 / ki7 + x3 / ki8 + x7 / ki11 + x11 / ki12 + x12 / ks));
   R13: x12 -> x13; cell * K22 * x22 * x12 / (x12 + k22 * (1 + x13 / ks));
   R14: x13 -> x14; cell * K23 * x23 * x13 / (x13 + k23 * (1 + x5 / ki14 + x11 / ki15 + x14 / ks));
-  R16:  -> x16; cell * a24 * x7 * x7 / (x7 * x7 + KI24 * KI24);
-  R17: x17 -> ; cell * ki17 * x2 * x17;
-  R20: x20 -> ; ki4 * x2 * x20 * cell;
-  R21:  -> x21; cell * KI23 * x13 * x21;
-  R22: x22 -> ; cell * K22 * x22 * x12 / ((x12 + k22) * 129);
-  R18: x9 -> ; kd9 * x9 * cell;
-  R19: x20 -> ; cell * ki5 * x6 * x20;
-  R25: x8 -> ; cell * kd8 * x8;
-  R24: x13 -> ; cell * kd13 * x13;
-  R23: x12 -> ; cell * x12 * kd12;
-  R26: x3 -> ; kd3 * x3 * cell;
-  R27: x2 -> ; kd2 * cell * x2;
-  R28: x16 -> ; cell * kd16 * x16;
-  R29: x11 -> ; kd11 * x11 * cell;
-  R30: x21 -> ; cell * ki9 * x12 * x21;
-  R31: x21 -> ; cell * ki10 * x10 * x21;
-  R32: x21 -> ; cell * ki6 * x21 * x2;
-  R34: x1 -> ; 0.1 * x1 * cell;
+  R16:  => x16; cell * a24 * x7 * x7 / (x7 * x7 + KI24 * KI24);
+  R17: x17 => ; cell * ki17 * x2 * x17;
+  R20: x20 => ; ki4 * x2 * x20 * cell;
+  R21:  => x21; cell * KI23 * x13 * x21;
+  R22: x22 => ; cell * K22 * x22 * x12 / ((x12 + k22) * 129);
+  R18: x9 => ; kd9 * x9 * cell;
+  R19: x20 => ; cell * ki5 * x6 * x20;
+  R25: x8 => ; cell * kd8 * x8;
+  R24: x13 => ; cell * kd13 * x13;
+  R23: x12 => ; cell * x12 * kd12;
+  R26: x3 => ; kd3 * x3 * cell;
+  R27: x2 => ; kd2 * cell * x2;
+  R28: x16 => ; cell * kd16 * x16;
+  R29: x11 => ; kd11 * x11 * cell;
+  R30: x21 => ; cell * ki9 * x12 * x21;
+  R31: x21 => ; cell * ki10 * x10 * x21;
+  R32: x21 => ; cell * ki6 * x21 * x2;
+  R34: x1 => ; 0.1 * x1 * cell;
 
   // Species initializations:
   x1 = 0.001;

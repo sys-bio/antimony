@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Zatorsky2006_p53_Model2()
 
   // Compartments and Species:
@@ -9,11 +9,11 @@ model Zatorsky2006_p53_Model2()
   fx := beta_x * flag1 + beta_x / M * flag2 + flag3 * beta_x / M * (1 + (M - 1) * ((x - xmin) / (xmax - xmin)));
 
   // Reactions:
-  R1:  -> x; compartment_ * fx * psi;
-  R2: x -> ; compartment_ * alpha_x * x;
-  R3: x -> ; compartment_ * alpha_xy * y * x;
-  R4:  -> y0; compartment_ * beta_y * x * psi;
-  R5: y0 -> y; compartment_ * alpha_0 * y0;
+  R1:  => x; compartment_ * fx * psi;
+  R2: x => ; compartment_ * alpha_x * x;
+  R3: x => ; compartment_ * alpha_xy * y * x;
+  R4:  => y0; compartment_ * beta_y * x * psi;
+  R5: y0 => y; compartment_ * alpha_0 * y0;
   R6: y -> ; compartment_ * alpha_y * y;
 
   // Events:

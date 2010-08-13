@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Markevich2004_MAPK_orderedelementary()
 
   // Compartments and Species:
@@ -9,14 +9,14 @@ model Markevich2004_MAPK_orderedelementary()
 
   // Reactions:
   v1a: M + MAPKK -> M_MAPKK; uVol * (k1 * M * MAPKK - k_1 * M_MAPKK);
-  v1b: M_MAPKK -> Mp + MAPKK; uVol * k2 * M_MAPKK;
+  v1b: M_MAPKK => Mp + MAPKK; uVol * k2 * M_MAPKK;
   v2a: Mp + MAPKK -> Mp_MAPKK; uVol * (k3 * Mp * MAPKK - k_3 * Mp_MAPKK);
-  v2b: Mp_MAPKK -> Mpp + MAPKK; uVol * k4 * Mp_MAPKK;
+  v2b: Mp_MAPKK => Mpp + MAPKK; uVol * k4 * Mp_MAPKK;
   v3a: Mpp + MKP3 -> Mpp_MKP3; uVol * (h1 * Mpp * MKP3 - h_1 * Mpp_MKP3);
-  v3b: Mpp_MKP3 -> Mp_MKP3_dep; uVol * h2 * Mpp_MKP3;
+  v3b: Mpp_MKP3 => Mp_MKP3_dep; uVol * h2 * Mpp_MKP3;
   v3c: Mp_MKP3_dep -> Mp + MKP3; h3 * Mp_MKP3_dep - h_3 * Mp * MKP3;
   v4a: Mp + MKP3 -> Mp_MKP3; uVol * (h4 * Mp * MKP3 - h_4 * Mp_MKP3);
-  v4b: Mp_MKP3 -> M_MKP3; uVol * h5 * Mp_MKP3;
+  v4b: Mp_MKP3 => M_MKP3; uVol * h5 * Mp_MKP3;
   v4c: M_MKP3 -> M + MKP3; uVol * (h6 * M_MKP3 - h_6 * M * MKP3);
 
   // Species initializations:

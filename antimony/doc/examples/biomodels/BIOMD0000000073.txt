@@ -1,6 +1,6 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 function function_3(Vs, B, n, K)
-  Vs * pow(B, n) / (pow(K, n) + pow(B, n));
+  Vs * B^n / (K^n + B^n);
 end
 
 function function_2(V, substrate, Km)
@@ -12,7 +12,7 @@ function function_1(k, mRNA)
 end
 
 function function_0(vsb, K, m, Bn)
-  vsb * pow(K, m) / (pow(K, m) + pow(Bn, m));
+  vsb * K^m / (K^m + Bn^m);
 end
 
 model Model_1()
@@ -25,54 +25,54 @@ model Model_1()
   species species_12 in cell, species_13 in cell, species_14 in cell, species_15 in cell;
 
   // Reactions:
-  reaction_0:  -> species_0; cell * function_0(reaction_0_vsb, reaction_0_K, reaction_0_m, species_3);
-  reaction_1:  -> species_1; cell * function_1(reaction_1_k, species_0);
-  reaction_2: species_0 -> ; cell * reaction_2_k1 * species_0;
-  reaction_3: species_1 -> species_2; cell * function_2(reaction_3_V, species_1, reaction_3_Km);
+  reaction_0:  => species_0; cell * function_0(reaction_0_vsb, reaction_0_K, reaction_0_m, species_3);
+  reaction_1:  => species_1; cell * function_1(reaction_1_k, species_0);
+  reaction_2: species_0 => ; cell * reaction_2_k1 * species_0;
+  reaction_3: species_1 => species_2; cell * function_2(reaction_3_V, species_1, reaction_3_Km);
   reaction_4: species_1 -> species_3; cell * (reaction_4_k1 * species_1 - reaction_4_k2 * species_3);
-  reaction_5:  -> species_4; cell * function_1(reaction_5_k, species_5);
-  reaction_6: species_5 -> ; cell * reaction_6_k1 * species_5;
-  reaction_7: species_4 -> species_6; cell * function_2(reaction_7_V, species_4, reaction_7_Km);
-  reaction_8: species_6 -> ; cell * function_2(reaction_8_V, species_6, reaction_8_Km);
-  reaction_9:  -> species_7; cell * function_3(reaction_9_Vs, species_3, reaction_9_n, reaction_9_K);
-  reaction_10:  -> species_8; cell * function_1(reaction_10_k, species_7);
-  reaction_11: species_9 -> ; cell * function_2(reaction_11_V, species_9, reaction_11_Km);
-  reaction_12: species_8 -> species_9; cell * function_2(reaction_12_V, species_8, reaction_12_Km);
+  reaction_5:  => species_4; cell * function_1(reaction_5_k, species_5);
+  reaction_6: species_5 => ; cell * reaction_6_k1 * species_5;
+  reaction_7: species_4 => species_6; cell * function_2(reaction_7_V, species_4, reaction_7_Km);
+  reaction_8: species_6 => ; cell * function_2(reaction_8_V, species_6, reaction_8_Km);
+  reaction_9:  => species_7; cell * function_3(reaction_9_Vs, species_3, reaction_9_n, reaction_9_K);
+  reaction_10:  => species_8; cell * function_1(reaction_10_k, species_7);
+  reaction_11: species_9 => ; cell * function_2(reaction_11_V, species_9, reaction_11_Km);
+  reaction_12: species_8 => species_9; cell * function_2(reaction_12_V, species_8, reaction_12_Km);
   reaction_13: species_4 + species_8 -> species_10; cell * (reaction_13_k1 * species_4 * species_8 - reaction_13_k2 * species_10);
-  reaction_14: species_10 -> species_11; cell * function_2(reaction_14_V, species_10, reaction_14_Km);
-  reaction_15: species_11 -> ; cell * function_2(reaction_15_V, species_11, reaction_15_Km);
+  reaction_14: species_10 => species_11; cell * function_2(reaction_14_V, species_10, reaction_14_Km);
+  reaction_15: species_11 => ; cell * function_2(reaction_15_V, species_11, reaction_15_Km);
   reaction_16: species_10 -> species_12; cell * (reaction_16_k1 * species_10 - reaction_16_k2 * species_12);
-  reaction_17: species_14 -> ; cell * reaction_17_k1 * species_14;
-  reaction_18: species_2 -> ; cell * reaction_18_k1 * species_2;
-  reaction_19: species_13 -> ; cell * reaction_19_k1 * species_13;
-  reaction_20:  -> species_5; cell * function_3(reaction_20_Vs, species_3, reaction_20_n, reaction_20_K);
-  reaction_21: species_12 -> species_14; cell * function_2(reaction_21_V, species_12, reaction_21_Km);
-  reaction_22: species_7 -> ; cell * reaction_22_k1 * species_7;
+  reaction_17: species_14 => ; cell * reaction_17_k1 * species_14;
+  reaction_18: species_2 => ; cell * reaction_18_k1 * species_2;
+  reaction_19: species_13 => ; cell * reaction_19_k1 * species_13;
+  reaction_20:  => species_5; cell * function_3(reaction_20_Vs, species_3, reaction_20_n, reaction_20_K);
+  reaction_21: species_12 => species_14; cell * function_2(reaction_21_V, species_12, reaction_21_Km);
+  reaction_22: species_7 => ; cell * reaction_22_k1 * species_7;
   reaction_23: species_12 + species_3 -> species_15; cell * (reaction_23_k1 * species_12 * species_3 - reaction_23_k2 * species_15);
-  reaction_24: species_0 -> ; cell * function_2(reaction_24_V, species_0, reaction_24_Km);
-  reaction_25: species_5 -> ; cell * function_2(reaction_25_V, species_5, reaction_25_Km);
-  reaction_26: species_7 -> ; cell * function_2(reaction_26_V, species_7, reaction_26_Km);
-  reaction_27: species_8 -> ; cell * reaction_27_k1 * species_8;
-  reaction_28: species_4 -> ; cell * reaction_28_k1 * species_4;
-  reaction_29: species_9 -> ; cell * reaction_29_k1 * species_9;
-  reaction_30: species_6 -> ; cell * reaction_30_k1 * species_6;
-  reaction_31: species_11 -> ; cell * reaction_31_k1 * species_11;
-  reaction_32: species_10 -> ; cell * reaction_32_k1 * species_10;
-  reaction_33: species_14 -> ; cell * function_2(reaction_33_V, species_14, reaction_33_Km);
-  reaction_34: species_1 -> ; cell * reaction_34_k1 * species_1;
-  reaction_35: species_2 -> ; cell * function_2(reaction_35_V, species_2, reaction_35_Km);
-  reaction_36: species_3 -> species_13; cell * function_2(reaction_36_V, species_3, reaction_36_Km);
-  reaction_37: species_13 -> ; cell * function_2(reaction_37_V, species_13, reaction_37_Km);
-  reaction_38: species_15 -> ; cell * reaction_38_k1 * species_15;
-  reaction_39: species_15 -> ; cell * function_2(reaction_39_V, species_15, reaction_39_Km);
-  reaction_40: species_3 -> ; cell * reaction_40_k1 * species_3;
-  reaction_41: species_2 -> species_1; cell * function_2(reaction_41_V, species_2, reaction_41_Km);
-  reaction_42: species_13 -> species_3; cell * function_2(reaction_42_V, species_13, reaction_42_Km);
-  reaction_43: species_6 -> species_4; cell * function_2(reaction_43_V, species_6, reaction_43_Km);
-  reaction_44: species_9 -> species_8; cell * function_2(reaction_44_V, species_9, reaction_44_Km);
-  reaction_45: species_14 -> species_12; cell * function_2(reaction_45_V, species_14, reaction_45_Km);
-  reaction_46: species_12 -> ; cell * reaction_46_k1 * species_12;
-  reaction_47: species_11 -> species_10; cell * function_2(reaction_47_V, species_11, reaction_47_Km);
+  reaction_24: species_0 => ; cell * function_2(reaction_24_V, species_0, reaction_24_Km);
+  reaction_25: species_5 => ; cell * function_2(reaction_25_V, species_5, reaction_25_Km);
+  reaction_26: species_7 => ; cell * function_2(reaction_26_V, species_7, reaction_26_Km);
+  reaction_27: species_8 => ; cell * reaction_27_k1 * species_8;
+  reaction_28: species_4 => ; cell * reaction_28_k1 * species_4;
+  reaction_29: species_9 => ; cell * reaction_29_k1 * species_9;
+  reaction_30: species_6 => ; cell * reaction_30_k1 * species_6;
+  reaction_31: species_11 => ; cell * reaction_31_k1 * species_11;
+  reaction_32: species_10 => ; cell * reaction_32_k1 * species_10;
+  reaction_33: species_14 => ; cell * function_2(reaction_33_V, species_14, reaction_33_Km);
+  reaction_34: species_1 => ; cell * reaction_34_k1 * species_1;
+  reaction_35: species_2 => ; cell * function_2(reaction_35_V, species_2, reaction_35_Km);
+  reaction_36: species_3 => species_13; cell * function_2(reaction_36_V, species_3, reaction_36_Km);
+  reaction_37: species_13 => ; cell * function_2(reaction_37_V, species_13, reaction_37_Km);
+  reaction_38: species_15 => ; cell * reaction_38_k1 * species_15;
+  reaction_39: species_15 => ; cell * function_2(reaction_39_V, species_15, reaction_39_Km);
+  reaction_40: species_3 => ; cell * reaction_40_k1 * species_3;
+  reaction_41: species_2 => species_1; cell * function_2(reaction_41_V, species_2, reaction_41_Km);
+  reaction_42: species_13 => species_3; cell * function_2(reaction_42_V, species_13, reaction_42_Km);
+  reaction_43: species_6 => species_4; cell * function_2(reaction_43_V, species_6, reaction_43_Km);
+  reaction_44: species_9 => species_8; cell * function_2(reaction_44_V, species_9, reaction_44_Km);
+  reaction_45: species_14 => species_12; cell * function_2(reaction_45_V, species_14, reaction_45_Km);
+  reaction_46: species_12 => ; cell * reaction_46_k1 * species_12;
+  reaction_47: species_11 => species_10; cell * function_2(reaction_47_V, species_11, reaction_47_Km);
 
   // Species initializations:
   species_0 = 9;

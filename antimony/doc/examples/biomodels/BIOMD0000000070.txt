@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Holzhutter2004_Erythrocyte_Metabolism()
 
   // Compartments and Species:
@@ -23,7 +23,7 @@ model Holzhutter2004_Erythrocyte_Metabolism()
   vGLT: $Glcout -> Glcin; compartment_ * (vGLT_Vmaxv0 / vGLT_KMoutv0 * (Glcout - Glcin / vGLT_Keqv0) / (1 + Glcout / vGLT_KMoutv0 + Glcin / vGLT_KMinv0 + vGLT_alfav0 * Glcout * Glcin / vGLT_KMoutv0 / vGLT_KMinv0));
   vHEX: Glcin + MgATP -> Glc6P + MgADP; compartment_ * (vHEX_Inhibv1 * Glcin / (Glcin + vHEX_KMGlcv1) * (vHEX_Vmax1v1 / vHEX_KMgATPv1) * (MgATP + vHEX_Vmax2v1 / vHEX_Vmax1v1 * MgATP * Mgf / vHEX_KMgATPMgv1 - Glc6P * MgADP / vHEX_Keqv1) / (1 + MgATP / vHEX_KMgATPv1 * (1 + Mgf / vHEX_KMgATPMgv1) + Mgf / vHEX_KMgv1 + (1.55 + Glc6P / vHEX_KGlc6Pv1) * (1 + Mgf / vHEX_KMgv1) + (Gri23P2f + MgGri23P2) / vHEX_K23P2Gv1 + Mgf * (Gri23P2f + MgGri23P2) / (vHEX_KMgv1 * vHEX_KMg23P2Gv1)));
   vGPI: Glc6P -> Fru6P; compartment_ * (vGPI_Vmaxv2 * (Glc6P - Fru6P / vGPI_Keqv2) / (Glc6P + vGPI_KGlc6Pv2 * (1 + Fru6P / vGPI_KFru6Pv2)));
-  vPFK: MgATP + Fru6P -> Fru16P2 + MgADP; compartment_ * (vPFK_Vmaxv3 * (Fru6P * MgATP - Fru16P2 * MgADP / vPFK_Keqv3) / ((Fru6P + vPFK_KFru6Pv3) * (MgATP + vPFK_KMgATPv3) * (1 + vPFK_L0v3 * pow((1 + ATPf / vPFK_KATPv3) * (1 + Mgf / vPFK_KMgv3) / ((1 + (AMPf + MgAMP) / vPFK_KAMPv3) * (1 + Fru6P / vPFK_KFru6Pv3)), 4))));
+  vPFK: MgATP + Fru6P -> Fru16P2 + MgADP; compartment_ * (vPFK_Vmaxv3 * (Fru6P * MgATP - Fru16P2 * MgADP / vPFK_Keqv3) / ((Fru6P + vPFK_KFru6Pv3) * (MgATP + vPFK_KMgATPv3) * (1 + vPFK_L0v3 * ((1 + ATPf / vPFK_KATPv3) * (1 + Mgf / vPFK_KMgv3) / ((1 + (AMPf + MgAMP) / vPFK_KAMPv3) * (1 + Fru6P / vPFK_KFru6Pv3)))^4)));
   vALD: Fru16P2 -> GraP + DHAP; compartment_ * (vALD_Vmaxv4 / vALD_KFru16P2v4 * (Fru16P2 - GraP * DHAP / vALD_Keqv4) / (1 + Fru16P2 / vALD_KFru16P2v4 + GraP / vALD_KiGraPv4 + DHAP * (GraP + vALD_KGraPv4) / (vALD_KDHAPv4 * vALD_KiGraPv4) + Fru16P2 * GraP / (vALD_KFru16P2v4 * vALD_KiiGraPv4)));
   vTPI: DHAP -> GraP; compartment_ * (vTPI_Vmaxv5 * (DHAP - GraP / vTPI_Keqv5) / (DHAP + vTPI_KDHAPv5 * (1 + GraP / vTPI_KGraPv5)));
   vGAPDH: GraP + Phi + NAD -> NADH + Gri13P2; compartment_ * (vGAPDH_Vmaxv6 / (vGAPDH_KNADv6 * vGAPDH_KGraPv6 * vGAPDH_KPv6) * (NAD * GraP * Phi - Gri13P2 * NADH / vGAPDH_Keqv6) / ((1 + NAD / vGAPDH_KNADv6) * (1 + GraP / vGAPDH_KGraPv6) * (1 + Phi / vGAPDH_KPv6) + (1 + NADH / vGAPDH_KNADHv6) * (1 + Gri13P2 / vGAPDH_K13P2Gv6) - 1));
@@ -32,14 +32,14 @@ model Holzhutter2004_Erythrocyte_Metabolism()
   vBPGP: Gri23P2f -> Gri3P + Phi; compartment_ * (vBPGP_Vmaxv9 * (Gri23P2f + MgGri23P2 - Gri3P / vBPGP_Keqv9) / (Gri23P2f + MgGri23P2 + vBPGP_K23P2Gv9));
   vPGM: Gri3P -> Gri2P; compartment_ * (vPGM_Vmaxv10 * (Gri3P - Gri2P / vPGM_Keqv10) / (Gri3P + vPGM_K3PGv10 * (1 + Gri2P / vPGM_K2PGv10)));
   vENO: Gri2P -> PEP; compartment_ * (vENO_Vmaxv11 * (Gri2P - PEP / vENO_Keqv11) / (Gri2P + vENO_K2PGv11 * (1 + PEP / vENO_KPEPv11)));
-  vPK: PEP + MgADP -> MgATP + Pyr; compartment_ * (vPK_Vmaxv12 * (PEP * MgADP - Pyr * MgATP / vPK_Keqv12) / ((PEP + vPK_KPEPv12) * (MgADP + vPK_KMgADPv12) * (1 + vPK_L0v12 * pow(1 + (ATPf + MgATP) / vPK_KATPv12, 4) / (pow(1 + PEP / vPK_KPEPv12, 4) * pow(1 + Fru16P2 / vPK_KFru16P2v12, 4)))));
+  vPK: PEP + MgADP -> MgATP + Pyr; compartment_ * (vPK_Vmaxv12 * (PEP * MgADP - Pyr * MgATP / vPK_Keqv12) / ((PEP + vPK_KPEPv12) * (MgADP + vPK_KMgADPv12) * (1 + vPK_L0v12 * (1 + (ATPf + MgATP) / vPK_KATPv12)^4 / ((1 + PEP / vPK_KPEPv12)^4 * (1 + Fru16P2 / vPK_KFru16P2v12)^4))));
   vLDHNADH: NADH + Pyr -> Lac + NAD; compartment_ * vLDHNADH_Vmaxv13 * (Pyr * NADH - Lac * NAD / vLDHNADH_Keqv13);
   vLDHNADPH: Pyr + NADPHf -> Lac + NADPf; compartment_ * vLDHNADPH_kLDHv14 * (Pyr * NADPHf - Lac * NADPf / vLDHNADPH_Keqv14);
   vATPase: MgATP -> Phi + MgADP; compartment_ * vATPase_kATPasev15 * MgATP;
-  vAK: MgATP + AMPf -> ADPf + MgADP; compartment_ * (vAK_Vmaxv16 / (vAK_KATPv16 * vAK_KAMPv16) * (MgATP * AMPf - MgADP * ADPf / vAK_Keqv16) / ((1 + MgATP / vAK_KATPv16) * (1 + AMPf / vAK_KAMPv16) + (MgADP + ADPf) / vAK_KADPv16 + MgADP * ADPf / pow(vAK_KADPv16, 2)));
+  vAK: MgATP + AMPf -> ADPf + MgADP; compartment_ * (vAK_Vmaxv16 / (vAK_KATPv16 * vAK_KAMPv16) * (MgATP * AMPf - MgADP * ADPf / vAK_Keqv16) / ((1 + MgATP / vAK_KATPv16) * (1 + AMPf / vAK_KAMPv16) + (MgADP + ADPf) / vAK_KADPv16 + MgADP * ADPf / vAK_KADPv16^2));
   vG6PDH: Glc6P + NADPf -> GlcA6P + NADPHf; compartment_ * (vG6PDH_Vmaxv17 / vG6PDH_KG6Pv17 / vG6PDH_KNADPv17 * (Glc6P * NADPf - GlcA6P * NADPHf / vG6PDH_Keqv17) / (1 + NADPf * (1 + Glc6P / vG6PDH_KG6Pv17) / vG6PDH_KNADPv17 + (ATPf + MgATP) / vG6PDH_KATPv17 + NADPHf / vG6PDH_KNADPHv17 + (Gri23P2f + MgGri23P2) / vG6PDH_KPGA23v17));
   vPGLDH: GlcA6P + NADPf -> Rul5P + NADPHf; compartment_ * (vPGLDH_Vmaxv18 / vPGLDH_K6PG1v18 / vPGLDH_KNADPv18 * (GlcA6P * NADPf - Rul5P * NADPHf / vPGLDH_Keqv18) / ((1 + NADPf / vPGLDH_KNADPv18) * (1 + GlcA6P / vPGLDH_K6PG1v18 + (Gri23P2f + MgGri23P2) / vPGLDH_KPGA23v18) + (ATPf + MgATP) / vPGLDH_KATPv18 + NADPHf * (1 + GlcA6P / vPGLDH_K6PG2v18) / vPGLDH_KNADPHv18));
-  vGSSGRD: GSSG + NADPHf -> 2GSH + NADPf; compartment_ * (vGSSGRD_Vmaxv19 * (GSSG * NADPHf / (vGSSGRD_KGSSGv19 * vGSSGRD_KNADPHv19) - pow(GSH, 2) / pow(vGSSGRD_KGSHv19, 2) * NADPf / (vGSSGRD_KNADPv19 * vGSSGRD_Keqv19)) / (1 + NADPHf * (1 + GSSG / vGSSGRD_KGSSGv19) / vGSSGRD_KNADPHv19 + NADPf / vGSSGRD_KNADPv19 * (1 + GSH * (1 + GSH / vGSSGRD_KGSHv19) / vGSSGRD_KGSHv19)));
+  vGSSGRD: GSSG + NADPHf -> 2GSH + NADPf; compartment_ * (vGSSGRD_Vmaxv19 * (GSSG * NADPHf / (vGSSGRD_KGSSGv19 * vGSSGRD_KNADPHv19) - GSH^2 / vGSSGRD_KGSHv19^2 * NADPf / (vGSSGRD_KNADPv19 * vGSSGRD_Keqv19)) / (1 + NADPHf * (1 + GSSG / vGSSGRD_KGSSGv19) / vGSSGRD_KNADPHv19 + NADPf / vGSSGRD_KNADPv19 * (1 + GSH * (1 + GSH / vGSSGRD_KGSHv19) / vGSSGRD_KGSHv19)));
   vGSHox: 2GSH -> GSSG; compartment_ * vGSHox_Kv20 * GSH;
   vRibPepi: Rul5P -> Xul5P; compartment_ * (vRibPepi_Vmaxv21 * (Rul5P - Xul5P / vRibPepi_Keqv21) / (Rul5P + vRibPepi_KRu5Pv21 * (1 + Xul5P / vRibPepi_KX5Pv21)));
   vRibPiso: Rul5P -> Rib5P; compartment_ * (vRibPiso_Vmaxv22 * (Rul5P - Rib5P / vRibPiso_Keqv22) / (Rul5P + vRibPiso_KRu5Pv22 * (1 + Rib5P / vRibPiso_KR5Pv22)));

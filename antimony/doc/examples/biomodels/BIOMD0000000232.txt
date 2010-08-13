@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Nazaret2009_TCA_RC_ATP()
 
   // Compartments and Species:
@@ -23,18 +23,18 @@ model Nazaret2009_TCA_RC_ATP()
   DeltaPsi' = (10 * Jresp - 3 * JATP - Jleak - JANT) / C;
 
   // Reactions:
-  v1:  -> Pyr; mitochondrion * v1_k1;
-  v2: Pyr + NAD -> AcCoA + $NADH; mitochondrion * v2_k2 * Pyr * NAD;
-  v3: OAA + AcCoA -> Cit; mitochondrion * v3_k3 * OAA * AcCoA;
-  v4: Cit + NAD -> KG + $NADH; mitochondrion * v4_k4 * Cit * NAD;
-  v5: KG + $ADP + 2NAD -> OAA + ATP + 2$NADH; mitochondrion * v5_k5 * KG * NAD * (At_ - ATP);
+  v1:  => Pyr; mitochondrion * v1_k1;
+  v2: Pyr + NAD => AcCoA + $NADH; mitochondrion * v2_k2 * Pyr * NAD;
+  v3: OAA + AcCoA => Cit; mitochondrion * v3_k3 * OAA * AcCoA;
+  v4: Cit + NAD => KG + $NADH; mitochondrion * v4_k4 * Cit * NAD;
+  v5: KG + $ADP + 2NAD => OAA + ATP + 2$NADH; mitochondrion * v5_k5 * KG * NAD * (At_ - ATP);
   v6: OAA -> KG; mitochondrion * v6_k6 * (OAA - KG / v6_Keq);
-  v7: Pyr + ATP -> OAA + $ADP; mitochondrion * v7_k7 * Pyr * ATP;
-  v8: OAA -> ; mitochondrion * v8_k8 * OAA;
-  vresp: $NADH + 0.5$O2 + 11$H -> NAD + $H2O + 10$He; mitochondrion * Jresp;
+  v7: Pyr + ATP => OAA + $ADP; mitochondrion * v7_k7 * Pyr * ATP;
+  v8: OAA => ; mitochondrion * v8_k8 * OAA;
+  vresp: $NADH + 0.5$O2 + 11$H => NAD + $H2O + 10$He; mitochondrion * Jresp;
   vATP: $ADP + $iP + 3$He -> ATP + $H2O + 3$H; mitochondrion * JATP;
-  vANT: ATP -> $ADP; mitochondrion * JANT;
-  vleak: $He -> $H; mitochondrion * Jleak;
+  vANT: ATP => $ADP; mitochondrion * JANT;
+  vleak: $He => $H; mitochondrion * Jleak;
 
   // Species initializations:
   ATP = 3.536;

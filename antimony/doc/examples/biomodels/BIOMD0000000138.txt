@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model model_0000001()
 
   // Compartments and Species:
@@ -11,7 +11,7 @@ model model_0000001()
   phih := 1 / (1 + exp((V - vh) / sh));
   phif := 1 / (1 + exp((vf - V) / sf));
   phical := 1 / (1 + exp((vm - V) / sm));
-  cinf := pow(c, 2) / (pow(c, 2) + pow(ks, 2));
+  cinf := c^2 / (c^2 + ks^2);
   ica := gcal * phical * (V - vca);
   isk := gsk * cinf * (V - vk);
   ibk := gf * phif * (V - vk);
@@ -25,7 +25,7 @@ model model_0000001()
   V' = -(ica + ik) / Cm;
 
   // Reactions:
-  reaction_0000004:  -> c; -ff * (alpha * ica + kc * c) * cell;
+  reaction_0000004:  => c; -ff * (alpha * ica + kc * c) * cell;
 
   // Species initializations:
   c = 0.3;

@@ -1,6 +1,6 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 function GK(A1, A2, A3, A4)
-  2 * A4 * A1 / (A2 - A1 + A3 * A2 + A4 * A1 + root(2, pow(A2 - A1 + A3 * A2 + A4 * A1, 2) - 4 * (A2 - A1) * A4 * A1));
+  2 * A4 * A1 / (A2 - A1 + A3 * A2 + A4 * A1 + root(2, (A2 - A1 + A3 * A2 + A4 * A1)^2 - 4 * (A2 - A1) * A4 * A1));
 end
 
 model Tyson2001_Cell_Cycle_Regulation()
@@ -12,32 +12,32 @@ model Tyson2001_Cell_Cycle_Regulation()
   species SK in cell;
 
   // Assignment Rules:
-  CycB := CycBt - 2 * CycBt * CKIt / (CycBt + CKIt + 1 / Keq + pow(pow(CycBt + CKIt + 1 / Keq, 2) - 4 * CycBt * CKIt, 1 / 2));
-  Trimer := 2 * CycBt * CKIt / (CycBt + CKIt + 1 / Keq + pow(pow(CycBt + CKIt + 1 / Keq, 2) - 4 * CycBt * CKIt, 1 / 2));
+  CycB := CycBt - 2 * CycBt * CKIt / (CycBt + CKIt + 1 / Keq + ((CycBt + CKIt + 1 / Keq)^2 - 4 * CycBt * CKIt)^(1 / 2));
+  Trimer := 2 * CycBt * CKIt / (CycBt + CKIt + 1 / Keq + ((CycBt + CKIt + 1 / Keq)^2 - 4 * CycBt * CKIt)^(1 / 2));
   Mad := 1;
   TF := GK(k15p * m + k15pp * SK, k16p + k16pp * m * CycB, J15, J16);
 
   // Reactions:
-  CycBt_synthesis:  -> CycBt; k1;
-  CycBdegradation: CycBt -> ; k2p * CycBt;
-  CycBdegradationviaCdh1: CycBt -> ; k2pp * Cdh1 * CycBt;
-  CycBtdegradationviaCdc20a: CycBt -> ; k2ppp * Cdc20a * CycBt;
-  Cdh1synthesis:  -> Cdh1; (k3p + k3pp * Cdc20a) * (1 - Cdh1) / (J3 + 1 - Cdh1);
-  Cdh1degradation: Cdh1 -> ; (k4p * SK * Cdh1 + k4 * m * CycB * Cdh1) / (J4 + Cdh1);
-  Cdc20tsynthesis:  -> Cdc20t; k5p + k5pp * pow(CycB * m / J5, n) / (1 + pow(CycB * m / J5, n));
-  Cdc20t_deg: Cdc20t -> ; k6 * Cdc20t;
-  Cdc20activation:  -> Cdc20a; k7 * IEP * (Cdc20t - Cdc20a) / (J7 + Cdc20t - Cdc20a);
-  Cdc20ainhibition: Cdc20a -> ; k8 * Mad * Cdc20a / (J8 + Cdc20a);
-  Cdc20adegradation: Cdc20a -> ; k6 * Cdc20a;
-  IEPsynthesis:  -> IEP; k9 * m * CycB * (1 - IEP);
-  IEPdegradation: IEP -> ; k10 * IEP;
-  growth:  -> m; mu * m * (1 - m / mmax);
-  CKItsynthesis:  -> CKIt; k11;
-  CKIdegradation: CKIt -> ; k12p * CKIt;
-  CKItphosphorilationviaSK: CKIt -> ; k12pp * SK * CKIt;
-  eq_7: CKIt -> ; k12ppp * m * CycB * CKIt;
-  SKsynthesis:  -> SK; k13 * TF;
-  SKdegradation: SK -> ; k14 * SK;
+  CycBt_synthesis:  => CycBt; k1;
+  CycBdegradation: CycBt => ; k2p * CycBt;
+  CycBdegradationviaCdh1: CycBt => ; k2pp * Cdh1 * CycBt;
+  CycBtdegradationviaCdc20a: CycBt => ; k2ppp * Cdc20a * CycBt;
+  Cdh1synthesis:  => Cdh1; (k3p + k3pp * Cdc20a) * (1 - Cdh1) / (J3 + 1 - Cdh1);
+  Cdh1degradation: Cdh1 => ; (k4p * SK * Cdh1 + k4 * m * CycB * Cdh1) / (J4 + Cdh1);
+  Cdc20tsynthesis:  => Cdc20t; k5p + k5pp * (CycB * m / J5)^n / (1 + (CycB * m / J5)^n);
+  Cdc20t_deg: Cdc20t => ; k6 * Cdc20t;
+  Cdc20activation:  => Cdc20a; k7 * IEP * (Cdc20t - Cdc20a) / (J7 + Cdc20t - Cdc20a);
+  Cdc20ainhibition: Cdc20a => ; k8 * Mad * Cdc20a / (J8 + Cdc20a);
+  Cdc20adegradation: Cdc20a => ; k6 * Cdc20a;
+  IEPsynthesis:  => IEP; k9 * m * CycB * (1 - IEP);
+  IEPdegradation: IEP => ; k10 * IEP;
+  growth:  => m; mu * m * (1 - m / mmax);
+  CKItsynthesis:  => CKIt; k11;
+  CKIdegradation: CKIt => ; k12p * CKIt;
+  CKItphosphorilationviaSK: CKIt => ; k12pp * SK * CKIt;
+  eq_7: CKIt => ; k12ppp * m * CycB * CKIt;
+  SKsynthesis:  => SK; k13 * TF;
+  SKdegradation: SK => ; k14 * SK;
 
   // Events:
   Cell_division: at 0 after lt(CycB, 0.1): m = m / 2;

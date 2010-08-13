@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model TaeHwanKim2007_Cellular_Memory_Symmetric_Model()
 
   // Compartments and Species:
@@ -12,25 +12,25 @@ model TaeHwanKim2007_Cellular_Memory_Symmetric_Model()
   i2 := piecewise(1, and(geq(time, 175), leq(time, 225)), 0);
 
   // Reactions:
-  React1:  -> R1; i1;
-  React2: R1 -> ; d_R1 * R1;
-  React3:  -> P1; sP1R1 * R1;
-  React4: P1 -> ; d_P1 * P1;
-  React5:  -> P1_prime; sP1_prime_P1 * P1;
-  React6:  -> P1_prime; s1 / (1 + pow(P2_prime, n));
-  React7:  -> P1_prime; s3 / (1 + pow(P3_prime, n));
-  React8: P1_prime -> ; d_P1_prime * P1_prime;
-  React9:  -> R2; i2;
-  React10: R2 -> ; d_R2 * R2;
-  React11:  -> P2; sP2R2 * R2;
-  React12: P2 -> ; d_P2 * P2;
-  React13:  -> P2_prime; sP2_prime_P2 * P2;
-  React14:  -> P2_prime; s2 / (1 + pow(P1_prime, n));
-  React15: P2_prime -> ; d_P2_prime * P2_prime;
-  React16:  -> P3_prime; sP3_prime_P2_prime * (pow(P2_prime, n) / (1 + pow(P2_prime, n)));
-  React17: P3_prime -> ; d_P3_prime * P3_prime;
-  React18:  -> P2_prime; s3 / (1 + pow(P4_prime, n));
-  React19:  -> P4_prime; sP4_prime_P1_prime * (pow(P1_prime, n) / (1 + pow(P1_prime, n)));
+  React1:  => R1; i1;
+  React2: R1 => ; d_R1 * R1;
+  React3:  => P1; sP1R1 * R1;
+  React4: P1 => ; d_P1 * P1;
+  React5:  => P1_prime; sP1_prime_P1 * P1;
+  React6:  => P1_prime; s1 / (1 + P2_prime^n);
+  React7:  => P1_prime; s3 / (1 + P3_prime^n);
+  React8: P1_prime => ; d_P1_prime * P1_prime;
+  React9:  => R2; i2;
+  React10: R2 => ; d_R2 * R2;
+  React11:  => P2; sP2R2 * R2;
+  React12: P2 => ; d_P2 * P2;
+  React13:  => P2_prime; sP2_prime_P2 * P2;
+  React14:  => P2_prime; s2 / (1 + P1_prime^n);
+  React15: P2_prime => ; d_P2_prime * P2_prime;
+  React16:  => P3_prime; sP3_prime_P2_prime * (P2_prime^n / (1 + P2_prime^n));
+  React17: P3_prime => ; d_P3_prime * P3_prime;
+  React18:  -> P2_prime; s3 / (1 + P4_prime^n);
+  React19:  -> P4_prime; sP4_prime_P1_prime * (P1_prime^n / (1 + P1_prime^n));
   React20: P4_prime -> ; d_P4_prime * P4_prime;
 
   // Species initializations:

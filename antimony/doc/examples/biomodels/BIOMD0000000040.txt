@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Field1974_Oregonator()
 
   // Compartments and Species:
@@ -6,11 +6,11 @@ model Field1974_Oregonator()
   species Br in BZ, $BrO3 in BZ, Ce in BZ, HBrO2 in BZ, $HOBr in BZ;
 
   // Reactions:
-  Reaction1: Br + $BrO3 -> HBrO2 + $HOBr; Br * BrO3 * Reaction1_k1 * BZ;
-  Reaction2: Br + HBrO2 -> 2$HOBr; Br * HBrO2 * Reaction2_k2 * BZ;
-  Reaction3: $BrO3 + HBrO2 -> Ce + 2HBrO2; BrO3 * HBrO2 * Reaction3_k3 * BZ;
-  Reaction4: 2HBrO2 -> $BrO3 + $HOBr; pow(HBrO2, 2) * Reaction4_k4 * BZ;
-  Reaction5: Ce -> Br; Ce * Reaction5_k5 * BZ;
+  Reaction1: Br + $BrO3 => HBrO2 + $HOBr; Br * BrO3 * Reaction1_k1 * BZ;
+  Reaction2: Br + HBrO2 => 2$HOBr; Br * HBrO2 * Reaction2_k2 * BZ;
+  Reaction3: $BrO3 + HBrO2 => Ce + 2HBrO2; BrO3 * HBrO2 * Reaction3_k3 * BZ;
+  Reaction4: 2HBrO2 => $BrO3 + $HOBr; HBrO2^2 * Reaction4_k4 * BZ;
+  Reaction5: Ce => Br; Ce * Reaction5_k5 * BZ;
 
   // Species initializations:
   Br = 1e-07;

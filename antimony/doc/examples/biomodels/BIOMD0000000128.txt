@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model model_0000001()
 
   // Compartments and Species:
@@ -16,12 +16,12 @@ model model_0000001()
   hinfer := 1 / (1 + c / dinh);
   jerp := kserca * c;
   binf := IP3 / (IP3 + dip3);
-  o := pow(ainf, 3) * pow(binf, 3) * pow(hinfer, 3);
+  o := ainf^3 * binf^3 * hinfer^3;
   jerleak := perl * (cer - c);
   jerip3 := o * (cer - c);
   jertot := jerleak + jerip3 - jerp;
   jmemtot := -(alpha * ica + kc * c);
-  perl_inf := inh * cAMP * pow(c, 4) / (pow(ki, 4) + pow(c, 4));
+  perl_inf := inh * cAMP * c^4 / (ki^4 + c^4);
 
   // Rate Rules:
   h' = (hinf - h) / tauh;
@@ -30,9 +30,9 @@ model model_0000001()
   n' = lambda_ * (ninf - n) / taun;
 
   // Reactions:
-  reaction_0000001:  -> c; cell * f * (jertot + jmemtot);
-  reaction_0000002:  -> cer; -fer * sigmav * jertot * cell;
-  reaction_000003:  -> cAMP; cell * ETswitch * ((cAMPlow - cAMP) / taudir);
+  reaction_0000001:  => c; cell * f * (jertot + jmemtot);
+  reaction_0000002:  => cer; -fer * sigmav * jertot * cell;
+  reaction_000003:  => cAMP; cell * ETswitch * ((cAMPlow - cAMP) / taudir);
 
   // Events:
   event_0000001: at gt(time, 60000): ETswitch = 1, girk = 3000, IP3 = 0.3;

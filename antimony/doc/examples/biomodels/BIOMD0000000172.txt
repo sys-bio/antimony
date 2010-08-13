@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Pritchard2002_glycolysis()
 
   // Compartments and Species:
@@ -11,10 +11,10 @@ model Pritchard2002_glycolysis()
   species $Succinate in cell;
 
   // Reactions:
-  HXT: $GLCo -> GLCi; HXT_Vmax_1 * (GLCo - GLCi) / HXT_Kglc_1 / (1 + (GLCo + GLCi) / HXT_Kglc_1 + HXT_Ki_1 * GLCo * GLCi / pow(HXT_Kglc_1, 2));
+  HXT: $GLCo -> GLCi; HXT_Vmax_1 * (GLCo - GLCi) / HXT_Kglc_1 / (1 + (GLCo + GLCi) / HXT_Kglc_1 + HXT_Ki_1 * GLCo * GLCi / HXT_Kglc_1^2);
   HK: GLCi + ATP -> G6P + ADP; cell * HK_Vmax_2 * (GLCi * ATP / (HK_Kglc_2 * HK_Katp_2) - G6P * ADP / (HK_Kglc_2 * HK_Katp_2 * HK_Keq_2)) / ((1 + GLCi / HK_Kglc_2 + G6P / HK_Kg6p_2) * (1 + ATP / HK_Katp_2 + ADP / HK_Kadp_2));
   PGI: G6P -> F6P; cell * PGI_Vmax_3 * (G6P / PGI_Kg6p_3 - F6P / (PGI_Kg6p_3 * PGI_Keq_3)) / (1 + G6P / PGI_Kg6p_3 + F6P / PGI_Kf6p_3);
-  PFK: ATP + F6P -> ADP + F16bP; cell * PFK_Vmax_4 * (PFK_gR_4 * (F6P / PFK_Kf6p_4) * (ATP / PFK_Katp_4) * (1 + F6P / PFK_Kf6p_4 + ATP / PFK_Katp_4 + PFK_gR_4 * F6P / PFK_Kf6p_4 * ATP / PFK_Katp_4) / (pow(1 + F6P / PFK_Kf6p_4 + ATP / PFK_Katp_4 + PFK_gR_4 * F6P / PFK_Kf6p_4 * ATP / PFK_Katp_4, 2) + PFK_L0_4 * pow((1 + PFK_Ciatp_4 * ATP / PFK_Kiatp_4) / (1 + ATP / PFK_Kiatp_4), 2) * pow((1 + PFK_Camp_4 * AMP / PFK_Kamp_4) / (1 + AMP / PFK_Kamp_4), 2) * pow((1 + PFK_Cf26_4 * F26bP / PFK_Kf26_4 + PFK_Cf16_4 * F16bP / PFK_Kf16_4) / (1 + F26bP / PFK_Kf26_4 + F16bP / PFK_Kf16_4), 2) * pow(1 + PFK_Catp_4 * ATP / PFK_Katp_4, 2)));
+  PFK: ATP + F6P => ADP + F16bP; cell * PFK_Vmax_4 * (PFK_gR_4 * (F6P / PFK_Kf6p_4) * (ATP / PFK_Katp_4) * (1 + F6P / PFK_Kf6p_4 + ATP / PFK_Katp_4 + PFK_gR_4 * F6P / PFK_Kf6p_4 * ATP / PFK_Katp_4) / ((1 + F6P / PFK_Kf6p_4 + ATP / PFK_Katp_4 + PFK_gR_4 * F6P / PFK_Kf6p_4 * ATP / PFK_Katp_4)^2 + PFK_L0_4 * ((1 + PFK_Ciatp_4 * ATP / PFK_Kiatp_4) / (1 + ATP / PFK_Kiatp_4))^2 * ((1 + PFK_Camp_4 * AMP / PFK_Kamp_4) / (1 + AMP / PFK_Kamp_4))^2 * ((1 + PFK_Cf26_4 * F26bP / PFK_Kf26_4 + PFK_Cf16_4 * F16bP / PFK_Kf16_4) / (1 + F26bP / PFK_Kf26_4 + F16bP / PFK_Kf16_4))^2 * (1 + PFK_Catp_4 * ATP / PFK_Katp_4)^2));
   ALD: F16bP -> DHAP + GAP; cell * ALD_Vmax_5 * (F16bP / ALD_Kf16bp_5 - DHAP * GAP / (ALD_Kf16bp_5 * ALD_Keq_5)) / (1 + F16bP / ALD_Kf16bp_5 + DHAP / ALD_Kdhap_5 + GAP / ALD_Kgap_5 + F16bP * GAP / (ALD_Kf16bp_5 * ALD_Kigap_5) + DHAP * GAP / (ALD_Kdhap_5 * ALD_Kgap_5));
   TPI: DHAP -> GAP; cell * (TPI_k1_6 * DHAP - TPI_k2_6 * GAP);
   GAPDH: GAP + NAD -> BPG + NADH; cell * GAPDH_C_7 * (GAPDH_Vmaxf_7 * GAP * NAD / (GAPDH_Kgap_7 * GAPDH_Knad_7) - GAPDH_Vmaxr_7 * BPG * NADH / (GAPDH_Kbpg_7 * GAPDH_Knadh_7)) / ((1 + GAP / GAPDH_Kgap_7 + BPG / GAPDH_Kbpg_7) * (1 + NAD / GAPDH_Knad_7 + NADH / GAPDH_Knadh_7));
@@ -22,14 +22,14 @@ model Pritchard2002_glycolysis()
   PGM: P3G -> P2G; cell * PGM_Vmax_9 * (P3G / PGM_Kp3g_9 - P2G / (PGM_Kp3g_9 * PGM_Keq_9)) / (1 + P3G / PGM_Kp3g_9 + P2G / PGM_Kp2g_9);
   ENO: P2G -> PEP; cell * ENO_Vmax_10 * (P2G / ENO_Kp2g_10 - PEP / (ENO_Kp2g_10 * ENO_Keq_10)) / (1 + P2G / ENO_Kp2g_10 + PEP / ENO_Kpep_10);
   PYK: ADP + PEP -> ATP + PYR; cell * PYK_Vmax_11 * (PEP * ADP / (PYK_Kpep_11 * PYK_Kadp_11) - PYR * ATP / (PYK_Kpep_11 * PYK_Kadp_11 * PYK_Keq_11)) / ((1 + PEP / PYK_Kpep_11 + PYR / PYK_Kpyr_11) * (1 + ADP / PYK_Kadp_11 + ATP / PYK_Katp_11));
-  PDC: PYR -> AcAld + $CO2; cell * PDC_Vmax_12 * pow(PYR / PDC_Kpyr_12, PDC_nH_12) / (1 + pow(PYR / PDC_Kpyr_12, PDC_nH_12));
+  PDC: PYR => AcAld + $CO2; cell * PDC_Vmax_12 * (PYR / PDC_Kpyr_12)^PDC_nH_12 / (1 + (PYR / PDC_Kpyr_12)^PDC_nH_12);
   ADH: NAD + $EtOH -> NADH + AcAld; cell * ADH_Vmax_13 * (EtOH * NAD / (ADH_Ketoh_13 * ADH_Kinad_13) - AcAld * NADH / (ADH_Ketoh_13 * ADH_Kinad_13 * ADH_Keq_13)) / (1 + NAD / ADH_Kinad_13 + EtOH * ADH_Knad_13 / (ADH_Kinad_13 * ADH_Ketoh_13) + AcAld * ADH_Knadh_13 / (ADH_Kinadh_13 * ADH_Kacald_13) + NADH / ADH_Kinadh_13 + EtOH * NAD / (ADH_Kinad_13 * ADH_Ketoh_13) + NAD * AcAld * ADH_Knadh_13 / (ADH_Kinad_13 * ADH_Kinadh_13 * ADH_Kacald_13) + EtOH * NADH * ADH_Knad_13 / (ADH_Kinad_13 * ADH_Kinadh_13 * ADH_Ketoh_13) + AcAld * NADH / (ADH_Kacald_13 * ADH_Kinadh_13) + EtOH * NAD * AcAld / (ADH_Kinad_13 * ADH_Kiacald_13 * ADH_Ketoh_13) + EtOH * AcAld * NADH / (ADH_Kietoh_13 * ADH_Kinadh_13 * ADH_Kacald_13));
-  ATPase: ATP -> ADP; cell * ATPase_Katpase_14 * ATP;
+  ATPase: ATP => ADP; cell * ATPase_Katpase_14 * ATP;
   AK: 2ADP -> ATP + AMP; cell * (AK_k1_15 * ADP * ADP - AK_k2_15 * ATP * AMP);
-  G3PDH: DHAP + NADH -> NAD + $Glycerol; cell * G3PDH_Vmax_16 * (DHAP / G3PDH_Kdhap_16 * (NADH / G3PDH_Knadh_16) - Glycerol / G3PDH_Kdhap_16 * (NAD / G3PDH_Knadh_16) * (1 / G3PDH_Keq_16)) / ((1 + DHAP / G3PDH_Kdhap_16 + Glycerol / G3PDH_Kglycerol_16) * (1 + NADH / G3PDH_Knadh_16 + NAD / G3PDH_Knad_16));
-  Glycogen_Branch: ATP + G6P -> ADP + $Glycogen; cell * Glycogen_Branch_KGLYCOGEN_17;
-  Trehalose_Branch: ATP + 2G6P -> ADP + $Trehalose; cell * Trehalose_Branch_Ktrehalose_18;
-  Succinate_Branch: 3NAD + 2AcAld -> 3NADH + $Succinate; cell * Succinate_Branch_k_19 * AcAld;
+  G3PDH: DHAP + NADH => NAD + $Glycerol; cell * G3PDH_Vmax_16 * (DHAP / G3PDH_Kdhap_16 * (NADH / G3PDH_Knadh_16) - Glycerol / G3PDH_Kdhap_16 * (NAD / G3PDH_Knadh_16) * (1 / G3PDH_Keq_16)) / ((1 + DHAP / G3PDH_Kdhap_16 + Glycerol / G3PDH_Kglycerol_16) * (1 + NADH / G3PDH_Knadh_16 + NAD / G3PDH_Knad_16));
+  Glycogen_Branch: ATP + G6P => ADP + $Glycogen; cell * Glycogen_Branch_KGLYCOGEN_17;
+  Trehalose_Branch: ATP + 2G6P => ADP + $Trehalose; cell * Trehalose_Branch_Ktrehalose_18;
+  Succinate_Branch: 3NAD + 2AcAld => 3NADH + $Succinate; cell * Succinate_Branch_k_19 * AcAld;
 
   // Species initializations:
   GLCo = 2;

@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model ErbB()
 
   // Compartments and Species:
@@ -126,22 +126,22 @@ model ErbB()
   EGF_binding_to_E1PT: E1_PT -> E_E1_PT; membrane * (kon86 * E * E1_PT - EGF_off * E_E1_PT);
   HRG_binding_to_E4PT: E4_PT -> H_E4_PT; membrane * (kon87 * H * E4_PT - HRGoff_4 * H_E4_PT);
   PTP1B_binding_to_SigAP: SigAP + T -> SigAP_T + SigT; membrane * (2 * kon88 * SigAP * T - koff88 * SigAP_T);
-  E11P_Degradation: E11P -> Empty; membrane * kdeg * E11P;
-  E11G_Degradation: E11G + SigG -> G; membrane * kdeg * E11G;
-  E11S_Degradation: E11S + SigS -> S; membrane * kdeg * E11S;
-  E11R_Degradation: E11R + SigR -> R; membrane * kdeg * E11R;
-  E11T_Degradation: E11T + SigT -> T; membrane * kdeg * E11T;
-  mwbbde76d1_155c_4264_8447_4457527547cb: Empty -> fint; membrane * a98 * (-fint + b98);
+  E11P_Degradation: E11P => Empty; membrane * kdeg * E11P;
+  E11G_Degradation: E11G + SigG => G; membrane * kdeg * E11G;
+  E11S_Degradation: E11S + SigS => S; membrane * kdeg * E11S;
+  E11R_Degradation: E11R + SigR => R; membrane * kdeg * E11R;
+  E11T_Degradation: E11T + SigT => T; membrane * kdeg * E11T;
+  mwbbde76d1_155c_4264_8447_4457527547cb: Empty => fint; membrane * a98 * (-fint + b98);
   EGF_in_EC_compartment: E -> Empty; membrane * ((kon1 * E * E1 - EGF_off * E_E1 + kon86 * E * E1_PT - EGF_off * E_E1_PT) / VeVc);
   HRG_in_EC_compartment: H -> Empty; membrane * ((kon87 * H * E4_PT - HRGoff_4 * H_E4_PT + kon2 * H * E3 - HRGoff_3 * H_E3 + kon3 * H * E4 - HRGoff_4 * H_E4) / VeVc);
   ERK_binding_to_MEKstar_1: ERK + MEKstar -> ERK_MEKstar; membrane * (kon89 * ERK * MEKstar - koff89 * ERK_MEKstar);
-  pERK_production: ERK_MEKstar -> pERK + MEKstar; membrane * kcat90 * ERK_MEKstar;
+  pERK_production: ERK_MEKstar => pERK + MEKstar; membrane * kcat90 * ERK_MEKstar;
   ERK_binding_to_MEKstar_2: pERK + MEKstar -> pERK_MEKstar; membrane * (kon91 * pERK * MEKstar - koff91 * pERK_MEKstar);
-  ERKstar_production: pERK_MEKstar -> ERKstar + MEKstar; membrane * kcat92 * pERK_MEKstar;
+  ERKstar_production: pERK_MEKstar => ERKstar + MEKstar; membrane * kcat92 * pERK_MEKstar;
   ERKstar_binding_to_Phosphatase: ERKstar + ERKpase -> ERKstar_ERKpase; membrane * (kon93 * ERKstar * ERKpase - koff93 * ERKstar_ERKpase);
-  ERKstar_dephosphorylation: ERKstar_ERKpase -> pERK + ERKpase; membrane * kcat94 * ERKstar_ERKpase;
+  ERKstar_dephosphorylation: ERKstar_ERKpase => pERK + ERKpase; membrane * kcat94 * ERKstar_ERKpase;
   pERK_binding_to_Phosphatase: pERK + ERKpase -> pERK_ERKpase; membrane * (kon95 * pERK * ERKpase - koff95 * pERK_ERKpase);
-  pERK_dephosphorylation: pERK_ERKpase -> ERK + ERKpase; membrane * kcat96 * pERK_ERKpase;
+  pERK_dephosphorylation: pERK_ERKpase => ERK + ERKpase; membrane * kcat96 * pERK_ERKpase;
 
   // Species initializations:
   E1 = 274;

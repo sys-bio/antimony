@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model model_0000001()
 
   // Compartments and Species:
@@ -7,13 +7,13 @@ model model_0000001()
   species $MKP3 in cell;
 
   // Reactions:
-  v1: M -> MpY; cell * (kcat1 * MEK * M / Km1 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
-  v2: MpY -> Mpp; cell * (kcat2 * MEK * MpY / Km2 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
-  v3: M -> MpT; cell * (kcat3 * MEK * M / Km3 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
-  v4: MpT -> Mpp; cell * (kcat4 * MEK * MpT / Km4 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
-  v5: Mpp -> MpT; cell * (kcat5 * MKP3 * Mpp / Km5 / (1 + Mpp / Km5 + MpT / Km6 + MpY / Km7 + M / Km8));
-  v6: MpT -> M; cell * (kcat6 * MKP3 * MpT / Km6 / (1 + Mpp / Km5 + MpT / Km6 + MpY / Km7 + M / Km8));
-  v7: MpY -> M; cell * (kcat7 * MKP3 * MpY / Km7 / (1 + Mpp / Km5 + MpT / Km6 + MpY / Km7 + M / Km8));
+  v1: M => MpY; cell * (kcat1 * MEK * M / Km1 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
+  v2: MpY => Mpp; cell * (kcat2 * MEK * MpY / Km2 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
+  v3: M => MpT; cell * (kcat3 * MEK * M / Km3 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
+  v4: MpT => Mpp; cell * (kcat4 * MEK * MpT / Km4 / (1 + M * ((Km1 + Km3) / (Km1 * Km3)) + MpY / Km2 + MpT / Km4));
+  v5: Mpp => MpT; cell * (kcat5 * MKP3 * Mpp / Km5 / (1 + Mpp / Km5 + MpT / Km6 + MpY / Km7 + M / Km8));
+  v6: MpT => M; cell * (kcat6 * MKP3 * MpT / Km6 / (1 + Mpp / Km5 + MpT / Km6 + MpY / Km7 + M / Km8));
+  v7: MpY => M; cell * (kcat7 * MKP3 * MpY / Km7 / (1 + Mpp / Km5 + MpT / Km6 + MpY / Km7 + M / Km8));
 
   // Species initializations:
   M = 800;

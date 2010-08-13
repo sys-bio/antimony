@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Hoefnagel2002_PyruvateBranches()
 
   // Compartments and Species:
@@ -11,20 +11,20 @@ model Hoefnagel2002_PyruvateBranches()
   species $Butanediol in compartment_, $O2 in compartment_, $PO4 in compartment_;
 
   // Reactions:
-  R1: ADP + NAD + $halfglucose -> ATP + NADH + pyruvate; R1_V_1 * (halfglucose / R1_Kglc_1) * (NAD / R1_Knad_1) * (ADP / R1_Kadp_1) / ((1 + halfglucose / R1_Kglc_1 + pyruvate / R1_Kpyr_1) * (1 + NAD / R1_Knad_1 + NADH / R1_Knadh_1) * (1 + ADP / R1_Kadp_1 + ATP / R1_Katp_1));
-  R2: NADH + pyruvate -> NAD + $lactate; R2_V_2 * ((pyruvate * NADH - lactate * NAD / R2_Keq_2) / (R2_Kpyr_2 * R2_Knadh_2)) / ((1 + pyruvate / R2_Kpyr_2 + lactate / R2_Klac_2) * (1 + NADH / R2_Knadh_2 + NAD / R2_Knad_2));
-  R3: NAD + pyruvate + CoA -> NADH + AcCoA; R3_V_3 * (pyruvate / R3_Kpyr_3) * (NAD / R3_Knad_3) * (CoA / R3_Kcoa_3) * (NAD / (NAD + R3_Ki_3 * NADH)) / ((1 + pyruvate / R3_Kpyr_3) * (1 + NAD / R3_Knad_3 + NADH / R3_Knadh_3) * (1 + CoA / R3_Kcoa_3 + AcCoA / R3_Kaccoa_3));
-  R4: AcCoA + $PO4 -> CoA + AcP; R4_V_4 * ((AcCoA * PO4 - AcP * CoA / R4_Keq_4) / (R4_Kiaccoa_4 * R4_Kpi_4)) / (1 + AcCoA / R4_Kiaccoa_4 + PO4 / R4_Kipi_4 + AcP / R4_Kiacp_4 + CoA / R4_Kicoa_4 + AcCoA * PO4 / (R4_Kiaccoa_4 * R4_Kpi_4) + AcP * CoA / (R4_Kacp_4 * R4_Kicoa_4));
-  R5: ADP + AcP -> ATP + $Ac; R5_V_5 * ((AcP * ADP - Ac * ATP / R5_Keq_5) / (R5_Kadp_5 * R5_Kacp_5)) / ((1 + AcP / R5_Kacp_5 + Ac / R5_Kac_5) * (1 + ADP / R5_Kadp_5 + ATP / R5_Katp_5));
-  R6: NADH + AcCoA -> NAD + CoA + AcO; R6_V_6 * ((AcCoA * NADH - CoA * NAD * AcO / R6_Keq_6) / (R6_Kaccoa_6 * R6_Knadh_6)) / ((1 + NAD / R6_Knad_6 + NADH / R6_Knadh_6) * (1 + AcCoA / R6_Kaccoa_6 + CoA / R6_Kcoa_6 + AcO / R6_Kaco_6 + AcO * CoA / (R6_Kaco_6 * R6_Kcoa_6)));
-  R7: NADH + AcO -> NAD + $EtOH; R7_V_7 * ((AcO * NADH - EtOH * NAD / R7_Keq_7) / (R7_Kaco_7 * R7_Knadh_7)) / ((1 + NAD / R7_Knad_7 + NADH / R7_Knadh_7) * (1 + AcO / R7_Kaco_7 + EtOH / R7_Ketoh_7));
-  R8: 2pyruvate -> AcLac; R8_V_8 * (pyruvate / R8_Kpyr_8) * (1 - AcLac / (pyruvate * R8_Keq_8)) * pow(pyruvate / R8_Kpyr_8 + AcLac / R8_Kaclac_8, R8_n_8 - 1) / (1 + pow(pyruvate / R8_Kpyr_8 + AcLac / R8_Kaclac_8, R8_n_8));
-  R9: AcLac -> AcetoinIn; R9_V_9 * (AcLac / R9_Kaclac_9) / (1 + AcLac / R9_Kaclac_9 + AcetoinIn / R9_Kacet_9);
-  R10: AcetoinIn -> AcetoinOut; R10_V_10 * (AcetoinIn / R10_Kacet_10) / (1 + AcetoinIn / R10_Kacet_10);
-  R11: NADH + AcetoinIn -> NAD + $Butanediol; R11_V_11 * ((AcetoinIn * NADH - Butanediol * NAD / R11_Keq_11) / (R11_Kacet_11 * R11_Knadh_11)) / ((1 + AcetoinIn / R11_Kacet_11 + Butanediol / R11_Kbut_11) * (1 + NADH / R11_Knadh_11 + NAD / R11_Knad_11));
-  R12: ATP -> ADP; R12_V_12 * pow(ATP / (ADP * R12_Katp_12), R12_n_12) / (1 + pow(ATP / (ADP * R12_Katp_12), R12_n_12));
-  R13: NADH + $O2 -> NAD; R13_V_13 * (NADH * O2 / (R13_Knadh_13 * R13_Ko_13)) / ((1 + NADH / R13_Knadh_13 + NAD / R13_Knad_13) * (1 + O2 / R13_Ko_13));
-  R14: AcLac -> AcetoinIn; R14_k_14 * AcLac;
+  R1: ADP + NAD + $halfglucose => ATP + NADH + pyruvate; R1_V_1 * (halfglucose / R1_Kglc_1) * (NAD / R1_Knad_1) * (ADP / R1_Kadp_1) / ((1 + halfglucose / R1_Kglc_1 + pyruvate / R1_Kpyr_1) * (1 + NAD / R1_Knad_1 + NADH / R1_Knadh_1) * (1 + ADP / R1_Kadp_1 + ATP / R1_Katp_1));
+  R2: NADH + pyruvate => NAD + $lactate; R2_V_2 * ((pyruvate * NADH - lactate * NAD / R2_Keq_2) / (R2_Kpyr_2 * R2_Knadh_2)) / ((1 + pyruvate / R2_Kpyr_2 + lactate / R2_Klac_2) * (1 + NADH / R2_Knadh_2 + NAD / R2_Knad_2));
+  R3: NAD + pyruvate + CoA => NADH + AcCoA; R3_V_3 * (pyruvate / R3_Kpyr_3) * (NAD / R3_Knad_3) * (CoA / R3_Kcoa_3) * (NAD / (NAD + R3_Ki_3 * NADH)) / ((1 + pyruvate / R3_Kpyr_3) * (1 + NAD / R3_Knad_3 + NADH / R3_Knadh_3) * (1 + CoA / R3_Kcoa_3 + AcCoA / R3_Kaccoa_3));
+  R4: AcCoA + $PO4 => CoA + AcP; R4_V_4 * ((AcCoA * PO4 - AcP * CoA / R4_Keq_4) / (R4_Kiaccoa_4 * R4_Kpi_4)) / (1 + AcCoA / R4_Kiaccoa_4 + PO4 / R4_Kipi_4 + AcP / R4_Kiacp_4 + CoA / R4_Kicoa_4 + AcCoA * PO4 / (R4_Kiaccoa_4 * R4_Kpi_4) + AcP * CoA / (R4_Kacp_4 * R4_Kicoa_4));
+  R5: ADP + AcP => ATP + $Ac; R5_V_5 * ((AcP * ADP - Ac * ATP / R5_Keq_5) / (R5_Kadp_5 * R5_Kacp_5)) / ((1 + AcP / R5_Kacp_5 + Ac / R5_Kac_5) * (1 + ADP / R5_Kadp_5 + ATP / R5_Katp_5));
+  R6: NADH + AcCoA => NAD + CoA + AcO; R6_V_6 * ((AcCoA * NADH - CoA * NAD * AcO / R6_Keq_6) / (R6_Kaccoa_6 * R6_Knadh_6)) / ((1 + NAD / R6_Knad_6 + NADH / R6_Knadh_6) * (1 + AcCoA / R6_Kaccoa_6 + CoA / R6_Kcoa_6 + AcO / R6_Kaco_6 + AcO * CoA / (R6_Kaco_6 * R6_Kcoa_6)));
+  R7: NADH + AcO => NAD + $EtOH; R7_V_7 * ((AcO * NADH - EtOH * NAD / R7_Keq_7) / (R7_Kaco_7 * R7_Knadh_7)) / ((1 + NAD / R7_Knad_7 + NADH / R7_Knadh_7) * (1 + AcO / R7_Kaco_7 + EtOH / R7_Ketoh_7));
+  R8: 2pyruvate => AcLac; R8_V_8 * (pyruvate / R8_Kpyr_8) * (1 - AcLac / (pyruvate * R8_Keq_8)) * (pyruvate / R8_Kpyr_8 + AcLac / R8_Kaclac_8)^(R8_n_8 - 1) / (1 + (pyruvate / R8_Kpyr_8 + AcLac / R8_Kaclac_8)^R8_n_8);
+  R9: AcLac => AcetoinIn; R9_V_9 * (AcLac / R9_Kaclac_9) / (1 + AcLac / R9_Kaclac_9 + AcetoinIn / R9_Kacet_9);
+  R10: AcetoinIn => AcetoinOut; R10_V_10 * (AcetoinIn / R10_Kacet_10) / (1 + AcetoinIn / R10_Kacet_10);
+  R11: NADH + AcetoinIn => NAD + $Butanediol; R11_V_11 * ((AcetoinIn * NADH - Butanediol * NAD / R11_Keq_11) / (R11_Kacet_11 * R11_Knadh_11)) / ((1 + AcetoinIn / R11_Kacet_11 + Butanediol / R11_Kbut_11) * (1 + NADH / R11_Knadh_11 + NAD / R11_Knad_11));
+  R12: ATP => ADP; R12_V_12 * (ATP / (ADP * R12_Katp_12))^R12_n_12 / (1 + (ATP / (ADP * R12_Katp_12))^R12_n_12);
+  R13: NADH + $O2 => NAD; R13_V_13 * (NADH * O2 / (R13_Knadh_13 * R13_Ko_13)) / ((1 + NADH / R13_Knadh_13 + NAD / R13_Knad_13) * (1 + O2 / R13_Ko_13));
+  R14: AcLac => AcetoinIn; R14_k_14 * AcLac;
 
   // Species initializations:
   ADP = 5;

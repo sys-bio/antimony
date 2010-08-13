@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 function hydrolysis(kh, R)
   kh * R;
 end
@@ -8,7 +8,7 @@ function sig_act(ke, r, kg, R, kf)
 end
 
 function hill_act(r, ke, R, h, kg)
-  r * ke * pow(R, h) / (kg + pow(R, h));
+  r * ke * R^h / (kg + R^h);
 end
 
 function extraction(kminus1, r)
@@ -26,16 +26,16 @@ model Model_1()
   species r5 in endosome, R5 in endosome, r7 in endosome, R7 in endosome;
 
   // Reactions:
-  reaction_0:  -> r5; endosome * reaction_0_K1;
-  reaction_1: r5 -> R5; endosome * sig_act_t(r5, reaction_1_ke, time, reaction_1_kg, R5, reaction_1_kf);
-  reaction_2: r5 -> ; endosome * extraction(reaction_2_kminus1, r5);
-  reaction_3:  -> r7; endosome * reaction_3_K1;
-  reaction_4: r7 -> R7; endosome * hill_act(r7, reaction_4_ke, R7, reaction_4_h, reaction_4_kg);
-  reaction_5: r7 -> R7; endosome * sig_act(reaction_5_ke, r7, reaction_5_kg, R5, reaction_5_kf);
-  reaction_6: R5 -> r5; endosome * sig_act(reaction_6_ke, R5, reaction_6_kg, R7, reaction_6_kf);
-  reaction_7: r7 -> ; endosome * extraction(reaction_7_kminus1, r7);
-  reaction_8: R5 -> r5; endosome * hydrolysis(reaction_8_kh, R5);
-  reaction_9: R7 -> r7; endosome * hydrolysis(reaction_9_kh, R7);
+  reaction_0:  => r5; endosome * reaction_0_K1;
+  reaction_1: r5 => R5; endosome * sig_act_t(r5, reaction_1_ke, time, reaction_1_kg, R5, reaction_1_kf);
+  reaction_2: r5 => ; endosome * extraction(reaction_2_kminus1, r5);
+  reaction_3:  => r7; endosome * reaction_3_K1;
+  reaction_4: r7 => R7; endosome * hill_act(r7, reaction_4_ke, R7, reaction_4_h, reaction_4_kg);
+  reaction_5: r7 => R7; endosome * sig_act(reaction_5_ke, r7, reaction_5_kg, R5, reaction_5_kf);
+  reaction_6: R5 => r5; endosome * sig_act(reaction_6_ke, R5, reaction_6_kg, R7, reaction_6_kf);
+  reaction_7: r7 => ; endosome * extraction(reaction_7_kminus1, r7);
+  reaction_8: R5 => r5; endosome * hydrolysis(reaction_8_kh, R5);
+  reaction_9: R7 => r7; endosome * hydrolysis(reaction_9_kh, R7);
 
   // Species initializations:
   r5 = 1;

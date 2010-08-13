@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Zi2007_TGFbeta_signaling()
 
   // Compartments and Species:
@@ -14,32 +14,32 @@ model Zi2007_TGFbeta_signaling()
   Total_Smad2c := Smad2c + Smads_Complex_c;
 
   // Reactions:
-  R1_Smad2_import: Smad2c -> Smad2n; V_cyt * Kimp_Smad2c * Smad2c;
-  R2_Smad2_export: Smad2n -> Smad2c; V_nuc * Kexp_Smad2n * Smad2n;
-  R3_Smad4_import: Smad4c -> Smad4n; V_cyt * Kimp_Smad4c * Smad4c;
-  R4_Smad4_export: Smad4n -> Smad4c; V_nuc * Kexp_Smad4n * Smad4n;
-  R5_T1R_production:  -> T1R_Surf; V_cyt * v_T1R;
-  R6_T1R_Cave_formation: T1R_Surf -> T1R_Cave; V_cyt * ki_Cave * T1R_Surf;
-  R7_T1R_Cave_recycling: T1R_Cave -> T1R_Surf; V_cyt * kr_Cave * T1R_Cave;
-  R8_T1R_EE_formation: T1R_Surf -> T1R_EE; V_cyt * ki_EE * T1R_Surf;
-  R9_T1R_EE_recycling: T1R_EE -> T1R_Surf; V_cyt * kr_EE * T1R_EE;
-  R10_T1R_EE_degradation: T1R_EE -> ; V_cyt * Kdeg_T1R_EE * T1R_EE;
-  R11_T2R_production:  -> T2R_Surf; V_cyt * v_T2R;
-  R12_T2R_Cave_formation: T2R_Surf -> T2R_Cave; V_cyt * ki_Cave * T2R_Surf;
-  R13_T2R_Cave_recycling: T2R_Cave -> T2R_Surf; V_cyt * kr_Cave * T2R_Cave;
-  R14_T2R_EE_formation: T2R_Surf -> T2R_EE; V_cyt * ki_EE * T2R_Surf;
-  R15_T2R_EE_recycling: T2R_EE -> T2R_Surf + TGF_beta; V_cyt * kr_EE * T2R_EE;
-  R16_T2R_EE_degradation: T2R_EE -> ; V_cyt * Kdeg_T2R_EE * T2R_EE;
-  R17_LRC_formation: TGF_beta + T2R_Surf + T1R_Surf -> LRC_Surf; V_cyt * k_LRC * TGF_beta * T2R_Surf * T1R_Surf;
-  R18_LRC_Cave_formation: LRC_Surf -> LRC_Cave; V_cyt * ki_Cave * LRC_Surf;
-  R19_LRC_Cave_recycling: LRC_Cave -> T1R_Surf + TGF_beta + T2R_Surf; V_cyt * kr_Cave * LRC_Cave;
-  R20_LRC_EE_formation: LRC_Surf -> LRC_EE; V_cyt * ki_EE * LRC_Surf;
-  R21_LRC_EE_recycling: LRC_EE -> T1R_Surf + T2R_Surf + TGF_beta; V_cyt * kr_EE * LRC_EE;
-  R22_LRC_EE_degradation: LRC_EE -> ; V_cyt * Kcd * LRC_EE;
-  R23_Smads_Complex_formation: Smad2c + Smad4c -> Smads_Complex_c; V_cyt * k_Smads_Complex_c * Smad2c * Smad4c * LRC_EE;
-  R24_Smads_Complex_import: Smads_Complex_c -> Smads_Complex_n; V_cyt * Kimp_Smads_Complex_c * Smads_Complex_c;
-  R25_Smads_Complex_Dissociation: Smads_Complex_n -> Smad4n + Smad2n; V_nuc * Kdiss_Smads_Complex_n * Smads_Complex_n;
-  R26_LRC_Cave_degradation: LRC_Cave -> ; V_cyt * Klid * LRC_Cave * Smads_Complex_n;
+  R1_Smad2_import: Smad2c => Smad2n; V_cyt * Kimp_Smad2c * Smad2c;
+  R2_Smad2_export: Smad2n => Smad2c; V_nuc * Kexp_Smad2n * Smad2n;
+  R3_Smad4_import: Smad4c => Smad4n; V_cyt * Kimp_Smad4c * Smad4c;
+  R4_Smad4_export: Smad4n => Smad4c; V_nuc * Kexp_Smad4n * Smad4n;
+  R5_T1R_production:  => T1R_Surf; V_cyt * v_T1R;
+  R6_T1R_Cave_formation: T1R_Surf => T1R_Cave; V_cyt * ki_Cave * T1R_Surf;
+  R7_T1R_Cave_recycling: T1R_Cave => T1R_Surf; V_cyt * kr_Cave * T1R_Cave;
+  R8_T1R_EE_formation: T1R_Surf => T1R_EE; V_cyt * ki_EE * T1R_Surf;
+  R9_T1R_EE_recycling: T1R_EE => T1R_Surf; V_cyt * kr_EE * T1R_EE;
+  R10_T1R_EE_degradation: T1R_EE => ; V_cyt * Kdeg_T1R_EE * T1R_EE;
+  R11_T2R_production:  => T2R_Surf; V_cyt * v_T2R;
+  R12_T2R_Cave_formation: T2R_Surf => T2R_Cave; V_cyt * ki_Cave * T2R_Surf;
+  R13_T2R_Cave_recycling: T2R_Cave => T2R_Surf; V_cyt * kr_Cave * T2R_Cave;
+  R14_T2R_EE_formation: T2R_Surf => T2R_EE; V_cyt * ki_EE * T2R_Surf;
+  R15_T2R_EE_recycling: T2R_EE => T2R_Surf + TGF_beta; V_cyt * kr_EE * T2R_EE;
+  R16_T2R_EE_degradation: T2R_EE => ; V_cyt * Kdeg_T2R_EE * T2R_EE;
+  R17_LRC_formation: TGF_beta + T2R_Surf + T1R_Surf => LRC_Surf; V_cyt * k_LRC * TGF_beta * T2R_Surf * T1R_Surf;
+  R18_LRC_Cave_formation: LRC_Surf => LRC_Cave; V_cyt * ki_Cave * LRC_Surf;
+  R19_LRC_Cave_recycling: LRC_Cave => T1R_Surf + TGF_beta + T2R_Surf; V_cyt * kr_Cave * LRC_Cave;
+  R20_LRC_EE_formation: LRC_Surf => LRC_EE; V_cyt * ki_EE * LRC_Surf;
+  R21_LRC_EE_recycling: LRC_EE => T1R_Surf + T2R_Surf + TGF_beta; V_cyt * kr_EE * LRC_EE;
+  R22_LRC_EE_degradation: LRC_EE => ; V_cyt * Kcd * LRC_EE;
+  R23_Smads_Complex_formation: Smad2c + Smad4c => Smads_Complex_c; V_cyt * k_Smads_Complex_c * Smad2c * Smad4c * LRC_EE;
+  R24_Smads_Complex_import: Smads_Complex_c => Smads_Complex_n; V_cyt * Kimp_Smads_Complex_c * Smads_Complex_c;
+  R25_Smads_Complex_Dissociation: Smads_Complex_n => Smad4n + Smad2n; V_nuc * Kdiss_Smads_Complex_n * Smads_Complex_n;
+  R26_LRC_Cave_degradation: LRC_Cave => ; V_cyt * Klid * LRC_Cave * Smads_Complex_n;
 
   // Species initializations:
   Smad2c = 492.61;

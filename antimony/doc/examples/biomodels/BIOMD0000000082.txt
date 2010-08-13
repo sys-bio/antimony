@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Model_1()
 
   // Compartments and Species:
@@ -11,8 +11,8 @@ model Model_1()
   reaction_1: DR + G_GDP -> DRG_GDP; cell * (reaction_1_k2 * DR * G_GDP - reaction_1_k8 * DRG_GDP);
   reaction_2: DRG_GDP -> GDP + DRG; cell * (reaction_2_k3 * DRG_GDP - reaction_2_k9 * DRG * GDP);
   reaction_3: DRG + GTP -> DRG_GTP; cell * (reaction_3_k4 * DRG * GTP - reaction_3_k10 * DRG_GTP);
-  reaction_4: DRG_GTP -> G_GTP + DR; cell * reaction_4_k5 * DRG_GTP;
-  reaction_5: G_GTP -> G_GDP; cell * reaction_5_k6 * G_GTP;
+  reaction_4: DRG_GTP => G_GTP + DR; cell * reaction_4_k5 * DRG_GTP;
+  reaction_5: G_GTP => G_GDP; cell * reaction_5_k6 * G_GTP;
 
   // Species initializations:
   agonist = 1e-08;

@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Chassagnole2002_Carbon_Metabolism()
 
   // Compartments and Species:
@@ -10,20 +10,20 @@ model Chassagnole2002_Carbon_Metabolism()
   species cpg2 in cytosol, cribu5p in cytosol;
 
   // Assignment Rules:
-  catp := 4.27 - 4.163 * (time / (0.657 + 1.43 * time + 0.0364 * pow(time, 2)));
-  cadp := 0.582 + 1.73 * pow(2.731, -0.15 * time) * (0.12 * time + 0.000214 * pow(time, 3));
-  camp := 0.123 + 7.25 * (time / (7.25 + 1.47 * time + 0.17 * pow(time, 2))) + 1.073 / (1.29 + 8.05 * time);
-  cnadp := 0.159 - 0.00554 * (time / (2.8 - 0.271 * time + 0.01 * pow(time, 2))) + 0.182 / (4.82 + 0.526 * time);
-  cnadph := 0.062 + 0.332 * pow(2.718, -0.464 * time) * (0.0166 * pow(time, 1.58) + 0.000166 * pow(time, 4.73) + 0.1312 * pow(10, -9) * pow(time, 7.89) + 0.1362 * pow(10, -12) * pow(time, 11) + 0.1233 * pow(10, -15) * pow(time, 14.2));
-  cnad := 1.314 + 1.314 * pow(2.73, -0.0435 * time - 0.342) - (time + 7.871) * (pow(2.73, -0.0218 * time - 0.171) / (8.481 + time));
-  cnadh := 0.0934 + 0.00111 * pow(2.371, -0.123 * time) * (0.844 * time + 0.104 * pow(time, 3));
+  catp := 4.27 - 4.163 * (time / (0.657 + 1.43 * time + 0.0364 * time^2));
+  cadp := 0.582 + 1.73 * 2.731^(-0.15 * time) * (0.12 * time + 0.000214 * time^3);
+  camp := 0.123 + 7.25 * (time / (7.25 + 1.47 * time + 0.17 * time^2)) + 1.073 / (1.29 + 8.05 * time);
+  cnadp := 0.159 - 0.00554 * (time / (2.8 - 0.271 * time + 0.01 * time^2)) + 0.182 / (4.82 + 0.526 * time);
+  cnadph := 0.062 + 0.332 * 2.718^(-0.464 * time) * (0.0166 * time^1.58 + 0.000166 * time^4.73 + 0.1312 * 10^-9 * time^7.89 + 0.1362 * 10^-12 * time^11 + 0.1233 * 10^-15 * time^14.2);
+  cnad := 1.314 + 1.314 * 2.73^(-0.0435 * time - 0.342) - (time + 7.871) * (2.73^(-0.0218 * time - 0.171) / (8.481 + time));
+  cnadh := 0.0934 + 0.00111 * 2.371^(-0.123 * time) * (0.844 * time + 0.104 * time^3);
 
   // Reactions:
-  vPTS: cglcex + 65cpep -> 65cg6p + 65cpyr; extracellular * vPTS_rmaxPTS * cglcex * (cpep / cpyr) / ((vPTS_KPTSa1 + vPTS_KPTSa2 * (cpep / cpyr) + vPTS_KPTSa3 * cglcex + cglcex * (cpep / cpyr)) * (1 + pow(cg6p, vPTS_nPTSg6p) / vPTS_KPTSg6p));
+  vPTS: cglcex + 65cpep -> 65cg6p + 65cpyr; extracellular * vPTS_rmaxPTS * cglcex * (cpep / cpyr) / ((vPTS_KPTSa1 + vPTS_KPTSa2 * (cpep / cpyr) + vPTS_KPTSa3 * cglcex + cglcex * (cpep / cpyr)) * (1 + cg6p^vPTS_nPTSg6p / vPTS_KPTSg6p));
   vPGI: cg6p -> cf6p; cytosol * vPGI_rmaxPGI * (cg6p - cf6p / vPGI_KPGIeq) / (vPGI_KPGIg6p * (1 + cf6p / (vPGI_KPGIf6p * (1 + cpg / vPGI_KPGIf6ppginh)) + cpg / vPGI_KPGIg6ppginh) + cg6p);
   vPGM: cg6p -> cg1p; cytosol * vPGM_rmaxPGM * (cg6p - cg1p / vPGM_KPGMeq) / (vPGM_KPGMg6p * (1 + cg1p / vPGM_KPGMg1p) + cg6p);
   vG6PDH: cg6p -> cpg; cytosol * vG6PDH_rmaxG6PDH * cg6p * cnadp / ((cg6p + vG6PDH_KG6PDHg6p) * (1 + cnadph / vG6PDH_KG6PDHnadphg6pinh) * (vG6PDH_KG6PDHnadp * (1 + cnadph / vG6PDH_KG6PDHnadphnadpinh) + cnadp));
-  vPFK: cf6p -> cfdp; cytosol * vPFK_rmaxPFK * catp * cf6p / ((catp + vPFK_KPFKatps * (1 + cadp / vPFK_KPFKadpc)) * (cf6p + vPFK_KPFKf6ps * (1 + cpep / vPFK_KPFKpep + cadp / vPFK_KPFKadpb + camp / vPFK_KPFKampb) / (1 + cadp / vPFK_KPFKadpa + camp / vPFK_KPFKampa)) * (1 + vPFK_LPFK / pow(1 + cf6p * (1 + cadp / vPFK_KPFKadpa + camp / vPFK_KPFKampa) / (vPFK_KPFKf6ps * (1 + cpep / vPFK_KPFKpep + cadp / vPFK_KPFKadpb + camp / vPFK_KPFKampb)), vPFK_nPFK)));
+  vPFK: cf6p -> cfdp; cytosol * vPFK_rmaxPFK * catp * cf6p / ((catp + vPFK_KPFKatps * (1 + cadp / vPFK_KPFKadpc)) * (cf6p + vPFK_KPFKf6ps * (1 + cpep / vPFK_KPFKpep + cadp / vPFK_KPFKadpb + camp / vPFK_KPFKampb) / (1 + cadp / vPFK_KPFKadpa + camp / vPFK_KPFKampa)) * (1 + vPFK_LPFK / (1 + cf6p * (1 + cadp / vPFK_KPFKadpa + camp / vPFK_KPFKampa) / (vPFK_KPFKf6ps * (1 + cpep / vPFK_KPFKpep + cadp / vPFK_KPFKadpb + camp / vPFK_KPFKampb)))^vPFK_nPFK));
   vTA: cgap + csed7p -> cf6p + ce4p; cytosol * vTA_rmaxTA * (cgap * csed7p - ce4p * cf6p / vTA_KTAeq);
   vTKA: crib5p + cxyl5p -> cgap + csed7p; cytosol * vTKA_rmaxTKa * (crib5p * cxyl5p - csed7p * cgap / vTKA_KTKaeq);
   vTKB: ce4p + cxyl5p -> cgap + cf6p; cytosol * vTKB_rmaxTKb * (cxyl5p * ce4p - cf6p * cgap / vTKB_KTKbeq);
@@ -37,18 +37,18 @@ model Chassagnole2002_Carbon_Metabolism()
   vsersynth: cpg3 -> ; cytosol * vsersynth_rmaxSerSynth * cpg3 / (vsersynth_KSerSynthpg3 + cpg3);
   vrpGluMu: cpg3 -> cpg2; cytosol * vrpGluMu_rmaxPGluMu * (cpg3 - cpg2 / vrpGluMu_KPGluMueq) / (vrpGluMu_KPGluMupg3 * (1 + cpg2 / vrpGluMu_KPGluMupg2) + cpg3);
   vENO: cpg2 -> cpep; cytosol * vENO_rmaxENO * (cpg2 - cpep / vENO_KENOeq) / (vENO_KENOpg2 * (1 + cpep / vENO_KENOpep) + cpg2);
-  vPK: cpep -> cpyr; cytosol * vPK_rmaxPK * cpep * pow(cpep / vPK_KPKpep + 1, vPK_nPK - 1) * cadp / (vPK_KPKpep * (vPK_LPK * pow((1 + catp / vPK_KPKatp) / (cfdp / vPK_KPKfdp + camp / vPK_KPKamp + 1), vPK_nPK) + pow(cpep / vPK_KPKpep + 1, vPK_nPK)) * (cadp + vPK_KPKadp));
-  vpepCxylase: cpep -> ; cytosol * vpepCxylase_rmaxpepCxylase * cpep * (1 + pow(cfdp / vpepCxylase_KpepCxylasefdp, vpepCxylase_npepCxylasefdp)) / (vpepCxylase_KpepCxylasepep + cpep);
+  vPK: cpep -> cpyr; cytosol * vPK_rmaxPK * cpep * (cpep / vPK_KPKpep + 1)^(vPK_nPK - 1) * cadp / (vPK_KPKpep * (vPK_LPK * ((1 + catp / vPK_KPKatp) / (cfdp / vPK_KPKfdp + camp / vPK_KPKamp + 1))^vPK_nPK + (cpep / vPK_KPKpep + 1)^vPK_nPK) * (cadp + vPK_KPKadp));
+  vpepCxylase: cpep -> ; cytosol * vpepCxylase_rmaxpepCxylase * cpep * (1 + (cfdp / vpepCxylase_KpepCxylasefdp)^vpepCxylase_npepCxylasefdp) / (vpepCxylase_KpepCxylasepep + cpep);
   vSynth1: cpep -> ; cytosol * vSynth1_rmaxSynth1 * cpep / (vSynth1_KSynth1pep + cpep);
   vSynth2: cpyr -> ; cytosol * vSynth2_rmaxSynth2 * cpyr / (vSynth2_KSynth2pyr + cpyr);
-  vDAHPS: ce4p + cpep -> ; cytosol * vDAHPS_rmaxDAHPS * pow(ce4p, vDAHPS_nDAHPSe4p) * pow(cpep, vDAHPS_nDAHPSpep) / ((vDAHPS_KDAHPSe4p + pow(ce4p, vDAHPS_nDAHPSe4p)) * (vDAHPS_KDAHPSpep + pow(cpep, vDAHPS_nDAHPSpep)));
-  vPDH: cpyr -> ; cytosol * vPDH_rmaxPDH * pow(cpyr, vPDH_nPDH) / (vPDH_KPDHpyr + pow(cpyr, vPDH_nPDH));
+  vDAHPS: ce4p + cpep -> ; cytosol * vDAHPS_rmaxDAHPS * ce4p^vDAHPS_nDAHPSe4p * cpep^vDAHPS_nDAHPSpep / ((vDAHPS_KDAHPSe4p + ce4p^vDAHPS_nDAHPSe4p) * (vDAHPS_KDAHPSpep + cpep^vDAHPS_nDAHPSpep));
+  vPDH: cpyr -> ; cytosol * vPDH_rmaxPDH * cpyr^vPDH_nPDH / (vPDH_KPDHpyr + cpyr^vPDH_nPDH);
   vMethSynth:  -> cpyr; cytosol * vMethSynth_rmaxMetSynth;
   vPGDH: cpg -> cribu5p; cytosol * vPGDH_rmaxPGDH * cpg * cnadp / ((cpg + vPGDH_KPGDHpg) * (cnadp + vPGDH_KPGDHnadp * (1 + cnadph / vPGDH_KPGDHnadphinh) * (1 + catp / vPGDH_KPGDHatpinh)));
   vR5PI: cribu5p -> crib5p; cytosol * vR5PI_rmaxR5PI * (cribu5p - crib5p / vR5PI_KR5PIeq);
   vRu5P: cribu5p -> cxyl5p; cytosol * vRu5P_rmaxRu5P * (cribu5p - cxyl5p / vRu5P_KRu5Peq);
   vPPK: crib5p -> ; cytosol * vPPK_rmaxRPPK * crib5p / (vPPK_KRPPKrib5p + crib5p);
-  vG1PAT: cg1p -> ; cytosol * vG1PAT_rmaxG1PAT * cg1p * catp * (1 + pow(cfdp / vG1PAT_KG1PATfdp, vG1PAT_nG1PATfdp)) / ((vG1PAT_KG1PATatp + catp) * (vG1PAT_KG1PATg1p + cg1p));
+  vG1PAT: cg1p -> ; cytosol * vG1PAT_rmaxG1PAT * cg1p * catp * (1 + (cfdp / vG1PAT_KG1PATfdp)^vG1PAT_nG1PATfdp) / ((vG1PAT_KG1PATatp + catp) * (vG1PAT_KG1PATg1p + cg1p));
   vG6P: cg6p -> ; cytosol * vG6P_mu * cg6p;
   vf6P: cf6p -> ; cytosol * vf6P_mu * cf6p;
   vfdP: cfdp -> ; cytosol * vfdP_mu * cfdp;

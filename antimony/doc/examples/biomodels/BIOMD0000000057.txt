@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Sneyd2002_dynamic_model_of_IP3_Receptor()
 
   // Compartments and Species:
@@ -7,7 +7,7 @@ model Sneyd2002_dynamic_model_of_IP3_Receptor()
   species A in compartment_, I2 in compartment_;
 
   // Assignment Rules:
-  open_probability := pow(0.1 * O + 0.9 * A, 4);
+  open_probability := (0.1 * O + 0.9 * A)^4;
   Phi1 := (k1 * L1 + l2) * c / (L1 + c * (1 + L1 / L3));
   Phi2 := (k2 * L3 + l4 * c) / (L3 + c * (1 + L3 / L1));
   Phi_minus2 := (kminus2 + lminus4 * c) / (1 + c / L5);

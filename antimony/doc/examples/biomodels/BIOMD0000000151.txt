@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Singh2006_IL6_Signal_Transduction()
 
   // Compartments and Species:
@@ -22,47 +22,47 @@ model Singh2006_IL6_Signal_Transduction()
   species x67 in cytosol;
 
   // Reactions:
-  R1:  -> x2; cytosol * kf0 * x1 * IL6;
-  R2: x2 -> ; cytosol * kr0 * x2;
-  R3: x6 -> x5 + x2; cytosol * (kr2 * x6 - kf2 * x2 * x5);
-  R5: x4 -> x5; cytosol * (kf1 * x3 * x4 - kr1 * x5);
-  R7: 2x6 -> x7; cytosol * kf3 * pow(x6, 2);
-  R8: x7 -> 2x6; cytosol * kr3 * x7;
-  R9: x7 -> x8; cytosol * k4 * x7;
-  R10: x16 -> x15 + x7; cytosol * k10 * x16;
-  R11: x9 + x8 -> x11; cytosol * (kf5 * x8 * x9 - kr5 * x11);
-  R12: x11 -> x10 + x8; cytosol * k6 * x11;
+  R1:  => x2; cytosol * kf0 * x1 * IL6;
+  R2: x2 => ; cytosol * kr0 * x2;
+  R3: x6 => x5 + x2; cytosol * (kr2 * x6 - kf2 * x2 * x5);
+  R5: x4 => x5; cytosol * (kf1 * x3 * x4 - kr1 * x5);
+  R7: 2x6 => x7; cytosol * kf3 * x6^2;
+  R8: x7 => 2x6; cytosol * kr3 * x7;
+  R9: x7 => x8; cytosol * k4 * x7;
+  R10: x16 => x15 + x7; cytosol * k10 * x16;
+  R11: x9 + x8 => x11; cytosol * (kf5 * x8 * x9 - kr5 * x11);
+  R12: x11 => x10 + x8; cytosol * k6 * x11;
   R13: x10 + x8 -> x12; cytosol * (kf7 * x8 * x10 - kr7 * x12);
   R14: x15 + x8 -> x16; cytosol * (kf9 * x8 * x15 - kr9 * x16);
   R15: x29 + x8 -> x30; cytosol * (kf21 * x29 * x8 - kr21 * x30);
   R16: x39 -> x46 + x8; cytosol * (kf37 * x39 - kr37 * x8 * x46);
   R16a: x40 -> x45 + x8; cytosol * (kf39 * x40 - kr39 * x45 * x8);
   R17: x41 -> x44 + x8; cytosol * (kf32 * x41 - kr32 * x44 * x8);
-  R18: x18 -> x17 + x9; cytosol * k12 * x18;
+  R18: x18 => x17 + x9; cytosol * k12 * x18;
   R19: x10 + x9 -> x14; cytosol * (kf13 * x9 * x10 - kr13 * x14);
-  R20: x22 -> x9; nucleus * k17 * x22;
+  R20: x22 => x9; nucleus * k17 * x22;
   R21: x30 + x9 -> x31; cytosol * (kf5 * x9 * x30 - kr5 * x31);
-  R22: x32 -> x29 + x15 + x9 + x7; cytosol * k10 * x32;
-  R23: x10 -> 0.5x13; cytosol * (2 * kf8 * pow(x10, 2) - 2 * kr8 * x13);
+  R22: x32 => x29 + x15 + x9 + x7; cytosol * k10 * x32;
+  R23: x10 -> 0.5x13; cytosol * (2 * kf8 * x10^2 - 2 * kr8 * x13);
   R24: x17 + x10 -> x18; cytosol * (kf11 * x10 * x17 - kr11 * x18);
   R25: x17 + x13 -> x19; cytosol * (kf11 * x13 * x17 - kr11 * x19);
-  R26: x13 -> x20; cytosol * k14 * x13;
-  R27: x19 -> x17 + x14; cytosol * k12 * x19;
-  R28: x31 + x15 -> x32; cytosol * (kf9 * x15 * x31 - kr9 * x32);
-  R29: x46 -> x15; cytosol * Vm * x46 / (Km + x46);
+  R26: x13 => x20; cytosol * k14 * x13;
+  R27: x19 => x17 + x14; cytosol * k12 * x19;
+  R28: x31 + x15 => x32; cytosol * (kf9 * x15 * x31 - kr9 * x32);
+  R29: x46 => x15; cytosol * Vm * x46 / (Km + x46);
   R30: x16 -> x39; cytosol * (kf34 * x16 - kr34 * x39);
-  R31: x20 -> 2x21; nucleus * (kr8 * x20 - kf8 * pow(x21, 2));
+  R31: x20 -> 2x21; nucleus * (kr8 * x20 - kf8 * x21^2);
   R32: x23 + x20 -> x27; nucleus * (kf15 * x23 * x20 - kr15 * x27);
   R33: x23 + x21 -> x28; nucleus * (kf15 * x23 * x21 - kr15 * x28);
   R34: x24 -> x22 + x21; nucleus * (kr13 * x24 - kf13 * x21 * x22);
-  R35: x28 -> x23 + x22; nucleus * k16 * x28;
-  R36: x27 -> x24 + x23; nucleus * k16 * x27;
-  R37:  -> x25; nucleus * (k18a * x20 / (k18b + x20));
-  R38: x25 -> x26; nucleus * k19 * x25;
-  R39: x26 -> ; nucleus * k22 * x26;
-  R40:  -> x29; nucleus * k20 * x26;
-  R41: x29 -> ; cytosol * k23 * x29;
-  R42: x32 -> x33 + x29; cytosol * k23 * x32;
+  R35: x28 => x23 + x22; nucleus * k16 * x28;
+  R36: x27 => x24 + x23; nucleus * k16 * x27;
+  R37:  => x25; nucleus * (k18a * x20 / (k18b + x20));
+  R38: x25 => x26; nucleus * k19 * x25;
+  R39: x26 => ; nucleus * k22 * x26;
+  R40:  => x29; nucleus * k20 * x26;
+  R41: x29 => ; cytosol * k23 * x29;
+  R42: x32 => x33 + x29; cytosol * k23 * x32;
   R43: x46 + x34 -> x45; cytosol * (kf38 * x34 * x46 - kr38 * x45);
   R44: x38 -> x35 + x34; cytosol * (kf35 * x38 - kr35 * x34 * x35);
   R45: x39 + x34 -> x40; cytosol * (kf24 * x39 * x34 - kr24 * x40);
@@ -75,23 +75,23 @@ model Singh2006_IL6_Signal_Transduction()
   R52: x39 + x38 -> x41; cytosol * (kf41 * x38 * x39 - kr41 * x41);
   R53: x44 -> x46 + x38; cytosol * (kf33 * x44 - kr33 * x38 * x46);
   R54: x49 + x41 -> x43; cytosol * (kf30 * x49 * x41 - kr30 * x43);
-  R55: x52 -> x47 + x50; cytosol * k43 * x52;
+  R55: x52 => x47 + x50; cytosol * k43 * x52;
   R56: x48 -> x51 + x49; cytosol * (kf29 * x48 - kr29 * x49 * x51);
   R57: x51 + x50 -> x52; cytosol * (kf42 * x50 * x51 - kr42 * x52);
   R58: x53 + x51 -> x54; cytosol * (kf44 * x51 * x53 - kr44 * x54);
-  R59: x54 -> x55 + x51; cytosol * k45 * x54;
+  R59: x54 => x55 + x51; cytosol * k45 * x54;
   R60: x55 + x51 -> x56; cytosol * (kf46 * x55 * x51 - kr46 * x56);
-  R61: x60 -> x59 + x53; cytosol * k51 * x60;
-  R62: x58 -> x59 + x55; cytosol * k49 * x58;
+  R61: x60 => x59 + x53; cytosol * k51 * x60;
+  R62: x58 => x59 + x55; cytosol * k49 * x58;
   R63: x59 + x55 -> x60; cytosol * (kf50 * x55 * x59 - kr50 * x60);
-  R64: x56 -> x51 + x57; cytosol * k47 * x56;
+  R64: x56 => x51 + x57; cytosol * k47 * x56;
   R65: x59 + x57 -> x58; cytosol * (kf48 * x57 * x59 - kr48 * x58);
   R66: x61 + x57 -> x62; cytosol * (kf52 * x57 * x61 - kr52 * x62);
-  R67: x62 -> x63 + x57; cytosol * k53 * x62;
+  R67: x62 => x63 + x57; cytosol * k53 * x62;
   R68: x64 -> x63 + x57; cytosol * (kr54 * x64 - kf54 * x57 * x63);
-  R69: x64 -> x65 + x57; cytosol * k55 * x64;
-  R70: x68 -> x66 + x61; cytosol * k59 * x68;
-  R71: x67 -> x66 + x63; cytosol * k57 * x67;
+  R69: x64 => x65 + x57; cytosol * k55 * x64;
+  R70: x68 => x66 + x61; cytosol * k59 * x68;
+  R71: x67 => x66 + x63; cytosol * k57 * x67;
   R72: x66 + x63 -> x68; cytosol * (kf58 * x63 * x66 - kr58 * x68);
   R73: x66 + x65 -> x67; cytosol * (kf56 * x65 * x66 - kr56 * x67);
 

@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Bray1995_chemotaxis_receptorlinkedcomplex()
 
   // Compartments and Species:
@@ -9,7 +9,7 @@ model Bray1995_chemotaxis_receptorlinkedcomplex()
   species Y in cell, Yp in cell, Z in cell, B in cell, Bp in cell, SetYp in cell;
 
   // Assignment Rules:
-  Bias := 1 - pow(Yp, Hill) / (2.333 * pow(SetYp, Hill) + pow(Yp, Hill));
+  Bias := 1 - Yp^Hill / (2.333 * SetYp^Hill + Yp^Hill);
 
   // Reactions:
   complex_r1: TTW -> TT + W; cell * (complex_r1_k1 * TTW - complex_r1_k2 * TT * W);
@@ -24,28 +24,28 @@ model Bray1995_chemotaxis_receptorlinkedcomplex()
   complex_r10: TTWW -> TTW + W; cell * (complex_r10_k1 * TTWW - complex_r10_k2 * TTW * W);
   complex_r11: WWAA -> W + WAA; cell * (complex_r11_k1 * WWAA - complex_r11_k2 * W * WAA);
   complex_r12: TTWAA -> TTAA + W; cell * (complex_r12_k1 * TTWAA - complex_r12_k2 * TTAA * W);
-  phosphorylation_r1: TTWWAA -> TTWWAAp; cell * phosphorylation_r1_k1 * TTWWAA;
-  phosphorylation_r2: AA -> AAp; cell * phosphorylation_r2_k1 * AA;
-  phosphorylation_r3: WAA -> WAAp; cell * phosphorylation_r3_k1 * WAA;
-  phosphorylation_r4: WWAA -> WWAAp; cell * phosphorylation_r4_k1 * WWAA;
-  phosphorylation_r5: TTAA -> TTAAp; cell * phosphorylation_r5_k1 * TTAA;
-  phosphorylation_r6: TTWAA -> TTWAAp; cell * phosphorylation_r6_k1 * TTWAA;
-  phosphorylation_r7: Y -> Yp; cell * phosphorylation_r7_k1 * Y;
-  phosphorylation_r8: Yp -> Y; cell * phosphorylation_r8_k1 * Yp;
-  phosphorylation_r9: Yp + Z -> Y + Z; cell * phosphorylation_r9_k1 * Yp * Z;
-  phosphorylation_r10: Bp -> B; cell * phosphorylation_r10_k1 * Bp;
-  phosphotransfer_r1: B + AAp -> Bp + AA; cell * phosphotransfer_r1_k1 * B * AAp;
-  phosphotransfer_r2: B + WAAp -> Bp + WAA; cell * phosphotransfer_r2_k1 * B * WAAp;
-  phosphotransfer_r3: B + WWAAp -> Bp + WWAA; cell * phosphotransfer_r3_k1 * B * WWAAp;
-  phosphotransfer_r4: B + TTAAp -> Bp + TTAA; cell * phosphotransfer_r4_k1 * B * TTAAp;
-  phosphotransfer_r5: B + TTWAAp -> Bp + TTWAA; cell * phosphotransfer_r5_k1 * B * TTWAAp;
-  phosphotransfer_r6: B + TTWWAAp -> Bp + TTWWAA; cell * phosphotransfer_r6_k1 * B * TTWWAAp;
-  phosphotransfer_r7: Y + AAp -> Yp + AA; cell * phosphotransfer_r7_k1 * Y * AAp;
-  phosphotransfer_r8: Y + WAAp -> Yp + WAA; cell * phosphotransfer_r8_k1 * Y * WAAp;
-  phosphotransfer_r9: Y + WWAAp -> Yp + WWAA; cell * phosphotransfer_r9_k1 * Y * WWAAp;
-  phosphotransfer_r10: Y + TTAAp -> Yp + TTAA; cell * phosphotransfer_r10_k1 * Y * TTAAp;
-  phosphotransfer_r11: Y + TTWAAp -> Yp + TTWAA; cell * phosphotransfer_r11_k1 * Y * TTWAAp;
-  phosphotransfer_r12: Y + TTWWAAp -> Yp + TTWWAA; cell * phosphotransfer_r12_k1 * Y * TTWWAAp;
+  phosphorylation_r1: TTWWAA => TTWWAAp; cell * phosphorylation_r1_k1 * TTWWAA;
+  phosphorylation_r2: AA => AAp; cell * phosphorylation_r2_k1 * AA;
+  phosphorylation_r3: WAA => WAAp; cell * phosphorylation_r3_k1 * WAA;
+  phosphorylation_r4: WWAA => WWAAp; cell * phosphorylation_r4_k1 * WWAA;
+  phosphorylation_r5: TTAA => TTAAp; cell * phosphorylation_r5_k1 * TTAA;
+  phosphorylation_r6: TTWAA => TTWAAp; cell * phosphorylation_r6_k1 * TTWAA;
+  phosphorylation_r7: Y => Yp; cell * phosphorylation_r7_k1 * Y;
+  phosphorylation_r8: Yp => Y; cell * phosphorylation_r8_k1 * Yp;
+  phosphorylation_r9: Yp + Z => Y + Z; cell * phosphorylation_r9_k1 * Yp * Z;
+  phosphorylation_r10: Bp => B; cell * phosphorylation_r10_k1 * Bp;
+  phosphotransfer_r1: B + AAp => Bp + AA; cell * phosphotransfer_r1_k1 * B * AAp;
+  phosphotransfer_r2: B + WAAp => Bp + WAA; cell * phosphotransfer_r2_k1 * B * WAAp;
+  phosphotransfer_r3: B + WWAAp => Bp + WWAA; cell * phosphotransfer_r3_k1 * B * WWAAp;
+  phosphotransfer_r4: B + TTAAp => Bp + TTAA; cell * phosphotransfer_r4_k1 * B * TTAAp;
+  phosphotransfer_r5: B + TTWAAp => Bp + TTWAA; cell * phosphotransfer_r5_k1 * B * TTWAAp;
+  phosphotransfer_r6: B + TTWWAAp => Bp + TTWWAA; cell * phosphotransfer_r6_k1 * B * TTWWAAp;
+  phosphotransfer_r7: Y + AAp => Yp + AA; cell * phosphotransfer_r7_k1 * Y * AAp;
+  phosphotransfer_r8: Y + WAAp => Yp + WAA; cell * phosphotransfer_r8_k1 * Y * WAAp;
+  phosphotransfer_r9: Y + WWAAp => Yp + WWAA; cell * phosphotransfer_r9_k1 * Y * WWAAp;
+  phosphotransfer_r10: Y + TTAAp => Yp + TTAA; cell * phosphotransfer_r10_k1 * Y * TTAAp;
+  phosphotransfer_r11: Y + TTWAAp => Yp + TTWAA; cell * phosphotransfer_r11_k1 * Y * TTWAAp;
+  phosphotransfer_r12: Y + TTWWAAp => Yp + TTWWAA; cell * phosphotransfer_r12_k1 * Y * TTWWAAp;
 
   // Species initializations:
   AA = 2.5e-06;

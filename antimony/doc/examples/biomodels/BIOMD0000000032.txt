@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model kofahl_pheromone_pathway()
 
   // Compartments and Species:
@@ -63,7 +63,7 @@ model kofahl_pheromone_pathway()
   v43: complexM -> Gbc + Far1PP; compartment_ * complexM * v43_k43;
   v44: complexN -> Cdc28 + Far1PP; compartment_ * complexN * v44_k44;
   v45: Cdc28 + Far1PP -> complexN; compartment_ * Far1PP * Cdc28 * v45_k45;
-  v46: $p -> Sst2; compartment_ * (pow(Fus3PP, 2) / (pow(4, 2) + pow(Fus3PP, 2))) * v46_k46;
+  v46: $p -> Sst2; compartment_ * (Fus3PP^2 / (4^2 + Fus3PP^2)) * v46_k46;
   v47: Sst2 -> $p; compartment_ * Sst2 * v47_k47;
 
   // Species initializations:

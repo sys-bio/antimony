@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Lai2007_O2_Transport_Metabolism()
 
   // Compartments and Species:
@@ -7,7 +7,7 @@ model Lai2007_O2_Transport_Metabolism()
   species CTcap in Capillary, CTtis in Tissue, $CFcap in Capillary, $CFtis in Tissue;
 
   // Assignment Rules:
-  StO2m := 100 * (Hct * CrbcHb * KHb * pow(CFcap, nH) / (1 + KHb * pow(CFcap, nH)) * Capillary + Wmc * CmcMb * KMb * CFtis / (1 + KMb * CFtis) * Tissue) / (CrbcHb * Hct * Capillary + CmcMb * Wmc * Tissue);
+  StO2m := 100 * (Hct * CrbcHb * KHb * CFcap^nH / (1 + KHb * CFcap^nH) * Capillary + Wmc * CmcMb * KMb * CFtis / (1 + KMb * CFtis) * Tissue) / (CrbcHb * Hct * Capillary + CmcMb * Wmc * Tissue);
   RStO2m := StO2m / StO2mW - 1;
   Katpase := piecewise(KatpaseW, leq(time, tE), KatpaseE);
   Qm := piecewise(QWm, leq(time, tE), QWm + dQMm * (1 - exp((tE - time) / tauQm)));
@@ -21,8 +21,8 @@ model Lai2007_O2_Transport_Metabolism()
   oxygen_phosph := OxidativePhosphorylation / Tissue * 6;
 
   // Rate Rules:
-  CFcap' = (Qm * (CTart - CTcap) - PSm * (CFcap - CFtis)) * (1 / Capillary) / (1 + 4 * Hct * CrbcHb * KHb * nH * pow(CFcap, nH - 1) / pow(1 + KHb * pow(CFcap, nH), 2));
-  CFtis' = (PSm * (CFcap - CFtis) / Tissue - Vmax * (CFtis / (Km + CFtis) * ADP / (Kadp + ADP))) / (1 + Wmc * CmcMb * KMb / pow(1 + KMb * CFtis, 2));
+  CFcap' = (Qm * (CTart - CTcap) - PSm * (CFcap - CFtis)) * (1 / Capillary) / (1 + 4 * Hct * CrbcHb * KHb * nH * CFcap^(nH - 1) / (1 + KHb * CFcap^nH)^2);
+  CFtis' = (PSm * (CFcap - CFtis) / Tissue - Vmax * (CFtis / (Km + CFtis) * ADP / (Kadp + ADP))) / (1 + Wmc * CmcMb * KMb / (1 + KMb * CFtis)^2);
 
   // Reactions:
   ATPase: ATP -> ADP; Tissue * Katpase * ATP;

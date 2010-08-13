@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Goldbeter1991_MinMitOscil()
 
   // Compartments and Species:
@@ -6,17 +6,17 @@ model Goldbeter1991_MinMitOscil()
   species C in cell, M in cell, X in cell;
 
   // Assignment Rules:
-  V1 := C * VM1 * pow(C + Kc, -1);
+  V1 := C * VM1 * (C + Kc)^-1;
   V3 := M * VM3;
 
   // Reactions:
-  reaction1:  -> C; cell * reaction1_vi;
-  reaction2: C -> ; C * cell * reaction2_kd;
-  reaction3: C -> ; C * cell * reaction3_vd * X * pow(C + reaction3_Kd, -1);
-  reaction4:  -> M; cell * (1 + -1 * M) * V1 * pow(reaction4_K1 + -1 * M + 1, -1);
-  reaction5: M -> ; cell * M * reaction5_V2 * pow(reaction5_K2 + M, -1);
-  reaction6:  -> X; cell * V3 * (1 + -1 * X) * pow(reaction6_K3 + -1 * X + 1, -1);
-  reaction7: X -> ; cell * reaction7_V4 * X * pow(reaction7_K4 + X, -1);
+  reaction1:  => C; cell * reaction1_vi;
+  reaction2: C => ; C * cell * reaction2_kd;
+  reaction3: C => ; C * cell * reaction3_vd * X * (C + reaction3_Kd)^-1;
+  reaction4:  => M; cell * (1 + -1 * M) * V1 * (reaction4_K1 + -1 * M + 1)^-1;
+  reaction5: M => ; cell * M * reaction5_V2 * (reaction5_K2 + M)^-1;
+  reaction6:  => X; cell * V3 * (1 + -1 * X) * (reaction6_K3 + -1 * X + 1)^-1;
+  reaction7: X => ; cell * reaction7_V4 * X * (reaction7_K4 + X)^-1;
 
   // Species initializations:
   C = 0.01;

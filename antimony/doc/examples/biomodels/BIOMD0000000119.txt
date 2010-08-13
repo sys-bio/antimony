@@ -1,10 +1,10 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 function GAMMAF(VV, theta, sigma)
   1 / (1 + exp(-(VV - theta) / sigma));
 end
 
 function ZFUNC(AA, CA, zz)
-  1 / (1 + pow(AA, zz) / pow(CA, zz));
+  1 / (1 + AA^zz / CA^zz);
 end
 
 model model_0000001()
@@ -14,16 +14,16 @@ model model_0000001()
   species Ca in compartment_0000001;
 
   // Assignment Rules:
-  INa := gNa * pow(Minfs, pms) * hhs * (V - VNa);
+  INa := gNa * Minfs^pms * hhs * (V - VNa);
   INaP := gNaP * Pinfs * (V - VNa);
-  IKdr := gKdr * pow(nns, pns) * (V - VK);
-  IA := gA * pow(Ainfs, 3) * bbs * (V - VK);
+  IKdr := gKdr * nns^pns * (V - VK);
+  IA := gA * Ainfs^3 * bbs * (V - VK);
   Iz := gZ * zzs * (V - VK);
   Minfs := GAMMAF(V, thetam, sigmam);
   Pinfs := GAMMAF(V, thetap, sigmap);
   Ainfs := GAMMAF(V, thetaa, sigmaa);
   mKCa := ZFUNC(ac, Ca, pwrc);
-  ICa := gCa * pow(rrs, 2) * (V - VCa);
+  ICa := gCa * rrs^2 * (V - VCa);
   IAHP := gKAHP * qqs * (V - VK);
   IKC := gKCa * mKCa * ccs * (V - VK);
 
@@ -38,7 +38,7 @@ model model_0000001()
   qqs' = (ZFUNC(aq, Ca, pwrq) - qqs) / tauq;
 
   // Reactions:
-  reaction_0000001:  -> Ca; compartment_0000001 * (-uuCa * ICa - Ca) / tauCa;
+  reaction_0000001:  => Ca; compartment_0000001 * (-uuCa * ICa - Ca) / tauCa;
 
   // Species initializations:
   Ca = 0.000787;

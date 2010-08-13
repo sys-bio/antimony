@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Eungdamrong2007_Ras_Activation()
 
   // Compartments and Species:
@@ -71,7 +71,7 @@ model Eungdamrong2007_Ras_Activation()
   reaction7: DAG_GM_GM -> ; reaction7_Kf * DAG_GM_GM * GM;
   Sos_act_RasPM: RasGDP_PM -> RasGTP_PM; Vmax_Sos_act_RasPM * RasGDP_PM * (1 / (Sos_act_RasPM_Km + RasGDP_PM)) * PM;
   flux1: Ca -> Ca_ER; ER_erMembrane * serca * flux1_vP * 0.00166112956810631 * Ca * 0.00166112956810631 * Ca * (1 / (flux1_kP * flux1_kP + 0.00166112956810631 * Ca * 0.00166112956810631 * Ca)) * erMembrane * 1 * (1 / KMOLE);
-  flux0: Ca -> Ca_ER; -(0.25 * ER_erMembrane * (RactCa + Ract) * (0.00166112956810631 * Ca_ER + -(0.00166112956810631 * Ca)) * pow(0.00166112956810631 * IP3 * RactCa * Rinh * (1 / (0.00166112956810631 * IP3 + flux0_dI)) * (1 / (RactCa + Ract)) * (1 / (RinhCa + Rinh)), 3) * flux0_singleChanFlux) * erMembrane * 1 * (1 / KMOLE);
+  flux0: Ca -> Ca_ER; -(0.25 * ER_erMembrane * (RactCa + Ract) * (0.00166112956810631 * Ca_ER + -(0.00166112956810631 * Ca)) * (0.00166112956810631 * IP3 * RactCa * Rinh * (1 / (0.00166112956810631 * IP3 + flux0_dI)) * (1 / (RactCa + Ract)) * (1 / (RinhCa + Rinh)))^3 * flux0_singleChanFlux) * erMembrane * 1 * (1 / KMOLE);
   flux2: Ca -> Ca_ER; -(ER_erMembrane * (0.00166112956810631 * Ca_ER + -(0.00166112956810631 * Ca)) * flux2_vL) * erMembrane * 1 * (1 / KMOLE);
   Ras_PM_depal1: RasGTP_PM -> RasGTP_depal_cyt; (Ras_PM_depal1_Kf * RasGTP_PM + -(Ras_PM_depal1_Kr * 0.00166112956810631 * RasGTP_depal_cyt)) * PM;
 

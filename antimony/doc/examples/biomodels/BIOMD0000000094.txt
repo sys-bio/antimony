@@ -1,4 +1,4 @@
-//Created by libAntimony v1.3
+//Created by libAntimony v1.4
 model Yamada2003_JAK_STAT_SOCS1_knockout()
 
   // Compartments and Species:
@@ -17,51 +17,51 @@ model Yamada2003_JAK_STAT_SOCS1_knockout()
   species IFNR in cytoplasm;
 
   // Reactions:
-  v1: JAK + R -> RJ; cytoplasm * (v1_kf * R * JAK - v1_kb * RJ);
-  v2: RJ + $IFN -> IFNRJ; cytoplasm * (v2_kf * IFN * RJ - v2_kb * IFNRJ);
-  v3: 2IFNRJ -> IFNRJ2; cytoplasm * (v3_kf * IFNRJ * IFNRJ - v3_kb * IFNRJ2);
-  v4: IFNRJ2 -> IFNRJ2_star; cytoplasm * v4_kf * IFNRJ2;
-  v5: IFNRJ2_star + STAT1c -> IFNRJ2_star_STAT1c; cytoplasm * (v5_kf * STAT1c * IFNRJ2_star - v5_kb * IFNRJ2_star_STAT1c);
-  v6: IFNRJ2_star_STAT1c -> STAT1c_star + IFNRJ2_star; cytoplasm * v6_kf * IFNRJ2_star_STAT1c;
-  v7: STAT1c_star + IFNRJ2_star -> IFNRJ2_star_STAT1c_star; cytoplasm * (v7_kf * IFNRJ2_star * STAT1c_star - v7_kb * IFNRJ2_star_STAT1c_star);
-  v8: 2STAT1c_star -> STAT1c_star_STAT1c_star; cytoplasm * (v8_kf * STAT1c_star * STAT1c_star - v8_kb * STAT1c_star_STAT1c_star);
-  v9: SHP2 + IFNRJ2_star -> IFNRJ2_star_SHP2; cytoplasm * (v9_kf * IFNRJ2_star * SHP2 - v9_kb * IFNRJ2_star_SHP2);
-  v10: IFNRJ2_star_SHP2 -> SHP2 + IFNRJ2; cytoplasm * v10_kf * IFNRJ2_star_SHP2;
-  v11: STAT1c_star + PPX -> STAT1c_star_PPX; cytoplasm * (v11_kf * PPX * STAT1c_star - v11_kb * STAT1c_star_PPX);
-  v12: STAT1c_star_PPX -> STAT1c + PPX; cytoplasm * v12_kf * STAT1c_star_PPX;
-  v13: STAT1c_star_STAT1c_star + PPX -> STAT1c_star_STAT1c_star_PPX; cytoplasm * (v13_kf * PPX * STAT1c_star_STAT1c_star - v13_kb * STAT1c_star_STAT1c_star_PPX);
-  v14: STAT1c_star_STAT1c_star_PPX -> STAT1c_STAT1c_star + PPX; cytoplasm * v14_kf * STAT1c_star_STAT1c_star_PPX;
-  v15: STAT1c_star + STAT1c -> STAT1c_STAT1c_star; cytoplasm * (v15_kf * STAT1c * STAT1c_star - v15_kb * STAT1c_STAT1c_star);
-  v16: STAT1c_star_STAT1c_star -> STAT1n_star_STAT1n_star; cytoplasm * v16_kf * STAT1c_star_STAT1c_star;
-  v17: 2STAT1n_star -> STAT1n_star_STAT1n_star; nucleus * (v17_kf * STAT1n_star * STAT1n_star - v17_kb * STAT1n_star_STAT1n_star);
-  v18: STAT1n_star + PPN -> STAT1n_star_PPN; nucleus * (v18_kf * PPN * STAT1n_star - v18_kb * STAT1n_star_PPN);
-  v19: STAT1n_star_PPN -> STAT1n + PPN; nucleus * v19_kf * STAT1n_star_PPN;
-  v20: STAT1n_star_STAT1n_star + PPN -> STAT1n_star_STAT1n_star_PPN; nucleus * (v20_kf * PPN * STAT1n_star_STAT1n_star - v20_kb * STAT1n_star_STAT1n_star_PPN);
-  v21: STAT1n_star_STAT1n_star_PPN -> STAT1n_STAT1n_star + PPN; nucleus * v21_kf * STAT1n_star_STAT1n_star_PPN;
-  v22: STAT1n_star + STAT1n -> STAT1n_STAT1n_star; nucleus * (v22_kf * STAT1n * STAT1n_star - v22_kb * STAT1n_STAT1n_star);
-  v23: STAT1n -> STAT1c; nucleus * v23_kf * STAT1n;
-  v25: mRNAn -> mRNAc; nucleus * v25_kf * mRNAn;
-  v26:  -> SOCS1; cytoplasm * v26_kf * mRNAc;
-  v27: mRNAc -> ; cytoplasm * v27_kf * mRNAc;
-  v28: SOCS1 -> ; cytoplasm * v28_kf * SOCS1;
-  v29: IFNRJ2_star + SOCS1 -> IFNRJ2_star_SOCS1; cytoplasm * (v29_kf * SOCS1 * IFNRJ2_star - v29_kb * IFNRJ2_star_SOCS1);
-  v30: IFNRJ2_star_SOCS1 + STAT1c -> IFNRJ2_star_SOCS1_STAT1c; cytoplasm * (v30_kf * STAT1c * IFNRJ2_star_SOCS1 - v30_kb * IFNRJ2_star_SOCS1_STAT1c);
-  v31: IFNRJ2_star_SOCS1_STAT1c + SHP2 -> IFNRJ2_star_SHP2_SOCS1_STAT1c; cytoplasm * (v31_kf * SHP2 * IFNRJ2_star_SOCS1_STAT1c - v31_kb * IFNRJ2_star_SHP2_SOCS1_STAT1c);
-  v32: IFNRJ2_star_SHP2_SOCS1_STAT1c -> IFNRJ2 + SOCS1 + STAT1c + SHP2; nucleus * v32_kf * IFNRJ2_star_SHP2_SOCS1_STAT1c;
-  v33: IFNRJ2_star_SHP2_SOCS1_STAT1c -> IFNRJ2_star_SHP2_STAT1c; cytoplasm * v33_kf * IFNRJ2_star_SHP2_SOCS1_STAT1c;
-  v34: IFNRJ2_star_SOCS1 + SHP2 -> IFNRJ2_star_SHP2_SOCS1; cytoplasm * (v34_kf * SHP2 * IFNRJ2_star_SOCS1 - v34_kb * IFNRJ2_star_SHP2_SOCS1);
-  v35: IFNRJ2_star_SHP2_SOCS1 + STAT1c -> IFNRJ2_star_SHP2_SOCS1_STAT1c; cytoplasm * (v35_kf * STAT1c * IFNRJ2_star_SHP2_SOCS1 - v35_kb * IFNRJ2_star_SHP2_SOCS1_STAT1c);
-  v36: IFNRJ2_star_STAT1c + SHP2 -> IFNRJ2_star_SHP2_STAT1c; cytoplasm * (v36_kf * SHP2 * IFNRJ2_star_STAT1c - v36_kb * IFNRJ2_star_SHP2_STAT1c);
-  v37: IFNRJ2_star_SHP2_STAT1c -> STAT1c + SHP2 + IFNRJ2; cytoplasm * v37_kf * IFNRJ2_star_SHP2_STAT1c;
-  v38: IFNRJ2_star_SOCS1_STAT1c -> IFNRJ2_star_STAT1c; cytoplasm * v38_kf * IFNRJ2_star_SOCS1_STAT1c;
-  v39: IFNRJ2_star_SHP2_SOCS1 -> IFNRJ2_star_SHP2; cytoplasm * v39_kf * IFNRJ2_star_SHP2_SOCS1;
-  v40: IFNRJ2_star_SHP2_SOCS1 -> SHP2 + IFNRJ2 + SOCS1; cytoplasm * v40_kf * IFNRJ2_star_SHP2_SOCS1;
-  v41: IFNRJ2_star_SOCS1 -> IFNRJ2_star; cytoplasm * v41_kf * IFNRJ2_star_SOCS1;
-  v42: IFNRJ2_star_STAT1c + SOCS1 -> IFNRJ2_star_SOCS1_STAT1c; cytoplasm * (v42_kf * SOCS1 * IFNRJ2_star_STAT1c - v42_kb * IFNRJ2_star_SOCS1_STAT1c);
-  v43: IFNRJ2_star_SHP2 + SOCS1 -> IFNRJ2_star_SHP2_SOCS1; cytoplasm * (v43_kf * SOCS1 * IFNRJ2_star_SHP2 - v43_kb * IFNRJ2_star_SHP2_SOCS1);
-  v44: IFNRJ2_star_SHP2_STAT1c + SOCS1 -> IFNRJ2_star_SHP2_SOCS1_STAT1c; cytoplasm * (v44_kf * SOCS1 * IFNRJ2_star_SHP2_STAT1c - v44_kb * IFNRJ2_star_SHP2_SOCS1_STAT1c);
-  v45: R + $IFN -> IFNR; cytoplasm * (v45_kf * IFN * R - v45_kb * IFNR);
-  v46: JAK + IFNR -> IFNRJ; cytoplasm * (v46_kf * IFNR * JAK - v46_kb * IFNRJ);
+  v1: JAK + R => RJ; cytoplasm * (v1_kf * R * JAK - v1_kb * RJ);
+  v2: RJ + $IFN => IFNRJ; cytoplasm * (v2_kf * IFN * RJ - v2_kb * IFNRJ);
+  v3: 2IFNRJ => IFNRJ2; cytoplasm * (v3_kf * IFNRJ * IFNRJ - v3_kb * IFNRJ2);
+  v4: IFNRJ2 => IFNRJ2_star; cytoplasm * v4_kf * IFNRJ2;
+  v5: IFNRJ2_star + STAT1c => IFNRJ2_star_STAT1c; cytoplasm * (v5_kf * STAT1c * IFNRJ2_star - v5_kb * IFNRJ2_star_STAT1c);
+  v6: IFNRJ2_star_STAT1c => STAT1c_star + IFNRJ2_star; cytoplasm * v6_kf * IFNRJ2_star_STAT1c;
+  v7: STAT1c_star + IFNRJ2_star => IFNRJ2_star_STAT1c_star; cytoplasm * (v7_kf * IFNRJ2_star * STAT1c_star - v7_kb * IFNRJ2_star_STAT1c_star);
+  v8: 2STAT1c_star => STAT1c_star_STAT1c_star; cytoplasm * (v8_kf * STAT1c_star * STAT1c_star - v8_kb * STAT1c_star_STAT1c_star);
+  v9: SHP2 + IFNRJ2_star => IFNRJ2_star_SHP2; cytoplasm * (v9_kf * IFNRJ2_star * SHP2 - v9_kb * IFNRJ2_star_SHP2);
+  v10: IFNRJ2_star_SHP2 => SHP2 + IFNRJ2; cytoplasm * v10_kf * IFNRJ2_star_SHP2;
+  v11: STAT1c_star + PPX => STAT1c_star_PPX; cytoplasm * (v11_kf * PPX * STAT1c_star - v11_kb * STAT1c_star_PPX);
+  v12: STAT1c_star_PPX => STAT1c + PPX; cytoplasm * v12_kf * STAT1c_star_PPX;
+  v13: STAT1c_star_STAT1c_star + PPX => STAT1c_star_STAT1c_star_PPX; cytoplasm * (v13_kf * PPX * STAT1c_star_STAT1c_star - v13_kb * STAT1c_star_STAT1c_star_PPX);
+  v14: STAT1c_star_STAT1c_star_PPX => STAT1c_STAT1c_star + PPX; cytoplasm * v14_kf * STAT1c_star_STAT1c_star_PPX;
+  v15: STAT1c_star + STAT1c => STAT1c_STAT1c_star; cytoplasm * (v15_kf * STAT1c * STAT1c_star - v15_kb * STAT1c_STAT1c_star);
+  v16: STAT1c_star_STAT1c_star => STAT1n_star_STAT1n_star; cytoplasm * v16_kf * STAT1c_star_STAT1c_star;
+  v17: 2STAT1n_star => STAT1n_star_STAT1n_star; nucleus * (v17_kf * STAT1n_star * STAT1n_star - v17_kb * STAT1n_star_STAT1n_star);
+  v18: STAT1n_star + PPN => STAT1n_star_PPN; nucleus * (v18_kf * PPN * STAT1n_star - v18_kb * STAT1n_star_PPN);
+  v19: STAT1n_star_PPN => STAT1n + PPN; nucleus * v19_kf * STAT1n_star_PPN;
+  v20: STAT1n_star_STAT1n_star + PPN => STAT1n_star_STAT1n_star_PPN; nucleus * (v20_kf * PPN * STAT1n_star_STAT1n_star - v20_kb * STAT1n_star_STAT1n_star_PPN);
+  v21: STAT1n_star_STAT1n_star_PPN => STAT1n_STAT1n_star + PPN; nucleus * v21_kf * STAT1n_star_STAT1n_star_PPN;
+  v22: STAT1n_star + STAT1n => STAT1n_STAT1n_star; nucleus * (v22_kf * STAT1n * STAT1n_star - v22_kb * STAT1n_STAT1n_star);
+  v23: STAT1n => STAT1c; nucleus * v23_kf * STAT1n;
+  v25: mRNAn => mRNAc; nucleus * v25_kf * mRNAn;
+  v26:  => SOCS1; cytoplasm * v26_kf * mRNAc;
+  v27: mRNAc => ; cytoplasm * v27_kf * mRNAc;
+  v28: SOCS1 => ; cytoplasm * v28_kf * SOCS1;
+  v29: IFNRJ2_star + SOCS1 => IFNRJ2_star_SOCS1; cytoplasm * (v29_kf * SOCS1 * IFNRJ2_star - v29_kb * IFNRJ2_star_SOCS1);
+  v30: IFNRJ2_star_SOCS1 + STAT1c => IFNRJ2_star_SOCS1_STAT1c; cytoplasm * (v30_kf * STAT1c * IFNRJ2_star_SOCS1 - v30_kb * IFNRJ2_star_SOCS1_STAT1c);
+  v31: IFNRJ2_star_SOCS1_STAT1c + SHP2 => IFNRJ2_star_SHP2_SOCS1_STAT1c; cytoplasm * (v31_kf * SHP2 * IFNRJ2_star_SOCS1_STAT1c - v31_kb * IFNRJ2_star_SHP2_SOCS1_STAT1c);
+  v32: IFNRJ2_star_SHP2_SOCS1_STAT1c => IFNRJ2 + SOCS1 + STAT1c + SHP2; nucleus * v32_kf * IFNRJ2_star_SHP2_SOCS1_STAT1c;
+  v33: IFNRJ2_star_SHP2_SOCS1_STAT1c => IFNRJ2_star_SHP2_STAT1c; cytoplasm * v33_kf * IFNRJ2_star_SHP2_SOCS1_STAT1c;
+  v34: IFNRJ2_star_SOCS1 + SHP2 => IFNRJ2_star_SHP2_SOCS1; cytoplasm * (v34_kf * SHP2 * IFNRJ2_star_SOCS1 - v34_kb * IFNRJ2_star_SHP2_SOCS1);
+  v35: IFNRJ2_star_SHP2_SOCS1 + STAT1c => IFNRJ2_star_SHP2_SOCS1_STAT1c; cytoplasm * (v35_kf * STAT1c * IFNRJ2_star_SHP2_SOCS1 - v35_kb * IFNRJ2_star_SHP2_SOCS1_STAT1c);
+  v36: IFNRJ2_star_STAT1c + SHP2 => IFNRJ2_star_SHP2_STAT1c; cytoplasm * (v36_kf * SHP2 * IFNRJ2_star_STAT1c - v36_kb * IFNRJ2_star_SHP2_STAT1c);
+  v37: IFNRJ2_star_SHP2_STAT1c => STAT1c + SHP2 + IFNRJ2; cytoplasm * v37_kf * IFNRJ2_star_SHP2_STAT1c;
+  v38: IFNRJ2_star_SOCS1_STAT1c => IFNRJ2_star_STAT1c; cytoplasm * v38_kf * IFNRJ2_star_SOCS1_STAT1c;
+  v39: IFNRJ2_star_SHP2_SOCS1 => IFNRJ2_star_SHP2; cytoplasm * v39_kf * IFNRJ2_star_SHP2_SOCS1;
+  v40: IFNRJ2_star_SHP2_SOCS1 => SHP2 + IFNRJ2 + SOCS1; cytoplasm * v40_kf * IFNRJ2_star_SHP2_SOCS1;
+  v41: IFNRJ2_star_SOCS1 => IFNRJ2_star; cytoplasm * v41_kf * IFNRJ2_star_SOCS1;
+  v42: IFNRJ2_star_STAT1c + SOCS1 => IFNRJ2_star_SOCS1_STAT1c; cytoplasm * (v42_kf * SOCS1 * IFNRJ2_star_STAT1c - v42_kb * IFNRJ2_star_SOCS1_STAT1c);
+  v43: IFNRJ2_star_SHP2 + SOCS1 => IFNRJ2_star_SHP2_SOCS1; cytoplasm * (v43_kf * SOCS1 * IFNRJ2_star_SHP2 - v43_kb * IFNRJ2_star_SHP2_SOCS1);
+  v44: IFNRJ2_star_SHP2_STAT1c + SOCS1 => IFNRJ2_star_SHP2_SOCS1_STAT1c; cytoplasm * (v44_kf * SOCS1 * IFNRJ2_star_SHP2_STAT1c - v44_kb * IFNRJ2_star_SHP2_SOCS1_STAT1c);
+  v45: R + $IFN => IFNR; cytoplasm * (v45_kf * IFN * R - v45_kb * IFNR);
+  v46: JAK + IFNR => IFNRJ; cytoplasm * (v46_kf * IFNR * JAK - v46_kb * IFNRJ);
 
   // Species initializations:
   R = 10;
