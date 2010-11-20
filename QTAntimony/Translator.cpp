@@ -129,6 +129,8 @@ Translator::Translator(QTAntimony* app, QString filename)
     QAction* zoomOut = new QAction(tr("Zoom &out"), this);
     zoomOut->setShortcut(QKeySequence::ZoomOut);
     zoomOut->setEnabled(true);
+    QAction* addCellMLTab = new QAction(tr("Add CellML &Tab"), this);
+    QAction* setCellMLFont = new QAction(tr("Set &CellML Font"), this);
 
     //Help
     QAction* actionShowTutorial = new QAction(tr("Show &Tutorial"), this);

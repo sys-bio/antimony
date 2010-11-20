@@ -81,6 +81,11 @@ void TabManager::revertToOriginal()
     GetActiveEditor()->RevertToOriginal();
 }
 
+void TabManager::addCellMLTab()
+{
+
+}
+
 void TabManager::setAntimonyFont()
 {
     bool ok;
