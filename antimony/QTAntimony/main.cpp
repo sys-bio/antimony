@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <QApplication>
 #include <QString>
 #include <QRegExp>
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
 {
 
 #ifdef SBW_INTEGRATION
-	bool sbwon = true;
+        bool sbwon = true;
 
 	static const char* Name("QTAntimony");
 	static const char* ServiceName("QTAntimony");
@@ -94,7 +95,6 @@ int main(int argc, char *argv[])
   //a.setStyleSheet(sheet);
 
 #ifdef SBW_INTEGRATION
-
 	// install an event filter that will display a new window when SBML is loaded
 	if (sbwon) {
 		a.installEventFilter(&a);
@@ -102,12 +102,13 @@ int main(int argc, char *argv[])
 	else {
 		a.SetUseSBW(false);
 	}
-#endif
-
 	for (int arg=1; arg<argc; arg++) {
 		if (sbwModuleIndex != arg) a.OpenFile(argv[arg]);
 	}
-	if (argc==1) {
+#else
+        a.SetUseSBW(false);
+#endif
+        if (argc==1) {
 		a.NewWindow();
 	}
 

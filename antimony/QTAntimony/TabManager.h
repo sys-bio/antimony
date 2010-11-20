@@ -29,8 +29,10 @@ public slots:
     void selectAll();
     void revertToTranslated();
     void revertToOriginal();
+    void addCellMLTab();
     void setAntimonyFont();
     void setSBMLFont();
+    void setCellMLFont();
     void zoomIn();
     void zoomOut();
 
@@ -42,10 +44,12 @@ public slots:
     void SaveCurrentAs();
     void SaveAntimony();
     void SaveAllSBML();
+    void SaveCellML();
 
     void TranslateCurrent();
     void TranslateAntimony();
     void TranslateSBML();
+    void TranslateCellML();
 
     void TabNameIs(const QString& tabname, ChangeableTextBox* tab);
 

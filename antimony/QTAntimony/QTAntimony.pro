@@ -8,13 +8,55 @@ isEmpty(LIBSBML_DIR) {
 }
 isEmpty(SBW_DIR) { 
     win32:SBW_DIR = ..\..\sbw
-    unix:SBW_DIR = ../../SBW-2.7.6/
+    unix:SBW_DIR = ../../sbw-2.7.6/
     mac:SBW_DIR = ../../buildall/build/cvs-dl/core/
 }
+
+# CellML Stuff:
+isEmpty(CELLML_DIR) { 
+    win32:CELLML_DIR = ..\..\CellML
+    unix:CELLML_DIR = ../../CellML/hg
+    mac:CELLML_DIR = ../../CellML
+}
+isEmpty(CELLML_API):CELLML_API = $${CELLML_DIR}/cellml-api
+isEmpty(CELLML_OPENCELL):CELLML_OPENCELL = $${CELLML_DIR}/cellml-opencell
+isEmpty(XULRUNNER):XULRUNNER = /home/lpsmith/xulrunner-sdk
+isEmpty(CELLML_INCLUDES):CELLML_INCLUDES = -I/usr/local/include \
+    -I$${XULRUNNER}/include/ \
+    -I$${XULRUNNER}/include/xpcom \
+    -I$${XULRUNNER}/include/nspr \
+    -I$${XULRUNNER}/include/necko \
+    -I$${XULRUNNER}/include/string \
+    -I$${XULRUNNER}/include/dom \
+    -I$${XULRUNNER}/include/js \
+    -I$${XULRUNNER}/include/editor \
+    -I$${XULRUNNER}/include/docshell \
+    -I$${XULRUNNER}/include/content \
+    -I$${XULRUNNER}/include/rdf \
+    -I$${CELLML_API} \
+    -I$${CELLML_API}/sources \
+    -I$${CELLML_API}/interfaces \
+    -I$${CELLML_API}/simple_interface_generators/glue/xpcom \
+    -I$${CELLML_OPENCELL}/DataCollector \
+    -I$${CELLML_OPENCELL}/stubs
+isEmpty(CELLML_INSTALLED_LIBRARY):CELLML_INSTALLED_LIBARARY = /usr/local/lib/
+isEmpty(CELLML_LIBRARIES):CELLML_LIBRARIES = -L$${XULRUNNER}/lib \
+    -l'xpcomglue_s' \
+    -l'xpcom' \
+    -l'xul' \
+    -l'embed_base_s' \
+    -l'sqlite3' \
+    -l'mozjs' \
+    -L$${CELLML_INSTALLED_LIBRARY} \
+    -lcellml \
+    -lcevas \
+    -L$${CELLML_OPENCELL_DIR}/opencellStage/components/ \
+    -lDataCollector
 mac:DEFINES += DARWIN \
     LINUX
 unix:DEFINES += LINUX
-DEFINES += SBW_INTEGRATION
+
+# DEFINES += SBW_INTEGRATION
 LIBS += -L$${SBW_DIR}/lib \
     -lSBW-static
 INCLUDEPATH += $${SBW_DIR}/include
@@ -26,6 +68,7 @@ INCLUDEPATH += "$${LIBSBML_DIR}/include" \
     "../src"
 LIBS += -L../lib/ \
     -lantimony \
+    $${CELLML_LIBRARIES} \
     -L$${LIBSBML_DIR}/lib \
     -L$${LIBSBML_DIR} \
     -lsbml
@@ -50,7 +93,8 @@ SOURCES += main.cpp \
     FileWatcher.cpp \
     SBWIntegration.cpp \
     Tutorial.cpp \
-    CopyMessageBox.cpp
+    CopyMessageBox.cpp \
+    CellMLTab.cpp
 HEADERS += AntimonyTab.h \
     SBMLTab.h \
     Translator.h \
@@ -61,4 +105,5 @@ HEADERS += AntimonyTab.h \
     SBWIntegration.h \
     Tutorial.h \
     Settings.h \
-    CopyMessageBox.h
+    CopyMessageBox.h \
+    CellMLTab.h

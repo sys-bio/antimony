@@ -42,6 +42,7 @@ public:
     Translator(QTAntimony* app, QString filename="");
     //~Translator();  //Hmm, do we need destructors here?
     void AddSBMLTab(QString name = "", QString text = "", bool translated=true);
+    void AddCellMLTab();
     void SetSBMLTab(QString model);
     bool IsBlank();
     virtual void closeEvent(QCloseEvent* event);
