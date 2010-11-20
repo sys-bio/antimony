@@ -44,6 +44,7 @@
   Variable* variablein;
   Variable* varmaybein;
   Variable* maybein;
+  bool maybemain;
 }
 
 %type <character> mathThing "mathematical symbol"
@@ -52,6 +53,7 @@
 %type <reactantList> reactantList
 %type <reactionDivider> reactionDivider
 %type <variable> variable variablein varmaybein varmaybeis maybein
+%type <maybemain> maybemain
 
 %left '(' ')' '+' '-' '*' '/' '^' ','
 
@@ -98,13 +100,13 @@ input:          /* empty */
 import:         IMPORT TEXTSTRING { if (g_registry.OpenFile(*($2))==0) YYABORT;}
         ;
 
-module:         MODULE WORD {g_registry.NewCurrentModule($2);} '(' variableexportlist ')' modulebody END
+module:         MODULE maybemain WORD {g_registry.NewCurrentModule($3, $2);} '(' variableexportlist ')' modulebody END
                 {
                   $$ = g_registry.CurrentModule();
                   if ($$->Finalize()) YYABORT;
                   g_registry.RevertToPreviousModule();
                 }
-        |       MODULE WORD {g_registry.NewCurrentModule($2);} modulebody END
+        |       MODULE maybemain WORD {g_registry.NewCurrentModule($3, $2);} modulebody END
                 {
                   $$ = g_registry.CurrentModule();
                   if ($$->Finalize()) YYABORT;
@@ -112,6 +114,10 @@ module:         MODULE WORD {g_registry.NewCurrentModule($2);} '(' variableexpor
                 }
         |       MODULE MODNAME {g_registry.SetError("module '" + *($2) + "' already defined."); YYABORT;}
         |       MODULE FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a module because it is already a defined function."); YYABORT;} 
+        ;
+
+maybemain:      /* empty */ {$$ = false;}
+        |       '*' {$$ = true;}
         ;
 
 function:       FUNCTIONWORD WORD {g_registry.NewUserFunction($2);} '(' variableexportlist ')' spacedformula END {if (g_registry.SetUserFunction($7)) YYABORT;}
@@ -502,9 +508,28 @@ int yylex(void)
   if (isdigit(cc) || (cc=='.' && isdigit(g_registry.input->peek()))) {
     double number;
     g_registry.input->unget();
+    streampos numbegin = g_registry.input->tellg();
     *g_registry.input >> number;
+    if (g_registry.input->fail()) {
+      //The gcc 4.4.3 parser fails if there's an 'e' after a number with no exponent.
+      g_registry.input->clear();
+      g_registry.input->seekg(numbegin);
+      int numint;
+      *g_registry.input >> numint;
+      yylval.num = numint;
+      if (g_registry.input->peek() == '.') {
+        g_registry.input->get();
+        *g_registry.input >> numint;
+        double fraction = numint;
+        while (fraction >= 1.0) {
+          fraction = fraction/10;
+        }
+        yylval.num += fraction;
+      }
+      return NUM;
+    }
     yylval.num = number;
-    //Now check to see if the last thing read was an 'E'/'e'
+    //However, pre-4.4.3 parsers would read the 'e' anyway, and we don't want it to, so unget the 'e'.
     g_registry.input->unget();
     g_registry.input->get(cc);
     if (cc == 'e' || cc == 'E') {

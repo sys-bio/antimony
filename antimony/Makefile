@@ -35,7 +35,6 @@ CELLML_API_DIR = /home/lpsmith/CellML/hg/cellml-api
 CELLML_OPENCELL_DIR = /home/lpsmith/CellML/hg/cellml-opencell
 cellml_location = /usr/local/lib/
 cellml_includes = -I/usr/local/include/ \
-  -I$(xulrunner)/include/xpcom/ \
   -I$(xulrunner)/include/ \
   -I$(xulrunner)/include/xpcom/ \
   -I$(xulrunner)/include/nspr/ \

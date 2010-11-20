@@ -169,6 +169,15 @@ bool Formula::IsEllipsesOnly() const
   return false;
 }
 
+bool Formula::IsSingleVariable() const
+{
+  if (m_components.size() == 1 &&
+      m_components[0].second.size() != 0) {
+    return true;
+  }
+  return false;
+}
+
 bool Formula::GetIsConst() const
 {
   for (size_t comp=0; comp<m_components.size(); comp++) {
@@ -565,16 +574,44 @@ void Formula::UseInstead(std::string newname, const Variable* oldvar)
 
 string Formula::ToCellML() const
 {
-  string retval = "";
+  string formula = "";
   //Don't check the variables; just concatenate strings.
   for (size_t comp=0; comp<m_components.size(); comp++) {
     if (m_components[comp].second.size() > 0) {
       assert(m_components[comp].second.size()==1); //CellML formulas can't refer to subvariables.
-      retval += ToStringFromVecDelimitedBy(m_components[comp].second, '_');
+      formula += ToStringFromVecDelimitedBy(m_components[comp].second, '_');
     }
     else {
-      retval += m_components[comp].first;
+      formula += m_components[comp].first;
     }
   }
-  return retval;
+  return CellMLify(formula);
+}
+
+string Formula::ToCellMLString(vector<pair<Variable*, size_t> > strands) const
+{
+  string formula = ToDelimitedStringWithStrands('_', strands);
+  return CellMLify(formula);
+}
+
+string Formula::CellMLify(string formula) const
+{
+  string revform = ConvertOneSymbolToFunction(formula);
+  while (formula != revform) {
+    //cout << "Changing to '" << revform << endl << endl;
+    formula = revform;
+    revform = ConvertOneSymbolToFunction(formula);
+  }
+#ifndef NSBML
+  //Convert through the SBML formula thingy, since it'll do x^y -> pow(x,y) and maybe other stuff.
+  ASTNode_t* ASTform = parseStringToASTNode(formula);
+  caratToPower(ASTform);
+  formula = parseASTNodeToString(ASTform, false);
+#endif
+  size_t pow = formula.find("pow(");
+  while (pow != string::npos) {
+    formula.insert(pow+3, "er");
+    pow = formula.find("pow(");
+  }
+  return formula;
 }

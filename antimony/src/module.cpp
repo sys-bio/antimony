@@ -17,7 +17,7 @@
 #include <CellMLBootstrap.hpp>
 #endif
 
-#define LEVELANDVERSION 2, 4
+#define LEVELANDVERSION 3, 1
 
 extern Registry g_registry;
 using namespace std;
@@ -32,9 +32,10 @@ Module::Module(string name)
     m_synchronized(),
     m_returnvalue(),
     m_currentexportvar(0),
+    m_ismain(false),
     m_varmap(),
 #ifndef NSBML
-    m_sbml(),
+    m_sbml(LEVELANDVERSION),
     m_libsbml_info(""),
     m_libsbml_warnings(""),
 #endif
