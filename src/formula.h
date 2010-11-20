@@ -35,6 +35,7 @@ public:
   bool IsAmountIn(const Variable* compartment) const;
   bool IsOne() const;
   bool IsEllipsesOnly() const;
+  bool IsSingleVariable() const;
   bool GetIsConst() const;
   bool CheckIncludes(std::string modname, const ReactantList* rlist) const;
   bool ContainsVar(std::string modname, std::vector<std::string> vname) const;
@@ -61,6 +62,8 @@ public:
   //For CellMLStuff:
   void UseInstead(std::string newname, const Variable* oldvar);
   std::string ToCellML() const;
+  std::string ToCellMLString(std::vector<std::pair<Variable*, size_t> > strands) const;
+  std::string CellMLify(std::string formula) const;
 };
 
 

@@ -29,7 +29,7 @@
 
 #define MAINMODULE "__main"
 #ifndef VERSION_STRING //So we can define it in the makefile if need be.
-#define VERSION_STRING "v1.3"
+#define VERSION_STRING "v1.4"
 #endif
 
 class Registry
@@ -95,7 +95,7 @@ public:
   void   SetupFunctions();
 
   //Modules
-  bool NewCurrentModule(const std::string* name);
+  bool NewCurrentModule(const std::string* name, bool ismain=false);
   Module* CurrentModule();
   void RevertToPreviousModule();
 

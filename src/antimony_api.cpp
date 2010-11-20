@@ -352,13 +352,30 @@ LIB_EXTERN long loadCellMLString(const char* modelstring)
   return CheckAndAddCellMLDoc(model);
 }
 
-LIB_EXTERN int writeCellMLFile(const char* filename, const char* moduleName)
+string getCellMLText(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
   nsCOMPtr<cellml_apiIModel> model = g_registry.GetModule(moduleName)->GetCellMLModel();
   nsresult rv;
   nsString cellmltext;
   rv = model->GetSerialisedText(cellmltext);
+  string cellmlstring = ToThinString(cellmltext.get());
+  size_t gtpos;
+  while ((gtpos = cellmlstring.find("><")) != string::npos) {
+    cellmlstring.insert(gtpos+1, "\n");
+  }
+  //LS DEBUG Hack number units!
+  gtpos = cellmlstring.find("<model");
+  cellmlstring.insert(gtpos+6, " xmlns:cellml=\"http://www.cellml.org/cellml/1.1#\"");
+  while ((gtpos = cellmlstring.find("<cn>")) != string::npos) {
+    cellmlstring.insert(gtpos+3, " cellml:units=\"dimensionless\"");
+  }
+  return cellmlstring;
+}
+
+LIB_EXTERN int writeCellMLFile(const char* filename, const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   ofstream afile(filename);
@@ -370,17 +387,18 @@ LIB_EXTERN int writeCellMLFile(const char* filename, const char* moduleName)
     setlocale(LC_ALL, oldlocale.c_str());
     return 0;
   }
-  string cellmlstring = ToThinString(cellmltext.get());
-  size_t gtpos;
-  while ((gtpos = cellmlstring.find("><")) != string::npos) {
-    cellmlstring.insert(gtpos+1, "\n");
-  }
+  string cellmlstring = getCellMLText(moduleName);
   afile << cellmlstring;
   afile.close();
   setlocale(LC_ALL, oldlocale.c_str());
   return 1;
 }
 
+LIB_EXTERN char* getCellMLString(const char* moduleName)
+{
+  if (!checkModule(moduleName)) return NULL;
+  return getCharStar(getCellMLText(moduleName).c_str());
+}
 
 #endif
 

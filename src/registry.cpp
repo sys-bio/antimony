@@ -604,7 +604,7 @@ void Registry::SetupFunctions()
   }
 }
 
-bool Registry::NewCurrentModule(const string* name)
+bool Registry::NewCurrentModule(const string* name, bool ismain)
 {
   string localname(*name);
   m_currentModules.push_back(localname);
@@ -615,6 +615,10 @@ bool Registry::NewCurrentModule(const string* name)
       //cout << "duplicated name: " << localname << endl;
       SetError("Programming error:  Unable to create new module with the same name as an existing module (\"" + localname + "\").");
       return true;
+    }
+    if (ismain && m_modules[mod].GetIsMain()) {
+      string warn = "Warning: changing main module for this file to be " + *name + " instead of '" + m_modules[mod].GetModuleName() + "'.";
+      AddWarning(warn);
     }
   }
   //Otherwise, create a new module with that name

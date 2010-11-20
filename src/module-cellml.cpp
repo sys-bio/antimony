@@ -145,7 +145,7 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
         rv = mmlis.MathMLToInputFormat(input, NULL, indent, cinfix);
         string infix;
         infix = cinfix.get();
-        cout << infix << endl;
+        //cout << infix << endl;
         string variable, equation;
         variable.assign(infix, 0, infix.find('='));
         equation.assign(infix, infix.find('=')+1, infix.size());
@@ -405,13 +405,13 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
           vector<string> sync1name, sync2name;
           bool foundorig = false;
           if (var1->IsPointer()) {
-            cout << "var1 is pointer: " << var1->GetNameDelimitedBy('.') << endl;
+            //cout << "var1 is pointer: " << var1->GetNameDelimitedBy('.') << endl;
             sync1name = var1->GetName();
             sync2name = var1->GetPointerName();
-            cout << "Looking for sync for " << ToStringFromVecDelimitedBy(sync1name, '.') << " and " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
+            //cout << "Looking for sync for " << ToStringFromVecDelimitedBy(sync1name, '.') << " and " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
             for (vector<pair<vector<string>, vector<string> > >::iterator sync = m_synchronized.begin();
                  sync != m_synchronized.end(); sync++) {
-              cout << "Found " << ToStringFromVecDelimitedBy(sync->first, '.') << " and " << ToStringFromVecDelimitedBy(sync->second, '.') << endl;
+              //cout << "Found " << ToStringFromVecDelimitedBy(sync->first, '.') << " and " << ToStringFromVecDelimitedBy(sync->second, '.') << endl;
               if ((sync1name == sync->first && sync2name == sync->second) ||
                   (sync2name == sync->first && sync1name == sync->second)) {
                 //cout << "Removing sync from " << m_modulename << ": " << ToStringFromVecDelimitedBy(sync1name, '.') << " with " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
@@ -423,7 +423,7 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
             }
           }
           if (!foundorig && var2->IsPointer()) {
-            cout << "var2 is pointer: " << var2->GetNameDelimitedBy('.') << endl;
+            //cout << "var2 is pointer: " << var2->GetNameDelimitedBy('.') << endl;
             sync1name = var2->GetName();
             sync2name = var2->GetPointerName();
             for (vector<pair<vector<string>, vector<string> > >::iterator sync = m_synchronized.begin();
@@ -470,12 +470,6 @@ void Module::CreateCellMLModel()
   nsCOMPtr<domIDOMImplementation> domi;
   rv = boot->GetDomImplementation(getter_AddRefs(domi));
   assert(domi != NULL);
-  nsCOMPtr<domIDocument> doc;
-  nsCOMPtr<domIDocumentType> dt;
-  nsString model = ToNSString("model");
-  nsString none =  ToNSString("");
-  rv = domi->CreateDocumentType(model, none, none, getter_AddRefs(dt));
-  rv = domi->CreateDocument(none, model, dt, getter_AddRefs(doc));
 
   cellmltext = ToNSString(m_modulename);
   m_cellmlmodel->SetName(cellmltext);
@@ -496,7 +490,7 @@ void Module::CreateCellMLModel()
   //Add in the Math
   for (map<Variable*, vector<Variable*> >::iterator mapiter = m_syncedvars.begin();
        mapiter != m_syncedvars.end(); mapiter++) {
-    AssignMathOnceFor(mapiter->second, doc);
+    AssignMathOnceFor(mapiter->second);
   }
 
   //Add in the ODEs
@@ -598,10 +592,15 @@ void Module::AddNewVariableToCellML(Variable* variable, nsCOMPtr<cellml_apiIMode
 
 nsCOMPtr<cellml_apiICellMLVariable> Module::AddNewVariableToCellML(string varname, nsCOMPtr<cellml_apiIModel> model)
 {
-  assert(m_cellmlcomponent != NULL);
+  return AddNewVariableToCellML(varname, m_cellmlcomponent, model);
+}
+
+nsCOMPtr<cellml_apiICellMLVariable> Module::AddNewVariableToCellML(string varname, nsCOMPtr<cellml_apiICellMLComponent> component, nsCOMPtr<cellml_apiIModel> model)
+{
+  assert(component != NULL);
   nsresult rv;
   nsCOMPtr<cellml_apiICellMLVariableSet> cmlvarset;
-  rv = m_cellmlcomponent->GetVariables(getter_AddRefs(cmlvarset));
+  rv = component->GetVariables(getter_AddRefs(cmlvarset));
   nsCOMPtr<cellml_apiICellMLVariable> cmlvar;
   nsString cmlvarst = ToNSString(varname);
   rv = cmlvarset->GetVariable(cmlvarst, getter_AddRefs(cmlvar));
@@ -613,110 +612,10 @@ nsCOMPtr<cellml_apiICellMLVariable> Module::AddNewVariableToCellML(string varnam
     varnum++;
   }
   rv = model->CreateCellMLVariable(getter_AddRefs(cmlvar));
-  rv = m_cellmlcomponent->AddElement(cmlvar);
+  rv = component->AddElement(cmlvar);
   rv = cmlvar->SetName(cmlvarst);
+  rv = cmlvar->SetUnitsName(ToNSString("dimensionless")); //LS DEBUG:  units
   return cmlvar;
-}
-
-void Module::AssignMathOnceFor(vector<Variable*> varlist, nsCOMPtr<domIDocument> doc)
-{
-  nsresult rv;
-  Variable* finalvar = varlist[0];
-  const Formula* ia = finalvar->GetInitialAssignment();
-  const Formula* ar = finalvar->GetAssignmentRuleOrKineticLaw();
-  const Formula* rr = finalvar->GetRateRule();
-  //'ia' and 'rr' may both exist and have been initially defined in different modules.  But that doesn't matter, since we need to define all three in the same CellML module, since that's the way they roll.
-  Variable* targetvar = varlist[0]->GetCanonicalVariable();
-  nsCOMPtr<cellml_apiICellMLVariable> cmlvar = targetvar->GetCellMLVariable();
-  if (!ia->IsEmpty()) {
-    if (ia->IsDouble()) {
-      rv = cmlvar->SetInitialValue(ToNSString(ia->ToCellML()));
-      cout << "Successfully set initial value for " << targetvar->GetNameDelimitedBy('.') << endl;
-    }
-    else {
-      //Can't do this in CellML.
-      cout << "Can't set initial assignment for " << varlist[0]->GetNameDelimitedBy('.') << endl;
-    }
-  }
-  if (!ar->IsEmpty()) {
-    const Variable* origtarget = targetvar->GetOriginal();
-    vector<string> varname = origtarget->GetName();
-    assert(varname.size()==1);
-    string formula = origtarget->GetAssignmentRuleOrKineticLaw()->ToDelimitedStringWithStrands('_', origtarget->GetStrandVars());
-    formula = varname[varname.size()-1] + " = " + formula;
-    if (AddCellMLMathTo(formula, targetvar, doc)) {
-      cout << "Successfully found assignment rule for " << targetvar->GetNameDelimitedBy('.') << " (" << formula << ")" << endl;
-    }
-    else {
-      cout << "Unable to translate \"" << formula << "\" to CellML's MathML for the assignment rule." << endl;
-    }
-  }
-  if (!rr->IsEmpty()) {
-    AddTimeFor(targetvar->GetCellMLVariable());
-    const Variable* origtarget = targetvar->GetOriginal();
-    vector<string> varname = origtarget->GetName();
-    assert(varname.size()==1);
-    string formula = origtarget->GetRateRule()->ToDelimitedStringWithStrands('_', origtarget->GetStrandVars());
-    formula = "d(" + varname[varname.size()-1] + ")/d(time) = " + formula;
-    if (AddCellMLMathTo(formula, targetvar, doc)) {
-      cout << "Successfully found rate rule for " << targetvar->GetNameDelimitedBy('.') << " (" << formula << ")" << endl;
-    }
-    else {
-      cout << "Unable to translate \"" << formula << "\" to CellML's MathML for the rate rule." << endl;
-    }
-  }
-}
-
-bool Module::AddCellMLMathTo(string formula, Variable* targetvar, nsCOMPtr<domIDocument> doc)
-{
-  nsresult rv;
-  nsCOMPtr<cellml_apiICellMLVariable> cmlvar = targetvar->GetCellMLVariable();
-  nsCOMPtr<cellml_apiICellMLComponent> cmlcomp = GetCellMLComponentOf(cmlvar);
-  nsCOMPtr<cellml_apiIMathContainer> upcast_cmlcomp;
-  rv = cmlcomp->QueryInterface(upcast_cmlcomp->GetIID(), getter_AddRefs(upcast_cmlcomp));
-  nsCOMPtr<domIElement> mathml;
-  nsCString formstring = ToNSCString(formula);
-  MathMLInputServices mmlis;
-  rv = mmlis.InputFormatToMathML(doc, formstring, getter_AddRefs(mathml));
-  NS_ENSURE_SUCCESS(rv, false);
-  nsCOMPtr<mathml_domIMathMLElement> recast_mathml;
-  rv = mathml->QueryInterface(recast_mathml->GetIID(), getter_AddRefs(recast_mathml));
-  NS_ENSURE_SUCCESS(rv, false);
-  rv = upcast_cmlcomp->AddMath(recast_mathml);
-  NS_ENSURE_SUCCESS(rv, false);
-  return true;
-}
-
-void Module::AddTimeFor(nsCOMPtr<cellml_apiICellMLVariable> cmlvar)
-{
-  nsCOMPtr<cellml_apiICellMLComponent> cmlcomp = GetCellMLComponentOf(cmlvar);
-  AddTimeTo(cmlcomp);
-}
-
-nsCOMPtr<cellml_apiICellMLVariable> Module::AddTimeTo(nsCOMPtr<cellml_apiICellMLComponent> cmlcomp)
-{
-  nsresult rv;
-  nsCOMPtr<cellml_apiICellMLVariableSet> cmlvarset;
-  rv = cmlcomp->GetVariables(getter_AddRefs(cmlvarset));
-  nsCOMPtr<cellml_apiICellMLVariable> time;
-  nsString timest = ToNSString("time");
-  rv = cmlvarset->GetVariable(timest, getter_AddRefs(time));
-  if (time != NULL) {
-    //Already exists!
-    return time;
-  }
-  assert(m_cellmlmodel != NULL);
-  rv = m_cellmlmodel->CreateCellMLVariable(getter_AddRefs(time));
-  rv = cmlcomp->AddElement(time);
-  rv = time->SetName(timest);
-
-  nsCOMPtr<cellml_apiICellMLComponent> parent;
-  rv = cmlcomp->GetEncapsulationParent(getter_AddRefs(parent));
-  if (parent != NULL) {
-    nsCOMPtr<cellml_apiICellMLVariable> ptime = AddTimeTo(parent);
-    AddOneConnection(time, ptime, td_UP);
-  }
-  return time;
 }
 
 Variable* Module::WhichFirstDefined(vector<Variable*> varlist, formula_type ftype)
@@ -735,7 +634,7 @@ Variable* Module::WhichFirstDefined(vector<Variable*> varlist, formula_type ftyp
     //Um, help? LS DEBUG
     //At least point to the version that everyone is synced to:
     candidate = varlist[0]->GetSameVariable();
-    cout << "Help!  Nothing found for the variables synced to " << candidate->GetNameDelimitedBy('.');
+    //cout << "Help!  Nothing found for the variables synced to " << candidate->GetNameDelimitedBy('.');
   }
   return candidate;
 }
@@ -858,6 +757,7 @@ void Module::AddConnectionsTo(vector<Variable*> varlist, const map<Variable*, Va
   for (size_t var=0; var<varlist.size(); var++) {
     Connect(varlist[var]->GetParentVariable(), canonmod, mod2linkedcellml, mod2var, canonparents, tree);
   }
+  //varlist[var]->GetSameVariable()->SaveCellMLLinkages(mod2linkedcellml, mod2var, canonparents);
 }
 
 Variable* Module::GetParent(Variable* child, const map<Variable*, Variable*>& tree)
@@ -897,29 +797,21 @@ nsCOMPtr<cellml_apiICellMLVariable> Module::GetLinkedCMLVar(Variable* mod, const
 
 void Module::Connect(Variable* modin, Variable* canonmod, map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> >& mod2linkedcellml, const map<Variable*, Variable*>& mod2var, const set<Variable*>& canonparents, const map<Variable*, Variable*>& tree)
 {
+  nsCOMPtr<cellml_apiICellMLVariable> cmlin = GetLinkedCMLVar(modin, mod2linkedcellml);
+  if ( cmlin != NULL) {
+    //We already connected this, so we're done!
+    return;
+  }
   Variable* canonvar = GetSyncedVariable(canonmod, mod2var);
-  nsCOMPtr<cellml_apiICellMLVariable> cmlin = NULL;
   Variable* syncedvar = GetSyncedVariable(modin, mod2var);
   if (syncedvar == NULL) {
-    cmlin = GetLinkedCMLVar(modin, mod2linkedcellml);
-    if (cmlin != NULL) {
-      //We already connected this, so we're done!
-      return;
-    }
     vector<string> canonname = canonvar->GetName();
     cmlin = modin->GetModule()->AddNewVariableToCellML(canonname[canonname.size()-1], m_cellmlmodel);
   }
   else {
     cmlin = syncedvar->GetCellMLVariable();
-    if (GetLinkedCMLVar(modin, mod2linkedcellml) != NULL) {
-      //We already connected this, so we're done!
-      return;
-    }
   }
 
-  //Put the new cmlin variable into the sync list before we forget:
-  mod2linkedcellml.insert(make_pair(modin, cmlin));
-  
   //So, there are three options:
   //  One, the modin is a direct parent of canonmod, so we link downwards towards it. 
   //  Two, the modin is a direct child of a direct parent of canonmod, so we link sidways into the parent tree or to canonmod directly.
@@ -958,6 +850,9 @@ void Module::Connect(Variable* modin, Variable* canonmod, map<Variable*, nsCOMPt
     assert(cmlparent != NULL);
     AddOneConnection(cmlin, cmlparent, td_UP);
   }
+
+  //Finally, put the new cmlin variable into the sync list so we only do this once:
+  mod2linkedcellml.insert(make_pair(modin, cmlin));
 }
 
 void Module::AddOneConnection(nsCOMPtr<cellml_apiICellMLVariable> varin, nsCOMPtr<cellml_apiICellMLVariable> varout, tree_direction td)
@@ -991,6 +886,138 @@ void Module::AddOneConnection(nsCOMPtr<cellml_apiICellMLVariable> varin, nsCOMPt
   else {
     rv = mapvars->SetSecondVariable(varout);
   }
+}
+
+void Module::AssignMathOnceFor(vector<Variable*> varlist)
+{
+  nsresult rv;
+  Variable* finalvar = varlist[0];
+  const Formula* ia = finalvar->GetInitialAssignment();
+  const Formula* ar = finalvar->GetAssignmentRuleOrKineticLaw();
+  const Formula* rr = finalvar->GetRateRule();
+  //'ia' and 'rr' may both exist and have been initially defined in different modules.  But that doesn't matter, since we need to define all three in the same CellML module, since that's the way they roll.
+  Variable* targetvar = varlist[0]->GetCanonicalVariable();
+  nsCOMPtr<cellml_apiICellMLVariable> cmlvar = targetvar->GetCellMLVariable();
+  const Variable* origtarget = targetvar->GetOriginal();
+  vector<string> varname = origtarget->GetName();
+  assert(varname.size()==1);
+  if (!ia->IsEmpty()) {
+    if (ia->IsDouble() || ia->IsSingleVariable()) {
+      rv = cmlvar->SetInitialValue(ToNSString(ia->ToCellML()));
+      //cout << "Successfully set initial value for " << targetvar->GetNameDelimitedBy('.') << endl;
+    }
+    else {
+      //Have to create a new variable.
+      string newvarname = varname[varname.size()-1] + "_init";
+      rv = cmlvar->SetInitialValue(ToNSString(newvarname));
+      Variable* tvarparent = targetvar->GetParentVariable();
+      Module* tvarmod = this;
+      if (tvarparent != NULL) {
+        tvarmod = tvarparent->GetModule();
+      }
+      nsCOMPtr<cellml_apiICellMLVariable> initvar = tvarmod->AddNewVariableToCellML(newvarname, m_cellmlmodel);
+      //LS DEBUG:  didn't check to see if we renamed 'newvarname'
+      string formula = newvarname + " = " + origtarget->GetInitialAssignment()->ToCellMLString(origtarget->GetStrandVars());
+      if (!AddCellMLMathTo(formula, targetvar)) {
+        string warning = "Unable to initialize " + targetvar->GetNameDelimitedBy('.') + " through "+ newvarname + " (" + formula + ")";
+        g_registry.AddWarning(warning);
+      }
+    }
+  }
+  if (!ar->IsEmpty()) {
+    string formula = origtarget->GetAssignmentRuleOrKineticLaw()->ToCellMLString(origtarget->GetStrandVars());
+    formula = varname[varname.size()-1] + " = " + formula;
+    if (!AddCellMLMathTo(formula, targetvar)) {
+      string warning = "Unable to translate \"" + formula + "\" to CellML's MathML for the assignment rule.";
+      g_registry.AddWarning(warning);
+    }
+  }
+  if (!rr->IsEmpty()) {
+    AddTimeFor(targetvar->GetCellMLVariable());
+    const Variable* origtarget = targetvar->GetOriginal();
+    vector<string> varname = origtarget->GetName();
+    assert(varname.size()==1);
+    string formula = origtarget->GetRateRule()->ToCellMLString(origtarget->GetStrandVars());
+    formula = "d(" + varname[varname.size()-1] + ")/d(time) = " + formula;
+    if (!AddCellMLMathTo(formula, targetvar)) {
+      string warning = "Unable to translate \"" + formula + "\" to CellML's MathML for the rate rule.";
+      g_registry.AddWarning(warning);
+    }
+  }
+}
+
+bool Module::AddCellMLMathTo(string formula, Variable* targetvar)
+{
+  nsCOMPtr<cellml_apiICellMLVariable> cmlvar = targetvar->GetCellMLVariable();
+  nsCOMPtr<cellml_apiICellMLComponent> cmlcomp = GetCellMLComponentOf(cmlvar);
+  return AddCellMLMathTo(formula, cmlcomp);
+}
+
+bool Module::AddCellMLMathTo(string formula, nsCOMPtr<cellml_apiICellMLComponent> cmlcomp)
+{
+  nsresult rv;
+  nsCOMPtr<cellml_apiIMathContainer> upcast_cmlcomp;
+  rv = cmlcomp->QueryInterface(upcast_cmlcomp->GetIID(), getter_AddRefs(upcast_cmlcomp));
+  nsCOMPtr<domIElement> mathml;
+  nsCString formstring = ToNSCString(formula);
+  MathMLInputServices mmlis;
+  nsCOMPtr<cellml_apiICellMLDOMElement> cmlde;
+  rv = m_cellmlmodel->QueryInterface(cmlde->GetIID(), getter_AddRefs(cmlde));
+  nsCOMPtr<domIElement> de;
+  rv = cmlde->GetDomElement(getter_AddRefs(de));
+  nsCOMPtr<domIDocument> doc;
+  rv = de->GetOwnerDocument(getter_AddRefs(doc));
+  NS_ENSURE_SUCCESS(rv, false);
+  rv = mmlis.InputFormatToMathML(doc, formstring, getter_AddRefs(mathml));
+  NS_ENSURE_SUCCESS(rv, false);
+  nsString elname;
+  rv = mathml->GetTagName(elname);
+  if (ToThinString(elname.get())=="error") return false;
+  nsCOMPtr<domINode> recast_mathml;
+  rv = mathml->QueryInterface(recast_mathml->GetIID(), getter_AddRefs(recast_mathml));
+  NS_ENSURE_SUCCESS(rv, false);
+  nsCOMPtr<mathml_domIMathMLMathElement> parent_mathml;
+  rv = m_cellmlmodel->CreateMathElement(getter_AddRefs(parent_mathml));
+  NS_ENSURE_SUCCESS(rv, false);
+  nsCOMPtr<domINode> newnode;
+  rv = parent_mathml->AppendChild(recast_mathml, getter_AddRefs(newnode));
+  NS_ENSURE_SUCCESS(rv, false);
+  rv = upcast_cmlcomp->AddMath(parent_mathml);
+  NS_ENSURE_SUCCESS(rv, false);
+  return true;
+}
+
+void Module::AddTimeFor(nsCOMPtr<cellml_apiICellMLVariable> cmlvar)
+{
+  nsCOMPtr<cellml_apiICellMLComponent> cmlcomp = GetCellMLComponentOf(cmlvar);
+  AddTimeTo(cmlcomp);
+}
+
+nsCOMPtr<cellml_apiICellMLVariable> Module::AddTimeTo(nsCOMPtr<cellml_apiICellMLComponent> cmlcomp)
+{
+  nsresult rv;
+  nsCOMPtr<cellml_apiICellMLVariableSet> cmlvarset;
+  rv = cmlcomp->GetVariables(getter_AddRefs(cmlvarset));
+  nsCOMPtr<cellml_apiICellMLVariable> time;
+  nsString timest = ToNSString("time");
+  rv = cmlvarset->GetVariable(timest, getter_AddRefs(time));
+  if (time != NULL) {
+    //Already exists!
+    return time;
+  }
+  assert(m_cellmlmodel != NULL);
+  rv = m_cellmlmodel->CreateCellMLVariable(getter_AddRefs(time));
+  rv = cmlcomp->AddElement(time);
+  rv = time->SetName(timest);
+  rv = time->SetUnitsName(ToNSString("dimensionless")); //LS DEBUG:  units
+
+  nsCOMPtr<cellml_apiICellMLComponent> parent;
+  rv = cmlcomp->GetEncapsulationParent(getter_AddRefs(parent));
+  if (parent != NULL) {
+    nsCOMPtr<cellml_apiICellMLVariable> ptime = AddTimeTo(parent);
+    AddOneConnection(time, ptime, td_UP);
+  }
+  return time;
 }
 
 void Module::AddODEsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod)
@@ -1079,7 +1106,10 @@ void Module::AddRateRuleInvolving(Variable* species, Formula form, set<Variable*
   }
   string infix = "d(" + localname + ")/d(time) = " + form.ToCellML();
   AddTimeTo(m_cellmlcomponent);
-  cout << "If we could convert infix to CellML yet, we would get: " << infix << endl;
+  if (!AddCellMLMathTo(infix, m_cellmlcomponent)) {
+    string warning = "Unable to translate \"" + infix + "\" to CellML's MathML for the rate rule.";
+    g_registry.AddWarning(warning);
+  }
 }
 
 string Module::FindOrCreateLocalVersionOf(Variable* variable, nsCOMPtr<cellml_apiICellMLVariable>& localvar)

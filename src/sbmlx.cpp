@@ -72,10 +72,13 @@ void setTimeName(ASTNode *node)
   }
 }
 
-string parseASTNodeToString(const ASTNode* ASTform) {
+string parseASTNodeToString(const ASTNode* ASTform, bool carat) {
   if (ASTform==NULL) return "";
   ASTNode clone(*ASTform);
   setTimeName(&clone);
+  if (carat) {
+    powerToCarat(&clone);
+  }
   char* formula = SBML_formulaToString(&clone);
   string ret = formula;
 #ifndef WIN32
@@ -97,13 +100,34 @@ void setTimeType(ASTNode_t* node)
   }
 }
 
-ASTNode* parseStringToASTNode(const string& formula) {
+ASTNode* parseStringToASTNode(const string& formula)
+{
   ASTNode* rootnode = SBML_parseFormula(formula.c_str());
   if (rootnode == NULL) return NULL;
   if (formula.find("time") != string::npos) {
     setTimeType(rootnode);
   }
   return rootnode;
+}
+
+void caratToPower(ASTNode* node)
+{
+  if (node->getType() == AST_POWER) {
+    node->setType(AST_FUNCTION_POWER);
+  }
+  for (unsigned int c = 0; c < node->getNumChildren() ; c++) {
+    caratToPower(node->getChild(c));
+  }
+}
+
+void powerToCarat(ASTNode* node)
+{
+  if (node->getType() == AST_FUNCTION_POWER) {
+    node->setType(AST_POWER);
+  }
+  for (unsigned int c = 0; c < node->getNumChildren() ; c++) {
+    powerToCarat(node->getChild(c));
+  }
 }
 
 #endif

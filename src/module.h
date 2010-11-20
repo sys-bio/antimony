@@ -37,6 +37,7 @@ private:
   std::vector<std::string> m_returnvalue;
 
   size_t m_currentexportvar;
+  bool m_ismain;
 
   //Caching for speed:
   std::map<std::vector<std::string>, Variable*> m_varmap;
@@ -80,6 +81,7 @@ public:
   void AddSynchronizedPair(Variable* oldvar, Variable* newvar);
   void AddTimeToUserFunction(std::string function);
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
+  void SetIsMain(bool ismain) {m_ismain=ismain;};
 
   Variable* GetVariable(const std::vector<std::string>& name);
   void AddToVarMapFrom(const Module& submod);
@@ -99,6 +101,7 @@ public:
   Variable* GetUpstreamDNA();
   Variable* GetDownstreamDNA();
   formula_type GetFormulaType() const; //If we have a return value
+  bool GetIsMain() const {return m_ismain;};
 
   const std::string& GetModuleName() const;
   std::string GetVariableNameDelimitedBy(char cc) const;
@@ -148,8 +151,10 @@ public:
   void  CreateCellMLComponent(Module* topmod);
   void  AddNewVariableToCellML(Variable* variable, nsCOMPtr<cellml_apiIModel> model);
   nsCOMPtr<cellml_apiICellMLVariable> AddNewVariableToCellML(std::string varname, nsCOMPtr<cellml_apiIModel> model);
-  void  AssignMathOnceFor(std::vector<Variable*> varlist, nsCOMPtr<domIDocument> doc);
-  bool  AddCellMLMathTo(std::string formula, Variable* targetvar, nsCOMPtr<domIDocument> doc);
+  nsCOMPtr<cellml_apiICellMLVariable> AddNewVariableToCellML(std::string varname, nsCOMPtr<cellml_apiICellMLComponent> component, nsCOMPtr<cellml_apiIModel> model);
+  void  AssignMathOnceFor(std::vector<Variable*> varlist);
+  bool  AddCellMLMathTo(std::string formula, Variable* targetvar);
+  bool  AddCellMLMathTo(std::string formula, nsCOMPtr<cellml_apiICellMLComponent> cmlcomp);
   void  AddTimeFor(nsCOMPtr<cellml_apiICellMLVariable> cmlvar);
   nsCOMPtr<cellml_apiICellMLVariable>  AddTimeTo(nsCOMPtr<cellml_apiICellMLComponent> cmlcomp);
   Variable* WhichFirstDefined(std::vector<Variable*> varlist, formula_type ftype);

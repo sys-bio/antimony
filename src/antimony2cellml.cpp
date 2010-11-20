@@ -28,7 +28,14 @@ int main(int argc, char** argv)
         retval = 1;
       }
       else {
-        cout << argv[file] << " read successfully." << endl;
+        cout << argv[file] << " read successfully";
+        char* warnings = getWarnings();
+        if (warnings == NULL) {
+          cout << "." << endl;
+        }
+        else {
+          cout << ", with the following warnings:" << endl << warnings << endl;
+        }
         size_t nummods = getNumModules();
         char** modnames = getModuleNames();
         string filename(argv[file]);

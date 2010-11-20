@@ -68,7 +68,7 @@
 #include "libutil.h"
 #include "enums.h"
 
-BEGIN_C_DECLS;
+BEGIN_C_DECLS
 /**
   * @name Input Functions
   */
@@ -850,6 +850,6 @@ LIB_EXTERN void freeAll();
 
 
 
-END_C_DECLS;
+END_C_DECLS
 
 #endif //ANTIMONY_API_H

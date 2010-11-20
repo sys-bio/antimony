@@ -57,8 +57,8 @@ private:
   //If we came from SBML, we have a Unit
   std::string m_units;
 
-  //If we are using CellML, this is a link to the corresponding variable in that document.
 #ifndef NCELLML
+  //If we are using CellML, this is a link to the corresponding variable in that document.
   nsCOMPtr<cellml_apiICellMLVariable> m_cellmlvariable;
   Variable* m_canonvar;
 #endif

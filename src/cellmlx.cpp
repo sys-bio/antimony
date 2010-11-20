@@ -263,7 +263,7 @@ nsCOMPtr<cellml_apiIConnection> GetOrCreateConnectionFor(nsCOMPtr<cellml_apiICel
     rv = mapcomp->GetSecondComponentName(testcomp2name);
     if ((testcomp1name == comp1name && testcomp2name == comp2name) ||
         (testcomp1name == comp2name && testcomp2name == comp1name)) {
-      cout << "Found match!" << endl;
+      //cout << "Found match!" << endl;
       return connection;
     }
     rv = coni->NextConnection(getter_AddRefs(connection));
