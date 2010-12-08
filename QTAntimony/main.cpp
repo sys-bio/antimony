@@ -6,6 +6,8 @@
 #include "QTAntimony.h"
 #include "SBWIntegration.h"
 
+#include <cstdio>
+
 #ifdef SBW_INTEGRATION
 #include "SBW/SBWC.h"
 #endif

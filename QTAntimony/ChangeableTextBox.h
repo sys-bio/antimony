@@ -1,7 +1,7 @@
 #ifndef CHANGEABLETEXTBOX_H
 #define CHANGEABLETEXTBOX_H
 
-#include<QTextEdit>
+#include <QTextEdit>
 
 class QFile;
 

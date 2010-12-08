@@ -84,7 +84,9 @@ bool AntimonyTab::setupSBMLCopy()
     char* SBML = getSBMLString(modname);
     m_selectedasSBML = SBML;
     clearPreviousLoads();
+#ifndef WIN32
     freeAll();
+#endif
     return true;
 }
 
