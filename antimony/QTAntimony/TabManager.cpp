@@ -108,6 +108,21 @@ void TabManager::setSBMLFont()
     }
 }
 
+void TabManager::setCellMLFont()
+{
+	//LS DEBUG fill in later
+	/*
+    bool ok;
+    QFont font = QFontDialog::getFont(&ok, textbox(1)->font(), this);
+    if (ok) {
+        // the user clicked OK and font is set to the font the user selected
+        for (int tab=1; tab<count(); tab++) {
+            textbox(tab)->setFont(font);
+        }
+    }
+	*/
+}
+
 
 void TabManager::zoomIn()
 {
@@ -188,6 +203,11 @@ void TabManager::TranslateSBML()
     }
 }
 
+void TabManager::TranslateCellML()
+{
+	//LS DEBUG fill in later
+}
+
 void TabManager::Translate(int tab)
 {
     if (tab==-1) return;
@@ -203,7 +223,9 @@ void TabManager::Translate(int tab)
         TranslateSBML(tab, tabtext);
     }
     clearPreviousLoads();
+#ifndef WIN32
     freeAll();
+#endif
     setUpdatesEnabled(true);
 }
 
@@ -290,7 +312,9 @@ void TabManager::TranslateAntimony(QString& text)
         removeTab(count()-1);
     }
     clearPreviousLoads();
+#ifndef WIN32
     freeAll();
+#endif
     /*
     for (int cleart = visibletabs+1; cleart < count(); cleart++) {
         ChangeableTextBox* tab_s = textbox(cleart);
@@ -337,7 +361,9 @@ void TabManager::TranslateSBML(int tab, const QString& text)
         anttab->SetTranslated();
     }
     clearPreviousLoads();
+#ifndef WIN32
     freeAll();
+#endif
 }
 
 void TabManager::TabNameIs(const QString& tabname, ChangeableTextBox* tab)
@@ -365,6 +391,12 @@ void TabManager::SaveCurrentAs()
 void TabManager::SaveAntimony()
 {
     textbox(0)->SaveTab();
+}
+
+void TabManager::SaveCellML()
+{
+	//LS DEBUG fill in later
+	//    textbox(0)->SaveTab();
 }
 
 void TabManager::SaveAllSBML()

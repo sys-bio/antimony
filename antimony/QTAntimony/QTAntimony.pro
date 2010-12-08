@@ -2,19 +2,19 @@
 # Project created by QtCreator 2009-06-01T16:21:30
 # -------------------------------------------------
 isEmpty(LIBSBML_DIR) { 
-    win32:LIBSBML_DIR = ..\..\libSBML-3.3.2
+    win32:LIBSBML_DIR = C:/Users/Lucian/Desktop/libsbml-5/build/install
     unix:LIBSBML_DIR = /usr/local/
     mac:LIBSBML_DIR = /usr/local/
 }
 isEmpty(SBW_DIR) { 
-    win32:SBW_DIR = ..\..\sbw
+    win32:SBW_DIR = ../../sbw
     unix:SBW_DIR = ../../sbw-2.7.6/
     mac:SBW_DIR = ../../buildall/build/cvs-dl/core/
 }
 
 # CellML Stuff:
 isEmpty(CELLML_DIR) { 
-    win32:CELLML_DIR = ..\..\CellML
+    win32:CELLML_DIR = ../../CellML
     unix:CELLML_DIR = ../../CellML/hg
     mac:CELLML_DIR = ../../CellML
 }
@@ -76,9 +76,9 @@ LIBS += -L../lib/ \
 # -lxml2 \
 # -lz \
 # -lbz2
-win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\bin"
-win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}\win32\bin"
-win32:QMAKE_LFLAGS += /LIBPATH:"..\win32"
+win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}/lib"
+win32:QMAKE_LFLAGS += /LIBPATH:"$${LIBSBML_DIR}/win32/bin"
+win32:QMAKE_LFLAGS += /LIBPATH:"../win32/"
 win32:RC_FILE = antimonyicon.rc
 mac:ICON = antimony.icns
 TARGET = QTAntimony

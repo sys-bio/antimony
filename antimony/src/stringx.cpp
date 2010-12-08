@@ -61,7 +61,7 @@ string ToThinString(std::wstring in)
 {
   string out;
   for (size_t ch=0; ch<in.size(); ch++) {
-    out.push_back(in[ch]);
+	  out.push_back(static_cast<char>(in[ch]));
   }
   return out;
 }

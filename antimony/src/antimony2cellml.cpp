@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "antimony_api.h"
 
 #ifdef WIN32

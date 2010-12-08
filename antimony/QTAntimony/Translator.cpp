@@ -206,7 +206,9 @@ Translator::Translator(QTAntimony* app, QString filename)
                 }
             }
             clearPreviousLoads();
+#ifndef WIN32
             freeAll();
+#endif
         }
     }
     else {

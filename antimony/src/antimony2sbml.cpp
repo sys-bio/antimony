@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "antimony_api.h"
 
 #ifdef WIN32
@@ -41,10 +42,7 @@ int main(int argc, char** argv)
         }
         for (size_t mod=0; mod<nummods; mod++) {
           if (getNumSymbolsOfType(modnames[mod], allSymbols) == 0) continue; //most likely for the 'main' module.
-          string sbmlname = filename;
-          sbmlname += "_";
-          sbmlname += modnames[mod];
-          sbmlname += "_sbml.xml";
+          string sbmlname = filename + "_" + modnames[mod] + "_sbml.xml";
           if (writeSBMLFile(sbmlname.c_str(), modnames[mod])) {
             cout << "Successfully wrote file " << sbmlname.c_str() << endl;
           }

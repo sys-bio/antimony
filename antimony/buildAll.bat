@@ -1,1 +1,0 @@
-qmake CONFIG-=debug CONFIG+=release all.pro -o MakeFileWin32  && nmake /f MakeFileWin32 

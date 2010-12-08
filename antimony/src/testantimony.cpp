@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <sstream>
 
 #include "antimony_api.h"
 using namespace std;
@@ -61,17 +62,17 @@ int main(int argc, char** argv)
       string sbmlname = "output/" + filename + "_" + modnames[mod] + "_sbml.xml";
       string jarname = "output/" + filename + "_" + modnames[mod] + "_jar.txt";
       if (writeAntimonyFile(antname.c_str(), modnames[mod])) {
-        cout << "Successfully wrote file " << antname.c_str() << endl;
+        cout << "Successfully wrote file " << antname << endl;
       }
       else {
-        cout << "Problem writing file " << antname.c_str() << endl;
+        cout << "Problem writing file " << antname << endl;
       }
 #ifndef NSBML
       if (writeSBMLFile(sbmlname.c_str(), modnames[mod])) {
-        cout << "Successfully wrote file " << sbmlname.c_str() << endl;
+        cout << "Successfully wrote file " << sbmlname << endl;
       }
       else {
-        cout << "Problem writing file " << sbmlname.c_str() << endl;
+        cout << "Problem writing file " << sbmlname << endl;
       }
 #endif
       if (writeJarnacFile(jarname.c_str(), modnames[mod])) {

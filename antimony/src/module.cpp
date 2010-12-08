@@ -17,7 +17,7 @@
 #include <CellMLBootstrap.hpp>
 #endif
 
-#define LEVELANDVERSION 3, 1
+#define LEVELANDVERSION 2, 4
 
 extern Registry g_registry;
 using namespace std;
