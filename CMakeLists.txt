@@ -60,7 +60,7 @@ option(CREATE_QTANTIMONY       "Generate QTAntimony"   ON )
 if(WITH_SBML)
 
 	find_library(LIBSBML_LIBRARY 
-		NAMES libsbml.lib libsbml
+		NAMES libsbml.lib libsbml.so libsbml
 		PATHS /usr/lib /usr/local/lib 
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -164,6 +164,9 @@ endif(UNIX)
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
 			  )
         file(GLOB XULRUNNER_INCLUDES ${XULRUNNER_INCLUDE_DIR} ${XULRUNNER_INCLUDE_DIR}/*/ )
+        file(GLOB XULRUNNER_NOT_INCLUDES ${XULRUNNER_INCLUDE_DIR} ${XULRUNNER_INCLUDE_DIR}/*.* )
+        
+        list(REMOVE_ITEM XULRUNNER_INCLUDES ${XULRUNNER_NOT_INCLUDES})
 
         #CellML:
 	find_library(CELLML_API 
@@ -201,7 +204,7 @@ endif(UNIX)
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
 			    )
-#        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${OPENCELL_DATACOLLECTOR_LIB})
+        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${OPENCELL_DATACOLLECTOR_LIB})
 
         find_path(OPENCELL_INCLUDE_DIR
 		NAMES stubs/IDataCollector.h
@@ -215,6 +218,7 @@ endif(UNIX)
 
         set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ALL_CELLML_LIBS} )
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${XULRUNNER_INCLUDES} ${CELLML_INCLUDE_DIRECTORIES} ${OPENCELL_INCLUDES})
+        add_definitions( -fshort-wchar )
 else()
   add_definitions( -DNCELLML )
 
@@ -294,8 +298,10 @@ file(GLOB LIBANTIMONY_HEADERS
 add_library(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_HEADERS} ${LIBANTIMONY_SOURCES} ${LIBANTIMONY_INCLUDES})
 target_link_libraries(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
 add_definitions(-DLIB_EXPORTS)
-add_definitions(-DWIN32 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
 
+if (NOT UNIX)
+  add_definitions(-DWIN32 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
+endif(WIN32)
 ####################################################################
 #
 # Build the various command-line executables
@@ -331,7 +337,7 @@ endif(WITH_CELLML)
 # Build QT Antimony
 #
 
-set (QTANTIMONY_SRC_DIR QTAntimony/)
+set (QTANTIMONY_SRC_DIR QTAntimony_src/)
 
 file(GLOB QTANTIMONY_SOURCES
         ${QTANTIMONY_SRC_DIR}AntimonyTab.cpp
@@ -369,7 +375,7 @@ if (CREATE_QTANTIMONY)
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${ANTIMONY_SRC_DIR} ${QT_INCLUDES})
         QT4_WRAP_CPP(QTANTIMONY_MOC_SRCS ${QTANTIMONY_HEADERS})
         source_group(MOC_sources FILES ${QTANTIMONY_MOC_SRCS})
-                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
+        #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
         add_executable(QTAntimony WIN32 MACOSX_BUNDLE ${QTANTIMONY_SOURCES} ${QTANTIMONY_MOC_SRCS} ${QTANTIMONY_HEADERS})
         add_dependencies(QTAntimony ${LIBANTIMONY_LIBRARY})
         target_link_libraries(QTAntimony ${QT_LIBRARIES} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} ${LIBANTIMONY_LIBS})
@@ -391,10 +397,10 @@ if(UNIX)
 		if(ENABLE_UNIVERSAL)
 			set(CMAKE_OSX_ARCHITECTURES "ppc" "i386" "x86_64")
 		endif(ENABLE_UNIVERSAL)
-	else(APPLE)
+    else(APPLE)
 		add_definitions(-DLINUX)
-	endif(APPLE)
-	add_definitions( -DPACKAGE_VERSION=\"${PACKAGE_VERSION}\"  -DPACKAGE_NAME="${PROJECT_NAME}")
+    endif(APPLE)
+    add_definitions( -DPACKAGE_VERSION=\"${PACKAGE_VERSION}\"  -DPACKAGE_NAME="${PROJECT_NAME}")
 
 else(UNIX)
 	add_definitions(-DWIN32 -DLIBANTIMONY_EXPORTS -DLIBLAX_EXPORTS)
