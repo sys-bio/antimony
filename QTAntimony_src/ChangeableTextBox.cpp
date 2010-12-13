@@ -116,7 +116,7 @@ void ChangeableTextBox::SetNormalBorder()
     setFrameShadow(m_origshadow);
 }
 
-void ChangeableTextBox:: SaveAndEmitCopyAvailable(bool yes)
+void ChangeableTextBox::SaveAndEmitCopyAvailable(bool yes)
 {
     m_copyavailable = yes;
     if (m_isactive) {
@@ -124,7 +124,7 @@ void ChangeableTextBox:: SaveAndEmitCopyAvailable(bool yes)
     }
 }
 
-void ChangeableTextBox:: SaveAndEmitUndoAvailable(bool yes)
+void ChangeableTextBox::SaveAndEmitUndoAvailable(bool yes)
 {
     m_undoavailable = yes;
     if (m_isactive) {
@@ -132,7 +132,7 @@ void ChangeableTextBox:: SaveAndEmitUndoAvailable(bool yes)
     }
 }
 
-void ChangeableTextBox:: SaveAndEmitRedoAvailable(bool yes)
+void ChangeableTextBox::SaveAndEmitRedoAvailable(bool yes)
 {
     m_redoavailable = yes;
     if (m_isactive) {

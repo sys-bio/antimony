@@ -140,6 +140,7 @@ public:
   std::string GetLastFile();
   Module* GetModule(std::string modulename);
   const Module* GetModule(std::string modulename) const;
+  const Module* GetMainModule() const;
   bool IsModuleName(std::string word);
 
   const_type GetConstness() const {return m_constness;};

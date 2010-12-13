@@ -43,11 +43,13 @@ int main(int argc, char** argv)
           filename.erase(0, filename.find("\\")+1);
         }
         size_t lastslash = dirname.rfind("/");
-        while (dirname.find("/") != lastslash) {
-          dirname.erase(0, dirname.find("/")+1);
-          lastslash = dirname.rfind("/");
+        if (lastslash != string::npos) {
+          while (dirname.find("/") != lastslash) {
+            dirname.erase(0, dirname.find("/")+1);
+            lastslash = dirname.rfind("/");
+          }
+          dirname.erase(lastslash, dirname.size()-lastslash);
         }
-        dirname.erase(lastslash, dirname.size()-lastslash);
         //cout << "Dirname = " << dirname << endl;
         string command = "mkdir -p rehash/" + dirname;
         system(command.c_str());

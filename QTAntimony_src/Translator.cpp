@@ -118,11 +118,16 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_actionSetSBMLLevelAndVersion = new QAction(tr("Set SBML &Level and Version"), this);
     m_actionSetSBMLLevelAndVersion->setEnabled(true);
 
-    //View
+#ifndef NCELLML
+    //If we're able to see CellML, set what the user sees.
+    QAction* sbmlTabs = new QAction(tr("&SBML tabs only"), this);
+    QAction* cellmlTabs= new QAction(tr("&CellML tabs only"), this);
+    QAction* sbmlAndCellMLTabs= new QAction(tr("&Both SBML and CellML tabs"), this);
+#endif
     QAction* setAntimonyFont = new QAction(tr("Set &Antimony Font"), this);
     setAntimonyFont->setEnabled(true);
-    QAction* setSBMLFont = new QAction(tr("Set &SBML Font"), this);
-    setSBMLFont->setEnabled(true);
+    QAction* setXMLFont = new QAction(tr("Set &XML Font"), this);
+    setXMLFont->setEnabled(true);
     QAction* zoomIn = new QAction(tr("Zoom &in"), this);
     zoomIn->setShortcut(QKeySequence::ZoomIn);
     zoomIn->setEnabled(true);
@@ -246,10 +251,16 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(zoomIn, SIGNAL(triggered()), m_tabmanager, SLOT(zoomIn()));
     connect(zoomOut, SIGNAL(triggered()), m_tabmanager, SLOT(zoomOut()));
     connect(setAntimonyFont, SIGNAL(triggered()), m_tabmanager, SLOT(setAntimonyFont()));
-    connect(setSBMLFont, SIGNAL(triggered()), m_tabmanager, SLOT(setSBMLFont()));
+    connect(setXMLFont, SIGNAL(triggered()), m_tabmanager, SLOT(setXMLFont()));
+#ifndef CELLML
+    connect(sbmlTabs, SIGNAL(triggered()), m_tabmanager, SLOT(sbmlTabs()));
+    connect(cellmlTabs, SIGNAL(triggered()), m_tabmanager, SLOT(cellmlTabs()));
+    connect(sbmlAndCellMLTabs, SIGNAL(triggered()), m_tabmanager, SLOT(sbmlAndCellMLTabs()));
+#endif
     connect(m_antimony, SIGNAL(OriginalAvailable(bool)), m_actionRevertToOriginal, SLOT(setEnabled(bool)));
     connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), m_antimony, SLOT(SetFailedTranslation()));
     connect(m_tabmanager, SIGNAL(FailedSBMLTranslation()), m_antimony, SLOT(SetFailedTranslation()));
+    connect(m_tabmanager, SIGNAL(FailedCellMLTranslation()), m_antimony, SLOT(SetFailedTranslation()));
     connect(m_antimony, SIGNAL(StartWatching(QString)), m_filewatcher, SLOT(StartWatching(QString)));
     connect(m_antimony, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), m_antimony, SLOT(FileChanged(QString)));
@@ -295,7 +306,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     viewmenu->addAction(zoomIn);
     viewmenu->addAction(zoomOut);
     viewmenu->addAction(setAntimonyFont);
-    viewmenu->addAction(setSBMLFont);
+    viewmenu->addAction(setXMLFont);
 
 #ifdef 	SBW_INTEGRATION
     if (m_app->GetUseSBW()) {
@@ -373,6 +384,7 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated)
     connect(sbml, SIGNAL(OriginalAvailable(bool)),   m_actionRevertToOriginal, SLOT(setEnabled(bool)));
     connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), sbml, SLOT(SetFailedTranslation()));
     connect(m_tabmanager, SIGNAL(FailedSBMLTranslation()), sbml, SLOT(SetFailedTranslation()));
+    connect(m_tabmanager, SIGNAL(FailedCellMLTranslation()), sbml, SLOT(SetFailedTranslation()));
     connect(sbml, SIGNAL(StartWatching(QString)), m_filewatcher, SLOT(StartWatching(QString)));
     connect(sbml, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), sbml, SLOT(FileChanged(QString)));

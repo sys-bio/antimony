@@ -620,9 +620,11 @@ bool Registry::NewCurrentModule(const string* name, bool ismain)
       string warn = "Warning: changing main module for this file to be " + *name + " instead of '" + m_modules[mod].GetModuleName() + "'.";
       AddWarning(warn);
     }
+    m_modules[mod].SetIsMain(false);
   }
   //Otherwise, create a new module with that name
   m_modules.push_back(Module(localname));
+  m_modules[m_modules.size()-1].SetIsMain(ismain);
   m_modulemap.insert(make_pair(*name, m_modules.size()-1));
   return false;
 }
@@ -844,6 +846,18 @@ Module* Registry::GetModule(string modulename)
     }
   }
   return NULL;
+}
+
+const Module* Registry::GetMainModule() const
+{
+  for (size_t mod=0; mod<m_modules.size(); mod++) {
+    if (m_modules[mod].GetIsMain()) {
+      return &(m_modules[mod]);
+    }
+  }
+  //If there's no 'main' module, return the last one in the list.
+  if (m_modules.size() == 0) return NULL;
+  return &(m_modules[m_modules.size()-1]);
 }
 
 const Module* Registry::GetModule(string modulename) const

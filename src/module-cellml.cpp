@@ -34,6 +34,7 @@ void Module::LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model, vector<nsCOMPtr<c
       return;
     }
   }
+  SetIsMain(true);
 
   FixNames();  //In case the name of one of the modules is something like 'time'.
 }
