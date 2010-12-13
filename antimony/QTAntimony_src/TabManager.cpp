@@ -20,7 +20,10 @@ using namespace std;
 
 TabManager::TabManager(QWidget* parent)
         : QTabWidget(parent),
-        m_oldtab(-1)
+        m_oldtab(-1),
+        m_anttab(0),
+        m_sbmltab(1),
+        m_cellmltab(-1)
 {
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(SwitchTabs(int)));
 }
@@ -89,14 +92,14 @@ void TabManager::addCellMLTab()
 void TabManager::setAntimonyFont()
 {
     bool ok;
-    QFont font = QFontDialog::getFont(&ok, textbox(0)->font(), this);
+    QFont font = QFontDialog::getFont(&ok, textbox(m_anttab)->font(), this);
     if (ok) {
         // the user clicked OK and font is set to the font the user selected
-        textbox(0)->setFont(font);
+        textbox(m_anttab)->setFont(font);
     }
 }
 
-void TabManager::setSBMLFont()
+void TabManager::setXMLFont()
 {
     bool ok;
     QFont font = QFontDialog::getFont(&ok, textbox(1)->font(), this);
@@ -107,22 +110,6 @@ void TabManager::setSBMLFont()
         }
     }
 }
-
-void TabManager::setCellMLFont()
-{
-	//LS DEBUG fill in later
-	/*
-    bool ok;
-    QFont font = QFontDialog::getFont(&ok, textbox(1)->font(), this);
-    if (ok) {
-        // the user clicked OK and font is set to the font the user selected
-        for (int tab=1; tab<count(); tab++) {
-            textbox(tab)->setFont(font);
-        }
-    }
-	*/
-}
-
 
 void TabManager::zoomIn()
 {
@@ -147,6 +134,24 @@ void TabManager::zoomOut()
         for (int ind=1; ind<count(); ind++) {
             textbox(ind)->zoomOut();
         }
+    }
+}
+
+void TabManager::sbmlTabs()
+{
+    if (m_cellmltab != -1) {
+        //Remove the CellML Tab
+        removeTab(m_cellmltab);
+        m_cellmltab = -1;
+    }
+    if (m_sbmltab == -1) {
+        //Add SBML Tabs
+        m_sbmltab = 1;
+        Translator* translator = static_cast<Translator*>(parent());
+        while (visibletabs >= count()) {
+            translator->AddSBMLTab();
+        }
+        AddSBMLTab();
     }
 }
 
@@ -193,19 +198,20 @@ void TabManager::TranslateCurrent()
 
 void TabManager::TranslateAntimony()
 {
-    Translate(0);
+    Translate(m_anttab);
 }
 
 void TabManager::TranslateSBML()
 {
-    for (int sbml=1; sbml<count(); sbml++) {
+    if (m_sbmltab == -1) return;
+    for (int sbml=m_sbmltab; sbml<count(); sbml++) {
         Translate(sbml);
     }
 }
 
 void TabManager::TranslateCellML()
 {
-	//LS DEBUG fill in later
+    Translate(m_cellmltab);
 }
 
 void TabManager::Translate(int tab)
@@ -216,8 +222,11 @@ void TabManager::Translate(int tab)
     setUpdatesEnabled(false);
     QString tabtext = oldtab->toPlainText();
     oldtab->SetOriginal();
-    if (tab==0) {
+    if (tab==m_anttab) {
         TranslateAntimony(tabtext);
+    }
+    else if (tab==m_cellmltab) {
+        TranslateCellML(tabtext);
     }
     else {
         TranslateSBML(tab, tabtext);
@@ -227,18 +236,6 @@ void TabManager::Translate(int tab)
     freeAll();
 #endif
     setUpdatesEnabled(true);
-}
-
-void TabManager::SetOthersOriginal(int oldtab)
-{
-    if (oldtab==0) {
-        for (int sbml=1; sbml<count(); sbml++) {
-            textbox(sbml)->RevertToOriginal();
-        }
-    }
-    else {
-        textbox(0)->RevertToOriginal();
-    }
 }
 
 void TabManager::SetOthersTranslated(int oldtab)
@@ -286,7 +283,20 @@ void TabManager::TranslateAntimony(QString& text)
         return;
     }
     long nummods = getNumModules();
-    long visibletabs = nummods;
+    long visibletabs = nummods + 1;
+    if (m_cellmltab != -1) {
+        visibletabs++;
+    }
+    Translator* translator = static_cast<Translator*>(parent());
+    long nummods = getNumModules();
+    while (count() != nummods) {
+        if (count() > nummods) {
+            removeTab(count()-1);
+        }
+        else {
+            translator->AddSBMLTab();
+        }
+    }
     for (long mod=0; mod<nummods; mod++) {
         int tabnum = mod;
         char* modname = getNthModuleName(mod);
@@ -345,7 +355,7 @@ void TabManager::TranslateSBML(int tab, const QString& text)
     setTabText(tab, tab_s->GetTabName());
 
     char* antimonytext = getAntimonyString(NULL);
-    AntimonyTab* anttab = static_cast<AntimonyTab*>(textbox(0));
+    AntimonyTab* anttab = static_cast<AntimonyTab*>(textbox(m_anttab));
     anttab->ReplaceModelWithString(oldmodelname, QString(antimonytext));
     //Now set the antimony tab type appropriately.
     bool someSBMLtranslated = false;
@@ -359,6 +369,49 @@ void TabManager::TranslateSBML(int tab, const QString& text)
     }
     else {
         anttab->SetTranslated();
+    }
+    clearPreviousLoads();
+#ifndef WIN32
+    freeAll();
+#endif
+}
+
+void TabManager::TranslateCellML(QString& text)
+{
+    textbox(m_cellmltab)->SetOriginal();
+    long handle = loadCellMLString(text.toUtf8().data());
+    if (handle == -1) {
+        //error condition
+        char* error = getLastError();
+        emit FailedCellMLTranslation();
+        textbox(m_cellmltab)->DisplayError(error);
+        return;
+    }
+    if (m_anttab != -1) {
+        char* antimonytext = getAntimonyString(NULL);
+        ChangeableTextBox* anttab = textbox(m_anttab);
+        anttab->SetTranslatedText(QString(antimonytext));
+    }
+    if (m_sbmltab != -1) {
+        Translator* translator = static_cast<Translator*>(parent());
+        long nummods = getNumModules();
+        while (count() - m_sbmltab != nummods) {
+            if (count() - m_sbmltab > nummods) {
+                removeTab(count()-1);
+            }
+            else {
+                translator->AddSBMLTab();
+            }
+        }
+        int tabnum = m_sbmltab;
+        for (long mod=0; mod<nummods; mod++) {
+            char* modname = getNthModuleName(mod);
+            ChangeableTextBox* tab_s = textbox(tabnum);
+            tab_s->SetTranslatedText(QString(getSBMLString(modname)));
+            tab_s->SetModelName(QString(modname));
+            setTabText(tabnum, tab_s->GetTabName());
+            tabnum++;
+        }
     }
     clearPreviousLoads();
 #ifndef WIN32
@@ -390,18 +443,19 @@ void TabManager::SaveCurrentAs()
 
 void TabManager::SaveAntimony()
 {
-    textbox(0)->SaveTab();
+    textbox(m_anttab)->SaveTab();
 }
 
 void TabManager::SaveCellML()
 {
-	//LS DEBUG fill in later
-	//    textbox(0)->SaveTab();
+    if (m_cellmltab == -1) return;
+    textbox(m_cellmltab)->SaveTab();
 }
 
 void TabManager::SaveAllSBML()
 {
-    for (int tab=1; tab<count(); tab++) {
+    if (m_sbmltab == -1) return;
+    for (int tab=m_sbmltab; tab<count(); tab++) {
         textbox(tab)->SaveTab();
     }
 }
@@ -412,8 +466,12 @@ bool TabManager::CanIClose()
     vector<int> unsaved;
     for (int tab=0; tab<count(); tab++) {
         if (!(textbox(tab)->IsTranslated()) && !(textbox(tab)->IsSaved())) {
-            if (tab==0) {
+            if (tab==m_anttab) {
                 message += "Antimony tab";
+                unsaved.push_back(tab);
+            }
+            else if (tab==m_cellmltab) {
+                message += "CellML tab";
                 unsaved.push_back(tab);
             }
             else {
@@ -486,20 +544,25 @@ void TabManager::SaveFonts()
 {
     QSettings qset(ORG, APP);
     qset.sync();
-    qset.setValue("antimonyfont", textbox(0)->currentFont());
-    qset.setValue("sbmlfont", textbox(1)->currentFont());
+    qset.setValue("antimonyfont", textbox(m_anttab)->currentFont());
+    if (m_sbmltab != -1) {
+        qset.setValue("xmlfont", textbox(m_sbmltab)->currentFont());
+    }
+    else if (m_cellmltab != -1) {
+        qset.setValue("xmlfont", textbox(m_cellmltab)->currentFont());
+    }
 }
 
 #ifdef SBW_INTEGRATION
 void TabManager::startSBWAnalyzer()
 {
     ChangeableTextBox* exporttab = GetActiveEditor();
-    if (currentIndex()==0) {
+    if (currentIndex()==m_anttab) {
         //We were on the Antimony tab--translate it if needed
         if (!exporttab->IsOriginal() &&
             !exporttab->IsTranslated() &&
             !exporttab->IsMixed()) {
-            Translate(0);
+            Translate(m_anttab);
         }
         //Assume the last SBML tab is the one to export
         exporttab = textbox(count()-1);
@@ -516,9 +579,7 @@ void TabManager::startSBWAnalyzer()
             int nModule =  SBWGetModuleInstance(oModuleInfo[0].toUtf8().constData());
             int nService =  SBWModuleFindServiceByName(nModule, oModuleInfo[1].toUtf8().constData());
             int nMethod = SBWServiceGetMethod(nModule, nService, "void doAnalysis(string)");
-			
-			SBWMethodSend(nModule, nService, nMethod,"void doAnalysis(string)", sbml.c_str());
-				
+            SBWMethodSend(nModule, nService, nMethod,"void doAnalysis(string)", sbml.c_str());
         }
         catch(...)
         {

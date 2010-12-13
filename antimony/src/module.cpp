@@ -970,7 +970,9 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   string indent = "";
   //Module definition
   if (m_modulename != MAINMODULE) {
-    retval += "model " + m_modulename + "(";
+    retval += "model ";
+    if (GetIsMain()) retval += "*";
+    retval += m_modulename + "(";
     for (size_t exp=0; exp<m_exportlist.size(); exp++) {
       if (exp > 0) {
         retval += ", ";

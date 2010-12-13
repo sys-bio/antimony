@@ -295,7 +295,19 @@ LIB_EXTERN char** getModuleNames();
  * Returns the nth module name.  Returns NULL and sets an error if there is no such module n.
  */
 LIB_EXTERN char*  getNthModuleName(unsigned long n);
+
+/**
+ * Returns the 'main' module name.  In Antimony, this is either the module marked by an asterisk (model *mainModel()  or the last module defined in the file.  In translated SBML models, this is the model child of the <sbml> object.  In translated CellML models, this is the 'containing' model that the translator creates to hold all the CellML components.  Returns NULL only if there are no modules at all.
+ */
+LIB_EXTERN char*  getMainModuleName(unsigned long n);
 /** \} */
+
+
+/**
+  * @name Module Interface
+  */
+/** \{ */
+
 
 /**
  * Returns the number of symbols defined to be in the interface of the given module.  In other words, if a module is defined 'module M(x, y, z)', this returns '3'.  (Modules with no interface symbols return '0'.)
@@ -311,8 +323,14 @@ LIB_EXTERN char** getSymbolNamesInInterfaceOf(const char* moduleName);
  * Returns the Nth symbol name defined to be in the interface of the given module.  If a module is defined 'module M(x, y, z)', calling this with n=0 returns "x".  If no such symbol is found, NULL is returned and an error is set.
  */
 LIB_EXTERN char* getNthSymbolNameInInterfaceOf(const char* moduleName, unsigned long n);
+/** \} */
 
 
+
+/**
+  * @name Replacements
+  */
+/** \{ */
 
 /**
  * Returns the Nth replacement symbol name of a symbol that has replaced a different symbol in the given module, through the use of an 'is' construct, or through the use of a module's interface.
@@ -349,6 +367,7 @@ LIB_EXTERN char* getNthFormerSymbolName(const char* moduleName, unsigned long n)
  * @see GetNumReplacedSymbolNames
  */
 LIB_EXTERN char* getNthReplacementSymbolName(const char* moduleName, unsigned long n);
+/** \} */
 
 
 

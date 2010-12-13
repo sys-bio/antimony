@@ -8,6 +8,9 @@ class TabManager : public QTabWidget
     Q_OBJECT;
 private:
     int m_oldtab;
+    int m_anttab;
+    int m_sbmltab;
+    int m_cellmltab;
 public:
     TabManager(QWidget* parent);
     //~TabManager();  //Hmm, do we need destructors here?
@@ -31,10 +34,13 @@ public slots:
     void revertToOriginal();
     void addCellMLTab();
     void setAntimonyFont();
-    void setSBMLFont();
-    void setCellMLFont();
+    void setXMLFont();
     void zoomIn();
     void zoomOut();
+
+    void sbmlTabs();
+    void cellmlTabs();
+    void sbmlAndCellMLTabs();
 
     //Whenever we switch tabs:
     void SwitchTabs(int tab);
@@ -60,12 +66,13 @@ public slots:
 signals:
     void FailedAntimonyTranslation();
     void FailedSBMLTranslation();
+    void FailedCellMLTranslation();
 
 private:
     ChangeableTextBox* GetActiveEditor();
     void TranslateAntimony(QString& text);
     void TranslateSBML(int tab, const QString& text);
-    void SetOthersOriginal(int oldtab);
+    void TranslateCellML(QString& text);
     void SetOthersTranslated(int oldtab);
 };
 
