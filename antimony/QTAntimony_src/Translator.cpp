@@ -20,6 +20,7 @@ using namespace SystemsBiologyWorkbench;
 #include "AntimonyTab.h"
 #include "ChangeableTextBox.h"
 #include "SBMLTab.h"
+#include "CellMLTab.h"
 #include "FileWatcher.h"
 #include "QTAntimony.h"
 #include "CopyMessageBox.h"
@@ -45,9 +46,16 @@ Translator::Translator(QTAntimony* app, QString filename)
         : QMainWindow(NULL),
         m_app(app),
         m_antimony(),
-        m_filewatcher(new FileWatcher),
-        m_allSBML()
+        m_filewatcher(new FileWatcher)
 {
+    //We need to know if we should display SBML tabs, CellML tabs, or both:
+    QSettings qset(ORG, APP);
+    qset.sync();
+    bool displaysbml = true;
+    displaysbml = (qset.value("displaysbml", displaysbml).toBool());
+    bool displaycellml = false;
+    displaycellml = (qset.value("displaycellml", displaycellml).toBool());
+
     //Actions
     //File
     QAction* actionNew = new QAction(tr("&New"), this);
@@ -118,12 +126,18 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_actionSetSBMLLevelAndVersion = new QAction(tr("Set SBML &Level and Version"), this);
     m_actionSetSBMLLevelAndVersion->setEnabled(true);
 
-#ifndef NCELLML
+	//View
+//LS DEBUG CELLML
+//#ifndef NCELLML
     //If we're able to see CellML, set what the user sees.
     QAction* sbmlTabs = new QAction(tr("&SBML tabs only"), this);
+    sbmlTabs->setCheckable(true);
+    sbmlTabs->setChecked(displaysbml);
     QAction* cellmlTabs= new QAction(tr("&CellML tabs only"), this);
+    cellmlTabs->setCheckable(true);
+    cellmlTabs->setChecked(displaycellml);
     QAction* sbmlAndCellMLTabs= new QAction(tr("&Both SBML and CellML tabs"), this);
-#endif
+//#endif
     QAction* setAntimonyFont = new QAction(tr("Set &Antimony Font"), this);
     setAntimonyFont->setEnabled(true);
     QAction* setXMLFont = new QAction(tr("Set &XML Font"), this);
@@ -154,7 +168,12 @@ Translator::Translator(QTAntimony* app, QString filename)
         QString filetext = "";
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             //error
-            AddSBMLTab();
+            if (displaycellml) {
+                AddCellMLTab();
+            }
+            if (displaysbml) {
+                AddSBMLTab();
+            }
        }
         else {
             QTextStream in(&file);
@@ -162,19 +181,26 @@ Translator::Translator(QTAntimony* app, QString filename)
             m_filewatcher->addPath(filename);
             long SBMLHandle = loadSBMLFile(filename.toUtf8().data());
             long AntimonyHandle = loadFile(filename.toUtf8().data());
+            long CellMLHandle = loadCellMLFile(filename.toUtf8().data());
             if (SBMLHandle == -1 && AntimonyHandle != -1) {
                 //Originally Antimony
                 m_antimony->setText(filetext);
                 m_antimony->SetSavedFilename(filename);
                 m_antimony->SetOriginal();
-                for (size_t mod=1; mod<getNumModules(); mod++) {
-                    char* modname = getNthModuleName(mod);
-                    AddSBMLTab(modname, getSBMLString(modname), true);
+                if (displaycellml) {
+                    AddCellMLTab(modname, getSBMLString(getMainModuleName()), true);
                 }
-                char* mod0name = getNthModuleName(0);
-                if (getNumSymbolsOfType(mod0name, allSymbols) != 0 || getNumModules()==1) {
-                    AddSBMLTab(mod0name, getSBMLString(mod0name), true);
-                }            }
+                if (displaysbml) {
+                    for (size_t mod=1; mod<getNumModules(); mod++) {
+                        char* modname = getNthModuleName(mod);
+                        AddSBMLTab(modname, getSBMLString(modname), true);
+                    }
+                    char* mod0name = getNthModuleName(0);
+                    if (getNumSymbolsOfType(mod0name, allSymbols) != 0 || getNumModules()==1) {
+                        AddSBMLTab(mod0name, getSBMLString(mod0name), true);
+                    }
+                }
+            }
             else if (SBMLHandle != -1) {
                 //Originally SBML
                 char* modname = getNthModuleName(getNumModules()-1);
@@ -182,6 +208,15 @@ Translator::Translator(QTAntimony* app, QString filename)
                 m_tabmanager->textbox(1)->SetOriginal();
                 m_tabmanager->textbox(1)->SetSavedFilename(filename);
                 m_antimony->SetTranslatedText(getAntimonyString(NULL));
+                if (displaycellml) {
+                    AddCellMLTab();
+                    m_tabmanager->TranslateSBML();
+                }
+            }
+            else if (CellMLHandle != -1) {
+                //Originally CellML
+                char* modname = getMainModuleName();
+                AddCellMLTab(modname, filetext, false);
             }
             else {
                 //Not a valid file of either format, but maybe we can tell if it's XML or not.
@@ -252,11 +287,12 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(zoomOut, SIGNAL(triggered()), m_tabmanager, SLOT(zoomOut()));
     connect(setAntimonyFont, SIGNAL(triggered()), m_tabmanager, SLOT(setAntimonyFont()));
     connect(setXMLFont, SIGNAL(triggered()), m_tabmanager, SLOT(setXMLFont()));
-#ifndef CELLML
+	//LS DEBUG CELLML
+	//#ifndef NCELLML
     connect(sbmlTabs, SIGNAL(triggered()), m_tabmanager, SLOT(sbmlTabs()));
     connect(cellmlTabs, SIGNAL(triggered()), m_tabmanager, SLOT(cellmlTabs()));
     connect(sbmlAndCellMLTabs, SIGNAL(triggered()), m_tabmanager, SLOT(sbmlAndCellMLTabs()));
-#endif
+//#endif
     connect(m_antimony, SIGNAL(OriginalAvailable(bool)), m_actionRevertToOriginal, SLOT(setEnabled(bool)));
     connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), m_antimony, SLOT(SetFailedTranslation()));
     connect(m_tabmanager, SIGNAL(FailedSBMLTranslation()), m_antimony, SLOT(SetFailedTranslation()));
@@ -307,6 +343,10 @@ Translator::Translator(QTAntimony* app, QString filename)
     viewmenu->addAction(zoomOut);
     viewmenu->addAction(setAntimonyFont);
     viewmenu->addAction(setXMLFont);
+    viewmenu->addAction(sbmlTabs);
+    viewmenu->addAction(cellmlTabs);
+    viewmenu->addAction(sbmlAndCellMLTabs);
+
 
 #ifdef 	SBW_INTEGRATION
     if (m_app->GetUseSBW()) {
@@ -375,7 +415,6 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated)
         sbml->SetOriginal();
     }
     m_tabmanager->addTab(sbml, sbml->GetTabName());
-    m_allSBML.push_back(sbml);
     connect(sbml, SIGNAL(ActiveUndoAvailable(bool)), m_actionUndo, SLOT(setEnabled(bool)));
     connect(sbml, SIGNAL(ActiveRedoAvailable(bool)), m_actionRedo, SLOT(setEnabled(bool)));
     connect(sbml, SIGNAL(ActiveCopyAvailable(bool)), m_actionCut, SLOT(setEnabled(bool)));
@@ -390,6 +429,33 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated)
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), sbml, SLOT(FileChanged(QString)));
     connect(sbml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
     connect(m_actionSetSBMLLevelAndVersion, SIGNAL(triggered()), sbml, SLOT(WhichLevelAndVersion()));
+}
+
+void Translator::AddCellMLTab(QString name, QString text, bool translated)
+{
+    CellMLTab* cellml = new CellMLTab();
+    cellml->SetModelName(name);
+    cellml->setPlainText(text);
+    if (translated) {
+        cellml->SetTranslated();
+    }
+    else {
+        cellml->SetOriginal();
+    }
+    m_tabmanager->insertTab(1, cellml, cellml->GetTabName());
+    connect(cellml, SIGNAL(ActiveUndoAvailable(bool)), m_actionUndo, SLOT(setEnabled(bool)));
+    connect(cellml, SIGNAL(ActiveRedoAvailable(bool)), m_actionRedo, SLOT(setEnabled(bool)));
+    connect(cellml, SIGNAL(ActiveCopyAvailable(bool)), m_actionCut, SLOT(setEnabled(bool)));
+    connect(cellml, SIGNAL(ActiveCopyAvailable(bool)), m_actionCopy, SLOT(setEnabled(bool)));
+    connect(cellml, SIGNAL(TranslatedAvailable(bool)), m_actionRevertToTranslated, SLOT(setEnabled(bool)));
+    connect(cellml, SIGNAL(OriginalAvailable(bool)),   m_actionRevertToOriginal, SLOT(setEnabled(bool)));
+    connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), cellml, SLOT(SetFailedTranslation()));
+    connect(m_tabmanager, SIGNAL(FailedSBMLTranslation()), cellml, SLOT(SetFailedTranslation()));
+    connect(m_tabmanager, SIGNAL(FailedCellMLTranslation()), cellml, SLOT(SetFailedTranslation()));
+    connect(cellml, SIGNAL(StartWatching(QString)), m_filewatcher, SLOT(StartWatching(QString)));
+    connect(cellml, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
+    connect(m_filewatcher, SIGNAL(fileChanged(QString)), cellml, SLOT(FileChanged(QString)));
+    connect(cellml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
 }
 
 void Translator::SetSBMLTab(QString model)

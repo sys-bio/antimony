@@ -21,7 +21,8 @@ string ToThinString(const PRUnichar* in)
 
 nsString ToNSString(const string& in)
 {
-  PRUnichar out[in.size()+1];
+	assert(10000 > in.size());
+  PRUnichar out[10000];
   
   for (size_t ch=0; ch<in.size(); ch++) {
     out[ch] = in[ch];

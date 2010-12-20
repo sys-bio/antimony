@@ -145,13 +145,54 @@ void TabManager::sbmlTabs()
         m_cellmltab = -1;
     }
     if (m_sbmltab == -1) {
-        //Add SBML Tabs
+        //Add an SBML Tab (TranslateAntimony will add any necessary extras)
         m_sbmltab = 1;
         Translator* translator = static_cast<Translator*>(parent());
-        while (visibletabs >= count()) {
-            translator->AddSBMLTab();
-        }
-        AddSBMLTab();
+        translator->AddSBMLTab();
+		TranslateAntimony();
+    }
+}
+
+void TabManager::cellmlTabs()
+{
+	if (m_sbmltab != -1) {
+		//Remove all SBML Tabs
+		while (m_sbmltab < count()) {
+			removeTab(m_sbmltab);
+		}
+        m_sbmltab = -1;
+	}
+	if (m_cellmltab == -1) {
+		//Add a CellML Tab
+		m_cellmltab = 1;
+		Translator* translator = static_cast<Translator*>(parent());
+		translator->AddCellMLTab();
+		TranslateAntimony();
+	}
+}
+
+void TabManager::sbmlAndCellMLTabs()
+{
+    bool needtranslation = false;
+	if (m_cellmltab == -1) {
+		//Add a CellML Tab
+		m_cellmltab = 1;
+		Translator* translator = static_cast<Translator*>(parent());
+		translator->AddCellMLTab();
+        needtranslation = true;
+	}
+    if (m_sbmltab == -1) {
+        //Add an SBML Tab (TranslateAntimony will add any necessary extras)
+        m_sbmltab = 2;
+        Translator* translator = static_cast<Translator*>(parent());
+        translator->AddSBMLTab();
+        needtranslation = true;
+    }
+    else if (m_sbmltab == 1) {
+        m_sbmltab = 2;
+    }
+    if (needtranslation) {
+		TranslateAntimony();
     }
 }
 
@@ -252,6 +293,7 @@ void TabManager::SetOthersTranslated(int oldtab)
 
 void TabManager::TranslateAntimony(QString& text)
 {
+    //Since this is an editor, they may have copied and pasted special characters into it, which need to be changed.
     text.replace(QChar(8230), "...");
     for (int i=0; i<text.size(); i++) {
         if (text[i].category()==QChar::Punctuation_Dash) {
@@ -270,10 +312,12 @@ void TabManager::TranslateAntimony(QString& text)
     if (text[text.size()-1] != '\n') {
         text.append('\n');
     }
-    if (text != textbox(0)->toPlainText()) {
-        textbox(0)->ReplaceTextWith(text);
-        textbox(0)->SetOriginal();
+    //If we have changed the above, replace the text with the 'correct' version.
+    if (text != textbox(m_anttab)->toPlainText()) {
+        textbox(m_anttab)->ReplaceTextWith(text);
+        textbox(m_anttab)->SetOriginal();
     }
+    //Now translate the model:
     long handle = loadString(text.toUtf8().data());
     if (handle == -1) {
         //error condition
@@ -282,56 +326,48 @@ void TabManager::TranslateAntimony(QString& text)
         textbox(0)->DisplayError(error);
         return;
     }
-    long nummods = getNumModules();
-    long visibletabs = nummods + 1;
-    if (m_cellmltab != -1) {
-        visibletabs++;
-    }
-    Translator* translator = static_cast<Translator*>(parent());
-    long nummods = getNumModules();
-    while (count() != nummods) {
-        if (count() > nummods) {
-            removeTab(count()-1);
-        }
-        else {
-            translator->AddSBMLTab();
-        }
-    }
-    for (long mod=0; mod<nummods; mod++) {
-        int tabnum = mod;
-        char* modname = getNthModuleName(mod);
-        //The '__main' module will always be model 0.  I want this to be the *last* tab for this translator, so since the Antimony tab is tab 0, model 0 (if it has any variables) goes to the end.
-        if (mod==0) {
-            tabnum = nummods;
-            long numvars = getNumSymbolsOfType(modname, allSymbols);
-            if (numvars == 0) {
-                visibletabs--;
-            }
-            Translator* translator = static_cast<Translator*>(parent());
-            while (visibletabs >= count()) {
-                translator->AddSBMLTab();
-            }
-            if (visibletabs < nummods) continue;
-        }
-        ChangeableTextBox* tab_s = textbox(tabnum);
-        tab_s->SetTranslatedText(QString(getSBMLString(modname)));
-        tab_s->SetModelName(QString(modname));
-        setTabText(tabnum, tab_s->GetTabName());
-    }
-    while (visibletabs+1 < count() && count()>2) {
-        removeTab(count()-1);
-    }
+    //Translate to CellML if need be:
+	if (m_cellmltab != -1) {
+		ChangeableTextBox* cellmltab = textbox(m_cellmltab);
+		char* mainmodel = getMainModuleName();
+		char* cellmltext = "Temp CellML Text"; //getCellMLString(maimmodel); //LS DEBUG CELLML
+		cellmltab->SetTranslatedText(QString(cellmltext));
+	}
+    //Translate to SBML if need be:
+	if (m_sbmltab != -1) {
+		long nummods = getNumModules();
+		long visibletabs = nummods + m_sbmltab;
+		Translator* translator = static_cast<Translator*>(parent());
+		while (count() != visibletabs) {
+			if (count() > visibletabs) {
+				removeTab(count()-1);
+			}
+			else {
+				translator->AddSBMLTab();
+			}
+		}
+		for (long mod=0; mod<nummods; mod++) {
+			char* modname = getNthModuleName(mod);
+			long tabnum = mod+m_sbmltab-1;
+			if (mod==0) {
+				//The '__main' module will always be model 0.  I want this to be the *last* tab for this translator, so since the Antimony tab is tab 0, model 0 (if it has any variables) goes to the end.
+				long numvars = getNumSymbolsOfType(modname, allSymbols);
+				if (numvars == 0) {
+					removeTab(count()-1);
+					continue;
+				}
+				tabnum = nummods+m_sbmltab-1;
+			}
+			ChangeableTextBox* tab_s = textbox(tabnum);
+			tab_s->SetTranslatedText(QString(getSBMLString(modname)));
+			tab_s->SetModelName(QString(modname));
+			setTabText(tabnum, tab_s->GetTabName());
+		}
+	}
     clearPreviousLoads();
 #ifndef WIN32
     freeAll();
 #endif
-    /*
-    for (int cleart = visibletabs+1; cleart < count(); cleart++) {
-        ChangeableTextBox* tab_s = textbox(cleart);
-        tab_s->SetLastText(QString(""));
-        setTabText(cleart, QString("<defunct>"));
-    }
-    */
 }
 
 void TabManager::TranslateSBML(int tab, const QString& text)
@@ -379,7 +415,9 @@ void TabManager::TranslateSBML(int tab, const QString& text)
 void TabManager::TranslateCellML(QString& text)
 {
     textbox(m_cellmltab)->SetOriginal();
-    long handle = loadCellMLString(text.toUtf8().data());
+//    long handle = loadCellMLString(text.toUtf8().data());
+	//LS DEBUG CELLML
+    long handle = loadSBMLString(text.toUtf8().data());
     if (handle == -1) {
         //error condition
         char* error = getLastError();
