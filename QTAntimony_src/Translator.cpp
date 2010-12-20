@@ -126,17 +126,16 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_actionSetSBMLLevelAndVersion = new QAction(tr("Set SBML &Level and Version"), this);
     m_actionSetSBMLLevelAndVersion->setEnabled(true);
 
-	//View
+    //View
 //LS DEBUG CELLML
 //#ifndef NCELLML
     //If we're able to see CellML, set what the user sees.
-    QAction* sbmlTabs = new QAction(tr("&SBML tabs only"), this);
+    QAction* sbmlTabs = new QAction(tr("&SBML tab(s)"), this);
     sbmlTabs->setCheckable(true);
     sbmlTabs->setChecked(displaysbml);
-    QAction* cellmlTabs= new QAction(tr("&CellML tabs only"), this);
+    QAction* cellmlTabs= new QAction(tr("&CellML tab"), this);
     cellmlTabs->setCheckable(true);
     cellmlTabs->setChecked(displaycellml);
-    QAction* sbmlAndCellMLTabs= new QAction(tr("&Both SBML and CellML tabs"), this);
 //#endif
     QAction* setAntimonyFont = new QAction(tr("Set &Antimony Font"), this);
     setAntimonyFont->setEnabled(true);
@@ -188,7 +187,8 @@ Translator::Translator(QTAntimony* app, QString filename)
                 m_antimony->SetSavedFilename(filename);
                 m_antimony->SetOriginal();
                 if (displaycellml) {
-                    AddCellMLTab(modname, getSBMLString(getMainModuleName()), true);
+                    char* modname = getMainModuleName();
+                    AddCellMLTab(modname, getSBMLString(modname), true);
                 }
                 if (displaysbml) {
                     for (size_t mod=1; mod<getNumModules(); mod++) {
@@ -287,11 +287,10 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(zoomOut, SIGNAL(triggered()), m_tabmanager, SLOT(zoomOut()));
     connect(setAntimonyFont, SIGNAL(triggered()), m_tabmanager, SLOT(setAntimonyFont()));
     connect(setXMLFont, SIGNAL(triggered()), m_tabmanager, SLOT(setXMLFont()));
-	//LS DEBUG CELLML
-	//#ifndef NCELLML
-    connect(sbmlTabs, SIGNAL(triggered()), m_tabmanager, SLOT(sbmlTabs()));
-    connect(cellmlTabs, SIGNAL(triggered()), m_tabmanager, SLOT(cellmlTabs()));
-    connect(sbmlAndCellMLTabs, SIGNAL(triggered()), m_tabmanager, SLOT(sbmlAndCellMLTabs()));
+    //LS DEBUG CELLML
+//#ifndef NCELLML
+    connect(sbmlTabs, SIGNAL(toggled(bool)), m_tabmanager, SLOT(sbmlTabs(bool)));
+    connect(cellmlTabs, SIGNAL(toggled(bool)), m_tabmanager, SLOT(cellmlTabs(bool)));
 //#endif
     connect(m_antimony, SIGNAL(OriginalAvailable(bool)), m_actionRevertToOriginal, SLOT(setEnabled(bool)));
     connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), m_antimony, SLOT(SetFailedTranslation()));
@@ -345,7 +344,6 @@ Translator::Translator(QTAntimony* app, QString filename)
     viewmenu->addAction(setXMLFont);
     viewmenu->addAction(sbmlTabs);
     viewmenu->addAction(cellmlTabs);
-    viewmenu->addAction(sbmlAndCellMLTabs);
 
 
 #ifdef 	SBW_INTEGRATION
@@ -494,6 +492,7 @@ void Translator::closeEvent(QCloseEvent* event)
         qset.sync();
         qset.setValue("geometry", saveGeometry());
         m_tabmanager->SaveFonts();
+        m_tabmanager->SaveTabDisplay();
     }
     else {
         event->ignore();

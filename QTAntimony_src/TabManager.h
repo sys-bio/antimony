@@ -20,6 +20,7 @@ public:
     void Translate(int tab);
     bool CanIClose();
     void SaveFonts();
+    void SaveTabDisplay();
 
 public slots:
     //We provide the functions and pass them to the underlying active editor tab
@@ -38,9 +39,8 @@ public slots:
     void zoomIn();
     void zoomOut();
 
-    void sbmlTabs();
-    void cellmlTabs();
-    void sbmlAndCellMLTabs();
+    void sbmlTabs(bool);
+    void cellmlTabs(bool);
 
     //Whenever we switch tabs:
     void SwitchTabs(int tab);
