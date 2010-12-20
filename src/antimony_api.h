@@ -299,7 +299,7 @@ LIB_EXTERN char*  getNthModuleName(unsigned long n);
 /**
  * Returns the 'main' module name.  In Antimony, this is either the module marked by an asterisk (model *mainModel()  or the last module defined in the file.  In translated SBML models, this is the model child of the <sbml> object.  In translated CellML models, this is the 'containing' model that the translator creates to hold all the CellML components.  Returns NULL only if there are no modules at all.
  */
-LIB_EXTERN char*  getMainModuleName(unsigned long n);
+LIB_EXTERN char*  getMainModuleName();
 /** \} */
 
 

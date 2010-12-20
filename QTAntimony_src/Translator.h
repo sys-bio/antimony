@@ -21,7 +21,6 @@ private:
     TabManager* m_tabmanager;
     AntimonyTab* m_antimony;
     FileWatcher* m_filewatcher;
-    std::vector<SBMLTab*> m_allSBML;
     //Editor actions (are tied to active tab only)
     QAction* m_actionUndo;
     QAction* m_actionRedo;
@@ -42,7 +41,7 @@ public:
     Translator(QTAntimony* app, QString filename="");
     //~Translator();  //Hmm, do we need destructors here?
     void AddSBMLTab(QString name = "", QString text = "", bool translated=true);
-    void AddCellMLTab();
+    void AddCellMLTab(QString name = "", QString text = "", bool translated=true);
     void SetSBMLTab(QString model);
     bool IsBlank();
     virtual void closeEvent(QCloseEvent* event);

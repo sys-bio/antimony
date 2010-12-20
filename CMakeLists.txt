@@ -163,10 +163,10 @@ endif(UNIX)
 			  ${CMAKE_SOURCE_DIR}/include 
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
 			  )
-        file(GLOB XULRUNNER_INCLUDES ${XULRUNNER_INCLUDE_DIR} ${XULRUNNER_INCLUDE_DIR}/*/ )
-        file(GLOB XULRUNNER_NOT_INCLUDES ${XULRUNNER_INCLUDE_DIR} ${XULRUNNER_INCLUDE_DIR}/*.* )
+        file(GLOB XULRUNNER_INCLUDE_DIRECTORIES ${XULRUNNER_INCLUDE_DIR} ${XULRUNNER_INCLUDE_DIR}/*/ )
+        file(GLOB XULRUNNER_NOT_INCLUDE_DIRECTORIES ${XULRUNNER_INCLUDE_DIR} ${XULRUNNER_INCLUDE_DIR}/*.* )
         
-        list(REMOVE_ITEM XULRUNNER_INCLUDES ${XULRUNNER_NOT_INCLUDES})
+        list(REMOVE_ITEM XULRUNNER_INCLUDE_DIRECTORIES ${XULRUNNER_NOT_INCLUDE_DIRECTORIES})
 
         #CellML:
 	find_library(CELLML_API 
@@ -187,14 +187,14 @@ endif(UNIX)
 			    )
 	
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CEVAS_LIB})
-	find_path(CELLML_INCLUDE_DIR
+	find_path(CELLML_API_ROOT_DIR
 		NAMES sources/Utilities.hxx
 		PATHS /usr/include /usr/local/include 
-                          C:/Users/Lucian/Desktop/CellML/cellml-api/
+                          C:/build/cellml-api/
 			  ${CMAKE_SOURCE_DIR}/include 
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
 			  )
-        set(CELLML_INCLUDE_DIRECTORIES ${CELLML_INCLUDE_DIR} ${CELLML_INCLUDE_DIR}/sources ${CELLML_INCLUDE_DIR}/interfaces ${CELLML_INCLUDE_DIR}/simple_interface_generators/glue/xpcom)
+        set(CELLML_INCLUDE_DIRECTORIES ${CELLML_API_ROOT_DIR} ${CELLML_API_ROOT_DIR}/sources ${CELLML_API_ROOT_DIR}/sources/cellml/ ${CELLML_API_ROOT_DIR}/interfaces ${CELLML_API_ROOT_DIR}/simple_interface_generators/glue/xpcom)
 
         #OpenCell:
 	find_library(OPENCELL_DATACOLLECTOR_LIB 
@@ -206,18 +206,18 @@ endif(UNIX)
 			    )
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${OPENCELL_DATACOLLECTOR_LIB})
 
-        find_path(OPENCELL_INCLUDE_DIR
+        find_path(OPENCELL_ROOT_DIR
 		NAMES stubs/IDataCollector.h
 		PATHS /usr/include /usr/local/include 
                           C:/Users/Lucian/Desktop/CellML/cellml-opencell/
 			  ${CMAKE_SOURCE_DIR}/include 
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
 			  )
-        set(OPENCELL_INCLUDES ${OPENCELL_INCLUDE_DIR}/DataCollector ${OPENCELL_INCLUDE_DIR}/stubs)
+        set(OPENCELL_INCLUDE_DIRECTORIES ${OPENCELL_ROOT_DIR}/DataCollector ${OPENCELL_ROOT_DIR}/stubs)
 
 
         set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ALL_CELLML_LIBS} )
-        INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${XULRUNNER_INCLUDES} ${CELLML_INCLUDE_DIRECTORIES} ${OPENCELL_INCLUDES})
+        INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${XULRUNNER_INCLUDE_DIRECTORIES} ${CELLML_INCLUDE_DIRECTORIES} ${OPENCELL_INCLUDE_DIRECTORIES})
         add_definitions( -fshort-wchar )
 else()
   add_definitions( -DNCELLML )
@@ -265,7 +265,7 @@ file(GLOB LIBANTIMONY_SOURCES
 	${ANTIMONY_SRC_DIR}userfunction.cpp
 	${ANTIMONY_SRC_DIR}variable.cpp
 	)
-file(GLOB LIBANTIMONY_INCLUDES 
+file(GLOB LIBANTIMONY_TRANSLATORS 
 	${ANTIMONY_SRC_DIR}module-sbml.cpp
 	${ANTIMONY_SRC_DIR}module-cellml.cpp
         )
@@ -274,7 +274,7 @@ SET_SOURCE_FILES_PROPERTIES(
 	${ANTIMONY_SRC_DIR}module-cellml.cpp
         PROPERTIES HEADER_FILE_ONLY true
         )
-source_group(Translators FILES ${LIBANTIMONY_INCLUDES})
+source_group(Translators FILES ${LIBANTIMONY_TRANSLATORS})
 
 file(GLOB LIBANTIMONY_HEADERS 
         ${ANTIMONY_SRC_DIR}antimony_api.h
@@ -295,13 +295,13 @@ file(GLOB LIBANTIMONY_HEADERS
 	${ANTIMONY_SRC_DIR}variable.h
         )
  
-add_library(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_HEADERS} ${LIBANTIMONY_SOURCES} ${LIBANTIMONY_INCLUDES})
+add_library(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_HEADERS} ${LIBANTIMONY_SOURCES} ${LIBANTIMONY_TRANSLATORS})
 target_link_libraries(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
 add_definitions(-DLIB_EXPORTS)
 
 if (NOT UNIX)
   add_definitions(-DWIN32 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
-endif(WIN32)
+endif(NOT UNIX)
 ####################################################################
 #
 # Build the various command-line executables
@@ -375,8 +375,7 @@ if (CREATE_QTANTIMONY)
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${ANTIMONY_SRC_DIR} ${QT_INCLUDES})
         QT4_WRAP_CPP(QTANTIMONY_MOC_SRCS ${QTANTIMONY_HEADERS})
         source_group(MOC_sources FILES ${QTANTIMONY_MOC_SRCS})
-        #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
-        add_executable(QTAntimony WIN32 MACOSX_BUNDLE ${QTANTIMONY_SOURCES} ${QTANTIMONY_MOC_SRCS} ${QTANTIMONY_HEADERS})
+        add_executable(QTAntimony ${QTANTIMONY_SOURCES} ${QTANTIMONY_MOC_SRCS} ${QTANTIMONY_HEADERS})
         add_dependencies(QTAntimony ${LIBANTIMONY_LIBRARY})
         target_link_libraries(QTAntimony ${QT_LIBRARIES} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} ${LIBANTIMONY_LIBS})
         add_definitions(${QT_DEFINITIONS})

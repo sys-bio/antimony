@@ -469,7 +469,7 @@ LIB_EXTERN char*  getNthModuleName(unsigned long n)
   return retval;
 }
 
-LIB_EXTERN char*  getMainModuleName()
+LIB_EXTERN char* getMainModuleName()
 {
   const Module* mainmod = g_registry.GetMainModule();
   if (mainmod==NULL) return NULL;
