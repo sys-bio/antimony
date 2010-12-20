@@ -22,7 +22,7 @@ SBMLTab::SBMLTab(QWidget* parent)
     defaultfont.setFamily("Courier New");
     defaultfont.setPointSize(10);
     QFont newfont;
-    newfont.fromString(qset.value("sbmlfont", defaultfont).toString());
+    newfont.fromString(qset.value("xmlfont", defaultfont).toString());
     setFont(newfont);
 }
 

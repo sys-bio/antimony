@@ -20,7 +20,7 @@ CellMLTab::CellMLTab(QWidget* parent)
     defaultfont.setFamily("Courier New");
     defaultfont.setPointSize(10);
     QFont newfont;
-    newfont.fromString(qset.value("CellMLfont", defaultfont).toString());
+    newfont.fromString(qset.value("xmlfont", defaultfont).toString());
     setFont(newfont);
 }
 

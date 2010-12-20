@@ -10,6 +10,7 @@
 #include <QAction>
 #include <QFontDialog>
 #include <vector>
+#include <cassert>
 
 
 #ifdef SBW_INTEGRATION
@@ -137,62 +138,44 @@ void TabManager::zoomOut()
     }
 }
 
-void TabManager::sbmlTabs()
+void TabManager::sbmlTabs(bool checked)
 {
-    if (m_cellmltab != -1) {
-        //Remove the CellML Tab
-        removeTab(m_cellmltab);
-        m_cellmltab = -1;
-    }
-    if (m_sbmltab == -1) {
+    if (checked) {
+        assert(m_sbmltab == -1);
         //Add an SBML Tab (TranslateAntimony will add any necessary extras)
-        m_sbmltab = 1;
+        if (m_cellmltab == -1) m_sbmltab = 1;
+        else m_sbmltab = 2;
         Translator* translator = static_cast<Translator*>(parent());
         translator->AddSBMLTab();
-		TranslateAntimony();
+        TranslateAntimony();
     }
-}
-
-void TabManager::cellmlTabs()
-{
-	if (m_sbmltab != -1) {
-		//Remove all SBML Tabs
-		while (m_sbmltab < count()) {
-			removeTab(m_sbmltab);
-		}
+    else {
+        assert(m_sbmltab > 0);
+        while (m_sbmltab < count()) {
+            removeTab(m_sbmltab);
+        }
         m_sbmltab = -1;
-	}
-	if (m_cellmltab == -1) {
-		//Add a CellML Tab
-		m_cellmltab = 1;
-		Translator* translator = static_cast<Translator*>(parent());
-		translator->AddCellMLTab();
-		TranslateAntimony();
-	}
+    }
 }
 
-void TabManager::sbmlAndCellMLTabs()
+void TabManager::cellmlTabs(bool checked)
 {
-    bool needtranslation = false;
-	if (m_cellmltab == -1) {
-		//Add a CellML Tab
-		m_cellmltab = 1;
-		Translator* translator = static_cast<Translator*>(parent());
-		translator->AddCellMLTab();
-        needtranslation = true;
-	}
-    if (m_sbmltab == -1) {
-        //Add an SBML Tab (TranslateAntimony will add any necessary extras)
-        m_sbmltab = 2;
+    if (checked) {
+        assert(m_cellmltab == -1);
+        //Add a CellML Tab
+        m_cellmltab = 1;
+        if (m_sbmltab==1) {
+            m_sbmltab = 2;
+        }
         Translator* translator = static_cast<Translator*>(parent());
-        translator->AddSBMLTab();
-        needtranslation = true;
+        translator->AddCellMLTab();
+        TranslateAntimony();
     }
-    else if (m_sbmltab == 1) {
-        m_sbmltab = 2;
-    }
-    if (needtranslation) {
-		TranslateAntimony();
+    else {
+        //Remove the CellML Tab
+        assert(m_cellmltab == 1);
+        removeTab(1);
+        m_cellmltab = -1;
     }
 }
 
@@ -309,7 +292,7 @@ void TabManager::TranslateAntimony(QString& text)
             text[i] = '"';
         }
     }
-    if (text[text.size()-1] != '\n') {
+    if (text.size()==0 || text[text.size()-1] != '\n') {
         text.append('\n');
     }
     //If we have changed the above, replace the text with the 'correct' version.
@@ -330,7 +313,8 @@ void TabManager::TranslateAntimony(QString& text)
 	if (m_cellmltab != -1) {
 		ChangeableTextBox* cellmltab = textbox(m_cellmltab);
 		char* mainmodel = getMainModuleName();
-		char* cellmltext = "Temp CellML Text"; //getCellMLString(maimmodel); //LS DEBUG CELLML
+                //char* cellmltext = "Temp CellML Text";
+                char* cellmltext = getCellMLString(mainmodel); //LS DEBUG CELLML
 		cellmltab->SetTranslatedText(QString(cellmltext));
 	}
     //Translate to SBML if need be:
@@ -589,6 +573,14 @@ void TabManager::SaveFonts()
     else if (m_cellmltab != -1) {
         qset.setValue("xmlfont", textbox(m_cellmltab)->currentFont());
     }
+}
+
+void TabManager::SaveTabDisplay()
+{
+    QSettings qset(ORG, APP);
+    qset.sync();
+    qset.setValue("displaysbml", (m_sbmltab!= -1));
+    qset.setValue("displaycellml", (m_cellmltab != -1));
 }
 
 #ifdef SBW_INTEGRATION
