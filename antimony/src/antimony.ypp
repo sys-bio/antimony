@@ -59,7 +59,7 @@
 
 %token YYEOF 0 "end of file"
 %token  <num> NUM "number"
-%token  <word> WORD "element name"
+%token  <word> ANTWORD "element name"
 %token  <word> MODNAME "name of an existing module"
 %token  <word> TEXTSTRING "text string"
 %token  <word> MODULE "'model' or 'module'"
@@ -100,13 +100,13 @@ input:          /* empty */
 import:         IMPORT TEXTSTRING { if (g_registry.OpenFile(*($2))==0) YYABORT;}
         ;
 
-module:         MODULE maybemain WORD {g_registry.NewCurrentModule($3, $2);} '(' variableexportlist ')' modulebody END
+module:         MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, $2);} '(' variableexportlist ')' modulebody END
                 {
                   $$ = g_registry.CurrentModule();
                   if ($$->Finalize()) YYABORT;
                   g_registry.RevertToPreviousModule();
                 }
-        |       MODULE maybemain WORD {g_registry.NewCurrentModule($3, $2);} modulebody END
+        |       MODULE maybemain ANTWORD {g_registry.NewCurrentModule($3, $2);} modulebody END
                 {
                   $$ = g_registry.CurrentModule();
                   if ($$->Finalize()) YYABORT;
@@ -120,7 +120,7 @@ maybemain:      /* empty */ {$$ = false;}
         |       '*' {$$ = true;}
         ;
 
-function:       FUNCTIONWORD WORD {g_registry.NewUserFunction($2);} '(' variableexportlist ')' spacedformula END {if (g_registry.SetUserFunction($7)) YYABORT;}
+function:       FUNCTIONWORD ANTWORD {g_registry.NewUserFunction($2);} '(' variableexportlist ')' spacedformula END {if (g_registry.SetUserFunction($7)) YYABORT;}
         |       FUNCTIONWORD MODNAME {g_registry.SetError("Cannot use '" + *($2) +"' as a function name because it is already the name of a module."); YYABORT;}
         |       FUNCTIONWORD FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a new function because it is already a defined function."); YYABORT;} 
         ;
@@ -136,8 +136,8 @@ variableexportlist:
         |       variableexportlist ',' variable { if (g_registry.AddVariableToCurrentExportList($3)) YYABORT; }
         ;
 
-variable:       WORD {$$ = g_registry.AddVariableToCurrent($1); }
-        |       variable '.' WORD {$$ = $1->GetSubVariable($3);
+variable:       ANTWORD {$$ = g_registry.AddVariableToCurrent($1); }
+        |       variable '.' ANTWORD {$$ = $1->GetSubVariable($3);
                   if ($$ == NULL) {
                     g_registry.SetError("'" + *($3) + "' is not a subvariable of '" + $1->GetNameDelimitedBy('.') + "'.");
                     YYABORT;
@@ -204,7 +204,7 @@ reactionDivider:
                 '-' '>' {$$ = rdBecomes;}
         |       '-' '|' {$$ = rdInhibits;}
         |       '-' '(' {$$ = rdInfluences;}
-        |       '-' WORD {if (*$2 != "o") {g_registry.SetError("'-" + *$2 + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} $$ = rdActivates;}
+        |       '-' ANTWORD {if (*$2 != "o") {g_registry.SetError("'-" + *$2 + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} $$ = rdActivates;}
         |       BECOMESIRREV {$$ = rdBecomesIrreversibly;}
         |       '<' BECOMESIRREV {$$ = rdBecomes;}
         ;
@@ -501,7 +501,7 @@ int yylex(void)
     if (g_registry.IsModuleName(word)) {
       return MODNAME;
     }
-    return WORD;
+    return ANTWORD;
   }
 
   // Parse numbers

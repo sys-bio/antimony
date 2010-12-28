@@ -20,11 +20,7 @@
 #ifndef NCELLML
 #include <IfaceCellML_APISPEC.hxx>
 #include <CellMLBootstrap.hpp>
-#include "IAnnoTools.h"
 #include "cellmlx.h"
-
-#define CELLML_BOOTSTRAP_CONTRACTID "@cellml.org/cellml-bootstrap;1"
-
 #endif
 
 #define MAINMODULE "__main"
@@ -84,9 +80,9 @@ public:
   int    CheckAndAddSBMLIfGood(SBMLDocument* document);
 #endif
 #ifndef NCELLML
-  bool   LoadCellML(nsCOMPtr<cellml_apiIModel> model);
-  bool   LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections);
-  bool   SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> connection);
+  bool   LoadCellML(iface::cellml_api::Model* model);
+  bool   LoadConnections(iface::cellml_api::ConnectionSet* connections);
+  bool   SynchronizeCellMLConnection(iface::cellml_api::Connection* connection);
   std::map<std::string, std::string> m_cellmlnames;
 #endif
   void   CreateLocalVariablesForSubmodelInterfaceIfNeeded();

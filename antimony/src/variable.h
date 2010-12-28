@@ -11,7 +11,6 @@
 #include "enums.h"
 
 #ifndef NCELLML
-#include <nsCOMPtr.h>
 #include "cellmlx.h"
 #endif
 
@@ -59,7 +58,7 @@ private:
 
 #ifndef NCELLML
   //If we are using CellML, this is a link to the corresponding variable in that document.
-  nsCOMPtr<cellml_apiICellMLVariable> m_cellmlvariable;
+  ObjRef<iface::cellml_api::CellMLVariable> m_cellmlvariable;
   Variable* m_canonvar;
 #endif
 
@@ -137,10 +136,10 @@ public:
 
 
 #ifndef NCELLML
-  nsCOMPtr<cellml_apiICellMLVariable> GetCellMLVariable() {return m_cellmlvariable;};
-  void SetCellMLVariable(nsCOMPtr<cellml_apiICellMLVariable> cmlvar) {m_cellmlvariable = cmlvar;};
   Variable* GetCanonicalVariable() {return m_canonvar;};
   void SetCanonicalVariable(Variable* cvar) {m_canonvar = cvar;};
+  iface::cellml_api::CellMLVariable* GetCellMLVariable() {m_cellmlvariable->add_ref(); return m_cellmlvariable;};
+  void SetCellMLVariable(iface::cellml_api::CellMLVariable* cmlvar) {m_cellmlvariable = cmlvar;};
 #endif
 };
 

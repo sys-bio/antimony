@@ -10,32 +10,6 @@
 
 using namespace std;
 
-string ToThinString(const PRUnichar* in)
-{
-  string out;
-  for (size_t ch=0; (in[ch] != '\0'); ch++) {
-    out.push_back(in[ch]);
-  }
-  return out;
-}
-
-nsString ToNSString(const string& in)
-{
-	assert(10000 > in.size());
-  PRUnichar out[10000];
-  
-  for (size_t ch=0; ch<in.size(); ch++) {
-    out[ch] = in[ch];
-  }
-
-  return nsDependentString(out, in.size());
-}
-
-nsCString ToNSCString(const string& in)
-{
-  return nsCString(in.c_str(), in.size());
-}
-
 string CellMLPiecewiseToSBML(const string& in)
 {
   string out = in;
@@ -115,163 +89,137 @@ string CellMLPiecewiseToSBML(const string& in)
   return CellMLPiecewiseToSBML(out); //recursive call for multiple 'case/then's
 }
 
-string GetModuleNameFrom(nsCOMPtr<cellml_apiICellMLComponent> component)
+string GetModuleNameFrom(iface::cellml_api::CellMLComponent* component)
 {
-  nsString cellmltext;
-  string cellmlname;
-  nsresult rv;
-  rv = component->GetName(cellmltext);
-  cellmlname = ToThinString(cellmltext.get());
-  nsCOMPtr<cellml_apiIModel> mod;
-  rv = component->GetModelElement(getter_AddRefs(mod));
-  rv = mod->GetName(cellmltext);
-  cellmlname = ToThinString(cellmltext.get()) + "__" + cellmlname;
+  RETURN_INTO_WSTRING(wcompname, component->name());
+  std::string compname(makeUTF8(wcompname));
+  RETURN_INTO_OBJREF(mod, iface::cellml_api::Model, component->modelElement());
+  RETURN_INTO_WSTRING(wmodname, mod->name());
+  std::string modname(makeUTF8(wmodname));
+
+  std::string cellmlname = modname + "__" + compname;
   FixName(cellmlname);
   return cellmlname;
 }
 
-string GetModuleNameFrom(nsCOMPtr<cellml_apiIImportComponent> impcomponent)
+string GetModuleNameFrom(iface::cellml_api::ImportComponent* impcomponent)
 {
-  nsString cellmltext;
-  string cellmlname;
-  nsresult rv;
-  rv = impcomponent->GetComponentRef(cellmltext);
-  cellmlname = ToThinString(cellmltext.get());
-  nsCOMPtr<cellml_apiICellMLElement> import_as_element;
-  rv = impcomponent->GetParentElement(getter_AddRefs(import_as_element));
-  nsCOMPtr<cellml_apiICellMLImport> import;
-  nsIID nsiid = import->GetIID();
-  rv = import_as_element->QueryInterface(nsiid, getter_AddRefs(import));
-  nsCOMPtr<cellml_apiIModel> mod;
-  rv = import->GetImportedModel(getter_AddRefs(mod));
-  rv = mod->GetName(cellmltext);
-  cellmlname = ToThinString(cellmltext.get()) + "__" + cellmlname;
+  RETURN_INTO_WSTRING(wcompRefName, impcomponent->componentRef());
+  std::string compRefName(makeUTF8(wcompRefName));
+
+  RETURN_INTO_OBJREF(import_as_element, iface::cellml_api::CellMLElement,
+                     impcomponent->parentElement());
+  DECLARE_QUERY_INTERFACE_OBJREF(import, import_as_element, cellml_api::CellMLImport);
+  RETURN_INTO_OBJREF(mod, iface::cellml_api::Model, import->importedModel());
+  RETURN_INTO_WSTRING(wimpModName, mod->name());
+  std::string impModName(makeUTF8(wimpModName));
+  std::string cellmlname = impModName + "__" + compRefName;
   return cellmlname;
 }
 
-string GetNameAccordingToEncapsulationParent(nsCOMPtr<cellml_apiICellMLComponent> component, nsCOMPtr<cellml_apiIModel> topmodel)
+// XXX This is *not* a reliable way to get a unique name for a component instance,
+// because not all components in an imported model have to be imported (they can
+// be encapsulated underneath an imported component) - meaning that if a model is
+// imported twice, this function will return the same name for a component that is
+// imported indirectly multiple times. -- Andrew Miller
+std::string
+GetNameAccordingToEncapsulationParent(iface::cellml_api::CellMLComponent* component,
+                                      iface::cellml_api::Model* topmodel)
 {
-  nsString cellmltext;
-  string cellmlname;
-  nsresult rv;
-
-  nsCString compid;
-  nsCOMPtr<IWrappedPCM> cw(do_QueryInterface(component));
-  rv = cw->GetObjid(compid);
-  map<string, string>::iterator name = g_registry.m_cellmlnames.find(compid.get());
+  char *oid = component->objid();
+  std::string oid_s(oid);
+  free(oid);
+  map<string, string>::iterator name = g_registry.m_cellmlnames.find(oid_s);
   if (name != g_registry.m_cellmlnames.end()) {
     return name->second;
   }
 
-  nsCOMPtr<cellml_apiICellMLComponent> encapsulationparent;
-  rv = component->GetEncapsulationParent(getter_AddRefs(encapsulationparent));
-  nsCOMPtr<cellml_apiIModel> encapsulationmodel;
+  RETURN_INTO_OBJREF(encapsulationParent, iface::cellml_api::CellMLComponent,
+                     component->encapsulationParent());
 
-  if (encapsulationparent == NULL) {
-    encapsulationmodel = topmodel;
+  ObjRef<iface::cellml_api::Model> encapsulationModel;
+  if (encapsulationParent == NULL) {
+    encapsulationModel = topmodel;
   }
   else {
-    rv = encapsulationparent->GetModelElement(getter_AddRefs(encapsulationmodel));
+    encapsulationModel = already_AddRefd<iface::cellml_api::Model>
+      (encapsulationParent->modelElement());
   }
   //rv = encapsulationmodel->GetName(cellmltext);
   //cout << "Encapsulation model: " << ToThinString(cellmltext.get()) << endl;
 
   //Now we have the encapsulation model.  This model is what has the name we need.  However, we can't trace from that model down to our component, because somewhere it might have included it more than once.  So instead, we work backward up the tree from the component.  The component may be in the same model; it might be imported; it might be imported by an import; etc.  We're going to discard all the names the component might have had in the path up to the encapsulation model, and instead just claim that the encapsulor included it directly with the name that it uses.
 
-  nsCOMPtr<cellml_apiIModel> compmodel;
-  rv = component->GetModelElement(getter_AddRefs(compmodel));
-  rv = compmodel->GetName(cellmltext);
-  //cout << "Component model: " << ToThinString(cellmltext.get()) << endl;
-  rv = component->GetName(cellmltext);
-  nsString componentref = cellmltext;
-  cellmlname = ToThinString(cellmltext.get());
-  FixName(cellmlname);
+  RETURN_INTO_OBJREF(compmodel, iface::cellml_api::Model, component->modelElement());
+  //RETURN_INTO_WSTRING(wcellmltext, compmodel->name());
+  //std::string cellmltext(makeUTF8(wcellmltext));
+  //cout << "Component model: " << cellmltext << endl;
 
-  cw = do_QueryInterface(compmodel);
-  rv = cw->GetObjid(compid);
-  nsCString encapmodid;
-  cw = do_QueryInterface(encapsulationmodel);
-  rv = cw->GetObjid(encapmodid);
-  while (compid != encapmodid) {
-    nsCOMPtr<cellml_apiICellMLElement> parentel;
-    rv = compmodel->GetParentElement(getter_AddRefs(parentel));
-    //Now cast 'parentel' as a ImportComponent and get the local name of the imported component.
+  RETURN_INTO_WSTRING(wcomponentRef, component->name());
+
+  while (CDA_objcmp(compmodel, encapsulationModel))
+  {
+    RETURN_INTO_OBJREF(parentel, iface::cellml_api::CellMLElement, compmodel->parentElement());
     assert(parentel != NULL);
-    nsCOMPtr<cellml_apiICellMLImport> import;
-    nsIID nsiid = import->GetIID();
-    rv = parentel->QueryInterface(nsiid, getter_AddRefs(import));
+
+    //Now QueryInterface 'parentel' to an ImportComponent and get the local name of the imported component.
+    DECLARE_QUERY_INTERFACE_OBJREF(import, parentel, cellml_api::CellMLImport);
     assert(import != NULL);
-    nsCOMPtr<cellml_apiIImportComponentSet> ics;
-    rv = import->GetComponents(getter_AddRefs(ics));
-    nsCOMPtr<cellml_apiIImportComponentIterator> ici;
-    rv = ics->IterateImportComponents(getter_AddRefs(ici));
-    nsCOMPtr<cellml_apiIImportComponent> ic;
-    rv = ici->NextImportComponent(getter_AddRefs(ic));
+
+    RETURN_INTO_OBJREF(ics, iface::cellml_api::ImportComponentSet, import->components());
+    RETURN_INTO_OBJREF(ici, iface::cellml_api::ImportComponentIterator, ics->iterateImportComponents());
     bool found = false;
-    while (ic != NULL) {
-      rv = ic->GetComponentRef(cellmltext);
-      if (componentref == cellmltext) {
+    while (true) {
+      RETURN_INTO_OBJREF(ic, iface::cellml_api::ImportComponent, ici->nextImportComponent());
+      if (ic == NULL)
+        break;
+
+      RETURN_INTO_WSTRING(newComponentRef, ic->componentRef());
+      if (newComponentRef == wcomponentRef) {
         //This is the right subcomponent
-        rv = ic->GetName(cellmltext);
-        cellmlname = ToThinString(cellmltext.get());
+        RETURN_INTO_WSTRING(newName, ic->name());
+        newComponentRef = newName;
         found = true;
       }
-      rv = ici->NextImportComponent(getter_AddRefs(ic));
     }
     assert(found);
-
-    
-    rv = parentel->GetModelElement(getter_AddRefs(compmodel));
-    cw = do_QueryInterface(compmodel);
-    rv = cw->GetObjid(compid);
   }
 
+  std::string cellmlname(makeUTF8(wcomponentRef));
   FixName(cellmlname);
   return cellmlname;
 }
 
-nsCOMPtr<cellml_apiICellMLComponent> GetCellMLComponentOf(nsCOMPtr<cellml_apiICellMLVariable> var)
+iface::cellml_api::CellMLComponent*
+GetCellMLComponentOf(iface::cellml_api::CellMLVariable* var)
 {
-  nsresult rv;
-  nsCOMPtr<cellml_apiICellMLElement> parentel;
-  rv = var->GetParentElement(getter_AddRefs(parentel));
-  
-  nsCOMPtr<cellml_apiICellMLComponent> comp;
-  nsIID nsiid = comp->GetIID();
-  rv = parentel->QueryInterface(nsiid, getter_AddRefs(comp));
-  return comp;
+  RETURN_INTO_OBJREF(el, iface::cellml_api::CellMLElement, var->parentElement());
+
+  DECLARE_QUERY_INTERFACE(ret, el, cellml_api::CellMLComponent);
+  return ret;
 }
 
-nsCOMPtr<cellml_apiIConnection> GetOrCreateConnectionFor(nsCOMPtr<cellml_apiICellMLComponent>comp1, nsCOMPtr<cellml_apiICellMLComponent>comp2, nsCOMPtr<cellml_apiIModel> model)
+iface::cellml_api::Connection*  GetOrCreateConnectionFor(iface::cellml_api::CellMLComponent* comp1, iface::cellml_api::CellMLComponent* comp2, iface::cellml_api::Model* model)
 {
-  nsresult rv;
-  nsString comp1name;
-  nsString comp2name;
-  rv = comp1->GetName(comp1name);
-  rv = comp2->GetName(comp2name);
-  nsCOMPtr<cellml_apiIConnectionSet> conset;
-  rv = model->GetConnections(getter_AddRefs(conset));
-  nsCOMPtr<cellml_apiIConnectionIterator> coni;
-  rv = conset->IterateConnections(getter_AddRefs(coni));
-  nsCOMPtr<cellml_apiIConnection> connection;
-  rv = coni->NextConnection(getter_AddRefs(connection));
+  RETURN_INTO_WSTRING(comp1name, comp1->name());
+  RETURN_INTO_WSTRING(comp2name, comp2->name());
+  RETURN_INTO_OBJREF(conset, iface::cellml_api::ConnectionSet, model->connections());
+  RETURN_INTO_OBJREF(coni, iface::cellml_api::ConnectionIterator, conset->iterateConnections());
+  RETURN_INTO_OBJREF(connection, iface::cellml_api::Connection, coni->nextConnection());
   while (connection != NULL) {
-    nsCOMPtr<cellml_apiIMapComponents> mapcomp;
-    rv = connection->GetComponentMapping(getter_AddRefs(mapcomp));
-    nsString testcomp1name;
-    nsString testcomp2name;
-    rv = mapcomp->GetFirstComponentName(testcomp1name);
-    rv = mapcomp->GetSecondComponentName(testcomp2name);
+    RETURN_INTO_OBJREF(mapcomp, iface::cellml_api::MapComponents, connection->componentMapping());
+    RETURN_INTO_WSTRING(testcomp1name, mapcomp->firstComponentName());
+    RETURN_INTO_WSTRING(testcomp2name, mapcomp->secondComponentName());
     if ((testcomp1name == comp1name && testcomp2name == comp2name) ||
         (testcomp1name == comp2name && testcomp2name == comp1name)) {
       //cout << "Found match!" << endl;
       return connection;
     }
-    rv = coni->NextConnection(getter_AddRefs(connection));
+    connection = coni->nextConnection();
   }
   //No connection found--create a new one
-  rv = model->CreateConnection(getter_AddRefs(connection));
-  rv = model->AddElement(connection);
+  connection = model->createConnection();
+  model->addElement(connection);
   return connection;
 }
 

@@ -22,6 +22,24 @@ using namespace std;
 extern int yyparse();
 extern int yylloc_first_line;
 
+std::wstring makeUTF16(const std::string& aStr)
+{
+  wchar_t* buf = new wchar_t[aStr.length() + 1];
+  mbstowcs(buf, aStr.c_str(), aStr.length());
+  std::wstring s = buf;
+  delete [] buf;
+  return s;
+}
+
+std::string makeUTF8(const std::wstring& aStr)
+{
+  char* buf = new char[aStr.length() * 2 + 1];
+  wcstombs(buf, aStr.c_str(), aStr.length() * 2 + 1);
+  std::string s = buf;
+  delete [] buf;
+  return s;
+}
+
 //Useful functions for later routines:
 char* getCharStar(const char* orig)
 {
@@ -298,7 +316,7 @@ LIB_EXTERN long loadSBMLString(const char* model)
 
 #include "cellmlx.h"
 
-long CheckAndAddCellMLDoc(nsCOMPtr<cellml_apiIModel> model)
+long CheckAndAddCellMLDoc(iface::cellml_api::Model* model)
 {
   g_registry.ClearWarnings();
   if (g_registry.LoadCellML(model)) return -1;
@@ -308,46 +326,42 @@ long CheckAndAddCellMLDoc(nsCOMPtr<cellml_apiIModel> model)
 
 LIB_EXTERN long loadCellMLFile(const char* filename)
 {
-  nsresult rv;
-  nsCOMPtr<cellml_apiICellMLBootstrap> boot(do_GetService(CELLML_BOOTSTRAP_CONTRACTID, &rv));
-  NS_ENSURE_SUCCESS(rv, -1);
-  nsCOMPtr<cellml_apiIDOMModelLoader> ml;
-  rv = boot->GetModelLoader(getter_AddRefs(ml));
+  RETURN_INTO_OBJREF(boot, iface::cellml_api::CellMLBootstrap, CreateCellMLBootstrap());
+  RETURN_INTO_OBJREF(ml, iface::cellml_api::DOMModelLoader, boot->modelLoader());
+  std::wstring wideFilename(makeUTF16(filename));
 
-  nsCOMPtr<cellml_apiIModel> model;
-  rv = ml->LoadFromURL(ToNSString(filename), getter_AddRefs(model));
-  if (NS_FAILED(rv)) {
+  ObjRef<iface::cellml_api::Model> model;
+  try
+  {
+    model = already_AddRefd<iface::cellml_api::Model>(ml->loadFromURL(wideFilename.c_str()));
+  }
+  catch (...)
+  {
     string file(filename);
-    nsString error;
-    ml->GetLastErrorMessage(error);
-    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  ToThinString(error.get()));
+    RETURN_INTO_WSTRING(error, ml->lastErrorMessage());
+    std::string emsg(makeUTF8(error));
+    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  emsg);
     return -1;
   }
-  long retval = CheckAndAddCellMLDoc(model);
-  if (retval == -1) {
-    string error = g_registry.GetError();
-    nsString nserror;
-    ml->GetLastErrorMessage(nserror);
-    error += ToThinString(nserror.get());
-    g_registry.SetError(error);
-  }
-  return retval;
+  return CheckAndAddCellMLDoc(model);
 }
 
 LIB_EXTERN long loadCellMLString(const char* modelstring)
 {
-  nsresult rv;
-  nsCOMPtr<cellml_apiICellMLBootstrap> boot(do_GetService(CELLML_BOOTSTRAP_CONTRACTID, &rv));
-  NS_ENSURE_SUCCESS(rv, -1);
-  nsCOMPtr<cellml_apiIDOMModelLoader> ml;
-  rv = boot->GetModelLoader(getter_AddRefs(ml));
+  RETURN_INTO_OBJREF(boot, iface::cellml_api::CellMLBootstrap, CreateCellMLBootstrap());
+  RETURN_INTO_OBJREF(ml, iface::cellml_api::DOMModelLoader, boot->modelLoader());
+  std::wstring wideString(makeUTF16(modelstring));
 
-  nsCOMPtr<cellml_apiIModel> model;
-  rv = ml->CreateFromText(ToNSString(modelstring), getter_AddRefs(model));
-  if (NS_FAILED(rv)) {
-    nsString error;
-    ml->GetLastErrorMessage(error);
-    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  ToThinString(error.get()));
+  ObjRef<iface::cellml_api::Model> model;
+  try
+  {
+    model = already_AddRefd<iface::cellml_api::Model>(ml->createFromText(wideString.c_str()));
+  }
+  catch (...)
+  {
+    RETURN_INTO_WSTRING(error, ml->lastErrorMessage());
+    std::string emsg(makeUTF8(error));
+    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  emsg);
   }
   return CheckAndAddCellMLDoc(model);
 }
@@ -355,12 +369,14 @@ LIB_EXTERN long loadCellMLString(const char* modelstring)
 string getCellMLText(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
-  nsCOMPtr<cellml_apiIModel> model = g_registry.GetModule(moduleName)->GetCellMLModel();
-  nsresult rv;
-  nsString cellmltext;
-  rv = model->GetSerialisedText(cellmltext);
-  string cellmlstring = ToThinString(cellmltext.get());
+  ObjRef<iface::cellml_api::Model> model = g_registry.GetModule(moduleName)->GetCellMLModel();
+  RETURN_INTO_WSTRING(cellmltext, model->serialisedText());
+  string cellmlstring = makeUTF8(cellmltext);
   size_t gtpos;
+  // XXX - I'd strongly recommend replacing this with code to go through the
+  // DOM representation and add text nodes containing newlines instead
+  //   -- Andrew Miller.
+  // Nah, this is simply for visualization purposes.  If the API ever provides a way to make it look nice, I'll use that.  --LS
   while ((gtpos = cellmlstring.find("><")) != string::npos) {
     cellmlstring.insert(gtpos+1, "\n");
   }
