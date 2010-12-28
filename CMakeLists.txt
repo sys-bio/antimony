@@ -105,69 +105,6 @@ endif(WITH_SBML)
 #
 
 if(WITH_CELLML)
-        #XULrunner:
-	find_library(XPCOMGLUE_LIB
-		NAMES xpcomglue_s.lib xpcomglue_s
-		PATHS /usr/lib /usr/local/lib
-                          C:/Users/Lucian/Desktop/CellML/xulrunner-sdk/lib
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${XPCOMGLUE_LIB})
-	find_library(XPCOM_LIB
-		NAMES xpcom.lib xpcom
-		PATHS /usr/lib /usr/local/lib
-                          C:/Users/Lucian/Desktop/CellML/xulrunner-sdk/lib
-			  ${CMAKEOURCE_DIR} 
-			  ${CMAKEOURCE_DIR}/dependencies/lib
-			    )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${XPCOM_LIB})
-	find_library(XUL_LIB 
-		NAMES xul.lib xul
-		PATHS /usr/lib /usr/local/lib
-                          C:/Users/Lucian/Desktop/CellML/xulrunner-sdk/lib
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${XUL_LIB})
-	find_library(EMBED_BASE_LIB
-		NAMES embed_base_s.lib embed_base_s
-		PATHS /usr/lib /usr/local/lib
-                          C:/Users/Lucian/Desktop/CellML/xulrunner-sdk/lib
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${EMBED_BASE_LIB})
-if(UNIX)
-        find_library(SQLITE_LIB 
-		NAMES sqlite3.lib sqlite3
-		PATHS /usr/lib /usr/local/lib
-                          C:/Users/Lucian/Desktop/CellML/xulrunner-sdk/lib
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${SQLITE_LIB})
-	find_library(MOZJS_LIB 
-		NAMES mozjs.lib mozjs
-		PATHS /usr/lib /usr/local/lib
-                          C:/Users/Lucian/Desktop/CellML/xulrunner-sdk/lib
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${MOZJS_LIB})
-endif(UNIX)
-	find_path(XULRUNNER_INCLUDE_DIR
-		NAMES xpcom/nsError.h 
-		PATHS /usr/include /usr/local/include 
-                          C:/Users/Lucian/Desktop/CellML/xulrunner-sdk/include
-			  ${CMAKE_SOURCE_DIR}/include 
-			  ${CMAKE_SOURCE_DIR}/dependencies/include
-			  )
-        file(GLOB XULRUNNER_INCLUDE_DIRECTORIES ${XULRUNNER_INCLUDE_DIR} ${XULRUNNER_INCLUDE_DIR}/*/ )
-        file(GLOB XULRUNNER_NOT_INCLUDE_DIRECTORIES ${XULRUNNER_INCLUDE_DIR} ${XULRUNNER_INCLUDE_DIR}/*.* )
-        
-        list(REMOVE_ITEM XULRUNNER_INCLUDE_DIRECTORIES ${XULRUNNER_NOT_INCLUDE_DIRECTORIES})
-
         #CellML:
 	find_library(CELLML_API 
 		NAMES cellml.lib cellml
@@ -194,32 +131,16 @@ endif(UNIX)
 			  ${CMAKE_SOURCE_DIR}/include 
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
 			  )
-        set(CELLML_INCLUDE_DIRECTORIES ${CELLML_API_ROOT_DIR} ${CELLML_API_ROOT_DIR}/sources ${CELLML_API_ROOT_DIR}/sources/cellml/ ${CELLML_API_ROOT_DIR}/interfaces ${CELLML_API_ROOT_DIR}/simple_interface_generators/glue/xpcom)
-
-        #OpenCell:
-	find_library(OPENCELL_DATACOLLECTOR_LIB 
-		NAMES DataCollector.lib DataCollector
-		PATHS /usr/lib /usr/local/lib
-                          C:/Users/Lucian/Desktop/CellML/cellml-opencell-0.8/libs/
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${OPENCELL_DATACOLLECTOR_LIB})
-
-        find_path(OPENCELL_ROOT_DIR
-		NAMES stubs/IDataCollector.h
-		PATHS /usr/include /usr/local/include 
-                          C:/Users/Lucian/Desktop/CellML/cellml-opencell/
-			  ${CMAKE_SOURCE_DIR}/include 
-			  ${CMAKE_SOURCE_DIR}/dependencies/include
-			  )
-        set(OPENCELL_INCLUDE_DIRECTORIES ${OPENCELL_ROOT_DIR}/DataCollector ${OPENCELL_ROOT_DIR}/stubs)
-
+        set(CELLML_INCLUDE_DIRECTORIES ${CELLML_API_ROOT_DIR} ${CELLML_API_ROOT_DIR}/sources ${CELLML_API_ROOT_DIR}/sources/cellml/ ${CELLML_API_ROOT_DIR}/interfaces ${CELLML_API_ROOT_DIR}/TeLICeMS/sources/ ${CELLML_API_ROOT_DIR}/CUSES/sources/ ${CELLML_API_ROOT_DIR}/CeVAS/sources/ )
 
         set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ALL_CELLML_LIBS} )
-        INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${XULRUNNER_INCLUDE_DIRECTORIES} ${CELLML_INCLUDE_DIRECTORIES} ${OPENCELL_INCLUDE_DIRECTORIES})
-        add_definitions( -fshort-wchar )
-else()
+        INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CELLML_INCLUDE_DIRECTORIES} )
+#        if (UNIX)
+#          add_definitions( -fshort-wchar )
+#        else()
+#          add_definitions( /Zc:wchar_t- )
+#        endif()
+else(WITH_CELLML)
   add_definitions( -DNCELLML )
 
 endif(WITH_CELLML)

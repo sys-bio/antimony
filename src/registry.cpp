@@ -20,13 +20,6 @@ extern std::vector<int> yylloc_last_lines;
 
 using namespace std;
 
-#ifndef NCELLML
-#include "cellmlx.h"
-#include <nsXPCOM.h>
-#include <nsIComponentManager.h>
-#include <nsComponentManagerUtils.h>
-#endif
-
 Registry::Registry()
   : m_oldinputs(),
     m_files(),
@@ -51,37 +44,12 @@ Registry::Registry()
   string main = MAINMODULE;
   NewCurrentModule(&main);
   SetupFunctions();
-
-#ifndef NCELLML
-  nsresult rv;
-  // Initialize XPCOM and check for failure ...
-  rv = NS_InitXPCOM2(nsnull, nsnull, nsnull);
-  if ( NS_FAILED(rv) )
-  {
-    printf("Calling NS_InitXPCOM returns [%x].\n", rv);
-    return;
-  }
-
-  nsCOMPtr<cellml_apiICellMLBootstrap> foo = do_CreateInstance(CELLML_BOOTSTRAP_CONTRACTID, &rv);
-  if ( NS_FAILED(rv) )
-  {
-    ostringstream warning;
-    warning << "Creating a cellml bootstrap instance returns " << rv << ":  your working directory must be the one with the 'components/' subdirectory.  I know, right?  Sigh.";
-    g_registry.AddWarning(warning.str());
-    return;
-  }
-
-#endif
 }
 
 Registry::~Registry()
 {
   FreeVariables();
   FreeFormulas();
-
-#ifndef NCELLML
-  NS_ShutdownXPCOM(nsnull);
-#endif
 }
 
 void Registry::ClearModules()
@@ -233,36 +201,44 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
 #ifndef NCELLML
 
 #include "cellmlx.h"
+#include <IfaceCeVAS.hxx>
+#include <CeVASBootstrap.hpp>
 
-#define CEVAS_BOOTSTRAP_CONTRACTID "@cellml.org/cevas-bootstrap;1"
-
-bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
+bool Registry::LoadCellML(iface::cellml_api::Model* model)
 {
   if (model == NULL) return true;
-  nsresult rv;
-  nsString cellmltext;
-  string cellmlname;
-  nsCOMPtr<cellml_servicesICeVASBootstrap> cevasboot(do_GetService(CEVAS_BOOTSTRAP_CONTRACTID, &rv));
-  NS_ENSURE_SUCCESS(rv, true);
+  RETURN_INTO_OBJREF(cevasboot, iface::cellml_services::CeVASBootstrap,
+                     CreateCeVASBootstrap());
 
-  nsCOMPtr<cellml_servicesICeVAS> cevas;
-  rv = cevasboot->CreateCeVASForModel(model, getter_AddRefs(cevas));
-  if (NS_FAILED(rv)) {
-    nsString error;
-    cevas->GetModelError(error);
-    SetError("Error reading CellML model:  " + ToThinString(error.get()));
+  ObjRef<iface::cellml_services::CeVAS> cevas;
+  try {
+    cevas = already_AddRefd<iface::cellml_services::CeVAS>
+      (cevasboot->createCeVASForModel(model));
+  }
+  catch (...){
     return true;
   }
-  nsCOMPtr<cellml_apiICellMLComponentIterator> cmpi;
-  rv = cevas->IterateRelevantComponents(getter_AddRefs(cmpi));
-  nsCOMPtr<cellml_apiICellMLComponent> component;
-  rv = cmpi->NextComponent(getter_AddRefs(component));
+
+  RETURN_INTO_WSTRING(error, cevas->modelError());
+  if (error != L"") {
+    RETURN_INTO_WSTRING(error, cevas->modelError());
+    std::string error8(makeUTF8(error));
+    SetError("Error reading CellML model:  " + error8);
+    return true;
+  }
+
+  RETURN_INTO_OBJREF(cmpi, iface::cellml_api::CellMLComponentIterator,
+                     cevas->iterateRelevantComponents());
   int numcomps=0;
-  vector<nsCOMPtr<cellml_apiICellMLComponent> > top_components;
-  while (component != NULL) {
+  vector<iface::cellml_api::CellMLComponent*> top_components;
+  while (true) {
+    RETURN_INTO_OBJREF(component, iface::cellml_api::CellMLComponent, cmpi->nextComponent());
+    if (component == NULL)
+      break;
+
     numcomps++;
     //Each CellML 'component' becomes its own Antimony 'module'
-    cellmlname = GetModuleNameFrom(component);
+    std::string cellmlname = GetModuleNameFrom(component);
     FixName(cellmlname);
     Module* mod = GetModule(cellmlname);
     if (mod == NULL) {
@@ -275,22 +251,23 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
     else {
       //It's either a multiply-imported component, or a component with an identical name.
     }
-    nsCOMPtr<cellml_apiICellMLComponent> parent;
-    rv = component->GetEncapsulationParent(getter_AddRefs(parent));
+    RETURN_INTO_OBJREF(parent, iface::cellml_api::CellMLComponent, component->encapsulationParent());
     if (parent == NULL) {
+      component->add_ref();
       top_components.push_back(component);
     }
-    rv = cmpi->NextComponent(getter_AddRefs(component));
   }
   if (numcomps == 0) {
     SetError("No components found in this CellML model.");
     return true;
   }
 
+  std::string cellmlname;
   //Now loop through all the components again, this time setting up 'encapsulation' for the submodules
   for (size_t topnum = 0; topnum<top_components.size(); topnum++) {
-    component = top_components[topnum];
-    rv = component->GetName(cellmltext);
+    iface::cellml_api::CellMLComponent* component = top_components[topnum];
+    // RETURN_INTO_WSTRING(wcellmltext, component->name());
+    // std::string cellmltext(makeUTF8(wcellmltext));
     cellmlname = GetModuleNameFrom(component);
     Module* mod = GetModule(cellmlname);
     assert(mod != NULL);
@@ -298,34 +275,35 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
   }
 
   //Now create a master model that contains only contain the top_components.
-  rv = model->GetName(cellmltext);
-  cellmlname = ToThinString(cellmltext.get());
-  FixName(cellmlname);
-  cellmlname += "__" MAINMODULE;
+  RETURN_INTO_WSTRING(wmodname, model->name());
+  std::string modname(makeUTF8(wmodname));
+  FixName(modname);
+  modname += "__" MAINMODULE;
   while (NewCurrentModule(&cellmlname)) {
     //Failure - duplicated name
-    cellmlname += "_";
+    modname += "_";
   }
   CurrentModule()->LoadCellMLModel(model, top_components);
+  for (std::vector<iface::cellml_api::CellMLComponent*>::iterator i = top_components.begin();
+       i != top_components.end(); i++)
+    (*i)->release_ref();
 
   //Now intercolate the connections into the modules.  First, get the connections from the imports:
-  nsCOMPtr<cellml_apiICellMLImportSet> imports;
-  rv = model->GetImports(getter_AddRefs(imports));
-  nsCOMPtr<cellml_apiICellMLImportIterator> impi;
-  rv = imports->IterateImports(getter_AddRefs(impi));
-  nsCOMPtr<cellml_apiICellMLImport> import;
-  rv = impi->NextImport(getter_AddRefs(import));
-  while (import != NULL) {
-    nsCOMPtr<cellml_apiIConnectionSet> impconnections;
-    rv = import->GetImportedConnections(getter_AddRefs(impconnections));
-    nsCOMPtr<cellml_apiIModel> impmodel;
-    rv = import->GetImportedModel(getter_AddRefs(impmodel));
+  RETURN_INTO_OBJREF(imports, iface::cellml_api::CellMLImportSet, model->imports());
+  RETURN_INTO_OBJREF(impi, iface::cellml_api::CellMLImportIterator, imports->iterateImports());
+
+  while (true) {
+    RETURN_INTO_OBJREF(import, iface::cellml_api::CellMLImport, impi->nextImport());
+    if (import == NULL)
+      break;
+
+    RETURN_INTO_OBJREF(impconnections, iface::cellml_api::ConnectionSet, import->importedConnections());
+    // RETURN_INTO_OBJREF(impmodel, iface::cellml_api::ConnectionSet, import->importedModel());
     LoadConnections(impconnections);
-    rv = impi->NextImport(getter_AddRefs(import));
   }
+
   //And then get the main model's connections
-  nsCOMPtr<cellml_apiIConnectionSet> connections;
-  rv = model->GetConnections(getter_AddRefs(connections));
+  RETURN_INTO_OBJREF(connections, iface::cellml_api::ConnectionSet, model->connections());
   LoadConnections(connections);
 
   CreateLocalVariablesForSubmodelInterfaceIfNeeded();
@@ -336,39 +314,34 @@ bool Registry::LoadCellML(nsCOMPtr<cellml_apiIModel> model)
   return false; //success
 }
 
-bool Registry::LoadConnections(nsCOMPtr<cellml_apiIConnectionSet> connections)
+bool Registry::LoadConnections(iface::cellml_api::ConnectionSet* connections)
 {
-  nsString cellmltext;
-  string cellmlname;
-  nsresult rv;
+  RETURN_INTO_OBJREF(coni, iface::cellml_api::ConnectionIterator, connections->iterateConnections());
 
-  nsCOMPtr<cellml_apiIConnectionIterator> coni;
-  rv = connections->IterateConnections(getter_AddRefs(coni));
-  nsCOMPtr<cellml_apiIConnection> connection;
-  rv = coni->NextConnection(getter_AddRefs(connection));
   bool somewrong = false;
-  while (connection != NULL) {
+  while (true) {
+    RETURN_INTO_OBJREF(connection, iface::cellml_api::Connection, coni->nextConnection());
+    if (connection == NULL)
+      break;
+
     if (SynchronizeCellMLConnection(connection)) {
       somewrong = true;
     }
-    rv = coni->NextConnection(getter_AddRefs(connection));
   }
   return somewrong;
 }
 
-bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> connection)
+bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connection)
 {
-  nsString cellmltext;
-  string cellmlname;
-  nsresult rv;
+  //used when the encapsulation parent is null (in GetNameAccordingToEncapsulationParent)
+  RETURN_INTO_OBJREF(topmodel, iface::cellml_api::Model, connection->modelElement());
 
-  nsCOMPtr<cellml_apiIModel> topmodel; //used when the encapsulation parent is null (in GetNameAccordingToEncapsulationParent)
-  rv = connection->GetModelElement(getter_AddRefs(topmodel));
-  nsCOMPtr<cellml_apiICellMLElement> parentel;
-  rv = topmodel->GetParentElement(getter_AddRefs(parentel));
-  while (parentel != NULL) {
-    rv = parentel->GetModelElement(getter_AddRefs(topmodel));
-    rv = topmodel->GetParentElement(getter_AddRefs(parentel));
+  RETURN_INTO_OBJREF(parentel, iface::cellml_api::CellMLElement, topmodel->parentElement());
+  while (parentel) {
+    topmodel = already_AddRefd<iface::cellml_api::Model>
+      (parentel->modelElement());
+    parentel = already_AddRefd<iface::cellml_api::CellMLElement>
+      (topmodel->parentElement());
   }
   //rv = topmodel->GetName(cellmltext);
   //cout << "Top model: " << ToThinString(cellmltext.get()) << endl;
@@ -376,31 +349,28 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
   //First we get the list of the component and any/all encapsulation parents
   vector<string> comp1moduleparents, comp2moduleparents;
   vector<string> comp1modulenames, comp2modulenames;
-  nsCOMPtr<cellml_apiIMapComponents> compmap;
-  rv = connection->GetComponentMapping(getter_AddRefs(compmap));
-  nsCOMPtr<cellml_apiICellMLComponent> component;
+  RETURN_INTO_OBJREF(compmap, iface::cellml_api::MapComponents, connection->componentMapping());
 
   //First
-  rv = compmap->GetFirstComponent(getter_AddRefs(component));
-  while (component != NULL) {
+  RETURN_INTO_OBJREF(component, iface::cellml_api::CellMLComponent, compmap->firstComponent());
+  while (component) {
     string modname = GetModuleNameFrom(component);
     comp1moduleparents.insert(comp1moduleparents.begin(), modname);
     modname = GetNameAccordingToEncapsulationParent(component, topmodel);
     FixName(modname);
     comp1modulenames.insert(comp1modulenames.begin(), modname);
-    rv = component->GetEncapsulationParent(getter_AddRefs(component));
+    component = already_AddRefd<iface::cellml_api::CellMLComponent>(component->encapsulationParent());
   }
   comp1moduleparents.insert(comp1moduleparents.begin(), CurrentModule()->GetModuleName());
 
-  //Second
-  rv = compmap->GetSecondComponent(getter_AddRefs(component));
-  while (component != NULL) {
+  component = already_AddRefd<iface::cellml_api::CellMLComponent>(compmap->firstComponent());
+  while (component) {
     string modname = GetModuleNameFrom(component);
     comp2moduleparents.insert(comp2moduleparents.begin(), modname);
     modname = GetNameAccordingToEncapsulationParent(component, topmodel);
     FixName(modname);
-    comp2modulenames.insert(comp2modulenames.begin(), modname);
-    rv = component->GetEncapsulationParent(getter_AddRefs(component));
+    comp1modulenames.insert(comp2modulenames.begin(), modname);
+    component = already_AddRefd<iface::cellml_api::CellMLComponent>(component->encapsulationParent());
   }
   comp2moduleparents.insert(comp2moduleparents.begin(), CurrentModule()->GetModuleName());
 
@@ -430,30 +400,33 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
   // cout << "second compartment submodule name: " << ToStringFromVecDelimitedBy(comp2modulenames, '.') << endl;
 
   //And we have the full names of the submodules whose variables need to be synchronized.  But there might be multiple variables, so we go through them all:
-  nsCOMPtr<cellml_apiIMapVariablesSet> mvs;
-  rv = connection->GetVariableMappings(getter_AddRefs(mvs));
-  nsCOMPtr<cellml_apiIMapVariablesIterator> mvsi;
-  rv = mvs->IterateMapVariables(getter_AddRefs(mvsi));
-  nsCOMPtr<cellml_apiIMapVariables> mapvars;
-  rv = mvsi->NextMapVariable(getter_AddRefs(mapvars));
+  RETURN_INTO_OBJREF(mvs, iface::cellml_api::MapVariablesSet, connection->variableMappings());
+  RETURN_INTO_OBJREF(mvsi, iface::cellml_api::MapVariablesIterator, mvs->iterateMapVariables());
+
   bool somefalse = false;
-  while (mapvars != NULL) {
-    rv = mapvars->GetFirstVariableName(cellmltext);
-    cellmlname = ToThinString(cellmltext.get());
-    FixName(cellmlname);
+  while (true) {
+    RETURN_INTO_OBJREF(mapvars, iface::cellml_api::MapVariables, mvsi->nextMapVariable());
+    if (mapvars == NULL)
+      break;
+
+    RETURN_INTO_WSTRING(wfirstVarName, mapvars->firstVariableName());
+    std::string firstVarName(makeUTF8(wfirstVarName));
+    FixName(firstVarName);
     vector<string> fullvarname = comp1modulenames;
-    fullvarname.push_back(cellmlname);
+    fullvarname.push_back(firstVarName);
     Variable* firstvar = topmod->GetVariable(fullvarname);
     assert(firstvar != NULL);
     firstvar = firstvar->GetSameVariable();
-    rv = mapvars->GetSecondVariableName(cellmltext);
-    cellmlname = ToThinString(cellmltext.get());
-    FixName(cellmlname);
+
+    RETURN_INTO_WSTRING(wsecondVarName, mapvars->secondVariableName());
+    std::string secondVarName(makeUTF8(wsecondVarName));
+    FixName(secondVarName);
     fullvarname = comp2modulenames;
-    fullvarname.push_back(cellmlname);
+    fullvarname.push_back(secondVarName);
     Variable* secondvar = topmod->GetVariable(fullvarname);
     assert(secondvar != NULL);
     secondvar = secondvar->GetSameVariable();
+
     //Now we create a local name for the variables to be synchronized if one doesn't already exist.
     vector<string> firstvarname = firstvar->GetName();
     vector<string> secondvarname = secondvar->GetName();
@@ -483,7 +456,6 @@ bool Registry::SynchronizeCellMLConnection(nsCOMPtr<cellml_apiIConnection> conne
         somefalse = true;
       }
     }
-    rv = mvsi->NextMapVariable(getter_AddRefs(mapvars));
   }
   return somefalse;
 }  

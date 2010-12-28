@@ -2,45 +2,23 @@
 #define CELLMLX_H
 
 #ifndef NCELLML
-#include "MathMLInputServices.h"
-#include "ICellMLInputServices.h"
-#include "ICeVAS.h"
-#include "IAnnoTools.h"
-#include <nsCOMArray.h>
-#include <nsCOMPtr.h>
-#include <nsComponentManagerUtils.h>
-#include <nsDebug.h>
-#include <nsIID.h>
-#include <nsServiceManagerUtils.h>
-#include <nsStringAPI.h>
-#include <prprf.h>
-
-namespace iface
-{
-  namespace XPCOM
-  {
-    class IObject;
-  };
-};
-#include <IWrappedPCM.h>
-
-
+#include "IfaceCellML_APISPEC.hxx"
+//#include "IfaceTeLICeMS.hxx"
+#include "Utilities.hxx"
 
 #include <string>
 #include <vector>
 
+std::wstring makeUTF16(const std::string& aStr);
+std::string makeUTF8(const std::wstring& aStr);
+std::string GetNameAccordingToEncapsulationParent(iface::cellml_api::CellMLComponent* component, iface::cellml_api::Model* topmodel);
+std::string GetModuleNameFrom(iface::cellml_api::CellMLComponent* component);
+std::string GetModuleNameFrom(iface::cellml_api::ImportComponent* impcomponent);
+iface::cellml_api::CellMLComponent* GetCellMLComponentOf(iface::cellml_api::CellMLVariable* var);
 
-std::string ToThinString(const PRUnichar* in);
-nsString ToNSString(const std::string& in);
-nsCString ToNSCString(const std::string& in);
 std::string CellMLPiecewiseToSBML(const std::string& in);
 
-std::string GetModuleNameFrom(nsCOMPtr<cellml_apiICellMLComponent> component);
-std::string GetModuleNameFrom(nsCOMPtr<cellml_apiIImportComponent> impcomponent);
-std::string GetNameAccordingToEncapsulationParent(nsCOMPtr<cellml_apiICellMLComponent> component, nsCOMPtr<cellml_apiIModel> topmodel);
-nsCOMPtr<cellml_apiICellMLComponent> GetCellMLComponentOf(nsCOMPtr<cellml_apiICellMLVariable> var);
-nsCOMPtr<cellml_apiIConnection> GetOrCreateConnectionFor(nsCOMPtr<cellml_apiICellMLComponent>comp1, nsCOMPtr<cellml_apiICellMLComponent>comp2, nsCOMPtr<cellml_apiIModel> model);
-
+iface::cellml_api::Connection* GetOrCreateConnectionFor(iface::cellml_api::CellMLComponent* comp1, iface::cellml_api::CellMLComponent* comp2, iface::cellml_api::Model* model);
 
 #endif //NCELLML
 

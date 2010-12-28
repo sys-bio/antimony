@@ -1,27 +1,21 @@
 #ifndef NCELLML
 
 #include "cellmlx.h"
-#include "MathMLInputServices.h"
-#include "ICellMLInputServices.h"
-#include "IAnnoTools.h"
-#include <nsStringAPI.h>
-#include <nsDebug.h>
-#include <nsCOMPtr.h>
-#include <prtypes.h>
-#include <nsServiceManagerUtils.h>
+//#include <IfaceTeLICeMS.hxx>
+#include <TeLICeMService.hpp>
+#include <IfaceAnnoTools.hxx>
+#include <IfaceCUSES.hxx>
+#include <CUSESBootstrap.hpp>
 
-#define CELLML_BOOTSTRAP_CONTRACTID "@cellml.org/cellml-bootstrap;1"
-
-void Module::LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model, vector<nsCOMPtr<cellml_apiICellMLComponent> > top_components)
+void Module::LoadCellMLModel(iface::cellml_api::Model* model, std::vector<iface::cellml_api::CellMLComponent*> top_components)
 {
   assert(m_cellmlcomponent==NULL);
   if (m_cellmlmodel != NULL) {
-    assert(false); 
+    assert(false);
   }
   m_cellmlmodel = model;
 
   //Translate
-  nsString cellmltext;
 
   //Components become sub-modules
   for (size_t comp=0; comp<top_components.size(); comp++) {
@@ -39,114 +33,100 @@ void Module::LoadCellMLModel(nsCOMPtr<cellml_apiIModel> model, vector<nsCOMPtr<c
   FixNames();  //In case the name of one of the modules is something like 'time'.
 }
 
-bool HasTimeUnits(nsCOMPtr<cellml_apiICellMLVariable> cmlvar) {
-  nsresult rv;
-  nsString cellmltext;
-  rv = cmlvar->GetUnitsName(cellmltext);
-  if (cellmltext == ToNSString("second")) return true;
-  nsCOMPtr<cellml_apiIUnits> units;
-  rv = cmlvar->GetUnitsElement(getter_AddRefs(units));
-  if (units==NULL) return false;
-  nsCOMPtr<cellml_apiIUnitSet> unitset;
-  rv = units->GetUnitCollection(getter_AddRefs(unitset));
-  nsCOMPtr<cellml_apiIUnitIterator> uniti;
-  rv = unitset->IterateUnits(getter_AddRefs(uniti));
-  nsCOMPtr<cellml_apiIUnit> unit;
-  rv = uniti->NextUnit(getter_AddRefs(unit));
-  while (unit != NULL) {
-    rv = unit->GetUnits(cellmltext);
-    if (cellmltext == ToNSString("second")) return true;
-    rv = uniti->NextUnit(getter_AddRefs(unit));
-  }
-  return false;
+bool HasTimeUnits(iface::cellml_api::CellMLVariable* cmlvar) {
+  RETURN_INTO_WSTRING(unitsName, cmlvar->unitsName());
+
+  // Shortcut for a common case...
+  if (unitsName == L"second")
+    return true;
+
+  // Otherwise, use CUSES to resolve the units. Optimisation note: It would be
+  // better to make the CUSES once, and cache it against the model.
+  RETURN_INTO_OBJREF(cb, iface::cellml_services::CUSESBootstrap, CreateCUSESBootstrap());
+  RETURN_INTO_OBJREF(mod, iface::cellml_api::Model, cmlvar->modelElement());
+  RETURN_INTO_OBJREF(cuses, iface::cellml_services::CUSES, cb->createCUSESForModel(mod, false));
+
+  RETURN_INTO_OBJREF(cur, iface::cellml_services::CanonicalUnitRepresentation,
+                     cuses->getUnitsByName(cmlvar, unitsName.c_str()));
+  if (cur->length() != 1)
+    return false;
+  RETURN_INTO_OBJREF(bui, iface::cellml_services::BaseUnitInstance, cur->fetchBaseUnit(0));
+  RETURN_INTO_OBJREF(bu, iface::cellml_services::BaseUnit, bui->unit());
+  RETURN_INTO_WSTRING(uname, bu->name());
+  return (uname == L"second");
 }
 
-void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
+void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
 {
-  nsString cellmltext;
-  string cellmlname;
-  nsresult rv;
-
   assert(m_cellmlmodel==NULL);
-  if (m_cellmlcomponent != NULL) {
-    assert(false);
-  }
+  assert(m_cellmlcomponent != NULL);
+
   //Variables
-  nsCOMPtr<cellml_apiICellMLVariableSet> varset;
-  rv = component->GetVariables(getter_AddRefs(varset));
-  nsCOMPtr<cellml_apiICellMLVariableIterator> vsi;
-  rv = varset->IterateVariables(getter_AddRefs(vsi));
-  nsCOMPtr<cellml_apiICellMLVariable> cmlvar;
-  rv = vsi->NextVariable(getter_AddRefs(cmlvar));
-  while (cmlvar != NULL) {
-    rv = cmlvar->GetName(cellmltext);
-    cellmlname = ToThinString(cellmltext.get());
-    Variable* antvar = AddOrFindVariable(&cellmlname);
+  RETURN_INTO_OBJREF(varset, iface::cellml_api::CellMLVariableSet, component->variables());
+  RETURN_INTO_OBJREF(vsi, iface::cellml_api::CellMLVariableIterator, varset->iterateVariables());
+
+  while (true) {
+    RETURN_INTO_OBJREF(cmlvar, iface::cellml_api::CellMLVariable, vsi->nextVariable());
+    if (cmlvar == NULL)
+      break;
+
+    RETURN_INTO_WSTRING(wvarName, cmlvar->name());
+    std::string varName(makeUTF8(wvarName));
+    Variable* antvar = AddOrFindVariable(&varName);
+
     //antvar->SetIsConst(false); //This forces it to be output in the Antimony script even if it's not otherwise used.
-    rv = cmlvar->GetInitialValue(cellmltext);
-    cellmlname = ToThinString(cellmltext.get());
-    if (cellmlname != "") {
+    RETURN_INTO_WSTRING(ivStr, cmlvar->initialValue());
+    if (ivStr != L"") {
       Formula* formula = g_registry.NewBlankFormula();
-      setFormulaWithString(cellmlname, formula, this);
+      std::string ivStr8(makeUTF8(ivStr));
+      setFormulaWithString(ivStr8, formula, this);
       antvar->SetFormula(formula);
     }
+
     //Put it in the module interface if it has one:
-    PRUint32 vi;
-    rv = cmlvar->GetPublicInterface(&vi);
-    if (vi != 2) {
+    if (cmlvar->publicInterface() != iface::cellml_api::INTERFACE_NONE ||
+        cmlvar->privateInterface() != iface::cellml_api::INTERFACE_NONE) {
       AddVariableToExportList(antvar);
     }
-    else {
-      rv = cmlvar->GetPrivateInterface(&vi);
-      if (vi != 2) {
-        AddVariableToExportList(antvar);
-      }
-    }
-    
-    rv = vsi->NextVariable(getter_AddRefs(cmlvar));
   }
 
   //Reactions
-  nsCOMPtr<cellml_apiIReactionSet> rxnset;
-  rv = component->GetReactions(getter_AddRefs(rxnset));
-  nsCOMPtr<cellml_apiIReactionIterator> rxni;
-  rv = rxnset->IterateReactions(getter_AddRefs(rxni));
-  nsCOMPtr<cellml_apiIReaction> rxn;
-  rv = rxni->NextReaction(getter_AddRefs(rxn));
-  while (rxn != NULL) {
+  RETURN_INTO_OBJREF(rxnset, iface::cellml_api::ReactionSet, component->reactions());
+  RETURN_INTO_OBJREF(rxni, iface::cellml_api::ReactionIterator, rxnset->iterateReactions());
+  while (true) {
+    RETURN_INTO_OBJREF(rxn, iface::cellml_api::Reaction, rxni->nextReaction());
+    if (rxn == NULL)
+      break;
+
     //parse the reaction;
     //reactions don't have names, so make up a new one for Antimony
     //LS DEBUG:  stopped coding here for now...
     //Variable* rxnvar = AddOrFindVariable(&cellmlname);
-    rv = rxni->NextReaction(getter_AddRefs(rxn));
   }
   
   //Math
-  nsCOMPtr<cellml_apiIMathContainer> mc(do_QueryInterface(component));
-  nsCOMPtr<cellml_apiIMathList> mathlist;
-  rv = mc->GetMath(getter_AddRefs(mathlist));
-  nsCOMPtr<cellml_apiIMathMLElementIterator> mli;
-  rv = mathlist->Iterate(getter_AddRefs(mli));
-  nsCOMPtr<mathml_domIMathMLElement> mathel;
-  rv = mli->Next(getter_AddRefs(mathel));
-  while(mathel != NULL) {
-    nsCOMPtr<domINodeList> nodes;
-    rv = mathel->GetChildNodes(getter_AddRefs(nodes));
-    PRUint32 length;
-    rv = nodes->GetLength(&length);
-    for (PRUint32 i=0; i<length; i++) {
-      nsCOMPtr<domINode> node;
-      rv = nodes->Item(i, getter_AddRefs(node));
-      nsCOMPtr<mathml_domIMathMLApplyElement> input(do_QueryInterface(node, &rv));
+  RETURN_INTO_OBJREF(mathlist, iface::cellml_api::MathList, component->math());
+  RETURN_INTO_OBJREF(mli, iface::cellml_api::MathMLElementIterator, mathlist->iterate());
+
+  RETURN_INTO_OBJREF(ts, iface::cellml_services::TeLICeMService, CreateTeLICeMService());
+
+  while (true)
+  {
+    RETURN_INTO_OBJREF(mathel, iface::mathml_dom::MathMLElement, mli->next());
+    if (mathel == NULL)
+      break;
+
+    RETURN_INTO_OBJREF(nodes, iface::dom::NodeList, mathel->childNodes());
+    uint32_t length = nodes->length();
+    for (uint32_t i=0; i<length; i++) {
+      RETURN_INTO_OBJREF(node, iface::dom::Node, nodes->item(i));
+      DECLARE_QUERY_INTERFACE_OBJREF(input, node, mathml_dom::MathMLApplyElement);
       if (input != NULL) {
-        nsCString indent;
-        indent = "";
-        nsCString cinfix;
-        MathMLInputServices mmlis;
-        rv = mmlis.MathMLToInputFormat(input, NULL, indent, cinfix);
-        string infix;
-        infix = cinfix.get();
-        //cout << infix << endl;
+        RETURN_INTO_WSTRING(wmath, ts->showMaths(input));
+        std::string infix(makeUTF8(wmath));
+
+        cout << infix << endl;
+
         string variable, equation;
         variable.assign(infix, 0, infix.find('='));
         equation.assign(infix, infix.find('=')+1, infix.size());
@@ -167,7 +147,7 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
         while ((idpos = equation.find("{base:")) != string::npos) {
           equation.erase(idpos, equation.find("}", idpos)-idpos+1);
         }
-        //Remove '$'--it's apparantly the way that cellml notes variables that are also function names.
+        //Remove '$'--it's apparantly the way that TeLICeM notes variables that are also function names.
         // (We'll fix the name later ourselves with 'FixNames')
         while ((idpos = equation.find("$")) != string::npos) {
           equation.erase(idpos, 1);
@@ -210,11 +190,13 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
           size_t timepos = variable.find(")/d(")+4;
           string maybetime;
           maybetime.assign(variable, timepos, variable.find(')', timepos)-timepos);
-          cellmltext = ToNSString(maybetime);
-          rv = varset->GetVariable(cellmltext, getter_AddRefs(cmlvar));
+          std::wstring wtimevar(makeUTF16(maybetime));
+          RETURN_INTO_OBJREF(cmlvar, iface::cellml_api::CellMLVariable,
+                             varset->getVariable(wtimevar.c_str()));
           if (cmlvar && !HasTimeUnits(cmlvar)) {
-            rv = cmlvar->GetUnitsName(cellmltext);
-            string warning = "The units of \"" + maybetime + "\" ('" + ToThinString(cellmltext.get()) + "') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.";
+            RETURN_INTO_WSTRING(wuname, cmlvar->unitsName());
+            std::string uname(makeUTF8(wuname));
+            string warning = "The units of \"" + maybetime + "\" ('" + uname + "') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.";
             g_registry.AddWarning(warning);
             continue;
           }
@@ -252,7 +234,6 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
         //string warning = "Child node " +  i + " of 'math' element not an 'apply' element";
       }
     }
-    rv = mli->Next(getter_AddRefs(mathel));
   }
 
   //Containers (?)
@@ -261,25 +242,25 @@ void Module::LoadCellMLComponent(nsCOMPtr<cellml_apiICellMLComponent> component)
   FixNames();
 }
 
-void Module::SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> component) {
+void Module::SetCellMLChildrenAsSubmodules(iface::cellml_api::CellMLComponent* component) {
   //Iterate over 'encapsulation' children and make them submodules.
-  nsString cellmltext;
-  string cellmlname;
-  nsresult rv;
-  nsCOMPtr<cellml_apiICellMLComponentSet> children;
-  rv = component->GetEncapsulationChildren(getter_AddRefs(children));
-  nsCOMPtr<cellml_apiICellMLComponentIterator> childi;
-  nsCOMPtr<cellml_apiICellMLComponent> child;
-  
-  rv = children->IterateComponents(getter_AddRefs(childi));
-  rv = childi->NextComponent(getter_AddRefs(child));
-  while (child != NULL) {
-    cellmlname = GetNameAccordingToEncapsulationParent(child, m_cellmlmodel);
+  RETURN_INTO_OBJREF(children, iface::cellml_api::CellMLComponentSet, component->encapsulationChildren());
+  RETURN_INTO_OBJREF(childi, iface::cellml_api::CellMLComponentIterator, children->iterateComponents());
+
+  while (true) {
+    RETURN_INTO_OBJREF(child, iface::cellml_api::CellMLComponent,
+                       childi->nextComponent());
+    if (child != NULL)
+      break;
+
+    std::string cellmlname = GetNameAccordingToEncapsulationParent(child, m_cellmlmodel);
     //rv = child->GetName(cellmltext);
     //cellmlname = ToThinString(cellmltext.get());
     //FixName(cellmlname);
+
     string cellmlmodname = GetModuleNameFrom(child);
     Module* submod = g_registry.GetModule(cellmlmodname);
+
     submod->SetCellMLChildrenAsSubmodules(child); //Recursive!  This is so the submodels are all set up before we copy them.
     vector<string> fullname;
     fullname.push_back(cellmlname);
@@ -287,11 +268,13 @@ void Module::SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> 
     if (foundvar != NULL && !(foundvar->GetType()==varModule && m_childrenadded)) {
       cellmlname = cellmlname + "_mod";
     }
+
     //Save the name, since it's not obvious whether the "_mod" was added or not.
-    nsCString compmodid;
-    nsCOMPtr<IWrappedPCM> cw(do_QueryInterface(child));
-    rv = cw->GetObjid(compmodid);
-    g_registry.m_cellmlnames.insert(make_pair(compmodid.get(), cellmlname)); //Even if we've already added this submodule, each time it's imported, the submodule gets its own component ID, and they all need to go in here.
+    char* id_s = child->objid();
+    std::string compmodid(id_s);
+    free(id_s);
+
+    g_registry.m_cellmlnames.insert(make_pair(compmodid, cellmlname)); //Even if we've already added this submodule, each time it's imported, the submodule gets its own component ID, and they all need to go in here.
     if (!m_childrenadded) {
       Variable* var = AddOrFindVariable(&cellmlname);
       if(var->SetModule(&cellmlmodname)) {
@@ -299,21 +282,20 @@ void Module::SetCellMLChildrenAsSubmodules(nsCOMPtr<cellml_apiICellMLComponent> 
         return;
       }
     }
-    rv = childi->NextComponent(getter_AddRefs(child));
   }
   m_childrenadded = true; //Since this is recursive, we may call some multiply-imported submodules multiple times otherwise.
 }
 
 
-const nsCOMPtr<cellml_apiIModel> Module::GetCellMLModel()
+iface::cellml_api::Model* Module::GetCellMLModel()
 {
   if (m_cellmlmodel==NULL) {
     CreateCellMLModel();
   }
   else {
-    nsString cellmltext;
-    m_cellmlmodel->GetName(cellmltext);
-    if (ToThinString(cellmltext.get()) != m_modulename) {
+    RETURN_INTO_WSTRING(wcellmltext, m_cellmlmodel->name());
+    std::string cellmltext(makeUTF8(wcellmltext));
+    if (cellmltext != m_modulename) {
       CreateCellMLModel();
     }
   }
@@ -454,26 +436,23 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
 
 void Module::CreateCellMLModel()
 {
-  nsresult rv;
-  nsString cellmltext;
-  wstring cellmlwstring;
-
   if (m_cellmlmodel != NULL) {
     if (m_cellmlcomponent != NULL) {
       m_cellmlcomponent = NULL;
     }
   }
 
-  nsCOMPtr<cellml_apiICellMLBootstrap> boot(do_GetService(CELLML_BOOTSTRAP_CONTRACTID, &rv));
-  NS_ENSURE_SUCCESS(rv, );
-  rv = boot->CreateModel(NS_LITERAL_STRING("1.1"), getter_AddRefs(m_cellmlmodel));
-  NS_ENSURE_SUCCESS(rv, );
-  nsCOMPtr<domIDOMImplementation> domi;
-  rv = boot->GetDomImplementation(getter_AddRefs(domi));
-  assert(domi != NULL);
+  RETURN_INTO_OBJREF(boot, iface::cellml_api::CellMLBootstrap, CreateCellMLBootstrap());
+  m_cellmlmodel =
+    already_AddRefd<iface::cellml_api::Model>(boot->createModel(L"1.1"));
 
-  cellmltext = ToNSString(m_modulename);
-  m_cellmlmodel->SetName(cellmltext);
+  DECLARE_QUERY_INTERFACE_OBJREF(cde, m_cellmlmodel, cellml_api::CellMLDOMElement);
+  RETURN_INTO_OBJREF(de, iface::dom::Element, cde->domElement());
+  RETURN_INTO_OBJREF(doc, iface::dom::Document, de->ownerDocument());
+
+  std::wstring wname(makeUTF16(m_modulename));
+  m_cellmlmodel->name(wname.c_str());
+
   //Create units
 
   //Create a component for all local variables
@@ -491,18 +470,16 @@ void Module::CreateCellMLModel()
   //Add in the Math
   for (map<Variable*, vector<Variable*> >::iterator mapiter = m_syncedvars.begin();
        mapiter != m_syncedvars.end(); mapiter++) {
-    AssignMathOnceFor(mapiter->second);
+    AssignMathOnceFor(mapiter->second, doc);
   }
 
   //Add in the ODEs
-  AddODEsTo(m_cellmlmodel, this);
-
-
+  AddODEsTo(m_cellmlmodel, this, doc);
 }
 
-void Module::AddCellMLComponentsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod)
+void Module::AddCellMLComponentsTo(iface::cellml_api::Model* model, Module* topmod)
 {
-  model->AddElement(GetCellMLComponent(topmod));
+  model->addElement(GetCellMLComponent(topmod));
   for (size_t var=0; var<m_variables.size(); var++) { 
     Variable* variable = m_variables[var];
     if (variable->GetType() == varModule) {
@@ -511,7 +488,8 @@ void Module::AddCellMLComponentsTo(nsCOMPtr<cellml_apiIModel> model, Module* top
   }
 }
 
-nsCOMPtr<cellml_apiICellMLComponent> Module::GetCellMLComponent(Module* topmod)
+// Note: doesn't AddRef.
+iface::cellml_api::CellMLComponent* Module::GetCellMLComponent(Module* topmod)
 {
   if (m_cellmlcomponent == NULL) {
     CreateCellMLComponent(topmod);
@@ -521,7 +499,6 @@ nsCOMPtr<cellml_apiICellMLComponent> Module::GetCellMLComponent(Module* topmod)
 
 void Module::CreateCellMLComponent(Module* topmod)
 {
-  nsresult rv;
   //Establish a unique name in CellML, which is a different namespace than Antimony (which can distinguish X.y from Z.y--in CelML, we can no longer call both 'y', and it's awkward to call everything 'X_y', etc.)
   int nindex = static_cast<int>(m_variablename.size())-1;
   string name = m_modulename; //The top component needs a name here, too.
@@ -537,14 +514,16 @@ void Module::CreateCellMLComponent(Module* topmod)
     }
   }
   topmod->AddUnique(m_variablename, name);
-  rv = topmod->m_cellmlmodel->CreateComponent(getter_AddRefs(m_cellmlcomponent));
-  rv = m_cellmlcomponent->SetName(ToNSString(name));
+  m_cellmlcomponent =
+    already_AddRefd<iface::cellml_api::CellMLComponent>(topmod->m_cellmlmodel->createComponent());
+  std::wstring wname(makeUTF16(name));
+  m_cellmlcomponent->name(wname.c_str());
   m_cellmlmodel = topmod->m_cellmlmodel;
 
   map<Variable*, vector<Variable*> >::iterator mapiter;
   
   //Create into m_cellmlcomponent.
-  for (size_t var=0; var<m_variables.size(); var++) { 
+  for (size_t var=0; var<m_variables.size(); var++) {
     Variable* variable = m_variables[var];
     bool used = false;
     switch(variable->GetType()) {
@@ -583,39 +562,49 @@ void Module::CreateCellMLComponent(Module* topmod)
   }
 }
 
-void Module::AddNewVariableToCellML(Variable* variable, nsCOMPtr<cellml_apiIModel> model)
+void Module::AddNewVariableToCellML(Variable* variable, iface::cellml_api::Model* model)
 {
   vector<string> varname = variable->GetName();
   assert(varname.size()>0);
-  nsCOMPtr<cellml_apiICellMLVariable> cmlvar = AddNewVariableToCellML(varname[varname.size()-1], model);
+  RETURN_INTO_OBJREF(cmlvar, iface::cellml_api::CellMLVariable,
+                     AddNewVariableToCellML(varname[varname.size()-1], model));
   variable->SetCellMLVariable(cmlvar);
 }
 
-nsCOMPtr<cellml_apiICellMLVariable> Module::AddNewVariableToCellML(string varname, nsCOMPtr<cellml_apiIModel> model)
+
+iface::cellml_api::CellMLVariable* Module::AddNewVariableToCellML(string varname, iface::cellml_api::Model* model)
 {
+  assert(m_cellmlcomponent != NULL);
   return AddNewVariableToCellML(varname, m_cellmlcomponent, model);
 }
 
-nsCOMPtr<cellml_apiICellMLVariable> Module::AddNewVariableToCellML(string varname, nsCOMPtr<cellml_apiICellMLComponent> component, nsCOMPtr<cellml_apiIModel> model)
+iface::cellml_api::CellMLVariable* Module::AddNewVariableToCellML(string varname, iface::cellml_api::CellMLComponent* component, iface::cellml_api::Model* model)
 {
-  assert(component != NULL);
-  nsresult rv;
-  nsCOMPtr<cellml_apiICellMLVariableSet> cmlvarset;
-  rv = component->GetVariables(getter_AddRefs(cmlvarset));
-  nsCOMPtr<cellml_apiICellMLVariable> cmlvar;
-  nsString cmlvarst = ToNSString(varname);
-  rv = cmlvarset->GetVariable(cmlvarst, getter_AddRefs(cmlvar));
+  RETURN_INTO_OBJREF(cmlvarset, iface::cellml_api::CellMLVariableSet,
+                     component->variables());
+
+  std::wstring cmlvarst(makeUTF16(varname));
+
+  RETURN_INTO_OBJREF(cmlvar, iface::cellml_api::CellMLVariable,
+                     cmlvarset->getVariable(cmlvarst.c_str()));
   size_t varnum = 1;
   while (cmlvar != NULL) {
     //A variable with that name already exists; create a new one instead.
-    cmlvarst = ToNSString(varname + "_" + SizeTToString(varnum));
-    rv = cmlvarset->GetVariable(cmlvarst, getter_AddRefs(cmlvar));
+    cmlvarst = makeUTF16(varname + "_" + SizeTToString(varnum));
+    RETURN_INTO_OBJREF(cmlvar, iface::cellml_api::CellMLVariable,
+                       cmlvarset->getVariable(cmlvarst.c_str()));
     varnum++;
   }
-  rv = model->CreateCellMLVariable(getter_AddRefs(cmlvar));
-  rv = component->AddElement(cmlvar);
-  rv = cmlvar->SetName(cmlvarst);
-  rv = cmlvar->SetUnitsName(ToNSString("dimensionless")); //LS DEBUG:  units
+
+  cmlvar = already_AddRefd<iface::cellml_api::CellMLVariable>
+    (model->createCellMLVariable());
+  component->addElement(cmlvar);
+  cmlvar->name(cmlvarst.c_str());
+  string nodim = "dimensionless";
+  cmlvar->unitsName(makeUTF16(nodim).c_str());
+  //cmlvar->publicInterface(iface::cellml_api::INTERFACE_OUT);
+  //cmlvar->privateInterface(iface::cellml_api::INTERFACE_IN); //LS DEBUG: make sure the new version of this code survives somewhere.
+  cmlvar->add_ref();
   return cmlvar;
 }
 
@@ -657,32 +646,27 @@ string Module::GetCellMLNameOf(vector<string> fullname)
   return m_cellmlnames.find(fullname)->second;
 }
 
-void Module::AddEncapsulationTo(nsCOMPtr<cellml_apiIModel> model)
+void Module::AddEncapsulationTo(iface::cellml_api::Model* model)
 {
-  nsresult rv;
-  nsCOMPtr<cellml_apiIGroup> group;
-  rv = model->CreateGroup(getter_AddRefs(group));
-  rv = model->AddElement(group);
-  nsCOMPtr<cellml_apiIRelationshipRef> relref;
-  rv = model->CreateRelationshipRef(getter_AddRefs(relref));
-  rv = group->AddElement(relref);
-  rv = relref->SetRelationshipName(ToNSString(""), ToNSString("encapsulation"));
+  RETURN_INTO_OBJREF(group, iface::cellml_api::Group, model->createGroup());
+  model->addElement(group);
+  RETURN_INTO_OBJREF(relref, iface::cellml_api::RelationshipRef, model->createRelationshipRef());
+  group->addElement(relref);
+  relref->setRelationshipName(L"", L"encapsulation");
   vector<string> blank;
-  nsCOMPtr<cellml_apiIComponentRef> cr = GetComponentRef(m_cellmlmodel, GetCellMLNameOf(blank), this);
-  rv = group->AddElement(cr);
+  RETURN_INTO_OBJREF(cr, iface::cellml_api::ComponentRef, GetComponentRef(m_cellmlmodel, GetCellMLNameOf(blank), this));
+  group->addElement(cr);
 }
 
-nsCOMPtr<cellml_apiIComponentRef> Module::GetComponentRef(nsCOMPtr<cellml_apiIModel> model, string cmlname, Module* topmod)
+iface::cellml_api::ComponentRef* Module::GetComponentRef(iface::cellml_api::Model* model, std::string cmlname, Module* topmod)
 {
-  nsresult rv;
-  nsCOMPtr<cellml_apiIComponentRef> cr;
-  rv = model->CreateComponentRef(getter_AddRefs(cr));
-  rv = cr->SetComponentName(ToNSString(cmlname));
+  RETURN_INTO_OBJREF(cr, iface::cellml_api::ComponentRef, model->createComponentRef());
+  cr->componentName(makeUTF16(cmlname).c_str());
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
       string subvarcmlname = topmod->GetCellMLNameOf(m_variables[var]->GetName());
-      nsCOMPtr<cellml_apiIComponentRef> subcr = m_variables[var]->GetModule()->GetComponentRef(model, subvarcmlname, topmod);
-      rv = cr->AddElement(subcr);
+      iface::cellml_api::ComponentRef* subcr = m_variables[var]->GetModule()->GetComponentRef(model, subvarcmlname, topmod);
+      cr->addElement(subcr);
     }
   }
   return cr;
@@ -727,40 +711,6 @@ void Module::SetupTree(map<Variable*, Variable*>& tree, Variable* thisvar)
   }
 }
 
-void Module::AddConnectionsTo(vector<Variable*> varlist, const map<Variable*, Variable*>& tree)
-{
-  Variable* canonmod = varlist[0]->GetCanonicalVariable()->GetParentVariable();
-  map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> > mod2linkedcellml;
-  map<Variable*, Variable*> mod2var;
-  set<Variable*> canonparents;
-
-  //This sets up the linkage between modules and the pre-existing Antimony variables, all of which have corresponding CellML variables
-  for (size_t var=0; var<varlist.size(); var++) {
-    Variable* modvar = varlist[var]->GetParentVariable();
-    mod2var.insert(make_pair(modvar, varlist[var]));
-  }
-
-  //This sets up the list of direct parents of the 'canon' module.  This is used when connecting to know how to connect (up, down, or sideways)
-  Variable* cp = GetParent(canonmod, tree);
-  while (cp != NULL) {
-    canonparents.insert(cp);
-    cp = GetParent(cp, tree);
-  }
-  if (canonmod != NULL) {
-    canonparents.insert(NULL); //The top-level module may have a linked variable too
-  }
-  
-  //The first linked CellML variable we have is the canonical one:
-  nsCOMPtr<cellml_apiICellMLVariable> canoncml = GetSyncedVariable(canonmod, mod2var)->GetCellMLVariable();
-  mod2linkedcellml.insert(make_pair(canonmod, canoncml));
-
-  //Now go through the list and connect everything.  As things are linked, mod2linkedcellml is updated so we don't duplicate effort.
-  for (size_t var=0; var<varlist.size(); var++) {
-    Connect(varlist[var]->GetParentVariable(), canonmod, mod2linkedcellml, mod2var, canonparents, tree);
-  }
-  //varlist[var]->GetSameVariable()->SaveCellMLLinkages(mod2linkedcellml, mod2var, canonparents);
-}
-
 Variable* Module::GetParent(Variable* child, const map<Variable*, Variable*>& tree)
 {
   if (child==NULL) return NULL;
@@ -785,9 +735,9 @@ Variable* Module::GetSyncedVariable(Variable* mod, const map<Variable*, Variable
   }
 }
 
-nsCOMPtr<cellml_apiICellMLVariable> Module::GetLinkedCMLVar(Variable* mod, const map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> >& mod2linkedcellml)
+iface::cellml_api::CellMLVariable* Module::GetLinkedCMLVar(Variable* mod, const std::map<Variable*, iface::cellml_api::CellMLVariable* >& mod2linkedcellml)
 {
-  map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> >::const_iterator branch = mod2linkedcellml.find(mod);
+  map<Variable*, iface::cellml_api::CellMLVariable* >::const_iterator branch = mod2linkedcellml.find(mod);
   if (branch==mod2linkedcellml.end()) {
     return NULL;
   }
@@ -796,9 +746,9 @@ nsCOMPtr<cellml_apiICellMLVariable> Module::GetLinkedCMLVar(Variable* mod, const
   }
 }
 
-void Module::Connect(Variable* modin, Variable* canonmod, map<Variable*, nsCOMPtr<cellml_apiICellMLVariable> >& mod2linkedcellml, const map<Variable*, Variable*>& mod2var, const set<Variable*>& canonparents, const map<Variable*, Variable*>& tree)
+void Module::Connect(Variable* modin, Variable* canonmod, std::map<Variable*, iface::cellml_api::CellMLVariable*>& mod2linkedcellml, const std::map<Variable*, Variable*>& mod2var, const std::set<Variable*>& canonparents, const std::map<Variable*, Variable*>& tree)
 {
-  nsCOMPtr<cellml_apiICellMLVariable> cmlin = GetLinkedCMLVar(modin, mod2linkedcellml);
+  iface::cellml_api::CellMLVariable* cmlin = GetLinkedCMLVar(modin, mod2linkedcellml);
   if ( cmlin != NULL) {
     //We already connected this, so we're done!
     return;
@@ -827,7 +777,7 @@ void Module::Connect(Variable* modin, Variable* canonmod, map<Variable*, nsCOMPt
       parent = GetParent(potential_child, tree);
     }
     Connect(potential_child, canonmod, mod2linkedcellml, mod2var, canonparents, tree);
-    nsCOMPtr<cellml_apiICellMLVariable> cmlchild = GetLinkedCMLVar(potential_child, mod2linkedcellml);
+    iface::cellml_api::CellMLVariable* cmlchild = GetLinkedCMLVar(potential_child, mod2linkedcellml);
     assert(cmlchild != NULL);
     AddOneConnection(cmlin, cmlchild, td_DOWN);
   }
@@ -840,14 +790,14 @@ void Module::Connect(Variable* modin, Variable* canonmod, map<Variable*, nsCOMPt
       parent = GetParent(potential_sibling, tree);
     }
     Connect(potential_sibling, canonmod, mod2linkedcellml, mod2var, canonparents, tree);
-    nsCOMPtr<cellml_apiICellMLVariable> cmlsib = GetLinkedCMLVar(potential_sibling, mod2linkedcellml);
+    iface::cellml_api::CellMLVariable* cmlsib = GetLinkedCMLVar(potential_sibling, mod2linkedcellml);
     assert(cmlsib != NULL);
     AddOneConnection(cmlin, cmlsib, td_SIDEWAYS);
   }
   else {
     //Option 3!
     Connect(inparent, canonmod, mod2linkedcellml, mod2var, canonparents, tree);
-    nsCOMPtr<cellml_apiICellMLVariable> cmlparent = GetLinkedCMLVar(inparent, mod2linkedcellml);
+    iface::cellml_api::CellMLVariable* cmlparent = GetLinkedCMLVar(inparent, mod2linkedcellml);
     assert(cmlparent != NULL);
     AddOneConnection(cmlin, cmlparent, td_UP);
   }
@@ -856,70 +806,71 @@ void Module::Connect(Variable* modin, Variable* canonmod, map<Variable*, nsCOMPt
   mod2linkedcellml.insert(make_pair(modin, cmlin));
 }
 
-void Module::AddOneConnection(nsCOMPtr<cellml_apiICellMLVariable> varin, nsCOMPtr<cellml_apiICellMLVariable> varout, tree_direction td)
+void  Module::AddOneConnection(iface::cellml_api::CellMLVariable* varin, iface::cellml_api::CellMLVariable* varout, tree_direction td)
 {
-  nsresult rv;
   switch(td) {
   case td_UP:
-    rv = varin->SetPublicInterface(0);
-    rv = varout->SetPrivateInterface(1);
+    varin->publicInterface(iface::cellml_api::INTERFACE_OUT);
+    varout->privateInterface(iface::cellml_api::INTERFACE_IN);
     break;
   case td_DOWN:
-    rv = varin->SetPrivateInterface(0);
-    rv = varout->SetPublicInterface(1);
+    varin->privateInterface(iface::cellml_api::INTERFACE_OUT);
+    varout->publicInterface(iface::cellml_api::INTERFACE_IN);
     break;
   case td_SIDEWAYS:
-    rv = varin->SetPublicInterface(0);
-    rv = varout->SetPublicInterface(1);
+    varin->publicInterface(iface::cellml_api::INTERFACE_OUT);
+    varout->publicInterface(iface::cellml_api::INTERFACE_IN);
     break;
   }
-  nsCOMPtr<cellml_apiICellMLComponent> compin  = GetCellMLComponentOf(varin);
-  nsCOMPtr<cellml_apiICellMLComponent> compout = GetCellMLComponentOf(varout);
-  nsCOMPtr<cellml_apiIConnection> connection = GetOrCreateConnectionFor(compin, compout, m_cellmlmodel);
-  nsCOMPtr<cellml_apiIMapVariables> mapvars;
-  rv = m_cellmlmodel->CreateMapVariables(getter_AddRefs(mapvars));
-  rv = connection->AddElement(mapvars);
-  rv = mapvars->SetFirstVariable(varin);
-  if (NS_FAILED(rv)) {
-    rv = mapvars->SetFirstVariable(varout);
-    rv = mapvars->SetSecondVariable(varin);
+  iface::cellml_api::CellMLComponent* compin  = GetCellMLComponentOf(varin);
+  iface::cellml_api::CellMLComponent* compout = GetCellMLComponentOf(varout);
+  iface::cellml_api::Connection* connection = GetOrCreateConnectionFor(compin, compout, m_cellmlmodel);
+  RETURN_INTO_OBJREF(mapvars, iface::cellml_api::MapVariables, m_cellmlmodel->createMapVariables());
+  connection->addElement(mapvars);
+  try
+  {
+    mapvars->firstVariable(varin);
+    mapvars->secondVariable(varout);
   }
-  else {
-    rv = mapvars->SetSecondVariable(varout);
+  catch (...)
+  {
+    mapvars->firstVariable(varout);
+    mapvars->secondVariable(varin);
   }
 }
 
-void Module::AssignMathOnceFor(vector<Variable*> varlist)
+void Module::AssignMathOnceFor(vector<Variable*> varlist, iface::dom::Document* doc)
 {
-  nsresult rv;
   Variable* finalvar = varlist[0];
   const Formula* ia = finalvar->GetInitialAssignment();
   const Formula* ar = finalvar->GetAssignmentRuleOrKineticLaw();
   const Formula* rr = finalvar->GetRateRule();
   //'ia' and 'rr' may both exist and have been initially defined in different modules.  But that doesn't matter, since we need to define all three in the same CellML module, since that's the way they roll.
   Variable* targetvar = varlist[0]->GetCanonicalVariable();
-  nsCOMPtr<cellml_apiICellMLVariable> cmlvar = targetvar->GetCellMLVariable();
+  RETURN_INTO_OBJREF(cmlvar, iface::cellml_api::CellMLVariable, targetvar->GetCellMLVariable());
   const Variable* origtarget = targetvar->GetOriginal();
   vector<string> varname = origtarget->GetName();
   assert(varname.size()==1);
   if (!ia->IsEmpty()) {
-    if (ia->IsDouble() || ia->IsSingleVariable()) {
-      rv = cmlvar->SetInitialValue(ToNSString(ia->ToCellML()));
-      //cout << "Successfully set initial value for " << targetvar->GetNameDelimitedBy('.') << endl;
+    if (ia->IsDouble()) {
+      std::wstring wiv(makeUTF16(ia->ToDelimitedStringWithEllipses('_')));
+      cmlvar->initialValue(wiv.c_str());
+      cout << "Successfully set initial value for " << targetvar->GetNameDelimitedBy('.') << endl;
     }
     else {
       //Have to create a new variable.
       string newvarname = varname[varname.size()-1] + "_init";
-      rv = cmlvar->SetInitialValue(ToNSString(newvarname));
+      std::wstring wiv(makeUTF16(newvarname));
+      cmlvar->initialValue(wiv.c_str());
       Variable* tvarparent = targetvar->GetParentVariable();
       Module* tvarmod = this;
       if (tvarparent != NULL) {
         tvarmod = tvarparent->GetModule();
       }
-      nsCOMPtr<cellml_apiICellMLVariable> initvar = tvarmod->AddNewVariableToCellML(newvarname, m_cellmlmodel);
+      RETURN_INTO_OBJREF(initvar, iface::cellml_api::CellMLVariable, tvarmod->AddNewVariableToCellML(newvarname, m_cellmlmodel));
       //LS DEBUG:  didn't check to see if we renamed 'newvarname'
       string formula = newvarname + " = " + origtarget->GetInitialAssignment()->ToCellMLString(origtarget->GetStrandVars());
-      if (!AddCellMLMathTo(formula, targetvar)) {
+      if (!AddCellMLMathTo(formula, targetvar, doc)) {
         string warning = "Unable to initialize " + targetvar->GetNameDelimitedBy('.') + " through "+ newvarname + " (" + formula + ")";
         g_registry.AddWarning(warning);
       }
@@ -928,7 +879,7 @@ void Module::AssignMathOnceFor(vector<Variable*> varlist)
   if (!ar->IsEmpty()) {
     string formula = origtarget->GetAssignmentRuleOrKineticLaw()->ToCellMLString(origtarget->GetStrandVars());
     formula = varname[varname.size()-1] + " = " + formula;
-    if (!AddCellMLMathTo(formula, targetvar)) {
+    if (!AddCellMLMathTo(formula, targetvar, doc)) {
       string warning = "Unable to translate \"" + formula + "\" to CellML's MathML for the assignment rule.";
       g_registry.AddWarning(warning);
     }
@@ -940,88 +891,71 @@ void Module::AssignMathOnceFor(vector<Variable*> varlist)
     assert(varname.size()==1);
     string formula = origtarget->GetRateRule()->ToCellMLString(origtarget->GetStrandVars());
     formula = "d(" + varname[varname.size()-1] + ")/d(time) = " + formula;
-    if (!AddCellMLMathTo(formula, targetvar)) {
+    if (!AddCellMLMathTo(formula, targetvar, doc)) {
       string warning = "Unable to translate \"" + formula + "\" to CellML's MathML for the rate rule.";
       g_registry.AddWarning(warning);
     }
   }
 }
 
-bool Module::AddCellMLMathTo(string formula, Variable* targetvar)
+bool Module::AddCellMLMathTo(string formula, Variable* targetvar, iface::dom::Document* doc)
 {
-  nsCOMPtr<cellml_apiICellMLVariable> cmlvar = targetvar->GetCellMLVariable();
-  nsCOMPtr<cellml_apiICellMLComponent> cmlcomp = GetCellMLComponentOf(cmlvar);
-  return AddCellMLMathTo(formula, cmlcomp);
+  RETURN_INTO_OBJREF(cmlvar, iface::cellml_api::CellMLVariable, targetvar->GetCellMLVariable());
+  RETURN_INTO_OBJREF(cmlcomp, iface::cellml_api::CellMLComponent, GetCellMLComponentOf(cmlvar));
+  return AddCellMLMathTo(formula, cmlcomp, doc);
 }
 
-bool Module::AddCellMLMathTo(string formula, nsCOMPtr<cellml_apiICellMLComponent> cmlcomp)
+bool Module::AddCellMLMathTo(std::string formula, iface::cellml_api::CellMLComponent* cmlcomp, iface::dom::Document* doc)
 {
-  nsresult rv;
-  nsCOMPtr<cellml_apiIMathContainer> upcast_cmlcomp;
-  rv = cmlcomp->QueryInterface(upcast_cmlcomp->GetIID(), getter_AddRefs(upcast_cmlcomp));
-  nsCOMPtr<domIElement> mathml;
-  nsCString formstring = ToNSCString(formula);
-  MathMLInputServices mmlis;
-  nsCOMPtr<cellml_apiICellMLDOMElement> cmlde;
-  rv = m_cellmlmodel->QueryInterface(cmlde->GetIID(), getter_AddRefs(cmlde));
-  nsCOMPtr<domIElement> de;
-  rv = cmlde->GetDomElement(getter_AddRefs(de));
-  nsCOMPtr<domIDocument> doc;
-  rv = de->GetOwnerDocument(getter_AddRefs(doc));
-  NS_ENSURE_SUCCESS(rv, false);
-  rv = mmlis.InputFormatToMathML(doc, formstring, getter_AddRefs(mathml));
-  NS_ENSURE_SUCCESS(rv, false);
-  nsString elname;
-  rv = mathml->GetTagName(elname);
-  if (ToThinString(elname.get())=="error") return false;
-  nsCOMPtr<domINode> recast_mathml;
-  rv = mathml->QueryInterface(recast_mathml->GetIID(), getter_AddRefs(recast_mathml));
-  NS_ENSURE_SUCCESS(rv, false);
-  nsCOMPtr<mathml_domIMathMLMathElement> parent_mathml;
-  rv = m_cellmlmodel->CreateMathElement(getter_AddRefs(parent_mathml));
-  NS_ENSURE_SUCCESS(rv, false);
-  nsCOMPtr<domINode> newnode;
-  rv = parent_mathml->AppendChild(recast_mathml, getter_AddRefs(newnode));
-  NS_ENSURE_SUCCESS(rv, false);
-  rv = upcast_cmlcomp->AddMath(parent_mathml);
-  NS_ENSURE_SUCCESS(rv, false);
+  RETURN_INTO_OBJREF(ts, iface::cellml_services::TeLICeMService, CreateTeLICeMService());
+  std::wstring wform(makeUTF16(formula));
+  RETURN_INTO_OBJREF(tmr, iface::cellml_services::TeLICeMMathResult,
+                     ts->parseMaths(doc, wform.c_str()));
+  // XXX it would be good to check tmr->errorMessage() and log the error - Andrew Miller
+  RETURN_INTO_OBJREF(math, iface::mathml_dom::MathMLElement,
+                      tmr->mathResult());
+  if (math == NULL)
+    return false;
+
+  cmlcomp->addMath(math);
   return true;
 }
 
-void Module::AddTimeFor(nsCOMPtr<cellml_apiICellMLVariable> cmlvar)
+void Module::AddTimeFor(iface::cellml_api::CellMLVariable* cmlvar)
 {
-  nsCOMPtr<cellml_apiICellMLComponent> cmlcomp = GetCellMLComponentOf(cmlvar);
+  RETURN_INTO_OBJREF(cmlcomp, iface::cellml_api::CellMLComponent, GetCellMLComponentOf(cmlvar));
   AddTimeTo(cmlcomp);
 }
 
-nsCOMPtr<cellml_apiICellMLVariable> Module::AddTimeTo(nsCOMPtr<cellml_apiICellMLComponent> cmlcomp)
+iface::cellml_api::CellMLVariable* Module::AddTimeTo(iface::cellml_api::CellMLComponent* cmlcomp)
 {
-  nsresult rv;
-  nsCOMPtr<cellml_apiICellMLVariableSet> cmlvarset;
-  rv = cmlcomp->GetVariables(getter_AddRefs(cmlvarset));
-  nsCOMPtr<cellml_apiICellMLVariable> time;
-  nsString timest = ToNSString("time");
-  rv = cmlvarset->GetVariable(timest, getter_AddRefs(time));
+  RETURN_INTO_OBJREF(cmlvarset, iface::cellml_api::CellMLVariableSet, cmlcomp->variables());
+  RETURN_INTO_OBJREF(time, iface::cellml_api::CellMLVariable, cmlvarset->getVariable(L"time"));
+
   if (time != NULL) {
     //Already exists!
     return time;
   }
   assert(m_cellmlmodel != NULL);
-  rv = m_cellmlmodel->CreateCellMLVariable(getter_AddRefs(time));
-  rv = cmlcomp->AddElement(time);
-  rv = time->SetName(timest);
-  rv = time->SetUnitsName(ToNSString("dimensionless")); //LS DEBUG:  units
 
-  nsCOMPtr<cellml_apiICellMLComponent> parent;
-  rv = cmlcomp->GetEncapsulationParent(getter_AddRefs(parent));
+  time = already_AddRefd<iface::cellml_api::CellMLVariable>
+    (m_cellmlmodel->createCellMLVariable());
+  cmlcomp->addElement(time);
+  time->name(L"time");
+  string nodim = "dimensionless";
+  time->unitsName(makeUTF16(nodim).c_str());
+
+  RETURN_INTO_OBJREF(parent, iface::cellml_api::CellMLComponent, cmlcomp->encapsulationParent());
   if (parent != NULL) {
-    nsCOMPtr<cellml_apiICellMLVariable> ptime = AddTimeTo(parent);
+    RETURN_INTO_OBJREF(ptime, iface::cellml_api::CellMLVariable, AddTimeTo(parent));
     AddOneConnection(time, ptime, td_UP);
   }
+
+  time->add_ref();
   return time;
 }
 
-void Module::AddODEsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod)
+void Module::AddODEsTo(iface::cellml_api::Model* model, Module* topmod, iface::dom::Document* doc)
 {
   set<Variable*> species;
   set<Variable*> reactions;
@@ -1051,7 +985,7 @@ void Module::AddODEsTo(nsCOMPtr<cellml_apiIModel> model, Module* topmod)
     if (involvedrxns.size()==0) continue; //The species was in no reactions.
     set<Variable*> contains;
     Module* ratemod = topmod->BestModuleToAdd(involvedrxns, contains);
-    ratemod->AddRateRuleInvolving(*speciter, form, involvedrxns);
+    ratemod->AddRateRuleInvolving(*speciter, form, involvedrxns, doc);
   }
 }
 
@@ -1097,24 +1031,59 @@ Module* Module::BestModuleToAdd(set<Variable*> involvedrxns, set<Variable*>& con
   return NULL;
 }
 
-void Module::AddRateRuleInvolving(Variable* species, Formula form, set<Variable*> involvedrxns)
+void Module::AddConnectionsTo(vector<Variable*> varlist, const map<Variable*, Variable*>& tree)
 {
-  nsCOMPtr<cellml_apiICellMLVariable> subvar;
-  string localname = FindOrCreateLocalVersionOf(species, subvar);
+  Variable* canonmod = varlist[0]->GetCanonicalVariable()->GetParentVariable();
+  map<Variable*, iface::cellml_api::CellMLVariable*> mod2linkedcellml;
+  map<Variable*, Variable*> mod2var;
+  set<Variable*> canonparents;
+
+  //This sets up the linkage between modules and the pre-existing Antimony variables, all of which have corresponding CellML variables
+  for (size_t var=0; var<varlist.size(); var++) {
+    Variable* modvar = varlist[var]->GetParentVariable();
+    mod2var.insert(make_pair(modvar, varlist[var]));
+  }
+
+  //This sets up the list of direct parents of the 'canon' module.  This is used when connecting to know how to connect (up, down, or sideways)
+  Variable* cp = GetParent(canonmod, tree);
+  while (cp != NULL) {
+    canonparents.insert(cp);
+    cp = GetParent(cp, tree);
+  }
+  if (canonmod != NULL) {
+    canonparents.insert(cp); //The top-level module may have a linked variable too
+  }
+  
+  //The first linked CellML variable we have is the canonical one:
+  iface::cellml_api::CellMLVariable* canoncml = GetSyncedVariable(canonmod, mod2var)->GetCellMLVariable();
+  mod2linkedcellml.insert(make_pair(canonmod, canoncml));
+
+  //Now go through the list and connect everything.  As things are linked, mod2linkedcellml is updated so we don't duplicate effort.
+  for (size_t var=0; var<varlist.size(); var++) {
+    Connect(varlist[var]->GetParentVariable(), canonmod, mod2linkedcellml, mod2var, canonparents, tree);
+  }
+}
+
+void Module::AddRateRuleInvolving(Variable* species, Formula form, set<Variable*> involvedrxns, iface::dom::Document* doc)
+{
+  string localname = FindOrCreateLocalVersionOf(species);
+
   for (set<Variable*>::iterator involvedit=involvedrxns.begin(); involvedit != involvedrxns.end(); involvedit++) {
-    string localrxn = FindOrCreateLocalVersionOf(*involvedit, subvar);
+    string localrxn = FindOrCreateLocalVersionOf(*involvedit);
+
     form.UseInstead(localrxn, *involvedit);
   }
   string infix = "d(" + localname + ")/d(time) = " + form.ToCellML();
   AddTimeTo(m_cellmlcomponent);
-  if (!AddCellMLMathTo(infix, m_cellmlcomponent)) {
+  if (!AddCellMLMathTo(infix, m_cellmlcomponent, doc)) {
     string warning = "Unable to translate \"" + infix + "\" to CellML's MathML for the rate rule.";
     g_registry.AddWarning(warning);
   }
 }
 
-string Module::FindOrCreateLocalVersionOf(Variable* variable, nsCOMPtr<cellml_apiICellMLVariable>& localvar)
+string Module::FindOrCreateLocalVersionOf(Variable* variable)
 {
+  iface::cellml_api::CellMLVariable* localvar;
   for (size_t var=0; var<m_variables.size(); var++) {
     if (variable->GetSameVariable() == m_variables[var]->GetSameVariable()) {
       vector<string> varname = m_variables[var]->GetName();
@@ -1125,8 +1094,8 @@ string Module::FindOrCreateLocalVersionOf(Variable* variable, nsCOMPtr<cellml_ap
   }
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType()==varModule) {
-      nsCOMPtr<cellml_apiICellMLVariable> subvar;
-      string foundvar = m_variables[var]->GetModule()->FindOrCreateLocalVersionOf(variable, subvar);
+      iface::cellml_api::CellMLVariable* subvar = NULL;
+      string foundvar = m_variables[var]->GetModule()->FindOrCreateLocalVersionOf(variable);
       if (foundvar != "") {
         //The variable was indeed in this list.  Create a local copy (in CellML) and sync it.
         vector<string> varname;
