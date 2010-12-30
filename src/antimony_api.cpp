@@ -24,8 +24,8 @@ extern int yylloc_first_line;
 
 std::wstring makeUTF16(const std::string& aStr)
 {
-  wchar_t* buf = new wchar_t[aStr.length() + 1];
-  mbstowcs(buf, aStr.c_str(), aStr.length());
+  wchar_t* buf = new wchar_t[aStr.size()];
+  mbstowcs(buf, aStr.c_str(), aStr.size());
   std::wstring s = buf;
   delete [] buf;
   return s;

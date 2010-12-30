@@ -30,34 +30,22 @@ sbmlflag =
 #libcellml =
 
 #otherwise
-xulrunner = /home/lpsmith/xulrunner-sdk
 CELLML_API_DIR = /home/lpsmith/CellML/hg/cellml-api
-CELLML_OPENCELL_DIR = /home/lpsmith/CellML/hg/cellml-opencell
 cellml_location = /usr/local/lib/
 cellml_includes = -I/usr/local/include/ \
-  -I$(xulrunner)/include/ \
-  -I$(xulrunner)/include/xpcom/ \
-  -I$(xulrunner)/include/nspr/ \
-  -I$(xulrunner)/include/necko/ \
-  -I$(xulrunner)/include/string/ \
-  -I$(xulrunner)/include/dom/ \
-  -I$(xulrunner)/include/js/ \
-  -I$(xulrunner)/include/editor/ \
-  -I$(xulrunner)/include/docshell/ \
-  -I$(xulrunner)/include/content/ \
-  -I$(xulrunner)/include/rdf/ \
+  -I/usr/local/lib/ \
   -I$(CELLML_API_DIR) \
   -I$(CELLML_API_DIR)/sources/ \
-  -I$(CELLML_API_DIR)/interfaces/ \
-  -I$(CELLML_API_DIR)/simple_interface_generators/glue/xpcom \
-  -I$(CELLML_OPENCELL_DIR)/DataCollector \
-  -I$(CELLML_OPENCELL_DIR)/stubs
+  -I$(CELLML_API_DIR)/sources/cellml/ \
+  -I$(CELLML_API_DIR)/TeLICeMS/sources/ \
+  -I$(CELLML_API_DIR)/CUSES/sources/ \
+  -I$(CELLML_API_DIR)/CeVAS/sources/ \
+  -I$(CELLML_API_DIR)/interfaces/ 
 
-libcellml = -L$(xulrunner)/lib   -l'xpcomglue_s' -l'xpcom' -l'xul' -l'embed_base_s' -l'sqlite3' -l'mozjs' -L$(cellml_location) -lcellml -lcevas  -L$(CELLML_OPENCELL_DIR)/opencellStage/components/ -lDataCollector
-cellmlflag = -fshort-wchar
+libcellml = -L$(cellml_location) -L$(CELLML_API_DIR)/.libs -lcellml -lcevas -lcuses -ltelicems
 
 
-generalcflags = -Wall -DVERSION_STRING="\"v$(version)\"" $(sbmlflag) $(cellmlflag) $(mingw_include) $(sbml_includes) $(cellml_includes)
+generalcflags = -Wall -DVERSION_STRING="\"v$(version)\"" $(sbmlflag) $(mingw_include) $(sbml_includes) $(cellml_includes)
 #For a debug version:
 CPPFLAGS = -ggdb $(generalcflags)
 #For profiling:
@@ -73,7 +61,7 @@ lib_dir = lib/
 bin_dir = bin/
 doc_dir = doc/
 ex_dir  = doc/examples/
-qt_dir  = QTAntimony/
+qt_dir  = QTAntimony_src/
 
 YPPFILES = $(src_dir)antimony.ypp
 
