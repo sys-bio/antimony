@@ -1,7 +1,6 @@
 #ifndef NCELLML
 
 #include "cellmlx.h"
-//#include <IfaceTeLICeMS.hxx>
 #include <TeLICeMService.hpp>
 #include <IfaceAnnoTools.hxx>
 #include <IfaceCUSES.hxx>
@@ -653,9 +652,11 @@ void Module::AddEncapsulationTo(iface::cellml_api::Model* model)
   RETURN_INTO_OBJREF(relref, iface::cellml_api::RelationshipRef, model->createRelationshipRef());
   group->addElement(relref);
   relref->setRelationshipName(L"", L"encapsulation");
+  /* LS DEBUG CELLML:  actually do this!
   vector<string> blank;
   RETURN_INTO_OBJREF(cr, iface::cellml_api::ComponentRef, GetComponentRef(m_cellmlmodel, GetCellMLNameOf(blank), this));
   group->addElement(cr);
+  */
 }
 
 iface::cellml_api::ComponentRef* Module::GetComponentRef(iface::cellml_api::Model* model, std::string cmlname, Module* topmod)
