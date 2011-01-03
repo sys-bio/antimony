@@ -58,7 +58,7 @@ bool HasTimeUnits(iface::cellml_api::CellMLVariable* cmlvar) {
 void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
 {
   assert(m_cellmlmodel==NULL);
-  assert(m_cellmlcomponent != NULL);
+ // assert(m_cellmlcomponent != NULL);
 
   //Variables
   RETURN_INTO_OBJREF(varset, iface::cellml_api::CellMLVariableSet, component->variables());
