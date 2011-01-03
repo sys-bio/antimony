@@ -369,7 +369,7 @@ bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connec
     comp2moduleparents.insert(comp2moduleparents.begin(), modname);
     modname = GetNameAccordingToEncapsulationParent(component, topmodel);
     FixName(modname);
-    comp1modulenames.insert(comp2modulenames.begin(), modname);
+    comp2modulenames.insert(comp2modulenames.begin(), modname);
     component = already_AddRefd<iface::cellml_api::CellMLComponent>(component->encapsulationParent());
   }
   comp2moduleparents.insert(comp2moduleparents.begin(), CurrentModule()->GetModuleName());
