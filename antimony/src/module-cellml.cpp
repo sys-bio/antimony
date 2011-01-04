@@ -124,7 +124,7 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
         RETURN_INTO_WSTRING(wmath, ts->showMaths(input));
         std::string infix(makeUTF8(wmath));
 
-        cout << infix << endl;
+        //cout << infix << endl;
 
         string variable, equation;
         variable.assign(infix, 0, infix.find('='));
@@ -140,6 +140,14 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
         }
         //Remove '{unit: ...}' bits (for now)
         while ((idpos = equation.find("{unit:")) != string::npos) {
+          equation.erase(idpos, equation.find("}", idpos)-idpos+1);
+        }
+        //Remove '{units: ...}' bits (for now)
+        while ((idpos = equation.find("{units:")) != string::npos) {
+          equation.erase(idpos, equation.find("}", idpos)-idpos+1);
+        }
+        //Remove '{type: ...}' bits (for now)
+        while ((idpos = equation.find("{type:")) != string::npos) {
           equation.erase(idpos, equation.find("}", idpos)-idpos+1);
         }
         //Remove '{base: ...}' bits
@@ -165,6 +173,7 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
           continue;
         }
         Formula* formula = g_registry.NewBlankFormula();
+        //cout << "final infix: "  << Trim(equation) << endl;
         setFormulaWithString(Trim(equation), formula, this);
 
         //Find out what variable we're assigning to, and how we're assigning to it.
@@ -249,7 +258,7 @@ void Module::SetCellMLChildrenAsSubmodules(iface::cellml_api::CellMLComponent* c
   while (true) {
     RETURN_INTO_OBJREF(child, iface::cellml_api::CellMLComponent,
                        childi->nextComponent());
-    if (child != NULL)
+    if (child == NULL)
       break;
 
     std::string cellmlname = GetNameAccordingToEncapsulationParent(child, m_cellmlmodel);

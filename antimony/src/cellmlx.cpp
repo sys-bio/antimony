@@ -183,6 +183,7 @@ GetNameAccordingToEncapsulationParent(iface::cellml_api::CellMLComponent* compon
       }
     }
     assert(found);
+    compmodel = parentel->modelElement();
   }
 
   std::string cellmlname(makeUTF8(wcomponentRef));

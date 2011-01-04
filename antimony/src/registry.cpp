@@ -363,7 +363,7 @@ bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connec
   }
   comp1moduleparents.insert(comp1moduleparents.begin(), CurrentModule()->GetModuleName());
 
-  component = already_AddRefd<iface::cellml_api::CellMLComponent>(compmap->firstComponent());
+  component = already_AddRefd<iface::cellml_api::CellMLComponent>(compmap->secondComponent());
   while (component) {
     string modname = GetModuleNameFrom(component);
     comp2moduleparents.insert(comp2moduleparents.begin(), modname);
@@ -395,9 +395,9 @@ bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connec
   }
   assert(topmod != NULL);
 
-  // cout << "Top module: " << commonparent << endl;
-  // cout << "first compartment submodule name: " << ToStringFromVecDelimitedBy(comp1modulenames, '.') << endl;
-  // cout << "second compartment submodule name: " << ToStringFromVecDelimitedBy(comp2modulenames, '.') << endl;
+  //cout << "Top module: " << commonparent << endl;
+  //cout << "first compartment submodule name: " << ToStringFromVecDelimitedBy(comp1modulenames, '.') << endl;
+  //cout << "second compartment submodule name: " << ToStringFromVecDelimitedBy(comp2modulenames, '.') << endl;
 
   //And we have the full names of the submodules whose variables need to be synchronized.  But there might be multiple variables, so we go through them all:
   RETURN_INTO_OBJREF(mvs, iface::cellml_api::MapVariablesSet, connection->variableMappings());
