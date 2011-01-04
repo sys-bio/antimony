@@ -75,15 +75,7 @@ if(WITH_SBML)
                           ${CMAKE_SOURCE_DIR}/../libsbml-5/release/include/
 			  )
 
-        find_library(LIBXML_LIBRARY 
-		NAMES libxml2.lib xml2
-		PATHS /usr/lib /usr/local/lib
-                      'C:/Program Files (x86)/SBML/libSBML-4.2.0-libxml2-x86/win32/lib'
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
-	
-	find_path(LIBXML_INCLUDE_DIR
+	find_path(LIBSBML_DEPENDENCIES_INCLUDE_DIR
 		NAMES libxml/parser.h 
 		PATHS /usr/include /usr/local/include 
                       'C:/Program Files (x86)/SBML/libSBML-4.2.0-libxml2-x86/win32/include'
@@ -93,7 +85,7 @@ if(WITH_SBML)
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
 			  )		
 
-        set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} ${LIBXML_LIBRARY})
+        set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} )
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR})
 else(WITH_SBML)
     add_definitions( -DNSBML )
@@ -106,40 +98,56 @@ endif(WITH_SBML)
 
 if(WITH_CELLML)
         #CellML:
-	find_library(CELLML_API 
-		NAMES cellml.lib cellml
-		PATHS /usr/lib /usr/local/lib
-                          C:/Users/Lucian/Desktop/CellML/api-binaries-win32/libs
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
-	
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CELLML_API})
-	find_library(CEVAS_LIB 
-		NAMES cevas.lib cevas
-		PATHS /usr/lib /usr/local/lib
-                          C:/Users/Lucian/Desktop/CellML/api-binaries-win32/libs
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
-	
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CEVAS_LIB})
-	find_path(CELLML_API_ROOT_DIR
+        find_path(CELLML_API_ROOT_DIR
 		NAMES sources/Utilities.hxx
 		PATHS /usr/include /usr/local/include 
                           C:/build/cellml-api/
 			  ${CMAKE_SOURCE_DIR}/include 
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
 			  )
+
+        find_library(CELLML_API 
+		NAMES cellml.lib cellml
+		PATHS /usr/lib /usr/local/lib
+                          ${CELLML_API_ROOT_DIR}/.libs
+                          C:/build/cellml-api/.libs/
+			  ${CMAKE_SOURCE_DIR} 
+			  ${CMAKE_SOURCE_DIR}/dependencies/lib
+			    )
+        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CELLML_API})
+
+        find_library(CEVAS_LIB 
+		NAMES cevas.lib cevas
+		PATHS /usr/lib /usr/local/lib
+                          ${CELLML_API_ROOT_DIR}/.libs
+			  ${CMAKE_SOURCE_DIR} 
+			  ${CMAKE_SOURCE_DIR}/dependencies/lib
+			    )
+        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CEVAS_LIB})
+	
+	find_library(CUSES_LIB 
+		NAMES cuses.lib cuses
+		PATHS /usr/lib /usr/local/lib
+                          ${CELLML_API_ROOT_DIR}/.libs
+			  ${CMAKE_SOURCE_DIR} 
+			  ${CMAKE_SOURCE_DIR}/dependencies/lib
+			    )
+        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CUSES_LIB})
+
+        find_library(TELICEMS_LIB 
+		NAMES telicems.lib telicems
+		PATHS /usr/lib /usr/local/lib
+                          ${CELLML_API_ROOT_DIR}/.libs
+			  ${CMAKE_SOURCE_DIR} 
+			  ${CMAKE_SOURCE_DIR}/dependencies/lib
+			    )
+        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${TELICEMS_LIB})
+
         set(CELLML_INCLUDE_DIRECTORIES ${CELLML_API_ROOT_DIR} ${CELLML_API_ROOT_DIR}/sources ${CELLML_API_ROOT_DIR}/sources/cellml/ ${CELLML_API_ROOT_DIR}/interfaces ${CELLML_API_ROOT_DIR}/TeLICeMS/sources/ ${CELLML_API_ROOT_DIR}/CUSES/sources/ ${CELLML_API_ROOT_DIR}/CeVAS/sources/ )
 
         set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ALL_CELLML_LIBS} )
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CELLML_INCLUDE_DIRECTORIES} )
-#        if (UNIX)
-#          add_definitions( -fshort-wchar )
-#        else()
-#          add_definitions( /Zc:wchar_t- )
-#        endif()
+
 else(WITH_CELLML)
   add_definitions( -DNCELLML )
 
