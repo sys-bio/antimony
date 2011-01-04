@@ -1,16 +1,17 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <map>
+#include "variable.h"
+#include "formula.h"
+#include "registry.h"
 
 extern bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
 
+using namespace std;
+
 #ifndef NSBML
 #include "sbmlx.h"
-#include "formula.h"
-#include "variable.h"
-#include "registry.h"
-
-using namespace std;
 
 // SBase objects no longer have IDs :( //update: now they do again!
 string getNameFromSBMLObject(const SBase* sbml, string basename)
