@@ -156,6 +156,7 @@ GetNameAccordingToEncapsulationParent(iface::cellml_api::CellMLComponent* compon
   //cout << "Component model: " << cellmltext << endl;
 
   RETURN_INTO_WSTRING(wcomponentRef, component->name());
+  std::string cellmlname(makeUTF8(wcomponentRef));
 
   while (CDA_objcmp(compmodel, encapsulationModel))
   {
@@ -178,7 +179,7 @@ GetNameAccordingToEncapsulationParent(iface::cellml_api::CellMLComponent* compon
       if (newComponentRef == wcomponentRef) {
         //This is the right subcomponent
         RETURN_INTO_WSTRING(newName, ic->name());
-        newComponentRef = newName;
+        cellmlname = makeUTF8(ic->name());
         found = true;
       }
     }
@@ -186,7 +187,6 @@ GetNameAccordingToEncapsulationParent(iface::cellml_api::CellMLComponent* compon
     compmodel = parentel->modelElement();
   }
 
-  std::string cellmlname(makeUTF8(wcomponentRef));
   FixName(cellmlname);
   return cellmlname;
 }
