@@ -178,7 +178,6 @@ GetNameAccordingToEncapsulationParent(iface::cellml_api::CellMLComponent* compon
       RETURN_INTO_WSTRING(newComponentRef, ic->componentRef());
       if (newComponentRef == wcomponentRef) {
         //This is the right subcomponent
-        RETURN_INTO_WSTRING(newName, ic->name());
         cellmlname = makeUTF8(ic->name());
         found = true;
       }
