@@ -610,8 +610,6 @@ iface::cellml_api::CellMLVariable* Module::AddNewVariableToCellML(string varname
   cmlvar->name(cmlvarst.c_str());
   string nodim = "dimensionless";
   cmlvar->unitsName(makeUTF16(nodim).c_str());
-  //cmlvar->publicInterface(iface::cellml_api::INTERFACE_OUT);
-  //cmlvar->privateInterface(iface::cellml_api::INTERFACE_IN); //LS DEBUG: make sure the new version of this code survives somewhere.
   cmlvar->add_ref();
   return cmlvar;
 }
@@ -661,11 +659,8 @@ void Module::AddEncapsulationTo(iface::cellml_api::Model* model)
   RETURN_INTO_OBJREF(relref, iface::cellml_api::RelationshipRef, model->createRelationshipRef());
   group->addElement(relref);
   relref->setRelationshipName(L"", L"encapsulation");
-  /* LS DEBUG CELLML:  actually do this!
-  vector<string> blank;
-  RETURN_INTO_OBJREF(cr, iface::cellml_api::ComponentRef, GetComponentRef(m_cellmlmodel, GetCellMLNameOf(blank), this));
+  RETURN_INTO_OBJREF(cr, iface::cellml_api::ComponentRef, GetComponentRef(m_cellmlmodel, GetCellMLNameOf(m_variablename), this));
   group->addElement(cr);
-  */
 }
 
 iface::cellml_api::ComponentRef* Module::GetComponentRef(iface::cellml_api::Model* model, std::string cmlname, Module* topmod)
@@ -1076,11 +1071,13 @@ void Module::AddConnectionsTo(vector<Variable*> varlist, const map<Variable*, Va
 
 void Module::AddRateRuleInvolving(Variable* species, Formula form, set<Variable*> involvedrxns, iface::dom::Document* doc)
 {
-  string localname = FindOrCreateLocalVersionOf(species);
+  iface::cellml_api::CellMLVariable* subvar = NULL;
+  string localname = "";
+  FindOrCreateLocalVersionOf(species, localname, subvar);
 
   for (set<Variable*>::iterator involvedit=involvedrxns.begin(); involvedit != involvedrxns.end(); involvedit++) {
-    string localrxn = FindOrCreateLocalVersionOf(*involvedit);
-
+    string localrxn;
+    FindOrCreateLocalVersionOf(*involvedit, localrxn, subvar);
     form.UseInstead(localrxn, *involvedit);
   }
   string infix = "d(" + localname + ")/d(time) = " + form.ToCellML();
@@ -1091,36 +1088,40 @@ void Module::AddRateRuleInvolving(Variable* species, Formula form, set<Variable*
   }
 }
 
-string Module::FindOrCreateLocalVersionOf(Variable* variable)
+void Module::FindOrCreateLocalVersionOf(Variable* variable, string& newvarname, iface::cellml_api::CellMLVariable*& newlocalvar)
 {
-  iface::cellml_api::CellMLVariable* localvar;
+  //Find...
   for (size_t var=0; var<m_variables.size(); var++) {
     if (variable->GetSameVariable() == m_variables[var]->GetSameVariable()) {
       vector<string> varname = m_variables[var]->GetName();
-      //assert(varname.size()==1); //Not true!  Names have *this* module's name in the front.
-      localvar = m_variables[var]->GetCellMLVariable();
-      return (varname[varname.size()-1]);
+      newlocalvar = m_variables[var]->GetCellMLVariable();
+      newvarname  = varname[varname.size()-1];
+      return;
     }
   }
+  //...or create
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType()==varModule) {
       iface::cellml_api::CellMLVariable* subvar = NULL;
-      string foundvar = m_variables[var]->GetModule()->FindOrCreateLocalVersionOf(variable);
-      if (foundvar != "") {
+      string foundvarname = "";
+      m_variables[var]->GetModule()->FindOrCreateLocalVersionOf(variable, foundvarname, subvar);
+      if (foundvarname != "") {
         //The variable was indeed in this list.  Create a local copy (in CellML) and sync it.
         vector<string> varname;
-        varname.push_back(foundvar);
+        varname.push_back(foundvarname);
         while (GetVariable(varname) != NULL) {
-          foundvar = m_variables[var]->GetModule()->GetModuleName() + "_" + foundvar;
-          varname[0] = foundvar;
+          foundvarname = m_variables[var]->GetModule()->GetModuleName() + "_" + foundvarname;
+          varname[0] = foundvarname;
         }
-        localvar = AddNewVariableToCellML(foundvar, m_cellmlmodel);
-        AddOneConnection(localvar, subvar, td_DOWN);
-        return foundvar;
+        newlocalvar = AddNewVariableToCellML(foundvarname, m_cellmlmodel);
+        AddOneConnection(newlocalvar, subvar, td_DOWN);
+        newvarname = foundvarname;
+        return;
       }
     }
   }
-  return "";
+  newvarname = "";
+  return;
 }
 
 #endif

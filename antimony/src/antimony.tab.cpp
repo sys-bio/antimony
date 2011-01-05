@@ -68,7 +68,7 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 189 of yacc.c  */
-#line 2 "antimony.ypp"
+#line 2 "src/antimony.ypp"
 
   //#define YYSTYPE double
 #include <math.h>
@@ -100,7 +100,7 @@
 
 
 /* Line 189 of yacc.c  */
-#line 104 "antimony.tab.cpp"
+#line 104 "src/antimony.tab.cpp"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -142,10 +142,10 @@
      OPERATOR = 270,
      EVENT = 271,
      COMPARTMENT = 272,
-     A_IN = 273,
+     IN = 273,
      IS = 274,
      VAR = 275,
-     A_CONST = 276,
+     CONST = 276,
      DASHES = 277,
      BECOMESIRREV = 278,
      ELLIPSES = 279,
@@ -164,7 +164,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 33 "antimony.ypp"
+#line 33 "src/antimony.ypp"
 
   char character;
   const string* word;
@@ -184,7 +184,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 188 "antimony.tab.cpp"
+#line 188 "src/antimony.tab.cpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -196,7 +196,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 200 "antimony.tab.cpp"
+#line 200 "src/antimony.tab.cpp"
 
 #ifdef short
 # undef short
@@ -1764,56 +1764,56 @@ yyreduce:
         case 3:
 
 /* Line 1455 of yacc.c  */
-#line 93 "antimony.ypp"
+#line 93 "src/antimony.ypp"
     {;}
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 94 "antimony.ypp"
+#line 94 "src/antimony.ypp"
     { /*cout << endl << $2->ToString() << endl << endl;*/ ;}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 95 "antimony.ypp"
+#line 95 "src/antimony.ypp"
     {;}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 96 "antimony.ypp"
+#line 96 "src/antimony.ypp"
     {;}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 97 "antimony.ypp"
+#line 97 "src/antimony.ypp"
     {YYABORT;;}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 100 "antimony.ypp"
+#line 100 "src/antimony.ypp"
     { if (g_registry.OpenFile(*((yyvsp[(2) - (2)].word)))==0) YYABORT;;}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 103 "antimony.ypp"
+#line 103 "src/antimony.ypp"
     {g_registry.NewCurrentModule((yyvsp[(3) - (3)].word), (yyvsp[(2) - (3)].maybemain));;}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 104 "antimony.ypp"
+#line 104 "src/antimony.ypp"
     {
                   (yyval.module) = g_registry.CurrentModule();
                   if ((yyval.module)->Finalize()) YYABORT;
@@ -1824,14 +1824,14 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 109 "antimony.ypp"
+#line 109 "src/antimony.ypp"
     {g_registry.NewCurrentModule((yyvsp[(3) - (3)].word), (yyvsp[(2) - (3)].maybemain));;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 110 "antimony.ypp"
+#line 110 "src/antimony.ypp"
     {
                   (yyval.module) = g_registry.CurrentModule();
                   if ((yyval.module)->Finalize()) YYABORT;
@@ -1842,112 +1842,112 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 115 "antimony.ypp"
+#line 115 "src/antimony.ypp"
     {g_registry.SetError("module '" + *((yyvsp[(2) - (2)].word)) + "' already defined."); YYABORT;;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 116 "antimony.ypp"
+#line 116 "src/antimony.ypp"
     {g_registry.SetError("Cannot define '" + *((yyvsp[(2) - (2)].word)) + "' as a module because it is already a defined function."); YYABORT;;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 119 "antimony.ypp"
+#line 119 "src/antimony.ypp"
     {(yyval.maybemain) = false;;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 120 "antimony.ypp"
+#line 120 "src/antimony.ypp"
     {(yyval.maybemain) = true;;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 123 "antimony.ypp"
+#line 123 "src/antimony.ypp"
     {g_registry.NewUserFunction((yyvsp[(2) - (2)].word));;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 123 "antimony.ypp"
+#line 123 "src/antimony.ypp"
     {if (g_registry.SetUserFunction((yyvsp[(7) - (8)].formula))) YYABORT;;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 124 "antimony.ypp"
+#line 124 "src/antimony.ypp"
     {g_registry.SetError("Cannot use '" + *((yyvsp[(2) - (2)].word)) +"' as a function name because it is already the name of a module."); YYABORT;;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 125 "antimony.ypp"
+#line 125 "src/antimony.ypp"
     {g_registry.SetError("Cannot define '" + *((yyvsp[(2) - (2)].word)) + "' as a new function because it is already a defined function."); YYABORT;;}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 128 "antimony.ypp"
+#line 128 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (1)].formula);;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 129 "antimony.ypp"
+#line 129 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(2) - (2)].formula);;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 130 "antimony.ypp"
+#line 130 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula);;}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 134 "antimony.ypp"
+#line 134 "src/antimony.ypp"
     {;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 135 "antimony.ypp"
+#line 135 "src/antimony.ypp"
     {if (g_registry.AddVariableToCurrentExportList((yyvsp[(1) - (1)].variable))) YYABORT; ;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 136 "antimony.ypp"
+#line 136 "src/antimony.ypp"
     { if (g_registry.AddVariableToCurrentExportList((yyvsp[(3) - (3)].variable))) YYABORT; ;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 139 "antimony.ypp"
+#line 139 "src/antimony.ypp"
     {(yyval.variable) = g_registry.AddVariableToCurrent((yyvsp[(1) - (1)].word)); ;}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 140 "antimony.ypp"
+#line 140 "src/antimony.ypp"
     {(yyval.variable) = (yyvsp[(1) - (3)].variable)->GetSubVariable((yyvsp[(3) - (3)].word));
                   if ((yyval.variable) == NULL) {
                     g_registry.SetError("'" + *((yyvsp[(3) - (3)].word)) + "' is not a subvariable of '" + (yyvsp[(1) - (3)].variable)->GetNameDelimitedBy('.') + "'.");
@@ -1959,133 +1959,133 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 146 "antimony.ypp"
+#line 146 "src/antimony.ypp"
     {(yyval.variable) = (yyvsp[(2) - (2)].variable); if ((yyval.variable)->SetIsConst(true)) YYABORT;;}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 149 "antimony.ypp"
+#line 149 "src/antimony.ypp"
     {if ((yyvsp[(1) - (3)].variable)->SetCompartment((yyvsp[(3) - (3)].variable))) YYABORT; (yyval.variable) = (yyvsp[(1) - (3)].variable);;}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 152 "antimony.ypp"
+#line 152 "src/antimony.ypp"
     {(yyval.variable) = (yyvsp[(1) - (1)].variable);;}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 153 "antimony.ypp"
+#line 153 "src/antimony.ypp"
     {(yyval.variable) = (yyvsp[(1) - (1)].variable);;}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 156 "antimony.ypp"
+#line 156 "src/antimony.ypp"
     {(yyval.variable) = (yyvsp[(1) - (1)].variable);;}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 157 "antimony.ypp"
+#line 157 "src/antimony.ypp"
     {(yyval.variable) = (yyvsp[(1) - (3)].variable); if ((yyvsp[(1) - (3)].variable)->SetFormula((yyvsp[(3) - (3)].formula))) YYABORT; ;}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 160 "antimony.ypp"
+#line 160 "src/antimony.ypp"
     {(yyval.variable) = NULL;;}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 161 "antimony.ypp"
+#line 161 "src/antimony.ypp"
     {(yyval.variable) = (yyvsp[(2) - (2)].variable);;}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 164 "antimony.ypp"
+#line 164 "src/antimony.ypp"
     {;}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 165 "antimony.ypp"
+#line 165 "src/antimony.ypp"
     {;}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 168 "antimony.ypp"
+#line 168 "src/antimony.ypp"
     {;}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 169 "antimony.ypp"
+#line 169 "src/antimony.ypp"
     {;}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 170 "antimony.ypp"
+#line 170 "src/antimony.ypp"
     {;}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 171 "antimony.ypp"
+#line 171 "src/antimony.ypp"
     {;}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 172 "antimony.ypp"
+#line 172 "src/antimony.ypp"
     {;}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 173 "antimony.ypp"
+#line 173 "src/antimony.ypp"
     {;}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 174 "antimony.ypp"
+#line 174 "src/antimony.ypp"
     {;}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 175 "antimony.ypp"
+#line 175 "src/antimony.ypp"
     {;}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 179 "antimony.ypp"
+#line 179 "src/antimony.ypp"
     {
                   Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[(4) - (8)].reactionDivider), (yyvsp[(7) - (8)].formula), (yyvsp[(1) - (8)].variable));
                   if (var == NULL) YYABORT;
@@ -2098,7 +2098,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 187 "antimony.ypp"
+#line 187 "src/antimony.ypp"
     {
                   Variable* var = g_registry.AddNewReactionToCurrent((yyvsp[(2) - (6)].reactionDivider), (yyvsp[(5) - (6)].formula));
                   if (var == NULL) YYABORT;
@@ -2111,840 +2111,840 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 196 "antimony.ypp"
+#line 196 "src/antimony.ypp"
     {(yyval.reactantList) = g_registry.NewBlankReactantList(); ;}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 197 "antimony.ypp"
+#line 197 "src/antimony.ypp"
     {(yyval.reactantList) = g_registry.NewBlankReactantList(); (yyval.reactantList)->AddReactant((yyvsp[(1) - (1)].variable)); ;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 198 "antimony.ypp"
+#line 198 "src/antimony.ypp"
     {(yyval.reactantList) = g_registry.NewBlankReactantList(); (yyval.reactantList)->AddReactant((yyvsp[(2) - (2)].variable), (yyvsp[(1) - (2)].num)); ;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 199 "antimony.ypp"
+#line 199 "src/antimony.ypp"
     {(yyval.reactantList) = (yyvsp[(1) - (3)].reactantList); (yyvsp[(1) - (3)].reactantList)->AddReactant((yyvsp[(3) - (3)].variable)); ;}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 200 "antimony.ypp"
+#line 200 "src/antimony.ypp"
     {(yyval.reactantList) = (yyvsp[(1) - (4)].reactantList); (yyvsp[(1) - (4)].reactantList)->AddReactant((yyvsp[(4) - (4)].variable), (yyvsp[(3) - (4)].num)); ;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 204 "antimony.ypp"
+#line 204 "src/antimony.ypp"
     {(yyval.reactionDivider) = rdBecomes;;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 205 "antimony.ypp"
+#line 205 "src/antimony.ypp"
     {(yyval.reactionDivider) = rdInhibits;;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 206 "antimony.ypp"
+#line 206 "src/antimony.ypp"
     {(yyval.reactionDivider) = rdInfluences;;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 207 "antimony.ypp"
+#line 207 "src/antimony.ypp"
     {if (*(yyvsp[(2) - (2)].word) != "o") {g_registry.SetError("'-" + *(yyvsp[(2) - (2)].word) + "' is not a valid set of characters to demark reactions.  Try '->' for reactions, and '-|', '-o', and '-(' for interactions."); YYABORT;} (yyval.reactionDivider) = rdActivates;;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 208 "antimony.ypp"
+#line 208 "src/antimony.ypp"
     {(yyval.reactionDivider) = rdBecomesIrreversibly;;}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 209 "antimony.ypp"
+#line 209 "src/antimony.ypp"
     {(yyval.reactionDivider) = rdBecomes;;}
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 212 "antimony.ypp"
+#line 212 "src/antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); ;}
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 213 "antimony.ypp"
+#line 213 "src/antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddEllipses();;}
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 214 "antimony.ypp"
+#line 214 "src/antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddVariable((yyvsp[(1) - (1)].variable)); ;}
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 215 "antimony.ypp"
+#line 215 "src/antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddNum((yyvsp[(1) - (1)].num)); ;}
     break;
 
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 216 "antimony.ypp"
+#line 216 "src/antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddText((yyvsp[(1) - (4)].word)); (yyval.formula)->AddMathThing('('); (yyval.formula)->AddFormula((yyvsp[(3) - (4)].formula)); (yyval.formula)->AddMathThing(')');;}
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 217 "antimony.ypp"
+#line 217 "src/antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddText((yyvsp[(1) - (1)].word)); ;}
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 218 "antimony.ypp"
+#line 218 "src/antimony.ypp"
     {(yyval.formula) = g_registry.NewBlankFormula(); (yyval.formula)->AddMathThing((yyvsp[(1) - (1)].character)); ;}
     break;
 
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 219 "antimony.ypp"
+#line 219 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(2) - (3)].formula); (yyval.formula)->AddParentheses();;}
     break;
 
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 220 "antimony.ypp"
+#line 220 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula); (yyvsp[(1) - (2)].formula)->AddEllipses();;}
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 221 "antimony.ypp"
+#line 221 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula); (yyvsp[(1) - (2)].formula)->AddVariable((yyvsp[(2) - (2)].variable)); ;}
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 222 "antimony.ypp"
+#line 222 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula); (yyvsp[(1) - (2)].formula)->AddNum((yyvsp[(2) - (2)].num)); ;}
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 223 "antimony.ypp"
+#line 223 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (5)].formula); (yyvsp[(1) - (5)].formula)->AddText((yyvsp[(2) - (5)].word)); (yyvsp[(4) - (5)].formula)->AddParentheses(); (yyval.formula)->AddFormula((yyvsp[(4) - (5)].formula)); ;}
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 224 "antimony.ypp"
+#line 224 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula); (yyvsp[(1) - (2)].formula)->AddText((yyvsp[(2) - (2)].word));;}
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 225 "antimony.ypp"
+#line 225 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (2)].formula); (yyvsp[(1) - (2)].formula)->AddMathThing((yyvsp[(2) - (2)].character)); ;}
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 226 "antimony.ypp"
+#line 226 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (4)].formula); (yyvsp[(3) - (4)].formula)->AddParentheses(); (yyval.formula)->AddFormula((yyvsp[(3) - (4)].formula)); ;}
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 227 "antimony.ypp"
+#line 227 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('<'); (yyvsp[(1) - (3)].formula)->AddMathThing('='); ;}
     break;
 
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 228 "antimony.ypp"
+#line 228 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('>'); (yyvsp[(1) - (3)].formula)->AddMathThing('='); ;}
     break;
 
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 229 "antimony.ypp"
+#line 229 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('='); (yyvsp[(1) - (3)].formula)->AddMathThing('='); ;}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 230 "antimony.ypp"
+#line 230 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('!'); (yyvsp[(1) - (3)].formula)->AddMathThing('='); ;}
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 231 "antimony.ypp"
+#line 231 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('&'); (yyvsp[(1) - (3)].formula)->AddMathThing('&'); ;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 232 "antimony.ypp"
+#line 232 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyvsp[(1) - (3)].formula)->AddMathThing('|'); (yyvsp[(1) - (3)].formula)->AddMathThing('|'); ;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 235 "antimony.ypp"
+#line 235 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (1)].formula);;}
     break;
 
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 236 "antimony.ypp"
+#line 236 "src/antimony.ypp"
     {(yyval.formula) = (yyvsp[(1) - (3)].formula); (yyval.formula)->AddMathThing(','); (yyval.formula)->AddFormula((yyvsp[(3) - (3)].formula)); ;}
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 239 "antimony.ypp"
+#line 239 "src/antimony.ypp"
     {(yyval.character) = '+';;}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 240 "antimony.ypp"
+#line 240 "src/antimony.ypp"
     {(yyval.character) = '-';;}
     break;
 
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 241 "antimony.ypp"
+#line 241 "src/antimony.ypp"
     {(yyval.character) = '*';;}
     break;
 
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 242 "antimony.ypp"
+#line 242 "src/antimony.ypp"
     {(yyval.character) = '/';;}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 243 "antimony.ypp"
+#line 243 "src/antimony.ypp"
     {(yyval.character) = '^';;}
     break;
 
   case 88:
 
 /* Line 1455 of yacc.c  */
-#line 244 "antimony.ypp"
+#line 244 "src/antimony.ypp"
     {(yyval.character) = '>';;}
     break;
 
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 245 "antimony.ypp"
+#line 245 "src/antimony.ypp"
     {(yyval.character) = '<';;}
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 246 "antimony.ypp"
+#line 246 "src/antimony.ypp"
     {(yyval.character) = '!';;}
     break;
 
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 249 "antimony.ypp"
+#line 249 "src/antimony.ypp"
     {;}
     break;
 
   case 92:
 
 /* Line 1455 of yacc.c  */
-#line 250 "antimony.ypp"
+#line 250 "src/antimony.ypp"
     {;}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 253 "antimony.ypp"
+#line 253 "src/antimony.ypp"
     {if ((yyvsp[(1) - (3)].variable)->SetFormula((yyvsp[(3) - (3)].formula))) YYABORT; ;}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 254 "antimony.ypp"
+#line 254 "src/antimony.ypp"
     {if ((yyvsp[(1) - (3)].variable)->Synchronize((yyvsp[(3) - (3)].variable))) YYABORT;;}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 255 "antimony.ypp"
+#line 255 "src/antimony.ypp"
     {if ((yyvsp[(1) - (3)].variable)->SetDisplayName(*((yyvsp[(3) - (3)].word)))) YYABORT;;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 256 "antimony.ypp"
+#line 256 "src/antimony.ypp"
     {if ((yyvsp[(1) - (4)].variable)->SetAssignmentRule((yyvsp[(4) - (4)].formula))) YYABORT;;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 257 "antimony.ypp"
+#line 257 "src/antimony.ypp"
     {if ((yyvsp[(1) - (4)].variable)->SetRateRule((yyvsp[(4) - (4)].formula))) YYABORT;;}
     break;
 
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 260 "antimony.ypp"
+#line 260 "src/antimony.ypp"
     {if ((yyvsp[(1) - (4)].variable)->SetModule((yyvsp[(3) - (4)].word))) YYABORT;;}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 260 "antimony.ypp"
+#line 260 "src/antimony.ypp"
     {if ((yyvsp[(8) - (8)].variable) != NULL) {if ((yyvsp[(1) - (8)].variable)->SetCompartment((yyvsp[(8) - (8)].variable))) YYABORT;};}
     break;
 
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 261 "antimony.ypp"
+#line 261 "src/antimony.ypp"
     {if(g_registry.CurrentModule()->SetModule((yyvsp[(1) - (2)].word))) YYABORT;;}
     break;
 
   case 101:
 
 /* Line 1455 of yacc.c  */
-#line 261 "antimony.ypp"
+#line 261 "src/antimony.ypp"
     {if ((yyvsp[(6) - (6)].variable) != NULL) {if (g_registry.SetCompartmentOfCurrentSubmod((yyvsp[(6) - (6)].variable))) YYABORT;};}
     break;
 
   case 102:
 
 /* Line 1455 of yacc.c  */
-#line 264 "antimony.ypp"
+#line 264 "src/antimony.ypp"
     {;}
     break;
 
   case 103:
 
 /* Line 1455 of yacc.c  */
-#line 265 "antimony.ypp"
+#line 265 "src/antimony.ypp"
     {if (g_registry.AddVariableToCurrentImportList((yyvsp[(1) - (1)].variable))) YYABORT; ;}
     break;
 
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 266 "antimony.ypp"
+#line 266 "src/antimony.ypp"
     { if (g_registry.AddVariableToCurrentImportList((yyvsp[(3) - (3)].variable))) YYABORT; ;}
     break;
 
   case 105:
 
 /* Line 1455 of yacc.c  */
-#line 269 "antimony.ypp"
+#line 269 "src/antimony.ypp"
     { ;}
     break;
 
   case 106:
 
 /* Line 1455 of yacc.c  */
-#line 270 "antimony.ypp"
+#line 270 "src/antimony.ypp"
     { ;}
     break;
 
   case 107:
 
 /* Line 1455 of yacc.c  */
-#line 271 "antimony.ypp"
+#line 271 "src/antimony.ypp"
     { ;}
     break;
 
   case 108:
 
 /* Line 1455 of yacc.c  */
-#line 272 "antimony.ypp"
+#line 272 "src/antimony.ypp"
     { ;}
     break;
 
   case 109:
 
 /* Line 1455 of yacc.c  */
-#line 273 "antimony.ypp"
+#line 273 "src/antimony.ypp"
     { ;}
     break;
 
   case 110:
 
 /* Line 1455 of yacc.c  */
-#line 274 "antimony.ypp"
+#line 274 "src/antimony.ypp"
     { ;}
     break;
 
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 276 "antimony.ypp"
+#line 276 "src/antimony.ypp"
     { ;}
     break;
 
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 277 "antimony.ypp"
+#line 277 "src/antimony.ypp"
     { ;}
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 280 "antimony.ypp"
+#line 280 "src/antimony.ypp"
     {g_registry.SetConstness(constDEFAULT); (yyvsp[(2) - (2)].variable)->SetRegConst(); if ((yyvsp[(2) - (2)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
     break;
 
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 281 "antimony.ypp"
+#line 281 "src/antimony.ypp"
     {g_registry.SetConstness(constVAR); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
     break;
 
   case 115:
 
 /* Line 1455 of yacc.c  */
-#line 282 "antimony.ypp"
+#line 282 "src/antimony.ypp"
     {g_registry.SetConstness(constCONST); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
     break;
 
   case 116:
 
 /* Line 1455 of yacc.c  */
-#line 283 "antimony.ypp"
+#line 283 "src/antimony.ypp"
     {(yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varSpeciesUndef)) YYABORT; ;}
     break;
 
   case 117:
 
 /* Line 1455 of yacc.c  */
-#line 286 "antimony.ypp"
+#line 286 "src/antimony.ypp"
     {g_registry.SetConstness(constDEFAULT); (yyvsp[(2) - (2)].variable)->SetRegConst(); if ((yyvsp[(2) - (2)].variable)->SetType(varFormulaUndef)) YYABORT; ;}
     break;
 
   case 118:
 
 /* Line 1455 of yacc.c  */
-#line 287 "antimony.ypp"
+#line 287 "src/antimony.ypp"
     {g_registry.SetConstness(constVAR); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaUndef)) YYABORT; ;}
     break;
 
   case 119:
 
 /* Line 1455 of yacc.c  */
-#line 288 "antimony.ypp"
+#line 288 "src/antimony.ypp"
     {g_registry.SetConstness(constCONST); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaUndef)) YYABORT; ;}
     break;
 
   case 120:
 
 /* Line 1455 of yacc.c  */
-#line 289 "antimony.ypp"
+#line 289 "src/antimony.ypp"
     {(yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaUndef)) YYABORT; ;}
     break;
 
   case 121:
 
 /* Line 1455 of yacc.c  */
-#line 292 "antimony.ypp"
+#line 292 "src/antimony.ypp"
     {g_registry.SetConstness(constDEFAULT); (yyvsp[(2) - (2)].variable)->SetRegConst(); if ((yyvsp[(2) - (2)].variable)->SetType(varReactionUndef)) YYABORT; ;}
     break;
 
   case 122:
 
 /* Line 1455 of yacc.c  */
-#line 293 "antimony.ypp"
+#line 293 "src/antimony.ypp"
     {g_registry.SetConstness(constVAR); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varReactionUndef)) YYABORT; ;}
     break;
 
   case 123:
 
 /* Line 1455 of yacc.c  */
-#line 294 "antimony.ypp"
+#line 294 "src/antimony.ypp"
     {g_registry.SetError("Reactions may not be set 'const'."); YYABORT; ;}
     break;
 
   case 124:
 
 /* Line 1455 of yacc.c  */
-#line 295 "antimony.ypp"
+#line 295 "src/antimony.ypp"
     {(yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varReactionUndef)) YYABORT; ;}
     break;
 
   case 125:
 
 /* Line 1455 of yacc.c  */
-#line 298 "antimony.ypp"
+#line 298 "src/antimony.ypp"
     {g_registry.SetConstness(constDEFAULT); (yyvsp[(2) - (2)].variable)->SetRegConst(); if ((yyvsp[(2) - (2)].variable)->SetType(varDNA)) YYABORT; ;}
     break;
 
   case 126:
 
 /* Line 1455 of yacc.c  */
-#line 299 "antimony.ypp"
+#line 299 "src/antimony.ypp"
     {g_registry.SetConstness(constVAR); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varDNA)) YYABORT; ;}
     break;
 
   case 127:
 
 /* Line 1455 of yacc.c  */
-#line 300 "antimony.ypp"
+#line 300 "src/antimony.ypp"
     {g_registry.SetConstness(constCONST); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varDNA)) YYABORT; ;}
     break;
 
   case 128:
 
 /* Line 1455 of yacc.c  */
-#line 301 "antimony.ypp"
+#line 301 "src/antimony.ypp"
     {(yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varDNA)) YYABORT; ;}
     break;
 
   case 129:
 
 /* Line 1455 of yacc.c  */
-#line 304 "antimony.ypp"
+#line 304 "src/antimony.ypp"
     {g_registry.SetConstness(constDEFAULT); (yyvsp[(2) - (2)].variable)->SetRegConst(); if ((yyvsp[(2) - (2)].variable)->SetType(varReactionGene)) YYABORT; ;}
     break;
 
   case 130:
 
 /* Line 1455 of yacc.c  */
-#line 305 "antimony.ypp"
+#line 305 "src/antimony.ypp"
     {g_registry.SetConstness(constVAR); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varReactionGene)) YYABORT; ;}
     break;
 
   case 131:
 
 /* Line 1455 of yacc.c  */
-#line 306 "antimony.ypp"
+#line 306 "src/antimony.ypp"
     {g_registry.SetError("Genes may not be set 'const'."); YYABORT; ;}
     break;
 
   case 132:
 
 /* Line 1455 of yacc.c  */
-#line 307 "antimony.ypp"
+#line 307 "src/antimony.ypp"
     {(yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varReactionGene)) YYABORT; ;}
     break;
 
   case 133:
 
 /* Line 1455 of yacc.c  */
-#line 310 "antimony.ypp"
+#line 310 "src/antimony.ypp"
     {g_registry.SetConstness(constDEFAULT); (yyvsp[(2) - (2)].variable)->SetRegConst(); if ((yyvsp[(2) - (2)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
     break;
 
   case 134:
 
 /* Line 1455 of yacc.c  */
-#line 311 "antimony.ypp"
+#line 311 "src/antimony.ypp"
     {g_registry.SetConstness(constVAR); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
     break;
 
   case 135:
 
 /* Line 1455 of yacc.c  */
-#line 312 "antimony.ypp"
+#line 312 "src/antimony.ypp"
     {g_registry.SetConstness(constCONST); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
     break;
 
   case 136:
 
 /* Line 1455 of yacc.c  */
-#line 313 "antimony.ypp"
+#line 313 "src/antimony.ypp"
     {(yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varFormulaOperator)) YYABORT; ;}
     break;
 
   case 137:
 
 /* Line 1455 of yacc.c  */
-#line 326 "antimony.ypp"
+#line 326 "src/antimony.ypp"
     {g_registry.SetConstness(constDEFAULT); (yyvsp[(2) - (2)].variable)->SetRegConst(); if ((yyvsp[(2) - (2)].variable)->SetType(varCompartment)) YYABORT; ;}
     break;
 
   case 138:
 
 /* Line 1455 of yacc.c  */
-#line 327 "antimony.ypp"
+#line 327 "src/antimony.ypp"
     {g_registry.SetConstness(constVAR); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varCompartment)) YYABORT; ;}
     break;
 
   case 139:
 
 /* Line 1455 of yacc.c  */
-#line 328 "antimony.ypp"
+#line 328 "src/antimony.ypp"
     {g_registry.SetConstness(constCONST); (yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varCompartment)) YYABORT; ;}
     break;
 
   case 140:
 
 /* Line 1455 of yacc.c  */
-#line 329 "antimony.ypp"
+#line 329 "src/antimony.ypp"
     {(yyvsp[(3) - (3)].variable)->SetRegConst(); if ((yyvsp[(3) - (3)].variable)->SetType(varCompartment)) YYABORT; ;}
     break;
 
   case 141:
 
 /* Line 1455 of yacc.c  */
-#line 332 "antimony.ypp"
+#line 332 "src/antimony.ypp"
     {g_registry.SetConstness(constVAR); (yyvsp[(2) - (2)].variable)->SetRegConst();;}
     break;
 
   case 142:
 
 /* Line 1455 of yacc.c  */
-#line 333 "antimony.ypp"
+#line 333 "src/antimony.ypp"
     {g_registry.SetConstness(constCONST); (yyvsp[(2) - (2)].variable)->SetRegConst();;}
     break;
 
   case 143:
 
 /* Line 1455 of yacc.c  */
-#line 334 "antimony.ypp"
+#line 334 "src/antimony.ypp"
     {(yyvsp[(3) - (3)].variable)->SetRegConst();;}
     break;
 
   case 144:
 
 /* Line 1455 of yacc.c  */
-#line 337 "antimony.ypp"
+#line 337 "src/antimony.ypp"
     {if (g_registry.SaveWorkingStrand()) YYABORT;;}
     break;
 
   case 145:
 
 /* Line 1455 of yacc.c  */
-#line 338 "antimony.ypp"
+#line 338 "src/antimony.ypp"
     {if (g_registry.SetStrandAs((yyvsp[(1) - (3)].variable))) YYABORT;;}
     break;
 
   case 146:
 
 /* Line 1455 of yacc.c  */
-#line 341 "antimony.ypp"
+#line 341 "src/antimony.ypp"
     {if (g_registry.SetNewUpstreamOpen((yyvsp[(2) - (2)].variable))) YYABORT;;}
     break;
 
   case 147:
 
 /* Line 1455 of yacc.c  */
-#line 342 "antimony.ypp"
+#line 342 "src/antimony.ypp"
     {g_registry.SetOpenUpstream(); ;}
     break;
 
   case 148:
 
 /* Line 1455 of yacc.c  */
-#line 343 "antimony.ypp"
+#line 343 "src/antimony.ypp"
     {if (g_registry.SetDownstreamEnd((yyvsp[(2) - (2)].variable))) YYABORT;;}
     break;
 
   case 149:
 
 /* Line 1455 of yacc.c  */
-#line 344 "antimony.ypp"
+#line 344 "src/antimony.ypp"
     {g_registry.SetOpenUpstream(); if(g_registry.SetDownstreamEnd((yyvsp[(3) - (3)].variable))) YYABORT;;}
     break;
 
   case 150:
 
 /* Line 1455 of yacc.c  */
-#line 345 "antimony.ypp"
+#line 345 "src/antimony.ypp"
     { ;}
     break;
 
   case 151:
 
 /* Line 1455 of yacc.c  */
-#line 348 "antimony.ypp"
+#line 348 "src/antimony.ypp"
     {if (g_registry.SetNewDownstreamOpen((yyvsp[(1) - (2)].variable))) YYABORT;;}
     break;
 
   case 152:
 
 /* Line 1455 of yacc.c  */
-#line 349 "antimony.ypp"
+#line 349 "src/antimony.ypp"
     {if (g_registry.SetDownstreamOpen((yyvsp[(2) - (3)].variable))) YYABORT;;}
     break;
 
   case 153:
 
 /* Line 1455 of yacc.c  */
-#line 352 "antimony.ypp"
+#line 352 "src/antimony.ypp"
     {if (g_registry.SetNewCurrentEvent((yyvsp[(2) - (3)].formula))) YYABORT;;}
     break;
 
   case 154:
 
 /* Line 1455 of yacc.c  */
-#line 352 "antimony.ypp"
+#line 352 "src/antimony.ypp"
     {;}
     break;
 
   case 155:
 
 /* Line 1455 of yacc.c  */
-#line 353 "antimony.ypp"
+#line 353 "src/antimony.ypp"
     {if (g_registry.SetNewCurrentEvent((yyvsp[(2) - (5)].formula), (yyvsp[(4) - (5)].formula))) YYABORT;;}
     break;
 
   case 156:
 
 /* Line 1455 of yacc.c  */
-#line 353 "antimony.ypp"
+#line 353 "src/antimony.ypp"
     {;}
     break;
 
   case 157:
 
 /* Line 1455 of yacc.c  */
-#line 354 "antimony.ypp"
+#line 354 "src/antimony.ypp"
     {if (g_registry.SetNewCurrentEvent((yyvsp[(4) - (5)].formula), (yyvsp[(1) - (5)].variable))) YYABORT;;}
     break;
 
   case 158:
 
 /* Line 1455 of yacc.c  */
-#line 354 "antimony.ypp"
+#line 354 "src/antimony.ypp"
     {;}
     break;
 
   case 159:
 
 /* Line 1455 of yacc.c  */
-#line 355 "antimony.ypp"
+#line 355 "src/antimony.ypp"
     {if (g_registry.SetNewCurrentEvent((yyvsp[(4) - (7)].formula), (yyvsp[(6) - (7)].formula), (yyvsp[(1) - (7)].variable))) YYABORT;;}
     break;
 
   case 160:
 
 /* Line 1455 of yacc.c  */
-#line 355 "antimony.ypp"
+#line 355 "src/antimony.ypp"
     {;}
     break;
 
   case 161:
 
 /* Line 1455 of yacc.c  */
-#line 356 "antimony.ypp"
+#line 356 "src/antimony.ypp"
     {if (g_registry.SetNewCurrentEvent((yyvsp[(4) - (6)].formula), (yyvsp[(1) - (6)].variable))) YYABORT;;}
     break;
 
   case 162:
 
 /* Line 1455 of yacc.c  */
-#line 356 "antimony.ypp"
+#line 356 "src/antimony.ypp"
     {;}
     break;
 
   case 163:
 
 /* Line 1455 of yacc.c  */
-#line 359 "antimony.ypp"
+#line 359 "src/antimony.ypp"
     {if (g_registry.AddResultToCurrentEvent((yyvsp[(1) - (3)].variable), (yyvsp[(3) - (3)].formula))) YYABORT;;}
     break;
 
   case 164:
 
 /* Line 1455 of yacc.c  */
-#line 360 "antimony.ypp"
+#line 360 "src/antimony.ypp"
     {if (g_registry.AddResultToCurrentEvent((yyvsp[(1) - (5)].variable), (yyvsp[(3) - (5)].formula))) YYABORT;;}
     break;
 
   case 165:
 
 /* Line 1455 of yacc.c  */
-#line 361 "antimony.ypp"
+#line 361 "src/antimony.ypp"
     {if (g_registry.AddResultToCurrentEvent((yyvsp[(1) - (6)].variable), (yyvsp[(3) - (6)].formula))) YYABORT;;}
     break;
 
   case 166:
 
 /* Line 1455 of yacc.c  */
-#line 362 "antimony.ypp"
+#line 362 "src/antimony.ypp"
     {if (g_registry.AddResultToCurrentEvent((yyvsp[(1) - (5)].variable), (yyvsp[(3) - (5)].formula))) YYABORT;;}
     break;
 
   case 167:
 
 /* Line 1455 of yacc.c  */
-#line 363 "antimony.ypp"
+#line 363 "src/antimony.ypp"
     {if (g_registry.AddResultToCurrentEvent((yyvsp[(1) - (6)].variable), (yyvsp[(3) - (6)].formula))) YYABORT;;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2948 "antimony.tab.cpp"
+#line 2948 "src/antimony.tab.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -3156,7 +3156,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 366 "antimony.ypp"
+#line 366 "src/antimony.ypp"
 
 
 
@@ -3255,7 +3255,7 @@ int yylex(void)
       return COMPARTMENT;
     }
     if (CaselessStrCmp(word, "in")) {
-      return A_IN;
+      return IN;
     }
     if (CaselessStrCmp(word, "is")) {
       return IS;
@@ -3264,10 +3264,10 @@ int yylex(void)
       return VAR;
     }
     if (CaselessStrCmp(word, "const")) {
-      return A_CONST;
+      return CONST;
     }
     if (CaselessStrCmp(word, "ext")) {
-      return A_CONST;
+      return CONST;
     }
     if (CaselessStrCmp(word, "import")) {
       return IMPORT;

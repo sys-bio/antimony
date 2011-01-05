@@ -182,7 +182,7 @@ public:
   void  GetAllSpeciesAndReactions(std::set<Variable*>& species, std::set<Variable*>& reactions);
   Module* BestModuleToAdd(std::set<Variable*> involvedrxns, std::set<Variable*>& contains );
   void  AddRateRuleInvolving(Variable* species, Formula form, std::set<Variable*> involvedrxns, iface::dom::Document* doc);
-  std::string FindOrCreateLocalVersionOf(Variable* variable);
+  void  FindOrCreateLocalVersionOf(Variable* variable, std::string& newvarname, iface::cellml_api::CellMLVariable*& newlocalvar);
 #endif
 
   void  FixNames();
