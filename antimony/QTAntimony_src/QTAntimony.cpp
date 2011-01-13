@@ -16,7 +16,7 @@ QTAntimony::QTAntimony(int& argc, char**& argv)
         m_original(NULL),
         m_opened(false),
         m_usesbw(false),
-		m_currentdir(""), //will set this below.
+        m_currentdir(""), //will set this below.
         m_basewindow(NULL)
 {
 #ifdef SBW_INTEGRATION

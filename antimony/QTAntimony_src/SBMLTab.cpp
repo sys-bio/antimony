@@ -63,6 +63,28 @@ bool SBMLTab::IsMixed()
     return false;
 }
 
+bool SBMLTab::SetLevelAndVersion(int levelversion)
+{
+  switch(levelversion) {
+  case 0: return SetLevelAndVersion(1, 2);
+  case 1: return SetLevelAndVersion(2, 1);
+  case 2: return SetLevelAndVersion(2, 2);
+  case 3: return SetLevelAndVersion(2, 3);
+  case 4: return SetLevelAndVersion(2, 4);
+  case 5: return SetLevelAndVersion(3, 1);
+  default:
+      CopyMessageBox msgBox;
+      QDataStream messagest = "";
+      messagest << "Programming error:  unable to set SBML level and version to '" << levelversion << "':  unknown code.";
+      QString message;
+      messagest >> message;
+      msgBox.setText(message);
+      msgBox.setStandardButtons(QMessageBox::Ok);
+      msgBox.exec();
+      return false;
+  }
+}
+
 bool SBMLTab::SetLevelAndVersion(int level, int version)
 {
     SBMLDocument* sbmldoc = readSBMLFromString(toPlainText().toUtf8());
@@ -116,51 +138,4 @@ void SBMLTab::SetTranslated()
 {
     ChangeableTextBox::SetTranslated();
     m_levelversion = 4;
-}
-
-void SBMLTab::WhichLevelAndVersion()
-{
-    QStringList lvs;
-    lvs     << tr("Level 1 Version 2")
-            << tr("Level 2 Version 1")
-            << tr("Level 2 Version 2")
-            << tr("Level 2 Version 3")
-            << tr("Level 2 Version 4")
-            //<< tr("Level 3 Version 1")
-            ;
-     bool ok;
-     QString item = QInputDialog::getItem(this, tr("SBML Level and Version"),
-                                          tr("Choose SBML Level and Version for ") + GetTabName() + tr(":"), lvs, m_levelversion, false, &ok);
-     if (ok && !item.isEmpty()) {
-         if (item == tr("Level 1 Version 2")) {
-           if (SetLevelAndVersion(1,2)) {
-             m_levelversion = 0;
-           }
-         }
-         if (item == tr("Level 2 Version 1")) {
-           if (SetLevelAndVersion(2,1)) {
-             m_levelversion = 1;
-           }
-         }
-         if (item == tr("Level 2 Version 2")) {
-           if (SetLevelAndVersion(2,2)) {
-             m_levelversion = 2;
-           }
-         }
-         if (item == tr("Level 2 Version 3")) {
-           if (SetLevelAndVersion(2,3)) {
-             m_levelversion = 3;
-           }
-         }
-         if (item == tr("Level 2 Version 4")) {
-           if (SetLevelAndVersion(2,4)) {
-             m_levelversion = 4;
-           }
-         }
-         if (item == tr("Level 3 Version 1")) {
-           if (SetLevelAndVersion(3,1)) {
-             m_levelversion = 5;
-           }
-         }
-     }
 }

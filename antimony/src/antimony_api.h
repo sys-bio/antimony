@@ -60,8 +60,8 @@
 #ifndef ANTIMONY_API_H
 #define ANTIMONY_API_H
 
-#ifndef VERSION_STRING //So we can define it in the makefile if need be.
-#define VERSION_STRING "v1.3"
+#ifndef LIBANTIMONY_VERSION_STRING //Should be defined in the makefile (from CMakeLists.txt)
+#define LIBANTIMONY_VERSION_STRING "v1.4"
 #endif
 
 

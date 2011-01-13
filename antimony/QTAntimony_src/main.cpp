@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 {
 
 #ifdef SBW_INTEGRATION
-        bool sbwon = true;
+  bool sbwon = true;
 
 	static const char* Name("QTAntimony");
 	static const char* ServiceName("QTAntimony");
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 #else
         a.SetUseSBW(false);
 #endif
-        if (argc==1) {
+  if (argc==1) {
 		a.NewWindow();
 	}
 

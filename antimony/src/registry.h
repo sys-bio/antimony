@@ -24,8 +24,8 @@
 #endif
 
 #define MAINMODULE "__main"
-#ifndef VERSION_STRING //So we can define it in the makefile if need be.
-#define VERSION_STRING "v1.4"
+#ifndef LIBANTIMONY_VERSION_STRING //Should be created in the makefile (CMakeLists.txt)
+#define LIBANTIMONY_VERSION_STRING "v1.4"
 #endif
 
 class Registry
