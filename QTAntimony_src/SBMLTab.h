@@ -17,10 +17,11 @@ public:
     virtual void addSpecialCopyToMenu(QMenu* menu, QAction* paste);
     virtual void ReplaceModelWithString(QString model, QString text);
     virtual bool IsMixed();
+    bool SetLevelAndVersion(int levelversion);
     bool SetLevelAndVersion(int level, int version);
+    int  GetLevelAndVersionCode() {return m_levelversion;};
 
 public slots:
     void SetTranslated();
-    void WhichLevelAndVersion();
 };
 #endif // SBMLTAB_H

@@ -19,6 +19,7 @@ using namespace SystemsBiologyWorkbench;
 #include "Settings.h"
 #include "AntimonyTab.h"
 #include "ChangeableTextBox.h"
+#include "resource.h"
 #include "SBMLTab.h"
 #include "CellMLTab.h"
 #include "FileWatcher.h"
@@ -48,6 +49,9 @@ Translator::Translator(QTAntimony* app, QString filename)
         m_antimony(),
         m_filewatcher(new FileWatcher)
 {
+  //Set the window icon (for windows)
+  //QIcon anticon(ANT_ICON1);
+  //setWindowIcon(anticon);
     //We need to know if we should display SBML tabs, CellML tabs, or both:
     QSettings qset(ORG, APP);
     qset.sync();
@@ -72,6 +76,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     actionSaveAs->setEnabled(true);
     QAction* actionSaveAntimony = new QAction(tr("Save &Antimony"), this);
     actionSaveAntimony->setShortcut(QKeySequence(tr("Alt+a")));
+
     actionSaveAntimony->setEnabled(true);
     QAction* actionSaveSBML = new QAction(tr("Save All S&BML"), this);
     actionSaveSBML->setShortcut(QKeySequence(tr("Alt+s")));
@@ -180,7 +185,6 @@ Translator::Translator(QTAntimony* app, QString filename)
             m_filewatcher->addPath(filename);
             long SBMLHandle = loadSBMLFile(filename.toUtf8().data());
             long AntimonyHandle = loadFile(filename.toUtf8().data());
-            long CellMLHandle = loadCellMLFile(filename.toUtf8().data());
             if (SBMLHandle == -1 && AntimonyHandle != -1) {
                 //Originally Antimony
                 m_antimony->setText(filetext);
@@ -213,11 +217,13 @@ Translator::Translator(QTAntimony* app, QString filename)
                     m_tabmanager->TranslateSBML();
                 }
             }
-            else if (CellMLHandle != -1) {
+#ifndef NCELLML
+            else if (loadCellMLFile(filename.toUtf8().data()) != -1) {
                 //Originally CellML
                 char* modname = getMainModuleName();
                 AddCellMLTab(modname, filetext, false);
             }
+#endif
             else {
                 //Not a valid file of either format, but maybe we can tell if it's XML or not.
                 QRegExp lessthanstart("^\\s*<");
@@ -280,6 +286,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(actionTranslateCurrent, SIGNAL(triggered()), m_tabmanager, SLOT(TranslateCurrent()));
     connect(actionTranslateAntimony, SIGNAL(triggered()), m_tabmanager, SLOT(TranslateAntimony()));
     connect(actionTranslateSBML, SIGNAL(triggered()), m_tabmanager, SLOT(TranslateSBML()));
+    connect(m_actionSetSBMLLevelAndVersion, SIGNAL(triggered()), m_tabmanager, SLOT(SetAllSBMLLevelsAndVersions()));
     connect(m_actionRevertToTranslated, SIGNAL(triggered()), m_tabmanager, SLOT(revertToTranslated()));
     connect(m_antimony, SIGNAL(TranslatedAvailable(bool)), m_actionRevertToTranslated, SLOT(setEnabled(bool)));
     connect(m_actionRevertToOriginal, SIGNAL(triggered()), m_tabmanager, SLOT(revertToOriginal()));
@@ -426,7 +433,6 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated)
     connect(sbml, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), sbml, SLOT(FileChanged(QString)));
     connect(sbml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
-    connect(m_actionSetSBMLLevelAndVersion, SIGNAL(triggered()), sbml, SLOT(WhichLevelAndVersion()));
 }
 
 void Translator::AddCellMLTab(QString name, QString text, bool translated)
@@ -503,7 +509,7 @@ void Translator::DisplayAbout()
 {
    QMessageBox msgBox;
     msgBox.setText("QTAntimony v0.6.1:");
-    msgBox.setInformativeText("Based on libAntimony " VERSION_STRING " and libSBML v" LIBSBML_DOTTED_VERSION);
+    msgBox.setInformativeText("Based on libAntimony " LIBANTIMONY_VERSION_STRING " and libSBML v" LIBSBML_DOTTED_VERSION);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.exec();
 

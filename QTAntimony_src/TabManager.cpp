@@ -9,6 +9,7 @@
 #include <QPrintDialog>
 #include <QAction>
 #include <QFontDialog>
+#include <QInputDialog>
 #include <vector>
 #include <cassert>
 
@@ -313,8 +314,11 @@ void TabManager::TranslateAntimony(QString& text)
 	if (m_cellmltab != -1) {
 		ChangeableTextBox* cellmltab = textbox(m_cellmltab);
 		char* mainmodel = getMainModuleName();
-                //char* cellmltext = "Temp CellML Text";
+#ifdef NCELLML
+                char* cellmltext = "Temp CellML Text";
+#else
                 char* cellmltext = getCellMLString(mainmodel); //LS DEBUG CELLML
+#endif
 		cellmltab->SetTranslatedText(QString(cellmltext));
 	}
     //Translate to SBML if need be:
@@ -439,6 +443,49 @@ void TabManager::TranslateCellML(QString& text)
 #ifndef WIN32
     freeAll();
 #endif
+}
+
+void TabManager::SetAllSBMLLevelsAndVersions()
+{
+  if (m_sbmltab == -1) return;
+  QStringList lvs;
+  lvs     << tr("Level 1 Version 2")
+          << tr("Level 2 Version 1")
+          << tr("Level 2 Version 2")
+          << tr("Level 2 Version 3")
+          << tr("Level 2 Version 4")
+          << tr("Level 3 Version 1")
+    ;
+  bool ok;
+  SBMLTab* sbmltab = static_cast<SBMLTab*>(textbox(m_sbmltab));
+
+  int levelversion = sbmltab->GetLevelAndVersionCode();
+  QString item = QInputDialog::getItem(this, tr("SBML Level and Version"),
+    tr("Choose SBML Level and Version:"), lvs, levelversion, false, &ok);
+  if (ok && !item.isEmpty()) {
+    if (item == tr("Level 1 Version 2")) {
+      levelversion = 0;
+    }
+    if (item == tr("Level 2 Version 1")) {
+      levelversion = 1;
+    }
+    if (item == tr("Level 2 Version 2")) {
+      levelversion = 2;
+    }
+    if (item == tr("Level 2 Version 3")) {
+      levelversion = 3;
+    }
+    if (item == tr("Level 2 Version 4")) {
+      levelversion = 4;
+    }
+    if (item == tr("Level 3 Version 1")) {
+      levelversion = 5;
+    }
+  }
+  for (int tnum=m_sbmltab; tnum<count(); tnum++) {
+    sbmltab = static_cast<SBMLTab*>(textbox(tnum));
+    sbmltab->SetLevelAndVersion(levelversion);
+  }
 }
 
 void TabManager::TabNameIs(const QString& tabname, ChangeableTextBox* tab)

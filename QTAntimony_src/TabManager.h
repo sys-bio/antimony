@@ -57,6 +57,8 @@ public slots:
     void TranslateSBML();
     void TranslateCellML();
 
+    void SetAllSBMLLevelsAndVersions();
+
     void TabNameIs(const QString& tabname, ChangeableTextBox* tab);
 
 #ifdef SBW_INTEGRATION

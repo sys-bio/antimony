@@ -345,7 +345,7 @@ void Module::CreateSBMLModel()
   Model* sbmlmod = m_sbml.createModel();
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(m_modulename);
-  sbmlmod->setNotes("<body xmlns=\"http://www.w3.org/1999/xhtml\"><p> Originally created by libAntimony " VERSION_STRING " (using libSBML " LIBSBML_DOTTED_VERSION ") </p></body>");
+  sbmlmod->setNotes("<body xmlns=\"http://www.w3.org/1999/xhtml\"><p> Originally created by libAntimony " LIBANTIMONY_VERSION_STRING " (using libSBML " LIBSBML_DOTTED_VERSION ") </p></body>");
   char cc = g_registry.GetCC();
   //User-defined functions
   for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
