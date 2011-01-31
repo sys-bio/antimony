@@ -17,7 +17,7 @@
 #include <CellMLBootstrap.hpp>
 #endif
 
-#define LEVELANDVERSION 2, 4
+#define LEVELANDVERSION 3, 1
 
 extern Registry g_registry;
 using namespace std;
@@ -33,9 +33,11 @@ Module::Module(string name)
     m_returnvalue(),
     m_currentexportvar(0),
     m_ismain(false),
+    m_sbmllevel(3),
+    m_sbmlversion(1),
     m_varmap(),
 #ifndef NSBML
-    m_sbml(LEVELANDVERSION),
+    m_sbml(m_sbmllevel, m_sbmlversion),
     m_libsbml_info(""),
     m_libsbml_warnings(""),
 #endif
@@ -46,9 +48,6 @@ Module::Module(string name)
 #endif
     m_uniquevars()
 {
-#ifndef NSBML
-  m_sbml.setLevelAndVersion(LEVELANDVERSION); //LS DEBUG:  bug in libsbml requires this (9/23/09)
-#endif
 }
 
 Module::Module(const Module& src, string newtopname, string modulename)

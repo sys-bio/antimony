@@ -1670,7 +1670,10 @@ LIB_EXTERN int writeSBMLFile(const char* filename, const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
   const SBMLDocument* sbmldoc = g_registry.GetModule(moduleName)->GetSBML();
-  int sbmlret = writeSBML(sbmldoc, filename);
+  SBMLWriter sbmlw;
+  sbmlw.setProgramName("libAntimony");
+  sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
+  int sbmlret = sbmlw.writeSBML(sbmldoc, filename);
   if (sbmlret == 0) {
     string error = "Unable to open file ";
     error += filename;
@@ -1684,7 +1687,10 @@ LIB_EXTERN char* getSBMLString(const char* moduleName)
 {
   if (!checkModule(moduleName)) return NULL;
   const SBMLDocument* sbmldoc = g_registry.GetModule(moduleName)->GetSBML();
-  char* sbmlstring = writeSBMLToString(sbmldoc);
+  SBMLWriter sbmlw;
+  sbmlw.setProgramName("libAntimony");
+  sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
+  char* sbmlstring = sbmlw.writeSBMLToString(sbmldoc);
   if (sbmlstring == NULL) {
     string error = "An underlying parser component in libSBML has failed when writing ";
     error += moduleName;
