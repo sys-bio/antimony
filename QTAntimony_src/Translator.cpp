@@ -19,7 +19,7 @@ using namespace SystemsBiologyWorkbench;
 #include "Settings.h"
 #include "AntimonyTab.h"
 #include "ChangeableTextBox.h"
-#include "resource.h"
+//#include "resource.h"
 #include "SBMLTab.h"
 #include "CellMLTab.h"
 #include "FileWatcher.h"

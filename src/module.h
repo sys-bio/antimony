@@ -39,6 +39,8 @@ private:
 
   size_t m_currentexportvar;
   bool m_ismain;
+  int m_sbmllevel;
+  int m_sbmlversion;
 
   //Caching for speed:
   std::map<std::vector<std::string>, Variable*> m_varmap;

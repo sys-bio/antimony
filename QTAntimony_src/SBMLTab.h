@@ -19,6 +19,7 @@ public:
     virtual bool IsMixed();
     bool SetLevelAndVersion(int levelversion);
     bool SetLevelAndVersion(int level, int version);
+    bool StoreLevelAndVersion(int level, int version);
     int  GetLevelAndVersionCode() {return m_levelversion;};
 
 public slots:

@@ -65,6 +65,7 @@ bool SBMLTab::IsMixed()
 
 bool SBMLTab::SetLevelAndVersion(int levelversion)
 {
+  m_levelversion = levelversion;
   switch(levelversion) {
   case 0: return SetLevelAndVersion(1, 2);
   case 1: return SetLevelAndVersion(2, 1);
@@ -132,6 +133,45 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
   }
 
     return success;
+}
+
+bool SBMLTab::StoreLevelAndVersion(int level, int version)
+{
+  switch(level) {
+  case 1:
+    if (version==2) {
+      m_levelversion = 0;
+      return true;
+    }
+    return false;
+  case 2:
+    switch(version) {
+    case 1:
+      m_levelversion = 1;
+      return true;
+    case 2:
+      m_levelversion = 2;
+      return true;
+    case 3:
+      m_levelversion = 3;
+      return true;
+    case 4:
+      m_levelversion = 4;
+      return true;
+    default:
+      return false;
+    }
+  case 3:
+    switch(version) {
+    case 1:
+      m_levelversion = 5;
+      return true;
+    default:
+      return false;
+    }
+  default:
+    return false;
+  }
 }
 
 void SBMLTab::SetTranslated()
