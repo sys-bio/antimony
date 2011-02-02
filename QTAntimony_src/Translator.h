@@ -40,7 +40,7 @@ public:
     Translator(); // Unimplemented--no default constructor.
     Translator(QTAntimony* app, QString filename="");
     //~Translator();  //Hmm, do we need destructors here?
-    void AddSBMLTab(QString name = "", QString text = "", bool translated=true);
+    void AddSBMLTab(QString name = "", QString text = "", bool translated=true, int level=3, int version=1);
     void AddCellMLTab(QString name = "", QString text = "", bool translated=true);
     void SetSBMLTab(QString model);
     bool IsBlank();

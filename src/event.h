@@ -12,13 +12,14 @@ class AntimonyEvent
 private:
   Formula m_trigger;
   Formula m_delay;
+  Formula m_priority;
   std::vector<std::vector<std::string> > m_varresults;
   std::vector<Formula> m_formresults;
   std::vector<std::string> m_name;
   std::string m_module;
 
 public:
-  AntimonyEvent(const Formula& delay, const Formula& trigger, Variable* var);
+  AntimonyEvent(const Formula& delay, const Formula& trigger, Variable* var, const Formula& priority);
   AntimonyEvent(); //A blank one we don't plan to use.
   ~AntimonyEvent() {};
 
@@ -30,6 +31,8 @@ public:
   Formula* GetTrigger() {return &m_trigger;};
   const Formula* GetDelay() const {return &m_delay;};
   Formula* GetDelay() {return &m_delay;};
+  const Formula* GetPriority() const {return &m_priority;};
+  Formula* GetPriority() {return &m_priority;};
   bool IsEmpty() const;
 
   size_t GetNumAssignments() const {return m_varresults.size();};

@@ -17,6 +17,8 @@ public:
     int addTab(ChangeableTextBox* page, const QString& label);
     int addTab(ChangeableTextBox* page, const QIcon& icon, const QString& label);
     ChangeableTextBox* textbox(int tabnum);
+    ChangeableTextBox* firstsbmltextbox();
+    ChangeableTextBox* cellmltextbox();
     void Translate(int tab);
     bool CanIClose();
     void SaveFonts();

@@ -17,8 +17,6 @@
 #include <CellMLBootstrap.hpp>
 #endif
 
-#define LEVELANDVERSION 3, 1
-
 extern Registry g_registry;
 using namespace std;
 
@@ -58,9 +56,12 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_synchronized(src.m_synchronized),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
+    m_ismain(src.m_ismain),
+    m_sbmllevel(src.m_sbmllevel),
+    m_sbmlversion(src.m_sbmlversion),
     m_varmap(), // useless--will reset with SetNewTopName, below.
 #ifndef NSBML
-    m_sbml(),
+    m_sbml(m_sbmllevel, m_sbmlversion),
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
     m_libsbml_warnings(),
 #endif
@@ -71,9 +72,6 @@ Module::Module(const Module& src, string newtopname, string modulename)
 #endif
     m_uniquevars()
 {
-#ifndef NSBML
-  m_sbml.setLevelAndVersion(LEVELANDVERSION); //LS DEBUG:  bug in libsbml requires this (9/23/09)
-#endif
   SetNewTopName(modulename, newtopname);
 #ifndef NSBML
   CreateSBMLModel(); //It's either this or go through and rename every blasted thing in it, and libSBML doesn't provide an easy way to go through all elements at once.
@@ -91,6 +89,9 @@ Module::Module(const Module& src)
     m_synchronized(src.m_synchronized),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(src.m_currentexportvar),
+    m_ismain(src.m_ismain),
+    m_sbmllevel(src.m_sbmllevel),
+    m_sbmlversion(src.m_sbmlversion),
     m_varmap(src.m_varmap),
 #ifndef NSBML
     m_sbml(src.m_sbml),
@@ -115,6 +116,9 @@ Module& Module::operator=(const Module& src)
   m_synchronized = src.m_synchronized;
   m_returnvalue = src.m_returnvalue;
   m_currentexportvar = src.m_currentexportvar;
+  m_ismain = src.m_ismain;
+  m_sbmllevel = src.m_sbmllevel;
+  m_sbmlversion = src.m_sbmlversion;
   m_varmap = src.m_varmap;
 #ifndef NSBML
   m_sbml = src.m_sbml;

@@ -12,7 +12,7 @@
 SBMLTab::SBMLTab(QWidget* parent)
         : ChangeableTextBox(parent),
         m_modelname(""),
-        m_levelversion(4)
+        m_levelversion(5)
 {
     m_filetypes = "SBML files (*.xml *.sbml);;All files(*.*)";
     m_extension = ".xml";
@@ -24,6 +24,8 @@ SBMLTab::SBMLTab(QWidget* parent)
     QFont newfont;
     newfont.fromString(qset.value("xmlfont", defaultfont).toString());
     setFont(newfont);
+    //m_levelversion = qset.value("sbmlLV", m_levelversion).Int();
+    // LS NOTE:  maybe do this at some point?  From an option in the menu, maybe?
 }
 
 void SBMLTab::SetModelName(QString name)
@@ -88,6 +90,7 @@ bool SBMLTab::SetLevelAndVersion(int levelversion)
 
 bool SBMLTab::SetLevelAndVersion(int level, int version)
 {
+    if (toPlainText().toUtf8() == "") return true;
     SBMLDocument* sbmldoc = readSBMLFromString(toPlainText().toUtf8());
     SBMLErrorLog* log = sbmldoc->getErrorLog();
     std::string trueerrors = "";
@@ -176,6 +179,6 @@ bool SBMLTab::StoreLevelAndVersion(int level, int version)
 
 void SBMLTab::SetTranslated()
 {
+    SetLevelAndVersion(m_levelversion);
     ChangeableTextBox::SetTranslated();
-    m_levelversion = 4;
 }

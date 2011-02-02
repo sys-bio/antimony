@@ -208,9 +208,12 @@ Translator::Translator(QTAntimony* app, QString filename)
             else if (SBMLHandle != -1) {
                 //Originally SBML
                 char* modname = getNthModuleName(getNumModules()-1);
-                AddSBMLTab(modname, filetext, false);
-                m_tabmanager->textbox(1)->SetOriginal();
-                m_tabmanager->textbox(1)->SetSavedFilename(filename);
+                SBMLDocument* document = readSBML(filename.toUtf8().data());
+                int level = document->getLevel();
+                int version = document->getVersion();
+                AddSBMLTab(modname, filetext, false, level, version);
+                m_tabmanager->firstsbmltextbox()->SetOriginal();
+                m_tabmanager->firstsbmltextbox()->SetSavedFilename(filename);
                 m_antimony->SetTranslatedText(getAntimonyString(NULL));
                 if (displaycellml) {
                     AddCellMLTab();
@@ -222,6 +225,13 @@ Translator::Translator(QTAntimony* app, QString filename)
                 //Originally CellML
                 char* modname = getMainModuleName();
                 AddCellMLTab(modname, filetext, false);
+                m_tabmanager->cellmltextbox()->SetOriginal();
+                m_tabmanager->cellmltextbox()->SetSavedFilename(filename);
+                m_antimony->SetTranslatedText(getAntimonyString(NULL));
+                if (displaysbml) {
+                  AddSBMLTab();
+                  m_tabmanager->TranslateCellML();
+                }
             }
 #endif
             else {
@@ -408,11 +418,12 @@ void Translator::addSBWMenu()
 #endif
 
 
-void Translator::AddSBMLTab(QString name, QString text, bool translated)
+void Translator::AddSBMLTab(QString name, QString text, bool translated, int level, int version)
 {
     SBMLTab* sbml = new SBMLTab();
     sbml->SetModelName(name);
     sbml->setPlainText(text);
+    sbml->StoreLevelAndVersion(level, version);
     if (translated) {
         sbml->SetTranslated();
     }
