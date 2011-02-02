@@ -9,9 +9,10 @@
 
 using namespace std;
 
-AntimonyEvent::AntimonyEvent(const Formula& delay, const Formula& trigger, Variable* var)
+AntimonyEvent::AntimonyEvent(const Formula& delay, const Formula& trigger, Variable* var, const Formula& priority)
   : m_trigger(trigger),
     m_delay(delay),
+    m_priority(priority),
     m_varresults(),
     m_formresults(),
     m_name(var->GetName()),
@@ -22,6 +23,7 @@ AntimonyEvent::AntimonyEvent(const Formula& delay, const Formula& trigger, Varia
 AntimonyEvent::AntimonyEvent()
   : m_trigger(),
     m_delay(),
+    m_priority(),
     m_varresults(),
     m_formresults(),
     m_name(),
@@ -151,7 +153,11 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
   if (!m_delay.IsEmpty()) {
     retval += m_delay.ToDelimitedStringWithEllipses(cc) + " after ";
   }
-  retval += m_trigger.ToDelimitedStringWithEllipses(cc) + ": ";
+  retval += m_trigger.ToDelimitedStringWithEllipses(cc);
+  if (!m_priority.IsEmpty()) {
+    retval += ", priority " + m_priority.ToDelimitedStringWithEllipses(cc);
+  }
+  retval += ": ";
   for (size_t result=0; result<m_varresults.size(); result++) {
     if (result>0) {
       retval += ", ";

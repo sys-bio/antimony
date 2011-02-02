@@ -119,7 +119,13 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       string delaystring(parseASTNodeToString(sbmldelay->getMath()));
       setFormulaWithString(delaystring, &delay, this);
     }
-    AntimonyEvent antevent(delay, trigger,var);
+    const Priority* sbmlpriority = event->getPriority();
+    Formula priority;
+    if (sbmlpriority != NULL) {
+      string prioritystring(parseASTNodeToString(sbmlpriority->getMath()));
+      setFormulaWithString(prioritystring, &priority, this);
+    }
+    AntimonyEvent antevent(delay, trigger, var, priority);
     var->SetEvent(&antevent);
 
     //Set the assignments:
@@ -513,7 +519,18 @@ void Module::CreateSBMLModel()
     if (!delay->IsEmpty()) {
       ASTtrig = parseStringToASTNode(delay->ToSBMLString());
       Delay* sbmldelay = sbmlevent->createDelay();
-      sbmldelay->setMath(ASTtrig);
+      if (sbmldelay != NULL) {
+        sbmldelay->setMath(ASTtrig);
+      }
+      delete ASTtrig;
+    }
+    const Formula* priority = event->GetPriority();
+    if (!priority->IsEmpty()) {
+      ASTtrig = parseStringToASTNode(priority->ToSBMLString());
+      Priority* sbmlpriority = sbmlevent->createPriority();
+      if (sbmlpriority != NULL) {
+        sbmlpriority->setMath(ASTtrig);
+      }
       delete ASTtrig;
     }
       

@@ -45,6 +45,18 @@ ChangeableTextBox* TabManager::textbox(int tabnum)
     return static_cast<ChangeableTextBox*>(widget(tabnum));
 }
 
+ChangeableTextBox* TabManager::firstsbmltextbox()
+{
+  if (m_sbmltab < 0) return NULL;
+  return static_cast<ChangeableTextBox*>(widget(m_sbmltab));
+}
+
+ChangeableTextBox* TabManager::cellmltextbox()
+{
+  if (m_cellmltab < 0) return NULL;
+  return static_cast<ChangeableTextBox*>(widget(m_cellmltab));
+}
+
 //We provide the functions and pass them to the underlying active editor tab
 void TabManager::undo()
 {
