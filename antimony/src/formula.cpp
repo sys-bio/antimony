@@ -607,6 +607,7 @@ string Formula::CellMLify(string formula) const
   ASTNode_t* ASTform = parseStringToASTNode(formula);
   caratToPower(ASTform);
   formula = parseASTNodeToString(ASTform, false);
+  delete ASTform;
 #endif
   size_t pow = formula.find("pow(");
   while (pow != string::npos) {

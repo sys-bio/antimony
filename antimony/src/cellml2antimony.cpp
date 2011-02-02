@@ -20,7 +20,7 @@ int main(int argc, char** argv)
     for (int file=1; file<argc; file++) {
       retval=loadCellMLFile(argv[file]);
       if (retval == -1) {
-        cout << getLastError() << endl;
+        cout << "Error in " << argv[file] << ":  " << getLastError() << endl;
         retval = 1;
       }
       else {

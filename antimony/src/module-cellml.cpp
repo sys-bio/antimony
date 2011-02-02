@@ -452,6 +452,8 @@ void Module::CreateCellMLModel()
   RETURN_INTO_OBJREF(boot, iface::cellml_api::CellMLBootstrap, CreateCellMLBootstrap());
   m_cellmlmodel =
     already_AddRefd<iface::cellml_api::Model>(boot->createModel(L"1.1"));
+  //g_registry.m_storedCellMLModels.push_back(m_cellmlmodel);
+
 
   DECLARE_QUERY_INTERFACE_OBJREF(cde, m_cellmlmodel, cellml_api::CellMLDOMElement);
   RETURN_INTO_OBJREF(de, iface::dom::Element, cde->domElement());
@@ -669,10 +671,11 @@ iface::cellml_api::ComponentRef* Module::GetComponentRef(iface::cellml_api::Mode
   for (size_t var=0; var<m_variables.size(); var++) {
     if (m_variables[var]->GetType() == varModule) {
       string subvarcmlname = topmod->GetCellMLNameOf(m_variables[var]->GetName());
-      iface::cellml_api::ComponentRef* subcr = m_variables[var]->GetModule()->GetComponentRef(model, subvarcmlname, topmod);
+      RETURN_INTO_OBJREF(subcr, iface::cellml_api::ComponentRef, m_variables[var]->GetModule()->GetComponentRef(model, subvarcmlname, topmod));
       cr->addElement(subcr);
     }
   }
+  cr->add_ref();
   return cr;
 }
 
@@ -937,7 +940,8 @@ iface::cellml_api::CellMLVariable* Module::AddTimeTo(iface::cellml_api::CellMLCo
   RETURN_INTO_OBJREF(time, iface::cellml_api::CellMLVariable, cmlvarset->getVariable(L"time"));
 
   if (time != NULL) {
-    //Already exists!
+    //Already exists, but we need to add a reference to it before returning.
+    time->add_ref();
     return time;
   }
   assert(m_cellmlmodel != NULL);
