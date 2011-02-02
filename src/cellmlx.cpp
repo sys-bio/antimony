@@ -19,6 +19,12 @@ string CellMLPiecewiseToSBML(const string& in)
     out.replace(spacepos, 2, " ");
   }
 
+  //Now replace '=' with '==':
+  size_t eqpos;
+  while ((eqpos = out.find(" = ")) != string::npos) {
+    out.replace(eqpos, 3, " == ");
+  }
+
   //cout << "Thus far:  " << in << endl;
   //If there are multiple 'piecewise' bits, excise the internal ones and parse them separately.
   size_t piecepos = 5;
