@@ -88,6 +88,12 @@ if(WITH_SBML)
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
 			  )		
 
+	if(UNIX)
+		add_definitions(-DLINUX)
+		if (APPLE)
+		add_definitions(-DDARWIN)
+		endif()
+	endif()
         set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} )
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR})
 else(WITH_SBML)
