@@ -48,10 +48,12 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 #
 
 # which language bindings should be build
-option(WITH_SBML     "Generate SBML translations"     ON )
-option(WITH_CELLML   "Generate CellML translations"   OFF )
-option(CREATE_QTANTIMONY       "Generate QTAntimony"   ON )
-option(WITH_SBW      "QTAntimony integration with SBW"   ON )
+option(WITH_SBML            "Generate SBML translations"      ON )
+option(WITH_CELLML          "Generate CellML translations"   OFF )
+option(CREATE_QTANTIMONY    "Generate QTAntimony"             ON )
+option(WITH_SBW             "QTAntimony integration with SBW" ON )
+option(WITH_SBW_TRANSLATOR  "builds a SBW translator"         ON )
+
 
 ####################################################################
 #
@@ -386,3 +388,29 @@ else(UNIX)
 	INSTALL(FILES ${WIN32_BINARIES} DESTINATION bin)
 	
 endif(UNIX)
+
+
+if (WITH_SBW_TRANSLATOR)
+  
+	find_library(LIBSBW_LIBRARY 
+		NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
+		PATHS /usr/lib /usr/local/lib 
+			  ${CMAKE_SOURCE_DIR} 
+			  ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${CMAKE_SOURCE_DIR}/../libsbml-5/build/src/RelWithDebInfo
+    )
+    find_path(SBW_INCLUDE_DIR
+		NAMES SBW/config.h
+		PATHS /usr/include /usr/local/include 
+			  ${CMAKE_SOURCE_DIR}/include 
+			  ${CMAKE_SOURCE_DIR}/dependencies/include
+              ${CMAKE_SOURCE_DIR}/../SBW/include/
+    )
+  INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBW_INCLUDE_DIR})
+  
+  add_executable(sbwantimony ${ANTIMONY_SRC_DIR}sbwtranslator.cpp)
+  add_dependencies(sbwantimony ${LIBANTIMONY_LIBRARY})
+  target_link_libraries(sbwantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} ${LIBSBW_LIBRARY})  
+  
+endif()
+
