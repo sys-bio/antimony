@@ -36,7 +36,7 @@ void myMessageOutput(QtMsgType type, const char *msg)
 
 #ifdef SBW_INTEGRATION
 
-void doAnlysis(SBWInteger /*from*/, SBWDataBlockReader *args, SBWDataBlockWriter * /*result*/, void * /*userData*/)
+void doAnalysis(SBWInteger /*from*/, SBWDataBlockReader *args, SBWDataBlockWriter * /*result*/, void * /*userData*/)
 {
 	char *sbml; 
 	SBWRead(args, "string", &sbml);
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
 	SBWModuleImplAddService( ServiceName, DisplayName, CategoryName, HelpString);
 
-	SBWModuleImplSetHandler( ServiceName, doAnlysis, 0, "void doAnalysis(string)", 1, HelpString);
+	SBWModuleImplSetHandler( ServiceName, doAnalysis, 0, "void doAnalysis(string)", 1, HelpString);
 	
 	int sbwModuleIndex = -1;
 	try 
