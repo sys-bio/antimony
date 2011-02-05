@@ -48,12 +48,9 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 #
 
 # which language bindings should be build
-option(WITH_SBML            "Generate SBML translations"      ON )
-option(WITH_CELLML          "Generate CellML translations"   OFF )
-option(CREATE_QTANTIMONY    "Generate QTAntimony"             ON )
-option(WITH_SBW             "QTAntimony integration with SBW" ON )
-option(WITH_SBW_TRANSLATOR  "builds a SBW translator"         ON )
-
+option(WITH_SBML     "Generate SBML translations"     ON )
+option(WITH_CELLML   "Generate CellML translations"   OFF )
+option(CREATE_QTANTIMONY       "Generate QTAntimony"   ON )
 
 ####################################################################
 #
@@ -88,12 +85,6 @@ if(WITH_SBML)
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
 			  )		
 
-	if(UNIX)
-		add_definitions(-DLINUX)
-		if (APPLE)
-		add_definitions(-DDARWIN)
-		endif()
-	endif()
         set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} )
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR})
 else(WITH_SBML)
@@ -318,38 +309,14 @@ if (CREATE_QTANTIMONY)
         QT4_WRAP_CPP(QTANTIMONY_MOC_SRCS ${QTANTIMONY_HEADERS})
         QT4_ADD_RESOURCES(RC_SRC_FILES ${QTANTIMONY_SRC_DIR}antimony.qrc )
         source_group(MOC_sources FILES ${QTANTIMONY_MOC_SRCS})
-
-        set(QTANTIMONY_LIBS ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
-        set(SBW_DEFINITIONS, "")
-        if (WITH_SBW)
-            find_library(LIBSBW_LIBRARY 
-		NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
-		PATHS /usr/lib /usr/local/lib 
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-                          ${CMAKE_SOURCE_DIR}/../libsbml-5/build/src/RelWithDebInfo
-                          )
-            set(QTANTIMONY_LIBS ${QTANTIMONY_LIBS} ${LIBSBW_LIBRARY} )
-            find_path(SBW_INCLUDE_DIR
-		NAMES SBW/config.h
-		PATHS /usr/include /usr/local/include 
-			  ${CMAKE_SOURCE_DIR}/include 
-			  ${CMAKE_SOURCE_DIR}/dependencies/include
-                          ${CMAKE_SOURCE_DIR}/../SBW/include/
-			  )
-            INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBW_INCLUDE_DIR})
-            set(SBW_DEFINITIONS "-DSBW_INTEGRATION")
-        endif(WITH_SBW)
-
         if (WIN32)
            link_libraries(${QT_QTMAIN_LIBRARY})
         endif(WIN32)
-
         set( MACOSX_BUNDLE_ICON_FILE antimony.icns )
-
         add_executable(QTAntimony WIN32 MACOSX_BUNDLE ${QTANTIMONY_SOURCES} ${QTANTIMONY_MOC_SRCS} ${QTANTIMONY_HEADERS} ${QTANTIMONY_RESOURCE})
-        target_link_libraries(QTAntimony ${QT_LIBRARIES} ${QTANTIMONY_LIBS})
-        add_definitions(${QT_DEFINITIONS} ${SBW_DEFINITIONS})
+        #add_dependencies(QTAntimony ${LIBANTIMONY_LIBRARY})
+        target_link_libraries(QTAntimony ${QT_LIBRARIES} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} ${LIBANTIMONY_LIBS})
+        add_definitions(${QT_DEFINITIONS})
         set(MACOSX_BUNDLE_ICON_FILE ${QTANTIMONY_SRC_DIR}antimony.icns)
 
 endif(CREATE_QTANTIMONY)
@@ -394,32 +361,3 @@ else(UNIX)
 	INSTALL(FILES ${WIN32_BINARIES} DESTINATION bin)
 	
 endif(UNIX)
-
-
-if (WITH_SBW_TRANSLATOR)
-  
-	find_library(LIBSBW_LIBRARY 
-		NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
-		PATHS /usr/lib /usr/local/lib 
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${CMAKE_SOURCE_DIR}/../libsbml-5/build/src/RelWithDebInfo
-    )
-    find_path(SBW_INCLUDE_DIR
-		NAMES SBW/config.h
-		PATHS /usr/include /usr/local/include 
-			  ${CMAKE_SOURCE_DIR}/include 
-			  ${CMAKE_SOURCE_DIR}/dependencies/include
-              ${CMAKE_SOURCE_DIR}/../SBW/include/
-    )
-  INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBW_INCLUDE_DIR})
-
-  if(MSVC)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")  
-  endif()
-  add_executable(sbwantimony WIN32 ${ANTIMONY_SRC_DIR}sbwtranslator.cpp)
-  add_dependencies(sbwantimony ${LIBANTIMONY_LIBRARY})
-  target_link_libraries(sbwantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} ${LIBSBW_LIBRARY})  
-  
-endif()
-
