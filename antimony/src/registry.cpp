@@ -586,6 +586,7 @@ bool Registry::NewCurrentModule(const string* name, bool ismain)
       //assert(false); //Parsing disallows this condition, but translation allows it (though it's still an Antimony error).
       //cout << "duplicated name: " << localname << endl;
       SetError("Programming error:  Unable to create new module with the same name as an existing module (\"" + localname + "\").");
+      m_currentModules.pop_back();
       return true;
     }
     if (ismain && m_modules[mod].GetIsMain()) {
