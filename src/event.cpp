@@ -9,10 +9,13 @@
 
 using namespace std;
 
-AntimonyEvent::AntimonyEvent(const Formula& delay, const Formula& trigger, Variable* var, const Formula& priority)
+AntimonyEvent::AntimonyEvent(const Formula& delay, const Formula& trigger, Variable* var)
   : m_trigger(trigger),
     m_delay(delay),
-    m_priority(priority),
+    m_priority(),
+    m_useValuesFromTriggerTime(true),
+    m_persistent(true),
+    m_initialValue(true),
     m_varresults(),
     m_formresults(),
     m_name(var->GetName()),
@@ -24,6 +27,9 @@ AntimonyEvent::AntimonyEvent()
   : m_trigger(),
     m_delay(),
     m_priority(),
+    m_useValuesFromTriggerTime(true),
+    m_persistent(true),
+    m_initialValue(true),
     m_varresults(),
     m_formresults(),
     m_name(),
@@ -52,6 +58,60 @@ bool AntimonyEvent::SetTrigger(const Formula& form)
   }
 #endif
   m_trigger = form;
+  return false;
+}
+
+bool AntimonyEvent::SetPriority(const Formula& priority)
+{
+  string prioritystring = priority.ToSBMLString();
+#ifndef NSBML
+  if (prioritystring.size() > 0) {
+    ASTNode* ASTpriority = parseStringToASTNode(prioritystring);
+    if (ASTpriority == NULL) {
+      g_registry.SetError("The priority \"" + priority.ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      return true;
+    }
+    else if (ASTpriority->isBoolean()) {
+      g_registry.SetError("The priority \"" + priority.ToDelimitedStringWithEllipses('.') + "\" is boolean, and it is therefore illegal to use it as the priority for an event.  Perhaps this was meant as the trigger?  If the line is being misparsed, try adding parentheses.");
+      delete ASTpriority;
+      return true;
+    }
+    else {
+      delete ASTpriority;
+    }
+  }
+#endif
+  m_priority = priority;
+  return false;
+}
+
+bool AntimonyEvent::SetUseValuesFromTriggerTime(const Formula& form)
+{
+  if (!form.IsBoolean()) {
+    g_registry.SetError("Unable to use '" + form.ToDelimitedStringWithEllipses('.') + "': only 'true' or 'false' may be used to set the value of 'fromTrigger' on an event.");
+    return true;
+  }
+  m_useValuesFromTriggerTime = form.GetBoolean();
+  return false;
+}
+
+bool AntimonyEvent::SetPersistent(const Formula& form)
+{
+  if (!form.IsBoolean()) {
+    g_registry.SetError("Unable to use '" + form.ToDelimitedStringWithEllipses('.') + "': only 'true' or 'false' may be used to set the value of 'persistent' on an event.");
+    return true;
+  }
+  m_persistent = form.GetBoolean();
+  return false;
+}
+
+bool AntimonyEvent::SetInitialValue(const Formula& form)
+{
+  if (!form.IsBoolean()) {
+    g_registry.SetError("Unable to use '" + form.ToDelimitedStringWithEllipses('.') + "': only 'true' or 'false' may be used to set the value of 't0' (the initial value) of an event.");
+    return true;
+  }
+  m_initialValue = form.GetBoolean();
   return false;
 }
 
@@ -156,6 +216,15 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
   retval += m_trigger.ToDelimitedStringWithEllipses(cc);
   if (!m_priority.IsEmpty()) {
     retval += ", priority " + m_priority.ToDelimitedStringWithEllipses(cc);
+  }
+  if (m_initialValue == false) {
+    retval += ", t0=false";
+  }
+  if (m_persistent == false) {
+    retval += ", persistent=false";
+  }
+  if (m_useValuesFromTriggerTime == false) {
+    retval += ", fromTrigger=false";
   }
   retval += ": ";
   for (size_t result=0; result<m_varresults.size(); result++) {

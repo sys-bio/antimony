@@ -8,6 +8,7 @@
 #include "stringx.h"
 #include "sbmlx.h"
 #include "variable.h"
+extern bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
 
 using namespace std;
 
@@ -107,6 +108,32 @@ bool Formula::IsDouble() const
     }
   }
   return false;
+}
+
+bool Formula::IsBoolean() const
+{
+  if (m_components.size() == 1) {
+    if (m_components[0].second.size() == 0) {
+      if (CaselessStrCmp(m_components[0].first, "true") ||
+          CaselessStrCmp(m_components[0].first, "false")) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool Formula::GetBoolean() const
+{
+  assert(IsBoolean());
+  if (m_components.size() == 1) {
+    if (m_components[0].second.size() == 0) {
+      if (CaselessStrCmp(m_components[0].first, "true")) {
+        return true;
+      }
+    }
+  }
+  return false; 
 }
 
 bool Formula::IsAmountIn(const Variable* compartment) const
