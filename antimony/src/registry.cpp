@@ -727,19 +727,19 @@ bool Registry::SetDownstreamOpen(Variable* var)
 }
 
 
-bool Registry::SetNewCurrentEvent(Formula* trigger, Formula* priority)
+bool Registry::SetNewCurrentEvent(Formula* trigger)
 {
   Variable* evar = CurrentModule()->AddNewNumberedVariable("_E");
-  return SetNewCurrentEvent(trigger, evar, priority);
+  return SetNewCurrentEvent(trigger, evar);
 }
 
-bool Registry::SetNewCurrentEvent(Formula* delay, Formula* trigger, Formula* priority)
+bool Registry::SetNewCurrentEvent(Formula* delay, Formula* trigger)
 {
   Variable* evar = CurrentModule()->AddNewNumberedVariable("_E");
-  return SetNewCurrentEvent(delay, trigger, evar, priority);
+  return SetNewCurrentEvent(delay, trigger, evar);
 }
 
-bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var, Formula* priority)
+bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
 {
   m_currentEvent = var->GetName();
 #ifndef NSBML
@@ -761,22 +761,19 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var, Formula* prio
   }
 #endif
   Formula delay;
-  AntimonyEvent event(delay, *trigger, var, *priority);
+  AntimonyEvent event(delay, *trigger, var);
   return var->SetEvent(&event);
 }
 
-bool Registry::SetNewCurrentEvent(Formula* delay, Formula* trigger, Variable* var, Formula* priority)
+bool Registry::SetNewCurrentEvent(Formula* delay, Formula* trigger, Variable* var)
 {
   m_currentEvent = var->GetName();
-  AntimonyEvent event(*delay, *trigger, var, *priority);
+  AntimonyEvent event(*delay, *trigger, var);
   return var->SetEvent(&event);
 }
 
-bool Registry::AddResultToCurrentEvent(Variable* var, Formula* form)
-{
-  //return
-  CurrentModule()->GetVariable(m_currentEvent)->GetEvent()->AddResult(var, form);
-  return false;
+AntimonyEvent* Registry::GetCurrentEvent() {
+  return CurrentModule()->GetVariable(m_currentEvent)->GetEvent();
 }
 
 bool Registry::SetCompartmentOfCurrentSubmod(Variable* var)

@@ -119,13 +119,29 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       string delaystring(parseASTNodeToString(sbmldelay->getMath()));
       setFormulaWithString(delaystring, &delay, this);
     }
-    const Priority* sbmlpriority = event->getPriority();
-    Formula priority;
-    if (sbmlpriority != NULL) {
-      string prioritystring(parseASTNodeToString(sbmlpriority->getMath()));
-      setFormulaWithString(prioritystring, &priority, this);
+    AntimonyEvent antevent(delay, trigger, var);
+
+    //Set the priority:
+    if (event->isSetPriority()) {
+      const Priority* sbmlpriority = event->getPriority();
+      Formula priority;
+      if (sbmlpriority != NULL) {
+        string prioritystring(parseASTNodeToString(sbmlpriority->getMath()));
+        setFormulaWithString(prioritystring, &priority, this);
+      }
+      antevent.SetPriority(priority);
     }
-    AntimonyEvent antevent(delay, trigger, var, priority);
+    //And set the other optional booleans:
+    if (event->isSetUseValuesFromTriggerTime()) {
+      antevent.SetUseValuesFromTriggerTime(event->getUseValuesFromTriggerTime());
+    }
+    if (event->getTrigger()->isSetPersistent()) {
+      antevent.SetPersistent(event->getTrigger()->getPersistent());
+    }
+    if (event->getTrigger()->isSetInitialValue()) {
+      antevent.SetInitialValue(event->getTrigger()->getInitialValue());
+    }
+    //All done--give it to the variable.
     var->SetEvent(&antevent);
 
     //Set the assignments:
@@ -533,6 +549,9 @@ void Module::CreateSBMLModel()
       }
       delete ASTtrig;
     }
+    sbmlevent->setUseValuesFromTriggerTime(event->GetUseValuesFromTriggerTime());
+    sbmlevent->getTrigger()->setInitialValue(event->GetInitialValue());
+    sbmlevent->getTrigger()->setPersistent(event->GetPersistent());
       
     long numasnts = static_cast<long>(event->GetNumAssignments());
     for (long asnt=numasnts-1; asnt>=0; asnt--) {

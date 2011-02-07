@@ -121,11 +121,11 @@ public:
   bool SetDownstreamOpen(Variable* var);
 
   //Events
-  bool SetNewCurrentEvent(Formula* trigger, Formula* priority);
-  bool SetNewCurrentEvent(Formula* delay, Formula* trigger, Formula* priority);
-  bool SetNewCurrentEvent(Formula* trigger, Variable* var, Formula* priority);
-  bool SetNewCurrentEvent(Formula* delay, Formula* trigger, Variable* var, Formula* priority);
-  bool AddResultToCurrentEvent(Variable* var, Formula* form);
+  bool SetNewCurrentEvent(Formula* trigger);
+  bool SetNewCurrentEvent(Formula* delay, Formula* trigger);
+  bool SetNewCurrentEvent(Formula* trigger, Variable* var);
+  bool SetNewCurrentEvent(Formula* delay, Formula* trigger, Variable* var);
+  AntimonyEvent* GetCurrentEvent();
   bool SetCompartmentOfCurrentSubmod(Variable* var);
 
   void SetError(std::string error) {m_error = error;};

@@ -32,6 +32,8 @@ public:
 
   bool IsEmpty() const;
   bool IsDouble() const;
+  bool IsBoolean() const;
+  bool GetBoolean() const;
   bool IsAmountIn(const Variable* compartment) const;
   bool IsOne() const;
   bool IsEllipsesOnly() const;
