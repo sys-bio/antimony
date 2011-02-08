@@ -122,7 +122,7 @@ public:
 
   //Events
   bool SetNewCurrentEvent(Formula* trigger);
-  bool SetNewCurrentEvent(Formula* delay, Formula* trigger);
+   bool SetNewCurrentEvent(Formula* delay, Formula* trigger);
   bool SetNewCurrentEvent(Formula* trigger, Variable* var);
   bool SetNewCurrentEvent(Formula* delay, Formula* trigger, Variable* var);
   AntimonyEvent* GetCurrentEvent();
@@ -137,6 +137,7 @@ public:
   Module* GetModule(std::string modulename);
   const Module* GetModule(std::string modulename) const;
   const Module* GetMainModule() const;
+  Module* GetMainModule();
   bool IsModuleName(std::string word);
 
   const_type GetConstness() const {return m_constness;};

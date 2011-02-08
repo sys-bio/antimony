@@ -50,8 +50,8 @@ int main(int argc, char** argv)
       cout << "***ToString (" << modnames[mod] << ") ***" << endl;
       cout << g_registry.GetModule(modnames[mod])->ToString().c_str() << endl << endl;
       */
-      cout << "***Jarnac (" << modnames[mod] << ") ***" << endl;
-      cout << getJarnacString(modnames[mod]) << endl;
+      //cout << "***Jarnac (" << modnames[mod] << ") ***" << endl;
+      //cout << getJarnacString(modnames[mod]) << endl;
       cout << endl << "***printAllDataFor (" << modnames[mod] << ") (from the API):***" << endl;
       printAllDataFor(modnames[mod]);
       cout << endl << "***Antimony (" << modnames[mod] << ")" << endl;
@@ -75,12 +75,14 @@ int main(int argc, char** argv)
         cout << "Problem writing file " << sbmlname << endl;
       }
 #endif
+      /*
       if (writeJarnacFile(jarname.c_str(), modnames[mod])) {
         cout << "Successfully wrote file " << jarname.c_str() << endl;
       }
       else {
         cout << "Problem writing file " << jarname.c_str() << endl;
       }
+      */
         
     }
     freeAll();

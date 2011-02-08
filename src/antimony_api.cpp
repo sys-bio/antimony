@@ -1634,6 +1634,7 @@ LIB_EXTERN char* getAntimonyString(const char* moduleName)
   return getCharStar(string("//Created by libAntimony " LIBANTIMONY_VERSION_STRING "\n" + antimony).c_str());
 }
 
+/*
 LIB_EXTERN int writeJarnacFile(const char* filename, const char* moduleName)
 {
   string oldlocale = setlocale(LC_ALL, NULL);
@@ -1664,12 +1665,19 @@ LIB_EXTERN char* getJarnacString(const char* moduleName)
   setlocale(LC_ALL, oldlocale.c_str());
   return jarnac;
 }
-
+*/
 #ifndef NSBML
 LIB_EXTERN int writeSBMLFile(const char* filename, const char* moduleName)
 {
+  const SBMLDocument* sbmldoc;
+  if (moduleName != NULL) {
+    if (!checkModule(moduleName)) return 0;
+    sbmldoc = g_registry.GetModule(moduleName)->GetSBML();
+  }
+  else {
+    sbmldoc = g_registry.GetMainModule()->GetSBML();
+  }
   if (!checkModule(moduleName)) return NULL;
-  const SBMLDocument* sbmldoc = g_registry.GetModule(moduleName)->GetSBML();
   SBMLWriter sbmlw;
   sbmlw.setProgramName("libAntimony");
   sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
@@ -1685,8 +1693,14 @@ LIB_EXTERN int writeSBMLFile(const char* filename, const char* moduleName)
 
 LIB_EXTERN char* getSBMLString(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
-  const SBMLDocument* sbmldoc = g_registry.GetModule(moduleName)->GetSBML();
+  const SBMLDocument* sbmldoc;
+  if (moduleName != NULL) {
+    if (!checkModule(moduleName)) return 0;
+    sbmldoc = g_registry.GetModule(moduleName)->GetSBML();
+  }
+  else {
+    sbmldoc = g_registry.GetMainModule()->GetSBML();
+  }
   SBMLWriter sbmlw;
   sbmlw.setProgramName("libAntimony");
   sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
