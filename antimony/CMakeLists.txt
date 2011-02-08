@@ -48,9 +48,11 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 #
 
 # which language bindings should be build
-option(WITH_SBML     "Generate SBML translations"     ON )
-option(WITH_CELLML   "Generate CellML translations"   OFF )
-option(CREATE_QTANTIMONY       "Generate QTAntimony"   ON )
+option(WITH_SBML            "Generate SBML translations"      ON )
+option(WITH_CELLML          "Generate CellML translations"    OFF )
+option(CREATE_QTANTIMONY    "Generate QTAntimony"             ON )
+option(WITH_SBW             "QTAntimony integration with SBW" ON )
+option(WITH_SBW_TRANSLATOR  "Generate SBWTranslator"          OFF )
 
 ####################################################################
 #
@@ -78,7 +80,7 @@ if(WITH_SBML)
 	find_path(LIBSBML_DEPENDENCIES_INCLUDE_DIR
 		NAMES libxml/parser.h 
 		PATHS /usr/include /usr/local/include 
-                      'C:/Program Files (x86)/SBML/libSBML-4.2.0-libxml2-x86/win32/include'
+                      C:/Program Files (x86)/SBML/libSBML-4.2.0-libxml2-x86/win32/include/
 			  /usr/include/libxml2
 			  /usr/local/include/libxml2
 			  ${CMAKE_SOURCE_DIR}/include 
@@ -313,10 +315,31 @@ if (CREATE_QTANTIMONY)
            link_libraries(${QT_QTMAIN_LIBRARY})
         endif(WIN32)
         set( MACOSX_BUNDLE_ICON_FILE antimony.icns )
+        set (QTANTIMONY_LIBRARIES ${QT_LIBRARIES} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} )
+        if (WITH_SBW)
+           set(SBW_DEFINITIONS "-DSBW_INTEGRATION" )
+           find_library(SBW_LIBRARY 
+		NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
+		PATHS /usr/lib /usr/local/lib 
+			  ${CMAKE_SOURCE_DIR} 
+			  ${CMAKE_SOURCE_DIR}/dependencies/lib
+                          ${CMAKE_SOURCE_DIR}/../SBW/install/lib
+                          )
+           set(QTANTIMONY_LIBRARIES ${QTANTIMONY_LIBRARIES} ${SBW_LIBRARY} )
+	
+	   find_path(SBW_INCLUDE_DIR
+		NAMES SBW/config.h
+		PATHS /usr/include /usr/local/include 
+			  ${CMAKE_SOURCE_DIR}/include 
+			  ${CMAKE_SOURCE_DIR}/dependencies/include
+                          ${CMAKE_SOURCE_DIR}/../SBW/install/include/
+			  )
+           INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBW_INCLUDE_DIR})
+
+        endif(WITH_SBW)
         add_executable(QTAntimony WIN32 MACOSX_BUNDLE ${QTANTIMONY_SOURCES} ${QTANTIMONY_MOC_SRCS} ${QTANTIMONY_HEADERS} ${QTANTIMONY_RESOURCE})
-        #add_dependencies(QTAntimony ${LIBANTIMONY_LIBRARY})
-        target_link_libraries(QTAntimony ${QT_LIBRARIES} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} ${LIBANTIMONY_LIBS})
-        add_definitions(${QT_DEFINITIONS})
+        target_link_libraries(QTAntimony ${QTANTIMONY_LIBRARIES} )
+        add_definitions(${QT_DEFINITIONS} ${SBW_DEFINITIONS})
         set(MACOSX_BUNDLE_ICON_FILE ${QTANTIMONY_SRC_DIR}antimony.icns)
 
 endif(CREATE_QTANTIMONY)
@@ -361,3 +384,4 @@ else(UNIX)
 	INSTALL(FILES ${WIN32_BINARIES} DESTINATION bin)
 	
 endif(UNIX)
+

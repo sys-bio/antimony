@@ -178,7 +178,7 @@ Translator::Translator(QTAntimony* app, QString filename)
             if (displaysbml) {
                 AddSBMLTab();
             }
-       }
+        }
         else {
             QTextStream in(&file);
             filetext = in.readAll();
@@ -478,8 +478,8 @@ void Translator::SetSBMLTab(QString model)
     assert(m_tabmanager->count()==2);
     assert(m_tabmanager->textbox(0)->toPlainText() == "");
     assert(m_tabmanager->textbox(1)->toPlainText() == "");
-    m_tabmanager->textbox(1)->setPlainText(model);
-    m_tabmanager->Translate(1);
+    m_tabmanager->firstsbmltextbox()->setPlainText(model);
+    m_tabmanager->TranslateSBML();
     m_tabmanager->setCurrentIndex(1);
 }
 

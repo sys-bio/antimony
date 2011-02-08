@@ -222,15 +222,15 @@ LIB_EXTERN int   writeCellMLFile(const char* filename, const char* moduleName);
 LIB_EXTERN char* getCellMLString(const char* moduleName);
 #endif
 
-/**
+/*
  * Writes out a jarnac-formatted file containing a 'flattened' version of the current module (one where all the species and reactions are listed in the same model).  This has *not* been very extensively tested, and many aspects of the model may be dropped.  But the basics should be there.  Returns 1 on success, 0 on failure (and sets an error).
  */
-LIB_EXTERN int   writeJarnacFile(const char* filename, const char* moduleName);
+//LIB_EXTERN int   writeJarnacFile(const char* filename, const char* moduleName);
 
-/**
+/*
  * Returns the same output as writeJarnacFile, but to a char* array instead of to a file.
  */
-LIB_EXTERN char* getJarnacString(const char* moduleName);
+//LIB_EXTERN char* getJarnacString(const char* moduleName);
 
 
 /**
@@ -297,7 +297,7 @@ LIB_EXTERN char** getModuleNames();
 LIB_EXTERN char*  getNthModuleName(unsigned long n);
 
 /**
- * Returns the 'main' module name.  In Antimony, this is either the module marked by an asterisk (model *mainModel()  or the last module defined in the file.  In translated SBML models, this is the model child of the <sbml> object.  In translated CellML models, this is the 'containing' model that the translator creates to hold all the CellML components.  Returns NULL only if there are no modules at all.
+ * Returns the 'main' module name.  In Antimony, this is either the module marked by an asterisk ('model *mainModel()')  or the last module defined in the file.  In translated SBML models, this is the model child of the <sbml> object.  In translated CellML models, this is the 'containing' model that the translator creates to hold all the CellML components.  Returns NULL only if there are no modules at all.
  */
 LIB_EXTERN char*  getMainModuleName();
 /** \} */

@@ -830,6 +830,18 @@ const Module* Registry::GetMainModule() const
   return &(m_modules[m_modules.size()-1]);
 }
 
+Module* Registry::GetMainModule()
+{
+  for (size_t mod=0; mod<m_modules.size(); mod++) {
+    if (m_modules[mod].GetIsMain()) {
+      return &(m_modules[mod]);
+    }
+  }
+  //If there's no 'main' module, return the last one in the list.
+  if (m_modules.size() == 0) return NULL;
+  return &(m_modules[m_modules.size()-1]);
+}
+
 const Module* Registry::GetModule(string modulename) const
 {
   map<string, size_t>::const_iterator found = m_modulemap.find(modulename);

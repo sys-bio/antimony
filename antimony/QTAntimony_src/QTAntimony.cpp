@@ -93,7 +93,7 @@ void QTAntimony::SaveCurrentDirectory(QString dir)
     if (sbmlEvent != NULL)
     {
         // here we open a new window with the SBML string
-        NewWindow()->SetSBMLTab(sbmlEvent->getSBML());
+        NewWindow()->AddSBMLTab(sbmlEvent->getSBML());
         return true;
     }
     return false;
