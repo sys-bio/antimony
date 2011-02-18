@@ -817,16 +817,16 @@ void  Module::AddOneConnection(iface::cellml_api::CellMLVariable* varin, iface::
 {
   switch(td) {
   case td_UP:
-    varin->publicInterface(iface::cellml_api::INTERFACE_OUT);
-    varout->privateInterface(iface::cellml_api::INTERFACE_IN);
+    varin->publicInterface(iface::cellml_api::INTERFACE_IN);
+    varout->privateInterface(iface::cellml_api::INTERFACE_OUT);
     break;
   case td_DOWN:
-    varin->privateInterface(iface::cellml_api::INTERFACE_OUT);
-    varout->publicInterface(iface::cellml_api::INTERFACE_IN);
+    varin->privateInterface(iface::cellml_api::INTERFACE_IN);
+    varout->publicInterface(iface::cellml_api::INTERFACE_OUT);
     break;
   case td_SIDEWAYS:
-    varin->publicInterface(iface::cellml_api::INTERFACE_OUT);
-    varout->publicInterface(iface::cellml_api::INTERFACE_IN);
+    varin->publicInterface(iface::cellml_api::INTERFACE_IN);
+    varout->publicInterface(iface::cellml_api::INTERFACE_OUT);
     break;
   }
   iface::cellml_api::CellMLComponent* compin  = GetCellMLComponentOf(varin);
