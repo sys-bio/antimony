@@ -26,6 +26,8 @@ SBMLTab::SBMLTab(QWidget* parent)
     setFont(newfont);
     //m_levelversion = qset.value("sbmlLV", m_levelversion).Int();
     // LS NOTE:  maybe do this at some point?  From an option in the menu, maybe?
+    m_sbmlw.setProgramName("libAntimony");
+    m_sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
 }
 
 void SBMLTab::SetModelName(QString name)
@@ -113,7 +115,7 @@ bool SBMLTab::SetLevelAndVersion(int level, int version)
     sbmldoc->setConsistencyChecksForConversion(LIBSBML_CAT_UNITS_CONSISTENCY, false);
     bool success = sbmldoc->setLevelAndVersion(level, version);
     if (success) {
-      ReplaceTextWith(writeSBMLToString(sbmldoc));
+      ReplaceTextWith(m_sbmlw.writeSBMLToString(sbmldoc));
     }
     else {
         //sbmldoc->getErrorLog()->clearLog();

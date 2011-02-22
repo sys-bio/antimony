@@ -215,7 +215,7 @@ string AntimonyEvent::ToStringDelimitedBy(char cc) const
   }
   retval += m_trigger.ToDelimitedStringWithEllipses(cc);
   if (!m_priority.IsEmpty()) {
-    retval += ", priority " + m_priority.ToDelimitedStringWithEllipses(cc);
+    retval += ", priority = " + m_priority.ToDelimitedStringWithEllipses(cc);
   }
   if (m_initialValue == false) {
     retval += ", t0=false";

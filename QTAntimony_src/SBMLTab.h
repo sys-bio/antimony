@@ -1,6 +1,7 @@
 #ifndef SBMLTAB_H
 #define SBMLTAB_H
 #include "ChangeableTextBox.h"
+#include <sbml/SBMLTypes.h>
 
 class SBMLTab : public ChangeableTextBox
 {
@@ -8,6 +9,7 @@ class SBMLTab : public ChangeableTextBox
 private:
     QString m_modelname;
     int m_levelversion;
+    SBMLWriter m_sbmlw;
 
 public:
     SBMLTab(QWidget* parent = 0);
