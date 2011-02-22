@@ -251,7 +251,10 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
         //LS DEBUG:  error message?
       }
       else {
-        stoichiometry = reactant->getStoichiometry();
+        if (reactant->isSetStoichiometry()) {
+          stoichiometry = reactant->getStoichiometry();
+        }
+        //LS DEBUG:  else error?
       }
       sbmlname = reactant->getSpecies();
       if (sbmlname == "") {
@@ -269,7 +272,9 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
         //LS DEBUG:  error message?
       }
       else {
-        stoichiometry = product->getStoichiometry();
+        if (product->isSetStoichiometry()) {
+          stoichiometry = product->getStoichiometry();
+        }
       }
       sbmlname = product->getSpecies();
       if (sbmlname == "") {
@@ -384,6 +389,8 @@ void Module::CreateSBMLModel()
   defaultCompartment->setConstant(true);
   defaultCompartment->setSize(1);
   defaultCompartment->setSBOTerm(410); //The 'implicit compartment'
+  unsigned int dim=3;
+  defaultCompartment->setSpatialDimensions(dim);
   size_t numcomps = GetNumVariablesOfType(allCompartments);
   for (size_t comp=0; comp<numcomps; comp++) {
     const Variable* compartment = GetNthVariableOfType(allCompartments, comp);
@@ -403,6 +410,7 @@ void Module::CreateSBMLModel()
       sbmlcomp->setSize(atof(formula->ToSBMLString().c_str()));
     }
     SetAssignmentFor(sbmlmod, compartment);
+    sbmlcomp->setSpatialDimensions(dim);
   }
 
   //Species
@@ -495,6 +503,7 @@ void Module::CreateSBMLModel()
       SpeciesReference* sr = sbmlmod->createReactant();
       sr->setSpecies(nthleft->GetNameDelimitedBy(cc));
       sr->setStoichiometry(nthstoich);
+      sr->setConstant(true);
     }
     const ReactantList* right = reaction->GetRight();
     for (size_t rnum=0; rnum<right->Size(); rnum++) {
@@ -503,6 +512,7 @@ void Module::CreateSBMLModel()
       SpeciesReference* sr = sbmlmod->createProduct();
       sr->setSpecies(nthright->GetNameDelimitedBy(cc));
       sr->setStoichiometry(nthstoich);
+      sr->setConstant(true);
     }
     //Find 'modifiers' and add them.
     vector<const Variable*> subvars = formula->GetVariablesFrom(formstring, m_modulename);

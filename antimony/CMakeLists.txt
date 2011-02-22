@@ -385,3 +385,32 @@ else(UNIX)
 	
 endif(UNIX)
 
+if (WITH_SBW_TRANSLATOR)
+  
+    find_library(LIBSBW_LIBRARY 
+		NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
+		PATHS /usr/lib /usr/local/lib 
+			  ${CMAKE_SOURCE_DIR} 
+			  ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${CMAKE_SOURCE_DIR}/../libsbml-5/build/src/RelWithDebInfo
+    )
+    find_path(SBW_INCLUDE_DIR
+		NAMES SBW/config.h
+		PATHS /usr/include /usr/local/include 
+			  ${CMAKE_SOURCE_DIR}/include 
+			  ${CMAKE_SOURCE_DIR}/dependencies/include
+              ${CMAKE_SOURCE_DIR}/../SBW/include/
+    )
+  INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBW_INCLUDE_DIR})
+
+  if(MSVC)
+    set_target_properties(sbwantimony PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
+    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")  
+  endif()
+  add_executable(sbwantimony WIN32 ${ANTIMONY_SRC_DIR}sbwtranslator.cpp)
+  add_dependencies(sbwantimony ${LIBANTIMONY_LIBRARY})
+  target_link_libraries(sbwantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} ${LIBSBW_LIBRARY})  
+  
+endif()
+
+
