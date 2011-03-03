@@ -598,16 +598,7 @@ void Module::CreateSBMLModel()
     if (formvar->GetDisplayName() != "") {
       param->setName(formvar->GetDisplayName());
     }
-    switch(formvar->GetConstType()) {
-    case constVAR:
-      param->setConstant(true);
-      break;
-    case constCONST:
-      param->setConstant(false);
-      break;
-    case constDEFAULT:
-      break;
-    }
+    param->setConstant(formvar->GetIsConst());
   }
 }
 

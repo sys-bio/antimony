@@ -74,7 +74,9 @@ BEGIN_C_DECLS
   */
 /** \{ */
 /**
- * Load a file of either SBML or Antimony format.  The first attempts to read the document as SBML, and if this results in an error, then reads it as Antimony.  If this, too, results in an error, the second error is saved, and a '-1' is returned.
+ * Load a file of any format libAntimony knows about (potentially Antimony, SBML, or CellML).  If all attempts fail, the errors from the attempt to read the file in the Antimony format are saved, so if the file is actually SBML or CellML, the error is likely to be "but contains errors, the reported errors will be from the attempt to read it as Antimony, and a '-1' is returned.
+ *
+ * NOTE:  This function will not attempt to parse the file as SBML if libAntimony is compiled with the '-NSBML' flag, and will not attempt to parse the file as CellML if compiled with the '-NCELLML' flag.
  *
  * @return a long integer indicating the index of the file read and stored.  On an error, returns -1 and no information is stored.
  *
@@ -85,15 +87,39 @@ BEGIN_C_DECLS
 LIB_EXTERN long   loadFile(const char* filename);
 
 /**
- * Load a string of either SBML or Antimony format.  The first attempts to read the string as SBML, and if this results in an error, then reads it as Antimony.  If this, too, results in an error, the second error is saved, and a '-1' is returned.
+ * Load a string of any format libAntimony knows about (potentially Antimony, SBML, or CellML).  The first attempts to read the string as SBML, and if this results in an error, then reads it as Antimony.  If this, too, results in an error, the second error is saved, and a '-1' is returned.
+ *
+ * NOTE:  This function will not attempt to parse the string as SBML if libAntimony is compiled with the '-NSBML' flag, and will not attempt to parse the string as CellML if compiled with the '-NCELLML' flag.
  *
  * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
  *
- * @param model The model, in either Antimony or SBML format.
+ * @param model The model, in (potentially) Antimony, SBML, or CellML format.
  *
  * @see getLastError()
  */
 LIB_EXTERN long   loadString(const char* model);
+
+/**
+ * Loads a file and parses it as an Antimony file.  On an error, the error is saved, -1 is returned, and no information is stored.
+ *
+ * @return a long integer indicating the index of the file read and stored.  On an error, returns -1 and no information is stored.
+ *
+ * @param filename The filename as a character string.  May be either absolute or relative to the directory the executable is being run from.
+ *
+ * @see getLastError()
+ */
+LIB_EXTERN long   loadAntimonyFile(const char* filename);
+
+/**
+ * Loads a string and parses it as an Antimony set of modules.  On an error, the error is saved, -1 is returned, and no information is stored.
+ *
+ * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
+ *
+ * @param model The model in Antimony format.
+ *
+ * @see getLastError()
+ */
+LIB_EXTERN long   loadAntimonyString(const char* model);
 
 #ifndef NSBML
 /**

@@ -10,6 +10,10 @@
 #include <sbml/SBMLTypes.h>
 #endif
 
+#ifndef NCELLML
+#include "cellmlx.h"
+#endif
+
 #include "antimony_api.h"
 #include "registry.h"
 #include "stringx.h"
@@ -230,22 +234,51 @@ long ParseFile(string oldlocale)
 
 LIB_EXTERN long loadString(const char* model)
 {
+  long retval = -1;
+#ifndef NSBML
+  retval = loadSBMLString(model);
+  if (retval != -1) return retval;
+#endif
+#ifndef NCELLML
+  retval = loadCellMLString(model);
+  if (retval != -1) return retval;
+#endif
+  return loadAntimonyString(model);
+}
+
+LIB_EXTERN long loadFile(const char* filename)
+{
+  long retval = -1;
+#ifndef NSBML
+  retval = loadSBMLFile(filename);
+  if (retval != -1) return retval;
+#endif
+#ifndef NCELLML
+  retval = loadCellMLFile(filename);
+  if (retval != -1) return retval;
+#endif
+  return loadAntimonyFile(filename);
+}
+
+LIB_EXTERN long loadAntimonyString(const char* model)
+{
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   g_registry.ClearModules();
   int ofreturn = g_registry.OpenString(model);
   if (ofreturn==0) return -1; //file read failure
   if (ofreturn==2) {
-    //SBML file
-    g_registry.FinalizeModules();
+    //SBML model
+    g_registry.SetError("The provided string is actually an SBML model, and is not in the Antimony format.  Use 'loadString' or 'loadSBMLString' to correctly parse it.");
     setlocale(LC_ALL, oldlocale.c_str());
-    return g_registry.SaveModules();
+    g_registry.ClearModules();
+    return -1;
   }
   assert(ofreturn==1); //antimony file
   return ParseFile(oldlocale);
 }
 
-LIB_EXTERN long loadFile(const char* filename)
+LIB_EXTERN long loadAntimonyFile(const char* filename)
 {
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
@@ -254,9 +287,11 @@ LIB_EXTERN long loadFile(const char* filename)
   if (ofreturn==0) return -1; //file read failure
   if (ofreturn==2) {
     //SBML file
-    g_registry.FinalizeModules();
+    string file(filename);
+    g_registry.SetError("The file '" + file + "' is actually an SBML file, and is not in the Antimony format.  Use 'loadFile' or 'loadSBMLFile' to correctly parse it.");
     setlocale(LC_ALL, oldlocale.c_str());
-    return g_registry.SaveModules();
+    g_registry.ClearModules();
+    return -1;
   }
   assert(ofreturn==1); //antimony file
   return ParseFile(oldlocale);
@@ -313,8 +348,6 @@ LIB_EXTERN long loadSBMLString(const char* model)
 #endif
 
 #ifndef NCELLML
-
-#include "cellmlx.h"
 
 long CheckAndAddCellMLDoc(iface::cellml_api::Model* model)
 {
