@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iostream>
 #include <cassert>
+#include <cstdlib>
 
 #include "formula.h"
 #include "module.h"

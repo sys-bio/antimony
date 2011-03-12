@@ -79,7 +79,7 @@ bool SBMLTab::SetLevelAndVersion(int levelversion)
   case 5: return SetLevelAndVersion(3, 1);
   default:
       CopyMessageBox msgBox;
-      QDataStream messagest = "";
+      QDataStream messagest("");
       messagest << "Programming error:  unable to set SBML level and version to '" << levelversion << "':  unknown code.";
       QString message;
       messagest >> message;

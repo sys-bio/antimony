@@ -8,7 +8,7 @@
 #endif
 
 using namespace std;
-bool CaselessStrCmp(const string& lhs, const string& rhs);
+bool CaselessStrcmp(const string& lhs, const string& rhs);
 
 int main(int argc, char** argv)
 {
@@ -21,29 +21,29 @@ int main(int argc, char** argv)
   options += "\n\t-o allsbml  : Output each model and submodel as a separate SBML model";
 #ifndef NCELLML
   options += "\n\t-o cellml   : Output the 'main' model as CellML";
-  instructions += ", SBML, and CellML.";
+  instructions += ",\nSBML, and CellML.";
 #else
-  instructions += " and SBML.";
+  instructions += "\nand SBML.";
 #endif
 #else
 #ifndef NCELLML
-  instructions += " and CellML.";
+  instructions += "\nand CellML.";
   options += "\n\t-o cellml   : Output the 'main' model as CellML";
 #else
-  instructions += " and... Antimony.  Because this program was compiled without using either libsbml or libcellml, which kind of makes translation to those formats difficult.  But hey!  You can still use it to round-trip your models to regularize them and clean up any bits where you might have defined an element multiple times or something.  I guess.  You still have to use '-o antimony' to set the output format, because if you got used to round-tripping your models with the program compiled this way, sure enough someone (like you) would come along and recompile the program with SBML and/or CellML support back in, and then your old scripts wouldn't work.  So I'm saving you from yourself here; you should thank me.";
+  instructions += "\nand... Antimony.  Because this program was compiled without using either\nlibsbml or libcellml, which kind of makes translation to those formats\ndifficult.  But hey!  You can still use it to round-trip your models to\nregularize them and clean up any bits where you might have defined an element\nmultiple times or something.  I guess.  You still have to use '-o antimony' to\nset the output format, because if you got used to round-tripping your models\nwith the program compiled this way, sure enough someone (like you) would come\nalong and recompile the program with SBML and/or CellML support back in, and\nthen your old scripts wouldn't work.  So I'm saving you from yourself here; you\nshould thank me.";
 #endif
 #endif
-  instructions += "\n\nYou must use at least one of the following options to set the output format of this translator:\n";
+  instructions += "\n\nYou must use at least one of the following options to set the output format\nof this translator:\n";
   instructions += options;
-  instructions += "\n\nEach file will be exported to the desired format separately.  Multiple output formats are possible; a separate '-o [format]' is needed for each output format.  This means that if you give sbtranslate two input files and two output formats, it will write four files by default: one for each file in each format.";
-  instructions += "\n\nsbtranslate takes as input any number of valid model files in any of the formats it understands.  If no files are provided, it reads input from stdin and attempts to parse that in one of its known model formats.";
-  instructions += "\n\nBy default, sbtranslate will output files in the working directory with the same name as the original file, minus that file's extention, plus '.txt' for antimony output, '.xml' for SBML output, and '.cellml' for CellML output (when available).  If the file was originally in the same format as the desired output, '_rt' (for 'roundtrip') is appended to the filename before the extention.  If the input was stdin, output will by default be written to stdout.";
+  instructions += "\n\nEach file will be exported to the desired format separately.  Multiple output\nformats are possible; a separate '-o [format]' is needed for each output format.\nThis means that if you give sbtranslate two input files and two output formats,\nit will write four files by default: one for each file in each format.";
+  instructions += "\n\nsbtranslate takes as input any number of valid model files in any of the\nformats it understands.  If no files are provided, it reads input from stdin\nand attempts to parse that in one of its known model formats.";
+  instructions += "\n\nBy default, sbtranslate will output files in the working directory with the\nsame name as the original file, minus that file's extention, plus '.txt' for\nantimony output, '.xml' for SBML output, and '.cellml' for CellML output (when\navailable).  If the file was originally in the same format as the desired\noutput, '_rt' (for 'roundtrip') is appended to the filename before the\nextention.  If the input was stdin, output will by default be written to\nstdout.";
   instructions += "\n\nTo change this behavior, the following options may be used:";
   instructions += "\n\t-outfile [filename]     : All output is written to the given file.";
-  instructions += "\n\t-outfileprefix [prefix] : All outfiles are prepended with the given prefix.";
-  instructions += "\n\t-stdin    : Input is read from stdin, in addition to any files that might be listed.";
-  instructions += "\n\t-stdout   : All output is written to standard output.  No files are created.";
-  instructions += "\n\t-dirsort  : If the input filenames include the name of the directory they are in, the corresponding output files are written out to a subdirectory of the working directory with the same name.  If '-outfileprefix' is used in conjunction with this option, that prefix is prepended to the directory name (and if it includes a slash, may itself be a directory).";
+  instructions += "\n\t-outfileprefix [prefix] : All outfiles are prepended with the given\n\t\t\t\t  prefix.";
+  instructions += "\n\t-stdin    : Input is read from stdin, in addition to any files that\n\t\t    might be listed.";
+  instructions += "\n\t-stdout   : All output is written to standard output.  No files are\n\t\t    created.";
+  instructions += "\n\t-dirsort  : If the input filenames include the name of the directory\n\t\t    they are in, the corresponding output files are written out\n\t\t    to a subdirectory of the working directory with the same\n\t\t    name.  If '-outfileprefix' is used in conjunction with this\n\t\t    option, that prefix is prepended to the directory name\n\t\t    (and if it includes a slash, may itself be a directory).";
 
   bool outputantimony = false;
   bool outputsbml = false;
@@ -55,20 +55,24 @@ int main(int argc, char** argv)
   bool writestdout = false;
   bool dirsort = false;
   vector<string> files;
-  for (int arg=0; arg<argc; arg++) {
+  if (argc==1) {
+    cerr << instructions << endl;
+    return 1;
+  }
+  for (int arg=1; arg<argc; arg++) {
     string sarg = argv[arg];
     if (sarg == "-o") {
       arg++;
       if (arg<argc) {
-        cerr << "You must provide an option for the '-o' flag.  Valid options are:\n" << options << "\nUse '-h' for more options." << endl;
+        cerr << "You must provide an option for the '-o' flag.  Valid options are:\n" << options << "\n\nUse '-h' for more options." << endl;
         retval = 1;
       }
       else {
         string outfmt = argv[arg];
-        if (CaselessStrCmp(outfmt, "antimony")) {
+        if (CaselessStrcmp(outfmt, "antimony")) {
           outputantimony = true;
         }
-        else if (CaselessStrCmp(outfmt, "cellml")) {
+        else if (CaselessStrcmp(outfmt, "cellml")) {
 #ifndef NCELLML
           outputcellml = true;
 #else
@@ -76,7 +80,7 @@ int main(int argc, char** argv)
           retval = 1;
 #endif
         }
-        else if (CaselessStrCmp(outfmt, "sbml")) {
+        else if (CaselessStrcmp(outfmt, "sbml")) {
 #ifndef SBML
           outputsbml = true;
 #else
@@ -84,7 +88,7 @@ int main(int argc, char** argv)
           retval = 1;
 #endif
         }
-        else if (CaselessStrCmp(outfmt, "allsbml")) {
+        else if (CaselessStrcmp(outfmt, "allsbml")) {
 #ifndef SBML
           outputallsbml = true;
 #else
@@ -98,7 +102,7 @@ int main(int argc, char** argv)
         }
       }
     }
-    else if (CaselessStrCmp(sarg, "-outfile")) {
+    else if (CaselessStrcmp(sarg, "-outfile")) {
       arg++;
       if (arg<argc) {
         cerr << "You must provide a filename for the '-outfile' flag.  Use '-h' for more options." << endl;
@@ -108,7 +112,7 @@ int main(int argc, char** argv)
         outfilename = argv[arg];
       }
     }
-    else if (CaselessStrCmp(sarg, "-outfileprefix")) {
+    else if (CaselessStrcmp(sarg, "-outfileprefix")) {
       arg++;
       if (arg<argc) {
         cerr << "You must provide an prefix for the '-outfileprefix' flag.  Use '-h' for more options." << endl;
@@ -118,14 +122,18 @@ int main(int argc, char** argv)
         outfileprefix = argv[arg];
       }
     }
-    else if (CaselessStrCmp(sarg, "-stdin")) {
+    else if (CaselessStrcmp(sarg, "-stdin")) {
       readstdin = true;
     }
-    else if (CaselessStrCmp(sarg, "-stdout")) {
+    else if (CaselessStrcmp(sarg, "-stdout")) {
       writestdout = true;
     }
-    else if (CaselessStrCmp(sarg, "-dirsort")) {
+    else if (CaselessStrcmp(sarg, "-dirsort")) {
       dirsort = true;
+    }
+    else if (CaselessStrcmp(sarg, "-h") || CaselessStrcmp(sarg, "--help")) {
+      cout << instructions << endl;
+      retval = 1;
     }
     else {
       files.push_back(sarg);
@@ -138,12 +146,16 @@ int main(int argc, char** argv)
       return retval;
     }
   }
+  if (!(outputantimony || outputsbml || outputallsbml || outputcellml)) {
+        cerr << "You must provide an output option using the '-o' flag.  Valid options are:\n" << options << "\n\nUse '-h' for more options." << endl;
+        retval = 1;
+  }
   if (files.size()==0) {
     readstdin = true;
   }
 
   vector<long> handles;
-  for (int file=1; file<files.size(); file++) {
+  for (size_t file=1; file<files.size(); file++) {
     handles.push_back(loadFile(files[file].c_str()));
     if (handles[file] == -1) {
       cerr << "Unable to load file '" << files[file] << "':  " << getLastError() << endl;
@@ -213,7 +225,7 @@ int main(int argc, char** argv)
 }
 
 
-bool CaselessStrCmp(const string& lhs, const string& rhs)
+bool CaselessStrcmp(const string& lhs, const string& rhs)
 {
 
   if (lhs.size() != rhs.size()) return false;
@@ -223,4 +235,4 @@ bool CaselessStrCmp(const string& lhs, const string& rhs)
   }
   return true;
 
-} /* CaselessStrCmp */
+} /* CaselessStrcmp */
