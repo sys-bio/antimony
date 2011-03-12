@@ -239,27 +239,34 @@ endif(NOT UNIX)
 #
 
 add_executable(rehashantimony ${ANTIMONY_SRC_DIR}rehashantimony.cpp)
-add_executable(testantimony ${ANTIMONY_SRC_DIR}testantimony.cpp)
 add_dependencies(rehashantimony ${LIBANTIMONY_LIBRARY})
-add_dependencies(testantimony ${LIBANTIMONY_LIBRARY})
 target_link_libraries(rehashantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+
+add_executable(testantimony ${ANTIMONY_SRC_DIR}testantimony.cpp)
+add_dependencies(testantimony ${LIBANTIMONY_LIBRARY})
 target_link_libraries(testantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+
+add_executable(sbtranslate ${ANTIMONY_SRC_DIR}sbtranslate.cpp)
+add_dependencies(sbtranslate ${LIBANTIMONY_LIBRARY})
+target_link_libraries(sbtranslate ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
 
 if(WITH_SBML)
   add_executable(antimony2sbml ${ANTIMONY_SRC_DIR}antimony2sbml.cpp)
-  add_executable(sbml2antimony ${ANTIMONY_SRC_DIR}sbml2antimony.cpp)
   add_dependencies(antimony2sbml ${LIBANTIMONY_LIBRARY})
-  add_dependencies(sbml2antimony ${LIBANTIMONY_LIBRARY})
   target_link_libraries(antimony2sbml ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+
+  add_executable(sbml2antimony ${ANTIMONY_SRC_DIR}sbml2antimony.cpp)
+  add_dependencies(sbml2antimony ${LIBANTIMONY_LIBRARY})
   target_link_libraries(sbml2antimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
 endif(WITH_SBML)
 
 if(WITH_CELLML)
   add_executable(antimony2cellml ${ANTIMONY_SRC_DIR}antimony2cellml.cpp)
-  add_executable(cellml2antimony ${ANTIMONY_SRC_DIR}cellml2antimony.cpp)
   add_dependencies(antimony2cellml ${LIBANTIMONY_LIBRARY})
-  add_dependencies(cellml2antimony ${LIBANTIMONY_LIBRARY})
   target_link_libraries(antimony2cellml ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+
+  add_executable(cellml2antimony ${ANTIMONY_SRC_DIR}cellml2antimony.cpp)
+  add_dependencies(cellml2antimony ${LIBANTIMONY_LIBRARY})
   target_link_libraries(cellml2antimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
 endif(WITH_CELLML)
 
@@ -360,7 +367,7 @@ if(UNIX)
     else(APPLE)
 		add_definitions(-DLINUX)
     endif(APPLE)
-    add_definitions( -DPACKAGE_VERSION=\"${PACKAGE_VERSION}\"  -DPACKAGE_NAME="${PROJECT_NAME}")
+   # add_definitions( -DPACKAGE_VERSION=\"${PACKAGE_VERSION}\"  -DPACKAGE_NAME="${PROJECT_NAME}")
 
 else(UNIX)
 	add_definitions(-DWIN32 -DLIBANTIMONY_EXPORTS -DLIBLAX_EXPORTS)

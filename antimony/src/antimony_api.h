@@ -1,4 +1,4 @@
- /**
+/**
   * @file    antimony_api.h
   * @brief   The API for the Antimony parser
   * @author  Lucian Smith
@@ -795,7 +795,7 @@ LIB_EXTERN unsigned long  getNumAssignmentsForEvent(const char* moduleName, unsi
 LIB_EXTERN char*   getTriggerForEvent(const char* moduleName, unsigned long event);
 
 /**
- * Returns the delay for the given event, as an equation (if present; if the event has no delay, "" is returned).
+ * Returns the delay for the given event, as an equation (if present; if the event has no delay, "" is returned.  If no such module or event is present, NULL is returned and an error is set.).
  */
 LIB_EXTERN char*   getDelayForEvent(const char* moduleName, unsigned long event);
 
@@ -803,6 +803,31 @@ LIB_EXTERN char*   getDelayForEvent(const char* moduleName, unsigned long event)
  * Returns 'true' if the given event has a delay; 'false' otherwise.
  */
 LIB_EXTERN bool    getEventHasDelay(const char* moduleName, unsigned long event);
+
+/**
+ * Returns the priority for the given event, as an equation (if present; if the event has no priority, "" is returned.  If no such module or event is present, NULL is returned and an error is set.).
+ */
+LIB_EXTERN char*   getPriorityForEvent(const char* moduleName, unsigned long event);
+
+/**
+ * Returns 'true' if the given event has a priority; 'false' otherwise.
+ */
+LIB_EXTERN bool    getEventHasPriority(const char* moduleName, unsigned long event);
+
+/**
+ * Returns the value of the persistence flag for the given event (default is 'false').  Unable to return an error if there is no such event or module, so will simply return 'false' in those situations, as well.
+ */
+LIB_EXTERN bool   getPersistenceForEvent(const char* moduleName, unsigned long event);
+
+/**
+ * Returns the value at time 0 for the given event trigger (default is 'true').  Unable to return an error if there is no such event or module, so will simply return 'true' in those situations, as well.
+ */
+LIB_EXTERN bool   getT0ForEvent(const char* moduleName, unsigned long event);
+
+/**
+ * Returns the value of the 'fromTrigger' flag for the given event trigger (default is 'true').  Unable to return an error if there is no such event or module, so will simply return 'true' in those situations, as well.
+ */
+LIB_EXTERN bool   getFromTriggerForEvent(const char* moduleName, unsigned long event);
 
 /**
  * Each assignment for an event assigns a formula to a variable.  This function returns the variable in question for the given event and assignment.

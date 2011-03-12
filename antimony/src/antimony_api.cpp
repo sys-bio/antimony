@@ -241,6 +241,7 @@ LIB_EXTERN long loadString(const char* model)
 #endif
 #ifndef NCELLML
   retval = loadCellMLString(model);
+  //xmlSetStructuredErrorFunc(NULL, NULL);
   if (retval != -1) return retval;
 #endif
   return loadAntimonyString(model);
@@ -1305,6 +1306,47 @@ LIB_EXTERN bool getEventHasDelay(const char* moduleName, unsigned long eventno)
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
   if (var==NULL) return NULL;
   return (!var->GetEvent()->GetDelay()->IsEmpty());
+}
+
+LIB_EXTERN char*   getPriorityForEvent(const char* moduleName, unsigned long eventno)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  string trig = var->GetEvent()->GetPriority()->ToDelimitedStringWithEllipses(g_registry.GetCC());
+  return getCharStar(trig.c_str());
+}
+
+LIB_EXTERN bool    getEventHasPriority(const char* moduleName, unsigned long eventno)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  return (!var->GetEvent()->GetPriority()->IsEmpty());
+}
+
+LIB_EXTERN bool   getPersistenceForEvent(const char* moduleName, unsigned long eventno)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  return var->GetEvent()->GetPersistent();
+}
+
+LIB_EXTERN bool   getT0ForEvent(const char* moduleName, unsigned long eventno)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  return var->GetEvent()->GetInitialValue();
+}
+
+LIB_EXTERN bool   getFromTriggerForEvent(const char* moduleName, unsigned long eventno)
+{
+  if (!checkModule(moduleName)) return NULL;
+  const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
+  if (var==NULL) return NULL;
+  return var->GetEvent()->GetUseValuesFromTriggerTime();
 }
 
 LIB_EXTERN char* getNthAssignmentVariableForEvent(const char* moduleName, unsigned long eventno, unsigned long n)

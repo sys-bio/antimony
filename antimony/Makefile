@@ -260,6 +260,7 @@ all : \
 	$(bin_dir)sbml2antimony \
 	$(bin_dir)cellml2antimony \
 	$(bin_dir)antimony2cellml \
+	$(bin_dir)sbtranslate \
 	$(bin_dir)rehashantimony
 	@echo ""
 	@echo "Libary created:"
@@ -294,8 +295,10 @@ $(bin_dir)sbml2antimony : $(lib_dir)libantimony.a $(src_dir)sbml2antimony.o
 $(bin_dir)cellml2antimony : $(lib_dir)libantimony.a $(src_dir)cellml2antimony.o
 	mkdir -p $(bin_dir)
 	$(CXX) -o $(bin_dir)cellml2antimony  $(src_dir)cellml2antimony.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
-	echo "cd $(bin_dir);declare -x LD_LIBRARY_PATH=\"/home/lpsmith/xulrunner-sdk/lib/:/home/lpsmith/CellML/hg/cellml-opencell/opencellStage/components/\";cellml2antimony $1" > $(bin_dir)/cellml2antimony.bat
-	chmod a+x $(bin_dir)/cellml2antimony.bat
+
+$(bin_dir)sbtranslate : $(lib_dir)libantimony.a $(src_dir)sbtranslate.o
+	mkdir -p $(bin_dir)
+	$(CXX) -o $(bin_dir)sbtranslate  $(src_dir)sbtranslate.o -lm $(CPPFLAGS) $(LIBRARYFLAGS)
 
 $(bin_dir)rehashantimony : $(lib_dir)libantimony.a $(src_dir)rehashantimony.o
 	mkdir -p $(bin_dir)
