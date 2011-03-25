@@ -1,14 +1,23 @@
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <vector>
+#include <cassert>
+#include <cstdlib>
 #include "antimony_api.h"
 
 #ifdef WIN32
 #include <conio.h>
+#include <direct.h> //for Windows mkdir
+#else
+#include <sys/stat.h> //for UNIX mkdir
+#include <cerrno>
 #endif
 
 using namespace std;
 bool CaselessStrcmp(const string& lhs, const string& rhs);
+enum file_type {FT_ANTIMONY, FT_SBML, FT_CELLML, FT_UNKNOWN};
+file_type GetFileType(string filename);
 
 int main(int argc, char** argv)
 {
@@ -39,18 +48,18 @@ int main(int argc, char** argv)
   instructions += "\n\nsbtranslate takes as input any number of valid model files in any of the\nformats it understands.  If no files are provided, it reads input from stdin\nand attempts to parse that in one of its known model formats.";
   instructions += "\n\nBy default, sbtranslate will output files in the working directory with the\nsame name as the original file, minus that file's extention, plus '.txt' for\nantimony output, '.xml' for SBML output, and '.cellml' for CellML output (when\navailable).  If the file was originally in the same format as the desired\noutput, '_rt' (for 'roundtrip') is appended to the filename before the\nextention.  If the input was stdin, output will by default be written to\nstdout.";
   instructions += "\n\nTo change this behavior, the following options may be used:";
-  instructions += "\n\t-outfile [filename]     : All output is written to the given file.";
-  instructions += "\n\t-outfileprefix [prefix] : All outfiles are prepended with the given\n\t\t\t\t  prefix.";
+  instructions += "\n\t-outfile [filename] : All output is written to the given file.";
+  instructions += "\n\t-prefix [prefix]    : All outfiles are prepended with the given\n\t\t\t\t  prefix.";
   instructions += "\n\t-stdin    : Input is read from stdin, in addition to any files that\n\t\t    might be listed.";
   instructions += "\n\t-stdout   : All output is written to standard output.  No files are\n\t\t    created.";
-  instructions += "\n\t-dirsort  : If the input filenames include the name of the directory\n\t\t    they are in, the corresponding output files are written out\n\t\t    to a subdirectory of the working directory with the same\n\t\t    name.  If '-outfileprefix' is used in conjunction with this\n\t\t    option, that prefix is prepended to the directory name\n\t\t    (and if it includes a slash, may itself be a directory).";
+  instructions += "\n\t-dirsort  : If the input filenames include the name of the directory\n\t\t    they are in, the corresponding output files are written out\n\t\t    to a subdirectory of the working directory with the same\n\t\t    name.  If '-prefix' is used in conjunction with this\n\t\t    option, that prefix is prepended to the directory name\n\t\t    (and if it includes a slash, may itself be a directory).";
 
   bool outputantimony = false;
   bool outputsbml = false;
   bool outputallsbml = false;
   bool outputcellml = false;
   string outfilename = "";
-  string outfileprefix = "";
+  string prefix = "";
   bool readstdin = false;
   bool writestdout = false;
   bool dirsort = false;
@@ -63,7 +72,7 @@ int main(int argc, char** argv)
     string sarg = argv[arg];
     if (sarg == "-o") {
       arg++;
-      if (arg<argc) {
+      if (arg>=argc) {
         cerr << "You must provide an option for the '-o' flag.  Valid options are:\n" << options << "\n\nUse '-h' for more options." << endl;
         retval = 1;
       }
@@ -104,7 +113,7 @@ int main(int argc, char** argv)
     }
     else if (CaselessStrcmp(sarg, "-outfile")) {
       arg++;
-      if (arg<argc) {
+      if (arg>=argc) {
         cerr << "You must provide a filename for the '-outfile' flag.  Use '-h' for more options." << endl;
         retval = 1;
       }
@@ -112,14 +121,14 @@ int main(int argc, char** argv)
         outfilename = argv[arg];
       }
     }
-    else if (CaselessStrcmp(sarg, "-outfileprefix")) {
+    else if (CaselessStrcmp(sarg, "-prefix")) {
       arg++;
-      if (arg<argc) {
-        cerr << "You must provide an prefix for the '-outfileprefix' flag.  Use '-h' for more options." << endl;
+      if (arg>=argc) {
+        cerr << "You must provide an prefix for the '-prefix' flag.  Use '-h' for more options." << endl;
         retval = 1;
       }
       else {
-        outfileprefix = argv[arg];
+        prefix = argv[arg];
       }
     }
     else if (CaselessStrcmp(sarg, "-stdin")) {
@@ -155,65 +164,225 @@ int main(int argc, char** argv)
   }
 
   vector<long> handles;
-  for (size_t file=1; file<files.size(); file++) {
-    handles.push_back(loadFile(files[file].c_str()));
-    if (handles[file] == -1) {
-      cerr << "Unable to load file '" << files[file] << "':  " << getLastError() << endl;
-      retval = 1;
-    }
-  }
+  size_t numstdin = 0;
   if (readstdin) {
-    string model = "";
-    while(cin) {
-      string input_line;
-      getline(cin, input_line);
-      model += input_line + "\n";
-    }
-    handles.push_back(loadString(model.c_str()));
-    if (handles[handles.size()-1] == -1) {
-      cerr << "Error reading in model from standard input: " << getLastError() << endl;
-    }
+    numstdin = 1;
   }
-
-  /*
-  }
-    else {
-      handles
-      retval=loadFile(argv[file]);
-      if (retval == -1) {
-        cout << getLastError() << endl;
-        retval = 1;
+  for (size_t file=0; file<files.size() + numstdin; file++) {
+    //Input:
+    if (file == files.size()) {
+      //stdin
+      string model = "";
+      while(cin) {
+        string input_line;
+        getline(cin, input_line);
+        model += input_line + "\n";
       }
-      else {
-        cout << argv[file] << " read successfully." << endl;
-        size_t nummods = getNumModules();
-        char** modnames = getModuleNames();
-        string filename(argv[file]);
-        if (filename.find(".txt") != string::npos) {
-          filename.erase(filename.find(".txt"), 4);
-        }
-        while (filename.find("/") != string::npos) {
-          filename.erase(0, filename.find("/")+1);
-        }
-        while (filename.find("\\") != string::npos) {
-          filename.erase(0, filename.find("\\")+1);
-        }
-        for (size_t mod=0; mod<nummods; mod++) {
-          if (getNumSymbolsOfType(modnames[mod], allSymbols) == 0) continue; //most likely for the 'main' module.
-          string sbmlname = filename + "_" + modnames[mod] + "_sbml.xml";
-          if (writeSBMLFile(sbmlname.c_str(), modnames[mod])) {
-            cout << "Successfully wrote file " << sbmlname.c_str() << endl;
+      handles.push_back(loadString(model.c_str()));
+      if (handles[handles.size()-1] == -1) {
+        handles.pop_back();
+        cerr << "Error reading in model from standard input: " << getLastError() << endl;
+        continue;
+      }
+    }
+    else {
+      switch(GetFileType(files[file])) {
+      case FT_ANTIMONY:
+        handles.push_back(loadAntimonyFile(files[file].c_str()));
+        break;
+      case FT_SBML:
+        handles.push_back(loadSBMLFile(files[file].c_str()));
+        break;
+      case FT_CELLML:
+        handles.push_back(loadCellMLFile(files[file].c_str()));
+        break;
+      case FT_UNKNOWN:
+        handles.push_back(loadFile(files[file].c_str()));
+        break;
+      }
+      if (handles[file] == -1) {
+        cerr << getLastError() << endl;
+        continue;
+      }
+      else if (!writestdout) {
+        cout << "Successfully read file " << files[file] << endl;
+      }
+    }
+    //Output:
+    string infile = "";
+    string infilenodir = "";
+    string fullprefix = prefix;
+    bool   stdin = false;
+    if (file < files.size()) {
+      infile = files[file];
+      infilenodir = infile;
+      size_t lastslash = infilenodir.find_last_of("/\\");
+      if (lastslash != string::npos) {
+        infilenodir = infilenodir.substr(lastslash+1, string::npos);
+        if (dirsort) {
+          string subdir = infile.substr(0, lastslash);
+          lastslash = subdir.find_last_of("/\\");
+          if (lastslash != string::npos) {
+            subdir = subdir.substr(lastslash+1, string::npos);
           }
-          else {
-            cout << "Problem writing file " << sbmlname.c_str() << endl;
+          if (subdir != "") {
+            subdir += "/";
+          }
+          fullprefix = subdir + prefix;
+        }
+      }
+      if (!writestdout) {
+        string subdir = fullprefix;
+        size_t lastslash = subdir.find_last_of("/\\");
+        if (lastslash != string::npos) {
+          subdir = subdir.substr(0, lastslash+1);
+#ifdef WIN32
+          if (mkdir(subdir.c_str()) == -1) {
+            cerr << "Unable to create directory " << subdir << endl;
             retval = 1;
           }
+#else
+          if (mkdir(subdir.c_str(), 0777) == -1 && errno != EEXIST) {  // Create the directory
+            cerr << "Unable to create directory " << subdir << endl;
+            retval = 1;
+          }
+          //string command = "mkdir -p " + subdir;
+          //system(command.c_str());
+#endif
         }
       }
-      freeAll();
     }
+    else {
+      stdin = true;
+    }
+    if (outputantimony) {
+      if (writestdout) {
+        cout << getAntimonyString(NULL) << endl;
+      }
+      else {
+        string antoutname = outfilename;
+        if (antoutname == "") {
+          if (stdin) {
+            antoutname = fullprefix + "antimony.txt";
+          }
+          else {
+            antoutname = fullprefix + infilenodir;
+            size_t lastperiod = antoutname.find_last_of('.');
+            antoutname = antoutname.substr(0, lastperiod);
+            antoutname += ".txt";
+            if (antoutname == infile) {
+              antoutname.insert(lastperiod, "_rt");
+            }
+          }
+        }
+        if (writeAntimonyFile(antoutname.c_str(), NULL)) { //NULL for 'all models'
+          cout << "Successfully wrote " << antoutname << endl;
+        }
+        else {
+          cerr << getLastError() << endl;
+        }
+      }
+    }
+#ifndef NSBML
+    if (outputsbml) {
+      if (writestdout) {
+        cout << getSBMLString(NULL) << endl;
+      }
+      else {
+        string sbmloutname = outfilename;
+        if (sbmloutname == "") {
+          if (stdin) {
+            sbmloutname = fullprefix + "sbml.xml";
+          }
+          else {
+            sbmloutname = fullprefix + infilenodir;
+            size_t lastperiod = sbmloutname.find_last_of('.');
+            sbmloutname = sbmloutname.substr(0, lastperiod);
+            sbmloutname += ".xml";
+            if (sbmloutname == infile) {
+              sbmloutname.insert(lastperiod, "_rt");
+            }
+          }
+        }
+        if (writeSBMLFile(sbmloutname.c_str(), NULL))  { //NULL for 'all models'
+          cout << "Successfully wrote " << sbmloutname << endl;
+        }
+        else {
+          cerr << getLastError() << endl;
+        }
+      }
+    }
+    else if (outputallsbml) {
+      unsigned long nummods = getNumModules();
+      for (unsigned long mod=0; mod<nummods; mod++) {
+        char* modname = getNthModuleName(mod);
+        assert(modname != NULL);
+        string modnamestr(modname);
+        if (writestdout) {
+          cout << getSBMLString(modname) << endl;
+        }
+        else {
+          string sbmloutname = outfilename;
+          if (sbmloutname == "") {
+            if (stdin) {
+              sbmloutname = fullprefix + "sbml_" + modnamestr + ".xml";
+            }
+            else {
+              sbmloutname = fullprefix + infilenodir;
+              size_t lastperiod = sbmloutname.find_last_of('.');
+              sbmloutname = sbmloutname.substr(0, lastperiod);
+              sbmloutname += "_" + modnamestr + ".xml";
+              if (sbmloutname == infile) {
+                sbmloutname.insert(lastperiod, "_rt");
+              }
+            }
+          }
+          if (writeSBMLFile(sbmloutname.c_str(), modname))  {
+            cout << "Successfully wrote " << sbmloutname << endl;
+          }
+          else {
+            cerr << getLastError() << endl;
+          }
+        }
+      }
+    }
+#endif //NSBML
+#ifndef NCELLML
+    if (outputcellml) {
+      if (writestdout) {
+        cout << getCellMLString(NULL) << endl;
+      }
+      else {
+        string cellmloutname = outfilename;
+        if (cellmloutname == "") {
+          if (stdin) {
+            cellmloutname = fullprefix + "cellml.cellml";
+          }
+          else {
+            cellmloutname = fullprefix + infilenodir;
+            size_t lastperiod = cellmloutname.find_last_of('.');
+            cellmloutname = cellmloutname.substr(0, lastperiod);
+            cellmloutname += ".cellml";
+            if (cellmloutname == infile) {
+              cellmloutname.insert(lastperiod, "_rt");
+            }
+          }
+        }
+        if (writeCellMLFile(cellmloutname.c_str(), NULL))  { //NULL for 'all models'
+          cout << "Successfully wrote " << cellmloutname << endl;
+        }
+        else {
+          cerr << getLastError() << endl;
+        }
+      }
+    }
+#endif //NCELLML
   }
-  */
+
+  if (handles.size()==0) {
+    cerr << "No models successfully read!" << endl;
+    retval = 1;
+  }
 #ifdef WIN32
   if (retval == 1) {
     cout << "(Press any key to exit.)" << endl;
@@ -223,7 +392,6 @@ int main(int argc, char** argv)
 
   return retval;
 }
-
 
 bool CaselessStrcmp(const string& lhs, const string& rhs)
 {
@@ -236,3 +404,54 @@ bool CaselessStrcmp(const string& lhs, const string& rhs)
   return true;
 
 } /* CaselessStrcmp */
+
+file_type GetFileType(string filename)
+{
+  ifstream infile;
+  infile.open(filename.c_str());
+  string line;
+  getline(infile, line);
+  bool isxml = false;
+  while (infile) {
+    if (line.find("<?xml") != string::npos) {
+      isxml = true;
+    }
+    else if (line.find("model") != string::npos
+             || line.find("module") != string::npos) {
+      if (line.rfind(' ')==5 || line.rfind(' ')==6 || line[line.size()-1] == ')') {
+        //cout << "Antimony by finding 'model/module'" << endl;
+        return FT_ANTIMONY;
+      }
+    }
+    if (isxml) {
+      if (line.find("cellml.org") != string::npos) {
+        //cout << "CellML by finding cellml.org" << endl;
+        return FT_CELLML;
+      }
+      if (line.find("<sbml") != string::npos) {
+        //cout << "SBML by finding '<sbml'" << endl;
+        return FT_SBML;
+      }
+    }
+    getline(infile, line);
+  }
+  //Didn't find anything obvious, so:
+  if (filename.rfind(".cellml") == filename.size()-7 && filename.size() != 6) {
+    cout << "CellML by file extension" << endl;
+    return FT_CELLML;
+  }
+  if (filename.rfind(".xml") == filename.size()-4 && filename.size() != 3) {
+    cout << "SBML by file extension" << endl;
+    return FT_SBML;
+  }
+  if (filename.rfind(".sbml") == filename.size()-5 && filename.size() != 4) {
+    cout << "SBML by file extension" << endl;
+    return FT_SBML;
+  }
+  if (filename.rfind(".txt") == filename.size()-4 && filename.size() != 3) {
+    cout << "Antimony by file extension" << endl;
+    return FT_ANTIMONY;
+  }
+   cout << "Unknown type" << endl;
+  return FT_UNKNOWN;
+}

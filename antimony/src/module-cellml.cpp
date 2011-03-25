@@ -862,7 +862,7 @@ void Module::AssignMathOnceFor(vector<Variable*> varlist, iface::dom::Document* 
     if (ia->IsDouble()) {
       std::wstring wiv(makeUTF16(ia->ToDelimitedStringWithEllipses('_')));
       cmlvar->initialValue(wiv.c_str());
-      cout << "Successfully set initial value for " << targetvar->GetNameDelimitedBy('.') << endl;
+      //cout << "Successfully set initial value for " << targetvar->GetNameDelimitedBy('.') << endl;
     }
     else {
       //Have to create a new variable.

@@ -425,7 +425,16 @@ string getCellMLText(const char* moduleName)
 
 LIB_EXTERN int writeCellMLFile(const char* filename, const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
+  string cellmlstring;
+  if (moduleName == NULL) {
+    cellmlstring = getCellMLText(g_registry.GetMainModule()->GetModuleName().c_str());
+  }
+  else if (!checkModule(moduleName)) {
+    return NULL;
+  }
+  else {
+    cellmlstring = getCellMLText(moduleName);
+  }
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   ofstream afile(filename);
@@ -437,7 +446,6 @@ LIB_EXTERN int writeCellMLFile(const char* filename, const char* moduleName)
     setlocale(LC_ALL, oldlocale.c_str());
     return 0;
   }
-  string cellmlstring = getCellMLText(moduleName);
   afile << cellmlstring;
   afile.close();
   setlocale(LC_ALL, oldlocale.c_str());
@@ -446,8 +454,17 @@ LIB_EXTERN int writeCellMLFile(const char* filename, const char* moduleName)
 
 LIB_EXTERN char* getCellMLString(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
-  return getCharStar(getCellMLText(moduleName).c_str());
+  string cellmlstring;
+  if (moduleName == NULL) {
+    cellmlstring = getCellMLText(g_registry.GetMainModule()->GetModuleName().c_str());
+  }
+  else if (!checkModule(moduleName)) {
+    return NULL;
+  }
+  else {
+    cellmlstring = getCellMLText(moduleName);
+  }
+  return getCharStar(cellmlstring.c_str());
 }
 
 #endif
@@ -529,6 +546,7 @@ LIB_EXTERN char* getMainModuleName()
 
 LIB_EXTERN bool checkModule(const char* moduleName)
 {
+  if (moduleName==NULL) return false;
   if (g_registry.GetModule(moduleName) == NULL) {
     string error = "No such module: '";
     error += moduleName;
@@ -1752,7 +1770,6 @@ LIB_EXTERN int writeSBMLFile(const char* filename, const char* moduleName)
   else {
     sbmldoc = g_registry.GetMainModule()->GetSBML();
   }
-  if (!checkModule(moduleName)) return NULL;
   SBMLWriter sbmlw;
   sbmlw.setProgramName("libAntimony");
   sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
