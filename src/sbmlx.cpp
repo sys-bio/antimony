@@ -63,20 +63,27 @@ string getNameFromSBMLObject(string ID, string name, string basename)
   return name;
 }
 */
-void setTimeName(ASTNode *node)  
+void matchNamesToTypes(ASTNode *node)  
 {
   if (node->getType() == AST_NAME_TIME) {
     node->setName("time");
   }
+  if (node->getType() == AST_NAME_AVOGADRO) {
+    node->setName("avogadro");
+  }
+  if (node->getType() == AST_FUNCTION_DELAY) {
+    node->setName("delay");
+  }
   for (unsigned int c = 0; c < node->getNumChildren() ; c++) {
-    setTimeName(node->getChild(c));
+    matchNamesToTypes(node->getChild(c));
   }
 }
+
 
 string parseASTNodeToString(const ASTNode* ASTform, bool carat) {
   if (ASTform==NULL) return "";
   ASTNode clone(*ASTform);
-  setTimeName(&clone);
+  matchNamesToTypes(&clone);
   if (carat) {
     powerToCarat(&clone);
   }
@@ -89,15 +96,21 @@ string parseASTNodeToString(const ASTNode* ASTform, bool carat) {
 }
 
 
-void setTimeType(ASTNode_t* node)  
+void matchTypesToNames(ASTNode_t* node)  
 {
   if (node->isOperator() == false && node->isNumber() == false) {
     if (string(node->getName()) == "time") {
       node->setType(AST_NAME_TIME);
     }
+    if (string(node->getName()) == "avogadro") {
+      node->setType(AST_NAME_AVOGADRO);
+    }
+    if (string(node->getName()) == "delay") {
+      node->setType(AST_FUNCTION_DELAY);
+    }
   }
   for (unsigned int c = 0; c < node->getNumChildren() ; c++) {
-    setTimeType(node->getChild(c));
+    matchTypesToNames(node->getChild(c));
   }
 }
 
@@ -105,8 +118,10 @@ ASTNode* parseStringToASTNode(const string& formula)
 {
   ASTNode* rootnode = SBML_parseFormula(formula.c_str());
   if (rootnode == NULL) return NULL;
-  if (formula.find("time") != string::npos) {
-    setTimeType(rootnode);
+  if (formula.find("time") != string::npos ||
+    formula.find("avogadro") != string::npos ||
+    formula.find("delay") != string::npos) {
+    matchTypesToNames(rootnode);
   }
   return rootnode;
 }
