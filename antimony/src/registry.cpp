@@ -570,8 +570,9 @@ void Registry::SetupFunctions()
   , "sqr"
   , "sqrt"
   , "time"
+  , "avogadro"
   };
-  for (size_t func=0; func<78; func++) {
+  for (size_t func=0; func<79; func++) {
     m_functions.push_back(functions[func]);
   }
 }

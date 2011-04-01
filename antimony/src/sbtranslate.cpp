@@ -191,10 +191,14 @@ int main(int argc, char** argv)
         handles.push_back(loadAntimonyFile(files[file].c_str()));
         break;
       case FT_SBML:
+#ifndef NSBML
         handles.push_back(loadSBMLFile(files[file].c_str()));
+#endif
         break;
       case FT_CELLML:
+#ifndef NCELLML
         handles.push_back(loadCellMLFile(files[file].c_str()));
+#endif
         break;
       case FT_UNKNOWN:
         handles.push_back(loadFile(files[file].c_str()));
@@ -212,7 +216,7 @@ int main(int argc, char** argv)
     string infile = "";
     string infilenodir = "";
     string fullprefix = prefix;
-    bool   stdin = false;
+    bool   use_stdin = false;
     if (file < files.size()) {
       infile = files[file];
       infilenodir = infile;
@@ -253,7 +257,7 @@ int main(int argc, char** argv)
       }
     }
     else {
-      stdin = true;
+      use_stdin = true;
     }
     if (outputantimony) {
       if (writestdout) {
@@ -262,7 +266,7 @@ int main(int argc, char** argv)
       else {
         string antoutname = outfilename;
         if (antoutname == "") {
-          if (stdin) {
+          if (use_stdin) {
             antoutname = fullprefix + "antimony.txt";
           }
           else {
@@ -291,7 +295,7 @@ int main(int argc, char** argv)
       else {
         string sbmloutname = outfilename;
         if (sbmloutname == "") {
-          if (stdin) {
+          if (use_stdin) {
             sbmloutname = fullprefix + "sbml.xml";
           }
           else {
@@ -324,7 +328,7 @@ int main(int argc, char** argv)
         else {
           string sbmloutname = outfilename;
           if (sbmloutname == "") {
-            if (stdin) {
+            if (use_stdin) {
               sbmloutname = fullprefix + "sbml_" + modnamestr + ".xml";
             }
             else {
@@ -355,7 +359,7 @@ int main(int argc, char** argv)
       else {
         string cellmloutname = outfilename;
         if (cellmloutname == "") {
-          if (stdin) {
+          if (use_stdin) {
             cellmloutname = fullprefix + "cellml.cellml";
           }
           else {
