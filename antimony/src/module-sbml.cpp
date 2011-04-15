@@ -443,6 +443,7 @@ void Module::CreateSBMLModel()
     else if (formula->IsAmountIn(species->GetCompartment())) {
       sbmlspecies->setInitialAmount(formula->ToAmount());
     }
+    sbmlspecies->setHasOnlySubstanceUnits(false);
     SetAssignmentFor(sbmlmod, species);
   }
 
@@ -477,6 +478,7 @@ void Module::CreateSBMLModel()
       continue; //Reactions that involve no species are illegal in SBML.
     }
     Reaction* sbmlrxn = sbmlmod->createReaction();
+    sbmlrxn->setFast(false);
     sbmlrxn->setId(rxnvar->GetNameDelimitedBy(cc));
     if (rxnvar->GetDisplayName() != "") {
       sbmlrxn->setName(rxnvar->GetDisplayName());
