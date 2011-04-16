@@ -3,36 +3,39 @@ model Smolen2002()
 
   // Compartments and Species:
   compartment CELL;
-  species $EmptySet in CELL, Per in CELL, dClk in CELL, dClkF in CELL;
+  species $EmptySet in CELL, Per in CELL, dClk in CELL, $dClkF in CELL;
+
+  // Assignment Rules:
+  dClkF := piecewise(0, lt(dClk - Per, 0), dClk - Per);
+  dClkF_tau1 := piecewise(0, lt(delay(dClk, tau1) - delay(Per, tau1), 0), delay(dClk, tau1) - delay(Per, tau1));
+  dClkF_tau2 := piecewise(0, lt(delay(dClk, tau2) - delay(Per, tau2), 0), delay(dClk, tau2) - delay(Per, tau2));
 
   // Reactions:
-  rPer: $EmptySet -> Per; rPer_V * delay(dClkF / (rPer_K + dClkF), rPer_parameter_0000008) * CELL;
-  rdClk: $EmptySet -> dClk; CELL * rdClk_V * delay(rdClk_K / (rdClk_K + dClkF), rdClk_parameter_0000009);
-  rPerD: Per -> $EmptySet; rPerD_D * Per * CELL;
-  rdClkD: dClk -> $EmptySet; rdClkD_D * dClk * CELL;
-
-  // Events:
-  _E0: at lt(dClk - Per, 0): dClkF = 0;
-  _E1: at geq(dClk - Per, 0): dClkF = dClk - Per;
+  rPer: $EmptySet => Per; Vsp * (dClkF_tau1 / (K1 + dClkF_tau1)) * CELL;
+  rdClk: $EmptySet => dClk; CELL * Vsc * (K2 / (K2 + dClkF_tau2));
+  rPerD: Per => $EmptySet; kdc * Per * CELL;
+  rdClkD: dClk => $EmptySet; kdp * dClk * CELL;
 
   // Species initializations:
   EmptySet = 0;
-  Per = 5e-16/CELL;
-  dClk = 1e-16/CELL;
-  dClkF = 0;
+  Per = 5e-16;
+  dClk = 1e-16;
 
   // Compartment initializations:
   CELL = 1e-15;
 
   // Variable initializations:
-  rPer_V = 0.5;
-  rPer_K = 0.3;
-  rPer_parameter_0000008 = 10;
-  rdClk_V = 0.25;
-  rdClk_K = 0.1;
-  rdClk_parameter_0000009 = 10;
-  rPerD_D = 0.5;
-  rdClkD_D = 0.5;
+  tau1 = 10;
+  tau2 = 10;
+  Vsp = 0.5;
+  K1 = 0.3;
+  Vsc = 0.25;
+  K2 = 0.1;
+  kdc = 0.5;
+  kdp = 0.5;
+
+  //Other declarations:
+  var dClkF_tau1, dClkF_tau2;
 
   //Display Names:
   dClkF is "free dClk";

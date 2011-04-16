@@ -1,0 +1,104 @@
+//Created by libAntimony v1.4
+model Grange2001_L_Dopa_PKmodel()
+
+  // Compartments and Species:
+  compartment gut, Vdopa, V_3_OMD, V1_B, V2_B, V1_M, V2_M;
+  species A_dopa in gut, A_B in gut, A_M in gut, C_dopa in Vdopa, C_OMD in V_3_OMD;
+  species C1_M in V1_M, C2_M in V2_M, C1_B in V1_B, C2_B in V2_B;
+
+  // Assignment Rules:
+  F_c := F_H * F_G;
+  F_H := 1 - CL_H / Q;
+  CL_H := f_H * CL_dopa;
+  CL_dopa := CL_AADC + CL_rest + CL_COMT;
+  f_rest := 1 - (f_AADC + f_COMT);
+  CL_AADC := CL_AADC0 / (1 + C1_M / ki);
+  CL_rest := CL_dopa0 * f_rest;
+  CL_COMT := CL_dopa0 * f_COMT;
+  CL_AADC0 := CL_dopa0 * f_AADC;
+
+  // Reactions:
+  l_dopa_absorption: A_dopa => C_dopa; ka_c * A_dopa * F_c;
+  l_dopa_blood_hepa_clearance: A_dopa => ; ka_c * A_dopa * (1 - F_c);
+  ro_04_5127_absorption: A_M => C1_M; ka_M * A_M;
+  benserazide_absorption: A_B => C1_B; ka_B * A_B * F_B;
+  benserazide_gut_clearance: A_B => ; ka_B * A_B * (1 - F_B);
+  AADC_clearance: C_dopa => ; CL_AADC * C_dopa;
+  COMT_clearance: C_dopa => C_OMD; CL_COMT * C_dopa;
+  rest_clearance: C_dopa => ; CL_rest * C_dopa;
+  _3_OMD_clearance: C_OMD => ; CL_OMD * C_OMD;
+  bens_clearance: C1_B => ; CL_B * C1_B;
+  bens_metabolism: C1_B => C1_M; fm / (1 - fm) * CL_B * C1_B;
+  ro_clearance: C1_M => ; CL_M * C1_M;
+  bens_distribution: C1_B -> C2_B; CL_dB * (C1_B - C2_B);
+  ro_distribution: C1_M -> C2_M; CL_dM * (C1_M - C2_M);
+
+  // Species initializations:
+  A_dopa = L_Dopa_per_kg_rat * rat_body_mass;
+  A_B = A_bens_tot * (1 - B_M_frac);
+  A_M = A_bens_tot * B_M_frac;
+  C_dopa = 0;
+  C_OMD = 0;
+  C1_M = 0;
+  C2_M = 0;
+  C1_B = 0;
+  C2_B = 0;
+
+  // Compartment initializations:
+  gut = 1;
+  Vdopa = 0.496;
+  V_3_OMD = 0.128;
+  V1_B = 0.202;
+  V2_B = 0.127;
+  V1_M = 0.0691;
+  V2_M = 3.2;
+
+  // Variable initializations:
+  F_G = 1;
+  Q = 0.828;
+  f_H = 0.13;
+  f_AADC = 0.69;
+  f_COMT = 0.1;
+  ki = 0.00246;
+  CL_dopa0 = 0.823;
+  ka_c = 1.29;
+  ka_M = 2.47;
+  ka_B = 0.94;
+  F_B = 0.022;
+  CL_OMD = 0.00895;
+  CL_B = 1.67;
+  fm = 0.15;
+  CL_M = 4.29;
+  CL_dB = 0.072;
+  CL_dM = 1.06;
+  L_Dopa_per_kg_rat = 404;
+  Benserazide_per_kg_rat = 78;
+  rat_body_mass = 0.25;
+  A_bens_tot = Benserazide_per_kg_rat * rat_body_mass;
+  B_M_frac = 0.07;
+
+  //Other declarations:
+  var F_c, F_H, CL_H, CL_dopa, f_rest, CL_AADC, CL_rest, CL_COMT, CL_AADC0;
+
+  //Display Names:
+  Vdopa is "V_L_Dopa";
+  C_OMD is "C_3-OMD";
+  ka_M is "ka_m";
+  ka_B is "ka_b";
+  CL_OMD is "CL_3_OMD";
+  B_M_frac is "Bens_Ro04-5127_fraction_gut";
+  l_dopa_absorption is "L_Dopa absorption from gut";
+  l_dopa_blood_hepa_clearance is "hepatic and blood L-Dopa clearance";
+  ro_04_5127_absorption is "ro 04-5127 absorption from gut";
+  benserazide_absorption is "benserazide absorption from gut";
+  benserazide_gut_clearance is "benserazide clearance from gut";
+  AADC_clearance is "L-Dopa clearance via AADC ";
+  COMT_clearance is "L-Dopa clearance via COMT";
+  rest_clearance is "rest clearance of L-Dopa";
+  _3_OMD_clearance is "3-OMD clearance";
+  bens_clearance is "benserazide clearance";
+  bens_metabolism is "benserazide metabolism to ro 04-5127";
+  ro_clearance is "ro 04-5127 clearance";
+  bens_distribution is "benserazide distribution";
+  ro_distribution is "ro 04-5127 distribution";
+end

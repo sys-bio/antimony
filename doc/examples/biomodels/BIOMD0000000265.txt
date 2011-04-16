@@ -1,0 +1,217 @@
+//Created by libAntimony v1.4
+model Conradie2010_RPControl_CellCycle()
+
+  // Compartments and Species:
+  compartment cell;
+  species CDc20 in cell, CDh1 in cell, CYCA in cell, CYCB in cell, CYCD in cell;
+  species CYCE in cell, DRG in cell, var2 in cell, var5 in cell, ERG in cell;
+  species GM in cell, var1 in cell, CDc20T in cell, MASS in cell, P27 in cell;
+  species CA in cell, CD in cell, CE in cell, var3 in cell, var6 in cell;
+  species IEP in cell, PPX in cell, var4 in cell;
+
+  // Assignment Rules:
+  PP1A := PP1T / (1 + K21 * (FB * CYCB + FE * (CYCA + CYCE)));
+  V2 := K2aa * CDc20 + K2a * (1 - CDh1) + K2 * CDh1;
+  V4 := K4 * (GA * CYCA + GB * CYCB + GE * CYCE);
+  V6 := K6a + K6 * (HA * CYCA + HB * CYCB + HE * CYCE);
+  V8 := K8a + K8 * (YB * CYCB + YE * (CYCA + CYCE)) / (CYCET + J8);
+  CYCET := CE + CYCE;
+  CYCDT := CD + CYCD;
+  CYCAT := CA + CYCA;
+  P27T := CA + CD + CE + P27;
+
+  // Reactions:
+  v1: ERG -> ; v1_k16 * ERG;
+  v2: DRG -> ; v2_k18 * DRG;
+  v3: CD -> P27; K10 * CD;
+  v4: CYCD -> ; K10 * CYCD;
+  v5: CYCE + P27 -> CE; K25 * CYCE * P27;
+  v6: CYCA + P27 -> CA; K25 * CYCA * P27;
+  v7: CYCD + P27 -> CD; v7_k24 * CYCD * P27;
+  v8: CD -> CYCD + P27; v8_k24r * CD;
+  v9: CYCA -> ; K30 * CDc20 * CYCA;
+  v10: CA -> P27; K30 * CA * CDc20;
+  v11: CE -> CYCE + P27; K25R * CE;
+  v12: CA -> CYCA + P27; K25R * CA;
+  v13: CE -> P27; V8 * CE;
+  v14: CYCE -> ; V8 * CYCE;
+  v15: P27 -> ; V6 * P27;
+  v16: CE -> CYCE; V6 * CE;
+  v17: CD -> CYCD; V6 * CD;
+  v18: CA -> CYCA; V6 * CA;
+  v19: CYCB -> ; V2 * CYCB;
+  v20:  -> CDh1; (v20_K3a + v20_K3 * CDc20) * (1 - CDh1) / (1 + v20_J3 - CDh1);
+  v21: CDh1 -> ; V4 * CDh1 / (v21_J4 + CDh1);
+  v22: PPX -> ; v22_K34 * PPX;
+  v23:  -> IEP; v23_K31 * CYCB * (1 - IEP) / (1 + v23_J31 - IEP);
+  v24: IEP -> ; v24_K32 * IEP * PPX / (v24_J32 + IEP);
+  v25: CDc20T -> ; K12 * CDc20T;
+  v26:  -> CDc20; v26_K13 * (-CDc20 + CDc20T) * IEP / (v26_J13 - CDc20 + CDc20T);
+  v27: CDc20 -> ; v27_K14 * CDc20 / (v27_J14 + CDc20);
+  v28: CDc20 -> ; K12 * CDc20;
+  v29: var5 -> var1 + var2; K20 * (LA * CYCA + LB * CYCB + LD * (CD + CYCD) + LE * CYCE) * var5;
+  v30: var6 -> var1 + var3; K20 * (LA * CYCA + LB * CYCB + LD * (CD + CYCD) + LE * CYCE) * var6;
+  v31:  -> GM; v31_K27 * MASS * r31switch;
+  v32: GM -> ; v32_K28 * GM;
+  v33:  -> MASS; eps * v33_MU * GM;
+  v34:  -> ERG; eps * v34_k15 / (1 + DRG^2 / v34_J15^2);
+  v35:  -> CDc20T; eps * (v35_K11a + v35_K11 * CYCB);
+  v36:  -> CYCA; eps * v36_K29 * MASS * var2;
+  v37:  -> PPX; eps * v37_K33;
+  v38:  -> CYCE; eps * (v38_K7a + v38_K7 * var2);
+  v39:  -> CYCD; eps * v39_K9 * DRG;
+  v40:  -> P27; eps * v40_K5;
+  v41:  -> DRG; eps * (v41_k17 * DRG^2 / (v41_J17^2 * (1 + DRG^2 / v41_J17^2)) + v41_k17a * ERG);
+  v42:  -> CYCB; eps * (v42_K1a + v42_K1 * CYCB^2 / (v42_J1^2 * (1 + CYCB^2 / v42_J1^2)));
+  v43: var4 -> var1; K20 * (LA * CYCA + LB * CYCB + LD * (CD + CYCD) + LE * CYCE) * var4;
+  v44: var1 -> var4; (v44_K19 * PP1A + v44_K19a * (PP1T - PP1A)) * var1;
+  v45: var5 -> var2 + var4; K26R * var5;
+  v46: var2 -> var3; (K23a + K23 * (CYCA + CYCB)) * var2;
+  v47: var3 -> var2; K22 * var3;
+  v48: var2 + var4 -> var5; K26 * var2 * var4;
+  v49: var6 -> var3 + var4; K26R * var6;
+  v50: var3 + var4 -> var6; K26 * var3 * var4;
+  v51: var6 -> var5; K22 * var6;
+  v52: var5 -> var6; (K23a + K23 * (CYCA + CYCB)) * var5;
+
+  // Events:
+  r31Ifpart1: at gt((var4 + var5 + var6) * (var1 + var4 + var5 + var6)^-1, 0.8): r31switch = 0;
+  r31Ifpart2: at lt((var4 + var5 + var6) * (var1 + var4 + var5 + var6)^-1, 0.8): r31switch = 1;
+  divisionEvent: at and(gt(CDh1, 0.2), eq(Flag, 1)): Flag = 2, MASS = 0.5 * MASS, GM = 0.5 * GM;
+  checkEvent: at and(lt(CDh1, 0.2), eq(Flag, 2)): Flag = 1;
+
+  // Species initializations:
+  CDc20 = 0.00220177;
+  CDh1 = 0.000653278;
+  CYCA = 1.4094;
+  CYCB = 2.72898;
+  CYCD = 0.43929;
+  CYCE = 0.0229112;
+  DRG = 0.900533;
+  var2 = 0.989986;
+  var5 = 0.00478911;
+  ERG = 0.0121809;
+  GM = 1.35565;
+  var1 = 9.97574;
+  CDc20T = 2.36733;
+  MASS = 1.68776;
+  P27 = 0.00922806;
+  CA = 0.0356927;
+  CD = 0.010976;
+  CE = 0.000542587;
+  var3 = 3.98594;
+  var6 = 0.0192822;
+  IEP = 0.154655;
+  PPX = 1;
+  var4 = 0.000190871;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  r31switch = 1;
+  Flag = 1;
+  K10 = 5;
+  K8a = 0.1;
+  K8 = 2;
+  K25 = 1000;
+  K25R = 10;
+  J8 = 0.1;
+  YE = 1;
+  YB = 0.05;
+  K30 = 20;
+  K2a = 0.05;
+  K2 = 20;
+  K2aa = 1;
+  K6a = 10;
+  K6 = 100;
+  HE = 0.5;
+  HB = 1;
+  HA = 0.5;
+  RBT = 10;
+  LD = 3.3;
+  LE = 5;
+  LB = 5;
+  LA = 3;
+  K20 = 10;
+  K21 = 1;
+  PP1T = 1;
+  FE = 25;
+  FB = 2;
+  K4 = 40;
+  GE = 0;
+  GB = 1;
+  GA = 0.3;
+  K12 = 1.5;
+  E2FT = 5;
+  K22 = 1;
+  K23a = 0.005;
+  K23 = 1;
+  K26 = 10000;
+  K26R = 200;
+  eps = 1;
+  v1_k16 = 0.25;
+  v2_k18 = 10;
+  v7_k24 = 1000;
+  v8_k24r = 10;
+  v20_J3 = 0.01;
+  v20_K3 = 140;
+  v20_K3a = 7.5;
+  v21_J4 = 0.01;
+  v22_K34 = 0.05;
+  v23_J31 = 0.01;
+  v23_K31 = 0.7;
+  v24_J32 = 0.01;
+  v24_K32 = 1.8;
+  v26_J13 = 0.005;
+  v26_K13 = 5;
+  v27_J14 = 0.005;
+  v27_K14 = 2.5;
+  v31_K27 = 0.2;
+  v32_K28 = 0.2;
+  v33_MU = 0.061;
+  v34_J15 = 0.1;
+  v34_k15 = 0.25;
+  v35_K11 = 1.5;
+  v35_K11a = 0;
+  v36_K29 = 0.05;
+  v37_K33 = 0.05;
+  v38_K7 = 0.6;
+  v38_K7a = 0;
+  v39_K9 = 2.5;
+  v40_K5 = 20;
+  v41_J17 = 0.3;
+  v41_k17 = 10;
+  v41_k17a = 0.35;
+  v42_J1 = 0.1;
+  v42_K1 = 0.6;
+  v42_K1a = 0.1;
+  v44_K19 = 20;
+  v44_K19a = 0;
+
+  //Other declarations:
+  var r31switch, Flag, PP1A, V2, V4, V6, V8, CYCET, CYCDT, CYCAT, P27T;
+
+  //Display Names:
+  CDc20 is "Cdc20";
+  CDh1 is "Cdh1";
+  CYCA is "cyclin A:Cdk2";
+  CYCB is "cyclin B:Cdk2";
+  CYCD is "cyclin D:Cdk2";
+  CYCE is "cyclin E:Cdk2";
+  DRG is "delayed-response genes";
+  var2 is "E2F";
+  var5 is "E2F:Rb";
+  ERG is "early-response genes";
+  GM is "general machinery for protein synthesis";
+  var1 is "hypophosphorylated Rb";
+  CDc20T is "inactive Cdc20";
+  MASS is "mass";
+  CA is "P27:cyclin A:Cdk2";
+  CD is "P27:cyclin D:Cdk2";
+  CE is "P27:cyclin E:Cdk2";
+  var3 is "phosphorylated E2F";
+  var6 is "phosphorylated E2F:Rb";
+  IEP is "phosphorylated intermediary enzyme";
+  var4 is "retinoblastoma protein (Rb)";
+end

@@ -1,0 +1,37 @@
+//Created by libAntimony v1.4
+model chance()
+
+  // Compartments and Species:
+  compartment cell;
+  species e in cell, x in cell, p in cell, p1 in cell, $a in cell, p2 in cell;
+
+  // Reactions:
+  r1: e + x -> p; cell * (k1 * e * x - k2 * p);
+  r2: p + x => e + p1; cell * k4_prime * p * x;
+  r3: p + $a => e + p2; cell * k4 * p * a;
+
+  // Species initializations:
+  e = 1.36;
+  x = 2;
+  p = 0;
+  p1 = 0;
+  a = 0;
+  p2 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k1 = 11;
+  k2 = 0;
+  k4_prime = 16.6;
+  k4 = 0.72;
+
+  //Display Names:
+  e is "enzyme E (catalase)";
+  x is "substrate S (hydrogen peroxide)";
+  p is "enzyme-substrate complex ES (catalase - hydrogen peroxide)";
+  p1 is "product 1";
+  a is "donor AH2";
+  p2 is "product 2";
+end

@@ -1,0 +1,24 @@
+//Created by libAntimony v1.4
+model chance()
+
+  // Compartments and Species:
+  compartment cell;
+  species X in cell, E in cell, P in cell, Q in cell;
+
+  // Reactions:
+  r1: X + E -> P; cell * (E * X - K2 * P);
+  r2: P => E + Q; cell * K3 * P;
+
+  // Species initializations:
+  X = 8;
+  E = 1;
+  P = 0;
+  Q = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  K2 = 0;
+  K3 = 0.5;
+end

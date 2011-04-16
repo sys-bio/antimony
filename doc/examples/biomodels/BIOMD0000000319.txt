@@ -1,0 +1,30 @@
+//Created by libAntimony v1.4
+model decroly82()
+
+  // Compartments and Species:
+  compartment cell;
+  species alpha in cell, beta in cell, gamma in cell;
+
+  // Reactions:
+  r1:  => alpha; r1_v_Km1;
+  r2: alpha => 50beta; r2_sigma1 * alpha * (1 + alpha) * (1 + beta)^2 / (r2_L1 + (1 + alpha)^2 * (1 + beta)^2);
+  r3: beta => 0.02gamma; r3_sigma2 * beta * (1 + r3_d * beta) * (1 + gamma)^2 / (r3_L2 + (1 + r3_d * beta)^2 * (1 + gamma)^2);
+  r4: gamma => ; r4_ks * gamma;
+
+  // Species initializations:
+  alpha = 29.19988;
+  beta = 188.8;
+  gamma = 0.3367;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  r1_v_Km1 = 0.45;
+  r2_L1 = 500000000;
+  r2_sigma1 = 10;
+  r3_L2 = 100;
+  r3_d = 0;
+  r3_sigma2 = 10;
+  r4_ks = 1.99;
+end

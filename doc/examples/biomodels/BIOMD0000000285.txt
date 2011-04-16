@@ -1,0 +1,179 @@
+//Created by libAntimony v1.4
+model Tang2010_PolyGlutamate()
+
+  // Compartments and Species:
+  compartment cytosol;
+  species PolyQ in cytosol, Proteasome in cytosol, NatP in cytosol, MisP in cytosol;
+  species MisP_Proteasome in cytosol, AggP1 in cytosol, AggP2 in cytosol;
+  species AggP3 in cytosol, AggP4 in cytosol, AggP5 in cytosol, AggPolyQ1 in cytosol;
+  species AggPolyQ2 in cytosol, AggPolyQ3 in cytosol, AggPolyQ4 in cytosol;
+  species AggPolyQ5 in cytosol, SeqAggP in cytosol, AggP_Proteasome in cytosol;
+  species mRFPu in cytosol, mRFPu_Proteasome in cytosol, PolyQ_Proteasome in cytosol;
+  species ROS in cytosol, p38_P in cytosol, p38 in cytosol, $Source in cytosol;
+  species $Sink in cytosol, p38death in cytosol, PIdeath in cytosol;
+
+  // Assignment Rules:
+  oligomers := AggPolyQ1 + AggPolyQ2 + AggPolyQ3 + AggPolyQ4 + AggPolyQ5;
+
+  // Reactions:
+  polyQSynthesis: $Source => PolyQ; ksynPolyQ * Source * kalive;
+  polyqProteasomeBinding: PolyQ + Proteasome => PolyQ_Proteasome; kbinPolyQ * PolyQ * Proteasome * kalive;
+  polyqProteasomeRelease: PolyQ_Proteasome => PolyQ + Proteasome; krelPolyQ * PolyQ_Proteasome * kalive;
+  PolyQDegradation: PolyQ_Proteasome => Proteasome; kdegPolyQ * PolyQ_Proteasome * kalive * kproteff;
+  mRFPuSynthesis: $Source => mRFPu; ksynmRFPu * Source * kalive;
+  mRFPuProteasomeBinding: mRFPu + Proteasome => mRFPu_Proteasome; kbinmRFPu * mRFPu * Proteasome * kalive;
+  mRFPuProteasomeRelease: mRFPu_Proteasome => mRFPu + Proteasome; krelmRFPu * mRFPu_Proteasome * kalive;
+  mRFPuDegradation: mRFPu_Proteasome => Proteasome; kdegmRFPu * mRFPu_Proteasome * kalive * kproteff;
+  PolyQAggregation1: 2PolyQ + ROS => AggPolyQ1 + ROS; kaggPolyQ * PolyQ * (PolyQ - 1) * 0.5 * (ROS^2 / (10^2 + ROS^2)) * kalive;
+  PolyQAggregation2: PolyQ + AggPolyQ1 + ROS => AggPolyQ2 + ROS; kaggPolyQ * PolyQ * AggPolyQ1 * (ROS^2 / (10^2 + ROS^2)) * kalive;
+  PolyQAggregation3: PolyQ + AggPolyQ2 + ROS => AggPolyQ3 + ROS; kaggPolyQ * PolyQ * AggPolyQ2 * (ROS^2 / (10^2 + ROS^2)) * kalive;
+  PolyQAggregation4: PolyQ + AggPolyQ3 + ROS => AggPolyQ4 + ROS; kaggPolyQ * PolyQ * AggPolyQ3 * (ROS^2 / (10^2 + ROS^2)) * kalive;
+  PolyQAggregation5: PolyQ + AggPolyQ4 + ROS => AggPolyQ5 + ROS; kaggPolyQ * PolyQ * AggPolyQ4 * (ROS^2 / (10^2 + ROS^2)) * kalive;
+  PolyQDisaggregation5: AggPolyQ5 => PolyQ + AggPolyQ4; kdisaggPolyQ5 * AggPolyQ5 * kalive;
+  PolyQDisaggregation4: AggPolyQ4 => PolyQ + AggPolyQ3; kdisaggPolyQ4 * AggPolyQ4 * kalive;
+  PolyQDisaggregation3: AggPolyQ3 => PolyQ + AggPolyQ2; kdisaggPolyQ3 * AggPolyQ3 * kalive;
+  PolyQDisaggregation2: AggPolyQ2 => PolyQ + AggPolyQ1; kdisaggPolyQ2 * AggPolyQ2 * kalive;
+  PolyQDisaggregation1: AggPolyQ1 => 2PolyQ; kdisaggPolyQ1 * AggPolyQ1 * kalive;
+  PolyQInclusionFormation: PolyQ + AggPolyQ5 => 7SeqAggP; kaggPolyQ * PolyQ * AggPolyQ5 * kalive;
+  PolyQInclusionGrowth: PolyQ + SeqAggP => 2SeqAggP; kseqPolyQ * PolyQ * SeqAggP * kalive;
+  ProteasomeInhibition1: AggPolyQ1 + Proteasome => AggP_Proteasome; kinhprot * AggPolyQ1 * Proteasome * kalive;
+  ProteasomeInhibition2: AggPolyQ2 + Proteasome => AggP_Proteasome; kinhprot * AggPolyQ2 * Proteasome * kalive;
+  ProteasomeInhibition3: AggPolyQ3 + Proteasome => AggP_Proteasome; kinhprot * AggPolyQ3 * Proteasome * kalive;
+  ProteasomeInhibition4: AggPolyQ4 + Proteasome => AggP_Proteasome; kinhprot * AggPolyQ4 * Proteasome * kalive;
+  ProteasomeInhibition5: AggPolyQ5 + Proteasome => AggP_Proteasome; kinhprot * AggPolyQ5 * Proteasome * kalive;
+  mRFPuProteasomeSequestering: mRFPu_Proteasome + SeqAggP => 2SeqAggP; kseqmRFPuProt * mRFPu_Proteasome * SeqAggP * kalive;
+  mRFPuSequestering: mRFPu + SeqAggP => 2SeqAggP; kseqmRFPu * mRFPu * SeqAggP * kalive;
+  ROSgenerationBasal: $Source => ROS; kgenROS * Source * kalive;
+  ROSgenerationSmallAggPolyQ1: AggPolyQ1 => AggPolyQ1 + ROS; kgenROSAggP * AggPolyQ1 * kalive;
+  ROSgenerationSmallAggPolyQ2: AggPolyQ2 => AggPolyQ2 + ROS; kgenROSAggP * AggPolyQ2 * kalive;
+  ROSgenerationSmallAggPolyQ3: AggPolyQ3 => AggPolyQ3 + ROS; kgenROSAggP * AggPolyQ3 * kalive;
+  ROSgenerationSmallAggPolyQ4: AggPolyQ4 => AggPolyQ4 + ROS; kgenROSAggP * AggPolyQ4 * kalive;
+  ROSgenerationSmallAggPolyQ5: AggPolyQ5 => AggPolyQ5 + ROS; kgenROSAggP * AggPolyQ5 * kalive;
+  ROSgenerationAggPProteasome: AggP_Proteasome => AggP_Proteasome + ROS; kgenROSAggP * AggP_Proteasome * kalive;
+  ROSremoval: ROS => $Sink; kremROS * ROS * kalive;
+  p38activation: ROS + p38 => ROS + p38_P; kactp38 * ROS * p38 * kalive;
+  p38inactivation: p38_P => p38; kinactp38 * p38_P * kalive;
+  AggP_ProteasomeSequestering: AggP_Proteasome + SeqAggP => 2SeqAggP; kseqAggPProt * AggP_Proteasome * SeqAggP * kalive;
+  PolyQ_ProteasomeSequestering: PolyQ_Proteasome + SeqAggP => 2SeqAggP; kseqPolyQProt * PolyQ_Proteasome * SeqAggP * kalive;
+  MisP_ProteasomeSequestering: MisP_Proteasome + SeqAggP => 2SeqAggP; kseqMisPProt * MisP_Proteasome * SeqAggP * kalive;
+  ProteinSynthesis: $Source => NatP; ksynNatP * Source * kalive;
+  Misfolding: NatP + ROS => MisP + ROS; kmisfold * NatP * ROS * kalive;
+  Refolding: MisP => NatP; krefold * MisP * kalive;
+  MisP_ProteasomeBinding: MisP + Proteasome => MisP_Proteasome; kbinMisPProt * MisP * Proteasome * kalive;
+  MisP_ProteasomeRelease: MisP_Proteasome => MisP + Proteasome; krelMisPProt * MisP_Proteasome * kalive;
+  MisP_Degradation: MisP_Proteasome => Proteasome; kdegMisP * MisP_Proteasome * kalive * kproteff;
+  MisP_Aggregation1: 2MisP => AggP1; kaggMisP * MisP * (MisP - 1) * 0.5 * kalive;
+  MisP_Aggregation2: MisP + AggP1 => AggP2; kagg2MisP * MisP * AggP1 * kalive;
+  MisP_Aggregation3: MisP + AggP2 => AggP3; kagg2MisP * MisP * AggP2 * kalive;
+  MisP_Aggregation4: MisP + AggP3 => AggP4; kagg2MisP * MisP * AggP3 * kalive;
+  MisP_Aggregation5: MisP + AggP4 => AggP5; kagg2MisP * MisP * AggP4 * kalive;
+  MisP_Disaggregation1: AggP1 => 2MisP; kdisaggMisP1 * AggP1 * kalive;
+  MisP_Disaggregation2: AggP2 => MisP + AggP1; kdisaggMisP2 * AggP2 * kalive;
+  MisP_Disaggregation3: AggP3 => MisP + AggP2; kdisaggMisP3 * AggP3 * kalive;
+  MisP_Disaggregation4: AggP4 => MisP + AggP3; kdisaggMisP4 * AggP4 * kalive;
+  MisP_Disaggregation5: AggP5 => MisP + AggP4; kdisaggMisP5 * AggP5 * kalive;
+  MisP_InclusionFormation: MisP + AggP5 => 7SeqAggP; kagg2MisP * MisP * AggP5 * kalive;
+  MisPInclusionGrowth: MisP + SeqAggP => 2SeqAggP; kseqMisP * MisP * SeqAggP * kalive;
+  ProteasomeInhibitionAggP1: AggP1 + Proteasome => AggP_Proteasome; kinhprot * AggP1 * Proteasome * kalive;
+  ProteasomeInhibitionAggP2: AggP2 + Proteasome => AggP_Proteasome; kinhprot * AggP2 * Proteasome * kalive;
+  ProteasomeInhibitionAggP3: AggP3 + Proteasome => AggP_Proteasome; kinhprot * AggP3 * Proteasome * kalive;
+  ProteasomeInhibitionAggP4: AggP4 + Proteasome => AggP_Proteasome; kinhprot * AggP4 * Proteasome * kalive;
+  ProteasomeInhibitionAggP5: AggP5 + Proteasome => AggP_Proteasome; kinhprot * AggP5 * Proteasome * kalive;
+  ROSgenerationSmallAggP1: AggP1 => AggP1 + ROS; kgenROSAggP * AggP1 * kalive;
+  ROSgenerationSmallAggP2: AggP2 => AggP2 + ROS; kgenROSAggP * AggP2 * kalive;
+  ROSgenerationSmallAggP3: AggP3 => AggP3 + ROS; kgenROSAggP * AggP3 * kalive;
+  ROSgenerationSmallAggP4: AggP4 => AggP4 + ROS; kgenROSAggP * AggP4 * kalive;
+  ROSgenerationSmallAggP5: AggP5 => AggP5 + ROS; kgenROSAggP * AggP5 * kalive;
+  p38_P_ROS_Generation: p38_P => p38_P + ROS; kgenROSp38 * p38_P * kp38act * kalive;
+  ROSgenerationSeqAggP: SeqAggP => SeqAggP + ROS; kgenROSSeqAggP * SeqAggP * kalive;
+  P38DeathPathway: p38_P => p38_P + p38death; kp38death * p38_P * kalive * kp38act;
+  PIDeathPathway: AggP_Proteasome => AggP_Proteasome + PIdeath; kPIdeath * AggP_Proteasome * kalive;
+
+  // Events:
+  PIcellDeath: at gt(PIdeath, 0): kalive = 0;
+  p38cellDeath: at gt(p38death, 0): kalive = 0;
+
+  // Species initializations:
+  PolyQ = 1000;
+  Proteasome = 1000;
+  NatP = 19500;
+  MisP = 0;
+  MisP_Proteasome = 0;
+  AggP1 = 0;
+  AggP2 = 0;
+  AggP3 = 0;
+  AggP4 = 0;
+  AggP5 = 0;
+  AggPolyQ1 = 0;
+  AggPolyQ2 = 0;
+  AggPolyQ3 = 0;
+  AggPolyQ4 = 0;
+  AggPolyQ5 = 0;
+  SeqAggP = 0;
+  AggP_Proteasome = 0;
+  mRFPu = 300;
+  mRFPu_Proteasome = 0;
+  PolyQ_Proteasome = 0;
+  ROS = 10;
+  p38_P = 0;
+  p38 = 100;
+  Source = 1;
+  Sink = 1;
+  p38death = 0;
+  PIdeath = 0;
+
+  // Compartment initializations:
+  cytosol = 1;
+
+  // Variable initializations:
+  kalive = 1;
+  kaggPolyQ = 5e-08;
+  kdisaggPolyQ1 = 5e-07;
+  kdisaggPolyQ2 = 4e-07;
+  kdisaggPolyQ3 = 3e-07;
+  kdisaggPolyQ4 = 2e-07;
+  kdisaggPolyQ5 = 1e-07;
+  kseqPolyQ = 8e-07;
+  kinhprot = 5e-09;
+  kaggMisP = 1e-11;
+  kagg2MisP = 1e-10;
+  kdisaggMisP1 = 5e-07;
+  kdisaggMisP2 = 4e-07;
+  kdisaggMisP3 = 3e-07;
+  kdisaggMisP4 = 2e-07;
+  kdisaggMisP5 = 1e-07;
+  ksynmRFPu = 0.138;
+  kbinmRFPu = 5e-07;
+  krelmRFPu = 1e-08;
+  kdegmRFPu = 0.005;
+  ksynPolyQ = 0.007;
+  kbinPolyQ = 5e-08;
+  krelPolyQ = 1e-09;
+  kdegPolyQ = 0.0025;
+  kgenROS = 0.0017;
+  kremROS = 0.0002;
+  kgenROSAggP = 5e-06;
+  kgenROSSeqAggP = 1e-07;
+  kactp38 = 5e-06;
+  kinactp38 = 0.002;
+  kseqMisP = 1e-09;
+  kseqAggPProt = 5e-07;
+  kseqPolyQProt = 5e-07;
+  kseqMisPProt = 5e-07;
+  kseqmRFPuProt = 5e-07;
+  kseqmRFPu = 1e-10;
+  ksynNatP = 2.4;
+  kmisfold = 2e-06;
+  krefold = 8e-05;
+  kbinMisPProt = 5e-08;
+  krelMisPProt = 1e-08;
+  kdegMisP = 0.01;
+  kgenROSp38 = 0.0007;
+  kp38act = 1;
+  kp38death = 9e-08;
+  kPIdeath = 2.5e-08;
+  kproteff = 1;
+
+  //Other declarations:
+  var kalive, oligomers;
+end

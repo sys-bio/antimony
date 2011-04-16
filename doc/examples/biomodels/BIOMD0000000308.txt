@@ -1,0 +1,44 @@
+//Created by libAntimony v1.4
+model Tyson2003_Negative_Feedback_Oscillator()
+
+  // Compartments and Species:
+  compartment env;
+  species Rp in env, X in env, Yp in env, $S in env, $Y in env, $R in env;
+
+  // Assignment Rules:
+  Y := Yt - Yp;
+  R := Rt - Rp;
+
+  // Reactions:
+  r1:  => X; env * (k0 + k1 * S);
+  r2: X => ; env * (k2 + k2_prime * Rp) * X;
+  r3: $Y => Yp; env * k3 * X * (Yt - Yp) / (Km3 + (Yt - Yp));
+  r4: Yp => $Y; env * k4 * Yp / (Km4 + Yp);
+  r5: $R => Rp; env * k5 * Yp * (Rt - Rp) / (Km5 + (Rt - Rp));
+  r6: Rp => $R; env * k6 * Rp / (Km6 + Rp);
+
+  // Species initializations:
+  Rp = 0;
+  X = 0;
+  Yp = 0;
+  S = 0;
+
+  // Compartment initializations:
+  env = 1;
+
+  // Variable initializations:
+  k0 = 0;
+  k1 = 1;
+  k2 = 0.01;
+  k2_prime = 10;
+  k3 = 0.1;
+  Yt = 1;
+  Km3 = 0.01;
+  k4 = 0.2;
+  Km4 = 0.01;
+  k5 = 0.1;
+  Rt = 1;
+  Km5 = 0.01;
+  k6 = 0.05;
+  Km6 = 0.01;
+end

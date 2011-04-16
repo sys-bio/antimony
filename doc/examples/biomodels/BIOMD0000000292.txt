@@ -1,0 +1,37 @@
+//Created by libAntimony v1.4
+model Rovers1995_Photsynthetic_Oscillations()
+
+  // Compartments and Species:
+  compartment c;
+  species NADPH in c, $ADP in c, ATP in c, X in c, $Y in c, $NADP in c;
+
+  // Assignment Rules:
+  ADP := A0 - ATP;
+  NADP := N0 - NADPH;
+
+  // Reactions:
+  v4: $NADP => NADPH; c * k4 * NADP;
+  v3: 2$ADP => 2ATP; c * k3 * ADP * NADP;
+  v2: $Y + NADPH + ATP => X + $ADP + $NADP; c * k2 * ATP;
+  v1: X + ATP => $Y + $ADP; c * k1 * X;
+
+  // Species initializations:
+  NADPH = 0.7;
+  ATP = 0.5;
+  X = 2;
+  Y = 1;
+
+  // Compartment initializations:
+  c = 1;
+
+  // Variable initializations:
+  k1 = 0.123;
+  k2 = 0.625;
+  k3 = 0.3;
+  k4 = 0.614;
+  N0 = 1.2;
+  A0 = 2.5;
+
+  //Display Names:
+  NADP is "NADP_super_+";
+end

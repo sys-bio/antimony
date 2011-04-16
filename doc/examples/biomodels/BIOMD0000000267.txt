@@ -1,0 +1,41 @@
+//Created by libAntimony v1.4
+model Lebeda2008_BoNT_Paralysis_3stepModel()
+
+  // Compartments and Species:
+  compartment extracellular, endosome, neuroplasm;
+  species free in extracellular, bound in extracellular, translocate in endosome;
+  species lytic in neuroplasm;
+
+  // Assignment Rules:
+  tension := 1 - lytic;
+
+  // Reactions:
+  endocytosis: bound => translocate; endocytosis_kT * bound * extracellular;
+  translocation: translocate => lytic; translocation_kL * translocate * endosome;
+  binding: free => bound; binding_kB * free * extracellular;
+
+  // Species initializations:
+  free = 1;
+  bound = 0;
+  translocate = 0;
+  lytic = 0;
+
+  // Compartment initializations:
+  extracellular = 1;
+  endosome = 1;
+  neuroplasm = 1;
+
+  // Variable initializations:
+  endocytosis_kT = 0.141;
+  translocation_kL = 0.013;
+  binding_kB = 0.058;
+
+  //Other declarations:
+  var tension;
+
+  //Display Names:
+  free is "free_BoNT/A";
+  bound is "bound_BoNT/A";
+  translocate is "transloc_BoNT/A";
+  lytic is "lytic_BoNT/A";
+end

@@ -1,0 +1,98 @@
+//Created by libAntimony v1.4
+model Wang2009_PI3K_Ras_Crosstalk()
+
+  // Compartments and Species:
+  compartment cell;
+  species sumrc1 in cell, $r in cell, $c1 in cell, c2 in cell, $ePI3K in cell;
+  species m3PI in cell, $eGEF in cell, mRas in cell, x1 in cell, x2 in cell;
+  species y in cell, $yp in cell, ypp in cell, z in cell, $zp in cell, zpp in cell;
+  species fGEF in cell, w in cell, eph in cell;
+
+  // Assignment Rules:
+  r := KDL * sumrc1 / (KDL + L);
+  c1 := L * sumrc1 / (KDL + L);
+  ePI3K := (1 + kappaPI3K + 2 * alphaPI3K * c2 - ((1 + kappaPI3K + 2 * alphaPI3K * c2)^2 - 8 * alphaPI3K * c2)^0.5) / 2;
+  eGEF := (KGR * c2 + KGP * m3PI) / (1 + KGR * c2 + KGP * m3PI) * fGEF;
+  yp := 1 - y - ypp;
+  zp := 1 - z - zpp;
+
+  // Reactions:
+  sumrc1ODE:  -> sumrc1; kt * (1 - sumrc1) + 2 * (kminusx * c2 - kxR0 * c1^2);
+  c2ODE:  -> c2; kxR0 * c1^2 - (kminusx + ke) * c2;
+  m3PIODE:  -> m3PI; k3PI * (ePI3K - m3PI);
+  mRasODE:  -> mRas; kRas * ((1 + Gamma) * eGEF - (1 + Gamma * eGEF) * mRas);
+  x1ODE:  -> x1; kdx1 * (mRas - x1 / (1 + y / KMx11 + yp / KMx12));
+  x2ODE:  -> x2; kdx2 * ((1 + Kx2) * m3PI / (1 + Kx2 * m3PI) - x2 / (1 + y / KMx21 + yp / KMx22));
+  yODE:  -> y; VmaxOVERKMyph1 * yp / (1 + yp / KMyph1 + ypp / KMyph2) - VmaxOVERKMx11 * x1 * y / (1 + y / KMx11 + yp / KMx12) - VmaxOVERKMx21 * x2 * y / (1 + y / KMx21 + yp / KMx22);
+  yppODE:  -> ypp; VmaxOVERKMx12 * x1 * yp / (1 + y / KMx11 + yp / KMx12) + VmaxOVERKMx22 * x2 * yp / (1 + y / KMx21 + yp / KMx22) - VmaxOVERKMyph2 * ypp / ((1 + z / KMy1 + zp / KMy2) * (1 + yp / KMyph1) + ypp / KMyph2);
+  zODE:  -> z; VmaxOVERKMzph1 * eph * zp / (1 + zp / KMzph1 + zpp / KMzph2) - VmaxOVERKMy1 * ypp * z / (1 + z / KMy1 + zp / KMy2);
+  zppODE:  -> zpp; VmaxOVERKMy2 * ypp * zp / (1 + z / KMy1 + zp / KMy2) - VmaxOVERKMzph2 * eph * zpp / (1 + zp / KMzph1 + zpp / KMzph2);
+  fGEFODE:  -> fGEF; kFBf * ((1 - fGEF) / Kf - zpp^n / (Zf^n + zpp^n) * fGEF);
+  wODE:  -> w; kdw * (zpp - w);
+  ephODE:  -> eph; kFBph * (w^p / (Wph^p + w^p) - (eph - 1) / Kph);
+
+  // Species initializations:
+  sumrc1 = 1;
+  c2 = 0;
+  m3PI = 0;
+  mRas = 0;
+  x1 = 0;
+  x2 = 0;
+  y = 1;
+  ypp = 0;
+  z = 1;
+  zpp = 0;
+  fGEF = 1;
+  w = 0;
+  eph = 1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  L = 1;
+  KDL = 1.5;
+  kxR0 = 0.3;
+  kminusx = 0.007;
+  ke = 0.2;
+  kt = 0.005;
+  alphaPI3K = 80;
+  kappaPI3K = 0.3;
+  k3PI = 1;
+  KGR = 495;
+  KGP = 5.09;
+  kRas = 1;
+  Gamma = 0.1;
+  kdx1 = 0.745;
+  kdx2 = 2.85;
+  Kx2 = 6.77;
+  VmaxOVERKMx11 = 1.18;
+  KMx11 = 30.3;
+  VmaxOVERKMx21 = 0.405;
+  KMx21 = 13.7;
+  VmaxOVERKMyph1 = 1.65;
+  KMyph1 = 23;
+  VmaxOVERKMx12 = 3.45;
+  KMx12 = 18.6;
+  VmaxOVERKMx22 = 1.09;
+  KMx22 = 9.59;
+  VmaxOVERKMyph2 = 4.2;
+  KMyph2 = 7.99;
+  VmaxOVERKMy1 = 6.57;
+  KMy1 = 9.91;
+  VmaxOVERKMzph1 = 0.167;
+  KMzph1 = 8.27;
+  VmaxOVERKMy2 = 31.9;
+  KMy2 = 8.81;
+  VmaxOVERKMzph2 = 0.228;
+  KMzph2 = 31.5;
+  kFBf = 0.976;
+  Zf = 0.272;
+  n = 1.03;
+  Kf = 3.76;
+  kdw = 0.0333;
+  kFBph = 2.34;
+  Wph = 0.385;
+  p = 1.98;
+  Kph = 4.64;
+end

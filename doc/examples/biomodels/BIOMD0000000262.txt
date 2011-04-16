@@ -1,0 +1,82 @@
+//Created by libAntimony v1.4
+model Model_1()
+
+  // Compartments and Species:
+  compartment Cell;
+  species $EGF in Cell, EGFR in Cell, pEGFR in Cell, pEGFR_Akt in Cell, Akt in Cell;
+  species pAkt in Cell, S6 in Cell, pAkt_S6 in Cell, pS6 in Cell, $pro_EGFR in Cell;
+  species EGF_EGFR in Cell;
+
+  // Assignment Rules:
+  EGF := EGF_conc_step + piecewise(EGF_conc_impulse, leq(time, pulse_time), 0) + EGF_conc_ramp * time / ramp_time;
+  pEGFR_total := (pEGFR + pEGFR_Akt) * pEGFR_scaleFactor;
+  pAkt_total := (pAkt + pAkt_S6) * pAkt_scaleFactor;
+  pS6_total := pS6 * pS6_scaleFactor;
+
+  // Reactions:
+  reaction_1: $EGF + EGFR -> EGF_EGFR; Cell * (reaction_1_k1 * EGF * EGFR - reaction_1_k2 * EGF_EGFR);
+  reaction_2: pEGFR + Akt -> pEGFR_Akt; Cell * (reaction_2_k1 * pEGFR * Akt - reaction_2_k2 * pEGFR_Akt);
+  reaction_3: pEGFR_Akt => pEGFR + pAkt; Cell * reaction_3_k1 * pEGFR_Akt;
+  reaction_4: pEGFR => ; Cell * reaction_4_k1 * pEGFR;
+  reaction_5: pAkt + S6 -> pAkt_S6; Cell * (reaction_5_k1 * pAkt * S6 - reaction_5_k2 * pAkt_S6);
+  reaction_6: pAkt_S6 => pAkt + pS6; Cell * reaction_6_k1 * pAkt_S6;
+  reaction_7: pAkt => Akt; Cell * reaction_7_k1 * pAkt;
+  reaction_8: pS6 => S6; Cell * reaction_8_k1 * pS6;
+  reaction_9: $pro_EGFR => EGFR; Cell * EGFR_turnover * pro_EGFR;
+  reaction_10: EGF_EGFR => pEGFR; Cell * reaction_10_k1 * EGF_EGFR;
+  reaction_11: EGFR => ; Cell * EGFR_turnover * EGFR;
+
+  // Species initializations:
+  EGFR = pro_EGFR;
+  pEGFR = 0;
+  pEGFR_Akt = 0;
+  Akt = 0.0433090165709309;
+  pAkt = 0;
+  S6 = 3.54316740542218;
+  pAkt_S6 = 0;
+  pS6 = 0;
+  pro_EGFR = 68190.1837333797;
+  EGF_EGFR = 0;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  pEGFR_scaleFactor = 0.000181734813832032;
+  pAkt_scaleFactor = 60.0587507734138;
+  pS6_scaleFactor = 49886.2313741851;
+  EGF_conc_step = 0;
+  EGF_conc_impulse = 0;
+  EGF_conc_ramp = 30;
+  EGFR_turnover = 0.000106386129269658;
+  pulse_time = 60;
+  ramp_time = 3600;
+  reaction_1_k1 = 0.00673816;
+  reaction_1_k2 = 0.040749;
+  reaction_2_k1 = 1.5543e-05;
+  reaction_2_k2 = 0.00517473;
+  reaction_3_k1 = 0.0305684;
+  reaction_4_k1 = 0.0997194;
+  reaction_5_k1 = 2.10189e-06;
+  reaction_5_k2 = 5.1794e-15;
+  reaction_6_k1 = 0.00121498;
+  reaction_7_k1 = 0.0327962;
+  reaction_8_k1 = 0.00113102;
+  reaction_10_k1 = 0.0192391;
+
+  //Other declarations:
+  var pEGFR_total, pAkt_total, pS6_total;
+
+  //Display Names:
+  reaction_1 is "EGF+EGFR";
+  reaction_2 is "pEGFR+Akt";
+  reaction_3 is "Akt_phosphorylation";
+  reaction_4 is "pEGFR_degradation";
+  reaction_5 is "pAkt+S6";
+  reaction_6 is "S6_phosphorylation";
+  reaction_7 is "pAkt_dephospho";
+  reaction_8 is "pS6_dephospho";
+  reaction_9 is "EGFR_synthesis";
+  reaction_10 is "EGFR_phosphorylation";
+  reaction_11 is "EGFR_degradation";
+end

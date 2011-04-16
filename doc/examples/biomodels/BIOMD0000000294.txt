@@ -1,0 +1,115 @@
+//Created by libAntimony v1.4
+model restif07()
+
+  // Compartments and Species:
+  compartment env;
+  species N in env, S in env, I1 in env, I2 in env, R1 in env, R2 in env;
+  species V in env, Iv2 in env, J2 in env, J1 in env, R in env;
+
+  // Assignment Rules:
+  mu := 1 / l_e;
+  beta := R0 * (gamma + mu);
+  gamma := 365 / tInf;
+  sigma := 1 / tImm;
+  sigmaV := 1 / tImm_V;
+  strain1_frac := (I1 + J1) / N;
+  strain2_frac := (I2 + J2 + Iv2) / N;
+  S_frac := S / N;
+  V_frac := V / N;
+  R_1_frac := (R1 + R) / N;
+  R_2_frac := (R2 + R) / N;
+  R_frac := R / N;
+
+  // Reactions:
+  r1:  => S; mu * (1 - p) * N;
+  r2:  => V; mu * p * N;
+  r3: S => ; mu * S;
+  r4: V => ; mu * V;
+  r5: I1 => ; mu * I1;
+  r6: I2 => ; mu * I2;
+  r7: Iv2 => ; mu * Iv2;
+  r8: R1 => ; mu * R1;
+  r9: R2 => ; mu * R2;
+  r10: J1 => ; mu * J1;
+  r11: J2 => ; mu * J2;
+  r12: R => ; mu * R;
+  r13: S => I1; beta * S * ((I1 + J1) / N);
+  r14: S => I2; beta * S * ((I2 + J2 + Iv2) / N);
+  r15: V => Iv2; beta * (1 - tau) * V * ((I2 + J2 + Iv2) / N);
+  r16: I1 => R1; gamma * I1;
+  r17: I2 => R2; gamma * I2;
+  r18: R2 => J1; beta * (1 - theta) * R2 * (I1 + J1) / N;
+  r19: R1 => J2; beta * (1 - theta) * R1 * (I2 + J2 + Iv2) / N;
+  r20: J1 => R; gamma / (1 - nu) * J1;
+  r21: J2 => R; gamma / (1 - nu) * J2;
+  r22: Iv2 => R; gamma / (1 - eta) * Iv2;
+  r23: R1 => S; sigma * R1;
+  r24: R2 => S; sigma * R2;
+  r25: R => S; sigma * R;
+  r26: V => S; sigmaV * V;
+
+  // Species initializations:
+  N = 1;
+  S = 0.0588235;
+  I1 = 0.00176967;
+  I2 = 1e-06;
+  R1 = 0.439407;
+  R2 = 0;
+  V = 0.9;
+  Iv2 = 0.5;
+  J2 = 0;
+  J1 = 0;
+  R = 0;
+
+  // Compartment initializations:
+  env = 1;
+
+  // Variable initializations:
+  l_e = 50;
+  R0 = 17;
+  p = 1;
+  tau = 0.7;
+  theta = 0.5;
+  nu = 0.5;
+  eta = 0.5;
+  tInf = 21;
+  tImm = 20;
+  tImm_V = 50;
+
+  //Other declarations:
+  var mu, beta, gamma, sigma, sigmaV, strain1_frac, strain2_frac, S_frac;
+  var V_frac, R_1_frac, R_2_frac, R_frac;
+
+  //Display Names:
+  env is "environment";
+  l_e is "life expectancy";
+  tInf is "infectious period (d)";
+  tImm is "immune period (yr)";
+  tImm_V is "vaccine immune period (yr)";
+  r1 is "Birth S (unvaccinated)";
+  r2 is "Birth V (vaccinated)";
+  r3 is "Death in S";
+  r4 is "Death in V";
+  r5 is "Death in I1";
+  r6 is "Death in I2";
+  r7 is "Death in Iv2";
+  r8 is "Death in R1";
+  r9 is "Death in R2";
+  r10 is "Death in J1";
+  r11 is "Death in J2";
+  r12 is "Death in Rp";
+  r13 is "Primary Infection with strain 1";
+  r14 is "Primary Infection with strain 2";
+  r15 is "Primary Infection of V with strain 2";
+  r16 is "Recovery (I1)";
+  r17 is "Recovery (I2)";
+  r18 is "Secondary Infection with strain 1";
+  r19 is "Secondary Infection with strain 2";
+  r20 is "Recovery (J1)";
+  r21 is "Recovery (J2)";
+  r22 is "Recovery (Iv2)";
+  r23 is "Loss of Immunity (R1)";
+  r24 is "Loss of Immunity (R2)";
+  r25 is "Loss of Immunity (Rp)";
+  r26 is "Loss of Immunity (V)";
+end

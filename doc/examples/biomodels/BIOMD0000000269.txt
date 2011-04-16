@@ -1,0 +1,201 @@
+//Created by libAntimony v1.4
+function function_1(k3, k3a, X, Auxin)
+  (k3 + k3a * X) * Auxin;
+end
+
+function function_2(k1a, X, k1)
+  k1a / (1 + X / k1);
+end
+
+function function_3(k2, k2a, ET, CK, k2b, PLSp, k2c)
+  k2 + k2a * (ET / (1 + CK / k2b)) * (PLSp / (k2c + PLSp));
+end
+
+function function_4(k4, Auxin, Ra)
+  k4 * Auxin * Ra;
+end
+
+function function_6(k6, Ra_star, ET, k6a)
+  k6 * Ra_star / (1 + ET / k6a);
+end
+
+function function_7(k7, PLSm)
+  k7 * PLSm;
+end
+
+function function_8(k8, PLSm)
+  k8 * PLSm;
+end
+
+function function_9(k9, PLSp)
+  k9 * PLSp;
+end
+
+function function_10(k10, PLSp, k10a, Re)
+  (k10 + k10a * PLSp) * Re;
+end
+
+function function_12(Re_star, ET, k11)
+  k11 * Re_star * ET;
+end
+
+function function_13(Auxin, CK, k12, k12a)
+  k12 + k12a * Auxin * CK;
+end
+
+function function_15(ET, k13)
+  k13 * ET;
+end
+
+function function_16(Re_star, k14, CTR1)
+  k14 * Re_star * CTR1;
+end
+
+function function_17(CTR1_star, k15)
+  k15 * CTR1_star;
+end
+
+function function_20(Auxin, k18a, k18)
+  k18a / (1 + Auxin / k18);
+end
+
+function function_18(CTR1_star, k16, k16a)
+  k16 - k16a * CTR1_star;
+end
+
+function function_19(X, k17)
+  k17 * X;
+end
+
+function function_21(CK, k19)
+  k19 * CK;
+end
+
+model Model_1()
+
+  // Compartments and Species:
+  compartment compartment_1, extra;
+  species X in compartment_1, Auxin in compartment_1, ET in compartment_1;
+  species CK in compartment_1, PLSp in compartment_1, $Ra in compartment_1;
+  species Ra_star in compartment_1, PLSm in compartment_1, $Re in compartment_1;
+  species Re_star in compartment_1, $CTR1 in compartment_1, CTR1_star in compartment_1;
+  species $RaT in compartment_1, $ReT in compartment_1, $CTR1T in compartment_1;
+  species $IAA in extra, $ACC in extra, $CK_ex in extra;
+
+  // Assignment Rules:
+  Ra := RaT - Ra_star;
+  Re := ReT - Re_star;
+  CTR1 := CTR1T - CTR1_star;
+
+  // Reactions:
+  reaction_1:  => Auxin; compartment_1 * function_2(k1a, X, k1);
+  reaction_2:  => Auxin; compartment_1 * function_3(k2, k2a, ET, CK, k2b, PLSp, k2c);
+  reaction_3: Auxin => ; compartment_1 * function_1(k3, k3a, X, Auxin);
+  reaction_4: $Ra => Ra_star; compartment_1 * function_4(k4, Auxin, Ra);
+  reaction_5: Ra_star => $Ra; compartment_1 * k5 * Ra_star;
+  reaction_6:  => PLSm; compartment_1 * function_6(k6, Ra_star, ET, k6a);
+  reaction_7: PLSm => ; compartment_1 * function_7(k7, PLSm);
+  reaction_8:  => PLSp; compartment_1 * function_8(k8, PLSm);
+  reaction_9: PLSp => ; compartment_1 * function_9(k9, PLSp);
+  reaction_10: $Re => Re_star; compartment_1 * function_10(k10, PLSp, k10a, Re);
+  reaction_11: Re_star => $Re; compartment_1 * function_12(Re_star, ET, k11);
+  reaction_12:  => ET; compartment_1 * function_13(Auxin, CK, k12, k12a);
+  reaction_13: ET => ; compartment_1 * function_15(ET, k13);
+  reaction_14: $CTR1 => CTR1_star; compartment_1 * function_16(Re_star, k14, CTR1);
+  reaction_15: CTR1_star => $CTR1; compartment_1 * function_17(CTR1_star, k15);
+  reaction_16:  => X; compartment_1 * function_18(CTR1_star, k16, k16a);
+  reaction_17: X => ; compartment_1 * function_19(X, k17);
+  reaction_18:  => CK; compartment_1 * function_20(Auxin, k18a, k18);
+  reaction_19: CK => ; compartment_1 * function_21(CK, k19);
+  v_Ethylene: $ACC => ET; compartment_1 * k_ethylene * ACC;
+  v_Auxin: $IAA => Auxin; compartment_1 * k_auxin * IAA;
+  v_Cytokinin: $CK_ex => CK; compartment_1 * k_cytokinin * CK_ex;
+
+  // Species initializations:
+  X = 0.1;
+  Auxin = 0.1;
+  ET = 0.1;
+  CK = 0.1;
+  PLSp = 0.1;
+  Ra_star = 1;
+  PLSm = 0.1;
+  Re_star = 0.3;
+  CTR1_star = 0.3;
+  RaT = 1;
+  ReT = 0.3;
+  CTR1T = 0.3;
+  IAA = 0;
+  ACC = 0;
+  CK_ex = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+  extra = 1;
+
+  // Variable initializations:
+  k3 = 2;
+  k3a = 0.45;
+  k1a = 1;
+  k1 = 1;
+  k2 = 0.2;
+  k2a = 2.8;
+  k2b = 1;
+  k2c = 0.01;
+  k4 = 1;
+  k6 = 0.3;
+  k6a = 0.2;
+  k7 = 1;
+  k8 = 1;
+  k9 = 1;
+  k10 = 0.0003;
+  k10a = 0.5;
+  k11 = 5;
+  k12 = 0.1;
+  k12a = 0.1;
+  k13 = 1;
+  k14 = 3;
+  k15 = 0.085;
+  k18a = 1;
+  k18 = 0.1;
+  k16 = 0.3;
+  k16a = 1;
+  k17 = 0.1;
+  k19 = 1;
+  k5 = 1;
+  k_ethylene = 0.5;
+  k_auxin = 70;
+  k_cytokinin = 10;
+
+  //Display Names:
+  Ra_star is "Ra*";
+  Re_star is "Re*";
+  CTR1_star is "CTR1*";
+  compartment_1 is "cell";
+  extra is "extracellular";
+  RaT is "Ra_total";
+  ReT is "Re_total";
+  CTR1T is "CTR1_total";
+  CK_ex is "Cytokinin_ext";
+  reaction_1 is "v1: Auxin Transport to the cell";
+  reaction_2 is "v2: Auxin biosynthesis in the cell";
+  reaction_3 is "v3: Auxin removal from the cell";
+  reaction_4 is "v4: Conversion of auxin receptor from the inactivated form to the activated form";
+  reaction_5 is "v5: Conversion of  auxin receptor from the activated form   to the inactivated form";
+  reaction_6 is "v6: Transcription of POLARIS gene";
+  reaction_7 is "v7: Decay of mRNA of POLARIS gene";
+  reaction_8 is "v8: Translation of POLARIS gene";
+  reaction_9 is "v9: Decay of protein of POLARIS gene";
+  reaction_10 is "v10: Conversion of the inactivated form of ethylene receptor to its activated form by PLSp ";
+  reaction_11 is "v11: Conversion of the activated form of ethylene receptor to its inactivated form";
+  reaction_12 is "v12: Ethylene biosynthesis ";
+  reaction_13 is "v13: Removal of ethylene";
+  reaction_14 is "v14: Conversion of the inactivated form of CTR1 protein to its activated form by Re*";
+  reaction_15 is "v15: Conversion of the activated form of CTR1 protein to its inactivated form";
+  reaction_16 is "v16: Activation of the downstream of ethylene signalling response is inhibited by  CTR1*";
+  reaction_17 is "v17: Removal of the unknown molecule X";
+  reaction_18 is "v18: Biosynthesis of cytokinin";
+  reaction_19 is "v19: removal of cytokinin";
+  v_Ethylene is "vEthylene: Uptake rate of exogenous ACC (1-aminocyclopropane-1-carboxylic acid)";
+  v_Auxin is "vAuxin: Uptake rate of exogenous auxin (indole-3-acetic acid, IAA)";
+  v_Cytokinin is "vCytokinin: Uptake rate of exogenous cytokinin";
+end

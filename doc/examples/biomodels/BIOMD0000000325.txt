@@ -1,0 +1,44 @@
+//Created by libAntimony v1.4
+model minfb()
+
+  // Compartments and Species:
+  compartment cell;
+  species $L in cell, R in cell, C in cell, I in cell, X in cell, A in cell;
+
+  // Reactions:
+  R_expression:  => R; cell * (BR + Rs * A / (KD + A));
+  R_degradation: R => ; cell * kdegR * R;
+  R_L_binding: R + $L -> C; cell * (kon * L * R - koff * C);
+  C_degradation: C => ; cell * kdegC * C;
+  C_I_binding: C + I -> X; cell * (k1 * C * I - k2 * X);
+  I_activation: X => C + A; cell * k3 * X;
+  X_degradation: X => ; cell * kdegX * X;
+  A_degradation: A => ; cell * kdegA * A;
+  I_expression:  => I; cell * (BI + TFs * A / (KD + A));
+  I_degradation: I => ; cell * kdegI * I;
+
+  // Species initializations:
+  L = 0.1;
+  R = 1;
+  C = 0;
+  I = 1;
+  X = 0;
+  A = 0;
+
+  // Variable initializations:
+  BR = 0.005;
+  Rs = 3;
+  KD = 200;
+  kdegR = 0.005;
+  kon = 0.001;
+  koff = 0.05;
+  kdegC = 0.01;
+  k1 = 1;
+  k2 = 5;
+  k3 = 45;
+  kdegX = 0.005;
+  kdegA = 0.005;
+  BI = 0.005;
+  TFs = 3;
+  kdegI = 0.005;
+end

@@ -1,0 +1,40 @@
+//Created by libAntimony v1.4
+model Rattanakul2003_BoneFormationModel()
+
+  // Compartments and Species:
+  compartment Compartment_;
+  species $x in Compartment_, $y in Compartment_, $z in Compartment_;
+
+  // Rate Rules:
+  x' = a1 / (k1 + y) - b1 * x;
+  y' = epsilon * ((a2 + a3 * x) * y * z / (k2 + x^2) - b2 * y);
+  z' = epsilon * delta * (a4 * x - (b3 * z + a5 * x * z / (k3 + x)));
+
+  // Species initializations:
+  x = 2;
+  y = 1;
+  z = 0.15;
+
+  // Compartment initializations:
+  Compartment_ = 1;
+
+  // Variable initializations:
+  epsilon = 0.1;
+  delta = 0.9;
+  a1 = 0.05;
+  a2 = 0.009;
+  a3 = 0.675;
+  a4 = 0.01;
+  a5 = 0.005;
+  b1 = 0.1;
+  b2 = 0.3;
+  b3 = 0.01;
+  k1 = 0.1;
+  k2 = 0.5;
+  k3 = 0.025;
+
+  //Display Names:
+  x is "PTH";
+  y is "active osteoclasts";
+  z is "active osteoblasts";
+end

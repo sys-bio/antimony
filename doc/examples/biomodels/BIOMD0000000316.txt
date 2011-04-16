@@ -1,0 +1,38 @@
+//Created by libAntimony v1.4
+function F(X, T)
+  piecewise(1, geq(X, T), 0);
+end
+
+model shenorr02()
+
+  // Compartments and Species:
+  compartment cell;
+  species $X in cell, Y in cell, Z in cell;
+
+  // Reactions:
+  r1:  -> Y; F(X, r1_Ty);
+  r2: Y -> ; r2_a * Y;
+  r3:  -> Z; F(X, r3_Ty) * F(Y, r3_Tz);
+  r4: Z -> ; r4_a * Z;
+
+  // Events:
+  e1: at geq(time, 3): X = 1;
+  e2: at geq(time, 3.5): X = 0;
+  e3: at geq(time, 10): X = 1;
+  e4: at geq(time, 15): X = 0;
+
+  // Species initializations:
+  X = 0;
+  Y = 0;
+  Z = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  r1_Ty = 0.5;
+  r2_a = 1;
+  r3_Ty = 0.5;
+  r3_Tz = 0.5;
+  r4_a = 1;
+end

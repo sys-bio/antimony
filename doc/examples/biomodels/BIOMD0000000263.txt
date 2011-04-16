@@ -1,0 +1,82 @@
+//Created by libAntimony v1.4
+model Model_1()
+
+  // Compartments and Species:
+  compartment Cell;
+  species $NGF in Cell, TrkA in Cell, pTrkA in Cell, pTrkA_Akt in Cell, Akt in Cell;
+  species pAkt in Cell, S6 in Cell, pAkt_S6 in Cell, pS6 in Cell, $pro_TrkA in Cell;
+  species NGF_TrkA in Cell;
+
+  // Assignment Rules:
+  NGF := NGF_conc_step + piecewise(NGF_conc_pulse, leq(time, pulse_time), 0) + NGF_conc_ramp * time / ramp_time;
+  pTrkA_total := (pTrkA + pTrkA_Akt) * pTrkA_scaleFactor;
+  pAkt_total := (pAkt + pAkt_S6) * pAkt_scaleFactor;
+  pS6_total := pS6 * pS6_scaleFactor;
+
+  // Reactions:
+  reaction_1: $NGF + TrkA -> NGF_TrkA; Cell * (reaction_1_k1 * NGF * TrkA - reaction_1_k2 * NGF_TrkA);
+  reaction_2: pTrkA + Akt -> pTrkA_Akt; Cell * (reaction_2_k1 * pTrkA * Akt - reaction_2_k2 * pTrkA_Akt);
+  reaction_3: pTrkA_Akt => pTrkA + pAkt; Cell * reaction_3_k1 * pTrkA_Akt;
+  reaction_4: pTrkA => ; Cell * reaction_4_k1 * pTrkA;
+  reaction_5: pAkt + S6 -> pAkt_S6; Cell * (reaction_5_k1 * pAkt * S6 - reaction_5_k2 * pAkt_S6);
+  reaction_6: pAkt_S6 => pAkt + pS6; Cell * reaction_6_k1 * pAkt_S6;
+  reaction_7: pAkt => Akt; Cell * reaction_7_k1 * pAkt;
+  reaction_8: pS6 => S6; Cell * reaction_8_k1 * pS6;
+  reaction_9: $pro_TrkA => TrkA; Cell * TrkA_turnover * pro_TrkA;
+  reaction_10: NGF_TrkA => pTrkA; Cell * reaction_10_k1 * NGF_TrkA;
+  reaction_11: TrkA => ; Cell * TrkA_turnover * TrkA;
+
+  // Species initializations:
+  TrkA = pro_TrkA;
+  pTrkA = 0;
+  pTrkA_Akt = 0;
+  Akt = 1.15594897919397;
+  pAkt = 0;
+  S6 = 3.552336039555;
+  pAkt_S6 = 0;
+  pS6 = 0;
+  pro_TrkA = 8.52065090518276;
+  NGF_TrkA = 0;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  pTrkA_scaleFactor = 0.848783474941268;
+  pAkt_scaleFactor = 2.42381211094508;
+  pS6_scaleFactor = 0.525842718263069;
+  NGF_conc_step = 0;
+  NGF_conc_pulse = 0;
+  NGF_conc_ramp = 30;
+  TrkA_turnover = 0.0011032440769796;
+  pulse_time = 60;
+  ramp_time = 3600;
+  reaction_1_k1 = 0.00269408;
+  reaction_1_k2 = 0.0133747;
+  reaction_2_k1 = 0.0882701;
+  reaction_2_k2 = 1.47518e-10;
+  reaction_3_k1 = 0.0202517;
+  reaction_4_k1 = 0.0684084;
+  reaction_5_k1 = 68.3666;
+  reaction_5_k2 = 5.23519;
+  reaction_6_k1 = 0.0056515;
+  reaction_7_k1 = 1.28135;
+  reaction_8_k1 = 0.000293167;
+  reaction_10_k1 = 0.00833178;
+
+  //Other declarations:
+  var pTrkA_total, pAkt_total, pS6_total;
+
+  //Display Names:
+  reaction_1 is "NGF+TrkA";
+  reaction_2 is "pTrkA+Akt";
+  reaction_3 is "Akt_phosphorylation";
+  reaction_4 is "pTrkA_degradation";
+  reaction_5 is "pAkt+S6";
+  reaction_6 is "S6_phosphorylation";
+  reaction_7 is "pAkt_dephospho";
+  reaction_8 is "pS6_dephospho";
+  reaction_9 is "TrkA_synthesis";
+  reaction_10 is "TrkA_phosphorylation";
+  reaction_11 is "TrkA_degradation";
+end

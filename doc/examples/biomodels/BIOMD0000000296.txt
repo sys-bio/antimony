@@ -1,0 +1,59 @@
+//Created by libAntimony v1.4
+model blub()
+
+  // Compartments and Species:
+  compartment environment;
+  species $IPTG in environment, C1 in environment, C2 in environment, A1 in environment;
+  species A2 in environment, $sink in environment, $source in environment;
+
+  // Assignment Rules:
+  kA2 := 0.02 + 0.03 * (IPTG^2 / (5^2 + IPTG^2));
+  d1 := 0.5 + IPTG^2 / (5^2 + IPTG^2);
+
+  // Reactions:
+  J0: $source => C1; environment * kc1 * C1 * (1 - (C1 + C2) / Cm);
+  J1: C1 => $sink; environment * (D + d1 * K1 / (K1 + A2^2)) * C1;
+  J2: $source => C2; environment * kc2 * C2 * (1 - (C1 + C2) / Cm);
+  J3: C2 => $sink; environment * (D + d2 * A1^2 / (K2 + A1^2)) * C2;
+  J4: $source => A1; environment * kA1 * C1;
+  J5: A1 => $sink; environment * (dAA1 + D) * A1;
+  J6: $source => A2; environment * kA2 * C2;
+  J7: A2 => $sink; environment * (dAA2 + D) * A2;
+
+  // Species initializations:
+  IPTG = 5;
+  C1 = 20;
+  C2 = 20;
+  A1 = 0.1;
+  A2 = 0.1;
+  sink = 0;
+  source = 0;
+
+  // Compartment initializations:
+  environment = 1;
+
+  // Variable initializations:
+  kc1 = 0.8;
+  kc2 = 0.4;
+  Cm = 100;
+  D = 0.1125;
+  kA1 = 0.1;
+  d2 = 0.3;
+  K2 = 10;
+  K1 = 10;
+  dAA1 = 0.017;
+  dAA2 = 0.11;
+
+  //Other declarations:
+  var kA2, d1;
+
+  //Display Names:
+  J0 is "predator growth";
+  J1 is "predator death";
+  J2 is "prey growth";
+  J3 is "prey death";
+  J4 is "3OC12HSL synthesis";
+  J5 is "3OC12HSL removal";
+  J6 is "3OC6HSL synthesis";
+  J7 is "3OC6HSL removal";
+end

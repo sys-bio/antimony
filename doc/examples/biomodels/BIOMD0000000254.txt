@@ -1,0 +1,42 @@
+//Created by libAntimony v1.4
+model Bier2000_GlycolyticOscillation()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $G1 in compartment_, $T1 in compartment_, $G2 in compartment_, $T2 in compartment_;
+
+  // Assignment Rules:
+  Tsum := T2 + T1;
+  Tdiff := T2 - T1;
+
+  // Rate Rules:
+  G1' = V_in - k1 * G1 * T1;
+  T1' = 2 * k1 * T1 * G1 - kp * T1 / (km + T1) + epsilon * (T2 - T1);
+  G2' = V_in - k1 * G2 * T2;
+  T2' = 2 * k1 * G2 * T2 - kp * T2 / (km + T2) - epsilon * (T2 - T1);
+
+  // Species initializations:
+  G1 = 6.6;
+  T1 = 7.6;
+  G2 = 10.3;
+  T2 = 0.41;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  V_in = 0.36;
+  k1 = 0.02;
+  kp = 6;
+  km = 13;
+  epsilon = 0.01;
+
+  //Other declarations:
+  var Tsum, Tdiff;
+
+  //Display Names:
+  G1 is "Glucose_1";
+  T1 is "ATP_1";
+  G2 is "Glucose_2";
+  T2 is "ATP_2";
+end

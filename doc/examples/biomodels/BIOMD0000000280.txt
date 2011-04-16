@@ -1,0 +1,38 @@
+//Created by libAntimony v1.4
+model Morris1981_MuscleFibre_Voltage_reduced()
+
+  // Compartments and Species:
+  compartment musclefiber;
+
+  // Assignment Rules:
+  Minf := (1 + tanh((V - V1) / V2)) / 2;
+  Ninf := (1 + tanh((V - V3) / V4)) / 2;
+  lambdaN := lambdaN_bar * cosh((V - V3) / (2 * V4));
+
+  // Rate Rules:
+  V' = (Iapp - gL * (V - VL) - gCa * Minf * (V - VCa) - gK * N * (V - VK)) / C;
+  N' = lambdaN * (Ninf - N);
+
+  // Compartment initializations:
+  musclefiber = 1;
+
+  // Variable initializations:
+  V = -50;
+  V1 = 10;
+  V2 = 15;
+  V3 = -1;
+  V4 = 14.5;
+  lambdaN_bar = 0.066666666667;
+  Iapp = 300;
+  gL = 2;
+  VL = -50;
+  gCa = 4;
+  VCa = 100;
+  gK = 8;
+  N = (1 + tanh((V - V3) / V4)) / 2;
+  VK = -70;
+  C = 20;
+
+  //Other declarations:
+  var Minf, V, Ninf, lambdaN, N;
+end

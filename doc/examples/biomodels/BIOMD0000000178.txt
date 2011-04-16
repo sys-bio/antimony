@@ -1,20 +1,20 @@
 //Created by libAntimony v1.4
-model step4()
+model Lebeda2008_BoTN_Paralysis_4stepModel()
 
   // Compartments and Species:
-  compartment extra, endo, neuroplasm;
-  species $BoNT in extra, bulk in extra, free in extra, bound in extra, translocate in endo;
-  species lytic in neuroplasm;
+  compartment extracellular, endosome, neuroplasm;
+  species $BoNT in extracellular, bulk in extracellular, free in extracellular;
+  species bound in extracellular, translocate in endosome, lytic in neuroplasm;
 
   // Assignment Rules:
   BoNT := bulk + free;
   tension := 1 - lytic;
 
   // Reactions:
-  endcytosis: bound => translocate; endcytosis_kT * bound * extra;
-  translocation: translocate => lytic; translocation_kL * translocate * endo;
-  binding: free => bound; binding_kB * free * extra;
-  bulk_movement: bulk => free; bulk_movement_kS * bulk * extra;
+  endocytosis: bound => translocate; endocytosis_kT * bound * extracellular;
+  translocation: translocate => lytic; translocation_kL * translocate * endosome;
+  binding: free => bound; binding_kB * free * extracellular;
+  bulk_movement: bulk => free; bulk_movement_kS * bulk * extracellular;
 
   // Species initializations:
   bulk = 1;
@@ -24,26 +24,24 @@ model step4()
   lytic = 0;
 
   // Compartment initializations:
-  extra = 1;
-  endo = 1;
+  extracellular = 1;
+  endosome = 1;
   neuroplasm = 1;
 
   // Variable initializations:
-  endcytosis_kT = 0.141;
+  endocytosis_kT = 0.141;
   translocation_kL = 0.013;
   binding_kB = 0.058;
-  bulk_movement_kS = 15;
+  bulk_movement_kS = 0.00015;
 
   //Other declarations:
   var tension;
 
   //Display Names:
-  extra is "extracellular";
-  endo is "endosome";
   BoNT is "tot_free_BoNT/A";
-  bulk is "bulk BoNT/A";
-  free is "free BoNT/A";
-  bound is "bound BoNT/A";
-  translocate is "transloc BoNT/A";
-  lytic is "lytic BoNT/A";
+  bulk is "bulk_BoNT/A";
+  free is "free_BoNT/A";
+  bound is "bound_BoNT/A";
+  translocate is "transloc_BoNT/A";
+  lytic is "lytic_BoNT/A";
 end
