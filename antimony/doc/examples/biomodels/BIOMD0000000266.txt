@@ -1,0 +1,100 @@
+//Created by libAntimony v1.4
+model voit03()
+
+  // Compartments and Species:
+  compartment cell, external;
+  species $X0 in external, $X1 in cell, $X2 in cell, $X3 in cell, $X4 in cell;
+  species $X5 in cell, $X6 in cell, $X7 in cell;
+
+  // Assignment Rules:
+  X8 := piecewise(8, eq(heat_shock, 1), 1);
+  X10 := piecewise(1, eq(heat_shock, 1), 1);
+  X12r := piecewise(16, eq(heat_shock, 1), 1);
+  X13 := piecewise(16, eq(heat_shock, 1), 1);
+  X15r := piecewise(50, eq(heat_shock, 1), 1);
+  X16 := piecewise(16, eq(heat_shock, 1), 1);
+  X18 := piecewise(18, eq(heat_shock, 1), 1);
+  flux_X1_in := 31.912 * X0^0.968 * X2^-0.194 * X7^0.00968 * X8^0.968 * X19^0.0323;
+  flux_X1_out := 89.935 * X1^0.75 * X6^-0.4 * X9;
+  flux_X2_in := 142.72 * X1^0.517 * X2^-0.179 * X3^0.183 * X6^-0.276 * X9^0.689 * X12r^0.311;
+  flux_X2_out := 30.12 * X1^-0.00333 * X2^0.575 * X3^-0.17 * X4^0.00333 * X10^0.5111 * X11^0.0667 * X12f^0.411 * X17^0.0111;
+  flux_X3_in := 7.8819 * X2^0.394 * X3^-0.392 * X4^-0.01 * X5^0.0128 * X12f^0.949 * X15r^0.0513;
+  flux_X3_out := 76.434 * X2^-0.412 * X3^0.593 * X12r^0.718 * X13^0.18 * X15f^0.103;
+  flux_X4_in := 11.07 * X3^0.5 * X13;
+  flux_X4_out := 3.4556 * X1^-0.0429 * X2^0.214 * X4^0.386 * X14^0.857 * X17^0.143;
+  flux_X5_in := 11.06 * X2^0.04 * X3^0.32 * X4^0.16 * X14^0.6 * X15f^0.4;
+  flux_X5_out := 4.929 * X2^-0.04 * X4^-0.04 * X5^0.25 * X15r^0.2 * X16^0.8;
+  flux_X6_in := 0.19424 * X1^-0.3 * X2^0.3 * X4^0.3 * X17;
+  flux_X6_out := 1.0939 * X6^0.2 * X18;
+  flux_X7_in := 1.0939 * X6^0.2 * X18;
+  flux_X7_out := 1.2288 * X7^0.3 * X19;
+
+  // Rate Rules:
+  X1' = flux_X1_in - flux_X1_out;
+  X2' = flux_X2_in - flux_X2_out;
+  X3' = flux_X3_in - flux_X3_out;
+  X4' = flux_X4_in - flux_X4_out;
+  X5' = flux_X5_in - flux_X5_out;
+  X6' = flux_X6_in - flux_X6_out;
+  X7' = flux_X7_in - flux_X7_out;
+
+  // Species initializations:
+  X0 = 1;
+  X1 = 0.03;
+  X2 = 1;
+  X3 = 0.1;
+  X4 = 0.7;
+  X5 = 1;
+  X6 = 0.02;
+  X7 = 0.05;
+
+  // Compartment initializations:
+  cell = 1;
+  external = 1;
+
+  // Variable initializations:
+  heat_shock = 0;
+
+  //Other declarations:
+  var X8, X10, X12r, X13, X15r, X16, X18, flux_X1_in, flux_X1_out, flux_X2_in;
+  var flux_X2_out, flux_X3_in, flux_X3_out, flux_X4_in, flux_X4_out, flux_X5_in;
+  var flux_X5_out, flux_X6_in, flux_X6_out, flux_X7_in, flux_X7_out;
+
+  //Display Names:
+  X0 is "glucose";
+  X1 is "glucose";
+  X2 is "G6P";
+  X3 is "G1P";
+  X4 is "UDPG";
+  X5 is "glycogen";
+  X6 is "T6P";
+  X7 is "trehalose";
+  X8 is "glucose transport into cell";
+  X9 is "hexokinase/glucokinase";
+  X10 is "phosphofructokinase";
+  X11 is "G6P dehydrogenase";
+  X12r is "phoshpoglucomutase";
+  X12f is "phoshpoglucomutase";
+  X13 is "UDPG pyrophosphorylase";
+  X14 is "glycogen synthase";
+  X15r is "glycogen phosphorylase";
+  X15f is "glycogen phosphorylase";
+  X16 is "glycogen use";
+  X17 is "alpha,alpha-T6P synthase";
+  X18 is "alpha,alpha--T6P phosphatase";
+  X19 is "trehalase";
+  flux_X1_in is "flux_to_glucose";
+  flux_X1_out is "flux_from_glucose";
+  flux_X2_in is "flux_to_G6P";
+  flux_X2_out is "flux_from_G6P";
+  flux_X3_in is "flux_to_G1P";
+  flux_X3_out is "flux_from_G1P";
+  flux_X4_in is "flux_to_UDPG";
+  flux_X4_out is "flux_from_UDPG";
+  flux_X5_in is "flux_to_glycogen";
+  flux_X5_out is "flux_from_glucogen";
+  flux_X6_in is "flux_to_T6P";
+  flux_X6_out is "flux_from_T6P";
+  flux_X7_in is "flux_to_trehalose";
+  flux_X7_out is "flux_from_trehalose";
+end

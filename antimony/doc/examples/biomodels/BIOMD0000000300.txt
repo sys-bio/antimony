@@ -1,0 +1,133 @@
+//Created by libAntimony v1.4
+function function_1(v)
+  v;
+end
+
+function function_2(kcatPH, Ptot, O2, KdPH, Htot, HP)
+  Htot * kcatPH * Ptot * O2 / (1 + O2) / (KdPH + Ptot + HP);
+end
+
+function vFH(Ftot, O2, alpha, H, KiFH, HF, KcatFH)
+  H * KcatFH * Ftot * O2 / (alpha + O2) / (KiFH + Ftot + HF);
+end
+
+function vFA(Ftot, O2, alpha, A, gamma, Atot, KiFA, KcatFH)
+  A * KcatFH * Ftot * O2 / (alpha + O2) / (KiFA + A + gamma * (Atot - A));
+end
+
+function function_3(H, kcatPH, Ptot, O2, KdPH, HP)
+  H * kcatPH * Ptot * O2 / (1 + O2) / (KdPH + Ptot + HP);
+end
+
+model Schmierer2010_FIH_Ankyrins()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species species_1 in compartment_1, species_2 in compartment_1, species_3 in compartment_1;
+  species $species_4 in compartment_1, $species_5 in compartment_1, $species_6 in compartment_1;
+  species $species_7 in compartment_1, $species_8 in compartment_1, $species_9 in compartment_1;
+  species $species_10 in compartment_1, $species_11 in compartment_1, $species_12 in compartment_1;
+  species $species_13 in compartment_1, $species_14 in compartment_1, $species_15 in compartment_1;
+  species $species_16 in compartment_1;
+
+  // Assignment Rules:
+  species_4 := species_1 - species_2;
+  species_6 := species_5 - species_3;
+  species_9 := 0.5 * (species_2 - species_7 - parameter_7 + sqrt((parameter_7 - species_2 + species_7)^2 + 4 * species_2 * parameter_7));
+  species_10 := 0.5 * (species_1 - species_8 - parameter_4 + sqrt((parameter_4 - species_1 + species_8)^2 + 4 * species_1 * parameter_4));
+  species_12 := (parameter_2 + species_9) / (parameter_7 + species_9);
+  species_13 := species_2 / (parameter_5 + species_1);
+  species_14 := species_1 / (parameter_5 + species_1);
+  species_15 := (species_1 - species_2) / (parameter_5 + species_1);
+  species_16 := species_3 / species_5;
+  parameter_14 := 1 / parameter_11;
+  parameter_16 := species_5 / parameter_11;
+  parameter_7 := parameter_2 / parameter_3 * (parameter_3 + species_3 + parameter_6 * (species_5 - species_3));
+  parameter_9 := parameter_3 / parameter_2 * (parameter_2 + species_9);
+  parameter_13 := parameter_8 * parameter_10;
+
+  // Reactions:
+  reaction_1:  => species_1; compartment_1 * function_1(parameter_18);
+  reaction_2: species_1 => ; compartment_1 * parameter_17 * species_1;
+  reaction_3: species_1 => ; compartment_1 * function_2(parameter_8, species_8, species_11, parameter_4, species_1, species_10);
+  reaction_4:  => species_2; compartment_1 * function_1(parameter_18);
+  reaction_5: species_2 => ; compartment_1 * parameter_17 * species_2;
+  reaction_6: species_2 => ; compartment_1 * function_3(species_2, parameter_8, species_8, species_11, parameter_4, species_10);
+  reaction_7: species_2 => ; compartment_1 * vFH(species_7, species_11, parameter_1, species_2, parameter_7, species_9, parameter_13);
+  reaction_8:  => species_3; compartment_1 * function_1(parameter_16);
+  reaction_9: species_3 => ; compartment_1 * parameter_14 * species_3;
+  reaction_10: species_3 => ; compartment_1 * vFA(species_7, species_11, parameter_1, species_3, parameter_6, species_5, parameter_9, parameter_13);
+
+  // Species initializations:
+  species_1 = 0;
+  species_2 = 0;
+  species_3 = 100;
+  species_5 = 100;
+  species_7 = 1;
+  species_8 = 0.2;
+  species_11 = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  parameter_1 = 0.33;
+  parameter_2 = 1;
+  parameter_3 = 1;
+  parameter_4 = 1;
+  parameter_5 = 0.3;
+  parameter_6 = 0;
+  parameter_8 = 500;
+  parameter_10 = 1;
+  parameter_11 = 5;
+  parameter_17 = 1;
+  parameter_18 = 1;
+
+  //Other declarations:
+  var parameter_14, parameter_16, parameter_7, parameter_9, parameter_13;
+
+  //Display Names:
+  compartment_1 is "Cell";
+  species_1 is "Htot";
+  species_2 is "H";
+  species_3 is "A";
+  species_4 is "HOH";
+  species_5 is "Atot";
+  species_6 is "AOH";
+  species_7 is "Ftot";
+  species_8 is "Ptot";
+  species_9 is "HF";
+  species_10 is "HP";
+  species_11 is "O2";
+  species_12 is "FIHfree";
+  species_13 is "CAD";
+  species_14 is "NAD";
+  species_15 is "CADOH";
+  species_16 is "A for plotting";
+  parameter_1 is "alpha";
+  parameter_2 is "KdFH";
+  parameter_3 is "KdFA";
+  parameter_4 is "KdPH";
+  parameter_5 is "KdHRE";
+  parameter_6 is "gamma";
+  parameter_8 is "kcatPH";
+  parameter_10 is "w";
+  parameter_11 is "eps";
+  parameter_14 is "kdeg_A";
+  parameter_16 is "ksyn_A";
+  parameter_7 is "KiFH";
+  parameter_9 is "KiFA";
+  parameter_13 is "kcatFH";
+  parameter_17 is "kdeg_H";
+  parameter_18 is "ksyn_H";
+  reaction_1 is "Htot synthesis";
+  reaction_2 is "Htot basal degradation";
+  reaction_3 is "Htot induced degradation";
+  reaction_4 is "H synthesis";
+  reaction_5 is "H basal degardation";
+  reaction_6 is "H induced degradation";
+  reaction_7 is "H hydroxylation";
+  reaction_8 is "A synthesis";
+  reaction_9 is "A degradation";
+  reaction_10 is "A hydroxylation";
+end

@@ -1,0 +1,56 @@
+//Created by libAntimony v1.4
+model Raia2010_IL13_L1236()
+
+  // Compartments and Species:
+  compartment cell;
+  species Rec in cell, Rec_i in cell, IL13_Rec in cell, p_IL13_Rec in cell;
+  species p_IL13_Rec_i in cell, JAK2 in cell, pJAK2 in cell, SHP1 in cell;
+  species STAT5 in cell, pSTAT5 in cell, CD274mRNA in cell, $IL13 in cell;
+
+  // Assignment Rules:
+  IL13 := 3.776 * IL13stimulation;
+
+  // Reactions:
+  reaction_1: Rec => IL13_Rec; Kon_IL13Rec * IL13 * Rec * cell;
+  reaction_2: Rec => Rec_i; Rec_intern * Rec * cell;
+  reaction_3: Rec_i => Rec; Rec_recycle * Rec_i * cell;
+  reaction_4: IL13_Rec => p_IL13_Rec; Rec_phosphorylation * IL13_Rec * pJAK2 * cell;
+  reaction_5: JAK2 => pJAK2; JAK2_phosphorylation * JAK2 * IL13_Rec * cell;
+  reaction_6: JAK2 => pJAK2; JAK2_phosphorylation * JAK2 * p_IL13_Rec * cell;
+  reaction_7: p_IL13_Rec => p_IL13_Rec_i; pRec_intern * p_IL13_Rec * cell;
+  reaction_8: p_IL13_Rec_i => ; pRec_degradation * p_IL13_Rec_i * cell;
+  reaction_9: pJAK2 => JAK2; pJAK2_dephosphorylation * pJAK2 * SHP1 * cell;
+  reaction_10: STAT5 => pSTAT5; STAT5_phosphorylation * STAT5 * pJAK2 * cell;
+  reaction_11: pSTAT5 => STAT5; pSTAT5_dephosphorylation * pSTAT5 * SHP1 * cell;
+  reaction_12:  => CD274mRNA; pSTAT5 * CD274mRNA_production * cell;
+
+  // Species initializations:
+  Rec = 1.8;
+  Rec_i = 118.598;
+  IL13_Rec = 0;
+  p_IL13_Rec = 0;
+  p_IL13_Rec_i = 0;
+  JAK2 = 24;
+  pJAK2 = 0;
+  SHP1 = 9.4;
+  STAT5 = 209;
+  pSTAT5 = 0;
+  CD274mRNA = 0;
+
+  // Compartment initializations:
+  cell = 100;
+
+  // Variable initializations:
+  IL13stimulation = 1;
+  Kon_IL13Rec = 0.00174087;
+  Rec_phosphorylation = 9.07541;
+  pRec_intern = 0.324132;
+  pRec_degradation = 0.417538;
+  Rec_intern = 0.259686;
+  Rec_recycle = 0.0039243;
+  JAK2_phosphorylation = 0.300019;
+  pJAK2_dephosphorylation = 0.0981611;
+  STAT5_phosphorylation = 0.00426767;
+  pSTAT5_dephosphorylation = 0.0116389;
+  CD274mRNA_production = 0.0115928;
+end

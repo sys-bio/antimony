@@ -1,0 +1,89 @@
+//Created by libAntimony v1.4
+model Friedland2009_Ara_Counter_RC3_events()
+
+  // Compartments and Species:
+  compartment cell;
+  species taRNA in cell, mT7cr in cell, mGFPcr in cell, pT7 in cell, pGFP in cell;
+  species ara in cell, pT3 in cell, mT3cr in cell;
+
+  // Assignment Rules:
+  pulse2_start := pulse1_start + pulse1_length + pulse_interval;
+  pulse3_start := pulse2_start + pulse2_length + pulse_interval;
+
+  // Reactions:
+  r0: ara => ; cell * piecewise(cAra, and(eq(pulse_flag, 1), gt(ara, 0)), dAra * ara);
+  r1a:  => taRNA; cell * (sT * ara / (ara + k_ara) + s0_taRNA);
+  r1b: taRNA => ; cell * d_taRNA * taRNA;
+  r2a:  => mT7cr; cell * s0_mT7cr;
+  r2b: mT7cr => ; cell * d_mT7 * mT7cr;
+  r3a:  => mGFPcr; cell * (s0_mGFPcr + k_pT3 * pT3^n3 / (km3^n3 + pT3^n3));
+  r3b: mGFPcr => ; cell * d_mGFP * mGFPcr;
+  r6:  => pT7; cell * (s0_pT7 * mT7cr + s_pT7k * mT7cr * taRNA);
+  r7:  => pGFP; cell * (s0_pGFP * mGFPcr + s_pGFPk * mGFPcr * taRNA);
+  r8: pT7 => ; cell * d_pT7 * pT7;
+  r9: pGFP => ; cell * d_pGFP * pGFP;
+  r10a:  => mT3cr; cell * (s0_mT3cr + k_pT7 * pT7^n7 / (km7^n7 + pT7^n7));
+  r10b: mT3cr => ; cell * d_mT3 * mT3cr;
+  r11:  => pT3; cell * (s0_pT3 * mT3cr + s_pT3k * taRNA * mT3cr);
+  r12: pT3 => ; cell * d_pT3 * pT3;
+
+  // Events:
+  pulse_start1: at and(geq(time, pulse1_start), leq(time, pulse1_start + pulse1_length)): ara = pulse_conc, pulse_flag = 1;
+  pulse_start2: at and(geq(time, pulse2_start), leq(time, pulse2_start + pulse2_length)): ara = pulse_conc, pulse_flag = 1;
+  pulse_start3: at and(geq(time, pulse3_start), leq(time, pulse3_start + pulse3_length)): ara = pulse_conc, pulse_flag = 1;
+  pulse_end1: at and(lt(time, pulse2_start), gt(time, pulse1_start + pulse1_length)): pulse_flag = 0;
+  pulse_end2: at and(lt(time, pulse3_start), gt(time, pulse2_start + pulse2_length)): pulse_flag = 0;
+  pulse_end3: at gt(time, pulse3_start + pulse3_length): pulse_flag = 0;
+
+  // Species initializations:
+  taRNA = 0.006796941377;
+  mT7cr = 0.3569405099;
+  mGFPcr = 0.176991329;
+  pT7 = 0.05230744612;
+  pGFP = 6.338921181;
+  ara = 0;
+  pT3 = 6.41674e-05;
+  mT3cr = 0.00566438;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  pulse1_start = 0.01;
+  pulse1_length = 11;
+  pulse_flag = 0;
+  pulse_conc = 0.01;
+  pulse2_length = 11;
+  pulse3_length = 22;
+  cAra = 0.0003;
+  dAra = 0.1201;
+  sT = 0.8467;
+  k_ara = 0.0571;
+  s0_taRNA = 0.0008;
+  d_taRNA = 0.1177;
+  s0_mT7cr = 0.0252;
+  d_mT7 = 0.0706;
+  s0_mGFPcr = 0.0123;
+  k_pT3 = 3.006;
+  n3 = 0.8892;
+  km3 = 7.9075;
+  d_mGFP = 0.07;
+  s0_pT7 = 0.0003;
+  s_pT7k = 0.0766;
+  s0_pGFP = 0.1007;
+  s_pGFPk = 0.9923;
+  d_pT7 = 0.0056;
+  d_pGFP = 0.003;
+  s0_mT3cr = 0.0003;
+  k_pT7 = 3.8009;
+  n7 = 2.602;
+  km7 = 3.0455;
+  d_mT3 = 0.0701;
+  s0_pT3 = 0;
+  s_pT3k = 0.0115;
+  d_pT3 = 0.0069;
+  pulse_interval = 20;
+
+  //Other declarations:
+  var pulse_flag, pulse2_start, pulse3_start;
+end

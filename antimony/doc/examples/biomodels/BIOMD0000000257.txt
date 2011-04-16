@@ -1,0 +1,66 @@
+//Created by libAntimony v1.4
+model Piedrafita2010_MR_System()
+
+  // Compartments and Species:
+  compartment env;
+  species $S in env, $U in env, $T in env, STU in env, STUS in env, STUST in env;
+  species STUSU in env, SU in env, ST in env, SUST in env, SUSTU in env;
+
+  // Assignment Rules:
+  k8 := k4;
+  k11 := k4;
+
+  // Reactions:
+  reaction1: $S + STU -> STUS; env * (k1 * S * STU - k1r * STUS);
+  reaction2: $T + STUS -> STUST; env * (k2 * T * STUS - k2r * STUST);
+  reaction3: STUST -> ST + STU; env * (k3 * STUST - k3r * ST * STU);
+  reaction4: STU => ; env * k4 * STU;
+  reaction5: SU + ST -> SUST; env * (k5 * ST * SU - k5r * SUST);
+  reaction6: $U + SUST -> SUSTU; env * (k6 * U * SUST - k6r * SUSTU);
+  reaction7: SUSTU -> STU + SU; env * (k7 * SUSTU - k7r * STU * SU);
+  reaction8: SU => ; env * k8 * SU;
+  reaction9: $U + STUS -> STUSU; env * (k9 * U * STUS - k9r * STUSU);
+  reaction10: STUSU -> STU + SU; env * (k10 * STUSU - k10r * STU * SU);
+  reaction11: ST => ; env * k11 * ST;
+
+  // Species initializations:
+  S = 4;
+  U = 1;
+  T = 2;
+  STU = 5;
+  STUS = 0;
+  STUST = 0;
+  STUSU = 0;
+  SU = 0;
+  ST = 0;
+  SUST = 0;
+  SUSTU = 0;
+
+  // Compartment initializations:
+  env = 1;
+
+  // Variable initializations:
+  k1 = 10;
+  k1r = 10;
+  k2 = 10;
+  k2r = 10;
+  k3 = 2;
+  k3r = 1;
+  k4 = 0.3;
+  k5 = 1;
+  k5r = 1;
+  k6 = 1;
+  k6r = 1;
+  k7 = 0.1;
+  k7r = 0.1;
+  k9 = 0.1;
+  k9r = 0.05;
+  k10 = 0.05;
+  k10r = 0.05;
+
+  //Other declarations:
+  var k8, k11;
+
+  //Display Names:
+  env is "environment";
+end

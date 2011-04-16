@@ -1,0 +1,47 @@
+//Created by libAntimony v1.4
+model BeckerSchilling2010_EpoR_AuxiliaryMode()
+
+  // Compartments and Species:
+  compartment medium, cellsurface, cell;
+  species EpoR in cellsurface, SAv in medium, SAv_EpoR in cellsurface, SAv_EpoRi in cell;
+  species dSAvi in cell, dSAve in medium;
+
+  // Assignment Rules:
+  SAv_medium := SAv + dSAve;
+  SAv_cells := SAv_EpoRi + dSAvi;
+
+  // Reactions:
+  reaction_1:  => EpoR; kt * Bmax_SAv * cell;
+  reaction_2: EpoR => ; kt * EpoR * cell;
+  reaction_3: SAv + EpoR => SAv_EpoR; kon_SAv * SAv * EpoR * cell;
+  reaction_4: SAv_EpoR => SAv + EpoR; koff_SAv * SAv_EpoR * cell;
+  reaction_5: SAv_EpoR => SAv_EpoRi; kt * SAv_EpoR * cell;
+  reaction_6: SAv_EpoRi => SAv; kex_SAv * SAv_EpoRi * cell;
+  reaction_7: SAv_EpoRi => dSAvi; kdi * SAv_EpoRi * cell;
+  reaction_8: SAv_EpoRi => dSAve; kde * SAv_EpoRi * cell;
+
+  // Species initializations:
+  EpoR = 76;
+  SAv = 999.293;
+  SAv_EpoR = 0;
+  SAv_EpoRi = 0;
+  dSAvi = 0;
+  dSAve = 0;
+
+  // Compartment initializations:
+  medium = 1;
+  cellsurface = 1;
+  cell = 1;
+
+  // Variable initializations:
+  kt = 0.0329366;
+  Bmax_SAv = 76;
+  kon_SAv = 2.29402e-06;
+  koff_SAv = 0.00679946;
+  kex_SAv = 0.01101;
+  kdi = 0.00317871;
+  kde = 0.0164042;
+
+  //Other declarations:
+  var SAv_medium, SAv_cells;
+end

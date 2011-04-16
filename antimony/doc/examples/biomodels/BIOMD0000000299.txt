@@ -1,0 +1,39 @@
+//Created by libAntimony v1.4
+model Leloup1999_CircadianRhythms_Neurospora()
+
+  // Compartments and Species:
+  compartment Cytoplasm, Nucleus;
+  species $M in Nucleus, $FC in Cytoplasm, $FN in Nucleus;
+
+  // Assignment Rules:
+  Ft := FC + FN;
+
+  // Rate Rules:
+  M' = vs * (KI^n / (KI^n + FN^n)) - vm * (M / (Km + M));
+  FC' = ks * M + k2 * FN - (vd * (FC / (Kd + FC)) + k1 * FC);
+  FN' = k1 * FC - k2 * FN;
+
+  // Species initializations:
+  M = 0.1;
+  FC = 0.1;
+  FN = 0.1;
+
+  // Compartment initializations:
+  Cytoplasm = 1;
+  Nucleus = 1;
+
+  // Variable initializations:
+  vs = 1.6;
+  vm = 0.505;
+  Km = 0.5;
+  KI = 1;
+  n = 4;
+  ks = 0.5;
+  vd = 1.4;
+  Kd = 0.13;
+  k1 = 0.5;
+  k2 = 0.6;
+
+  //Other declarations:
+  var Ft;
+end

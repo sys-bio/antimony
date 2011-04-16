@@ -1,0 +1,45 @@
+//Created by libAntimony v1.4
+model Morris1981_MuscleFibre_Voltage()
+
+  // Compartments and Species:
+  compartment musclefibre;
+
+  // Assignment Rules:
+  Minf := (1 + tanh((V - V1) / V2)) / 2;
+  Ninf := (1 + tanh((V - V3) / V4)) / 2;
+  lambdaN := lambdaN_bar * cosh((V - V3) / (2 * V4));
+  lambdaM := lambdaM_bar * cosh((V - V1) / (2 * V2));
+
+  // Rate Rules:
+  V' = (Iapp - gL * (V - VL) - gCa * M * (V - VCa) - gK * N * (V - VK)) / C;
+  N' = lambdaN * (Ninf - N);
+  M' = lambdaM * (Minf - M);
+
+  // Compartment initializations:
+  musclefibre = 1;
+
+  // Variable initializations:
+  V = -50;
+  V1 = 0;
+  V2 = 15;
+  V3 = 10;
+  V4 = 10;
+  lambdaN_bar = 0.1;
+  lambdaM_bar = 1;
+  Iapp = 50;
+  gL = 2;
+  VL = -50;
+  gCa = 4;
+  VCa = 100;
+  gK = 8;
+  N = (1 + tanh((V - V3) / V4)) / 2;
+  VK = -70;
+  C = 20;
+  M = (1 + tanh((V - V1) / V2)) / 2;
+
+  //Other declarations:
+  var Minf, V, Ninf, lambdaN, lambdaM, N, M;
+
+  //Display Names:
+  Iapp is "I";
+end

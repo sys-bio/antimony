@@ -1,0 +1,143 @@
+//Created by libAntimony v1.4
+model Schilling2009_ERK_distributive()
+
+  // Compartments and Species:
+  compartment cell;
+  species JAK2 in cell, EpoR in cell, SHP1 in cell, SOS in cell, Raf in cell;
+  species MEK2 in cell, MEK1 in cell, ERK1 in cell, ERK2 in cell, pJAK2 in cell;
+  species pEpoR in cell, mSHP1 in cell, actSHP1 in cell, mSOS in cell, pRaf in cell;
+  species ppMEK2 in cell, ppMEK1 in cell, ppERK1 in cell, ppERK2 in cell;
+  species pSOS in cell, pMEK2 in cell, pMEK1 in cell, pERK1 in cell, pERK2 in cell;
+  species Delay01_mSHP1 in cell, Delay02_mSHP1 in cell, Delay03_mSHP1 in cell;
+  species Delay04_mSHP1 in cell, Delay05_mSHP1 in cell, Delay06_mSHP1 in cell;
+  species Delay07_mSHP1 in cell, Delay08_mSHP1 in cell, Epo in cell;
+
+  // Assignment Rules:
+  rescaled_pEpoR := scale_pEpoR * pEpoR;
+  rescaled_ppMEK1 := scale_ppMEK * ppMEK1;
+  rescaled_ppMEK2 := scale_ppMEK * ppMEK2;
+  rescaled_ppERK1 := scale_ppERK * ppERK1;
+  rescaled_ppERK2 := scale_ppERK * ppERK2;
+  rescaled_pJAK2 := scale_pJAK2 * pJAK2;
+  rescaled_pSOS := scale_SOS * pSOS;
+  rescaled_SOS := scale_SOS * SOS;
+  rescaled_mSOS := scale_SOS * mSOS;
+
+  // Reactions:
+  reaction_1: JAK2 => pJAK2; JAK2_phosphorylation_by_Epo * JAK2 * Epo * cell;
+  reaction_2: EpoR => pEpoR; EpoR_phosphorylation_by_pJAK2 * EpoR * pJAK2 * cell;
+  reaction_3: SHP1 => mSHP1; SHP1_activation_by_pEpoR * SHP1 * pEpoR * cell;
+  reaction_4: mSHP1 => Delay01_mSHP1; SHP1_delay * mSHP1 * cell;
+  reaction_5: Delay01_mSHP1 => Delay02_mSHP1; SHP1_delay * Delay01_mSHP1 * cell;
+  reaction_6: Delay02_mSHP1 => Delay03_mSHP1; SHP1_delay * Delay02_mSHP1 * cell;
+  reaction_7: Delay03_mSHP1 => Delay04_mSHP1; SHP1_delay * Delay03_mSHP1 * cell;
+  reaction_8: Delay04_mSHP1 => Delay05_mSHP1; SHP1_delay * Delay04_mSHP1 * cell;
+  reaction_9: Delay05_mSHP1 => Delay06_mSHP1; SHP1_delay * Delay05_mSHP1 * cell;
+  reaction_10: Delay06_mSHP1 => Delay07_mSHP1; SHP1_delay * Delay06_mSHP1 * cell;
+  reaction_11: Delay07_mSHP1 => Delay08_mSHP1; SHP1_delay * Delay07_mSHP1 * cell;
+  reaction_12: Delay08_mSHP1 => actSHP1; SHP1_delay * Delay08_mSHP1 * cell;
+  reaction_13: actSHP1 => SHP1; actSHP1_deactivation * actSHP1 * cell;
+  reaction_14: pEpoR => EpoR; pEpoR_dephosphorylation_by_actSHP1 * pEpoR * actSHP1 * cell;
+  reaction_15: pJAK2 => JAK2; pJAK2_dephosphorylation_by_actSHP1 * pJAK2 * actSHP1 * cell;
+  reaction_16: SOS => mSOS; SOS_recruitment_by_pEpoR * SOS * pEpoR * cell;
+  reaction_17: mSOS => SOS; mSOS_release_from_membrane * mSOS * cell;
+  reaction_18: Raf => pRaf; mSOS_induced_Raf_phosphorylation * Raf * mSOS * cell;
+  reaction_19: pRaf => Raf; pRaf_dephosphorylation * pRaf * cell;
+  reaction_20: MEK2 => pMEK2; First_MEK2_phosphorylation_by_pRaf * MEK2 * pRaf * cell;
+  reaction_21: MEK1 => pMEK1; First_MEK1_phosphorylation_by_pRaf * MEK1 * pRaf * cell;
+  reaction_22: pMEK2 => ppMEK2; Second_MEK2_phosphorylation_by_pRaf * pMEK2 * pRaf * cell;
+  reaction_23: pMEK1 => ppMEK1; Second_MEK1_phosphorylation_by_pRaf * pMEK1 * pRaf * cell;
+  reaction_24: ppMEK2 => pMEK2; First_MEK_dephosphorylation * ppMEK2 * cell;
+  reaction_25: ppMEK1 => pMEK1; First_MEK_dephosphorylation * ppMEK1 * cell;
+  reaction_26: pMEK2 => MEK2; Second_MEK_dephosphorylation * pMEK2 * cell;
+  reaction_27: pMEK1 => MEK1; Second_MEK_dephosphorylation * pMEK1 * cell;
+  reaction_28: ERK1 => pERK1; First_ERK1_phosphorylation_by_ppMEK * ERK1 * ppMEK2 * cell;
+  reaction_29: ERK2 => pERK2; First_ERK2_phosphorylation_by_ppMEK * ERK2 * ppMEK2 * cell;
+  reaction_30: ERK1 => pERK1; First_ERK1_phosphorylation_by_ppMEK * ERK1 * ppMEK1 * cell;
+  reaction_31: ERK2 => pERK2; First_ERK2_phosphorylation_by_ppMEK * ERK2 * ppMEK1 * cell;
+  reaction_32: pERK1 => ppERK1; Second_ERK1_phosphorylation_by_ppMEK * pERK1 * ppMEK2 * cell;
+  reaction_33: pERK2 => ppERK2; Second_ERK2_phosphorylation_by_ppMEK * pERK2 * ppMEK2 * cell;
+  reaction_34: pERK1 => ppERK1; Second_ERK1_phosphorylation_by_ppMEK * pERK1 * ppMEK1 * cell;
+  reaction_35: pERK2 => ppERK2; Second_ERK2_phosphorylation_by_ppMEK * pERK2 * ppMEK1 * cell;
+  reaction_36: ppERK1 => pERK1; First_ERK_dephosphorylation * ppERK1 * cell;
+  reaction_37: ppERK2 => pERK2; First_ERK_dephosphorylation * ppERK2 * cell;
+  reaction_38: pERK1 => ERK1; Second_ERK_dephosphorylation * pERK1 * cell;
+  reaction_39: pERK2 => ERK2; Second_ERK_dephosphorylation * pERK2 * cell;
+  reaction_40: mSOS => pSOS; ppERK_neg_feedback_on_mSOS * mSOS * ppERK1 * cell;
+  reaction_41: mSOS => pSOS; ppERK_neg_feedback_on_mSOS * mSOS * ppERK2 * cell;
+  reaction_42: pSOS => SOS; pSOS_dephosphorylation * pSOS * cell;
+
+  // Species initializations:
+  JAK2 = 2;
+  EpoR = 1;
+  SHP1 = 10.7991;
+  SOS = 2.5101;
+  Raf = 3.7719;
+  MEK2 = 11;
+  MEK1 = 24;
+  ERK1 = 7;
+  ERK2 = 21;
+  pJAK2 = 0;
+  pEpoR = 0;
+  mSHP1 = 0;
+  actSHP1 = 0;
+  mSOS = 0;
+  pRaf = 0;
+  ppMEK2 = 0;
+  ppMEK1 = 0;
+  ppERK1 = 0;
+  ppERK2 = 0;
+  pSOS = 0;
+  pMEK2 = 0;
+  pMEK1 = 0;
+  pERK1 = 0;
+  pERK2 = 0;
+  Delay01_mSHP1 = 0;
+  Delay02_mSHP1 = 0;
+  Delay03_mSHP1 = 0;
+  Delay04_mSHP1 = 0;
+  Delay05_mSHP1 = 0;
+  Delay06_mSHP1 = 0;
+  Delay07_mSHP1 = 0;
+  Delay08_mSHP1 = 0;
+  Epo = 50;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  JAK2_phosphorylation_by_Epo = 0.0122149;
+  EpoR_phosphorylation_by_pJAK2 = 3.15714;
+  SHP1_activation_by_pEpoR = 0.408408;
+  SHP1_delay = 0.408408;
+  actSHP1_deactivation = 0.0248773;
+  pEpoR_dephosphorylation_by_actSHP1 = 1.19995;
+  pJAK2_dephosphorylation_by_actSHP1 = 0.368384;
+  SOS_recruitment_by_pEpoR = 0.10271;
+  mSOS_release_from_membrane = 15.5956;
+  mSOS_induced_Raf_phosphorylation = 0.144515;
+  pRaf_dephosphorylation = 0.374228;
+  First_MEK2_phosphorylation_by_pRaf = 3.11919;
+  Second_MEK2_phosphorylation_by_pRaf = 215.158;
+  First_MEK1_phosphorylation_by_pRaf = 0.687193;
+  Second_MEK1_phosphorylation_by_pRaf = 667.957;
+  First_MEK_dephosphorylation = 0.130937;
+  Second_MEK_dephosphorylation = 0.0732724;
+  First_ERK1_phosphorylation_by_ppMEK = 2.4927;
+  Second_ERK1_phosphorylation_by_ppMEK = 59.5251;
+  First_ERK2_phosphorylation_by_ppMEK = 2.44361;
+  Second_ERK2_phosphorylation_by_ppMEK = 53.0816;
+  First_ERK_dephosphorylation = 39.0886;
+  Second_ERK_dephosphorylation = 3.00453;
+  ppERK_neg_feedback_on_mSOS = 5122.68;
+  pSOS_dephosphorylation = 0.124944;
+  scale_pEpoR = 0.493312;
+  scale_pJAK2 = 0.21008;
+  scale_ppERK = 13.5981;
+  scale_SOS = 1.10228;
+  scale_ppMEK = 40.5364;
+
+  //Other declarations:
+  var rescaled_pEpoR, rescaled_ppMEK1, rescaled_ppMEK2, rescaled_ppERK1, rescaled_ppERK2;
+  var rescaled_pJAK2, rescaled_pSOS, rescaled_SOS, rescaled_mSOS;
+end

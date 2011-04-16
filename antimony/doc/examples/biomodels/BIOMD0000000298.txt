@@ -1,0 +1,82 @@
+//Created by libAntimony v1.4
+model Leloup1999_CircadianRhythms_Drosophila()
+
+  // Compartments and Species:
+  compartment Compartment_;
+  species $MP in Compartment_, $CN_ in Compartment_, $C in Compartment_, $T2 in Compartment_;
+  species $T1 in Compartment_, $T0 in Compartment_, $MT in Compartment_, $P0 in Compartment_;
+  species $P1 in Compartment_, $P2 in Compartment_;
+
+  // Assignment Rules:
+  Pt := P0 + P1 + P2 + C + CN_;
+
+  // Rate Rules:
+  MP' = vsP * (KIP^n / (KIP^n + CN_^n)) - (vmP * (MP / (KmP + MP)) + kd * MP);
+  CN_' = k1 * C - (k2 * CN_ + kdN * CN_);
+  C' = k3 * P2 * T2 + k2 * CN_ - (k4 * C + k1 * C + kdC * C);
+  T2' = V3T * (T1 / (K3T + T1)) + k4 * C - (V4T * (T2 / (K4T + T2)) + k3 * P2 * T2 + vdT * (T2 / (KdT + T2)) + kd * T2);
+  T1' = V1T * (T0 / (K1T + T0)) + V4T * (T2 / (K4T + T2)) - (V2T * (T1 / (K2T + T1)) + V3T * (T1 / (K3T + T1)) + kd * T1);
+  T0' = ksT * MT + V2T * (T1 / (K2T + T1)) - (V1T * (T0 / (K1T + T0)) + kd * T0);
+  MT' = vsT * (KIT^n / (KIT^n + CN_^n)) - (vmT * (MT / (KmT + MT)) + kd * MT);
+  P0' = ksP * MP + V2P * (P1 / (K2P + P1)) - (V1P * (P0 / (K1P + P0)) + kd * P0);
+  P1' = V1P * (P0 / (K1P + P0)) + V4P * (P2 / (K4P + P2)) - (V2P * (P1 / (K2P + P1)) + V3P * (P1 / (K3P + P1)) + kd * P1);
+  P2' = V3P * (P1 / (K3P + P1)) + k4 * C - (V4P * (P2 / (K4P + P2)) + k3 * P2 * T2 + vdP * (P2 / (KdP + P2)) + kd * P2);
+
+  // Species initializations:
+  MP = 0.0614368;
+  CN_ = 1.34728;
+  C = 0.207614;
+  T2 = 0.0145428;
+  T1 = 0.0213384;
+  T0 = 0.0217261;
+  MT = 0.0860342;
+  P0 = 0.0169928;
+  P1 = 0.0141356;
+  P2 = 0.0614368;
+
+  // Compartment initializations:
+  Compartment_ = 1;
+
+  // Variable initializations:
+  vsP = 1.1;
+  vmP = 1;
+  KmP = 0.2;
+  KIP = 1;
+  ksP = 0.9;
+  vdP = 2.2;
+  KdP = 0.2;
+  vsT = 1;
+  vmT = 0.7;
+  KmT = 0.2;
+  KIT = 1;
+  ksT = 0.9;
+  vdT = 3;
+  KdT = 0.2;
+  kdC = 0.01;
+  kdN = 0.01;
+  k1 = 0.8;
+  k2 = 0.2;
+  k3 = 1.2;
+  k4 = 0.6;
+  kd = 0.01;
+  V1P = 8;
+  V1T = 8;
+  V2P = 1;
+  V2T = 1;
+  V3P = 8;
+  V3T = 8;
+  V4P = 1;
+  V4T = 1;
+  K1P = 2;
+  K1T = 2;
+  K2P = 2;
+  K2T = 2;
+  K3P = 2;
+  K3T = 2;
+  K4P = 2;
+  K4T = 2;
+  n = 4;
+
+  //Other declarations:
+  var Pt;
+end

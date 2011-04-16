@@ -1,0 +1,53 @@
+//Created by libAntimony v1.4
+model Akman2008_Circadian_Clock_Model1()
+
+  // Compartments and Species:
+  compartment nucleus, cytoplasm;
+  species FC in cytoplasm, FCp in cytoplasm, FN in nucleus, FNp in nucleus;
+  species MF in nucleus;
+
+  // Assignment Rules:
+  Tot_FRQ := FC + FCp + FN + FNp;
+
+  // Reactions:
+  MFtrn:  => MF; (vs + amp * ((1 + tanh(2 * (time - 24 * floor(time / 24) - dawn))) * (1 - tanh(2 * (time - 24 * floor(time / 24) - dusk))) / 4)) * ki^n / (ki^n + (FN + FNp)^n);
+  MFdeg: MF => ; vm * MF / (km + MF);
+  FCtrl:  => FC; ks * MF;
+  FCdeg: FC => ; vd * FC;
+  FCtrs: FC -> FN; k1n * FC - k2n * FN;
+  FCptrl:  => FCp; ksp * MF;
+  FCpdeg: FCp => ; vdp * FCp;
+  FCptrs: FCp -> FNp; k1np * FCp - k2np * FNp;
+
+  // Species initializations:
+  FC = 2.46246334204771;
+  FCp = 2.7123114824279;
+  FN = 1.84400040515923;
+  FNp = 2.74224951500791;
+  MF = 0.725579308537909;
+
+  // Compartment initializations:
+  nucleus = 1;
+  cytoplasm = 1;
+
+  // Variable initializations:
+  vs = 1.2236333742524;
+  ki = 5.04543346939346;
+  n = 6.3958;
+  vm = 0.885376326739544;
+  km = 0.0846004096489894;
+  ks = 0.313846476998244;
+  vd = 0.161111487362275;
+  k1n = 0.222636680929471;
+  k2n = 0.331484503209686;
+  ksp = 0.294840169149965;
+  vdp = 0.139750313979272;
+  k1np = 0.272306464006464;
+  k2np = 0.295420749525813;
+  amp = 0;
+  dawn = 6;
+  dusk = 18;
+
+  //Other declarations:
+  var Tot_FRQ;
+end

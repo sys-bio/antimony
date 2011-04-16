@@ -1,0 +1,53 @@
+//Created by libAntimony v1.4
+model Shrestha2010_HypoCalcemia_PTHresponse()
+
+  // Compartments and Species:
+  compartment PTG_pool, Plasma_pool;
+  species $x1 in PTG_pool, $x2 in Plasma_pool, $Ca in Plasma_pool;
+
+  // Assignment Rules:
+  Ca := piecewise(Ca0, lt(time, t0), Ca0 - Ca1 * (1 - exp(-alpha * (time - t0))));
+  k := lambda_2 * x2_n + lambda_1 * x1_n;
+  lambda_Ca := (A - B) / (1 + (Ca / S)^m_Ca) + B;
+  m_Ca := m1 / (1 + exp(-beta * (R - Ca))) + m2;
+  A := lambda_1 * lambda_2 * x2_max / (k - lambda_2 * x2_max);
+  B := lambda_1 * lambda_2 * x2_min / (k - lambda_2 * x2_min);
+  S := Ca0_baseline * (-(x1_n * B - lambda_2 * x2_n) / (x1_n * A - lambda_2 * x2_n))^(1 / m_Ca);
+
+  // Rate Rules:
+  x1' = k - lambda_Ca * x1 - lambda_1 * x1;
+  x2' = lambda_Ca * x1 - lambda_2 * x2;
+
+  // Species initializations:
+  x1 = 0;
+  x2 = 0;
+
+  // Compartment initializations:
+  PTG_pool = 1;
+  Plasma_pool = 1;
+
+  // Variable initializations:
+  m1 = 112.52;
+  m2 = 15;
+  beta = 1000000;
+  R = 1.2162;
+  lambda_1 = 0.0125;
+  lambda_2 = 0.5595;
+  Ca0 = 1.255;
+  Ca1 = 0.1817;
+  t0 = 575;
+  alpha = 0.0442;
+  x1_n = 490.78;
+  x2_n = 6.629;
+  x2_min = 0.6697;
+  x2_max = 14.043;
+  Ca0_baseline = 1.255;
+
+  //Other declarations:
+  var k, lambda_Ca, m_Ca, A, B, S;
+
+  //Display Names:
+  x1 is "PTH_in_PTG";
+  x2 is "PTH_in_Plasma";
+  Ca is "Ca_in_Plasma";
+end

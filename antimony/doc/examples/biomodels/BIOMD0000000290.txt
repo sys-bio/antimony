@@ -1,0 +1,68 @@
+//Created by libAntimony v1.4
+model Alexander2010_Tcell_Regulation_Sys2()
+
+  // Compartments and Species:
+  compartment body;
+  species A in body, R in body, E in body, G in body, $A_im in body;
+
+  // Assignment Rules:
+  mA := b1 + muA;
+  mG := muG + v_max / k;
+  R0 := f * (v_max / k) * lambdaE * gamma / (mG * mA * muE);
+
+  // Reactions:
+  r1a: G => ; v_max / (k + G) * G;
+  r1b: $A_im => A; f * (v_max / (k + G)) * G;
+  r2:  => G; gamma * E;
+  r3:  => R; beta * A;
+  r4:  => R; pi1 * E * A;
+  r5:  => E; lambdaE * A;
+  r6: A => ; muA * A;
+  r7: R => ; muR * R;
+  r8: E => ; muE * E;
+  r9: G => ; muG * G;
+  r10: A => ; b1 * A;
+  r11: A => ; sigma1 * A * R;
+
+  // Species initializations:
+  A = 1;
+  R = 0;
+  E = 0;
+  G = 100000000;
+  A_im = 0;
+
+  // Compartment initializations:
+  body = 1;
+
+  // Variable initializations:
+  v_max = 125000;
+  k = 50000000;
+  f = 0.0001;
+  gamma = 2000;
+  beta = 200;
+  pi1 = 0.016;
+  lambdaE = 1000;
+  muA = 0.25;
+  muR = 0.25;
+  muE = 0.25;
+  muG = 5;
+  b1 = 0.25;
+  sigma1 = 3e-06;
+
+  //Other declarations:
+  var mA, mG, R0;
+
+  //Display Names:
+  r1a is "r1a: self-antigen uptake";
+  r1b is "r1b: pAPC maturation";
+  r2 is "r2: self-antigen release triggered by E";
+  r3 is "r3: R activation by A";
+  r4 is "r4: R activation by A and E";
+  r5 is "r5: E generation by A";
+  r6 is "r6: A death";
+  r7 is "r7: R death";
+  r8 is "r8: E death";
+  r9 is "r9: G clearance";
+  r10 is "r10: A suppression by Tregs of other specificity";
+  r11 is "r11: A suppression by R";
+end

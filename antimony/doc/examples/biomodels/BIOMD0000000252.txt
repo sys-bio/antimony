@@ -1,0 +1,37 @@
+//Created by libAntimony v1.4
+model Hunziker2010_p53_StressSpecificResponse()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species $p in compartment_1, $mm in compartment_1, $m in compartment_1;
+  species $pm in compartment_1;
+
+  // Rate Rules:
+  p' = S - k_f * p * m - alpha * p + (k_b + gamma) * pm;
+  mm' = k_t * p^2 - beta * mm;
+  m' = k_tl * mm - k_f * p * m + (k_b + delta) * pm - gamma * m;
+  pm' = k_f * p * m - (k_b + delta) * pm - gamma * pm;
+
+  // Species initializations:
+  p = 1;
+  mm = 1;
+  m = 1;
+  pm = 1;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  S = 1000;
+  alpha = 0.1;
+  k_t = 0.03;
+  k_tl = 1.4;
+  k_b = 7200;
+  k_f = 5000;
+  beta = 0.6;
+  gamma = 0.2;
+  delta = 11;
+
+  //Display Names:
+  compartment_1 is "cell";
+end

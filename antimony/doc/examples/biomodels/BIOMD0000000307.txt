@@ -1,0 +1,46 @@
+//Created by libAntimony v1.4
+function goldbeter_koshland(v1, v2, J1, J2)
+  2 * v1 * J2 / (v2 - v1 + J1 * v2 + J2 * v1 + ((v2 - v1 + J1 * v2 + J2 * v1)^2 - 4 * (v2 - v1) * v1 * J2)^(1 / 2));
+end
+
+model Tyson2003_Activator_Inhibitor()
+
+  // Compartments and Species:
+  compartment env;
+  species R in env, X in env, $S in env, $Ep in env, $E in env;
+
+  // Assignment Rules:
+  Ep := goldbeter_koshland(k3 * R, k4, J3, J4) * Et;
+  E := Et - Ep;
+  Km3 := J3 * Et;
+  Km4 := J4 * Et;
+
+  // Reactions:
+  r0: X => R; env * (k0_prime + k0 * Ep) * X;
+  r1:  => X; env * k1 * S;
+  r2: R => ; env * k2 * R;
+  r3: $E => $Ep; env * k3 * R * E / (Km3 + E);
+  r4: $Ep => $E; env * k4 * Ep / (Km4 + Ep);
+
+  // Species initializations:
+  R = 0;
+  X = 0;
+  S = 0;
+
+  // Compartment initializations:
+  env = 1;
+
+  // Variable initializations:
+  k0_prime = 0.01;
+  k0 = 0.4;
+  k1 = 1;
+  k2 = 1;
+  k3 = 1;
+  J3 = 0.05;
+  k4 = 0.3;
+  J4 = 0.05;
+  Et = 1;
+
+  //Other declarations:
+  var Km3, Km4;
+end

@@ -1,0 +1,47 @@
+//Created by libAntimony v1.4
+function F(X, T)
+  piecewise(1, geq(X, T), 0);
+end
+
+model shenorr02()
+
+  // Compartments and Species:
+  compartment cell;
+  species $X in cell, Z1 in cell, Z2 in cell, Z3 in cell;
+
+  // Rate Rules:
+  X' = FX - X;
+
+  // Reactions:
+  r1:  -> Z1; F(X, r1_T1);
+  r2: Z1 -> ; r2_a * Z1;
+  r3:  -> Z2; F(X, r3_T2);
+  r4: Z2 -> ; r4_a * Z2;
+  r5:  -> Z3; F(X, r5_T3);
+  r6: Z3 -> ; r6_a * Z3;
+
+  // Events:
+  e1: at geq(time, 1): FX = 1;
+  e2: at geq(time, 6): FX = 0;
+
+  // Species initializations:
+  X = 0;
+  Z1 = 0;
+  Z2 = 0;
+  Z3 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  FX = 0;
+  r1_T1 = 0.1;
+  r2_a = 1;
+  r3_T2 = 0.5;
+  r4_a = 1;
+  r5_T3 = 0.8;
+  r6_a = 1;
+
+  //Other declarations:
+  var FX;
+end

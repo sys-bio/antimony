@@ -1,0 +1,124 @@
+//Created by libAntimony v1.4
+model Passos2010_DNAdamage_CellularSenescence()
+
+  // Compartments and Species:
+  compartment cell;
+  species Mdm2 in cell, p53 in cell, Mdm2_p53 in cell, Mdm2_mRNA in cell;
+  species p53_mRNA in cell, ATMA in cell, ATMI in cell, p21 in cell, p21_mRNA in cell;
+  species p21step1 in cell, p21step2 in cell, p53_P in cell, Mdm2_P in cell;
+  species p21_basal in cell, p38 in cell, p38_P in cell, GADD45 in cell, IR in cell;
+  species damDNA in cell, ROS in cell, basalROS in cell, $Sink in cell, $Source in cell;
+
+  // Reactions:
+  p53mRNASynthesis: $Source => p53_mRNA; ksynp53mRNA * Source;
+  p53mRNADegradation: p53_mRNA => $Sink; kdegp53mRNA * p53_mRNA;
+  Mdm2Synthesis: Mdm2_mRNA => Mdm2_mRNA + Mdm2; ksynMdm2 * Mdm2_mRNA;
+  Mdm2mRNASynthesis1: p53 => p53 + Mdm2_mRNA; ksynMdm2mRNA * p53;
+  Mdm2mRNASynthesis2: p53_P => p53_P + Mdm2_mRNA; ksynMdm2mRNA * p53_P;
+  Mdm2mRNADegradation: Mdm2_mRNA => $Sink; kdegMdm2mRNA * Mdm2_mRNA;
+  Mdm2Degradation: Mdm2 => $Sink; kdegMdm2 * Mdm2;
+  p53Synthesis: p53_mRNA => p53 + p53_mRNA; ksynp53 * p53_mRNA;
+  p53Degradation: Mdm2_p53 => Mdm2; kdegp53 * Mdm2_p53;
+  p53Mdm2IndepDegradation1: p53_P => $Sink; kdegp53mdm2ind * p53_P;
+  p53Mdm2IndepDegradation2: p53 => $Sink; kdegp53mdm2ind * p53;
+  P53_Mdm2Binding: p53 + Mdm2 => Mdm2_p53; kbinMdm2p53 * p53 * Mdm2;
+  P53_Mdm2Release: Mdm2_p53 => p53 + Mdm2; krelMdm2p53 * Mdm2_p53;
+  DNAdamage: IR => IR + damDNA; kdam * IR;
+  DNArepair: damDNA => $Sink; krepair * damDNA;
+  ATMactivation: damDNA + ATMI => damDNA + ATMA; kactATM * damDNA * ATMI;
+  p53phoshorylation: p53 + ATMA => p53_P + ATMA; kphosp53 * p53 * ATMA;
+  p53dephosorylation: p53_P => p53; kdephosp53 * p53_P;
+  Mdm2phoshorylation: Mdm2 + ATMA => Mdm2_P + ATMA; kphosMdm2 * Mdm2 * ATMA;
+  Mdm2dephosorylation: Mdm2_P => Mdm2; kdephosMdm2 * Mdm2_P;
+  Mdm2Pdegradation: Mdm2_P => $Sink; kdegATMMdm2 * Mdm2_P;
+  ATMInactivation: ATMA => ATMI; kinactATM * ATMA;
+  p21mRNASynthesis1: p53 => p53 + p21_mRNA; ksynp21mRNAp53 * p53;
+  p21mRNASynthesis2: p53_P => p53_P + p21_mRNA; ksynp21mRNAp53P * p53_P;
+  p21mRNADegradation: p21_mRNA => $Sink; kdegp21mRNA * p21_mRNA;
+  p21Synthesis1: p21_mRNA => p21_mRNA + p21step1; ksynp21step1 * p21_mRNA;
+  p21Synthesis2: p21step1 => p21step2; ksynp21step2 * p21step1;
+  p21Synthesis3: p21step2 => p21; ksynp21step3 * p21step2;
+  p21degradation: p21 => $Sink; kdegp21 * p21;
+  GADD45activation2: p21 => p21 + GADD45; kGADD45 * p21;
+  GADD45degradation: GADD45 => $Sink; kdegGADD45 * GADD45;
+  p38activation: p38 + GADD45 => p38_P + GADD45; kphosp38 * p38 * GADD45;
+  p38inactivation: p38_P => p38; kdephosp38 * p38_P;
+  ROSgenerationP38: p38_P => p38_P + ROS; kgenROSp38 * p38_P * kp38ROS;
+  ROSremoval: ROS => $Sink; kremROS * ROS;
+  ROSDNAdamage: ROS => ROS + damDNA; kdamROS * ROS;
+  basalROSDNAdamage: basalROS => basalROS + damDNA; kdamBasalROS * basalROS;
+
+  // Events:
+  stressCell: at geq(time, 172800): IR = 200;
+  stopStress: at geq(time, 172860): IR = 0;
+  stopp38ROS: at geq(time, 691200): kp38ROS = 0.6;
+
+  // Species initializations:
+  Mdm2 = 5;
+  p53 = 5;
+  Mdm2_p53 = 95;
+  Mdm2_mRNA = 10;
+  p53_mRNA = 10;
+  ATMA = 0;
+  ATMI = 200;
+  p21 = 0;
+  p21_mRNA = 1;
+  p21step1 = 0;
+  p21step2 = 0;
+  p53_P = 0;
+  Mdm2_P = 0;
+  p21_basal = 7;
+  p38 = 100;
+  p38_P = 0;
+  GADD45 = 0;
+  IR = 0;
+  damDNA = 0;
+  ROS = 0;
+  basalROS = 10;
+  Sink = 1;
+  Source = 1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  kp38ROS = 1;
+  ksynMdm2 = 0.000495;
+  kdegMdm2 = 0.000433;
+  ksynp53 = 0.006;
+  kdegp53 = 0.000825;
+  kdegp53mdm2ind = 8.25e-07;
+  kbinMdm2p53 = 0.001155;
+  krelMdm2p53 = 1.155e-06;
+  ksynMdm2mRNA = 0.0001;
+  kdegMdm2mRNA = 0.0001;
+  kactATM = 2e-05;
+  kdegATMMdm2 = 0.0004;
+  kinactATM = 0.0005;
+  kphosp53 = 0.006;
+  kdephosp53 = 0.5;
+  kphosMdm2 = 2;
+  kdephosMdm2 = 0.5;
+  kphosp38 = 0.008;
+  kdephosp38 = 0.1;
+  kdam = 0.007;
+  krepair = 6e-05;
+  kGADD45 = 4e-06;
+  kdegGADD45 = 1e-05;
+  ksynp53mRNA = 0.001;
+  kdegp53mRNA = 0.0001;
+  ksynp21mRNAp53P = 6e-06;
+  ksynp21mRNAp53 = 6e-08;
+  kdegp21mRNA = 2.4e-05;
+  ksynp21step1 = 0.0004;
+  ksynp21step2 = 4e-05;
+  ksynp21step3 = 4e-05;
+  kdegp21 = 0.00019;
+  kremROS = 0.000383;
+  kgenROSp38 = 0.00045;
+  kdamROS = 1e-05;
+  kdamBasalROS = 1e-09;
+
+  //Other declarations:
+  var kp38ROS;
+end
