@@ -406,7 +406,7 @@ string Formula::ConvertOneSymbolToFunction(string formula) const
     return formula;
   }
   vector<size_t> openparens;
-  openparens.push_back(-1);
+  openparens.push_back(string::npos);
   for (size_t chpos=0; chpos<mid; chpos++) {
     if (formula[chpos] == '(') {
       openparens.push_back(chpos);

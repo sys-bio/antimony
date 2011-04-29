@@ -911,7 +911,10 @@ string Registry::GetAntimony() const
   }
   set<const Module*> mods;
   for (size_t mod=0; mod<m_modules.size(); mod++) {
-    retval += m_modules[mod].GetAntimony(mods, true) + "\n";
+    retval += m_modules[mod].GetAntimony(mods, true);
+    if (mod <m_modules.size()-1) {
+      retval += "\n";
+    }
     mods.insert(&m_modules[mod]);
   }
   return retval;
