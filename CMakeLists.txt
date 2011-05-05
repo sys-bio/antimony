@@ -39,7 +39,7 @@ SET(CPACK_PACKAGE_VERSION_PATCH "${LIBANTIMONY_VERSION_PATCH}")
 INCLUDE(CPack)
 
 option(BUILD_SHARED_LIBS  "Build shared library (Set to OFF to build static libraries)" ON)
-set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS are used), Debug, Release, RelWithDebInfo, MinSizeRel" FORCE )
+set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS are used), Debug, Release, RelWithDebInfo, MinSizeRel" )
 
 
 ####################################################################
@@ -50,9 +50,11 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 # which language bindings should be build
 option(WITH_SBML            "Generate SBML translations"      ON )
 option(WITH_CELLML          "Generate CellML translations"    OFF )
-option(CREATE_QTANTIMONY    "Generate QTAntimony"             ON )
+option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
 option(WITH_SBW             "QTAntimony integration with SBW" ON )
 option(WITH_SBW_TRANSLATOR  "Generate SBWTranslator"          OFF )
+set(EXTRA_LIBS "" CACHE STRING "Libraries the other libraries depend on that are in non-standard locations" )
+#set(EXTRA_LIBS "" CACHE_STRING "")
 
 ####################################################################
 #
@@ -76,16 +78,6 @@ if(WITH_SBML)
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
                           ${CMAKE_SOURCE_DIR}/../libsbml-5/release/include/
 			  )
-
-	find_path(LIBSBML_DEPENDENCIES_INCLUDE_DIR
-		NAMES libxml/parser.h 
-		PATHS /usr/include /usr/local/include 
-                      C:/Program Files (x86)/SBML/libSBML-4.2.0-libxml2-x86/win32/include/
-			  /usr/include/libxml2
-			  /usr/local/include/libxml2
-			  ${CMAKE_SOURCE_DIR}/include 
-			  ${CMAKE_SOURCE_DIR}/dependencies/include
-			  )		
 
         set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} )
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR})
@@ -154,6 +146,9 @@ else(WITH_CELLML)
   add_definitions( -DNCELLML )
 
 endif(WITH_CELLML)
+
+
+set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS} )
 
 ####################################################################
 #

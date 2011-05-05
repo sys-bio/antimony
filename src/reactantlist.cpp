@@ -131,7 +131,7 @@ double ReactantList::GetStoichiometryFor(const Variable* var) const
 
 double ReactantList::GetStoichiometryFor(size_t n) const
 {
-  if (n>=m_components.size()) return NULL;
+  if (n>=m_components.size()) return 0.0;
   return m_components[n].first;
 }
 
