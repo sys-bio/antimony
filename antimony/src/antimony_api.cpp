@@ -1361,9 +1361,9 @@ LIB_EXTERN bool   getT0ForEvent(const char* moduleName, unsigned long eventno)
 
 LIB_EXTERN bool   getFromTriggerForEvent(const char* moduleName, unsigned long eventno)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return false;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
-  if (var==NULL) return NULL;
+  if (var==NULL) return false;
   return var->GetEvent()->GetUseValuesFromTriggerTime();
 }
 
