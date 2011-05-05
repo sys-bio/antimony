@@ -569,7 +569,7 @@ LIB_EXTERN bool checkModule(const char* moduleName)
 
 LIB_EXTERN unsigned long getNumSymbolsInInterfaceOf(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return 0;
   return g_registry.GetModule(moduleName)->GetNumExportVariables();
 }
 
@@ -596,7 +596,7 @@ LIB_EXTERN char* getNthSymbolNameInInterfaceOf(const char* moduleName, unsigned 
 
 LIB_EXTERN unsigned long getNumReplacedSymbolNames(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return 0;
   return g_registry.GetModule(moduleName)->GetNumSynchronizedVariables();
 }
 
@@ -652,7 +652,7 @@ LIB_EXTERN char* getNthReplacementSymbolName(const char* moduleName, unsigned lo
 
 LIB_EXTERN unsigned long getNumReplacedSymbolNamesBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return 0;
   return g_registry.GetModule(moduleName)->GetSynchronizedVariablesBetween(formerSubmodName, replacementSubmodName).size();
 }
 
@@ -712,7 +712,7 @@ LIB_EXTERN unsigned long getNumModules()
 
 LIB_EXTERN unsigned long getNumSymbolsOfType(const char* moduleName, return_type rtype)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return 0;
   return g_registry.GetModule(moduleName)->GetNumVariablesOfType(rtype);
 }
 
@@ -901,13 +901,13 @@ LIB_EXTERN char*  getNthSymbolCompartmentOfType(const char* moduleName, return_t
 
 LIB_EXTERN unsigned long getNumReactions(const char* moduleName)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return 0;
   return getNumSymbolsOfType(moduleName, allReactions);
 }
 
 LIB_EXTERN unsigned long getNumInteractions(const char* moduleName)
 { 
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return 0;
   return getNumSymbolsOfType(moduleName, allInteractions);
 }
 
@@ -1080,7 +1080,7 @@ LIB_EXTERN char* getNthReactioniMthInteracteeName(const char* moduleName, unsign
 
 double getNthRxnOrIntMthReactantOrProductStoichiometries(const char* moduleName, unsigned long n, unsigned long m, bool reaction, bool reactant)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return 0.0;
   return_type rtype = allReactions;
   if (!reaction) {
     rtype = allInteractions;
@@ -1088,12 +1088,12 @@ double getNthRxnOrIntMthReactantOrProductStoichiometries(const char* moduleName,
   unsigned long numlines = getNumSymbolsOfType(moduleName, rtype);
   if (n >= numlines) {
     reportReactionIndexProblem(n, numlines, moduleName, reaction);
-    return NULL;
+    return 0.0;
   }
   const Module* mod = g_registry.GetModule(moduleName);
   const Variable* rxn = mod->GetNthVariableOfType(rtype, n);
   if (rxn->GetReaction() == NULL) {
-    return NULL;
+    return 0.0;
   }
   vector<double> stoichiometries;
   if (reactant) {
@@ -1104,7 +1104,7 @@ double getNthRxnOrIntMthReactantOrProductStoichiometries(const char* moduleName,
   }
   if (m >= stoichiometries.size()) {
     reportReactionSubIndexProblem(m, stoichiometries.size(), n, moduleName, reaction, reactant);
-    return NULL;
+    return 0.0;
   }
   return stoichiometries[m];
 }
@@ -1294,9 +1294,9 @@ LIB_EXTERN char* getNthEventName(const char* moduleName, unsigned long eventno)
 
 LIB_EXTERN unsigned long getNumAssignmentsForEvent(const char* moduleName, unsigned long eventno)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return 0;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
-  if (var==NULL) return NULL;
+  if (var==NULL) return 0;
   return var->GetEvent()->GetNumAssignments();
 }
 
@@ -1320,9 +1320,9 @@ LIB_EXTERN char* getDelayForEvent(const char* moduleName, unsigned long eventno)
 
 LIB_EXTERN bool getEventHasDelay(const char* moduleName, unsigned long eventno)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return false;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
-  if (var==NULL) return NULL;
+  if (var==NULL) return false;
   return (!var->GetEvent()->GetDelay()->IsEmpty());
 }
 
@@ -1337,25 +1337,25 @@ LIB_EXTERN char*   getPriorityForEvent(const char* moduleName, unsigned long eve
 
 LIB_EXTERN bool    getEventHasPriority(const char* moduleName, unsigned long eventno)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return false;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
-  if (var==NULL) return NULL;
+  if (var==NULL) return false;
   return (!var->GetEvent()->GetPriority()->IsEmpty());
 }
 
 LIB_EXTERN bool   getPersistenceForEvent(const char* moduleName, unsigned long eventno)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return false;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
-  if (var==NULL) return NULL;
+  if (var==NULL) return false;
   return var->GetEvent()->GetPersistent();
 }
 
 LIB_EXTERN bool   getT0ForEvent(const char* moduleName, unsigned long eventno)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return false;
   const Variable* var = g_registry.GetModule(moduleName)->GetNthVariableOfType(allEvents, eventno);
-  if (var==NULL) return NULL;
+  if (var==NULL) return false;
   return var->GetEvent()->GetInitialValue();
 }
 
@@ -1406,7 +1406,7 @@ LIB_EXTERN unsigned long* getDNAStrandSizes(const char* moduleName)
 
 LIB_EXTERN unsigned long getSizeOfNthDNAStrand(const char* moduleName, unsigned long n)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return 0;
   unsigned long actualsize = getNumDNAStrands(moduleName);
   if (actualsize <= n) {
     string error = "There is no DNA strand with index " + SizeTToString(n);
@@ -1425,7 +1425,7 @@ LIB_EXTERN unsigned long getSizeOfNthDNAStrand(const char* moduleName, unsigned 
       error += ".";
     }
     g_registry.SetError(error);
-    return NULL;
+    return 0;
   }
   return g_registry.GetModule(moduleName)->GetNthVariableOfType(expandedStrands, n)->GetDNAStrand()->ToExpandedStringVecDelimitedBy(g_registry.GetCC()).size();
 }
@@ -1511,7 +1511,7 @@ LIB_EXTERN unsigned long* getModularDNAStrandSizes(const char* moduleName)
 
 LIB_EXTERN unsigned long getSizeOfNthModularDNAStrand(const char* moduleName, unsigned long n)
 {
-  if (!checkModule(moduleName)) return NULL;
+  if (!checkModule(moduleName)) return 0;
   unsigned long actualsize = getNumModularDNAStrands(moduleName);
   if (actualsize <= n) {
     string error = "There is no Modular DNA strand with index " + SizeTToString(n);
@@ -1530,7 +1530,7 @@ LIB_EXTERN unsigned long getSizeOfNthModularDNAStrand(const char* moduleName, un
       error += ".";
     }
     g_registry.SetError(error);
-    return NULL;
+    return 0;
   }
   return g_registry.GetModule(moduleName)->GetNthVariableOfType(modularStrands, n)->GetDNAStrand()->ToModularStringVecDelimitedBy(g_registry.GetCC()).size();
 }
