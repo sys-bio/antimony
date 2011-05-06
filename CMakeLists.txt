@@ -355,10 +355,17 @@ if(UNIX)
     if(APPLE)
 		add_definitions(-DMACOSX)
 		#create universal binaries
-		option(ENABLE_UNIVERSAL "Create Universal Binaries" ON)
-		if(ENABLE_UNIVERSAL)
-			set(CMAKE_OSX_ARCHITECTURES "ppc" "i386" "x86_64")
-		endif(ENABLE_UNIVERSAL)
+                option(ENABLE_UNIVERSAL "Create Universal Binaries" OFF)
+                
+                set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING "A semicolon separated list of build architectures to be used")
+                if(ENABLE_UNIVERSAL)
+                  # if universal binaries are requested and none defined so far
+                  # overwrite them with all three common architectures. If the user 
+                  # specified their own list of architectures do not touch!
+                  if (CMAKE_OSX_ARCHITECTURES STREQUAL "")                        
+                    set(CMAKE_OSX_ARCHITECTURES "i386;ppc;x86_64" CACHE STRING "A semicolon separated list of build architectures to be used" FORCE)                
+                  endif()
+                endif(ENABLE_UNIVERSAL)
     else(APPLE)
 		add_definitions(-DLINUX)
     endif(APPLE)
