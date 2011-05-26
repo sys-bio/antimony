@@ -306,7 +306,7 @@ file(GLOB QTANTIMONY_HEADERS
 file(GLOB QTANTIMONY_RESOURCE
         ${QTANTIMONY_SRC_DIR}antimonyicon.rc
         )
-if (CREATE_QTANTIMONY)
+if (WITH_QTANTIMONY)
         find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED )
         include(${QT_USE_FILE})
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${ANTIMONY_SRC_DIR} ${QT_INCLUDES})
@@ -344,7 +344,7 @@ if (CREATE_QTANTIMONY)
         add_definitions(${QT_DEFINITIONS} ${SBW_DEFINITIONS})
         set(MACOSX_BUNDLE_ICON_FILE ${QTANTIMONY_SRC_DIR}antimony.icns)
 
-endif(CREATE_QTANTIMONY)
+endif(WITH_QTANTIMONY)
 
 
 ####################################################################
