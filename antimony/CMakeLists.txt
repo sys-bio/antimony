@@ -100,29 +100,50 @@ if(WITH_CELLML)
 			  ${CMAKE_SOURCE_DIR}/dependencies/include
 			  )
 
-        find_library(CELLML_API 
+        find_path(CELLML_API_SDK
+		NAMES include/Utilities.hxx
+		PATHS /usr/include /usr/local/include 
+                          C:/build/cellml-sdk/
+			  ${CMAKE_SOURCE_DIR}/cellml-sdk 
+			  ${CMAKE_SOURCE_DIR}/dependencies/cellml-sdk
+			  )
+
+        find_library(CELLML_API_LIB
 		NAMES cellml.lib cellml
 		PATHS /usr/lib /usr/local/lib
                           ${CELLML_API_ROOT_DIR}/.libs
+                          ${CELLML_API_SDK}/lib
                           C:/build/cellml-api/.libs/
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
 			    )
-        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CELLML_API})
+        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CELLML_API_LIB})
 
         find_library(CEVAS_LIB 
 		NAMES cevas.lib cevas
 		PATHS /usr/lib /usr/local/lib
                           ${CELLML_API_ROOT_DIR}/.libs
+                          ${CELLML_API_SDK}/lib
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
 			    )
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CEVAS_LIB})
 	
+        find_library(ANNOTOOLS_LIB 
+		NAMES annotools.lib annotools
+		PATHS /usr/lib /usr/local/lib
+                          ${CELLML_API_ROOT_DIR}/.libs
+                          ${CELLML_API_SDK}/lib
+			  ${CMAKE_SOURCE_DIR} 
+			  ${CMAKE_SOURCE_DIR}/dependencies/lib
+			    )
+        set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${ANNOTOOLS_LIB})
+	
 	find_library(CUSES_LIB 
 		NAMES cuses.lib cuses
 		PATHS /usr/lib /usr/local/lib
                           ${CELLML_API_ROOT_DIR}/.libs
+                          ${CELLML_API_SDK}/lib
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
 			    )
@@ -132,6 +153,7 @@ if(WITH_CELLML)
 		NAMES telicems.lib telicems
 		PATHS /usr/lib /usr/local/lib
                           ${CELLML_API_ROOT_DIR}/.libs
+                          ${CELLML_API_SDK}/lib
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
 			    )
