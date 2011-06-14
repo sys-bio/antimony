@@ -430,7 +430,7 @@ LIB_EXTERN int writeCellMLFile(const char* filename, const char* moduleName)
     cellmlstring = getCellMLText(g_registry.GetMainModule()->GetModuleName().c_str());
   }
   else if (!checkModule(moduleName)) {
-    return NULL;
+    return 0;
   }
   else {
     cellmlstring = getCellMLText(moduleName);
