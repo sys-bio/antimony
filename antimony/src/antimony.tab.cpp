@@ -142,10 +142,10 @@
      OPERATOR = 270,
      EVENT = 271,
      COMPARTMENT = 272,
-     IN = 273,
+     INWORD = 273,
      IS = 274,
-     VAR = 275,
-     CONST = 276,
+     VARWORD = 275,
+     CONSTWORD = 276,
      DASHES = 277,
      BECOMESIRREV = 278,
      ELLIPSES = 279,
@@ -3285,19 +3285,19 @@ int yylex(void)
       return COMPARTMENT;
     }
     if (CaselessStrCmp(word, "in")) {
-      return IN;
+      return INWORD;
     }
     if (CaselessStrCmp(word, "is")) {
       return IS;
     }
     if (CaselessStrCmp(word, "var")) {
-      return VAR;
+      return VARWORD;
     }
     if (CaselessStrCmp(word, "const")) {
-      return CONST;
+      return CONSTWORD;
     }
     if (CaselessStrCmp(word, "ext")) {
-      return CONST;
+      return CONSTWORD;
     }
     if (CaselessStrCmp(word, "import")) {
       return IMPORT;
