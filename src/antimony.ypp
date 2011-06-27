@@ -72,10 +72,10 @@
 %token  <word> OPERATOR "'operator'"
 %token  <word> EVENT "'event'"
 %token  <word> COMPARTMENT "'compartment'"
-%token  <word> IN "'in'"
+%token  <word> INWORD "'in'"
 %token  <word> IS "'is'"
-%token  <word> VAR "'var'"
-%token  <word> CONST "'const'"
+%token  <word> VARWORD "'var'"
+%token  <word> CONSTWORD "'const'"
 %token  <word> DASHES "--"
 %token  <word> BECOMESIRREV "=>"
 %token  <word> ELLIPSES "..."
@@ -146,7 +146,7 @@ variable:       ANTWORD {$$ = g_registry.AddVariableToCurrent($1); }
         |       '$' variable {$$ = $2; if ($$->SetIsConst(true)) YYABORT;}
         ;
 
-variablein:    variable IN variable {if ($1->SetCompartment($3)) YYABORT; $$ = $1;}
+variablein:    variable INWORD variable {if ($1->SetCompartment($3)) YYABORT; $$ = $1;}
         ;
 
 varmaybein:    variable {$$ = $1;}
@@ -158,7 +158,7 @@ varmaybeis:    varmaybein {$$ = $1;}
         ;
 
 maybein:        /* empty */ {$$ = NULL;}
-        |       IN variable {$$ = $2;}
+        |       INWORD variable {$$ = $2;}
         ;
 
 modulebody:     modulepart {}
@@ -278,50 +278,50 @@ varinitialize:  specinit { }
         ;
 
 specinit:       SPECIES varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varSpeciesUndef)) YYABORT; }
-        |       VAR SPECIES varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
-        |       CONST SPECIES varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
+        |       VARWORD SPECIES varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
+        |       CONSTWORD SPECIES varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
         |       specinit ',' varmaybeis {$3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
         ;
 
 formulainit:    FORMULA varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varFormulaUndef)) YYABORT; }
-        |       VAR FORMULA varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varFormulaUndef)) YYABORT; }
-        |       CONST FORMULA varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varFormulaUndef)) YYABORT; }
+        |       VARWORD FORMULA varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varFormulaUndef)) YYABORT; }
+        |       CONSTWORD FORMULA varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varFormulaUndef)) YYABORT; }
         |       formulainit ',' varmaybeis {$3->SetRegConst(); if ($3->SetType(varFormulaUndef)) YYABORT; }
         ;
 
 reactioninit:   REACTION varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varReactionUndef)) YYABORT; }
-        |       VAR REACTION varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varReactionUndef)) YYABORT; }
-        |       CONST REACTION {g_registry.SetError("Reactions may not be set 'const'."); YYABORT; }
+        |       VARWORD REACTION varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varReactionUndef)) YYABORT; }
+        |       CONSTWORD REACTION {g_registry.SetError("Reactions may not be set 'const'."); YYABORT; }
         |       reactioninit ',' varmaybeis {$3->SetRegConst(); if ($3->SetType(varReactionUndef)) YYABORT; }
         ;
 
 dnainit:        DNA varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varDNA)) YYABORT; }
-        |       VAR DNA varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varDNA)) YYABORT; }
-        |       CONST DNA varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varDNA)) YYABORT; }
+        |       VARWORD DNA varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varDNA)) YYABORT; }
+        |       CONSTWORD DNA varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varDNA)) YYABORT; }
         |       dnainit ',' varmaybeis {$3->SetRegConst(); if ($3->SetType(varDNA)) YYABORT; }
         ;
 
 geneinit:       GENE varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varReactionGene)) YYABORT; }
-        |       VAR GENE varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varReactionGene)) YYABORT; }
-        |       CONST GENE varmaybeis {g_registry.SetError("Genes may not be set 'const'."); YYABORT; }
+        |       VARWORD GENE varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varReactionGene)) YYABORT; }
+        |       CONSTWORD GENE varmaybeis {g_registry.SetError("Genes may not be set 'const'."); YYABORT; }
         |       geneinit ',' varmaybeis {$3->SetRegConst(); if ($3->SetType(varReactionGene)) YYABORT; }
         ;
 
 operatorinit:   OPERATOR varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varFormulaOperator)) YYABORT; }
-        |       VAR OPERATOR varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varFormulaOperator)) YYABORT; }
-        |       CONST OPERATOR varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varFormulaOperator)) YYABORT; }
+        |       VARWORD OPERATOR varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varFormulaOperator)) YYABORT; }
+        |       CONSTWORD OPERATOR varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varFormulaOperator)) YYABORT; }
         |       operatorinit ',' varmaybeis {$3->SetRegConst(); if ($3->SetType(varFormulaOperator)) YYABORT; }
         ;
 
 compartmentinit:
                 COMPARTMENT varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varCompartment)) YYABORT; }
-        |       VAR COMPARTMENT varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
-        |       CONST COMPARTMENT varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
+        |       VARWORD COMPARTMENT varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
+        |       CONSTWORD COMPARTMENT varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
         |       compartmentinit ',' varmaybeis {$3->SetRegConst(); if ($3->SetType(varCompartment)) YYABORT; }
         ;
 
-varconstinit:   VAR varmaybeis {g_registry.SetConstness(constVAR); $2->SetRegConst();}
-        |       CONST varmaybeis {g_registry.SetConstness(constCONST); $2->SetRegConst();}
+varconstinit:   VARWORD varmaybeis {g_registry.SetConstness(constVAR); $2->SetRegConst();}
+        |       CONSTWORD varmaybeis {g_registry.SetConstness(constCONST); $2->SetRegConst();}
         |       varconstinit ',' varmaybeis {$3->SetRegConst();}
         ;
 
@@ -468,19 +468,19 @@ int yylex(void)
       return COMPARTMENT;
     }
     if (CaselessStrCmp(word, "in")) {
-      return IN;
+      return INWORD;
     }
     if (CaselessStrCmp(word, "is")) {
       return IS;
     }
     if (CaselessStrCmp(word, "var")) {
-      return VAR;
+      return VARWORD;
     }
     if (CaselessStrCmp(word, "const")) {
-      return CONST;
+      return CONSTWORD;
     }
     if (CaselessStrCmp(word, "ext")) {
-      return CONST;
+      return CONSTWORD;
     }
     if (CaselessStrCmp(word, "import")) {
       return IMPORT;
