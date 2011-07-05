@@ -352,7 +352,7 @@ void TabManager::TranslateAntimony(QString& text)
 			if (mod==0) {
 				//The '__main' module will always be model 0.  I want this to be the *last* tab for this translator, so since the Antimony tab is tab 0, model 0 (if it has any variables) goes to the end.
 				long numvars = getNumSymbolsOfType(modname, allSymbols);
-				if (numvars == 0) {
+				if (numvars == 0 && nummods != 1) {
 					removeTab(count()-1);
 					continue;
 				}
