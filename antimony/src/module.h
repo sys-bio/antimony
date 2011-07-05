@@ -85,6 +85,7 @@ public:
   void AddTimeToUserFunction(std::string function);
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};
+  void AddDeletion(Variable* deletedvar) {};
 
   Variable* GetVariable(const std::vector<std::string>& name);
   void AddToVarMapFrom(const Module& submod);
@@ -131,7 +132,7 @@ public:
   std::string ListSynchronizedVariables(std::string indent, std::set<size_t> alreadysynchronized) const;
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
 #ifndef NSBML
-  void  LoadSBML(const SBMLDocument* sbmldoc);
+  void  LoadSBML(const Model* sbmldoc);
   const SBMLDocument* GetSBML();
   void  CreateSBMLModel();
   void  SetAssignmentFor(Model* sbmlmod, const Variable* var);

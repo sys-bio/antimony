@@ -312,7 +312,7 @@ long CheckAndAddSBMLDoc(SBMLDocument* document)
   if (sbmlname != MAINMODULE) {
     g_registry.NewCurrentModule(&sbmlname);
   }
-  g_registry.CurrentModule()->LoadSBML(document);
+  g_registry.CurrentModule()->LoadSBML(sbml);
 
   g_registry.FinalizeModules();
   return g_registry.SaveModules();

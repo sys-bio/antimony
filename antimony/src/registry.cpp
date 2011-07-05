@@ -188,7 +188,7 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
         sbmlname += "_";
       }
     }
-    CurrentModule()->LoadSBML(document);
+    CurrentModule()->LoadSBML(document->getModel());
     if (sbmlname != MAINMODULE) {
       RevertToPreviousModule();
     }

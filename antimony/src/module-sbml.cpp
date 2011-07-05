@@ -1,8 +1,7 @@
 #ifndef NSBML
-void Module::LoadSBML(const SBMLDocument* sbmldoc)
+void Module::LoadSBML(const Model* sbml)
 {
   //m_sbml = *sbmldoc;
-  const Model* sbml = sbmldoc->getModel();
   string sbmlname = "";
 
   //Function Definitions
@@ -98,7 +97,12 @@ void Module::LoadSBML(const SBMLDocument* sbmldoc)
       var->SetUnits(species->getUnits());
     }
   }
-  
+
+
+#ifdef USE_COMP
+  //Deletion deletion;
+#endif //USE_COMP
+
   //Events:
   for (unsigned int ev=0; ev<sbml->getNumEvents(); ev++) {
     const Event* event = sbml->getEvent(ev);

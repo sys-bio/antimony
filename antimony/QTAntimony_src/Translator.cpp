@@ -49,9 +49,9 @@ Translator::Translator(QTAntimony* app, QString filename)
         m_antimony(),
         m_filewatcher(new FileWatcher)
 {
-  //Set the window icon (for windows)
-  //QIcon anticon(ANT_ICON1);
-  //setWindowIcon(anticon);
+    //Set the window icon (for windows)
+    QIcon anticon("antimony.ico");
+    setWindowIcon(anticon);
     //We need to know if we should display SBML tabs, CellML tabs, or both:
     QSettings qset(ORG, APP);
     qset.sync();
@@ -133,7 +133,7 @@ Translator::Translator(QTAntimony* app, QString filename)
 
     //View
 //LS DEBUG CELLML
-//#ifndef NCELLML
+#ifndef NCELLML
     //If we're able to see CellML, set what the user sees.
     QAction* sbmlTabs = new QAction(tr("&SBML tab(s)"), this);
     sbmlTabs->setCheckable(true);
@@ -141,7 +141,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     QAction* cellmlTabs= new QAction(tr("&CellML tab"), this);
     cellmlTabs->setCheckable(true);
     cellmlTabs->setChecked(displaycellml);
-//#endif
+#endif
     QAction* setAntimonyFont = new QAction(tr("Set &Antimony Font"), this);
     setAntimonyFont->setEnabled(true);
     QAction* setXMLFont = new QAction(tr("Set &XML Font"), this);
@@ -165,6 +165,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     setWindowTitle("QTAntimony");
     m_tabmanager = new TabManager(this);
     m_antimony = new AntimonyTab;
+    ChangeableTextBox* active = m_antimony;
     m_tabmanager->addTab(m_antimony, m_antimony->GetTabName());
     connect(m_antimony, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
     if (filename != "") {
@@ -241,7 +242,7 @@ Translator::Translator(QTAntimony* app, QString filename)
                     //It's SBML.  Probably.  Re-read it as SBML to find the error:
                     loadSBMLFile(filename.toUtf8().data());
                     AddSBMLTab("", filetext, false);
-                    m_tabmanager->textbox(1)->SetFailedTranslation();
+                    m_tabmanager->firstsbmltextbox()->SetFailedTranslation();
                     QString error = getLastError();
                     //m_tabmanager->textbox(1)->DisplayError(error);
                     QRegExp oneline("([^\n]{50}\\S*)\\s");
@@ -249,9 +250,11 @@ Translator::Translator(QTAntimony* app, QString filename)
                     error = "// " + error;
                     QRegExp returns("\n");
                     error.replace(returns, "\n//  ");
+                    error += "\n// (Switch to the SBML tab and hit 'undo' to get the original faulty model)";
                     m_antimony->ReplaceTextWith(error);
                     m_antimony->SetFailedTranslation();
-                    m_tabmanager->textbox(1)->SetSavedFilename(filename);
+                    m_tabmanager->firstsbmltextbox()->SetSavedFilename(filename);
+                    active = m_tabmanager->firstsbmltextbox();
                 }
                 else{
                     AddSBMLTab();
@@ -270,7 +273,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     else {
         AddSBMLTab();
     }
-    m_antimony->SetActive();
+    active->SetActive();
 
     //Connections
     connect(actionNew, SIGNAL(triggered()), QApplication::instance(), SLOT(NewWindow()));
@@ -305,10 +308,10 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(setAntimonyFont, SIGNAL(triggered()), m_tabmanager, SLOT(setAntimonyFont()));
     connect(setXMLFont, SIGNAL(triggered()), m_tabmanager, SLOT(setXMLFont()));
     //LS DEBUG CELLML
-//#ifndef NCELLML
+#ifndef NCELLML
     connect(sbmlTabs, SIGNAL(toggled(bool)), m_tabmanager, SLOT(sbmlTabs(bool)));
     connect(cellmlTabs, SIGNAL(toggled(bool)), m_tabmanager, SLOT(cellmlTabs(bool)));
-//#endif
+#endif
     connect(m_antimony, SIGNAL(OriginalAvailable(bool)), m_actionRevertToOriginal, SLOT(setEnabled(bool)));
     connect(m_tabmanager, SIGNAL(FailedAntimonyTranslation()), m_antimony, SLOT(SetFailedTranslation()));
     connect(m_tabmanager, SIGNAL(FailedSBMLTranslation()), m_antimony, SLOT(SetFailedTranslation()));
@@ -359,9 +362,10 @@ Translator::Translator(QTAntimony* app, QString filename)
     viewmenu->addAction(zoomOut);
     viewmenu->addAction(setAntimonyFont);
     viewmenu->addAction(setXMLFont);
+#ifndef NCELLML
     viewmenu->addAction(sbmlTabs);
     viewmenu->addAction(cellmlTabs);
-
+#endif
 
 #ifdef 	SBW_INTEGRATION
     if (m_app->GetUseSBW()) {
