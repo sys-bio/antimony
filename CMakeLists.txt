@@ -10,8 +10,8 @@ project(libantimony)
 #
 # Set up version information.
 #
-SET(LIBANTIMONY_VERSION_MAJOR 1)
-SET(LIBANTIMONY_VERSION_MINOR 4)
+SET(LIBANTIMONY_VERSION_MAJOR 2)
+SET(LIBANTIMONY_VERSION_MINOR 0)
 SET(LIBANTIMONY_VERSION_PATCH "")
 SET(LIBANTIMONY_VERSION_RELEASE "")
 
@@ -200,6 +200,7 @@ file(GLOB LIBANTIMONY_SOURCES
 	${ANTIMONY_SRC_DIR}Antimony.cpp
 	${ANTIMONY_SRC_DIR}antimony.tab.cpp
 	${ANTIMONY_SRC_DIR}cellmlx.cpp
+#	${ANTIMONY_SRC_DIR}deletion.cpp
 	${ANTIMONY_SRC_DIR}dnastrand.cpp
 	${ANTIMONY_SRC_DIR}event.cpp
 	${ANTIMONY_SRC_DIR}formula.cpp
@@ -226,26 +227,28 @@ source_group(Translators FILES ${LIBANTIMONY_TRANSLATORS})
 
 file(GLOB LIBANTIMONY_HEADERS 
         ${ANTIMONY_SRC_DIR}antimony_api.h
-	${ANTIMONY_SRC_DIR}dnastrand.h
-	${ANTIMONY_SRC_DIR}cellmlx.h
-	${ANTIMONY_SRC_DIR}enums.h
-	${ANTIMONY_SRC_DIR}event.h
-	${ANTIMONY_SRC_DIR}formula.h
-	${ANTIMONY_SRC_DIR}libutil.h
-	${ANTIMONY_SRC_DIR}module.h
-	${ANTIMONY_SRC_DIR}reactantlist.h
-	${ANTIMONY_SRC_DIR}reaction.h
-	${ANTIMONY_SRC_DIR}registry.h
-	${ANTIMONY_SRC_DIR}sbmlx.h
-	${ANTIMONY_SRC_DIR}stringx.h
-	${ANTIMONY_SRC_DIR}typex.h
-	${ANTIMONY_SRC_DIR}userfunction.h
-	${ANTIMONY_SRC_DIR}variable.h
+        ${ANTIMONY_SRC_DIR}dnastrand.h
+        ${ANTIMONY_SRC_DIR}cellmlx.h
+#        ${ANTIMONY_SRC_DIR}deletion.h
+        ${ANTIMONY_SRC_DIR}enums.h
+        ${ANTIMONY_SRC_DIR}event.h
+        ${ANTIMONY_SRC_DIR}formula.h
+        ${ANTIMONY_SRC_DIR}libutil.h
+        ${ANTIMONY_SRC_DIR}module.h
+        ${ANTIMONY_SRC_DIR}reactantlist.h
+        ${ANTIMONY_SRC_DIR}reaction.h
+        ${ANTIMONY_SRC_DIR}registry.h
+        ${ANTIMONY_SRC_DIR}sbmlx.h
+        ${ANTIMONY_SRC_DIR}stringx.h
+        ${ANTIMONY_SRC_DIR}typex.h
+        ${ANTIMONY_SRC_DIR}userfunction.h
+        ${ANTIMONY_SRC_DIR}variable.h
         )
  
 add_library(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_HEADERS} ${LIBANTIMONY_SOURCES} ${LIBANTIMONY_TRANSLATORS})
 target_link_libraries(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
 add_definitions(-DLIB_EXPORTS)
+install(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION bin)
 
 if (NOT UNIX)
   add_definitions(-DWIN32 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
@@ -258,33 +261,40 @@ endif(NOT UNIX)
 add_executable(rehashantimony ${ANTIMONY_SRC_DIR}rehashantimony.cpp)
 add_dependencies(rehashantimony ${LIBANTIMONY_LIBRARY})
 target_link_libraries(rehashantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+install(TARGETS rehashantimony DESTINATION bin)
 
 add_executable(testantimony ${ANTIMONY_SRC_DIR}testantimony.cpp)
 add_dependencies(testantimony ${LIBANTIMONY_LIBRARY})
 target_link_libraries(testantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+install(TARGETS testantimony DESTINATION bin)
 
 add_executable(sbtranslate ${ANTIMONY_SRC_DIR}sbtranslate.cpp)
 add_dependencies(sbtranslate ${LIBANTIMONY_LIBRARY})
 target_link_libraries(sbtranslate ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+install(TARGETS sbtranslate DESTINATION bin)
 
 if(WITH_SBML)
   add_executable(antimony2sbml ${ANTIMONY_SRC_DIR}antimony2sbml.cpp)
   add_dependencies(antimony2sbml ${LIBANTIMONY_LIBRARY})
   target_link_libraries(antimony2sbml ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+  install(TARGETS antimony2sbml DESTINATION bin)
 
   add_executable(sbml2antimony ${ANTIMONY_SRC_DIR}sbml2antimony.cpp)
   add_dependencies(sbml2antimony ${LIBANTIMONY_LIBRARY})
   target_link_libraries(sbml2antimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+  install(TARGETS sbml2antimony DESTINATION bin)
 endif(WITH_SBML)
 
 if(WITH_CELLML)
   add_executable(antimony2cellml ${ANTIMONY_SRC_DIR}antimony2cellml.cpp)
   add_dependencies(antimony2cellml ${LIBANTIMONY_LIBRARY})
   target_link_libraries(antimony2cellml ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+  install(TARGETS antimony2cellml DESTINATION bin)
 
   add_executable(cellml2antimony ${ANTIMONY_SRC_DIR}cellml2antimony.cpp)
   add_dependencies(cellml2antimony ${LIBANTIMONY_LIBRARY})
   target_link_libraries(cellml2antimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+  install(TARGETS cellml2antimony DESTINATION bin)
 endif(WITH_CELLML)
 
 ####################################################################
@@ -365,6 +375,8 @@ if (WITH_QTANTIMONY)
         target_link_libraries(QTAntimony ${QTANTIMONY_LIBRARIES} )
         add_definitions(${QT_DEFINITIONS} ${SBW_DEFINITIONS})
         set(MACOSX_BUNDLE_ICON_FILE ${QTANTIMONY_SRC_DIR}antimony.icns)
+        install(TARGETS QTAntimony DESTINATION bin)
+        install(FILES ${QTANTIMONY_SRC_DIR}antimony.ico DESTINATION bin)
 
 endif(WITH_QTANTIMONY)
 
@@ -396,9 +408,9 @@ if(UNIX)
 else(UNIX)
 	add_definitions(-DWIN32 -DLIBANTIMONY_EXPORTS -DLIBLAX_EXPORTS)
 	if(MSVC)
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-	option(WITH_STATIC_RUNTIME "Compile using the static MSVC Runtime" OFF)
-	if (WITH_STATIC_RUNTIME)
+	  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	  option(WITH_STATIC_RUNTIME "Compile using the static MSVC Runtime" OFF)
+	  if (WITH_STATIC_RUNTIME)
 		foreach(flag_var
 			CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
 			CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
@@ -408,7 +420,7 @@ else(UNIX)
 			endif(${flag_var} MATCHES "/MD")
 		endforeach(flag_var)
 		add_definitions( -D_MT)
-    endif(WITH_STATIC_RUNTIME)
+	  endif(WITH_STATIC_RUNTIME)
 	endif(MSVC)
 	
 	file(GLOB WIN32_BINARIES ${CMAKE_SOURCE_DIR}/dependencies/bin/*.dll)
@@ -441,6 +453,7 @@ if (WITH_SBW_TRANSLATOR)
   add_executable(sbwantimony WIN32 ${ANTIMONY_SRC_DIR}sbwtranslator.cpp)
   add_dependencies(sbwantimony ${LIBANTIMONY_LIBRARY})
   target_link_libraries(sbwantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} ${LIBSBW_LIBRARY})  
+  install(TARGETS sbwantimony DESTINATION bin)
   
 endif()
 
