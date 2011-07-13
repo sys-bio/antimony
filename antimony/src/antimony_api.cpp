@@ -1724,7 +1724,18 @@ LIB_EXTERN char* getAntimonyString(const char* moduleName)
   while (antimony.size()>1 && antimony[0] == '\n') {
     antimony.erase(0, 1);
   }
-  return getCharStar(string("//Created by libAntimony " LIBANTIMONY_VERSION_STRING "\n" + antimony).c_str());
+  string top = "//Created by libAntimony " LIBANTIMONY_VERSION_STRING "\n";
+  vector<string> warnings = g_registry.GetWarnings();
+  for (size_t warn=0; warn<warnings.size(); warn++) {
+    if (warn == 0) {
+      top += "\n// Warnings from automatic translation:\n";
+    }
+    top += "//    " + warnings[warn] + "\n";
+  }
+  if (warnings.size() > 0) {
+    top += "\n";
+  }
+  return getCharStar(string(top + antimony).c_str());
 }
 
 /*
