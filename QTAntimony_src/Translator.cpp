@@ -522,11 +522,11 @@ void Translator::closeEvent(QCloseEvent* event)
 
 void Translator::DisplayAbout()
 {
-   QMessageBox msgBox;
-    msgBox.setText("QTAntimony " + LIBANTIMONY_VERSION_STRING);
-    msgBox.setInformativeText("Based on libAntimony " LIBANTIMONY_VERSION_STRING " and libSBML v" LIBSBML_DOTTED_VERSION);
-    msgBox.setStandardButtons(QMessageBox::Ok);
-    msgBox.exec();
+  QMessageBox msgBox;
+  msgBox.setText("QTAntimony " LIBANTIMONY_VERSION_STRING);
+  msgBox.setInformativeText("Based on libAntimony " LIBANTIMONY_VERSION_STRING " and libSBML v" LIBSBML_DOTTED_VERSION);
+  msgBox.setStandardButtons(QMessageBox::Ok);
+  msgBox.exec();
 
 }
 
