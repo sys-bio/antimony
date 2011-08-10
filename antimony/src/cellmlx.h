@@ -3,8 +3,7 @@
 
 #ifndef NCELLML
 #include "IfaceCellML_APISPEC.hxx"
-//#include "IfaceTeLICeMS.hxx"
-#include "Utilities.hxx"
+#include "cellml-api-cxx-support.hpp"
 
 #include <string>
 #include <vector>

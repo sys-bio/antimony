@@ -92,16 +92,8 @@ endif(WITH_SBML)
 
 if(WITH_CELLML)
         #CellML:
-        find_path(CELLML_API_ROOT_DIR
-		NAMES sources/Utilities.hxx
-		PATHS /usr/include /usr/local/include 
-                          C:/build/cellml-api/
-			  ${CMAKE_SOURCE_DIR}/include 
-			  ${CMAKE_SOURCE_DIR}/dependencies/include
-			  )
-
-        find_path(CELLML_API_SDK
-		NAMES include/Utilities.hxx
+        find_path(CELLML_API_INSTALL_DIR
+		NAMES include/IfaceCellML_APISPEC.hxx
 		PATHS /usr/include /usr/local/include 
                           C:/build/cellml-sdk/
 			  ${CMAKE_SOURCE_DIR}/cellml-sdk 
@@ -111,8 +103,7 @@ if(WITH_CELLML)
         find_library(CELLML_API_LIB
 		NAMES cellml.lib cellml
 		PATHS /usr/lib /usr/local/lib
-                          ${CELLML_API_ROOT_DIR}/.libs
-                          ${CELLML_API_SDK}/lib
+                          ${CELLML_API_INSTALL_DIR}/lib
                           C:/build/cellml-api/.libs/
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -122,8 +113,7 @@ if(WITH_CELLML)
         find_library(CEVAS_LIB 
 		NAMES cevas.lib cevas
 		PATHS /usr/lib /usr/local/lib
-                          ${CELLML_API_ROOT_DIR}/.libs
-                          ${CELLML_API_SDK}/lib
+                          ${CELLML_API_INSTALL_DIR}/lib
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
 			    )
@@ -132,8 +122,7 @@ if(WITH_CELLML)
         find_library(ANNOTOOLS_LIB 
 		NAMES annotools.lib annotools
 		PATHS /usr/lib /usr/local/lib
-                          ${CELLML_API_ROOT_DIR}/.libs
-                          ${CELLML_API_SDK}/lib
+                          ${CELLML_API_INSTALL_DIR}/lib
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
 			    )
@@ -142,8 +131,7 @@ if(WITH_CELLML)
 	find_library(CUSES_LIB 
 		NAMES cuses.lib cuses
 		PATHS /usr/lib /usr/local/lib
-                          ${CELLML_API_ROOT_DIR}/.libs
-                          ${CELLML_API_SDK}/lib
+                          ${CELLML_API_INSTALL_DIR}/lib
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
 			    )
@@ -152,14 +140,13 @@ if(WITH_CELLML)
         find_library(TELICEMS_LIB 
 		NAMES telicems.lib telicems
 		PATHS /usr/lib /usr/local/lib
-                          ${CELLML_API_ROOT_DIR}/.libs
-                          ${CELLML_API_SDK}/lib
+                          ${CELLML_API_INSTALL_DIR}/lib
 			  ${CMAKE_SOURCE_DIR} 
 			  ${CMAKE_SOURCE_DIR}/dependencies/lib
 			    )
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${TELICEMS_LIB})
 
-        set(CELLML_INCLUDE_DIRECTORIES ${CELLML_API_ROOT_DIR} ${CELLML_API_ROOT_DIR}/sources ${CELLML_API_ROOT_DIR}/sources/cellml/ ${CELLML_API_ROOT_DIR}/interfaces ${CELLML_API_ROOT_DIR}/TeLICeMS/sources/ ${CELLML_API_ROOT_DIR}/CUSES/sources/ ${CELLML_API_ROOT_DIR}/CeVAS/sources/ )
+        set(CELLML_INCLUDE_DIRECTORIES ${CELLML_API_INSTALL_DIR}/include )
 
         set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ALL_CELLML_LIBS} )
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${CELLML_INCLUDE_DIRECTORIES} )
