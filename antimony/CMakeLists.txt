@@ -15,9 +15,6 @@ SET(LIBANTIMONY_VERSION_MINOR 0)
 SET(LIBANTIMONY_VERSION_PATCH "")
 SET(LIBANTIMONY_VERSION_RELEASE "")
 
-SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
-add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
-
 
 ####################################################################
 #
@@ -36,6 +33,7 @@ SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt")
 SET(CPACK_PACKAGE_VERSION_MAJOR "${LIBANTIMONY_VERSION_MAJOR}")
 SET(CPACK_PACKAGE_VERSION_MINOR "${LIBANTIMONY_VERSION_MINOR}")
 SET(CPACK_PACKAGE_VERSION_PATCH "${LIBANTIMONY_VERSION_PATCH}")
+SET(CPACK_PACKAGE_VERSION_RELEASE "${LIBANTIMONY_VERSION_RELEASE}")
 INCLUDE(CPack)
 
 option(BUILD_SHARED_LIBS  "Build shared library (Set to OFF to build static libraries)" ON)
@@ -49,12 +47,21 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 
 # which language bindings should be build
 option(WITH_SBML            "Generate SBML translations"      ON )
+option(WITH_COMP_SBML       "Use the hierarchical composition package in SBML"      ON )
 option(WITH_CELLML          "Generate CellML translations"    OFF )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
 option(WITH_SBW             "QTAntimony integration with SBW" ON )
 option(WITH_SBW_TRANSLATOR  "Generate SBWTranslator"          OFF )
 set(EXTRA_LIBS "" CACHE STRING "Libraries the other libraries depend on that are in non-standard locations" )
 #set(EXTRA_LIBS "" CACHE_STRING "")
+
+if (WITH_COMP_SBML)
+  SET(LIBANTIMONY_VERSION_MINOR 1)
+  SET(LIBANTIMONY_VERSION_RELEASE "-beta")
+endif()
+SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
+add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
+
 
 ####################################################################
 #
@@ -66,21 +73,23 @@ if(WITH_SBML)
 	find_library(LIBSBML_LIBRARY 
 		NAMES libsbml.lib libsbml.so libsbml
 		PATHS /usr/lib /usr/local/lib 
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-                          ${CMAKE_SOURCE_DIR}/../libsbml-5/build/src/RelWithDebInfo
-                          )
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${CMAKE_SOURCE_DIR}/../libsbml-5/build/src/RelWithDebInfo
+        )
 	
 	find_path(LIBSBML_INCLUDE_DIR
 		NAMES sbml/SBMLTypes.h
 		PATHS /usr/include /usr/local/include 
-			  ${CMAKE_SOURCE_DIR}/include 
-			  ${CMAKE_SOURCE_DIR}/dependencies/include
-                          ${CMAKE_SOURCE_DIR}/../libsbml-5/release/include/
-			  )
-
-        set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} )
-        INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR})
+              ${CMAKE_SOURCE_DIR}/include 
+              ${CMAKE_SOURCE_DIR}/dependencies/include
+              ${CMAKE_SOURCE_DIR}/../libsbml-5/release/include/
+        )
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} )
+    INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR})
+	if (WITH_COMP_SBML)
+	    add_definitions( -DUSE_COMP )
+    endif(WITH_COMP_SBML)
 else(WITH_SBML)
     add_definitions( -DNSBML )
 endif(WITH_SBML)
@@ -95,7 +104,8 @@ if(WITH_CELLML)
         find_path(CELLML_API_INSTALL_DIR
 		NAMES include/IfaceCellML_APISPEC.hxx
 		PATHS /usr/include /usr/local/include 
-                          C:/build/cellml-sdk/
+              C:/Program Files (x86)/cellml-sdk-1.10
+              C:/Program Files/cellml-sdk-1.10
 			  ${CMAKE_SOURCE_DIR}/cellml-sdk 
 			  ${CMAKE_SOURCE_DIR}/dependencies/cellml-sdk
 			  )
@@ -236,9 +246,10 @@ add_library(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_HEADERS} ${LIBANTIMONY_SOURCES}
 target_link_libraries(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
 add_definitions(-DLIB_EXPORTS)
 install(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION bin)
+install(FILES   ${LIBANTIMONY_HEADERS} DESTINATION include)
 
 if (NOT UNIX)
-  add_definitions(-DWIN32 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
+  add_definitions(-DWIN32=1 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
 endif(NOT UNIX)
 ####################################################################
 #
@@ -445,3 +456,11 @@ if (WITH_SBW_TRANSLATOR)
 endif()
 
 
+###############################################################################
+#
+# Install win32 dependencies
+# 
+if (NOT UNIX)
+  file(GLOB win_dependencies "${CMAKE_CURRENT_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
+  install(FILES ${win_dependencies} DESTINATION bin/)
+endif()

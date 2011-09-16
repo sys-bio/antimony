@@ -978,12 +978,7 @@ bool Variable::SetCompartment(Variable* var)
     return GetSameVariable()->SetCompartment(var);
   }
   if (var->SetType(varCompartment)) return true;
-  if (m_compartment.size() > 0) {
-    if (m_compartment == var->GetName()) return false; //resetting
-    g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' to be in compartment '" + var->GetNameDelimitedBy('.') + "', because it is already in a different compartment (" + ToStringFromVecDelimitedBy(m_compartment, '.') + ").");
-    return true;
-  }
-  m_compartment = var->GetName();
+  m_compartment = var->GetSameVariable()->GetName();
   return false;
 }
 

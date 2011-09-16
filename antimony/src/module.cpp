@@ -35,7 +35,12 @@ Module::Module(string name)
     m_sbmlversion(1),
     m_varmap(),
 #ifndef NSBML
-    m_sbml(m_sbmllevel, m_sbmlversion),
+#ifdef USE_COMP
+    m_sbmlnamespaces(m_sbmllevel, m_sbmlversion, "comp", 1),
+#else
+    m_sbmlnamespaces(m_sbmllevel, m_sbmlversion),
+#endif
+    m_sbml(&m_sbmlnamespaces),
     m_libsbml_info(""),
     m_libsbml_warnings(""),
 #endif
@@ -46,6 +51,18 @@ Module::Module(string name)
 #endif
     m_uniquevars()
 {
+#ifdef USE_COMP
+  CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
+  compdoc->setRequired(false);
+  SBMLDocument* doctest = compdoc->getSBMLDocument();
+  SBase* parenttest = compdoc->getParentSBMLObject();
+  if (doctest == NULL) {
+    cout << "SBML document not set, for unknown reason.";
+  }
+  if (parenttest == NULL) {
+    cout << "Parent of 'splugin' not found, for unknown reason.";
+  }
+#endif //USE_COMP
 }
 
 Module::Module(const Module& src, string newtopname, string modulename)
@@ -61,7 +78,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_sbmlversion(src.m_sbmlversion),
     m_varmap(), // useless--will reset with SetNewTopName, below.
 #ifndef NSBML
-    m_sbml(m_sbmllevel, m_sbmlversion),
+    m_sbmlnamespaces(src.m_sbmlnamespaces),
+    m_sbml(&m_sbmlnamespaces), //New because we're renaming everything.
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
     m_libsbml_warnings(),
 #endif
@@ -73,9 +91,22 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_uniquevars()
 {
   SetNewTopName(modulename, newtopname);
+  /*
 #ifndef NSBML
-  CreateSBMLModel(); //It's either this or go through and rename every blasted thing in it, and libSBML doesn't provide an easy way to go through all elements at once.
+  CreateSBMLModel(false); //It's either this or go through and rename every blasted thing in it, and libSBML doesn't provide an easy way to go through all elements at once.
+#ifdef USE_COMP
+  CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
+  SBMLDocument* doctest = compdoc->getSBMLDocument();
+  SBase* parenttest = compdoc->getParentSBMLObject();
+  if (doctest == NULL) {
+    cout << "SBML document not set, for unknown reason.";
+  }
+  if (parenttest == NULL) {
+    cout << "Parent of 'splugin' not found, for unknown reason.";
+  }
+#endif //USE_COMP
 #endif
+  */
 #ifndef NCELLML
   //CreateCellMLModel(); //ditto
 #endif
@@ -94,6 +125,7 @@ Module::Module(const Module& src)
     m_sbmlversion(src.m_sbmlversion),
     m_varmap(src.m_varmap),
 #ifndef NSBML
+    m_sbmlnamespaces(src.m_sbmlnamespaces),
     m_sbml(src.m_sbml),
     m_libsbml_info(src.m_libsbml_info),
     m_libsbml_warnings(src.m_libsbml_warnings),
@@ -105,6 +137,17 @@ Module::Module(const Module& src)
 #endif
     m_uniquevars(src.m_uniquevars)
 {
+#ifdef USE_COMP
+  CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
+  SBMLDocument* doctest = compdoc->getSBMLDocument();
+  SBase* parenttest = compdoc->getParentSBMLObject();
+  if (doctest == NULL) {
+    cout << "SBML document not set, for unknown reason.";
+  }
+  if (parenttest == NULL) {
+    cout << "Parent of 'splugin' not found, for unknown reason.";
+  }
+#endif //USE_COMP
 }
 
 Module& Module::operator=(const Module& src)
@@ -121,9 +164,22 @@ Module& Module::operator=(const Module& src)
   m_sbmlversion = src.m_sbmlversion;
   m_varmap = src.m_varmap;
 #ifndef NSBML
+  m_sbmlnamespaces = src.m_sbmlnamespaces;
   m_sbml = src.m_sbml;
   m_libsbml_info = src.m_libsbml_info;
   m_libsbml_warnings = src.m_libsbml_warnings;
+#ifdef USE_COMP
+  CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
+  compdoc->setRequired(false);
+  SBMLDocument* doctest = compdoc->getSBMLDocument();
+  SBase* parenttest = compdoc->getParentSBMLObject();
+  if (doctest == NULL) {
+    cout << "SBML document not set, for unknown reason.";
+  }
+  if (parenttest == NULL) {
+    cout << "Parent of 'splugin' not found, for unknown reason.";
+  }
+#endif //USE_COMP
 #endif
 #ifndef NCELLML
   m_cellmlmodel = src.m_cellmlmodel;
@@ -623,80 +679,111 @@ bool Module::Finalize()
 #ifndef NSBML
   //Phase 5:  Check SBML compatibility, and create sbml model object.
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
-  const SBMLDocument* sbmldoc = GetSBML();
-  stringstream stream;
- 
-  SBMLWriter writer;
-  writer.writeSBML(sbmldoc, stream);
-  string newSBML = stream.str();
-  SBMLReader reader;
-  SBMLDocument* testdoc = reader.readSBMLFromString(newSBML);
-  testdoc->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
-  testdoc->checkConsistency();
-  SBMLErrorLog* log = testdoc->getErrorLog();
-  string trueerrors = "";
-  for (unsigned int err=0; err<log->getNumErrors(); err++) {
-    const SBMLError* error = log->getError(err);
-    unsigned int errtype = error->getSeverity();
-    switch(errtype) {
-    case 0: //LIBSBML_SEV_INFO:
-      if (m_libsbml_info != "") m_libsbml_info += "\n";
-      m_libsbml_info += error->getMessage();
-      break;
-    case 1: //LIBSBML_SEV_WARNING:
-      if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
-      m_libsbml_warnings += error->getMessage();
-      break;
-    case 2: //LIBSBML_SEV_ERROR:
-      if (trueerrors != "") trueerrors += "\n";
-      trueerrors += error->getMessage();
-      break;
-    case 3: //LIBSBML_SEV_FATAL:
-      g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:  " + error->getMessage());
-      delete testdoc;
-      return true;
-    default:
-      g_registry.SetError("Unknown error when creating an SBML document--there should have only been four types, but we found a fifth?  libSBML may have been updated; try using an older version, perhaps.  Error from libSBML:  " + error->getMessage());
-      delete testdoc;
-      return true;
+  if (m_variablename.empty()) {
+    //Only test SBML on top-level modules.
+    const SBMLDocument* sbmldoc = GetSBML(true); //Use the comp version if possible.
+    stringstream stream;
+
+    SBMLWriter writer;
+    writer.writeSBML(sbmldoc, stream);
+    string newSBML = stream.str();
+    SBMLReader reader;
+    SBMLDocument* testdoc = reader.readSBMLFromString(newSBML);
+    testdoc->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
+    testdoc->checkConsistency();
+    SBMLErrorLog* log = testdoc->getErrorLog();
+    string trueerrors = "";
+    for (unsigned int err=0; err<log->getNumErrors(); err++) {
+      const SBMLError* error = log->getError(err);
+      unsigned int errtype = error->getSeverity();
+      switch(errtype) {
+      case 0: //LIBSBML_SEV_INFO:
+        if (m_libsbml_info != "") m_libsbml_info += "\n";
+        m_libsbml_info += error->getMessage();
+        break;
+      case 1: //LIBSBML_SEV_WARNING:
+        if (m_libsbml_warnings != "") m_libsbml_warnings += "\n";
+        m_libsbml_warnings += error->getMessage();
+        break;
+      case 2: //LIBSBML_SEV_ERROR:
+        if (trueerrors != "") trueerrors += "\n";
+        trueerrors += error->getMessage();
+        break;
+      case 3: //LIBSBML_SEV_FATAL:
+        g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:  " + error->getMessage());
+        delete testdoc;
+        return true;
+      default:
+        g_registry.SetError("Unknown error when creating an SBML document--there should have only been four types, but we found a fifth?  libSBML may have been updated; try using an older version, perhaps.  Error from libSBML:  " + error->getMessage());
+        delete testdoc;
+        return true;
+      }
     }
+    if (trueerrors != "") {
+      g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but this one slipped through--please let us know what happened and we'll try to fix it.  Error message(s) from libSBML:\n" + trueerrors);
+      //delete testdoc;
+      //return true;
+    }
+    delete testdoc;
   }
-  if (trueerrors != "") {
-    g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but this one slipped through--please let us know what happened and we'll try to fix it.  Error message(s) from libSBML:\n" + trueerrors);
-    //delete testdoc;
-    //return true;
-  }
-  delete testdoc;
 #endif
   return false;
 }
 
-size_t Module::GetNumVariablesOfType(return_type rtype) const
+size_t Module::GetNumVariablesOfType(return_type rtype, bool comp) const
 {
-  if (rtype == allSymbols) return m_uniquevars.size();
   size_t total = 0;
-  for (size_t nvar=0; nvar<m_uniquevars.size(); nvar++) {
-    const Variable* var = m_uniquevars[nvar];
-    if (AreEquivalent(rtype, var->GetType()) &&
-        AreEquivalent(rtype, var->GetIsConst())) {
-      if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
-        total++;
+  vector<Variable*> vars = m_uniquevars;
+  if (comp) {
+    vars = m_variables;
+    //These aren't necessarily unique--remove any that aren't.
+    vector<Variable*>::iterator varit = vars.begin();
+    while (varit != vars.end()) {
+      if ((*varit)->IsPointer()) {
+        varit = vars.erase(varit);
       }
+      else {
+        varit++;
+      }
+    }
+  }
+  if (rtype == allSymbols) return vars.size();
+  for (size_t nvar=0; nvar<vars.size(); nvar++) {
+    const Variable* var = vars[nvar];
+    if (AreEquivalent(rtype, var->GetType()) &&
+      AreEquivalent(rtype, var->GetIsConst())) {
+        if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
+          total++;
+        }
     }
   }
   return total;
 }
 
-const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n) const
+const Variable* Module::GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const
 {
+  vector<Variable*> vars = m_uniquevars;
+  if (comp) {
+    vars = m_variables;
+    //These aren't necessarily unique--remove any that aren't.
+    vector<Variable*>::iterator varit = vars.begin();
+    while (varit != vars.end()) {
+      if ((*varit)->IsPointer()) {
+        varit = vars.erase(varit);
+      }
+      else {
+        varit++;
+      }
+    }
+  }
   if (rtype == allSymbols) {
-    assert(n < m_uniquevars.size());
-    return m_uniquevars[n];
+    assert(n < vars.size());
+    return vars[n];
   }
 
   size_t total = 0;
-  for (size_t nvar=0; nvar<m_uniquevars.size(); nvar++) {
-    const Variable* var = m_uniquevars[nvar];
+  for (size_t nvar=0; nvar<vars.size(); nvar++) {
+    const Variable* var = vars[nvar];
     if (AreEquivalent(rtype, var->GetType()) &&
         AreEquivalent(rtype, var->GetIsConst())) {
       if (!(rtype == expandedStrands && !var->IsExpandedStrand())) {
@@ -708,6 +795,18 @@ const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n) const
     }
   }
   return NULL;
+}
+
+
+const Variable* Module::GetNthVariableOfType(return_type rtype, size_t n, bool comp) const
+{
+  return GetNthConstVariableOfType(rtype, n, comp);
+}
+
+Variable* Module::GetNthVariableOfType(return_type rtype, size_t n, bool comp) 
+{ 
+  const Variable* ret = GetNthConstVariableOfType(rtype, n, comp);
+  return const_cast<Variable*>(ret);
 }
 
 
@@ -1339,11 +1438,11 @@ string Module::ListAssignmentDifferencesFrom(const Module* origmod, string mname
 {
   char cc = '.';
   string list = "";
-  assert(GetNumVariablesOfType(allSymbols) == origmod->GetNumVariablesOfType(allSymbols));
+  assert(GetNumVariablesOfType(allSymbols, false) == origmod->GetNumVariablesOfType(allSymbols, false));
   set<const Variable*> renamed;
-  for (size_t var=0; var<GetNumVariablesOfType(allSymbols); var++) {
-    const Variable* thisvar = GetNthVariableOfType(allSymbols, var);
-    const Variable* origvar = origmod->GetNthVariableOfType(allSymbols, var);
+  for (size_t var=0; var<GetNumVariablesOfType(allSymbols, false); var++) {
+    const Variable* thisvar = GetNthVariableOfType(allSymbols, var, false);
+    const Variable* origvar = origmod->GetNthVariableOfType(allSymbols, var, false);
     string thisform = thisvar->GetFormula()->ToDelimitedStringWithEllipses(cc);
     string origform = origvar->GetFormula()->ToDelimitedStringWithEllipses(cc);
     while (thisform.find(mname + ".") != string::npos) {

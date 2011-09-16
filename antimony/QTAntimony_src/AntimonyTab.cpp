@@ -17,7 +17,8 @@ AntimonyTab::AntimonyTab(QWidget* parent)
         m_actionCopySBML(NULL),
         m_selectedasSBML(""),
         m_ismixed(false),
-        m_filenodirectory("")
+        m_filenodirectory(""),
+        m_flatten(false)
 {
     m_filetypes = "Antimony files (*.txt);;All files(*.*)";
     m_extension = ".txt";
@@ -81,7 +82,17 @@ bool AntimonyTab::setupSBMLCopy()
         mod = 1;
     }
     char* modname = getNthModuleName(mod);
-    char* SBML = getSBMLString(modname);
+    char* SBML;
+#ifdef USE_COMP
+    if (m_flatten) {
+      SBML = getSBMLString(modname);
+    }
+    else {
+      SBML = getCompSBMLString(modname);
+    }
+#else
+    SBML = getSBMLString(modname);
+#endif
     m_selectedasSBML = SBML;
     clearPreviousLoads();
 #ifndef WIN32

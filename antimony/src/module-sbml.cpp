@@ -1,6 +1,162 @@
 #ifndef NSBML
+#ifdef USE_COMP
+void Module::TranslateReplacedElementsFor(const CompSBasePlugin* cplugin, Variable* var)
+{
+  if (cplugin == NULL) return;
+  const SBase* psbmlo = cplugin->getParentSBMLObject();
+  const SBase* parentmod = psbmlo->getAncestorOfType(SBML_MODEL);
+  if (parentmod == NULL) {
+    parentmod = cplugin->getParentSBMLObject()->getAncestorOfType(SBML_COMP_MODELDEFINITION, "comp");
+  }
+  const CompModelPlugin* parentmodplug = NULL;
+  if (parentmod != NULL) {
+    parentmodplug = static_cast<const CompModelPlugin*>(parentmod->getPlugin("comp"));
+  }
+  assert(parentmodplug != NULL);
+  for (unsigned int re=0; re<cplugin->getNumReplacedElements(); re++) {
+    const ReplacedElement* replacement = cplugin->getReplacedElement(re);
+    string submod = replacement->getSubmodelRef();
+    vector<string> smname;
+    smname.push_back(submod);
+    Variable* smvar = GetVariable(smname);
+    if (smvar == NULL) {
+      g_registry.AddWarning("Unable to find submodule " + submod + " in model " + GetModuleName() + " which would have contained a replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + ".");
+    }
+    else {
+      if (smvar->GetType() != varModule) {
+        g_registry.AddWarning("Unable to connect a replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": the variable " + submod + " is not a submodel.");
+      }
+      else {
+        if (replacement->isSetIdRef()) {
+          smname.push_back(replacement->getIdRef());
+          smvar = GetVariable(smname);
+          if (smvar == NULL) {
+            g_registry.AddWarning("Unable to connect a replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": the variable " + ToStringFromVecDelimitedBy(smname, '.') + " could not be found.");
+          }
+          else {
+            AddSynchronizedPair(smvar, var);
+          }
+        }
+        else if (parentmodplug == NULL) {
+          //This seems unlikely?  But anyway.
+          g_registry.AddWarning("Unable to find parent model of " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ".");
+        }
+        else if (replacement->isSetPortRef()) {
+          string pid = replacement->getPortRef();
+          const Submodel* submodel = parentmodplug->getSubmodel(submod);
+          const SBMLDocument* doc = replacement->getSBMLDocument();
+          const CompSBMLDocumentPlugin* docplug = static_cast<const CompSBMLDocumentPlugin*>(doc->getPlugin("comp"));
+          const SBase* mod = docplug->getModel(submodel->getModelRef());
+          if (mod == NULL) {
+            g_registry.AddWarning("Unable to find the model " + submodel->getModelRef() + " in the SBML document referenced in the replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ".");
+          }
+          else {
+            int modtc = mod->getTypeCode();
+            if (modtc == SBML_COMP_EXTERNALMODELDEFINITION) {
+              const ExternalModelDefinition* extmoddef = static_cast<const ExternalModelDefinition*>(mod);
+              SBMLDocument* extdoc = NULL;
+              Model* extmod = NULL;
+              getDocumentFromExternalModelDefinition(extmoddef, extdoc, extmod);
+              if (extdoc->getModel() == NULL) {
+                g_registry.AddWarning("Unable to connect to a port for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": the externally-defined model could not be read.");
+                //LS DEBUG:  Get this working with relative pathnames in QTAntimony (which, as of now, it does not.)
+              }
+              else {
+                //LS DEBUG:  get this working, too.
+              }
+            }
+            else {
+              const Model* sm = static_cast<const Model*>(mod);
+              const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sm->getPlugin("comp"));
+              const Port* smport = mplugin->getPort(pid);
+              if (smport == NULL) {
+                g_registry.AddWarning("Unable to find the port " + pid + " in model " + submodel->getModelRef() + ".  The port does not seem to exist.  (Referenced in a replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ".)");
+              }
+              else {
+                if (smport->isSetIdRef()) {
+                  smname.push_back(smport->getIdRef());
+                  smvar = GetVariable(smname);
+                  if (smvar == NULL) {
+                    g_registry.AddWarning("Unable to connect a replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": the variable " + ToStringFromVecDelimitedBy(smname, '.') + " could not be found.");
+                  }
+                  else {
+                    AddSynchronizedPair(smvar, var);
+                  }
+                }
+                else {
+                  g_registry.AddWarning("Unable to connect to the port " + pid + " in model " + submod + ".  Antimony does not yet support for SBaseRef objects that do not use SIdRefs.");
+                }
+              }
+            }
+          }
+        }
+        else {
+          g_registry.AddWarning("Unable to translate replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": translation of replacements defined with elements other than idrefs is not yet implemented.");
+        }
+      }
+    }
+    if (replacement->isSetConversionFactor()) {
+      g_registry.AddWarning("Unable to translate the conversion factor for the replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": conversion factors are not yet added as a concept in Antimony.");
+    }
+  }
+}
+
+void Module::AddSubmodelsToDocument(SBMLDocument* sbml)
+{
+  CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(sbml->getPlugin("comp"));
+
+  size_t numsubmods = GetNumVariablesOfType(subModules, true);
+  if (numsubmods > 0) compdoc->setRequired(true);
+  for (size_t sm=0; sm<numsubmods; sm++) {
+    Module* submod = GetNthVariableOfType(subModules, sm, true)->GetModule();
+    Module* origmod = g_registry.GetModule(submod->GetModuleName());
+    submod->AddSubmodelsToDocument(sbml);
+    SBase* therealready = compdoc->getModel(origmod->GetModuleName());
+    if (therealready == NULL) {
+      const SBMLDocument* subdoc = origmod->GetSBML(true);
+      const ModelDefinition md(*(subdoc->getModel()));
+      int rv = compdoc->addModelDefinition(&md);
+    }
+  }
+}
+
+#endif  //USE_COMP
+
 void Module::LoadSBML(const Model* sbml)
 {
+#ifdef USE_COMP
+  const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
+  if (mplugin != NULL) {
+    for (unsigned int sm=0; sm<mplugin->getNumSubmodels(); sm++) {
+      const Submodel* submodel = mplugin->getSubmodel(sm);
+      string submodname = getNameFromSBMLObject(submodel, "submod");
+      Variable* var = AddOrFindVariable(&submodname);
+      if (submodel->isSetName()) {
+        var->SetDisplayName(submodel->getName());
+      }
+      string refname = submodel->getModelRef();
+      if (var->SetModule(&refname)) {
+        g_registry.AddWarning("Unable to find submodel " + refname + ".");
+      }
+      for (unsigned int d=0; d<submodel->getNumDeletions(); d++) {
+        const Deletion* deletion = submodel->getDeletion(d);
+        string delname = getNameFromSBMLObject(deletion, "del");
+        var = AddOrFindVariable(&delname);
+        g_registry.AddWarning("Unable to process the deletion " + delname + " from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions have not yet been added as a concept in Antimony.");
+        //LS DEBUG:  when we have deletions, add them here.
+      }
+      if (submodel->isSetLengthConversionFactor() ||
+          submodel->isSetAreaConversionFactor() ||
+          submodel->isSetVolumeConversionFactor() ||
+          submodel->isSetSubstanceConversionFactor() ||
+          submodel->isSetTimeConversionFactor() ||
+          submodel->isSetExtentConversionFactor()) {
+        g_registry.AddWarning("Unable to process the conversion factor(s) from submodel " + submodname + " in model " + GetModuleName() + ".  Conversion factors have not yet been added as a concept in Antimony.");
+        //LS DEBUG:  when we have conversion factors, add them here.
+      }
+    }
+  }
+#endif //USE_COMP
   //m_sbml = *sbmldoc;
   string sbmlname = "";
 
@@ -51,6 +207,12 @@ void Module::LoadSBML(const Model* sbml)
     if (compartment->isSetUnits()) {
       var->SetUnits(compartment->getUnits());
     }
+#ifdef USE_COMP
+    if (comp) {
+      const CompSBasePlugin* cplugin = static_cast<const CompSBasePlugin*>(compartment->getPlugin("comp"));
+      TranslateReplacedElementsFor(cplugin, var);
+    }
+#endif
   }
 
   //Species
@@ -96,12 +258,11 @@ void Module::LoadSBML(const Model* sbml)
     if (species->isSetUnits()) {
       var->SetUnits(species->getUnits());
     }
-  }
-
-
 #ifdef USE_COMP
-  //Deletion deletion;
-#endif //USE_COMP
+    const CompSBasePlugin* splugin = static_cast<const CompSBasePlugin*>(species->getPlugin("comp"));
+    TranslateReplacedElementsFor(splugin, var);
+#endif
+  }
 
   //Events:
   for (unsigned int ev=0; ev<sbml->getNumEvents(); ev++) {
@@ -157,6 +318,10 @@ void Module::LoadSBML(const Model* sbml)
       setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform, this);
       var->GetEvent()->AddResult(asntvar, asntform);
     }
+#ifdef USE_COMP
+    const CompSBasePlugin* eplugin = static_cast<const CompSBasePlugin*>(event->getPlugin("comp"));
+    TranslateReplacedElementsFor(eplugin, var);
+#endif
   }
 
   //LS DEBUG:  Add constraints?
@@ -178,6 +343,10 @@ void Module::LoadSBML(const Model* sbml)
     if (parameter->isSetUnits()) {
       var->SetUnits(parameter->getUnits());
     }
+#ifdef USE_COMP
+    const CompSBasePlugin* pplugin = static_cast<const CompSBasePlugin*>(parameter->getPlugin("comp"));
+    TranslateReplacedElementsFor(pplugin, var);
+#endif
   }
 
   //Initial Assignments:  can override 'getValue' values.
@@ -197,6 +366,7 @@ void Module::LoadSBML(const Model* sbml)
     else {
       //LS DEBUG:  error?  The 'symbol' is supposed to be required.
     }
+    //Don't need to check replacements--that'll all work out automatically.
   }
     
   //Rules:
@@ -236,6 +406,7 @@ void Module::LoadSBML(const Model* sbml)
     else {
       assert(false); //should be caught above
     }
+    //Don't need to check replacements for normal rules, but if we ever get algebraic rules, we will.
   }
 
   //Reactions
@@ -354,29 +525,90 @@ void Module::LoadSBML(const Model* sbml)
     }
     //Put reactants, products, and the formula together:
     AddNewReaction(&reactants, rxntype, &products, &formula, var);
+#ifdef USE_COMP
+    const CompSBasePlugin* rplugin = static_cast<const CompSBasePlugin*>(reaction->getPlugin("comp"));
+    TranslateReplacedElementsFor(rplugin, var);
+#endif
   }
+ 
+#ifdef USE_COMP
+  if(mplugin != NULL) {
+    //Ports!
+    for (unsigned int p=0; p<mplugin->getNumPorts(); p++) {
+      const Port* port = mplugin->getPort(p);
+      if (port->isSetIdRef()) {
+        string idref = port->getIdRef();
+        Variable* portvar = AddOrFindVariable(&idref);
+        AddVariableToExportList(portvar);
+      }
+      else {
+        g_registry.AddWarning("Unable to add port " + port->getId() + " to model " + GetModuleName() + ":  ports created without idrefs are currently untranslatable to antimony.");
+      }
+    }
+  }
+#endif //USE_COMP
+
   //Finally, fix the fact that 'time' used to be OK in functions (l2v1), but is no longer (l2v2).
   g_registry.FixTimeInFunctions();
   //And that some SBML-OK names are not OK in Antimony
   FixNames();
 }
 
-const SBMLDocument* Module::GetSBML()
+const SBMLDocument* Module::GetSBML(bool comp)
 {
   const Model* mod = m_sbml.getModel();
-  if (mod != NULL && mod->getId() == m_modulename) {
+  if (comp && mod != NULL && mod->getId() == m_modulename) {
     return &m_sbml;
   }
-  CreateSBMLModel();
+  CreateSBMLModel(comp);
   return &m_sbml;
 }
 
-void Module::CreateSBMLModel()
+void Module::CreateSBMLModel(bool comp)
 {
+#ifndef USE_COMP
+  if (comp) {
+    comp = false;
+    g_registry.AddWarning("Unable to create hierarchical version of SBML model:  libAntimony was not compiled with the USE_COMP flag set.  libSBML may need to be recompiled with USE_COMP as well.  Exporting flattened version of SBML file instead.");
+  }
+#endif
+  if (comp) {
+    SBMLDocument newdoc(&m_sbmlnamespaces);
+    m_sbml = newdoc;
+#ifdef USE_COMP
+    CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
+    if (compdoc != NULL) compdoc->setRequired(false);
+#endif
+  }
+  else {
+    SBMLNamespaces plainnamespaces(m_sbmllevel, m_sbmlversion);
+    SBMLDocument newdoc(&plainnamespaces);
+    m_sbml = newdoc;
+  }
+
   Model* sbmlmod = m_sbml.createModel();
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(m_modulename);
   char cc = g_registry.GetCC();
+
+#ifdef USE_COMP
+  CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
+  CompModelPlugin* mplugin = static_cast<CompModelPlugin*>(sbmlmod->getPlugin("comp"));
+  size_t numsubmods = GetNumVariablesOfType(subModules, true);
+
+  //Submodels!
+  if (comp) {
+    AddSubmodelsToDocument(&m_sbml);
+    for (size_t sm=0; sm<numsubmods; sm++) {
+      Variable* submod = GetNthVariableOfType(subModules, sm, true);
+      Module* module = submod->GetModule();
+      Submodel* sbmlsubmod = mplugin->createSubmodel();
+      sbmlsubmod->setId(submod->GetNameDelimitedBy(cc));
+      sbmlsubmod->setModelRef(module->GetModuleName());
+    }
+  }
+#endif //USE_COMP
+
   //User-defined functions
   for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
     const UserFunction* userfunction = g_registry.GetNthUserFunction(uf);
@@ -395,9 +627,21 @@ void Module::CreateSBMLModel()
   defaultCompartment->setSBOTerm(410); //The 'implicit compartment'
   unsigned int dim=3;
   defaultCompartment->setSpatialDimensions(dim);
-  size_t numcomps = GetNumVariablesOfType(allCompartments);
-  for (size_t comp=0; comp<numcomps; comp++) {
-    const Variable* compartment = GetNthVariableOfType(allCompartments, comp);
+#ifdef USE_COMP
+  if (comp) {
+    CompSBasePlugin* plugcompartment = static_cast<CompSBasePlugin*>(defaultCompartment->getPlugin("comp"));
+    for (size_t sm=0; sm<numsubmods; sm++) {
+      Variable* submod = GetNthVariableOfType(subModules, sm, true);
+      ReplacedElement* re = plugcompartment->createReplacedElement();
+      re->setSubmodelRef(submod->GetNameDelimitedBy(cc));
+      re->setIdRef(DEFAULTCOMP);
+      re->setIdentical(true);
+    }
+  }
+#endif //USE_COMP
+  size_t numcomps = GetNumVariablesOfType(allCompartments, comp);
+  for (size_t cmpt=0; cmpt<numcomps; cmpt++) {
+    const Variable* compartment = GetNthVariableOfType(allCompartments, cmpt, comp);
     Compartment* sbmlcomp = sbmlmod->createCompartment();
     sbmlcomp->setId(compartment->GetNameDelimitedBy(cc));
     if (compartment->GetDisplayName() != "") {
@@ -418,9 +662,9 @@ void Module::CreateSBMLModel()
   }
 
   //Species
-  size_t numspecies = GetNumVariablesOfType(allSpecies);
+  size_t numspecies = GetNumVariablesOfType(allSpecies, comp);
   for (size_t spec=0; spec < numspecies; spec++) {
-    const Variable* species = GetNthVariableOfType(allSpecies, spec);
+    const Variable* species = GetNthVariableOfType(allSpecies, spec, comp);
     Species* sbmlspecies = sbmlmod->createSpecies();
     sbmlspecies->setId(species->GetNameDelimitedBy(cc));
     if (species->GetDisplayName() != "") {
@@ -452,9 +696,9 @@ void Module::CreateSBMLModel()
   }
 
   //Formulas
-  size_t numforms = GetNumVariablesOfType(allFormulas);
+  size_t numforms = GetNumVariablesOfType(allFormulas, comp);
   for (size_t form=0; form < numforms; form++) {
-    const Variable* formvar = GetNthVariableOfType(allFormulas, form);
+    const Variable* formvar = GetNthVariableOfType(allFormulas, form, comp);
     const Formula*  formula = formvar->GetFormula();
     Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
@@ -474,9 +718,9 @@ void Module::CreateSBMLModel()
   }
 
   //Reactions
-  size_t numrxns = GetNumVariablesOfType(allReactions);
+  size_t numrxns = GetNumVariablesOfType(allReactions, comp);
   for (size_t rxn=0; rxn < numrxns; rxn++) {
-    const Variable* rxnvar = GetNthVariableOfType(allReactions, rxn);
+    const Variable* rxnvar = GetNthVariableOfType(allReactions, rxn, comp);
     const AntimonyReaction* reaction = rxnvar->GetReaction();
     if (reaction->IsEmpty()) {
       continue; //Reactions that involve no species are illegal in SBML.
@@ -534,9 +778,9 @@ void Module::CreateSBMLModel()
   }
 
   //Events
-  size_t numevents = GetNumVariablesOfType(allEvents);
+  size_t numevents = GetNumVariablesOfType(allEvents, comp);
   for (size_t ev=0; ev < numevents; ev++) {
-    const Variable* eventvar = GetNthVariableOfType(allEvents, ev);
+    const Variable* eventvar = GetNthVariableOfType(allEvents, ev, comp);
     const AntimonyEvent* event = eventvar->GetEvent();
     Event* sbmlevent = sbmlmod->createEvent();
     sbmlevent->setId(eventvar->GetNameDelimitedBy(cc));
@@ -581,9 +825,9 @@ void Module::CreateSBMLModel()
   }
 
   //Interactions
-  size_t numinteractions = GetNumVariablesOfType(allInteractions);
+  size_t numinteractions = GetNumVariablesOfType(allInteractions, comp);
   for (size_t irxn=0; irxn<numinteractions; irxn++) {
-    const Variable* arxnvar = GetNthVariableOfType(allInteractions, irxn);
+    const Variable* arxnvar = GetNthVariableOfType(allInteractions, irxn, comp);
     const AntimonyReaction* arxn = arxnvar->GetReaction();
     Reaction* rxn = sbmlmod->getReaction(arxn->GetRight()->GetNthReactant(0)->GetNameDelimitedBy(cc));
     if (rxn != NULL) {
@@ -596,9 +840,9 @@ void Module::CreateSBMLModel()
   }
 
   //Unknown variables (turn into parameters)
-  size_t numunknown = GetNumVariablesOfType(allUnknown);
+  size_t numunknown = GetNumVariablesOfType(allUnknown, comp);
   for (size_t form=0; form < numunknown; form++) {
-    const Variable* formvar = GetNthVariableOfType(allUnknown, form);
+    const Variable* formvar = GetNthVariableOfType(allUnknown, form, comp);
     Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
     if (formvar->GetDisplayName() != "") {
@@ -606,6 +850,64 @@ void Module::CreateSBMLModel()
     }
     param->setConstant(formvar->GetIsConst());
   }
+
+#ifdef USE_COMP
+  //Ports
+  if (comp) {
+    set<string> portnames;
+    pair<set<string>::iterator, bool> setret;
+    for (size_t ex=0; ex<m_exportlist.size(); ex++) {
+      Port* port = mplugin->createPort();
+      size_t test = m_exportlist[ex].size();
+      if (test > 1) {
+        test = test;
+      }
+      //assert(m_exportlist[ex].size()==1);
+      port->setIdRef(m_exportlist[ex][0]);
+      string portname = m_exportlist[ex][m_exportlist[ex].size()-1];
+      size_t digit = 0;
+      setret = portnames.insert(portname);
+      while (setret.second = false) {
+        portname = m_exportlist[ex][m_exportlist[ex].size()-1] + "_" + SizeTToString(digit);
+        setret = portnames.insert(portname);
+      }
+      port->setId(portname);
+    }
+    //Synchronized variables
+    for (size_t sync=0; sync<m_synchronized.size(); sync++) {
+      vector<string> name1 = m_synchronized[sync].first;
+      vector<string> name2 = m_synchronized[sync].second;
+      if (name2.size() == 1 && name1.size() != 1) {
+        //Switch the order if the second is a local variable and the first is not.
+        name1 = name2;
+        name2 = m_synchronized[sync].first;
+      }
+      const Variable* var1 = GetVariable(name1);
+      const Variable* var2 = GetVariable(name2);
+      if (name1.size() == 1 && name2.size() == 1) {
+        //Don't worry about it--we already removed it in the GetNthWhatever functions.
+      }
+      else if (name1.size()==1) {
+        SBase* sbmlvar1 = sbmlmod->getElementBySId(name1[0]);
+        CompSBasePlugin* svarplug1 = static_cast<CompSBasePlugin*>(sbmlvar1->getPlugin("comp"));
+        ReplacedElement* re = svarplug1->createReplacedElement();
+        re->setSubmodelRef(name2[0]);
+        size_t svn=1;
+        SBaseRef* sbr = re;
+        while (svn+1 < name2.size()) {
+          sbr->setIdRef(name2[svn]);
+          sbr = sbr->createSBaseRef();
+          svn++;
+        }
+        sbr->setIdRef(name2[svn]);
+      }
+      else {
+        //Need to create a local variable.
+
+      }
+    }
+  }
+#endif //USE_COMP
 }
 
 void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var)

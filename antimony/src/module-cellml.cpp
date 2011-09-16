@@ -600,8 +600,7 @@ iface::cellml_api::CellMLVariable* Module::AddNewVariableToCellML(string varname
   while (cmlvar != NULL) {
     //A variable with that name already exists; create a new one instead.
     cmlvarst = makeUTF16(varname + "_" + SizeTToString(varnum));
-    RETURN_INTO_OBJREF(cmlvar, iface::cellml_api::CellMLVariable,
-                       cmlvarset->getVariable(cmlvarst.c_str()));
+    cmlvar = already_AddRefd<iface::cellml_api::CellMLVariable>(cmlvarset->getVariable(cmlvarst.c_str()));
     varnum++;
   }
 

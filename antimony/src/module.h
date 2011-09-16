@@ -10,6 +10,10 @@
 #include <sbml/SBMLTypes.h>
 #endif
 
+#ifdef USE_COMP
+#include <sbml/packages/comp/common/CompExtensionTypes.h>
+#endif
+
 #ifndef NCELLML
 //#include "ICellMLInputServices.h"
 //#include <nsCOMPtr.h>
@@ -46,6 +50,7 @@ private:
   std::map<std::vector<std::string>, Variable*> m_varmap;
 
 #ifndef NSBML
+  SBMLNamespaces m_sbmlnamespaces;
   SBMLDocument m_sbml;
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
@@ -124,19 +129,25 @@ public:
   std::string GetSBMLInfo() const {return m_libsbml_info;};
   std::string GetSBMLWarnings() const {return m_libsbml_warnings;};
 #endif
-  size_t GetNumVariablesOfType(return_type rtype) const;
-  const Variable* GetNthVariableOfType(return_type rtype, size_t n) const;
+  size_t GetNumVariablesOfType(return_type rtype, bool comp) const;
+  const Variable* GetNthVariableOfType(return_type rtype, size_t n, bool comp) const;
+        Variable* GetNthVariableOfType(return_type rtype, size_t n, bool comp);
   bool   AreEquivalent(return_type rtype, var_type vtype) const;
   bool   AreEquivalent(return_type rtype, bool isconst) const;
 
   std::string ListSynchronizedVariables(std::string indent, std::set<size_t> alreadysynchronized) const;
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
 #ifndef NSBML
-  void  LoadSBML(const Model* sbmldoc);
-  const SBMLDocument* GetSBML();
-  void  CreateSBMLModel();
+#ifdef USE_COMP
+  void TranslateReplacedElementsFor(const CompSBasePlugin* cplugin, Variable* var);
+  void  AddSubmodelsToDocument(SBMLDocument* sbml);
+#endif //USE_COMP
+  void  LoadSBML(const SBMLDocument* sbmldoc);
+  void  LoadSBML(const Model* sbml);
+  const SBMLDocument* GetSBML(bool comp);
+  void  CreateSBMLModel(bool comp);
   void  SetAssignmentFor(Model* sbmlmod, const Variable* var);
-#endif
+#endif //NSBML
 
 #ifndef NCELLML
   //Reading:
@@ -201,6 +212,7 @@ private:
   bool OrigIsAlreadyReaction(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rxn) const;
   bool OrigIsAlreadyEvent(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string event) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
+  const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;
 };
 
 #include "userfunction.h"

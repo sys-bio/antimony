@@ -1,7 +1,7 @@
 To use these Windows executables:
-   * QTAntimony is a simple editor that can convert Antimony models to SBML 
-     and visa versa.  It can read both Antimony and SBML files, and you can 
-     edit either and translate between them.  Do note that if you convert one 
+   * QTAntimony is a simple editor that can convert models between Antimony, SBML, 
+     and CellML.  It can read Antimony, SBML, and CellML files, and you can 
+     edit any and translate between them.  Do note that if you convert one 
      format to the other, modify the latter, then translate it back, you will 
      often lose information in the process--any annotation or unit definitions
      in the SBML file will not survive the round-trip, for example.  However, 
@@ -13,7 +13,7 @@ To use these Windows executables:
 
      C:\Program Files\Antimony
 
-     and the suite of BioModels (http://biomodels.net/) in:
+     and the suite of antimony-translated BioModels (http://biomodels.net/) in:
 
      C:\Program Files\Antimony\biomodels
 

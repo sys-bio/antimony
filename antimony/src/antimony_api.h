@@ -61,7 +61,7 @@
 #define ANTIMONY_API_H
 
 #ifndef LIBANTIMONY_VERSION_STRING //Should be defined in the makefile (from CMakeLists.txt)
-#define LIBANTIMONY_VERSION_STRING "v1.4"
+#define LIBANTIMONY_VERSION_STRING "v2.0"
 #endif
 
 
@@ -216,20 +216,37 @@ LIB_EXTERN char* getAntimonyString(const char* moduleName);
 
 #ifndef NSBML
 /**
- * Writes out a SBML-formatted XML file to the file indicated.  For now, the output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libSBML's 'writeSBML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
+ * Writes out a SBML-formatted XML file to the file indicated.  The output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libSBML's 'writeSBML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
  * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
  *
  *@see getSBMLString
  */
 LIB_EXTERN int   writeSBMLFile(const char* filename, const char* moduleName);
 /**
- * Returns the same output as writeSBMLFile, but to a char* array instead of to a file.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
+ * Returns the same output as writeSBMLFile, but to a char* array instead of to a file.  The output is 'flattened', that is, all components of sub-modules are re-named and placed in a single model.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
  * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
  *
  *@see writeSBMLFile
  */
 LIB_EXTERN char* getSBMLString(const char* moduleName);
-#endif
+
+#ifdef USE_COMP
+/**
+ * Writes out a SBML-formatted XML file to the file indicated, using the 'Hierarchichal Model Composition' package.  This retains Antimony's modularity in the SBML format.  Returns the output of libSBML's 'writeSBML', which "Returns non-zero on success and zero if the filename could not be opened for writing."  An error indicating this is set on returning zero.
+ * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag, or if compiled without the USE_COMP flag.
+ *
+ *@see getSBMLString
+ */
+LIB_EXTERN int   writeCompSBMLFile(const char* filename, const char* moduleName);
+/**
+ * Returns the same output as writeSBMLFile, but to a char* array instead of to a file, using the 'Hierarchichal Model Composition' package.  This retains Antimony's modularity in the SBML format.  Returns the output of libSBML's 'writeSBMLToString", which "Returns the string on success and NULL if one of the underlying parser components fail (rare)."
+ * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag, or if compiled without the USE_COMP flag.
+ *
+ *@see writeSBMLFile
+ */
+LIB_EXTERN char* getCompSBMLString(const char* moduleName);
+#endif //USE_COMP
+#endif //NSBML
 
 #ifndef NCELLML
 /**
