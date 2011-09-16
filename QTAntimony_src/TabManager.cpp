@@ -20,12 +20,14 @@
 
 using namespace std;
 
-TabManager::TabManager(QWidget* parent)
+TabManager::TabManager(QWidget* parent, QAction* flatten)
         : QTabWidget(parent),
         m_oldtab(-1),
         m_anttab(0),
         m_sbmltab(1),
-        m_cellmltab(-1)
+        m_cellmltab(-1),
+        m_flatten(false),
+        m_actionFlatten(flatten)
 {
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(SwitchTabs(int)));
 }
@@ -153,6 +155,8 @@ void TabManager::zoomOut()
 
 void TabManager::sbmlTabs(bool checked)
 {
+  if (checked && m_sbmltab != -1) return; //Just making sure.
+  if (!checked && m_sbmltab == -1) return; //Just making sure.
     if (checked) {
         assert(m_sbmltab == -1);
         //Add an SBML Tab (TranslateAntimony will add any necessary extras)
@@ -173,7 +177,9 @@ void TabManager::sbmlTabs(bool checked)
 
 void TabManager::cellmlTabs(bool checked)
 {
-    if (checked) {
+  if (checked && m_cellmltab != -1) return; //reconfirm
+  if (!checked && m_cellmltab == -1) return; //reconfirm
+  if (checked) {
         assert(m_cellmltab == -1);
         //Add a CellML Tab
         m_cellmltab = 1;
@@ -327,7 +333,7 @@ void TabManager::TranslateAntimony(QString& text)
 		ChangeableTextBox* cellmltab = textbox(m_cellmltab);
 		char* mainmodel = getMainModuleName();
 #ifdef NCELLML
-                char* cellmltext = "Temp CellML Text";
+                char* cellmltext = "Unable to translate CellML Text";
 #else
                 char* cellmltext = getCellMLString(mainmodel); //LS DEBUG CELLML
 #endif
@@ -359,8 +365,17 @@ void TabManager::TranslateAntimony(QString& text)
 				tabnum = nummods+m_sbmltab-1;
 			}
 			ChangeableTextBox* tab_s = textbox(tabnum);
-			tab_s->SetTranslatedText(QString(getSBMLString(modname)));
-			tab_s->SetModelName(QString(modname));
+#ifdef USE_COMP
+      if (m_flatten) {
+        tab_s->SetTranslatedText(QString(getSBMLString(modname)));
+      }
+      else {
+        tab_s->SetTranslatedText(QString(getCompSBMLString(modname)));
+      }
+#else
+      tab_s->SetTranslatedText(QString(getSBMLString(modname)));
+#endif
+      tab_s->SetModelName(QString(modname));
 			setTabText(tabnum, tab_s->GetTabName());
 		}
 	}
@@ -382,29 +397,39 @@ void TabManager::TranslateSBML(int tab, const QString& text)
         //do something about the error
         return;
     }
+    unsigned long nummods = getNumModules();
+    bool multiples = true;
+    if (nummods==1 || (nummods==2 && getNumSymbolsOfType(getNthModuleName(0), allSymbols)==0) ) {
+      multiples = false;
+    }
     long modelnum = 0;
     if (getNumModules() == 2) {
         modelnum = 1;
     }
-    QString modelname = getNthModuleName(modelnum);
+    QString modelname = getMainModuleName();
     tab_s->SetModelName(modelname);
     setTabText(tab, tab_s->GetTabName());
 
     char* antimonytext = getAntimonyString(NULL);
     AntimonyTab* anttab = static_cast<AntimonyTab*>(textbox(m_anttab));
-    anttab->ReplaceModelWithString(oldmodelname, QString(antimonytext));
-    //Now set the antimony tab type appropriately.
-    bool someSBMLtranslated = false;
-    for (int sbml=1; sbml<count(); sbml++) {
-        if (!textbox(sbml)->IsOriginal()) {
-            someSBMLtranslated = true;
-        }
-    }
-    if (someSBMLtranslated) {
-        anttab->SetMixed();
+    if (multiples) {
+      anttab->SetTranslatedText(QString(antimonytext));
     }
     else {
+      anttab->ReplaceModelWithString(oldmodelname, QString(antimonytext));
+      //Now set the antimony tab type appropriately.
+      bool someSBMLtranslated = false;
+      for (int sbml=1; sbml<count(); sbml++) {
+        if (!textbox(sbml)->IsOriginal()) {
+          someSBMLtranslated = true;
+        }
+      }
+      if (someSBMLtranslated) {
+        anttab->SetMixed();
+      }
+      else {
         anttab->SetTranslated();
+      }
     }
     clearPreviousLoads();
 #ifndef WIN32
@@ -415,9 +440,11 @@ void TabManager::TranslateSBML(int tab, const QString& text)
 void TabManager::TranslateCellML(QString& text)
 {
     textbox(m_cellmltab)->SetOriginal();
-//    long handle = loadCellMLString(text.toUtf8().data());
-	//LS DEBUG CELLML
+#ifdef NCELLML
     long handle = loadSBMLString(text.toUtf8().data());
+#else
+    long handle = loadCellMLString(text.toUtf8().data());
+#endif
     if (handle == -1) {
         //error condition
         char* error = getLastError();
@@ -445,7 +472,16 @@ void TabManager::TranslateCellML(QString& text)
         for (long mod=0; mod<nummods; mod++) {
             char* modname = getNthModuleName(mod);
             ChangeableTextBox* tab_s = textbox(tabnum);
+#ifdef USE_COMP
+            if (m_flatten) {
+              tab_s->SetTranslatedText(QString(getSBMLString(modname)));
+            }
+            else {
+              tab_s->SetTranslatedText(QString(getCompSBMLString(modname)));
+            }
+#else
             tab_s->SetTranslatedText(QString(getSBMLString(modname)));
+#endif
             tab_s->SetModelName(QString(modname));
             setTabText(tabnum, tab_s->GetTabName());
             tabnum++;
@@ -494,10 +530,45 @@ void TabManager::SetAllSBMLLevelsAndVersions()
       levelversion = 5;
     }
   }
+  if (levelversion <=4 && m_flatten==false) {
+    m_actionFlatten->toggle();
+  }
   for (int tnum=m_sbmltab; tnum<count(); tnum++) {
     sbmltab = static_cast<SBMLTab*>(textbox(tnum));
     sbmltab->SetLevelAndVersion(levelversion);
   }
+}
+
+void TabManager::SetFlatten(bool flatten)
+{
+#ifndef USE_COMP
+  flatten = false;
+#endif
+  AntimonyTab* anttab = static_cast<AntimonyTab*>(textbox(m_anttab));
+  anttab->SetFlatten(flatten);
+  if (m_flatten==flatten) return; //Don't try to switch anything.
+  m_flatten = flatten;
+  //change the flattening state
+  for (int tnum=m_sbmltab; tnum<count(); tnum++) {
+    SBMLTab* sbmltab = static_cast<SBMLTab*>(textbox(tnum));
+    QString SBML;
+#ifdef USE_COMP
+    if (flatten) {
+#endif
+      loadSBMLString(sbmltab->toPlainText().toAscii());
+      SBML = getSBMLString(NULL);
+#ifdef USE_COMP
+    }
+    else {
+      QString modelname = sbmltab->GetModelName();
+      loadAntimonyString(anttab->toPlainText().toAscii());
+      SBML = getCompSBMLString(modelname.toAscii());
+      sbmltab->StoreLevelAndVersion(3, 1);
+    }
+#endif
+    sbmltab->SetTranslatedText(SBML);
+  }
+  clearPreviousLoads();
 }
 
 void TabManager::TabNameIs(const QString& tabname, ChangeableTextBox* tab)
@@ -640,6 +711,7 @@ void TabManager::SaveTabDisplay()
     qset.sync();
     qset.setValue("displaysbml", (m_sbmltab!= -1));
     qset.setValue("displaycellml", (m_cellmltab != -1));
+    qset.setValue("flattensbml", m_flatten);
 }
 
 #ifdef SBW_INTEGRATION

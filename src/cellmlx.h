@@ -4,6 +4,10 @@
 #ifndef NCELLML
 #include "IfaceCellML_APISPEC.hxx"
 #include "cellml-api-cxx-support.hpp"
+#ifdef WIN32
+#undef WIN32
+#define WIN32 1 //CellML wants this to just be #defined, but SBML wants it to be 1.
+#endif
 
 #include <string>
 #include <vector>

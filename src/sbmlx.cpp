@@ -39,29 +39,33 @@ string getNameFromSBMLObject(const SBase* sbml, string basename)
     } while (foundvar != NULL);
   }
   assert(name != "");
+  if (name != sbml->getId()) {
+    SBase* varsbml = const_cast<SBase*>(sbml);
+    varsbml->setId(name);
+  }
   return name;
 }
 
 /*
-string getNameFromSBMLObject(string ID, string name, string basename)
-{
+  string getNameFromSBMLObject(string ID, string name, string basename)
+  {
   if (ID != "") return ID;
   if (name != "") return name;
   long num=0;
   Variable* foundvar = NULL;
   do {
-    char charnum[50];
-    sprintf(charnum, "%li", num);
-    num++;
-    name = basename;
-    name += charnum;
-    vector<string> fullname;
-    fullname.push_back(name);
-    foundvar = g_registry.CurrentModule()->GetVariable(fullname);
+  char charnum[50];
+  sprintf(charnum, "%li", num);
+  num++;
+  name = basename;
+  name += charnum;
+  vector<string> fullname;
+  fullname.push_back(name);
+  foundvar = g_registry.CurrentModule()->GetVariable(fullname);
   } while (foundvar != NULL);
   assert(name != "");
   return name;
-}
+  }
 */
 void matchNamesToTypes(ASTNode *node)  
 {
@@ -119,8 +123,8 @@ ASTNode* parseStringToASTNode(const string& formula)
   ASTNode* rootnode = SBML_parseFormula(formula.c_str());
   if (rootnode == NULL) return NULL;
   if (formula.find("time") != string::npos ||
-    formula.find("avogadro") != string::npos ||
-    formula.find("delay") != string::npos) {
+      formula.find("avogadro") != string::npos ||
+      formula.find("delay") != string::npos) {
     matchTypesToNames(rootnode);
   }
   return rootnode;
@@ -311,3 +315,51 @@ void FixName(map<vector<string>, Variable*>& varmap)
   }
   
 }
+#ifdef USE_COMP
+void getDocumentFromExternalModelDefinition(const ExternalModelDefinition* extmoddef, SBMLDocument*& extdoc, Model*& extmod)
+{
+  string source = extmoddef->getSource();
+  size_t colon = source.find(':');
+  if (colon != string::npos) {
+    string first = source.substr(0, colon);
+    if (CaselessStrCmp(first, "urn")) {
+      string err = "URNs";
+      size_t colon2 = source.find(':', colon+1);
+      string second = source.substr(colon+1, colon2-colon-1);
+      if (CaselessStrCmp(second, "miriam")) {
+        err = "MIRIAM URNs";
+        size_t colon3 = source.find(':', colon2+1);
+        string third = source.substr(colon2+1, colon3-colon2-1);
+        if (CaselessStrCmp(third, "biomodels.db")) {
+          err = "MIRIAM Biomodels URNs";
+        }
+      }
+      g_registry.AddWarning("Unable to open document " + source + ":  Reading " + err + " has not yet been implemented.");
+      extdoc = NULL;
+      extmod = NULL;
+      return;
+    }
+  }
+  extdoc = readSBMLFromFile(source.c_str());
+  if (extdoc->getModel() == NULL) {
+    extmod = NULL;
+    return;
+  }
+  if (extmoddef->isSetModelRef()) {
+    CompSBMLDocumentPlugin* extdocp = static_cast<CompSBMLDocumentPlugin*>(extdoc->getPlugin("comp"));
+    string extmodname = extmoddef->getModelRef();
+    if (extdocp != NULL) {
+      SBase* extmodsb = extdocp->getModel(extmodname);
+      if (extmodsb != NULL && extmodsb->getTypeCode() == SBML_COMP_EXTERNALMODELDEFINITION) {
+        const ExternalModelDefinition* extm2 = static_cast<const ExternalModelDefinition*>(extmodsb);
+        return getDocumentFromExternalModelDefinition(extm2, extdoc, extmod);
+      }
+      else {
+        extmod = static_cast<Model*>(extmodsb);
+        return;
+      }
+    }
+  }
+  extmod = extdoc->getModel();
+}
+#endif

@@ -11,8 +11,10 @@ private:
     int m_anttab;
     int m_sbmltab;
     int m_cellmltab;
+    bool m_flatten;
+    QAction* m_actionFlatten; 
 public:
-    TabManager(QWidget* parent);
+    TabManager(QWidget* parent, QAction* flatten);
     //~TabManager();  //Hmm, do we need destructors here?
     int addTab(ChangeableTextBox* page, const QString& label);
     int addTab(ChangeableTextBox* page, const QIcon& icon, const QString& label);
@@ -60,6 +62,7 @@ public slots:
     void TranslateCellML();
 
     void SetAllSBMLLevelsAndVersions();
+    void SetFlatten(bool);
 
     void TabNameIs(const QString& tabname, ChangeableTextBox* tab);
 

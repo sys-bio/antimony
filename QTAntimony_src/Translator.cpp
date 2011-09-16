@@ -49,6 +49,10 @@ Translator::Translator(QTAntimony* app, QString filename)
         m_antimony(),
         m_filewatcher(new FileWatcher)
 {
+    QAction* actionFlattenSBML = new QAction(tr("&Flatten SBML tab(s)"), this);
+    m_tabmanager = new TabManager(this, actionFlattenSBML);
+    m_antimony = new AntimonyTab;
+
     //Set the window icon (for windows)
     QIcon anticon("antimony.ico");
     setWindowIcon(anticon);
@@ -59,6 +63,13 @@ Translator::Translator(QTAntimony* app, QString filename)
     displaysbml = (qset.value("displaysbml", displaysbml).toBool());
     bool displaycellml = false;
     displaycellml = (qset.value("displaycellml", displaycellml).toBool());
+#ifndef NCELLML
+    displaysbml = true;
+    displaycellml = false;
+#endif
+
+    bool flattensbml = false;
+    flattensbml = (qset.value("flattensbml", flattensbml).toBool());
 
     //Actions
     //File
@@ -130,6 +141,9 @@ Translator::Translator(QTAntimony* app, QString filename)
     actionFind->setEnabled(false);
     m_actionSetSBMLLevelAndVersion = new QAction(tr("Set SBML &Level and Version"), this);
     m_actionSetSBMLLevelAndVersion->setEnabled(true);
+    actionFlattenSBML->setCheckable(true);
+    actionFlattenSBML->setChecked(flattensbml);
+    actionFlattenSBML->setShortcut(QKeySequence(tr("Ctrl+f")));
 
     //View
 //LS DEBUG CELLML
@@ -163,8 +177,6 @@ Translator::Translator(QTAntimony* app, QString filename)
 
     //The tabs
     setWindowTitle("QTAntimony");
-    m_tabmanager = new TabManager(this);
-    m_antimony = new AntimonyTab;
     ChangeableTextBox* active = m_antimony;
     m_tabmanager->addTab(m_antimony, m_antimony->GetTabName());
     connect(m_antimony, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
@@ -191,18 +203,38 @@ Translator::Translator(QTAntimony* app, QString filename)
                 m_antimony->setText(filetext);
                 m_antimony->SetSavedFilename(filename);
                 m_antimony->SetOriginal();
+#ifndef NCELLML
                 if (displaycellml) {
                     char* modname = getMainModuleName();
-                    AddCellMLTab(modname, getSBMLString(modname), true);
+                    AddCellMLTab(modname, getCellMLString(modname), true);
                 }
+#endif //NCELLML
                 if (displaysbml) {
                     for (size_t mod=1; mod<getNumModules(); mod++) {
                         char* modname = getNthModuleName(mod);
+#ifdef USE_COMP
+                        if (flattensbml) {
+                          AddSBMLTab(modname, getSBMLString(modname), true);
+                        }
+                        else {
+                          AddSBMLTab(modname, getCompSBMLString(modname), true);
+                        }
+#else
                         AddSBMLTab(modname, getSBMLString(modname), true);
+#endif
                     }
                     char* mod0name = getNthModuleName(0);
                     if (getNumSymbolsOfType(mod0name, allSymbols) != 0 || getNumModules()==1) {
+#ifdef USE_COMP
+                        if (flattensbml) {
+                          AddSBMLTab(mod0name, getSBMLString(mod0name), true);
+                        }
+                        else {
+                          AddSBMLTab(mod0name, getCompSBMLString(mod0name), true);
+                        }
+#else
                         AddSBMLTab(mod0name, getSBMLString(mod0name), true);
+#endif
                     }
                 }
             }
@@ -300,6 +332,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(actionTranslateAntimony, SIGNAL(triggered()), m_tabmanager, SLOT(TranslateAntimony()));
     connect(actionTranslateSBML, SIGNAL(triggered()), m_tabmanager, SLOT(TranslateSBML()));
     connect(m_actionSetSBMLLevelAndVersion, SIGNAL(triggered()), m_tabmanager, SLOT(SetAllSBMLLevelsAndVersions()));
+    connect(actionFlattenSBML, SIGNAL(toggled(bool)), m_tabmanager, SLOT(SetFlatten(bool)));
     connect(m_actionRevertToTranslated, SIGNAL(triggered()), m_tabmanager, SLOT(revertToTranslated()));
     connect(m_antimony, SIGNAL(TranslatedAvailable(bool)), m_actionRevertToTranslated, SLOT(setEnabled(bool)));
     connect(m_actionRevertToOriginal, SIGNAL(triggered()), m_tabmanager, SLOT(revertToOriginal()));
@@ -353,6 +386,9 @@ Translator::Translator(QTAntimony* app, QString filename)
     editmenu->addAction(m_actionRevertToOriginal);
     editmenu->addSeparator();
     editmenu->addAction(m_actionSetSBMLLevelAndVersion);
+#ifdef USE_COMP
+    editmenu->addAction(actionFlattenSBML);
+#endif
     editmenu->addSeparator();
     editmenu->addAction(actionFind);
 
@@ -385,6 +421,10 @@ Translator::Translator(QTAntimony* app, QString filename)
     nextTab->setEnabled(true);
     connect(nextTab, SIGNAL(triggered()), m_tabmanager, SLOT(nextTab()));
 
+
+    m_tabmanager->sbmlTabs(displaysbml);
+    m_tabmanager->cellmlTabs(displaycellml);
+    m_tabmanager->SetFlatten(flattensbml);
 
     //And finally...
     setCentralWidget(m_tabmanager);

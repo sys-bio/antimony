@@ -11,6 +11,7 @@ private:
     QString  m_selectedasSBML;
     bool     m_ismixed;
     QString  m_filenodirectory;
+    bool     m_flatten;
 
     bool setupSBMLCopy();
 
@@ -23,6 +24,7 @@ public:
     virtual void ReplaceModelWithString(QString model, QString text);
     virtual bool IsMixed();
     virtual void SetFilename(QString filename);
+    virtual void SetFlatten(bool flatten) {m_flatten = flatten;};
     void SetMixed();
 
 public slots:
