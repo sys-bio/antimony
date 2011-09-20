@@ -27,6 +27,9 @@ int main(int argc, char** argv)
   options += "\n\t-o antimony : Output all models in Antimony format";
 #ifndef NSBML
   options += "\n\t-o sbml     : Output the 'main' model as SBML";
+#ifdef USE_COMP
+  options += "\n\t-o sbml-comp: Output all models in a single SBML file using the\n\t               (unoffical) 'comp' package.";
+#endif
   options += "\n\t-o allsbml  : Output each model and submodel as a separate SBML model";
 #ifndef NCELLML
   options += "\n\t-o cellml   : Output the 'main' model as CellML";
@@ -56,6 +59,7 @@ int main(int argc, char** argv)
 
   bool outputantimony = false;
   bool outputsbml = false;
+  bool outputcompsbml = false;
   bool outputallsbml = false;
   bool outputcellml = false;
   string outfilename = "";
@@ -94,6 +98,14 @@ int main(int argc, char** argv)
           outputsbml = true;
 #else
           cerr << "SBML output is not supported in this version of sbtranslate.  You must recompile the program and include the libSBML library.  Use '-h' for more information.";
+          retval = 1;
+#endif
+        }
+        else if (CaselessStrcmp(outfmt, "sbml-comp")) {
+#ifdef USE_COMP
+          outputcompsbml = true;
+#else
+          cerr << "SBML 'comp' output (the format used in the Hierarchical Model Composition package for SBML Level 3) is not supported in this version of sbtranslate.  You must recompile the program and include a beta version of the libSBML library, together with the 'comp' package enabled.  Use '-h' for more information.";
           retval = 1;
 #endif
         }
@@ -155,7 +167,7 @@ int main(int argc, char** argv)
       return retval;
     }
   }
-  if (!(outputantimony || outputsbml || outputallsbml || outputcellml)) {
+  if (!(outputantimony || outputsbml || outputallsbml || outputcompsbml || outputcellml)) {
         cerr << "You must provide an output option using the '-o' flag.  Valid options are:\n" << options << "\n\nUse '-h' for more options." << endl;
         retval = 1;
   }
@@ -288,9 +300,16 @@ int main(int argc, char** argv)
       }
     }
 #ifndef NSBML
-    if (outputsbml) {
+    if (outputsbml || outputcompsbml) {
       if (writestdout) {
-        cout << getSBMLString(NULL) << endl;
+        if (outputcompsbml) {
+#ifdef USE_COMP
+          cout << getCompSBMLString(NULL) << endl;
+#endif
+        }
+        else {
+          cout << getSBMLString(NULL) << endl;
+        }
       }
       else {
         string sbmloutname = outfilename;
@@ -308,11 +327,23 @@ int main(int argc, char** argv)
             }
           }
         }
-        if (writeSBMLFile(sbmloutname.c_str(), NULL))  { //NULL for 'all models'
-          cout << "Successfully wrote " << sbmloutname << endl;
+        if (outputcompsbml) {
+#ifdef USE_COMP
+          if (writeCompSBMLFile(sbmloutname.c_str(), NULL))  { //NULL for 'all models'
+            cout << "Successfully wrote " << sbmloutname << endl;
+          }
+          else {
+            cerr << getLastError() << endl;
+          }
+#endif
         }
         else {
-          cerr << getLastError() << endl;
+          if (writeSBMLFile(sbmloutname.c_str(), NULL))  { //NULL for 'all models'
+            cout << "Successfully wrote " << sbmloutname << endl;
+          }
+          else {
+            cerr << getLastError() << endl;
+          }
         }
       }
     }
