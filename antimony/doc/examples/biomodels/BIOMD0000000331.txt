@@ -1,0 +1,69 @@
+//Created by libAntimony v2.0
+model Larsen2004_CalciumSpiking_EnzymeBinding()
+
+  // Compartments and Species:
+  compartment cytoplasm, ER, mit;
+  species $G_alpha in cytoplasm, $PLC in cytoplasm, $Ca_cyt in cytoplasm;
+  species $Ca_ER in ER, $Ca_mit in mit, $Enz in cytoplasm, $Product in cytoplasm;
+
+  // Rate Rules:
+  G_alpha' = k1 + k2 * G_alpha - k3 * G_alpha * PLC / (G_alpha + K4) - k5 * G_alpha * Ca_cyt / (G_alpha + K6);
+  PLC' = k7 * G_alpha - k8 * PLC / (PLC + K9);
+  Ca_cyt' = (Ca_ER - Ca_cyt) * k10 * Ca_cyt * PLC^4 / (PLC^4 + K11^4) + k12 * PLC + k13 * G_alpha - k14 * Ca_cyt / (Ca_cyt + K15) - k16 * Ca_cyt / (Ca_cyt + K17) - k18 * Ca_cyt^8 / (K19^8 + Ca_cyt^8) + (Ca_mit - Ca_cyt) * k20 * Ca_cyt / (Ca_cyt + K21);
+  Ca_ER' = -(Ca_ER - Ca_cyt) * k10 * Ca_cyt * PLC^4 / (PLC^4 + K11^4) + k16 * Ca_cyt / (Ca_cyt + K17);
+  Ca_mit' = k18 * Ca_cyt^8 / (K19^8 + Ca_cyt^8) - (Ca_mit - Ca_cyt) * k20 * Ca_cyt / (Ca_cyt + K21);
+  Enz' = k_act * Ca_cyt^p / (KM^p + Ca_cyt^p) - k_inact * Enz;
+  Product' = k_enz * Enz - k_rem * Product;
+
+  // Species initializations:
+  G_alpha = 0.01;
+  PLC = 0.01;
+  Ca_cyt = 0.01;
+  Ca_ER = 10;
+  Ca_mit = 0.001;
+  Enz = 0;
+  Product = 0;
+
+  // Compartment initializations:
+  cytoplasm = 1;
+  ER = 1;
+  mit = 1;
+
+  // Variable initializations:
+  k1 = 0.01;
+  k2 = 1.65;
+  k3 = 0.64;
+  K4 = 0.09;
+  k5 = 4.88;
+  K6 = 1.18;
+  k7 = 2.08;
+  k8 = 32.24;
+  K9 = 29.09;
+  k10 = 0.7;
+  K11 = 3;
+  k12 = 2.8;
+  k13 = 13.4;
+  k14 = 153;
+  K15 = 0.16;
+  k16 = 7;
+  K17 = 0.05;
+  k18 = 79;
+  K19 = 3.5;
+  k20 = 0.81;
+  K21 = 4.5;
+  k_act = 5;
+  KM = 0.62;
+  k_inact = 0.4;
+  p = 4;
+  k_enz = 3;
+  k_rem = 3;
+
+  //Display Names:
+  mit is "mitochondria";
+  G_alpha is "G-alpha";
+  Ca_cyt is "Calcium-Cyt";
+  Ca_ER is "Calcium-ER";
+  Ca_mit is "Calcium-mit";
+  Enz is "Enzyme";
+  Product is "EnzCatlysedProduct";
+end

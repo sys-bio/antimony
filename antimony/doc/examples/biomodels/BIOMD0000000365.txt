@@ -1,0 +1,97 @@
+//Created by libAntimony v2.0
+model Model_1()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species APC in compartment_1, Va in compartment_1, Va_APC in compartment_1;
+  species Va3 in compartment_1, Va3_APC in compartment_1, Va5 in compartment_1;
+  species Va5_APC in compartment_1, Va53 in compartment_1, Va53_APC in compartment_1;
+  species Va56 in compartment_1, Va56_APC in compartment_1, Va36 in compartment_1;
+  species Va36_APC in compartment_1, Va536 in compartment_1, Va536_APC in compartment_1;
+  species HC in compartment_1, LC in compartment_1, HC5 in compartment_1;
+  species HC3 in compartment_1, HC56 in compartment_1, HC36 in compartment_1;
+  species HC536 in compartment_1, LC_APC in compartment_1, HC53 in compartment_1;
+  species VaA3 in compartment_1, VaA53 in compartment_1, VaA36 in compartment_1;
+  species VaA536 in compartment_1, VaLCA1 in compartment_1, VaLCA1_APC in compartment_1;
+
+  // Reactions:
+  r1: Va + APC -> Va_APC; compartment_1 * (k1 * Va * APC - k2 * Va_APC);
+  r2: Va3 + APC -> Va3_APC; compartment_1 * (k1 * Va3 * APC - k2 * Va3_APC);
+  r3: Va5 + APC -> Va5_APC; compartment_1 * (k1 * Va5 * APC - k2 * Va5_APC);
+  r4: Va53 + APC -> Va53_APC; compartment_1 * (k1 * Va53 * APC - k2 * Va53_APC);
+  r5: Va56 + APC -> Va56_APC; compartment_1 * (k1 * Va56 * APC - k2 * Va56_APC);
+  r6: Va36 + APC -> Va36_APC; compartment_1 * (k1 * Va36 * APC - k2 * Va36_APC);
+  r7: Va536 + APC -> Va536_APC; compartment_1 * (k1 * Va536 * APC - k2 * Va536_APC);
+  r8: Va_APC => Va5_APC; compartment_1 * k5 * Va_APC;
+  r9: Va5_APC => Va56_APC; compartment_1 * k6 * Va5_APC;
+  r10: Va56_APC => Va536_APC; compartment_1 * k3 * Va56_APC;
+  r11: Va5_APC => Va53_APC; compartment_1 * k3 * Va5_APC;
+  r12: Va53_APC => Va536_APC; compartment_1 * k6 * Va53_APC;
+  r13: Va_APC => Va3_APC; compartment_1 * k3 * Va_APC;
+  r14: Va3_APC => Va36_APC; compartment_1 * k6 * Va3_APC;
+  r15: Va36_APC => Va536_APC; compartment_1 * k5 * Va36_APC;
+  r16: Va3_APC => Va53_APC; compartment_1 * k5 * Va3_APC;
+  r17: Va -> HC + LC; compartment_1 * (k9 * Va - k10 * HC * LC);
+  r18: Va5 -> HC5 + LC; compartment_1 * (k9 * Va5 - k10 * HC5 * LC);
+  r19: Va3 -> HC3 + LC; compartment_1 * (k9 * Va3 - k10 * HC3 * LC);
+  r20: Va56 -> HC56 + LC; compartment_1 * (k9 * Va56 - k10 * HC56 * LC);
+  r21: Va53 -> HC53 + LC; compartment_1 * (k9 * Va53 - k10 * HC53 * LC);
+  r22: Va36 -> HC36 + LC; compartment_1 * (k9 * Va36 - k10 * HC36 * LC);
+  r23: Va536 -> HC536 + LC; compartment_1 * (k9 * Va536 - k10 * HC536 * LC);
+  r24: LC + APC -> LC_APC; compartment_1 * (k1 * LC * APC - k2 * LC_APC);
+  r25: Va3 -> VaA3 + VaLCA1; compartment_1 * (k7 * Va3 - k8 * VaA3 * VaLCA1);
+  r26: Va53 -> VaA53 + VaLCA1; compartment_1 * (k7 * Va53 - k8 * VaA53 * VaLCA1);
+  r27: Va36 -> VaA36 + VaLCA1; compartment_1 * (k7 * Va36 - k8 * VaA36 * VaLCA1);
+  r28: Va536 -> VaA536 + VaLCA1; compartment_1 * (k7 * Va536 - k8 * VaA536 * VaLCA1);
+  r29: Va3_APC -> VaA3 + VaLCA1_APC; compartment_1 * (k7 * Va3_APC - k8 * VaA3 * VaLCA1_APC);
+  r30: Va53_APC -> VaA53 + VaLCA1_APC; compartment_1 * (k7 * Va53_APC - k8 * VaA53 * VaLCA1_APC);
+  r31: Va36_APC -> VaA36 + VaLCA1_APC; compartment_1 * (k7 * Va36_APC - k8 * VaA36 * VaLCA1_APC);
+  r32: Va536_APC -> VaA536 + VaLCA1_APC; compartment_1 * (k7 * Va536_APC - k7 * VaA536 * VaLCA1_APC);
+  r33: VaLCA1 + APC -> VaLCA1_APC; compartment_1 * (k1 * VaLCA1 * APC - k2 * VaLCA1_APC);
+
+  // Species initializations:
+  APC = 1e-08;
+  Va = 2e-07;
+  Va_APC = 0;
+  Va3 = 0;
+  Va3_APC = 0;
+  Va5 = 0;
+  Va5_APC = 0;
+  Va53 = 0;
+  Va53_APC = 0;
+  Va56 = 0;
+  Va56_APC = 0;
+  Va36 = 0;
+  Va36_APC = 0;
+  Va536 = 0;
+  Va536_APC = 0;
+  HC = 0;
+  LC = 0;
+  HC5 = 0;
+  HC3 = 0;
+  HC56 = 0;
+  HC36 = 0;
+  HC536 = 0;
+  LC_APC = 0;
+  HC53 = 0;
+  VaA3 = 0;
+  VaA53 = 0;
+  VaA36 = 0;
+  VaA536 = 0;
+  VaLCA1 = 0;
+  VaLCA1_APC = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  k1 = 100000000;
+  k2 = 0.7;
+  k3 = 0.064;
+  k5 = 1;
+  k6 = 0.00052;
+  k7 = 0.028;
+  k8 = 2570;
+  k9 = 1.72e-05;
+  k10 = 2630;
+end

@@ -1,0 +1,71 @@
+//Created by libAntimony v2.0
+model Model_1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species E in compartment_, E_P_1 in compartment_, P in compartment_, M in compartment_;
+  species M1 in compartment_, E_M1 in compartment_, E_M in compartment_, T in compartment_;
+  species E_P_2 in compartment_, P2 in compartment_, P21 in compartment_;
+  species E_P21 in compartment_, E_P2 in compartment_, E_P1 in compartment_;
+
+  // Reactions:
+  r1: E + P -> E_P_1; compartment_ * (k1 * E * P - j1 * E_P_1);
+  r2: E_P_1 => E + M; compartment_ * k2 * E_P_1;
+  r3: M => M1; compartment_ * k9 * M;
+  r4: E + M1 -> E_M1; compartment_ * (k3 * E * M1 - j3 * E_M1);
+  r5: E + M -> E_M; compartment_ * (k3a * E * M - j3a * E_M);
+  r6: E_M1 => E + T; compartment_ * k4 * E_M1;
+  r7: E_M => E + T; compartment_ * k4a * E_M;
+  r8: E + P -> E_P_2; compartment_ * (k5 * E * P - j5 * E_P_2);
+  r9: E_P_2 => E + P2; compartment_ * k6 * E_P_2;
+  r10: P2 => P21; compartment_ * k10 * P2;
+  r11: E + P21 -> E_P21; compartment_ * (k7 * E * P21 - j7 * E_P21);
+  r12: E + P2 -> E_P2; compartment_ * (k7a * E * P2 - j7a * E_P2);
+  r13: E_P21 => E + T; compartment_ * k8 * E_P21;
+  r14: E_P2 => E + T; compartment_ * k8a * E_P2;
+  r15: E_P_1 => T; compartment_ * kC1 * E_P_1;
+  r16: E_P_2 => T; compartment_ * kC2 * E_P_2;
+
+  // Species initializations:
+  E = 0.00015;
+  E_P_1 = 0;
+  P = 1;
+  M = 0;
+  M1 = 0;
+  E_M1 = 0;
+  E_M = 0;
+  T = 0;
+  E_P_2 = 0;
+  P2 = 0;
+  P21 = 0;
+  E_P21 = 0;
+  E_P2 = 0;
+  E_P1 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  k1 = 91.8;
+  k2 = 82.4;
+  k9 = 3.12e-08;
+  k3 = 38.1;
+  k3a = 151.5;
+  k4 = 38.1;
+  k4a = 209.9;
+  k5 = 5.16;
+  k6 = 32.3;
+  k10 = 7.23e-10;
+  k7 = 6.76e-08;
+  k7a = 4.7;
+  k8 = 0.00599;
+  k8a = 42.6;
+  kC1 = 2.39e-06;
+  kC2 = 0.031;
+  j1 = 33.4;
+  j3 = 1.58e-06;
+  j3a = 0.185;
+  j5 = 21.8;
+  j7 = 4.46e-09;
+  j7a = 2.66e-05;
+end

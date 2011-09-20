@@ -1,0 +1,57 @@
+//Created by libAntimony v2.0
+model Larsen2004_CalciumSpiking()
+
+  // Compartments and Species:
+  compartment cytoplasm, ER, mit;
+  species $G_alpha in cytoplasm, $PLC in cytoplasm, $Ca_cyt in cytoplasm;
+  species $Ca_ER in ER, $Ca_mit in mit;
+
+  // Rate Rules:
+  G_alpha' = k1 + k2 * G_alpha - k3 * G_alpha * PLC / (G_alpha + K4) - k5 * G_alpha * Ca_cyt / (G_alpha + K6);
+  PLC' = k7 * G_alpha - k8 * PLC / (PLC + K9);
+  Ca_cyt' = (Ca_ER - Ca_cyt) * k10 * Ca_cyt * PLC^4 / (PLC^4 + K11^4) + k12 * PLC + k13 * G_alpha - k14 * Ca_cyt / (Ca_cyt + K15) - k16 * Ca_cyt / (Ca_cyt + K17) - k18 * Ca_cyt^8 / (K19^8 + Ca_cyt^8) + (Ca_mit - Ca_cyt) * k20 * Ca_cyt / (Ca_cyt + K21);
+  Ca_ER' = -(Ca_ER - Ca_cyt) * k10 * Ca_cyt * PLC^4 / (PLC^4 + K11^4) + k16 * Ca_cyt / (Ca_cyt + K17);
+  Ca_mit' = k18 * Ca_cyt^8 / (K19^8 + Ca_cyt^8) - (Ca_mit - Ca_cyt) * k20 * Ca_cyt / (Ca_cyt + K21);
+
+  // Species initializations:
+  G_alpha = 0.01;
+  PLC = 0.01;
+  Ca_cyt = 0.01;
+  Ca_ER = 10;
+  Ca_mit = 0.001;
+
+  // Compartment initializations:
+  cytoplasm = 1;
+  ER = 1;
+  mit = 1;
+
+  // Variable initializations:
+  k1 = 0.35;
+  k2 = 0;
+  k3 = 0.0001;
+  K4 = 0.783;
+  k5 = 1.24;
+  K6 = 0.7;
+  k7 = 5.82;
+  k8 = 32.24;
+  K9 = 29.09;
+  k10 = 0.93;
+  K11 = 2.667;
+  k12 = 0.76;
+  k13 = 0;
+  k14 = 149;
+  K15 = 0.16;
+  k16 = 20.9;
+  K17 = 0.05;
+  k18 = 79;
+  K19 = 2;
+  k20 = 1.5;
+  K21 = 1.5;
+
+  //Display Names:
+  mit is "mitochondria";
+  G_alpha is "G-alpha";
+  Ca_cyt is "Calcium-Cyt";
+  Ca_ER is "Calcium-ER";
+  Ca_mit is "Calcium-mit";
+end

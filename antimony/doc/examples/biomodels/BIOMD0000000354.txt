@@ -1,0 +1,87 @@
+//Created by libAntimony v2.0
+model Abell2011_CalciumSignaling_WithoutAdaptation()
+
+  // Compartments and Species:
+  compartment cytosol, outside, ER_store, mitochondria;
+  species CaI in cytosol, IP3 in cytosol, g in cytosol, CaO in outside, CaS in ER_store;
+  species CaM in mitochondria;
+
+  // Reactions:
+  kPLC:  => IP3; R * CaI;
+  JPump: CaI => CaS; B * CaI^2 / (CaI^2 + k2^2);
+  JChannel: CaS => CaI; (1 - mwc714c217_c8fd_4024_912c_681cd6931f59) * (L + (1 - g) * A * IP3^2 / (IP3^2 + kIP3R^2) * CaI^2 / (CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2)) * CaS;
+  kPhosphatase: IP3 => ; D * IP3;
+  inhibition_parameter1:  => g; E * CaI^4 / (CaI^4 + mwf998b218_be11_4aa4_81ae_41141861fb42^4) * (1 - g);
+  inhibition_parameter2: g => ; F * g;
+  mwbdcd6a40_1ae7_4c86_a99f_1fba0b8beaf7:  => CaI; mw004dcb62_da5f_41c7_a7bd_033574894f48 * (PMleak + kSTIM^8 / (CaS^8 + kSTIM^8));
+  mw530793e3_76b2_4483_be11_e94364306712: CaI => ; mwd21d3f76_d133_4053_8e44_02a538657e0a * CaI^2 / (CaI^2 + mw3a93c3a6_623a_44fe_84e9_a47823defd1f^2);
+  mwfaf5e05a_b642_4ee2_a069_3c2fc783fba4: CaI => CaM; mw886be93a_22c7_4966_a1fa_113afd832ae3 * CaI^4 / (CaI^4 + mwc8d6bdb5_59d4_43fa_b96d_7426f4857e0d^4);
+  mw69f19152_7258_45b0_bf9e_b196f19d7e03: CaM => CaI; mwd90ce3ea_f8d5_4f0a_8093_e39a2d3dbf33 * CaM / (CaM + 0.01);
+  ERtoMito: CaS => CaM; mwc714c217_c8fd_4024_912c_681cd6931f59 * (L + (1 - g) * A * IP3^2 / (IP3^2 + kIP3R^2) * CaI^2 / (CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2)) * CaS;
+
+  // Species initializations:
+  CaI = 0.05;
+  IP3 = 0;
+  g = 0.002;
+  CaO = 1000;
+  CaS = 2;
+  CaM = 0;
+
+  // Compartment initializations:
+  cytosol = 1;
+  outside = 1;
+  ER_store = 1;
+  mitochondria = 1;
+
+  // Variable initializations:
+  A = 3;
+  B = 0.266;
+  D = 2;
+  E = 5;
+  F = 0.018;
+  k2 = 0.175;
+  L = 0.01;
+  R = 1;
+  kIP3R = 0.175;
+  PMleak = 0.0346;
+  kSTIM = 1;
+  mw004dcb62_da5f_41c7_a7bd_033574894f48 = 0.02;
+  mw78dd80b8_e003_4c62_81d1_547d001767af = 0.13;
+  mw3a93c3a6_623a_44fe_84e9_a47823defd1f = 0.2;
+  mwd21d3f76_d133_4053_8e44_02a538657e0a = 0.013;
+  mwf998b218_be11_4aa4_81ae_41141861fb42 = 1;
+  mwc714c217_c8fd_4024_912c_681cd6931f59 = 0.03;
+  mwd90ce3ea_f8d5_4f0a_8093_e39a2d3dbf33 = 0.005;
+  mw886be93a_22c7_4966_a1fa_113afd832ae3 = 0.03;
+  mwc8d6bdb5_59d4_43fa_b96d_7426f4857e0d = 0.6;
+
+  //Display Names:
+  outside is "Outside";
+  mitochondria is "mito";
+  A is "IP3R";
+  B is "SERCA";
+  D is "IP3degradation";
+  E is "IP3Rinhibition";
+  F is "IP3Rrecovery";
+  k2 is "kSERCA";
+  L is "ERleak";
+  mw004dcb62_da5f_41c7_a7bd_033574894f48 is "STIM";
+  mw78dd80b8_e003_4c62_81d1_547d001767af is "kIP3Rca";
+  mw3a93c3a6_623a_44fe_84e9_a47823defd1f is "kPMCA";
+  mwd21d3f76_d133_4053_8e44_02a538657e0a is "PMCA";
+  mwf998b218_be11_4aa4_81ae_41141861fb42 is "kG";
+  mwc714c217_c8fd_4024_912c_681cd6931f59 is "DirTransf";
+  mwd90ce3ea_f8d5_4f0a_8093_e39a2d3dbf33 is "MitNaCaEx";
+  mw886be93a_22c7_4966_a1fa_113afd832ae3 is "UniPort";
+  mwc8d6bdb5_59d4_43fa_b96d_7426f4857e0d is "kUniP";
+  kPLC is "PLC: Receptor and Ca2+ regulated IP3 production";
+  JPump is "SERCA: Pumps Ca2+ into ER Ca2+ stores";
+  JChannel is "IP3R: IP3 and Ca2+ regulated Ca2+ channel,  plus leak";
+  kPhosphatase is "IP3 phosphatase:  Degradation of IP3";
+  inhibition_parameter1 is "Inhibition of IP3R (mechanism not well understood)";
+  inhibition_parameter2 is "Recovery of IP3R from Ca2+ iinhibition when Ca2+ drops";
+  mwbdcd6a40_1ae7_4c86_a99f_1fba0b8beaf7 is "Regulation of Orai by STIM, plus leak";
+  mw530793e3_76b2_4483_be11_e94364306712 is "PMCA:  Pumps Ca2+ across PM out of cell";
+  mwfaf5e05a_b642_4ee2_a069_3c2fc783fba4 is "UniporterFromCytosol";
+  mw69f19152_7258_45b0_bf9e_b196f19d7e03 is "MitoToCytosol";
+end

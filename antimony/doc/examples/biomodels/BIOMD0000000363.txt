@@ -1,0 +1,28 @@
+//Created by libAntimony v2.0
+model Model_1()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species II in compartment_, M in compartment_, IIa in compartment_, P2 in compartment_;
+
+  // Reactions:
+  r1: II => M; compartment_ * r1_k1 * II;
+  r2: M => IIa; compartment_ * r2_k1 * M;
+  r3: II => P2; compartment_ * r3_k1 * II;
+  r4: P2 => IIa; compartment_ * r4_k1 * P2;
+
+  // Species initializations:
+  II = 1;
+  M = 0;
+  IIa = 0;
+  P2 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  r1_k1 = 0.005;
+  r2_k1 = 0.01;
+  r3_k1 = 1e-05;
+  r4_k1 = 2.5e-05;
+end

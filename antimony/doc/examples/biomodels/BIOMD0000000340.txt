@@ -1,0 +1,436 @@
+//Created by libAntimony v2.0
+function Constant_flux_irreversible(v)
+  v;
+end
+
+function Factor_production(initial, degradation)
+  initial * degradation;
+end
+
+function Hyperbolic_rate_law(v, substrate, enzyme, k)
+  v * substrate * enzyme / (k + enzyme);
+end
+
+function VKH2mediated_factor_production(d_factor, factor_initial, VKH2, VKH2_initial)
+  d_factor * factor_initial * VKH2 / VKH2_initial;
+end
+
+function Irreversible_association(s1, s2, c)
+  s1 * s2 / c;
+end
+
+function Warfarin_inhibited_first_order_kinetics(Imax, Cwarf, IC50, substrate, degradation)
+  degradation * substrate * (1 - Imax * Cwarf / (IC50 + Cwarf));
+end
+
+
+model Model_1()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species VKH2 in compartment_1, IIa in compartment_1, VIII in compartment_1;
+  species VIIIa in compartment_1, APC_PS in compartment_1, IX in compartment_1;
+  species IXa in compartment_1, XIa in compartment_1, XI in compartment_1;
+  species XIIa in compartment_1, VII in compartment_1, VIIa in compartment_1;
+  species X in compartment_1, Xa in compartment_1, IXa_VIIIa in compartment_1;
+  species V in compartment_1, Va in compartment_1, II in compartment_1, F in compartment_1;
+  species Fg in compartment_1, $DP in compartment_1, P in compartment_1, XF in compartment_1;
+  species XIII in compartment_1, Pg in compartment_1, APC in compartment_1;
+  species IIa_Tmod in compartment_1, PC in compartment_1, Tmod in compartment_1;
+  species TF in compartment_1, VIIa_TF in compartment_1, VII_TF in compartment_1;
+  species Xa_TFPI in compartment_1, TFPI in compartment_1, PS in compartment_1;
+  species Va_Xa in compartment_1, CA in compartment_1, XII in compartment_1;
+  species K in compartment_1, ATIII_Heparin in compartment_1, Xa_ATIII_Heparin in compartment_1;
+  species VK in compartment_1, $C_warf in compartment_1, VKO in compartment_1;
+  species Pk in compartment_1, FDP in compartment_1, D in compartment_1, TAT in compartment_1;
+  species VIIa_TF_Xa_TFPI in compartment_1, XIIIa in compartment_1, IIa_ATIII_Heparin in compartment_1;
+  species IXa_ATIII_Heparin in compartment_1, $A_warf in compartment_1, VK_p in compartment_1;
+
+  // Assignment Rules:
+  DP := FDP + D;
+
+  // Rate Rules:
+  C_warf' = warfarin_ka * A_warf / warfarin_Vd - warfarin_ke * C_warf;
+  A_warf' = -warfarin_ka * A_warf;
+
+  // Reactions:
+  r1_: VIII => VIIIa; compartment_1 * Hyperbolic_rate_law(r1__v, VIII, IIa, r1__k);
+  r2_: VIIIa => ; compartment_1 * Hyperbolic_rate_law(r2__v, VIIIa, APC_PS, r2__k);
+  r3_: IX => IXa; compartment_1 * Hyperbolic_rate_law(r3__v, IX, XIa, r3__k);
+  r4_: XI => XIa; compartment_1 * Hyperbolic_rate_law(r4__v, XI, XIIa, r4__k);
+  r5_: XI => XIa; compartment_1 * Hyperbolic_rate_law(r5__v, XI, IIa, r5__k);
+  r6_: VII => VIIa; compartment_1 * Hyperbolic_rate_law(r6__v, VII, IIa, r6__k);
+  r7_: X => Xa; compartment_1 * Hyperbolic_rate_law(r7__v, X, IXa, r7__k);
+  r8_: X => Xa; compartment_1 * Hyperbolic_rate_law(r8__v, X, IXa_VIIIa, r8__k);
+  r9_: X => Xa; compartment_1 * Hyperbolic_rate_law(r9__v, X, VIIa, r9__k);
+  r10: V => Va; compartment_1 * Hyperbolic_rate_law(r10_v, V, IIa, r10_k);
+  r11: Va => ; compartment_1 * Hyperbolic_rate_law(r11_v, Va, APC_PS, r11_k);
+  r12: II => IIa; compartment_1 * Hyperbolic_rate_law(r12_v, II, Va_Xa, r12_k);
+  r13: II => IIa; compartment_1 * Hyperbolic_rate_law(r13_v, II, Xa, r13_k);
+  r14: Fg => F; compartment_1 * Hyperbolic_rate_law(r14_v, Fg, IIa, r14_k);
+  r15: Fg => FDP; compartment_1 * Hyperbolic_rate_law(r15_v, Fg, P, r15_k);
+  r16: F => XF; compartment_1 * Hyperbolic_rate_law(r16_v, F, XIIIa, r16_k);
+  r17: F => FDP; compartment_1 * Hyperbolic_rate_law(r17_v, F, P, r17_k);
+  r18: XF => D; compartment_1 * Hyperbolic_rate_law(r18_v, XF, P, r18_k);
+  r19: XF => D; compartment_1 * Hyperbolic_rate_law(r19_v, XF, APC_PS, r19_k);
+  r20: XIII => XIIIa; compartment_1 * Hyperbolic_rate_law(r20_v, XIII, IIa, r20_k);
+  r21: Pg => P; compartment_1 * Hyperbolic_rate_law(r21_v, Pg, IIa, r21_k);
+  r22: Pg => P; compartment_1 * Hyperbolic_rate_law(r22_v, Pg, F, r22_k);
+  r23: Pg => P; compartment_1 * Hyperbolic_rate_law(r23_v, Pg, APC_PS, r23_k);
+  r24: PC => APC; compartment_1 * Hyperbolic_rate_law(r24_v, PC, IIa_Tmod, r24_k);
+  r25: Va_Xa => ; compartment_1 * Hyperbolic_rate_law(r25_v, Va_Xa, APC_PS, r25_k);
+  r26: IXa + VIIIa => IXa_VIIIa; compartment_1 * Irreversible_association(IXa, VIIIa, r26_c);
+  r27: Va + Xa => Va_Xa; compartment_1 * Irreversible_association(Va, Xa, r27_c);
+  r28: IIa + Tmod => IIa_Tmod; compartment_1 * Irreversible_association(IIa, Tmod, r28_c);
+  r29: VIIa + TF => VIIa_TF; compartment_1 * Irreversible_association(VIIa, TF, r29_c);
+  r30: VII + TF => VII_TF; compartment_1 * Irreversible_association(VII, TF, r30_c);
+  r31: VIIa_TF + Xa_TFPI => VIIa_TF_Xa_TFPI; compartment_1 * Irreversible_association(VIIa_TF, Xa_TFPI, r31_c);
+  r32: Xa + TFPI => Xa_TFPI; compartment_1 * Irreversible_association(Xa, TFPI, r32_c);
+  r33: VII_TF => VIIa_TF; compartment_1 * Hyperbolic_rate_law(r33_v, VII_TF, Xa, r33_k);
+  r34: X => Xa; compartment_1 * Hyperbolic_rate_law(r34_v, X, VIIa_TF, r34_k);
+  r35: IX => IXa; compartment_1 * Hyperbolic_rate_law(r35_v, IX, VIIa_TF, r35_k);
+  r36: VII_TF => VIIa_TF; compartment_1 * Hyperbolic_rate_law(r36_v, VII_TF, TF, r36_k);
+  r37: APC + PS => APC_PS; compartment_1 * Irreversible_association(APC, PS, r37_c);
+  r38: VII => VIIa; compartment_1 * Hyperbolic_rate_law(r38_v, VII, Xa, r38_k);
+  r39: VII => VIIa; compartment_1 * Hyperbolic_rate_law(r39_v, VII, VIIa_TF, r39_k);
+  r40: VII => VIIa; compartment_1 * Hyperbolic_rate_law(r40_v, VII, IXa, r40_k);
+  r41: XII => XIIa; compartment_1 * Hyperbolic_rate_law(r41_v, XII, CA, r41_k);
+  r42: XII => XIIa; compartment_1 * Hyperbolic_rate_law(r42_v, XII, K, r42_k);
+  r43: Pk => K; compartment_1 * Hyperbolic_rate_law(r43_v, Pk, XIIa, r43_k);
+  r44: IIa + ATIII_Heparin => IIa_ATIII_Heparin; compartment_1 * Irreversible_association(IIa, ATIII_Heparin, c44);
+  r45: Xa + ATIII_Heparin => Xa_ATIII_Heparin; compartment_1 * Irreversible_association(Xa, ATIII_Heparin, c45);
+  r46: IXa + ATIII_Heparin => IXa_ATIII_Heparin; compartment_1 * Irreversible_association(IXa, ATIII_Heparin, c46);
+  r47: VK => VKH2; compartment_1 * Warfarin_inhibited_first_order_kinetics(I_max, C_warf, IC50, VK, d_VK2);
+  r48: VKO => VK; compartment_1 * Warfarin_inhibited_first_order_kinetics(I_max, C_warf, IC50, VKO, d_VKO);
+  pII_VKH2:  => II; compartment_1 * VKH2mediated_factor_production(d_II, II0, VKH2, VKH20);
+  pVII_VKH2:  => VII; compartment_1 * VKH2mediated_factor_production(d_VII, VII0, VKH2, VKH20);
+  pIX_VKH2:  => IX; compartment_1 * VKH2mediated_factor_production(d_IX, IX0, VKH2, VKH20);
+  pX_VKH2:  => X; compartment_1 * VKH2mediated_factor_production(d_X, X0, VKH2, VKH20);
+  pPC_VKH2:  => PC; compartment_1 * VKH2mediated_factor_production(d_PC, PC0, VKH2, VKH20);
+  pPS_VKH2:  => PS; compartment_1 * VKH2mediated_factor_production(d_PS, PS0, VKH2, VKH20);
+  dFg: Fg => FDP; compartment_1 * d_Fg * Fg;
+  dF: F => FDP; compartment_1 * dF_k1 * F;
+  dXF: XF => D; compartment_1 * dXF_k1 * XF;
+  dII: II => ; compartment_1 * d_II * II;
+  dIIa: IIa => TAT; compartment_1 * dIIa_k1 * IIa;
+  dTF: TF => ; compartment_1 * dTF_k1 * TF;
+  dV: V => ; compartment_1 * d_V * V;
+  dVa: Va => ; compartment_1 * dVa_k1 * Va;
+  dVII: VII => ; compartment_1 * d_VII * VII;
+  dVIIa: VIIa => ; compartment_1 * dVIIa_k1 * VIIa;
+  dVIII: VIII => ; compartment_1 * d_VIII * VIII;
+  dVIIIa: VIIIa => ; compartment_1 * dVIIIa_k1 * VIIIa;
+  dX: X => ; compartment_1 * d_X * X;
+  dXa: Xa => ; compartment_1 * dXa_k1 * Xa;
+  dIX: IX => ; compartment_1 * d_IX * IX;
+  dIXa: IXa => ; compartment_1 * dIXa_k1 * IXa;
+  dXII: XII => ; compartment_1 * d_XII * XII;
+  dXIIa: XIIa => ; compartment_1 * dXIIa_k1 * XIIa;
+  dXIII: XIII => ; compartment_1 * d_XIII * XIII;
+  dXIIIa: XIIIa => ; compartment_1 * dXIIIa_k1 * XIIIa;
+  dPk: Pk => ; compartment_1 * d_Pk * Pk;
+  dK: K => ; compartment_1 * dK_k1 * K;
+  dPg: Pg => ; compartment_1 * d_Pg * Pg;
+  dP: P => ; compartment_1 * dP_k1 * P;
+  dPC: PC => ; compartment_1 * d_PC * PC;
+  dAPC: APC => ; compartment_1 * dAPC_k1 * APC;
+  dPS: PS => ; compartment_1 * d_PS * PS;
+  dFDP: FDP => ; compartment_1 * dFDP_k1 * FDP;
+  dD: D => ; compartment_1 * dD_k1 * D;
+  dTFPI: TFPI => ; compartment_1 * d_TFPI * TFPI;
+  dVIIa_TF: VIIa_TF => ; compartment_1 * dVIIa_TF_k1 * VIIa_TF;
+  dVII_TF: VII_TF => ; compartment_1 * dVII_TF_k1 * VII_TF;
+  dAPC_PS: APC_PS => ; compartment_1 * dAPC_PS_k1 * APC_PS;
+  dVa_Xa: Va_Xa => ; compartment_1 * dVa_Xa_k1 * Va_Xa;
+  dIXa_VIIIa: IXa_VIIIa => ; compartment_1 * dIXa_VIIIa_k1 * IXa_VIIIa;
+  dTmod: Tmod => ; compartment_1 * d_Tmod * Tmod;
+  dIIa_Tmod: IIa_Tmod => ; compartment_1 * dIIa_Tmod_k1 * IIa_Tmod;
+  dXa_TFPI: Xa_TFPI => ; compartment_1 * dXa_TFPI_k1 * Xa_TFPI;
+  dVIIa_TF_Xa_TFPI: VIIa_TF_Xa_TFPI => ; compartment_1 * dVIIa_TF_Xa_TFPI_k1 * VIIa_TF_Xa_TFPI;
+  dTAT: TAT => ; compartment_1 * dTAT_k1 * TAT;
+  dCA: CA => ; compartment_1 * dCA_k1 * CA;
+  dXIa: XIa => ; compartment_1 * dXIa_k1 * XIa;
+  dVKH2: VKH2 => VKO; compartment_1 * d_VKH2 * VKH2;
+  VK_transport: VK -> VK_p; compartment_1 * (vitaminK_k12 * VK - vitaminK_k21_Vc * VK_p);
+  eHeparin: ATIII_Heparin => ; compartment_1 * heparin_ke * ATIII_Heparin;
+  eHeparinXa: Xa_ATIII_Heparin => ; compartment_1 * heparin_ke * Xa_ATIII_Heparin;
+  eHeparinIXa: IXa_ATIII_Heparin => ; compartment_1 * heparin_ke * IXa_ATIII_Heparin;
+  eHeparinIIa: IIa_ATIII_Heparin => ; compartment_1 * heparin_ke * IIa_ATIII_Heparin;
+  dXI: XI => ; compartment_1 * dXI_k1 * XI;
+  pXII:  => XII; compartment_1 * Factor_production(XII0, d_XII);
+  pVIII:  => VIII; compartment_1 * Factor_production(VIII0, d_VIII);
+  pXI:  => XI; compartment_1 * Factor_production(XI0, d_XI);
+  pV:  => V; compartment_1 * Factor_production(V0, d_V);
+  pFg:  => Fg; compartment_1 * Factor_production(Fg0, d_Fg);
+  pXIII:  => XIII; compartment_1 * Factor_production(XIII0, d_XIII);
+  pPg:  => Pg; compartment_1 * Factor_production(Pg0, d_Pg);
+  pTmod:  => Tmod; compartment_1 * Factor_production(Tmod0, d_Tmod);
+  pTFPI:  => TFPI; compartment_1 * Factor_production(TFPI0, d_TFPI);
+  pPk:  => Pk; compartment_1 * Factor_production(Pk0, d_Pk);
+  pVK:  => VK; compartment_1 * Factor_production(VK0, d_VK);
+  dVK: VK => ; compartment_1 * d_VK * VK;
+  pHeparin:  => ATIII_Heparin; compartment_1 * Constant_flux_irreversible(heparin_infusion);
+
+  // Events:
+  warfarin_administration: at gt(piecewise(time - 24 * ceil(time / 24), xor(lt(time, 0), lt(24, 0)), time - 24 * floor(time / 24)), 1): A_warf = A_warf + warfarin_daily_dose;
+  heparin_administration: at gt(time, heparin_infusion_duration_hr): heparin_infusion = 0;
+
+  // Species initializations:
+  VKH2 = VKH20;
+  IIa = 0;
+  VIII = VIII0;
+  VIIIa = 0;
+  APC_PS = 0;
+  IX = IX0;
+  IXa = 0;
+  XIa = 0;
+  XI = XI0;
+  XIIa = 0;
+  VII = VII0;
+  VIIa = 0;
+  X = X0;
+  Xa = 0;
+  IXa_VIIIa = 0;
+  V = V0;
+  Va = 0;
+  II = II0;
+  F = 0;
+  Fg = Fg0;
+  P = 0;
+  XF = 0;
+  XIII = XIII0;
+  Pg = Pg0;
+  APC = 0;
+  IIa_Tmod = 0;
+  PC = PC0;
+  Tmod = Tmod0;
+  TF = 0;
+  VIIa_TF = 0;
+  VII_TF = 0;
+  Xa_TFPI = 0;
+  TFPI = TFPI0;
+  PS = PS0;
+  Va_Xa = 0;
+  CA = 0;
+  XII = XII0;
+  K = 0;
+  ATIII_Heparin = heparin_bolus;
+  Xa_ATIII_Heparin = 0;
+  VK = VK0;
+  C_warf = 0;
+  VKO = VKO0;
+  Pk = Pk0;
+  FDP = 0;
+  D = 0;
+  TAT = 0;
+  VIIa_TF_Xa_TFPI = 0;
+  XIIIa = 0;
+  IIa_ATIII_Heparin = 0;
+  IXa_ATIII_Heparin = 0;
+  A_warf = 0;
+  VK_p = VK0 * vitaminK_k12 / vitaminK_k21_Vc;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  IC50 = 0.34;
+  warfarin_daily_dose = 4;
+  heparin_infusion_duration_hr = 24;
+  heparin_infusion = 0;
+  I_max = 1;
+  II0 = 1394.4;
+  VII0 = 10;
+  IX0 = 89.6;
+  X0 = 174.3;
+  PC0 = 60;
+  PS0 = 300;
+  VKH20 = 0.1;
+  d_II = 0.01;
+  d_VII = 0.12;
+  d_IX = 0.029;
+  d_X = 0.018;
+  d_PC = 0.05;
+  d_PS = 0.0165;
+  vitaminK_Vc = 24;
+  d_VK2 = 0.0228;
+  d_VKH2 = d_VK2 * VK0 / VKH20;
+  d_VKO = d_VK2 * VK0 / VKO0;
+  VK0 = 1;
+  VKO0 = 0.1;
+  vitaminK_k21_Vc = 0.0122 / vitaminK_Vc;
+  vitaminK_k12 = 0.0587;
+  heparin_ke = 0.693;
+  warfarin_ka = 1;
+  warfarin_Vd = 10;
+  warfarin_CL = 0.2;
+  warfarin_ke = warfarin_CL / warfarin_Vd;
+  d_XII = 0.012;
+  d_VIII = 0.058;
+  d_XI = 0.1;
+  d_V = 0.043;
+  d_Fg = 0.032;
+  d_XIII = 0.0036;
+  d_Pg = 0.05;
+  d_Tmod = 0.05;
+  d_TFPI = 20;
+  d_Pk = 0.05;
+  XII0 = 375;
+  VIII0 = 0.7;
+  XI0 = 30.6;
+  V0 = 26.7;
+  Fg0 = 8945.5;
+  XIII0 = 70.3;
+  Pg0 = 2154.3;
+  Tmod0 = 50;
+  TFPI0 = 2.5;
+  Pk0 = 450;
+  R1 = 0.140845070422535;
+  R2 = 1;
+  c44 = c45 * R1;
+  c45 = 0.85;
+  c46 = c45 * R2;
+  d_VK = 0.2052;
+  heparin_bolus = 0;
+  r1__v = 50000;
+  r1__k = 1e-06;
+  r2__v = 50;
+  r2__k = 1;
+  r3__v = 7;
+  r3__k = 10;
+  r4__v = 7;
+  r4__k = 1;
+  r5__v = 10;
+  r5__k = 10;
+  r6__v = 0.1;
+  r6__k = 10;
+  r7__v = 0.02;
+  r7__k = 10;
+  r8__v = 2;
+  r8__k = 0.1;
+  r9__v = 1e-09;
+  r9__k = 10;
+  r10_v = 50000;
+  r10_k = 10;
+  r11_v = 50;
+  r11_k = 1;
+  r12_v = 100;
+  r12_k = 10;
+  r13_v = 9;
+  r13_k = 500;
+  r14_v = 20000;
+  r14_k = 0.5;
+  r15_v = 500;
+  r15_k = 500;
+  r16_v = 7;
+  r16_k = 10;
+  r17_v = 7;
+  r17_k = 10;
+  r18_v = 7;
+  r18_k = 100;
+  r19_v = 1;
+  r19_k = 1;
+  r20_v = 7;
+  r20_k = 1;
+  r21_v = 7;
+  r21_k = 5000;
+  r22_v = 5;
+  r22_k = 10000;
+  r23_v = 2;
+  r23_k = 1;
+  r24_v = 7;
+  r24_k = 1;
+  r25_v = 2;
+  r25_k = 1;
+  r26_c = 0.01;
+  r27_c = 0.5;
+  r28_c = 0.5;
+  r29_c = 0.5;
+  r30_c = 0.1;
+  r31_c = 0.5;
+  r32_c = 0.5;
+  r33_v = 70;
+  r33_k = 1;
+  r34_v = 900;
+  r34_k = 200;
+  r35_v = 70;
+  r35_k = 1;
+  r36_v = 1000;
+  r36_k = 1;
+  r37_c = 0.5;
+  r38_v = 1;
+  r38_k = 10;
+  r39_v = 1;
+  r39_k = 10;
+  r40_v = 0.2;
+  r40_k = 10;
+  r41_v = 7;
+  r41_k = 1;
+  r42_v = 70;
+  r42_k = 1;
+  r43_v = 7;
+  r43_k = 1;
+  dF_k1 = 0.05;
+  dXF_k1 = 0.05;
+  dIIa_k1 = 67.4;
+  dTF_k1 = 0.05;
+  dVa_k1 = 20;
+  dVIIa_k1 = 20;
+  dVIIIa_k1 = 20;
+  dXa_k1 = 20;
+  dIXa_k1 = 20;
+  dXIIa_k1 = 20;
+  dXIIIa_k1 = 0.69;
+  dK_k1 = 20;
+  dP_k1 = 20;
+  dAPC_k1 = 20.4;
+  dFDP_k1 = 3.5;
+  dD_k1 = 0.1;
+  dVIIa_TF_k1 = 20;
+  dVII_TF_k1 = 0.7;
+  dAPC_PS_k1 = 20;
+  dVa_Xa_k1 = 20;
+  dIXa_VIIIa_k1 = 20;
+  dIIa_Tmod_k1 = 20;
+  dXa_TFPI_k1 = 20;
+  dVIIa_TF_Xa_TFPI_k1 = 20;
+  dTAT_k1 = 0.2;
+  dCA_k1 = 0.05;
+  dXIa_k1 = 20;
+  dXI_k1 = 0.1;
+
+  //Other declarations:
+  var heparin_infusion;
+
+  //Display Names:
+  heparin_infusion_duration_hr is "heparin_infusion_duration [hr]";
+  II0 is "II(0)";
+  VII0 is "VII(0)";
+  IX0 is "IX(0)";
+  X0 is "X(0)";
+  PC0 is "PC(0)";
+  PS0 is "PS(0)";
+  VKH20 is "VKH2(0)";
+  VK0 is "VK(0)";
+  VKO0 is "VKO(0)";
+  vitaminK_k21_Vc is "vitaminK_k21/Vc";
+  XII0 is "XII(0)";
+  VIII0 is "VIII(0)";
+  XI0 is "XI(0)";
+  V0 is "V(0)";
+  Fg0 is "Fg(0)";
+  XIII0 is "XIII(0)";
+  Pg0 is "Pg(0)";
+  Tmod0 is "Tmod(0)";
+  TFPI0 is "TFPI(0)";
+  Pk0 is "Pk(0)";
+  r1_ is "r1 ";
+  r2_ is "r2 ";
+  r3_ is "r3 ";
+  r4_ is "r4 ";
+  r5_ is "r5 ";
+  r6_ is "r6 ";
+  r7_ is "r7 ";
+  r8_ is "r8 ";
+  r9_ is "r9 ";
+end

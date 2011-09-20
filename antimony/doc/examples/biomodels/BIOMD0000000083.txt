@@ -1,4 +1,4 @@
-//Created by libAntimony v1.4
+//Created by libAntimony v2.0
 function function_3(Vs, B, n, K)
   Vs * B^n / (K^n + B^n);
 end
@@ -15,109 +15,106 @@ function function_0(vsb, K, m, Bn)
   vsb * K^m / (K^m + Bn^m);
 end
 
-function functionDefinition_0000005(length, time_ref)
-  ceil(sin(pi * time_ref / length + 0.001) / 2);
+function function_5(length, model_time)
+  ceil(sin(pi * model_time / length + 0.001) / 2);
 end
 
 
 model Model_1()
 
   // Compartments and Species:
-  compartment compartment_0;
-  species species_0 in compartment_0, species_1 in compartment_0, species_2 in compartment_0;
-  species species_3 in compartment_0, species_4 in compartment_0, species_5 in compartment_0;
-  species species_6 in compartment_0, species_7 in compartment_0, species_8 in compartment_0;
-  species species_9 in compartment_0, species_10 in compartment_0, species_11 in compartment_0;
-  species species_12 in compartment_0, species_13 in compartment_0, species_14 in compartment_0;
-  species species_15 in compartment_0, species_16 in compartment_0, species_17 in compartment_0;
-  species species_18 in compartment_0;
+  compartment cell;
+  species Bn in cell, Mb in cell, Bc in cell, Bcp in cell, Cc in cell, Mc in cell;
+  species Ccp in cell, Mp in cell, Pc in cell, Pcp in cell, PCc in cell, PCcp in cell;
+  species PCn in cell, Bnp in cell, PCnp in cell, In_ in cell, Mr in cell;
+  species Rc in cell, Rn in cell;
 
   // Assignment Rules:
-  parameter_0000096 := functionDefinition_0000005(12, time);
+  parameter_0000096 := function_5(12, time);
   parameter_0000097 := 2.4 + (3 - 2.4) * parameter_0000096;
 
   // Reactions:
-  reaction_0:  => species_0; compartment_0 * function_0(reaction_0_vsb, reaction_0_K, reaction_0_m, species_18);
-  reaction_1:  => species_1; compartment_0 * function_1(reaction_1_k, species_0);
-  reaction_2: species_0 => ; compartment_0 * reaction_2_k1 * species_0;
-  reaction_3: species_1 => species_2; compartment_0 * function_2(reaction_3_V, species_1, reaction_3_Km);
-  reaction_4: species_1 -> species_3; compartment_0 * (reaction_4_k1 * species_1 - reaction_4_k2 * species_3);
-  reaction_5:  => species_4; compartment_0 * function_1(reaction_5_k, species_5);
-  reaction_6: species_5 => ; compartment_0 * reaction_6_k1 * species_5;
-  reaction_7: species_4 => species_6; compartment_0 * function_2(reaction_7_V, species_4, reaction_7_Km);
-  reaction_8: species_6 => ; compartment_0 * function_2(reaction_8_V, species_6, reaction_8_Km);
-  reaction_9:  => species_7; compartment_0 * function_3(parameter_0000097, species_3, reaction_9_n, reaction_9_K);
-  reaction_10:  => species_8; compartment_0 * function_1(reaction_10_k, species_7);
-  reaction_11: species_9 => ; compartment_0 * function_2(reaction_11_V, species_9, reaction_11_Km);
-  reaction_12: species_8 => species_9; compartment_0 * function_2(reaction_12_V, species_8, reaction_12_Km);
-  reaction_13: species_4 + species_8 -> species_10; compartment_0 * (reaction_13_k1 * species_4 * species_8 - reaction_13_k2 * species_10);
-  reaction_14: species_10 => species_11; compartment_0 * function_2(reaction_14_V, species_10, reaction_14_Km);
-  reaction_15: species_11 => ; compartment_0 * function_2(reaction_15_V, species_11, reaction_15_Km);
-  reaction_16: species_10 -> species_12; compartment_0 * (reaction_16_k1 * species_10 - reaction_16_k2 * species_12);
-  reaction_17: species_14 => ; compartment_0 * reaction_17_k1 * species_14;
-  reaction_18: species_2 => ; compartment_0 * reaction_18_k1 * species_2;
-  reaction_19: species_13 => ; compartment_0 * reaction_19_k1 * species_13;
-  reaction_20:  => species_5; compartment_0 * function_3(reaction_20_Vs, species_3, reaction_20_n, reaction_20_K);
-  reaction_21: species_12 => species_14; compartment_0 * function_2(reaction_21_V, species_12, reaction_21_Km);
-  reaction_22: species_7 => ; compartment_0 * reaction_22_k1 * species_7;
-  reaction_23: species_12 + species_3 -> species_15; compartment_0 * (reaction_23_k1 * species_12 * species_3 - reaction_23_k2 * species_15);
-  reaction_24: species_0 => ; compartment_0 * function_2(reaction_24_V, species_0, reaction_24_Km);
-  reaction_25: species_5 => ; compartment_0 * function_2(reaction_25_V, species_5, reaction_25_Km);
-  reaction_26: species_7 => ; compartment_0 * function_2(reaction_26_V, species_7, reaction_26_Km);
-  reaction_27: species_8 => ; compartment_0 * reaction_27_k1 * species_8;
-  reaction_28: species_4 => ; compartment_0 * reaction_28_k1 * species_4;
-  reaction_29: species_9 => ; compartment_0 * reaction_29_k1 * species_9;
-  reaction_30: species_6 => ; compartment_0 * reaction_30_k1 * species_6;
-  reaction_31: species_11 => ; compartment_0 * reaction_31_k1 * species_11;
-  reaction_32: species_10 => ; compartment_0 * reaction_32_k1 * species_10;
-  reaction_33: species_14 => ; compartment_0 * function_2(reaction_33_V, species_14, reaction_33_Km);
-  reaction_34: species_1 => ; compartment_0 * reaction_34_k1 * species_1;
-  reaction_35: species_2 => ; compartment_0 * function_2(reaction_35_V, species_2, reaction_35_Km);
-  reaction_36: species_3 => species_13; compartment_0 * function_2(reaction_36_V, species_3, reaction_36_Km);
-  reaction_37: species_13 => ; compartment_0 * function_2(reaction_37_V, species_13, reaction_37_Km);
-  reaction_38: species_15 => ; compartment_0 * reaction_38_k1 * species_15;
-  reaction_39: species_15 => ; compartment_0 * function_2(reaction_39_V, species_15, reaction_39_Km);
-  reaction_40: species_3 => ; compartment_0 * reaction_40_k1 * species_3;
-  reaction_41: species_2 => species_1; compartment_0 * function_2(reaction_41_V, species_2, reaction_41_Km);
-  reaction_42: species_13 => species_3; compartment_0 * function_2(reaction_42_V, species_13, reaction_42_Km);
-  reaction_43: species_6 => species_4; compartment_0 * function_2(reaction_43_V, species_6, reaction_43_Km);
-  reaction_44: species_9 => species_8; compartment_0 * function_2(reaction_44_V, species_9, reaction_44_Km);
-  reaction_45: species_14 => species_12; compartment_0 * function_2(reaction_45_V, species_14, reaction_45_Km);
-  reaction_46: species_12 => ; compartment_0 * reaction_46_k1 * species_12;
-  reaction_47: species_11 => species_10; compartment_0 * function_2(reaction_47_V, species_11, reaction_47_Km);
-  reaction_48:  => species_16; compartment_0 * function_3(reaction_48_Vs, species_3, reaction_48_n, reaction_48_K);
-  reaction_49: species_16 => ; compartment_0 * reaction_49_k1 * species_16;
-  reaction_50: species_16 => ; compartment_0 * function_2(reaction_50_V, species_16, reaction_50_Km);
-  reaction_51:  => species_17; compartment_0 * function_1(reaction_51_k, species_16);
-  reaction_52: species_17 -> species_18; compartment_0 * (reaction_52_k1 * species_17 - reaction_52_k2 * species_18);
-  reaction_53: species_17 => ; compartment_0 * function_2(reaction_53_V, species_17, reaction_53_Km);
-  reaction_54: species_17 => ; compartment_0 * reaction_54_k1 * species_17;
-  reaction_55: species_18 => ; compartment_0 * function_2(reaction_55_V, species_18, reaction_55_Km);
-  reaction_56: species_18 => ; compartment_0 * reaction_56_k1 * species_18;
+  reaction_0:  => Mb; cell * function_0(reaction_0_vsb, reaction_0_K, reaction_0_m, Rn);
+  reaction_1:  => Bc; cell * function_1(reaction_1_k, Mb);
+  reaction_2: Mb => ; cell * reaction_2_k1 * Mb;
+  reaction_3: Bc => Bcp; cell * function_2(reaction_3_V, Bc, reaction_3_Km);
+  reaction_4: Bc -> Bn; cell * (reaction_4_k1 * Bc - reaction_4_k2 * Bn);
+  reaction_5:  => Cc; cell * function_1(reaction_5_k, Mc);
+  reaction_6: Mc => ; cell * reaction_6_k1 * Mc;
+  reaction_7: Cc => Ccp; cell * function_2(reaction_7_V, Cc, reaction_7_Km);
+  reaction_8: Ccp => ; cell * function_2(reaction_8_V, Ccp, reaction_8_Km);
+  reaction_9:  => Mp; cell * function_3(parameter_0000097, Bn, reaction_9_n, reaction_9_K);
+  reaction_10:  => Pc; cell * function_1(reaction_10_k, Mp);
+  reaction_11: Pcp => ; cell * function_2(reaction_11_V, Pcp, reaction_11_Km);
+  reaction_12: Pc => Pcp; cell * function_2(reaction_12_V, Pc, reaction_12_Km);
+  reaction_13: Cc + Pc -> PCc; cell * (reaction_13_k1 * Cc * Pc - reaction_13_k2 * PCc);
+  reaction_14: PCc => PCcp; cell * function_2(reaction_14_V, PCc, reaction_14_Km);
+  reaction_15: PCcp => ; cell * function_2(reaction_15_V, PCcp, reaction_15_Km);
+  reaction_16: PCc -> PCn; cell * (reaction_16_k1 * PCc - reaction_16_k2 * PCn);
+  reaction_17: PCnp => ; cell * reaction_17_k1 * PCnp;
+  reaction_18: Bcp => ; cell * reaction_18_k1 * Bcp;
+  reaction_19: Bnp => ; cell * reaction_19_k1 * Bnp;
+  reaction_20:  => Mc; cell * function_3(reaction_20_Vs, Bn, reaction_20_n, reaction_20_K);
+  reaction_21: PCn => PCnp; cell * function_2(reaction_21_V, PCn, reaction_21_Km);
+  reaction_22: Mp => ; cell * reaction_22_k1 * Mp;
+  reaction_23: PCn + Bn -> In_; cell * (reaction_23_k1 * PCn * Bn - reaction_23_k2 * In_);
+  reaction_24: Mb => ; cell * function_2(reaction_24_V, Mb, reaction_24_Km);
+  reaction_25: Mc => ; cell * function_2(reaction_25_V, Mc, reaction_25_Km);
+  reaction_26: Mp => ; cell * function_2(reaction_26_V, Mp, reaction_26_Km);
+  reaction_27: Pc => ; cell * reaction_27_k1 * Pc;
+  reaction_28: Cc => ; cell * reaction_28_k1 * Cc;
+  reaction_29: Pcp => ; cell * reaction_29_k1 * Pcp;
+  reaction_30: Ccp => ; cell * reaction_30_k1 * Ccp;
+  reaction_31: PCcp => ; cell * reaction_31_k1 * PCcp;
+  reaction_32: PCc => ; cell * reaction_32_k1 * PCc;
+  reaction_33: PCnp => ; cell * function_2(reaction_33_V, PCnp, reaction_33_Km);
+  reaction_34: Bc => ; cell * reaction_34_k1 * Bc;
+  reaction_35: Bcp => ; cell * function_2(reaction_35_V, Bcp, reaction_35_Km);
+  reaction_36: Bn => Bnp; cell * function_2(reaction_36_V, Bn, reaction_36_Km);
+  reaction_37: Bnp => ; cell * function_2(reaction_37_V, Bnp, reaction_37_Km);
+  reaction_38: In_ => ; cell * reaction_38_k1 * In_;
+  reaction_39: In_ => ; cell * function_2(reaction_39_V, In_, reaction_39_Km);
+  reaction_40: Bn => ; cell * reaction_40_k1 * Bn;
+  reaction_41: Bcp => Bc; cell * function_2(reaction_41_V, Bcp, reaction_41_Km);
+  reaction_42: Bnp => Bn; cell * function_2(reaction_42_V, Bnp, reaction_42_Km);
+  reaction_43: Ccp => Cc; cell * function_2(reaction_43_V, Ccp, reaction_43_Km);
+  reaction_44: Pcp => Pc; cell * function_2(reaction_44_V, Pcp, reaction_44_Km);
+  reaction_45: PCnp => PCn; cell * function_2(reaction_45_V, PCnp, reaction_45_Km);
+  reaction_46: PCn => ; cell * reaction_46_k1 * PCn;
+  reaction_47: PCcp => PCc; cell * function_2(reaction_47_V, PCcp, reaction_47_Km);
+  reaction_48:  => Mr; cell * function_3(reaction_48_Vs, Bn, reaction_48_n, reaction_48_K);
+  reaction_49: Mr => ; cell * reaction_49_k1 * Mr;
+  reaction_50: Mr => ; cell * function_2(reaction_50_V, Mr, reaction_50_Km);
+  reaction_51:  => Rc; cell * function_1(reaction_51_k, Mr);
+  reaction_52: Rc -> Rn; cell * (reaction_52_k1 * Rc - reaction_52_k2 * Rn);
+  reaction_53: Rc => ; cell * function_2(reaction_53_V, Rc, reaction_53_Km);
+  reaction_54: Rc => ; cell * reaction_54_k1 * Rc;
+  reaction_55: Rn => ; cell * function_2(reaction_55_V, Rn, reaction_55_Km);
+  reaction_56: Rn => ; cell * reaction_56_k1 * Rn;
 
   // Species initializations:
-  species_0 = 0;
-  species_1 = 0;
-  species_2 = 0;
-  species_3 = 0;
-  species_4 = 0;
-  species_5 = 0;
-  species_6 = 0;
-  species_7 = 0;
-  species_8 = 0;
-  species_9 = 0;
-  species_10 = 0;
-  species_11 = 0;
-  species_12 = 0;
-  species_13 = 0;
-  species_14 = 0;
-  species_15 = 0;
-  species_16 = 0;
-  species_17 = 0;
-  species_18 = 0;
+  Bn = 0;
+  Mb = 0;
+  Bc = 0;
+  Bcp = 0;
+  Cc = 0;
+  Mc = 0;
+  Ccp = 0;
+  Mp = 0;
+  Pc = 0;
+  Pcp = 0;
+  PCc = 0;
+  PCcp = 0;
+  PCn = 0;
+  Bnp = 0;
+  PCnp = 0;
+  In_ = 0;
+  Mr = 0;
+  Rc = 0;
+  Rn = 0;
 
   // Compartment initializations:
-  compartment_0 = 1;
+  cell = 1;
 
   // Variable initializations:
   reaction_0_vsb = 1.8;
@@ -219,26 +216,6 @@ model Model_1()
   var parameter_0000096, parameter_0000097;
 
   //Display Names:
-  compartment_0 is "cell";
-  species_0 is "Mb";
-  species_1 is "Bc";
-  species_2 is "Bcp";
-  species_3 is "Bn";
-  species_4 is "Cc";
-  species_5 is "Mc";
-  species_6 is "Ccp";
-  species_7 is "Mp";
-  species_8 is "Pc";
-  species_9 is "Pcp";
-  species_10 is "PCc";
-  species_11 is "PCcp";
-  species_12 is "PCn";
-  species_13 is "Bnp";
-  species_14 is "PCnp";
-  species_15 is "In";
-  species_16 is "Mr";
-  species_17 is "Rc";
-  species_18 is "Rn";
   parameter_0000096 is "LD";
   parameter_0000097 is "vsp";
   reaction_0 is "Mb synthesized";

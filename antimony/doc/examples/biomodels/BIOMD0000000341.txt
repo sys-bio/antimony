@@ -1,0 +1,36 @@
+//Created by libAntimony v2.0
+model Topp2000_BetaCellMass_Diabetes()
+
+  // Compartments and Species:
+  compartment cell;
+  species $G in cell, $I in cell, $B in cell;
+
+  // Rate Rules:
+  G' = R0 - (Eg0 + si * I) * G;
+  I' = B * sigma * G^2 / (alpha + G^2) - k * I;
+  B' = (-d0 + r1 * G - r2 * G^2) * B;
+
+  // Species initializations:
+  G = 250;
+  I = 2.8;
+  B = 37;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  si = 0.72;
+  Eg0 = 1.44;
+  R0 = 864;
+  sigma = 43.2;
+  alpha = 20000;
+  k = 432;
+  d0 = 0.06;
+  r1 = 0.00084;
+  r2 = 2.4e-06;
+
+  //Display Names:
+  G is "glucose";
+  I is "insulin";
+  B is "Mass";
+end

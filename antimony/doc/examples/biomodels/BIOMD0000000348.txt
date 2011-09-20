@@ -1,0 +1,133 @@
+//Created by libAntimony v2.0
+model Fridlyand2010_GlucoseSensitivity_A()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $G3P in compartment_, $PYR in compartment_, $ATP in compartment_;
+  species $NADHm in compartment_, $NADHc in compartment_, $Vm in compartment_;
+  species $Cam in compartment_;
+
+  // Assignment Rules:
+  ACa := 1 + -(1 * (1 / exp(Cam * (1 / KpCam))));
+  AD := MgADP * MgADP * (1 / (MgADP * MgADP + Kmadp * Kmadp));
+  ADP := Ao + -ATP;
+  AT_ := Vm^hp * (1 / (Kmph^hp + Vm^hp));
+  Cac := CaR + kACa * (ATP * (1 / ADP))^hCa * (1 / (KAD^hCa + (ATP * (1 / ADP))^hCa));
+  DelJNCa := 1 + Ni^3 * (1 / KNaj^3) + Cam * (1 / KCaj) + Ni^3 * Cam * (1 / (KNaj^3 * KCaj)) + Nam^3 * (1 / KNaj^3) + Cac * (1 / KCaj) + Nam^3 * Cac * (1 / (KNaj^3 * KCaj));
+  FDe := NADHm * (1 / (KmNh + NADHm));
+  FLNADc := NADHc * (1 / (Klnc + NADHc * (1 / NADc))) * (1 / NADc);
+  FNADc := NADHc * (1 / (KTNc + NADHc * (1 / NADc))) * (1 / NADc);
+  FPCa := 1 * (1 / (1 + u2 * (1 + u1 * (1 / (1 + Cam * (1 / KCam))^2))));
+  FPNAD := NADm * (1 / (KPNm + NADm * (1 / NADHm))) * (1 / NADHm);
+  FPYR := PYR * (1 / (Kmpyr + PYR));
+  FTe := (1 + kat * Vm) * (1 / (1 + kbt * Vm));
+  JGlu := Vmglu * Glu^hgl * ATP * (1 / (Kmgl^hgl + Glu^hgl)) * (1 / (KmATP + ATP));
+  Jgpd := Vmgpd * G3P * NADc * (1 / (G3P + Kmg3p)) * (1 / (KgNc + NADc * (1 / NADHc))) * (1 / NADHc);
+  Jhl := (Plb + Plr) * exp(klp * Vm);
+  Jhres := Vme * FTe * FDe;
+  JLDH := Vmldh * FLNADc * PYR * (1 / (KmLD + PYR));
+  JNCa := Vmnc * (exp(0.5 * Vm * Ni^3 * Cam * (1 / (Tv * KNaj^3 * KCaj))) + -exp(-(0.5 * Vm * Nam^3 * Cac * (1 / (Tv * KNaj^3 * KCaj))))) * (1 / DelJNCa);
+  JO2 := 0.1 * Jhres;
+  Jph := Vmph * AD * AT_ * ACa;
+  JPYR := Vmpdh * FPNAD * FPCa * FPYR;
+  Jtnadh := Tnadh * FNADc * NADm * (1 / (KTNm + NADm * (1 / NADHm))) * (1 / NADHm);
+  Juni := PCa * ZCa * Vm * (am * Cam * exp(-(Vm * ZCa * (1 / Tv))) + -(ai * Cac)) * (1 / Tv) * (1 / (-1 + exp(-(Vm * ZCa * (1 / Tv)))));
+  MgADP := 0.055 * ADP;
+  NADc := Ntc + -NADHc;
+  NADm := Ntm + -NADHm;
+  ID := ATP / ADP;
+
+  // Rate Rules:
+  G3P' = (2 * JGlu + -Jgpd) * (1 / Vi) + -(kgpd * G3P);
+  PYR' = (Jgpd + -JPYR + -JLDH) * (1 / (Vi + Vmmit));
+  ATP' = -((kATP + kATPCa * Cac) * ATP) + (2 * JGlu + 0.231 * Jph) * (1 / Vi);
+  NADHm' = (4.6 * JPYR + -(0.1 * Jhres) + Jtnadh) * (1 / Vmmit) + -(knadhm * NADHm);
+  NADHc' = (Jgpd + -Jtnadh + -JLDH) * (1 / Vi) + -(knadhc * NADHc);
+  Vm' = (Jhres + -Jph + -Jhl + -(2 * Juni) + -JNCa) * F * (1 / Cmit);
+  Cam' = fm * (Juni + -JNCa) * (1 / Vmmit);
+
+  // Species initializations:
+  G3P = G3P_init;
+  PYR = PYR_init;
+  ATP = ATP_init;
+  NADHm = NADHm_init;
+  NADHc = NADHc_init;
+  Vm = Vm_init;
+  Cam = Cam_init;
+
+  // Variable initializations:
+  ai = 0.341;
+  am = 0.2;
+  Ao = 4000;
+  ATP_init = 3700;
+  Cac_init = 0.1;
+  Cam_init = 0.2;
+  CaR = 0.09;
+  Cmit = 5200;
+  F = 96480;
+  fi = 0.01;
+  fm = 0.0003;
+  G3P_init = 30;
+  Glu = 8;
+  hCa = 4;
+  hgl = 1.7;
+  hp = 8;
+  kACa = 0.25;
+  KAD = 25;
+  kat = -0.00492;
+  kATP = 4e-05;
+  kATPCa = 9e-05;
+  kbt = -0.00443;
+  kCaA = 30;
+  KCaj = 8;
+  KCam = 0.05;
+  KgNc = 0.09;
+  kgpd = 1e-05;
+  Klnc = 1;
+  klp = 0.0305;
+  Kmadp = 20;
+  KmATP = 500;
+  Kmg3p = 200;
+  Kmgl = 7;
+  KmLD = 47.5;
+  KmNh = 3000;
+  Kmph = 131.4;
+  Kmpyr = 47.5;
+  knadhc = 0.0001;
+  knadhm = 0.0001;
+  KNaj = 8000;
+  KpCam = 0.165;
+  KPNm = 81;
+  KTNc = 0.002;
+  KTNm = 16.78;
+  NADHc_init = 10;
+  NADHm_init = 50;
+  Nam = 5000;
+  Ni = 10000;
+  Ntc = 2000;
+  Ntm = 2200;
+  PCa = 0.004;
+  Plb = 0.0012;
+  Plr = 0.0012;
+  PYR_init = 10;
+  Tnadh = 0.05;
+  Tv = 26.73;
+  u1 = 1.5;
+  u2 = 1.1;
+  Vi = 0.53;
+  Vm_init = 100;
+  Vme = 22;
+  Vmglu = 0.011;
+  Vmgpd = 0.5;
+  Vmldh = 1.2;
+  Vmmit = 0.0144;
+  Vmnc = 0.025;
+  Vmpdh = 0.3;
+  Vmph = 8;
+  ZCa = 2;
+
+  //Other declarations:
+  var ACa, AD, ADP, AT_, Cac, DelJNCa, FDe, FLNADc, FNADc, FPCa, FPNAD, FPYR;
+  var FTe, JGlu, Jgpd, Jhl, Jhres, JLDH, JNCa, JO2, Jph, JPYR, Jtnadh, Juni;
+  var MgADP, NADc, NADm, ID;
+end

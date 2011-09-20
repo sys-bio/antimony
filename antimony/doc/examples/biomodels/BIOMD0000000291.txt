@@ -1,4 +1,4 @@
-//Created by libAntimony v1.4
+//Created by libAntimony v2.0
 model Nikolaev2005_AlbuminBilirubinAdsorption()
 
   // Compartments and Species:
@@ -13,10 +13,10 @@ model Nikolaev2005_AlbuminBilirubinAdsorption()
   x7 := C0 - x2 - n * x3;
 
   // Rate Rules:
-  x1' = K_AlB * k3 * (A0 - x1 - x3 - x4) * (B0 - x1 - x2 - 2 * x4) - K_AlB2 * k4 * x1 * (B0 - x1 - x2 - 2 * x4) - k3 * x1 - k9 * x1 * (C0 - x2 - n * x3)^(n + 1) + k4 * x4 + k10 * x4 * (C0 - x2 - n * x3);
-  x2' = k6 * (C0 - x2 - n * x3) * (B0 - x1 - x2 - 2 * x4) - k8 * x2 + k9 * x1 * (C0 - x2 - n * x3)^(n + 1) + k10 * x4 * (C0 - x2 - n * x3);
-  x3' = k5 * (C0 - x2 - n * x3)^n * (A0 - x1 - x3 - x4) - k7 * x3 + k9 * x1 * (C0 - x2 - n * x3)^(n + 1);
-  x4' = K_AlB2 * k4 * x1 * (B0 - x1 - x2 - 2 * x4) - k4 * x4 - k10 * x4 * (C0 - x2 - n * x3);
+  x1' = K_AlB * k3 * x5 * x6 - K_AlB2 * k4 * x1 * x6 - k3 * x1 - k9 * x1 * x7^(n + 1) + k4 * x4 + k10 * x4 * x7;
+  x2' = k6 * x7 * x6 - k8 * x2 + k9 * x1 * x7^(n + 1) + k10 * x4 * x7;
+  x3' = k5 * x7^n * x5 - k7 * x3 + k9 * x1 * x7^(n + 1);
+  x4' = K_AlB2 * k4 * x1 * x6 - k4 * x4 - k10 * x4 * x7;
 
   // Species initializations:
   x1 = 0;
