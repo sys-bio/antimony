@@ -1,0 +1,72 @@
+//Created by libAntimony v2.0
+model Vernoux2011_AuxinSignalling_AuxinSingleStepInput()
+
+  // Compartments and Species:
+  compartment compartment_0000001;
+  species I in compartment_0000001, A in compartment_0000001, D_II in compartment_0000001;
+  species D_IA in compartment_0000001, R in compartment_0000001, $aux in compartment_0000001;
+
+  // Assignment Rules:
+  aux := piecewise(5, gt(time, 1000), 0);
+  kprime_IA := K_IA * k_IA;
+  kprime_II := K_II * k_II;
+  aux_basal := 1 / (K_aux * (gamma_I - 1));
+
+  // Reactions:
+  reac_DIA: A + I -> D_IA; k_IA * I * A - kprime_IA * D_IA;
+  reac_DII: I + I -> D_II; k_II * I * I - kprime_II * D_II;
+  reac_degrI: I => ; gamma_I * d_I * K_aux * aux / (K_aux * aux + 1) * I;
+  reac_degrA: A => ; d_A * A;
+  reac_degrDIA: D_IA => ; d_IA * D_IA;
+  reac_degrDII: D_II => ; d_II * D_II;
+  reac_DIAxA: D_IA => A; gamma_I * d_I * K_aux * aux / (K_aux * aux + 1) * D_IA;
+  reac_DIIxI: D_II => I; gamma_I * d_I * K_aux * aux / (K_aux * aux + 1) * D_II;
+  reac_degrR: R => ; d_r * R;
+  reac_prodI:  => I; pi_I * R;
+  reac_prodA:  => A; pi_A;
+  reac_prodR:  => R; (1 + f_c / B_d * A * (1 + w_A * f_A * A / B_d)) / (1 + A / B_d * (1 + w_A * A / B_d) + w_I * A * I / (K_IA * B_d) + w_D * D_IA / B_d + k_Am);
+
+  // Species initializations:
+  I = 10;
+  A = 10;
+  D_II = 10;
+  D_IA = 10;
+  R = 1;
+
+  // Compartment initializations:
+  compartment_0000001 = 1;
+
+  // Variable initializations:
+  pi_I = 1;
+  d_r = 0.007;
+  d_A = 0.003;
+  d_II = 0.003;
+  d_IA = 0.003;
+  k_II = 1;
+  k_IA = 1;
+  B_d = 100;
+  f_A = 10;
+  gamma_I = 10;
+  K_aux = 1;
+  K_II = 10;
+  K_IA = 10;
+  f_c = 10;
+  w_A = 10;
+  w_I = 10;
+  w_D = 10;
+  d_I = 0.05;
+  pi_A = 1;
+  k_Am = 10;
+
+  //Other declarations:
+  var kprime_IA, kprime_II, aux_basal;
+
+  //Display Names:
+  compartment_0000001 is "c_1";
+  I is "Aux/IAA";
+  A is "ARF";
+  D_II is "Aux/IAA:Aux/IAA";
+  D_IA is "Aux/IAA:ARF";
+  R is "mRNA";
+  aux is "auxin";
+end

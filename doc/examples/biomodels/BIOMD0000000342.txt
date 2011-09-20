@@ -1,0 +1,152 @@
+//Created by libAntimony v2.0
+model Zi2011_TGFbeta_Pathway()
+
+  // Compartments and Species:
+  compartment default, Vmed, Vcyt, Vnuc;
+  species TGF_beta_ex in Vmed, T1R_surf in Vcyt, T1R_endo in Vcyt, T2R_surf in Vcyt;
+  species T2R_endo in Vcyt, LRC_surf in Vcyt, LRC_endo in Vcyt, Smad2c in Vcyt;
+  species Smad2n in Vnuc, Smad4c in Vcyt, Smad4n in Vnuc, PSmad2c in Vcyt;
+  species PSmad2_PSmad2_c in Vcyt, PSmad2_Smad4_c in Vcyt, PSmad2n in Vnuc;
+  species PSmad2_PSmad2_n in Vnuc, PSmad2_Smad4_n in Vnuc, TGF_beta_endo in Vcyt;
+  species TGF_beta_ns in Vmed, $AA in Vcyt, $empty_degraded in Vcyt;
+
+  // Assignment Rules:
+  Vmed := 2.000000e-03 / (1.000000e+06 * exp(log(1.45) * time / 1440));
+  totalNumT1R := (T1R_surf + T1R_endo + LRC_surf + LRC_endo) * 2.3 * 602;
+  totalNumT2R := (T2R_surf + T2R_endo + LRC_surf + LRC_endo) * 2.3 * 602;
+  totalNumLRC := (LRC_surf + LRC_endo) * 2.3 * 602;
+  totalNumPSmad2 := (PSmad2c + PSmad2_PSmad2_c * 2 + PSmad2_Smad4_c) * 2.3 * 602 + (PSmad2n + PSmad2_PSmad2_n * 2 + PSmad2_Smad4_n) * 602;
+  totalNuclearPSmad2 := PSmad2n + 2 * PSmad2_PSmad2_n + PSmad2_Smad4_n;
+  totalSmad2c := Smad2c + PSmad2c + 2 * PSmad2_PSmad2_c + PSmad2_Smad4_c;
+  totalSmad2n := Smad2n + PSmad2n + 2 * PSmad2_PSmad2_n + PSmad2_Smad4_n;
+  medium_TGF_beta_amount := TGF_beta_ex * 1.000000e-09 * Vmed * 6.000000e+23;
+  koff_ns := kon_ns * KD_ns;
+
+  // Reactions:
+  re1: $AA => T1R_surf; Vcyt * k_T1R;
+  re2: T1R_surf => T1R_endo; Vcyt * ki * T1R_surf;
+  re3: T1R_endo => T1R_surf; Vcyt * kr * T1R_endo;
+  re4: T1R_endo => $empty_degraded; Vcyt * kdeg_T1R * T1R_endo;
+  re5: $AA => T2R_surf; Vcyt * k_T2R;
+  re6: T2R_surf => T2R_endo; Vcyt * ki * T2R_surf;
+  re7: T2R_endo => T2R_surf; Vcyt * kr * T2R_endo;
+  re8: T2R_endo => $empty_degraded; Vcyt * kdeg_T2R * T2R_endo;
+  re9: TGF_beta_ex + T2R_surf + T1R_surf => LRC_surf; Vcyt * ka_LRC * TGF_beta_ex * T2R_surf * T1R_surf;
+  re10: LRC_surf => LRC_endo; Vcyt * ki * LRC_surf;
+  re11: LRC_endo => $empty_degraded; Vcyt * kdeg_LRC * LRC_endo;
+  re12: LRC_endo => T1R_endo + T2R_endo + TGF_beta_endo; Vcyt * kdiss_LRC * LRC_endo;
+  re13: TGF_beta_endo => $empty_degraded; Vcyt * kdeg_TGF_beta * TGF_beta_endo;
+  re14: Smad2c => Smad2n; Vcyt * kimp_Smad2 * Smad2c;
+  re15: Smad2n => Smad2c; Vnuc * kexp_Smad2 * Smad2n;
+  re16: Smad4c => Smad4n; Vcyt * kimp_Smad4 * Smad4c;
+  re17: Smad4n => Smad4c; Vnuc * kexp_Smad4 * Smad4n;
+  re18: Smad2c => PSmad2c; Vcyt * kpho_Smad2 * Smad2c * LRC_endo;
+  re19: PSmad2c => PSmad2n; Vcyt * kimp_Smad2 * PSmad2c;
+  re20: PSmad2n => PSmad2c; Vnuc * kexp_Smad2 * PSmad2n;
+  re21: PSmad2c + Smad4c -> PSmad2_Smad4_c; Vcyt * (kon_Smads * PSmad2c * Smad4c - koff_Smads * PSmad2_Smad4_c);
+  re22: PSmad2_Smad4_c => PSmad2_Smad4_n; Vcyt * kimp_Smads * PSmad2_Smad4_c;
+  re23: PSmad2_Smad4_n -> PSmad2n + Smad4n; Vnuc * (koff_Smads * PSmad2_Smad4_n - kon_Smads * PSmad2n * Smad4n);
+  re24: PSmad2n => Smad2n; Vnuc * kdepho_Smad2 * PSmad2n;
+  re25: 2PSmad2c -> PSmad2_PSmad2_c; Vcyt * (kon_Smads * PSmad2c^2 - koff_Smads * PSmad2_PSmad2_c);
+  re26: PSmad2_PSmad2_c => PSmad2_PSmad2_n; Vcyt * kimp_Smads * PSmad2_PSmad2_c;
+  re27: PSmad2_PSmad2_n -> 2PSmad2n; Vnuc * (koff_Smads * PSmad2_PSmad2_n - kon_Smads * PSmad2n^2);
+  re28: LRC_surf => $empty_degraded; Vcyt * klid * LRC_surf * totalNuclearPSmad2;
+  re29: TGF_beta_ex -> TGF_beta_ns; Vmed * (kon_ns * TGF_beta_ex - koff_ns * TGF_beta_ns);
+
+  // Events:
+  single_pulse_TGF_beta_washout: at 0 after and(eq(stimulation_type, 2), eq(time, single_pulse_duration)): TGF_beta_ex = 0;
+
+  // Species initializations:
+  TGF_beta_ex = 0.05;
+  T1R_surf = (k_T1R * kdeg_T1R + k_T1R * kr) / (kdeg_T1R * ki);
+  T1R_endo = k_T1R / kdeg_T1R;
+  T2R_surf = (k_T2R * kdeg_T2R + k_T2R * kr) / (kdeg_T2R * ki);
+  T2R_endo = k_T2R / kdeg_T2R;
+  LRC_surf = 0;
+  LRC_endo = 0;
+  Smad2c = 60.6;
+  Smad2n = 28.5;
+  Smad4c = 50.8;
+  Smad4n = 50.8;
+  PSmad2c = 0;
+  PSmad2_PSmad2_c = 0;
+  PSmad2_Smad4_c = 0;
+  PSmad2n = 0;
+  PSmad2_PSmad2_n = 0;
+  PSmad2_Smad4_n = 0;
+  TGF_beta_endo = 0;
+  TGF_beta_ns = 0;
+  AA = 0;
+  empty_degraded = 0;
+
+  // Compartment initializations:
+  default = 1;
+  Vcyt = 2.3e-12;
+  Vnuc = 1e-12;
+
+  // Variable initializations:
+  stimulation_type = 1;
+  single_pulse_duration = 0.5;
+  TGF_beta_dose_mol_per_cell = TGF_beta_ex * 1.000000e-09 * Vmed * 6.000000e+23;
+  ki = 0.333;
+  kr = 0.0333;
+  k_T1R = 0.0167;
+  k_T2R = 0.0190076;
+  kdeg_T1R = 0.00256;
+  kdeg_T2R = 0.0132;
+  kdeg_LRC = 0.00256;
+  kdeg_TGF_beta = 0.347;
+  klid = 0.0233678;
+  ka_LRC = 117.897;
+  kdiss_LRC = 0.0438111;
+  kimp_Smad2 = 0.156;
+  kexp_Smad2 = 0.763;
+  kimp_Smad4 = 0.156;
+  kexp_Smad4 = 0.359;
+  kpho_Smad2 = 0.0488268;
+  kon_Smads = 0.198472;
+  koff_Smads = 1;
+  kimp_Smads = 0.889;
+  kdepho_Smad2 = 0.394;
+  kon_ns = 0.0505413;
+  KD_ns = 40.2257;
+
+  //Other declarations:
+  var Vmed, totalNumT1R, totalNumT2R, totalNumLRC, totalNumPSmad2, totalNuclearPSmad2;
+  var totalSmad2c, totalSmad2n, medium_TGF_beta_amount, koff_ns;
+
+  //Display Names:
+  Vmed is "Medium";
+  Vcyt is "Cytoplasm";
+  Vnuc is "Nucleus";
+  single_pulse_TGF_beta_washout is "TGF-beta washout in singel pulse stimulation";
+  re1 is "T1R production";
+  re2 is "T1R internalization to early endosome";
+  re3 is "T1R recycling from early endosome";
+  re4 is "T1R constitutive degradation";
+  re5 is "T2R production";
+  re6 is "T2R internalization to early endosome";
+  re7 is "T2R recycling from early endosome";
+  re8 is "T2R constitutive degradation";
+  re9 is "LRC activation";
+  re10 is "LRC internalization to early endosome";
+  re11 is "LRC constitutive degradation";
+  re12 is "dissociation of LRC in endosome";
+  re13 is "TGF-beta constitutive degradation";
+  re14 is "Smad2 nuclear import";
+  re15 is "Smad2 nuclear export";
+  re16 is "Smad4 nuclear import";
+  re17 is "Smad4 nuclear export";
+  re18 is "Smad2 phosphorylation";
+  re19 is "PSmad2 nuclear import";
+  re20 is "PSmad2 nuclear export";
+  re21 is "Smad2-Smad4 complex formation";
+  re22 is "Smad2-Smad4 nuclear import";
+  re23 is "Smad2-Smad4 dissociation";
+  re24 is "Smad2 dephosphorylation";
+  re25 is "PSmad2 dimer formation";
+  re26 is "PSmad2 dimer nuclear  import";
+  re27 is "PSmad2 dimmer dissociation";
+  re28 is "negative feedback induced LRC degradation";
+  re29 is "non-specific binding of TGF-beta";
+end

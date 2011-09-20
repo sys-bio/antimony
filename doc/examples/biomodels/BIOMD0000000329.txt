@@ -1,0 +1,48 @@
+//Created by libAntimony v2.0
+model Kummer2000_CalciumSpiking()
+
+  // Compartments and Species:
+  compartment cytoplasm, ER;
+  species $a in cytoplasm, $b in cytoplasm, $c in cytoplasm, $d in ER;
+
+  // Rate Rules:
+  a' = k1 + k2 * a - k3 * a * b / (a + K4) - k5 * a * c / (a + K6);
+  b' = k7 * a - k8 * b / (b + K9);
+  c' = k10 * c * b * d / (d + K11) + k12 * b + k13 * a - k14 * c / (c + K15) - k16 * c / (c + K17);
+  d' = -k10 * c * b * d / (d + K11) + k16 * c / (c + K17);
+
+  // Species initializations:
+  a = 0.01;
+  b = 0.01;
+  c = 0.01;
+  d = 20;
+
+  // Compartment initializations:
+  cytoplasm = 1;
+  ER = 1;
+
+  // Variable initializations:
+  k1 = 0.09;
+  k2 = 1.3;
+  k3 = 0.64;
+  K4 = 0.19;
+  k5 = 4.88;
+  K6 = 1.18;
+  k7 = 2.08;
+  k8 = 32.24;
+  K9 = 29.09;
+  k10 = 5;
+  K11 = 2.67;
+  k12 = 0.7;
+  k13 = 13.58;
+  k14 = 153;
+  K15 = 0.16;
+  k16 = 4.85;
+  K17 = 0.05;
+
+  //Display Names:
+  a is "G-alpha";
+  b is "PLC";
+  c is "Calcium-Cyt";
+  d is "Calcium-ER";
+end

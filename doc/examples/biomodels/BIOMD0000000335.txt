@@ -1,0 +1,143 @@
+//Created by libAntimony v2.0
+model Model_1()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species TF in compartment_1, TF_VII in compartment_1, VII in compartment_1;
+  species TF_VIIa in compartment_1, VIIa in compartment_1, Xa in compartment_1;
+  species IIa in compartment_1, TF_VIIa_X in compartment_1, X in compartment_1;
+  species TF_VIIa_Xa in compartment_1, IX in compartment_1, TF_VIIa_IX in compartment_1;
+  species IXa in compartment_1, II in compartment_1, VIII in compartment_1;
+  species VIIIa in compartment_1, IXa_VIIIa in compartment_1, IXa_VIIIa_X in compartment_1;
+  species VIIIa1_L in compartment_1, VIIIa2 in compartment_1, V in compartment_1;
+  species Va in compartment_1, Xa_Va in compartment_1, Xa_Va_II in compartment_1;
+  species mIIa in compartment_1, TFPI in compartment_1, Xa_TFPI in compartment_1;
+  species TF_VIIa_Xa_TFPI in compartment_1, ATIII in compartment_1, Xa_ATIII in compartment_1;
+  species mIIa_ATIII in compartment_1, IXa_ATIII in compartment_1, IIa_ATIII in compartment_1;
+  species TF_VIIa_ATIII in compartment_1;
+
+  // Assignment Rules:
+  IIa_plus_1_2mIIa := IIa + 1.2 * mIIa;
+
+  // Reactions:
+  R1: TF + VII -> TF_VII; compartment_1 * (k2 * TF * VII - k1 * TF_VII);
+  R2: TF + VIIa -> TF_VIIa; compartment_1 * (k4 * TF * VIIa - k3 * TF_VIIa);
+  R3: TF_VIIa + VII => TF_VIIa + VIIa; compartment_1 * k5 * TF_VIIa * VII;
+  R4: Xa + VII => Xa + VIIa; compartment_1 * k6 * Xa * VII;
+  R5: IIa + VII => IIa + VIIa; compartment_1 * k7 * IIa * VII;
+  R6: TF_VIIa + X -> TF_VIIa_X; compartment_1 * (k9 * TF_VIIa * X - k8 * TF_VIIa_X);
+  R7: TF_VIIa + Xa -> TF_VIIa_Xa; compartment_1 * (k12 * TF_VIIa * Xa - k11 * TF_VIIa_Xa);
+  R8: TF_VIIa + IX -> TF_VIIa_IX; compartment_1 * (k14 * TF_VIIa * IX - k13 * TF_VIIa_IX);
+  R9: Xa + II => Xa + IIa; compartment_1 * k16 * Xa * II;
+  R10: IIa + VIII => IIa + VIIIa; compartment_1 * k17 * IIa * VIII;
+  R11: IXa + VIIIa -> IXa_VIIIa; compartment_1 * (k19 * IXa * VIIIa - k18 * IXa_VIIIa);
+  R12: IXa_VIIIa + X -> IXa_VIIIa_X; compartment_1 * (k21 * IXa_VIIIa * X - k20 * IXa_VIIIa_X);
+  R13: VIIIa -> VIIIa1_L + VIIIa2; compartment_1 * (k24 * VIIIa - k23 * VIIIa1_L * VIIIa2);
+  R14: IXa_VIIIa_X => VIIIa1_L + VIIIa2 + X + IXa; compartment_1 * k25 * IXa_VIIIa_X;
+  R15: IXa_VIIIa => VIIIa1_L + VIIIa2 + IXa; compartment_1 * k25 * IXa_VIIIa;
+  R16: IIa + V => IIa + Va; compartment_1 * k26 * IIa * V;
+  R17: Xa + Va -> Xa_Va; compartment_1 * (k28 * Xa * Va - k27 * Xa_Va);
+  R18: Xa_Va + II -> Xa_Va_II; compartment_1 * (k30 * Xa_Va * II - k29 * Xa_Va_II);
+  R19: mIIa + Xa_Va => IIa + Xa_Va; compartment_1 * k32 * mIIa * Xa_Va;
+  R20: Xa + TFPI -> Xa_TFPI; compartment_1 * (k34 * Xa * TFPI - k33 * Xa_TFPI);
+  R21: TF_VIIa_Xa + TFPI -> TF_VIIa_Xa_TFPI; compartment_1 * (k36 * TF_VIIa_Xa * TFPI - k35 * TF_VIIa_Xa_TFPI);
+  R22: TF_VIIa + Xa_TFPI => TF_VIIa_Xa_TFPI; compartment_1 * k37 * TF_VIIa * Xa_TFPI;
+  R23: Xa + ATIII => Xa_ATIII; compartment_1 * k38 * Xa * ATIII;
+  R24: mIIa + ATIII => mIIa_ATIII; compartment_1 * k39 * mIIa * ATIII;
+  R25: IXa + ATIII => IXa_ATIII; compartment_1 * k40 * IXa * ATIII;
+  R26: IIa + ATIII => IIa_ATIII; compartment_1 * k41 * IIa * ATIII;
+  R27: TF_VIIa + ATIII => TF_VIIa_ATIII; compartment_1 * k42 * TF_VIIa * ATIII;
+  R6b: TF_VIIa_X => TF_VIIa_Xa; compartment_1 * k10 * TF_VIIa_X;
+  R8b: TF_VIIa_IX => TF_VIIa + IXa; compartment_1 * k15 * TF_VIIa_IX;
+  R12b: IXa_VIIIa_X => IXa_VIIIa + Xa; compartment_1 * k22 * IXa_VIIIa_X;
+  R18b: Xa_Va_II => Xa_Va + mIIa; compartment_1 * k31 * Xa_Va_II;
+
+  // Species initializations:
+  TF = 2.5e-11;
+  TF_VII = 0;
+  VII = 1e-08;
+  TF_VIIa = 0;
+  VIIa = 1e-10;
+  Xa = 0;
+  IIa = 0;
+  TF_VIIa_X = 0;
+  X = 1.6e-07;
+  TF_VIIa_Xa = 0;
+  IX = 9e-08;
+  TF_VIIa_IX = 0;
+  IXa = 0;
+  II = 1.4e-06;
+  VIII = 7e-10;
+  VIIIa = 0;
+  IXa_VIIIa = 0;
+  IXa_VIIIa_X = 0;
+  VIIIa1_L = 0;
+  VIIIa2 = 0;
+  V = 2e-08;
+  Va = 0;
+  Xa_Va = 0;
+  Xa_Va_II = 0;
+  mIIa = 0;
+  TFPI = 2.5e-09;
+  Xa_TFPI = 0;
+  TF_VIIa_Xa_TFPI = 0;
+  ATIII = 3.4e-06;
+  Xa_ATIII = 0;
+  mIIa_ATIII = 0;
+  IXa_ATIII = 0;
+  IIa_ATIII = 0;
+  TF_VIIa_ATIII = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  k1 = 0.0031;
+  k2 = 3200000;
+  k3 = 0.0031;
+  k4 = 23000000;
+  k5 = 440000;
+  k6 = 13000000;
+  k7 = 23000;
+  k8 = 1.05;
+  k9 = 25000000;
+  k10 = 6;
+  k11 = 19;
+  k12 = 22000000;
+  k13 = 2.4;
+  k14 = 10000000;
+  k15 = 1.8;
+  k16 = 7500;
+  k17 = 20000000;
+  k18 = 0.005;
+  k19 = 10000000;
+  k20 = 0.001;
+  k21 = 100000000;
+  k22 = 8.2;
+  k23 = 22000;
+  k24 = 0.006;
+  k25 = 0.001;
+  k26 = 20000000;
+  k27 = 0.2;
+  k28 = 400000000;
+  k29 = 103;
+  k30 = 100000000;
+  k31 = 63.5;
+  k32 = 15000000;
+  k33 = 0.00036;
+  k34 = 900000;
+  k35 = 0.00011;
+  k36 = 320000000;
+  k37 = 50000000;
+  k38 = 1500;
+  k39 = 7100;
+  k40 = 490;
+  k41 = 7100;
+  k42 = 230;
+
+  //Other declarations:
+  var IIa_plus_1_2mIIa;
+
+  //Display Names:
+  IIa_plus_1_2mIIa is "IIa+1.2mIIa";
+end

@@ -1,37 +1,41 @@
-//Created by libAntimony v1.4
+//Created by libAntimony v2.0
 model yao08()
 
   // Compartments and Species:
   compartment cell;
-  species M in cell, E in cell, CD in cell, CE in cell, R in cell, RE in cell;
+  species MC in cell, EF in cell, CD in cell, CE in cell, RB in cell, RE in cell;
   species RP in cell;
 
   // Reactions:
-  r1:  => M; cell * r1_kM * S / (r1_KS + S);
-  r2:  => CD; cell * r2_kCDS * S / (r2_KS + S);
-  r3:  => E; cell * (r3_kE * (M / (r3_KM + M)) * (E / (r3_KE + E)) + r3_kb * M / (r3_KM + M));
-  r4:  => CE; cell * r4_kCE * E / (r4_KE + E);
-  r5:  => CD; cell * r5_kCD * E / (r5_KE + E);
-  r6:  => R; cell * r6_kR;
-  r7: RE => E + RP; cell * (r7_kP1 * CD * RE / (r7_KCD + RE) + r7_kP2 * CE * RE / (r7_KCE + RE));
-  r8: E + R => RE; cell * r8_kRE * R * E;
-  r9: R => RP; cell * (r9_kP1 * CD * R / (r9_KCD + R) + r9_kP2 * CE * R / (r9_KCE + R));
-  r10: RP => R; cell * r10_kDP * RP / (r10_KRP + RP);
-  r11: M => ; cell * r11_dM * M;
-  r12: E => ; cell * r12_dE * E;
+  r1:  => MC; cell * (r1_kM * S / (r1_KS + S));
+  r2:  => CD; cell * (r2_kkCDS * S / (r2_KS + S));
+  r3:  => EF; cell * (r3_kkEF * MC * EF / ((r3_KMC + MC) * (r3_KEF + EF)) + r3_kkb * MC / (r3_KMC + MC));
+  r4:  => CE; cell * (r4_kkCE * EF / (r4_KEF + EF));
+  r5:  => CD; cell * (r5_kkCD * MC / (r5_KMC + MC));
+  r6:  => RB; cell * r6_kkRB;
+  r7: RE => EF + RP; cell * (r7_kkRBPP * CD * RE / (r7_KD + RE) + r7_kkRBPP * CE * RE / (r7_KE + RE));
+  r8: EF + RB => RE; cell * r8_kkRE * RB * EF;
+  r9: RB => RP; cell * (r9_kkRBP * CD * RB / (r9_KD + RB) + r9_kkRBP2 * CE * RB / (r9_KE + RB));
+  r10: RP => RB; cell * (r10_kkRBUP * RP / (r10_Kp + RP));
+  r11: MC => ; cell * r11_dMC * MC;
+  r12: EF => ; cell * r12_dEF * EF;
   r13: CE => ; cell * r13_dCE * CE;
   r14: CD => ; cell * r14_dCD * CD;
-  r15: R => ; cell * r15_dR * R;
+  r15: RB => ; cell * r15_dRB * RB;
   r16: RP => ; cell * r16_dRP * RP;
   r17: RE => ; cell * r17_dRE * RE;
 
+  // Events:
+  e1: at gt(time, 0): S = 20;
+  e2: at gt(time, 5): S = 1;
+
   // Species initializations:
-  M = 0;
-  E = 0;
+  MC = 0;
+  EF = 0;
   CD = 0;
   CE = 0;
-  R = 0.55;
-  RE = 0;
+  RB = 0;
+  RE = 0.55;
   RP = 0;
 
   // Compartment initializations:
@@ -42,41 +46,43 @@ model yao08()
   r1_KS = 0.5;
   r1_kM = 1;
   r2_KS = 0.5;
-  r2_kCDS = 0.45;
-  r3_KE = 0.15;
-  r3_KM = 0.15;
-  r3_kE = 0.4;
-  r3_kb = 0.003;
-  r4_KE = 0.15;
-  r4_kCE = 0.45;
-  r5_KE = 0.15;
-  r5_kCD = 0.03;
-  r6_kR = 0.18;
-  r7_KCD = 0.92;
-  r7_KCE = 0.92;
-  r7_kP1 = 18;
-  r7_kP2 = 18;
-  r8_kRE = 180;
-  r9_KCD = 0.92;
-  r9_KCE = 0.92;
-  r9_kP1 = 18;
-  r9_kP2 = 18;
-  r10_KRP = 0.01;
-  r10_kDP = 3.6;
-  r11_dM = 0.7;
-  r12_dE = 0.25;
+  r2_kkCDS = 0.45;
+  r3_KEF = 0.15;
+  r3_KMC = 0.15;
+  r3_kkEF = 0.4;
+  r3_kkb = 0.003;
+  r4_KEF = 0.15;
+  r4_kkCE = 0.35;
+  r5_KMC = 0.15;
+  r5_kkCD = 0.03;
+  r6_kkRB = 0.18;
+  r7_KD = 0.92;
+  r7_KE = 0.92;
+  r7_kkRBPP = 18;
+  r8_kkRE = 180;
+  r9_KD = 0.92;
+  r9_KE = 0.92;
+  r9_kkRBP = 18;
+  r9_kkRBP2 = 18;
+  r10_Kp = 0.01;
+  r10_kkRBUP = 3.6;
+  r11_dMC = 0.7;
+  r12_dEF = 0.25;
   r13_dCE = 1.5;
   r14_dCD = 1.5;
-  r15_dR = 0.06;
+  r15_dRB = 0.06;
   r16_dRP = 0.06;
   r17_dRE = 0.03;
 
+  //Other declarations:
+  var S;
+
   //Display Names:
-  M is "Myc";
-  E is "E2F";
+  MC is "Myc";
+  EF is "E2F";
   CD is "CycD";
   CE is "CycE";
-  R is "Rb";
+  RB is "Rb";
   RE is "Rb-E2F complex";
   RP is "phosphorylated Rb";
 end

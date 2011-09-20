@@ -1,0 +1,99 @@
+//Created by libAntimony v2.0
+model Atorvastatin_Metabolism()
+
+  // Compartments and Species:
+  compartment compartment_, medium, cell;
+  species AS_m in medium, ASL_m in medium, ASoOH_m in medium, ASLpOH_m in medium;
+  species ASpOH_m in medium, ASLoOH_m in medium, AS_c in cell, ASL_c in cell;
+  species ASpOH_c in cell, ASoOH_c in cell, ASLpOH_c in cell, ASLoOH_c in cell;
+  species ASpOH_b in cell, ASoOH_b in cell, ASLpOH_b in cell, ASLoOH_b in cell;
+  species AS_b in cell, ASL_b in cell;
+
+  // Reactions:
+  Import_AS: AS_m => AS_c; Import_AS_k * AS_m;
+  Import_ASL: ASL_m => ASL_c; Import_ASL_k * ASL_m;
+  CYP3A4_ASpOH: AS_c => ASpOH_c; CYP3A4_ASpOH_Vmax / CYP3A4_ASpOH_Km1 * AS_c / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASoOH: AS_c => ASoOH_c; CYP3A4_ASoOH_Vmax / CYP3A4_ASoOH_Km1 * AS_c / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASLpOH: ASL_c => ASLpOH_c; CYP3A4_ASLpOH_Vmax / CYP3A4_ASLpOH_Km1 * ASL_c / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASLoOH: ASL_c => ASLoOH_c; CYP3A4_ASLoOH_Vmax / CYP3A4_ASLoOH_Km1 * ASL_c / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
+  Export_ASoOH: ASoOH_c => ASoOH_m; Export_ASoOH_k * ASoOH_c;
+  UGT1A3_AS: AS_c => ASL_c; UGT1A3_AS_Vmax * AS_c / (UGT1A3_AS_Km1 + AS_c + AS_c * AS_c / UGT1A3_AS_KI1);
+  R_ASASL_c: ASL_c => AS_c; (k_CR_ASL_c + k_PON_ASL_c) * ASL_c;
+  CR_oOH: ASLoOH_c => ASoOH_c; (k_CR_ASL_c + k_PON_OH_c) * ASLoOH_c;
+  CR_pOH: ASLpOH_c => ASpOH_c; (k_CR_ASL_c + k_PON_OH_c) * ASLpOH_c;
+  Export_AS: AS_c => AS_m; Export_AS_k * AS_c;
+  Export_ASL: ASL_c => ASL_m; Export_ASL_k * ASL_c;
+  Import_ASLpOH: ASLpOH_m => ASLpOH_c; Import_ASLpOH_k * ASLpOH_m;
+  Import_ASLoOH: ASLoOH_m => ASLoOH_c; Import_ASLoOH_k * ASLoOH_m;
+  ASpOH_Prot: ASpOH_c => ASpOH_b; Prot_k1 * ((1 - fu_AS) / fu_AS * ASpOH_c - ASpOH_b);
+  ASoOH_Prot: ASoOH_c => ASoOH_b; Prot_k1 * ((1 - fu_AS) / fu_AS * ASoOH_c - ASoOH_b);
+  ASLpOH_Prot: ASLpOH_c => ASLpOH_b; Prot_k1 * ((1 - fu_ASL) / fu_ASL * ASLpOH_c - ASLpOH_b);
+  ASLoOH_Prot: ASLoOH_c => ASLoOH_b; Prot_k1 * ((1 - fu_ASL) / fu_ASL * ASLoOH_c - ASLoOH_b);
+  AS_Prot: AS_c => AS_b; Prot_k1 * ((1 - fu_AS) / fu_AS * AS_c - AS_b);
+  ASL_Prot: ASL_c => ASL_b; Prot_k1 * ((1 - fu_ASL) / fu_ASL * ASL_c - ASL_b);
+  Import_ASpOH: ASpOH_m => ASpOH_c; Import_ASpOH_k * ASpOH_m;
+  R_ASASL_m: ASL_m => AS_m; k_CR_ASL_m * ASL_m;
+  R_pOH_m: ASLpOH_m => ASpOH_m; k_CR_ASL_m * ASLpOH_m;
+  R_oOH_m: ASLoOH_m => ASoOH_m; k_CR_ASL_m * ASLoOH_m;
+  Export_ASLpOH: ASLpOH_c => ASLpOH_m; Export_ASLpOH_k * ASLpOH_c;
+  Export_ASLoOH: ASLoOH_c => ASLoOH_m; Export_ASLoOH_k * ASLoOH_c;
+  Export_ASpOH: ASpOH_c => ASpOH_m; Export_ASpOH_k * ASpOH_c;
+  Import_ASoOH: ASoOH_m => ASoOH_c; Import_ASoOH_k * ASoOH_m;
+
+  // Species initializations:
+  AS_m = 8797.15;
+  ASL_m = 30.56;
+  ASoOH_m = 0;
+  ASLpOH_m = 0;
+  ASpOH_m = 0;
+  ASLoOH_m = 0;
+  AS_c = 0;
+  ASL_c = 0;
+  ASpOH_c = 0;
+  ASoOH_c = 0;
+  ASLpOH_c = 0;
+  ASLoOH_c = 0;
+  ASpOH_b = 0;
+  ASoOH_b = 0;
+  ASLpOH_b = 0;
+  ASLoOH_b = 0;
+  AS_b = 0;
+  ASL_b = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+  medium = 2;
+  cell = 0.0142;
+
+  // Variable initializations:
+  CYP3A4_ASLpOH_Km1 = 1400;
+  CYP3A4_ASLoOH_Km1 = 3900;
+  CYP3A4_ASpOH_Km1 = 25600;
+  CYP3A4_ASoOH_Km1 = 29700;
+  Import_ASLpOH_k = 0.033729;
+  Import_ASLoOH_k = 0.026122;
+  Import_ASL_k = 0.2754;
+  fu_ASL = 0.22;
+  fu_AS = 0.22;
+  Import_ASpOH_k = 0.0039614;
+  Export_ASLpOH_k = 0.0011319;
+  Export_ASLoOH_k = 0.0026674;
+  k_CR_ASL_c = 3.55e-05;
+  k_CR_ASL_m = 0.005;
+  k_PON_OH_c = 0.0039829;
+  Export_ASoOH_k = 0.0015983;
+  Prot_k1 = 8.52;
+  CYP3A4_ASoOH_Vmax = 47.4985;
+  CYP3A4_ASLpOH_Vmax = 17.4446;
+  CYP3A4_ASLoOH_Vmax = 39.1342;
+  UGT1A3_AS_Vmax = 13.5862;
+  UGT1A3_AS_Km1 = 12000;
+  UGT1A3_AS_KI1 = 75000;
+  k_PON_ASL_c = 0.0043734;
+  Export_AS_k = 0.002166;
+  Export_ASL_k = 0.021822;
+  Import_AS_k = 0.020335;
+  Import_ASoOH_k = 0.00038875;
+  Export_ASpOH_k = 0.00079526;
+  CYP3A4_ASpOH_Vmax = 15.7336;
+end

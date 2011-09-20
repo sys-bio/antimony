@@ -1,0 +1,36 @@
+//Created by libAntimony v2.0
+model Pfeiffer2001_ATPProducingPathways_CooperationCompetition()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species S in compartment_, N1 in compartment_, N2 in compartment_;
+
+  // Reactions:
+  r1:  -> S; v;
+  r2: S -> 10N1; N1 * S / (1 + S);
+  r3: S -> N2; N2 * 20 * S / (1 + S);
+  r4: N1 -> ; d * N1;
+  r5: N2 -> ; d * N2;
+
+  // Events:
+  _E0: at geq(time, 15): N2 = 0.01;
+
+  // Species initializations:
+  S = 0.111111111111111;
+  N1 = 100;
+  N2 = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  v = 10;
+  d = 1;
+
+  //Display Names:
+  r1 is "resource production";
+  r2 is "resource consumption and cell growth 1";
+  r3 is "resource consumption and cell growth 2";
+  r4 is "cell death 1";
+  r5 is "cell death 2";
+end

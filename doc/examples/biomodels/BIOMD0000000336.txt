@@ -1,0 +1,97 @@
+//Created by libAntimony v2.0
+function function_4_VIIIa_IXa_degradation_2(I, VIIIa_IXa, compartment_1)
+  (compartment_1 * abs(I - VIIIa_IXa) + (I - VIIIa_IXa)) / compartment_1;
+end
+
+
+model Model_1()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species VIIIa_IXa in compartment_1, IX in compartment_1, IX_TF_VIIa in compartment_1;
+  species TF_VIIa in compartment_1, IXa in compartment_1, X in compartment_1;
+  species X_TF_VIIa in compartment_1, Xa in compartment_1, X_VIIIa_IXa in compartment_1;
+  species V in compartment_1, Va in compartment_1, VIII in compartment_1;
+  species VIIIa in compartment_1, IIa in compartment_1, II in compartment_1;
+  species II_Va_Xa in compartment_1, Va_Xa in compartment_1, mIIa in compartment_1;
+
+  // Assignment Rules:
+  IIa_plus_1_2mIIa := IIa + 1.2 * mIIa;
+
+  // Rate Rules:
+  I' = (-abs(I - VIIIa_IXa) + (I - VIIIa_IXa)) * k20;
+
+  // Reactions:
+  R1: IX + TF_VIIa -> IX_TF_VIIa; compartment_1 * (k6 * IX * TF_VIIa - k16 * IX_TF_VIIa);
+  R1b: IX_TF_VIIa => TF_VIIa + IXa; compartment_1 * k11 * IX_TF_VIIa;
+  R2: X + TF_VIIa -> X_TF_VIIa; compartment_1 * (k6 * X * TF_VIIa - k17 * X_TF_VIIa);
+  R2b: X_TF_VIIa => TF_VIIa + Xa; compartment_1 * k12 * X_TF_VIIa;
+  R3: X + VIIIa_IXa -> X_VIIIa_IXa; compartment_1 * (k6 * X * VIIIa_IXa - k18 * X_VIIIa_IXa);
+  R3b: X_VIIIa_IXa => VIIIa_IXa + Xa; compartment_1 * k13 * X_VIIIa_IXa;
+  R4: IX + Xa => Xa + IXa; compartment_1 * k15 * IX * Xa;
+  R5: V + Xa => Xa + Va; compartment_1 * k1 * V * Xa;
+  R6: VIII + Xa => Xa + VIIIa; compartment_1 * k3 * VIII * Xa;
+  R7: V + IIa => IIa + Va; compartment_1 * k2 * V * IIa;
+  R8: VIII + IIa => IIa + VIIIa; compartment_1 * k4 * VIII * IIa;
+  R9: II + Va_Xa -> II_Va_Xa; compartment_1 * (k6 * II * Va_Xa - k19 * II_Va_Xa);
+  R9b: II_Va_Xa => Va_Xa + mIIa; compartment_1 * k14 * II_Va_Xa;
+  R10: mIIa + Va_Xa => Va_Xa + IIa; compartment_1 * k5 * mIIa * Va_Xa;
+  R11: VIIIa + IXa -> VIIIa_IXa; compartment_1 * (k7 * VIIIa * IXa - k9 * VIIIa_IXa);
+  R12: Va + Xa -> Va_Xa; compartment_1 * (k6 * Va * Xa - k10 * Va_Xa);
+  R7_atn: V + mIIa => mIIa + Va; compartment_1 * k2 * V * mIIa;
+  R8_atn: VIII + mIIa => mIIa + VIIIa; compartment_1 * k4 * VIII * mIIa;
+  R4_atn: IX + Va_Xa => Va_Xa + IXa; compartment_1 * k15 * IX * Va_Xa;
+  VIIIa_IXa_degradation: VIIIa_IXa => ; compartment_1 * function_4_VIIIa_IXa_degradation_2(I, VIIIa_IXa, compartment_1);
+
+  // Species initializations:
+  VIIIa_IXa = 0;
+  IX = 9e-08;
+  IX_TF_VIIa = 0;
+  TF_VIIa = 5e-09;
+  IXa = 0;
+  X = 1.7e-07;
+  X_TF_VIIa = 0;
+  Xa = 0;
+  X_VIIIa_IXa = 0;
+  V = 2e-08;
+  Va = 0;
+  VIII = 7e-10;
+  VIIIa = 0;
+  IIa = 0;
+  II = 1.4e-06;
+  II_Va_Xa = 0;
+  Va_Xa = 0;
+  mIIa = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  I = 0;
+  k1 = 20000000;
+  k2 = 20000000;
+  k3 = 10000000;
+  k4 = 20000000;
+  k5 = 10000000;
+  k6 = 100000000;
+  k7 = 10000000;
+  k8 = 400000000;
+  k9 = 0.005;
+  k10 = 0.4;
+  k11 = 0.3;
+  k12 = 1.15;
+  k13 = 8.2;
+  k14 = 32;
+  k15 = 100000;
+  k16 = 24;
+  k17 = 44;
+  k18 = 0.001;
+  k19 = 70;
+  k20 = 0.02;
+
+  //Other declarations:
+  var I, IIa_plus_1_2mIIa;
+
+  //Display Names:
+  IIa_plus_1_2mIIa is "IIa+1.2mIIa";
+end
