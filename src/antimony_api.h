@@ -22,9 +22,9 @@
   * - Interactions (not modelled explicitly in SBML, only implied)
   * - DNA strands (not modelled explicitly in SBML)
   *
-  * Note that there are many concepts modelled in SBML that are not modelled in libAntimony--as such, libAntimony is not the ideal tool to use to convert SBML models with those concepts included; the excellent libSBML (http://sbml.org/Software/libSBML) should be used instead.  Similarly, the concepts in Antimony not in SBML (the main ones being modularity, interactions, and DNA strands) will be lost when converting to an SBML file, so converting an Antimony file to SBML and back again may be lossy.
+  * Note that there are several concepts modelled in SBML that are not modelled in libAntimony, units, annotations, and algebraic rules in particular.  As such, libAntimony is not the ideal tool to use to convert SBML models when those elements are vital to your modelling; the excellent libSBML (http://sbml.org/Software/libSBML) should be used instead.  Similarly, the concepts in Antimony not in SBML (the main ones being modularity, interactions, and DNA strands) will be lost when converting to an SBML file, so converting an Antimony file to SBML and back again may be lossy.  Do note that as of Antimony 2.1-beta, modularity may indeed be preserved in SBML files using the new 'Hierachircl Model Composition' package constructs (http://sbml.org/Community/Wiki/SBML_Level_3_Proposals/Hierarchical_Model_Composition).
   *
-  * Return Types
+  * <b>Return Types</b><br/>
   * Many of the functions listed below ask for an enum value to determine what kind of symbol you are asking about.  This list is declared in enums.h, and is as follows:
   * - 0: allSymbols:        Every symbol of every type in Antimony
   * - 1: allSpecies:        All species, both const (border) and variable.
@@ -49,7 +49,7 @@
   * - 20: expandedStrands:   DNA strands containing nothing but operators and genes--any sub-strands have been expanded to their component DNA objects, and those sub-strands are not included in any lists.
   * - 21: modularStrands:    All defined DNA strands, with some being subparts of the others.
   *
-  * Returned Pointers
+  * <b>Returned Pointers</b><br/>
   * The majority of the functions described below return pointers to arrays and/or strings.  These pointers you then own, and are created with 'malloc':  you must 'free' them yourself to release the allocated memory.  Some programming environments will handle this automatically for you, and others will not.  If you want to not bother with it, the function 'freeAll' is provided, which will free every pointer created by this library.  In order for this to work, however, you must have not freed a single provided pointer yourself, and you must not subsequently try to reference any data provided by the library (your own copies of the data will be fine, of course).
   *
   * If the library runs out of memory when trying to return a pointer, it will return NULL instead and attempt to set an error message, retrievable with 'getLastError()'.
@@ -70,7 +70,7 @@
 
 BEGIN_C_DECLS
 /**
-  * @name Input Functions
+  * @name Input
   */
 /** \{ */
 /**
@@ -340,7 +340,7 @@ LIB_EXTERN char** getModuleNames();
 LIB_EXTERN char*  getNthModuleName(unsigned long n);
 
 /**
- * Returns the 'main' module name.  In Antimony, this is either the module marked by an asterisk ('model *mainModel()')  or the last module defined in the file.  In translated SBML models, this is the model child of the <sbml> object.  In translated CellML models, this is the 'containing' model that the translator creates to hold all the CellML components.  Returns NULL only if there are no modules at all.
+ * Returns the 'main' module name.  In Antimony, this is either the module marked by an asterisk ('model *mainModel()')  or the last module defined in the file.  In translated SBML models, this is the model child of the &lt;sbml&gt; object.  In translated CellML models, this is the 'containing' model that the translator creates to hold all the CellML components.  Returns NULL only if there are no modules at all.
  */
 LIB_EXTERN char*  getMainModuleName();
 /** \} */
@@ -410,8 +410,6 @@ LIB_EXTERN char* getNthFormerSymbolName(const char* moduleName, unsigned long n)
  * @see GetNumReplacedSymbolNames
  */
 LIB_EXTERN char* getNthReplacementSymbolName(const char* moduleName, unsigned long n);
-/** \} */
-
 
 
 /**
@@ -449,7 +447,7 @@ LIB_EXTERN char* getNthFormerSymbolNameBetween(const char* moduleName, const cha
  * @see GetNumReplacedSymbolNames
  */
 LIB_EXTERN char* getNthReplacementSymbolNameBetween(const char* moduleName, const char* formerSubmodName, const char* replacementSubmodName, unsigned long n);
-
+/** \} */
 
 
 

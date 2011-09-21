@@ -681,7 +681,11 @@ bool Module::Finalize()
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
   if (m_variablename.empty()) {
     //Only test SBML on top-level modules.
+#ifdef USE_COMP
     const SBMLDocument* sbmldoc = GetSBML(true); //Use the comp version if possible.
+#else
+    const SBMLDocument* sbmldoc = GetSBML(false); //Trying to get the comp version would result in an added warning.
+#endif
     stringstream stream;
 
     SBMLWriter writer;

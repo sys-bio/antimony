@@ -47,10 +47,10 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 
 # which language bindings should be build
 option(WITH_SBML            "Generate SBML translations"      ON )
-option(WITH_COMP_SBML       "Use the hierarchical composition package in SBML"      ON )
-option(WITH_CELLML          "Generate CellML translations"    OFF )
+option(WITH_COMP_SBML       "Use the hierarchical composition package in SBML"      OFF )
+option(WITH_CELLML          "Generate CellML translations"    ON )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
-option(WITH_SBW             "QTAntimony integration with SBW" ON )
+option(WITH_SBW             "QTAntimony integration with SBW" OFF )
 option(WITH_SBW_TRANSLATOR  "Generate SBWTranslator"          OFF )
 set(EXTRA_LIBS "" CACHE STRING "Libraries the other libraries depend on that are in non-standard locations" )
 #set(EXTRA_LIBS "" CACHE_STRING "")
