@@ -2,60 +2,46 @@
 
 <h2>Windows Binaries</h2>
 
-<h3>Using the converters</h3>
-To use these Windows executables:
-   - Copy this folder where you want it, keeping the .exe's and the .dll's together in the same directory.
+<h3>The Windows installer</h3>
+The Windows version of Antimony comes with an installer that will copy QTAntimony and the various converters to your machine, and make QTAntimony available from the 'Start' menu.  You can use 'QTAntimony' to create, edit, and view Antimony, SBML, and CellML documents.  If you choose to install the 2.1-beta version, you will additionally be able to work with SBML documents with the 'Hierarchichal Model Composition' package constructs enabled (http://sbml.org/Community/Wiki/SBML_Level_3_Proposals/Hierarchical_Model_Composition).  To use QTAntimony, simply open a file in one of the accepted formats, or create a new one.  To view, edit, and save versions of your model in other formats, click on the tab for that format.  Do note that if you edit your model in one tab, that tab becomes the 'canonical' version of the model, and the other tabs will be automatically generated when you switch back to them by translating the version you are currently editing.  In any tab, you can always hit 'undo' (control-Z) to revert the model to what it was before.
 
-   - If you do *not* have Visual Studio 2008 installed, you will need to run the provided executable 'vcredist_x86.exe'.  This was obtained from Microsoft's web site <br> http://www.microsoft.com/downloads/details.aspx?displaylang=en&FamilyID=9B2DA534-3E03-4391-8A4D-074B9F2BC1BF <br><br> If you are a developer using a different version of Visual Studio, you should probably just compile libAntimony yourself.  But if all you want is to run the two converters (antimony2sbml and sbml2antimony), run this to install the required libraries.
-
-   - The easiest way to run the converters is from the command line (just double-clicking on the .exe will pop up a window with an error). To do this:
-       - Copy any models you want to convert into this folder.
-       - Click 'Start', then 'Run', and type 'cmd'.  A window will pop up.
-       - Type 'cd &lt;directory&gt;' where &lt;directory&gt; is where you put the folder (for example, 'cd Desktop/antimony')
-       - To convert an SBML file to Antimony, type:<br><br>
-         <code>sbml2antimony.exe &lt;inputfile.xml&gt; &lt;outputfile.txt&gt;</code><br><br>
-         For example, to convert the provided SBML input file (an oscillator) type:<br><br>
-         <code>sbml2antimony.exe ex_sbml_input.xml ex_antimony_output.txt</code><br>&nbsp;
-       - To convert all models in an Antimony file to SBML files, type:<br><br>
-         <code>antimony2sbml.exe &lt;inputfile.txt&gt; &lt;outputfileprefix&gt;</code><br><br>
-         This will create one or more output files of the format:<br><br>
-         <code>outputfileprefix_[model1].xml<br>outputfileprefix_[model2].xml<br>[etc.]</code><br><br>
-         where [model1] and [model2] are the actual names of the models in the Antimony file.<br><br>
-         For example, to convert the provided Antimony input file models to SBML, type:<br><br>
-         <code>antimony2sbml.exe ex_antimony_input.txt ex_sbml_output</code><br><br>
-         Which will create the files:<br><br><code>
-         ex_sbml_output_bistable_sbml.xml<br>
-         ex_sbml_output_combined_model_sbml.xml<br>
-         ex_sbml_output_ffn_sbml.xml<br>
-         ex_sbml_output_ringoscil_sbml.xml<br>
-         ex_sbml_output___main_sbml.xml</code><br><br>
-         If you don't include the output file name or prefix, the program will remove '.xml' from SBML files (if present) and add '.txt', or will remove '.txt' from Antimony files (if present) and use the result as the output file prefix instead.<br><br>
-If you don't want to copy the models into this folder all the time, you can cd 
-into a directory containing the models you want to convert and run the
-converter from there by calling it explicitly by typing (for example) 
-"c:\Program Files\Antimony\antimony2sbml.exe", depending on where you put the 
-folder.  (It is also possible to install the dll's somewhere or add the 
-converter folder's name to your PATH, but if you know what I'm talking about, 
-you know how to do it.)  
+The various command-line translators are hopefully self-explanatory; running them with no arguments at all will produce information on how to run them.  As several different formats were becoming available, a single new translator 'sbtranslate' is now provided that can read models in any format, and produce them in any format as well.  Run 'sbtranslate -h' for more information.
 
 <h3>Programming with the .dll files</h3>
-To use the libAntimony libraries, include the file antimony_api.h in your source for access to the commands, and then link in the libraries, either the provided pre-compiled versions for Windows, or the ones you have created yourself.  The resulting executables will need access to the libAntimony dll as well as its dependencies:  libSBML and expat (both provided).  Due to weirdnesses with Visual Studio, the libSBML dll and the libAntimony dll need to have been created with the same Visual Studio version, meaning (for the moment) that the libSBML dll provided from http://sbml.org/ will not work--use the one we've recompiled instead.  (And if you're compiling your own version with VS, you'll probably also need to compile libSBML yourself, too.)  We have also had issues with the latest version of libSBML: the provided dll is actually from June of 2008.  We are working with the libSBML people to resolve the issue; hopefully, the next version either of libAntimony or libSBML will no longer be incompatible with the other.
+To use the libAntimony libraries, include the file antimony_api.h in your source for access to the commands, and then link in the libraries, either the provided pre-compiled versions for Windows, or the ones you have created yourself.  The resulting executables will need access to the libAntimony dll as well as its dependencies:  libSBML (which comes statically linked to expat) and the various CellML dlls (all provided).  At the current time, in order for both CellML and libSBML to work together nicely, they must use different XML-parsing libraries, which means, since CellML only uses libxml, that libSBML must be compiled using expat or xerces--the one that uses expat is provided.  These libraries were all compiled with Visual Studio 2010; using some other version of Visual Studio will probably not work with the provided binaries.
 
-<h2>Source code</h2>
+<h2>Compiling From Source</h2>
+To compile libAntimony from source, use CMake (http://cmake.org/).  For most systems, 'cmake-gui' is your best bet, but if you are trying to compile remotely via a terminal program, 'ccmake' will also work, and has a similar interface.  Antimony, libSBML, and the CellML API all now use CMake as their core build system, so once you learn the basics for one, your knowledge should transfer to the others.
 
-To compile libAntimony from source, you can either see if the provided makefiles or project files work for you out of the box, or you can make your own anew with qmake, the make package that comes with <A HREF="http://www.qtsoftware.com/products/qt/index.html">Qt</a>.  The main options are whether to compile in debug or release mode, and whether or not to use libSBML.  If you compile without libSBML, you will obviously not be able to convert antimony files to and from SBML, but all other functionality will be retained.
+To start, create a new subdirectory in the 'antimony/' directory, and cd into it:
 
-On Unix/MacOS:
-- <b>Using 'make'</b>:  Edit the provided Makefile to tell the compiler whether you are using libSBML, where it is located if so, and whether you want a debug or non-debug version.  Then type 'make', which will compile the library (lib/libAntimony.a), and three executables (sbml2antimony, antimony2sbml, and testantimony).
-- <b>Using QMake</b>:  A provided script 'buildall.sh' will make the library (the static version), the two converter programs, and a test program.  To compile without libSBML, use the flag '--DEFINES+=NSBML'.  To compile with libSBML installed in a location other than /usr/local/lib, use the flag '--LIBSBML_DIR+=&lt;directory&gt;'
+<code>mkdir build; cd build</code>
 
-On Windows:
-- <b>Using Visual Stuido</b>:  .vcproj files are available in the subdirectories libantimony/, sbml2antimony/, and antimony2sbml/.  The libAntimony dll will need to be built before the other two can be successfully linked.
-- <b>Using QMake and nmake</b>:  A provided batch file 'buildAll.bat' will generate Makefiles for windows, and if you don't have nmake, you can just use qmake on its own for whatever system you're using (qmake can make cygwin Makefiles, for example).  As on Unix, to compile without libSBML, use the flag '--DEFINES+=NSBML'.  To compile with libSBML installed in a location other than c:\\Program Files\SBML\libSBML-3.3.2-expat\, use the flag '--LIBSBML_DIR+=&lt;directory&gt;'  (Relative directories are OK here, too.  The provided .vcproj files, for example, assume you have installed libAntimony in the same place you installed libSBML, and were created using the flag '--LIBSBML_DIR+="..\..\\libsbml-3.3.2\")
+Next, run 'cmake-gui' (or 'ccmake', if you are trying to build remotely and need a text-based interface) with '..' (the parent directory) as the argument:
 
-Of course, on any system, there's always the option of:
-- <b>Forging ahead on your own</b>:  libAntimony is not actually all that complicated--there's a single directory with .cpp files in it, three of which are for the example programs (testantimony, antimony2sbml, and sbml2antimony), and the rest of which comprise libAntimony.  There's a .ypp file in there that's the bison-formatted parser, but bison simply uses it to generate a .cpp file (antimony.tab.cpp) which I've already done for you, so you can safely ignore that, too.  If things still don't work, feel free to file a bug report or contact us directly.
-</P>
+<code>cmake-gui ..</code>
+
+The first thing to set is what you want to compile to.  On Linux and MacOSX, 'Native Makefiles' is probably your best bet.  For Windows, you can set the compiler to whatever version of Visual Studio you have installed, or to 
+
+From here, select what options you want on and off.  In particular, here are what some of the options do:
+
+- <code>WITH_SBML</code> Incorporates libSBML, allowing translation to and from SBML.  Requires <A target="_top" HREF="http://sbml.org/Software/libSBML">libSBML</a> v5.0.0 or later.
+- <code>WITH_COMP_SBML</code>  Turns on functionality to produce and consume models with Hierarchical Model Composition package constructs.  Requires libSBML with the latest version of the 'comp' package API integrated.  (This option being on is the only difference between antimony v2.0 and antimony v2.1-beta.)
+- <code>WITH_CELLML</code>  Incorporates the CellML API, allowing translation to and from CellML.  Requires the <A target="_top" HREF="http://www.cellml.org/tools/downloads/cellml_api/releases/1.10">CellML SDK</a> to work.
+- <code>WITH_QTANTIMONY</code>  Produces the QTAntimony editor.  Requires QT (http://qt.nokia.com/).
+- <code>WITH_SBW</code> Incorporates functionality in QTAntimony to import and export models to other SBW-enabled programs.  Requires SBW (and has had problems; if you need this functionality and it doesn't work, let us know).
+- <code>WITH_SBW_TRANSLATOR</code> Produces an SBW translator written by Frank Bergmann to translate models to and from the Antimony format.  May not work with other options enabled.
+
+These options come with the following dependencies:
+- If WITH_SBML is turned on, CMake will need to know where libSBML was installed; both LIBSBML_INCLUDE_DIR and LIBSBML_LIBRARY need to be set.
+- If WITH_COMP_SBML is turned on, the version of libSBML pointed to by LIBSBML_INCLUDE_DIR and LIBSBML_LIBRARY will need to point to the version of libsbml (5.1 or greater) with the 'comp' package integrated.
+- If WITH_CELLML is turned on, CMake will need to know where the CellML API was installed:  you need only set 'CELLML_API_INSTALL_DIR' and it will find the include directories and the various libraries automatically (if it can't, you may need to track down those libraries yourself).  Note that using the CellML API will trigger a flurry of warnings from the compiler, particularly in Windows.  They may all be safely ignored.
+- If WITH_QTANTIMONY is turned on, CMake will need to know where qmake was installed; QT_QMAKE_EXECUTABLE will need to be set.
+- If WITH_SBW is turned on, CMake will need to know where SBW was installed; both SBW_INCLUDE_DIR and SBW_LIBRARY will need to be set.
+- To set whether to make a release or debug version by default, set the CMAKE_BUILD_TYPE variable to 'Debug', 'Release', 'RelWithDebInfo', or 'MinSizeRel'.  (The last has not been tested extensively with this project, but is a standard CMake option.)
+- To set where to install the antimony library and executables, use CMAKE_INSTALL_PREFIX.  I often use '../install/' for a local install.
+
+If CMake does not work for you, you may be able to get things working on your own--libAntimony is not a complicated program, with only a handful of .cpp files in a single directory, which you may be able to get working yourself.  The core Antimony parser (antimony.ypp) is compiled with bison to antimony_tab.cpp, which is already included.  The main complications are its various dependencies, but these can be turned off:  in particular, setting NSBML and/or NCELLML will not attempt to compile anything with SBML or CellML dependencies, respectively.  QTAntimony is a bit more complicated in that it requires QT, but if you have compiled QT programs before, getting QTAntimony up and running is probably not very difficult.  The old Makefile is still available as well, and may be instructive.
 
 @htmlinclude google-analytics.html
 

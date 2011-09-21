@@ -3,10 +3,11 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
 	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.0  (Linux)">
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.2  (Linux)">
 	<META NAME="AUTHOR" CONTENT="Lucian Smith">
 	<META NAME="CREATED" CONTENT="20090114;10524300">
-	<META NAME="CHANGED" CONTENT="20090813;14152800">
+	<META NAME="CHANGEDBY" CONTENT="Lucian Smith">
+	<META NAME="CHANGED" CONTENT="20110920;14220100">
 	<META NAME="Info 1" CONTENT="">
 	<META NAME="Info 2" CONTENT="">
 	<META NAME="Info 3" CONTENT="">
@@ -22,21 +23,21 @@
 	</STYLE>
 </HEAD>
 <BODY LANG="en-US" DIR="LTR">
-<P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=7>Antimony</FONT></P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=4 STYLE="font-size: 16pt">v1.3,
-October 14<SUP>th</SUP> 2009</FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><IMG SRC="Tutorial_html_m6958d328.jpg" NAME="graphics1" ALIGN=LEFT WIDTH=189 HEIGHT=183 BORDER=0><FONT SIZE=7>Antimony</FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=5>A
+human-readable,</FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=5>human-writable,</FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=5>model
+definition language</FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=5>A human-readable,<br/>
-        human-writable,<br/>
-        model definition language</FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=4 STYLE="font-size: 16pt">v2.0
+and 2.1-beta, September 19<SUP>th</SUP>, 2011</FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=6>Tutorial</FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=5>by
 Lucian Smith</FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
-</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Introduction</B></P>
@@ -47,7 +48,8 @@ between different labs and different computer programs without loss
 of specificity.  But SBML was not designed to be readable or writable
 by humans, only by computer programs, so other programs have sprung
 up to allow users to more easily create the models they need.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2">Many
 of these programs are GUI-based, and allow drag-and-drop editing of
 species and reactions, such as JDesigner and TinkerCell.  A few, like
@@ -63,7 +65,8 @@ genetic networks in particular.  A programming library 'libAntimony'
 was developed in tandem with the language to allow computer
 translation of Antimony-formatted models into SBML and other formats
 used by other computer programs.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2">The
 basic features of Antimony include the ability to:</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2">  -
@@ -78,51 +81,105 @@ Define events and compartments, and
 Create 'DNA strands' whose elements can pass reaction rates to
 downstream elements, and inherit and modify reaction rates from
 upstream elements.</P>
-
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=3><B>What's
+New</B></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=4><FONT SIZE=3><SPAN STYLE="font-weight: normal">As
+of the 2.0 version of Antimony, it is now possible to export models
+as CellML.  This requires the use of the CellML API, which is now
+available as an SDK.  </SPAN></FONT><FONT SIZE=3><SPAN STYLE="font-weight: normal">Hierarchical
+models are exported using CellML's hierarchy, translated to
+accommodate their 'black box' requirements.</SPAN></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=4><FONT SIZE=3><SPAN STYLE="font-weight: normal">As
+of the 2.1-beta version of Antimony, it is now additionally possible
+to export hierarchical models using the 'hierarchical model
+composition' package constructs for SBML level 3.  </SPAN></FONT></FONT>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2; page-break-before: always">
 <FONT SIZE=4><B>Language Specifications</B></FONT></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Species
 and Reactions</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 The simplest Antimony file may simply have a list of reactions
 containing species, along with some initializations.  Reactions are
 written as two lists of species, separated by a '-&gt;', and followed
 by a semicolon:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S1 +
 E -&gt; ES;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Optionally, you may provide a reaction rate for the reaction by
 including a mathematical expression after the semicolon, followed by
 another semicolon:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S1 +
-E -&gt; ES; k1*k2*S1*E - k2*ES;</P>
-
+E -&gt; ES; k1*k2*S1*E – k2*ES;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 You may also give the reaction a name by prepending the name followed
 by a colon:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0:
 S1 + E -&gt; ES; k1*k2*S1*E - k2*ES;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 The same effect can be achieved by setting the reaction rate
 separately, by assigning the reaction rate to the reaction name with
 an '=':</P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0:
-S1 + E -&gt; ES;<br/>  J0 =
-k1*k2*S1*E - k2*ES;</P>
-
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-You may even define them in the opposite order--they are all ways of
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0:
+S1 + E -&gt; ES;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0 =
+k1*k2*S1*E - k2*ES;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+You may even define them in the opposite order—they are all ways of
 saying the same thing.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+If you want, you can define a reaction to be irreversible by using
+'=&gt;' instead of '-&gt;':</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"><BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0:
+S1 + E =&gt; ES;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+However, if you additionally provide a reaction rate, that rate is
+not checked to ensure that it is compatible with an irreversible
+reaction.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 At this point, Antimony will make several assumptions about your
 model.  It will assume (and require) that all symbols that appear in
@@ -132,29 +189,49 @@ symbols may later be declared or used as species or as 'formulas',
 Antimony's term for constants and packaged equations like SBML's
 assignment rules.  In the above example, k1 and k2 are (thus far)
 undefined symbols, which may be assigned straightforwardly:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0:
-S1 + E -&gt; ES; k1*k2*S1*E - k2*ES;</br>  k1 =
-3;</br>  k2 =
+S1 + E -&gt; ES; k1*k2*S1*E – k2*ES;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k1 =
+3;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k2 =
 1.4;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 More complicated expressions are also allowed, as are the creation of
 symbols which exist only to simplify or clarify other expressions:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  pH =
-7;<br/>  k3 =
+7;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k3 =
 -log10(pH);</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 The initial concentrations of species are defined in exactly the same
 way as formulas, and may be just as complex (or simple):</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S1 =
-2;<br/>  E =
-3;<br/>  ES =
+2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E =
+3;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  ES =
 S1 + E;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Order for any of the above (and in general in Antimony) does not
 matter at all:  you may use a symbol before defining it, or define it
@@ -163,56 +240,113 @@ incompatible context (such as using the same name as a reaction and a
 species), your resulting model will still be valid.  Antimony files
 written by libAntimony will adhere to a standard format of defining
 symbols, but again, this is not required.</P>
-
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Constant
 and variable symbols</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Some models have 'boundary species' in their reactions, or species
 whose concentrations do not change as a result of participating in a
 reaction.  To declare that a species is a boundary species, use the
 'const' keyword:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  const
 S1;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 While you're declaring it, you may want to be more specific by using
 the 'species' keyword:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  const
 species S1;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 If a symbol appears as a participant in a reaction, antimony will
 recognize that it is a species automatically, so the use of the
 keyword 'species' is not required.  If, however, you have a species
 which never appears in a reaction, you will need to use the 'species'
 keyword.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 If you have several species that are all constant, you may declare
 this all in one line:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  const
 species S1, S2, S3;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 While species are variable by default, you may also declare them so
 explicitly with the 'var' keyword:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  var
 species S4, S5, S6;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+Alternatively, you may declare a species to be a boundary species by
+prepending a '$' in front of it:</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S1 +
+$E -&gt; ES;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+This would set the level of 'E' to be constant.  You can use this
+symbol in declaration lists as well:</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+species S1, $S2, $S3, S4, S5, $S6;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+This declares six species, three of which are variable (by default)
+and three of which are constant.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Likewise, formulas are constant by default.  They may be initialized
 with an equals sign, with either a simple or a complex formula:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k1 =
-5;<br/>  k2 =
+5;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k2 =
 2*S1;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 You may also explicitly declare whether they are constant or
 variable:</P>
@@ -220,46 +354,71 @@ variable:</P>
  
 </P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  const
-k1;<br/>  var
+k1;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  var
 k2;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 and be more specific and declare that both are formulas:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  const
-formula k1;<br/>  var
+formula k1;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  var
 formula k2;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Variables defined with an equals sign are assigned those values at
 the start of the simulation.  In SBML terms, they use the 'Initial
 Assignment' values.  If the formula is to vary during the course of
 the simulation, use the Assignment Rule (or Rate Rule) syntax,
 described later.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 You can also mix-and-match your declarations however best suits what
 you want to convey:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
-species S1, S2, S3, S4;<br/> 
-formula k1, k2, k3, k4;<br/><BR>
-<br/>  const
-S1, S4, k1, k3;<br/>  var
+species S1, S2, S3, S4;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+formula k1, k2, k3, k4;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"><BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  const
+S1, S4, k1, k3;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  var
 S2, S3, k2, k4;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Antimony is a pure model definition language, meaning that all
 statements in the language serve to build a static model of a dynamic
 biological system.  Unlike Jarnac, sequential programming techniques
 such as re-using a variable for a new purpose will not work:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  pH =
-7;<br/>  k1 =
--log10(pH);<br/>  pH =
-8.2;<br/>  k2 =
+7;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k1 =
 -log10(pH);</P>
-
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  pH =
+8.2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k2 =
+-log10(pH);</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 In a sequential programming language, the above would result in
 different values being stored in k1 and k2.  (This is how Jarnac
@@ -268,11 +427,13 @@ works, for those familiar with that language/simulation environment.)
 'k2' are static symbols that are being defined by Antimony
 statements, and not processed in any way.  A simulator that requests
 the mathematical expression for k1 will receive the string
-"-log10(pH)"; the same string it will receive for k2.  A request
-for the mathematical expression for pH will receive the string "8.2",
+“-log10(pH)”; the same string it will receive for k2.  A request
+for the mathematical expression for pH will receive the string “8.2”,
 since that's the last definition found in the file.  As such, k1 and
 k2 will end up being identical.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 As a side note, we considered having libAntimony store a warning when
 presented with an input file such as the example above with a later
@@ -283,15 +444,22 @@ where the user might legitimately want to override an earlier
 definition (such as when using submodules, as we'll get to in a bit).
  So for now, the above is valid Antimony input that just so happens
 to produce exactly the same output as:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  pH =
-8.2;<br/>  k1 =
--log10(pH);<br/>  k2 =
+8.2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k1 =
 -log10(pH);</P>
-
-
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k2 =
+-log10(pH);</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Modules</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Antimony input files may define several different models, and may use
 previously-defined models as parts of newly-defined models.  Each
@@ -299,218 +467,373 @@ different model is known as a 'module', and is minimally defined by
 putting the keyword 'model' (or 'module', if you like) and the name
 you want to give the module at the beginning of the model definitions
 you wish to encapsulate, and putting the keyword 'end' at the end:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-example<br/>&nbsp;&nbsp;S + E
--&gt; ES;<br/>end</P>
-
+example</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S + E
+-&gt; ES;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"><BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 After this module is defined, it can be used as a part of another
 model (this is the one time that order matters in Antimony).  To
 import a module into another module, simply use the name of the
 module, followed by parentheses and a semicolon:</P>
-
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-example<br/>&nbsp;&nbsp;S + E
--&gt; ES;<br/>end<br/>
-<br/>model
-example2<br/>&nbsp;&nbsp; 
-example();<br/>end</P>
-
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-This is usually not very helpful in and of itself-you'll likely
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
+example</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S + E
+-&gt; ES;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"><BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
+example2</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+example();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+This is usually not very helpful in and of itself—you'll likely
 want to give the submodule a name so you can refer to the things
 inside it.  To do this, pre-pend a name followed by a colon:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-example2<br/>&nbsp;&nbsp;A:
-example();<br/>end<br/>
+example2</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+example();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Now, you can modify or define elements in the submodule by referring
 to symbols in the submodule by name, pre-pended with the name you've
 given the module, followed by a '.':</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-example2<br/>&nbsp;&nbsp;A:
-example();<br/>&nbsp;&nbsp;A.S =
-3;<br/>end</P>
-
+example2</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+example();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.S =
+3;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 This results in a model with a single reaction (<FONT FACE="Courier New, monospace">A.S
 + A.E -&gt; A.ES</FONT>) and a single initial condition (<FONT FACE="Courier New, monospace">A.S
 = 3</FONT>).</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 You may also import multiple copies of modules, and modules that
 themselves contain submodules:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-example3<br/>&nbsp;&nbsp;A:
-example();<br/>&nbsp;&nbsp;B:
-example();<br/>&nbsp;&nbsp;C:
-example2();<br/>end</P>
-
+example3</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+example();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B:
+example();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  C:
+example2();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 This would result in a model with three reactions and a single
 initial condition.</P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">&nbsp;&nbsp;A.S +
-A.E -&gt; A.ES<br/>&nbsp;&nbsp;B.S +
-B.E -&gt; B.ES<br/>&nbsp;&nbsp;C.A.S
-+ C.A.E -&gt; C.A.ES<br/>&nbsp;&nbsp;C.A.S
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.S +
+A.E -&gt; A.ES</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B.S +
+B.E -&gt; B.ES</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  C.A.S
++ C.A.E -&gt; C.A.ES</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  C.A.S
 = 3;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 You can also use the species defined in submodules in new reactions:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-example4<br/>&nbsp;&nbsp;A:
-example();<br/>&nbsp;&nbsp;A.S
--&gt; ; kdeg*A.S;<br/>end</P>
-
+example4</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+example();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.S
+-&gt; ; kdeg*A.S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 When combining multiple submodules, you can also 'attach' them to
 each other by declaring that a species in one submodule is the same
 species as is found in a different submodule by using the 'is'
-keyword ("A.S is B.S").  For example, let's say that we have a
+keyword (“A.S is B.S”).  For example, let's say that we have a
 species which is known to bind reversibly to two different species. 
 You could set this up as the following:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-side_reaction<br/>&nbsp;&nbsp;J0: S
-+ E -&gt; SE; k1*k2*S*E - k2*ES;<br/>&nbsp;&nbsp;S =
-5;<br/>&nbsp;&nbsp;E =
-3;<br/>&nbsp;&nbsp;SE =
-E+S;<br/>&nbsp;&nbsp;k1 =
-1.2;<br/>&nbsp;&nbsp;k2 =
-0.4;<br/>end<br/><BR>
-<br/>model
-full_reaction<br/>&nbsp;&nbsp;A:
-side_reaction();<br/>&nbsp;&nbsp;B:
-side_reaction()<br/>&nbsp;&nbsp;A.S
-is B.S;<br/>end</P>
-
+side_reaction</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0: S
++ E -&gt; SE; k1*k2*S*E – k2*ES;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S =
+5;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E =
+3;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  SE =
+E+S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k1 =
+1.2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k2 =
+0.4;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"><BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
+full_reaction</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+side_reaction();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B:
+side_reaction();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.S
+is B.S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 If you wanted, you could give the identical species a new name to
 more easily use it in the 'full_reaction' module:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-full_reaction<br/>&nbsp;&nbsp;var
-species S;<br/>&nbsp;&nbsp;A:
-side_reaction();<br/>&nbsp;&nbsp;B:
-side_reaction()<br/>&nbsp;&nbsp;A.S
-is S;<br/>&nbsp;&nbsp;B.S
-is S;<br/>end</P>
-
+full_reaction</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  var
+species S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+side_reaction();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B:
+side_reaction()</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.S
+is S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B.S
+is S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 In this system, 'S' is involved in two reversible reactions with
 exactly the same reaction kinetics and initial concentrations.  Let's
 now say the reaction rate of the second side-reaction takes the same
 form, but that the kinetics are twice as fast, and the starting
 conditions are different:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-full_reaction<br/>&nbsp;&nbsp;var
-species S;<br/>&nbsp;&nbsp;A:
-side_reaction();<br/>&nbsp;&nbsp;A.S
-is S;<br/>&nbsp;&nbsp;B:
-side_reaction()<br/>&nbsp;&nbsp;B.S
-is S;<br/>&nbsp;&nbsp;B.k1
-= 2.4;<br/>&nbsp;&nbsp;B.k2
-= 0.8;<br/>&nbsp;&nbsp;B.E =
-10;<br/>end</P>
-
+full_reaction</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  var
+species S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+side_reaction();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.S
+is S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B:
+side_reaction();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B.S
+is S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B.k1
+= 2.4;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B.k2
+= 0.8;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B.E =
+10;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Note that since we defined the initial concentration of 'SE' as 'S +
 E', B.SE will now have a different initial concentration, since B.E
 has been changed.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Finally, we add a third side reaction, one in which S binds
 irreversibly, and where the complex it forms degrades.  We'll need a
 new reaction rate, and a whole new reaction as well:</P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-full_reaction<br/>&nbsp;&nbsp;var
-species S;<br/>&nbsp;&nbsp;A:
-side_reaction();<br/>&nbsp;&nbsp;A.S
-is S;<br/>&nbsp;&nbsp;B:
-side_reaction()<br/>&nbsp;&nbsp;B.S
-is S;<br/>&nbsp;&nbsp;B.k1
-= 2.4;<br/>&nbsp;&nbsp;B.k2
-= 0.8;<br/>&nbsp;&nbsp;B.E =
-10;<br/>&nbsp;&nbsp;C:
-side_reaction();<br/>&nbsp;&nbsp;C.S
-is S;<br/>&nbsp;&nbsp;C.J0
-=  C.k1*C.k2*S*C.E<br/>&nbsp;&nbsp;J3:
-C.SE -&gt; ; C.SE*k3;<br/>&nbsp;&nbsp;k3 =
-0.02;<br/>end</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2">model
+full_reaction</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  var
+species S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+side_reaction();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.S
+is S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B:
+side_reaction();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B.S
+is S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B.k1
+= 2.4;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B.k2
+= 0.8;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B.E =
+10;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  C:
+side_reaction();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  C.S
+is S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  C.J0
+=  C.k1*C.k2*S*C.E</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J3:
+C.SE -&gt; ; C.SE*k3;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k3 =
+0.02;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Note that defining the reaction rate of C.J0 used the symbol 'S;
 exactly the same result would be obtained if we had used 'C.S' or
 even 'A.S' or 'B.S'.  Antimony knows that those symbols all refer to
 the same species, and will give them all the same name in subsequent
 output.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 For convenience and style, modules may define an interface where some
 symbols in the module are more easily renamed.  To do this, first
 enclose a list of the symbols to export in parentheses after the name
 of the model when defining it:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-side_reaction(S, k1)<br/>&nbsp;&nbsp;J0: S
-+ E -&gt; SE; k1*k2*S*E - k2*ES;<br/>&nbsp;&nbsp;S =
-5;<br/>&nbsp;&nbsp;E =
-3;<br/>&nbsp;&nbsp;SE =
-E+S;<br/>&nbsp;&nbsp;k1 =
-1.2;<br/>&nbsp;&nbsp;k2 =
-0.4;<br/>end</P>
-
+side_reaction(S, k1)</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0: S
++ E -&gt; SE; k1*k2*S*E – k2*ES;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S =
+5;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E =
+3;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  SE =
+E+S;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k1 =
+1.2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  k2 =
+0.4;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Then when you use that module as a submodule, you can provide a list
 of new symbols in parentheses:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
 side_reaction(spec2, k2);</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 is equivalent to writing:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
-side_reaction();<br/>A.S
-is spec2;<br/>A.k1
+side_reaction();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.S
+is spec2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.k1
 is k2;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 One thing to be aware of when using this method:  Since wrapping
 definitions in a defined model is optional, all 'bare' declarations
 are defined to be in a default module with the name '__main'.  If
 there are no unwrapped definitions, '__main' will still exist, but
 will be empty.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 As a final note:  use of the 'is' keyword is not restricted to
 elements inside submodules.  As a result, if you wish to change the
 name of an element (if, for example, you want the reactions to look
 simpler in Antimony, but wish to have a more descriptive name in the
 exported SBML), you may use 'is' as well:</P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">   A -&gt; B;<br>
-  A is ABA;<br>
-  B is ABA8OH;</p>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A -&gt;
+B;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A is
+ABA;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B is
+ABA8OH;</P>
+<P CLASS="courier-text-western" STYLE="font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="font-weight: normal; widows: 2; orphans: 2">
 is equivalent to writing:</P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> ABA -&gt; ABA8OH;</p>
+<P CLASS="courier-text-western" STYLE="font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="font-weight: normal; widows: 2; orphans: 2">
+  ABA -&gt; ABA8OH;</P>
 <P CLASS="courier-text-western" STYLE="font-weight: normal; widows: 2; orphans: 2">
 <BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Display
 Names</B></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
  When some tools visualize models, they make a distinction between
 the 'id' of an element, which must be unique to the model and which
@@ -520,16 +843,21 @@ stringent naming requirements.  In Antimony, it is the id of elements
 which is used everywhere.  However, you may also set the 'display
 name' of an element by using the 'is' keyword and putting the name in
 quotes:</P>
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.k1
-is &quot;reaction rate k1&quot;;<br>
- S34 is &quot;Ethyl Alcohol&quot;;</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 <BR>
 </P>
-
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A.k1
+is &quot;reaction rate k1&quot;;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S34 
+is &quot;Ethyl Alcohol&quot;;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Other
 files</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 More than one file may be used to define a set of modules in Antimony
 through the use of the 'import' keyword.  At any point in the file
@@ -538,21 +866,33 @@ name of the file in quotation marks, and Antimony will include the
 modules defined in that file as if they had been cut and pasted into
 your file at that point.  SBML files may also be included in this
 way:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">import
-"models1.txt"<br/>import
-"oscli.xml"<br/>
-<br/>model
-mod2()<br/>&nbsp;&nbsp;A:
-mod1();<br/>&nbsp;&nbsp;B:
-oscli();<br/>end</P>
-
+“models1.txt”</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">import
+“oscli.xml”</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"><BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
+mod2()</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+mod1();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  B:
+oscli();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 In this example, the file 'models1.txt' is an Antimony file that
 defines the module 'mod1', and the file 'oscli.xml' is an SBML file
 that defines a model named 'oscli'.  The Antimony module 'mod2' may
 then use modules from either or both of the other imported files.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Remember that imported files act like they were cut and pasted into
 the main file.  As such, any bare declarations in the main file and
@@ -560,11 +900,13 @@ in the imported files will all contribute to the default '__main'
 module Most SBML files will not contribute to this module, unless the
 name of the model in the file is '__main' (for example, if it was
 created by the antimony converter).</P>
-
-
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Compartments</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 A compartment is a demarcated region of space that contains species
 and has a particular volume.  In Antimony, you may ignore
@@ -572,58 +914,89 @@ compartments altogether, and all species are assumed to be members of
 a default compartment with the imaginative name 'default_compartment'
 with a constant volume of 1.  You may define other compartments by
 using the 'compartment' keyword:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
 compartment comp1;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Compartments may also be variable or constant, and defined as such
 with 'var' and 'const':</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  const
-compartment comp1;<br/>  var
+compartment comp1;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  var
 compartment comp2;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 The volume of a compartment may be set with an '=' in the same manner
 as species and reaction rates:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  comp1
-= 5;<br/>  comp2
+= 5;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  comp2
 = 3*S1;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 To declare that something is in a compartment, the 'in' keyword is
 used, either during declaration:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
-compartment comp1 in comp2;<br/>  const
-species S1 in comp2;<br/>  S2 in
+compartment comp1 in comp2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  const
+species S1 in comp2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S2 in
 comp2;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 or during assignment for reactions:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0 in
-comp1: x -&gt; y; k1*x;<br/>  y -&gt;
+comp1: x -&gt; y; k1*x;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  y -&gt;
 z; k2*y in comp2;</P>
-
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-or submodules:</p>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> M0 in
-comp2: submod();<br/> 
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+or submodules:</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  M0 in
+comp2: submod();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
 submod2(y) in comp3;</P>
-
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-or other variables:</p>
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">S1 in
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+or other variables:</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S1 in
 comp2 = 5;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Here are Antimony's rules for determining which compartment something
 is in:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <UL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 	If the symbol has been declared to be in a compartment, it is in
@@ -651,62 +1024,101 @@ is in:</P>
 	is treated as having no declared compartment for the purposes of
 	determining the compartments of other symbols.</P>
 </UL>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Note that declaring that one compartment is 'in' a second compartment
 does not change the compartment of the symbols in the first
 compartment:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
-compartment c1, c2;<br/> 
-species s1 in c1, s2 in c1;<br/>  c1 in
+compartment c1, c2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+species s1 in c1, s2 in c1;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  c1 in
 c2;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 yields:</P>
-
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-<U>symbol&nbsp;&nbsp;&nbsp;&nbsp;compartment</U><br/>
-s1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c1<br/>
-s2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c1<br/>
-c1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c2<br/>
-c2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default_compartment</P>
-
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-Compartments may not be circular: "c1 in c2; c2 in c3; c3 in c1"
+<U>symbol		compartment</U></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+s1		c1</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+s2		c1</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+c1		c2</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+c2		default_compartment</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+Compartments may not be circular: “c1 in c2; c2 in c3; c3 in c1”
 is illegal.</P>
-
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Events</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><SPAN STYLE="font-weight: normal">Events
 are discontinuities in model simulations that change the definitions
 of one or more symbols if certain conditions apply.  The condition is
 expressed as a boolean formula, and the definition changes </SPAN><SPAN STYLE="font-weight: normal">are
 expressed as assignments, using the keyword 'at' and the following
 syntax:</SPAN></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
 at&lt;boolean expr.&gt;: variable1=formula1: variable2=formula2
 [etc];</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 such as:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  at
-(x&gt;5): y=3: x=2.3;</P>
-
+(x&gt;5): y=3: x=r+2;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 You may also give the event a name by prepending it with a colon:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E1:
-at(x&gt;5): y=3: x=2.3;</P>
-
+at(x&gt;5): y=3: x=r+2;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 (you may also claim an event is 'in' a compartment just like
 everything else ('E1 in comp1:').  This declaration will never change
 the compartment of anything else.)</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Note:  it is a good idea to enclose inequalities (&lt;, &gt;, &lt;=,
 &gt;=, ==, and !=), and logic (&amp;&amp;, ||, and !) in parentheses
@@ -714,29 +1126,174 @@ when using them here.  The parser that translates these statements to
 SBML is not very robust and can get confused translating these
 symbols when not enclosed in parentheses.  This will be fixed in
 later versions of libAntimony.</P>
-
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+In addition, there are a number of concepts in SBML events that can
+now be encoded in Antimony,  If event assignments are to occur after
+a delay, this can be encoded by using the 'after' keyword:</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E1:
+at 2 after (x&gt;5): y=3: x=r+2;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+This means to wait two time units after x transitions from less than
+five to more than five, then change y to 3 and x to 2.3.  The delay
+may also itself be a formula:</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E1:
+at 2*z/y after (x&gt;5): y=3: x=r+2;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+For delayed events (and to a certain extent with simultaneous events,
+discussed below), one needs to know what values to use when
+performing event assignments:  the values from the time the event was
+triggered, or the values from the time the event assignments are
+being executed?  By default (in Antimony, as in SBML Level 2) the
+first holds true:  event assignments are to use values from the
+moment the event is triggered.  To change this, the keyword
+'fromTrigger' is used:</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E1:
+at 2*z/y after (x&gt;5), fromTrigger=false: y=3: x=r+2;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+You may also declare 'fromTrigger=true' to explicitly declare what is
+the default.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+New complications can arise when event assignments from multiple
+events are to execute at the same time:  which event assignments are
+to be executed first?  By default, there is no defined answer to this
+question: as long as both sets of assignments are executed, either
+may be executed first.  However, if the model depends on a particular
+order of execution, events may be given priorities, using the
+priority keyword:</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E1:
+at ((x&gt;5) &amp;&amp; (z&lt;4)), priority = 1: y=3: x=r+2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E2:
+at ((x&gt;5) &amp;&amp; (q&gt;7)), priority = 0: y=5: x=r+6;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+In situations where z&lt;4, q&gt;7, and x&lt;5, and then x increases,
+both E1 and E2 will trigger at the same time.  Since both modify the
+same values, it makes a difference in which order they are
+executed—in this case, whichever happens last takes precedence.  By
+giving the events priorities (higher priorities execute first) the
+result of this situation is deterministic:  E2 will execute last, and
+y will equal 5 and not 3.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+Another question is whether, if at the beginning of the simulation
+the trigger condition is 'true', it should be considered to have just
+transitioned to being true or not.  The default is no, meaning that
+no event may trigger at time 0.  You may override this default by
+using the 't0' keyword:</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E1:
+at (x&gt;5)), t0 = false: y=3: x=r+2;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+In this situation, the value at t0 is considered to be false, meaning
+it can immediately transition to true if x is greater than 5,
+triggering the event.  You may explicitly state the default by using
+'t0 = true'.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+Finally, a different class of events is often modeled in some
+situations where the trigger condition must persist in being true
+from the entire time between when the event is triggered to when it
+is executed.  By default, this is not the case for Antimony events,
+and, once triggered, all events will execute.  To change the class of
+your event, use the keyword 'persistent':</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  E1:
+at 3 after (x&gt;5)), persistent = true: y=3: x=r+2;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+For this model, x must be greater than 5 for three seconds before
+executing its event assignments:  if x dips below 5 during that time,
+the event will not fire.  To explicitly declare the default
+situation, use 'persistent=false'.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+The ability to change the default priority, t0, and persistent
+characteristics of events was introduced in SBML Level 3, so if you
+translate your model to SBML Level 2, it will lose the ability to
+define functionality other than the default.  For more details about
+the interpretation of these event classifications, see the SBML Level
+3 specification.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Assignment
 Rules:</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 In some models, species and/or variables change in a manner not
 described by a reaction.  When a variable receives a new value at
 every point in the model, this can be expressed in an assignment
 rule, which in Antimony is formulated with a ':=' as:</P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
    Ptot := P1 + P2 + PE;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 In this example, 'Ptot' will continually be updated to reflect the
 total amount of 'P' present in the model.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Each symbol (species or formula) may have only one assignment rule
 associated with it.  If an Antimony file defines more than one rule,
 only the last will be saved.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 When species are used as the target of an assignment rule, they are
 defined to be 'boundary species' and thus 'const'.  Antimony doesn't
@@ -746,65 +1303,99 @@ assignment rules (or rate rules, below).  SBML distinguishes between
 boundary species that may change and boundary species that may not,
 but in Antimony, all boundary species may change as the result of
 being in an Assignment Rule or Rate Rule.</P>
-
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Rate
 Rules:</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Rate rules define the change in a symbol's value over time instead of
 defining its new value.  In this sense, they are similar to reaction
 rate kinetics, but without an explicit stoichiometry of change. 
 These may be modeled in Antimony by appending an apostrophe to the
 name of the symbol, and using an equals sign to define the rate:</P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">S1'
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2">  <SPAN STYLE="font-weight: normal">S1'
 = </SPAN><SPAN STYLE="font-weight: normal"> V1*(1 - S1)/(K1 + (1 -
 S1)) - V2*S1/(K2 + S1) </SPAN>
 </P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Note that unlike initializations and assignment rules, formulas in
 rate rules may be self-referential, either directly or indirectly.</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Any symbol may have only one rate rule or assignment rule associated
 with it.  Should it find more than one, only the last will be saved.</P>
-
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>DNA
 Strands:</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 A new concept in Antimony that has not been modeled explicitly in
 previous model definition languages such as SBML is the idea of
 having DNA strands where downstream elements can inherit reaction
 rates from upstream elements.  DNA strands are declared by connecting
 symbols with '--':</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
 --P1--G1--stop--P2--G2--</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 You can also give the strand a name:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna1:
 --P1--G1--</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 By default, the reaction rate or formula associated with an element
 of a DNA strand is equal to the reaction rate or formula of the
 element upstream of it in the strand.  Thus, if P1 is a promoter and
 G1 is a gene, in the model:</P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna1:
---P1--G1--<br/>  P1 =
-S1*k;<br/>  G1:
--&gt; prot1;</P>
-
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-the reaction rate of G1 will be "S1*k".</P>
-
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna1:
+--P1--G1--</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  P1 =
+S1*k;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  G1:
+-&gt; prot1;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+the reaction rate of G1 will be “S1*k”.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 It is also possible to modulate the inherited reaction rate.  To do
 this, we use ellipses ('...') as shorthand for 'the formula for the
@@ -812,79 +1403,126 @@ element upstream of me'.  Let's add a ribosome binding site that
 increases the rate of production of protein by a factor of three, and
 say that the promoter actually increases the rate of protein
 production by S1*k instead of setting it to S1*k:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna1:
---P1--RBS1--G1--<br/>  P1 =
-S1*k + ...;<br/>  RBS1
-= ...*3;<br/>  G1:
+--P1--RBS1--G1--</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  P1 =
+S1*k + ...;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  RBS1
+= ...*3;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  G1:
 -&gt; prot1;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><SPAN STYLE="font-weight: normal">Since
 in this model, nothing is upstream of P1, the upstream rate is set to
 zero, so the final reaction rate </SPAN><SPAN STYLE="font-weight: normal">of
-G1 is equal to "(S1*k + 0)*3".  </SPAN>
+G1 is equal to “(S1*k + 0)*3”.  </SPAN>
 </P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Valid elements of DNA strands include formulas (operators), reactions
 (genes), and other DNA strands.  Let's wrap our model so far in a
 submodule, and then use the strand in a new strand:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-strand1()<br/>&nbsp;&nbsp;dna1:
---P1--RBS1--G1--<br/>&nbsp;&nbsp;P1 =
-S1*k + ...;<br/>&nbsp;&nbsp;RBS1
-= ...*3;<br/>&nbsp;&nbsp;G1:
--&gt; prot1;<br/>end<br/><BR>
-<br/>model
-fullstrand()<br/>&nbsp;&nbsp;A:
-strand1();<br/>&nbsp;&nbsp;fulldna:  P2--A.dna1<br/>&nbsp;&nbsp;P2 =
-S2*k2;<br/>end</P>
-
+strand1()</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna1:
+--P1--RBS1--G1--</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  P1 =
+S1*k + ...;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  RBS1
+= ...*3;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  G1:
+-&gt; prot1;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"><BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
+fullstrand()</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+strand1();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+fulldna:  P2--A.dna1</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  P2 =
+S2*k2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 In the model 'fullstrand', the reaction that produces A.prot1 is
-equal to "((A.S1*A.k+(S2*k2))*3)".</P>
-
+equal to “((A.S1*A.k+(S2*k2))*3)”.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Operators and genes may be duplicated and appear in multiple strands:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna1:
- --P1--RBS1--G1--<br/>  dna2:
- P2--dna1<br/>  dna3:
+ --P1--RBS1--G1--</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna2:
+ P2--dna1</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna3:
  P2--RBS2--G1</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Strands, however, count as unique constructs, and may only appear as
 singletons or within a single other strand (and may not, of course,
 exist in a loop, being contained in a strand that it itself
 contains).</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 If the reaction rate or formula for any duplicated symbol is left at
 the default or if it contains ellipses explicitly ('...'), it will be
 equal to the sum of all reaction rates in all the strands in which it
 appears.  If we further define our above model:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna1:
- --P1--RBS1--G1--<br/>  dna2:
- P2--dna1<br/>  dna3:
- P2--RBS2--G1<br/>  P1 =
-...+0.3;<br/>  P2 =
-...+1.2;<br/>  RBS1
-= ...*0.8;<br/>  RBS2
-= ...*1.1;<br/>  G1:
+ --P1--RBS1--G1--</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna2:
+ P2--dna1</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  dna3:
+ P2--RBS2--G1</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  P1 =
+...+0.3;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  P2 =
+...+1.2;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  RBS1
+= ...*0.8;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  RBS2
+= ...*1.1;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  G1:
 -&gt; prot1;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 The reaction rate for the production of 'prot1' will be equal to
-"(((0+1.2)+0.3)*0.8) + (((0+1.2)*1.1))".</P>
+“(((0+1.2)+0.3)*0.8) + (((0+1.2)*1.1))”.</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 If you set the reaction rate of G1 without using an ellipsis, but
 include it in multiple strands, its reaction rate will be a multiple
 of the number of strands it is a part of.  For example, if you set
-the reaction rate of G1 above to "k1*S1", and include it in two
-strands, the net reaction rate will be "k1*S1 + k1*S1".</P>
-
+the reaction rate of G1 above to “k1*S1”, and include it in two
+strands, the net reaction rate will be “k1*S1 + k1*S1”.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><SPAN STYLE="font-weight: normal">The
 purpose of prepending or postfixing a '--' to a strand is to declare
 that the strand in question is designed to have DNA attached to it at
@@ -893,41 +1531,71 @@ in its definition in a submodule, the name of that module may be used
 as a proxy for that strand when creating attaching something upstream
 of it, and visa versa with a defined downstream '--' in its
 definition:</SPAN></P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-twostrands<br/> 
-&nbsp;&nbsp;--P1--RBS1--G1<br/> 
-&nbsp;&nbsp;P2--RBS2--G2--<br/>end<br/>
-<br/>model
-long<br/>&nbsp;&nbsp;A:
-twostrands();<br/>&nbsp;&nbsp;P3--A<br/>&nbsp;&nbsp;A--G3<br/>end</P>
-
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-The module 'long' will have two strands:  "P3--A.P1--A.RBS1--A.G1"
-and "A.P2--A.RBS2--A.G2--G3".</P>
-
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
+twostrands</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+--P1--RBS1--G1</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+P2--RBS2--G2--</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"><BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
+long</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+twostrands();</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  P3--A</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A--G3</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+The module 'long' will have two strands:  “P3--A.P1--A.RBS1--A.G1”
+and “A.P2--A.RBS2--A.G2--G3”.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Submodule strands intended to be used in the middle of other strands
 should be defined with '--' both upstream and downstream of the
 strand in question:</P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
-oneexported<br/> 
-&nbsp;&nbsp;--P1--RBS1--G1--<br/> 
-&nbsp;&nbsp;P2--RBS2--G2<br/>end<br/>
-<br/>model
-full<br/>&nbsp;&nbsp;A:
-oneexported()<br/> 
-&nbsp;&nbsp;P2--A--stop<br/>end</P>
-
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-If multiple strands are defined with upstream or downstream "--"
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
+oneexported</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+--P1--RBS1--G1--</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+P2--RBS2--G2</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"><BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">model
+full</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  A:
+oneexported()</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+P2--A--stop</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+If multiple strands are defined with upstream or downstream “--”
 marks, it is illegal to use the name of the module containing them as
 proxy.</P>
-
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Interactions</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Some species act as activators or repressors of reactions that they
 do not actively participate in.  Typical models do not bother
@@ -935,125 +1603,207 @@ mentioning this explicitly, as it will show up in the reaction rates.
  However, for visualization purposes and/or for cases where the
 reaction rates might not be known explicitly, you may declare these
 interactions using the same format as reactions, using different
-symbols instead of the "-&gt;":  for activations, use "-o";
-for inhibitions, use "-|", and for unknown interactions or for
+symbols instead of  “&nbsp;&gt;”:  for activations, use “-o”;
+for inhibitions, use “-|”, and for unknown interactions or for
 interactions which sometimes activate and sometimes inhibit, use
-"-(":</P>
-
-
+“-(“:</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0:
-S1 + E -&gt; SE;<br/>  i1:
-S2 -| J0;<br/>  i2:
-S3 -o J0;<br/>  i3:
+S1 + E -&gt; SE;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  i1:
+S2 -| J0;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  i2:
+S3 -o J0;</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  i3:
 S4 -( J0;</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 If a reaction rate is given for the reaction in question, that
 reaction must include the species listed as interacting with that
 reaction.  This, then, is legal:</P>
-
-<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0:
-S1 + E -&gt; SE; k1*S1*E/S2<br/>  i1:
-S2 -| J0;</P>
-
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-because the species S2 is present in the formula "k1*S1*E/S2".
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  J0:
+S1 + E -&gt; SE; k1*S1*E/S2</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  i1:
+S2 -| J0;</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+because the species S2 is present in the formula “k1*S1*E/S2”. 
 If the concentration of an inhibitory species increases, it should
 decrease the reaction rate of the reaction it inhibits, and visa
 versa for activating species.  The current version of libAntimony
-(v1.0) does not check this, but future versions may add the check.</P>
-
+(v1.3) does not check this, but future versions may add the check.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 When the reaction rate is not known, species from interactions will
 be added to the SBML 'listOfModifiers' for the reaction in question. 
 Normally, the kinetic law is parsed by libAntimony and any species
 there are added to the list of modifiers automatically, but if there
 is no kinetic law to parse, this is how to add species to that list.</P>
-
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Function
 Definitions</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 You may create user-defined functions in a similar fashion to the way
 you create modules, and then use these functions in Antimony
 equations.  These functions must be basic single equations, and act
 in a similar manner to macro expansions.  As an example, you might
 define the quadratic equation thus:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">function
-quadratic(x, a, b, c)<br/>&nbsp;&nbsp;a*x^2
-+ b*x + c<br/>end</P>
-
+quadratic(x, a, b, c)</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  a*x^2
++ b*x + c</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">end</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 And then use it in a later equation:</P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2">  S3 =
 quadratic(s1, k1, k2, k3);</P>
-
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-This would effectively define S3 to have the equation "k1*s1^2 +
-k2*s1 + k3".</P>
-
-
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+This would effectively define S3 to have the equation “k1*s1^2 +
+k2*s1 + k3”.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><B>Importing
 and Exporting Antimony Models</B></P>
-
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 Once you have created an Antimony file, you can convert it to SBML
-using the 'antimony2sbml' program available from
-<A HREF="http://antimony.sourceforge.net/">http://antimony.sourceforge.net/</A>
+using the 'antimony2sbml'  or  the 'QTAntimony' visual editor (both
+available from <A HREF="http://antimony.sourceforge.net/">http://antimony.sourceforge.net/)</A>
  This will convert each of the models defined in the Antimony text
-file into a separate SBML file, including the overall '__main' module
-(if it contains anything).  These files can then be used for
-simulation or visualization in other programs.  This is a
-command-line program that takes as its arguments a list of Antimony
-files to convert:</P>
-
+file into a separate SBML model, including the overall '__main'
+module (if it contains anything).  These files can then be used for
+simulation or visualization in other programs.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+QTAntimony can be used to edit and translate Antimony, SBML, and
+CellML models.  Any file in those three formats can be opened, and
+from the 'View' menu, you can turn on or off the SBML and CellML
+tabs.  Select the tabs to translate and view the working model in
+those different formats.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+If you are using Antimony v2.1-beta, the SBML tabs can be configured
+to use the 'Hierarchical Model Composition' package constructs (see
+<A HREF="http://sbml.org/Community/Wiki/SBML_Level_3_Proposals/Hierarchical_Model_Composition">http://sbml.org/Community/Wiki/SBML_Level_3_Proposals/Hierarchical_Model_Composition</A>).
+ Select 'Edit/Flatten SBML tab(s)' or hit control-F to toggle between
+this version and the old 'flattened' version of SBML.  (To compile
+this version yourself, you will need the latest versions of libSBML
+and the SBML 'comp' package, and to select 'WITH_COMP_SBML' from the
+CMake menu.)</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+As there were now several different file formats available for
+translation, the old command-line translators still exist, but have
+been supplanted by the new 'sbtranslate' executable.  Instructions
+for use are available by running sbtranslate from the command line,
+but in brief:  any number of files to translate may be added to the
+command line, and the desired output format is given with a line like
+'-o antimony', '-o sbml', or '-o cellml'.  The 2.1-beta version also
+adds the option '-o sbml-comp' to output files with the SBML 'comp'
+package constructs.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+Examples:</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
-antimony2sbml.exe model1.txt model2.txt</P>
-
+sbtranslate.exe model1.txt model2.txt -o sbml</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 will create one SBML file for each model in the two Antimony files in
-the working directory of the executable.  Each file will be of the
-fomat "[prefix]_[modelname].xml", where [prefix] is the filename
-with '.txt' removed (if present).</P>
-
+the working directory.  Each file will be of the format
+“[prefix]_[modelname].xml”, where [prefix] is the original
+filename with '.txt' removed (if present).</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-SBML files can also be converted to the Antimony format using
-'sbml2antimony'.  This works similarly to the antimony2sbml program,
-in that it takes a list of SBML files and outputs one Antimony file
-for each SBML input.  The output file will be the original filename
-with '.xml' removed and '.txt' appended:</P>
-
+<BR>
+</P>
 <P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
-sbml2antimony.exe oscli.xml ffn.xml</P>
-
+sbtranslate.exe oscli.xml ffn.xml -o antimony</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 will output two files in the working directory:  'oscli.txt' and
-'ffn.txt'.  
-</P>
-
+'ffn.txt' (in the antimony format).</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-In time, we hope that other programs will be made available to
-convert Antimony files to other formats.  The library 'libAntimony'
-is available also at <A HREF="http://antimony.sourceforge.net/">http://antimony.sourceforge.net/</A>
-for programmers who wish to incorporate the ability to read in
-Antimony files to their own programs, and an API is provided to
-convert the resulting models to other formats.  Our own lab's
-TinkerCell program (<A HREF="http://www.tinkercell.com/">http://www.tinkercell.com/</A>)
-can now convert basic Antimony models to its own format, and display
-the result visually.</P>
-
-
-
-<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><FONT SIZE=4 STYLE="font-size: 16pt"><B>Appendix:
- Converting between SBML and Antimony</B></FONT></P>
-
+<BR>
+</P>
+<P CLASS="courier-text-western" STYLE="widows: 2; orphans: 2"> 
+sbtranslate.exe model1.txt -o sbml-comp</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+will output 'model1.xml' in the working directory, containing all
+models in the 'model1.txt' file, using the SBML 'comp' package.</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; widows: 2; orphans: 2; page-break-before: always">
+<B><FONT SIZE=4 STYLE="font-size: 16pt">Appendix:  Converting between
+SBML and Antimony</FONT></B></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 For reference, here are some of the differences you will see when
 converting models between SBML and Antimony:</P>
-             
+<P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
+<BR>
+</P>
 <UL>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 	<B>Local parameters</B> in SBML reactions <B>become global
@@ -1089,7 +1839,8 @@ converting models between SBML and Antimony:</P>
 	boundary=false and constant=false</B> in SBML.  
 	</P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
-	<B>Modules </B>in Antimony <B>are flattened </B>in SBML.</P>
+	<B>Modules </B>in Antimony <B>are flattened </B>in SBML (unless you
+	use the 'comp' option).</P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 	<B>DNA strands </B>in Antimony <B>disappear </B>in SBML.</P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
@@ -1113,9 +1864,9 @@ converting models between SBML and Antimony:</P>
 	'time_ref'</B> in Antimony.  This 'time_ref' is added to the
 	function's interface (as the last in the list of symbols), and any
 	uses of the function are modified to use 'time' in the call.  In
-        other words, a function "function(x, y): x+y*time" becomes
-        "function(x, y, time_ref): x + y*time_ref", and formulas that
-        use "function(A, B)" become "function(A, B, time)"</P>
+	other words, a function “function(x, y): x+y*time” becomes
+	“function(x, y, time_ref): x + y*time_ref”, and formulas that
+	use “function(A, B)” become “function(A, B, time)”</P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0in; font-weight: normal; widows: 2; orphans: 2">
 	<B>A variety of Antimony keywords</B>, if found in SBML models, <B>are
 	renamed to add an appended '_'</B>.  So 'compartment' becomes

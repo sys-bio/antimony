@@ -1,5 +1,5 @@
 #version number
-version = 1.4
+version = 2.0
 
 #mingw:
 #mingw = i586-mingw32msvc
@@ -123,24 +123,6 @@ LIBOFILES = $(src_dir)antimony_api.o \
 	$(src_dir)userfunction.o \
 	$(src_dir)variable.o \
 
-QMAKEFILES = antimony.pro \
-	antimony2sbml.pro \
-	antimony2cellml.pro \
-	sbml2antimony.pro \
-	testantimony.pro \
-	antimony2sbml/QMakeFile \
-	antimony2sbml/antimony2sbml.pro \
-	antimony2sbml/antimony2sbml.vcproj \
-	antimony2cellml/QMakeFile \
-	antimony2cellml/antimony2cellml.pro \
-	antimony2cellml/antimony2cellml.vcproj \
-	sbml2antimony/QMakeFile \
-	sbml2antimony/sbml2antimony.pro \
-	sbml2antimony/sbml2antimony.vcproj \
-	libantimony/QMakeFile \
-	libantimony/libantimony.pro \
-	libantimony/antimony.vcproj \
-
 QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 	$(qt_dir)AntimonyTab.h \
 	$(qt_dir)ChangeableTextBox.cpp \
@@ -228,8 +210,7 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(ex_dir)ex_sbml_output_ringoscil_sbml.xml \
 	$(ex_dir)biomodels/BIOMD0000000001.txt \
 	$(ex_dir)biomodels/BIOMD0000000???.txt \
-	$(ex_dir)cellml/*/*.txt \
-	$(ex_dir)cellml/*/*_sbml.xml \
+	$(ex_dir)cellml_files.zip
 
 DOCSRCFILES = \
 	$(doc_dir)antimony-biomodels.txt \
@@ -253,27 +234,25 @@ DOCSRCFILES = \
 	README.txt
 
 
-#Executables:
+#Pointer:
 all : \
-	$(bin_dir)testantimony \
-	$(bin_dir)antimony2sbml \
-	$(bin_dir)sbml2antimony \
-	$(bin_dir)cellml2antimony \
-	$(bin_dir)antimony2cellml \
-	$(bin_dir)sbtranslate \
-	$(bin_dir)rehashantimony
+	Makefile
+	@echo "Antimony now uses CMake as its build system.  To use, create a build directory\nand change into it:"
 	@echo ""
-	@echo "Libary created:"
-	@echo "  lib/libantimony.a:  The libAntimony static library"
+	@echo "mkdir build/; cd build"
 	@echo ""
-	@echo "Executables created:  "
-	@echo "  bin/antimony2sbml:   Converts all modules in antimony files to SBML files"
-	@echo "  bin/sbml2antimony:   Converts SBML files into antimony files."
-	@echo "  bin/cellml2antimony: Converts CellML files into antimony files."
-	@echo "  bin/testantimony:    Prints information about your antimony file(s) and"
-	@echo "                         re-saves the data in different formats"
+	@echo "Then run cmake (cmake-gui or ccmake) from that directory, with '..' as\nthe argument:"
 	@echo ""
-	@echo "For more information, see the documentation in the doc/ directory."
+	@echo "cmake-gui .."
+	@echo ""
+	@echo "This will create a makefile for whatever system you told it to."
+	@echo ""
+	@echo "This makefile still exists for the purpose of creating source and"
+	@echo "documentation distributions.  'make srcdist' and 'make docs' can be"
+	@echo "used for these tasks (until they too are moved to cmake)."
+	@echo ""
+	@echo "For more information, see the documentation in the doc/ directory,"
+	@echo "doc/antimony-installation.html in particular."
 	@echo ""
 
 $(bin_dir)testantimony : $(lib_dir)libantimony.a $(src_dir)testantimony.o
@@ -306,11 +285,14 @@ $(bin_dir)rehashantimony : $(lib_dir)libantimony.a $(src_dir)rehashantimony.o
 
 
 #The distribution zip file.
-srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile
+srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile $(ex_dir)cellml_files.zip
 	tar --transform 's,^,antimony/,' -cvf antimony_src_v$(version).tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile
 	gzip antimony_src_v$(version).tar
 
 #The documentation.
+$(ex_dir)cellml_files.zip:
+	cd $(ex_dir); zip cellml_files.zip cellml/*/*; cd ../..;
+
 docs : $(doc_dir)index.html $(doc_dir)cellmllist_ant.html $(doc_dir)cellmllist_sbml.html
 	zip Antimony_documentation_v$(version).zip $(DOCFILES)
 

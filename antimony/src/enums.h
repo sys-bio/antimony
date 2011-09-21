@@ -13,7 +13,7 @@
  * - rdActivates: An activation interaction: -o
  * - rdInhibits: An inhibition interaction: -|
  * - rdInfluences: A generic interaction: -(
- * - rdBecomesIrreversibly: '=>'
+ * - rdBecomesIrreversibly: An irreversible reaction: '=>'
  */
 enum rd_type {rdBecomes = 0, rdActivates, rdInhibits, rdInfluences, rdBecomesIrreversibly};
 
