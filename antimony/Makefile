@@ -81,6 +81,8 @@ CPPFILES = $(src_dir)antimony_api.cpp \
 	$(src_dir)sbmlx.cpp \
 	$(src_dir)stringx.cpp \
 	$(src_dir)testantimony.cpp \
+	$(src_dir)rehashantimony.cpp \
+	$(src_dir)sbtranslate.cpp \
 	$(src_dir)typex.cpp \
 	$(src_dir)userfunction.cpp \
 	$(src_dir)variable.cpp \
@@ -129,6 +131,8 @@ QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 	$(qt_dir)ChangeableTextBox.h \
 	$(qt_dir)CopyMessageBox.cpp \
 	$(qt_dir)CopyMessageBox.h \
+	$(qt_dir)CellMLTab.cpp \
+	$(qt_dir)CellMLTab.h \
 	$(qt_dir)FileWatcher.cpp \
 	$(qt_dir)FileWatcher.h \
 	$(qt_dir)main.cpp \
@@ -151,6 +155,7 @@ QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 	$(qt_dir)antimony.icns \
 	$(qt_dir)antimony.ico \
 	$(qt_dir)antimony.jpg \
+	$(qt_dir)antimony.qrc \
 	$(qt_dir)antimony_ico.pdn \
 	$(qt_dir)antimonyicon.rc \
 	$(qt_dir)README.txt \
@@ -285,8 +290,8 @@ $(bin_dir)rehashantimony : $(lib_dir)libantimony.a $(src_dir)rehashantimony.o
 
 
 #The distribution zip file.
-srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile $(ex_dir)cellml_files.zip
-	tar --transform 's,^,antimony/,' -cvf antimony_src_v$(version).tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile
+srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile CMakeLists.txt $(ex_dir)cellml_files.zip
+	tar --transform 's,^,antimony/,' -cvf antimony_src_v$(version).tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) $(ex_dir)cellml_files.zip Makefile CMakeLists.txt
 	gzip antimony_src_v$(version).tar
 
 #The documentation.
