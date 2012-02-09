@@ -333,11 +333,11 @@ void TabManager::TranslateAntimony(QString& text)
 		ChangeableTextBox* cellmltab = textbox(m_cellmltab);
 		char* mainmodel = getMainModuleName();
 #ifdef NCELLML
-                char* cellmltext = "Unable to translate CellML Text";
+    cellmltab->SetTranslatedText("Unable to translate CellML Text");
 #else
-                char* cellmltext = getCellMLString(mainmodel); //LS DEBUG CELLML
-#endif
+    char* cellmltext = getCellMLString(mainmodel); //LS DEBUG CELLML
 		cellmltab->SetTranslatedText(QString(cellmltext));
+#endif
 	}
     //Translate to SBML if need be:
 	if (m_sbmltab != -1) {

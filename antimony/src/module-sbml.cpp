@@ -145,10 +145,7 @@ void Module::LoadSBML(const Model* sbml)
         g_registry.AddWarning("Unable to process the deletion " + delname + " from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions have not yet been added as a concept in Antimony.");
         //LS DEBUG:  when we have deletions, add them here.
       }
-      if (submodel->isSetLengthConversionFactor() ||
-          submodel->isSetAreaConversionFactor() ||
-          submodel->isSetVolumeConversionFactor() ||
-          submodel->isSetSubstanceConversionFactor() ||
+      if (submodel->isSetSubstanceConversionFactor() ||
           submodel->isSetTimeConversionFactor() ||
           submodel->isSetExtentConversionFactor()) {
         g_registry.AddWarning("Unable to process the conversion factor(s) from submodel " + submodname + " in model " + GetModuleName() + ".  Conversion factors have not yet been added as a concept in Antimony.");
@@ -635,7 +632,6 @@ void Module::CreateSBMLModel(bool comp)
       ReplacedElement* re = plugcompartment->createReplacedElement();
       re->setSubmodelRef(submod->GetNameDelimitedBy(cc));
       re->setIdRef(DEFAULTCOMP);
-      re->setIdentical(true);
     }
   }
 #endif //USE_COMP
