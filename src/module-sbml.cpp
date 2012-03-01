@@ -616,25 +616,64 @@ void Module::CreateSBMLModel(bool comp)
     fd->setMath(math);
     delete math;
   }
-  //Compartments
-  Compartment* defaultCompartment = sbmlmod->createCompartment();
-  defaultCompartment->setId(DEFAULTCOMP);
-  defaultCompartment->setConstant(true);
-  defaultCompartment->setSize(1);
-  defaultCompartment->setSBOTerm(410); //The 'implicit compartment'
-  unsigned int dim=3;
-  defaultCompartment->setSpatialDimensions(dim);
-#ifdef USE_COMP
-  if (comp) {
-    CompSBasePlugin* plugcompartment = static_cast<CompSBasePlugin*>(defaultCompartment->getPlugin("comp"));
-    for (size_t sm=0; sm<numsubmods; sm++) {
-      Variable* submod = GetNthVariableOfType(subModules, sm, true);
-      ReplacedElement* re = plugcompartment->createReplacedElement();
-      re->setSubmodelRef(submod->GetNameDelimitedBy(cc));
-      re->setIdRef(DEFAULTCOMP);
+  //Species
+  bool need_default = false;
+  size_t numspecies = GetNumVariablesOfType(allSpecies, comp);
+  for (size_t spec=0; spec < numspecies; spec++) {
+    const Variable* species = GetNthVariableOfType(allSpecies, spec, comp);
+    Species* sbmlspecies = sbmlmod->createSpecies();
+    sbmlspecies->setId(species->GetNameDelimitedBy(cc));
+    if (species->GetDisplayName() != "") {
+      sbmlspecies->setName(species->GetDisplayName());
     }
+    sbmlspecies->setConstant(false); //There's no need to try to distinguish between const and var for species.
+    if (species->GetIsConst()) {
+      sbmlspecies->setBoundaryCondition(true);
+    }
+    else {
+      sbmlspecies->setBoundaryCondition(false);
+    }
+    const Variable* compartment = species->GetCompartment();
+    if (compartment == NULL) {
+      sbmlspecies->setCompartment(DEFAULTCOMP);
+      need_default = true;
+    }
+    else {
+      sbmlspecies->setCompartment(compartment->GetNameDelimitedBy(cc));
+    }
+    const Formula* formula = species->GetFormula();
+    if (formula->IsDouble()) {
+      sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
+    }
+    else if (formula->IsAmountIn(species->GetCompartment())) {
+      sbmlspecies->setInitialAmount(formula->ToAmount());
+    }
+    sbmlspecies->setHasOnlySubstanceUnits(false);
+    SetAssignmentFor(sbmlmod, species);
   }
+
+  //Compartments
+  size_t numsp= GetNumVariablesOfType(allSpecies, comp);
+  unsigned int dim=3;
+  if (need_default) {
+    Compartment* defaultCompartment = sbmlmod->createCompartment();
+    defaultCompartment->setId(DEFAULTCOMP);
+    defaultCompartment->setConstant(true);
+    defaultCompartment->setSize(1);
+    defaultCompartment->setSBOTerm(410); //The 'implicit compartment'
+    defaultCompartment->setSpatialDimensions(dim);
+#ifdef USE_COMP
+    if (comp) {
+      CompSBasePlugin* plugcompartment = static_cast<CompSBasePlugin*>(defaultCompartment->getPlugin("comp"));
+      for (size_t sm=0; sm<numsubmods; sm++) {
+        Variable* submod = GetNthVariableOfType(subModules, sm, true);
+        ReplacedElement* re = plugcompartment->createReplacedElement();
+        re->setSubmodelRef(submod->GetNameDelimitedBy(cc));
+        re->setIdRef(DEFAULTCOMP);
+      }
+    }
 #endif //USE_COMP
+  }
   size_t numcomps = GetNumVariablesOfType(allCompartments, comp);
   for (size_t cmpt=0; cmpt<numcomps; cmpt++) {
     const Variable* compartment = GetNthVariableOfType(allCompartments, cmpt, comp);
@@ -655,40 +694,6 @@ void Module::CreateSBMLModel(bool comp)
     }
     SetAssignmentFor(sbmlmod, compartment);
     sbmlcomp->setSpatialDimensions(dim);
-  }
-
-  //Species
-  size_t numspecies = GetNumVariablesOfType(allSpecies, comp);
-  for (size_t spec=0; spec < numspecies; spec++) {
-    const Variable* species = GetNthVariableOfType(allSpecies, spec, comp);
-    Species* sbmlspecies = sbmlmod->createSpecies();
-    sbmlspecies->setId(species->GetNameDelimitedBy(cc));
-    if (species->GetDisplayName() != "") {
-      sbmlspecies->setName(species->GetDisplayName());
-    }
-    sbmlspecies->setConstant(false); //There's no need to try to distinguish between const and var for species.
-    if (species->GetIsConst()) {
-      sbmlspecies->setBoundaryCondition(true);
-    }
-    else {
-      sbmlspecies->setBoundaryCondition(false);
-    }
-    const Variable* compartment = species->GetCompartment();
-    if (compartment == NULL) {
-      sbmlspecies->setCompartment(defaultCompartment->getId());
-    }
-    else {
-      sbmlspecies->setCompartment(compartment->GetNameDelimitedBy(cc));
-    }
-    const Formula* formula = species->GetFormula();
-    if (formula->IsDouble()) {
-      sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
-    }
-    else if (formula->IsAmountIn(species->GetCompartment())) {
-      sbmlspecies->setInitialAmount(formula->ToAmount());
-    }
-    sbmlspecies->setHasOnlySubstanceUnits(false);
-    SetAssignmentFor(sbmlmod, species);
   }
 
   //Formulas
