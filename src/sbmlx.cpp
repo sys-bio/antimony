@@ -120,7 +120,11 @@ void matchTypesToNames(ASTNode_t* node)
 
 ASTNode* parseStringToASTNode(const string& formula)
 {
+#if (LIBSBML_VERSION >= 50500)
+  ASTNode* rootnode = SBML_parseL3Formula(formula.c_str());
+#else
   ASTNode* rootnode = SBML_parseFormula(formula.c_str());
+#endif
   if (rootnode == NULL) return NULL;
   if (formula.find("time") != string::npos ||
       formula.find("avogadro") != string::npos ||

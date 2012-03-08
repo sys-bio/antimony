@@ -1,8 +1,8 @@
 #include <cassert>
 #include <vector>
 #include <string>
-#include <cassert>
 #include <cstdlib>
+#include <sys/stat.h>
 
 #include "formula.h"
 #include "module.h"
@@ -17,12 +17,14 @@
 extern int yylloc_first_line;
 extern int yylloc_last_line;
 extern std::vector<int> yylloc_last_lines;
+#define CONFIGFILE ".antimony";
 
 using namespace std;
 
 Registry::Registry()
   : m_oldinputs(),
     m_files(),
+    m_directories(),
     m_variablenames(),
     m_functions(),
     m_storedvars(),
@@ -39,6 +41,7 @@ Registry::Registry()
     m_oldmodules(),
     m_olduserfunctions(),
     m_oldmodulemaps(),
+    m_sbindex(),
     input(NULL)
 {
   string main = MAINMODULE;
@@ -71,6 +74,7 @@ void Registry::ClearModules()
   m_error.clear();
   m_userfunctions.clear();
   m_userfunctionnames.clear();
+  m_sbindex.clear();
   m_isfunction = false;
   string main = MAINMODULE;
   NewCurrentModule(&main);
@@ -102,6 +106,34 @@ void Registry::ClearAll()
   ClearModules();
 }
 
+void Registry::AddDirectory(std::string directory)
+{
+  if (directory.empty()) return;
+  if (directory[directory.size()-1] != '/') {
+    directory = directory + "/";
+  }
+  m_directories.push_back(directory);
+  if (m_sbindex.size() > 0) {
+    string sbi = directory + "/" + CONFIGFILE;
+    if (file_exists(sbi)) {
+      AddSBIndex(sbi);
+    }
+  }
+}
+
+
+vector<string> Registry::GetDirectories()
+{
+  return m_directories;
+}
+
+
+void Registry::ClearDirectories()
+{
+  m_directories.clear();
+}
+
+
 //Return values:  1: antimony, unread 2: SBML, read
 int Registry::OpenString(string model)
 {
@@ -130,46 +162,204 @@ int Registry::OpenString(string model)
 //Return values:  0: failure, 1: antimony, unread 2: SBML, read
 int Registry::OpenFile(const string& filename)
 {
-#ifndef NSBML
-  //Try opening as SBML:
-  SBMLDocument* document = readSBML(filename.c_str());
-  int sbmlcheck = CheckAndAddSBMLIfGood(document);
-  delete document;
-  if (sbmlcheck==2) return 2;
-#endif
-  m_files.push_back(filename);
-  if (input != NULL) {
-    m_oldinputs.push_back(input);
+  //Find a filename that can be passed to a file input stream that exists.
+  ParseSBIndex();
+  string thisfilename = "";
+  if (m_files.size() > 0) {
+    thisfilename = m_files[m_files.size()-1];
   }
-  ifstream* inputfile = new ifstream;
-  input = inputfile;
-  inputfile->open(filename.c_str(), ios::in);
-  if (!inputfile->is_open()) {
-    m_files.pop_back();
-    string error = "Could not open \"";
+  string newname = GetFilenameFrom(thisfilename, filename);
+  //If we can't find the file at all, return 0.
+  if (newname=="") {
+    string error = "Could not open '";
     error += filename;
-    error += "\".  "
+    error += "', and could not find that file in any known directory.  "
       "Please check that this file:\n" 
-      "	1) exists in directory that antimony is being run from,\n"
+      "	1) exists in directory that antimony is being run from or knows about\n"
       "	2) is read enabled, and\n"
       "	3) is not in use by another program.\n";
     SetError(error);
     return 0;
   }
 
-  if (!inputfile->good())
-  {
-    m_files.pop_back();
+  //Add the directory of this file to our list of known directories, so we
+  // can look for other files there, especially .antimony files:
+  size_t lastslash = newname.rfind('/');
+  if (lastslash != string::npos) {
+    string dir = newname;
+    dir = dir.replace(lastslash, dir.size()-lastslash, "");
+    AddDirectory(dir);
+  }
+
+  //Now try to read it as SBML
+#ifndef NSBML
+  //Try opening as SBML:
+  SBMLDocument* document = readSBML(newname.c_str());
+  int sbmlcheck = CheckAndAddSBMLIfGood(document);
+  delete document;
+  if (sbmlcheck==2) {
+    return 2;
+  }
+#endif
+
+  //If that failed, set up the 'input' member variable so we can parse it as Antimony.
+  ifstream* inputfile = new ifstream;
+  inputfile->open(newname.c_str(), ios::in);
+  if (!inputfile->is_open() || !inputfile->good()) {
     string error = "Input file ";
     error += filename;
-    error += " is open, but not able to be read from.  This should not happen, and is probably a programming error on our part, but just in case, check the permissions on the file and try again.  If that still does not work, contact us letting us know how you got this error.";
+    if (newname != filename) {
+      error += " was found to map to " + newname + ", which";
+    }
+    error += " exists, but seemingly cannot be read from.  Check the permissions on the file and try again.  If this still does not work, contact us letting us know how you got this error.";
     SetError(error);
+    delete inputfile;
     return 0;
   }
+  m_files.push_back(newname);
+  if (input != NULL) {
+    m_oldinputs.push_back(input);
+  }
+  input = inputfile;
   yylloc_last_lines.push_back(yylloc_last_line);
   yylloc_last_line = 1;
   yylloc_first_line = 1;
   return 1;
+}
+
+string Registry::GetFilenameFrom(string thisfile, string import)
+{
+  if (import.empty()) return "";
+  string ret = "";
+  //First check to see if we've been told about this import from this file in an .antimony file
+  ParseSBIndex();
+  map<pair<string, string>, string>::iterator result;
+  result = m_sbindex.find(make_pair(thisfile, import));
+  if (result != m_sbindex.end()) {
+    ret = result->second;
+    assert(file_exists(ret)); //should have already been checked in ParseSBIndex
+    cout << "found file " << ret << " from import string " << import << endl;
+    return ret;
+  }
+
+  //If it wasn't there, look for it normally.  First, if it's an absolute link, look for it that way.
+  // Otherwise, prepend the local directory.
+  string reldirectory = thisfile;
+  size_t lastslash = reldirectory.rfind('/');
+  if (lastslash != string::npos) {
+    reldirectory = reldirectory.replace(lastslash, reldirectory.size()-lastslash, "");
+  }
+  ret = import;
+  if (import[0] == '/') {
+    ret = reldirectory + import;
+  }
+    cout << "found file " << ret << " from import string " << import << endl;
+  if (file_exists(ret)) return ret;
+
+  //Apparantly that didn't work either.  Try looking in the directories that have been provided:
+  for (size_t d=0; d<m_directories.size(); d++) {
+    ret = m_directories[d] + "/" + import;
+    cout << "found file " << ret << " from import string " << import << endl;
+    if (file_exists(ret)) return ret;
+  }
+
+  //As a last-ditch effort, try looking for only the file part of 'import' by calling this function again:
+  string nodir = import;
+  lastslash = nodir.rfind('/');
+  if (lastslash != string::npos) {
+    nodir = nodir.replace(0, lastslash, "");
+    return GetFilenameFrom(thisfile, nodir);
+  }
+
+  //Nope, 'import' was already only a filename.  Time to give up:
+  return "";
+}
+
+void Registry::ParseSBIndex()
+{
+  string sbi = CONFIGFILE;
+  if (m_sbindex.size() > 0) return; //Already parsed any sbindexes.
+  if (file_exists(sbi)) {
+    AddSBIndex(sbi);
+  }
+  for (size_t d=0; d<m_directories.size(); d++) {
+    string dsbi = m_directories[d] + "/" + sbi;
+    if (file_exists(dsbi)) {
+      AddSBIndex(dsbi);
+    }
+  }
+}
+
+void Registry::AddSBIndex(string sbi)
+{
+  ifstream inputfile;
+  inputfile.open(sbi.c_str(), ios::in);
+  if (!inputfile.is_open() || !inputfile.good()) {
+    //Can't open/read the file.
+    AddWarning("Unable to open and/or read the sbindex file '" + sbi +"', even though it was seen to exist.");
+    return;
+  }
+  string sbidir = sbi;
+  size_t lastslash = sbidir.rfind('/');
+  if (lastslash != string::npos) {
+    sbidir = sbidir.replace(lastslash, sbidir.size()-lastslash, ""); 
+  }
+  else {
+    sbidir = "";
+  }
+  const int buffsize = 99999;
+  char charline[buffsize];
+  while (inputfile.good() && !inputfile.eof()) {
+    inputfile.getline(charline, buffsize);
+    string oneline(charline);
+    size_t tabchar = oneline.find('\t');
+    vector<string> entries;
+    while (tabchar != string::npos) {
+      entries.push_back(oneline.substr(0, tabchar));
+      oneline = oneline.replace(0, tabchar+1, "");
+      tabchar = oneline.find('\t');
+    }
+    entries.push_back(oneline);
+    cout << oneline << endl;
+    if (entries.size()==3) {
+      cout << "Found three entries." << endl;
+      string requester = entries[0];
+      string request   = entries[1];
+      string filename  = entries[2];
+      if (requester == "<MAIN>") {
+        requester = "";
+      }
+      if (requester.size() > 0 && requester[0] != '/') {
+        requester = sbidir + requester;
+      }
+      if (filename.size() > 0 && filename[0] != '/') {
+        filename = sbidir + filename;
+      }
+      if (file_exists(filename)) {
+        m_sbindex.insert(make_pair(make_pair(requester, request), filename));
+      }
+      cout << "'" << requester << "', '" << request << "', '" << filename << "'" << endl;
+    }
+    else if (oneline != ""){
+      AddWarning("Incorrectly formatted line in sbindex file '" + sbi + "':  each line is supposed to be three-column tab-delimited");
+    }
+  }
+  //LS DEBUG:
+  cout << "Entries from " << sbi << endl;
+  for (map<pair<string, string>, string>::iterator entry=m_sbindex.begin(); entry != m_sbindex.end(); entry++) {
+    cout << (*entry).first.first << ", " << (*entry).first.second << ":  " << (*entry).second << endl;
+  }
+}
+
+bool Registry::file_exists (const string& filename)
+{
+#ifdef _MSC_VER
+#  define stat _stat
+#endif
+
+  if (filename.empty()) return 0;
+  struct stat buf;
+  return stat(filename.c_str(), &buf) == 0;
 }
 
 #ifndef NSBML
