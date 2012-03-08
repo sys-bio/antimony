@@ -238,7 +238,6 @@ string Registry::GetFilenameFrom(string thisfile, string import)
   if (result != m_sbindex.end()) {
     ret = result->second;
     assert(file_exists(ret)); //should have already been checked in ParseSBIndex
-    cout << "found file " << ret << " from import string " << import << endl;
     return ret;
   }
 
@@ -253,13 +252,11 @@ string Registry::GetFilenameFrom(string thisfile, string import)
   if (import[0] == '/') {
     ret = reldirectory + import;
   }
-    cout << "found file " << ret << " from import string " << import << endl;
   if (file_exists(ret)) return ret;
 
   //Apparantly that didn't work either.  Try looking in the directories that have been provided:
   for (size_t d=0; d<m_directories.size(); d++) {
     ret = m_directories[d] + "/" + import;
-    cout << "found file " << ret << " from import string " << import << endl;
     if (file_exists(ret)) return ret;
   }
 
@@ -320,9 +317,8 @@ void Registry::AddSBIndex(string sbi)
       tabchar = oneline.find('\t');
     }
     entries.push_back(oneline);
-    cout << oneline << endl;
     if (entries.size()==3) {
-      cout << "Found three entries." << endl;
+      //cout << "Found three entries." << endl;
       string requester = entries[0];
       string request   = entries[1];
       string filename  = entries[2];
@@ -338,17 +334,19 @@ void Registry::AddSBIndex(string sbi)
       if (file_exists(filename)) {
         m_sbindex.insert(make_pair(make_pair(requester, request), filename));
       }
-      cout << "'" << requester << "', '" << request << "', '" << filename << "'" << endl;
+      //cout << "'" << requester << "', '" << request << "', '" << filename << "'" << endl;
     }
     else if (oneline != ""){
       AddWarning("Incorrectly formatted line in sbindex file '" + sbi + "':  each line is supposed to be three-column tab-delimited");
     }
   }
   //LS DEBUG:
+  /*
   cout << "Entries from " << sbi << endl;
   for (map<pair<string, string>, string>::iterator entry=m_sbindex.begin(); entry != m_sbindex.end(); entry++) {
     cout << (*entry).first.first << ", " << (*entry).first.second << ":  " << (*entry).second << endl;
   }
+  */
 }
 
 bool Registry::file_exists (const string& filename)

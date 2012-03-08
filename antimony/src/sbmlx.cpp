@@ -120,7 +120,7 @@ void matchTypesToNames(ASTNode_t* node)
 
 ASTNode* parseStringToASTNode(const string& formula)
 {
-#if (LIBSBML_VERSION >= 50500)
+#if (LIBSBML_VERSION >= 50402)
   ASTNode* rootnode = SBML_parseL3Formula(formula.c_str());
 #else
   ASTNode* rootnode = SBML_parseFormula(formula.c_str());
