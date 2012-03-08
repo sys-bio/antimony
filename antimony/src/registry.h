@@ -33,6 +33,7 @@ class Registry
 private:
   std::vector<std::istream*> m_oldinputs;
   std::vector<std::string>   m_files;
+  std::vector<std::string>   m_directories;
   std::set<std::string>      m_variablenames;
   std::vector<std::string>   m_functions;
 
@@ -60,6 +61,8 @@ private:
   std::vector<std::vector<UserFunction> > m_olduserfunctions;
   std::vector<std::map<std::string, size_t> > m_oldmodulemaps;
 
+  std::map<std::pair<std::string, std::string>, std::string> m_sbindex;
+
 public:
   Registry();
   ~Registry();
@@ -73,6 +76,10 @@ public:
   void FreeVariables();
   void FreeFormulas();
   void ClearAll();
+
+  void   AddDirectory(std::string directory);
+  std::vector<std::string> GetDirectories();
+  void   ClearDirectories();
 
   int    OpenFile(const std::string& filename);
   int    OpenString(std::string model);
@@ -89,6 +96,10 @@ public:
   bool   SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};
   void   SetupFunctions();
+  std::string GetFilenameFrom(std::string thisfile, std::string import);
+  void   ParseSBIndex();
+  void   AddSBIndex(std::string sbi);
+  bool   file_exists (const std::string& filename);
 
   //Modules
   bool NewCurrentModule(const std::string* name, bool ismain=false);
