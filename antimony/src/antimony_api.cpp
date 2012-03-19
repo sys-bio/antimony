@@ -550,6 +550,16 @@ LIB_EXTERN void clearPreviousLoads()
   g_registry.ClearAll();
 }
 
+LIB_EXTERN void   addDirectory(const char* directory)
+{
+  g_registry.AddDirectory(directory);
+}
+
+LIB_EXTERN void   clearDirectories()
+{
+  g_registry.ClearDirectories();
+}
+
 LIB_EXTERN char* getLastError()
 {
   return getCharStar((g_registry.GetError()).c_str());

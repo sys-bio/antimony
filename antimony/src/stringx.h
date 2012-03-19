@@ -11,6 +11,7 @@ class Module;
 class Variable;
 
 std::string SizeTToString(size_t num);
+std::string DoubleToString(double num);
 std::string ToStringFromVecDelimitedBy(std::vector<std::string> name, char cc);
 std::wstring ToWString(std::string in);
 std::string ToThinString(std::wstring in);

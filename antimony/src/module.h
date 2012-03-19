@@ -40,6 +40,7 @@ private:
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
   std::vector<std::vector<std::string> > m_changed;
   std::vector<std::string> m_returnvalue;
+  std::vector<UnitDef*> m_unitdefs;
 
   size_t m_currentexportvar;
   bool m_ismain;
@@ -91,6 +92,8 @@ public:
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};
   void AddDeletion(Variable* deletedvar) {};
+  std::string AddUnitDefIfUnique(UnitDef* unitdef);
+  bool AddUnitDef(UnitDef* unitdef);
 
   Variable* GetVariable(const std::vector<std::string>& name);
   void AddToVarMapFrom(const Module& submod);
@@ -111,6 +114,9 @@ public:
   Variable* GetDownstreamDNA();
   formula_type GetFormulaType() const; //If we have a return value
   bool GetIsMain() const {return m_ismain;};
+  UnitDef* GetUnitDef(std::string uid);
+  size_t GetNumUnitDefs();
+  UnitDef* GetUnitDef(size_t n);
 
   const std::string& GetModuleName() const;
   std::string GetVariableNameDelimitedBy(char cc) const;

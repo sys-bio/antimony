@@ -11,8 +11,14 @@ string SizeTToString(size_t number)
 {
   ostringstream ostr;
   ostr << number;
-  string s(ostr.str());
-  return s;
+  return ostr.str();
+}
+
+string DoubleToString(double number)
+{
+  ostringstream ostr;
+  ostr << number;
+  return ostr.str();
 }
 
 string ToStringFromVecDelimitedBy(vector<string> name, char cc)

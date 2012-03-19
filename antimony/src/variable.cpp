@@ -6,6 +6,7 @@
 #include "sbmlx.h"
 #include "stringx.h"
 #include "typex.h"
+#include "unitdef.h"
 
 using namespace std;
 
@@ -1093,6 +1094,18 @@ bool Variable::SetDisplayName(string name)
   return false;
 }
 
+
+bool Variable::SetUnitDef(UnitDef* unitdef)
+{
+  if (unitdef->IsOnlyKind()) {
+    m_unitdef = unitdef->GetName();
+    delete unitdef;
+  }
+  else {
+    m_unitdef = g_registry.CurrentModule()->AddUnitDefIfUnique(unitdef);
+  }
+  return false; //success
+}
 
 //Set this variable to be a shell pointing to the clone, transferring any data we may already have.
 bool Variable::Synchronize(Variable* clone)
