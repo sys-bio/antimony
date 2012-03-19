@@ -13,6 +13,7 @@
 #endif
 #include "registry.h"
 #include "module.h"
+#include "unitdef.h"
 
   class Formula;
   class ReactantList;
@@ -42,20 +43,22 @@
   ReactantList* reactantList;
   Variable* variable;
   Variable* variablein;
-  Variable* varmaybein;
+  Variable* varmaybeis;
   Variable* maybein;
+  UnitDef*  unitdef;
   bool maybemain;
 }
 
-%type <character> mathThing "mathematical symbol"
-%type <formula> formula spacedformula commaformula
-%type <module> module
-%type <reactantList> reactantList
+%type <character>       mathThing "mathematical symbol"
+%type <formula>         formula spacedformula commaformula
+%type <module>          module
+%type <reactantList>    reactantList
 %type <reactionDivider> reactionDivider
-%type <variable> variable variablein varmaybein varmaybeis maybein
-%type <maybemain> maybemain
+%type <variable>        variable variablein varmaybein varmaybeis maybein
+%type <unitdef>         unitdef
+%type <maybemain>       maybemain
 
-%left '(' ')' '+' '-' '*' '/' '^' ',' 
+%left '+' '-' '*' '/' '^' ','
 
 %token YYEOF 0 "end of file"
 %token  <num> NUM "number"
@@ -84,6 +87,7 @@
 %token  <word> AT "'@' or 'at'"
 %token  <word> AFTER "'after'"
 %token  <word> FUNCTIONWORD "'function'"
+%token  <word> UNITWORD "'unit'"
 //                      %token  <word> DELETEWORD "'delete'"
 
 %debug
@@ -147,15 +151,16 @@ variable:       ANTWORD {$$ = g_registry.AddVariableToCurrent($1); }
         |       '$' variable {$$ = $2; if ($$->SetIsConst(true)) YYABORT;}
         ;
 
-variablein:    variable INWORD variable {if ($1->SetCompartment($3)) YYABORT; $$ = $1;}
+variablein:     variable INWORD variable {if ($1->SetCompartment($3)) YYABORT; $$ = $1;}
         ;
 
-varmaybein:    variable {$$ = $1;}
-        |      variablein {$$ = $1;}
+varmaybein:     variable {$$ = $1;}
+        |       variablein {$$ = $1;}
         ;
 
-varmaybeis:    varmaybein {$$ = $1;}
-        |      varmaybein '=' formula {$$ = $1; if ($1->SetFormula($3)) YYABORT; }
+varmaybeis:     varmaybein {$$ = $1;}
+        |       varmaybein '=' formula {$$ = $1; if ($1->SetFormula($3)) YYABORT; }
+        |       varmaybeis ',' unitdef {$$ = $1; if ($1->SetUnitDef($3)) YYABORT; }
         ;
 
 maybein:        /* empty */ {$$ = NULL;}
@@ -172,6 +177,7 @@ modulepart:     reaction lineend {}
         |       varinitialize lineend {}
         |       dnadef lineend {}
         |       event lineend {}
+        |       unitinit lineend {}
 //|       deletion lineend {}
         |       variablein {}
         |       lineend {}
@@ -232,6 +238,7 @@ formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
         |       formula '!' '=' {$$ = $1; $1->AddMathThing('!'); $1->AddMathThing('='); }
         |       formula '&' '&' {$$ = $1; $1->AddMathThing('&'); $1->AddMathThing('&'); }
         |       formula '|' '|' {$$ = $1; $1->AddMathThing('|'); $1->AddMathThing('|'); }
+        |       formula '{' unitdef '}' {$$ = $1; string name = $3->GetName(); $1->AddText(&name); }
         ;
 
 commaformula:   formula {$$ = $1;}
@@ -327,6 +334,10 @@ varconstinit:   VARWORD varmaybeis {g_registry.SetConstness(constVAR); $2->SetRe
         |       varconstinit ',' varmaybeis {$3->SetRegConst();}
         ;
 
+unitinit:       UNITWORD ANTWORD '=' unitdef {$4->SetName(*$2); if (g_registry.CurrentModule()->AddUnitDef($4)) YYABORT; }
+        |       UNITWORD ANTWORD {g_registry.SetError("Cannot define '" + *($2) + "' as a unit with only 'unit " + *($2) + "'--you have to add ' = [definition]' afterwards."); YYABORT;} 
+        ;
+
 dnadef:         dnastrand {if (g_registry.SaveWorkingStrand()) YYABORT;}
         |       varmaybein ':' dnastrand {if (g_registry.SetStrandAs($1)) YYABORT;}
         ;
@@ -376,6 +387,16 @@ deletion:       DELETEWORD variable {g_registry.CurrentModule()->AddDeletion($2)
         |       deletion ',' variable {g_registry.CurrentModule()->AddDeletion($3);}
         ;
 */
+
+unitdef:        ANTWORD {$$ = new UnitDef(*$1);}
+        |       '(' unitdef ')' { $$ = $2;}
+        |       unitdef '*' unitdef {$$ = $1; $$->MultiplyUnitDef($3); delete $3;}
+        |       unitdef '/' unitdef {$$ = $1; $3->Invert(); $$->MultiplyUnitDef($3); delete $3;}
+        |       unitdef '^' NUM {$$ = $1; $$->RaiseTo($3);}
+        |       NUM '/' unitdef {$$ = $3; $$->Invert(); $$->MultiplyBy($1)}
+        |       NUM unitdef {$$ = $2; $$->MultiplyBy($1);}
+        ;
+
 %%
 
 
@@ -502,6 +523,9 @@ int yylex(void)
     }
     if (CaselessStrCmp(word, "function")) {
       return FUNCTIONWORD;
+    }
+    if (CaselessStrCmp(word, "unit")) {
+      return UNITWORD;
     }
     /*
     if (CaselessStrCmp(word, "delete")) {

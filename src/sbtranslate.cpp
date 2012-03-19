@@ -52,7 +52,8 @@ int main(int argc, char** argv)
   instructions += "\n\nBy default, sbtranslate will output files in the working directory with the\nsame name as the original file, minus that file's extention, plus '.txt' for\nantimony output, '.xml' for SBML output, and '.cellml' for CellML output (when\navailable).  If the file was originally in the same format as the desired\noutput, '_rt' (for 'roundtrip') is appended to the filename before the\nextention.  If the input was stdin, output will by default be written to\nstdout.";
   instructions += "\n\nTo change this behavior, the following options may be used:";
   instructions += "\n\t-outfile [filename] : All output is written to the given file.";
-  instructions += "\n\t-prefix [prefix]    : All outfiles are prepended with the given\n\t\t\t\t  prefix.";
+  instructions += "\n\t-prefix [prefix]    : All outfiles are prepended with the given\n\t\t\t      prefix.";
+  instructions += "\n\t-d [directory]      : This directory will be used to search for \n\t\t\t      imported files if the normal import routines do\n\t\t\t      not work.  This directory is also used to\n\t\t\t      search for any '.antimony' files, which are used\n\t\t\t      to map import directives to actual files.";
   instructions += "\n\t-stdin    : Input is read from stdin, in addition to any files that\n\t\t    might be listed.";
   instructions += "\n\t-stdout   : All output is written to standard output.  No files are\n\t\t    created.";
   instructions += "\n\t-dirsort  : If the input filenames include the name of the directory\n\t\t    they are in, the corresponding output files are written out\n\t\t    to a subdirectory of the working directory with the same\n\t\t    name.  If '-prefix' is used in conjunction with this\n\t\t    option, that prefix is prepended to the directory name\n\t\t    (and if it includes a slash, may itself be a directory).";
@@ -131,6 +132,16 @@ int main(int argc, char** argv)
       }
       else {
         outfilename = argv[arg];
+      }
+    }
+    else if (CaselessStrcmp(sarg, "-d")) {
+      arg++;
+      if (arg>=argc) {
+        cerr << "You must provide a filename for the '-outfile' flag.  Use '-h' for more options." << endl;
+        retval = 1;
+      }
+      else {
+        addDirectory(argv[arg]);
       }
     }
     else if (CaselessStrcmp(sarg, "-prefix")) {

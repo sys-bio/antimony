@@ -15,6 +15,7 @@
 #endif
 
 class Module;
+class UnitDef;
 
 class Variable
 {
@@ -36,6 +37,7 @@ private:
   std::vector<Module> m_valModule;
   AntimonyEvent m_valEvent;
   DNAStrand m_valStrand;
+  std::string m_unitdef;
 
   //Some parameters and species can have rate rules in addition to initial assignments:
   Formula m_valRateRule;
@@ -121,6 +123,7 @@ public:
   bool SetDNAStrand(DNAStrand& strand);
   bool SetIsInStrand(Variable* var);
   bool SetDisplayName(std::string name);
+  bool SetUnitDef(UnitDef* unitdef);
 
   bool Synchronize(Variable* clone);
 
