@@ -8,6 +8,9 @@
 
 class ReactantList;
 class Variable;
+#ifndef NSBML
+class Model;
+#endif
 
 class UnitDef
 {
@@ -37,7 +40,11 @@ public:
 
   std::string GetName();
   void Invert();
+  UnitDef* GetCanonical();
   UnitDef* GetCanonical(std::set<std::string> usednames);
+#ifndef NSBML
+  void AddToSBML(Model* sbmlmod);
+#endif
 
 private:
 

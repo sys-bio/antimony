@@ -4,6 +4,7 @@
 #include <set>
 
 #include "stringx.h"
+#include "sbmlx.h"
 #include "unitdef.h"
 #include "registry.h"
 
@@ -132,6 +133,12 @@ void UnitDef::Invert()
   }
 }
 
+UnitDef* UnitDef::GetCanonical()
+{
+  set<string> usednames;
+  return GetCanonical(usednames);
+}
+
 UnitDef* UnitDef::GetCanonical(set<string> usednames)
 {
   bool sbmlkindsonly = true;
@@ -176,3 +183,22 @@ UnitDef* UnitDef::GetCanonical(set<string> usednames)
   }
   return ret;
 }
+
+#ifndef SBML
+void UnitDef::AddToSBML(Model* sbmlmod)
+{
+  UnitDef* canonical = GetCanonical();
+  if (canonical==NULL) {
+    return;
+  }
+  if (canonical->IsOnlyKind()) {
+      return;
+  }
+  UnitDefinition* ud = sbmlmod->createUnitDefinition();
+  ud->setId(canonical->m_name);
+  ud->setName(canonical->m_name);
+  for (size_t ue=0; ue<m_components.size(); ue++) {
+    //LS DEBUG:  create the Unit objects here.
+  }
+}
+#endif

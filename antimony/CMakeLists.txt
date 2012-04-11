@@ -209,6 +209,8 @@ file(GLOB LIBANTIMONY_SOURCES
 	${ANTIMONY_SRC_DIR}stringx.cpp
 	${ANTIMONY_SRC_DIR}typex.cpp
 	${ANTIMONY_SRC_DIR}userfunction.cpp
+	${ANTIMONY_SRC_DIR}unitdef.cpp
+	${ANTIMONY_SRC_DIR}unitelement.cpp
 	${ANTIMONY_SRC_DIR}variable.cpp
 	)
 file(GLOB LIBANTIMONY_TRANSLATORS 
@@ -239,6 +241,8 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}stringx.h
         ${ANTIMONY_SRC_DIR}typex.h
         ${ANTIMONY_SRC_DIR}userfunction.h
+	${ANTIMONY_SRC_DIR}unitdef.h
+	${ANTIMONY_SRC_DIR}unitelement.h
         ${ANTIMONY_SRC_DIR}variable.h
         )
  
