@@ -616,6 +616,13 @@ void Module::CreateSBMLModel(bool comp)
     fd->setMath(math);
     delete math;
   }
+
+  //Units
+  for (size_t ud=0; ud<GetNumUnitDefs(); ud++) {
+    UnitDef* unitdef = GetUnitDef(ud);
+    unitdef->AddToSBML(sbmlmod);
+  }
+
   //Species
   bool need_default = false;
   size_t numspecies = GetNumVariablesOfType(allSpecies, comp);
