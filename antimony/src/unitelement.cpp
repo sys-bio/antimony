@@ -48,9 +48,10 @@ void UnitElement::SetScale(long scale)
 
 void UnitElement::MultiplyBy(double newmult)
 {
-  newmult = newmult * m_multiplier * pow(10, m_scale);
-  m_scale = floor(log10(newmult));
-  m_multiplier = newmult/pow(10, m_scale);
+  double ten=10;
+  newmult = newmult * m_multiplier * pow(ten, m_scale);
+  m_scale = static_cast<long>(floor(log10(newmult)));
+  m_multiplier = newmult/pow(ten, m_scale);
 }
 
 void UnitElement::Invert()

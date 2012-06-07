@@ -316,50 +316,27 @@ void FixName(map<vector<string>, Variable*>& varmap)
   
 }
 #ifdef USE_COMP
-void getDocumentFromExternalModelDefinition(const ExternalModelDefinition* extmoddef, SBMLDocument*& extdoc, Model*& extmod)
+void getDocumentFromExternalModelDefinition(const ExternalModelDefinition* cextmoddef, SBMLDocument*& extdoc, Model*& extmod)
 {
-  string source = extmoddef->getSource();
-  size_t colon = source.find(':');
-  if (colon != string::npos) {
-    string first = source.substr(0, colon);
-    if (CaselessStrCmp(first, "urn")) {
-      string err = "URNs";
-      size_t colon2 = source.find(':', colon+1);
-      string second = source.substr(colon+1, colon2-colon-1);
-      if (CaselessStrCmp(second, "miriam")) {
-        err = "MIRIAM URNs";
-        size_t colon3 = source.find(':', colon2+1);
-        string third = source.substr(colon2+1, colon3-colon2-1);
-        if (CaselessStrCmp(third, "biomodels.db")) {
-          err = "MIRIAM Biomodels URNs";
-        }
-      }
-      g_registry.AddWarning("Unable to open document " + source + ":  Reading " + err + " has not yet been implemented.");
-      extdoc = NULL;
-      extmod = NULL;
-      return;
+  ExternalModelDefinition* extmoddef = const_cast<ExternalModelDefinition*>(cextmoddef);
+  extmod = extmoddef->getReferencedModel();
+  if (extmod == NULL) {
+    string error = "Unable to open ";
+    if (extmoddef->isSetModelRef()) {
+      error += "the model " + extmoddef->getModelRef() + " from ";
     }
-  }
-  extdoc = readSBMLFromFile(source.c_str());
-  if (extdoc->getModel() == NULL) {
+    if (extmoddef->isSetSource()) {
+      error += "the URI " + extmoddef->getSource() + ".";
+    }
+    else {
+      error += "the external model definition, because it did not have the required 'source' attribute.";
+    }
+    g_registry.AddWarning(error);
+    extdoc = NULL;
     extmod = NULL;
     return;
   }
-  if (extmoddef->isSetModelRef()) {
-    CompSBMLDocumentPlugin* extdocp = static_cast<CompSBMLDocumentPlugin*>(extdoc->getPlugin("comp"));
-    string extmodname = extmoddef->getModelRef();
-    if (extdocp != NULL) {
-      SBase* extmodsb = extdocp->getModel(extmodname);
-      if (extmodsb != NULL && extmodsb->getTypeCode() == SBML_COMP_EXTERNALMODELDEFINITION) {
-        const ExternalModelDefinition* extm2 = static_cast<const ExternalModelDefinition*>(extmodsb);
-        return getDocumentFromExternalModelDefinition(extm2, extdoc, extmod);
-      }
-      else {
-        extmod = static_cast<Model*>(extmodsb);
-        return;
-      }
-    }
-  }
-  extmod = extdoc->getModel();
+  extdoc = extmod->getSBMLDocument();
+  return;
 }
 #endif

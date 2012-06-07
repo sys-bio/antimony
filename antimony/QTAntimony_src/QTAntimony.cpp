@@ -70,9 +70,9 @@ QString QTAntimony::GetCurrentDir()
     return m_currentdir;
 }
 
-Translator* QTAntimony::NewWindow()
+Translator* QTAntimony::NewWindow(QString filename)
 {
-    Translator* newt = new Translator(this);
+    Translator* newt = new Translator(this, filename);
     if (m_original==NULL) {
         m_original = newt;
     }

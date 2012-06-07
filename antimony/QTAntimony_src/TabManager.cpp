@@ -20,13 +20,13 @@
 
 using namespace std;
 
-TabManager::TabManager(QWidget* parent, QAction* flatten)
+TabManager::TabManager(QWidget* parent, QAction* flatten, bool doFlatten)
         : QTabWidget(parent),
         m_oldtab(-1),
         m_anttab(0),
         m_sbmltab(1),
         m_cellmltab(-1),
-        m_flatten(false),
+        m_flatten(doFlatten),
         m_actionFlatten(flatten)
 {
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(SwitchTabs(int)));
@@ -210,7 +210,8 @@ void TabManager::SwitchTabs(int tab)
     if ((oldtab != NULL) &&
         !oldtab->IsOriginal() &&
         !oldtab->IsTranslated() &&
-        !oldtab->IsMixed()) {
+        !oldtab->IsMixed() &&
+        !oldtab->IsFailed()) {
         Translate(m_oldtab);
     }
     else if ((oldtab != NULL) &&

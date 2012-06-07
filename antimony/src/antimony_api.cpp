@@ -459,7 +459,7 @@ LIB_EXTERN long loadCellMLString(const char* modelstring)
   }
   catch (...)
   {
-    RETURN_INTO_WSTRING(error, ml->lastErrorMessage());
+    wstring error = ml->lastErrorMessage();
     std::string emsg(makeUTF8(error));
     g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  emsg);
   }

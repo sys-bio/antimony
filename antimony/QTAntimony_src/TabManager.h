@@ -14,7 +14,7 @@ private:
     bool m_flatten;
     QAction* m_actionFlatten; 
 public:
-    TabManager(QWidget* parent, QAction* flatten);
+    TabManager(QWidget* parent, QAction*, bool);
     //~TabManager();  //Hmm, do we need destructors here?
     int addTab(ChangeableTextBox* page, const QString& label);
     int addTab(ChangeableTextBox* page, const QIcon& icon, const QString& label);

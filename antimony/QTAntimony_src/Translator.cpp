@@ -50,9 +50,6 @@ Translator::Translator(QTAntimony* app, QString filename)
         m_filewatcher(new FileWatcher)
 {
     QAction* actionFlattenSBML = new QAction(tr("&Flatten SBML tab(s)"), this);
-    m_tabmanager = new TabManager(this, actionFlattenSBML);
-    m_antimony = new AntimonyTab;
-
     //Set the window icon (for windows)
     QIcon anticon("antimony.ico");
     setWindowIcon(anticon);
@@ -63,13 +60,16 @@ Translator::Translator(QTAntimony* app, QString filename)
     displaysbml = (qset.value("displaysbml", displaysbml).toBool());
     bool displaycellml = false;
     displaycellml = (qset.value("displaycellml", displaycellml).toBool());
-#ifndef NCELLML
+#ifdef NCELLML
     displaysbml = true;
     displaycellml = false;
 #endif
 
     bool flattensbml = false;
     flattensbml = (qset.value("flattensbml", flattensbml).toBool());
+
+    m_tabmanager = new TabManager(this, actionFlattenSBML, flattensbml);
+    m_antimony = new AntimonyTab;
 
     //Actions
     //File
@@ -274,7 +274,6 @@ Translator::Translator(QTAntimony* app, QString filename)
                     //It's SBML.  Probably.  Re-read it as SBML to find the error:
                     loadSBMLFile(filename.toUtf8().data());
                     AddSBMLTab("", filetext, false);
-                    m_tabmanager->firstsbmltextbox()->SetFailedTranslation();
                     QString error = getLastError();
                     //m_tabmanager->textbox(1)->DisplayError(error);
                     QRegExp oneline("([^\n]{50}\\S*)\\s");
@@ -286,6 +285,7 @@ Translator::Translator(QTAntimony* app, QString filename)
                     m_antimony->ReplaceTextWith(error);
                     m_antimony->SetFailedTranslation();
                     m_tabmanager->firstsbmltextbox()->SetSavedFilename(filename);
+                    m_tabmanager->firstsbmltextbox()->SetFailedTranslation();
                     active = m_tabmanager->firstsbmltextbox();
                 }
                 else{

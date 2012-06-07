@@ -76,6 +76,7 @@
 %token  <word> EVENT "'event'"
 %token  <word> COMPARTMENT "'compartment'"
 %token  <word> INWORD "'in'"
+%token  <word> HASWORD "'has'"
 %token  <word> IS "'is'"
 %token  <word> VARWORD "'var'"
 %token  <word> CONSTWORD "'const'"
@@ -160,7 +161,7 @@ varmaybein:     variable {$$ = $1;}
 
 varmaybeis:     varmaybein {$$ = $1;}
         |       varmaybein '=' formula {$$ = $1; if ($1->SetFormula($3)) YYABORT; }
-        |       varmaybeis ',' unitdef {$$ = $1; if ($1->SetUnitDef($3)) YYABORT; }
+        |       varmaybeis HASWORD unitdef {$$ = $1; if ($1->SetUnitDef($3)) YYABORT; }
         ;
 
 maybein:        /* empty */ {$$ = NULL;}
@@ -493,6 +494,9 @@ int yylex(void)
     }
     if (CaselessStrCmp(word, "compartment")) {
       return COMPARTMENT;
+    }
+    if (CaselessStrCmp(word, "has")) {
+      return HASWORD;
     }
     if (CaselessStrCmp(word, "in")) {
       return INWORD;
