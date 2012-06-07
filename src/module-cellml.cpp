@@ -277,10 +277,7 @@ void Module::SetCellMLChildrenAsSubmodules(iface::cellml_api::CellMLComponent* c
     }
 
     //Save the name, since it's not obvious whether the "_mod" was added or not.
-    char* id_s = child->objid();
-    std::string compmodid(id_s);
-    free(id_s);
-
+    std::string compmodid = child->objid();
     g_registry.m_cellmlnames.insert(make_pair(compmodid, cellmlname)); //Even if we've already added this submodule, each time it's imported, the submodule gets its own component ID, and they all need to go in here.
     if (!m_childrenadded) {
       Variable* var = AddOrFindVariable(&cellmlname);

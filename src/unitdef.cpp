@@ -176,7 +176,8 @@ UnitDef* UnitDef::GetCanonical(set<string> usednames)
         return NULL;
       }
       ud->MultiplyBy(unitelement.GetMultiplier());
-      ud->MultiplyBy(pow(10, unitelement.GetScale()));
+      double ten=10;
+      ud->MultiplyBy(pow(ten, unitelement.GetScale()));
       ud->RaiseTo(unitelement.GetExponent());
       ret->MultiplyUnitDef(ud);
     }

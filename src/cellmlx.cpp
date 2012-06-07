@@ -132,10 +132,8 @@ std::string
 GetNameAccordingToEncapsulationParent(iface::cellml_api::CellMLComponent* component,
                                       iface::cellml_api::Model* topmodel)
 {
-  char *oid = component->objid();
-  std::string oid_s(oid);
-  free(oid);
-  map<string, string>::iterator name = g_registry.m_cellmlnames.find(oid_s);
+  std::string oid = component->objid();
+  map<string, string>::iterator name = g_registry.m_cellmlnames.find(oid);
   if (name != g_registry.m_cellmlnames.end()) {
     return name->second;
   }

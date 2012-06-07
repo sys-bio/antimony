@@ -108,11 +108,14 @@ int main(int argc, char *argv[])
 		if (sbwModuleIndex != arg) a.OpenFile(argv[arg]);
 	}
 #else
-        a.SetUseSBW(false);
+  a.SetUseSBW(false);
 #endif
   if (argc==1) {
 		a.NewWindow();
 	}
+  else {
+    a.NewWindow(argv[1]);
+  }
 
 	return a.exec();
 }

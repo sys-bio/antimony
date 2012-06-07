@@ -144,7 +144,7 @@ int Registry::OpenString(string model)
   delete document;
   if (sbmlcheck==2) return 2;
 #endif
-  if (model[model.size()-1] != '\n') {
+  if (model.size()==0 || model[model.size()-1] != '\n') {
     model.push_back('\n');
   }
   m_files.push_back("");

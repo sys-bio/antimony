@@ -35,7 +35,7 @@ public:
 public slots:
     void OpenNewFile();
     void SaveCurrentDirectory(QString dir);
-    Translator* NewWindow();
+    Translator* NewWindow(QString filename="");
 
 };
 
