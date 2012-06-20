@@ -21,6 +21,7 @@ Variable::Variable(const string name, const Module* module)
     m_valEvent(),
     m_valStrand(),
     m_valRateRule(),
+    m_valUnitDef(name, module->GetModuleName()),
     m_formulatype(formulaINITIAL),
     m_compartment(),
     m_supercompartment(),
@@ -28,7 +29,7 @@ Variable::Variable(const string name, const Module* module)
     m_strands(),
     m_type(varUndefined),
     m_const(constDEFAULT),
-    m_units("")
+    m_unitVariable()
 {
   m_name.push_back(name);
 }
@@ -83,6 +84,8 @@ formula_type Variable::GetFormulaType() const
     return formulaTRIGGER;
   case varStrand:
     return formulaASSIGNMENT; //or kinetic, but we treat them the same in this case.
+  case varUnitDefinition:
+    return formulaINITIAL; //I guess?
   }
   assert(false); //uncaught variable type;
   return m_formulatype;
@@ -100,6 +103,7 @@ const Formula* Variable::GetFormula() const
   case varCompartment:
   case varUndefined:
   case varDNA:
+  case varUnitDefinition:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -129,6 +133,7 @@ Formula* Variable::GetFormula()
   case varSpeciesUndef:
   case varCompartment:
   case varUndefined:
+  case varUnitDefinition:
     return &(m_valFormula);
   case varReactionUndef:
   case varReactionGene:
@@ -164,6 +169,8 @@ const Formula* Variable::GetInitialAssignment() const
     }
   case varModule:
     return m_valModule[0].GetFormula();
+  case varUnitDefinition:
+    return &(m_valFormula);
   case varFormulaOperator:
   case varDNA:
   case varReactionUndef:
@@ -202,6 +209,7 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varModule:
     return m_valModule[0].GetFormula();
   case varEvent:
+  case varUnitDefinition:
     return &(g_registry.m_blankform);
   case varStrand:
     return m_valStrand.GetFinalFormula();
@@ -235,6 +243,7 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varModule:
     return m_valModule[0].GetFormula();
   case varEvent:
+  case varUnitDefinition:
     return &(g_registry.m_blankform);
   case varStrand:
     return m_valStrand.GetFinalFormula();
@@ -304,6 +313,24 @@ AntimonyEvent* Variable::GetEvent()
   }
   assert(m_type == varEvent);
   return &(m_valEvent);
+}
+
+UnitDef* Variable::GetUnitDef()
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetUnitDef();
+  }
+  assert(m_type==varUnitDefinition);
+  return &(m_valUnitDef);
+}
+
+const UnitDef* Variable::GetUnitDef() const
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetUnitDef();
+  }
+  assert(m_type==varUnitDefinition);
+  return &(m_valUnitDef);
 }
 
 Variable* Variable::GetSubVariable(const std::string* name)
@@ -401,6 +428,7 @@ bool Variable::GetIsConst() const
   case varStrand:
     return false;
   case varUndefined:
+  case varUnitDefinition:
     return true;
   }
   switch(m_const) {
@@ -485,6 +513,25 @@ string Variable::GetDisplayName() const
   return m_displayname;
 }
 
+Variable* Variable::GetUnitVariable() const
+{
+  return g_registry.GetModule(m_module)->GetVariable(m_unitVariable);
+}
+
+bool Variable::SetUnitVariable(std::string name)
+{
+  FixUnitName(name);
+  Variable* var = g_registry.GetModule(m_module)->AddOrFindVariable(&name);
+  return SetUnitVariable(var);
+}
+
+bool Variable::SetUnitVariable(Variable* unitvar)
+{
+  if (unitvar==NULL) return true;
+  if (unitvar->SetType(varUnitDefinition)) return true;
+  m_unitVariable = unitvar->GetName();
+  return false;
+}
 
 bool Variable::SetType(var_type newtype)
 {
@@ -551,6 +598,7 @@ bool Variable::SetType(var_type newtype)
     case varEvent:
     case varCompartment:
     case varStrand:
+    case varUnitDefinition:
       g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
@@ -565,6 +613,15 @@ bool Variable::SetType(var_type newtype)
     case varCompartment:
     case varEvent:
       m_type = newtype;
+      return false;
+    case varUnitDefinition:
+      m_type = newtype;
+      if (m_valFormula.MakeAllVariablesUnits()) return true;
+      if (m_valFormula.IsDouble() && m_unitVariable.size()>0) {
+        m_valFormula.AddVariable(GetUnitVariable());
+      }
+      if (m_valUnitDef.SetFromFormula(&m_valFormula)) return true;
+      m_valFormula.Clear();
       return false;
     case varModule:
     case varStrand:
@@ -591,6 +648,7 @@ bool Variable::SetType(var_type newtype)
     case varEvent:
     case varCompartment:
     case varStrand:
+    case varUnitDefinition:
       g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
@@ -608,6 +666,7 @@ bool Variable::SetType(var_type newtype)
     case varEvent:
     case varCompartment:
     case varStrand:
+    case varUnitDefinition:
       g_registry.SetError(error); return true;
     }
   case varReactionGene:
@@ -625,6 +684,7 @@ bool Variable::SetType(var_type newtype)
     case varEvent:
     case varCompartment:
     case varStrand:
+    case varUnitDefinition:
       g_registry.SetError(error); return true;
     }
   case varReactionUndef:
@@ -644,11 +704,13 @@ bool Variable::SetType(var_type newtype)
     case varEvent:
     case varCompartment:
     case varStrand:
+    case varUnitDefinition:
       g_registry.SetError(error); return true;
     }
   case varInteraction:
   case varEvent:
   case varCompartment:
+  case varUnitDefinition:
     if (newtype == varFormulaUndef || newtype == varUndefined) return false;
     g_registry.SetError(error); return true; //the already-identical cases handled above.
   case varUndefined:
@@ -673,7 +735,7 @@ bool Variable::SetFormula(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect.  Error from the libsbml parser:  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -706,6 +768,10 @@ bool Variable::SetFormula(Formula* formula)
   case varSpeciesUndef:
     m_valFormula = *formula;
     break;
+  case varUnitDefinition:
+    if (formula->MakeAllVariablesUnits()) return true;
+    if (m_valUnitDef.SetFromFormula(formula)) return true;
+    break;
   case varEvent:
     if (m_valEvent.SetTrigger(*formula)) return true;
     break;
@@ -713,6 +779,18 @@ bool Variable::SetFormula(Formula* formula)
     g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' to be " + formula->ToDelimitedStringWithEllipses('.') + " because DNA strands are only defined by their components, and do not have any equations associated with them.");
     return true;
   }
+  if (m_valFormula.MakeUnitVariablesUnits()) return true;
+#ifndef NSBML
+  ASTNode* root = parseStringToASTNode(m_valFormula.ToSBMLString());
+  if (root != NULL && root->isSetUnits() && root->getNumChildren()==0) {
+    string unit = root->getUnits();
+    if (SetUnitVariable(unit)) return true;
+    //Now remove the units from the formula string, since we already stored that information.
+    double val = GetValueFrom(root);
+    m_valFormula.Clear();
+    m_valFormula.AddNum(val);
+  }
+#endif
   return false;
 }
 
@@ -726,8 +804,7 @@ bool Variable::SetAssignmentRule(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      //g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
-      g_registry.SetError("The formula \"" + formstring + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The formula \"" + formstring + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect.  Error from the libsbml parser:  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -741,6 +818,7 @@ bool Variable::SetAssignmentRule(Formula* formula)
   }
   if (IsReaction(m_type)) {
     m_valReaction.SetFormula(formula);
+    if (formula->MakeUnitVariablesUnits()) return true;
     return false;
   }
   if (!CanHaveAssignmentRule(m_type)) {
@@ -754,6 +832,7 @@ bool Variable::SetAssignmentRule(Formula* formula)
   if (m_type == varUndefined) {
     m_type = varFormulaUndef;
   }
+  if (formula->MakeUnitVariablesUnits()) return true;
   m_formulatype = formulaASSIGNMENT;
   m_valFormula = *formula;
   return false;
@@ -769,7 +848,7 @@ bool Variable::SetRateRule(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect.  Error from the libsbml parser:  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -789,6 +868,7 @@ bool Variable::SetRateRule(Formula* formula)
   if (m_type == varUndefined) {
     m_type = varFormulaUndef;
   }
+  if (formula->MakeUnitVariablesUnits()) return true;
   m_valRateRule = *formula;
   m_formulatype = formulaRATE;
   return false;
@@ -804,7 +884,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect.  Error from the libsbml parser:  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -851,16 +931,12 @@ bool Variable::SetModule(const string* modname)
     return GetSameVariable()->SetModule(modname);
   }
   assert(m_name.size() == 1);
-  if (m_type != varUndefined) {
-    g_registry.SetError("Cannot define '" + GetNameDelimitedBy('.') + "' to be model '" + *modname + "', because it is already a " + VarTypeToString(m_type) + ".");
-    return true; //error
-  }
   Module newmod(*g_registry.GetModule(*modname), m_name[0], m_module);
   m_valModule.push_back(newmod);
   m_type = varModule;
   g_registry.SetCurrentImportedModule(m_name);
   g_registry.GetModule(m_module)->AddToVarMapFrom(newmod);
-  return false;
+  return SetType(varModule);
 }
 
 bool Variable::SetEvent(const AntimonyEvent* event)
@@ -899,11 +975,17 @@ void Variable::SetNewTopName(string newmodname, string newtopname)
   if (!m_valEvent.IsEmpty()) {
     m_valEvent.SetNewTopName(m_module, newtopname);
   }
+  if (m_valUnitDef.GetName().size() != 0) {
+    m_valUnitDef.SetName(m_name);
+  }
   if (m_compartment.size() > 0) {
     m_compartment.insert(m_compartment.begin(), newtopname);
   }
   if (m_supercompartment.size() > 0) {
     m_supercompartment.insert(m_supercompartment.begin(), newtopname);
+  }
+  if (m_unitVariable.size() > 0) {
+    m_unitVariable.insert(m_unitVariable.begin(), newtopname);
   }
   set<vector<string> > newstrands;
   for (set<vector<string> >::iterator strand = m_strands.begin(); strand != m_strands.end(); strand++) {
@@ -955,6 +1037,12 @@ bool Variable::SetIsConst(bool constant)
       return true;
     }
     break;
+  case varUnitDefinition:
+    if (!constant) {
+      g_registry.SetError(error + ", as 'constantness' is undefined for unit definitions.");
+      return true;
+    }
+    break;
   }
   if (constant) {
     m_const = constCONST;
@@ -1001,6 +1089,7 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varEvent:
   case varCompartment:
   case varUndefined:
+  case varUnitDefinition:
     assert(false); // Those things don't have components
     return false;
   case varStrand:
@@ -1043,6 +1132,7 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varCompartment:
   case varEvent:
   case varUndefined:
+  case varUnitDefinition:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
@@ -1094,16 +1184,25 @@ bool Variable::SetDisplayName(string name)
   return false;
 }
 
-
+//Sets this variable to be a unit definition.
 bool Variable::SetUnitDef(UnitDef* unitdef)
 {
-  if (unitdef->IsOnlyKind()) {
-    m_unitdef = unitdef->GetName();
-    delete unitdef;
-  }
-  else {
-    m_unitdef = g_registry.CurrentModule()->AddUnitDefIfUnique(unitdef);
-  }
+  if (SetType(varUnitDefinition)) return true;
+  unitdef->SetName(m_name);
+  m_valUnitDef = *unitdef;
+  Module* mod = g_registry.GetModule(m_module);
+  if (mod->AddUnitVariables(unitdef)) return true;
+  return false; //success
+}
+
+//Sets this variable to *have* the given unit definition.
+bool Variable::SetUnit(UnitDef* unitdef)
+{
+  Variable* unitvar = g_registry.GetModule(m_module)->AddOrFindUnitDef(unitdef);
+  if (unitvar==NULL) return true; //Already using a variable as a non-unit.
+  m_unitVariable = unitvar->GetName();
+  Module* mod = g_registry.GetModule(m_module);
+  if (mod->AddUnitVariables(unitdef)) return true;
   return false; //success
 }
 
@@ -1160,15 +1259,6 @@ bool Variable::Synchronize(Variable* clone)
     }
   }
 
-  //If the variables came from SBML, we can check to see if the units are the same:
-  string myunits = GetUnits();
-  string cloneunits = clone->GetUnits();
-  if (myunits != "" && cloneunits != "" && myunits != cloneunits) {
-    g_registry.SetError("The symbols " + GetNameDelimitedBy('.') + " and " + clone->GetNameDelimitedBy('.') + " may not be set to be equal to one another because the units of the first (" + myunits + ") are incompatible with the units of the second (" + cloneunits + ").");
-    return true;
-  }
-  
-  //Now, actually synchronize the data.
   if ((m_type == varUndefined) ||
       (m_type == varReactionUndef && IsReaction(clone->GetType())) ||
       (m_type == varSpeciesUndef && IsSpecies(clone->GetType())) ){
@@ -1182,6 +1272,27 @@ bool Variable::Synchronize(Variable* clone)
     m_type = clone->GetType();
   }
 
+  //Now, actually synchronize the data.
+
+  //Synchronize the units:
+  Variable* unitvar = GetUnitVariable();
+  Variable* cloneuv = clone->GetUnitVariable();
+  if (unitvar!=NULL) {
+    if (cloneuv==NULL) {
+      clone->SetUnitVariable(unitvar);
+    }
+    else {
+      UnitDef* ud = unitvar->GetUnitDef();
+      UnitDef* cloneud = cloneuv->GetUnitDef();
+      if (ud != NULL && cloneud != NULL && !ud->Matches(cloneud)) {
+        g_registry.SetError("The symbols " + GetNameDelimitedBy('.') + " and " + clone->GetNameDelimitedBy('.') + " may not be set to be equal to one another because the units of the first (" + ud->GetNameDelimitedBy('.') + ") are incompatible with the units of the second (" + cloneud->GetNameDelimitedBy('.') + ").");
+        return true;
+      }
+    }
+    m_unitVariable.clear();
+  }
+  
+  //Synchronize the const-ness
   if (clone->m_const == constDEFAULT) {
     clone->m_const = m_const;
   }
@@ -1191,8 +1302,7 @@ bool Variable::Synchronize(Variable* clone)
   m_const = clone->m_const;
 
   if (m_displayname != "") {
-    string clonedispname = clone->GetDisplayName();
-    if (clonedispname == "") {
+    if (clone->GetDisplayName() == "") {
       clone->SetDisplayName(m_displayname);
     }
     m_displayname = "";
@@ -1261,9 +1371,6 @@ bool Variable::Synchronize(Variable* clone)
     clone->m_supercomptype = m_supercomptype;
   }
   m_supercompartment.clear();
-
-
-  
 
   m_sameVariable = clone->GetName();
 

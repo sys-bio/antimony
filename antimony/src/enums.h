@@ -44,7 +44,8 @@ enum var_type {varSpeciesUndef = 0,
                varModule,
                varEvent,
                varCompartment,
-               varStrand};
+               varStrand,
+               varUnitDefinition};
 /**
  * return_types are used in the API when requesting information about different symbols.  Each return_type refers to a different group of symbols, and are overlapping--i.e. a single symbol can be included in 'allGenes' and 'allReactions'. 
   * - allSymbols:        Every symbol of every type in Antimony
@@ -91,7 +92,8 @@ enum return_type {allSymbols = 0,
                   constCompartments,
                   subModules,
                   expandedStrands,
-                  modularStrands};
+                  modularStrands,
+                  allUnits};
 
 /**
  * const_type values are not used in the API, but are used internally in libAntimony.  Every symbol starts off being constDEFAULT, which means that the model never stated explicitly whether the symbol was to be constant or variable, so the program will use a heuristic to determine which is the case.  Once set, the heuristic is ignored, and the type (constVAR for variable symbols, constCONST for constant ones) is permanent.  Not all symbols can actually be variable or constant (for example, submodules and reactions), so attempts to set this value for those symbols will fail.

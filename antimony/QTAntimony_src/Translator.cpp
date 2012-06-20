@@ -281,7 +281,7 @@ Translator::Translator(QTAntimony* app, QString filename)
                     error = "// " + error;
                     QRegExp returns("\n");
                     error.replace(returns, "\n//  ");
-                    error = "// (Switch to the SBML tab and hit 'undo' to get the original faulty model)\n" + error;
+                    error = "// (Switch to the SBML tab to get the original faulty model.  Hit 'undo' if necessary.)\n" + error;
                     m_antimony->ReplaceTextWith(error);
                     m_antimony->SetFailedTranslation();
                     m_tabmanager->firstsbmltextbox()->SetSavedFilename(filename);

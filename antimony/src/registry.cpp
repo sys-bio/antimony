@@ -27,6 +27,7 @@ Registry::Registry()
     m_directories(),
     m_variablenames(),
     m_functions(),
+    m_constants(),
     m_storedvars(),
     m_storedformulas(),
     m_modules(),
@@ -47,6 +48,7 @@ Registry::Registry()
   string main = MAINMODULE;
   NewCurrentModule(&main);
   SetupFunctions();
+  SetupConstants();
 }
 
 Registry::~Registry()
@@ -676,92 +678,95 @@ bool Registry::SwitchToPreviousFile()
 
 void Registry::SetupFunctions()
 {
-  //This list courtesy libSBML, MathML.cpp, MATHML_ELEMENTS, plus "pow", in honor of Batman.
-  // (Ok, other extras (post-xor) from ASTNode.cpp)
+  //This list straight from sbml's L3Parser (which I also wrote).
   const char* functions[] = {
   "abs"
-  , "and"
-  , "annotation"
-  , "annotation-xml"
-  , "apply"
+  , "acos"
   , "arccos"
+  , "acosh"
   , "arccosh"
+  , "acot"
   , "arccot"
+  , "acoth"
   , "arccoth"
+  , "acsc"
   , "arccsc"
+  , "acsch"
   , "arccsch"
+  , "asec"
   , "arcsec"
+  , "asech"
   , "arcsech"
+  , "asin"
   , "arcsin"
-  , "arcsinh"
+  , "atan"
   , "arctan"
+  , "atanh"
   , "arctanh"
-  , "bvar"
+  , "ceil"
   , "ceiling"
-  //  , "ci"
-  , "cn"
   , "cos"
   , "cosh"
   , "cot"
   , "coth"
   , "csc"
   , "csch"
-  , "csymbol"
-  , "degree"
-  , "divide"
-  , "eq"
+  , "delay"
   , "exp"
-  , "exponentiale"
   , "factorial"
-  , "false"
   , "floor"
-  , "geq"
-  , "gt"
-  , "infinity"
-  , "lambda"
-  , "leq"
-  , "ln"
   , "log"
-  , "logbase"
-  , "lt"
-  , "math"
-  , "minus"
-  , "neq"
-  , "not"
-  , "notanumber"
-  , "or"
-  , "otherwise"
-  , "pi"
-  , "piece"
+  , "ln"
+  , "log10"
   , "piecewise"
-  , "plus"
   , "power"
+  , "pow"
+  , "sqr"
+  , "sqrt"
   , "root"
-  , "sec"
   , "sech"
-  , "semantics"
-  , "sep"
   , "sin"
   , "sinh"
   , "tan"
   , "tanh"
-  , "times"
-  , "true"
+  , "and"
+  , "not"
+  , "or"
   , "xor"
-  , "acos"
-  , "asin"
-  , "atan"
-  , "ceil"
-  , "delay"
-  , "log10"
-  , "pow"
-  , "sqr"
-  , "sqrt"
-  , "time"
-  , "avogadro"
+  , "eq"
+  , "equals"
+  , "geq"
+  , "gt"
+  , "leq"
+  , "lt"
+  , "neq"
+  , "divide"
+  , "minus"
+  , "plus"
+  , "times"
   };
-  for (size_t func=0; func<79; func++) {
+  for (size_t func=0; func<64; func++) {
     m_functions.push_back(functions[func]);
+  }
+}
+
+void Registry::SetupConstants()
+{
+  //This list straight from sbml's L3Parser (which I also wrote).
+  const char* constants[] = {
+  "true"  
+  , "false"  
+  , "pi"  
+  , "exponentiale" 
+  , "avogadro"  
+  , "time"  
+  , "inf"  
+  , "infinity"  
+  , "nan"  
+  , "notanumber"
+  };
+  for (size_t c=0; c<10; c++) {
+    m_constants.push_back(constants[c]);
   }
 }
 
@@ -936,7 +941,7 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The event trigger \"" + trigger->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The event trigger \"" + trigger->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect.  Error from the libsbml parser:  " + SBML_getLastParseL3Error());
       return true;
     }
     else if (!ASTform->isBoolean()) {
@@ -1086,6 +1091,16 @@ const string* Registry::IsFunction(string word)
   for (size_t uf=0; uf<m_userfunctionnames.size(); uf++) {
     if (word == m_userfunctionnames[uf]) {
       return &(m_userfunctionnames[uf]);
+    }
+  }
+  return NULL;
+}
+
+const string* Registry::IsConstant(string word)
+{
+  for (size_t c=0; c<m_constants.size(); c++) {
+    if (word == m_constants[c]) {
+      return &(m_constants[c]);
     }
   }
   return NULL;

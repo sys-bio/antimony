@@ -546,6 +546,9 @@ void Module::CreateCellMLComponent(Module* topmod)
       AddNewVariableToCellML(variable, topmod->m_cellmlmodel);
       used = true;
       break;
+    //case varUnitDefinition:
+      //LS DEBUG UNITS  Add something here
+      //break;
     case varEvent:
     case varModule:
     case varStrand:

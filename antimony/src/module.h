@@ -40,7 +40,6 @@ private:
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
   std::vector<std::vector<std::string> > m_changed;
   std::vector<std::string> m_returnvalue;
-  std::vector<UnitDef*> m_unitdefs;
 
   size_t m_currentexportvar;
   bool m_ismain;
@@ -92,8 +91,8 @@ public:
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};
   void AddDeletion(Variable* deletedvar) {};
-  std::string AddUnitDefIfUnique(UnitDef* unitdef);
-  bool AddUnitDef(UnitDef* unitdef);
+  Variable* AddOrFindUnitDef(UnitDef* unitdef);
+  bool AddUnitVariables(UnitDef* unitdef);
 
   Variable* GetVariable(const std::vector<std::string>& name);
   void AddToVarMapFrom(const Module& submod);
@@ -114,9 +113,6 @@ public:
   Variable* GetDownstreamDNA();
   formula_type GetFormulaType() const; //If we have a return value
   bool GetIsMain() const {return m_ismain;};
-  UnitDef* GetUnitDef(std::string uid);
-  size_t GetNumUnitDefs();
-  UnitDef* GetUnitDef(size_t n);
 
   const std::string& GetModuleName() const;
   std::string GetVariableNameDelimitedBy(char cc) const;
@@ -217,6 +213,7 @@ private:
   bool OrigIsAlreadyRateRule(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rule) const;
   bool OrigIsAlreadyReaction(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rxn) const;
   bool OrigIsAlreadyEvent(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string event) const;
+  bool OrigIsAlreadyUnitDef(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string unitdef) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;
 };

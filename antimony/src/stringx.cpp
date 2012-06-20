@@ -147,7 +147,7 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
       if (input.good()) {
         input.unget();
       }
-      if (g_registry.IsFunction(word) != NULL) {
+      if (g_registry.IsFunction(word) != NULL || g_registry.IsConstant(word)) {
         fullname.push_back(word);
         Variable* subvar = module->GetVariable(fullname);
         if (subvar == NULL) {
@@ -206,7 +206,7 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
         postnum = input.tellg();
       }
       string num;
-      num.assign(formulastring, prenum, postnum-prenum);
+      num.assign(formulastring, prenum, static_cast<size_t>(postnum-prenum));
       //cout << "Text: '" << num << "'" << endl;
       //cout << "Number: '" << number << "'" << endl;
       formula->AddText(&num);
@@ -231,3 +231,27 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
   }
 }
 
+bool CaselessStrCmp(const string& lhs, const string& rhs)
+{
+
+  if (lhs.size() != rhs.size()) return false;
+
+  for (size_t i = 0; i < lhs.size(); ++i) {
+    if (toupper(lhs[i]) != toupper(rhs[i])) return false;
+  }
+  return true;
+
+} /* CaselessStrCmp */
+
+void FixUnitName(string& name)
+{
+  if (name.size()>2 && name[name.size()-1]=='s' && name != "dimensionless" && name != "siemens") {
+    name.erase(name.size()-1, name.size());
+  }
+  if (CaselessStrCmp(name, "meter")) {
+    name = "metre";
+  }
+  if (CaselessStrCmp(name, "liter")) {
+    name = "litre";
+  }
+}

@@ -22,6 +22,7 @@ bool IsReaction(const var_type vtype)
   case varCompartment:
   case varStrand:
   case varUndefined:
+  case varUnitDefinition:
     return false;
   }
   assert(false); //uncaught vtype
@@ -59,6 +60,7 @@ bool IsSpecies(const var_type vtype)
   case varCompartment:
   case varStrand:
   case varUndefined:
+  case varUnitDefinition:
     return false;
   }
   assert(false); //uncaught vtype
@@ -81,6 +83,7 @@ bool IsDNA(const var_type vtype)
   case varCompartment:
   case varStrand:
   case varUndefined:
+  case varUnitDefinition:
     return false;
   }
   assert(false); //uncaught vtype
@@ -103,6 +106,7 @@ bool CanHaveRateRule(const var_type vtype)
   case varModule:
   case varEvent:
   case varStrand:
+  case varUnitDefinition:
     return false;
   }
   assert(false); //uncaught type
@@ -125,6 +129,7 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varModule:
   case varEvent:
   case varStrand:
+  case varUnitDefinition:
     return false;
   }
   assert(false); //uncaught type
@@ -139,6 +144,7 @@ bool HasOrIsFormula(const var_type vtype)
   case varFormulaUndef:
   case varDNA:
   case varCompartment:
+  case varUnitDefinition:
     return true;
   case varReactionGene:
   case varReactionUndef:
@@ -191,6 +197,8 @@ string VarTypeToString(const var_type vtype)
     return "Compartment";
   case varStrand:
     return "Strand";
+  case varUnitDefinition:
+    return "Unit Definition";
   case varUndefined:
     return "Undefined";
   }
@@ -219,6 +227,8 @@ string VarTypeToAntimony(const var_type vtype)
     return "event ";
   case varCompartment:
     return "compartment ";
+  case varUnitDefinition:
+    return "unit ";
   case varStrand:
   case varModule:
   case varUndefined:
@@ -277,6 +287,8 @@ string ReturnTypeToString(const return_type rtype)
     return "expanded DNA strand";
   case modularStrands:
     return "modular DNA strand";
+  case allUnits:
+    return "units";
   }
   assert(false); //uncaught type
   return "Uncaught type";

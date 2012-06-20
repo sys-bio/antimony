@@ -8,6 +8,7 @@
 #include "event.h"
 #include "formula.h"
 #include "reaction.h"
+#include "unitdef.h"
 #include "enums.h"
 
 #ifndef NCELLML
@@ -37,7 +38,7 @@ private:
   std::vector<Module> m_valModule;
   AntimonyEvent m_valEvent;
   DNAStrand m_valStrand;
-  std::string m_unitdef;
+  UnitDef m_valUnitDef;
 
   //Some parameters and species can have rate rules in addition to initial assignments:
   Formula m_valRateRule;
@@ -55,8 +56,8 @@ private:
   //Additionally, the variable might be set constant
   const_type m_const;
 
-  //If we came from SBML, we have a Unit
-  std::string m_units;
+  //Also, the variable might have a unit associated with it.
+  std::vector<std::string> m_unitVariable;
 
 #ifndef NCELLML
   //If we are using CellML, this is a link to the corresponding variable in that document.
@@ -87,6 +88,8 @@ public:
   Module* GetModule();
   AntimonyEvent* GetEvent();
   const AntimonyEvent* GetEvent() const;
+  UnitDef* GetUnitDef();
+  const UnitDef* GetUnitDef() const;
   Variable* GetSubVariable(const std::string* name);
   Variable* GetSameVariable();
   const Variable* GetSameVariable() const;
@@ -103,8 +106,9 @@ public:
   std::string GetFormulaForNthEntryInStrand(char cc, size_t n);
   std::string GetDisplayName() const;
 
-  std::string GetUnits() const {return m_units;};
-  void SetUnits(std::string ud) {m_units = ud;};
+  Variable* GetUnitVariable() const;
+  bool SetUnitVariable(std::string);
+  bool SetUnitVariable(Variable* unitvar);
 
   bool SetType(var_type newtype);
   bool SetFormula(Formula* formula);
@@ -124,6 +128,7 @@ public:
   bool SetIsInStrand(Variable* var);
   bool SetDisplayName(std::string name);
   bool SetUnitDef(UnitDef* unitdef);
+  bool SetUnit(UnitDef* unitdef);
 
   bool Synchronize(Variable* clone);
 

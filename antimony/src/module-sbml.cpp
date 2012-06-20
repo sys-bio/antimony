@@ -202,7 +202,7 @@ void Module::LoadSBML(const Model* sbml)
       var->SetFormula(formula);
     }
     if (compartment->isSetUnits()) {
-      var->SetUnits(compartment->getUnits());
+      var->SetUnitVariable(compartment->getUnits());
     }
 #ifdef USE_COMP
     if (comp) {
@@ -253,7 +253,7 @@ void Module::LoadSBML(const Model* sbml)
       var->SetCompartment(compartment);
     }
     if (species->isSetUnits()) {
-      var->SetUnits(species->getUnits());
+      var->SetUnitVariable(species->getUnits());
     }
 #ifdef USE_COMP
     const CompSBasePlugin* splugin = static_cast<const CompSBasePlugin*>(species->getPlugin("comp"));
@@ -338,7 +338,7 @@ void Module::LoadSBML(const Model* sbml)
       //LS NOTE:  If a parameter has both a value and an 'initial assignment', the initial assignment will override the value.
     }
     if (parameter->isSetUnits()) {
-      var->SetUnits(parameter->getUnits());
+      var->SetUnitVariable(parameter->getUnits());
     }
 #ifdef USE_COMP
     const CompSBasePlugin* pplugin = static_cast<const CompSBasePlugin*>(parameter->getPlugin("comp"));
@@ -460,7 +460,6 @@ void Module::LoadSBML(const Model* sbml)
     Formula formula;
     if (reaction->isSetKineticLaw()) {
       const KineticLaw* kl = reaction->getKineticLaw();
-      var->SetUnits(kl->getSubstanceUnits() + "/(" + kl->getTimeUnits() + ")");
       formulastring = parseASTNodeToString(kl->getMath());
       setFormulaWithString(formulastring, &formula, this);
       for (unsigned int localp=0; localp<kl->getNumParameters(); localp++) {
@@ -527,6 +526,22 @@ void Module::LoadSBML(const Model* sbml)
     TranslateReplacedElementsFor(rplugin, var);
 #endif
   }
+
+  //Units
+  for (unsigned int ud=0; ud<sbml->getNumUnitDefinitions(); ud++) {
+    const UnitDefinition* unitdefinition = sbml->getUnitDefinition(ud);
+    sbmlname = getNameFromSBMLObject(unitdefinition, "_UD");
+    Variable* var = AddOrFindVariable(&sbmlname);
+    if (unitdefinition->isSetName()) {
+      var->SetDisplayName(unitdefinition->getName());
+    }
+    var->SetUnitDef(&GetUnitDefFrom(unitdefinition, m_modulename));
+#ifdef USE_COMP
+    const CompSBasePlugin* udplugin = static_cast<const CompSBasePlugin*>(unitdefinition->getPlugin("comp"));
+    TranslateReplacedElementsFor(udplugin, var);
+#endif
+  }
+
  
 #ifdef USE_COMP
   if(mplugin != NULL) {
@@ -617,17 +632,11 @@ void Module::CreateSBMLModel(bool comp)
     delete math;
   }
 
-  //Units
-  for (size_t ud=0; ud<GetNumUnitDefs(); ud++) {
-    UnitDef* unitdef = GetUnitDef(ud);
-    unitdef->AddToSBML(sbmlmod);
-  }
-
   //Species
   bool need_default = false;
   size_t numspecies = GetNumVariablesOfType(allSpecies, comp);
   for (size_t spec=0; spec < numspecies; spec++) {
-    const Variable* species = GetNthVariableOfType(allSpecies, spec, comp);
+    Variable* species = GetNthVariableOfType(allSpecies, spec, comp);
     Species* sbmlspecies = sbmlmod->createSpecies();
     sbmlspecies->setId(species->GetNameDelimitedBy(cc));
     if (species->GetDisplayName() != "") {
@@ -648,15 +657,47 @@ void Module::CreateSBMLModel(bool comp)
     else {
       sbmlspecies->setCompartment(compartment->GetNameDelimitedBy(cc));
     }
-    const Formula* formula = species->GetFormula();
+    Variable* unitvar = species->GetUnitVariable();
+    Formula* formula = species->GetFormula();
     if (formula->IsDouble()) {
-      sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
+      if (unitvar != NULL) {
+        formula->AddVariable(unitvar);
+        unitvar = NULL;
+      }
+      else {
+        sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
+      }
     }
-    else if (formula->IsAmountIn(species->GetCompartment())) {
+    else if (formula->IsAmountIn(compartment)) {
       sbmlspecies->setInitialAmount(formula->ToAmount());
+    }
+    if (unitvar != NULL) {
+      //We need to convert concentration to substance.
+      UnitDef* ud = new UnitDef(*unitvar->GetUnitDef());
+      UnitDef volume("liter", m_modulename);
+      if (compartment != NULL) {
+        Variable* compunit = compartment->GetUnitVariable();
+        if (compunit != NULL) {
+          ud->MultiplyUnitDef(compunit->GetUnitDef());
+        }
+      }
+      else {
+        ud->MultiplyUnitDef(&volume);
+      }
+      ud->Reduce();
+      Variable* newunit = AddOrFindUnitDef(ud);
+      sbmlspecies->setSubstanceUnits(newunit->GetNameDelimitedBy('_'));
     }
     sbmlspecies->setHasOnlySubstanceUnits(false);
     SetAssignmentFor(sbmlmod, species);
+  }
+
+  //Units
+  size_t numunits = GetNumVariablesOfType(allUnits, comp);
+  for (size_t ud=0; ud<numunits; ud++) {
+    Variable* unit = GetNthVariableOfType(allUnits, ud, comp);
+    UnitDef* unitdef = unit->GetUnitDef();
+    unitdef->AddToSBML(sbmlmod);
   }
 
   //Compartments
@@ -699,6 +740,10 @@ void Module::CreateSBMLModel(bool comp)
     if (formula->IsDouble()) {
       sbmlcomp->setSize(atof(formula->ToSBMLString().c_str()));
     }
+    Variable* unitvar = compartment->GetUnitVariable();
+    if (unitvar != NULL) {
+      sbmlcomp->setUnits(unitvar->GetNameDelimitedBy('_'));
+    }
     SetAssignmentFor(sbmlmod, compartment);
     sbmlcomp->setSpatialDimensions(dim);
   }
@@ -716,6 +761,10 @@ void Module::CreateSBMLModel(bool comp)
     param->setConstant(formvar->GetIsConst());
     if (formula->IsDouble()) {
       param->setValue(atof(formula->ToSBMLString().c_str()));
+    }
+    Variable* unitvar = formvar->GetUnitVariable();
+    if (unitvar != NULL) {
+      param->setUnits(unitvar->GetNameDelimitedBy('_'));
     }
     SetAssignmentFor(sbmlmod, formvar);
     formula_type ftype = formvar->GetFormulaType();
@@ -857,6 +906,10 @@ void Module::CreateSBMLModel(bool comp)
       param->setName(formvar->GetDisplayName());
     }
     param->setConstant(formvar->GetIsConst());
+    Variable* unitvar = formvar->GetUnitVariable();
+    if (unitvar != NULL) {
+      param->setUnits(unitvar->GetNameDelimitedBy('_'));
+    }
   }
 
 #ifdef USE_COMP
@@ -911,7 +964,7 @@ void Module::CreateSBMLModel(bool comp)
       }
       else {
         //Need to create a local variable.
-
+        //LS DEBUG
       }
     }
   }
