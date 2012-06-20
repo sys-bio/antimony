@@ -2,6 +2,7 @@
 #define SBMLX_H
 #include <string>
 #include <vector>
+#include "unitdef.h"
 
 #ifndef NSBML
 #ifdef WIN32
@@ -20,6 +21,10 @@ std::string parseASTNodeToString(const ASTNode* ASTform, bool carat=true);
 ASTNode* parseStringToASTNode(const std::string& formula);
 void caratToPower(ASTNode* node);
 void powerToCarat(ASTNode* node);
+std::set<std::string> GetUnitNames(ASTNode* astn);
+double GetValueFrom(ASTNode* astn);
+
+UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, std::string modulename);
 #endif
 
 

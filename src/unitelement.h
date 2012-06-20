@@ -5,6 +5,10 @@
 #include <utility>
 #include <vector>
 
+#ifndef NSBML
+#include <sbml/Unit.h>
+#endif
+
 
 class UnitElement
 {
@@ -17,6 +21,9 @@ private:
 
 public:
   UnitElement(std::string kind);
+#ifndef NSBML
+  UnitElement(const Unit* unit);
+#endif
   ~UnitElement() {};
   bool operator<(const UnitElement& ue) const;
 
@@ -27,14 +34,16 @@ public:
   void MultiplyBy(double newmult);
   void Invert();
 
-  std::string GetKind();
-  double GetExponent();
-  double GetMultiplier();
-  long GetScale();
+  std::string GetKind() const;
+  double GetExponent() const;
+  double GetMultiplier() const;
+  long GetScale() const;
 
   bool Matches(const UnitElement& ue) const;
   bool KindIsCanonical() const;
   
+  std::string ToString() const;
+  std::string ToInvString() const;
 };
 
 

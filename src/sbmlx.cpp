@@ -120,7 +120,10 @@ void matchTypesToNames(ASTNode_t* node)
 
 ASTNode* parseStringToASTNode(const string& formula)
 {
-  ASTNode* rootnode = SBML_parseL3Formula(formula.c_str());
+  L3ParserSettings l3ps;
+  l3ps.setParseCollapseMinus(true);
+  l3ps.setParseLog(L3P_PARSE_LOG_AS_LOG10);
+  ASTNode* rootnode = SBML_parseL3FormulaWithSettings(formula.c_str(), &l3ps);
   if (rootnode == NULL) return NULL;
   if (formula.find("time") != string::npos ||
       formula.find("avogadro") != string::npos ||
@@ -173,6 +176,7 @@ bool FixName(std::string& name)
   "formula",
   "function",
   "gene",
+  "has",
   "import",
   "in",
   "is",
@@ -183,89 +187,83 @@ bool FixName(std::string& name)
   "species",
   "var",
 
-  "nan", //not a number in Math
-
   "abs"
-  , "and"
-  , "annotation"
-  , "annotation-xml"
-  , "apply"
+  , "acos"
   , "arccos"
+  , "acosh"
   , "arccosh"
+  , "acot"
   , "arccot"
+  , "acoth"
   , "arccoth"
+  , "acsc"
   , "arccsc"
+  , "acsch"
   , "arccsch"
+  , "asec"
   , "arcsec"
+  , "asech"
   , "arcsech"
+  , "asin"
   , "arcsin"
-  , "arcsinh"
+  , "atan"
   , "arctan"
+  , "atanh"
   , "arctanh"
-  , "bvar"
+  , "ceil"
   , "ceiling"
-  //  , "ci"
-  , "cn"
   , "cos"
   , "cosh"
   , "cot"
   , "coth"
   , "csc"
   , "csch"
-  , "csymbol"
-  , "degree"
-  , "divide"
-  , "eq"
+  , "delay"
   , "exp"
-  , "exponentiale"
   , "factorial"
-  , "false"
   , "floor"
-  , "geq"
-  , "gt"
-  , "infinity"
-  , "lambda"
-  , "leq"
-  , "ln"
   , "log"
-  , "logbase"
-  , "lt"
-  , "math"
-  , "minus"
-  , "neq"
-  , "not"
-  , "notanumber"
-  , "or"
-  , "otherwise"
-  , "pi"
-  , "piece"
+  , "ln"
+  , "log10"
   , "piecewise"
-  , "plus"
   , "power"
+  , "pow"
+  , "sqr"
+  , "sqrt"
   , "root"
-  , "sec"
   , "sech"
-  , "semantics"
-  , "sep"
   , "sin"
   , "sinh"
   , "tan"
   , "tanh"
-  , "times"
-  , "true"
+  , "and"
+  , "not"
+  , "or"
   , "xor"
-  , "acos"
-  , "asin"
-  , "atan"
-  , "ceil"
-  , "delay"
-  , "log10"
-  , "pow"
-  , "sqr"
-  , "sqrt"
-  , "time"
+  , "eq"
+  , "equals"
+  , "geq"
+  , "gt"
+  , "leq"
+  , "lt"
+  , "neq"
+  , "divide"
+  , "minus"
+  , "plus"
+  , "times"
+
+  , "true"  
+  , "false"  
+  , "pi"  
+  , "exponentiale" 
+  , "avogadro"  
+  , "time"  
+  , "inf"  
+  , "infinity"  
+  , "nan"  
+  , "notanumber"
   };
-  for (size_t kw=0; kw<98; kw++) {
+  for (size_t kw=0; kw<93; kw++) {
     if (CaselessStrCmp(name, keywords[kw])) {
       name += "_";
       return true;
@@ -339,4 +337,45 @@ void getDocumentFromExternalModelDefinition(const ExternalModelDefinition* cextm
   extdoc = extmod->getSBMLDocument();
   return;
 }
+
+set<string> GetUnitNames(ASTNode* astn)
+{
+  set<string> ret;
+  if (astn==NULL) return ret;
+  if (astn->isSetUnits()) {
+    ret.insert(astn->getUnits());
+  }
+  for (unsigned int c=0; c<astn->getNumChildren(); c++) {
+    set<string> addme = GetUnitNames(astn->getChild(c));
+    ret.insert(addme.begin(), addme.end());
+  }
+  return ret;
+}
+
+double GetValueFrom(ASTNode* astn)
+{
+  switch (astn->getType()) {
+  case AST_RATIONAL:
+  case AST_REAL:
+  case AST_REAL_E:
+    return astn->getReal();
+  case AST_INTEGER:
+    return astn->getInteger();
+  default:
+    assert(false);
+    return 0; 
+  }
+}
+UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, string modulename)
+{
+  UnitDef ret(unitdefinition->getId(), modulename);
+  ret.ClearComponents();
+  for (unsigned int ue=0; ue<unitdefinition->getNumUnits(); ue++) {
+    const Unit* unit = unitdefinition->getUnit(ue);
+    ret.AddUnitElement(unit);
+  }
+  return ret;
+}
+
+
 #endif

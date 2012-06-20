@@ -14,6 +14,7 @@
 #include "registry.h"
 #include "module.h"
 #include "unitdef.h"
+#include "stringx.h"
 
   class Formula;
   class ReactantList;
@@ -23,7 +24,6 @@
   using namespace std;
   int yylex(void);
   void yyerror(char const *);
-  bool CaselessStrCmp(const string& lhs, const string& rhs);
   Registry g_registry;
   int yylloc_first_line = 1;
   int yylloc_last_line = 1;
@@ -58,7 +58,16 @@
 %type <unitdef>         unitdef
 %type <maybemain>       maybemain
 
-%left '+' '-' '*' '/' '^' ','
+%left '&' '|' /* Boolean functions and, or */
+//                      %left '<' '>' '=' '!' /* Boolean comparison functions (gt, lt, eq, etc.) */
+//                      %left NOT /* boolean negation--unary not */
+%left '-' '+'
+%left '*' '/' '%'
+%right '^'    /* exponentiation        */
+//                      %left NEG     /* negation--unary minus */
+//                      Old:
+//                      %left '^'
+//                      %left '+' '-' '*' '/' ','
 
 %token YYEOF 0 "end of file"
 %token  <num> NUM "number"
@@ -84,6 +93,7 @@
 %token  <word> BECOMESIRREV "=>"
 %token  <word> ELLIPSES "..."
 %token  <word> FUNCTION "name of an existing function"
+%token  <word> CONSTANT "name of a pre-defined constant"
 %token  <word> IMPORT "'import'"
 %token  <word> AT "'@' or 'at'"
 %token  <word> AFTER "'after'"
@@ -161,7 +171,7 @@ varmaybein:     variable {$$ = $1;}
 
 varmaybeis:     varmaybein {$$ = $1;}
         |       varmaybein '=' formula {$$ = $1; if ($1->SetFormula($3)) YYABORT; }
-        |       varmaybeis HASWORD unitdef {$$ = $1; if ($1->SetUnitDef($3)) YYABORT; }
+        |       varmaybein HASWORD unitdef {$$ = $1; if ($1->SetUnit($3)) YYABORT; }
         ;
 
 maybein:        /* empty */ {$$ = NULL;}
@@ -222,24 +232,31 @@ formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
         |       ELLIPSES {$$ = g_registry.NewBlankFormula(); $$->AddEllipses();}
         |       variable {$$ = g_registry.NewBlankFormula(); $$->AddVariable($1); }
         |       NUM  {$$ = g_registry.NewBlankFormula(); $$->AddNum($1); }
-        |       FUNCTION '(' commaformula ')' {$$ = g_registry.NewBlankFormula(); $$->AddText($1); $$->AddMathThing('('); $$->AddFormula($3); $$->AddMathThing(')');}
+        |       CONSTANT {$$ = g_registry.NewBlankFormula(); $$->AddText($1); }
         |       FUNCTION {$$ = g_registry.NewBlankFormula(); $$->AddText($1); }
-        |       mathThing {$$ = g_registry.NewBlankFormula(); $$->AddMathThing($1); }
         |       '(' commaformula ')' {$$ = $2; $$->AddParentheses();}
+        |       mathThing {$$ = g_registry.NewBlankFormula(); $$->AddMathThing($1); }
         |       formula ELLIPSES {$$ = $1; $1->AddEllipses();}
         |       formula variable {$$ = $1; $1->AddVariable($2); }
         |       formula NUM  {$$ = $1; $1->AddNum($2); }
-        |       formula FUNCTION '(' commaformula ')' {$$ = $1; $1->AddText($2); $4->AddParentheses(); $$->AddFormula($4); }
-        |       formula FUNCTION {$$ = $1; $1->AddText($2);}
-        |       formula mathThing {$$ = $1; $1->AddMathThing($2); }
+        |       formula CONSTANT  {$$ = $1; $1->AddText($2); }
+        |       formula FUNCTION {$$ = $1; $1->AddText($2); }
         |       formula '(' commaformula ')' {$$ = $1; $3->AddParentheses(); $$->AddFormula($3); }
+        |       formula mathThing {$$ = $1; $1->AddMathThing($2); }
         |       formula '<' '=' {$$ = $1; $1->AddMathThing('<'); $1->AddMathThing('='); }
         |       formula '>' '=' {$$ = $1; $1->AddMathThing('>'); $1->AddMathThing('='); }
         |       formula '=' '=' {$$ = $1; $1->AddMathThing('='); $1->AddMathThing('='); }
         |       formula '!' '=' {$$ = $1; $1->AddMathThing('!'); $1->AddMathThing('='); }
         |       formula '&' '&' {$$ = $1; $1->AddMathThing('&'); $1->AddMathThing('&'); }
         |       formula '|' '|' {$$ = $1; $1->AddMathThing('|'); $1->AddMathThing('|'); }
-        |       formula '{' unitdef '}' {$$ = $1; string name = $3->GetName(); $1->AddText(&name); }
+        |       formula '{' unitdef '}'
+                {
+                  //Need to create a variable to be this unit definition, or find one that already has this unit definition, and then use that name.
+                  $$ = $1;
+                  Variable* unitvar = g_registry.CurrentModule()->AddOrFindUnitDef($3);
+                  if (unitvar==NULL) YYABORT;
+                  $$->AddVariable(unitvar);
+                }
         ;
 
 commaformula:   formula {$$ = $1;}
@@ -265,6 +282,7 @@ assignment:     varmaybein '=' formula {if ($1->SetFormula($3)) YYABORT; }
         |       varmaybein IS TEXTSTRING {if ($1->SetDisplayName(*($3))) YYABORT;}
         |       varmaybein ':' '=' formula {if ($1->SetAssignmentRule($4)) YYABORT;}
         |       varmaybein '\'' '=' formula {if ($1->SetRateRule($4)) YYABORT;}
+        |       varmaybein HASWORD unitdef {if ($1->SetUnit($3)) YYABORT; }
         ;
 
 submodule:      varmaybein ':' MODNAME '(' {if ($1->SetModule($3)) YYABORT;} variableimportlist ')' maybein {if ($8 != NULL) {if ($1->SetCompartment($8)) YYABORT;}}
@@ -335,8 +353,8 @@ varconstinit:   VARWORD varmaybeis {g_registry.SetConstness(constVAR); $2->SetRe
         |       varconstinit ',' varmaybeis {$3->SetRegConst();}
         ;
 
-unitinit:       UNITWORD ANTWORD '=' unitdef {$4->SetName(*$2); if (g_registry.CurrentModule()->AddUnitDef($4)) YYABORT; }
-        |       UNITWORD ANTWORD {g_registry.SetError("Cannot define '" + *($2) + "' as a unit with only 'unit " + *($2) + "'--you have to add ' = [definition]' afterwards."); YYABORT;} 
+unitinit:       UNITWORD variable '=' unitdef {if ($2->SetUnitDef($4)) YYABORT;}
+        |       UNITWORD variable {if ($2->SetType(varUnitDefinition)) YYABORT;} 
         ;
 
 dnadef:         dnastrand {if (g_registry.SaveWorkingStrand()) YYABORT;}
@@ -389,15 +407,21 @@ deletion:       DELETEWORD variable {g_registry.CurrentModule()->AddDeletion($2)
         ;
 */
 
-unitdef:        ANTWORD {$$ = new UnitDef(*$1);}
+unitdef:        formula {$$ = new UnitDef("", g_registry.CurrentModule()->GetModuleName()); if ($$->SetFromFormula($1)) YYABORT; if ($1->MakeAllVariablesUnits()) YYABORT;}
+        ;
+/*
+unitdef:        ANTWORD {$$ = new UnitDef(*$1, g_registry.CurrentModule()->GetModuleName());}
         |       '(' unitdef ')' { $$ = $2;}
         |       unitdef '*' unitdef {$$ = $1; $$->MultiplyUnitDef($3); delete $3;}
-        |       unitdef '/' unitdef {$$ = $1; $3->Invert(); $$->MultiplyUnitDef($3); delete $3;}
+        |       unitdef '/' unitdef {$$ = $1; $$->DivideUnitDef($3); delete $3;}
         |       unitdef '^' NUM {$$ = $1; $$->RaiseTo($3);}
         |       NUM '/' unitdef {$$ = $3; $$->Invert(); $$->MultiplyBy($1)}
         |       NUM unitdef {$$ = $2; $$->MultiplyBy($1);}
+        |       unitdef '^' '-' NUM {$$ = $1; $$->RaiseTo(-$4);}
+        |       '-' NUM '/' unitdef {$$ = $4; $$->Invert(); $$->MultiplyBy(-$2)}
+        |       '-' NUM unitdef {$$ = $3; $$->MultiplyBy(-$2);}
         ;
-
+*/
 %%
 
 
@@ -540,6 +564,10 @@ int yylex(void)
     if (g_registry.IsFunction(word) != NULL) {
       yylval.word = g_registry.IsFunction(word);
       return FUNCTION;
+    }
+    if (g_registry.IsConstant(word) != NULL) {
+      yylval.word = g_registry.IsConstant(word);
+      return CONSTANT;
     }
     //Otherwise, it's a user-defined variable:
     yylval.word = g_registry.AddWord(word);
@@ -694,15 +722,3 @@ int yylex(void)
   }
   return cc;
 }
-
-bool CaselessStrCmp(const string& lhs, const string& rhs)
-{
-
-  if (lhs.size() != rhs.size()) return false;
-
-  for (size_t i = 0; i < lhs.size(); ++i) {
-    if (toupper(lhs[i]) != toupper(rhs[i])) return false;
-  }
-  return true;
-
-} /* CaselessStrCmp */

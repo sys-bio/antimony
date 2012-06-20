@@ -36,6 +36,7 @@ private:
   std::vector<std::string>   m_directories;
   std::set<std::string>      m_variablenames;
   std::vector<std::string>   m_functions;
+  std::vector<std::string>   m_constants;
 
   std::set<Variable*>      m_storedvars;
   std::set<Formula*>       m_storedformulas;
@@ -96,6 +97,7 @@ public:
   bool   SwitchToPreviousFile();
   size_t GetNumFiles() {return m_oldmodules.size();};
   void   SetupFunctions();
+  void   SetupConstants();
   std::string GetFilenameFrom(std::string thisfile, std::string import);
   void   ParseSBIndex();
   void   AddSBIndex(std::string sbi);
@@ -155,6 +157,7 @@ public:
   const std::string* AddWord(std::string word);
   void StoreVariable(Variable* var);
   const std::string* IsFunction(std::string word);
+  const std::string* IsConstant(std::string word);
 
   std::string GetAntimony() const;
   std::string GetAntimony(std::string modulename) const;

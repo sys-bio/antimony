@@ -24,6 +24,8 @@ bool FixName(std::string& name);
 bool FixName(std::vector<std::string>& names);
 void FixName(std::vector<std::vector<std::string> >& allnames);
 void FixName(std::map<std::vector<std::string>, Variable*>& varmap);
+void FixUnitName(std::string& name);
 
+bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
 
 #endif //STRINGX_h

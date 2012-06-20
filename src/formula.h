@@ -5,6 +5,10 @@
 #include <utility>
 #include <vector>
 
+#ifndef NSBML
+#include <sbml/math/ASTNode.h>
+#endif
+
 class ReactantList;
 class Variable;
 
@@ -60,6 +64,12 @@ public:
   void InsertTimeInFunction(std::string function);
   void ReplaceWith(const Variable* origvar, const Variable* newvar);
   bool IsStraightCopyOf(const Formula* origform) const;
+
+  bool MakeAllVariablesUnits();
+  bool MakeUnitVariablesUnits();
+#ifndef NSBML
+  bool MakeUnitVariablesUnits(ASTNode* astn);
+#endif
 
   //For CellMLStuff:
   void UseInstead(std::string newname, const Variable* oldvar);

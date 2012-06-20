@@ -102,7 +102,7 @@ bool Formula::IsDouble() const
       }
     }
   }
-  if (m_components.size() == 2) {
+  else if (m_components.size() == 2) {
     if (m_components[0].second.size() == 0 && m_components[0].first == "-" &&
         m_components[1].second.size() == 0 && IsReal(m_components[1].first) ) {
       return true;
@@ -372,17 +372,10 @@ string Formula::ToSBMLString() const
 
 string Formula::ToSBMLString(vector<pair<Variable*, size_t> > strands) const
 {
-  string formula = ToDelimitedStringWithStrands('_', strands);
-  //cout << "Original: " << formula << endl;
-  string revform = ConvertOneSymbolToFunction(formula);
-  while (formula != revform) {
-    //cout << "Changing to '" << revform << endl << endl;
-    formula = revform;
-    revform = ConvertOneSymbolToFunction(formula);
-  }
-  return formula;
+  return ToDelimitedStringWithStrands('_', strands);
 }
 
+//Now only need this for CellML (for now).
 string Formula::ConvertOneSymbolToFunction(string formula) const
 {
   size_t mid = string::npos;
@@ -581,6 +574,41 @@ bool Formula::IsStraightCopyOf(const Formula* origform) const
     }
   }
   return true;
+}
+
+bool Formula::MakeAllVariablesUnits()
+{
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() > 0) {
+      Module* module = g_registry.GetModule(m_components[comp].first);
+      assert(module != NULL);
+      Variable* subvar = module->GetVariable(m_components[comp].second);
+      if (subvar->SetType(varUnitDefinition)) return true;
+    }
+  }
+  return false;
+}
+
+bool Formula::MakeUnitVariablesUnits()
+{
+#ifndef NSBML
+  string formula = ToSBMLString();
+  ASTNode* root = parseStringToASTNode(formula);
+  set<string> allunits = GetUnitNames(root);
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() > 0) {
+      Module* module = g_registry.GetModule(m_components[comp].first);
+      assert(module != NULL);
+      Variable* subvar = module->GetVariable(m_components[comp].second);
+      string unitname = subvar->GetNameDelimitedBy('_');
+      if (allunits.find(unitname) != allunits.end()) {
+        if (subvar->SetType(varUnitDefinition)) return true;
+      }
+    }
+  }
+
+#endif
+  return false;
 }
 
 void Formula::UseInstead(std::string newname, const Variable* oldvar)
