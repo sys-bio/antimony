@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Sasagawa2005_MAPK()
+//Created by libAntimony v2.3-beta
+model *Sasagawa2005_MAPK()
 
   // Compartments and Species:
   compartment compartment_, c1;
@@ -306,7 +306,7 @@ model Sasagawa2005_MAPK()
   J7_J7_k1 = 10;
   J7_J7_k2 = 0.2;
   J8_J8_k1 = 0.002;
-  J8_J8_k2 = 1e-05;
+  J8_J8_k2 = 1e-005;
   J9_J9_k1 = 0.5;
   J9_J9_k2 = 0.2;
   J10_J10_k = 0.002;
@@ -390,7 +390,7 @@ model Sasagawa2005_MAPK()
   J69_J69_Vmax = 2;
   J69_J69_Km1 = 0.02;
   J70_J70_k1 = 6.2;
-  J70_J70_k2 = 6.4e-05;
+  J70_J70_k2 = 6.4e-005;
   J71_J71_k = 1;
   J72_J72_k = 0.00063;
   J73_J73_k = 0.00042;
@@ -524,7 +524,14 @@ model Sasagawa2005_MAPK()
   J167_J167_k = 0.06;
   J168_J168_k = 0.06;
 
+  //Other declarations:
+  const compartment_, c1;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
   //Display Names:
+  substance is "microMole";
   proteosome is "proteasome";
   re1 is "form_EGFreceptor";
   re2 is "EGFbinding";

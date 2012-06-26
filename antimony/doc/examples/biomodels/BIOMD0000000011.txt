@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model MAPK_in_Solution()
+//Created by libAntimony v2.3-beta
+model *MAPK_in_Solution()
 
   // Compartments and Species:
   compartment Cytoplasm;
@@ -102,7 +102,14 @@ model MAPK_in_Solution()
   Reaction29_d10 = 0.4;
   Reaction30_k10 = 0.1;
 
+  //Other declarations:
+  const Cytoplasm;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
   //Display Names:
+  substance is "micromole";
   MAPKMEKpp is "MAPK_MEK-PP";
   MAPKp is "MAPK-P";
   MAPKPH is "MAPK phosphatase";

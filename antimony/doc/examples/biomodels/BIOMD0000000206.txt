@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Wolf2000_Glycolytic_Oscillations()
+//Created by libAntimony v2.3-beta
+model *Wolf2000_Glycolytic_Oscillations()
 
   // Compartments and Species:
   compartment compartment_;
@@ -36,25 +36,57 @@ model Wolf2000_Glycolytic_Oscillations()
 
   // Variable initializations:
   k0 = 50;
+  k0 has mM_min_1;
   k1 = 550;
+  k1 has mM_1_min_1;
   k2 = 9.8;
+  k2 has min_1;
   k31 = 323.8;
+  k31 has mM_1_min_1;
   k33 = 57823.1;
+  k33 has mM_1_min_1;
   k32 = 76411.1;
+  k32 has mM_1_min_1;
   k34 = 23.7;
+  k34 has mM_1_min_1;
   k4 = 80;
+  k4 has mM_1_min_1;
   k5 = 9.7;
+  k5 has min_1;
   k6 = 2000;
+  k6 has mM_1_min_1;
   k7 = 28;
+  k7 has min_1;
   k8 = 85.7;
+  k8 has mM_1_min_1;
   k9 = 80;
+  k9 has min_1;
   k10 = 375;
+  k10 has min_1;
   atot = 4;
+  atot has mM;
   ntot = 1;
+  ntot has mM;
   n = 4;
+  n has dimensionless;
   ki = 1;
+  ki has mM;
+
+  //Other declarations:
+  const compartment_, k0, k1, k2, k31, k33, k32, k34, k4, k5, k6, k7, k8;
+  const k9, k10, atot, ntot, n, ki;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+  unit mM = 1e-3 mole / litre;
+  unit mM_min_1 = 1e-3 mole / (litre * 60 second);
+  unit min_1 = 1 / 60 second;
+  unit mM_1_min_1 = litre / (1e-3 mole * 60 second);
 
   //Display Names:
+  substance is "milli mole";
+  time_unit is "min";
   s1 is "Glucose";
   at_ is "ATP";
   s2 is "F16P";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model untitled()
+//Created by libAntimony v2.3-beta
+model *untitled()
 
   // Compartments and Species:
   compartment chloroplast, cytosol;
@@ -61,7 +61,7 @@ model untitled()
   x_PGA_cyt = 1;
   ADP_ch = 0.00149;
   x_DHAP_cyt = 1;
-  x_Proton_ch = 2.512e-05;
+  x_Proton_ch = 2.512e-005;
   G1P_ch = 0.18206;
   x_Starch_ch = 1;
 
@@ -147,4 +147,13 @@ model untitled()
   E18_GAP_TP_Piap_kPi_ch = 0.63;
   E18_GAP_TP_Piap_kPGA_ch = 0.25;
   E18_GAP_TP_Piap_kDHAP_ch = 0.077;
+
+  //Other declarations:
+  const chloroplast, cytosol, Light_on;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+
+  //Display Names:
+  substance is "mM";
 end

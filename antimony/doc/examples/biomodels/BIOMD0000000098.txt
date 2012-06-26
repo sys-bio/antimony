@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Goldbeter1990_CalciumSpike_CICR()
+//Created by libAntimony v2.3-beta
+model *Goldbeter1990_CalciumSpike_CICR()
 
   // Compartments and Species:
   compartment cytosol, store;
@@ -23,20 +23,43 @@ model Goldbeter1990_CalciumSpike_CICR()
 
   // Variable initializations:
   v0 = 1;
+  v0 has uM_per_sec;
   v1 = 7.3;
+  v1 has uM_per_sec;
   beta = 0.301;
+  beta has dimensionless;
   Vm2 = 65;
+  Vm2 has uM_per_sec;
   n = 2;
+  n has dimensionless;
   K2 = 1;
+  K2 has uM;
   Vm3 = 500;
+  Vm3 has uM_per_sec;
   m = 2;
+  m has dimensionless;
   Kr = 2;
+  Kr has uM;
   Ka = 0.9;
+  Ka has uM;
   kf = 1;
+  kf has sec_inv;
   k = 10;
+  k has sec_inv;
   p = 4;
+  p has dimensionless;
+
+  //Other declarations:
+  const cytosol, store, v0, v1, beta, Vm2, n, K2, Vm3, m, Kr, Ka, kf, k, p;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit uM_per_sec = 1e-6 mole / (litre * second);
+  unit sec_inv = 1 / second;
+  unit uM = 1e-6 mole / litre;
 
   //Display Names:
+  substance is "micromole";
   R0 is "Ca influx";
   R1 is "InsP3 dependent Ca influx";
   R2 is "ATP driven Ca pumping into store";

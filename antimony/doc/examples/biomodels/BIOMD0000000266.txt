@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model voit03()
+//Created by libAntimony v2.3-beta
+model *voit03()
 
   // Compartments and Species:
   compartment cell, external;
@@ -54,13 +54,53 @@ model voit03()
 
   // Variable initializations:
   heat_shock = 0;
+  heat_shock has dimensionless;
+  X8 has dimensionless;
+  X9 has dimensionless;
+  X10 has dimensionless;
+  X11 has dimensionless;
+  X12r has dimensionless;
+  X12f has dimensionless;
+  X13 has dimensionless;
+  X14 has dimensionless;
+  X15r has dimensionless;
+  X15f has dimensionless;
+  X16 has dimensionless;
+  X17 has dimensionless;
+  X18 has dimensionless;
+  X19 has dimensionless;
+  flux_X1_in has flux;
+  flux_X1_out has flux;
+  flux_X2_in has flux;
+  flux_X2_out has flux;
+  flux_X3_in has flux;
+  flux_X3_out has flux;
+  flux_X4_in has flux;
+  flux_X4_out has flux;
+  flux_X5_in has flux;
+  flux_X5_out has flux;
+  flux_X6_in has flux;
+  flux_X6_out has flux;
+  flux_X7_in has flux;
+  flux_X7_out has flux;
 
   //Other declarations:
-  var X8, X10, X12r, X13, X15r, X16, X18, flux_X1_in, flux_X1_out, flux_X2_in;
-  var flux_X2_out, flux_X3_in, flux_X3_out, flux_X4_in, flux_X4_out, flux_X5_in;
-  var flux_X5_out, flux_X6_in, flux_X6_out, flux_X7_in, flux_X7_out;
+  var X8, X9, X10, X11, X12r, X12f, X13, X14, X15r, X15f, X16, X17, X18, X19;
+  var flux_X1_in, flux_X1_out, flux_X2_in, flux_X2_out, flux_X3_in, flux_X3_out;
+  var flux_X4_in, flux_X4_out, flux_X5_in, flux_X5_out, flux_X6_in, flux_X6_out;
+  var flux_X7_in, flux_X7_out;
+  const cell, external, heat_shock;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+  unit flux = 1e-3 mole / (60 second * litre);
+  unit mM = 1e-3 mole / litre;
 
   //Display Names:
+  substance is "milimole";
+  time_unit is "minutes";
+  flux is "mM per minute";
   X0 is "glucose";
   X1 is "glucose";
   X2 is "G6P";

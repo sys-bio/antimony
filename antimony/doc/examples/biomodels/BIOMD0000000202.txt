@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model ChenXF2008_CICR()
+//Created by libAntimony v2.3-beta
+model *ChenXF2008_CICR()
 
   // Compartments and Species:
   compartment Cytoplasm, ER, PM;
@@ -46,44 +46,96 @@ model ChenXF2008_CICR()
 
   // Variable initializations:
   L = 0.00093;
+  L has s_1;
   P_IP3R = 66.6;
+  P_IP3R has s_1;
   Ki = 1;
+  Ki has uM;
   k_i = 6;
+  k_i has s_1;
   Ka = 0.4;
+  Ka has uM;
   V_SERCA = 1;
+  V_SERCA has uM_s_1;
   p = 2;
+  p has dimensionless;
   K_SERCA = 0.15;
+  K_SERCA has uM;
   k_soc = 2.3;
-  V_PMleak = 5e-07;
+  k_soc has uM_1_s_1;
+  V_PMleak = 5e-007;
+  V_PMleak has s_1;
   Ca_ec = 1500;
+  Ca_ec has uM;
   V_PMCA = 1;
+  V_PMCA has uM_s_1;
   q = 2;
+  q has dimensionless;
   K_PMCA = 0.45;
+  K_PMCA has uM;
   V_PLC = 0.5;
+  V_PLC has uM_s_1;
   K_PLC = 0.12;
+  K_PLC has uM;
   kdeg = 0.5;
+  kdeg has s_1;
   K_deg = 0.1;
+  K_deg has uM;
   A = 0.5;
+  A has uM_1_s_1;
   Kd = 0.4;
+  Kd has uM;
   K1 = 5;
+  K1 has uM;
   St = 0.6;
+  St has uM;
   k_a = 4;
+  k_a has s_1;
   Vs4 = 0.25;
+  Vs4 has uM_s_1;
   K2 = 0.14;
+  K2 has uM;
   kd_oligo = 0.8;
+  kd_oligo has s_1;
   Vcp = 0.00018;
+  Vcp has uM_s_1;
   n_hill = 3;
-  Kc = 2e-05;
+  n_hill has dimensionless;
+  Kc = 2e-005;
+  Kc has uM;
   kdc = 0.5;
+  kdc has s_1;
   kop = 0.5;
+  kop has s_1;
   l_hill = 1;
+  l_hill has dimensionless;
   Ko = 0.2;
+  Ko has uM;
   kod = 1;
+  kod has s_1;
   kdo = 0.6;
+  kdo has s_1;
   r_hill = 4;
+  r_hill has dimensionless;
   h = 0;
+  h has dimensionless;
   Orai1_t = 0.001;
+  Orai1_t has uM;
 
   //Other declarations:
   var h;
+  const Cytoplasm, ER, PM, L, P_IP3R, Ki, k_i, Ka, V_SERCA, p, K_SERCA, k_soc;
+  const V_PMleak, Ca_ec, V_PMCA, q, K_PMCA, V_PLC, K_PLC, kdeg, K_deg, A;
+  const Kd, K1, St, k_a, Vs4, K2, kd_oligo, Vcp, n_hill, Kc, kdc, kop, l_hill;
+  const Ko, kod, kdo, r_hill, Orai1_t;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit uM = 1e-6 mole / litre;
+  unit s_1 = 1 / second;
+  unit uM_s_1 = 1e-6 mole / (litre * second);
+  unit uM_1_s_1 = litre / (1e-6 mole * second);
+
+  //Display Names:
+  substance is "micromole";
 end

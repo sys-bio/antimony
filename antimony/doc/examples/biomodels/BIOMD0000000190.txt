@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Model_1()
+//Created by libAntimony v2.3-beta
+model *Model_1()
 
   // Compartments and Species:
   compartment cytosol;
@@ -50,20 +50,37 @@ model Model_1()
 
   // Variable initializations:
   Vmaxodc = 1.27905671844446;
+  Vmaxodc has uM_min_1;
   Vmaxssat = 0.677298510125025;
+  Vmaxssat has uM_min_1;
   Vmaxsamdc = 0.367465856805639;
+  Vmaxsamdc has uM_min_1;
   Antz = 0.574589492832405;
+  Antz has uM_min_1;
   Keq = 1;
+  Keq has uM_1;
   Kdodc = 0.05;
+  Kdodc has uM_1;
   Ksodc = 5;
+  Ksodc has uM_min_2;
   Kdssat = 0.2;
+  Kdssat has min_1;
   Ksssat = 0.001;
+  Ksssat has uM_min_2;
   Kdsamdc = 0.02;
+  Kdsamdc has min_1;
   Kssamdc = 1;
+  Kssamdc has uM_min_2;
   Kdantz = 0.02;
+  Kdantz has min_1;
   Ksantz = 0.02;
+  Ksantz has uM_min_2;
   R = 0.004;
+  R has min_1;
   C = 4.44;
+  C has dimensionless;
+  Kaccoa has min_1;
+  Kcoa has min_1;
   ODC_Kipodc = 1300;
   ODC_Kmodc = 60;
   SAMdc_Kapsamdc = 0.5;
@@ -106,8 +123,32 @@ model Model_1()
 
   //Other declarations:
   var Vmaxodc, Vmaxssat, Vmaxsamdc, Antz, Kaccoa, Kcoa;
+  const cytosol, Keq, Kdodc, Ksodc, Kdssat, Ksssat, Kdsamdc, Kssamdc, Kdantz;
+  const Ksantz, R, C;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-6 mole;
+  unit uM_1 = litre / 1e-6 mole;
+  unit uM_min_1 = 1e-6 mole / (60 second * litre);
+  unit uM_1_min_1 = litre / (1e-6 mole * 60 second);
+  unit uM_1_min_2 = litre / (1e-6 mole * (60 second)^2);
+  unit min_1 = 1 / 60 second;
+  unit uM = 1e-6 mole / litre;
+  unit min_uM_1 = 60 second * litre / 1e-6 mole;
+  unit uM_min_2 = 1e-6 mole / (litre * (60 second)^2);
 
   //Display Names:
+  time_unit is "minute";
+  substance is "µmole";
+  uM_1 is "peruM";
+  uM_min_1 is "uMpermin";
+  uM_1_min_1 is "peruMpermin";
+  uM_1_min_2 is "uM^(-1)min^(-2)";
+  min_1 is "permin";
+  uM is "microM";
+  min_uM_1 is "minperuM";
+  uM_min_2 is "uM(min)^-2";
   cytosol is "Cytosol";
   SAM is "S-adenosyl-L-methionine";
   A is "S-adenosylmethioninamine";

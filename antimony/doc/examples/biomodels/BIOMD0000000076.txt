@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Cronwright2002_Glycerol_Synthesis()
+//Created by libAntimony v2.3-beta
+model *Cronwright2002_Glycerol_Synthesis()
 
   // Compartments and Species:
   compartment compartment_;
@@ -37,7 +37,18 @@ model Cronwright2002_Glycerol_Synthesis()
   Gpp_p_Phi = 1;
   Gpp_p_K2phi = 1;
 
+  //Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+  unit mM_per_minute = 1e-3 mole / (litre * 60 second);
+  unit mM = 1e-3 mole / litre;
+
   //Display Names:
+  substance is "millimole";
+  time_unit is "minute";
   compartment_ is "Cytoplasm";
   G3P is "Glycerol 3-phosphate";
   Gly is "Glycerol";

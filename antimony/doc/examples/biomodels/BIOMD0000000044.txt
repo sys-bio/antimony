@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_of_IP3()
+//Created by libAntimony v2.3-beta
+model *Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_of_IP3()
 
   // Compartments and Species:
   compartment extracellular, cytosol, intravesicular;
@@ -45,7 +45,16 @@ model Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_o
   v7_n = 4;
   v8_epsilon = 0.1;
 
+  //Other declarations:
+  const extracellular, cytosol, intravesicular, beta;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
+
   //Display Names:
+  substance is "micromole (default)";
+  time_unit is "minute (default)";
   v6 is "Agonist stimulated production of IP3";
   v7 is "Ca dependent IP3 degradation";
   v8 is "Ca independent IP3 degradation";

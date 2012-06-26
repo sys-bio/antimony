@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Chassagnole2001_Threonine_Synthesis()
+//Created by libAntimony v2.3-beta
+model *Chassagnole2001_Threonine_Synthesis()
 
   // Compartments and Species:
   compartment compartment_;
@@ -77,12 +77,26 @@ model Chassagnole2001_Threonine_Synthesis()
   vhk_k4hs = 0.11;
   vhk_k4thr = 1.09;
   vhk_k4iatp = 4.35;
-  vnadph_endo_knadph = 5.4e-06;
+  vnadph_endo_knadph = 5.4e-006;
   vnadph_endo_prot = 202;
-  vatpase_katpase = 4.1e-05;
+  vatpase_katpase = 4.1e-005;
   vatpase_prot = 202;
 
+  //Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+  unit mM = 1e-3 mole / litre;
+  unit mM_per_min = 1e-3 mole / (litre * 60 second);
+  unit litre_per_mg_per_min = litre / (1e-3 gram * 60 second);
+  unit millimole_per_mg_per_min = 1e-3 mole / (1e-3 gram * 60 second);
+  unit mg_per_litre = 1e-3 gram / litre;
+
   //Display Names:
+  substance is "millimole";
+  time_unit is "min";
   aspp is "Aspartyl phosphate";
   asa is "Aspartate beta-semialdehyde";
   hs is "Homoserine";

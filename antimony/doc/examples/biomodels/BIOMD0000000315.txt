@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Oligator()
+//Created by libAntimony v2.3-beta
+model *Oligator()
 
   // Compartments and Species:
   compartment sample;
@@ -72,48 +72,110 @@ model Oligator()
 
   // Variable initializations:
   k0d = 0.0294;
+  k0d has per_nM_per_min;
   k0r = 3.43457943925;
+  k0r has per_min;
   k1d = 3.43457943925;
+  k1d has per_min;
   k1r = 0.0294;
+  k1r has per_nM_per_min;
   k2d = 3.43457943925;
+  k2d has per_min;
   k2r = 0.0294;
+  k2r has per_nM_per_min;
   k3d = 3.43457943925;
+  k3d has per_min;
   k3r = 0.0294;
+  k3r has per_nM_per_min;
   k4d = 15.2;
+  k4d has per_min;
   k5d = 11.8408;
+  k5d has per_min;
   k6d = 3.34;
+  k6d has per_min;
   k7d = 0.0294;
+  k7d has per_nM_per_min;
   k7r = 3.43457943925;
+  k7r has per_min;
   k8d = 0.610714285714;
+  k8d has per_min;
   k8r = 0.0171;
+  k8r has per_nM_per_min;
   k9d = 0.610714285714;
+  k9d has per_min;
   k9r = 0.0171;
+  k9r has per_nM_per_min;
   k10d = 3.43457943925;
+  k10d has per_min;
   k10r = 0.0294;
+  k10r has per_nM_per_min;
   k11d = 11.8408;
+  k11d has per_min;
   k12d = 9.2239832;
+  k12d has per_min;
   k13d = 2.60186;
+  k13d has per_min;
   k14d = 0.0171;
+  k14d has per_nM_per_min;
   k14r = 0.610714285714;
+  k14r has per_min;
   k15d = 0.00186296832954;
+  k15d has per_min;
   k15r = 0.027;
+  k15r has per_nM_per_min;
   k16d = 0.027;
+  k16d has per_nM_per_min;
   k16r = 0.00186296832954;
+  k16r has per_min;
   k17d = 0.0171;
+  k17d has per_nM_per_min;
   k17r = 0.610714285714;
+  k17r has per_min;
   k18d = 17.024;
+  k18d has per_min;
   k19d = 5.566848;
+  k19d has per_min;
   k20d = 3.2064;
+  k20d has per_min;
   k21d = 0.027;
+  k21d has per_nM_per_min;
   k21r = 0.00608108108108;
+  k21r has per_min;
   k22d = 0.021546;
-  k22r = 4.15391351351e-05;
-  k23d = 4.15391351351e-05;
+  k22d has per_nM_per_min;
+  k22r = 4.15391351351e-005;
+  k22r has per_nM_per_min;
+  k23d = 4.15391351351e-005;
+  k23d has per_nM_per_min;
   k23r = 0.021546;
+  k23r has per_nM_per_min;
   k24d = 0.411;
+  k24d has per_min;
   k25d = 0.485802;
+  k25d has per_min;
   k26d = 1.7262;
+  k26d has per_min;
+  Bp_concentration has nM;
+  Inh_total has nM;
+  beta_total has nM;
+  alpha_total has nM;
 
   //Other declarations:
   var Bp_concentration, fluorescence, Inh_total, beta_total, alpha_total;
+  const sample, k0d, k0r, k1d, k1r, k2d, k2r, k3d, k3r, k4d, k5d, k6d, k7d;
+  const k7r, k8d, k8r, k9d, k9r, k10d, k10r, k11d, k12d, k13d, k14d, k14r;
+  const k15d, k15r, k16d, k16r, k17d, k17r, k18d, k19d, k20d, k21d, k21r;
+  const k22d, k22r, k23d, k23r, k24d, k25d, k26d;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+  unit nM = 1e-9 mole / litre;
+  unit per_nM_per_min = litre / (1e-9 mole * 60 second);
+  unit per_min = 1 / 60 second;
+
+  //Display Names:
+  time_unit is "min";
+  substance is "nanomole";
+  per_nM_per_min is "nM_per_min";
 end

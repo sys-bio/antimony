@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Teusink1998_Glycolysis_TurboDesign()
+//Created by libAntimony v2.3-beta
+model *Teusink1998_Glycolysis_TurboDesign()
 
   // Compartments and Species:
   compartment cell;
@@ -33,13 +33,16 @@ model Teusink1998_Glycolysis_TurboDesign()
 
   // Variable initializations:
   KRHMP = 1;
+  KRHMP has mM;
   gR = 10;
   c1 = 0.0005;
   L0 = 1000;
   KRATP = 0.06;
+  KRATP has mM;
   gT_ = 1;
   c2 = 1;
   KiATP = 10;
+  KiATP has mM;
   ci = 10;
   HK_VHK = 68;
   HK_KATP = 0.15;
@@ -55,8 +58,18 @@ model Teusink1998_Glycolysis_TurboDesign()
 
   //Other declarations:
   var lambda1, lambda2, lambda3, R, T, L;
+  const cell, KRHMP, gR, c1, L0, KRATP, gT_, c2, KiATP, ci;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+  unit mM = 1e-3 mole / litre;
+  unit mM_per_min = 1e-3 mole / (litre * 60 second);
 
   //Display Names:
+  substance is "mmol";
+  time_unit is "min";
+  mM_per_min is "mM per min";
   HMP is "hexose monophosphate";
   Fru16P2 is "fructose 1,6-bisphosphate";
   Glc is "glucose";

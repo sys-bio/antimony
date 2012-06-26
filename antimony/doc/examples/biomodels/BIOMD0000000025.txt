@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Smolen2002()
+//Created by libAntimony v2.3-beta
+model *Smolen2002()
 
   // Compartments and Species:
   compartment CELL;
@@ -18,26 +18,46 @@ model Smolen2002()
 
   // Species initializations:
   EmptySet = 0;
-  Per = 5e-16;
-  dClk = 1e-16;
+  Per = 5e-016;
+  dClk = 1e-016;
 
   // Compartment initializations:
-  CELL = 1e-15;
+  CELL = 1e-015;
+  dClkF_tau1 has nM;
+  dClkF_tau2 has nM;
 
   // Variable initializations:
   tau1 = 10;
+  tau1 has time_unit;
   tau2 = 10;
+  tau2 has time_unit;
   Vsp = 0.5;
+  Vsp has nM_per_hr;
   K1 = 0.3;
+  K1 has nM;
   Vsc = 0.25;
+  Vsc has nM_per_hr;
   K2 = 0.1;
+  K2 has nM;
   kdc = 0.5;
+  kdc has per_hr;
   kdp = 0.5;
+  kdp has per_hr;
 
   //Other declarations:
   var dClkF_tau1, dClkF_tau2;
+  const CELL, tau1, tau2, Vsp, K1, Vsc, K2, kdc, kdp;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+  unit nM = 1e-9 mole / litre;
+  unit nM_per_hr = 1e-9 mole / (litre * 3600 second);
+  unit per_hr = 1 / 3600 second;
 
   //Display Names:
+  time_unit is "hour (new default)";
+  substance is "nanomole (new default)";
   dClkF is "free dClk";
   rPer is "Per production";
   rdClk is "dClk production";

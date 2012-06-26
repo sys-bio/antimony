@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Wilhelm2009_BistableReaction()
+//Created by libAntimony v2.3-beta
+model *Wilhelm2009_BistableReaction()
 
   // Compartments and Species:
   compartment batch;
@@ -13,16 +13,29 @@ model Wilhelm2009_BistableReaction()
 
   // Species initializations:
   S = 1;
+  S has substance_per_volume;
   P = 1;
+  P has substance_per_volume;
   X = 1;
+  X has substance_per_volume;
   Y = 1;
+  Y has substance_per_volume;
 
   // Compartment initializations:
   batch = 1;
+  batch has volume;
 
   // Variable initializations:
   r1_k1 = 8;
   r2_k2 = 1;
   r3_k3 = 1;
   r4_k4 = 1.5;
+
+  //Other declarations:
+  const batch;
+
+  // Unit definitions:
+  unit volume = litre;
+  unit substance = mole;
+  unit substance_per_volume = mole / litre;
 end

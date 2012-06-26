@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_1(V, Shalve, h, substrate)
   V / (Shalve^h + substrate^h);
 end
@@ -7,8 +7,7 @@ function function_3(x, beta)
   x / beta / (1 + x / beta);
 end
 
-
-model Kim2011_Oscillator_SimpleIII()
+model *Kim2011_Oscillator_SimpleIII()
 
   // Compartments and Species:
   compartment compartment_1;
@@ -37,6 +36,14 @@ model Kim2011_Oscillator_SimpleIII()
   reaction_1_Shalve = 1;
   reaction_2_Shalve = 1;
   reaction_3_Shalve = 1;
+
+  //Other declarations:
+  const compartment_1, parameter_1, parameter_2, parameter_3;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = dimensionless;
+  unit substance = dimensionless;
 
   //Display Names:
   compartment_1 is "compartment";

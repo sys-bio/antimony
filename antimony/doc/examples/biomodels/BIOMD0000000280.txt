@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Morris1981_MuscleFibre_Voltage_reduced()
+//Created by libAntimony v2.3-beta
+model *Morris1981_MuscleFibre_Voltage_reduced()
 
   // Compartments and Species:
   compartment musclefiber;
@@ -15,24 +15,58 @@ model Morris1981_MuscleFibre_Voltage_reduced()
 
   // Compartment initializations:
   musclefiber = 1;
+  Minf has dimensionless;
 
   // Variable initializations:
   V = -50;
+  V has mV;
   V1 = 10;
+  V1 has mV;
   V2 = 15;
+  V2 has mV;
+  Ninf has dimensionless;
   V3 = -1;
+  V3 has mV;
   V4 = 14.5;
+  V4 has mV;
+  lambdaN has per_m;
   lambdaN_bar = 0.066666666667;
+  lambdaN_bar has per_m;
   Iapp = 300;
+  Iapp has uA_per_cm2;
   gL = 2;
+  gL has mS_per_cm2;
   VL = -50;
+  VL has mV;
   gCa = 4;
+  gCa has mS_per_cm2;
   VCa = 100;
+  VCa has mV;
   gK = 8;
+  gK has mS_per_cm2;
   N = (1 + tanh((V - V3) / V4)) / 2;
+  N has dimensionless;
   VK = -70;
+  VK has mV;
   C = 20;
+  C has uF_per_cm2;
 
   //Other declarations:
   var Minf, V, Ninf, lambdaN, N;
+  const musclefiber, V1, V2, V3, V4, lambdaN_bar, Iapp, gL, VL, gCa, VCa;
+  const gK, VK, C;
+
+  // Unit definitions:
+  unit time_unit = 1e-3 second;
+  unit per_m = 1 / 1e-3 second;
+  unit mV = 1e-3 volt;
+  unit mS_per_cm2 = 1e-3 siemens / (1e-2 metre)^2;
+  unit uA_per_cm2 = 1e-6 ampere / (1e-2 metre)^2;
+  unit uF_per_cm2 = 1e-6 farad / (1e-2 metre)^2;
+
+  //Display Names:
+  time_unit is "ms";
+  per_m is "per ms";
+  uA_per_cm2 is "microA_per_cm2";
+  uF_per_cm2 is "microF per cm2";
 end

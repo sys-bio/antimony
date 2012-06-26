@@ -1,10 +1,9 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function LD(tod, length)
   ceil(sin(pi * tod / length + 0.001) / 2);
 end
 
-
-model Locke2005_CircadianClock()
+model *Locke2005_CircadianClock()
 
   // Compartments and Species:
   compartment compartment_;
@@ -134,7 +133,21 @@ model Locke2005_CircadianClock()
   two11_Fch_0 = 8;
   four12_Fch_0 = 8;
 
+  //Other declarations:
+  const compartment_, q1, n1, a, g1, m1, k1, p1, r1, r2, m2, k2, m3, k3, n2;
+  const b, g2, g3, c, m4, k4, p2, r3, r4, m5, m6, k5, m7, m8, k6, n3, d, g4;
+  const m9, k7, p3, r5, r6, m10, k8, m11, k9, q2, n4, n5, g5, g6, f, e, m12;
+  const k10, p4, r7, r8, m13, k11, m14, k12, p5, k13, q3, m15, Lmax, Lmin;
+  const CP, dayLength;
+
+  // Unit definitions:
+  unit length = metre;
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+
   //Display Names:
+  substance is "nM (default)";
+  time_unit is "hour (default)";
   cLm is "LHY mRNA";
   cLc is "LHY protein in cytoplasm";
   cLn is "LHY protein in nucleus";

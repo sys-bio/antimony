@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Tang2010_PolyGlutamate()
+//Created by libAntimony v2.3-beta
+model *Tang2010_PolyGlutamate()
 
   // Compartments and Species:
   compartment cytosol;
@@ -127,53 +127,64 @@ model Tang2010_PolyGlutamate()
 
   // Variable initializations:
   kalive = 1;
-  kaggPolyQ = 5e-08;
-  kdisaggPolyQ1 = 5e-07;
-  kdisaggPolyQ2 = 4e-07;
-  kdisaggPolyQ3 = 3e-07;
-  kdisaggPolyQ4 = 2e-07;
-  kdisaggPolyQ5 = 1e-07;
-  kseqPolyQ = 8e-07;
-  kinhprot = 5e-09;
-  kaggMisP = 1e-11;
-  kagg2MisP = 1e-10;
-  kdisaggMisP1 = 5e-07;
-  kdisaggMisP2 = 4e-07;
-  kdisaggMisP3 = 3e-07;
-  kdisaggMisP4 = 2e-07;
-  kdisaggMisP5 = 1e-07;
+  kaggPolyQ = 5e-008;
+  kdisaggPolyQ1 = 5e-007;
+  kdisaggPolyQ2 = 4e-007;
+  kdisaggPolyQ3 = 3e-007;
+  kdisaggPolyQ4 = 2e-007;
+  kdisaggPolyQ5 = 1e-007;
+  kseqPolyQ = 8e-007;
+  kinhprot = 5e-009;
+  kaggMisP = 1e-011;
+  kagg2MisP = 1e-010;
+  kdisaggMisP1 = 5e-007;
+  kdisaggMisP2 = 4e-007;
+  kdisaggMisP3 = 3e-007;
+  kdisaggMisP4 = 2e-007;
+  kdisaggMisP5 = 1e-007;
   ksynmRFPu = 0.138;
-  kbinmRFPu = 5e-07;
-  krelmRFPu = 1e-08;
+  kbinmRFPu = 5e-007;
+  krelmRFPu = 1e-008;
   kdegmRFPu = 0.005;
   ksynPolyQ = 0.007;
-  kbinPolyQ = 5e-08;
-  krelPolyQ = 1e-09;
+  kbinPolyQ = 5e-008;
+  krelPolyQ = 1e-009;
   kdegPolyQ = 0.0025;
   kgenROS = 0.0017;
   kremROS = 0.0002;
-  kgenROSAggP = 5e-06;
-  kgenROSSeqAggP = 1e-07;
-  kactp38 = 5e-06;
+  kgenROSAggP = 5e-006;
+  kgenROSSeqAggP = 1e-007;
+  kactp38 = 5e-006;
   kinactp38 = 0.002;
-  kseqMisP = 1e-09;
-  kseqAggPProt = 5e-07;
-  kseqPolyQProt = 5e-07;
-  kseqMisPProt = 5e-07;
-  kseqmRFPuProt = 5e-07;
-  kseqmRFPu = 1e-10;
+  kseqMisP = 1e-009;
+  kseqAggPProt = 5e-007;
+  kseqPolyQProt = 5e-007;
+  kseqMisPProt = 5e-007;
+  kseqmRFPuProt = 5e-007;
+  kseqmRFPu = 1e-010;
   ksynNatP = 2.4;
-  kmisfold = 2e-06;
-  krefold = 8e-05;
-  kbinMisPProt = 5e-08;
-  krelMisPProt = 1e-08;
+  kmisfold = 2e-006;
+  krefold = 8e-005;
+  kbinMisPProt = 5e-008;
+  krelMisPProt = 1e-008;
   kdegMisP = 0.01;
   kgenROSp38 = 0.0007;
   kp38act = 1;
-  kp38death = 9e-08;
-  kPIdeath = 2.5e-08;
+  kp38death = 9e-008;
+  kPIdeath = 2.5e-008;
   kproteff = 1;
 
   //Other declarations:
-  var kalive, oligomers;
+  var kalive, kp38act, kproteff, oligomers;
+  const cytosol, kaggPolyQ, kdisaggPolyQ1, kdisaggPolyQ2, kdisaggPolyQ3, kdisaggPolyQ4;
+  const kdisaggPolyQ5, kseqPolyQ, kinhprot, kaggMisP, kagg2MisP, kdisaggMisP1;
+  const kdisaggMisP2, kdisaggMisP3, kdisaggMisP4, kdisaggMisP5, ksynmRFPu;
+  const kbinmRFPu, krelmRFPu, kdegmRFPu, ksynPolyQ, kbinPolyQ, krelPolyQ;
+  const kdegPolyQ, kgenROS, kremROS, kgenROSAggP, kgenROSSeqAggP, kactp38;
+  const kinactp38, kseqMisP, kseqAggPProt, kseqPolyQProt, kseqMisPProt, kseqmRFPuProt;
+  const kseqmRFPu, ksynNatP, kmisfold, krefold, kbinMisPProt, krelMisPProt;
+  const kdegMisP, kgenROSp38, kp38death, kPIdeath;
+
+  // Unit definitions:
+  unit substance = item;
 end

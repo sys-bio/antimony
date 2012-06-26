@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Plant1981_BurstingNerveCells()
+//Created by libAntimony v2.3-beta
+model *Plant1981_BurstingNerveCells()
 
   // Compartments and Species:
   compartment COMpartment_;
@@ -16,7 +16,7 @@ model Plant1981_BurstingNerveCells()
   alpha_h := 0.07 * exp((25 - Vs) / 20);
   beta_h := 1 / (exp((55 - Vs) / 10) + 1);
   tau_h := 12.5 / (alpha_h + beta_h);
-  x_infinity := 1 / (exp(0.15 * (-V_membrane - 50)) + 1);
+  x_infinity := 1 / (exp(0.15 * (- V_membrane - 50)) + 1);
   i_Ca := g_T * x1 * (V_I - V_membrane);
   n_infinity := alpha_n / (alpha_n + beta_n);
   i_K := g_K * n1^4 * (V_K - V_membrane);
@@ -63,8 +63,10 @@ model Plant1981_BurstingNerveCells()
 
   //Other declarations:
   var i_Na, Vs, m_infinity, alpha_m, beta_m, h_infinity, alpha_h, beta_h;
-  var tau_h, x_infinity, i_Ca, n_infinity, i_K, alpha_n, beta_n, tau_n, i_K_Ca;
-  var i_L;
+  var tau_h, g_Ca, x_infinity, i_Ca, n_infinity, i_K, alpha_n, beta_n, tau_n;
+  var i_K_Ca, i_L;
+  const COMpartment_, V_I, V_K, V_L, V_Ca, g_I, g_K, g_T, g_K_Ca, g_L, K_p;
+  const K_c, f, tau_x, a, b;
 
   //Display Names:
   V_membrane is "V";

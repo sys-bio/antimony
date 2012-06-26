@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Wang2007_ATP_induced_Ca_Oscillation()
+//Created by libAntimony v2.3-beta
+model *Wang2007_ATP_induced_Ca_Oscillation()
 
   // Compartments and Species:
   compartment Cytosol, ER;
@@ -70,8 +70,14 @@ model Wang2007_ATP_induced_Ca_Oscillation()
 
   //Other declarations:
   var Raplc, Rpkc, Rgalpha_gtp, Rdg, Rip3, Rcyt1, Rcyt2, Rer;
+  const Cytosol, ER, Kp, Kd, Kr, n, Kg, m, Ks, Kc1, Kc2, w, Ker, Cplc_total;
+  const k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
 
   //Display Names:
+  substance is "nano mole";
   Ca_ER is "Calcium";
   Ca_Cyt is "Calcium";
   DG is "Diacylglycerol";

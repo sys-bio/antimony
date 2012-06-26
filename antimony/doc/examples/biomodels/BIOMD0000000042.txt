@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Glycolysis_Nielsen()
+//Created by libAntimony v2.3-beta
+model *Glycolysis_Nielsen()
 
   // Compartments and Species:
   compartment compartment_;
@@ -82,4 +82,17 @@ model Glycolysis_Nielsen()
   k9b = 10;
   k10 = 0.05;
   flow = 0.011;
+
+  //Other declarations:
+  const compartment_, V1, K1GLC, K1ATP, V2, K2, k2, K2ATP, k3f, k3b, V4, K4GAP;
+  const K4NAD, k5f, k5b, V6, K6PEP, K6ADP, V7, K7PYR, k8f, k8b, k9f, k9b;
+  const k10, flow;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+
+  //Display Names:
+  substance is "millimole";
+  time_unit is "minute";
 end

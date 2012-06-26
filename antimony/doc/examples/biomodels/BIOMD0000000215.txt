@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_1(Ag, K1, Ifn_Prot, K2, a2)
   a2 * (Ag / (K1 + Ag)) * (Ifn_Prot / (K2 + Ifn_Prot));
 end
@@ -23,8 +23,7 @@ function function_6(a5, Tbet_Prot, K5, Rec_Prot, K6, Ag, K7)
   a5 * (Tbet_Prot / (K5 + Tbet_Prot)) * (Rec_Prot / (K6 + Rec_Prot)) * (Ag / (K7 + Ag));
 end
 
-
-model Schulz2009_Th1_differentiation()
+model *Schulz2009_Th1_differentiation()
 
   // Compartments and Species:
   compartment compartment_;
@@ -83,6 +82,12 @@ model Schulz2009_Th1_differentiation()
   reaction_13_K5 = 0.029;
   reaction_13_K6 = 66;
   reaction_13_K7 = 0.014;
+
+  //Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
 
   //Display Names:
   vtrnldeg is "Tbet IFN dependend transcription";

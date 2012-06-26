@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function hydrolysis(kh, R)
   kh * R;
 end
@@ -19,8 +19,7 @@ function sig_act_t(r, ke, t, kg, R, kf)
   r * (ke * t / (100 + t)) / (1 + exp((kg - R) * kf));
 end
 
-
-model Model_1()
+model *Model_1()
 
   // Compartments and Species:
   compartment endosome;
@@ -67,7 +66,21 @@ model Model_1()
   reaction_8_kh = 0.06;
   reaction_9_kh = 0.15;
 
+  //Other declarations:
+  const endosome;
+
+  // Unit definitions:
+  unit time_unit = second;
+  unit M = mole / litre;
+  unit ps = 1 / second;
+  unit Mp = mole / (second * litre);
+  unit lpmole = litre / mole;
+
   //Display Names:
+  time_unit is "sec";
+  ps is "persec";
+  Mp is "Mpers";
+  lpmole is "lpermole";
   endosome is "endosomal membrane";
   r5 is "Rab5-GDP";
   R5 is "Rab5-GTP";

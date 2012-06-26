@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Tham2008_PDmodel_TumourShrinkage()
+//Created by libAntimony v2.3-beta
+model *Tham2008_PDmodel_TumourShrinkage()
 
   // Compartments and Species:
   compartment COMpartment_;
@@ -22,21 +22,55 @@ model Tham2008_PDmodel_TumourShrinkage()
 
   // Compartment initializations:
   COMpartment_ = 1;
+  rem_time has week;
+  Exposure has mg;
 
   // Variable initializations:
   Size = 6.66;
+  Size has cm;
+  Effect has dimensionless;
   Dose = 5203.84;
+  Dose has mg;
   Dose_Int1 = 0;
+  Dose_Int1 has week;
   Dose_Int2 = 1;
+  Dose_Int2 has week;
   Dose_Length = 0.44359;
+  Dose_Length has week;
   Cycle_Int = 3;
+  Cycle_Int has week;
   N_Cycle = 6;
+  N_Cycle has dimensionless;
   conversion_factor = 604800;
+  conversion_factor has sec_per_week;
   AE50 = 10600;
+  AE50 has mg;
+  Keq has per_week;
   Teq = 7.67;
+  Teq has week;
   Size_0 = 6.66;
+  Size_0 has cm;
+  RateIn has per_week;
   T_Turnover = 21.8;
+  T_Turnover has cm_week;
+  Kover has per_cm_per_week;
 
   //Other declarations:
   var rem_time, Exposure, Size, Effect, Keq, RateIn, Kover;
+  const COMpartment_, Dose, Dose_Int1, Dose_Int2, Dose_Length, Cycle_Int;
+  const N_Cycle, conversion_factor, AE50, Teq, Size_0, T_Turnover;
+
+  // Unit definitions:
+  unit effect_unit = dimensionless;
+  unit week = 604800 second;
+  unit sec_per_week = second / 604800 second;
+  unit cm = 1e-2 metre;
+  unit mg = 1e-3 gram;
+  unit cm_week = 1e-2 metre * 604800 second;
+  unit per_week = 1 / 604800 second;
+  unit per_cm_per_week = 1 / (1e-2 metre * 604800 second);
+  unit m2 = metre^2;
+
+  //Display Names:
+  effect_unit is "normalised";
 end

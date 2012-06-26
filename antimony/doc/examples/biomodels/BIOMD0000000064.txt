@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function L_PFK(L, CiATP, KiATP, CAMP, KAMP, CF26BP, KF26BP, CF16BP, KF16BP, AT_, AM, F16, F26)
   L * ((1 + CiATP * (AT_ / KiATP)) / (1 + AT_ / KiATP))^2 * ((1 + CAMP * (AM / KAMP)) / (1 + AM / KAMP))^2 * ((1 + CF26BP * F26 / KF26BP + CF16BP * F16 / KF16BP) / (1 + F26 / KF26BP + F16 / KF16BP))^2;
 end
@@ -11,8 +11,7 @@ function T_PFK(CATP, KmATP, AT_)
   1 + CATP * (AT_ / KmATP);
 end
 
-
-model Teusink2000_Glycolysis()
+model *Teusink2000_Glycolysis()
 
   // Compartments and Species:
   compartment extracellular, cytosol;
@@ -44,7 +43,7 @@ model Teusink2000_Glycolysis()
   vPDC: PYR => ACE + $CO2; cytosol * vPDC_VmPDC * (PYR^vPDC_nPDC / vPDC_KmPDCPYR^vPDC_nPDC) / (1 + PYR^vPDC_nPDC / vPDC_KmPDCPYR^vPDC_nPDC);
   vSUC: 2ACE + 3NAD + 4P => 3NADH + $SUCC; cytosol * vSUC_KSUCC * ACE;
   vGLT: $GLCo -> GLCi; vGLT_VmGLT / vGLT_KmGLTGLCo * (GLCo - GLCi / vGLT_KeqGLT) / (1 + GLCo / vGLT_KmGLTGLCo + GLCi / vGLT_KmGLTGLCi + 0.91 * GLCo * GLCi / (vGLT_KmGLTGLCo * vGLT_KmGLTGLCi));
-  vADH: ACE + NADH -> NAD + $ETOH; -cytosol * (vADH_VmADH / (vADH_KiADHNAD * vADH_KmADHETOH) * (NAD * ETOH - NADH * ACE / vADH_KeqADH) / (1 + NAD / vADH_KiADHNAD + vADH_KmADHNAD * ETOH / (vADH_KiADHNAD * vADH_KmADHETOH) + vADH_KmADHNADH * ACE / (vADH_KiADHNADH * vADH_KmADHACE) + NADH / vADH_KiADHNADH + NAD * ETOH / (vADH_KiADHNAD * vADH_KmADHETOH) + vADH_KmADHNADH * NAD * ACE / (vADH_KiADHNAD * vADH_KiADHNADH * vADH_KmADHACE) + vADH_KmADHNAD * ETOH * NADH / (vADH_KiADHNAD * vADH_KmADHETOH * vADH_KiADHNADH) + NADH * ACE / (vADH_KiADHNADH * vADH_KmADHACE) + NAD * ETOH * ACE / (vADH_KiADHNAD * vADH_KmADHETOH * vADH_KiADHACE) + ETOH * NADH * ACE / (vADH_KiADHETOH * vADH_KiADHNADH * vADH_KmADHACE)));
+  vADH: ACE + NADH -> NAD + $ETOH; - cytosol * (vADH_VmADH / (vADH_KiADHNAD * vADH_KmADHETOH) * (NAD * ETOH - NADH * ACE / vADH_KeqADH) / (1 + NAD / vADH_KiADHNAD + vADH_KmADHNAD * ETOH / (vADH_KiADHNAD * vADH_KmADHETOH) + vADH_KmADHNADH * ACE / (vADH_KiADHNADH * vADH_KmADHACE) + NADH / vADH_KiADHNADH + NAD * ETOH / (vADH_KiADHNAD * vADH_KmADHETOH) + vADH_KmADHNADH * NAD * ACE / (vADH_KiADHNAD * vADH_KiADHNADH * vADH_KmADHACE) + vADH_KmADHNAD * ETOH * NADH / (vADH_KiADHNAD * vADH_KmADHETOH * vADH_KiADHNADH) + NADH * ACE / (vADH_KiADHNADH * vADH_KmADHACE) + NAD * ETOH * ACE / (vADH_KiADHNAD * vADH_KmADHETOH * vADH_KiADHACE) + ETOH * NADH * ACE / (vADH_KiADHETOH * vADH_KiADHNADH * vADH_KmADHACE)));
   vG3PDH: TRIO + NADH => NAD + $GLY; cytosol * vG3PDH_VmG3PDH / (vG3PDH_KmG3PDHDHAP * vG3PDH_KmG3PDHNADH) * (1 / (1 + KeqTPI) * TRIO * NADH - GLY * NAD / vG3PDH_KeqG3PDH) / ((1 + 1 / (1 + KeqTPI) * TRIO / vG3PDH_KmG3PDHDHAP + GLY / vG3PDH_KmG3PDHGLY) * (1 + NADH / vG3PDH_KmG3PDHNADH + NAD / vG3PDH_KmG3PDHNAD));
   vATP: P -> ; cytosol * vATP_KATPASE * ATP;
 
@@ -79,20 +78,35 @@ model Teusink2000_Glycolysis()
 
   // Variable initializations:
   gR = 5.12;
+  gR has dimensionless;
   KmPFKF6P = 0.1;
+  KmPFKF6P has mM;
   KmPFKATP = 0.71;
+  KmPFKATP has mM;
   Lzero = 0.66;
+  Lzero has dimensionless;
   CiPFKATP = 100;
+  CiPFKATP has dimensionless;
   KiPFKATP = 0.65;
+  KiPFKATP has mM;
   CPFKAMP = 0.0845;
+  CPFKAMP has dimensionless;
   KPFKAMP = 0.0995;
+  KPFKAMP has mM;
   CPFKF26BP = 0.0174;
+  CPFKF26BP has dimensionless;
   KPFKF26BP = 0.000682;
+  KPFKF26BP has mM;
   CPFKF16BP = 0.397;
+  CPFKF16BP has dimensionless;
   KPFKF16BP = 0.111;
+  KPFKF16BP has mM;
   CPFKATP = 3;
+  CPFKATP has dimensionless;
   KeqAK = 0.45;
+  KeqAK has dimensionless;
   KeqTPI = 0.045;
+  KeqTPI has dimensionless;
   vGLK_VmGLK = 226.452;
   vGLK_KmGLKGLCi = 0.08;
   vGLK_KmGLKATP = 0.15;
@@ -149,7 +163,7 @@ model Teusink2000_Glycolysis()
   vADH_VmADH = 810;
   vADH_KiADHNAD = 0.92;
   vADH_KmADHETOH = 17;
-  vADH_KeqADH = 6.9e-05;
+  vADH_KeqADH = 6.9e-005;
   vADH_KmADHNAD = 0.17;
   vADH_KmADHNADH = 0.11;
   vADH_KiADHNADH = 0.031;
@@ -164,7 +178,22 @@ model Teusink2000_Glycolysis()
   vG3PDH_KmG3PDHNAD = 0.93;
   vATP_KATPASE = 33.7;
 
+  //Other declarations:
+  const extracellular, cytosol, gR, KmPFKF6P, KmPFKATP, Lzero, CiPFKATP, KiPFKATP;
+  const CPFKAMP, KPFKAMP, CPFKF26BP, KPFKF26BP, CPFKF16BP, KPFKF16BP, CPFKATP;
+  const KeqAK, KeqTPI;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+  unit mM = 1e-3 mole / litre;
+  unit mMpermin = 1e-3 mole / (litre * 60 second);
+  unit permin = 1 / 60 second;
+  unit mmolepermin = 1e-3 mole / 60 second;
+
   //Display Names:
+  substance is "millimole";
+  time_unit is "minute";
   GLCi is "Glucose in Cytosol";
   G6P is "Glucose 6 Phosphate";
   F6P is "Fructose 6 Phosphate";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Goldbeter1991_MinMitOscil()
+//Created by libAntimony v2.3-beta
+model *Goldbeter1991_MinMitOscil()
 
   // Compartments and Species:
   compartment cell;
@@ -20,11 +20,15 @@ model Goldbeter1991_MinMitOscil()
 
   // Species initializations:
   C = 0.01;
+  C has substance_per_volume;
   M = 0.01;
+  M has substance_per_volume;
   X = 0.01;
+  X has substance_per_volume;
 
   // Compartment initializations:
   cell = 1;
+  cell has volume;
 
   // Variable initializations:
   VM1 = 3;
@@ -43,6 +47,12 @@ model Goldbeter1991_MinMitOscil()
 
   //Other declarations:
   var V1, V3;
+  const cell, VM1, VM3, Kc;
+
+  // Unit definitions:
+  unit volume = litre;
+  unit substance = mole;
+  unit substance_per_volume = mole / litre;
 
   //Display Names:
   C is "Cyclin";

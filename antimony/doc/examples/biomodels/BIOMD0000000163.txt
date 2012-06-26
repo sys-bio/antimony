@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Zi2007_TGFbeta_signaling()
+//Created by libAntimony v2.3-beta
+model *Zi2007_TGFbeta_signaling()
 
   // Compartments and Species:
   compartment V_medium, V_nuc, V_cyt;
@@ -80,14 +80,23 @@ model Zi2007_TGFbeta_signaling()
   Kexp_Smad2n = 1;
   Kimp_Smad4c = 0.08;
   Kexp_Smad4n = 0.5;
-  k_Smads_Complex_c = 6.85e-05;
+  k_Smads_Complex_c = 6.85e-005;
   Kimp_Smads_Complex_c = 0.16;
   Kdiss_Smads_Complex_n = 0.1174;
 
   //Other declarations:
-  var Total_Smad2n, Total_Smad2c;
+  var k_LRC, Total_Smad2n, Total_Smad2c;
+  const V_medium, V_nuc, V_cyt, v_T1R, v_T2R, ki_EE, kr_EE, ki_Cave, kr_Cave;
+  const Kcd, Klid, Kdeg_T1R_EE, Kdeg_T2R_EE, Kimp_Smad2c, Kexp_Smad2n, Kimp_Smad4c;
+  const Kexp_Smad4n, k_Smads_Complex_c, Kimp_Smads_Complex_c, Kdiss_Smads_Complex_n;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
 
   //Display Names:
+  time_unit is "minute";
+  substance is "nano mole";
   V_medium is "Medium";
   V_nuc is "Nucleus";
   V_cyt is "Cytoplasm";

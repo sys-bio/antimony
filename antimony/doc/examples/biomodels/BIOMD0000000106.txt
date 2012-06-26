@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Yang2007_ArachidonicAcid()
+//Created by libAntimony v2.3-beta
+model *Yang2007_ArachidonicAcid()
 
   // Compartments and Species:
   compartment cell;
@@ -125,11 +125,24 @@ model Yang2007_ArachidonicAcid()
   KI21 = 500;
   KI22 = 500;
   KI23 = 0.053;
-  KI24 = 2.3e-05;
+  KI24 = 2.3e-005;
   a24 = 0.15;
   ks = 500;
 
+  //Other declarations:
+  const cell, lin, K15, k15, K16, k16, K17, k17, K18, k18, K19, k19, K20;
+  const k20, K21, k21, K22, k22, K23, k23, K24, k24, kd2, kd3, kd8, kd9, kd11;
+  const kd12, kd13, kd16, ki1, ki2, ki3, ki4, ki5, ki6, ki7, ki8, ki9, ki10;
+  const ki11, ki12, ki14, ki15, ki16, ki17, ki18, KI19, KI20, KI21, KI22;
+  const KI23, KI24, a24, ks;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
+
   //Display Names:
+  substance is "micromole";
+  time_unit is "minute";
   x1 is "AA";
   x10 is "5-HPETE";
   x11 is "5-HETE";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model testid()
+//Created by libAntimony v2.3-beta
+model *testid()
 
   // Compartments and Species:
   compartment cytosol;
@@ -39,25 +39,52 @@ model testid()
 
   // Variable initializations:
   k1 = 700;
+  k1 has peruMpersec;
   k2 = 800;
+  k2 has persec;
   k3 = 850;
+  k3 has persec;
   k4 = 20;
+  k4 has persec;
   k5 = 0.2;
+  k5 has persec;
   k6 = 700;
+  k6 has peruMpersec;
   k7 = 800;
+  k7 has persec;
   k8 = 850;
+  k8 has persec;
   k9 = 5;
+  k9 has peruMpersec;
   k10 = 25;
+  k10 has persec;
   k11 = 1.6;
+  k11 has persec;
   k12 = 0.02;
+  k12 has persec;
   e5c = 0.11;
+  e5c has peruMpercm;
   e5c_NO = 0.025;
+  e5c_NO has peruMpercm;
   e6c_NO = 0.064;
+  e6c_NO has peruMpercm;
+  ext_ has percm;
 
   //Other declarations:
   var ext_;
+  const cytosol, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, e5c, e5c_NO;
+  const e6c_NO;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit peruMpersec = litre / (1e-6 mole * second);
+  unit uM = 1e-6 mole / litre;
+  unit persec = 1 / second;
+  unit peruMpercm = litre / (1e-6 mole * 1e-2 metre);
+  unit percm = 1 / 1e-2 metre;
 
   //Display Names:
+  substance is "micromole";
   e5c is "ext_5coord";
   e5c_NO is "ext_5coord_NO";
   e6c_NO is "ext_6coord_NO";

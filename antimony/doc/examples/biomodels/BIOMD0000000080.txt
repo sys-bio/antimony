@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Model_1()
+//Created by libAntimony v2.3-beta
+model *Model_1()
 
   // Compartments and Species:
   compartment cell;
@@ -15,16 +15,16 @@ model Model_1()
   Reaction_6: G_GTP => G_GDP; cell * Reaction_6_k6 * G_GTP;
 
   // Species initializations:
-  D = 3.1e-05;
+  D = 3.1e-005;
   DR = 0;
   DRG_GDP = 0;
-  G_GDP = 1e-06;
+  G_GDP = 1e-006;
   DRG = 0;
   GDP = 0;
   DRG_GTP = 0;
-  GTP = 1e-05;
+  GTP = 1e-005;
   G_GTP = 0;
-  R = 1e-10;
+  R = 1e-010;
 
   // Compartment initializations:
   cell = 1;
@@ -40,6 +40,9 @@ model Model_1()
   Reaction_4_k10 = 55;
   Reaction_5_k5 = 1;
   Reaction_6_k6 = 2;
+
+  //Other declarations:
+  const cell;
 
   //Display Names:
   Reaction_1 is "Forming DR";

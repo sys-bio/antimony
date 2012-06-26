@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Pritchard2002_glycolysis()
+//Created by libAntimony v2.3-beta
+model *Pritchard2002_glycolysis()
 
   // Compartments and Species:
   compartment cell, ext_;
@@ -131,7 +131,7 @@ model Pritchard2002_glycolysis()
   ADH_Vmax_13 = 209.5;
   ADH_Ketoh_13 = 17;
   ADH_Kinad_13 = 0.92;
-  ADH_Keq_13 = 6.9e-05;
+  ADH_Keq_13 = 6.9e-005;
   ADH_Knad_13 = 0.17;
   ADH_Knadh_13 = 0.11;
   ADH_Kinadh_13 = 0.031;
@@ -151,7 +151,16 @@ model Pritchard2002_glycolysis()
   Trehalose_Branch_Ktrehalose_18 = 2.4;
   Succinate_Branch_k_19 = 21.4;
 
+  //Other declarations:
+  const cell, ext_;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+
   //Display Names:
+  substance is "mmole";
+  time_unit is "minute";
   cell is "cytosol";
   ext_ is "exterior";
   GLCo is "Glc(ext)";

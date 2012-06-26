@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Novak1993_M_phase_control()
+//Created by libAntimony v2.3-beta
+model *Novak1993_M_phase_control()
 
   // Compartments and Species:
   compartment cytoplasm;
@@ -94,8 +94,18 @@ model Novak1993_M_phase_control()
 
   //Other declarations:
   var k25, kwee, k2, total_cyclin, Y15P;
+  const cytoplasm, total_cdc2, total_cdc25, total_wee1, total_IE, total_UbE;
+  const V25_prime, V25_double_prime, Vwee_prime, Vwee_double_prime, V2_prime;
+  const V2_double_prime, k1AA, k3, kinh, kcak, ka, K_a, kbPPase, K_b, ke;
+  const K_e, kfPPase, K_f, kg, K_g, khPPAse, K_h, kc, K_c, kd_anti_IE, K_d;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
 
   //Display Names:
+  substance is "nanomole";
+  time_unit is "minutes";
   dimer is "cyclin-cdc2 dimer";
   dimer_p is "Thr161 phosphorylated dimer(active MPF)";
   p_dimer is "Tyr15 phosphorylated dimer";

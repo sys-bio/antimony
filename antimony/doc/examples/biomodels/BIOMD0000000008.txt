@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Gardner1998_CellCycle_Goldbeter()
+//Created by libAntimony v2.3-beta
+model *Gardner1998_CellCycle_Goldbeter()
 
   // Compartments and Species:
   compartment Cell;
@@ -26,13 +26,19 @@ model Gardner1998_CellCycle_Goldbeter()
 
   // Species initializations:
   C = 0;
+  C has substance_per_volume;
   X = 0;
+  X has substance_per_volume;
   M = 0;
+  M has substance_per_volume;
   Y = 1;
+  Y has substance_per_volume;
   Z = 1;
+  Z has substance_per_volume;
 
   // Compartment initializations:
   Cell = 1;
+  Cell has volume;
 
   // Variable initializations:
   K6 = 0.3;
@@ -59,6 +65,12 @@ model Gardner1998_CellCycle_Goldbeter()
 
   //Other declarations:
   var V1, V3;
+  const Cell, K6, V1p, V3p;
+
+  // Unit definitions:
+  unit volume = litre;
+  unit substance = mole;
+  unit substance_per_volume = mole / litre;
 
   //Display Names:
   C is "cyclin";

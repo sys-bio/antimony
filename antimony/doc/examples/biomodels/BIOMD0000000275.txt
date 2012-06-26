@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model goldbeter2007()
+//Created by libAntimony v2.3-beta
+model *goldbeter2007()
 
   // Compartments and Species:
   compartment PSM;
@@ -31,33 +31,74 @@ model goldbeter2007()
 
   // Compartment initializations:
   PSM = 1;
+  vs1 has nM_per_min;
 
   // Variable initializations:
   kd5 = 0;
+  kd5 has per_min;
   kd1 = 1;
+  kd1 has per_nM_per_min;
   V0 = 0.365;
+  V0 has nM_per_min;
   Vsc = 7.1;
+  Vsc has nM_per_min;
   n = 2;
+  n has dimensionless;
   Ka = 0.2;
+  Ka has nM;
   kd3 = 1;
+  kd3 has per_min;
   ks2 = 1;
+  ks2 has per_min;
   kd2 = 0.28;
+  kd2 has per_min;
   ks3 = 1;
+  ks3 has per_min;
   Ki = 0.2;
+  Ki has nM;
   m = 2;
+  m has dimensionless;
   kd4 = 1;
+  kd4 has per_min;
   ks1 = 1;
+  ks1 has per_min;
   RALDH2_0 = 7.1;
+  RALDH2_0 has nM;
   x = 15;
+  x has length;
   L = 50;
+  L has length;
   M_0 = 5;
+  M_0 has nM;
+  rho has dimensionless;
+  alpha2 has dimensionless;
+  alpha1 has dimensionless;
   Kr1 = 1;
+  Kr1 has nM;
   Kr2 = 1;
+  Kr2 has nM;
 
   //Other declarations:
   var vs1, rho, alpha2, alpha1;
+  const PSM, kd5, kd1, V0, Vsc, n, Ka, kd3, ks2, kd2, ks3, Ki, m, kd4, ks1;
+  const RALDH2_0, x, L, M_0, Kr1, Kr2;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+  unit nM = 1e-9 mole / litre;
+  unit nM_per_min = 1e-9 mole / (litre * 60 second);
+  unit per_nM_per_min = litre / (1e-9 mole * 60 second);
+  unit per_min = 1 / 60 second;
+  unit length = dimensionless;
 
   //Display Names:
+  substance is "nmole";
+  time_unit is "min";
+  nM_per_min is "nM per min";
+  per_nM_per_min is "per nM per min";
+  per_min is "per min";
+  length is "arbit. length";
   M_C is "cyp26_mRNA";
   C is "CYP26";
   F is "FGF";

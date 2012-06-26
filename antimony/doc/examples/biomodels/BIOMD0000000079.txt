@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_4(P, V3, R, k3)
   P * V3 * (1 - R) / (k3 + (1 - R));
 end
@@ -19,8 +19,7 @@ function function_0(a, Q)
   a * Q;
 end
 
-
-model Model_0()
+model *Model_0()
 
   // Compartments and Species:
   compartment body;
@@ -55,7 +54,16 @@ model Model_0()
   reaction_5_V = 2.5;
   reaction_5_Km = 0.01;
 
+  //Other declarations:
+  const body;
+
+  // Unit definitions:
+  unit time_unit = 604800 second;
+  unit substance = dimensionless;
+
   //Display Names:
+  time_unit is "weeks";
+  substance is "dimensionless";
   reaction_0 is "Increase of  P";
   reaction_1 is "Decrease of P";
   reaction_2 is "Increase of Q";

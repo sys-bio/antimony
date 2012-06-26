@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Grange2001_L_Dopa_PKmodel()
+//Created by libAntimony v2.3-beta
+model *Grange2001_L_Dopa_PKmodel()
 
   // Compartments and Species:
   compartment gut, Vdopa, V_3_OMD, V1_B, V2_B, V1_M, V2_M;
@@ -52,35 +52,74 @@ model Grange2001_L_Dopa_PKmodel()
   V2_B = 0.127;
   V1_M = 0.0691;
   V2_M = 3.2;
+  F_c has dimensionless;
+  F_H has dimensionless;
 
   // Variable initializations:
   F_G = 1;
+  F_G has dimensionless;
+  CL_H has l_per_h;
   Q = 0.828;
   f_H = 0.13;
+  f_H has dimensionless;
+  CL_dopa has l_per_h;
+  f_rest has dimensionless;
   f_AADC = 0.69;
+  f_AADC has dimensionless;
   f_COMT = 0.1;
+  f_COMT has dimensionless;
+  CL_AADC has l_per_h;
+  CL_rest has l_per_h;
+  CL_COMT has l_per_h;
+  CL_AADC0 has l_per_h;
   ki = 0.00246;
   CL_dopa0 = 0.823;
+  CL_dopa0 has l_per_h;
   ka_c = 1.29;
   ka_M = 2.47;
   ka_B = 0.94;
   F_B = 0.022;
+  F_B has dimensionless;
   CL_OMD = 0.00895;
+  CL_OMD has l_per_h;
   CL_B = 1.67;
+  CL_B has l_per_h;
   fm = 0.15;
+  fm has dimensionless;
   CL_M = 4.29;
+  CL_M has l_per_h;
   CL_dB = 0.072;
+  CL_dB has l_per_h;
   CL_dM = 1.06;
+  CL_dM has l_per_h;
   L_Dopa_per_kg_rat = 404;
+  L_Dopa_per_kg_rat has umol_per_kg;
   Benserazide_per_kg_rat = 78;
+  Benserazide_per_kg_rat has umol_per_kg;
   rat_body_mass = 0.25;
+  rat_body_mass has kilogram;
   A_bens_tot = Benserazide_per_kg_rat * rat_body_mass;
+  A_bens_tot has substance;
   B_M_frac = 0.07;
 
   //Other declarations:
   var F_c, F_H, CL_H, CL_dopa, f_rest, CL_AADC, CL_rest, CL_COMT, CL_AADC0;
+  const gut, Vdopa, V_3_OMD, V1_B, V2_B, V1_M, V2_M, F_G, Q, f_H, f_AADC;
+  const f_COMT, ki, CL_dopa0, ka_c, ka_M, ka_B, F_B, CL_OMD, CL_B, fm, CL_M;
+  const CL_dB, CL_dM, L_Dopa_per_kg_rat, Benserazide_per_kg_rat, rat_body_mass;
+  const A_bens_tot, B_M_frac;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit umol_per_kg = 1e-9 mole / kilogram;
+  unit per_h = 1 / 3600 second;
+  unit l_per_h = litre / 3600 second;
+  unit time_unit = 3600 second;
 
   //Display Names:
+  substance is "micromole";
+  umol_per_kg is "micromole_per_kg";
+  time_unit is "hours";
   Vdopa is "V_L_Dopa";
   C_OMD is "C_3-OMD";
   ka_M is "ka_m";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Overgaard2007_PDmodel_IL21()
+//Created by libAntimony v2.3-beta
+model *Overgaard2007_PDmodel_IL21()
 
   // Compartments and Species:
   compartment COMpartment_;
@@ -7,7 +7,7 @@ model Overgaard2007_PDmodel_IL21()
   // Assignment Rules:
   E_slow := AMT_dose * pEs2 * (gNsTs1 + gNsTs2 + gNsTs3);
   E_fast := pEf2 * (gNfTf1 + gNfTf2 + gNfTf3);
-  f_prime := delta_high_dose * (1 + exp(-alpha * (time - (tdose1 + t_prime))))^-1;
+  f_prime := delta_high_dose * (1 + exp(- alpha * (time - (tdose1 + t_prime))))^-1;
   M_c := piecewise(M_night, and(geq(tprime / 3600, t_night), lt(tprime / 3600, t_day)), M_day);
   tprime := time * 3600 * 1 - floor(time * 3600 * 1 / day_length) * day_length;
   k := kb + kinc * (T - T_b * (1 + pEtot * BR)) + f2_drug;
@@ -18,12 +18,12 @@ model Overgaard2007_PDmodel_IL21()
   M_day := (kb + kinc * (T_day - T_b)) * (T_day - T_a);
   M_night := (1 - f_prime) * M_night_baseline + f_prime * M_day;
   M_night_baseline := (kb + kinc * (T_night - T_b)) * (T_night - T_a);
-  gNsTs1 := piecewise(Ks^Ns / 6 * exp(-Ks * X1) * X1^(Ns - 1), gt(X1, 0), 0);
-  gNsTs2 := piecewise(Ks^Ns / 6 * exp(-Ks * X2) * X2^(Ns - 1), gt(X2, 0), 0);
-  gNsTs3 := piecewise(Ks^Ns / 6 * exp(-Ks * X3) * X3^(Ns - 1), gt(X3, 0), 0);
-  gNfTf1 := piecewise(Kf^Nf / 6 * exp(-Kf * X1) * X1^(Nf - 1), gt(X1, 0), 0);
-  gNfTf2 := piecewise(Kf^Nf / 6 * exp(-Kf * X2) * X2^(Nf - 1), gt(X2, 0), 0);
-  gNfTf3 := piecewise(Kf^Nf / 6 * exp(-Kf * X3) * X3^(Nf - 1), gt(X3, 0), 0);
+  gNsTs1 := piecewise(Ks^Ns / 6 * exp(- Ks * X1) * X1^(Ns - 1), gt(X1, 0), 0);
+  gNsTs2 := piecewise(Ks^Ns / 6 * exp(- Ks * X2) * X2^(Ns - 1), gt(X2, 0), 0);
+  gNsTs3 := piecewise(Ks^Ns / 6 * exp(- Ks * X3) * X3^(Ns - 1), gt(X3, 0), 0);
+  gNfTf1 := piecewise(Kf^Nf / 6 * exp(- Kf * X1) * X1^(Nf - 1), gt(X1, 0), 0);
+  gNfTf2 := piecewise(Kf^Nf / 6 * exp(- Kf * X2) * X2^(Nf - 1), gt(X2, 0), 0);
+  gNfTf3 := piecewise(Kf^Nf / 6 * exp(- Kf * X3) * X3^(Nf - 1), gt(X3, 0), 0);
   X1 := (time - tdose1) / 24;
   X2 := (time - tdose2) / 24;
   X3 := (time - tdose3) / 24;
@@ -31,7 +31,7 @@ model Overgaard2007_PDmodel_IL21()
   Ks := Ns / Ts;
 
   // Rate Rules:
-  M' = -km * (M - M_c);
+  M' = - km * (M - M_c);
   T' = c^-1 * (M - k * (T - T_a));
   BR' = f_prime * (E_slow + E_fast) * (1 - BR) - kR * BR;
 
@@ -76,6 +76,10 @@ model Overgaard2007_PDmodel_IL21()
   var M, T, BR, E_slow, E_fast, f_prime, M_c, tprime, k, f2_drug, T_day, T_night;
   var kb, M_day, M_night, M_night_baseline, gNsTs1, gNsTs2, gNsTs3, gNfTf1;
   var gNfTf2, gNfTf3, X1, X2, X3, Kf, Ks;
+  const COMpartment_, T_a, T_b, delta_T, kinc, tdose1, tdose2, tdose3, t_day;
+  const t_night, day_length, km, c, pEtot, kR, AMT_dose, pEf1, pEs1, pEf2;
+  const pEs2, pEf3, pEs3, M_b, t_prime, alpha, delta_high_dose, Ns, Nf, Ts;
+  const Tf;
 
   //Display Names:
   M is "Metabolic rate";

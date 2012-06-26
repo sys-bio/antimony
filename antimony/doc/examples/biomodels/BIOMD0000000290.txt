@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Alexander2010_Tcell_Regulation_Sys2()
+//Created by libAntimony v2.3-beta
+model *Alexander2010_Tcell_Regulation_Sys2()
 
   // Compartments and Species:
   compartment body;
@@ -36,23 +36,50 @@ model Alexander2010_Tcell_Regulation_Sys2()
 
   // Variable initializations:
   v_max = 125000;
+  v_max has items_per_day;
   k = 50000000;
+  k has substance;
   f = 0.0001;
+  f has dimensionless;
   gamma = 2000;
+  gamma has per_day;
   beta = 200;
+  beta has per_day;
   pi1 = 0.016;
+  pi1 has per_day_per_item;
   lambdaE = 1000;
+  lambdaE has per_day;
   muA = 0.25;
+  muA has per_day;
   muR = 0.25;
+  muR has per_day;
   muE = 0.25;
+  muE has per_day;
   muG = 5;
+  muG has per_day;
   b1 = 0.25;
-  sigma1 = 3e-06;
+  b1 has per_day;
+  sigma1 = 3e-006;
+  sigma1 has per_day_per_item;
+  mA has per_day;
+  mG has per_day;
+  R0 has dimensionless;
 
   //Other declarations:
   var mA, mG, R0;
+  const body, v_max, k, f, gamma, beta, pi1, lambdaE, muA, muR, muE, muG;
+  const b1, sigma1;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 86400 second;
+  unit per_day = 1 / 86400 second;
+  unit per_day_per_item = 1 / (86400 second * item);
+  unit items_per_day = item / 86400 second;
 
   //Display Names:
+  substance is "number";
+  time_unit is "days";
   r1a is "r1a: self-antigen uptake";
   r1b is "r1b: pAPC maturation";
   r2 is "r2: self-antigen release triggered by E";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Maeda2006_MyosinPhosphorylation()
+//Created by libAntimony v2.3-beta
+model *Maeda2006_MyosinPhosphorylation()
 
   // Compartments and Species:
   compartment c0, c1, c2;
@@ -340,9 +340,9 @@ model Maeda2006_MyosinPhosphorylation()
   re101_kb = 8.6348;
   re102_kf = 1;
   re102_kb = 0.1;
-  re106_kf = 4.63e-05;
-  re107_kf = 4.63e-05;
-  re108_kf = 4.63e-05;
+  re106_kf = 4.63e-005;
+  re107_kf = 4.63e-005;
+  re108_kf = 4.63e-005;
   re109_Km = 0.04;
   re109_ratio = 4;
   re109_Vmax = 4.9;
@@ -448,7 +448,19 @@ model Maeda2006_MyosinPhosphorylation()
   re174_g = 0.01;
   re175_g = 0.01;
 
+  //Other declarations:
+  const c0, c1, c2;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit microMolar = 1e-6 mole / litre;
+  unit per_uM_per_sec = litre / (1e-6 mole * second);
+  unit per_sec = 1 / second;
+  unit per_uM2_per_sec = litre^2 / ((1e-6 mole)^2 * second);
+  unit per_uM3_per_sec = litre^3 / ((1e-6 mole)^3 * second);
+
   //Display Names:
+  substance is "micromoles";
   c0 is "Default";
   c1 is "cytosol";
   c2 is "ER";

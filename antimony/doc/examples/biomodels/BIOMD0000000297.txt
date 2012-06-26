@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Ciliberto2003_Morphogenesis()
+//Created by libAntimony v2.3-beta
+model *Ciliberto2003_Morphogenesis()
 
   // Compartments and Species:
   compartment compartment_;
@@ -83,8 +83,8 @@ model Ciliberto2003_Morphogenesis()
   Trim = 0.084410675;
   Clb = 0.18453673;
   Sic = 0.0035491784;
-  PTrim = 1.402314e-05;
-  PClb = 3.0203049e-05;
+  PTrim = 1.402314e-005;
+  PClb = 3.0203049e-005;
   SBF = 0.12405464;
   IE = 0.52220768;
   Cdc20a = 1.4384692;
@@ -180,8 +180,23 @@ model Ciliberto2003_Morphogenesis()
 
   //Other declarations:
   var flag, BUD, kswe, kmih, IEin, Cdh1in, Mih1, Mcmin, SBFin, Swe1T;
+  const compartment_, kswe_prime, kswe_doubleprime, kswe_tripleprime, kmih_prime;
+  const Mih_ast, kmih_doubleprime, Mih, IEtot, Cdh1tot, Mih1tot, Mcmtot, SBFtot;
+  const kdiss, kdsic_prime, kdsic_doubleprime, kdsic, kdclb_doubleprime, kdclb_tripleprime;
+  const kdclb_prime, kass, ksclb, Jm, eps, kisbf_prime, kisbf_doubleprime;
+  const jisbf, kasbf_prime, kasbf_doubleprime, jasbf, kiie, jiie, kaie, jaie;
+  const kicdc20, jicdc20, kdcdc20, kacdc20, jacdc20, kicdh, kicdh_prime, jicdh;
+  const Kacdh_prime, Kacdh_doubleprime, jacdh, khsl1, Viwee, Jiwee, kdswe_prime;
+  const khsl1r, Vawee, Jawee, ksswe, kssweC, Vimih, jimih, Vamih, Jamih, kimcm;
+  const jimcm, kamcm, jamcm, kdbud, ksbud, kssic, kdcln, kscln, kscdc20_prime;
+  const kscdc20_doubleprime, jscdc20, kdswe_doubleprime, mu;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = item;
 
   //Display Names:
+  time_unit is "minutes";
   Trim is "CDC28_Clb2_Sic1_Complex";
   Clb is "Clb2";
   Sic is "Sic1";

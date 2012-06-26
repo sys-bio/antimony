@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Model_1()
+//Created by libAntimony v2.3-beta
+model *Model_1()
 
   // Compartments and Species:
   compartment extracellular, cytosol;
@@ -40,6 +40,15 @@ model Model_1()
   NOS_Kmnos1 = 16;
   ODC_Vmaxodc = 0.013;
   ODC_Kmodc = 90;
+
+  //Other declarations:
+  const extracellular, cytosol;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-6 mole;
+  unit microM = 1e-6 mole / litre;
+  unit microMpermin = 1e-6 mole / (litre * 60 second);
 
   //Display Names:
   ARGex is "Arginine ex";

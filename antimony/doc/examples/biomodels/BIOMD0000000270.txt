@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Schilling2009_ERK_distributive()
+//Created by libAntimony v2.3-beta
+model *Schilling2009_ERK_distributive()
 
   // Compartments and Species:
   compartment cell;
@@ -101,43 +101,116 @@ model Schilling2009_ERK_distributive()
   Delay07_mSHP1 = 0;
   Delay08_mSHP1 = 0;
   Epo = 50;
+  Epo has U_per_ml;
 
   // Compartment initializations:
   cell = 1;
 
   // Variable initializations:
   JAK2_phosphorylation_by_Epo = 0.0122149;
+  JAK2_phosphorylation_by_Epo has ml_per_min_per_U;
   EpoR_phosphorylation_by_pJAK2 = 3.15714;
+  EpoR_phosphorylation_by_pJAK2 has sec_ord;
   SHP1_activation_by_pEpoR = 0.408408;
+  SHP1_activation_by_pEpoR has sec_ord;
   SHP1_delay = 0.408408;
+  SHP1_delay has per_min;
   actSHP1_deactivation = 0.0248773;
+  actSHP1_deactivation has per_min;
   pEpoR_dephosphorylation_by_actSHP1 = 1.19995;
+  pEpoR_dephosphorylation_by_actSHP1 has sec_ord;
   pJAK2_dephosphorylation_by_actSHP1 = 0.368384;
+  pJAK2_dephosphorylation_by_actSHP1 has sec_ord;
   SOS_recruitment_by_pEpoR = 0.10271;
+  SOS_recruitment_by_pEpoR has sec_ord;
   mSOS_release_from_membrane = 15.5956;
+  mSOS_release_from_membrane has per_min;
   mSOS_induced_Raf_phosphorylation = 0.144515;
+  mSOS_induced_Raf_phosphorylation has sec_ord;
   pRaf_dephosphorylation = 0.374228;
+  pRaf_dephosphorylation has per_min;
   First_MEK2_phosphorylation_by_pRaf = 3.11919;
+  First_MEK2_phosphorylation_by_pRaf has sec_ord;
   Second_MEK2_phosphorylation_by_pRaf = 215.158;
+  Second_MEK2_phosphorylation_by_pRaf has sec_ord;
   First_MEK1_phosphorylation_by_pRaf = 0.687193;
+  First_MEK1_phosphorylation_by_pRaf has sec_ord;
   Second_MEK1_phosphorylation_by_pRaf = 667.957;
+  Second_MEK1_phosphorylation_by_pRaf has sec_ord;
   First_MEK_dephosphorylation = 0.130937;
+  First_MEK_dephosphorylation has per_min;
   Second_MEK_dephosphorylation = 0.0732724;
+  Second_MEK_dephosphorylation has per_min;
   First_ERK1_phosphorylation_by_ppMEK = 2.4927;
+  First_ERK1_phosphorylation_by_ppMEK has sec_ord;
   Second_ERK1_phosphorylation_by_ppMEK = 59.5251;
+  Second_ERK1_phosphorylation_by_ppMEK has sec_ord;
   First_ERK2_phosphorylation_by_ppMEK = 2.44361;
+  First_ERK2_phosphorylation_by_ppMEK has sec_ord;
   Second_ERK2_phosphorylation_by_ppMEK = 53.0816;
+  Second_ERK2_phosphorylation_by_ppMEK has sec_ord;
   First_ERK_dephosphorylation = 39.0886;
+  First_ERK_dephosphorylation has per_min;
   Second_ERK_dephosphorylation = 3.00453;
+  Second_ERK_dephosphorylation has per_min;
   ppERK_neg_feedback_on_mSOS = 5122.68;
+  ppERK_neg_feedback_on_mSOS has sec_ord;
   pSOS_dephosphorylation = 0.124944;
+  pSOS_dephosphorylation has per_min;
   scale_pEpoR = 0.493312;
+  scale_pEpoR has au_per_molec;
   scale_pJAK2 = 0.21008;
+  scale_pJAK2 has au_per_molec;
   scale_ppERK = 13.5981;
+  scale_ppERK has au_per_molec;
   scale_SOS = 1.10228;
+  scale_SOS has au_per_molec;
   scale_ppMEK = 40.5364;
+  scale_ppMEK has au_per_molec;
+  rescaled_pEpoR has au;
+  rescaled_ppMEK1 has au;
+  rescaled_ppMEK2 has au;
+  rescaled_ppERK1 has au;
+  rescaled_ppERK2 has au;
+  rescaled_pJAK2 has au;
+  rescaled_pSOS has au;
+  rescaled_SOS has au;
+  rescaled_mSOS has au;
 
   //Other declarations:
   var rescaled_pEpoR, rescaled_ppMEK1, rescaled_ppMEK2, rescaled_ppERK1, rescaled_ppERK2;
   var rescaled_pJAK2, rescaled_pSOS, rescaled_SOS, rescaled_mSOS;
+  const cell, JAK2_phosphorylation_by_Epo, EpoR_phosphorylation_by_pJAK2;
+  const SHP1_activation_by_pEpoR, SHP1_delay, actSHP1_deactivation, pEpoR_dephosphorylation_by_actSHP1;
+  const pJAK2_dephosphorylation_by_actSHP1, SOS_recruitment_by_pEpoR, mSOS_release_from_membrane;
+  const mSOS_induced_Raf_phosphorylation, pRaf_dephosphorylation, First_MEK2_phosphorylation_by_pRaf;
+  const Second_MEK2_phosphorylation_by_pRaf, First_MEK1_phosphorylation_by_pRaf;
+  const Second_MEK1_phosphorylation_by_pRaf, First_MEK_dephosphorylation;
+  const Second_MEK_dephosphorylation, First_ERK1_phosphorylation_by_ppMEK;
+  const Second_ERK1_phosphorylation_by_ppMEK, First_ERK2_phosphorylation_by_ppMEK;
+  const Second_ERK2_phosphorylation_by_ppMEK, First_ERK_dephosphorylation;
+  const Second_ERK_dephosphorylation, ppERK_neg_feedback_on_mSOS, pSOS_dephosphorylation;
+  const scale_pEpoR, scale_pJAK2, scale_ppERK, scale_SOS, scale_ppMEK;
+
+  // Unit definitions:
+  unit substance = 1e4 item;
+  unit time_unit = 60 second;
+  unit volume = 1e-3 litre;
+  unit U = dimensionless;
+  unit U_per_ml = dimensionless / 1e-3 litre;
+  unit ml_per_min_per_U = 1e-3 litre / (dimensionless * 60 second);
+  unit au = dimensionless;
+  unit au_per_molec = 1e-3 litre * dimensionless / 1e4 item;
+  unit per_min = 1 / 60 second;
+  unit sec_ord = 1e-3 litre / (1e4 item * 60 second);
+
+  //Display Names:
+  substance is "10E4 molecules";
+  time_unit is "minutes";
+  volume is "ml";
+  ml_per_min_per_U is "per min per (Uml)";
+  au is "arb. units";
+  au_per_molec is "arb. unit. per 10000 molecules";
+  per_min is "per minute";
+  sec_ord is "second order rate constant";
 end

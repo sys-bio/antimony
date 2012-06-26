@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Conant2007_WGD_glycolysis_2A3AB()
+//Created by libAntimony v2.3-beta
+model *Conant2007_WGD_glycolysis_2A3AB()
 
   // Compartments and Species:
   compartment cyto;
@@ -63,16 +63,27 @@ model Conant2007_WGD_glycolysis_2A3AB()
 
   // Variable initializations:
   WGD_E = 1;
+  WGD_E has dimensionless;
   fV_HXT = 1;
+  fV_HXT has dimensionless;
   fV_HXK = 1;
+  fV_HXK has dimensionless;
   fV_TDH = 1;
+  fV_TDH has dimensionless;
   fV_ENO = 1;
+  fV_ENO has dimensionless;
   fV_PFK = 1;
+  fV_PFK has dimensionless;
   fV_FBA = 1;
+  fV_FBA has dimensionless;
   fV_PYK = 1;
+  fV_PYK has dimensionless;
   fV_PGK = 1;
+  fV_PGK has dimensionless;
   fV_GPM = 1;
+  fV_GPM has dimensionless;
   fV_PGI = 1;
+  fV_PGI has dimensionless;
   HXT_Vmax_1 = 97.24;
   HXT_Kglc_1 = 1.1918;
   HXT_Ki_1 = 0.91;
@@ -141,7 +152,7 @@ model Conant2007_WGD_glycolysis_2A3AB()
   ADH_Vmax_13 = 209.5;
   ADH_Ketoh_13 = 17;
   ADH_Kinad_13 = 0.92;
-  ADH_Keq_13 = 6.9e-05;
+  ADH_Keq_13 = 6.9e-005;
   ADH_Knad_13 = 0.17;
   ADH_Knadh_13 = 0.11;
   ADH_Kinadh_13 = 0.031;
@@ -161,7 +172,28 @@ model Conant2007_WGD_glycolysis_2A3AB()
   trehalose_synth_Ktrehalose_18 = 2.4;
   succinate_syn_k_19 = 21.4;
 
+  //Other declarations:
+  const cyto, WGD_E, fV_HXT, fV_HXK, fV_TDH, fV_ENO, fV_PFK, fV_FBA, fV_PYK;
+  const fV_PGK, fV_GPM, fV_PGI;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+  unit mM = 1e-3 mole / litre;
+  unit mmpmin = 1e-3 mole / 60 second;
+  unit mMpmin = 1e-3 mole / (60 second * litre);
+  unit pmin = 1 / 60 second;
+  unit lpmin = litre / 60 second;
+  unit pmMpmin = litre / (1e-3 mole * 60 second);
+
   //Display Names:
+  time_unit is "minute";
+  substance is "mmol";
+  mmpmin is "mmolepermin";
+  mMpmin is "mMpermin";
+  pmin is "permin";
+  lpmin is "permin";
+  pmMpmin is "permMpermin";
   cyto is "cytoplasm";
   F26bP is "Fru2,6-P2";
   WGD_E is "WGD enzyme conc change";

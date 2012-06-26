@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_17(substrate, Km, V)
   V * substrate / (Km + substrate);
 end
@@ -51,8 +51,7 @@ function function_10(Vmax_v1, GlucoseExt, GlucoseInt, KGlc, Alpha_v1)
   Vmax_v1 * ((GlucoseExt - GlucoseInt) / (KGlc + GlucoseExt + GlucoseInt + Alpha_v1 * GlucoseExt * GlucoseInt / KGlc));
 end
 
-
-model Model_1()
+model *Model_1()
 
   // Compartments and Species:
   compartment compartment_1, compartment_2, compartment_3;
@@ -205,6 +204,15 @@ model Model_1()
   vANTI_k2 = 1000000;
   vGlyT_k1 = 1000000;
   vGlyT_k2 = 1000000;
+
+  //Other declarations:
+  const compartment_1, compartment_2, compartment_3, RaHXK, RaPFK, RaPYK;
+  const RaPGAM, RaENO;
+
+  // Unit definitions:
+  unit time_unit = second;
+  unit substance = 1e-3 mole;
+  unit volume = 1e-3 litre;
 
   //Display Names:
   compartment_1 is "cytosol";

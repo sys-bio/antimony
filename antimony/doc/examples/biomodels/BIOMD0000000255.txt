@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function stepfunc2(t, t_start, v_start, t_end, v_end)
   piecewise(v_start, lt(t, t_start), v_end, gt(t, t_end), (v_end - v_start) / (t_end - t_start) * (t - t_start) + v_start);
 end
@@ -7,8 +7,7 @@ function stepfunc(t, t_start, v_start, t_end, v_end)
   piecewise(v_start, lt(t, t_start), piecewise(v_end, gt(t, t_end), (v_start + v_end) / 2 + (v_end - v_start) / 2 * sin(3.14 / 2 * (2 * t - t_end - t_start) / (t_end - t_start))));
 end
 
-
-model A431_ErbB()
+model *A431_ErbB()
 
   // Compartments and Species:
   compartment plasma_membrane, endosomes, lysosomes, medium, endosomal_membrane;
@@ -187,14 +186,14 @@ model A431_ErbB()
   k1c := stepfunc(model_time, 1799.99, 0, 1800, 0);
   kd1c := stepfunc(model_time, 1799.99, 0, 1800, 0);
   kd1d := stepfunc(model_time, 1799.99, 0, 1800, 0);
-  kd6 := stepfunc(model_time, 1799.99, 0, 1800, 5.000000e-05);
+  kd6 := stepfunc(model_time, 1799.99, 0, 1800, 5.000000e-005);
   k97 := kd97 / KD_iressa_wt;
   k97c := kd97c / KD_iressa_mt;
   k116 := stepfunc(model_time, 2659.99, 0, 2660, 0.0150356);
   k119 := stepfunc(model_time, 1799.99, 0, 1800, 10000000);
   kd122 := stepfunc(model_time, 1799.99, 0, 1800, 1);
   k1 := stepfunc(model_time, 1799.99, 0, 1800, 10000000);
-  k122 := stepfunc(model_time, 1799.99, 0, 1800, 1.870400e-08);
+  k122 := stepfunc(model_time, 1799.99, 0, 1800, 1.870400e-008);
 
   // Reactions:
   v1: $c1 + c2 -> c3; k1 * c1 * c2 - kd1 * c3;
@@ -1026,7 +1025,8 @@ model A431_ErbB()
   v862: c5 + c105 -> c558; k123h * c5 * c105 - kd123h * c558;
 
   // Species initializations:
-  c1 = 1e-11;
+  c1 = 1e-011;
+  c1 has mole_per_volume;
   c2 = 0;
   c3 = 0;
   c288 = 0;
@@ -1445,6 +1445,7 @@ model A431_ErbB()
   c87 = 0;
   c531 = 1080000;
   c285 = 0;
+  c285 has mole_per_volume;
   c330 = 0;
   c331 = 0;
   c332 = 0;
@@ -1508,6 +1509,7 @@ model A431_ErbB()
   c424 = 0;
   c407 = 0;
   c514 = 0;
+  c514 has mole_per_volume;
   c142 = 0;
   c144 = 0;
   c158 = 0;
@@ -1538,19 +1540,28 @@ model A431_ErbB()
   medium = 1;
   endosomal_membrane = 1;
   cytoplasm = 1;
+  ERB_B1_P_tot has item;
+  ERB_B1_P_dimer has item;
+  ERB_B1_4_P has item;
+  ERB_B1_3_P has item;
+  ERB_B1_2_P has item;
 
   // Variable initializations:
   EGFR_t = 1080000;
+  EGFR_t has item;
   ERK_t = 695000;
+  ERK_t has item;
   AKT_t = 905000;
+  AKT_t has item;
+  model_time has time_unit;
   k1d = 518;
-  k2 = 7.44622e-06;
+  k2 = 7.44622e-006;
   kd2 = 0.16;
-  k2b = 3.73632e-08;
+  k2b = 3.73632e-008;
   kd2b = 0.016;
   k3 = 1;
   kd3 = 0.001;
-  k4 = 6.73e-06;
+  k4 = 6.73e-006;
   kd4 = 0.000166;
   k4b = 0;
   kd4b = 0.000166;
@@ -1560,10 +1571,10 @@ model A431_ErbB()
   kd5b = 0.0080833;
   kd5c = 0.162;
   k6 = 0.013;
-  k8 = 5.91474e-07;
+  k8 = 5.91474e-007;
   kd8 = 0.2;
   kd8b = 0.02;
-  k8b = 9.34641e-06;
+  k8b = 9.34641e-006;
   k10 = 140000;
   k10b = 0.05426;
   kd10 = 0.011;
@@ -1571,50 +1582,50 @@ model A431_ErbB()
   kd13 = 0;
   k14 = 0;
   kd14 = 0;
-  k15 = 1.667e-08;
+  k15 = 1.667e-008;
   kd15 = 0;
-  k16 = 1.67e-05;
-  k16b = 1.667e-07;
-  k17 = 1.67e-05;
+  k16 = 1.67e-005;
+  k16b = 1.667e-007;
+  k17 = 1.67e-005;
   kd17 = 0.06;
-  k18 = 2.5e-05;
+  k18 = 2.5e-005;
   kd18 = 1.3;
-  k19 = 1.667e-07;
+  k19 = 1.667e-007;
   kd19 = 0.5;
-  k20 = 1.1068e-05;
+  k20 = 1.1068e-005;
   kd20 = 0.4;
-  k21 = 3.67e-07;
+  k21 = 3.67e-007;
   kd21 = 0.23;
-  k22 = 1.39338e-07;
+  k22 = 1.39338e-007;
   kd22 = 0.1;
   k23 = 6;
   kd23 = 0.06;
   kd24 = 0.55;
-  k25 = 1.67e-05;
+  k25 = 1.67e-005;
   kd25 = 0.0214;
-  k28 = 5e-06;
+  k28 = 5e-006;
   kd28 = 0.0053;
-  k28b = 5e-06;
+  k28b = 5e-006;
   kd28b = 0.0053;
-  k29 = 1.17e-06;
+  k29 = 1.17e-006;
   kd29 = 3.1;
   kd32 = 0.1;
-  k32 = 4e-07;
+  k32 = 4e-007;
   kd33 = 0.2;
-  k33 = 3.5e-05;
+  k33 = 3.5e-005;
   kd34 = 0.03;
-  k34 = 7.5e-06;
+  k34 = 7.5e-006;
   kd35 = 0.0015;
-  k35 = 7.5e-06;
+  k35 = 7.5e-006;
   k36 = 0.005;
   kd36 = 0;
   kd37 = 0.3;
-  k37 = 1.5e-06;
-  k40 = 5e-05;
+  k37 = 1.5e-006;
+  k40 = 5e-005;
   kd40 = 0.064;
-  k41 = 5e-05;
+  k41 = 5e-005;
   kd41 = 0.0429;
-  k42 = 6e-05;
+  k42 = 6e-005;
   kd42 = 0.0141589;
   kd43 = 31.6228;
   k43 = 0;
@@ -1623,11 +1634,11 @@ model A431_ErbB()
   k45 = 0;
   kd47 = 0.8;
   k47 = 0;
-  k48 = 2.37e-05;
+  k48 = 2.37e-005;
   kd48 = 0.79;
   kd49 = 0.112387;
   k49 = 0;
-  k50 = 4.74801e-08;
+  k50 = 4.74801e-008;
   kd50 = 0.252982;
   kd52 = 0.033;
   kd53 = 0.28;
@@ -1638,29 +1649,29 @@ model A431_ErbB()
   k56 = 0.000397392;
   kd57 = 0.0076;
   k57 = 0;
-  k58 = 8.33e-07;
+  k58 = 8.33e-007;
   kd58 = 56.7862;
-  k52 = 8.85125e-06;
-  k44 = 1.07e-05;
+  k52 = 8.85125e-006;
+  k44 = 1.07e-005;
   k60 = 0.00266742;
   kd60 = 0;
   k61 = 0.00057;
   kd61 = 0;
   kd63 = 0.275;
-  k64 = 1.67e-05;
+  k64 = 1.67e-005;
   kd64 = 0.3;
   kd65 = 0.2;
   k65 = 0;
-  k66 = 1.5e-05;
+  k66 = 1.5e-005;
   kd66 = 0.2;
-  k67 = 5e-05;
+  k67 = 5e-005;
   kd67 = 0.02;
   kd68 = 0.2;
   k68 = 0;
   kd68b = 20.5;
-  k69 = 3.33e-05;
+  k69 = 3.33e-005;
   kd69 = 0.1;
-  k70 = 6.67e-07;
+  k70 = 6.67e-007;
   kd70 = 0.1;
   k71 = 0;
   kd71 = 25.2;
@@ -1668,36 +1679,36 @@ model A431_ErbB()
   kd72 = 5.01187;
   k73 = 0.00374845;
   kd73 = 0.5;
-  k74 = 6.36184e-07;
+  k74 = 6.36184e-007;
   kd74 = 0.355656;
   kd75 = 0.00633957;
   k75 = 0;
   k76 = 0;
   kd76 = 142.262;
   kd60d = 0;
-  k22b = 3.5e-05;
+  k22b = 3.5e-005;
   kd22b = 0.1;
   kd34b = 0.1;
-  k34b = 7.5e-05;
-  k94b = 5e-05;
-  k94 = 5e-05;
+  k34b = 7.5e-005;
+  k94b = 5e-005;
+  k94 = 5e-005;
   kd94 = 0.01;
   k95 = 0;
   kd95 = 33;
-  k96 = 1.67e-06;
+  k96 = 1.67e-006;
   kd96 = 0.1;
   kd6b = 0;
-  k7 = 5e-05;
+  k7 = 5e-005;
   kd7 = 0.000138;
   k62b = 0.000416;
   kd60b = 0;
   k60c = 0.00052;
   k60b = 0.0471248;
-  KD_iressa_wt = 3.5e-08;
+  KD_iressa_wt = 3.5e-008;
   kd97 = 0.015;
-  KD_iressa_mt = 3e-09;
+  KD_iressa_mt = 3e-009;
   kd97c = 0.001;
-  Kinh2 = 3e-07;
+  Kinh2 = 3e-007;
   kd98 = 0.001;
   k98 = 33300;
   Kinh4 = 0.113;
@@ -1706,25 +1717,25 @@ model A431_ErbB()
   Kinh3 = 0.001;
   kd100 = 0.001;
   k100 = 1;
-  k101 = 8.33e-07;
+  k101 = 8.33e-007;
   kd101 = 0.03;
-  k102 = 5e-07;
+  k102 = 5e-007;
   kd102 = 5.61009;
-  k103 = 8.36983e-09;
+  k103 = 8.36983e-009;
   kd103 = 0.016;
   k104 = 0;
   kd104 = 0.2;
-  k105 = 6.67e-05;
+  k105 = 6.67e-005;
   kd105 = 0.1;
-  k106 = 1.33e-05;
+  k106 = 1.33e-005;
   kd106 = 0.1;
-  k106b = 2.63418e-08;
+  k106b = 2.63418e-008;
   kd106b = 0.1;
-  k107 = 3.33e-05;
+  k107 = 3.33e-005;
   kd107 = 0.1;
   k108 = 0;
   kd108 = 5;
-  k109 = 5e-06;
+  k109 = 5e-006;
   kd109 = 0.1;
   k110 = 0.000333;
   kd110 = 0.1;
@@ -1734,19 +1745,19 @@ model A431_ErbB()
   kd112 = 0.1;
   k113 = 0;
   kd113 = 177.828;
-  k114 = 4.98816e-06;
+  k114 = 4.98816e-006;
   kd114 = 0.1;
   k115 = 0;
   kd115 = 1;
   kd116 = 0;
-  k117 = 8.33e-08;
+  k117 = 8.33e-008;
   kd117 = 0.1;
   k118 = 0;
   kd118 = 0.03;
   kd119 = 0.0103115;
-  k120 = 1.48131e-08;
+  k120 = 1.48131e-008;
   kd120 = 0.1;
-  k120b = 5.92538e-11;
+  k120b = 5.92538e-011;
   kd120b = 0.1;
   Ks = 0.001;
   k121 = 0.001;
@@ -1762,8 +1773,36 @@ model A431_ErbB()
 
   //Other declarations:
   var ERB_B1_P_tot, ERB_B1_P_dimer, ERB_B1_4_P, ERB_B1_3_P, ERB_B1_2_P, ERK_PP;
-  var AKT_PP, model_time, kd1, k1c, kd1c, kd1d, kd6, k97, k97c, k116, k119;
-  var kd122, k1, k122;
+  var AKT_PP, model_time, kd1, k1c, kd1c, kd1d, k1d, k6, kd6, kd35, k35, k48;
+  var kd48, kd56, k56, k58, kd58, k73, kd73, k74, kd74, kd75, k97, kd97, k97c;
+  var kd97c, k99, k103, kd103, k116, k119, k120, kd120, k120b, kd120b, kd122;
+  var k1, k122;
+  const plasma_membrane, endosomes, lysosomes, medium, endosomal_membrane;
+  const cytoplasm, EGFR_t, ERK_t, AKT_t, k2, kd2, k2b, kd2b, k3, kd3, k4;
+  const kd4, k4b, kd4b, k5, kd5, k5b, kd5b, kd5c, k8, kd8, kd8b, k8b, k10;
+  const k10b, kd10, k13, kd13, k14, kd14, k15, kd15, k16, k16b, k17, kd17;
+  const k18, kd18, k19, kd19, k20, kd20, k21, kd21, k22, kd22, k23, kd23;
+  const kd24, k25, kd25, k28, kd28, k28b, kd28b, k29, kd29, kd32, k32, kd33;
+  const k33, kd34, k34, k36, kd36, kd37, k37, k40, kd40, k41, kd41, k42, kd42;
+  const kd43, k43, kd44, kd45, k45, kd47, k47, kd49, k49, k50, kd50, kd52;
+  const kd53, k53, kd55, k55, kd57, k57, k52, k44, k60, kd60, k61, kd61, kd63;
+  const k64, kd64, kd65, k65, k66, kd66, k67, kd67, kd68, k68, kd68b, k69;
+  const kd69, k70, kd70, k71, kd71, k72, kd72, k75, k76, kd76, kd60d, k22b;
+  const kd22b, kd34b, k34b, k94b, k94, kd94, k95, kd95, k96, kd96, kd6b, k7;
+  const kd7, k62b, kd60b, k60c, k60b, KD_iressa_wt, KD_iressa_mt, Kinh2, kd98;
+  const k98, Kinh4, kd99, Kinh3, kd100, k100, k101, kd101, k102, kd102, k104;
+  const kd104, k105, kd105, k106, kd106, k106b, kd106b, k107, kd107, k108;
+  const kd108, k109, kd109, k110, kd110, kd111, k111, k112, kd112, k113, kd113;
+  const k114, kd114, k115, kd115, kd116, k117, kd117, k118, kd118, kd119;
+  const Ks, k121, kd121, k123, kd123, k6b, KD_ATP, k123h, kd123h, KD;
+
+  // Unit definitions:
+  unit time_unit = second;
+  unit substance = item;
+  unit volume = litre;
+  unit per_sec = 1 / second;
+  unit per_item_per_sec = 1 / (item * second);
+  unit mole_per_volume = mole / litre;
 
   //Display Names:
   plasma_membrane is "plasma membrane";

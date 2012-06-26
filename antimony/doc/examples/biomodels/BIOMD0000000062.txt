@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Bhartiya2003_Tryptophan_operon()
+//Created by libAntimony v2.3-beta
+model *Bhartiya2003_Tryptophan_operon()
 
   // Compartments and Species:
   compartment compartment_;
@@ -29,9 +29,17 @@ model Bhartiya2003_Tryptophan_operon()
 
   // Variable initializations:
   Tomax = 100;
+  Tomax has concentration;
   Tex = 0.14;
+  Tex has concentration;
   e_val = 0.9;
+  e_val has concentration;
   f_val = 380;
+  f_val has concentration;
+  Ts_norm has dimensionless;
+  To_norm has dimensionless;
+  Tt_norm has dimensionless;
+  Enz_norm has dimensionless;
   Enzyme_synthesis_k1 = 65;
   Enzyme_synthesis_ki1 = 3.53;
   Enzyme_synthesis_nH = 1.92;
@@ -45,8 +53,21 @@ model Bhartiya2003_Tryptophan_operon()
 
   //Other declarations:
   var Ts_norm, To_norm, Tt_norm, Enz_norm;
+  const compartment_, Tomax, Tex, e_val, f_val;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
+  unit concentration = 1e-6 mole / litre;
+  unit Concentration_per_time = 1e-6 mole / (litre * 60 second);
+  unit time_inverse = 1 / 60 second;
 
   //Display Names:
+  substance is "micromole";
+  time_unit is "minutes";
+  concentration is "microM";
+  Concentration_per_time is "microM_per_min";
+  time_inverse is "per_min";
   compartment_ is "cell";
   Enz is "Anthranilate synthase";
   Ts is "Synthesized tryptophan";

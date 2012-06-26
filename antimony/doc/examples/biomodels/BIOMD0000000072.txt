@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Model_1()
+//Created by libAntimony v2.3-beta
+model *Model_1()
 
   // Compartments and Species:
   compartment cell;
@@ -16,7 +16,7 @@ model Model_1()
   reaction_6: Ga => Gd; cell * reaction_6_k1 * Ga;
 
   // Species initializations:
-  L = 6.02e+17;
+  L = 6.02e+017;
   R = 10000;
   G = 7000;
   Gbg = 3000;
@@ -28,14 +28,20 @@ model Model_1()
   cell = 1;
 
   // Variable initializations:
-  reaction_0_k1 = 3.32e-18;
+  reaction_0_k1 = 3.32e-018;
   reaction_0_k2 = 0.01;
   reaction_1_v = 4;
   reaction_2_k1 = 0.0004;
   reaction_3_k1 = 1;
-  reaction_4_k1 = 1e-05;
+  reaction_4_k1 = 1e-005;
   reaction_5_k1 = 0.004;
   reaction_6_k1 = 0.11;
+
+  //Other declarations:
+  const cell;
+
+  // Unit definitions:
+  unit substance = item;
 
   //Display Names:
   L is "Ligand";

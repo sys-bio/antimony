@@ -1,12 +1,12 @@
-//Created by libAntimony v2.0
-model Oxhamre_Bacteria_induced_Ca_oscillations()
+//Created by libAntimony v2.3-beta
+model *Oxhamre_Bacteria_induced_Ca_oscillations()
 
   // Compartments and Species:
   compartment Cytosol, Endoplasmic_Reticulum;
   species CaER in Endoplasmic_Reticulum, Ca_Cyt in Cytosol;
 
   // Assignment Rules:
-  n := n0 * (exp(-kbN * time) + kappa * (1 - exp(-kbN * time)));
+  n := n0 * (exp(- kbN * time) + kappa * (1 - exp(- kbN * time)));
   p1 := p11 + p12 * n / (K1 + n);
   p2 := Ca_Cyt / (K2 + Ca_Cyt);
 
@@ -44,4 +44,14 @@ model Oxhamre_Bacteria_induced_Ca_oscillations()
 
   //Other declarations:
   var n, p1, p2, p3;
+  const Cytosol, Endoplasmic_Reticulum, n0, kbN, kappa, p11, p12, K1, K2;
+  const k31, K3;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
+
+  //Display Names:
+  substance is "micromole (default)";
+  time_unit is "minute (default)";
 end

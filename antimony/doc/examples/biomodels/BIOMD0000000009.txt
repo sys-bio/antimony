@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Huang1996_MAPK_ultrasens()
+//Created by libAntimony v2.3-beta
+model *Huang1996_MAPK_ultrasens()
 
   // Compartments and Species:
   compartment compartment_;
@@ -41,7 +41,7 @@ model Huang1996_MAPK_ultrasens()
   r10b: KPase_PP_K => P_K + KPase; compartment_ * r10b_k10 * KPase_PP_K;
 
   // Species initializations:
-  E1 = 3e-05;
+  E1 = 3e-005;
   E2 = 0.0003;
   KKK = 0.003;
   P_KKK = 0;
@@ -65,7 +65,7 @@ model Huang1996_MAPK_ultrasens()
   KPase_P_K = 0;
 
   // Compartment initializations:
-  compartment_ = 4e-12;
+  compartment_ = 4e-012;
 
   // Variable initializations:
   K_PP_norm_max = 0.900049;
@@ -100,7 +100,14 @@ model Huang1996_MAPK_ultrasens()
   r10a_d10 = 150;
   r10b_k10 = 150;
 
+  //Other declarations:
+  const compartment_, K_PP_norm_max;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
   //Display Names:
+  substance is "micromole";
   E1 is "MAPKKK activator";
   E2 is "MAPKKK inactivator";
   KKK is "MAPKKK";

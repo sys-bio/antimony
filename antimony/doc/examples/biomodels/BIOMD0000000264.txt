@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Model_1()
+//Created by libAntimony v2.3-beta
+model *Model_1()
 
   // Compartments and Species:
   compartment Cell;
@@ -29,6 +29,7 @@ model Model_1()
   reaction_13: $Inhibitor + EGF_EGFR -> EGF_EGFR_i; Cell * (inhibitor_binding_kf * Inhibitor * EGF_EGFR - inhibitor_binding_kb * EGF_EGFR_i);
   reaction_14: $EGF + EGFR_i -> EGF_EGFR_i; Cell * (EGF_binding_kf * EGF * EGFR_i - EGF_binding_kb * EGF_EGFR_i);
   reaction_15: EGFR_i => ; Cell * EGFR_turnover * EGFR_i;
+  EGF has ng_per_ml;
 
   // Species initializations:
   EGFR = pro_EGFR / (1 + inhibitor_binding_kf * Inhibitor / (inhibitor_binding_kb + EGFR_turnover));
@@ -47,27 +48,43 @@ model Model_1()
 
   // Compartment initializations:
   Cell = 1;
+  pEGFR_total has ng_per_ml;
+  pAkt_total has ng_per_ml;
 
   // Variable initializations:
   pEGFR_scaleFactor = 0.000181735;
+  pEGFR_scaleFactor has ng;
   pAkt_scaleFactor = 60.0588;
+  pAkt_scaleFactor has ng;
   pS6_scaleFactor = 49886.2;
+  pS6_scaleFactor has ng;
+  pS6_total has ng_per_ml;
   EGF_conc_step = 30;
+  EGF_conc_step has ng_per_ml;
   EGF_conc_pulse = 0;
+  EGF_conc_pulse has ng_per_ml;
   EGF_conc_ramp = 0;
+  EGF_conc_ramp has ng_per_ml;
   EGFR_turnover = 0.000106386;
+  EGFR_turnover has per_sec;
   EGF_binding_kf = 0.00673816;
+  EGF_binding_kf has ml_per_ng_per_sec;
   EGF_binding_kb = 0.040749;
-  inhibitor_binding_kf = 2.43466029020655e-05;
-  inhibitor_binding_kb = 5.25096686262403e-05;
+  EGF_binding_kb has per_sec;
+  inhibitor_binding_kf = 2.43466029020655e-005;
+  inhibitor_binding_kf has per_conc_per_sec;
+  inhibitor_binding_kb = 5.25096686262403e-005;
+  inhibitor_binding_kb has per_sec;
   pulse_time = 60;
+  pulse_time has time_unit;
   ramp_time = 3600;
-  reaction_2_k1 = 1.5543e-05;
+  ramp_time has time_unit;
+  reaction_2_k1 = 1.5543e-005;
   reaction_2_k2 = 0.00517473;
   reaction_3_k1 = 0.0528141;
   reaction_4_k1 = 0.0997194;
-  reaction_5_k1 = 2.10189e-06;
-  reaction_5_k2 = 5.1794e-15;
+  reaction_5_k1 = 2.10189e-006;
+  reaction_5_k2 = 5.1794e-015;
   reaction_6_k1 = 0.00121498;
   reaction_7_k1 = 0.0327962;
   reaction_8_k1 = 0.00113102;
@@ -75,8 +92,28 @@ model Model_1()
 
   //Other declarations:
   var pEGFR_total, pAkt_total, pS6_total;
+  const Cell, pEGFR_scaleFactor, pAkt_scaleFactor, pS6_scaleFactor, EGF_conc_step;
+  const EGF_conc_pulse, EGF_conc_ramp, EGFR_turnover, EGF_binding_kf, EGF_binding_kb;
+  const inhibitor_binding_kf, inhibitor_binding_kb, pulse_time, ramp_time;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit conc = dimensionless / 1e-3 litre;
+  unit time_unit = second;
+  unit volume = 1e-3 litre;
+  unit per_sec = 1 / second;
+  unit ng = 1e-9 gram;
+  unit ng_per_ml = 1e-9 gram / 1e-3 litre;
+  unit ml_per_ng_per_sec = 1e-3 litre / (1e-9 gram * second);
+  unit per_conc_per_sec = 1e-3 litre * dimensionless / second;
 
   //Display Names:
+  substance is "arbitrary_amount";
+  conc is "arbitrary_conc";
+  time_unit is "seconds";
+  volume is "ml";
+  per_sec is "per second";
+  per_conc_per_sec is "per conc per second";
   reaction_1 is "EGF+EGFR";
   reaction_2 is "pEGFR+Akt";
   reaction_3 is "Akt_phosphorylation";

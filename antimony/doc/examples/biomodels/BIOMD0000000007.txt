@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model NovakTyson1997CellModel()
+//Created by libAntimony v2.3-beta
+model *NovakTyson1997CellModel()
 
   // Compartments and Species:
   compartment Cell;
@@ -75,6 +75,7 @@ model NovakTyson1997CellModel()
 
   // Compartment initializations:
   Cell = 1;
+  Cell has volume;
 
   // Variable initializations:
   kp = 3.25;
@@ -125,8 +126,17 @@ model NovakTyson1997CellModel()
 
   //Other declarations:
   var kp, Mass, k2, k6, kwee, k25;
+  const Cell, mu, k1, k2prime, k3, k4, k5, k6prime, k7, k7r, k8, k8r, kc;
+  const kcr, ki, kir, ku, kur, ku2, kur2, kw, kwr, V2, V2prime, V6, V6prime;
+  const V25, V25prime, Vw, Vwprime, Kmc, Kmcr, Kmi, Kmir, Kmp, Kmu, Kmur;
+  const Kmu2, Kmur2, Kmw, Kmwr, alpha, beta, Cig1;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit volume = litre;
 
   //Display Names:
+  time_unit is "minutes";
   UbE is "ubiquitinProtease1";
   UbE2 is "ubiquitinProtease2";
   G2K is "Cdc13_Cdc2";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Bray1995_chemotaxis_receptorlinkedcomplex()
+//Created by libAntimony v2.3-beta
+model *Bray1995_chemotaxis_receptorlinkedcomplex()
 
   // Compartments and Species:
   compartment cell;
@@ -48,14 +48,14 @@ model Bray1995_chemotaxis_receptorlinkedcomplex()
   phosphotransfer_r12: Y + TTWWAAp => Yp + TTWWAA; cell * phosphotransfer_r12_k1 * Y * TTWWAAp;
 
   // Species initializations:
-  AA = 2.5e-06;
+  AA = 2.5e-006;
   AAp = 0;
-  W = 5e-06;
+  W = 5e-006;
   WAA = 0;
   WAAp = 0;
   WWAA = 0;
   WWAAp = 0;
-  TT = 2.5e-06;
+  TT = 2.5e-006;
   TTW = 0;
   TTWW = 0;
   TTWAA = 0;
@@ -64,18 +64,19 @@ model Bray1995_chemotaxis_receptorlinkedcomplex()
   TTAAp = 0;
   TTWWAA = 0;
   TTWWAAp = 0;
-  Y = 1e-05;
+  Y = 1e-005;
   Yp = 0;
-  Z = 2e-05;
-  B = 2e-06;
+  Z = 2e-005;
+  B = 2e-006;
   Bp = 0;
-  SetYp = 1.63e-06;
+  SetYp = 1.63e-006;
 
   // Compartment initializations:
   cell = 1.41;
 
   // Variable initializations:
   Hill = 4;
+  Bias has dimensionless;
   complex_r1_k1 = 0.00365;
   complex_r1_k2 = 1000000;
   complex_r2_k1 = 0.00894;
@@ -92,7 +93,7 @@ model Bray1995_chemotaxis_receptorlinkedcomplex()
   complex_r7_k2 = 1000000;
   complex_r8_k1 = 727;
   complex_r8_k2 = 1000000;
-  complex_r9_k1 = 7.87e-06;
+  complex_r9_k1 = 7.87e-006;
   complex_r9_k2 = 1000000;
   complex_r10_k1 = 0.0511;
   complex_r10_k2 = 1000000;
@@ -125,7 +126,16 @@ model Bray1995_chemotaxis_receptorlinkedcomplex()
 
   //Other declarations:
   var Bias;
+  const cell, Hill;
+
+  // Unit definitions:
+  unit perMpersec = litre / (mole * second);
+  unit persec = 1 / second;
+  unit volume = 1e-15 litre;
+  unit M = mole / litre;
+  unit Mpersec = mole / (litre * second);
 
   //Display Names:
+  volume is "femtolitre";
   SetYp is "setYp";
 end

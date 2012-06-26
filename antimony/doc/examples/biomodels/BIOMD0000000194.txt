@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model TM()
+//Created by libAntimony v2.3-beta
+model *TM()
 
   // Compartments and Species:
   compartment Cytoplasm;
@@ -15,28 +15,49 @@ model TM()
   mt_attachment: at gt(time, 2000): u = const_val_0;
 
   // Species initializations:
-  Mad1_CMad2 = 5e-08;
-  OMad2 = 1.5e-07;
+  Mad1_CMad2 = 5e-008;
+  Mad1_CMad2 has mole_per_volume;
+  OMad2 = 1.5e-007;
+  OMad2 has mole_per_volume;
   Mad1_CMad2_OMad2 = 0;
-  Cdc20 = 2.2e-07;
+  Mad1_CMad2_OMad2 has mole_per_volume;
+  Cdc20 = 2.2e-007;
+  Cdc20 has mole_per_volume;
   Cdc20_CMad2 = 0;
+  Cdc20_CMad2 has mole_per_volume;
 
   // Compartment initializations:
   Cytoplasm = 1;
 
   // Variable initializations:
   u = 1;
+  u has dimensionless;
   const_val_0 = 0;
+  const_val_0 has dimensionless;
   eta_T = 0.01;
+  eta_T has ps;
   gamma_T = 1000000000;
+  gamma_T has pMp;
   alpha_T = 200000;
+  alpha_T has pMp;
   beta_T = 0.2;
+  beta_T has ps;
   const_val_1 = 1;
+  const_val_1 has dimensionless;
 
   //Other declarations:
   var u;
+  const Cytoplasm, const_val_0, eta_T, gamma_T, alpha_T, beta_T, const_val_1;
+
+  // Unit definitions:
+  unit ps = 1 / second;
+  unit pMp = litre / (mole * second);
+  unit volume = litre;
+  unit mole_per_volume = mole / litre;
 
   //Display Names:
+  ps is "per second";
+  pMp is " liter per mole per second";
   Mad1_CMad2 is "Mad1:C-Mad2";
   OMad2 is "O-Mad2";
   Mad1_CMad2_OMad2 is "Mad1:C-Mad2:O-Mad2*";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Field1974_Oregonator()
+//Created by libAntimony v2.3-beta
+model *Field1974_Oregonator()
 
   // Compartments and Species:
   compartment BZ;
@@ -13,10 +13,10 @@ model Field1974_Oregonator()
   Reaction5: Ce => Br; Ce * Reaction5_k5 * BZ;
 
   // Species initializations:
-  Br = 1e-07;
+  Br = 1e-007;
   BrO3 = 0.06;
   Ce = 0.05;
-  HBrO2 = 5e-11;
+  HBrO2 = 5e-011;
   HOBr = 0;
 
   // Compartment initializations:
@@ -29,6 +29,9 @@ model Field1974_Oregonator()
   Reaction3_k3 = 8000;
   Reaction4_k4 = 40000000;
   Reaction5_k5 = 1;
+
+  //Other declarations:
+  const BZ, f;
 
   //Display Names:
   Br is "Br-";

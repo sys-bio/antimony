@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Sneyd2002_dynamic_model_of_IP3_Receptor()
+//Created by libAntimony v2.3-beta
+model *Sneyd2002_dynamic_model_of_IP3_Receptor()
 
   // Compartments and Species:
   compartment compartment_;
@@ -63,8 +63,14 @@ model Sneyd2002_dynamic_model_of_IP3_Receptor()
 
   //Other declarations:
   var open_probability, Phi1, Phi2, Phi_minus2, Phi3, Phi4, Phi_minus4, Phi5;
+  const compartment_, k1, L1, l2, lminus2, c, L3, k2, l4, kminus1, kminus2;
+  const kminus3, lminus4, L5, k3, k4, l6, kminus4, lminus6, IP3;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
 
   //Display Names:
+  substance is "micromole";
   R is "Receptor";
   O is "Open State";
   I1 is "Inactivated State 1";

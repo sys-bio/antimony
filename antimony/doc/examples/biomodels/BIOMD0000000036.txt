@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Tyson1999()
+//Created by libAntimony v2.3-beta
+model *Tyson1999()
 
   // Compartments and Species:
   compartment default, CYTOPLASM;
@@ -22,7 +22,7 @@ model Tyson1999()
   CYTOPLASM = 1;
 
   // Variable initializations:
-  N_A = 6.0221367e+23;
+  N_A = 6.0221367e+023;
   TC_Vm = 1;
   TC_Pcrit = 0.1;
   TC_Keq = 200;
@@ -34,7 +34,14 @@ model Tyson1999()
   DBT_J = 0.05;
   DBT_Keq = 200;
 
+  //Other declarations:
+  const default, CYTOPLASM, N_A;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+
   //Display Names:
+  time_unit is "hour";
   P is "Pt";
   TC is "transcription";
   TL is "translation";

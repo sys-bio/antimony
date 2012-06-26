@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Keizer1996_Ryanodine_receptor_adaptation()
+//Created by libAntimony v2.3-beta
+model *Keizer1996_Ryanodine_receptor_adaptation()
 
   // Compartments and Species:
   compartment compartment_;
@@ -21,6 +21,7 @@ model Keizer1996_Ryanodine_receptor_adaptation()
 
   // Compartment initializations:
   compartment_ = 1;
+  Open_probability has dimensionless;
 
   // Variable initializations:
   Closed_state_1_ka_minus = 28.8;
@@ -36,7 +37,18 @@ model Keizer1996_Ryanodine_receptor_adaptation()
 
   //Other declarations:
   var Open_probability;
+  const compartment_;
+
+  // Unit definitions:
+  unit per_microM4sec = litre^4 / ((1e-6 mole)^4 * second);
+  unit per_microM3sec = litre^3 / ((1e-6 mole)^3 * second);
+  unit per_second = 1 / second;
+  unit microM = 1e-6 mole / litre;
+  unit substance = dimensionless;
 
   //Display Names:
+  per_microM4sec is "microM-4sec-1";
+  per_microM3sec is "microM-3sec-1";
+  substance is "normalized substance";
   Closed_State_2 is "Closed State 2";
 end

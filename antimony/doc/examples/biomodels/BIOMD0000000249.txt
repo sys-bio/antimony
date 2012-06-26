@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model restif06()
+//Created by libAntimony v2.3-beta
+model *restif06()
 
   // Compartments and Species:
   compartment env;
@@ -48,7 +48,7 @@ model restif06()
   N = 1;
   S = 0.0588912;
   I_1 = 0.003775;
-  I_2 = 1e-06;
+  I_2 = 1e-006;
   R_1 = 0.93733;
   R_2 = 0;
   I_1p = 0;
@@ -57,21 +57,52 @@ model restif06()
 
   // Compartment initializations:
   env = 1;
+  mu has per_year;
 
   // Variable initializations:
   l_e = 50;
+  l_e has time_unit;
+  beta_1 has per_year;
   R0_1 = 17;
+  R0_1 has dimensionless;
+  gamma_1 has per_year;
+  beta_2 has per_year;
   R0_2 = 17;
+  R0_2 has dimensionless;
+  gamma_2 has per_year;
   tInf_1 = 21;
+  tInf_1 has day;
   tInf_2 = 21;
+  tInf_2 has day;
+  sigma has per_year;
   tImm = 20;
+  tImm has time_unit;
+  Lambda_1 has per_year;
+  Lambda_2 has per_year;
+  I_1_frac has dimensionless;
+  I_2_frac has dimensionless;
+  S_frac has dimensionless;
+  R1_frac has dimensionless;
+  R2_frac has dimensionless;
+  Rp_frac has dimensionless;
   psi = 0.2;
+  psi has dimensionless;
 
   //Other declarations:
   var mu, beta_1, gamma_1, beta_2, gamma_2, sigma, Lambda_1, Lambda_2, I_1_frac;
   var I_2_frac, S_frac, R1_frac, R2_frac, Rp_frac;
+  const env, l_e, R0_1, R0_2, tInf_1, tInf_2, tImm, psi;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 3.1536e+007 second;
+  unit day = 86400 second;
+  unit per_year = 1 / 3.1536e+007 second;
 
   //Display Names:
+  substance is "individuals";
+  time_unit is "years";
+  day is "days";
   env is "environment";
   l_e is "life expectancy";
   tInf_1 is "infectious period 1";

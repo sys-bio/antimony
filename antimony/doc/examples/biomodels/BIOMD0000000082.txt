@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Model_1()
+//Created by libAntimony v2.3-beta
+model *Model_1()
 
   // Compartments and Species:
   compartment cell;
@@ -15,15 +15,15 @@ model Model_1()
   reaction_5: G_GTP => G_GDP; cell * reaction_5_k6 * G_GTP;
 
   // Species initializations:
-  agonist = 1e-08;
+  agonist = 1e-008;
   DR = 0;
   DRG_GDP = 0;
   DRG = 0;
   GDP = 0;
   DRG_GTP = 0;
-  GTP = 1e-05;
-  Recptor = 1e-09;
-  G_GDP = 1e-09;
+  GTP = 1e-005;
+  Recptor = 1e-009;
+  G_GDP = 1e-009;
   G_GTP = 0;
 
   // Compartment initializations:
@@ -40,6 +40,9 @@ model Model_1()
   reaction_3_k10 = 0.1;
   reaction_4_k5 = 0.05;
   reaction_5_k6 = 0.1;
+
+  //Other declarations:
+  const cell;
 
   //Display Names:
   agonist is "D";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Clarke2006_Smad_signalling()
+//Created by libAntimony v2.3-beta
+model *Clarke2006_Smad_signalling()
 
   // Compartments and Species:
   compartment cytoplasm, nucleus;
@@ -47,7 +47,7 @@ model Clarke2006_Smad_signalling()
   reaction_5_k5cn = 0.563;
   reaction_4_k4nc = 0.783;
   reaction_4_k4cn = 0.00497;
-  reaction_2_k2a = 6.5e-05;
+  reaction_2_k2a = 6.5e-005;
   reaction_2_k2d = 0.0399;
   reaction_3_k3 = 16.6;
   reaction_6_k6d = 0.0492;
@@ -57,8 +57,19 @@ model Clarke2006_Smad_signalling()
 
   //Other declarations:
   var sum_R_smad_cyt, sum_R_smad_nuc, sum_smad4_cyt, sum_smad4_nuc;
+  const cytoplasm, nucleus;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = item;
+  unit min_inv = 1 / 60 second;
+  unit items_per_min = item / 60 second;
+  unit per_item_min = 1 / (item * 60 second);
 
   //Display Names:
+  time_unit is "minutes";
+  items_per_min is "items per min";
+  per_item_min is "per item per min";
   receptor is "receptors";
   R_smad_cyt is "R-Smad_cyt";
   R_smad_P_cyt is "R-Smad-P_cyt";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Rozi2003_Glycogen_Phosphorylase_Activation()
+//Created by libAntimony v2.3-beta
+model *Rozi2003_Glycogen_Phosphorylase_Activation()
 
   // Compartments and Species:
   compartment extracellular, cytosol, intravesicular;
@@ -32,37 +32,79 @@ model Rozi2003_Glycogen_Phosphorylase_Activation()
 
   // Variable initializations:
   v0 = 2;
+  v0 has uM_per_min;
   v1 = 2;
+  v1 has uM_per_min;
   beta = 0.5;
+  beta has dimensionless;
   Vm2 = 6;
+  Vm2 has uM_per_min;
   K2 = 0.1;
+  K2 has uM;
   Vm3 = 20;
+  Vm3 has uM_per_min;
   m = 2;
+  m has dimensionless;
   Ka = 0.2;
+  Ka has uM;
   Ky = 0.2;
+  Ky has uM;
   Kz = 0.5;
+  Kz has uM;
   Kf = 1;
+  Kf has min_inv;
   K = 10;
+  K has min_inv;
   V4 = 2;
+  V4 has uM_per_min;
   Vm5 = 30;
+  Vm5 has uM_per_min;
   n = 4;
+  n has dimensionless;
   K5 = 1;
+  K5 has uM;
   Kd = 0.4;
+  Kd has uM;
   epsilon = 0.1;
+  epsilon has min_inv;
   Vpm1 = 1.5;
+  Vpm1 has min_inv;
   gamma = 9;
+  gamma has dimensionless;
   Ka5 = 0.5;
+  Ka5 has uM;
   K1 = 0.1;
   Ka6 = 0.5;
+  Ka6 has uM;
   Vpm2 = 0.6;
+  Vpm2 has min_inv;
   alpha = 9;
+  alpha has dimensionless;
   G = 10000;
+  G has uM;
   Ka1 = 10000;
+  Ka1 has uM;
   Kp2 = 0.2;
   Ka2 = 10000;
+  Ka2 has uM;
   p = 2;
+  p has dimensionless;
+
+  //Other declarations:
+  const extracellular, cytosol, intravesicular, v0, v1, beta, Vm2, K2, Vm3;
+  const m, Ka, Ky, Kz, Kf, K, V4, Vm5, n, K5, Kd, epsilon, Vpm1, gamma, Ka5;
+  const K1, Ka6, Vpm2, alpha, G, Ka1, Kp2, Ka2, p;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit uM = 1e-6 mole / litre;
+  unit uM_per_min = 1e-6 mole / (litre * 3600 second);
+  unit time_unit = 3600 second;
+  unit min_inv = 1 / 3600 second;
 
   //Display Names:
+  substance is "micromole";
+  time_unit is "minutes";
   EC is "Extracellular Calcium";
   Z is "Cytosolic Calcium";
   A is "IP3";

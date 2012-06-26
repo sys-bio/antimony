@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_3(Vs, B, n, K)
   Vs * B^n / (K^n + B^n);
 end
@@ -15,8 +15,7 @@ function function_0(vsb, K, m, Bn)
   vsb * K^m / (K^m + Bn^m);
 end
 
-
-model Model_1()
+model *Model_1()
 
   // Compartments and Species:
   compartment cell;
@@ -177,6 +176,13 @@ model Model_1()
   reaction_46_k1 = 0.01;
   reaction_47_V = 0.1;
   reaction_47_Km = 0.1;
+
+  //Other declarations:
+  const cell;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
 
   //Display Names:
   species_0 is "Mb";

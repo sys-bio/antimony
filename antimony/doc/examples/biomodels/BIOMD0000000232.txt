@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Nazaret2009_TCA_RC_ATP()
+//Created by libAntimony v2.3-beta
+model *Nazaret2009_TCA_RC_ATP()
 
   // Compartments and Species:
   compartment cytoplasm, mitochondrion;
@@ -53,24 +53,46 @@ model Nazaret2009_TCA_RC_ATP()
   // Compartment initializations:
   cytoplasm = 1;
   mitochondrion = 1;
+  ATPcrit has mM;
 
   // Variable initializations:
   At_ = 4.16;
-  C = 6.75e-06;
+  At_ has mM;
+  C = 6.75e-006;
+  C has mM_per_mV;
+  DeltaGtransport has mJ_per_mol;
   DeltaPsi = 150;
+  DeltaPsi has mV;
   DeltaPsim = 150;
+  DeltaPsim has mV;
   F = 96485;
+  F has C_per_mol;
+  JANT has mM_per_;
+  JATP has mM_per_;
+  Jleak has mM_per_;
+  Jresp has mM_per_;
   K = 2;
-  Kapp = 4.4e-09;
+  K has mM;
+  Kapp = 4.4e-009;
+  Kapp has per_mM;
   Nt = 1.07;
+  Nt has mM;
   R = 8314;
+  R has mJ_per_mol_per_K;
   T = 298;
+  T has kelvin;
   a = 0.1;
+  a has per_mV;
   b = 0.004;
+  b has per_mM;
   kANT = 0.05387;
+  kANT has per_;
   kATP = 131.9;
+  kATP has mM_per_;
   kleak = 0.000426;
+  kleak has mM_per_s_per_mV;
   kresp = 2.5;
+  kresp has mM_per_;
   v1_k1 = 0.038;
   v2_k2 = 0.152;
   v3_k3 = 57.142;
@@ -83,8 +105,39 @@ model Nazaret2009_TCA_RC_ATP()
 
   //Other declarations:
   var ATPcrit, DeltaGtransport, DeltaPsi, JANT, JATP, Jleak, Jresp;
+  const cytoplasm, mitochondrion, At_, C, DeltaPsim, F, K, Kapp, Nt, R, T;
+  const a, b, kANT, kATP, kleak, kresp;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit C_per_mol = 1e1 coulomb / 1e1 mole;
+  unit mJ_per_mol_per_K = 1e-3 joule / (1e1 mole * 1e1 kelvin);
+  unit mJ_per_mol = 1e-3 joule / 1e1 mole;
+  unit mM = 1e-3 mole / 1e1 litre;
+  unit mM_per_mV = 1e-3 mole / (1e1 litre * 1e-3 volt);
+  unit mM_per_ = 1e-3 mole / (1e1 litre * 1e1 second);
+  unit mM_per_s_per_mV = 1e-3 mole / (1e1 litre * 1e1 second * 1e-3 volt);
+  unit mV = 1e-3 volt;
+  unit per_mM = 1e1 litre / 1e-3 mole;
+  unit per_mM_per_ = 1e1 litre / (1e-3 mole * 1e1 second);
+  unit per_mM_squared_per_ = (1e1 litre)^2 / ((1e-3 mole)^2 * 1e1 second);
+  unit per_mV = 1 / 1e-3 volt;
+  unit per_ = 1 / 1e1 second;
 
   //Display Names:
+  C_per_mol is "coulomb per mole";
+  mJ_per_mol_per_K is "milliJoule per mole per Kelvin";
+  mJ_per_mol is "milliJoules per mole";
+  mM is "millimolar";
+  mM_per_mV is "millimolar per millivolt";
+  mM_per_ is "millimolar per second";
+  mM_per_s_per_mV is "millimolar per second per millivolt";
+  mV is "millivolt";
+  per_mM is "per mM";
+  per_mM_per_ is "per millimolar per second";
+  per_mM_squared_per_ is "per millimolar squared per second";
+  per_mV is "per millivolt";
+  per_ is "per second";
   mitochondrion is "mitochondrial matrix";
   H is "H+";
   He is "H+";

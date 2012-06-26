@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model DellOrco2009_phototransduction()
+//Created by libAntimony v2.3-beta
+model *DellOrco2009_phototransduction()
 
   // Compartments and Species:
   compartment cytosol;
@@ -33,12 +33,12 @@ model DellOrco2009_phototransduction()
   preflash := piecewise(premag, leq(time, predur), 0);
   testflash := piecewise(mag, and(geq(time, del), leq(time, del + dur)), 0);
   stimulus := background + preflash + testflash + otherstimulus;
-  numConcFactor := 1 / (6.022000e+05 * Vcyto);
-  kRK1_1 := kRK1_0 * exp(-omega);
-  kRK1_2 := kRK1_0 * exp(-omega * 2);
-  kRK1_3 := kRK1_0 * exp(-omega * 3);
-  kRK1_4 := kRK1_0 * exp(-omega * 4);
-  kRK1_5 := kRK1_0 * exp(-omega * 5);
+  numConcFactor := 1 / (6.022000e+005 * Vcyto);
+  kRK1_1 := kRK1_0 * exp(- omega);
+  kRK1_2 := kRK1_0 * exp(- omega * 2);
+  kRK1_3 := kRK1_0 * exp(- omega * 3);
+  kRK1_4 := kRK1_0 * exp(- omega * 4);
+  kRK1_5 := kRK1_0 * exp(- omega * 5);
   kRK1_6 := 0;
   kA1_1 := kArr * exp(omega_arr);
   kA1_2 := kArr * exp(omega_arr * 2);
@@ -46,12 +46,12 @@ model DellOrco2009_phototransduction()
   kA1_4 := kArr * exp(omega_arr * 4);
   kA1_5 := kArr * exp(omega_arr * 5);
   kA1_6 := kArr * exp(omega_arr * 6);
-  kG1_1 := kG1_0 * exp(-omega);
-  kG1_2 := kG1_0 * exp(-omega * 2);
-  kG1_3 := kG1_0 * exp(-omega * 3);
-  kG1_4 := kG1_0 * exp(-omega * 4);
-  kG1_5 := kG1_0 * exp(-omega * 5);
-  kG1_6 := kG1_0 * exp(-omega * 6);
+  kG1_1 := kG1_0 * exp(- omega);
+  kG1_2 := kG1_0 * exp(- omega * 2);
+  kG1_3 := kG1_0 * exp(- omega * 3);
+  kG1_4 := kG1_0 * exp(- omega * 4);
+  kG1_5 := kG1_0 * exp(- omega * 5);
+  kG1_6 := kG1_0 * exp(- omega * 6);
   E := PDE_a_Ga_GTP + 2 * Ga_GTP_a_PDE_a_Ga_GTP;
   Rec_wCa2 := (Rectot - Rec_wCa2_RK * numConcFactor) / (1 + (Kp / Ca2_free)^w);
   alfamax := betadark * cGMPdark * (1 + (Ca2dark / Kc)^m);
@@ -147,7 +147,7 @@ model DellOrco2009_phototransduction()
   v_r30: RK -> Rec_wCa2_RK; kRec3 * Rec_wCa2 * RK - kRec4 * Rec_wCa2_RK;
   v_r31: Ca2_free -> Ca2_buff; k1 * (eT - Ca2_buff) * Ca2_free - k2 * Ca2_buff;
   v_r32: Ca2_free => ; gammaCa * (Ca2_free - Ca2_0);
-  v_r33:  => Ca2_free; 1.000000e+06 * fCa * Jdark / ((2 + fCa) * F * Vcyto) * (cGMP / cGMPdark)^ncg;
+  v_r33:  => Ca2_free; 1.000000e+006 * fCa * Jdark / ((2 + fCa) * F * Vcyto) * (cGMP / cGMPdark)^ncg;
   v_r34:  => cGMP; alfamax / (1 + (Ca2_free / Kc)^m);
   v_r35: cGMP => ; (betadark + betasub * E) * cGMP;
 
@@ -248,12 +248,12 @@ model DellOrco2009_phototransduction()
   kRK3_ATP = 400;
   kRK4 = 20;
   omega_arr = 0.81323;
-  kArr = 6.0918e-10;
+  kArr = 6.0918e-010;
   kA2 = 0.00323198;
   kA3 = 0.0445091;
-  kOps = 6.1172e-13;
+  kOps = 6.1172e-013;
   kRrecyc = 0.0007;
-  kG1_0 = 3.0586111111e-05;
+  kG1_0 = 3.0586111111e-005;
   kG2 = 2250.34;
   kG3 = 2000;
   kG4_GDP = 600;
@@ -265,10 +265,10 @@ model DellOrco2009_phototransduction()
   kP1 = 0.0549715;
   kP1_rev = 0;
   kP2 = 940.706;
-  kP3 = 1.49834e-09;
+  kP3 = 1.49834e-009;
   kP4 = 21.0881;
   kPDEshutoff = 0.033;
-  kRGS1 = 1.57e-07;
+  kRGS1 = 1.57e-007;
   kRGS2 = 256.07;
   kRec3 = 9.68777;
   kRec4 = 0.610084;
@@ -297,4 +297,11 @@ model DellOrco2009_phototransduction()
   var numConcFactor, kRK1_1, kRK1_2, kRK1_3, kRK1_4, kRK1_5, kRK1_6, kA1_1;
   var kA1_2, kA1_3, kA1_4, kA1_5, kA1_6, kG1_1, kG1_2, kG1_3, kG1_4, kG1_5;
   var kG1_6, E, Rec_wCa2, alfamax, J, deltaJ;
+  const cytosol, Rtot, PDEtot, Gtot, Rectot, RGStot, ArrTot, flashBG, flash0Dur;
+  const flash0Mag, flashDel, flashDur, flashMag, otherstimulus, kRK1_0, omega;
+  const kRK2, RKdark, kRK3_ATP, kRK4, omega_arr, kArr, kA2, kA3, kOps, kRrecyc;
+  const kG1_0, kG2, kG3, kG4_GDP, kG5_GTP, kG6, kG7, kGrecyc, kGshutoff, kP1;
+  const kP1_rev, kP2, kP3, kP4, kPDEshutoff, kRGS1, kRGS2, kRec3, kRec4, Kp;
+  const w, Vcyto, Kc, m, betadark, betasub, fCa, Jdark, F, cGMPdark, ncg;
+  const gammaCa, Ca2dark, Ca2_0, k1, k2, eT, ktherm;
 end

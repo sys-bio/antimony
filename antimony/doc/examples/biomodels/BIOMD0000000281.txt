@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model chance()
+//Created by libAntimony v2.3-beta
+model *chance()
 
   // Compartments and Species:
   compartment cell;
@@ -13,13 +13,13 @@ model chance()
 
   // Assignment Rules:
   GLU_0 := GLU / 0.003;
-  ENZ_0 := ENZ / 1.020000e-05;
-  ENG_0 := ENG / 1.020000e-05;
+  ENZ_0 := ENZ / 1.020000e-005;
+  ENG_0 := ENG / 1.020000e-005;
   TP1_0 := TP1 / 0.0015;
   ADP_0 := ADP / 0.001;
   GLP_0 := GLP / 0.001;
-  ETZ_0 := ETZ / 1.000000e-05;
-  ETG_0 := ETG / 1.000000e-05;
+  ETZ_0 := ETZ / 1.000000e-005;
+  ETG_0 := ETG / 1.000000e-005;
   GPP_0 := GPP / 0.001;
   GAP_0 := GAP / 0.0002;
   DHA_0 := DHA / 0.0013;
@@ -30,44 +30,44 @@ model chance()
   PGA_0 := PGA / 0.0002;
   PYR_0 := PYR / 0.002;
   LAC_0 := LAC / 0.0012;
-  DIN_0 := DIN / 7.000000e-05;
-  DIH_0 := DIH / 7.000000e-05;
-  XI_0 := XI / 6.000000e-05;
-  XSI_0 := XSI / 6.000000e-05;
+  DIN_0 := DIN / 7.000000e-005;
+  DIH_0 := DIH / 7.000000e-005;
+  XI_0 := XI / 6.000000e-005;
+  XSI_0 := XSI / 6.000000e-005;
   OXY_0 := OXY / 0.0005;
-  XSP_0 := XSP / 6.000000e-05;
+  XSP_0 := XSP / 6.000000e-005;
   TP2_0 := TP2 / 0.0015;
   DBP_0 := DBP / 0.025;
-  PUE_0 := PUE / 3.060000e-06;
+  PUE_0 := PUE / 3.060000e-006;
   PPP_0 := PPP / 3.06;
   AGP_0 := AGP / 0.0013;
-  MOD_0 := MOD / 5.000000e-05;
+  MOD_0 := MOD / 5.000000e-005;
   MOB_0 := MOB / 0.0001;
-  MOX_0 := MOX / 5.000000e-05;
+  MOX_0 := MOX / 5.000000e-005;
 
   // Reactions:
-  r_1: GLU + ENZ => ENG; cell * 1.000000e-06 * r_1_k * GLU * ENZ;
-  r_2: ENG + TP1 => ADP + GLP + ENZ; cell * 1.000000e-06 * r_2_k * ENG * TP1;
-  r_3: GLP + ETZ => ETG; cell * 1.000000e-06 * r_3_k * GLP * ETZ;
-  r_4: ETG + TP1 => GPP + ETZ + ADP; cell * 1.000000e-06 * r_4_k * ETG * TP1;
-  r_5: GPP => GAP + DHA; cell * 1.000000e-06 * r_5_k * GPP;
-  r_6: DHA + DPH => AGP + DPN; cell * 1.000000e-06 * r_6_k * DHA * DPH;
-  r_7: AGP + DPN => DHA + DPH; cell * 1.000000e-06 * r_7_k * AGP * DPN;
-  r_8: GAP + MOD => MOB + DPH; cell * 1.000000e-06 * r_8_k * GAP * MOD;
-  r_9: MOB + PID => DGA + MOX; cell * 1.000000e-06 * r_9_k * MOB * PID;
-  r_10: MOX + DPN => MOD; cell * 1.000000e-06 * r_10_k * MOX * DPN;
-  r_11: DGA + ADP => TP1 + PGA; cell * 1.000000e-06 * r_11_k * DGA * ADP;
-  r_12: PGA + ADP => TP1 + PYR; cell * 1.000000e-06 * r_12_k * PGA * ADP;
-  r_13: PYR + DPH => LAC + DPN; cell * 1.000000e-06 * r_13_k * PYR * DPH;
-  r_14: LAC + DPN => PYR + DPH; cell * 1.000000e-06 * r_14_k * LAC * DPN;
-  r_15: PYR + 4DIN => 4DIH; cell * 1.000000e-06 * r_15_k * PYR * DIN;
-  r_16: DIH + 3XI + OXY => 3XSI + DIN; cell * 1.000000e-06 * r_16_k * DIH * XI * OXY;
-  r_17: XSI + PID => XSP; cell * 1.000000e-06 * r_17_k * XSI * PID;
-  r_18: XSP + ADP => TP2 + XI; cell * 1.000000e-06 * r_18_k * XSP * ADP;
-  r_19: XSI => XI; cell * 1.000000e-06 * r_19_k * XSI * DBP;
-  r_20: TP2 => TP1; cell * 1.000000e-06 * r_20_k * TP2 * DBP;
-  r_21: TP1 + PUE => PPP; cell * 1.000000e-06 * r_21_k * TP1 * PUE;
-  r_22: PPP => ADP + PUE + PID; cell * 1.000000e-06 * r_22_k * PPP;
+  r_1: GLU + ENZ => ENG; cell * 1.000000e-006 * r_1_k * GLU * ENZ;
+  r_2: ENG + TP1 => ADP + GLP + ENZ; cell * 1.000000e-006 * r_2_k * ENG * TP1;
+  r_3: GLP + ETZ => ETG; cell * 1.000000e-006 * r_3_k * GLP * ETZ;
+  r_4: ETG + TP1 => GPP + ETZ + ADP; cell * 1.000000e-006 * r_4_k * ETG * TP1;
+  r_5: GPP => GAP + DHA; cell * 1.000000e-006 * r_5_k * GPP;
+  r_6: DHA + DPH => AGP + DPN; cell * 1.000000e-006 * r_6_k * DHA * DPH;
+  r_7: AGP + DPN => DHA + DPH; cell * 1.000000e-006 * r_7_k * AGP * DPN;
+  r_8: GAP + MOD => MOB + DPH; cell * 1.000000e-006 * r_8_k * GAP * MOD;
+  r_9: MOB + PID => DGA + MOX; cell * 1.000000e-006 * r_9_k * MOB * PID;
+  r_10: MOX + DPN => MOD; cell * 1.000000e-006 * r_10_k * MOX * DPN;
+  r_11: DGA + ADP => TP1 + PGA; cell * 1.000000e-006 * r_11_k * DGA * ADP;
+  r_12: PGA + ADP => TP1 + PYR; cell * 1.000000e-006 * r_12_k * PGA * ADP;
+  r_13: PYR + DPH => LAC + DPN; cell * 1.000000e-006 * r_13_k * PYR * DPH;
+  r_14: LAC + DPN => PYR + DPH; cell * 1.000000e-006 * r_14_k * LAC * DPN;
+  r_15: PYR + 4DIN => 4DIH; cell * 1.000000e-006 * r_15_k * PYR * DIN;
+  r_16: DIH + 3XI + OXY => 3XSI + DIN; cell * 1.000000e-006 * r_16_k * DIH * XI * OXY;
+  r_17: XSI + PID => XSP; cell * 1.000000e-006 * r_17_k * XSI * PID;
+  r_18: XSP + ADP => TP2 + XI; cell * 1.000000e-006 * r_18_k * XSP * ADP;
+  r_19: XSI => XI; cell * 1.000000e-006 * r_19_k * XSI * DBP;
+  r_20: TP2 => TP1; cell * 1.000000e-006 * r_20_k * TP2 * DBP;
+  r_21: TP1 + PUE => PPP; cell * 1.000000e-006 * r_21_k * TP1 * PUE;
+  r_22: PPP => ADP + PUE + PID; cell * 1.000000e-006 * r_22_k * PPP;
 
   // Events:
   e_1: at geq(time, 64): GLU = 0.003;
@@ -75,12 +75,12 @@ model chance()
 
   // Species initializations:
   GLU = 0;
-  ENZ = 1e-05;
+  ENZ = 1e-005;
   ENG = 0;
   TP1 = 0.0005;
   ADP = 0.0001;
   GLP = 0;
-  ETZ = 1e-05;
+  ETZ = 1e-005;
   ETG = 0;
   GPP = 0;
   GAP = 0;
@@ -92,23 +92,55 @@ model chance()
   PGA = 0;
   PYR = 0.001;
   LAC = 0.001;
-  DIN = 3e-05;
-  DIH = 3e-05;
-  XI = 2e-05;
-  XSI = 2e-05;
+  DIN = 3e-005;
+  DIH = 3e-005;
+  XI = 2e-005;
+  XSI = 2e-005;
   OXY = 0.0005;
-  XSP = 2e-05;
+  XSP = 2e-005;
   TP2 = 0.0005;
   DBP = 0;
-  PUE = 2e-06;
-  PPP = 1e-06;
+  PUE = 2e-006;
+  PPP = 1e-006;
   AGP = 0;
-  MOD = 5e-05;
+  MOD = 5e-005;
   MOB = 0;
   MOX = 0;
 
   // Compartment initializations:
   cell = 1;
+  GLU_0 has dimensionless;
+  ENZ_0 has dimensionless;
+  ENG_0 has dimensionless;
+  TP1_0 has dimensionless;
+  ADP_0 has dimensionless;
+  GLP_0 has dimensionless;
+  ETZ_0 has dimensionless;
+  ETG_0 has dimensionless;
+  GPP_0 has dimensionless;
+  GAP_0 has dimensionless;
+  DHA_0 has dimensionless;
+  DPN_0 has dimensionless;
+  DPH_0 has dimensionless;
+  PID_0 has dimensionless;
+  DGA_0 has dimensionless;
+  PGA_0 has dimensionless;
+  PYR_0 has dimensionless;
+  LAC_0 has dimensionless;
+  DIN_0 has dimensionless;
+  DIH_0 has dimensionless;
+  XI_0 has dimensionless;
+  XSI_0 has dimensionless;
+  OXY_0 has dimensionless;
+  XSP_0 has dimensionless;
+  TP2_0 has dimensionless;
+  DBP_0 has dimensionless;
+  PUE_0 has dimensionless;
+  PPP_0 has dimensionless;
+  AGP_0 has dimensionless;
+  MOD_0 has dimensionless;
+  MOB_0 has dimensionless;
+  MOX_0 has dimensionless;
 
   // Variable initializations:
   r_1_k = 3000000000;
@@ -139,8 +171,17 @@ model chance()
   var DHA_0, DPN_0, DPH_0, PID_0, DGA_0, PGA_0, PYR_0, LAC_0, DIN_0, DIH_0;
   var XI_0, XSI_0, OXY_0, XSP_0, TP2_0, DBP_0, PUE_0, PPP_0, AGP_0, MOD_0;
   var MOB_0, MOX_0;
+  const cell;
+
+  // Unit definitions:
+  unit per_ = 1 / 1e1 second;
+  unit per_M_per_ = 1e1 litre / (1e1 mole * 1e1 second);
+  unit per_M_squared_per_ = (1e1 litre)^2 / ((1e1 mole)^2 * 1e1 second);
 
   //Display Names:
+  per_ is "per second";
+  per_M_per_ is "per molar per second";
+  per_M_squared_per_ is "per molar squared per second";
   GLU is "(GLU) glucose";
   ENZ is "(ENZ) hexokinase";
   ENG is "(ENG) hexokinase-glucose intermediate";

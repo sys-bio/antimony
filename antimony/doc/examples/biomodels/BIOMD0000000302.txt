@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Wang1996_Single_Neuron()
+//Created by libAntimony v2.3-beta
+model *Wang1996_Single_Neuron()
 
   // Compartments and Species:
   compartment pre_synaptic_cell, post_synaptic_cell;
@@ -45,26 +45,71 @@ model Wang1996_Single_Neuron()
 
   // Variable initializations:
   Cm = 1;
+  Cm has uF_per_cm2;
   gL = 0.1;
+  gL has mS_per_cm2;
   gK = 9;
+  gK has mS_per_cm2;
   gNa = 35;
+  gNa has mS_per_cm2;
   E_K = -90;
+  E_K has mV;
   E_L = -65;
+  E_L has mV;
   E_Na = 55;
+  E_Na has mV;
   phi = 5;
+  phi has dimensionless;
+  tau_0 has time_unit;
   I_app_post = 0;
+  I_app_post has uA_per_cm2;
+  I_Na_post has uA_per_cm2;
+  m_inf_post has dimensionless;
   h_post = alpha_h_post / (beta_h_post + alpha_h_post);
+  h_post has dimensionless;
   V_post = -64;
+  V_post has mV;
+  alpha_m_post has per_m;
+  beta_m_post has per_m;
+  alpha_h_post has per_m;
+  beta_h_post has per_m;
+  I_K_post has uA_per_cm2;
   n_post = alpha_n_post / (beta_n_post + alpha_n_post);
+  n_post has dimensionless;
+  alpha_n_post has per_m;
+  beta_n_post has per_m;
+  I_L_post has uA_per_cm2;
+  I_syn has uA_per_cm2;
   g_syn = 0.1;
+  g_syn has mS_per_cm2;
   s = alpha * F / (beta + alpha * F);
+  s has dimensionless;
   E_syn = -75;
+  E_syn has mV;
   alpha = 12;
+  alpha has per_m;
+  F has dimensionless;
   beta = 0.1;
+  beta has per_m;
   V_pre = -64;
+  V_pre has mV;
   theta_syn = 0;
+  theta_syn has mV;
+  I_app_pre has uA_per_cm2;
+  I_Na_pre has uA_per_cm2;
+  m_inf_pre has dimensionless;
   h_pre = alpha_h_pre / (beta_h_pre + alpha_h_pre);
+  h_pre has dimensionless;
   n_pre = alpha_n_pre / (beta_n_pre + alpha_n_pre);
+  n_pre has dimensionless;
+  alpha_n_pre has per_m;
+  beta_n_pre has per_m;
+  alpha_h_pre has per_m;
+  beta_h_pre has per_m;
+  alpha_m_pre has per_m;
+  beta_m_pre has per_m;
+  I_K_pre has uA_per_cm2;
+  I_L_pre has uA_per_cm2;
 
   //Other declarations:
   var tau_0, I_Na_post, m_inf_post, h_post, V_post, alpha_m_post, beta_m_post;
@@ -72,4 +117,19 @@ model Wang1996_Single_Neuron()
   var I_L_post, I_syn, s, F, V_pre, I_app_pre, I_Na_pre, m_inf_pre, h_pre;
   var n_pre, alpha_n_pre, beta_n_pre, alpha_h_pre, beta_h_pre, alpha_m_pre;
   var beta_m_pre, I_K_pre, I_L_pre;
+  const pre_synaptic_cell, post_synaptic_cell, Cm, gL, gK, gNa, E_K, E_L;
+  const E_Na, phi, I_app_post, g_syn, E_syn, alpha, beta, theta_syn;
+
+  // Unit definitions:
+  unit time_unit = 1e-3 second;
+  unit per_m = 1 / 1e-3 second;
+  unit mV = 1e-3 volt;
+  unit uA_per_cm2 = 1e-6 ampere / (1e-2 metre)^2;
+  unit uF_per_cm2 = 1e-6 farad / (1e-2 metre)^2;
+  unit mS_per_cm2 = 1e-3 siemens / (1e-2 metre)^2;
+
+  //Display Names:
+  time_unit is "ms";
+  per_m is "per_ms";
+  uA_per_cm2 is "microA_per_cm2";
 end

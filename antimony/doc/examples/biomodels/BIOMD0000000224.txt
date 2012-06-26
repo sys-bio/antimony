@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Meyer1991_CalciumSpike_ICC()
+//Created by libAntimony v2.3-beta
+model *Meyer1991_CalciumSpike_ICC()
 
   // Compartments and Species:
   compartment cytosol, ER_store;
@@ -25,14 +25,33 @@ model Meyer1991_CalciumSpike_ICC()
 
   // Variable initializations:
   A = 20;
+  A has psec;
   B = 40;
+  B has microMpsec;
   C = 1.1;
+  C has microMpsec;
   D = 2;
+  D has psec;
   E = 1;
+  E has microM4;
   F = 0.02;
+  F has psec;
   k1 = 0.5;
+  k1 has microM;
   k2 = 0.15;
+  k2 has microM;
   k3 = 1;
+  k3 has microM;
   L = 0.01;
+  L has psec;
   R = 0.09;
+
+  //Other declarations:
+  const cytosol, ER_store, A, B, C, D, E, F, k1, k2, k3, L, R;
+
+  // Unit definitions:
+  unit microM = 1e-6 mole / litre;
+  unit microMpsec = 1e-6 mole / (second * litre);
+  unit microM4 = 1 / ((1e-6 mole)^4 * second * litre);
+  unit psec = 1 / second;
 end

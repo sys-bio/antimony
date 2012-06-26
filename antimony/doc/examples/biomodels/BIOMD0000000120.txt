@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Chan2004_TCell_receptor_activation()
+//Created by libAntimony v2.3-beta
+model *Chan2004_TCell_receptor_activation()
 
   // Compartments and Species:
   compartment compartment_;
@@ -36,21 +36,39 @@ model Chan2004_TCell_receptor_activation()
 
   // Variable initializations:
   r_l = 0;
+  r_l has items_per_time;
   n1 = 1;
+  n1 has sec_inv_item_inv;
   k1 = 0.01;
+  k1 has sec_inv;
   m1 = 1;
   d0 = 0.15;
+  d0 has sec_inv;
   d1 = 0.15;
+  d1 has sec_inv;
   k2 = 0.01;
+  k2 has sec_inv;
   m2 = 1;
+  m2 has sec_inv_item_inv;
   n2 = 0.02;
+  n2 has sec_inv;
   d2 = 0;
+  d2 has sec_inv;
   n = 1.95;
+  n has dimensionless;
 
   //Other declarations:
   var r_l;
+  const compartment_, n1, k1, m1, d0, d1, k2, m2, n2, d2, n;
+
+  // Unit definitions:
+  unit substance = item;
+  unit items_per_time = item / second;
+  unit sec_inv = 1 / second;
+  unit sec_inv_item_inv = 1 / (item * second);
 
   //Display Names:
+  sec_inv_item_inv is "per_sec_per_item";
   compartment_ is "cell";
   lck_inactive is "Inactive lck";
   lck_active is "Active lck";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Komarova2003_BoneRemodeling()
+//Created by libAntimony v2.3-beta
+model *Komarova2003_BoneRemodeling()
 
   // Compartments and Species:
   compartment compartment_;
@@ -52,8 +52,16 @@ model Komarova2003_BoneRemodeling()
 
   //Other declarations:
   var flag_resorption, flag_formation, gamma;
+  const compartment_, alpha1, alpha2, beta1, beta2, g11, g21, g12, g22, k1;
+  const k2;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 86400 second;
 
   //Display Names:
+  substance is "number";
+  time_unit is "day";
   x1 is "Osteoclast";
   x2 is "Osteoblast";
   x1_bar is "Steady state osteoclast";

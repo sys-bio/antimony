@@ -1,10 +1,9 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function GAMMAF(VV, theta, sigma)
   1 / (1 + exp(-(VV - theta) / sigma));
 end
 
-
-model model_0000001()
+model *model_0000001()
 
   // Compartments and Species:
   compartment compartment_0000001;
@@ -24,7 +23,7 @@ model model_0000001()
   bbs' = (GAMMAF(V, thetab, sigmab) - bbs) / tauBs;
   nns' = phi * (GAMMAF(V, thetan, sigman) - nns) / (1 + 5 * GAMMAF(V, t_taun, -15));
   hhs' = phi * (GAMMAF(V, thetah, sigmah) - hhs) / (1 + 7.5 * GAMMAF(V, t_tauh, -6));
-  V' = (-gL * (V - VL) - INa - INaP - IKdr - IA - Iz + Iapp) / Cm;
+  V' = (- gL * (V - VL) - INa - INaP - IKdr - IA - Iz + Iapp) / Cm;
 
   // Compartment initializations:
   compartment_0000001 = 1;
@@ -70,7 +69,16 @@ model model_0000001()
 
   //Other declarations:
   var INa, INaP, IKdr, IA, Iz, Minfs, Pinfs, Ainfs, zzs, bbs, nns, hhs, V;
+  const compartment_0000001, Cm, pms, pns, VNa, t_tauh, t_taun, thetaa, sigmaa;
+  const thetab, sigmab, tauBs, sigmam, sigmah, sigman, sigmaz, gNa, gKdr;
+  const gL, Iapp, gA, gNaP, gZ, thetaz, tauZs, phi, thetah, thetam, thetan;
+  const thetap, sigmap, VK, VL;
+
+  // Unit definitions:
+  unit time_unit = 1e-3 second;
+  unit mV = 1e-3 volt;
 
   //Display Names:
+  time_unit is "ms";
   V is "VVs";
 end

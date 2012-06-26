@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model blub()
+//Created by libAntimony v2.3-beta
+model *blub()
 
   // Compartments and Species:
   compartment environment;
@@ -46,8 +46,15 @@ model blub()
 
   //Other declarations:
   var kA2, d1;
+  const environment, kc1, kc2, Cm, D, kA1, d2, K2, K1, dAA1, dAA2;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
 
   //Display Names:
+  substance is "nanomole";
+  time_unit is "hours";
   J0 is "predator growth";
   J1 is "predator death";
   J2 is "prey growth";

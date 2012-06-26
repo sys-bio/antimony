@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Hernjak2005_Calcium_Signaling()
+//Created by libAntimony v2.3-beta
+model *Hernjak2005_Calcium_Signaling()
 
   // Compartments and Species:
   compartment Extracellular, Cytosol, ER, PM, ERM;
@@ -18,27 +18,27 @@ model Hernjak2005_Calcium_Signaling()
   // Assignment Rules:
   flux0_ar := piecewise(Jch * (0.0016611295681 * Ca_Extracellular + -(0.0016611295681 * Ca_Cytosol)), and(gt(time, t1), lt(time, t2)), 0);
   flux1_ar := piecewise(JchD * (0.0016611295681 * Ca_D_Extracellular + -(0.0016611295681 * Ca_D_Cytosol)), and(gt(time, t1), lt(time, t2)), 0);
-  pulses_ar := piecewise(p0 * exp(-((time + -delta) * Ks)), gt(time, delta), 0) + piecewise(p1 * exp(-((time + -(tau + delta)) * Ks)), gt(time, tau + delta), 0) + piecewise(p2 * exp(-(Ks * (time + -(2 * tau + delta)))), gt(time, 2 * tau + delta), 0) + piecewise(p3 * exp(-(Ks * (time + -(3 * tau + delta)))), gt(time, 3 * tau + delta), 0) + piecewise(p4 * exp(-(Ks * (time + -(4 * tau + delta)))), gt(time, 4 * tau + delta), 0) + piecewise(p5 * exp(-(Ks * (time + -(5 * tau + delta)))), gt(time, 5 * tau + delta), 0) + piecewise(p6 * exp(-(Ks * (time + -(6 * tau + delta)))), gt(time, 6 * tau + delta), 0) + piecewise(p7 * exp(-(Ks * (time + -(7 * tau + delta)))), gt(time, 7 * tau + delta), 0) + piecewise(p8 * exp(-(Ks * (time + -(8 * tau + delta)))), gt(time, 8 * tau + delta), 0) + piecewise(p9 * exp(-(Ks * (time + -(9 * tau + delta)))), gt(time, 9 * tau + delta), 0) + piecewise(p10 * exp(-(Ks * (time + -(10 * tau + delta)))), gt(time, 10 * tau + delta), 0) + piecewise(p11 * exp(-(Ks * (time + -(11 * tau + delta)))), gt(time, 11 * tau + delta), 0);
+  pulses_ar := piecewise(p0 * exp(-((time + - delta) * Ks)), gt(time, delta), 0) + piecewise(p1 * exp(-((time + -(tau + delta)) * Ks)), gt(time, tau + delta), 0) + piecewise(p2 * exp(-(Ks * (time + -(2 * tau + delta)))), gt(time, 2 * tau + delta), 0) + piecewise(p3 * exp(-(Ks * (time + -(3 * tau + delta)))), gt(time, 3 * tau + delta), 0) + piecewise(p4 * exp(-(Ks * (time + -(4 * tau + delta)))), gt(time, 4 * tau + delta), 0) + piecewise(p5 * exp(-(Ks * (time + -(5 * tau + delta)))), gt(time, 5 * tau + delta), 0) + piecewise(p6 * exp(-(Ks * (time + -(6 * tau + delta)))), gt(time, 6 * tau + delta), 0) + piecewise(p7 * exp(-(Ks * (time + -(7 * tau + delta)))), gt(time, 7 * tau + delta), 0) + piecewise(p8 * exp(-(Ks * (time + -(8 * tau + delta)))), gt(time, 8 * tau + delta), 0) + piecewise(p9 * exp(-(Ks * (time + -(9 * tau + delta)))), gt(time, 9 * tau + delta), 0) + piecewise(p10 * exp(-(Ks * (time + -(10 * tau + delta)))), gt(time, 10 * tau + delta), 0) + piecewise(p11 * exp(-(Ks * (time + -(11 * tau + delta)))), gt(time, 11 * tau + delta), 0);
 
   // Reactions:
   CD28k_highDbinding: Ca_D_Cytosol + D28k_high_D_Cytosol -> D28kB_high_D_Cytosol; (CD28k_highDbinding_Kf * 0.00166112956810631 * Ca_D_Cytosol * 0.00166112956810631 * D28k_high_D_Cytosol + -(CD28k_highDbinding_Kr * 0.00166112956810631 * D28kB_high_D_Cytosol)) * Cytosol * 1 * (1 / KMOLE);
   PA_Dbinding: PA_D_Cytosol + Ca_D_Cytosol -> PABCa_D_Cytosol; (PA_Dbinding_Kf * 0.00166112956810631 * PA_D_Cytosol * 0.00166112956810631 * Ca_D_Cytosol + -(PA_Dbinding_Kr * 0.00166112956810631 * PABCa_D_Cytosol)) * Cytosol * 1 * (1 / KMOLE);
-  CG_deg: CG_D_Cytosol -> ; (CG_deg_D * CG_deg_r_n^2 * (0.00166112956810631 * CG_D_Cytosol + -(0.00166112956810631 * CG_Cytosol)) * (1 / CG_deg_l_n) * (1 / CG_deg_r_d^2) * (1 / CG_deg_l_star) + CG_deg_D * (0.00166112956810631 * CG_D_Cytosol + -CG_deg_CG_F) * (1 / CG_deg_l_star) * (1 / CG_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
-  IP3deg: IP3_D_Cytosol -> ; (IP3deg_D * IP3deg_r_n^2 * (0.00166112956810631 * IP3_D_Cytosol + -(0.00166112956810631 * IP3_Cytosol)) * (1 / IP3deg_l_n) * (1 / IP3deg_r_d^2) * (1 / IP3deg_l_star) + IP3deg_D * (0.00166112956810631 * IP3_D_Cytosol + -IP3deg_IP3_F) * (1 / IP3deg_l_star) * (1 / IP3deg_lc)) * Cytosol * 1 * (1 / KMOLE);
-  D28kB_deg: D28kB_D_Cytosol -> ; (D28kB_deg_D * D28kB_deg_r_n^2 * (0.00166112956810631 * D28kB_D_Cytosol + -(0.00166112956810631 * D28kB_Cytosol)) * (1 / D28kB_deg_l_n) * (1 / D28kB_deg_r_D^2) * (1 / D28kB_deg_l_star) + D28kB_deg_D * (0.00166112956810631 * D28kB_D_Cytosol + -D28kB_deg_D28kB_F) * (1 / D28kB_deg_l_star) * (1 / D28kB_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
-  D28k_deg: D28k_D_Cytosol -> ; (D28k_deg_D * D28k_deg_r_n^2 * (0.00166112956810631 * D28k_D_Cytosol + -(0.00166112956810631 * D28k_Cytosol)) * (1 / D28k_deg_l_n) * (1 / D28k_deg_r_D^2) * (1 / D28k_deg_l_star) + D28k_deg_D * (0.00166112956810631 * D28k_D_Cytosol + -D28k_deg_D28k_F) * (1 / D28k_deg_l_star) * (1 / D28k_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  CG_deg: CG_D_Cytosol -> ; (CG_deg_D * CG_deg_r_n^2 * (0.00166112956810631 * CG_D_Cytosol + -(0.00166112956810631 * CG_Cytosol)) * (1 / CG_deg_l_n) * (1 / CG_deg_r_d^2) * (1 / CG_deg_l_star) + CG_deg_D * (0.00166112956810631 * CG_D_Cytosol + - CG_deg_CG_F) * (1 / CG_deg_l_star) * (1 / CG_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  IP3deg: IP3_D_Cytosol -> ; (IP3deg_D * IP3deg_r_n^2 * (0.00166112956810631 * IP3_D_Cytosol + -(0.00166112956810631 * IP3_Cytosol)) * (1 / IP3deg_l_n) * (1 / IP3deg_r_d^2) * (1 / IP3deg_l_star) + IP3deg_D * (0.00166112956810631 * IP3_D_Cytosol + - IP3deg_IP3_F) * (1 / IP3deg_l_star) * (1 / IP3deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  D28kB_deg: D28kB_D_Cytosol -> ; (D28kB_deg_D * D28kB_deg_r_n^2 * (0.00166112956810631 * D28kB_D_Cytosol + -(0.00166112956810631 * D28kB_Cytosol)) * (1 / D28kB_deg_l_n) * (1 / D28kB_deg_r_D^2) * (1 / D28kB_deg_l_star) + D28kB_deg_D * (0.00166112956810631 * D28kB_D_Cytosol + - D28kB_deg_D28kB_F) * (1 / D28kB_deg_l_star) * (1 / D28kB_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  D28k_deg: D28k_D_Cytosol -> ; (D28k_deg_D * D28k_deg_r_n^2 * (0.00166112956810631 * D28k_D_Cytosol + -(0.00166112956810631 * D28k_Cytosol)) * (1 / D28k_deg_l_n) * (1 / D28k_deg_r_D^2) * (1 / D28k_deg_l_star) + D28k_deg_D * (0.00166112956810631 * D28k_D_Cytosol + - D28k_deg_D28k_F) * (1 / D28k_deg_l_star) * (1 / D28k_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
   PA_MgD: $Mg_D_Cytosol + PA_D_Cytosol -> PABMg_D_Cytosol; (PA_MgD_Kf * 0.00166112956810631 * Mg_D_Cytosol * 0.00166112956810631 * PA_D_Cytosol + -(PA_MgD_Kr * 0.00166112956810631 * PABMg_D_Cytosol)) * Cytosol * 1 * (1 / KMOLE);
   PA_Ca: PA_Cytosol + Ca_Cytosol -> PABCa_Cytosol; (PA_Ca_Kf * 0.00166112956810631 * PA_Cytosol * 0.00166112956810631 * Ca_Cytosol + -(PA_Ca_Kr * 0.00166112956810631 * PABCa_Cytosol)) * Cytosol * 1 * (1 / KMOLE);
-  PABMg_deg: PABMg_D_Cytosol -> ; (PABMg_deg_D * PABMg_deg_r_n^2 * (0.00166112956810631 * PABMg_D_Cytosol + -(0.00166112956810631 * PABMg_Cytosol)) * (1 / PABMg_deg_l_n) * (1 / PABMg_deg_r_d^2) * (1 / PABMg_deg_l_star) + PABMg_deg_D * (0.00166112956810631 * PABMg_D_Cytosol + -PABMg_deg_PABMg_F) * (1 / PABMg_deg_l_star) * (1 / PABMg_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
-  D28k_high_deg: D28k_high_D_Cytosol -> ; (D28k_high_deg_D * D28k_high_deg_r_n^2 * (0.00166112956810631 * D28k_high_D_Cytosol + -(0.00166112956810631 * D28k_high_Cytosol)) * (1 / D28k_high_deg_l_n) * (1 / D28k_high_deg_r_D^2) * (1 / D28k_high_deg_l_star) + D28k_high_deg_D * (0.00166112956810631 * D28k_high_D_Cytosol + -D28k_high_deg_D28k_high_F) * (1 / D28k_high_deg_l_star) * (1 / D28k_high_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  PABMg_deg: PABMg_D_Cytosol -> ; (PABMg_deg_D * PABMg_deg_r_n^2 * (0.00166112956810631 * PABMg_D_Cytosol + -(0.00166112956810631 * PABMg_Cytosol)) * (1 / PABMg_deg_l_n) * (1 / PABMg_deg_r_d^2) * (1 / PABMg_deg_l_star) + PABMg_deg_D * (0.00166112956810631 * PABMg_D_Cytosol + - PABMg_deg_PABMg_F) * (1 / PABMg_deg_l_star) * (1 / PABMg_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  D28k_high_deg: D28k_high_D_Cytosol -> ; (D28k_high_deg_D * D28k_high_deg_r_n^2 * (0.00166112956810631 * D28k_high_D_Cytosol + -(0.00166112956810631 * D28k_high_Cytosol)) * (1 / D28k_high_deg_l_n) * (1 / D28k_high_deg_r_D^2) * (1 / D28k_high_deg_l_star) + D28k_high_deg_D * (0.00166112956810631 * D28k_high_D_Cytosol + - D28k_high_deg_D28k_high_F) * (1 / D28k_high_deg_l_star) * (1 / D28k_high_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
   Ca_d: Ca_Cytosol -> ; 0.75 * Ca_d_D * (0.00166112956810631 * Ca_Cytosol + -(0.00166112956810631 * Ca_D_Cytosol)) * Ca_d_r_neck^2 * (1 / Ca_d_l) * (1 / Ca_d_r_spine^3) * Cytosol * 1 * (1 / KMOLE);
-  D28kB_high_deg: D28kB_high_D_Cytosol -> ; (D28kB_high_deg_D * D28kB_high_deg_r_n^2 * (0.00166112956810631 * D28kB_high_D_Cytosol + -(0.00166112956810631 * D28kB_high_Cytosol)) * (1 / D28kB_high_deg_l_n) * (1 / D28kB_high_deg_r_D^2) * (1 / D28kB_high_deg_l_star) + D28kB_high_deg_D * (0.00166112956810631 * D28kB_high_D_Cytosol + -D28kB_high_deg_D28kB_high_F) * (1 / D28kB_high_deg_l_star) * (1 / D28kB_high_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  D28kB_high_deg: D28kB_high_D_Cytosol -> ; (D28kB_high_deg_D * D28kB_high_deg_r_n^2 * (0.00166112956810631 * D28kB_high_D_Cytosol + -(0.00166112956810631 * D28kB_high_Cytosol)) * (1 / D28kB_high_deg_l_n) * (1 / D28kB_high_deg_r_D^2) * (1 / D28kB_high_deg_l_star) + D28kB_high_deg_D * (0.00166112956810631 * D28kB_high_D_Cytosol + - D28kB_high_deg_D28kB_high_F) * (1 / D28kB_high_deg_l_star) * (1 / D28kB_high_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
   CG_d: CG_Cytosol -> ; 0.75 * CG_d_D * (0.00166112956810631 * CG_Cytosol + -(0.00166112956810631 * CG_D_Cytosol)) * CG_d_r_neck^2 * (1 / CG_d_l) * (1 / CG_d_r_spine^3) * Cytosol * 1 * (1 / KMOLE);
   D28kB_d: D28kB_Cytosol -> ; 0.75 * D28kB_d_D * (0.00166112956810631 * D28kB_Cytosol + -(0.00166112956810631 * D28kB_Cytosol)) * D28kB_d_r_neck^2 * (1 / D28kB_d_l) * (1 / D28kB_d_r_spine^3) * Cytosol * 1 * (1 / KMOLE);
   reaction1: h_D_ERM -> ; -((reaction1_Kinh + -((0.00166112956810631 * Ca_D_Cytosol + reaction1_Kinh) * h_D_ERM)) * reaction1_Kon) * ERM;
   CGbinding: Ca_Cytosol + CG_Cytosol -> CGB_Cytosol; (CGbinding_Kf * 0.00166112956810631 * Ca_Cytosol * 0.00166112956810631 * CG_Cytosol + -(CGbinding_Kr * 0.00166112956810631 * CGB_Cytosol)) * Cytosol * 1 * (1 / KMOLE);
   CaD28k_med: D28k_Cytosol + Ca_Cytosol -> D28kB_Cytosol; (CaD28k_med_Kf * 0.00166112956810631 * D28k_Cytosol * 0.00166112956810631 * Ca_Cytosol + -(CaD28k_med_Kr * 0.00166112956810631 * D28kB_Cytosol)) * Cytosol * 1 * (1 / KMOLE);
-  PABCa_deg: PABCa_D_Cytosol -> ; (PABCa_deg_D * PABCa_deg_r_n^2 * (0.00166112956810631 * PABCa_D_Cytosol + -(0.00166112956810631 * PABCa_Cytosol)) * (1 / PABCa_deg_l_n) * (1 / PABCa_deg_r_d^2) * (1 / PABCa_deg_l_star) + PABCa_deg_D * (0.00166112956810631 * PABCa_D_Cytosol + -PABCa_deg_PABCa_F) * (1 / PABCa_deg_l_star) * (1 / PABCa_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  PABCa_deg: PABCa_D_Cytosol -> ; (PABCa_deg_D * PABCa_deg_r_n^2 * (0.00166112956810631 * PABCa_D_Cytosol + -(0.00166112956810631 * PABCa_Cytosol)) * (1 / PABCa_deg_l_n) * (1 / PABCa_deg_r_d^2) * (1 / PABCa_deg_l_star) + PABCa_deg_D * (0.00166112956810631 * PABCa_D_Cytosol + - PABCa_deg_PABCa_F) * (1 / PABCa_deg_l_star) * (1 / PABCa_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
   IP3_d: IP3_Cytosol -> ; 0.75 * IP3_d_D * (0.00166112956810631 * IP3_Cytosol + -(0.00166112956810631 * IP3_D_Cytosol)) * IP3_d_r_neck^2 * (1 / IP3_d_l) * (1 / IP3_d_r_spine^3) * Cytosol * 1 * (1 / KMOLE);
   D28k_high_d: D28k_high_Cytosol -> ; 0.75 * D28k_high_d_D * (0.00166112956810631 * D28k_high_Cytosol + -(0.00166112956810631 * D28k_high_D_Cytosol)) * D28k_high_d_r_neck^2 * (1 / D28k_high_d_l) * (1 / D28k_high_d_r_spine^3) * Cytosol * 1 * (1 / KMOLE);
   reaction0: h_ERM -> ; -((reaction0_Kinh + -((0.00166112956810631 * Ca_Cytosol + reaction0_Kinh) * h_ERM)) * reaction0_Kon) * ERM;
@@ -47,16 +47,16 @@ model Hernjak2005_Calcium_Signaling()
   D28kBDbinding: D28k_D_Cytosol + Ca_D_Cytosol -> D28kB_D_Cytosol; (D28kBDbinding_Kf * 0.00166112956810631 * D28k_D_Cytosol * 0.00166112956810631 * Ca_D_Cytosol + -(D28kBDbinding_Kr * 0.00166112956810631 * D28kB_D_Cytosol)) * Cytosol * 1 * (1 / KMOLE);
   PABCa_d: PABCa_Cytosol -> ; 0.75 * PABCa_d_D * (0.00166112956810631 * PABCa_Cytosol + -(0.00166112956810631 * PABCa_D_Cytosol)) * PABCa_d_r_neck^2 * (1 / PABCa_d_l) * (1 / PABCa_d_r_spine^3) * Cytosol * 1 * (1 / KMOLE);
   PA_d: PA_Cytosol -> ; 0.75 * PA_d_D * (0.00166112956810631 * PA_Cytosol + -(0.00166112956810631 * PA_D_Cytosol)) * PA_d_r_neck^2 * (1 / PA_d_l) * (1 / PA_d_r_spine^3) * Cytosol * 1 * (1 / KMOLE);
-  CGB_deg: CGB_D_Cytosol -> ; (CGB_deg_D * CGB_deg_r_n^2 * (0.00166112956810631 * CGB_D_Cytosol + -(0.00166112956810631 * CGB_Cytosol)) * (1 / CGB_deg_l_n) * (1 / CGB_deg_r_d^2) * (1 / CGB_deg_l_star) + CGB_deg_D * (0.00166112956810631 * CGB_D_Cytosol + -CGB_deg_CGB_F) * (1 / CGB_deg_l_star) * (1 / CGB_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  CGB_deg: CGB_D_Cytosol -> ; (CGB_deg_D * CGB_deg_r_n^2 * (0.00166112956810631 * CGB_D_Cytosol + -(0.00166112956810631 * CGB_Cytosol)) * (1 / CGB_deg_l_n) * (1 / CGB_deg_r_d^2) * (1 / CGB_deg_l_star) + CGB_deg_D * (0.00166112956810631 * CGB_D_Cytosol + - CGB_deg_CGB_F) * (1 / CGB_deg_l_star) * (1 / CGB_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
   PA_Mg: PA_Cytosol + $Mg_Cytosol -> PABMg_Cytosol; (PA_Mg_Kf * 0.00166112956810631 * PA_Cytosol * 0.00166112956810631 * Mg_Cytosol + -(PA_Mg_Kr * 0.00166112956810631 * PABMg_Cytosol)) * Cytosol * 1 * (1 / KMOLE);
-  PA_deg: PA_D_Cytosol -> ; (PA_deg_D * PA_deg_r_n^2 * (0.00166112956810631 * PA_D_Cytosol + -(0.00166112956810631 * PA_Cytosol)) * (1 / PA_deg_l_n) * (1 / PA_deg_r_d^2) * (1 / PA_deg_l_star) + PA_deg_D * (0.00166112956810631 * PA_D_Cytosol + -PA_deg_PA_F) * (1 / PA_deg_l_star) * (1 / PA_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
-  IP3_degr: IP3_Cytosol -> ; IP3_degr_Kdegr * (0.00166112956810631 * IP3_Cytosol + -IP3_degr_IP3_CytosolS) * Cytosol * 1 * (1 / KMOLE);
+  PA_deg: PA_D_Cytosol -> ; (PA_deg_D * PA_deg_r_n^2 * (0.00166112956810631 * PA_D_Cytosol + -(0.00166112956810631 * PA_Cytosol)) * (1 / PA_deg_l_n) * (1 / PA_deg_r_d^2) * (1 / PA_deg_l_star) + PA_deg_D * (0.00166112956810631 * PA_D_Cytosol + - PA_deg_PA_F) * (1 / PA_deg_l_star) * (1 / PA_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  IP3_degr: IP3_Cytosol -> ; IP3_degr_Kdegr * (0.00166112956810631 * IP3_Cytosol + - IP3_degr_IP3_CytosolS) * Cytosol * 1 * (1 / KMOLE);
   D28kB_high_d: D28kB_high_Cytosol -> ; 0.75 * D28kB_high_d_D * (0.00166112956810631 * D28kB_high_Cytosol + -(0.00166112956810631 * D28kB_high_D_Cytosol)) * D28kB_high_d_r_neck^2 * (1 / D28kB_high_d_l) * (1 / D28kB_high_d_r_spine^3) * Cytosol * 1 * (1 / KMOLE);
   D28k_d: D28k_Cytosol -> ; 0.75 * D28k_d_D * (0.00166112956810631 * D28k_Cytosol + -(0.00166112956810631 * D28k_D_Cytosol)) * D28k_d_r_neck^2 * (1 / D28k_d_l) * (1 / D28k_d_r_spine^3) * Cytosol * 1 * (1 / KMOLE);
   CGB_d: CGB_Cytosol -> ; 0.75 * CGB_d_D * (0.00166112956810631 * CGB_Cytosol + -(0.00166112956810631 * CGB_D_Cytosol)) * CGB_d_r_neck^2 * (1 / CGB_d_l) * (1 / CGB_d_r_spine^3) * Cytosol * 1 * (1 / KMOLE);
   CG_Dbinding: Ca_D_Cytosol + CG_D_Cytosol -> CGB_D_Cytosol; (CG_Dbinding_Kf * 0.00166112956810631 * Ca_D_Cytosol * 0.00166112956810631 * CG_D_Cytosol + -(CG_Dbinding_Kr * 0.00166112956810631 * CGB_D_Cytosol)) * Cytosol * 1 * (1 / KMOLE);
-  IP3_degr1: IP3_D_Cytosol -> ; IP3_degr1_Kdegr * (0.00166112956810631 * IP3_D_Cytosol + -IP3_degr1_IP3_CytosolD) * Cytosol * 1 * (1 / KMOLE);
-  Ca_deg: Ca_D_Cytosol -> ; (Ca_deg_D * Ca_deg_r_n^2 * (0.00166112956810631 * Ca_D_Cytosol + -(0.00166112956810631 * Ca_Cytosol)) * (1 / Ca_deg_l_n) * (1 / Ca_deg_r_D^2) * (1 / Ca_deg_l_star) + Ca_deg_D * (0.00166112956810631 * Ca_D_Cytosol + -Ca_deg_Ca_F) * (1 / Ca_deg_l_star) * (1 / Ca_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
+  IP3_degr1: IP3_D_Cytosol -> ; IP3_degr1_Kdegr * (0.00166112956810631 * IP3_D_Cytosol + - IP3_degr1_IP3_CytosolD) * Cytosol * 1 * (1 / KMOLE);
+  Ca_deg: Ca_D_Cytosol -> ; (Ca_deg_D * Ca_deg_r_n^2 * (0.00166112956810631 * Ca_D_Cytosol + -(0.00166112956810631 * Ca_Cytosol)) * (1 / Ca_deg_l_n) * (1 / Ca_deg_r_D^2) * (1 / Ca_deg_l_star) + Ca_deg_D * (0.00166112956810631 * Ca_D_Cytosol + - Ca_deg_Ca_F) * (1 / Ca_deg_l_star) * (1 / Ca_deg_lc)) * Cytosol * 1 * (1 / KMOLE);
   pulses:  -> IP3_Cytosol; pulses_SVR * pulses_Js * pulses_ar * (1 / pulses_Rs) * Cytosol * 1 * (1 / KMOLE);
   ER_leak_flux: Ca_Cytosol -> $Ca_ER; -(ERDensity_ERM * ER_leak_flux_vL * (1 + -(0.00166112956810631 * Ca_Cytosol * (1 / (0.00166112956810631 * Ca_ER))))) * ERM * 1 * (1 / KMOLE);
   SERCA_fluxD: Ca_D_Cytosol -> $Ca_D_ER; ERDensity_D_ERM * SERCA_fluxD_vP * 0.00166112956810631 * Ca_D_Cytosol * 0.00166112956810631 * Ca_D_Cytosol * (1 / (SERCA_fluxD_kP * SERCA_fluxD_kP + 0.00166112956810631 * Ca_D_Cytosol * 0.00166112956810631 * Ca_D_Cytosol)) * ERM * 1 * (1 / KMOLE);
@@ -69,47 +69,82 @@ model Hernjak2005_Calcium_Signaling()
 
   // Species initializations:
   ERDensity_ERM = 1;
+  ERDensity_ERM has molecule_per_volume;
   PA_D_Cytosol = 1928.19396;
+  PA_D_Cytosol has molecule_per_volume;
   PABCa_D_Cytosol = 9827.53562;
+  PABCa_D_Cytosol has molecule_per_volume;
   Ca_D_ER = 240800;
+  Ca_D_ER has molecule_per_volume;
   h_D_ERM = 0.8;
+  h_D_ERM has molecule_per_volume;
   PABMg_D_Cytosol = 36404.27644;
+  PABMg_D_Cytosol has molecule_per_volume;
   ERDensity_D_ERM = 1;
+  ERDensity_D_ERM has molecule_per_volume;
   CG_D_Cytosol = 84566.35334;
+  CG_D_Cytosol has molecule_per_volume;
   D28kB_D_Cytosol = 2510.04502;
+  D28kB_D_Cytosol has molecule_per_volume;
   PA_Cytosol = 1928.19396;
+  PA_Cytosol has molecule_per_volume;
   CG_Cytosol = 84566.35334;
+  CG_Cytosol has molecule_per_volume;
   PABCa_Cytosol = 9827.53562;
+  PABCa_Cytosol has molecule_per_volume;
   Mg_Cytosol = 355180;
+  Mg_Cytosol has molecule_per_volume;
   D28k_high_Cytosol = 43952.64608;
+  D28k_high_Cytosol has molecule_per_volume;
   D28k_high_D_Cytosol = 43952.64608;
+  D28k_high_D_Cytosol has molecule_per_volume;
   Ca_ER = 240800;
+  Ca_ER has molecule_per_volume;
   D28kB_high_D_Cytosol = 4207.35392;
+  D28kB_high_D_Cytosol has molecule_per_volume;
   CGB_D_Cytosol = 11753.6286;
+  CGB_D_Cytosol has molecule_per_volume;
   Ca_D_Cytosol = 27.09;
+  Ca_D_Cytosol has molecule_per_volume;
   CGB_Cytosol = 11753.6286;
+  CGB_Cytosol has molecule_per_volume;
   D28k_Cytosol = 45649.95498;
+  D28k_Cytosol has molecule_per_volume;
   D28kB_high_Cytosol = 4207.35392;
+  D28kB_high_Cytosol has molecule_per_volume;
   PABMg_Cytosol = 36404.27644;
+  PABMg_Cytosol has molecule_per_volume;
   IP3_Cytosol = 96.32;
+  IP3_Cytosol has molecule_per_volume;
   Ca_Extracellular = 602000;
+  Ca_Extracellular has molecule_per_volume;
   D28k_D_Cytosol = 45649.95498;
+  D28k_D_Cytosol has molecule_per_volume;
   IP3_D_Cytosol = 96.32;
+  IP3_D_Cytosol has molecule_per_volume;
   Mg_D_Cytosol = 355180;
+  Mg_D_Cytosol has molecule_per_volume;
   Ca_Cytosol = 27.09;
+  Ca_Cytosol has molecule_per_volume;
   h_ERM = 0.8;
+  h_ERM has molecule_per_volume;
   Ca_D_Extracellular = 602000;
+  Ca_D_Extracellular has molecule_per_volume;
   D28kB_Cytosol = 2510.04502;
+  D28kB_Cytosol has molecule_per_volume;
 
   // Compartment initializations:
   Extracellular = 1;
   Cytosol = 14169.5000044198;
   ER = 2500;
   PM = 16669.5000051998;
+  PM has um2;
   ERM = 50000;
+  ERM has um2;
 
   // Variable initializations:
   KMOLE = 0.00166112956810631;
+  KMOLE has uM_um3_molecules_1;
   pulses0 = 0;
   p0 = 1;
   delta = 0;
@@ -310,5 +345,36 @@ model Hernjak2005_Calcium_Signaling()
   ER_leak_fluxD_vL = 0.12396;
 
   //Other declarations:
-  var flux0_ar, flux1_ar, pulses_ar;
+  var pulses0, flux0_ar, flux1_ar, pulses_ar;
+  const Extracellular, Cytosol, ER, PM, ERM, KMOLE, p0, delta, tau, Ks, A1;
+  const B1, Jch, t1, t2, JchD, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11;
+  const p12, p13;
+
+  // Unit definitions:
+  unit substance = item;
+  unit volume = (1e-6 metre)^3;
+  unit area = (1e-6 metre)^2;
+  unit molecule = item;
+  unit umol_um3_litre_1 = 1e-021 mole;
+  unit um2 = (1e-6 metre)^2;
+  unit uM_um3_molecules_1 = 1e-021 dimensionless * mole / item;
+  unit uM_s_1 = 0.001 dimensionless * mole / (metre^3 * second);
+  unit uM_1_s_1 = 1000 dimensionless * metre^3 / (mole * second);
+  unit s_1 = 1 / second;
+  unit um2_s_1 = 1e-012 dimensionless * metre^2 / second;
+  unit um = 1e-6 metre;
+  unit uM = 0.001 dimensionless * mole / metre^3;
+  unit molecules_um_2_s_1 = 1e+012 dimensionless * item / (metre^2 * second);
+  unit pA_um_2 = dimensionless * ampere / metre^2;
+  unit molecules_um_2_uM_1_s_1 = 1e+015 dimensionless * item * metre / (mole * second);
+  unit um_1 = 1 / 1e-6 metre;
+  unit uM_um_s_1 = 1e-009 dimensionless * mole / (metre^2 * second);
+  unit _one_ = dimensionless;
+  unit s = second;
+  unit uM_um3_molecules_1_s_1 = 1e-021 dimensionless * mole / (item * second);
+  unit _one__0E_57_item_4_m6_mol_s_1 = 1e-057 dimensionless * metre^6 * mole / (item^4 * second);
+  unit um_s_1 = 1e-6 metre / second;
+  unit molecule = molecule;
+  unit molecule_per_volume = molecule / (1e-6 metre)^3;
+  unit molecule_per_volume_um2 = molecule * (1e-6 metre)^2 / (1e-6 metre)^3;
 end

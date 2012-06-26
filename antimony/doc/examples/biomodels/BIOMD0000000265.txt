@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Conradie2010_RPControl_CellCycle()
+//Created by libAntimony v2.3-beta
+model *Conradie2010_RPControl_CellCycle()
 
   // Compartments and Species:
   compartment cell;
@@ -46,7 +46,7 @@ model Conradie2010_RPControl_CellCycle()
   v23:  -> IEP; v23_K31 * CYCB * (1 - IEP) / (1 + v23_J31 - IEP);
   v24: IEP -> ; v24_K32 * IEP * PPX / (v24_J32 + IEP);
   v25: CDc20T -> ; K12 * CDc20T;
-  v26:  -> CDc20; v26_K13 * (-CDc20 + CDc20T) * IEP / (v26_J13 - CDc20 + CDc20T);
+  v26:  -> CDc20; v26_K13 * (- CDc20 + CDc20T) * IEP / (v26_J13 - CDc20 + CDc20T);
   v27: CDc20 -> ; v27_K14 * CDc20 / (v27_J14 + CDc20);
   v28: CDc20 -> ; K12 * CDc20;
   v29: var5 -> var1 + var2; K20 * (LA * CYCA + LB * CYCB + LD * (CD + CYCD) + LE * CYCE) * var5;
@@ -110,46 +110,96 @@ model Conradie2010_RPControl_CellCycle()
 
   // Variable initializations:
   r31switch = 1;
+  r31switch has dimensionless;
   Flag = 1;
+  Flag has dimensionless;
+  PP1A has dimensionless;
+  V2 has dimensionless;
+  V4 has dimensionless;
+  V6 has dimensionless;
+  V8 has dimensionless;
+  CYCET has dimensionless;
+  CYCDT has dimensionless;
+  CYCAT has dimensionless;
+  P27T has dimensionless;
   K10 = 5;
+  K10 has per_hour;
   K8a = 0.1;
+  K8a has per_hour;
   K8 = 2;
+  K8 has per_hour;
   K25 = 1000;
+  K25 has per_hour;
   K25R = 10;
+  K25R has per_hour;
   J8 = 0.1;
+  J8 has dimensionless;
   YE = 1;
+  YE has dimensionless;
   YB = 0.05;
+  YB has dimensionless;
   K30 = 20;
+  K30 has per_hour;
   K2a = 0.05;
+  K2a has per_hour;
   K2 = 20;
+  K2 has per_hour;
   K2aa = 1;
+  K2aa has per_hour;
   K6a = 10;
+  K6a has per_hour;
   K6 = 100;
+  K6 has per_hour;
   HE = 0.5;
+  HE has dimensionless;
   HB = 1;
+  HB has dimensionless;
   HA = 0.5;
+  HA has dimensionless;
   RBT = 10;
+  RBT has dimensionless;
   LD = 3.3;
+  LD has dimensionless;
   LE = 5;
+  LE has dimensionless;
   LB = 5;
+  LB has dimensionless;
   LA = 3;
+  LA has dimensionless;
   K20 = 10;
+  K20 has per_hour;
   K21 = 1;
+  K21 has dimensionless;
   PP1T = 1;
+  PP1T has dimensionless;
   FE = 25;
+  FE has dimensionless;
   FB = 2;
+  FB has dimensionless;
   K4 = 40;
+  K4 has per_hour;
   GE = 0;
+  GE has dimensionless;
   GB = 1;
+  GB has dimensionless;
   GA = 0.3;
+  GA has dimensionless;
   K12 = 1.5;
+  K12 has per_hour;
   E2FT = 5;
+  E2FT has dimensionless;
   K22 = 1;
+  K22 has per_hour;
   K23a = 0.005;
+  K23a has per_hour;
   K23 = 1;
+  K23 has per_hour;
   K26 = 10000;
+  K26 has per_hour;
   K26R = 200;
+  K26R has per_hour;
   eps = 1;
+  eps has dimensionless;
   v1_k16 = 0.25;
   v2_k18 = 10;
   v7_k24 = 1000;
@@ -191,8 +241,19 @@ model Conradie2010_RPControl_CellCycle()
 
   //Other declarations:
   var r31switch, Flag, PP1A, V2, V4, V6, V8, CYCET, CYCDT, CYCAT, P27T;
+  const cell, K10, K8a, K8, K25, K25R, J8, YE, YB, K30, K2a, K2, K2aa, K6a;
+  const K6, HE, HB, HA, RBT, LD, LE, LB, LA, K20, K21, PP1T, FE, FB, K4, GE;
+  const GB, GA, K12, E2FT, K22, K23a, K23, K26, K26R, eps;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit time_unit = 3600 second;
+  unit per_hour = 1 / 3600 second;
 
   //Display Names:
+  substance is "arbitrary units";
+  time_unit is "hour";
+  per_hour is "per hour";
   CDc20 is "Cdc20";
   CDh1 is "Cdh1";
   CYCA is "cyclin A:Cdk2";

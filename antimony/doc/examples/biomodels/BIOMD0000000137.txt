@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Sedaghat2002_InsulinSignalling_noFeedback()
+//Created by libAntimony v2.3-beta
+model *Sedaghat2002_InsulinSignalling_noFeedback()
 
   // Compartments and Species:
   compartment CellSurface, Intracellular;
@@ -43,7 +43,7 @@ model Sedaghat2002_InsulinSignalling_noFeedback()
 
   // Events:
   event_0000001: at geq(time, 15): x1 = 0;
-  event_0000002: at gt(x6 + x7 + x8, 100): k5 = 1.670000e-02;
+  event_0000002: at gt(x6 + x7 + x8, 100): k5 = 1.670000e-002;
   event_0000003: at leq(x6 + x7 + x8, 100): k5 = 0.1002;
 
   // Species initializations:
@@ -75,9 +75,9 @@ model Sedaghat2002_InsulinSignalling_noFeedback()
 
   // Variable initializations:
   k5 = 0;
-  k1 = 6e-08;
+  k1 = 6e-008;
   kminus1 = 0.2;
-  k2 = 6e-08;
+  k2 = 6e-008;
   kminus2 = 20;
   k3 = 2500;
   kminus3 = 0.2;
@@ -85,7 +85,7 @@ model Sedaghat2002_InsulinSignalling_noFeedback()
   kminus4 = 0.003;
   k4prime = 0.0021;
   kminus4prime = 0.00021;
-  kminus5 = 1.67e-18;
+  kminus5 = 1.67e-018;
   k6 = 0.461;
   k7 = 4.16;
   kminus7 = 1.396;
@@ -111,8 +111,19 @@ model Sedaghat2002_InsulinSignalling_noFeedback()
 
   //Other declarations:
   var k5, k9, k11, k12, k13prime, Effect, x4x5;
+  const CellSurface, Intracellular, k1, kminus1, k2, kminus2, k3, kminus3;
+  const k4, kminus4, k4prime, kminus4prime, kminus5, k6, k7, kminus7, k8;
+  const kminus8, k9_stimulated, k9_basal, kminus9, k10, kminus10, kminus11;
+  const kminus12, k13, kminus13, k14, kminus14, IRp, SHIP, PTEN, PTP, APequil;
+  const PI3K;
+
+  // Unit definitions:
+  unit substance = 1e-15 mole;
+  unit time_unit = 60 second;
 
   //Display Names:
+  substance is "femtomole";
+  time_unit is "minute";
   x1 is "Insulin";
   x2 is "Unbound Insulin Receptor";
   x3 is "Unphosphorylated once bound receptor";

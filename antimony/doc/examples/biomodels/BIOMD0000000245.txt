@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model lei2001()
+//Created by libAntimony v2.3-beta
+model *lei2001()
 
   // Compartments and Species:
   compartment env, cell;
@@ -53,53 +53,117 @@ model lei2001()
   // Compartment initializations:
   env = 1;
   cell = 1;
+  qO2 has mmole_per_g_per_h;
+  qCO2 has mmole_per_g_per_h;
 
   // Variable initializations:
   X_a = 0.1;
+  X_a has dimensionless;
   X_AcDH = 0.0075;
+  X_AcDH has dimensionless;
   k_1h = 0.584;
+  k_1h has g_per_l_per_h;
   K_1h = 0.0116;
+  K_1h has g_per_l;
   k_1l = 1.43;
+  k_1l has g_per_l_per_h;
   K_1l = 0.94;
+  K_1l has g_per_l;
   k_1e = 47.1;
+  k_1e has g_per_l_per_h;
   K_1e = 0.12;
+  K_1e has g_per_l;
   K_1i = 14.2;
+  K_1i has l_per_g;
   k_2 = 0.501;
-  K_2 = 2e-05;
+  k_2 has g_per_l_per_h;
+  K_2 = 2e-005;
+  K_2 has g_per_l;
   K_2i = 0.101;
+  K_2i has l_per_g;
   k_3 = 5.81;
-  K_3 = 5e-07;
+  k_3 has g_per_l_per_h;
+  K_3 = 5e-007;
+  K_3 has g_per_l;
   k_4 = 4.8;
+  k_4 has g_per_l_per_h;
   K_4 = 0.000264;
+  K_4 has g_per_l;
   k_5 = 0.0104;
+  k_5 has g_per_l_per_h;
   K_5 = 0.0102;
+  K_5 has g_per_l;
   k_5e = 0.775;
+  k_5e has g_per_l_per_h;
   K_5e = 0.1;
+  K_5e has g_per_l;
   K_5i = 440;
+  K_5i has l_per_g;
   k_6 = 2.82;
+  k_6 has g_per_l_per_h;
   K_6 = 0.034;
+  K_6 has g_per_l;
   k_6r = 0.0125;
+  k_6r has dimensionless;
   K_6e = 0.057;
+  K_6e has g_per_l;
   k_7 = 1.203;
+  k_7 has g_per_l_per_h;
   K_7 = 0.0101;
+  K_7 has g_per_l;
   k_8 = 0.589;
+  k_8 has g_per_l_per_h;
   k_9 = 0.008;
-  K_9 = 1e-06;
+  k_9 has g_per_l_per_h;
+  K_9 = 1e-006;
+  K_9 has g_per_l;
   k_9e = 0.0751;
+  k_9e has g_per_l_per_h;
   K_9e = 13;
+  K_9e has g_per_l;
   K_9i = 25;
+  K_9i has l_per_g;
   k_9c = 0.00399;
+  k_9c has g_per_l_per_h;
   k_10 = 0.392;
+  k_10 has g_per_l_per_h;
   K_10 = 0.0023;
+  K_10 has g_per_l;
   k_10e = 0.00339;
+  k_10e has g_per_l_per_h;
   K_10e = 0.0018;
+  K_10e has g_per_l;
   k_11 = 0.02;
+  k_11 has g_per_l_per_h;
   D = 0.1;
+  D has per_h;
 
   //Other declarations:
   var qO2, qCO2, X_a, X_AcDH;
+  const env, cell, k_1h, K_1h, k_1l, K_1l, k_1e, K_1e, K_1i, k_2, K_2, K_2i;
+  const k_3, K_3, k_4, K_4, k_5, K_5, k_5e, K_5e, K_5i, k_6, K_6, k_6r, K_6e;
+  const k_7, K_7, k_8, k_9, K_9, k_9e, K_9e, K_9i, k_9c, k_10, K_10, k_10e;
+  const K_10e, k_11, D;
+
+  // Unit definitions:
+  unit substance = gram;
+  unit time_unit = 3600 second;
+  unit volume = litre;
+  unit per_h = 1 / 3600 second;
+  unit g_per_l = gram / litre;
+  unit l_per_g = litre / gram;
+  unit g_per_l_per_h = gram / (litre * 3600 second);
+  unit mmole_per_g_per_h = 1e-3 mole / (3600 second * gram);
 
   //Display Names:
+  substance is "gram";
+  time_unit is "hours";
+  volume is "liter";
+  per_h is "per hour";
+  g_per_l is "gram  per liter";
+  l_per_g is "liter  per gram";
+  g_per_l_per_h is "gram  per liter per hour";
+  mmole_per_g_per_h is "mmole per gram BM per hour";
   env is "environment";
   s_glu is "Glucose";
   s_pyr is "Pyruvate";

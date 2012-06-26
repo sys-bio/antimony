@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Kofahl2004_PheromonePathway()
+//Created by libAntimony v2.3-beta
+model *Kofahl2004_PheromonePathway()
 
   // Compartments and Species:
   compartment Extracellular, compartment_;
@@ -158,7 +158,20 @@ model Kofahl2004_PheromonePathway()
   v46_k46 = 200;
   v47_k47 = 1;
 
+  //Other declarations:
+  const Extracellular, compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+  unit nanoMolar = 1e-9 mole / litre;
+  unit min_inv = 1 / 60 second;
+  unit min_inv_nM_inv = litre / (1e-9 mole * 60 second);
+  unit nM_min_inv = 1e-9 mole / (litre * 60 second);
+
   //Display Names:
+  substance is "nanomole (default)";
+  time_unit is "minute (default)";
   compartment_ is "cell";
   alpha is "α-factor";
   Ste2a is "Ste2active";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Galazzo1990_FermentationPathwayKinetics()
+//Created by libAntimony v2.3-beta
+model *Galazzo1990_FermentationPathwayKinetics()
 
   // Compartments and Species:
   compartment extracellular, cytoplasm;
@@ -15,10 +15,10 @@ model Galazzo1990_FermentationPathwayKinetics()
   Vhk: ATP + Glci -> G6P; cytoplasm * Vhk_Vm2 / (1 + Vhk_Km2Glc / Glci + Vhk_Km2ATP / ATP + Vhk_Ks2Glc * Vhk_Km2ATP / (Glci * ATP));
   Vin: $Glco -> Glci; cytoplasm * (Vin_Vm1 - Vin_Ki1G6P * G6P);
   Vpol: ATP + G6P -> $Carbo; cytoplasm * 1.1 * Vpol_Vm3 * G6P^Vpol_n3 / (Vpol_K3Gly^Vpol_n3 + G6P^Vpol_n3) / (1 + Vpol_Km30 / 0.7 * (1 + Vpol_Km3G6P / G6P));
-  Vpfk: ATP + G6P -> FDP; cytoplasm * Vpfk_Vm4 * Vpfk_g4R * 0.3 * G6P / Vpfk_K4F6P * ATP / Vpfk_K4ATP * (1 + 0.3 * G6P / Vpfk_K4F6P + ATP / Vpfk_K4ATP + Vpfk_g4R * 0.3 * G6P / Vpfk_K4F6P * ATP / Vpfk_K4ATP) / ((1 + 0.3 * G6P / Vpfk_K4F6P + ATP / Vpfk_K4ATP + Vpfk_g4R * 0.3 * G6P / Vpfk_K4F6P * ATP / Vpfk_K4ATP)^2 + Vpfk_L40 * ((1 + Vpfk_c4AMP * (3 - ATP - 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5)) / Vpfk_K4AMP) / (1 + (3 - ATP - 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5)) / Vpfk_K4AMP))^2 * (1 + Vpfk_c4F6P * 0.3 * G6P / Vpfk_K4F6P + Vpfk_c4ATP * ATP / Vpfk_K4ATP + Vpfk_gT * Vpfk_c4F6P * 0.3 * G6P / Vpfk_K4F6P * Vpfk_c4ATP * ATP / Vpfk_K4ATP)^2);
-  Vgapd: FDP -> 2ATP + 2PEP; cytoplasm * Vgapd_Vm5 / (1 + Vgapd_K5G3P / (0.01 * FDP) + (Vgapd_K5NAD / Vgapd_NAD + Vgapd_K5G3P * Vgapd_K5NAD / (Vgapd_NAD * 0.01 * FDP) + Vgapd_K5G3P * Vgapd_K5NAD * Vgapd_NADH / (Vgapd_NAD * 0.01 * FDP * Vgapd_K5NADH)) * (1 + 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgapd_K5ADP + (3 - ATP - 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5)) / Vgapd_K5AMP + ATP / Vgapd_K5ATP));
-  Vpk: PEP -> ATP + $EtOH; cytoplasm * Vpk_Vm6 * (PEP / Vpk_K6PEP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP) * (Vpk_g6R * (1 + PEP / Vpk_K6PEP + 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP + Vpk_g6R * PEP / Vpk_K6PEP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP) + Vpk_q6 * Vpk_L60 * ((1 + Vpk_c6FDP * FDP / Vpk_K6FDP) / (1 + FDP / Vpk_K6FDP))^2 * Vpk_g6T * Vpk_c6PEP * PEP / Vpk_K6PEP * Vpk_c6ADP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP * (1 + Vpk_c6PEP * PEP / Vpk_K6PEP + Vpk_c6ADP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP + Vpk_g6T * Vpk_c6PEP * PEP / Vpk_K6PEP * Vpk_c6ADP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP)) / ((1 + 9.55 * 10^-9 / Vpk_h6) * ((1 + PEP / Vpk_K6PEP + 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP + Vpk_g6R * PEP / Vpk_K6PEP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP)^2 + Vpk_L60 * ((1 + Vpk_c6FDP * FDP / Vpk_K6FDP) / (1 + FDP / Vpk_K6FDP))^2 * (1 + Vpk_c6PEP * PEP / Vpk_K6PEP + Vpk_c6ADP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP + Vpk_g6T * Vpk_c6PEP * PEP / Vpk_K6PEP * Vpk_c6ADP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP)^2));
-  Vgol: 0.5FDP -> $Gly; Vgol_Vm7 * cytoplasm * (PEP / Vgol_K6PEP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP) * (Vgol_g6R * (1 + PEP / Vgol_K6PEP + 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP + Vgol_g6R * PEP / Vgol_K6PEP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP) + Vgol_q6 * Vgol_L60 * ((1 + Vgol_c6FDP * FDP / Vgol_K6FDP) / (1 + FDP / Vgol_K6FDP))^2 * Vgol_g6T * Vgol_c6PEP * PEP / Vgol_K6PEP * Vgol_c6ADP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP * (1 + Vgol_c6PEP * PEP / Vgol_K6PEP + Vgol_c6ADP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP + Vgol_g6T * Vgol_c6PEP * PEP / Vgol_K6PEP * Vgol_c6ADP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP)) / ((1 + 9.55 * 10^-9 / Vgol_h6) * ((1 + PEP / Vgol_K6PEP + 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP + Vgol_g6R * PEP / Vgol_K6PEP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP)^2 + Vgol_L60 * ((1 + Vgol_c6FDP * FDP / Vgol_K6FDP) / (1 + FDP / Vgol_K6FDP))^2 * (1 + Vgol_c6PEP * PEP / Vgol_K6PEP + Vgol_c6ADP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP + Vgol_g6T * Vgol_c6PEP * PEP / Vgol_K6PEP * Vgol_c6ADP * 0.5 * (-ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP)^2));
+  Vpfk: ATP + G6P -> FDP; cytoplasm * Vpfk_Vm4 * Vpfk_g4R * 0.3 * G6P / Vpfk_K4F6P * ATP / Vpfk_K4ATP * (1 + 0.3 * G6P / Vpfk_K4F6P + ATP / Vpfk_K4ATP + Vpfk_g4R * 0.3 * G6P / Vpfk_K4F6P * ATP / Vpfk_K4ATP) / ((1 + 0.3 * G6P / Vpfk_K4F6P + ATP / Vpfk_K4ATP + Vpfk_g4R * 0.3 * G6P / Vpfk_K4F6P * ATP / Vpfk_K4ATP)^2 + Vpfk_L40 * ((1 + Vpfk_c4AMP * (3 - ATP - 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5)) / Vpfk_K4AMP) / (1 + (3 - ATP - 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5)) / Vpfk_K4AMP))^2 * (1 + Vpfk_c4F6P * 0.3 * G6P / Vpfk_K4F6P + Vpfk_c4ATP * ATP / Vpfk_K4ATP + Vpfk_gT * Vpfk_c4F6P * 0.3 * G6P / Vpfk_K4F6P * Vpfk_c4ATP * ATP / Vpfk_K4ATP)^2);
+  Vgapd: FDP -> 2ATP + 2PEP; cytoplasm * Vgapd_Vm5 / (1 + Vgapd_K5G3P / (0.01 * FDP) + (Vgapd_K5NAD / Vgapd_NAD + Vgapd_K5G3P * Vgapd_K5NAD / (Vgapd_NAD * 0.01 * FDP) + Vgapd_K5G3P * Vgapd_K5NAD * Vgapd_NADH / (Vgapd_NAD * 0.01 * FDP * Vgapd_K5NADH)) * (1 + 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgapd_K5ADP + (3 - ATP - 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5)) / Vgapd_K5AMP + ATP / Vgapd_K5ATP));
+  Vpk: PEP -> ATP + $EtOH; cytoplasm * Vpk_Vm6 * (PEP / Vpk_K6PEP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP) * (Vpk_g6R * (1 + PEP / Vpk_K6PEP + 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP + Vpk_g6R * PEP / Vpk_K6PEP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP) + Vpk_q6 * Vpk_L60 * ((1 + Vpk_c6FDP * FDP / Vpk_K6FDP) / (1 + FDP / Vpk_K6FDP))^2 * Vpk_g6T * Vpk_c6PEP * PEP / Vpk_K6PEP * Vpk_c6ADP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP * (1 + Vpk_c6PEP * PEP / Vpk_K6PEP + Vpk_c6ADP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP + Vpk_g6T * Vpk_c6PEP * PEP / Vpk_K6PEP * Vpk_c6ADP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP)) / ((1 + 9.55 * 10^-9 / Vpk_h6) * ((1 + PEP / Vpk_K6PEP + 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP + Vpk_g6R * PEP / Vpk_K6PEP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP)^2 + Vpk_L60 * ((1 + Vpk_c6FDP * FDP / Vpk_K6FDP) / (1 + FDP / Vpk_K6FDP))^2 * (1 + Vpk_c6PEP * PEP / Vpk_K6PEP + Vpk_c6ADP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP + Vpk_g6T * Vpk_c6PEP * PEP / Vpk_K6PEP * Vpk_c6ADP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vpk_K6ADP)^2));
+  Vgol: 0.5FDP -> $Gly; Vgol_Vm7 * cytoplasm * (PEP / Vgol_K6PEP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP) * (Vgol_g6R * (1 + PEP / Vgol_K6PEP + 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP + Vgol_g6R * PEP / Vgol_K6PEP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP) + Vgol_q6 * Vgol_L60 * ((1 + Vgol_c6FDP * FDP / Vgol_K6FDP) / (1 + FDP / Vgol_K6FDP))^2 * Vgol_g6T * Vgol_c6PEP * PEP / Vgol_K6PEP * Vgol_c6ADP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP * (1 + Vgol_c6PEP * PEP / Vgol_K6PEP + Vgol_c6ADP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP + Vgol_g6T * Vgol_c6PEP * PEP / Vgol_K6PEP * Vgol_c6ADP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP)) / ((1 + 9.55 * 10^-9 / Vgol_h6) * ((1 + PEP / Vgol_K6PEP + 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP + Vgol_g6R * PEP / Vgol_K6PEP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP)^2 + Vgol_L60 * ((1 + Vgol_c6FDP * FDP / Vgol_K6FDP) / (1 + FDP / Vgol_K6FDP))^2 * (1 + Vgol_c6PEP * PEP / Vgol_K6PEP + Vgol_c6ADP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP + Vgol_g6T * Vgol_c6PEP * PEP / Vgol_K6PEP * Vgol_c6ADP * 0.5 * (- ATP + (12 * ATP - 3 * ATP^2)^0.5) / Vgol_K6ADP)^2));
   Vatpase: ATP -> ; cytoplasm * Vatpase_Vm8 * ATP;
 
   // Species initializations:
@@ -35,12 +35,18 @@ model Galazzo1990_FermentationPathwayKinetics()
   // Compartment initializations:
   extracellular = 1;
   cytoplasm = 1;
+  VappGly has mM_per_minute;
+  VratioVmax has dimensionless;
 
   // Variable initializations:
   parameter_4 = 14.31;
+  parameter_4 has mM_per_minute;
   parameter_5 = 8.25;
+  parameter_5 has dimensionless;
   parameter_6 = 2;
+  parameter_6 has mM;
   parameter_7 = 68.5;
+  parameter_7 has mM_per_minute;
   Vin_Vm1 = 19.7;
   Vin_Ki1G6P = 3.7;
   Vhk_Vm2 = 68.5;
@@ -82,7 +88,7 @@ model Galazzo1990_FermentationPathwayKinetics()
   Vpk_g6T = 1;
   Vpk_c6PEP = 0.000158793;
   Vpk_c6ADP = 1;
-  Vpk_h6 = 1.14815e-07;
+  Vpk_h6 = 1.14815e-007;
   Vgol_Vm7 = 203;
   Vgol_K6PEP = 0.00793966;
   Vgol_K6ADP = 5;
@@ -94,13 +100,26 @@ model Galazzo1990_FermentationPathwayKinetics()
   Vgol_g6T = 1;
   Vgol_c6PEP = 0.000158793;
   Vgol_c6ADP = 1;
-  Vgol_h6 = 1.14815e-07;
+  Vgol_h6 = 1.14815e-007;
   Vatpase_Vm8 = 25.1;
 
   //Other declarations:
   var VappGly, VratioVmax;
+  const extracellular, cytoplasm, parameter_4, parameter_5, parameter_6, parameter_7;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+  unit mM = 1e-3 mole / litre;
+  unit mM_per_minute = 1e-3 mole / (litre * 60 second);
+  unit min_inv = 1 / 60 second;
 
   //Display Names:
+  substance is "millimole";
+  time_unit is "minute";
+  mM is "milliMolar";
+  mM_per_minute is "mM per minute";
+  min_inv is "minute_inverse";
   extracellular is "Extracellular";
   cytoplasm is "Cytoplasm";
   Glci is "Glucose inside the cell";

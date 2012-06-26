@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Yildirim2003_Lac_operon()
+//Created by libAntimony v2.3-beta
+model *Yildirim2003_Lac_operon()
 
   // Compartments and Species:
   compartment cell;
@@ -43,7 +43,7 @@ model Yildirim2003_Lac_operon()
   gamma_M = 0.411;
   gamma_B = 0.000833;
   gamma_A = 0.52;
-  gamma_0 = 7.25e-07;
+  gamma_0 = 7.25e-007;
   K = 7200;
   alpha_M = 0.000997;
   tau_B = 2;
@@ -63,7 +63,18 @@ model Yildirim2003_Lac_operon()
   K_Le = 0.26;
   K_1 = 25200;
 
+  //Other declarations:
+  const cell, mu, gamma_M, gamma_B, gamma_A, gamma_0, K, alpha_M, tau_B, alpha_A;
+  const K_L1, alpha_B, K_A, beta_A, tau_M, K_L, gamma_L, gamma_P, alpha_L;
+  const alpha_P, tau_P, beta_L1, K_Le, K_1;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+
   //Display Names:
+  time_unit is "minute";
+  substance is "millimoles";
   M is "mRNA";
   B is "Betagalactosidase";
   A is "allolactose";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Model_1()
+//Created by libAntimony v2.3-beta
+model *Model_1()
 
   // Compartments and Species:
   compartment cell;
@@ -33,7 +33,9 @@ model Model_1()
 
   // Variable initializations:
   alpha = 2;
+  alpha has substance;
   beta = 4;
+  beta has unitDefinition_3;
   reaction_0_k1 = 2.5;
   reaction_0_k2 = 5;
   reaction_1_k1 = 2500;
@@ -43,7 +45,16 @@ model Model_1()
   reaction_3_k1 = 10;
   reaction_4_k = 20000000;
 
+  //Other declarations:
+  const cell, alpha, beta;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+  unit unitDefinition_3 = 1 / 60 second;
+
   //Display Names:
+  unitDefinition_3 is "unit for beta";
   RemovalH is "removal of hormone";
   reaction_0 is "H binding to  R";
   reaction_1 is "HR forming HRRH";

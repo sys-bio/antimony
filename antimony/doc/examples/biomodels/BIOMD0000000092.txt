@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Fuentes2005_ZymogenActivation()
+//Created by libAntimony v2.3-beta
+model *Fuentes2005_ZymogenActivation()
 
   // Compartments and Species:
   compartment compartment_;
@@ -11,7 +11,7 @@ model Fuentes2005_ZymogenActivation()
   v3: ez -> w + 2e; compartment_ * v3_k3 * ez;
 
   // Species initializations:
-  z = 2.4e-05;
+  z = 2.4e-005;
   e = 0;
   w = 0;
   ez = 0;
@@ -24,6 +24,13 @@ model Fuentes2005_ZymogenActivation()
   v2_k21 = 1000;
   v2_k22 = 0.00021;
   v3_k3 = 0.00054;
+
+  //Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit M_inv_sec_inv = litre / (mole * second);
+  unit sec_inv = 1 / second;
 
   //Display Names:
   z is "Zymogen";

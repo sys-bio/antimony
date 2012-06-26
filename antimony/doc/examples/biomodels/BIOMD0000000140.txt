@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Hoffmann2002_WT_IkBNFkB_Signaling()
+//Created by libAntimony v2.3-beta
+model *Hoffmann2002_WT_IkBNFkB_Signaling()
 
   // Compartments and Species:
   compartment cytoplasm, nucleus;
@@ -116,11 +116,11 @@ model Hoffmann2002_WT_IkBNFkB_Signaling()
   deg4 = 0.00135;
   k1 = 5.4;
   k01 = 0.0048;
-  tr2a = 9.25e-05;
+  tr2a = 9.25e-005;
   tr2 = 0.99;
   tr3 = 0.0168;
-  tr2b = 1.068e-05;
-  tr2e = 7.62e-06;
+  tr2b = 1.068e-005;
+  tr2e = 7.62e-006;
   a1 = 1.35;
   d1 = 0.075;
   tr1 = 0.2448;
@@ -146,10 +146,19 @@ model Hoffmann2002_WT_IkBNFkB_Signaling()
   v39_k2_IkBbeta_nuc_NFkB_nuc = 0.0069;
 
   //Other declarations:
-  var trigger_value, flag_for_after_trigger, fr_after_trigger, Total_IkBbeta;
+  var trigger_value, flag_for_after_trigger, fr, fr_after_trigger, Total_IkBbeta;
   var Total_IkBeps, Total_IkBalpha, Total_NFkBn;
+  const cytoplasm, nucleus, a4, d4, a5, d5, a6, d6, r4, r5, r6, deg4, k1;
+  const k01, tr2a, tr2, tr3, tr2b, tr2e, a1, d1, tr1, deg1, tp1, tp2, a2;
+  const d2, a3, d3, a7, k2, a8, k2_beta, a9, k2_eps, r1, r2, r3, k02;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
 
   //Display Names:
+  substance is "micro mole";
+  time_unit is "minutes";
   v1 is "NFkB-IkBalpha complex formation";
   v2 is "NFkB-IkBbeta complex formation";
   v3 is "NFkB-IkBeps complex formation";

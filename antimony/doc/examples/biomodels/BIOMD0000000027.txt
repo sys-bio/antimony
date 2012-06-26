@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Markevich2004_MAPK_orderedMM()
+//Created by libAntimony v2.3-beta
+model *Markevich2004_MAPK_orderedMM()
 
   // Compartments and Species:
   compartment uVol;
@@ -32,7 +32,14 @@ model Markevich2004_MAPK_orderedMM()
   Km4 = 18;
   Km5 = 78;
 
+  //Other declarations:
+  const uVol, k1cat, Km1, k2cat, Km2, k3cat, Km3, k4cat, Km4, Km5;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+
   //Display Names:
+  substance is "nanomole (default)";
   v1 is "phosphorylation of MAPK";
   v2 is "phosphorylation of P-MAPK";
   v3 is "dephosphorylation of PP-MAPK";

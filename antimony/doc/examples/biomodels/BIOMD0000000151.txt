@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Singh2006_IL6_Signal_Transduction()
+//Created by libAntimony v2.3-beta
+model *Singh2006_IL6_Signal_Transduction()
 
   // Compartments and Species:
   compartment cytosol, nucleus;
@@ -197,7 +197,7 @@ model Singh2006_IL6_Signal_Transduction()
   kf32 = 0.1;
   kr32 = 0.000245;
   k12 = 0.003;
-  kf13 = 2e-07;
+  kf13 = 2e-007;
   kr13 = 0.2;
   k17 = 0.05;
   kf8 = 0.02;
@@ -214,7 +214,7 @@ model Singh2006_IL6_Signal_Transduction()
   kf15 = 0.001;
   kr15 = 0.2;
   kf61 = 0.2;
-  kr61 = 2e-07;
+  kr61 = 2e-007;
   k16 = 0.005;
   k18a = 0.01;
   k18b = 400;
@@ -276,7 +276,22 @@ model Singh2006_IL6_Signal_Transduction()
   kf56 = 0.014;
   kr56 = 0.6;
 
+  //Other declarations:
+  const cytosol, nucleus, IL6, kf0, kr0, kf1, kr1, kf2, kr2, kf3, kr3, k4;
+  const k10, kf5, kr5, k6, kf7, kr7, kf9, kr9, kf21, kr21, kf37, kr37, kf39;
+  const kr39, kf32, kr32, k12, kf13, kr13, k17, kf8, kr8, kf11, kr11, k14;
+  const Vm, Km, kf34, kr34, kf60, kr60, kf15, kr15, kf61, kr61, k16, k18a;
+  const k18b, k19, k22, k20, k23, kf38, kr38, kf35, kr35, kf24, kr24, kf25;
+  const kr25, kf40, kr40, kf26, kr26, kf31, kr31, kf27, kr27, kf28, kr28;
+  const kf41, kr41, kf33, kr33, kf30, kr30, k43, kf29, kr29, kf42, kr42, kf44;
+  const kr44, k45, kf46, kr46, k51, k49, kf50, kr50, k47, kf48, kr48, kf52;
+  const kr52, k53, kr54, kf54, k55, k59, k57, kf58, kr58, kf56, kr56;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+
   //Display Names:
+  substance is "nano mole";
   x1 is "gp80";
   x2 is "IL6-gp80";
   x6 is "IL6-gp80-gp130-JAK";
