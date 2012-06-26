@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Goldbeter1995()
+//Created by libAntimony v2.3-beta
+model *Goldbeter1995()
 
   // Compartments and Species:
   compartment default, CYTOPLASM, compartment_0000004;
@@ -30,9 +30,9 @@ model Goldbeter1995()
   Pn = 0.25;
 
   // Compartment initializations:
-  default = 1e-15;
-  CYTOPLASM = 1e-15;
-  compartment_0000004 = 1e-15;
+  default = 1e-015;
+  CYTOPLASM = 1e-015;
+  compartment_0000004 = 1e-015;
 
   // Variable initializations:
   rM_Vs = 0.76;
@@ -54,7 +54,16 @@ model Goldbeter1995()
   rVd_Vd = 0.95;
   rVd_Kd = 0.2;
 
+  //Other declarations:
+  const default, CYTOPLASM, compartment_0000004;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 3600 second;
+
   //Display Names:
+  substance is "micromole (default)";
+  time_unit is "heure (default)";
   compartment_0000004 is "NUCLEUS";
   M is "PER mRNA";
   P0 is "unphosphorylated PER";

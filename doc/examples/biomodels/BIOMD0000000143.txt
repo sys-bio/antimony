@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Olsen2003_neutrophil_oscillatory_metabolism()
+//Created by libAntimony v2.3-beta
+model *Olsen2003_neutrophil_oscillatory_metabolism()
 
   // Compartments and Species:
   compartment phagosome, cytoplasm;
@@ -67,7 +67,7 @@ model Olsen2003_neutrophil_oscillatory_metabolism()
   k4 = 20;
   k5 = 10;
   k6 = 0.1;
-  k7 = 1e-06;
+  k7 = 1e-006;
   k8 = 50;
   k9 = 500;
   k10 = 10;
@@ -84,7 +84,16 @@ model Olsen2003_neutrophil_oscillatory_metabolism()
   L = 550;
   Ko = 1.5;
 
+  //Other declarations:
+  const phagosome, cytoplasm, Knadph, k1, kminus1, k2, k3, k4, k5, k6, k7;
+  const k8, k9, k10, k11, k12, k13, kminus13, k14, k15, k16, k17, k18, V;
+  const L, Ko;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
   //Display Names:
+  substance is "micro mole";
   H2O2_p is "H2O2";
   per3_p is "Ferric peroxidase";
   coI_p is "compound I";

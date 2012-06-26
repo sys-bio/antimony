@@ -1,10 +1,9 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function goldbeter_koshland(v1, v2, J1, J2)
   2 * v1 * J2 / (v2 - v1 + J1 * v2 + J2 * v1 + ((v2 - v1 + J1 * v2 + J2 * v1)^2 - 4 * (v2 - v1) * v1 * J2)^(1 / 2));
 end
 
-
-model Tyson2003_Activator_Inhib_Oscillator()
+model *Tyson2003_Activator_Inhib_Oscillator()
 
   // Compartments and Species:
   compartment env;
@@ -36,17 +35,46 @@ model Tyson2003_Activator_Inhib_Oscillator()
 
   // Variable initializations:
   k0 = 4;
+  k0 has per_;
   k1 = 1;
+  k1 has per_;
   k2 = 1;
+  k2 has per_;
   k2_prime = 1;
+  k2_prime has per_M_per_;
   k3 = 1;
+  k3 has per_;
   J3 = 0.3;
+  J3 has dimensionless;
   k4 = 1;
+  k4 has M_per_;
   J4 = 0.3;
+  J4 has dimensionless;
   k5 = 0.1;
+  k5 has per_;
   k6 = 0.075;
+  k6 has per_;
   Et = 1;
+  Et has M;
+  Km3 has M;
+  Km4 has M;
 
   //Other declarations:
   var Km3, Km4;
+  const env, k0, k1, k2, k2_prime, k3, J3, k4, J4, k5, k6, Et;
+
+  // Unit definitions:
+  unit time_unit = second;
+  unit substance = mole;
+  unit per_ = 1 / second;
+  unit M_per_ = mole / (second * litre);
+  unit M = mole / litre;
+  unit per_M_per_ = litre / (mole * second);
+
+  //Display Names:
+  time_unit is "s";
+  substance is "mole";
+  per_ is "per_s";
+  M_per_ is "M_per_s";
+  per_M_per_ is "per_M_per_s";
 end

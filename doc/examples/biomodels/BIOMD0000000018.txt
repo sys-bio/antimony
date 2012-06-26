@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model MorrisonAllegra()
+//Created by libAntimony v2.3-beta
+model *MorrisonAllegra()
 
   // Compartments and Species:
   compartment ext_, cell;
@@ -210,7 +210,16 @@ model MorrisonAllegra()
   MTX4deg_Vm = 0.03;
   MTX5deg_Vm = 0.03;
 
+  //Other declarations:
+  const ext_, cell, Keq;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 3600 second;
+
   //Display Names:
+  substance is "micromole (new default)";
+  time_unit is "heure (new default)";
   FH2f is "dihydrofolate free";
   FH2b is "dihydrofolate bound";
   DHFRf is "dihydrofolate reductase free";

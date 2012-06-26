@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Akman2008_Circadian_Clock_Model2()
+//Created by libAntimony v2.3-beta
+model *Akman2008_Circadian_Clock_Model2()
 
   // Compartments and Species:
   compartment cytosol, nucleus;
@@ -98,7 +98,18 @@ model Akman2008_Circadian_Clock_Model2()
   dawn = 12;
   dusk = 24;
 
+  //Other declarations:
+  const cytosol, nucleus, a1, a2, a3, a4, a5, a6, a7, b1, b2, b3, b4, b5;
+  const b7, b8, b9, b10, b6, d1, d2, d3, d4, d5, f1, f2, gam1, gam2, r1, r2;
+  const n, m, k, a3p, d2p, f1p, gam1p, amp, dawn, dusk;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = dimensionless;
+
   //Display Names:
+  time_unit is "hours";
+  substance is "arbitrary_units";
   E1F is "s-Frq_1";
   E1Fp is "l-Frq_1";
   E1W is "WC-1_1";

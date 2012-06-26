@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Grange2001_L_Dopa_PK()
+//Created by libAntimony v2.3-beta
+model *Grange2001_L_Dopa_PK()
 
   // Compartments and Species:
   compartment gut, Vdopa, V_3_OMD;
@@ -32,23 +32,49 @@ model Grange2001_L_Dopa_PK()
   gut = 1;
   Vdopa = 0.496;
   V_3_OMD = 0.196;
+  F_b has dimensionless;
+  F_H has dimensionless;
 
   // Variable initializations:
   F_G = 0.24;
+  F_G has dimensionless;
+  CL_H has l_per_h;
   Q = 0.828;
   f_H = 0.13;
+  f_H has dimensionless;
+  CL_dopa has l_per_h;
+  f_rest has dimensionless;
   f_AADC = 0.69;
+  f_AADC has dimensionless;
   f_COMT = 0.1;
+  f_COMT has dimensionless;
+  CL_AADC has l_per_h;
+  CL_rest has l_per_h;
+  CL_COMT has l_per_h;
   CL_dopa0 = 0.823;
+  CL_dopa0 has l_per_h;
   ka_b = 2.11;
+  ka_b has per_h;
   CL_OMD = 0.012;
   L_Dopa_per_kg_rat = 404;
   rat_body_mass = 0.25;
 
   //Other declarations:
   var F_b, F_H, CL_H, CL_dopa, f_rest, CL_AADC, CL_rest, CL_COMT;
+  const gut, Vdopa, V_3_OMD, F_G, Q, f_H, f_AADC, f_COMT, CL_dopa0, ka_b;
+  const CL_OMD, L_Dopa_per_kg_rat, rat_body_mass;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit umol_per_kg = 1e-9 mole / kilogram;
+  unit per_h = 1 / 3600 second;
+  unit l_per_h = litre / 3600 second;
+  unit time_unit = 3600 second;
 
   //Display Names:
+  substance is "micromole";
+  umol_per_kg is "micromole_per_kg";
+  time_unit is "hours";
   Vdopa is "V_L_Dopa";
   C_OMD is "C_3-OMD";
   CL_OMD is "CL_3_OMD";

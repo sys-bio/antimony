@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Curien2009_Aspartate_Metabolism()
+//Created by libAntimony v2.3-beta
+model *Curien2009_Aspartate_Metabolism()
 
   // Compartments and Species:
   compartment c1;
@@ -70,9 +70,13 @@ model Curien2009_Aspartate_Metabolism()
 
   // Compartment initializations:
   c1 = 1;
+  V_Lys_RS has umole_per_litre_per_time;
+  V_Thr_RS has umole_per_litre_per_time;
+  V_Ile_RS has umole_per_litre_per_time;
 
   // Variable initializations:
   V_AA_RS = 0.43;
+  V_AA_RS has umole_per_litre_per_time;
   Vak1_AK1_kforward_app_exp = 5.65;
   Vak1_AK1_kreverse_app_exp = 1.6;
   Vak1_AK1_Lys_Ki_app_exp = 550;
@@ -136,8 +140,20 @@ model Curien2009_Aspartate_Metabolism()
 
   //Other declarations:
   var V_Lys_RS, V_Thr_RS, V_Ile_RS;
+  const c1, V_AA_RS;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit per_time = 1 / second;
+  unit per_litre = 1 / litre;
+  unit umole_per_litre = 1e-6 mole / litre;
+  unit umole_per_litre_per_time = 1e-6 mole / (litre * second);
+  unit umole2_per_litre2 = (1e-6 mole)^2 / litre^2;
+  unit litre_per_umole_per_time = litre / (1e-6 mole * second);
+  unit umole_per_time = 1e-6 mole / second;
 
   //Display Names:
+  substance is "micromole";
   c1 is "chl";
   Asp is "Aspartate";
   Lys is "Lysine";

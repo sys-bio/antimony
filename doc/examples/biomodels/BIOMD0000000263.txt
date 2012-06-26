@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Model_1()
+//Created by libAntimony v2.3-beta
+model *Model_1()
 
   // Compartments and Species:
   compartment Cell;
@@ -25,6 +25,7 @@ model Model_1()
   reaction_9: $pro_TrkA => TrkA; Cell * TrkA_turnover * pro_TrkA;
   reaction_10: NGF_TrkA => pTrkA; Cell * reaction_10_k1 * NGF_TrkA;
   reaction_11: TrkA => ; Cell * TrkA_turnover * TrkA;
+  NGF has ng_per_ml;
 
   // Species initializations:
   TrkA = pro_TrkA;
@@ -40,21 +41,33 @@ model Model_1()
 
   // Compartment initializations:
   Cell = 1;
+  pTrkA_total has ng_per_ml;
+  pAkt_total has ng_per_ml;
 
   // Variable initializations:
   pTrkA_scaleFactor = 0.848783474941268;
+  pTrkA_scaleFactor has ng;
   pAkt_scaleFactor = 2.42381211094508;
+  pAkt_scaleFactor has ng;
   pS6_scaleFactor = 0.525842718263069;
+  pS6_scaleFactor has ng;
+  pS6_total has ng_per_ml;
   NGF_conc_step = 0;
+  NGF_conc_step has ng_per_ml;
   NGF_conc_pulse = 0;
+  NGF_conc_pulse has ng_per_ml;
   NGF_conc_ramp = 30;
+  NGF_conc_ramp has ng_per_ml;
   TrkA_turnover = 0.0011032440769796;
+  TrkA_turnover has per_sec;
   pulse_time = 60;
+  pulse_time has time_unit;
   ramp_time = 3600;
+  ramp_time has time_unit;
   reaction_1_k1 = 0.00269408;
   reaction_1_k2 = 0.0133747;
   reaction_2_k1 = 0.0882701;
-  reaction_2_k2 = 1.47518e-10;
+  reaction_2_k2 = 1.47518e-010;
   reaction_3_k1 = 0.0202517;
   reaction_4_k1 = 0.0684084;
   reaction_5_k1 = 68.3666;
@@ -66,8 +79,26 @@ model Model_1()
 
   //Other declarations:
   var pTrkA_total, pAkt_total, pS6_total;
+  const Cell, pTrkA_scaleFactor, pAkt_scaleFactor, pS6_scaleFactor, NGF_conc_step;
+  const NGF_conc_pulse, NGF_conc_ramp, TrkA_turnover, pulse_time, ramp_time;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit conc = dimensionless / 1e-3 litre;
+  unit time_unit = second;
+  unit volume = 1e-3 litre;
+  unit per_sec = 1 / second;
+  unit ng = 1e-9 gram;
+  unit ng_per_ml = 1e-9 gram / 1e-3 litre;
+  unit per_conc_per_sec = 1e-3 litre * dimensionless / second;
 
   //Display Names:
+  substance is "arbitrary_amount";
+  conc is "arbitrary_conc";
+  time_unit is "seconds";
+  volume is "ml";
+  per_sec is "per second";
+  per_conc_per_sec is "per conc per second";
   reaction_1 is "NGF+TrkA";
   reaction_2 is "pTrkA+Akt";
   reaction_3 is "Akt_phosphorylation";

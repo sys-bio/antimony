@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Yamada2003_JAK_STAT_SOCS1_knockout()
+//Created by libAntimony v2.3-beta
+model *Yamada2003_JAK_STAT_SOCS1_knockout()
 
   // Compartments and Species:
   compartment cytoplasm, nucleus;
@@ -127,7 +127,7 @@ model Yamada2003_JAK_STAT_SOCS1_knockout()
   v13_kf = 0.001;
   v13_kb = 0.2;
   v14_kf = 0.003;
-  v15_kf = 2e-07;
+  v15_kf = 2e-007;
   v15_kb = 0.2;
   v16_kf = 0.005;
   v17_kf = 0.02;
@@ -138,7 +138,7 @@ model Yamada2003_JAK_STAT_SOCS1_knockout()
   v20_kf = 0.001;
   v20_kb = 0.2;
   v21_kf = 0.005;
-  v22_kf = 2e-07;
+  v22_kf = 2e-007;
   v22_kb = 0.2;
   v23_kf = 0.05;
   v25_kf = 0.001;
@@ -175,7 +175,18 @@ model Yamada2003_JAK_STAT_SOCS1_knockout()
   v46_kf = 0.1;
   v46_kb = 0.05;
 
+  //Other declarations:
+  const cytoplasm, nucleus;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit nM_per_second = 1e-9 mole / (litre * second);
+  unit sec_inv = 1 / second;
+  unit nM_inv_sec_inv = litre / (1e-9 mole * second);
+  unit nM = 1e-9 mole / litre;
+
   //Display Names:
+  substance is "nanomoles";
   R is "Receptor";
   RJ is "Receptor JAK complex";
   IFNRJ is "Interferon-Receptor-JAK complex";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Veening2008_DegU_Regulation()
+//Created by libAntimony v2.3-beta
+model *Veening2008_DegU_Regulation()
 
   // Compartments and Species:
   compartment univ;
@@ -62,7 +62,15 @@ model Veening2008_DegU_Regulation()
 
   //Other declarations:
   var kdephos, kphos, DegU_Total;
+  const univ, Imax, Io, Irmax, Iro, K, Kdim, Kr, Kr1, R, V, ka, kd, kdeg;
+  const kdegA, kdegm, ksyn, ksyn1, p, q, ratio;
+
+  // Unit definitions:
+  unit volume = 1e-15 litre;
+  unit substance = item;
 
   //Display Names:
+  volume is "femtolitre";
+  substance is "molecules";
   ratio is "kphosratiokdephos";
 end

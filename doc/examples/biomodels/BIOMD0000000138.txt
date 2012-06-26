@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model model_0000001()
+//Created by libAntimony v2.3-beta
+model *model_0000001()
 
   // Compartments and Species:
   compartment cell;
@@ -20,12 +20,12 @@ model model_0000001()
   ik := isk + ibk + ikdr + ia;
 
   // Rate Rules:
-  n' = lambda_ * (phik - n) / taun;
+  n' = lambda * (phik - n) / taun;
   h' = (phih - h) / tauh;
   V' = -(ica + ik) / Cm;
 
   // Reactions:
-  reaction_0000004:  => c; -ff * (alpha * ica + kc * c) * cell;
+  reaction_0000004:  => c; - ff * (alpha * ica + kc * c) * cell;
 
   // Species initializations:
   c = 0.3;
@@ -54,7 +54,7 @@ model model_0000001()
   sf = 5.6;
   taun = 30;
   tauh = 20;
-  lambda_ = 0.7;
+  lambda = 0.7;
   kc = 0.16;
   ks = 0.5;
   ff = 0.01;
@@ -66,6 +66,13 @@ model model_0000001()
   //Other declarations:
   var phik, phia, phih, phif, phical, cinf, ica, isk, ibk, ikdr, ia, ik, n;
   var h, V;
+  const cell, vca, vk, Cm, gk, gcal, gsk, ga, gf, vn, va, vm, vh, vf, sn;
+  const sa, sm, sh, sf, taun, tauh, lambda, kc, ks, ff, alpha;
+
+  // Unit definitions:
+  unit ms = 1e-3 second;
+  unit mV = 1e-3 volt;
+  unit micro_mole = 1e-6 mole;
 
   //Display Names:
   c is "calcium concentration";

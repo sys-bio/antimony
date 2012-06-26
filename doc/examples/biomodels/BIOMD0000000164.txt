@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model SmithAE2002_RanTransport()
+//Created by libAntimony v2.3-beta
+model *SmithAE2002_RanTransport()
 
   // Compartments and Species:
   compartment Cytosol, EC, Nucleus, Nuc_membrane, PM;
@@ -41,16 +41,16 @@ model SmithAE2002_RanTransport()
   Carrier_RanGTP_binding: RanGTP_Cytosol + Carrier_Cytosol -> Carrier_RanGTP_Cytosol; (Carrier_RanGTP_binding_Kon_Carrier_RanGTP_binding * RanGTP_Cytosol * Carrier_Cytosol + -(Carrier_RanGTP_binding_Koff_Carrier_RanGTP_binding * Carrier_RanGTP_Cytosol)) * Cytosol;
   NTF2_FRAN_Nuc_Exchange: 4FNTF2_RanGDP_Nucleus -> 4NTF2_Nucleus + 3FRanGTP_Nucleus + FRanGDP_Nucleus; 0.25 * NTF2_FRAN_Nuc_Exchange_RCC1Kcat * RCC1_Nucleus * FNTF2_RanGDP_Nucleus * (1 / (NTF2_FRAN_Nuc_Exchange_RCC1Km + RanGDP_Nucleus + FNTF2_RanGDP_Nucleus)) * Nucleus;
   RanBP1_binding: RanBP1_Cytosol + Carrier_RanGTP_Cytosol -> RanBP1_Carrier_RanGTP_Cytosol; (RanBP1_binding_Kon_RanBP1_binding * RanBP1_Cytosol * Carrier_RanGTP_Cytosol + -(RanBP1_binding_Koff_RanBP1_binding * RanBP1_Carrier_RanGTP_Cytosol)) * Cytosol;
-  Carrier_RanGTP_flux: Carrier_RanGTP_Cytosol -> Carrier_RanGTP_Nucleus; Carrier_RanGTP_flux_Carrier_RanGTP_Kperm * (Carrier_RanGTP_Cytosol + -Carrier_RanGTP_Nucleus) * Nuc_membrane;
-  NTF2_flux: NTF2_Cytosol -> NTF2_Nucleus; NTF2_flux_NTF2_Kperm * (NTF2_Cytosol + -NTF2_Nucleus) * Nuc_membrane;
-  NTF2_RanGDP_flux: NTF2_RanGDP_Cytosol -> NTF2_RanGDP_Nucleus; NTF2_RanGDP_flux_NTF2_RanGDP_Kperm * (NTF2_RanGDP_Cytosol + -NTF2_RanGDP_Nucleus) * Nuc_membrane;
-  Carrier_flux: Carrier_Cytosol -> Carrier_Nucleus; Carrier_flux_Carrier_Kperm * (Carrier_Cytosol + -Carrier_Nucleus) * Nuc_membrane;
-  FRanGDP_flux: FRanGDP_Cytosol -> FRanGDP_Nucleus; FRanGDP_flux_RanGDP_Kperm * (FRanGDP_Cytosol + -FRanGDP_Nucleus) * Nuc_membrane;
-  Carrier_FRanGTP_flux: FCarrier_RanGTP_Cytosol -> FCarrier_RanGTP_Nucleus; Carrier_FRanGTP_flux_Carrier_RanGTP_Kperm * (FCarrier_RanGTP_Cytosol + -FCarrier_RanGTP_Nucleus) * Nuc_membrane;
-  FNTF2_RanGDP_flux: FNTF2_RanGDP_Cytosol -> FNTF2_RanGDP_Nucleus; FNTF2_RanGDP_flux_NTF2_RanGDP_Kperm * (FNTF2_RanGDP_Cytosol + -FNTF2_RanGDP_Nucleus) * Nuc_membrane;
-  FRanGTP_flux: FRanGTP_Cytosol -> FRanGTP_Nucleus; FRanGTP_flux_RanGTP_Kperm * (FRanGTP_Cytosol + -FRanGTP_Nucleus) * Nuc_membrane;
-  RanGDP_flux: RanGDP_Cytosol -> RanGDP_Nucleus; RanGDP_flux_RanGDP_Kperm * (RanGDP_Cytosol + -RanGDP_Nucleus) * Nuc_membrane;
-  RanGTP_flux: RanGTP_Cytosol -> RanGTP_Nucleus; RanGTP_flux_RanGTP_Kperm * (RanGTP_Cytosol + -RanGTP_Nucleus) * Nuc_membrane;
+  Carrier_RanGTP_flux: Carrier_RanGTP_Cytosol -> Carrier_RanGTP_Nucleus; Carrier_RanGTP_flux_Carrier_RanGTP_Kperm * (Carrier_RanGTP_Cytosol + - Carrier_RanGTP_Nucleus) * Nuc_membrane;
+  NTF2_flux: NTF2_Cytosol -> NTF2_Nucleus; NTF2_flux_NTF2_Kperm * (NTF2_Cytosol + - NTF2_Nucleus) * Nuc_membrane;
+  NTF2_RanGDP_flux: NTF2_RanGDP_Cytosol -> NTF2_RanGDP_Nucleus; NTF2_RanGDP_flux_NTF2_RanGDP_Kperm * (NTF2_RanGDP_Cytosol + - NTF2_RanGDP_Nucleus) * Nuc_membrane;
+  Carrier_flux: Carrier_Cytosol -> Carrier_Nucleus; Carrier_flux_Carrier_Kperm * (Carrier_Cytosol + - Carrier_Nucleus) * Nuc_membrane;
+  FRanGDP_flux: FRanGDP_Cytosol -> FRanGDP_Nucleus; FRanGDP_flux_RanGDP_Kperm * (FRanGDP_Cytosol + - FRanGDP_Nucleus) * Nuc_membrane;
+  Carrier_FRanGTP_flux: FCarrier_RanGTP_Cytosol -> FCarrier_RanGTP_Nucleus; Carrier_FRanGTP_flux_Carrier_RanGTP_Kperm * (FCarrier_RanGTP_Cytosol + - FCarrier_RanGTP_Nucleus) * Nuc_membrane;
+  FNTF2_RanGDP_flux: FNTF2_RanGDP_Cytosol -> FNTF2_RanGDP_Nucleus; FNTF2_RanGDP_flux_NTF2_RanGDP_Kperm * (FNTF2_RanGDP_Cytosol + - FNTF2_RanGDP_Nucleus) * Nuc_membrane;
+  FRanGTP_flux: FRanGTP_Cytosol -> FRanGTP_Nucleus; FRanGTP_flux_RanGTP_Kperm * (FRanGTP_Cytosol + - FRanGTP_Nucleus) * Nuc_membrane;
+  RanGDP_flux: RanGDP_Cytosol -> RanGDP_Nucleus; RanGDP_flux_RanGDP_Kperm * (RanGDP_Cytosol + - RanGDP_Nucleus) * Nuc_membrane;
+  RanGTP_flux: RanGTP_Cytosol -> RanGTP_Nucleus; RanGTP_flux_RanGTP_Kperm * (RanGTP_Cytosol + - RanGTP_Nucleus) * Nuc_membrane;
 
   // Species initializations:
   Carrier_Cytosol = 11.8952664327711;
@@ -82,19 +82,35 @@ model SmithAE2002_RanTransport()
 
   // Compartment initializations:
   Cytosol = 1;
+  Cytosol has um3;
   EC = 1.40845070422535;
+  EC has um3;
   Nucleus = 0.408450704225352;
+  Nucleus has um3;
   Nuc_membrane = 0.245070422535211;
+  Nuc_membrane has um2;
   PM = 1.40845070422535;
+  PM has um2;
 
   // Variable initializations:
   RanGAP_Kcat_FRanGTP_dephosphorylation = 6;
+  RanGAP_Kcat_FRanGTP_dephosphorylation has s_1;
+  Vmax_RanGTP_dephosphorylation_FRanGTP_dephosphorylation has uM_s_1;
   RanGAP_Kcat_dephosphorylationF = 6;
+  RanGAP_Kcat_dephosphorylationF has s_1;
+  Vmax_dephosphorylation_dephosphorylationF has uM_s_1;
   RanGAP_Kcat_RanGTP_dephosphorylation = 6;
+  RanGAP_Kcat_RanGTP_dephosphorylation has s_1;
+  Vmax_RanGTP_dephosphorylation_RanGTP_dephosphorylation has uM_s_1;
   RanGAP_Kcat_dephosphorylation = 6;
+  RanGAP_Kcat_dephosphorylation has s_1;
+  Vmax_dephosphorylation_dephosphorylation has uM_s_1;
   kinj = 25;
+  kinj has s_1;
   start = 1;
+  start has s;
   tau = 0.4;
+  tau has s;
   Carrier_FRanGTP_binding_Kon_Carrier_RanGTP_binding = 0;
   Carrier_FRanGTP_binding_Koff_Carrier_RanGTP_binding = 0;
   FRanGTP_dephosphorylation_Km_RanGTP_dephosphorylation = 0.43;
@@ -152,6 +168,25 @@ model SmithAE2002_RanTransport()
   var Vmax_RanGTP_dephosphorylation_FRanGTP_dephosphorylation, Vmax_dephosphorylation_dephosphorylationF;
   var Vmax_RanGTP_dephosphorylation_RanGTP_dephosphorylation, Vmax_dephosphorylation_dephosphorylation;
   var ar_for_Microinj;
+  const Cytosol, EC, Nucleus, Nuc_membrane, PM, RanGAP_Kcat_FRanGTP_dephosphorylation;
+  const RanGAP_Kcat_dephosphorylationF, RanGAP_Kcat_RanGTP_dephosphorylation;
+  const RanGAP_Kcat_dephosphorylation, kinj, start, tau;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit area = (1e-6 metre)^2;
+  unit molecule = item;
+  unit umol_litre_um_3 = 1e-21 mole;
+  unit um2 = (1e-6 metre)^2;
+  unit uM_s_1 = 0.001 dimensionless * mole / (metre^3 * second);
+  unit uM_1_s_1 = 1000 dimensionless * metre^3 / (mole * second);
+  unit s_1 = 1 / second;
+  unit uM = 0.001 dimensionless * mole / metre^3;
+  unit s = second;
+  unit uM_um_s_1 = 1e-009 dimensionless * mole / (metre^2 * second);
+  unit pA_um_2 = dimensionless * ampere / metre^2;
+  unit um_s_1 = 1e-006 dimensionless * metre / second;
+  unit um3 = (1e-6 metre)^3;
 
   //Display Names:
   Carrier_FRanGTP_binding is "Carrier FRanGTP binding";

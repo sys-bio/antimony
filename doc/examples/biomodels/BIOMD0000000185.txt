@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Locke2008_Circadian_Clock()
+//Created by libAntimony v2.3-beta
+model *Locke2008_Circadian_Clock()
 
   // Compartments and Species:
   compartment compartment_;
@@ -43,31 +43,61 @@ model Locke2008_Circadian_Clock()
 
   // Compartment initializations:
   compartment_ = 1;
+  F has nM;
 
   // Variable initializations:
   v_1 = 6.8355;
+  v_1 has nM_hr_1;
   K1 = 2.7266;
+  K1 has nM;
   n = 5.6645;
+  n has dimensionless;
   v_2 = 8.4297;
+  v_2 has nM_hr_1;
   K2 = 0.291;
+  K2 has nM;
   vc = 6.7924;
+  vc has nM_hr_1;
   K = 1;
+  K has dimensionless;
   Kc = 4.8283;
+  Kc has nM;
   L = 0;
+  L has nM_hr_1;
   k3 = 0.1177;
+  k3 has hr_1;
   v_4 = 1.0841;
+  v_4 has nM_hr_1;
   K4 = 8.1343;
+  K4 has nM;
   k5 = 0.3352;
+  k5 has hr_1;
   v_6 = 4.6645;
+  v_6 has nM_hr_1;
   K6 = 9.9849;
+  K6 has nM;
   k7 = 0.2282;
+  k7 has hr_1;
   v_8 = 3.5216;
+  v_8 has nM_hr_1;
   K8 = 7.4519;
+  K8 has nM;
 
   //Other declarations:
   var F;
+  const compartment_, v_1, K1, n, v_2, K2, vc, K, Kc, L, k3, v_4, K4, k5;
+  const v_6, K6, k7, v_8, K8;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+  unit nM = 1e-9 mole / litre;
+  unit nM_hr_1 = 1e-9 mole / (litre * 3600 second);
+  unit hr_1 = 1 / 3600 second;
 
   //Display Names:
+  substance is "nano mole";
+  time_unit is "hour";
   compartment_ is "Cell";
   X1 is "clock gene mRNA";
   Y1 is "clock protein";

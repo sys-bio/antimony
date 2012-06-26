@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Bruggeman2005_AmmoniumAssimilation()
+//Created by libAntimony v2.3-beta
+model *Bruggeman2005_AmmoniumAssimilation()
 
   // Compartments and Species:
   compartment compartment_;
@@ -77,29 +77,29 @@ model Bruggeman2005_AmmoniumAssimilation()
   Kurpiiump = 0.0023;
   Kurump = 8.4;
   Kglnur = 0.07;
-  a1 = 1e-22;
+  a1 = 1e-022;
   b1 = 0.5166;
   c1 = 0.5974;
   d1 = 0.0387;
   Vad = 0.5;
-  Kadpiikg = 1.052e-05;
+  Kadpiikg = 1.052e-005;
   Kadgln = 0.9714;
   Kadgs = 0.001703;
-  e1 = 1e-22;
+  e1 = 1e-022;
   f1 = 2.766;
   g1 = 3.323;
   h1 = 0.2148;
-  i1 = 1e-22;
-  j1 = 1e-22;
-  k1 = 1e-22;
+  i1 = 1e-022;
+  j1 = 1e-022;
+  k1 = 1e-022;
   l1 = 0.02316;
   m1 = 0.8821;
   n1 = 8.491;
   o1 = 0.8791;
   Vdead = 0.5;
-  Kdeadpiikg = 2.274e-06;
+  Kdeadpiikg = 2.274e-006;
   Kdeadgln = 0.04444;
-  Kdeadpiiu = 1.805e-05;
+  Kdeadpiiu = 1.805e-005;
   Kdeadgsa = 0.0002015;
   Vgdh = 360;
   Kgdhkg = 0.32;
@@ -131,6 +131,7 @@ model Bruggeman2005_AmmoniumAssimilation()
   Kgspi = 3.7;
   Kgsgln = 5.65;
   Keq = 460;
+  Keq has dimensionless;
   Vgludem = 120;
   Kgludemglu = 8;
   Kgludemeq = 10000000000;
@@ -146,7 +147,9 @@ model Bruggeman2005_AmmoniumAssimilation()
   Vazgludem = 30;
   Kazgludemazglu = 0.3;
   Kazgludemeq = 10000000000;
+  Kazgludemeq has dimensionless;
   Kazgludemazinter = 0.5;
+  Kazgludemazinter has dimensionless;
   Vadp = 100;
   Kadp = 0.5;
   ATPtot = 5.37;
@@ -161,8 +164,25 @@ model Bruggeman2005_AmmoniumAssimilation()
 
   //Other declarations:
   var vAPP_GS, nAMP, PIIKG1, PIIUMP3KG3;
+  const compartment_, UT, kcatut, Kglnut, Kutipii, Kutpii, Kutpiiump, Kututp;
+  const Kutippi, UR, kcatur, Kurpiiump, Kurump, Kglnur, a1, b1, c1, d1, Vad;
+  const Kadpiikg, Kadgln, Kadgs, e1, f1, g1, h1, i1, j1, k1, l1, m1, n1, o1;
+  const Vdead, Kdeadpiikg, Kdeadgln, Kdeadpiiu, Kdeadgsa, Vgdh, Kgdhkg, Kgdhnh;
+  const Kgdhglu, Kgdhnadph, Kgdhnadp, Keqgdh, Kgdhazglu, Vgog, Kgoggln, Kgogkg;
+  const Kgognadph, Kgogglu, Kgognadp, Kgogaz, Vgs, aamp, bamp, camp, damp;
+  const n1amp, n2amp, Kgseq, Kgsatp, Kgsglu, Kgsnh, Kgsadp, Kgspi, Kgsgln;
+  const Keq, Vgludem, Kgludemglu, Kgludemeq, Kgludemazglu, Vglndem, Kglndemgln;
+  const Kglndemeq, Kglndemazgln, Vazglndem, Kazglndemazgln, Kazglndemeq, Kazglndemazinter;
+  const Vazgludem, Kazgludemazglu, Kazgludemeq, Kazgludemazinter, Vadp, Kadp;
+  const ATPtot, GStot, PIItot, Kd1, Kd2, Kd3, Kd1piiump, Kd2piiump, Kd3piiump;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit milliMolar = 1e-3 mole / litre;
 
   //Display Names:
+  time_unit is "mins";
+  milliMolar is "mM";
   vAPP_GS is "maxRateGS";
   nAMP is "AdenylationStateGS";
 end

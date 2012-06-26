@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Eungdamrong2007_Ras_Activation()
+//Created by libAntimony v2.3-beta
+model *Eungdamrong2007_Ras_Activation()
 
   // Compartments and Species:
   compartment EC, cyt, er, Golgi, PM, erMembrane, GM;
@@ -17,14 +17,14 @@ model Eungdamrong2007_Ras_Activation()
   species RasGRP_cyt in cyt, CaRasGRP1_cyt in cyt;
 
   // Assignment Rules:
-  Rate_PIP2Synbasal_PIP2_synthesis := piecewise(0.581 * kBasalSynPIP2_PIP2_synthesis * (-1 + exp((PIP2_basal_PIP2_synthesis + -PIP2_PM) * (1 / PIP2_basal_PIP2_synthesis))), lt(PIP2_PM, PIP2_basal_PIP2_synthesis), 0);
-  Rate_PIP2SynStim_PIP2_synthesis := piecewise(kStimSynPIP2_PIP2_synthesis * exp(-((time + -tauPIP2syn_PIP2_synthesis) * (1 / PIP2syndecay_PIP2_synthesis))), gt(time, tauPIP2syn_PIP2_synthesis), 0);
+  Rate_PIP2Synbasal_PIP2_synthesis := piecewise(0.581 * kBasalSynPIP2_PIP2_synthesis * (-1 + exp((PIP2_basal_PIP2_synthesis + - PIP2_PM) * (1 / PIP2_basal_PIP2_synthesis))), lt(PIP2_PM, PIP2_basal_PIP2_synthesis), 0);
+  Rate_PIP2SynStim_PIP2_synthesis := piecewise(kStimSynPIP2_PIP2_synthesis * exp(-((time + - tauPIP2syn_PIP2_synthesis) * (1 / PIP2syndecay_PIP2_synthesis))), gt(time, tauPIP2syn_PIP2_synthesis), 0);
   Vmax_Shc_phosphorylation := 0.2 * Activated_EGFR_PM;
   Vmax_RasGRP_DAG_GEF := 0.05 * RasGRP_DAG_GM;
   Vmax_CAPRI_GAP := 10 * CaCAPRI_PM_PM;
   Vmax_CaRasGRP_act_RasGM := 0.01 * Ca_RasGRP_GM_GM;
-  Ratebasal_PIPsyn_PIP_synthesis := piecewise(0.581 * kBasalSynPIP_PIP_synthesis * (-1 + exp((PIP_basal_PIP_synthesis + -PIP_PM) * (1 / PIP_basal_PIP_synthesis))), lt(PIP_PM, PIP_basal_PIP_synthesis), 0);
-  Ratestim_PIPsyn_PIP_synthesis := piecewise(kStimSynPIP_PIP_synthesis * exp(-((time + -tauPIPsyn_PIP_synthesis) * (1 / PIPsyndecay_PIP_synthesis))), gt(time, tauPIPsyn_PIP_synthesis), 0);
+  Ratebasal_PIPsyn_PIP_synthesis := piecewise(0.581 * kBasalSynPIP_PIP_synthesis * (-1 + exp((PIP_basal_PIP_synthesis + - PIP_PM) * (1 / PIP_basal_PIP_synthesis))), lt(PIP_PM, PIP_basal_PIP_synthesis), 0);
+  Ratestim_PIPsyn_PIP_synthesis := piecewise(kStimSynPIP_PIP_synthesis * exp(-((time + - tauPIPsyn_PIP_synthesis) * (1 / PIPsyndecay_PIP_synthesis))), gt(time, tauPIPsyn_PIP_synthesis), 0);
   Koff_reaction2 := dinh_reaction2 * Kon_reaction2;
   Vmax_EGF_act_PLCgamma := 0.3 * Activated_EGFR_PM;
   Kr_Ca_binds_IP3R := 1000 * dact_Ca_binds_IP3R;
@@ -34,7 +34,7 @@ model Eungdamrong2007_Ras_Activation()
   PIP2_synthesis: PIP_PM -> PIP2_PM; (Rate_PIP2Synbasal_PIP2_synthesis + Rate_PIP2SynStim_PIP2_synthesis) * PIP_PM * PM;
   Shc_phosphorylation: Shc_PM -> Shc_star_PM; Vmax_Shc_phosphorylation * Shc_PM * (1 / (Shc_phosphorylation_Km + Shc_PM)) * PM;
   Ca_bind_CAPRI: Ca + CAPRI_cyt -> CaCAPRI_cyt; (Ca_bind_CAPRI_Kf * 0.00166112956810631 * Ca * 0.00166112956810631 * CAPRI_cyt + -(Ca_bind_CAPRI_Kr * 0.00166112956810631 * CaCAPRI_cyt)) * cyt * 1 * (1 / KMOLE);
-  IP3_degradation: IP3 -> ; IP3_degradation_kIP3deg * (0.00166112956810631 * IP3 + -IP3_degradation_IP3_basal) * cyt * 1 * (1 / KMOLE);
+  IP3_degradation: IP3 -> ; IP3_degradation_kIP3deg * (0.00166112956810631 * IP3 + - IP3_degradation_IP3_basal) * cyt * 1 * (1 / KMOLE);
   RasGTP_depal_translocate: RasGTP_depal_cyt -> RasGTP_Golgi_GM; (RasGTP_depal_translocate_Kf * 0.00166112956810631 * RasGTP_depal_cyt + -(RasGTP_depal_translocate_Kr * RasGTP_Golgi_GM)) * GM;
   ca_bind_rasGRP: Ca + RasGRP_cyt -> CaRasGRP1_cyt; (ca_bind_rasGRP_Kf * 0.00166112956810631 * Ca * 0.00166112956810631 * RasGRP_cyt + -(ca_bind_rasGRP_Kr * 0.00166112956810631 * CaRasGRP1_cyt)) * cyt * 1 * (1 / KMOLE);
   RasGRP_DAG_GEF: RasGDP_Golgi_GM -> RasGTP_Golgi_GM; Vmax_RasGRP_DAG_GEF * RasGDP_Golgi_GM * (1 / (RasGRP_DAG_GEF_Km + RasGDP_Golgi_GM)) * GM;
@@ -77,51 +77,97 @@ model Eungdamrong2007_Ras_Activation()
 
   // Species initializations:
   RasGTP_Golgi_GM = 0;
+  RasGTP_Golgi_GM has molecule_per_volume;
   EGF_EC = 4.02136;
+  EGF_EC has molecule_per_volume;
   CAPRI_cyt = 30.1;
+  CAPRI_cyt has molecule_per_volume;
   serca = 45;
+  serca has molecule_per_volume;
   PIP_PM = 2857;
+  PIP_PM has molecule_per_volume;
   PI_PM = 142857;
+  PI_PM has molecule_per_volume;
   Shc_PM = 186;
+  Shc_PM has molecule_per_volume;
   CaCAPRI_PM_PM = 0;
+  CaCAPRI_PM_PM has molecule_per_volume;
   RactCa = 2.264;
+  RactCa has molecule_per_volume;
   Shc_star_PM = 0;
+  Shc_star_PM has molecule_per_volume;
   EGFR_PM = 21;
+  EGFR_PM has molecule_per_volume;
   PLC_act_PM = 0;
+  PLC_act_PM has molecule_per_volume;
   RasGTP_pal_cyt = 0;
+  RasGTP_pal_cyt has molecule_per_volume;
   PLC_PM = 100;
+  PLC_PM has molecule_per_volume;
   PIP2_PM = 1072;
+  PIP2_PM has molecule_per_volume;
   Activated_EGFR_PM = 0;
+  Activated_EGFR_PM has molecule_per_volume;
   Ca = 0;
+  Ca has molecule_per_volume;
   Ract = 9.056;
+  Ract has molecule_per_volume;
   Rinh = 7.7825;
+  Rinh has molecule_per_volume;
   RinhCa = 3.5375;
+  RinhCa has molecule_per_volume;
   IP3 = 0;
+  IP3 has molecule_per_volume;
   RasGDP_Golgi_GM = 50;
+  RasGDP_Golgi_GM has molecule_per_volume;
   Ca_RasGRP_GM_GM = 0;
+  Ca_RasGRP_GM_GM has molecule_per_volume;
   DAG_GM_GM = 0;
+  DAG_GM_GM has molecule_per_volume;
   RasGRP_DAG_GM = 0;
+  RasGRP_DAG_GM has molecule_per_volume;
   CaCAPRI_cyt = 0;
+  CaCAPRI_cyt has molecule_per_volume;
   DAG_PM = 2000;
+  DAG_PM has molecule_per_volume;
   RasGTP_depal_cyt = 0;
+  RasGTP_depal_cyt has molecule_per_volume;
   RasGDP_depal_cyt = 0;
+  RasGDP_depal_cyt has molecule_per_volume;
   RasGDP_pal_cyt = 0;
+  RasGDP_pal_cyt has molecule_per_volume;
   Ca_PLCe_cyt = 0;
+  Ca_PLCe_cyt has molecule_per_volume;
   Ras_CaPLCe_GM = 0;
+  Ras_CaPLCe_GM has molecule_per_volume;
   PIP2_GM_GM = 250;
+  PIP2_GM_GM has molecule_per_volume;
   ER_erMembrane = 2;
+  ER_erMembrane has molecule_per_volume;
   Ca_ER = 120400;
+  Ca_ER has molecule_per_volume;
   Sos_cyt = 81.27;
+  Sos_cyt has molecule_per_volume;
   Grb2_cyt = 502.67;
+  Grb2_cyt has molecule_per_volume;
   PLCe_cyt = 12.04;
+  PLCe_cyt has molecule_per_volume;
   buffer_cyt = 120.4;
+  buffer_cyt has molecule_per_volume;
   ca_buffer_cyt = 0;
+  ca_buffer_cyt has molecule_per_volume;
   SosGrb2_cyt = 99.33;
+  SosGrb2_cyt has molecule_per_volume;
   SGS_PM = 0;
+  SGS_PM has molecule_per_volume;
   RasGTP_PM = 0;
+  RasGTP_PM has molecule_per_volume;
   RasGDP_PM = 400;
+  RasGDP_PM has molecule_per_volume;
   RasGRP_cyt = 30.1;
+  RasGRP_cyt has molecule_per_volume;
   CaRasGRP1_cyt = 0;
+  CaRasGRP1_cyt has molecule_per_volume;
 
   // Compartment initializations:
   EC = 1;
@@ -129,24 +175,53 @@ model Eungdamrong2007_Ras_Activation()
   er = 0.012;
   Golgi = 0.012;
   PM = 0.6;
+  PM has um2;
   erMembrane = 0.0456;
+  erMembrane has um2;
   GM = 0.048;
+  GM has um2;
 
   // Variable initializations:
   KMOLE = 0.00166112956810631;
+  KMOLE has uM_um3_molecules_1;
   kStimSynPIP2_PIP2_synthesis = 0.01;
+  kStimSynPIP2_PIP2_synthesis has s_1;
   tauPIP2syn_PIP2_synthesis = 0.05;
+  tauPIP2syn_PIP2_synthesis has s;
   PIP2syndecay_PIP2_synthesis = 10;
+  PIP2syndecay_PIP2_synthesis has s;
   PIP2_basal_PIP2_synthesis = 1072;
+  PIP2_basal_PIP2_synthesis has molecules_um_2;
   kBasalSynPIP2_PIP2_synthesis = 0.045;
+  kBasalSynPIP2_PIP2_synthesis has s_1;
+  Rate_PIP2Synbasal_PIP2_synthesis has s_1;
+  Rate_PIP2SynStim_PIP2_synthesis has s_1;
+  Vmax_Shc_phosphorylation has molecules_um_2_s_1;
+  Vmax_RasGRP_DAG_GEF has molecules_um_2_s_1;
+  Vmax_CAPRI_GAP has molecules_um_2_s_1;
+  Vmax_CaRasGRP_act_RasGM has molecules_um_2_s_1;
   PIP_basal_PIP_synthesis = 2857;
+  PIP_basal_PIP_synthesis has molecules_um_2;
   kBasalSynPIP_PIP_synthesis = 0.0015;
+  kBasalSynPIP_PIP_synthesis has s_1;
   kStimSynPIP_PIP_synthesis = 0.01;
+  kStimSynPIP_PIP_synthesis has s_1;
   tauPIPsyn_PIP_synthesis = 0.05;
+  tauPIPsyn_PIP_synthesis has s;
   PIPsyndecay_PIP_synthesis = 10;
+  PIPsyndecay_PIP_synthesis has s;
+  Ratebasal_PIPsyn_PIP_synthesis has s_1;
+  Ratestim_PIPsyn_PIP_synthesis has s_1;
   Kon_reaction2 = 2.1;
+  Kon_reaction2 has uM_1_s_1;
   dinh_reaction2 = 0.11;
+  dinh_reaction2 has uM;
+  Koff_reaction2 has s_1;
+  Vmax_EGF_act_PLCgamma has molecules_um_2_s_1;
   dact_Ca_binds_IP3R = 0.2;
+  dact_Ca_binds_IP3R has s_1;
+  Kr_Ca_binds_IP3R has s_1;
+  Vmax_Sos_act_RasPM has molecules_um_2_s_1;
   PIP2_synthesis_I = 0;
   Shc_phosphorylation_I = 0;
   Shc_phosphorylation_Km = 1032;
@@ -178,7 +253,7 @@ model Eungdamrong2007_Ras_Activation()
   reaction5_Kr = 0.1;
   RasGDP_pal_I = 0;
   RasGDP_pal_Kf = 0.015;
-  RasGDP_pal_Kr = 1e-05;
+  RasGDP_pal_Kr = 1e-005;
   CAPRI_GAP_I = 0;
   CAPRI_GAP_Km = 1200;
   RasGDPpal_translocation_I = 0;
@@ -191,7 +266,7 @@ model Eungdamrong2007_Ras_Activation()
   RasGDP_depal_translocate_Kr = 0.01;
   Ras_GTP_palm1_I = 0;
   Ras_GTP_palm1_Kf = 0.000158489319246111;
-  Ras_GTP_palm1_Kr = 1e-05;
+  Ras_GTP_palm1_Kr = 1e-005;
   RasPal_basal_GAP_Kf = 0.0001;
   RasPal_basal_GAP_Kr = 0;
   basal_cyt_depal_GEF_Kf = 0.0001;
@@ -248,7 +323,7 @@ model Eungdamrong2007_Ras_Activation()
   flux0_dI = 0.8;
   flux0_singleChanFlux = 4.69;
   flux2_I = 0;
-  flux2_vL = 3.16e-05;
+  flux2_vL = 3.16e-005;
   Ras_PM_depal1_I = 0;
   Ras_PM_depal1_Kf = 0.0001;
   Ras_PM_depal1_Kr = 0;
@@ -258,6 +333,37 @@ model Eungdamrong2007_Ras_Activation()
   var Vmax_RasGRP_DAG_GEF, Vmax_CAPRI_GAP, Vmax_CaRasGRP_act_RasGM, Ratebasal_PIPsyn_PIP_synthesis;
   var Ratestim_PIPsyn_PIP_synthesis, Koff_reaction2, Vmax_EGF_act_PLCgamma;
   var Kr_Ca_binds_IP3R, Vmax_Sos_act_RasPM;
+  const EC, cyt, er, Golgi, PM, erMembrane, GM, KMOLE, kStimSynPIP2_PIP2_synthesis;
+  const tauPIP2syn_PIP2_synthesis, PIP2syndecay_PIP2_synthesis, PIP2_basal_PIP2_synthesis;
+  const kBasalSynPIP2_PIP2_synthesis, PIP_basal_PIP_synthesis, kBasalSynPIP_PIP_synthesis;
+  const kStimSynPIP_PIP_synthesis, tauPIPsyn_PIP_synthesis, PIPsyndecay_PIP_synthesis;
+  const Kon_reaction2, dinh_reaction2, dact_Ca_binds_IP3R;
+
+  // Unit definitions:
+  unit substance = item;
+  unit volume = (1e-6 metre)^3;
+  unit area = (1e-6 metre)^2;
+  unit molecule = item;
+  unit umol_um3_litre_1 = 1e-021 mole;
+  unit um2 = (1e-6 metre)^2;
+  unit uM_um3_molecules_1 = 1e-021 dimensionless * mole / item;
+  unit molecules_um_2_s_1 = 1e+012 dimensionless * item / (metre^2 * second);
+  unit pA_um_2 = dimensionless * ampere / metre^2;
+  unit s_1 = 1 / second;
+  unit s = second;
+  unit molecules_um_2 = 1e+012 dimensionless * item / metre^2;
+  unit uM_s_1 = 0.001 dimensionless * mole / (metre^3 * second);
+  unit uM_1_s_1 = 1000 dimensionless * metre^3 / (mole * second);
+  unit uM = 0.001 dimensionless * mole / metre^3;
+  unit molecules_um_2_uM_1_s_1 = 1e+015 dimensionless * item * metre / (mole * second);
+  unit um2_molecules_1_s_1 = 1e-012 dimensionless * metre^2 / (item * second);
+  unit uM_um_s_1 = 1e-009 dimensionless * mole / (metre^2 * second);
+  unit _one__0E_33_item_2_m2_mol_s_1 = 1e-033 dimensionless * metre^2 * mole / (item^2 * second);
+  unit _one__0E_30_item_2_m5_s_1 = 1e-030 dimensionless * metre^5 / (item^2 * second);
+  unit um3_molecules_1_s_1 = 1e-018 dimensionless * metre^3 / (item * second);
+  unit molecule = molecule;
+  unit molecule_per_volume = molecule / (1e-6 metre)^3;
+  unit molecule_per_volume_um2 = molecule * (1e-6 metre)^2 / (1e-6 metre)^3;
 
   //Display Names:
   PIP2_synthesis is "PIP2 synthesis";

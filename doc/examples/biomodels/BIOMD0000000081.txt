@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Suh2004_KCNQ_regulation()
+//Created by libAntimony v2.3-beta
+model *Suh2004_KCNQ_regulation()
 
   // Compartments and Species:
   compartment EX, M, Cytoplasm;
@@ -15,7 +15,7 @@ model Suh2004_KCNQ_regulation()
   MgSat20 := 1 * (1 / (1 + 20 * (1 / Mg2_C)));
   ATPSat300 := 1 * (1 / (1 + 300 * (1 / (0.5 + ATP_C))));
   MgSat10 := 0.2 + 0.8 * 1 * (1 / (1 + KMgGTPase * (1 / Mg2_C)));
-  OxoSat := 1 * (1 / (1 + Koxom * (1 / (1.000000e-05 + oxoM_EX))));
+  OxoSat := 1 * (1 / (1 + Koxom * (1 / (1.000000e-005 + oxoM_EX))));
   Gactive := GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M;
   ATPSat1000 := 1 * (1 / (1 + 1000 * (1 / (0.5 + ATP_C))));
   I_KCNQ := 1.33 * (0.025 * PIP2xKCNQ_M)^nHill;
@@ -23,7 +23,7 @@ model Suh2004_KCNQ_regulation()
 
   // Reactions:
   PIP5kinase: 0.0009967ATP_C + PIP_M -> PIP2_M; (0.2 + 0.8 * MgSat20) * PIP5kinase_kPIP5Kinase * PIP_M * ATPSat300;
-  IP3Phosphatase: 1.66611e-18ip3_C -> ; ip3_C * IP3Phosphatase_kIP3ase * Cytoplasm * NA_micro;
+  IP3Phosphatase: 1.66611e-018ip3_C -> ; ip3_C * IP3Phosphatase_kIP3ase * Cytoplasm * NA_micro;
   PIP2binding: KCNQsites_M + PIP2_M -> PIP2xKCNQ_M; (PIP2binding_kPIP2on * KCNQsites_M * PIP2_M + -(PIP2binding_kPIP2off * PIP2xKCNQ_M)) * M;
   MgonGGTPgS: GGTPgS_M -> GGTPgSMg_M; MgonGGTPgS_kMg2onGTPgS * GGTPgS_M * Mg2_C * M;
   GGTPase: GGTPMg_M -> GGDP_M; GGTPase_kGGTPase * MgSat10 * GGTPMg_M * M;
@@ -44,38 +44,76 @@ model Suh2004_KCNQ_regulation()
 
   // Species initializations:
   GTPgS_C = 0;
+  GTPgS_C has microMolar;
   KCNQsites_M = 6.7;
+  KCNQsites_M has molecule_per_volume;
   PIP2_M = 5000;
+  PIP2_M has molecule_per_volume;
   GGDPbS_M = 0;
+  GGDPbS_M has molecule_per_volume;
   Mg2_C = 2100;
+  Mg2_C has microMolar;
   ATP_C = 3000;
+  ATP_C has microMolar;
   oxoM_EX = 0;
+  oxoM_EX has microMolar;
   GDPbS_C = 0;
+  GDPbS_C has microMolar;
   GGTPMg_M = 0.1;
+  GGTPMg_M has molecule_per_volume;
   GDP_C = 0;
+  GDP_C has microMolar;
+  GTP_C has microMolar;
   GGDPAlF4Mg_M = 0;
+  GGDPAlF4Mg_M has molecule_per_volume;
   ip3_C = 0.48;
+  ip3_C has microMolar;
   AlF4_C = 0;
+  AlF4_C has microMolar;
   G_M = 0.065;
+  G_M has molecule_per_volume;
   GGTP_M = 0.048;
+  GGTP_M has molecule_per_volume;
   GGDPAlF4_M = 0;
+  GGDPAlF4_M has molecule_per_volume;
   GGTPgS_M = 0;
+  GGTPgS_M has molecule_per_volume;
   PI_M = 200000;
+  PI_M has molecule_per_volume;
   PIP_M = 1150;
+  PIP_M has molecule_per_volume;
   PIP2xKCNQ_M = 33.3;
+  PIP2xKCNQ_M has molecule_per_volume;
   GGTPgSMg_M = 0;
+  GGTPgSMg_M has molecule_per_volume;
   GGDP_M = 200;
+  GGDP_M has molecule_per_volume;
 
   // Compartment initializations:
   EX = 1;
+  EX has litre;
   M = 1;
+  M has um2;
   Cytoplasm = 1;
+  Cytoplasm has litre;
+  MgSat20 has dimensionless;
+  ATPSat300 has dimensionless;
+  MgSat10 has dimensionless;
+  OxoSat has dimensionless;
+  Gactive has molecules_um_2;
+  ATPSat1000 has dimensionless;
 
   // Variable initializations:
   KMgGTPase = 10;
+  KMgGTPase has microMolar;
   Koxom = 8;
+  Koxom has microMolar;
+  I_KCNQ has dimensionless;
   nHill = 1.8;
-  NA_micro = 6.022e+17;
+  nHill has dimensionless;
+  fGactive has dimensionless;
+  NA_micro = 6.022e+017;
+  NA_micro has items_per_micromole;
   PIP5kinase_kPIP5Kinase = 0.06;
   IP3Phosphatase_kIP3ase = 0.3;
   PIP2binding_kPIP2on = 0.00025;
@@ -95,15 +133,36 @@ model Suh2004_KCNQ_regulation()
   PIP2_5Pase_kPIP2Pase = 0.005;
   PLC_kPLC = 4.8;
   PLC_PLCspont = 0.00075;
-  AlF4on_kAlF4on = 7e-06;
+  AlF4on_kAlF4on = 7e-006;
   AlF4on_kAlF4off = 0.005;
   PI4Kinase_kPI4Kinase = 0.0001;
   MgonGDPAlF4_kMgonAlF4 = 0.002;
 
   //Other declarations:
   var MgSat20, ATPSat300, MgSat10, OxoSat, Gactive, ATPSat1000, I_KCNQ, fGactive;
+  const EX, M, Cytoplasm, KMgGTPase, Koxom, nHill, NA_micro;
+
+  // Unit definitions:
+  unit micromole = 1e-6 mole;
+  unit substance = item;
+  unit items_per_micromole = item / 1e-6 mole;
+  unit molecule = item;
+  unit um2 = (1e-6 metre)^2;
+  unit molecules_um_2_s_1 = item / ((1e-6 metre)^2 * second);
+  unit molecules_um_2 = item / (1e-6 metre)^2;
+  unit uM_s_1 = 1e-6 mole / (litre * second);
+  unit s_1 = 1 / second;
+  unit um2_molecules_1_s_1 = (1e-6 metre)^2 / (item * second);
+  unit uM_1_s_1 = litre / (1e-6 mole * second);
+  unit uM_um_s_1 = 1e-6 metre * 1e-6 mole / (second * litre);
+  unit microMolar = 1e-6 mole / litre;
+  unit volume = litre;
+  unit molecule = molecule;
+  unit molecule_per_volume = molecule / litre;
+  unit molecule_per_volume_um2 = molecule * (1e-6 metre)^2 / litre;
 
   //Display Names:
+  substance is "items";
   EX is "Extracellular";
   M is "Membrane";
   GGDPAlF4Mg_M is "GGDPAIF4Mg_M";

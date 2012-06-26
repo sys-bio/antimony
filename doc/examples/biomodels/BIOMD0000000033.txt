@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Brown2004_NGF_EGF_signaling()
+//Created by libAntimony v2.3-beta
+model *Brown2004_NGF_EGF_signaling()
 
   // Compartments and Species:
   compartment cell;
@@ -79,9 +79,9 @@ model Brown2004_NGF_EGF_signaling()
   cell = 1;
 
   // Variable initializations:
-  krbEGF = 2.18503e-05;
+  krbEGF = 2.18503e-005;
   kruEGF = 0.0121008;
-  krbNGF = 1.38209e-07;
+  krbNGF = 1.38209e-007;
   kruNGF = 0.00723811;
   kEGF = 694.731;
   KmEGF = 6086070;
@@ -128,7 +128,22 @@ model Brown2004_NGF_EGF_signaling()
   kdBRaf = 441.287;
   KmdBRaf = 10879500;
 
+  //Other declarations:
+  const cell, krbEGF, kruEGF, krbNGF, kruNGF, kEGF, KmEGF, kNGF, KmNGF, kdSos;
+  const KmdSos, kSos, KmSos, kRasGap, KmRasGap, kRasToRaf1, KmRasToRaf1, kpRaf1;
+  const KmpRaf1, kpBRaf, KmpBRaf, kdMek, KmdMek, kpMekCytoplasmic, KmpMekCytoplasmic;
+  const kdErk, KmdErk, kpP90Rsk, KmpP90Rsk, kPI3K, KmPI3K, kPI3KRas, KmPI3KRas;
+  const kAkt, KmAkt, kdRaf1ByAkt, KmRaf1ByAkt, kC3GNGF, KmC3GNGF, kC3G, KmC3G;
+  const kRapGap, KmRapGap, kRap1ToBRaf, KmRap1ToBRaf, kdRaf1, KmdRaf1, kdBRaf;
+  const KmdBRaf;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 60 second;
+
   //Display Names:
+  substance is "item (default)";
+  time_unit is "minute (default)";
   EGFBindingReaction is "EGF binding";
   EGFUnbindingReaction is "EFG unbinding";
   NGFBindingReaction is "NGF binding";

@@ -1,20 +1,20 @@
-//Created by libAntimony v2.0
-model model_0000001()
+//Created by libAntimony v2.3-beta
+model *model_0000001()
 
   // Compartments and Species:
   compartment nucleus, cytoplasm;
   species M_T in cytoplasm, M_P in cytoplasm, T0 in cytoplasm, T1 in cytoplasm;
   species T2 in cytoplasm, P0 in cytoplasm, P1 in cytoplasm, P2 in cytoplasm;
-  species C in cytoplasm, CN_ in nucleus, $Tt in cytoplasm, $Pt in cytoplasm;
+  species C in cytoplasm, CN in nucleus, $Tt in cytoplasm, $Pt in cytoplasm;
 
   // Assignment Rules:
-  Tt := T0 + T1 + T2 + C + CN_ * nucleus / cytoplasm;
-  Pt := P0 + P1 + P2 + C + CN_ * nucleus / cytoplasm;
+  Tt := T0 + T1 + T2 + C + CN * nucleus / cytoplasm;
+  Pt := P0 + P1 + P2 + C + CN * nucleus / cytoplasm;
   v_dT := (1 + (v_dT_fac - 1) * ceil(sin(time / l_d * pi) * 0.9)) * v_dT_dark;
 
   // Reactions:
-  per_trans:  => M_P; per_trans_v_sP * per_trans_Ki_P^n / (per_trans_Ki_P^n + CN_^n);
-  tim_trans:  => M_T; tim_trans_v_sT * tim_trans_Ki_T^n / (tim_trans_Ki_T^n + CN_^n);
+  per_trans:  => M_P; per_trans_v_sP * per_trans_Ki_P^n / (per_trans_Ki_P^n + CN^n);
+  tim_trans:  => M_T; tim_trans_v_sT * tim_trans_Ki_T^n / (tim_trans_Ki_T^n + CN^n);
   M_T_decay: M_T => ; (M_T_decay_v_mT / (M_T_decay_K_mT + M_T) + kd) * M_T * cytoplasm;
   M_P_decay: M_P => ; (M_P_decay_v_mP / (M_P_decay_K_mP + M_P) + kd) * M_P * cytoplasm;
   PER_transl:  => P0; PER_transl_k_sP * M_P * cytoplasm;
@@ -27,8 +27,8 @@ model model_0000001()
   T2_decay: T2 => ; kd * T2 * cytoplasm;
   C_form: P2 + T2 => C; (C_form_k3 * T2 * P2 - C_form_k4 * C) * cytoplasm;
   C_decay: C => ; C_decay_kd_C * C * cytoplasm;
-  CN_decay: CN_ => ; CN_decay_kd_CN * CN_ * nucleus;
-  C_transp: C -> CN_; C_transp_k1 * C * cytoplasm - C_transp_k2 * CN_ * nucleus;
+  CN_decay: CN => ; CN_decay_kd_CN * CN * nucleus;
+  C_transp: C -> CN; C_transp_k1 * C * cytoplasm - C_transp_k2 * CN * nucleus;
   P_pho: P0 => P1; P_pho_V_1P * P0 / (P_pho_K_1P + P0) * cytoplasm;
   P1_pho: P1 => P2; P1_pho_V_3P * P1 / (P1_pho_K_3P + P1) * cytoplasm;
   P1_depho: P1 => P0; P1_depho_V_2P * P1 / (P1_depho_K_2P + P1) * cytoplasm;
@@ -50,18 +50,26 @@ model model_0000001()
   P1 = 0.02;
   P2 = 0.01;
   C = 0.18;
-  CN_ = 1.2;
+  CN = 1.2;
 
   // Compartment initializations:
   nucleus = 1;
+  nucleus has litre;
   cytoplasm = 1;
+  cytoplasm has litre;
 
   // Variable initializations:
   n = 4;
+  n has dimensionless;
   kd = 0.01;
+  kd has perh;
+  v_dT has nMph;
   l_d = 12;
+  l_d has time_unit;
   v_dT_fac = 2;
+  v_dT_fac has dimensionless;
   v_dT_dark = 2;
+  v_dT_dark has nMph;
   per_trans_v_sP = 0.8;
   per_trans_Ki_P = 1;
   tim_trans_v_sT = 1;
@@ -100,8 +108,25 @@ model model_0000001()
 
   //Other declarations:
   var v_dT;
+  const nucleus, cytoplasm, n, kd, l_d, v_dT_fac, v_dT_dark;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit nM = 1e-9 mole / litre;
+  unit time_unit = 3.6e3 second;
+  unit nMph = 1e-9 mole / (3.6e3 second * litre);
+  unit perh = 1 / 3.6e3 second;
+  unit pnMph = litre / (3.6e3 second * 1e-9 mole);
+  unit nmph = 1e-9 mole / 3.6e3 second;
 
   //Display Names:
+  substance is "nanomolar";
+  nM is "nanomoleperlitre";
+  time_unit is "hours";
+  nMph is "nanoMperHour";
+  perh is "perhour";
+  pnMph is "pernMperHour";
+  nmph is "nanomolperhour";
   M_T is "tim mRNA";
   M_P is "per mRNA";
   T0 is "TIM";
@@ -111,7 +136,7 @@ model model_0000001()
   P1 is "PER-p";
   P2 is "PER-pp";
   C is "PER_TIM complex cytoplasm";
-  CN_ is "PER_TIM complex nuclear";
+  CN is "PER_TIM complex nuclear";
   Tt is "total TIM";
   Pt is "total PER";
   n is "transkr_rep_hill_coefficient";

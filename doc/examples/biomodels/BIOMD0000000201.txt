@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
+//Created by libAntimony v2.3-beta
+model *Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
 
   // Compartments and Species:
   compartment cytosol;
@@ -78,83 +78,171 @@ model Goldbeter2008_Somite_Segmentation_Clock_Notch_Wnt_FGF()
 
   // Compartment initializations:
   cytosol = 1;
+  cytosol has litre;
 
   // Variable initializations:
   KdN = 1.4;
+  KdN has nanomolar;
   vsN = 0.23;
+  vsN has flux;
   vdN = 2.82;
+  vdN has flux;
   KdNa = 0.001;
+  KdNa has nanomolar;
   VdNa = 0.01;
+  VdNa has flux;
   kt1 = 0.1;
+  kt1 has first_order_rate_constant;
   kt2 = 0.1;
+  kt2 has first_order_rate_constant;
   KdNan = 0.001;
+  KdNan has nanomolar;
   VdNan = 0.1;
+  VdNan has flux;
   KdMF = 0.768;
+  KdMF has nanomolar;
   KIG1 = 2.5;
+  KIG1 has nanomolar;
+  vsFK has flux;
   vsF = 3;
+  vsF has flux;
   vmF = 1.92;
+  vmF has flux;
   KA = 0.05;
+  KA has nanomolar;
   KdF = 0.37;
+  KdF has nanomolar;
   vdF = 0.39;
+  vdF has flux;
   ksF = 0.3;
+  ksF has first_order_rate_constant;
   kd1 = 0;
+  kd1 has first_order_rate_constant;
   vsB = 0.087;
+  vsB has flux;
   kd2 = 7.062;
+  kd2 has first_order_rate_constant;
   v0 = 0.06;
+  v0 has flux;
   vMB = 1.64;
+  vMB has flux;
   vmd = 0.8;
+  vmd has flux;
   KaB = 0.7;
+  KaB has nanomolar;
   KaXa = 0.05;
+  KaXa has nanomolar;
   Kmd = 0.48;
+  Kmd has nanomolar;
   n = 2;
+  n has dimensionless;
   m = 2;
+  m has dimensionless;
   vMXa = 0.5;
+  vMXa has flux;
   ksAx = 0.02;
+  ksAx has first_order_rate_constant;
   vdAx = 0.6;
+  vdAx has flux;
   KdAx = 0.63;
+  KdAx has nanomolar;
   d1 = 0.1;
+  d1 has first_order_rate_constant;
   a1 = 1.8;
+  a1 has second_order_rate_constant;
   K1 = 0.28;
+  K1 has nanomolar;
   K2 = 0.03;
+  K2 has nanomolar;
   kt3 = 0.7;
+  kt3 has first_order_rate_constant;
   kt4 = 1.5;
+  kt4 has first_order_rate_constant;
   ksDusp = 0.5;
+  ksDusp has first_order_rate_constant;
   vdDusp = 2;
+  vdDusp has flux;
   KdDusp = 0.5;
+  KdDusp has nanomolar;
   kcDusp = 1.35;
+  kcDusp has first_order_rate_constant;
   KaFgf = 0.5;
+  KaFgf has nanomolar;
   KaRas = 0.103;
+  KaRas has nanomolar;
   KdRas = 0.1;
+  KdRas has nanomolar;
   KdErk = 0.05;
+  KdErk has nanomolar;
   KaErk = 0.05;
+  KaErk has nanomolar;
   KaX = 0.05;
+  KaX has nanomolar;
   KIF = 0.5;
+  KIF has nanomolar;
   KID = 0.5;
+  KID has nanomolar;
   KdX = 0.05;
+  KdX has nanomolar;
   KaMDusp = 0.5;
+  KaMDusp has nanomolar;
   KdMDusp = 0.5;
+  KdMDusp has nanomolar;
   q = 2;
+  q has dimensionless;
   r = 2;
+  r has dimensionless;
   kc = 3.45;
+  kc has first_order_rate_constant;
   j = 2;
+  j has dimensionless;
   p = 2;
+  p has dimensionless;
   epsilon = 0.3;
+  epsilon has dimensionless;
   theta = 1.5;
+  theta has dimensionless;
   eta = 0.3;
+  eta has dimensionless;
   VMsMDusp = 0.9;
+  VMsMDusp has flux;
   VMdMDusp = 0.5;
+  VMdMDusp has flux;
   VMK = 5.08;
+  VMK has flux;
   VMP = 1;
+  VMP has flux;
   VMaRas = 4.968;
+  VMaRas has flux;
   VMdRas = 0.41;
+  VMdRas has flux;
   VMaErk = 3.3;
+  VMaErk has flux;
   VMaX = 1.6;
+  VMaX has flux;
   VMdX = 0.5;
+  VMdX has flux;
 
   //Other declarations:
   var vsFK;
+  const cytosol, KdN, vsN, vdN, KdNa, VdNa, kt1, kt2, KdNan, VdNan, KdMF;
+  const KIG1, vsF, vmF, KA, KdF, vdF, ksF, kd1, vsB, kd2, v0, vMB, vmd, KaB;
+  const KaXa, Kmd, n, m, vMXa, ksAx, vdAx, KdAx, d1, a1, K1, K2, kt3, kt4;
+  const ksDusp, vdDusp, KdDusp, kcDusp, KaFgf, KaRas, KdRas, KdErk, KaErk;
+  const KaX, KIF, KID, KdX, KaMDusp, KdMDusp, q, r, kc, j, p, epsilon, theta;
+  const eta, VMsMDusp, VMdMDusp, VMK, VMP, VMaRas, VMdRas, VMaErk, VMaX, VMdX;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+  unit first_order_rate_constant = 1 / 60 second;
+  unit second_order_rate_constant = litre / (1e-9 mole * 60 second);
+  unit flux = 1e-9 mole / (litre * 60 second);
+  unit nanomolar = 1e-9 mole / litre;
 
   //Display Names:
+  substance is "nanomole";
+  time_unit is "minute";
   N is "Notch protein";
   Na is "cytosolic NicD";
   Nan_ is "nuclear NicD";

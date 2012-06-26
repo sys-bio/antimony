@@ -1,10 +1,9 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_1(k, E, S, Km)
   k * E * S / (Km + S);
 end
 
-
-model Complement_System()
+model *Complement_System()
 
   // Compartments and Species:
   compartment compartment_;
@@ -149,11 +148,11 @@ model Complement_System()
   kb04_1 = 1.1;
   kb04_2 = 2000;
   kc04_2 = 0.199162432258527;
-  kd01_1 = 7.07e-05;
-  kd01_2 = 7.23e-05;
+  kd01_1 = 7.07e-005;
+  kd01_2 = 7.23e-005;
   kd04_1 = 1.1;
   kd04_2 = 2000;
-  ke01_1 = 7.07e-05;
+  ke01_1 = 7.07e-005;
   ke01_2 = 0.0001;
   ke02_1 = 0.00074;
   ke02_2 = 0.0011;
@@ -214,8 +213,24 @@ model Complement_System()
 
   //Other declarations:
   var mC3;
+  const compartment_, ka01_1, ka01_2, ka02_1, ka02_2, ka03_1, ka04_1, kc01_1;
+  const kc01_2, kc02, kc03_1, kc03_2, kc04_1, ka03_2, ka04_2, kd02_2, kd02_1;
+  const kd03_1, kd03_2, kb01_1, kb01_2, kb02_1, kb02_2, kb03_1, kb03_2, kb04_1;
+  const kb04_2, kc04_2, kd01_1, kd01_2, kd04_1, kd04_2, ke01_1, ke01_2, ke02_1;
+  const ke02_2, ke03_1, ke03_2, ke04_1, ke04_2, kf01_1, kf01_2, kf02_1, kf02_2;
+  const kf03, kf04_2, kf04_1, kf05, kf06_1, kf06_2, kf07_1, kf07_2, kd05_1;
+  const kd05_2, kd06_1, kd06_2, kd07_1, kd07_2, ke05_1, ke05_2, ke06_1, ke06_2;
+  const ke07_1, ke07_2, kd08_1, kd08_2, kd09_1, kd09_2, kd10_1, kd10_2, kd11_1;
+  const kd11_2, kg01_1, kg01_2, kg02_1, kg02_2, kg03_1, kg03_2, kg04_1, kg04_2;
+  const kt01, kt02, kt03, kt04_1, kt04_2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-9 mole;
+  unit nM = 1e-9 mole * 1e-1 litre;
 
   //Display Names:
+  substance is "nano mole";
   PC_CRP is "PC/CRP";
   PC_CRP_C1 is "PC/CRP/C1";
   C4b_C2a is "C4b/C2a";

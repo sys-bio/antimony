@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model model_0000001()
+//Created by libAntimony v2.3-beta
+model *model_0000001()
 
   // Compartments and Species:
   compartment cell;
@@ -8,16 +8,16 @@ model model_0000001()
 
   // Assignment Rules:
   Ena := Rk * Temp / Fara * log(nao / nai);
-  a11 := 3.802 / (0.1027 * exp(-v / 17) + 0.2 * exp(-v / 150));
-  a12 := 3.802 / (0.1027 * exp(-v / 15) + 0.23 * exp(-v / 150));
-  a13 := 3.802 / (0.1027 * exp(-v / 12) + 0.25 * exp(-v / 150));
-  b11 := 0.1917 * exp(-v / 20.3);
+  a11 := 3.802 / (0.1027 * exp(- v / 17) + 0.2 * exp(- v / 150));
+  a12 := 3.802 / (0.1027 * exp(- v / 15) + 0.23 * exp(- v / 150));
+  a13 := 3.802 / (0.1027 * exp(- v / 12) + 0.25 * exp(- v / 150));
+  b11 := 0.1917 * exp(- v / 20.3);
   b12 := 0.2 * exp(-(v - 5) / 20.3);
   b13 := 0.22 * exp(-(v - 10) / 20.3);
   a2 := 9.178 * exp(v / 29.68);
   b2 := a13 * a2 * a3 / (b13 * b3);
-  a3 := 3.7933 * 1.000000e-07 * exp(-v / 7.7);
-  b3 := 0.0084 + 2.000000e-05 * v;
+  a3 := 3.7933 * 1.000000e-007 * exp(- v / 7.7);
+  b3 := 0.0084 + 2.000000e-005 * v;
   a4 := a2 / 100;
   b4 := a3;
   a5 := a2 / (9.5 * 10000);
@@ -35,7 +35,7 @@ model model_0000001()
   reaction_0000008: C1 -> C2; cell * (C1 * b12 - C2 * a12);
   reaction_0000009: C1 -> IF; cell * (C1 * b3 - IF * a3);
   reaction_0000010: IF -> O; cell * (IF * b2 - a2 * O);
-  reaction_0000011: O -> C1; cell * (-C1 * a13 + O * b13);
+  reaction_0000011: O -> C1; cell * (- C1 * a13 + O * b13);
 
   // Events:
   event_0000001: at and(geq(time, 5), leq(time, 20)): v = -30;
@@ -68,8 +68,15 @@ model model_0000001()
   //Other declarations:
   var v, Ena, a11, a12, a13, b11, b12, b13, a2, b2, a3, b3, a4, b4, a5, b5;
   var Ina;
+  const cell, nao, nai, scale, Gna, Rk, Fara, Temp;
+
+  // Unit definitions:
+  unit unitDefinition_0000001 = 1e-3 second;
+  unit unitDefinition_0000002 = 1e-3 volt;
 
   //Display Names:
+  unitDefinition_0000001 is "time(ms)";
+  unitDefinition_0000002 is "voltage(mV)";
   O is "open states";
   nao is "[Na]out";
   nai is "[Na]in";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Scheper1999()
+//Created by libAntimony v2.3-beta
+model *Scheper1999()
 
   // Compartments and Species:
   compartment compartment_0000004;
@@ -13,11 +13,11 @@ model Scheper1999()
 
   // Species initializations:
   EmptySet = 0;
-  M = 1e-15/compartment_0000004;
-  P = 1e-15/compartment_0000004;
+  M = 1e-015/ compartment_0000004;
+  P = 1e-015/ compartment_0000004;
 
   // Compartment initializations:
-  compartment_0000004 = 1e-15;
+  compartment_0000004 = 1e-015;
 
   // Variable initializations:
   TC_rM = 1;
@@ -28,6 +28,12 @@ model Scheper1999()
   TL_parameter_0000009 = 4;
   Md_qM = 0.21;
   Pd_qP = 0.21;
+
+  //Other declarations:
+  const compartment_0000004;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
 
   //Display Names:
   compartment_0000004 is "cytoplasm";

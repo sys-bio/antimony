@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Hunziker2010_p53_StressSpecificResponse()
+//Created by libAntimony v2.3-beta
+model *Hunziker2010_p53_StressSpecificResponse()
 
   // Compartments and Species:
   compartment compartment_1;
@@ -31,6 +31,14 @@ model Hunziker2010_p53_StressSpecificResponse()
   beta = 0.6;
   gamma = 0.2;
   delta = 11;
+
+  //Other declarations:
+  const compartment_1, S, alpha, k_t, k_tl, k_b, k_f, beta, gamma, delta;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = 3600 second;
+  unit substance = dimensionless;
 
   //Display Names:
   compartment_1 is "cell";

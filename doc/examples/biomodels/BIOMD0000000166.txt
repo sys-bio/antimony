@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Zhu2007_TF_syn_modulated_by_Ca()
+//Created by libAntimony v2.3-beta
+model *Zhu2007_TF_syn_modulated_by_Ca()
 
   // Compartments and Species:
   compartment cytoplasm, store;
@@ -53,8 +53,15 @@ model Zhu2007_TF_syn_modulated_by_Ca()
 
   //Other declarations:
   var kf, Kd;
+  const cytoplasm, store, kf0, gamma, Ka, Kb, Kd0;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
 
   //Display Names:
+  substance is "micro mole";
+  time_unit is "minutes";
   X is "TF_A";
   Y is "Calcium in store";
   Z is "Calcium in cytoplasm";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Maurya2005()
+//Created by libAntimony v2.3-beta
+model *Maurya2005()
 
   // Compartments and Species:
   compartment compartment_0;
@@ -11,8 +11,8 @@ model Maurya2005()
   species species_15 in compartment_0, species_16 in compartment_0;
 
   // Assignment Rules:
-  parameter_0 := (species_5 + species_10 + species_15 + species_11) / 1.000000e-08;
-  parameter_1 := (25 * species_15 + 25 * species_11 + 0.013 * species_10 + 0.013 * species_5) / 1.000000e-08;
+  parameter_0 := (species_5 + species_10 + species_15 + species_11) / 1.000000e-008;
+  parameter_1 := (25 * species_15 + 25 * species_11 + 0.013 * species_10 + 0.013 * species_5) / 1.000000e-008;
 
   // Reactions:
   reaction_1: species_1 + species_3 -> species_5; compartment_0 * (reaction_1_k1 * species_1 * species_3 - reaction_1_k2 * species_5);
@@ -35,10 +35,10 @@ model Maurya2005()
 
   // Species initializations:
   species_0 = 0;
-  species_1 = 1e-08;
+  species_1 = 1e-008;
   species_2 = 0;
   species_3 = 0.000468;
-  species_4 = 1e-05;
+  species_4 = 1e-005;
   species_5 = 0;
   species_6 = 0;
   species_7 = 0.0044;
@@ -57,9 +57,9 @@ model Maurya2005()
 
   // Variable initializations:
   reaction_1_k1 = 529000;
-  reaction_1_k2 = 8.38e-06;
+  reaction_1_k2 = 8.38e-006;
   reaction_3_k1 = 0.013;
-  reaction_3_k2 = 9.03e-07;
+  reaction_3_k2 = 9.03e-007;
   reaction_4_k1 = 0.0001;
   reaction_4_k2 = 62.3;
   reaction_5_k1 = 853000;
@@ -73,7 +73,7 @@ model Maurya2005()
   reaction_9_k1 = 94700000;
   reaction_9_k2 = 0.00227;
   reaction_10_k1 = 0.013;
-  reaction_10_k2 = 2.22e-09;
+  reaction_10_k2 = 2.22e-009;
   reaction_11_k1 = 2;
   reaction_11_k2 = 1470000;
   reaction_13_k1 = 25;
@@ -81,7 +81,7 @@ model Maurya2005()
   reaction_14_k1 = 0.0001;
   reaction_14_k2 = 3.83;
   reaction_16_k1 = 3960000000;
-  reaction_16_k2 = 5.43e-05;
+  reaction_16_k2 = 5.43e-005;
   reaction_17_k1 = 1620000;
   reaction_17_k2 = 0.00875;
   reaction_19_k1 = 6300000;
@@ -93,6 +93,7 @@ model Maurya2005()
 
   //Other declarations:
   var parameter_0, parameter_1;
+  const compartment_0;
 
   //Display Names:
   compartment_0 is "cell";

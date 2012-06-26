@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Zatorsky2006_p53_Model5()
+//Created by libAntimony v2.3-beta
+model *Zatorsky2006_p53_Model5()
 
   // Compartments and Species:
   compartment compartment_;
@@ -29,7 +29,16 @@ model Zatorsky2006_p53_Model5()
   alpha_0 = 1.1;
   Theta = 2;
 
+  //Other declarations:
+  const compartment_, psi, alpha_x, alpha_xy, beta_y, alpha_y, alpha_0, Theta;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 3600 second;
+
   //Display Names:
+  substance is "dimensionless";
+  time_unit is "hours";
   compartment_ is "cell";
   x is "p53";
   y is "Mdm2";

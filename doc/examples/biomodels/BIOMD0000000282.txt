@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model chance()
+//Created by libAntimony v2.3-beta
+model *chance()
 
   // Compartments and Species:
   compartment cell;
@@ -23,11 +23,26 @@ model chance()
 
   // Variable initializations:
   k1 = 11;
+  k1 has per_uM_per_;
   k2 = 0;
+  k2 has per_;
   k4_prime = 16.6;
+  k4_prime has per_uM_per_;
   k4 = 0.72;
+  k4 has per_uM_per_;
+
+  //Other declarations:
+  const cell, k1, k2, k4_prime, k4;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit per_uM_per_ = 1e1 litre / (1e-6 mole * 1e1 second);
+  unit per_ = 1 / 1e1 second;
 
   //Display Names:
+  substance is "micromole";
+  per_uM_per_ is "per micromolar per second";
+  per_ is "per second";
   e is "enzyme E (catalase)";
   x is "substrate S (hydrogen peroxide)";
   p is "enzyme-substrate complex ES (catalase - hydrogen peroxide)";

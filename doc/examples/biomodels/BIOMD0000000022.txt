@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Ueda2001_CircClock()
+//Created by libAntimony v2.3-beta
+model *Ueda2001_CircClock()
 
   // Compartments and Species:
   compartment Drosophilia, compartment_0000003, compartment_0000002;
@@ -131,7 +131,16 @@ model Ueda2001_CircClock()
   Reaction37_D10 = 0.3;
   Reaction37_L10 = 0.2;
 
+  //Other declarations:
+  const Drosophilia, compartment_0000003, compartment_0000002;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+
   //Display Names:
+  substance is "nanomole (default)";
+  time_unit is "hour (default)";
   compartment_0000003 is "cytoplasm";
   compartment_0000002 is "nucleus";
   CCc is "Clk-Cyc_cyt";
@@ -178,3 +187,4 @@ model Ueda2001_CircClock()
   Reaction35 is "Clk_cyt degradation";
   Reaction36 is "Clk-Cyc_cyt degradation";
 end
+ 

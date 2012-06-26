@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Holzhutter2004_Erythrocyte_Metabolism()
+//Created by libAntimony v2.3-beta
+model *Holzhutter2004_Erythrocyte_Metabolism()
 
   // Compartments and Species:
   compartment compartment_;
@@ -271,13 +271,26 @@ model Holzhutter2004_Erythrocyte_Metabolism()
   vP1NADP_EqMult = 10000000;
   vP1NADP_Kd1 = 0.0002;
   vP1NADPH_EqMult = 10000000;
-  vP1NADPH_Kd3 = 1e-05;
+  vP1NADPH_Kd3 = 1e-005;
   vP2NADP_EqMult = 10000000;
-  vP2NADP_Kd2 = 1e-05;
+  vP2NADP_Kd2 = 1e-005;
   vP2NADPH_EqMult = 10000000;
   vP2NADPH_Kd4 = 0.0002;
 
+  //Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 3600 second;
+  unit mM = 1e-3 mole / litre;
+  unit mM_per_hour = 1e-3 mole / (litre * 3600 second);
+  unit hour_inverse = 1 / 3600 second;
+  unit per_mM_hour = litre / (1e-3 mole * 3600 second);
+
   //Display Names:
+  substance is "millimole";
+  time_unit is "hour";
   compartment_ is "cytoplasm";
   Glcin is "Glucose in";
   Glc6P is "Glucose 6-phosphate";

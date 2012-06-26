@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model ralser()
+//Created by libAntimony v2.3-beta
+model *ralser()
 
   // Compartments and Species:
   compartment extracellular, cytoplasm;
@@ -17,13 +17,13 @@ model ralser()
   ratio_NADPH_NADP := NADPH / NADP;
 
   // Reactions:
-  vGLK: GLCi + P -> G6P; cytoplasm * (vGLK_VmGLK * (-(G6P * (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vGLK_KeqAK * SUMAXP * P + P^2 - 4 * vGLK_KeqAK * P^2)^0.5) / ((1 - 4 * vGLK_KeqAK) * vGLK_KeqGLK)) + GLCi * (-SUMAXP + P - 4 * vGLK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vGLK_KeqAK * SUMAXP * P + P^2 - 4 * vGLK_KeqAK * P^2)^0.5) / (2 - 8 * vGLK_KeqAK)) / (vGLK_KmGLKATP * vGLK_KmGLKGLCi * (1 + G6P / vGLK_KmGLKG6P + GLCi / vGLK_KmGLKGLCi) * (1 + (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vGLK_KeqAK * SUMAXP * P + P^2 - 4 * vGLK_KeqAK * P^2)^0.5) / ((1 - 4 * vGLK_KeqAK) * vGLK_KmGLKADP) + (-SUMAXP + P - 4 * vGLK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vGLK_KeqAK * SUMAXP * P + P^2 - 4 * vGLK_KeqAK * P^2)^0.5) / ((2 - 8 * vGLK_KeqAK) * vGLK_KmGLKATP))));
+  vGLK: GLCi + P -> G6P; cytoplasm * (vGLK_VmGLK * (-(G6P * (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vGLK_KeqAK * SUMAXP * P + P^2 - 4 * vGLK_KeqAK * P^2)^0.5) / ((1 - 4 * vGLK_KeqAK) * vGLK_KeqGLK)) + GLCi * (- SUMAXP + P - 4 * vGLK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vGLK_KeqAK * SUMAXP * P + P^2 - 4 * vGLK_KeqAK * P^2)^0.5) / (2 - 8 * vGLK_KeqAK)) / (vGLK_KmGLKATP * vGLK_KmGLKGLCi * (1 + G6P / vGLK_KmGLKG6P + GLCi / vGLK_KmGLKGLCi) * (1 + (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vGLK_KeqAK * SUMAXP * P + P^2 - 4 * vGLK_KeqAK * P^2)^0.5) / ((1 - 4 * vGLK_KeqAK) * vGLK_KmGLKADP) + (- SUMAXP + P - 4 * vGLK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vGLK_KeqAK * SUMAXP * P + P^2 - 4 * vGLK_KeqAK * P^2)^0.5) / ((2 - 8 * vGLK_KeqAK) * vGLK_KmGLKATP))));
   vPGI: G6P -> F6P; cytoplasm * (vPGI_VmPGI / vPGI_KmPGIG6P * (G6P - F6P / vPGI_KeqPGI) / (1 + G6P / vPGI_KmPGIG6P + F6P / vPGI_KmPGIF6P));
-  vPFK: F6P + P -> F16P; cytoplasm * (vPFK_gR * vPFK_VmPFK * F6P * (-SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) * (1 + F6P / vPFK_KmPFKF6P + (-SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP) + vPFK_gR * F6P * (-SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP * vPFK_KmPFKF6P)) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP * vPFK_KmPFKF6P * (vPFK_L0 * (1 + vPFK_CPFKF26BP * F26BP / vPFK_KPFKF26BP + vPFK_CPFKF16BP * F16P / vPFK_KPFKF16BP)^2 * (1 + 2 * vPFK_CPFKAMP * vPFK_KeqAK * (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5)^2 / ((-1 + 4 * vPFK_KeqAK) * vPFK_KPFKAMP * (SUMAXP - P + 4 * vPFK_KeqAK * P - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5)))^2 * (1 + vPFK_CiPFKATP * (-SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KiPFKATP))^2 * (1 + vPFK_CPFKATP * (-SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP))^2 / ((1 + F26BP / vPFK_KPFKF26BP + F16P / vPFK_KPFKF16BP)^2 * (1 + 2 * vPFK_KeqAK * (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5)^2 / ((-1 + 4 * vPFK_KeqAK) * vPFK_KPFKAMP * (SUMAXP - P + 4 * vPFK_KeqAK * P - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5)))^2 * (1 + (-SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KiPFKATP))^2) + (1 + F6P / vPFK_KmPFKF6P + (-SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP) + vPFK_gR * F6P * (-SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP * vPFK_KmPFKF6P))^2)));
+  vPFK: F6P + P -> F16P; cytoplasm * (vPFK_gR * vPFK_VmPFK * F6P * (- SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) * (1 + F6P / vPFK_KmPFKF6P + (- SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP) + vPFK_gR * F6P * (- SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP * vPFK_KmPFKF6P)) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP * vPFK_KmPFKF6P * (vPFK_L0 * (1 + vPFK_CPFKF26BP * F26BP / vPFK_KPFKF26BP + vPFK_CPFKF16BP * F16P / vPFK_KPFKF16BP)^2 * (1 + 2 * vPFK_CPFKAMP * vPFK_KeqAK * (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5)^2 / ((-1 + 4 * vPFK_KeqAK) * vPFK_KPFKAMP * (SUMAXP - P + 4 * vPFK_KeqAK * P - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5)))^2 * (1 + vPFK_CiPFKATP * (- SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KiPFKATP))^2 * (1 + vPFK_CPFKATP * (- SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP))^2 / ((1 + F26BP / vPFK_KPFKF26BP + F16P / vPFK_KPFKF16BP)^2 * (1 + 2 * vPFK_KeqAK * (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5)^2 / ((-1 + 4 * vPFK_KeqAK) * vPFK_KPFKAMP * (SUMAXP - P + 4 * vPFK_KeqAK * P - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5)))^2 * (1 + (- SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KiPFKATP))^2) + (1 + F6P / vPFK_KmPFKF6P + (- SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP) + vPFK_gR * F6P * (- SUMAXP + P - 4 * vPFK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPFK_KeqAK * SUMAXP * P + P^2 - 4 * vPFK_KeqAK * P^2)^0.5) / ((2 - 8 * vPFK_KeqAK) * vPFK_KmPFKATP * vPFK_KmPFKF6P))^2)));
   vALD: F16P -> DHAP + GA3P; cytoplasm * (vALD_VmALD * F16P / vALD_KmALDF16P * (1 - DHAP * GA3P / (F16P * vALD_KeqALD)) / (1 + F16P / vALD_KmALDF16P + DHAP / vALD_KmALDDHAP + GA3P / vALD_KmALDGAP + F16P * GA3P / (vALD_KmALDF16P * vALD_KmALDGAPi) + DHAP * GA3P / (vALD_KmALDDHAP * vALD_KmALDGAP)));
   vG3PDH: DHAP + NADH -> $GLY + NAD; cytoplasm * (vG3PDH_VmG3PDH * (-(GLY * NAD / vG3PDH_KeqG3PDH) + NADH * DHAP / (1 + vG3PDH_KeqTPI)) / (vG3PDH_KmG3PDHDHAP * vG3PDH_KmG3PDHNADH * (1 + NAD / vG3PDH_KmG3PDHNAD + NADH / vG3PDH_KmG3PDHNADH) * (1 + GLY / vG3PDH_KmG3PDHGLY + DHAP / ((1 + vG3PDH_KeqTPI) * vG3PDH_KmG3PDHDHAP))));
   vGAPDH: GA3P + NAD -> BPG + NADH; cytoplasm * (k_rel_GAPDH * vGAPDH_VmGAPDHf * GA3P * NAD / (vGAPDH_KmGAPDHGAP * vGAPDH_KmGAPDHNAD) * (1 - BPG * NADH / (GA3P * NAD * vGAPDH_KeqGAPDH)) / ((1 + GA3P / vGAPDH_KmGAPDHGAP + BPG / vGAPDH_KmGAPDHBPG) * (1 + NAD / vGAPDH_KmGAPDHNAD + NADH / vGAPDH_KmGAPDHNADH)));
-  vPGK: BPG -> P3G + P; cytoplasm * (vPGK_VmPGK * (vPGK_KeqPGK * BPG * (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPGK_KeqAK * SUMAXP * P + P^2 - 4 * vPGK_KeqAK * P^2)^0.5) / (1 - 4 * vPGK_KeqAK) - (-SUMAXP + P - 4 * vPGK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPGK_KeqAK * SUMAXP * P + P^2 - 4 * vPGK_KeqAK * P^2)^0.5) * P3G / (2 - 8 * vPGK_KeqAK)) / (vPGK_KmPGKATP * vPGK_KmPGKP3G * (1 + (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPGK_KeqAK * SUMAXP * P + P^2 - 4 * vPGK_KeqAK * P^2)^0.5) / ((1 - 4 * vPGK_KeqAK) * vPGK_KmPGKADP) + (-SUMAXP + P - 4 * vPGK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPGK_KeqAK * SUMAXP * P + P^2 - 4 * vPGK_KeqAK * P^2)^0.5) / ((2 - 8 * vPGK_KeqAK) * vPGK_KmPGKATP)) * (1 + BPG / vPGK_KmPGKBPG + P3G / vPGK_KmPGKP3G)));
+  vPGK: BPG -> P3G + P; cytoplasm * (vPGK_VmPGK * (vPGK_KeqPGK * BPG * (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPGK_KeqAK * SUMAXP * P + P^2 - 4 * vPGK_KeqAK * P^2)^0.5) / (1 - 4 * vPGK_KeqAK) - (- SUMAXP + P - 4 * vPGK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPGK_KeqAK * SUMAXP * P + P^2 - 4 * vPGK_KeqAK * P^2)^0.5) * P3G / (2 - 8 * vPGK_KeqAK)) / (vPGK_KmPGKATP * vPGK_KmPGKP3G * (1 + (SUMAXP - (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPGK_KeqAK * SUMAXP * P + P^2 - 4 * vPGK_KeqAK * P^2)^0.5) / ((1 - 4 * vPGK_KeqAK) * vPGK_KmPGKADP) + (- SUMAXP + P - 4 * vPGK_KeqAK * P + (SUMAXP^2 - 2 * SUMAXP * P + 8 * vPGK_KeqAK * SUMAXP * P + P^2 - 4 * vPGK_KeqAK * P^2)^0.5) / ((2 - 8 * vPGK_KeqAK) * vPGK_KmPGKATP)) * (1 + BPG / vPGK_KmPGKBPG + P3G / vPGK_KmPGKP3G)));
   vPGM: P3G -> P2G; cytoplasm * (vPGM_VmPGM / vPGM_KmPGMP3G * (P3G - P2G / vPGM_KeqPGM) / (1 + P3G / vPGM_KmPGMP3G + P2G / vPGM_KmPGMP2G));
   vENO: P2G -> PEP; cytoplasm * (vENO_VmENO / vENO_KmENOP2G * (P2G - PEP / vENO_KeqENO) / (1 + P2G / vENO_KmENOP2G + PEP / vENO_KmENOPEP));
   vPYK: PEP -> PYR + P; cytoplasm * (vPYK_VmPYK / (vPYK_KmPYKPEP * vPYK_KmPYKADP) * (PEP * (SUMAXP - (P^2 - 4 * vPYK_KeqAK * P^2 - 2 * P * SUMAXP + 8 * vPYK_KeqAK * P * SUMAXP + SUMAXP^2)^0.5) / (1 - 4 * vPYK_KeqAK) - PYR * (P - 4 * vPYK_KeqAK * P - SUMAXP + (P^2 - 4 * vPYK_KeqAK * P^2 - 2 * P * SUMAXP + 8 * vPYK_KeqAK * P * SUMAXP + SUMAXP^2)^0.5) / (2 - 8 * vPYK_KeqAK) / vPYK_KeqPYK) / ((1 + PEP / vPYK_KmPYKPEP + PYR / vPYK_KmPYKPYR) * (1 + (P - 4 * vPYK_KeqAK * P - SUMAXP + (P^2 - 4 * vPYK_KeqAK * P^2 - 2 * P * SUMAXP + 8 * vPYK_KeqAK * P * SUMAXP + SUMAXP^2)^0.5) / (2 - 8 * vPYK_KeqAK) / vPYK_KmPYKATP + (SUMAXP - (P^2 - 4 * vPYK_KeqAK * P^2 - 2 * P * SUMAXP + 8 * vPYK_KeqAK * P * SUMAXP + SUMAXP^2)^0.5) / (1 - 4 * vPYK_KeqAK) / vPYK_KmPYKADP)));
@@ -82,7 +82,10 @@ model ralser()
 
   // Variable initializations:
   k_rel_TPI = 1;
+  k_rel_TPI has dimensionless;
   k_rel_GAPDH = 1;
+  k_rel_GAPDH has dimensionless;
+  ratio_NADPH_NADP has dimensionless;
   SUMAXP = 4.1;
   vGLK_VmGLK = 226.452;
   vGLK_KeqAK = 0.45;
@@ -161,7 +164,7 @@ model ralser()
   vADH_VmADH = 810;
   vADH_KiADHNAD = 0.92;
   vADH_KmADHETOH = 17;
-  vADH_KeqADH = 6.9e-05;
+  vADH_KeqADH = 6.9e-005;
   vADH_KmADHNAD = 0.17;
   vADH_KmADHNADH = 0.11;
   vADH_KiADHNADH = 0.031;
@@ -218,8 +221,18 @@ model ralser()
 
   //Other declarations:
   var ratio_NADPH_NADP;
+  const extracellular, cytoplasm, k_rel_TPI, k_rel_GAPDH, SUMAXP;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+  unit mMpermin = 1e-3 mole / (litre * 60 second);
+  unit mM = 1e-3 mole / litre;
+  unit permin = 1 / 60 second;
 
   //Display Names:
+  substance is "millimole";
+  time_unit is "minute";
   P is "High energy phosphates";
   G6P is "Glucose 6 Phosphate";
   F6P is "Fructose 6 Phosphate";

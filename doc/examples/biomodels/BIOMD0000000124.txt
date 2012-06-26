@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model model_0000001()
+//Created by libAntimony v2.3-beta
+model *model_0000001()
 
   // Compartments and Species:
   compartment cell;
@@ -39,10 +39,10 @@ model model_0000001()
 
   // Reactions:
   reaction_0000005:  => c; cell * fcyt * (jmem + jer);
-  reaction_0000006:  => cer; -fer * vcytver * jer * cell;
+  reaction_0000006:  => cer; - fer * vcytver * jer * cell;
 
   // Events:
-  event_0000001: at gt(time, 3.000000e+04): gkatp = 530;
+  event_0000001: at gt(time, 3.000000e+004): gkatp = 530;
 
   // Species initializations:
   c = 0.1;
@@ -62,7 +62,7 @@ model model_0000001()
   vir = -75;
   cm = 5300;
   taun = 16;
-  alpha = 4.5e-06;
+  alpha = 4.5e-006;
   fcyt = 0.01;
   kpmca = 0.2;
   kd = 0.3;
@@ -91,8 +91,19 @@ model model_0000001()
   var gkatp, alphaIRn, betaIRn, nIRinf, tauIRn, alphaIRr, betaIRr, rIRinf;
   var tauIRr, ica, ik, ikca, ikatp, iir, minf, ninf, ainf, w, jmem, jserca;
   var jleak, jip3, oinf, jer, V, n, a, nIR, rIR;
+  const cell, gca, gkca, gk, gir, vca, vk, vir, cm, taun, alpha, fcyt, kpmca;
+  const kd, vn, vm, sn, sm, kserca, dact, dinact, fer, pleak, dip3, vcytver;
+  const ip3, sa, r, taua;
+
+  // Unit definitions:
+  unit time_unit = 1e-3 second;
+  unit mV = 1e-3 volt;
+  unit substance = 1e-6 mole;
 
   //Display Names:
+  time_unit is "millisecond";
+  mV is "millivolt";
+  substance is "micromole";
   cell is "GH3 cell";
   c is "cytosolic free ca concentration";
   cer is "ER ca concentration";

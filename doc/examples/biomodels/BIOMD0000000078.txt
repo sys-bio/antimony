@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_3(Vs, B, n, K)
   Vs * B^n / (K^n + B^n);
 end
@@ -19,8 +19,7 @@ function functionDefinition_0000005(length, time_ref)
   ceil(sin(pi * time_ref / length + 0.001) / 2);
 end
 
-
-model Model_1()
+model *Model_1()
 
   // Compartments and Species:
   compartment cell;
@@ -187,6 +186,12 @@ model Model_1()
 
   //Other declarations:
   var parameter_0000081, parameter_0000082;
+  const cell;
+
+  // Unit definitions:
+  unit length = metre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
 
   //Display Names:
   species_0 is "Mb";

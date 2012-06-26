@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Kotte2010_Ecoli_Metabolic_Adaption()
+//Created by libAntimony v2.3-beta
+model *Kotte2010_Ecoli_Metabolic_Adaption()
 
   // Compartments and Species:
   compartment Environment, Cell;
@@ -145,14 +145,17 @@ model Kotte2010_Ecoli_Metabolic_Adaption()
 
   // Species initializations:
   BM = 0.03;
+  BM has od_per_volume;
   ACT = 0;
+  ACT has gram_per_litre;
   GLC = 4.8;
+  GLC has gram_per_litre;
   ACoA = 0.351972298;
   AKG = 0.191190619;
   cAMP = 0.202804098;
   FBP = 6.57504207;
   G6P = 1.908140784;
-  GLX = 5.70593e-09;
+  GLX = 5.70593e-009;
   ICT = 0.001408116;
   MAL = 3.278779135;
   OAA = 0.050535354;
@@ -198,16 +201,22 @@ model Kotte2010_Ecoli_Metabolic_Adaption()
 
   // Variable initializations:
   shift1 = 8.15;
+  shift1 has hour;
   GLC_1 = 0;
+  GLC_1 has gram_per_litre;
   ACT_1 = 5;
+  ACT_1 has gram_per_litre;
   BM_1 = 0.03;
   shift2 = 27.85;
+  shift2 has hour;
   GLC_2 = 3;
+  GLC_2 has gram_per_litre;
   ACT_2 = 3;
+  ACT_2 has gram_per_litre;
   BM_2 = 0.0005;
   env_M_ACT = 60.05;
   env_M_GLC = 180.156;
-  env_uc = 9.5e-07;
+  env_uc = 9.5e-007;
   e_AceA_kcat = 614;
   e_AceA_n = 4;
   e_AceA_L = 50100;
@@ -298,7 +307,7 @@ model Kotte2010_Ecoli_Metabolic_Adaption()
   e_Ppc_Kfbp = 0.408;
   e_PpsA_kcat = 1.32;
   e_PpsA_n = 2;
-  e_PpsA_L = 1e-79;
+  e_PpsA_L = 1e-079;
   e_PpsA_Kpyr = 0.00177;
   e_PpsA_Kpep = 0.001;
   e_PykF_kcat = 5749;
@@ -320,8 +329,8 @@ model Kotte2010_Ecoli_Metabolic_Adaption()
   tf_PdhR_scale = 100;
   tf_PdhR_kpyr = 0.164;
   tf_PdhR_n = 1;
-  g_aceBAK_vcra_unbound = 1.9e-09;
-  g_aceBAK_vcra_bound = 2e-06;
+  g_aceBAK_vcra_unbound = 1.9e-009;
+  g_aceBAK_vcra_bound = 2e-006;
   g_aceBAK_Kcra = 0.00365;
   g_aceBAK_aceBfactor = 0.3;
   g_aceBAK_aceKfactor = 0.03;
@@ -332,57 +341,57 @@ model Kotte2010_Ecoli_Metabolic_Adaption()
   g_aceBAK_L = 923;
   g_aceBAK_kcat_iclr = 0.00093;
   g_aceBAK_DNA = 1;
-  g_aceBAK_vcrp_bound = 2.3e-10;
-  g_aceBAK_vcrp_unbound = 2e-08;
+  g_aceBAK_vcrp_bound = 2.3e-010;
+  g_aceBAK_vcrp_unbound = 2e-008;
   g_aceBAK_Kcrp = 0.341;
   g_acs_vcrp_unbound = 0;
-  g_acs_vcrp_bound = 1.2e-06;
+  g_acs_vcrp_bound = 1.2e-006;
   g_acs_n = 2.31;
   g_acs_Kcrp = 0.0047;
   g_akg2mal_vcrp_unbound = 0;
-  g_akg2mal_vcrp_bound = 1.4e-06;
+  g_akg2mal_vcrp_bound = 1.4e-006;
   g_akg2mal_Kcrp = 0.091;
   g_akg2mal_n = 0.74;
-  g_emp_vcra_unbound = 6.2e-07;
+  g_emp_vcra_unbound = 6.2e-007;
   g_emp_vcra_bound = 0;
   g_emp_Kcra = 0.09;
   g_emp_vcrp_unbound = 0;
-  g_emp_vcrp_bound = 4.7e-07;
+  g_emp_vcrp_bound = 4.7e-007;
   g_emp_Kcrp = 0.012;
-  g_eno_vcra_unbound = 6.8e-07;
+  g_eno_vcra_unbound = 6.8e-007;
   g_eno_vcra_bound = 0;
   g_eno_Kcra = 0.016;
   g_fdp_vcra_unbound = 0;
-  g_fdp_vcra_bound = 4.5e-08;
+  g_fdp_vcra_bound = 4.5e-008;
   g_fdp_Kcra = 0.00118;
   g_gltA_vcrp_unbound = 0;
-  g_gltA_vcrp_bound = 2.3e-06;
+  g_gltA_vcrp_bound = 2.3e-006;
   g_gltA_Kcrp = 0.04;
   g_gltA_n = 1.07;
-  g_icd_vcra_unbound = 1.1e-07;
-  g_icd_vcra_bound = 8.5e-07;
+  g_icd_vcra_unbound = 1.1e-007;
+  g_icd_vcra_bound = 8.5e-007;
   g_icd_Kcra = 0.00117;
   g_mdh_vcrp_unbound = 0;
-  g_mdh_vcrp_bound = 9.1e-06;
+  g_mdh_vcrp_bound = 9.1e-006;
   g_mdh_Kcrp = 0.06;
   g_pckA_vcra_unbound = 0;
-  g_pckA_vcra_bound = 2.5e-06;
+  g_pckA_vcra_bound = 2.5e-006;
   g_pckA_Kcra = 0.00535;
-  g_pdh_vpdhr_unbound = 3.6e-07;
-  g_pdh_vpdhr_bound = 1.3e-09;
+  g_pdh_vpdhr_unbound = 3.6e-007;
+  g_pdh_vpdhr_bound = 1.3e-009;
   g_pdh_Kpdhr = 0.0034;
-  g_pfkA_vcra_unbound = 8.2e-07;
-  g_pfkA_vcra_bound = 6.6e-09;
-  g_pfkA_Kcra = 6.3e-07;
+  g_pfkA_vcra_unbound = 8.2e-007;
+  g_pfkA_vcra_bound = 6.6e-009;
+  g_pfkA_Kcra = 6.3e-007;
   g_ppsA_vcra_unbound = 0;
-  g_ppsA_vcra_bound = 3.3e-06;
+  g_ppsA_vcra_bound = 3.3e-006;
   g_ppsA_Kcra = 0.017;
-  g_pykF_vcra_unbound = 3.9e-07;
-  g_pykF_vcra_bound = 2.1e-09;
+  g_pykF_vcra_unbound = 3.9e-007;
+  g_pykF_vcra_bound = 2.1e-009;
   g_pykF_Kcra = 0.0023;
-  d_k_degr = 2.8e-05;
+  d_k_degr = 2.8e-005;
   bm_k_expr = 20000;
-  bm_muACT = 5.6e-05;
+  bm_muACT = 5.6e-005;
   bm_muGLC = 0.00018;
   bm_GLC_ACoA = 1.88;
   bm_GLC_AKG = 0.978;
@@ -402,8 +411,59 @@ model Kotte2010_Ecoli_Metabolic_Adaption()
   //Other declarations:
   var alphaGLC, alphaACT, mu, k_bm_ACoA, k_bm_AKG, k_bm_G6P, k_bm_OAA, k_bm_PEP;
   var k_bm_PG3, k_bm_PYR, SS_Me, SS_Ppc;
+  const Environment, Cell, shift1, GLC_1, ACT_1, BM_1, shift2, GLC_2, ACT_2;
+  const BM_2, env_M_ACT, env_M_GLC, env_uc, e_AceA_kcat, e_AceA_n, e_AceA_L;
+  const e_AceA_Kict, e_AceA_Kpep, e_AceA_Kpg3, e_AceA_Kakg, e_AceB_kcat, e_AceB_Kglx;
+  const e_AceB_Kacoa, e_AceB_Kglxacoa, e_AceK_kcat_ki, e_AceK_kcat_ph, e_AceK_n;
+  const e_AceK_L, e_AceK_Kicd, e_AceK_Kicd_P, e_AceK_Kpep, e_AceK_Kpyr, e_AceK_Koaa;
+  const e_AceK_Kglx, e_AceK_Kakg, e_AceK_Kpg3, e_AceK_Kict, e_Acoa2act_kcat;
+  const e_Acoa2act_n, e_Acoa2act_L, e_Acoa2act_Kacoa, e_Acoa2act_Kpyr, e_Acs_kcat;
+  const e_Acs_Kact, e_Akg2mal_kcat, e_Akg2mal_Kakg, e_CAMPdegr_kcat, e_CAMPdegr_KcAMP;
+  const e_Cya_kcat, e_Cya_KEIIA, e_Emp_kcat_f, e_Emp_kcat_r, e_Emp_Kfbp, e_Emp_Kpg3;
+  const e_Eno_kcatf, e_Eno_kcatr, e_Eno_Kpg3, e_Eno_Kpep, e_Fdp_kcat, e_Fdp_n;
+  const e_Fdp_L, e_Fdp_Kfbp, e_Fdp_Kpep, e_GltA_kcat, e_GltA_Koaa, e_GltA_Kacoa;
+  const e_GltA_Koaaacoa, e_GltA_Kakg, e_Icd_kcat, e_Icd_n, e_Icd_L, e_Icd_Kict;
+  const e_Icd_Kpep, e_Mdh_kcat, e_Mdh_n, e_Mdh_Kmal, e_Me_kcat, e_Me_n, e_Me_L;
+  const e_Me_Kmal, e_Me_Kacoa, e_Me_Kcamp, e_PckA_kcat, e_PckA_Koaa, e_PckA_Kpep;
+  const e_Pdh_kcat, e_Pdh_n, e_Pdh_L, e_Pdh_Kpyr, e_Pdh_KpyrI, e_Pdh_Kglx;
+  const e_PfkA_kcat, e_PfkA_n, e_PfkA_L, e_PfkA_Kg6p, e_PfkA_Kpep, e_Ppc_kcat;
+  const e_Ppc_n, e_Ppc_L, e_Ppc_Kpep, e_Ppc_Kfbp, e_PpsA_kcat, e_PpsA_n, e_PpsA_L;
+  const e_PpsA_Kpyr, e_PpsA_Kpep, e_PykF_kcat, e_PykF_n, e_PykF_L, e_PykF_Kpep;
+  const e_PykF_Kfbp, pts_k1, pts_km1, pts_k4, pts_KEIIA, pts_Kglc, tf_Cra_scale;
+  const tf_Cra_kfbp, tf_Cra_n, tf_Crp_scale, tf_Crp_kcamp, tf_Crp_n, tf_PdhR_scale;
+  const tf_PdhR_kpyr, tf_PdhR_n, g_aceBAK_vcra_unbound, g_aceBAK_vcra_bound;
+  const g_aceBAK_Kcra, g_aceBAK_aceBfactor, g_aceBAK_aceKfactor, g_aceBAK_KDNA;
+  const g_aceBAK_KP, g_aceBAK_KPprime, g_aceBAK_KG, g_aceBAK_L, g_aceBAK_kcat_iclr;
+  const g_aceBAK_DNA, g_aceBAK_vcrp_bound, g_aceBAK_vcrp_unbound, g_aceBAK_Kcrp;
+  const g_acs_vcrp_unbound, g_acs_vcrp_bound, g_acs_n, g_acs_Kcrp, g_akg2mal_vcrp_unbound;
+  const g_akg2mal_vcrp_bound, g_akg2mal_Kcrp, g_akg2mal_n, g_emp_vcra_unbound;
+  const g_emp_vcra_bound, g_emp_Kcra, g_emp_vcrp_unbound, g_emp_vcrp_bound;
+  const g_emp_Kcrp, g_eno_vcra_unbound, g_eno_vcra_bound, g_eno_Kcra, g_fdp_vcra_unbound;
+  const g_fdp_vcra_bound, g_fdp_Kcra, g_gltA_vcrp_unbound, g_gltA_vcrp_bound;
+  const g_gltA_Kcrp, g_gltA_n, g_icd_vcra_unbound, g_icd_vcra_bound, g_icd_Kcra;
+  const g_mdh_vcrp_unbound, g_mdh_vcrp_bound, g_mdh_Kcrp, g_pckA_vcra_unbound;
+  const g_pckA_vcra_bound, g_pckA_Kcra, g_pdh_vpdhr_unbound, g_pdh_vpdhr_bound;
+  const g_pdh_Kpdhr, g_pfkA_vcra_unbound, g_pfkA_vcra_bound, g_pfkA_Kcra;
+  const g_ppsA_vcra_unbound, g_ppsA_vcra_bound, g_ppsA_Kcra, g_pykF_vcra_unbound;
+  const g_pykF_vcra_bound, g_pykF_Kcra, d_k_degr, bm_k_expr, bm_muACT, bm_muGLC;
+  const bm_GLC_ACoA, bm_GLC_AKG, bm_GLC_G6P, bm_GLC_OAA, bm_GLC_PEP, bm_GLC_PG3;
+  const bm_GLC_PYR, bm_ACT_ACoA, bm_ACT_AKG, bm_ACT_G6P, bm_ACT_OAA, bm_ACT_PEP;
+  const bm_ACT_PG3, bm_ACT_PYR;
+
+  // Unit definitions:
+  unit od = dimensionless;
+  unit substance = 1e-6 mole;
+  unit volume = litre;
+  unit time_unit = second;
+  unit hour = 3600 second;
+  unit gram_per_litre = gram / litre;
+  unit od_per_volume = dimensionless / litre;
 
   //Display Names:
+  od is "OD";
+  substance is "micromole";
+  time_unit is "seconds";
+  hour is "hours";
   first_shift is "first shift";
   second_shift is "second shift";
 end

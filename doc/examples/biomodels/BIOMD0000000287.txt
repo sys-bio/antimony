@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Passos2010_DNAdamage_CellularSenescence()
+//Created by libAntimony v2.3-beta
+model *Passos2010_DNAdamage_CellularSenescence()
 
   // Compartments and Species:
   compartment cell;
@@ -87,12 +87,12 @@ model Passos2010_DNAdamage_CellularSenescence()
   kdegMdm2 = 0.000433;
   ksynp53 = 0.006;
   kdegp53 = 0.000825;
-  kdegp53mdm2ind = 8.25e-07;
+  kdegp53mdm2ind = 8.25e-007;
   kbinMdm2p53 = 0.001155;
-  krelMdm2p53 = 1.155e-06;
+  krelMdm2p53 = 1.155e-006;
   ksynMdm2mRNA = 0.0001;
   kdegMdm2mRNA = 0.0001;
-  kactATM = 2e-05;
+  kactATM = 2e-005;
   kdegATMMdm2 = 0.0004;
   kinactATM = 0.0005;
   kphosp53 = 0.006;
@@ -102,23 +102,32 @@ model Passos2010_DNAdamage_CellularSenescence()
   kphosp38 = 0.008;
   kdephosp38 = 0.1;
   kdam = 0.007;
-  krepair = 6e-05;
-  kGADD45 = 4e-06;
-  kdegGADD45 = 1e-05;
+  krepair = 6e-005;
+  kGADD45 = 4e-006;
+  kdegGADD45 = 1e-005;
   ksynp53mRNA = 0.001;
   kdegp53mRNA = 0.0001;
-  ksynp21mRNAp53P = 6e-06;
-  ksynp21mRNAp53 = 6e-08;
-  kdegp21mRNA = 2.4e-05;
+  ksynp21mRNAp53P = 6e-006;
+  ksynp21mRNAp53 = 6e-008;
+  kdegp21mRNA = 2.4e-005;
   ksynp21step1 = 0.0004;
-  ksynp21step2 = 4e-05;
-  ksynp21step3 = 4e-05;
+  ksynp21step2 = 4e-005;
+  ksynp21step3 = 4e-005;
   kdegp21 = 0.00019;
   kremROS = 0.000383;
   kgenROSp38 = 0.00045;
-  kdamROS = 1e-05;
-  kdamBasalROS = 1e-09;
+  kdamROS = 1e-005;
+  kdamBasalROS = 1e-009;
 
   //Other declarations:
   var kp38ROS;
+  const cell, ksynMdm2, kdegMdm2, ksynp53, kdegp53, kdegp53mdm2ind, kbinMdm2p53;
+  const krelMdm2p53, ksynMdm2mRNA, kdegMdm2mRNA, kactATM, kdegATMMdm2, kinactATM;
+  const kphosp53, kdephosp53, kphosMdm2, kdephosMdm2, kphosp38, kdephosp38;
+  const kdam, krepair, kGADD45, kdegGADD45, ksynp53mRNA, kdegp53mRNA, ksynp21mRNAp53P;
+  const ksynp21mRNAp53, kdegp21mRNA, ksynp21step1, ksynp21step2, ksynp21step3;
+  const kdegp21, kremROS, kgenROSp38, kdamROS, kdamBasalROS;
+
+  // Unit definitions:
+  unit substance = item;
 end

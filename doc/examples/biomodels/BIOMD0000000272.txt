@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model BeckerSchilling2010_EpoR_AuxiliaryMode()
+//Created by libAntimony v2.3-beta
+model *BeckerSchilling2010_EpoR_AuxiliaryMode()
 
   // Compartments and Species:
   compartment medium, cellsurface, cell;
@@ -35,13 +35,33 @@ model BeckerSchilling2010_EpoR_AuxiliaryMode()
 
   // Variable initializations:
   kt = 0.0329366;
+  kt has per_minute;
   Bmax_SAv = 76;
-  kon_SAv = 2.29402e-06;
+  Bmax_SAv has pM;
+  kon_SAv = 2.29402e-006;
+  kon_SAv has per_minute_per_pM;
   koff_SAv = 0.00679946;
+  koff_SAv has per_minute;
   kex_SAv = 0.01101;
+  kex_SAv has per_minute;
   kdi = 0.00317871;
+  kdi has per_minute;
   kde = 0.0164042;
+  kde has per_minute;
 
   //Other declarations:
   var SAv_medium, SAv_cells;
+  const medium, cellsurface, cell, kt, Bmax_SAv, kon_SAv, koff_SAv, kex_SAv;
+  const kdi, kde;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-012 mole;
+  unit per_minute = 1 / 60 second;
+  unit pM = 1e-012 mole / litre;
+  unit per_minute_per_pM = litre / (60 second * 1e-012 mole);
+
+  //Display Names:
+  time_unit is "minute";
+  substance is "picomole";
 end

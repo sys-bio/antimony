@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_4_v003(K3, K4, V3, pERK_c, ppERK_c)
   V3 * pERK_c / (K3 * (1 + ppERK_c / K4) + pERK_c);
 end
@@ -223,8 +223,7 @@ function function_4_v115(K115, V115, MEKc)
   V115 * MEKc / (K115 + MEKc);
 end
 
-
-model Model_1()
+model *Model_1()
 
   // Compartments and Species:
   compartment cytoplasm, nucleus, default;
@@ -426,7 +425,7 @@ model Model_1()
   KimRSKP = 0.025925065;
   KexRSKP = 0.129803956;
   p32 = 0.003284434;
-  p34 = 7.64816282169636e-05;
+  p34 = 7.64816282169636e-005;
   V35 = 8.907637012;
   K35 = 8562.744184;
   V36 = 0.000597315;
@@ -461,7 +460,7 @@ model Model_1()
   p60 = 0.002448164;
   KimF = 0.019898797;
   KexF = 0.396950616;
-  p63 = 4.13466150826031e-05;
+  p63 = 4.13466150826031e-005;
   V101 = 0.01807448;
   K101 = 3475.168;
   V102 = 0.09858154;
@@ -494,14 +493,14 @@ model Model_1()
   K115 = 2122.045;
   p12 = 0.007875765;
   p16 = 0.000257;
-  p17 = 4.81e-05;
+  p17 = 4.81e-005;
   p22 = 0.000257;
-  p23 = 4.81e-05;
+  p23 = 4.81e-005;
   p33 = 0.000601234209304622;
   p38 = 0.000257;
-  p39 = 4.81e-05;
+  p39 = 4.81e-005;
   p45 = 0.000257;
-  p46 = 4.81e-05;
+  p46 = 4.81e-005;
   p47 = 0.001670815;
   m47 = 15.80783969;
   p48 = 0.686020478;
@@ -519,7 +518,25 @@ model Model_1()
   p56 = 0.01646825;
   m56 = 9.544308421;
   p59 = 0.001443889;
-  p61 = 3.49860901414122e-05;
+  p61 = 3.49860901414122e-005;
+
+  //Other declarations:
+  const V3, K3, K4, V4, V5, K5, K6, V6, KimERK, Vc, KexERK, Vn, KimERKP, KexERKP;
+  const V15, K15, KimDUSP, KexDUSP, KimDUSPP, KexDUSPP, V20, K20, V21, K21;
+  const V24, K24, V1, Fct, K1, K2, KimERKPP, KexERKPP, V10, n10, K10, p11;
+  const p13, V14, K14, V2, V29, K29, V25, K25, KimRSKP, KexRSKP, p32, p34;
+  const V35, K35, V36, K36, V37, K37, V27, K27, V28, K28, V30, K30, V31, n31;
+  const K31, KF31, nF31, KimFOS, KexFOS, KimFOSP, KexFOSP, V42, K42, V43;
+  const K43, V44, K44, V57, n57, K57, p58, p60, KimF, KexF, cytoplasm, p63;
+  const nucleus, V101, K101, V102, K102, V103, K103, V104, K104, V105, K105;
+  const V106, K106, V107, K107, V108, K108, V109, K109, V110, K110, V111;
+  const K111, V112, K112, V113, K113, V114, K114, V115, K115, default, p12;
+  const p16, p17, p22, p23, p33, p38, p39, p45, p46, p47, m47, p48, p49, m49;
+  const p50, p51, m51, p52, m52, p53, p54, m54, p55, p56, m56, p59, p61;
+
+  // Unit definitions:
+  unit volume = 1e-12 litre;
+  unit substance = 1e-9 mole;
 
   //Display Names:
   reaction_32 is "v001";

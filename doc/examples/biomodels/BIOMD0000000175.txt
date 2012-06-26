@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model ErbB()
+//Created by libAntimony v2.3-beta
+model *ErbB()
 
   // Compartments and Species:
   compartment membrane;
@@ -131,7 +131,7 @@ model ErbB()
   E11S_Degradation: E11S + SigS => S; membrane * kdeg * E11S;
   E11R_Degradation: E11R + SigR => R; membrane * kdeg * E11R;
   E11T_Degradation: E11T + SigT => T; membrane * kdeg * E11T;
-  mwbbde76d1_155c_4264_8447_4457527547cb: Empty => fint; membrane * a98 * (-fint + b98);
+  mwbbde76d1_155c_4264_8447_4457527547cb: Empty => fint; membrane * a98 * (- fint + b98);
   EGF_in_EC_compartment: E -> Empty; membrane * ((kon1 * E * E1 - EGF_off * E_E1 + kon86 * E * E1_PT - EGF_off * E_E1_PT) / VeVc);
   HRG_in_EC_compartment: H -> Empty; membrane * ((kon87 * H * E4_PT - HRGoff_4 * H_E4_PT + kon2 * H * E3 - HRGoff_3 * H_E3 + kon3 * H * E4 - HRGoff_4 * H_E4) / VeVc);
   ERK_binding_to_MEKstar_1: ERK + MEKstar -> ERK_MEKstar; membrane * (kon89 * ERK * MEKstar - koff89 * ERK_MEKstar);
@@ -465,7 +465,7 @@ model ErbB()
   kon79 = 0.0078;
   kon65 = 0.0123;
   kon66 = 0.00019264;
-  kon67 = 6.6667e-05;
+  kon67 = 6.6667e-005;
   kon80 = 0.0002;
   kon40 = 0.0191;
   kon41 = 0.0051;
@@ -493,7 +493,7 @@ model ErbB()
   koff71 = 2.2988;
   kon72 = 0.0355;
   koff72 = 0.907;
-  eps = 1e-16;
+  eps = 1e-016;
   kon89 = 0.1997;
   koff89 = 99.9637;
   kcat90 = 20.0037;
@@ -508,7 +508,40 @@ model ErbB()
   kcat96 = 19.9851;
   ERKPpase_Abund = 35.005;
 
+  //Other declarations:
+  const membrane, ErbB1_Abund, ErbB2_Abund, ErbB3_Abund, ErbB4_Abund, Grb2_Abund;
+  const Shc_Abund, PI3K_Abund, RasGAP_Abund, SOS_Abund, Gab1_Abund, PIP2_Abund;
+  const Akt_Abund, Ras_Abund, Raf_Abund, MEK_Abund, ERK_Abund, VmaxPY, KmPY;
+  const kdeg, kf47, Vmaxr47, Kmf47, Kmr47, kf48, Kmf48, Kmr48, PTEN, kf49;
+  const kr49, Kmf49, Kmr49, Kmr49b, kr49b, kf51, kr51, Vmaxr51, Kmf51, Kmr51;
+  const Kmrb51, kf52, Vmaxr52, Kmf52, Kmr52, kf53, Vmaxr53, Kmf53, Kmr53;
+  const kf54, Vmaxr54, Kmf54, Kmr54, kf55, Vmaxr55, Kmf55, Kmr55, kf38, kf39;
+  const kf50, a98, b98, koff46, EGF_off, HRGoff_3, HRGoff_4, koff4, koff5;
+  const koff6, koff7, koff8, koff9, koff57, koff16, koff17, koff18, koff19;
+  const koff20, koff21, koff22, koff23, koff24, koff25, koff26, koff27, koff28;
+  const koff29, koff30, koff31, koff32, koff33, koff34, koff35, koff36, koff37;
+  const koff65, koff66, koff67, koff40, koff41, koff42, koff43, koff44, koff45;
+  const koff58, koff59, koff68, PTP1B_Abund, kPTP10, kPTP11, kPTP12, kPTP13;
+  const kPTP14, kPTP15, kPTP63, kPTP64, koff73, koff74, koff75, koff76, koff77;
+  const koff78, koff79, koff80, kPTP38, kPTP39, koff88, kPTP50, kf81, Vmaxr81;
+  const Kmf81, Kmr81, kf82, Vmaxr82, Kmf82, Kmr82, kf83, Vmaxr83, Kmf83, Kmr83;
+  const kf84, Vmaxr84, Kmf84, Kmr84, kf85, Vmaxr85, Kmf85, Kmr85, kcon49;
+  const kon1, kon86, kon2, kon3, kon87, kon4, kon5, kon6, kon7, kon8, kon9;
+  const kon57, kf10, kf11, kf12, kf13, kf14, kf15, kf63, kf64, kon16, kon17;
+  const kon18, kon73, kon19, kon20, kon21, kon74, kon22, kon23, kon24, kon25;
+  const kon75, kon26, kon27, kon28, kon29, kon76, kon30, kon31, kon32, kon33;
+  const kon77, kon34, kon35, kon36, kon37, kon78, kon79, kon65, kon66, kon67;
+  const kon80, kon40, kon41, kon42, kon43, kon44, kon45, kon88, kon46, kon58;
+  const kon59, kon60, VeVc, koff60, koff61, kon61, kon62, koff62, kon68, kon69;
+  const koff69, kon70, koff70, kon71, koff71, kon72, koff72, eps, kon89, koff89;
+  const kcat90, kon91, koff91, kcat92, kon93, koff93, kcat94, kon95, koff95;
+  const kcat96, ERKPpase_Abund;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+
   //Display Names:
+  substance is "nanomole";
   E1 is "ErbB1";
   E2 is "ErbB2";
   E3 is "ErbB3";

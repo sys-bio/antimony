@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model model_0000001()
+//Created by libAntimony v2.3-beta
+model *model_0000001()
 
   // Compartments and Species:
   compartment cell;
@@ -26,12 +26,12 @@ model model_0000001()
   // Rate Rules:
   h' = (hinf - h) / tauh;
   inh' = ETswitch * ((0.2 - inh) / taudir);
-  V' = (-ica - ik - igirk) / cm;
-  n' = lambda_ * (ninf - n) / taun;
+  V' = (- ica - ik - igirk) / cm;
+  n' = lambda * (ninf - n) / taun;
 
   // Reactions:
   reaction_0000001:  => c; cell * f * (jertot + jmemtot);
-  reaction_0000002:  => cer; -fer * sigmav * jertot * cell;
+  reaction_0000002:  => cer; - fer * sigmav * jertot * cell;
   reaction_000003:  => cAMP; cell * ETswitch * ((cAMPlow - cAMP) / taudir);
 
   // Events:
@@ -64,11 +64,11 @@ model model_0000001()
   gca = 2000;
   vm = -20;
   sm = 12;
-  lambda_ = 1.25;
+  lambda = 1.25;
   cm = 5300;
   f = 0.01;
   fer = 0.01;
-  alpha = 4.5e-06;
+  alpha = 4.5e-006;
   perl = 0.0005;
   dact = 0.35;
   dip3 = 0.5;
@@ -85,8 +85,15 @@ model model_0000001()
   var IP3, girk, ETswitch, ninf, minf, hinf, ica, igirk, ik, ainf, hinfer;
   var jerp, binf, o, jerleak, jerip3, jertot, jmemtot, perl_inf, h, inh, V;
   var n;
+  const cell, vh, sh, tauh, kserca, sigmav, kc, vn, vk, taun, gk, sn, vca;
+  const gca, vm, sm, lambda, cm, f, fer, alpha, perl, dact, dip3, dinh, ki;
+  const taudir, cAMPlow;
+
+  // Unit definitions:
+  unit ms = 1e-3 second;
 
   //Display Names:
+  ms is "millisecond";
   c is "cytosolic calcium concentration";
   cer is "ER calcium concentration";
   event_0000001 is "ET-1 switch";

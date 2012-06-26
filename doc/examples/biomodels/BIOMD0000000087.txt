@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model YeastWTmodel2()
+//Created by libAntimony v2.3-beta
+model *YeastWTmodel2()
 
   // Compartments and Species:
   compartment cellMembrane, nucleus;
@@ -139,13 +139,13 @@ model YeastWTmodel2()
   kalive = 1;
   Capping_k1 = 0.0005;
   Uncapping_k2 = 0.000385;
-  Rad17binding_k3 = 1.5e-08;
+  Rad17binding_k3 = 1.5e-008;
   ExoXactivation_k4 = 0.01;
   ExoXactivity_k5 = 0.0003;
-  Exo1activation_k6a = 5e-05;
+  Exo1activation_k6a = 5e-005;
   Exo1Rad24dependentActivation_k6b = 0.0005;
-  Exo1Rad17independentActivity_k7a = 3e-05;
-  Exo1Rad17dependentActivity_k7b = 3e-05;
+  Exo1Rad17independentActivity_k7a = 3e-005;
+  Exo1Rad17dependentActivity_k7b = 3e-005;
   RPAbinding1_k8a = 0.001;
   RPAbinding2_k8b = 100;
   RPAbinding_k8c = 100;
@@ -153,16 +153,16 @@ model YeastWTmodel2()
   Rad9activation_k9 = 100;
   ExoXinhibition_k10a = 0.05;
   ExoXinhibition2_k10b = 0.05;
-  Rad53activation_k11 = 1e-05;
+  Rad53activation_k11 = 1e-005;
   Chk1Activation_k12 = 0.00017;
   Exo1inhibition_k13 = 1;
-  Dun1activation_k14 = 3.3e-06;
+  Dun1activation_k14 = 3.3e-006;
   Chk1cellArrest_k15 = 0.2;
   Dun1cellArrest_k16 = 0.1;
   SDNArepair1_k17a = 0.05;
   G2DNArepair1_k17b = 0.05;
   SDNArepair2_k18a = 0.001;
-  G2DNArepair2_k18b = 1e-05;
+  G2DNArepair2_k18b = 1e-005;
   Recovery_k19 = 0.001;
   G1cyclinSynthesis_kc1 = 0.16;
   ScyclinSynthesis_kc1 = 0.16;
@@ -183,6 +183,10 @@ model YeastWTmodel2()
 
   //Other declarations:
   var kalive;
+  const cellMembrane, nucleus;
+
+  // Unit definitions:
+  unit substance = item;
 
   //Display Names:
   Exo1activation is "Rad24independentExo1Activation";

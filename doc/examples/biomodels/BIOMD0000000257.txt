@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Piedrafita2010_MR_System()
+//Created by libAntimony v2.3-beta
+model *Piedrafita2010_MR_System()
 
   // Compartments and Species:
   compartment env;
@@ -41,26 +41,57 @@ model Piedrafita2010_MR_System()
 
   // Variable initializations:
   k1 = 10;
+  k1 has per_time_per_M;
   k1r = 10;
+  k1r has per_time;
   k2 = 10;
+  k2 has per_time_per_M;
   k2r = 10;
+  k2r has per_time;
   k3 = 2;
+  k3 has per_time;
   k3r = 1;
+  k3r has per_time_per_M;
   k4 = 0.3;
+  k4 has per_time;
   k5 = 1;
+  k5 has per_time_per_M;
   k5r = 1;
+  k5r has per_time;
   k6 = 1;
+  k6 has per_time_per_M;
   k6r = 1;
+  k6r has per_time;
   k7 = 0.1;
+  k7 has per_time;
   k7r = 0.1;
+  k7r has per_time_per_M;
+  k8 has per_time;
   k9 = 0.1;
+  k9 has per_time_per_M;
   k9r = 0.05;
+  k9r has per_time;
   k10 = 0.05;
+  k10 has per_time;
   k10r = 0.05;
+  k10r has per_time_per_M;
+  k11 has per_time;
 
   //Other declarations:
   var k8, k11;
+  const env, k1, k1r, k2, k2r, k3, k3r, k4, k5, k5r, k6, k6r, k7, k7r, k9;
+  const k9r, k10, k10r;
+
+  // Unit definitions:
+  unit substance = mole;
+  unit time_unit = second;
+  unit volume = litre;
+  unit per_time = 1 / second;
+  unit per_time_per_M = litre / (mole * second);
 
   //Display Names:
+  substance is "mole";
+  time_unit is "sec";
+  volume is "litre";
   env is "environment";
 end

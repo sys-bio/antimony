@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Curien2003_MetThr_synthesis()
+//Created by libAntimony v2.3-beta
+model *Curien2003_MetThr_synthesis()
 
   // Compartments and Species:
   compartment compartment_;
@@ -10,7 +10,7 @@ model Curien2003_MetThr_synthesis()
   // Reactions:
   v1: $Hser -> Phser; compartment_ * v1_V0;
   vCys: Phser + $Cys -> $Cystathionine + $Phi; CGS * (vCys_kcat2 / (1 + vCys_KmCYS / Cys)) * Phser / (Phser + vCys_KmPHSER * (1 + Phi / vCys_Ki2) / (1 + vCys_KmCYS / Cys));
-  vThr: Phser -> $Thr + $Phi; TS * (5.900000e-04 + 0.062 * AdoMet^2.9 / (32^2.9 + AdoMet^2.9)) * Phser / (1 + Phi / vThr_Ki3);
+  vThr: Phser -> $Thr + $Phi; TS * (5.900000e-004 + 0.062 * AdoMet^2.9 / (32^2.9 + AdoMet^2.9)) * Phser / (1 + Phi / vThr_Ki3);
 
   // Species initializations:
   Phser = 0;
@@ -34,7 +34,17 @@ model Curien2003_MetThr_synthesis()
   vCys_Ki2 = 2000;
   vThr_Ki3 = 1000;
 
+  //Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit microM = 1e-6 mole / litre;
+  unit sec_inverse = 1 / second;
+  unit microM_per_second = 1e-6 mole / (litre * second);
+
   //Display Names:
+  substance is "micromole";
   compartment_ is "Cell";
   Phser is "Phosphohomoserine";
   Thr is "Threonine";

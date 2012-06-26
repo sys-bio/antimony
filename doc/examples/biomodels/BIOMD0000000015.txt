@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Curto()
+//Created by libAntimony v2.3-beta
+model *Curto()
 
   // Compartments and Species:
   compartment cell;
@@ -176,14 +176,23 @@ model Curto()
   rnag_frnan11 = 1;
   trans_atrans = 8.8539;
   trans_ftrans5 = 0.33;
-  ua_aua = 8.744e-05;
+  ua_aua = 8.744e-005;
   ua_fua16 = 2.21;
   x_ax = 0.0012;
   x_fx14 = 2;
   xd_axd = 0.949;
   xd_fxd14 = 0.55;
 
+  //Other declarations:
+  const cell;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
+
   //Display Names:
+  substance is "micromole (default)";
+  time_unit is "minute (default)";
   PRPP is "phosphoribosylpyrophosphate";
   IMP is "inosine monophosphate";
   SAMP is "adenylosuccinate";

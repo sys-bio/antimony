@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Neves2008_Cell_Shape()
+//Created by libAntimony v2.3-beta
+model *Neves2008_Cell_Shape()
 
   // Compartments and Species:
   compartment cyto, extra, cyto_mem;
@@ -73,58 +73,124 @@ model Neves2008_Cell_Shape()
 
   // Species initializations:
   AC_active_cyto_mem = 0;
+  AC_active_cyto_mem has molecule_per_volume;
   G_GDP_cyto = 0;
+  G_GDP_cyto has molecule_per_volume;
   G_protein_cyto = 2167.2;
+  G_protein_cyto has molecule_per_volume;
   G_a_s_cyto = 0;
+  G_a_s_cyto has molecule_per_volume;
   GRK_bg_cyto = 0;
+  GRK_bg_cyto has molecule_per_volume;
   iso_BAR_p_cyto_mem = 0;
+  iso_BAR_p_cyto_mem has molecule_per_volume;
   PDE4_cyto = 240.8;
+  PDE4_cyto has molecule_per_volume;
   ATP_cyto = 3010000;
+  ATP_cyto has molecule_per_volume;
   AC_PKA_cyto_mem = 0;
+  AC_PKA_cyto_mem has molecule_per_volume;
   R2C2_cyto = 120.4;
+  R2C2_cyto has molecule_per_volume;
   PP_PDE_cyto = 120.4;
+  PP_PDE_cyto has molecule_per_volume;
   BAR_cyto_mem = 94;
+  BAR_cyto_mem has molecule_per_volume;
   BAR_G_cyto_mem = 0;
+  BAR_G_cyto_mem has molecule_per_volume;
   iso_extra = 6020;
+  iso_extra has molecule_per_volume;
   iso_BAR_cyto_mem = 0;
+  iso_BAR_cyto_mem has molecule_per_volume;
   MAPK_active_cyto = 0;
+  MAPK_active_cyto has molecule_per_volume;
   MEK_cyto = 108.36;
+  MEK_cyto has molecule_per_volume;
   MEK_active_cyto = 0;
+  MEK_active_cyto has molecule_per_volume;
   B_Raf_active_cyto = 0;
+  B_Raf_active_cyto has molecule_per_volume;
   bg_cyto = 0;
+  bg_cyto has molecule_per_volume;
   B_Raf_cyto = 120.4;
+  B_Raf_cyto has molecule_per_volume;
   PKA_cyto = 0;
+  PKA_cyto has molecule_per_volume;
   AC_cyto_mem = 300;
+  AC_cyto_mem has molecule_per_volume;
   AMP_cyto = 3010000;
+  AMP_cyto has molecule_per_volume;
   GRK_cyto = 0.602;
+  GRK_cyto has molecule_per_volume;
   PP2A_cyto = 60.2;
+  PP2A_cyto has molecule_per_volume;
   MAPK_cyto = 216.72;
+  MAPK_cyto has molecule_per_volume;
   PTP_cyto = 120.4;
+  PTP_cyto has molecule_per_volume;
   PTP_PKA_cyto = 0;
+  PTP_PKA_cyto has molecule_per_volume;
   c_R2C2_cyto = 0;
+  c_R2C2_cyto has molecule_per_volume;
   c2_R2C2_cyto = 0;
+  c2_R2C2_cyto has molecule_per_volume;
   c3_R2C2_cyto = 0;
+  c3_R2C2_cyto has molecule_per_volume;
   iso_BAR_G_cyto_mem = 0;
+  iso_BAR_G_cyto_mem has molecule_per_volume;
   PDE_high_km_cyto = 301;
+  PDE_high_km_cyto has molecule_per_volume;
   cAMP_cyto = 0;
+  cAMP_cyto has molecule_per_volume;
   PTP_PP_cyto = 60.2;
+  PTP_PP_cyto has molecule_per_volume;
   PDE4_P_cyto = 0;
+  PDE4_P_cyto has molecule_per_volume;
 
   // Compartment initializations:
   cyto = 1;
   extra = 0.111111111111111;
   cyto_mem = 0.2;
+  cyto_mem has um2;
 
   // Variable initializations:
   KMOLE = 0.00166112956810631;
+  KMOLE has uM_um3_molecules_1;
+  Vmax_pde4_p_pde4_p has uM_s_1;
   kcat_PPase_Raf = 5;
+  kcat_PPase_Raf has s_1;
+  Vmax_PPase_Raf has uM_s_1;
+  Vmax_PDE4_PDE4 has uM_s_1;
+  Vmax_MEK_activates_MAPK has uM_s_1;
   kcat_PKA_activates_Raf = 10;
+  kcat_PKA_activates_Raf has s_1;
+  Vmax_PKA_activates_Raf has uM_s_1;
+  Vmax_AC_active_AC_active has molecules_um_2_s_1;
+  Vmax_highKM_PDE has uM_s_1;
   kcat_PKA_P_PTP = 0.2;
+  kcat_PKA_P_PTP has s_1;
+  Vmax_PKA_P_PTP has uM_s_1;
+  Vmax_AC_basal_AC_basal has molecules_um_2_s_1;
+  Vmax_grk_GRK has molecules_um_2_s_1;
+  Vmax_PKA_P_PDE has uM_s_1;
+  Vmax_Raf_activates_MEK has uM_s_1;
   kcat_PTP_PKA = 0.1;
+  kcat_PTP_PKA has s_1;
+  Vmax_PTP_PKA has uM_s_1;
   kcat_PTP = 1.06;
+  kcat_PTP has s_1;
+  Vmax_PTP has uM_s_1;
   kcat_PPase_MAPK = 0.636;
+  kcat_PPase_MAPK has s_1;
+  Vmax_PPase_MAPK has uM_s_1;
+  Vmax_pp2a_4_pp2a_4 has uM_s_1;
   kcat_pp_ptp_pp_ptp = 5;
+  kcat_pp_ptp_pp_ptp has s_1;
+  Vmax_pp_ptp has uM_s_1;
+  Vmax_GRK_bg_GRK_bg has molecules_um_2_s_1;
   kcat_PPase_mek = 5;
+  kcat_PPase_mek has s_1;
+  Vmax_PPase_mek has uM_s_1;
   activate_Gs_I = 0;
   activate_Gs_Kf_activate_Gs = 0.025;
   activate_Gs_Kr_activate_Gs = 0;
@@ -187,4 +253,26 @@ model Neves2008_Cell_Shape()
   var Vmax_AC_basal_AC_basal, Vmax_grk_GRK, Vmax_PKA_P_PDE, Vmax_Raf_activates_MEK;
   var Vmax_PTP_PKA, Vmax_PTP, Vmax_PPase_MAPK, Vmax_pp2a_4_pp2a_4, Vmax_pp_ptp;
   var Vmax_GRK_bg_GRK_bg, Vmax_PPase_mek;
+  const cyto, extra, cyto_mem, KMOLE, kcat_PPase_Raf, kcat_PKA_activates_Raf;
+  const kcat_PKA_P_PTP, kcat_PTP_PKA, kcat_PTP, kcat_PPase_MAPK, kcat_pp_ptp_pp_ptp;
+  const kcat_PPase_mek;
+
+  // Unit definitions:
+  unit substance = item;
+  unit volume = (1e-006 metre)^3;
+  unit area = (1e-6 metre)^2;
+  unit molecule = item;
+  unit um2 = (1e-6 metre)^2;
+  unit uM_um3_molecules_1 = 1e-6 mole / (item * litre * (1e-6 metre)^3);
+  unit molecules_um_2_s_1 = item / ((1e-6 metre)^2 * second);
+  unit pA_um_2 = dimensionless * ampere / metre^2;
+  unit s_1 = 1 / second;
+  unit _one_000000_0_m6_mol_2_s_1 = 1e+006 dimensionless * metre^6 / (mole^2 * second);
+  unit uM_s_1 = 0.001 dimensionless * mole / (metre^3 * second);
+  unit uM = 0.001 dimensionless * mole / metre^3;
+  unit uM_1_s_1 = 1000 dimensionless * metre^3 / (mole * second);
+  unit molecules_um_2 = item / (1e-6 metre)^2;
+  unit molecule = molecule;
+  unit molecule_per_volume = molecule / (1e-006 metre)^3;
+  unit molecule_per_volume_um2 = molecule * (1e-6 metre)^2 / (1e-006 metre)^3;
 end

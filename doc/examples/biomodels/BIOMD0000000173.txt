@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Schmierer_2008_Smad_Tgfb()
+//Created by libAntimony v2.3-beta
+model *Schmierer_2008_Smad_Tgfb()
 
   // Compartments and Species:
   compartment nucleus, cytosol;
@@ -73,29 +73,59 @@ model Schmierer_2008_Smad_Tgfb()
   R_inact = 0;
 
   // Compartment initializations:
-  nucleus = 1e-12;
-  cytosol = 2.27e-12;
+  nucleus = 1e-012;
+  cytosol = 2.27e-012;
 
   // Variable initializations:
-  kin = 5.93e-15;
-  kex = 1.26e-14;
+  kin = 5.93e-015;
+  kin has lp;
+  kex = 1.26e-014;
+  kex has lp;
   kphos = 0.0004037081673984;
+  kphos has pnMp;
   kdephos = 0.00656639;
-  kin_CIF = 3.36347821e-14;
+  kdephos has pnMp;
+  kin_CIF = 3.36347821e-014;
+  kin_CIF has lp;
   kon = 0.00183925592901392;
+  kon has pnMp;
   koff = 0.016;
+  koff has ps;
+  CIF has dimensionless;
+  K_diss has nM;
   kon_SB = 0.146422317103884;
+  kon_SB has pnMp;
   koff_SB = 100;
+  koff_SB has ps;
   k_TGFb = 0.07423555020288;
+  k_TGFb has pnMp;
+  K_dissSB has nM;
   ntoN = 602214150000000;
+  ntoN has dimensionless;
   SB_0 = 0;
+  SB_0 has nM;
   SB_add = 10000;
+  SB_add has nM;
   t_SB = 2700;
+  t_SB has time_unit;
 
   //Other declarations:
   var CIF, K_diss, K_dissSB;
+  const nucleus, cytosol, kin, kex, kphos, kdephos, kin_CIF, kon, koff, kon_SB;
+  const koff_SB, k_TGFb, ntoN, SB_0, SB_add, t_SB;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit nM = 1e-9 mole / litre;
+  unit ps = 1 / second;
+  unit pnMp = litre / (1e-9 mole * second);
+  unit lp = litre / second;
+  unit time_unit = second;
 
   //Display Names:
+  ps is "persecond";
+  pnMp is "pernMpersecond";
+  lp is "litrepersecond";
   nucleus is "Nuc";
   cytosol is "Cyt";
   S2_n is "Smad2_n";

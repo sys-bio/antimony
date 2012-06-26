@@ -1,10 +1,9 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function GK(A1, A2, A3, A4)
   2 * A4 * A1 / (A2 - A1 + A3 * A2 + A4 * A1 + root(2, (A2 - A1 + A3 * A2 + A4 * A1)^2 - 4 * (A2 - A1) * A4 * A1));
 end
 
-
-model Tyson2001_Cell_Cycle_Regulation()
+model *Tyson2001_Cell_Cycle_Regulation()
 
   // Compartments and Species:
   compartment cell;
@@ -96,8 +95,17 @@ model Tyson2001_Cell_Cycle_Regulation()
 
   //Other declarations:
   var TF;
+  const cell, k1, k2p, k2pp, k2ppp, k3p, k3pp, J3, k4, k5p, k5pp, J5, k6;
+  const n, k7, J7, k8, J8, k9, k10, mu, k11, k12p, k12pp, mmax, k12ppp, Keq;
+  const k13, k14, k15p, k15pp, k16p, k16pp, J15, J16, k4p, J4;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit time_unit = 60 second;
 
   //Display Names:
+  substance is "normalized";
+  time_unit is "minutes";
   Cell_division is "Cell division";
   CycBt_synthesis is "CycBt synthesis";
   CycBdegradation is "CycBt degradation";

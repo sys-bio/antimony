@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Rovers1995_Photsynthetic_Oscillations()
+//Created by libAntimony v2.3-beta
+model *Rovers1995_Photsynthetic_Oscillations()
 
   // Compartments and Species:
   compartment c;
@@ -23,15 +23,39 @@ model Rovers1995_Photsynthetic_Oscillations()
 
   // Compartment initializations:
   c = 1;
+  c has volume;
 
   // Variable initializations:
   k1 = 0.123;
+  k1 has per_;
   k2 = 0.625;
+  k2 has per_;
   k3 = 0.3;
+  k3 has per_mM_per_;
   k4 = 0.614;
+  k4 has per_;
   N0 = 1.2;
+  N0 has mM;
   A0 = 2.5;
+  A0 has mM;
+
+  //Other declarations:
+  const c, k1, k2, k3, k4, N0, A0;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit mM = 1e-3 mole / litre;
+  unit per_mM_per_ = litre / (second * 1e-3 mole);
+  unit per_ = 1 / second;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit time_unit = second;
 
   //Display Names:
+  substance is "mmole";
+  per_mM_per_ is "per_mM_per_s";
+  per_ is "per_s";
+  time_unit is "time";
   NADP is "NADP_super_+";
 end

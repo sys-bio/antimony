@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Kholodenko1999_EGFRsignaling()
+//Created by libAntimony v2.3-beta
+model *Kholodenko1999_EGFRsignaling()
 
   // Compartments and Species:
   compartment compartment_;
@@ -64,7 +64,7 @@ model Kholodenko1999_EGFRsignaling()
   PLCgl = 0;
 
   // Compartment initializations:
-  compartment_ = 3e-12;
+  compartment_ = 3e-012;
 
   // Variable initializations:
   v1_k1f = 0.003;
@@ -118,7 +118,14 @@ model Kholodenko1999_EGFRsignaling()
   v25_k25f = 1;
   v25_k25b = 0.03;
 
+  //Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+
   //Display Names:
+  substance is "nanomole";
   compartment_ is "cytoplasm";
   EGF is "Epidermal_Growth_Factor";
   R is "EGFR";

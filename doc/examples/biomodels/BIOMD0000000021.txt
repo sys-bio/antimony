@@ -1,14 +1,14 @@
-//Created by libAntimony v2.0
-model Leloup1999_CircClock_periodic()
+//Created by libAntimony v2.3-beta
+model *Leloup1999_CircClock_periodic()
 
   // Compartments and Species:
   compartment Cell, compartment_0000002;
   species P0 in Cell, T0 in Cell, P1 in Cell, T1 in Cell, P2 in Cell, T2 in Cell;
-  species CC in Cell, Cn_ in compartment_0000002, Mp in Cell, Mt in Cell;
+  species CC in Cell, Cn in compartment_0000002, Mp in Cell, Mt in Cell;
 
   // Assignment Rules:
-  Pt := CC + Cn_ + P0 + P1 + P2;
-  Tt := CC + Cn_ + T0 + T1 + T2;
+  Pt := CC + Cn + P0 + P1 + P2;
+  Tt := CC + Cn + T0 + T1 + T2;
 
   // Reactions:
   P0_to_P1: P0 => P1; Cell * P0_to_P1_V_1P * P0 / (P0_to_P1_K1_P + P0);
@@ -26,11 +26,11 @@ model Leloup1999_CircClock_periodic()
   P2_degradation: P2 => ; Cell * P2_degradation_k_d * P2 + Cell * P2_degradation_V_dP * P2 / (P2_degradation_K_dP + P2);
   T2_degradation: T2 => ; Cell * T2_degradation_k_d * T2 + Cell * V_dT * T2 / (T2_degradation_K_dT + T2);
   PT_complex_formation: P2 + T2 -> CC; Cell * PT_complex_formation_k3 * P2 * T2 - Cell * PT_complex_formation_k4 * CC;
-  PT_complex_nucleation: CC -> Cn_; Cell * PT_complex_nucleation_k1 * CC - compartment_0000002 * PT_complex_nucleation_k2 * Cn_;
+  PT_complex_nucleation: CC -> Cn; Cell * PT_complex_nucleation_k1 * CC - compartment_0000002 * PT_complex_nucleation_k2 * Cn;
   PT_complex_degradation: CC => ; Cell * PT_complex_degradation_k_dC * CC;
-  PTnucl_complex_degradation: Cn_ => ; compartment_0000002 * PTnucl_complex_degradation_k_dN * Cn_;
-  Mp_production:  => Mp; Cell * Mp_production_v_sP * Mp_production_K_IP^Mp_production_n / (Mp_production_K_IP^Mp_production_n + Cn_^Mp_production_n);
-  Mt_production:  => Mt; Cell * Mt_production_V_sT * Mt_production_K_IT^Mt_production_n / (Mt_production_K_IT^Mt_production_n + Cn_^Mt_production_n);
+  PTnucl_complex_degradation: Cn => ; compartment_0000002 * PTnucl_complex_degradation_k_dN * Cn;
+  Mp_production:  => Mp; Cell * Mp_production_v_sP * Mp_production_K_IP^Mp_production_n / (Mp_production_K_IP^Mp_production_n + Cn^Mp_production_n);
+  Mt_production:  => Mt; Cell * Mt_production_V_sT * Mt_production_K_IT^Mt_production_n / (Mt_production_K_IT^Mt_production_n + Cn^Mt_production_n);
   P0_production:  => P0; Cell * P0_production_k_sP * Mp;
   T0_production:  => T0; Cell * T0_production_k_sT * Mt;
   Mp_degradation: Mp => ; Cell * Mp_degradation_k_d * Mp + Cell * Mp_degradation_V_mP * Mp / (Mp_degradation_K_mP + Mp);
@@ -44,7 +44,7 @@ model Leloup1999_CircClock_periodic()
   P2 = 0;
   T2 = 0;
   CC = 0;
-  Cn_ = 0;
+  Cn = 0;
   Mp = 0;
   Mt = 0;
 
@@ -102,8 +102,15 @@ model Leloup1999_CircClock_periodic()
 
   //Other declarations:
   var Pt, Tt;
+  const Cell, compartment_0000002, V_mT, V_dT;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
 
   //Display Names:
+  substance is "nanomole (default)";
+  time_unit is "hour (default)";
   Cell is "cytoplasm";
   compartment_0000002 is "nucleus";
   P0 is "PER Protein (unphosphorylated)";
@@ -113,7 +120,7 @@ model Leloup1999_CircClock_periodic()
   P2 is "PER Protein (bi-phosphorylated)";
   T2 is "TIM Protein (bi-phosphorylated)";
   CC is "Cytosolic PER-TIM Complex";
-  Cn_ is "Nuclear PER-TIM Complex";
+  Cn is "Nuclear PER-TIM Complex";
   Mp is "PER mRNA";
   Mt is "TIM mRNA";
   Pt is "Total Per";

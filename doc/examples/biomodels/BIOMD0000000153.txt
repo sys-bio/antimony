@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model model_0000001()
+//Created by libAntimony v2.3-beta
+model *model_0000001()
 
   // Compartments and Species:
   compartment Spine;
@@ -179,7 +179,7 @@ model model_0000001()
   voff55: PP2ACa_PKA => PP2ACa + PKA; Spine * PP2ACa_PKA * voff55_koff55;
 
   // Events:
-  cAMP_pulse: at geq(time, cAMP_delay): cAMP = 6.600000e-06;
+  cAMP_pulse: at geq(time, cAMP_delay): cAMP = 6.600000e-006;
   ca_on1: at geq(time, cAMP_delay + cAMP_Ca_delay): k57 = kon_high;
   ca_on2: at geq(time, cAMP_delay + cAMP_Ca_delay + 1 * (spike_duration + spike_interval)): k57 = kon_high;
   ca_off1: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration): k57 = kon_low;
@@ -202,11 +202,11 @@ model model_0000001()
   ca_off10: at geq(time, cAMP_delay + cAMP_Ca_delay + spike_duration + 9 * (spike_interval + spike_duration)): k57 = kon_low;
 
   // Species initializations:
-  D = 4.98e-06;
-  CDK5 = 2e-07;
+  D = 4.98e-006;
+  CDK5 = 2e-007;
   D_CDK5 = 0;
   D75 = 0;
-  CK1 = 1.66e-07;
+  CK1 = 1.66e-007;
   D_CK1 = 0;
   D137 = 0;
   PKA = 0;
@@ -220,7 +220,7 @@ model model_0000001()
   D34_137 = 0;
   D75CK1 = 0;
   D75_PKA = 0;
-  PP2A = 2e-07;
+  PP2A = 2e-007;
   D75_PP2A = 0;
   PP2AP = 0;
   D75_PP2AP = 0;
@@ -228,7 +228,7 @@ model model_0000001()
   D137_CDK5 = 0;
   D137_PKA = 0;
   D137_PP2C = 0;
-  PP2C = 1.33e-07;
+  PP2C = 1.33e-007;
   D34_75_CK1 = 0;
   D34_137_CDK5 = 0;
   D34_75_137 = 0;
@@ -244,8 +244,8 @@ model model_0000001()
   D34_75_137_PP2AP = 0;
   D34_137_PP2C = 0;
   D75_137_PP2C = 0;
-  PDE = 2e-06;
-  PP2Binactive = 3.32e-07;
+  PDE = 2e-006;
+  PP2Binactive = 3.32e-007;
   D34_75_137_PP2C = 0;
   CK1P = 0;
   CK1P_PP2B = 0;
@@ -254,7 +254,7 @@ model model_0000001()
   PP2A_PKA = 0;
   Ca = 0;
   PP2BinactiveCa2 = 0;
-  R2C2 = 6.64e-06;
+  R2C2 = 6.64e-006;
   cAMP = 0;
   cAMP_R2C2 = 0;
   cAMP2_R2C2 = 0;
@@ -279,16 +279,16 @@ model model_0000001()
   Empty = 0;
 
   // Compartment initializations:
-  Spine = 1e-15;
+  Spine = 1e-015;
 
   // Variable initializations:
   cAMP_delay = 400;
   cAMP_Ca_delay = 50;
-  k57 = 2.5e-08;
-  kon_high = 6.6e-06;
+  k57 = 2.5e-008;
+  kon_high = 6.6e-006;
   spike_duration = 2;
   spike_interval = 2;
-  kon_low = 2.5e-08;
+  kon_low = 2.5e-008;
   von1_kon1 = 5600000;
   voff1_koff1 = 12;
   vcat1_kcat1 = 3;
@@ -385,8 +385,8 @@ model model_0000001()
   voff33_koff33 = 16;
   vcat33_kcat33 = 4;
   vcat34_kcat34 = 5;
-  von35_kon35 = 1e+15;
-  von36_kon36 = 3e+15;
+  von35_kon35 = 1e+015;
+  von36_kon36 = 3e+015;
   voff35_koff35 = 1;
   voff36_koff36 = 1;
   von37_kon37 = 54000000;
@@ -443,6 +443,8 @@ model model_0000001()
 
   //Other declarations:
   var k57;
+  const Spine, cAMP_delay, cAMP_Ca_delay, kon_high, spike_duration, spike_interval;
+  const kon_low;
 
   //Display Names:
   D34_75 is "D34:75";

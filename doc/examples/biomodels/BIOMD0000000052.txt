@@ -1,10 +1,10 @@
-//Created by libAntimony v2.0
-model Brands2002_MonosaccharideCasein()
+//Created by libAntimony v2.3-beta
+model *Brands2002_MonosaccharideCasein()
 
   // Compartments and Species:
   compartment compartment_;
   species Glu in compartment_, Fru in compartment_, Formic_acid in compartment_;
-  species Triose in compartment_, Acetic_acid in compartment_, Cn_ in compartment_;
+  species Triose in compartment_, Acetic_acid in compartment_, Cn in compartment_;
   species Amadori in compartment_, AMP in compartment_, C5 in compartment_;
   species lys_R in compartment_, Melanoidin in compartment_;
 
@@ -14,7 +14,7 @@ model Brands2002_MonosaccharideCasein()
   _J3: Glu => C5 + Formic_acid; _J3_K3 * Glu;
   _J4: Fru => C5 + Formic_acid; _J4_K4 * Fru;
   _J5: Fru => 2Triose; _J5_K5 * Fru;
-  _J6: Triose => Cn_ + Acetic_acid; _J6_K6 * Triose;
+  _J6: Triose => Cn + Acetic_acid; _J6_K6 * Triose;
   _J7: lys_R + Glu => Amadori; _J7_K7 * Glu * lys_R;
   _J8: Amadori => Acetic_acid + lys_R; _J8_K8 * Amadori;
   _J9: Amadori => AMP; _J9_K9 * Amadori;
@@ -27,7 +27,7 @@ model Brands2002_MonosaccharideCasein()
   Formic_acid = 0;
   Triose = 0;
   Acetic_acid = 0;
-  Cn_ = 0;
+  Cn = 0;
   Amadori = 0;
   AMP = 0;
   C5 = 0;
@@ -49,4 +49,15 @@ model Brands2002_MonosaccharideCasein()
   _J9_K9 = 0.14359;
   _J10_K10 = 0.00015;
   _J11_K11 = 0.12514;
+
+  //Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+
+  //Display Names:
+  substance is "millimole (default)";
+  time_unit is "minute (default)";
 end

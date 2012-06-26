@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Shi1993_Caffeine_pressor_tolerance()
+//Created by libAntimony v2.3-beta
+model *blub()
 
   // Compartments and Species:
   compartment Gut, C, P, Tol, Eff;
@@ -9,7 +9,7 @@ model Shi1993_Caffeine_pressor_tolerance()
   E := E_0 + S * C_e / (1 + C_t / T_50);
 
   // Rate Rules:
-  X_gut' = -k_a * X_gut;
+  X_gut' = - k_a * X_gut;
   C_p' = k_a * F * X_gut / V_C - k12 * C_p + k21 * C_per - k10 * C_p;
   C_per' = k12 * C_p - k21 * C_per;
   C_e' = k_eo * (C_p - C_e);
@@ -20,6 +20,7 @@ model Shi1993_Caffeine_pressor_tolerance()
 
   // Species initializations:
   X_gut = 0;
+  X_gut has mg_per_kg_per_volume;
   C_p = 0;
   C_per = 0;
   C_e = 0;
@@ -34,28 +35,64 @@ model Shi1993_Caffeine_pressor_tolerance()
 
   // Variable initializations:
   t_int = 2;
+  t_int has time_unit;
   cups = 0;
+  cups has dimensionless;
   t_lag = 0.15;
+  t_lag has time_unit;
   cupsize = 90;
+  cupsize has substance;
   bodyweight = 80;
+  bodyweight has kilogram;
   CL = 0.11;
   V_C = 0.32;
+  V_C has l_per_kg;
   k_a = 12;
+  k_a has per_hour;
   k10 = 0.34;
+  k10 has per_hour;
   k12 = 1.64;
+  k12 has per_hour;
   k21 = 1.19;
+  k21 has per_hour;
   t_half = 3.98;
+  t_half has time_unit;
   F = 0.984;
   k_eo = 2.03;
+  k_eo has per_hour;
   k_tol = 0.75;
+  k_tol has per_hour;
   E_0 = 83.3;
+  E_0 has mm_Hg;
   S = 19.07;
+  S has mm_Hg_l_per_mg;
   T_50 = 0.26;
+  T_50 has mg_per_l;
+  E has mm_Hg;
 
   //Other declarations:
   var cups, E;
+  const Gut, C, P, Tol, Eff, t_int, t_lag, cupsize, bodyweight, CL, V_C, k_a;
+  const k10, k12, k21, t_half, F, k_eo, k_tol, E_0, S, T_50;
+
+  // Unit definitions:
+  unit substance = 1e-6 kilogram;
+  unit time_unit = 3600 second;
+  unit per_hour = 1 / 3600 second;
+  unit l_per_kg = litre / kilogram;
+  unit mm_Hg = 1e-3 metre;
+  unit mm_Hg_l_per_mg = 1e-3 metre * litre / 1e-6 kilogram;
+  unit mg_per_l = 1e-6 kilogram / litre;
+  unit mg_per_kg = dimensionless;
+  unit volume = litre;
+  unit mg_per_kg_per_volume = dimensionless / litre;
 
   //Display Names:
+  substance is "mg";
+  time_unit is "hr";
+  l_per_kg is "liter_per_kg";
+  mm_Hg_l_per_mg is "mm_Hg per (mg/l)";
+  mg_per_l is "mg/l";
   coffecup is "coffee cup";
   t_int is "t_intervall";
   E is "MAP";

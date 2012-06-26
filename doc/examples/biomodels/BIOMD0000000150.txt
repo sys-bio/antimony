@@ -1,12 +1,12 @@
-//Created by libAntimony v2.0
-model Morris2002_CellCycle_CDK2Cyclin()
+//Created by libAntimony v2.3-beta
+model *Morris2002_CellCycle_CDK2Cyclin()
 
   // Compartments and Species:
   compartment geometry;
   species CDK2cycA in geometry, CyclinA in geometry, Cdk2 in geometry, CDK2cycA_star_ in geometry;
 
   // Assignment Rules:
-  total_fluorescence := CDK2cycA * 599990 * 1.000000e+06 / 43200 + CDK2cycA_star_ * 599990 * 1.000000e+06 / 43200 + basal_fluorescence;
+  total_fluorescence := CDK2cycA * 599990 * 1.000000e+006 / 43200 + CDK2cycA_star_ * 599990 * 1.000000e+006 / 43200 + basal_fluorescence;
 
   // Reactions:
   Binding: Cdk2 + CyclinA -> CDK2cycA; Binding_kf * Cdk2 * CyclinA * geometry - Binding_kb * CDK2cycA * geometry;
@@ -14,12 +14,12 @@ model Morris2002_CellCycle_CDK2Cyclin()
 
   // Species initializations:
   CDK2cycA = 0;
-  CyclinA = 4e-07;
-  Cdk2 = 1e-07;
+  CyclinA = 4e-007;
+  Cdk2 = 1e-007;
   CDK2cycA_star_ = 0;
 
   // Compartment initializations:
-  geometry = 1e-12;
+  geometry = 1e-012;
 
   // Variable initializations:
   basal_fluorescence = 1.21210648148148;
@@ -29,5 +29,6 @@ model Morris2002_CellCycle_CDK2Cyclin()
   Activation_kb = 0.557;
 
   //Other declarations:
-  var total_fluorescence;
+  var basal_fluorescence, total_fluorescence;
+  const geometry;
 end

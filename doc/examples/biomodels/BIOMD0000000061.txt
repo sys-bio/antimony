@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Hynne2001_Glycolysis()
+//Created by libAntimony v2.3-beta
+model *Hynne2001_Glycolysis()
 
   // Compartments and Species:
   compartment extracellular, cytosol;
@@ -139,7 +139,26 @@ model Hynne2001_Glycolysis()
   vAK_k24f = 432.9;
   vAK_k24r = 133.333;
 
+  //Other declarations:
+  const extracellular, cytosol;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+  unit mM_per_minute = 1e-3 mole / (litre * 60 second);
+  unit min_inverse = 1 / 60 second;
+  unit mM_inverse_min_inverse = litre / (1e-3 mole * 60 second);
+  unit mM_squared = (1e-3 mole)^2 / litre^2;
+  unit mM = 1e-3 mole / litre;
+
   //Display Names:
+  substance is "millimole";
+  time_unit is "minute";
+  mM_per_minute is "mM per minute";
+  min_inverse is "minute inverse";
+  mM_inverse_min_inverse is "mM inverse min inverse";
+  mM_squared is "mM squared";
+  mM is "milliMolar";
   GlcX is "Extracellular glucose";
   Glc is "Cytosolic glucose";
   G6P is "Glucose-6-Phosphate";

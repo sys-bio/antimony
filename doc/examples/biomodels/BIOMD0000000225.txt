@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Westermark2003_Pancreatic_GlycOsc_basic()
+//Created by libAntimony v2.3-beta
+model *Westermark2003_Pancreatic_GlycOsc_basic()
 
   // Compartments and Species:
   compartment comp;
@@ -24,28 +24,61 @@ model Westermark2003_Pancreatic_GlycOsc_basic()
 
   // Compartment initializations:
   comp = 1;
+  Vgk has mM_per_;
 
   // Variable initializations:
   hGK = 1.7;
+  hGK has dimensionless;
   KeqGPI = 0.3;
+  KeqGPI has dimensionless;
+  Vpfk has mM_per_;
+  Vfba has mM_per_;
   Sgk = 8;
+  Sgk has mM;
   Spfk = 4;
+  Spfk has mM;
   Sfba = 0.005;
+  Sfba has mM;
   Xpfk = 0.01;
+  Xpfk has mM;
   alpha = 5;
+  alpha has dimensionless;
   hx = 2.5;
+  hx has dimensionless;
   hpfk = 2.5;
+  hpfk has dimensionless;
   hact = 1;
+  hact has dimensionless;
   sigcorr = 1.5;
   dw_per_ml = 0.3333;
+  dw_per_ml has g_per_ml;
   min_to_sec = 60;
+  min_to_sec has dimensionless;
   Vgk_min = 10;
+  Vgk_min has mmole_per_min_g;
   Vpfk_min = 100;
+  Vpfk_min has mmole_per_min_g;
   Vfba_min = 25;
+  Vfba_min has mmole_per_min_g;
 
   //Other declarations:
   var Vgk, Vpfk, Vfba;
+  const comp, hGK, KeqGPI, Sgk, Spfk, Sfba, Xpfk, alpha, hx, hpfk, hact, sigcorr;
+  const dw_per_ml, min_to_sec, Vgk_min, Vpfk_min, Vfba_min;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = second;
+  unit mM = 1e-3 mole / litre;
+  unit g_per_ml = 1e-3 kilogram / 1e-3 litre;
+  unit mM_per_ = 1e-3 mole / (second * litre);
+  unit mmole_per_min_g = 1e-3 mole / (60 second * kilogram);
 
   //Display Names:
+  substance is "mmole";
+  time_unit is "seconds";
+  g_per_ml is "gramm per ml";
+  mM_per_ is "mM per sec";
+  mmole_per_min_g is "mmole per (min kg)";
   comp is "compartment";
 end

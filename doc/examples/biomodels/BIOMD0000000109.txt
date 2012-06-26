@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Haberichter2007_cellcycle()
+//Created by libAntimony v2.3-beta
+model *Haberichter2007_cellcycle()
 
   // Compartments and Species:
   compartment X;
@@ -253,25 +253,25 @@ model Haberichter2007_cellcycle()
   ks1YEmi1 = 1788.517;
   ksMYEmi1 = 9608.162;
   kdYEmi1 = 0.018158;
-  kbYCyclinDYYCdk4 = 1.43e-06;
-  kbYp27YYCdk4 = 6.34e-06;
-  kbYp27YYCdk2 = 1.23e-05;
+  kbYCyclinDYYCdk4 = 1.43e-006;
+  kbYp27YYCdk4 = 6.34e-006;
+  kbYp27YYCdk2 = 1.23e-005;
   timeYModifier = 240.0637;
-  kbYCyclinEYYCdk2 = 5.01e-05;
-  kbYCyclinAYYCdk2 = 9.52e-05;
-  kbYCyclinAYYCdk1 = 6.48e-05;
-  kbYD4YYpRb = 3.15e-05;
+  kbYCyclinEYYCdk2 = 5.01e-005;
+  kbYCyclinAYYCdk2 = 9.52e-005;
+  kbYCyclinAYYCdk1 = 6.48e-005;
+  kbYD4YYpRb = 3.15e-005;
   kupYD4YYpRb = 1.694662;
-  kbYE2YYpRb = 5.74e-05;
+  kbYE2YYpRb = 5.74e-005;
   kupYE2YYpRb = 4.78271;
-  kbYA2YYpRb = 6.25e-05;
+  kbYA2YYpRb = 6.25e-005;
   kupYA2YYpRb = 0.200091;
-  kbYA1YYpRb = 6.73e-05;
+  kbYA1YYpRb = 6.73e-005;
   kupYA1YYpRb = 0.202132;
   ktYpRbYYDephos = 0.023194;
-  kbYE2FYYpRb = 9.66e-06;
+  kbYE2FYYpRb = 9.66e-006;
   kbYEmi1YYAPCC = 0.0001;
-  kbYAPCCYYCyclinA = 1.61e-05;
+  kbYAPCCYYCyclinA = 1.61e-005;
   kudYAPCCYYCyclinA = 4.999555;
   kdYCyclinD = 0.05;
   kdYCyclinE = 0.05;
@@ -292,8 +292,24 @@ model Haberichter2007_cellcycle()
 
   //Other declarations:
   var kYact, ksYE2F, ksYEmi1, ksYCyclinA, ksYCyclinE;
+  const X, k1Yact, ksYCyclinD, ksYp27, kdYp27, kd1Yp27, ks0YCyclinE, ks1YCyclinE;
+  const ksMYCyclinE, ks0YCyclinA, ks1YCyclinA, ksMYCyclinA, ks0YE2F, ks1YE2F;
+  const ksMYE2F, kdYE2F, kd0YE2F, ks0YEmi1, ks1YEmi1, ksMYEmi1, kdYEmi1, kbYCyclinDYYCdk4;
+  const kbYp27YYCdk4, kbYp27YYCdk2, timeYModifier, kbYCyclinEYYCdk2, kbYCyclinAYYCdk2;
+  const kbYCyclinAYYCdk1, kbYD4YYpRb, kupYD4YYpRb, kbYE2YYpRb, kupYE2YYpRb;
+  const kbYA2YYpRb, kupYA2YYpRb, kbYA1YYpRb, kupYA1YYpRb, ktYpRbYYDephos;
+  const kbYE2FYYpRb, kbYEmi1YYAPCC, kbYAPCCYYCyclinA, kudYAPCCYYCyclinA, kdYCyclinD;
+  const kdYCyclinE, kdYCyclinA, kuYCyclinDYYCdk4, kuYp27YYCdk4, kuYCyclinEYYCdk2;
+  const kuYp27YYCdk2, kuYCyclinAYYCdk2, kuYCyclinAYYCdk1, kuYD4YYpRb, kuYE2YYpRb;
+  const kuYA2YYpRb, kuYA1YYpRb, kuYE2FYYpRb, kuYEmi1YYAPCC, kuYAPCCYYCyclinA;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = item;
 
   //Display Names:
+  time_unit is "min";
+  substance is "#";
   X is "cell";
   modifier_activation is "modifier activation";
 end

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Tyson2003_Negative_Feedback_Oscillator()
+//Created by libAntimony v2.3-beta
+model *Tyson2003_Negative_Feedback_Oscillator()
 
   // Compartments and Species:
   compartment env;
@@ -28,17 +28,50 @@ model Tyson2003_Negative_Feedback_Oscillator()
 
   // Variable initializations:
   k0 = 0;
+  k0 has M_per_;
   k1 = 1;
+  k1 has per_;
   k2 = 0.01;
+  k2 has per_;
   k2_prime = 10;
+  k2_prime has per_M_per_;
   k3 = 0.1;
+  k3 has per_;
   Yt = 1;
+  Yt has M;
   Km3 = 0.01;
+  Km3 has M;
   k4 = 0.2;
+  k4 has M_per_;
   Km4 = 0.01;
+  Km4 has M;
   k5 = 0.1;
+  k5 has per_;
   Rt = 1;
+  Rt has M;
   Km5 = 0.01;
+  Km5 has M;
   k6 = 0.05;
+  k6 has M_per_;
   Km6 = 0.01;
+  Km6 has M;
+
+  //Other declarations:
+  const env, k0, k1, k2, k2_prime, k3, Yt, Km3, k4, Km4, k5, Rt, Km5, k6;
+  const Km6;
+
+  // Unit definitions:
+  unit time_unit = second;
+  unit substance = mole;
+  unit per_ = 1 / second;
+  unit M_per_ = mole / (second * litre);
+  unit M = mole / litre;
+  unit per_M_per_ = litre / (mole * second);
+
+  //Display Names:
+  time_unit is "s";
+  substance is "mole";
+  per_ is "per_s";
+  M_per_ is "M_per_s";
+  per_M_per_ is "per_M_per_s";
 end

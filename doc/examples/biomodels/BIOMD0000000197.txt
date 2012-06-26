@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model MDCKII_Transport()
+//Created by libAntimony v2.3-beta
+model *MDCKII_Transport()
 
   // Compartments and Species:
   compartment basolat, cell, apical;
@@ -36,19 +36,46 @@ model MDCKII_Transport()
 
   // Variable initializations:
   p1 = 0.0025;
+  p1 has permin;
   p2 = 0.0784;
+  p2 has permin;
   p3 = 0.0013;
+  p3 has permin;
   p4 = 0.0827;
+  p4 has permin;
   p5 = 0.0091;
-  p6 = 6.4e-05;
+  p5 has permin;
+  p6 = 6.4e-005;
+  p6 has per_nmole_per_ml;
   p7 = 0.0397;
+  p7 has permin;
   p8 = 1000;
+  p8 has substance;
   p9 = 0.0098;
+  p9 has per_nmole_per_ml;
   p10 = 1.6;
+  p10 has permin;
   p11 = 1000;
+  p11 has substance;
   p12 = 0.0003;
+  p12 has ml_per_min;
+
+  //Other declarations:
+  const basolat, cell, apical, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11;
+  const p12;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit permin = 1 / 60 second;
+  unit ml_per_min = 1e-3 litre / 60 second;
+  unit per_nmole_per_ml = 1 / (1e-9 mole * 60 second);
 
   //Display Names:
+  substance is "nmole";
+  volume is "ml";
+  time_unit is "min";
   basolat is "basolateral extrocellular space";
   cell is "intracellular";
   apical is "apical extracellular space";

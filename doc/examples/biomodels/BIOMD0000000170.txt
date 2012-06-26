@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Weimann2004_CircadianOscillator()
+//Created by libAntimony v2.3-beta
+model *Weimann2004_CircadianOscillator()
 
   // Compartments and Species:
   compartment Nucleus, Cytoplasm;
@@ -42,37 +42,78 @@ model Weimann2004_CircadianOscillator()
   // Compartment initializations:
   Nucleus = 1;
   Cytoplasm = 1;
+  trans_per2_cry has nM_per_hour;
 
   // Variable initializations:
   v1b = 9;
+  v1b has nM_per_hour;
   c = 0.01;
+  c has nM;
   k1b = 1;
+  k1b has nM;
   k1i = 0.56;
+  k1i has nM;
   hill_coeff = 8;
+  hill_coeff has dimensionless;
+  trans_Bmal1 has nM_per_hour;
   v4b = 3.6;
+  v4b has nM_per_hour;
   r = 3;
+  r has dimensionless;
   k4b = 2.16;
+  k4b has nM;
+  y5_y6_y7 has nM;
   k1d = 0.12;
+  k1d has time_inverse;
   k2b = 0.3;
+  k2b has nM_inv_hr_inv;
   q = 2;
+  q has dimensionless;
   k2d = 0.05;
+  k2d has time_inverse;
   k2t = 0.24;
+  k2t has time_inverse;
   k3t = 0.02;
+  k3t has time_inverse;
   k3d = 0.12;
+  k3d has time_inverse;
   k4d = 0.75;
+  k4d has time_inverse;
   k5b = 0.24;
+  k5b has time_inverse;
   k5d = 0.06;
+  k5d has time_inverse;
   k5t = 0.45;
+  k5t has time_inverse;
   k6t = 0.06;
+  k6t has time_inverse;
   k6d = 0.12;
+  k6d has time_inverse;
   k6a = 0.09;
+  k6a has time_inverse;
   k7a = 0.003;
+  k7a has time_inverse;
   k7d = 0.09;
+  k7d has time_inverse;
 
   //Other declarations:
   var trans_per2_cry, trans_Bmal1, y5_y6_y7;
+  const Nucleus, Cytoplasm, v1b, c, k1b, k1i, hill_coeff, v4b, r, k4b, k1d;
+  const k2b, q, k2d, k2t, k3t, k3d, k4d, k5b, k5d, k5t, k6t, k6d, k6a, k7a;
+  const k7d;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 3600 second;
+  unit nM = 1e-9 mole / litre;
+  unit nM_per_hour = 1e-9 mole / (litre * 3600 second);
+  unit time_inverse = 1 / 3600 second;
+  unit nM_inv_hr_inv = litre / (1e-9 mole * 3600 second);
 
   //Display Names:
+  substance is "nano mole";
+  time_unit is "hour";
+  time_inverse is "hr_inv";
   y1 is "Per2 or Cry mRNA";
   y2 is "PER2_CRY_complex_cytoplasm";
   y3 is "PER2_CRY_complex_nucleus";

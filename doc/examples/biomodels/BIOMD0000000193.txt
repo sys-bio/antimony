@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model KDM()
+//Created by libAntimony v2.3-beta
+model *KDM()
 
   // Compartments and Species:
   compartment Cytoplasm;
@@ -19,36 +19,66 @@ model KDM()
   mt_attachment: at gt(time, 2000): u = const_val_0;
 
   // Species initializations:
-  Mad1_CMad2 = 5e-08;
-  OMad2 = 1.3e-07;
+  Mad1_CMad2 = 5e-008;
+  Mad1_CMad2 has mole_per_volume;
+  OMad2 = 1.3e-007;
+  OMad2 has mole_per_volume;
   Mad1_CMad2_OMad2 = 0;
-  Cdc20 = 2.2e-07;
+  Mad1_CMad2_OMad2 has mole_per_volume;
+  Cdc20 = 2.2e-007;
+  Cdc20 has mole_per_volume;
   Cdc20_CMad2 = 0;
-  Bub3_BubR1 = 1.3e-07;
+  Cdc20_CMad2 has mole_per_volume;
+  Bub3_BubR1 = 1.3e-007;
+  Bub3_BubR1 has mole_per_volume;
   MCC = 0;
+  MCC has mole_per_volume;
   Bub3_BubR1_Cdc20 = 0;
+  Bub3_BubR1_Cdc20 has mole_per_volume;
 
   // Compartment initializations:
   Cytoplasm = 1;
 
   // Variable initializations:
   u = 1;
+  u has dimensionless;
   const_val_0 = 0;
+  const_val_0 has dimensionless;
   k3f = 0.01;
+  k3f has ps;
   kf6 = 1000;
+  kf6 has pMp;
   k5f = 10000;
+  k5f has pMp;
   k5r = 0.2;
+  k5r has ps;
   k2f = 10000000;
+  k2f has pMp;
   k1f = 200000;
+  k1f has pMp;
   k1r = 0.2;
+  k1r has ps;
   k4f = 10000000;
+  k4f has pMp;
   k4r = 0.02;
+  k4r has ps;
   const_val_1 = 1;
+  const_val_1 has dimensionless;
 
   //Other declarations:
   var u;
+  const Cytoplasm, const_val_0, k3f, kf6, k5f, k5r, k2f, k1f, k1r, k4f, k4r;
+  const const_val_1;
+
+  // Unit definitions:
+  unit ps = 1 / second;
+  unit pMp = litre / (mole * second);
+  unit volume = litre;
+  unit mole_per_volume = mole / litre;
 
   //Display Names:
+  ps is "per second";
+  pMp is "liter per mole per second";
   Mad1_CMad2 is "Mad1:C-Mad2";
   OMad2 is "O-Mad2";
   Mad1_CMad2_OMad2 is "Mad1:C-Mad2:O-Mad2*";

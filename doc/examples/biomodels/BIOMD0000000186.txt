@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model MSAC_dissociation_controlled()
+//Created by libAntimony v2.3-beta
+model *MSAC_dissociation_controlled()
 
   // Compartments and Species:
   compartment Cytoplasm;
@@ -23,44 +23,82 @@ model MSAC_dissociation_controlled()
   mt_attachment: at gt(time, 2000): u_prime = const_val_1, u = const_val_0;
 
   // Species initializations:
-  Mad1_CMad2 = 5e-08;
-  OMad2 = 1.3e-07;
+  Mad1_CMad2 = 5e-008;
+  Mad1_CMad2 has mole_per_volume;
+  OMad2 = 1.3e-007;
+  OMad2 has mole_per_volume;
   Mad1_CMad2_OMad2 = 0;
-  Cdc20 = 2.2e-07;
+  Mad1_CMad2_OMad2 has mole_per_volume;
+  Cdc20 = 2.2e-007;
+  Cdc20 has mole_per_volume;
   Cdc20_CMad2 = 0;
-  Bub3_BubR1 = 1.27e-07;
+  Cdc20_CMad2 has mole_per_volume;
+  Bub3_BubR1 = 1.27e-007;
+  Bub3_BubR1 has mole_per_volume;
   MCC = 0;
+  MCC has mole_per_volume;
   Bub3_BubR1_Cdc20 = 0;
-  APC = 9e-08;
+  Bub3_BubR1_Cdc20 has mole_per_volume;
+  APC = 9e-008;
+  APC has mole_per_volume;
   MCC_APC = 0;
+  MCC_APC has mole_per_volume;
   APC_Cdc20 = 0;
+  APC_Cdc20 has mole_per_volume;
 
   // Compartment initializations:
   Cytoplasm = 1;
 
   // Variable initializations:
   u = 1;
+  u has dimensionless;
   const_val_0 = 0;
+  const_val_0 has dimensionless;
   u_prime = 0;
+  u_prime has dimensionless;
   const_val_1 = 1;
+  const_val_1 has dimensionless;
   k1f = 200000;
+  k1f has pMp;
   k1r = 0.2;
+  k1r has ps;
   k2f = 100000000;
+  k2f has pMp;
   k3f = 0.01;
+  k3f has ps;
   k4f = 10000000;
+  k4f has pMp;
   k4r = 0.02;
+  k4r has ps;
   k5f = 10000;
+  k5f has pMp;
   k5r = 0.2;
+  k5r has ps;
   kf6 = 1000;
+  kf6 has pMp;
   k7f = 100000000;
+  k7f has pMp;
   k7r = 0.08;
+  k7r has ps;
   k8f = 5000000;
+  k8f has pMp;
   k8r = 0.08;
+  k8r has ps;
 
   //Other declarations:
   var u, u_prime;
+  const Cytoplasm, const_val_0, const_val_1, k1f, k1r, k2f, k3f, k4f, k4r;
+  const k5f, k5r, kf6, k7f, k7r, k8f, k8r;
+
+  // Unit definitions:
+  unit ps = 1 / second;
+  unit pMp = litre / (mole * second);
+  unit volume = litre;
+  unit mole_per_volume = mole / litre;
 
   //Display Names:
+  ps is "per second";
+  pMp is "liter per mole per second";
   Mad1_CMad2 is "Mad1:C-Mad2";
   OMad2 is "O-Mad2";
   Mad1_CMad2_OMad2 is "Mad1:C-Mad2:O-Mad2*";

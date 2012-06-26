@@ -1,9 +1,9 @@
-//Created by libAntimony v2.0
-model Kinetic_modelling_of_Amadori_degradation()
+//Created by libAntimony v2.3-beta
+model *Kinetic_modelling_of_Amadori_degradation()
 
   // Compartments and Species:
   compartment compartment_;
-  species DFG in compartment_, E1 in compartment_, E2 in compartment_, Cn_ in compartment_;
+  species DFG in compartment_, E1 in compartment_, E2 in compartment_, Cn in compartment_;
   species Gly in compartment_, _3DG in compartment_, FA in compartment_, _1DG in compartment_;
   species AA in compartment_, Man in compartment_, Glu in compartment_, MG in compartment_;
   species Mel in compartment_, Fru in compartment_;
@@ -11,26 +11,26 @@ model Kinetic_modelling_of_Amadori_degradation()
   // Reactions:
   v1: DFG => E1; v1_k1 * DFG;
   v2: DFG => E2; v2_k2 * DFG;
-  v3: DFG => Gly + Cn_; v3_k3 * DFG;
+  v3: DFG => Gly + Cn; v3_k3 * DFG;
   v4: E1 => Gly + _3DG; v4_k4 * E1;
-  v5: _3DG => Cn_; v5_k5 * _3DG;
+  v5: _3DG => Cn; v5_k5 * _3DG;
   v6: _3DG => FA; v6_k6 * _3DG;
   v7: E2 => Gly + _1DG; v7_k7 * E2;
-  v8: _1DG => Cn_; v8_k8 * _1DG;
+  v8: _1DG => Cn; v8_k8 * _1DG;
   v9: _1DG => AA; v9_k9 * _1DG;
   v10: E1 => Gly + Man; v10_k10 * E1;
   v11: E1 => Gly + Glu; v11_k11 * E1;
   v12: Man => Glu; v12_k12 * Man;
   v13: Glu => _3DG; v13_k13 * Glu;
-  v14: Gly + Cn_ => Mel; v14_k14 * Cn_ * Gly;
-  v15: Cn_ => AA + FA + MG; v15_k15 * Cn_;
+  v14: Gly + Cn => Mel; v14_k14 * Cn * Gly;
+  v15: Cn => AA + FA + MG; v15_k15 * Cn;
   v16: E2 => Gly + Fru; v16_k16 * E2;
 
   // Species initializations:
   DFG = 9;
   E1 = 0;
   E2 = 0;
-  Cn_ = 0;
+  Cn = 0;
   Gly = 0;
   _3DG = 0;
   FA = 0;
@@ -62,4 +62,15 @@ model Kinetic_modelling_of_Amadori_degradation()
   v14_k14 = 0.0034;
   v15_k15 = 0.0159;
   v16_k16 = 0.0134;
+
+  //Other declarations:
+  const compartment_;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
+
+  //Display Names:
+  substance is "micromole (default)";
+  time_unit is "minute (default)";
 end

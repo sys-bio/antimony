@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Swat2004_Mammalian_G1_S_Transition()
+//Created by libAntimony v2.3-beta
+model *Swat2004_Mammalian_G1_S_Transition()
 
   // Compartments and Species:
   compartment cell;
@@ -86,7 +86,21 @@ model Swat2004_Mammalian_G1_S_Transition()
   phi_CycEi = 0.06;
   phi_CycEa = 0.05;
 
+  //Other declarations:
+  const cell, k1, Km1, J11, J61, k16, k61, phi_pRB, kp, k2, a, Km2, J12, J62;
+  const phi_E2F1, k3, k23, J13, J63, k34, Km4, phi_CycDi, k43, phi_CycDa;
+  const Fm, k25, J15, J65, phi_AP1, k67, k76, phi_pRBpp, phi_pRBp, k28, J18;
+  const J68, k89, Km9, k98, phi_CycEi, phi_CycEa;
+
+  // Unit definitions:
+  unit time_unit = dimensionless;
+  unit volume = dimensionless;
+  unit substance = dimensionless;
+
   //Display Names:
+  time_unit is "norm. time";
+  volume is "norm. volume";
+  substance is "norm substance";
   CycDi is "CycD/cdk4,6(i)";
   CycDa is "CycD/cdk4,6(a)";
   CycEi is "CycE/cdk2(i)";

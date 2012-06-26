@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model p53_Mdm2_System()
+//Created by libAntimony v2.3-beta
+model *p53_Mdm2_System()
 
   // Compartments and Species:
   compartment cell;
@@ -56,22 +56,51 @@ model p53_Mdm2_System()
 
   // Variable initializations:
   IR = 0;
+  IR has decagray;
   ksynMdm2 = 0.000495;
+  ksynMdm2 has psec;
   kdegMdm2 = 0.000433;
+  kdegMdm2 has psec;
   ksynp53 = 0.078;
+  ksynp53 has psec;
   kdegp53 = 0.000825;
+  kdegp53 has psec;
   kbinMdm2p53 = 0.001155;
-  krelMdm2p53 = 1.155e-05;
+  kbinMdm2p53 has pmolepsec;
+  krelMdm2p53 = 1.155e-005;
+  krelMdm2p53 has psec;
   ksynMdm2mRNA = 0.0001;
+  ksynMdm2mRNA has psec;
   kdegMdm2mRNA = 0.0001;
+  kdegMdm2mRNA has psec;
   kbinARFMdm2 = 0.01;
+  kbinARFMdm2 has pmolepsec;
   kdegARFMdm2 = 0.001;
+  kdegARFMdm2 has psec;
   kdegARF = 0.0001;
-  kactARF = 3.3e-05;
+  kdegARF has psec;
+  kactARF = 3.3e-005;
+  kactARF has psec;
   kdam = 0.08;
-  krepair = 2e-05;
+  kdam has molepsecpdGy;
+  krepair = 2e-005;
+  krepair has psec;
   kproteff = 1;
+  kproteff has dimensionless;
 
   //Other declarations:
   var IR;
+  const cell, ksynMdm2, kdegMdm2, ksynp53, kdegp53, kbinMdm2p53, krelMdm2p53;
+  const ksynMdm2mRNA, kdegMdm2mRNA, kbinARFMdm2, kdegARFMdm2, kdegARF, kactARF;
+  const kdam, krepair, kproteff;
+
+  // Unit definitions:
+  unit molepsecpdGy = mole / (second * 10 gray);
+  unit decagray = 10 gray;
+  unit molepsec = mole / second;
+  unit pmolepsec = 1 / (mole * second);
+  unit psec = 1 / second;
+
+  //Display Names:
+  decagray is "dGy";
 end

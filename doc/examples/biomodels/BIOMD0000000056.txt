@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function BB_218(A1, A2, A3, A4)
   A2 - A1 + A3 * A2 + A4 * A1;
 end
@@ -19,8 +19,7 @@ function Mass_Action_1_222(k1, S1)
   k1 * S1;
 end
 
-
-model Chen2004_CellCycle()
+model *Chen2004_CellCycle()
 
   // Compartments and Species:
   compartment cell;
@@ -52,7 +51,7 @@ model Chen2004_CellCycle()
   SBF := GK_219(Vasbf, Visbf, Jasbf, Jisbf);
   SIC1T := SIC1 + C2 + C5 + SIC1P + C2P + C5P;
   TEM1GDP := TEM1T - TEM1GTP;
-  F := exp(-mu * D);
+  F := exp(- mu * D);
   D := 1.026 / mu - 32;
   mu := log(2) / mdt;
   Vdb5 := kdb5_p + kdb5_p_p * CDC20;
@@ -196,8 +195,8 @@ model Chen2004_CellCycle()
   ESP1 = 0.301313;
   F2 = 0.236058;
   F2P = 0.0273938;
-  F5 = 7.24e-05;
-  F5P = 7.91e-05;
+  F5 = 7.24e-005;
+  F5P = 7.91e-005;
   IEP = 0.1015;
   LTE1 = 0.1;
   MAD2 = 0.01;
@@ -366,10 +365,31 @@ model Chen2004_CellCycle()
   Inactivation_2_k = 1;
 
   //Other declarations:
-  var F, D, mu, Vdb5, Vdb2, Vasbf, Visbf, Vkpc1, Vkpf6, Vacdh, Vicdh, Vppnet;
+  var KEZ2, mad2l, lte1h, bub2l, KEZ, F, lte1l, CDC15T, ESP1T, IET, TEM1T;
+  var D, mu, Vdb5, Vdb2, Vasbf, Visbf, Vkpc1, Vkpf6, Vacdh, Vicdh, Vppnet;
   var Vkpnet, Vdppx, Vdpds, Vaiep, Vd2c1, Vd2f6, Vppc1, Vppf6;
+  const cell, mad2h, bub2h, b0, C0, Dn3, ebudb5, ebudn2, ebudn3, ec1b2, ec1b5;
+  const ec1k2, ec1n2, ec1n3, ef6b2, ef6b5, ef6k2, ef6n2, ef6n3, eicdhb2, eicdhb5;
+  const eicdhn2, eicdhn3, eorib2, eorib5, esbfb5, esbfn2, esbfn3, J20ppx;
+  const Jacdh, Jaiep, Jamcm, Jasbf, Jatem, Jd2c1, Jd2f6, Jicdh, Jiiep, Jimcm;
+  const Jisbf, Jitem, Jn3, Jpds, Jspn, ka15_p, ka15_p_p, ka15p, ka20_p, ka20_p_p;
+  const kacdh_p, kacdh_p_p, kaiep, kamcm, kasb2, kasb5, kasbf, kasesp, kasf2;
+  const kasf5, kasrent, kasrentp, kaswi, kd14, kd1c1, kd1f6, kd1pds_p, kd20;
+  const kd2c1, kd2f6, kd2pds_p_p, kd3c1, kd3f6, kd3pds_p_p, kdb2_p, kdb2_p_p;
+  const kdb2p, kdb5_p, kdb5_p_p, kdbud, kdcdh, kdib2, kdib5, kdiesp, kdif2;
+  const kdif5, kdirent, kdirentp, kdn2, kdnet, kdori, kdppx_p, kdppx_p_p;
+  const kdspn, kdswi, ki15, kicdh_p, kicdh_p_p, kiiep, kimcm, kisbf_p, kisbf_p_p;
+  const kiswi, kkpnet_p, kkpnet_p_p, kppc1, kppf6, kppnet_p, kppnet_p_p, ks14;
+  const ks1pds_p_p, ks20_p, ks20_p_p, ks2pds_p_p, ksb2_p, ksb2_p_p, ksb5_p;
+  const ksb5_p_p, ksbud, ksc1_p, ksc1_p_p, kscdh, ksf6_p, ksf6_p_p, ksf6_p_p_p;
+  const ksn2_p, ksn2_p_p, ksnet, ksori, kspds_p, ksppx, ksspn, ksswi_p, ksswi_p_p;
+  const mdt;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
 
   //Display Names:
+  time_unit is "min";
   reset_ORI is "reset ORI";
   start_S is "start DNA synthesis";
   spindle_checkpoint is "spindle checkpoint";

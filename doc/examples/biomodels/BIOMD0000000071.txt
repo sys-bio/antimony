@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Bakker2001_Glycolysis()
+//Created by libAntimony v2.3-beta
+model *Bakker2001_Glycolysis()
 
   // Compartments and Species:
   compartment tot_cell, glycosome, cytosol, extracellular;
@@ -37,7 +37,7 @@ model Bakker2001_Glycolysis()
   vGDH: DHAP + NADH -> NAD + $Gly3P; tot_cell / Vt * vGDH_Vm8 * vGDH_Vm8f * (NADH * DHAPg / (vGDH_K8DHAPg * vGDH_K8NADH) - vGDH_Vm8r * NAD * Gly3Pg / (vGDH_K8Gly3Pg * vGDH_K8NAD * vGDH_Vm8f)) / ((1 + NAD / vGDH_K8NAD + NADH / vGDH_K8NADH) * (1 + DHAPg / vGDH_K8DHAPg + Gly3Pg / vGDH_K8Gly3Pg));
   vGPO: $Gly3P => DHAP; tot_cell / Vt * vGPO_Vm9 * Gly3Pc / (vGPO_K9Gly3Pc * 1 + Gly3Pc);
   vPyrTr: Pyr => $PyrE; tot_cell / Vt * vPyrTr_Vm10 * Pyr / vPyrTr_K10Pyr / (1 + Pyr / vPyrTr_K10Pyr);
-  vPGK: BPGA13 -> Nb + Pg; tot_cell / Vt * vPGK_Vm11 * vPGK_Vm11f * (-vPGK_Vm11r * PGAg * ATPg / (vPGK_K11ATPg * vPGK_K11PGA3 * vPGK_Vm11f) + BPGA13 * ADPg / (vPGK_K11ADPg * vPGK_K11BPGA13)) / ((1 + BPGA13 / vPGK_K11BPGA13 + PGAg / vPGK_K11PGA3) * (1 + ATPg / vPGK_K11ATPg + ADPg / vPGK_K11ADPg));
+  vPGK: BPGA13 -> Nb + Pg; tot_cell / Vt * vPGK_Vm11 * vPGK_Vm11f * (- vPGK_Vm11r * PGAg * ATPg / (vPGK_K11ATPg * vPGK_K11PGA3 * vPGK_Vm11f) + BPGA13 * ADPg / (vPGK_K11ADPg * vPGK_K11BPGA13)) / ((1 + BPGA13 / vPGK_K11BPGA13 + PGAg / vPGK_K11PGA3) * (1 + ATPg / vPGK_K11ATPg + ADPg / vPGK_K11ADPg));
   vPK: Nb => Pc + Pyr; tot_cell / Vt * vPK_Vm12 * (PEPc / (0.34 * (1 + ADPc / 0.57 + ATPc / 0.64)))^vPK_n12 * ADPc / vPK_K12ADP / ((1 + (PEPc / (0.34 * (1 + ADPc / 0.57 + ATPc / 0.64)))^vPK_n12) * (1 + ADPc / vPK_K12ADP));
   vATPase: Pc => ; tot_cell / Vt * vATPase_K13 * ATPc / ADPc;
   vGlyK: $Gly3P -> Pg + $Gly; tot_cell / Vt * vGlyK_Vm14 * (vGlyK_Vm14f * ADPg * Gly3Pg / (vGlyK_K14ADPg * vGlyK_K14Gly3Pg) - Gly * vGlyK_Vm14r * ATPg / (vGlyK_K14ATPg * vGlyK_K14Gly)) / ((1 + Gly / vGlyK_K14Gly + Gly3Pg / vGlyK_K14Gly3Pg) * (1 + ATPg / vGlyK_K14ATPg + ADPg / vGlyK_K14ADPg));
@@ -68,15 +68,27 @@ model Bakker2001_Glycolysis()
 
   // Variable initializations:
   Vt = 5.7;
+  Vt has microlitre_per_mg;
+  Vc has microlitre_per_mg;
+  Vg has microlitre_per_mg;
   TPIact = 1;
+  TPIact has dimensionless;
   sumAc = 3.9;
+  sumAc has mM;
   sumAg = 6;
+  sumAg has mM;
   KeqAK = 0.442;
+  KeqAK has dimensionless;
   Keq_anti = 1;
+  Keq_anti has dimensionless;
   sumc4 = 45;
+  sumc4 has mM;
   sumc5 = 5;
+  sumc5 has mM;
   Keq_PGM = 0.187;
+  Keq_PGM has dimensionless;
   Keq_ENO = 6.7;
+  Keq_ENO has dimensionless;
   vGlcTr_Vm1 = 106.2;
   vGlcTr_K1Glc = 2;
   vGlcTr_afac = 0.75;
@@ -140,8 +152,21 @@ model Bakker2001_Glycolysis()
 
   //Other declarations:
   var Vc, Vg;
+  const tot_cell, glycosome, cytosol, extracellular, Vt, TPIact, sumAc, sumAg;
+  const KeqAK, Keq_anti, sumc4, sumc5, Keq_PGM, Keq_ENO;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit volume = 1e-6 litre;
+  unit microlitre_per_mg = 1e-6 litre / 1e-3 gram;
+  unit nanomole_per_min_per_mg = 1e-9 mole / (60 second * 1e-3 gram);
+  unit time_unit = 60 second;
+  unit mM = 1e-9 mole / 1e-6 litre;
 
   //Display Names:
+  substance is "nanomole";
+  volume is "microlitre";
+  time_unit is "minute";
   tot_cell is "total cell";
   GlcI is "Glucose";
   Pg is "Phosphates in Glycosome";

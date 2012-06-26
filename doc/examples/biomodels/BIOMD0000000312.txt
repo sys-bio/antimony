@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Tyson2003_Perfect_Adaption()
+//Created by libAntimony v2.3-beta
+model *Tyson2003_Perfect_Adaption()
 
   // Compartments and Species:
   compartment env;
@@ -23,8 +23,31 @@ model Tyson2003_Perfect_Adaption()
 
   // Variable initializations:
   k1 = 2;
+  k1 has per_;
   k2 = 2;
+  k2 has per_M_per_;
   k3 = 1;
+  k3 has per_;
   k4 = 1;
+  k4 has per_;
   tau = 4;
+  tau has time_unit;
+
+  //Other declarations:
+  const env, k1, k2, k3, k4, tau;
+
+  // Unit definitions:
+  unit time_unit = second;
+  unit substance = mole;
+  unit per_ = 1 / second;
+  unit M_per_ = mole / (second * litre);
+  unit M = mole / litre;
+  unit per_M_per_ = litre / (mole * second);
+
+  //Display Names:
+  time_unit is "s";
+  substance is "mole";
+  per_ is "per_s";
+  M_per_ is "M_per_s";
+  per_M_per_ is "per_M_per_s";
 end

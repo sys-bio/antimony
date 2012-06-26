@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Nakakuki2010_CellFateDecision_Core()
+//Created by libAntimony v2.3-beta
+model *Nakakuki2010_CellFateDecision_Core()
 
   // Compartments and Species:
   compartment compartment_;
@@ -12,8 +12,8 @@ model Nakakuki2010_CellFateDecision_Core()
   ppERKc := x1 - x2;
 
   // Reactions:
-  reaction_1:  => x1; compartment_ * (-x1 / tau1 + K1 * L / tau1);
-  reaction_2:  => x2; compartment_ * (-x2 / tau2 + K2 * L / tau2);
+  reaction_1:  => x1; compartment_ * (- x1 / tau1 + K1 * L / tau1);
+  reaction_2:  => x2; compartment_ * (- x2 / tau2 + K2 * L / tau2);
   reaction_3:  => ppERKn; compartment_ * (reaction_3_k1 * ppERKc - reaction_3_k2 * ppERKn - reaction_3_k3 * DUSP * ppERKn);
   reaction_4:  => DUSP; compartment_ * reaction_4_k * ppERKn;
   reaction_5:  => pRSKn; compartment_ * (reaction_5_k4 * ppERKn - reaction_5_k5 * pRSKn);
@@ -57,6 +57,14 @@ model Nakakuki2010_CellFateDecision_Core()
   reaction_8_k10 = 0.3;
   reaction_8_k9 = 0.3;
   reaction_9_k12 = 0.001;
+
+  //Other declarations:
+  const compartment_, k7, k11, k13, L, K1, tau1, K2, tau2;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
 
   //Display Names:
   ppERKn is "ppERK(nucleus)";

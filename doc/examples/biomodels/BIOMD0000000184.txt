@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Lavrentovich2008_Ca_Oscillations()
+//Created by libAntimony v2.3-beta
+model *Lavrentovich2008_Ca_Oscillations()
 
   // Compartments and Species:
   compartment compartment_, ER;
@@ -25,21 +25,46 @@ model Lavrentovich2008_Ca_Oscillations()
 
   // Variable initializations:
   vin = 0.05;
+  vin has uM_sec_1;
   kout = 0.5;
+  kout has sec_1;
   vM3 = 40;
+  vM3 has sec_1;
   k_CaA = 0.15;
+  k_CaA has uM;
   n = 2.02;
+  n has dimensionless;
   k_CaI = 0.15;
+  k_CaI has uM;
   m = 2.2;
+  m has dimensionless;
   kip3 = 0.1;
+  kip3 has uM;
   vM2 = 15;
+  vM2 has uM_sec_1;
   k2 = 0.1;
+  k2 has uM;
   kf = 0.5;
+  kf has sec_1;
   vp = 0.05;
+  vp has uM_sec_1;
   kp = 0.3;
+  kp has uM;
   kdeg = 0.08;
+  kdeg has sec_1;
+
+  //Other declarations:
+  const compartment_, ER, vin, kout, vM3, k_CaA, n, k_CaI, m, kip3, vM2, k2;
+  const kf, vp, kp, kdeg;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit uM = 1e-6 mole / litre;
+  unit uM_sec_1 = 1e-6 mole / (litre * second);
+  unit sec_1 = 1 / second;
 
   //Display Names:
+  substance is "micro mole";
   compartment_ is "Cytoplasm";
   ER is "Endoplasmic Reticulum";
   X is "Cytoplasmic Calcium";

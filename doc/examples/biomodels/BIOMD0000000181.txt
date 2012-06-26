@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Sriram2007_CellCycle()
+//Created by libAntimony v2.3-beta
+model *Sriram2007_CellCycle()
 
   // Compartments and Species:
   compartment compartment_;
@@ -39,28 +39,68 @@ model Sriram2007_CellCycle()
 
   // Variable initializations:
   j1 = 0.9;
+  j1 has nM_min_1;
   vd1 = 6;
+  vd1 has nM_min_1;
   n = 2;
+  n has dimensionless;
   km1 = 5;
+  km1 has nM;
   kc1 = 0.2;
+  kc1 has min_1;
   kd1 = 0.8;
+  kd1 has min_1;
   j2 = 0.5;
+  j2 has nM_min_1;
   vd2 = 1.052;
+  vd2 has nM_min_1;
   km2 = 5;
+  km2 has nM;
   kc2 = 0.22;
+  kc2 has min_1;
   kd2 = 0.9;
+  kd2 has min_1;
   j3 = 0.2;
+  j3 has nM_min_1;
   vd3 = 3;
+  vd3 has nM_min_1;
   km3 = 5;
+  km3 has nM;
   kc3 = 0.6;
+  kc3 has min_1;
   kd3 = 0.8;
+  kd3 has min_1;
   v12 = 15;
+  v12 has nM_min_1;
   k120 = 10;
+  k120 has nM;
   kd4 = 0.16;
+  kd4 has min_1;
   v11 = 15;
+  v11 has nM_min_1;
   k110 = 10;
+  k110 has nM;
   kd5 = 0.16;
+  kd5 has min_1;
   v10 = 15;
+  v10 has nM_min_1;
   k100 = 10;
+  k100 has nM;
   kd6 = 0.16;
+  kd6 has min_1;
+
+  //Other declarations:
+  const compartment_, j1, vd1, n, km1, kc1, kd1, j2, vd2, km2, kc2, kd2, j3;
+  const vd3, km3, kc3, kd3, v12, k120, kd4, v11, k110, kd5, v10, k100, kd6;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+  unit nM_min_1 = 1e-9 mole / (litre * 60 second);
+  unit nM = 1e-9 mole / litre;
+  unit min_1 = 1 / 60 second;
+
+  //Display Names:
+  substance is "nano mole";
+  time_unit is "minutes";
 end

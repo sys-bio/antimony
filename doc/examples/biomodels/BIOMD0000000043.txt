@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition()
+//Created by libAntimony v2.3-beta
+model *Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition()
 
   // Compartments and Species:
   compartment extracellular, cytosol, intravesicular;
@@ -41,4 +41,15 @@ model Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_channel_inhibition()
   v5_K = 10;
   v6_Kd = 5000;
   v7_Kr = 5;
+
+  //Other declarations:
+  const extracellular, cytosol, intravesicular, a, d, beta;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit time_unit = 60 second;
+
+  //Display Names:
+  substance is "micromole (default)";
+  time_unit is "minute (default)";
 end

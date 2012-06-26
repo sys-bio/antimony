@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Vilar2006_TGFbeta()
+//Created by libAntimony v2.3-beta
+model *Vilar2006_TGFbeta()
 
   // Compartments and Species:
   compartment PM, Endosome;
@@ -37,7 +37,7 @@ model Vilar2006_TGFbeta()
   Endosome = 1;
 
   // Variable initializations:
-  ligand = 3e-05;
+  ligand = 3e-005;
   ka = 1;
   kcd = 0.0277777778;
   klid = 0.25;
@@ -49,8 +49,15 @@ model Vilar2006_TGFbeta()
 
   //Other declarations:
   var ligand;
+  const PM, Endosome, ka, kcd, klid, ki, pRI, kr, alpha, pRII;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 3600 second;
+  unit min_inv = 1 / 3600 second;
 
   //Display Names:
+  time_unit is "minutes";
   PM is "Plasma membrane";
   RI is "Receptor 1";
   RII is "Receptor 2";

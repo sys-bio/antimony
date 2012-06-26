@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Lebeda2008_BoNT_Paralysis_3stepModel()
+//Created by libAntimony v2.3-beta
+model *Lebeda2008_BoNT_Paralysis_3stepModel()
 
   // Compartments and Species:
   compartment extracellular, endosome, neuroplasm;
@@ -32,8 +32,19 @@ model Lebeda2008_BoNT_Paralysis_3stepModel()
 
   //Other declarations:
   var tension;
+  const extracellular, endosome, neuroplasm;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit volume = dimensionless;
+  unit time_unit = 60 second;
+  unit pmin = 1 / 60 second;
 
   //Display Names:
+  substance is "relative concentration";
+  volume is "normalized volume";
+  time_unit is "min";
+  pmin is "perminute";
   free is "free_BoNT/A";
   bound is "bound_BoNT/A";
   translocate is "transloc_BoNT/A";

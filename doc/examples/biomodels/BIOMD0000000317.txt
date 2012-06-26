@@ -1,10 +1,9 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function F(X, T)
   piecewise(1, geq(X, T), 0);
 end
 
-
-model shenorr02()
+model *shenorr02()
 
   // Compartments and Species:
   compartment cell;
@@ -36,6 +35,7 @@ model shenorr02()
 
   // Variable initializations:
   FX = 0;
+  FX has dimensionless;
   r1_T1 = 0.1;
   r2_a = 1;
   r3_T2 = 0.5;
@@ -45,4 +45,10 @@ model shenorr02()
 
   //Other declarations:
   var FX;
+  const cell;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit time_unit = dimensionless;
+  unit volume = dimensionless;
 end

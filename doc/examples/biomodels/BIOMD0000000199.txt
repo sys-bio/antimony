@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model testid()
+//Created by libAntimony v2.3-beta
+model *testid()
 
   // Compartments and Species:
   compartment cytosol;
@@ -44,16 +44,36 @@ model testid()
 
   // Variable initializations:
   k1 = 2.6;
+  k1 has persec;
   k2 = 0.9;
+  k2 has peruMpersec;
   k3 = 26;
+  k3 has persec;
   k4 = 2.6;
+  k4 has persec;
   k5 = 0.9;
+  k5 has peruMpersec;
   k6 = 26;
+  k6 has persec;
   k7 = 5;
+  k7 has persec;
   k8 = 2.6;
+  k8 has persec;
   k9 = 0.0001;
+  k9 has persec;
   k10 = 0.0013;
+  k10 has peruMpersec;
+
+  //Other declarations:
+  const cytosol, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit peruMpersec = litre / (1e-6 mole * second);
+  unit uM = 1e-6 mole / litre;
+  unit persec = 1 / second;
 
   //Display Names:
+  substance is "micromole";
   citrulline is "citruline";
 end

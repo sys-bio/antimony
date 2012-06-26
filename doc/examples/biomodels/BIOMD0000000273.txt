@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_4_cT_degr(D, L, cT, cZG, cZTL, def, m6, m7, m8, p5)
   ((m6 * L + m7 * D) * cT * (p5 * cZTL + cZG) + m8 * cT) / def;
 end
@@ -151,8 +151,7 @@ function function_4_cT_modif(cT, def, f, g6, p15)
   p15 * cT^f / (cT^f + g6^f) / def;
 end
 
-
-model Pokhilko2010_CircClock()
+model *Pokhilko2010_CircClock()
 
   // Compartments and Species:
   compartment def;
@@ -329,7 +328,17 @@ model Pokhilko2010_CircClock()
   parameter_1 = 0.5;
 
   //Other declarations:
-  var L, D;
+  var L, D, parameter_1;
+  const m6, m7, p5, m8, def, m16, n10, l, g12, n11, m, g13, p6, m15, m23;
+  const p4, q2, n5, n6, g7, s, g16, g, n2, d, g4, n3, g5, e, m5, p10, p14;
+  const m14, m9, m4, p3, c, g3, m3, p1, p2, m12, m10, m11, m25, m26, p7, p12;
+  const p13, q4, n12, g15, o, g14, n, m19, m21, n0, q1, n1, b, g2, g1, a;
+  const m1, m2, p11, q3, n4, n7, i, g9, g8, h, m13, m22, p9, n8, j, g10, n9;
+  const k, g11, m17, m24, m18, p8, m20, p15, f, g6, dawn, dusk, dawn1, dusk1;
+  const dawn2, dusk2;
+
+  // Unit definitions:
+  unit substance = item;
 
   //Display Names:
   parameter_1 is "quantity";

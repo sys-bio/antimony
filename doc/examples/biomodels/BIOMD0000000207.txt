@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Romond1999_CellCycle()
+//Created by libAntimony v2.3-beta
+model *Romond1999_CellCycle()
 
   // Compartments and Species:
   compartment compartment_;
@@ -28,49 +28,100 @@ model Romond1999_CellCycle()
 
   // Species initializations:
   C1 = 2;
+  C1 has uM;
   M1 = 1;
+  M1 has dimensionless_per_volume;
   X1 = 0;
+  X1 has dimensionless_per_volume;
   C2 = 0;
+  C2 has uM;
   M2 = 0;
+  M2 has dimensionless_per_volume;
   X2 = 0;
+  X2 has dimensionless_per_volume;
 
   // Compartment initializations:
   compartment_ = 1;
+  V1 has min_1;
 
   // Variable initializations:
   Kc1 = 0.5;
+  Kc1 has uM;
   V_M1 = 0.3;
+  V_M1 has min_1;
+  V3 has min_1;
   V_M3 = 0.1;
+  V_M3 has min_1;
+  U1 has min_1;
   Kc2 = 0.5;
+  Kc2 has uM;
   U_M1 = 0.3;
+  U_M1 has min_1;
+  U3 has min_1;
   U_M3 = 0.1;
+  U_M3 has min_1;
   vi1 = 0.05;
+  vi1 has uM_min_1;
   Kim1 = 0.03;
+  Kim1 has dimensionless;
   vd1 = 0.025;
+  vd1 has uM_min_1;
   K_d1 = 0.02;
+  K_d1 has uM;
   kd1 = 0.001;
+  kd1 has min_1;
   K1 = 0.01;
+  K1 has dimensionless;
   V2 = 0.15;
+  V2 has min_1;
   K2 = 0.01;
+  K2 has dimensionless;
   K3 = 0.01;
+  K3 has dimensionless;
   V4 = 0.05;
+  V4 has min_1;
   K4 = 0.01;
+  K4 has dimensionless;
   vi2 = 0.05;
+  vi2 has uM_min_1;
   Kim2 = 0.03;
+  Kim2 has dimensionless;
   vd2 = 0.025;
+  vd2 has uM_min_1;
   K_d2 = 0.02;
+  K_d2 has uM;
   kd2 = 0.001;
+  kd2 has min_1;
   H1 = 0.01;
+  H1 has dimensionless;
   U2 = 0.15;
+  U2 has min_1;
   H2 = 0.01;
+  H2 has dimensionless;
   H3 = 0.01;
+  H3 has dimensionless;
   U4 = 0.05;
+  U4 has min_1;
   H4 = 0.01;
+  H4 has dimensionless;
 
   //Other declarations:
   var V1, V3, U1, U3;
+  const compartment_, Kc1, V_M1, V_M3, Kc2, U_M1, U_M3, vi1, Kim1, vd1, K_d1;
+  const kd1, K1, V2, K2, K3, V4, K4, vi2, Kim2, vd2, K_d2, kd2, H1, U2, H2;
+  const H3, U4, H4;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit uM = 1e-6 mole / litre;
+  unit micromole = 1e-6 mole;
+  unit min_1 = 1 / 60 second;
+  unit uM_min_1 = 1e-6 mole / (litre * 60 second);
+  unit volume = litre;
+  unit dimensionless_per_volume = dimensionless / litre;
 
   //Display Names:
+  time_unit is "minute";
   C1 is "cyclinB";
   M1 is "cdk1";
   X1 is "ubiquitin ligase";

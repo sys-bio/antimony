@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Raia2010_IL13_L1236()
+//Created by libAntimony v2.3-beta
+model *Raia2010_IL13_L1236()
 
   // Compartments and Species:
   compartment cell;
@@ -42,6 +42,7 @@ model Raia2010_IL13_L1236()
 
   // Variable initializations:
   IL13stimulation = 1;
+  IL13stimulation has ng_per_ml;
   Kon_IL13Rec = 0.00174087;
   Rec_phosphorylation = 9.07541;
   pRec_intern = 0.324132;
@@ -53,4 +54,20 @@ model Raia2010_IL13_L1236()
   STAT5_phosphorylation = 0.00426767;
   pSTAT5_dephosphorylation = 0.0116389;
   CD274mRNA_production = 0.0115928;
+
+  //Other declarations:
+  const cell, IL13stimulation, Kon_IL13Rec, Rec_phosphorylation, pRec_intern;
+  const pRec_degradation, Rec_intern, Rec_recycle, JAK2_phosphorylation, pJAK2_dephosphorylation;
+  const STAT5_phosphorylation, pSTAT5_dephosphorylation, CD274mRNA_production;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 60 second;
+  unit volume = 60e-15 litre;
+  unit ng_per_ml = 1e-9 gram * 1e-3 litre;
+
+  //Display Names:
+  substance is "molecules";
+  time_unit is "minutes";
+  volume is "cell_volumes";
 end

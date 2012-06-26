@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Conant2007_glycolysis_2C()
+//Created by libAntimony v2.3-beta
+model *Conant2007_glycolysis_2C()
 
   // Compartments and Species:
   compartment cyto, mito;
@@ -69,7 +69,9 @@ model Conant2007_glycolysis_2C()
 
   // Variable initializations:
   t_m = 1;
+  t_m has dimensionless;
   WGD_E = 0.65;
+  WGD_E has dimensionless;
   HXT_Vmax_1 = 97.24;
   HXT_Kglc_1 = 1.1918;
   HXT_Ki_1 = 0.91;
@@ -138,7 +140,7 @@ model Conant2007_glycolysis_2C()
   ADH_Vmax_13 = 209.5;
   ADH_Ketoh_13 = 17;
   ADH_Kinad_13 = 0.92;
-  ADH_Keq_13 = 6.9e-05;
+  ADH_Keq_13 = 6.9e-005;
   ADH_Knad_13 = 0.17;
   ADH_Knadh_13 = 0.11;
   ADH_Kinadh_13 = 0.031;
@@ -166,7 +168,27 @@ model Conant2007_glycolysis_2C()
   PDH_Ki_NADH = 50;
   PDH_Ki_PYR = 20;
 
+  //Other declarations:
+  const cyto, mito, t_m, WGD_E;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-3 mole;
+  unit mM = 1e-3 mole / litre;
+  unit mmpmin = 1e-3 mole / 60 second;
+  unit mMpmin = 1e-3 mole / (60 second * litre);
+  unit pmin = 1 / 60 second;
+  unit lpmin = litre / 60 second;
+  unit pmMpmin = litre / (1e-3 mole * 60 second);
+
   //Display Names:
+  time_unit is "minute";
+  substance is "mmol";
+  mmpmin is "mmolepermin";
+  mMpmin is "mMpermin";
+  pmin is "permin";
+  lpmin is "permin";
+  pmMpmin is "permMpermin";
   cyto is "cytoplasm";
   mito is "mitochondrion";
   F26bP is "Fru2,6-P2";

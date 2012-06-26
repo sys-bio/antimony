@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model model_0000001()
+//Created by libAntimony v2.3-beta
+model *model_0000001()
 
   // Compartments and Species:
   compartment extracellular, Cytosol, intracellular_Ca_storepool;
@@ -46,8 +46,14 @@ model model_0000001()
 
   //Other declarations:
   var flag, beta;
+  const extracellular, Cytosol, intracellular_Ca_storepool, tstim, v0, v1;
+  const VM2, VM3, KR, KA, K2, kf, k, n, m, p;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
 
   //Display Names:
+  substance is "microM";
   z is "Ca in the cytosol";
   y is "Ca in the InsP3-insensitive pool";
   tstim is "stimulation time";

@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Rattanakul2003_BoneFormationModel()
+//Created by libAntimony v2.3-beta
+model *Rattanakul2003_BoneFormationModel()
 
   // Compartments and Species:
   compartment Compartment_;
@@ -17,6 +17,7 @@ model Rattanakul2003_BoneFormationModel()
 
   // Compartment initializations:
   Compartment_ = 1;
+  Compartment_ has litre;
 
   // Variable initializations:
   epsilon = 0.1;
@@ -33,7 +34,16 @@ model Rattanakul2003_BoneFormationModel()
   k2 = 0.5;
   k3 = 0.025;
 
+  //Other declarations:
+  const Compartment_, epsilon, delta, a1, a2, a3, a4, a5, b1, b2, b3, k1;
+  const k2, k3;
+
+  // Unit definitions:
+  unit minute = 60 second;
+  unit time_unit = 60 second;
+
   //Display Names:
+  time_unit is "time";
   x is "PTH";
   y is "active osteoclasts";
   z is "active osteoblasts";

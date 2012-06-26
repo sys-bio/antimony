@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model repressilator()
+//Created by libAntimony v2.3-beta
+model *repressilator()
 
   // Compartments and Species:
   compartment cell;
@@ -52,8 +52,17 @@ model repressilator()
 
   //Other declarations:
   var beta, alpha0, alpha, t_ave, kd_mRNA, kd_prot, k_tl, a_tr, a0_tr;
+  const cell, eff, n, KM, tau_mRNA, tau_prot, ps_a, ps_0;
+
+  // Unit definitions:
+  unit volume = 1e-15 litre;
+  unit substance = item;
+  unit time_unit = 60 second;
 
   //Display Names:
+  volume is "cubic microns";
+  substance is "item";
+  time_unit is "minute";
   PX is "LacI protein";
   PY is "TetR protein";
   PZ is "cI protein";

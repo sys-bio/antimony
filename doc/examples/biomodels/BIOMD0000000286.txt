@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Proctor2010_GSK3_p53_AlzheimerDisease()
+//Created by libAntimony v2.3-beta
+model *Proctor2010_GSK3_p53_AlzheimerDisease()
 
   // Compartments and Species:
   compartment cell;
@@ -191,24 +191,24 @@ model Proctor2010_GSK3_p53_AlzheimerDisease()
   ksynp53 = 0.007;
   kdegp53 = 0.005;
   kbinMdm2p53 = 0.001155;
-  krelMdm2p53 = 1.155e-05;
-  kbinGSK3bp53 = 2e-06;
+  krelMdm2p53 = 1.155e-005;
+  kbinGSK3bp53 = 2e-006;
   krelGSK3bp53 = 0.002;
   ksynMdm2 = 0.000495;
   kdegMdm2 = 0.01;
   kbinE1Ub = 0.0002;
   kbinE2Ub = 0.001;
-  kp53Ub = 5e-05;
+  kp53Ub = 5e-005;
   kp53PolyUb = 0.01;
-  kbinProt = 2e-06;
-  kactDUBp53 = 1e-07;
+  kbinProt = 2e-006;
+  kactDUBp53 = 1e-007;
   kactDUBProtp53 = 0.0001;
-  kactDUBMdm2 = 1e-07;
-  kMdm2Ub = 4.56e-06;
-  kMdm2PUb = 6.84e-06;
+  kactDUBMdm2 = 1e-007;
+  kMdm2Ub = 4.56e-006;
+  kMdm2PUb = 6.84e-006;
   kMdm2PolyUb = 0.00456;
   kdam = 0.08;
-  krepair = 2e-05;
+  krepair = 2e-005;
   kactATM = 0.0001;
   kinactATM = 0.0005;
   kphosp53 = 0.0002;
@@ -222,24 +222,37 @@ model Proctor2010_GSK3_p53_AlzheimerDisease()
   kdephospTau = 0.01;
   kbinMTTau = 0.1;
   krelMTTau = 0.0001;
-  ksynTau = 8e-05;
-  kbinTauProt = 1.925e-07;
+  ksynTau = 8e-005;
+  kbinTauProt = 1.925e-007;
   kdegTau20SProt = 0.01;
-  kaggTau = 1e-08;
-  kaggTauP1 = 1e-08;
-  kaggTauP2 = 1e-07;
+  kaggTau = 1e-008;
+  kaggTauP1 = 1e-008;
+  kaggTauP2 = 1e-007;
   ktangfor = 0.001;
-  kprodAbeta = 5e-05;
-  kinhibprot = 1e-05;
+  kprodAbeta = 5e-005;
+  kinhibprot = 1e-005;
   kdegAbeta = 0.0001;
-  kaggAbeta = 1e-08;
+  kaggAbeta = 1e-008;
   kpf = 0.001;
-  ksynp53mRNAAbeta = 1e-05;
-  kdamROS = 1e-05;
-  kdamBasalROS = 1e-09;
-  kgenROSAbeta = 1e-05;
+  ksynp53mRNAAbeta = 1e-005;
+  kdamROS = 1e-005;
+  kdamBasalROS = 1e-009;
+  kgenROSAbeta = 1e-005;
   kproteff = 1;
 
   //Other declarations:
-  var tot_mdm2, tot_p53;
+  var kproteff, tot_mdm2, tot_p53;
+  const cell, ksynp53mRNA, kdegp53mRNA, ksynMdm2mRNA, kdegMdm2mRNA, ksynMdm2mRNAGSK3bp53;
+  const ksynp53, kdegp53, kbinMdm2p53, krelMdm2p53, kbinGSK3bp53, krelGSK3bp53;
+  const ksynMdm2, kdegMdm2, kbinE1Ub, kbinE2Ub, kp53Ub, kp53PolyUb, kbinProt;
+  const kactDUBp53, kactDUBProtp53, kactDUBMdm2, kMdm2Ub, kMdm2PUb, kMdm2PolyUb;
+  const kdam, krepair, kactATM, kinactATM, kphosp53, kdephosp53, kphosMdm2;
+  const kdephosMdm2, kphosMdm2GSK3b, kphosMdm2GSK3bp53, kphospTauGSK3bp53;
+  const kphospTauGSK3b, kdephospTau, kbinMTTau, krelMTTau, ksynTau, kbinTauProt;
+  const kdegTau20SProt, kaggTau, kaggTauP1, kaggTauP2, ktangfor, kprodAbeta;
+  const kinhibprot, kdegAbeta, kaggAbeta, kpf, ksynp53mRNAAbeta, kdamROS;
+  const kdamBasalROS, kgenROSAbeta;
+
+  // Unit definitions:
+  unit substance = item;
 end

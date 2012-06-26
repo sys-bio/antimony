@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Kim2007_Wnt_ERK_Crosstalk()
+//Created by libAntimony v2.3-beta
+model *Kim2007_Wnt_ERK_Crosstalk()
 
   // Compartments and Species:
   compartment cytoplasm, nucleus;
@@ -105,8 +105,8 @@ model Kim2007_Wnt_ERK_Crosstalk()
   k11 = 0.417;
   V12 = 0.423;
   k13 = 0.000257;
-  k14 = 8.22e-05;
-  k21 = 1e-06;
+  k14 = 8.22e-005;
+  k21 = 1e-006;
   k15 = 0.167;
   k_plus16 = 1;
   k_minus16 = 30;
@@ -148,9 +148,21 @@ model Kim2007_Wnt_ERK_Crosstalk()
   flag_for_wnt_signal = 0;
 
   //Other declarations:
-  var W, X13X14;
+  var W, flag_for_wnt_signal, X13X14;
+  const cytoplasm, nucleus, k1, k2, k3, k4, k5, k_plus6, k_minus6, k_plus7;
+  const k_minus7, k_plus8, k_minus8, k9, k10, k11, V12, k13, k14, k21, k15;
+  const k_plus16, k_minus16, k_plus17, k_minus17, Vmax1, Km1, Ki, Vmax2, Km2;
+  const kcat1, Km3, Vmax3, Km4, kcat2, Km5, Vmax4, Km6, kcat3, Km7, Vmax5;
+  const Km8, kcat4, Km9, k18, k19, Vmax6, Km10, kcat5, n1, Km11, k20, kcat6;
+  const Km12, kcat7, Km13, Vmax7, Km14;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
 
   //Display Names:
+  substance is "nanomole";
+  time_unit is "minute";
   X1 is "Dshi";
   X2 is "Dsha";
   X3 is "APC_ast/Axin_ast/GSK3beta";

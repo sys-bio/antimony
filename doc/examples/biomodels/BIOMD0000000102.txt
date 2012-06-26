@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Legewie2006_apoptosis_WT()
+//Created by libAntimony v2.3-beta
+model *Legewie2006_apoptosis_WT()
 
   // Compartments and Species:
   compartment cytosol;
@@ -57,48 +57,103 @@ model Legewie2006_apoptosis_WT()
 
   // Variable initializations:
   k1 = 0.002;
+  k1 has per_nM_per_sec;
   kb1 = 0.1;
-  k2 = 5e-06;
+  kb1 has sec_inverse;
+  k2 = 5e-006;
+  k2 has per_nM_per_sec;
   k3 = 0.00035;
+  k3 has per_nM_per_sec;
   k4 = 0.0002;
+  k4 has per_nM_per_sec;
   k5 = 0.0002;
-  k6 = 5e-05;
+  k5 has per_nM_per_sec;
+  k6 = 5e-005;
+  k6 has per_nM_per_sec;
   k7 = 0.0035;
+  k7 has per_nM_per_sec;
   k8 = 0.002;
+  k8 has per_nM_per_sec;
   k8b = 0.1;
+  k8b has sec_inverse;
   k9 = 0.001;
+  k9 has per_nM_per_sec;
   k9b = 0.001;
+  k9b has sec_inverse;
   k10 = 0.001;
+  k10 has per_nM_per_sec;
   k10b = 0.001;
+  k10b has sec_inverse;
   k11 = 0.001;
+  k11 has per_nM_per_sec;
   k11b = 0.001;
+  k11b has sec_inverse;
   k12 = 0.001;
+  k12 has per_nM_per_sec;
   k12b = 0.001;
+  k12b has sec_inverse;
   k13 = 0.002;
+  k13 has per_nM_per_sec;
   k13b = 0.1;
+  k13b has sec_inverse;
   k14 = 0.002;
+  k14 has per_nM_per_sec;
   k14b = 0.1;
+  k14b has sec_inverse;
   k15 = 0.003;
+  k15 has per_nM_per_sec;
   k15b = 0.001;
+  k15b has sec_inverse;
   k16 = 0.001;
+  k16 has sec_inverse;
   k16prod = 0.02;
+  k16prod has nM_per_sec;
   k17 = 0.001;
+  k17 has sec_inverse;
   k17prod = 0.02;
+  k17prod has nM_per_sec;
   k18 = 0.001;
+  k18 has sec_inverse;
   k18prod = 0.04;
+  k18prod has nM_per_sec;
   k19 = 0.001;
+  k19 has sec_inverse;
   k20 = 0.001;
+  k20 has sec_inverse;
   k21 = 0.001;
+  k21 has sec_inverse;
   k22 = 0.001;
+  k22 has sec_inverse;
   k22prod = 0.2;
+  k22prod has nM_per_sec;
   k23 = 0.001;
+  k23 has sec_inverse;
   k24 = 0.001;
+  k24 has sec_inverse;
   k25 = 0.001;
+  k25 has sec_inverse;
   k26 = 0.001;
+  k26 has sec_inverse;
   k27 = 0.001;
+  k27 has sec_inverse;
   k28 = 0.001;
+  k28 has sec_inverse;
+
+  //Other declarations:
+  const cytosol, k1, kb1, k2, k3, k4, k5, k6, k7, k8, k8b, k9, k9b, k10, k10b;
+  const k11, k11b, k12, k12b, k13, k13b, k14, k14b, k15, k15b, k16, k16prod;
+  const k17, k17prod, k18, k18prod, k19, k20, k21, k22, k22prod, k23, k24;
+  const k25, k26, k27, k28;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit nM_per_sec = 1e-9 mole / (litre * second);
+  unit per_nM_per_sec = litre / (1e-9 mole * second);
+  unit nM = 1e-9 mole / litre;
+  unit sec_inverse = 1 / second;
 
   //Display Names:
+  substance is "nanomole";
   cytosol is "Cytosol";
   A is "APAF-1";
   C9 is "Caspase 9";

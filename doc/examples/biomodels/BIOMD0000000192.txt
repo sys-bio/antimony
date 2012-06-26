@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model RanGTP_gradient()
+//Created by libAntimony v2.3-beta
+model *RanGTP_gradient()
 
   // Compartments and Species:
   compartment nucleus, cytoplasm;
@@ -35,8 +35,8 @@ model RanGTP_gradient()
   RanGDP_cy = 5;
 
   // Compartment initializations:
-  nucleus = 1.2e-11;
-  cytoplasm = 1.8e-11;
+  nucleus = 1.2e-011;
+  cytoplasm = 1.8e-011;
 
   // Variable initializations:
   RCC1_binding_r1 = 74;
@@ -55,4 +55,14 @@ model RanGTP_gradient()
   RanBP1_RanGDP_Km = 0.1;
   RanGAP_RanGDP_kcat_GAP = 10.6;
   RanGAP_RanGDP_Km_GAP = 0.7;
+
+  //Other declarations:
+  const nucleus, cytoplasm;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+  unit microMpsec = 1e-6 mole / (second * litre);
+  unit pmicroMpsec = litre / (1e-6 mole * second);
+  unit psec = 1 / second;
+  unit microM = 1e-6 mole / litre;
 end

@@ -1,10 +1,9 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_1(V, substrate, Km)
   V * substrate / (Km + substrate);
 end
 
-
-model Locke2006_CircClock_LL()
+model *Locke2006_CircClock_LL()
 
   // Compartments and Species:
   compartment compartment_;
@@ -43,7 +42,7 @@ model Locke2006_CircClock_LL()
   reaction_28:  => cXm; compartment_ * n3 * cTn^d / (g4^d + cTn^d);
   reaction_29: cXm => ; compartment_ * m9 * cXm / (k7 + cXm);
   reaction_30:  => cTc; p2 * compartment_ * cTm;
-  reaction_31: cTc -> cTn; compartment_ * (-r4 * cTn + r3 * cTc);
+  reaction_31: cTc -> cTn; compartment_ * (- r4 * cTn + r3 * cTc);
   reaction_32: cTc => ; compartment_ * (1 - light) * m5 * cTc / (k5 + cTc);
   reaction_33: cTc => ; m6 * compartment_ * cTc / (k5 + cTc);
   reaction_34: cTn => ; compartment_ * (1 - light) * m7 * cTn / (k6 + cTn);
@@ -152,7 +151,19 @@ model Locke2006_CircClock_LL()
   k16 = 0.6104;
   light = 1;
 
+  //Other declarations:
+  const compartment_, q1, n0, g0, alpha, n1, a, g1, m1, k1, p1, r1, r2, m2;
+  const k2, m3, k3, n2, b, g2, g3, c, m4, k4, p2, r3, r4, m5, m6, k5, m7;
+  const m8, k6, n3, d, g4, m9, k7, p3, r5, r6, m10, k8, m11, k9, q2, n4, n5;
+  const g5, g6, e, f, m12, k10, p4, r7, r8, m13, k11, m14, k12, p5, k13, m15;
+  const q3, q4, g, n6, g7, m16, k14, p6, r9, r10, m17, k15, m18, k16, light;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+
   //Display Names:
+  substance is "nM";
   compartment_ is "cell";
   cLm is "LHY mRNA";
   cLc is "LHY protein in cytoplasm";

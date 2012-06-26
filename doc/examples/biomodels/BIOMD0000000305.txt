@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Kolomeisky2003_myosin()
+//Created by libAntimony v2.3-beta
+model *Kolomeisky2003_myosin()
 
   // Compartments and Species:
   compartment compartment_;
@@ -11,27 +11,30 @@ model Kolomeisky2003_myosin()
   S_tot := S0 + S1;
   V := d * ((Fw_1st_step + Fw_2nd_step) / 2 - (Bw_1st_step + Bw_2nd_step) / 2) / S_tot;
   V_ave := d * ((fwd_step1 + fwd_step2) / 2 - (back_step1 + back_step2) / 2) / (S_tot * time);
-  tau := (k_1 * ATP * exp(-th_1 * Force * d / kT) + k_2 * exp(-th_2 * Force * d / kT) + k_3 * ATP * exp(th_3 * Force * d / kT) + k_4 * exp(th_4 * Force * d / kT)) / (k_1 * ATP * exp(-th_1 * Force * d / kT) * k_2 * exp(-th_2 * Force * d / kT) + k_3 * ATP * exp(th_3 * Force * d / kT) * k_4 * exp(th_4 * Force * d / kT));
+  tau := (k_1 * ATP * exp(- th_1 * Force * d / kT) + k_2 * exp(- th_2 * Force * d / kT) + k_3 * ATP * exp(th_3 * Force * d / kT) + k_4 * exp(th_4 * Force * d / kT)) / (k_1 * ATP * exp(- th_1 * Force * d / kT) * k_2 * exp(- th_2 * Force * d / kT) + k_3 * ATP * exp(th_3 * Force * d / kT) * k_4 * exp(th_4 * Force * d / kT));
 
   // Reactions:
-  Fw_1st_step: S0 + $ATP => S1 + $Pi_ + fwd_step1; k_1 * S0 * ATP * exp(-th_1 * Force * d / kT);
-  Fw_2nd_step: S1 => S0 + $ADP + fwd_step2; k_2 * S1 * exp(-th_2 * Force * d / kT);
+  Fw_1st_step: S0 + $ATP => S1 + $Pi_ + fwd_step1; k_1 * S0 * ATP * exp(- th_1 * Force * d / kT);
+  Fw_2nd_step: S1 => S0 + $ADP + fwd_step2; k_2 * S1 * exp(- th_2 * Force * d / kT);
   Bw_1st_step: S0 + $ATP => S1 + $Pi_ + back_step1; k_3 * S0 * ATP * exp(th_3 * Force * d / kT);
   Bw_2nd_step: S1 => S0 + $ADP + back_step2; k_4 * S1 * exp(th_4 * Force * d / kT);
 
   // Species initializations:
-  S0 = 10/compartment_;
+  S0 = 10/ compartment_;
   ATP = 20;
+  ATP has uM;
   S1 = 0;
   Pi_ = 0;
+  Pi_ has uM;
   ADP = 0;
+  ADP has uM;
   fwd_step1 = 0;
   fwd_step2 = 0;
   back_step1 = 0;
   back_step2 = 0;
 
   // Compartment initializations:
-  compartment_ = 1e-15;
+  compartment_ = 1e-015;
 
   // Variable initializations:
   k_1 = 0.7;
@@ -41,11 +44,24 @@ model Kolomeisky2003_myosin()
   kT = 4.1164;
   k_2 = 12;
   th_2 = 0.045;
-  k_3 = 5e-06;
+  k_3 = 5e-006;
   th_3 = 0.58;
-  k_4 = 6e-06;
+  k_4 = 6e-006;
   th_4 = 0.385;
 
   //Other declarations:
   var S_tot, V, V_ave, tau;
+  const compartment_, k_1, th_1, Force, d, kT, k_2, th_2, k_3, th_3, k_4;
+  const th_4;
+
+  // Unit definitions:
+  unit substance = item;
+  unit umole = 1e-6 mole;
+  unit uM = 1e-6 mole / litre;
+  unit volume = litre;
+
+  //Display Names:
+  substance is "molecules";
+  umole is "micromole";
+  volume is "litre";
 end

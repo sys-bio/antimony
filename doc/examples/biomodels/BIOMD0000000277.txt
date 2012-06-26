@@ -1,15 +1,15 @@
-//Created by libAntimony v2.0
-model Shrestha2010_HyperCalcemia_PTHresponse()
+//Created by libAntimony v2.3-beta
+model *Shrestha2010_HyperCalcemia_PTHresponse()
 
   // Compartments and Species:
   compartment PTG_pool, Plasma_pool;
   species $x1 in PTG_pool, $x2 in Plasma_pool, $Ca in Plasma_pool;
 
   // Assignment Rules:
-  Ca := piecewise(Ca0, lt(time, t0), Ca0 + Ca1 * (1 - exp(-alpha * (time - t0))));
+  Ca := piecewise(Ca0, lt(time, t0), Ca0 + Ca1 * (1 - exp(- alpha * (time - t0))));
   k := lambda_2 * x2_n + lambda_1 * x1_n;
   lambda_Ca := (A - B) / (1 + (Ca / S)^m_Ca) + B;
-  m_Ca := m1 / (1 + exp(-beta * (R - Ca))) + m2;
+  m_Ca := m1 / (1 + exp(- beta * (R - Ca))) + m2;
   A := lambda_1 * lambda_2 * x2_max / (k - lambda_2 * x2_max);
   B := lambda_1 * lambda_2 * x2_min / (k - lambda_2 * x2_min);
   S := Ca0_baseline * (-(x1_n * B - lambda_2 * x2_n) / (x1_n * A - lambda_2 * x2_n))^(1 / m_Ca);
@@ -45,6 +45,8 @@ model Shrestha2010_HyperCalcemia_PTHresponse()
 
   //Other declarations:
   var k, lambda_Ca, m_Ca, A, B, S;
+  const PTG_pool, Plasma_pool, m1, m2, beta, R, lambda_1, lambda_2, Ca0, Ca1;
+  const t0, alpha, x1_n, x2_n, x2_min, x2_max, Ca0_baseline;
 
   //Display Names:
   x1 is "PTH_in_PTG";
