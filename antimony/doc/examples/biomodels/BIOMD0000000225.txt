@@ -24,15 +24,15 @@ model *Westermark2003_Pancreatic_GlycOsc_basic()
 
   // Compartment initializations:
   comp = 1;
-  Vgk has mM_per_;
+  Vgk has mM_per_s;
 
   // Variable initializations:
   hGK = 1.7;
   hGK has dimensionless;
   KeqGPI = 0.3;
   KeqGPI has dimensionless;
-  Vpfk has mM_per_;
-  Vfba has mM_per_;
+  Vpfk has mM_per_s;
+  Vfba has mM_per_s;
   Sgk = 8;
   Sgk has mM;
   Spfk = 4;
@@ -71,14 +71,14 @@ model *Westermark2003_Pancreatic_GlycOsc_basic()
   unit time_unit = second;
   unit mM = 1e-3 mole / litre;
   unit g_per_ml = 1e-3 kilogram / 1e-3 litre;
-  unit mM_per_ = 1e-3 mole / (second * litre);
+  unit mM_per_s = 1e-3 mole / (second * litre);
   unit mmole_per_min_g = 1e-3 mole / (60 second * kilogram);
 
   //Display Names:
   substance is "mmole";
   time_unit is "seconds";
   g_per_ml is "gramm per ml";
-  mM_per_ is "mM per sec";
+  mM_per_s is "mM per sec";
   mmole_per_min_g is "mmole per (min kg)";
   comp is "compartment";
 end

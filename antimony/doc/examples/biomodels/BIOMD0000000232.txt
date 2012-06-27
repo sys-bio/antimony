@@ -67,10 +67,10 @@ model *Nazaret2009_TCA_RC_ATP()
   DeltaPsim has mV;
   F = 96485;
   F has C_per_mol;
-  JANT has mM_per_;
-  JATP has mM_per_;
-  Jleak has mM_per_;
-  Jresp has mM_per_;
+  JANT has mM_per_s;
+  JATP has mM_per_s;
+  Jleak has mM_per_s;
+  Jresp has mM_per_s;
   K = 2;
   K has mM;
   Kapp = 4.4e-009;
@@ -86,22 +86,31 @@ model *Nazaret2009_TCA_RC_ATP()
   b = 0.004;
   b has per_mM;
   kANT = 0.05387;
-  kANT has per_;
+  kANT has per_s;
   kATP = 131.9;
-  kATP has mM_per_;
+  kATP has mM_per_s;
   kleak = 0.000426;
   kleak has mM_per_s_per_mV;
   kresp = 2.5;
-  kresp has mM_per_;
+  kresp has mM_per_s;
   v1_k1 = 0.038;
+  v1_k1 has mM_per_s;
   v2_k2 = 0.152;
+  v2_k2 has per_mM_per_s;
   v3_k3 = 57.142;
+  v3_k3 has per_mM_per_s;
   v4_k4 = 0.053;
+  v4_k4 has per_mM_per_s;
   v5_k5 = 0.082361;
+  v5_k5 has per_mM_squared_per_s;
   v6_k6 = 0.0032;
+  v6_k6 has per_s;
   v6_Keq = 0.3975;
+  v6_Keq has dimensionless;
   v7_k7 = 0.04;
+  v7_k7 has per_mM_per_s;
   v8_k8 = 3.6;
+  v8_k8 has per_s;
 
   //Other declarations:
   var ATPcrit, DeltaGtransport, DeltaPsi, JANT, JATP, Jleak, Jresp;
@@ -115,14 +124,14 @@ model *Nazaret2009_TCA_RC_ATP()
   unit mJ_per_mol = 1e-3 joule / 1e1 mole;
   unit mM = 1e-3 mole / 1e1 litre;
   unit mM_per_mV = 1e-3 mole / (1e1 litre * 1e-3 volt);
-  unit mM_per_ = 1e-3 mole / (1e1 litre * 1e1 second);
+  unit mM_per_s = 1e-3 mole / (1e1 litre * 1e1 second);
   unit mM_per_s_per_mV = 1e-3 mole / (1e1 litre * 1e1 second * 1e-3 volt);
   unit mV = 1e-3 volt;
   unit per_mM = 1e1 litre / 1e-3 mole;
-  unit per_mM_per_ = 1e1 litre / (1e-3 mole * 1e1 second);
-  unit per_mM_squared_per_ = (1e1 litre)^2 / ((1e-3 mole)^2 * 1e1 second);
+  unit per_mM_per_s = 1e1 litre / (1e-3 mole * 1e1 second);
+  unit per_mM_squared_per_s = (1e1 litre)^2 / ((1e-3 mole)^2 * 1e1 second);
   unit per_mV = 1 / 1e-3 volt;
-  unit per_ = 1 / 1e1 second;
+  unit per_s = 1 / 1e1 second;
 
   //Display Names:
   C_per_mol is "coulomb per mole";
@@ -130,14 +139,14 @@ model *Nazaret2009_TCA_RC_ATP()
   mJ_per_mol is "milliJoules per mole";
   mM is "millimolar";
   mM_per_mV is "millimolar per millivolt";
-  mM_per_ is "millimolar per second";
+  mM_per_s is "millimolar per second";
   mM_per_s_per_mV is "millimolar per second per millivolt";
   mV is "millivolt";
   per_mM is "per mM";
-  per_mM_per_ is "per millimolar per second";
-  per_mM_squared_per_ is "per millimolar squared per second";
+  per_mM_per_s is "per millimolar per second";
+  per_mM_squared_per_s is "per millimolar squared per second";
   per_mV is "per millivolt";
-  per_ is "per second";
+  per_s is "per second";
   mitochondrion is "mitochondrial matrix";
   H is "H+";
   He is "H+";

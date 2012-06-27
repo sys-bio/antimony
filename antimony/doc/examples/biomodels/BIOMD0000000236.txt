@@ -30,7 +30,7 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
 
   // Compartment initializations:
   cell = 1;
-  Vgk has mM_per_;
+  Vgk has mM_per_s;
 
   // Variable initializations:
   hGK = 1.7;
@@ -39,9 +39,9 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
   KeqGPI has dimensionless;
   KeqTPI = 0.045455;
   KeqTPI has dimensionless;
-  Vpfk has mM_per_;
-  Vfba has mM_per_;
-  Vgapdh has mM_per_;
+  Vpfk has mM_per_s;
+  Vfba has mM_per_s;
+  Vgapdh has mM_per_s;
   Sgk = 8;
   Sgk has mM;
   Spfk = 4;
@@ -90,14 +90,14 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
   unit time_unit = second;
   unit mM = 1e-3 mole / litre;
   unit g_per_ml = 1e-3 kilogram / 1e-3 litre;
-  unit mM_per_ = 1e-3 mole / (second * litre);
+  unit mM_per_s = 1e-3 mole / (second * litre);
   unit mmole_per_min_g = 1e-3 mole / (60 second * kilogram);
 
   //Display Names:
   substance is "mmole";
   time_unit is "seconds";
   g_per_ml is "gramm per ml";
-  mM_per_ is "mM per sec";
+  mM_per_s is "mM per sec";
   mmole_per_min_g is "mmole per (min kg)";
   GLC is "intracellular glucose";
   F6P is "fructose-6-phosphate";
