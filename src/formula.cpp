@@ -326,6 +326,9 @@ string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, siz
           actualvar = module->GetVariable(varname);
         }
         if (actualvar != NULL) {
+          if (!retval.empty() && retval[retval.size()-1] != ' ' && retval[retval.size()-1] != '(' && retval[retval.size()-1] != '^') {
+            retval += " ";
+          }
           retval += actualvar->GetNameDelimitedBy(cc);
         }
         else if (varname.size() > 0) {
@@ -354,6 +357,9 @@ string Formula::ToDelimitedStringWithEllipses(char cc) const
       actualvar = module->GetVariable(varname);
     }
     if (actualvar != NULL) {
+      if (!retval.empty() && retval[retval.size()-1] != ' ' && retval[retval.size()-1] != '(' && retval[retval.size()-1] != '^') {
+        retval += " ";
+      }
       retval += actualvar->GetNameDelimitedBy(cc);
     }
     else {

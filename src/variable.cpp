@@ -51,6 +51,9 @@ string Variable::GetNameDelimitedBy(char cc) const
     }
     retval += m_name[i];
   }
+  if (GetType()==varUnitDefinition) {
+    FixUnitName(retval);
+  }
   return retval;
 }
 
@@ -428,6 +431,7 @@ bool Variable::GetIsConst() const
   case varStrand:
     return false;
   case varUndefined:
+    if (m_const==constDEFAULT) return true;
   case varUnitDefinition:
     return true;
   }
@@ -735,7 +739,7 @@ bool Variable::SetFormula(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect.  Error from the libsbml parser:  " + SBML_getLastParseL3Error());
+      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\":  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -804,7 +808,7 @@ bool Variable::SetAssignmentRule(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The formula \"" + formstring + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect.  Error from the libsbml parser:  " + SBML_getLastParseL3Error());
+      g_registry.SetError("In the formula \"" + formstring + "\" for '" + GetNameDelimitedBy('.') + "':  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -848,7 +852,7 @@ bool Variable::SetRateRule(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" for '" + GetNameDelimitedBy('.') + "' seems to be incorrect.  Error from the libsbml parser:  " + SBML_getLastParseL3Error());
+      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" for '" + GetNameDelimitedBy('.') + "':  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -884,7 +888,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect.  Error from the libsbml parser:  " + SBML_getLastParseL3Error());
+      g_registry.SetError("In the reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses('.') + "\":  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -1191,18 +1195,15 @@ bool Variable::SetUnitDef(UnitDef* unitdef)
   unitdef->SetName(m_name);
   m_valUnitDef = *unitdef;
   Module* mod = g_registry.GetModule(m_module);
-  if (mod->AddUnitVariables(unitdef)) return true;
+  if (mod != NULL && mod->AddUnitVariables(unitdef)) return true;
   return false; //success
 }
 
-//Sets this variable to *have* the given unit definition.
-bool Variable::SetUnit(UnitDef* unitdef)
+//Sets this variable to *have* the given unit.
+bool Variable::SetUnit(Variable* var)
 {
-  Variable* unitvar = g_registry.GetModule(m_module)->AddOrFindUnitDef(unitdef);
-  if (unitvar==NULL) return true; //Already using a variable as a non-unit.
-  m_unitVariable = unitvar->GetName();
-  Module* mod = g_registry.GetModule(m_module);
-  if (mod->AddUnitVariables(unitdef)) return true;
+  if (var->SetType(varUnitDefinition)) return true;
+  m_unitVariable = var->GetName();
   return false; //success
 }
 

@@ -37,6 +37,7 @@ private:
   std::vector<std::string> m_variablename;
 
   std::vector<Variable*> m_variables;
+  std::vector<Variable*> m_defaultVariables;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
   std::vector<std::vector<std::string> > m_changed;
   std::vector<std::string> m_returnvalue;
@@ -93,8 +94,10 @@ public:
   void AddDeletion(Variable* deletedvar) {};
   Variable* AddOrFindUnitDef(UnitDef* unitdef);
   bool AddUnitVariables(UnitDef* unitdef);
+  void AddDefaultVariables();
 
   Variable* GetVariable(const std::vector<std::string>& name);
+  Variable* GetDefaultVariable(const std::vector<std::string>& name);
   void AddToVarMapFrom(const Module& submod);
   const Variable* GetVariable(const std::vector<std::string>& name) const;
   const Variable* GetVariableFromSymbol(std::string varname) const;

@@ -245,7 +245,9 @@ bool CaselessStrCmp(const string& lhs, const string& rhs)
 
 void FixUnitName(string& name)
 {
-  if (name.size()>2 && name[name.size()-1]=='s' && name != "dimensionless" && name != "siemens") {
+  if (name.size()>2 && name[name.size()-1]=='s' && name[name.size()-2]!='_' 
+      && name != "dimensionless"
+      && name.find("siemens") == string::npos) {
     name.erase(name.size()-1, name.size());
   }
   if (CaselessStrCmp(name, "meter")) {
@@ -253,5 +255,8 @@ void FixUnitName(string& name)
   }
   if (CaselessStrCmp(name, "liter")) {
     name = "litre";
+  }
+  if (CaselessStrCmp(name, "time")) {
+    name = "time_unit";
   }
 }

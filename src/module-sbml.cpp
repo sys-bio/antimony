@@ -175,8 +175,25 @@ void Module::LoadSBML(const Model* sbml)
     g_registry.GetNthUserFunction(g_registry.GetNumUserFunctions()-1)->FixNames();
   }
 
-  set<string> defaultcompartments;
+  //Units
+  for (unsigned int ud=0; ud<sbml->getNumUnitDefinitions(); ud++) {
+    const UnitDefinition* unitdefinition = sbml->getUnitDefinition(ud);
+    sbmlname = getNameFromSBMLObject(unitdefinition, "_UD");
+    FixUnitName(sbmlname);
+    Variable* var = AddOrFindVariable(&sbmlname);
+    if (unitdefinition->isSetName()) {
+      var->SetDisplayName(unitdefinition->getName());
+    }
+    var->SetUnitDef(&GetUnitDefFrom(unitdefinition, m_modulename));
+#ifdef USE_COMP
+    const CompSBasePlugin* udplugin = static_cast<const CompSBasePlugin*>(unitdefinition->getPlugin("comp"));
+    TranslateReplacedElementsFor(udplugin, var);
+#endif
+  }
+
+ 
   //Compartments
+  set<string> defaultcompartments;
   for (unsigned int comp=0; comp<sbml->getNumCompartments(); comp++) {
     const Compartment* compartment = sbml->getCompartment(comp);
     sbmlname = getNameFromSBMLObject(compartment, "_C");
@@ -203,6 +220,9 @@ void Module::LoadSBML(const Model* sbml)
     }
     if (compartment->isSetUnits()) {
       var->SetUnitVariable(compartment->getUnits());
+    }
+    if (compartment->isSetConstant()) {
+      var->SetIsConst(compartment->getConstant());
     }
 #ifdef USE_COMP
     if (comp) {
@@ -247,13 +267,29 @@ void Module::LoadSBML(const Model* sbml)
       //Since all species are variable by default, we only set this explicitly if true.
       var->SetIsConst(true);
     }
+    Variable* compartment = NULL;
     if (defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
       Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
       compartment->SetType(varCompartment);
       var->SetCompartment(compartment);
     }
     if (species->isSetUnits()) {
-      var->SetUnitVariable(species->getUnits());
+      Variable* spunits = AddOrFindVariable(&(species->getUnits()));
+      spunits->SetType(varUnitDefinition);
+      UnitDef* ud = new UnitDef(*spunits->GetUnitDef());
+      UnitDef* compud = NULL;
+      if (compartment==NULL) {
+        string volume = "volume";
+        compud = AddOrFindVariable(&volume)->GetUnitDef();
+      }
+      else {
+        Variable* compunits = compartment->GetUnitVariable();
+        compud = compunits->GetUnitDef();
+      }
+      ud->DivideUnitDef(compud);
+      ud->Reduce();
+      Variable* concentrationUnits = AddOrFindUnitDef(ud);
+      var->SetUnitVariable(concentrationUnits);
     }
 #ifdef USE_COMP
     const CompSBasePlugin* splugin = static_cast<const CompSBasePlugin*>(species->getPlugin("comp"));
@@ -339,6 +375,9 @@ void Module::LoadSBML(const Model* sbml)
     }
     if (parameter->isSetUnits()) {
       var->SetUnitVariable(parameter->getUnits());
+    }
+    if (parameter->isSetConstant()) {
+      var->SetIsConst(parameter->getConstant());
     }
 #ifdef USE_COMP
     const CompSBasePlugin* pplugin = static_cast<const CompSBasePlugin*>(parameter->getPlugin("comp"));
@@ -494,9 +533,14 @@ void Module::LoadSBML(const Model* sbml)
         }
 
         //Set the value for the new variable:
-        Formula localformula;
-        localformula.AddNum(localparam->getValue());
-        localvar->SetFormula(&localformula);
+        if (localparam->isSetValue()) {
+          Formula localformula;
+          localformula.AddNum(localparam->getValue());
+          localvar->SetFormula(&localformula);
+        }
+        if (localparam->isSetUnits()) {
+          localvar->SetUnitVariable(localparam->getUnits());
+        }
       }
     }
     else if (reaction->getNumModifiers() > 0) {
@@ -527,22 +571,6 @@ void Module::LoadSBML(const Model* sbml)
 #endif
   }
 
-  //Units
-  for (unsigned int ud=0; ud<sbml->getNumUnitDefinitions(); ud++) {
-    const UnitDefinition* unitdefinition = sbml->getUnitDefinition(ud);
-    sbmlname = getNameFromSBMLObject(unitdefinition, "_UD");
-    Variable* var = AddOrFindVariable(&sbmlname);
-    if (unitdefinition->isSetName()) {
-      var->SetDisplayName(unitdefinition->getName());
-    }
-    var->SetUnitDef(&GetUnitDefFrom(unitdefinition, m_modulename));
-#ifdef USE_COMP
-    const CompSBasePlugin* udplugin = static_cast<const CompSBasePlugin*>(unitdefinition->getPlugin("comp"));
-    TranslateReplacedElementsFor(udplugin, var);
-#endif
-  }
-
- 
 #ifdef USE_COMP
   if(mplugin != NULL) {
     //Ports!
@@ -660,13 +688,7 @@ void Module::CreateSBMLModel(bool comp)
     Variable* unitvar = species->GetUnitVariable();
     Formula* formula = species->GetFormula();
     if (formula->IsDouble()) {
-      if (unitvar != NULL) {
-        formula->AddVariable(unitvar);
-        unitvar = NULL;
-      }
-      else {
-        sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
-      }
+      sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
     }
     else if (formula->IsAmountIn(compartment)) {
       sbmlspecies->setInitialAmount(formula->ToAmount());
@@ -686,7 +708,7 @@ void Module::CreateSBMLModel(bool comp)
       }
       ud->Reduce();
       Variable* newunit = AddOrFindUnitDef(ud);
-      sbmlspecies->setSubstanceUnits(newunit->GetNameDelimitedBy('_'));
+      sbmlspecies->setSubstanceUnits(newunit->GetNameDelimitedBy(cc));
     }
     sbmlspecies->setHasOnlySubstanceUnits(false);
     SetAssignmentFor(sbmlmod, species);
@@ -697,7 +719,29 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t ud=0; ud<numunits; ud++) {
     Variable* unit = GetNthVariableOfType(allUnits, ud, comp);
     UnitDef* unitdef = unit->GetUnitDef();
-    unitdef->AddToSBML(sbmlmod);
+    unitdef->AddToSBML(sbmlmod, unit->GetNameDelimitedBy(cc), unit->GetDisplayName());
+    vector<string> name = unit->GetName();
+    assert(!name.empty());
+    string unitname = unit->GetNameDelimitedBy(cc);
+    string finalname = name[name.size()-1];
+    if (finalname=="substance") {
+      sbmlmod->setSubstanceUnits(unitname);
+    }
+    if (finalname=="volume") {
+      sbmlmod->setVolumeUnits(unitname);
+    }
+    if (finalname=="area") {
+      sbmlmod->setAreaUnits(unitname);
+    }
+    if (finalname=="length") {
+      sbmlmod->setLengthUnits(unitname);
+    }
+    if (finalname=="time_unit") {
+      sbmlmod->setTimeUnits(unitname);
+    }
+    if (finalname=="extent") {
+      sbmlmod->setExtentUnits(unitname);
+    }
   }
 
   //Compartments

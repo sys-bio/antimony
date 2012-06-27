@@ -45,7 +45,7 @@
   Variable* variablein;
   Variable* varmaybeis;
   Variable* maybein;
-  UnitDef*  unitdef;
+  Variable* unitdef;
   bool maybemain;
 }
 
@@ -54,8 +54,7 @@
 %type <module>          module
 %type <reactantList>    reactantList
 %type <reactionDivider> reactionDivider
-%type <variable>        variable variablein varmaybein varmaybeis maybein
-%type <unitdef>         unitdef
+%type <variable>        variable variablein varmaybein varmaybeis maybein unitdef
 %type <maybemain>       maybemain
 
 %left '&' '|' /* Boolean functions and, or */
@@ -253,9 +252,7 @@ formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
                 {
                   //Need to create a variable to be this unit definition, or find one that already has this unit definition, and then use that name.
                   $$ = $1;
-                  Variable* unitvar = g_registry.CurrentModule()->AddOrFindUnitDef($3);
-                  if (unitvar==NULL) YYABORT;
-                  $$->AddVariable(unitvar);
+                  $$->AddVariable($3);
                 }
         ;
 
@@ -353,7 +350,7 @@ varconstinit:   VARWORD varmaybeis {g_registry.SetConstness(constVAR); $2->SetRe
         |       varconstinit ',' varmaybeis {$3->SetRegConst();}
         ;
 
-unitinit:       UNITWORD variable '=' unitdef {if ($2->SetUnitDef($4)) YYABORT;}
+unitinit:       UNITWORD variable '=' formula {if ($2->SetType(varUnitDefinition)) YYABORT; if ($2->GetUnitDef()->SetFromFormula($4)) YYABORT;}
         |       UNITWORD variable {if ($2->SetType(varUnitDefinition)) YYABORT;} 
         ;
 
@@ -407,7 +404,18 @@ deletion:       DELETEWORD variable {g_registry.CurrentModule()->AddDeletion($2)
         ;
 */
 
-unitdef:        formula {$$ = new UnitDef("", g_registry.CurrentModule()->GetModuleName()); if ($$->SetFromFormula($1)) YYABORT; if ($1->MakeAllVariablesUnits()) YYABORT;}
+unitdef:        formula {
+                    if ($1->MakeAllVariablesUnits()) YYABORT;
+                    if ($1->IsSingleVariable()) {
+                      $$ = g_registry.CurrentModule()->GetVariable(($1->GetVariables())[0]);
+                      if ($$==NULL) YYABORT;
+                    }
+                    else {
+                      UnitDef* ud = new UnitDef("", g_registry.CurrentModule()->GetModuleName());
+                      if (ud->SetFromFormula($1)) YYABORT;
+                      $$ = g_registry.CurrentModule()->AddOrFindUnitDef(ud);
+                    }
+                }
         ;
 /*
 unitdef:        ANTWORD {$$ = new UnitDef(*$1, g_registry.CurrentModule()->GetModuleName());}
@@ -427,7 +435,9 @@ unitdef:        ANTWORD {$$ = new UnitDef(*$1, g_registry.CurrentModule()->GetMo
 
 void yyerror(char const *s)
 {
-  g_registry.SetError(s);
+  if (g_registry.GetError()=="") {
+    g_registry.SetError(s);
+  }
 }
 
 int yylex(void)
@@ -449,7 +459,7 @@ int yylex(void)
   }
   if (!g_registry.input->good()) {
     //Something else went wrong!
-    g_registry.SetError("The input file is no longer good, for an unknown reason.");
+    g_registry.SetError("Unparseable content in line " + DoubleToString(yylloc_last_line) + ".");
     return -1;
   }
 
@@ -467,7 +477,7 @@ int yylex(void)
     g_registry.input->get(cc);
     if (cc == '\r' || cc == '\n') {
       while ((cc == '\r' || cc == '\n') && !g_registry.input->eof()) {
-	g_registry.input->get(cc);
+        g_registry.input->get(cc);
       }
       ++yylloc_last_line;
       g_registry.input->unget();
@@ -477,7 +487,7 @@ int yylex(void)
       g_registry.input->unget();
       cc = '\\';
     }
-  }
+ }
 
   // Parse words
   if (isalpha(cc) || cc == '_') {
@@ -584,6 +594,7 @@ int yylex(void)
     g_registry.input->unget();
     streampos numbegin = g_registry.input->tellg();
     *g_registry.input >> number;
+    streampos numend = g_registry.input->tellg();
     if (g_registry.input->fail()) {
       //The gcc 4.4.3 parser fails if there's an 'e' after a number with no exponent.
       g_registry.input->clear();
@@ -602,12 +613,19 @@ int yylex(void)
       }
       return NUM;
     }
+    assert(g_registry.input->good());
     yylval.num = number;
     //However, pre-4.4.3 parsers would read the 'e' anyway, and we don't want it to, so unget the 'e'.
     g_registry.input->unget();
-    g_registry.input->get(cc);
-    if (cc == 'e' || cc == 'E') {
-      g_registry.input->unget();
+    if (!g_registry.input->good()) {
+      //Sometimes you can't do this?  For some reason?  If this happens we'll assume there was no 'e'.
+      g_registry.input->clear();
+    }
+    else {
+      g_registry.input->get(cc);
+      if (cc == 'e' || cc == 'E') {
+        g_registry.input->unget();
+      }
     }
     return NUM;
   }
