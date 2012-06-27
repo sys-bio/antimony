@@ -124,7 +124,10 @@ ASTNode* parseStringToASTNode(const string& formula)
   l3ps.setParseCollapseMinus(true);
   l3ps.setParseLog(L3P_PARSE_LOG_AS_LOG10);
   ASTNode* rootnode = SBML_parseL3FormulaWithSettings(formula.c_str(), &l3ps);
-  if (rootnode == NULL) return NULL;
+  if (rootnode == NULL) {
+    g_registry.SetError(SBML_getLastParseL3Error());
+    return NULL;
+  }
   if (formula.find("time") != string::npos ||
       formula.find("avogadro") != string::npos ||
       formula.find("delay") != string::npos) {

@@ -128,7 +128,7 @@ public:
   bool SetIsInStrand(Variable* var);
   bool SetDisplayName(std::string name);
   bool SetUnitDef(UnitDef* unitdef);
-  bool SetUnit(UnitDef* unitdef);
+  bool SetUnit(Variable* var);
 
   bool Synchronize(Variable* clone);
 

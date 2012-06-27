@@ -941,7 +941,7 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The event trigger \"" + trigger->ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect.  Error from the libsbml parser:  " + SBML_getLastParseL3Error());
+      g_registry.SetError("In event trigger \"" + trigger->ToDelimitedStringWithEllipses('.') + "\":  " + SBML_getLastParseL3Error());
       return true;
     }
     else if (!ASTform->isBoolean()) {
