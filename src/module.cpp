@@ -1296,7 +1296,16 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
         already_synchronized.insert(added_syncs.begin(), added_syncs.end());
       }
 
-      retval += ");\n";
+      retval += ")";
+      Variable* extentconv = m_variables[var]->GetExtentConversionFactor();
+      Variable* timeconv = m_variables[var]->GetTimeConversionFactor();
+      if (extentconv != NULL) {
+        retval += ", extentconv = " + extentconv->GetNameDelimitedBy(cc);
+      }
+      if (timeconv !=NULL) {
+        retval += ", timeconv = " + timeconv->GetNameDelimitedBy(cc);
+      }
+      retval += ";\n";
     }
   }
   retval += ListSynchronizedVariables(indent, already_synchronized);
@@ -1864,4 +1873,59 @@ bool Module::OrigMatches(const Variable* var, const map<const Variable*, Variabl
   if (origmapiter->second.GetType() != type) return false;
   if (origmapiter->second.GetConstType() != isconst) return false;
   return (origmapiter->second.GetCompartment() == comp);
+}
+
+vector<const Variable*> Module::GetSynchronizedVariablesFor(const Variable* var)
+{
+  vector<const Variable*> ret;
+  if (var==NULL) {
+    assert(false);
+    return ret;
+  }
+  for (size_t s=0; s<m_synchronized.size(); s++) {
+    if (m_synchronized[s].first == var->GetName()) {
+      const Variable* sync = GetVariable(m_synchronized[s].second);
+      ret.push_back(sync);
+    }
+    if (m_synchronized[s].second == var->GetName()) {
+      const Variable* sync = GetVariable(m_synchronized[s].first);
+      ret.push_back(sync);
+    }
+  }
+  return ret;
+}
+
+void Module::FillInSyncmap(map<const Variable*, Variable >& syncmap) const
+{
+  for (size_t s=0; s<m_synchronized.size(); s++) {
+    const Variable* var = NULL;
+    if (m_synchronized[s].first.size() > 1) {
+      var = GetVariable(m_synchronized[s].first);
+      AddVarToSyncMap(var, syncmap);
+    }
+    if (m_synchronized[s].second.size() > 1) {
+      var = GetVariable(m_synchronized[s].second);
+      AddVarToSyncMap(var, syncmap);
+    }
+  }
+}
+
+void Module::AddVarToSyncMap(const Variable* var, map<const Variable*, Variable >& syncmap) const
+{
+  vector<string> origname = var->GetName();
+  if (origname.size() <=1) {
+    assert(false);
+    return;
+  }
+  vector<string> submodname;
+  submodname.push_back(origname[0]);
+  origname.erase(origname.begin());
+  const Variable* submod = GetVariable(submodname);
+  assert(submod != NULL);
+  Module* origmod = g_registry.GetModule(submod->GetModule()->GetModuleName());
+  Variable* origvar = origmod->GetVariable(origname)->GetSameVariable();
+  Variable copied = *origvar;
+  copied.ClearSameName();
+  copied.SetNewTopName(m_modulename, submodname[0]);
+  syncmap.insert(make_pair(var, copied));
 }

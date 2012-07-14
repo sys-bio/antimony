@@ -308,7 +308,12 @@ void ChangeableTextBox::SetSavedFilename(QString filename)
     emit TabNameIsNow(GetTabName(), this);
 }
 
-void ChangeableTextBox::SetTranslatedText(QString text)
+QString ChangeableTextBox::GetFilename()
+{
+  return m_filename;
+}
+
+    void ChangeableTextBox::SetTranslatedText(QString text)
 {
     ReplaceTextWith(text);
     SetTranslated();

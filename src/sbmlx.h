@@ -12,7 +12,7 @@
 
 #ifdef USE_COMP
 #include <sbml/packages/comp/common/CompExtensionTypes.h>
-void getDocumentFromExternalModelDefinition(const ExternalModelDefinition* extmoddef, SBMLDocument*& extdoc, Model*& extmod);
+Model* getModelFromExternalModelDefinition(const ExternalModelDefinition* extmoddef);
 #endif //USE_COMP
 
 std::string getNameFromSBMLObject(const SBase* sbml, std::string basename);

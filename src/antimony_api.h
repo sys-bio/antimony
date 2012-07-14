@@ -147,6 +147,19 @@ LIB_EXTERN long   loadSBMLFile(const char* filename);
  * @see getLastError()
  */
 LIB_EXTERN long   loadSBMLString(const char* model);
+
+/**
+ * @brief Load a string known to be SBML with its file location.
+ *
+ * Loads a string and parses it (using libSBML) as an SBML file.  On an error, the error is saved, -1 is returned, and no information is stored.  This function additionally allows you to set the location of the string, in case there are relative file references in the file (as there can be in some hierarchical models).
+ * @return a long integer indicating the index of the string read and stored.  On an error, returns -1 and no information is stored.
+ * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
+ *
+ * @param model The model, in SBML format.
+ *
+ * @see getLastError()
+ */
+LIB_EXTERN long   loadSBMLStringWithLocation(const char* model, const char* location);
 #endif
 
 #ifndef NCELLML

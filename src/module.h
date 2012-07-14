@@ -151,8 +151,13 @@ public:
   void  LoadSBML(const Model* sbml);
   const SBMLDocument* GetSBML(bool comp);
   void  CreateSBMLModel(bool comp);
-  void  SetAssignmentFor(Model* sbmlmod, const Variable* var);
+  void  SetAssignmentFor(Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp);
+  bool  SynchronizeAssignments(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
+  bool  SynchronizeRates(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
 #endif //NSBML
+  std::vector<const Variable*> GetSynchronizedVariablesFor(const Variable* var);
+  void FillInSyncmap(std::map<const Variable*, Variable >& syncmap) const;
+  void AddVarToSyncMap(const Variable* var, std::map<const Variable*, Variable >& syncmap) const;
 
 #ifndef NCELLML
   //Reading:
@@ -218,6 +223,10 @@ private:
   bool OrigIsAlreadyEvent(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string event) const;
   bool OrigIsAlreadyUnitDef(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string unitdef) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
+  void GetReplacingAndRules(const Replacing* replacing, std::string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule);
+  Variable* GetSBaseRef(const SBaseRef* sbr, std::string modname, std::string re_string, const SBase* orig);
+  bool IsReplaced(const InitialAssignment* ia, const Model* parent);
+  bool IsReplaced(const Rule* rule, const Model* parent);
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;
 };
 

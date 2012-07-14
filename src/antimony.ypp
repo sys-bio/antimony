@@ -140,9 +140,11 @@ function:       FUNCTIONWORD ANTWORD {g_registry.NewUserFunction($2);} '(' varia
         |       FUNCTIONWORD FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a new function because it is already a defined function."); YYABORT;} 
         ;
 
-spacedformula:  formula {$$ = $1;}
-        |       lineend spacedformula {$$ = $2;}
-        |       spacedformula lineend {$$ = $1;}
+spacedformula:  maybelineend formula maybelineend {$$ = $2;}
+        ;
+
+maybelineend:   /* empty */
+        |       lineend {}
         ;
 
 variableexportlist:
@@ -228,13 +230,6 @@ reactionDivider:
         ;
 
 formula:        /* empty */ {$$ = g_registry.NewBlankFormula(); }
-        |       ELLIPSES {$$ = g_registry.NewBlankFormula(); $$->AddEllipses();}
-        |       variable {$$ = g_registry.NewBlankFormula(); $$->AddVariable($1); }
-        |       NUM  {$$ = g_registry.NewBlankFormula(); $$->AddNum($1); }
-        |       CONSTANT {$$ = g_registry.NewBlankFormula(); $$->AddText($1); }
-        |       FUNCTION {$$ = g_registry.NewBlankFormula(); $$->AddText($1); }
-        |       '(' commaformula ')' {$$ = $2; $$->AddParentheses();}
-        |       mathThing {$$ = g_registry.NewBlankFormula(); $$->AddMathThing($1); }
         |       formula ELLIPSES {$$ = $1; $1->AddEllipses();}
         |       formula variable {$$ = $1; $1->AddVariable($2); }
         |       formula NUM  {$$ = $1; $1->AddNum($2); }
@@ -282,15 +277,26 @@ assignment:     varmaybein '=' formula {if ($1->SetFormula($3)) YYABORT; }
         |       varmaybein HASWORD unitdef {if ($1->SetUnit($3)) YYABORT; }
         ;
 
-submodule:      varmaybein ':' MODNAME '(' {if ($1->SetModule($3)) YYABORT;} variableimportlist ')' maybein {if ($8 != NULL) {if ($1->SetCompartment($8)) YYABORT;}}
-        |       MODNAME '(' {if(g_registry.CurrentModule()->SetModule($1)) YYABORT;} variableimportlist ')' maybein {if ($6 != NULL) {if (g_registry.SetCompartmentOfCurrentSubmod($6)) YYABORT;}}
+submodule:      varmaybein ':' MODNAME '(' {if ($1->SetModule($3)) YYABORT;} variableimportlist ')' submodifications maybein {if ($9 != NULL) {if ($1->SetCompartment($9)) YYABORT;}}
+        |       MODNAME '(' {if(g_registry.CurrentModule()->SetModule($1)) YYABORT;} variableimportlist ')' submodifications maybein {if ($7 != NULL) {if (g_registry.GetCurrentSubmodel()->SetCompartment($7)) YYABORT;}}
         ;
+
 variableimportlist:
                 /* empty */ {}
         |       variable {if (g_registry.AddVariableToCurrentImportList($1)) YYABORT; }
         |       variableimportlist ',' variable { if (g_registry.AddVariableToCurrentImportList($3)) YYABORT; }
         ;
 
+submodifications:
+                /* empty */ {}
+        |       submodifications ',' ANTWORD '=' variable {if (CaselessStrCmp(*$3, "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor($5);}
+                else if (CaselessStrCmp(*$3, "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor($5)) YYABORT;}
+                else { g_registry.SetError("Illegal term '" + *$3 + "' in submodel declaration.  You may use the terms 'extentconv' and 'timeconv' to set the extent and time conversion factors for this submodel, respectively."); YYABORT;}}
+        ;
+        |       submodifications ',' ANTWORD '=' NUM {if (CaselessStrCmp(*$3, "extentconv")) {g_registry.GetCurrentSubmodel()->SetExtentConversionFactor($5);}
+                else if (CaselessStrCmp(*$3, "timeconv")) {if (g_registry.GetCurrentSubmodel()->SetTimeConversionFactor($5)) YYABORT;}
+                else { g_registry.SetError("Illegal term '" + *$3 + "' in submodel declaration.  You may use the terms 'extentconv' and 'timeconv' to set the extent and time conversion factors for this submodel, respectively."); YYABORT;}}
+        ;
 varinitialize:  specinit { }
         |       formulainit { }
         |       reactioninit { }
@@ -380,11 +386,6 @@ colonret:       ':' {}
         ;
 
 eventmodifications:  /* empty */ {}
-        |       ',' ANTWORD '=' formula {if (CaselessStrCmp(*$2, "priority")) {if (g_registry.GetCurrentEvent()->SetPriority(*$4)) YYABORT;}
-                else if (CaselessStrCmp(*$2, "t0")) {if (g_registry.GetCurrentEvent()->SetInitialValue(*$4)) YYABORT;}
-                else if (CaselessStrCmp(*$2, "fromTrigger")) {if (g_registry.GetCurrentEvent()->SetUseValuesFromTriggerTime(*$4)) YYABORT;}
-                else if (CaselessStrCmp(*$2, "persistent")) {if (g_registry.GetCurrentEvent()->SetPersistent(*$4)) YYABORT;}
-                else { g_registry.SetError("Illegal term '" + *$2 + "' in event defintion.  You may use the terms 'priority', 't0', 'fromTrigger', and 'persistent' here to set those properties of an event."); YYABORT;}}
         |       eventmodifications ',' ANTWORD '=' formula {if (CaselessStrCmp(*$3, "priority")) {g_registry.GetCurrentEvent()->SetPriority(*$5);}
                 else if (CaselessStrCmp(*$3, "t0")) {if (g_registry.GetCurrentEvent()->SetInitialValue(*$5)) YYABORT;}
                 else if (CaselessStrCmp(*$3, "fromTrigger")) {if (g_registry.GetCurrentEvent()->SetUseValuesFromTriggerTime(*$5)) YYABORT;}

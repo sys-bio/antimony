@@ -49,6 +49,7 @@ public:
     bool IsFailed();
     virtual void SetFilename(QString filename);
     virtual void SetSavedFilename(QString filename);
+    virtual QString GetFilename();
     void SaveTab();
     void SaveTabAs();
     void DisplayError(QString error);

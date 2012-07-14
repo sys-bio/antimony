@@ -1,103 +1,253 @@
 #ifndef NSBML
 #ifdef USE_COMP
+
+void Module::GetReplacingAndRules(const Replacing* replacing, string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule)
+{
+  reference = NULL;
+  string submod = replacing->getSubmodelRef();
+  vector<string> smname;
+  smname.push_back(submod);
+  Variable* smvar = GetVariable(smname);
+  if (smvar == NULL) {
+    g_registry.AddWarning("Unable to find submodule " + submod + " in model " + GetModuleName() + " which would have contained the " + re_string  + " for " + orig->getElementName() + " " + orig->getId() + ".");
+    return;
+  }
+  if (smvar->GetType() != varModule) {
+    g_registry.AddWarning("Unable to connect a " + re_string + " for " + orig->getElementName() + " " + orig->getId() + " in model " + GetModuleName() + ": the variable " + submod + " is not a submodel.");
+    return;
+  }
+  reference = GetSBaseRef(replacing, submod, re_string, orig);
+  const SBase* sb = orig->getParentSBMLObject();
+  while (sb != NULL && !(sb->getTypeCode() == SBML_MODEL || sb->getTypeCode() == SBML_COMP_MODELDEFINITION)) {
+    sb = sb->getParentSBMLObject();
+  }
+  if (sb==NULL) return;
+  const Model* origmodel = static_cast<const Model*>(sb);
+  if (origmodel==NULL) return;
+  Replacing* sbr = const_cast<Replacing*>(replacing);
+  SBase* ref = sbr->getReferencedElement();
+  sb = ref;
+  while (sb != NULL && !(sb->getTypeCode() == SBML_MODEL || sb->getTypeCode() == SBML_COMP_MODELDEFINITION)) {
+    sb = sb->getParentSBMLObject();
+  }
+  if (sb==NULL) return;
+  const Model* refmodel = static_cast<const Model*>(sb);
+  if (refmodel==NULL) return;
+
+  //Initial assignment:
+  const InitialAssignment* newia = origmodel->getInitialAssignment(orig->getId());
+  if (IsReplaced(newia, origmodel)) {
+    newia = NULL;
+  }
+  if (newia==NULL) {
+    newia = refmodel->getInitialAssignment(ref->getId());
+    if (IsReplaced(newia, refmodel)) {
+      newia = NULL;
+    }
+  }
+  if (newia != NULL) {
+    ia = newia;
+  }
+
+  //Rules
+  const Rule* newrule = origmodel->getRule(orig->getId());
+  if (IsReplaced(newrule, origmodel)) {
+    newrule = NULL;
+  }
+  if (newrule == NULL) {
+    newrule = refmodel->getRule(ref->getId());
+    if (IsReplaced(newrule, origmodel)) {
+      newrule = NULL;
+    }
+  }
+  if (newrule != NULL) {
+    rule = newrule;
+  }
+
+  return;
+}
+
+Variable* Module::GetSBaseRef(const SBaseRef* csbr, std::string modname, std::string re_string, const SBase* orig)
+{
+  SBaseRef* sbr = const_cast<SBaseRef*>(csbr);
+  SBase* referenced = sbr->getReferencedElement();
+  if (referenced==NULL) {
+    g_registry.AddWarning("Unable to find a " + re_string + " for " + orig->getElementName() + " " + orig->getId() + " in model " + GetModuleName() + ".");
+    return NULL;
+  }
+  vector<string> refname;
+  string refid = referenced->getId();
+  if (refid.empty()) {
+    //LS DEBUG:  We might be able to handle some of these even if they don't have IDs at some point
+    g_registry.AddWarning("Unable to connect a " + re_string + " for " + orig->getElementName() + " " + orig->getId() + " in model " + GetModuleName() + ": the referenced element has no ID, which is required in Antimony.");
+    return NULL;
+  }
+  refname.push_back(refid);
+  //Now move back up the stack of submodels until we get to modname:
+  const SBase* parent = referenced->getParentSBMLObject();
+  while (parent != NULL) {
+    if (parent->getTypeCode()==SBML_COMP_SUBMODEL) {
+      string submodelid = parent->getId();
+      refname.insert(refname.begin(), submodelid);
+    }
+    parent = parent->getParentSBMLObject();
+  }
+  Variable* ret = GetVariable(refname);
+  if (ret==NULL) {
+      g_registry.AddWarning("Unable to connect a " + re_string + " for " + orig->getElementName() + " " + orig->getId() + " in model " + GetModuleName() + ": the variable " + ToStringFromVecDelimitedBy(refname, '.') + " could not be found.");
+  }
+  return ret;
+}
+
+bool Module::IsReplaced(const InitialAssignment* ia, const Model* parent)
+{
+  //This routine assumes that the passed-in initial assignment is either the top-level object or is already copied into a Submodel object.
+  if (ia==NULL) return false;
+  const CompSBasePlugin* iaplug = static_cast<const CompSBasePlugin*>(ia->getPlugin("comp"));
+  if (iaplug != NULL) {
+    if (iaplug->isSetReplacedBy()) return true;
+  }
+  if (parent==NULL) return false;
+  const SBase* parentchain = parent->getParentSBMLObject();
+  while (parentchain != NULL) {
+    if (parentchain->getTypeCode()==SBML_MODEL || parentchain->getTypeCode()==SBML_COMP_MODELDEFINITION) {
+      parent = static_cast<const Model*>(parentchain);
+      if (parent==NULL) {
+        assert(false);
+        continue;
+      }
+      for (unsigned int i=0; i<parent->getNumInitialAssignments(); i++) {
+        const InitialAssignment* upperia = parent->getInitialAssignment(i);
+        iaplug = static_cast<const CompSBasePlugin*>(upperia->getPlugin("comp"));
+        if (iaplug==NULL) continue;
+        for (unsigned int r=0; r<iaplug->getNumReplacedElements(); r++) {
+          const ReplacedElement* cre = iaplug->getReplacedElement(r);
+          ReplacedElement* re = const_cast<ReplacedElement*>(cre);
+          if (re->getReferencedElement() == ia) return true;
+        }
+      }
+    }
+    else if (parentchain->getTypeCode()==SBML_COMP_SUBMODEL) {
+      //check to see if it was deleted!
+      const Submodel* submodel = static_cast<const Submodel*>(parentchain);
+      for (unsigned int del=0; del<submodel->getNumDeletions(); del++) {
+        const Deletion* cdeletion = submodel->getDeletion(del);
+        Deletion* deletion = const_cast<Deletion*>(cdeletion);
+        if (deletion->getReferencedElement() == ia) return true;
+      }
+    }
+    parentchain = parentchain->getParentSBMLObject();
+  }
+  return false;
+}
+
+bool Module::IsReplaced(const Rule* rule, const Model* parent)
+{
+  //This routine assumes that the passed-in rule is either the top-level object or is already copied into a Submodel object.
+  if (rule==NULL) return false;
+  const CompSBasePlugin* ruleplug = static_cast<const CompSBasePlugin*>(rule->getPlugin("comp"));
+  if (ruleplug != NULL) {
+    if (ruleplug->isSetReplacedBy()) return true;
+  }
+  if (parent==NULL) return false;
+  const SBase* parentchain = parent->getParentSBMLObject();
+  while (parentchain != NULL) {
+    if (parentchain->getTypeCode()==SBML_MODEL || parentchain->getTypeCode()==SBML_COMP_MODELDEFINITION) {
+      parent = static_cast<const Model*>(parentchain);
+      if (parent==NULL) {
+        assert(false);
+        continue;
+      }
+      for (unsigned int i=0; i<parent->getNumRules(); i++) {
+        const Rule* upperrule = parent->getRule(i);
+        ruleplug = static_cast<const CompSBasePlugin*>(upperrule->getPlugin("comp"));
+        if (ruleplug==NULL) continue;
+        for (unsigned int r=0; r<ruleplug->getNumReplacedElements(); r++) {
+          const ReplacedElement* cre = ruleplug->getReplacedElement(r);
+          ReplacedElement* re = const_cast<ReplacedElement*>(cre);
+          if (re->getReferencedElement() == rule) return true;
+        }
+      }
+    }
+    else if (parentchain->getTypeCode()==SBML_COMP_SUBMODEL) {
+      //check to see if it was deleted!
+      const Submodel* submodel = static_cast<const Submodel*>(parentchain);
+      for (unsigned int del=0; del<submodel->getNumDeletions(); del++) {
+        const Deletion* cdeletion = submodel->getDeletion(del);
+        Deletion* deletion = const_cast<Deletion*>(cdeletion);
+        if (deletion->getReferencedElement() == rule) return true;
+      }
+    }
+    parentchain = parentchain->getParentSBMLObject();
+  }
+  return false;
+}
+
 void Module::TranslateReplacedElementsFor(const CompSBasePlugin* cplugin, Variable* var)
 {
   if (cplugin == NULL) return;
   const SBase* psbmlo = cplugin->getParentSBMLObject();
-  const SBase* parentmod = psbmlo->getAncestorOfType(SBML_MODEL);
-  if (parentmod == NULL) {
-    parentmod = cplugin->getParentSBMLObject()->getAncestorOfType(SBML_COMP_MODELDEFINITION, "comp");
-  }
-  const CompModelPlugin* parentmodplug = NULL;
-  if (parentmod != NULL) {
-    parentmodplug = static_cast<const CompModelPlugin*>(parentmod->getPlugin("comp"));
-  }
-  assert(parentmodplug != NULL);
+  //While we are searching for replaced elements, etc., find the single canonical version of these things, if they exist.
+  const InitialAssignment* ia = NULL;
+  const Rule* rule = NULL;
+  bool noreplace = true;
+  bool origformisblank = var->GetFormula()->IsEmpty();
+
   for (unsigned int re=0; re<cplugin->getNumReplacedElements(); re++) {
-    const ReplacedElement* replacement = cplugin->getReplacedElement(re);
-    string submod = replacement->getSubmodelRef();
-    vector<string> smname;
-    smname.push_back(submod);
-    Variable* smvar = GetVariable(smname);
-    if (smvar == NULL) {
-      g_registry.AddWarning("Unable to find submodule " + submod + " in model " + GetModuleName() + " which would have contained a replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + ".");
+    const ReplacedElement* replaced = cplugin->getReplacedElement(re);
+    if (replaced->isSetConversionFactor()) {
+      g_registry.AddWarning("Unable to translate the conversion factor for the replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": individual conversion factors are not yet added as a concept in Antimony.");
     }
-    else {
-      if (smvar->GetType() != varModule) {
-        g_registry.AddWarning("Unable to connect a replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": the variable " + submod + " is not a submodel.");
-      }
-      else {
-        if (replacement->isSetIdRef()) {
-          smname.push_back(replacement->getIdRef());
-          smvar = GetVariable(smname);
-          if (smvar == NULL) {
-            g_registry.AddWarning("Unable to connect a replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": the variable " + ToStringFromVecDelimitedBy(smname, '.') + " could not be found.");
-          }
-          else {
-            AddSynchronizedPair(smvar, var);
-          }
-        }
-        else if (parentmodplug == NULL) {
-          //This seems unlikely?  But anyway.
-          g_registry.AddWarning("Unable to find parent model of " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ".");
-        }
-        else if (replacement->isSetPortRef()) {
-          string pid = replacement->getPortRef();
-          const Submodel* submodel = parentmodplug->getSubmodel(submod);
-          const SBMLDocument* doc = replacement->getSBMLDocument();
-          const CompSBMLDocumentPlugin* docplug = static_cast<const CompSBMLDocumentPlugin*>(doc->getPlugin("comp"));
-          const SBase* mod = docplug->getModel(submodel->getModelRef());
-          if (mod == NULL) {
-            g_registry.AddWarning("Unable to find the model " + submodel->getModelRef() + " in the SBML document referenced in the replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ".");
-          }
-          else {
-            int modtc = mod->getTypeCode();
-            if (modtc == SBML_COMP_EXTERNALMODELDEFINITION) {
-              const ExternalModelDefinition* extmoddef = static_cast<const ExternalModelDefinition*>(mod);
-              SBMLDocument* extdoc = NULL;
-              Model* extmod = NULL;
-              getDocumentFromExternalModelDefinition(extmoddef, extdoc, extmod);
-              if (extdoc->getModel() == NULL) {
-                g_registry.AddWarning("Unable to connect to a port for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": the externally-defined model could not be read.");
-                //LS DEBUG:  Get this working with relative pathnames in QTAntimony (which, as of now, it does not.)
-              }
-              else {
-                //LS DEBUG:  get this working, too.
-              }
-            }
-            else {
-              const Model* sm = static_cast<const Model*>(mod);
-              const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sm->getPlugin("comp"));
-              const Port* smport = mplugin->getPort(pid);
-              if (smport == NULL) {
-                g_registry.AddWarning("Unable to find the port " + pid + " in model " + submodel->getModelRef() + ".  The port does not seem to exist.  (Referenced in a replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ".)");
-              }
-              else {
-                if (smport->isSetIdRef()) {
-                  smname.push_back(smport->getIdRef());
-                  smvar = GetVariable(smname);
-                  if (smvar == NULL) {
-                    g_registry.AddWarning("Unable to connect a replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": the variable " + ToStringFromVecDelimitedBy(smname, '.') + " could not be found.");
-                  }
-                  else {
-                    AddSynchronizedPair(smvar, var);
-                  }
-                }
-                else {
-                  g_registry.AddWarning("Unable to connect to the port " + pid + " in model " + submod + ".  Antimony does not yet support for SBaseRef objects that do not use SIdRefs.");
-                }
-              }
-            }
-          }
-        }
-        else {
-          g_registry.AddWarning("Unable to translate replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": translation of replacements defined with elements other than idrefs is not yet implemented.");
-        }
-      }
+    Variable* smvar = NULL;
+    GetReplacingAndRules(replaced, "replaced element", psbmlo, smvar, ia, rule);
+    noreplace = false;
+    if (smvar!=NULL) {
+      smvar->Synchronize(var);
+      //If it is NULL, we've already added an appropriate warning.
     }
-    if (replacement->isSetConversionFactor()) {
-      g_registry.AddWarning("Unable to translate the conversion factor for the replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": conversion factors are not yet added as a concept in Antimony.");
+  }
+  if (cplugin->isSetReplacedBy()) {
+    const ReplacedBy* replacedby = cplugin->getReplacedBy();
+    Variable* smvar;
+    GetReplacingAndRules(replacedby, "replacement element", psbmlo, smvar, ia, rule);
+    noreplace = false;
+    if (smvar!=NULL) {
+      var->Synchronize(smvar);
+      //If it is NULL, we've already added an appropriate warning.
     }
+  }
+  if (noreplace) {
+    const SBase* parentmod = psbmlo;
+    while (parentmod != NULL && parentmod->getTypeCode() != SBML_MODEL && parentmod->getTypeCode() != SBML_COMP_MODELDEFINITION) {
+      parentmod = parentmod->getParentSBMLObject();
+    }
+    const Model* pm = static_cast<const Model*>(parentmod);
+    ia = pm->getInitialAssignment(psbmlo->getId());
+    rule = pm->getRule(psbmlo->getId());
+  }
+  if (ia != NULL) {
+    Formula* formula = g_registry.NewBlankFormula();
+    string formulastring(parseASTNodeToString(ia->getMath()));
+    setFormulaWithString(formulastring, formula, this);
+    formula->SetNewTopNameWith(ia, GetModuleName());
+    var->SetFormula(formula);
+  }
+  else if (!cplugin->isSetReplacedBy() && origformisblank && !var->GetFormula()->IsEmpty()) {
+    //We need to ensure that synchronization didn't overwrite the original blank.
+    Formula* form = g_registry.NewBlankFormula();
+    string space = " ";
+    form->AddText(&space);
+    var->SetFormula(form);
+  }
+  if (rule != NULL) {
+    var->SetWithRule(rule);
+  }
+  else if (!var->GetRateRule()->IsEmpty()) {
+    //The old rate rule must have been deleted.
+    Formula* form = g_registry.NewBlankFormula();
+    string space = " ";
+    form->AddText(&space);
+    var->SetRateRule(form);
   }
 }
 
@@ -125,6 +275,7 @@ void Module::AddSubmodelsToDocument(SBMLDocument* sbml)
 void Module::LoadSBML(const Model* sbml)
 {
 #ifdef USE_COMP
+  //Load submodels
   const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
   if (mplugin != NULL) {
     for (unsigned int sm=0; sm<mplugin->getNumSubmodels(); sm++) {
@@ -135,21 +286,28 @@ void Module::LoadSBML(const Model* sbml)
         var->SetDisplayName(submodel->getName());
       }
       string refname = submodel->getModelRef();
+      if (g_registry.GetModule(refname)==NULL) {
+        g_registry.LoadModelFrom(refname, sbml->getSBMLDocument());
+      }
       if (var->SetModule(&refname)) {
         g_registry.AddWarning("Unable to find submodel " + refname + ".");
       }
       for (unsigned int d=0; d<submodel->getNumDeletions(); d++) {
         const Deletion* deletion = submodel->getDeletion(d);
         string delname = getNameFromSBMLObject(deletion, "del");
-        var = AddOrFindVariable(&delname);
+        //var = AddOrFindVariable(&delname);
         g_registry.AddWarning("Unable to process the deletion " + delname + " from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions have not yet been added as a concept in Antimony.");
         //LS DEBUG:  when we have deletions, add them here.
       }
-      if (submodel->isSetSubstanceConversionFactor() ||
-          submodel->isSetTimeConversionFactor() ||
-          submodel->isSetExtentConversionFactor()) {
-        g_registry.AddWarning("Unable to process the conversion factor(s) from submodel " + submodname + " in model " + GetModuleName() + ".  Conversion factors have not yet been added as a concept in Antimony.");
-        //LS DEBUG:  when we have conversion factors, add them here.
+      if (submodel->isSetTimeConversionFactor()) {
+        string tcf = submodel->getTimeConversionFactor();
+        Variable* tcfvar = AddOrFindVariable(&tcf);
+        var->SetTimeConversionFactor(tcfvar);
+      }
+      if (submodel->isSetExtentConversionFactor()) {
+        string xcf = submodel->getExtentConversionFactor();
+        Variable* xcfvar = AddOrFindVariable(&xcf);
+        var->SetExtentConversionFactor(xcfvar);
       }
     }
   }
@@ -225,10 +383,8 @@ void Module::LoadSBML(const Model* sbml)
       var->SetIsConst(compartment->getConstant());
     }
 #ifdef USE_COMP
-    if (comp) {
-      const CompSBasePlugin* cplugin = static_cast<const CompSBasePlugin*>(compartment->getPlugin("comp"));
-      TranslateReplacedElementsFor(cplugin, var);
-    }
+    const CompSBasePlugin* cplugin = static_cast<const CompSBasePlugin*>(compartment->getPlugin("comp"));
+    TranslateReplacedElementsFor(cplugin, var);
 #endif
   }
 
@@ -385,24 +541,20 @@ void Module::LoadSBML(const Model* sbml)
 #endif
   }
 
+#ifndef USE_COMP
   //Initial Assignments:  can override 'getValue' values.
   for (unsigned int ia=0; ia<sbml->getNumInitialAssignments(); ia++) {
     const InitialAssignment* initasnt = sbml->getInitialAssignment(ia);
-    if (initasnt->isSetSymbol()) {
-      sbmlname = initasnt->getSymbol();
-      Variable* var = AddOrFindVariable(&sbmlname);
-      if (initasnt->isSetName()) {
-        var->SetDisplayName(initasnt->getName());
-      }
-      Formula* formula = g_registry.NewBlankFormula();
-      string formulastring(parseASTNodeToString(initasnt->getMath()));
-      setFormulaWithString(formulastring, formula, this);
-      var->SetFormula(formula);
+    if (!initasnt->isSetSymbol()) {
+      assert(false); //Should have been caught in SBML validity check.
+      continue;
     }
-    else {
-      //LS DEBUG:  error?  The 'symbol' is supposed to be required.
-    }
-    //Don't need to check replacements--that'll all work out automatically.
+    sbmlname = initasnt->getSymbol();
+    Variable* var = AddOrFindVariable(&sbmlname);
+    Formula* formula = g_registry.NewBlankFormula();
+    string formulastring(parseASTNodeToString(initasnt->getMath()));
+    setFormulaWithString(formulastring, formula, this);
+    var->SetFormula(formula);
   }
     
   //Rules:
@@ -418,32 +570,10 @@ void Module::LoadSBML(const Model* sbml)
       sbmlname = getNameFromSBMLObject(rule, "_R");
     }
     Variable* var = AddOrFindVariable(&sbmlname);
-    if (rule->isSetName()) {
-      var->SetDisplayName(rule->getName());
-    }
-    Formula* formula = g_registry.NewBlankFormula();
-    string formulastring(parseASTNodeToString(rule->getMath()));
-    setFormulaWithString(formulastring, formula, this);
-    if (IsSpecies(var->GetType())) {
-      //Any species in any rule must be 'const' (in Antimony), because this means it's a 'boundary species'
-      var->SetIsConst(true);
-    }
-    else {
-      //For other parameters, assignment and rate rules always mean the variable in question is not constant.
-      var->SetIsConst(false);
-    }
-
-    if (rule->isAssignment()) {
-      var->SetAssignmentRule(formula);
-    }
-    else if (rule->isRate()) {
-      var->SetRateRule(formula);
-    }
-    else {
-      assert(false); //should be caught above
-    }
-    //Don't need to check replacements for normal rules, but if we ever get algebraic rules, we will.
+    var->SetWithRule(rule);
   }
+#endif
+  //If we ever get algebraic rules, we will need to set them up here, for both comp and non-comp (and check their replacements).
 
   //Reactions
   for (unsigned int rxn=0; rxn<sbml->getNumReactions(); rxn++) {
@@ -630,6 +760,10 @@ void Module::CreateSBMLModel(bool comp)
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(m_modulename);
   char cc = g_registry.GetCC();
+  map<const Variable*, Variable > syncmap;
+  if (comp) {
+    FillInSyncmap(syncmap); //Only need this if we're hierarchical
+  }
 
 #ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
@@ -645,6 +779,14 @@ void Module::CreateSBMLModel(bool comp)
       Submodel* sbmlsubmod = mplugin->createSubmodel();
       sbmlsubmod->setId(submod->GetNameDelimitedBy(cc));
       sbmlsubmod->setModelRef(module->GetModuleName());
+      Variable* conv = submod->GetExtentConversionFactor();
+      if (conv != NULL) {
+        sbmlsubmod->setExtentConversionFactor(conv->GetNameDelimitedBy(cc));
+      }
+      conv = submod->GetTimeConversionFactor();
+      if (conv != NULL) {
+        sbmlsubmod->setTimeConversionFactor(conv->GetNameDelimitedBy(cc));
+      }
     }
   }
 #endif //USE_COMP
@@ -711,7 +853,7 @@ void Module::CreateSBMLModel(bool comp)
       sbmlspecies->setSubstanceUnits(newunit->GetNameDelimitedBy(cc));
     }
     sbmlspecies->setHasOnlySubstanceUnits(false);
-    SetAssignmentFor(sbmlmod, species);
+    SetAssignmentFor(sbmlmod, species, syncmap, comp);
   }
 
   //Units
@@ -788,7 +930,7 @@ void Module::CreateSBMLModel(bool comp)
     if (unitvar != NULL) {
       sbmlcomp->setUnits(unitvar->GetNameDelimitedBy('_'));
     }
-    SetAssignmentFor(sbmlmod, compartment);
+    SetAssignmentFor(sbmlmod, compartment, syncmap, comp);
     sbmlcomp->setSpatialDimensions(dim);
   }
 
@@ -810,7 +952,7 @@ void Module::CreateSBMLModel(bool comp)
     if (unitvar != NULL) {
       param->setUnits(unitvar->GetNameDelimitedBy('_'));
     }
-    SetAssignmentFor(sbmlmod, formvar);
+    SetAssignmentFor(sbmlmod, formvar, syncmap, comp);
     formula_type ftype = formvar->GetFormulaType();
     assert (ftype == formulaINITIAL || ftype==formulaASSIGNMENT || ftype==formulaRATE);
     if (ftype != formulaINITIAL) {
@@ -1007,6 +1149,7 @@ void Module::CreateSBMLModel(bool comp)
         sbr->setIdRef(name2[svn]);
       }
       else {
+        assert(false);
         //Need to create a local variable.
         //LS DEBUG
       }
@@ -1015,36 +1158,173 @@ void Module::CreateSBMLModel(bool comp)
 #endif //USE_COMP
 }
 
-void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var)
+void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<const Variable*, Variable>& syncmap, bool comp)
 {
+  bool useinitial = true;
+  bool useassignment = true;
+  bool userate = true;
+  if (comp) {
+    //The comp version is a lot more complicated than the flat version, because we need to:
+    // * Delete all rules/assignments that no longer apply to this variable
+    // * Leave any rule/assignment that still applies
+    // * Create a new rule/assignment if none of the old ones apply.
+    vector<const Variable*> synchronized = GetSynchronizedVariablesFor(var);
+    useassignment = SynchronizeAssignments(sbmlmod, var, synchronized, syncmap);
+    userate = SynchronizeRates(sbmlmod, var, synchronized, syncmap);
+  }
   char cc = g_registry.GetCC();
   formula_type ftype = var->GetFormulaType();
   const Formula* formula = var->GetFormula();
   if (!formula->IsEmpty()) {
     ASTNode* math = parseStringToASTNode(formula->ToSBMLString());
     if (ftype == formulaASSIGNMENT) {
-      AssignmentRule* ar = sbmlmod->createAssignmentRule();
-      ar->setVariable(var->GetNameDelimitedBy(cc));
-      ar->setMath(math);
+      if (useassignment) {
+        AssignmentRule* ar = sbmlmod->createAssignmentRule();
+        ar->setVariable(var->GetNameDelimitedBy(cc));
+        ar->setMath(math);
+      }
     }
     else if (!formula->IsDouble() &&
-             !(IsSpecies(var->GetType()) && formula->IsAmountIn(var->GetCompartment()))) {
-      //if it was a double or a species with an amount, we already dealt with it.  Otherwise:
-      InitialAssignment* ia = sbmlmod->createInitialAssignment();
-      ia->setSymbol(var->GetNameDelimitedBy(cc));
-      ia->setMath(math);
+      !(IsSpecies(var->GetType()) && formula->IsAmountIn(var->GetCompartment()))) {
+        //if it was a double or a species with an amount, we already dealt with it.  Otherwise:
+        if (useassignment) {
+          InitialAssignment* ia = sbmlmod->createInitialAssignment();
+          ia->setSymbol(var->GetNameDelimitedBy(cc));
+          ia->setMath(math);
+        }
     }
     delete math;
   }
   if (ftype == formulaRATE) {
     formula = var->GetRateRule();
     if (!formula->IsEmpty()) {
-      ASTNode* math = parseStringToASTNode(var->GetRateRule()->ToSBMLString());
-      RateRule* rr = sbmlmod->createRateRule();
-      rr->setVariable(var->GetNameDelimitedBy(cc));
-      rr->setMath(math);
-      delete math;
+      if (userate) {
+        ASTNode* math = parseStringToASTNode(var->GetRateRule()->ToSBMLString());
+        RateRule* rr = sbmlmod->createRateRule();
+        rr->setVariable(var->GetNameDelimitedBy(cc));
+        rr->setMath(math);
+        delete math;
+      }
     }
   }
 }
+
+
+void CreateDeletion(Submodel* submodel, SBase* sbase, SBMLDocument& sbml, vector<string> submodname, string basemetaid)
+{
+  Deletion* deletion = submodel->createDeletion();
+  SBaseRef* sbr = deletion;
+  for (size_t i=1; i<submodname.size(); i++) {
+    sbr->setIdRef(submodname[i]);
+    sbr = sbr->createSBaseRef();
+  }
+  string metaid = sbase->getMetaId();
+  if (metaid.empty()) {
+    //Need to set one.
+    size_t num = 1;
+    metaid = basemetaid;
+    while (sbml.getElementByMetaId(metaid) != NULL) {
+      metaid = basemetaid + SizeTToString(num);
+      num++;
+    }
+    sbase->setMetaId(metaid);
+  }
+  sbr->setMetaIdRef(metaid);
+}
+
+bool Module::SynchronizeAssignments(Model* sbmlmod, const Variable* var, const vector<const Variable*>& synchronized, const map<const Variable*, Variable>& syncmap)
+{
+  bool ret = true;
+  const Formula* currentform = var->GetFormula();
+  bool notblank = !currentform->IsEmpty();
+  for (size_t v=0; v<synchronized.size(); v++) {
+    map<const Variable*, Variable >::const_iterator syncmapiter = syncmap.find(synchronized[v]);
+    if (syncmapiter == syncmap.end()) {
+      assert(false);
+      continue;
+    }
+    const Variable* orig = &syncmapiter->second;
+    if (ret && notblank && var->GetFormulaType() == orig->GetFormulaType() &&
+        currentform->ToSBMLString() == orig->GetFormula()->ToSBMLString()) {
+          ret = false; //We can leave the original definition there.
+          continue;
+    }
+    if (orig->GetFormula()->IsEmpty()) continue; //There won't be any ia's or ar's in the original.
+    //Otherwise, delete any initial assignments or assignment rules in the submodel.
+    vector<string> syncname = synchronized[v]->GetName();
+    vector<string> submodname = syncname;
+    submodname.pop_back();
+    Variable* submod = GetVariable(submodname);
+    if (submod==NULL) {
+      assert(false);
+      continue;
+    }
+    CompSBMLDocumentPlugin* csdp = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
+    ModelDefinition* md = csdp->getModelDefinition(submod->GetModule()->GetModuleName());
+    InitialAssignment* ia = md->getInitialAssignment(syncname[syncname.size()-1]);
+    Rule* ar = md->getRule(syncname[syncname.size()-1]);
+    Deletion* deletion = NULL;
+    SBaseRef* sbr = NULL;
+    CompModelPlugin* cmp = static_cast<CompModelPlugin*>(sbmlmod->getPlugin("comp"));
+    Submodel* submodel = cmp->getSubmodel(submodname[0]);
+    if (submod==NULL) {
+      assert(false);
+      return ret;
+    }
+    if (ia != NULL) {
+      string basemetaid = submod->GetModule()->GetModuleName() + "_" + ia->getId() + "_initialassignment";
+      CreateDeletion(submodel, ia, m_sbml, submodname, basemetaid);
+    }
+    if (ar != NULL && ar->isAssignment()) {
+      string basemetaid = submod->GetModule()->GetModuleName() + "_" + ar->getId() + "_assignmentrule";
+      CreateDeletion(submodel, ar, m_sbml, submodname, basemetaid);
+    }
+  }
+  return ret;
+}
+
+bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<const Variable*>& synchronized, const map<const Variable*, Variable>& syncmap)
+{
+  bool ret = true;
+  const Formula* currentform = var->GetRateRule();
+  bool notblank = !currentform->IsEmpty();
+  for (size_t v=0; v<synchronized.size(); v++) {
+    map<const Variable*, Variable >::const_iterator syncmapiter = syncmap.find(synchronized[v]);
+    if (syncmapiter == syncmap.end()) {
+      assert(false);
+      continue;
+    }
+    const Variable* orig = &syncmapiter->second;
+    if (ret && notblank && var->GetFormulaType() == orig->GetFormulaType() &&
+        currentform->ToSBMLString() == orig->GetRateRule()->ToSBMLString()) {
+          ret = false; //We can leave the original definition there.
+          continue;
+    }
+    if (orig->GetRateRule()->IsEmpty()) continue; //There won't be any rr's in the original.
+    //Otherwise, delete any rate rules in the submodel.
+    vector<string> syncname = synchronized[v]->GetName();
+    vector<string> submodname = syncname;
+    submodname.pop_back();
+    Variable* submod = GetVariable(submodname);
+    if (submod==NULL) {
+      assert(false);
+      continue;
+    }
+    CompSBMLDocumentPlugin* csdp = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
+    ModelDefinition* md = csdp->getModelDefinition(submod->GetModule()->GetModuleName());
+    Rule* rr = md->getRule(syncname[syncname.size()-1]);
+    if (rr != NULL && rr->isRate()) {
+      CompModelPlugin* cmp = static_cast<CompModelPlugin*>(sbmlmod->getPlugin("comp"));
+      Submodel* submodel = cmp->getSubmodel(submodname[0]);
+      if (submod==NULL) {
+        assert(false);
+        return ret;
+      }
+      string basemetaid = submod->GetModule()->GetModuleName() + "_" + rr->getId() + "_raterule";
+      CreateDeletion(submodel, rr, m_sbml, submodname, basemetaid);
+    }
+  }
+  return ret;
+}
+
 #endif

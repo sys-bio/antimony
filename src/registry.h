@@ -86,6 +86,8 @@ public:
   int    OpenString(std::string model);
 #ifndef NSBML
   int    CheckAndAddSBMLIfGood(SBMLDocument* document);
+  void   LoadSubmodelsFrom(const Model* model);
+  bool   LoadModelFrom(std::string modelname, const SBMLDocument* document);
 #endif
 #ifndef NCELLML
   bool   LoadCellML(iface::cellml_api::Model* model);
@@ -139,7 +141,7 @@ public:
   bool SetNewCurrentEvent(Formula* trigger, Variable* var);
   bool SetNewCurrentEvent(Formula* delay, Formula* trigger, Variable* var);
   AntimonyEvent* GetCurrentEvent();
-  bool SetCompartmentOfCurrentSubmod(Variable* var);
+  Variable* GetCurrentSubmodel();
 
   void SetError(std::string error) {m_error = error;};
   void AddErrorPrefix(std::string error) {m_error = error + m_error;};
