@@ -317,10 +317,10 @@ void FixName(map<vector<string>, Variable*>& varmap)
   
 }
 #ifdef USE_COMP
-void getDocumentFromExternalModelDefinition(const ExternalModelDefinition* cextmoddef, SBMLDocument*& extdoc, Model*& extmod)
+Model* getModelFromExternalModelDefinition(const ExternalModelDefinition* cextmoddef)
 {
   ExternalModelDefinition* extmoddef = const_cast<ExternalModelDefinition*>(cextmoddef);
-  extmod = extmoddef->getReferencedModel();
+  Model* extmod = extmoddef->getReferencedModel();
   if (extmod == NULL) {
     string error = "Unable to open ";
     if (extmoddef->isSetModelRef()) {
@@ -333,12 +333,8 @@ void getDocumentFromExternalModelDefinition(const ExternalModelDefinition* cextm
       error += "the external model definition, because it did not have the required 'source' attribute.";
     }
     g_registry.AddWarning(error);
-    extdoc = NULL;
-    extmod = NULL;
-    return;
   }
-  extdoc = extmod->getSBMLDocument();
-  return;
+  return extmod;
 }
 
 set<string> GetUnitNames(ASTNode* astn)

@@ -69,6 +69,7 @@ public:
   bool MakeUnitVariablesUnits();
 #ifndef NSBML
   bool MakeUnitVariablesUnits(ASTNode* astn);
+  void SetNewTopNameWith(const SBase* from, const std::string& modname);
 #endif
 
   //For CellMLStuff:

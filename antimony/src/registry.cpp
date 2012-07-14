@@ -371,6 +371,7 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
   if (log->getNumFailsWithSeverity(2) == 0 && log->getNumFailsWithSeverity(3) == 0) {
     //It's a valid SBML file.
     const Model* sbml = document->getModel();
+    LoadSubmodelsFrom(sbml);
     string sbmlname = getNameFromSBMLObject(sbml, "file");
     if (sbmlname != MAINMODULE) {
       while (NewCurrentModule(&sbmlname)) {
@@ -386,6 +387,60 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
   }
   return 0;
 }
+
+void Registry::LoadSubmodelsFrom(const Model* model)
+{
+  const CompModelPlugin* cmp = static_cast<const CompModelPlugin*>(model->getPlugin("comp"));
+  if (cmp==NULL) return;
+  //Load any submodels that external model might need.
+  for (unsigned int s=0; s<cmp->getNumSubmodels(); s++) {
+    const Submodel* submodel = cmp->getSubmodel(s);
+    if (LoadModelFrom(submodel->getModelRef(), model->getSBMLDocument())) {
+      AddWarning("Unable to load submodel " + submodel->getModelRef() + ".");
+    }
+  }
+}
+
+bool Registry::LoadModelFrom(std::string modelname, const SBMLDocument* document)
+{
+  if (modelname.empty()) return true;
+  if (GetModule(modelname) != NULL) return false; //Already loaded.
+  if (document==NULL) return true;
+#ifdef USE_COMP
+  const CompSBMLDocumentPlugin* docplug = static_cast<const CompSBMLDocumentPlugin*>(document->getPlugin("comp"));
+  if (docplug==NULL) return true;
+  const SBase* model = docplug->getModel(modelname);
+  if (model==NULL) {
+    AddWarning("Unable to find model " + modelname + " in the SBML Document.");
+    return true;
+  }
+  const Model* mod = NULL;
+  const SBMLDocument* modeldoc = document;
+  if (model->getTypeCode()==SBML_COMP_EXTERNALMODELDEFINITION) {
+    const ExternalModelDefinition* emd = static_cast<const ExternalModelDefinition*>(model);
+    mod = getModelFromExternalModelDefinition(emd);
+    if (mod==NULL) {
+      AddWarning("Unable to load external model " + modelname + ".");
+      return true;
+    }
+  }
+  else {
+    mod = static_cast<const Model*>(model);
+  }
+  LoadSubmodelsFrom(mod);
+  NewCurrentModule(&modelname);
+  CurrentModule()->LoadSBML(mod);
+  return false;
+#else
+  if (document->getModel()->getName()==modelname) {
+    NewCurrentModule();
+    CurrentModule()->LoadSBML(document->getModel());
+    return false;
+  }
+  return true; //Failure; need comp for this function.
+#endif
+}
+
 #endif  
 
 #ifndef NCELLML
@@ -970,9 +1025,9 @@ AntimonyEvent* Registry::GetCurrentEvent() {
   return CurrentModule()->GetVariable(m_currentEvent)->GetEvent();
 }
 
-bool Registry::SetCompartmentOfCurrentSubmod(Variable* var)
+Variable* Registry::GetCurrentSubmodel()
 {
-  return CurrentModule()->GetVariable(m_currentImportedModule)->SetCompartment(var);
+  return CurrentModule()->GetVariable(m_currentImportedModule);
 }
 
 Formula* Registry::NewBlankFormula()

@@ -23,6 +23,8 @@ Variable::Variable(const string name, const Module* module)
     m_valRateRule(),
     m_valUnitDef(name, module->GetModuleName()),
     m_formulatype(formulaINITIAL),
+    m_extentConversionFactor(),
+    m_timeConversionFactor(),
     m_compartment(),
     m_supercompartment(),
     m_supercomptype(varUndefined),
@@ -292,6 +294,15 @@ const AntimonyReaction* Variable::GetReaction() const
 }
 
 Module* Variable::GetModule()
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetModule();
+  }
+  assert(m_type == varModule);
+  return &(m_valModule[0]);
+}
+
+const Module* Variable::GetModule() const
 {
   if (IsPointer()) {
     return GetSameVariable()->GetModule();
@@ -738,8 +749,9 @@ bool Variable::SetFormula(Formula* formula)
   string formstring = formula->ToSBMLString(GetStrandVars());
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
-    if (ASTform == NULL) {
-      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\":  " + SBML_getLastParseL3Error());
+    string errstring = SBML_getLastParseL3Error();
+    if (ASTform == NULL && !errstring.empty()) {
+      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\":  " + errstring);
       return true;
     }
     else {
@@ -829,7 +841,7 @@ bool Variable::SetAssignmentRule(Formula* formula)
     g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is the type " + VarTypeToString(m_type) + ", and may not have an assignment rule associated with it.");
     return true;
   }
-  if (GetFormulaType() == formulaRATE) {
+  if (GetFormulaType() == formulaRATE && !m_valRateRule.IsEmpty()) {
     g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is associated with a rate rule, and may not additionally have an assignment rule.");
     return true;
   }
@@ -865,7 +877,7 @@ bool Variable::SetRateRule(Formula* formula)
     g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is the type " + VarTypeToString(m_type) + ", and may not have a rate rule associated with it.");
     return true;
   }
-  if (GetFormulaType() == formulaASSIGNMENT) {
+  if (GetFormulaType() == formulaASSIGNMENT && !m_valFormula.IsEmpty()) {
     g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is associated with an assignment rule, and may not additionally have a rate rule.");
     return true;
   }
@@ -990,6 +1002,12 @@ void Variable::SetNewTopName(string newmodname, string newtopname)
   }
   if (m_unitVariable.size() > 0) {
     m_unitVariable.insert(m_unitVariable.begin(), newtopname);
+  }
+  if (m_extentConversionFactor.size() > 0) {
+    m_extentConversionFactor.insert(m_extentConversionFactor.begin(), newtopname);
+  }
+  if (m_timeConversionFactor.size() > 0) {
+    m_timeConversionFactor.insert(m_timeConversionFactor.begin(), newtopname);
   }
   set<vector<string> > newstrands;
   for (set<vector<string> >::iterator strand = m_strands.begin(); strand != m_strands.end(); strand++) {
@@ -1207,6 +1225,60 @@ bool Variable::SetUnit(Variable* var)
   return false; //success
 }
 
+bool Variable::SetExtentConversionFactor(Variable* var)
+{
+  if (var->SetType(varFormulaUndef)) return true;
+  if (var->GetType() != varFormulaUndef) {
+    g_registry.SetError("Unable to use " + var->GetNameDelimitedBy('.') + " as the extent conversion factor for submodel " + GetNameDelimitedBy('.') + " because that variable is of type " + VarTypeToString(var->GetType()) + " and only variables of type Formula may be used as conversion factors.");
+    return true;
+  }
+  if (var->SetIsConst(true)) return true;
+  m_extentConversionFactor = var->GetName();
+  return false;
+}
+
+bool Variable::SetTimeConversionFactor(Variable* var)
+{
+  if (var->SetType(varFormulaUndef)) return true;
+  if (var->GetType() != varFormulaUndef) {
+    g_registry.SetError("Unable to use " + var->GetNameDelimitedBy('.') + " as the time conversion factor for submodel " + GetNameDelimitedBy('.') + " because that variable is of type " + VarTypeToString(var->GetType()) + " and only variables of type Formula may be used as conversion factors.");
+    return true;
+  }
+  if (var->SetIsConst(true)) return true;
+  m_timeConversionFactor = var->GetName();
+  return false;
+}
+
+bool Variable::SetExtentConversionFactor(double val)
+{
+  string convname = "extentconv";
+  Variable* conversionFactor = g_registry.GetModule(m_module)->AddOrFindVariable(&convname);
+  Formula* formula = new Formula();
+  formula->AddNum(val);
+  if (conversionFactor->SetFormula(formula)) return true;
+  return SetExtentConversionFactor(conversionFactor);
+}
+
+bool Variable::SetTimeConversionFactor(double val)
+{
+  string convname = "timeconv";
+  Variable* conversionFactor = g_registry.GetModule(m_module)->AddOrFindVariable(&convname);
+  Formula* formula = new Formula();
+  formula->AddNum(val);
+  if (conversionFactor->SetFormula(formula)) return true;
+  return SetTimeConversionFactor(conversionFactor);
+}
+
+Variable* Variable::GetExtentConversionFactor()
+{
+  return g_registry.GetModule(m_module)->GetVariable(m_extentConversionFactor);
+}
+
+Variable* Variable::GetTimeConversionFactor()
+{
+  return g_registry.GetModule(m_module)->GetVariable(m_timeConversionFactor);
+}
+
 //Set this variable to be a shell pointing to the clone, transferring any data we may already have.
 bool Variable::Synchronize(Variable* clone)
 {
@@ -1231,11 +1303,7 @@ bool Variable::Synchronize(Variable* clone)
     //already equivalent--don't do anything
     return false;
   }
-  if (clone->m_name.size() > 1 && m_name.size() == 1) {
-    //When synchronizing a local variable to a submodule's variable, always have the local trump the submodule.
-    return clone->Synchronize(this);
-  }
-  
+
   //Check for error conditions
   assert(m_module == clone->GetNamespace());
 
@@ -1309,6 +1377,7 @@ bool Variable::Synchronize(Variable* clone)
     m_displayname = "";
   }
 
+  //Synchronize the formulas.
   if (!m_valFormula.IsEmpty()) {
     Formula* cloneform = clone->GetFormula();
     if (cloneform->IsEmpty() || cloneform->IsEllipsesOnly()) {
@@ -1347,6 +1416,8 @@ bool Variable::Synchronize(Variable* clone)
     m_valRateRule.Clear();
   }
   m_formulatype = clone->GetFormulaType();
+
+  //Synchronize the Reactions.
   if (!m_valReaction.IsEmpty()) {
     const AntimonyReaction* clonerxn = clone->GetReaction();
     if (clonerxn->IsEmpty()) {
@@ -1354,7 +1425,11 @@ bool Variable::Synchronize(Variable* clone)
     }
     m_valReaction.Clear();
   }
+
+  //Don't synchronize modules (should be accounted for above)
   assert(m_valModule.size()==0);
+
+  //Synchronize DNA strands
   if (!m_valStrand.IsEmpty()) {
     const DNAStrand* clonestrand = clone->GetDNAStrand();
     if (clonestrand->IsEmpty()) {
@@ -1363,6 +1438,7 @@ bool Variable::Synchronize(Variable* clone)
     m_valStrand.Clear();
   }
   
+  //Synchronize the compartments.
   if (clone->m_compartment.size() == 0) {
     clone->m_compartment = m_compartment;
   }
@@ -1373,6 +1449,12 @@ bool Variable::Synchronize(Variable* clone)
   }
   m_supercompartment.clear();
 
+  //We always synchronize the data above first, but where we store it can change based on which version is the top-level.
+  if (clone->m_name.size() > 1 && m_name.size() == 1) {
+    //When synchronizing a local variable to a submodule's variable, always have the local trump the submodule.
+    return clone->Synchronize(this);
+  }
+  
   m_sameVariable = clone->GetName();
 
   //And save this pair in the module as having been syncronized
@@ -1491,3 +1573,31 @@ Variable* Variable::GetParentVariable()
   }
   return g_registry.GetModule(m_module)->GetVariable(parentname);  
 }
+
+#ifndef NSBML
+void Variable::SetWithRule(const Rule* rule)
+{
+  Formula* formula = g_registry.NewBlankFormula();
+  string formulastring(parseASTNodeToString(rule->getMath()));
+  setFormulaWithString(formulastring, formula, g_registry.GetModule(m_module));
+  formula->SetNewTopNameWith(rule, m_module);
+  if (IsSpecies(GetType())) {
+    //Any species in any rule must be 'const' (in Antimony), because this means it's a 'boundary species'
+    SetIsConst(true);
+  }
+  else {
+    //For other parameters, assignment and rate rules always mean the variable in question is not constant.
+    SetIsConst(false);
+  }
+
+  if (rule->isAssignment()) {
+    SetAssignmentRule(formula);
+  }
+  else if (rule->isRate()) {
+    SetRateRule(formula);
+  }
+  else {
+    assert(false); //Algebraic rules should be caught in calling function
+  }
+}
+#endif

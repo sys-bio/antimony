@@ -390,7 +390,7 @@ void TabManager::TranslateSBML(int tab, const QString& text)
 {
     ChangeableTextBox* tab_s = textbox(tab);
     QString oldmodelname = tab_s->GetModelName();
-    int handle = loadSBMLString(text.toUtf8().data());
+    int handle = loadSBMLStringWithLocation(text.toUtf8().data(), tab_s->GetFilename().toAscii());
     if (handle == -1) {
         char* error = getLastError();
         emit FailedSBMLTranslation();
@@ -556,7 +556,7 @@ void TabManager::SetFlatten(bool flatten)
 #ifdef USE_COMP
     if (flatten) {
 #endif
-      loadSBMLString(sbmltab->toPlainText().toAscii());
+      loadSBMLStringWithLocation(sbmltab->toPlainText().toAscii(), sbmltab->GetFilename().toAscii());
       SBML = getSBMLString(NULL);
 #ifdef USE_COMP
     }

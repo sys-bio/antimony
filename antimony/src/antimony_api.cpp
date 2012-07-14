@@ -309,44 +309,28 @@ void LoadSBML(const SBMLDocument* doc)
     for (int emd=0; emd<numext; emd++) {
       const ExternalModelDefinition* extmoddef = compdoc->getExternalModelDefinition(emd);
       string extid = extmoddef->getId();
-      g_registry.NewCurrentModule(&extid);
-      SBMLDocument* extdoc = NULL;
-      Model* extmod = NULL;
-      getDocumentFromExternalModelDefinition(extmoddef, extdoc, extmod);
-      if (extdoc==NULL) continue;
-      if (extdoc->getModel() == NULL) {
-        g_registry.AddWarning("Unable to read document " + extmoddef->getSource() + ".  The model " + extid + " will be blank.");
-      }
-      else if (extmod == NULL) {
+      Model* extmod = getModelFromExternalModelDefinition(extmoddef);
+      if (extmod == NULL) {
         g_registry.AddWarning("Unable to find model " + extmoddef->getModelRef() + " from the document " + extmoddef->getSource() + ".  The model " + extid + " will be blank.");  
       }
       else {
-        g_registry.CurrentModule()->LoadSBML(extmod);
+        g_registry.LoadSubmodelsFrom(extmod);
+        if (g_registry.GetModule(extid)==NULL) {
+          g_registry.NewCurrentModule(&extid);
+          g_registry.CurrentModule()->LoadSBML(extmod);
+          g_registry.RevertToPreviousModule();
+        }
       }
     }
     int nummodels = compdoc->getNumModelDefinitions();
-    int numtranslated = 0;
-    std::set<int> translatednums;
-    while (nummodels > numtranslated) {
-      for (int md=0; md<nummodels; md++) {
-        if (translatednums.find(md) != translatednums.end()) continue;
-        const ModelDefinition* modeldef = compdoc->getModelDefinition(md);
-        const CompModelPlugin* modeldefplug = static_cast<const CompModelPlugin*>(modeldef->getPlugin("comp"));
-        int numsubs = modeldefplug->getNumSubmodels();
-        bool cantranslate = true;
-        for (int ns=0; ns<numsubs; ns++) {
-          const Submodel* submod=modeldefplug->getSubmodel(ns);
-          string modelref = submod->getModelRef();
-          if (g_registry.GetModule(modelref) == NULL) {
-            cantranslate = false;
-          }
-        }
-        if (cantranslate) {
-          string sbmlname = getNameFromSBMLObject(modeldef, "submodel");
-          g_registry.NewCurrentModule(&sbmlname);
-          g_registry.CurrentModule()->LoadSBML(modeldef);
-          numtranslated++;
-        }
+    for (int md=0; md<nummodels; md++) {
+      const ModelDefinition* modeldef = compdoc->getModelDefinition(md);
+      g_registry.LoadSubmodelsFrom(modeldef);
+      string sbmlname = getNameFromSBMLObject(modeldef, "model");
+      if (g_registry.GetModule(sbmlname)==NULL) {
+        g_registry.NewCurrentModule(&sbmlname);
+        g_registry.CurrentModule()->LoadSBML(modeldef);
+        g_registry.RevertToPreviousModule();
       }
     }
   }
@@ -377,7 +361,6 @@ long CheckAndAddSBMLDoc(SBMLDocument* document)
   if (document->getErrorLog()->getNumFailsWithSeverity(2) > 0 || document->getErrorLog()->getNumFailsWithSeverity(3) > 0 ) {
     return -1;
   }
-  const Model* sbml = document->getModel();
   LoadSBML(document);
 
   g_registry.FinalizeModules();
@@ -401,8 +384,18 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
 
 LIB_EXTERN long loadSBMLString(const char* model)
 {
+  return loadSBMLStringWithLocation(model, NULL);
+}
+
+LIB_EXTERN long loadSBMLStringWithLocation(const char* model, const char* location)
+{
   g_registry.ClearModules();
   SBMLDocument* document = readSBMLFromString(model);
+  if (location != NULL) {
+    string locURI = "file:";
+    locURI += location;
+    document->setLocationURI(locURI);
+  }
   long retval = CheckAndAddSBMLDoc(document);
   if (retval == -1) {
     stringstream errorstream;

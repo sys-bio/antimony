@@ -44,6 +44,10 @@ private:
   Formula m_valRateRule;
   formula_type m_formulatype;
 
+  //If the variable is a submodule, it can have conversion factors
+  std::vector<std::string> m_extentConversionFactor;
+  std::vector<std::string> m_timeConversionFactor;
+
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
   std::vector<std::string> m_supercompartment;
@@ -86,6 +90,7 @@ public:
   Formula* GetRateRule();
   const AntimonyReaction* GetReaction() const;
   Module* GetModule();
+  const Module* GetModule() const;
   AntimonyEvent* GetEvent();
   const AntimonyEvent* GetEvent() const;
   UnitDef* GetUnitDef();
@@ -130,7 +135,19 @@ public:
   bool SetUnitDef(UnitDef* unitdef);
   bool SetUnit(Variable* var);
 
+  //Submodule conversion factors:
+  bool SetExtentConversionFactor(Variable* var);
+  bool SetTimeConversionFactor(Variable* var);
+  bool SetExtentConversionFactor(double val);
+  bool SetTimeConversionFactor(double val);
+  Variable* GetExtentConversionFactor();
+  Variable* GetTimeConversionFactor();
+
   bool Synchronize(Variable* clone);
+#ifndef NSBML
+  //bool Synchronize(Variable* clone, SBase* foo);
+  void SetWithRule(const Rule* rule);
+#endif
 
   bool IncludesSelf();
   bool AnyCompartmentLoops() const;

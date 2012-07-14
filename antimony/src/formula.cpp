@@ -595,9 +595,9 @@ bool Formula::MakeAllVariablesUnits()
   return false;
 }
 
+#ifndef NSBML
 bool Formula::MakeUnitVariablesUnits()
 {
-#ifndef NSBML
   string formula = ToSBMLString();
   ASTNode* root = parseStringToASTNode(formula);
   set<string> allunits = GetUnitNames(root);
@@ -612,10 +612,20 @@ bool Formula::MakeUnitVariablesUnits()
       }
     }
   }
-
-#endif
   return false;
 }
+
+void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
+{
+  while (from != NULL) {
+    if (from->getTypeCode()==SBML_COMP_SUBMODEL) {
+      string submodname = from->getId();
+      SetNewTopName(modname, submodname);
+    }
+    from = from->getParentSBMLObject();
+  }
+}
+#endif
 
 void Formula::UseInstead(std::string newname, const Variable* oldvar)
 {
