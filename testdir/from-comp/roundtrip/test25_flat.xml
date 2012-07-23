@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.3-beta on 2012-07-23 11:23 with libSBML version 5.5.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="false">
+  <model id="doc0" name="doc0">
+    <listOfCompartments>
+      <compartment id="sub1__sub1__C" spatialDimensions="3" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="sub1__sub1__s1" compartment="sub1__sub1__C" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="extentconv" value="1000" constant="true"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="sub1__sub1__J0" reversible="true" fast="false">
+        <listOfProducts>
+          <speciesReference species="sub1__sub1__s1" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> extentconv </ci>
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> sub1__sub1__s1 </ci>
+                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                </apply>
+                <apply>
+                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/delay"> delay </csymbol>
+                  <ci> sub1__sub1__s1 </ci>
+                  <cn type="e-notation"> 2 <sep/> 4 </cn>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

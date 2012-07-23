@@ -1,0 +1,22 @@
+//Created by libAntimony v2.3-beta
+model *doc0()
+
+  // Compartments and Species:
+  compartment sub1__sub1__C;
+  species sub1__sub1__s1 in sub1__sub1__C;
+
+  // Reactions:
+  sub1__sub1__J0:  -> sub1__sub1__s1; extentconv * (sub1__sub1__s1 * time / delay(sub1__sub1__s1, 2.000000e+004));
+
+  // Species initializations:
+  sub1__sub1__s1 = 1/ sub1__sub1__C;
+
+  // Compartment initializations:
+  sub1__sub1__C = ;
+
+  // Variable initializations:
+  extentconv = 1000;
+
+  //Other declarations:
+  const sub1__sub1__C, extentconv;
+end

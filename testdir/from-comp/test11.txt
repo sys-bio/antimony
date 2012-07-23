@@ -1,0 +1,70 @@
+//Created by libAntimony v2.3-beta
+model moddef1()
+
+  // Compartments and Species:
+  compartment C;
+  species S1 in C;
+
+  // Species initializations:
+  S1 = 5;
+
+  // Compartment initializations:
+  C = 1;
+
+  //Other declarations:
+  var C;
+end
+
+model moddef2()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1();
+
+  // Compartments and Species:
+  compartment C;
+  species S1 in C;
+
+  // Species initializations:
+  S1 = 5;
+
+  // Compartment initializations:
+  C = 1;
+
+  //Other declarations:
+  var C;
+end
+
+model moddef3()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1();
+  sub2: moddef2();
+
+  // Compartments and Species:
+  compartment C;
+  species S1 in C;
+
+  // Species initializations:
+  S1 = 5;
+
+  // Compartment initializations:
+  C = 1;
+
+  //Other declarations:
+  var C;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1();
+  sub2: moddef2();
+  sub3: moddef3();
+  sub2.sub1.C is C;
+
+  // Compartments and Species:
+  species S1 in C;
+
+  // Species initializations:
+  S1 = 5;
+end

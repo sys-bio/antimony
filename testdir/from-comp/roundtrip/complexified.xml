@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.3-beta on 2012-07-23 11:23 with libSBML version 5.5.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model id="complexified" name="complexified">
+    <listOfCompartments>
+      <compartment id="comp" spatialDimensions="3" size="1" constant="true">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="comp" comp:submodelRef="A"/>
+          <comp:replacedElement comp:idRef="comp" comp:submodelRef="B"/>
+        </comp:listOfReplacedElements>
+      </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="S" compartment="comp" initialConcentration="5" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="S" comp:submodelRef="A"/>
+          <comp:replacedElement comp:idRef="S" comp:submodelRef="B"/>
+        </comp:listOfReplacedElements>
+      </species>
+      <species id="D" compartment="comp" initialConcentration="10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="D" comp:submodelRef="A"/>
+          <comp:replacedElement comp:idRef="D" comp:submodelRef="B"/>
+        </comp:listOfReplacedElements>
+      </species>
+    </listOfSpecies>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="A" comp:modelRef="ExtMod1"/>
+      <comp:submodel comp:id="B" comp:modelRef="simple"/>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="ExtMod1" name="ExtMod1">
+      <listOfCompartments>
+        <compartment id="comp" spatialDimensions="3" size="1" constant="true"/>
+      </listOfCompartments>
+      <listOfSpecies>
+        <species id="S" compartment="comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+        <species id="E" compartment="comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+        <species id="D" compartment="comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+        <species id="ES" compartment="comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      </listOfSpecies>
+      <listOfReactions>
+        <reaction id="J0" reversible="true" fast="false">
+          <listOfReactants>
+            <speciesReference species="S" stoichiometry="1" constant="true"/>
+            <speciesReference species="E" stoichiometry="1" constant="true"/>
+          </listOfReactants>
+          <listOfProducts>
+            <speciesReference species="ES" stoichiometry="1" constant="true"/>
+          </listOfProducts>
+        </reaction>
+        <reaction id="J1" reversible="true" fast="false">
+          <listOfReactants>
+            <speciesReference species="ES" stoichiometry="1" constant="true"/>
+          </listOfReactants>
+          <listOfProducts>
+            <speciesReference species="E" stoichiometry="1" constant="true"/>
+            <speciesReference species="D" stoichiometry="1" constant="true"/>
+          </listOfProducts>
+        </reaction>
+      </listOfReactions>
+    </comp:modelDefinition>
+    <comp:modelDefinition id="simple" name="simple">
+      <listOfCompartments>
+        <compartment id="comp" spatialDimensions="3" size="1" constant="true"/>
+      </listOfCompartments>
+      <listOfSpecies>
+        <species id="S" compartment="comp" initialConcentration="5" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+        <species id="D" compartment="comp" initialConcentration="10" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      </listOfSpecies>
+      <listOfReactions>
+        <reaction id="J0" reversible="true" fast="false">
+          <listOfReactants>
+            <speciesReference species="S" stoichiometry="1" constant="true"/>
+          </listOfReactants>
+          <listOfProducts>
+            <speciesReference species="D" stoichiometry="1" constant="true"/>
+          </listOfProducts>
+        </reaction>
+      </listOfReactions>
+      <comp:listOfPorts>
+        <comp:port comp:idRef="S" comp:id="S"/>
+        <comp:port comp:idRef="D" comp:id="D"/>
+        <comp:port comp:idRef="comp" comp:id="comp"/>
+        <comp:port comp:idRef="J0" comp:id="J0"/>
+      </comp:listOfPorts>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

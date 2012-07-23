@@ -1,0 +1,37 @@
+//Created by libAntimony v2.3-beta
+model *doc0()
+
+  // Compartments and Species:
+  compartment sub1__C;
+  species sub1__s1 in sub1__C;
+
+  // Assignment Rules:
+  t3 := delay(t1, timeconv * 3);
+
+  // Rate Rules:
+  t1' = (time / timeconv * t1 + 3) / timeconv;
+
+  // Reactions:
+  sub1__J0:  -> sub1__s1; extentconv / timeconv * (sub1__s1 * t3 * (time / timeconv) / delay(t5, timeconv * 2.000000e+004));
+
+  // Events:
+  _E0: at timeconv * (1 / (time / timeconv)) after gt(time / timeconv, 3): t5 = time / timeconv;
+
+  // Species initializations:
+  sub1__s1 = 1/ sub1__C;
+
+  // Compartment initializations:
+  sub1__C = ;
+
+  // Variable initializations:
+  timeconv = 60;
+  t5 = 1;
+  extentconv = 1000;
+  t1 = 1;
+  t2 = time / timeconv + 3;
+  t4 = 1;
+
+  //Other declarations:
+  var t5, t1, t2, t3, t4;
+  const sub1__C, timeconv, extentconv;
+end

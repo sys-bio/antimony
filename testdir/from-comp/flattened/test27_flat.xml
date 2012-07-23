@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.3-beta on 2012-07-23 12:48 with libSBML version 5.5.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model id="doc0" name="doc0">
+    <listOfParameters>
+      <parameter id="timeconv" value="60" constant="true"/>
+      <parameter id="sub1__timeconv" value="60" constant="true"/>
+      <parameter id="sub1__timeconv_times_timeconv" constant="true"/>
+      <parameter id="sub1__sub1__t1" constant="false"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="sub1__timeconv_times_timeconv">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> sub1__timeconv </ci>
+            <ci> timeconv </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="sub1__sub1__t1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <plus/>
+            <apply>
+              <divide/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <ci> sub1__timeconv_times_timeconv </ci>
+            </apply>
+            <cn type="integer"> 3 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+  </model>
+</sbml>

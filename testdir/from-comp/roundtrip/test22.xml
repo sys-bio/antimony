@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.3-beta on 2012-07-23 11:23 with libSBML version 5.5.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model id="doc0" name="doc0">
+    <listOfCompartments>
+      <compartment id="C" spatialDimensions="3" size="1" constant="true">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="C" comp:submodelRef="sub1"/>
+        </comp:listOfReplacedElements>
+      </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="s1" compartment="C" initialConcentration="0.001" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="s1" comp:submodelRef="sub1"/>
+        </comp:listOfReplacedElements>
+      </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="timeconv" value="60" constant="true"/>
+      <parameter id="t1" value="1" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="t1" comp:submodelRef="sub1"/>
+        </comp:listOfReplacedElements>
+      </parameter>
+      <parameter id="t2" value="1" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="t2" comp:submodelRef="sub1"/>
+        </comp:listOfReplacedElements>
+      </parameter>
+      <parameter id="t3" value="1" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="t3" comp:submodelRef="sub1"/>
+        </comp:listOfReplacedElements>
+      </parameter>
+      <parameter id="t4" value="1" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="t4" comp:submodelRef="sub1"/>
+        </comp:listOfReplacedElements>
+      </parameter>
+      <parameter id="t5" value="1" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="t5" comp:submodelRef="sub1"/>
+        </comp:listOfReplacedElements>
+      </parameter>
+    </listOfParameters>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="sub1" comp:modelRef="moddef1" comp:timeConversionFactor="timeconv">
+        <comp:listOfDeletions>
+          <comp:deletion comp:metaIdRef="moddef1_t2_initialassignment"/>
+          <comp:deletion comp:metaIdRef="moddef1_t3_assignmentrule"/>
+        </comp:listOfDeletions>
+      </comp:submodel>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="moddef1" name="moddef1">
+      <listOfCompartments>
+        <compartment id="C" spatialDimensions="3" size="1" constant="true"/>
+      </listOfCompartments>
+      <listOfSpecies>
+        <species id="s1" compartment="C" initialConcentration="0.001" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      </listOfSpecies>
+      <listOfParameters>
+        <parameter id="t5" value="1" constant="false"/>
+        <parameter id="t1" value="1" constant="false"/>
+        <parameter id="t2" constant="false"/>
+        <parameter id="t3" constant="false"/>
+        <parameter id="t4" value="1" constant="false"/>
+      </listOfParameters>
+      <listOfInitialAssignments>
+        <initialAssignment metaid="moddef1_t2_initialassignment" symbol="t2">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <cn type="integer"> 3 </cn>
+            </apply>
+          </math>
+        </initialAssignment>
+      </listOfInitialAssignments>
+      <listOfRules>
+        <rateRule variable="t1">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <apply>
+                <divide/>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                <ci> t1 </ci>
+              </apply>
+              <cn type="integer"> 3 </cn>
+            </apply>
+          </math>
+        </rateRule>
+        <assignmentRule metaid="moddef1_t3_assignmentrule" variable="t3">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/delay"> delay </csymbol>
+              <ci> t1 </ci>
+              <cn type="integer"> 3 </cn>
+            </apply>
+          </math>
+        </assignmentRule>
+      </listOfRules>
+      <listOfReactions>
+        <reaction id="J0" reversible="true" fast="false">
+          <listOfProducts>
+            <speciesReference species="s1" stoichiometry="1" constant="true"/>
+          </listOfProducts>
+          <kineticLaw>
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> t3 </ci>
+                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> s1 </ci>
+                  <apply>
+                    <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/delay"> delay </csymbol>
+                    <ci> t5 </ci>
+                    <cn type="e-notation"> 2 <sep/> -1 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </math>
+          </kineticLaw>
+        </reaction>
+      </listOfReactions>
+      <listOfEvents>
+        <event id="_E0" useValuesFromTriggerTime="true">
+          <trigger initialValue="true" persistent="true">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <apply>
+                <gt/>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                <cn type="integer"> 3 </cn>
+              </apply>
+            </math>
+          </trigger>
+          <delay>
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <apply>
+                <divide/>
+                <cn type="integer"> 1 </cn>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              </apply>
+            </math>
+          </delay>
+          <listOfEventAssignments>
+            <eventAssignment variable="t5">
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              </math>
+            </eventAssignment>
+          </listOfEventAssignments>
+        </event>
+      </listOfEvents>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

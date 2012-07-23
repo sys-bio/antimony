@@ -1,0 +1,59 @@
+//Created by libAntimony v2.3-beta
+
+// Warnings from automatic translation:
+//    Unable to process the deletion oldrxn from submodel B in model complexified2.  Deletions have not yet been added as a concept in Antimony.
+//    Unable to connect a replaced element for reaction J0 in model complexified2: the variable B.oldrxn could not be found.
+//    Unable to connect a replaced element for reaction J1 in model complexified2: the variable B.oldrxn could not be found.
+
+model enzyme(comp, S, E, D, ES, J0, J1)
+
+  // Compartments and Species:
+  compartment comp;
+  species S in comp, E in comp, D in comp, ES in comp;
+
+  // Reactions:
+  J0: S + E -> ES; ;
+  J1: ES -> E + D; ;
+
+  // Species initializations:
+  S = ;
+  E = ;
+  D = ;
+  ES = ;
+
+  // Compartment initializations:
+  comp = 1;
+
+  //Other declarations:
+  const comp;
+end
+
+model simple(S, D, comp, J0)
+
+  // Compartments and Species:
+  compartment comp;
+  species S in comp, D in comp;
+
+  // Reactions:
+  J0: S -> D; ;
+
+  // Species initializations:
+  S = 5;
+  D = 10;
+
+  // Compartment initializations:
+  comp = 1;
+
+  //Other declarations:
+  const comp;
+end
+
+model *complexified2()
+
+  // Sub-modules, and any changes to those submodules:
+  A: enzyme(comp, S, E, D, ES, J0, J1);
+  B: simple();
+  B.comp is comp;
+  B.S is S;
+  B.D is D;
+end

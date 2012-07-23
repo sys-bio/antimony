@@ -1,0 +1,85 @@
+//Created by libAntimony v2.3-beta
+model *QuorumTrigger()
+
+  // Compartments and Species:
+  compartment default;
+  species Env in default, LuxR in default, Complex in default, LuxI in default;
+  species GFP in default, P1 in default, P5 in default;
+
+  // Reactions:
+  Production_P1:  => 10LuxR; P1 * (kb * (ko_f / ko_r) * nr + ka * (kao_f / kao_r) * nr * (ka_f / ka_r * Env)^nc) / (1 + ko_f / ko_r * nr + kao_f / kao_r * nr * (ka_f / ka_r * Env)^nc);
+  Complex_Complex: 2LuxR + 2LuxI -> Complex; kc_f * LuxR^nc * LuxI^nc - kc_r * Complex;
+  Production_P5:  => 10GFP + 10LuxI + 10LuxR; P5 * (kb * (ko_f / ko_r) * nr + ka * (kao_f / kao_r) * nr * (ka_f / ka_r * Complex)^nc) / (1 + ko_f / ko_r * nr + kao_f / kao_r * nr * (ka_f / ka_r * Complex)^nc);
+  Degradation_GFP: GFP => ; kd * GFP;
+  Degradation_LuxI: LuxI => ; kd * LuxI;
+  Degradation_Complex: Complex => ; kd * Complex;
+  Degradation_LuxR: LuxR => ; kd * LuxR;
+  MembraneDiffusion_LuxI: LuxI -> ; kmdiff_f * LuxI - kmdiff_r;
+
+  // Events:
+  event0: at geq(time, 10000), t0=false, persistent=false, fromTrigger=false: Env = 100;
+
+  // Species initializations:
+  Env = 0;
+  LuxR = 0;
+  Complex = 0;
+  LuxI = 0;
+  GFP = 0;
+  P1 = 2;
+  P5 = 2;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  kr_f = 0.5;
+  kr_r = 1;
+  ka_f = 0.0033;
+  ka_r = 1;
+  kc_f = 0.05;
+  kc_r = 1;
+  ko_f = 0.033;
+  ko_r = 1;
+  kao_f = 1;
+  kao_r = 1;
+  kmdiff_f = 1;
+  kmdiff_r = 0.01;
+  kd = 0.0075;
+  kecd = 0.005;
+  nc = 2;
+  nr = 30;
+  ko = 0.05;
+  kb = 0.0001;
+  ng = 2;
+  np = 10;
+  ka = 0.25;
+  kecdiff = 1;
+
+  //Other declarations:
+  const default, kr_f, kr_r, ka_f, ka_r, kc_f, kc_r, ko_f, ko_r, kao_f, kao_r;
+  const kmdiff_f, kmdiff_r, kd, kecd, nc, nr, ko, kb, ng, np, ka, kecdiff;
+
+  //Display Names:
+  kr_f is "Forward repression binding rate";
+  kr_r is "Reverse repression binding rate";
+  ka_f is "Forward activation binding rate";
+  ka_r is "Reverse activation binding rate";
+  kc_f is "Forward complex formation rate";
+  kc_r is "Reverse complex formation rate";
+  ko_f is "Forward RNAP binding rate";
+  ko_r is "Reverse RNAP binding rate";
+  kao_f is "Forward activated RNAP binding rate";
+  kao_r is "Reverse activated RNAP binding rate";
+  kmdiff_f is "Forward membrane diffusion rate";
+  kmdiff_r is "Reverse membrane diffusion rate";
+  kd is "Degradation rate";
+  kecd is "Extracellular degradation rate";
+  nc is "Stoichiometry of binding";
+  nr is "Initial RNAP count";
+  ko is "Open complex production rate";
+  kb is "Basal production rate";
+  ng is "Initial promoter count";
+  np is "Stoichiometry of production";
+  ka is "Activated production rate";
+  kecdiff is "Extracellular diffusion rate";
+end
