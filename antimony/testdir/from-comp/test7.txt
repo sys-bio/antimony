@@ -1,0 +1,23 @@
+//Created by libAntimony v2.3-beta
+model Mod1(subparam1)
+
+  // Rate Rules:
+  subparam1' = 8 * subparam2 + subparam1;
+
+  // Variable initializations:
+  subparam1 = subparam2 + 6;
+  subparam2 = 6;
+
+  //Other declarations:
+  var subparam1;
+  const subparam2;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  submod1: Mod1(param1);
+
+  // Variable initializations:
+  param1 = 10.42;
+end

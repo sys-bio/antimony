@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.3-beta on 2012-07-23 11:23 with libSBML version 5.5.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model id="doc0" name="doc0">
+    <listOfParameters>
+      <parameter id="param1" value="10.42" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="subparam1" comp:submodelRef="submod1"/>
+        </comp:listOfReplacedElements>
+      </parameter>
+      <parameter id="param2" value="6" constant="true">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="subparam2" comp:submodelRef="submod1"/>
+        </comp:listOfReplacedElements>
+      </parameter>
+    </listOfParameters>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="submod1" comp:modelRef="Mod1">
+        <comp:listOfDeletions>
+          <comp:deletion comp:metaIdRef="Mod1_subparam1_initialassignment"/>
+        </comp:listOfDeletions>
+      </comp:submodel>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="Mod1" name="Mod1">
+      <listOfParameters>
+        <parameter id="subparam1" constant="false"/>
+        <parameter id="subparam2" value="6" constant="true"/>
+      </listOfParameters>
+      <listOfInitialAssignments>
+        <initialAssignment metaid="Mod1_subparam1_initialassignment" symbol="subparam1">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <ci> subparam2 </ci>
+              <cn type="integer"> 6 </cn>
+            </apply>
+          </math>
+        </initialAssignment>
+      </listOfInitialAssignments>
+      <listOfRules>
+        <rateRule variable="subparam1">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn type="integer"> 8 </cn>
+                <ci> subparam2 </ci>
+              </apply>
+              <ci> subparam1 </ci>
+            </apply>
+          </math>
+        </rateRule>
+      </listOfRules>
+      <comp:listOfPorts>
+        <comp:port comp:idRef="subparam1" comp:id="subparam1"/>
+      </comp:listOfPorts>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

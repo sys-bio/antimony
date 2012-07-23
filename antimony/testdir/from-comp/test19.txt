@@ -1,0 +1,26 @@
+//Created by libAntimony v2.3-beta
+model moddef1()
+
+  // Rate Rules:
+  p80' = 4 * p80 + 3;
+
+  // Variable initializations:
+  p80 = 80;
+
+  //Other declarations:
+  var p80;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1();
+  sub1.p80 * conv is p8;
+
+  // Variable initializations:
+  p8 = 8;
+  conv = 0.1;
+
+  //Other declarations:
+  const conv;
+end

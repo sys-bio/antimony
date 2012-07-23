@@ -1,0 +1,41 @@
+//Created by libAntimony v2.3-beta
+model moddef1()
+
+  // Compartments and Species:
+  compartment C;
+  species $s80 in C;
+
+  // Rate Rules:
+  s80' = 4 * s80 + 3;
+
+  // Species initializations:
+  s80 = 80;
+
+  // Compartment initializations:
+  C = 1;
+
+  //Other declarations:
+  const C;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1();
+  sub1.s80 * conv is s8;
+
+  // Compartments and Species:
+  compartment C;
+
+  // Species initializations:
+  s8 = 8;
+
+  // Compartment initializations:
+  C = 1;
+
+  // Variable initializations:
+  conv = 0.1;
+
+  //Other declarations:
+  const C, conv;
+end

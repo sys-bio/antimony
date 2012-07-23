@@ -1,0 +1,32 @@
+//Created by libAntimony v2.3-beta
+model *aggregate()
+
+  // Compartments and Species:
+  compartment submod1__comp, submod2__comp;
+  species submod1__S in submod1__comp, submod1__E in submod1__comp, submod1__D in submod1__comp;
+  species submod1__ES in submod1__comp, submod2__S in submod2__comp, submod2__E in submod2__comp;
+  species submod2__D in submod2__comp, submod2__ES in submod2__comp;
+
+  // Reactions:
+  submod1__J0: submod1__S + submod1__E -> submod1__ES; ;
+  submod1__J1: submod1__ES -> submod1__E + submod1__D; ;
+  submod2__J0: submod2__S + submod2__E -> submod2__ES; ;
+  submod2__J1: submod2__ES -> submod2__E + submod2__D; ;
+
+  // Species initializations:
+  submod1__S = ;
+  submod1__E = ;
+  submod1__D = ;
+  submod1__ES = ;
+  submod2__S = ;
+  submod2__E = ;
+  submod2__D = ;
+  submod2__ES = ;
+
+  // Compartment initializations:
+  submod1__comp = 1;
+  submod2__comp = 1;
+
+  //Other declarations:
+  const submod1__comp, submod2__comp;
+end

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.3-beta on 2012-07-23 11:23 with libSBML version 5.5.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model id="doc0" name="doc0">
+    <listOfParameters>
+      <parameter id="timeconv" value="60" constant="true"/>
+      <parameter id="extentconv" value="10" constant="true"/>
+    </listOfParameters>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="sub1" comp:modelRef="moddef3" comp:timeConversionFactor="timeconv" comp:extentConversionFactor="extentconv"/>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="moddef1" name="moddef1">
+      <listOfCompartments>
+        <compartment id="C" spatialDimensions="3" constant="true"/>
+      </listOfCompartments>
+      <listOfSpecies>
+        <species id="s1" compartment="C" initialAmount="1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      </listOfSpecies>
+      <listOfReactions>
+        <reaction id="J0" reversible="true" fast="false">
+          <listOfProducts>
+            <speciesReference species="s1" stoichiometry="1" constant="true"/>
+          </listOfProducts>
+          <kineticLaw>
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <apply>
+                <divide/>
+                <apply>
+                  <times/>
+                  <ci> s1 </ci>
+                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                </apply>
+                <apply>
+                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/delay"> delay </csymbol>
+                  <ci> s1 </ci>
+                  <cn type="e-notation"> 2 <sep/> 4 </cn>
+                </apply>
+              </apply>
+            </math>
+          </kineticLaw>
+        </reaction>
+      </listOfReactions>
+    </comp:modelDefinition>
+    <comp:modelDefinition id="moddef2" name="moddef2">
+      <listOfParameters>
+        <parameter id="timeconv" value="60" constant="true"/>
+        <parameter id="extentconv" value="10" constant="true"/>
+      </listOfParameters>
+      <comp:listOfSubmodels>
+        <comp:submodel comp:id="sub1" comp:modelRef="moddef1" comp:timeConversionFactor="timeconv" comp:extentConversionFactor="extentconv"/>
+      </comp:listOfSubmodels>
+    </comp:modelDefinition>
+    <comp:modelDefinition id="moddef3" name="moddef3">
+      <listOfParameters>
+        <parameter id="timeconv" value="60" constant="true"/>
+        <parameter id="extentconv" value="10" constant="true"/>
+      </listOfParameters>
+      <comp:listOfSubmodels>
+        <comp:submodel comp:id="sub1" comp:modelRef="moddef2" comp:timeConversionFactor="timeconv" comp:extentConversionFactor="extentconv"/>
+      </comp:listOfSubmodels>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

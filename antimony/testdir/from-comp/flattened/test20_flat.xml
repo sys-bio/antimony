@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.3-beta on 2012-07-23 12:48 with libSBML version 5.5.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model id="doc0" name="doc0">
+    <listOfCompartments>
+      <compartment id="C" spatialDimensions="3" size="1" constant="true"/>
+      <compartment id="sub1__C" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="s8" compartment="C" initialConcentration="8" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="conv" value="0.1" constant="true"/>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="s8">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <plus/>
+              <apply>
+                <times/>
+                <cn type="integer"> 4 </cn>
+                <apply>
+                  <divide/>
+                  <ci> s8 </ci>
+                  <ci> conv </ci>
+                </apply>
+              </apply>
+              <cn type="integer"> 3 </cn>
+            </apply>
+            <ci> conv </ci>
+          </apply>
+        </math>
+      </rateRule>
+    </listOfRules>
+  </model>
+</sbml>

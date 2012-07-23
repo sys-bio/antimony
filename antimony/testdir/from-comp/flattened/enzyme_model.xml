@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.3-beta on 2012-07-23 12:48 with libSBML version 5.5.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model id="aggregate" name="aggregate">
+    <listOfCompartments>
+      <compartment id="submod1_comp" spatialDimensions="3" size="1" constant="true"/>
+      <compartment id="submod2_comp" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="submod1_S" compartment="submod1_comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="submod1_E" compartment="submod1_comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="submod1_D" compartment="submod1_comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="submod1_ES" compartment="submod1_comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="submod2_S" compartment="submod2_comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="submod2_E" compartment="submod2_comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="submod2_D" compartment="submod2_comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="submod2_ES" compartment="submod2_comp" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="submod1_J0" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="submod1_S" stoichiometry="1" constant="true"/>
+          <speciesReference species="submod1_E" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="submod1_ES" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+      </reaction>
+      <reaction id="submod1_J1" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="submod1_ES" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="submod1_E" stoichiometry="1" constant="true"/>
+          <speciesReference species="submod1_D" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+      </reaction>
+      <reaction id="submod2_J0" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="submod2_S" stoichiometry="1" constant="true"/>
+          <speciesReference species="submod2_E" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="submod2_ES" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+      </reaction>
+      <reaction id="submod2_J1" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="submod2_ES" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="submod2_E" stoichiometry="1" constant="true"/>
+          <speciesReference species="submod2_D" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

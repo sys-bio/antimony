@@ -1,0 +1,29 @@
+//Created by libAntimony v2.3-beta
+model *doc0()
+
+  // Compartments and Species:
+  compartment A__comp;
+  species A__S in A__comp, A__A__E in A__comp, A__A__D in A__comp, A__A__ES in A__comp;
+  species A__B__E in A__comp, A__B__D in A__comp, A__B__ES in A__comp;
+
+  // Reactions:
+  A__A__J0: A__S + A__A__E -> A__A__ES; ;
+  A__A__J1: A__A__ES -> A__A__E + A__A__D; ;
+  A__B__J0: A__S + A__B__E -> A__B__ES; ;
+  A__B__J1: A__B__ES -> A__B__E + A__B__D; ;
+
+  // Species initializations:
+  A__S = ;
+  A__A__E = ;
+  A__A__D = ;
+  A__A__ES = ;
+  A__B__E = ;
+  A__B__D = ;
+  A__B__ES = ;
+
+  // Compartment initializations:
+  A__comp = 1;
+
+  //Other declarations:
+  const A__comp;
+end

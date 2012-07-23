@@ -1,0 +1,183 @@
+//Created by libAntimony v2.3-beta
+function get2DArrayElement(a, b, c)
+  a;
+end
+
+
+model *QTPop()
+
+  // Compartments and Species:
+  compartment default, GRID__QuorumTrigger__default;
+  species LuxI in default, GRID__QuorumTrigger__Env in GRID__QuorumTrigger__default;
+  species GRID__QuorumTrigger__LuxR in GRID__QuorumTrigger__default, GRID__QuorumTrigger__Complex in GRID__QuorumTrigger__default;
+  species GRID__QuorumTrigger__LuxI in GRID__QuorumTrigger__default, GRID__QuorumTrigger__GFP in GRID__QuorumTrigger__default;
+  species GRID__QuorumTrigger__P1 in GRID__QuorumTrigger__default, GRID__QuorumTrigger__P5 in GRID__QuorumTrigger__default;
+
+  // Reactions:
+  Degradation_LuxI: LuxI => ; Degradation_LuxI_kecd * get2DArrayElement(LuxI, Degradation_LuxI_i, Degradation_LuxI_j);
+  Diffusion_LuxI_Above: LuxI -> LuxI; Diffusion_LuxI_Above_kecdiff * get2DArrayElement(LuxI, Diffusion_LuxI_Above_i, Diffusion_LuxI_Above_j) - Diffusion_LuxI_Above_kecdiff * get2DArrayElement(LuxI, Diffusion_LuxI_Above_i - 1, Diffusion_LuxI_Above_j + 0);
+  Diffusion_LuxI_Below: LuxI -> LuxI; Diffusion_LuxI_Below_kecdiff * get2DArrayElement(LuxI, Diffusion_LuxI_Below_i, Diffusion_LuxI_Below_j) - Diffusion_LuxI_Below_kecdiff * get2DArrayElement(LuxI, Diffusion_LuxI_Below_i + 1, Diffusion_LuxI_Below_j + 0);
+  Diffusion_LuxI_Left: LuxI -> LuxI; Diffusion_LuxI_Left_kecdiff * get2DArrayElement(LuxI, Diffusion_LuxI_Left_i, Diffusion_LuxI_Left_j) - Diffusion_LuxI_Left_kecdiff * get2DArrayElement(LuxI, Diffusion_LuxI_Left_i + 0, Diffusion_LuxI_Left_j - 1);
+  Diffusion_LuxI_Right: LuxI -> LuxI; Diffusion_LuxI_Right_kecdiff * get2DArrayElement(LuxI, Diffusion_LuxI_Right_i, Diffusion_LuxI_Right_j) - Diffusion_LuxI_Right_kecdiff * get2DArrayElement(LuxI, Diffusion_LuxI_Right_i + 0, Diffusion_LuxI_Right_j + 1);
+  MembraneDiffusion_LuxI: LuxI -> LuxI; get2DArrayElement(kmdiff_f, MembraneDiffusion_LuxI_i, MembraneDiffusion_LuxI_j) * get2DArrayElement(LuxI, MembraneDiffusion_LuxI_i, MembraneDiffusion_LuxI_j) - get2DArrayElement(kmdiff_r, MembraneDiffusion_LuxI_i, MembraneDiffusion_LuxI_j) * get2DArrayElement(LuxI, MembraneDiffusion_LuxI_i, MembraneDiffusion_LuxI_j);
+  GRID__QuorumTrigger__Production_P1:  => 10GRID__QuorumTrigger__LuxR; GRID__QuorumTrigger__P1 * (GRID__QuorumTrigger__kb * (GRID__QuorumTrigger__ko_f / GRID__QuorumTrigger__ko_r) * GRID__QuorumTrigger__nr + GRID__QuorumTrigger__ka * (GRID__QuorumTrigger__kao_f / GRID__QuorumTrigger__kao_r) * GRID__QuorumTrigger__nr * (GRID__QuorumTrigger__ka_f / GRID__QuorumTrigger__ka_r * GRID__QuorumTrigger__Env)^GRID__QuorumTrigger__nc) / (1 + GRID__QuorumTrigger__ko_f / GRID__QuorumTrigger__ko_r * GRID__QuorumTrigger__nr + GRID__QuorumTrigger__kao_f / GRID__QuorumTrigger__kao_r * GRID__QuorumTrigger__nr * (GRID__QuorumTrigger__ka_f / GRID__QuorumTrigger__ka_r * GRID__QuorumTrigger__Env)^GRID__QuorumTrigger__nc);
+  GRID__QuorumTrigger__Complex_Complex: 2GRID__QuorumTrigger__LuxR + 2GRID__QuorumTrigger__LuxI -> GRID__QuorumTrigger__Complex; GRID__QuorumTrigger__kc_f * GRID__QuorumTrigger__LuxR^GRID__QuorumTrigger__nc * GRID__QuorumTrigger__LuxI^GRID__QuorumTrigger__nc - GRID__QuorumTrigger__kc_r * GRID__QuorumTrigger__Complex;
+  GRID__QuorumTrigger__Production_P5:  => 10GRID__QuorumTrigger__GFP + 10GRID__QuorumTrigger__LuxI + 10GRID__QuorumTrigger__LuxR; GRID__QuorumTrigger__P5 * (GRID__QuorumTrigger__kb * (GRID__QuorumTrigger__ko_f / GRID__QuorumTrigger__ko_r) * GRID__QuorumTrigger__nr + GRID__QuorumTrigger__ka * (GRID__QuorumTrigger__kao_f / GRID__QuorumTrigger__kao_r) * GRID__QuorumTrigger__nr * (GRID__QuorumTrigger__ka_f / GRID__QuorumTrigger__ka_r * GRID__QuorumTrigger__Complex)^GRID__QuorumTrigger__nc) / (1 + GRID__QuorumTrigger__ko_f / GRID__QuorumTrigger__ko_r * GRID__QuorumTrigger__nr + GRID__QuorumTrigger__kao_f / GRID__QuorumTrigger__kao_r * GRID__QuorumTrigger__nr * (GRID__QuorumTrigger__ka_f / GRID__QuorumTrigger__ka_r * GRID__QuorumTrigger__Complex)^GRID__QuorumTrigger__nc);
+  GRID__QuorumTrigger__Degradation_GFP: GRID__QuorumTrigger__GFP => ; GRID__QuorumTrigger__kd * GRID__QuorumTrigger__GFP;
+  GRID__QuorumTrigger__Degradation_LuxI: GRID__QuorumTrigger__LuxI => ; GRID__QuorumTrigger__kd * GRID__QuorumTrigger__LuxI;
+  GRID__QuorumTrigger__Degradation_Complex: GRID__QuorumTrigger__Complex => ; GRID__QuorumTrigger__kd * GRID__QuorumTrigger__Complex;
+  GRID__QuorumTrigger__Degradation_LuxR: GRID__QuorumTrigger__LuxR => ; GRID__QuorumTrigger__kd * GRID__QuorumTrigger__LuxR;
+  GRID__QuorumTrigger__MembraneDiffusion_LuxI: GRID__QuorumTrigger__LuxI -> ; GRID__QuorumTrigger__kmdiff_f * GRID__QuorumTrigger__LuxI - GRID__QuorumTrigger__kmdiff_r;
+
+  // Events:
+  GRID__QuorumTrigger__event0: at geq(time, 10000), t0=false, persistent=false, fromTrigger=false: GRID__QuorumTrigger__Env = 100;
+
+  // Species initializations:
+  LuxI = 0;
+  GRID__QuorumTrigger__Env = 0;
+  GRID__QuorumTrigger__LuxR = 0;
+  GRID__QuorumTrigger__Complex = 0;
+  GRID__QuorumTrigger__LuxI = 0;
+  GRID__QuorumTrigger__GFP = 0;
+  GRID__QuorumTrigger__P1 = 2;
+  GRID__QuorumTrigger__P5 = 2;
+
+  // Compartment initializations:
+  default = 1;
+  GRID__QuorumTrigger__default = 1;
+
+  // Variable initializations:
+  a = ;
+  kr_f = 0.5;
+  kr_r = 1;
+  ka_f = 0.0033;
+  ka_r = 1;
+  kc_f = 0.05;
+  kc_r = 1;
+  ko_f = 0.033;
+  ko_r = 1;
+  kao_f = 1;
+  kao_r = 1;
+  kmdiff_f = 1;
+  kmdiff_r = 0.01;
+  kd = 0.0075;
+  kecd = 0.005;
+  nc = 2;
+  nr = 30;
+  ko = 0.05;
+  kb = 0.0001;
+  ng = 2;
+  np = 10;
+  ka = 0.25;
+  kecdiff = 1;
+  QuorumTrigger__locations = ;
+  QuorumTrigger_size = 16;
+  GRID__QuorumTrigger__kr_f = 0.5;
+  GRID__QuorumTrigger__kr_r = 1;
+  GRID__QuorumTrigger__ka_f = 0.0033;
+  GRID__QuorumTrigger__ka_r = 1;
+  GRID__QuorumTrigger__kc_f = 0.05;
+  GRID__QuorumTrigger__kc_r = 1;
+  GRID__QuorumTrigger__ko_f = 0.033;
+  GRID__QuorumTrigger__ko_r = 1;
+  GRID__QuorumTrigger__kao_f = 1;
+  GRID__QuorumTrigger__kao_r = 1;
+  GRID__QuorumTrigger__kmdiff_f = 1;
+  GRID__QuorumTrigger__kmdiff_r = 0.01;
+  GRID__QuorumTrigger__kd = 0.0075;
+  GRID__QuorumTrigger__kecd = 0.005;
+  GRID__QuorumTrigger__nc = 2;
+  GRID__QuorumTrigger__nr = 30;
+  GRID__QuorumTrigger__ko = 0.05;
+  GRID__QuorumTrigger__kb = 0.0001;
+  GRID__QuorumTrigger__ng = 2;
+  GRID__QuorumTrigger__np = 10;
+  GRID__QuorumTrigger__ka = 0.25;
+  GRID__QuorumTrigger__kecdiff = 1;
+  i = ;
+  j = ;
+  Degradation_LuxI_i = ;
+  Degradation_LuxI_j = ;
+  Degradation_LuxI_kecd = 0.005;
+  Degradation_LuxI_kecd has u_1_second_n1;
+  Diffusion_LuxI_Above_i = ;
+  Diffusion_LuxI_Above_j = ;
+  Diffusion_LuxI_Above_kecdiff = 1;
+  Diffusion_LuxI_Above_kecdiff has u_1_second_n1;
+  Diffusion_LuxI_Below_i = ;
+  Diffusion_LuxI_Below_j = ;
+  Diffusion_LuxI_Below_kecdiff = 1;
+  Diffusion_LuxI_Below_kecdiff has u_1_second_n1;
+  Diffusion_LuxI_Left_i = ;
+  Diffusion_LuxI_Left_j = ;
+  Diffusion_LuxI_Left_kecdiff = 1;
+  Diffusion_LuxI_Left_kecdiff has u_1_second_n1;
+  Diffusion_LuxI_Right_i = ;
+  Diffusion_LuxI_Right_j = ;
+  Diffusion_LuxI_Right_kecdiff = 1;
+  Diffusion_LuxI_Right_kecdiff has u_1_second_n1;
+  MembraneDiffusion_LuxI_i = ;
+  MembraneDiffusion_LuxI_j = ;
+
+  //Other declarations:
+  var QuorumTrigger__locations, QuorumTrigger_size;
+  const default, GRID__QuorumTrigger__default, kr_f, kr_r, ka_f, ka_r, kc_f;
+  const kc_r, ko_f, ko_r, kao_f, kao_r, kmdiff_f, kmdiff_r, kd, kecd, nc;
+  const nr, ko, kb, ng, np, ka, kecdiff, GRID__QuorumTrigger__kr_f, GRID__QuorumTrigger__kr_r;
+  const GRID__QuorumTrigger__ka_f, GRID__QuorumTrigger__ka_r, GRID__QuorumTrigger__kc_f;
+  const GRID__QuorumTrigger__kc_r, GRID__QuorumTrigger__ko_f, GRID__QuorumTrigger__ko_r;
+  const GRID__QuorumTrigger__kao_f, GRID__QuorumTrigger__kao_r, GRID__QuorumTrigger__kmdiff_f;
+  const GRID__QuorumTrigger__kmdiff_r, GRID__QuorumTrigger__kd, GRID__QuorumTrigger__kecd;
+  const GRID__QuorumTrigger__nc, GRID__QuorumTrigger__nr, GRID__QuorumTrigger__ko;
+  const GRID__QuorumTrigger__kb, GRID__QuorumTrigger__ng, GRID__QuorumTrigger__np;
+  const GRID__QuorumTrigger__ka, GRID__QuorumTrigger__kecdiff;
+
+  // Unit definitions:
+  unit u_1_second_n1 = 1 / second;
+
+  //Display Names:
+  kr_f is "Forward repression binding rate";
+  kr_r is "Reverse repression binding rate";
+  ka_f is "Forward activation binding rate";
+  ka_r is "Reverse activation binding rate";
+  kc_f is "Forward complex formation rate";
+  kc_r is "Reverse complex formation rate";
+  ko_f is "Forward RNAP binding rate";
+  ko_r is "Reverse RNAP binding rate";
+  kao_f is "Forward activated RNAP binding rate";
+  kao_r is "Reverse activated RNAP binding rate";
+  kmdiff_f is "Forward membrane diffusion rate";
+  kmdiff_r is "Reverse membrane diffusion rate";
+  kd is "Degradation rate";
+  kecd is "Extracellular degradation rate";
+  nc is "Stoichiometry of binding";
+  nr is "Initial RNAP count";
+  ko is "Open complex production rate";
+  kb is "Basal production rate";
+  ng is "Initial promoter count";
+  np is "Stoichiometry of production";
+  ka is "Activated production rate";
+  kecdiff is "Extracellular diffusion rate";
+  GRID__QuorumTrigger__kr_f is "Forward repression binding rate";
+  GRID__QuorumTrigger__kr_r is "Reverse repression binding rate";
+  GRID__QuorumTrigger__ka_f is "Forward activation binding rate";
+  GRID__QuorumTrigger__ka_r is "Reverse activation binding rate";
+  GRID__QuorumTrigger__kc_f is "Forward complex formation rate";
+  GRID__QuorumTrigger__kc_r is "Reverse complex formation rate";
+  GRID__QuorumTrigger__ko_f is "Forward RNAP binding rate";
+  GRID__QuorumTrigger__ko_r is "Reverse RNAP binding rate";
+  GRID__QuorumTrigger__kao_f is "Forward activated RNAP binding rate";
+  GRID__QuorumTrigger__kao_r is "Reverse activated RNAP binding rate";
+  GRID__QuorumTrigger__kmdiff_f is "Forward membrane diffusion rate";
+  GRID__QuorumTrigger__kmdiff_r is "Reverse membrane diffusion rate";
+  GRID__QuorumTrigger__kd is "Degradation rate";
+  GRID__QuorumTrigger__kecd is "Extracellular degradation rate";
+  GRID__QuorumTrigger__nc is "Stoichiometry of binding";
+  GRID__QuorumTrigger__nr is "Initial RNAP count";
+  GRID__QuorumTrigger__ko is "Open complex production rate";
+  GRID__QuorumTrigger__kb is "Basal production rate";
+  GRID__QuorumTrigger__ng is "Initial promoter count";
+  GRID__QuorumTrigger__np is "Stoichiometry of production";
+  GRID__QuorumTrigger__ka is "Activated production rate";
+  GRID__QuorumTrigger__kecdiff is "Extracellular diffusion rate";
+end

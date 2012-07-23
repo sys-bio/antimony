@@ -1,0 +1,29 @@
+//Created by libAntimony v2.3-beta
+
+// Warnings from automatic translation:
+//    Unable to process the deletion del0 from submodel sub1 in model doc0.  Deletions have not yet been added as a concept in Antimony.
+
+model moddef1()
+
+  // Rate Rules:
+  p80' = 4 * p80 + 3;
+
+  // Variable initializations:
+  p80 = 80;
+
+  //Other declarations:
+  var p80;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1();
+  sub1.p80 is p8;
+
+  // Rate Rules:
+  p8' = 3;
+
+  // Variable initializations:
+  p8 = 8;
+end
