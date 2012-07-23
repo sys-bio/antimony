@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created by libAntimony version v2.3-beta on 2012-07-23 11:23 with libSBML version 5.5.0. -->
+<!-- Created by libAntimony version v2.3-beta with libSBML version 5.5.0. -->
 <sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
   <model id="doc0" name="doc0">
     <listOfParameters>
-      <parameter id="param1" value="10.42" constant="false">
+      <parameter id="param1" constant="false">
         <comp:listOfReplacedElements>
           <comp:replacedElement comp:idRef="subparam1" comp:submodelRef="submod1"/>
         </comp:listOfReplacedElements>
@@ -15,11 +15,7 @@
       </parameter>
     </listOfParameters>
     <comp:listOfSubmodels>
-      <comp:submodel comp:id="submod1" comp:modelRef="Mod1">
-        <comp:listOfDeletions>
-          <comp:deletion comp:metaIdRef="Mod1_subparam1_initialassignment"/>
-        </comp:listOfDeletions>
-      </comp:submodel>
+      <comp:submodel comp:id="submod1" comp:modelRef="Mod1"/>
     </comp:listOfSubmodels>
   </model>
   <comp:listOfModelDefinitions>
@@ -29,7 +25,7 @@
         <parameter id="subparam2" value="6" constant="true"/>
       </listOfParameters>
       <listOfInitialAssignments>
-        <initialAssignment metaid="Mod1_subparam1_initialassignment" symbol="subparam1">
+        <initialAssignment symbol="subparam1">
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <plus/>
