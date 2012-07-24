@@ -1,0 +1,40 @@
+//Created by libAntimony v2.3-beta
+model ExtMod1()
+
+  // Compartments and Species:
+  compartment comp;
+  species S in comp, E in comp, D in comp, ES in comp;
+
+  // Reactions:
+  J0: S + E -> ES; ;
+  J1: ES -> E + D; ;
+
+  // Species initializations:
+  S = ;
+  E = ;
+  D = ;
+  ES = ;
+
+  // Compartment initializations:
+  comp = 1;
+
+  //Other declarations:
+  const comp;
+end
+
+model EM1()
+
+  // Sub-modules, and any changes to those submodules:
+  A: ExtMod1();
+  B: ExtMod1();
+  A.comp is comp;
+  B.comp is comp;
+  A.S is S;
+  B.S is S;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  A: EM1();
+end
