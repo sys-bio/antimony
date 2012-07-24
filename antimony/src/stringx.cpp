@@ -206,7 +206,7 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
         postnum = input.tellg();
       }
       string num;
-      num.assign(formulastring, prenum, static_cast<size_t>(postnum-prenum));
+      num.assign(formulastring, static_cast<size_t>(prenum), static_cast<size_t>(postnum-prenum));
       //cout << "Text: '" << num << "'" << endl;
       //cout << "Number: '" << number << "'" << endl;
       formula->AddText(&num);

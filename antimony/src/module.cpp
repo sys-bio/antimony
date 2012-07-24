@@ -341,9 +341,16 @@ void Module::SetComponentCompartments(Variable* compartment)
   }
 }
 
-void Module::AddSynchronizedPair(Variable* oldvar, Variable* newvar)
+void Module::AddSynchronizedPair(const Variable* oldvar, const Variable* newvar, const Variable* conversionFactor)
 {
   m_synchronized.push_back(make_pair(oldvar->GetName(), newvar->GetName()));
+  if (conversionFactor==NULL) {
+    vector<string> empty;
+    m_conversionFactors.push_back(empty);
+  }
+  else {
+    m_conversionFactors.push_back(conversionFactor->GetName());
+  }
 }
 
 void Module::AddTimeToUserFunction(std::string function)
@@ -379,7 +386,7 @@ void Module::CreateLocalVariablesForSubmodelInterfaceIfNeeded()
           else {
             newvar = AddNewNumberedVariable(localname);
           }
-          if (newvar->Synchronize(var)) {
+          if (newvar->Synchronize(var, NULL)) {
             assert(false);
           }
         }
@@ -1131,14 +1138,13 @@ string Module::OutputOnly(vector<var_type> types, string name, string indent, ch
     if (matches) {
       const Formula* form = var->GetFormula();
       formula_type ftype = var->GetFormulaType();
-      if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
-        string formula = form->ToDelimitedStringWithEllipses(cc);
-        if (OrigFormulaIsAlready(var, origmap, formula)) continue;
+      if (form != NULL && !form->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
+        if (OrigFormulaIsAlready(var, origmap, form)) continue;
         if (firstone) {
           retval += "\n" + indent + "// " + name + ":\n";
           firstone = false;
         }
-        retval += indent + var->GetNameDelimitedBy(cc) + " = " + formula + ";\n";
+        retval += indent + var->GetNameDelimitedBy(cc) + " = " + form->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
       Variable* unit = var->GetUnitVariable();
       if (unit != NULL) {
@@ -1281,7 +1287,8 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
         vector<string> exportname = submod->GetNthExportVariable(exp);
         for (size_t sync=0; sync<m_synchronized.size(); sync++) {
           if (m_synchronized[sync].first == exportname &&
-              m_synchronized[sync].second.size() == 1) {
+              m_synchronized[sync].second.size() == 1 &&
+              m_conversionFactors[sync].empty()) {
             if (added_syncs.size() > 0) {
               varimportlist += ", ";
             }
@@ -1384,14 +1391,12 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     if (var->GetFormulaType() == formulaRATE) {
       const Formula* raterule = var->GetRateRule();
       string rule =  raterule->ToDelimitedStringWithEllipses(cc);
-      if (OrigIsAlreadyRateRule(var, origmap, rule)) continue;
-      if (!raterule->IsEmpty()) {
-        if (firstone) {
-          retval += "\n" + indent + "// Rate Rules:\n";
-          firstone = false;
-        }
-        retval += indent + var->GetNameDelimitedBy(cc) + "' = " + rule + ";\n";
+      if (OrigRateRuleIsAlready(var, origmap, raterule)) continue;
+      if (firstone) {
+        retval += "\n" + indent + "// Rate Rules:\n";
+        firstone = false;
       }
+      retval += indent + var->GetNameDelimitedBy(cc) + "' = " + rule + ";\n";
     }
   }
 
@@ -1633,7 +1638,13 @@ string Module::ListSynchronizedVariables(string indent, set<size_t> alreadysynch
   string list = "";
   for (size_t pair=0; pair<m_synchronized.size(); pair++) {
     if (alreadysynchronized.find(pair) == alreadysynchronized.end()) {
-      list += indent + ToStringFromVecDelimitedBy(m_synchronized[pair].first, cc) + " is " + ToStringFromVecDelimitedBy(m_synchronized[pair].second, cc) + ";\n";
+      list += indent + ToStringFromVecDelimitedBy(m_synchronized[pair].first, cc);
+      if (!m_conversionFactors[pair].empty()) {
+        list += " * " + ToStringFromVecDelimitedBy(m_conversionFactors[pair], cc);
+      }
+      list += " is ";
+      list += ToStringFromVecDelimitedBy(m_synchronized[pair].second, cc);
+      list += ";\n";
     }
   }
   return list;
@@ -1716,9 +1727,10 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
           //Find out how the two variables were synchronized
           bool synched = false;
           for (size_t sync=0; sync<m_synchronized.size(); sync++) {
+            const Variable* conversionFactor = GetVariable(m_conversionFactors[sync]);
             if ((m_synchronized[sync].first == copied.GetName()) &&
                 (m_synchronized[sync].second == origmapiter->second.GetName())) {
-              copied.Synchronize(&origmapiter->second);
+              copied.Synchronize(&origmapiter->second, conversionFactor);
               if (origmapiter->second.IsPointer()) {
                 assert(!copied.IsPointer());
                 origmapiter->second = copied;
@@ -1728,7 +1740,7 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
             }
             if ((m_synchronized[sync].first == origmapiter->second.GetName()) &&
                 (m_synchronized[sync].second == copied.GetName())) {
-              origmapiter->second.Synchronize(&copied);
+              origmapiter->second.Synchronize(&copied, conversionFactor);
               if (origmapiter->second.IsPointer()) {
                 assert(!copied.IsPointer());
                 origmapiter->second = copied;
@@ -1740,7 +1752,7 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
           if (!synched) {
             //Sync them randomly  LS DEBUG
             //assert(false);
-            origmapiter->second.Synchronize(&copied);
+            origmapiter->second.Synchronize(&copied, NULL);
             //copied.Synchronize(&origmapiter->second);
             if (!copied.IsPointer()) {
               //The synchronization worked backwards from what we tried.
@@ -1754,7 +1766,7 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
   }
 }
 
-bool Module::OrigFormulaIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap, string formula) const
+bool Module::OrigFormulaIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* formula) const
 {
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) {
@@ -1762,10 +1774,45 @@ bool Module::OrigFormulaIsAlready(const Variable* var, const map<const Variable*
     return false;
   }
   char cc = '.';
-  const Formula* form = origmapiter->second.GetFormula();
+  Formula form;
+  const Formula* origform = origmapiter->second.GetFormula();
+  if (origform != NULL) {
+    form = *origform;
+  }
+  form.AddConversionFactors(formula->GetConversionFactors());
+
   formula_type ftype = origmapiter->second.GetFormulaType();
-  if (form != NULL && !form->IsEmpty() && !form->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
-    return (form->ToDelimitedStringWithEllipses(cc) == formula);
+  if (origform != NULL && !origform->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
+    return (form.ToDelimitedStringWithEllipses(cc) == formula->ToDelimitedStringWithEllipses(cc));
+  }
+  /*
+  cout << var->GetNameDelimitedBy('.') << " original is blank or wrong type: ";
+  if (form != NULL) {
+    cout << form->ToDelimitedStringWithEllipses(cc);
+  }
+  cout << endl;
+  */
+  return false;
+}
+
+bool Module::OrigRateRuleIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* formula) const
+{
+  map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) {
+    //cout << var->GetNameDelimitedBy('.') << " not found" << endl;
+    return false;
+  }
+  char cc = '.';
+  Formula form;
+  const Formula* origform = origmapiter->second.GetRateRule();
+  if (origform != NULL) {
+    form = *origform;
+  }
+  form.AddConversionFactors(formula->GetConversionFactors());
+
+  formula_type ftype = origmapiter->second.GetFormulaType();
+  if (origform != NULL && !origform->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
+    return (form.ToDelimitedStringWithEllipses(cc) == formula->ToDelimitedStringWithEllipses(cc));
   }
   /*
   cout << var->GetNameDelimitedBy('.') << " original is blank or wrong type: ";
@@ -1819,23 +1866,6 @@ bool Module::OrigIsAlreadyAssignmentRule(const Variable* var, const map<const Va
   string newrule = origmapiter->second.GetFormula()->ToDelimitedStringWithEllipses(cc);
   //cout << "New: " << newrule << endl;
   return (origmapiter->second.GetFormula()->ToDelimitedStringWithEllipses(cc) == rule);
-}
-
-bool Module::OrigIsAlreadyRateRule(const Variable* var, const map<const Variable*, Variable>& origmap, string rule) const
-{
-  //cout << "Old: " << rule << endl;
-  map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
-  if (origmapiter == origmap.end()) {
-    //cout << "not found" << endl;
-    return false;
-  }
-  char cc = '.';
-  if (origmapiter->second.GetFormulaType() != formulaRATE) {
-    //cout << var->GetNameDelimitedBy('.') << " is not a rate rule:" << FormulaTypeToString(origmapiter->second.GetFormulaType()) << endl;
-    //cout << "New: " <<  origmapiter->second.GetFormula()->ToDelimitedStringWithEllipses(cc) << endl;
-    return false;
-  }
-  return (origmapiter->second.GetRateRule()->ToDelimitedStringWithEllipses(cc) == rule);
 }
 
 bool Module::OrigIsAlreadyReaction(const Variable* var, const map<const Variable*, Variable>& origmap, string rxn) const

@@ -150,7 +150,7 @@ bool Module::IsReplaced(const Rule* rule, const Model* parent)
     if (ruleplug->isSetReplacedBy()) return true;
   }
   if (parent==NULL) return false;
-  const SBase* parentchain = parent->getParentSBMLObject();
+  const SBase* parentchain = rule->getParentSBMLObject();
   while (parentchain != NULL) {
     if (parentchain->getTypeCode()==SBML_MODEL || parentchain->getTypeCode()==SBML_COMP_MODELDEFINITION) {
       parent = static_cast<const Model*>(parentchain);
@@ -183,74 +183,6 @@ bool Module::IsReplaced(const Rule* rule, const Model* parent)
   return false;
 }
 
-void Module::TranslateReplacedElementsFor(const CompSBasePlugin* cplugin, Variable* var)
-{
-  if (cplugin == NULL) return;
-  const SBase* psbmlo = cplugin->getParentSBMLObject();
-  //While we are searching for replaced elements, etc., find the single canonical version of these things, if they exist.
-  const InitialAssignment* ia = NULL;
-  const Rule* rule = NULL;
-  bool noreplace = true;
-  bool origformisblank = var->GetFormula()->IsEmpty();
-
-  for (unsigned int re=0; re<cplugin->getNumReplacedElements(); re++) {
-    const ReplacedElement* replaced = cplugin->getReplacedElement(re);
-    if (replaced->isSetConversionFactor()) {
-      g_registry.AddWarning("Unable to translate the conversion factor for the replaced element for " + VarTypeToString(var->GetType()) + " " + var->GetNameDelimitedBy('.') + " in model " + GetModuleName() + ": individual conversion factors are not yet added as a concept in Antimony.");
-    }
-    Variable* smvar = NULL;
-    GetReplacingAndRules(replaced, "replaced element", psbmlo, smvar, ia, rule);
-    noreplace = false;
-    if (smvar!=NULL) {
-      smvar->Synchronize(var);
-      //If it is NULL, we've already added an appropriate warning.
-    }
-  }
-  if (cplugin->isSetReplacedBy()) {
-    const ReplacedBy* replacedby = cplugin->getReplacedBy();
-    Variable* smvar;
-    GetReplacingAndRules(replacedby, "replacement element", psbmlo, smvar, ia, rule);
-    noreplace = false;
-    if (smvar!=NULL) {
-      var->Synchronize(smvar);
-      //If it is NULL, we've already added an appropriate warning.
-    }
-  }
-  if (noreplace) {
-    const SBase* parentmod = psbmlo;
-    while (parentmod != NULL && parentmod->getTypeCode() != SBML_MODEL && parentmod->getTypeCode() != SBML_COMP_MODELDEFINITION) {
-      parentmod = parentmod->getParentSBMLObject();
-    }
-    const Model* pm = static_cast<const Model*>(parentmod);
-    ia = pm->getInitialAssignment(psbmlo->getId());
-    rule = pm->getRule(psbmlo->getId());
-  }
-  if (ia != NULL) {
-    Formula* formula = g_registry.NewBlankFormula();
-    string formulastring(parseASTNodeToString(ia->getMath()));
-    setFormulaWithString(formulastring, formula, this);
-    formula->SetNewTopNameWith(ia, GetModuleName());
-    var->SetFormula(formula);
-  }
-  else if (!cplugin->isSetReplacedBy() && origformisblank && !var->GetFormula()->IsEmpty()) {
-    //We need to ensure that synchronization didn't overwrite the original blank.
-    Formula* form = g_registry.NewBlankFormula();
-    string space = " ";
-    form->AddText(&space);
-    var->SetFormula(form);
-  }
-  if (rule != NULL) {
-    var->SetWithRule(rule);
-  }
-  else if (!var->GetRateRule()->IsEmpty()) {
-    //The old rate rule must have been deleted.
-    Formula* form = g_registry.NewBlankFormula();
-    string space = " ";
-    form->AddText(&space);
-    var->SetRateRule(form);
-  }
-}
-
 void Module::AddSubmodelsToDocument(SBMLDocument* sbml)
 {
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(sbml->getPlugin("comp"));
@@ -271,6 +203,111 @@ void Module::AddSubmodelsToDocument(SBMLDocument* sbml)
 }
 
 #endif  //USE_COMP
+
+void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
+{
+  const InitialAssignment* ia = NULL;
+  const Rule* rule = NULL;
+  bool noreplace = true;
+  bool origformisblank = var->GetFormula()->IsEmpty();
+
+#ifdef USE_COMP
+  const CompSBasePlugin* cplugin = static_cast<const CompSBasePlugin*>(obj->getPlugin("comp"));
+  //While we are searching for replaced elements, etc., find the single canonical version of these things, if they exist.
+  if (cplugin != NULL) {
+    for (unsigned int re=0; re<cplugin->getNumReplacedElements(); re++) {
+      const ReplacedElement* replaced = cplugin->getReplacedElement(re);
+      Variable* conversionFactor = NULL;
+      if (replaced->isSetConversionFactor()) {
+        conversionFactor = AddOrFindVariable(&replaced->getConversionFactor());
+      }
+      Variable* smvar = NULL;
+      GetReplacingAndRules(replaced, "replaced element", obj, smvar, ia, rule);
+      noreplace = false;
+      if (smvar!=NULL) {
+        if (ia != NULL || 
+            (rule != NULL && rule->isAssignment())) {
+          //If 'var' was set with an initialValue (or equivalent) it should be overridden by the initial assignment.  But when we call 'synchronize', that routine doesn't know the difference, so we need to clear it first.  The same is true of assignment rules.
+          Formula form;
+          var->SetFormula(&form);
+        }
+        smvar->Synchronize(var, conversionFactor);
+        //If it is NULL, we've already added an appropriate warning.
+      }
+    }
+    if (cplugin->isSetReplacedBy()) {
+      const ReplacedBy* replacedby = cplugin->getReplacedBy();
+      Variable* smvar;
+      GetReplacingAndRules(replacedby, "replacement element", obj, smvar, ia, rule);
+      noreplace = false;
+      if (smvar!=NULL) {
+        var->Synchronize(smvar, NULL);
+        //If it is NULL, we've already added an appropriate warning.
+        //Also, replacedBy elements don't have conversion factors.
+      }
+    }
+  }
+#endif
+  if (noreplace) {
+    const SBase* parentmod = obj;
+    while (parentmod != NULL && parentmod->getTypeCode() != SBML_MODEL 
+#ifdef USE_COMP
+      && parentmod->getTypeCode() != SBML_COMP_MODELDEFINITION
+#endif
+      ) {
+      parentmod = parentmod->getParentSBMLObject();
+    }
+    const Model* pm = static_cast<const Model*>(parentmod);
+    ia = pm->getInitialAssignment(obj->getId());
+    rule = pm->getRule(obj->getId());
+  }
+  if (ia != NULL) {
+    bool localparent = true;
+#ifdef USE_COMP
+    const SBase* parent = ia->getParentSBMLObject();
+    while (parent != NULL) {
+      if (parent->getTypeCode() == SBML_COMP_SUBMODEL) {
+        localparent = false;
+      }
+      parent = parent->getParentSBMLObject();
+    }
+#endif
+    if (localparent) {
+      Formula formula;
+      string formulastring(parseASTNodeToString(ia->getMath()));
+      setFormulaWithString(formulastring, &formula, this);
+      formula.SetNewTopNameWith(ia, GetModuleName());
+      var->SetFormula(&formula);
+    }
+  }
+#ifdef USE_COMP
+  else if (ia == NULL && (rule == NULL || !rule->isAssignment()) && cplugin != NULL && !cplugin->isSetReplacedBy() && origformisblank && !var->GetFormula()->IsEmpty()) {
+    //We need to ensure that synchronization didn't overwrite the original blank.
+    Formula form;
+    var->SetFormula(&form);
+  }
+#endif
+  if (rule != NULL) {
+    bool localparent = true;
+#ifdef USE_COMP
+    const SBase* parent = rule->getParentSBMLObject();
+    while (parent != NULL) {
+      if (parent->getTypeCode() == SBML_COMP_SUBMODEL) {
+        localparent = false;
+      }
+      parent = parent->getParentSBMLObject();
+    }
+#endif
+    if (localparent) {
+      var->SetWithRule(rule);
+    }
+  }
+  else if (!var->GetRateRule()->IsEmpty()) {
+    //The old rate rule must have been deleted.
+    Formula form;
+    var->SetRateRule(&form);
+  }
+}
 
 void Module::LoadSBML(const Model* sbml)
 {
@@ -327,9 +364,9 @@ void Module::LoadSBML(const Model* sbml)
       g_registry.AddVariableToCurrentExportList(expvar);
     }
     string formulastring(parseASTNodeToString(function->getBody()));
-    Formula* formula = g_registry.NewBlankFormula();
-    setFormulaWithString(formulastring, formula, this);
-    g_registry.SetUserFunction(formula);
+    Formula formula;
+    setFormulaWithString(formulastring, &formula, this);
+    g_registry.SetUserFunction(&formula);
     g_registry.GetNthUserFunction(g_registry.GetNumUserFunctions()-1)->FixNames();
   }
 
@@ -343,10 +380,7 @@ void Module::LoadSBML(const Model* sbml)
       var->SetDisplayName(unitdefinition->getName());
     }
     var->SetUnitDef(&GetUnitDefFrom(unitdefinition, m_modulename));
-#ifdef USE_COMP
-    const CompSBasePlugin* udplugin = static_cast<const CompSBasePlugin*>(unitdefinition->getPlugin("comp"));
-    TranslateReplacedElementsFor(udplugin, var);
-#endif
+    TranslateRulesAndAssignmentsTo(unitdefinition, var);
   }
 
  
@@ -371,10 +405,10 @@ void Module::LoadSBML(const Model* sbml)
       var->SetDisplayName(compartment->getName());
     }
     var->SetType(varCompartment);
-    Formula* formula = g_registry.NewBlankFormula();
+    Formula formula;
     if (compartment->isSetSize()) {
-      formula->AddNum(compartment->getSize());
-      var->SetFormula(formula);
+      formula.AddNum(compartment->getSize());
+      var->SetFormula(&formula);
     }
     if (compartment->isSetUnits()) {
       var->SetUnitVariable(compartment->getUnits());
@@ -382,10 +416,7 @@ void Module::LoadSBML(const Model* sbml)
     if (compartment->isSetConstant()) {
       var->SetIsConst(compartment->getConstant());
     }
-#ifdef USE_COMP
-    const CompSBasePlugin* cplugin = static_cast<const CompSBasePlugin*>(compartment->getPlugin("comp"));
-    TranslateReplacedElementsFor(cplugin, var);
-#endif
+    TranslateRulesAndAssignmentsTo(compartment, var);
   }
 
   //Species
@@ -399,23 +430,23 @@ void Module::LoadSBML(const Model* sbml)
     var->SetType(varSpeciesUndef);
 
     //Setting the formula
-    Formula* formula = g_registry.NewBlankFormula();
+    Formula formula;
     if (species->isSetInitialAmount()) {
       double amount = species->getInitialAmount();
-      formula->AddNum(amount);
+      formula.AddNum(amount);
       if (amount != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
         Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
         Formula* compform = compartment->GetFormula();
         if (!compform->IsOne()) {
-          formula->AddMathThing('/');
-          formula->AddVariable(compartment);
+          formula.AddMathThing('/');
+          formula.AddVariable(compartment);
         }
       }
-      var->SetFormula(formula);
+      var->SetFormula(&formula);
     }
     else if (species->isSetInitialConcentration()) {
-      formula->AddNum(species->getInitialConcentration());
-      var->SetFormula(formula);
+      formula.AddNum(species->getInitialConcentration());
+      var->SetFormula(&formula);
     }
     //Anything more complicated is set in a Rule, which we'll get to later.
 
@@ -447,10 +478,7 @@ void Module::LoadSBML(const Model* sbml)
       Variable* concentrationUnits = AddOrFindUnitDef(ud);
       var->SetUnitVariable(concentrationUnits);
     }
-#ifdef USE_COMP
-    const CompSBasePlugin* splugin = static_cast<const CompSBasePlugin*>(species->getPlugin("comp"));
-    TranslateReplacedElementsFor(splugin, var);
-#endif
+    TranslateRulesAndAssignmentsTo(species, var);
   }
 
   //Events:
@@ -507,10 +535,7 @@ void Module::LoadSBML(const Model* sbml)
       setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform, this);
       var->GetEvent()->AddResult(asntvar, asntform);
     }
-#ifdef USE_COMP
-    const CompSBasePlugin* eplugin = static_cast<const CompSBasePlugin*>(event->getPlugin("comp"));
-    TranslateReplacedElementsFor(eplugin, var);
-#endif
+    TranslateRulesAndAssignmentsTo(event, var);
   }
 
   //LS DEBUG:  Add constraints?
@@ -535,44 +560,9 @@ void Module::LoadSBML(const Model* sbml)
     if (parameter->isSetConstant()) {
       var->SetIsConst(parameter->getConstant());
     }
-#ifdef USE_COMP
-    const CompSBasePlugin* pplugin = static_cast<const CompSBasePlugin*>(parameter->getPlugin("comp"));
-    TranslateReplacedElementsFor(pplugin, var);
-#endif
+    TranslateRulesAndAssignmentsTo(parameter, var);
   }
 
-#ifndef USE_COMP
-  //Initial Assignments:  can override 'getValue' values.
-  for (unsigned int ia=0; ia<sbml->getNumInitialAssignments(); ia++) {
-    const InitialAssignment* initasnt = sbml->getInitialAssignment(ia);
-    if (!initasnt->isSetSymbol()) {
-      assert(false); //Should have been caught in SBML validity check.
-      continue;
-    }
-    sbmlname = initasnt->getSymbol();
-    Variable* var = AddOrFindVariable(&sbmlname);
-    Formula* formula = g_registry.NewBlankFormula();
-    string formulastring(parseASTNodeToString(initasnt->getMath()));
-    setFormulaWithString(formulastring, formula, this);
-    var->SetFormula(formula);
-  }
-    
-  //Rules:
-  for (unsigned int rulen=0; rulen<sbml->getNumRules(); rulen++) {
-    const Rule* rule = sbml->getRule(rulen);
-    if (rule->isAlgebraic()) {
-      //LS DEBUG:  error message?  Unable to process algebraic rules
-      continue;
-    }
-    sbmlname = rule->getVariable();
-    assert(sbmlname != "");
-    if (sbmlname == "") {
-      sbmlname = getNameFromSBMLObject(rule, "_R");
-    }
-    Variable* var = AddOrFindVariable(&sbmlname);
-    var->SetWithRule(rule);
-  }
-#endif
   //If we ever get algebraic rules, we will need to set them up here, for both comp and non-comp (and check their replacements).
 
   //Reactions
@@ -695,10 +685,7 @@ void Module::LoadSBML(const Model* sbml)
     }
     //Put reactants, products, and the formula together:
     AddNewReaction(&reactants, rxntype, &products, &formula, var);
-#ifdef USE_COMP
-    const CompSBasePlugin* rplugin = static_cast<const CompSBasePlugin*>(reaction->getPlugin("comp"));
-    TranslateReplacedElementsFor(rplugin, var);
-#endif
+    TranslateRulesAndAssignmentsTo(reaction, var);
   }
 
 #ifdef USE_COMP
@@ -1124,29 +1111,33 @@ void Module::CreateSBMLModel(bool comp)
     for (size_t sync=0; sync<m_synchronized.size(); sync++) {
       vector<string> name1 = m_synchronized[sync].first;
       vector<string> name2 = m_synchronized[sync].second;
-      if (name2.size() == 1 && name1.size() != 1) {
-        //Switch the order if the second is a local variable and the first is not.
+      const Variable* conversionFactor = GetVariable(m_conversionFactors[sync]);
+      if (name1.size() == 1 && name2.size() != 1) {
+        //Switch the order if the first is a local variable and the second is not.
         name1 = name2;
         name2 = m_synchronized[sync].first;
+        //Also, the conversion factor is no longer valid (and also already applied to the local model)
+        conversionFactor = NULL;
       }
-      const Variable* var1 = GetVariable(name1);
-      const Variable* var2 = GetVariable(name2);
       if (name1.size() == 1 && name2.size() == 1) {
         //Don't worry about it--we already removed it in the GetNthWhatever functions.
       }
-      else if (name1.size()==1) {
-        SBase* sbmlvar1 = sbmlmod->getElementBySId(name1[0]);
+      else if (name2.size()==1) {
+        SBase* sbmlvar1 = sbmlmod->getElementBySId(name2[0]);
         CompSBasePlugin* svarplug1 = static_cast<CompSBasePlugin*>(sbmlvar1->getPlugin("comp"));
         ReplacedElement* re = svarplug1->createReplacedElement();
-        re->setSubmodelRef(name2[0]);
+        re->setSubmodelRef(name1[0]);
+        if (conversionFactor != NULL) {
+          re->setConversionFactor(conversionFactor->GetNameDelimitedBy(cc));
+        }
         size_t svn=1;
         SBaseRef* sbr = re;
-        while (svn+1 < name2.size()) {
-          sbr->setIdRef(name2[svn]);
+        while (svn+1 < name1.size()) {
+          sbr->setIdRef(name1[svn]);
           sbr = sbr->createSBaseRef();
           svn++;
         }
-        sbr->setIdRef(name2[svn]);
+        sbr->setIdRef(name1[svn]);
       }
       else {
         assert(false);
@@ -1163,6 +1154,7 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
   bool useinitial = true;
   bool useassignment = true;
   bool userate = true;
+#ifdef USE_COMP
   if (comp) {
     //The comp version is a lot more complicated than the flat version, because we need to:
     // * Delete all rules/assignments that no longer apply to this variable
@@ -1172,6 +1164,7 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
     useassignment = SynchronizeAssignments(sbmlmod, var, synchronized, syncmap);
     userate = SynchronizeRates(sbmlmod, var, synchronized, syncmap);
   }
+#endif
   char cc = g_registry.GetCC();
   formula_type ftype = var->GetFormulaType();
   const Formula* formula = var->GetFormula();
@@ -1209,7 +1202,7 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
   }
 }
 
-
+#ifdef USE_COMP
 void CreateDeletion(Submodel* submodel, SBase* sbase, SBMLDocument& sbml, vector<string> submodname, string basemetaid)
 {
   Deletion* deletion = submodel->createDeletion();
@@ -1263,8 +1256,6 @@ bool Module::SynchronizeAssignments(Model* sbmlmod, const Variable* var, const v
     ModelDefinition* md = csdp->getModelDefinition(submod->GetModule()->GetModuleName());
     InitialAssignment* ia = md->getInitialAssignment(syncname[syncname.size()-1]);
     Rule* ar = md->getRule(syncname[syncname.size()-1]);
-    Deletion* deletion = NULL;
-    SBaseRef* sbr = NULL;
     CompModelPlugin* cmp = static_cast<CompModelPlugin*>(sbmlmod->getPlugin("comp"));
     Submodel* submodel = cmp->getSubmodel(submodname[0]);
     if (submod==NULL) {
@@ -1326,5 +1317,6 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
   }
   return ret;
 }
+#endif //USE_COMP
 
-#endif
+#endif //NSBML

@@ -13,7 +13,7 @@ extern bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
 
 using namespace std;
 
-void Formula::AddVariable(Variable* var)
+void Formula::AddVariable(const Variable* var)
 {
   pair<string, vector<string> > newvar;
   newvar = make_pair(var->GetNamespace(), var->GetName());
@@ -78,12 +78,28 @@ void Formula::AddParentheses()
   m_components.push_back(newvar);
 }
 
+void Formula::AddConversionFactor(const Variable* cf)
+{
+  if (cf==NULL) return;
+  AddParentheses();
+  AddMathThing('*');
+  AddVariable(cf);
+  vector<string> novar;
+  m_conversionFactors.push_back(make_pair(cf->GetNamespace(), cf->GetName()));
+}
+
 void Formula::SetNewTopName(string newmodname, string newtopname)
 {
   for (size_t component=0; component<m_components.size(); component++) {
     if (m_components[component].second.size() > 0) {
       m_components[component].first = newmodname;
       m_components[component].second.insert(m_components[component].second.begin(), newtopname);
+    }
+  }
+  for (size_t cf=0; cf<m_conversionFactors.size(); cf++) {
+    if (m_conversionFactors[cf].second.size() > 0) {
+      m_conversionFactors[cf].first = newmodname;
+      m_conversionFactors[cf].second.insert(m_conversionFactors[cf].second.begin(), newtopname);
     }
   }
 }
@@ -582,6 +598,21 @@ bool Formula::IsStraightCopyOf(const Formula* origform) const
   return true;
 }
 
+std::vector<std::pair<std::string, std::vector<std::string> > > Formula::GetConversionFactors() const
+{
+  return m_conversionFactors;
+}
+
+void Formula::AddConversionFactors(std::vector<std::pair<std::string, std::vector<std::string> > > cfs)
+{
+  for (size_t cf=0; cf<cfs.size(); cf++) {
+    AddParentheses();
+    AddMathThing('*');
+    m_conversionFactors.push_back(cfs[cf]);
+    m_components.push_back(cfs[cf]);
+  }
+}
+
 bool Formula::MakeAllVariablesUnits()
 {
   for (size_t comp=0; comp<m_components.size(); comp++) {
@@ -617,6 +648,8 @@ bool Formula::MakeUnitVariablesUnits()
 
 void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
 {
+  //Only need to do anything if 'from' is in a submodel, which only happens in comp-sbml.
+#ifdef USE_COMP
   while (from != NULL) {
     if (from->getTypeCode()==SBML_COMP_SUBMODEL) {
       string submodname = from->getId();
@@ -624,6 +657,7 @@ void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
     }
     from = from->getParentSBMLObject();
   }
+#endif
 }
 #endif
 

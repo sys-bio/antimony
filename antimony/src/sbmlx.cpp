@@ -156,6 +156,45 @@ void powerToCarat(ASTNode* node)
   }
 }
 
+set<string> GetUnitNames(ASTNode* astn)
+{
+  set<string> ret;
+  if (astn==NULL) return ret;
+  if (astn->isSetUnits()) {
+    ret.insert(astn->getUnits());
+  }
+  for (unsigned int c=0; c<astn->getNumChildren(); c++) {
+    set<string> addme = GetUnitNames(astn->getChild(c));
+    ret.insert(addme.begin(), addme.end());
+  }
+  return ret;
+}
+
+double GetValueFrom(ASTNode* astn)
+{
+  switch (astn->getType()) {
+  case AST_RATIONAL:
+  case AST_REAL:
+  case AST_REAL_E:
+    return astn->getReal();
+  case AST_INTEGER:
+    return astn->getInteger();
+  default:
+    assert(false);
+    return 0; 
+  }
+}
+UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, string modulename)
+{
+  UnitDef ret(unitdefinition->getId(), modulename);
+  ret.ClearComponents();
+  for (unsigned int ue=0; ue<unitdefinition->getNumUnits(); ue++) {
+    const Unit* unit = unitdefinition->getUnit(ue);
+    ret.AddUnitElement(unit);
+  }
+  return ret;
+}
+
 #endif
 
 
@@ -316,6 +355,7 @@ void FixName(map<vector<string>, Variable*>& varmap)
   }
   
 }
+
 #ifdef USE_COMP
 Model* getModelFromExternalModelDefinition(const ExternalModelDefinition* cextmoddef)
 {
@@ -336,45 +376,5 @@ Model* getModelFromExternalModelDefinition(const ExternalModelDefinition* cextmo
   }
   return extmod;
 }
-
-set<string> GetUnitNames(ASTNode* astn)
-{
-  set<string> ret;
-  if (astn==NULL) return ret;
-  if (astn->isSetUnits()) {
-    ret.insert(astn->getUnits());
-  }
-  for (unsigned int c=0; c<astn->getNumChildren(); c++) {
-    set<string> addme = GetUnitNames(astn->getChild(c));
-    ret.insert(addme.begin(), addme.end());
-  }
-  return ret;
-}
-
-double GetValueFrom(ASTNode* astn)
-{
-  switch (astn->getType()) {
-  case AST_RATIONAL:
-  case AST_REAL:
-  case AST_REAL_E:
-    return astn->getReal();
-  case AST_INTEGER:
-    return astn->getInteger();
-  default:
-    assert(false);
-    return 0; 
-  }
-}
-UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, string modulename)
-{
-  UnitDef ret(unitdefinition->getId(), modulename);
-  ret.ClearComponents();
-  for (unsigned int ue=0; ue<unitdefinition->getNumUnits(); ue++) {
-    const Unit* unit = unitdefinition->getUnit(ue);
-    ret.AddUnitElement(unit);
-  }
-  return ret;
-}
-
 
 #endif

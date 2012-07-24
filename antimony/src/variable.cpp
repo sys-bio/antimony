@@ -1280,10 +1280,10 @@ Variable* Variable::GetTimeConversionFactor()
 }
 
 //Set this variable to be a shell pointing to the clone, transferring any data we may already have.
-bool Variable::Synchronize(Variable* clone)
+bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
 {
   if (IsPointer()) {
-    if(GetSameVariable()->Synchronize(clone)) return true;
+    if(GetSameVariable()->Synchronize(clone, conversionFactor)) return true;
     m_type = clone->GetType();
     return false;
   }
@@ -1350,7 +1350,7 @@ bool Variable::Synchronize(Variable* clone)
     if (cloneuv==NULL) {
       clone->SetUnitVariable(unitvar);
     }
-    else {
+    else if (conversionFactor==NULL) {
       UnitDef* ud = unitvar->GetUnitDef();
       UnitDef* cloneud = cloneuv->GetUnitDef();
       if (ud != NULL && cloneud != NULL && !ud->Matches(cloneud)) {
@@ -1365,9 +1365,6 @@ bool Variable::Synchronize(Variable* clone)
   if (clone->m_const == constDEFAULT) {
     clone->m_const = m_const;
   }
-  else if (clone->m_const == constCONST && m_const == constVAR) {
-    clone->m_const = constVAR;
-  }
   m_const = clone->m_const;
 
   if (m_displayname != "") {
@@ -1381,6 +1378,7 @@ bool Variable::Synchronize(Variable* clone)
   if (!m_valFormula.IsEmpty()) {
     Formula* cloneform = clone->GetFormula();
     if (cloneform->IsEmpty() || cloneform->IsEllipsesOnly()) {
+      m_valFormula.AddConversionFactor(conversionFactor);
       switch (GetFormulaType()) {
       case formulaINITIAL:
       case formulaRATE: //We'll deal with the actual rate rule next.
@@ -1407,6 +1405,7 @@ bool Variable::Synchronize(Variable* clone)
   if (!m_valRateRule.IsEmpty()) {
     Formula* cloneform = clone->GetRateRule();
     if (cloneform->IsEmpty()) {
+      m_valRateRule.AddConversionFactor(conversionFactor);
       if (clone->SetRateRule(&m_valRateRule))  {
         g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy('.') + " with " + clone->GetNameDelimitedBy('.') + ":  ");
         return true;
@@ -1421,6 +1420,7 @@ bool Variable::Synchronize(Variable* clone)
   if (!m_valReaction.IsEmpty()) {
     const AntimonyReaction* clonerxn = clone->GetReaction();
     if (clonerxn->IsEmpty()) {
+      m_valReaction.GetFormula()->AddConversionFactor(conversionFactor);
       if (clone->SetReaction(&m_valReaction)) return true;
     }
     m_valReaction.Clear();
@@ -1452,13 +1452,13 @@ bool Variable::Synchronize(Variable* clone)
   //We always synchronize the data above first, but where we store it can change based on which version is the top-level.
   if (clone->m_name.size() > 1 && m_name.size() == 1) {
     //When synchronizing a local variable to a submodule's variable, always have the local trump the submodule.
-    return clone->Synchronize(this);
+    return (clone->Synchronize(this, NULL));
   }
   
   m_sameVariable = clone->GetName();
 
   //And save this pair in the module as having been syncronized
-  g_registry.GetModule(m_module)->AddSynchronizedPair(this, clone);
+  g_registry.GetModule(m_module)->AddSynchronizedPair(this, clone, conversionFactor);
 
   return false;
 }
@@ -1577,10 +1577,10 @@ Variable* Variable::GetParentVariable()
 #ifndef NSBML
 void Variable::SetWithRule(const Rule* rule)
 {
-  Formula* formula = g_registry.NewBlankFormula();
+  Formula formula;
   string formulastring(parseASTNodeToString(rule->getMath()));
-  setFormulaWithString(formulastring, formula, g_registry.GetModule(m_module));
-  formula->SetNewTopNameWith(rule, m_module);
+  setFormulaWithString(formulastring, &formula, g_registry.GetModule(m_module));
+  formula.SetNewTopNameWith(rule, m_module);
   if (IsSpecies(GetType())) {
     //Any species in any rule must be 'const' (in Antimony), because this means it's a 'boundary species'
     SetIsConst(true);
@@ -1591,10 +1591,10 @@ void Variable::SetWithRule(const Rule* rule)
   }
 
   if (rule->isAssignment()) {
-    SetAssignmentRule(formula);
+    SetAssignmentRule(&formula);
   }
   else if (rule->isRate()) {
-    SetRateRule(formula);
+    SetRateRule(&formula);
   }
   else {
     assert(false); //Algebraic rules should be caught in calling function

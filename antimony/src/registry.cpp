@@ -390,6 +390,8 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
 
 void Registry::LoadSubmodelsFrom(const Model* model)
 {
+  //Only meaningful if using sbml-comp
+#ifdef USE_COMP
   const CompModelPlugin* cmp = static_cast<const CompModelPlugin*>(model->getPlugin("comp"));
   if (cmp==NULL) return;
   //Load any submodels that external model might need.
@@ -399,6 +401,7 @@ void Registry::LoadSubmodelsFrom(const Model* model)
       AddWarning("Unable to load submodel " + submodel->getModelRef() + ".");
     }
   }
+#endif
 }
 
 bool Registry::LoadModelFrom(std::string modelname, const SBMLDocument* document)
@@ -433,7 +436,7 @@ bool Registry::LoadModelFrom(std::string modelname, const SBMLDocument* document
   return false;
 #else
   if (document->getModel()->getName()==modelname) {
-    NewCurrentModule();
+    NewCurrentModule(&modelname);
     CurrentModule()->LoadSBML(document->getModel());
     return false;
   }
@@ -894,7 +897,7 @@ bool Registry::AddVariableToCurrentImportList(Variable* import_var)
     SetError(error);
     return true;
   }
-  var->Synchronize(import_var);
+  var->Synchronize(import_var, NULL);
   return false;
 }
 
