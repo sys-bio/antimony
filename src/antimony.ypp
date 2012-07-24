@@ -270,7 +270,9 @@ lineend:        ';' {}
         ;
 
 assignment:     varmaybein '=' formula {if ($1->SetFormula($3)) YYABORT; }
-        |       varmaybein IS variable {if ($1->Synchronize($3)) YYABORT;}
+        |       varmaybein IS variable {if ($1->Synchronize($3, NULL)) YYABORT;}
+        |       varmaybein IS variable '/' variable {if ($1->Synchronize($3, $5)) YYABORT;}
+        |       varmaybein '*' variable IS variable {if ($1->Synchronize($5, $3)) YYABORT;}
         |       varmaybein IS TEXTSTRING {if ($1->SetDisplayName(*($3))) YYABORT;}
         |       varmaybein ':' '=' formula {if ($1->SetAssignmentRule($4)) YYABORT;}
         |       varmaybein '\'' '=' formula {if ($1->SetRateRule($4)) YYABORT;}

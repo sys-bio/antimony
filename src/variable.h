@@ -143,7 +143,7 @@ public:
   Variable* GetExtentConversionFactor();
   Variable* GetTimeConversionFactor();
 
-  bool Synchronize(Variable* clone);
+  bool Synchronize(Variable* clone, const Variable* conversionFactor);
 #ifndef NSBML
   //bool Synchronize(Variable* clone, SBase* foo);
   void SetWithRule(const Rule* rule);

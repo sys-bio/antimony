@@ -39,6 +39,7 @@ private:
   std::vector<Variable*> m_variables;
   std::vector<Variable*> m_defaultVariables;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
+  std::vector<std::vector<std::string> > m_conversionFactors;
   std::vector<std::vector<std::string> > m_changed;
   std::vector<std::string> m_returnvalue;
 
@@ -87,7 +88,7 @@ public:
   void SetNewTopName(std::string newmodname, std::string newtopname);
   bool SetModule(const std::string* modname);
   void SetComponentCompartments(Variable* compartment);
-  void AddSynchronizedPair(Variable* oldvar, Variable* newvar);
+  void AddSynchronizedPair(const Variable* oldvar, const Variable* newvar, const Variable* conversionFactor);
   void AddTimeToUserFunction(std::string function);
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};
@@ -144,16 +145,16 @@ public:
   std::string ListAssignmentDifferencesFrom(const Module* origmod, std::string mname, std::string indent) const;
 #ifndef NSBML
 #ifdef USE_COMP
-  void TranslateReplacedElementsFor(const CompSBasePlugin* cplugin, Variable* var);
   void  AddSubmodelsToDocument(SBMLDocument* sbml);
+  bool  SynchronizeAssignments(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
+  bool  SynchronizeRates(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
 #endif //USE_COMP
+  void TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var);
   void  LoadSBML(const SBMLDocument* sbmldoc);
   void  LoadSBML(const Model* sbml);
   const SBMLDocument* GetSBML(bool comp);
   void  CreateSBMLModel(bool comp);
   void  SetAssignmentFor(Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp);
-  bool  SynchronizeAssignments(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
-  bool  SynchronizeRates(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
 #endif //NSBML
   std::vector<const Variable*> GetSynchronizedVariablesFor(const Variable* var);
   void FillInSyncmap(std::map<const Variable*, Variable >& syncmap) const;
@@ -213,21 +214,23 @@ public:
 
 private:
   void FillInOrigmap(std::map<const Variable*, Variable >& origmap) const;
-  bool OrigFormulaIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string formula) const;
+  bool OrigFormulaIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* formula) const;
+  bool OrigRateRuleIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* formula) const;
   bool OrigIsAlreadyCompartment(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigIsAlreadyConstSpecies(const Variable* var, const std::map<const Variable*, Variable>& origmap, bool isconst) const;
   bool OrigIsAlreadyDNAStrand(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string strand) const;
   bool OrigIsAlreadyAssignmentRule(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rule) const;
-  bool OrigIsAlreadyRateRule(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rule) const;
   bool OrigIsAlreadyReaction(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rxn) const;
   bool OrigIsAlreadyEvent(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string event) const;
   bool OrigIsAlreadyUnitDef(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string unitdef) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
-  void GetReplacingAndRules(const Replacing* replacing, std::string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule);
-  Variable* GetSBaseRef(const SBaseRef* sbr, std::string modname, std::string re_string, const SBase* orig);
   bool IsReplaced(const InitialAssignment* ia, const Model* parent);
   bool IsReplaced(const Rule* rule, const Model* parent);
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;
+#ifdef USE_COMP
+  void GetReplacingAndRules(const Replacing* replacing, std::string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule);
+  Variable* GetSBaseRef(const SBaseRef* sbr, std::string modname, std::string re_string, const SBase* orig);
+#endif
 };
 
 #include "userfunction.h"

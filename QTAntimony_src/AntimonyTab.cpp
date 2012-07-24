@@ -111,7 +111,7 @@ void AntimonyTab::ReplaceModelWithString(QString modelname, QString text)
     text = text.trimmed();
     QString model = toPlainText();
     if (modelname != "__main") {
-        QString pattern = "(model|module)\\s+" + modelname + ".*end";
+        QString pattern = "(model|module)\\s*[*]?\\s*" + modelname + ".*end";
         QRegExp text_to_find(pattern, Qt::CaseInsensitive);
         text_to_find.setMinimal(true);
         if (model.contains(text_to_find)) {
@@ -135,7 +135,7 @@ void AntimonyTab::ReplaceModelWithString(QString modelname, QString text)
     }
 
     model = model.trimmed();
-    QRegExp repeats("//Created by libAntimony v[0-9.ba]+\\s*//Created by libAntimony");
+    QRegExp repeats("//Created by libAntimony v[0-9.\\-beta]+\\s*//Created by libAntimony");
     model.replace(repeats, "//Created by libAntimony");
     ReplaceTextWith(model);
 }

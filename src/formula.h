@@ -19,18 +19,20 @@ private:
   //Formula& operator=(const Formula& src); //Undefined
 
   std::vector<std::pair<std::string, std::vector<std::string> > > m_components;
+  std::vector<std::pair<std::string, std::vector<std::string> > > m_conversionFactors;
 
 public:
   Formula() {};
   ~Formula() {};
 
-  void AddVariable(Variable* var);
+  void AddVariable(const Variable* var);
   void AddNum(double num);
   void AddMathThing(char maththing);
   void AddText(const std::string* function);
   void AddFormula(const Formula* form2);
   void AddEllipses();
   void AddParentheses();
+  void AddConversionFactor(const Variable* cf);
 
   void SetNewTopName(std::string newmodname, std::string newtopname);
 
@@ -64,6 +66,9 @@ public:
   void InsertTimeInFunction(std::string function);
   void ReplaceWith(const Variable* origvar, const Variable* newvar);
   bool IsStraightCopyOf(const Formula* origform) const;
+
+  std::vector<std::pair<std::string, std::vector<std::string> > > GetConversionFactors() const;
+  void AddConversionFactors(std::vector<std::pair<std::string, std::vector<std::string> > > cfs);
 
   bool MakeAllVariablesUnits();
   bool MakeUnitVariablesUnits();
