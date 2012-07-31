@@ -20,6 +20,9 @@ private:
 
   std::vector<std::pair<std::string, std::vector<std::string> > > m_components;
   std::vector<std::pair<std::string, std::vector<std::string> > > m_conversionFactors;
+  std::vector<std::pair<std::string, std::vector<std::string> > > m_timeConversionFactors;
+  std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_convertedVariables;
+  std::string m_module;
 
 public:
   Formula() {};
@@ -33,6 +36,7 @@ public:
   void AddEllipses();
   void AddParentheses();
   void AddConversionFactor(const Variable* cf);
+  void AddInvTimeConversionFactor(const Variable* tcf);
 
   void SetNewTopName(std::string newmodname, std::string newtopname);
 
@@ -65,10 +69,10 @@ public:
   void ChangeTimeTo(const Variable* timeref);
   void InsertTimeInFunction(std::string function);
   void ReplaceWith(const Variable* origvar, const Variable* newvar);
-  bool IsStraightCopyOf(const Formula* origform) const;
 
-  std::vector<std::pair<std::string, std::vector<std::string> > > GetConversionFactors() const;
-  void AddConversionFactors(std::vector<std::pair<std::string, std::vector<std::string> > > cfs);
+  bool Matches(const Formula* newform) const;
+  void Convert(Variable* converted, Variable* cf);
+  void ConvertTime(Variable* tcf);
 
   bool MakeAllVariablesUnits();
   bool MakeUnitVariablesUnits();

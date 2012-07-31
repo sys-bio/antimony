@@ -18,6 +18,7 @@ void Formula::AddVariable(const Variable* var)
   pair<string, vector<string> > newvar;
   newvar = make_pair(var->GetNamespace(), var->GetName());
   m_components.push_back(newvar);
+  m_module = var->GetNamespace();
 }
 
 void Formula::AddNum(double num)
@@ -80,16 +81,27 @@ void Formula::AddParentheses()
 
 void Formula::AddConversionFactor(const Variable* cf)
 {
+  if (IsEmpty()) return;
   if (cf==NULL) return;
   AddParentheses();
   AddMathThing('*');
   AddVariable(cf);
-  vector<string> novar;
   m_conversionFactors.push_back(make_pair(cf->GetNamespace(), cf->GetName()));
+}
+
+void Formula::AddInvTimeConversionFactor(const Variable* tcf)
+{
+  if (IsEmpty()) return;
+  if (tcf==NULL) return;
+  AddParentheses();
+  AddMathThing('/');
+  AddVariable(tcf);
+  m_timeConversionFactors.push_back(make_pair(tcf->GetNamespace(), tcf->GetName()));
 }
 
 void Formula::SetNewTopName(string newmodname, string newtopname)
 {
+  m_module = newmodname;
   for (size_t component=0; component<m_components.size(); component++) {
     if (m_components[component].second.size() > 0) {
       m_components[component].first = newmodname;
@@ -101,6 +113,10 @@ void Formula::SetNewTopName(string newmodname, string newtopname)
       m_conversionFactors[cf].first = newmodname;
       m_conversionFactors[cf].second.insert(m_conversionFactors[cf].second.begin(), newtopname);
     }
+  }
+  for (size_t cv=0; cv<m_convertedVariables.size(); cv++) {
+    m_convertedVariables[cv].first.insert(m_convertedVariables[cv].first.begin(), newtopname);
+    m_convertedVariables[cv].second.insert(m_convertedVariables[cv].second.begin(), newtopname);
   }
 }
 
@@ -504,32 +520,6 @@ void Formula::FixNames(string modname)
       FixName(m_components[comp].second);
     }
   }
-  /*
-  //Check to make sure we're still a legal formula:
-#ifndef NSBML
-  string formstring = ToSBMLString();
-  if (formstring.size() > 0) {
-    ASTNode_t* ASTform = parseStringToASTNode(formstring);
-    if (ASTform == NULL) {
-      //Something went wrong, so maybe something we thought was a function is actually a variable name:
-      for (size_t comp=0; comp<m_components.size(); comp++) {
-        if (m_components[comp].second.size() == 0) {
-          vector<string> possiblevarname;
-          possiblevarname.push_back(m_components[comp].first + "_");
-          Variable* pvar = g_registry.GetModule(modname)->GetVariable(possiblevarname);
-          if (pvar != NULL) {
-            m_components[comp].first = modname;
-            m_components[comp].second = possiblevarname;
-          }
-        }
-      }
-    }
-    else {
-      delete ASTform;
-    }
-  }
-#endif
-  */
 }
 
 void Formula::ChangeTimeTo(const Variable* timeref)
@@ -569,47 +559,135 @@ void Formula::ReplaceWith(const Variable* origvar, const Variable* newvar)
 }
 
 
-bool Formula::IsStraightCopyOf(const Formula* origform) const
+bool Formula::Matches(const Formula* newform) const
 {
-  if (m_components.size() != origform->m_components.size()) {
-    //cout << "Different sizes" << endl;
-    return false;
+  Formula orig(*this);
+  //First apply the conversion factors:
+  std::vector<std::pair<std::string, std::vector<std::string> > > tcfs = newform->m_timeConversionFactors;
+  for (size_t tcf=0; tcf<tcfs.size(); tcf++) {
+    if (orig.m_timeConversionFactors.size() > tcf) continue;
+    //The time conversion is complicated enough it's worth it to find the variable and add it.
+    Module* module = g_registry.GetModule(tcfs[tcf].first);
+    assert(module != NULL);
+    const Variable* timecf = module->GetVariable(tcfs[tcf].second);
+    assert(timecf != NULL);
+    orig.AddInvTimeConversionFactor(timecf);
   }
-  for (size_t comp=0; comp<m_components.size(); comp++) {
-    if (m_components[comp].second.size() > 0) {
-      vector<string> orig = origform->m_components[comp].second;
-      vector<string> copy = m_components[comp].second;
-      int diff = copy.size() - orig.size();
-      assert(diff > 0);
-      for (size_t element = 0; element<orig.size(); element++) {
-        if (orig[element] != copy[element+diff]) {
-          //cout << "Different variable in this spot" << endl;
-          return false;
-        }
-      }
+
+  std::vector<std::pair<std::string, std::vector<std::string> > > cfs = newform->m_conversionFactors;
+  for (size_t cf=0; cf<cfs.size(); cf++) {
+    if (orig.m_conversionFactors.size() > cf) continue;
+    orig.AddParentheses();
+    orig.AddMathThing('*');
+    orig.m_conversionFactors.push_back(cfs[cf]);
+    orig.m_components.push_back(cfs[cf]);
+  }
+
+  std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > cvs = newform->m_convertedVariables;
+  for (size_t cv=0; cv<cvs.size(); cv++) {
+    if (orig.m_convertedVariables.size() > cv) continue;
+    Module* module = g_registry.GetModule(m_module);
+    Variable* converted = module->GetVariable(cvs[cv].first);
+    Variable* cf = module->GetVariable(cvs[cv].second);
+    if (cvs[cv].first[cvs[cv].first.size()-1] == "time") {
+      orig.ConvertTime(cf);
     }
     else {
-      if (m_components[comp].first != origform->m_components[comp].first) {
-        //cout << "Different texts" << endl;
-        return false;
-      }
+      orig.Convert(converted, cf);
+    }
+  }
+
+  //Now see if the components match:
+  if (orig.m_components.size() != newform->m_components.size()) return false;
+  for (size_t c=0; c<orig.m_components.size(); c++) {
+    if (orig.m_components[c].second.size() > 0) {
+      Module* module = g_registry.GetModule(orig.m_components[c].first);
+      assert(module != NULL);
+      Variable* subvar = module->GetVariable(orig.m_components[c].second);
+      subvar = subvar->GetSameVariable();
+      Variable* newvar = module->GetVariable(newform->m_components[c].second);
+      if (newvar == NULL || subvar != newvar->GetSameVariable()) return false;
+    }
+    else {
+      if (orig.m_components[c] != newform->m_components[c]) return false;
     }
   }
   return true;
 }
 
-std::vector<std::pair<std::string, std::vector<std::string> > > Formula::GetConversionFactors() const
+void Formula::Convert(Variable* converted, Variable* cf)
 {
-  return m_conversionFactors;
+  converted = converted->GetSameVariable();
+  std::vector<std::pair<std::string, std::vector<std::string> > > oldcomponents = m_components;
+  m_components.clear();
+  bool usedConverted = false;
+  for (size_t comp=0; comp<oldcomponents.size(); comp++) {
+    if (oldcomponents[comp].second.size() > 0) {
+      Module* module = g_registry.GetModule(oldcomponents[comp].first);
+      assert(module != NULL);
+      Variable* subvar = module->GetVariable(oldcomponents[comp].second);
+      subvar = subvar->GetSameVariable();
+      if (subvar==converted) {
+        AddMathThing('(');
+        m_components.push_back(oldcomponents[comp]);
+        AddMathThing('/');
+        AddVariable(cf);
+        AddMathThing(')');
+        usedConverted = true;
+      }
+      else {
+        m_components.push_back(oldcomponents[comp]);
+      }
+    }
+    else {
+      m_components.push_back(oldcomponents[comp]);
+    }
+  }
+  if (usedConverted) {
+    m_convertedVariables.push_back(make_pair(converted->GetName(), cf->GetName()));
+  }
 }
 
-void Formula::AddConversionFactors(std::vector<std::pair<std::string, std::vector<std::string> > > cfs)
+void Formula::ConvertTime(Variable* tcf)
 {
-  for (size_t cf=0; cf<cfs.size(); cf++) {
-    AddParentheses();
-    AddMathThing('*');
-    m_conversionFactors.push_back(cfs[cf]);
-    m_components.push_back(cfs[cf]);
+  std::vector<std::pair<std::string, std::vector<std::string> > > oldcomponents = m_components;
+  m_components.clear();
+  bool hasTime = false;
+  int watchForComma = false;
+  int parencount = -1;
+  for (size_t comp=0; comp<oldcomponents.size(); comp++) {
+    if (oldcomponents[comp].first=="time") {
+        AddMathThing('(');
+        m_components.push_back(oldcomponents[comp]);
+        AddMathThing('/');
+        AddVariable(tcf);
+        AddMathThing(')');
+        hasTime = true;
+    }
+    else {
+      m_components.push_back(oldcomponents[comp]);
+    }
+    if (oldcomponents[comp].first=="delay") {
+      watchForComma = true;
+    }
+    if (watchForComma && oldcomponents[comp].first=="(") {
+      parencount++;
+    }
+    if (watchForComma && oldcomponents[comp].first==")") {
+      parencount--;
+    }
+    if (watchForComma && parencount==0 && oldcomponents[comp].first==",") {
+      AddVariable(tcf);
+      AddMathThing('*');
+      hasTime = true;
+      watchForComma = false;
+      parencount = -1;
+    }
+  }
+  if (hasTime) {
+    vector<string> timename;
+    timename.push_back("time");
+    m_convertedVariables.push_back(make_pair(timename, tcf->GetName()));
   }
 }
 

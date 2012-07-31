@@ -1234,6 +1234,7 @@ bool Variable::SetExtentConversionFactor(Variable* var)
   }
   if (var->SetIsConst(true)) return true;
   m_extentConversionFactor = var->GetName();
+  GetModule()->ConvertExtent(var);
   return false;
 }
 
@@ -1246,6 +1247,7 @@ bool Variable::SetTimeConversionFactor(Variable* var)
   }
   if (var->SetIsConst(true)) return true;
   m_timeConversionFactor = var->GetName();
+  GetModule()->ConvertTime(var);
   return false;
 }
 
@@ -1549,7 +1551,7 @@ bool Variable::StillMatchesOriginal(formula_type ftype) const
   if (ftype==formulaRATE) {
     formthen = origvar->GetRateRule();
   }
-  return formnow->IsStraightCopyOf(formthen);
+  return formnow->Matches(formthen);
 }
 
 const Variable* Variable::GetOriginal() const

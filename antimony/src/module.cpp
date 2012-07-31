@@ -30,6 +30,7 @@ Module::Module(string name)
     m_variables(),
     m_defaultVariables(),
     m_synchronized(),
+    m_conversionFactors(),
     m_returnvalue(),
     m_currentexportvar(0),
     m_ismain(false),
@@ -79,6 +80,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_variables(src.m_variables),
     m_defaultVariables(src.m_defaultVariables),
     m_synchronized(src.m_synchronized),
+    m_conversionFactors(src.m_conversionFactors),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(0),
     m_ismain(src.m_ismain),
@@ -127,6 +129,7 @@ Module::Module(const Module& src)
     m_variables(src.m_variables),
     m_defaultVariables(src.m_defaultVariables),
     m_synchronized(src.m_synchronized),
+    m_conversionFactors(src.m_conversionFactors),
     m_returnvalue(src.m_returnvalue),
     m_currentexportvar(src.m_currentexportvar),
     m_ismain(src.m_ismain),
@@ -166,6 +169,7 @@ Module& Module::operator=(const Module& src)
   m_variablename = src.m_variablename;
   m_variables = src.m_variables;
   m_synchronized = src.m_synchronized;
+  m_conversionFactors = src.m_conversionFactors;
   m_returnvalue = src.m_returnvalue;
   m_currentexportvar = src.m_currentexportvar;
   m_ismain = src.m_ismain;
@@ -323,6 +327,9 @@ void Module::SetNewTopName(string newmodname, string newtopname)
   for (size_t pair=0; pair<m_synchronized.size(); pair++) {
     m_synchronized[pair].first.insert(m_synchronized[pair].first.begin(), newtopname);
     m_synchronized[pair].second.insert(m_synchronized[pair].second.begin(), newtopname);
+    if (!m_conversionFactors[pair].empty()) {
+      m_conversionFactors[pair].insert(m_conversionFactors[pair].begin(), newtopname);
+    }
   }
 }
 
@@ -790,7 +797,7 @@ bool Module::Finalize()
   }
 
 #ifndef NSBML
-  //Phase 3.5:  Create substance units for SBML species.
+  //Phase 4:  Create substance units for SBML species.
   for (size_t var=0; var<m_variables.size(); var++) {
     Variable* species = m_variables[var];
     if (!IsSpecies(species->GetType())) continue;
@@ -815,7 +822,7 @@ bool Module::Finalize()
   }
 #endif
 
-  //Phase 4: Store a list of unique variable names.
+  //Phase 5: Store a list of unique variable names.
   set<Variable*> uniquevarset;  //Can't have m_uniquevars be a set because order matters (bah).
   pair<set<Variable*>::iterator, bool> setret;
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -840,8 +847,28 @@ bool Module::Finalize()
     }
   }
 
+  //Phase 6:  convert conversion factors.
+  for (size_t cf=0; cf < m_conversionFactors.size(); cf++) {
+    vector<string> toconvert = m_synchronized[cf].first;
+    if (toconvert.empty()) continue;
+    vector<string> convmodel = toconvert;
+    convmodel.pop_back();
+    if (convmodel.empty()) {
+      assert(false);
+      return true;
+    }
+    Variable* conversionFactor = GetVariable(m_conversionFactors[cf]);
+    if (conversionFactor==NULL) continue;
+    Variable* converted = GetVariable(toconvert);
+    if (converted==NULL) {
+      return true;
+    }
+    Variable* modulevar = GetVariable(convmodel);
+    modulevar->GetModule()->Convert(converted, conversionFactor, m_modulename);
+  }
+
 #ifndef NSBML
-  //Phase 5:  Check SBML compatibility, and create sbml model object.
+  //Phase 7:  Check SBML compatibility, and create sbml model object.
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
   if (m_variablename.empty()) {
     //Only test SBML on top-level modules.
@@ -1372,14 +1399,13 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     if (var->GetType() == varStrand) continue;
     if (var->GetFormulaType() == formulaASSIGNMENT) {
       const Formula* asntrule = var->GetFormula();
-      if (!asntrule->IsEmpty() && !asntrule->IsEllipsesOnly()) {
-        string rule = asntrule->ToDelimitedStringWithEllipses(cc);
-        if (OrigIsAlreadyAssignmentRule(var, origmap, rule)) continue;
+      if (!asntrule->IsEllipsesOnly()) {
+        if (OrigAssignmentRuleIsAlready(var, origmap, asntrule)) continue;
         if (firstone) {
           retval += "\n" + indent + "// Assignment Rules:\n";
           firstone = false;
         }
-        retval += indent + var->GetNameDelimitedBy(cc) + " := " + rule + ";\n";
+        retval += indent + var->GetNameDelimitedBy(cc) + " := " + asntrule->ToDelimitedStringWithEllipses(cc) + ";\n";
       }
     }
   }
@@ -1390,13 +1416,12 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     const Variable* var = m_uniquevars[vnum];
     if (var->GetFormulaType() == formulaRATE) {
       const Formula* raterule = var->GetRateRule();
-      string rule =  raterule->ToDelimitedStringWithEllipses(cc);
       if (OrigRateRuleIsAlready(var, origmap, raterule)) continue;
       if (firstone) {
         retval += "\n" + indent + "// Rate Rules:\n";
         firstone = false;
       }
-      retval += indent + var->GetNameDelimitedBy(cc) + "' = " + rule + ";\n";
+      retval += indent + var->GetNameDelimitedBy(cc) + "' = " + raterule->ToDelimitedStringWithEllipses(cc) + ";\n";
     }
   }
 
@@ -1406,13 +1431,13 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     const Variable* var = m_uniquevars[vnum];
     var_type type = var->GetType();
     if (IsReaction(type)) {
-      string rxn = var->GetReaction()->ToDelimitedStringWithEllipses(cc);
-      if (OrigIsAlreadyReaction(var, origmap, rxn)) continue;
+      const AntimonyReaction* rxn = var->GetReaction();
+      if (OrigReactionIsAlready(var, origmap, rxn)) continue;
       if (firstone) {
         retval += "\n" + indent + "// Reactions:\n";
         firstone = false;
       }
-      retval += indent + rxn + "\n";
+      retval += indent + rxn->ToDelimitedStringWithEllipses(cc) + "\n";
     }
   }
 
@@ -1423,13 +1448,13 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     //if (var->IsPointer()) continue;
     var_type type = var->GetType();
     if (type == varInteraction) {
-      string rxn = var->GetReaction()->ToDelimitedStringWithEllipses(cc);
-      if (OrigIsAlreadyReaction(var, origmap, rxn)) continue;
+      const AntimonyReaction* rxn = var->GetReaction();
+      if (OrigReactionIsAlready(var, origmap, rxn)) continue;
       if (firstone) {
         retval += "\n" + indent + "// Interactions:\n";
         firstone = false;
       }
-      retval += indent + rxn + "\n";
+      retval += indent + rxn->ToDelimitedStringWithEllipses(cc) + "\n";
     }
   }
 
@@ -1439,13 +1464,13 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     const Variable* var = m_uniquevars[vnum];
     var_type type = var->GetType();
     if (type == varEvent) {
-      string event = var->GetEvent()->ToStringDelimitedBy(cc);
-      if (OrigIsAlreadyEvent(var, origmap, event)) continue;
+      const AntimonyEvent* event = var->GetEvent();
+      if (OrigEventIsAlready(var, origmap, event)) continue;
       if (firstone) {
         retval += "\n" + indent + "// Events:\n";
         firstone = false;
       }
-      retval += indent + event + "\n";
+      retval += indent + event->ToStringDelimitedBy(cc) + "\n";
     }
   }
 
@@ -1564,14 +1589,12 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   //Display names
   bool anydisplay = false;
   for (size_t var=0; var<m_uniquevars.size(); var++) {
-    //if (m_uniquevars[var]->IsPointer()) continue;
-    if (m_uniquevars[var]->GetDisplayName() != "") {
-      if (anydisplay == false) {
-        retval += "\n" + indent + "//Display Names:\n";
-        anydisplay = true;
-      }
-      retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is \"" + m_uniquevars[var]->GetDisplayName() + "\";\n";
+    if (OrigDisplayNameIsAlready(m_uniquevars[var], origmap)) continue;
+    if (anydisplay == false) {
+      retval += "\n" + indent + "//Display Names:\n";
+      anydisplay = true;
     }
+    retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is \"" + m_uniquevars[var]->GetDisplayName() + "\";\n";
   }
 
   //end model definition
@@ -1773,17 +1796,11 @@ bool Module::OrigFormulaIsAlready(const Variable* var, const map<const Variable*
     //cout << var->GetNameDelimitedBy('.') << " not found" << endl;
     return false;
   }
-  char cc = '.';
-  Formula form;
   const Formula* origform = origmapiter->second.GetFormula();
-  if (origform != NULL) {
-    form = *origform;
-  }
-  form.AddConversionFactors(formula->GetConversionFactors());
 
   formula_type ftype = origmapiter->second.GetFormulaType();
   if (origform != NULL && !origform->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
-    return (form.ToDelimitedStringWithEllipses(cc) == formula->ToDelimitedStringWithEllipses(cc));
+    return origform->Matches(formula);
   }
   /*
   cout << var->GetNameDelimitedBy('.') << " original is blank or wrong type: ";
@@ -1802,25 +1819,12 @@ bool Module::OrigRateRuleIsAlready(const Variable* var, const map<const Variable
     //cout << var->GetNameDelimitedBy('.') << " not found" << endl;
     return false;
   }
-  char cc = '.';
-  Formula form;
   const Formula* origform = origmapiter->second.GetRateRule();
-  if (origform != NULL) {
-    form = *origform;
-  }
-  form.AddConversionFactors(formula->GetConversionFactors());
 
   formula_type ftype = origmapiter->second.GetFormulaType();
-  if (origform != NULL && !origform->IsEllipsesOnly() && (ftype==formulaINITIAL || ftype==formulaRATE)) {
-    return (form.ToDelimitedStringWithEllipses(cc) == formula->ToDelimitedStringWithEllipses(cc));
+  if (origform != NULL && !origform->IsEllipsesOnly() && ftype==formulaRATE) {
+    return origform->Matches(formula);
   }
-  /*
-  cout << var->GetNameDelimitedBy('.') << " original is blank or wrong type: ";
-  if (form != NULL) {
-    cout << form->ToDelimitedStringWithEllipses(cc);
-  }
-  cout << endl;
-  */
   return false;
 }
 
@@ -1848,43 +1852,45 @@ bool Module::OrigIsAlreadyDNAStrand(const Variable* var, const map<const Variabl
   return (origmapiter->second.GetDNAStrand()->ToStringDelimitedBy(cc) == strand);
 }
 
-bool Module::OrigIsAlreadyAssignmentRule(const Variable* var, const map<const Variable*, Variable>& origmap, string rule) const
+bool Module::OrigAssignmentRuleIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap, const Formula* formula) const
 {
-  //cout << "Old: " << rule << endl;
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) {
-    //cout << "not found" << endl;
+    //cout << var->GetNameDelimitedBy('.') << " not found" << endl;
     return false;
   }
-  char cc = '.';
-  
-  if (origmapiter->second.GetFormulaType() != formulaASSIGNMENT) {
-    //cout << var->GetNameDelimitedBy('.') << " is not assignment:" << FormulaTypeToString(origmapiter->second.GetFormulaType()) << endl;
-    //cout << "New: " <<  origmapiter->second.GetFormula()->ToDelimitedStringWithEllipses(cc) << endl;
-    return false;
+  const Formula* origform = origmapiter->second.GetFormula();
+
+  formula_type ftype = origmapiter->second.GetFormulaType();
+  if (origform != NULL && !origform->IsEllipsesOnly() && ftype==formulaASSIGNMENT) {
+    return origform->Matches(formula);
   }
-  string newrule = origmapiter->second.GetFormula()->ToDelimitedStringWithEllipses(cc);
-  //cout << "New: " << newrule << endl;
-  return (origmapiter->second.GetFormula()->ToDelimitedStringWithEllipses(cc) == rule);
+  /*
+  cout << var->GetNameDelimitedBy('.') << " original is blank or wrong type: ";
+  if (form != NULL) {
+    cout << form->ToDelimitedStringWithEllipses(cc);
+  }
+  cout << endl;
+  */
+  return false;
 }
 
-bool Module::OrigIsAlreadyReaction(const Variable* var, const map<const Variable*, Variable>& origmap, string rxn) const
+bool Module::OrigReactionIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap, const AntimonyReaction* rxn) const
 {
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) return false;
   char cc = '.';
   var_type type = origmapiter->second.GetType();
   if (!(IsReaction(type) || type==varInteraction)) return false;
-  return (origmapiter->second.GetReaction()->ToDelimitedStringWithEllipses(cc) == rxn);
+  return (origmapiter->second.GetReaction()->Matches(rxn));
 }
 
-bool Module::OrigIsAlreadyEvent(const Variable* var, const map<const Variable*, Variable>& origmap, string event) const
+bool Module::OrigEventIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap, const AntimonyEvent* event) const
 {
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) return false;
-  char cc = '.';
-  if (origmapiter->second.GetType() != varUnitDefinition) return false;
-  return (origmapiter->second.GetEvent()->ToStringDelimitedBy(cc) == event);
+  if (origmapiter->second.GetType() != varEvent) return false;
+  return (origmapiter->second.GetEvent()->Matches(event));
 }
 
 bool Module::OrigIsAlreadyUnitDef(const Variable* var, const map<const Variable*, Variable>& origmap, string unitdef) const
@@ -1892,8 +1898,16 @@ bool Module::OrigIsAlreadyUnitDef(const Variable* var, const map<const Variable*
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) return false;
   char cc = '.';
-  if (origmapiter->second.GetType() != varEvent) return false;
+  if (origmapiter->second.GetType() != varUnitDefinition) return false;
   return (origmapiter->second.GetUnitDef()->ToStringDelimitedBy(cc) == unitdef);
+}
+
+bool Module::OrigDisplayNameIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap) const
+{
+  if (var->GetDisplayName() == "") return true;
+  map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  return (origmapiter->second.GetDisplayName() == var->GetDisplayName());
 }
 
 bool Module::OrigMatches(const Variable* var, const map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const
@@ -1959,3 +1973,120 @@ void Module::AddVarToSyncMap(const Variable* var, map<const Variable*, Variable 
   copied.SetNewTopName(m_modulename, submodname[0]);
   syncmap.insert(make_pair(var, copied));
 }
+
+void Module::Convert(Variable* conv, Variable* cf, string modulename)
+{
+  Module* origmod = g_registry.GetModule(m_modulename);
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* subvar = m_variables[var];
+    Variable* origsubvar = origmod->m_variables[var];
+    Formula* form = NULL;
+    Formula origform;
+    AntimonyEvent origevent;
+    AntimonyEvent* newevent;
+    switch (subvar->GetType()) {
+    case varFormulaUndef:
+    case varFormulaOperator:
+    case varDNA:
+    case varSpeciesUndef:
+    case varCompartment:
+    case varUndefined:
+    case varUnitDefinition:
+    case varReactionUndef:
+    case varReactionGene:
+    case varInteraction:
+      form = subvar->GetFormula();
+      origform = *origsubvar->GetFormula();
+      origform.SetNewTopName(modulename, m_variablename[0]);
+      if (origform.Matches(form)) {
+        form->Convert(conv, cf);
+      }
+      if (subvar->GetFormulaType() == formulaRATE) {
+        form = subvar->GetRateRule();
+        origform = *origsubvar->GetRateRule();
+        origform.SetNewTopName(modulename, m_variablename[0]);
+        if (origform.Matches(form)) {
+          form->Convert(conv, cf);
+        }
+      }
+      break;
+    case varModule:
+      subvar->GetModule()->Convert(conv, cf, modulename);
+      break;
+    case varEvent:
+      newevent = subvar->GetEvent();
+      origevent = *origsubvar->GetEvent();
+      origevent.SetNewTopName(modulename, m_variablename[0]);
+      if (origevent.Matches(newevent)) {
+        newevent->Convert(conv, cf);
+      }
+      break;
+    case varStrand:
+      break;
+    }
+  }
+}
+
+void Module::ConvertTime(Variable* tcf)
+{
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* subvar = m_variables[var];
+    Formula* form = NULL;
+    switch (subvar->GetType()) {
+    case varReactionUndef:
+    case varReactionGene:
+      subvar->GetFormula()->AddInvTimeConversionFactor(tcf);
+    case varFormulaUndef:
+    case varFormulaOperator:
+    case varDNA:
+    case varSpeciesUndef:
+    case varCompartment:
+    case varUndefined:
+    case varInteraction:
+      subvar->GetFormula()->ConvertTime(tcf);
+      if (subvar->GetFormulaType() == formulaRATE) {
+        subvar->GetRateRule()->AddInvTimeConversionFactor(tcf);
+        subvar->GetRateRule()->ConvertTime(tcf);
+      }
+      break;
+    case varModule:
+      subvar->GetModule()->ConvertTime(tcf);
+      break;
+    case varEvent:
+      subvar->GetEvent()->ConvertTime(tcf);
+      break;
+    case varUnitDefinition:
+    case varStrand:
+      break;
+    }
+  }
+}
+
+void Module::ConvertExtent(Variable* xcf)
+{
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* subvar = m_variables[var];
+    Formula* form = NULL;
+    switch (subvar->GetType()) {
+    case varReactionUndef:
+    case varReactionGene:
+      subvar->GetFormula()->AddConversionFactor(xcf);
+      break;
+    case varModule:
+      subvar->GetModule()->ConvertExtent(xcf);
+      break;
+    case varFormulaUndef:
+    case varFormulaOperator:
+    case varDNA:
+    case varSpeciesUndef:
+    case varCompartment:
+    case varUndefined:
+    case varInteraction:
+    case varEvent:
+    case varUnitDefinition:
+    case varStrand:
+      break;
+    }
+  }
+}
+

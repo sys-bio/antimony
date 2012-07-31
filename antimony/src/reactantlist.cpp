@@ -150,3 +150,21 @@ void ReactantList::FixNames()
   }
   FixName(m_module);
 }
+
+bool ReactantList::Matches(const ReactantList* newrl) const
+{
+  vector<vector<string> > newvariables = newrl->GetVariableList();
+  vector<double> newstoichs = newrl->GetStoichiometries();
+  if (m_components.size() != newvariables.size()) return false;
+  for (size_t component=0; component<m_components.size(); component++) {
+    if (m_components[component].first != newstoichs[component]) return false;
+    Module* module = g_registry.GetModule(m_module);
+    assert(module != NULL);
+    Variable* origvar = module->GetVariable(m_components[component].second);
+    assert(origvar != NULL);
+    Variable* newvar = module->GetVariable(newvariables[component]);
+    assert(newvar != NULL);
+    if (origvar->GetSameVariable() != newvar->GetSameVariable()) return false;
+  }
+  return true;
+}
