@@ -106,9 +106,6 @@ model *QTPop()
   Diffusion_LuxI_Right: LuxI -> LuxI; Diffusion_LuxI_Right_kecdiff * get2DArrayElement(LuxI, Diffusion_LuxI_Right_i, Diffusion_LuxI_Right_j) - Diffusion_LuxI_Right_kecdiff * get2DArrayElement(LuxI, Diffusion_LuxI_Right_i + 0, Diffusion_LuxI_Right_j + 1);
   MembraneDiffusion_LuxI: LuxI -> LuxI; get2DArrayElement(kmdiff_f, MembraneDiffusion_LuxI_i, MembraneDiffusion_LuxI_j) * get2DArrayElement(LuxI, MembraneDiffusion_LuxI_i, MembraneDiffusion_LuxI_j) - get2DArrayElement(kmdiff_r, MembraneDiffusion_LuxI_i, MembraneDiffusion_LuxI_j) * get2DArrayElement(LuxI, MembraneDiffusion_LuxI_i, MembraneDiffusion_LuxI_j);
 
-  // Events:
-  GRID__QuorumTrigger.event0: at geq(time, 10000), t0=false, persistent=false, fromTrigger=false: GRID__QuorumTrigger.Env = 100;
-
   // Species initializations:
   LuxI = 0;
 
@@ -175,28 +172,6 @@ model *QTPop()
   unit u_1_second_n1 = 1 / second;
 
   //Display Names:
-  GRID__QuorumTrigger.kr_f is "Forward repression binding rate";
-  GRID__QuorumTrigger.kr_r is "Reverse repression binding rate";
-  GRID__QuorumTrigger.ka_f is "Forward activation binding rate";
-  GRID__QuorumTrigger.ka_r is "Reverse activation binding rate";
-  GRID__QuorumTrigger.kc_f is "Forward complex formation rate";
-  GRID__QuorumTrigger.kc_r is "Reverse complex formation rate";
-  GRID__QuorumTrigger.ko_f is "Forward RNAP binding rate";
-  GRID__QuorumTrigger.ko_r is "Reverse RNAP binding rate";
-  GRID__QuorumTrigger.kao_f is "Forward activated RNAP binding rate";
-  GRID__QuorumTrigger.kao_r is "Reverse activated RNAP binding rate";
-  GRID__QuorumTrigger.kmdiff_f is "Forward membrane diffusion rate";
-  GRID__QuorumTrigger.kmdiff_r is "Reverse membrane diffusion rate";
-  GRID__QuorumTrigger.kd is "Degradation rate";
-  GRID__QuorumTrigger.kecd is "Extracellular degradation rate";
-  GRID__QuorumTrigger.nc is "Stoichiometry of binding";
-  GRID__QuorumTrigger.nr is "Initial RNAP count";
-  GRID__QuorumTrigger.ko is "Open complex production rate";
-  GRID__QuorumTrigger.kb is "Basal production rate";
-  GRID__QuorumTrigger.ng is "Initial promoter count";
-  GRID__QuorumTrigger.np is "Stoichiometry of production";
-  GRID__QuorumTrigger.ka is "Activated production rate";
-  GRID__QuorumTrigger.kecdiff is "Extracellular diffusion rate";
   kr_f is "Forward repression binding rate";
   kr_r is "Reverse repression binding rate";
   ka_f is "Forward activation binding rate";

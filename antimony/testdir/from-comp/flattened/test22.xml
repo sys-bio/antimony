@@ -21,7 +21,11 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
             <plus/>
-            <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            <apply>
+              <divide/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <ci> timeconv </ci>
+            </apply>
             <cn type="integer"> 3 </cn>
           </apply>
         </math>
@@ -31,13 +35,21 @@
       <rateRule variable="t1">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
-            <plus/>
+            <divide/>
             <apply>
-              <divide/>
-              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-              <ci> t1 </ci>
+              <plus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <divide/>
+                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                  <ci> timeconv </ci>
+                </apply>
+                <ci> t1 </ci>
+              </apply>
+              <cn type="integer"> 3 </cn>
             </apply>
-            <cn type="integer"> 3 </cn>
+            <ci> timeconv </ci>
           </apply>
         </math>
       </rateRule>
@@ -46,7 +58,11 @@
           <apply>
             <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/delay"> delay </csymbol>
             <ci> t1 </ci>
-            <cn type="integer"> 3 </cn>
+            <apply>
+              <times/>
+              <ci> timeconv </ci>
+              <cn type="integer"> 3 </cn>
+            </apply>
           </apply>
         </math>
       </assignmentRule>
@@ -61,19 +77,31 @@
             <apply>
               <divide/>
               <apply>
-                <times/>
-                <ci> t3 </ci>
-                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-              </apply>
-              <apply>
-                <times/>
-                <ci> s1 </ci>
+                <divide/>
                 <apply>
-                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/delay"> delay </csymbol>
-                  <ci> t5 </ci>
-                  <cn type="e-notation"> 2 <sep/> -1 </cn>
+                  <times/>
+                  <ci> t3 </ci>
+                  <apply>
+                    <divide/>
+                    <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                    <ci> timeconv </ci>
+                  </apply>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> s1 </ci>
+                  <apply>
+                    <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/delay"> delay </csymbol>
+                    <ci> t5 </ci>
+                    <apply>
+                      <times/>
+                      <ci> timeconv </ci>
+                      <cn type="e-notation"> 2 <sep/> -1 </cn>
+                    </apply>
+                  </apply>
                 </apply>
               </apply>
+              <ci> timeconv </ci>
             </apply>
           </math>
         </kineticLaw>
@@ -85,7 +113,11 @@
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <gt/>
-              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <apply>
+                <divide/>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                <ci> timeconv </ci>
+              </apply>
               <cn type="integer"> 3 </cn>
             </apply>
           </math>
@@ -93,16 +125,28 @@
         <delay>
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
-              <divide/>
-              <cn type="integer"> 1 </cn>
-              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <times/>
+              <apply>
+                <divide/>
+                <cn type="integer"> 1 </cn>
+                <apply>
+                  <divide/>
+                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                  <ci> timeconv </ci>
+                </apply>
+              </apply>
+              <ci> timeconv </ci>
             </apply>
           </math>
         </delay>
         <listOfEventAssignments>
           <eventAssignment variable="t5">
             <math xmlns="http://www.w3.org/1998/Math/MathML">
-              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <apply>
+                <divide/>
+                <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                <ci> timeconv </ci>
+              </apply>
             </math>
           </eventAssignment>
         </listOfEventAssignments>

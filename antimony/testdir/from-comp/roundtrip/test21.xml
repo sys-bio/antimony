@@ -12,31 +12,8 @@
     <listOfParameters>
       <parameter id="conv" value="0.1" constant="true"/>
     </listOfParameters>
-    <listOfRules>
-      <rateRule variable="C8">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <times/>
-            <apply>
-              <plus/>
-              <apply>
-                <times/>
-                <cn type="integer"> 4 </cn>
-                <ci> C8 </ci>
-              </apply>
-              <cn type="integer"> 3 </cn>
-            </apply>
-            <ci> conv </ci>
-          </apply>
-        </math>
-      </rateRule>
-    </listOfRules>
     <comp:listOfSubmodels>
-      <comp:submodel comp:id="sub1" comp:modelRef="moddef1">
-        <comp:listOfDeletions>
-          <comp:deletion comp:metaIdRef="moddef1_C80_raterule"/>
-        </comp:listOfDeletions>
-      </comp:submodel>
+      <comp:submodel comp:id="sub1" comp:modelRef="moddef1"/>
     </comp:listOfSubmodels>
   </model>
   <comp:listOfModelDefinitions>
@@ -45,7 +22,7 @@
         <compartment id="C80" spatialDimensions="3" size="80" constant="false"/>
       </listOfCompartments>
       <listOfRules>
-        <rateRule metaid="moddef1_C80_raterule" variable="C80">
+        <rateRule variable="C80">
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <plus/>
