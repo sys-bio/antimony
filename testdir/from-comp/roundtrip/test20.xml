@@ -15,31 +15,8 @@
     <listOfParameters>
       <parameter id="conv" value="0.1" constant="true"/>
     </listOfParameters>
-    <listOfRules>
-      <rateRule variable="s8">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <times/>
-            <apply>
-              <plus/>
-              <apply>
-                <times/>
-                <cn type="integer"> 4 </cn>
-                <ci> s8 </ci>
-              </apply>
-              <cn type="integer"> 3 </cn>
-            </apply>
-            <ci> conv </ci>
-          </apply>
-        </math>
-      </rateRule>
-    </listOfRules>
     <comp:listOfSubmodels>
-      <comp:submodel comp:id="sub1" comp:modelRef="moddef1">
-        <comp:listOfDeletions>
-          <comp:deletion comp:metaIdRef="moddef1_s80_raterule"/>
-        </comp:listOfDeletions>
-      </comp:submodel>
+      <comp:submodel comp:id="sub1" comp:modelRef="moddef1"/>
     </comp:listOfSubmodels>
   </model>
   <comp:listOfModelDefinitions>
@@ -51,7 +28,7 @@
         <species id="s80" compartment="C" initialConcentration="80" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false"/>
       </listOfSpecies>
       <listOfRules>
-        <rateRule metaid="moddef1_s80_raterule" variable="s80">
+        <rateRule variable="s80">
           <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
               <plus/>
