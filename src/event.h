@@ -48,9 +48,14 @@ public:
   bool GetInitialValue() const {return m_initialValue;};
   bool IsEmpty() const;
 
+  bool Matches(const AntimonyEvent* newevent) const;
+  void Convert(Variable* converted, Variable* cf);
+  void ConvertTime(Variable* tcf);
+
   size_t GetNumAssignments() const {return m_varresults.size();};
   std::string GetNthAssignmentVariableName(size_t n, char cc) const;
   std::string GetNthAssignmentFormulaString(size_t n, char cc, bool SBML) const;
+  const Formula* GetAssignmentFormula(size_t n) const;
   std::string ToStringDelimitedBy(char cc) const;
   void FixNames();
 };

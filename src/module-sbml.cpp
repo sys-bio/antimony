@@ -330,11 +330,21 @@ void Module::LoadSBML(const Model* sbml)
         g_registry.AddWarning("Unable to find submodel " + refname + ".");
       }
       for (unsigned int d=0; d<submodel->getNumDeletions(); d++) {
-        const Deletion* deletion = submodel->getDeletion(d);
-        string delname = getNameFromSBMLObject(deletion, "del");
-        //var = AddOrFindVariable(&delname);
-        g_registry.AddWarning("Unable to process the deletion " + delname + " from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions have not yet been added as a concept in Antimony.");
+        Deletion* deletion = const_cast<Deletion*>(submodel->getDeletion(d));
+        SBase* target = deletion->getReferencedElement();
         //LS DEBUG:  when we have deletions, add them here.
+        if (target != NULL) {
+          switch (target->getTypeCode()) {
+          case SBML_INITIAL_ASSIGNMENT:
+          case SBML_RATE_RULE:
+          case SBML_ASSIGNMENT_RULE:
+            break; //We do handle these types of deletions.
+          default:
+            string delname = getNameFromSBMLObject(deletion, "del");
+            //var = AddOrFindVariable(&delname);
+            g_registry.AddWarning("Unable to process the deletion " + delname + " from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions have not yet been added as a concept in Antimony.");
+          }
+        }
       }
       if (submodel->isSetTimeConversionFactor()) {
         string tcf = submodel->getTimeConversionFactor();
@@ -1206,11 +1216,6 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
 void CreateDeletion(Submodel* submodel, SBase* sbase, SBMLDocument& sbml, vector<string> submodname, string basemetaid)
 {
   Deletion* deletion = submodel->createDeletion();
-  SBaseRef* sbr = deletion;
-  for (size_t i=1; i<submodname.size(); i++) {
-    sbr->setIdRef(submodname[i]);
-    sbr = sbr->createSBaseRef();
-  }
   string metaid = sbase->getMetaId();
   if (metaid.empty()) {
     //Need to set one.
@@ -1221,8 +1226,101 @@ void CreateDeletion(Submodel* submodel, SBase* sbase, SBMLDocument& sbml, vector
       num++;
     }
     sbase->setMetaId(metaid);
+    //However, sbase might just be a copy of the real thing we need to find:
+    SBase* parent = sbase->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
+    Submodel* submod = static_cast<Submodel*>(parent);
+    if (submod != NULL) {
+      //Yup, it was a copy.
+      CompSBMLDocumentPlugin* sbmlp = static_cast<CompSBMLDocumentPlugin*>(sbml.getPlugin("comp"));
+      ModelDefinition* md = sbmlp->getModelDefinition(submod->getModelRef());
+      InitialAssignment* ia = NULL;
+      Rule* rule = NULL;
+      switch(sbase->getTypeCode()) {
+      case SBML_INITIAL_ASSIGNMENT:
+        ia = static_cast<InitialAssignment*>(sbase);
+        ia = md->getInitialAssignment(ia->getSymbol());
+        ia->setMetaId(metaid);
+        break;
+      case SBML_RATE_RULE:
+      case SBML_ASSIGNMENT_RULE:
+        rule = static_cast<Rule*>(sbase);
+        rule = md->getRule(rule->getVariable());
+        rule->setMetaId(metaid);
+        break;
+      default:
+        assert(false);
+        break;
+      }
+    }
+    SBaseRef* subsbr = new SBaseRef();
+    subsbr->setMetaIdRef(metaid);
+    while (submod != NULL && submod != submodel) {
+      SBaseRef* newsbr = new SBaseRef();
+      newsbr->setIdRef(submod->getId());
+      newsbr->setSBaseRef(subsbr);
+      subsbr = newsbr;
+      submod = static_cast<Submodel*>(submod->getAncestorOfType(SBML_COMP_SUBMODEL, "comp"));
+    }
+    deletion->setIdRef(subsbr->getIdRef());
+    deletion->setMetaIdRef(subsbr->getMetaIdRef());
+    deletion->setSBaseRef(subsbr->getSBaseRef());
+    delete subsbr;
+    return;
+  }
+  SBaseRef* sbr = deletion;
+  for (size_t i=1; i<submodname.size(); i++) {
+    sbr->setIdRef(submodname[i]);
+    sbr = sbr->createSBaseRef();
   }
   sbr->setMetaIdRef(metaid);
+}
+
+InitialAssignment* Module::FindInitialAssignment(Model* md, vector<string> syncname)
+{
+  InitialAssignment* ia = md->getInitialAssignment(syncname[syncname.size()-1]);
+  if (ia != NULL) return ia;
+  SBase* object = md->getElementBySId(syncname[syncname.size()-1]);
+  if (object==NULL) return NULL;
+  CompSBasePlugin* objp = static_cast<CompSBasePlugin*>(object->getPlugin("comp"));
+  for (unsigned long re=0; re<objp->getNumReplacedElements(); objp++) {
+    SBase* referenced = objp->getReplacedElement(re)->getReferencedElement();
+    syncname[1] = referenced->getId();
+    SBase* parent = referenced->getParentSBMLObject();
+    while (parent != NULL && parent->getTypeCode() != SBML_MODEL && parent->getTypeCode() != SBML_COMP_MODELDEFINITION) {
+      parent = parent->getParentSBMLObject();
+    }
+    if (parent != NULL) {
+      Model* parentmod = static_cast<Model*>(parent);
+      InitialAssignment* ia = FindInitialAssignment(parentmod, syncname);
+      if (ia != NULL) return ia;
+    }
+  }
+
+  return NULL;
+}
+
+Rule* Module::FindRule(Model* md, vector<string> syncname)
+{
+  Rule* rule = md->getRule(syncname[syncname.size()-1]);
+  if (rule != NULL) return rule;
+  SBase* object = md->getElementBySId(syncname[syncname.size()-1]);
+  if (object==NULL) return NULL;
+  CompSBasePlugin* objp = static_cast<CompSBasePlugin*>(object->getPlugin("comp"));
+  for (unsigned long re=0; re<objp->getNumReplacedElements(); objp++) {
+    SBase* referenced = objp->getReplacedElement(re)->getReferencedElement();
+    syncname[1] = referenced->getId();
+    SBase* parent = referenced->getParentSBMLObject();
+    while (parent != NULL && parent->getTypeCode() != SBML_MODEL && parent->getTypeCode() != SBML_COMP_MODELDEFINITION) {
+      parent = parent->getParentSBMLObject();
+    }
+    if (parent != NULL) {
+      Model* parentmod = static_cast<Model*>(parent);
+      Rule* rule = FindRule(parentmod, syncname);
+      if (rule != NULL) return rule;
+    }
+  }
+
+  return NULL;
 }
 
 bool Module::SynchronizeAssignments(Model* sbmlmod, const Variable* var, const vector<const Variable*>& synchronized, const map<const Variable*, Variable>& syncmap)
@@ -1238,7 +1336,7 @@ bool Module::SynchronizeAssignments(Model* sbmlmod, const Variable* var, const v
     }
     const Variable* orig = &syncmapiter->second;
     if (ret && notblank && var->GetFormulaType() == orig->GetFormulaType() &&
-        currentform->ToSBMLString() == orig->GetFormula()->ToSBMLString()) {
+        orig->GetFormula()->Matches(currentform)) {
           ret = false; //We can leave the original definition there.
           continue;
     }
@@ -1252,10 +1350,14 @@ bool Module::SynchronizeAssignments(Model* sbmlmod, const Variable* var, const v
       assert(false);
       continue;
     }
-    CompSBMLDocumentPlugin* csdp = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
-    ModelDefinition* md = csdp->getModelDefinition(submod->GetModule()->GetModuleName());
-    InitialAssignment* ia = md->getInitialAssignment(syncname[syncname.size()-1]);
-    Rule* ar = md->getRule(syncname[syncname.size()-1]);
+    Model* md = sbmlmod;
+    for (size_t sm=0; sm<submodname.size(); sm++) {
+      CompModelPlugin* cmp = static_cast<CompModelPlugin*>(md->getPlugin("comp"));
+      Submodel* instantiatedsubmod = cmp->getSubmodel(submodname[sm]);
+      md = instantiatedsubmod->getInstantiation();
+    }
+    InitialAssignment* ia = FindInitialAssignment(md, syncname);
+    Rule* ar = FindRule(md, syncname);
     CompModelPlugin* cmp = static_cast<CompModelPlugin*>(sbmlmod->getPlugin("comp"));
     Submodel* submodel = cmp->getSubmodel(submodname[0]);
     if (submod==NULL) {
@@ -1263,11 +1365,11 @@ bool Module::SynchronizeAssignments(Model* sbmlmod, const Variable* var, const v
       return ret;
     }
     if (ia != NULL) {
-      string basemetaid = submod->GetModule()->GetModuleName() + "_" + ia->getId() + "_initialassignment";
+      string basemetaid = ia->getParentSBMLObject()->getParentSBMLObject()->getId() + "_" + ia->getId() + "_initialassignment";
       CreateDeletion(submodel, ia, m_sbml, submodname, basemetaid);
     }
     if (ar != NULL && ar->isAssignment()) {
-      string basemetaid = submod->GetModule()->GetModuleName() + "_" + ar->getId() + "_assignmentrule";
+      string basemetaid = ar->getParentSBMLObject()->getParentSBMLObject()->getId() + "_" + ar->getId() + "_assignmentrule";
       CreateDeletion(submodel, ar, m_sbml, submodname, basemetaid);
     }
   }
@@ -1287,7 +1389,7 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
     }
     const Variable* orig = &syncmapiter->second;
     if (ret && notblank && var->GetFormulaType() == orig->GetFormulaType() &&
-        currentform->ToSBMLString() == orig->GetRateRule()->ToSBMLString()) {
+        orig->GetRateRule()->Matches(currentform)) {
           ret = false; //We can leave the original definition there.
           continue;
     }
@@ -1301,9 +1403,13 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
       assert(false);
       continue;
     }
-    CompSBMLDocumentPlugin* csdp = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
-    ModelDefinition* md = csdp->getModelDefinition(submod->GetModule()->GetModuleName());
-    Rule* rr = md->getRule(syncname[syncname.size()-1]);
+    Model* md = sbmlmod;
+    for (size_t sm=0; sm<submodname.size(); sm++) {
+      CompModelPlugin* cmp = static_cast<CompModelPlugin*>(md->getPlugin("comp"));
+      Submodel* instantiatedsubmod = cmp->getSubmodel(submodname[sm]);
+      md = instantiatedsubmod->getInstantiation();
+    }
+    Rule* rr = FindRule(md, syncname);
     if (rr != NULL && rr->isRate()) {
       CompModelPlugin* cmp = static_cast<CompModelPlugin*>(sbmlmod->getPlugin("comp"));
       Submodel* submodel = cmp->getSubmodel(submodname[0]);
@@ -1311,7 +1417,7 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
         assert(false);
         return ret;
       }
-      string basemetaid = submod->GetModule()->GetModuleName() + "_" + rr->getId() + "_raterule";
+      string basemetaid = rr->getParentSBMLObject()->getParentSBMLObject()->getId() + "_" + rr->getId() + "_raterule";
       CreateDeletion(submodel, rr, m_sbml, submodname, basemetaid);
     }
   }

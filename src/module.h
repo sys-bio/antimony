@@ -210,26 +210,32 @@ public:
   void  FindOrCreateLocalVersionOf(Variable* variable, std::string& newvarname, iface::cellml_api::CellMLVariable*& newlocalvar);
 #endif
 
-  void  FixNames();
+  void FixNames();
+  void ConvertTime(Variable* tcf);
+  void ConvertExtent(Variable* xcf);
 
 private:
   void FillInOrigmap(std::map<const Variable*, Variable >& origmap) const;
   bool OrigFormulaIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* formula) const;
   bool OrigRateRuleIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* formula) const;
+  bool OrigAssignmentRuleIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const Formula* formula) const;
   bool OrigIsAlreadyCompartment(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigIsAlreadyConstSpecies(const Variable* var, const std::map<const Variable*, Variable>& origmap, bool isconst) const;
   bool OrigIsAlreadyDNAStrand(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string strand) const;
-  bool OrigIsAlreadyAssignmentRule(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rule) const;
-  bool OrigIsAlreadyReaction(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string rxn) const;
-  bool OrigIsAlreadyEvent(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string event) const;
+  bool OrigReactionIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyReaction* rxn) const;
+  bool OrigEventIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyEvent* event) const;
   bool OrigIsAlreadyUnitDef(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string unitdef) const;
+  bool OrigDisplayNameIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
   bool IsReplaced(const InitialAssignment* ia, const Model* parent);
   bool IsReplaced(const Rule* rule, const Model* parent);
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;
+  void Convert(Variable* converted, Variable* cf, std::string modulename);
 #ifdef USE_COMP
   void GetReplacingAndRules(const Replacing* replacing, std::string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule);
   Variable* GetSBaseRef(const SBaseRef* sbr, std::string modname, std::string re_string, const SBase* orig);
+  InitialAssignment* FindInitialAssignment(Model* md, std::vector<std::string> syncname);
+  Rule* FindRule(Model* md, std::vector<std::string> syncname);
 #endif
 };
 

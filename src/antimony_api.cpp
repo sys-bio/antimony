@@ -225,7 +225,7 @@ long ParseFile(string oldlocale)
     g_registry.AddErrorPrefix(errorp);
     return -1;
   }
-  if (g_registry.FinalizeModules()) return -1;
+  //if (g_registry.FinalizeModules()) return -1;
   return g_registry.SaveModules();
 }
 

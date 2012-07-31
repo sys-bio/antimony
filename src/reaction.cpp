@@ -160,3 +160,12 @@ void AntimonyReaction::FixNames()
   m_right.FixNames();
   m_formula.FixNames(m_module);
 }
+
+bool AntimonyReaction::Matches(const AntimonyReaction* newreaction) const
+{
+  if (GetType() != newreaction->GetType()) return false;
+  if (!m_left.Matches(newreaction->GetLeft())) return false;
+  if (!m_right.Matches(newreaction->GetRight())) return false;
+  return m_formula.Matches(newreaction->GetFormula());
+}
+

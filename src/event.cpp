@@ -149,6 +149,31 @@ bool AntimonyEvent::IsEmpty() const
   return false;
 }
 
+void AntimonyEvent::Convert(Variable* converted, Variable* cf)
+{
+  m_trigger.Convert(converted, cf);
+  m_delay.Convert(converted, cf);
+  m_priority.Convert(converted, cf);
+  for (size_t fr=0; fr<m_formresults.size(); fr++) {
+    Variable* asntvar = g_registry.GetModule(m_module)->GetVariable(m_varresults[fr]);
+    if (converted->GetSameVariable() == asntvar->GetSameVariable()) {
+      m_formresults[fr].AddConversionFactor(cf);
+    }
+    m_formresults[fr].Convert(converted, cf);
+  }
+}
+
+void AntimonyEvent::ConvertTime(Variable* tcf)
+{
+  m_trigger.ConvertTime(tcf);
+  m_delay.ConvertTime(tcf);
+  m_delay.AddConversionFactor(tcf);
+  m_priority.ConvertTime(tcf);
+  for (size_t fr=0; fr<m_formresults.size(); fr++) {
+    m_formresults[fr].ConvertTime(tcf);
+  }
+}
+
 string AntimonyEvent::GetNthAssignmentVariableName(size_t n, char cc) const
 {
   if (n >= m_varresults.size()) {
@@ -254,4 +279,22 @@ void AntimonyEvent::FixNames()
   }
   FixName(m_name);
   FixName(m_module);
+}
+
+bool AntimonyEvent::Matches(const AntimonyEvent* newevent) const
+{
+  if (!m_trigger.Matches(newevent->GetTrigger())) return false;
+  if (!m_delay.Matches(newevent->GetDelay())) return false;
+  if (!m_priority.Matches(newevent->GetPriority())) return false;
+  if (m_formresults.size() != newevent->GetNumAssignments()) return false;
+  for (size_t fr=0; fr<m_formresults.size(); fr++) {
+    if (!m_formresults[fr].Matches(newevent->GetAssignmentFormula(fr))) return false;
+  }
+  return true;
+}
+
+const Formula* AntimonyEvent::GetAssignmentFormula(size_t n) const
+{
+  if (n >= m_formresults.size()) return NULL;
+  return &m_formresults[n];
 }
