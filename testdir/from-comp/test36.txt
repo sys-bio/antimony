@@ -1,0 +1,22 @@
+//Created by libAntimony v2.3-beta
+model moddef1()
+
+  // Events:
+  E0: at 1 / time after gt(time, 3), priority = 10: t2 = 5.5, t1 = 3.3;
+
+  // Variable initializations:
+  t1 = 1;
+  t2 = 1;
+
+  //Other declarations:
+  var t1, t2;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1();
+
+  // Events:
+  sub1.E0: at 1 / time after gt(time, 3): sub1.t2 = 5.5, sub1.t1 = 3.3;
+end

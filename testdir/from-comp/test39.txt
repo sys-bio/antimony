@@ -1,0 +1,33 @@
+//Created by libAntimony v2.3-beta
+
+// Warnings from automatic translation:
+//    Unable to process deletion from submodel sub1 in model doc0.  Deletions of LocalParameter elements have not been added as a concept in Antimony.
+
+model moddef1()
+
+  // Compartments and Species:
+  compartment C;
+  species s1 in C;
+
+  // Reactions:
+  J0:  -> s1; J0_p1 * s1;
+
+  // Species initializations:
+  s1 = 0.001;
+
+  // Compartment initializations:
+  C = 1;
+
+  // Variable initializations:
+  p1 = 100;
+  J0_p1 = 10;
+
+  //Other declarations:
+  const C, p1;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1();
+end
