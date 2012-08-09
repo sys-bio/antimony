@@ -17,7 +17,6 @@ public:
   std::string GetAntimony() const;
   void FixNames();
   bool ChangeTimeToRef();
-
   //bool GetFormulaUsing(std::vector<std::vector<std::string> > newvars, Formula& setform) const;
 
 };

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-UnitElement::UnitElement(std::string kind)
+UnitElement::UnitElement(string kind)
   : m_kind(kind)
   , m_exponent(1)
   , m_multiplier(1)
@@ -39,7 +39,7 @@ bool UnitElement::operator<(const UnitElement& ue) const
   return m_scale < ue.m_scale;
 }
 
-void UnitElement::SetKind(std::string name)
+void UnitElement::SetKind(string name)
 {
   m_kind = name;
   FixUnitName(m_kind);

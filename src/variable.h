@@ -44,9 +44,10 @@ private:
   Formula m_valRateRule;
   formula_type m_formulatype;
 
-  //If the variable is a submodule, it can have conversion factors
+  //If the variable is a submodule, it can have conversion factors and deletions.
   std::vector<std::string> m_extentConversionFactor;
   std::vector<std::string> m_timeConversionFactor;
+  std::vector<std::vector<std::string> > m_deletions;
 
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
@@ -56,6 +57,9 @@ private:
 
   //This tells us what kind of variable we're dealing with.
   var_type m_type;
+
+  //When we are a deleted variable, it makes a difference to SBML whether or not we used to be a unit
+  bool m_deletedunit;
 
   //Additionally, the variable might be set constant
   const_type m_const;
@@ -110,6 +114,7 @@ public:
   bool IsExpandedStrand() const;
   std::string GetFormulaForNthEntryInStrand(char cc, size_t n);
   std::string GetDisplayName() const;
+  bool IsDeletedUnit() const {return m_deletedunit;}
 
   Variable* GetUnitVariable() const;
   bool SetUnitVariable(std::string);
@@ -142,6 +147,11 @@ public:
   bool SetTimeConversionFactor(double val);
   Variable* GetExtentConversionFactor();
   Variable* GetTimeConversionFactor();
+  std::vector<std::vector<std::string> > GetDeletions() const;
+
+  //Submodule deletions:
+  bool DeleteFromSubmodel(Variable* deletedvar);
+  void ClearReferencesTo(Variable* deletedvar);
 
   bool Synchronize(Variable* clone, const Variable* conversionFactor);
 #ifndef NSBML

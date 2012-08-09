@@ -360,7 +360,7 @@ void Module::AddSynchronizedPair(const Variable* oldvar, const Variable* newvar,
   }
 }
 
-void Module::AddTimeToUserFunction(std::string function)
+void Module::AddTimeToUserFunction(string function)
 {
   for (size_t var=0; var<m_variables.size(); var++) {
     Formula* form = m_variables[var]->GetFormula();
@@ -400,6 +400,96 @@ void Module::CreateLocalVariablesForSubmodelInterfaceIfNeeded()
       }
     }
   }
+}
+
+bool Module::AddDeletion(Variable* deletedvar)
+{
+  deletedvar = deletedvar->GetSameVariable();
+  //Make sure the deleted variable has not been synchronized with anything at this level:
+  for (size_t sync=0; sync<m_synchronized.size(); sync++) {
+    Variable* var = GetVariable(m_synchronized[sync].first);
+    if (var->GetSameVariable() == deletedvar) {
+      g_registry.SetError("Unable to delete variable " + deletedvar->GetNameDelimitedBy('.') + " because it is already synchronized to the variable " + ToStringFromVecDelimitedBy(m_synchronized[sync].second, '.') + ".");
+      return true;
+    }
+    var = GetVariable(m_synchronized[sync].second);
+    if (var->GetSameVariable() == deletedvar) {
+      g_registry.SetError("Unable to delete variable " + deletedvar->GetNameDelimitedBy('.') + " because it is already synchronized to the variable " + ToStringFromVecDelimitedBy(m_synchronized[sync].first, '.') + ".");
+      return true;
+    }
+  }
+  vector<string> delname = deletedvar->GetName();
+  if (delname.size() == 1) {
+    //Can't delete top-level elements (why?)
+    g_registry.SetError("It is illegal to delete variable " + delname[0] + " because deletions are constructs for elements in submodels only.  If you don't want an element in the model you are manipulating, don't put it in in the first place.");
+    return true;
+  }
+  //At this point, we know we should be able to delete the variable--it's in a submodel, and not connected to anything outside that submodel.
+  vector<string> submodname;
+  submodname.push_back(delname[0]);
+  Variable* subvar = GetVariable(submodname);
+  if (subvar==NULL) {
+    assert(false); //Should be impossible to find a variable whose submodel does not exist.
+    g_registry.SetError("Unable to find submodel " + submodname[0] + " to delete variable " + deletedvar->GetNameDelimitedBy('.') + " from it.");
+    return true;
+  }
+  if (deletedvar->GetType()==varModule) {
+    if (DeleteFromSynchronized(deletedvar)) return true;
+  }
+  return subvar->DeleteFromSubmodel(deletedvar);
+}
+
+void Module::ClearReferencesTo(Variable* deletedvar)
+{
+  for (size_t v=0; v<m_variables.size(); v++) {
+    m_variables[v]->ClearReferencesTo(deletedvar);
+  }
+  if (deletedvar->GetIsEquivalentTo(GetVariable(m_returnvalue))) {
+    m_returnvalue.clear();
+  }
+  for (size_t sync=0; sync<m_conversionFactors.size(); sync++) {
+    Variable* convvar = GetVariable(m_conversionFactors[sync]);
+    if (convvar->GetSameVariable() == deletedvar) {
+      m_conversionFactors[sync].clear();
+    }
+  }
+}
+
+//Used when 'deletedvar' is a submodel itself.
+bool Module::DeleteFromSynchronized(Variable* deletedvar)
+{
+  assert(deletedvar->GetType()==varModule);
+  vector<string> delname = deletedvar->GetName();
+  
+  for (vector<pair<vector<string>, vector<string> > >::iterator sync = m_synchronized.begin(); sync != m_synchronized.end();) {
+    vector<pair<vector<string>, vector<string> > >::iterator nextsync = sync;
+    nextsync++;
+    vector<string> firstname = sync->first;
+    vector<string> secondname = sync->second;
+    if (firstname.size() > delname.size()) {
+      bool matches = true;
+      for (size_t n=0; n<delname.size(); n++) {
+        if (firstname[n] != delname[n]) {
+          matches = false;
+        }
+      }
+      if (matches) {
+        m_synchronized.erase(sync);
+        sync = nextsync;
+        continue;
+      }
+    }
+    if (secondname.size() > delname.size()) {
+      for (size_t n=0; n<delname.size(); n++) {
+        if (secondname[n] != delname[n]) {
+          g_registry.SetError("Unable to delete model " + deletedvar->GetNameDelimitedBy('.') + " because a variable in that model (" + ToStringFromVecDelimitedBy(secondname, '.') + ") was already synchronized with " + ToStringFromVecDelimitedBy(firstname, '.') + ".  Either delete that variable first, or do not try to delete the entire submodel, and instead delete unused elements from it.");
+          return true;
+        }
+      }
+    }
+    sync = nextsync;
+  }
+  return false;
 }
 
 Variable* Module::AddOrFindUnitDef(UnitDef* unitdef)
@@ -569,7 +659,7 @@ const Variable* Module::GetVariable(const vector<string>& name) const
   return NULL;
 }
 
-const Variable* Module::GetVariableFromSymbol(std::string varname) const
+const Variable* Module::GetVariableFromSymbol(string varname) const
 {
   for (size_t v=0; v<m_uniquevars.size(); v++) {
     if (varname == m_uniquevars[v]->GetNameDelimitedBy(g_registry.GetCC())) {
@@ -1090,6 +1180,11 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
       return true;
     }
     return false;
+  case allDeleted:
+    if (vtype==varDeleted) {
+      return true;
+    }
+    return false;
   }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -1107,6 +1202,7 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
   case varCompartment:
   case varStrand:
   case varUnitDefinition:
+  case varDeleted:
     break;
   }
   assert(false); //uncaught return type
@@ -1141,6 +1237,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case expandedStrands:
   case modularStrands:
   case subModules:
+  case allDeleted:
     return true;
   }
   assert(false); //uncaught return_type
@@ -1493,6 +1590,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   retval += OutputOnly(types, "Variable initializations", indent, cc, origmap);
 
   //Whether things are variable or constant (if not already declared)
+  vector<string> delnames;
   vector<string> varnames;
   vector<string> constnames;
   vector<string> DNAnames;
@@ -1539,6 +1637,9 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
       }
       genenames.push_back(name);
       break;
+    case varDeleted:
+      delnames.push_back(name);
+      break;
     case varSpeciesUndef: //already taken care of at top
     case varFormulaUndef: //
     case varReactionUndef: 
@@ -1551,6 +1652,12 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
     case varUnitDefinition:
       break;
     }
+  }
+
+  //Deleted elements:
+  if (delnames.size()) {
+    retval += "\n" + indent + "//Deleted elements from submodels:\n";
+    retval += ListIn80Cols("delete", delnames, indent);
   }
 
   if (DNAnames.size() || operatornames.size() || genenames.size() || varnames.size() || constnames.size() || innames.size()) {

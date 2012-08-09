@@ -77,6 +77,14 @@ void AntimonyReaction::Clear()
   m_formula.Clear();
 }
 
+void AntimonyReaction::ClearReferencesTo(Variable* deletedvar)
+{
+  if (m_empty) return;
+  m_left.ClearReferencesTo(deletedvar);
+  m_right.ClearReferencesTo(deletedvar);
+  m_formula.ClearReferencesTo(deletedvar);
+}
+
 const Formula* AntimonyReaction::GetFormula() const
 {
   return &(m_formula);

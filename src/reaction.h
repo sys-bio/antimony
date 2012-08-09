@@ -34,6 +34,7 @@ public:
   void SetComponentCompartments(Variable* var, bool frommodule);
   bool SetFormulaOfInteracteesAndClear();
   void Clear();
+  void ClearReferencesTo(Variable* deletedvar);
 
   const Formula* GetFormula() const;
   const ReactantList* GetLeft()  const {return &m_left;};

@@ -134,6 +134,7 @@ void AntimonyEvent::SetNewTopName(string modname, string newtopname)
   //Our dependents:
   m_trigger.SetNewTopName(modname, newtopname);
   m_delay.SetNewTopName(modname, newtopname);
+  m_priority.SetNewTopName(modname, newtopname);
   assert(m_varresults.size() == m_formresults.size());
   for (size_t result=0; result<m_varresults.size(); result++) {
     m_varresults[result].insert(m_varresults[result].begin(), newtopname);
@@ -171,6 +172,29 @@ void AntimonyEvent::ConvertTime(Variable* tcf)
   m_priority.ConvertTime(tcf);
   for (size_t fr=0; fr<m_formresults.size(); fr++) {
     m_formresults[fr].ConvertTime(tcf);
+  }
+}
+
+void AntimonyEvent::ClearReferencesTo(Variable* deletedvar)
+{
+  if (IsEmpty()) return;
+  m_trigger.ClearReferencesTo(deletedvar);
+  m_delay.ClearReferencesTo(deletedvar);
+  m_priority.ClearReferencesTo(deletedvar);
+  vector<Formula>::iterator form = m_formresults.begin();
+  vector<vector<string> >::iterator varresult = m_varresults.begin();
+  Module* module = g_registry.GetModule(m_module);
+  assert(module != NULL);
+  while (form != m_formresults.end()) {
+    if (form->ClearReferencesTo(deletedvar) ||
+        module->GetVariable(*varresult)->GetIsEquivalentTo(deletedvar)) {
+          form = m_formresults.erase(form);
+          varresult = m_varresults.erase(varresult);
+    }
+    else {
+      form++;
+      varresult++;
+    }
   }
 }
 

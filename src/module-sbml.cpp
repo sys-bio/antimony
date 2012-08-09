@@ -1,6 +1,65 @@
 #ifndef NSBML
 #ifdef USE_COMP
 
+void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<string> submodname)
+{
+  if (event->isSetName()) {
+    var->SetDisplayName(event->getName());
+  }
+  var->SetType(varEvent);
+
+  //Set the trigger:
+  string triggerstring(parseASTNodeToString(event->getTrigger()->getMath()));
+  Formula trigger;
+  setFormulaWithString(triggerstring, &trigger, module);
+  Formula delay;
+  const Delay* sbmldelay = event->getDelay();
+  if (sbmldelay != NULL) {
+    string delaystring(parseASTNodeToString(sbmldelay->getMath()));
+    setFormulaWithString(delaystring, &delay, module);
+  }
+  AntimonyEvent antevent(delay, trigger, var);
+
+  //Set the priority:
+  if (event->isSetPriority()) {
+    const Priority* sbmlpriority = event->getPriority();
+    Formula priority;
+    if (sbmlpriority != NULL) {
+      string prioritystring(parseASTNodeToString(sbmlpriority->getMath()));
+      setFormulaWithString(prioritystring, &priority, module);
+    }
+    antevent.SetPriority(priority);
+  }
+  //And set the other optional booleans:
+  if (event->isSetUseValuesFromTriggerTime()) {
+    antevent.SetUseValuesFromTriggerTime(event->getUseValuesFromTriggerTime());
+  }
+  if (event->getTrigger()->isSetPersistent()) {
+    antevent.SetPersistent(event->getTrigger()->getPersistent());
+  }
+  if (event->getTrigger()->isSetInitialValue()) {
+    antevent.SetInitialValue(event->getTrigger()->getInitialValue());
+  }
+  //All done--give it to the variable.
+  var->SetEvent(&antevent);
+
+  //Set the assignments:
+  for (unsigned int asnt=0; asnt<event->getNumEventAssignments(); asnt++) {
+    const EventAssignment* assignment = event->getEventAssignment(asnt);
+    vector<string> name = submodname;
+    name.push_back(assignment->getVariable());
+    Variable* asntvar = module->GetVariable(name);
+    if (asntvar == NULL && name.size()==1) {
+      asntvar = module->AddOrFindVariable(&name[0]);
+    }
+    assert(asntvar != NULL);
+    Formula*  asntform = g_registry.NewBlankFormula();
+    setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform, module);
+    var->GetEvent()->AddResult(asntvar, asntform);
+  }
+  module->TranslateRulesAndAssignmentsTo(event, var);
+}
+
 void Module::GetReplacingAndRules(const Replacing* replacing, string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule)
 {
   reference = NULL;
@@ -67,7 +126,7 @@ void Module::GetReplacingAndRules(const Replacing* replacing, string re_string, 
   return;
 }
 
-Variable* Module::GetSBaseRef(const SBaseRef* csbr, std::string modname, std::string re_string, const SBase* orig)
+Variable* Module::GetSBaseRef(const SBaseRef* csbr, string modname, string re_string, const SBase* orig)
 {
   SBaseRef* sbr = const_cast<SBaseRef*>(csbr);
   SBase* referenced = sbr->getReferencedElement();
@@ -331,18 +390,72 @@ void Module::LoadSBML(const Model* sbml)
       }
       for (unsigned int d=0; d<submodel->getNumDeletions(); d++) {
         Deletion* deletion = const_cast<Deletion*>(submodel->getDeletion(d));
+        string delname = getNameFromSBMLObject(deletion, "del");
+        delname += " ";
+        if (delname=="del0 ") delname = "";
         SBase* target = deletion->getReferencedElement();
         //LS DEBUG:  when we have deletions, add them here.
         if (target != NULL) {
+          SBase* submodparent = target->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
+          vector<string> targetname;
+          while (submodparent != NULL) {
+            targetname.insert(targetname.begin(), submodparent->getId());
+            submodparent = submodparent->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
+          }
+          vector<string> delparentname = targetname;
+          SBase* eventparent = target->getAncestorOfType(SBML_EVENT);
+          Event* event = static_cast<Event*>(eventparent);
+          Variable* deletedvar = NULL;
           switch (target->getTypeCode()) {
           case SBML_INITIAL_ASSIGNMENT:
           case SBML_RATE_RULE:
           case SBML_ASSIGNMENT_RULE:
-            break; //We do handle these types of deletions.
+            break; //We handle these types of deletions elsewhere.
+          case SBML_SPECIES:
+          case SBML_COMPARTMENT:
+          case SBML_PARAMETER:
+          case SBML_REACTION:
+          case SBML_EVENT:
+          case SBML_UNIT_DEFINITION:
+          case SBML_COMP_SUBMODEL:
+            if (!target->isSetId()) {
+              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the target " + SBMLTypeCode_toString(target->getTypeCode(), "comp") + " element did not have an ID.");
+              continue;
+            }
+            targetname.push_back(target->getId());
+            deletedvar = GetVariable(targetname);
+            assert(deletedvar != NULL);
+            AddDeletion(deletedvar);
+            break;
+          case SBML_PRIORITY:
+          case SBML_DELAY:
+          case SBML_EVENT_ASSIGNMENT:
+          case SBML_TRIGGER:
+            //Delete the target, then re-calculate the event:
+            target->removeFromParentAndDelete();
+            assert(event != NULL);
+            targetname.push_back(event->getId());
+            deletedvar = GetVariable(targetname);
+            assert(deletedvar != NULL);
+            SetVarWithEvent(deletedvar, event, this, delparentname);
+            break;
+          case SBML_CONSTRAINT:
+          case SBML_ALGEBRAIC_RULE:
+            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " elements cannot be expressed in Antimony at all.  (Deleting them is therefore safe, because they are automatically dropped anyway.)");
+            break;
           default:
-            string delname = getNameFromSBMLObject(deletion, "del");
+            //From core:
+            /*
+              SBML_FUNCTION_DEFINITION 	
+              SBML_KINETIC_LAW 	
+              SBML_SPECIES_REFERENCE 	
+              SBML_MODIFIER_SPECIES_REFERENCE 	
+              SBML_UNIT 	
+              SBML_LOCAL_PARAMETER 	
+            */
             //var = AddOrFindVariable(&delname);
-            g_registry.AddWarning("Unable to process the deletion " + delname + " from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions have not yet been added as a concept in Antimony.");
+            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions of " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " elements have not been added as a concept in Antimony.");
+            break;
           }
         }
       }
@@ -367,6 +480,18 @@ void Module::LoadSBML(const Model* sbml)
   for (unsigned int func=0; func<sbml->getNumFunctionDefinitions(); func++) {
     const FunctionDefinition* function = sbml->getFunctionDefinition(func);
     sbmlname = getNameFromSBMLObject(function, "_F");
+    UserFunction* uf = g_registry.GetUserFunction(sbmlname);
+    bool duplicate = false;
+    while (uf != NULL && !duplicate) {
+      if (parseASTNodeToString(function->getMath()) == uf->ToSBMLString()) {
+        duplicate = true;
+      }
+      else {
+        sbmlname = getNameFromSBMLObject(sbml, "fd") + "_" + sbmlname;
+        uf = g_registry.GetUserFunction(sbmlname);
+      }
+    }
+    if (duplicate) continue;
     g_registry.NewUserFunction(&sbmlname);
     for (unsigned int arg=0; arg<function->getNumArguments(); arg++) {
       string argument(parseASTNodeToString(function->getArgument(arg)));
@@ -495,57 +620,13 @@ void Module::LoadSBML(const Model* sbml)
   for (unsigned int ev=0; ev<sbml->getNumEvents(); ev++) {
     const Event* event = sbml->getEvent(ev);
     sbmlname = getNameFromSBMLObject(event, "_E");
+    if (!event->isSetId()) {
+      Event* ncevent = const_cast<Event*>(event);
+      ncevent->setId(sbmlname);
+    }
     Variable* var = AddOrFindVariable(&sbmlname);
-    if (event->isSetName()) {
-      var->SetDisplayName(event->getName());
-    }
-    var->SetType(varEvent);
-
-    //Set the trigger:
-    string triggerstring(parseASTNodeToString(event->getTrigger()->getMath()));
-    Formula trigger;
-    setFormulaWithString(triggerstring, &trigger, this);
-    Formula delay;
-    const Delay* sbmldelay = event->getDelay();
-    if (sbmldelay != NULL) {
-      string delaystring(parseASTNodeToString(sbmldelay->getMath()));
-      setFormulaWithString(delaystring, &delay, this);
-    }
-    AntimonyEvent antevent(delay, trigger, var);
-
-    //Set the priority:
-    if (event->isSetPriority()) {
-      const Priority* sbmlpriority = event->getPriority();
-      Formula priority;
-      if (sbmlpriority != NULL) {
-        string prioritystring(parseASTNodeToString(sbmlpriority->getMath()));
-        setFormulaWithString(prioritystring, &priority, this);
-      }
-      antevent.SetPriority(priority);
-    }
-    //And set the other optional booleans:
-    if (event->isSetUseValuesFromTriggerTime()) {
-      antevent.SetUseValuesFromTriggerTime(event->getUseValuesFromTriggerTime());
-    }
-    if (event->getTrigger()->isSetPersistent()) {
-      antevent.SetPersistent(event->getTrigger()->getPersistent());
-    }
-    if (event->getTrigger()->isSetInitialValue()) {
-      antevent.SetInitialValue(event->getTrigger()->getInitialValue());
-    }
-    //All done--give it to the variable.
-    var->SetEvent(&antevent);
-
-    //Set the assignments:
-    for (unsigned int asnt=0; asnt<event->getNumEventAssignments(); asnt++) {
-      const EventAssignment* assignment = event->getEventAssignment(asnt);
-      string name = assignment->getVariable();
-      Variable* asntvar = AddOrFindVariable(&name);
-      Formula*  asntform = g_registry.NewBlankFormula();
-      setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform, this);
-      var->GetEvent()->AddResult(asntvar, asntform);
-    }
-    TranslateRulesAndAssignmentsTo(event, var);
+    vector<string> nosub;
+    SetVarWithEvent(var, event, this, nosub);
   }
 
   //LS DEBUG:  Add constraints?
@@ -705,11 +786,24 @@ void Module::LoadSBML(const Model* sbml)
       const Port* port = mplugin->getPort(p);
       if (port->isSetIdRef()) {
         string idref = port->getIdRef();
-        Variable* portvar = AddOrFindVariable(&idref);
-        AddVariableToExportList(portvar);
+        //check to make sure it's not a function
+        SBase* ref = const_cast<Port*>(port)->getReferencedElement();
+        if (ref != NULL && ref->getTypeCode()!= SBML_FUNCTION_DEFINITION) {
+          Variable* portvar = AddOrFindVariable(&idref);
+          AddVariableToExportList(portvar);
+        }
+      }
+      else if (port->isSetUnitRef()) {
+        string idref = port->getUnitRef();
+        //check to make sure it's not a function
+        SBase* ref = const_cast<Port*>(port)->getReferencedElement();
+        if (ref != NULL) {
+          Variable* portvar = AddOrFindVariable(&idref);
+          AddVariableToExportList(portvar);
+        }
       }
       else {
-        g_registry.AddWarning("Unable to add port " + port->getId() + " to model " + GetModuleName() + ":  ports created without idrefs are currently untranslatable to antimony.");
+        g_registry.AddWarning("Unable to add port " + port->getId() + " to model " + GetModuleName() + ":  ports created without idrefs are currently untranslatable to Antimony.");
       }
     }
   }
@@ -783,6 +877,24 @@ void Module::CreateSBMLModel(bool comp)
       conv = submod->GetTimeConversionFactor();
       if (conv != NULL) {
         sbmlsubmod->setTimeConversionFactor(conv->GetNameDelimitedBy(cc));
+      }
+      vector<vector<string> > deletedvars = submod->GetDeletions();
+      for (size_t d=0; d<deletedvars.size(); d++) {
+        vector<string> delname= deletedvars[d];
+        assert(delname.size() > 1);
+        Deletion* deletion = sbmlsubmod->createDeletion();
+        deletion->setIdRef(delname[1]);
+        SBaseRef* sbr = deletion;
+        for (size_t n=2; n<delname.size(); n++) {
+          SBaseRef* subsbr = sbr->createSBaseRef();
+          subsbr->setIdRef(delname[n]);
+          sbr = subsbr;
+        }
+        Variable* deletedvar = GetVariable(delname);
+        if (deletedvar->IsDeletedUnit()) {
+          sbr->unsetIdRef();
+          sbr->setUnitRef(delname[delname.size()-1]);
+        }
       }
     }
   }
@@ -1029,7 +1141,11 @@ void Module::CreateSBMLModel(bool comp)
     }
     Trigger* trig = sbmlevent->createTrigger();
     ASTNode* ASTtrig = parseStringToASTNode(event->GetTrigger()->ToSBMLString());
+    if (ASTtrig==NULL) {
+      ASTtrig = parseStringToASTNode("true");
+    }
     trig->setMath(ASTtrig);
+
     delete ASTtrig;
     const Formula* delay = event->GetDelay();
     if (!delay->IsEmpty()) {
@@ -1102,13 +1218,16 @@ void Module::CreateSBMLModel(bool comp)
     pair<set<string>::iterator, bool> setret;
     for (size_t ex=0; ex<m_exportlist.size(); ex++) {
       Port* port = mplugin->createPort();
-      size_t test = m_exportlist[ex].size();
-      if (test > 1) {
-        test = test;
-      }
       //assert(m_exportlist[ex].size()==1);
-      port->setIdRef(m_exportlist[ex][0]);
+      const Variable* exported = GetVariable(m_exportlist[ex]);
       string portname = m_exportlist[ex][m_exportlist[ex].size()-1];
+      if (exported != NULL && exported->GetType()==varUnitDefinition) {
+        port->setUnitRef(m_exportlist[ex][0]);
+        portname = "unit_" + portname;
+      }
+      else {
+        port->setIdRef(m_exportlist[ex][0]);
+      }
       size_t digit = 0;
       setret = portnames.insert(portname);
       while (setret.second = false) {
@@ -1134,6 +1253,12 @@ void Module::CreateSBMLModel(bool comp)
       }
       else if (name2.size()==1) {
         SBase* sbmlvar1 = sbmlmod->getElementBySId(name2[0]);
+        bool isunit = false;
+        if (sbmlvar1 == NULL) {
+          sbmlvar1 = sbmlmod->getUnitDefinition(name2[0]);
+          isunit = true;
+        }
+        assert(sbmlvar1 != NULL);
         CompSBasePlugin* svarplug1 = static_cast<CompSBasePlugin*>(sbmlvar1->getPlugin("comp"));
         ReplacedElement* re = svarplug1->createReplacedElement();
         re->setSubmodelRef(name1[0]);
@@ -1147,7 +1272,12 @@ void Module::CreateSBMLModel(bool comp)
           sbr = sbr->createSBaseRef();
           svn++;
         }
-        sbr->setIdRef(name1[svn]);
+        if (isunit) {
+          sbr->setUnitRef(name1[svn]);
+        }
+        else {
+          sbr->setIdRef(name1[svn]);
+        }
       }
       else {
         assert(false);

@@ -14,9 +14,9 @@
 #include "stringx.h"
 #include "variable.h"
 
-extern int yylloc_first_line;
-extern int yylloc_last_line;
-extern std::vector<int> yylloc_last_lines;
+extern int antimony_yylloc_first_line;
+extern int antimony_yylloc_last_line;
+extern std::vector<int> antimony_yylloc_last_lines;
 #define CONFIGFILE ".antimony";
 
 using namespace std;
@@ -108,7 +108,7 @@ void Registry::ClearAll()
   ClearModules();
 }
 
-void Registry::AddDirectory(std::string directory)
+void Registry::AddDirectory(string directory)
 {
   if (directory.empty()) return;
   if (directory[directory.size()-1] != '/') {
@@ -154,9 +154,9 @@ int Registry::OpenString(string model)
     m_oldinputs.push_back(input);
   }
   istringstream* inputstring = new istringstream(model);
-  yylloc_last_lines.push_back(yylloc_last_line);
-  yylloc_last_line = 1;
-  yylloc_first_line = 1;
+  antimony_yylloc_last_lines.push_back(antimony_yylloc_last_line);
+  antimony_yylloc_last_line = 1;
+  antimony_yylloc_first_line = 1;
   input = inputstring;
   return 1;
 }
@@ -223,9 +223,9 @@ int Registry::OpenFile(const string& filename)
     m_oldinputs.push_back(input);
   }
   input = inputfile;
-  yylloc_last_lines.push_back(yylloc_last_line);
-  yylloc_last_line = 1;
-  yylloc_first_line = 1;
+  antimony_yylloc_last_lines.push_back(antimony_yylloc_last_line);
+  antimony_yylloc_last_line = 1;
+  antimony_yylloc_first_line = 1;
   return 1;
 }
 
@@ -404,7 +404,7 @@ void Registry::LoadSubmodelsFrom(const Model* model)
 #endif
 }
 
-bool Registry::LoadModelFrom(std::string modelname, const SBMLDocument* document)
+bool Registry::LoadModelFrom(string modelname, const SBMLDocument* document)
 {
   if (modelname.empty()) return true;
   if (GetModule(modelname) != NULL) return false; //Already loaded.
@@ -470,7 +470,7 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
   RETURN_INTO_WSTRING(error, cevas->modelError());
   if (error != L"") {
     RETURN_INTO_WSTRING(error, cevas->modelError());
-    std::string error8(makeUTF8(error));
+    string error8(makeUTF8(error));
     SetError("Error reading CellML model:  " + error8);
     return true;
   }
@@ -486,7 +486,7 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
 
     numcomps++;
     //Each CellML 'component' becomes its own Antimony 'module'
-    std::string cellmlname = GetModuleNameFrom(component);
+    string cellmlname = GetModuleNameFrom(component);
     FixName(cellmlname);
     Module* mod = GetModule(cellmlname);
     if (mod == NULL) {
@@ -510,12 +510,12 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
     return true;
   }
 
-  std::string cellmlname;
+  string cellmlname;
   //Now loop through all the components again, this time setting up 'encapsulation' for the submodules
   for (size_t topnum = 0; topnum<top_components.size(); topnum++) {
     iface::cellml_api::CellMLComponent* component = top_components[topnum];
     // RETURN_INTO_WSTRING(wcellmltext, component->name());
-    // std::string cellmltext(makeUTF8(wcellmltext));
+    // string cellmltext(makeUTF8(wcellmltext));
     cellmlname = GetModuleNameFrom(component);
     Module* mod = GetModule(cellmlname);
     assert(mod != NULL);
@@ -524,7 +524,7 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
 
   //Now create a master model that contains only contain the top_components.
   RETURN_INTO_WSTRING(wmodname, model->name());
-  std::string modname(makeUTF8(wmodname));
+  string modname(makeUTF8(wmodname));
   FixName(modname);
   modname += "__" MAINMODULE;
   while (NewCurrentModule(&modname)) {
@@ -532,7 +532,7 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
     modname += "_";
   }
   CurrentModule()->LoadCellMLModel(model, top_components);
-  for (std::vector<iface::cellml_api::CellMLComponent*>::iterator i = top_components.begin();
+  for (vector<iface::cellml_api::CellMLComponent*>::iterator i = top_components.begin();
        i != top_components.end(); i++)
     (*i)->release_ref();
 
@@ -658,7 +658,7 @@ bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connec
       break;
 
     RETURN_INTO_WSTRING(wfirstVarName, mapvars->firstVariableName());
-    std::string firstVarName(makeUTF8(wfirstVarName));
+    string firstVarName(makeUTF8(wfirstVarName));
     FixName(firstVarName);
     vector<string> fullvarname = comp1modulenames;
     fullvarname.push_back(firstVarName);
@@ -667,7 +667,7 @@ bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connec
     firstvar = firstvar->GetSameVariable();
 
     RETURN_INTO_WSTRING(wsecondVarName, mapvars->secondVariableName());
-    std::string secondVarName(makeUTF8(wsecondVarName));
+    string secondVarName(makeUTF8(wsecondVarName));
     FixName(secondVarName);
     fullvarname = comp2modulenames;
     fullvarname.push_back(secondVarName);
@@ -874,7 +874,7 @@ bool Registry::AddVariableToCurrentExportList(Variable* export_var)
   return CurrentModule()->AddVariableToExportList(export_var);
 }
 
-void Registry::NewUserFunction(const std::string* name)
+void Registry::NewUserFunction(const string* name)
 {
   m_isfunction = true;
   UserFunction newfunc(*name);
@@ -1284,6 +1284,16 @@ UserFunction* Registry::GetNthUserFunction(size_t n)
 {
   if (m_userfunctions.size() <= n) return NULL;
   return &(m_userfunctions[n]);
+}
+
+UserFunction* Registry::GetUserFunction(string word)
+{
+  for (size_t func=0; func<m_userfunctionnames.size(); func++) {
+    if (word == m_userfunctionnames[func]) {
+      return &(m_userfunctions[func]);
+    }
+  }
+  return NULL;
 }
 
 void Registry::FixTimeInFunctions()

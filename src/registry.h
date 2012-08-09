@@ -137,7 +137,7 @@ public:
 
   //Events
   bool SetNewCurrentEvent(Formula* trigger);
-   bool SetNewCurrentEvent(Formula* delay, Formula* trigger);
+  bool SetNewCurrentEvent(Formula* delay, Formula* trigger);
   bool SetNewCurrentEvent(Formula* trigger, Variable* var);
   bool SetNewCurrentEvent(Formula* delay, Formula* trigger, Variable* var);
   AntimonyEvent* GetCurrentEvent();
@@ -178,6 +178,7 @@ public:
   size_t GetNumUserFunctions() const {return m_userfunctions.size();};
   const UserFunction* GetNthUserFunction(size_t n) const;
   UserFunction* GetNthUserFunction(size_t n);
+  UserFunction* GetUserFunction(std::string name);
   void FixTimeInFunctions();
 
   //Keeping track of malloc'd stuff so we can free it ourselves if need be.

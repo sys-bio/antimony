@@ -6,7 +6,7 @@
 #include <IfaceCUSES.hxx>
 #include <CUSESBootstrap.hpp>
 
-void Module::LoadCellMLModel(iface::cellml_api::Model* model, std::vector<iface::cellml_api::CellMLComponent*> top_components)
+void Module::LoadCellMLModel(iface::cellml_api::Model* model, vector<iface::cellml_api::CellMLComponent*> top_components)
 {
   assert(m_cellmlcomponent==NULL);
   if (m_cellmlmodel != NULL) {
@@ -69,14 +69,14 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
       break;
 
     RETURN_INTO_WSTRING(wvarName, cmlvar->name());
-    std::string varName(makeUTF8(wvarName));
+    string varName(makeUTF8(wvarName));
     Variable* antvar = AddOrFindVariable(&varName);
 
     //antvar->SetIsConst(false); //This forces it to be output in the Antimony script even if it's not otherwise used.
     RETURN_INTO_WSTRING(ivStr, cmlvar->initialValue());
     if (ivStr != L"") {
       Formula* formula = g_registry.NewBlankFormula();
-      std::string ivStr8(makeUTF8(ivStr));
+      string ivStr8(makeUTF8(ivStr));
       setFormulaWithString(ivStr8, formula, this);
       antvar->SetFormula(formula);
     }
@@ -121,7 +121,7 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
       DECLARE_QUERY_INTERFACE_OBJREF(input, node, mathml_dom::MathMLApplyElement);
       if (input != NULL) {
         RETURN_INTO_WSTRING(wmath, ts->showMaths(input));
-        std::string infix(makeUTF8(wmath));
+        string infix(makeUTF8(wmath));
 
         //cout << infix << endl;
 
@@ -197,12 +197,12 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
           size_t timepos = variable.find(")/d(")+4;
           string maybetime;
           maybetime.assign(variable, timepos, variable.find(')', timepos)-timepos);
-          std::wstring wtimevar(makeUTF16(maybetime));
+          wstring wtimevar(makeUTF16(maybetime));
           RETURN_INTO_OBJREF(cmlvar, iface::cellml_api::CellMLVariable,
                              varset->getVariable(wtimevar.c_str()));
           if (cmlvar && !HasTimeUnits(cmlvar)) {
             RETURN_INTO_WSTRING(wuname, cmlvar->unitsName());
-            std::string uname(makeUTF8(wuname));
+            string uname(makeUTF8(wuname));
             string warning = "The units of \"" + maybetime + "\" ('" + uname + "') do not have 'seconds' as their base unit, so assuming this CellML model is trying to take the derivative of something with respect to some not-time element, we are not translating this derivative.";
             g_registry.AddWarning(warning);
             continue;
@@ -260,7 +260,7 @@ void Module::SetCellMLChildrenAsSubmodules(iface::cellml_api::CellMLComponent* c
     if (child == NULL)
       break;
 
-    std::string cellmlname = GetNameAccordingToEncapsulationParent(child, m_cellmlmodel);
+    string cellmlname = GetNameAccordingToEncapsulationParent(child, m_cellmlmodel);
     //rv = child->GetName(cellmltext);
     //cellmlname = ToThinString(cellmltext.get());
     //FixName(cellmlname);
@@ -277,7 +277,7 @@ void Module::SetCellMLChildrenAsSubmodules(iface::cellml_api::CellMLComponent* c
     }
 
     //Save the name, since it's not obvious whether the "_mod" was added or not.
-    std::string compmodid = child->objid();
+    string compmodid = child->objid();
     g_registry.m_cellmlnames.insert(make_pair(compmodid, cellmlname)); //Even if we've already added this submodule, each time it's imported, the submodule gets its own component ID, and they all need to go in here.
     if (!m_childrenadded) {
       Variable* var = AddOrFindVariable(&cellmlname);
@@ -298,7 +298,7 @@ iface::cellml_api::Model* Module::GetCellMLModel()
   }
   else {
     RETURN_INTO_WSTRING(wcellmltext, m_cellmlmodel->name());
-    std::string cellmltext(makeUTF8(wcellmltext));
+    string cellmltext(makeUTF8(wcellmltext));
     if (cellmltext != m_modulename) {
       CreateCellMLModel();
     }
@@ -456,7 +456,7 @@ void Module::CreateCellMLModel()
   RETURN_INTO_OBJREF(de, iface::dom::Element, cde->domElement());
   RETURN_INTO_OBJREF(doc, iface::dom::Document, de->ownerDocument());
 
-  std::wstring wname(makeUTF16(m_modulename));
+  wstring wname(makeUTF16(m_modulename));
   m_cellmlmodel->name(wname.c_str());
 
   //Create units
@@ -522,7 +522,7 @@ void Module::CreateCellMLComponent(Module* topmod)
   topmod->AddUnique(m_variablename, name);
   m_cellmlcomponent =
     already_AddRefd<iface::cellml_api::CellMLComponent>(topmod->m_cellmlmodel->createComponent());
-  std::wstring wname(makeUTF16(name));
+  wstring wname(makeUTF16(name));
   m_cellmlcomponent->name(wname.c_str());
   m_cellmlmodel = topmod->m_cellmlmodel;
 
@@ -592,7 +592,7 @@ iface::cellml_api::CellMLVariable* Module::AddNewVariableToCellML(string varname
   RETURN_INTO_OBJREF(cmlvarset, iface::cellml_api::CellMLVariableSet,
                      component->variables());
 
-  std::wstring cmlvarst(makeUTF16(varname));
+  wstring cmlvarst(makeUTF16(varname));
 
   RETURN_INTO_OBJREF(cmlvar, iface::cellml_api::CellMLVariable,
                      cmlvarset->getVariable(cmlvarst.c_str()));
@@ -663,7 +663,7 @@ void Module::AddEncapsulationTo(iface::cellml_api::Model* model)
   group->addElement(cr);
 }
 
-iface::cellml_api::ComponentRef* Module::GetComponentRef(iface::cellml_api::Model* model, std::string cmlname, Module* topmod)
+iface::cellml_api::ComponentRef* Module::GetComponentRef(iface::cellml_api::Model* model, string cmlname, Module* topmod)
 {
   RETURN_INTO_OBJREF(cr, iface::cellml_api::ComponentRef, model->createComponentRef());
   cr->componentName(makeUTF16(cmlname).c_str());
@@ -741,7 +741,7 @@ Variable* Module::GetSyncedVariable(Variable* mod, const map<Variable*, Variable
   }
 }
 
-iface::cellml_api::CellMLVariable* Module::GetLinkedCMLVar(Variable* mod, const std::map<Variable*, iface::cellml_api::CellMLVariable* >& mod2linkedcellml)
+iface::cellml_api::CellMLVariable* Module::GetLinkedCMLVar(Variable* mod, const map<Variable*, iface::cellml_api::CellMLVariable* >& mod2linkedcellml)
 {
   map<Variable*, iface::cellml_api::CellMLVariable* >::const_iterator branch = mod2linkedcellml.find(mod);
   if (branch==mod2linkedcellml.end()) {
@@ -752,7 +752,7 @@ iface::cellml_api::CellMLVariable* Module::GetLinkedCMLVar(Variable* mod, const 
   }
 }
 
-void Module::Connect(Variable* modin, Variable* canonmod, std::map<Variable*, iface::cellml_api::CellMLVariable*>& mod2linkedcellml, const std::map<Variable*, Variable*>& mod2var, const std::set<Variable*>& canonparents, const std::map<Variable*, Variable*>& tree)
+void Module::Connect(Variable* modin, Variable* canonmod, map<Variable*, iface::cellml_api::CellMLVariable*>& mod2linkedcellml, const map<Variable*, Variable*>& mod2var, const set<Variable*>& canonparents, const map<Variable*, Variable*>& tree)
 {
   iface::cellml_api::CellMLVariable* cmlin = GetLinkedCMLVar(modin, mod2linkedcellml);
   if ( cmlin != NULL) {
@@ -859,14 +859,14 @@ void Module::AssignMathOnceFor(vector<Variable*> varlist, iface::dom::Document* 
   assert(varname.size()==1);
   if (!ia->IsEmpty()) {
     if (ia->IsDouble()) {
-      std::wstring wiv(makeUTF16(ia->ToDelimitedStringWithEllipses('_')));
+      wstring wiv(makeUTF16(ia->ToDelimitedStringWithEllipses('_')));
       cmlvar->initialValue(wiv.c_str());
       //cout << "Successfully set initial value for " << targetvar->GetNameDelimitedBy('.') << endl;
     }
     else {
       //Have to create a new variable.
       string newvarname = varname[varname.size()-1] + "_init";
-      std::wstring wiv(makeUTF16(newvarname));
+      wstring wiv(makeUTF16(newvarname));
       cmlvar->initialValue(wiv.c_str());
       Variable* tvarparent = targetvar->GetParentVariable();
       Module* tvarmod = this;
@@ -911,10 +911,10 @@ bool Module::AddCellMLMathTo(string formula, Variable* targetvar, iface::dom::Do
   return AddCellMLMathTo(formula, cmlcomp, doc);
 }
 
-bool Module::AddCellMLMathTo(std::string formula, iface::cellml_api::CellMLComponent* cmlcomp, iface::dom::Document* doc)
+bool Module::AddCellMLMathTo(string formula, iface::cellml_api::CellMLComponent* cmlcomp, iface::dom::Document* doc)
 {
   RETURN_INTO_OBJREF(ts, iface::cellml_services::TeLICeMService, CreateTeLICeMService());
-  std::wstring wform(makeUTF16(formula));
+  wstring wform(makeUTF16(formula));
   RETURN_INTO_OBJREF(tmr, iface::cellml_services::TeLICeMMathResult,
                      ts->parseMaths(doc, wform.c_str()));
   // XXX it would be good to check tmr->errorMessage() and log the error - Andrew Miller

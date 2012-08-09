@@ -23,23 +23,23 @@
 #define DEFAULTCOMP "default_compartment" //Also defined in module.cpp
 
 using namespace std;
-extern int yyparse();
-extern int yylloc_first_line;
+extern int antimony_yyparse();
+extern int antimony_yylloc_first_line;
 
-std::wstring makeUTF16(const std::string& aStr)
+wstring makeUTF16(const string& aStr)
 {
   wchar_t* buf = new wchar_t[aStr.size() + 1];
   mbstowcs(buf, aStr.c_str(), aStr.size() + 1);
-  std::wstring s = buf;
+  wstring s = buf;
   delete [] buf;
   return s;
 }
 
-std::string makeUTF8(const std::wstring& aStr)
+string makeUTF8(const wstring& aStr)
 {
   char* buf = new char[aStr.length() * 2 + 1];
   wcstombs(buf, aStr.c_str(), aStr.length() * 2 + 1);
-  std::string s = buf;
+  string s = buf;
   delete [] buf;
   return s;
 }
@@ -198,15 +198,15 @@ void reportVariableTypeIndexProblem(unsigned long n, return_type rtype, unsigned
 //Helper function for below.
 long ParseFile(string oldlocale)
 {
-  int yyreturn = yyparse();
+  int antimony_yyreturn = antimony_yyparse();
   setlocale(LC_ALL, oldlocale.c_str());
-  if (yyreturn != 0) {
+  if (antimony_yyreturn != 0) {
     if (g_registry.GetError().size() == 0) {
       assert(false); //Need to fill in the reason why we failed explicitly, if possible.
-      if (yyreturn == 1) {
+      if (antimony_yyreturn == 1) {
         g_registry.SetError("Parsing failed because of invalid input.");
       }
-      else if (yyreturn == 2) {
+      else if (antimony_yyreturn == 2) {
         g_registry.SetError("Parsing failed due to memory exhaution.");
       }
       else {
@@ -221,7 +221,7 @@ long ParseFile(string oldlocale)
     else {
       errorp += "file '" + fname + "'";
     }
-    errorp += ", line " + SizeTToString(yylloc_first_line) + ":  ";
+    errorp += ", line " + SizeTToString(antimony_yylloc_first_line) + ":  ";
     g_registry.AddErrorPrefix(errorp);
     return -1;
   }
@@ -421,7 +421,7 @@ LIB_EXTERN long loadCellMLFile(const char* filename)
 {
   RETURN_INTO_OBJREF(boot, iface::cellml_api::CellMLBootstrap, CreateCellMLBootstrap());
   RETURN_INTO_OBJREF(ml, iface::cellml_api::DOMModelLoader, boot->modelLoader());
-  std::wstring wideFilename(makeUTF16(filename));
+  wstring wideFilename(makeUTF16(filename));
 
   ObjRef<iface::cellml_api::Model> model;
   try
@@ -432,7 +432,7 @@ LIB_EXTERN long loadCellMLFile(const char* filename)
   {
     string file(filename);
     RETURN_INTO_WSTRING(error, ml->lastErrorMessage());
-    std::string emsg(makeUTF8(error));
+    string emsg(makeUTF8(error));
     g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  emsg);
     return -1;
   }
@@ -443,7 +443,7 @@ LIB_EXTERN long loadCellMLString(const char* modelstring)
 {
   RETURN_INTO_OBJREF(boot, iface::cellml_api::CellMLBootstrap, CreateCellMLBootstrap());
   RETURN_INTO_OBJREF(ml, iface::cellml_api::DOMModelLoader, boot->modelLoader());
-  std::wstring wideString(makeUTF16(modelstring));
+  wstring wideString(makeUTF16(modelstring));
 
   ObjRef<iface::cellml_api::Model> model;
   try
@@ -453,7 +453,7 @@ LIB_EXTERN long loadCellMLString(const char* modelstring)
   catch (...)
   {
     wstring error = ml->lastErrorMessage();
-    std::string emsg(makeUTF8(error));
+    string emsg(makeUTF8(error));
     g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  emsg);
   }
   return CheckAndAddCellMLDoc(model);

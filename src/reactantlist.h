@@ -28,6 +28,8 @@ public:
   bool SetComponentTypesTo(var_type vtype);
   bool SetComponentFormulasTo(Formula form);
 
+  void ClearReferencesTo(Variable* deletedvar);
+
   std::vector<std::vector<std::string> > GetVariableList() const;
   size_t Size() const {return m_components.size();};
 

@@ -98,12 +98,12 @@ string CellMLPiecewiseToSBML(const string& in)
 string GetModuleNameFrom(iface::cellml_api::CellMLComponent* component)
 {
   RETURN_INTO_WSTRING(wcompname, component->name());
-  std::string compname(makeUTF8(wcompname));
+  string compname(makeUTF8(wcompname));
   RETURN_INTO_OBJREF(mod, iface::cellml_api::Model, component->modelElement());
   RETURN_INTO_WSTRING(wmodname, mod->name());
-  std::string modname(makeUTF8(wmodname));
+  string modname(makeUTF8(wmodname));
 
-  std::string cellmlname = modname + "__" + compname;
+  string cellmlname = modname + "__" + compname;
   FixName(cellmlname);
   return cellmlname;
 }
@@ -111,15 +111,15 @@ string GetModuleNameFrom(iface::cellml_api::CellMLComponent* component)
 string GetModuleNameFrom(iface::cellml_api::ImportComponent* impcomponent)
 {
   RETURN_INTO_WSTRING(wcompRefName, impcomponent->componentRef());
-  std::string compRefName(makeUTF8(wcompRefName));
+  string compRefName(makeUTF8(wcompRefName));
 
   RETURN_INTO_OBJREF(import_as_element, iface::cellml_api::CellMLElement,
                      impcomponent->parentElement());
   DECLARE_QUERY_INTERFACE_OBJREF(import, import_as_element, cellml_api::CellMLImport);
   RETURN_INTO_OBJREF(mod, iface::cellml_api::Model, import->importedModel());
   RETURN_INTO_WSTRING(wimpModName, mod->name());
-  std::string impModName(makeUTF8(wimpModName));
-  std::string cellmlname = impModName + "__" + compRefName;
+  string impModName(makeUTF8(wimpModName));
+  string cellmlname = impModName + "__" + compRefName;
   return cellmlname;
 }
 
@@ -128,11 +128,11 @@ string GetModuleNameFrom(iface::cellml_api::ImportComponent* impcomponent)
 // be encapsulated underneath an imported component) - meaning that if a model is
 // imported twice, this function will return the same name for a component that is
 // imported indirectly multiple times. -- Andrew Miller
-std::string
+string
 GetNameAccordingToEncapsulationParent(iface::cellml_api::CellMLComponent* component,
                                       iface::cellml_api::Model* topmodel)
 {
-  std::string oid = component->objid();
+  string oid = component->objid();
   map<string, string>::iterator name = g_registry.m_cellmlnames.find(oid);
   if (name != g_registry.m_cellmlnames.end()) {
     return name->second;
@@ -156,11 +156,11 @@ GetNameAccordingToEncapsulationParent(iface::cellml_api::CellMLComponent* compon
 
   RETURN_INTO_OBJREF(compmodel, iface::cellml_api::Model, component->modelElement());
   //RETURN_INTO_WSTRING(wcellmltext, compmodel->name());
-  //std::string cellmltext(makeUTF8(wcellmltext));
+  //string cellmltext(makeUTF8(wcellmltext));
   //cout << "Component model: " << cellmltext << endl;
 
   RETURN_INTO_WSTRING(wcomponentRef, component->name());
-  std::string cellmlname(makeUTF8(wcomponentRef));
+  string cellmlname(makeUTF8(wcomponentRef));
 
   while (CDA_objcmp(compmodel, encapsulationModel))
   {

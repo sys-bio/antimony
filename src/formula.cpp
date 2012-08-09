@@ -9,9 +9,9 @@
 #include "stringx.h"
 #include "sbmlx.h"
 #include "variable.h"
-extern bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
 
 using namespace std;
+extern bool CaselessStrCmp(const string& lhs, const string& rhs);
 
 void Formula::AddVariable(const Variable* var)
 {
@@ -300,7 +300,7 @@ bool Formula::ContainsVar(const Variable* outervar) const
   return false;
 }
 
-bool Formula::ContainsFunction(const std::string& function) const
+bool Formula::ContainsFunction(const string& function) const
 {
   for (size_t comp=0; comp<m_components.size(); comp++) {
     if (m_components[comp].second.size() == 0  &&
@@ -533,7 +533,7 @@ void Formula::ChangeTimeTo(const Variable* timeref)
   }
 }
 
-void Formula::InsertTimeInFunction(std::string function)
+void Formula::InsertTimeInFunction(string function)
 {
   for (size_t comp=0; comp<m_components.size(); comp++) {
     if (m_components[comp].second.size() == 0  &&
@@ -563,7 +563,7 @@ bool Formula::Matches(const Formula* newform) const
 {
   Formula orig(*this);
   //First apply the conversion factors:
-  std::vector<std::pair<std::string, std::vector<std::string> > > tcfs = newform->m_timeConversionFactors;
+  vector<pair<string, vector<string> > > tcfs = newform->m_timeConversionFactors;
   for (size_t tcf=0; tcf<tcfs.size(); tcf++) {
     if (orig.m_timeConversionFactors.size() > tcf) continue;
     //The time conversion is complicated enough it's worth it to find the variable and add it.
@@ -574,7 +574,7 @@ bool Formula::Matches(const Formula* newform) const
     orig.AddInvTimeConversionFactor(timecf);
   }
 
-  std::vector<std::pair<std::string, std::vector<std::string> > > cfs = newform->m_conversionFactors;
+  vector<pair<string, vector<string> > > cfs = newform->m_conversionFactors;
   for (size_t cf=0; cf<cfs.size(); cf++) {
     if (orig.m_conversionFactors.size() > cf) continue;
     orig.AddParentheses();
@@ -583,7 +583,7 @@ bool Formula::Matches(const Formula* newform) const
     orig.m_components.push_back(cfs[cf]);
   }
 
-  std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > cvs = newform->m_convertedVariables;
+  vector<pair<vector<string>, vector<string> > > cvs = newform->m_convertedVariables;
   for (size_t cv=0; cv<cvs.size(); cv++) {
     if (orig.m_convertedVariables.size() > cv) continue;
     Module* module = g_registry.GetModule(m_module);
@@ -618,7 +618,7 @@ bool Formula::Matches(const Formula* newform) const
 void Formula::Convert(Variable* converted, Variable* cf)
 {
   converted = converted->GetSameVariable();
-  std::vector<std::pair<std::string, std::vector<std::string> > > oldcomponents = m_components;
+  vector<pair<string, vector<string> > > oldcomponents = m_components;
   m_components.clear();
   bool usedConverted = false;
   for (size_t comp=0; comp<oldcomponents.size(); comp++) {
@@ -650,7 +650,7 @@ void Formula::Convert(Variable* converted, Variable* cf)
 
 void Formula::ConvertTime(Variable* tcf)
 {
-  std::vector<std::pair<std::string, std::vector<std::string> > > oldcomponents = m_components;
+  vector<pair<string, vector<string> > > oldcomponents = m_components;
   m_components.clear();
   bool hasTime = false;
   int watchForComma = false;
@@ -739,7 +739,16 @@ void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
 }
 #endif
 
-void Formula::UseInstead(std::string newname, const Variable* oldvar)
+bool Formula::ClearReferencesTo(Variable* deletedvar)
+{
+  if (ContainsVar(deletedvar)) {
+    Clear();
+    return true;
+  }
+  return false;
+}
+
+void Formula::UseInstead(string newname, const Variable* oldvar)
 {
   vector<string> newfullname;
   newfullname.push_back(newname);

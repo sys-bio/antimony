@@ -38,6 +38,7 @@ public:
   bool GetUpstreamOpen() const {return m_upstreamopen;};
   bool GetDownstreamOpen() const {return m_downstreamopen;};
   bool CheckContains(Variable* var) const;
+  void ClearReferencesTo(Variable* deletedvar);
 
   void SetNewTopName(std::string newmodname, std::string newtopname);
   std::string ToStringDelimitedBy(char cc) const;

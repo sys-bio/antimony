@@ -6,9 +6,8 @@
 #include "formula.h"
 #include "registry.h"
 
-extern bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
-
 using namespace std;
+extern bool CaselessStrCmp(const string& lhs, const string& rhs);
 
 #ifndef NSBML
 #include "sbmlx.h"
@@ -199,7 +198,7 @@ UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, string modulename)
 
 
 //SBML models might have variable names in them that are reserved keywords in Antimony (like 'compartment', to take a huge example).  FixName fixes this so that you can output readable Antimony again.
-bool FixName(std::string& name)
+bool FixName(string& name)
 {
   while (name.size() && name[0] == ' ') {
     name.erase(0, 1);
@@ -212,6 +211,7 @@ bool FixName(std::string& name)
   "at",
   "compartment",
   "const",
+  "delete",
   "end",
   "event",
   "ext",
@@ -305,7 +305,7 @@ bool FixName(std::string& name)
   , "nan"  
   , "notanumber"
   };
-  for (size_t kw=0; kw<93; kw++) {
+  for (size_t kw=0; kw<94; kw++) {
     if (CaselessStrCmp(name, keywords[kw])) {
       name += "_";
       return true;

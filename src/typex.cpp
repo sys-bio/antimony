@@ -23,6 +23,7 @@ bool IsReaction(const var_type vtype)
   case varStrand:
   case varUndefined:
   case varUnitDefinition:
+  case varDeleted:
     return false;
   }
   assert(false); //uncaught vtype
@@ -61,6 +62,7 @@ bool IsSpecies(const var_type vtype)
   case varStrand:
   case varUndefined:
   case varUnitDefinition:
+  case varDeleted:
     return false;
   }
   assert(false); //uncaught vtype
@@ -84,6 +86,7 @@ bool IsDNA(const var_type vtype)
   case varStrand:
   case varUndefined:
   case varUnitDefinition:
+  case varDeleted:
     return false;
   }
   assert(false); //uncaught vtype
@@ -107,6 +110,7 @@ bool CanHaveRateRule(const var_type vtype)
   case varEvent:
   case varStrand:
   case varUnitDefinition:
+  case varDeleted:
     return false;
   }
   assert(false); //uncaught type
@@ -130,6 +134,7 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varEvent:
   case varStrand:
   case varUnitDefinition:
+  case varDeleted:
     return false;
   }
   assert(false); //uncaught type
@@ -153,13 +158,14 @@ bool HasOrIsFormula(const var_type vtype)
   case varEvent: //Not for the purposes of Jarnac, at any rate.
   case varStrand:
   case varUndefined:
+  case varDeleted:
     return false;
   }
   assert(false); //uncaught vtype
   return false;
 }
 
-std::string RDToString(rd_type type)
+string RDToString(rd_type type)
 {
   switch(type) {
   case rdBecomes:    return "->";
@@ -199,6 +205,8 @@ string VarTypeToString(const var_type vtype)
     return "Strand";
   case varUnitDefinition:
     return "Unit Definition";
+  case varDeleted:
+    return "Deleted element";
   case varUndefined:
     return "Undefined";
   }
@@ -229,6 +237,8 @@ string VarTypeToAntimony(const var_type vtype)
     return "compartment ";
   case varUnitDefinition:
     return "unit ";
+  case varDeleted:
+    return "delete ";
   case varStrand:
   case varModule:
   case varUndefined:
@@ -289,6 +299,8 @@ string ReturnTypeToString(const return_type rtype)
     return "modular DNA strand";
   case allUnits:
     return "units";
+  case allDeleted:
+    return "deleted submodel elements";
   }
   assert(false); //uncaught type
   return "Uncaught type";
