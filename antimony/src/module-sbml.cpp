@@ -60,6 +60,41 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
   module->TranslateRulesAndAssignmentsTo(event, var);
 }
 
+string GetNewIDForLocalParameter(const SBase* lp)
+{
+  if (lp==NULL) {
+    assert(false);
+    return "";
+  }
+  const Reaction* rxnparent = static_cast<const Reaction*>(lp->getAncestorOfType(SBML_REACTION));
+  if (rxnparent==NULL) return "";
+  const Model* model = static_cast<const Model*>(rxnparent->getAncestorOfType(SBML_COMP_MODELDEFINITION, "comp"));
+  if (model==NULL) {
+    model = static_cast<const Model*>(rxnparent->getAncestorOfType(SBML_MODEL));
+  }
+  if (model==NULL) return "";
+  string rxnname;
+  if (rxnparent->isSetId()) {
+    rxnname = rxnparent->getId();
+  }
+  else {
+    unsigned long rxnnum;
+    for (rxnnum=0; rxnnum<model->getNumReactions(); rxnnum++) {
+      if (rxnparent == model->getReaction(rxnnum)) break;
+    }
+    rxnname = "_J" + SizeTToString(rxnnum);
+  }
+  string lpid = rxnname + "_" + lp->getId();
+  SBase* shadow = const_cast<Model*>(model)->getElementBySId(lpid);
+  size_t snum = 0;
+  while (shadow != NULL) {
+    lpid = rxnname + "_" + lp->getId() + SizeTToString(snum);
+    snum++;
+    shadow = const_cast<Model*>(model)->getElementBySId(lpid);
+  }
+  return lpid;
+}
+
 void Module::GetReplacingAndRules(const Replacing* replacing, string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule)
 {
   reference = NULL;
@@ -141,15 +176,17 @@ Variable* Module::GetSBaseRef(const SBaseRef* csbr, string modname, string re_st
     g_registry.AddWarning("Unable to connect a " + re_string + " for " + orig->getElementName() + " " + orig->getId() + " in model " + GetModuleName() + ": the referenced element has no ID, which is required in Antimony.");
     return NULL;
   }
+  if (referenced->getTypeCode() == SBML_LOCAL_PARAMETER) {
+    //We renamed it when we translated it to Antimony
+    refid = GetNewIDForLocalParameter(referenced);
+  }
   refname.push_back(refid);
   //Now move back up the stack of submodels until we get to modname:
-  const SBase* parent = referenced->getParentSBMLObject();
+  const SBase* parent = referenced->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
   while (parent != NULL) {
-    if (parent->getTypeCode()==SBML_COMP_SUBMODEL) {
-      string submodelid = parent->getId();
-      refname.insert(refname.begin(), submodelid);
-    }
-    parent = parent->getParentSBMLObject();
+    string submodelid = parent->getId();
+    refname.insert(refname.begin(), submodelid);
+    parent = parent->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
   }
   Variable* ret = GetVariable(refname);
   if (ret==NULL) {
@@ -394,7 +431,6 @@ void Module::LoadSBML(const Model* sbml)
         delname += " ";
         if (delname=="del0 ") delname = "";
         SBase* target = deletion->getReferencedElement();
-        //LS DEBUG:  when we have deletions, add them here.
         if (target != NULL) {
           SBase* submodparent = target->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
           vector<string> targetname;
@@ -403,9 +439,14 @@ void Module::LoadSBML(const Model* sbml)
             submodparent = submodparent->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
           }
           vector<string> delparentname = targetname;
-          SBase* eventparent = target->getAncestorOfType(SBML_EVENT);
-          Event* event = static_cast<Event*>(eventparent);
+          vector<string> paramname = targetname;
+          SBase* typeparent = target->getAncestorOfType(SBML_EVENT);
+          Event* event = static_cast<Event*>(typeparent);
+          typeparent = target->getAncestorOfType(SBML_REACTION);
+          Reaction* reaction = static_cast<Reaction*>(typeparent);
           Variable* deletedvar = NULL;
+          Variable* origparam = NULL;
+          Variable* newparam = NULL;
           switch (target->getTypeCode()) {
           case SBML_INITIAL_ASSIGNMENT:
           case SBML_RATE_RULE:
@@ -432,8 +473,12 @@ void Module::LoadSBML(const Model* sbml)
           case SBML_EVENT_ASSIGNMENT:
           case SBML_TRIGGER:
             //Delete the target, then re-calculate the event:
-            target->removeFromParentAndDelete();
             assert(event != NULL);
+            if (!event->isSetId()) {
+              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Event parent of the deleted " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " element did not have an ID, making it impossible for Antimony to determine which event was being modified.");
+              continue;
+            }
+            target->removeFromParentAndDelete();
             targetname.push_back(event->getId());
             deletedvar = GetVariable(targetname);
             assert(deletedvar != NULL);
@@ -443,6 +488,20 @@ void Module::LoadSBML(const Model* sbml)
           case SBML_ALGEBRAIC_RULE:
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " elements cannot be expressed in Antimony at all.  (Deleting them is therefore safe, because they are automatically dropped anyway.)");
             break;
+          case SBML_LOCAL_PARAMETER:
+            assert(reaction != NULL);
+            if (!reaction->isSetId()) {
+              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Reaction parent of the deleted Local Parameter did not have an ID, making it impossible for Antimony to determine which event was being modified.");
+              continue;
+            }
+            paramname.push_back(reaction->getId());
+            deletedvar = GetVariable(paramname);
+            assert(deletedvar != NULL);
+            paramname = targetname;
+            paramname.push_back(target->getId());
+            targetname.push_back(GetNewIDForLocalParameter(target));
+            deletedvar->GetFormula()->ReplaceWith(targetname, paramname);
+            break;
           default:
             //From core:
             /*
@@ -451,7 +510,6 @@ void Module::LoadSBML(const Model* sbml)
               SBML_SPECIES_REFERENCE 	
               SBML_MODIFIER_SPECIES_REFERENCE 	
               SBML_UNIT 	
-              SBML_LOCAL_PARAMETER 	
             */
             //var = AddOrFindVariable(&delname);
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions of " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " elements have not been added as a concept in Antimony.");
@@ -710,38 +768,18 @@ void Module::LoadSBML(const Model* sbml)
     Formula formula;
     if (reaction->isSetKineticLaw()) {
       const KineticLaw* kl = reaction->getKineticLaw();
-      formulastring = parseASTNodeToString(kl->getMath());
-      setFormulaWithString(formulastring, &formula, this);
-      for (unsigned int localp=0; localp<kl->getNumParameters(); localp++) {
-        const Parameter* localparam = kl->getParameter(localp);
-        vector<string> fullname;
-        //Find the variable with the original name:
-        string origname = getNameFromSBMLObject(localparam, "_P");
-        fullname.push_back(origname);
-        Variable* origvar = GetVariable(fullname);
+      ASTNode astn = *kl->getMath();
+      for (unsigned int localp=0; localp<kl->getNumLocalParameters(); localp++) {
+        const LocalParameter* localparam = kl->getLocalParameter(localp);
+        string origname = localparam->getId();
 
         //Create a new variable with a new name:
-        fullname.clear();
-        sbmlname = var->GetNameDelimitedBy('_') + "_" + origname;
+        vector<string> fullname;
+        sbmlname = GetNewIDForLocalParameter(localparam);
         fullname.push_back(sbmlname);
-        Variable* foundvar = GetVariable(fullname);
-        while (foundvar != NULL) {
-          //Just in case something weird happened and there was another one of *this* name, too.
-          sbmlname = var->GetNameDelimitedBy('_') + "_" + sbmlname;
-          fullname.clear();
-          fullname.push_back(sbmlname);
-          foundvar = GetVariable(fullname);
-        }
         Variable* localvar = AddOrFindVariable(&sbmlname);
-
-        //Replace the variable in the formula:
-        if(origvar != NULL) {
-          formula.ReplaceWith(origvar, localvar);
-        }
-        else {
-          //If origvar is NULL, nothing needs to be replaced: if the original formula had included the parameter, the earlier setFormulaWithString would have created one.  But since there wasn't one, this means the original formula didn't include the parameter at all!  Meaning this local parameter has no use whatsoever!  What the heck, dude.  Oh, well.
-          //cout << "Unused local variable for reaction " << var->GetNameDelimitedBy('.') << ":  " << origname << endl;
-        }
+        //Change the ASTNode so that old idrefs point to the new name.
+        astn.renameSIdRefs(localparam->getId(), sbmlname);
 
         //Set the value for the new variable:
         if (localparam->isSetValue()) {
@@ -753,6 +791,8 @@ void Module::LoadSBML(const Model* sbml)
           localvar->SetUnitVariable(localparam->getUnits());
         }
       }
+      formulastring = parseASTNodeToString(&astn);
+      setFormulaWithString(formulastring, &formula, this);
     }
     else if (reaction->getNumModifiers() > 0) {
       //If the kinetic law is empty, we can set some interactions, if there are any Modifiers.
@@ -784,27 +824,44 @@ void Module::LoadSBML(const Model* sbml)
     //Ports!
     for (unsigned int p=0; p<mplugin->getNumPorts(); p++) {
       const Port* port = mplugin->getPort(p);
-      if (port->isSetIdRef()) {
-        string idref = port->getIdRef();
-        //check to make sure it's not a function
-        SBase* ref = const_cast<Port*>(port)->getReferencedElement();
-        if (ref != NULL && ref->getTypeCode()!= SBML_FUNCTION_DEFINITION) {
-          Variable* portvar = AddOrFindVariable(&idref);
-          AddVariableToExportList(portvar);
-        }
+      if (port->isSetSBaseRef()) {
+        g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.");
+        continue;
       }
-      else if (port->isSetUnitRef()) {
-        string idref = port->getUnitRef();
-        //check to make sure it's not a function
-        SBase* ref = const_cast<Port*>(port)->getReferencedElement();
-        if (ref != NULL) {
-          Variable* portvar = AddOrFindVariable(&idref);
-          AddVariableToExportList(portvar);
-        }
+      SBase* ref = const_cast<Port*>(port)->getReferencedElement();
+      if (ref==NULL) {
+        g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because the object the port referenced could not be found.");
+        continue;
       }
-      else {
-        g_registry.AddWarning("Unable to add port " + port->getId() + " to model " + GetModuleName() + ":  ports created without idrefs are currently untranslatable to Antimony.");
+      switch(ref->getTypeCode()) {
+      case SBML_CONSTRAINT:
+      case SBML_ALGEBRAIC_RULE:
+        g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because " + SBMLTypeCode_toString(ref->getTypeCode(), "core") + " elements do not exist in Antimony, and are therefore untranslateable.");
+        continue;
+      case SBML_INITIAL_ASSIGNMENT:
+      case SBML_RATE_RULE:
+      case SBML_ASSIGNMENT_RULE:
+      case SBML_PRIORITY:
+      case SBML_DELAY:
+      case SBML_EVENT_ASSIGNMENT:
+      case SBML_TRIGGER:
+        g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because " + SBMLTypeCode_toString(ref->getTypeCode(), "core") + " elements only exist as part of other Antimony elements, and do not function as their own separate entities which may be flagged as a port.");
+        continue;
+      case SBML_FUNCTION_DEFINITION:
+        g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because function defintions are global in Antimony, not local.");
+        continue;
+      default:
+        break;
       }
+      if (!ref->isSetId()) {
+        g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because the referenced element has no ID.");
+      }
+      string refid = ref->getId();
+      if (ref->getTypeCode()==SBML_LOCAL_PARAMETER) {
+        refid = GetNewIDForLocalParameter(ref);
+      }
+      Variable* portvar = AddOrFindVariable(&refid);
+      AddVariableToExportList(portvar);
     }
   }
 #endif //USE_COMP

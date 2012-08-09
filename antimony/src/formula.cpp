@@ -549,11 +549,11 @@ void Formula::InsertTimeInFunction(string function)
   }
 }
 
-void Formula::ReplaceWith(const Variable* origvar, const Variable* newvar)
+void Formula::ReplaceWith(std::vector<std::string> origname, std::vector<std::string> newname)
 {
   for (size_t comp=0; comp<m_components.size(); comp++) {
-    if (m_components[comp].second == origvar->GetName()) {
-      m_components[comp].second = newvar->GetName();
+    if (m_components[comp].second == origname) {
+      m_components[comp].second = newname;
     }
   }
 }
