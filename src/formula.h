@@ -68,7 +68,7 @@ public:
   void FixNames(std::string modname);
   void ChangeTimeTo(const Variable* timeref);
   void InsertTimeInFunction(std::string function);
-  void ReplaceWith(const Variable* origvar, const Variable* newvar);
+  void ReplaceWith(std::vector<std::string> origname, std::vector<std::string> newname);
 
   bool Matches(const Formula* newform) const;
   void Convert(Variable* converted, Variable* cf);
