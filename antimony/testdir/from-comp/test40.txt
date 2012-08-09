@@ -1,0 +1,36 @@
+//Created by libAntimony v2.3-beta
+model moddef1()
+
+  // Compartments and Species:
+  compartment C;
+  species s1 in C;
+
+  // Reactions:
+  J0:  -> s1; J0_p1 * s1;
+
+  // Species initializations:
+  s1 = 0.001;
+
+  // Compartment initializations:
+  C = 1;
+
+  // Variable initializations:
+  p1 = ;
+  J0_p1 = 10;
+
+  //Other declarations:
+  const C;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1();
+  sub1.p1 is new_p1;
+
+  // Variable initializations:
+  new_p1 = 100;
+
+  //Other declarations:
+  const new_p1;
+end

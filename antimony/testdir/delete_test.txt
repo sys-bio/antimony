@@ -1,0 +1,63 @@
+model foo()
+  species S1 in C1, s2 in c2
+  J1: S1 ->; K1;
+  j2: s2 ->; k2;
+  E1: at DELAY1 after (Y1 > 3), priority=PRIORITY1: Z1=0, Q1=0;
+  e2: at delay2 after (y2 > 3), priority=priority2: z2=0, q2=0;
+end
+
+model bar1()
+  A: foo();
+  delete A.S1;
+end
+
+model bar2()
+  A: foo();
+  delete A.C1;
+end
+
+model bar3()
+  A: foo();
+  delete A.J1;
+end
+
+model bar4()
+  A: foo();
+  delete A.K1;
+end
+
+model bar5()
+  A: foo();
+  delete A.E1;
+end
+
+model bar6()
+  A: foo();
+  delete A.Y1;
+end
+
+model bar7()
+  A: foo();
+  delete A.Z1;
+end
+
+model bar8()
+  A: foo();
+  delete A.DELAY1;
+end
+
+model bar9()
+  A: foo();
+  delete A.PRIORITY1;
+end
+
+model bar10()
+  A: foo();
+  delete A.Q1;
+end
+
+model bar11()
+  A: foo();
+  delete A.S1, A.C1, A.J1, A.K1, A.E1, A.Y1, A.Z1, A.DELAY1, A.PRIORITY1;
+end
+

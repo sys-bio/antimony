@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.3-beta with libSBML version 5.6.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="false">
+  <model id="doc0" name="doc0">
+    <listOfParameters>
+      <parameter id="sub1__t1" value="1" constant="false"/>
+      <parameter id="sub1__t2" value="1" constant="false"/>
+    </listOfParameters>
+    <listOfEvents>
+      <event id="sub1__E0" useValuesFromTriggerTime="true">
+        <trigger initialValue="true" persistent="true">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <gt/>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+              <cn type="integer"> 3 </cn>
+            </apply>
+          </math>
+        </trigger>
+        <delay>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <cn type="integer"> 1 </cn>
+              <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+            </apply>
+          </math>
+        </delay>
+        <listOfEventAssignments>
+          <eventAssignment variable="sub1__t1">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <cn> 3.3 </cn>
+            </math>
+          </eventAssignment>
+          <eventAssignment variable="sub1__t2">
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <cn> 5.5 </cn>
+            </math>
+          </eventAssignment>
+        </listOfEventAssignments>
+      </event>
+    </listOfEvents>
+  </model>
+</sbml>
