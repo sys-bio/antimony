@@ -31,6 +31,8 @@ enum rd_type {rdBecomes = 0, rdActivates, rdInhibits, rdInfluences, rdBecomesIrr
  * - varEvent: An event
  * - varCompartment: A compartment
  * - varStrand: A DNA strand (an ordered list of DNA elements)
+ * - varUnitDefinition: A unit definition.
+ * - varDeleted: A deleted submodel element
  */
 
 enum var_type {varSpeciesUndef = 0,
@@ -45,7 +47,8 @@ enum var_type {varSpeciesUndef = 0,
                varEvent,
                varCompartment,
                varStrand,
-               varUnitDefinition};
+               varUnitDefinition,
+               varDeleted};
 /**
  * return_types are used in the API when requesting information about different symbols.  Each return_type refers to a different group of symbols, and are overlapping--i.e. a single symbol can be included in 'allGenes' and 'allReactions'. 
   * - allSymbols:        Every symbol of every type in Antimony
@@ -70,6 +73,8 @@ enum var_type {varSpeciesUndef = 0,
   * - subModules:        Submodules used within the current module.
   * - expandedStrands:   DNA strands containing nothing but operators and genes--any sub-strands have been expanded to their component DNA objects, and those sub-strands are not included in any lists.
   * - modularStrands:    All defined DNA strands, with some being subparts of the others.
+  * - allUnits:          All unit definitions.
+  * - allDeleted:        All submodel elements that have been deleted from the containing model.
   */
 enum return_type {allSymbols = 0,
                   allSpecies,
@@ -93,7 +98,8 @@ enum return_type {allSymbols = 0,
                   subModules,
                   expandedStrands,
                   modularStrands,
-                  allUnits};
+                  allUnits,
+                  allDeleted};
 
 /**
  * const_type values are not used in the API, but are used internally in libAntimony.  Every symbol starts off being constDEFAULT, which means that the model never stated explicitly whether the symbol was to be constant or variable, so the program will use a heuristic to determine which is the case.  Once set, the heuristic is ignored, and the type (constVAR for variable symbols, constCONST for constant ones) is permanent.  Not all symbols can actually be variable or constant (for example, submodules and reactions), so attempts to set this value for those symbols will fail.

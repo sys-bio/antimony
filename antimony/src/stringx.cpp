@@ -3,9 +3,9 @@
 #include <iostream>
 #include "stringx.h"
 #include "registry.h"
-extern bool CaselessStrCmp(const std::string& lhs, const std::string& rhs);
 
 using namespace std;
+extern bool CaselessStrCmp(const string& lhs, const string& rhs);
 
 string SizeTToString(size_t number)
 {
@@ -54,7 +54,7 @@ bool IsReal(const string& src)
   return true;
 } /* IsReal */
 
-wstring ToWString(std::string in)
+wstring ToWString(string in)
 {
   wstring out;
   for (size_t ch=0; ch<in.size(); ch++) {
@@ -63,7 +63,7 @@ wstring ToWString(std::string in)
   return out;
 }
   
-string ToThinString(std::wstring in)
+string ToThinString(wstring in)
 {
   string out;
   for (size_t ch=0; ch<in.size(); ch++) {
@@ -72,7 +72,7 @@ string ToThinString(std::wstring in)
   return out;
 }
 
-string Trim(std::string in)
+string Trim(string in)
 {
   string out = in;
   while (out.size() && out[0] == ' ') {
@@ -91,7 +91,7 @@ string Trim(std::string in)
   return out;
 }
 
-std::string AndsAndOrs(std::string& in)
+string AndsAndOrs(string& in)
 {
   string out = in;
   size_t andpos;
@@ -161,17 +161,6 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
       if (g_registry.IsModuleName(word)) {
         FixName(word);
       }
-      /*  Apparantly this is a bad idea, for some reason.  We'll FixName stuff later, instead.
-      if ((CaselessStrCmp(word, "module")) || (CaselessStrCmp(word, "model")) || (CaselessStrCmp(word, "end")) ||
-          (CaselessStrCmp(word, "species")) || (CaselessStrCmp(word, "formula")) || (CaselessStrCmp(word, "reaction")) ||
-          (CaselessStrCmp(word, "DNA")) || (CaselessStrCmp(word, "gene")) || (CaselessStrCmp(word, "operator")) ||
-          (CaselessStrCmp(word, "compartment")) || (CaselessStrCmp(word, "in")) || (CaselessStrCmp(word, "is")) ||
-          (CaselessStrCmp(word, "var")) || (CaselessStrCmp(word, "const")) || (CaselessStrCmp(word, "ext")) ||
-          (CaselessStrCmp(word, "import")) || (CaselessStrCmp(word, "event")) || (CaselessStrCmp(word, "at")) ||
-          (CaselessStrCmp(word, "after")) || (CaselessStrCmp(word, "function"))) {
-        //FixName(word);
-      }
-      */
       size_t pointpos;
       while ((pointpos = word.find('.')) != string::npos) {
         string onebit = word;

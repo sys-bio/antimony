@@ -64,6 +64,22 @@ bool ReactantList::SetComponentFormulasTo(Formula form)
   return false;
 }
 
+void ReactantList::ClearReferencesTo(Variable* deletedvar)
+{
+  Module* module = g_registry.GetModule(m_module);
+  assert(module != NULL);
+
+  for (vector<pair<double, vector<string> > >::iterator component = m_components.begin(); component != m_components.end(); ) {
+    Variable* var = module->GetVariable(component->second);
+    if (var->GetIsEquivalentTo(deletedvar)) {
+      component = m_components.erase(component);
+    }
+    else {
+      component++;
+    }
+  }
+}
+
 vector<vector<string> > ReactantList::GetVariableList() const
 {
   vector<vector<string> > vlist;

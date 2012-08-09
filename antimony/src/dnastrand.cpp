@@ -132,6 +132,19 @@ bool DNAStrand::CheckContains(Variable* var) const
   return false;
 }
 
+void DNAStrand::ClearReferencesTo(Variable* deletedvar)
+{
+  Module* module = g_registry.GetModule(m_module);
+  vector<vector<string> >::iterator strand = m_strand.begin();
+  while (strand != m_strand.end()) {
+    if (module->GetVariable(*strand)->GetIsEquivalentTo(deletedvar)) {
+      strand = m_strand.erase(strand);
+    }
+    else {
+      strand++;
+    }
+  }
+}
 
 string DNAStrand::ToStringDelimitedBy(char cc) const
 {

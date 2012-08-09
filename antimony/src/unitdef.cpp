@@ -131,6 +131,16 @@ bool UnitDef::IsEmpty()
   return (m_components.empty());
 }
 
+void UnitDef::ClearReferencesTo(Variable* deletedvar)
+{
+  vector<string> delname = deletedvar->GetName();
+  for (size_t el=0; el<m_components.size(); el++) {
+    if (m_components[el].GetKind() == delname[delname.size()-1]) {
+      ClearComponents();
+      return;
+    }
+  }
+}
 
 bool UnitDef::SetFromFormula(Formula* formula)
 {

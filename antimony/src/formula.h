@@ -81,6 +81,8 @@ public:
   void SetNewTopNameWith(const SBase* from, const std::string& modname);
 #endif
 
+  bool ClearReferencesTo(Variable* deletedvar);
+
   //For CellMLStuff:
   void UseInstead(std::string newname, const Variable* oldvar);
   std::string ToCellML() const;

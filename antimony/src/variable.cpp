@@ -30,6 +30,7 @@ Variable::Variable(const string name, const Module* module)
     m_supercomptype(varUndefined),
     m_strands(),
     m_type(varUndefined),
+    m_deletedunit(false),
     m_const(constDEFAULT),
     m_unitVariable()
 {
@@ -90,7 +91,8 @@ formula_type Variable::GetFormulaType() const
   case varStrand:
     return formulaASSIGNMENT; //or kinetic, but we treat them the same in this case.
   case varUnitDefinition:
-    return formulaINITIAL; //I guess?
+  case varDeleted:
+    return formulaINITIAL; //For lack of any other default.
   }
   assert(false); //uncaught variable type;
   return m_formulatype;
@@ -120,6 +122,8 @@ const Formula* Variable::GetFormula() const
     return m_valEvent.GetTrigger();
   case varStrand:
     return m_valStrand.GetFinalFormula();
+  case varDeleted:
+    return &(g_registry.m_blankform);
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
@@ -150,6 +154,8 @@ Formula* Variable::GetFormula()
     return m_valEvent.GetTrigger();
   case varStrand:
     return m_valStrand.GetFinalFormula();
+  case varDeleted:
+    return &(g_registry.m_blankform);
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
@@ -183,6 +189,7 @@ const Formula* Variable::GetInitialAssignment() const
   case varInteraction:
   case varEvent:
   case varStrand:
+  case varDeleted:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -213,11 +220,12 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
     return m_valReaction.GetFormula();
   case varModule:
     return m_valModule[0].GetFormula();
-  case varEvent:
-  case varUnitDefinition:
-    return &(g_registry.m_blankform);
   case varStrand:
     return m_valStrand.GetFinalFormula();
+  case varEvent:
+  case varUnitDefinition:
+  case varDeleted:
+    return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
   return &(g_registry.m_blankform);
@@ -247,11 +255,12 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
     return m_valReaction.GetFormula();
   case varModule:
     return m_valModule[0].GetFormula();
-  case varEvent:
-  case varUnitDefinition:
-    return &(g_registry.m_blankform);
   case varStrand:
     return m_valStrand.GetFinalFormula();
+  case varEvent:
+  case varUnitDefinition:
+  case varDeleted:
+    return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
   return &(g_registry.m_blankform);
@@ -347,7 +356,7 @@ const UnitDef* Variable::GetUnitDef() const
   return &(m_valUnitDef);
 }
 
-Variable* Variable::GetSubVariable(const std::string* name)
+Variable* Variable::GetSubVariable(const string* name)
 {
   if (IsPointer()) {
     return GetSameVariable()->GetSubVariable(name);
@@ -444,6 +453,7 @@ bool Variable::GetIsConst() const
   case varUndefined:
     if (m_const==constDEFAULT) return true;
   case varUnitDefinition:
+  case varDeleted:
     return true;
   }
   switch(m_const) {
@@ -461,6 +471,7 @@ bool Variable::GetIsConst() const
 
 bool Variable::GetIsEquivalentTo(const Variable* var) const
 {
+  if (var==NULL) return false;
   if (IsPointer()) {
     return GetSameVariable()->GetIsEquivalentTo(var);
   }
@@ -533,7 +544,7 @@ Variable* Variable::GetUnitVariable() const
   return g_registry.GetModule(m_module)->GetVariable(m_unitVariable);
 }
 
-bool Variable::SetUnitVariable(std::string name)
+bool Variable::SetUnitVariable(string name)
 {
   FixUnitName(name);
   Variable* var = g_registry.GetModule(m_module)->AddOrFindVariable(&name);
@@ -594,12 +605,26 @@ bool Variable::SetType(var_type newtype)
   if (IsSpecies(newtype) && (m_formulatype == formulaASSIGNMENT || m_formulatype == formulaRATE)) {
     m_const = constCONST;
   }
+  if (newtype == varDeleted) {
+    //You can delete any type of variable.
+    if (m_type == varUnitDefinition) {
+      m_deletedunit = true; 
+    }
+    m_type = newtype;
+    m_const = constDEFAULT;
+    m_valFormula.Clear();
+    m_valRateRule.Clear();
+    m_valReaction.Clear();
+    m_valUnitDef.ClearComponents();
+    return false;
+  }
 
   string error = "Unable to set the type of variable '" + GetNameDelimitedBy('.') + "' to " + VarTypeToString(newtype) + " because it is already set to be the incompatible type " + VarTypeToString(m_type) + ".  This situation can occur either with explicit type declaration or by using the variable in different, incompatible contexts.";
   switch(m_type) {
   case varSpeciesUndef:
     switch(newtype) {
     case varSpeciesUndef:
+    case varDeleted:
       //If they were both SpeciesUndef, we already returned.
       return false;
     case varFormulaUndef:
@@ -627,6 +652,7 @@ bool Variable::SetType(var_type newtype)
     case varInteraction:
     case varCompartment:
     case varEvent:
+    case varDeleted:
       m_type = newtype;
       return false;
     case varUnitDefinition:
@@ -648,6 +674,7 @@ bool Variable::SetType(var_type newtype)
     switch(newtype) {
     case varFormulaUndef:
     case varUndefined:
+    case varDeleted:
       return false;
     case varDNA:
     case varFormulaOperator:
@@ -672,6 +699,7 @@ bool Variable::SetType(var_type newtype)
     case varFormulaOperator:
     case varDNA:
     case varUndefined:
+    case varDeleted:
       return false;
     case varSpeciesUndef:
     case varReactionGene:
@@ -691,6 +719,7 @@ bool Variable::SetType(var_type newtype)
     case varReactionGene:
     case varReactionUndef:
     case varUndefined:
+    case varDeleted:
       return false;
     case varSpeciesUndef:
     case varFormulaOperator:
@@ -707,6 +736,7 @@ bool Variable::SetType(var_type newtype)
     case varReactionUndef:
     case varUndefined:
     case varFormulaUndef:
+    case varDeleted:
       return false;
     case varDNA:
     case varReactionGene:
@@ -734,6 +764,9 @@ bool Variable::SetType(var_type newtype)
   case varModule:
   case varStrand:
     g_registry.SetError(error); return true; //the already-identical cases handled above.
+  case varDeleted:
+    g_registry.SetError("Unable to set the type of variable '" + GetNameDelimitedBy('.') + "' to " + VarTypeToString(newtype) + " because it has already been deleted from the containing model.");
+    return true;
   }
 
   assert(false); //uncaught vtype
@@ -794,6 +827,8 @@ bool Variable::SetFormula(Formula* formula)
   case varStrand:
     g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' to be " + formula->ToDelimitedStringWithEllipses('.') + " because DNA strands are only defined by their components, and do not have any equations associated with them.");
     return true;
+  case varDeleted:
+    g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' to be " + formula->ToDelimitedStringWithEllipses('.') + " because this variable was already deleted.");
   }
   if (m_valFormula.MakeUnitVariablesUnits()) return true;
 #ifndef NSBML
@@ -1065,6 +1100,9 @@ bool Variable::SetIsConst(bool constant)
       return true;
     }
     break;
+  case varDeleted:
+    g_registry.SetError(error + ", as the variable was already deleted.");
+    break;
   }
   if (constant) {
     m_const = constCONST;
@@ -1112,6 +1150,7 @@ bool Variable::SetSuperCompartment(Variable* var, var_type supertype)
   case varCompartment:
   case varUndefined:
   case varUnitDefinition:
+  case varDeleted:
     assert(false); // Those things don't have components
     return false;
   case varStrand:
@@ -1155,6 +1194,7 @@ void Variable::SetComponentCompartments(bool frommodule)
   case varEvent:
   case varUndefined:
   case varUnitDefinition:
+  case varDeleted:
     return; //No components to set
   case varReactionUndef:
   case varReactionGene:
@@ -1279,6 +1319,67 @@ Variable* Variable::GetExtentConversionFactor()
 Variable* Variable::GetTimeConversionFactor()
 {
   return g_registry.GetModule(m_module)->GetVariable(m_timeConversionFactor);
+}
+
+vector<vector<string> > Variable::GetDeletions() const
+{
+  return m_deletions;
+}
+
+bool Variable::DeleteFromSubmodel(Variable* deletedvar)
+{
+  if (GetType() != varModule) {
+    assert(false);
+    g_registry.SetError("Cannot delete variable " + deletedvar->GetNameDelimitedBy('.') + " because " + GetNameDelimitedBy('.') + " is not a submodel.");
+    return true;
+  }
+
+  //Find and delete references to deletedvar:
+  Module* submod = GetModule();
+  submod->ClearReferencesTo(deletedvar);
+
+  //And set deletedvar to 'deleted'!  Like Strong Bad!
+  deletedvar->SetType(varDeleted);
+  //And save the fact that you did it:
+  m_deletions.push_back(deletedvar->GetName());
+  return false;
+}
+
+void Variable::ClearReferencesTo(Variable* deletedvar)
+{
+  Module* parentmod = g_registry.GetModule(m_module);
+  m_valFormula.ClearReferencesTo(deletedvar);
+  m_valReaction.ClearReferencesTo(deletedvar);
+  if (!m_valModule.empty()) {
+    m_valModule[0].ClearReferencesTo(deletedvar);
+  }
+  m_valEvent.ClearReferencesTo(deletedvar);
+  m_valStrand.ClearReferencesTo(deletedvar);
+  m_valUnitDef.ClearReferencesTo(deletedvar);
+  m_valRateRule.ClearReferencesTo(deletedvar);
+  if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_extentConversionFactor))) {
+    m_extentConversionFactor.clear();
+  }
+  if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_timeConversionFactor))) {
+    m_timeConversionFactor.clear();
+  }
+  if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_compartment))) {
+    m_compartment.clear();
+  }
+  if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_supercompartment))) {
+    m_supercompartment.clear();
+  }
+  for (set<vector<string> >::iterator strand=m_strands.begin(); strand != m_strands.end();) {
+    if (parentmod->GetVariable(*strand)->GetSameVariable() == deletedvar) {
+      strand = m_strands.erase(strand);
+    }
+    else {
+      strand++;
+    }
+  }
+  if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_unitVariable))) {
+    m_unitVariable.clear();
+  }
 }
 
 //Set this variable to be a shell pointing to the clone, transferring any data we may already have.

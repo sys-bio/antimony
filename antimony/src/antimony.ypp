@@ -22,12 +22,12 @@
   class Variable;
 
   using namespace std;
-  int yylex(void);
-  void yyerror(char const *);
+  int antimony_yylex(void);
+  void antimony_yyerror(char const *);
   Registry g_registry;
-  int yylloc_first_line = 1;
-  int yylloc_last_line = 1;
-  std::vector<int> yylloc_last_lines;
+  int antimony_yylloc_first_line = 1;
+  int antimony_yylloc_last_line = 1;
+  vector<int> antimony_yylloc_last_lines;
 %}
 
 /*Bison declarations */
@@ -58,48 +58,44 @@
 %type <maybemain>       maybemain
 
 %left '&' '|' /* Boolean functions and, or */
-//                      %left '<' '>' '=' '!' /* Boolean comparison functions (gt, lt, eq, etc.) */
-//                      %left NOT /* boolean negation--unary not */
 %left '-' '+'
 %left '*' '/' '%'
 %right '^'    /* exponentiation        */
-//                      %left NEG     /* negation--unary minus */
-//                      Old:
-//                      %left '^'
-//                      %left '+' '-' '*' '/' ','
 
 %token YYEOF 0 "end of file"
 %token  <num> NUM "number"
+%token  <word> AFTER "'after'"
 %token  <word> ANTWORD "element name"
-%token  <word> MODNAME "name of an existing module"
-%token  <word> TEXTSTRING "text string"
-%token  <word> MODULE "'model' or 'module'"
-%token  <word> END "'end'"
-%token  <word> SPECIES "'species'"
-%token  <word> REACTION "'reaction'"
-%token  <word> FORMULA "'formula'"
-%token  <word> DNA "'DNA'"
-%token  <word> GENE "'gene'"
-%token  <word> OPERATOR "'operator'"
-%token  <word> EVENT "'event'"
+%token  <word> AT "'@' or 'at'"
+%token  <word> BECOMESIRREV "=>"
 %token  <word> COMPARTMENT "'compartment'"
-%token  <word> INWORD "'in'"
-%token  <word> HASWORD "'has'"
-%token  <word> IS "'is'"
-%token  <word> VARWORD "'var'"
+%token  <word> CONSTANT "name of a pre-defined constant"
 %token  <word> CONSTWORD "'const'"
 %token  <word> DASHES "--"
-%token  <word> BECOMESIRREV "=>"
+%token  <word> DELETEWORD "'delete'"
+%token  <word> DNA "'DNA'"
 %token  <word> ELLIPSES "..."
+%token  <word> END "'end'"
+%token  <word> EVENT "'event'"
+%token  <word> FORMULA "'formula'"
 %token  <word> FUNCTION "name of an existing function"
-%token  <word> CONSTANT "name of a pre-defined constant"
-%token  <word> IMPORT "'import'"
-%token  <word> AT "'@' or 'at'"
-%token  <word> AFTER "'after'"
 %token  <word> FUNCTIONWORD "'function'"
+%token  <word> GENE "'gene'"
+%token  <word> HASWORD "'has'"
+%token  <word> IMPORT "'import'"
+%token  <word> INWORD "'in'"
+%token  <word> IS "'is'"
+%token  <word> MODNAME "name of an existing module"
+%token  <word> MODULE "'model' or 'module'"
+%token  <word> OPERATOR "'operator'"
+%token  <word> REACTION "'reaction'"
+%token  <word> SPECIES "'species'"
+%token  <word> TEXTSTRING "text string"
 %token  <word> UNITWORD "'unit'"
+%token  <word> VARWORD "'var'"
 //                      %token  <word> DELETEWORD "'delete'"
 
+%name-prefix="antimony_yy"
 %debug
 %error-verbose
 %% /* The grammar: */
@@ -140,12 +136,16 @@ function:       FUNCTIONWORD ANTWORD {g_registry.NewUserFunction($2);} '(' varia
         |       FUNCTIONWORD FUNCTION {g_registry.SetError("Cannot define '" + *($2) + "' as a new function because it is already a defined function."); YYABORT;} 
         ;
 
-spacedformula:  maybelineend formula maybelineend {$$ = $2;}
+spacedformula:  formula {$$ = $1;}
+        |       lineend spacedformula {$$ = $2;}
+        |       spacedformula lineend {$$ = $1;}
         ;
 
-maybelineend:   /* empty */
+/*
+maybelineend:   // empty
         |       lineend {}
         ;
+*/
 
 variableexportlist:
                 /* empty */ {}
@@ -190,7 +190,7 @@ modulepart:     reaction lineend {}
         |       dnadef lineend {}
         |       event lineend {}
         |       unitinit lineend {}
-//|       deletion lineend {}
+        |       deletion lineend {}
         |       variablein {}
         |       lineend {}
         ;
@@ -358,7 +358,9 @@ varconstinit:   VARWORD varmaybeis {g_registry.SetConstness(constVAR); $2->SetRe
         |       varconstinit ',' varmaybeis {$3->SetRegConst();}
         ;
 
-unitinit:       UNITWORD variable '=' formula {if ($2->SetType(varUnitDefinition)) YYABORT; if ($2->GetUnitDef()->SetFromFormula($4)) YYABORT;}
+unitinit:       UNITWORD variable '=' formula {if ($2->SetType(varUnitDefinition)) YYABORT;
+                                               if ($4->MakeAllVariablesUnits()) YYABORT;
+                                               if ($2->GetUnitDef()->SetFromFormula($4)) YYABORT;}
         |       UNITWORD variable {if ($2->SetType(varUnitDefinition)) YYABORT;} 
         ;
 
@@ -401,11 +403,10 @@ assignmentlist: variable '=' formula {if (g_registry.GetCurrentEvent()->AddResul
         |       variable '=' formula ',' assignmentlist {if (g_registry.GetCurrentEvent()->AddResult($1, $3)) YYABORT;}
         |       variable '=' formula ',' '\n' assignmentlist {if (g_registry.GetCurrentEvent()->AddResult($1, $3)) YYABORT;}
         ;
-/*
-deletion:       DELETEWORD variable {g_registry.CurrentModule()->AddDeletion($2);}
-        |       deletion ',' variable {g_registry.CurrentModule()->AddDeletion($3);}
+
+deletion:       DELETEWORD variable {if (g_registry.CurrentModule()->AddDeletion($2)) YYABORT;}
+        |       deletion ',' variable {if (g_registry.CurrentModule()->AddDeletion($3)) YYABORT;}
         ;
-*/
 
 unitdef:        formula {
                     if ($1->MakeAllVariablesUnits()) YYABORT;
@@ -415,35 +416,23 @@ unitdef:        formula {
                     }
                     else {
                       UnitDef* ud = new UnitDef("", g_registry.CurrentModule()->GetModuleName());
+                      if ($1->MakeAllVariablesUnits()) YYABORT;
                       if (ud->SetFromFormula($1)) YYABORT;
                       $$ = g_registry.CurrentModule()->AddOrFindUnitDef(ud);
                     }
                 }
         ;
-/*
-unitdef:        ANTWORD {$$ = new UnitDef(*$1, g_registry.CurrentModule()->GetModuleName());}
-        |       '(' unitdef ')' { $$ = $2;}
-        |       unitdef '*' unitdef {$$ = $1; $$->MultiplyUnitDef($3); delete $3;}
-        |       unitdef '/' unitdef {$$ = $1; $$->DivideUnitDef($3); delete $3;}
-        |       unitdef '^' NUM {$$ = $1; $$->RaiseTo($3);}
-        |       NUM '/' unitdef {$$ = $3; $$->Invert(); $$->MultiplyBy($1)}
-        |       NUM unitdef {$$ = $2; $$->MultiplyBy($1);}
-        |       unitdef '^' '-' NUM {$$ = $1; $$->RaiseTo(-$4);}
-        |       '-' NUM '/' unitdef {$$ = $4; $$->Invert(); $$->MultiplyBy(-$2)}
-        |       '-' NUM unitdef {$$ = $3; $$->MultiplyBy(-$2);}
-        ;
-*/
 %%
 
 
-void yyerror(char const *s)
+void antimony_yyerror(char const *s)
 {
   if (g_registry.GetError()=="") {
     g_registry.SetError(s);
   }
 }
 
-int yylex(void)
+int antimony_yylex(void)
 {
   char cc = 0;
   g_registry.input->get(cc);
@@ -451,22 +440,23 @@ int yylex(void)
   //If we're done with the file:
   if (g_registry.input->eof()) {
     if (g_registry.SwitchToPreviousFile()) {
+      g_registry.CurrentModule()->Finalize();
       return 0;
     }
     else {
-      yylloc_first_line = yylloc_last_lines.back();
-      yylloc_last_line = yylloc_last_lines.back();
-      yylloc_last_lines.pop_back();
-      return yylex();
+      antimony_yylloc_first_line = antimony_yylloc_last_lines.back();
+      antimony_yylloc_last_line = antimony_yylloc_last_lines.back();
+      antimony_yylloc_last_lines.pop_back();
+      return antimony_yylex();
     }
   }
   if (!g_registry.input->good()) {
     //Something else went wrong!
-    g_registry.SetError("Unparseable content in line " + DoubleToString(yylloc_last_line) + ".");
+    g_registry.SetError("Unparseable content in line " + DoubleToString(antimony_yylloc_last_line) + ".");
     return -1;
   }
 
-  yylloc_first_line = yylloc_last_line;
+  antimony_yylloc_first_line = antimony_yylloc_last_line;
 
   // Skip white space.
   while ((cc == ' ' ||
@@ -474,7 +464,7 @@ int yylex(void)
          !g_registry.input->eof()) {
     g_registry.input->get(cc);
   }
-  if (g_registry.input->eof()) return yylex();
+  if (g_registry.input->eof()) return antimony_yylex();
   // Skip carriage returns after '\':
   if (cc == '\\') {
     g_registry.input->get(cc);
@@ -482,9 +472,9 @@ int yylex(void)
       while ((cc == '\r' || cc == '\n') && !g_registry.input->eof()) {
         g_registry.input->get(cc);
       }
-      ++yylloc_last_line;
+      ++antimony_yylloc_last_line;
       g_registry.input->unget();
-      return yylex();
+      return antimony_yylex();
     }
     else {
       g_registry.input->unget();
@@ -568,22 +558,20 @@ int yylex(void)
     if (CaselessStrCmp(word, "unit")) {
       return UNITWORD;
     }
-    /*
     if (CaselessStrCmp(word, "delete")) {
       return DELETEWORD;
     }
-    */
     
     if (g_registry.IsFunction(word) != NULL) {
-      yylval.word = g_registry.IsFunction(word);
+      antimony_yylval.word = g_registry.IsFunction(word);
       return FUNCTION;
     }
     if (g_registry.IsConstant(word) != NULL) {
-      yylval.word = g_registry.IsConstant(word);
+      antimony_yylval.word = g_registry.IsConstant(word);
       return CONSTANT;
     }
     //Otherwise, it's a user-defined variable:
-    yylval.word = g_registry.AddWord(word);
+    antimony_yylval.word = g_registry.AddWord(word);
     //cout << "\tRead word '" << word << "'." << endl;
     if (g_registry.IsModuleName(word)) {
       return MODNAME;
@@ -604,7 +592,7 @@ int yylex(void)
       g_registry.input->seekg(numbegin);
       int numint;
       *g_registry.input >> numint;
-      yylval.num = numint;
+      antimony_yylval.num = numint;
       if (g_registry.input->peek() == '.') {
         g_registry.input->get();
         *g_registry.input >> numint;
@@ -612,12 +600,12 @@ int yylex(void)
         while (fraction >= 1.0) {
           fraction = fraction/10;
         }
-        yylval.num += fraction;
+        antimony_yylval.num += fraction;
       }
       return NUM;
     }
     assert(g_registry.input->good());
-    yylval.num = number;
+    antimony_yylval.num = number;
     //However, pre-4.4.3 parsers would read the 'e' anyway, and we don't want it to, so unget the 'e'.
     g_registry.input->unget();
     if (!g_registry.input->good()) {
@@ -669,7 +657,7 @@ int yylex(void)
       if (!g_registry.input->eof()) {
         g_registry.input->unget();
       }
-      return yylex();
+      return antimony_yylex();
     }
     else if (cc == '*') {
       bool nextstar = false;
@@ -683,7 +671,7 @@ int yylex(void)
         }
         g_registry.input->get(cc);
       }
-      return yylex();
+      return antimony_yylex();
     }
     else {
       g_registry.input->unget();
@@ -720,7 +708,7 @@ int yylex(void)
       cc = '"';
     }
     else {
-      yylval.word = g_registry.AddWord(textstring);
+      antimony_yylval.word = g_registry.AddWord(textstring);
       return TEXTSTRING;
     }
   }
@@ -739,7 +727,7 @@ int yylex(void)
     cc = '\n';
   }
   if (cc == '\n') {
-    ++yylloc_last_line;
+    ++antimony_yylloc_last_line;
   }
   return cc;
 }

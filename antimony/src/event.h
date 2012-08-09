@@ -51,6 +51,7 @@ public:
   bool Matches(const AntimonyEvent* newevent) const;
   void Convert(Variable* converted, Variable* cf);
   void ConvertTime(Variable* tcf);
+  void ClearReferencesTo(Variable* deletedvar);
 
   size_t GetNumAssignments() const {return m_varresults.size();};
   std::string GetNthAssignmentVariableName(size_t n, char cc) const;

@@ -40,7 +40,6 @@ private:
   std::vector<Variable*> m_defaultVariables;
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
   std::vector<std::vector<std::string> > m_conversionFactors;
-  std::vector<std::vector<std::string> > m_changed;
   std::vector<std::string> m_returnvalue;
 
   size_t m_currentexportvar;
@@ -92,7 +91,9 @@ public:
   void AddTimeToUserFunction(std::string function);
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};
-  void AddDeletion(Variable* deletedvar) {};
+  bool AddDeletion(Variable* deletedvar);
+  bool DeleteFromSynchronized(Variable* deletedvar);
+  void ClearReferencesTo(Variable* deletedvar);
   Variable* AddOrFindUnitDef(UnitDef* unitdef);
   bool AddUnitVariables(UnitDef* unitdef);
   void AddDefaultVariables();
@@ -117,6 +118,7 @@ public:
   Variable* GetDownstreamDNA();
   formula_type GetFormulaType() const; //If we have a return value
   bool GetIsMain() const {return m_ismain;};
+
 
   const std::string& GetModuleName() const;
   std::string GetVariableNameDelimitedBy(char cc) const;
