@@ -1,29 +1,29 @@
 [Files]
-Source: ..\install-official\bin\QTAntimony.exe; DestDir: {app}
-Source: ..\install-official\bin\QtCore4.dll; DestDir: {app}
-Source: ..\install-official\bin\QtGui4.dll; DestDir: {app}
-Source: ..\install-official\bin\README.txt; DestDir: {app}
-Source: ..\install-official\bin\annotools.dll; DestDir: {app}
-Source: ..\install-official\bin\antimony.ico; DestDir: {app}
-Source: ..\install-official\bin\antimony2cellml.exe; DestDir: {app}
-Source: ..\install-official\bin\antimony2sbml.exe; DestDir: {app}
-Source: ..\install-official\bin\celeds.dll; DestDir: {app}
-Source: ..\install-official\bin\cellml.dll; DestDir: {app}
-Source: ..\install-official\bin\cellml2antimony.exe; DestDir: {app}
-Source: ..\install-official\bin\cevas.dll; DestDir: {app}
-Source: ..\install-official\bin\cuses.dll; DestDir: {app}
-Source: ..\install-official\bin\libantimony.dll; DestDir: {app}
-Source: ..\install-official\bin\libantimony.lib; DestDir: {app}
-Source: ..\install-official\bin\libsbml.dll; DestDir: {app}
-Source: ..\install-official\bin\libxml2.dll; DestDir: {app}
-Source: ..\install-official\bin\malaes.dll; DestDir: {app}
-Source: ..\install-official\bin\msvcp100.dll; DestDir: {app}
-Source: ..\install-official\bin\msvcr100.dll; DestDir: {app}
-Source: ..\install-official\bin\rehashantimony.exe; DestDir: {app}
-Source: ..\install-official\bin\sbml2antimony.exe; DestDir: {app}
-Source: ..\install-official\bin\sbtranslate.exe; DestDir: {app}
-Source: ..\install-official\bin\telicems.dll; DestDir: {app}
-Source: ..\install-official\bin\testantimony.exe; DestDir: {app}
+Source: ..\install-beta\bin\QTAntimony.exe; DestDir: {app}
+Source: ..\install-beta\bin\QtCore4.dll; DestDir: {app}
+Source: ..\install-beta\bin\QtGui4.dll; DestDir: {app}
+Source: ..\install-beta\bin\README.txt; DestDir: {app}
+Source: ..\install-beta\bin\annotools.dll; DestDir: {app}
+Source: ..\install-beta\bin\antimony.ico; DestDir: {app}
+Source: ..\install-beta\bin\antimony2cellml.exe; DestDir: {app}
+Source: ..\install-beta\bin\antimony2sbml.exe; DestDir: {app}
+Source: ..\install-beta\bin\celeds.dll; DestDir: {app}
+Source: ..\install-beta\bin\cellml.dll; DestDir: {app}
+Source: ..\install-beta\bin\cellml2antimony.exe; DestDir: {app}
+Source: ..\install-beta\bin\cevas.dll; DestDir: {app}
+Source: ..\install-beta\bin\cuses.dll; DestDir: {app}
+Source: ..\install-beta\bin\libantimony.dll; DestDir: {app}
+Source: ..\install-beta\bin\libantimony.lib; DestDir: {app}
+Source: ..\install-beta\bin\libsbml.dll; DestDir: {app}
+Source: ..\install-beta\bin\libxml2.dll; DestDir: {app}
+Source: ..\install-beta\bin\malaes.dll; DestDir: {app}
+Source: ..\install-beta\bin\msvcp100.dll; DestDir: {app}
+Source: ..\install-beta\bin\msvcr100.dll; DestDir: {app}
+Source: ..\install-beta\bin\rehashantimony.exe; DestDir: {app}
+Source: ..\install-beta\bin\sbml2antimony.exe; DestDir: {app}
+Source: ..\install-beta\bin\sbtranslate.exe; DestDir: {app}
+Source: ..\install-beta\bin\telicems.dll; DestDir: {app}
+Source: ..\install-beta\bin\testantimony.exe; DestDir: {app}
 Source: ..\doc\examples\ex_antimony_output.txt; DestDir: {app}
 Source: ..\doc\examples\ex_sbml_input.xml; DestDir: {app}
 Source: ..\doc\examples\ex_sbml_output___main_sbml.xml; DestDir: {app}
@@ -457,11 +457,11 @@ Source: ..\doc\examples\biomodels\BIOMD0000000422.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000423.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000424.txt; DestDir: {app}\biomodels\
 [Setup]
-DefaultGroupName=Antimony
+DefaultGroupName=Antimony-beta
 UsePreviousGroup=true
 AppName=QTAntimony
-AppVerName=QTAntimony 2.2.0
-DefaultDirName={pf}\Antimony
+AppVerName=QTAntimony 2.3.0-beta
+DefaultDirName={pf}\Antimony-beta
 UsePreviousAppDir=false
 [Icons]
 Name: {group}\{cm:UninstallProgram, QTAntimony}; Filename: {uninstallexe}

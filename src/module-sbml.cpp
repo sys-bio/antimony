@@ -1,6 +1,4 @@
 #ifndef NSBML
-#ifdef USE_COMP
-
 void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<string> submodname)
 {
   if (event->isSetName()) {
@@ -68,10 +66,14 @@ string GetNewIDForLocalParameter(const SBase* lp)
   }
   const Reaction* rxnparent = static_cast<const Reaction*>(lp->getAncestorOfType(SBML_REACTION));
   if (rxnparent==NULL) return "";
+#ifdef USE_COMP
   const Model* model = static_cast<const Model*>(rxnparent->getAncestorOfType(SBML_COMP_MODELDEFINITION, "comp"));
   if (model==NULL) {
     model = static_cast<const Model*>(rxnparent->getAncestorOfType(SBML_MODEL));
   }
+#else
+  const Model* model = static_cast<const Model*>(rxnparent->getAncestorOfType(SBML_MODEL));
+#endif
   if (model==NULL) return "";
   string rxnname;
   if (rxnparent->isSetId()) {
@@ -94,6 +96,8 @@ string GetNewIDForLocalParameter(const SBase* lp)
   }
   return lpid;
 }
+
+#ifdef USE_COMP
 
 void Module::GetReplacingAndRules(const Replacing* replacing, string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule)
 {
@@ -551,6 +555,7 @@ void Module::LoadSBML(const Model* sbml)
     }
     if (duplicate) continue;
     g_registry.NewUserFunction(&sbmlname);
+    uf = g_registry.GetUserFunction(sbmlname);
     for (unsigned int arg=0; arg<function->getNumArguments(); arg++) {
       string argument(parseASTNodeToString(function->getArgument(arg)));
       Variable* expvar = g_registry.AddVariableToCurrent(&argument);
@@ -558,7 +563,7 @@ void Module::LoadSBML(const Model* sbml)
     }
     string formulastring(parseASTNodeToString(function->getBody()));
     Formula formula;
-    setFormulaWithString(formulastring, &formula, this);
+    setFormulaWithString(formulastring, &formula, uf);
     g_registry.SetUserFunction(&formula);
     g_registry.GetNthUserFunction(g_registry.GetNumUserFunctions()-1)->FixNames();
   }
@@ -769,8 +774,8 @@ void Module::LoadSBML(const Model* sbml)
     if (reaction->isSetKineticLaw()) {
       const KineticLaw* kl = reaction->getKineticLaw();
       ASTNode astn = *kl->getMath();
-      for (unsigned int localp=0; localp<kl->getNumLocalParameters(); localp++) {
-        const LocalParameter* localparam = kl->getLocalParameter(localp);
+      for (unsigned int localp=0; localp<kl->getNumParameters(); localp++) {
+        const Parameter* localparam = kl->getParameter(localp);
         string origname = localparam->getId();
 
         //Create a new variable with a new name:

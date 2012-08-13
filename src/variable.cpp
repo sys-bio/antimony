@@ -1242,6 +1242,11 @@ bool Variable::SetDisplayName(string name)
     return GetSameVariable()->SetDisplayName(name);
   }
   if (name == GetNameDelimitedBy('_')) return false; //Don't bother with names that are identical to id's
+  size_t quote = name.find('"');
+  while (quote != string::npos) {
+    name.replace(quote, 1, "&quot;");
+    quote = name.find('"');
+  }
   m_displayname = name;
   return false;
 }
