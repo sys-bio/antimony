@@ -1,0 +1,134 @@
+//Created by libAntimony v2.3-beta
+model *Muraro2011_CytokininAuxin_CrossRegulation()
+
+  // Compartments and Species:
+  compartment cell;
+  species IAAm in cell, IAAp in cell, AuxTIR1 in cell, AuxTIAA in cell, IAAs in cell;
+  species ARFIAA in cell, ARF2 in cell, Aux in cell, PINm in cell, PINp in cell;
+  species ARm in cell, ARp in cell, $TIR1 in cell, $ARF in cell, CRm in cell;
+  species CRp in cell, AHKph in cell, Ck in cell, ARRBph in cell, ARRAph in cell;
+  species ARRAm in cell, ARRAp in cell, $ARRBp in cell, $CkAHKph in cell;
+  species $CkAHK in cell, $F1 in cell, $F2 in cell, $F3 in cell, $F4 in cell;
+  species $F5a in cell, $F5b in cell, $F6 in cell;
+
+  // Assignment Rules:
+  TIR1 := alphaTIR1 - AuxTIR1 - AuxTIAA;
+  ARF := alphaARF - 2 * ARF2 - ARFIAA;
+  ARRBp := alphaARRB - etaAHKph * ARRBph;
+  CkAHKph := alphaPH - AHKph - ARRAph - ARRBph;
+  CkAHK := alphaAHK - etaAHKph * (AHKph + CkAHKph);
+  F1 := ARF / thetaARF / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + ARF * IAAp / psiARFIAA + ARF^2 / psiARF + ARRBph / thARRBph);
+  F2 := (ARF2 / thetaARF2 + ARF^2 / psiARF) / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + ARF * IAAp / psiARFIAA + ARF^2 / psiARF + ARRBph / thARRBph);
+  F3 := ARRBph / thARRBph / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + ARF * IAAp / psiARFIAA + ARF^2 / psiARF + ARRBph / thARRBph);
+  F4 := ARRBph / thARRBph / (1 + ARRAph / thARRAph + ARRBph / thARRBph);
+  F5a := ARF / thetaARF / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + ARF * IAAp / psiARFIAA + ARF^2 / psiARF);
+  F5b := (ARF2 / thetaARF2 + ARF^2 / psiARF) / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + ARF * IAAp / psiARFIAA + ARF^2 / psiARF);
+  F6 := ARp / thetaARp / (1 + ARp / thetaARp);
+
+  // Reactions:
+  r1:  => IAAm; phiIAAp * (lambda1 * F1 + F2 + lambda3 * F3) - IAAm;
+  r2:  => IAAp; 1 / eps * (deltaIAAp * IAAm - la * IAAp * AuxTIR1 + ld * AuxTIAA) + etaARFIAA * (pd * ARFIAA - pa * IAAp * ARF);
+  r3:  => AuxTIR1; 1 / eps * (ka * Aux * TIR1 - kd * AuxTIR1 + (ld + 1) * AuxTIAA - la * AuxTIR1 * IAAp);
+  r4:  => AuxTIAA; 1 / eps * (la * IAAp * AuxTIR1 - (ld + 1) * AuxTIAA);
+  r5:  => IAAs; 1 / eps * (AuxTIAA - muIAAs * IAAs);
+  r6:  => ARFIAA; pa * ARF * IAAp - pd * ARFIAA;
+  r7:  => ARF2; qa * ARF^2 - qd * ARF2;
+  r8:  => Aux; muAux * (alphaAux - Aux) - 1 / eps * etaAuxTIR1 * (ka * Aux * TIR1 - kd * AuxTIR1);
+  r9:  => PINm; phiPINp * (lambda1 * F5a + F5b) - PINm;
+  r10:  => PINp; 1 / eps * (deltaPINp * PINm - PINp);
+  r11:  => ARm; phiARp * (lambda1 * F5a + F5b) - ARm;
+  r12:  => ARp; 1 / eps * (deltaARp * ARm - ARp);
+  r13:  => CRm; phiCRp * F4 - CRm;
+  r14:  => CRp; 1 / eps * (deltaCRp * CRm - CRp);
+  r15:  => AHKph; 1 / eps * (rd * CkAHKph - ra * AHKph * Ck);
+  r16:  => Ck; muCk * (alphaCk - Ck) - etaCkPh / eps * (ra * AHKph * Ck - rd * CkAHKph);
+  r17:  => ARRBph; 1 / eps * (ua * CkAHKph * ARRBp - ud * CkAHK * ARRBph);
+  r18:  => ARRAph; 1 / eps * (sa * CkAHKph * ARRAp - sd * CkAHK * ARRAph);
+  r19:  => ARRAm; phiARRAp * F6 - ARRAm;
+  r20:  => ARRAp; 1 / eps * (deltaARRAp * ARRAm - ARRAp + etaAHKph * (sd * CkAHK * ARRAph - sa * CkAHKph * ARRAp));
+
+  // Species initializations:
+  IAAm = 0;
+  IAAp = 0;
+  AuxTIR1 = 0;
+  AuxTIAA = 0;
+  IAAs = 0;
+  ARFIAA = 0;
+  ARF2 = 0;
+  Aux = 1;
+  PINm = 0;
+  PINp = 0;
+  ARm = 0;
+  ARp = 0;
+  CRm = 0;
+  CRp = 0;
+  AHKph = 1;
+  Ck = 1;
+  ARRBph = 0;
+  ARRAph = 0;
+  ARRAm = 0;
+  ARRAp = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  alphaTIR1 = 1;
+  alphaARF = 1;
+  alphaARRB = 2;
+  etaAHKph = 1;
+  alphaPH = 1;
+  alphaAHK = 1;
+  thetaARF = 0.1;
+  thetaARF2 = 0.01;
+  thARFIAA = 0.1;
+  psiARFIAA = 0.1;
+  psiARF = 0.1;
+  thARRBph = 0.1;
+  thARRAph = 0.1;
+  thetaARp = 0.1;
+  eps = 0.01;
+  lambda1 = 0.1;
+  lambda3 = 0.02;
+  alphaAux = 1;
+  phiIAAp = 100;
+  phiARp = 2;
+  phiPINp = 100;
+  deltaIAAp = 1;
+  deltaARp = 1;
+  deltaPINp = 1;
+  muAux = 0.1;
+  muIAAs = 1;
+  etaAuxTIR1 = 10;
+  etaARFIAA = 1;
+  la = 0.5;
+  ld = 0.1;
+  pa = 10;
+  pd = 10;
+  ka = 100;
+  kd = 1;
+  qa = 1;
+  qd = 1;
+  thetaIAAp = 0.1;
+  alphaCk = 1;
+  phiCRp = 2;
+  phiARRAp = 100;
+  deltaCRp = 1;
+  deltaARRAp = 1;
+  muCk = 0.1;
+  etaCkPh = 1;
+  ra = 1;
+  rd = 1;
+  ua = 1;
+  ud = 1;
+  sa = 1;
+  sd = 1;
+
+  //Other declarations:
+  const cell, alphaTIR1, alphaARF, alphaARRB, etaAHKph, alphaPH, alphaAHK;
+  const thetaARF, thetaARF2, thARFIAA, psiARFIAA, psiARF, thARRBph, thARRAph;
+  const thetaARp, eps, lambda1, lambda3, alphaAux, phiIAAp, phiARp, phiPINp;
+  const deltaIAAp, deltaARp, deltaPINp, muAux, muIAAs, etaAuxTIR1, etaARFIAA;
+  const la, ld, pa, pd, ka, kd, qa, qd, thetaIAAp, alphaCk, phiCRp, phiARRAp;
+  const deltaCRp, deltaARRAp, muCk, etaCkPh, ra, rd, ua, ud, sa, sd;
+end

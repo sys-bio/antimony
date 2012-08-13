@@ -1,0 +1,197 @@
+//Created by libAntimony v2.3-beta
+model *Smallbone2011_TrehaloseBiosynthesis()
+
+  // Compartments and Species:
+  compartment cell, medium;
+  species glc in cell, g1p in cell, g6p in cell, trh in cell, t6p in cell;
+  species udg in cell, $adp in cell, $atp in cell, $ppi in cell, $f6p in cell;
+  species $h in cell, $pho in cell, $udp in cell, $utp in cell, $h2o in cell;
+  species $glx in medium;
+
+  // Assignment Rules:
+  glc_change := log10(glc / glc_0);
+  g1p_change := log10(g1p / g1p_0);
+  g6p_change := log10(g6p / g6p_0);
+  trh_change := log10(trh / trh_0);
+  t6p_change := log10(t6p / t6p_0);
+  udg_change := log10(udg / udg_0);
+
+  // Reactions:
+  pgi: g6p -> $f6p; cell * pgi_shock^heat * pgi_Vmax / pgi_Kg6p * (g6p - f6p / pgi_Keq) / (1 + g6p / pgi_Kg6p + f6p / pgi_Kf6p);
+  hxt: $glx -> glc; cell * hxt_shock^heat * hxt_Vmax * (glx - glc) / hxt_Kglc / (1 + (glx + glc) / hxt_Kglc + hxt_Ki * glx * glc / hxt_Kglc^2);
+  hxk: glc + $atp => g6p + $adp + $h; cell * hxk_shock^heat * hxk_Vmax / (hxk_Kglc * hxk_Katp) * (glc * atp - g6p * adp / hxk_Keq) / ((1 + glc / hxk_Kglc + g6p / hxk_Kg6p + t6p / hxk_Kit6p) * (1 + atp / hxk_Katp + adp / hxk_Kadp));
+  pgm: g6p -> g1p; cell * pgm_shock^heat * pgm_Vmax / pgm_Kg6p * (g6p - g1p / pgm_Keq) / (1 + g6p / pgm_Kg6p + g1p / pgm_Kg1p);
+  tpp: t6p + $h2o => trh + $pho; cell * tpp_shock^heat * tpp_Vmax * t6p / tpp_Kt6p / (1 + t6p / tpp_Kt6p);
+  tps: g6p + udg => t6p + $udp + $h; cell * tps_activity * tps_shock^heat * tps_Vmax * g6p * udg / (tps_Kg6p * tps_Kudg) / ((1 + g6p / tps_Kg6p) * (1 + udg / tps_Kudg));
+  nth: trh + $h2o => 2glc; cell * nth_shock^heat * nth_Vmax * trh / nth_Ktrh / (1 + trh / nth_Ktrh);
+  ugp: g1p + $utp + $h => udg + $ppi; cell * ugp_shock^heat * ugp_Vmax * utp * g1p / (ugp_Kutp * ugp_Kg1p) / (ugp_Kiutp / ugp_Kutp + utp / ugp_Kutp + g1p / ugp_Kg1p + utp * g1p / (ugp_Kutp * ugp_Kg1p) + ugp_Kiutp / ugp_Kutp * udg / ugp_Kiudg + g1p * udg / (ugp_Kg1p * ugp_Kiudg));
+
+  // Species initializations:
+  glc = glc_0;
+  g1p = g1p_0;
+  g6p = g6p_0;
+  trh = trh_0;
+  t6p = t6p_0;
+  udg = udg_0;
+  adp = 1.282;
+  atp = 2.525;
+  ppi = ;
+  f6p = 0.625;
+  h = ;
+  pho = ;
+  udp = 0.2815;
+  utp = 0.6491;
+  h2o = ;
+  glx = 100;
+
+  // Compartment initializations:
+  cell = 1;
+  medium = 1;
+
+  // Variable initializations:
+  glc_0 = 0.09765;
+  glc_0 has mM;
+  g1p_0 = 0.1;
+  g1p_0 has mM;
+  g6p_0 = 2.675;
+  g6p_0 has mM;
+  trh_0 = 0.05;
+  trh_0 has mM;
+  t6p_0 = 0.02;
+  t6p_0 has mM;
+  udg_0 = 0.7;
+  udg_0 has mM;
+  heat = 0;
+  heat has dimensionless;
+  glc_change has dimensionless;
+  g1p_change has dimensionless;
+  g6p_change has dimensionless;
+  trh_change has dimensionless;
+  t6p_change has dimensionless;
+  udg_change has dimensionless;
+  pgi_Vmax = 1071;
+  pgi_Vmax has mM_per_min;
+  pgi_Kg6p = 1.4;
+  pgi_Kg6p has mM;
+  pgi_Kf6p = 0.29;
+  pgi_Kf6p has mM;
+  pgi_Keq = 0.3;
+  pgi_Keq has dimensionless;
+  pgi_shock = 1;
+  pgi_shock has dimensionless;
+  hxt_Vmax = 97.24;
+  hxt_Vmax has mM_per_min;
+  hxt_Kglc = 1.1918;
+  hxt_Kglc has mM;
+  hxt_Ki = 0.91;
+  hxt_Ki has dimensionless;
+  hxt_shock = 8;
+  hxt_shock has dimensionless;
+  hxk_Vmax = 289.6;
+  hxk_Vmax has mM_per_min;
+  hxk_Kglc = 0.08;
+  hxk_Kglc has mM;
+  hxk_Katp = 0.15;
+  hxk_Katp has mM;
+  hxk_Kg6p = 30;
+  hxk_Kg6p has mM;
+  hxk_Kadp = 0.23;
+  hxk_Kadp has mM;
+  hxk_Keq = 2000;
+  hxk_Keq has dimensionless;
+  hxk_Kit6p = 0.04;
+  hxk_Kit6p has mM;
+  hxk_shock = 8;
+  hxk_shock has dimensionless;
+  pgm_Vmax = 0.3545;
+  pgm_Vmax has mM_per_min;
+  pgm_Kg6p = 0.05;
+  pgm_Kg6p has mM;
+  pgm_Kg1p = 0.023;
+  pgm_Kg1p has mM;
+  pgm_Keq = 0.1667;
+  pgm_Keq has dimensionless;
+  pgm_shock = 16;
+  pgm_shock has dimensionless;
+  tpp_Vmax = 6.5;
+  tpp_Vmax has mM_per_min;
+  tpp_Kt6p = 0.5;
+  tpp_Kt6p has mM;
+  tpp_shock = 18;
+  tpp_shock has dimensionless;
+  tps_Vmax = 1.371;
+  tps_Vmax has mM_per_min;
+  tps_Kg6p = 3.8;
+  tps_Kg6p has mM;
+  tps_Kudg = 0.886;
+  tps_Kudg has mM;
+  tps_shock = 12;
+  tps_shock has dimensionless;
+  tps_activity = 1;
+  tps_activity has dimensionless;
+  nth_Vmax = 15.2;
+  nth_Vmax has mM_per_min;
+  nth_Ktrh = 2.99;
+  nth_Ktrh has mM;
+  nth_shock = 6;
+  nth_shock has dimensionless;
+  ugp_Vmax = 36.82;
+  ugp_Vmax has mM_per_min;
+  ugp_Kutp = 0.11;
+  ugp_Kutp has mM;
+  ugp_Kiutp = 0.11;
+  ugp_Kiutp has mM;
+  ugp_Kg1p = 0.32;
+  ugp_Kg1p has mM;
+  ugp_Kiudg = 0.0035;
+  ugp_Kiudg has mM;
+  ugp_shock = 16;
+  ugp_shock has dimensionless;
+
+  //Other declarations:
+  var glc_change, g1p_change, g6p_change, trh_change, t6p_change, udg_change;
+  const cell, medium, glc_0, g1p_0, g6p_0, trh_0, t6p_0, udg_0, heat;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit time_unit = 60 second;
+  unit mM = 1e-3 mole / litre;
+  unit per_min = 1 / 60 second;
+  unit mM_per_min = 1e-3 mole / (litre * 60 second);
+
+  //Display Names:
+  substance is "mmol";
+  time_unit is "min";
+  per_min is "per min";
+  mM_per_min is "mM per min";
+  glc is "glucose";
+  g1p is "glucose 1-phosphate";
+  g6p is "glucose 6-phosphate";
+  trh is "trehalose";
+  t6p is "trehalose 6-phosphate";
+  udg is "UDP glucose";
+  adp is "ADP";
+  atp is "ATP";
+  ppi is "diphosphate";
+  f6p is "fructose 6-phosphate";
+  h is "H+";
+  pho is "phosphate";
+  udp is "UDP";
+  utp is "UTP";
+  h2o is "water";
+  glx is "glucose";
+  glc_change is "log10 change in glucose";
+  g1p_change is "log10 change in glucose 1-phosphate";
+  g6p_change is "log10 change in glucose 6-phosphate";
+  trh_change is "log10 change in trehalose";
+  t6p_change is "log10 change in trehalose 6-phosphate";
+  udg_change is "log10 change in UDP glucose";
+  pgi is "G6P isomerase";
+  hxt is "glucose transport";
+  hxk is "hexokinase";
+  pgm is "phosphoglucomutase";
+  tpp is "T6P phosphatase";
+  tps is "T6P synthase";
+  nth is "trehalase";
+  ugp is "UDP glucose phosphorylase";
+end

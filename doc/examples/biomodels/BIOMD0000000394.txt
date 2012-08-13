@@ -1,0 +1,126 @@
+//Created by libAntimony v2.3-beta
+model *Sivakumar2011_EGFReceptorSignalingPathway()
+
+  // Compartments and Species:
+  compartment default, c2;
+  species s21 in c2, s22 in c2, s25 in c2, s26 in c2, s27 in c2, s28 in c2;
+  species s29 in c2, s30 in c2, s31 in c2, s33 in c2, s34 in c2, s23 in c2;
+  species s24 in c2, s3 in default, s123 in c2, s124 in c2, s125 in c2, s126 in c2;
+  species s127 in c2, s129 in c2, s142 in default, s144 in c2, s147 in c2;
+
+  // Reactions:
+  r8: s23 -> s24; kI_r8_s22 / (kI_r8_s22 + s22) * (kI_r8_s29 / (kI_r8_s29 + s29)) * (kI_r8_s33 / (kI_r8_s33 + s33)) * (s124 * ((kcatp_r8_s124 / kM_r8_s124_s23 * s23 - kcatn_r8_s124 / kM_r8_s124_s24 * s24) / (1 + s23 / kM_r8_s124_s23 + s24 / kM_r8_s124_s24)) + s31 * ((kcatp_r8_s31 / kM_r8_s31_s23 * s23 - kcatn_r8_s31 / kM_r8_s31_s24 * s24) / (1 + s23 / kM_r8_s31_s23 + s24 / kM_r8_s31_s24)));
+  r9: s25 -> s26; s24 * ((kcatp_r9 / kM_r9_s25 * s25 - kcatn_r9 / kM_r9_s26 * s26) / (1 + s25 / kM_r9_s25 + s26 / kM_r9_s26));
+  r11: s29 -> s30; s127 * ((kcatp_r11 / kM_r11_s29 * s29 - kcatn_r11 / kM_r11_s30 * s30) / (1 + s29 / kM_r11_s29 + s30 / kM_r11_s30));
+  r14: s27 -> s28; s26 * ((kcatp_r14 / kM_r14_s27 * s27 - kcatn_r14 / kM_r14_s28 * s28) / (1 + s27 / kM_r14_s27 + s28 / kM_r14_s28));
+  r15: s28 -> s34; kass_r15 * s28 - kdiss_r15 * s34;
+  r17: 2s123 -> s129; s3 * (kass_r17_s3 * s123^2 - kdiss_r17_s3 * s129);
+  r6: s127 -> s127; s144 * (kass_r6_s144 * s127 - kdiss_r6_s144 * s127);
+  r7: s21 -> s22; s144 * (kass_r7_s144 * s21 - kdiss_r7_s144 * s22);
+  r4: s124 + s125 -> s124 + s126; s144 * (kass_r4_s144 * s124 * s125 - kdiss_r4_s144 * s124 * s126);
+  re11: s129 + s147 => s144; kI_re11_s142 / (kI_re11_s142 + s142) * (Vp_re11 * s129 * s147 / (ki_re11_s129 * kM_re11_s147 + kM_re11_s147 * s129 + kM_re11_s129 * s147 + s129 * s147));
+
+  // Species initializations:
+  s21 = 5;
+  s22 = 0;
+  s25 = 5;
+  s26 = 0;
+  s27 = 5;
+  s28 = 0;
+  s29 = 5;
+  s30 = 0;
+  s31 = 5;
+  s33 = 5;
+  s34 = 1;
+  s23 = 5;
+  s24 = 0;
+  s3 = 5;
+  s123 = 5;
+  s124 = 5;
+  s125 = 0.5;
+  s126 = 0;
+  s127 = 2;
+  s129 = 0;
+  s142 = 0.5;
+  s144 = 0;
+  s147 = 5;
+
+  // Compartment initializations:
+  default = 1;
+  c2 = 1;
+
+  // Variable initializations:
+  kcatp_r8_s124 = 0.511;
+  kM_r8_s124_s23 = 0.47;
+  kcatn_r8_s124 = 1.083;
+  kM_r8_s124_s24 = 0.786;
+  kcatp_r8_s31 = 0.727;
+  kM_r8_s31_s23 = 0.614;
+  kcatn_r8_s31 = 0.636;
+  kM_r8_s31_s24 = 1.367;
+  kI_r8_s22 = 0.583;
+  kI_r8_s29 = 1.219;
+  kI_r8_s33 = 0.293;
+  kcatp_r9 = 2;
+  kM_r9_s25 = 0.626;
+  kcatn_r9 = 0.693;
+  kM_r9_s26 = 0.463;
+  kcatp_r11 = 0.787;
+  kM_r11_s29 = 1.459;
+  kcatn_r11 = 0.566;
+  kM_r11_s30 = 1.021;
+  kcatp_r14 = 0.558;
+  kM_r14_s27 = 0.038;
+  kcatn_r14 = 0.725;
+  kM_r14_s28 = 1.65;
+  kass_r15 = 2;
+  kdiss_r15 = 0.074;
+  kass_r17_s3 = 0.73;
+  kdiss_r17_s3 = 1.13;
+  kI_re11_s142 = 1;
+  kass_r6_s144 = 1;
+  kdiss_r6_s144 = 1;
+  kass_r7_s144 = 1;
+  kdiss_r7_s144 = 1;
+  kass_r4_s144 = 1;
+  kdiss_r4_s144 = 1;
+  Vp_re11 = 1;
+  kM_re11_s129 = 1;
+  kM_re11_s147 = 1;
+  ki_re11_s129 = 1;
+
+  //Other declarations:
+  const default, c2, kcatp_r8_s124, kM_r8_s124_s23, kcatn_r8_s124, kM_r8_s124_s24;
+  const kcatp_r8_s31, kM_r8_s31_s23, kcatn_r8_s31, kM_r8_s31_s24, kI_r8_s22;
+  const kI_r8_s29, kI_r8_s33, kcatp_r9, kM_r9_s25, kcatn_r9, kM_r9_s26, kcatp_r11;
+  const kM_r11_s29, kcatn_r11, kM_r11_s30, kcatp_r14, kM_r14_s27, kcatn_r14;
+  const kM_r14_s28, kass_r15, kdiss_r15, kass_r17_s3, kdiss_r17_s3, kI_re11_s142;
+  const kass_r6_s144, kdiss_r6_s144, kass_r7_s144, kdiss_r7_s144, kass_r4_s144;
+  const kdiss_r4_s144, Vp_re11, kM_re11_s129, kM_re11_s147, ki_re11_s129;
+
+  //Display Names:
+  c2 is "Cytosol";
+  s21 is "Akt";
+  s22 is "Akt";
+  s25 is "MEK1_minus_2";
+  s26 is "MEK1_minus_2";
+  s27 is "ERK1_minus_2";
+  s28 is "ERK1_minus_2";
+  s29 is "RKIP";
+  s30 is "RKIP";
+  s31 is "PP2A";
+  s33 is "14_minus_3_minus_3";
+  s34 is "Mitogenesis_br_Differentiation";
+  s23 is "Raf_minus_1";
+  s24 is "Raf_minus_1";
+  s3 is "EGF";
+  s123 is "EGFR";
+  s124 is "Ras";
+  s125 is "GDP";
+  s126 is "GTP";
+  s127 is "PKC";
+  s129 is "EGFR";
+  s142 is "erlotinib";
+  s144 is "Complex_br_(EGFR/../_br_GAP)";
+  s147 is "Complex(Grb2/../PLC)";
+end

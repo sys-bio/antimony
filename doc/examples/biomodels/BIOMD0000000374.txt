@@ -1,0 +1,91 @@
+//Created by libAntimony v2.3-beta
+model *Bertram1995_PancreaticBetaCell_CRAC()
+
+  // Compartments and Species:
+  compartment COMpartment_;
+  species $V_membrane in COMpartment_, $n in COMpartment_, $jm in COMpartment_;
+  species $Ca_er_Ca_equations in COMpartment_, $Ca_i in COMpartment_;
+
+  // Assignment Rules:
+  i_Ca := i_Ca_f + i_Ca_s;
+  i_K := g_K * n * (V_membrane + 70);
+  i_K_ATP := g_K_ATP * (V_membrane + 70);
+  i_K_Ca := g_K_Ca * Ca_i^5 / (Ca_i^5 + kdkca^5) * (V_membrane + 70);
+  i_CRAC := g_CRAC * r_infinity * (V_membrane - V_CRAC);
+  i_leak := g_leak * (V_membrane - V_CRAC);
+  n_infinity := 1 / (1 + exp((-15 - V_membrane) / 6));
+  tau_n := 9.09 / (1 + exp((15 + V_membrane) / 6));
+  jm_infinity := 1 - 1 / (1 + exp((53 + V_membrane) / 2));
+  tau_j := 50000 / (exp((53 + V_membrane) / 4) + exp((-53 - V_membrane) / 4)) + 1500;
+  J_er_tot := J_er_leak + J_er_IP3 - J_er_p;
+  J_mem_tot := - f * (gamma * i_Ca + k_Ca * Ca_i);
+  i_Ca_f := g_Ca_f * m_f_infinity * (V_membrane - V_Ca);
+  m_f_infinity := 1 / (1 + exp((-20 - V_membrane) / 7.5));
+  i_Ca_s := g_Ca_s * m_s_infinity * (1 - jm) * (V_membrane - V_Ca);
+  m_s_infinity := 1 / (1 + exp((-16 - V_membrane) / 10));
+  j := 1 - jm;
+  r_infinity := 1 / (1 + exp(1 * (Ca_er_Ca_equations - Ca_er_bar)));
+  J_er_p := verp * Ca_i^2 / (Ca_i^2 + kerp^2);
+  a_infinity := 1 / (1 + dact / Ca_i);
+  b_infinity := IP3 / (IP3 + dip3);
+  h_infinity := 1 / (1 + Ca_i / dinh);
+  O := a_infinity^3 * b_infinity^3 * h_infinity^3 * 1;
+  J_er_leak := perl * (Ca_er_Ca_equations - Ca_i);
+  J_er_IP3 := O * (Ca_er_Ca_equations - Ca_i);
+
+  // Rate Rules:
+  V_membrane' = -(i_Ca + i_K + i_K_ATP + i_K_Ca + i_CRAC + i_leak) / Cm;
+  n' = lambda_n * (n_infinity - n) / tau_n;
+  jm' = (jm_infinity - jm) / tau_j;
+  Ca_er_Ca_equations' = - J_er_tot / (lambda_er * sigma_er);
+  Ca_i' = J_er_tot / lambda_er + J_mem_tot;
+
+  // Species initializations:
+  V_membrane = -61;
+  n = 0.0005;
+  jm = 0.25;
+  Ca_er_Ca_equations = 9;
+  Ca_i = 0.11;
+
+  // Compartment initializations:
+  COMpartment_ = 1;
+
+  // Variable initializations:
+  Cm = 6158;
+  lambda_n = 1.85;
+  lambda_er = 250;
+  sigma_er = 5;
+  g_K = 3900;
+  g_K_ATP = 150;
+  g_Ca_f = 810;
+  V_Ca = 100;
+  g_Ca_s = 510;
+  g_K_Ca = 1200;
+  kdkca = 0.55;
+  g_CRAC = 75;
+  V_CRAC = 0;
+  Ca_er_bar = 3;
+  g_leak = 0;
+  verp = 0.24;
+  kerp = 0.1;
+  IP3 = 0;
+  dact = 0.1;
+  dinh = 0.4;
+  dip3 = 0.2;
+  perl = 0.02;
+  k_Ca = 0.07;
+  gamma = 3.607e-006;
+  f = 0.01;
+
+  //Other declarations:
+  var i_Ca, i_K, i_K_ATP, i_K_Ca, i_CRAC, i_leak, n_infinity, tau_n, jm_infinity;
+  var tau_j, J_er_tot, J_mem_tot, i_Ca_f, m_f_infinity, i_Ca_s, m_s_infinity;
+  var j, r_infinity, J_er_p, a_infinity, b_infinity, h_infinity, O, J_er_leak;
+  var J_er_IP3;
+  const COMpartment_, Cm, lambda_n, lambda_er, sigma_er, g_K, g_K_ATP, g_Ca_f;
+  const V_Ca, g_Ca_s, g_K_Ca, kdkca, g_CRAC, V_CRAC, Ca_er_bar, g_leak, verp;
+  const kerp, IP3, dact, dinh, dip3, perl, k_Ca, gamma, f;
+
+  //Display Names:
+  Ca_er_Ca_equations is "ca_er_ca_equations";
+end

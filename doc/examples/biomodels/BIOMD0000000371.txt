@@ -1,0 +1,58 @@
+//Created by libAntimony v2.3-beta
+model *DeVries2000_PancreaticBetaCells_InsulinSecretion()
+
+  // Compartments and Species:
+  compartment Compartment_;
+  species $V_membrane in Compartment_, $n in Compartment_, $s in Compartment_;
+
+  // Assignment Rules:
+  i_Ca := g_Ca * m_infinity * (V_membrane - V_Ca);
+  i_K := g_K * n * (V_membrane - V_K);
+  i_K_ATP := g_K_ATP * p * (V_membrane - V_K);
+  i_s := g_s * s * (V_membrane - V_K);
+  n_infinity := 1 / (1 + exp((V_n - V_membrane) / theta_n));
+  s_infinity := 1 / (1 + exp((V_s - V_membrane) / theta_s));
+  m_infinity := 1 / (1 + exp((V_m - V_membrane) / theta_m));
+
+  // Rate Rules:
+  V_membrane' = -(i_Ca + i_K + i_K_ATP + i_s) / tau_membrane;
+  n' = lamda * (n_infinity - n) / tau_potassium_current_n_gate;
+  s' = (s_infinity - s) / tau_s;
+
+  // Species initializations:
+  V_membrane = -65;
+  n = 0.05;
+  s = 0.025;
+
+  // Compartment initializations:
+  Compartment_ = 1;
+
+  // Variable initializations:
+  tau_membrane = 20;
+  lamda = 0.8;
+  tau_potassium_current_n_gate = 20;
+  tau_s = 20000;
+  g_Ca = 3.6;
+  V_Ca = 25;
+  V_m = -20;
+  theta_m = 12;
+  g_K = 10;
+  V_K = -75;
+  V_n = -17;
+  theta_n = 5.6;
+  g_s = 4;
+  V_s = -22;
+  theta_s = 8;
+  g_K_ATP = 1.2;
+  p = 0.5;
+
+  //Other declarations:
+  var i_Ca, i_K, i_K_ATP, i_s, n_infinity, s_infinity, m_infinity;
+  const Compartment_, tau_membrane, lamda, tau_potassium_current_n_gate, tau_s;
+  const g_Ca, V_Ca, V_m, theta_m, g_K, V_K, V_n, theta_n, g_s, V_s, theta_s;
+  const g_K_ATP, p;
+
+  //Display Names:
+  tau_membrane is "tau";
+  tau_potassium_current_n_gate is "tau_2";
+end

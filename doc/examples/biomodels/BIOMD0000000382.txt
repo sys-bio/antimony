@@ -1,0 +1,48 @@
+//Created by libAntimony v2.3-beta
+model *Sturis1991_InsulinGlucoseModel_UltradianOscillation()
+
+  // Compartments and Species:
+  compartment compartment1;
+  species $x in compartment1, $y in compartment1, $z in compartment1, $h1 in compartment1;
+  species $h2 in compartment1, $h3 in compartment1;
+
+  // Assignment Rules:
+  f1 := 209 / (1 + exp(- z / (300 * v3) + 6.6));
+  f5 := 180 / (1 + exp(0.29 * h3 / v1 - 7.5));
+  f2 := 72 * (1 - exp(- z / 144 * v3));
+  f3 := 0.01 * z / v3;
+  f4 := 90 / (1 + exp(-1.772 * log(y * (1 / v2 + 1 / (E * t2))) + 7.76)) + 4;
+
+  // Rate Rules:
+  x' = f1 - E * (x / v1 - y / v2) - x / t1;
+  y' = E * (x / v1 - y / v2) - y / t2;
+  z' = f5 + I - f2 - f3 * f4;
+  h1' = 3 * (x - h1) / t3;
+  h2' = 3 * (h1 - h2) / t3;
+  h3' = 3 * (h2 - h3) / t3;
+
+  // Species initializations:
+  x = 90;
+  y = 180;
+  z = 13000;
+  h1 = 70;
+  h2 = 70;
+  h3 = 70;
+
+  // Compartment initializations:
+  compartment1 = 1;
+
+  // Variable initializations:
+  E = 0.21;
+  v1 = 3;
+  v2 = 11;
+  t1 = 6;
+  t2 = 100;
+  I = 216;
+  t3 = 36;
+  v3 = 10;
+
+  //Other declarations:
+  var f1, f5, f2, f3, f4;
+  const compartment1, E, v1, v2, t1, t2, I, t3, v3;
+end

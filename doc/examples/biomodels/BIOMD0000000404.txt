@@ -1,0 +1,222 @@
+//Created by libAntimony v2.3-beta
+function function_4_motor_r1(M, MYp, Yp, cell, ka, kappa)
+  ka * (M * Yp - kappa / 4 * MYp) / cell;
+end
+
+function function_4_motor_r2(MYp, MYpYp, Yp, alpha, cell, ka, kappa)
+  ka * (MYp * Yp - 2 * alpha * kappa / 3 * MYpYp) / cell;
+end
+
+function function_4_motor_r3(MYpYp, MYpYpYp, Yp, alpha, cell, ka, kappa)
+  ka * (MYpYp * Yp - 3 * alpha * alpha * kappa / 2 * MYpYpYp) / cell;
+end
+
+function function_4_motor_r4(MYpYpYp, MYpYpYpYp, Yp, alpha, cell, ka, kappa)
+  ka * (MYpYpYp * Yp - 4 * alpha * alpha * alpha * kappa * MYpYpYpYp) / cell;
+end
+
+function Autophosphorylation(kcat, correction, E)
+  kcat * correction * E;
+end
+
+function ModAutophosphorylation(M, S, kcat, correction)
+  M * S * kcat * correction;
+end
+
+
+model *Bray1993_chemotaxis()
+
+  // Compartments and Species:
+  compartment cell;
+  species $asp in cell, $ni in cell, T in cell, Tasp in cell, Tni in cell;
+  species W in cell, TW in cell, Tasp_W in cell, Tni_W in cell, TA in cell;
+  species Tasp_A in cell, Tni_A in cell, WA in cell, TWA in cell, Tasp_WA in cell;
+  species Tni_WA in cell, A in cell, Ap in cell, B in cell, Bp in cell, Z in cell;
+  species Y in cell, Yp in cell, M in cell, MYp in cell, MYpYp in cell, MYpYpYp in cell;
+  species MYpYpYpYp in cell, $species_1 in cell;
+
+  // Assignment Rules:
+  Bias := (M + MYp) / (M + MYp + MYpYp + MYpYpYp + MYpYpYpYp);
+  parameter_2 := species_1 / (species_1 + parameter_3);
+
+  // Reactions:
+  phosphorylation_r1: A => Ap; cell * Autophosphorylation(phosphorylation_r1_kcat, parameter_2, A);
+  phosphorylation_r2: A => Ap; cell * ModAutophosphorylation(TWA, A, phosphorylation_r2_kcat, parameter_2);
+  phosphorylation_r3: A => Ap; cell * ModAutophosphorylation(Tni_WA, A, phosphorylation_r3_kcat, parameter_2);
+  phosphorylation_r4: Tasp_WA + Yp => Tasp_WA + Y; cell * phosphorylation_r4_k1 * Tasp_WA * Yp;
+  phosphorylation_r5: Ap + Y => A + Yp; cell * phosphorylation_r5_k1 * Ap * Y;
+  phosphorylation_r6: Y => Yp; cell * Autophosphorylation(phosphorylation_r6_kcat, parameter_2, Y);
+  phosphorylation_r7: Yp => Y; cell * phosphorylation_r7_k1 * Yp;
+  phosphorylation_r8: Yp + Z => Y + Z; cell * phosphorylation_r8_k1 * Yp * Z;
+  phosphorylation_r9: Ap + B => A + Bp; cell * phosphorylation_r9_k1 * Ap * B;
+  phosphorylation_r10: Bp => B; cell * phosphorylation_r10_k1 * Bp;
+  regulatory_r1: T + $asp -> Tasp; cell * (regulatory_r1_k1 * T * asp - regulatory_r1_k2 * Tasp);
+  regulatory_r2: T + $ni -> Tni; cell * (regulatory_r2_k1 * T * ni - regulatory_r2_k2 * Tni);
+  regulatory_r3: T + W -> TW; cell * (regulatory_r3_k1 * T * W - regulatory_r3_k2 * TW);
+  regulatory_r4: T + A -> TA; cell * (regulatory_r4_k1 * T * A - regulatory_r4_k2 * TA);
+  regulatory_r5: W + A -> WA; cell * (regulatory_r5_k1 * W * A - regulatory_r5_k2 * WA);
+  regulatory_r6: TW + A -> TWA; cell * (regulatory_r6_k1 * TW * A - regulatory_r6_k2 * TWA);
+  regulatory_r7: TA + W -> TWA; cell * (regulatory_r7_k1 * TA * W - regulatory_r7_k2 * TWA);
+  regulatory_r8: T + WA -> TWA; cell * (regulatory_r8_k1 * T * WA - regulatory_r8_k2 * TWA);
+  regulatory_r9: Tasp + W -> Tasp_W; cell * (regulatory_r9_k1 * Tasp * W - regulatory_r9_k2 * Tasp_W);
+  regulatory_r10: Tasp + A -> Tasp_A; cell * (regulatory_r10_k1 * Tasp * A - regulatory_r10_k2 * Tasp_A);
+  regulatory_r11: Tasp_W + A -> Tasp_WA; cell * (regulatory_r11_k1 * Tasp_W * A - regulatory_r11_k2 * Tasp_WA);
+  regulatory_r12: Tasp_A + W -> Tasp_WA; cell * (regulatory_r12_k1 * Tasp_A * W - regulatory_r12_k2 * Tasp_WA);
+  regulatory_r13: Tasp + WA -> Tasp_WA; cell * (regulatory_r13_k1 * Tasp * WA - regulatory_r13_k2 * Tasp_WA);
+  regulatory_r14: Tni + W -> Tni_W; cell * (regulatory_r14_k1 * Tni * W - regulatory_r14_k2 * Tni_W);
+  regulatory_r15: Tni + A -> Tni_A; cell * (regulatory_r15_k1 * Tni * A - regulatory_r15_k2 * Tni_A);
+  regulatory_r16: Tni_W + A -> Tni_WA; cell * (regulatory_r16_k1 * Tni_W * A - regulatory_r16_k2 * Tni_WA);
+  regulatory_r17: Tni_A + W -> Tni_WA; cell * (regulatory_r17_k1 * Tni_A * W - regulatory_r17_k2 * Tni_WA);
+  regulatory_r18: Tni + WA -> Tni_WA; cell * (regulatory_r18_k1 * Tni * WA - regulatory_r18_k2 * Tni_WA);
+  motor_r1: M + Yp -> MYp; cell * function_4_motor_r1(M, MYp, Yp, cell, ka, kappa);
+  motor_r2: MYp + Yp -> MYpYp; cell * function_4_motor_r2(MYp, MYpYp, Yp, alpha, cell, ka, kappa);
+  motor_r3: MYpYp + Yp -> MYpYpYp; cell * function_4_motor_r3(MYpYp, MYpYpYp, Yp, alpha, cell, ka, kappa);
+  motor_r4: MYpYpYp + Yp -> MYpYpYpYp; cell * function_4_motor_r4(MYpYpYp, MYpYpYpYp, Yp, alpha, cell, ka, kappa);
+  reaction_1: TA + $asp -> Tasp_A; cell * (reaction_1_k1 * TA * asp - reaction_1_k2 * Tasp_A);
+  reaction_2: TW + $asp -> Tasp_W; cell * (reaction_2_k1 * TW * asp - reaction_2_k2 * Tasp_W);
+  reaction_3: TWA + $asp -> Tasp_WA; cell * (reaction_3_k1 * TWA * asp - reaction_3_k2 * Tasp_WA);
+
+  // Events:
+  event_1: at geq(time, 5): asp = parameter_1;
+  event_2: at geq(time, 10): asp = 0;
+
+  // Species initializations:
+  asp = 0;
+  ni = 0;
+  T = 3.12e-006;
+  Tasp = 0;
+  Tni = 0;
+  W = 2.89e-006;
+  TW = 5.91e-007;
+  Tasp_W = 0;
+  Tni_W = 0;
+  TA = 4.44e-007;
+  Tasp_A = 0;
+  Tni_A = 0;
+  WA = 6.78e-007;
+  TWA = 8.47e-007;
+  Tasp_WA = 0;
+  Tni_WA = 0;
+  A = 3e-006;
+  Ap = 3.48e-008;
+  B = 1.93e-006;
+  Bp = 6.87e-008;
+  Z = 2e-005;
+  Y = 9.9e-006;
+  Yp = 7e-009;
+  M = 6.24e-009;
+  MYp = 7.77e-010;
+  MYpYp = 2.99e-010;
+  MYpYpYp = 3.78e-010;
+  MYpYpYpYp = 2.31e-009;
+  species_1 = 0.1;
+
+  // Compartment initializations:
+  cell = 1.41e-015;
+
+  // Variable initializations:
+  parameter_1 = 1e-007;
+  alpha = 0.14;
+  kappa = 2.25e-007;
+  ka = 0.1;
+  parameter_3 = 0.0003;
+  phosphorylation_r1_kcat = 0.001;
+  phosphorylation_r2_kcat = 75000;
+  phosphorylation_r3_kcat = 200000;
+  phosphorylation_r4_k1 = 100000000;
+  phosphorylation_r5_k1 = 200000;
+  phosphorylation_r6_kcat = 0;
+  phosphorylation_r7_k1 = 0.037;
+  phosphorylation_r8_k1 = 500000;
+  phosphorylation_r9_k1 = 1000000;
+  phosphorylation_r10_k1 = 1;
+  regulatory_r1_k1 = 1000000;
+  regulatory_r1_k2 = 1;
+  regulatory_r2_k1 = 1000;
+  regulatory_r2_k2 = 1;
+  regulatory_r3_k1 = 100000;
+  regulatory_r3_k2 = 1;
+  regulatory_r4_k1 = 10000;
+  regulatory_r4_k2 = 1;
+  regulatory_r5_k1 = 100000;
+  regulatory_r5_k2 = 1;
+  regulatory_r6_k1 = 400000;
+  regulatory_r6_k2 = 1;
+  regulatory_r7_k1 = 400000;
+  regulatory_r7_k2 = 1;
+  regulatory_r8_k1 = 400000;
+  regulatory_r8_k2 = 1;
+  regulatory_r9_k1 = 100000;
+  regulatory_r9_k2 = 1;
+  regulatory_r10_k1 = 10000;
+  regulatory_r10_k2 = 1;
+  regulatory_r11_k1 = 400000;
+  regulatory_r11_k2 = 1;
+  regulatory_r12_k1 = 400000;
+  regulatory_r12_k2 = 1;
+  regulatory_r13_k1 = 400000;
+  regulatory_r13_k2 = 1;
+  regulatory_r14_k1 = 0.1;
+  regulatory_r14_k2 = 1;
+  regulatory_r15_k1 = 0.01;
+  regulatory_r15_k2 = 1;
+  regulatory_r16_k1 = 0.4;
+  regulatory_r16_k2 = 1;
+  regulatory_r17_k1 = 0.4;
+  regulatory_r17_k2 = 1;
+  regulatory_r18_k1 = 0.4;
+  regulatory_r18_k2 = 1;
+  reaction_1_k1 = 1000000;
+  reaction_1_k2 = 1;
+  reaction_2_k1 = 1000000;
+  reaction_2_k2 = 1;
+  reaction_3_k1 = 1000000;
+  reaction_3_k2 = 1;
+
+  //Other declarations:
+  var Bias, parameter_2;
+  const cell, parameter_1, alpha, kappa, ka, parameter_3;
+
+  //Display Names:
+  species_1 is "ATP";
+  event_1 is "Add ASP";
+  parameter_1 is "asp_pulse";
+  event_2 is "Remove ASP";
+  parameter_2 is "autoPhospho";
+  parameter_3 is "KmATP";
+  phosphorylation_r1 is "A->Ap";
+  phosphorylation_r2 is "TWA+A->TWA+Ap";
+  phosphorylation_r3 is "Tni_WA+A->Tni_WA+Ap";
+  phosphorylation_r4 is "Tasp_WA+Yp->Tasp_WA+Y";
+  phosphorylation_r5 is "Ap+Y->A+Yp";
+  phosphorylation_r6 is "Y ->Yp";
+  phosphorylation_r7 is "Yp->Y";
+  phosphorylation_r8 is "Yp+Z->Y+Z";
+  phosphorylation_r9 is "Ap+B->A+Bp";
+  phosphorylation_r10 is "Bp->B";
+  regulatory_r1 is "T+asp<->Tasp";
+  regulatory_r2 is "T+ni<->Tni";
+  regulatory_r3 is "T+W<->TW";
+  regulatory_r4 is "T+A<->TA";
+  regulatory_r5 is "W+A<->WA";
+  regulatory_r6 is "TW+A<->TWA";
+  regulatory_r7 is "TA+W<->TWA";
+  regulatory_r8 is "T+WA<->TWA";
+  regulatory_r9 is "Tasp+W<->Tasp_W";
+  regulatory_r10 is "Tasp+A<->Tasp_A";
+  regulatory_r11 is "Tasp_W+A<->Tasp_WA";
+  regulatory_r12 is "Tasp_A+W<->Tasp_WA";
+  regulatory_r13 is "Tasp+WA<->Tasp_WA";
+  regulatory_r14 is "Tni+W<->Tni_W";
+  regulatory_r15 is "Tni+A<->Tni_A";
+  regulatory_r16 is "Tni_W+A<->Tni_WA";
+  regulatory_r17 is "Tni_A+W<->Tni_WA";
+  regulatory_r18 is "Tni+WA<->Tni_WA";
+  motor_r1 is "M+Yp<->MYp";
+  motor_r2 is "MYp+Yp<->MYpYp";
+  motor_r3 is "MYpYp+Yp<->MYpYpYp";
+  motor_r4 is "MYpYpYp+Yp<->MYpYpYpYp";
+  reaction_1 is "TA + asp <-> Tasp_A";
+  reaction_2 is "TW+asp <-> Tasp_W";
+  reaction_3 is "TWA+asp <-> Tasp_WA";
+end

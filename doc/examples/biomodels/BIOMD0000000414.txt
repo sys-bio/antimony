@@ -1,0 +1,27 @@
+//Created by libAntimony v2.3-beta
+model *DIIVENUS_reducedmodel()
+
+  // Compartments and Species:
+  compartment cell;
+  species VENUS in cell;
+
+  // Reactions:
+  VENUSproduction:  => VENUS; p2;
+  VENUSdecayduetophotobleaching: VENUS => ; lambda_star * p2 * VENUS;
+  VENUSdecayduetoauxin: VENUS => ; p2 * VENUS / (p1_star * VENUS + qj_star);
+
+  // Species initializations:
+  VENUS = 1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  p1_star = 0.056;
+  p2 = 0.0053;
+  lambda_star = 0.52;
+  qj_star = 0.16;
+
+  //Other declarations:
+  const cell, p1_star, p2, lambda_star, qj_star;
+end

@@ -1,0 +1,113 @@
+//Created by libAntimony v2.3-beta
+model *DallaMan2007_MealModel_GlucoseInsulinSystem()
+
+  // Compartments and Species:
+  compartment Compartment1;
+  species $G_p in Compartment1, $G_t in Compartment1, $I_l in Compartment1;
+  species $I_p in Compartment1, $Q_sto1 in Compartment1, $Q_gut in Compartment1;
+  species $Q_sto2 in Compartment1, $I_1 in Compartment1, $I_d in Compartment1;
+  species $X in Compartment1, $I_po in Compartment1, $Y in Compartment1;
+
+  // Assignment Rules:
+  EGP := k_p1 - k_p2 * G_p - k_p3 * I_d - k_p4 * I_po;
+  Ra := f * k_abs * Q_gut / BW;
+  E := 0;
+  U_id := U_idm;
+  m_3 := HE * m_1 / (1 - HE);
+  S := gamma * I_po;
+  k_empt := k_min + (k_max - k_min) / 2 * (tanh(aa * (Q_sto - b * D)) - tanh(cc * (Q_sto - d * D)) + 2);
+  I := I_p / V_I;
+  S_po := Y + K * (EGP + Ra - E - U_ii - k_1 * G_p + k_2 * G_t) / V_G + S_b;
+  G := G_p / V_G;
+  aa := 5 / 2 / (1 - b) / D;
+  cc := 5 / 2 / d / D;
+  V_mmax := (1 - part) * (V_m0 + V_mX * X);
+  HE := - m_5 * S + m_6;
+  Q_sto := Q_sto1 + Q_sto2;
+  U_idm := V_mmax * G_t / (K_m0 + G_t);
+  U := U_ii + U_id;
+
+  // Rate Rules:
+  G_p' = EGP + Ra - E - U_ii - k_1 * G_p + k_2 * G_t;
+  G_t' = - U_id + k_1 * G_p - k_2 * G_t;
+  I_l' = - m_1 * I_l - m_3 * I_l + m_2 * I_p + S;
+  I_p' = - m_2 * I_p - m_4 * I_p + m_1 * I_l;
+  Q_sto1' = - k_gri * Q_sto1;
+  Q_gut' = - k_abs * Q_gut + k_empt * Q_sto2;
+  Q_sto2' = - k_empt * Q_sto2 + k_gri * Q_sto1;
+  I_1' = - k_i * (I_1 - I);
+  I_d' = - k_i * (I_d - I_1);
+  X' = - p_2U * X + p_2U * (I - I_b);
+  I_po' = - gamma * I_po + S_po;
+  Y' = - alpha * (Y - beta * (G - G_b));
+
+  // Species initializations:
+  G_p = 178;
+  G_t = 135;
+  I_l = 4.5;
+  I_p = 1.25;
+  Q_sto1 = 78000;
+  Q_gut = 0;
+  Q_sto2 = 0;
+  I_1 = 25;
+  I_d = 25;
+  X = 0;
+  I_po = 3.6;
+  Y = 0;
+
+  // Compartment initializations:
+  Compartment1 = 1;
+
+  // Variable initializations:
+  U_ii = 1;
+  k_1 = 0.065;
+  k_2 = 0.079;
+  m_1 = 0.19;
+  m_2 = 0.484;
+  m_4 = 0.194;
+  k_gri = 0.0558;
+  k_abs = 0.057;
+  k_i = 0.0079;
+  p_2U = 0.0331;
+  I_b = 25;
+  gamma = 0.5;
+  alpha = 0.05;
+  beta = 0.11;
+  G_b = 95;
+  V_G = 1.88;
+  V_I = 0.05;
+  m_5 = 0.0304;
+  m_6 = 0.6471;
+  HE_b = 0.6;
+  S_b = 1.8;
+  S_b_minus = -1.8;
+  k_max = 0.0558;
+  k_min = 0.008;
+  f = 0.9;
+  b = 0.82;
+  d = 0.01;
+  BW = 78;
+  k_p1 = 2.7;
+  k_p2 = 0.0021;
+  k_p3 = 0.009;
+  k_p4 = 0.0618;
+  V_m0 = 2.5;
+  V_mX = 0.047;
+  K_m0 = 225.59;
+  part = 0.2;
+  K = 2.3;
+  k_e1 = 0.0005;
+  k_e2 = 339;
+  D = 78000;
+
+  //Other declarations:
+  var EGP, Ra, E, U_id, m_3, S, k_empt, I, S_po, G, aa, cc, V_mmax, HE, Q_sto;
+  var U_idm, U;
+  const Compartment1, U_ii, k_1, k_2, m_1, m_2, m_4, k_gri, k_abs, k_i, p_2U;
+  const I_b, gamma, alpha, beta, G_b, V_G, V_I, m_5, m_6, HE_b, S_b, S_b_minus;
+  const k_max, k_min, f, b, d, BW, k_p1, k_p2, k_p3, k_p4, V_m0, V_mX, K_m0;
+  const part, K, k_e1, k_e2, D;
+
+  //Display Names:
+  Compartment1 is "default";
+end

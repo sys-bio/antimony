@@ -1,0 +1,54 @@
+//Created by libAntimony v2.3-beta
+model *Maree2006_DuCa_Type1DiabetesModel()
+
+  // Compartments and Species:
+  compartment compartment1;
+  species $M in compartment1, $Ma in compartment1, $Ba in compartment1, $Bn in compartment1;
+  species $Cy in compartment1;
+
+  // Assignment Rules:
+  W := Wmax * exp(- parameter_1);
+  parameter_1 := ((time - 9) / 3)^2;
+
+  // Rate Rules:
+  M' = J + (k + b) * Ma - c * M - f1 * M * Ba - e1 * M * (M + Ma);
+  Ma' = f1 * M * Ba - k * Ma - e2 * Ma * (M + Ma);
+  Ba' = W + Amax * Cy / (kc + Cy) - (f1 * M + f2 * Ma + d) * Ba;
+  Bn' = d * Ba - (f1 * M + f2 * Ma) * Bn;
+  Cy' = alpha * Bn * Ma - delta * Cy;
+
+  // Species initializations:
+  M = 477000;
+  Ma = 0;
+  Ba = 0;
+  Bn = 0;
+  Cy = 0;
+
+  // Compartment initializations:
+  compartment1 = 1;
+
+  // Variable initializations:
+  J = 50000;
+  k = 0.4;
+  b = 0.09;
+  c = 0.1;
+  f1 = 1e-005;
+  e1 = 1e-008;
+  e2 = 1e-008;
+  d = 0.5;
+  f2 = 1e-005;
+  Amax = 20000000;
+  kc = 1;
+  alpha = 5e-009;
+  delta = 25;
+  g = 1e-005;
+  Wmax = 40000000;
+
+  //Other declarations:
+  var W, parameter_1;
+  const compartment1, J, k, b, c, f1, e1, e2, d, f2, Amax, kc, alpha, delta;
+  const g, Wmax;
+
+  //Display Names:
+  parameter_1 is "x";
+end

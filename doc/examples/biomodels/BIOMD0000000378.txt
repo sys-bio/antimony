@@ -1,0 +1,91 @@
+//Created by libAntimony v2.3-beta
+model *Chay1997_CalciumConcentration()
+
+  // Compartments and Species:
+  compartment Compartment_;
+  species $V_membrane in Compartment_, $h in Compartment_, $d in Compartment_;
+  species $n in Compartment_, $Ca_i_cytosolic_calcium in Compartment_, $Ca_lum in Compartment_;
+
+  // Assignment Rules:
+  i_K_dr := g_K_dr * n^4 * (V_membrane - V_K);
+  i_K_Ca := g_K_Ca * Ca_i_cytosolic_calcium^3 / (K_Ca^3 + Ca_i_cytosolic_calcium^3) * (V_membrane - V_K);
+  i_K_ATP := g_K_ATP * (V_membrane - V_K);
+  i_fast := g_fast * m_infinity^3 * h * (V_membrane - V_fast);
+  i_Ca := P_Ca * d * f_infinity * 2 * F * V_membrane / (R * T) * (Ca_o - Ca_i_cytosolic_calcium * exp(2 * F * V_membrane / (R * T))) / (1 - exp(2 * F * V_membrane / (R * T)));
+  i_NS := g_NS * K_NS^2 / (K_NS^2 + Ca_lum^2) * ((V_membrane - VNS) / (1 - exp(0.1 * (VNS - V_membrane))) - 10);
+  i_NaL := g_NaL * (V_membrane - V_Na);
+  h_infinity := 1 / (1 + exp((Vh - V_membrane) / Sh));
+  tau_h := 1 / (lamda_h * (exp((Vh - V_membrane) / (2 * Sh)) + exp((V_membrane - Vh) / (2 * Sh))));
+  d_infinity := 1 / (1 + exp((Vd - V_membrane) / Sd));
+  tau_d := 1 / (lamda_d * (exp((Vd - V_membrane) / (2 * Sd)) + exp((V_membrane - Vd) / (2 * Sd))));
+  n_infinity := 1 / (1 + exp((Vn - V_membrane) / Sn));
+  tau_n := 1 / (lamda_n * (exp((Vn - V_membrane) / (2 * Sn)) + exp((V_membrane - Vn) / (2 * Sn))));
+  m_infinity := 1 / (1 + exp((Vm - V_membrane) / Sm));
+  f_infinity := K_Ca / (K_Ca + Ca_i_calcium_current_f_gate);
+
+  // Rate Rules:
+  V_membrane' = -(i_K_dr + i_K_Ca + i_K_ATP + i_fast + i_Ca + i_NS + i_NaL) / Cm;
+  h' = (h_infinity - h) / tau_h;
+  d' = (d_infinity - d) / tau_d;
+  n' = (n_infinity - n) / tau_n;
+  Ca_i_cytosolic_calcium' = k_rel * (Ca_lum - Ca_i_cytosolic_calcium) - (omega * i_Ca + k_Ca * Ca_i_cytosolic_calcium + k_pump * Ca_i_cytosolic_calcium);
+  Ca_lum' = - k_rel * (Ca_lum - Ca_i_cytosolic_calcium) + k_pump * Ca_i_cytosolic_calcium;
+
+  // Species initializations:
+  V_membrane = -38.34146;
+  h = 0.214723;
+  d = 0.0031711238;
+  n = 0.1836403;
+  Ca_i_cytosolic_calcium = 0.6959466;
+  Ca_lum = 102.686;
+
+  // Compartment initializations:
+  Compartment_ = 1;
+
+  // Variable initializations:
+  Cm = 1;
+  k_rel = 0.2;
+  omega = 0.2;
+  k_Ca = 7;
+  k_pump = 30;
+  R = 8314;
+  T = 310;
+  F = 96485;
+  g_fast = 600;
+  V_fast = 80;
+  Vm = -25;
+  Sm = 9;
+  lamda_h = 12.5;
+  Vh = -48;
+  Sh = -7;
+  P_Ca = 2;
+  Ca_o = 2500;
+  K_Ca = 1;
+  lamda_d = 2.5;
+  Vd = -10;
+  Sd = 5;
+  Ca_i_calcium_current_f_gate = 1;
+  g_NS = 5;
+  K_NS = 50;
+  VNS = -20;
+  g_K_dr = 600;
+  V_K = -75;
+  lamda_n = 12.5;
+  Vn = -18;
+  Sn = 14;
+  g_K_Ca = 5;
+  g_K_ATP = 2;
+  g_NaL = 0.3;
+  V_Na = 80;
+
+  //Other declarations:
+  var i_K_dr, i_K_Ca, i_K_ATP, i_fast, i_Ca, i_NS, i_NaL, h_infinity, tau_h;
+  var d_infinity, tau_d, n_infinity, tau_n, m_infinity, f_infinity;
+  const Compartment_, Cm, k_rel, omega, k_Ca, k_pump, R, T, F, g_fast, V_fast;
+  const Vm, Sm, lamda_h, Vh, Sh, P_Ca, Ca_o, K_Ca, lamda_d, Vd, Sd, Ca_i_calcium_current_f_gate;
+  const g_NS, K_NS, VNS, g_K_dr, V_K, lamda_n, Vn, Sn, g_K_Ca, g_K_ATP, g_NaL;
+  const V_Na;
+
+  //Display Names:
+  Ca_i_calcium_current_f_gate is "Ca_i";
+end

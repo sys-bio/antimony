@@ -1,0 +1,144 @@
+//Created by libAntimony v2.3-beta
+function function_2(v, E, R, T2, T1, k, S, h)
+  v * exp(E / R * (T2 - T1) / (T1 * T2)) / (k + S^h);
+end
+
+function function_1(v, E, R, T2, T1, S)
+  v * exp(E / R * (T2 - T1) / (T1 * T2)) * S;
+end
+
+function function_4(v, E, R, T2, T1, S)
+  v * exp(E / R * (T2 - T1) / (T1 * T2)) * S;
+end
+
+function function_3(v, E, R, T2, T1, S, Km)
+  v * exp(E / R * (T2 - T1) / (T1 * T2)) * S / (Km + S);
+end
+
+function function_5(v, E, R, T2, T1, S1, S2, a)
+  v * exp(E / R * (T2 - T1) / (T1 * T2)) * S1 * S2^a;
+end
+
+
+model *Model_1()
+
+  // Compartments and Species:
+  compartment default;
+  species $s2 in default, s9 in default, s10 in default, s11 in default, $s13 in default;
+  species species_1 in default, $species_2 in default, species_3 in default;
+  species species_4 in default, species_12 in default;
+
+  // Assignment Rules:
+  T2 := 296 + parameter_4 / 2 * sin(2 * pi * time / parameter_5);
+  parameter_6 := 50000;
+  parameter_7 := 84000;
+
+  // Reactions:
+  re12: s10 => s11; default * function_1(re12_v, parameter_6, parameter_3, T2, T, s10);
+  re13: $s2 => s9; default * function_2(re13_v, parameter_7, parameter_3, T2, T, re13_k, s11, re13_h);
+  re14: s9 => species_12; default * function_3(re14_v, parameter_6, parameter_3, T2, T, s9, re14_Km);
+  re15: s10 => species_12; default * function_3(re15_v, parameter_6, parameter_3, T2, T, s10, re15_Km);
+  re16: s11 => species_12; default * function_3(re16_v, parameter_6, parameter_3, T2, T, s11, re16_Km);
+  re18: $s13 => s10; default * function_4(re18_v, parameter_7, parameter_3, T2, T, s9);
+  reaction_1: $species_2 => species_1; default * function_1(reaction_1_v, reaction_1_E, parameter_3, T2, T, species_2);
+  reaction_2: species_3 + s11 => species_4; default * function_5(reaction_2_v, parameter_7, parameter_3, T2, T, species_3, s11, reaction_2_a);
+  reaction_3: species_1 => species_3; default * function_1(parameter_1, parameter_9, parameter_3, T2, T, species_1);
+  reaction_4: species_1 => species_12; default * function_3(reaction_4_v, reaction_4_E, parameter_3, T2, T, species_1, reaction_4_Km);
+  reaction_5: species_4 => species_12; default * function_3(reaction_5_v, reaction_5_E, parameter_3, T2, T, species_4, reaction_5_Km);
+  reaction_6: species_3 => species_1; default * function_1(parameter_2, parameter_10, parameter_3, T2, T, species_3);
+  reaction_7: species_3 => species_12; default * function_3(parameter_8, reaction_7_E, parameter_3, T2, T, species_3, reaction_7_Km);
+
+  // Species initializations:
+  s2 = 1;
+  s9 = 1;
+  s10 = 1;
+  s11 = 1;
+  s13 = 1;
+  species_1 = 1;
+  species_2 = 1;
+  species_3 = 1;
+  species_4 = 1;
+  species_12 = 1;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  T = 291;
+  parameter_4 = 10;
+  parameter_5 = 24;
+  parameter_1 = 1;
+  parameter_2 = 0.5;
+  parameter_3 = 8.31447;
+  parameter_8 = 1;
+  parameter_9 = 60000;
+  parameter_10 = 67000;
+  re12_v = 0.1;
+  re13_v = 2.6;
+  re13_k = 0.4;
+  re13_h = 2;
+  re14_v = 3;
+  re14_Km = 2;
+  re15_v = 2.2;
+  re15_Km = 0.2;
+  re16_v = 1.5;
+  re16_Km = 1.4;
+  re18_v = 5;
+  reaction_1_v = 19;
+  reaction_1_E = 67000;
+  reaction_2_v = 10;
+  reaction_2_a = 2;
+  reaction_4_v = 30;
+  reaction_4_E = 67000;
+  reaction_4_Km = 2;
+  reaction_5_v = 20;
+  reaction_5_E = 67000;
+  reaction_5_Km = 4;
+  reaction_7_E = 67000;
+  reaction_7_Km = 1;
+
+  //Other declarations:
+  var T2, parameter_6, parameter_7;
+  const default, T, parameter_4, parameter_5, parameter_1, parameter_2, parameter_3;
+  const parameter_8, parameter_9, parameter_10;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
+
+  //Display Names:
+  time_unit is "time";
+  s2 is "C3_Gene";
+  s9 is "C3_mRNA";
+  s10 is "C_3";
+  s11 is "C_3_P";
+  s13 is "C_3_pre";
+  species_1 is "C1";
+  species_2 is "C1_mRNA";
+  species_3 is "C1_phos";
+  species_4 is "c1c3complex";
+  species_12 is "junk";
+  parameter_4 is "amplitude";
+  parameter_5 is "entrperiod";
+  parameter_1 is "v_phos";
+  parameter_2 is "V_dephos";
+  parameter_3 is "R";
+  parameter_6 is "EAlow";
+  parameter_7 is "EAhigh";
+  parameter_8 is "vphosdegr";
+  parameter_9 is "Ephos";
+  parameter_10 is "Edephos";
+  re12 is "C3_phos";
+  re13 is "C3_transk";
+  re14 is "C3_mRNADegr";
+  re15 is "C3_degr";
+  re16 is "C3_phos_degr";
+  re18 is "C3_transl";
+  reaction_1 is "C1_transl";
+  reaction_2 is "complexformation";
+  reaction_3 is "C1_phos";
+  reaction_4 is "C1_degr";
+  reaction_5 is "complexdegr";
+  reaction_6 is "C1_dephos";
+  reaction_7 is "C1_phos_degr";
+end

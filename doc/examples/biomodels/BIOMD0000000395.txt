@@ -1,0 +1,117 @@
+//Created by libAntimony v2.3-beta
+model *Sivakumar2011_HedgehogSignalingPathway()
+
+  // Compartments and Species:
+  compartment default, c1, c4, c5;
+  species s9 in c1, s10 in c1, s1 in c1, s75 in c5, s135 in c5, s7 in default;
+  species s21 in c1, s46 in c1, s48 in c1, s69 in c4, s71 in c5, s68 in c1;
+  species s70 in c5, s128 in c5, s140 in c5, s148 in c1, s150 in c1, s152 in c1;
+  species s157 in c1, s158 in c5, s159 in c4, s160 in c4, s161 in c1;
+
+  // Reactions:
+  r52: s140 => s75; kass_r52 * s140 - kdiss_r52 * s75;
+  r55: s158 => s75; kass_r55 * s158;
+  r7: s7 + s1 -> s21; kass_r7 * s7 * s1 - kdiss_r7 * s21;
+  r14: s69 -> s46; s21 * ((kcatp_r14 / kM_r14_s69 * s69 - kcatn_r14 / kM_r14_s46 * s46) / (1 + s69 / kM_r14_s69 + s46 / kM_r14_s46));
+  r51: s135 + s128 -> s140; kass_r51 * s135 * s128 - kdiss_r51 * s140;
+  r53: s70 -> s70; s48 * ((kcatp_r53 / kM_r53_s70 * s70 - kcatn_r53 / kM_r53_s70 * s70) / (1 + s70 / kM_r53_s70 + s70 / kM_r53_s70));
+  re24: s148 + s150 => s159; s157 * kass_re24_s157 * s148 * s150;
+  r15: s46 + s9 -> s48 + s10; s21 * (kass_r15_s21 * s46 * s9 - kdiss_r15_s21 * s48 * s10);
+  r23: s159 -> s68 + s160; s21 * (kass_r23_s21 * s159 - kdiss_r23_s21 * s68 * s160);
+  r54: s70 + s71 -> s158; kass_r54 * s70 * s71 - kdiss_r54 * s158;
+  r26: s161 -> s70; kass_r26 * s161 - kdiss_r26 * s70;
+  r25: s160 -> s161 + s69; kass_r25 * s160 - kdiss_r25 * s161 * s69;
+
+  // Species initializations:
+  s9 = 2;
+  s10 = 0;
+  s1 = 5;
+  s75 = 0;
+  s135 = 2.5;
+  s7 = 5;
+  s21 = 0;
+  s46 = 0;
+  s48 = 0;
+  s69 = 0;
+  s71 = 2;
+  s68 = 0;
+  s70 = 0;
+  s128 = 2.5;
+  s140 = 0;
+  s148 = 3;
+  s150 = 3;
+  s152 = 0;
+  s157 = 0.5;
+  s158 = 0;
+  s159 = 0;
+  s160 = 0;
+  s161 = 0;
+
+  // Compartment initializations:
+  default = 1;
+  c1 = 1;
+  c4 = 1;
+  c5 = 1;
+
+  // Variable initializations:
+  kass_r7 = 1.13;
+  kdiss_r7 = 1.122;
+  kcatp_r14 = 1.146;
+  kM_r14_s69 = 1.03;
+  kcatn_r14 = 1.75;
+  kM_r14_s46 = 0.215;
+  kass_r25 = 1.27;
+  kdiss_r25 = 0.73;
+  kass_r26 = 1.33;
+  kdiss_r26 = 0.61;
+  kass_r51 = 1.23;
+  kdiss_r51 = 0.46;
+  kass_r52 = 0.6;
+  kdiss_r52 = 1.67;
+  kcatp_r53 = 1.29;
+  kM_r53_s70 = 0.79;
+  kcatn_r53 = 1.62;
+  kass_r54 = 1.28;
+  kdiss_r54 = 0.71;
+  kass_r55 = 1.56;
+  kass_r15_s21 = 1.53;
+  kdiss_r15_s21 = 0.89;
+  kass_re24_s157 = 1;
+  kass_r23_s21 = 1;
+  kdiss_r23_s21 = 1;
+
+  //Other declarations:
+  const default, c1, c4, c5, kass_r7, kdiss_r7, kcatp_r14, kM_r14_s69, kcatn_r14;
+  const kM_r14_s46, kass_r25, kdiss_r25, kass_r26, kdiss_r26, kass_r51, kdiss_r51;
+  const kass_r52, kdiss_r52, kcatp_r53, kM_r53_s70, kcatn_r53, kass_r54, kdiss_r54;
+  const kass_r55, kass_r15_s21, kdiss_r15_s21, kass_re24_s157, kass_r23_s21;
+  const kdiss_r23_s21;
+
+  //Display Names:
+  c1 is "Receiving cell";
+  c4 is "lipid raft";
+  c5 is "nucleus";
+  s9 is "ATP";
+  s10 is "ADP";
+  s1 is "Patched";
+  s75 is "Hedgehog target gene";
+  s135 is "Sap18";
+  s7 is "Hedgehog";
+  s21 is "Complex_br_(Patched/Hedgehog)";
+  s46 is "Complex_br_(Costal2/Fused/_br_Smoothened)";
+  s48 is "Complex_br_(Costal2/Smoothened/_br_Fused)";
+  s69 is "Complex_br_(Costal2/Fused/_br_Smoothened)";
+  s71 is "CBP";
+  s68 is "Microtubule";
+  s70 is "Cubitus_space_interruptus";
+  s128 is "Complex_br_(Cubitus_space_interruptus_space_repressor/Su(fu))";
+  s140 is "Complex_br_(Sap18/Su(fu)/_br_Cubitus_space_interruptus_space_repressor)";
+  s148 is "smoothened";
+  s150 is "complex";
+  s152 is "MIcrotubule";
+  s157 is "sag";
+  s158 is "Complex_br_(CBP/Cubitus)";
+  s159 is "Complex_br_(Costal2/Fused/../microtubule)";
+  s160 is "Complex_br_(Su(fu)/Fused/../_br_Smoothened)";
+  s161 is "Complex_br_(Su(fu)/Cubitus)";
+end

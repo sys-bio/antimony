@@ -1,0 +1,118 @@
+//Created by libAntimony v2.3-beta
+function function_1(v)
+  v;
+end
+
+
+model *Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose()
+
+  // Compartments and Species:
+  compartment chloroplast, cytosol, vacuole, phloem;
+  species RuBP in chloroplast, PGA in chloroplast, TP in chloroplast, HeP in chloroplast;
+  species TPGA in chloroplast, E4P in chloroplast, S7P in chloroplast, Ru5P in chloroplast;
+  species GG in chloroplast, ATP in chloroplast, ADP in chloroplast, UTP in chloroplast;
+  species UDP in chloroplast, Pi_ in chloroplast, $CO2 in chloroplast, TPc in cytosol;
+  species HePc in cytosol, Suc in cytosol, Pic in cytosol, SucV in vacuole;
+  species $E in phloem, $Resp in chloroplast;
+
+  // Assignment Rules:
+  v_15 := 0.0258 * HePc * UTP;
+
+  // Reactions:
+  RuBisCO: RuBP + $CO2 => 2PGA; chloroplast * RuBisCO_k1 * RuBP * CO2;
+  PGA_red: PGA + ATP => TP + ADP + Pi_; chloroplast * PGA_red_k1 * PGA * ATP;
+  FBP_A_ase: 2TP -> HeP + Pi_; chloroplast * (FBP_A_ase_k1 * TP^2 - FBP_A_ase_k2 * HeP * Pi_);
+  F6P_TK1: HeP => TPGA + E4P; chloroplast * F6P_TK1_k1 * HeP;
+  SBP_A_ase: E4P + TP => S7P + Pi_; chloroplast * SBP_A_ase_k1 * E4P * TP;
+  S7P_TK1_R5P_I: S7P => TPGA + Ru5P; chloroplast * S7P_TK1_R5P_I_k1 * S7P;
+  TK2_Ru5P_E: TPGA + TP => Ru5P; chloroplast * TK2_Ru5P_E_k1 * TPGA * TP;
+  Ru5P_K: Ru5P + ATP => RuBP + ADP; chloroplast * Ru5P_K_k1 * Ru5P * ATP;
+  ATP_S: ADP + Pi_ => ATP; chloroplast * ATP_S_k1 * ADP * Pi_;
+  Starch_S: ATP + HeP => GG + ADP + 2Pi_; chloroplast * Starch_S_k1 * ATP * HeP;
+  Starch_P: GG + Pi_ => HeP; chloroplast * Starch_P_k1 * GG * Pi_;
+  TPT: TP + Pic => TPc + Pi_; TPT_k1 * TP * Pic;
+  FBPc_A_ase: 2TPc => HePc + Pic; cytosol * FBPc_A_ase_k1 * TPc^2;
+  Suc_S: 2HePc + UTP => Suc + UDP + 3Pic; function_1(v_15);
+  UTP_S: UDP + Pic => UTP; UTP_S_k1 * UDP * Pic;
+  Respi: Suc => $Resp; r * Suc;
+  Diffu: Suc -> SucV; D * Suc - D * SucV;
+  Transl: Suc -> $E; phi * Suc - phi * E;
+
+  // Species initializations:
+  RuBP = 2;
+  PGA = 2.4;
+  TP = 0.5;
+  HeP = 2.2;
+  TPGA = 0.2;
+  E4P = 0.05;
+  S7P = 2;
+  Ru5P = 0.05;
+  GG = 99.9999999999999;
+  ATP = 3.875;
+  ADP = 0.53;
+  UTP = 3.871;
+  UDP = 1.613;
+  Pi_ = 2.5;
+  CO2 = 31;
+  TPc = 0.114;
+  HePc = 0.1;
+  Suc = 77.31;
+  Pic = 0.8;
+  SucV = 77.31;
+  E = 0.5;
+  Resp = 1;
+
+  // Compartment initializations:
+  chloroplast = 1;
+  cytosol = 1;
+  vacuole = 1;
+  phloem = 1;
+
+  // Variable initializations:
+  r = 3e-005;
+  D = 0.0001;
+  phi = 0.0001;
+  RuBisCO_k1 = 0.006;
+  PGA_red_k1 = 0.0207;
+  FBP_A_ase_k1 = 4;
+  FBP_A_ase_k2 = 0;
+  F6P_TK1_k1 = 0.031;
+  SBP_A_ase_k1 = 3.1;
+  S7P_TK1_R5P_I_k1 = 0.31;
+  TK2_Ru5P_E_k1 = 6.2;
+  Ru5P_K_k1 = 0.031;
+  ATP_S_k1 = 0.279;
+  Starch_S_k1 = 0.002;
+  Starch_P_k1 = 4e-005;
+  TPT_k1 = 0.5;
+  FBPc_A_ase_k1 = 1.55;
+  UTP_S_k1 = 0.00755;
+
+  //Other declarations:
+  var v_15;
+  const chloroplast, cytosol, vacuole, phloem, r, D, phi;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  //Display Names:
+  v_15 is "v(15)";
+  PGA_red is "PGA reduction";
+  FBP_A_ase is "FBP ald + ase";
+  F6P_TK1 is "F6P trans I";
+  SBP_A_ase is "SBP ald + ase";
+  S7P_TK1_R5P_I is "S7P trans I + R5P iso";
+  TK2_Ru5P_E is "trans II + Ru5P epi";
+  Ru5P_K is "Ru5P kinase";
+  ATP_S is "ATP synthase";
+  Starch_S is "starch synthetase";
+  Starch_P is "starch phosphorylase";
+  TPT is "TP translocator";
+  FBPc_A_ase is "FBPc ald + ase";
+  Suc_S is "sucrose synthetase";
+  UTP_S is "UTP synthase";
+  Respi is "respiration rate";
+  Diffu is "diffusion rate";
+  Transl is "translocation rate";
+end

@@ -1,0 +1,44 @@
+//Created by libAntimony v2.3-beta
+model *DIIVENUS_fullmodel()
+
+  // Compartments and Species:
+  compartment cell;
+  species auxin in cell, TIR1 in cell, auxinTIR1 in cell, auxinTIR1VENUS in cell;
+  species VENUS in cell;
+
+  // Reactions:
+  auxin_TIR1association: auxin + TIR1 => auxinTIR1; ka * auxin * TIR1;
+  auxin_TIR1dissociation: auxinTIR1 => auxin + TIR1; kd * auxinTIR1;
+  auxin_TIR1_VENUSassociation: auxinTIR1 + VENUS => auxinTIR1VENUS; la * auxinTIR1 * VENUS;
+  auxin_TIR1_VENUSdissociation: auxinTIR1VENUS => auxinTIR1 + VENUS; ld * auxinTIR1VENUS;
+  auxin_TIR1_VENUSdissociationleadingtoubiquitination: auxinTIR1VENUS => auxinTIR1; lm * auxinTIR1VENUS;
+  auxinproduction:  => auxin; alpha_tr;
+  auxindecay: auxin => ; mu * auxin;
+  VENUSproduction:  => VENUS; delta;
+  VENUSphotobleachingdecay: VENUS => ; lambda * VENUS;
+
+  // Species initializations:
+  auxin = 7.38;
+  TIR1 = 15.4;
+  auxinTIR1 = 0.28;
+  auxinTIR1VENUS = 2.78;
+  VENUS = 40.4;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  kd = 0.334;
+  ka = 0.000822;
+  mu = 0.79;
+  ld = 4.49;
+  lm = 0.175;
+  la = 1.15;
+  delta = 0.486;
+  lambda = 0.00316;
+  TIR1T = 18.5;
+  alpha_tr = 30.5;
+
+  //Other declarations:
+  const cell, kd, ka, mu, ld, lm, la, delta, lambda, TIR1T, alpha_tr;
+end

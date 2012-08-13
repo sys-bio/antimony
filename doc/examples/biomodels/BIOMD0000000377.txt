@@ -1,0 +1,66 @@
+//Created by libAntimony v2.3-beta
+model *Bertram2000_PancreaticBetaCells_Oscillations()
+
+  // Compartments and Species:
+  compartment Compartment_;
+  species $V in Compartment_, $n in Compartment_, $s1 in Compartment_, $s2 in Compartment_;
+
+  // Assignment Rules:
+  ICa := gCa * minf * (V - VCa);
+  IK := gK * n * (V - VK);
+  Il := gl * (V - Vl);
+  Is1 := gs1 * s1 * (V - VK);
+  Is2 := gs2 * s2 * (V - VK);
+  ninf := 1 / (1 + exp((Vn - V) / sn));
+  taun := tnbar / (1 + exp((V - Vn) / sn));
+  s1inf := 1 / (1 + exp((Vs1 - V) / ss1));
+  s2inf := 1 / (1 + exp((Vs2 - V) / ss2));
+  minf := 1 / (1 + exp((Vm - V) / sm));
+  parameter_1 := Is1 + Is2;
+
+  // Rate Rules:
+  V' = -(ICa + IK + Il + Is1 + Is2) / Cm;
+  n' = (ninf - n) / taun;
+  s1' = (s1inf - s1) / taus1;
+  s2' = (s2inf - s2) / taus2;
+
+  // Species initializations:
+  V = -43;
+  n = 0.03;
+  s1 = 0.1;
+  s2 = 0.434;
+
+  // Compartment initializations:
+  Compartment_ = 1;
+
+  // Variable initializations:
+  Cm = 4524;
+  taus1 = 1000;
+  taus2 = 120000;
+  Vm = -22;
+  VCa = 100;
+  gCa = 280;
+  sm = 7.5;
+  gK = 1300;
+  VK = -80;
+  lambda = 1.1;
+  tnbar = 8.3;
+  Vn = -9;
+  sn = 10;
+  gs1 = 20;
+  Vs1 = -40;
+  ss1 = 0.5;
+  Vs2 = -42;
+  ss2 = 0.4;
+  gs2 = 32;
+  gl = 25;
+  Vl = -40;
+
+  //Other declarations:
+  var ICa, IK, Il, Is1, Is2, ninf, taun, s1inf, s2inf, minf, parameter_1;
+  const Compartment_, Cm, taus1, taus2, Vm, VCa, gCa, sm, gK, VK, lambda;
+  const tnbar, Vn, sn, gs1, Vs1, ss1, Vs2, ss2, gs2, gl, Vl;
+
+  //Display Names:
+  parameter_1 is "I1+I2";
+end

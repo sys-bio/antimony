@@ -1,0 +1,160 @@
+//Created by libAntimony v2.3-beta
+model *Bertram2004_PancreaticBetaCell_modelB()
+
+  // Compartments and Species:
+  compartment COMpartment_;
+  species $V in COMpartment_, $n in COMpartment_, $c in COMpartment_, $cer in COMpartment_;
+  species $g6p in COMpartment_, $fbp in COMpartment_, $adp in COMpartment_;
+
+  // Assignment Rules:
+  IK := gK * n * (V - VK);
+  ICa := gCa * minf * (V - VCa);
+  IKCa := gKCa / (1 + (kd / c)^2) * (V - VK);
+  IKATP := gkatpbar * katpo * (V - VK);
+  ninf := 1 / (1 + exp(-(16 + V / 1) / 5));
+  Jmem := -(alpha * ICa + kpmca * c);
+  Jer := epser * (Jleak - Jserca) / lambdaer;
+  pfk := 1 * ((pfkbas * cat * topa16 + cat * topb) / bottom16);
+  rgpdh := 0.2 * abs(fbp * 1 / 1^2)^(1 / 2);
+  atp := 0.5 * (atot - adp + rad * 1);
+  fback := r + y;
+  minf := 1 / (1 + exp(-(20 + V / 1) / 12));
+  Jleak := pleak * (cer - c);
+  Jserca := Kserca * c;
+  f6p := 0.3 * g6p;
+  topa16 := topa15 + weight16;
+  topb := weight15;
+  bottom16 := bottom15 + weight16;
+  weight2 := atp^2 / (k4 * 1);
+  topa2 := topa1;
+  bottom2 := bottom1 + weight2;
+  topa3 := topa2 + weight3;
+  weight3 := f6p^2 / (k3 * 1);
+  bottom3 := bottom2 + weight3;
+  weight4 := (f6p * atp)^2 / (fatp * k3 * k4 * 1^2);
+  topa4 := topa3 + weight4;
+  bottom4 := bottom3 + weight4;
+  weight5 := fbp / k2;
+  topa5 := topa4;
+  bottom5 := bottom4 + weight5;
+  weight6 := fbp * atp^2 / (k2 * k4 * fbt * 1);
+  topa6 := topa5;
+  bottom6 := bottom5 + weight6;
+  weight7 := fbp * f6p^2 / (k2 * k3 * ffbp * 1);
+  topa7 := topa6 + weight7;
+  bottom7 := bottom6 + weight7;
+  weight8 := fbp * f6p^2 * atp^2 / (k2 * k3 * k4 * ffbp * fbt * fatp * 1^2);
+  topa8 := topa7 + weight8;
+  bottom8 := bottom7 + weight8;
+  weight9 := amp / k1;
+  amp := adp * adp / atp;
+  topa9 := topa8;
+  bottom9 := bottom8 + weight9;
+  weight10 := amp * atp^2 / (k1 * k4 * fmt * 1);
+  topa10 := topa9;
+  bottom10 := bottom9 + weight10;
+  weight11 := amp * f6p^2 / (k1 * k3 * famp * 1);
+  topa11 := topa10 + weight11;
+  bottom11 := bottom10 + weight11;
+  weight12 := amp * f6p^2 * atp^2 / (k1 * k3 * k4 * famp * fmt * fatp * 1^2);
+  topa12 := topa11 + weight12;
+  bottom12 := bottom11 + weight12;
+  weight13 := amp * fbp / (k1 * k2);
+  topa13 := topa12;
+  bottom13 := bottom12 + weight13;
+  weight14 := amp * fbp * atp^2 / (k1 * k2 * k4 * fbt * fmt * 1);
+  topa14 := topa13;
+  bottom14 := bottom13 + weight14;
+  weight15 := amp * fbp * f6p^2 / (k1 * k2 * k3 * ffbp * famp * 1);
+  topa15 := topa14;
+  bottom15 := bottom14 + weight15;
+  weight16 := amp * fbp * f6p^2 * atp^2 / (k1 * k2 * k3 * k4 * ffbp * famp * fbt * fmt * fatp * 1^2);
+  mgadp := 0.165 * adp;
+  adp3m := 0.135 * adp;
+  atp4m := 0.05 * atp;
+  topo := 0.08 * (1 + 2 * mgadp / (kdd * 1)) + 0.89 * (mgadp / (kdd * 1))^2;
+  bottomo := (1 + mgadp / (kdd * 1))^2 * (1 + adp3m / (ktd * 1) + atp4m / (ktt * 1));
+  katpo := topo / bottomo;
+  rad := abs((adp - atot)^2 - 4 * adp^2)^(1 / 2) / 1;
+  y := vg * (rgpdh / (kg + rgpdh));
+  ratio := atp / adp;
+
+  // Rate Rules:
+  V' = -(IK + ICa + IKCa + IKATP) / Cm;
+  n' = (ninf - n) / taun;
+  c' = fcyt * (Jmem + Jer);
+  cer' = - fer * sigmaV * Jer;
+  g6p' = lambda * (Rgk - pfk);
+  fbp' = lambda * (pfk / 1 - 0.5 * rgpdh);
+  adp' = (atp - adp * exp(fback * (1 - c / r1))) / (taua * 1);
+
+  // Species initializations:
+  V = -60;
+  n = 0.025;
+  c = 0.25;
+  cer = 185;
+  g6p = 200;
+  fbp = 40;
+  adp = 780;
+
+  // Compartment initializations:
+  COMpartment_ = 1;
+
+  // Variable initializations:
+  Cm = 5300;
+  taun = 20;
+  fcyt = 0.01;
+  fer = 0.01;
+  sigmaV = 31;
+  lambda = 0.005;
+  Rgk = 0.2;
+  r1 = 0.35;
+  taua = 300000;
+  gK = 2700;
+  VK = -75;
+  gCa = 1000;
+  VCa = 25;
+  gKCa = 600;
+  kd = 0.5;
+  alpha = 4.5e-006;
+  kpmca = 0.2;
+  epser = 1;
+  lambdaer = 1;
+  pleak = 0.0002;
+  Kserca = 0.4;
+  atot = 3000;
+  pfkbas = 0.06;
+  cat = 2;
+  bottom1 = 1;
+  topa1 = 0;
+  k1 = 30;
+  k2 = 1;
+  k3 = 50000;
+  k4 = 1000;
+  famp = 0.02;
+  fatp = 20;
+  ffbp = 0.2;
+  fbt = 20;
+  fmt = 20;
+  kdd = 17;
+  ktd = 26;
+  ktt = 1;
+  gkatpbar = 25000;
+  r = 1;
+  vg = 2.2;
+  kg = 10;
+
+  //Other declarations:
+  var IK, ICa, IKCa, IKATP, ninf, Jmem, Jer, pfk, rgpdh, atp, fback, minf;
+  var Jleak, Jserca, f6p, topa16, topb, bottom16, weight2, topa2, bottom2;
+  var topa3, weight3, bottom3, weight4, topa4, bottom4, weight5, topa5, bottom5;
+  var weight6, topa6, bottom6, weight7, topa7, bottom7, weight8, topa8, bottom8;
+  var weight9, amp, topa9, bottom9, weight10, topa10, bottom10, weight11;
+  var topa11, bottom11, weight12, topa12, bottom12, weight13, topa13, bottom13;
+  var weight14, topa14, bottom14, weight15, topa15, bottom15, weight16, mgadp;
+  var adp3m, atp4m, topo, bottomo, katpo, rad, y, ratio;
+  const COMpartment_, Cm, taun, fcyt, fer, sigmaV, lambda, Rgk, r1, taua;
+  const gK, VK, gCa, VCa, gKCa, kd, alpha, kpmca, epser, lambdaer, pleak;
+  const Kserca, atot, pfkbas, cat, bottom1, topa1, k1, k2, k3, k4, famp, fatp;
+  const ffbp, fbt, fmt, kdd, ktd, ktt, gkatpbar, r, vg, kg;
+end
