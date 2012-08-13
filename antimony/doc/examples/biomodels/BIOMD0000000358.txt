@@ -1,10 +1,10 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function HenriMichaelisMenten_irreversible_kcat(kcat, enzyme, substrate, Km)
   kcat * enzyme * substrate / (Km + substrate);
 end
 
 
-model Model_1()
+model *Model_1()
 
   // Compartments and Species:
   compartment compartment_1;
@@ -60,4 +60,13 @@ model Model_1()
 
   //Other declarations:
   var AmAct;
+  const compartment_1, kcat_X, km_X, ki_Xa, k_PT, k_PL, kcat_V, km_V, kcat_II;
+  const km_II, kcat_2, km_2, ki_IIaAlpha2M, ki_IIaATIII;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+
+  //Display Names:
+  time_unit is "time";
 end

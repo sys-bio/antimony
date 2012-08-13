@@ -12,8 +12,8 @@ model *Morris1981_MuscleFibre_Voltage()
 
   // Rate Rules:
   V' = (Iapp - gL * (V - VL) - gCa * M * (V - VCa) - gK * N * (V - VK)) / C;
-  N' = lambdaN * (Ninf - N);
   M' = lambdaM * (Minf - M);
+  N' = lambdaN * (Ninf - N);
 
   // Compartment initializations:
   musclefibre = 1;
@@ -26,6 +26,26 @@ model *Morris1981_MuscleFibre_Voltage()
   V1 has mV;
   V2 = 15;
   V2 has mV;
+  Iapp = 50;
+  Iapp has uA_per_cm2;
+  gL = 2;
+  gL has mS_per_cm2;
+  VL = -50;
+  VL has mV;
+  gCa = 4;
+  gCa has mS_per_cm2;
+  M = (1 + tanh((V - V1) / V2)) / 2;
+  M has dimensionless;
+  VCa = 100;
+  VCa has mV;
+  gK = 8;
+  gK has mS_per_cm2;
+  N = (1 + tanh((V - V3) / V4)) / 2;
+  N has dimensionless;
+  VK = -70;
+  VK has mV;
+  C = 20;
+  C has uF_per_cm2;
   Ninf has dimensionless;
   V3 = 10;
   V3 has mV;
@@ -37,31 +57,11 @@ model *Morris1981_MuscleFibre_Voltage()
   lambdaM has per_m;
   lambdaM_bar = 1;
   lambdaM_bar has per_m;
-  Iapp = 50;
-  Iapp has uA_per_cm2;
-  gL = 2;
-  gL has mS_per_cm2;
-  VL = -50;
-  VL has mV;
-  gCa = 4;
-  gCa has mS_per_cm2;
-  VCa = 100;
-  VCa has mV;
-  gK = 8;
-  gK has mS_per_cm2;
-  N = (1 + tanh((V - V3) / V4)) / 2;
-  N has dimensionless;
-  VK = -70;
-  VK has mV;
-  C = 20;
-  C has uF_per_cm2;
-  M = (1 + tanh((V - V1) / V2)) / 2;
-  M has dimensionless;
 
   //Other declarations:
-  var Minf, V, Ninf, lambdaN, lambdaM, N, M;
-  const musclefibre, V1, V2, V3, V4, lambdaN_bar, lambdaM_bar, Iapp, gL, VL;
-  const gCa, VCa, gK, VK, C;
+  var Minf, V, M, N, Ninf, lambdaN, lambdaM;
+  const musclefibre, V1, V2, Iapp, gL, VL, gCa, VCa, gK, VK, C, V3, V4, lambdaN_bar;
+  const lambdaM_bar;
 
   // Unit definitions:
   unit time_unit = 1e-3 second;

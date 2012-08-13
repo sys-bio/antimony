@@ -4,10 +4,10 @@ model *Model_generated_by_BIOCHAM()
   // Compartments and Species:
   compartment nuclei, cytoplasm;
   species MPFc in cytoplasm, preMPFc in cytoplasm, StgPc in cytoplasm, Wee1c in cytoplasm;
-  species $Wee1Pc in cytoplasm, Stgm in cytoplasm, Xp in cytoplasm, Stgc in cytoplasm;
-  species Xm in cytoplasm, MPFn in nuclei, preMPFn in nuclei, Wee1Pn in nuclei;
-  species Wee1n in nuclei, StgPn in nuclei, Stgn in nuclei, FZYa in nuclei;
-  species IEa_1 in nuclei, N in nuclei;
+  species $Wee1Pc in cytoplasm, N in nuclei, Wee1n in nuclei, Wee1Pn in nuclei;
+  species Stgm in cytoplasm, Xp in cytoplasm, Stgc in cytoplasm, Xm in cytoplasm;
+  species MPFn in nuclei, preMPFn in nuclei, StgPn in nuclei, Stgn in nuclei;
+  species FZYa in nuclei, IEa_1 in nuclei;
 
   // Assignment Rules:
   Wee1Pc := (Wee1T - N * E_1 * (Wee1n + Wee1Pn)) / (1 - N * E_1) - Wee1c;
@@ -78,28 +78,29 @@ model *Model_generated_by_BIOCHAM()
   preMPFc = 0;
   StgPc = 0.8;
   Wee1c = 0;
+  N = 1;
+  Wee1n = 0;
+  Wee1Pn = 0;
   Stgm = 1;
   Xp = 0;
   Stgc = 0;
   Xm = 0;
   MPFn = 0;
   preMPFn = 0;
-  Wee1Pn = 0;
-  Wee1n = 0;
   StgPn = 0;
   Stgn = 0;
   FZYa = 0;
   IEa_1 = 0;
-  N = 1;
 
   // Compartment initializations:
   nuclei = 1;
   cytoplasm = 1;
 
   // Variable initializations:
+  Wee1T = 0.8;
+  E_1 = 7e-005;
   kez_1 = 0.5;
   factor_1 = 1.95;
-  E_1 = 7e-005;
   ksc = 0.01;
   kdc = 0.01;
   kdnp = 0.01;
@@ -140,24 +141,23 @@ model *Model_generated_by_BIOCHAM()
   ksxm_1 = 0.0005;
   kout_1 = 0;
   StringT = 0.8;
-  Wee1T = 0.8;
 
   //Other declarations:
   var CycBT, StgPT;
-  const nuclei, cytoplasm, kez_1, factor_1, E_1, ksc, kdc, kdnp, kdn, kaie;
-  const kiie, kafzy, kifzy, kweep, kwee, kstgp, kstg, ksstg, kdstg, kastgp;
-  const kastg, kistg, kawee, kiweep, kiwee, kt, Jaie, Jiie, Jafzy, Jifzy;
-  const Jastg, Jistg, Jawee, Jiwee, Jm, kdmp, kdm, koutw_1, kinw_1, kouts_1;
-  const kins_1, ksxp_1, ksxm_1, kout_1, StringT, Wee1T;
+  const nuclei, cytoplasm, Wee1T, E_1, kez_1, factor_1, ksc, kdc, kdnp, kdn;
+  const kaie, kiie, kafzy, kifzy, kweep, kwee, kstgp, kstg, ksstg, kdstg;
+  const kastgp, kastg, kistg, kawee, kiweep, kiwee, kt, Jaie, Jiie, Jafzy;
+  const Jifzy, Jastg, Jistg, Jawee, Jiwee, Jm, kdmp, kdm, koutw_1, kinw_1;
+  const kouts_1, kins_1, ksxp_1, ksxm_1, kout_1, StringT;
 
   // Unit definitions:
   unit time_1 = 60 second;
 
   //Display Names:
   time_1 is "min";
+  E_1 is "E";
   kez_1 is "kez";
   factor_1 is "factor";
-  E_1 is "E";
   kdc is "kdcp";
   kdn is "kdnpp";
   kwee is "kweepp";

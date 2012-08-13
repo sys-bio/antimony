@@ -14,10 +14,10 @@ model *Nazaret2009_TCA_RC_ATP()
   NADH := Nt - NAD;
   ATPcrit := At_ / (1 + exp(-3 * DeltaGtransport / (R * T)) / (Kapp * iP));
   DeltaGtransport := 1.2 * F * DeltaPsi;
-  JANT := kANT * ATP;
+  Jresp := kresp * ((Nt - NAD) / (K + Nt - NAD)) / (1 + exp(a * (DeltaPsi - DeltaPsim)));
   JATP := kATP * (2 / (1 + exp(b * (ATP - ATPcrit))) - 1);
   Jleak := kleak * DeltaPsi;
-  Jresp := kresp * ((Nt - NAD) / (K + Nt - NAD)) / (1 + exp(a * (DeltaPsi - DeltaPsim)));
+  JANT := kANT * ATP;
 
   // Rate Rules:
   DeltaPsi' = (10 * Jresp - 3 * JATP - Jleak - JANT) / C;
@@ -53,46 +53,46 @@ model *Nazaret2009_TCA_RC_ATP()
   // Compartment initializations:
   cytoplasm = 1;
   mitochondrion = 1;
-  ATPcrit has mM;
 
   // Variable initializations:
   At_ = 4.16;
   At_ has mM;
-  C = 6.75e-006;
-  C has mM_per_mV;
-  DeltaGtransport has mJ_per_mol;
-  DeltaPsi = 150;
-  DeltaPsi has mV;
-  DeltaPsim = 150;
-  DeltaPsim has mV;
-  F = 96485;
-  F has C_per_mol;
-  JANT has mM_per_s;
-  JATP has mM_per_s;
-  Jleak has mM_per_s;
-  Jresp has mM_per_s;
-  K = 2;
-  K has mM;
-  Kapp = 4.4e-009;
-  Kapp has per_mM;
   Nt = 1.07;
   Nt has mM;
+  ATPcrit has mM;
+  DeltaGtransport has mJ_per_mol;
   R = 8314;
   R has mJ_per_mol_per_K;
   T = 298;
   T has kelvin;
-  a = 0.1;
-  a has per_mV;
-  b = 0.004;
-  b has per_mM;
+  Kapp = 4.4e-009;
+  Kapp has per_mM;
+  C = 6.75e-006;
+  C has mM_per_mV;
+  F = 96485;
+  F has C_per_mol;
+  DeltaPsi = 150;
+  DeltaPsi has mV;
+  Jresp has mM_per_s;
+  JATP has mM_per_s;
+  Jleak has mM_per_s;
+  JANT has mM_per_s;
+  DeltaPsim = 150;
+  DeltaPsim has mV;
   kANT = 0.05387;
   kANT has per_s;
   kATP = 131.9;
   kATP has mM_per_s;
+  b = 0.004;
+  b has per_mM;
   kleak = 0.000426;
   kleak has mM_per_s_per_mV;
   kresp = 2.5;
   kresp has mM_per_s;
+  K = 2;
+  K has mM;
+  a = 0.1;
+  a has per_mV;
   v1_k1 = 0.038;
   v1_k1 has mM_per_s;
   v2_k2 = 0.152;
@@ -113,9 +113,9 @@ model *Nazaret2009_TCA_RC_ATP()
   v8_k8 has per_s;
 
   //Other declarations:
-  var ATPcrit, DeltaGtransport, DeltaPsi, JANT, JATP, Jleak, Jresp;
-  const cytoplasm, mitochondrion, At_, C, DeltaPsim, F, K, Kapp, Nt, R, T;
-  const a, b, kANT, kATP, kleak, kresp;
+  var ATPcrit, DeltaGtransport, DeltaPsi, Jresp, JATP, Jleak, JANT;
+  const cytoplasm, mitochondrion, At_, Nt, R, T, Kapp, C, F, DeltaPsim, kANT;
+  const kATP, b, kleak, kresp, K, a;
 
   // Unit definitions:
   unit substance = 1e-3 mole;
@@ -159,7 +159,7 @@ model *Nazaret2009_TCA_RC_ATP()
   iP is "phosphate";
   Pyr is "pyruvate";
   H2O is "water";
-  F is "Faraday constant";
   R is "gas constant";
   T is "absolute temperature";
+  F is "Faraday constant";
 end

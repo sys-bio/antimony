@@ -7,24 +7,26 @@ function MM_twosubst(Vmax, Km1, Km2, S1, S2)
   Vmax * S1 * S2 / ((Km1 + S1) * (Km2 + S2));
 end
 
+
 model *Reed2008()
 
   // Compartments and Species:
   compartment blood, cytosol, mito, cell;
   species $b_met in blood, $b_ser in blood, $GAR in cytosol, $NADPH in cytosol;
   species $BET in cytosol, $DUMP in cytosol, $Fol in cell, $H2O2 in cytosol;
-  species $CO in mito, $HCHO in cell, c_thf in cytosol, m_thf in mito, c_5mf in cytosol;
+  species $CO in mito, $HCHO in cell, c_thf in cytosol, c_5mf in cytosol;
   species c_2cf in cytosol, c_1cf in cytosol, c_10f in cytosol, c_dhf in cytosol;
-  species m_2cf in mito, m_1cf in mito, m_10f in mito, b_gly in blood, b_glu in blood;
-  species b_cys in blood, b_gsg in blood, b_gsh in blood, aic in cytosol;
-  species c_glu in cytosol, c_cys in cytosol, glc in cytosol, c_gly in cytosol;
-  species c_gsg in cytosol, c_gsh in cytosol, cyt in cytosol, hcy in cytosol;
-  species c_ser in cytosol, sah in cytosol, sam in cytosol, met in cytosol;
-  species c_coo in cytosol, m_ser in mito, m_gly in mito, m_coo in mito, src in cell;
-  species dmg in cell;
+  species m_thf in mito, m_2cf in mito, m_1cf in mito, m_10f in mito, b_gly in blood;
+  species b_glu in blood, b_cys in blood, b_gsg in blood, b_gsh in blood;
+  species aic in cytosol, c_glu in cytosol, c_cys in cytosol, glc in cytosol;
+  species c_gly in cytosol, c_gsg in cytosol, c_gsh in cytosol, cyt in cytosol;
+  species hcy in cytosol, c_ser in cytosol, sah in cytosol, sam in cytosol;
+  species met in cytosol, c_coo in cytosol, m_ser in mito, m_gly in mito;
+  species m_coo in mito, src in cell, dmg in cell;
 
   // Assignment Rules:
   b_met := aa_input * b_met_basal;
+  aa_input := piecewise(breakfast, and(leq(7, daytime), leq(daytime, 10)), lunch, and(leq(12, daytime), leq(daytime, 15)), dinner, and(leq(18, daytime), leq(daytime, 21)), fasting);
   b_ser := aa_input * b_ser_basal;
   tot_cfol := c_5mf + c_2cf + c_1cf + c_10f + c_dhf + c_thf;
   tot_mfol := m_thf + m_2cf + m_1cf + m_10f;
@@ -32,7 +34,6 @@ model *Reed2008()
   V_oGly_b := aa_input * V_oGly_b_basal;
   V_oGlu_b := aa_input * V_oGlu_b_basal;
   daytime := time - 24 * floor(time / 24);
-  aa_input := piecewise(breakfast, and(leq(7, daytime), leq(daytime, 10)), lunch, and(leq(12, daytime), leq(daytime, 15)), dinner, and(leq(18, daytime), leq(daytime, 21)), fasting);
 
   // Reactions:
   b_gsh_decomp: b_gsh -> b_cys + b_gly + b_glu; blood * 90 * b_gsh;
@@ -107,12 +108,12 @@ model *Reed2008()
   CO = 0;
   HCHO = 500;
   c_thf = Fol / (2 * 3 / 4) - (c_5mf + c_2cf + c_1cf + c_10f + c_dhf);
-  m_thf = Fol / (2 * 1 / 4) - (m_2cf + m_1cf + m_10f);
   c_5mf = 4.4965335653401;
   c_2cf = 0.506278119133034;
   c_1cf = 0.278602708139276;
   c_10f = 3.40907070478307;
   c_dhf = 0.0385952337473159;
+  m_thf = Fol / (2 * 1 / 4) - (m_2cf + m_1cf + m_10f);
   m_2cf = 1.66610924423152;
   m_1cf = 1.54929073348709;
   m_10f = 15.9087989350187;
@@ -146,13 +147,23 @@ model *Reed2008()
   cytosol = 1;
   mito = 1;
   cell = 1;
+
+  // Variable initializations:
+  b_met_basal = 30;
+  b_met_basal has uM;
+  b_ser_basal = 150;
+  b_ser_basal has uM;
   tot_cfol has uM;
   tot_mfol has uM;
   V_oCys_b has uM_per_h;
+  V_oCys_b_basal = 70;
+  V_oCys_b_basal has uM_per_h;
   V_oGly_b has uM_per_h;
+  V_oGly_b_basal = 630;
+  V_oGly_b_basal has uM_per_h;
   V_oGlu_b has uM_per_h;
-
-  // Variable initializations:
+  V_oGlu_b_basal = 273;
+  V_oGlu_b_basal has uM_per_h;
   V_gshHb = 150;
   V_gshHb has uM_per_h;
   K_gshHb = 150;
@@ -446,34 +457,25 @@ model *Reed2008()
   fasting = 0.25;
   fasting has dimensionless;
   daytime has time_unit;
-  b_met_basal = 30;
-  b_met_basal has uM;
-  b_ser_basal = 150;
-  b_ser_basal has uM;
-  V_oGly_b_basal = 630;
-  V_oGly_b_basal has uM_per_h;
-  V_oGlu_b_basal = 273;
-  V_oGlu_b_basal has uM_per_h;
-  V_oCys_b_basal = 70;
-  V_oCys_b_basal has uM_per_h;
   k_out_cys = 1;
   k_out_cys has per_h;
 
   //Other declarations:
-  var tot_cfol, tot_mfol, V_oCys_b, V_oGly_b, V_oGlu_b, daytime, aa_input;
-  const blood, cytosol, mito, cell, V_gshHb, K_gshHb, V_gshLb, h_gshLb, K_gshLb;
-  const V_gsgHb, K_gsgHb, V_gsgLb, K_gsgLb, V_bcysc, K_bcysc, V_bglutc, K_bglutc;
-  const k_out_glu, V_bglyc, K_bglyc, k_out_gly, V_bserc, K_bserc, k_out_ser;
-  const V_bmetc, K_bmetc, k_out_met, Vm_mFTD, K_10f_FTD, Vf_mSHMT, K_thf_SHMT;
-  const K_ser_SHMT, Vr_mSHMT, K_gly_SHMT, K_2cf_SHMT, Vf_mFTS, K_thf_mFTS;
-  const K_coo_mFTS, Vr_mFTS, K_10f_mFTS, k1_mNE, k2_mNE, Vm_GDC, K_thf_GDC;
-  const K_gly_GDC, Vm_SDH, K_thf_SDH, K_src_SDH, Vm_DMGD, K_thf_DMGD, K_dmg_DMGD;
-  const Vf_mMTD, K_2cf_MTD, Vr_MTD, K_1cf_MTD, Vf_mMTCH, K_1cf_MTCH, Vr_MTCH;
-  const K_10f_MTCH, V_mser, K_mser, V_cser, K_cser, k_in_coo, k_out_coo, V_mgly;
-  const K_mgly, V_cgly, K_cgly, Vm_MS, K_5mf_MS, K_hcy_MS, ssH2O2, Ki_MS;
-  const Vm_DHFR, K_dhf_DHFR, K_NADPH_DHFR, Vm_cFTD, Vm_PGT, K_10f_PGT, K_GAR_PGT;
-  const Vm_cFTS, K_thf_cFTS, K_coo_cFTS, Vf_cSHMT, Vr_cSHMT, k1_cNE, k2_cNE;
-  const Vm_TS, K_DUMP_TS, K_2cf_TS, Vm_MTHFR, K_2cf_MTHFR, K_NADPH_MTHFR;
+  var aa_input, tot_cfol, tot_mfol, V_oCys_b, V_oGly_b, V_oGlu_b, daytime;
+  const blood, cytosol, mito, cell, b_met_basal, b_ser_basal, V_oCys_b_basal;
+  const V_oGly_b_basal, V_oGlu_b_basal, V_gshHb, K_gshHb, V_gshLb, h_gshLb;
+  const K_gshLb, V_gsgHb, K_gsgHb, V_gsgLb, K_gsgLb, V_bcysc, K_bcysc, V_bglutc;
+  const K_bglutc, k_out_glu, V_bglyc, K_bglyc, k_out_gly, V_bserc, K_bserc;
+  const k_out_ser, V_bmetc, K_bmetc, k_out_met, Vm_mFTD, K_10f_FTD, Vf_mSHMT;
+  const K_thf_SHMT, K_ser_SHMT, Vr_mSHMT, K_gly_SHMT, K_2cf_SHMT, Vf_mFTS;
+  const K_thf_mFTS, K_coo_mFTS, Vr_mFTS, K_10f_mFTS, k1_mNE, k2_mNE, Vm_GDC;
+  const K_thf_GDC, K_gly_GDC, Vm_SDH, K_thf_SDH, K_src_SDH, Vm_DMGD, K_thf_DMGD;
+  const K_dmg_DMGD, Vf_mMTD, K_2cf_MTD, Vr_MTD, K_1cf_MTD, Vf_mMTCH, K_1cf_MTCH;
+  const Vr_MTCH, K_10f_MTCH, V_mser, K_mser, V_cser, K_cser, k_in_coo, k_out_coo;
+  const V_mgly, K_mgly, V_cgly, K_cgly, Vm_MS, K_5mf_MS, K_hcy_MS, ssH2O2;
+  const Ki_MS, Vm_DHFR, K_dhf_DHFR, K_NADPH_DHFR, Vm_cFTD, Vm_PGT, K_10f_PGT;
+  const K_GAR_PGT, Vm_cFTS, K_thf_cFTS, K_coo_cFTS, Vf_cSHMT, Vr_cSHMT, k1_cNE;
+  const k2_cNE, Vm_TS, K_DUMP_TS, K_2cf_TS, Vm_MTHFR, K_2cf_MTHFR, K_NADPH_MTHFR;
   const Vf_cMTD, Vr_cMTD, Vf_cMTCH, Vm_ART, K_10f_ART, K_aic_ART, Vm_BHMT;
   const K_hcy_BHMT, K_bet_BHMT, Ki_BHMT, Vm_MAT1, Km_MAT1, Ki_MAT1, Vm_MAT3;
   const Km_MAT3, Ka_MAT3, Ki_MAT3, Vm_GNMT, K_sam_GNMT, K_gly_GNMT, Ki_GNMT;
@@ -481,8 +483,7 @@ model *Reed2008()
   const Vm_CBS, K_hcy_CBS, K_ser_CBS, Ka_CBS, Vm_CTGL, K_cyt_CTGL, Vm_GCS;
   const Ke_GCS, K_cys_GCS, K_glu_GCS, Ki_GCS, Kp_GCS, Ka_GCS, Vm_GS, Ke_GS;
   const K_gly_GS, K_glc_GS, Kp_GS, Vm_GPX, K_gsh_GPX, K_H2O2_GPX, Vm_GR, K_gsg_GR;
-  const K_NADPH_GR, dinner, lunch, breakfast, fasting, b_met_basal, b_ser_basal;
-  const V_oGly_b_basal, V_oGlu_b_basal, V_oCys_b_basal, k_out_cys;
+  const K_NADPH_GR, dinner, lunch, breakfast, fasting, k_out_cys;
 
   // Unit definitions:
   unit substance = 1e-6 mole;
@@ -502,6 +503,7 @@ model *Reed2008()
   time_unit is "hours";
   mito is "mitochondrion";
   b_met is "b_Met";
+  aa_input is "Aminoacid_input";
   b_ser is "b_Ser";
   BET is "Betaine";
   DUMP is "dUMP";
@@ -509,12 +511,12 @@ model *Reed2008()
   CO is "CO2";
   HCHO is "Formaldehyde";
   c_thf is "c_THF";
-  m_thf is "m_THF";
   c_5mf is "c_5-methyl-THF";
   c_2cf is "c_5-10-methylene-THF";
   c_1cf is "c_5-10-methenyl-THF";
   c_10f is "c_10-formyl-THF";
   c_dhf is "c_DHF";
+  m_thf is "m_THF";
   m_2cf is "m_5-10-methylene-THF";
   m_1cf is "m_5-10-methenyl-THF";
   m_10f is "m_10-formyl-THF";
@@ -542,5 +544,4 @@ model *Reed2008()
   m_coo is "m_Formate";
   src is "Sarcosine";
   dmg is "Dimethylglycine";
-  aa_input is "Aminoacid_input";
 end

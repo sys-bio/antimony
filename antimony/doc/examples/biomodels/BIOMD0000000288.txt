@@ -4,9 +4,9 @@ model *Wang2009_PI3K_Ras_Crosstalk()
   // Compartments and Species:
   compartment cell;
   species sumrc1 in cell, $r in cell, $c1 in cell, c2 in cell, $ePI3K in cell;
-  species m3PI in cell, $eGEF in cell, mRas in cell, x1 in cell, x2 in cell;
-  species y in cell, $yp in cell, ypp in cell, z in cell, $zp in cell, zpp in cell;
-  species fGEF in cell, w in cell, eph in cell;
+  species m3PI in cell, $eGEF in cell, fGEF in cell, mRas in cell, x1 in cell;
+  species x2 in cell, y in cell, $yp in cell, ypp in cell, z in cell, $zp in cell;
+  species zpp in cell, w in cell, eph in cell;
 
   // Assignment Rules:
   r := KDL * sumrc1 / (KDL + L);
@@ -35,6 +35,7 @@ model *Wang2009_PI3K_Ras_Crosstalk()
   sumrc1 = 1;
   c2 = 0;
   m3PI = 0;
+  fGEF = 1;
   mRas = 0;
   x1 = 0;
   x2 = 0;
@@ -42,7 +43,6 @@ model *Wang2009_PI3K_Ras_Crosstalk()
   ypp = 0;
   z = 1;
   zpp = 0;
-  fGEF = 1;
   w = 0;
   eph = 1;
 
@@ -50,17 +50,17 @@ model *Wang2009_PI3K_Ras_Crosstalk()
   cell = 1;
 
   // Variable initializations:
-  L = 1;
   KDL = 1.5;
+  L = 1;
+  kappaPI3K = 0.3;
+  alphaPI3K = 80;
+  KGR = 495;
+  KGP = 5.09;
   kxR0 = 0.3;
   kminusx = 0.007;
   ke = 0.2;
   kt = 0.005;
-  alphaPI3K = 80;
-  kappaPI3K = 0.3;
   k3PI = 1;
-  KGR = 495;
-  KGP = 5.09;
   kRas = 1;
   Gamma = 0.1;
   kdx1 = 0.745;
@@ -97,8 +97,8 @@ model *Wang2009_PI3K_Ras_Crosstalk()
   Kph = 4.64;
 
   //Other declarations:
-  const cell, L, KDL, kxR0, kminusx, ke, kt, alphaPI3K, kappaPI3K, k3PI, KGR;
-  const KGP, kRas, Gamma, kdx1, kdx2, Kx2, VmaxOVERKMx11, KMx11, VmaxOVERKMx21;
+  const cell, KDL, L, kappaPI3K, alphaPI3K, KGR, KGP, kxR0, kminusx, ke, kt;
+  const k3PI, kRas, Gamma, kdx1, kdx2, Kx2, VmaxOVERKMx11, KMx11, VmaxOVERKMx21;
   const KMx21, VmaxOVERKMyph1, KMyph1, VmaxOVERKMx12, KMx12, VmaxOVERKMx22;
   const KMx22, VmaxOVERKMyph2, KMyph2, VmaxOVERKMy1, KMy1, VmaxOVERKMzph1;
   const KMzph1, VmaxOVERKMy2, KMy2, VmaxOVERKMzph2, KMzph2, kFBf, Zf, n, Kf;

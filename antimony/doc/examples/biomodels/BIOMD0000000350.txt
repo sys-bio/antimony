@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function LD1212(tod)
   ceil(sin(pi * tod / 12) / 2);
 end
@@ -84,13 +84,13 @@ function function_6(t, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, re
 end
 
 
-model Model_1()
+model *Model_1()
 
   // Compartments and Species:
   compartment compartment_;
-  species acc in compartment_, cca1_n in compartment_, toc1_2 in compartment_;
-  species toc1_mrna in compartment_, toc1_1 in compartment_, cca1_mrna in compartment_;
-  species cca1_c in compartment_, toc1luc_mrna in compartment_, toc1luc_1 in compartment_;
+  species acc in compartment_, toc1_mrna in compartment_, toc1_1 in compartment_;
+  species toc1_2 in compartment_, cca1_mrna in compartment_, cca1_c in compartment_;
+  species cca1_n in compartment_, toc1luc_mrna in compartment_, toc1luc_1 in compartment_;
   species toc1luc_2 in compartment_, cca1luc_mrna in compartment_, cca1luc in compartment_;
   species luc_mrna in compartment_, luc in compartment_;
 
@@ -131,12 +131,12 @@ model Model_1()
 
   // Species initializations:
   acc = 0.272067372878265;
-  cca1_n = 3.07283764226433;
-  toc1_2 = 0.312711901675853;
   toc1_mrna = 0.0385665277682963;
   toc1_1 = 0.206521274112594;
+  toc1_2 = 0.312711901675853;
   cca1_mrna = 0.104555645465821;
   cca1_c = 0.051315426489096;
+  cca1_n = 3.07283764226433;
   toc1luc_mrna = 0;
   toc1luc_1 = 0;
   toc1luc_2 = 0;
@@ -149,29 +149,29 @@ model Model_1()
   compartment_ = 1;
 
   // Variable initializations:
-  acc_rate = 0.0820132250303287;
-  L_toc1 = 0.0001;
-  R_toc1_acc = 0.231107032949407;
-  R_toc1_cca1 = 1.08706126858966;
-  H_toc1_cca1 = 2.07807738692343;
-  R_cca1_toc1_2_l = 3.27520292103832;
-  R_cca1_toc1_2_d = 1.38563901682266;
-  H_cca1_toc1 = 2.5007062880634;
-  effcopies_cca1_LHY7 = 1.13965755508623;
-  effcopies_toc1_TOC8 = 1;
   D_luc = 0.182881217463259;
   D_mrna_luc = 1;
+  acc_rate = 0.0820132250303287;
+  R_toc1_cca1 = 1.08706126858966;
+  H_toc1_cca1 = 2.07807738692343;
+  L_toc1 = 0.0001;
+  R_toc1_acc = 0.231107032949407;
   D_mrna_toc1 = 0.29213049778373;
   T_toc1 = 0.769970172977886;
   Di_toc1_12_l = 0.136490583368648;
   Di_toc1_12_d = 0.326619492089715;
   D_toc1_2_l = 0.461550559180802;
   D_toc1_2_d = 0.356613920551118;
+  H_cca1_toc1 = 2.5007062880634;
+  R_cca1_toc1_2_l = 3.27520292103832;
+  R_cca1_toc1_2_d = 1.38563901682266;
   D_mrna_cca1 = 1.33082080954527;
   T_cca1 = 4.90486610428652;
   Di_cca1_cn = 10;
   D_cca1_l = 0.424177877449438;
   D_cca1_d = 0.269380178154091;
+  effcopies_cca1_LHY7 = 1.13965755508623;
+  effcopies_toc1_TOC8 = 1;
   parameter_1 = 1;
   parameter_2 = 0;
   parameter_3 = 0;
@@ -180,6 +180,16 @@ model Model_1()
 
   //Other declarations:
   var toc1luc;
+  const compartment_, D_luc, D_mrna_luc, acc_rate, R_toc1_cca1, H_toc1_cca1;
+  const L_toc1, R_toc1_acc, D_mrna_toc1, T_toc1, Di_toc1_12_l, Di_toc1_12_d;
+  const D_toc1_2_l, D_toc1_2_d, H_cca1_toc1, R_cca1_toc1_2_l, R_cca1_toc1_2_d;
+  const D_mrna_cca1, T_cca1, Di_cca1_cn, D_cca1_l, D_cca1_d, effcopies_cca1_LHY7;
+  const effcopies_toc1_TOC8, parameter_1, parameter_2, parameter_3, parameter_4;
+  const parameter_5;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
 
   //Display Names:
   parameter_1 is "T_luc";

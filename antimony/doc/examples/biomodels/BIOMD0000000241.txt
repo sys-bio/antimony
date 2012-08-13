@@ -1,5 +1,5 @@
 //Created by libAntimony v2.3-beta
-model *blub()
+model *Shi1993_Caffeine_pressor_tolerance()
 
   // Compartments and Species:
   compartment Gut, C, P, Tol, Eff;
@@ -34,6 +34,21 @@ model *blub()
   Eff = 1;
 
   // Variable initializations:
+  k_a = 12;
+  k_a has per_hour;
+  F = 0.984;
+  V_C = 0.32;
+  V_C has l_per_kg;
+  k12 = 1.64;
+  k12 has per_hour;
+  k21 = 1.19;
+  k21 has per_hour;
+  k10 = 0.34;
+  k10 has per_hour;
+  k_eo = 2.03;
+  k_eo has per_hour;
+  k_tol = 0.75;
+  k_tol has per_hour;
   t_int = 2;
   t_int has time_unit;
   cups = 0;
@@ -45,23 +60,8 @@ model *blub()
   bodyweight = 80;
   bodyweight has kilogram;
   CL = 0.11;
-  V_C = 0.32;
-  V_C has l_per_kg;
-  k_a = 12;
-  k_a has per_hour;
-  k10 = 0.34;
-  k10 has per_hour;
-  k12 = 1.64;
-  k12 has per_hour;
-  k21 = 1.19;
-  k21 has per_hour;
   t_half = 3.98;
   t_half has time_unit;
-  F = 0.984;
-  k_eo = 2.03;
-  k_eo has per_hour;
-  k_tol = 0.75;
-  k_tol has per_hour;
   E_0 = 83.3;
   E_0 has mm_Hg;
   S = 19.07;
@@ -72,8 +72,8 @@ model *blub()
 
   //Other declarations:
   var cups, E;
-  const Gut, C, P, Tol, Eff, t_int, t_lag, cupsize, bodyweight, CL, V_C, k_a;
-  const k10, k12, k21, t_half, F, k_eo, k_tol, E_0, S, T_50;
+  const Gut, C, P, Tol, Eff, k_a, F, V_C, k12, k21, k10, k_eo, k_tol, t_int;
+  const t_lag, cupsize, bodyweight, CL, t_half, E_0, S, T_50;
 
   // Unit definitions:
   unit substance = 1e-6 kilogram;

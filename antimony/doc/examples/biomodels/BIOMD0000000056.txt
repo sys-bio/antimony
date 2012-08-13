@@ -19,20 +19,21 @@ function Mass_Action_1_222(k1, S1)
   k1 * S1;
 end
 
+
 model *Chen2004_CellCycle()
 
   // Compartments and Species:
   compartment cell;
-  species $BCK2 in cell, BUB2 in cell, BUD in cell, C2 in cell, C2P in cell;
-  species C5 in cell, C5P in cell, CDC14 in cell, $CDC14T in cell, CDC15 in cell;
-  species $CDC15i in cell, CDC20 in cell, CDC20i in cell, CDC6 in cell, CDC6P in cell;
-  species $CDC6T in cell, CDH1 in cell, CDH1i in cell, $CKIT in cell, CLB2 in cell;
-  species $CLB2T in cell, CLB5 in cell, $CLB5T in cell, CLN2 in cell, $CLN3 in cell;
-  species ESP1 in cell, F2 in cell, F2P in cell, F5 in cell, F5P in cell;
-  species $IE in cell, IEP in cell, LTE1 in cell, MAD2 in cell, MASS in cell;
-  species $MCM1 in cell, NET1 in cell, NET1P in cell, $NET1T in cell, ORI in cell;
-  species PDS1 in cell, $PE in cell, PPX in cell, RENT in cell, RENTP in cell;
-  species $SBF in cell, SIC1 in cell, SIC1P in cell, $SIC1T in cell, SPN in cell;
+  species $BCK2 in cell, MASS in cell, BUB2 in cell, BUD in cell, C2 in cell;
+  species C2P in cell, C5 in cell, C5P in cell, CDC14 in cell, $CDC14T in cell;
+  species RENT in cell, RENTP in cell, CDC15 in cell, $CDC15i in cell, CDC20 in cell;
+  species CDC20i in cell, CDC6 in cell, CDC6P in cell, $CDC6T in cell, F2 in cell;
+  species F5 in cell, F2P in cell, F5P in cell, CDH1 in cell, CDH1i in cell;
+  species $CKIT in cell, $SIC1T in cell, CLB2 in cell, $CLB2T in cell, CLB5 in cell;
+  species $CLB5T in cell, CLN2 in cell, $CLN3 in cell, ESP1 in cell, $IE in cell;
+  species IEP in cell, LTE1 in cell, MAD2 in cell, $MCM1 in cell, NET1 in cell;
+  species NET1P in cell, $NET1T in cell, ORI in cell, PDS1 in cell, $PE in cell;
+  species PPX in cell, $SBF in cell, SIC1 in cell, SIC1P in cell, SPN in cell;
   species SWI5 in cell, SWI5P in cell, $TEM1GDP in cell, TEM1GTP in cell;
 
   // Assignment Rules:
@@ -41,6 +42,7 @@ model *Chen2004_CellCycle()
   CDC15i := CDC15T - CDC15;
   CDC6T := CDC6 + F2 + F5 + CDC6P + F2P + F5P;
   CKIT := SIC1T + CDC6T;
+  SIC1T := SIC1 + C2 + C5 + SIC1P + C2P + C5P;
   CLB2T := CLB2 + C2 + C2P + F2 + F2P;
   CLB5T := CLB5 + C5 + C5P + F5 + F5P;
   CLN3 := C0 * Dn3 * MASS / (Jn3 + Dn3 * MASS);
@@ -49,17 +51,18 @@ model *Chen2004_CellCycle()
   NET1T := NET1 + NET1P + RENT + RENTP;
   PE := ESP1T - ESP1;
   SBF := GK_219(Vasbf, Visbf, Jasbf, Jisbf);
-  SIC1T := SIC1 + C2 + C5 + SIC1P + C2P + C5P;
+  Vasbf := kasbf * (esbfn2 * CLN2 + esbfn3 * (CLN3 + BCK2) + esbfb5 * CLB5);
+  Visbf := kisbf_p + kisbf_p_p * CLB2;
   TEM1GDP := TEM1T - TEM1GTP;
   F := exp(- mu * D);
   D := 1.026 / mu - 32;
   mu := log(2) / mdt;
   Vdb5 := kdb5_p + kdb5_p_p * CDC20;
   Vdb2 := kdb2_p + kdb2_p_p * CDH1 + kdb2p * CDC20;
-  Vasbf := kasbf * (esbfn2 * CLN2 + esbfn3 * (CLN3 + BCK2) + esbfb5 * CLB5);
-  Visbf := kisbf_p + kisbf_p_p * CLB2;
   Vkpc1 := kd1c1 + Vd2c1 / (Jd2c1 + SIC1 + C2 + C5 + SIC1P + C2P + C5P);
+  Vd2c1 := kd2c1 * (ec1n3 * CLN3 + ec1k2 * BCK2 + ec1n2 * CLN2 + ec1b5 * CLB5 + ec1b2 * CLB2);
   Vkpf6 := kd1f6 + Vd2f6 / (Jd2f6 + CDC6 + F2 + F5 + CDC6P + F2P + F5P);
+  Vd2f6 := kd2f6 * (ef6n3 * CLN3 + ef6k2 * BCK2 + ef6n2 * CLN2 + ef6b5 * CLB5 + ef6b2 * CLB2);
   Vacdh := kacdh_p + kacdh_p_p * CDC14;
   Vicdh := kicdh_p + kicdh_p_p * (eicdhn3 * CLN3 + eicdhn2 * CLN2 + eicdhb5 * CLB5 + eicdhb2 * CLB2);
   Vppnet := kppnet_p + kppnet_p_p * PPX;
@@ -67,8 +70,6 @@ model *Chen2004_CellCycle()
   Vdppx := kdppx_p + kdppx_p_p * (J20ppx + CDC20) * Jpds / (Jpds + PDS1);
   Vdpds := kd1pds_p + kd2pds_p_p * CDC20 + kd3pds_p_p * CDH1;
   Vaiep := kaiep * CLB2;
-  Vd2c1 := kd2c1 * (ec1n3 * CLN3 + ec1k2 * BCK2 + ec1n2 * CLN2 + ec1b5 * CLB5 + ec1b2 * CLB2);
-  Vd2f6 := kd2f6 * (ef6n3 * CLN3 + ef6k2 * BCK2 + ef6n2 * CLN2 + ef6b5 * CLB5 + ef6b2 * CLB2);
   Vppc1 := kppc1 * CDC14;
   Vppf6 := kppf6 * CDC14;
 
@@ -175,6 +176,7 @@ model *Chen2004_CellCycle()
   cell_division: at lt(CLB2 - KEZ, 0): SPN = 0, BUD = 0, LTE1 = lte1l, MASS = F * MASS;
 
   // Species initializations:
+  MASS = 1.206019;
   BUB2 = 0.2;
   BUD = 0.008473;
   C2 = 0.238404;
@@ -182,32 +184,31 @@ model *Chen2004_CellCycle()
   C5 = 0.070081;
   C5P = 0.006878;
   CDC14 = 0.468344;
+  RENT = 1.04954;
+  RENTP = 0.6;
   CDC15 = 0.656533;
   CDC20 = 0.444296;
   CDC20i = 1.472044;
   CDC6 = 0.10758;
   CDC6P = 0.015486;
+  F2 = 0.236058;
+  F5 = 7.24e-005;
+  F2P = 0.0273938;
+  F5P = 7.91e-005;
   CDH1 = 0.930499;
   CDH1i = 0.0695;
   CLB2 = 0.1469227;
   CLB5 = 0.0518014;
   CLN2 = 0.0652511;
   ESP1 = 0.301313;
-  F2 = 0.236058;
-  F2P = 0.0273938;
-  F5 = 7.24e-005;
-  F5P = 7.91e-005;
   IEP = 0.1015;
   LTE1 = 0.1;
   MAD2 = 0.01;
-  MASS = 1.206019;
   NET1 = 0.018645;
   NET1P = 0.970271;
   ORI = 0.000909;
   PDS1 = 0.025612;
   PPX = 0.123179;
-  RENT = 1.04954;
-  RENTP = 0.6;
   SIC1 = 0.0228776;
   SIC1P = 0.00641;
   SPN = 0.03;
@@ -219,6 +220,20 @@ model *Chen2004_CellCycle()
   cell = 1;
 
   // Variable initializations:
+  b0 = 0.054;
+  CDC15T = 1;
+  C0 = 0.4;
+  Dn3 = 1;
+  Jn3 = 6;
+  IET = 1;
+  kamcm = 1;
+  kimcm = 0.15;
+  Jamcm = 0.1;
+  Jimcm = 0.1;
+  ESP1T = 1;
+  Jasbf = 0.01;
+  Jisbf = 0.01;
+  TEM1T = 1;
   KEZ2 = 0.2;
   mad2h = 8;
   bub2h = 1;
@@ -227,10 +242,6 @@ model *Chen2004_CellCycle()
   bub2l = 0.2;
   KEZ = 0.3;
   lte1l = 0.1;
-  b0 = 0.054;
-  C0 = 0.4;
-  CDC15T = 1;
-  Dn3 = 1;
   ebudb5 = 1;
   ebudn2 = 0.25;
   ebudn3 = 0.05;
@@ -253,22 +264,15 @@ model *Chen2004_CellCycle()
   esbfb5 = 2;
   esbfn2 = 2;
   esbfn3 = 10;
-  ESP1T = 1;
-  IET = 1;
   J20ppx = 0.15;
   Jacdh = 0.03;
   Jaiep = 0.1;
-  Jamcm = 0.1;
-  Jasbf = 0.01;
   Jatem = 0.1;
   Jd2c1 = 0.05;
   Jd2f6 = 0.05;
   Jicdh = 0.03;
   Jiiep = 0.1;
-  Jimcm = 0.1;
-  Jisbf = 0.01;
   Jitem = 0.1;
-  Jn3 = 6;
   Jpds = 0.04;
   Jspn = 0.14;
   ka15_p = 0.002;
@@ -279,7 +283,6 @@ model *Chen2004_CellCycle()
   kacdh_p = 0.01;
   kacdh_p_p = 0.8;
   kaiep = 0.1;
-  kamcm = 1;
   kasb2 = 50;
   kasb5 = 50;
   kasbf = 0.38;
@@ -325,7 +328,6 @@ model *Chen2004_CellCycle()
   kicdh_p = 0.001;
   kicdh_p_p = 0.08;
   kiiep = 0.15;
-  kimcm = 0.15;
   kisbf_p = 0.6;
   kisbf_p_p = 8;
   kiswi = 0.05;
@@ -361,29 +363,28 @@ model *Chen2004_CellCycle()
   ksswi_p = 0.005;
   ksswi_p_p = 0.08;
   mdt = 90;
-  TEM1T = 1;
   Inactivation_2_k = 1;
 
   //Other declarations:
-  var KEZ2, mad2l, lte1h, bub2l, KEZ, F, lte1l, CDC15T, ESP1T, IET, TEM1T;
-  var D, mu, Vdb5, Vdb2, Vasbf, Visbf, Vkpc1, Vkpf6, Vacdh, Vicdh, Vppnet;
-  var Vkpnet, Vdppx, Vdpds, Vaiep, Vd2c1, Vd2f6, Vppc1, Vppf6;
-  const cell, mad2h, bub2h, b0, C0, Dn3, ebudb5, ebudn2, ebudn3, ec1b2, ec1b5;
-  const ec1k2, ec1n2, ec1n3, ef6b2, ef6b5, ef6k2, ef6n2, ef6n3, eicdhb2, eicdhb5;
-  const eicdhn2, eicdhn3, eorib2, eorib5, esbfb5, esbfn2, esbfn3, J20ppx;
-  const Jacdh, Jaiep, Jamcm, Jasbf, Jatem, Jd2c1, Jd2f6, Jicdh, Jiiep, Jimcm;
-  const Jisbf, Jitem, Jn3, Jpds, Jspn, ka15_p, ka15_p_p, ka15p, ka20_p, ka20_p_p;
-  const kacdh_p, kacdh_p_p, kaiep, kamcm, kasb2, kasb5, kasbf, kasesp, kasf2;
-  const kasf5, kasrent, kasrentp, kaswi, kd14, kd1c1, kd1f6, kd1pds_p, kd20;
-  const kd2c1, kd2f6, kd2pds_p_p, kd3c1, kd3f6, kd3pds_p_p, kdb2_p, kdb2_p_p;
-  const kdb2p, kdb5_p, kdb5_p_p, kdbud, kdcdh, kdib2, kdib5, kdiesp, kdif2;
-  const kdif5, kdirent, kdirentp, kdn2, kdnet, kdori, kdppx_p, kdppx_p_p;
-  const kdspn, kdswi, ki15, kicdh_p, kicdh_p_p, kiiep, kimcm, kisbf_p, kisbf_p_p;
-  const kiswi, kkpnet_p, kkpnet_p_p, kppc1, kppf6, kppnet_p, kppnet_p_p, ks14;
-  const ks1pds_p_p, ks20_p, ks20_p_p, ks2pds_p_p, ksb2_p, ksb2_p_p, ksb5_p;
-  const ksb5_p_p, ksbud, ksc1_p, ksc1_p_p, kscdh, ksf6_p, ksf6_p_p, ksf6_p_p_p;
-  const ksn2_p, ksn2_p_p, ksnet, ksori, kspds_p, ksppx, ksspn, ksswi_p, ksswi_p_p;
-  const mdt;
+  var CDC15T, IET, ESP1T, Vasbf, Visbf, TEM1T, KEZ2, mad2l, lte1h, bub2l;
+  var KEZ, F, lte1l, D, mu, Vdb5, Vdb2, Vkpc1, Vd2c1, Vkpf6, Vd2f6, Vacdh;
+  var Vicdh, Vppnet, Vkpnet, Vdppx, Vdpds, Vaiep, Vppc1, Vppf6;
+  const cell, b0, C0, Dn3, Jn3, kamcm, kimcm, Jamcm, Jimcm, Jasbf, Jisbf;
+  const mad2h, bub2h, ebudb5, ebudn2, ebudn3, ec1b2, ec1b5, ec1k2, ec1n2;
+  const ec1n3, ef6b2, ef6b5, ef6k2, ef6n2, ef6n3, eicdhb2, eicdhb5, eicdhn2;
+  const eicdhn3, eorib2, eorib5, esbfb5, esbfn2, esbfn3, J20ppx, Jacdh, Jaiep;
+  const Jatem, Jd2c1, Jd2f6, Jicdh, Jiiep, Jitem, Jpds, Jspn, ka15_p, ka15_p_p;
+  const ka15p, ka20_p, ka20_p_p, kacdh_p, kacdh_p_p, kaiep, kasb2, kasb5;
+  const kasbf, kasesp, kasf2, kasf5, kasrent, kasrentp, kaswi, kd14, kd1c1;
+  const kd1f6, kd1pds_p, kd20, kd2c1, kd2f6, kd2pds_p_p, kd3c1, kd3f6, kd3pds_p_p;
+  const kdb2_p, kdb2_p_p, kdb2p, kdb5_p, kdb5_p_p, kdbud, kdcdh, kdib2, kdib5;
+  const kdiesp, kdif2, kdif5, kdirent, kdirentp, kdn2, kdnet, kdori, kdppx_p;
+  const kdppx_p_p, kdspn, kdswi, ki15, kicdh_p, kicdh_p_p, kiiep, kisbf_p;
+  const kisbf_p_p, kiswi, kkpnet_p, kkpnet_p_p, kppc1, kppf6, kppnet_p, kppnet_p_p;
+  const ks14, ks1pds_p_p, ks20_p, ks20_p_p, ks2pds_p_p, ksb2_p, ksb2_p_p;
+  const ksb5_p, ksb5_p_p, ksbud, ksc1_p, ksc1_p_p, kscdh, ksf6_p, ksf6_p_p;
+  const ksf6_p_p_p, ksn2_p, ksn2_p_p, ksnet, ksori, kspds_p, ksppx, ksspn;
+  const ksswi_p, ksswi_p_p, mdt;
 
   // Unit definitions:
   unit time_unit = 60 second;

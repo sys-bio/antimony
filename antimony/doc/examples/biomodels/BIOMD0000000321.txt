@@ -10,10 +10,10 @@ model *Grange2001_L_Dopa_PK()
   F_H := 1 - CL_H / Q;
   CL_H := f_H * CL_dopa;
   CL_dopa := CL_AADC + CL_rest + CL_COMT;
-  f_rest := 1 - (f_AADC + f_COMT);
   CL_AADC := CL_dopa0 * f_AADC;
   CL_rest := CL_dopa0 * f_rest;
   CL_COMT := CL_dopa0 * f_COMT;
+  f_rest := 1 - (f_AADC + f_COMT);
 
   // Reactions:
   l_dopa_absorption: A_dopa => C_dopa; ka_b * A_dopa * F_b;
@@ -32,10 +32,12 @@ model *Grange2001_L_Dopa_PK()
   gut = 1;
   Vdopa = 0.496;
   V_3_OMD = 0.196;
-  F_b has dimensionless;
-  F_H has dimensionless;
 
   // Variable initializations:
+  L_Dopa_per_kg_rat = 404;
+  rat_body_mass = 0.25;
+  F_b has dimensionless;
+  F_H has dimensionless;
   F_G = 0.24;
   F_G has dimensionless;
   CL_H has l_per_h;
@@ -43,26 +45,24 @@ model *Grange2001_L_Dopa_PK()
   f_H = 0.13;
   f_H has dimensionless;
   CL_dopa has l_per_h;
+  CL_AADC has l_per_h;
+  CL_rest has l_per_h;
+  CL_COMT has l_per_h;
   f_rest has dimensionless;
   f_AADC = 0.69;
   f_AADC has dimensionless;
   f_COMT = 0.1;
   f_COMT has dimensionless;
-  CL_AADC has l_per_h;
-  CL_rest has l_per_h;
-  CL_COMT has l_per_h;
   CL_dopa0 = 0.823;
   CL_dopa0 has l_per_h;
   ka_b = 2.11;
   ka_b has per_h;
   CL_OMD = 0.012;
-  L_Dopa_per_kg_rat = 404;
-  rat_body_mass = 0.25;
 
   //Other declarations:
-  var F_b, F_H, CL_H, CL_dopa, f_rest, CL_AADC, CL_rest, CL_COMT;
-  const gut, Vdopa, V_3_OMD, F_G, Q, f_H, f_AADC, f_COMT, CL_dopa0, ka_b;
-  const CL_OMD, L_Dopa_per_kg_rat, rat_body_mass;
+  var F_b, F_H, CL_H, CL_dopa, CL_AADC, CL_rest, CL_COMT, f_rest;
+  const gut, Vdopa, V_3_OMD, L_Dopa_per_kg_rat, rat_body_mass, F_G, Q, f_H;
+  const f_AADC, f_COMT, CL_dopa0, ka_b, CL_OMD;
 
   // Unit definitions:
   unit substance = 1e-9 mole;

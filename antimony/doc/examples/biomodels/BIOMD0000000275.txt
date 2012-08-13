@@ -31,9 +31,19 @@ model *goldbeter2007()
 
   // Compartment initializations:
   PSM = 1;
-  vs1 has nM_per_min;
 
   // Variable initializations:
+  M_0 = 5;
+  M_0 has nM;
+  x = 15;
+  x has length;
+  L = 50;
+  L has length;
+  vs1 has nM_per_min;
+  ks1 = 1;
+  ks1 has per_min;
+  RALDH2_0 = 7.1;
+  RALDH2_0 has nM;
   kd5 = 0;
   kd5 has per_min;
   kd1 = 1;
@@ -60,28 +70,18 @@ model *goldbeter2007()
   m has dimensionless;
   kd4 = 1;
   kd4 has per_min;
-  ks1 = 1;
-  ks1 has per_min;
-  RALDH2_0 = 7.1;
-  RALDH2_0 has nM;
-  x = 15;
-  x has length;
-  L = 50;
-  L has length;
-  M_0 = 5;
-  M_0 has nM;
   rho has dimensionless;
   alpha2 has dimensionless;
   alpha1 has dimensionless;
-  Kr1 = 1;
-  Kr1 has nM;
   Kr2 = 1;
   Kr2 has nM;
+  Kr1 = 1;
+  Kr1 has nM;
 
   //Other declarations:
   var vs1, rho, alpha2, alpha1;
-  const PSM, kd5, kd1, V0, Vsc, n, Ka, kd3, ks2, kd2, ks3, Ki, m, kd4, ks1;
-  const RALDH2_0, x, L, M_0, Kr1, Kr2;
+  const PSM, M_0, x, L, ks1, RALDH2_0, kd5, kd1, V0, Vsc, n, Ka, kd3, ks2;
+  const kd2, ks3, Ki, m, kd4, Kr2, Kr1;
 
   // Unit definitions:
   unit substance = 1e-9 mole;

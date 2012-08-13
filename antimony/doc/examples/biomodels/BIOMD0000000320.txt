@@ -11,10 +11,10 @@ model *Grange2001_L_Dopa_PKmodel()
   F_H := 1 - CL_H / Q;
   CL_H := f_H * CL_dopa;
   CL_dopa := CL_AADC + CL_rest + CL_COMT;
-  f_rest := 1 - (f_AADC + f_COMT);
   CL_AADC := CL_AADC0 / (1 + C1_M / ki);
   CL_rest := CL_dopa0 * f_rest;
   CL_COMT := CL_dopa0 * f_COMT;
+  f_rest := 1 - (f_AADC + f_COMT);
   CL_AADC0 := CL_dopa0 * f_AADC;
 
   // Reactions:
@@ -52,10 +52,17 @@ model *Grange2001_L_Dopa_PKmodel()
   V2_B = 0.127;
   V1_M = 0.0691;
   V2_M = 3.2;
-  F_c has dimensionless;
-  F_H has dimensionless;
 
   // Variable initializations:
+  L_Dopa_per_kg_rat = 404;
+  L_Dopa_per_kg_rat has umol_per_kg;
+  rat_body_mass = 0.25;
+  rat_body_mass has kilogram;
+  A_bens_tot = Benserazide_per_kg_rat * rat_body_mass;
+  A_bens_tot has substance;
+  B_M_frac = 0.07;
+  F_c has dimensionless;
+  F_H has dimensionless;
   F_G = 1;
   F_G has dimensionless;
   CL_H has l_per_h;
@@ -63,14 +70,14 @@ model *Grange2001_L_Dopa_PKmodel()
   f_H = 0.13;
   f_H has dimensionless;
   CL_dopa has l_per_h;
+  CL_AADC has l_per_h;
+  CL_rest has l_per_h;
+  CL_COMT has l_per_h;
   f_rest has dimensionless;
   f_AADC = 0.69;
   f_AADC has dimensionless;
   f_COMT = 0.1;
   f_COMT has dimensionless;
-  CL_AADC has l_per_h;
-  CL_rest has l_per_h;
-  CL_COMT has l_per_h;
   CL_AADC0 has l_per_h;
   ki = 0.00246;
   CL_dopa0 = 0.823;
@@ -92,22 +99,14 @@ model *Grange2001_L_Dopa_PKmodel()
   CL_dB has l_per_h;
   CL_dM = 1.06;
   CL_dM has l_per_h;
-  L_Dopa_per_kg_rat = 404;
-  L_Dopa_per_kg_rat has umol_per_kg;
   Benserazide_per_kg_rat = 78;
   Benserazide_per_kg_rat has umol_per_kg;
-  rat_body_mass = 0.25;
-  rat_body_mass has kilogram;
-  A_bens_tot = Benserazide_per_kg_rat * rat_body_mass;
-  A_bens_tot has substance;
-  B_M_frac = 0.07;
 
   //Other declarations:
-  var F_c, F_H, CL_H, CL_dopa, f_rest, CL_AADC, CL_rest, CL_COMT, CL_AADC0;
-  const gut, Vdopa, V_3_OMD, V1_B, V2_B, V1_M, V2_M, F_G, Q, f_H, f_AADC;
-  const f_COMT, ki, CL_dopa0, ka_c, ka_M, ka_B, F_B, CL_OMD, CL_B, fm, CL_M;
-  const CL_dB, CL_dM, L_Dopa_per_kg_rat, Benserazide_per_kg_rat, rat_body_mass;
-  const A_bens_tot, B_M_frac;
+  var F_c, F_H, CL_H, CL_dopa, CL_AADC, CL_rest, CL_COMT, f_rest, CL_AADC0;
+  const gut, Vdopa, V_3_OMD, V1_B, V2_B, V1_M, V2_M, L_Dopa_per_kg_rat, rat_body_mass;
+  const A_bens_tot, B_M_frac, F_G, Q, f_H, f_AADC, f_COMT, ki, CL_dopa0, ka_c;
+  const ka_M, ka_B, F_B, CL_OMD, CL_B, fm, CL_M, CL_dB, CL_dM, Benserazide_per_kg_rat;
 
   // Unit definitions:
   unit substance = 1e-9 mole;
@@ -121,11 +120,11 @@ model *Grange2001_L_Dopa_PKmodel()
   umol_per_kg is "micromole_per_kg";
   time_unit is "hours";
   Vdopa is "V_L_Dopa";
+  B_M_frac is "Bens_Ro04-5127_fraction_gut";
   C_OMD is "C_3-OMD";
   ka_M is "ka_m";
   ka_B is "ka_b";
   CL_OMD is "CL_3_OMD";
-  B_M_frac is "Bens_Ro04-5127_fraction_gut";
   l_dopa_absorption is "L_Dopa absorption from gut";
   l_dopa_blood_hepa_clearance is "hepatic and blood L-Dopa clearance";
   ro_04_5127_absorption is "ro 04-5127 absorption from gut";

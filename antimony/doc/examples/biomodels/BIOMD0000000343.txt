@@ -1,15 +1,15 @@
-//Created by libAntimony v2.0
-model model01()
+//Created by libAntimony v2.3-beta
+model *model01()
 
   // Compartments and Species:
   compartment compartment_0000001;
-  species $IR in compartment_0000001, $IRins in compartment_0000001, $IRp in compartment_0000001;
-  species $IRip in compartment_0000001, $IRi in compartment_0000001, $IRS in compartment_0000001;
-  species $IRSip in compartment_0000001, $X in compartment_0000001, $Xp in compartment_0000001;
-  species $V1a in compartment_0000001, $V1b in compartment_0000001, $V1c in compartment_0000001;
-  species $V1d in compartment_0000001, $V1e in compartment_0000001, $V1g in compartment_0000001;
-  species $V1r in compartment_0000001, $V2 in compartment_0000001, $Vm2 in compartment_0000001;
-  species $V3 in compartment_0000001, $Vm3 in compartment_0000001, $simXP in compartment_0000001;
+  species $IR in compartment_0000001, $V1a in compartment_0000001, $V1b in compartment_0000001;
+  species $V1r in compartment_0000001, $V1g in compartment_0000001, $IRins in compartment_0000001;
+  species $V1c in compartment_0000001, $IRp in compartment_0000001, $V1d in compartment_0000001;
+  species $IRip in compartment_0000001, $V1e in compartment_0000001, $IRi in compartment_0000001;
+  species $IRS in compartment_0000001, $V2 in compartment_0000001, $Vm2 in compartment_0000001;
+  species $IRSip in compartment_0000001, $X in compartment_0000001, $V3 in compartment_0000001;
+  species $Vm3 in compartment_0000001, $Xp in compartment_0000001, $simXP in compartment_0000001;
   species $intamount in compartment_0000001, measIRp in compartment_0000001;
   species $measdoublestep in compartment_0000001, $measanna in compartment_0000001;
   species $measdosR in compartment_0000001;
@@ -17,11 +17,11 @@ model model01()
   // Assignment Rules:
   V1a := k1a * ins * IR + k1abasic * IR;
   V1b := k1b * IRins;
+  V1r := k1r * IRi;
+  V1g := k1g * IRp;
   V1c := k1c * IRins;
   V1d := k1d * IRp;
   V1e := IRip * (k1e + k1f * Xp / (1 + Xp));
-  V1g := k1g * IRp;
-  V1r := k1r * IRi;
   V2 := k21 * (IRp + k22 * IRip) * IRS;
   Vm2 := km2 * IRSip;
   V3 := k3 * X * IRSip;
@@ -33,14 +33,14 @@ model model01()
   measdosR := kyDosR * IRSip;
 
   // Rate Rules:
-  IR' = -V1a + V1b + V1r + V1g;
+  IR' = - V1a + V1b + V1r + V1g;
   IRins' = V1a - V1b - V1c;
   IRp' = V1c - V1d - V1g;
   IRip' = V1d - V1e;
   IRi' = V1e - V1r;
-  IRS' = -V2 + Vm2;
+  IRS' = - V2 + Vm2;
   IRSip' = V2 - Vm2;
-  X' = -V3 + Vm3;
+  X' = - V3 + Vm3;
   Xp' = V3 - Vm3;
 
   // Species initializations:
@@ -60,9 +60,12 @@ model model01()
 
   // Variable initializations:
   k1a = 0.3892881852;
+  ins = 100;
   k1abasic = 0.012452744;
   k1b = 0.02000224505;
-  k1e = 4.38334e-05;
+  k1c = 0.3635167928;
+  k1d = 1580.6782649401;
+  k1e = 4.38334e-005;
   k1f = 20.0726035037;
   k1g = 286.6994648072;
   k1r = 3.6327773442;
@@ -71,13 +74,14 @@ model model01()
   km2 = 32.5942371891;
   k3 = 1.6286590231;
   km3 = 0.1131073982;
-  ky1 = 152.9631668536;
   ky2 = 8936.219557405;
   kyanna = 16760.1203140926;
   kyDosR = 13740.4321729991;
-  ins = 100;
-  k1c = 0.3635167928;
-  k1d = 1580.6782649401;
+  ky1 = 152.9631668536;
+
+  //Other declarations:
+  const compartment_0000001, k1a, ins, k1abasic, k1b, k1c, k1d, k1e, k1f;
+  const k1g, k1r, k21, k22, km2, k3, km3, ky2, kyanna, kyDosR, ky1;
 
   //Display Names:
   compartment_0000001 is "compartemnt 1";

@@ -3,35 +3,39 @@ model *yao08()
 
   // Compartments and Species:
   compartment cell;
-  species M in cell, E in cell, CD in cell, CE in cell, R in cell, RE in cell;
+  species MC in cell, EF in cell, CD in cell, CE in cell, RB in cell, RE in cell;
   species RP in cell;
 
   // Reactions:
-  r1:  => M; cell * r1_kM * S / (r1_KS + S);
-  r2:  => CD; cell * r2_kCDS * S / (r2_KS + S);
-  r3:  => E; cell * (r3_kE * (M / (r3_KM + M)) * (E / (r3_KE + E)) + r3_kb * M / (r3_KM + M));
-  r4:  => CE; cell * r4_kCE * E / (r4_KE + E);
-  r5:  => CD; cell * r5_kCD * E / (r5_KE + E);
-  r6:  => R; cell * r6_kR;
-  r7: RE => E + RP; cell * (r7_kP1 * CD * RE / (r7_KCD + RE) + r7_kP2 * CE * RE / (r7_KCE + RE));
-  r8: E + R => RE; cell * r8_kRE * R * E;
-  r9: R => RP; cell * (r9_kP1 * CD * R / (r9_KCD + R) + r9_kP2 * CE * R / (r9_KCE + R));
-  r10: RP => R; cell * r10_kDP * RP / (r10_KRP + RP);
-  r11: M => ; cell * r11_dM * M;
-  r12: E => ; cell * r12_dE * E;
+  r1:  => MC; cell * (r1_kM * S / (r1_KS + S));
+  r2:  => CD; cell * (r2_kkCDS * S / (r2_KS + S));
+  r3:  => EF; cell * (r3_kkEF * MC * EF / ((r3_KMC + MC) * (r3_KEF + EF)) + r3_kkb * MC / (r3_KMC + MC));
+  r4:  => CE; cell * (r4_kkCE * EF / (r4_KEF + EF));
+  r5:  => CD; cell * (r5_kkCD * MC / (r5_KMC + MC));
+  r6:  => RB; cell * r6_kkRB;
+  r7: RE => EF + RP; cell * (r7_kkRBPP * CD * RE / (r7_KD + RE) + r7_kkRBPP * CE * RE / (r7_KE + RE));
+  r8: EF + RB => RE; cell * r8_kkRE * RB * EF;
+  r9: RB => RP; cell * (r9_kkRBP * CD * RB / (r9_KD + RB) + r9_kkRBP2 * CE * RB / (r9_KE + RB));
+  r10: RP => RB; cell * (r10_kkRBUP * RP / (r10_Kp + RP));
+  r11: MC => ; cell * r11_dMC * MC;
+  r12: EF => ; cell * r12_dEF * EF;
   r13: CE => ; cell * r13_dCE * CE;
   r14: CD => ; cell * r14_dCD * CD;
-  r15: R => ; cell * r15_dR * R;
+  r15: RB => ; cell * r15_dRB * RB;
   r16: RP => ; cell * r16_dRP * RP;
   r17: RE => ; cell * r17_dRE * RE;
 
+  // Events:
+  e1: at gt(time, 0): S = 20;
+  e2: at gt(time, 5): S = 1;
+
   // Species initializations:
-  M = 0;
-  E = 0;
+  MC = 0;
+  EF = 0;
   CD = 0;
   CE = 0;
-  R = 0.55;
-  RE = 0;
+  RB = 0;
+  RE = 0.55;
   RP = 0;
 
   // Compartment initializations:
@@ -46,65 +50,64 @@ model *yao08()
   r1_kM has uM_per_hr;
   r2_KS = 0.5;
   r2_KS has dimensionless;
-  r2_kCDS = 0.45;
-  r2_kCDS has uM_per_hr;
-  r3_KE = 0.15;
-  r3_KE has uM;
-  r3_KM = 0.15;
-  r3_KM has uM;
-  r3_kE = 0.4;
-  r3_kE has uM_per_hr;
-  r3_kb = 0.003;
-  r3_kb has uM_per_hr;
-  r4_KE = 0.15;
-  r4_KE has uM;
-  r4_kCE = 0.45;
-  r4_kCE has uM_per_hr;
-  r5_KE = 0.15;
-  r5_KE has uM;
-  r5_kCD = 0.03;
-  r5_kCD has uM_per_hr;
-  r6_kR = 0.18;
-  r6_kR has uM_per_hr;
-  r7_KCD = 0.92;
-  r7_KCD has uM;
-  r7_KCE = 0.92;
-  r7_KCE has uM;
-  r7_kP1 = 18;
-  r7_kP1 has per_hr;
-  r7_kP2 = 18;
-  r7_kP2 has per_hr;
-  r8_kRE = 180;
-  r8_kRE has per_uM_per_hr;
-  r9_KCD = 0.92;
-  r9_KCD has uM;
-  r9_KCE = 0.92;
-  r9_KCE has uM;
-  r9_kP1 = 18;
-  r9_kP1 has per_hr;
-  r9_kP2 = 18;
-  r9_kP2 has per_hr;
-  r10_KRP = 0.01;
-  r10_KRP has uM;
-  r10_kDP = 3.6;
-  r10_kDP has uM_per_hr;
-  r11_dM = 0.7;
-  r11_dM has per_hr;
-  r12_dE = 0.25;
-  r12_dE has per_hr;
+  r2_kkCDS = 0.45;
+  r2_kkCDS has uM_per_hr;
+  r3_KEF = 0.15;
+  r3_KEF has uM;
+  r3_KMC = 0.15;
+  r3_KMC has uM;
+  r3_kkEF = 0.4;
+  r3_kkEF has uM_per_hr;
+  r3_kkb = 0.003;
+  r3_kkb has uM_per_hr;
+  r4_KEF = 0.15;
+  r4_KEF has uM;
+  r4_kkCE = 0.35;
+  r4_kkCE has uM_per_hr;
+  r5_KMC = 0.15;
+  r5_KMC has uM;
+  r5_kkCD = 0.03;
+  r5_kkCD has uM_per_hr;
+  r6_kkRB = 0.18;
+  r6_kkRB has uM_per_hr;
+  r7_KD = 0.92;
+  r7_KD has uM;
+  r7_KE = 0.92;
+  r7_KE has uM;
+  r7_kkRBPP = 18;
+  r7_kkRBPP has per_hr;
+  r8_kkRE = 180;
+  r8_kkRE has per_uM_per_hr;
+  r9_KD = 0.92;
+  r9_KD has uM;
+  r9_KE = 0.92;
+  r9_KE has uM;
+  r9_kkRBP = 18;
+  r9_kkRBP has per_hr;
+  r9_kkRBP2 = 18;
+  r9_kkRBP2 has per_hr;
+  r10_Kp = 0.01;
+  r10_Kp has uM;
+  r10_kkRBUP = 3.6;
+  r10_kkRBUP has uM_per_hr;
+  r11_dMC = 0.7;
+  r11_dMC has per_hr;
+  r12_dEF = 0.25;
+  r12_dEF has per_hr;
   r13_dCE = 1.5;
   r13_dCE has per_hr;
   r14_dCD = 1.5;
   r14_dCD has per_hr;
-  r15_dR = 0.06;
-  r15_dR has per_hr;
+  r15_dRB = 0.06;
+  r15_dRB has per_hr;
   r16_dRP = 0.06;
   r16_dRP has per_hr;
   r17_dRE = 0.03;
   r17_dRE has per_hr;
 
   //Other declarations:
-  const cell, S;
+  var S;
+  const cell;
 
   // Unit definitions:
   unit substance = 1e-6 mole;
@@ -120,11 +123,11 @@ model *yao08()
   uM_per_hr is "uM per hr";
   per_hr is "per hr";
   per_uM_per_hr is "per_uM per hr";
-  M is "Myc";
-  E is "E2F";
+  MC is "Myc";
+  EF is "E2F";
   CD is "CycD";
   CE is "CycE";
-  R is "Rb";
+  RB is "Rb";
   RE is "Rb-E2F complex";
   RP is "phosphorylated Rb";
 end

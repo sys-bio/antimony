@@ -23,11 +23,12 @@ function function_1(kcps, M)
   kcps * M;
 end
 
+
 model *Hong2009_CircadianClock()
 
   // Compartments and Species:
   compartment system;
-  species CP in system, CP2 in system, IC in system, TF in system, M in system;
+  species M in system, TF in system, CP in system, CP2 in system, IC in system;
   species $CPtot in system;
 
   // Assignment Rules:
@@ -53,38 +54,38 @@ model *Hong2009_CircadianClock()
   r17: IC => TF; system * function_4_r17(CP, CP2, IC, Jp, kp2, system);
 
   // Species initializations:
+  M = 1.4;
+  TF = 0.13;
   CP = 0.037;
   CP2 = 0.046;
   IC = 0.37;
-  TF = 0.13;
-  M = 1.4;
 
   // Compartment initializations:
   system = 1;
 
   // Variable initializations:
   Dex = 0;
-  kp1 = 10;
-  Jp = 0.05;
   kms = 1;
   n = 2;
   J = 0.3;
-  kp2 = 0.1;
-  kcps = 0.5;
   kmd = 0.1;
+  kcps = 0.5;
   kcpd = 0.525;
   ka = 100;
   kd = 0.01;
+  kp1 = 10;
+  Jp = 0.05;
   chk2 = 0;
   kicd = 0.01;
   kcp2d = 0.0525;
   kica = 20;
   chk2c = 0;
+  kp2 = 0.1;
   ICtot = 1;
 
   //Other declarations:
-  const Dex, system, kp1, Jp, kms, n, J, kp2, kcps, kmd, kcpd, ka, kd, chk2;
-  const kicd, kcp2d, kica, chk2c, ICtot;
+  const system, Dex, kms, n, J, kmd, kcps, kcpd, ka, kd, kp1, Jp, chk2, kicd;
+  const kcp2d, kica, chk2c, kp2, ICtot;
 
   //Display Names:
   ICtot is "TFtot";

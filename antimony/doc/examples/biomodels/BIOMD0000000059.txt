@@ -8,6 +8,17 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
 
   // Assignment Rules:
   ADP_cyt := 4000 - ATP_cyt;
+  n_infinity := 1 / (1 + exp((Vn - V) / Sn));
+  tau_n := c / (exp((V - Vtau) / a) + exp((Vtau - V) / b));
+  I_Vca := gmvca * pvca * (V - Vca);
+  I_CaPump := Pmcap * Ca_cyt^2 / (Kcap^2 + Ca_cyt^2);
+  I_NaCa := gnaca * Ca_cyt^5 * (V - Vnaca) / (Ca_cyt^5 + Knaca^5);
+  I_CRAN := f_CRAN * p_CRAN * (V - Vna);
+  I_Na := gmna * pna * (V - Vna);
+  I_NaK := Pnak * (F1 * f_2 * f_3 * F4 * F5 * f_6 - b_1 * B2 * B3 * B4 * b_5 * B6) / D;
+  I_KDr := gmKDr * n * (V - Vk);
+  I_KCa := gmkca * f_Ca * (V - Vk);
+  I_KATP := gmkatp * Okatp * (V - Vk);
   Vca := TV / 2 * log(Ca_ec / Ca_cyt);
   Vk := TV * log(K_ec / K_cyt);
   Vna := TV * log(Na_ec / Na_cyt);
@@ -28,17 +39,6 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   D := f_2 * f_3 * F4 * F5 * f_6 + b_1 * f_3 * F4 * F5 * f_6 + b_1 * B2 * F4 * F5 * f_6 + b_1 * B2 * B3 * F5 * f_6 + b_1 * B2 * B3 * B4 * f_6 + b_1 * B2 * B3 * B4 * b_5;
   f_Ca := Ca_cyt^4 / (Ca_cyt^4 + Kkca^4);
   Okatp := (0.08 * (1 + 0.33 * (ADP_cyt / Kdd)) + 0.89 * (0.165 * (ADP_cyt / Kdd))^2) / ((1 + 0.165 * (ADP_cyt / Kdd))^2 * (1 + 0.135 * (ADP_cyt / Ktd) + 0.05 * (ATP_cyt / Ktt)));
-  n_infinity := 1 / (1 + exp((Vn - V) / Sn));
-  tau_n := c / (exp((V - Vtau) / a) + exp((Vtau - V) / b));
-  I_Vca := gmvca * pvca * (V - Vca);
-  I_CaPump := Pmcap * Ca_cyt^2 / (Kcap^2 + Ca_cyt^2);
-  I_NaCa := gnaca * Ca_cyt^5 * (V - Vnaca) / (Ca_cyt^5 + Knaca^5);
-  I_CRAN := f_CRAN * p_CRAN * (V - Vna);
-  I_Na := gmna * pna * (V - Vna);
-  I_NaK := Pnak * (F1 * f_2 * f_3 * F4 * F5 * f_6 - b_1 * B2 * B3 * B4 * b_5 * B6) / D;
-  I_KDr := gmKDr * n * (V - Vk);
-  I_KCa := gmkca * f_Ca * (V - Vk);
-  I_KATP := gmkatp * Okatp * (V - Vk);
   Jerp := Pcaer * Ca_cyt^2 / (Ca_cyt^2 + Kcarp^2);
   O_infinity := Ca_cyt * IP3_cyt^3 / ((Ca_cyt + Krca) * (IP3_cyt^3 + Kip3^3));
   Jout := (Pleak + Pip3 * O_infinity) * (Ca_er - Ca_cyt);
@@ -80,8 +80,21 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
 
   // Variable initializations:
   n = 0.00123;
+  n_infinity has dimensionless;
+  tau_n has time_unit;
   V = -60.9;
   V has millivolt;
+  I_Vca has femtoampere;
+  I_CaPump has femtoampere;
+  I_NaCa has femtoampere;
+  I_CRAN has femtoampere;
+  I_Na has femtoampere;
+  I_NaK has femtoampere;
+  I_KDr has femtoampere;
+  I_KCa has femtoampere;
+  I_KATP has femtoampere;
+  Cm = 6158;
+  Cm has femtofarad;
   Vca has millivolt;
   TV = 26.73;
   TV has millivolt;
@@ -146,12 +159,10 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   Ktd has micromole_per_litre;
   Ktt = 1;
   Ktt has micromole_per_litre;
-  n_infinity has dimensionless;
   Vn = -14;
   Vn has millivolt;
   Sn = 7;
   Sn has millivolt;
-  tau_n has time_unit;
   c = 20;
   c has time_unit;
   Vtau = -75;
@@ -160,33 +171,24 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   a has millivolt;
   b = 20;
   b has millivolt;
-  I_Vca has femtoampere;
   gmvca = 770;
   gmvca has picosiemens;
-  I_CaPump has femtoampere;
   Pmcap = 2000;
   Pmcap has femtoampere;
   Kcap = 0.1;
   Kcap has micromole_per_litre;
-  I_NaCa has femtoampere;
   gnaca = 271;
   gnaca has picosiemens;
   Knaca = 0.75;
   Knaca has micromole_per_litre;
-  I_CRAN has femtoampere;
-  I_Na has femtoampere;
   gmna = 1200;
   gmna has picosiemens;
-  I_NaK has femtoampere;
   Pnak = 600;
   Pnak has femtoampere;
-  I_KDr has femtoampere;
   gmKDr = 3000;
   gmKDr has picosiemens;
-  I_KCa has femtoampere;
   gmkca = 130;
   gmkca has picosiemens;
-  I_KATP has femtoampere;
   gmkatp = 24000;
   gmkatp has picosiemens;
   Jerp has microM_per_millisecond;
@@ -204,8 +206,6 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   Pleak has litres_per_millisecond;
   Pip3 = 1.2e-015;
   Pip3 has litres_per_millisecond;
-  Cm = 6158;
-  Cm has femtofarad;
   fi = 0.01;
   fi has dimensionless;
   F = 9.6485e+016;
@@ -228,15 +228,15 @@ model *Fridlyand2003_Ca_flux_pancreatic_cells()
   katp has per_millisecond;
 
   //Other declarations:
-  var n, V, Vca, Vk, Vna, Vnaca, pvca, f_CRAN, p_CRAN, pna, f_5, b_5, F1;
-  var F4, F5, B2, B3, B4, B6, D, f_Ca, Okatp, n_infinity, tau_n, I_Vca, I_CaPump;
-  var I_NaCa, I_CRAN, I_Na, I_NaK, I_KDr, I_KCa, I_KATP, Jerp, Pcaer, O_infinity;
+  var n, n_infinity, tau_n, V, I_Vca, I_CaPump, I_NaCa, I_CRAN, I_Na, I_NaK;
+  var I_KDr, I_KCa, I_KATP, Vca, Vk, Vna, Vnaca, pvca, f_CRAN, p_CRAN, pna;
+  var f_5, b_5, F1, F4, F5, B2, B3, B4, B6, D, f_Ca, Okatp, Jerp, Pcaer, O_infinity;
   var Jout;
-  const Cytoplasm, ER, TV, Ca_ec, K_ec, K_cyt, Na_ec, Vcah, Kcah, gm_CRAN;
+  const Cytoplasm, ER, Cm, TV, Ca_ec, K_ec, K_cyt, Na_ec, Vcah, Kcah, gm_CRAN;
   const Kcar, V_CRAN, f5_ast, b5_ast, f_1, f_4, b_2, b_3, b_4, P, b_6, Ksup;
   const f_2, f_3, f_6, b_1, Kkca, Kdd, Ktd, Ktt, Vn, Sn, c, Vtau, a, b, gmvca;
   const Pmcap, Kcap, gnaca, Knaca, gmna, Pnak, gmKDr, gmkca, gmkatp, Kcarp;
-  const Krca, Kip3, Pleak, Pip3, Cm, fi, F, ksg, fer, kip, Kipca, kdip, kadp;
+  const Krca, Kip3, Pleak, Pip3, fi, F, ksg, fer, kip, Kipca, kdip, kadp;
   const katpca, katp;
 
   // Unit definitions:

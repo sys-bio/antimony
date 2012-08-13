@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Model_1()
+//Created by libAntimony v2.3-beta
+model *Model_1()
 
   // Compartments and Species:
   compartment compartment_1;
@@ -50,8 +50,8 @@ model Model_1()
   r33: VaLCA1 + APC -> VaLCA1_APC; compartment_1 * (k1 * VaLCA1 * APC - k2 * VaLCA1_APC);
 
   // Species initializations:
-  APC = 1e-08;
-  Va = 2e-07;
+  APC = 1e-008;
+  Va = 2e-007;
   Va_APC = 0;
   Va3 = 0;
   Va3_APC = 0;
@@ -92,6 +92,9 @@ model Model_1()
   k6 = 0.00052;
   k7 = 0.028;
   k8 = 2570;
-  k9 = 1.72e-05;
+  k9 = 1.72e-005;
   k10 = 2630;
+
+  //Other declarations:
+  const compartment_1, k1, k2, k3, k5, k6, k7, k8, k9, k10;
 end

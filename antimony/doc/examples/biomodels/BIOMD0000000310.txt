@@ -3,6 +3,7 @@ function goldbeter_koshland(v1, v2, J1, J2)
   2 * v1 * J2 / (v2 - v1 + J1 * v2 + J2 * v1 + ((v2 - v1 + J1 * v2 + J2 * v1)^2 - 4 * (v2 - v1) * v1 * J2)^(1 / 2));
 end
 
+
 model *Tyson2003_Mutual_Inhibition()
 
   // Compartments and Species:
@@ -31,6 +32,16 @@ model *Tyson2003_Mutual_Inhibition()
   env = 1;
 
   // Variable initializations:
+  Et = 1;
+  Et has M;
+  k3 = 0.2;
+  k3 has M_per_s;
+  k4 = 1;
+  k4 has per_s;
+  J3 = 0.05;
+  J3 has dimensionless;
+  J4 = 0.05;
+  J4 has dimensionless;
   k0 = 0;
   k0 has M_per_s;
   k1 = 0.05;
@@ -39,22 +50,12 @@ model *Tyson2003_Mutual_Inhibition()
   k2 has per_s;
   k2_prime = 0.5;
   k2_prime has per_M_per_s;
-  k3 = 0.2;
-  k3 has M_per_s;
-  J3 = 0.05;
-  J3 has dimensionless;
-  k4 = 1;
-  k4 has per_s;
-  J4 = 0.05;
-  J4 has dimensionless;
-  Et = 1;
-  Et has M;
   Km3 has M;
   Km4 has M;
 
   //Other declarations:
   var Km3, Km4;
-  const env, k0, k1, k2, k2_prime, k3, J3, k4, J4, Et;
+  const env, Et, k3, k4, J3, J4, k0, k1, k2, k2_prime;
 
   // Unit definitions:
   unit time_unit = second;

@@ -3,6 +3,7 @@ function GAMMAF(VV, theta, sigma)
   1 / (1 + exp(-(VV - theta) / sigma));
 end
 
+
 model *model_0000001()
 
   // Compartments and Species:
@@ -10,20 +11,20 @@ model *model_0000001()
 
   // Assignment Rules:
   INa := gNa * Minfs^pms * hhs * (V - VNa);
+  Minfs := GAMMAF(V, thetam, sigmam);
   INaP := gNaP * Pinfs * (V - VNa);
+  Pinfs := GAMMAF(V, thetap, sigmap);
   IKdr := gKdr * nns^pns * (V - VK);
   IA := gA * Ainfs^3 * bbs * (V - VK);
-  Iz := gZ * zzs * (V - VK);
-  Minfs := GAMMAF(V, thetam, sigmam);
-  Pinfs := GAMMAF(V, thetap, sigmap);
   Ainfs := GAMMAF(V, thetaa, sigmaa);
+  Iz := gZ * zzs * (V - VK);
 
   // Rate Rules:
-  zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs) / tauZs;
-  bbs' = (GAMMAF(V, thetab, sigmab) - bbs) / tauBs;
-  nns' = phi * (GAMMAF(V, thetan, sigman) - nns) / (1 + 5 * GAMMAF(V, t_taun, -15));
   hhs' = phi * (GAMMAF(V, thetah, sigmah) - hhs) / (1 + 7.5 * GAMMAF(V, t_tauh, -6));
   V' = (- gL * (V - VL) - INa - INaP - IKdr - IA - Iz + Iapp) / Cm;
+  nns' = phi * (GAMMAF(V, thetan, sigman) - nns) / (1 + 5 * GAMMAF(V, t_taun, -15));
+  bbs' = (GAMMAF(V, thetab, sigmab) - bbs) / tauBs;
+  zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs) / tauZs;
 
   // Compartment initializations:
   compartment_0000001 = 1;
@@ -61,14 +62,14 @@ model *model_0000001()
   sigmap = 3;
   VK = -90;
   VL = -70;
-  zzs = 0.00141;
-  bbs = 0.203517;
-  nns = 0.02457;
   hhs = 0.98786;
   V = -71.81327;
+  nns = 0.02457;
+  bbs = 0.203517;
+  zzs = 0.00141;
 
   //Other declarations:
-  var INa, INaP, IKdr, IA, Iz, Minfs, Pinfs, Ainfs, zzs, bbs, nns, hhs, V;
+  var INa, Minfs, hhs, V, INaP, Pinfs, IKdr, nns, IA, Ainfs, bbs, Iz, zzs;
   const compartment_0000001, Cm, pms, pns, VNa, t_tauh, t_taun, thetaa, sigmaa;
   const thetab, sigmab, tauBs, sigmam, sigmah, sigman, sigmaz, gNa, gKdr;
   const gL, Iapp, gA, gNaP, gZ, thetaz, tauZs, phi, thetah, thetam, thetan;

@@ -15,14 +15,14 @@ model *model_0000001()
   rIRinf := 1 / (1 + betaIRr / alphaIRr);
   tauIRr := 1 / (alphaIRr + betaIRr);
   ica := gca * minf * (V - vca);
+  minf := 1 / (1 + exp((vm - V) / sm));
   ik := gk * n * (V - vk);
   ikca := gkca * w * (V - vk);
+  w := c^5 / (c^5 + kd^5);
   ikatp := gkatp * a * (V - vk);
   iir := gir * nIR * rIR * (V - vir);
-  minf := 1 / (1 + exp((vm - V) / sm));
   ninf := 1 / (1 + exp((vn - V) / sn));
   ainf := 1 / (1 + exp((r - c) / sa));
-  w := c^5 / (c^5 + kd^5);
   jmem := -(alpha * ica + kpmca * c);
   jserca := kserca * c;
   jleak := pleak * (cer - c);
@@ -88,9 +88,9 @@ model *model_0000001()
   rIR = 0.282;
 
   //Other declarations:
-  var gkatp, alphaIRn, betaIRn, nIRinf, tauIRn, alphaIRr, betaIRr, rIRinf;
-  var tauIRr, ica, ik, ikca, ikatp, iir, minf, ninf, ainf, w, jmem, jserca;
-  var jleak, jip3, oinf, jer, V, n, a, nIR, rIR;
+  var gkatp, alphaIRn, V, betaIRn, nIRinf, tauIRn, alphaIRr, betaIRr, rIRinf;
+  var tauIRr, ica, minf, ik, n, ikca, w, ikatp, a, iir, nIR, rIR, ninf, ainf;
+  var jmem, jserca, jleak, jip3, oinf, jer;
   const cell, gca, gkca, gk, gir, vca, vk, vir, cm, taun, alpha, fcyt, kpmca;
   const kd, vn, vm, sn, sm, kserca, dact, dinact, fer, pleak, dip3, vcytver;
   const ip3, sa, r, taua;

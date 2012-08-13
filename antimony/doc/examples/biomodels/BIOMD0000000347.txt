@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Bachmann2011_JAK2STAT5_FeedbackControl()
+//Created by libAntimony v2.3-beta
+model *Bachmann2011_JAK2STAT5_FeedbackControl()
 
   // Compartments and Species:
   compartment cyt, nuc;
@@ -75,7 +75,7 @@ model Bachmann2011_JAK2STAT5_FeedbackControl()
   SOCS3nRNA5 = 0;
   SOCS3RNA = 0;
   SOCS3 = 0;
-  Epo = 1.24997e-07;
+  Epo = 1.24997e-007;
 
   // Compartment initializations:
   cyt = 0.4;
@@ -110,8 +110,16 @@ model Bachmann2011_JAK2STAT5_FeedbackControl()
   STAT5ActJAK2 = 0.0780965;
   STAT5Exp = 0.0745155;
   STAT5Imp = 0.0268889;
-  epo_level = 1.24997e-07;
+  epo_level = 1.24997e-007;
   init_EpoRJAK2 = 3.97622;
   init_SHP1 = 26.7251;
   init_STAT5 = 79.7535;
+
+  //Other declarations:
+  const cyt, nuc, ActD, CISEqc, CISEqcOE, CISInh, CISRNADelay, CISRNAEqc;
+  const CISRNATurn, CISTurn, CISoe, EpoRActJAK2, EpoRCISInh, EpoRCISRemove;
+  const JAK2ActEpo, JAK2EpoRDeaSHP1, SHP1ActEpoR, SHP1Dea, SOCS3Eqc, SOCS3EqcOE;
+  const SOCS3Inh, SOCS3RNADelay, SOCS3RNAEqc, SOCS3RNATurn, SOCS3Turn, SOCS3oe;
+  const STAT5ActEpoR, STAT5ActJAK2, STAT5Exp, STAT5Imp, epo_level, init_EpoRJAK2;
+  const init_SHP1, init_STAT5;
 end

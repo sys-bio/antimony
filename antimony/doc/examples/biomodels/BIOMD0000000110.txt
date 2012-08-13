@@ -3,9 +3,9 @@ model *Qu2003_CellCycle()
 
   // Compartments and Species:
   compartment cell;
-  species x1 in cell, x in cell, c0 in cell, $c in cell, z0 in cell, z1 in cell;
-  species z2 in cell, w0 in cell, w1 in cell, u in cell, i in cell, ix in cell;
-  species ixp in cell, y in cell, $totalCyclin in cell;
+  species x1 in cell, x in cell, c0 in cell, $c in cell, ix in cell, ixp in cell;
+  species z0 in cell, z1 in cell, z2 in cell, w0 in cell, w1 in cell, u in cell;
+  species i in cell, y in cell, $totalCyclin in cell;
 
   // Assignment Rules:
   c := (c0 - (x + x1 + ix + ixp)) / (c0 * cell);
@@ -39,6 +39,8 @@ model *Qu2003_CellCycle()
   x1 = 0.1;
   x = 0.1;
   c0 = 200;
+  ix = 0;
+  ixp = 0;
   z0 = 0;
   z1 = 0;
   z2 = 0;
@@ -46,8 +48,6 @@ model *Qu2003_CellCycle()
   w1 = 0;
   u = 0;
   i = 0;
-  ix = 0;
-  ixp = 0;
   y = 0;
 
   // Compartment initializations:
@@ -100,6 +100,8 @@ model *Qu2003_CellCycle()
   x is "Active Cyclin:CDK complex";
   c0 is "Total CDK";
   c is "Free CDK";
+  ix is "Cyclin:CDK:CKI complex with CKI unphosphorylated";
+  ixp is "Cyclin:CDK:CKI complex with CKI phosphorylated";
   z0 is "Unphosphorylated CDC25";
   z1 is "One-site phosphorylated CDC25";
   z2 is "Two-site phosphorylated CDC25";
@@ -107,8 +109,6 @@ model *Qu2003_CellCycle()
   w1 is "phosphorylated wee1";
   u is "Active SKP2 or APC";
   i is "Free CKI";
-  ix is "Cyclin:CDK:CKI complex with CKI unphosphorylated";
-  ixp is "Cyclin:CDK:CKI complex with CKI phosphorylated";
   y is "Free cyclin";
   reaction_0000001 is "Free cyclin synthesis";
   reaction_0000002 is "Cyclin binding with CDK";

@@ -24,10 +24,10 @@ model *model_0000001()
   perl_inf := inh * cAMP * c^4 / (ki^4 + c^4);
 
   // Rate Rules:
-  h' = (hinf - h) / tauh;
-  inh' = ETswitch * ((0.2 - inh) / taudir);
   V' = (- ica - ik - igirk) / cm;
+  h' = (hinf - h) / tauh;
   n' = lambda * (ninf - n) / taun;
+  inh' = ETswitch * ((0.2 - inh) / taudir);
 
   // Reactions:
   reaction_0000001:  => c; cell * f * (jertot + jmemtot);
@@ -73,18 +73,17 @@ model *model_0000001()
   dact = 0.35;
   dip3 = 0.5;
   dinh = 0.4;
+  V = -60;
+  h = 0;
+  n = 0;
   ki = 0.5;
+  inh = 1;
   taudir = 20000;
   cAMPlow = 0.2;
-  h = 0;
-  inh = 1;
-  V = -60;
-  n = 0;
 
   //Other declarations:
-  var IP3, girk, ETswitch, ninf, minf, hinf, ica, igirk, ik, ainf, hinfer;
-  var jerp, binf, o, jerleak, jerip3, jertot, jmemtot, perl_inf, h, inh, V;
-  var n;
+  var IP3, girk, ETswitch, ninf, V, minf, hinf, ica, igirk, h, ik, n, ainf;
+  var hinfer, jerp, binf, o, jerleak, jerip3, jertot, jmemtot, perl_inf, inh;
   const cell, vh, sh, tauh, kserca, sigmav, kc, vn, vk, taun, gk, sn, vca;
   const gca, vm, sm, lambda, cm, f, fer, alpha, perl, dact, dip3, dinh, ki;
   const taudir, cAMPlow;
@@ -97,7 +96,7 @@ model *model_0000001()
   c is "cytosolic calcium concentration";
   cer is "ER calcium concentration";
   event_0000001 is "ET-1 switch";
-  inh is "variable for direct inhibition of secretion";
   V is "voltage";
   n is "delayed rectifier activation";
+  inh is "variable for direct inhibition of secretion";
 end

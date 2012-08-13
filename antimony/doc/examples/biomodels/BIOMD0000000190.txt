@@ -13,9 +13,9 @@ model *Model_1()
 
   // Rate Rules:
   Vmaxodc' = Ksodc / (1 + Keq * (D + S)) - Kdodc * Antz * Vmaxodc;
+  Antz' = Ksantz * (1 - 1 / (1 + Keq * 0.01 * (D + S))) - Kdantz * Antz;
   Vmaxssat' = Ksssat * (1 - 1 / (1 + Keq * (D + S))) - Kdssat * (1 / (1 + Keq * (D + S))) * Vmaxssat;
   Vmaxsamdc' = Kssamdc * (1 / (1 + Keq * (D + S))) - Kdsamdc * Vmaxsamdc;
-  Antz' = Ksantz * (1 - 1 / (1 + Keq * 0.01 * (D + S))) - Kdantz * Antz;
 
   // Reactions:
   ODC: $ORN => P; cytosol * (Vmaxodc * ORN / (ODC_Kmodc * (1 + P / ODC_Kipodc) + ORN));
@@ -51,30 +51,30 @@ model *Model_1()
   // Variable initializations:
   Vmaxodc = 1.27905671844446;
   Vmaxodc has uM_min_1;
-  Vmaxssat = 0.677298510125025;
-  Vmaxssat has uM_min_1;
-  Vmaxsamdc = 0.367465856805639;
-  Vmaxsamdc has uM_min_1;
-  Antz = 0.574589492832405;
-  Antz has uM_min_1;
+  Ksodc = 5;
+  Ksodc has uM_min_2;
   Keq = 1;
   Keq has uM_1;
   Kdodc = 0.05;
   Kdodc has uM_1;
-  Ksodc = 5;
-  Ksodc has uM_min_2;
-  Kdssat = 0.2;
-  Kdssat has min_1;
+  Antz = 0.574589492832405;
+  Antz has uM_min_1;
+  Vmaxssat = 0.677298510125025;
+  Vmaxssat has uM_min_1;
   Ksssat = 0.001;
   Ksssat has uM_min_2;
-  Kdsamdc = 0.02;
-  Kdsamdc has min_1;
+  Kdssat = 0.2;
+  Kdssat has min_1;
+  Vmaxsamdc = 0.367465856805639;
+  Vmaxsamdc has uM_min_1;
   Kssamdc = 1;
   Kssamdc has uM_min_2;
-  Kdantz = 0.02;
-  Kdantz has min_1;
+  Kdsamdc = 0.02;
+  Kdsamdc has min_1;
   Ksantz = 0.02;
   Ksantz has uM_min_2;
+  Kdantz = 0.02;
+  Kdantz has min_1;
   R = 0.004;
   R has min_1;
   C = 4.44;
@@ -161,9 +161,9 @@ model *Model_1()
   aD_efflux_Kadefflux has min_1;
 
   //Other declarations:
-  var Vmaxodc, Vmaxssat, Vmaxsamdc, Antz, Kaccoa, Kcoa;
-  const cytosol, Keq, Kdodc, Ksodc, Kdssat, Ksssat, Kdsamdc, Kssamdc, Kdantz;
-  const Ksantz, R, C;
+  var Vmaxodc, Antz, Vmaxssat, Vmaxsamdc, Kaccoa, Kcoa;
+  const cytosol, Ksodc, Keq, Kdodc, Ksssat, Kdssat, Kssamdc, Kdsamdc, Ksantz;
+  const Kdantz, R, C;
 
   // Unit definitions:
   unit time_unit = 60 second;
@@ -199,14 +199,14 @@ model *Model_1()
   Met is "Methionine";
   ORN is "L-Ornithine";
   AcCoA is "Acetyl-CoA";
-  Kdodc is "KdODC";
   Ksodc is "KsODC";
-  Kdssat is "KdSSAT";
+  Kdodc is "KdODC";
   Ksssat is "KsSSAT";
-  Kdsamdc is "KdSAMDC";
+  Kdssat is "KdSSAT";
   Kssamdc is "KsSAMDC";
-  Kdantz is "KdANTZ";
+  Kdsamdc is "KdSAMDC";
   Ksantz is "KsANTZ";
+  Kdantz is "KdANTZ";
   ODC is "Ornithine decarboxylase";
   SAMdc is "S-adenosylmethionine decarboxylase";
   SSAT_for_S is "Spermidine/Spermine N1-acetyltransferase for S";

@@ -11,6 +11,7 @@ function T_PFK(CATP, KmATP, AT_)
   1 + CATP * (AT_ / KmATP);
 end
 
+
 model *Teusink2000_Glycolysis()
 
   // Compartments and Species:
@@ -20,7 +21,7 @@ model *Teusink2000_Glycolysis()
   species PEP in cytosol, PYR in cytosol, ACE in cytosol, P in cytosol, NAD in cytosol;
   species NADH in cytosol, $Glyc in cytosol, $Trh in cytosol, $CO2 in cytosol;
   species $SUCC in cytosol, $GLCo in extracellular, $ETOH in cytosol, $GLY in cytosol;
-  species $ATP in cytosol, $ADP in cytosol, $AMP in cytosol, $SUM_P in cytosol;
+  species $ATP in cytosol, $ADP in cytosol, $SUM_P in cytosol, $AMP in cytosol;
   species $F26BP in cytosol;
 
   // Assignment Rules:
@@ -77,6 +78,8 @@ model *Teusink2000_Glycolysis()
   cytosol = 1;
 
   // Variable initializations:
+  KeqAK = 0.45;
+  KeqAK has dimensionless;
   gR = 5.12;
   gR has dimensionless;
   KmPFKF6P = 0.1;
@@ -103,8 +106,6 @@ model *Teusink2000_Glycolysis()
   KPFKF16BP has mM;
   CPFKATP = 3;
   CPFKATP has dimensionless;
-  KeqAK = 0.45;
-  KeqAK has dimensionless;
   KeqTPI = 0.045;
   KeqTPI has dimensionless;
   vGLK_VmGLK = 226.452;
@@ -248,9 +249,9 @@ model *Teusink2000_Glycolysis()
   vATP_KATPASE has permin;
 
   //Other declarations:
-  const extracellular, cytosol, gR, KmPFKF6P, KmPFKATP, Lzero, CiPFKATP, KiPFKATP;
-  const CPFKAMP, KPFKAMP, CPFKF26BP, KPFKF26BP, CPFKF16BP, KPFKF16BP, CPFKATP;
-  const KeqAK, KeqTPI;
+  const extracellular, cytosol, KeqAK, gR, KmPFKF6P, KmPFKATP, Lzero, CiPFKATP;
+  const KiPFKATP, CPFKAMP, KPFKAMP, CPFKF26BP, KPFKF26BP, CPFKF16BP, KPFKF16BP;
+  const CPFKATP, KeqTPI;
 
   // Unit definitions:
   unit substance = 1e-3 mole;
@@ -283,10 +284,10 @@ model *Teusink2000_Glycolysis()
   GLY is "Glycerol";
   ATP is "ATP concentration";
   ADP is "ADP concentration";
-  AMP is "AMP concentration";
   SUM_P is "sum of AXP conc";
-  F26BP is "F2,6P";
   KeqAK is "AK eq constant";
+  AMP is "AMP concentration";
+  F26BP is "F2,6P";
   KeqTPI is "TPI eq constant";
   vGLK is "Hexokinase";
   vPGI is "Glucose-6-phosphate isomerase";

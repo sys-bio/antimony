@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Koschorreck2008_InsulinClearance()
+//Created by libAntimony v2.3-beta
+model *Koschorreck2008_InsulinClearance()
 
   // Compartments and Species:
   compartment compartment1;
@@ -9,6 +9,26 @@ model Koschorreck2008_InsulinClearance()
   species $RPen in compartment1, $IRPen in compartment1, $I2RPen in compartment1;
 
   // Assignment Rules:
+  r1 := kins * R * ins - kins1d * IR;
+  r5 := kyd * Rp;
+  f1 := intk2 * R - reck1 * Ren;
+  r3 := kins * IR * ins - kins2d * I2R;
+  r6 := kyp * IR - kyd * IRp;
+  f2 := intk2 * IR;
+  r7 := kyp * I2R - kyd * I2Rp;
+  f3 := intk2 * I2R;
+  r2 := kins * Rp * ins - kins1d * IRp;
+  f4 := intk1 * Rp - reck1 * RPen;
+  r4 := kins * IRp * ins - kins2d * I2Rp;
+  f5 := intk1 * IRp;
+  f6 := intk1 * I2Rp;
+  i1 := kins1den * IRen;
+  i5 := kyden * RPen;
+  i3 := kins2den * I2Ren;
+  i6 := kyp * IRen - kyden * IRPen;
+  i7 := kyp * I2Ren - kyden * I2RPen;
+  i2 := kins1den * IRPen;
+  i4 := kins2den * I2RPen;
   I2RPen := Rtotal - R - IR - I2R - Rp - IRp - I2Rp - Ren - IRen - I2Ren - RPen - IRPen;
   mliver := 0.05 * bw;
   vp := 0.03375 * 10^-3 * bw;
@@ -16,27 +36,7 @@ model Koschorreck2008_InsulinClearance()
   vd := 0.272 * 10^-3 * vhep * rholiver;
   mkidney := 2 * 0.85 * bw / 230;
   Kkidney := 0.0225 * 10^-3 * mkidney;
-  r1 := kins * R * ins - kins1d * IR;
-  r2 := kins * Rp * ins - kins1d * IRp;
-  r3 := kins * IR * ins - kins2d * I2R;
-  r4 := kins * IRp * ins - kins2d * I2Rp;
-  r5 := kyd * Rp;
-  r6 := kyp * IR - kyd * IRp;
-  r7 := kyp * I2R - kyd * I2Rp;
-  i1 := kins1den * IRen;
-  i2 := kins1den * IRPen;
-  i3 := kins2den * I2Ren;
-  i4 := kins2den * I2RPen;
-  i5 := kyden * RPen;
-  i6 := kyp * IRen - kyden * IRPen;
-  i7 := kyp * I2Ren - kyden * I2RPen;
-  f1 := intk2 * R - reck1 * Ren;
-  f2 := intk2 * IR;
-  f3 := intk2 * I2R;
-  f4 := intk1 * Rp - reck1 * RPen;
-  f5 := intk1 * IRp;
-  f6 := intk1 * I2Rp;
-  parameter_1 := -(-r1 - r2 - r3 - r4) * vhep / vp;
+  parameter_1 := -(- r1 - r2 - r3 - r4) * vhep / vp;
   parameter_2 := Kkidney * ins / vp;
   parameter_3 := parameter_2 + parameter_1;
   parameter_4 := parameter_1 / (parameter_1 + parameter_2) * 100;
@@ -52,17 +52,17 @@ model Koschorreck2008_InsulinClearance()
   parameter_14 := parameter_10 - parameter_12;
 
   // Rate Rules:
-  R' = -r1 + r5 - f1;
+  R' = - r1 + r5 - f1;
   IR' = r1 - r3 - r6 - f2;
   I2R' = r3 - r7 - f3;
-  Rp' = -r2 - r5 - f4;
+  Rp' = - r2 - r5 - f4;
   IRp' = r2 - r4 + r6 - f5;
   I2Rp' = r4 + r7 - f6;
   Ren' = i1 + i5 + f1;
-  IRen' = -i1 + i3 - i6 + f2;
-  I2Ren' = -i3 - i7 + f3;
+  IRen' = - i1 + i3 - i6 + f2;
+  I2Ren' = - i3 - i7 + f3;
   RPen' = i2 - i5 + f4;
-  IRPen' = -i2 + i4 + i6 + f5;
+  IRPen' = - i2 + i4 + i6 + f5;
 
   // Species initializations:
   R = 35.3837;
@@ -82,6 +82,7 @@ model Koschorreck2008_InsulinClearance()
   compartment1 = 1;
 
   // Variable initializations:
+  Rtotal = 40;
   kins = 0.001;
   kins1d = 0.0004;
   kins2d = 0.04;
@@ -93,20 +94,21 @@ model Koschorreck2008_InsulinClearance()
   intk1 = 0.00055;
   intk2 = 0.0002;
   reck1 = 0.001533;
-  Rtotal = 40;
   k1ub = 0.35;
   k2ub = 0.2;
   pansec = 0.0016976;
   Kpan = 0.5;
-  rholiver = 1051;
   bw = 200;
+  rholiver = 1051;
 
   //Other declarations:
-  var mliver, vp, vhep, vd, mkidney, Kkidney, r1, r2, r3, r4, r5, r6, r7;
-  var i1, i2, i3, i4, i5, i6, i7, f1, f2, f3, f4, f5, f6, parameter_1, parameter_2;
+  var r1, r5, f1, r3, r6, f2, r7, f3, r2, f4, r4, f5, f6, i1, i5, i3, i6;
+  var i7, i2, i4, mliver, vp, vhep, vd, mkidney, Kkidney, parameter_1, parameter_2;
   var parameter_3, parameter_4, parameter_5, parameter_6, parameter_7, parameter_8;
   var parameter_9, parameter_10, parameter_11, parameter_12, parameter_13;
   var parameter_14;
+  const compartment1, Rtotal, kins, kins1d, kins2d, kins1den, kins2den, kyd;
+  const kyden, kyp, intk1, intk2, reck1, k1ub, k2ub, pansec, Kpan, bw, rholiver;
 
   //Display Names:
   parameter_1 is "rliv";

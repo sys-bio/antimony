@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
+//Created by libAntimony v2.3-beta
+model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
 
   // Compartments and Species:
   compartment default;
@@ -14,9 +14,9 @@ model Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
 
   // Assignment Rules:
   vglucoseuptake := k_glut1 * G_t / (KmG1 + G_t) + k_glut4 * GLUT4_M * G_t / (KmG4 + G_t) + kbf * (INS + 5);
-  KD := 7.000000e-06;
+  KD := 7.000000e-006;
   S2 := 0;
-  S1 := (INS + 5) * 1.000000e-12;
+  S1 := (INS + 5) * 1.000000e-012;
   K4 := 1400;
   K8 := 0.01;
   aa := 5 / 2 / (1 - b) / D;
@@ -27,7 +27,7 @@ model Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   S := gamma * I_po;
   I := I_p / V_I;
   G := G_p / V_G;
-  HE := -m_5 * S + m_6;
+  HE := - m_5 * S + m_6;
   m_3 := HE * m_1 / (1 - HE);
   Q_sto := Q_sto1 + Q_sto2;
   Ra := f * k_abs * Q_gut / BW;
@@ -38,18 +38,18 @@ model Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   S_po := Y + K * (EGP + Ra - E - U_ii - k_1 * G_p + k_2 * G_t) / V_G + S_b;
 
   // Rate Rules:
+  G_t' = - U_id + k_1 * G_p - k_2 * G_t;
+  INS' = - p_2U * INS + p_2U * (I - I_b);
   G_p' = EGP + Ra - E - U_ii - k_1 * G_p + k_2 * G_t;
-  G_t' = -U_id + k_1 * G_p - k_2 * G_t;
-  I_l' = -m_1 * I_l - m_3 * I_l + m_2 * I_p + S;
-  I_p' = -m_2 * I_p - m_4 * I_p + m_1 * I_l;
-  Q_sto1' = -k_gri * Q_sto1;
-  Q_sto2' = -k_empt * Q_sto2 + k_gri * Q_sto1;
-  Q_gut' = -k_abs * Q_gut + k_empt * Q_sto2;
-  I_1' = -k_i * (I_1 - I);
-  I_d' = -k_i * (I_d - I_1);
-  INS' = -p_2U * INS + p_2U * (I - I_b);
-  I_po' = -gamma * I_po + S_po;
-  Y' = -alpha * (Y - beta * (G - G_b));
+  I_d' = - k_i * (I_d - I_1);
+  I_po' = - gamma * I_po + S_po;
+  I_p' = - m_2 * I_p - m_4 * I_p + m_1 * I_l;
+  Q_sto1' = - k_gri * Q_sto1;
+  Q_sto2' = - k_empt * Q_sto2 + k_gri * Q_sto1;
+  Q_gut' = - k_abs * Q_gut + k_empt * Q_sto2;
+  Y' = - alpha * (Y - beta * (G - G_b));
+  I_l' = - m_1 * I_l - m_3 * I_l + m_2 * I_p + S;
+  I_1' = - k_i * (I_1 - I);
 
   // Reactions:
   R1: r0 => r1; 2 * a1 * S1 * r0;
@@ -121,19 +121,19 @@ model Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   r0 = 9.96820379306998;
   r1 = 0.0221366043399864;
   r2 = 0.00934921094738169;
-  r11 = 1.22886711962222e-05;
-  r12 = 1.0376421415741e-05;
-  r22 = 2.18683301945588e-06;
-  r1x2 = 1.36475817837692e-06;
-  r11x2 = 1.51513915390766e-09;
-  r1x22 = 6.39351849488596e-10;
-  r1x22d = 5.59231079319369e-20;
-  r11x22 = 1.78725515332219e-14;
-  rend = 3.31711803810961e-05;
+  r11 = 1.22886711962222e-005;
+  r12 = 1.0376421415741e-005;
+  r22 = 2.18683301945588e-006;
+  r1x2 = 1.36475817837692e-006;
+  r11x2 = 1.51513915390766e-009;
+  r1x22 = 6.39351849488596e-010;
+  r1x22d = 5.59231079319369e-020;
+  r11x22 = 1.78725515332219e-014;
+  rend = 3.31711803810961e-005;
   rendP = 0.000212533941418487;
-  iendIR = 7.25519178924707e-06;
-  iend = 1.13228497567934e-06;
-  rPbasal = 3.87230309356247e-05;
+  iendIR = 7.25519178924707e-006;
+  iend = 1.13228497567934e-006;
+  rPbasal = 3.87230309356247e-005;
   IRS = 9.99982253600007;
   IRSiP = 0.000177463999892648;
   X = 9.92463241634744;
@@ -142,7 +142,7 @@ model Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   PI3K_ = 0.0242164303337614;
   PDK1 = 8.65876984730663;
   PDK1_ = 1.34123015269338;
-  PKC = 3.60283594102724e-05;
+  PKC = 3.60283594102724e-005;
   PKC_P = 9.99996397164059;
   PKB = 9.90193143617302;
   PKB_P = 0.0980685638269942;
@@ -184,11 +184,11 @@ model Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   k7b = 565342.162392942;
   k8f = 1515762.41887571;
   k8b = 300.7511656484;
-  k91 = 8.14e-08;
+  k91 = 8.14e-008;
   k92 = 0.0280831426;
   k9b = 4.0297596909;
   k5Basic = 0.2040341054;
-  k5BasicWb = 2.34e-08;
+  k5BasicWb = 2.34e-008;
   k_glut4 = 31.4211308621;
   k_glut1 = 0.2966651081;
   KmG1 = 132.7704719106;
@@ -234,21 +234,28 @@ model Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   k_e1 = 0.0005;
   k_e2 = 339;
   D = 78000;
-  G_p = 178;
   G_t = 135;
-  I_l = 4.5;
+  INS = 0;
+  G_p = 178;
+  I_d = 25;
+  I_po = 3.6;
   I_p = 1.25;
   Q_sto1 = 78000;
   Q_sto2 = 0;
   Q_gut = 0;
-  I_1 = 25;
-  I_d = 25;
-  INS = 0;
-  I_po = 3.6;
   Y = 0;
+  I_l = 4.5;
+  I_1 = 25;
 
   //Other declarations:
-  var vglucoseuptake, KD, S2, S1, K4, K8, aa, cc, EGP, V_mmax, E, S, I, G;
-  var HE, m_3, Q_sto, Ra, k_empt, U_idm, U_id, U, S_po, G_p, G_t, I_l, I_p;
-  var Q_sto1, Q_sto2, Q_gut, I_1, I_d, INS, I_po, Y;
+  var vglucoseuptake, G_t, INS, KD, S2, S1, K4, K8, aa, cc, EGP, G_p, I_d;
+  var I_po, V_mmax, E, S, I, I_p, G, HE, m_3, Q_sto, Q_sto1, Q_sto2, Ra, Q_gut;
+  var k_empt, U_idm, U_id, U, S_po, Y, I_l, I_1;
+  const default, a1, a2, d1, d2, Kcr, Kex, Kend, Kdp, Kcat, Km, kfbasal, krbasal;
+  const k21, k22, k23, k24, k2b, k3f, k3b, k4f, k4b, k5f, k5b, k6f, k6b, k7f;
+  const k7b, k8f, k8b, k91, k92, k9b, k5Basic, k5BasicWb, k_glut4, k_glut1;
+  const KmG1, KmG4, kbf, V_G, k_1, k_2, G_b, V_I, m_1, m_2, m_4, m_5, m_6;
+  const HE_b, I_b, S_b, S_b_minus, k_max, k_min, k_abs, k_gri, f, b, d, BW;
+  const k_p1, k_p2, k_p3, k_p4, k_i, U_ii, V_m0, V_mX, K_m0, p_2U, part, K;
+  const alpha, beta, gamma, k_e1, k_e2, D;
 end

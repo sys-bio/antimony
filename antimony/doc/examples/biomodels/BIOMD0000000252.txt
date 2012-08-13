@@ -3,37 +3,37 @@ model *Hunziker2010_p53_StressSpecificResponse()
 
   // Compartments and Species:
   compartment compartment_1;
-  species $p in compartment_1, $mm in compartment_1, $m in compartment_1;
-  species $pm in compartment_1;
+  species $p in compartment_1, $m in compartment_1, $pm in compartment_1;
+  species $mm in compartment_1;
 
   // Rate Rules:
   p' = S - k_f * p * m - alpha * p + (k_b + gamma) * pm;
-  mm' = k_t * p^2 - beta * mm;
   m' = k_tl * mm - k_f * p * m + (k_b + delta) * pm - gamma * m;
   pm' = k_f * p * m - (k_b + delta) * pm - gamma * pm;
+  mm' = k_t * p^2 - beta * mm;
 
   // Species initializations:
   p = 1;
-  mm = 1;
   m = 1;
   pm = 1;
+  mm = 1;
 
   // Compartment initializations:
   compartment_1 = 1;
 
   // Variable initializations:
   S = 1000;
-  alpha = 0.1;
-  k_t = 0.03;
-  k_tl = 1.4;
-  k_b = 7200;
   k_f = 5000;
-  beta = 0.6;
+  alpha = 0.1;
+  k_b = 7200;
   gamma = 0.2;
+  k_t = 0.03;
+  beta = 0.6;
+  k_tl = 1.4;
   delta = 11;
 
   //Other declarations:
-  const compartment_1, S, alpha, k_t, k_tl, k_b, k_f, beta, gamma, delta;
+  const compartment_1, S, k_f, alpha, k_b, gamma, k_t, beta, k_tl, delta;
 
   // Unit definitions:
   unit volume = dimensionless;

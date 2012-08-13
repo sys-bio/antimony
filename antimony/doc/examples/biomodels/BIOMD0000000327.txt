@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function ap(ao, ai, bo, bi, ka, kb)
   (ao * bi - bo * ai) / (ka * kb * ((1 + ai / ka + bi / kb) * (ao / ka + bo / kb) + (1 + ao / ka + bo / kb) * (ai / ka + bi / kb)));
 end
@@ -8,11 +8,11 @@ function g(xi, xo)
 end
 
 
-model whitcomb04()
+model *whitcomb04()
 
   // Compartments and Species:
   compartment plasma, cell, lumen;
-  species bi in cell, $bb in plasma, $cb in plasma, $nb in plasma, ci in cell;
+  species $bb in plasma, $cb in plasma, $nb in plasma, bi in cell, ci in cell;
   species ni in cell, bl in lumen, $cl in lumen;
 
   // Assignment Rules:
@@ -52,10 +52,10 @@ model whitcomb04()
   _E1: at geq(time, toff): gcftr = gcftrbase;
 
   // Species initializations:
-  bi = 15;
   bb = 22;
   cb = 130;
   nb = 140;
+  bi = 15;
   ci = 60;
   ni = 14;
   bl = 32;
@@ -66,44 +66,110 @@ model whitcomb04()
   lumen = cell / vr;
 
   // Variable initializations:
-  ton = 60;
-  gcftr = gcftrbase;
-  gcftron = 1;
-  toff = 360;
-  gcftrbase = 7e-05;
-  g_bi = 0.2;
-  g_cl = 1;
-  zeta = 50;
-  kbi = 1;
-  kcl = 10;
-  gnbc = 2;
-  gapl = 0.25;
-  gapbl = 0.005;
   vr = 10;
+  vr has dimensionless;
+  ton = 60;
+  ton has second;
+  gcftr = gcftrbase;
+  gcftr has L_per_volt_per_sec_per_m2;
+  gcftron = 1;
+  gcftron has L_per_volt_per_sec_per_m2;
+  toff = 360;
+  toff has second;
+  gcftrbase = 7e-005;
+  gcftrbase has L_per_volt_per_sec_per_m2;
+  g_bi = 0.2;
+  g_bi has dimensionless;
+  g_cl = 1;
+  g_cl has dimensionless;
+  zeta = 50;
+  zeta has m2_per_L;
+  kbi = 1;
+  kbi has mM;
+  kcl = 10;
+  kcl has mM;
+  gnbc = 2;
+  gnbc has mmol_per_volt_per_sec_per_m2;
+  gapl = 0.25;
+  gapl has mmol_per_volt_per_sec_per_m2;
+  gapbl = 0.005;
+  gapbl has mmol_per_volt_per_sec_per_m2;
   bi0 = 15;
+  bi0 has mM;
   buf = 0.1;
+  buf has L_per_sec_per_m2;
   ek = -0.085;
+  ek has volt;
   gk = 1;
+  gk has mmol_per_volt_per_sec_per_m2;
   r = 8.31451;
+  r has J_per_mol_per_K;
   f = 96485;
+  f has C_per_mol;
   temp = 310;
+  temp has kelvin;
   ionstr = 160;
+  ionstr has mM;
   gnak = 3.125;
+  gnak has mmol_per_volt_per_sec_per_m2;
   np0 = 25;
+  np0 has mM;
   epump = -0.2;
+  epump has volt;
   gnaleak = 0.4;
+  gnaleak has mmol_per_volt_per_sec_per_m2;
   jac = 0.025;
+  jac has mmol_per_sec_per_m2;
   rat = 0.25;
+  rat has dimensionless;
+  eb has volt;
+  enbc has volt;
+  ec has volt;
+  ena has volt;
+  kccf has mmol_per_volt_per_sec_per_m2;
+  kbcf has mmol_per_volt_per_sec_per_m2;
+  knbc has mmol_per_volt_per_sec_per_m2;
+  v has volt;
+  jnbc has mmol_per_sec_per_m2;
+  jbcftr has mmol_per_sec_per_m2;
+  jccftr has mmol_per_sec_per_m2;
+  japl has mmol_per_sec_per_m2;
+  japbl has mmol_per_sec_per_m2;
+  jlum has L_per_sec_per_m2;
+  jnak has mmol_per_sec_per_m2;
+  jnaleak has mmol_per_sec_per_m2;
 
   //Other declarations:
   var gcftr, eb, enbc, ec, ena, kccf, kbcf, knbc, v, jnbc, jbcftr, jccftr;
   var japl, japbl, jlum, jnak, jnaleak;
+  const plasma, cell, lumen, vr, ton, gcftron, toff, gcftrbase, g_bi, g_cl;
+  const zeta, kbi, kcl, gnbc, gapl, gapbl, bi0, buf, ek, gk, r, f, temp, ionstr;
+  const gnak, np0, epump, gnaleak, jac, rat;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit mM = 1e-3 mole / litre;
+  unit mmol_per_volt_per_sec_per_m2 = 1e-3 mole / (volt * second * metre^2);
+  unit L_per_volt_per_sec_per_m2 = litre / (volt * second * metre^2);
+  unit mmol_per_sec_per_m2 = 1e-3 mole / (second * metre^2);
+  unit m2_per_L = metre^2 / litre;
+  unit L_per_sec_per_m2 = litre / (second * metre^2);
+  unit J_per_mol_per_K = joule / (mole * kelvin);
+  unit C_per_mol = coulomb / mole;
 
   //Display Names:
-  bi is "HCO3-";
+  substance is "mmol";
+  mmol_per_volt_per_sec_per_m2 is "mmol per volt per sec per m^2";
+  L_per_volt_per_sec_per_m2 is "L per volt per sec per m^2";
+  mmol_per_sec_per_m2 is "mmol per sec per m^2";
+  m2_per_L is "m^2 per L";
+  L_per_sec_per_m2 is "L per sec per m^2";
+  J_per_mol_per_K is "J per mol per K";
+  C_per_mol is "C per mol";
   bb is "HCO3-";
   cb is "CL-";
   nb is "Na+";
+  bi is "HCO3-";
   ci is "CL-";
   ni is "Na+";
   bl is "HCO3-";

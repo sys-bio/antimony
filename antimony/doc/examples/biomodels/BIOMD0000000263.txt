@@ -3,8 +3,8 @@ model *Model_1()
 
   // Compartments and Species:
   compartment Cell;
-  species $NGF in Cell, TrkA in Cell, pTrkA in Cell, pTrkA_Akt in Cell, Akt in Cell;
-  species pAkt in Cell, S6 in Cell, pAkt_S6 in Cell, pS6 in Cell, $pro_TrkA in Cell;
+  species $NGF in Cell, TrkA in Cell, $pro_TrkA in Cell, pTrkA in Cell, pTrkA_Akt in Cell;
+  species Akt in Cell, pAkt in Cell, S6 in Cell, pAkt_S6 in Cell, pS6 in Cell;
   species NGF_TrkA in Cell;
 
   // Assignment Rules:
@@ -29,6 +29,7 @@ model *Model_1()
 
   // Species initializations:
   TrkA = pro_TrkA;
+  pro_TrkA = 8.52065090518276;
   pTrkA = 0;
   pTrkA_Akt = 0;
   Akt = 1.15594897919397;
@@ -36,34 +37,33 @@ model *Model_1()
   S6 = 3.552336039555;
   pAkt_S6 = 0;
   pS6 = 0;
-  pro_TrkA = 8.52065090518276;
   NGF_TrkA = 0;
 
   // Compartment initializations:
   Cell = 1;
-  pTrkA_total has ng_per_ml;
-  pAkt_total has ng_per_ml;
 
   // Variable initializations:
+  NGF_conc_step = 0;
+  NGF_conc_step has ng_per_ml;
+  NGF_conc_pulse = 0;
+  NGF_conc_pulse has ng_per_ml;
+  pulse_time = 60;
+  pulse_time has time_unit;
+  NGF_conc_ramp = 30;
+  NGF_conc_ramp has ng_per_ml;
+  ramp_time = 3600;
+  ramp_time has time_unit;
+  pTrkA_total has ng_per_ml;
   pTrkA_scaleFactor = 0.848783474941268;
   pTrkA_scaleFactor has ng;
+  pAkt_total has ng_per_ml;
   pAkt_scaleFactor = 2.42381211094508;
   pAkt_scaleFactor has ng;
   pS6_scaleFactor = 0.525842718263069;
   pS6_scaleFactor has ng;
   pS6_total has ng_per_ml;
-  NGF_conc_step = 0;
-  NGF_conc_step has ng_per_ml;
-  NGF_conc_pulse = 0;
-  NGF_conc_pulse has ng_per_ml;
-  NGF_conc_ramp = 30;
-  NGF_conc_ramp has ng_per_ml;
   TrkA_turnover = 0.0011032440769796;
   TrkA_turnover has per_sec;
-  pulse_time = 60;
-  pulse_time has time_unit;
-  ramp_time = 3600;
-  ramp_time has time_unit;
   reaction_1_k1 = 0.00269408;
   reaction_1_k2 = 0.0133747;
   reaction_2_k1 = 0.0882701;
@@ -88,8 +88,8 @@ model *Model_1()
 
   //Other declarations:
   var pTrkA_total, pAkt_total, pS6_total;
-  const Cell, pTrkA_scaleFactor, pAkt_scaleFactor, pS6_scaleFactor, NGF_conc_step;
-  const NGF_conc_pulse, NGF_conc_ramp, TrkA_turnover, pulse_time, ramp_time;
+  const Cell, NGF_conc_step, NGF_conc_pulse, pulse_time, NGF_conc_ramp, ramp_time;
+  const pTrkA_scaleFactor, pAkt_scaleFactor, pS6_scaleFactor, TrkA_turnover;
 
   // Unit definitions:
   unit substance = dimensionless;

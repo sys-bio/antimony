@@ -15,10 +15,17 @@ model *vasalou2010()
   // Assignment Rules:
   GABA := GABA_o + v_GABA * VIP / (K_GABA + VIP);
   K_in := K_ex / theta_K;
+  theta_K := exp(E_K / (k_q * (T + T_abs) * 1000));
   Na_in := Na_ex / theta_Na;
+  theta_Na := exp(E_Na / (k_q * (T + T_abs) * 1000));
   v_K := V_MK * Ca_in / (k_MK + Ca_in) + V_b * beta / (k_b + beta);
-  f_r := -1 / (tau_m * log((theta - R_star * I_star) / (V_reset - R_star * I_star)));
   beta := VIP / (VIP + K_D);
+  f_r := -1 / (tau_m * log((theta - R_star * I_star) / (V_reset - R_star * I_star)));
+  tau_m := Cm * R_star;
+  theta := V_rest + V_theta;
+  R_star := 1 / (g_Na + g_K + g_L + g_Ca + gK_Ca - g_inhib - g_ex);
+  I_star := g_Na * E_Na + g_Ca * E_Ca + g_K * E_K + g_L * E_L + gK_Ca * E_K - g_inhib * E_inhib - g_ex * E_ex;
+  V_reset := V_rest + 4;
   v_sPc := v_sP0 + C_T * CB / (K_C + CB);
   E_Na := E_Na_0 * (T + T_abs) / (T_room + T_abs);
   E_K := E_K_0 * (T + T_abs) / (T_room + T_abs);
@@ -27,15 +34,11 @@ model *vasalou2010()
   Cl_in := Cl_o + M_P / (K_Cl1 + M_P) * v_Cl1 + GABA^n_Cl / (K_Cl2 + GABA^n_Cl) * v_Cl2;
   E_inhib := - k_q * (T + T_abs) * log(Cl_ex / Cl_in) * 1000;
   P_K := v_PK * B_C^n_PK / (K_PK + B_C^n_PK);
-  theta_Na := exp(E_Na / (k_q * (T + T_abs) * 1000));
-  theta_K := exp(E_K / (k_q * (T + T_abs) * 1000));
   alpha := 4 * P_Ca * Ca_in * 10^-3 + P_K * K_in + P_Na * Na_in + P_Cl * Cl_ex;
   beta_a := P_K * K_in - P_K * K_ex + P_Na * Na_in - P_Na * Na_ex + P_Cl * Cl_ex - P_Cl * Cl_in;
   c := -(4 * P_Ca * Ca_ex * 10^-3 + P_K * K_ex + P_Na * Na_ex + P_Cl * Cl_in);
   psi := (sqrt(beta_a^2 - 4 * alpha * c) - beta_a) / (2 * alpha);
   V_rest := R_g * (T + T_abs) / Faraday * log(psi) * 1000;
-  theta := V_rest + V_theta;
-  V_reset := V_rest + 4;
   R := V_R * V_rest / (K_R + V_rest);
   I_Na := g_Na * (V_rest - E_Na);
   g_K := g_K_0 + M_P / (K_gk + M_P) * v_gk;
@@ -44,9 +47,6 @@ model *vasalou2010()
   g_L := 1 / R;
   g_Ca := v_Ca * (M_P^n_Ca / (K_Ca + M_P^n_Ca));
   gK_Ca := VK_Ca * (C_C^n_KCa / (K_KCa + C_C^n_KCa));
-  I_star := g_Na * E_Na + g_Ca * E_Ca + g_K * E_K + g_L * E_L + gK_Ca * E_K - g_inhib * E_inhib - g_ex * E_ex;
-  R_star := 1 / (g_Na + g_K + g_L + g_Ca + gK_Ca - g_inhib - g_ex);
-  tau_m := Cm * R_star;
 
   // Reactions:
   vo:  -> 0.001Ca_in; 1000 * cytoplasm * (v_vo * B_C^n_vo / (K_vo + B_C^n_vo));
@@ -135,6 +135,12 @@ model *vasalou2010()
   nucleus = 1;
 
   // Variable initializations:
+  v_GABA = 19;
+  v_GABA has nM;
+  K_GABA = 3;
+  K_GABA has nM;
+  theta_K has mV;
+  theta_Na has mV;
   v_vo = 0.09;
   v_vo has uM_per_h;
   n_vo = 4.5;
@@ -215,6 +221,7 @@ model *vasalou2010()
   kd_n has per_h;
   V1_P = V_phos;
   V1_P has nM_per_h;
+  V_phos = 0.4;
   K_p = 0.1;
   K_p has nM;
   V2_P = 0.3;
@@ -277,6 +284,11 @@ model *vasalou2010()
   vd_BN = 0.6;
   vd_BN has nM_per_h;
   v_K has nM_per_h;
+  V_MK = 5;
+  k_MK = 2.9;
+  V_b = 2;
+  beta has dimensionless;
+  k_b = 2;
   K_1_CB = 0.01;
   K_1_CB has nM;
   vP = 1;
@@ -288,22 +300,16 @@ model *vasalou2010()
   v_VIP = 0.5;
   v_VIP has nM_per_h;
   f_r has hertz;
+  theta has mV;
+  I_star has uA;
+  V_reset has mV;
   n_VIP = 1.9;
   n_VIP has dimensionless;
   K_VIP = 15;
   k_dVIP = 0.5;
   n_dVIP = 0.2;
   n_dVIP has dimensionless;
-  v_GABA = 19;
-  v_GABA has nM;
-  K_GABA = 3;
-  K_GABA has nM;
-  beta has dimensionless;
   K_D = 0.08;
-  V_MK = 5;
-  k_MK = 2.9;
-  V_b = 2;
-  k_b = 2;
   E_Na has mV;
   E_Na_0 = 45;
   E_Na_0 has mV;
@@ -330,18 +336,14 @@ model *vasalou2010()
   v_PK = 1.9;
   n_PK = -2;
   K_PK = 1;
-  theta_Na has mV;
-  theta_K has mV;
   P_Ca = 0.05;
   P_Na = 0.036;
   P_Cl = 0.3;
   V_rest has mV;
   R_g = 8.314;
   Faraday = 96485;
-  theta has mV;
   V_theta = 20;
   V_theta has mV;
-  V_reset has mV;
   V_R = 0.41;
   K_R = 34;
   K_R has mV;
@@ -371,32 +373,30 @@ model *vasalou2010()
   VK_Ca = 3;
   n_KCa = -1;
   K_KCa = 0.16;
-  I_star has uA;
   g_inhib = 12.3;
   g_inhib has nS;
   E_ex = 0;
   E_ex has mV;
   Cm = 5;
   PK_o = 1.1;
-  V_phos = 0.4;
 
   //Other declarations:
-  var v_K, f_r, beta, v_sPc, E_Na, E_K, E_L, E_Ca, Cl_in, E_inhib, P_K, theta_Na;
-  var theta_K, alpha, beta_a, c, psi, V_rest, theta, V_reset, R, I_Na, g_K;
-  var I_Na_abs, g_ex, g_L, g_Ca, gK_Ca, I_star, R_star, tau_m;
-  const extra, cytoplasm, store, nucleus, v_vo, n_vo, K_vo, v_kk, n_kk, K_kk;
-  const n_kCa, V_M1, beta_IP3, V_M2, n_M2, K_2, V_M3, n_M3, K_R_Ca, p_A, K_A;
-  const k_f, v_sP0, C_T, K_C, n_BN, K_AP, v_mP, K_mP, kd_mP, v_sC, K_sC, v_mC;
-  const K_mC, kd_mC, v_sB, K_IB, m_BN, v_mB, K_mB, kd_mB, ks_P, kd_n, V1_P;
-  const K_p, V2_P, K_dp, k3, k4, ks_C, kd_nc, V1_C, V2_C, v_dPC, Kd, v_dCC;
-  const k1, k2, V1_PC, V2_PC, vd_PCC, V3_PC, V4_PC, vd_PCN, k7, k8, vd_IN;
-  const ksB, V1_B, V2_B, k5, k6, vd_BC, V3_B, V4_B, vd_BN, K_1_CB, vP, K_2_CB;
-  const WT, v_VIP, n_VIP, K_VIP, k_dVIP, n_dVIP, v_GABA, K_GABA, K_D, V_MK;
-  const k_MK, V_b, k_b, E_Na_0, T, T_abs, T_room, E_K_0, E_L_0, k_q, K_Cl1;
-  const v_Cl1, n_Cl, K_Cl2, v_Cl2, v_PK, n_PK, K_PK, P_Ca, P_Na, P_Cl, R_g;
-  const Faraday, V_theta, V_R, K_R, g_Na, g_K_0, K_gk, v_gk, V_ex1, n_ex1;
-  const K_ex1, n_ex2, K_ex2, V_ex2, v_Ca, n_Ca, K_Ca, VK_Ca, n_KCa, K_KCa;
-  const g_inhib, E_ex, Cm, PK_o, V_phos;
+  var theta_K, theta_Na, v_K, beta, f_r, tau_m, theta, R_star, I_star, V_reset;
+  var v_sPc, E_Na, E_K, E_L, E_Ca, Cl_in, E_inhib, P_K, alpha, beta_a, c;
+  var psi, V_rest, R, I_Na, g_K, I_Na_abs, g_ex, g_L, g_Ca, gK_Ca;
+  const extra, cytoplasm, store, nucleus, v_GABA, K_GABA, v_vo, n_vo, K_vo;
+  const v_kk, n_kk, K_kk, n_kCa, V_M1, beta_IP3, V_M2, n_M2, K_2, V_M3, n_M3;
+  const K_R_Ca, p_A, K_A, k_f, v_sP0, C_T, K_C, n_BN, K_AP, v_mP, K_mP, kd_mP;
+  const v_sC, K_sC, v_mC, K_mC, kd_mC, v_sB, K_IB, m_BN, v_mB, K_mB, kd_mB;
+  const ks_P, kd_n, V1_P, V_phos, K_p, V2_P, K_dp, k3, k4, ks_C, kd_nc, V1_C;
+  const V2_C, v_dPC, Kd, v_dCC, k1, k2, V1_PC, V2_PC, vd_PCC, V3_PC, V4_PC;
+  const vd_PCN, k7, k8, vd_IN, ksB, V1_B, V2_B, k5, k6, vd_BC, V3_B, V4_B;
+  const vd_BN, V_MK, k_MK, V_b, k_b, K_1_CB, vP, K_2_CB, WT, v_VIP, n_VIP;
+  const K_VIP, k_dVIP, n_dVIP, K_D, E_Na_0, T, T_abs, T_room, E_K_0, E_L_0;
+  const k_q, K_Cl1, v_Cl1, n_Cl, K_Cl2, v_Cl2, v_PK, n_PK, K_PK, P_Ca, P_Na;
+  const P_Cl, R_g, Faraday, V_theta, V_R, K_R, g_Na, g_K_0, K_gk, v_gk, V_ex1;
+  const n_ex1, K_ex1, n_ex2, K_ex2, V_ex2, v_Ca, n_Ca, K_Ca, VK_Ca, n_KCa;
+  const K_KCa, g_inhib, E_ex, Cm, PK_o;
 
   // Unit definitions:
   unit substance = 1e-9 mole;

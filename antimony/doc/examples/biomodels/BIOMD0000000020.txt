@@ -5,11 +5,11 @@ model *hhsa_1952()
   compartment unit_compartment;
 
   // Assignment Rules:
-  V_neg := - V;
-  E := V + E_R;
   i_Na := g_Na * m^3 * h * (V - V_Na);
   i_K := g_K * n^4 * (V - V_K);
   i_L := g_L * (V - V_L);
+  V_neg := - V;
+  E := V + E_R;
   V_Na := E_Na - E_R;
   V_K := E_K - E_R;
   V_L := E_L - E_R;
@@ -32,32 +32,32 @@ model *hhsa_1952()
   // Variable initializations:
   V = 0;
   V has mV;
+  I = 0;
+  Cm = 1;
   V_neg has mV;
   E has mV;
-  I = 0;
-  m = 0.052932;
-  h = 0.59612;
-  n = 0.31768;
   E_R = -75;
   E_R has mV;
-  Cm = 1;
   g_Na = 120;
+  m = 0.052932;
+  h = 0.59612;
+  V_Na has mV;
   g_K = 36;
+  n = 0.31768;
+  V_K has mV;
   g_L = 0.3;
+  V_L has mV;
   E_Na = -190;
   E_Na has mV;
   E_K = -63;
   E_K has mV;
   E_L = -85.613;
   E_L has mV;
-  V_Na has mV;
-  V_K has mV;
-  V_L has mV;
 
   //Other declarations:
-  var V, V_neg, E, i_Na, i_K, i_L, m, h, n, V_Na, V_K, V_L, alpha_m, beta_m;
+  var V, i_Na, i_K, i_L, V_neg, E, m, h, V_Na, n, V_K, V_L, alpha_m, beta_m;
   var alpha_h, beta_h, alpha_n, beta_n;
-  const unit_compartment, I, E_R, Cm, g_Na, g_K, g_L, E_Na, E_K, E_L;
+  const unit_compartment, I, Cm, E_R, g_Na, g_K, g_L, E_Na, E_K, E_L;
 
   // Unit definitions:
   unit time_unit = 1e-3 second;

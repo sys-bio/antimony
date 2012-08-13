@@ -7,6 +7,7 @@ function ZFUNC(AA, CA, zz)
   1 / (1 + AA^zz / CA^zz);
 end
 
+
 model *model_0000001()
 
   // Compartments and Species:
@@ -15,24 +16,24 @@ model *model_0000001()
 
   // Assignment Rules:
   INa := gNa * Minfs^pms * hhs * (V - VNa);
+  Minfs := GAMMAF(V, thetam, sigmam);
   INaP := gNaP * Pinfs * (V - VNa);
+  Pinfs := GAMMAF(V, thetap, sigmap);
   IKdr := gKdr * nns^pns * (V - VK);
   IA := gA * Ainfs^3 * bbs * (V - VK);
-  Iz := gZ * zzs * (V - VK);
-  Minfs := GAMMAF(V, thetam, sigmam);
-  Pinfs := GAMMAF(V, thetap, sigmap);
   Ainfs := GAMMAF(V, thetaa, sigmaa);
-  mKCa := ZFUNC(ac, Ca, pwrc);
+  Iz := gZ * zzs * (V - VK);
   ICa := gCa * rrs^2 * (V - VCa);
-  IAHP := gKAHP * qqs * (V - VK);
   IKC := gKCa * mKCa * ccs * (V - VK);
+  IAHP := gKAHP * qqs * (V - VK);
+  mKCa := ZFUNC(ac, Ca, pwrc);
 
   // Rate Rules:
-  zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs) / tauZs;
-  bbs' = (GAMMAF(V, thetab, sigmab) - bbs) / tauBs;
-  nns' = phi * (GAMMAF(V, thetan, sigman) - nns) / (1 + 5 * GAMMAF(V, t_taun, -15));
   hhs' = phi * (GAMMAF(V, thetah, sigmah) - hhs) / (1 + 7.5 * GAMMAF(V, t_tauh, -6));
   V' = (- gL * (V - VL) - INa - INaP - IKdr - IA - Iz - ICa - IKC - IAHP + Iapp) / Cm;
+  nns' = phi * (GAMMAF(V, thetan, sigman) - nns) / (1 + 5 * GAMMAF(V, t_taun, -15));
+  bbs' = (GAMMAF(V, thetab, sigmab) - bbs) / tauBs;
+  zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs) / tauZs;
   rrs' = (GAMMAF(V, thetar, sigmar) - rrs) / tauRs;
   ccs' = (GAMMAF(V, thetac, sigmac) - ccs) / tauKc;
   qqs' = (ZFUNC(aq, Ca, pwrq) - qqs) / tauq;
@@ -79,40 +80,40 @@ model *model_0000001()
   sigmap = 3;
   VK = -90;
   VL = -70;
-  zzs = 0.0013689;
-  bbs = 0.207565;
-  nns = 0.0242166;
   hhs = 0.979199;
   V = -71.962;
+  nns = 0.0242166;
+  bbs = 0.207565;
+  zzs = 0.0013689;
   rrs = 0.005507;
-  ccs = 0.002486;
-  qqs = 0;
   thetar = -20;
-  VCa = 120;
   sigmar = 10;
-  sigmac = 7;
+  tauRs = 1;
+  ccs = 0.002486;
   thetac = -30;
-  pwrc = 1;
+  sigmac = 7;
+  tauKc = 2;
+  qqs = 0;
+  aq = 2;
   pwrq = 4;
+  tauq = 450;
+  VCa = 120;
+  pwrc = 1;
   gCa = 0.08;
   gKCa = 10;
   gKAHP = 5;
-  tauRs = 1;
-  aq = 2;
   ac = 6;
-  tauq = 450;
   tauCa = 13;
   uuCa = 0.13;
-  tauKc = 2;
 
   //Other declarations:
-  var INa, INaP, IKdr, IA, Iz, Minfs, Pinfs, Ainfs, zzs, bbs, nns, hhs, V;
-  var rrs, ccs, qqs, mKCa, ICa, IAHP, IKC;
+  var INa, Minfs, hhs, V, INaP, Pinfs, IKdr, nns, IA, Ainfs, bbs, Iz, zzs;
+  var ICa, IKC, IAHP, rrs, ccs, qqs, mKCa;
   const compartment_0000001, Cm, pms, pns, VNa, t_tauh, t_taun, thetaa, sigmaa;
   const thetab, sigmab, tauBs, sigmam, sigmah, sigman, sigmaz, gNa, gKdr;
   const gL, Iapp, gA, gNaP, gZ, thetaz, tauZs, phi, thetah, thetam, thetan;
-  const thetap, sigmap, VK, VL, thetar, VCa, sigmar, sigmac, thetac, pwrc;
-  const pwrq, gCa, gKCa, gKAHP, tauRs, aq, ac, tauq, tauCa, uuCa, tauKc;
+  const thetap, sigmap, VK, VL, thetar, sigmar, tauRs, thetac, sigmac, tauKc;
+  const aq, pwrq, tauq, VCa, pwrc, gCa, gKCa, gKAHP, ac, tauCa, uuCa;
 
   // Unit definitions:
   unit time_unit = 1e-3 second;

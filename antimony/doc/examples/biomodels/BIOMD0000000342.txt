@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Zi2011_TGFbeta_Pathway()
+//Created by libAntimony v2.3-beta
+model *Zi2011_TGFbeta_Pathway()
 
   // Compartments and Species:
   compartment default, Vmed, Vcyt, Vnuc;
@@ -11,7 +11,7 @@ model Zi2011_TGFbeta_Pathway()
   species TGF_beta_ns in Vmed, $AA in Vcyt, $empty_degraded in Vcyt;
 
   // Assignment Rules:
-  Vmed := 2.000000e-03 / (1.000000e+06 * exp(log(1.45) * time / 1440));
+  Vmed := 2.000000e-003 / (1.000000e+006 * exp(log(1.45) * time / 1440));
   totalNumT1R := (T1R_surf + T1R_endo + LRC_surf + LRC_endo) * 2.3 * 602;
   totalNumT2R := (T2R_surf + T2R_endo + LRC_surf + LRC_endo) * 2.3 * 602;
   totalNumLRC := (LRC_surf + LRC_endo) * 2.3 * 602;
@@ -19,7 +19,7 @@ model Zi2011_TGFbeta_Pathway()
   totalNuclearPSmad2 := PSmad2n + 2 * PSmad2_PSmad2_n + PSmad2_Smad4_n;
   totalSmad2c := Smad2c + PSmad2c + 2 * PSmad2_PSmad2_c + PSmad2_Smad4_c;
   totalSmad2n := Smad2n + PSmad2n + 2 * PSmad2_PSmad2_n + PSmad2_Smad4_n;
-  medium_TGF_beta_amount := TGF_beta_ex * 1.000000e-09 * Vmed * 6.000000e+23;
+  medium_TGF_beta_amount := TGF_beta_ex * 1.000000e-009 * Vmed * 6.000000e+023;
   koff_ns := kon_ns * KD_ns;
 
   // Reactions:
@@ -58,64 +58,151 @@ model Zi2011_TGFbeta_Pathway()
 
   // Species initializations:
   TGF_beta_ex = 0.05;
+  TGF_beta_ex has nM_per_volume;
   T1R_surf = (k_T1R * kdeg_T1R + k_T1R * kr) / (kdeg_T1R * ki);
+  T1R_surf has nM_per_volume;
   T1R_endo = k_T1R / kdeg_T1R;
+  T1R_endo has nM_per_volume;
   T2R_surf = (k_T2R * kdeg_T2R + k_T2R * kr) / (kdeg_T2R * ki);
+  T2R_surf has nM_per_volume;
   T2R_endo = k_T2R / kdeg_T2R;
+  T2R_endo has nM_per_volume;
   LRC_surf = 0;
+  LRC_surf has nM_per_volume;
   LRC_endo = 0;
+  LRC_endo has nM_per_volume;
   Smad2c = 60.6;
+  Smad2c has nM_per_volume;
   Smad2n = 28.5;
+  Smad2n has nM_per_volume;
   Smad4c = 50.8;
+  Smad4c has nM_per_volume;
   Smad4n = 50.8;
+  Smad4n has nM_per_volume;
   PSmad2c = 0;
+  PSmad2c has nM_per_volume;
   PSmad2_PSmad2_c = 0;
+  PSmad2_PSmad2_c has nM_per_volume;
   PSmad2_Smad4_c = 0;
+  PSmad2_Smad4_c has nM_per_volume;
   PSmad2n = 0;
+  PSmad2n has nM_per_volume;
   PSmad2_PSmad2_n = 0;
+  PSmad2_PSmad2_n has nM_per_volume;
   PSmad2_Smad4_n = 0;
+  PSmad2_Smad4_n has nM_per_volume;
   TGF_beta_endo = 0;
+  TGF_beta_endo has nM_per_volume;
   TGF_beta_ns = 0;
+  TGF_beta_ns has nM_per_volume;
   AA = 0;
+  AA has nM_per_volume;
   empty_degraded = 0;
+  empty_degraded has nM_per_volume;
 
   // Compartment initializations:
   default = 1;
-  Vcyt = 2.3e-12;
-  Vnuc = 1e-12;
+  default has volume;
+  Vmed has volume;
+  Vcyt = 2.3e-012;
+  Vcyt has volume;
+  Vnuc = 1e-012;
+  Vnuc has volume;
 
   // Variable initializations:
-  stimulation_type = 1;
-  single_pulse_duration = 0.5;
-  TGF_beta_dose_mol_per_cell = TGF_beta_ex * 1.000000e-09 * Vmed * 6.000000e+23;
-  ki = 0.333;
-  kr = 0.0333;
   k_T1R = 0.0167;
-  k_T2R = 0.0190076;
+  k_T1R has nM_per_min;
   kdeg_T1R = 0.00256;
+  kdeg_T1R has per_min;
+  kr = 0.0333;
+  kr has per_min;
+  ki = 0.333;
+  ki has per_min;
+  k_T2R = 0.0190076;
+  k_T2R has nM_per_min;
   kdeg_T2R = 0.0132;
+  kdeg_T2R has per_min;
+  stimulation_type = 1;
+  stimulation_type has dimensionless;
+  single_pulse_duration = 0.5;
+  single_pulse_duration has min;
+  totalNumT1R has molecules_per_cell;
+  totalNumT2R has molecules_per_cell;
+  totalNumLRC has molecules_per_cell;
+  totalNumPSmad2 has molecules_per_cell;
+  totalNuclearPSmad2 has nM;
+  totalSmad2c has nM;
+  totalSmad2n has nM;
+  medium_TGF_beta_amount has molecules_per_cell;
+  TGF_beta_dose_mol_per_cell = TGF_beta_ex * 1.000000e-009 * Vmed * 6.000000e+023;
+  TGF_beta_dose_mol_per_cell has molecules_per_cell;
   kdeg_LRC = 0.00256;
+  kdeg_LRC has per_min;
   kdeg_TGF_beta = 0.347;
+  kdeg_TGF_beta has per_min;
   klid = 0.0233678;
+  klid has per_min;
   ka_LRC = 117.897;
+  ka_LRC has third_order;
   kdiss_LRC = 0.0438111;
+  kdiss_LRC has per_min;
   kimp_Smad2 = 0.156;
+  kimp_Smad2 has per_min;
   kexp_Smad2 = 0.763;
+  kexp_Smad2 has per_min;
   kimp_Smad4 = 0.156;
+  kimp_Smad4 has per_min;
   kexp_Smad4 = 0.359;
+  kexp_Smad4 has per_min;
   kpho_Smad2 = 0.0488268;
+  kpho_Smad2 has second_order;
   kon_Smads = 0.198472;
+  kon_Smads has second_order;
   koff_Smads = 1;
+  koff_Smads has per_min;
   kimp_Smads = 0.889;
+  kimp_Smads has per_min;
   kdepho_Smad2 = 0.394;
+  kdepho_Smad2 has per_min;
   kon_ns = 0.0505413;
+  kon_ns has per_min;
+  koff_ns has per_min;
   KD_ns = 40.2257;
+  KD_ns has dimensionless;
 
   //Other declarations:
   var Vmed, totalNumT1R, totalNumT2R, totalNumLRC, totalNumPSmad2, totalNuclearPSmad2;
-  var totalSmad2c, totalSmad2n, medium_TGF_beta_amount, koff_ns;
+  var totalSmad2c, totalSmad2n, medium_TGF_beta_amount, TGF_beta_dose_mol_per_cell;
+  var koff_ns;
+  const default, Vcyt, Vnuc, k_T1R, kdeg_T1R, kr, ki, k_T2R, kdeg_T2R, stimulation_type;
+  const single_pulse_duration, kdeg_LRC, kdeg_TGF_beta, klid, ka_LRC, kdiss_LRC;
+  const kimp_Smad2, kexp_Smad2, kimp_Smad4, kexp_Smad4, kpho_Smad2, kon_Smads;
+  const koff_Smads, kimp_Smads, kdepho_Smad2, kon_ns, KD_ns;
+
+  // Unit definitions:
+  unit substance = 1e-9 mole;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit time_unit = 60 second;
+  unit per_min = 1 / 60 second;
+  unit nM_per_min = 1e-9 mole / 60 second;
+  unit third_order = 1 / ((1e-9 mole)^2 * 60 second);
+  unit second_order = 1 / (1e-9 mole * 60 second);
+  unit min = 60 second;
+  unit nM = 1e-9 mole;
+  unit molecules_per_cell = dimensionless;
+  unit nM_per_volume = 1e-9 mole / litre;
 
   //Display Names:
+  time_unit is "min";
+  per_min is "per min";
+  nM_per_min is "nM per min";
+  third_order is "third order rate constant";
+  second_order is "second order rate constant";
+  min is "minute";
+  nM is "nanomolar";
+  molecules_per_cell is "molecules per cell";
   Vmed is "Medium";
   Vcyt is "Cytoplasm";
   Vnuc is "Nucleus";

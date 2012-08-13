@@ -3,11 +3,11 @@ model *Tyson1991CellModel_2()
 
   // Compartments and Species:
   compartment cell;
-  species $EmptySet in cell, $u in cell, $z in cell, $v in cell;
+  species $EmptySet in cell, $u in cell, $v in cell, $z in cell;
 
   // Assignment Rules:
-  z := v - u;
   alpha := k4prime / k4;
+  z := v - u;
 
   // Rate Rules:
   u' = k4 * (v - u) * (alpha + u^2) - k6 * u;
@@ -27,12 +27,12 @@ model *Tyson1991CellModel_2()
   cell = 1;
 
   // Variable initializations:
-  kappa = 0.015;
-  k6 = 1;
   k4 = 180;
+  k6 = 1;
+  kappa = 0.015;
   k4prime = 0.018;
 
   //Other declarations:
   var alpha;
-  const cell, kappa, k6, k4, k4prime;
+  const cell, k4, k6, kappa, k4prime;
 end
