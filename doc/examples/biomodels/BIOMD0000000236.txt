@@ -4,7 +4,7 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
   // Compartments and Species:
   compartment cell;
   species $GLC in cell, G6P_F6P in cell, $F6P in cell, FBP in cell, $G3P in cell;
-  species $DHAP in cell, DHAP_G3P in cell;
+  species DHAP_G3P in cell, $DHAP in cell;
 
   // Assignment Rules:
   F6P := G6P_F6P * KeqGPI / (1 + KeqGPI);
@@ -30,18 +30,30 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
 
   // Compartment initializations:
   cell = 1;
-  Vgk has mM_per_s;
 
   // Variable initializations:
-  hGK = 1.7;
-  hGK has dimensionless;
   KeqGPI = 0.3;
   KeqGPI has dimensionless;
   KeqTPI = 0.045455;
   KeqTPI has dimensionless;
+  Vgk has mM_per_s;
+  Vgk_min = 10;
+  Vgk_min has mmole_per_min_g;
+  dw_per_ml = 0.3333;
+  dw_per_ml has g_per_ml;
+  min_to_sec = 60;
+  min_to_sec has dimensionless;
+  hGK = 1.7;
+  hGK has dimensionless;
   Vpfk has mM_per_s;
+  Vpfk_min = 100;
+  Vpfk_min has mmole_per_min_g;
   Vfba has mM_per_s;
+  Vfba_min = 25;
+  Vfba_min has mmole_per_min_g;
   Vgapdh has mM_per_s;
+  Vgapdh_min = 250;
+  Vgapdh_min has mmole_per_min_g;
   Sgk = 8;
   Sgk has mM;
   Spfk = 4;
@@ -60,18 +72,6 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
   hpfk has dimensionless;
   hact = 1;
   hact has dimensionless;
-  dw_per_ml = 0.3333;
-  dw_per_ml has g_per_ml;
-  min_to_sec = 60;
-  min_to_sec has dimensionless;
-  Vgk_min = 10;
-  Vgk_min has mmole_per_min_g;
-  Vpfk_min = 100;
-  Vpfk_min has mmole_per_min_g;
-  Vfba_min = 25;
-  Vfba_min has mmole_per_min_g;
-  Vgapdh_min = 250;
-  Vgapdh_min has mmole_per_min_g;
   Pfba = 0.5;
   Pfba has mM;
   Qfba = 0.275;
@@ -81,9 +81,9 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
 
   //Other declarations:
   var Vgk, Vpfk, Vfba, Vgapdh, sigma;
-  const cell, hGK, KeqGPI, KeqTPI, Sgk, Spfk, Sfba, Sgapdh, Xpfk, alpha, hx;
-  const hpfk, hact, dw_per_ml, min_to_sec, Vgk_min, Vpfk_min, Vfba_min, Vgapdh_min;
-  const Pfba, Qfba, KeqFBA;
+  const cell, KeqGPI, KeqTPI, Vgk_min, dw_per_ml, min_to_sec, hGK, Vpfk_min;
+  const Vfba_min, Vgapdh_min, Sgk, Spfk, Sfba, Sgapdh, Xpfk, alpha, hx, hpfk;
+  const hact, Pfba, Qfba, KeqFBA;
 
   // Unit definitions:
   unit substance = 1e-3 mole;
@@ -103,6 +103,6 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
   F6P is "fructose-6-phosphate";
   FBP is "fructose-1,6-biphosphate";
   G3P is "glyceraldehyde--phosphate";
-  DHAP is "dihydroxyacetone-phosphate";
   DHAP_G3P is "DHAP-G3P pool";
+  DHAP is "dihydroxyacetone-phosphate";
 end

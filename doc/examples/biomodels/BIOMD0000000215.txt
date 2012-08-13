@@ -23,12 +23,13 @@ function function_6(a5, Tbet_Prot, K5, Rec_Prot, K6, Ag, K7)
   a5 * (Tbet_Prot / (K5 + Tbet_Prot)) * (Rec_Prot / (K6 + Rec_Prot)) * (Ag / (K7 + Ag));
 end
 
+
 model *Schulz2009_Th1_differentiation()
 
   // Compartments and Species:
   compartment compartment_;
-  species $Ag in compartment_, Ifn_Prot in compartment_, Rec_Prot in compartment_;
-  species Tbet_Prot in compartment_, Tbet_mRNA in compartment_, Ifn_mRNA in compartment_;
+  species Tbet_mRNA in compartment_, Ifn_mRNA in compartment_, $Ag in compartment_;
+  species Ifn_Prot in compartment_, Rec_Prot in compartment_, Tbet_Prot in compartment_;
   species Rec_mRNA in compartment_;
 
   // Assignment Rules:
@@ -51,11 +52,11 @@ model *Schulz2009_Th1_differentiation()
   reaction_13:  => Ifn_mRNA; compartment_ * function_6(reaction_13_a5, Tbet_Prot, reaction_13_K5, Rec_Prot, reaction_13_K6, Ag, reaction_13_K7);
 
   // Species initializations:
+  Tbet_mRNA = 0.0440000000000001;
+  Ifn_mRNA = 0;
   Ifn_Prot = 0;
   Rec_Prot = 0;
   Tbet_Prot = 44.0000000000001;
-  Tbet_mRNA = 0.0440000000000001;
-  Ifn_mRNA = 0;
   Rec_mRNA = 0;
 
   // Compartment initializations:

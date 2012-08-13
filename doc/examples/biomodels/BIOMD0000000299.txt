@@ -3,20 +3,20 @@ model *Leloup1999_CircadianRhythms_Neurospora()
 
   // Compartments and Species:
   compartment Cytoplasm, Nucleus;
-  species $M in Nucleus, $FC in Cytoplasm, $FN in Nucleus;
+  species $M in Nucleus, $FN in Nucleus, $FC in Cytoplasm;
 
   // Assignment Rules:
   Ft := FC + FN;
 
   // Rate Rules:
   M' = vs * (KI^n / (KI^n + FN^n)) - vm * (M / (Km + M));
-  FC' = ks * M + k2 * FN - (vd * (FC / (Kd + FC)) + k1 * FC);
   FN' = k1 * FC - k2 * FN;
+  FC' = ks * M + k2 * FN - (vd * (FC / (Kd + FC)) + k1 * FC);
 
   // Species initializations:
   M = 0.1;
-  FC = 0.1;
   FN = 0.1;
+  FC = 0.1;
 
   // Compartment initializations:
   Cytoplasm = 1;
@@ -24,17 +24,17 @@ model *Leloup1999_CircadianRhythms_Neurospora()
 
   // Variable initializations:
   vs = 1.6;
-  vm = 0.505;
-  Km = 0.5;
   KI = 1;
   n = 4;
+  vm = 0.505;
+  Km = 0.5;
   ks = 0.5;
+  k2 = 0.6;
   vd = 1.4;
   Kd = 0.13;
   k1 = 0.5;
-  k2 = 0.6;
 
   //Other declarations:
   var Ft;
-  const Cytoplasm, Nucleus, vs, vm, Km, KI, n, ks, vd, Kd, k1, k2;
+  const Cytoplasm, Nucleus, vs, KI, n, vm, Km, ks, k2, vd, Kd, k1;
 end

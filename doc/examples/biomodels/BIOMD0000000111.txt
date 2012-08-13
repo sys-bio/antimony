@@ -8,8 +8,8 @@ model *Novak2001_FissionYeast_CellCycle()
 
   // Assignment Rules:
   MPF := (cdc13T - preMPF) * (cdc13T - Trimer) / cdc13T;
-  sigma := cdc13T + rum1T + Kdiss;
   Trimer := 2 * cdc13T * rum1T / (sigma + (sigma^2 - 4 * cdc13T * rum1T)^0.5);
+  sigma := cdc13T + rum1T + Kdiss;
   TF := 2 * k15 * M * J16 / (k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16 + sqrt((k16_prime + k16_double_prime * MPF - k15 * M + (k16_prime + k16_double_prime * MPF) * J15 + k15 * M * J16)^2 - 4 * (k16_prime + k16_double_prime * MPF - k15 * M) * k15 * M * J16));
   kwee := kwee_prime + (kwee_double_prime - kwee_prime) * (2 * Vawee * Jiwee / (Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee + sqrt((Viwee * MPF - Vawee + Viwee * MPF * Jawee + Vawee * Jiwee)^2 - 4 * (Viwee * MPF - Vawee) * Vawee * Jiwee)));
   k25 := k25_prime + (k25_double_prime - k25_prime) * (2 * Va25 * MPF * Ji25 / (Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25 + sqrt((Vi25 - Va25 * MPF + Vi25 * Ja25 + Va25 * MPF * Ji25)^2 - 4 * (Vi25 - Va25 * MPF) * Va25 * MPF * Ji25)));
@@ -52,6 +52,7 @@ model *Novak2001_FissionYeast_CellCycle()
 
   // Compartment initializations:
   cell = 1;
+  Trimer has dimensionless;
 
   // Variable initializations:
   flag_MPF = 0;
@@ -59,7 +60,6 @@ model *Novak2001_FissionYeast_CellCycle()
   sigma has dimensionless;
   Kdiss = 0.001;
   Kdiss has dimensionless;
-  Trimer has dimensionless;
   TF has dimensionless;
   k15 = 1.5;
   k15 has min_inv;
@@ -157,7 +157,7 @@ model *Novak2001_FissionYeast_CellCycle()
   mu has min_inv;
 
   //Other declarations:
-  var flag_MPF, sigma, Trimer, TF, kwee, k25;
+  var Trimer, flag_MPF, sigma, TF, kwee, k25;
   const cell, Kdiss, k15, J16, k16_prime, k16_double_prime, J15, kwee_prime;
   const kwee_double_prime, Vawee, Jiwee, Viwee, Jawee, k25_prime, k25_double_prime;
   const Va25, Ji25, Vi25, Ja25, k1, k2_prime, k2_double_prime, k2_triple_prime;

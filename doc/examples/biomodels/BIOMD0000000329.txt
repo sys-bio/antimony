@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Kummer2000_CalciumSpiking()
+//Created by libAntimony v2.3-beta
+model *Kummer2000_CalciumSpiking()
 
   // Compartments and Species:
   compartment cytoplasm, ER;
@@ -9,7 +9,7 @@ model Kummer2000_CalciumSpiking()
   a' = k1 + k2 * a - k3 * a * b / (a + K4) - k5 * a * c / (a + K6);
   b' = k7 * a - k8 * b / (b + K9);
   c' = k10 * c * b * d / (d + K11) + k12 * b + k13 * a - k14 * c / (c + K15) - k16 * c / (c + K17);
-  d' = -k10 * c * b * d / (d + K11) + k16 * c / (c + K17);
+  d' = - k10 * c * b * d / (d + K11) + k16 * c / (c + K17);
 
   // Species initializations:
   a = 0.01;
@@ -39,6 +39,10 @@ model Kummer2000_CalciumSpiking()
   K15 = 0.16;
   k16 = 4.85;
   K17 = 0.05;
+
+  //Other declarations:
+  const cytoplasm, ER, k1, k2, k3, K4, k5, K6, k7, k8, K9, k10, K11, k12;
+  const k13, k14, K15, k16, K17;
 
   //Display Names:
   a is "G-alpha";

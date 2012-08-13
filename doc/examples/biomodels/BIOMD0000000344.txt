@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Hsp70Model()
+//Created by libAntimony v2.3-beta
+model *Hsp70Model()
 
   // Compartments and Species:
   compartment cytosol, nucleus;
@@ -174,18 +174,18 @@ model Hsp70Model()
   // Variable initializations:
   kalive = 1;
   ksynNatP = 0.042;
-  kmisfold = 2e-06;
-  kbinMisPProt = 1e-07;
+  kmisfold = 2e-006;
+  kbinMisPProt = 1e-007;
   kdegMisP = 0.01;
-  kagg = 1e-08;
-  kseqagg = 7e-07;
-  kbinAggPProt = 1e-05;
-  kbinHspMisp = 8e-06;
-  krelHspMisp = 8e-05;
+  kagg = 1e-008;
+  kseqagg = 7e-007;
+  kbinAggPProt = 1e-005;
+  kbinHspMisp = 8e-006;
+  krelHspMisp = 8e-005;
   krefold = 0.00055;
   kbinHsf1Hsp90 = 0.02;
   krelHsf1Hsp90 = 0.5;
-  kdimerHsf1 = 8e-05;
+  kdimerHsf1 = 8e-005;
   ktrimerHsf1 = 0.01;
   kdetrimerHsf1 = 0.5;
   kdedimerHsf1 = 0.5;
@@ -194,8 +194,8 @@ model Hsp70Model()
   kupregHsp = 0.2;
   kbasalsynHsp70 = 0.008;
   kbasalsynHsp90 = 0.008;
-  kbinHsp70Prot = 1.2e-08;
-  kbinHsp90Prot = 1e-08;
+  kbinHsp70Prot = 1.2e-008;
+  kbinHsp90Prot = 1e-008;
   kdegHsp70 = 0.01;
   kdegHsp90 = 0.01;
   kgenROS = 0.01;
@@ -214,27 +214,41 @@ model Hsp70Model()
   krelHSEPhosTriH = 0.08;
   kphosp38 = 0.02;
   kdephosp38Mkp1 = 0.05;
-  kgenROSAggP = 1e-06;
+  kgenROSAggP = 1e-006;
   ksynAkt = 0.0015;
   kbinAktHsp90 = 0.00037;
   krelAktHsp90 = 7;
-  kbinAktProt = 6e-08;
-  krelAktProt = 1e-08;
+  kbinAktProt = 6e-008;
+  krelAktProt = 1e-008;
   kdegAkt = 0.01;
-  kbinCHIP = 2e-07;
-  krelCHIP = 1e-08;
-  ksynMkp1 = 1e-05;
-  kbinMkp1Prot = 9.6e-09;
+  kbinCHIP = 2e-007;
+  krelCHIP = 1e-008;
+  ksynMkp1 = 1e-005;
+  kbinMkp1Prot = 9.6e-009;
   kdegMkp1 = 0.01;
   kphosMkp1 = 0.02;
   kdephosMkp1 = 0.001;
   kgenROSp38 = 0.0001;
-  kdamHsp = 1e-08;
-  kp38death = 1.5e-07;
-  kJnkdeath = 1.5e-07;
-  kPIdeath = 2e-08;
+  kdamHsp = 1e-008;
+  kp38death = 1.5e-007;
+  kJnkdeath = 1.5e-007;
+  kPIdeath = 2e-008;
   kp38act = 1;
 
   //Other declarations:
-  var kalive, tot_Hsp90, tot_Hsp70, tot_MisP;
+  var kalive, kbinHsf1Hsp90, kgenROS, krelHsp90client, krelAktHsp90, kp38act;
+  var tot_Hsp90, tot_Hsp70, tot_MisP;
+  const cytosol, nucleus, ksynNatP, kmisfold, kbinMisPProt, kdegMisP, kagg;
+  const kseqagg, kbinAggPProt, kbinHspMisp, krelHspMisp, krefold, krelHsf1Hsp90;
+  const kdimerHsf1, ktrimerHsf1, kdetrimerHsf1, kdedimerHsf1, kbinHSEHsf1;
+  const krelHSEHsf1, kupregHsp, kbasalsynHsp70, kbasalsynHsp90, kbinHsp70Prot;
+  const kbinHsp90Prot, kdegHsp70, kdegHsp90, kremROS, kbinHsp70client, krelHsp70client;
+  const kbinHsp90client, kphosJnk, kdephosJnkMkp1, kbinHsp70Ppx, krelHsp70Ppx;
+  const kphosHsf1, kdephosHsf1, kbinHSEPhosTriH, krelHSEPhosTriH, kphosp38;
+  const kdephosp38Mkp1, kgenROSAggP, ksynAkt, kbinAktHsp90, kbinAktProt, krelAktProt;
+  const kdegAkt, kbinCHIP, krelCHIP, ksynMkp1, kbinMkp1Prot, kdegMkp1, kphosMkp1;
+  const kdephosMkp1, kgenROSp38, kdamHsp, kp38death, kJnkdeath, kPIdeath;
+
+  // Unit definitions:
+  unit substance = item;
 end

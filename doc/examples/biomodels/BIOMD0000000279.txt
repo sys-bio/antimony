@@ -6,11 +6,10 @@ model *Komarova2005_PTHaction_OsteoclastOsteoblastCoupling()
   species $x1 in Compartment_, $x2 in Compartment_, $z in Compartment_;
 
   // Assignment Rules:
-  y1 := piecewise(x1 - x1_bar, gt(x1, x1_bar), 0);
   y2 := piecewise(x2 - x2_bar, gt(x2, x2_bar), 0);
+  y1 := piecewise(x1 - x1_bar, gt(x1, x1_bar), 0);
   x1_bar := (beta1 / alpha1)^((1 - g22) / gamma) * (beta2 / alpha2)^(g21 / gamma);
   x2_bar := (beta1 / alpha1)^(g12 / gamma) * (beta2 / alpha2)^((1 - g11) / gamma);
-  g21 := piecewise(0.15, and(geq(time, 1), lt(time, 2)), -0.5);
   gamma := g12 * g21 - (1 - g11) * (1 - g22);
 
   // Rate Rules:
@@ -28,18 +27,20 @@ model *Komarova2005_PTHaction_OsteoclastOsteoblastCoupling()
 
   // Variable initializations:
   alpha1 = 3;
+  g11 = 0.5;
+  g21 = -0.5;
   beta1 = 0.2;
   alpha2 = 4;
-  beta2 = 0.02;
-  k1 = 0.24;
-  k2 = 0.0017;
-  g11 = 0.5;
   g12 = 1;
   g22 = 0;
+  beta2 = 0.02;
+  k2 = 0.0017;
+  k1 = 0.24;
 
   //Other declarations:
-  var y1, y2, x1_bar, x2_bar, g21, gamma;
-  const Compartment_, alpha1, beta1, alpha2, beta2, k1, k2, g11, g12, g22;
+  var y2, y1, x1_bar, x2_bar, gamma;
+  const Compartment_, alpha1, g11, g21, beta1, alpha2, g12, g22, beta2, k2;
+  const k1;
 
   //Display Names:
   x1 is "Osteoclasts";

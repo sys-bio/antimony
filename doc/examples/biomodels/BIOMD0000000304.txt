@@ -8,23 +8,23 @@ model *Plant1981_BurstingNerveCells()
 
   // Assignment Rules:
   i_Na := g_I * m_infinity^3 * h1 * (V_I - V_membrane);
-  Vs := a * V_membrane + b;
-  m_infinity := alpha_m / (alpha_m + beta_m);
-  alpha_m := 0.1 * (50 - Vs) / (exp((50 - Vs) / 10) - 1);
-  beta_m := 4 * exp((25 - Vs) / 18);
-  h_infinity := alpha_h / (alpha_h + beta_h);
-  alpha_h := 0.07 * exp((25 - Vs) / 20);
-  beta_h := 1 / (exp((55 - Vs) / 10) + 1);
-  tau_h := 12.5 / (alpha_h + beta_h);
-  x_infinity := 1 / (exp(0.15 * (- V_membrane - 50)) + 1);
   i_Ca := g_T * x1 * (V_I - V_membrane);
-  n_infinity := alpha_n / (alpha_n + beta_n);
   i_K := g_K * n1^4 * (V_K - V_membrane);
-  alpha_n := 0.01 * (55 - Vs) / (exp((55 - Vs) / 10) - 1);
-  beta_n := 0.125 * exp((45 - Vs) / 80);
-  tau_n := 12.5 / (alpha_n + beta_n);
   i_K_Ca := g_K_Ca * c / (K_p + c) * (V_K - V_membrane);
   i_L := g_L * (V_L - V_membrane);
+  h_infinity := alpha_h / (alpha_h + beta_h);
+  tau_h := 12.5 / (alpha_h + beta_h);
+  x_infinity := 1 / (exp(0.15 * (- V_membrane - 50)) + 1);
+  n_infinity := alpha_n / (alpha_n + beta_n);
+  tau_n := 12.5 / (alpha_n + beta_n);
+  m_infinity := alpha_m / (alpha_m + beta_m);
+  Vs := a * V_membrane + b;
+  alpha_m := 0.1 * (50 - Vs) / (exp((50 - Vs) / 10) - 1);
+  beta_m := 4 * exp((25 - Vs) / 18);
+  alpha_h := 0.07 * exp((25 - Vs) / 20);
+  beta_h := 1 / (exp((55 - Vs) / 10) + 1);
+  alpha_n := 0.01 * (55 - Vs) / (exp((55 - Vs) / 10) - 1);
+  beta_n := 0.125 * exp((45 - Vs) / 80);
 
   // Rate Rules:
   V_membrane' = i_Na + i_Ca + i_K + i_K_Ca + i_L;
@@ -44,29 +44,29 @@ model *Plant1981_BurstingNerveCells()
   COMpartment_ = 1;
 
   // Variable initializations:
+  tau_x = 235;
+  f = 0.0003;
+  K_c = 0.0085;
+  V_Ca = 140;
+  g_I = 4;
   V_I = 30;
   V_K = -75;
   V_L = -40;
-  V_Ca = 140;
-  g_I = 4;
   g_K = 0.3;
   g_T = 0.01;
   g_K_Ca = 0.03;
   g_L = 0.003;
   K_p = 0.5;
-  K_c = 0.0085;
-  f = 0.0003;
-  tau_x = 235;
   a = 1.209;
   b = 78.714;
   g_Ca = 0.004;
 
   //Other declarations:
-  var i_Na, Vs, m_infinity, alpha_m, beta_m, h_infinity, alpha_h, beta_h;
-  var tau_h, g_Ca, x_infinity, i_Ca, n_infinity, i_K, alpha_n, beta_n, tau_n;
-  var i_K_Ca, i_L;
-  const COMpartment_, V_I, V_K, V_L, V_Ca, g_I, g_K, g_T, g_K_Ca, g_L, K_p;
-  const K_c, f, tau_x, a, b;
+  var i_Na, i_Ca, i_K, i_K_Ca, i_L, h_infinity, tau_h, x_infinity, n_infinity;
+  var tau_n, m_infinity, Vs, alpha_m, beta_m, alpha_h, beta_h, g_Ca, alpha_n;
+  var beta_n;
+  const COMpartment_, tau_x, f, K_c, V_Ca, g_I, V_I, V_K, V_L, g_K, g_T, g_K_Ca;
+  const g_L, K_p, a, b;
 
   //Display Names:
   V_membrane is "V";

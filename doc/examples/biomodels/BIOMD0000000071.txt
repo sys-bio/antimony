@@ -7,24 +7,24 @@ model *Bakker2001_Glycolysis()
   species Fru16BP in glycosome, DHAP in tot_cell, GAP in glycosome, NAD in glycosome;
   species BPGA13 in glycosome, NADH in glycosome, Pyr in cytosol, Nb in tot_cell;
   species Pc in cytosol, $PyrE in extracellular, $Gly in glycosome, $GlcE in extracellular;
-  species $Gly3P in tot_cell, $ATPc in cytosol, $ADPc in cytosol, $ATPg in glycosome;
-  species $ADPg in glycosome, $DHAPg in glycosome, $DHAPc in cytosol, $Gly3Pc in cytosol;
-  species $Gly3Pg in glycosome, $PGAg in glycosome, $PEPc in cytosol;
+  species $Gly3P in tot_cell, $Gly3Pc in cytosol, $Gly3Pg in glycosome, $ATPc in cytosol;
+  species $ADPc in cytosol, $ATPg in glycosome, $ADPg in glycosome, $DHAPg in glycosome;
+  species $DHAPc in cytosol, $PGAg in glycosome, $PEPc in cytosol;
 
   // Assignment Rules:
   Gly3P := (Gly3Pc * cytosol + Gly3Pg * glycosome) / tot_cell;
+  Gly3Pc := sumc5 - DHAPc;
+  Gly3Pg := Gly3Pc * DHAPg / (Keq_anti * DHAPc);
   ATPc := (Pc * (1 - 4 * KeqAK) - sumAc + ((sumAc - (1 - 4 * KeqAK) * Pc)^2 + 4 * (1 - 4 * KeqAK) * KeqAK * Pc^2)^0.5) / (2 * (1 - 4 * KeqAK));
   ADPc := Pc - 2 * ATPc;
   ATPg := (Pg * (1 - 4 * KeqAK) - sumAg + ((sumAg - (1 - 4 * KeqAK) * Pg)^2 + 4 * (1 - 4 * KeqAK) * KeqAK * Pg^2)^0.5) / (2 * (1 - 4 * KeqAK));
   ADPg := Pg - 2 * ATPg;
   DHAPg := (DHAP * Vt - DHAPc * Vc) / Vg;
   DHAPc := sumc5 * (1 + Vc / Vg) * DHAP / (sumc4 + sumc5 * Vc / Vg - (BPGA13 + 2 * Fru16BP + Fru6P + GAP + Glc6P + Pg));
-  Gly3Pc := sumc5 - DHAPc;
-  Gly3Pg := Gly3Pc * DHAPg / (Keq_anti * DHAPc);
-  PGAg := Nb * (1 + Vc / Vg) / (1 + (1 + Keq_PGM + Keq_PGM * Keq_ENO) * Vc / Vg);
-  PEPc := Keq_ENO * Keq_PGM * PGAg;
   Vc := cytosol * Vt / tot_cell;
   Vg := glycosome * Vt / tot_cell;
+  PGAg := Nb * (1 + Vc / Vg) / (1 + (1 + Keq_PGM + Keq_PGM * Keq_ENO) * Vc / Vg);
+  PEPc := Keq_ENO * Keq_PGM * PGAg;
 
   // Reactions:
   vGlcTr: $GlcE -> GlcI; tot_cell / Vt * vGlcTr_Vm1 * (GlcE - GlcI) / (vGlcTr_K1Glc + GlcE + GlcI + vGlcTr_afac * GlcE * GlcI / vGlcTr_K1Glc);
@@ -67,28 +67,28 @@ model *Bakker2001_Glycolysis()
   extracellular = 1;
 
   // Variable initializations:
-  Vt = 5.7;
-  Vt has microlitre_per_mg;
-  Vc has microlitre_per_mg;
-  Vg has microlitre_per_mg;
-  TPIact = 1;
-  TPIact has dimensionless;
+  KeqAK = 0.442;
+  KeqAK has dimensionless;
   sumAc = 3.9;
   sumAc has mM;
   sumAg = 6;
   sumAg has mM;
-  KeqAK = 0.442;
-  KeqAK has dimensionless;
-  Keq_anti = 1;
-  Keq_anti has dimensionless;
-  sumc4 = 45;
-  sumc4 has mM;
+  Vt = 5.7;
+  Vt has microlitre_per_mg;
+  Vc has microlitre_per_mg;
+  Vg has microlitre_per_mg;
   sumc5 = 5;
   sumc5 has mM;
+  sumc4 = 45;
+  sumc4 has mM;
+  Keq_anti = 1;
+  Keq_anti has dimensionless;
   Keq_PGM = 0.187;
   Keq_PGM has dimensionless;
   Keq_ENO = 6.7;
   Keq_ENO has dimensionless;
+  TPIact = 1;
+  TPIact has dimensionless;
   vGlcTr_Vm1 = 106.2;
   vGlcTr_Vm1 has nanomole_per_min_per_mg;
   vGlcTr_K1Glc = 2;
@@ -212,8 +212,8 @@ model *Bakker2001_Glycolysis()
 
   //Other declarations:
   var Vc, Vg;
-  const tot_cell, glycosome, cytosol, extracellular, Vt, TPIact, sumAc, sumAg;
-  const KeqAK, Keq_anti, sumc4, sumc5, Keq_PGM, Keq_ENO;
+  const tot_cell, glycosome, cytosol, extracellular, KeqAK, sumAc, sumAg;
+  const Vt, sumc5, sumc4, Keq_anti, Keq_PGM, Keq_ENO, TPIact;
 
   // Unit definitions:
   unit substance = 1e-9 mole;
@@ -243,17 +243,17 @@ model *Bakker2001_Glycolysis()
   Gly is "Glycerol";
   GlcE is "Glucose external";
   Gly3P is "Glycerol 3-phosphate";
+  Gly3Pc is "Gy3P c.";
+  Gly3Pg is "Gy3P g.";
   ATPc is "ATP cyt.";
   ADPc is "ADP cyt.";
   ATPg is "ATP gly.";
   ADPg is "ADP gly.";
   DHAPg is "DHAP gly.";
+  Vt is "tot volume per mg protein";
   DHAPc is "DHAP cyt.";
-  Gly3Pc is "Gy3P c.";
-  Gly3Pg is "Gy3P g.";
   PGAg is "3-PGA g.";
   PEPc is "PEP c.";
-  Vt is "tot volume per mg protein";
   vGlcTr is "Glucose transport";
   vHK is "Hexokinase";
   vPGI is "Glucose-phosphate isomerase";

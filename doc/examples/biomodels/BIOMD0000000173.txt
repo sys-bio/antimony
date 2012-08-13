@@ -77,6 +77,12 @@ model *Schmierer_2008_Smad_Tgfb()
   cytosol = 2.27e-012;
 
   // Variable initializations:
+  SB_add = 10000;
+  SB_add has nM;
+  t_SB = 2700;
+  t_SB has time_unit;
+  SB_0 = 0;
+  SB_0 has nM;
   kin = 5.93e-015;
   kin has lp;
   kex = 1.26e-014;
@@ -102,17 +108,11 @@ model *Schmierer_2008_Smad_Tgfb()
   K_dissSB has nM;
   ntoN = 602214150000000;
   ntoN has dimensionless;
-  SB_0 = 0;
-  SB_0 has nM;
-  SB_add = 10000;
-  SB_add has nM;
-  t_SB = 2700;
-  t_SB has time_unit;
 
   //Other declarations:
   var CIF, K_diss, K_dissSB;
-  const nucleus, cytosol, kin, kex, kphos, kdephos, kin_CIF, kon, koff, kon_SB;
-  const koff_SB, k_TGFb, ntoN, SB_0, SB_add, t_SB;
+  const nucleus, cytosol, SB_add, t_SB, SB_0, kin, kex, kphos, kdephos, kin_CIF;
+  const kon, koff, kon_SB, koff_SB, k_TGFb, ntoN;
 
   // Unit definitions:
   unit substance = 1e-9 mole;
@@ -149,6 +149,9 @@ model *Schmierer_2008_Smad_Tgfb()
   G4_c is "pGFP-Smad2/Smad4_c";
   GG_c is "pGFP-Smad2/pGFP-Smad2_c";
   SB is "SB-431542";
+  SB_add is "SB conc after addition";
+  t_SB is "time of SB addition";
+  SB_0 is "SB conc at start";
   kin is "kin (import rate for monomeric Smads)";
   kex is "kex (export rate for monomeric Smads)";
   kphos is "kphos (phosphorylation rate)";
@@ -163,9 +166,6 @@ model *Schmierer_2008_Smad_Tgfb()
   k_TGFb is "k_TGFb (rate of TGFb binding to receptors)";
   K_dissSB is "Kdiss SB (dissociation constant of the SB/receptor interaction)";
   ntoN is "quantity to number factor";
-  SB_0 is "SB conc at start";
-  SB_add is "SB conc after addition";
-  t_SB is "time of SB addition";
   reaction_1 is "Reaction  7 Shuttling S4";
   reaction_2 is "Reaction  5A Shuttling S2";
   reaction_3 is "Reaction  6A Shuttling pS2";

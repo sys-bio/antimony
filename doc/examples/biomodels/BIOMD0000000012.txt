@@ -8,13 +8,13 @@ model *repressilator()
   // Assignment Rules:
   beta := tau_mRNA / tau_prot;
   alpha0 := a0_tr * eff * tau_prot / (log(2) * KM);
+  a0_tr := ps_0 * 60;
   alpha := a_tr * eff * tau_prot / (log(2) * KM);
+  a_tr := (ps_a - ps_0) * 60;
   t_ave := tau_mRNA / log(2);
   kd_mRNA := log(2) / tau_mRNA;
   kd_prot := log(2) / tau_prot;
   k_tl := eff / t_ave;
-  a_tr := (ps_a - ps_0) * 60;
-  a0_tr := ps_0 * 60;
 
   // Reactions:
   Reaction1: X => ; kd_mRNA * X;
@@ -42,17 +42,17 @@ model *repressilator()
   cell = 1;
 
   // Variable initializations:
-  eff = 20;
-  n = 2;
-  KM = 40;
   tau_mRNA = 2;
   tau_prot = 10;
+  eff = 20;
+  KM = 40;
+  n = 2;
   ps_a = 0.5;
   ps_0 = 0.0005;
 
   //Other declarations:
-  var beta, alpha0, alpha, t_ave, kd_mRNA, kd_prot, k_tl, a_tr, a0_tr;
-  const cell, eff, n, KM, tau_mRNA, tau_prot, ps_a, ps_0;
+  var beta, alpha0, a0_tr, alpha, a_tr, t_ave, kd_mRNA, kd_prot, k_tl;
+  const cell, tau_mRNA, tau_prot, eff, KM, n, ps_a, ps_0;
 
   // Unit definitions:
   unit volume = 1e-15 litre;
@@ -69,9 +69,9 @@ model *repressilator()
   X is "LacI mRNA";
   Y is "TetR mRNA";
   Z is "cI mRNA";
-  eff is "translation efficiency";
   tau_mRNA is "mRNA half life";
   tau_prot is "protein half life";
+  eff is "translation efficiency";
   t_ave is "average mRNA life time";
   ps_a is "tps_active";
   ps_0 is "tps_repr";

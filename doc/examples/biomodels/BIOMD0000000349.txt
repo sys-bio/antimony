@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Fridlyand2010_GlucoseSensitivity_B()
+//Created by libAntimony v2.3-beta
+model *Fridlyand2010_GlucoseSensitivity_B()
 
   // Compartments and Species:
   compartment compartment_;
@@ -8,48 +8,48 @@ model Fridlyand2010_GlucoseSensitivity_B()
   species $Cam in compartment_;
 
   // Assignment Rules:
+  JGlu := Vmglu * Glu^hgl * ATP * (1 / (Kmgl^hgl + Glu^hgl)) * (1 / (KmATP + ATP));
+  Jgpd := Vmgpd * G3P * NADc * (1 / (G3P + Kmg3p)) * (1 / (KgNc + NADc * (1 / NADHc))) * (1 / NADHc);
+  JPYR := Vmpdh * FPNAD * FPCa * FPYR;
+  JLDH := Vmldh * FLNADc * PYR * (1 / (KmLD + PYR));
+  Jph := Vmph * AD * AT_ * ACa;
+  Jhres := Vme * FTe * FDe;
+  Jtnadh := Tnadh * FNADc * NADm * (1 / (KTNm + NADm * (1 / NADHm))) * (1 / NADHm);
+  Jhl := (Plb + Plr) * exp(klp * Vm);
+  Juni := PCa * ZCa * Vm * (am * Cam * exp(-(Vm * ZCa * (1 / Tv))) + -(ai * Cac)) * (1 / Tv) * (1 / (-1 + exp(-(Vm * ZCa * (1 / Tv)))));
+  JNCa := Vmnc * (exp(0.5 * Vm * Ni^3 * Cam * (1 / (Tv * KNaj^3 * KCaj))) + -exp(-(0.5 * Vm * Nam^3 * Cac * (1 / (Tv * KNaj^3 * KCaj))))) * (1 / DelJNCa);
   ACa := 1 + -(1 * (1 / exp(Cam * (1 / KpCam))));
   AD := MgADP * MgADP * (1 / (MgADP * MgADP + Kmadp * Kmadp));
-  ADP := Ao + -ATP;
+  MgADP := 0.055 * ADP;
+  ADP := Ao + - ATP;
   AT_ := Vm^hp * (1 / (Kmph^hp + Vm^hp));
   DelJNCa := 1 + Ni^3 * (1 / KNaj^3) + Cam * (1 / KCaj) + Ni^3 * Cam * (1 / (KNaj^3 * KCaj)) + Nam^3 * (1 / KNaj^3) + Cac * (1 / KCaj) + Nam^3 * Cac * (1 / (KNaj^3 * KCaj));
   FDe := NADHm * (1 / (KmNh + NADHm));
   FLNADc := NADHc * (1 / (Klnc + NADHc * (1 / NADc))) * (1 / NADc);
+  NADc := Ntc + - NADHc;
   FNADc := NADHc * (1 / (KTNc + NADHc * (1 / NADc))) * (1 / NADc);
   FPCa := 1 * (1 / (1 + u2 * (1 + u1 * (1 / (1 + Cam * (1 / KCam))^2))));
   FPNAD := NADm * (1 / (KPNm + NADm * (1 / NADHm))) * (1 / NADHm);
+  NADm := Ntm + - NADHm;
   FPYR := PYR * (1 / (Kmpyr + PYR));
   FTe := (1 + kat * Vm) * (1 / (1 + kbt * Vm));
   hCa := 1 * (1 / (1 + exp(0.166666666666667 * (15 + Vp))));
   IKCa := gKCa * nKCa * (75 + Vp);
-  IVCa := gmVCa * PVCa * hCa * (-100 + Vp);
-  JGlu := Vmglu * Glu^hgl * ATP * (1 / (Kmgl^hgl + Glu^hgl)) * (1 / (KmATP + ATP));
-  Jgpd := Vmgpd * G3P * NADc * (1 / (G3P + Kmg3p)) * (1 / (KgNc + NADc * (1 / NADHc))) * (1 / NADHc);
-  Jhl := (Plb + Plr) * exp(klp * Vm);
-  Jhres := Vme * FTe * FDe;
-  JLDH := Vmldh * FLNADc * PYR * (1 / (KmLD + PYR));
-  JNCa := Vmnc * (exp(0.5 * Vm * Ni^3 * Cam * (1 / (Tv * KNaj^3 * KCaj))) + -exp(-(0.5 * Vm * Nam^3 * Cac * (1 / (Tv * KNaj^3 * KCaj))))) * (1 / DelJNCa);
-  JO2 := 0.1 * Jhres;
-  Jph := Vmph * AD * AT_ * ACa;
-  JPYR := Vmpdh * FPNAD * FPCa * FPYR;
-  Jtnadh := Tnadh * FNADc * NADm * (1 / (KTNm + NADm * (1 / NADHm))) * (1 / NADHm);
-  Juni := PCa * ZCa * Vm * (am * Cam * exp(-(Vm * ZCa * (1 / Tv))) + -(ai * Cac)) * (1 / Tv) * (1 / (-1 + exp(-(Vm * ZCa * (1 / Tv)))));
-  MgADP := 0.055 * ADP;
-  NADc := Ntc + -NADHc;
-  NADm := Ntm + -NADHm;
   nKCa := Cac^3 * (1 / (0.015625 + Cac^3));
-  PVCa := 1 * (1 / (1 + exp(0.105263157894737 * (-19 + -Vp))));
+  IVCa := gmVCa * PVCa * hCa * (-100 + Vp);
+  PVCa := 1 * (1 / (1 + exp(0.105263157894737 * (-19 + - Vp))));
+  JO2 := 0.1 * Jhres;
 
   // Rate Rules:
-  G3P' = (2 * JGlu + -Jgpd) * (1 / Vi) + -(kgpd * G3P);
-  PYR' = (Jgpd + -JPYR + -JLDH) * (1 / (Vi + Vmmit));
+  G3P' = (2 * JGlu + - Jgpd) * (1 / Vi) + -(kgpd * G3P);
+  PYR' = (Jgpd + - JPYR + - JLDH) * (1 / (Vi + Vmmit));
   ATP' = -((kATP + kATPCa * Cac) * ATP) + (2 * JGlu + 0.231 * Jph) * (1 / Vi);
-  NADHm' = (4.6 * JPYR + -(0.1 * Jhres) + Jtnadh) * (1 / Vmmit) + -(knadhm * NADHm);
-  NADHc' = (Jgpd + -Jtnadh + -JLDH) * (1 / Vi) + -(knadhc * NADHc);
-  Vm' = (Jhres + -Jph + -Jhl + -(2 * Juni) + -JNCa) * (1 / Cmit);
-  Cam' = fm * (Juni + -JNCa) * (1 / Vmmit);
-  Vp' = -((IVCa + IKCa) * (1 / Cmp));
   Cac' = -(fi * IVCa * (1 / (2 * F * Vci))) + -(ksg * Cac);
+  NADHm' = (4.6 * JPYR + -(0.1 * Jhres) + Jtnadh) * (1 / Vmmit) + -(knadhm * NADHm);
+  NADHc' = (Jgpd + - Jtnadh + - JLDH) * (1 / Vi) + -(knadhc * NADHc);
+  Vm' = (Jhres + - Jph + - Jhl + -(2 * Juni) + - JNCa) * (1 / Cmit);
+  Cam' = fm * (Juni + - JNCa) * (1 / Vmmit);
+  Vp' = -((IVCa + IKCa) * (1 / Cmp));
 
   // Species initializations:
   G3P = G3P_init;
@@ -60,19 +60,34 @@ model Fridlyand2010_GlucoseSensitivity_B()
   Vm = Vm_init;
   Cam = Cam_init;
 
+  // Compartment initializations:
+  compartment_ = ;
+
   // Variable initializations:
+  G3P_init = 30;
+  Vi = 0.53;
+  kgpd = 1e-005;
+  PYR_init = 10;
+  Vmmit = 0.0144;
+  ATP_init = 3700;
+  kATP = 4e-005;
+  kATPCa = 9e-005;
+  Cac = Cac_init;
+  NADHm_init = 50;
+  knadhm = 0.0001;
+  NADHc_init = 10;
+  knadhc = 0.0001;
+  Vm_init = 100;
+  Cmit = 1.82;
+  Cam_init = 0.2;
+  fm = 0.0003;
   ai = 0.341;
   am = 0.2;
   Ao = 4000;
-  ATP_init = 3700;
   Cac_init = 0.1;
-  Cam_init = 0.2;
-  Cmit = 1.82;
   Cmp = 6158;
   F = 96480;
   fi = 0.01;
-  fm = 0.0003;
-  G3P_init = 30;
   gKCa = 25;
   Glu = 8;
   gmVCa = 20;
@@ -80,14 +95,11 @@ model Fridlyand2010_GlucoseSensitivity_B()
   hp = 8;
   hpc = 8;
   kat = -0.00492;
-  kATP = 4e-05;
-  kATPCa = 9e-05;
   kbt = -0.00443;
   kCaA = 30;
   KCaj = 8;
   KCam = 0.05;
   KgNc = 0.09;
-  kgpd = 1e-05;
   Klnc = 1;
   klp = 0.0305;
   Kmadp = 20;
@@ -98,16 +110,12 @@ model Fridlyand2010_GlucoseSensitivity_B()
   KmNh = 3000;
   Kmph = 131.4;
   Kmpyr = 47.5;
-  knadhc = 0.0001;
-  knadhm = 0.0001;
   KNaj = 8000;
   KpCam = 0.165;
   KPNm = 81;
-  ksg = 2e-05;
+  ksg = 2e-005;
   KTNc = 0.002;
   KTNm = 16.78;
-  NADHc_init = 10;
-  NADHm_init = 50;
   Nam = 5000;
   Ni = 10000;
   Ntc = 2000;
@@ -115,29 +123,31 @@ model Fridlyand2010_GlucoseSensitivity_B()
   PCa = 0.004;
   Plb = 0.0012;
   Plr = 0.0012;
-  PYR_init = 10;
   Tnadh = 0.05;
   Tv = 26.73;
   u1 = 1.5;
   u2 = 1.1;
   Vci = 0.764;
-  Vi = 0.53;
-  Vm_init = 100;
   Vme = 22;
   Vmglu = 0.011;
   Vmgpd = 0.5;
   Vmldh = 1.2;
-  Vmmit = 0.0144;
   Vmnc = 0.025;
   Vmpdh = 0.3;
   Vmph = 8;
   Vp_init = -70;
   ZCa = 2;
   Vp = Vp_init;
-  Cac = Cac_init;
 
   //Other declarations:
-  var ACa, AD, ADP, AT_, DelJNCa, FDe, FLNADc, FNADc, FPCa, FPNAD, FPYR, FTe;
-  var hCa, IKCa, IVCa, JGlu, Jgpd, Jhl, Jhres, JLDH, JNCa, JO2, Jph, JPYR;
-  var Jtnadh, Juni, MgADP, NADc, NADm, nKCa, PVCa, Vp, Cac;
+  var JGlu, Jgpd, JPYR, JLDH, Cac, Jph, Jhres, Jtnadh, Jhl, Juni, JNCa, ACa;
+  var AD, MgADP, ADP, AT_, DelJNCa, FDe, FLNADc, NADc, FNADc, FPCa, FPNAD;
+  var NADm, FPYR, FTe, hCa, Vp, IKCa, nKCa, IVCa, PVCa, JO2;
+  const compartment_, G3P_init, Vi, kgpd, PYR_init, Vmmit, ATP_init, kATP;
+  const kATPCa, NADHm_init, knadhm, NADHc_init, knadhc, Vm_init, Cmit, Cam_init;
+  const fm, ai, am, Ao, Cac_init, Cmp, F, fi, gKCa, Glu, gmVCa, hgl, hp, hpc;
+  const kat, kbt, kCaA, KCaj, KCam, KgNc, Klnc, klp, Kmadp, KmATP, Kmg3p;
+  const Kmgl, KmLD, KmNh, Kmph, Kmpyr, KNaj, KpCam, KPNm, ksg, KTNc, KTNm;
+  const Nam, Ni, Ntc, Ntm, PCa, Plb, Plr, Tnadh, Tv, u1, u2, Vci, Vme, Vmglu;
+  const Vmgpd, Vmldh, Vmnc, Vmpdh, Vmph, Vp_init, ZCa;
 end

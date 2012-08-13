@@ -3,7 +3,7 @@ model *Bier2000_GlycolyticOscillation()
 
   // Compartments and Species:
   compartment compartment_;
-  species $G1 in compartment_, $T1 in compartment_, $G2 in compartment_, $T2 in compartment_;
+  species $G1 in compartment_, $T1 in compartment_, $T2 in compartment_, $G2 in compartment_;
 
   // Assignment Rules:
   Tsum := T2 + T1;
@@ -12,14 +12,14 @@ model *Bier2000_GlycolyticOscillation()
   // Rate Rules:
   G1' = V_in - k1 * G1 * T1;
   T1' = 2 * k1 * T1 * G1 - kp * T1 / (km + T1) + epsilon * (T2 - T1);
-  G2' = V_in - k1 * G2 * T2;
   T2' = 2 * k1 * G2 * T2 - kp * T2 / (km + T2) - epsilon * (T2 - T1);
+  G2' = V_in - k1 * G2 * T2;
 
   // Species initializations:
   G1 = 6.6;
   T1 = 7.6;
-  G2 = 10.3;
   T2 = 0.41;
+  G2 = 10.3;
 
   // Compartment initializations:
   compartment_ = 1;
@@ -38,6 +38,6 @@ model *Bier2000_GlycolyticOscillation()
   //Display Names:
   G1 is "Glucose_1";
   T1 is "ATP_1";
-  G2 is "Glucose_2";
   T2 is "ATP_2";
+  G2 is "Glucose_2";
 end

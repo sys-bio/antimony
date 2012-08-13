@@ -7,13 +7,6 @@ model *voit03()
   species $X5 in cell, $X6 in cell, $X7 in cell;
 
   // Assignment Rules:
-  X8 := piecewise(8, eq(heat_shock, 1), 1);
-  X10 := piecewise(1, eq(heat_shock, 1), 1);
-  X12r := piecewise(16, eq(heat_shock, 1), 1);
-  X13 := piecewise(16, eq(heat_shock, 1), 1);
-  X15r := piecewise(50, eq(heat_shock, 1), 1);
-  X16 := piecewise(16, eq(heat_shock, 1), 1);
-  X18 := piecewise(18, eq(heat_shock, 1), 1);
   flux_X1_in := 31.912 * X0^0.968 * X2^-0.194 * X7^0.00968 * X8^0.968 * X19^0.0323;
   flux_X1_out := 89.935 * X1^0.75 * X6^-0.4 * X9;
   flux_X2_in := 142.72 * X1^0.517 * X2^-0.179 * X3^0.183 * X6^-0.276 * X9^0.689 * X12r^0.311;
@@ -28,6 +21,13 @@ model *voit03()
   flux_X6_out := 1.0939 * X6^0.2 * X18;
   flux_X7_in := 1.0939 * X6^0.2 * X18;
   flux_X7_out := 1.2288 * X7^0.3 * X19;
+  X8 := piecewise(8, eq(heat_shock, 1), 1);
+  X10 := piecewise(1, eq(heat_shock, 1), 1);
+  X12r := piecewise(16, eq(heat_shock, 1), 1);
+  X13 := piecewise(16, eq(heat_shock, 1), 1);
+  X15r := piecewise(50, eq(heat_shock, 1), 1);
+  X16 := piecewise(16, eq(heat_shock, 1), 1);
+  X18 := piecewise(18, eq(heat_shock, 1), 1);
 
   // Rate Rules:
   X1' = flux_X1_in - flux_X1_out;
@@ -51,24 +51,6 @@ model *voit03()
   // Compartment initializations:
   cell = 1;
   external = 1;
-
-  // Variable initializations:
-  heat_shock = 0;
-  heat_shock has dimensionless;
-  X8 has dimensionless;
-  X9 has dimensionless;
-  X10 has dimensionless;
-  X11 has dimensionless;
-  X12r has dimensionless;
-  X12f has dimensionless;
-  X13 has dimensionless;
-  X14 has dimensionless;
-  X15r has dimensionless;
-  X15f has dimensionless;
-  X16 has dimensionless;
-  X17 has dimensionless;
-  X18 has dimensionless;
-  X19 has dimensionless;
   flux_X1_in has flux;
   flux_X1_out has flux;
   flux_X2_in has flux;
@@ -84,11 +66,36 @@ model *voit03()
   flux_X7_in has flux;
   flux_X7_out has flux;
 
+  // Variable initializations:
+  heat_shock = 0;
+  heat_shock has dimensionless;
+  X8 has dimensionless;
+  X9 = ;
+  X9 has dimensionless;
+  X10 has dimensionless;
+  X11 = ;
+  X11 has dimensionless;
+  X12r has dimensionless;
+  X12f = ;
+  X12f has dimensionless;
+  X13 has dimensionless;
+  X14 = ;
+  X14 has dimensionless;
+  X15r has dimensionless;
+  X15f = ;
+  X15f has dimensionless;
+  X16 has dimensionless;
+  X17 = ;
+  X17 has dimensionless;
+  X18 has dimensionless;
+  X19 = ;
+  X19 has dimensionless;
+
   //Other declarations:
-  var X8, X9, X10, X11, X12r, X12f, X13, X14, X15r, X15f, X16, X17, X18, X19;
   var flux_X1_in, flux_X1_out, flux_X2_in, flux_X2_out, flux_X3_in, flux_X3_out;
   var flux_X4_in, flux_X4_out, flux_X5_in, flux_X5_out, flux_X6_in, flux_X6_out;
-  var flux_X7_in, flux_X7_out;
+  var flux_X7_in, flux_X7_out, X8, X9, X10, X11, X12r, X12f, X13, X14, X15r;
+  var X15f, X16, X17, X18, X19;
   const cell, external, heat_shock;
 
   // Unit definitions:
@@ -103,12 +110,26 @@ model *voit03()
   flux is "mM per minute";
   X0 is "glucose";
   X1 is "glucose";
+  flux_X1_in is "flux_to_glucose";
+  flux_X1_out is "flux_from_glucose";
   X2 is "G6P";
+  flux_X2_in is "flux_to_G6P";
+  flux_X2_out is "flux_from_G6P";
   X3 is "G1P";
+  flux_X3_in is "flux_to_G1P";
+  flux_X3_out is "flux_from_G1P";
   X4 is "UDPG";
+  flux_X4_in is "flux_to_UDPG";
+  flux_X4_out is "flux_from_UDPG";
   X5 is "glycogen";
+  flux_X5_in is "flux_to_glycogen";
+  flux_X5_out is "flux_from_glucogen";
   X6 is "T6P";
+  flux_X6_in is "flux_to_T6P";
+  flux_X6_out is "flux_from_T6P";
   X7 is "trehalose";
+  flux_X7_in is "flux_to_trehalose";
+  flux_X7_out is "flux_from_trehalose";
   X8 is "glucose transport into cell";
   X9 is "hexokinase/glucokinase";
   X10 is "phosphofructokinase";
@@ -123,18 +144,4 @@ model *voit03()
   X17 is "alpha,alpha-T6P synthase";
   X18 is "alpha,alpha--T6P phosphatase";
   X19 is "trehalase";
-  flux_X1_in is "flux_to_glucose";
-  flux_X1_out is "flux_from_glucose";
-  flux_X2_in is "flux_to_G6P";
-  flux_X2_out is "flux_from_G6P";
-  flux_X3_in is "flux_to_G1P";
-  flux_X3_out is "flux_from_G1P";
-  flux_X4_in is "flux_to_UDPG";
-  flux_X4_out is "flux_from_UDPG";
-  flux_X5_in is "flux_to_glycogen";
-  flux_X5_out is "flux_from_glucogen";
-  flux_X6_in is "flux_to_T6P";
-  flux_X6_out is "flux_from_T6P";
-  flux_X7_in is "flux_to_trehalose";
-  flux_X7_out is "flux_from_trehalose";
 end

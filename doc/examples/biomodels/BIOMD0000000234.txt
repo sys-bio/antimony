@@ -6,11 +6,11 @@ model *Tham2008_PDmodel_TumourShrinkage()
   species $Ce in COMpartment_;
 
   // Assignment Rules:
-  rem_time := (time * conversion_factor - floor(time * conversion_factor / (Cycle_Int * conversion_factor)) * Cycle_Int * conversion_factor) / conversion_factor;
   Exposure := piecewise(Dose, and(lt(time, Cycle_Int * N_Cycle), lt(Dose_Int1, rem_time), lt(rem_time, Dose_Length)), Dose, and(lt(time, Cycle_Int * N_Cycle), lt(Dose_Int2, rem_time), lt(rem_time, Dose_Int2 + Dose_Length)), 0);
-  Effect := 1 - Ce / (AE50 + Ce);
   Keq := log(2) / Teq;
+  rem_time := (time * conversion_factor - floor(time * conversion_factor / (Cycle_Int * conversion_factor)) * Cycle_Int * conversion_factor) / conversion_factor;
   RateIn := Size_0 * Kover;
+  Effect := 1 - Ce / (AE50 + Ce);
   Kover := 1 / T_Turnover;
 
   // Rate Rules:
@@ -22,43 +22,43 @@ model *Tham2008_PDmodel_TumourShrinkage()
 
   // Compartment initializations:
   COMpartment_ = 1;
-  rem_time has week;
   Exposure has mg;
+  Keq has per_week;
+  rem_time has week;
 
   // Variable initializations:
-  Size = 6.66;
-  Size has cm;
-  Effect has dimensionless;
-  Dose = 5203.84;
-  Dose has mg;
-  Dose_Int1 = 0;
-  Dose_Int1 has week;
-  Dose_Int2 = 1;
-  Dose_Int2 has week;
-  Dose_Length = 0.44359;
-  Dose_Length has week;
-  Cycle_Int = 3;
-  Cycle_Int has week;
-  N_Cycle = 6;
-  N_Cycle has dimensionless;
   conversion_factor = 604800;
   conversion_factor has sec_per_week;
+  Cycle_Int = 3;
+  Cycle_Int has week;
+  Dose = 5203.84;
+  Dose has mg;
+  N_Cycle = 6;
+  N_Cycle has dimensionless;
+  Dose_Int1 = 0;
+  Dose_Int1 has week;
+  Dose_Length = 0.44359;
+  Dose_Length has week;
+  Dose_Int2 = 1;
+  Dose_Int2 has week;
+  Size = 6.66;
+  Size has cm;
+  RateIn has per_week;
+  Effect has dimensionless;
+  Kover has per_cm_per_week;
   AE50 = 10600;
   AE50 has mg;
-  Keq has per_week;
   Teq = 7.67;
   Teq has week;
   Size_0 = 6.66;
   Size_0 has cm;
-  RateIn has per_week;
   T_Turnover = 21.8;
   T_Turnover has cm_week;
-  Kover has per_cm_per_week;
 
   //Other declarations:
-  var rem_time, Exposure, Size, Effect, Keq, RateIn, Kover;
-  const COMpartment_, Dose, Dose_Int1, Dose_Int2, Dose_Length, Cycle_Int;
-  const N_Cycle, conversion_factor, AE50, Teq, Size_0, T_Turnover;
+  var Exposure, Keq, rem_time, Size, RateIn, Effect, Kover;
+  const COMpartment_, conversion_factor, Cycle_Int, Dose, N_Cycle, Dose_Int1;
+  const Dose_Length, Dose_Int2, AE50, Teq, Size_0, T_Turnover;
 
   // Unit definitions:
   unit effect_unit = dimensionless;

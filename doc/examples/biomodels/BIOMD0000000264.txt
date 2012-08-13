@@ -3,9 +3,10 @@ model *Model_1()
 
   // Compartments and Species:
   compartment Cell;
-  species $EGF in Cell, EGFR in Cell, pEGFR in Cell, pEGFR_Akt in Cell, Akt in Cell;
-  species pAkt in Cell, S6 in Cell, pAkt_S6 in Cell, pS6 in Cell, $pro_EGFR in Cell;
-  species EGF_EGFR in Cell, EGFR_i in Cell, EGF_EGFR_i in Cell, $Inhibitor in Cell;
+  species $EGF in Cell, EGFR in Cell, $pro_EGFR in Cell, $Inhibitor in Cell;
+  species pEGFR in Cell, pEGFR_Akt in Cell, Akt in Cell, pAkt in Cell, S6 in Cell;
+  species pAkt_S6 in Cell, pS6 in Cell, EGF_EGFR in Cell, EGFR_i in Cell;
+  species EGF_EGFR_i in Cell;
 
   // Assignment Rules:
   EGF := EGF_conc_step + piecewise(EGF_conc_pulse, leq(time, pulse_time), 0) + EGF_conc_ramp * time / ramp_time;
@@ -33,6 +34,8 @@ model *Model_1()
 
   // Species initializations:
   EGFR = pro_EGFR / (1 + inhibitor_binding_kf * Inhibitor / (inhibitor_binding_kb + EGFR_turnover));
+  pro_EGFR = 68190.2000000002;
+  Inhibitor = 0;
   pEGFR = 0;
   pEGFR_Akt = 0;
   Akt = 0.043309;
@@ -40,45 +43,43 @@ model *Model_1()
   S6 = 3.54317;
   pAkt_S6 = 0;
   pS6 = 0;
-  pro_EGFR = 68190.2000000002;
   EGF_EGFR = 0;
   EGFR_i = pro_EGFR - EGFR;
   EGF_EGFR_i = 0;
-  Inhibitor = 0;
 
   // Compartment initializations:
   Cell = 1;
-  pEGFR_total has ng_per_ml;
-  pAkt_total has ng_per_ml;
 
   // Variable initializations:
+  EGF_conc_step = 30;
+  EGF_conc_step has ng_per_ml;
+  EGF_conc_pulse = 0;
+  EGF_conc_pulse has ng_per_ml;
+  pulse_time = 60;
+  pulse_time has time_unit;
+  EGF_conc_ramp = 0;
+  EGF_conc_ramp has ng_per_ml;
+  ramp_time = 3600;
+  ramp_time has time_unit;
+  inhibitor_binding_kf = 2.43466029020655e-005;
+  inhibitor_binding_kf has per_conc_per_sec;
+  inhibitor_binding_kb = 5.25096686262403e-005;
+  inhibitor_binding_kb has per_sec;
+  EGFR_turnover = 0.000106386;
+  EGFR_turnover has per_sec;
+  pEGFR_total has ng_per_ml;
   pEGFR_scaleFactor = 0.000181735;
   pEGFR_scaleFactor has ng;
+  pAkt_total has ng_per_ml;
   pAkt_scaleFactor = 60.0588;
   pAkt_scaleFactor has ng;
   pS6_scaleFactor = 49886.2;
   pS6_scaleFactor has ng;
   pS6_total has ng_per_ml;
-  EGF_conc_step = 30;
-  EGF_conc_step has ng_per_ml;
-  EGF_conc_pulse = 0;
-  EGF_conc_pulse has ng_per_ml;
-  EGF_conc_ramp = 0;
-  EGF_conc_ramp has ng_per_ml;
-  EGFR_turnover = 0.000106386;
-  EGFR_turnover has per_sec;
   EGF_binding_kf = 0.00673816;
   EGF_binding_kf has ml_per_ng_per_sec;
   EGF_binding_kb = 0.040749;
   EGF_binding_kb has per_sec;
-  inhibitor_binding_kf = 2.43466029020655e-005;
-  inhibitor_binding_kf has per_conc_per_sec;
-  inhibitor_binding_kb = 5.25096686262403e-005;
-  inhibitor_binding_kb has per_sec;
-  pulse_time = 60;
-  pulse_time has time_unit;
-  ramp_time = 3600;
-  ramp_time has time_unit;
   reaction_2_k1 = 1.5543e-005;
   reaction_2_k1 has per_conc_per_sec;
   reaction_2_k2 = 0.00517473;
@@ -102,9 +103,9 @@ model *Model_1()
 
   //Other declarations:
   var pEGFR_total, pAkt_total, pS6_total;
-  const Cell, pEGFR_scaleFactor, pAkt_scaleFactor, pS6_scaleFactor, EGF_conc_step;
-  const EGF_conc_pulse, EGF_conc_ramp, EGFR_turnover, EGF_binding_kf, EGF_binding_kb;
-  const inhibitor_binding_kf, inhibitor_binding_kb, pulse_time, ramp_time;
+  const Cell, EGF_conc_step, EGF_conc_pulse, pulse_time, EGF_conc_ramp, ramp_time;
+  const inhibitor_binding_kf, inhibitor_binding_kb, EGFR_turnover, pEGFR_scaleFactor;
+  const pAkt_scaleFactor, pS6_scaleFactor, EGF_binding_kf, EGF_binding_kb;
 
   // Unit definitions:
   unit substance = dimensionless;

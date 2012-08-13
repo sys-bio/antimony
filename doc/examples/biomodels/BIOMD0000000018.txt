@@ -3,11 +3,11 @@ model *MorrisonAllegra()
 
   // Compartments and Species:
   compartment ext_, cell;
-  species FH2f in cell, $FH2b in cell, DHFRf in cell, $DHFRtot in cell, FH4 in cell;
+  species FH2f in cell, $FH2b in cell, DHFRf in cell, $DHFRtot in cell, MTX1b in cell;
+  species MTX2b in cell, MTX3b in cell, MTX4b in cell, MTX5b in cell, FH4 in cell;
   species CH2FH4 in cell, CH3FH4 in cell, CHOFH4 in cell, FFH2 in cell, HCHO in cell;
   species FGAR in cell, AICAR in cell, MTX1 in cell, MTX2 in cell, MTX3 in cell;
-  species MTX4 in cell, MTX5 in cell, MTX1b in cell, MTX2b in cell, MTX3b in cell;
-  species MTX4b in cell, MTX5b in cell, $EMTX in ext_, $dUMP in cell, $GAR in cell;
+  species MTX4 in cell, MTX5 in cell, $EMTX in ext_, $dUMP in cell, $GAR in cell;
   species $serine in cell, $formate in cell, $ATP in cell, $glutamine in cell;
   species $glycine in cell, $NADP in cell, $NADPH in cell, $homocysteine in cell;
 
@@ -67,6 +67,11 @@ model *MorrisonAllegra()
   // Species initializations:
   FH2f = 0.0012;
   DHFRf = 0.64;
+  MTX1b = 0;
+  MTX2b = 0;
+  MTX3b = 0;
+  MTX4b = 0;
+  MTX5b = 0;
   FH4 = 0.46;
   CH2FH4 = 0.26;
   CH3FH4 = 1.63;
@@ -80,11 +85,6 @@ model *MorrisonAllegra()
   MTX3 = 0;
   MTX4 = 0;
   MTX5 = 0;
-  MTX1b = 0;
-  MTX2b = 0;
-  MTX3b = 0;
-  MTX4b = 0;
-  MTX5b = 0;
   EMTX = 0;
   dUMP = 20.76;
   GAR = 689.6;

@@ -20,9 +20,9 @@ model *model_0000001()
   ik := isk + ibk + ikdr + ia;
 
   // Rate Rules:
+  V' = -(ica + ik) / Cm;
   n' = lambda * (phik - n) / taun;
   h' = (phih - h) / tauh;
-  V' = -(ica + ik) / Cm;
 
   // Reactions:
   reaction_0000004:  => c; - ff * (alpha * ica + kc * c) * cell;
@@ -59,13 +59,13 @@ model *model_0000001()
   ks = 0.5;
   ff = 0.01;
   alpha = 0.0015;
+  V = -60;
   n = 0.1;
   h = 0.1;
-  V = -60;
 
   //Other declarations:
-  var phik, phia, phih, phif, phical, cinf, ica, isk, ibk, ikdr, ia, ik, n;
-  var h, V;
+  var phik, V, phia, phih, phif, phical, cinf, ica, isk, ibk, ikdr, n, ia;
+  var h, ik;
   const cell, vca, vk, Cm, gk, gcal, gsk, ga, gf, vn, va, vm, vh, vf, sn;
   const sa, sm, sh, sf, taun, tauh, lambda, kc, ks, ff, alpha;
 

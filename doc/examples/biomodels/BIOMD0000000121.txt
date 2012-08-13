@@ -7,8 +7,8 @@ model *model_0000001()
 
   // Assignment Rules:
   ik := Gk * o * (v - vk);
-  vk := R * Temp / F * log(ko / ki);
   Gk := 1.350000e-002 * ko^0.59;
+  vk := R * Temp / F * log(ko / ki);
   a := 5.550000e-002 * exp(0.05547153 * (v - 12));
   b := 2.357000e-003 * exp(-0.036588 * v);
   aa := 6.550000e-002 * exp(0.05547153 * (v - 36));
@@ -51,7 +51,7 @@ model *model_0000001()
   bin = 1.077;
 
   //Other declarations:
-  var v, vk, Gk, a, b, aa, bb, ai, bi, u;
+  var Gk, v, vk, a, b, aa, bb, ai, bi, u;
   const cell, vtest, vhold, R, F, Temp, ko, ki, ain, bin;
 
   // Unit definitions:
@@ -68,7 +68,9 @@ model *model_0000001()
   o is "OpenState";
   i is "InactivationState";
   ik is "cardiac delayed rectifier current";
+  Gk is "membrane_conductance";
   v is "membrane_potential";
+  vk is "reversal potential for k";
   vtest is "test_potential";
   vhold is "holding_potential";
   R is "gas constant";
@@ -76,8 +78,6 @@ model *model_0000001()
   Temp is "temperature";
   ko is "extracellular K";
   ki is "introcellular K";
-  vk is "reversal potential for k";
-  Gk is "membrane_conductance";
   reaction_0000001 is "c3-c2 transition";
   reaction_0000002 is "c2-c1 transition";
   reaction_0000003 is "c1-o transition";

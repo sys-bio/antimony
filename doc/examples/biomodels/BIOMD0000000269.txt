@@ -71,15 +71,16 @@ function function_21(CK, k19)
   k19 * CK;
 end
 
+
 model *Model_1()
 
   // Compartments and Species:
   compartment compartment_1, extra;
-  species X in compartment_1, Auxin in compartment_1, ET in compartment_1;
-  species CK in compartment_1, PLSp in compartment_1, $Ra in compartment_1;
-  species Ra_star in compartment_1, PLSm in compartment_1, $Re in compartment_1;
-  species Re_star in compartment_1, $CTR1 in compartment_1, CTR1_star in compartment_1;
-  species $RaT in compartment_1, $ReT in compartment_1, $CTR1T in compartment_1;
+  species Auxin in compartment_1, X in compartment_1, PLSp in compartment_1;
+  species $Ra in compartment_1, $RaT in compartment_1, Ra_star in compartment_1;
+  species CK in compartment_1, ET in compartment_1, PLSm in compartment_1;
+  species $Re in compartment_1, $ReT in compartment_1, Re_star in compartment_1;
+  species $CTR1 in compartment_1, $CTR1T in compartment_1, CTR1_star in compartment_1;
   species $IAA in extra, $ACC in extra, $CK_ex in extra;
 
   // Assignment Rules:
@@ -112,18 +113,18 @@ model *Model_1()
   v_Cytokinin: $CK_ex => CK; compartment_1 * k_cytokinin * CK_ex;
 
   // Species initializations:
-  X = 0.1;
   Auxin = 0.1;
-  ET = 0.1;
-  CK = 0.1;
+  X = 0.1;
   PLSp = 0.1;
-  Ra_star = 1;
-  PLSm = 0.1;
-  Re_star = 0.3;
-  CTR1_star = 0.3;
   RaT = 1;
+  Ra_star = 1;
+  CK = 0.1;
+  ET = 0.1;
+  PLSm = 0.1;
   ReT = 0.3;
+  Re_star = 0.3;
   CTR1T = 0.3;
+  CTR1_star = 0.3;
   IAA = 0;
   ACC = 0;
   CK_ex = 0;
@@ -133,10 +134,6 @@ model *Model_1()
   extra = 1;
 
   // Variable initializations:
-  k3 = 2;
-  k3 has per_s;
-  k3a = 0.45;
-  k3a has per_uM_per_s;
   k1a = 1;
   k1a has uM_per_s;
   k1 = 1;
@@ -149,8 +146,14 @@ model *Model_1()
   k2b has uM;
   k2c = 0.01;
   k2c has uM;
+  k3 = 2;
+  k3 has per_s;
+  k3a = 0.45;
+  k3a has per_uM_per_s;
   k4 = 1;
   k4 has per_uM_per_s;
+  k5 = 1;
+  k5 has per_s;
   k6 = 0.3;
   k6 has per_s;
   k6a = 0.2;
@@ -177,20 +180,18 @@ model *Model_1()
   k14 has per_uM_per_s;
   k15 = 0.085;
   k15 has per_s;
-  k18a = 1;
-  k18a has uM_per_s;
-  k18 = 0.1;
-  k18 has uM;
   k16 = 0.3;
   k16 has uM_per_s;
   k16a = 1;
   k16a has per_s;
   k17 = 0.1;
   k17 has per_s;
+  k18a = 1;
+  k18a has uM_per_s;
+  k18 = 0.1;
+  k18 has uM;
   k19 = 1;
   k19 has per_s;
-  k5 = 1;
-  k5 has per_s;
   k_ethylene = 0.5;
   k_ethylene has per_s;
   k_auxin = 70;
@@ -199,9 +200,9 @@ model *Model_1()
   k_cytokinin has per_s;
 
   //Other declarations:
-  const k3, k3a, k1a, k1, k2, k2a, k2b, k2c, k4, k6, k6a, k7, k8, k9, k10;
-  const k10a, k11, k12, k12a, k13, k14, k15, k18a, k18, k16, k16a, k17, k19;
-  const compartment_1, extra, k5, k_ethylene, k_auxin, k_cytokinin;
+  const compartment_1, extra, k1a, k1, k2, k2a, k2b, k2c, k3, k3a, k4, k5;
+  const k6, k6a, k7, k8, k9, k10, k10a, k11, k12, k12a, k13, k14, k15, k16;
+  const k16a, k17, k18a, k18, k19, k_ethylene, k_auxin, k_cytokinin;
 
   // Unit definitions:
   unit substance = 1e-6 mole;
@@ -212,9 +213,6 @@ model *Model_1()
   unit uM_per_s = 1e-6 mole / (litre * second);
 
   //Display Names:
-  Ra_star is "Ra*";
-  Re_star is "Re*";
-  CTR1_star is "CTR1*";
   substance is "umole";
   time_unit is "sec";
   per_s is "per_sec";
@@ -223,8 +221,11 @@ model *Model_1()
   compartment_1 is "cell";
   extra is "extracellular";
   RaT is "Ra_total";
+  Ra_star is "Ra*";
   ReT is "Re_total";
+  Re_star is "Re*";
   CTR1T is "CTR1_total";
+  CTR1_star is "CTR1*";
   CK_ex is "Cytokinin_ext";
   reaction_1 is "v1: Auxin Transport to the cell";
   reaction_2 is "v2: Auxin biosynthesis in the cell";

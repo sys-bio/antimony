@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Topp2000_BetaCellMass_Diabetes()
+//Created by libAntimony v2.3-beta
+model *Topp2000_BetaCellMass_Diabetes()
 
   // Compartments and Species:
   compartment cell;
@@ -8,7 +8,7 @@ model Topp2000_BetaCellMass_Diabetes()
   // Rate Rules:
   G' = R0 - (Eg0 + si * I) * G;
   I' = B * sigma * G^2 / (alpha + G^2) - k * I;
-  B' = (-d0 + r1 * G - r2 * G^2) * B;
+  B' = (- d0 + r1 * G - r2 * G^2) * B;
 
   // Species initializations:
   G = 250;
@@ -19,15 +19,18 @@ model Topp2000_BetaCellMass_Diabetes()
   cell = 1;
 
   // Variable initializations:
-  si = 0.72;
-  Eg0 = 1.44;
   R0 = 864;
+  Eg0 = 1.44;
+  si = 0.72;
   sigma = 43.2;
   alpha = 20000;
   k = 432;
   d0 = 0.06;
   r1 = 0.00084;
-  r2 = 2.4e-06;
+  r2 = 2.4e-006;
+
+  //Other declarations:
+  const cell, R0, Eg0, si, sigma, alpha, k, d0, r1, r2;
 
   //Display Names:
   G is "glucose";

@@ -1,4 +1,4 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function Irreversible_association(s1, s2, c)
   s1 * s2 / c;
 end
@@ -20,34 +20,35 @@ function Warfarin_inhibited_first_order_kinetics(Imax, Cwarf, IC50, substrate, d
 end
 
 
-model Model_1()
+model *Model_1()
 
   // Compartments and Species:
   compartment compartment_1;
-  species VKH2 in compartment_1, IIa in compartment_1, VIII in compartment_1;
-  species VIIIa in compartment_1, APC_PS in compartment_1, IX in compartment_1;
-  species IXa in compartment_1, XIa in compartment_1, XI in compartment_1;
-  species XIIa in compartment_1, VII in compartment_1, VIIa in compartment_1;
-  species X in compartment_1, Xa in compartment_1, IXa_VIIIa in compartment_1;
-  species V in compartment_1, Va in compartment_1, II in compartment_1, F in compartment_1;
-  species Fg in compartment_1, $DP in compartment_1, P in compartment_1, XF in compartment_1;
-  species XIII in compartment_1, Pg in compartment_1, APC in compartment_1;
-  species IIa_Tmod in compartment_1, PC in compartment_1, Tmod in compartment_1;
-  species TF in compartment_1, VIIa_TF in compartment_1, VII_TF in compartment_1;
-  species Xa_TFPI in compartment_1, TFPI in compartment_1, PS in compartment_1;
+  species IIa in compartment_1, VIII in compartment_1, VIIIa in compartment_1;
+  species APC_PS in compartment_1, IX in compartment_1, IXa in compartment_1;
+  species XIa in compartment_1, XI in compartment_1, XIIa in compartment_1;
+  species VII in compartment_1, VIIa in compartment_1, X in compartment_1;
+  species Xa in compartment_1, IXa_VIIIa in compartment_1, V in compartment_1;
+  species Va in compartment_1, II in compartment_1, F in compartment_1, Fg in compartment_1;
+  species $DP in compartment_1, FDP in compartment_1, D in compartment_1;
+  species P in compartment_1, XF in compartment_1, XIII in compartment_1;
+  species Pg in compartment_1, APC in compartment_1, IIa_Tmod in compartment_1;
+  species PC in compartment_1, Tmod in compartment_1, TF in compartment_1;
+  species VIIa_TF in compartment_1, VII_TF in compartment_1, Xa_TFPI in compartment_1;
+  species TFPI in compartment_1, PS in compartment_1, VKH2 in compartment_1;
   species Va_Xa in compartment_1, CA in compartment_1, XII in compartment_1;
   species K in compartment_1, ATIII_Heparin in compartment_1, Xa_ATIII_Heparin in compartment_1;
-  species VK in compartment_1, $C_warf in compartment_1, VKO in compartment_1;
-  species Pk in compartment_1, FDP in compartment_1, D in compartment_1, TAT in compartment_1;
+  species VK in compartment_1, $C_warf in compartment_1, $A_warf in compartment_1;
+  species VKO in compartment_1, Pk in compartment_1, TAT in compartment_1;
   species VIIa_TF_Xa_TFPI in compartment_1, XIIIa in compartment_1, IIa_ATIII_Heparin in compartment_1;
-  species $A_warf in compartment_1, IXa_ATIII_Heparin in compartment_1, VK_p in compartment_1;
+  species IXa_ATIII_Heparin in compartment_1, VK_p in compartment_1;
 
   // Assignment Rules:
   DP := FDP + D;
 
   // Rate Rules:
   C_warf' = Warfarin_ka * A_warf / Warfarin_Vd - Warfarin_ke * C_warf;
-  A_warf' = -Warfarin_ka * A_warf;
+  A_warf' = - Warfarin_ka * A_warf;
   Integral_Fibrin' = F;
 
   // Reactions:
@@ -172,7 +173,6 @@ model Model_1()
   dilution_event: at gt(time, 0): compartment_1 = compartment_1 * 3;
 
   // Species initializations:
-  VKH2 = VKH20;
   IIa = 0;
   VIII = VIII0;
   VIIIa = 0;
@@ -192,6 +192,8 @@ model Model_1()
   II = II0;
   F = 0;
   Fg = Fg0;
+  FDP = 0;
+  D = 0;
   P = 0;
   XF = 0;
   XIII = XIII0;
@@ -206,6 +208,7 @@ model Model_1()
   Xa_TFPI = 0;
   TFPI = TFPI0;
   PS = PS0;
+  VKH2 = VKH20;
   Va_Xa = 0;
   CA = 0;
   XII = XII0;
@@ -214,15 +217,13 @@ model Model_1()
   Xa_ATIII_Heparin = 0;
   VK = VK0;
   C_warf = 0;
+  A_warf = 0;
   VKO = VKO0;
   Pk = Pk0;
-  FDP = 0;
-  D = 0;
   TAT = 0;
   VIIa_TF_Xa_TFPI = 0;
   XIIIa = 0;
   IIa_ATIII_Heparin = 0;
-  A_warf = 0;
   IXa_ATIII_Heparin = 0;
   VK_p = 0;
 
@@ -230,17 +231,32 @@ model Model_1()
   compartment_1 = 1;
 
   // Variable initializations:
-  IC50 = 0.34;
+  VIII0 = 0.7;
+  IX0 = 89.6;
+  XI0 = 30.6;
+  VII0 = 10;
+  X0 = 174.3;
+  V0 = 26.7;
+  II0 = 1394.4;
+  Fg0 = 8945.5;
+  XIII0 = 70.3;
+  Pg0 = 2154.3;
+  PC0 = 60;
+  Tmod0 = 50;
+  TFPI0 = 2.5;
+  PS0 = 300;
+  VKH20 = 0.1;
+  XII0 = 375;
+  VK0 = 1;
+  Warfarin_ka = 1;
+  Warfarin_Vd = 10;
+  Warfarin_ke = Warfarin_CL / Warfarin_Vd;
+  VKO0 = 0.1;
+  Pk0 = 450;
   Integral_Fibrin = 0;
   clottingTime_s = 0;
   I_max = 1;
-  II0 = 1394.4;
-  VII0 = 10;
-  IX0 = 89.6;
-  X0 = 174.3;
-  PC0 = 60;
-  PS0 = 300;
-  VKH20 = 0.1;
+  IC50 = 0.34;
   d_II = 0.01;
   d_VII = 0.12;
   d_IX = 0.029;
@@ -251,15 +267,10 @@ model Model_1()
   d_VK2 = 0.0228;
   d_VKH2 = d_VK2 * VK0 / VKH20;
   d_VKO = d_VK2 * VK0 / VKO0;
-  VK0 = 1;
-  VKO0 = 0.1;
   VitaminK_k21_Vc = 0.0122 / VitaminK_Vc;
   VitaminK_k12 = 0.0587;
   Heparin_ke = 0.693;
-  Warfarin_ka = 1;
-  Warfarin_Vd = 10;
   Warfarin_CL = 0.2;
-  Warfarin_ke = Warfarin_CL / Warfarin_Vd;
   d_XII = 0.012;
   d_VIII = 0.058;
   d_XI = 0.1;
@@ -270,16 +281,6 @@ model Model_1()
   d_Tmod = 0.05;
   d_TFPI = 20;
   d_Pk = 0.05;
-  XII0 = 375;
-  VIII0 = 0.7;
-  XI0 = 30.6;
-  V0 = 26.7;
-  Fg0 = 8945.5;
-  XIII0 = 70.3;
-  Pg0 = 2154.3;
-  Tmod0 = 50;
-  TFPI0 = 2.5;
-  Pk0 = 450;
   R1 = 0.140845070422535;
   R2 = 1;
   c44 = c45 * R1;
@@ -287,7 +288,7 @@ model Model_1()
   c46 = c45 * R2;
   d_VK = 0.2052;
   r1__v = 50000;
-  r1__k = 1e-06;
+  r1__k = 1e-006;
   r2__v = 50;
   r2__k = 1;
   r3__v = 7;
@@ -302,7 +303,7 @@ model Model_1()
   r7__k = 10;
   r8__v = 2;
   r8__k = 0.1;
-  r9__v = 1e-09;
+  r9__v = 1e-009;
   r9__k = 10;
   r10_v = 50000;
   r10_k = 10;
@@ -395,31 +396,42 @@ model Model_1()
 
   //Other declarations:
   var compartment_1, Integral_Fibrin, clottingTime_s;
+  const VIII0, IX0, XI0, VII0, X0, V0, II0, Fg0, XIII0, Pg0, PC0, Tmod0, TFPI0;
+  const PS0, VKH20, XII0, VK0, Warfarin_ka, Warfarin_Vd, Warfarin_ke, VKO0;
+  const Pk0, I_max, IC50, d_II, d_VII, d_IX, d_X, d_PC, d_PS, VitaminK_Vc;
+  const d_VK2, d_VKH2, d_VKO, VitaminK_k21_Vc, VitaminK_k12, Heparin_ke, Warfarin_CL;
+  const d_XII, d_VIII, d_XI, d_V, d_Fg, d_XIII, d_Pg, d_Tmod, d_TFPI, d_Pk;
+  const R1, R2, c44, c45, c46, d_VK;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit substance = 1e-9 mole;
 
   //Display Names:
-  clottingTime_event is "clottingTime event";
-  clottingTime_s is "clottingTime [s]";
-  dilution_event is "dilution event";
-  II0 is "II(0)";
-  VII0 is "VII(0)";
-  IX0 is "IX(0)";
-  X0 is "X(0)";
-  PC0 is "PC(0)";
-  PS0 is "PS(0)";
-  VKH20 is "VKH2(0)";
-  VK0 is "VK(0)";
-  VKO0 is "VKO(0)";
-  VitaminK_k21_Vc is "VitaminK_k21/Vc";
-  XII0 is "XII(0)";
+  time_unit is "time";
   VIII0 is "VIII(0)";
+  IX0 is "IX(0)";
   XI0 is "XI(0)";
+  VII0 is "VII(0)";
+  X0 is "X(0)";
   V0 is "V(0)";
+  II0 is "II(0)";
   Fg0 is "Fg(0)";
   XIII0 is "XIII(0)";
   Pg0 is "Pg(0)";
+  PC0 is "PC(0)";
   Tmod0 is "Tmod(0)";
   TFPI0 is "TFPI(0)";
+  PS0 is "PS(0)";
+  VKH20 is "VKH2(0)";
+  XII0 is "XII(0)";
+  VK0 is "VK(0)";
+  VKO0 is "VKO(0)";
   Pk0 is "Pk(0)";
+  clottingTime_event is "clottingTime event";
+  clottingTime_s is "clottingTime [s]";
+  dilution_event is "dilution event";
+  VitaminK_k21_Vc is "VitaminK_k21/Vc";
   r1_ is "r1 ";
   r2_ is "r2 ";
   r3_ is "r3 ";

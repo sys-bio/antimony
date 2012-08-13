@@ -3,12 +3,13 @@ function GK(A1, A2, A3, A4)
   2 * A4 * A1 / (A2 - A1 + A3 * A2 + A4 * A1 + root(2, (A2 - A1 + A3 * A2 + A4 * A1)^2 - 4 * (A2 - A1) * A4 * A1));
 end
 
+
 model *Tyson2001_Cell_Cycle_Regulation()
 
   // Compartments and Species:
   compartment cell;
-  species CycBt in cell, $CycB in cell, Cdc20a in cell, $Trimer in cell, Cdh1 in cell;
-  species m in cell, Cdc20t in cell, IEP in cell, $Mad in cell, CKIt in cell;
+  species CycBt in cell, $CycB in cell, CKIt in cell, Cdc20a in cell, $Trimer in cell;
+  species Cdh1 in cell, m in cell, Cdc20t in cell, IEP in cell, $Mad in cell;
   species SK in cell;
 
   // Assignment Rules:
@@ -44,18 +45,19 @@ model *Tyson2001_Cell_Cycle_Regulation()
 
   // Species initializations:
   CycBt = 0.001;
+  CKIt = 0.001;
   Cdc20a = 0.001;
   Cdh1 = 0.001;
   m = 0.5;
   Cdc20t = 0.001;
   IEP = 0.001;
-  CKIt = 0.001;
   SK = 0.001;
 
   // Compartment initializations:
   cell = 1;
 
   // Variable initializations:
+  Keq = 1000;
   k1 = 0.04;
   k2p = 0.04;
   k2pp = 1;
@@ -81,7 +83,6 @@ model *Tyson2001_Cell_Cycle_Regulation()
   k12pp = 50;
   mmax = 10;
   k12ppp = 100;
-  Keq = 1000;
   k13 = 1;
   k14 = 1;
   k15p = 1.5;
@@ -95,8 +96,8 @@ model *Tyson2001_Cell_Cycle_Regulation()
 
   //Other declarations:
   var TF;
-  const cell, k1, k2p, k2pp, k2ppp, k3p, k3pp, J3, k4, k5p, k5pp, J5, k6;
-  const n, k7, J7, k8, J8, k9, k10, mu, k11, k12p, k12pp, mmax, k12ppp, Keq;
+  const cell, Keq, k1, k2p, k2pp, k2ppp, k3p, k3pp, J3, k4, k5p, k5pp, J5;
+  const k6, n, k7, J7, k8, J8, k9, k10, mu, k11, k12p, k12pp, mmax, k12ppp;
   const k13, k14, k15p, k15pp, k16p, k16pp, J15, J16, k4p, J4;
 
   // Unit definitions:

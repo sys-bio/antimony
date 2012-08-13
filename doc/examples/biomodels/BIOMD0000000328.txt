@@ -1,5 +1,5 @@
-//Created by libAntimony v2.0
-model Atorvastatin_Metabolism()
+//Created by libAntimony v2.3-beta
+model *Atorvastatin_Metabolism()
 
   // Compartments and Species:
   compartment compartment_, medium, cell;
@@ -67,33 +67,88 @@ model Atorvastatin_Metabolism()
 
   // Variable initializations:
   CYP3A4_ASLpOH_Km1 = 1400;
+  CYP3A4_ASLpOH_Km1 has nM;
   CYP3A4_ASLoOH_Km1 = 3900;
+  CYP3A4_ASLoOH_Km1 has nM;
   CYP3A4_ASpOH_Km1 = 25600;
+  CYP3A4_ASpOH_Km1 has nM;
   CYP3A4_ASoOH_Km1 = 29700;
+  CYP3A4_ASoOH_Km1 has nM;
   Import_ASLpOH_k = 0.033729;
+  Import_ASLpOH_k has ml_per_min;
   Import_ASLoOH_k = 0.026122;
+  Import_ASLoOH_k has ml_per_min;
   Import_ASL_k = 0.2754;
+  Import_ASL_k has ml_per_min;
   fu_ASL = 0.22;
+  fu_ASL has dimensionless;
   fu_AS = 0.22;
+  fu_AS has dimensionless;
   Import_ASpOH_k = 0.0039614;
+  Import_ASpOH_k has ml_per_min;
   Export_ASLpOH_k = 0.0011319;
+  Export_ASLpOH_k has ml_per_min;
   Export_ASLoOH_k = 0.0026674;
-  k_CR_ASL_c = 3.55e-05;
+  Export_ASLoOH_k has ml_per_min;
+  k_CR_ASL_c = 3.55e-005;
+  k_CR_ASL_c has ml_per_min;
   k_CR_ASL_m = 0.005;
+  k_CR_ASL_m has ml_per_min;
   k_PON_OH_c = 0.0039829;
+  k_PON_OH_c has ml_per_min;
   Export_ASoOH_k = 0.0015983;
+  Export_ASoOH_k has ml_per_min;
   Prot_k1 = 8.52;
+  Prot_k1 has ml_per_min;
   CYP3A4_ASoOH_Vmax = 47.4985;
+  CYP3A4_ASoOH_Vmax has pmole_per_min;
   CYP3A4_ASLpOH_Vmax = 17.4446;
+  CYP3A4_ASLpOH_Vmax has pmole_per_min;
   CYP3A4_ASLoOH_Vmax = 39.1342;
+  CYP3A4_ASLoOH_Vmax has pmole_per_min;
   UGT1A3_AS_Vmax = 13.5862;
+  UGT1A3_AS_Vmax has pmole_per_min;
   UGT1A3_AS_Km1 = 12000;
+  UGT1A3_AS_Km1 has nM;
   UGT1A3_AS_KI1 = 75000;
+  UGT1A3_AS_KI1 has nM;
   k_PON_ASL_c = 0.0043734;
+  k_PON_ASL_c has ml_per_min;
   Export_AS_k = 0.002166;
+  Export_AS_k has ml_per_min;
   Export_ASL_k = 0.021822;
+  Export_ASL_k has ml_per_min;
   Import_AS_k = 0.020335;
+  Import_AS_k has ml_per_min;
   Import_ASoOH_k = 0.00038875;
+  Import_ASoOH_k has ml_per_min;
   Export_ASpOH_k = 0.00079526;
+  Export_ASpOH_k has ml_per_min;
   CYP3A4_ASpOH_Vmax = 15.7336;
+  CYP3A4_ASpOH_Vmax has pmole_per_min;
+
+  //Other declarations:
+  const compartment_, medium, cell, CYP3A4_ASLpOH_Km1, CYP3A4_ASLoOH_Km1;
+  const CYP3A4_ASpOH_Km1, CYP3A4_ASoOH_Km1, Import_ASLpOH_k, Import_ASLoOH_k;
+  const Import_ASL_k, fu_ASL, fu_AS, Import_ASpOH_k, Export_ASLpOH_k, Export_ASLoOH_k;
+  const k_CR_ASL_c, k_CR_ASL_m, k_PON_OH_c, Export_ASoOH_k, Prot_k1, CYP3A4_ASoOH_Vmax;
+  const CYP3A4_ASLpOH_Vmax, CYP3A4_ASLoOH_Vmax, UGT1A3_AS_Vmax, UGT1A3_AS_Km1;
+  const UGT1A3_AS_KI1, k_PON_ASL_c, Export_AS_k, Export_ASL_k, Import_AS_k;
+  const Import_ASoOH_k, Export_ASpOH_k, CYP3A4_ASpOH_Vmax;
+
+  // Unit definitions:
+  unit time_unit = 60 second;
+  unit substance = 1e-12 mole;
+  unit volume = 1e-3 litre;
+  unit nM = 1e-12 mole / 1e-3 litre;
+  unit pmole_per_min = 1e-12 mole / 60 second;
+  unit ml_per_min = 1e-3 litre / 60 second;
+
+  //Display Names:
+  time_unit is "min";
+  substance is "pmole";
+  volume is "ml";
+  nM is "pmole per ml";
+  pmole_per_min is "pmole per minute";
+  ml_per_min is "ml per minute";
 end

@@ -18,17 +18,17 @@ model *lei2001()
   X_AcDH' = (r9 - r11 - (0.732 * r7 + 0.619 * r8) * X_AcDH) / (x * env);
 
   // Reactions:
-  r7: s_glu => 0.732x + 0.127$CO2 + 0.063$Red; k_7 * s_glu / (s_glu + K_7) * x * X_a * env;
-  r8: s_acetate => 0.619x + 0.325$CO2 + 0.214$Red; k_8 * s_acetate / ((s_acetate + K_5e) * (1 + K_5i * s_glu)) * x * X_a * env;
-  r9: $a => $AcDH; ((k_9 * s_glu / (s_glu + K_9) + k_9e * s_EtOH / (s_EtOH + K_9e)) / (K_9i * s_glu + 1) + k_9c * s_glu / (s_glu + K_9)) * X_a * x * env;
-  r10: $a => ; (k_10 * s_glu / (s_glu + K_10) + k_10e * s_EtOH / (s_EtOH + K_10e)) * X_a * x * env;
-  r11: $AcDH => ; k_11 * X_AcDH * x * env;
   r1: s_glu => 0.978s_pyr + 0.178$Red; (k_1l * s_glu / (s_glu + K_1l) + k_1h * s_glu / (s_glu + K_1h) + k_1e * s_acetald * s_glu / (s_glu * (K_1i * s_acetald + 1) + K_1e)) * x * X_a * env;
   r2: s_pyr => 1.499$CO2 + 0.908$Red; k_2 * s_pyr / ((s_pyr + K_2) * (K_2i * s_glu + 1)) * x * X_a * env;
   r4: s_acetald => 1.363s_acetate + 0.363$Red; k_4 * s_acetald / (s_acetald + K_4) * x * X_a * X_AcDH * env;
   r5: s_acetate => 1.446$CO2 + 1.066$Red; (k_5 * s_acetate / (s_acetate + K_5) + k_5e * s_acetate / ((s_acetate + K_5e) * (1 + K_5i * s_glu))) * x * X_a * env;
   r6: s_acetald + 0.363$Red -> 1.045s_EtOH; k_6 * (s_acetald - k_6r * s_EtOH) / (s_acetald + K_6 + K_6e * s_EtOH) * x * X_a * env;
+  r7: s_glu => 0.732x + 0.127$CO2 + 0.063$Red; k_7 * s_glu / (s_glu + K_7) * x * X_a * env;
+  r8: s_acetate => 0.619x + 0.325$CO2 + 0.214$Red; k_8 * s_acetate / ((s_acetate + K_5e) * (1 + K_5i * s_glu)) * x * X_a * env;
   r3: s_pyr => 0.5s_acetald + 0.33$CO2; k_3 * s_pyr^4 / (s_pyr^4 + K_3) * x * X_a * env;
+  r9: $a => $AcDH; ((k_9 * s_glu / (s_glu + K_9) + k_9e * s_EtOH / (s_EtOH + K_9e)) / (K_9i * s_glu + 1) + k_9c * s_glu / (s_glu + K_9)) * X_a * x * env;
+  r10: $a => ; (k_10 * s_glu / (s_glu + K_10) + k_10e * s_EtOH / (s_EtOH + K_10e)) * X_a * x * env;
+  r11: $AcDH => ; k_11 * X_AcDH * x * env;
   s_glu_in: $S_f => s_glu; S_f * D * env;
   s_glu_out: s_glu => ; s_glu * D * env;
   s_pyr_out: s_pyr => ; s_pyr * D * env;
@@ -53,14 +53,14 @@ model *lei2001()
   // Compartment initializations:
   env = 1;
   cell = 1;
-  qO2 has mmole_per_g_per_h;
-  qCO2 has mmole_per_g_per_h;
 
   // Variable initializations:
   X_a = 0.1;
   X_a has dimensionless;
   X_AcDH = 0.0075;
   X_AcDH has dimensionless;
+  qO2 has mmole_per_g_per_h;
+  qCO2 has mmole_per_g_per_h;
   k_1h = 0.584;
   k_1h has g_per_l_per_h;
   K_1h = 0.0116;
@@ -139,7 +139,7 @@ model *lei2001()
   D has per_h;
 
   //Other declarations:
-  var qO2, qCO2, X_a, X_AcDH;
+  var X_a, X_AcDH, qO2, qCO2;
   const env, cell, k_1h, K_1h, k_1l, K_1l, k_1e, K_1e, K_1i, k_2, K_2, K_2i;
   const k_3, K_3, k_4, K_4, k_5, K_5, k_5e, K_5e, K_5i, k_6, K_6, k_6r, K_6e;
   const k_7, K_7, k_8, k_9, K_9, k_9e, K_9e, K_9i, k_9c, k_10, K_10, k_10e;
@@ -175,18 +175,18 @@ model *lei2001()
   AcDH is "BM(AcDH)";
   Red is "Red. Equ. (NADH)";
   S_f is "Glucose(feed)";
-  D is "Dilutionrate";
-  r7 is "BM growth (gluc)";
-  r8 is "BM growth (acetate)";
-  r9 is "Acdh production";
-  r10 is "active BM degradation";
-  r11 is "Acdh degradation";
   r1 is "glycolysis";
   r2 is "TCA (pyruvate)";
   r4 is "Acetald. dehydrogenase";
   r5 is "TCA (acetate)";
   r6 is "ADH";
+  r7 is "BM growth (gluc)";
+  r8 is "BM growth (acetate)";
   r3 is "Pyruvate Dehydrogenase";
+  r9 is "Acdh production";
+  r10 is "active BM degradation";
+  r11 is "Acdh degradation";
+  D is "Dilutionrate";
   s_glu_in is "Glucose inflow";
   s_glu_out is "Glucose outflow";
   s_pyr_out is "Pyruvate outflow";

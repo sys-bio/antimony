@@ -24,15 +24,25 @@ model *Westermark2003_Pancreatic_GlycOsc_basic()
 
   // Compartment initializations:
   comp = 1;
-  Vgk has mM_per_s;
 
   // Variable initializations:
-  hGK = 1.7;
-  hGK has dimensionless;
   KeqGPI = 0.3;
   KeqGPI has dimensionless;
+  Vgk has mM_per_s;
+  Vgk_min = 10;
+  Vgk_min has mmole_per_min_g;
+  dw_per_ml = 0.3333;
+  dw_per_ml has g_per_ml;
+  min_to_sec = 60;
+  min_to_sec has dimensionless;
+  hGK = 1.7;
+  hGK has dimensionless;
   Vpfk has mM_per_s;
+  Vpfk_min = 100;
+  Vpfk_min has mmole_per_min_g;
   Vfba has mM_per_s;
+  Vfba_min = 25;
+  Vfba_min has mmole_per_min_g;
   Sgk = 8;
   Sgk has mM;
   Spfk = 4;
@@ -50,21 +60,11 @@ model *Westermark2003_Pancreatic_GlycOsc_basic()
   hact = 1;
   hact has dimensionless;
   sigcorr = 1.5;
-  dw_per_ml = 0.3333;
-  dw_per_ml has g_per_ml;
-  min_to_sec = 60;
-  min_to_sec has dimensionless;
-  Vgk_min = 10;
-  Vgk_min has mmole_per_min_g;
-  Vpfk_min = 100;
-  Vpfk_min has mmole_per_min_g;
-  Vfba_min = 25;
-  Vfba_min has mmole_per_min_g;
 
   //Other declarations:
   var Vgk, Vpfk, Vfba;
-  const comp, hGK, KeqGPI, Sgk, Spfk, Sfba, Xpfk, alpha, hx, hpfk, hact, sigcorr;
-  const dw_per_ml, min_to_sec, Vgk_min, Vpfk_min, Vfba_min;
+  const comp, KeqGPI, Vgk_min, dw_per_ml, min_to_sec, hGK, Vpfk_min, Vfba_min;
+  const Sgk, Spfk, Sfba, Xpfk, alpha, hx, hpfk, hact, sigcorr;
 
   // Unit definitions:
   unit substance = 1e-3 mole;

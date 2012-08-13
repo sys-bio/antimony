@@ -13,22 +13,22 @@ model *Wang1996_Single_Neuron()
   alpha_h_post := 0.07 * exp(-(V_post + 58) / 20);
   beta_h_post := 1 / (exp(-0.1 * (V_post + 28)) + 1);
   I_K_post := gK * n_post^4 * (V_post - E_K);
-  alpha_n_post := -0.01 * (V_post + 34) / (exp(-0.1 * (V_post + 34)) - 1);
-  beta_n_post := 0.125 * exp(-(V_post + 44) / 80);
   I_L_post := gL * (V_post - E_L);
   I_syn := g_syn * s * (V_post - E_syn);
+  alpha_n_post := -0.01 * (V_post + 34) / (exp(-0.1 * (V_post + 34)) - 1);
+  beta_n_post := 0.125 * exp(-(V_post + 44) / 80);
   F := 1 / (1 + exp(-(V_pre - theta_syn) / 2));
   I_app_pre := piecewise(2, and(geq(time, 10), leq(time, 20)), 0);
   I_Na_pre := gNa * m_inf_pre^3 * h_pre * (V_pre - E_Na);
-  m_inf_pre := alpha_m_pre / (alpha_m_pre + beta_m_pre);
-  alpha_n_pre := -0.01 * (V_pre + 34) / (exp(-0.1 * (V_pre + 34)) - 1);
-  beta_n_pre := 0.125 * exp(-(V_pre + 44) / 80);
-  alpha_h_pre := 0.07 * exp(-(V_pre + 58) / 20);
-  beta_h_pre := 1 / (exp(-0.1 * (V_pre + 28)) + 1);
-  alpha_m_pre := -0.1 * (V_pre + 35) / (exp(-0.1 * (V_pre + 35)) - 1);
-  beta_m_pre := 4 * exp(-(V_pre + 60) / 18);
   I_K_pre := gK * n_pre^4 * (V_pre - E_K);
   I_L_pre := gL * (V_pre - E_L);
+  m_inf_pre := alpha_m_pre / (alpha_m_pre + beta_m_pre);
+  alpha_m_pre := -0.1 * (V_pre + 35) / (exp(-0.1 * (V_pre + 35)) - 1);
+  beta_m_pre := 4 * exp(-(V_pre + 60) / 18);
+  alpha_h_pre := 0.07 * exp(-(V_pre + 58) / 20);
+  beta_h_pre := 1 / (exp(-0.1 * (V_pre + 28)) + 1);
+  alpha_n_pre := -0.01 * (V_pre + 34) / (exp(-0.1 * (V_pre + 34)) - 1);
+  beta_n_pre := 0.125 * exp(-(V_pre + 44) / 80);
 
   // Rate Rules:
   h_post' = phi * (alpha_h_post * (1 - h_post) - beta_h_post * h_post);
@@ -74,12 +74,12 @@ model *Wang1996_Single_Neuron()
   alpha_h_post has per_m;
   beta_h_post has per_m;
   I_K_post has uA_per_cm2;
+  I_L_post has uA_per_cm2;
+  I_syn has uA_per_cm2;
   n_post = alpha_n_post / (beta_n_post + alpha_n_post);
   n_post has dimensionless;
   alpha_n_post has per_m;
   beta_n_post has per_m;
-  I_L_post has uA_per_cm2;
-  I_syn has uA_per_cm2;
   g_syn = 0.1;
   g_syn has mS_per_cm2;
   s = alpha * F / (beta + alpha * F);
@@ -97,26 +97,26 @@ model *Wang1996_Single_Neuron()
   theta_syn has mV;
   I_app_pre has uA_per_cm2;
   I_Na_pre has uA_per_cm2;
+  I_K_pre has uA_per_cm2;
+  I_L_pre has uA_per_cm2;
   m_inf_pre has dimensionless;
   h_pre = alpha_h_pre / (beta_h_pre + alpha_h_pre);
   h_pre has dimensionless;
+  alpha_m_pre has per_m;
+  beta_m_pre has per_m;
+  alpha_h_pre has per_m;
+  beta_h_pre has per_m;
   n_pre = alpha_n_pre / (beta_n_pre + alpha_n_pre);
   n_pre has dimensionless;
   alpha_n_pre has per_m;
   beta_n_pre has per_m;
-  alpha_h_pre has per_m;
-  beta_h_pre has per_m;
-  alpha_m_pre has per_m;
-  beta_m_pre has per_m;
-  I_K_pre has uA_per_cm2;
-  I_L_pre has uA_per_cm2;
 
   //Other declarations:
   var tau_0, I_Na_post, m_inf_post, h_post, V_post, alpha_m_post, beta_m_post;
-  var alpha_h_post, beta_h_post, I_K_post, n_post, alpha_n_post, beta_n_post;
-  var I_L_post, I_syn, s, F, V_pre, I_app_pre, I_Na_pre, m_inf_pre, h_pre;
-  var n_pre, alpha_n_pre, beta_n_pre, alpha_h_pre, beta_h_pre, alpha_m_pre;
-  var beta_m_pre, I_K_pre, I_L_pre;
+  var alpha_h_post, beta_h_post, I_K_post, I_L_post, I_syn, n_post, alpha_n_post;
+  var beta_n_post, s, F, V_pre, I_app_pre, I_Na_pre, I_K_pre, I_L_pre, m_inf_pre;
+  var h_pre, alpha_m_pre, beta_m_pre, alpha_h_pre, beta_h_pre, n_pre, alpha_n_pre;
+  var beta_n_pre;
   const pre_synaptic_cell, post_synaptic_cell, Cm, gL, gK, gNa, E_K, E_L;
   const E_Na, phi, I_app_post, g_syn, E_syn, alpha, beta, theta_syn;
 

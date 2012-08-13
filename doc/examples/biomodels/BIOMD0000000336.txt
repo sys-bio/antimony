@@ -1,16 +1,16 @@
-//Created by libAntimony v2.0
+//Created by libAntimony v2.3-beta
 function function_4_VIIIa_IXa_degradation_2(I, VIIIa_IXa, compartment_1)
   (compartment_1 * abs(I - VIIIa_IXa) + (I - VIIIa_IXa)) / compartment_1;
 end
 
 
-model Model_1()
+model *Model_1()
 
   // Compartments and Species:
   compartment compartment_1;
-  species VIIIa_IXa in compartment_1, IX in compartment_1, IX_TF_VIIa in compartment_1;
-  species TF_VIIa in compartment_1, IXa in compartment_1, X in compartment_1;
-  species X_TF_VIIa in compartment_1, Xa in compartment_1, X_VIIIa_IXa in compartment_1;
+  species IX in compartment_1, IX_TF_VIIa in compartment_1, TF_VIIa in compartment_1;
+  species IXa in compartment_1, X in compartment_1, X_TF_VIIa in compartment_1;
+  species Xa in compartment_1, VIIIa_IXa in compartment_1, X_VIIIa_IXa in compartment_1;
   species V in compartment_1, Va in compartment_1, VIII in compartment_1;
   species VIIIa in compartment_1, IIa in compartment_1, II in compartment_1;
   species II_Va_Xa in compartment_1, Va_Xa in compartment_1, mIIa in compartment_1;
@@ -44,21 +44,21 @@ model Model_1()
   VIIIa_IXa_degradation: VIIIa_IXa => ; compartment_1 * function_4_VIIIa_IXa_degradation_2(I, VIIIa_IXa, compartment_1);
 
   // Species initializations:
-  VIIIa_IXa = 0;
-  IX = 9e-08;
+  IX = 9e-008;
   IX_TF_VIIa = 0;
-  TF_VIIa = 5e-09;
+  TF_VIIa = 5e-009;
   IXa = 0;
-  X = 1.7e-07;
+  X = 1.7e-007;
   X_TF_VIIa = 0;
   Xa = 0;
+  VIIIa_IXa = 0;
   X_VIIIa_IXa = 0;
-  V = 2e-08;
+  V = 2e-008;
   Va = 0;
-  VIII = 7e-10;
+  VIII = 7e-010;
   VIIIa = 0;
   IIa = 0;
-  II = 1.4e-06;
+  II = 1.4e-006;
   II_Va_Xa = 0;
   Va_Xa = 0;
   mIIa = 0;
@@ -67,7 +67,6 @@ model Model_1()
   compartment_1 = 1;
 
   // Variable initializations:
-  I = 0;
   k1 = 20000000;
   k2 = 20000000;
   k3 = 10000000;
@@ -88,9 +87,12 @@ model Model_1()
   k18 = 0.001;
   k19 = 70;
   k20 = 0.02;
+  I = 0;
 
   //Other declarations:
   var I, IIa_plus_1_2mIIa;
+  const compartment_1, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12;
+  const k13, k14, k15, k16, k17, k18, k19, k20;
 
   //Display Names:
   IIa_plus_1_2mIIa is "IIa+1.2mIIa";

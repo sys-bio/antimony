@@ -20,10 +20,10 @@ model *untitled()
 
   // Assignment Rules:
   pC3_frac := (pC3 + C8_pC3 + pC3_Apop) / C3_tot;
+  C3_tot := pC3 + C8_pC3 + pC3_Apop + C3 + C3_pC6 + XIAP_C3 + PARP_C3 + C3_Ub;
   C3_frac := (C3 + C3_pC6 + XIAP_C3 + PARP_C3) / C3_tot;
   C3_UB_frac := C3_Ub / C3_tot;
   cPARP_frac := CPARP / (CPARP + PARP + PARP_C3);
-  C3_tot := pC3 + C8_pC3 + pC3_Apop + C3 + C3_pC6 + XIAP_C3 + PARP_C3 + C3_Ub;
   fC3_fract := C3 / C3_tot;
 
   // Reactions:
@@ -208,7 +208,7 @@ model *untitled()
   v = 0.07;
 
   //Other declarations:
-  var pC3_frac, C3_frac, C3_UB_frac, cPARP_frac, C3_tot, fC3_fract;
+  var pC3_frac, C3_tot, C3_frac, C3_UB_frac, cPARP_frac, fC3_fract;
   const cell, mitochondrion, k1, k_1, kc1, k2, k_2, k3, k_3, kc3, k4, k_4;
   const k5, k_5, kc5, k6, k_6, kc6, k7, k_7, k8, k_8, kc8, k9, k_9, kc9, k10;
   const k_10, kc10, k11, k_11, k12, k_12, kc12, k13, k_13, k14, k_14, k15;
@@ -259,9 +259,9 @@ model *untitled()
   Apaf_hash is "Apaf#";
   pC9 is "proC9";
   pC3_frac is "pC3 fraction";
+  C3_tot is "total Caspase 3";
   C3_frac is "C3 fraction";
   C3_UB_frac is "degraded C3 fraction";
   cPARP_frac is "cPARP fraction";
-  C3_tot is "total Caspase 3";
   fC3_fract is "free C3 fraction";
 end

@@ -1,18 +1,38 @@
-//Created by libAntimony v2.0
-model FitzHugh1961_NerveMembrane()
+//Created by libAntimony v2.3-beta
+model *FitzHugh1961_NerveMembrane()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $x in compartment_, $y in compartment_;
 
   // Rate Rules:
   x' = c * (x + -(x^3 / 3) + y + z);
-  y' = -(1 / c) * (x + -a + b * y);
+  y' = -(1 / c) * (x + - a + b * y);
 
-  // Variable initializations:
+  // Species initializations:
   x = -1;
   y = 0.5;
-  a = 0.7;
-  b = 0.8;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
   c = 3;
+  c has dimensionless;
   z = -0.4;
+  z has dimensionless;
+  a = 0.7;
+  a has dimensionless;
+  b = 0.8;
+  b has dimensionless;
 
   //Other declarations:
-  var x, y;
+  var z;
+  const compartment_, c, a, b;
+
+  // Unit definitions:
+  unit time_unit = 1e-3 second;
+
+  //Display Names:
+  time_unit is "time";
 end

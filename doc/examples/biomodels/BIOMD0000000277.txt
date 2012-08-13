@@ -6,13 +6,13 @@ model *Shrestha2010_HyperCalcemia_PTHresponse()
   species $x1 in PTG_pool, $x2 in Plasma_pool, $Ca in Plasma_pool;
 
   // Assignment Rules:
-  Ca := piecewise(Ca0, lt(time, t0), Ca0 + Ca1 * (1 - exp(- alpha * (time - t0))));
   k := lambda_2 * x2_n + lambda_1 * x1_n;
   lambda_Ca := (A - B) / (1 + (Ca / S)^m_Ca) + B;
-  m_Ca := m1 / (1 + exp(- beta * (R - Ca))) + m2;
+  Ca := piecewise(Ca0, lt(time, t0), Ca0 + Ca1 * (1 - exp(- alpha * (time - t0))));
   A := lambda_1 * lambda_2 * x2_max / (k - lambda_2 * x2_max);
   B := lambda_1 * lambda_2 * x2_min / (k - lambda_2 * x2_min);
   S := Ca0_baseline * (-(x1_n * B - lambda_2 * x2_n) / (x1_n * A - lambda_2 * x2_n))^(1 / m_Ca);
+  m_Ca := m1 / (1 + exp(- beta * (R - Ca))) + m2;
 
   // Rate Rules:
   x1' = k - lambda_Ca * x1 - lambda_1 * x1;
@@ -27,26 +27,26 @@ model *Shrestha2010_HyperCalcemia_PTHresponse()
   Plasma_pool = 1;
 
   // Variable initializations:
-  m1 = 112.52;
-  m2 = 15;
-  beta = 1000000;
-  R = 1.2162;
   lambda_1 = 0.0125;
   lambda_2 = 0.5595;
   Ca0 = 1.22;
-  Ca1 = 0.2624;
   t0 = 575;
+  Ca1 = 0.2624;
   alpha = 0.0569;
-  x1_n = 490.78;
   x2_n = 6.629;
-  x2_min = 0.6697;
+  x1_n = 490.78;
+  m1 = 112.52;
+  beta = 1000000;
+  R = 1.2162;
+  m2 = 15;
   x2_max = 14.043;
+  x2_min = 0.6697;
   Ca0_baseline = 1.255;
 
   //Other declarations:
-  var k, lambda_Ca, m_Ca, A, B, S;
-  const PTG_pool, Plasma_pool, m1, m2, beta, R, lambda_1, lambda_2, Ca0, Ca1;
-  const t0, alpha, x1_n, x2_n, x2_min, x2_max, Ca0_baseline;
+  var k, lambda_Ca, A, B, S, m_Ca;
+  const PTG_pool, Plasma_pool, lambda_1, lambda_2, Ca0, t0, Ca1, alpha, x2_n;
+  const x1_n, m1, beta, R, m2, x2_max, x2_min, Ca0_baseline;
 
   //Display Names:
   x1 is "PTH_in_PTG";

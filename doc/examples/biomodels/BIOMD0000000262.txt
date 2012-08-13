@@ -3,8 +3,8 @@ model *Model_1()
 
   // Compartments and Species:
   compartment Cell;
-  species $EGF in Cell, EGFR in Cell, pEGFR in Cell, pEGFR_Akt in Cell, Akt in Cell;
-  species pAkt in Cell, S6 in Cell, pAkt_S6 in Cell, pS6 in Cell, $pro_EGFR in Cell;
+  species $EGF in Cell, EGFR in Cell, $pro_EGFR in Cell, pEGFR in Cell, pEGFR_Akt in Cell;
+  species Akt in Cell, pAkt in Cell, S6 in Cell, pAkt_S6 in Cell, pS6 in Cell;
   species EGF_EGFR in Cell;
 
   // Assignment Rules:
@@ -29,6 +29,7 @@ model *Model_1()
 
   // Species initializations:
   EGFR = pro_EGFR;
+  pro_EGFR = 68190.1837333797;
   pEGFR = 0;
   pEGFR_Akt = 0;
   Akt = 0.0433090165709309;
@@ -36,34 +37,33 @@ model *Model_1()
   S6 = 3.54316740542218;
   pAkt_S6 = 0;
   pS6 = 0;
-  pro_EGFR = 68190.1837333797;
   EGF_EGFR = 0;
 
   // Compartment initializations:
   Cell = 1;
-  pEGFR_total has ng_per_ml;
-  pAkt_total has ng_per_ml;
 
   // Variable initializations:
+  EGF_conc_step = 0;
+  EGF_conc_step has ng_per_ml;
+  EGF_conc_impulse = 0;
+  EGF_conc_impulse has ng_per_ml;
+  pulse_time = 60;
+  pulse_time has time_unit;
+  EGF_conc_ramp = 30;
+  EGF_conc_ramp has ng_per_ml;
+  ramp_time = 3600;
+  ramp_time has time_unit;
+  pEGFR_total has ng_per_ml;
   pEGFR_scaleFactor = 0.000181734813832032;
   pEGFR_scaleFactor has ng;
+  pAkt_total has ng_per_ml;
   pAkt_scaleFactor = 60.0587507734138;
   pAkt_scaleFactor has ng;
   pS6_scaleFactor = 49886.2313741851;
   pS6_scaleFactor has ng;
   pS6_total has ng_per_ml;
-  EGF_conc_step = 0;
-  EGF_conc_step has ng_per_ml;
-  EGF_conc_impulse = 0;
-  EGF_conc_impulse has ng_per_ml;
-  EGF_conc_ramp = 30;
-  EGF_conc_ramp has ng_per_ml;
   EGFR_turnover = 0.000106386129269658;
   EGFR_turnover has per_sec;
-  pulse_time = 60;
-  pulse_time has time_unit;
-  ramp_time = 3600;
-  ramp_time has time_unit;
   reaction_1_k1 = 0.00673816;
   reaction_1_k2 = 0.040749;
   reaction_1_k2 has per_sec;
@@ -90,8 +90,8 @@ model *Model_1()
 
   //Other declarations:
   var pEGFR_total, pAkt_total, pS6_total;
-  const Cell, pEGFR_scaleFactor, pAkt_scaleFactor, pS6_scaleFactor, EGF_conc_step;
-  const EGF_conc_impulse, EGF_conc_ramp, EGFR_turnover, pulse_time, ramp_time;
+  const Cell, EGF_conc_step, EGF_conc_impulse, pulse_time, EGF_conc_ramp;
+  const ramp_time, pEGFR_scaleFactor, pAkt_scaleFactor, pS6_scaleFactor, EGFR_turnover;
 
   // Unit definitions:
   unit substance = dimensionless;
