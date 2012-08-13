@@ -6,16 +6,25 @@ To enable full functionality in libAntimony, you first need to install libSBML, 
 
 For CellML:
 
-The CellML API v1.10 SDK was used in this version of Antimony (and QTAntimony) and seems to work OK.  As of this writing, the URL to download the SDK was http://www.cellml.org/tools/downloads/cellml_api/releases/1.10  All that is needed in CMake is to set CELLML_API_INSTALL_DIR to this SDK, and the other CELLML_* variables will be set automatically.
+The CellML API v1.11 SDK was used in this version of Antimony (and QTAntimony) and seems to work OK.  As of this writing, the URL to download the SDK was http://www.cellml.org/tools/downloads/cellml_api/releases/1.11  All that is needed in CMake is to set CELLML_API_INSTALL_DIR to this SDK, and the other CELLML_* variables will be set automatically.
 
 If downloading the SDK does not work (or if it is unavailable for your operating system) it too now uses CMake as its build system, and we have had reasonable success using this on linux-based systems.
 
-What's New in v2.0:
+What's new in v2.2:
+  - The ability to define units and use them in mathematical equations.
+  - The ability to define conversion factors when synchronizing elements between submodels.
+  - The ability to define time and extent conversion factors when importing submodels.
+
+Wht's new in v2.3-beta:
+  - The ability to import and export SBML models with all the new 2.2 capabilities to 'hierarchical model composition' package constructs.
+
+
+What's new in v2.0:
   - The ability to translate to and from CellML
   - The ability to define events more specifically (following their modification for SBML Level 3)
   - The ability to define irreversible reactions with '=>' instead of '->'.
 
-What's New in v2.1-beta:
+What's new in v2.1-beta:
   - The ability to import and export SBML models with 'hierarchical model composition' package constructs.
 
 

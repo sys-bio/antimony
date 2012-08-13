@@ -1,0 +1,25 @@
+model submod(q, r, x)
+  S1 ->; k1*S1;
+  at (x>3), priority=q: y=4;
+  at (x>3), priority=r: y=5;
+  x = 3;
+  x' = .2;
+  q := x-3;
+  r = -4;
+  unused = 10;
+  unused' = .3;
+  unused2 := x;
+end
+
+model testmod()
+  A: submod(Q, R), timeconv=60, extentconv=10;
+  A.x * cf is X;
+  cf = 100;
+  R = 20;
+  A.unused is U1;
+  U1 = ;
+  U1' = ;
+  A.unused2 is U2;
+  U2 := ;
+end
+  

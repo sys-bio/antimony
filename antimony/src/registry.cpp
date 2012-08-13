@@ -689,17 +689,17 @@ bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connec
       else {
         newvar = topmod->AddNewNumberedVariable(newvarname[0]);
       }
-      if (firstvar->Synchronize(newvar)) {
+      if (firstvar->Synchronize(newvar, NULL)) {
         g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + firstvar->GetNameDelimitedBy('.') + " and " + newvar->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
         somefalse = true;
       }
-      if (secondvar->Synchronize(newvar)) {
+      if (secondvar->Synchronize(newvar, NULL)) {
         g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + secondvar->GetNameDelimitedBy('.') + " and " + newvar->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
         somefalse = true;
       }
     }
     else {
-      if (firstvar->Synchronize(secondvar)) {
+      if (firstvar->Synchronize(secondvar, NULL)) {
         g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + firstvar->GetNameDelimitedBy('.') + " and " + secondvar->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
         somefalse = true;
       }

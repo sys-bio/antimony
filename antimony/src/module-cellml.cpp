@@ -365,7 +365,7 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
           //Already synchronized.
           continue;
         }
-        if (!var1->Synchronize(var2)) {
+        if (!var1->Synchronize(var2, NULL)) {
           //This adds the synchronization to the local list instead of the submodel's list.  So, move it!
           assert(g_registry.GetModule(var1->GetNamespace()) == syncmod);
           assert(numsynced == syncmod->m_synchronized.size()-1);
