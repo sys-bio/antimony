@@ -1,0 +1,211 @@
+//Created by libAntimony v2.3-beta
+
+// Warnings from automatic translation:
+//    Unable to create port constraint__constraint0 in model CompModel because Constraint elements do not exist in Antimony, and are therefore untranslateable.
+//    Unable to create port functionDefinition__f in model CompModel because function defintions are global in Antimony, not local.
+//    Unable to process deletion from submodel C1 in model CompTest.  Deletions of FunctionDefinition elements have not been added as a concept in Antimony.
+//    Unable to process deletion from submodel C1 in model CompTest.  Constraint elements cannot be expressed in Antimony at all.  (Deleting them is therefore safe, because they are automatically dropped anyway.)
+//    Unable to create port compartment__Cell__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port reaction__R1__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port reaction__R3__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port event__event0__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port event__event1__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port localParameter__R3___kf__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port localParameter__R1___kf__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port constraint__constraint0__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port unitDefinition__perSecond__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port functionDefinition__f__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port input__S1__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port output__S2__C1 in model CompTest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+
+function f(x)
+  2 * x;
+end
+
+function neighborQuantityLeft(a)
+  0;
+end
+
+function neighborQuantityRight(a)
+  0;
+end
+
+function neighborQuantityAbove(a)
+  0;
+end
+
+function neighborQuantityBelow(a)
+  0;
+end
+
+function getCompartmentLocationX(a)
+  0;
+end
+
+function getCompartmentLocationY(a)
+  0;
+end
+
+
+model CompModel(Cell, R1, R3, event0, event1, R3_kf0, R1_kf0, perSecond, S1, S2)
+
+  // Compartments and Species:
+  compartment Cell;
+  species S1 in Cell, S2 in Cell;
+
+  // Assignment Rules:
+  V1 := S1 + S2;
+
+  // Rate Rules:
+  V2' = S1 * S2;
+
+  // Reactions:
+  R1: S1 => S2; R1_kf0 * S1;
+  R3: S2 => S1; R3_kf0 * S2;
+
+  // Events:
+  event0: at 10 after geq(time, 100), t0=false, persistent=false, fromTrigger=false: S1 = 10;
+  event1: at 100 after true, t0=false, persistent=false, fromTrigger=false: S2 = 100;
+
+  // Species initializations:
+  S1 = 0;
+  S2 = 0;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  x = ;
+  V2 = 0;
+  R1_kf = 0.1;
+  R3_kf = 0.1;
+  kr_f = 0.5;
+  kr_r = 1;
+  ka_f = 0.0033;
+  ka_r = 1;
+  kc_f = 0.05;
+  kc_r = 1;
+  ko_f = 0.033;
+  ko_r = 1;
+  kao_f = 1;
+  kao_r = 1;
+  kmdiff_f = 1;
+  kmdiff_r = 0.01;
+  kd = 0.0075;
+  kecd = 0.005;
+  nc = 2;
+  nr = 30;
+  ko = 0.05;
+  kb = 0.0001;
+  ng = 2;
+  np = 10;
+  ka = 0.25;
+  kecdiff = 1;
+  kf = 2;
+  R1_kr = 1;
+  R3_kr = 1;
+  R1_kf0 = 1;
+  R3_kf0 = 1;
+
+  //Other declarations:
+  var V1, V2;
+  const x, second, Cell, R1_kf, R3_kf, kr_f, kr_r, ka_f, ka_r, kc_f, kc_r;
+  const ko_f, ko_r, kao_f, kao_r, kmdiff_f, kmdiff_r, kd, kecd, nc, nr, ko;
+  const kb, ng, np, ka, kecdiff, kf, R1_kr, R3_kr;
+
+  // Unit definitions:
+  unit perSecond = 1 / second;
+
+  //Display Names:
+  kr_f is "Forward repression binding rate";
+  kr_r is "Reverse repression binding rate";
+  ka_f is "Forward activation binding rate";
+  ka_r is "Reverse activation binding rate";
+  kc_f is "Forward complex formation rate";
+  kc_r is "Reverse complex formation rate";
+  ko_f is "Forward RNAP binding rate";
+  ko_r is "Reverse RNAP binding rate";
+  kao_f is "Forward activated RNAP binding rate";
+  kao_r is "Reverse activated RNAP binding rate";
+  kmdiff_f is "Forward membrane diffusion rate";
+  kmdiff_r is "Reverse membrane diffusion rate";
+  kd is "Degradation rate";
+  kecd is "Extracellular degradation rate";
+  nc is "Stoichiometry of binding";
+  nr is "Initial RNAP count";
+  ko is "Open complex production rate";
+  kb is "Basal production rate";
+  ng is "Initial promoter count";
+  np is "Stoichiometry of production";
+  ka is "Activated production rate";
+  kecdiff is "Extracellular diffusion rate";
+end
+
+model *CompTest(Cell)
+
+  // Sub-modules, and any changes to those submodules:
+  C1: CompModel();
+  C1.Cell is Cell;
+  C1.S2 is S1;
+  C1.S1 is S2;
+  C1.R3_kf0 is topKf;
+
+  // Reactions:
+  C1.R1: S2 => S1; C1.kf * S2;
+
+  // Variable initializations:
+  kr_f = 0.5;
+  kr_r = 1;
+  ka_f = 0.0033;
+  ka_r = 1;
+  kc_f = 0.05;
+  kc_r = 1;
+  ko_f = 0.033;
+  ko_r = 1;
+  kao_f = 1;
+  kao_r = 1;
+  kmdiff_f = 1;
+  kmdiff_r = 0.01;
+  kd = 0.0075;
+  kecd = 0.005;
+  nc = 2;
+  nr = 30;
+  ko = 0.05;
+  kb = 0.0001;
+  ng = 2;
+  np = 10;
+  ka = 0.25;
+  kecdiff = 1;
+  topKf = 3;
+
+  //Deleted elements from submodels:
+  delete C1.perSecond, C1.event0, C1.event1;
+
+  //Other declarations:
+  const topKf, kr_f, kr_r, ka_f, ka_r, kc_f, kc_r, ko_f, ko_r, kao_f, kao_r;
+  const kmdiff_f, kmdiff_r, kd, kecd, nc, nr, ko, kb, ng, np, ka, kecdiff;
+
+  //Display Names:
+  kr_f is "Forward repression binding rate";
+  kr_r is "Reverse repression binding rate";
+  ka_f is "Forward activation binding rate";
+  ka_r is "Reverse activation binding rate";
+  kc_f is "Forward complex formation rate";
+  kc_r is "Reverse complex formation rate";
+  ko_f is "Forward RNAP binding rate";
+  ko_r is "Reverse RNAP binding rate";
+  kao_f is "Forward activated RNAP binding rate";
+  kao_r is "Reverse activated RNAP binding rate";
+  kmdiff_f is "Forward membrane diffusion rate";
+  kmdiff_r is "Reverse membrane diffusion rate";
+  kd is "Degradation rate";
+  kecd is "Extracellular degradation rate";
+  nc is "Stoichiometry of binding";
+  nr is "Initial RNAP count";
+  ko is "Open complex production rate";
+  kb is "Basal production rate";
+  ng is "Initial promoter count";
+  np is "Stoichiometry of production";
+  ka is "Activated production rate";
+  kecdiff is "Extracellular diffusion rate";
+end

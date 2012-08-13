@@ -1,0 +1,63 @@
+//Created by libAntimony v2.3-beta
+model submod(q, r, x)
+
+  // Compartments and Species:
+  species S1;
+
+  // Assignment Rules:
+  q := x - 3;
+  unused2 := x;
+
+  // Rate Rules:
+  x' = 0.2;
+  unused' = 0.3;
+
+  // Reactions:
+  _J0: S1 -> ; k1 * S1;
+
+  // Events:
+  _E0: at gt(x, 3), priority = q: y = 4;
+  _E1: at gt(x, 3), priority = r: y = 5;
+
+  // Species initializations:
+  S1 = ;
+
+  // Variable initializations:
+  x = 3;
+  y = ;
+  r = -4;
+  unused = 10;
+  k1 = ;
+
+  //Other declarations:
+  var x, q, y, unused, unused2;
+  const r, k1;
+end
+
+model *testmod()
+
+  // Sub-modules, and any changes to those submodules:
+  A: submod(), extentconv = extentconv, timeconv = timeconv;
+  A.q is Q;
+  A.r is R;
+  A.x * cf is X;
+  A.unused is U1;
+  A.unused2 is U2;
+
+  // Assignment Rules:
+  U2 := ;
+
+  // Rate Rules:
+  U1' = ;
+
+  // Variable initializations:
+  timeconv = 60;
+  extentconv = 10;
+  R = 20;
+  cf = 100;
+  X = ;
+  U1 = ;
+
+  //Other declarations:
+  const timeconv, extentconv, cf;
+end
