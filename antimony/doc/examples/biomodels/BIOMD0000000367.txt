@@ -1,0 +1,35 @@
+//Created by libAntimony v2.3-beta
+model *Model_1()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species $x in compartment_1, $y in compartment_1, $z in compartment_1;
+
+  // Rate Rules:
+  x' = - r * x * y + zeta * mu_x - zeta * x;
+  y' = r * x * y - b * y * z - zeta * y;
+  z' = - b * y * z + zeta * mu_z - zeta * z;
+  mu_z' = epsilon * (y - k * (mu_z - mu_z_star));
+
+  // Species initializations:
+  x = 4;
+  y = 0.2;
+  z = 0.4;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  r = 0.2;
+  zeta = 0.5;
+  mu_x = 4;
+  b = 1.5;
+  mu_z = 0.4;
+  epsilon = 0.002;
+  k = 0.4;
+  mu_z_star = 0.4;
+
+  //Other declarations:
+  var mu_z;
+  const compartment_1, r, zeta, mu_x, b, epsilon, k, mu_z_star;
+end

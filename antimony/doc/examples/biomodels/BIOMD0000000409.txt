@@ -1,0 +1,159 @@
+//Created by libAntimony v2.3-beta
+model *Queralt2006_MitoticExit_Cdc55DownregulationBySeparase()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $AA in compartment_, Clb2 in compartment_, $degr in compartment_;
+  species Cdc20 in compartment_, Cdh1 in compartment_, $Cdh1_i in compartment_;
+  species securinT in compartment_, $securin in compartment_, securinseparase in compartment_;
+  species separaseT in compartment_, $separase in compartment_, Net1 in compartment_;
+  species Net1Cdc14 in compartment_, PoloT in compartment_, Polo in compartment_;
+  species $Polo_i in compartment_, Tem1 in compartment_, $Tem1_i in compartment_;
+  species Cdc15 in compartment_, $Cdc15_i in compartment_, MEN in compartment_;
+  species $PP2A in compartment_, $Net1P in compartment_, $Cdc14 in compartment_;
+
+  // Assignment Rules:
+  Cdh1_i := Cdh1T - Cdh1;
+  securin := securinT - securinseparase;
+  separase := separaseT - securinseparase;
+  Polo_i := PoloT - Polo;
+  Tem1_i := Tem1T - Tem1;
+  Cdc15_i := Cdc15T - Cdc15;
+  PP2A := (1 + kpp * ki * separase) / (1 + ki * separase) * PP2AT;
+  Net1P := Net1T - Net1 - Net1Cdc14;
+  Cdc14 := Cdc14T - Net1Cdc14;
+  Cdk := Clb2 / (1 + Inh);
+
+  // Reactions:
+  v1: $AA -> Clb2; ksclb2;
+  v2: Clb2 -> $degr; (kdclb2 + kadclb2 * Cdc20 + kaadclb2 * Cdh1) * Clb2;
+  v3: $AA -> Cdc20; kscdc20;
+  v4: Cdc20 -> $degr; (kdcdc20 + kadcdc20 * Cdh1) * Cdc20;
+  v5: $Cdh1_i -> Cdh1; (kdcdh + kadcdh * Cdc14) * ((Cdh1T - Cdh1) / (Jcdh + Cdh1T - Cdh1));
+  v6: Cdh1 -> $Cdh1_i; kapcdh * Cdk * (Cdh1 / (Jcdh + Cdh1));
+  v7: $AA -> securinT + $securin; kssecurin;
+  v8: securinT + $securin -> $degr; (kdsecurin + kadsecurin * Cdc20) * securinT;
+  v9: $AA -> separaseT + $separase; ksseparase;
+  v10: separaseT + $separase -> $degr; kdseparase * separaseT;
+  v11: $securin + $separase -> securinseparase; lasecurin * securin * separase - ldsecurin * securinseparase;
+  securinseparase_securindegradation: securinseparase -> $separase; (kdsecurin + kadsecurin * Cdc20) * securinseparase;
+  securinseparase_separase_degradation: securinseparase -> $securin; kdseparase * securinseparase;
+  v13: $Net1P -> Net1; (kad * Cdc14 + kd * PP2A) * (Net1P / (Jnet + Net1P));
+  v14: Net1 -> $Net1P; (kp * Cdk + kap * MEN) * (Net1 / (Jnet + Net1 + Net1Cdc14));
+  v15: Net1 -> Net1Cdc14; lanet * Net1 * Cdc14;
+  v16: Net1Cdc14 -> Net1; ldnet * Net1Cdc14;
+  v17: Net1Cdc14 -> $Net1P; (kp * Cdk + kap * MEN) * (Net1Cdc14 / (Jnet + Net1 + Net1Cdc14));
+  v18: $AA -> PoloT + $Polo_i; kspolo;
+  v19: PoloT + $Polo_i -> $degr; (kdpolo + kadpolo * Cdh1) * PoloT;
+  v20: $Polo_i -> Polo; (kapolo + kaapolo * Cdk) * ((PoloT - Polo) / (Jpolo + PoloT - Polo));
+  v21: Polo -> $Polo_i; kipolo * (Polo / (Jpolo + Polo));
+  v22: Polo -> $degr; (kdpolo + kadpolo * Cdh1) * Polo;
+  v23: $Tem1_i -> Tem1; (katem + kaatem * Polo) * ((Tem1T - Tem1) / (Jtem1 + Tem1T - Tem1));
+  v24: Tem1 -> $Tem1_i; (kitem + kaitem * PP2A) * (Tem1 / (Jtem1 + Tem1));
+  v25: $Cdc15_i -> Cdc15; (kacdc15 + kaacdc15 * Cdc14) * ((Cdc15T - Cdc15) / (Jcdc15 + Cdc15T - Cdc15));
+  v26: Cdc15 -> $Cdc15_i; (kicdc15 + kaicdc15 * Cdk) * (Cdc15 / (Jcdc15 + Cdc15));
+  v27: $AA -> MEN; lamen * (Tem1 - MEN) * (Cdc15 - MEN);
+  v28: MEN -> $degr; ldmen * MEN;
+  v29: MEN -> ; (kitem + kaitem * PP2A) * (MEN / (Jtem1 + Tem1));
+  v30: MEN -> ; (kicdc15 + kaicdc15 * Cdk) * (MEN / (Jcdc15 + Cdc15));
+
+  // Species initializations:
+  AA = 1;
+  Clb2 = 0.997;
+  degr = 1;
+  Cdc20 = 0;
+  Cdh1 = 3.8e-005;
+  securinT = 0.6;
+  securinseparase = 0.248;
+  separaseT = 0.25;
+  Net1 = 0.098;
+  Net1Cdc14 = 0.485;
+  PoloT = 0.99;
+  Polo = 0.945;
+  Tem1 = 0.00389;
+  Cdc15 = 0.0257;
+  MEN = 8e-006;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Cdh1T = 1;
+  Tem1T = 1;
+  Cdc15T = 1;
+  kpp = 0.1;
+  ki = 20;
+  PP2AT = 1;
+  Net1T = 1;
+  Cdc14T = 0.5;
+  Inh = 0;
+  ksclb2 = 0.03;
+  kdclb2 = 0.03;
+  kadclb2 = 0.2;
+  kaadclb2 = 2;
+  kscdc20 = 0.015;
+  kdcdc20 = 0.05;
+  kadcdc20 = 2;
+  kdcdh = 0.01;
+  kadcdh = 1;
+  kapcdh = 1;
+  Jcdh = 0.0015;
+  kssecurin = 0.03;
+  kdsecurin = 0.05;
+  kadsecurin = 2;
+  ksseparase = 0.001;
+  kdseparase = 0.004;
+  lasecurin = 500;
+  ldsecurin = 1;
+  kad = 0.1;
+  kd = 0.45;
+  kp = 0.4;
+  kap = 2;
+  Jnet = 0.2;
+  lanet = 500;
+  ldnet = 1;
+  kspolo = 0.01;
+  kdpolo = 0.01;
+  kadpolo = 0.25;
+  kapolo = 0;
+  kaapolo = 0.5;
+  kipolo = 0.1;
+  Jpolo = 0.25;
+  katem = 0;
+  kaatem = 0.5;
+  kitem = 0.1;
+  kaitem = 1;
+  Jtem1 = 0.005;
+  kacdc15 = 0.02;
+  kaacdc15 = 0.5;
+  kicdc15 = 0;
+  kaicdc15 = 0.2;
+  Jcdc15 = 0.2;
+  lamen = 10;
+  ldmen = 0.1;
+
+  //Other declarations:
+  var Cdk;
+  const compartment_, Cdh1T, Tem1T, Cdc15T, kpp, ki, PP2AT, Net1T, Cdc14T;
+  const Inh, ksclb2, kdclb2, kadclb2, kaadclb2, kscdc20, kdcdc20, kadcdc20;
+  const kdcdh, kadcdh, kapcdh, Jcdh, kssecurin, kdsecurin, kadsecurin, ksseparase;
+  const kdseparase, lasecurin, ldsecurin, kad, kd, kp, kap, Jnet, lanet, ldnet;
+  const kspolo, kdpolo, kadpolo, kapolo, kaapolo, kipolo, Jpolo, katem, kaatem;
+  const kitem, kaitem, Jtem1, kacdc15, kaacdc15, kicdc15, kaicdc15, Jcdc15;
+  const lamen, ldmen;
+
+  //Display Names:
+  Cdh1_i is "inactive Cdh1";
+  securinseparase is "securin:separase";
+  Polo_i is "inactive Polo";
+  Tem1_i is "inactive Tem1";
+  Cdc15_i is "inactive Cdc15";
+  Cdk is "Cdk activity";
+  securinseparase_securindegradation is "securinseparase securindegradation";
+  securinseparase_separase_degradation is "securin:separase separase degradation";
+  v13 is "Net1P dephosphorylation";
+  v14 is "Net1 phosphorylation";
+  v17 is "Net1Cdc14 phosphorylation";
+  v29 is "Tem1 degradation in MEN";
+  v30 is "Cdc15 degradation in MEN";
+end

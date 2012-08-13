@@ -1,0 +1,201 @@
+//Created by libAntimony v2.3-beta
+function function_2(Vm, S, K, R1, KR1, R2, KR2)
+  Vm * S / (S + K * (1 + R1 / KR1 + R2 / KR2));
+end
+
+function function_7(Vm, S, KA, A, K, R1, KR1, R2, KR2, R3, KR3)
+  Vm * S / (S * (1 + KA / A) + K * (1 + (1 + KA / A) * (R1 / KR1 + R2 / KR2 + R3 / KR3)));
+end
+
+function function_4(Vm, S1, S2, K1, R1, KR1, R2, KR2, R3, KR3, R4, KR41, K2, KR42)
+  Vm * S1 * S2 / ((S1 + K1 * (1 + R1 / KR1 + R2 / KR2 + R3 / KR3)) * (S2 * (1 + R4 / KR41) + K2 * (1 + R4 / KR42)));
+end
+
+function function_6(Vm, s1, s2, K1, K2)
+  Vm * s1 * s2 / ((s1 + K1) * (s2 + K2));
+end
+
+function function_1(Vm, S, K, R1, KR1, R2, KR2, R3, KR3, R4, KR4, R5, KR5)
+  Vm * S / (S + K * (1 + R1 / KR1 + R2 / KR2 + R3 / KR3 + R4 / KR4 + R5 / KR5));
+end
+
+function function_3(Vm, S, K, R1, KR1)
+  Vm * S / (S + K * (1 + R1 / KR1));
+end
+
+function function_5(Vm, S1, S2, K1, K2, R1, KR1, R2, KA1, A1, KA2, A2, KA3, A3)
+  Vm * S1 * S2 / ((S1 + K1) * (1 + R1 / KR1) * (S2 + K2 * (1 + K2 * R2 / (KA1 * A1 + KA2 * A2 + KA3 * A3))));
+end
+
+
+model *Arnold2011_Poolman2000_CalvinCycle_Starch()
+
+  // Compartments and Species:
+  compartment chloroplast, cytosol;
+  species RuBP in chloroplast, PGA in chloroplast, DPGA in chloroplast, GAP in chloroplast;
+  species DHAP in chloroplast, FBP in chloroplast, F6P in chloroplast, E4P in chloroplast;
+  species SBP in chloroplast, S7P in chloroplast, X5P in chloroplast, R5P in chloroplast;
+  species Ru5P in chloroplast, G6P in chloroplast, G1P in chloroplast, ATP in chloroplast;
+  species $ADP in chloroplast, $NADPH in chloroplast, $NADP in chloroplast;
+  species $H in chloroplast, $Pi_ in chloroplast, $Pext in cytosol;
+
+  // Assignment Rules:
+  ADP := 1.5 - ATP;
+  Pi_ := 15 - 2 * (RuBP + DPGA + FBP + SBP) - (PGA + GAP + DHAP + F6P + E4P + S7P + X5P + R5P + Ru5P + G6P + G1P + ATP);
+
+  // Reactions:
+  RuBisCO: RuBP => 2PGA; chloroplast * function_1(RuBisCO_Vm, RuBP, RuBisCO_K, PGA, RuBisCO_KR1, FBP, RuBisCO_KR2, SBP, RuBisCO_KR3, Pi_, RuBisCO_KR4, NADPH, RuBisCO_KR5);
+  PGA_K: PGA + ATP -> DPGA + $ADP; chloroplast * (PGA_K_k1 * PGA * ATP - PGA_K_k2 * DPGA * ADP);
+  GAP_DH: DPGA + $NADPH + $H -> GAP + $NADP + $Pi_; chloroplast * (GAP_DH_k1 * DPGA * NADPH * H - GAP_DH_k2 * GAP * NADP * Pi_);
+  TP_I: GAP -> DHAP; chloroplast * (TP_I_k1 * GAP - TP_I_k2 * DHAP);
+  FBP_A: DHAP + GAP -> FBP; chloroplast * (FBP_A_k1 * DHAP * GAP - FBP_A_k2 * FBP);
+  FBPase: FBP => F6P + $Pi_; chloroplast * function_2(FBPase_Vm, FBP, FBPase_K, F6P, FBPase_KR1, Pi_, FBPase_KR2);
+  F6P_TK: GAP + F6P -> X5P + E4P; chloroplast * (F6P_TK_k1 * GAP * F6P - F6P_TK_k2 * X5P * E4P);
+  SBP_A: DHAP + E4P -> SBP; chloroplast * (SBP_A_k1 * DHAP * E4P - SBP_A_k2 * SBP);
+  SBPase: SBP => S7P + $Pi_; chloroplast * function_3(SBPase_Vm, SBP, SBPase_K, Pi_, SBPase_KR1);
+  S7P_TK: GAP + S7P -> X5P + R5P; chloroplast * (S7P_TK_k1 * GAP * S7P - S7P_TK_k2 * X5P * R5P);
+  R5P_I: R5P -> Ru5P; chloroplast * (R5P_I_k1 * R5P - R5P_I_k2 * Ru5P);
+  Ru5P_E: X5P -> Ru5P; chloroplast * (Ru5P_E_k1 * X5P - Ru5P_E_k2 * Ru5P);
+  Ru5P_K: Ru5P + ATP => RuBP + $ADP; chloroplast * function_4(Ru5P_K_Vm, Ru5P, ATP, Ru5P_K_K1, PGA, Ru5P_K_KR1, RuBP, Ru5P_K_KR2, Pi_, Ru5P_K_KR3, ADP, Ru5P_K_KR41, Ru5P_K_K2, Ru5P_K_KR42);
+  PG_I: F6P -> G6P; chloroplast * (PG_I_k1 * F6P - PG_I_k2 * G6P);
+  PG_M: G6P -> G1P; chloroplast * (PG_M_k1 * G6P - PG_M_k2 * G1P);
+  Starch_S: G1P + ATP => ; chloroplast * function_5(Starch_S_Vm, G1P, ATP, Starch_S_K1, Starch_S_K2, ADP, Starch_S_KR1, Pi_, Starch_S_KA1, PGA, Starch_S_KA2, F6P, Starch_S_KA3, FBP);
+  Starch_P: $Pi_ => G1P; chloroplast * function_3(Starch_P_Vm, Pi_, Starch_P_K, G1P, Starch_P_KR1);
+  ATP_S: $ADP + $Pi_ => ATP; chloroplast * function_6(ATP_S_Vm, ADP, Pi_, ATP_S_K1, ATP_S_K2);
+  TPT_PGA: PGA => ; chloroplast * function_7(TPT_PGA_Vm, PGA, TPT_PGA_KA, Pext, TPT_PGA_K, Pi_, TPT_PGA_KR1, GAP, TPT_PGA_KR2, DHAP, TPT_PGA_KR3);
+  TPT_GAP: GAP => ; chloroplast * function_7(TPT_GAP_Vm, GAP, TPT_GAP_KA, Pext, TPT_GAP_K, Pi_, TPT_GAP_KR1, PGA, TPT_GAP_KR2, DHAP, TPT_GAP_KR3);
+  TPT_DHAP: DHAP => ; chloroplast * function_7(TPT_DHAP_Vm, DHAP, TPT_DHAP_KA, Pext, TPT_DHAP_K, Pi_, TPT_DHAP_KR1, PGA, TPT_DHAP_KR2, GAP, TPT_DHAP_KR3);
+
+  // Species initializations:
+  RuBP = 2;
+  PGA = 2.4;
+  DPGA = 0.0011;
+  GAP = 0.02;
+  DHAP = 0.48;
+  FBP = 0.669999999999999;
+  F6P = 0.640764257004719;
+  E4P = 0.05;
+  SBP = 0.3;
+  S7P = 2;
+  X5P = 0.0747384155455904;
+  R5P = 0.125186846038864;
+  Ru5P = 0.0500747384155456;
+  G6P = 1.47375779111085;
+  G1P = 0.0854779518844294;
+  ATP = 0.68;
+  NADPH = 0.21;
+  NADP = 0.29;
+  H = 1.25892541179417e-005;
+  Pext = 0.5;
+
+  // Compartment initializations:
+  chloroplast = 1;
+  cytosol = 1;
+
+  // Variable initializations:
+  RuBisCO_Vm = 340;
+  RuBisCO_K = 0.02;
+  RuBisCO_KR1 = 0.84;
+  RuBisCO_KR2 = 0.04;
+  RuBisCO_KR3 = 0.0075;
+  RuBisCO_KR4 = 0.9;
+  RuBisCO_KR5 = 0.07;
+  PGA_K_k1 = 500000000;
+  PGA_K_k2 = 1612900000000;
+  GAP_DH_k1 = 500000000;
+  GAP_DH_k2 = 31.25;
+  TP_I_k1 = 500000000;
+  TP_I_k2 = 22727000;
+  FBP_A_k1 = 500000000;
+  FBP_A_k2 = 70423000;
+  FBPase_Vm = 200;
+  FBPase_K = 0.03;
+  FBPase_KR1 = 0.7;
+  FBPase_KR2 = 12;
+  F6P_TK_k1 = 500000000;
+  F6P_TK_k2 = 5952400000;
+  SBP_A_k1 = 500000000;
+  SBP_A_k2 = 38461500;
+  SBPase_Vm = 40;
+  SBPase_K = 0.02;
+  SBPase_KR1 = 12;
+  S7P_TK_k1 = 500000000;
+  S7P_TK_k2 = 588240000;
+  R5P_I_k1 = 500000000;
+  R5P_I_k2 = 1250000000;
+  Ru5P_E_k1 = 500000000;
+  Ru5P_E_k2 = 746269000;
+  Ru5P_K_Vm = 1000;
+  Ru5P_K_K1 = 0.05;
+  Ru5P_K_KR1 = 2;
+  Ru5P_K_KR2 = 0.7;
+  Ru5P_K_KR3 = 4;
+  Ru5P_K_KR41 = 2.5;
+  Ru5P_K_K2 = 0.05;
+  Ru5P_K_KR42 = 0.4;
+  PG_I_k1 = 500000000;
+  PG_I_k2 = 217400000;
+  PG_M_k1 = 500000000;
+  PG_M_k2 = 8621000000;
+  Starch_S_Vm = 40;
+  Starch_S_K1 = 0.08;
+  Starch_S_K2 = 0.08;
+  Starch_S_KR1 = 10;
+  Starch_S_KA1 = 0.1;
+  Starch_S_KA2 = 0.02;
+  Starch_S_KA3 = 0.02;
+  Starch_P_Vm = 40;
+  Starch_P_K = 0.1;
+  Starch_P_KR1 = 0.05;
+  ATP_S_Vm = 350;
+  ATP_S_K1 = 0.014;
+  ATP_S_K2 = 0.3;
+  TPT_PGA_Vm = 250;
+  TPT_PGA_KA = 0.74;
+  TPT_PGA_K = 0.25;
+  TPT_PGA_KR1 = 0.63;
+  TPT_PGA_KR2 = 0.075;
+  TPT_PGA_KR3 = 0.077;
+  TPT_GAP_Vm = 250;
+  TPT_GAP_KA = 0.74;
+  TPT_GAP_K = 0.075;
+  TPT_GAP_KR1 = 0.63;
+  TPT_GAP_KR2 = 0.25;
+  TPT_GAP_KR3 = 0.077;
+  TPT_DHAP_Vm = 250;
+  TPT_DHAP_KA = 0.74;
+  TPT_DHAP_K = 0.077;
+  TPT_DHAP_KR1 = 0.63;
+  TPT_DHAP_KR2 = 0.25;
+  TPT_DHAP_KR3 = 0.075;
+
+  //Other declarations:
+  const chloroplast, cytosol;
+
+  // Unit definitions:
+  unit volume = litre;
+  unit substance = 1e-3 mole;
+
+  //Display Names:
+  RuBisCO is "RuBisCo";
+  PGA_K is "PGA kinase";
+  GAP_DH is "GAP dehydrogenase";
+  TP_I is "TP isomerase";
+  FBP_A is "FBP aldolase";
+  FBPase is "FBP ase";
+  F6P_TK is "F6P transketolase";
+  SBP_A is "SBP aldolase";
+  SBPase is "SBP ase";
+  S7P_TK is "S7P transketolase";
+  R5P_I is "R5P isomerase";
+  Ru5P_E is "Ru5P epimerase";
+  Ru5P_K is "Ru5P kinase";
+  PG_I is "PG isomerase";
+  PG_M is "PG mutase";
+  Starch_S is "starch synthase";
+  Starch_P is "starch phosphorylase";
+  ATP_S is "ATP synthetase";
+  TPT_PGA is "TPT - PGA";
+  TPT_GAP is "TPT - GAP";
+  TPT_DHAP is "TPT - DHAP";
+end

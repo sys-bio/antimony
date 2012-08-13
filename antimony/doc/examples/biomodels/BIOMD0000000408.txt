@@ -1,0 +1,182 @@
+//Created by libAntimony v2.3-beta
+model *Hettling2011()
+
+  // Compartments and Species:
+  compartment IMS, CYT, cell;
+  species ADPi in IMS, ATPi in IMS, Cri in IMS, PCri in IMS, PCr in CYT, ADP in CYT;
+  species ATP in CYT, Cr in CYT, P_ii in IMS, P_i in CYT;
+
+  // Assignment Rules:
+  phase := (abs(time - time_Jhyd_step) - floor(abs(time - time_Jhyd_step) / (60 / heartrate_bpm)) * 60 / heartrate_bpm) / (60 / heartrate_bpm);
+  VhydAmp_test := 2 * Jhyd_test / (fracSysUp + fracSysDown);
+  fracDia := 1 - fracSysUp - fracSysDown;
+  VhydAmp_basis := 2 * Jhyd_basis / (fracSysUp + fracSysDown);
+  j_diff_pcr := PSmomPCr * (PCri - PCr);
+  j_diff_atp := PSmomATP * (ATPi - ATP);
+  densyn := 1 + ADPi / Kadp + P_ii / Kpi + ADPi * P_ii / (Kadp * Kpi);
+  vatpnorm := tmito_factor * ((Jhyd_test - jsyn) / (Jhyd_test - Jhyd_basis));
+  jsyn := Vmaxsyn * (ADPi * P_ii / (Kpi * Kadp * densyn));
+  r_diff_pcr := j_diff_pcr / (j_diff_pcr + j_diff_atp);
+  j_ck_mi := (VmaxMif * ATPi * Cri / (KiaMi * KbMi) - VmaxMib * ADPi * PCri / (KicMi * KdMi)) / (1 + Cri / KibMi + PCri / KidMi + ATPi * (1 / KiaMi + Cri / (KiaMi * KbMi)) + ADPi * (1 / KicMi + Cri / (KicMi * KibMi) + PCri / (KidMi * (KicMi * KdMi / KidMi))));
+  VmaxMif := VmaxMif_full_activity * ck_factor_iaa;
+  VmaxMib := K_CK_eq * KicMi * KdMi * VmaxMif / (KiaMi * KbMi);
+  j_ck_mm := (VmaxMMf * ATP * Cr / (KiaMM * KbMM) - VmaxMMb * ADP * PCr / (KicMM * KdMM)) / (1 + Cr / KibMM + PCr / KidMM + ATP * (1 / KiaMM + Cr / (KiaMM * KbMM)) + ADP * (1 / KicMM + Cr / (KicMM * KibMM) + PCr / (KidMM * (KicMM * KdMM / KidMM))));
+  VmaxMMf := VmaxMMf_full_activity * ck_factor_iaa;
+  VmaxMMb := K_CK_eq * KicMM * KdMM * VmaxMMf / (KiaMM * KbMM);
+  j_diff_adp := PSmomATP * (ADPi - ADP);
+  j_diff_cr := PSmomCr * (Cri - Cr);
+  j_diff_pi := PSmomPi * (P_ii - P_i);
+
+  // Rate Rules:
+  tmito' = vatpnorm;
+
+  // Reactions:
+  Jsyn: P_ii + ADPi -> ATPi; Vmaxsyn * ADPi * P_ii / (Kadp * Kpi * (1 + ADPi / Kadp + P_ii / Kpi + ADPi * P_ii / (Kadp * Kpi)));
+  J_CK_Mi: ATPi + Cri -> PCri + ADPi; j_ck_mi;
+  J_CK_MM: Cr + ATP -> PCr + ADP; j_ck_mm;
+  Jhyd_reaction: ATP -> ADP + P_i; Jhyd;
+  J_diff_Pi: P_ii -> P_i; j_diff_pi;
+  J_diff_Cr: Cri -> Cr; j_diff_cr;
+  J_diff_ADP: ADPi -> ADP; j_diff_adp;
+  J_diff_PCr: PCri -> PCr; j_diff_pcr;
+  J_diff_ATP: ATPi -> ATP; j_diff_atp;
+
+  // Events:
+  pulsatile_test: at 0 after and(and(geq(time, time_Jhyd_step), gt(time - last_time_fired, stepsize)), eq(pulsatility, 1)): last_time_fired = time, Jhyd = piecewise((1 - (phase - fracSysUp) / fracSysDown) * VhydAmp_test, and(gt(phase, fracSysUp), leq(phase, 1 - fracDia)), phase / fracSysUp * VhydAmp_test, leq(phase, fracSysUp), 0, geq(phase, 1 - fracDia), Jhyd);
+  pulsatile_basis: at 0 after and(and(lt(time, time_Jhyd_step), geq(time - last_time_fired, stepsize)), eq(pulsatility, 1)): last_time_fired = time, Jhyd = piecewise(0, leq(phase, fracDia), (phase - fracDia) / fracSysDown * VhydAmp_basis, and(gt(phase, fracDia), leq(phase, 1 - fracSysUp)), (1 - phase) * VhydAmp_basis / fracSysUp, gt(phase, 1 - fracSysUp), Jhyd);
+  nonpulsatile_step: at 0 after geq(time, time_Jhyd_step): tmito_factor = 1, heartrate_bpm = heartrate_test, Jhyd = piecewise(Jhyd_test, eq(pulsatility, 0), Jhyd);
+
+  // Species initializations:
+  ADPi = 39;
+  ADPi has micromole_per_litre;
+  ATPi = 5626;
+  ATPi has micromole_per_litre;
+  Cri = 9789;
+  Cri has micromole_per_litre;
+  PCri = 5711;
+  PCri has micromole_per_litre;
+  PCr = 5710;
+  PCr has micromole_per_litre;
+  ADP = 64;
+  ADP has micromole_per_litre;
+  ATP = 5601;
+  ATP has micromole_per_litre;
+  Cr = 9789;
+  Cr has micromole_per_litre;
+  P_ii = 910;
+  P_ii has micromole_per_litre;
+  P_i = 912;
+  P_i has micromole_per_litre;
+
+  // Compartment initializations:
+  IMS = 0.0625;
+  CYT = 0.75;
+  cell = 1;
+
+  // Variable initializations:
+  time_Jhyd_step = 40;
+  time_Jhyd_step has second;
+  last_time_fired = 0;
+  last_time_fired has second;
+  stepsize = 0.001;
+  stepsize has second;
+  pulsatility = 1;
+  Jhyd = 486.5;
+  Jhyd has micromole_per_litre_per_second;
+  fracSysUp = 0.1666666666;
+  fracSysDown = 0.1666666666;
+  VhydAmp_test has micromole_per_litre_per_second;
+  VhydAmp_basis has micromole_per_litre_per_second;
+  Jhyd_test = 627.6;
+  Jhyd_test has micromole_per_litre_per_second;
+  heartrate_bpm = 135;
+  heartrate_bpm has unitDefinition_0000004;
+  heartrate_test = 220;
+  heartrate_test has unitDefinition_0000004;
+  tmito_factor = 0;
+  j_diff_pcr has micromole_per_litre_per_second;
+  PSmomPCr = 155;
+  PSmomPCr has per_second;
+  j_diff_atp has micromole_per_litre_per_second;
+  PSmomATP = 13.29477;
+  PSmomATP has per_second;
+  Kadp = 25;
+  Kadp has micromole_per_litre;
+  Kpi = 800;
+  Kpi has micromole_per_litre;
+  tmito = 0;
+  tmito has second;
+  jsyn has micromole_per_litre_per_second;
+  Jhyd_basis = 486.5;
+  Jhyd_basis has micromole_per_litre_per_second;
+  Vmaxsyn = 1503.74;
+  Vmaxsyn has micromole_per_litre_per_second;
+  j_ck_mi has micromole_per_litre_per_second;
+  VmaxMif has micromole_per_litre_per_second;
+  KiaMi = 750;
+  KiaMi has micromole_per_litre;
+  KbMi = 5200;
+  KbMi has micromole_per_litre;
+  VmaxMib has micromole_per_litre_per_second;
+  KicMi = 204.8;
+  KicMi has micromole_per_litre;
+  KdMi = 500;
+  KdMi has micromole_per_litre;
+  KibMi = 28800;
+  KibMi has micromole_per_litre;
+  KidMi = 1600;
+  KidMi has micromole_per_litre;
+  j_ck_mm has micromole_per_litre_per_second;
+  VmaxMMf has micromole_per_litre_per_second;
+  KiaMM = 900;
+  KiaMM has micromole_per_litre;
+  KbMM = 15500;
+  KbMM has micromole_per_litre;
+  VmaxMMb has micromole_per_litre_per_second;
+  KicMM = 222.4;
+  KicMM has micromole_per_litre;
+  KdMM = 1670;
+  KdMM has micromole_per_litre;
+  KibMM = 34900;
+  KibMM has micromole_per_litre;
+  KidMM = 4730;
+  KidMM has micromole_per_litre;
+  j_diff_adp has micromole_per_litre_per_second;
+  j_diff_cr has micromole_per_litre_per_second;
+  PSmomCr = 155;
+  PSmomCr has per_second;
+  j_diff_pi has micromole_per_litre_per_second;
+  PSmomPi = 194;
+  PSmomPi has per_second;
+  heartrate_basis = 135;
+  heartrate_basis has unitDefinition_0000004;
+  ck_factor_iaa = 1;
+  ck_factor_ia = 0.0286;
+  K_CK_eq = 152;
+  VmaxMif_full_activity = 882.0756;
+  VmaxMif_full_activity has micromole_per_litre_per_second;
+  VmaxMMf_full_activity = 11441.78;
+  VmaxMMf_full_activity has micromole_per_litre_per_second;
+
+  //Other declarations:
+  var last_time_fired, pulsatility, Jhyd, phase, VhydAmp_test, fracDia, VhydAmp_basis;
+  var Jhyd_test, heartrate_bpm, tmito_factor, j_diff_pcr, j_diff_atp, densyn;
+  var tmito, vatpnorm, jsyn, r_diff_pcr, j_ck_mi, VmaxMif, VmaxMib, j_ck_mm;
+  var VmaxMMf, VmaxMMb, j_diff_adp, j_diff_cr, j_diff_pi;
+  const IMS, CYT, cell, time_Jhyd_step, stepsize, fracSysUp, fracSysDown;
+  const heartrate_test, PSmomPCr, PSmomATP, Kadp, Kpi, Jhyd_basis, Vmaxsyn;
+  const KiaMi, KbMi, KicMi, KdMi, KibMi, KidMi, KiaMM, KbMM, KicMM, KdMM;
+  const KibMM, KidMM, PSmomCr, PSmomPi, heartrate_basis, ck_factor_iaa, ck_factor_ia;
+  const K_CK_eq, VmaxMif_full_activity, VmaxMMf_full_activity;
+
+  // Unit definitions:
+  unit micromole = 1e-6 mole;
+  unit micromole_per_litre = 1e-6 mole / litre;
+  unit micromole_per_litre_per_second = 1e-6 mole / (litre * second);
+  unit unitDefinition_0000004 = 1 / 60 second;
+  unit per_second = 1 / second;
+  unit volume = litre;
+
+  //Display Names:
+  unitDefinition_0000004 is "per_minute";
+end

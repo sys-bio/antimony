@@ -1,0 +1,70 @@
+//Created by libAntimony v2.3-beta
+function carboxylation(kc, S2, K, R, KI, E, S1)
+  (kc * S2 / (S2 + K * (1 + R / KI)) * E + kc * S2 / (S2 + K * (1 + R / KI)) * S1 - abs(kc * S2 / (S2 + K * (1 + R / KI)) * E - kc * S2 / (S2 + K * (1 + R / KI)) * S1)) / 2;
+end
+
+function PGA_consumption(S1, Rp, Nt, kc, E, R)
+  S1 / Rp * (R / Nt) * kc * E;
+end
+
+function NADPH_production(j, S1, Nt)
+  j / 2 * (S1 / Nt);
+end
+
+function oxygenation(phi, kc, S2, K, R, KI, E, S1)
+  phi * (kc * S2 / (S2 + K * (1 + R / KI)) * E + kc * S2 / (S2 + K * (1 + R / KI)) * S1 - abs(kc * S2 / (S2 + K * (1 + R / KI)) * E - kc * S2 / (S2 + K * (1 + R / KI)) * S1)) / 2;
+end
+
+
+model *Model_1()
+
+  // Compartments and Species:
+  compartment chloroplast;
+  species $RuBP in chloroplast, PGA in chloroplast, NADPH in chloroplast;
+  species $CO2 in chloroplast, $O2 in chloroplast, $NADP in chloroplast;
+
+  // Assignment Rules:
+  NADP := Nt - NADPH;
+  jp := 1 / 2 * (1 - f) * I;
+  j := (abs(jp + 467) - abs(jp - 467)) / 2 / 65;
+  phi := 0.21 * (O2 / Ko) / (CO2 / Kc);
+
+  // Reactions:
+  PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast * carboxylation(kc, CO2, Kc, O2, Ko, E, RuBP);
+  PGA_prod_Vo: $RuBP + $CO2 + 2NADPH => 1.5PGA; chloroplast * oxygenation(phi, kc, CO2, Kc, O2, Ko, E, RuBP);
+  PGA_cons: PGA => $RuBP; chloroplast * PGA_consumption(PGA, Rp, Nt, kc, E, NADPH);
+  NADPH_prod: $NADP => NADPH; chloroplast * NADPH_production(j, NADP, Nt);
+
+  // Species initializations:
+  RuBP = 2;
+  PGA = 2.4;
+  NADPH = 0.21;
+  CO2 = 230;
+  O2 = 210;
+
+  // Compartment initializations:
+  chloroplast = 1;
+
+  // Variable initializations:
+  Nt = 0.5;
+  E = 1.33846153846154;
+  Rp = 3.2;
+  f = 0.23;
+  I = 1000;
+  Ko = 330;
+  Kc = 460;
+  kc = 2.5;
+
+  //Other declarations:
+  var jp, j, phi;
+  const chloroplast, Nt, E, Rp, f, I, Ko, Kc, kc;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+
+  //Display Names:
+  PGA_prod_Vc is "PGA production - v_c";
+  PGA_prod_Vo is "PGA production - v_o";
+  PGA_cons is "PGA consumption";
+  NADPH_prod is "NADPH production";
+end

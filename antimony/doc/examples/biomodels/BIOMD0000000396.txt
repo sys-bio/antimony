@@ -1,0 +1,182 @@
+//Created by libAntimony v2.3-beta
+model *Sivakumar2011_NotchSignalingPathway()
+
+  // Compartments and Species:
+  compartment default, c1, c5;
+  species s2 in default, s4 in default, s7 in default, s15 in c1, s19 in c1;
+  species s21 in c1, s22 in default, s23 in default, s25 in c1, s27 in c5;
+  species s26 in c5, s28 in c5, s32 in c5, s29 in c5, s24 in c5, s35 in c5;
+  species s37 in c5, s38 in c5, s39 in c5, s40 in c5, s1 in c1, s18 in default;
+  species s41 in c1, s42 in default, s48 in default, s53 in c1, s60 in default;
+  species s63 in c1, s64 in c1, s65 in c1, s67 in c1, s75 in c5, s76 in default;
+  species s77 in default, s81 in default, s82 in default;
+
+  // Reactions:
+  r30: s32 => s75; kass_r30 * s32;
+  r31: s35 => s75; kass_r31 * s35 - kdiss_r31 * s75;
+  r8: s15 -> s19 + s63; s82 * ((kcatp_r8 * (s15 / kM_r8_s15) - kcatn_r8 * (s19 / kM_r8_s19) * (s63 / kM_r8_s63)) / (s15 / kM_r8_s15 + (1 + s19 / kM_r8_s19) * (1 + s63 / kM_r8_s63)));
+  r9: s7 -> s22; s23 * ((kcatp_r9 / kM_r9_s7 * s7 - kcatn_r9 / kM_r9_s22 * s22) / (1 + s7 / kM_r9_s7 + s22 / kM_r9_s22));
+  r10: s63 -> s24; kI_r10_s25 / (kI_r10_s25 + s25) * (kass_r10 * s63 - kdiss_r10 * s24);
+  r11: s32 -> s26 + s28; s24 * ((kcatp_r11 * (s32 / kM_r11_s32) - kcatn_r11 * (s26 / kM_r11_s26) * (s28 / kM_r11_s28)) / (s32 / kM_r11_s32 + (1 + s26 / kM_r11_s26) * (1 + s28 / kM_r11_s28)));
+  r13: s24 + s26 + s27 + s29 -> s35; kass_r13 * s24 * s26 * s27 * s29 - kdiss_r13 * s35;
+  r16: s24 + s39 -> s37; (kcatp_r16 / (ki_r16_s39 * kM_r16_s39) * s38 * s24 * s39 - kcatn_r16 / kM_r16_s39 * s38 * s37) / (1 + s24 / ki_r16_s39 + s39 / ki_r16_s39 + s24 * s39 / (ki_r16_s39 * kM_r16_s39) + s37 / kM_r16_s39);
+  r17: s37 -> s40; kass_r17 * s37 - kdiss_r17 * s40;
+  r18: s1 + s4 -> s41; (kcatp_r18 / (ki_r18_s4 * kM_r18_s4) * s42 * s1 * s4 - kcatn_r18 / kM_r18_s4 * s42 * s41) / (1 + s1 / ki_r18_s4 + s4 / ki_r18_s4 + s1 * s4 / (ki_r18_s4 * kM_r18_s4) + s41 / kM_r18_s4);
+  r21: s41 + s48 -> s53; kI_r21_s2 / (kI_r21_s2 + s2) * (kass_r21 * s41 * s48 - kdiss_r21 * s53);
+  r25: s53 -> s60 + s15; s21 * ((kcatp_r25 * (s53 / kM_r25_s53) - kcatn_r25 * (s60 / kM_r25_s60) * (s15 / kM_r25_s15)) / (s53 / kM_r25_s53 + (1 + s60 / kM_r25_s60) * (1 + s15 / kM_r25_s15)));
+  r26: s25 -> s64; s65 * ((kcatp_r26 / kM_r26_s25 * s25 - kcatn_r26 / kM_r26_s64 * s64) / (1 + s25 / kM_r26_s25 + s64 / kM_r26_s64));
+  r28: s7 + s41 -> s67; (kcatp_r28 / (ki_r28_s41 * kM_r28_s41) * s2 * s7 * s41 - kcatn_r28 / kM_r28_s41 * s2 * s67) / (1 + s7 / ki_r28_s41 + s41 / ki_r28_s41 + s7 * s41 / (ki_r28_s41 * kM_r28_s41) + s67 / kM_r28_s41);
+  r29: s67 -> s18 + s15; s21 * ((kcatp_r29 * (s67 / kM_r29_s67) - kcatn_r29 * (s18 / kM_r29_s18) * (s15 / kM_r29_s15)) / (s67 / kM_r29_s67 + (1 + s18 / kM_r29_s18) * (1 + s15 / kM_r29_s15)));
+  re16: s76 + s77 -> s82; kI_re16_s81 / (kI_re16_s81 + s81) * (kass_re16 * s76 * s77 - kdiss_re16 * s82);
+
+  // Species initializations:
+  s2 = 5;
+  s4 = 5;
+  s7 = 5;
+  s15 = 5;
+  s19 = 0;
+  s21 = 0.5;
+  s22 = 0;
+  s23 = 0.5;
+  s25 = 0.64;
+  s27 = 0.5;
+  s26 = 5;
+  s28 = 5;
+  s32 = 0;
+  s29 = 0.5;
+  s24 = 0;
+  s35 = 0;
+  s37 = 0;
+  s38 = 0.6;
+  s39 = 0.5;
+  s40 = 0;
+  s1 = 5;
+  s18 = 0;
+  s41 = 0;
+  s42 = 5;
+  s48 = 5;
+  s53 = 0;
+  s60 = 0;
+  s63 = 0;
+  s64 = 0;
+  s65 = 0.33;
+  s67 = 0;
+  s75 = 0;
+  s76 = 5;
+  s77 = 5;
+  s81 = 0;
+  s82 = 0;
+
+  // Compartment initializations:
+  default = 1;
+  c1 = 1;
+  c5 = 1;
+
+  // Variable initializations:
+  kcatp_r8 = 0.5;
+  kM_r8_s15 = 1;
+  kcatn_r8 = 1.5;
+  kM_r8_s19 = 2;
+  kM_r8_s63 = 1.5;
+  kcatp_r9 = 1.5;
+  kM_r9_s7 = 1;
+  kcatn_r9 = 0.04;
+  kM_r9_s22 = 0.05;
+  kass_r10 = 2;
+  kdiss_r10 = 0.01;
+  kI_r10_s25 = 1;
+  kcatp_r11 = 0.5;
+  kM_r11_s32 = 1;
+  kcatn_r11 = 0.5;
+  kM_r11_s26 = 1.5;
+  kM_r11_s28 = 1;
+  kass_r13 = 0.5;
+  kdiss_r13 = 2;
+  kcatp_r16 = 1;
+  kcatn_r16 = 1;
+  kM_r16_s39 = 1;
+  ki_r16_s39 = 1;
+  kass_r17 = 1.5;
+  kdiss_r17 = 1.5;
+  kcatp_r18 = 1;
+  kcatn_r18 = 1.5;
+  kM_r18_s4 = 1;
+  ki_r18_s4 = 1.5;
+  kass_r21 = 1.5;
+  kdiss_r21 = 1.5;
+  kI_r21_s2 = 1.5;
+  kcatp_r25 = 1;
+  kM_r25_s53 = 1.5;
+  kcatn_r25 = 1.5;
+  kM_r25_s60 = 1.25;
+  kM_r25_s15 = 1.5;
+  kcatp_r26 = 0.5;
+  kM_r26_s25 = 1.7;
+  kcatn_r26 = 1;
+  kM_r26_s64 = 1.61;
+  kcatp_r28 = 1.71;
+  kcatn_r28 = 1.48;
+  kM_r28_s41 = 1.64;
+  ki_r28_s41 = 1.28;
+  kcatp_r29 = 1.86;
+  kM_r29_s67 = 1.61;
+  kcatn_r29 = 1.78;
+  kM_r29_s18 = 0.15;
+  kM_r29_s15 = 1.87;
+  kass_r30 = 1.95;
+  kass_r31 = 0.055;
+  kdiss_r31 = 2;
+  kass_re16 = 0.004;
+  kdiss_re16 = 2;
+  kI_re16_s81 = 0.00594;
+
+  //Other declarations:
+  const default, c1, c5, kcatp_r8, kM_r8_s15, kcatn_r8, kM_r8_s19, kM_r8_s63;
+  const kcatp_r9, kM_r9_s7, kcatn_r9, kM_r9_s22, kass_r10, kdiss_r10, kI_r10_s25;
+  const kcatp_r11, kM_r11_s32, kcatn_r11, kM_r11_s26, kM_r11_s28, kass_r13;
+  const kdiss_r13, kcatp_r16, kcatn_r16, kM_r16_s39, ki_r16_s39, kass_r17;
+  const kdiss_r17, kcatp_r18, kcatn_r18, kM_r18_s4, ki_r18_s4, kass_r21, kdiss_r21;
+  const kI_r21_s2, kcatp_r25, kM_r25_s53, kcatn_r25, kM_r25_s60, kM_r25_s15;
+  const kcatp_r26, kM_r26_s25, kcatn_r26, kM_r26_s64, kcatp_r28, kcatn_r28;
+  const kM_r28_s41, ki_r28_s41, kcatp_r29, kM_r29_s67, kcatn_r29, kM_r29_s18;
+  const kM_r29_s15, kass_r30, kass_r31, kdiss_r31, kass_re16, kdiss_re16;
+  const kI_re16_s81;
+
+  //Display Names:
+  c1 is "cytosol";
+  c5 is "nucleus";
+  s2 is "Fringe";
+  s4 is "fucose";
+  s7 is "Delta";
+  s15 is "NI_sub_c_sub_t";
+  s19 is "N_sub_tm";
+  s21 is "TACE";
+  s22 is "a7_degraded";
+  s23 is "Neuralized";
+  s25 is "Numb";
+  s27 is "Mastermind";
+  s26 is "Su(H)";
+  s28 is "CoR";
+  s32 is "Complex_br_(Su(H)/CoR)";
+  s29 is "CoA";
+  s24 is "NI_sub_c_sub_s";
+  s35 is "Complex_br_(Mastermind/Su(H)/_br_CoA/NI_sub_c_sub_s)";
+  s37 is "NI_sub_c_sub_s";
+  s38 is "Sel 10";
+  s39 is "Ub";
+  s40 is "a46_degraded";
+  s1 is "Notch";
+  s18 is "Complex_br_(Delta/N_sub_ext)";
+  s41 is "Notch";
+  s42 is "Neurotic";
+  s48 is "Serrate";
+  s53 is "Complex_br_(Serrate/Notch)";
+  s60 is "Complex_br_(Serrate/N_sub_ext)";
+  s63 is "NI_sub_c_sub_s";
+  s64 is "a25_degraded";
+  s65 is "LNXp80";
+  s67 is "Complex_br_(Notch/Delta)";
+  s75 is "E(spl)-C genes";
+  s81 is "dapt";
+  s82 is "gama secretase";
+end

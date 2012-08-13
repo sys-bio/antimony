@@ -1,0 +1,47 @@
+//Created by libAntimony v2.3-beta
+model *model01()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species $Z1 in compartment_1, $E2 in compartment_1, $E4 in compartment_1;
+  species $E1 in compartment_1, $Z2 in compartment_1, $Z3 in compartment_1;
+  species $E3 in compartment_1, $Z4 in compartment_1;
+
+  // Rate Rules:
+  Z1' = -(mu1 * E2 + mu5 * E4) * Z1 + k1 * E1;
+  E2' = mu2 * E1 * Z2 - k2 * E2;
+  E4' = mu4 * E3 * Z4 - k4 * E4;
+  E1' = (mu1 * E2 + mu5 * E4) * Z1 - k1 * E1;
+  Z2' = - mu2 * E1 * Z2 + k2 * E2;
+  Z3' = -(mu23 * E2 + mu3 * E4) * Z3 + k3 * E3;
+  E3' = (mu23 * E2 + mu3 * E4) * Z3 - k3 * E3;
+  Z4' = - mu4 * E3 * Z4 + k4 * E4;
+
+  // Species initializations:
+  Z1 = 0.5;
+  E2 = 0;
+  E4 = 0;
+  E1 = 0.001 * Z1 / 0.999;
+  Z2 = 10;
+  Z3 = 10;
+  E3 = 0;
+  Z4 = 100;
+
+  // Compartment initializations:
+  compartment_1 = ;
+
+  // Variable initializations:
+  mu1 = 1;
+  mu5 = 1;
+  k1 = 1;
+  mu2 = 0.1;
+  k2 = 1;
+  mu23 = 0.1;
+  mu3 = 0.1;
+  k3 = 5;
+  mu4 = 0.1;
+  k4 = 5;
+
+  //Other declarations:
+  const compartment_1, mu1, mu5, k1, mu2, k2, mu23, mu3, k3, mu4, k4;
+end

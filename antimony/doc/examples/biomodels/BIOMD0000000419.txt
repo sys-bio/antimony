@@ -1,0 +1,44 @@
+//Created by libAntimony v2.3-beta
+model *Ratushny2012_SPF_I()
+
+  // Compartments and Species:
+  compartment univ;
+  species P1 in univ, P2 in univ, Target in univ;
+
+  // Assignment Rules:
+  dsp1ksp := Ksp / 2 * (1 + (s + P1 * univ) / Ksp - ((1 + (s + P1 * univ) / Ksp)^2 - 4 * s * P1 * univ / Ksp^2)^0.5);
+  dsp1p2kd := Kd / 2 * (1 + (dsp1ksp + P2 * univ) / Kd - ((1 + (dsp1ksp + P2 * univ) / Kd)^2 - 4 * dsp1ksp * P2 * univ / Kd^2)^0.5);
+
+  // Reactions:
+  ___r1:  => P1; ks * (k0 + (dsp1p2kd / ka)^h) / (1 + (dsp1p2kd / ka)^h);
+  ___r2: P1 => ; ___r2___RATE__ * P1;
+  ___r3:  => P2; ks * (k0 + (dsp1p2kd / ka)^h) / (1 + (dsp1p2kd / ka)^h);
+  ___r4: P2 => ; ___r4___RATE__ * P2;
+  ___r5:  => Target; ks * (k0 + (dsp1p2kd / ka)^h) / (1 + (dsp1p2kd / ka)^h);
+  ___r6: Target => ; ___r6___RATE__ * Target;
+
+  // Species initializations:
+  P1 = 10;
+  P2 = 10;
+  Target = 10;
+
+  // Compartment initializations:
+  univ = 1;
+
+  // Variable initializations:
+  Kd = 1e-005;
+  Ksp = 0.001;
+  s = 1000;
+  h = 2;
+  k0 = 0.1;
+  ka = 40;
+  ks = 10;
+  ku = 0.1;
+  ___r2___RATE__ = 0.1;
+  ___r4___RATE__ = 0.1;
+  ___r6___RATE__ = 0.1;
+
+  //Other declarations:
+  var dsp1ksp, dsp1p2kd;
+  const univ, Kd, Ksp, s, h, k0, ka, ks, ku;
+end

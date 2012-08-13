@@ -1,0 +1,97 @@
+//Created by libAntimony v2.3-beta
+function function_6(Vm, S1, S2, P1, P2, P3, k, K1, K2)
+  Vm * (S1 * S2 - P1 * P2 * P3 / k) / (K1 + S1 * S2 * K1 / K2 + P1 * P2 * P3 / k);
+end
+
+function function_5(k, E, S, K)
+  k / 2 * (E + S + K - sqrt((E + S + K)^2 - 4 * E * S));
+end
+
+function function_7(Vm, S, K)
+  Vm * S / (S + K);
+end
+
+function function_8(Vm, S1, S2, K1, K2, K3, R)
+  Vm * S1 * S2 / (K1 * K2 + K2 * S2 + S1 * S2 + K3 * R);
+end
+
+function function_10(Vm, s1, s2, K1, K2)
+  Vm * s1 * s2 / ((s1 + K1) * (s2 + K2));
+end
+
+function function_9(S1, S2, P1, P2, K2, K1, Vm)
+  Vm * (S1 * S2 - P1 * P2) / ((S1 + P1) * K2 + (S2 + P2) * K1 + K1 * K2 * (S1 / K1 + P2 / K2) * (S2 / K2 + P1 / K1));
+end
+
+
+model *Arnold2011_Giersch1990_CalvinCycle()
+
+  // Compartments and Species:
+  compartment chloroplast, cytosol;
+  species RuBP in chloroplast, PGA in chloroplast, TP in chloroplast, Ru5P in chloroplast;
+  species Pi_ in chloroplast, ATP in chloroplast, ADP in chloroplast, $E_RuBisCO in chloroplast;
+  species $totRuBP in chloroplast, $TPc in cytosol, $Pic in cytosol;
+
+  // Assignment Rules:
+  totRuBP := 1 / 2 * (P_0 - (PGA + TP + Ru5P + Pi_ + ATP));
+
+  // Reactions:
+  RuBisCO: $totRuBP + RuBP => 2PGA; chloroplast * function_5(RuBisCO_k, E_RuBisCO, totRuBP, RuBisCO_K);
+  PGA_red: PGA + ATP -> ADP + TP + Pi_; chloroplast * function_6(PGA_red_Vm, PGA, ATP, ADP, TP, Pi_, PGA_red_k, PGA_red_K1, PGA_red_K2);
+  TP_red: 5TP => 3Ru5P + 2Pi_; chloroplast * function_7(TP_red_Vm, TP, TP_red_K);
+  RuBP_reg: Ru5P + ATP => RuBP + ADP; chloroplast * function_8(RuBP_reg_Vm, Ru5P, ATP, RuBP_reg_K1, RuBP_reg_K2, RuBP_reg_K3, Pi_);
+  TPT: TP + $Pic -> $TPc + Pi_; function_9(TP, Pic, TPc, Pi_, TPT_K2, TPT_K1, TPT_Vm);
+  ATP_S: ADP + Pi_ => ATP; chloroplast * function_10(V6, ADP, Pi_, ATP_S_K1, ATP_S_K2);
+
+  // Species initializations:
+  RuBP = 2;
+  PGA = 2.4;
+  TP = 0.5;
+  Ru5P = 0.0500747384155456;
+  Pi_ = 5;
+  ATP = 0.68;
+  ADP = 0.82;
+  E_RuBisCO = 3.56;
+  TPc = 0.2;
+  Pic = 1.4;
+
+  // Compartment initializations:
+  chloroplast = 1;
+  cytosol = 1;
+
+  // Variable initializations:
+  P_0 = 16;
+  V6 = 5.8801285588795;
+  RuBisCO_k = 0.504;
+  RuBisCO_K = 0.04;
+  PGA_red_Vm = 3.49;
+  PGA_red_k = 14;
+  PGA_red_K1 = 1;
+  PGA_red_K2 = 1;
+  TP_red_Vm = 1.06;
+  TP_red_K = 0.4;
+  RuBP_reg_Vm = 4.81;
+  RuBP_reg_K1 = 0.05;
+  RuBP_reg_K2 = 0.5;
+  RuBP_reg_K3 = 0.05;
+  TPT_K2 = 0.25;
+  TPT_K1 = 0.08;
+  TPT_Vm = 3.3;
+  ATP_S_K1 = 0.08;
+  ATP_S_K2 = 0.5;
+
+  //Other declarations:
+  const chloroplast, cytosol, P_0, V6;
+
+  // Unit definitions:
+  unit volume = litre;
+  unit substance = 1e-3 mole;
+
+  //Display Names:
+  E_RuBisCO is "RuBisCo";
+  PGA_red is "PGA reduction";
+  TP_red is "TP reduction";
+  RuBP_reg is "RuBP regeneration";
+  TPT is "TP translocator";
+  ATP_S is "ATP synthesis";
+end

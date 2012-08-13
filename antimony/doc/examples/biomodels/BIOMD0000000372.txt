@@ -1,0 +1,65 @@
+//Created by libAntimony v2.3-beta
+model *Tolic2000_InsulinGlucoseFeedback()
+
+  // Compartments and Species:
+  compartment COMpartment_;
+  species $x1 in COMpartment_, $Ip in COMpartment_, $x2 in COMpartment_, $x3 in COMpartment_;
+  species $G in COMpartment_, $Ii in COMpartment_;
+
+  // Assignment Rules:
+  f5_x3 := Rg / (1 + exp(alpha * (x3 * 1 / Vp - C5)));
+  f2_G := Ub * (1 - exp(- G / (C2 * Vg)));
+  f3_G := G / (C3 * Vg);
+  f4_Ii := U0 + (Um - U0) / (1 + exp(- beta * log(Ii / C4 * (1 / Vi + 1 / (E * ti)))));
+  f1_G := Rm / (1 + exp((C1 - G / Vg) / a1));
+  Ip_conc := Ip / Vp;
+  Ii_conc := Ii / Vi;
+  G_conc := G / (Vg * 10);
+
+  // Rate Rules:
+  x1' = 3 / td * (Ip / 1 - x1);
+  Ip' = f1_G - (E * (Ip / Vp - Ii / Vi) + Ip / tp);
+  x2' = 3 / td * (x1 - x2);
+  x3' = 3 / td * (x2 - x3);
+  G' = Gin + f5_x3 + -(f2_G + f3_G * f4_Ii);
+  Ii' = E * (Ip / Vp - Ii / Vi) - Ii / ti;
+
+  // Species initializations:
+  x1 = 110.420253;
+  Ip = 93.36441699;
+  x2 = 112.7601171;
+  x3 = 104.5878705;
+  G = 12342.61665;
+  Ii = 243.2865183;
+
+  // Compartment initializations:
+  COMpartment_ = 1;
+
+  // Variable initializations:
+  td = 36;
+  Gin = 216;
+  E = 0.2;
+  Vp = 3;
+  Vi = 11;
+  ti = 100;
+  tp = 6;
+  Vg = 10;
+  Rm = 210;
+  C1 = 2000;
+  a1 = 300;
+  Ub = 72;
+  C2 = 144;
+  C3 = 1000;
+  U0 = 40;
+  Um = 940;
+  beta = 1.77;
+  C4 = 80;
+  Rg = 180;
+  alpha = 0.29;
+  C5 = 26;
+
+  //Other declarations:
+  var f5_x3, f2_G, f3_G, f4_Ii, f1_G, Ip_conc, Ii_conc, G_conc;
+  const COMpartment_, td, Gin, E, Vp, Vi, ti, tp, Vg, Rm, C1, a1, Ub, C2;
+  const C3, U0, Um, beta, C4, Rg, alpha, C5;
+end

@@ -1,0 +1,37 @@
+//Created by libAntimony v2.3-beta
+model *Ratushny2012_NF()
+
+  // Compartments and Species:
+  compartment univ;
+  species Target in univ;
+
+  // Assignment Rules:
+  dspksp := Ksp / 2 * (1 + (s + P) / Ksp - ((1 + (s + P) / Ksp)^2 - 4 * s * P / Ksp^2)^0.5);
+  dspspkd := Kd / 2 * (1 + 2 * dspksp / Kd - ((1 + 2 * dspksp / Kd)^2 - 4 * dspksp^2 / Kd^2)^0.5);
+
+  // Reactions:
+  ___r1:  => Target; ks * (k0 + (dspspkd / ka)^h) / (1 + (dspspkd / ka)^h);
+  ___r2: Target => ; ___r2___RATE__ * Target;
+
+  // Species initializations:
+  Target = 10;
+
+  // Compartment initializations:
+  univ = 1;
+
+  // Variable initializations:
+  Kd = 1e-005;
+  Ksp = 0.001;
+  P = 40;
+  s = 1000;
+  h = 2;
+  k0 = 0.1;
+  ka = 40;
+  ks = 10;
+  ku = 0.1;
+  ___r2___RATE__ = 0.1;
+
+  //Other declarations:
+  var dspksp, dspspkd;
+  const univ, Kd, Ksp, P, s, h, k0, ka, ks, ku;
+end

@@ -1,0 +1,138 @@
+//Created by libAntimony v2.3-beta
+model *Sivakumar2011_NeuralStemCellDifferentiation_Crosstalk()
+
+  // Compartments and Species:
+  compartment default, c1;
+  species s53 in default, s57 in default, s58 in default, s60 in default;
+  species s61 in default, s68 in default, s72 in default, s73 in c1, s81 in default;
+  species s83 in default, s85 in default, s88 in default, s89 in default;
+  species s96 in default, s98 in default, s100 in default, s101 in default;
+  species s107 in default, s109 in default, s111 in default, s122 in default;
+  species s124 in default, s135 in default, s142 in default, s144 in default;
+  species s146 in default, s147 in default;
+
+  // Reactions:
+  re29: s57 -> s53 + s58; kI_re29_s61 / (kI_re29_s61 + s61) * s60 * kV_re29_s60 * ((s57 / kM_re29_s60_s57 * sqrt(kG_s57 * kM_re29_s60_s57 / (kG_s53 * kM_re29_s60_s53 * kG_s58 * kM_re29_s60_s58)) - s53 / kM_re29_s60_s53 * (s58 / kM_re29_s60_s58) * sqrt(kG_s53 * kM_re29_s60_s53 * kG_s58 * kM_re29_s60_s58 / (kG_s57 * kM_re29_s60_s57))) / (s57 / kM_re29_s60_s57 + (1 + s53 / kM_re29_s60_s53) * (1 + s58 / kM_re29_s60_s58)));
+  re31: s53 + s68 -> s72; kass_re31 * s53 * s68 - kdiss_re31 * s72;
+  re32: s72 -> s73; kass_re32 * s72 - kdiss_re32 * s73;
+  re33: s81 + s83 -> s85; kass_re33 * s81 * s83 - kdiss_re33 * s85;
+  re36: s96 + s98 -> s100; kI_re36_s101 / (kI_re36_s101 + s101) * (kass_re36 * s96 * s98 - kdiss_re36 * s100);
+  re37: s100 -> s73; kass_re37 * s100 - kdiss_re37 * s73;
+  re38: s107 + s109 -> s111; kass_re38 * s107 * s109 - kdiss_re38 * s111;
+  re40: s122 + s124 -> s135; (kcatp_re40 / (ki_re40_s124 * kM_re40_s124) * s111 * s122 * s124 - kcatn_re40 / kM_re40_s124 * s111 * s135) / (1 + s122 / ki_re40_s124 + s124 / ki_re40_s124 + s122 * s124 / (ki_re40_s124 * kM_re40_s124) + s135 / kM_re40_s124);
+  re42: s142 + s144 -> s146; kI_re42_s147 / (kI_re42_s147 + s147) * (kI_re42_s135 / (kI_re42_s135 + s135)) * (kass_re42 * s142 * s144 - kdiss_re42 * s146);
+  re43: s144 -> s73; kass_re43 * s144 - kdiss_re43 * s73;
+  re34: s88 -> s88; s85 * (kass_re34_s85 * s88 - kdiss_re34_s85 * s88) + s89 * (kass_re34_s89 * s88 - kdiss_re34_s89 * s88);
+  re35: s88 -> s73; s89 * (kass_re35_s89 * s88 - kdiss_re35_s89 * s73);
+
+  // Species initializations:
+  s53 = 0;
+  s57 = 5;
+  s58 = 0;
+  s60 = 5;
+  s61 = 100;
+  s68 = 5;
+  s72 = 0;
+  s73 = 0;
+  s81 = 5;
+  s83 = 5;
+  s85 = 0;
+  s88 = 5;
+  s89 = 0;
+  s96 = 5;
+  s98 = 5;
+  s100 = 0;
+  s101 = 100;
+  s107 = 5;
+  s109 = 5;
+  s111 = 0;
+  s122 = 5;
+  s124 = 5;
+  s135 = 0;
+  s142 = 5;
+  s144 = 5;
+  s146 = 0;
+  s147 = 100;
+
+  // Compartment initializations:
+  default = 1;
+  c1 = 1;
+
+  // Variable initializations:
+  kV_re29_s60 = 1;
+  kM_re29_s60_s57 = 1;
+  kG_s57 = 1;
+  kM_re29_s60_s53 = 1;
+  kG_s53 = 1;
+  kM_re29_s60_s58 = 1;
+  kG_s58 = 1;
+  kI_re29_s61 = 1;
+  kass_re31 = 1;
+  kdiss_re31 = 1;
+  kass_re32 = 1;
+  kdiss_re32 = 1;
+  kass_re33 = 1;
+  kdiss_re33 = 1;
+  kass_re36 = 1;
+  kdiss_re36 = 1;
+  kI_re36_s101 = 1;
+  kass_re37 = 1;
+  kdiss_re37 = 1;
+  kass_re38 = 1;
+  kdiss_re38 = 1;
+  kcatp_re40 = 1;
+  kcatn_re40 = 1;
+  kM_re40_s124 = 1;
+  ki_re40_s124 = 1;
+  kass_re42 = 1;
+  kdiss_re42 = 1;
+  kI_re42_s147 = 1;
+  kI_re42_s135 = 1;
+  kass_re43 = 1;
+  kdiss_re43 = 1;
+  kass_re34_s85 = 1;
+  kdiss_re34_s85 = 1;
+  kass_re34_s89 = 1;
+  kdiss_re34_s89 = 1;
+  kass_re35_s89 = 1;
+  kdiss_re35_s89 = 1;
+
+  //Other declarations:
+  const default, c1, kV_re29_s60, kM_re29_s60_s57, kG_s57, kM_re29_s60_s53;
+  const kG_s53, kM_re29_s60_s58, kG_s58, kI_re29_s61, kass_re31, kdiss_re31;
+  const kass_re32, kdiss_re32, kass_re33, kdiss_re33, kass_re36, kdiss_re36;
+  const kI_re36_s101, kass_re37, kdiss_re37, kass_re38, kdiss_re38, kcatp_re40;
+  const kcatn_re40, kM_re40_s124, ki_re40_s124, kass_re42, kdiss_re42, kI_re42_s147;
+  const kI_re42_s135, kass_re43, kdiss_re43, kass_re34_s85, kdiss_re34_s85;
+  const kass_re34_s89, kdiss_re34_s89, kass_re35_s89, kdiss_re35_s89;
+
+  //Display Names:
+  c1 is "nucleus";
+  s53 is "NICD";
+  s57 is "Notch";
+  s58 is "Notch TM";
+  s60 is "Gamma secretase";
+  s61 is "DAPT";
+  s68 is "RBP-jk";
+  s72 is "Complex NICD-RBP";
+  s73 is "Hes-1";
+  s81 is "Shh";
+  s83 is "Ptch1";
+  s85 is "Complex Shh Ptch1";
+  s88 is "smo";
+  s89 is "SAG";
+  s96 is "EGF";
+  s98 is "EGFR";
+  s100 is "Complex EGF-EGFR";
+  s101 is "Erlotinib";
+  s107 is "Wnt";
+  s109 is "Frzzl";
+  s111 is "Complex Wnt-Frzzl";
+  s122 is "Dishevelled";
+  s124 is "FRAT-CK2";
+  s135 is "Complex Dishevelled-FRAT-CK2";
+  s142 is "GSK3B";
+  s144 is "Beta-catenin";
+  s146 is "Complex GSK3B-Bcatenin";
+  s147 is "6 bromoindirubin 3`oxime";
+end

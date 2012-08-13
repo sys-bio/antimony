@@ -1,0 +1,71 @@
+//Created by libAntimony v2.3-beta
+function function_1(v)
+  v;
+end
+
+
+model *Cookson2011_EnzymaticQueueingCoupling()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species species_1 in compartment_1, species_2 in compartment_1, species_3 in compartment_1;
+  species species_4 in compartment_1, species_5 in compartment_1, species_6 in compartment_1;
+
+  // Reactions:
+  reaction_1: species_1 + species_5 => species_3; compartment_1 * parameter_4 * species_1 * species_5;
+  reaction_2: species_2 + species_5 => species_4; compartment_1 * parameter_4 * species_2 * species_5;
+  reaction_3:  => species_1; compartment_1 * function_1(parameter_1);
+  reaction_4:  => species_2; compartment_1 * function_1(parameter_2);
+  reaction_5: species_3 => species_5; compartment_1 * parameter_3 * species_3;
+  reaction_6: species_4 => species_5; compartment_1 * parameter_3 * species_4;
+  reaction_7: species_1 => ; compartment_1 * parameter_5 * species_1;
+  reaction_8: species_2 => ; compartment_1 * parameter_5 * species_2;
+
+  // Species initializations:
+  species_1 = 0;
+  species_2 = 0;
+  species_3 = 0;
+  species_4 = 0;
+  species_5 = 100;
+  species_6 = 1;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  parameter_1 = 500;
+  parameter_2 = 500;
+  parameter_3 = 10;
+  parameter_4 = 1000;
+  parameter_5 = 0.03465735902799;
+
+  //Other declarations:
+  const compartment_1, parameter_1, parameter_2, parameter_3, parameter_4;
+  const parameter_5;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit substance = item;
+
+  //Display Names:
+  compartment_1 is "compartment";
+  species_1 is "x1";
+  species_2 is "x2";
+  species_3 is "E1";
+  species_4 is "E2";
+  species_5 is "E";
+  species_6 is "E+x1";
+  parameter_1 is "lambda1";
+  parameter_2 is "lambda2";
+  parameter_3 is "mu";
+  parameter_4 is "Kp";
+  parameter_5 is "g";
+  reaction_1 is "binding1";
+  reaction_2 is "binding2";
+  reaction_3 is "production1";
+  reaction_4 is "production2";
+  reaction_5 is "degradation1";
+  reaction_6 is "degradation2";
+  reaction_7 is "dilution1";
+  reaction_8 is "dilution2";
+end

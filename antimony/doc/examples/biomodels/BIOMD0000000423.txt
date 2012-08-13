@@ -1,0 +1,64 @@
+//Created by libAntimony v2.3-beta
+model *Nyman2012_InsulinSignalling()
+
+  // Compartments and Species:
+  compartment default;
+  species IR in default, IRins in default, IRp in default, IRiP in default;
+  species IRi in default, IRS in default, IRSiP in default, X in default;
+  species Xp in default;
+
+  // Assignment Rules:
+  measIRS1 := IRSiP;
+  measIRp := IRp + IRiP;
+  IRmem := IRp + IRins + IR;
+
+  // Reactions:
+  v1a: IR => IRins; k1a * ins * IR + k1aBasic * IR;
+  v1b: IRins => IR; k1b * IRins;
+  v1c: IRins => IRp; k1c * IRins;
+  v1d: IRp => IRiP; k1d * IRp;
+  v1e: IRiP => IRi; IRiP * (k1e + k1f * Xp / (1 + Xp));
+  v1g: IRp => IR; k1g * IRp;
+  v1r: IRi => IR; k1r * IRi;
+  v2: IRS => IRSiP; k21 * IRS * (IRp + k22 * IRiP) / (1 + km23 * Xp);
+  vm2: IRSiP => IRS; km2 * IRSiP;
+  v3: X => Xp; k3 * X * IRSiP;
+  vm3: Xp => X; km3 * Xp;
+
+  // Species initializations:
+  IR = 8.94067597532632;
+  IRins = 0.59688996214639;
+  IRp = 0.0383525925240207;
+  IRiP = 0.424076631823384;
+  IRi = 4.83863890758515e-006;
+  IRS = 9.43998194225544;
+  IRSiP = 0.560018057744573;
+  X = 9.99635886407151;
+  Xp = 0.00364113592848386;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  k1a = 0.153418;
+  k1aBasic = 0.0383389;
+  k1b = 3.4699e-006;
+  k1c = 0.574266;
+  k1d = 4.78844;
+  k1e = 5.25027e-005;
+  k1f = 119.353;
+  k1g = 4.14899;
+  k1r = 37954.7;
+  k21 = 538004;
+  k22 = 1.7252e-006;
+  km2 = 262759;
+  km23 = 88.9096;
+  k3 = 8.62917e-005;
+  km3 = 0.132671;
+  ins = 100;
+
+  //Other declarations:
+  var measIRS1, measIRp, IRmem;
+  const default, k1a, k1aBasic, k1b, k1c, k1d, k1e, k1f, k1g, k1r, k21, k22;
+  const km2, km23, k3, km3, ins;
+end

@@ -1,0 +1,74 @@
+//Created by libAntimony v2.3-beta
+function function_1(substrate, Km, V)
+  V * substrate / (Km + substrate);
+end
+
+function function_2(Vm, s1, s2, K1, K2)
+  Vm * s1 * s2 / ((s1 + K1) * (s2 + K2));
+end
+
+
+model *Arnold2011_Zhu2009_CalvinCycle()
+
+  // Compartments and Species:
+  compartment chloroplast;
+  species RuBP in chloroplast, PGA in chloroplast, DPGA in chloroplast, GAP in chloroplast;
+  species Ru5P in chloroplast, $ADP in chloroplast, $ATP in chloroplast, $Pi_ in chloroplast;
+
+  // Assignment Rules:
+  Pi_ := 15 - 2 * (RuBP + DPGA + ATP) - (PGA + GAP + Ru5P + ADP);
+
+  // Reactions:
+  RuBisCO: RuBP => 2PGA; chloroplast * function_1(RuBP, RuBisCO_Km, RuBisCO_V);
+  PGA_K: PGA + $ATP => $ADP + DPGA; chloroplast * function_2(PGA_K_Vm, PGA, ATP, PGA_K_K1, PGA_K_K2);
+  GAP_DH: DPGA => GAP + $Pi_; chloroplast * function_1(DPGA, GAP_DH_Km, GAP_DH_V);
+  GAP2Ru5P: GAP => 0.6Ru5P; chloroplast * function_1(GAP, GAP2Ru5P_Km, GAP2Ru5P_V);
+  Ru5P_K: Ru5P + $ATP => RuBP + $ADP; chloroplast * function_2(Ru5P_K_Vm, Ru5P, ATP, Ru5P_K_K1, Ru5P_K_K2);
+  PGA2sink: PGA => ; chloroplast * function_1(PGA, PGA2sink_Km, PGA2sink_V);
+  GAP2sink: GAP => ; chloroplast * function_1(GAP, GAP2sink_Km, GAP2sink_V);
+
+  // Species initializations:
+  RuBP = 2;
+  PGA = 2.4;
+  DPGA = 0.0011;
+  GAP = 0.02;
+  Ru5P = 0.0501;
+  ADP = 0.82;
+  ATP = 0.68;
+
+  // Compartment initializations:
+  chloroplast = 1;
+
+  // Variable initializations:
+  RuBisCO_Km = 1;
+  RuBisCO_V = 3.78;
+  PGA_K_Vm = 11.75;
+  PGA_K_K1 = 0.24;
+  PGA_K_K2 = 0.39;
+  GAP_DH_Km = 0.5;
+  GAP_DH_V = 5.04;
+  GAP2Ru5P_Km = 0.84;
+  GAP2Ru5P_V = 3.05;
+  Ru5P_K_Vm = 8;
+  Ru5P_K_K1 = 0.15;
+  Ru5P_K_K2 = 0.059;
+  PGA2sink_Km = 0.75;
+  PGA2sink_V = 3;
+  GAP2sink_Km = 5;
+  GAP2sink_V = 0.1;
+
+  //Other declarations:
+  const chloroplast;
+
+  // Unit definitions:
+  unit volume = litre;
+  unit substance = 1e-3 mole;
+
+  //Display Names:
+  PGA_K is "PGA kinase";
+  GAP_DH is "GAP dehydrogenase";
+  GAP2Ru5P is "GAP to Ru5P";
+  Ru5P_K is "Ru5P kinase";
+  PGA2sink is "PGA to sink";
+  GAP2sink is "GAP to sink";
+end
