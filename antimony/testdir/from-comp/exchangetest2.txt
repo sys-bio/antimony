@@ -1,0 +1,197 @@
+//Created by libAntimony v2.3-beta
+
+// Warnings from automatic translation:
+//    Unable to create port rateRule__submod_unused_raterule in model submod because RateRule elements only exist as part of other Antimony elements, and do not function as their own separate entities which may be flagged as a port.
+//    Unable to create port assignmentRule__submod_unused2_assignmentrule in model submod because AssignmentRule elements only exist as part of other Antimony elements, and do not function as their own separate entities which may be flagged as a port.
+//    Unable to create port q__A in model exchangetest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port r__A in model exchangetest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port x__A in model exchangetest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port parameter__unused__A in model exchangetest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port parameter__unused2__A in model exchangetest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port rateRule__submod_unused_raterule__A in model exchangetest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+//    Unable to create port assignmentRule__submod_unused2_assignmentrule__A in model exchangetest because the object the port referenced is in a submodel, and these objects cannot be declared ports in Antimony.
+
+function neighborQuantityLeft(a)
+  0;
+end
+
+function neighborQuantityRight(a)
+  0;
+end
+
+function neighborQuantityAbove(a)
+  0;
+end
+
+function neighborQuantityBelow(a)
+  0;
+end
+
+function getCompartmentLocationX(a)
+  0;
+end
+
+function getCompartmentLocationY(a)
+  0;
+end
+
+
+model submod(q, r, x, unused, unused2, default_compartment)
+
+  // Compartments and Species:
+  species S1;
+
+  // Assignment Rules:
+  q := x - 3;
+  unused2 := x;
+
+  // Rate Rules:
+  x' = 0.2;
+  unused' = 0.3;
+
+  // Reactions:
+  _J0: S1 -> ; k1 * S1;
+
+  // Events:
+  _E0: at gt(x, 3), priority = q: y = 4;
+  _E1: at gt(x, 3), priority = r: y = 5;
+
+  // Species initializations:
+  S1 = ;
+
+  // Variable initializations:
+  x = 3;
+  y = ;
+  r = -4;
+  unused = 10;
+  k1 = ;
+  kr_f = 0.5;
+  kr_r = 1;
+  ka_f = 0.0033;
+  ka_r = 1;
+  kc_f = 0.05;
+  kc_r = 1;
+  ko_f = 0.033;
+  ko_r = 1;
+  kao_f = 1;
+  kao_r = 1;
+  kmdiff_f = 1;
+  kmdiff_r = 0.01;
+  kd = 0.0075;
+  kecd = 0.005;
+  nc = 2;
+  nr = 30;
+  ko = 0.05;
+  kb = 0.0001;
+  ng = 2;
+  np = 10;
+  ka = 0.25;
+  kecdiff = 1;
+  default_compartment = ;
+
+  //Other declarations:
+  var x, q, y, unused, unused2;
+  const r, k1, kr_f, kr_r, ka_f, ka_r, kc_f, kc_r, ko_f, ko_r, kao_f, kao_r;
+  const kmdiff_f, kmdiff_r, kd, kecd, nc, nr, ko, kb, ng, np, ka, kecdiff;
+
+  //Display Names:
+  kr_f is "Forward repression binding rate";
+  kr_r is "Reverse repression binding rate";
+  ka_f is "Forward activation binding rate";
+  ka_r is "Reverse activation binding rate";
+  kc_f is "Forward complex formation rate";
+  kc_r is "Reverse complex formation rate";
+  ko_f is "Forward RNAP binding rate";
+  ko_r is "Reverse RNAP binding rate";
+  kao_f is "Forward activated RNAP binding rate";
+  kao_r is "Reverse activated RNAP binding rate";
+  kmdiff_f is "Forward membrane diffusion rate";
+  kmdiff_r is "Reverse membrane diffusion rate";
+  kd is "Degradation rate";
+  kecd is "Extracellular degradation rate";
+  nc is "Stoichiometry of binding";
+  nr is "Initial RNAP count";
+  ko is "Open complex production rate";
+  kb is "Basal production rate";
+  ng is "Initial promoter count";
+  np is "Stoichiometry of production";
+  ka is "Activated production rate";
+  kecdiff is "Extracellular diffusion rate";
+end
+
+model *exchangetest()
+
+  // Sub-modules, and any changes to those submodules:
+  A: submod(), extentconv = timeconv, timeconv = extentconv;
+  A.default_compartment is Cell;
+  A.q * cf is Q;
+  A.r * cf is R;
+  A.x * cf is X;
+  A.unused * cf is U1;
+  A.unused2 * cf is U2;
+
+  // Compartments and Species:
+  compartment Cell;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  extentconv = 10;
+  timeconv = 60;
+  cf = 100;
+  R = 20;
+  X = ;
+  U1 = ;
+  kr_f = 0.5;
+  kr_r = 1;
+  ka_f = 0.0033;
+  ka_r = 1;
+  kc_f = 0.05;
+  kc_r = 1;
+  ko_f = 0.033;
+  ko_r = 1;
+  kao_f = 1;
+  kao_r = 1;
+  kmdiff_f = 1;
+  kmdiff_r = 0.01;
+  kd = 0.0075;
+  kecd = 0.005;
+  nc = 2;
+  nr = 30;
+  ko = 0.05;
+  kb = 0.0001;
+  ng = 2;
+  np = 10;
+  ka = 0.25;
+  kecdiff = 1;
+
+  //Other declarations:
+  const Cell, extentconv, timeconv, cf, kr_f, kr_r, ka_f, ka_r, kc_f, kc_r;
+  const ko_f, ko_r, kao_f, kao_r, kmdiff_f, kmdiff_r, kd, kecd, nc, nr, ko;
+  const kb, ng, np, ka, kecdiff;
+
+  //Display Names:
+  kr_f is "Forward repression binding rate";
+  kr_r is "Reverse repression binding rate";
+  ka_f is "Forward activation binding rate";
+  ka_r is "Reverse activation binding rate";
+  kc_f is "Forward complex formation rate";
+  kc_r is "Reverse complex formation rate";
+  ko_f is "Forward RNAP binding rate";
+  ko_r is "Reverse RNAP binding rate";
+  kao_f is "Forward activated RNAP binding rate";
+  kao_r is "Reverse activated RNAP binding rate";
+  kmdiff_f is "Forward membrane diffusion rate";
+  kmdiff_r is "Reverse membrane diffusion rate";
+  kd is "Degradation rate";
+  kecd is "Extracellular degradation rate";
+  nc is "Stoichiometry of binding";
+  nr is "Initial RNAP count";
+  ko is "Open complex production rate";
+  kb is "Basal production rate";
+  ng is "Initial promoter count";
+  np is "Stoichiometry of production";
+  ka is "Activated production rate";
+  kecdiff is "Extracellular diffusion rate";
+end

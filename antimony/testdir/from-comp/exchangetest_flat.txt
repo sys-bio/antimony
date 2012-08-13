@@ -1,0 +1,37 @@
+//Created by libAntimony v2.3-beta
+model *testmod()
+
+  // Compartments and Species:
+  species A__S1;
+
+  // Assignment Rules:
+  Q := X / cf - 3;
+
+  // Rate Rules:
+  X' = 0.2 * cf / timeconv;
+
+  // Reactions:
+  A___J0: A__S1 -> ; extentconv / timeconv * A__k1 * A__S1;
+
+  // Events:
+  A___E0: at gt(X / cf, 3), priority = Q: A__y = 4;
+  A___E1: at gt(X / cf, 3), priority = R: A__y = 5;
+
+  // Species initializations:
+  A__S1 = ;
+
+  // Variable initializations:
+  X = ;
+  cf = 100;
+  A__y = ;
+  R = 20;
+  timeconv = 60;
+  extentconv = 10;
+  U1 = ;
+  U2 = ;
+  A__k1 = ;
+
+  //Other declarations:
+  var X, Q, A__y, U1, U2;
+  const cf, R, timeconv, extentconv, A__k1;
+end

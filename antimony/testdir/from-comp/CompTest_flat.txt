@@ -1,0 +1,184 @@
+//Created by libAntimony v2.3-beta
+function neighborQuantityLeft(a)
+  0;
+end
+
+function neighborQuantityRight(a)
+  0;
+end
+
+function neighborQuantityAbove(a)
+  0;
+end
+
+function neighborQuantityBelow(a)
+  0;
+end
+
+function getCompartmentLocationX(a)
+  0;
+end
+
+function getCompartmentLocationY(a)
+  0;
+end
+
+function C1__neighborQuantityLeft(a)
+  0;
+end
+
+function C1__neighborQuantityRight(a)
+  0;
+end
+
+function C1__neighborQuantityAbove(a)
+  0;
+end
+
+function C1__neighborQuantityBelow(a)
+  0;
+end
+
+function C1__getCompartmentLocationX(a)
+  0;
+end
+
+function C1__getCompartmentLocationY(a)
+  0;
+end
+
+
+model *CompTest()
+
+  // Compartments and Species:
+  compartment Cell;
+  species S1 in Cell, S2 in Cell;
+
+  // Assignment Rules:
+  C1__V1 := S2 + S1;
+
+  // Rate Rules:
+  C1__V2' = S2 * S1;
+
+  // Reactions:
+  C1__R1: S2 => S1; C1__kf * S2;
+  C1__R3: S1 => S2; topKf * S1;
+
+  // Species initializations:
+  S1 = 0;
+  S2 = 0;
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  kr_f = 0.5;
+  kr_r = 1;
+  ka_f = 0.0033;
+  ka_r = 1;
+  kc_f = 0.05;
+  kc_r = 1;
+  ko_f = 0.033;
+  ko_r = 1;
+  kao_f = 1;
+  kao_r = 1;
+  kmdiff_f = 1;
+  kmdiff_r = 0.01;
+  kd = 0.0075;
+  kecd = 0.005;
+  nc = 2;
+  nr = 30;
+  ko = 0.05;
+  kb = 0.0001;
+  ng = 2;
+  np = 10;
+  ka = 0.25;
+  kecdiff = 1;
+  topKf = 3;
+  C1__V2 = 0;
+  C1__R1_kf = 0.1;
+  C1__R3_kf = 0.1;
+  C1__x = ;
+  C1__kr_f = 0.5;
+  C1__kr_r = 1;
+  C1__ka_f = 0.0033;
+  C1__ka_r = 1;
+  C1__kc_f = 0.05;
+  C1__kc_r = 1;
+  C1__ko_f = 0.033;
+  C1__ko_r = 1;
+  C1__kao_f = 1;
+  C1__kao_r = 1;
+  C1__kmdiff_f = 1;
+  C1__kmdiff_r = 0.01;
+  C1__kd = 0.0075;
+  C1__kecd = 0.005;
+  C1__nc = 2;
+  C1__nr = 30;
+  C1__ko = 0.05;
+  C1__kb = 0.0001;
+  C1__ng = 2;
+  C1__np = 10;
+  C1__ka = 0.25;
+  C1__kecdiff = 1;
+  C1__kf = 2;
+  C1__R1_kr = 1;
+  C1__R3_kr = 1;
+  C1__second = ;
+
+  //Other declarations:
+  var C1__V1, C1__V2;
+  const Cell, kr_f, kr_r, ka_f, ka_r, kc_f, kc_r, ko_f, ko_r, kao_f, kao_r;
+  const kmdiff_f, kmdiff_r, kd, kecd, nc, nr, ko, kb, ng, np, ka, kecdiff;
+  const topKf, C1__R1_kf, C1__R3_kf, C1__x, C1__kr_f, C1__kr_r, C1__ka_f;
+  const C1__ka_r, C1__kc_f, C1__kc_r, C1__ko_f, C1__ko_r, C1__kao_f, C1__kao_r;
+  const C1__kmdiff_f, C1__kmdiff_r, C1__kd, C1__kecd, C1__nc, C1__nr, C1__ko;
+  const C1__kb, C1__ng, C1__np, C1__ka, C1__kecdiff, C1__kf, C1__R1_kr, C1__R3_kr;
+  const C1__second;
+
+  //Display Names:
+  kr_f is "Forward repression binding rate";
+  kr_r is "Reverse repression binding rate";
+  ka_f is "Forward activation binding rate";
+  ka_r is "Reverse activation binding rate";
+  kc_f is "Forward complex formation rate";
+  kc_r is "Reverse complex formation rate";
+  ko_f is "Forward RNAP binding rate";
+  ko_r is "Reverse RNAP binding rate";
+  kao_f is "Forward activated RNAP binding rate";
+  kao_r is "Reverse activated RNAP binding rate";
+  kmdiff_f is "Forward membrane diffusion rate";
+  kmdiff_r is "Reverse membrane diffusion rate";
+  kd is "Degradation rate";
+  kecd is "Extracellular degradation rate";
+  nc is "Stoichiometry of binding";
+  nr is "Initial RNAP count";
+  ko is "Open complex production rate";
+  kb is "Basal production rate";
+  ng is "Initial promoter count";
+  np is "Stoichiometry of production";
+  ka is "Activated production rate";
+  kecdiff is "Extracellular diffusion rate";
+  C1__kr_f is "Forward repression binding rate";
+  C1__kr_r is "Reverse repression binding rate";
+  C1__ka_f is "Forward activation binding rate";
+  C1__ka_r is "Reverse activation binding rate";
+  C1__kc_f is "Forward complex formation rate";
+  C1__kc_r is "Reverse complex formation rate";
+  C1__ko_f is "Forward RNAP binding rate";
+  C1__ko_r is "Reverse RNAP binding rate";
+  C1__kao_f is "Forward activated RNAP binding rate";
+  C1__kao_r is "Reverse activated RNAP binding rate";
+  C1__kmdiff_f is "Forward membrane diffusion rate";
+  C1__kmdiff_r is "Reverse membrane diffusion rate";
+  C1__kd is "Degradation rate";
+  C1__kecd is "Extracellular degradation rate";
+  C1__nc is "Stoichiometry of binding";
+  C1__nr is "Initial RNAP count";
+  C1__ko is "Open complex production rate";
+  C1__kb is "Basal production rate";
+  C1__ng is "Initial promoter count";
+  C1__np is "Stoichiometry of production";
+  C1__ka is "Activated production rate";
+  C1__kecdiff is "Extracellular diffusion rate";
+end
