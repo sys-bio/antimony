@@ -156,6 +156,7 @@ LIB_EXTERN long   loadSBMLString(const char* model);
  * NOTE:  This function is unavailable when libAntimony is compiled with the '-NSBML' flag.
  *
  * @param model The model, in SBML format.
+ * @param location The location of the file (i.e. "file1.xml" or "/home/user/sbml/models/file.xml")
  *
  * @see getLastError()
  */
