@@ -1,5 +1,5 @@
 #version number
-version = 2.0
+version = 2.2
 
 #mingw:
 #mingw = i586-mingw32msvc
@@ -85,6 +85,8 @@ CPPFILES = $(src_dir)antimony_api.cpp \
 	$(src_dir)sbtranslate.cpp \
 	$(src_dir)typex.cpp \
 	$(src_dir)userfunction.cpp \
+	$(src_dir)unitdef.cpp \
+	$(src_dir)unitelement.cpp \
 	$(src_dir)variable.cpp \
 	$(src_dir)antimony2sbml.cpp \
 	$(src_dir)antimony2cellml.cpp \
@@ -107,6 +109,8 @@ HFILES = $(src_dir)antimony_api.h \
 	$(src_dir)stringx.h \
 	$(src_dir)typex.h \
 	$(src_dir)userfunction.h \
+	$(src_dir)unitdef.h \
+	$(src_dir)unitelement.h \
 	$(src_dir)variable.h
 
 LIBOFILES = $(src_dir)antimony_api.o \
@@ -154,7 +158,7 @@ QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 	$(qt_dir)Tutorial.xxd \
 	$(qt_dir)antimony.icns \
 	$(qt_dir)antimony.ico \
-	$(qt_dir)antimony.jpg \
+#	$(qt_dir)antimony.jpg \
 	$(qt_dir)antimony.qrc \
 	$(qt_dir)antimony_ico.pdn \
 	$(qt_dir)antimonyicon.rc \
@@ -162,7 +166,7 @@ QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 
 
 DOCFILES = $(doc_dir)antimony__api_8h.html \
-	$(doc_dir)antimony__api_8h-source.html \
+	$(doc_dir)antimony__api_8h_source.html \
 	$(doc_dir)antimony-biomodels.html \
 	$(doc_dir)antimony-cellml.html \
 	$(doc_dir)antimony-examples.html \
@@ -173,11 +177,17 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)antimony-why.html \
 	$(doc_dir)cellmllist_ant.html \
 	$(doc_dir)cellmllist_sbml.html \
-	$(doc_dir)doxygen.css \
-	$(doc_dir)doxygen.png \
 	$(doc_dir)enums_8h.html \
-	$(doc_dir)enums_8h-source.html \
+	$(doc_dir)enums_8h_source.html \
 	$(doc_dir)files.html \
+	$(doc_dir)globals_enum.html \
+	$(doc_dir)globals_func.html \
+	$(doc_dir)globals.html \
+	$(doc_dir)index.html \
+	$(doc_dir)technical_spec.html \
+	$(doc_dir)bc_s.png \
+	$(doc_dir)closed.png \
+	$(doc_dir)doxygen.png \
 	$(doc_dir)ftv2blank.png \
 	$(doc_dir)ftv2doc.png \
 	$(doc_dir)ftv2folderclosed.png \
@@ -189,21 +199,31 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)ftv2node.png \
 	$(doc_dir)ftv2plastnode.png \
 	$(doc_dir)ftv2pnode.png \
+	$(doc_dir)ftv2splitbar.png \
 	$(doc_dir)ftv2vertline.png \
-	$(doc_dir)globals_enum.html \
-	$(doc_dir)globals_func.html \
-	$(doc_dir)globals.html \
-	$(doc_dir)index.html \
-	$(doc_dir)main.html \
-	$(doc_dir)tab_b.gif \
-	$(doc_dir)tab_l.gif \
-	$(doc_dir)tab_r.gif \
-	$(doc_dir)tabs.css \
-	$(doc_dir)tree.html \
-	$(doc_dir)Tutorial.pdf \
+	$(doc_dir)nav_f.png \
+	$(doc_dir)nav_h.png \
+	$(doc_dir)open.png \
 	$(doc_dir)Screenshot-linux.png \
 	$(doc_dir)Screenshot-macosx.png \
 	$(doc_dir)Screenshot-windows.png \
+	$(doc_dir)tab_a.png \
+	$(doc_dir)tab_b.png \
+	$(doc_dir)tab_h.png \
+	$(doc_dir)tab_s.png \
+	$(doc_dir)doxygen.css \
+	$(doc_dir)tabs.css \
+	$(doc_dir)navtree.css \
+	$(doc_dir)Tutorial.pdf \
+	$(doc_dir)antimony__api_8h.js \
+	$(doc_dir)antimony-examples.js \
+	$(doc_dir)enums_8h.js \
+	$(doc_dir)files.js \
+	$(doc_dir)index.js \
+	$(doc_dir)jquery.js \
+	$(doc_dir)navtreeindex.js \
+	$(doc_dir)navtree.js \
+	$(doc_dir)resize.js \
 	$(ex_dir).htaccess \
 	$(ex_dir)ex_antimony_input.txt \
 	$(ex_dir)ex_antimony_output.txt \
@@ -216,6 +236,7 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(ex_dir)biomodels/BIOMD0000000001.txt \
 	$(ex_dir)biomodels/BIOMD0000000???.txt \
 	$(ex_dir)cellml_files.zip
+
 
 DOCSRCFILES = \
 	$(doc_dir)antimony-biomodels.txt \
@@ -294,9 +315,10 @@ srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIM
 	tar --transform 's,^,antimony/,' -cvf antimony_src_v$(version).tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) $(ex_dir)cellml_files.zip Makefile CMakeLists.txt
 	gzip antimony_src_v$(version).tar
 
+
 #The documentation.
-$(ex_dir)cellml_files.zip:
-	cd $(ex_dir); zip cellml_files.zip cellml/*/*; cd ../..;
+#$(ex_dir)cellml_files.zip:
+#	cd $(ex_dir); zip cellml_files.zip cellml/*/*; cd ../..;
 
 docs : $(doc_dir)index.html $(doc_dir)cellmllist_ant.html $(doc_dir)cellmllist_sbml.html
 	zip Antimony_documentation_v$(version).zip $(DOCFILES)
