@@ -121,7 +121,7 @@ ASTNode* parseStringToASTNode(const string& formula)
 {
   L3ParserSettings l3ps;
   l3ps.setParseCollapseMinus(true);
-  l3ps.setParseLog(L3P_PARSE_LOG_AS_LOG10);
+  l3ps.setParseLog(L3P_PARSE_LOG_AS_LN);
   ASTNode* rootnode = SBML_parseL3FormulaWithSettings(formula.c_str(), &l3ps);
   if (rootnode == NULL) {
     g_registry.SetError(SBML_getLastParseL3Error());
