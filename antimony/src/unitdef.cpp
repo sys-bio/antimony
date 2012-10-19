@@ -459,19 +459,19 @@ UnitDef* UnitDef::GetCanonical(set<string> usednames) const
   return ret;
 }
 
-#ifndef SBML
-void UnitDef::AddToSBML(Model* sbmlmod, string id, string name)
+#ifndef NSBML
+UnitDefinition* UnitDef::AddToSBML(Model* sbmlmod, string id, string name)
 {
   UnitDef* canonical = GetCanonical();
   if (canonical!=NULL && canonical->IsOnlyCanonicalKind()) {
     delete canonical;
-    return;
+    return NULL;
   }
   UnitDefinition* ud = sbmlmod->createUnitDefinition();
   if (id=="time_unit") id = "time";
   ud->setId(id); //Don't use any auto-generated names.
   ud->setName(name);
-  if (canonical==NULL) return;
+  if (canonical==NULL) return NULL;
   for (size_t ue=0; ue<canonical->m_components.size(); ue++) {
     UnitElement unitel = canonical->m_components[ue];
     Unit* unit = ud->createUnit();
@@ -483,5 +483,6 @@ void UnitDef::AddToSBML(Model* sbmlmod, string id, string name)
     unit->setScale(unitel.GetScale());
   }
   delete canonical;
+  return ud;
 }
 #endif

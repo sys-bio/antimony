@@ -14,9 +14,42 @@ What's new in v2.2:
   - The ability to define units and use them in mathematical equations.
   - The ability to define conversion factors when synchronizing elements between submodels.
   - The ability to define time and extent conversion factors when importing submodels.
+  - The ability to delete submodel elements.
 
 Wht's new in v2.3-beta:
   - The ability to import and export SBML models with all the new 2.2 capabilities to 'hierarchical model composition' package constructs.
+
+The syntax for each is:
+
+Deletions:
+  
+  delete S1.x;
+  
+which will delete the variable 'x' from submodel S1, and will clear any
+equations or reactions that had 'x' in it:  if a reaction rate was 'p1*x',
+that reaction rate will be cleared entirely (and may be reset using normal
+Antimony constructs).
+
+Time and extent conversion factors in submodels:
+
+  S1: submodel(), timeconv=60, extentconv=100;
+  
+or
+  
+  S1: submodel(), timeconv=tc, extentconv=xc;
+  
+(where 'tc' and 'xc' are parameters that may be defined elsewhere) may be
+used.
+
+Conversion factors for synchronized variables:
+
+  S1.y * cf is x;
+  
+or
+  
+  S1.y is x / cf;
+
+
 
 
 What's new in v2.0:

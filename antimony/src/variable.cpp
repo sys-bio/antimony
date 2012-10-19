@@ -11,7 +11,8 @@
 using namespace std;
 
 Variable::Variable(const string name, const Module* module)
-  : m_name(),
+  : Annotated(),
+    m_name(),
     m_module(module->GetModuleName()),
     m_displayname(""),
     m_sameVariable(),
@@ -830,8 +831,8 @@ bool Variable::SetFormula(Formula* formula)
   case varDeleted:
     g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' to be " + formula->ToDelimitedStringWithEllipses('.') + " because this variable was already deleted.");
   }
-  if (m_valFormula.MakeUnitVariablesUnits()) return true;
 #ifndef NSBML
+  if (m_valFormula.MakeUnitVariablesUnits()) return true;
   ASTNode* root = parseStringToASTNode(m_valFormula.ToSBMLString());
   if (root != NULL && root->isSetUnits() && root->getNumChildren()==0) {
     string unit = root->getUnits();
@@ -1689,6 +1690,7 @@ void Variable::SetWithRule(const Rule* rule)
   string formulastring(parseASTNodeToString(rule->getMath()));
   setFormulaWithString(formulastring, &formula, g_registry.GetModule(m_module));
   formula.SetNewTopNameWith(rule, m_module);
+  formula.SetAnnotation(rule);
   if (IsSpecies(GetType())) {
     //Any species in any rule must be 'const' (in Antimony), because this means it's a 'boundary species'
     SetIsConst(true);
@@ -1708,4 +1710,5 @@ void Variable::SetWithRule(const Rule* rule)
     assert(false); //Algebraic rules should be caught in calling function
   }
 }
+
 #endif

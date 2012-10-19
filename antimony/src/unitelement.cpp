@@ -2,7 +2,10 @@
 #include "stringx.h"
 #include <cmath>
 #include <cassert>
+#include <sstream>
+#ifndef NSBML
 #include <sbml/UnitKind.h>
+#endif
 
 using namespace std;
 
