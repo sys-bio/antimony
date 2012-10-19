@@ -704,9 +704,12 @@ bool Formula::MakeAllVariablesUnits()
   return false;
 }
 
-#ifndef NSBML
 bool Formula::MakeUnitVariablesUnits()
 {
+#ifdef NSBML
+  //Can't do it.
+  return false;
+#else
   string formula = ToSBMLString();
   ASTNode* root = parseStringToASTNode(formula);
   set<string> allunits = GetUnitNames(root);
@@ -722,8 +725,10 @@ bool Formula::MakeUnitVariablesUnits()
     }
   }
   return false;
+#endif
 }
 
+#ifndef NSBML
 void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
 {
   //Only need to do anything if 'from' is in a submodel, which only happens in comp-sbml.
@@ -737,6 +742,7 @@ void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
   }
 #endif
 }
+
 #endif
 
 bool Formula::ClearReferencesTo(Variable* deletedvar)

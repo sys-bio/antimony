@@ -4,6 +4,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include "annotated.h"
 
 #ifndef NSBML
 #include <sbml/math/ASTNode.h>
@@ -12,7 +13,7 @@
 class ReactantList;
 class Variable;
 
-class Formula
+class Formula : public Annotated
 {
 private:
   //Formula(const Formula& src); //Undefined

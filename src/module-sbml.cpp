@@ -7,14 +7,17 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
   var->SetType(varEvent);
 
   //Set the trigger:
-  string triggerstring(parseASTNodeToString(event->getTrigger()->getMath()));
+  const Trigger* sbmltrigger = event->getTrigger();
+  string triggerstring(parseASTNodeToString(sbmltrigger->getMath()));
   Formula trigger;
   setFormulaWithString(triggerstring, &trigger, module);
+  trigger.SetAnnotation(sbmltrigger);
   Formula delay;
   const Delay* sbmldelay = event->getDelay();
   if (sbmldelay != NULL) {
     string delaystring(parseASTNodeToString(sbmldelay->getMath()));
     setFormulaWithString(delaystring, &delay, module);
+    delay.SetAnnotation(sbmldelay);
   }
   AntimonyEvent antevent(delay, trigger, var);
 
@@ -25,6 +28,7 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
     if (sbmlpriority != NULL) {
       string prioritystring(parseASTNodeToString(sbmlpriority->getMath()));
       setFormulaWithString(prioritystring, &priority, module);
+      priority.SetAnnotation(sbmlpriority);
     }
     antevent.SetPriority(priority);
   }
@@ -53,6 +57,7 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
     assert(asntvar != NULL);
     Formula*  asntform = g_registry.NewBlankFormula();
     setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform, module);
+    asntform->SetAnnotation(assignment);
     var->GetEvent()->AddResult(asntvar, asntform);
   }
   module->TranslateRulesAndAssignmentsTo(event, var);
@@ -377,6 +382,7 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
       string formulastring(parseASTNodeToString(ia->getMath()));
       setFormulaWithString(formulastring, &formula, this);
       formula.SetNewTopNameWith(ia, GetModuleName());
+      formula.SetAnnotation(ia);
       var->SetFormula(&formula);
     }
   }
@@ -411,6 +417,7 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
 
 void Module::LoadSBML(const Model* sbml)
 {
+  SetAnnotation(sbml);
 #ifdef USE_COMP
   //Load submodels
   const CompModelPlugin* mplugin = static_cast<const CompModelPlugin*>(sbml->getPlugin("comp"));
@@ -429,6 +436,7 @@ void Module::LoadSBML(const Model* sbml)
       if (var->SetModule(&refname)) {
         g_registry.AddWarning("Unable to find submodel " + refname + ".");
       }
+      var->SetAnnotation(submodel);
       for (unsigned int d=0; d<submodel->getNumDeletions(); d++) {
         Deletion* deletion = const_cast<Deletion*>(submodel->getDeletion(d));
         string delname = getNameFromSBMLObject(deletion, "del");
@@ -471,6 +479,7 @@ void Module::LoadSBML(const Model* sbml)
             deletedvar = GetVariable(targetname);
             assert(deletedvar != NULL);
             AddDeletion(deletedvar);
+            deletedvar->SetAnnotation(deletion);
             break;
           case SBML_PRIORITY:
           case SBML_DELAY:
@@ -492,6 +501,9 @@ void Module::LoadSBML(const Model* sbml)
           case SBML_ALGEBRAIC_RULE:
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " elements cannot be expressed in Antimony at all.  (Deleting them is therefore safe, because they are automatically dropped anyway.)");
             break;
+          case SBML_FUNCTION_DEFINITION:
+            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Function definitions are global in Antimony, not local, and therefore cannot be deleted from submodels.");
+            break;
           case SBML_LOCAL_PARAMETER:
             assert(reaction != NULL);
             if (!reaction->isSetId()) {
@@ -505,15 +517,16 @@ void Module::LoadSBML(const Model* sbml)
             paramname.push_back(target->getId());
             targetname.push_back(GetNewIDForLocalParameter(target));
             deletedvar->GetFormula()->ReplaceWith(targetname, paramname);
+            deletedvar->SetAnnotation(deletion);
             break;
           default:
             //From core:
             /*
-              SBML_FUNCTION_DEFINITION 	
               SBML_KINETIC_LAW 	
               SBML_SPECIES_REFERENCE 	
               SBML_MODIFIER_SPECIES_REFERENCE 	
               SBML_UNIT 	
+              SBML_LISTOF
             */
             //var = AddOrFindVariable(&delname);
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions of " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " elements have not been added as a concept in Antimony.");
@@ -553,9 +566,15 @@ void Module::LoadSBML(const Model* sbml)
         uf = g_registry.GetUserFunction(sbmlname);
       }
     }
-    if (duplicate) continue;
+    if (duplicate) {
+      if (!uf->HasAnnotation()) {
+        uf->SetAnnotation(function);
+      }
+      continue;
+    }
     g_registry.NewUserFunction(&sbmlname);
     uf = g_registry.GetUserFunction(sbmlname);
+    uf->SetAnnotation(function);
     for (unsigned int arg=0; arg<function->getNumArguments(); arg++) {
       string argument(parseASTNodeToString(function->getArgument(arg)));
       Variable* expvar = g_registry.AddVariableToCurrent(&argument);
@@ -574,11 +593,11 @@ void Module::LoadSBML(const Model* sbml)
     sbmlname = getNameFromSBMLObject(unitdefinition, "_UD");
     FixUnitName(sbmlname);
     Variable* var = AddOrFindVariable(&sbmlname);
+    var->SetAnnotation(unitdefinition);
     if (unitdefinition->isSetName()) {
       var->SetDisplayName(unitdefinition->getName());
     }
     var->SetUnitDef(&GetUnitDefFrom(unitdefinition, m_modulename));
-    TranslateRulesAndAssignmentsTo(unitdefinition, var);
   }
 
  
@@ -599,6 +618,7 @@ void Module::LoadSBML(const Model* sbml)
       // Later versions of antimony now set the SBO terms to 410, so we might not need this code very long.
     }
     Variable* var = AddOrFindVariable(&sbmlname);
+    var->SetAnnotation(compartment);
     if (compartment->isSetName()) {
       var->SetDisplayName(compartment->getName());
     }
@@ -626,6 +646,7 @@ void Module::LoadSBML(const Model* sbml)
       var->SetDisplayName(species->getName());
     }
     var->SetType(varSpeciesUndef);
+    var->SetAnnotation(species);
 
     //Setting the formula
     Formula formula;
@@ -690,6 +711,7 @@ void Module::LoadSBML(const Model* sbml)
     Variable* var = AddOrFindVariable(&sbmlname);
     vector<string> nosub;
     SetVarWithEvent(var, event, this, nosub);
+    var->SetAnnotation(event);
   }
 
   //LS DEBUG:  Add constraints?
@@ -699,6 +721,7 @@ void Module::LoadSBML(const Model* sbml)
     const Parameter* parameter = sbml->getParameter(param);
     sbmlname = getNameFromSBMLObject(parameter, "_P");
     Variable* var = AddOrFindVariable(&sbmlname);
+    var->SetAnnotation(parameter);
     if (parameter->isSetName()) {
       var->SetDisplayName(parameter->getName());
     }
@@ -724,6 +747,7 @@ void Module::LoadSBML(const Model* sbml)
     const Reaction* reaction = sbml->getReaction(rxn);
     sbmlname = getNameFromSBMLObject(reaction, "_J");
     Variable* var = AddOrFindVariable(&sbmlname);
+    var->SetAnnotation(reaction);
     if (reaction->isSetName()) {
       var->SetDisplayName(reaction->getName());
     }
@@ -773,6 +797,7 @@ void Module::LoadSBML(const Model* sbml)
     Formula formula;
     if (reaction->isSetKineticLaw()) {
       const KineticLaw* kl = reaction->getKineticLaw();
+      formula.SetAnnotation(kl);
       ASTNode astn = *kl->getMath();
       for (unsigned int localp=0; localp<kl->getNumParameters(); localp++) {
         const Parameter* localparam = kl->getParameter(localp);
@@ -783,6 +808,7 @@ void Module::LoadSBML(const Model* sbml)
         sbmlname = GetNewIDForLocalParameter(localparam);
         fullname.push_back(sbmlname);
         Variable* localvar = AddOrFindVariable(&sbmlname);
+        localvar->SetAnnotation(localparam);
         //Change the ASTNode so that old idrefs point to the new name.
         astn.renameSIdRefs(localparam->getId(), sbmlname);
 
@@ -912,6 +938,7 @@ void Module::CreateSBMLModel(bool comp)
   Model* sbmlmod = m_sbml.createModel();
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(m_modulename);
+  TransferAnnotationTo(sbmlmod);
   char cc = g_registry.GetCC();
   map<const Variable*, Variable > syncmap;
   if (comp) {
@@ -931,7 +958,9 @@ void Module::CreateSBMLModel(bool comp)
       Module* module = submod->GetModule();
       Submodel* sbmlsubmod = mplugin->createSubmodel();
       sbmlsubmod->setId(submod->GetNameDelimitedBy(cc));
+      sbmlsubmod->setName(submod->GetDisplayName());
       sbmlsubmod->setModelRef(module->GetModuleName());
+      submod->TransferAnnotationTo(sbmlsubmod);
       Variable* conv = submod->GetExtentConversionFactor();
       if (conv != NULL) {
         sbmlsubmod->setExtentConversionFactor(conv->GetNameDelimitedBy(cc));
@@ -957,6 +986,7 @@ void Module::CreateSBMLModel(bool comp)
           sbr->unsetIdRef();
           sbr->setUnitRef(delname[delname.size()-1]);
         }
+        deletedvar->TransferAnnotationTo(deletion);
       }
     }
   }
@@ -970,6 +1000,9 @@ void Module::CreateSBMLModel(bool comp)
     fd->setId(userfunction->GetModuleName());
     ASTNode* math = parseStringToASTNode(userfunction->ToSBMLString());
     fd->setMath(math);
+    if (userfunction->HasAnnotation()) {
+      userfunction->TransferAnnotationTo(fd);
+    }
     delete math;
   }
 
@@ -979,6 +1012,9 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t spec=0; spec < numspecies; spec++) {
     Variable* species = GetNthVariableOfType(allSpecies, spec, comp);
     Species* sbmlspecies = sbmlmod->createSpecies();
+    if (species->HasAnnotation()) {
+      species->TransferAnnotationTo(sbmlspecies);
+    }
     sbmlspecies->setId(species->GetNameDelimitedBy(cc));
     if (species->GetDisplayName() != "") {
       sbmlspecies->setName(species->GetDisplayName());
@@ -1032,7 +1068,10 @@ void Module::CreateSBMLModel(bool comp)
   for (size_t ud=0; ud<numunits; ud++) {
     Variable* unit = GetNthVariableOfType(allUnits, ud, comp);
     UnitDef* unitdef = unit->GetUnitDef();
-    unitdef->AddToSBML(sbmlmod, unit->GetNameDelimitedBy(cc), unit->GetDisplayName());
+    UnitDefinition* sbmlunitdef = unitdef->AddToSBML(sbmlmod, unit->GetNameDelimitedBy(cc), unit->GetDisplayName());
+    if (sbmlunitdef != NULL && unit->HasAnnotation()) {
+      unit->TransferAnnotationTo(sbmlunitdef);
+    }
     vector<string> name = unit->GetName();
     assert(!name.empty());
     string unitname = unit->GetNameDelimitedBy(cc);

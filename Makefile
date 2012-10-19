@@ -65,7 +65,8 @@ qt_dir  = QTAntimony_src/
 
 YPPFILES = $(src_dir)antimony.ypp
 
-CPPFILES = $(src_dir)antimony_api.cpp \
+CPPFILES = $(src_dir)annotated.cpp \
+	$(src_dir)antimony_api.cpp \
 	$(src_dir)Antimony.cpp \
 	$(src_dir)antimony.tab.cpp \
 	$(src_dir)cellmlx.cpp \
@@ -94,7 +95,8 @@ CPPFILES = $(src_dir)antimony_api.cpp \
 	$(src_dir)cellml2antimony.cpp \
 	$(src_dir)testantimony.cpp \
 
-HFILES = $(src_dir)antimony_api.h \
+HFILES = $(src_dir)annotated.h \
+	$(src_dir)antimony_api.h \
 	$(src_dir)dnastrand.h \
 	$(src_dir)cellmlx.h \
 	$(src_dir)enums.h \
@@ -113,7 +115,8 @@ HFILES = $(src_dir)antimony_api.h \
 	$(src_dir)unitelement.h \
 	$(src_dir)variable.h
 
-LIBOFILES = $(src_dir)antimony_api.o \
+LIBOFILES = $(src_dir)annotated.o \
+	$(src_dir)antimony_api.o \
 	$(src_dir)antimony.tab.o \
 	$(src_dir)cellmlx.o \
 	$(src_dir)dnastrand.o \

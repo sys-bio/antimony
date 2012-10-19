@@ -1,13 +1,14 @@
 
 %{
   //#define YYSTYPE double
-#include <math.h>
-#include <stdio.h>
-#include <string>
+#include <cassert>
 #include <ctype.h>
 #include <fstream>
 #include <iostream>
+#include <math.h>
 #include <set>
+#include <stdio.h>
+#include <string>
 #ifndef NSBML
 #include <sbml/SBMLTypes.h>
 #endif
@@ -263,6 +264,7 @@ mathThing:      '+' {$$ = '+';}
         |       '>' {$$ = '>';}
         |       '<' {$$ = '<';}
         |       '!' {$$ = '!';}
+        |       '%' {$$ = '%';}
         ;
 
 lineend:        ';' {}

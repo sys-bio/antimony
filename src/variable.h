@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include "annotated.h"
 #include "dnastrand.h"
 #include "event.h"
 #include "formula.h"
@@ -15,10 +16,14 @@
 #include "cellmlx.h"
 #endif
 
+#ifndef NSBML
+#include "sbml/SBMLTypes.h"
+#endif
+
 class Module;
 class UnitDef;
 
-class Variable
+class Variable : public Annotated
 {
 private:
   Variable(); //Undefined

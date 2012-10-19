@@ -57,7 +57,7 @@ public:
   UnitDef* GetCanonical(std::set<std::string> usednames) const;
 #ifndef NSBML
   UnitDef* GetUnitDefFromASTNode(ASTNode* astn);
-  void AddToSBML(Model* sbmlmod, std::string id, std::string name);
+  UnitDefinition* AddToSBML(Model* sbmlmod, std::string id, std::string name);
 #endif
 
 private:

@@ -525,7 +525,8 @@ Variable* Module::AddOrFindUnitDef(UnitDef* unitdef)
     }
   }
   //Need a new variable;
-  Variable* var = AddOrFindVariable(&unitdef->GetNameDelimitedBy('.')); //Since this unitdef was never a part of a variable, it will always have a simple name.
+  string udname = unitdef->GetNameDelimitedBy('.');
+  Variable* var = AddOrFindVariable(&udname); //Since this unitdef was never a part of a variable, it will always have a simple name.
   if (var->SetUnitDef(unitdef)) return NULL;
   return var;
 }
@@ -535,7 +536,8 @@ bool Module::AddUnitVariables(UnitDef* unitdef)
 {
   for (unsigned long u=0; u<unitdef->GetNumUnitElements(); u++) {
     UnitElement* ue = unitdef->GetUnitElement(u);
-    Variable* var = AddOrFindVariable(&(ue->GetKind()));
+    string uekind = ue->GetKind();
+    Variable* var = AddOrFindVariable(&uekind);
     if (var->SetType(varUnitDefinition)) return true;
   }
   return false; //success

@@ -20,13 +20,15 @@
 enum tree_direction {td_UP, td_DOWN, td_SIDEWAYS};
 #endif
 
+#include "annotated.h"
 #include "antimony_api.h"
 #include "variable.h"
 #include "reaction.h"
 
 class ReactionList;
 
-class Module{
+class Module  : public Annotated
+{
 protected:
   std::string m_modulename;
   std::vector<std::vector<std::string> > m_exportlist;
@@ -229,15 +231,17 @@ private:
   bool OrigIsAlreadyUnitDef(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string unitdef) const;
   bool OrigDisplayNameIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;
-  bool IsReplaced(const InitialAssignment* ia, const Model* parent);
-  bool IsReplaced(const Rule* rule, const Model* parent);
   const Variable* GetNthConstVariableOfType(return_type rtype, size_t n, bool comp) const;
   void Convert(Variable* converted, Variable* cf, std::string modulename);
+#ifndef NSBML
+  bool IsReplaced(const InitialAssignment* ia, const Model* parent);
+  bool IsReplaced(const Rule* rule, const Model* parent);
 #ifdef USE_COMP
   void GetReplacingAndRules(const Replacing* replacing, std::string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule);
   Variable* GetSBaseRef(const SBaseRef* sbr, std::string modname, std::string re_string, const SBase* orig);
   InitialAssignment* FindInitialAssignment(Model* md, std::vector<std::string> syncname);
   Rule* FindRule(Model* md, std::vector<std::string> syncname);
+#endif
 #endif
 };
 
