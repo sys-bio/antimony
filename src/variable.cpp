@@ -1375,9 +1375,11 @@ void Variable::ClearReferencesTo(Variable* deletedvar)
   if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_supercompartment))) {
     m_supercompartment.clear();
   }
-  for (set<vector<string> >::iterator strand=m_strands.begin(); strand != m_strands.end();) {
+  set<vector<string> >::iterator strand=m_strands.begin();
+  while (strand != m_strands.end()) {
     if (parentmod->GetVariable(*strand)->GetSameVariable() == deletedvar) {
-      strand = m_strands.erase(strand);
+      m_strands.erase(strand);
+      strand = m_strands.begin();
     }
     else {
       strand++;
