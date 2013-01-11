@@ -8,6 +8,7 @@ bool Annotated::TransferAnnotationTo(SBase* sbmlobj) const
     sbmlobj->setMetaId(m_metaid);
     return sbmlobj->setAnnotation(&m_annotation);
   }
+  return true;
 }
 
 void Annotated::SetAnnotation(const SBase* sbmlobj)
