@@ -472,7 +472,7 @@ void Module::LoadSBML(const Model* sbml)
           case SBML_UNIT_DEFINITION:
           case SBML_COMP_SUBMODEL:
             if (!target->isSetId()) {
-              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the target " + SBMLTypeCode_toString(target->getTypeCode(), "comp") + " element did not have an ID.");
+              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the target " + SBMLTypeCode_toString(target->getTypeCode(), target->getPackageName().c_str()) + " element did not have an ID.");
               continue;
             }
             targetname.push_back(target->getId());
@@ -529,7 +529,7 @@ void Module::LoadSBML(const Model* sbml)
               SBML_LISTOF
             */
             //var = AddOrFindVariable(&delname);
-            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions of " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " elements have not been added as a concept in Antimony.");
+            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Deletions of " + SBMLTypeCode_toString(target->getTypeCode(), target->getPackageName().c_str()) + " elements have not been added as a concept in Antimony.");
             break;
           }
         }
