@@ -1,0 +1,33 @@
+//Created by libAntimony v2.4
+model *BIOMD0000000425()
+
+  // Compartments and Species:
+  compartment cell;
+  species c in cell;
+
+  // Reactions:
+  reaction_1:  => c; reaction_1_alpha;
+  reaction_3: c => ; reaction_3_kd * c;
+  reaction_2:  => c; c / (reaction_2_kappa + c);
+  reaction_4: c => ; reaction_4_phi * c / (reaction_4_delta + reaction_4_gamma * c);
+
+  // Species initializations:
+  c = 1;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  reaction_1_alpha = 0.001;
+  reaction_3_kd = 1;
+  reaction_2_kappa = 0.5;
+  reaction_4_phi = 5e-006;
+  reaction_4_delta = 1e-005;
+  reaction_4_gamma = 1e-005;
+
+  //Other declarations:
+  const cell;
+
+  //Display Names:
+  c is "ribosome concentration";
+end

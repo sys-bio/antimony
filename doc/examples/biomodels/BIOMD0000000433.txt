@@ -1,0 +1,156 @@
+//Created by libAntimony v2.4
+function function_10(MK_P, MKK_PP, MKK_P, MK_PP, MKK, MK, P2, K10b, K5b, K6b, Kse2, K9b, k10b)
+  k10b * P2 * MK_P / K10b / (1 + MKK_PP / K5b + MKK_P / K6b + MKK / Kse2 + MK / Kse2 + MK_P / K10b + MK_PP / K9b);
+end
+
+function function_1(MKKK, K1, k1, Sig)
+  k1 * Sig * MKKK / (K1 + MKKK);
+end
+
+function function_6(P1, MKK_P, MKK_PP, MK_P, MK_PP, MKK, MK, k6a, K6a, MKKK, MKKK_P, P2, K6b, K2a, Kse1, K5a, k6b, K5b, Kse2, K10b, K9b)
+  k6a * P1 * MKK_P / K6a / (1 + MKKK_P / K2a + MKKK / Kse1 + MKK_PP / K5a + MKK_P / K6a + MKK / Kse1) + k6b * P2 * MKK_P / K6b / (1 + MKK_PP / K5b + MKK_P / K6b + MKK / Kse2 + MK / Kse2 + MK_P / K10b + MK_PP / K9b);
+end
+
+function function_2(MKKK_P, MKKK, P1, MKK_PP, MKK_P, MKK, Kse1, K2a, K5a, K6a, k2a)
+  k2a * MKKK_P * P1 / K2a / (1 + MKKK_P / K2a + MKKK / Kse1 + MKK_PP / K5a + MKK_P / K6a + MKK / Kse1);
+end
+
+function function_3(k3, MKKK_P, MKK, K3, MKK_P, K4)
+  k3 * MKKK_P * MKK / K3 / (1 + MKK / K3 + MKK_P / K4);
+end
+
+function function_4(k4, MKKK_P, MKK_P, K4, MKK, K3)
+  k4 * MKKK_P * MKK_P / K4 / (1 + MKK / K3 + MKK_P / K4);
+end
+
+function function_5(MKK_PP, MKK_P, MK_P, MK_PP, P1, MKK, MK, k5a, K5a, MKKK, MKKK_P, k5b, P2, K5b, K6a, Kse1, K2a, K6b, Kse2, K10b, K9b)
+  k5a * P1 * MKK_PP / K5a / (1 + MKKK_P / K2a + MKKK / Kse1 + MKK_PP / K5a + MKK_P / K6a + MKK / Kse1) + k5b * P2 * MKK_PP / K5b / (1 + MKK_PP / K5b + MKK_P / K6b + MKK / Kse2 + MK / Kse2 + MK_P / K10b + MK_PP / K9b);
+end
+
+function function_7(k7, MKK_PP, MK, K7, MK_P, K8)
+  k7 * MKK_PP * MK / K7 / (1 + MK / K7 + MK_P / K8);
+end
+
+function function_9(MK_PP, MKK_PP, MKK_P, MK_P, MKK, MK, P2, K9b, K5b, K6b, Kse2, K10b, k9b)
+  k9b * P2 * MK_PP / K9b / (1 + MKK_PP / K5b + MKK_P / K6b + MKK / Kse2 + MK / Kse2 + MK_P / K10b + MK_PP / K9b);
+end
+
+function function_8(k7, MKK_PP, MK_P, K8, MK, K7)
+  k7 * MKK_PP * MK_P / K8 / (1 + MK / K7 + MK_P / K8);
+end
+
+
+model *BIOMD0000000433()
+
+  // Compartments and Species:
+  compartment compartment_1, compartment_2;
+  species species_1 in compartment_1, species_2 in compartment_1, species_3 in compartment_1;
+  species species_4 in compartment_1, species_5 in compartment_1, species_6 in compartment_1;
+  species species_7 in compartment_1, species_8 in compartment_1, species_9 in compartment_1;
+  species species_10 in compartment_1, species_11 in compartment_1;
+
+  // Reactions:
+  reaction_1: species_1 => species_2; compartment_1 * function_1(species_1, parameter_1, reaction_1_k1, species_11);
+  reaction_2: species_2 => species_1; compartment_1 * function_2(species_2, species_1, species_9, species_5, species_4, species_3, parameter_11, parameter_2, parameter_5, parameter_6, reaction_2_k2a);
+  reaction_3: species_3 => species_4; compartment_1 * function_3(reaction_3_k3, species_2, species_3, parameter_3, species_4, parameter_4);
+  reaction_4: species_4 => species_5; compartment_1 * function_4(reaction_4_k4, species_2, species_4, parameter_4, species_3, parameter_3);
+  reaction_5: species_5 => species_4; compartment_1 * function_5(species_5, species_4, species_7, species_8, species_9, species_3, species_6, reaction_5_k5a, parameter_5, species_1, species_2, reaction_5_k5b, species_10, parameter_13, parameter_6, parameter_11, parameter_2, parameter_14, parameter_12, parameter_10, parameter_9);
+  reaction_6: species_4 => species_3; compartment_1 * function_6(species_9, species_4, species_5, species_7, species_8, species_3, species_6, reaction_6_k6a, parameter_6, species_1, species_2, species_10, parameter_14, parameter_2, parameter_11, parameter_5, reaction_6_k6b, parameter_13, parameter_12, parameter_10, parameter_9);
+  reaction_7: species_6 => species_7; compartment_1 * function_7(reaction_7_k7, species_5, species_6, parameter_7, species_7, parameter_8);
+  reaction_8: species_7 => species_8; compartment_1 * function_8(reaction_8_k7, species_5, species_7, parameter_8, species_6, parameter_7);
+  reaction_9: species_8 => species_7; compartment_1 * function_9(species_8, species_9, species_4, species_7, species_3, species_6, species_10, parameter_9, parameter_13, parameter_14, parameter_12, parameter_10, reaction_9_k9b);
+  reaction_10: species_7 => species_6; compartment_1 * function_10(species_7, species_5, species_4, species_8, species_3, species_6, species_10, parameter_10, parameter_13, parameter_14, parameter_12, parameter_9, reaction_10_k10b);
+
+  // Species initializations:
+  species_1 = 300;
+  species_2 = 0;
+  species_3 = 1199.99994221325;
+  species_4 = 0;
+  species_5 = 0;
+  species_6 = 1199.99994221325;
+  species_7 = 0;
+  species_8 = 0;
+  species_9 = 100;
+  species_10 = 200;
+  species_11 = 20;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+  compartment_2 = 1;
+
+  // Variable initializations:
+  parameter_1 = 100;
+  parameter_2 = 54.3;
+  parameter_3 = 50.5;
+  parameter_4 = 500;
+  parameter_5 = 24.3;
+  parameter_6 = 108.6;
+  parameter_7 = 50.5;
+  parameter_8 = 500;
+  parameter_9 = 24.3;
+  parameter_10 = 108.6;
+  parameter_11 = 0.06;
+  parameter_12 = 0.06;
+  parameter_13 = 24.3;
+  parameter_14 = 108.6;
+  reaction_1_k1 = 1;
+  reaction_2_k2a = 0.086;
+  reaction_3_k3 = 0.01;
+  reaction_4_k4 = 15;
+  reaction_5_k5a = 0.092;
+  reaction_5_k5b = 0.092;
+  reaction_6_k6a = 0.086;
+  reaction_6_k6b = 0.086;
+  reaction_7_k7 = 0.01;
+  reaction_8_k7 = 15;
+  reaction_9_k9b = 0.092;
+  reaction_10_k10b = 0.086;
+
+  //Other declarations:
+  const compartment_1, compartment_2, parameter_1, parameter_2, parameter_3;
+  const parameter_4, parameter_5, parameter_6, parameter_7, parameter_8, parameter_9;
+  const parameter_10, parameter_11, parameter_12, parameter_13, parameter_14;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-9 mole;
+
+  //Display Names:
+  compartment_1 is "compartment";
+  compartment_2 is "No Name";
+  species_1 is "MKKK";
+  species_2 is "MKKK_P";
+  species_3 is "MKK";
+  species_4 is "MKK_P";
+  species_5 is "MKK_PP";
+  species_6 is "MK";
+  species_7 is "MK_P";
+  species_8 is "MK_PP";
+  species_9 is "P1";
+  species_10 is "P2";
+  species_11 is "Sig";
+  parameter_1 is "K1";
+  parameter_2 is "K2a";
+  parameter_3 is "K3";
+  parameter_4 is "K4";
+  parameter_5 is "K5a";
+  parameter_6 is "K6a";
+  parameter_7 is "K7";
+  parameter_8 is "K8";
+  parameter_9 is "K9b";
+  parameter_10 is "K10b";
+  parameter_11 is "Kse1";
+  parameter_12 is "Kse2";
+  parameter_13 is "K5b";
+  parameter_14 is "K6b";
+  reaction_1 is "1";
+  reaction_2 is "2";
+  reaction_3 is "3";
+  reaction_4 is "4";
+  reaction_5 is "5";
+  reaction_6 is "6";
+  reaction_7 is "7";
+  reaction_8 is "8";
+  reaction_9 is "9";
+  reaction_10 is "10";
+end

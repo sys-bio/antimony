@@ -1,0 +1,324 @@
+//Created by libAntimony v2.4
+function function_1(ICSmax, IC, ICt, IS_)
+  ICSmax / (1 + (IC / ICt)^IS_);
+end
+
+function function_2(k5, HFC, HBS)
+  k5 * HFC / HBS;
+end
+
+function function_3(k6, IC, IBS)
+  k6 * IC * IBS;
+end
+
+function function_4(k7, IC, IBS)
+  k7 * IC * IBS;
+end
+
+function function_5(k8, PFC)
+  k8 * PFC;
+end
+
+function function_6(BCRmax, BCRt, HFC, BS)
+  BCRmax / (1 + (BCRt / HFC)^BS);
+end
+
+function function_7(HCSmax, HFC, HCSt, HS)
+  HCSmax / (1 + (HFC / HCSt)^HS);
+end
+
+function function_8(k9, ACAT, HFC)
+  k9 * ACAT * HFC;
+end
+
+function function_9(k10, CEH, HCE)
+  k10 * CEH * HCE;
+end
+
+function function_10(k11, PFC)
+  k11 * PFC;
+end
+
+function function_11(khrs, HLDLRsS, HFC)
+  khrs * HLDLRsS / HFC;
+end
+
+function function_12(k15, VLDLC, LPL)
+  k15 * VLDLC * LPL;
+end
+
+function function_13(k17, IDLC, HSL)
+  k17 * IDLC * HSL;
+end
+
+function function_14(k18, LDLC, HLDLRs)
+  k18 * LDLC * HLDLRs;
+end
+
+function function_15(k20, PLDLRs, LDLC)
+  k20 * PLDLRs * LDLC;
+end
+
+function function_16(kprs, PLDLRsS, PFC)
+  kprs * PLDLRsS / PFC;
+end
+
+function function_17(k23, ACAT, PFC)
+  k23 * ACAT * PFC;
+end
+
+function function_18(k24, CEH, PCE)
+  k24 * CEH * PCE;
+end
+
+function function_19(k26, PFC, NHDL, LCAT)
+  k26 * PFC * NHDL * LCAT;
+end
+
+function function_20(PCSmax, PFC, PPCt, PCSS)
+  PCSmax / (1 + (PFC / PPCt)^PCSS);
+end
+
+function function_21(k27, HDLC, CETP)
+  k27 * HDLC * CETP;
+end
+
+function function_22(k28, HDLC, CETP)
+  k28 * HDLC * CETP;
+end
+
+function function_23(k29, HDLC, SRB1)
+  k29 * HDLC * SRB1;
+end
+
+
+model *MODEL1206010000()
+
+  // Compartments and Species:
+  compartment Intake, Intestine, HepaticTissue, PeripheralTissue, Plasma;
+  compartment Excreted;
+  species $species_1 in Intake, species_2 in Intestine, $species_3 in Intestine;
+  species species_4 in HepaticTissue, species_5 in Intestine, species_6 in Excreted;
+  species species_7 in HepaticTissue, species_8 in Excreted, $species_9 in Plasma;
+  species species_10 in Plasma, species_11 in PeripheralTissue, $species_12 in HepaticTissue;
+  species species_13 in HepaticTissue, species_14 in HepaticTissue, species_15 in HepaticTissue;
+  species $species_16 in HepaticTissue, species_17 in Plasma, species_18 in HepaticTissue;
+  species $species_19 in HepaticTissue, species_20 in HepaticTissue, species_21 in Plasma;
+  species species_22 in Plasma, species_23 in Plasma, species_24 in Plasma;
+  species species_25 in PeripheralTissue, $species_26 in PeripheralTissue;
+  species species_27 in PeripheralTissue, species_28 in PeripheralTissue;
+  species species_29 in PeripheralTissue, species_30 in Plasma, species_31 in Plasma;
+  species $species_32 in PeripheralTissue, species_33 in Plasma, species_34 in HepaticTissue;
+
+  // Reactions:
+  reaction_1: $species_1 => species_2; reaction_1_k1 * species_1;
+  reaction_2: $species_3 => species_2; function_1(reaction_2_ICSmax, species_2, reaction_2_ICt, reaction_2_IS);
+  reaction_3: species_4 => species_5; reaction_3_k1 * species_4;
+  reaction_4: species_5 => species_4; reaction_4_k1 * species_5;
+  reaction_5: species_5 => species_6; reaction_5_k1 * species_5;
+  reaction_6: species_7 => species_4; function_2(reaction_6_k5, species_7, species_4);
+  reaction_7: species_2 => species_7; function_3(reaction_7_k6, species_2, species_5);
+  reaction_8: species_2 => species_8; function_4(reaction_8_k7, species_2, species_5);
+  reaction_9: $species_9 => species_10; function_5(reaction_9_k8, species_11);
+  reaction_10: species_7 => species_2; function_6(reaction_10_BCRmax, reaction_10_BCRt, species_7, reaction_10_BS);
+  reaction_11: $species_12 => species_7; function_7(reaction_11_HCSmax, species_7, reaction_11_HCSt, reaction_11_HS);
+  reaction_12: species_7 => species_13; function_8(reaction_12_k9, species_14, species_7);
+  reaction_13: species_13 => species_7; function_9(reaction_13_k10, species_15, species_13);
+  reaction_14: $species_16 => species_10; function_10(reaction_14_k11, species_11);
+  reaction_15: species_7 => species_17; reaction_15_k1 * species_7;
+  reaction_16: $species_19 => species_18; function_11(reaction_16_khrs, species_19, species_7);
+  reaction_17: species_18 => species_20; reaction_17_k1 * species_18;
+  reaction_18: species_17 => species_7; reaction_18_k1 * species_17;
+  reaction_19: species_17 => species_21; function_12(reaction_19_k15, species_17, species_22);
+  reaction_20: species_21 => species_7; reaction_20_k1 * species_21;
+  reaction_21: species_21 => species_23; function_13(reaction_21_k17, species_21, species_24);
+  reaction_22: species_23 => species_7; function_14(reaction_22_k18, species_23, species_18);
+  reaction_23: species_23 => species_7; reaction_23_k1 * species_23;
+  reaction_24: species_23 => species_11; function_15(reaction_24_k20, species_25, species_23);
+  reaction_25: species_23 => species_11; reaction_25_k1 * species_23;
+  reaction_26: $species_26 => species_25; function_16(reaction_26_kprs, species_26, species_11);
+  reaction_27: species_25 => species_27; reaction_27_k1 * species_25;
+  reaction_28: species_11 => species_28; function_17(reaction_28_k23, species_14, species_11);
+  reaction_29: species_28 => species_11; function_18(reaction_29_k24, species_15, species_28);
+  reaction_30: species_11 => species_29; reaction_30_k1 * species_11;
+  reaction_31: species_11 + species_10 => species_30; function_19(reaction_31_k26, species_11, species_10, species_31);
+  reaction_32: $species_32 => species_11; function_20(reaction_32_PCSmax, species_11, reaction_32_PPCt, reaction_32_PCSS);
+  reaction_33: species_30 => species_17; function_21(reaction_33_k27, species_30, species_33);
+  reaction_34: species_30 => species_23; function_22(reaction_34_k28, species_30, species_33);
+  reaction_35: species_30 => species_7; function_23(reaction_35_k29, species_30, species_34);
+
+  // Species initializations:
+  species_1 = 304;
+  species_2 = 3150;
+  species_3 = 0;
+  species_4 = 400;
+  species_5 = 467;
+  species_6 = 0;
+  species_7 = 60000;
+  species_8 = 0;
+  species_9 = 0;
+  species_10 = 100;
+  species_11 = 57516;
+  species_12 = 0;
+  species_13 = 10000;
+  species_14 = 100;
+  species_15 = 100;
+  species_16 = 0;
+  species_17 = 20;
+  species_18 = 100;
+  species_19 = 600;
+  species_20 = 0;
+  species_21 = 20;
+  species_22 = 100;
+  species_23 = 100;
+  species_24 = 100;
+  species_25 = 100;
+  species_26 = 575.16;
+  species_27 = 0;
+  species_28 = 9363;
+  species_29 = 0;
+  species_30 = 45;
+  species_31 = 100;
+  species_32 = 0;
+  species_33 = 100;
+  species_34 = 100;
+
+  // Compartment initializations:
+  Intake = 1;
+  Intake has volume;
+  Intestine = 1;
+  Intestine has volume;
+  HepaticTissue = 1;
+  HepaticTissue has volume;
+  PeripheralTissue = 1;
+  PeripheralTissue has volume;
+  Plasma = 1;
+  Plasma has volume;
+  Excreted = 1;
+  Excreted has volume;
+
+  // Variable initializations:
+  reaction_1_k1 = 1;
+  reaction_2_ICSmax = 100;
+  reaction_2_ICt = 3120;
+  reaction_2_IS = 5;
+  reaction_3_k1 = 6;
+  reaction_4_k1 = 4.29;
+  reaction_5_k1 = 0.856;
+  reaction_6_k5 = 2.66;
+  reaction_7_k6 = 0.0005286;
+  reaction_8_k7 = 0.0005286;
+  reaction_9_k8 = 0.0005;
+  reaction_10_BCRmax = 2000;
+  reaction_10_BCRt = 55326;
+  reaction_10_BS = 5;
+  reaction_11_HCSmax = 500;
+  reaction_11_HCSt = 93925;
+  reaction_11_HS = 5;
+  reaction_12_k9 = 1;
+  reaction_13_k10 = 5.998;
+  reaction_14_k11 = 0.005;
+  reaction_15_k1 = 0.016;
+  reaction_16_khrs = 100;
+  reaction_17_k1 = 0.01;
+  reaction_18_k1 = 0.0496;
+  reaction_19_k15 = 0.43;
+  reaction_20_k1 = 0.054;
+  reaction_21_k17 = 0.38;
+  reaction_22_k18 = 0.068;
+  reaction_23_k1 = 0.005;
+  reaction_24_k20 = 0.00675;
+  reaction_25_k1 = 5e-006;
+  reaction_26_kprs = 100;
+  reaction_27_k1 = 0.01;
+  reaction_28_k23 = 0.017386;
+  reaction_29_k24 = 0.1068;
+  reaction_30_k1 = 0.0005;
+  reaction_31_k26 = 1.5e-005;
+  reaction_32_PCSmax = 500;
+  reaction_32_PPCt = 80342;
+  reaction_32_PCSS = 5;
+  reaction_33_k27 = 0.01;
+  reaction_34_k28 = 0.001;
+  reaction_35_k29 = 0.05;
+
+  //Other declarations:
+  const Intake, Intestine, HepaticTissue, PeripheralTissue, Plasma, Excreted;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = 86400 second;
+  unit substance = dimensionless;
+
+  //Display Names:
+  time_unit is "time";
+  species_1 is "DC";
+  species_2 is "IC";
+  species_3 is "ICS";
+  species_4 is "HBS";
+  species_5 is "IBS";
+  species_6 is "EBS";
+  species_7 is "HFC";
+  species_8 is "EC";
+  species_9 is "INHDLS";
+  species_10 is "NHDL";
+  species_11 is "PFC";
+  species_12 is "HCS";
+  species_13 is "HCE";
+  species_14 is "ACAT";
+  species_15 is "CEH";
+  species_16 is "HNHDLS";
+  species_17 is "VLDLC";
+  species_18 is "HLDLRs";
+  species_19 is "HLDLRsS";
+  species_20 is "HLDLRD";
+  species_21 is "IDLC";
+  species_22 is "LPL";
+  species_23 is "LDLC";
+  species_24 is "HSL";
+  species_25 is "PLDLRs";
+  species_26 is "PLDLRsS";
+  species_27 is "PLDLRD";
+  species_28 is "PCE";
+  species_29 is "PSS";
+  species_30 is "HDLC";
+  species_31 is "LCAT";
+  species_32 is "PCS";
+  species_33 is "CETP";
+  species_34 is "SRB1";
+  reaction_1 is "Ingestion";
+  reaction_2 is "Intestinal Cholesterol Synthesis";
+  reaction_3 is "Bile Salt Release";
+  reaction_4 is "Bile Salt Return";
+  reaction_5 is "Bile Salt Excretion";
+  reaction_6 is "Bile Salt Synthesis";
+  reaction_7 is "Cholesterol Absorption";
+  reaction_8 is "Cholesterol Excretion";
+  reaction_9 is "Intestinal Nascent HDL Synthesis";
+  reaction_10 is "Billary Cholesterol Release";
+  reaction_11 is "Hepatic Cholesterol Synthesis";
+  reaction_12 is "Hepatic Cholesterol Storage";
+  reaction_13 is "Release of Stored Cholesterol";
+  reaction_14 is "Hepatic Nascent HDL Synthesis";
+  reaction_15 is "VLDL Cholesterol Formation";
+  reaction_16 is "Hepatic LDLR Synthesis";
+  reaction_17 is "Hepatic LDL Receptor Degradation";
+  reaction_18 is "VLDL Cholesterol ReUptake";
+  reaction_19 is "IDL Cholesterol Formation";
+  reaction_20 is "IDL Cholesterol ReUptake";
+  reaction_21 is "LDL Cholesterol Formation";
+  reaction_22 is "Receptor Dependent Hepatic Uptake";
+  reaction_23 is "Receptor Independent Hepatic Uptake";
+  reaction_24 is "Receptor Dependent Peripheral Uptake";
+  reaction_25 is "Receptor Independent Peripheral Uptake";
+  reaction_26 is "Peripheral LDLR Synthesis";
+  reaction_27 is "Peripheral LDL Receptor Degradation";
+  reaction_28 is "Peripheral Cholesterol Storage";
+  reaction_29 is "Release of Stored Peripheral Cholesterol";
+  reaction_30 is "Peripheral Steroid Production";
+  reaction_31 is "HDL Cholesterol Formation";
+  reaction_32 is "Peripheral Cholesterol Synthesis";
+  reaction_33 is "CETP Mediated Transfer To VLDL";
+  reaction_34 is "CETP Mediated TransferTo LDL";
+  reaction_35 is "Reverse Cholesterol Transport";
+end

@@ -1,0 +1,263 @@
+//Created by libAntimony v2.4
+function activitycalc(x, slopea, yintercepta)
+  yintercepta + x * slopea;
+end
+
+
+model *BIOMD0000000436()
+
+  // Compartments and Species:
+  compartment c1;
+  species $FA in c1, HETE in c1, PGH2 in c1, PGE2 in c1, PGF2a in c1, PGD2 in c1;
+  species PGJ2 in c1, dPGJ2 in c1, AA in c1, LPS in c1, DG in c1, GPCho in c1;
+  species dPGD2 in c1;
+
+  // Assignment Rules:
+  timevalue := time + t0;
+  LPSactivity := activitycalc(timevalue, LPSslope, LPSint);
+  DGactivity := activitycalc(timevalue, DGslope, DGint);
+  GPChoratio := activitycalc(timevalue, GPChoslope, GPChoint) / GPChointzero;
+
+  // Reactions:
+  r2: $FA => AA; k2 * FA;
+  r3: DG => AA; k3 * DGactivity * DGperDNA * DNA_;
+  r7: GPCho => AA; k7 * GPChoratio * GPCho;
+  r5: GPCho => AA; k5 * DGactivity * GPChoratio * GPCho / DNA_;
+  r11: AA => PGH2; k11 * AA;
+  r10: AA => PGH2; k10 * DGactivity * AA / DNA_;
+  r8: AA => HETE; k8 * AA;
+  r4: AA => ; k4 * AA;
+  r9: HETE => ; k9 * HETE;
+  r13: PGH2 => PGE2; k13 * PGH2;
+  r14: PGE2 => ; k14 * PGE2;
+  r15: PGH2 => PGF2a; k15 * PGH2;
+  r16: PGF2a => ; k16 * PGF2a;
+  r17: PGH2 => PGD2; k17 * PGH2;
+  r18: PGD2 => PGJ2; k18 * PGD2;
+  r19: PGD2 => dPGD2; k19 * PGD2;
+  r20: dPGD2 => ; k20 * dPGD2;
+  r21: PGJ2 => dPGJ2; k21 * PGJ2;
+  r22: dPGJ2 => ; k22 * dPGJ2;
+  r1: $FA => AA; k1 * onepmol * LPSactivity;
+  r6: GPCho => AA; k6 * GPCho * GPChoratio * LPSactivity;
+  r12: AA => PGH2; k12 * AA * LPSactivity;
+
+  // Events:
+  _E0: at gt(timevalue, t0): GPChoslope = GPChoslopezero, GPChoint = GPChointzero, DGslope = DGslopezero, DGint = DGintzero, LPSslope = LPSslopezero, LPSint = LPSintzero;
+  _E1: at geq(timevalue, t1): GPChoslope = GPChoslope1, GPChoint = GPChoint1, DGslope = DGslope1, DGint = DGint1, LPSslope = LPSslope1, LPSint = LPSint1;
+  _E2: at geq(timevalue, t2): GPChoslope = GPChoslope2, GPChoint = GPChoint2, DGslope = DGslope2, DGint = DGint2;
+  _E3: at geq(timevalue, t3): GPChoslope = GPChoslope3, GPChoint = GPChoint3, DGslope = DGslope3, DGint = DGint3, LPSslope = LPSslope3, LPSint = LPSint3;
+  _E4: at geq(timevalue, t4): GPChoslope = GPChoslope4, GPChoint = GPChoint4, DGslope = DGslope4, DGint = DGint4;
+  _E5: at geq(timevalue, t5): GPChoslope = GPChoslope5, GPChoint = GPChoint5, DGslope = DGslope5, DGint = DGint5;
+  _E6: at geq(timevalue, t6): GPChoslope = GPChoslope6, GPChoint = GPChoint6, DGslope = DGslope6, DGint = DGint6;
+
+  // Species initializations:
+  FA = 1;
+  FA has pmol_per_volume;
+  HETE = 0;
+  HETE has pmol_per_volume;
+  PGH2 = 0;
+  PGH2 has pmol_per_volume;
+  PGE2 = 0;
+  PGE2 has pmol_per_volume;
+  PGF2a = 0;
+  PGF2a has pmol_per_volume;
+  PGD2 = 0;
+  PGJ2 = 0;
+  PGJ2 has pmol_per_volume;
+  dPGJ2 = 0;
+  dPGJ2 has pmol_per_volume;
+  AA = 25;
+  AA has pmol_per_volume;
+  LPS = 0.5;
+  LPS has dimensionless_per_volume;
+  DG = 0;
+  DG has dimensionless_per_volume;
+  GPCho = 1;
+  GPCho has pmol_per_volume;
+  dPGD2 = 0;
+  dPGD2 has pmol_per_volume;
+
+  // Compartment initializations:
+  c1 = 1;
+  c1 has litre;
+  timevalue has time_unit;
+
+  // Variable initializations:
+  t0 = 0;
+  t0 has time_unit;
+  LPSint = 0;
+  LPSint has dimensionless;
+  LPSintzero = 0;
+  LPSintzero has dimensionless;
+  LPSslope = 0;
+  LPSslope has perh;
+  LPSslopezero = 2;
+  LPSslopezero has perh;
+  DGint = 1;
+  DGint has dimensionless;
+  DGintzero = 1;
+  DGintzero has dimensionless;
+  DGslope = 1;
+  DGslope has perh;
+  DGslopezero = 0.3014;
+  DGslopezero has perh;
+  GPChoint = 315.3137;
+  GPChoint has pmol;
+  GPChointzero = 315.3137;
+  GPChointzero has pmol;
+  GPChoslope = -158.43;
+  GPChoslope has pmolperh;
+  GPChoslopezero = -158.43;
+  GPChoslopezero has pmolperh;
+  t1 = 0.5;
+  t1 has time_unit;
+  LPSint1 = 1.3335;
+  LPSint1 has dimensionless;
+  LPSslope1 = -0.6667;
+  LPSslope1 has perh;
+  DGint1 = 1.2292;
+  DGint1 has dimensionless;
+  DGslope1 = -0.1572;
+  DGslope1 has perh;
+  GPChoint1 = 179.96;
+  GPChoint1 has pmol;
+  GPChoslope1 = 112.28;
+  GPChoslope1 has pmolperh;
+  t2 = 1;
+  t2 has time_unit;
+  DGint2 = 1.0282;
+  DGint2 has dimensionless;
+  DGslope2 = 0.0439;
+  DGslope2 has perh;
+  GPChoint2 = 267.93;
+  GPChoint2 has pmol;
+  GPChoslope2 = 24.31;
+  GPChoslope2 has pmolperh;
+  t3 = 2;
+  t3 has time_unit;
+  LPSint3 = 0;
+  LPSint3 has dimensionless;
+  LPSslope3 = 0;
+  LPSslope3 has perh;
+  DGint3 = 1.2987;
+  DGint3 has dimensionless;
+  DGslope3 = -0.0913;
+  DGslope3 has perh;
+  GPChoint3 = 396.41;
+  GPChoint3 has pmol;
+  GPChoslope3 = -39.93;
+  GPChoslope3 has pmolperh;
+  t4 = 4;
+  t4 has time_unit;
+  DGint4 = 0.543;
+  DGint4 has dimensionless;
+  DGslope4 = 0.0976;
+  DGslope4 has perh;
+  GPChoint4 = 214.77;
+  GPChoint4 has pmol;
+  GPChoslope4 = 5.48;
+  GPChoslope4 has pmolperh;
+  t5 = 8;
+  t5 has time_unit;
+  DGint5 = 0.7549;
+  DGint5 has dimensionless;
+  DGslope5 = 0.0711;
+  DGslope5 has perh;
+  GPChoint5 = 41.93;
+  GPChoint5 has pmol;
+  GPChoslope5 = 27.08;
+  GPChoslope5 has pmolperh;
+  t6 = 12;
+  t6 has time_unit;
+  DGint6 = 0.5927;
+  DGint6 has dimensionless;
+  DGslope6 = 0.0846;
+  DGslope6 has perh;
+  GPChoint6 = 425.43;
+  GPChoint6 has pmol;
+  GPChoslope6 = -4.874;
+  GPChoslope6 has pmolperh;
+  k1 = 355.637;
+  k1 has perh;
+  k2 = 1e-015;
+  k2 has perh;
+  k3 = 1e-015;
+  k3 has perh;
+  k4 = 1e-015;
+  k4 has perh;
+  k5 = 1e-015;
+  k5 has ugDNAperh;
+  k6 = 0.33;
+  k6 has perh;
+  k7 = 1e-015;
+  k7 has perh;
+  k8 = 0.007;
+  k8 has perh;
+  k9 = 0.187;
+  k9 has perh;
+  k10 = 0.024;
+  k10 has ugDNAperh;
+  k11 = 0.111;
+  k11 has perh;
+  k12 = 0.098;
+  k12 has perh;
+  k13 = 0.204;
+  k13 has perh;
+  k14 = 1e-015;
+  k14 has perh;
+  k15 = 0.061;
+  k15 has perh;
+  k16 = 1e-015;
+  k16 has perh;
+  k17 = 3.116;
+  k17 has perh;
+  k18 = 0.054;
+  k18 has perh;
+  k19 = 0.029;
+  k19 has perh;
+  k20 = 0.014;
+  k20 has perh;
+  k21 = 0.034;
+  k21 has perh;
+  k22 = 0.116;
+  k22 has perh;
+  DNA_ = 1;
+  DNA_ has ug;
+  DGperDNA = 1;
+  DGperDNA has pmolperugDNA;
+  onepmol = 1;
+  onepmol has pmol;
+  zero = 0;
+  zero has dimensionless;
+  LPSactivity has dimensionless;
+  DGactivity has dimensionless;
+  GPChoratio has dimensionless;
+
+  //Other declarations:
+  var timevalue, LPSint, LPSslope, DGint, DGslope, GPChoint, GPChoslope, DGperDNA;
+  var LPSactivity, DGactivity, GPChoratio;
+  const c1, t0, LPSintzero, LPSslopezero, DGintzero, DGslopezero, GPChointzero;
+  const GPChoslopezero, t1, LPSint1, LPSslope1, DGint1, DGslope1, GPChoint1;
+  const GPChoslope1, t2, DGint2, DGslope2, GPChoint2, GPChoslope2, t3, LPSint3;
+  const LPSslope3, DGint3, DGslope3, GPChoint3, GPChoslope3, t4, DGint4, DGslope4;
+  const GPChoint4, GPChoslope4, t5, DGint5, DGslope5, GPChoint5, GPChoslope5;
+  const t6, DGint6, DGslope6, GPChoint6, GPChoslope6, k1, k2, k3, k4, k5;
+  const k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16, k17, k18, k19;
+  const k20, k21, k22, DNA_, onepmol, zero;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+  unit perh = 1 / 0.0002778 second;
+  unit pmolperugDNA = 1e-12 mole / 1e-6 gram;
+  unit ug = 1e-6 gram;
+  unit pmol = 1e-12 mole;
+  unit pmolperh = 1e-12 mole / 0.0002778 second;
+  unit ugDNAperh = 1e-6 gram / 3600 second;
+  unit volume = litre;
+  unit pmol_per_volume = 1e-12 mole / litre;
+  unit dimensionless_per_volume = dimensionless / litre;
+
+  //Display Names:
+  AA is "Arachidonic acid";
+end

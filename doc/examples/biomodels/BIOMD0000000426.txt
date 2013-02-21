@@ -1,0 +1,569 @@
+//Created by libAntimony v2.4
+function RUPE(Vmax, RU5P, X5P, Keq_RUPE, KRu5P, KX5P)
+  Vmax * (RU5P - X5P / Keq_RUPE) / (RU5P + KRu5P * (1 + X5P / KX5P));
+end
+
+function PGDH(Vmax, K6PG1, KNADP, PGN, NADP, RU5P, NADPH, Kapp, BPG, KPGA23, ATP, KATP, K6PG2, KNADPH)
+  Vmax / K6PG1 / KNADP * (PGN * NADP - RU5P * NADPH / Kapp) / ((1 + NADP / KNADP) * (1 + PGN / K6PG1 + BPG / KPGA23) + ATP / KATP + NADPH * (1 + PGN / K6PG2) / KNADPH);
+end
+
+function G6PDH(Vmax, KG6P, KNADP, G6P, NADP, PGN, NADPH, Kapp, ATP, KATP, KNADPH, BPG, KPGA23)
+  Vmax / KG6P / KNADP * (G6P * NADP - PGN * NADPH / Kapp) / (1 + NADP * (1 + G6P / KG6P) / KNADP + ATP / KATP + NADPH / KNADPH + BPG / KPGA23);
+end
+
+function TKL(Vmax, R5P, X5P, GAP, S7P, Keq_TKL, K1, K2, K6, K3, K5, K4, K7)
+  Vmax * (R5P * X5P - GAP * S7P / Keq_TKL) / ((K1 + R5P) * X5P + (K2 + K6 * S7P) * R5P + (K3 + K5 * S7P) * GAP + K4 * S7P + K7 * X5P * GAP);
+end
+
+function PGI(Vmf, A, Kg6p, Vmr, P, Kf6p, E4P, Kery4p, F16P, Kfbp, PGN, Kpg)
+  (Vmf * A / Kg6p - Vmr * P / Kf6p) / (1 + A / Kg6p + P / Kf6p + E4P / Kery4p + F16P / Kfbp + PGN / Kpg);
+end
+
+function TKL2(Vmax, E4P, X5P, GAP, F6P, Keq_TKL2, K1, K2, K6, K3, K5, K4, K7)
+  Vmax * (E4P * X5P - GAP * F6P / Keq_TKL2) / ((K1 + E4P) * X5P + (K2 + K6 * F6P) * E4P + (K3 + K5 * F6P) * GAP + K4 * F6P + K7 * X5P * GAP);
+end
+
+function HK(Vmf, Ka, Kb, A, B, P, Q, Kapp, Kp, Kq)
+  Vmf / (Ka * Kb) * (A * B - P * Q / Kapp) / (1 + A / Ka + B / Kb + A * B / (Ka * Kb) + P / Kp + Q / Kq + P * Q / (Kp * Kq) + A * Q / (Ka * Kq) + P * B / (Kp * Kb));
+end
+
+function R5PI(Vmax, RU5P, R5P, Keq_R5PI, KRu5P, KR5P)
+  Vmax * (RU5P - R5P / Keq_R5PI) / (RU5P + KRu5P * (1 + R5P / KR5P));
+end
+
+function GLUT(Vmaxf, GLC_e, GLC, keq, KGlc_e, KGlc)
+  Vmaxf * (GLC_e - GLC / keq) / (KGlc_e * (1 + GLC / KGlc) + GLC_e);
+end
+
+function TAL(Vmax, S7P, GAP, E4P, F6P, Keq_TAL, K1, K2, K6, K3, K5, K4, K7)
+  Vmax * (S7P * GAP - E4P * F6P / Keq_TAL) / ((K1 + GAP) * S7P + (K2 + K6 * F6P) * GAP + (K3 + K5 * F6P) * E4P + K4 * F6P + K7 * S7P * E4P);
+end
+
+function PGLM(Vmaxf, G1P, KG1P, Vmaxr, G6P, KG6P)
+  (Vmaxf * G1P / KG1P - Vmaxr * G6P / KG6P) / (1 + G1P / KG1P + G6P / KG6P);
+end
+
+function PRPPS(Vmax, R5P, ATP, PRPP, AMP, Kapp, KATP, KR5P)
+  Vmax * (R5P * ATP - PRPP * AMP / Kapp) / ((KATP + ATP) * (KR5P + R5P));
+end
+
+function GPa(Vmaxf, GLY, Pi_, KiGLYf, KPi, Vmaxr, G1P, KGLYb, KiG1P, KiPi, KiGLYb)
+  (Vmaxf * (GLY * Pi_ / (KiGLYf * KPi)) - Vmaxr * (GLY * G1P / (KGLYb * KiG1P))) / (1 + GLY / KiGLYf + Pi_ / KiPi + GLY / KiGLYb + G1P / KiG1P + GLY * Pi_ / (KiGLYf * KiPi) + GLY * G1P / (KiGLYb * KiG1P));
+end
+
+function GPb(Vmaxf, GLY, Pi_, KiGLYf, KPi, Vmaxr, G1P, KiGLYb, KG1P, KiPi, KiG1P, AMP, nH, Kamp)
+  (Vmaxf * (GLY * Pi_ / (KiGLYf * KPi)) - Vmaxr * (GLY * G1P / (KiGLYb * KG1P))) / (1 + GLY / KiGLYf + Pi_ / KiPi + GLY / KiGLYb + G1P / KiG1P + GLY * Pi_ / (KiGLYf * KPi) + GLY * G1P / (KiGLYb * KG1P)) * (AMP^nH / Kamp) / (1 + AMP^nH / Kamp);
+end
+
+function FBA(Vmf, A, Kfbp, Vmr, P, Q, Kdhap, Kg3p)
+  (Vmf * A / Kfbp - Vmr * P * Q / (Kdhap * Kg3p)) / (1 + A / Kfbp + P / Kdhap + Q / Kg3p + P * Q / (Kdhap * Kg3p));
+end
+
+function TPI(Vf, GAP, Kms, Vr, DHAP, Kmp)
+  (Vf * GAP / Kms - Vr * DHAP / Kmp) / (1 + GAP / Kms + DHAP / Kmp);
+end
+
+function GAPDH(Vmf, A, B, C, Knad, Kg3p, Kp, Vmr, P, Q, Kdpg, Knadh)
+  (Vmf * A * B * C / (Knad * Kg3p * Kp) - Vmr * P * Q / (Kdpg * Knadh)) / (1 + A / Knad + A * B / (Knad * Kg3p) + A * B * C / (Knad * Kg3p * Kp) + P * Q / (Kdpg * Knadh) + Q / Knadh);
+end
+
+function PGK(Vmf, A, B, alfa, Ka, Kb, Vmr, P, Q, beta, Kp, Kq)
+  (Vmf * A * B / (alfa * Ka * Kb) - Vmr * P * Q / (beta * Kp * Kq)) / (1 + A / Ka + B / Kb + A * B / (alfa * Ka * Kb) + P * Q / (beta * Kp * Kq) + P / Kp + Q / Kq);
+end
+
+function PFK(Vm, a, B, Katp, beta, F26P, alfa, Kf26bp, A, Kf6p, L, CIT, Kcit, Kiatp, Q, P, Kadp, Kfbp, Kapp)
+  Vm * (a * B / Katp / (1 + a * B / Katp)) * ((1 + beta * a * F26P / (alfa * Kf26bp)) / (1 + a * F26P / (alfa * Kf26bp))) * (a * A * (1 + a * F26P / (alfa * Kf26bp)) / (Kf6p * (1 + a * F26P / Kf26bp)) * (1 + a * A * (1 + a * F26P / (alfa * Kf26bp)) / (Kf6p * (1 + a * F26P / Kf26bp)))^3 / (L * (1 + a * CIT / Kcit)^4 * (1 + a * B / Kiatp)^4 / (1 + a * F26P / Kf26bp)^4 + (1 + a * A * (1 + a * F26P / (alfa * Kf26bp)) / (Kf6p * (1 + a * F26P / Kf26bp)))^4) - a * Q * a * P / (Kadp * Kfbp * Kapp) / (a * Q / Kadp + a * P / Kfbp + a * Q * a * P / (Kadp * Kfbp) + 1));
+end
+
+function function_1(Vmf, PG3, Kms, Vmr, PG2, Kmp)
+  (Vmf * PG3 / Kms - Vmr * PG2 / Kmp) / (1 + PG3 / Kms + PG2 / Kmp);
+end
+
+function GS(Vmaxf, Kf, a, G1P, ATP, GLY, Pi_, ADP, Keq, Kr)
+  Vmaxf / Kf * a * G1P * a * ATP * a * GLY * (1 - (a * Pi_)^2 * a * ADP / (a * G1P * a * ATP * Keq)) / (1 + a * G1P * a * ATP * a * GLY / Kf + a * GLY * (a * Pi_)^2 * a * ADP / Kr);
+end
+
+function function_2(Vmf, PG2, Kms, Vmr, PEP, Kmp)
+  (Vmf * PG2 / Kms - Vmr * PEP / Kmp) / (1 + PG2 / Kms + PEP / Kmp);
+end
+
+function function_3(Vm, B, Kadp, A, Kpep, L, Q, Kiatp, F16P, Kfbp, P, Katp, Kpyr, Kapp, a)
+  Vm * (a * B / Kadp / (1 + a * B / Kadp) * (a * A / Kpep * (1 + a * A / Kpep)^3 / (L * (1 + a * Q / Kiatp)^4 / (1 + a * F16P / Kfbp)^4 + (1 + a * A / Kpep)^4)) - a * Q * a * P / (Katp * Kpyr * Kapp) / (a * Q / Katp + a * P / Kpyr + a * Q * a * P / (Katp * Kpyr) + 1));
+end
+
+function function_4(Vmf, A, B, alfa, Ka, Kb, Vmr, P, Q, beta, Kp, Kq)
+  (Vmf * A * B / (alfa * Ka * Kb) - Vmr * P * Q / (beta * Kp * Kq)) / (1 + A / Ka + B / Kb + A * B / (alfa * Ka * Kb) + P * Q / (beta * Kp * Kq) + P / Kp + Q / Kq);
+end
+
+function function_5(Vf, ADP, ATP, AMP, Keq)
+  Vf * ADP^2 * (1 - ATP * AMP / Keq) / ((1 + ADP)^2 + (1 + ATP) * (1 + AMP) - 1);
+end
+
+function function_6(Vf, NADH, NAD, Keq)
+  Vf * NADH * (1 - NAD / (NADH * Keq)) / (1 + NADH + 1 + NAD - 1);
+end
+
+function function_7(Vf, NADPH, NADP, Keq)
+  Vf * NADPH * (1 - NADP / (NADPH * Keq)) / (1 + NADPH + 1 + NADP - 1);
+end
+
+function function_8(Vmf, PYR, y, Pi_, ADP, O2, ATP, CO2, Keq)
+  Vmf * PYR^(1 / y) * Pi_ * ADP * O2^(5 / (2 * y)) * (1 - ATP * CO2^(3 / y) / (PYR^(1 / y) * O2^(5 / (2 * y)) * Pi_ * ADP * Keq)) / ((1 + PYR)^(1 / y) * (1 + O2)^(5 / (2 * y)) * (1 + Pi_) * (1 + ADP) + (1 + ATP) * (1 + CO2)^(3 / y) - 1);
+end
+
+
+model *BIOMD0000000426()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species species_1 in compartment_1, species_2 in compartment_1, $species_3 in compartment_1;
+  species species_4 in compartment_1, species_5 in compartment_1, species_6 in compartment_1;
+  species species_7 in compartment_1, species_8 in compartment_1, $species_9 in compartment_1;
+  species $species_10 in compartment_1, species_11 in compartment_1, species_12 in compartment_1;
+  species species_13 in compartment_1, species_14 in compartment_1, species_15 in compartment_1;
+  species species_16 in compartment_1, species_17 in compartment_1, $species_18 in compartment_1;
+  species species_19 in compartment_1, $species_20 in compartment_1, $species_21 in compartment_1;
+  species species_22 in compartment_1, $species_23 in compartment_1, $species_24 in compartment_1;
+  species $species_25 in compartment_1, $species_26 in compartment_1, species_27 in compartment_1;
+  species species_28 in compartment_1, species_29 in compartment_1, species_30 in compartment_1;
+  species species_31 in compartment_1, $species_32 in compartment_1, $species_33 in compartment_1;
+  species $species_34 in compartment_1;
+
+  // Assignment Rules:
+  species_3 := parameter_1 - species_4;
+  species_10 := parameter_2 - species_11;
+  species_18 := parameter_3 - species_19;
+  parameter_4 := parameter_58 * parameter_59 * parameter_60 / (parameter_61 * parameter_62 * parameter_5);
+  parameter_7 := parameter_63 * parameter_64 * parameter_65 / (parameter_66 * parameter_67 * parameter_6);
+  parameter_8 := parameter_37 * parameter_68 * parameter_69 / (parameter_12 * parameter_70);
+  parameter_37 := 14.63 * parameter_28;
+  parameter_9 := parameter_38 * parameter_71 / (parameter_72 * parameter_18);
+  parameter_38 := 5.976 * parameter_28;
+  parameter_10 := parameter_39 * parameter_73 * parameter_74 / (parameter_75 * parameter_76 * parameter_77 * parameter_19);
+  parameter_39 := 109.1 * parameter_28;
+  parameter_11 := parameter_40 * parameter_49 * parameter_50 / (parameter_51 * parameter_52 * parameter_20);
+  parameter_40 := 73.41 * parameter_28;
+  parameter_13 := parameter_32 * (parameter_81 / (parameter_82 * parameter_14));
+  parameter_32 := 7778 * parameter_28;
+  parameter_15 := parameter_55 * parameter_56 / (parameter_57 * parameter_16);
+  parameter_22 := parameter_78 * parameter_79 / (parameter_80 * parameter_21);
+  parameter_24 := parameter_43 * parameter_53 / (parameter_54 * parameter_23);
+  parameter_43 := 160.9 * parameter_28;
+  parameter_26 := parameter_45 * parameter_83 * parameter_84 / (parameter_85 * parameter_86 * parameter_25);
+  parameter_45 := 340.3 * parameter_28;
+  parameter_27 := species_20;
+  parameter_30 := 23.03 * parameter_28;
+  parameter_31 := 86.85 * parameter_28;
+  parameter_33 := 1.008 * parameter_28;
+  parameter_34 := 31.02 * parameter_28;
+  parameter_35 := 1056 * parameter_28;
+  parameter_36 := 0.1761 * parameter_28;
+  parameter_41 := 32040 * parameter_28;
+  parameter_42 := 107.6 * parameter_28;
+  parameter_44 := 27.81 * parameter_28;
+  parameter_46 := 4982000 * parameter_28;
+  parameter_47 := 127800 * parameter_28;
+  parameter_48 := 9801000 * parameter_29;
+
+  // Reactions:
+  reaction_1: $species_9 -> species_1; compartment_1 * GLUT(parameter_30, species_9, species_1, reaction_1_keq, reaction_1_KGlc_e, reaction_1_KGlc);
+  reaction_2: species_1 + species_4 -> species_2 + $species_3; compartment_1 * HK(parameter_31, reaction_2_Ka, reaction_2_Kb, species_1, species_4, species_2, species_3, reaction_2_Kapp, reaction_2_Kp, reaction_2_Kq);
+  reaction_3: species_2 -> species_5; compartment_1 * PGI(parameter_32, species_2, parameter_82, parameter_13, species_5, parameter_81, species_7, reaction_3_Kery4p, species_6, reaction_3_Kfbp, species_8, reaction_3_Kpg);
+  reaction_4: species_2 + $species_10 -> species_8 + species_11; compartment_1 * G6PDH(parameter_33, reaction_4_KG6P, reaction_4_KNADP, species_2, species_10, species_8, species_11, reaction_4_Kapp, species_4, reaction_4_KATP, reaction_4_KNADPH, species_12, reaction_4_KPGA23);
+  reaction_5: species_8 + $species_10 -> species_13 + species_11; compartment_1 * PGDH(parameter_34, reaction_5_K6PG1, reaction_5_KNADP, species_8, species_10, species_13, species_11, reaction_5_Kapp, species_12, reaction_5_KPGA23, species_4, reaction_5_KATP, reaction_5_K6PG2, reaction_5_KNADPH);
+  reaction_6: species_13 -> species_14; compartment_1 * RUPE(reaction_6_Vmax, species_13, species_14, reaction_6_Keq_RUPE, reaction_6_KRu5P, reaction_6_KX5P);
+  reaction_7: species_13 -> species_15; compartment_1 * R5PI(reaction_7_Vmax, species_13, species_15, reaction_7_Keq_R5PI, reaction_7_KRu5P, reaction_7_KR5P);
+  reaction_8: species_15 + species_14 -> species_16 + species_17; compartment_1 * TKL(parameter_35, species_15, species_14, species_16, species_17, reaction_8_Keq_TKL, reaction_8_K1, reaction_8_K2, reaction_8_K6, reaction_8_K3, reaction_8_K5, reaction_8_K4, reaction_8_K7);
+  reaction_9: species_14 + species_7 -> species_16 + species_5; compartment_1 * TKL2(parameter_36, species_7, species_14, species_16, species_5, reaction_9_Keq_TKL2, reaction_9_K1, reaction_9_K2, reaction_9_K6, reaction_9_K3, reaction_9_K5, reaction_9_K4, reaction_9_K7);
+  reaction_10: species_17 + species_16 -> species_5 + species_7; compartment_1 * TAL(reaction_10_Vmax, species_17, species_16, species_7, species_5, reaction_10_Keq_TAL, reaction_10_K1, reaction_10_K2, reaction_10_K6, reaction_10_K3, reaction_10_K5, reaction_10_K4, reaction_10_K7);
+  reaction_11: species_15 + species_4 -> $species_20 + $species_21; compartment_1 * PRPPS(reaction_11_Vmax, species_15, species_4, species_21, species_20, reaction_11_Kapp, reaction_11_KATP, reaction_11_KR5P);
+  reaction_12: species_22 -> species_2; compartment_1 * PGLM(parameter_55, species_22, parameter_57, parameter_15, species_2, parameter_56);
+  reaction_13: $species_24 + $species_23 -> $species_24 + species_22; compartment_1 * GPa(parameter_58, species_24, species_23, parameter_61, parameter_62, parameter_4, species_22, reaction_13_KGLYb, parameter_60, reaction_13_KiPi, parameter_59);
+  reaction_14: species_6 -> species_16 + species_27; compartment_1 * FBA(parameter_37, species_6, parameter_70, parameter_8, species_27, species_16, parameter_68, parameter_69);
+  reaction_15: species_16 -> species_27; compartment_1 * TPI(parameter_38, species_16, parameter_72, parameter_9, species_27, parameter_71);
+  reaction_16: species_16 + species_19 + $species_23 -> species_12 + $species_18; compartment_1 * GAPDH(parameter_39, species_19, species_16, species_23, parameter_76, parameter_75, parameter_77, parameter_10, species_12, species_18, parameter_73, parameter_74);
+  reaction_17: species_12 + $species_3 -> species_28 + species_4; compartment_1 * PGK(parameter_40, species_12, species_3, reaction_17_alfa, parameter_51, parameter_52, parameter_11, species_28, species_4, reaction_17_beta, parameter_49, parameter_50);
+  reaction_18: $species_24 + $species_23 -> $species_24 + species_22; compartment_1 * GPb(parameter_63, species_24, species_23, parameter_66, reaction_18_KPi, parameter_7, species_22, parameter_64, parameter_65, parameter_67, reaction_18_KiG1P, parameter_27, reaction_18_nH, reaction_18_Kamp);
+  reaction_19: species_22 + species_4 -> $species_24 + $species_3 + 2$species_23; compartment_1 * GS(parameter_41, reaction_19_Kf, parameter_17, species_22, species_4, species_24, species_23, species_3, reaction_19_Keq, reaction_19_Kr);
+  reaction_20: species_5 + species_4 -> species_6 + $species_3; compartment_1 * PFK(parameter_42, parameter_17, species_4, reaction_20_Katp, reaction_20_beta, species_26, reaction_20_alfa, reaction_20_Kf26bp, species_5, reaction_20_Kf6p, reaction_20_L, species_25, reaction_20_Kcit, reaction_20_Kiatp, species_3, species_6, reaction_20_Kadp, reaction_20_Kfbp, reaction_20_Kapp);
+  reaction_21: species_28 -> species_29; compartment_1 * function_1(parameter_78, species_28, parameter_80, parameter_22, species_29, parameter_79);
+  reaction_22: species_29 -> species_30; compartment_1 * function_2(parameter_43, species_29, parameter_54, parameter_24, species_30, parameter_53);
+  reaction_23: species_30 + $species_3 -> species_31 + species_4; compartment_1 * function_3(parameter_44, species_3, reaction_23_Kadp, species_30, reaction_23_Kpep, reaction_23_L, species_4, reaction_23_Kiatp, species_6, reaction_23_Kfbp, species_31, reaction_23_Katp, reaction_23_Kpyr, reaction_23_Kapp, parameter_17);
+  reaction_24: species_31 + $species_18 -> $species_32 + species_19; compartment_1 * function_4(parameter_45, species_18, species_31, reaction_24_alfa, parameter_85, parameter_86, parameter_26, species_32, species_19, reaction_24_beta, parameter_83, parameter_84);
+  reaction_25: 2$species_3 -> species_4 + $species_20; compartment_1 * function_5(reaction_25_Vf, species_3, species_4, species_20, reaction_25_Keq);
+  reaction_26: $species_18 -> species_19; compartment_1 * function_6(parameter_46, species_18, species_19, reaction_26_Keq);
+  reaction_27: species_11 -> $species_10; compartment_1 * function_7(parameter_47, species_11, species_10, reaction_27_Keq);
+  reaction_28: 0.08species_31 + 0.2$species_34 + $species_23 + $species_3 -> 0.24$species_33 + species_4; compartment_1 * function_8(parameter_48, species_31, reaction_28_y, species_23, species_3, species_34, species_4, species_33, reaction_28_Keq);
+  reaction_29: species_4 => $species_3 + $species_23; compartment_1 * reaction_29_k1 * species_4;
+
+  // Species initializations:
+  species_1 = 0.000897;
+  species_2 = 0.00109;
+  species_4 = 0.0087;
+  species_5 = 3.62e-005;
+  species_6 = 0.000367;
+  species_7 = 0.00093;
+  species_8 = 0.0001;
+  species_9 = 0.01;
+  species_11 = 1.87082e-005;
+  species_12 = 6.29e-005;
+  species_13 = 0.000143;
+  species_14 = 0.000242;
+  species_15 = 2.74e-005;
+  species_16 = 0.000153;
+  species_17 = 8.58e-005;
+  species_19 = 0.00134;
+  species_20 = 0.00311;
+  species_21 = 0.001;
+  species_22 = 3.41e-005;
+  species_23 = 0.02;
+  species_24 = 0.208403745497308;
+  species_25 = 0.00108;
+  species_26 = 3.67e-006;
+  species_27 = 0.000553;
+  species_28 = 3.07e-005;
+  species_29 = 4.98e-006;
+  species_30 = 5.79e-005;
+  species_31 = 0.00183;
+  species_32 = 0.0155;
+  species_33 = 0.0214;
+  species_34 = 6.5e-005;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  parameter_1 = 0.0114;
+  parameter_2 = 1.932e-005;
+  parameter_3 = 0.001345;
+  parameter_58 = 0.03347;
+  parameter_59 = 0.00015;
+  parameter_60 = 0.0101;
+  parameter_61 = 0.0017;
+  parameter_62 = 0.004;
+  parameter_5 = 0.42;
+  parameter_6 = 16.62;
+  parameter_63 = 0.01049;
+  parameter_64 = 0.0044;
+  parameter_65 = 0.0015;
+  parameter_66 = 0.015;
+  parameter_67 = 0.0046;
+  parameter_68 = 8e-005;
+  parameter_69 = 0.00016;
+  parameter_12 = 0.0018;
+  parameter_70 = 9e-006;
+  parameter_71 = 0.0016;
+  parameter_72 = 0.00051;
+  parameter_18 = 0.381;
+  parameter_73 = 2.2e-005;
+  parameter_74 = 1e-005;
+  parameter_75 = 0.00019;
+  parameter_76 = 9e-005;
+  parameter_77 = 0.029;
+  parameter_19 = 0.3574;
+  parameter_49 = 0.00013;
+  parameter_50 = 0.00027;
+  parameter_51 = 7.9e-005;
+  parameter_52 = 4e-005;
+  parameter_20 = 11.369;
+  parameter_81 = 5e-005;
+  parameter_82 = 0.0004;
+  parameter_14 = 0.0556;
+  parameter_55 = 7.364;
+  parameter_56 = 3e-005;
+  parameter_57 = 6.3e-005;
+  parameter_16 = 17.2;
+  parameter_17 = 1000;
+  parameter_21 = 1.6491;
+  parameter_78 = 154;
+  parameter_79 = 0.00012;
+  parameter_80 = 0.00019;
+  parameter_23 = 1.4127;
+  parameter_53 = 6e-005;
+  parameter_54 = 3.8e-005;
+  parameter_25 = 3452.5;
+  parameter_83 = 0.0047;
+  parameter_84 = 7e-005;
+  parameter_85 = 2e-006;
+  parameter_86 = 0.0003;
+  parameter_28 = 1;
+  parameter_29 = 1;
+  reaction_1_keq = 1;
+  reaction_1_KGlc_e = 0.01;
+  reaction_1_KGlc = 0.0093;
+  reaction_2_Ka = 0.0001;
+  reaction_2_Kb = 0.0011;
+  reaction_2_Kapp = 651;
+  reaction_2_Kp = 2e-005;
+  reaction_2_Kq = 0.0035;
+  reaction_3_Kery4p = 1e-006;
+  reaction_3_Kfbp = 6e-005;
+  reaction_3_Kpg = 1.5e-005;
+  reaction_4_KG6P = 6.67e-008;
+  reaction_4_KNADP = 3.67e-009;
+  reaction_4_Kapp = 2000;
+  reaction_4_KATP = 7.49e-007;
+  reaction_4_KNADPH = 3.12e-009;
+  reaction_4_KPGA23 = 2.289e-006;
+  reaction_5_K6PG1 = 1e-008;
+  reaction_5_KNADP = 1.8e-008;
+  reaction_5_Kapp = 141.7;
+  reaction_5_KPGA23 = 1.2e-007;
+  reaction_5_KATP = 1.54e-007;
+  reaction_5_K6PG2 = 5.8e-008;
+  reaction_5_KNADPH = 4.5e-009;
+  reaction_6_Vmax = 1.471;
+  reaction_6_Keq_RUPE = 2.7;
+  reaction_6_KRu5P = 1.9e-007;
+  reaction_6_KX5P = 5e-007;
+  reaction_7_Vmax = 0.7646;
+  reaction_7_Keq_R5PI = 3;
+  reaction_7_KRu5P = 7.8e-007;
+  reaction_7_KR5P = 2.2e-006;
+  reaction_8_Keq_TKL = 2.08;
+  reaction_8_K1 = 4.177e-007;
+  reaction_8_K2 = 3.055e-007;
+  reaction_8_K6 = 0.00774;
+  reaction_8_K3 = 1.2432e-005;
+  reaction_8_K5 = 0.41139;
+  reaction_8_K4 = 4.96e-009;
+  reaction_8_K7 = 48.8;
+  reaction_9_Keq_TKL2 = 29.7;
+  reaction_9_K1 = 1.84e-009;
+  reaction_9_K2 = 3.055e-007;
+  reaction_9_K6 = 0.122;
+  reaction_9_K3 = 5.48e-008;
+  reaction_9_K5 = 0.0287;
+  reaction_9_K4 = 3e-010;
+  reaction_9_K7 = 0.215;
+  reaction_10_Vmax = 58.27;
+  reaction_10_Keq_TAL = 2.703;
+  reaction_10_K1 = 8.23e-009;
+  reaction_10_K2 = 4.765e-008;
+  reaction_10_K6 = 0.4653;
+  reaction_10_K3 = 1.733e-007;
+  reaction_10_K5 = 0.8683;
+  reaction_10_K4 = 6.095e-009;
+  reaction_10_K7 = 2.524;
+  reaction_11_Vmax = 0.5104;
+  reaction_11_Kapp = 100000;
+  reaction_11_KATP = 3e-008;
+  reaction_11_KR5P = 5.7e-007;
+  reaction_13_KGLYb = 0.00015;
+  reaction_13_KiPi = 0.0047;
+  reaction_17_alfa = 1;
+  reaction_17_beta = 1;
+  reaction_18_KPi = 0.0002;
+  reaction_18_KiG1P = 0.0074;
+  reaction_18_nH = 1.75;
+  reaction_18_Kamp = 1.9e-012;
+  reaction_19_Kf = 17400;
+  reaction_19_Keq = 267100;
+  reaction_19_Kr = 158;
+  reaction_20_Katp = 2.1e-005;
+  reaction_20_beta = 0.98;
+  reaction_20_alfa = 0.32;
+  reaction_20_Kf26bp = 8.4e-007;
+  reaction_20_Kf6p = 1;
+  reaction_20_L = 4.1;
+  reaction_20_Kcit = 6.8;
+  reaction_20_Kiatp = 20;
+  reaction_20_Kadp = 5;
+  reaction_20_Kfbp = 5;
+  reaction_20_Kapp = 247;
+  reaction_23_Kadp = 0.4;
+  reaction_23_Kpep = 0.014;
+  reaction_23_L = 1;
+  reaction_23_Kiatp = 2.5;
+  reaction_23_Kfbp = 0.0004;
+  reaction_23_Katp = 0.86;
+  reaction_23_Kpyr = 10;
+  reaction_23_Kapp = 195172;
+  reaction_24_alfa = 1;
+  reaction_24_beta = 1;
+  reaction_25_Vf = 141.2;
+  reaction_25_Keq = 2.26;
+  reaction_26_Keq = 300;
+  reaction_27_Keq = 0.2;
+  reaction_28_y = 12.5;
+  reaction_28_Keq = 1000000;
+  reaction_29_k1 = 6210;
+
+  //Other declarations:
+  var parameter_4, parameter_7, parameter_8, parameter_37, parameter_9, parameter_38;
+  var parameter_10, parameter_39, parameter_11, parameter_40, parameter_13;
+  var parameter_32, parameter_15, parameter_22, parameter_24, parameter_43;
+  var parameter_26, parameter_45, parameter_27, parameter_30, parameter_31;
+  var parameter_33, parameter_34, parameter_35, parameter_36, parameter_41;
+  var parameter_42, parameter_44, parameter_46, parameter_47, parameter_48;
+  const compartment_1, parameter_1, parameter_2, parameter_3, parameter_58;
+  const parameter_59, parameter_60, parameter_61, parameter_62, parameter_5;
+  const parameter_6, parameter_63, parameter_64, parameter_65, parameter_66;
+  const parameter_67, parameter_68, parameter_69, parameter_12, parameter_70;
+  const parameter_71, parameter_72, parameter_18, parameter_73, parameter_74;
+  const parameter_75, parameter_76, parameter_77, parameter_19, parameter_49;
+  const parameter_50, parameter_51, parameter_52, parameter_20, parameter_81;
+  const parameter_82, parameter_14, parameter_55, parameter_56, parameter_57;
+  const parameter_16, parameter_17, parameter_21, parameter_78, parameter_79;
+  const parameter_80, parameter_23, parameter_53, parameter_54, parameter_25;
+  const parameter_83, parameter_84, parameter_85, parameter_86, parameter_28;
+  const parameter_29;
+
+  // Unit definitions:
+  unit volume = 1e-9 litre;
+  unit time_unit = 60 second;
+  unit substance = 1e-9 mole;
+
+  //Display Names:
+  time_unit is "time";
+  compartment_1 is "compartment";
+  species_1 is "GLC";
+  species_2 is "G6P";
+  species_3 is "ADP";
+  parameter_1 is "Atot";
+  species_4 is "ATP";
+  species_5 is "F6P";
+  species_6 is "F16P";
+  species_7 is "E4P";
+  species_8 is "PGN";
+  species_9 is "GLC_e";
+  species_10 is "NADP";
+  parameter_2 is "NPtot";
+  species_11 is "NADPH";
+  species_12 is "BPG";
+  species_13 is "RU5P";
+  species_14 is "X5P";
+  species_15 is "R5P";
+  species_16 is "GAP";
+  species_17 is "S7P";
+  species_18 is "NADH";
+  parameter_3 is "Ntot";
+  species_19 is "NAD";
+  species_20 is "AMP";
+  species_21 is "PRPP";
+  species_22 is "G1P";
+  species_23 is "Pi";
+  species_24 is "GLY";
+  species_25 is "CIT";
+  species_26 is "F26P";
+  species_27 is "DHAP";
+  species_28 is "PG3";
+  species_29 is "PG2";
+  species_30 is "PEP";
+  species_31 is "PYR";
+  species_32 is "LAC";
+  species_33 is "CO2";
+  species_34 is "O2";
+  parameter_4 is "GPa_Vr";
+  parameter_58 is "GPa_Vmaxf";
+  parameter_59 is "GPa_KiGLYb";
+  parameter_60 is "GPa_KiG1P";
+  parameter_61 is "GPa_KiGLYf";
+  parameter_62 is "GPa_KPi";
+  parameter_5 is "GPa_Keq";
+  parameter_6 is "GPb_Keq";
+  parameter_7 is "GPb_Vr";
+  parameter_63 is "GPb_Vmaxf";
+  parameter_64 is "GPb_KiGLYb";
+  parameter_65 is "GPb_KG1P";
+  parameter_66 is "GPb_KiGLYf";
+  parameter_67 is "GPb_KiPi";
+  parameter_8 is "FBA_Vr";
+  parameter_37 is "FBA_Vf";
+  parameter_68 is "FBA_Kdhap";
+  parameter_69 is "FBA_Kg3p";
+  parameter_12 is "FBA_Keq";
+  parameter_70 is "FBA_Kfbp";
+  parameter_9 is "TPI_Vr";
+  parameter_38 is "TPI_Vf";
+  parameter_71 is "TPI_Kmp";
+  parameter_72 is "TPI_Kms";
+  parameter_18 is "TPI_Keq";
+  parameter_10 is "GAPDH_Vr";
+  parameter_39 is "GAPDH_Vf";
+  parameter_73 is "GAPDH_Kdpg";
+  parameter_74 is "GAPDH_Knadh";
+  parameter_75 is "GAPDH_Kg3p";
+  parameter_76 is "GAPDH_Knad";
+  parameter_77 is "GAPDH_Kp";
+  parameter_19 is "GAPDH_Keq";
+  parameter_11 is "PGK_Vr";
+  parameter_40 is "PGK_Vf";
+  parameter_49 is "PGK_Kp";
+  parameter_50 is "PGK_Kq";
+  parameter_51 is "PGK_Ka";
+  parameter_52 is "PGK_Kb";
+  parameter_20 is "PGK_Keq";
+  parameter_13 is "PGI_Vmr";
+  parameter_32 is "PGI_Vmf";
+  parameter_81 is "PGI_Kf6p";
+  parameter_82 is "PGI_Kg6p";
+  parameter_14 is "PGI_Keq";
+  parameter_15 is "PGLM_Vmr";
+  parameter_55 is "PGLM_Vmaxf";
+  parameter_56 is "PGLM_KG6P";
+  parameter_57 is "PGLM_KG1P";
+  parameter_16 is "PGLM_Keq";
+  parameter_17 is "scale1e3";
+  parameter_21 is "PGYM_Keq";
+  parameter_22 is "PGYM_Vr";
+  parameter_78 is "PGYM_Vmf";
+  parameter_79 is "PGYM_Kmp";
+  parameter_80 is "PGYM_Kms";
+  parameter_23 is "ENO_Keq";
+  parameter_24 is "ENO_Vr";
+  parameter_43 is "ENO_Vf";
+  parameter_53 is "ENO_Kmp";
+  parameter_54 is "ENO_Kms";
+  parameter_25 is "LDH_Keq";
+  parameter_26 is "LDH_Vr";
+  parameter_45 is "LDH_Vf";
+  parameter_83 is "LDH_Kp";
+  parameter_84 is "LDH_Kq";
+  parameter_85 is "LDH_Ka";
+  parameter_86 is "LDH_Kb";
+  parameter_27 is "AMP";
+  parameter_28 is "AKT";
+  parameter_29 is "AKT_MPM";
+  parameter_30 is "GLUT_Vf";
+  parameter_31 is "HK_Vf";
+  parameter_33 is "G6PDH_Vf";
+  parameter_34 is "PGDH_Vf";
+  parameter_35 is "TKL_Vf";
+  parameter_36 is "TKL2_Vf";
+  parameter_41 is "GS_Vf";
+  parameter_42 is "PFK_Vf";
+  parameter_44 is "PK_Vf";
+  parameter_46 is "DHase_Vf";
+  parameter_47 is "DPHase_Vf";
+  parameter_48 is "MPM_Vf";
+  reaction_1 is "GLUT";
+  reaction_2 is "HK";
+  reaction_3 is "PGI";
+  reaction_4 is "G6PDH";
+  reaction_5 is "PGDH";
+  reaction_6 is "RUPE";
+  reaction_7 is "R5PI";
+  reaction_8 is "TKL";
+  reaction_9 is "TKL2";
+  reaction_10 is "TAL";
+  reaction_11 is "PRPPS";
+  reaction_12 is "PGLM";
+  reaction_13 is "GPa";
+  reaction_14 is "FBA";
+  reaction_15 is "TPI";
+  reaction_16 is "GAPDH";
+  reaction_17 is "PGK";
+  reaction_18 is "GPb";
+  reaction_19 is "GS";
+  reaction_20 is "PFK";
+  reaction_21 is "PGYM";
+  reaction_22 is "ENO";
+  reaction_23 is "PK";
+  reaction_24 is "LDH";
+  reaction_25 is "AK";
+  reaction_26 is "DHase";
+  reaction_27 is "DPHase";
+  reaction_28 is "MPM";
+  reaction_29 is "ATPase";
+end
