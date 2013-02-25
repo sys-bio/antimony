@@ -456,11 +456,23 @@ Source: ..\doc\examples\biomodels\BIOMD0000000421.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000422.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000423.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000424.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000425.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000426.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000427.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000428.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000429.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000430.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000431.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000432.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000433.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000434.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000435.txt; DestDir: {app}\biomodels\
+Source: ..\doc\examples\biomodels\BIOMD0000000436.txt; DestDir: {app}\biomodels\
 [Setup]
 DefaultGroupName=Antimony
 UsePreviousGroup=true
 AppName=QTAntimony
-AppVerName=QTAntimony 2.2.0
+AppVerName=QTAntimony 2.4.0
 DefaultDirName={pf}\Antimony
 UsePreviousAppDir=false
 [Icons]

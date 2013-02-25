@@ -2,13 +2,20 @@ Thank you for using Antimony, a human-readable, human-writable modular model def
 
 The documentation for this project is in the doc/ subdirectory, and was created with Doxygen.  Described there is information about the Antimony model language and the libAntimony library, including compilation instructions.
 
-To enable full functionality in libAntimony, you first need to install libSBML, available from http://sbml.org/Software/libSBML/.  Both libSBML and libAntimony now use CMake as their build systems.
+To enable full functionality in libAntimony, you first need to install libSBML, available from http://sbml.org/Software/libSBML/.  Both libSBML and libAntimony now use CMake as their build systems.  For full functionality, be sure to enable the 'comp' package in libsbml, as this enables full hierarchical modeling support.  As of antimony v2.4, all binary releases of the library and executables use the 'comp' package by default.
 
 For CellML:
 
-The CellML API v1.11 SDK was used in this version of Antimony (and QTAntimony) and seems to work OK.  As of this writing, the URL to download the SDK was http://www.cellml.org/tools/downloads/cellml_api/releases/1.11  All that is needed in CMake is to set CELLML_API_INSTALL_DIR to this SDK, and the other CELLML_* variables will be set automatically.
+The CellML API v1.11 SDK was used in this version of Antimony (and QTAntimony) and seems to work OK (despite producing 2.33 billion warnings during compile).  As of this writing, the URL to download the SDK was http://www.cellml.org/tools/downloads/cellml_api/releases/1.11  All that is needed in CMake is to set CELLML_API_INSTALL_DIR to this SDK, and the other CELLML_* variables will be set automatically.
 
 If downloading the SDK does not work (or if it is unavailable for your operating system) it too now uses CMake as its build system, and we have had reasonable success using this on linux-based systems.
+
+What's new in v2.4:
+  - Because the SBML 'Hierarchical Model Composition' package has been accepted and is now officially part of SBML (yay!), support for it is now on by default, and has moved out of beta.  Models created using this package should be fully compatible with other programs who also support SBML hierarchy.  Support for 'flattened' models also remains, so core SBML L3v1 models as well as SBML L2 and L1 models can still be exported and imported.)
+  - The Tutorial has been updated to include information on all the most recent features.
+
+What's new in v2.3-beta:
+  - The ability to import and export SBML models with all the new 2.2 capabilities to 'hierarchical model composition' package constructs.
 
 What's new in v2.2:
   - The ability to define units and use them in mathematical equations.
@@ -16,38 +23,35 @@ What's new in v2.2:
   - The ability to define time and extent conversion factors when importing submodels.
   - The ability to delete submodel elements.
 
-Wht's new in v2.3-beta:
-  - The ability to import and export SBML models with all the new 2.2 capabilities to 'hierarchical model composition' package constructs.
-
 The syntax for each is:
 
 Deletions:
   
-  delete S1.x;
+  delete A1.x;
   
-which will delete the variable 'x' from submodel S1, and will clear any
+which will delete the variable 'x' from submodel A1, and will clear any
 equations or reactions that had 'x' in it:  if a reaction rate was 'p1*x',
 that reaction rate will be cleared entirely (and may be reset using normal
 Antimony constructs).
 
 Time and extent conversion factors in submodels:
 
-  S1: submodel(), timeconv=60, extentconv=100;
+  A1: submodel(), timeconv=60, extentconv=100;
   
 or
   
-  S1: submodel(), timeconv=tc, extentconv=xc;
+  A1: submodel(), timeconv=tc, extentconv=xc;
   
 (where 'tc' and 'xc' are parameters that may be defined elsewhere) may be
 used.
 
 Conversion factors for synchronized variables:
 
-  S1.y * cf is x;
+  A1.y * cf is x;
   
 or
   
-  S1.y is x / cf;
+  A1.y is x / cf;
 
 
 

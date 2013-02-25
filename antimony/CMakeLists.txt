@@ -11,7 +11,7 @@ project(libantimony)
 # Set up version information.
 #
 SET(LIBANTIMONY_VERSION_MAJOR 2)
-SET(LIBANTIMONY_VERSION_MINOR 2)
+SET(LIBANTIMONY_VERSION_MINOR 4)
 SET(LIBANTIMONY_VERSION_PATCH "")
 SET(LIBANTIMONY_VERSION_RELEASE "")
 
@@ -47,7 +47,7 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 
 # which language bindings should be build
 option(WITH_SBML            "Generate SBML translations"      ON )
-option(WITH_COMP_SBML       "Use the hierarchical composition package in SBML"      OFF )
+option(WITH_COMP_SBML       "Use the hierarchical composition package in SBML"      ON )
 option(WITH_CELLML          "Generate CellML translations"    ON )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
 option(WITH_SBW             "QTAntimony integration with SBW" OFF )
@@ -55,10 +55,6 @@ option(WITH_SBW_TRANSLATOR  "Generate SBWTranslator"          OFF )
 set(EXTRA_LIBS "" CACHE STRING "Libraries the other libraries depend on that are in non-standard locations" )
 #set(EXTRA_LIBS "" CACHE_STRING "")
 
-if (WITH_COMP_SBML)
-  SET(LIBANTIMONY_VERSION_MINOR 3)
-  SET(LIBANTIMONY_VERSION_RELEASE "-beta")
-endif()
 SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
 add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
 
@@ -104,56 +100,56 @@ if(WITH_CELLML)
         find_path(CELLML_API_INSTALL_DIR
 		NAMES include/IfaceCellML_APISPEC.hxx
 		PATHS /usr/include /usr/local/include 
-              C:/Program Files (x86)/cellml-sdk-1.10
-              C:/Program Files/cellml-sdk-1.10
-			  ${CMAKE_SOURCE_DIR}/cellml-sdk 
-			  ${CMAKE_SOURCE_DIR}/dependencies/cellml-sdk
+              C:/Program Files (x86)/cellml-sdk-1.11
+              C:/Program Files/cellml-sdk-1.11
+              ${CMAKE_SOURCE_DIR}/cellml-sdk 
+              ${CMAKE_SOURCE_DIR}/dependencies/cellml-sdk
 			  )
 
         find_library(CELLML_API_LIB
 		NAMES cellml.lib cellml
 		PATHS /usr/lib /usr/local/lib
-                          ${CELLML_API_INSTALL_DIR}/lib
-                          C:/build/cellml-api/.libs/
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
+              ${CELLML_API_INSTALL_DIR}/lib
+              C:/build/cellml-api/.libs/
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              )
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CELLML_API_LIB})
 
         find_library(CEVAS_LIB 
 		NAMES cevas.lib cevas
 		PATHS /usr/lib /usr/local/lib
-                          ${CELLML_API_INSTALL_DIR}/lib
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
+              ${CELLML_API_INSTALL_DIR}/lib
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              )
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CEVAS_LIB})
 	
         find_library(ANNOTOOLS_LIB 
 		NAMES annotools.lib annotools
 		PATHS /usr/lib /usr/local/lib
-                          ${CELLML_API_INSTALL_DIR}/lib
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
+              ${CELLML_API_INSTALL_DIR}/lib
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              )
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${ANNOTOOLS_LIB})
 	
 	find_library(CUSES_LIB 
 		NAMES cuses.lib cuses
 		PATHS /usr/lib /usr/local/lib
-                          ${CELLML_API_INSTALL_DIR}/lib
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
+              ${CELLML_API_INSTALL_DIR}/lib
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              )
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CUSES_LIB})
 
         find_library(TELICEMS_LIB 
 		NAMES telicems.lib telicems
 		PATHS /usr/lib /usr/local/lib
-                          ${CELLML_API_INSTALL_DIR}/lib
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
-			    )
+              ${CELLML_API_INSTALL_DIR}/lib
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              )
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${TELICEMS_LIB})
 
         set(CELLML_INCLUDE_DIRECTORIES ${CELLML_API_INSTALL_DIR}/include )

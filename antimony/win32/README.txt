@@ -1,12 +1,63 @@
 To use these Windows executables:
-   * QTAntimony is a simple editor that can convert models between Antimony, SBML, 
-     and CellML.  It can read Antimony, SBML, and CellML files, and you can 
-     edit any and translate between them.  Do note that if you convert one 
+   * QTAntimony is a simple editor that can convert models between Antimony,
+     SBML, and CellML.  It can read Antimony, SBML, and CellML files, and you
+     can edit any and translate between them.  Do note that if you convert one 
      format to the other, modify the latter, then translate it back, you will 
      often lose information in the process--any annotation or unit definitions
      in the SBML file will not survive the round-trip, for example.  However, 
      it should be enough to get started with the language and start to 
      experiment.
+
+   * While specific translators still exist, 'sbtranslate' can be used to
+     convert between formats that Antimony understands.  The precompiled
+     binary can be used to convert files between Antimony, SBML, and CellML.
+
+     You must use at least one of the following options to set the output format
+     of this translator:
+
+        -o antimony : Output all models in Antimony format
+        -o sbml     : Output the 'main' model as SBML
+        -o sbml-comp: Output all models in a single SBML file using the
+                       (unoffical) 'comp' package.
+        -o allsbml  : Output each model and submodel as a separate SBML model
+        -o cellml   : Output the 'main' model as CellML
+
+     Each file will be exported to the desired format separately.  Multiple output
+     formats are possible; a separate '-o [format]' is needed for each output format.
+     This means that if you give sbtranslate two input files and two output formats,
+     it will write four files by default: one for each file in each format.
+
+     sbtranslate takes as input any number of valid model files in any of the
+     formats it understands.  If no files are provided, it reads input from stdin
+     and attempts to parse that in one of its known model formats.
+
+     By default, sbtranslate will output files in the working directory with the
+     same name as the original file, minus that file's extention, plus '.txt' for
+     antimony output, '.xml' for SBML output, and '.cellml' for CellML output (when
+     available).  If the file was originally in the same format as the desired
+     output, '_rt' (for 'roundtrip') is appended to the filename before the
+     extention.  If the input was stdin, output will by default be written to
+     stdout.
+
+     To change this behavior, the following options may be used:
+        -outfile [filename] : All output is written to the given file.
+        -prefix [prefix]    : All outfiles are prepended with the given
+                              prefix.
+        -d [directory]      : This directory will be used to search for
+                              imported files if the normal import routines do
+                              not work.  This directory is also used to
+                              search for any '.antimony' files, which are used
+                              to map import directives to actual files.
+        -stdin    : Input is read from stdin, in addition to any files that
+                    might be listed.
+        -stdout   : All output is written to standard output.  No files are
+                    created.
+        -dirsort  : If the input filenames include the name of the directory
+                    they are in, the corresponding output files are written out
+                    to a subdirectory of the working directory with the same
+                    name.  If '-prefix' is used in conjunction with this
+                    option, that prefix is prepended to the directory name
+                    (and if it includes a slash, may itself be a directory).
 
    * Example models are available in the Antimony directory.  Assuming you
      installed this in the default location, you'll find them in:
@@ -17,63 +68,8 @@ To use these Windows executables:
 
      C:\Program Files\Antimony\biomodels
 
-   * The easiest way to run the converters is from the command line (just 
-     double-clicking on the .exe will pop up a window with an error). 
-     To do this:
-       - Copy any models you want to convert into this folder.
-       - Click 'Start', then 'Run', and type 'cmd'.  A window will pop up.
-       - Type 'cd <directory>' where <directory> is where you put the folder
-         (for example, 'cd Desktop\antimony\')
-       - To convert SBML files to Antimony, type:
 
-       sbml2antimony.exe <inputfile.xml> [<inputfile2.xml>] [...]
-
-       This will produce antimony files with the same names as the inputfiles
-       with '.xml' removed (if it was there) and '.txt' appended.  It will
-       also create the antimony file in the current (working) directory,
-       even if the original files are in a different directory.
-
-       For example, to convert the provided SBML input file (an oscillator) 
-       from the doc/examples/ directory, type:
-
-       sbml2antimony.exe ex_sbml_input.xml
-
-       - To convert all models in Antimony files to SBML files, type:
-
-       antimony2sbml.exe <inputfile.txt> [<inputfile2.xml>] [...]
-
-       This will create one or more output files, each with the same name
-       as the inputfiles, with '.txt' removed (if present), and 
-       '_<modelname>.xml' appended, where <modelname> is the name of the
-       model in the Antimony file.  As Antimony files may have more than one
-       model in them, converting a single Antimony file to SBML can create
-       multiple SBML files.
-
-       For example, to convert the provided Antimony input file models (in
-       the doc/examples/ directory) to SBML, copy the file to this
-       directory and type:
-
-       antimony2sbml.exe ex_antimony_input.txt
-
-       Which will create the files:
-
-        ex_sbml_input_bistable_sbml.xml
-        ex_sbml_input_combined_model_sbml.xml
-        ex_sbml_input_ffn_sbml.xml
-        ex_sbml_input_ringoscil_sbml.xml
-        ex_sbml_input___main_sbml.xml
-
-       If you don't want to create models in this folder all the time,
-       you can cd into a directory containing the models you want to
-       convert and run the converter from there by calling it explicitly by
-       typing (for example) "c:\Program Files\Antimony\antimony2sbml.exe",
-       depending on where you put the  folder.  (It is also possible to
-       install the dll's somewhere or add the converter folder's name to
-       your PATH, but if you know what I'm talking about, you know how to
-       do it.)  
-
-
-If you have any questions or problems, please feel free to contact us at 
+If you have any questions or problems, please feel free to contact the author at 
 
 lpsmith@u.washington.edu
 

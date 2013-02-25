@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 #ifndef NSBML
   options += "\n\t-o sbml     : Output the 'main' model as SBML";
 #ifdef USE_COMP
-  options += "\n\t-o sbml-comp: Output all models in a single SBML file using the\n\t               (unoffical) 'comp' package.";
+  options += "\n\t-o sbml-comp: Output all models in a single SBML file using the\n\t               'comp' package.";
 #endif
   options += "\n\t-o allsbml  : Output each model and submodel as a separate SBML model";
 #ifndef NCELLML
@@ -71,6 +71,10 @@ int main(int argc, char** argv)
   vector<string> files;
   if (argc==1) {
     cerr << instructions << endl;
+#ifdef WIN32
+    cerr << endl << "(Press any key to exit.)" << endl;
+    getch();
+#endif
     return 1;
   }
   for (int arg=1; arg<argc; arg++) {
@@ -180,7 +184,7 @@ int main(int argc, char** argv)
   }
   if (!(outputantimony || outputsbml || outputallsbml || outputcompsbml || outputcellml)) {
         cerr << "You must provide an output option using the '-o' flag.  Valid options are:\n" << options << "\n\nUse '-h' for more options." << endl;
-        retval = 1;
+        return 1;
   }
   if (files.size()==0) {
     readstdin = true;
