@@ -1157,7 +1157,7 @@ const string* Registry::IsFunction(string word)
 const string* Registry::IsConstant(string word)
 {
   for (size_t c=0; c<m_constants.size(); c++) {
-    if (word == m_constants[c]) {
+    if (CaselessStrCmp(word, m_constants[c])) {
       return &(m_constants[c]);
     }
   }

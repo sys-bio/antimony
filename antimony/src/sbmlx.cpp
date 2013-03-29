@@ -299,7 +299,7 @@ bool FixName(string& name)
   , "pi"  
   , "exponentiale" 
   , "avogadro"  
-  , "time"  
+  , "time"
   , "inf"  
   , "infinity"  
   , "nan"  
