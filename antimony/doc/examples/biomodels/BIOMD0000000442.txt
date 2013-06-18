@@ -1,0 +1,159 @@
+//Created by libAntimony v2.4
+function function_4_1_1(A, K1, Ka, V1, species_0, species_7)
+  V1 * species_0 / K1 / (1 + species_0 / K1) * ((1 + A * species_7 / Ka) / (1 + species_7 / Ka));
+end
+
+function function_4_3_1(K3, KI, k3, species_1, species_2, species_3, species_7)
+  k3 * species_1 * species_2 / K3 / ((1 + species_2 / K3 + species_3 / K3) * (1 + species_7 / KI));
+end
+
+function function_4_4_1(K4, KI, k4, species_1, species_2, species_3, species_7)
+  k4 * species_1 * species_3 / K4 / ((1 + species_2 / K4 + species_3 / K4) * (1 + species_7 / KI));
+end
+
+function function_4_7_1(K7, k7, species_4, species_5, species_6)
+  k7 * species_4 * species_5 / K7 / (1 + species_5 / K7 + species_6 / K7);
+end
+
+function function_4_8_1(K8, k8, species_4, species_5, species_6)
+  k8 * species_4 * species_6 / K8 / (1 + species_5 / K8 + species_6 / K8);
+end
+
+function function_4_2_1(K2, k2, species_1, species_8)
+  k2 * species_8 * species_1 / K2 / (1 + species_1 / K2);
+end
+
+function function_4_5_1(K5, k5, species_3, species_4, species_9)
+  k5 * species_9 * species_4 / K5 / (1 + species_4 / K5 + species_3 / K5);
+end
+
+function function_4_6_1(K6, k6, species_3, species_4, species_9)
+  k6 * species_9 * species_3 / K6 / (1 + species_4 / K6 + species_3 / K6);
+end
+
+function function_4_9_1(K9, k9, species_10, species_6, species_7)
+  k9 * species_10 * species_7 / K9 / (1 + species_7 / K9 + species_6 / K9);
+end
+
+function function_4_10_1(K10, k10, species_10, species_6, species_7)
+  k10 * species_10 * species_6 / K10 / (1 + species_7 / K10 + species_6 / K10);
+end
+
+function function_1(V11, X, K11, A, species_7, Ka)
+  V11 * X / K11 / (1 + X / K11) * ((1 + A * species_7 / Ka) / (1 + species_7 / Ka));
+end
+
+function function_2(V12, X_P, K12)
+  V12 * X_P / (K12 + X_P);
+end
+
+
+model *MODEL1112190005()
+
+  // Compartments and Species:
+  compartment compartment_0;
+  species species_0 in compartment_0, species_1 in compartment_0, species_2 in compartment_0;
+  species species_3 in compartment_0, species_4 in compartment_0, species_5 in compartment_0;
+  species species_6 in compartment_0, species_7 in compartment_0, species_8 in compartment_0;
+  species species_9 in compartment_0, species_10 in compartment_0, species_11 in compartment_0;
+  species species_12 in compartment_0;
+
+  // Reactions:
+  reaction_0: species_0 => species_1; compartment_0 * function_4_1_1(reaction_0_A, reaction_0_K1, reaction_0_Ka, reaction_0_V1, species_0, species_7);
+  reaction_1: species_2 => species_3; compartment_0 * function_4_3_1(reaction_1_K3, reaction_1_KI, reaction_1_k3, species_1, species_2, species_3, species_7);
+  reaction_2: species_3 => species_4; compartment_0 * function_4_4_1(reaction_2_K4, reaction_2_KI, reaction_2_k4, species_1, species_2, species_3, species_7);
+  reaction_3: species_5 => species_6; compartment_0 * function_4_7_1(reaction_3_K7, reaction_3_k7, species_4, species_5, species_6);
+  reaction_4: species_6 => species_7; compartment_0 * function_4_8_1(reaction_4_K8, reaction_4_k8, species_4, species_5, species_6);
+  reaction_5: species_1 => species_0; compartment_0 * function_4_2_1(reaction_5_K2, reaction_5_k2, species_1, species_8);
+  reaction_6: species_4 => species_3; compartment_0 * function_4_5_1(reaction_6_K5, reaction_6_k5, species_3, species_4, species_9);
+  reaction_7: species_3 => species_2; compartment_0 * function_4_6_1(reaction_7_K6, reaction_7_k6, species_3, species_4, species_9);
+  reaction_8: species_7 => species_6; compartment_0 * function_4_9_1(reaction_8_K9, reaction_8_k9, species_10, species_6, species_7);
+  reaction_9: species_6 => species_5; compartment_0 * function_4_10_1(reaction_9_K10, reaction_9_k10, species_10, species_6, species_7);
+  reaction_10: species_11 => species_12; compartment_0 * function_1(reaction_10_V11, species_11, reaction_10_K11, reaction_10_A, species_7, reaction_10_Ka);
+  reaction_11: species_12 => species_11; compartment_0 * function_2(reaction_11_V12, species_12, reaction_11_K12);
+
+  // Species initializations:
+  species_0 = 999.999903688753;
+  species_1 = 0;
+  species_2 = 3999.99961475501;
+  species_3 = 0;
+  species_4 = 0;
+  species_5 = 999.999903688753;
+  species_6 = 0;
+  species_7 = 0;
+  species_8 = 99.9999903688752;
+  species_9 = 499.999951844377;
+  species_10 = 499.999951844377;
+  species_11 = 99.9999903688752;
+  species_12 = 0;
+
+  // Compartment initializations:
+  compartment_0 = 1;
+
+  // Variable initializations:
+  reaction_0_A = 100;
+  reaction_0_K1 = 15;
+  reaction_0_Ka = 500;
+  reaction_0_V1 = 6;
+  reaction_1_K3 = 20;
+  reaction_1_KI = 9;
+  reaction_1_k3 = 0.1;
+  reaction_2_K4 = 20;
+  reaction_2_KI = 9;
+  reaction_2_k4 = 0.1;
+  reaction_3_K7 = 20;
+  reaction_3_k7 = 0.1;
+  reaction_4_K8 = 20;
+  reaction_4_k8 = 0.1;
+  reaction_5_K2 = 100;
+  reaction_5_k2 = 0.1;
+  reaction_6_K5 = 20;
+  reaction_6_k5 = 0.02;
+  reaction_7_K6 = 20;
+  reaction_7_k6 = 0.02;
+  reaction_8_K9 = 20;
+  reaction_8_k9 = 0.02;
+  reaction_9_K10 = 20;
+  reaction_9_k10 = 0.02;
+  reaction_10_V11 = 0.1;
+  reaction_10_K11 = 50;
+  reaction_10_A = 100;
+  reaction_10_Ka = 500;
+  reaction_11_V12 = 0.5;
+  reaction_11_K12 = 50;
+
+  //Other declarations:
+  const compartment_0;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-9 mole;
+
+  //Display Names:
+  compartment_0 is "compartment";
+  species_0 is "MKKK";
+  species_1 is "MKKK_P";
+  species_2 is "MKK";
+  species_3 is "MKK_P";
+  species_4 is "MKK_PP";
+  species_5 is "M";
+  species_6 is "M_P";
+  species_7 is "M_PP";
+  species_8 is "P1";
+  species_9 is "P2";
+  species_10 is "P3";
+  species_11 is "X";
+  species_12 is "X_P";
+  reaction_0 is "1";
+  reaction_1 is "3";
+  reaction_2 is "4";
+  reaction_3 is "7";
+  reaction_4 is "8";
+  reaction_5 is "2";
+  reaction_6 is "5";
+  reaction_7 is "6";
+  reaction_8 is "9";
+  reaction_9 is "10";
+  reaction_10 is "11";
+  reaction_11 is "12";
+end

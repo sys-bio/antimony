@@ -1,0 +1,52 @@
+//Created by libAntimony v2.4
+model *BIOMD0000000462()
+
+  // Compartments and Species:
+  compartment cell;
+  species Abeta in cell, AbDim in cell, AbP in cell, $Source in cell, $Sink in cell;
+  species Nep in cell;
+
+  // Reactions:
+  Abetaproduction: $Source => Abeta; kprod * Source;
+  AbetaDegradation: Abeta + Nep => $Sink + Nep; kdeg * Abeta * Nep * 0.001;
+  AbetaDimerisation: 2Abeta => AbDim; kdimer * Abeta * (Abeta - 1) * 0.5;
+  AbetaDedimerisation: AbDim => 2Abeta; kdedimer * AbDim;
+  AbetaPlaqueFormation: 2AbDim => 4AbP; kpf * AbDim * (AbDim - 1) * 0.5;
+  AbetaPlaqueGrowth: Abeta + AbP => 2AbP; kpg * Abeta * AbP^2 / (kpghalf^2 + AbP^2);
+  AbetaDisaggregation: AbP => Abeta; kdisagg * AbP;
+  NepDegradation: Nep => $Sink; kdegNep * Nep;
+
+  // Species initializations:
+  Abeta = 0;
+  AbDim = 0;
+  AbP = 0;
+  Source = 1;
+  Sink = 1;
+  Nep = 1000;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  kprod = 1.86e-005;
+  kdeg = 2.1e-005;
+  kdimer = 1.1783e-007;
+  kdedimer = 8.4655e-006;
+  kdisagg = 5.4357e-005;
+  kpf = 2.785e-006;
+  kpg = 0.00574;
+  kpghalf = 4;
+  kdegNep = 1.8e-010;
+
+  //Other declarations:
+  const cell, kprod, kdeg, kdimer, kdedimer, kdisagg, kpf, kpg, kpghalf, kdegNep;
+
+  // Unit definitions:
+  unit substance = item;
+
+  //Display Names:
+  Abeta is "AbetaMonomer";
+  AbDim is "AbetaDimer";
+  AbP is "AbetaPlaque";
+  Nep is "Neprilysin";
+end
