@@ -1,0 +1,92 @@
+//Created by libAntimony v2.4
+model *MODEL1301110000()
+
+  // Compartments and Species:
+  compartment default;
+  species s1 in default, s19 in default, s3 in default, s4 in default, s16 in default;
+  species s17 in default, s5 in default, s42 in default, s2 in default, s45 in default;
+
+  // Reactions:
+  re3: s19 => s3; re3_Y2 * s19;
+  re2: s2 => s19; re2_k2 * s2;
+  re4: s19 + s4 => s42; s19 * s4 * re4_k3 - re4_k4 * s42;
+  re5: s42 + s16 => s17; s16 * s42 * re5_k5 - re5_k6 * s17;
+  re8: s4 => s5; re8_Y3 * s4;
+  re1: s1 => s2; re1_k1 * s1 - re1_Y1 * s2;
+  re14: s17 => s45; (re14_K7 + re14_K8 * s17^re14_n1 / (re14_K9^re14_n1 + s17^re14_n1)) * (re14_k10 + re14_K11 * s17^re14_n2 / (re14_K12^re14_n2 + s17^re14_n2) - s45);
+
+  // Species initializations:
+  s1 = 1e-005;
+  s19 = 1e-006;
+  s3 = 0;
+  s4 = 5e-006;
+  s16 = 1e-005;
+  s17 = 0;
+  s5 = 0;
+  s42 = 0;
+  s2 = 0;
+  s45 = 0;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+
+  // Variable initializations:
+  re3_Y2 = 0.0696;
+  re3_Y2 has substance;
+  re2_k2 = 35.7;
+  re2_k2 has substance;
+  re4_k3 = 9600000;
+  re4_k3 has substance;
+  re4_k4 = 0;
+  re4_k4 has substance;
+  re5_k5 = 1960000;
+  re5_k5 has substance;
+  re5_k6 = 10.2;
+  re5_k6 has substance;
+  re8_Y3 = 0.0002832;
+  re8_Y3 has substance;
+  re1_k1 = 3.734;
+  re1_k1 has substance;
+  re1_Y1 = 0.348;
+  re1_Y1 has substance;
+  re14_K7 = 0.004051;
+  re14_K7 has substance;
+  re14_K8 = 0.009567;
+  re14_K8 has substance;
+  re14_K9 = 9.742e-008;
+  re14_K9 has substance;
+  re14_k10 = 6.5e-016;
+  re14_k10 has substance;
+  re14_K11 = 1e-014;
+  re14_K11 has substance;
+  re14_K12 = 2.4e-007;
+  re14_K12 has substance;
+  re14_n1 = 2;
+  re14_n1 has substance;
+  re14_n2 = 2;
+  re14_n2 has substance;
+
+  //Other declarations:
+  const default;
+
+  // Unit definitions:
+  unit substance = mole;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit time_unit = second;
+
+  //Display Names:
+  time_unit is "time";
+  s1 is "Ptet-LasR";
+  s19 is "LasR";
+  s3 is "sa3_degraded";
+  s4 is "3OC12HSL";
+  s16 is "pLuxR";
+  s17 is "A pLux";
+  s5 is "sa6_degraded";
+  s42 is "LasR/AHL";
+  s2 is "mRNA(LasR)";
+  s45 is "GFP";
+end

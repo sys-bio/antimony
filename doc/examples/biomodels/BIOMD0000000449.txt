@@ -1,0 +1,165 @@
+//Created by libAntimony v2.4
+model *MODEL1304160000()
+
+  // Compartments and Species:
+  compartment cellvolume;
+  species IR in cellvolume, IRp in cellvolume, IRins in cellvolume, IRip in cellvolume;
+  species IRi in cellvolume, IRS1 in cellvolume, IRS1p in cellvolume, IRS1p307 in cellvolume;
+  species IRS1307 in cellvolume, X in cellvolume, Xp in cellvolume, PKB in cellvolume;
+  species PKB308p in cellvolume, PKB473p in cellvolume, PKB308p473p in cellvolume;
+  species mTORC1 in cellvolume, mTORC1a in cellvolume, mTORC2 in cellvolume;
+  species mTORC2a in cellvolume, AS160 in cellvolume, AS160p in cellvolume;
+  species GLUT4m in cellvolume, GLUT4 in cellvolume, S6K in cellvolume, S6Kp in cellvolume;
+  species S6 in cellvolume, S6p in cellvolume;
+
+  // Assignment Rules:
+  measuredIRp := scaleIR * (IRp + IRip);
+  measuredIRint := IRi + IRip;
+  measuredIRS1p := scaleIRS1 * (IRS1p + IRS1p307);
+  measuredIRS1307 := scaleIRS1307 * (IRS1p307 + IRS1307);
+  measuredPKB308p := scalePKB308 * (PKB308p + PKB308p473p);
+  measuredPKB473p := scalePKB473 * (PKB473p + PKB308p473p);
+  measuredAS160p := scaleAS160 * AS160p;
+  measuredmTORC1a := mTORC1a;
+  measuredS6Kp := scaleS6K * S6Kp;
+  measuredS6p := scaleS6 * S6p;
+  measuredmTORC2a := mTORC2a;
+  glucoseuptake := k8 * GLUT4m * gluc + glut1 * gluc;
+
+  // Reactions:
+  v1a: IR => IRins; IR * k1a * insulin;
+  v1basal: IR => IRp; k1basal * IR;
+  v1c: IRins => IRp; IRins * k1c;
+  v1d: IRp => IRip; IRp * k1d;
+  v1e: IRip => IRi; IRip * k1f * Xp;
+  v1g: IRp => IR; IRp * k1g;
+  v1r: IRi => IR; IRi * k1r;
+  v2a: IRS1 => IRS1p; IRS1 * k2a * IRip;
+  v2b: IRS1p => IRS1; IRS1p * k2b;
+  v2c: IRS1p => IRS1p307; IRS1p * k2c * mTORC1a * diabetes;
+  v2d: IRS1p307 => IRS1p; IRS1p307 * k2d;
+  v2f: IRS1p307 => IRS1307; IRS1p307 * k2f;
+  v2basal: IRS1 => IRS1307; IRS1 * k2basal;
+  v2g: IRS1307 => IRS1; IRS1307 * k2g;
+  v3a: X => Xp; X * k3a * IRS1p;
+  v3b: Xp => X; Xp * k3b;
+  v5a: mTORC1 => mTORC1a; mTORC1 * (k5a1 * PKB308p473p + k5a2 * PKB308p);
+  v5b: mTORC1a => mTORC1; mTORC1a * k5b;
+  v5c: mTORC2 => mTORC2a; mTORC2 * k5c * IRip;
+  v5d: mTORC2a => mTORC2; k5d * mTORC2a;
+  v4a: PKB => PKB308p; k4a * PKB * IRS1p;
+  v4b: PKB308p => PKB; k4b * PKB308p;
+  v4c: PKB308p => PKB308p473p; k4c * PKB308p * mTORC2a;
+  v4e: PKB473p => PKB308p473p; k4e * PKB473p * IRS1p307;
+  v4f: PKB308p473p => PKB473p; k4f * PKB308p473p;
+  v4h: PKB473p => PKB; k4h * PKB473p;
+  v6f1: AS160 => AS160p; AS160 * (k6f1 * PKB308p473p + k6f2 * PKB473p^n6 / (km6^n6 + PKB473p^n6));
+  v6b1: AS160p => AS160; AS160p * k6b;
+  v7f: GLUT4 => GLUT4m; GLUT4 * k7f * AS160p;
+  v7b: GLUT4m => GLUT4; GLUT4m * k7b;
+  v9f1: S6K => S6Kp; S6K * k9f1 * mTORC1a^n9 / (km9^n9 + mTORC1a^n9);
+  v9b1: S6Kp => S6K; S6Kp * k9b1;
+  v9f2: S6 => S6p; S6 * k9f2 * S6Kp;
+  v9b2: S6p => S6; S6p * k9b2;
+
+  // Species initializations:
+  IR = 49.9344643421136;
+  IRp = 0.000931221500588088;
+  IRins = 0;
+  IRip = 0.011815001204792;
+  IRi = 0.0527894351383809;
+  IRS1 = 86.2418960059256;
+  IRS1p = 0.00095272377217019;
+  IRS1p307 = 0.00891531075576947;
+  IRS1307 = 13.7482359094757;
+  X = 99.9986712896423;
+  Xp = 0.00132871035763352;
+  PKB = 78.0219322115859;
+  PKB308p = 12.2197372437326;
+  PKB473p = 9.6963389945784;
+  PKB308p473p = 0.061992532897245;
+  mTORC1 = 96.927052256569;
+  mTORC1a = 3.07294774343092;
+  mTORC2 = 99.9045223943705;
+  mTORC2a = 0.0954776056294795;
+  AS160 = 95.4699007486273;
+  AS160p = 4.53009925137289;
+  GLUT4m = 4.5880858350243;
+  GLUT4 = 45.4119141649757;
+  S6K = 99.8296860066098;
+  S6Kp = 0.170313993390069;
+  S6 = 98.2037625421647;
+  S6p = 1.79623745783512;
+
+  // Compartment initializations:
+  cellvolume = 1;
+
+  // Variable initializations:
+  diabetes = 0.15;
+  k1a = 0.6331;
+  k1basal = 0.03683;
+  k1c = 0.8768;
+  k1d = 31.01;
+  k1f = 1840;
+  k1g = 1944;
+  k1r = 0.5471;
+  k2a = 3.227;
+  k2c = 5759;
+  k2basal = 0.04228;
+  k2b = 3424;
+  k2d = 280.8;
+  k2f = 2.913;
+  k2g = 0.2671;
+  k3a = 0.001377;
+  k3b = 0.09876;
+  k4a = 5790;
+  k4b = 34.8;
+  k4c = 4.456;
+  k4e = 42.84;
+  k4f = 143.6;
+  k4h = 0.5361;
+  k5a1 = 1.842;
+  k5a2 = 0.05506;
+  k5b = 24.83;
+  k5d = 1.06;
+  km5 = 2.65;
+  k5c = 0.08575;
+  k6f1 = 2.652;
+  k6f2 = 36.93;
+  km6 = 30.54;
+  n6 = 2.137;
+  k6b = 65.18;
+  k7f = 50.98;
+  k7b = 2286;
+  k8 = 724.2;
+  glut1 = 7042;
+  k9f1 = 0.1298;
+  k9b1 = 0.04441;
+  k9f2 = 3.329;
+  k9b2 = 31;
+  km9 = 5873;
+  n9 = 0.9855;
+  scaleIR = 5.202;
+  scaleIRS1 = 0.3761;
+  scaleIRS1ds = 14.89;
+  scaleIRS1307 = 0.05866;
+  scalePKB308 = 0.04356;
+  scalePKB473 = 0.013;
+  scaleAS160 = 0.026656;
+  scaleGLUCOSE = 0.04051;
+  scaleS6K = 0.7465;
+  scaleS6 = 0.1149;
+  gluc = 0.05;
+  insulin = 10;
+
+  //Other declarations:
+  var measuredIRp, measuredIRint, measuredIRS1p, measuredIRS1307, measuredPKB308p;
+  var measuredPKB473p, measuredAS160p, measuredmTORC1a, measuredS6Kp, measuredS6p;
+  var measuredmTORC2a, glucoseuptake;
+  const cellvolume, diabetes, k1a, k1basal, k1c, k1d, k1f, k1g, k1r, k2a;
+  const k2c, k2basal, k2b, k2d, k2f, k2g, k3a, k3b, k4a, k4b, k4c, k4e, k4f;
+  const k4h, k5a1, k5a2, k5b, k5d, km5, k5c, k6f1, k6f2, km6, n6, k6b, k7f;
+  const k7b, k8, glut1, k9f1, k9b1, k9f2, k9b2, km9, n9, scaleIR, scaleIRS1;
+  const scaleIRS1ds, scaleIRS1307, scalePKB308, scalePKB473, scaleAS160, scaleGLUCOSE;
+  const scaleS6K, scaleS6, gluc, insulin;
+end

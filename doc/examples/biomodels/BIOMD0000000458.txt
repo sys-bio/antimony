@@ -1,0 +1,66 @@
+//Created by libAntimony v2.4
+model *BIOMD0000000458()
+
+  // Compartments and Species:
+  compartment cell;
+  species $p3g in cell, php in cell, pser in cell, $ser in cell, $serA in cell;
+  species $serC in cell, $serB in cell;
+
+  // Reactions:
+  PDH: $p3g -> php; cell * serA * PDH_kcatA * (p3g / PDH_KAp3g) / (1 + p3g / PDH_KAp3g + php / PDH_KAphp) / (1 + ser / PDH_KiAser);
+  PSA: php -> pser; cell * serC * PSA_kcatC * (php / PSA_KCphp) / (1 + php / PSA_KCphp + pser / PSA_KCpser);
+  PSP: pser -> $ser; cell * serB * PSP_kcatB * (pser / PSP_KBpser) / (1 + pser / PSP_KBpser + ser / PSP_KBser);
+
+  // Species initializations:
+  p3g = 2.36;
+  php = 0.6;
+  pser = 0.09;
+  ser = 4.9;
+  serA = 1.15;
+  serC = 0.1;
+  serB = 0.25;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  PDH_kcatA = 0.55;
+  PDH_kcatA has per_s;
+  PDH_KAp3g = 1.2;
+  PDH_KAp3g has mM;
+  PDH_KAphp = 0.0032;
+  PDH_KAphp has mM;
+  PDH_KiAser = 0.0038;
+  PDH_KiAser has mM;
+  PSA_kcatC = 1.75;
+  PSA_kcatC has per_s;
+  PSA_KCphp = 0.0015;
+  PSA_KCphp has mM;
+  PSA_KCpser = 0.0017;
+  PSA_KCpser has mM;
+  PSP_kcatB = 1.43;
+  PSP_kcatB has per_s;
+  PSP_KBpser = 0.0015;
+  PSP_KBpser has mM;
+  PSP_KBser = 0.15;
+  PSP_KBser has mM;
+
+  //Other declarations:
+  const cell;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit mM = 1e-3 mole / litre;
+  unit per_s = 1 / second;
+
+  //Display Names:
+  substance is "mmol";
+  per_s is "per s";
+  p3g is "3-phosphoglycerate";
+  php is "phosphohydroxypyruvate";
+  pser is "phosphoserine";
+  ser is "serine";
+  PDH is "phosphoglycerate dehydrogenase";
+  PSA is "phosphoserine aminotransferase";
+  PSP is "phosphoserine phosphatase";
+end

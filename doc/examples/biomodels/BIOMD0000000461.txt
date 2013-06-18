@@ -1,0 +1,33 @@
+//Created by libAntimony v2.4
+model *MODEL1212180000()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species $IPTG in compartment_, sigb in compartment_, lacz in compartment_;
+  species x in compartment_;
+
+  // Reactions:
+  v1: $IPTG -> sigb; IPTG * kbs - kbd * sigb;
+  v2: sigb -> lacz; -(kzd * lacz) + kzs * sigb / (1 + x);
+  v3: sigb -> x; -(kxd * x) + kxs * sigb / (1 + x);
+
+  // Species initializations:
+  IPTG = 100;
+  sigb = 0;
+  lacz = 0;
+  x = 0;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  kbd = 0.044;
+  kbs = 100;
+  kxd = 9;
+  kxs = 0.76;
+  kzd = 0.041;
+  kzs = 0.0004;
+
+  //Other declarations:
+  const compartment_, kbd, kbs, kxd, kxs, kzd, kzs;
+end

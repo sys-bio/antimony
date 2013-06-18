@@ -1,0 +1,161 @@
+//Created by libAntimony v2.4
+model *MODEL1212040001()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species R in compartment_, L in compartment_, RL in compartment_, Gabg in compartment_;
+  species RGabg in compartment_, RGabgL in compartment_, GaGTP in compartment_;
+  species Gbg in compartment_, RGS in compartment_, RGSGaGTP in compartment_;
+  species GaGDPP in compartment_, Effector in compartment_, GaGTPEffector in compartment_;
+  species inertGaGTP in compartment_, RGSinertGaGTP in compartment_, GaGDP in compartment_;
+  species P in compartment_, z1 in compartment_, z2 in compartment_, z3 in compartment_;
+
+  // Reactions:
+  R1: R + L => RL; compartment_ * R * L * R1_k1;
+  R2: R + Gabg => RGabg; compartment_ * R * Gabg * R2_k2;
+  R3: RL + Gabg => RGabgL; compartment_ * RL * Gabg * R3_k3;
+  R4: RGabg + L => RGabgL; compartment_ * RGabg * L * R4_k4;
+  R5: RGabgL => RL + GaGTP + Gbg; compartment_ * RGabgL * R5_k5;
+  R6: Gabg => GaGTP + Gbg; compartment_ * Gabg * R6_k6;
+  R7: GaGTP + RGS => RGSGaGTP; compartment_ * GaGTP * RGS * R7_k7;
+  R8: RGSGaGTP => GaGDPP + RGS; compartment_ * RGSGaGTP * R8_k8;
+  R9: GaGTP => GaGDPP; compartment_ * GaGTP * R9_k9;
+  R10: Effector + GaGTP => GaGTPEffector; compartment_ * Effector * GaGTP * R10_k10;
+  R11: GaGTPEffector => inertGaGTP + Effector; compartment_ * GaGTPEffector * R11_k11;
+  R12: inertGaGTP + RGS => RGSinertGaGTP; compartment_ * inertGaGTP * RGS * R12_k12;
+  R13: RGSinertGaGTP => GaGDPP + RGS; compartment_ * RGSinertGaGTP * R13_k13;
+  R14: inertGaGTP => GaGDPP; compartment_ * inertGaGTP * R14_k14;
+  R15: GaGDPP => GaGDP + P; compartment_ * GaGDPP * R15_k15;
+  R16: GaGDP + Gbg => Gabg; compartment_ * GaGDP * Gbg * R16_k16;
+  R17: P => ; compartment_ * P * R17_k17;
+  R18:  => z1; compartment_ * GaGTPEffector * ka;
+  R19: z1 => z2; compartment_ * z1 * ka;
+  R20: z2 => z3; compartment_ * z2 * ka;
+  R21: z3 => ; compartment_ * z3 * ka;
+
+  // Events:
+  Ligand_addition: at geq(time, 14): L = L + Ligand_conc;
+
+  // Species initializations:
+  R = 205;
+  R has nanoMolar;
+  L = 0;
+  L has nanoMolar;
+  RL = 0;
+  RL has nanoMolar;
+  Gabg = 0;
+  Gabg has nanoMolar;
+  RGabg = 0;
+  RGabg has nanoMolar;
+  RGabgL = 0;
+  RGabgL has nanoMolar;
+  GaGTP = 0;
+  GaGTP has nanoMolar;
+  Gbg = 205;
+  Gbg has nanoMolar;
+  RGS = 60;
+  RGS has nanoMolar;
+  RGSGaGTP = 0;
+  RGSGaGTP has nanoMolar;
+  GaGDPP = 0;
+  GaGDPP has nanoMolar;
+  Effector = 205;
+  Effector has nanoMolar;
+  GaGTPEffector = 0;
+  GaGTPEffector has nanoMolar;
+  inertGaGTP = 0;
+  inertGaGTP has nanoMolar;
+  RGSinertGaGTP = 0;
+  RGSinertGaGTP has nanoMolar;
+  GaGDP = 205;
+  GaGDP has nanoMolar;
+  P = 0;
+  P has nanoMolar;
+  z1 = 0;
+  z1 has nanoMolar;
+  z2 = 0;
+  z2 has nanoMolar;
+  z3 = 0;
+  z3 has nanoMolar;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  Ligand_conc = 0.1;
+  Ligand_conc has nanoMolar;
+  ka = 1.5;
+  ka has FirstOrder;
+  R1_k1 = 0.0025;
+  R1_k1 has SecondOrder;
+  R2_k2 = 0.005;
+  R2_k2 has SecondOrder;
+  R3_k3 = 0.02;
+  R3_k3 has SecondOrder;
+  R4_k4 = 0.005;
+  R4_k4 has SecondOrder;
+  R5_k5 = 50;
+  R5_k5 has FirstOrder;
+  R6_k6 = 0.2;
+  R6_k6 has FirstOrder;
+  R7_k7 = 500;
+  R7_k7 has SecondOrder;
+  R8_k8 = 2.5;
+  R8_k8 has FirstOrder;
+  R9_k9 = 0.005;
+  R9_k9 has FirstOrder;
+  R10_k10 = 10;
+  R10_k10 has SecondOrder;
+  R11_k11 = 1;
+  R11_k11 has FirstOrder;
+  R12_k12 = 50;
+  R12_k12 has SecondOrder;
+  R13_k13 = 0.3;
+  R13_k13 has FirstOrder;
+  R14_k14 = 0.005;
+  R14_k14 has FirstOrder;
+  R15_k15 = 1000;
+  R15_k15 has FirstOrder;
+  R16_k16 = 1000;
+  R16_k16 has SecondOrder;
+  R17_k17 = 10;
+  R17_k17 has FirstOrder;
+
+  //Other declarations:
+  const compartment_, Ligand_conc, ka;
+
+  // Unit definitions:
+  unit nanoMolar = 1e-9 mole / litre;
+  unit hour = 3600 second;
+  unit FirstOrder = 1 / 3600 second;
+  unit SecondOrder = litre / (1e-9 mole * 3600 second);
+  unit volume = litre;
+
+  //Display Names:
+  nanoMolar is "nM";
+  hour is "hr";
+  FirstOrder is "1/hr";
+  SecondOrder is "1/(nM*hr)";
+  compartment_ is "cell";
+  R1 is "Receptor-Ligand association";
+  R2 is "Receptor-Gprotein association";
+  R3 is "RL-Gprotein association";
+  R4 is "RGabg-Ligand association";
+  R5 is "Galpha activation by receptor";
+  R6 is "Galpha activation spontaneous";
+  R7 is "Galpha-RGS association";
+  R8 is "Galpha deactivation by RGS";
+  R9 is "Galpha deactivation spontaneous";
+  R10 is "Galpha-Effector association";
+  R11 is "Galpha becomes inert";
+  R12 is "inertGalpha-RGS association";
+  R13 is "inertGalpha deactivation by RGS";
+  R14 is "inertGalpha deactivation spontaneous";
+  R15 is "Phosphate release";
+  R16 is "Gprotein subunits association";
+  R17 is "Phosphate degradation";
+  R18 is "Delay 1";
+  R19 is "Delay 2";
+  R20 is "Delay 3";
+  R21 is "Delay 4";
+end

@@ -1,0 +1,59 @@
+//Created by libAntimony v2.4
+model *MODEL1305030001()
+
+  // Compartments and Species:
+  compartment cell;
+  species x1 in cell, x2 in cell, x3 in cell, $y1 in cell, $y2 in cell, $y3 in cell;
+  species $y4 in cell, $y5 in cell, $y6 in cell;
+
+  // Reactions:
+  v1: $y1 + x2 -> x1 + x3; v1_e1 * (v1_p1 * y1 * x2 - x1 * x3) / (1 + y1 + x2 + x1 + x3 + y1 * x2 + x1 * x3);
+  v2: $y4 + x3 -> $y5 + x2; v2_e2 * (v2_p2 * y4 * x3 - y5 * x2) / (1 + x3 + x2 + y4 + y5 + x3 * y4 + x2 * y5);
+  v3: x1 -> $y2; v3_e3 * (v3_p3 * x1 - y2) / (1 + x1 + y2);
+  v4: x1 -> $y3; v4_e4 * (v4_p4 * x1 - y3) / (1 + x1 + y3);
+  v5: x3 -> $y6; v5_e5 * v5_p5 * x3;
+
+  // Species initializations:
+  x1 = 0.05625738310526;
+  x2 = 0.76876151899652;
+  x3 = 4.23123848100348;
+  y1 = 10;
+  y2 = 0;
+  y3 = 0;
+  y4 = 1;
+  y5 = 1;
+  y6 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  v1_e1 = 1;
+  v1_e1 has dimensionless;
+  v1_p1 = 10;
+  v1_p1 has dimensionless;
+  v2_e2 = 1;
+  v2_e2 has dimensionless;
+  v2_p2 = 10;
+  v2_p2 has dimensionless;
+  v3_e3 = 1;
+  v3_e3 has dimensionless;
+  v3_p3 = 50;
+  v3_p3 has dimensionless;
+  v4_e4 = 1;
+  v4_e4 has dimensionless;
+  v4_p4 = 10;
+  v4_p4 has dimensionless;
+  v5_e5 = 1;
+  v5_e5 has dimensionless;
+  v5_p5 = 0;
+  v5_p5 has dimensionless;
+
+  //Other declarations:
+  const cell;
+
+  // Unit definitions:
+  unit substance = dimensionless;
+  unit time_unit = dimensionless;
+  unit volume = dimensionless;
+end
