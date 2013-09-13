@@ -926,7 +926,7 @@ void Module::CreateSBMLModel(bool comp)
     m_sbml = newdoc;
 #ifdef USE_COMP
     CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
-    if (compdoc != NULL) compdoc->setRequired(false);
+    if (compdoc != NULL) compdoc->setRequired(true);
 #endif
   }
   else {
