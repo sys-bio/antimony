@@ -372,7 +372,9 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
           assert(syncmod->m_synchronized.size() > 0);
           pair<vector<string>, vector<string> > newsync = syncmod->m_synchronized[syncmod->m_synchronized.size()-1];
           syncmod->m_synchronized.pop_back();
+          syncmod->m_conversionFactors.pop_back();
           modcopy->m_synchronized.push_back(newsync);
+          modcopy->m_conversionFactors.push_back(syncmod->m_conversionFactors[syncmod->m_conversionFactors.size()-1]);
           /*
           cout << ToStringFromVecDelimitedBy(var1name, '.') << " to "
                << ToStringFromVecDelimitedBy(var2name, '.') << ": " << endl;
@@ -396,13 +398,15 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
             sync1name = var1->GetName();
             sync2name = var1->GetPointerName();
             //cout << "Looking for sync for " << ToStringFromVecDelimitedBy(sync1name, '.') << " and " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
+            vector<vector<string> >::iterator cf = m_conversionFactors.begin();
             for (vector<pair<vector<string>, vector<string> > >::iterator sync = m_synchronized.begin();
-                 sync != m_synchronized.end(); sync++) {
+                 sync != m_synchronized.end(); sync++, cf++) {
               //cout << "Found " << ToStringFromVecDelimitedBy(sync->first, '.') << " and " << ToStringFromVecDelimitedBy(sync->second, '.') << endl;
               if ((sync1name == sync->first && sync2name == sync->second) ||
                   (sync2name == sync->first && sync1name == sync->second)) {
                 //cout << "Removing sync from " << m_modulename << ": " << ToStringFromVecDelimitedBy(sync1name, '.') << " with " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
                 m_synchronized.erase(sync);
+                m_conversionFactors.erase(cf);
                 foundorig = true;
                 //cout << "Found original!" << endl;
                 break;
@@ -413,12 +417,14 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
             //cout << "var2 is pointer: " << var2->GetNameDelimitedBy('.') << endl;
             sync1name = var2->GetName();
             sync2name = var2->GetPointerName();
+            vector<vector<string> >::iterator cf = m_conversionFactors.begin();
             for (vector<pair<vector<string>, vector<string> > >::iterator sync = m_synchronized.begin();
-                 sync != m_synchronized.end(); sync++) {
+                 sync != m_synchronized.end(); sync++, cf++) {
               if ((sync1name == sync->first && sync2name == sync->second) ||
                   (sync2name == sync->first && sync1name == sync->second)) {
                 //cout << "Removing sync from " << m_modulename << ": " << ToStringFromVecDelimitedBy(sync1name, '.') << " with " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
                 m_synchronized.erase(sync);
+                m_conversionFactors.erase(cf);
                 foundorig = true;
                 //cout << "Found original!" << endl;
                 break;

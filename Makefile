@@ -176,6 +176,7 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)antimony-installation.html \
 	$(doc_dir)antimony-license.html \
 	$(doc_dir)antimony-qt.html \
+	$(doc_dir)antimony-translations.html \
 	$(doc_dir)antimony-technical-spec.html \
 	$(doc_dir)antimony-why.html \
 	$(doc_dir)cellmllist_ant.html \

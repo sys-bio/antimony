@@ -56,7 +56,7 @@ Module::Module(string name)
 {
 #ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
-  compdoc->setRequired(false);
+  compdoc->setRequired(true);
   SBMLDocument* doctest = compdoc->getSBMLDocument();
   SBase* parenttest = compdoc->getParentSBMLObject();
   assert(doctest != NULL);
@@ -183,7 +183,7 @@ Module& Module::operator=(const Module& src)
   m_libsbml_warnings = src.m_libsbml_warnings;
 #ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
-  compdoc->setRequired(false);
+  compdoc->setRequired(true);
   SBMLDocument* doctest = compdoc->getSBMLDocument();
   SBase* parenttest = compdoc->getParentSBMLObject();
   if (doctest == NULL) {
@@ -461,9 +461,12 @@ bool Module::DeleteFromSynchronized(Variable* deletedvar)
   assert(deletedvar->GetType()==varModule);
   vector<string> delname = deletedvar->GetName();
   
+  vector<vector<string> >::iterator cf = m_conversionFactors.begin();
   for (vector<pair<vector<string>, vector<string> > >::iterator sync = m_synchronized.begin(); sync != m_synchronized.end();) {
     vector<pair<vector<string>, vector<string> > >::iterator nextsync = sync;
+    vector<vector<string> >::iterator nextcf = cf;
     nextsync++;
+    nextcf++;
     vector<string> firstname = sync->first;
     vector<string> secondname = sync->second;
     if (firstname.size() > delname.size()) {
@@ -475,7 +478,9 @@ bool Module::DeleteFromSynchronized(Variable* deletedvar)
       }
       if (matches) {
         m_synchronized.erase(sync);
+        m_conversionFactors.erase(cf);
         sync = nextsync;
+        cf = nextcf;
         continue;
       }
     }
@@ -488,6 +493,7 @@ bool Module::DeleteFromSynchronized(Variable* deletedvar)
       }
     }
     sync = nextsync;
+    cf = nextcf;
   }
   return false;
 }
@@ -940,6 +946,9 @@ bool Module::Finalize()
   }
 
   //Phase 6:  convert conversion factors.
+  if (m_conversionFactors.size() != m_synchronized.size()) {
+    //assert(false);
+  }
   for (size_t cf=0; cf < m_conversionFactors.size(); cf++) {
     vector<string> toconvert = m_synchronized[cf].first;
     if (toconvert.empty()) continue;
@@ -1849,7 +1858,12 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
         Variable copied(*(origmod->m_uniquevars[uniq]));
         copied.ClearSameName();
         copied.SetNewTopName(m_modulename, mname[0]);
-        const Variable* origvar = GetVariable(copied.GetName())->GetSameVariable();
+        const Variable* origvar = GetVariable(copied.GetName());
+        if (origvar == NULL) {
+          assert(false);
+          continue;
+        }
+        origvar = origvar->GetSameVariable();
         assert(find(m_uniquevars.begin(), m_uniquevars.end(), origvar) != m_uniquevars.end());
         origmapiter = origmap.find(origvar);
         if (origmapiter == origmap.end()) {

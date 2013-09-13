@@ -466,8 +466,8 @@ file_type GetFileType(string filename)
     if (line.find("<?xml") != string::npos) {
       isxml = true;
     }
-    else if (line.find("model") != string::npos
-             || line.find("module") != string::npos) {
+    else if (isxml == false && (line.find("model") != string::npos
+             || line.find("module") != string::npos)) {
       if (line.rfind(' ')==5 || line.rfind(' ')==6 || line[line.size()-1] == ')') {
         //cout << "Antimony by finding 'model/module'" << endl;
         return FT_ANTIMONY;
