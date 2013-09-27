@@ -391,9 +391,12 @@ LIB_EXTERN long loadSBMLStringWithLocation(const char* model, const char* locati
 {
   g_registry.ClearModules();
   SBMLDocument* document = readSBMLFromString(model);
-  if (location != NULL) {
-    string locURI = "file:";
-    locURI += location;
+  string loc;
+  if (location) {
+    loc = location;
+  }
+  if (!loc.empty()) {
+    string locURI = "file:" + loc;
     document->setLocationURI(locURI);
   }
   long retval = CheckAndAddSBMLDoc(document);
@@ -1122,12 +1125,12 @@ LIB_EXTERN char*** getInteractorNames(const char* moduleName)
   return getReactantOrProductNamesForRxnOrInt(moduleName, false, true);
 }
 
-LIB_EXTERN char** getNthReactionInteractorNames(const char* moduleName, unsigned long n)
+LIB_EXTERN char** getNthInteractionInteractorNames(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductNames(moduleName, n, false, true);
 }
 
-LIB_EXTERN char* getNthReactionMthInteractorName(const char* moduleName, unsigned long interaction, unsigned long interactor)
+LIB_EXTERN char* getNthInteractionMthInteractorName(const char* moduleName, unsigned long interaction, unsigned long interactor)
 {
   return getNthRxnorIntMthReactantOrProductName(moduleName, interaction, interactor, false, true);
 }
@@ -1137,12 +1140,12 @@ LIB_EXTERN char*** getInteracteeNames(const char* moduleName)
   return getReactantOrProductNamesForRxnOrInt(moduleName, false, false);
 }
 
-LIB_EXTERN char** getNthReactionInteracteeNames(const char* moduleName, unsigned long n)
+LIB_EXTERN char** getNthInteractionInteracteeNames(const char* moduleName, unsigned long n)
 {
   return getNthRxnOrIntReactantOrProductNames(moduleName, n, false, false);
 }
 
-LIB_EXTERN char* getNthReactioniMthInteracteeName(const char* moduleName, unsigned long interaction, unsigned long interactee)
+LIB_EXTERN char* getNthInteractionMthInteracteeName(const char* moduleName, unsigned long interaction, unsigned long interactee)
 {
   return getNthRxnorIntMthReactantOrProductName(moduleName, interaction, interactee, false, false);
 }
@@ -1240,6 +1243,11 @@ LIB_EXTERN double* getNthReactionReactantStoichiometries(const char* moduleName,
 LIB_EXTERN double getNthReactionMthReactantStoichiometries(const char* moduleName, unsigned long rxn, unsigned long reactant)
 {
   return getNthRxnOrIntMthReactantOrProductStoichiometries(moduleName, rxn, reactant, true, true);
+}
+
+LIB_EXTERN double getNthReactionMthProductStoichiometries(const char* moduleName, unsigned long rxn, unsigned long reactant)
+{
+  return getNthRxnOrIntMthReactantOrProductStoichiometries(moduleName, rxn, reactant, true, false);
 }
 
 LIB_EXTERN double** getProductStoichiometries(const char* moduleName)
