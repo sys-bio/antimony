@@ -556,7 +556,14 @@ void TabManager::SetFlatten(bool flatten)
 #ifdef USE_COMP
     if (flatten) {
 #endif
-      loadSBMLStringWithLocation(sbmltab->toPlainText().toAscii(), sbmltab->GetFilename().toAscii());
+      int ret = loadSBMLStringWithLocation(sbmltab->toPlainText().toAscii(), sbmltab->GetFilename().toAscii());
+      if (ret==-1) {
+        //Error in the SBML itself.
+        char* error = getLastError();
+        emit FailedSBMLTranslation();
+        textbox(0)->DisplayError(error);
+        continue;
+      }
       SBML = getSBMLString(NULL);
 #ifdef USE_COMP
     }

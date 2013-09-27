@@ -52,6 +52,9 @@ option(WITH_CELLML          "Generate CellML translations"    ON )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
 option(WITH_SBW             "QTAntimony integration with SBW" OFF )
 option(WITH_SBW_TRANSLATOR  "Generate SBWTranslator"          OFF )
+option(WITH_SWIG   "Regenerate SWIG-based language bindings." ON )
+option(WITH_PYTHON       "Generate Python language bindings." OFF)
+
 set(EXTRA_LIBS "" CACHE STRING "Libraries the other libraries depend on that are in non-standard locations" )
 #set(EXTRA_LIBS "" CACHE_STRING "")
 
@@ -162,6 +165,53 @@ else(WITH_CELLML)
 
 endif(WITH_CELLML)
 
+###############################################################################
+#
+# If WITH_SWIG is selected, we need to find swig
+#
+if(WITH_SWIG)
+    find_program(SWIG_EXECUTABLE
+        NAMES swig
+        PATHS
+              c:/Program Files (x86)/Swig
+              c:/Program Files/Swig
+              c:/swigwin-2.0.11
+              c:/swigwin-2.0.10
+              c:/swigwin-2.0.9
+              c:/swigwin-2.0.8
+              c:/swigwin-2.0.7
+              c:/swigwin-2.0.6
+              c:/swigwin-2.0.5
+              c:/swigwin-2.0.4
+              c:/swigwin-2.0.3
+              c:/swigwin-2.0.2
+              c:/swigwin-2.0.1
+              c:/swigwin-2.0.0
+              /usr/local/bin
+              /opt/local/bin
+              /usr/bin
+        DOC "The file name of the swig executable."
+        )
+    find_package(SWIG)
+    if (SWIG_FOUND AND SWIG_VERSION VERSION_LESS "2.0.4")
+    	message(WARNING "You are using swig version ${SWIG_VERSION} while we recommend at least version 2.0.4.")
+    endif()
+    set(SWIG_EXTRA_ARGS)
+endif(WITH_SWIG)
+
+if(WITH_SWIG)
+    message(STATUS "  Using SWIG                    = ${SWIG_EXECUTABLE}")
+    
+    if (SWIG_FOUND AND SWIG_VERSION VERSION_LESS "2.0.4")
+    	message(WARNING "   You are using swig version ${SWIG_VERSION} while we recommend at least version 2.0.4.")
+    endif()
+
+endif()
+
+if(WITH_PYTHON)
+    message(STATUS "  Using Python                  = ${PYTHON_EXECUTABLE}")
+endif()
+
 
 set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS} )
 
@@ -255,6 +305,16 @@ install(FILES   ${LIBANTIMONY_HEADERS} DESTINATION include)
 if (NOT UNIX)
   add_definitions(-DWIN32 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
 endif(NOT UNIX)
+
+
+####################################################################
+#
+# Build the bindings.
+#
+
+add_subdirectory(src/bindings)
+
+
 ####################################################################
 #
 # Build the various command-line executables

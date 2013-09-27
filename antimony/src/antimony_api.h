@@ -7,9 +7,9 @@
   *
   * Note:  It is not currently possible to convert an internally-formatted model into an Antimony model (the API has several 'get' functions, but no 'set' functions).  This restriction will be relaxed in future versions of the library.
   *
-  * Antimony models are modular; that is, one model may be defined and then used as a subset of a larger model.  As such, a single Antimony file may contain a number of different models, each referred to as a 'module'.  SBML files are (as of January 2009) not modular, and only contain a single model per file.  When writing SBML files, therefore, only one module may be written per file.  (A proposed aspect of SBML Level 3 is to introduce modularity in a similar way to how Antimony works; once libSBML implements this modularity, libAntimony will be extended to allow writing and reading of modular SBML files as well.)
+  * Antimony models are modular; that is, one model may be defined and then used as a subset of a larger model.  As such, a single Antimony file may contain a number of different models, each referred to as a 'module'.  SBML core files are not modular, and only contain a single model per file, but SBML L3 models with the 'Hierarchical Model Composition' package are (http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp), so translations from Antimony may either be 'flattened' to SBML core, or may retain their modularity by using the hierarchy package.
   *
-  * Converting files may be accomplished fairly straightforwardly using 'loadFile' to read in a file (of either Antimony or SBML format), 'getNumModules' and 'getModuleNames' to obtain a list of the modules in that file, and finally the 'writeAntimonyFile' or 'writeSBMLFile' routines to write them out again.
+  * Converting files may be accomplished fairly straightforwardly using 'loadFile' to read in a file (of Antimony, SBML, or CellML format), 'getNumModules' and 'getModuleNames' to obtain a list of the modules in that file, and finally the 'writeAntimonyFile', 'writeSBMLFile', 'writeCompSBMLFile', and 'writeCellMLFile' routines to write them out again.
   *
   * Converting the models inside Antimony or SBML files to your own internal format for your software is a bit more involved.  An example program is provided that will read in a list of files, write out all the included modules to individual Antimony and SBML files, and write out a list of the components to the screen in a few different formats which will hopefully prove useful as an example.  The 'printAllDataFor' routine in the file antimony_api.cpp may also be used as an example, as it only uses routines provided in the API, and is thus fully exportable and modifiable in other C or C++ programs.
   *
@@ -22,20 +22,20 @@
   * - Interactions (not modelled explicitly in SBML, only implied)
   * - DNA strands (not modelled explicitly in SBML)
   *
-  * Note that there are several concepts modelled in SBML that are not modelled in libAntimony, units, annotations, and algebraic rules in particular.  As such, libAntimony is not the ideal tool to use to convert SBML models when those elements are vital to your modelling; the excellent libSBML (http://sbml.org/Software/libSBML) should be used instead.  Similarly, the concepts in Antimony not in SBML (the main ones being modularity, interactions, and DNA strands) will be lost when converting to an SBML file, so converting an Antimony file to SBML and back again may be lossy.  Do note that as of Antimony 2.1-beta, modularity may indeed be preserved in SBML files using the new 'Hierachircl Model Composition' package constructs (http://sbml.org/Community/Wiki/SBML_Level_3_Proposals/Hierarchical_Model_Composition).
+  * Note that there are several concepts modelled in SBML that are not modelled in libAntimony, units, annotations, and algebraic rules in particular.  As such, libAntimony is not the ideal tool to use to convert SBML models when those elements are vital to your modelling; the excellent libSBML (http://sbml.org/Software/libSBML) should be used instead.  Similarly, the concepts in Antimony not in SBML (the main ones being interactions, and DNA strands) will be lost when converting to an SBML file, so converting an Antimony file to SBML and back again may be lossy.  Do note that as of Antimony 2.1-beta, modularity may indeed be preserved in SBML files using the new 'Hierachircl Model Composition' package constructs .
   *
   * <b>Return Types</b><br/>
   * Many of the functions listed below ask for an enum value to determine what kind of symbol you are asking about.  This list is declared in enums.h, and is as follows:
-  * - 0: allSymbols:        Every symbol of every type in Antimony
-  * - 1: allSpecies:        All species, both const (border) and variable.
-  * - 2: allFormulas:       All formulas (values defined by an equation), both const and variable.
-  * - 3: allDNA:            All symbols defined to be DNA (operators and genes, but not strands).
-  * - 4: allOperators:      All symbols defined to be operators (formulas embeddable in a DNA strand).
-  * - 5: allGenes:          All symbols defined to be genes (reactions embeddable in a DNA strand).
-  * - 6: allReactions:      All reactions (species being converted or created).
-  * - 7: allInteractions:   All interactions (species involved in reaction rates).
-  * - 8: allEvents:         All events.
-  * - 9: allCompartments:   All compartments, both const and variable.
+  * - 0: allSymbols:         Every symbol of every type in Antimony
+  * - 1: allSpecies:         All species, both const (boundary) and variable.
+  * - 2: allFormulas:        All formulas (values defined by an equation), both const and variable.
+  * - 3: allDNA:             All symbols defined to be DNA (operators and genes, but not strands).
+  * - 4: allOperators:       All symbols defined to be operators (formulas embeddable in a DNA strand).
+  * - 5: allGenes:           All symbols defined to be genes (reactions embeddable in a DNA strand).
+  * - 6: allReactions:       All reactions (species being converted or created).
+  * - 7: allInteractions:    All interactions (species involved in reaction rates).
+  * - 8: allEvents:          All events.
+  * - 9: allCompartments:    All compartments, both const and variable.
   * - 10: allUnknown:        All symbols whose type has never been defined or used.
   * - 11: varSpecies:        Variable species.
   * - 12: varFormulas:       Formulas (equations) that can change (including as a result of events).
@@ -728,7 +728,7 @@ LIB_EXTERN char**  getNthInteractionInteractorNames(const char* modulename, unsi
 /**
  * Returns the Mth interactor names for the given interaction.  If no such interactor or interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char**  getNthInteractionMthInteractorNames(const char* modulename, unsigned long interaction, unsigned long interactor);
+LIB_EXTERN char*  getNthInteractionMthInteractorName(const char* modulename, unsigned long interaction, unsigned long interactor);
 
 /**
  * Returns all the interactee names for all interactions in the given module.  The dimensions of the included arrays can be found with 'getNumInteractions' and 'getNumInteractees' (the array is not 'square'--each sub array may have a different length).
@@ -743,7 +743,7 @@ LIB_EXTERN char**  getNthInteractionInteracteeNames(const char* modulename, unsi
 /**
  * Returns the Mth interactee name for the given interaction.  If no such interactee or interaction is present, NULL is returned and an error is set.
  */
-LIB_EXTERN char**  getNthInteractionMthInteracteeName(const char* modulename, unsigned long interaction, unsigned long interactee);
+LIB_EXTERN char*  getNthInteractionMthInteracteeName(const char* modulename, unsigned long interaction, unsigned long interactee);
 
 /**
  * Returns an array of all the interaction dividers in the given module.  The length of the array can be obtained with 'getNumInteractions'.

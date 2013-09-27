@@ -5,6 +5,7 @@
 #include "variable.h"
 #include "formula.h"
 #include "registry.h"
+#include "sbml/math/L3FormulaFormatter.h"
 
 using namespace std;
 extern bool CaselessStrCmp(const string& lhs, const string& rhs);
@@ -90,7 +91,7 @@ string parseASTNodeToString(const ASTNode* ASTform, bool carat) {
   if (carat) {
     powerToCarat(&clone);
   }
-  char* formula = SBML_formulaToString(&clone);
+  char* formula = SBML_formulaToL3String(&clone);
   string ret = formula;
 #ifndef WIN32
   free(formula);
