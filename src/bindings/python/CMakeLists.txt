@@ -42,60 +42,58 @@ endif(ANTIMONY_REMOVE_WRAPPERS)
 
 ADD_CUSTOM_COMMAND(        
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/antimony_wrap.cpp
-        COMMAND "${PYTHON_EXECUTABLE}"
-        ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/../swig/swigdoc.py"
-                        python
-                        -I"${CMAKE_CURRENT_SOURCE_DIR}/../.."
-                        -D"${CMAKE_CURRENT_SOURCE_DIR}/../../../docs/src"
-                        "${CMAKE_CURRENT_SOURCE_DIR}/../swig/antimony.i"
-                        "${CMAKE_CURRENT_BINARY_DIR}/pydoc-doxygen.i"
-#        COMMAND "${PYTHON_EXECUTABLE}"
-#        ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/doc-converter/rewrite_pydoc.py"
-#                        -f "${CMAKE_CURRENT_BINARY_DIR}/pydoc-doxygen.i"
-#                        -o "${CMAKE_CURRENT_BINARY_DIR}/pydoc-normal.i"
-#                        -i ${CMAKE_CURRENT_SOURCE_DIR}/../../../docs/src/common-text
-#                        -g ${CMAKE_CURRENT_SOURCE_DIR}/../../../docs/src/graphics
-        COMMAND "${CMAKE_COMMAND}"
-        ARGS    -E rename pydoc-doxygen.i pydoc.i
-        COMMAND "${SWIG_EXECUTABLE}"
-        ARGS    -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
-                -I${CMAKE_CURRENT_SOURCE_DIR} 
-                -I${CMAKE_CURRENT_BINARY_DIR} 
-                -I${CMAKE_SOURCE_DIR}/src
-                -I${CMAKE_SOURCE_DIR}/include
-                -c++
-                -python                
-                ${SWIG_EXTRA_ARGS}                 
-                -o ${CMAKE_CURRENT_BINARY_DIR}/antimony_wrap.cpp 
-                ${CMAKE_CURRENT_SOURCE_DIR}/antimony.i
-#        COMMAND "${CMAKE_COMMAND}"
-#        ARGS    -E rename pydoc.i pydoc-doxygen.i
-#        COMMAND "${CMAKE_COMMAND}"
-#        ARGS    -E rename antimony.py antimony-doxygen.py
-#        COMMAND "${CMAKE_COMMAND}"
-#        ARGS    -E rename pydoc-normal.i pydoc.i
-#        COMMAND "${SWIG_EXECUTABLE}"
-#        ARGS    -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
-#                -I${CMAKE_CURRENT_SOURCE_DIR} 
-#                -I${CMAKE_CURRENT_BINARY_DIR} 
-#                -I${CMAKE_SOURCE_DIR}/src
-#                -I${CMAKE_SOURCE_DIR}/include
-#                -c++
-#                -python                
-#                ${SWIG_EXTRA_ARGS}                 
-#                -o ${CMAKE_CURRENT_BINARY_DIR}/antimony_wrap.cpp 
-#                ${CMAKE_CURRENT_SOURCE_DIR}/antimony.i
-#        COMMAND "${CMAKE_COMMAND}"
-#        ARGS    -E rename pydoc.i pydoc-normal.i 
-        MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/antimony.i
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-                ${CMAKE_CURRENT_SOURCE_DIR}/doc-converter/rewrite_pydoc.py
-                ${CMAKE_CURRENT_SOURCE_DIR}/../swig/swigdoc.py
-                ${SWIG_DEPENDENCIES}
-        COMMENT "Swig Python source") 
+    COMMAND "${PYTHON_EXECUTABLE}"
+    ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/../swig/swigdoc.py"
+            python
+            -I"${CMAKE_CURRENT_SOURCE_DIR}/../.."
+            -D"${CMAKE_CURRENT_SOURCE_DIR}/../../../doc"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../swig/antimony.i"
+            "${CMAKE_CURRENT_BINARY_DIR}/pydoc-doxygen.i"
+    COMMAND "${PYTHON_EXECUTABLE}"
+    ARGS    "${CMAKE_CURRENT_SOURCE_DIR}/doc-converter/rewrite_pydoc.py"
+            -f "${CMAKE_CURRENT_BINARY_DIR}/pydoc-doxygen.i"
+            -o "${CMAKE_CURRENT_BINARY_DIR}/pydoc-normal.i"
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS    -E rename pydoc-doxygen.i pydoc.i
+    COMMAND "${SWIG_EXECUTABLE}"
+    ARGS    -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
+            -I${CMAKE_CURRENT_SOURCE_DIR} 
+            -I${CMAKE_CURRENT_BINARY_DIR} 
+            -I${CMAKE_SOURCE_DIR}/src
+            -I${CMAKE_SOURCE_DIR}/include
+            -c++
+            -python        
+            ${SWIG_EXTRA_ARGS}         
+            -o ${CMAKE_CURRENT_BINARY_DIR}/antimony_wrap.cpp 
+            ${CMAKE_CURRENT_SOURCE_DIR}/antimony.i
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS    -E rename pydoc.i pydoc-doxygen.i
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS    -E rename libantimony.py antimony-doxygen.py
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS    -E rename pydoc-normal.i pydoc.i
+    COMMAND "${SWIG_EXECUTABLE}"
+    ARGS    -I${CMAKE_CURRENT_SOURCE_DIR}/../swig/
+            -I${CMAKE_CURRENT_SOURCE_DIR} 
+            -I${CMAKE_CURRENT_BINARY_DIR} 
+            -I${CMAKE_SOURCE_DIR}/src
+            -I${CMAKE_SOURCE_DIR}/include
+            -c++
+            -python        
+            ${SWIG_EXTRA_ARGS}         
+            -o ${CMAKE_CURRENT_BINARY_DIR}/antimony_wrap.cpp 
+            ${CMAKE_CURRENT_SOURCE_DIR}/antimony.i
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS    -E rename pydoc.i pydoc-normal.i 
+    MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/antimony.i
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+            ${CMAKE_CURRENT_SOURCE_DIR}/doc-converter/rewrite_pydoc.py
+            ${CMAKE_CURRENT_SOURCE_DIR}/../swig/swigdoc.py
+            ${SWIG_DEPENDENCIES}
+    COMMENT "Swig Python source") 
 
 add_custom_target(binding_python_swig ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/antimony_wrap.cpp)
-        
+
 ####################################################################
 #
 # Build native library
@@ -151,12 +149,10 @@ INSTALL(TARGETS binding_python_lib DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/ant
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.py  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
-INSTALL(FILES ${LIBANTIMONY_LIBS} ${LIBANTIMONY_LIBRARY}  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
 
-if(!UNIX)
-	file(GLOB WIN32_BINARIES ${CMAKE_SOURCE_DIR}/dependencies/bin/*.dll)
-	INSTALL(FILES ${WIN32_BINARIES} DESTINATION bin)
-        INSTALL(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony)
+if (NOT UNIX)
+  file(GLOB new_win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll")
+  install(FILES ${new_win_dependencies} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
 endif()
 
 ####################################################################
