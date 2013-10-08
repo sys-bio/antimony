@@ -279,6 +279,7 @@ assignment:     varmaybein '=' formula {if ($1->SetFormula($3)) YYABORT; }
         |       varmaybein ':' '=' formula {if ($1->SetAssignmentRule($4)) YYABORT;}
         |       varmaybein '\'' '=' formula {if ($1->SetRateRule($4)) YYABORT;}
         |       varmaybein HASWORD unitdef {if ($1->SetUnit($3)) YYABORT; }
+//        |       NUM '=' formula {if (g_registry.CurrentModule()->SetAlgRule($1, $3)) YYABORT; }
         ;
 
 submodule:      varmaybein ':' MODNAME '(' {if ($1->SetModule($3)) YYABORT;} variableimportlist ')' submodifications maybein {if ($9 != NULL) {if ($1->SetCompartment($9)) YYABORT;}}

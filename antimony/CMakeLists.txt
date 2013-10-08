@@ -85,6 +85,18 @@ if(WITH_SBML)
               ${CMAKE_SOURCE_DIR}/../libsbml-5/release/include/
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} )
+    if(WIN32)
+	find_path(LIBSBML_BIN_DIR
+		NAMES libsbml.dll
+		PATHS /usr/bin /usr/local/bin
+              ${LIBSBML_INCLUDE_DIR}/../bin
+              ${CMAKE_SOURCE_DIR}/ 
+              ${CMAKE_SOURCE_DIR}/dependencies/libsbml/bin
+              ${CMAKE_SOURCE_DIR}/../libsbml-5/release/bin/
+        )
+        set(LIBSBML_DLL ${LIBSBML_BIN_DIR}/libsbml.dll)
+        install(FILES   ${LIBSBML_DLL} DESTINATION ${CMAKE_SOURCE_DIR}/win32)
+    endif()
     INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR})
 	if (WITH_COMP_SBML)
 	    add_definitions( -DUSE_COMP )
@@ -304,6 +316,9 @@ install(FILES   ${LIBANTIMONY_HEADERS} DESTINATION include)
 
 if (NOT UNIX)
   add_definitions(-DWIN32 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
+  if (WITH_PYTHON)
+     INSTALL(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION bindings/python/antimony )
+  endif()
 endif(NOT UNIX)
 
 
@@ -485,8 +500,6 @@ else(UNIX)
 	  endif(WITH_STATIC_RUNTIME)
 	endif(MSVC)
 	
-	file(GLOB WIN32_BINARIES ${CMAKE_SOURCE_DIR}/dependencies/bin/*.dll)
-	INSTALL(FILES ${WIN32_BINARIES} DESTINATION bin)
 	
 endif(UNIX)
 
@@ -525,6 +538,6 @@ endif()
 # Install win32 dependencies
 # 
 if (NOT UNIX)
-  file(GLOB win_dependencies "${CMAKE_CURRENT_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
+  file(GLOB win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll" "${CMAKE_CURRENT_SOURCE_DIR}/win32/README.txt")
   install(FILES ${win_dependencies} DESTINATION bin/)
 endif()
