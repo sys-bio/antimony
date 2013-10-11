@@ -597,7 +597,8 @@ void Module::LoadSBML(const Model* sbml)
     if (unitdefinition->isSetName()) {
       var->SetDisplayName(unitdefinition->getName());
     }
-    var->SetUnitDef(&GetUnitDefFrom(unitdefinition, m_modulename));
+    UnitDef* unitdef = new UnitDef(GetUnitDefFrom(unitdefinition, m_modulename));
+    var->SetUnitDef(unitdef);
   }
 
  
@@ -1331,7 +1332,7 @@ void Module::CreateSBMLModel(bool comp)
       }
       size_t digit = 0;
       setret = portnames.insert(portname);
-      while (setret.second = false) {
+      while (setret.second == false) {
         portname = m_exportlist[ex][m_exportlist[ex].size()-1] + "_" + SizeTToString(digit);
         setret = portnames.insert(portname);
       }

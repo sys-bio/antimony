@@ -2145,6 +2145,7 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
       }
       break;
     case varStrand:
+    case varDeleted:
       break;
     }
   }
@@ -2180,6 +2181,7 @@ void Module::ConvertTime(Variable* tcf)
       break;
     case varUnitDefinition:
     case varStrand:
+    case varDeleted:
       break;
     }
   }
@@ -2208,6 +2210,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varEvent:
     case varUnitDefinition:
     case varStrand:
+    case varDeleted:
       break;
     }
   }

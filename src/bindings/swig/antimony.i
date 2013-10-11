@@ -28,6 +28,7 @@ public class"
 
 %{
 #include "../../antimony_api.h"
+#include "../../antimony_api_cpp.h"
 %}
 
 /**
@@ -123,15 +124,99 @@ public class"
 %newobject getNthModularDNAStrand;
 
 /**
- * Ignore the 'freeAll' function, as SWIG handles the new returned objects above
+ * Ignore 'freeAll', and all functions that return vectors, as SWIG cannot convert them properly.
  */
 
 %ignore freeAll;
+%ignore getModuleNames;
+%ignore getSymbolNamesInInterfaceOf;
+%ignore getAllReplacementSymbolPairs;
+%ignore getNthReplacementSymbolPair;
+%ignore getAllReplacementSymbolPairsBetween;
+%ignore getNthReplacementSymbolPairBetween;
+%ignore getSymbolNamesOfType;
+%ignore getSymbolDisplayNamesOfType;
+%ignore getSymbolEquationsOfType;
+%ignore getSymbolInitialAssignmentsOfType;
+%ignore getSymbolAssignmentRulesOfType;
+%ignore getSymbolRateRulesOfType;
+%ignore getSymbolCompartmentsOfType;
+%ignore getReactantNames;
+%ignore getNthReactionReactantNames;
+%ignore getProductNames;
+%ignore getNthReactionProductNames;
+%ignore getReactantStoichiometries;
+%ignore getProductStoichiometries;
+%ignore getInteractorNames;
+%ignore getNthInteractionInteractorNames;
+%ignore getInteracteeNames;
+%ignore getNthInteractionInteracteeNames;
+%ignore getInteractionDividers;
+%ignore getStoichiometryMatrix;
+%ignore getStoichiometryMatrixRowLabels;
+%ignore getStoichiometryMatrixColumnLabels;
+%ignore getReactionRates;
+%ignore getEventNames;
+%ignore getDNAStrandSizes;
+%ignore getDNAStrands;
+%ignore getNthDNAStrand;
+%ignore getModularDNAStrandSizes;
+%ignore getModularDNAStrands;
+%ignore getNthModularDNAStrand;
 
+%rename(getModuleNames) getModuleNamesAsVector;
+%rename(getSymbolNamesInInterfaceOf) getSymbolNamesInInterfaceOfAsVector;
+%rename(getAllReplacementSymbolPairs) getAllReplacementSymbolPairsAsVector;
+%rename(getNthReplacementSymbolPair) getNthReplacementSymbolPairAsVector;
+%rename(getAllReplacementSymbolPairsBetween) getAllReplacementSymbolPairsBetweenAsVector;
+%rename(getNthReplacementSymbolPairBetween) getNthReplacementSymbolPairBetweenAsVector;
+%rename(getSymbolNamesOfType) getSymbolNamesOfTypeAsVector;
+%rename(getSymbolDisplayNamesOfType) getSymbolDisplayNamesOfTypeAsVector;
+%rename(getSymbolEquationsOfType) getSymbolEquationsOfTypeAsVector;
+%rename(getSymbolInitialAssignmentsOfType) getSymbolInitialAssignmentsOfTypeAsVector;
+%rename(getSymbolAssignmentRulesOfType) getSymbolAssignmentRulesOfTypeAsVector;
+%rename(getSymbolRateRulesOfType) getSymbolRateRulesOfTypeAsVector;
+%rename(getSymbolCompartmentsOfType) getSymbolCompartmentsOfTypeAsVector;
+%rename(getReactantNames) getReactantNamesAsVector;
+%rename(getNthReactionReactantNames) getNthReactionReactantNamesAsVector;
+%rename(getProductNames) getProductNamesAsVector;
+%rename(getNthReactionProductNames) getNthReactionProductNamesAsVector;
+%rename(getReactantStoichiometries) getReactantStoichiometriesAsVector;
+%rename(getProductStoichiometries) getProductStoichiometriesAsVector;
+%rename(getInteractorNames) getInteractorNamesAsVector;
+%rename(getNthInteractionInteractorNames) getNthInteractionInteractorNamesAsVector;
+%rename(getInteracteeNames) getInteracteeNamesAsVector;
+%rename(getNthInteractionInteracteeNames) getNthInteractionInteracteeNamesAsVector;
+%rename(getInteractionDividers) getInteractionDividersAsVector;
+%rename(getStoichiometryMatrix) getStoichiometryMatrixAsVector;
+%rename(getStoichiometryMatrixRowLabels) getStoichiometryMatrixRowLabelsAsVector;
+%rename(getStoichiometryMatrixColumnLabels) getStoichiometryMatrixColumnLabelsAsVector;
+%rename(getReactionRates) getReactionRatesAsVector;
+%rename(getEventNames) getEventNamesAsVector;
+%rename(getDNAStrandSizes) getDNAStrandSizesAsVector;
+%rename(getDNAStrands) getDNAStrandsAsVector;
+%rename(getNthDNAStrand) getNthDNAStrandAsVector;
+%rename(getModularDNAStrandSizes) getModularDNAStrandSizesAsVector;
+%rename(getModularDNAStrands) getModularDNAStrandsAsVector;
+%rename(getNthModularDNAStrand) getNthModularDNAStrandAsVector;
+
+%include "std_vector.i"
+%include "std_string.i"
+
+// Instantiate templates used by example
+namespace std {
+   %template(UnsignedLongVector) vector<unsigned long>;
+   %template(DoubleVector) vector<double>;
+   %template(DoubleVectorVector) vector<vector<double> >;
+   %template(StringVector) vector<string>;
+   %template(StringVectorVector) vector<vector<string> >;
+#   %template(RDTypeVector) vector<rd_type>;
+}
 
 /**
  * Wrap these files.
  */
 
 %include antimony_api.h
+%include antimony_api_cpp.h
 %include enums.h

@@ -129,7 +129,7 @@ else()
         endif()
 endif()
 
-message(STATUS "libraries: ${LIBANTIMONY_LIBS}\nantimony:${LIBANTIMONY_LIBRARY}")
+#message(STATUS "libraries: ${LIBANTIMONY_LIBS}\nantimony:${LIBANTIMONY_LIBRARY}")
 target_link_libraries(binding_python_lib ${LIBANTIMONY_LIBS} ${LIBANTIMONY_LIBRARY} ${PYTHON_LIBRARIES})
 
 # 

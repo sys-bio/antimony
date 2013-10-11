@@ -1711,6 +1711,8 @@ LIB_EXTERN return_type getTypeOfSymbol(const char* moduleName, const char* symbo
     return modularStrands;
   case varUnitDefinition:
     return allUnits;
+  case varDeleted:
+    return allDeleted;
   }
   assert(false); //uncaught var_type
   g_registry.SetError("Coding error:  Didn't include a return type for variable type " + VarTypeToString(vtype) + " in getTypeOfSymbol; antimony_api.cpp.  Email the author to fix.");
@@ -1723,7 +1725,8 @@ LIB_EXTERN formula_type getTypeOfEquationForSymbol(const char* moduleName, const
   const Variable* var = g_registry.GetModule(moduleName)->GetVariableFromSymbol(symbolName);
   if (var == NULL) {
     string error = "No such variable: '";
-    error += *symbolName + "'.";
+    error += *symbolName;
+    error += "'.";
     g_registry.SetError(error);
     return formulaINITIAL;
   }

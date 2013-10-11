@@ -205,9 +205,6 @@ if(WITH_SWIG)
         DOC "The file name of the swig executable."
         )
     find_package(SWIG)
-    if (SWIG_FOUND AND SWIG_VERSION VERSION_LESS "2.0.4")
-    	message(WARNING "You are using swig version ${SWIG_VERSION} while we recommend at least version 2.0.4.")
-    endif()
     set(SWIG_EXTRA_ARGS)
 endif(WITH_SWIG)
 
@@ -252,6 +249,7 @@ set (ANTIMONY_SRC_DIR src/)
 
 file(GLOB LIBANTIMONY_SOURCES 
         ${ANTIMONY_SRC_DIR}antimony_api.cpp
+        ${ANTIMONY_SRC_DIR}antimony_api_cpp.cpp
 	${ANTIMONY_SRC_DIR}Antimony.cpp
 	${ANTIMONY_SRC_DIR}antimony.tab.cpp
 	${ANTIMONY_SRC_DIR}annotated.cpp
@@ -287,6 +285,7 @@ source_group(Translators FILES ${LIBANTIMONY_TRANSLATORS})
 file(GLOB LIBANTIMONY_HEADERS 
 	${ANTIMONY_SRC_DIR}annotated.h
         ${ANTIMONY_SRC_DIR}antimony_api.h
+        ${ANTIMONY_SRC_DIR}antimony_api_cpp.h
         ${ANTIMONY_SRC_DIR}dnastrand.h
         ${ANTIMONY_SRC_DIR}cellmlx.h
         ${ANTIMONY_SRC_DIR}enums.h
