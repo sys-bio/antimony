@@ -232,7 +232,7 @@ LIB_EXTERN vector<string> getSymbolCompartmentsOfTypeAsVector(const char* module
   return compartments;
 }
 
-string getNthRxnorIntMthReactantOrProductName(const char* moduleName, unsigned long n, unsigned long m, bool reaction, bool reactant)
+string getNthRxnorIntMthReactantOrProductNameAsString(const char* moduleName, unsigned long n, unsigned long m, bool reaction, bool reactant)
 {
   if (!checkModule(moduleName)) return NULL;
   return_type rtype = allReactions;
@@ -269,7 +269,7 @@ vector<string> getNthRxnOrIntReactantOrProductNamesAsVector(const char* moduleNa
   if (!checkModule(moduleName)) return names;
   unsigned long vnum = getNumReactOrProdForRxnOrInt(moduleName, n, reaction, reactant);
   for (unsigned long var=0; var<vnum; var++) {
-    names.push_back(getNthRxnorIntMthReactantOrProductName(moduleName, n, var, reaction, reactant));
+    names.push_back(getNthRxnorIntMthReactantOrProductNameAsString(moduleName, n, var, reaction, reactant));
   }
   return names;
 }
