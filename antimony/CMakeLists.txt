@@ -205,7 +205,7 @@ if(WITH_SWIG)
         DOC "The file name of the swig executable."
         )
     find_package(SWIG)
-    set(SWIG_EXTRA_ARGS)
+    set(SWIG_EXTRA_ARGS "" CACHE STRING "Extra arguments to SWIG" )
 endif(WITH_SWIG)
 
 if(WITH_SWIG)
