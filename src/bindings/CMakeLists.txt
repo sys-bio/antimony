@@ -17,7 +17,20 @@ mark_as_advanced(ANTIMONY_REMOVE_WRAPPERS)
 
 # antimony_api.h has a couple includes, which are easy enough to follow, and
 #  means we don't have to explicitly include them all the time otherwise.
-SET(SWIG_EXTRA_ARGS "-includeall")
+SET(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} "-includeall")
+
+if(NOT WITH_CELLML)
+  SET(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} "-DNCELLML")
+endif()
+
+if(NOT WITH_SBML)
+  SET(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} "-DNSBML")
+endif()
+  
+if(WITH_COMP_SBML)
+  SET(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} "-DUSE_COMP")
+endif()
+  
 
 if(WITH_CSHARP)
 add_subdirectory(csharp)

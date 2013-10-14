@@ -25,6 +25,24 @@
   */
 public class"
 
+#ifdef NSBML
+%{
+#define NSBML
+%}
+#endif
+
+#ifdef USE_COMP
+%{
+#define USE_COMP
+%}
+#endif
+
+#ifdef NCELLML
+%{
+#define NCELLML
+%}
+#endif
+
 
 %{
 #include "../../antimony_api.h"
@@ -52,14 +70,23 @@ public class"
 
 %typemap(newfree) char * "free($1);";
 
-%newobject getAntimonyString;
+#ifndef NSBML
 %newobject getSBMLString;
-%newobject getCompSBMLString;
-%newobject getCellMLString;
-%newobject getLastError;
-%newobject getWarnings;
 %newobject getSBMLInfoMessages;
 %newobject getSBMLWarnings;
+#endif
+
+#ifndef USE_COMP
+%newobject getCompSBMLString;
+#endif
+
+#ifndef NCELLML
+%newobject getCellMLString;
+#endif
+
+%newobject getAntimonyString;
+%newobject getLastError;
+%newobject getWarnings;
 %newobject getModuleNames;
 %newobject getNthModuleName;
 %newobject getMainModuleName;
@@ -187,7 +214,8 @@ public class"
 %rename(getNthInteractionInteractorNames) getNthInteractionInteractorNamesAsVector;
 %rename(getInteracteeNames) getInteracteeNamesAsVector;
 %rename(getNthInteractionInteracteeNames) getNthInteractionInteracteeNamesAsVector;
-%rename(getInteractionDividers) getInteractionDividersAsVector;
+#%rename(getInteractionDividers) getInteractionDividersAsVector;
+%ignore getInteractionDividersAsVector;
 %rename(getStoichiometryMatrix) getStoichiometryMatrixAsVector;
 %rename(getStoichiometryMatrixRowLabels) getStoichiometryMatrixRowLabelsAsVector;
 %rename(getStoichiometryMatrixColumnLabels) getStoichiometryMatrixColumnLabelsAsVector;
@@ -202,6 +230,7 @@ public class"
 
 %include "std_vector.i"
 %include "std_string.i"
+#%include "std_exception.i"
 
 // Instantiate templates used by example
 namespace std {
