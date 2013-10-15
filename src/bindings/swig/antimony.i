@@ -25,25 +25,6 @@
   */
 public class"
 
-#ifdef NSBML
-%{
-#define NSBML
-%}
-#endif
-
-#ifdef USE_COMP
-%{
-#define USE_COMP
-%}
-#endif
-
-#ifdef NCELLML
-%{
-#define NCELLML
-%}
-#endif
-
-
 %{
 #include "../../antimony_api.h"
 #include "../../antimony_api_cpp.h"
