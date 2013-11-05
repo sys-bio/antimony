@@ -7,7 +7,7 @@ model *model_0000001()
   species IM2 in cell, O in cell, IF in cell;
 
   // Assignment Rules:
-  Ena := Rk * Temp / Fara * log(nao / nai);
+  Ena := (Rk * Temp) / Fara * ln(nao / nai);
   a11 := 3.802 / (0.1027 * exp(- v / 17) + 0.2 * exp(- v / 150));
   a12 := 3.802 / (0.1027 * exp(- v / 15) + 0.23 * exp(- v / 150));
   a13 := 3.802 / (0.1027 * exp(- v / 12) + 0.25 * exp(- v / 150));
@@ -15,14 +15,14 @@ model *model_0000001()
   b12 := 0.2 * exp(-(v - 5) / 20.3);
   b13 := 0.22 * exp(-(v - 10) / 20.3);
   a2 := 9.178 * exp(v / 29.68);
-  b2 := a13 * a2 * a3 / (b13 * b3);
+  b2 := (a13 * a2 * a3) / (b13 * b3);
   a3 := 3.7933 * 1.000000e-007 * exp(- v / 7.7);
   b3 := 0.0084 + 2.000000e-005 * v;
   a4 := a2 / 100;
   b4 := a3;
   a5 := a2 / (9.5 * 10000);
   b5 := a3 / 50;
-  Ina := Gna * (O / (IC3 + IC2 + IF + IM1 + IM2 + C3 + C2 + C1 + O)) * (v - Ena) / scale;
+  Ina := (Gna * (O / (IC3 + IC2 + IF + IM1 + IM2 + C3 + C2 + C1 + O)) * (v - Ena)) / scale;
 
   // Reactions:
   reaction_0000001: IC3 -> IC2; cell * (IC3 * a11 - IC2 * b11);
@@ -38,8 +38,8 @@ model *model_0000001()
   reaction_0000011: O -> C1; cell * (- C1 * a13 + O * b13);
 
   // Events:
-  event_0000001: at and(geq(time, 5), leq(time, 20)): v = -30;
-  event_0000002: at gt(time, 20): v = -80;
+  event_0000001: at time >= 5 && time <= 20: v = -30;
+  event_0000002: at time > 20: v = -80;
 
   // Species initializations:
   C1 = 0;

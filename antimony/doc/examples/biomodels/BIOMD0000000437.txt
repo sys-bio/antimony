@@ -82,12 +82,12 @@ model *MODEL1212150000()
   L_WCCVVD_degradation: L_WCCVVDn => degraded_L_WCCCVVDn; L_WCCVVDn * kd_WCCVVD;
 
   // Events:
-  n_CYCLE: at 0 after and(gt(time_, 125), gt(frq_mRNA, frq_level_A)): cycle = cycle + 1;
-  light_on: at 0 after gt(time_, T_light_on): kact_L_WCC = kact_L_WCC_light;
-  light_off: at 0 after gt(time_, T_light_on + LP): kact_L_WCC = 0;
-  calculate_period_find_frq_level_A: at 0 after gt(time_, 125): frq_level_A = frq_mRNA;
-  calculate_period_find_Y: at 0 after and(and(gt(time_, 125), gt(frq_mRNA, frq_level_A)), lt(cycle, 3)): Y = time_;
-  calculate_period_find_X: at 0 after and(and(gt(time_, 125), gt(frq_mRNA, frq_level_A)), lt(cycle, 2)): X = time_;
+  n_CYCLE: at 0 after time_ > 125 && frq_mRNA > frq_level_A: cycle = cycle + 1;
+  light_on: at 0 after time_ > T_light_on: kact_L_WCC = kact_L_WCC_light;
+  light_off: at 0 after time_ > T_light_on + LP: kact_L_WCC = 0;
+  calculate_period_find_frq_level_A: at 0 after time_ > 125: frq_level_A = frq_mRNA;
+  calculate_period_find_Y: at 0 after time_ > 125 && frq_mRNA > frq_level_A && cycle < 3: Y = time_;
+  calculate_period_find_X: at 0 after time_ > 125 && frq_mRNA > frq_level_A && cycle < 2: X = time_;
 
   // Species initializations:
   L_WCC = 0;

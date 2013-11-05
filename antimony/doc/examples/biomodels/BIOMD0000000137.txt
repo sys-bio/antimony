@@ -13,8 +13,8 @@ model *Sedaghat2002_InsulinSignalling_noFeedback()
 
   // Assignment Rules:
   k9 := (k9_stimulated + k9_basal) * (x12 / PI3K) + k9_basal;
-  k11 := 0.1 * kminus11 * (x13 - 0.31) / (3.1 - 0.31);
-  k12 := 0.1 * kminus12 * (x13 - 0.31) / (3.1 - 0.31);
+  k11 := (0.1 * kminus11 * (x13 - 0.31)) / (3.1 - 0.31);
+  k12 := (0.1 * kminus12 * (x13 - 0.31)) / (3.1 - 0.31);
   k13prime := (40 / 60 - 4 / 96) * kminus13 * Effect;
   Effect := (0.2 * x17 + 0.8 * x19) / APequil;
   x4x5 := x4 + x5;
@@ -31,7 +31,7 @@ model *Sedaghat2002_InsulinSignalling_noFeedback()
   R9: x6 => ; Intracellular * kminus5 * x6;
   R10: x7 => x6; Intracellular * k6 * PTP * x7;
   R11: x8 => x6; Intracellular * k6 * PTP * x8;
-  R12: x9 -> x10; Intracellular * (k7 * x9 * (x4 + x5) / IRp - kminus7 * PTP * x10);
+  R12: x9 -> x10; Intracellular * ((k7 * x9 * (x4 + x5)) / IRp - kminus7 * PTP * x10);
   R13: x11 + x10 -> x12; Intracellular * (k8 * x10 * x11 - kminus8 * x12);
   R14: x14 -> x13; Intracellular * (k9 * x14 - kminus9 * PTEN * x13);
   R15: x15 -> x13; Intracellular * (k10 * x15 - kminus10 * SHIP * x13);
@@ -42,9 +42,9 @@ model *Sedaghat2002_InsulinSignalling_noFeedback()
   R20: x20 -> x21; Intracellular * ((k13 + k13prime) * x20 - kminus13 * x21);
 
   // Events:
-  event_0000001: at geq(time, 15): x1 = 0;
-  event_0000002: at gt(x6 + x7 + x8, 100): k5 = 1.670000e-002;
-  event_0000003: at leq(x6 + x7 + x8, 100): k5 = 0.1002;
+  event_0000001: at time >= 15: x1 = 0;
+  event_0000002: at x6 + x7 + x8 > 100: k5 = 1.670000e-002;
+  event_0000003: at x6 + x7 + x8 <= 100: k5 = 0.1002;
 
   // Species initializations:
   x1 = 100000000;

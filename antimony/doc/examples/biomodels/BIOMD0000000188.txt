@@ -36,8 +36,8 @@ model *p53_Mdm2_ATM_System()
   ATMInactivation: ATMA => ATMI; kinactATM * ATMA;
 
   // Events:
-  stressCell: at geq(time, 3600): IR = 25;
-  stopStress: at geq(time, 3660): IR = 0;
+  stressCell: at time >= 3600: IR = 25;
+  stopStress: at time >= 3660: IR = 0;
 
   // Species initializations:
   Mdm2 = 5;

@@ -22,10 +22,10 @@ model *Veening2008_DegU_Regulation()
   degradationmRNA: mDegU => ; kdegm * mDegU;
   dephosphorylation: DegUP => DegU; kdephos * DegUP;
   mRNAAprEdeg: mAprE => ; kdegm * mAprE;
-  mRNAAprEsyn:  => mAprE; Kr1 / (R + Kr1) * (Iro * (Dim * univ / Kdim + 1) / (1 + Dim * univ / Kdim + (Dim * univ)^2 / Kdim^2 + R / Kr) + Irmax * (Dim * univ)^2 / (Kdim^2 * (1 + Dim * univ / Kdim + (Dim * univ)^2 / Kdim^2 + R / Kr)));
+  mRNAAprEsyn:  => mAprE; Kr1 / (R + Kr1) * ((Iro * ((Dim * univ) / Kdim + 1)) / (1 + (Dim * univ) / Kdim + (Dim * univ)^2 / Kdim^2 + R / Kr) + (Irmax * (Dim * univ)^2) / (Kdim^2 * (1 + (Dim * univ) / Kdim + (Dim * univ)^2 / Kdim^2 + R / Kr)));
   phosphorylation: DegU => DegUP; kphos * DegU;
   synthesisDegU:  => DegU; ksyn1 * mDegU * univ;
-  synthesismRNA:  => mDegU; Io * K / (Dim * univ + K) + Imax * Dim * univ / (Dim * univ + K);
+  synthesismRNA:  => mDegU; (Io * K) / (Dim * univ + K) + (Imax * Dim * univ) / (Dim * univ + K);
 
   // Species initializations:
   AprE = 0;

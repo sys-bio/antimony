@@ -7,9 +7,9 @@ model *BIOMD0000000458()
   species $serC in cell, $serB in cell;
 
   // Reactions:
-  PDH: $p3g -> php; cell * serA * PDH_kcatA * (p3g / PDH_KAp3g) / (1 + p3g / PDH_KAp3g + php / PDH_KAphp) / (1 + ser / PDH_KiAser);
-  PSA: php -> pser; cell * serC * PSA_kcatC * (php / PSA_KCphp) / (1 + php / PSA_KCphp + pser / PSA_KCpser);
-  PSP: pser -> $ser; cell * serB * PSP_kcatB * (pser / PSP_KBpser) / (1 + pser / PSP_KBpser + ser / PSP_KBser);
+  PDH: $p3g -> php; (cell * serA * PDH_kcatA * (p3g / PDH_KAp3g)) / (1 + p3g / PDH_KAp3g + php / PDH_KAphp) / (1 + ser / PDH_KiAser);
+  PSA: php -> pser; (cell * serC * PSA_kcatC * (php / PSA_KCphp)) / (1 + php / PSA_KCphp + pser / PSA_KCpser);
+  PSP: pser -> $ser; (cell * serB * PSP_kcatB * (pser / PSP_KBpser)) / (1 + pser / PSP_KBpser + ser / PSP_KBser);
 
   // Species initializations:
   p3g = 2.36;

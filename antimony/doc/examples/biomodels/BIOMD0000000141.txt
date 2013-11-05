@@ -5,14 +5,14 @@ model *model_0000001()
   compartment cell;
 
   // Assignment Rules:
-  i := piecewise(0, lt(time, 30), 0.075 * (time - 30));
+  i := piecewise(0, time < 30, 0.075 * (time - 30));
 
   // Rate Rules:
-  v' = 0.04 * v^2 + 4.1 * v + 108 - u + i;
+  v' = (0.04 * v^2 + 4.1 * v + 108) - u + i;
   u' = a * (b * v - u);
 
   // Events:
-  event_0000001: at gt(v, Vthresh): u = u + d, v = c;
+  event_0000001: at v > Vthresh: u = u + d, v = c;
 
   // Compartment initializations:
   cell = 1;

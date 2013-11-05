@@ -21,7 +21,7 @@ model *Proctor2007_ubiquitine()
   Refolding: MisP => NatP + refNatP; k3 * MisP;
   MisPE3Binding: MisP + E3 => E3_MisP; k61 * MisP * E3;
   MisPE3Release: E3_MisP => MisP + E3; k61r * E3_MisP;
-  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; k62 * E1 * Ub * ATP / (5000 + ATP);
+  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; (k62 * E1 * Ub * ATP) / (5000 + ATP);
   E2UbBinding: E2 + E1_Ub => E2_Ub + E1; k63 * E2 * E1_Ub;
   Monoubiquitination: E2_Ub + E3_MisP => MisP_Ub + E2 + E3; k64 * E2_Ub * E3_MisP;
   Polyubiquitination1: MisP_Ub + E2_Ub => MisP_Ub2 + E2; k65 * MisP_Ub * E2_Ub;
@@ -49,11 +49,11 @@ model *Proctor2007_ubiquitine()
   DeubiquitinationBoundMisP3: MisP_Ub6_Proteasome + DUB => MisP_Ub5_Proteasome + Ub + DUB; k68 * MisP_Ub6_Proteasome * DUB;
   DeubiquitinationBoundMisP2: MisP_Ub5_Proteasome + DUB => MisP_Ub4_Proteasome + Ub + DUB; k68 * MisP_Ub5_Proteasome * DUB;
   DeubiquitinationBoundMisP1: MisP_Ub4_Proteasome + DUB => MisP_Ub3 + Proteasome + Ub + DUB; k68 * MisP_Ub4_Proteasome * DUB;
-  ProteasomeActivity1: MisP_Ub4_Proteasome + $ATP => 4Ub + Proteasome + $ADP + degUb4; k69 * MisP_Ub4_Proteasome * ATP / (5000 + ATP);
-  ProteasomeActivity2: MisP_Ub5_Proteasome + $ATP => 5Ub + Proteasome + $ADP + degUb5; k69 * MisP_Ub5_Proteasome * ATP / (5000 + ATP);
-  ProteasomeActivity3: MisP_Ub6_Proteasome + $ATP => 6Ub + Proteasome + $ADP + degUb6; k69 * MisP_Ub6_Proteasome * ATP / (5000 + ATP);
-  ProteasomeActivity4: MisP_Ub7_Proteasome + $ATP => 7Ub + Proteasome + $ADP + degUb7; k69 * MisP_Ub7_Proteasome * ATP / (5000 + ATP);
-  ProteasomeActivity5: MisP_Ub8_Proteasome + $ATP => 8Ub + Proteasome + $ADP + degUb8; k69 * MisP_Ub8_Proteasome * ATP / (5000 + ATP);
+  ProteasomeActivity1: MisP_Ub4_Proteasome + $ATP => 4Ub + Proteasome + $ADP + degUb4; (k69 * MisP_Ub4_Proteasome * ATP) / (5000 + ATP);
+  ProteasomeActivity2: MisP_Ub5_Proteasome + $ATP => 5Ub + Proteasome + $ADP + degUb5; (k69 * MisP_Ub5_Proteasome * ATP) / (5000 + ATP);
+  ProteasomeActivity3: MisP_Ub6_Proteasome + $ATP => 6Ub + Proteasome + $ADP + degUb6; (k69 * MisP_Ub6_Proteasome * ATP) / (5000 + ATP);
+  ProteasomeActivity4: MisP_Ub7_Proteasome + $ATP => 7Ub + Proteasome + $ADP + degUb7; (k69 * MisP_Ub7_Proteasome * ATP) / (5000 + ATP);
+  ProteasomeActivity5: MisP_Ub8_Proteasome + $ATP => 8Ub + Proteasome + $ADP + degUb8; (k69 * MisP_Ub8_Proteasome * ATP) / (5000 + ATP);
   Aggregation1: 2MisP => AggP; k71 * MisP * (MisP - 1) * 0.5;
   Aggregation2: MisP + AggP => 2AggP; k71 * MisP * AggP;
   Aggregation3: 2MisP_Ub => AggP; k72 * MisP_Ub * (MisP_Ub - 1) * 0.5;

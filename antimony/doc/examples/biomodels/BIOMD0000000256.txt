@@ -12,7 +12,7 @@ model *Rehm2006_Caspase()
   species SMAC_mito in mito, CytC_mit in mito, CytC_cell in cell;
 
   // Assignment Rules:
-  apo_lim := piecewise(PC9, lt(PC9, APAF1), APAF1);
+  apo_lim := piecewise(PC9, PC9 < APAF1, APAF1);
   SMAC_norm := SMAC / XIAP_ini;
   XIAP_2SMAC_norm := XIAP_2SMAC / XIAP_ini;
   C9norm := C9 / C9_tot;
@@ -85,12 +85,12 @@ model *Rehm2006_Caspase()
   reaction51: BIR3R_p2frag -> ; cell * k51 * BIR3R_p2frag;
   reaction52: SMAC -> ; cell * k52 * SMAC;
   reaction53: C3 + Substrate -> C3 + ClvgPrds; cell * k53 * C3 * Substrate;
-  SMAC_release: SMAC_mito -> SMAC; cell * SMAC_mito * log(2) / th_SMAC;
-  Apo_formation: PC9 + APAF1 -> C9; cell * apo_lim * log(2) / th_Apop;
-  CytC_release: CytC_mit -> CytC_cell; cell * CytC_mit * log(2) / th_CytC;
+  SMAC_release: SMAC_mito -> SMAC; (cell * SMAC_mito * ln(2)) / th_SMAC;
+  Apo_formation: PC9 + APAF1 -> C9; (cell * apo_lim * ln(2)) / th_Apop;
+  CytC_release: CytC_mit -> CytC_cell; (cell * CytC_mit * ln(2)) / th_CytC;
 
   // Events:
-  Production_Breakdown: at lt(Substrate, S_breakdown): k1 = 0, k1r = 0, k2 = 0, k2r = 0, k38 = 0.0058, k39 = 0.0058, k40 = 0.0058, k43 = 0.0058, k44 = 0.0058, k46 = 0.0058, k48 = 0.0058, k50 = 0.0058, k51 = 0.0058;
+  Production_Breakdown: at Substrate < S_breakdown: k1 = 0, k1r = 0, k2 = 0, k2r = 0, k38 = 0.0058, k39 = 0.0058, k40 = 0.0058, k43 = 0.0058, k44 = 0.0058, k46 = 0.0058, k48 = 0.0058, k50 = 0.0058, k51 = 0.0058;
 
   // Species initializations:
   PC3 = 0.12;

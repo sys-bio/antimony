@@ -8,7 +8,7 @@ function function_1(v)
 end
 
 function function_4_VmHCOOHc_1(c_coo, cytosol, k_in_coo, k_out_coo, m_coo, mito)
-  k_in_coo * m_coo * mito / 3 - k_out_coo * c_coo * cytosol;
+  (k_in_coo * m_coo * mito) / 3 - k_out_coo * c_coo * cytosol;
 end
 
 function function_4_b_cys_cystine_conv_1(b_cys)
@@ -28,7 +28,7 @@ function function_4_b_gsh_decomp_1(b_gsh)
 end
 
 function function_4_V_GDC_1(K_gly_GDC, K_thf_GDC, Vm_GDC, m_gly, m_thf)
-  Vm_GDC * m_thf * m_gly / ((K_thf_GDC + m_thf) * (K_gly_GDC + m_gly));
+  (Vm_GDC * m_thf * m_gly) / ((K_thf_GDC + m_thf) * (K_gly_GDC + m_gly));
 end
 
 function function_4_b_gsg_loss_1(b_gsg)
@@ -48,39 +48,39 @@ function function_4_b_gly_loss_1(b_gly)
 end
 
 function function_4_VmFTD_1(K_10f_FTD, Vm_mFTD, m_10f)
-  Vm_mFTD * m_10f / (K_10f_FTD + m_10f);
+  (Vm_mFTD * m_10f) / (K_10f_FTD + m_10f);
 end
 
 function MM_twosubst(Vmax, Km1, Km2, S1, S2)
-  Vmax * S1 * S2 / ((Km1 + S1) * (Km2 + S2));
+  (Vmax * S1 * S2) / ((Km1 + S1) * (Km2 + S2));
 end
 
 function MM(Vmax, Km, S)
-  Vmax * S / (Km + S);
+  (Vmax * S) / (Km + S);
 end
 
 function function_4_V_c_gshLb_1(K_gshLb, V_gshLb, c_gsh, cytosol, h_gshLb)
-  cytosol * V_gshLb * c_gsh^h_gshLb / (K_gshLb^h_gshLb + c_gsh^h_gshLb);
+  (cytosol * V_gshLb * c_gsh^h_gshLb) / (K_gshLb^h_gshLb + c_gsh^h_gshLb);
 end
 
 function function_4_V_MS_1(H2O2, K_5mf_MS, K_hcy_MS, Ki_MS, Vm_MS, c_5mf, hcy, ssH2O2)
-  MM_twosubst(Vm_MS, K_5mf_MS, K_hcy_MS, c_5mf, hcy) * (ssH2O2 + Ki_MS) / (H2O2 + Ki_MS);
+  (MM_twosubst(Vm_MS, K_5mf_MS, K_hcy_MS, c_5mf, hcy) * (ssH2O2 + Ki_MS)) / (H2O2 + Ki_MS);
 end
 
 function function_4_V_DHFR_1(K_NADPH_DHFR, K_dhf_DHFR, NADPH, Vm_DHFR, c_dhf)
-  Vm_DHFR * c_dhf * NADPH / ((K_dhf_DHFR + c_dhf) * (K_NADPH_DHFR + NADPH));
+  (Vm_DHFR * c_dhf * NADPH) / ((K_dhf_DHFR + c_dhf) * (K_NADPH_DHFR + NADPH));
 end
 
 function function_4_VcFTD_1(K_10f_FTD, Vm_cFTD, c_10f)
-  Vm_cFTD * c_10f / (K_10f_FTD + c_10f);
+  (Vm_cFTD * c_10f) / (K_10f_FTD + c_10f);
 end
 
 function function_4_V_PGT_1(GAR, K_10f_PGT, K_GAR_PGT, Vm_PGT, c_10f)
-  Vm_PGT * c_10f * GAR / ((K_10f_PGT + c_10f) * (K_GAR_PGT + GAR));
+  (Vm_PGT * c_10f * GAR) / ((K_10f_PGT + c_10f) * (K_GAR_PGT + GAR));
 end
 
 function function_4_VcFTS_1(K_coo_cFTS, K_thf_cFTS, Vm_cFTS, c_coo, c_thf)
-  Vm_cFTS * c_thf * c_coo / ((K_thf_cFTS + c_thf) * (K_coo_cFTS + c_coo));
+  (Vm_cFTS * c_thf * c_coo) / ((K_thf_cFTS + c_thf) * (K_coo_cFTS + c_coo));
 end
 
 function function_4_VcSHMT_1(K_2cf_SHMT, K_gly_SHMT, K_ser_SHMT, K_thf_SHMT, Vf_cSHMT, Vr_cSHMT, c_2cf, c_gly, c_ser, c_thf)
@@ -92,11 +92,11 @@ function function_4_VcNE_1(HCHO, c_2cf, c_thf, cytosol, k1_cNE, k2_cNE)
 end
 
 function function_4_V_TS_1(DUMP, K_2cf_TS, K_DUMP_TS, Vm_TS, c_2cf)
-  Vm_TS * DUMP * c_2cf / ((K_DUMP_TS + DUMP) * (K_2cf_TS + c_2cf));
+  (Vm_TS * DUMP * c_2cf) / ((K_DUMP_TS + DUMP) * (K_2cf_TS + c_2cf));
 end
 
 function function_4_V_MTHFR_1(K_2cf_MTHFR, K_NADPH_MTHFR, NADPH, Vm_MTHFR, c_2cf, sah, sam)
-  MM_twosubst(Vm_MTHFR, K_2cf_MTHFR, K_NADPH_MTHFR, c_2cf, NADPH) * 72 / (10 + sam - sah);
+  (MM_twosubst(Vm_MTHFR, K_2cf_MTHFR, K_NADPH_MTHFR, c_2cf, NADPH) * 72) / ((10 + sam) - sah);
 end
 
 function function_4_VcMTD_1(K_1cf_MTD, K_2cf_MTD, Vf_cMTD, Vr_cMTD, c_1cf, c_2cf)
@@ -108,7 +108,7 @@ function function_4_VcMTCH_1(K_10f_MTCH, K_1cf_MTCH, Vf_cMTCH, Vr_MTCH, c_10f, c
 end
 
 function function_4_V_ART_1(K_10f_ART, K_aic_ART, Vm_ART, aic, c_10f)
-  Vm_ART * c_10f * aic / ((K_10f_ART + c_10f) * (K_aic_ART + aic));
+  (Vm_ART * c_10f * aic) / ((K_10f_ART + c_10f) * (K_aic_ART + aic));
 end
 
 function function_4_V_BHMT_1(BET, H2O2, K_bet_BHMT, K_hcy_BHMT, Ki_BHMT, Vm_BHMT, cytosol, hcy, sah, sam, ssH2O2)
@@ -120,7 +120,7 @@ function function_4_V_MATI_1(Ki_MAT1, Km_MAT1, Vm_MAT1, c_gsg, met, sam)
 end
 
 function function_4_V_MATIII_1(Ka_MAT3, Ki_MAT3, Km_MAT3, Vm_MAT3, c_gsg, met, sam)
-  Vm_MAT3 * (met^1.21 / (Km_MAT3 + met^1.21)) * (1 + 7.2 * sam^2 / (Ka_MAT3^2 + sam^2)) * ((Ki_MAT3 + 66.71) / (Ki_MAT3 + c_gsg));
+  Vm_MAT3 * (met^1.21 / (Km_MAT3 + met^1.21)) * (1 + (7.2 * sam^2) / (Ka_MAT3^2 + sam^2)) * ((Ki_MAT3 + 66.71) / (Ki_MAT3 + c_gsg));
 end
 
 function function_4_V_GNMT_1(K_gly_GNMT, K_sam_GNMT, Ki_GNMT, Vm_GNMT, c_5mf, c_gly, cytosol, sah, sam)
@@ -144,15 +144,15 @@ function function_4_V_CBS_1(H2O2, K_hcy_CBS, K_ser_CBS, Ka_CBS, Vm_CBS, c_ser, h
 end
 
 function function_4_V_CTGL_1(K_cyt_CTGL, Vm_CTGL, cyt)
-  Vm_CTGL * cyt / (K_cyt_CTGL + cyt);
+  (Vm_CTGL * cyt) / (K_cyt_CTGL + cyt);
 end
 
 function function_4_V_GCS_1(H2O2, K_cys_GCS, K_glu_GCS, Ka_GCS, Ke_GCS, Ki_GCS, Kp_GCS, Vm_GCS, c_cys, c_glu, c_gsh, glc, ssH2O2)
-  Vm_GCS * (c_cys * c_glu - glc / Ke_GCS) / (K_cys_GCS * K_glu_GCS + c_glu * K_cys_GCS + c_cys * (K_glu_GCS * (1 + c_gsh / Ki_GCS) + c_glu) + glc / Kp_GCS + c_gsh / Ki_GCS) * ((H2O2 + Ka_GCS) / (ssH2O2 + Ka_GCS));
+  (Vm_GCS * (c_cys * c_glu - glc / Ke_GCS)) / (K_cys_GCS * K_glu_GCS + c_glu * K_cys_GCS + c_cys * (K_glu_GCS * (1 + c_gsh / Ki_GCS) + c_glu) + glc / Kp_GCS + c_gsh / Ki_GCS) * ((H2O2 + Ka_GCS) / (ssH2O2 + Ka_GCS));
 end
 
 function function_4_V_GS_1(K_glc_GS, K_gly_GS, Ke_GS, Kp_GS, Vm_GS, c_gly, c_gsh, glc)
-  Vm_GS * (c_gly * glc - c_gsh / Ke_GS) / (K_gly_GS * K_glc_GS + glc * K_gly_GS + c_gly * (K_glc_GS + glc) + c_gsh / Kp_GS);
+  (Vm_GS * (c_gly * glc - c_gsh / Ke_GS)) / (K_gly_GS * K_glc_GS + glc * K_gly_GS + c_gly * (K_glc_GS + glc) + c_gsh / Kp_GS);
 end
 
 function function_4_c_glu_usage_1(c_glu)
@@ -160,7 +160,7 @@ function function_4_c_glu_usage_1(c_glu)
 end
 
 function function_4_cys_usage_1(c_cys)
-  0.35 * c_cys^2 / 200;
+  (0.35 * c_cys^2) / 200;
 end
 
 function function_4_V_GPX_1(H2O2, K_H2O2_GPX, K_gsh_GPX, Vm_GPX, c_gsh)
@@ -168,7 +168,7 @@ function function_4_V_GPX_1(H2O2, K_H2O2_GPX, K_gsh_GPX, Vm_GPX, c_gsh)
 end
 
 function function_4_V_GR_1(K_NADPH_GR, K_gsg_GR, NADPH, Vm_GR, c_gsg)
-  Vm_GR * c_gsg * NADPH / ((K_gsg_GR + c_gsg) * (K_NADPH_GR + NADPH));
+  (Vm_GR * c_gsg * NADPH) / ((K_gsg_GR + c_gsg) * (K_NADPH_GR + NADPH));
 end
 
 function function_4_c_gsh_degr_1(c_gsh)
@@ -180,39 +180,39 @@ function function_4_c_gsg_degr_1(c_gsg)
 end
 
 function function_4_V_ODC_1(Kipodc, Kmodc, parameter_1, species_2, species_7)
-  parameter_1 * species_7 / (Kmodc * (1 + species_2 / Kipodc) + species_7);
+  (parameter_1 * species_7) / (Kmodc * (1 + species_2 / Kipodc) + species_7);
 end
 
 function function_4_V_SAMDC_1(Kapsamdc, Kiasamdc, Kissamdc, Kmsamdc, parameter_3, sam, species_1, species_2, species_3)
-  parameter_3 / (1 + species_3 / Kissamdc) * sam / (Kmsamdc * (1 + Kapsamdc / species_2 + species_1 / Kiasamdc) + sam);
+  (parameter_3 / (1 + species_3 / Kissamdc) * sam) / (Kmsamdc * (1 + Kapsamdc / species_2 + species_1 / Kiasamdc) + sam);
 end
 
 function function_4_V_SSAT_S_1(C, Kmaccoassat, Kmcoassat, Kmdssat, Kmsssat, parameter_2, species_3, species_4, species_8, species_9)
-  1 / C * parameter_2 * species_3 * species_8 / (Kmsssat * (1 + species_4 / Kmdssat) * Kmaccoassat * (1 + species_9 / Kmcoassat) + Kmaccoassat * (1 + species_9 / Kmcoassat) * species_3 + Kmsssat * (1 + species_4 / Kmdssat) * species_8 + species_3 * species_8);
+  (1 / C * parameter_2 * species_3 * species_8) / (Kmsssat * (1 + species_4 / Kmdssat) * Kmaccoassat * (1 + species_9 / Kmcoassat) + Kmaccoassat * (1 + species_9 / Kmcoassat) * species_3 + Kmsssat * (1 + species_4 / Kmdssat) * species_8 + species_3 * species_8);
 end
 
 function function_4_V_SSAT_D_1(Kmaccoassat, Kmcoassat, Kmdssat, Kmsssat, parameter_2, species_3, species_4, species_8, species_9)
-  parameter_2 * species_4 * species_8 / (Kmdssat * (1 + species_3 / Kmsssat) * Kmaccoassat * (1 + species_9 / Kmcoassat) + Kmaccoassat * (1 + species_9 / Kmcoassat) * species_4 + Kmdssat * (1 + species_3 / Kmsssat) * species_8 + species_4 * species_8);
+  (parameter_2 * species_4 * species_8) / (Kmdssat * (1 + species_3 / Kmsssat) * Kmaccoassat * (1 + species_9 / Kmcoassat) + Kmaccoassat * (1 + species_9 / Kmcoassat) * species_4 + Kmdssat * (1 + species_3 / Kmsssat) * species_8 + species_4 * species_8);
 end
 
 function function_4_V_PAO_AS_1(Kmadpao, Kmaspao, Kmdpao, Kmspao, Vmpao, species_3, species_4, species_5, species_6)
-  Vmpao * species_5 / (Kmaspao * (1 + species_6 / Kmadpao + species_5 / Kmaspao + species_4 / Kmdpao + species_3 / Kmspao));
+  (Vmpao * species_5) / (Kmaspao * (1 + species_6 / Kmadpao + species_5 / Kmaspao + species_4 / Kmdpao + species_3 / Kmspao));
 end
 
 function function_4_V_PAO_AD_1(Kmadpao, Kmaspao, Kmdpao, Kmspao, Vmpao, species_3, species_4, species_5, species_6)
-  Vmpao * species_6 / (Kmadpao * (1 + species_6 / Kmadpao + species_5 / Kmaspao + species_4 / Kmdpao + species_3 / Kmspao));
+  (Vmpao * species_6) / (Kmadpao * (1 + species_6 / Kmadpao + species_5 / Kmaspao + species_4 / Kmdpao + species_3 / Kmspao));
 end
 
 function function_4_V_SPDS_1(KaSpds, Kiaspds, Kidspds, Kpspds, Vmspds, species_1, species_2, species_4)
-  Vmspds * species_1 * species_2 / (Kiaspds * Kpspds * (1 + species_4 / Kidspds) + Kpspds * species_1 + KaSpds * (1 + species_4 / Kidspds) * species_2 + species_1 * species_2);
+  (Vmspds * species_1 * species_2) / (Kiaspds * Kpspds * (1 + species_4 / Kidspds) + Kpspds * species_1 + KaSpds * (1 + species_4 / Kidspds) * species_2 + species_1 * species_2);
 end
 
 function function_4_V_SPMS_1(Kaspms, Kdspms, Kiaspms, Kisspms, Vmspms, species_1, species_3, species_4)
-  Vmspms * species_1 * species_4 / (Kiaspms * Kdspms * (1 + species_3 / Kisspms) + Kdspms * species_1 + Kaspms * (1 + species_3 / Kisspms) * species_4 + species_1 * species_4);
+  (Vmspms * species_1 * species_4) / (Kiaspms * Kdspms * (1 + species_3 / Kisspms) + Kdspms * species_1 + Kaspms * (1 + species_3 / Kisspms) * species_4 + species_1 * species_4);
 end
 
 function function_4_V_MATII(Ki, Km, met, parameter_19, sam)
-  parameter_19 / (1 + (Km * (1 + sam / Ki) / met)^0.76);
+  parameter_19 / (1 + ((Km * (1 + sam / Ki)) / met)^0.76);
 end
 
 function function_4_V_SDH_1(K_src_SDH, K_thf_SDH, Vm_SDH, m_thf, mito, src)
@@ -272,7 +272,7 @@ function function_4_V_c_gsgLb_1(K_gsgLb, V_gsgLb, c_gsg, cytosol)
 end
 
 function function_4_VmSERc_1(K_cser, K_mser, V_cser, V_mser, c_ser, cytosol, m_ser, mito)
-  (MM(V_mser, K_mser, m_ser) * mito / 3 - MM(V_cser, K_cser, c_ser)) * cytosol;
+  ((MM(V_mser, K_mser, m_ser) * mito) / 3 - MM(V_cser, K_cser, c_ser)) * cytosol;
 end
 
 function function_4_V_c_gsgHb_1(K_gsgHb, V_gsgHb, c_gsg, cytosol)
@@ -301,7 +301,7 @@ model *MODEL1305060001()
 
   // Assignment Rules:
   b_met := aa_input * b_met_basal;
-  aa_input := piecewise(breakfast, and(leq(7, daytime), leq(daytime, 10)), piecewise(lunch, and(leq(12, daytime), leq(daytime, 15)), piecewise(dinner, and(leq(18, daytime), leq(daytime, 21)), fasting)));
+  aa_input := piecewise(breakfast, 7 <= daytime && daytime <= 10, piecewise(lunch, 12 <= daytime && daytime <= 15, piecewise(dinner, 18 <= daytime && daytime <= 21, fasting)));
   b_ser := aa_input * b_ser_basal;
   tot_cfol := c_5mf + c_2cf + c_1cf + c_10f + c_dhf + c_thf;
   tot_mfol := m_thf + m_2cf + m_1cf + m_10f;
@@ -407,7 +407,7 @@ model *MODEL1305060001()
   BET = 50;
   DUMP = 20;
   H2O2 = 0.015;
-  c_thf = Fol / (2 * 3 / 4) - (c_5mf + c_2cf + c_1cf + c_10f + c_dhf);
+  c_thf = Fol / ((2 * 3) / 4) - (c_5mf + c_2cf + c_1cf + c_10f + c_dhf);
   Fol = 20.1;
   c_5mf = 5.36079859230553;
   c_2cf = 0.463962655701761;
@@ -438,7 +438,7 @@ model *MODEL1305060001()
   species_8 = 38.833390762794;
   species_9 = 160.666609237206;
   CO = 0;
-  m_thf = Fol / (2 * 1 / 4) - (m_2cf + m_1cf + m_10f);
+  m_thf = Fol / ((2 * 1) / 4) - (m_2cf + m_1cf + m_10f);
   m_2cf = 1.66729681864136;
   m_1cf = 1.55022131198345;
   m_10f = 15.9931179032642;

@@ -11,29 +11,29 @@ model *Friedland2009_Ara_Counter_RC3_events()
   pulse3_start := pulse2_start + pulse2_length + pulse_interval;
 
   // Reactions:
-  r0: ara => ; cell * piecewise(cAra, and(eq(pulse_flag, 1), gt(ara, 0)), dAra * ara);
-  r1a:  => taRNA; cell * (sT * ara / (ara + k_ara) + s0_taRNA);
+  r0: ara => ; cell * piecewise(cAra, pulse_flag == 1 && ara > 0, dAra * ara);
+  r1a:  => taRNA; cell * ((sT * ara) / (ara + k_ara) + s0_taRNA);
   r1b: taRNA => ; cell * d_taRNA * taRNA;
   r2a:  => mT7cr; cell * s0_mT7cr;
   r2b: mT7cr => ; cell * d_mT7 * mT7cr;
-  r3a:  => mGFPcr; cell * (s0_mGFPcr + k_pT3 * pT3^n3 / (km3^n3 + pT3^n3));
+  r3a:  => mGFPcr; cell * (s0_mGFPcr + (k_pT3 * pT3^n3) / (km3^n3 + pT3^n3));
   r3b: mGFPcr => ; cell * d_mGFP * mGFPcr;
   r6:  => pT7; cell * (s0_pT7 * mT7cr + s_pT7k * mT7cr * taRNA);
   r7:  => pGFP; cell * (s0_pGFP * mGFPcr + s_pGFPk * mGFPcr * taRNA);
   r8: pT7 => ; cell * d_pT7 * pT7;
   r9: pGFP => ; cell * d_pGFP * pGFP;
-  r10a:  => mT3cr; cell * (s0_mT3cr + k_pT7 * pT7^n7 / (km7^n7 + pT7^n7));
+  r10a:  => mT3cr; cell * (s0_mT3cr + (k_pT7 * pT7^n7) / (km7^n7 + pT7^n7));
   r10b: mT3cr => ; cell * d_mT3 * mT3cr;
   r11:  => pT3; cell * (s0_pT3 * mT3cr + s_pT3k * taRNA * mT3cr);
   r12: pT3 => ; cell * d_pT3 * pT3;
 
   // Events:
-  pulse_start1: at and(geq(time, pulse1_start), leq(time, pulse1_start + pulse1_length)): ara = pulse_conc, pulse_flag = 1;
-  pulse_start2: at and(geq(time, pulse2_start), leq(time, pulse2_start + pulse2_length)): ara = pulse_conc, pulse_flag = 1;
-  pulse_start3: at and(geq(time, pulse3_start), leq(time, pulse3_start + pulse3_length)): ara = pulse_conc, pulse_flag = 1;
-  pulse_end1: at and(lt(time, pulse2_start), gt(time, pulse1_start + pulse1_length)): pulse_flag = 0;
-  pulse_end2: at and(lt(time, pulse3_start), gt(time, pulse2_start + pulse2_length)): pulse_flag = 0;
-  pulse_end3: at gt(time, pulse3_start + pulse3_length): pulse_flag = 0;
+  pulse_start1: at time >= pulse1_start && time <= pulse1_start + pulse1_length: ara = pulse_conc, pulse_flag = 1;
+  pulse_start2: at time >= pulse2_start && time <= pulse2_start + pulse2_length: ara = pulse_conc, pulse_flag = 1;
+  pulse_start3: at time >= pulse3_start && time <= pulse3_start + pulse3_length: ara = pulse_conc, pulse_flag = 1;
+  pulse_end1: at time < pulse2_start && time > pulse1_start + pulse1_length: pulse_flag = 0;
+  pulse_end2: at time < pulse3_start && time > pulse2_start + pulse2_length: pulse_flag = 0;
+  pulse_end3: at time > pulse3_start + pulse3_length: pulse_flag = 0;
 
   // Species initializations:
   taRNA = 0.006796941377;

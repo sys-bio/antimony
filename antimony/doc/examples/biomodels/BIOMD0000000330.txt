@@ -7,11 +7,11 @@ model *Larsen2004_CalciumSpiking()
   species $Ca_ER in ER, $Ca_mit in mit;
 
   // Rate Rules:
-  G_alpha' = k1 + k2 * G_alpha - k3 * G_alpha * PLC / (G_alpha + K4) - k5 * G_alpha * Ca_cyt / (G_alpha + K6);
-  PLC' = k7 * G_alpha - k8 * PLC / (PLC + K9);
-  Ca_cyt' = (Ca_ER - Ca_cyt) * k10 * Ca_cyt * PLC^4 / (PLC^4 + K11^4) + k12 * PLC + k13 * G_alpha - k14 * Ca_cyt / (Ca_cyt + K15) - k16 * Ca_cyt / (Ca_cyt + K17) - k18 * Ca_cyt^8 / (K19^8 + Ca_cyt^8) + (Ca_mit - Ca_cyt) * k20 * Ca_cyt / (Ca_cyt + K21);
-  Ca_ER' = -(Ca_ER - Ca_cyt) * k10 * Ca_cyt * PLC^4 / (PLC^4 + K11^4) + k16 * Ca_cyt / (Ca_cyt + K17);
-  Ca_mit' = k18 * Ca_cyt^8 / (K19^8 + Ca_cyt^8) - (Ca_mit - Ca_cyt) * k20 * Ca_cyt / (Ca_cyt + K21);
+  G_alpha' = (k1 + k2 * G_alpha) - (k3 * G_alpha * PLC) / (G_alpha + K4) - (k5 * G_alpha * Ca_cyt) / (G_alpha + K6);
+  PLC' = k7 * G_alpha - (k8 * PLC) / (PLC + K9);
+  Ca_cyt' = (((Ca_ER - Ca_cyt) * k10 * Ca_cyt * PLC^4) / (PLC^4 + K11^4) + k12 * PLC + k13 * G_alpha) - (k14 * Ca_cyt) / (Ca_cyt + K15) - (k16 * Ca_cyt) / (Ca_cyt + K17) - (k18 * Ca_cyt^8) / (K19^8 + Ca_cyt^8) + ((Ca_mit - Ca_cyt) * k20 * Ca_cyt) / (Ca_cyt + K21);
+  Ca_ER' = (-(Ca_ER - Ca_cyt) * k10 * Ca_cyt * PLC^4) / (PLC^4 + K11^4) + (k16 * Ca_cyt) / (Ca_cyt + K17);
+  Ca_mit' = (k18 * Ca_cyt^8) / (K19^8 + Ca_cyt^8) - ((Ca_mit - Ca_cyt) * k20 * Ca_cyt) / (Ca_cyt + K21);
 
   // Species initializations:
   G_alpha = 0.01;

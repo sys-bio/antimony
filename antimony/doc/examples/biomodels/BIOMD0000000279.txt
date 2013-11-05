@@ -6,8 +6,8 @@ model *Komarova2005_PTHaction_OsteoclastOsteoblastCoupling()
   species $x1 in Compartment_, $x2 in Compartment_, $z in Compartment_;
 
   // Assignment Rules:
-  y2 := piecewise(x2 - x2_bar, gt(x2, x2_bar), 0);
-  y1 := piecewise(x1 - x1_bar, gt(x1, x1_bar), 0);
+  y2 := piecewise(x2 - x2_bar, x2 > x2_bar, 0);
+  y1 := piecewise(x1 - x1_bar, x1 > x1_bar, 0);
   x1_bar := (beta1 / alpha1)^((1 - g22) / gamma) * (beta2 / alpha2)^(g21 / gamma);
   x2_bar := (beta1 / alpha1)^(g12 / gamma) * (beta2 / alpha2)^((1 - g11) / gamma);
   gamma := g12 * g21 - (1 - g11) * (1 - g22);

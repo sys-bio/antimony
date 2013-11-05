@@ -25,15 +25,15 @@ model *Curien2009_Aspartate_Metabolism()
   Vdhdps2: ASA => Lys; c1 * Vdhdps2_DHDPS2_k_app_exp * DHDPS2 * ASA * (1 / (1 + (Lys / Vdhdps2_DHDPS2_Lys_Ki_app_exp)^Vdhdps2_DHDPS2_nH_exp));
   Vhsdh1: ASA -> Hser; c1 * Vhsdh1_HSDHI_kforward_app_exp * AKHSDHI * ASA * (Vhsdh1_HSDHI_Thr_relative_residual_activity_app_exp + Vhsdh1_HSDHI_Thr_relative_inhibition_app_exp / (1 + Thr / Vhsdh1_HSDHI_Thr_Ki_app_exp));
   Vhsdh2: ASA -> Hser; c1 * Vhsdh2_HSDHII_kforward_app_exp * AKHSDHII * ASA * (Vhsdh2_HSDHII_Thr_relative_residual_activity_app_exp + Vhsdh2_HSDHII_Thr_relative_inhibition_app_exp / (1 + Thr / Vhsdh2_HSDHII_Thr_Ki_app_exp));
-  Vhsk: Hser => PHser; c1 * Vhsk_HSK_kcat_app_exp * HSK * Hser / (Vhsk_HSK_Hser_app_exp + Hser);
+  Vhsk: Hser => PHser; (c1 * Vhsk_HSK_kcat_app_exp * HSK * Hser) / (Vhsk_HSK_Hser_app_exp + Hser);
   Vts1: PHser => Thr; c1 * TS1 * PHser * ((Vts1_TS1_kcatmin_exp + Vts1_TS1_AdoMet_kcatmax_exp * (AdoMet^Vts1_TS1_nH_exp / Vts1_TS1_AdoMet_Ka1_exp)) / (1 + AdoMet^Vts1_TS1_nH_exp / Vts1_TS1_AdoMet_Ka1_exp) / (Vts1_TS1_AdoMEt_Km_no_AdoMet_exp * ((1 + AdoMet / Vts1_TS1_AdoMet_Ka2_exp) / (1 + AdoMet / Vts1_TS1_AdoMet_Ka3_exp) / (1 + AdoMet^Vts1_TS1_nH_exp / Vts1_TS1_AdoMet_Ka4_exp)) * (1 + Phosphate / Vts1_TS1_Phosphate_Ki_exp) + PHser));
   Vcgs: PHser => $Cysta; c1 * CGS * PHser * (Vcgs_CGS_kcat_exp / (1 + Vcgs_CGS_Cys_Km_exp / Cys) / (Vcgs_CGS_Phser_Km_exp / (1 + Vcgs_CGS_Cys_Km_exp / Cys) * (1 + Phosphate / Vcgs_CGS_Phosphate_Ki_exp) + PHser));
-  Vtd: Thr => Ile; c1 * TD * Thr * (Vtd_TD_k_app_exp / (1 + (Ile / (Vtd_TD_Ile_Ki_no_Val_app_exp + Vtd_TD_Val_Ka1_app_exp * Val / (Vtd_TD_Val_Ka2_app_exp + Val)))^Vtd_TD_nH_app_exp));
-  VlysTRNA: Lys => $LysTRNA; c1 * V_Lys_RS * Lys / (VlysTRNA_Lys_tRNAS_Lys_Km + Lys);
-  VthrTRNA: Thr => $ThrTRNA; c1 * V_Thr_RS * Thr / (VthrTRNA_Thr_tRNAS_Thr_Km + Thr);
-  VileTRNA: Ile => $IleTRNA; c1 * V_Ile_RS * Ile / (VileTRNA_Ile_tRNAS_Ile_Km + Ile);
-  VlysKR: Lys => $Sacc; c1 * VlysKR_LKR_kcat_exp * LKR * Lys / (VlysKR_LKR_Lys_Km_exp + Lys);
-  Vtha: Thr => $Gly; c1 * Vtha_THA_kcat_exp * THA * Thr / (Vtha_THA_Thr_Km_exp + Thr);
+  Vtd: Thr => Ile; c1 * TD * Thr * (Vtd_TD_k_app_exp / (1 + (Ile / (Vtd_TD_Ile_Ki_no_Val_app_exp + (Vtd_TD_Val_Ka1_app_exp * Val) / (Vtd_TD_Val_Ka2_app_exp + Val)))^Vtd_TD_nH_app_exp));
+  VlysTRNA: Lys => $LysTRNA; (c1 * V_Lys_RS * Lys) / (VlysTRNA_Lys_tRNAS_Lys_Km + Lys);
+  VthrTRNA: Thr => $ThrTRNA; (c1 * V_Thr_RS * Thr) / (VthrTRNA_Thr_tRNAS_Thr_Km + Thr);
+  VileTRNA: Ile => $IleTRNA; (c1 * V_Ile_RS * Ile) / (VileTRNA_Ile_tRNAS_Ile_Km + Ile);
+  VlysKR: Lys => $Sacc; (c1 * VlysKR_LKR_kcat_exp * LKR * Lys) / (VlysKR_LKR_Lys_Km_exp + Lys);
+  Vtha: Thr => $Gly; (c1 * Vtha_THA_kcat_exp * THA * Thr) / (Vtha_THA_Thr_Km_exp + Thr);
 
   // Species initializations:
   Asp = 1500;

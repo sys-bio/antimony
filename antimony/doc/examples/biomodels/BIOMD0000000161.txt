@@ -17,14 +17,14 @@ model *Eungdamrong2007_Ras_Activation()
   species RasGRP_cyt in cyt, CaRasGRP1_cyt in cyt;
 
   // Assignment Rules:
-  Rate_PIP2Synbasal_PIP2_synthesis := piecewise(0.581 * kBasalSynPIP2_PIP2_synthesis * (-1 + exp((PIP2_basal_PIP2_synthesis + - PIP2_PM) * (1 / PIP2_basal_PIP2_synthesis))), lt(PIP2_PM, PIP2_basal_PIP2_synthesis), 0);
-  Rate_PIP2SynStim_PIP2_synthesis := piecewise(kStimSynPIP2_PIP2_synthesis * exp(-((time + - tauPIP2syn_PIP2_synthesis) * (1 / PIP2syndecay_PIP2_synthesis))), gt(time, tauPIP2syn_PIP2_synthesis), 0);
+  Rate_PIP2Synbasal_PIP2_synthesis := piecewise(0.581 * kBasalSynPIP2_PIP2_synthesis * (-1 + exp((PIP2_basal_PIP2_synthesis + - PIP2_PM) * (1 / PIP2_basal_PIP2_synthesis))), PIP2_PM < PIP2_basal_PIP2_synthesis, 0);
+  Rate_PIP2SynStim_PIP2_synthesis := piecewise(kStimSynPIP2_PIP2_synthesis * exp(-((time + - tauPIP2syn_PIP2_synthesis) * (1 / PIP2syndecay_PIP2_synthesis))), time > tauPIP2syn_PIP2_synthesis, 0);
   Vmax_Shc_phosphorylation := 0.2 * Activated_EGFR_PM;
   Vmax_RasGRP_DAG_GEF := 0.05 * RasGRP_DAG_GM;
   Vmax_CAPRI_GAP := 10 * CaCAPRI_PM_PM;
   Vmax_CaRasGRP_act_RasGM := 0.01 * Ca_RasGRP_GM_GM;
-  Ratebasal_PIPsyn_PIP_synthesis := piecewise(0.581 * kBasalSynPIP_PIP_synthesis * (-1 + exp((PIP_basal_PIP_synthesis + - PIP_PM) * (1 / PIP_basal_PIP_synthesis))), lt(PIP_PM, PIP_basal_PIP_synthesis), 0);
-  Ratestim_PIPsyn_PIP_synthesis := piecewise(kStimSynPIP_PIP_synthesis * exp(-((time + - tauPIPsyn_PIP_synthesis) * (1 / PIPsyndecay_PIP_synthesis))), gt(time, tauPIPsyn_PIP_synthesis), 0);
+  Ratebasal_PIPsyn_PIP_synthesis := piecewise(0.581 * kBasalSynPIP_PIP_synthesis * (-1 + exp((PIP_basal_PIP_synthesis + - PIP_PM) * (1 / PIP_basal_PIP_synthesis))), PIP_PM < PIP_basal_PIP_synthesis, 0);
+  Ratestim_PIPsyn_PIP_synthesis := piecewise(kStimSynPIP_PIP_synthesis * exp(-((time + - tauPIPsyn_PIP_synthesis) * (1 / PIPsyndecay_PIP_synthesis))), time > tauPIPsyn_PIP_synthesis, 0);
   Koff_reaction2 := dinh_reaction2 * Kon_reaction2;
   Vmax_EGF_act_PLCgamma := 0.3 * Activated_EGFR_PM;
   Kr_Ca_binds_IP3R := 1000 * dact_Ca_binds_IP3R;

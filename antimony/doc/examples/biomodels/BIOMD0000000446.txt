@@ -1,6 +1,6 @@
 //Created by libAntimony v2.4
 function EMM(St, Et, Km, kcat)
-  0.5 * kcat * (St + Et + Km - sqrt((St + Et + Km)^2 - 4 * St * Et));
+  0.5 * kcat * ((St + Et + Km) - sqrt((St + Et + Km)^2 - 4 * St * Et));
 end
 
 function Gamma(v, u, J, K)
@@ -8,7 +8,7 @@ function Gamma(v, u, J, K)
 end
 
 function fGK(v, u, J, K)
-  piecewise(0, and(eq(v, 0), eq(u, 0)), 2 * u * K / (Gamma(v, u, J, K) + sqrt(Gamma(v, u, J, K)^2 - 4 * (v - u) * u * K)));
+  piecewise(0, v == 0 && u == 0, (2 * u * K) / (Gamma(v, u, J, K) + sqrt(Gamma(v, u, J, K)^2 - 4 * (v - u) * u * K)));
 end
 
 
@@ -39,7 +39,7 @@ model *MODEL1302180000()
   mUFPT := 13;
 
   // Reactions:
-  re2:  => UFPT; ktrUFP * mUFPT * piecewise(eIF2a / eIF2aT, eq(extATT, 1), 1);
+  re2:  => UFPT; ktrUFP * mUFPT * piecewise(eIF2a / eIF2aT, extATT == 1, 1);
   re3: UFPT => ; kdUFP * UFPT;
   re4: UFPT => ; kbu * BiUFP * UFPT;
   reu1:  => BiUFP; tmr * kf * BiP * UFP;
@@ -52,8 +52,8 @@ model *MODEL1302180000()
   reu8: BiPER => ; kr * tmr * BiPER;
   reu9:  => IRE1A; tmr * kff * IRE1^n;
   reu10: IRE1A => ; tmr * kr * IRE1A;
-  reu11:  => PERKA; tmr * kff * piecewise(UFP, eq(switch, 1), 1) * PERK^n;
-  reu12: PERKA => ; tmr * kr * PERKA / (1 + extPERK * UFP);
+  reu11:  => PERKA; tmr * kff * piecewise(UFP, switch == 1, 1) * PERK^n;
+  reu12: PERKA => ; (tmr * kr * PERKA) / (1 + extPERK * UFP);
   re5:  => ATF6T; ktrATF6 * mATF6T;
   re6: ATF6T => ; kdATF6 * ATF6T;
   re8: ATF6T => ATF6GB; ktrans * ATF6;
@@ -61,27 +61,27 @@ model *MODEL1302180000()
   re9: ATF6GB => ; kdATF6GB * ATF6GB;
   re10: ATF6GB => ATF6p50; kcleave * ATF6GB;
   re11: ATF6p50 => ; kdATF6p50 * ATF6p50;
-  rew2:  => mWFS1; trcWFS * ATF6p50 / (krcWFS + ATF6p50);
+  rew2:  => mWFS1; (trcWFS * ATF6p50) / (krcWFS + ATF6p50);
   rew3: mWFS1 => ; kdmWFS * mWFS1;
   rew4:  => WFS1; ktrWFS * mWFS1;
   rew5: WFS1 => ; kdWFS * WFS1;
-  re12:  => mXbp1u; trcXU * (basalXBP + kmAtfsXBP * ATF6p50) / (krcXU + basalXBP + kmAtfsXBP * ATF6p50);
+  re12:  => mXbp1u; (trcXU * (basalXBP + kmAtfsXBP * ATF6p50)) / (krcXU + basalXBP + kmAtfsXBP * ATF6p50);
   re13: mXbp1u => ; kdmXU * mXbp1u;
   re14: mXbp1u => mXbp1s; spliceRate;
   re15: mXbp1s => ; kdmXS * mXbp1s;
   re16:  => Xbp1s; ktrXS * mXbp1s;
   re17: Xbp1s => ; kdXS * Xbp1s;
-  re18:  => mBiPT; trcBiP * (basalBiP + kmXbp * Xbp1s + kmAtfsBiP * ATF6p50) / (krcBiP + basalBiP + kmXbp * Xbp1s + kmAtfsBiP * ATF6p50);
+  re18:  => mBiPT; (trcBiP * (basalBiP + kmXbp * Xbp1s + kmAtfsBiP * ATF6p50)) / (krcBiP + basalBiP + kmXbp * Xbp1s + kmAtfsBiP * ATF6p50);
   re19: mBiPT => ; kdmBiP * mBiPT;
   re20:  => BiPT; ktrBiP * mBiPT;
   re21: BiPT => ; kdBiP * BiPT;
-  re23:  => ATF4; ktrATF4 * mATF4 / (1 + (eIF2a / kATF4)^nh);
+  re23:  => ATF4; (ktrATF4 * mATF4) / (1 + (eIF2a / kATF4)^nh);
   re24: ATF4 => ; kdATF4 * ATF4;
-  re25:  => mCHOP; trcCHOP * (kmAtff * ATF4 + kmAtfs * ATF6p50) / (krcCHOP + kmAtff * ATF4 + kmAtfs * ATF6p50);
+  re25:  => mCHOP; (trcCHOP * (kmAtff * ATF4 + kmAtfs * ATF6p50)) / (krcCHOP + kmAtff * ATF4 + kmAtfs * ATF6p50);
   re26: mCHOP => ; kdmCHOP * mCHOP;
   re27:  => CHOP; ktrCHOP * mCHOP;
   re28: CHOP => ; kdCHOP * CHOP;
-  re29:  => mGADD34; trcGADD34 * kmChop * CHOP / (krcGADD34 + kmChop * CHOP);
+  re29:  => mGADD34; (trcGADD34 * kmChop * CHOP) / (krcGADD34 + kmChop * CHOP);
   re30: mGADD34 => ; kdmGADD34 * mGADD34;
   re31:  => GADD34; ktrGADD34 * mGADD34;
   re32: GADD34 => ; kdGADD34 * GADD34;

@@ -8,7 +8,7 @@ model *Model_1()
   species NGF_TrkA in Cell;
 
   // Assignment Rules:
-  NGF := NGF_conc_step + piecewise(NGF_conc_pulse, leq(time, pulse_time), 0) + NGF_conc_ramp * time / ramp_time;
+  NGF := NGF_conc_step + piecewise(NGF_conc_pulse, time <= pulse_time, 0) + (NGF_conc_ramp * time) / ramp_time;
   pTrkA_total := (pTrkA + pTrkA_Akt) * pTrkA_scaleFactor;
   pAkt_total := (pAkt + pAkt_S6) * pAkt_scaleFactor;
   pS6_total := pS6 * pS6_scaleFactor;

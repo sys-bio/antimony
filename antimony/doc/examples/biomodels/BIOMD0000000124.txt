@@ -28,7 +28,7 @@ model *model_0000001()
   jleak := pleak * (cer - c);
   jip3 := oinf * (cer - c);
   oinf := c / (dact + c) * (ip3 / (dip3 + ip3)) * (dinact / (dinact + c));
-  jer := jleak + jip3 - jserca;
+  jer := (jleak + jip3) - jserca;
 
   // Rate Rules:
   V' = -(ica + ik + ikca + ikatp + iir) / cm;
@@ -42,7 +42,7 @@ model *model_0000001()
   reaction_0000006:  => cer; - fer * vcytver * jer * cell;
 
   // Events:
-  event_0000001: at gt(time, 3.000000e+004): gkatp = 530;
+  event_0000001: at time > 3.000000e+004: gkatp = 530;
 
   // Species initializations:
   c = 0.1;

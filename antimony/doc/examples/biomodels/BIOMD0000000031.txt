@@ -7,10 +7,10 @@ model *Markevich2004_MAPK_orderedMM2kinases()
   species $MKP3 in uVol;
 
   // Reactions:
-  v1: M => Mp; uVol * (k1cat * MAPKK1 * M / Km1 / (1 + M / Km1));
-  v2: Mp => Mpp; uVol * (k2cat * MAPKK2 * Mp / Km2 / (1 + Mp / Km2));
-  v3: Mpp => Mp; uVol * (k3cat * MKP3 * Mpp / Km3 / (1 + Mpp / Km3 + Mp / Km4 + M / Km5));
-  v4: Mp => M; uVol * (k4cat * MKP3 * Mp / Km4 / (1 + Mpp / Km3 + Mp / Km4 + M / Km5));
+  v1: M => Mp; uVol * ((k1cat * MAPKK1 * M) / Km1 / (1 + M / Km1));
+  v2: Mp => Mpp; uVol * ((k2cat * MAPKK2 * Mp) / Km2 / (1 + Mp / Km2));
+  v3: Mpp => Mp; uVol * ((k3cat * MKP3 * Mpp) / Km3 / (1 + Mpp / Km3 + Mp / Km4 + M / Km5));
+  v4: Mp => M; uVol * ((k4cat * MKP3 * Mp) / Km4 / (1 + Mpp / Km3 + Mp / Km4 + M / Km5));
 
   // Species initializations:
   M = 500;

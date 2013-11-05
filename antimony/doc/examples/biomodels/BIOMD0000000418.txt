@@ -6,11 +6,11 @@ model *Ratushny2012_SPF()
   species P in univ;
 
   // Assignment Rules:
-  dspksp := Ksp / 2 * (1 + (s + P * univ) / Ksp - ((1 + (s + P * univ) / Ksp)^2 - 4 * s * P * univ / Ksp^2)^0.5);
-  dspspkd := Kd / 2 * (1 + 2 * dspksp / Kd - ((1 + 2 * dspksp / Kd)^2 - 4 * dspksp^2 / Kd^2)^0.5);
+  dspksp := Ksp / 2 * ((1 + (s + P * univ) / Ksp) - ((1 + (s + P * univ) / Ksp)^2 - (4 * s * P * univ) / Ksp^2)^0.5);
+  dspspkd := Kd / 2 * ((1 + (2 * dspksp) / Kd) - ((1 + (2 * dspksp) / Kd)^2 - (4 * dspksp^2) / Kd^2)^0.5);
 
   // Reactions:
-  ___r1:  => P; ks * (k0 + (dspspkd / ka)^h) / (1 + (dspspkd / ka)^h);
+  ___r1:  => P; (ks * (k0 + (dspspkd / ka)^h)) / (1 + (dspspkd / ka)^h);
   ___r2: P => ; ___r2___RATE__ * P;
 
   // Species initializations:

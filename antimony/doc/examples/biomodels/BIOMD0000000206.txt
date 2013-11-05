@@ -8,7 +8,7 @@ model *Wolf2000_Glycolytic_Oscillations()
   species s6o in compartment_;
 
   // Reactions:
-  v1: s1 + 2at_ -> s2; compartment_ * k1 * s1 * at_ / (1 + (at_ / ki)^n);
+  v1: s1 + 2at_ -> s2; (compartment_ * k1 * s1 * at_) / (1 + (at_ / ki)^n);
   v2: s2 -> 2s3; compartment_ * k2 * s2;
   v3: s3 + na -> s4 + at_; compartment_ * ((k31 * k32 * s3 * na * (atot - at_) - k33 * k34 * s4 * at_ * (ntot - na)) / (k33 * (ntot - na) + k32 * (atot - at_)));
   v4: s4 -> s5 + at_; compartment_ * k4 * s4 * (atot - at_);

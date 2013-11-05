@@ -9,12 +9,12 @@ model *Xu2003_Phosphoinositide_turnover()
   species PLC_act_PM in PM, IP3_Cyt in Cytosol;
 
   // Assignment Rules:
-  Ratebasal_PIPsyn_PIPSyn := piecewise(0.581 * kBasalSynPIP_PIPSyn * (-1 + exp((PIP_basal_PIPSyn + - PIP_PM) * (1 / PIP_basal_PIPSyn))), lt(PIP_PM, PIP_basal_PIPSyn), 0);
-  Ratestim_PIPsyn_PIPSyn := piecewise(kStimSynPIP_PIPSyn * exp(-((time + - tauPIPsyn_PIPSyn) * (1 / PIPsyndecay_PIPSyn))), gt(time, tauPIPsyn_PIPSyn), 0);
-  signal_PLCact := piecewise(exp(-((time + - tau0_PLCact) * (1 / stimdecay_PLCact))), gt(time, tau0_PLCact), 0);
+  Ratebasal_PIPsyn_PIPSyn := piecewise(0.581 * kBasalSynPIP_PIPSyn * (-1 + exp((PIP_basal_PIPSyn + - PIP_PM) * (1 / PIP_basal_PIPSyn))), PIP_PM < PIP_basal_PIPSyn, 0);
+  Ratestim_PIPsyn_PIPSyn := piecewise(kStimSynPIP_PIPSyn * exp(-((time + - tauPIPsyn_PIPSyn) * (1 / PIPsyndecay_PIPSyn))), time > tauPIPsyn_PIPSyn, 0);
+  signal_PLCact := piecewise(exp(-((time + - tau0_PLCact) * (1 / stimdecay_PLCact))), time > tau0_PLCact, 0);
   kr_PIP2PH_PIP2_PH := kf_PIP2PH_PIP2_PH * KdPIP2PH_PIP2_PH;
-  Rate_PIP2Synbasal_PIP2Syn := piecewise(0.581 * kBasalSynPIP2_PIP2Syn * (-1 + exp((PIP2_basal_PIP2Syn + - PIP2_PM) * (1 / PIP2_basal_PIP2Syn))), lt(PIP2_PM, PIP2_basal_PIP2Syn), 0);
-  Rate_PIP2SynStim_PIP2Syn := piecewise(kStimSynPIP2_PIP2Syn * exp(-((time + - tauPIP2syn_PIP2Syn) * (1 / PIP2syndecay_PIP2Syn))), gt(time, tauPIP2syn_PIP2Syn), 0);
+  Rate_PIP2Synbasal_PIP2Syn := piecewise(0.581 * kBasalSynPIP2_PIP2Syn * (-1 + exp((PIP2_basal_PIP2Syn + - PIP2_PM) * (1 / PIP2_basal_PIP2Syn))), PIP2_PM < PIP2_basal_PIP2Syn, 0);
+  Rate_PIP2SynStim_PIP2Syn := piecewise(kStimSynPIP2_PIP2Syn * exp(-((time + - tauPIP2syn_PIP2Syn) * (1 / PIP2syndecay_PIP2Syn))), time > tauPIP2syn_PIP2Syn, 0);
   kr_IP3PH_IP3_PHGFP := kf_IP3PH_IP3_PHGFP * KdIP3PH_IP3_PHGFP;
 
   // Reactions:

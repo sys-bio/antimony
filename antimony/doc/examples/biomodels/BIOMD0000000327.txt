@@ -4,7 +4,7 @@ function ap(ao, ai, bo, bi, ka, kb)
 end
 
 function g(xi, xo)
-  xi * xo * log(xi / xo) / (xi - xo);
+  (xi * xo * ln(xi / xo)) / (xi - xo);
 end
 
 
@@ -17,10 +17,10 @@ model *whitcomb04()
 
   // Assignment Rules:
   cl := 160 - bl;
-  eb := r * temp / f * log(bi / bl);
-  enbc := r * temp / f * log(bi^2 * ni / (bb^2 * nb));
-  ec := r * temp / f * log(ci / cl);
-  ena := r * temp / f * log(nb / ni);
+  eb := (r * temp) / f * ln(bi / bl);
+  enbc := (r * temp) / f * ln((bi^2 * ni) / (bb^2 * nb));
+  ec := (r * temp) / f * ln(ci / cl);
+  ena := (r * temp) / f * ln(nb / ni);
   kccf := g(ci, cl) * gcftr * g_cl;
   kbcf := g(bi, bl) * gcftr * g_bi;
   knbc := gnbc;
@@ -48,8 +48,8 @@ model *whitcomb04()
   outflow: bl -> ; lumen * zeta * jlum * bl;
 
   // Events:
-  _E0: at geq(time, ton): gcftr = gcftron;
-  _E1: at geq(time, toff): gcftr = gcftrbase;
+  _E0: at time >= ton: gcftr = gcftron;
+  _E1: at time >= toff: gcftr = gcftrbase;
 
   // Species initializations:
   bb = 22;

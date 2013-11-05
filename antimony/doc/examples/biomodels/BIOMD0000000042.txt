@@ -25,13 +25,13 @@ model *Glycolysis_Nielsen()
   EtOHflow: EtOH => ; compartment_ * EtOH * flow;
   AMPflow: AMP => ; compartment_ * AMP * flow;
   Pflow: P => ; compartment_ * P * flow;
-  reaction_1: GLC + ATP => F6P + ADP; compartment_ * (V1 * ATP * GLC / ((K1GLC + GLC) * (K1ATP + ATP)));
-  reaction_2: F6P + ATP => FBP + ADP; compartment_ * (V2 * ATP * F6P^2 / ((K2 * (1 + k2 * (ATP / AMP)^2) + F6P^2) * (K2ATP + ATP)));
+  reaction_1: GLC + ATP => F6P + ADP; compartment_ * ((V1 * ATP * GLC) / ((K1GLC + GLC) * (K1ATP + ATP)));
+  reaction_2: F6P + ATP => FBP + ADP; compartment_ * ((V2 * ATP * F6P^2) / ((K2 * (1 + k2 * (ATP / AMP)^2) + F6P^2) * (K2ATP + ATP)));
   reaction_3: FBP -> 2GAP; compartment_ * (k3f * FBP - k3b * GAP^2);
-  reaction_4: GAP + NAD => DPG + NADH; compartment_ * (V4 * NAD * GAP / ((K4GAP + GAP) * (K4NAD + NAD)));
+  reaction_4: GAP + NAD => DPG + NADH; compartment_ * ((V4 * NAD * GAP) / ((K4GAP + GAP) * (K4NAD + NAD)));
   reaction_5: DPG + ADP -> PEP + ATP; compartment_ * (k5f * DPG * ADP - k5b * PEP * ATP);
-  reaction_6: PEP + ADP => PYR + ATP; compartment_ * (V6 * ADP * PEP / ((K6PEP + PEP) * (K6ADP + ADP)));
-  reaction_7: PYR => ACA; compartment_ * (V7 * PYR / (K7PYR + PYR));
+  reaction_6: PEP + ADP => PYR + ATP; compartment_ * ((V6 * ADP * PEP) / ((K6PEP + PEP) * (K6ADP + ADP)));
+  reaction_7: PYR => ACA; compartment_ * ((V7 * PYR) / (K7PYR + PYR));
   reaction_8: ACA + NADH -> EtOH + NAD; compartment_ * (k8f * NADH * ACA - k8b * NAD * EtOH);
   reaction_9: AMP + ATP -> 2ADP; compartment_ * (k9f * AMP * ATP - k9b * ADP^2);
   reaction_10: F6P => P; compartment_ * k10 * F6P;

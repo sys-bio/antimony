@@ -11,7 +11,7 @@ model *Zi2011_TGFbeta_Pathway()
   species TGF_beta_ns in Vmed, $AA in Vcyt, $empty_degraded in Vcyt;
 
   // Assignment Rules:
-  Vmed := 2.000000e-003 / (1.000000e+006 * exp(log(1.45) * time / 1440));
+  Vmed := 2.000000e-003 / (1.000000e+006 * exp((ln(1.45) * time) / 1440));
   totalNumT1R := (T1R_surf + T1R_endo + LRC_surf + LRC_endo) * 2.3 * 602;
   totalNumT2R := (T2R_surf + T2R_endo + LRC_surf + LRC_endo) * 2.3 * 602;
   totalNumLRC := (LRC_surf + LRC_endo) * 2.3 * 602;
@@ -54,7 +54,7 @@ model *Zi2011_TGFbeta_Pathway()
   re29: TGF_beta_ex -> TGF_beta_ns; Vmed * (kon_ns * TGF_beta_ex - koff_ns * TGF_beta_ns);
 
   // Events:
-  single_pulse_TGF_beta_washout: at 0 after and(eq(stimulation_type, 2), eq(time, single_pulse_duration)): TGF_beta_ex = 0;
+  single_pulse_TGF_beta_washout: at 0 after stimulation_type == 2 && time == single_pulse_duration: TGF_beta_ex = 0;
 
   // Species initializations:
   TGF_beta_ex = 0.05;

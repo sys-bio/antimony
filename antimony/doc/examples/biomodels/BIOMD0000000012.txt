@@ -1,5 +1,5 @@
 //Created by libAntimony v2.4
-model *repressilator()
+model *BIOMD0000000012()
 
   // Compartments and Species:
   compartment cell;
@@ -7,13 +7,13 @@ model *repressilator()
 
   // Assignment Rules:
   beta := tau_mRNA / tau_prot;
-  alpha0 := a0_tr * eff * tau_prot / (log(2) * KM);
+  alpha0 := (a0_tr * eff * tau_prot) / (ln(2) * KM);
   a0_tr := ps_0 * 60;
-  alpha := a_tr * eff * tau_prot / (log(2) * KM);
+  alpha := (a_tr * eff * tau_prot) / (ln(2) * KM);
   a_tr := (ps_a - ps_0) * 60;
-  t_ave := tau_mRNA / log(2);
-  kd_mRNA := log(2) / tau_mRNA;
-  kd_prot := log(2) / tau_prot;
+  t_ave := tau_mRNA / ln(2);
+  kd_mRNA := ln(2) / tau_mRNA;
+  kd_prot := ln(2) / tau_prot;
   k_tl := eff / t_ave;
 
   // Reactions:
@@ -26,9 +26,9 @@ model *repressilator()
   Reaction7: PX => ; kd_prot * PX;
   Reaction8: PY => ; kd_prot * PY;
   Reaction9: PZ => ; kd_prot * PZ;
-  Reaction10:  => X; a0_tr + a_tr * KM^n / (KM^n + PZ^n);
-  Reaction11:  => Y; a0_tr + a_tr * KM^n / (KM^n + PX^n);
-  Reaction12:  => Z; a0_tr + a_tr * KM^n / (KM^n + PY^n);
+  Reaction10:  => X; a0_tr + (a_tr * KM^n) / (KM^n + PZ^n);
+  Reaction11:  => Y; a0_tr + (a_tr * KM^n) / (KM^n + PX^n);
+  Reaction12:  => Z; a0_tr + (a_tr * KM^n) / (KM^n + PY^n);
 
   // Species initializations:
   PX = 0;

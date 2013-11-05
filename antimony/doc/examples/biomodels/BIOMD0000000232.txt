@@ -12,9 +12,9 @@ model *Nazaret2009_TCA_RC_ATP()
   // Assignment Rules:
   ADP := At_ - ATP;
   NADH := Nt - NAD;
-  ATPcrit := At_ / (1 + exp(-3 * DeltaGtransport / (R * T)) / (Kapp * iP));
+  ATPcrit := At_ / (1 + exp((-3 * DeltaGtransport) / (R * T)) / (Kapp * iP));
   DeltaGtransport := 1.2 * F * DeltaPsi;
-  Jresp := kresp * ((Nt - NAD) / (K + Nt - NAD)) / (1 + exp(a * (DeltaPsi - DeltaPsim)));
+  Jresp := (kresp * ((Nt - NAD) / ((K + Nt) - NAD))) / (1 + exp(a * (DeltaPsi - DeltaPsim)));
   JATP := kATP * (2 / (1 + exp(b * (ATP - ATPcrit))) - 1);
   Jleak := kleak * DeltaPsi;
   JANT := kANT * ATP;

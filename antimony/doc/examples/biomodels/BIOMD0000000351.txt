@@ -7,7 +7,7 @@ model *Vernoux2011_AuxinSignalling_AuxinSingleStepInput()
   species D_IA in compartment_0000001, R in compartment_0000001, $aux in compartment_0000001;
 
   // Assignment Rules:
-  aux := piecewise(5, gt(time, 1000), 0);
+  aux := piecewise(5, time > 1000, 0);
   kprime_IA := K_IA * k_IA;
   kprime_II := K_II * k_II;
   aux_basal := 1 / (K_aux * (gamma_I - 1));
@@ -15,16 +15,16 @@ model *Vernoux2011_AuxinSignalling_AuxinSingleStepInput()
   // Reactions:
   reac_DIA: A + I -> D_IA; k_IA * I * A - kprime_IA * D_IA;
   reac_DII: I + I -> D_II; k_II * I * I - kprime_II * D_II;
-  reac_degrI: I => ; gamma_I * d_I * K_aux * aux / (K_aux * aux + 1) * I;
+  reac_degrI: I => ; (gamma_I * d_I * K_aux * aux) / (K_aux * aux + 1) * I;
   reac_degrA: A => ; d_A * A;
   reac_degrDIA: D_IA => ; d_IA * D_IA;
   reac_degrDII: D_II => ; d_II * D_II;
-  reac_DIAxA: D_IA => A; gamma_I * d_I * K_aux * aux / (K_aux * aux + 1) * D_IA;
-  reac_DIIxI: D_II => I; gamma_I * d_I * K_aux * aux / (K_aux * aux + 1) * D_II;
+  reac_DIAxA: D_IA => A; (gamma_I * d_I * K_aux * aux) / (K_aux * aux + 1) * D_IA;
+  reac_DIIxI: D_II => I; (gamma_I * d_I * K_aux * aux) / (K_aux * aux + 1) * D_II;
   reac_degrR: R => ; d_r * R;
   reac_prodI:  => I; pi_I * R;
   reac_prodA:  => A; pi_A;
-  reac_prodR:  => R; (1 + f_c / B_d * A * (1 + w_A * f_A * A / B_d)) / (1 + A / B_d * (1 + w_A * A / B_d) + w_I * A * I / (K_IA * B_d) + w_D * D_IA / B_d + k_Am);
+  reac_prodR:  => R; (1 + f_c / B_d * A * (1 + (w_A * f_A * A) / B_d)) / (1 + A / B_d * (1 + (w_A * A) / B_d) + (w_I * A * I) / (K_IA * B_d) + (w_D * D_IA) / B_d + k_Am);
 
   // Species initializations:
   I = 10;

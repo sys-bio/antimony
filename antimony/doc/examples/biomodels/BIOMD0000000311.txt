@@ -1,6 +1,6 @@
 //Created by libAntimony v2.4
 function goldbeter_koshland(v1, v2, J1, J2)
-  2 * v1 * J2 / (v2 - v1 + J1 * v2 + J2 * v1 + ((v2 - v1 + J1 * v2 + J2 * v1)^2 - 4 * (v2 - v1) * v1 * J2)^(1 / 2));
+  (2 * v1 * J2) / (v2 - v1 + J1 * v2 + J2 * v1 + ((v2 - v1 + J1 * v2 + J2 * v1)^2 - 4 * (v2 - v1) * v1 * J2)^(1 / 2));
 end
 
 
@@ -18,8 +18,8 @@ model *Tyson2003_Mutual_Activation()
   r1:  => R; env * k0 * Ep;
   r2:  => R; env * k1 * S;
   r3: R => ; env * k2 * R;
-  r4: $E => $Ep; env * k3 * R * E / (J3 + E);
-  r5: $Ep => $E; env * k4 * Ep / (J4 + Ep);
+  r4: $E => $Ep; (env * k3 * R * E) / (J3 + E);
+  r5: $Ep => $E; (env * k4 * Ep) / (J4 + Ep);
 
   // Species initializations:
   R = 0;

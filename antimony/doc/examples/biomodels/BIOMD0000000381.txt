@@ -11,9 +11,9 @@ model *Maree2006_DuCa_Type1DiabetesModel()
   parameter_1 := ((time - 9) / 3)^2;
 
   // Rate Rules:
-  M' = J + (k + b) * Ma - c * M - f1 * M * Ba - e1 * M * (M + Ma);
+  M' = (J + (k + b) * Ma) - c * M - f1 * M * Ba - e1 * M * (M + Ma);
   Ma' = f1 * M * Ba - k * Ma - e2 * Ma * (M + Ma);
-  Ba' = W + Amax * Cy / (kc + Cy) - (f1 * M + f2 * Ma + d) * Ba;
+  Ba' = (W + (Amax * Cy) / (kc + Cy)) - (f1 * M + f2 * Ma + d) * Ba;
   Bn' = d * Ba - (f1 * M + f2 * Ma) * Bn;
   Cy' = alpha * Bn * Ma - delta * Cy;
 

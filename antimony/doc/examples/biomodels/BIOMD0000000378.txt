@@ -8,11 +8,11 @@ model *Chay1997_CalciumConcentration()
 
   // Assignment Rules:
   i_K_dr := g_K_dr * n^4 * (V_membrane - V_K);
-  i_K_Ca := g_K_Ca * Ca_i_cytosolic_calcium^3 / (K_Ca^3 + Ca_i_cytosolic_calcium^3) * (V_membrane - V_K);
+  i_K_Ca := (g_K_Ca * Ca_i_cytosolic_calcium^3) / (K_Ca^3 + Ca_i_cytosolic_calcium^3) * (V_membrane - V_K);
   i_K_ATP := g_K_ATP * (V_membrane - V_K);
   i_fast := g_fast * m_infinity^3 * h * (V_membrane - V_fast);
-  i_Ca := P_Ca * d * f_infinity * 2 * F * V_membrane / (R * T) * (Ca_o - Ca_i_cytosolic_calcium * exp(2 * F * V_membrane / (R * T))) / (1 - exp(2 * F * V_membrane / (R * T)));
-  i_NS := g_NS * K_NS^2 / (K_NS^2 + Ca_lum^2) * ((V_membrane - VNS) / (1 - exp(0.1 * (VNS - V_membrane))) - 10);
+  i_Ca := ((P_Ca * d * f_infinity * 2 * F * V_membrane) / (R * T) * (Ca_o - Ca_i_cytosolic_calcium * exp((2 * F * V_membrane) / (R * T)))) / (1 - exp((2 * F * V_membrane) / (R * T)));
+  i_NS := (g_NS * K_NS^2) / (K_NS^2 + Ca_lum^2) * ((V_membrane - VNS) / (1 - exp(0.1 * (VNS - V_membrane))) - 10);
   i_NaL := g_NaL * (V_membrane - V_Na);
   h_infinity := 1 / (1 + exp((Vh - V_membrane) / Sh));
   tau_h := 1 / (lamda_h * (exp((Vh - V_membrane) / (2 * Sh)) + exp((V_membrane - Vh) / (2 * Sh))));

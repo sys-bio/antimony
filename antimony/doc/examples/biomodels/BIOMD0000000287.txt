@@ -49,9 +49,9 @@ model *Passos2010_DNAdamage_CellularSenescence()
   basalROSDNAdamage: basalROS => basalROS + damDNA; kdamBasalROS * basalROS;
 
   // Events:
-  stressCell: at geq(time, 172800): IR = 200;
-  stopStress: at geq(time, 172860): IR = 0;
-  stopp38ROS: at geq(time, 691200): kp38ROS = 0.6;
+  stressCell: at time >= 172800: IR = 200;
+  stopStress: at time >= 172860: IR = 0;
+  stopp38ROS: at time >= 691200: kp38ROS = 0.6;
 
   // Species initializations:
   Mdm2 = 5;

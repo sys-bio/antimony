@@ -1,0 +1,148 @@
+//Created by libAntimony v2.4
+model *MODEL1302180003()
+
+  // Compartments and Species:
+  compartment default, c1, c2;
+  species s1 in default, s2 in c2, s3 in c1, s4 in c1, s5 in default, s6 in c1;
+  species s7 in c1, s8 in c1, s9 in c1, s10 in c1, s11 in c1, s12 in default;
+  species s13 in default, s119 in default;
+
+  // Reactions:
+  re3: s4 => s3; - k6 * s3 * (B_T - s4) + k7 * s4;
+  re4: s5 => s2; k_CCE * ((fracK * Cao) / (K3 + Cao) - s2) * (s1 - s2);
+  re5: s7 => s6; (k1 * (R_T - half * R_T * (exp(- s12 / tau_I) + exp(- s12 / tau_II) + ((exp(- s12 / tau_I) - exp(- s12 / tau_II)) * (tau_I + tau_II)) / (tau_I - tau_II))) * s3) / (K1 + s3);
+  re6: s6 => s8; k2 * s6;
+  re7: s2 => s3; k3 * ((k_CICR * s3) / (K_CICR + s3)) * (s6 / (K2 + s6))^3 * s2 - k4 * (s3 / (K3 + s3))^2 + k5 * s2 * s2;
+  re8: s3 => s9; (dot_Vhi * s3^4) / (K_hi^4 + s3^4);
+  re9: s3 => s10; (dot_Vex * s3) / (K5 + s3);
+  re10: s11 => s3; dot_q_inpass;
+  re11: s13 => s12; re11_unisec;
+  re12: s3 => s9; (dot_Vp * s3^2) / (K4^2 + s3^2);
+
+  // Species initializations:
+  s1 = 1500000;
+  s1 has substance_per_volume;
+  s2 = 2830000;
+  s2 has substance_per_volume;
+  s3 = 117.2;
+  s3 has substance_per_volume;
+  s4 = 3870;
+  s4 has substance_per_volume;
+  s5 = 0;
+  s5 has substance_per_volume;
+  s6 = 0;
+  s6 has substance_per_volume;
+  s7 = 0;
+  s7 has substance_per_volume;
+  s8 = 0;
+  s8 has substance_per_volume;
+  s9 = 0;
+  s9 has substance_per_volume;
+  s10 = 0;
+  s10 has substance_per_volume;
+  s11 = 0;
+  s11 has substance_per_volume;
+  s12 = 0;
+  s12 has substance_per_volume;
+  s13 = 0;
+  s13 has substance_per_volume;
+  s119 = 0;
+  s119 has substance_per_volume;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+  c1 = 1;
+  c1 has volume;
+  c2 = 1;
+  c2 has volume;
+
+  // Variable initializations:
+  R_T = 44000;
+  R_T has dimensionless;
+  k1 = 0.0006;
+  k1 has sub_sec;
+  k2 = 1;
+  k2 has inv_sec;
+  k3 = 3.32;
+  k3 has inv_sec;
+  k4 = 2500;
+  k4 has sub_sec;
+  k5 = 5e-011;
+  k5 has inv_sec_sub;
+  k6 = 0.05;
+  k6 has inv_sec_sub;
+  k7 = 150;
+  k7 has inv_sec;
+  K1 = 0;
+  K1 has substance;
+  K2 = 200;
+  K2 has substance;
+  K3 = 150;
+  K3 has substance;
+  K4 = 80;
+  K4 has substance;
+  K5 = 321;
+  K5 has substance;
+  K_hi = 380;
+  K_hi has substance;
+  k_CICR = 1;
+  k_CICR has dimensionless;
+  K_CICR = 0;
+  K_CICR has substance;
+  k_CCE = 0;
+  k_CCE has inv_sec_sub;
+  B_T = 120000;
+  B_T has substance;
+  dot_Vp = 815;
+  dot_Vp has sub_sec;
+  dot_Vex = 9165;
+  dot_Vex has sub_sec;
+  dot_Vhi = 2380;
+  dot_Vhi has sub_sec;
+  dot_q_inpass = 3000;
+  dot_q_inpass has sub_sec;
+  Cao = 100;
+  Cao has substance;
+  tau_I = 66;
+  tau_I has substance;
+  tau_II = 0.01;
+  tau_II has substance;
+  half = 0.5;
+  half has dimensionless;
+  fracK = 7071067.81;
+  fracK has substance;
+  re11_unisec = 1;
+  re11_unisec has sub_sec;
+
+  //Other declarations:
+  const default, c1, c2, R_T, k1, k2, k3, k4, k5, k6, k7, K1, K2, K3, K4;
+  const K5, K_hi, k_CICR, K_CICR, k_CCE, B_T, dot_Vp, dot_Vex, dot_Vhi, dot_q_inpass;
+  const Cao, tau_I, tau_II, half, fracK;
+
+  // Unit definitions:
+  unit time_unit = second;
+  unit substance = 1e-009 mole;
+  unit area = metre^2;
+  unit length = metre;
+  unit volume = litre;
+  unit sub_sec = 1e-009 mole / second;
+  unit inv_sec = 1 / second;
+  unit inv_sec_sub = 1 / (1e-009 mole * second);
+  unit nM_inv_s = 1e-9 mole / second;
+  unit inv_nM_s = 1 / (1e-9 mole * second);
+  unit substance_per_volume = 1e-009 mole / litre;
+
+  //Display Names:
+  time_unit is "time";
+  c1 is "Cell";
+  c2 is "ER";
+  s1 is "Ca_ex";
+  s2 is "Ca_s";
+  s3 is "Ca_c";
+  s4 is "Ca_B";
+  s6 is "IP3";
+  s12 is "TimeT";
+  s119 is "Shear Stress";
+  re3 is "re1";
+end

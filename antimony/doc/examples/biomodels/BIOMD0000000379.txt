@@ -10,26 +10,26 @@ model *DallaMan2007_MealModel_GlucoseInsulinSystem()
 
   // Assignment Rules:
   EGP := k_p1 - k_p2 * G_p - k_p3 * I_d - k_p4 * I_po;
-  Ra := f * k_abs * Q_gut / BW;
+  Ra := (f * k_abs * Q_gut) / BW;
   E := 0;
   U_id := U_idm;
-  m_3 := HE * m_1 / (1 - HE);
+  m_3 := (HE * m_1) / (1 - HE);
   S := gamma * I_po;
   k_empt := k_min + (k_max - k_min) / 2 * (tanh(aa * (Q_sto - b * D)) - tanh(cc * (Q_sto - d * D)) + 2);
   I := I_p / V_I;
-  S_po := Y + K * (EGP + Ra - E - U_ii - k_1 * G_p + k_2 * G_t) / V_G + S_b;
+  S_po := Y + (K * ((EGP + Ra) - E - U_ii - k_1 * G_p + k_2 * G_t)) / V_G + S_b;
   G := G_p / V_G;
   aa := 5 / 2 / (1 - b) / D;
   cc := 5 / 2 / d / D;
   V_mmax := (1 - part) * (V_m0 + V_mX * X);
   HE := - m_5 * S + m_6;
   Q_sto := Q_sto1 + Q_sto2;
-  U_idm := V_mmax * G_t / (K_m0 + G_t);
+  U_idm := (V_mmax * G_t) / (K_m0 + G_t);
   U := U_ii + U_id;
 
   // Rate Rules:
-  G_p' = EGP + Ra - E - U_ii - k_1 * G_p + k_2 * G_t;
-  G_t' = - U_id + k_1 * G_p - k_2 * G_t;
+  G_p' = (EGP + Ra) - E - U_ii - k_1 * G_p + k_2 * G_t;
+  G_t' = (- U_id + k_1 * G_p) - k_2 * G_t;
   I_l' = - m_1 * I_l - m_3 * I_l + m_2 * I_p + S;
   I_p' = - m_2 * I_p - m_4 * I_p + m_1 * I_l;
   Q_sto1' = - k_gri * Q_sto1;

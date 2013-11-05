@@ -8,7 +8,7 @@ model *Kim2007_CellularMemory_AsymmetricModel()
   species P3_prime in compartment_;
 
   // Assignment Rules:
-  i2 := piecewise(1, and(geq(time, 50), leq(time, 100)), 0);
+  i2 := piecewise(1, time >= 50 && time <= 100, 0);
 
   // Reactions:
   React1:  => R1; i1;

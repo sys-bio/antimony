@@ -1,10 +1,10 @@
 //Created by libAntimony v2.4
 function stepfunc2(t, t_start, v_start, t_end, v_end)
-  piecewise(v_start, lt(t, t_start), v_end, gt(t, t_end), (v_end - v_start) / (t_end - t_start) * (t - t_start) + v_start);
+  piecewise(v_start, t < t_start, v_end, t > t_end, (v_end - v_start) / (t_end - t_start) * (t - t_start) + v_start);
 end
 
 function stepfunc(t, t_start, v_start, t_end, v_end)
-  piecewise(v_start, lt(t, t_start), piecewise(v_end, gt(t, t_end), (v_start + v_end) / 2 + (v_end - v_start) / 2 * sin(3.14 / 2 * (2 * t - t_end - t_start) / (t_end - t_start))));
+  piecewise(v_start, t < t_start, piecewise(v_end, t > t_end, (v_start + v_end) / 2 + (v_end - v_start) / 2 * sin((3.14 / 2 * (2 * t - t_end - t_start)) / (t_end - t_start))));
 end
 
 

@@ -90,8 +90,8 @@ model *Tang2010_PolyGlutamate()
   PIDeathPathway: AggP_Proteasome => AggP_Proteasome + PIdeath; kPIdeath * AggP_Proteasome * kalive;
 
   // Events:
-  PIcellDeath: at gt(PIdeath, 0): kalive = 0;
-  p38cellDeath: at gt(p38death, 0): kalive = 0;
+  PIcellDeath: at PIdeath > 0: kalive = 0;
+  p38cellDeath: at p38death > 0: kalive = 0;
 
   // Species initializations:
   PolyQ = 1000;

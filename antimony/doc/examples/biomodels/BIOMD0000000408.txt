@@ -7,22 +7,22 @@ model *Hettling2011()
   species ATP in CYT, Cr in CYT, P_ii in IMS, P_i in CYT;
 
   // Assignment Rules:
-  phase := (abs(time - time_Jhyd_step) - floor(abs(time - time_Jhyd_step) / (60 / heartrate_bpm)) * 60 / heartrate_bpm) / (60 / heartrate_bpm);
-  VhydAmp_test := 2 * Jhyd_test / (fracSysUp + fracSysDown);
+  phase := (abs(time - time_Jhyd_step) - (floor(abs(time - time_Jhyd_step) / (60 / heartrate_bpm)) * 60) / heartrate_bpm) / (60 / heartrate_bpm);
+  VhydAmp_test := (2 * Jhyd_test) / (fracSysUp + fracSysDown);
   fracDia := 1 - fracSysUp - fracSysDown;
-  VhydAmp_basis := 2 * Jhyd_basis / (fracSysUp + fracSysDown);
+  VhydAmp_basis := (2 * Jhyd_basis) / (fracSysUp + fracSysDown);
   j_diff_pcr := PSmomPCr * (PCri - PCr);
   j_diff_atp := PSmomATP * (ATPi - ATP);
-  densyn := 1 + ADPi / Kadp + P_ii / Kpi + ADPi * P_ii / (Kadp * Kpi);
+  densyn := 1 + ADPi / Kadp + P_ii / Kpi + (ADPi * P_ii) / (Kadp * Kpi);
   vatpnorm := tmito_factor * ((Jhyd_test - jsyn) / (Jhyd_test - Jhyd_basis));
-  jsyn := Vmaxsyn * (ADPi * P_ii / (Kpi * Kadp * densyn));
+  jsyn := Vmaxsyn * ((ADPi * P_ii) / (Kpi * Kadp * densyn));
   r_diff_pcr := j_diff_pcr / (j_diff_pcr + j_diff_atp);
-  j_ck_mi := (VmaxMif * ATPi * Cri / (KiaMi * KbMi) - VmaxMib * ADPi * PCri / (KicMi * KdMi)) / (1 + Cri / KibMi + PCri / KidMi + ATPi * (1 / KiaMi + Cri / (KiaMi * KbMi)) + ADPi * (1 / KicMi + Cri / (KicMi * KibMi) + PCri / (KidMi * (KicMi * KdMi / KidMi))));
+  j_ck_mi := ((VmaxMif * ATPi * Cri) / (KiaMi * KbMi) - (VmaxMib * ADPi * PCri) / (KicMi * KdMi)) / (1 + Cri / KibMi + PCri / KidMi + ATPi * (1 / KiaMi + Cri / (KiaMi * KbMi)) + ADPi * (1 / KicMi + Cri / (KicMi * KibMi) + PCri / (KidMi * ((KicMi * KdMi) / KidMi))));
   VmaxMif := VmaxMif_full_activity * ck_factor_iaa;
-  VmaxMib := K_CK_eq * KicMi * KdMi * VmaxMif / (KiaMi * KbMi);
-  j_ck_mm := (VmaxMMf * ATP * Cr / (KiaMM * KbMM) - VmaxMMb * ADP * PCr / (KicMM * KdMM)) / (1 + Cr / KibMM + PCr / KidMM + ATP * (1 / KiaMM + Cr / (KiaMM * KbMM)) + ADP * (1 / KicMM + Cr / (KicMM * KibMM) + PCr / (KidMM * (KicMM * KdMM / KidMM))));
+  VmaxMib := (K_CK_eq * KicMi * KdMi * VmaxMif) / (KiaMi * KbMi);
+  j_ck_mm := ((VmaxMMf * ATP * Cr) / (KiaMM * KbMM) - (VmaxMMb * ADP * PCr) / (KicMM * KdMM)) / (1 + Cr / KibMM + PCr / KidMM + ATP * (1 / KiaMM + Cr / (KiaMM * KbMM)) + ADP * (1 / KicMM + Cr / (KicMM * KibMM) + PCr / (KidMM * ((KicMM * KdMM) / KidMM))));
   VmaxMMf := VmaxMMf_full_activity * ck_factor_iaa;
-  VmaxMMb := K_CK_eq * KicMM * KdMM * VmaxMMf / (KiaMM * KbMM);
+  VmaxMMb := (K_CK_eq * KicMM * KdMM * VmaxMMf) / (KiaMM * KbMM);
   j_diff_adp := PSmomATP * (ADPi - ADP);
   j_diff_cr := PSmomCr * (Cri - Cr);
   j_diff_pi := PSmomPi * (P_ii - P_i);
@@ -31,7 +31,7 @@ model *Hettling2011()
   tmito' = vatpnorm;
 
   // Reactions:
-  Jsyn: P_ii + ADPi -> ATPi; Vmaxsyn * ADPi * P_ii / (Kadp * Kpi * (1 + ADPi / Kadp + P_ii / Kpi + ADPi * P_ii / (Kadp * Kpi)));
+  Jsyn: P_ii + ADPi -> ATPi; (Vmaxsyn * ADPi * P_ii) / (Kadp * Kpi * (1 + ADPi / Kadp + P_ii / Kpi + (ADPi * P_ii) / (Kadp * Kpi)));
   J_CK_Mi: ATPi + Cri -> PCri + ADPi; j_ck_mi;
   J_CK_MM: Cr + ATP -> PCr + ADP; j_ck_mm;
   Jhyd_reaction: ATP -> ADP + P_i; Jhyd;
@@ -42,9 +42,9 @@ model *Hettling2011()
   J_diff_ATP: ATPi -> ATP; j_diff_atp;
 
   // Events:
-  pulsatile_test: at 0 after and(and(geq(time, time_Jhyd_step), gt(time - last_time_fired, stepsize)), eq(pulsatility, 1)): last_time_fired = time, Jhyd = piecewise((1 - (phase - fracSysUp) / fracSysDown) * VhydAmp_test, and(gt(phase, fracSysUp), leq(phase, 1 - fracDia)), phase / fracSysUp * VhydAmp_test, leq(phase, fracSysUp), 0, geq(phase, 1 - fracDia), Jhyd);
-  pulsatile_basis: at 0 after and(and(lt(time, time_Jhyd_step), geq(time - last_time_fired, stepsize)), eq(pulsatility, 1)): last_time_fired = time, Jhyd = piecewise(0, leq(phase, fracDia), (phase - fracDia) / fracSysDown * VhydAmp_basis, and(gt(phase, fracDia), leq(phase, 1 - fracSysUp)), (1 - phase) * VhydAmp_basis / fracSysUp, gt(phase, 1 - fracSysUp), Jhyd);
-  nonpulsatile_step: at 0 after geq(time, time_Jhyd_step): tmito_factor = 1, heartrate_bpm = heartrate_test, Jhyd = piecewise(Jhyd_test, eq(pulsatility, 0), Jhyd);
+  pulsatile_test: at 0 after time >= time_Jhyd_step && time - last_time_fired > stepsize && pulsatility == 1: last_time_fired = time, Jhyd = piecewise((1 - (phase - fracSysUp) / fracSysDown) * VhydAmp_test, phase > fracSysUp && phase <= 1 - fracDia, phase / fracSysUp * VhydAmp_test, phase <= fracSysUp, 0, phase >= 1 - fracDia, Jhyd);
+  pulsatile_basis: at 0 after time < time_Jhyd_step && time - last_time_fired >= stepsize && pulsatility == 1: last_time_fired = time, Jhyd = piecewise(0, phase <= fracDia, (phase - fracDia) / fracSysDown * VhydAmp_basis, phase > fracDia && phase <= 1 - fracSysUp, ((1 - phase) * VhydAmp_basis) / fracSysUp, phase > 1 - fracSysUp, Jhyd);
+  nonpulsatile_step: at 0 after time >= time_Jhyd_step: tmito_factor = 1, heartrate_bpm = heartrate_test, Jhyd = piecewise(Jhyd_test, pulsatility == 0, Jhyd);
 
   // Species initializations:
   ADPi = 39;

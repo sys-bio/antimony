@@ -7,14 +7,14 @@ model *Hornberg2005_ERKcascade()
   species x2 in compartment_, x2p in compartment_, x3 in compartment_, x3p in compartment_;
 
   // Reactions:
-  v1: R -> Rin; v1_Vm1 * R / (v1_Km1 + R);
-  v2: Rin -> R; v2_Vm2 * Rin / (v2_Km2 + Rin);
-  v3: x1 -> x1p; v3_k3 * R * x1 / (v3_Km3 + x1);
-  v4: x1p -> x1; v4_Vm4 * x1p / (v4_Km4 + x1p);
-  v5: x2 -> x2p; v5_k5 * x1p * x2 / (v5_Km5 + x2);
-  v6: x2p -> x2; v6_Vm6 * x2p / (v6_Km6 + x2p);
-  v7: x3 -> x3p; v7_k7 * x2p * x3 / (v7_Km7 + x3);
-  v8: x3p -> x3; v8_Vm8 * x3p / v8_Km8 / (1 + x3p / v8_Km8 + v8_Inh / v8_Ki8);
+  v1: R -> Rin; (v1_Vm1 * R) / (v1_Km1 + R);
+  v2: Rin -> R; (v2_Vm2 * Rin) / (v2_Km2 + Rin);
+  v3: x1 -> x1p; (v3_k3 * R * x1) / (v3_Km3 + x1);
+  v4: x1p -> x1; (v4_Vm4 * x1p) / (v4_Km4 + x1p);
+  v5: x2 -> x2p; (v5_k5 * x1p * x2) / (v5_Km5 + x2);
+  v6: x2p -> x2; (v6_Vm6 * x2p) / (v6_Km6 + x2p);
+  v7: x3 -> x3p; (v7_k7 * x2p * x3) / (v7_Km7 + x3);
+  v8: x3p -> x3; (v8_Vm8 * x3p) / v8_Km8 / (1 + x3p / v8_Km8 + v8_Inh / v8_Ki8);
 
   // Species initializations:
   R = 0.5;

@@ -1,6 +1,6 @@
 //Created by libAntimony v2.4
 function carboxylation(kc, S2, K, R, KI, E, S1)
-  (kc * S2 / (S2 + K * (1 + R / KI)) * E + kc * S2 / (S2 + K * (1 + R / KI)) * S1 - abs(kc * S2 / (S2 + K * (1 + R / KI)) * E - kc * S2 / (S2 + K * (1 + R / KI)) * S1)) / 2;
+  (((kc * S2) / (S2 + K * (1 + R / KI)) * E + (kc * S2) / (S2 + K * (1 + R / KI)) * S1) - abs((kc * S2) / (S2 + K * (1 + R / KI)) * E - (kc * S2) / (S2 + K * (1 + R / KI)) * S1)) / 2;
 end
 
 function PGA_consumption(S1, Rp, Nt, kc, E, R)
@@ -12,7 +12,7 @@ function NADPH_production(j, S1, Nt)
 end
 
 function oxygenation(phi, kc, S2, K, R, KI, E, S1)
-  phi * (kc * S2 / (S2 + K * (1 + R / KI)) * E + kc * S2 / (S2 + K * (1 + R / KI)) * S1 - abs(kc * S2 / (S2 + K * (1 + R / KI)) * E - kc * S2 / (S2 + K * (1 + R / KI)) * S1)) / 2;
+  (phi * (((kc * S2) / (S2 + K * (1 + R / KI)) * E + (kc * S2) / (S2 + K * (1 + R / KI)) * S1) - abs((kc * S2) / (S2 + K * (1 + R / KI)) * E - (kc * S2) / (S2 + K * (1 + R / KI)) * S1))) / 2;
 end
 
 
@@ -27,7 +27,7 @@ model *Model_1()
   NADP := Nt - NADPH;
   jp := 1 / 2 * (1 - f) * I;
   j := (abs(jp + 467) - abs(jp - 467)) / 2 / 65;
-  phi := 0.21 * (O2 / Ko) / (CO2 / Kc);
+  phi := (0.21 * (O2 / Ko)) / (CO2 / Kc);
 
   // Reactions:
   PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast * carboxylation(kc, CO2, Kc, O2, Ko, E, RuBP);

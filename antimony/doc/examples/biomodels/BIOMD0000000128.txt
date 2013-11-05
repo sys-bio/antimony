@@ -19,14 +19,14 @@ model *model_0000001()
   o := ainf^3 * binf^3 * hinfer^3;
   jerleak := perl * (cer - c);
   jerip3 := o * (cer - c);
-  jertot := jerleak + jerip3 - jerp;
+  jertot := (jerleak + jerip3) - jerp;
   jmemtot := -(alpha * ica + kc * c);
-  perl_inf := inh * cAMP * c^4 / (ki^4 + c^4);
+  perl_inf := (inh * cAMP * c^4) / (ki^4 + c^4);
 
   // Rate Rules:
   V' = (- ica - ik - igirk) / cm;
   h' = (hinf - h) / tauh;
-  n' = lambda * (ninf - n) / taun;
+  n' = (lambda * (ninf - n)) / taun;
   inh' = ETswitch * ((0.2 - inh) / taudir);
 
   // Reactions:
@@ -35,7 +35,7 @@ model *model_0000001()
   reaction_000003:  => cAMP; cell * ETswitch * ((cAMPlow - cAMP) / taudir);
 
   // Events:
-  event_0000001: at gt(time, 60000): ETswitch = 1, girk = 3000, IP3 = 0.3;
+  event_0000001: at time > 60000: ETswitch = 1, girk = 3000, IP3 = 0.3;
 
   // Species initializations:
   c = 0.3;

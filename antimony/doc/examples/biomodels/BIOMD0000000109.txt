@@ -29,10 +29,10 @@ model *Haberichter2007_cellcycle()
   hyperphosphorylatedYpRb := pRbY20 + pRbY21;
   totalYEmi1 := Emi1 + APCCYEmi1;
   activeYCdk2 := Cdk2Y011 + Cdk2Y012;
-  ksYE2F := ks0YE2F + ks1YE2F * E2F / (ksMYE2F + E2F);
-  ksYEmi1 := ks0YEmi1 + ks1YEmi1 * E2F / (ksMYEmi1 + E2F);
-  ksYCyclinA := ks0YCyclinA + ks1YCyclinA * E2F / (ksMYCyclinA + E2F);
-  ksYCyclinE := ks0YCyclinE + ks1YCyclinE * E2F / (ksMYCyclinE + E2F);
+  ksYE2F := ks0YE2F + (ks1YE2F * E2F) / (ksMYE2F + E2F);
+  ksYEmi1 := ks0YEmi1 + (ks1YEmi1 * E2F) / (ksMYEmi1 + E2F);
+  ksYCyclinA := ks0YCyclinA + (ks1YCyclinA * E2F) / (ksMYCyclinA + E2F);
+  ksYCyclinE := ks0YCyclinE + (ks1YCyclinE * E2F) / (ksMYCyclinE + E2F);
 
   // Reactions:
   rxnY001:  => CyclinD; ksYCyclinD * X;
@@ -175,7 +175,7 @@ model *Haberichter2007_cellcycle()
   rxnY138: APCCYCdk1Y10YCdk1Y11YInt => Cdk1Y10 + APCC; X * kudYAPCCYYCyclinA * APCCYCdk1Y10YCdk1Y11YInt;
 
   // Events:
-  modifier_activation: at gt(time, 240.0637): kYact = k1Yact;
+  modifier_activation: at time > 240.0637: kYact = k1Yact;
 
   // Species initializations:
   APCC = 24582.9;

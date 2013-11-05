@@ -41,10 +41,10 @@ model *Middleton2012_GibberellinSignalling()
   re22: $s6 => s27; re22_deltaGA20ox * s39;
   re23: $s5 => s28; re23_deltaGA3ox * s41;
   re24: $s33 => s2; re24_deltaGID * s42;
-  re27: $s11 => s39; muGA20ox * s16 / (s16 + re27_thetaGA20ox);
-  re28: $s15 => s42; muGID * s16 / (s16 + re28_thetaGID);
-  re29: $s34 => s40; muDELLA * re29_thetaDELLA / (s16 + re29_thetaDELLA);
-  re30: $s35 => s41; muGA3ox * s16 / (s16 + re30_thetaGA3ox);
+  re27: $s11 => s39; (muGA20ox * s16) / (s16 + re27_thetaGA20ox);
+  re28: $s15 => s42; (muGID * s16) / (s16 + re28_thetaGID);
+  re29: $s34 => s40; (muDELLA * re29_thetaDELLA) / (s16 + re29_thetaDELLA);
+  re30: $s35 => s41; (muGA3ox * s16) / (s16 + re30_thetaGA3ox);
   re31: s40 => $s34; muDELLA * s40;
   re32: s42 => $s15; muGID * s42;
   re33: s39 => $s11; muGA20ox * s39;
@@ -62,8 +62,8 @@ model *Middleton2012_GibberellinSignalling()
   re46: s1 => $s71; (muGA + Pmem * re46_B1) * s1;
 
   // Events:
-  AddGA4: at gt(time, tGA4on): omegaGA4 = appliedGA4;
-  RemoveGA4: at gt(time, tGA4off): omegaGA4 = 0;
+  AddGA4: at time > tGA4on: omegaGA4 = appliedGA4;
+  RemoveGA4: at time > tGA4off: omegaGA4 = 0;
 
   // Species initializations:
   s1 = 0.01;

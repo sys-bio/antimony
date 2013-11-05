@@ -4,11 +4,11 @@ function BB_218(A1, A2, A3, A4)
 end
 
 function GK_219(A1, A2, A3, A4)
-  2 * A4 * A1 / (A2 - A1 + A3 * A2 + A4 * A1 + root(2, (A2 - A1 + A3 * A2 + A4 * A1)^2 - 4 * (A2 - A1) * A4 * A1));
+  (2 * A4 * A1) / (A2 - A1 + A3 * A2 + A4 * A1 + root(2, (A2 - A1 + A3 * A2 + A4 * A1)^2 - 4 * (A2 - A1) * A4 * A1));
 end
 
 function MichaelisMenten_220(M1, J1, k1, S1)
-  k1 * S1 * M1 / (J1 + S1);
+  (k1 * S1 * M1) / (J1 + S1);
 end
 
 function Mass_Action_2_221(k1, S1, S2)
@@ -45,7 +45,7 @@ model *BIOMD0000000056()
   SIC1T := SIC1 + C2 + C5 + SIC1P + C2P + C5P;
   CLB2T := CLB2 + C2 + C2P + F2 + F2P;
   CLB5T := CLB5 + C5 + C5P + F5 + F5P;
-  CLN3 := C0 * Dn3 * MASS / (Jn3 + Dn3 * MASS);
+  CLN3 := (C0 * Dn3 * MASS) / (Jn3 + Dn3 * MASS);
   IE := IET - IEP;
   MCM1 := GK_219(kamcm * CLB2, kimcm, Jamcm, Jimcm);
   NET1T := NET1 + NET1P + RENT + RENTP;
@@ -56,7 +56,7 @@ model *BIOMD0000000056()
   TEM1GDP := TEM1T - TEM1GTP;
   F := exp(- mu * D);
   D := 1.026 / mu - 32;
-  mu := log(2) / mdt;
+  mu := ln(2) / mdt;
   Vdb5 := kdb5_p + kdb5_p_p * CDC20;
   Vdb2 := kdb2_p + kdb2_p_p * CDH1 + kdb2p * CDC20;
   Vkpc1 := kd1c1 + Vd2c1 / (Jd2c1 + SIC1 + C2 + C5 + SIC1P + C2P + C5P);
@@ -67,7 +67,7 @@ model *BIOMD0000000056()
   Vicdh := kicdh_p + kicdh_p_p * (eicdhn3 * CLN3 + eicdhn2 * CLN2 + eicdhb5 * CLB5 + eicdhb2 * CLB2);
   Vppnet := kppnet_p + kppnet_p_p * PPX;
   Vkpnet := (kkpnet_p + kkpnet_p_p * CDC15) * MASS;
-  Vdppx := kdppx_p + kdppx_p_p * (J20ppx + CDC20) * Jpds / (Jpds + PDS1);
+  Vdppx := kdppx_p + (kdppx_p_p * (J20ppx + CDC20) * Jpds) / (Jpds + PDS1);
   Vdpds := kd1pds_p + kd2pds_p_p * CDC20 + kd3pds_p_p * CDH1;
   Vaiep := kaiep * CLB2;
   Vppc1 := kppc1 * CDC14;
@@ -166,14 +166,14 @@ model *BIOMD0000000056()
   Negative_regulation_of_DNA_synthesis: ORI => ; Mass_Action_1_222(kdori, ORI);
   Budding:  => BUD; ksbud * (ebudn2 * CLN2 + ebudn3 * CLN3 + ebudb5 * CLB5);
   Negative_regulation_of_Cell_budding: BUD => ; Mass_Action_1_222(kdbud, BUD);
-  Spindle_formation:  => SPN; ksspn * CLB2 / (Jspn + CLB2);
+  Spindle_formation:  => SPN; (ksspn * CLB2) / (Jspn + CLB2);
   Spindle_disassembly: SPN => ; Mass_Action_1_222(kdspn, SPN);
 
   // Events:
-  reset_ORI: at lt(CLB2 + CLB5 - KEZ2, 0): ORI = 0;
-  start_S: at gt(ORI - 1, 0): BUB2 = bub2h, MAD2 = mad2h;
-  spindle_checkpoint: at gt(SPN - 1, 0): BUB2 = bub2l, LTE1 = lte1h, MAD2 = mad2l;
-  cell_division: at lt(CLB2 - KEZ, 0): SPN = 0, BUD = 0, LTE1 = lte1l, MASS = F * MASS;
+  reset_ORI: at (CLB2 + CLB5) - KEZ2 < 0: ORI = 0;
+  start_S: at ORI - 1 > 0: BUB2 = bub2h, MAD2 = mad2h;
+  spindle_checkpoint: at SPN - 1 > 0: BUB2 = bub2l, LTE1 = lte1h, MAD2 = mad2l;
+  cell_division: at CLB2 - KEZ < 0: SPN = 0, BUD = 0, LTE1 = lte1l, MASS = F * MASS;
 
   // Species initializations:
   MASS = 1.206019;

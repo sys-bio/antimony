@@ -16,12 +16,12 @@ model *Saucerman2006_PKA()
 
   // Assignment Rules:
   Vmax_cAMP_synthesis_GsAC := k_ac_gsa_cAMP_synthesis_GsAC * GsAC_cell;
-  light_cAMP_photolysis := piecewise(1, and(gt(time, ton_global_light_cAMP_photolysis), lt(time, toff_global_light_cAMP_photolysis)), 0) + piecewise(light_spot_cell, and(gt(time, ton_local_light_cAMP_photolysis), lt(time, toff_local_light_cAMP_photolysis)), 0);
+  light_cAMP_photolysis := piecewise(1, time > ton_global_light_cAMP_photolysis && time < toff_global_light_cAMP_photolysis, 0) + piecewise(light_spot_cell, time > ton_local_light_cAMP_photolysis && time < toff_local_light_cAMP_photolysis, 0);
   Vmax_cAMP_synthesis_FskAC := kfsk_cAMP_synthesis_FskAC * FskAC_cell;
-  Kf_inhibit_PDE := piecewise(1000, gt(time, 1000), 0);
-  Kr_inhibit_PDE := piecewise(30000, gt(time, 1000), 0);
-  ar_for_add_propranolol := piecewise((Propranolol_pipette + - Propranolol_cell) * (1 / tauPropranolol), gt(time, t_propadd), 0);
-  ar_for_add_Ligand := piecewise((L_pipette + - L_cell) * (1 / tauL), gt(time, t_Ladd), 0);
+  Kf_inhibit_PDE := piecewise(1000, time > 1000, 0);
+  Kr_inhibit_PDE := piecewise(30000, time > 1000, 0);
+  ar_for_add_propranolol := piecewise((Propranolol_pipette + - Propranolol_cell) * (1 / tauPropranolol), time > t_propadd, 0);
+  ar_for_add_Ligand := piecewise((L_pipette + - L_cell) * (1 / tauL), time > t_Ladd, 0);
   Ratio_AKARp_AKARtot := AKARp_cell / (AKAR_cell + AKARp_cell + PKAC_AKAR_cell + PP_AKARp_cell);
 
   // Reactions:

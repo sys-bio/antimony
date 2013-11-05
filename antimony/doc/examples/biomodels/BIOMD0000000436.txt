@@ -22,9 +22,9 @@ model *BIOMD0000000436()
   r2: $FA => AA; k2 * FA;
   r3: DG => AA; k3 * DGactivity * DGperDNA * DNA_;
   r7: GPCho => AA; k7 * GPChoratio * GPCho;
-  r5: GPCho => AA; k5 * DGactivity * GPChoratio * GPCho / DNA_;
+  r5: GPCho => AA; (k5 * DGactivity * GPChoratio * GPCho) / DNA_;
   r11: AA => PGH2; k11 * AA;
-  r10: AA => PGH2; k10 * DGactivity * AA / DNA_;
+  r10: AA => PGH2; (k10 * DGactivity * AA) / DNA_;
   r8: AA => HETE; k8 * AA;
   r4: AA => ; k4 * AA;
   r9: HETE => ; k9 * HETE;
@@ -43,13 +43,13 @@ model *BIOMD0000000436()
   r12: AA => PGH2; k12 * AA * LPSactivity;
 
   // Events:
-  _E0: at gt(timevalue, t0): GPChoslope = GPChoslopezero, GPChoint = GPChointzero, DGslope = DGslopezero, DGint = DGintzero, LPSslope = LPSslopezero, LPSint = LPSintzero;
-  _E1: at geq(timevalue, t1): GPChoslope = GPChoslope1, GPChoint = GPChoint1, DGslope = DGslope1, DGint = DGint1, LPSslope = LPSslope1, LPSint = LPSint1;
-  _E2: at geq(timevalue, t2): GPChoslope = GPChoslope2, GPChoint = GPChoint2, DGslope = DGslope2, DGint = DGint2;
-  _E3: at geq(timevalue, t3): GPChoslope = GPChoslope3, GPChoint = GPChoint3, DGslope = DGslope3, DGint = DGint3, LPSslope = LPSslope3, LPSint = LPSint3;
-  _E4: at geq(timevalue, t4): GPChoslope = GPChoslope4, GPChoint = GPChoint4, DGslope = DGslope4, DGint = DGint4;
-  _E5: at geq(timevalue, t5): GPChoslope = GPChoslope5, GPChoint = GPChoint5, DGslope = DGslope5, DGint = DGint5;
-  _E6: at geq(timevalue, t6): GPChoslope = GPChoslope6, GPChoint = GPChoint6, DGslope = DGslope6, DGint = DGint6;
+  _E0: at timevalue > t0: GPChoslope = GPChoslopezero, GPChoint = GPChointzero, DGslope = DGslopezero, DGint = DGintzero, LPSslope = LPSslopezero, LPSint = LPSintzero;
+  _E1: at timevalue >= t1: GPChoslope = GPChoslope1, GPChoint = GPChoint1, DGslope = DGslope1, DGint = DGint1, LPSslope = LPSslope1, LPSint = LPSint1;
+  _E2: at timevalue >= t2: GPChoslope = GPChoslope2, GPChoint = GPChoint2, DGslope = DGslope2, DGint = DGint2;
+  _E3: at timevalue >= t3: GPChoslope = GPChoslope3, GPChoint = GPChoint3, DGslope = DGslope3, DGint = DGint3, LPSslope = LPSslope3, LPSint = LPSint3;
+  _E4: at timevalue >= t4: GPChoslope = GPChoslope4, GPChoint = GPChoint4, DGslope = DGslope4, DGint = DGint4;
+  _E5: at timevalue >= t5: GPChoslope = GPChoslope5, GPChoint = GPChoint5, DGslope = DGslope5, DGint = DGint5;
+  _E6: at timevalue >= t6: GPChoslope = GPChoslope6, GPChoint = GPChoint6, DGslope = DGslope6, DGint = DGint6;
 
   // Species initializations:
   FA = 1;

@@ -5,12 +5,12 @@ model *model_0000001()
   compartment cell;
 
   // Rate Rules:
-  v' = 0.04 * v^2 + 5 * v + 140 - U + i;
+  v' = (0.04 * v^2 + 5 * v + 140) - U + i;
   U' = a * (b * v - U);
 
   // Events:
-  event_0000001: at gt(v, Vthresh): U = U + d, v = c;
-  event_0000002: at gt(time, 10): i = 10;
+  event_0000001: at v > Vthresh: U = U + d, v = c;
+  event_0000002: at time > 10: i = 10;
 
   // Compartment initializations:
   cell = 1;

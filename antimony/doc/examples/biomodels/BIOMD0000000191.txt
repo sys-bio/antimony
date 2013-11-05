@@ -6,11 +6,11 @@ model *Model_1()
   species $ARGex in extracellular, ORN in cytosol, ARGin in cytosol;
 
   // Reactions:
-  Arginase: ARGin => ORN; cytosol * (Arginase_Vmaxarg * ARGin / (Arginase_Kmarg * (1 + ORN / Arginase_Kioarg) + ARGin));
+  Arginase: ARGin => ORN; cytosol * ((Arginase_Vmaxarg * ARGin) / (Arginase_Kmarg * (1 + ORN / Arginase_Kioarg) + ARGin));
   Arginine_transport: $ARGex => ARGin; extracellular * (ARGex / (Arginine_transport_Kmhat + ARGex) * (Arginine_transport_Vmaxhat / (1 + ORN / Arginine_transport_Kiornhat + ARGin / Arginine_transport_Kmhat)) + ARGex / (Arginine_transport_Kmlat + ARGex) * (Arginine_transport_Vmaxlat / (1 + ORN / Arginine_transport_Kiornhat + ARGin / Arginine_transport_Kmlat)));
   Ornithine_efflux: ORN => ; cytosol * (Ornithine_efflux_Vmaxefflhat / (1 + ARGex / Ornithine_efflux_Kmhat) * (ORN / (Ornithine_efflux_Kiornhat * (1 + ARGin / Ornithine_efflux_Kmhat) + ORN)) + Ornithine_efflux_Vmaxeffllat / (1 + ARGex / Ornithine_efflux_Kmlat) * (ORN / (Ornithine_efflux_Kmeffllat * (1 + ARGin / Ornithine_efflux_Kmlat) + ORN)));
-  NOS: ARGin => ; cytosol * (NOS_Vmaxnos1 * ARGin / (NOS_Kmnos1 + ARGin));
-  ODC: ORN => ; cytosol * (ODC_Vmaxodc * ORN / (ODC_Kmodc + ORN));
+  NOS: ARGin => ; cytosol * ((NOS_Vmaxnos1 * ARGin) / (NOS_Kmnos1 + ARGin));
+  ODC: ORN => ; cytosol * ((ODC_Vmaxodc * ORN) / (ODC_Kmodc + ORN));
 
   // Species initializations:
   ARGex = 330;

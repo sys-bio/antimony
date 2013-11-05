@@ -21,12 +21,12 @@ model *Cooling2007_IP3transients_CardiacMyocyte()
   J4 := kf4 * L * Rg - kr4 * Rlg;
   J5 := kf5 * Rlg;
   Cpc := Cc / Cp;
-  J14 := kf14 * Pc * PIP2 / (Km14 / Cpc + PIP2);
-  J15 := kf15 * Pcg * PIP2 / (Km15 / Cpc + PIP2);
+  J14 := (kf14 * Pc * PIP2) / (Km14 / Cpc + PIP2);
+  J15 := (kf15 * Pcg * PIP2) / (Km15 / Cpc + PIP2);
   J16 := kf16 * IP3;
   J8 := kf8 * P * Ca - kr8 * Pc;
   J11 := kf11 * Pg * Ca - kr11 * Pcg;
-  L := piecewise(Ls / (1 + exp(-80 * (time - ts - 0.05))), and(lt(time, ts + 0.15), geq(time, ts)), Ls, geq(time, ts + 0.15), 0);
+  L := piecewise(Ls / (1 + exp(-80 * (time - ts - 0.05))), time < ts + 0.15 && time >= ts, Ls, time >= ts + 0.15, 0);
   kr1 := kf1 * Kd1;
   kr2 := kf2 * Kd2;
   kr4 := kf4 * Kd4;
@@ -35,16 +35,16 @@ model *Cooling2007_IP3transients_CardiacMyocyte()
   Cp := 1 / (Vc * Rpc);
 
   // Rate Rules:
-  Gd' = J7 + J13 + J12 - (J2 + J3);
+  Gd' = (J7 + J13 + J12) - (J2 + J3);
   Gt_' = J6 - (J7 + J9 + J10);
   R' = -1 * (J1 + J2);
-  Rl' = J1 + J6 - J3;
+  Rl' = (J1 + J6) - J3;
   Rg' = J2 - J4;
-  Rlg' = J3 - J5 + J4 - J6;
+  Rlg' = (J3 - J5 + J4) - J6;
   Rlgp' = J5;
   IP3' = Cpc * (J14 + J15) - J16;
-  Pc' = J8 + J12 - J10;
-  Pcg' = J10 + J11 - J12;
+  Pc' = (J8 + J12) - J10;
+  Pcg' = (J10 + J11) - J12;
   P' = J13 - (J9 + J8);
   Pg' = J9 - (J11 + J13);
   Ca' = Cpc * -1 * (J8 + J11);

@@ -6,7 +6,7 @@ model *minfb()
   species $L in cell, R in cell, C in cell, I in cell, X in cell, A in cell;
 
   // Reactions:
-  R_expression:  => R; cell * (BR + Rs * A / (KD + A));
+  R_expression:  => R; cell * (BR + (Rs * A) / (KD + A));
   R_degradation: R => ; cell * kdegR * R;
   R_L_binding: R + $L -> C; cell * (kon * L * R - koff * C);
   C_degradation: C => ; cell * kdegC * C;
@@ -14,7 +14,7 @@ model *minfb()
   I_activation: X => C + A; cell * k3 * X;
   X_degradation: X => ; cell * kdegX * X;
   A_degradation: A => ; cell * kdegA * A;
-  I_expression:  => I; cell * (BI + TFs * A / (KD + A));
+  I_expression:  => I; cell * (BI + (TFs * A) / (KD + A));
   I_degradation: I => ; cell * kdegI * I;
 
   // Species initializations:
