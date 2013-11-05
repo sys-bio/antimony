@@ -7,10 +7,10 @@ model *Tolic2000_InsulinGlucoseFeedback()
   species $G in COMpartment_, $Ii in COMpartment_;
 
   // Assignment Rules:
-  f5_x3 := Rg / (1 + exp(alpha * (x3 * 1 / Vp - C5)));
+  f5_x3 := Rg / (1 + exp(alpha * ((x3 * 1) / Vp - C5)));
   f2_G := Ub * (1 - exp(- G / (C2 * Vg)));
   f3_G := G / (C3 * Vg);
-  f4_Ii := U0 + (Um - U0) / (1 + exp(- beta * log(Ii / C4 * (1 / Vi + 1 / (E * ti)))));
+  f4_Ii := U0 + (Um - U0) / (1 + exp(- beta * ln(Ii / C4 * (1 / Vi + 1 / (E * ti)))));
   f1_G := Rm / (1 + exp((C1 - G / Vg) / a1));
   Ip_conc := Ip / Vp;
   Ii_conc := Ii / Vi;

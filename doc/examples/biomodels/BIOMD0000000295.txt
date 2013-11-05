@@ -10,8 +10,8 @@ model *Akman2008_Circadian_Clock_Model1()
   Tot_FRQ := FC + FCp + FN + FNp;
 
   // Reactions:
-  MFtrn:  => MF; (vs + amp * ((1 + tanh(2 * (time - 24 * floor(time / 24) - dawn))) * (1 - tanh(2 * (time - 24 * floor(time / 24) - dusk))) / 4)) * ki^n / (ki^n + (FN + FNp)^n);
-  MFdeg: MF => ; vm * MF / (km + MF);
+  MFtrn:  => MF; ((vs + amp * (((1 + tanh(2 * (time - 24 * floor(time / 24) - dawn))) * (1 - tanh(2 * (time - 24 * floor(time / 24) - dusk)))) / 4)) * ki^n) / (ki^n + (FN + FNp)^n);
+  MFdeg: MF => ; (vm * MF) / (km + MF);
   FCtrl:  => FC; ks * MF;
   FCdeg: FC => ; vd * FC;
   FCtrs: FC -> FN; k1n * FC - k2n * FN;

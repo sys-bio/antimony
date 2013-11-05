@@ -16,11 +16,11 @@ model *Proctor2005_Hsp90()
   unsuccessulRefolding: MCom => MisP + Hsp90; k4 * MCom;
   refolding: MCom + ATP => Hsp90 + NatP + ADP; k5 * MCom * ATP;
   proteinDegradation: MisP + ATP => ADP; k6 * MisP * ATP;
-  proteinAggregation1: 2MisP => AggP; (MisP - 1) * k7 * MisP / 2;
+  proteinAggregation1: 2MisP => AggP; ((MisP - 1) * k7 * MisP) / 2;
   proteinAggregation2: MisP + AggP => 2AggP; k7 * MisP * AggP;
   Hsp90HSF1Binding: Hsp90 + HSF1 => HCom; k8 * Hsp90 * HSF1;
   Hsp90HSF1Release: HCom => Hsp90 + HSF1; k9 * HCom;
-  dimerisation: 2HSF1 => DiH; (HSF1 - 1) * k10 * HSF1 / 2;
+  dimerisation: 2HSF1 => DiH; ((HSF1 - 1) * k10 * HSF1) / 2;
   trimerisation: HSF1 + DiH => TriH; k11 * HSF1 * DiH;
   deTrimerisation: TriH => HSF1 + DiH; k12 * TriH;
   deDimerisation: DiH => 2HSF1; k13 * DiH;

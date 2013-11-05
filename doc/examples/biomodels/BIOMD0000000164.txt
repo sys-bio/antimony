@@ -19,7 +19,7 @@ model *SmithAE2002_RanTransport()
   Vmax_dephosphorylation_dephosphorylationF := RanGAP_Cytosol * RanGAP_Kcat_dephosphorylationF;
   Vmax_RanGTP_dephosphorylation_RanGTP_dephosphorylation := RanGAP_Kcat_RanGTP_dephosphorylation * RanGAP_Cytosol;
   Vmax_dephosphorylation_dephosphorylation := RanGAP_Cytosol * RanGAP_Kcat_dephosphorylation;
-  ar_for_Microinj := piecewise(kinj * 0.0016611295681 * Pipet_Cytosol, and(gt(time, start), lt(time, start + tau)), 0);
+  ar_for_Microinj := piecewise(kinj * 0.0016611295681 * Pipet_Cytosol, time > start && time < start + tau, 0);
 
   // Reactions:
   Carrier_FRanGTP_binding: Carrier_Cytosol + FRanGTP_Cytosol -> FCarrier_RanGTP_Cytosol; (Carrier_FRanGTP_binding_Kon_Carrier_RanGTP_binding * Carrier_Cytosol * FRanGTP_Cytosol + -(Carrier_FRanGTP_binding_Koff_Carrier_RanGTP_binding * FCarrier_RanGTP_Cytosol)) * Cytosol;

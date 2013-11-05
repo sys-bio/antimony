@@ -1,6 +1,6 @@
 //Created by libAntimony v2.4
 function LD1212(tod)
-  ceil(sin(pi * tod / 12) / 2);
+  ceil(sin((pi * tod) / 12) / 2);
 end
 
 function function_2(acc_rate, acc)
@@ -52,19 +52,19 @@ function function_5(t, Di_l, Di_d, level)
 end
 
 function function_7(t, R_toc1_acc, acc, R_toc1_cca1, cca1_n, H_toc1_cca1, rep_pTOC1, L_toc1)
-  rep_pTOC1 * transcription(t) * (L_toc1 + R_toc1_acc * acc) / (1 + L_toc1 + R_toc1_acc * acc + (R_toc1_cca1 * cca1_n)^H_toc1_cca1);
+  (rep_pTOC1 * transcription(t) * (L_toc1 + R_toc1_acc * acc)) / (1 + L_toc1 + R_toc1_acc * acc + (R_toc1_cca1 * cca1_n)^H_toc1_cca1);
 end
 
 function function_8(t, R_toc1_acc, acc, R_toc1_cca1, cca1_n, H_toc1_cca1, rep_TOC1, L_toc1)
-  rep_TOC1 * transcription(t) * copies_toc1(t) * (L_toc1 + R_toc1_acc * acc) / (1 + L_toc1 + R_toc1_acc * acc + (R_toc1_cca1 * cca1_n)^H_toc1_cca1);
+  (rep_TOC1 * transcription(t) * copies_toc1(t) * (L_toc1 + R_toc1_acc * acc)) / (1 + L_toc1 + R_toc1_acc * acc + (R_toc1_cca1 * cca1_n)^H_toc1_cca1);
 end
 
 function function_9(t, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, rep_pCCA1)
-  rep_pCCA1 * transcription(t) * (toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 / ((toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
+  (rep_pCCA1 * transcription(t) * (toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1) / ((toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
 end
 
 function function_10(t, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, rep_CCA1)
-  rep_CCA1 * transcription(t) * copies_cca1(t) * (toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 / ((toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
+  (rep_CCA1 * transcription(t) * copies_cca1(t) * (toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1) / ((toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
 end
 
 function tf_output(reporter, effcopies, tf)
@@ -76,11 +76,11 @@ function function_1(acc_rate, t)
 end
 
 function function_3(R_toc1_acc, acc, R_toc1_cca1, H_toc1_cca1, cca1_n, t, L_toc1, rep_CCA1, effcopies_cca1_LHY7)
-  transcription(t) * (ox_toc1(t) + copies_toc1(t) * (L_toc1 + R_toc1_acc * acc) / (1 + L_toc1 + R_toc1_acc * acc + (R_toc1_cca1 * tf_output(rep_CCA1, effcopies_cca1_LHY7, cca1_n))^H_toc1_cca1));
+  transcription(t) * (ox_toc1(t) + (copies_toc1(t) * (L_toc1 + R_toc1_acc * acc)) / (1 + L_toc1 + R_toc1_acc * acc + (R_toc1_cca1 * tf_output(rep_CCA1, effcopies_cca1_LHY7, cca1_n))^H_toc1_cca1));
 end
 
 function function_6(t, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, rep_TOC1, effcopies_toc1_TOC8)
-  transcription(t) * (ox_cca1(t) + copies_cca1(t) * (tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2) * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 / ((tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2) * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 + 1));
+  transcription(t) * (ox_cca1(t) + (copies_cca1(t) * (tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2) * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1) / ((tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2) * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 + 1));
 end
 
 

@@ -1,6 +1,6 @@
 //Created by libAntimony v2.4
 function F(X, T)
-  piecewise(1, geq(X, T), 0);
+  piecewise(1, X >= T, 0);
 end
 
 
@@ -22,8 +22,8 @@ model *shenorr02()
   r6: Z3 -> ; r6_a * Z3;
 
   // Events:
-  e1: at geq(time, 1): FX = 1;
-  e2: at geq(time, 6): FX = 0;
+  e1: at time >= 1: FX = 1;
+  e2: at time >= 6: FX = 0;
 
   // Species initializations:
   X = 0;

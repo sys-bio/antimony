@@ -11,7 +11,7 @@ model *Folate2004()
 
   // Reactions:
   V_NE: THF => _5_10_CH2THF; HCOOH * NE_k1 * THF - NE_k2 * _5_10_CH2THF;
-  V_MS: _5mTHF => THF; MS_Vmax * (_5mTHF / MS_Km_5mTHF) * (Hcy / MS_Km_Hcy) / (MS_Kd / MS_Km_5mTHF + _5mTHF / MS_Km_5mTHF + Hcy / MS_Km_Hcy + _5mTHF * Hcy / (MS_Km_5mTHF * MS_Km_Hcy));
+  V_MS: _5mTHF => THF; (MS_Vmax * (_5mTHF / MS_Km_5mTHF) * (Hcy / MS_Km_Hcy)) / (MS_Kd / MS_Km_5mTHF + _5mTHF / MS_Km_5mTHF + Hcy / MS_Km_Hcy + (_5mTHF * Hcy) / (MS_Km_5mTHF * MS_Km_Hcy));
   V_MTHFR: _5_10_CH2THF => _5mTHF; MTHFR_Vmax * (NADPH / (MTHFR_Km_NADPH + NADPH)) * (_5_10_CH2THF / (MTHFR_Km_5_10_CH2THF + _5_10_CH2THF));
   V_FTD: _10fTHF => THF; FTD_Vmax * (_10fTHF / (FTD_Km_10fTHF + _10fTHF));
   V_FTS: THF => _10fTHF; FTS_Vmax * (HCOOH / (FTS_Km_HCOOH + HCOOH)) * (THF / (FTS_Km_THF + THF));

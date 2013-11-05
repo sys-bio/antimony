@@ -8,26 +8,26 @@ model *Wang1996_Single_Neuron()
   tau_0 := Cm / gL;
   I_Na_post := gNa * m_inf_post^3 * h_post * (V_post - E_Na);
   m_inf_post := alpha_m_post / (alpha_m_post + beta_m_post);
-  alpha_m_post := -0.1 * (V_post + 35) / (exp(-0.1 * (V_post + 35)) - 1);
+  alpha_m_post := (-0.1 * (V_post + 35)) / (exp(-0.1 * (V_post + 35)) - 1);
   beta_m_post := 4 * exp(-(V_post + 60) / 18);
   alpha_h_post := 0.07 * exp(-(V_post + 58) / 20);
   beta_h_post := 1 / (exp(-0.1 * (V_post + 28)) + 1);
   I_K_post := gK * n_post^4 * (V_post - E_K);
   I_L_post := gL * (V_post - E_L);
   I_syn := g_syn * s * (V_post - E_syn);
-  alpha_n_post := -0.01 * (V_post + 34) / (exp(-0.1 * (V_post + 34)) - 1);
+  alpha_n_post := (-0.01 * (V_post + 34)) / (exp(-0.1 * (V_post + 34)) - 1);
   beta_n_post := 0.125 * exp(-(V_post + 44) / 80);
   F := 1 / (1 + exp(-(V_pre - theta_syn) / 2));
-  I_app_pre := piecewise(2, and(geq(time, 10), leq(time, 20)), 0);
+  I_app_pre := piecewise(2, time >= 10 && time <= 20, 0);
   I_Na_pre := gNa * m_inf_pre^3 * h_pre * (V_pre - E_Na);
   I_K_pre := gK * n_pre^4 * (V_pre - E_K);
   I_L_pre := gL * (V_pre - E_L);
   m_inf_pre := alpha_m_pre / (alpha_m_pre + beta_m_pre);
-  alpha_m_pre := -0.1 * (V_pre + 35) / (exp(-0.1 * (V_pre + 35)) - 1);
+  alpha_m_pre := (-0.1 * (V_pre + 35)) / (exp(-0.1 * (V_pre + 35)) - 1);
   beta_m_pre := 4 * exp(-(V_pre + 60) / 18);
   alpha_h_pre := 0.07 * exp(-(V_pre + 58) / 20);
   beta_h_pre := 1 / (exp(-0.1 * (V_pre + 28)) + 1);
-  alpha_n_pre := -0.01 * (V_pre + 34) / (exp(-0.1 * (V_pre + 34)) - 1);
+  alpha_n_pre := (-0.01 * (V_pre + 34)) / (exp(-0.1 * (V_pre + 34)) - 1);
   beta_n_pre := 0.125 * exp(-(V_pre + 44) / 80);
 
   // Rate Rules:
@@ -82,7 +82,7 @@ model *Wang1996_Single_Neuron()
   beta_n_post has per_m;
   g_syn = 0.1;
   g_syn has mS_per_cm2;
-  s = alpha * F / (beta + alpha * F);
+  s = (alpha * F) / (beta + alpha * F);
   s has dimensionless;
   E_syn = -75;
   E_syn has mV;

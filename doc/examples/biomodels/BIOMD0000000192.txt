@@ -16,8 +16,8 @@ model *RanGTP_gradient()
   Cytoplasmic_transfer: RanGTP_nuc -> RanGTP_cy; Cytoplasmic_transfer_kpermRanGTP * nucleus * (RanGTP_nuc - RanGTP_cy);
   Nucleoplasmic_transfer: RanGDP_nuc -> RanGDP_cy; Nucleoplasmic_transfer_kpermRanGDP * nucleus * (RanGDP_nuc - RanGDP_cy);
   RanGTP_binding: RanGTP_cy + RanBP1 -> RanGTP_RanBP1; (RanGTP_binding_kon * RanGTP_cy * RanBP1 - RanGTP_binding_koff * RanGTP_RanBP1) * cytoplasm;
-  RanBP1_RanGDP: RanGTP_RanBP1 -> RanGDP_cy + RanBP1; cytoplasm * RanBP1_RanGDP_kcat * RanGTP_RanBP1 * RanGAP / (RanGTP_RanBP1 + RanBP1_RanGDP_Km);
-  RanGAP_RanGDP: RanGTP_cy -> RanGDP_cy; cytoplasm * RanGAP_RanGDP_kcat_GAP * RanGTP_cy * RanGAP / (RanGAP_RanGDP_Km_GAP + RanGTP_cy);
+  RanBP1_RanGDP: RanGTP_RanBP1 -> RanGDP_cy + RanBP1; (cytoplasm * RanBP1_RanGDP_kcat * RanGTP_RanBP1 * RanGAP) / (RanGTP_RanBP1 + RanBP1_RanGDP_Km);
+  RanGAP_RanGDP: RanGTP_cy -> RanGDP_cy; (cytoplasm * RanGAP_RanGDP_kcat_GAP * RanGTP_cy * RanGAP) / (RanGAP_RanGDP_Km_GAP + RanGTP_cy);
 
   // Species initializations:
   RanGDP_nuc = 0;

@@ -1,18 +1,18 @@
 //Created by libAntimony v2.4
 function function_4_motor_r1(M, MYp, Yp, cell, ka, kappa)
-  ka * (M * Yp - kappa / 4 * MYp) / cell;
+  (ka * (M * Yp - kappa / 4 * MYp)) / cell;
 end
 
 function function_4_motor_r2(MYp, MYpYp, Yp, alpha, cell, ka, kappa)
-  ka * (MYp * Yp - 2 * alpha * kappa / 3 * MYpYp) / cell;
+  (ka * (MYp * Yp - (2 * alpha * kappa) / 3 * MYpYp)) / cell;
 end
 
 function function_4_motor_r3(MYpYp, MYpYpYp, Yp, alpha, cell, ka, kappa)
-  ka * (MYpYp * Yp - 3 * alpha * alpha * kappa / 2 * MYpYpYp) / cell;
+  (ka * (MYpYp * Yp - (3 * alpha * alpha * kappa) / 2 * MYpYpYp)) / cell;
 end
 
 function function_4_motor_r4(MYpYpYp, MYpYpYpYp, Yp, alpha, cell, ka, kappa)
-  ka * (MYpYpYp * Yp - 4 * alpha * alpha * alpha * kappa * MYpYpYpYp) / cell;
+  (ka * (MYpYpYp * Yp - 4 * alpha * alpha * alpha * kappa * MYpYpYpYp)) / cell;
 end
 
 function Autophosphorylation(kcat, correction, E)
@@ -77,8 +77,8 @@ model *Bray1993_chemotaxis()
   reaction_3: TWA + $asp -> Tasp_WA; cell * (reaction_3_k1 * TWA * asp - reaction_3_k2 * Tasp_WA);
 
   // Events:
-  event_1: at geq(time, 5): asp = parameter_1;
-  event_2: at geq(time, 10): asp = 0;
+  event_1: at time >= 5: asp = parameter_1;
+  event_2: at time >= 10: asp = 0;
 
   // Species initializations:
   asp = 0;

@@ -31,17 +31,17 @@ model *Hsp70Model()
   Misfolding: NatP + ROS => MisP + ROS; kmisfold * NatP * ROS * kalive;
   Hsp90MisPBinding: MisP + Hsp90 => Hsp90_MisP; kbinHspMisp * MisP * Hsp90 * kalive;
   Hsp90unsuccessulRefolding: Hsp90_MisP => MisP + Hsp90; krelHspMisp * Hsp90_MisP * kalive;
-  Hsp90refolding: Hsp90_MisP + $ATP => Hsp90 + NatP + $ADP; krefold * Hsp90_MisP * kalive * ATP / (5000 + ATP);
+  Hsp90refolding: Hsp90_MisP + $ATP => Hsp90 + NatP + $ADP; (krefold * Hsp90_MisP * kalive * ATP) / (5000 + ATP);
   Hsp70MisPBinding: MisP + Hsp70 => Hsp70_MisP; kbinHspMisp * MisP * Hsp70 * kalive;
   Hsp70unsuccessulRefolding: Hsp70_MisP => MisP + Hsp70; krelHspMisp * Hsp70_MisP * kalive;
-  Hsp70refolding: Hsp70_MisP + $ATP => Hsp70 + NatP + $ADP; krefold * Hsp70_MisP * kalive * ATP / (5000 + ATP);
+  Hsp70refolding: Hsp70_MisP + $ATP => Hsp70 + NatP + $ADP; (krefold * Hsp70_MisP * kalive * ATP) / (5000 + ATP);
   Hsp70ClientBinding: Hsp70 + Hsp70Client => Hsp70_Hsp70Client; kbinHsp70client * Hsp70 * Hsp70Client * kalive;
   Hsp70ClientRelease: Hsp70_Hsp70Client => Hsp70 + Hsp70Client; krelHsp70client * Hsp70_Hsp70Client * kalive;
   Hsp90ClientBinding: Hsp90 + Hsp90Client => Hsp90_Hsp90Client; kbinHsp90client * Hsp90 * Hsp90Client * kalive;
   Hsp90ClientRelease: Hsp90_Hsp90Client => Hsp90 + Hsp90Client; krelHsp90client * Hsp90_Hsp90Client * kalive;
   Hsp90HSF1Binding: Hsp90 + Hsf1 => Hsf1_Hsp90; kbinHsf1Hsp90 * Hsp90 * Hsf1 * kalive;
   Hsp90HSF1Release: Hsf1_Hsp90 => Hsp90 + Hsf1; krelHsf1Hsp90 * Hsf1_Hsp90 * kalive;
-  dimerisation: 2Hsf1 => Hsf1_Hsf1; (Hsf1 - 1) * kdimerHsf1 * kalive * Hsf1 / 2;
+  dimerisation: 2Hsf1 => Hsf1_Hsf1; ((Hsf1 - 1) * kdimerHsf1 * kalive * Hsf1) / 2;
   trimerisation: Hsf1 + Hsf1_Hsf1 => Hsf1_Hsf1_Hsf1; ktrimerHsf1 * Hsf1 * Hsf1_Hsf1 * kalive;
   deTrimerisation: Hsf1_Hsf1_Hsf1 => Hsf1 + Hsf1_Hsf1; kdetrimerHsf1 * Hsf1_Hsf1_Hsf1 * kalive;
   deDimerisation: Hsf1_Hsf1 => 2Hsf1; kdedimerHsf1 * Hsf1_Hsf1 * kalive;
@@ -58,14 +58,14 @@ model *Hsp70Model()
   Hsp90BasalSynthesis: $Source => Hsp90; kbasalsynHsp90 * kalive;
   Hsp90Upregulation: HSEHsp90_Hsf1_Hsf1_Hsf1_P => HSEHsp90_Hsf1_Hsf1_Hsf1_P + Hsp90; kupregHsp * HSEHsp90_Hsf1_Hsf1_Hsf1_P * kalive;
   Hsp90ProteasomeBinding: Hsp90 + Proteasome => Hsp90_Proteasome; kbinHsp90Prot * Hsp90 * Proteasome * kalive;
-  Hsp90Degradation: Hsp90_Proteasome + $ATP => Proteasome + $ADP; kdegHsp90 * Hsp90_Proteasome * kalive * ATP / (5000 + ATP);
+  Hsp90Degradation: Hsp90_Proteasome + $ATP => Proteasome + $ADP; (kdegHsp90 * Hsp90_Proteasome * kalive * ATP) / (5000 + ATP);
   Hsp70BasalSynthesis: $Source => Hsp70; kbasalsynHsp70 * kalive;
   Hsp70Upregulation: HSEHsp70_Hsf1_Hsf1_Hsf1_P => HSEHsp70_Hsf1_Hsf1_Hsf1_P + Hsp70; kupregHsp * HSEHsp70_Hsf1_Hsf1_Hsf1_P * kalive;
   Hsp70ProteasomeBinding: Hsp70 + Proteasome => Hsp70_Proteasome; kbinHsp70Prot * Hsp70 * Proteasome * kalive;
-  Hsp70Degradation: Hsp70_Proteasome + $ATP => Proteasome + $ADP; kdegHsp70 * Hsp70_Proteasome * kalive * ATP / (5000 + ATP);
+  Hsp70Degradation: Hsp70_Proteasome + $ATP => Proteasome + $ADP; (kdegHsp70 * Hsp70_Proteasome * kalive * ATP) / (5000 + ATP);
   MisPProteasomeBinding1: Hsp70_MisP + Proteasome => MisP_Proteasome + Hsp70; kbinMisPProt * Hsp70_MisP * Proteasome * kalive;
   MisPProteasomeBinding2: Hsp90_MisP + Proteasome => MisP_Proteasome + Hsp90; kbinMisPProt * Hsp90_MisP * Proteasome * kalive;
-  MisPDegradation: MisP_Proteasome + $ATP => Proteasome + $ADP; kdegMisP * MisP_Proteasome * kalive * ATP / (5000 + ATP);
+  MisPDegradation: MisP_Proteasome + $ATP => Proteasome + $ADP; (kdegMisP * MisP_Proteasome * kalive * ATP) / (5000 + ATP);
   radicalFormation: $Source => ROS; kgenROS * Source * kalive;
   radicalScavenging: ROS => $Sink; kremROS * ROS * kalive;
   Hsp70_PpxBinding: Hsp70 + Ppx => Hsp70_Ppx; kbinHsp70Ppx * Hsp70 * Ppx * kalive;
@@ -87,10 +87,10 @@ model *Hsp70Model()
   CHIPrelease: Akt_CHIP_Hsp90 => CHIP + Akt_Hsp90; krelCHIP * Akt_CHIP_Hsp90 * kalive;
   AktProteasomeBinding: Akt_CHIP_Hsp90 + Proteasome => Akt_Proteasome + CHIP + Hsp90; kbinAktProt * Akt_CHIP_Hsp90 * Proteasome * kalive;
   AktProteasomeRelease: Akt_Proteasome => Akt + Proteasome; krelAktProt * Akt_Proteasome * kalive;
-  AktDegradation: Akt_Proteasome + $ATP => Proteasome + $ADP; kdegAkt * Akt_Proteasome * kalive * ATP / (5000 + ATP);
+  AktDegradation: Akt_Proteasome + $ATP => Proteasome + $ADP; (kdegAkt * Akt_Proteasome * kalive * ATP) / (5000 + ATP);
   Mkp1Synthesis: $Source => Mkp1; ksynMkp1 * Source * kalive;
   Mkp1ProteasomeBinding: Mkp1 + Proteasome => Mkp1_Proteasome; kbinMkp1Prot * Mkp1 * Proteasome * kalive;
-  Mkp1Degradation: Mkp1_Proteasome + $ATP => Proteasome + $ADP; kdegMkp1 * Mkp1_Proteasome * kalive * ATP / (5000 + ATP);
+  Mkp1Degradation: Mkp1_Proteasome + $ATP => Proteasome + $ADP; (kdegMkp1 * Mkp1_Proteasome * kalive * ATP) / (5000 + ATP);
   Mkp1Phosphorylation: Mkp1 + Hsp70 => Mkp1_P + Hsp70; kphosMkp1 * Mkp1 * Hsp70 * kalive;
   Mkp1Dephosphorylation: Mkp1_P + ROS => Mkp1 + ROS; kdephosMkp1 * Mkp1_P * ROS * kalive;
   p38ROSproduction: p38_P => p38_P + ROS; kgenROSp38 * p38_P * kalive * kp38act;
@@ -109,7 +109,7 @@ model *Hsp70Model()
   PICellDeath: AggP_Proteasome => AggP_Proteasome + PIDeath + CellDeath; kPIdeath * AggP_Proteasome * kalive;
 
   // Events:
-  DeathOfCell: at geq(CellDeath, 1): kalive = 0;
+  DeathOfCell: at CellDeath >= 1: kalive = 0;
 
   // Species initializations:
   NatP = 17600;

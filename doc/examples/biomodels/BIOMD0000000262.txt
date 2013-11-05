@@ -8,7 +8,7 @@ model *Model_1()
   species EGF_EGFR in Cell;
 
   // Assignment Rules:
-  EGF := EGF_conc_step + piecewise(EGF_conc_impulse, leq(time, pulse_time), 0) + EGF_conc_ramp * time / ramp_time;
+  EGF := EGF_conc_step + piecewise(EGF_conc_impulse, time <= pulse_time, 0) + (EGF_conc_ramp * time) / ramp_time;
   pEGFR_total := (pEGFR + pEGFR_Akt) * pEGFR_scaleFactor;
   pAkt_total := (pAkt + pAkt_S6) * pAkt_scaleFactor;
   pS6_total := pS6 * pS6_scaleFactor;

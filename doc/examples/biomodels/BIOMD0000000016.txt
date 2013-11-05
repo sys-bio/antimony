@@ -10,16 +10,16 @@ model *Goldbeter1995()
   Pt := P0 + P1 + P2 + Pn;
 
   // Reactions:
-  rM: $EmptySet => M; default * rM_Vs * rM_KI^rM_n / (rM_KI^rM_n + Pn^rM_n);
+  rM: $EmptySet => M; (default * rM_Vs * rM_KI^rM_n) / (rM_KI^rM_n + Pn^rM_n);
   rTL: $EmptySet => P0; rTL_ks * M * default;
-  rP01: P0 => P1; CYTOPLASM * rP01_V1 * P0 / (rP01_K1 + P0);
-  rP10: P1 => P0; CYTOPLASM * rP10_V2 * P1 / (rP10_K2 + P1);
-  rP12: P1 => P2; CYTOPLASM * rP12_V3 * P1 / (rP12_K3 + P1);
-  rP21: P2 => P1; CYTOPLASM * rP21_V4 * P2 / (rP21_K4 + P2);
+  rP01: P0 => P1; (CYTOPLASM * rP01_V1 * P0) / (rP01_K1 + P0);
+  rP10: P1 => P0; (CYTOPLASM * rP10_V2 * P1) / (rP10_K2 + P1);
+  rP12: P1 => P2; (CYTOPLASM * rP12_V3 * P1) / (rP12_K3 + P1);
+  rP21: P2 => P1; (CYTOPLASM * rP21_V4 * P2) / (rP21_K4 + P2);
   rP2n: P2 => Pn; rP2n_k1 * P2 * CYTOPLASM;
   rPn2: Pn => P2; rPn2_k2 * Pn * compartment_0000004;
-  rmRNAd: M => $EmptySet; rmRNAd_Vm * M * CYTOPLASM / (rmRNAd_Km + M);
-  rVd: P2 => $EmptySet; CYTOPLASM * rVd_Vd * P2 / (rVd_Kd + P2);
+  rmRNAd: M => $EmptySet; (rmRNAd_Vm * M * CYTOPLASM) / (rmRNAd_Km + M);
+  rVd: P2 => $EmptySet; (CYTOPLASM * rVd_Vd * P2) / (rVd_Kd + P2);
 
   // Species initializations:
   EmptySet = 0;

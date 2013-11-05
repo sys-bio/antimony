@@ -9,8 +9,8 @@ model *Curien2003_MetThr_synthesis()
 
   // Reactions:
   v1: $Hser -> Phser; compartment_ * v1_V0;
-  vCys: Phser + $Cys -> $Cystathionine + $Phi; CGS * (vCys_kcat2 / (1 + vCys_KmCYS / Cys)) * Phser / (Phser + vCys_KmPHSER * (1 + Phi / vCys_Ki2) / (1 + vCys_KmCYS / Cys));
-  vThr: Phser -> $Thr + $Phi; TS * (5.900000e-004 + 0.062 * AdoMet^2.9 / (32^2.9 + AdoMet^2.9)) * Phser / (1 + Phi / vThr_Ki3);
+  vCys: Phser + $Cys -> $Cystathionine + $Phi; (CGS * (vCys_kcat2 / (1 + vCys_KmCYS / Cys)) * Phser) / (Phser + (vCys_KmPHSER * (1 + Phi / vCys_Ki2)) / (1 + vCys_KmCYS / Cys));
+  vThr: Phser -> $Thr + $Phi; (TS * (5.900000e-004 + (0.062 * AdoMet^2.9) / (32^2.9 + AdoMet^2.9)) * Phser) / (1 + Phi / vThr_Ki3);
 
   // Species initializations:
   Phser = 0;

@@ -17,18 +17,18 @@ model *Muraro2011_CytokininAuxin_CrossRegulation()
   ARRBp := alphaARRB - etaAHKph * ARRBph;
   CkAHKph := alphaPH - AHKph - ARRAph - ARRBph;
   CkAHK := alphaAHK - etaAHKph * (AHKph + CkAHKph);
-  F1 := ARF / thetaARF / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + ARF * IAAp / psiARFIAA + ARF^2 / psiARF + ARRBph / thARRBph);
-  F2 := (ARF2 / thetaARF2 + ARF^2 / psiARF) / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + ARF * IAAp / psiARFIAA + ARF^2 / psiARF + ARRBph / thARRBph);
-  F3 := ARRBph / thARRBph / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + ARF * IAAp / psiARFIAA + ARF^2 / psiARF + ARRBph / thARRBph);
+  F1 := ARF / thetaARF / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + (ARF * IAAp) / psiARFIAA + ARF^2 / psiARF + ARRBph / thARRBph);
+  F2 := (ARF2 / thetaARF2 + ARF^2 / psiARF) / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + (ARF * IAAp) / psiARFIAA + ARF^2 / psiARF + ARRBph / thARRBph);
+  F3 := ARRBph / thARRBph / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + (ARF * IAAp) / psiARFIAA + ARF^2 / psiARF + ARRBph / thARRBph);
   F4 := ARRBph / thARRBph / (1 + ARRAph / thARRAph + ARRBph / thARRBph);
-  F5a := ARF / thetaARF / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + ARF * IAAp / psiARFIAA + ARF^2 / psiARF);
-  F5b := (ARF2 / thetaARF2 + ARF^2 / psiARF) / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + ARF * IAAp / psiARFIAA + ARF^2 / psiARF);
+  F5a := ARF / thetaARF / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + (ARF * IAAp) / psiARFIAA + ARF^2 / psiARF);
+  F5b := (ARF2 / thetaARF2 + ARF^2 / psiARF) / (1 + ARF / thetaARF + ARF2 / thetaARF2 + ARFIAA / thARFIAA + (ARF * IAAp) / psiARFIAA + ARF^2 / psiARF);
   F6 := ARp / thetaARp / (1 + ARp / thetaARp);
 
   // Reactions:
   r1:  => IAAm; phiIAAp * (lambda1 * F1 + F2 + lambda3 * F3) - IAAm;
   r2:  => IAAp; 1 / eps * (deltaIAAp * IAAm - la * IAAp * AuxTIR1 + ld * AuxTIAA) + etaARFIAA * (pd * ARFIAA - pa * IAAp * ARF);
-  r3:  => AuxTIR1; 1 / eps * (ka * Aux * TIR1 - kd * AuxTIR1 + (ld + 1) * AuxTIAA - la * AuxTIR1 * IAAp);
+  r3:  => AuxTIR1; 1 / eps * ((ka * Aux * TIR1 - kd * AuxTIR1 + (ld + 1) * AuxTIAA) - la * AuxTIR1 * IAAp);
   r4:  => AuxTIAA; 1 / eps * (la * IAAp * AuxTIR1 - (ld + 1) * AuxTIAA);
   r5:  => IAAs; 1 / eps * (AuxTIAA - muIAAs * IAAs);
   r6:  => ARFIAA; pa * ARF * IAAp - pd * ARFIAA;

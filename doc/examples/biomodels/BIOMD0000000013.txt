@@ -14,27 +14,27 @@ model *untitled()
   species $x_Proton_ch in chloroplast, G1P_ch in chloroplast, $x_Starch_ch in chloroplast;
 
   // Reactions:
-  E1: RuBP_ch + $x_CO2 => 2PGA_ch; Light_on * E1_Rbco_vm * RuBP_ch * chloroplast / (RuBP_ch + E1_Rbco_km * (1 + PGA_ch / E1_Rbco_KiPGA + FBP_ch / E1_Rbco_KiFBP + SBP_ch / E1_Rbco_KiSBP + Pi_ch / E1_Rbco_KiPi + x_NADPH_ch / E1_Rbco_KiNADPH));
-  E2: PGA_ch + ATP_ch => BPGA_ch + ADP_ch; Light_on * E2_PGK_v * chloroplast * (PGA_ch * ATP_ch - BPGA_ch * ADP_ch / E2_q2);
-  E3: $x_NADPH_ch + BPGA_ch + $x_Proton_ch => $x_NADP_ch + GAP_ch + Pi_ch; Light_on * E3_G3Pdh_v * chloroplast * (BPGA_ch * x_NADPH_ch * x_Proton_ch - x_NADP_ch * GAP_ch * Pi_ch / E3_q3);
+  E1: RuBP_ch + $x_CO2 => 2PGA_ch; (Light_on * E1_Rbco_vm * RuBP_ch * chloroplast) / (RuBP_ch + E1_Rbco_km * (1 + PGA_ch / E1_Rbco_KiPGA + FBP_ch / E1_Rbco_KiFBP + SBP_ch / E1_Rbco_KiSBP + Pi_ch / E1_Rbco_KiPi + x_NADPH_ch / E1_Rbco_KiNADPH));
+  E2: PGA_ch + ATP_ch => BPGA_ch + ADP_ch; Light_on * E2_PGK_v * chloroplast * (PGA_ch * ATP_ch - (BPGA_ch * ADP_ch) / E2_q2);
+  E3: $x_NADPH_ch + BPGA_ch + $x_Proton_ch => $x_NADP_ch + GAP_ch + Pi_ch; Light_on * E3_G3Pdh_v * chloroplast * (BPGA_ch * x_NADPH_ch * x_Proton_ch - (x_NADP_ch * GAP_ch * Pi_ch) / E3_q3);
   E4: GAP_ch -> DHAP_ch; chloroplast * E4_TPI_v * (GAP_ch - DHAP_ch / E4_q4);
   E5: GAP_ch + DHAP_ch -> FBP_ch; E5_F_Aldo_v * chloroplast * (DHAP_ch * GAP_ch - FBP_ch / E5_q5);
-  E6: FBP_ch => F6P_ch + Pi_ch; Light_on * E6_FBPase_ch_vm * FBP_ch * chloroplast / (FBP_ch + E6_FBPase_ch_km * (1 + F6P_ch / E6_FBPase_ch_KiF6P + Pi_ch / E6_FBPase_ch_KiPi));
-  E7: GAP_ch + F6P_ch -> X5P_ch + E4P_ch; chloroplast * E7_F_TKL_v * (F6P_ch * GAP_ch - E4P_ch * X5P_ch / E7_q7);
+  E6: FBP_ch => F6P_ch + Pi_ch; (Light_on * E6_FBPase_ch_vm * FBP_ch * chloroplast) / (FBP_ch + E6_FBPase_ch_km * (1 + F6P_ch / E6_FBPase_ch_KiF6P + Pi_ch / E6_FBPase_ch_KiPi));
+  E7: GAP_ch + F6P_ch -> X5P_ch + E4P_ch; chloroplast * E7_F_TKL_v * (F6P_ch * GAP_ch - (E4P_ch * X5P_ch) / E7_q7);
   E8: DHAP_ch + E4P_ch -> SBP_ch; chloroplast * E8_E_Aldo_v * (E4P_ch * DHAP_ch - SBP_ch / E8_q8);
-  E9: SBP_ch => Pi_ch + S7P_ch; Light_on * E9_SBPase_ch_vm * SBP_ch * chloroplast / (SBP_ch + E9_SBPase_ch_km * (1 + Pi_ch / E9_SBPase_ch_KiPi));
-  E10: S7P_ch + GAP_ch -> R5P_ch + X5P_ch; chloroplast * E10_G_TKL_v * (GAP_ch * S7P_ch - X5P_ch * R5P_ch / E10_q10);
+  E9: SBP_ch => Pi_ch + S7P_ch; (Light_on * E9_SBPase_ch_vm * SBP_ch * chloroplast) / (SBP_ch + E9_SBPase_ch_km * (1 + Pi_ch / E9_SBPase_ch_KiPi));
+  E10: S7P_ch + GAP_ch -> R5P_ch + X5P_ch; chloroplast * E10_G_TKL_v * (GAP_ch * S7P_ch - (X5P_ch * R5P_ch) / E10_q10);
   E11: R5P_ch -> Ru5P_ch; E11_R5Piso_v * chloroplast * (R5P_ch - Ru5P_ch / E11_q11);
   E12: X5P_ch -> Ru5P_ch; chloroplast * E12_X5Pepi_v * (X5P_ch - Ru5P_ch / E12_q12);
-  E13: Ru5P_ch + ATP_ch => RuBP_ch + ADP_ch; Light_on * E13_Ru5Pk_ch_vm * Ru5P_ch * chloroplast * ATP_ch / ((Ru5P_ch + E13_Ru5Pk_ch_km1 * (1 + PGA_ch / E13_Ru5Pk_ch_KiPGA + RuBP_ch / E13_Ru5Pk_ch_KiRuBP + Pi_ch / E13_Ru5Pk_ch_KiPi)) * (ATP_ch * (1 + ADP_ch / E13_Ru5Pk_ch_KiADP1) + E13_Ru5Pk_ch_km2 * (1 + ADP_ch / E13_Ru5Pk_ch_KiADP2)));
+  E13: Ru5P_ch + ATP_ch => RuBP_ch + ADP_ch; (Light_on * E13_Ru5Pk_ch_vm * Ru5P_ch * chloroplast * ATP_ch) / ((Ru5P_ch + E13_Ru5Pk_ch_km1 * (1 + PGA_ch / E13_Ru5Pk_ch_KiPGA + RuBP_ch / E13_Ru5Pk_ch_KiRuBP + Pi_ch / E13_Ru5Pk_ch_KiPi)) * (ATP_ch * (1 + ADP_ch / E13_Ru5Pk_ch_KiADP1) + E13_Ru5Pk_ch_km2 * (1 + ADP_ch / E13_Ru5Pk_ch_KiADP2)));
   E14: F6P_ch -> G6P_ch; E14_PGI_v * chloroplast * (F6P_ch - G6P_ch / E14_q14);
   E15: G6P_ch -> G1P_ch; E15_PGM_v * chloroplast * (G6P_ch - G1P_ch / E15_q15);
-  light_reaction: Pi_ch + ADP_ch => ATP_ch; Light_on * light_reaction_LR_vm * ADP_ch * Pi_ch * chloroplast / ((ADP_ch + light_reaction_LR_kmADP) * (Pi_ch + light_reaction_LR_kmPi));
-  E16: ATP_ch + G1P_ch => $x_Starch_ch + ADP_ch + 2Pi_ch; E16_StSyn_vm * G1P_ch * ATP_ch * chloroplast / ((G1P_ch + E16_stsyn_ch_km1) * (1 + ADP_ch / E16_stsyn_ch_Ki) * (ATP_ch + E16_stsyn_ch_km2) + E16_stsyn_ch_km2 * Pi_ch / (E16_stsyn_ch_ka1 * PGA_ch) + E16_stsyn_ch_ka2 * F6P_ch + E16_stsyn_ch_ka3 * FBP_ch);
-  E17: $x_Starch_ch + Pi_ch => G1P_ch; E17_StPase_Vm * Pi_ch * chloroplast / (Pi_ch + E17_StPase_km * (1 + G1P_ch / E17_StPase_kiG1P));
-  E18_DHAP: $x_Pi_cyt + DHAP_ch => $x_DHAP_cyt + Pi_ch; E18_DHAP_TP_Piap_vm * DHAP_ch * chloroplast / (E18_DHAP_TP_Piap_kDHAP_ch * (1 + (1 + E18_DHAP_TP_Piap_kPi_cyt / x_Pi_cyt) * (Pi_ch / E18_DHAP_TP_Piap_kPi_ch + PGA_ch / E18_DHAP_TP_Piap_kPGA_ch + DHAP_ch / E18_DHAP_TP_Piap_kDHAP_ch + GAP_ch / E18_DHAP_TP_Piap_kGAP_ch)));
-  E18_PGA: $x_Pi_cyt + PGA_ch => $x_PGA_cyt + Pi_ch; E18_PGA_PGA_xpMult * E18_PGA_TP_Piap_vm * PGA_ch * chloroplast / (E18_PGA_TP_Piap_kPGA_ch * (1 + (1 + E18_PGA_TP_Piap_kPi_cyt / x_Pi_cyt) * (Pi_ch / E18_PGA_TP_Piap_kPi_ch + PGA_ch / E18_PGA_TP_Piap_kPGA_ch + DHAP_ch / E18_PGA_TP_Piap_kDHAP_ch + GAP_ch / E18_PGA_TP_Piap_kGAP_ch)));
-  E18_GAP: $x_Pi_cyt + GAP_ch => $x_GAP_cyt + Pi_ch; E18_GAP_TP_Piap_vm * GAP_ch * chloroplast / (E18_GAP_TP_Piap_kGAP_ch * (1 + (1 + E18_GAP_TP_Piap_kPi_cyt / x_Pi_cyt) * (Pi_ch / E18_GAP_TP_Piap_kPi_ch + PGA_ch / E18_GAP_TP_Piap_kPGA_ch + DHAP_ch / E18_GAP_TP_Piap_kDHAP_ch + GAP_ch / E18_GAP_TP_Piap_kGAP_ch)));
+  light_reaction: Pi_ch + ADP_ch => ATP_ch; (Light_on * light_reaction_LR_vm * ADP_ch * Pi_ch * chloroplast) / ((ADP_ch + light_reaction_LR_kmADP) * (Pi_ch + light_reaction_LR_kmPi));
+  E16: ATP_ch + G1P_ch => $x_Starch_ch + ADP_ch + 2Pi_ch; (E16_StSyn_vm * G1P_ch * ATP_ch * chloroplast) / ((G1P_ch + E16_stsyn_ch_km1) * (1 + ADP_ch / E16_stsyn_ch_Ki) * (ATP_ch + E16_stsyn_ch_km2) + (E16_stsyn_ch_km2 * Pi_ch) / (E16_stsyn_ch_ka1 * PGA_ch) + E16_stsyn_ch_ka2 * F6P_ch + E16_stsyn_ch_ka3 * FBP_ch);
+  E17: $x_Starch_ch + Pi_ch => G1P_ch; (E17_StPase_Vm * Pi_ch * chloroplast) / (Pi_ch + E17_StPase_km * (1 + G1P_ch / E17_StPase_kiG1P));
+  E18_DHAP: $x_Pi_cyt + DHAP_ch => $x_DHAP_cyt + Pi_ch; (E18_DHAP_TP_Piap_vm * DHAP_ch * chloroplast) / (E18_DHAP_TP_Piap_kDHAP_ch * (1 + (1 + E18_DHAP_TP_Piap_kPi_cyt / x_Pi_cyt) * (Pi_ch / E18_DHAP_TP_Piap_kPi_ch + PGA_ch / E18_DHAP_TP_Piap_kPGA_ch + DHAP_ch / E18_DHAP_TP_Piap_kDHAP_ch + GAP_ch / E18_DHAP_TP_Piap_kGAP_ch)));
+  E18_PGA: $x_Pi_cyt + PGA_ch => $x_PGA_cyt + Pi_ch; (E18_PGA_PGA_xpMult * E18_PGA_TP_Piap_vm * PGA_ch * chloroplast) / (E18_PGA_TP_Piap_kPGA_ch * (1 + (1 + E18_PGA_TP_Piap_kPi_cyt / x_Pi_cyt) * (Pi_ch / E18_PGA_TP_Piap_kPi_ch + PGA_ch / E18_PGA_TP_Piap_kPGA_ch + DHAP_ch / E18_PGA_TP_Piap_kDHAP_ch + GAP_ch / E18_PGA_TP_Piap_kGAP_ch)));
+  E18_GAP: $x_Pi_cyt + GAP_ch => $x_GAP_cyt + Pi_ch; (E18_GAP_TP_Piap_vm * GAP_ch * chloroplast) / (E18_GAP_TP_Piap_kGAP_ch * (1 + (1 + E18_GAP_TP_Piap_kPi_cyt / x_Pi_cyt) * (Pi_ch / E18_GAP_TP_Piap_kPi_ch + PGA_ch / E18_GAP_TP_Piap_kPGA_ch + DHAP_ch / E18_GAP_TP_Piap_kDHAP_ch + GAP_ch / E18_GAP_TP_Piap_kGAP_ch)));
 
   // Species initializations:
   x_CO2 = 1;

@@ -29,9 +29,9 @@ model *Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics()
   R16: $Ca_Cyt -> $Ca_Nuc; cytosol * k21 * Ca_Cyt - nucleus * k22 * Ca_Nuc;
 
   // Events:
-  event_0000001: at and(leq(Time_in_Seconds - time, 0), lt(time, 1500)): Ca_Nuc = 1, Ca_Cyt = 1, Time_in_Seconds = Time_in_Seconds + 100;
-  event_0000002: at and(leq(Time_in_Seconds - time, 90), lt(time, 1500)): Ca_Nuc = 0.1, Ca_Cyt = 0.1;
-  event_0000003: at geq(time, 1500): Ca_Nuc = 0.1, Ca_Cyt = 0.1;
+  event_0000001: at Time_in_Seconds - time <= 0 && time < 1500: Ca_Nuc = 1, Ca_Cyt = 1, Time_in_Seconds = Time_in_Seconds + 100;
+  event_0000002: at Time_in_Seconds - time <= 90 && time < 1500: Ca_Nuc = 0.1, Ca_Cyt = 0.1;
+  event_0000003: at time >= 1500: Ca_Nuc = 0.1, Ca_Cyt = 0.1;
 
   // Species initializations:
   Ca_Nuc = 1;

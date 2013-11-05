@@ -13,8 +13,8 @@ model *restif06()
   beta_2 := R0_2 * gamma_2;
   gamma_2 := 365 / tInf_2;
   sigma := 1 / tImm;
-  Lambda_1 := beta_1 * (I_1 + I_1p) / N;
-  Lambda_2 := beta_2 * (I_2 + I_2p) / N;
+  Lambda_1 := (beta_1 * (I_1 + I_1p)) / N;
+  Lambda_2 := (beta_2 * (I_2 + I_2p)) / N;
   I_1_frac := (I_1 + I_1p) / N;
   I_2_frac := (I_2 + I_2p) / N;
   S_frac := S / N;
@@ -34,8 +34,8 @@ model *restif06()
   r9: R_p => ; mu * R_p;
   r10: S => I_1; beta_1 * ((I_1 + I_1p) / N) * S;
   r11: S => I_2; beta_2 * ((I_2 + I_2p) / N) * S;
-  r12: R_2 => I_1p; (1 - psi) * beta_1 * (I_1 + I_1p) / N * R_2;
-  r13: R_1 => I_2p; (1 - psi) * beta_2 * (I_2 + I_2p) / N * R_1;
+  r12: R_2 => I_1p; ((1 - psi) * beta_1 * (I_1 + I_1p)) / N * R_2;
+  r13: R_1 => I_2p; ((1 - psi) * beta_2 * (I_2 + I_2p)) / N * R_1;
   r14: I_1 => R_1; gamma_1 * I_1;
   r15: I_2 => R_2; gamma_2 * I_2;
   r16: I_1p => R_p; gamma_1 * I_1p;

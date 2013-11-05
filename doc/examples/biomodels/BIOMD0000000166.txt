@@ -6,17 +6,17 @@ model *Zhu2007_TF_syn_modulated_by_Ca()
   species X in cytoplasm, Y in store, Z in cytoplasm;
 
   // Assignment Rules:
-  kf := kf0 * (1 + gamma * Z^4 / (Ka^4 + Z^4));
+  kf := kf0 * (1 + (gamma * Z^4) / (Ka^4 + Z^4));
   Kd := Kd0 / (1 + Z^4 / Kb^4);
 
   // Reactions:
-  TF_synthesis:  -> X; kf * X^2 / (X^2 + Kd);
+  TF_synthesis:  -> X; (kf * X^2) / (X^2 + Kd);
   TF_degradation: X -> ; TF_degradation_kd * X;
   TF_synthesis_basal:  -> X; TF_synthesis_basal_Rbas;
   Calcium_Influx:  -> Z; Calcium_Influx_v0;
   Calcium_Influx_stimulation:  -> Z; Calcium_Influx_stimulation_v1 * Calcium_Influx_stimulation_beta;
-  Calcium_into_store: Z -> Y; Calcium_into_store_Vm2 * Z^Calcium_into_store_n / (Calcium_into_store_K2^Calcium_into_store_n + Z^Calcium_into_store_n);
-  Calcium_into_cytoplasm: Y -> Z; Calcium_into_cytoplasm_Vm3 * Y^Calcium_into_cytoplasm_m / (Calcium_into_cytoplasm_Kr^Calcium_into_cytoplasm_m + Y^Calcium_into_cytoplasm_m) * Z^Calcium_into_cytoplasm_p / (Calcium_into_cytoplasm_K_A^Calcium_into_cytoplasm_p + Z^Calcium_into_cytoplasm_p);
+  Calcium_into_store: Z -> Y; (Calcium_into_store_Vm2 * Z^Calcium_into_store_n) / (Calcium_into_store_K2^Calcium_into_store_n + Z^Calcium_into_store_n);
+  Calcium_into_cytoplasm: Y -> Z; ((Calcium_into_cytoplasm_Vm3 * Y^Calcium_into_cytoplasm_m) / (Calcium_into_cytoplasm_Kr^Calcium_into_cytoplasm_m + Y^Calcium_into_cytoplasm_m) * Z^Calcium_into_cytoplasm_p) / (Calcium_into_cytoplasm_K_A^Calcium_into_cytoplasm_p + Z^Calcium_into_cytoplasm_p);
   Leakage: Y -> Z; Leakage_k1 * Y;
   Leakage_from_cytoplasm: Z -> ; Leakage_from_cytoplasm_k * Z;
 

@@ -8,7 +8,7 @@ model *Mayya2005_STATmodule()
   species species_test in sol;
 
   // Assignment Rules:
-  statKinase_sol := piecewise(0.01 * sin(0.001571 * (-500 + time)), and(gt(time, 500), lt(time, 2502.54614894971)), 0);
+  statKinase_sol := piecewise(0.01 * sin(0.001571 * (-500 + time)), time > 500 && time < 2502.54614894971, 0);
 
   // Reactions:
   PstatDimerisation: 2Pstat_sol -> PstatDimer_sol; (PstatDimerisation_Kf_PstatDimerisation * Pstat_sol^2 + -(PstatDimerisation_Kr_PstatDimerisation * PstatDimer_sol)) * sol;

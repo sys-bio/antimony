@@ -8,19 +8,19 @@ function Factor_production(initial, degradation)
 end
 
 function Hyperbolic_rate_law(v, substrate, enzyme, k)
-  v * substrate * enzyme / (k + enzyme);
+  (v * substrate * enzyme) / (k + enzyme);
 end
 
 function VKH2mediated_factor_production(d_factor, factor_initial, VKH2, VKH2_initial)
-  d_factor * factor_initial * VKH2 / VKH2_initial;
+  (d_factor * factor_initial * VKH2) / VKH2_initial;
 end
 
 function Irreversible_association(s1, s2, c)
-  s1 * s2 / c;
+  (s1 * s2) / c;
 end
 
 function Warfarin_inhibited_first_order_kinetics(Imax, Cwarf, IC50, substrate, degradation)
-  degradation * substrate * (1 - Imax * Cwarf / (IC50 + Cwarf));
+  degradation * substrate * (1 - (Imax * Cwarf) / (IC50 + Cwarf));
 end
 
 
@@ -51,7 +51,7 @@ model *Model_1()
   DP := FDP + D;
 
   // Rate Rules:
-  C_warf' = warfarin_ka * A_warf / warfarin_Vd - warfarin_ke * C_warf;
+  C_warf' = (warfarin_ka * A_warf) / warfarin_Vd - warfarin_ke * C_warf;
   A_warf' = - warfarin_ka * A_warf;
 
   // Reactions:
@@ -173,8 +173,8 @@ model *Model_1()
   pHeparin:  => ATIII_Heparin; compartment_1 * Constant_flux_irreversible(heparin_infusion);
 
   // Events:
-  warfarin_administration: at gt(piecewise(time - 24 * ceil(time / 24), xor(lt(time, 0), lt(24, 0)), time - 24 * floor(time / 24)), 1): A_warf = A_warf + warfarin_daily_dose;
-  heparin_administration: at gt(time, heparin_infusion_duration_hr): heparin_infusion = 0;
+  warfarin_administration: at time % 24 > 1: A_warf = A_warf + warfarin_daily_dose;
+  heparin_administration: at time > heparin_infusion_duration_hr: heparin_infusion = 0;
 
   // Species initializations:
   IIa = 0;
@@ -229,7 +229,7 @@ model *Model_1()
   XIIIa = 0;
   IIa_ATIII_Heparin = 0;
   IXa_ATIII_Heparin = 0;
-  VK_p = VK0 * vitaminK_k12 / vitaminK_k21_Vc;
+  VK_p = (VK0 * vitaminK_k12) / vitaminK_k21_Vc;
 
   // Compartment initializations:
   compartment_1 = 1;
@@ -273,8 +273,8 @@ model *Model_1()
   d_PS = 0.0165;
   vitaminK_Vc = 24;
   d_VK2 = 0.0228;
-  d_VKH2 = d_VK2 * VK0 / VKH20;
-  d_VKO = d_VK2 * VK0 / VKO0;
+  d_VKH2 = (d_VK2 * VK0) / VKH20;
+  d_VKO = (d_VK2 * VK0) / VKO0;
   heparin_ke = 0.693;
   warfarin_CL = 0.2;
   d_XII = 0.012;

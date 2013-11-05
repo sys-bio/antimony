@@ -16,7 +16,7 @@ model *Wolf2001_Respiratory_Oscillations()
   A2m := Am - A3m;
 
   // Reactions:
-  v1: $sul_ex => sul; c0 * k_v0 / (1 + (cys / Kc)^n);
+  v1: $sul_ex => sul; (c0 * k_v0) / (1 + (cys / Kc)^n);
   v13: $eth_ex => eth; c0 * k_v13;
   v2: sul + A3c => aps + $PPi; c1 * k2 * sul * A3c;
   v10: $oxy_ex => oxy; c0 * k_v10;
@@ -31,10 +31,10 @@ model *Wolf2001_Respiratory_Oscillations()
   v18: oah => ; c1 * k18 * oah;
   v8: $S2 + aco => S1; c2 * k8 * aco * S2;
   v9: S1 + 4$N1 => $S2 + 4N2; c2 * k9 * S1 * N1;
-  v11a: $C1 + $Hm + N2 => $C2 + $Ho + $N1; c2 * k11 * N2 * oxy / ((a * N2 + oxy) * (1 + (hyd / Kh)^m));
-  v11a2: $C2 + oxy => $C1 + $H2O; c2 * k11 * N2 * oxy / ((a * N2 + oxy) * (1 + (hyd / Kh)^m));
+  v11a: $C1 + $Hm + N2 => $C2 + $Ho + $N1; (c2 * k11 * N2 * oxy) / ((a * N2 + oxy) * (1 + (hyd / Kh)^m));
+  v11a2: $C2 + oxy => $C1 + $H2O; (c2 * k11 * N2 * oxy) / ((a * N2 + oxy) * (1 + (hyd / Kh)^m));
   v16: $A2c + A3m => $A2m + A3c; c2 * k16 * A3m * A2c;
-  v11b: $Ho + $A2m => $Hm + A3m; c2 * 3 * k11 * N2 * oxy / ((a * N2 + oxy) * (1 + (hyd / Kh)^m)) * A2m / (Ka + A2m);
+  v11b: $Ho + $A2m => $Hm + A3m; ((c2 * 3 * k11 * N2 * oxy) / ((a * N2 + oxy) * (1 + (hyd / Kh)^m)) * A2m) / (Ka + A2m);
   vLEAK: $Ho => $Hm; 0;
   v12: A3c => $A2c; c1 * k12 * A3c;
 

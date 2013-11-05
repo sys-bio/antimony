@@ -6,7 +6,7 @@ model *Tyson1999()
   species $EmptySet in default, M in CYTOPLASM, P in CYTOPLASM;
 
   // Reactions:
-  TC: $EmptySet => M; CYTOPLASM * (TC_Vm / (1 + (P * (1 - 2 / (1 + (1 + 8 * TC_Keq * P)^0.5)) / (2 * TC_Pcrit))^2));
+  TC: $EmptySet => M; CYTOPLASM * (TC_Vm / (1 + ((P * (1 - 2 / (1 + (1 + 8 * TC_Keq * P)^0.5))) / (2 * TC_Pcrit))^2));
   TL: $EmptySet => P; TL_V * M * CYTOPLASM;
   mRNAD: M => $EmptySet; mRNAD_D * M * CYTOPLASM;
   ProteinD: P => $EmptySet; ProteinD_D * P * CYTOPLASM;

@@ -1,0 +1,147 @@
+//Created by libAntimony v2.4
+model *MODEL1302180004()
+
+  // Compartments and Species:
+  compartment default, c1;
+  species s14 in c1, s15 in c1, s16 in c1, s17 in c1, s18 in c1, s19 in c1;
+  species s20 in c1, s21 in c1, s22 in c1, s23 in c1, s24 in c1, s25 in c1;
+  species s26 in c1, s27 in c1, s28 in c1, s119 in default;
+
+  // Reactions:
+  re57: s22 -> s20; exp(re57_unity - (s23 / re57_tf)^1.8) * re57_normal * (s23 / re57_unimol)^0.8 * (re57_unity - (s23 / re57_tf)^1.8);
+  re58: s19 => s17; (re58_k2 * s19 * s20) / (re58_Km2 + s19);
+  re59: s17 => s19; (re59_k3 * s17 * s18) / (re59_Km3 + s17);
+  re60: s17 + s16 -> s28; re60_k4 * s17 * s16 - re60_kr4 * s28;
+  re61: s28 => s26; (re61_k8 * s28 * s14) / (re61_Km8 + s28);
+  re62: s26 => s27; (re62_k10 * s26 * s24) / (re62_Km10 + s26);
+  re63: s26 => s28; (re63_k7 * s26 * s15) / (re63_Km7 + s26);
+  re64: s27 => s26; (re64_k9 * s27 * s15) / (re64_Km9 + s27);
+  re65: s27 => s17 + s16; (re65_k11 * s27 * s15) / (re65_Km11 + s27);
+  re66: s25 => s14; re66_k5 * s17 * s25;
+  re67: s14 => s25; re67_k6 * s14;
+  re68: s21 => s23; re68_unitime;
+
+  // Species initializations:
+  s14 = 0.246;
+  s14 has substance_per_volume;
+  s15 = 150;
+  s15 has substance_per_volume;
+  s16 = 167.616;
+  s16 has substance_per_volume;
+  s17 = 0.345;
+  s17 has substance_per_volume;
+  s18 = 0.1;
+  s18 has substance_per_volume;
+  s19 = 6967.271;
+  s19 has substance_per_volume;
+  s20 = 0.03;
+  s20 has substance_per_volume;
+  s21 = 0;
+  s21 has substance_per_volume;
+  s22 = 99.97;
+  s22 has substance_per_volume;
+  s23 = 0;
+  s23 has substance_per_volume;
+  s24 = 3;
+  s24 has substance_per_volume;
+  s25 = 999.754;
+  s25 has substance_per_volume;
+  s26 = 1.457;
+  s26 has substance_per_volume;
+  s27 = 1.723;
+  s27 has substance_per_volume;
+  s28 = 29.203;
+  s28 has substance_per_volume;
+  s119 = 0;
+  s119 has substance_per_volume;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+  c1 = 1;
+  c1 has volume;
+
+  // Variable initializations:
+  re57_normal = 0.907;
+  re57_normal has sub_sec;
+  re57_unity = 1;
+  re57_unity has dimensionless;
+  re57_unimol = 1;
+  re57_unimol has substance;
+  re57_tf = 15;
+  re57_tf has substance;
+  re58_k2 = 0.2;
+  re58_k2 has inv_sec;
+  re58_Km2 = 6170;
+  re58_Km2 has substance;
+  re59_k3 = 7.5;
+  re59_k3 has inv_sec;
+  re59_Km3 = 80.9;
+  re59_Km3 has substance;
+  re60_k4 = 0.045;
+  re60_k4 has inv_sec_sub;
+  re60_kr4 = 0.089;
+  re60_kr4 has inv_sec;
+  re61_k8 = 20;
+  re61_k8 has inv_sec;
+  re61_Km8 = 80000;
+  re61_Km8 has substance;
+  re62_k10 = 20;
+  re62_k10 has inv_sec;
+  re62_Km10 = 80000;
+  re62_Km10 has substance;
+  re63_k7 = 0.037;
+  re63_k7 has inv_sec;
+  re63_Km7 = 8800;
+  re63_Km7 has substance;
+  re64_k9 = 0.04;
+  re64_k9 has inv_sec;
+  re64_Km9 = 48000;
+  re64_Km9 has substance;
+  re65_k11 = 0.163;
+  re65_k11 has inv_sec;
+  re65_Km11 = 48000;
+  re65_Km11 has substance;
+  re66_k5 = 0.0007;
+  re66_k5 has inv_sec_sub;
+  re67_k6 = 0.98;
+  re67_k6 has inv_sec;
+  re68_unitime = 1;
+  re68_unitime has sub_sec;
+
+  //Other declarations:
+  const default, c1;
+
+  // Unit definitions:
+  unit time_unit = second;
+  unit substance = 1e-009 mole;
+  unit area = metre^2;
+  unit length = metre;
+  unit volume = litre;
+  unit sub_sec = 1e-009 mole / second;
+  unit inv_sec = 1 / second;
+  unit inv_sec_sub = 1 / (1e-009 mole * second);
+  unit nM_inv_s = 1e-9 mole / second;
+  unit inv_nM_s = 1 / (1e-9 mole * second);
+  unit substance_per_volume = 1e-009 mole / litre;
+
+  //Display Names:
+  time_unit is "time";
+  c1 is "Cell";
+  s14 is "PDK1";
+  s15 is "PP2A";
+  s16 is "AKT";
+  s17 is "PI3P";
+  s18 is "PTEN";
+  s19 is "PIP2";
+  s20 is "p-PI3K";
+  s21 is "s3";
+  s22 is "PI3K";
+  s23 is "Time";
+  s24 is "PDK2";
+  s25 is "PDK1_cyto";
+  s26 is "p-AKT:PI3P";
+  s27 is "pp-AKT:PI3P";
+  s28 is "AKT:PI3P";
+  s119 is "Shear Stress";
+end

@@ -7,9 +7,9 @@ model *Valero2006_Adenine_TernaryCycle()
   species NADH in compartment_, $Lac in compartment_;
 
   // Reactions:
-  v1: ATP -> AMP; Vmapp1 * ATP / (Kmapp1 + ATP);
-  v2: ATP + AMP -> 2ADP; Vm2 * ATP * AMP / (K + Km2ATP * AMP + Km2AMP * ATP + ATP * AMP);
-  v3: ADP -> ATP + Pyr; Vmapp3 * ADP / (Kmapp3 + ADP);
+  v1: ATP -> AMP; (Vmapp1 * ATP) / (Kmapp1 + ATP);
+  v2: ATP + AMP -> 2ADP; (Vm2 * ATP * AMP) / (K + Km2ATP * AMP + Km2AMP * ATP + ATP * AMP);
+  v3: ADP -> ATP + Pyr; (Vmapp3 * ADP) / (Kmapp3 + ADP);
   v4: Pyr + NADH -> $Lac; k4 * Pyr;
 
   // Species initializations:

@@ -4,11 +4,11 @@ function hydrolysis(kh, R)
 end
 
 function sig_act(ke, r, kg, R, kf)
-  ke * r / (1 + exp((kg - R) * kf));
+  (ke * r) / (1 + exp((kg - R) * kf));
 end
 
 function hill_act(r, ke, R, h, kg)
-  r * ke * R^h / (kg + R^h);
+  (r * ke * R^h) / (kg + R^h);
 end
 
 function extraction(kminus1, r)
@@ -16,7 +16,7 @@ function extraction(kminus1, r)
 end
 
 function sig_act_t(r, ke, t, kg, R, kf)
-  r * (ke * t / (100 + t)) / (1 + exp((kg - R) * kf));
+  (r * ((ke * t) / (100 + t))) / (1 + exp((kg - R) * kf));
 end
 
 

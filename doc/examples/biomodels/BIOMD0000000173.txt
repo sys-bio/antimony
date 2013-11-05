@@ -12,7 +12,7 @@ model *Schmierer_2008_Smad_Tgfb()
   species R_inact in cytosol, $SB in cytosol;
 
   // Assignment Rules:
-  SB := piecewise(SB_add, gt(time, t_SB), SB_0);
+  SB := piecewise(SB_add, time > t_SB, SB_0);
   CIF := kin_CIF / kin;
   K_diss := koff / kon;
   K_dissSB := koff_SB / kon_SB;

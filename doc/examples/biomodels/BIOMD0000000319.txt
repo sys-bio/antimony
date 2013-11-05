@@ -7,8 +7,8 @@ model *decroly82()
 
   // Reactions:
   r1:  => alpha; r1_v_Km1;
-  r2: alpha => 50beta; r2_sigma1 * alpha * (1 + alpha) * (1 + beta)^2 / (r2_L1 + (1 + alpha)^2 * (1 + beta)^2);
-  r3: beta => 0.02gamma; r3_sigma2 * beta * (1 + r3_d * beta) * (1 + gamma)^2 / (r3_L2 + (1 + r3_d * beta)^2 * (1 + gamma)^2);
+  r2: alpha => 50beta; (r2_sigma1 * alpha * (1 + alpha) * (1 + beta)^2) / (r2_L1 + (1 + alpha)^2 * (1 + beta)^2);
+  r3: beta => 0.02gamma; (r3_sigma2 * beta * (1 + r3_d * beta) * (1 + gamma)^2) / (r3_L2 + (1 + r3_d * beta)^2 * (1 + gamma)^2);
   r4: gamma => ; r4_ks * gamma;
 
   // Species initializations:

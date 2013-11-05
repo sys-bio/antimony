@@ -12,7 +12,7 @@ model *BIOMD0000000462()
   AbetaDimerisation: 2Abeta => AbDim; kdimer * Abeta * (Abeta - 1) * 0.5;
   AbetaDedimerisation: AbDim => 2Abeta; kdedimer * AbDim;
   AbetaPlaqueFormation: 2AbDim => 4AbP; kpf * AbDim * (AbDim - 1) * 0.5;
-  AbetaPlaqueGrowth: Abeta + AbP => 2AbP; kpg * Abeta * AbP^2 / (kpghalf^2 + AbP^2);
+  AbetaPlaqueGrowth: Abeta + AbP => 2AbP; (kpg * Abeta * AbP^2) / (kpghalf^2 + AbP^2);
   AbetaDisaggregation: AbP => Abeta; kdisagg * AbP;
   NepDegradation: Nep => $Sink; kdegNep * Nep;
 

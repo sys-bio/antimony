@@ -10,7 +10,7 @@ model *Plant1981_BurstingNerveCells()
   i_Na := g_I * m_infinity^3 * h1 * (V_I - V_membrane);
   i_Ca := g_T * x1 * (V_I - V_membrane);
   i_K := g_K * n1^4 * (V_K - V_membrane);
-  i_K_Ca := g_K_Ca * c / (K_p + c) * (V_K - V_membrane);
+  i_K_Ca := (g_K_Ca * c) / (K_p + c) * (V_K - V_membrane);
   i_L := g_L * (V_L - V_membrane);
   h_infinity := alpha_h / (alpha_h + beta_h);
   tau_h := 12.5 / (alpha_h + beta_h);
@@ -19,11 +19,11 @@ model *Plant1981_BurstingNerveCells()
   tau_n := 12.5 / (alpha_n + beta_n);
   m_infinity := alpha_m / (alpha_m + beta_m);
   Vs := a * V_membrane + b;
-  alpha_m := 0.1 * (50 - Vs) / (exp((50 - Vs) / 10) - 1);
+  alpha_m := (0.1 * (50 - Vs)) / (exp((50 - Vs) / 10) - 1);
   beta_m := 4 * exp((25 - Vs) / 18);
   alpha_h := 0.07 * exp((25 - Vs) / 20);
   beta_h := 1 / (exp((55 - Vs) / 10) + 1);
-  alpha_n := 0.01 * (55 - Vs) / (exp((55 - Vs) / 10) - 1);
+  alpha_n := (0.01 * (55 - Vs)) / (exp((55 - Vs) / 10) - 1);
   beta_n := 0.125 * exp((45 - Vs) / 80);
 
   // Rate Rules:

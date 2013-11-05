@@ -9,9 +9,9 @@ model *Lavrentovich2008_Ca_Oscillations()
   R1:  => X; compartment_ * vin;
   R2: X => ; compartment_ * kout * X;
   R3: Y => X; ER * 4 * vM3 * k_CaA^n * (X^n / ((X^n + k_CaA^n) * (X^n + k_CaI^n))) * (Z^m / (Z^m + kip3^m)) * (Y - X);
-  R4: X => Y; compartment_ * vM2 * X^2 / (X^2 + k2^2);
+  R4: X => Y; (compartment_ * vM2 * X^2) / (X^2 + k2^2);
   R5: Y => X; ER * kf * (Y - X);
-  R6:  => Z; compartment_ * vp * X^2 / (X^2 + kp^2);
+  R6:  => Z; (compartment_ * vp * X^2) / (X^2 + kp^2);
   R7: Z => ; compartment_ * kdeg * Z;
 
   // Species initializations:

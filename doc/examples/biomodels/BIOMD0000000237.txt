@@ -14,8 +14,8 @@ model *Schaber2006_Pheromone_Starvation_Crosstalk()
   species Ste12TeSte5 in compartment_, Ste12TeSte5P in compartment_, FREP in compartment_;
 
   // Assignment Rules:
-  alpha := alphastim * piecewise(alphaA * (1 - exp(-(time - alphat) / alphas)), and(geq(time, alphat), leq(time, alphae)), piecewise(alphaA * exp(-(time - alphat) / alphas), geq(time, alphae), 0));
-  beta := betastim * betaA * piecewise(1 - exp(-(time - betat) / betas), and(geq(time, betat), leq(time, betae)), piecewise(exp(-(time - betae) / betas), gt(time, betae), 0));
+  alpha := alphastim * piecewise(alphaA * (1 - exp(-(time - alphat) / alphas)), time >= alphat && time <= alphae, piecewise(alphaA * exp(-(time - alphat) / alphas), time >= alphae, 0));
+  beta := betastim * betaA * piecewise(1 - exp(-(time - betat) / betas), time >= betat && time <= betae, piecewise(exp(-(time - betae) / betas), time > betae, 0));
 
   // Reactions:
   v1: Ste5 + Ste11 -> Ste5Ste11; compartment_ * k1 * Ste5 * Ste11;

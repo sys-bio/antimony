@@ -21,13 +21,13 @@ model *voit03()
   flux_X6_out := 1.0939 * X6^0.2 * X18;
   flux_X7_in := 1.0939 * X6^0.2 * X18;
   flux_X7_out := 1.2288 * X7^0.3 * X19;
-  X8 := piecewise(8, eq(heat_shock, 1), 1);
-  X10 := piecewise(1, eq(heat_shock, 1), 1);
-  X12r := piecewise(16, eq(heat_shock, 1), 1);
-  X13 := piecewise(16, eq(heat_shock, 1), 1);
-  X15r := piecewise(50, eq(heat_shock, 1), 1);
-  X16 := piecewise(16, eq(heat_shock, 1), 1);
-  X18 := piecewise(18, eq(heat_shock, 1), 1);
+  X8 := piecewise(8, heat_shock == 1, 1);
+  X10 := piecewise(1, heat_shock == 1, 1);
+  X12r := piecewise(16, heat_shock == 1, 1);
+  X13 := piecewise(16, heat_shock == 1, 1);
+  X15r := piecewise(50, heat_shock == 1, 1);
+  X16 := piecewise(16, heat_shock == 1, 1);
+  X18 := piecewise(18, heat_shock == 1, 1);
 
   // Rate Rules:
   X1' = flux_X1_in - flux_X1_out;

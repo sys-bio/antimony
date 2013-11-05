@@ -1,22 +1,22 @@
 //Created by libAntimony v2.4
 function function_2(v, E, R, T2, T1, k, S, h)
-  v * exp(E / R * (T2 - T1) / (T1 * T2)) / (k + S^h);
+  (v * exp((E / R * (T2 - T1)) / (T1 * T2))) / (k + S^h);
 end
 
 function function_1(v, E, R, T2, T1, S)
-  v * exp(E / R * (T2 - T1) / (T1 * T2)) * S;
+  v * exp((E / R * (T2 - T1)) / (T1 * T2)) * S;
 end
 
 function function_4(v, E, R, T2, T1, S)
-  v * exp(E / R * (T2 - T1) / (T1 * T2)) * S;
+  v * exp((E / R * (T2 - T1)) / (T1 * T2)) * S;
 end
 
 function function_3(v, E, R, T2, T1, S, Km)
-  v * exp(E / R * (T2 - T1) / (T1 * T2)) * S / (Km + S);
+  (v * exp((E / R * (T2 - T1)) / (T1 * T2)) * S) / (Km + S);
 end
 
 function function_5(v, E, R, T2, T1, S1, S2, a)
-  v * exp(E / R * (T2 - T1) / (T1 * T2)) * S1 * S2^a;
+  v * exp((E / R * (T2 - T1)) / (T1 * T2)) * S1 * S2^a;
 end
 
 
@@ -29,7 +29,7 @@ model *Model_1()
   species species_4 in default, species_12 in default;
 
   // Assignment Rules:
-  T2 := 296 + parameter_4 / 2 * sin(2 * pi * time / parameter_5);
+  T2 := 296 + parameter_4 / 2 * sin((2 * pi * time) / parameter_5);
   parameter_6 := 50000;
   parameter_7 := 84000;
 

@@ -6,8 +6,8 @@ model *Meyer1991_CalciumSpike_ICC()
   species CaI in cytosol, IP3 in cytosol, CaS in ER_store, g in cytosol;
 
   // Reactions:
-  JChannel: CaS => CaI; (1 - g) * (A * (IP3 * 0.5)^4 / (IP3 * 0.5 + k1)^4 + L) * CaS;
-  JPump: CaI => CaS; B * (CaI * 0.01)^2 / ((CaI * 0.01)^2 + k2^2);
+  JChannel: CaS => CaI; (1 - g) * ((A * (IP3 * 0.5)^4) / (IP3 * 0.5 + k1)^4 + L) * CaS;
+  JPump: CaI => CaS; (B * (CaI * 0.01)^2) / ((CaI * 0.01)^2 + k2^2);
   kPLC:  => IP3; C * (1 - k3 / (CaI * 0.01 + k3) * (1 / (1 + R)));
   kPhosphatase: IP3 => ; D * IP3 * 0.5;
   inhibition_parameter1:  => g; E * (CaI * 0.01)^4 * (1 - g);

@@ -13,17 +13,17 @@ model *Romond1999_CellCycle()
   U3 := M2 * U_M3;
 
   // Rate Rules:
-  M1' = V1 * (1 - M1) / (K1 + (1 - M1)) - V2 * M1 / (K2 + M1);
-  X1' = V3 * (1 - X1) / (K3 + (1 - X1)) - V4 * X1 / (K4 + X1);
-  M2' = U1 * (1 - M2) / (H1 + (1 - M2)) - U2 * M2 / (H2 + M2);
-  X2' = U3 * (1 - X2) / (H3 + (1 - X2)) - U4 * X2 / (H4 + X2);
+  M1' = (V1 * (1 - M1)) / (K1 + (1 - M1)) - (V2 * M1) / (K2 + M1);
+  X1' = (V3 * (1 - X1)) / (K3 + (1 - X1)) - (V4 * X1) / (K4 + X1);
+  M2' = (U1 * (1 - M2)) / (H1 + (1 - M2)) - (U2 * M2) / (H2 + M2);
+  X2' = (U3 * (1 - X2)) / (H3 + (1 - X2)) - (U4 * X2) / (H4 + X2);
 
   // Reactions:
-  R1:  => C1; compartment_ * vi1 * Kim1 / (Kim1 + M2);
-  R2: C1 => ; compartment_ * vd1 * X1 * C1 / (K_d1 + C1);
+  R1:  => C1; (compartment_ * vi1 * Kim1) / (Kim1 + M2);
+  R2: C1 => ; (compartment_ * vd1 * X1 * C1) / (K_d1 + C1);
   R3: C1 => ; compartment_ * kd1 * C1;
-  R8:  => C2; compartment_ * vi2 * Kim2 / (Kim2 + M1);
-  R9: C2 => ; compartment_ * vd2 * X2 * C2 / (K_d2 + C2);
+  R8:  => C2; (compartment_ * vi2 * Kim2) / (Kim2 + M1);
+  R9: C2 => ; (compartment_ * vd2 * X2 * C2) / (K_d2 + C2);
   R10: C2 => ; compartment_ * kd2 * C2;
 
   // Species initializations:

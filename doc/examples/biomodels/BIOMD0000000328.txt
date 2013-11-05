@@ -12,12 +12,12 @@ model *Atorvastatin_Metabolism()
   // Reactions:
   Import_AS: AS_m => AS_c; Import_AS_k * AS_m;
   Import_ASL: ASL_m => ASL_c; Import_ASL_k * ASL_m;
-  CYP3A4_ASpOH: AS_c => ASpOH_c; CYP3A4_ASpOH_Vmax / CYP3A4_ASpOH_Km1 * AS_c / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
-  CYP3A4_ASoOH: AS_c => ASoOH_c; CYP3A4_ASoOH_Vmax / CYP3A4_ASoOH_Km1 * AS_c / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
-  CYP3A4_ASLpOH: ASL_c => ASLpOH_c; CYP3A4_ASLpOH_Vmax / CYP3A4_ASLpOH_Km1 * ASL_c / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
-  CYP3A4_ASLoOH: ASL_c => ASLoOH_c; CYP3A4_ASLoOH_Vmax / CYP3A4_ASLoOH_Km1 * ASL_c / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASpOH: AS_c => ASpOH_c; (CYP3A4_ASpOH_Vmax / CYP3A4_ASpOH_Km1 * AS_c) / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASoOH: AS_c => ASoOH_c; (CYP3A4_ASoOH_Vmax / CYP3A4_ASoOH_Km1 * AS_c) / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASLpOH: ASL_c => ASLpOH_c; (CYP3A4_ASLpOH_Vmax / CYP3A4_ASLpOH_Km1 * ASL_c) / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
+  CYP3A4_ASLoOH: ASL_c => ASLoOH_c; (CYP3A4_ASLoOH_Vmax / CYP3A4_ASLoOH_Km1 * ASL_c) / (1 + AS_c / CYP3A4_ASpOH_Km1 + AS_c / CYP3A4_ASoOH_Km1 + ASL_c / CYP3A4_ASLpOH_Km1 + ASL_c / CYP3A4_ASLoOH_Km1);
   Export_ASoOH: ASoOH_c => ASoOH_m; Export_ASoOH_k * ASoOH_c;
-  UGT1A3_AS: AS_c => ASL_c; UGT1A3_AS_Vmax * AS_c / (UGT1A3_AS_Km1 + AS_c + AS_c * AS_c / UGT1A3_AS_KI1);
+  UGT1A3_AS: AS_c => ASL_c; (UGT1A3_AS_Vmax * AS_c) / (UGT1A3_AS_Km1 + AS_c + (AS_c * AS_c) / UGT1A3_AS_KI1);
   R_ASASL_c: ASL_c => AS_c; (k_CR_ASL_c + k_PON_ASL_c) * ASL_c;
   CR_oOH: ASLoOH_c => ASoOH_c; (k_CR_ASL_c + k_PON_OH_c) * ASLoOH_c;
   CR_pOH: ASLpOH_c => ASpOH_c; (k_CR_ASL_c + k_PON_OH_c) * ASLpOH_c;

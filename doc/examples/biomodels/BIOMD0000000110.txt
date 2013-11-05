@@ -20,11 +20,11 @@ model *Qu2003_CellCycle()
   reaction_0000006: z1 -> z2; cell * ((bz + cz * x) * z1 - az * z2);
   reaction_0000007:  => w0; k10 * cell;
   reaction_000008: w0 -> w1; cell * ((bw + cw * x) * w0 - aw * w1);
-  reaction_000009:  => u; cell * x^2 / (a^2 + x^2) / Tau;
+  reaction_000009:  => u; (cell * x^2) / (a^2 + x^2) / Tau;
   reaction_0000010:  => i; k12 * cell;
   reaction_0000011: i + x -> ix; (k14 * x * i - k15 * ix) * cell;
   reaction_0000014: ix -> ixp; cell * ((bi + ci * x) * ix - ai * ixp);
-  reaction_0000013: u => ; cell * u / Tau;
+  reaction_0000013: u => ; (cell * u) / Tau;
   reaction_0000015: i => ; cell * k13 * i;
   reaction_0000016: ixp => x; cell * k16 * k16u * ixp;
   reaction_0000017: w0 => ; cell * w0 * k11;

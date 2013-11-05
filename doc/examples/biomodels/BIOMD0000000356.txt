@@ -13,7 +13,7 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   species mTOR_ in default, GLUT4_C in default, GLUT4_M in default;
 
   // Assignment Rules:
-  vglucoseuptake := k_glut1 * G_t / (KmG1 + G_t) + k_glut4 * GLUT4_M * G_t / (KmG4 + G_t) + kbf * (INS + 5);
+  vglucoseuptake := (k_glut1 * G_t) / (KmG1 + G_t) + (k_glut4 * GLUT4_M * G_t) / (KmG4 + G_t) + kbf * (INS + 5);
   KD := 7.000000e-006;
   S2 := 0;
   S1 := (INS + 5) * 1.000000e-012;
@@ -28,19 +28,19 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   I := I_p / V_I;
   G := G_p / V_G;
   HE := - m_5 * S + m_6;
-  m_3 := HE * m_1 / (1 - HE);
+  m_3 := (HE * m_1) / (1 - HE);
   Q_sto := Q_sto1 + Q_sto2;
-  Ra := f * k_abs * Q_gut / BW;
+  Ra := (f * k_abs * Q_gut) / BW;
   k_empt := k_min + (k_max - k_min) / 2 * (tanh(aa * (Q_sto - b * D)) - tanh(cc * (Q_sto - d * D)) + 2);
-  U_idm := V_mmax * G_t / (K_m0 + G_t);
+  U_idm := (V_mmax * G_t) / (K_m0 + G_t);
   U_id := U_idm + vglucoseuptake;
   U := U_ii + U_id;
-  S_po := Y + K * (EGP + Ra - E - U_ii - k_1 * G_p + k_2 * G_t) / V_G + S_b;
+  S_po := Y + (K * ((EGP + Ra) - E - U_ii - k_1 * G_p + k_2 * G_t)) / V_G + S_b;
 
   // Rate Rules:
-  G_t' = - U_id + k_1 * G_p - k_2 * G_t;
+  G_t' = (- U_id + k_1 * G_p) - k_2 * G_t;
   INS' = - p_2U * INS + p_2U * (I - I_b);
-  G_p' = EGP + Ra - E - U_ii - k_1 * G_p + k_2 * G_t;
+  G_p' = (EGP + Ra) - E - U_ii - k_1 * G_p + k_2 * G_t;
   I_d' = - k_i * (I_d - I_1);
   I_po' = - gamma * I_po + S_po;
   I_p' = - m_2 * I_p - m_4 * I_p + m_1 * I_l;
@@ -95,8 +95,8 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   R41: r1x22 => rendP + 2iendIR; Kend * r1x22;
   R42: r1x22d => rendP + 3iendIR; Kend * r1x22d;
   R43: r11x22 => rendP + 3iendIR; Kend * r11x22;
-  R44: rendP => rend; (Kdp + Kcat * X_P / (Km + X_P)) * rendP;
-  R45: iendIR => iend; (Kdp + Kcat * X_P / (Km + X_P)) * iendIR;
+  R44: rendP => rend; (Kdp + (Kcat * X_P) / (Km + X_P)) * rendP;
+  R45: iendIR => iend; (Kdp + (Kcat * X_P) / (Km + X_P)) * iendIR;
   R46: r0 => rPbasal; kfbasal * r0;
   R47: rPbasal => r0; krbasal * rPbasal;
   R48: rPbasal => rendP; Kend * rPbasal;

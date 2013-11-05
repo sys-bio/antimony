@@ -30,18 +30,18 @@ model *Srividhya2006_CellCycle()
   cyclincdkcomplexformation: x1 + $x2 => Pre_MPF; Mass_Action_2(kf, x1, x2);
   cyclindegradation: x1 => ; x1 * (kc + Bc * x6);
   MPFdissociation: x3 => $x2; kd * (1 + B2 * x6) * x3;
-  PreMPFMPFtransition: Pre_MPF => x3; vM1 * (1 + a1 * x4 / (Ka + x4)) * (Pre_MPF / (j1 + Pre_MPF));
-  MPFPreMPFtransition: x3 => Pre_MPF; vM1_2 * (1 + B1 * x5 / (Ka + x5)) * (x3 / (j1_2 + x3));
-  cdc25phosphorylation: y4 => $x4; vM2 * (1 + a2 * m * x3 / (Ka + m * x3)) * ((1 - x4) / (j2 + 1 - x4));
-  cdc25dephosphorylation: $x4 => y4; vM2_2 * x4 / (j2_2 + x4);
-  wee1dephosphorylation: $y5 => x5; vM3 * ((1 - x5) / (j3_2 + 1 - x5));
-  wee1phosphorylation: x5 => $y5; vM3_2 * (1 + B3 * m * x3 / (Ka + m * x3)) * (x5 / (j3 + x5));
-  _2: $y6 => x6; vM4 * ((1 + a4 * m * delay(x3, tau) / (Ka + m * delay(x3, tau))) * (1 - x6) / (j4 + (1 - x6)));
-  APCdephosphorylation: x6 => $y6; vM4_2 * x6 / (j4_2 + x6);
+  PreMPFMPFtransition: Pre_MPF => x3; vM1 * (1 + (a1 * x4) / (Ka + x4)) * (Pre_MPF / (j1 + Pre_MPF));
+  MPFPreMPFtransition: x3 => Pre_MPF; vM1_2 * (1 + (B1 * x5) / (Ka + x5)) * (x3 / (j1_2 + x3));
+  cdc25phosphorylation: y4 => $x4; vM2 * (1 + (a2 * m * x3) / (Ka + m * x3)) * ((1 - x4) / ((j2 + 1) - x4));
+  cdc25dephosphorylation: $x4 => y4; (vM2_2 * x4) / (j2_2 + x4);
+  wee1dephosphorylation: $y5 => x5; vM3 * ((1 - x5) / ((j3_2 + 1) - x5));
+  wee1phosphorylation: x5 => $y5; vM3_2 * (1 + (B3 * m * x3) / (Ka + m * x3)) * (x5 / (j3 + x5));
+  _2: $y6 => x6; vM4 * (((1 + (a4 * m * delay(x3, tau)) / (Ka + m * delay(x3, tau))) * (1 - x6)) / (j4 + (1 - x6)));
+  APCdephosphorylation: x6 => $y6; (vM4_2 * x6) / (j4_2 + x6);
   cellmass:  => m; mu * m * (1 - m / a);
 
   // Events:
-  cell_division: at lt(x3, 0.2): m = m / 2;
+  cell_division: at x3 < 0.2: m = m / 2;
 
   // Species initializations:
   x1 = 0.01;

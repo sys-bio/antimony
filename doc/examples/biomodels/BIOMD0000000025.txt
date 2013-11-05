@@ -6,9 +6,9 @@ model *Smolen2002()
   species $EmptySet in CELL, Per in CELL, dClk in CELL, $dClkF in CELL;
 
   // Assignment Rules:
-  dClkF := piecewise(0, lt(dClk - Per, 0), dClk - Per);
-  dClkF_tau1 := piecewise(0, lt(delay(dClk, tau1) - delay(Per, tau1), 0), delay(dClk, tau1) - delay(Per, tau1));
-  dClkF_tau2 := piecewise(0, lt(delay(dClk, tau2) - delay(Per, tau2), 0), delay(dClk, tau2) - delay(Per, tau2));
+  dClkF := piecewise(0, dClk - Per < 0, dClk - Per);
+  dClkF_tau1 := piecewise(0, delay(dClk, tau1) - delay(Per, tau1) < 0, delay(dClk, tau1) - delay(Per, tau1));
+  dClkF_tau2 := piecewise(0, delay(dClk, tau2) - delay(Per, tau2) < 0, delay(dClk, tau2) - delay(Per, tau2));
 
   // Reactions:
   rPer: $EmptySet => Per; Vsp * (dClkF_tau1 / (K1 + dClkF_tau1)) * CELL;

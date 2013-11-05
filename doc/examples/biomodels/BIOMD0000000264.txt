@@ -9,7 +9,7 @@ model *Model_1()
   species EGF_EGFR_i in Cell;
 
   // Assignment Rules:
-  EGF := EGF_conc_step + piecewise(EGF_conc_pulse, leq(time, pulse_time), 0) + EGF_conc_ramp * time / ramp_time;
+  EGF := EGF_conc_step + piecewise(EGF_conc_pulse, time <= pulse_time, 0) + (EGF_conc_ramp * time) / ramp_time;
   pEGFR_total := (pEGFR + pEGFR_Akt) * pEGFR_scaleFactor;
   pAkt_total := (pAkt + pAkt_S6) * pAkt_scaleFactor;
   pS6_total := pS6 * pS6_scaleFactor;
@@ -33,7 +33,7 @@ model *Model_1()
   EGF has ng_per_ml;
 
   // Species initializations:
-  EGFR = pro_EGFR / (1 + inhibitor_binding_kf * Inhibitor / (inhibitor_binding_kb + EGFR_turnover));
+  EGFR = pro_EGFR / (1 + (inhibitor_binding_kf * Inhibitor) / (inhibitor_binding_kb + EGFR_turnover));
   pro_EGFR = 68190.2000000002;
   Inhibitor = 0;
   pEGFR = 0;

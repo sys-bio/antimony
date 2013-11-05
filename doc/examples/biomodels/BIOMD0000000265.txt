@@ -14,7 +14,7 @@ model *Conradie2010_RPControl_CellCycle()
   V2 := K2aa * CDc20 + K2a * (1 - CDh1) + K2 * CDh1;
   V4 := K4 * (GA * CYCA + GB * CYCB + GE * CYCE);
   V6 := K6a + K6 * (HA * CYCA + HB * CYCB + HE * CYCE);
-  V8 := K8a + K8 * (YB * CYCB + YE * (CYCA + CYCE)) / (CYCET + J8);
+  V8 := K8a + (K8 * (YB * CYCB + YE * (CYCA + CYCE))) / (CYCET + J8);
   CYCET := CE + CYCE;
   CYCDT := CD + CYCD;
   CYCAT := CA + CYCA;
@@ -40,29 +40,29 @@ model *Conradie2010_RPControl_CellCycle()
   v17: CD -> CYCD; V6 * CD;
   v18: CA -> CYCA; V6 * CA;
   v19: CYCB -> ; V2 * CYCB;
-  v20:  -> CDh1; (v20_K3a + v20_K3 * CDc20) * (1 - CDh1) / (1 + v20_J3 - CDh1);
-  v21: CDh1 -> ; V4 * CDh1 / (v21_J4 + CDh1);
+  v20:  -> CDh1; ((v20_K3a + v20_K3 * CDc20) * (1 - CDh1)) / ((1 + v20_J3) - CDh1);
+  v21: CDh1 -> ; (V4 * CDh1) / (v21_J4 + CDh1);
   v22: PPX -> ; v22_K34 * PPX;
-  v23:  -> IEP; v23_K31 * CYCB * (1 - IEP) / (1 + v23_J31 - IEP);
-  v24: IEP -> ; v24_K32 * IEP * PPX / (v24_J32 + IEP);
+  v23:  -> IEP; (v23_K31 * CYCB * (1 - IEP)) / ((1 + v23_J31) - IEP);
+  v24: IEP -> ; (v24_K32 * IEP * PPX) / (v24_J32 + IEP);
   v25: CDc20T -> ; K12 * CDc20T;
-  v26:  -> CDc20; v26_K13 * (- CDc20 + CDc20T) * IEP / (v26_J13 - CDc20 + CDc20T);
-  v27: CDc20 -> ; v27_K14 * CDc20 / (v27_J14 + CDc20);
+  v26:  -> CDc20; (v26_K13 * (- CDc20 + CDc20T) * IEP) / (v26_J13 - CDc20 + CDc20T);
+  v27: CDc20 -> ; (v27_K14 * CDc20) / (v27_J14 + CDc20);
   v28: CDc20 -> ; K12 * CDc20;
   v29: var5 -> var1 + var2; K20 * (LA * CYCA + LB * CYCB + LD * (CD + CYCD) + LE * CYCE) * var5;
   v30: var6 -> var1 + var3; K20 * (LA * CYCA + LB * CYCB + LD * (CD + CYCD) + LE * CYCE) * var6;
   v31:  -> GM; v31_K27 * MASS * r31switch;
   v32: GM -> ; v32_K28 * GM;
   v33:  -> MASS; eps * v33_MU * GM;
-  v34:  -> ERG; eps * v34_k15 / (1 + DRG^2 / v34_J15^2);
+  v34:  -> ERG; (eps * v34_k15) / (1 + DRG^2 / v34_J15^2);
   v35:  -> CDc20T; eps * (v35_K11a + v35_K11 * CYCB);
   v36:  -> CYCA; eps * v36_K29 * MASS * var2;
   v37:  -> PPX; eps * v37_K33;
   v38:  -> CYCE; eps * (v38_K7a + v38_K7 * var2);
   v39:  -> CYCD; eps * v39_K9 * DRG;
   v40:  -> P27; eps * v40_K5;
-  v41:  -> DRG; eps * (v41_k17 * DRG^2 / (v41_J17^2 * (1 + DRG^2 / v41_J17^2)) + v41_k17a * ERG);
-  v42:  -> CYCB; eps * (v42_K1a + v42_K1 * CYCB^2 / (v42_J1^2 * (1 + CYCB^2 / v42_J1^2)));
+  v41:  -> DRG; eps * ((v41_k17 * DRG^2) / (v41_J17^2 * (1 + DRG^2 / v41_J17^2)) + v41_k17a * ERG);
+  v42:  -> CYCB; eps * (v42_K1a + (v42_K1 * CYCB^2) / (v42_J1^2 * (1 + CYCB^2 / v42_J1^2)));
   v43: var4 -> var1; K20 * (LA * CYCA + LB * CYCB + LD * (CD + CYCD) + LE * CYCE) * var4;
   v44: var1 -> var4; (v44_K19 * PP1A + v44_K19a * (PP1T - PP1A)) * var1;
   v45: var5 -> var2 + var4; K26R * var5;
@@ -75,10 +75,10 @@ model *Conradie2010_RPControl_CellCycle()
   v52: var5 -> var6; (K23a + K23 * (CYCA + CYCB)) * var5;
 
   // Events:
-  r31Ifpart1: at gt((var4 + var5 + var6) * (var1 + var4 + var5 + var6)^-1, 0.8): r31switch = 0;
-  r31Ifpart2: at lt((var4 + var5 + var6) * (var1 + var4 + var5 + var6)^-1, 0.8): r31switch = 1;
-  divisionEvent: at and(gt(CDh1, 0.2), eq(Flag, 1)): Flag = 2, MASS = 0.5 * MASS, GM = 0.5 * GM;
-  checkEvent: at and(lt(CDh1, 0.2), eq(Flag, 2)): Flag = 1;
+  r31Ifpart1: at (var4 + var5 + var6) * (var1 + var4 + var5 + var6)^-1 > 0.8: r31switch = 0;
+  r31Ifpart2: at (var4 + var5 + var6) * (var1 + var4 + var5 + var6)^-1 < 0.8: r31switch = 1;
+  divisionEvent: at CDh1 > 0.2 && Flag == 1: Flag = 2, MASS = 0.5 * MASS, GM = 0.5 * GM;
+  checkEvent: at CDh1 < 0.2 && Flag == 2: Flag = 1;
 
   // Species initializations:
   CDc20 = 0.00220177;

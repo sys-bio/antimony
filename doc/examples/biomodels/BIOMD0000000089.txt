@@ -1,6 +1,6 @@
 //Created by libAntimony v2.4
 function function_1(V, substrate, Km)
-  V * substrate / (Km + substrate);
+  (V * substrate) / (Km + substrate);
 end
 
 
@@ -14,13 +14,13 @@ model *Locke2006_CircClock_LL()
   species cPn in compartment_, cAm in compartment_, cAc in compartment_, cAn in compartment_;
 
   // Reactions:
-  reaction_1:  => cLm; compartment_ * g0^alpha / (g0^alpha + cAn^alpha) * (light * (q1 * cPn + n0) + n1 * cXn^a / (g1^a + cXn^a));
+  reaction_1:  => cLm; (compartment_ * g0^alpha) / (g0^alpha + cAn^alpha) * (light * (q1 * cPn + n0) + (n1 * cXn^a) / (g1^a + cXn^a));
   reaction_0: cLm => ; compartment_ * function_1(m1, cLm, k1);
   reaction_2:  => cLc; compartment_ * p1 * cLm;
   reaction_3: cLc -> cLn; compartment_ * (r1 * cLc - r2 * cLn);
   reaction_4: cLc => ; compartment_ * function_1(m2, cLc, k2);
   reaction_5: cLn => ; compartment_ * function_1(m3, cLn, k3);
-  reaction_6:  => cTm; compartment_ * n2 * cYn^b / (g2^b + cYn^b) * (g3^c / (g3^c + cLn^c));
+  reaction_6:  => cTm; (compartment_ * n2 * cYn^b) / (g2^b + cYn^b) * (g3^c / (g3^c + cLn^c));
   reaction_7: cTm => ; compartment_ * function_1(m4, cTm, k4);
   reaction_9: cYc -> cYn; compartment_ * (r7 * cYc - r8 * cYn);
   reaction_10: cYn => ; compartment_ * function_1(m14, cYn, k12);
@@ -36,20 +36,20 @@ model *Locke2006_CircClock_LL()
   reaction_20: cAn => ; compartment_ * function_1(m18, cAn, k16);
   reaction_21:  => cPn; (1 - light) * p5 * compartment_;
   reaction_22: cPn => ; q3 * light * cPn * compartment_;
-  reaction_23: cPn => ; compartment_ * m15 * cPn / (k13 + cPn);
+  reaction_23: cPn => ; (compartment_ * m15 * cPn) / (k13 + cPn);
   reaction_25:  => cAm; light * q4 * cPn * compartment_;
-  reaction_26:  => cAm; compartment_ * n6 * cLn^g / (g7^g + cLn^g);
-  reaction_27: cAm => ; compartment_ * m16 * cAm / (k14 + cAm);
-  reaction_28:  => cXm; compartment_ * n3 * cTn^d / (g4^d + cTn^d);
-  reaction_29: cXm => ; compartment_ * m9 * cXm / (k7 + cXm);
+  reaction_26:  => cAm; (compartment_ * n6 * cLn^g) / (g7^g + cLn^g);
+  reaction_27: cAm => ; (compartment_ * m16 * cAm) / (k14 + cAm);
+  reaction_28:  => cXm; (compartment_ * n3 * cTn^d) / (g4^d + cTn^d);
+  reaction_29: cXm => ; (compartment_ * m9 * cXm) / (k7 + cXm);
   reaction_30:  => cTc; p2 * compartment_ * cTm;
   reaction_31: cTc -> cTn; compartment_ * (- r4 * cTn + r3 * cTc);
-  reaction_32: cTc => ; compartment_ * (1 - light) * m5 * cTc / (k5 + cTc);
-  reaction_33: cTc => ; m6 * compartment_ * cTc / (k5 + cTc);
-  reaction_34: cTn => ; compartment_ * (1 - light) * m7 * cTn / (k6 + cTn);
-  reaction_38: cTn => ; m8 * compartment_ * cTn / (k6 + cTn);
-  reaction_39:  => cYm; compartment_ * (light * q2 * cPn + (light * n4 + n5) * g5^e / (g5^e + cTn^e)) * (g6^f / (g6^f + cLn^f));
-  reaction_40: cYm => ; compartment_ * m12 * cYm / (k10 + cYm);
+  reaction_32: cTc => ; (compartment_ * (1 - light) * m5 * cTc) / (k5 + cTc);
+  reaction_33: cTc => ; (m6 * compartment_ * cTc) / (k5 + cTc);
+  reaction_34: cTn => ; (compartment_ * (1 - light) * m7 * cTn) / (k6 + cTn);
+  reaction_38: cTn => ; (m8 * compartment_ * cTn) / (k6 + cTn);
+  reaction_39:  => cYm; compartment_ * (light * q2 * cPn + ((light * n4 + n5) * g5^e) / (g5^e + cTn^e)) * (g6^f / (g6^f + cLn^f));
+  reaction_40: cYm => ; (compartment_ * m12 * cYm) / (k10 + cYm);
 
   // Species initializations:
   cLm = 0.4625;

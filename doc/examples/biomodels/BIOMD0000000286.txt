@@ -20,7 +20,7 @@ model *Proctor2010_GSK3_p53_AlzheimerDisease()
   species $ADP in cell, $AMP in cell, $Source in cell, $Sink in cell;
 
   // Assignment Rules:
-  IR := piecewise(25, and(geq(time, 3600), leq(time, 3660)), 0);
+  IR := piecewise(25, time >= 3600 && time <= 3660, 0);
   tot_mdm2 := Mdm2 + Mdm2_p53 + Mdm2_P + Mdm2_p53_Ub + Mdm2_p53_Ub2 + Mdm2_p53_Ub3 + Mdm2_p53_Ub4 + Mdm2_P1_p53_Ub4 + Mdm2_Ub + Mdm2_Ub2 + Mdm2_Ub3 + Mdm2_Ub4 + Mdm2_P_Ub + Mdm2_P_Ub2 + Mdm2_P_Ub3 + Mdm2_P_Ub4 + Mdm2_Ub4_Proteasome + Mdm2_P_Ub4_Proteasome;
   tot_p53 := p53 + Mdm2_p53 + p53_P + Mdm2_p53_Ub + Mdm2_p53_Ub2 + Mdm2_p53_Ub3 + Mdm2_p53_Ub4 + Mdm2_P1_p53_Ub4 + p53_Ub4_Proteasome;
 
@@ -39,7 +39,7 @@ model *Proctor2010_GSK3_p53_AlzheimerDisease()
   GSK3p53Release: GSK3b_p53 => GSK3b + p53; krelGSK3bp53 * GSK3b_p53;
   GSK3p53PBinding: GSK3b + p53_P => GSK3b_p53_P; kbinGSK3bp53 * GSK3b * p53_P;
   GSK3_p53PRelease: GSK3b_p53_P => GSK3b + p53_P; krelGSK3bp53 * GSK3b_p53_P;
-  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; kbinE1Ub * E1 * Ub * ATP / (5000 + ATP);
+  E1UbBinding: E1 + Ub + $ATP => E1_Ub + $AMP; (kbinE1Ub * E1 * Ub * ATP) / (5000 + ATP);
   E2UbBinding: E2 + E1_Ub => E2_Ub + E1; kbinE2Ub * E2 * E1_Ub;
   Mdm2Ubiquitination: Mdm2 + E2_Ub => Mdm2_Ub + E2; kMdm2Ub * Mdm2 * E2_Ub;
   Mdm2polyUbiquitination1: Mdm2_Ub + E2_Ub => Mdm2_Ub2 + E2; kMdm2PolyUb * Mdm2_Ub * E2_Ub;
@@ -64,7 +64,7 @@ model *Proctor2010_GSK3_p53_AlzheimerDisease()
   Mdm2GSK3phosphorylation2: Mdm2_p53_Ub4 + GSK3b_p53 => Mdm2_P1_p53_Ub4 + GSK3b_p53; kphosMdm2GSK3bp53 * Mdm2_p53_Ub4 * GSK3b_p53;
   Mdm2GSK3phosphorylation3: Mdm2_p53_Ub4 + GSK3b_p53_P => Mdm2_P1_p53_Ub4 + GSK3b_p53_P; kphosMdm2GSK3bp53 * Mdm2_p53_Ub4 * GSK3b_p53_P;
   p53ProteasomeBinding1: Mdm2_P1_p53_Ub4 + Proteasome => p53_Ub4_Proteasome + Mdm2; kbinProt * Mdm2_P1_p53_Ub4 * Proteasome;
-  Degradationp53_Ub4: p53_Ub4_Proteasome + $ATP => 4Ub + Proteasome + $ADP; kdegp53 * kproteff * p53_Ub4_Proteasome * ATP / (5000 + ATP);
+  Degradationp53_Ub4: p53_Ub4_Proteasome + $ATP => 4Ub + Proteasome + $ADP; (kdegp53 * kproteff * p53_Ub4_Proteasome * ATP) / (5000 + ATP);
   TauMTbinding: Tau => MT_Tau; kbinMTTau * Tau;
   TauMTrelease: MT_Tau => Tau; krelMTTau * MT_Tau;
   Tauphosphorylation1: GSK3b_p53 + Tau => GSK3b_p53 + Tau_P1; kphospTauGSK3bp53 * GSK3b_p53 * Tau;

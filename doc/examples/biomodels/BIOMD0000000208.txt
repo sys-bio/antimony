@@ -7,10 +7,10 @@ model *Deineko2003_CellCycle()
   species y5 in compartment_, y6 in compartment_;
 
   // Assignment Rules:
-  F6 := piecewise(0.044, leq(time, 60), 0);
+  F6 := piecewise(0.044, time <= 60, 0);
 
   // Reactions:
-  R1:  => y1; emax * k1 * y1 / (k1 * y1 + (k1_prime + k1_double_prime * y1) * y2);
+  R1:  => y1; (emax * k1 * y1) / (k1 * y1 + (k1_prime + k1_double_prime * y1) * y2);
   R2: y1 => ; phi1 * y1;
   R3:  => y2; k2 * y1;
   R4: y2 => y3; k3 * y2 * y5;

@@ -28,7 +28,7 @@ model *Jenkinson2011_EGF_MAPK()
   ERK_PP := x59 + x83;
   SHC_P_t := x33 + x34 + x35 + x36 + x37 + x38 + x39 + x40 + x91 + x92 + x93 + x94 + x64 + x65 + x66 + x67 + x68;
   EGF_EGFR_act := x5 + x7 + x15 + x23 + x25 + x27 + x29 + x32 + x33 + x34 + x35 + x36 + x37 + x88 + x89 + x90 + x91 + x92 + x93 + x94 + x8 + x11 + x17 + x18 + x19 + x20 + x21 + x63 + x64 + x65 + x66 + x67 + x68;
-  k5 := piecewise(1.55, lt(C, 3100), 0.2, gt(C, 100000), C * -1.350000e-005 + 1.55);
+  k5 := piecewise(1.55, C < 3100, 0.2, C > 100000, C * -1.350000e-005 + 1.55);
   C := RT / (kr1 / (k1 * x1) + 1);
 
   // Reactions:
@@ -67,7 +67,7 @@ model *Jenkinson2011_EGF_MAPK()
   v33: x38 -> x40 + x30; k33 * x38 - kr33 * x40 * x30;
   v34: x25 -> x15 + x30; k34 * x25 - kr34 * x15 * x30;
   v35: x30 -> x24 + x22; k35 * x30 - kr35 * x24 * x22;
-  v36: x40 => x31; Vm36 * x40 / (Km36 + x40);
+  v36: x40 => x31; (Vm36 * x40) / (Km36 + x40);
   v37: x33 -> x15 + x40; k37 * x33 - kr37 * x15 * x40;
   v38: x22 + x40 -> x39; k24 * x22 * x40 - kr24 * x39;
   v39: x34 -> x15 + x39; k37 * x34 - kr37 * x15 * x39;

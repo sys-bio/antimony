@@ -17,10 +17,10 @@ model *Nyman2012_InsulinSignalling()
   v1b: IRins => IR; k1b * IRins;
   v1c: IRins => IRp; k1c * IRins;
   v1d: IRp => IRiP; k1d * IRp;
-  v1e: IRiP => IRi; IRiP * (k1e + k1f * Xp / (1 + Xp));
+  v1e: IRiP => IRi; IRiP * (k1e + (k1f * Xp) / (1 + Xp));
   v1g: IRp => IR; k1g * IRp;
   v1r: IRi => IR; k1r * IRi;
-  v2: IRS => IRSiP; k21 * IRS * (IRp + k22 * IRiP) / (1 + km23 * Xp);
+  v2: IRS => IRSiP; (k21 * IRS * (IRp + k22 * IRiP)) / (1 + km23 * Xp);
   vm2: IRSiP => IRS; km2 * IRSiP;
   v3: X => Xp; k3 * X * IRSiP;
   vm3: Xp => X; km3 * Xp;

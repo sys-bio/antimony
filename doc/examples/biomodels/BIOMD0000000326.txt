@@ -30,8 +30,8 @@ model *DellOrco2009_phototransduction()
   predur := flash0Dur;
   dur := flashDur;
   del := flashDel;
-  preflash := piecewise(premag, leq(time, predur), 0);
-  testflash := piecewise(mag, and(geq(time, del), leq(time, del + dur)), 0);
+  preflash := piecewise(premag, time <= predur, 0);
+  testflash := piecewise(mag, time >= del && time <= del + dur, 0);
   stimulus := background + preflash + testflash + otherstimulus;
   numConcFactor := 1 / (6.022000e+005 * Vcyto);
   kRK1_1 := kRK1_0 * exp(- omega);
@@ -55,11 +55,11 @@ model *DellOrco2009_phototransduction()
   E := PDE_a_Ga_GTP + 2 * Ga_GTP_a_PDE_a_Ga_GTP;
   Rec_wCa2 := (Rectot - Rec_wCa2_RK * numConcFactor) / (1 + (Kp / Ca2_free)^w);
   alfamax := betadark * cGMPdark * (1 + (Ca2dark / Kc)^m);
-  J := 2 / (2 + fCa) * (cGMP / cGMPdark)^ncg * Jdark + fCa / (fCa + 2) * (Ca2_free - Ca2_0) / (Ca2dark - Ca2_0) * Jdark;
+  J := 2 / (2 + fCa) * (cGMP / cGMPdark)^ncg * Jdark + (fCa / (fCa + 2) * (Ca2_free - Ca2_0)) / (Ca2dark - Ca2_0) * Jdark;
   deltaJ := Jdark - J;
 
   // Reactions:
-  v_r1: R => R0; stimulus * R / Rtot;
+  v_r1: R => R0; (stimulus * R) / Rtot;
   v_r2_0: R0 + RK -> R0_RKpre; kRK1_0 * RK * R0 - kRK2 * R0_RKpre;
   v_r2_1: R1 + RK -> R1_RKpre; kRK1_1 * RK * R1 - kRK2 * R1_RKpre;
   v_r2_2: R2 + RK -> R2_RKpre; kRK1_2 * RK * R2 - kRK2 * R2_RKpre;
@@ -147,7 +147,7 @@ model *DellOrco2009_phototransduction()
   v_r30: RK -> Rec_wCa2_RK; kRec3 * Rec_wCa2 * RK - kRec4 * Rec_wCa2_RK;
   v_r31: Ca2_free -> Ca2_buff; k1 * (eT - Ca2_buff) * Ca2_free - k2 * Ca2_buff;
   v_r32: Ca2_free => ; gammaCa * (Ca2_free - Ca2_0);
-  v_r33:  => Ca2_free; 1.000000e+006 * fCa * Jdark / ((2 + fCa) * F * Vcyto) * (cGMP / cGMPdark)^ncg;
+  v_r33:  => Ca2_free; (1.000000e+006 * fCa * Jdark) / ((2 + fCa) * F * Vcyto) * (cGMP / cGMPdark)^ncg;
   v_r34:  => cGMP; alfamax / (1 + (Ca2_free / Kc)^m);
   v_r35: cGMP => ; (betadark + betasub * E) * cGMP;
 

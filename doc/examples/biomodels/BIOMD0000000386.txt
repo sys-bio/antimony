@@ -1,6 +1,6 @@
 //Created by libAntimony v2.4
 function oxygenation(phi, Vc, Vj, Vp)
-  phi * ((Vc + Vj - abs(Vc - Vj)) / 2 + Vp - abs((Vc + Vj - abs(Vc - Vj)) / 2 - Vp)) / 2;
+  (phi * ((((Vc + Vj) - abs(Vc - Vj)) / 2 + Vp) - abs(((Vc + Vj) - abs(Vc - Vj)) / 2 - Vp))) / 2;
 end
 
 function PGA_consumption(S1, Rp, R, Nt, Vc)
@@ -12,7 +12,7 @@ function NADPH_production(j, S1, Nt)
 end
 
 function carboxylation(Vc, Vj, Vp)
-  ((Vc + Vj - abs(Vc - Vj)) / 2 + Vp - abs((Vc + Vj - abs(Vc - Vj)) / 2 - Vp)) / 2;
+  ((((Vc + Vj) - abs(Vc - Vj)) / 2 + Vp) - abs(((Vc + Vj) - abs(Vc - Vj)) / 2 - Vp)) / 2;
 end
 
 
@@ -25,10 +25,10 @@ model *Arnold2011_Sharkey2007_RuBisCO_CalvinCycle()
 
   // Assignment Rules:
   NADP := Nt - NADPH;
-  phi := 0.21 * (gm * O2 / Ko) / ((gm * CO2 - v_c + Rd) / Kc);
+  phi := (0.21 * ((gm * O2) / Ko)) / ((gm * CO2 - v_c + Rd) / Kc);
   v_c := (abs((abs(Vc + Vj) - abs(Vc - Vj)) / 2 + Vp) - abs((abs(Vc + Vj) - abs(Vc - Vj)) / 2 - Vp)) / 2;
-  Vc := Vcmax * (CO2 - 1 / 2 * (CO2 + Kc * (1 + O2 / Ko) + (Vcmax - Rd) / gm - sqrt((CO2 + Kc * (1 + O2 / Ko) + (Vcmax - Rd) / gm)^2 + 4 / gm * (Rd * (CO2 + Kc * (1 + O2 / Ko)) + Vcmax * (Gamma - CO2))))) / (CO2 - 1 / 2 * (CO2 + Kc * (1 + O2 / Ko) + (Vcmax - Rd) / gm - sqrt((CO2 + Kc * (1 + O2 / Ko) + (Vcmax - Rd) / gm)^2 + 4 / gm * (Rd * (CO2 + Kc * (1 + O2 / Ko)) + Vcmax * (Gamma - CO2)))) + Kc * (1 + O2 / Ko));
-  Vj := J / 4 * (CO2 - 1 / 2 * (CO2 + 2 * Gamma + (J - 4 * Rd) / (4 * gm) - sqrt((CO2 + 2 * Gamma + (J - 4 * Rd) / (4 * gm))^2 + 4 / gm * (Rd * (CO2 + 2 * Gamma) + J / 4 * (Gamma - CO2))))) / (CO2 - 1 / 2 * (CO2 + 2 * Gamma + (J - 4 * Rd) / (4 * gm) - sqrt((CO2 + 2 * Gamma + (J - 4 * Rd) / (4 * gm))^2 + 4 / gm * (Rd * (CO2 + 2 * Gamma) + J / 4 * (Gamma - CO2)))) + 2 * Gamma);
+  Vc := (Vcmax * (CO2 - 1 / 2 * ((CO2 + Kc * (1 + O2 / Ko) + (Vcmax - Rd) / gm) - sqrt((CO2 + Kc * (1 + O2 / Ko) + (Vcmax - Rd) / gm)^2 + 4 / gm * (Rd * (CO2 + Kc * (1 + O2 / Ko)) + Vcmax * (Gamma - CO2)))))) / (CO2 - 1 / 2 * ((CO2 + Kc * (1 + O2 / Ko) + (Vcmax - Rd) / gm) - sqrt((CO2 + Kc * (1 + O2 / Ko) + (Vcmax - Rd) / gm)^2 + 4 / gm * (Rd * (CO2 + Kc * (1 + O2 / Ko)) + Vcmax * (Gamma - CO2)))) + Kc * (1 + O2 / Ko));
+  Vj := (J / 4 * (CO2 - 1 / 2 * ((CO2 + 2 * Gamma + (J - 4 * Rd) / (4 * gm)) - sqrt((CO2 + 2 * Gamma + (J - 4 * Rd) / (4 * gm))^2 + 4 / gm * (Rd * (CO2 + 2 * Gamma) + J / 4 * (Gamma - CO2)))))) / (CO2 - 1 / 2 * ((CO2 + 2 * Gamma + (J - 4 * Rd) / (4 * gm)) - sqrt((CO2 + 2 * Gamma + (J - 4 * Rd) / (4 * gm))^2 + 4 / gm * (Rd * (CO2 + 2 * Gamma) + J / 4 * (Gamma - CO2)))) + 2 * Gamma);
   Vp := 3 * TPU * ((CO2 - (3 * TPU - Rd) / gm) / (CO2 - (3 * TPU - Rd) / gm - Gamma));
 
   // Reactions:

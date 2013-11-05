@@ -14,19 +14,19 @@ model *ChenXF2008_CICR()
   h' = A * (Kd - (Ca_Cyt + Kd) * h);
 
   // Reactions:
-  ER_Channel: Ca_ER => Ca_Cyt; Cytoplasm * (L + P_IP3R * IP3_Cyt^3 * Ca_Cyt^3 * h^3 / ((IP3_Cyt + Ki)^3 * (Ca_Cyt + Ka)^3)) * (Ca_ER - Ca_Cyt);
-  SERCA: Ca_Cyt => Ca_ER; Cytoplasm * (V_SERCA * Ca_Cyt^p / (K_SERCA^p + Ca_Cyt^p));
+  ER_Channel: Ca_ER => Ca_Cyt; Cytoplasm * (L + (P_IP3R * IP3_Cyt^3 * Ca_Cyt^3 * h^3) / ((IP3_Cyt + Ki)^3 * (Ca_Cyt + Ka)^3)) * (Ca_ER - Ca_Cyt);
+  SERCA: Ca_Cyt => Ca_ER; Cytoplasm * ((V_SERCA * Ca_Cyt^p) / (K_SERCA^p + Ca_Cyt^p));
   PM_Channel:  => Ca_Cyt; Cytoplasm * (k_soc * O_o + V_PMleak) * (Ca_ec - Ca_Cyt);
-  PMCA: Ca_Cyt => ; Cytoplasm * (V_PMCA * Ca_Cyt^q / (K_PMCA^q + Ca_Cyt^q));
-  PLC:  => IP3_Cyt; Cytoplasm * (V_PLC * Ca_Cyt^2 / (K_PLC^2 + Ca_Cyt^2));
-  deg: IP3_Cyt => ; Cytoplasm * (kdeg * Ca_Cyt^2 / (K_deg^2 + Ca_Cyt^2)) * IP3_Cyt;
+  PMCA: Ca_Cyt => ; Cytoplasm * ((V_PMCA * Ca_Cyt^q) / (K_PMCA^q + Ca_Cyt^q));
+  PLC:  => IP3_Cyt; Cytoplasm * ((V_PLC * Ca_Cyt^2) / (K_PLC^2 + Ca_Cyt^2));
+  deg: IP3_Cyt => ; Cytoplasm * ((kdeg * Ca_Cyt^2) / (K_deg^2 + Ca_Cyt^2)) * IP3_Cyt;
   act_apoSTIM1_syn:  => S2a; ER * k_a * S2;
   act_apoSTIM1_deg: S2a => ; ER * k_i * S2a;
-  apoSTIM1_oligo_syn:  => S4; ER * (Vs4 * S2^2 / (S2^2 + K2^2));
+  apoSTIM1_oligo_syn:  => S4; ER * ((Vs4 * S2^2) / (S2^2 + K2^2));
   apoSTIM1_oligo_deg: S4 => ; ER * kd_oligo * S4;
-  close_CRAC_prod:  => Oc; PM * (Vcp * Orai1^n_hill / (Kc^n_hill + Orai1^n_hill));
+  close_CRAC_prod:  => Oc; PM * ((Vcp * Orai1^n_hill) / (Kc^n_hill + Orai1^n_hill));
   closed_CRAC_channel_deg: Oc => ; PM * kdc * Oc;
-  open_CRAC_channel_prod: Oc => O_o; PM * (kop * S2a^l_hill * Oc / (Ko^l_hill + S2a^l_hill));
+  open_CRAC_channel_prod: Oc => O_o; PM * ((kop * S2a^l_hill * Oc) / (Ko^l_hill + S2a^l_hill));
   open_to_closed: O_o => Oc; PM * kod * O_o;
   open_CRAC_channel_deg: O_o => ; PM * kdo * O_o;
 
