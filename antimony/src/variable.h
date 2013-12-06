@@ -52,7 +52,7 @@ private:
   //If the variable is a submodule, it can have conversion factors and deletions.
   std::vector<std::string> m_extentConversionFactor;
   std::vector<std::string> m_timeConversionFactor;
-  std::vector<std::vector<std::string> > m_deletions;
+  std::set<std::pair<std::vector<std::string>, deletion_type> > m_deletions;
 
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
@@ -86,7 +86,7 @@ public:
   bool IsPointer() const {return m_sameVariable.size() != 0;};
   const std::vector<std::string>& GetName() const;
   std::vector<std::string> GetPointerName() const {return m_sameVariable;};
-  std::string GetNameDelimitedBy(char cc) const;
+  std::string GetNameDelimitedBy(std::string cc) const;
   var_type GetType() const;
   bool HasFormula() const {return (!m_valFormula.IsEmpty());};
   formula_type GetFormulaType() const;
@@ -98,6 +98,7 @@ public:
   const Formula* GetRateRule() const;
   Formula* GetRateRule();
   const AntimonyReaction* GetReaction() const;
+  AntimonyReaction* GetReaction();
   Module* GetModule();
   const Module* GetModule() const;
   AntimonyEvent* GetEvent();
@@ -117,7 +118,7 @@ public:
   bool GetIsEquivalentTo(const Variable* var) const;
   std::vector<std::pair<Variable*, size_t> > GetStrandVars() const;
   bool IsExpandedStrand() const;
-  std::string GetFormulaForNthEntryInStrand(char cc, size_t n);
+  std::string GetFormulaForNthEntryInStrand(std::string cc, size_t n);
   std::string GetDisplayName() const;
   bool IsDeletedUnit() const {return m_deletedunit;}
 
@@ -152,11 +153,11 @@ public:
   bool SetTimeConversionFactor(double val);
   Variable* GetExtentConversionFactor();
   Variable* GetTimeConversionFactor();
-  std::vector<std::vector<std::string> > GetDeletions() const;
+  std::set<std::pair<std::vector<std::string>, deletion_type> > GetDeletions() const;
 
   //Submodule deletions:
   bool DeleteFromSubmodel(Variable* deletedvar);
-  void ClearReferencesTo(Variable* deletedvar);
+  std::set<std::pair<std::vector<std::string>, deletion_type> > ClearReferencesTo(Variable* deletedvar);
 
   bool Synchronize(Variable* clone, const Variable* conversionFactor);
 #ifndef NSBML

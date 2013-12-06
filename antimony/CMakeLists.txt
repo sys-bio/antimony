@@ -47,7 +47,9 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 
 # which language bindings should be build
 option(WITH_SBML            "Generate SBML translations"      ON )
-option(WITH_COMP_SBML       "Use the hierarchical composition package in SBML"      ON )
+if (WITH_SBML)
+    option(WITH_COMP_SBML       "Use the hierarchical composition package API"      ON )
+endif()
 option(WITH_CELLML          "Generate CellML translations"    ON )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
 option(WITH_SBW             "QTAntimony integration with SBW" OFF )
@@ -57,6 +59,18 @@ option(WITH_PYTHON       "Generate Python language bindings." OFF)
 
 set(EXTRA_LIBS "" CACHE STRING "Libraries the other libraries depend on that are in non-standard locations" )
 #set(EXTRA_LIBS "" CACHE_STRING "")
+
+# Enable the generation of unit tests. If enabled, all test runners
+# will be created and can be run with "make test" or ctest.
+# This won't work in Visual Studio 2003, so we disable this option there.
+#
+if(NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio 6" AND NOT ${CMAKE_GENERATOR} MATCHES "Visual Studio 7")
+    if (WITH_COMP_SBML)
+        option(WITH_CHECK    "Compile unit tests. Run with 'make test' or 'ctest'." OFF)
+    endif()
+endif()
+
+
 
 SET(LIBANTIMONY_VERSION_STRING "v${LIBANTIMONY_VERSION_MAJOR}.${LIBANTIMONY_VERSION_MINOR}${LIBANTIMONY_VERSION_PATCH}${LIBANTIMONY_VERSION_RELEASE}")
 add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
@@ -74,7 +88,7 @@ if(WITH_SBML)
 		PATHS /usr/lib /usr/local/lib 
               ${CMAKE_SOURCE_DIR} 
               ${CMAKE_SOURCE_DIR}/dependencies/lib
-              ${CMAKE_SOURCE_DIR}/../libsbml-5/build/src/RelWithDebInfo
+              ${CMAKE_SOURCE_DIR}/../libsbml-5/release/lib/
         )
 	
 	find_path(LIBSBML_INCLUDE_DIR
@@ -98,8 +112,8 @@ if(WITH_SBML)
         install(FILES   ${LIBSBML_DLL} DESTINATION ${CMAKE_SOURCE_DIR}/win32)
     endif()
     INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${LIBSBML_INCLUDE_DIR})
-	if (WITH_COMP_SBML)
-	    add_definitions( -DUSE_COMP )
+    if (WITH_COMP_SBML)
+        add_definitions( -DUSE_COMP )
     endif(WITH_COMP_SBML)
 else(WITH_SBML)
     add_definitions( -DNSBML )
@@ -224,6 +238,41 @@ endif()
 
 set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXTRA_LIBS} )
 
+###############################################################################
+## Enable support for testing ... can be invoked by running ctest
+# or make test
+#
+
+if(WITH_CHECK)
+    # we do use tests, that require 2.8.4
+    cmake_minimum_required(VERSION 2.8.4)
+
+    enable_testing()
+
+    find_library(LIBCHECK_LIBRARY
+        NAMES check libcheck
+        PATHS /usr/lib /usr/local/lib ${LIBSBML_DEPENDENCY_DIR}/lib
+        DOC "The file name of the libcheck library."
+    )
+
+    find_path(LIBCHECK_INCLUDE_DIR
+        NAMES check.h
+        PATHS /usr/include /usr/local/include  ${LIBSBML_DEPENDENCY_DIR}/include
+        DOC "The directory containing the libcheck include files."
+              )
+
+    if(NOT EXISTS "${LIBCHECK_INCLUDE_DIR}/check.h")
+        message(FATAL_ERROR "The 'check' include directory appears to be invalid. It should contain the file check.h, but it does not.")
+    endif()
+
+    if(${CMAKE_GENERATOR} MATCHES "Visual Studio 6" OR ${CMAKE_GENERATOR} MATCHES "Visual Studio 7")
+        message(WARNING "Libcheck is not compatible with Visual Studio 2003 (or earlier versions).")
+    endif()
+
+
+endif(WITH_CHECK)
+
+
 ####################################################################
 #
 # Need some variables set up, such as the name for the libAntimony 
@@ -306,7 +355,8 @@ file(GLOB LIBANTIMONY_HEADERS
 	${ANTIMONY_SRC_DIR}unitelement.h
         ${ANTIMONY_SRC_DIR}variable.h
         )
- 
+
+##### Build the main library #####
 add_library(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_HEADERS} ${LIBANTIMONY_SOURCES} ${LIBANTIMONY_TRANSLATORS})
 target_link_libraries(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
 add_definitions(-DLIB_EXPORTS)
@@ -321,12 +371,41 @@ if (NOT UNIX)
 endif(NOT UNIX)
 
 
+##### Build the static library #####
+add_library (${LIBANTIMONY_LIBRARY}-static STATIC ${LIBANTIMONY_SOURCES} )
+
+if (WIN32 AND NOT CYGWIN)
+    # don't decorate static library 
+    set_target_properties(${LIBANTIMONY_LIBRARY}-static PROPERTIES COMPILE_DEFINITIONS "LIBLAX_STATIC=1;LIBSBML_STATIC=1;LIBANTIMONY_STATIC=1")
+endif(WIN32 AND NOT CYGWIN)
+
+target_link_libraries(${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
+
+INSTALL(TARGETS ${LIBANTIMONY_LIBRARY}-static
+        DESTINATION bin
+  )
+
+
+
 ####################################################################
 #
 # Build the bindings.
 #
 
 add_subdirectory(src/bindings)
+
+
+
+####################################################################
+#
+# Build the test libraries.
+#
+
+if(WITH_CHECK)
+    message(STATUS "  Using libcheck                = ${LIBCHECK_LIBRARY}")
+    add_subdirectory(src/test)
+endif()
+
 
 
 ####################################################################

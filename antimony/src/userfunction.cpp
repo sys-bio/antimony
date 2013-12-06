@@ -21,7 +21,7 @@ bool UserFunction::SetFormula(const Formula& formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The formula \"" + formula.ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The formula \"" + formula.ToDelimitedStringWithEllipses(".") + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
     else {
@@ -30,7 +30,7 @@ bool UserFunction::SetFormula(const Formula& formula)
   }
 #endif
   m_formula = formula;
-  formstring = formula.ToDelimitedStringWithEllipses('.');
+  formstring = formula.ToDelimitedStringWithEllipses(".");
   vector<vector<string> > formvars = formula.GetVariables();
   for (size_t fv=0; fv<formvars.size(); fv++) {
     bool foundvar = false;
@@ -54,7 +54,7 @@ bool UserFunction::SetFormula(const Formula& formula)
       }
     }
     if (foundvar == false) {
-      g_registry.SetError("In the user-defined function '" + m_modulename + "', the variable '" + m_exportlist[ufv][0] + "' was found in the function's export list, but not in the formula itself ('" + formula.ToDelimitedStringWithEllipses('.') + "').  This means that any variable assigned to this function would be ignored, and is probably not what you meant.  In any event, it's an illegal Antimony construction.");
+      g_registry.SetError("In the user-defined function '" + m_modulename + "', the variable '" + m_exportlist[ufv][0] + "' was found in the function's export list, but not in the formula itself ('" + formula.ToDelimitedStringWithEllipses(".") + "').  This means that any variable assigned to this function would be ignored, and is probably not what you meant.  In any event, it's an illegal Antimony construction.");
       return true;
     }
   }
@@ -80,7 +80,7 @@ string UserFunction::GetAntimony() const
       func += ", ";
     }
   }
-  func += ")\n  " + m_formula.ToDelimitedStringWithEllipses('.') + ";\nend\n";
+  func += ")\n  " + m_formula.ToDelimitedStringWithEllipses(".") + ";\nend\n";
   return func;
 }
 

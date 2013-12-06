@@ -6,6 +6,10 @@
 #include <cstdlib>
 #include "antimony_api.h"
 
+#ifndef NSBML
+#include "sbml/sbmlTypes.h"
+#endif
+
 #ifdef WIN32
 #include <conio.h>
 #include <direct.h> //for Windows mkdir

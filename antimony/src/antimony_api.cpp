@@ -436,7 +436,7 @@ LIB_EXTERN long loadCellMLFile(const char* filename)
     string file(filename);
     RETURN_INTO_WSTRING(error, ml->lastErrorMessage());
     string emsg(makeUTF8(error));
-    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  emsg);
+    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from the CellML API:\n" +  emsg + "\n");
     return -1;
   }
   return CheckAndAddCellMLDoc(model);
@@ -457,7 +457,7 @@ LIB_EXTERN long loadCellMLString(const char* modelstring)
   {
     wstring error = ml->lastErrorMessage();
     string emsg(makeUTF8(error));
-    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from libCellML:\n" +  emsg);
+    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from the CellML API:\n" +  emsg);
   }
   return CheckAndAddCellMLDoc(model);
 }
@@ -1864,8 +1864,10 @@ int writeSBMLFileInternal(const char* filename, const char* moduleName, bool com
     sbmldoc = g_registry.GetMainModule()->GetSBML(comp);
   }
   SBMLWriter sbmlw;
-  sbmlw.setProgramName("libAntimony");
-  sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
+  if (g_registry.GetWriteNameToSBML()) {
+    sbmlw.setProgramName("libAntimony");
+    sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
+  }
   int sbmlret = sbmlw.writeSBML(sbmldoc, filename);
   if (sbmlret == 0) {
     string error = "Unable to open file ";
@@ -1891,15 +1893,17 @@ char* getSBMLStringInternal(const char* moduleName, bool comp)
 {
   const SBMLDocument* sbmldoc;
   if (moduleName != NULL) {
-    if (!checkModule(moduleName)) return 0;
+    if (!checkModule(moduleName)) return NULL;
     sbmldoc = g_registry.GetModule(moduleName)->GetSBML(comp);
   }
   else {
     sbmldoc = g_registry.GetMainModule()->GetSBML(comp);
   }
   SBMLWriter sbmlw;
-  sbmlw.setProgramName("libAntimony");
-  sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
+  if (g_registry.GetWriteNameToSBML()) {
+    sbmlw.setProgramName("libAntimony");
+    sbmlw.setProgramVersion(LIBANTIMONY_VERSION_STRING);
+  }
   char* sbmlstring = sbmlw.writeSBMLToString(sbmldoc);
   if (sbmlstring == NULL) {
     string error = "An underlying parser component in libSBML has failed when writing ";

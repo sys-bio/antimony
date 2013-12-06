@@ -64,20 +64,27 @@ bool ReactantList::SetComponentFormulasTo(Formula form)
   return false;
 }
 
-void ReactantList::ClearReferencesTo(Variable* deletedvar)
+bool ReactantList::ClearReferencesTo(Variable* deletedvar)
 {
+  if (m_module.empty()) {
+    //There are no reactants in this list, so we don't need to clear it.
+    return false;
+  }
   Module* module = g_registry.GetModule(m_module);
   assert(module != NULL);
 
+  bool ret = false;
   for (vector<pair<double, vector<string> > >::iterator component = m_components.begin(); component != m_components.end(); ) {
     Variable* var = module->GetVariable(component->second);
     if (var->GetIsEquivalentTo(deletedvar)) {
       component = m_components.erase(component);
+      ret = true;
     }
     else {
       component++;
     }
   }
+  return ret;
 }
 
 vector<vector<string> > ReactantList::GetVariableList() const
@@ -89,7 +96,7 @@ vector<vector<string> > ReactantList::GetVariableList() const
   return vlist;
 }
 
-string ReactantList::ToStringDelimitedBy(char cc) const
+string ReactantList::ToStringDelimitedBy(std::string cc) const
 {
   string retval;
   for (size_t component=0; component<m_components.size(); component++) {
@@ -111,7 +118,7 @@ string ReactantList::ToStringDelimitedBy(char cc) const
   return retval;
 }
 
-vector<string> ReactantList::ToStringVecDelimitedBy(char cc) const
+vector<string> ReactantList::ToStringVecDelimitedBy(string cc) const
 {
   vector<string> retval;
   for (size_t component=0; component<m_components.size(); component++) {

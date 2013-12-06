@@ -3,8 +3,10 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 #include "formula.h"
+#include "enums.h"
 
 //Note:  'AntimonyEvent' instead of just 'Event' because libSBML defines a 'Event' class.
 class AntimonyEvent
@@ -51,13 +53,13 @@ public:
   bool Matches(const AntimonyEvent* newevent) const;
   void Convert(Variable* converted, Variable* cf);
   void ConvertTime(Variable* tcf);
-  void ClearReferencesTo(Variable* deletedvar);
+  bool ClearReferencesTo(Variable* deletedvar, std::set<std::pair<std::vector<std::string>, deletion_type> >* ret);
 
   size_t GetNumAssignments() const {return m_varresults.size();};
-  std::string GetNthAssignmentVariableName(size_t n, char cc) const;
-  std::string GetNthAssignmentFormulaString(size_t n, char cc, bool SBML) const;
+  std::string GetNthAssignmentVariableName(size_t n, std::string cc) const;
+  std::string GetNthAssignmentFormulaString(size_t n, std::string cc, bool SBML) const;
   const Formula* GetAssignmentFormula(size_t n) const;
-  std::string ToStringDelimitedBy(char cc) const;
+  std::string ToStringDelimitedBy(std::string cc) const;
   void FixNames();
 };
 

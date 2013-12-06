@@ -110,4 +110,21 @@ enum const_type {constDEFAULT = 0, constVAR, constCONST};
  * rule_type values are not used in the API, but are used internally in libAntimony.  Every symbol starts off with a default type based on its type (most things are formINITIAL; reactions are formKINETIC, and events are formTRIGGER), and those symbols that aren't reactions, events, or modules may be formASSIGNMENT (for those symbols that have assignment rules) or formRATE (for those symbols that have rate rules).  formASSIGNMENT symbols have only one formula, but formRATE have two: one for their initial condition, and one for how it changes with time.
  */
 enum formula_type {formulaINITIAL = 0, formulaASSIGNMENT, formulaRATE, formulaKINETIC, formulaTRIGGER};
+
+/**
+ * deletion_type values are not used in the API, but are used internally in libAntimony.  When a variable is deleted in Antimony, the elements it appears in may also need to be deleted.  This allows 'partial' deletion of SBML elements, so (for example) if a species is deleted, it disappears from all reactions it used to appear in.
+ */
+enum deletion_type {delFull = 0,
+                    delEventPriority,
+                    delEventDelay,
+                    delEventAssignment,
+                    delRateRule,
+                    delInitialAssignment,
+                    delAssignmentRule,
+                    delReactant,
+                    delProduct,
+                    delKineticLaw,
+                    delModifier,
+                    delInteraction};
+
 #endif // ENUMS_H

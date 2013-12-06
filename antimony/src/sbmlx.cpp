@@ -5,16 +5,17 @@
 #include "variable.h"
 #include "formula.h"
 #include "registry.h"
-//#include "sbml/math/L3FormulaFormatter.h"
-#include "sbml/math/FormulaFormatter.h"
 
 using namespace std;
 extern bool CaselessStrCmp(const string& lhs, const string& rhs);
 
 #ifndef NSBML
 #include "sbmlx.h"
+#include "sbml/math/FormulaFormatter.h"
+#if LIBSBML_VERSION >= 50900
+#include "sbml/math/L3FormulaFormatter.h"
+#endif
 
-// SBase objects no longer have IDs :( //update: now they do again!
 string getNameFromSBMLObject(const SBase* sbml, string basename)
 {
   string name = sbml->getId();
@@ -47,27 +48,6 @@ string getNameFromSBMLObject(const SBase* sbml, string basename)
   return name;
 }
 
-/*
-  string getNameFromSBMLObject(string ID, string name, string basename)
-  {
-  if (ID != "") return ID;
-  if (name != "") return name;
-  long num=0;
-  Variable* foundvar = NULL;
-  do {
-  char charnum[50];
-  sprintf(charnum, "%li", num);
-  num++;
-  name = basename;
-  name += charnum;
-  vector<string> fullname;
-  fullname.push_back(name);
-  foundvar = g_registry.CurrentModule()->GetVariable(fullname);
-  } while (foundvar != NULL);
-  assert(name != "");
-  return name;
-  }
-*/
 void matchNamesToTypes(ASTNode *node)  
 {
   if (node->getType() == AST_NAME_TIME) {
@@ -92,8 +72,12 @@ string parseASTNodeToString(const ASTNode* ASTform, bool carat) {
   if (carat) {
     powerToCarat(&clone);
   }
-//  char* formula = SBML_formulaToL3String(&clone);
+
+#if LIBSBML_VERSION >= 50900
+  char* formula = SBML_formulaToL3String(&clone);
+#else
   char* formula = SBML_formulaToString(&clone);
+#endif
   string ret = formula;
 #ifndef WIN32
   free(formula);

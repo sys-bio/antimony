@@ -37,12 +37,13 @@ Registry::Registry()
     m_currentImportedModule(),
     m_workingstrand(),
     m_currentEvent(),
-    m_cc('_'),
+    m_cc("_"),
     m_error(),
     m_oldmodules(),
     m_olduserfunctions(),
     m_oldmodulemaps(),
     m_sbindex(),
+    m_writeNameToSBML(true),
     input(NULL)
 {
   string main = MAINMODULE;
@@ -266,7 +267,7 @@ string Registry::GetFilenameFrom(string thisfile, string import)
   string nodir = import;
   lastslash = nodir.rfind('/');
   if (lastslash != string::npos) {
-    nodir = nodir.replace(0, lastslash, "");
+    nodir = nodir.replace(0, lastslash+1, "");
     return GetFilenameFrom(thisfile, nodir);
   }
 
@@ -622,8 +623,8 @@ bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connec
   }
   comp2moduleparents.insert(comp2moduleparents.begin(), CurrentModule()->GetModuleName());
 
-  //cout << "First component's parents: " << ToStringFromVecDelimitedBy(comp1moduleparents, '.') << endl << "Second component's parents: " << ToStringFromVecDelimitedBy(comp2moduleparents, '.') << endl;
-  //cout << "First component's names: " << ToStringFromVecDelimitedBy(comp1modulenames, '.') << endl << "Second component's names: " << ToStringFromVecDelimitedBy(comp2modulenames, '.') << endl;
+  //cout << "First component's parents: " << ToStringFromVecDelimitedBy(comp1moduleparents, ".") << endl << "Second component's parents: " << ToStringFromVecDelimitedBy(comp2moduleparents, ".") << endl;
+  //cout << "First component's names: " << ToStringFromVecDelimitedBy(comp1modulenames, ".") << endl << "Second component's names: " << ToStringFromVecDelimitedBy(comp2modulenames, ".") << endl;
   //Now figure out the 'lowest' common parent in the encapsulation tree:
   string commonparent = "";
   assert(comp1moduleparents.size() > 0 && comp2moduleparents.size() > 0 && comp1moduleparents[0] == comp2moduleparents[0]);
@@ -644,8 +645,8 @@ bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connec
   assert(topmod != NULL);
 
   //cout << "Top module: " << commonparent << endl;
-  //cout << "first compartment submodule name: " << ToStringFromVecDelimitedBy(comp1modulenames, '.') << endl;
-  //cout << "second compartment submodule name: " << ToStringFromVecDelimitedBy(comp2modulenames, '.') << endl;
+  //cout << "first compartment submodule name: " << ToStringFromVecDelimitedBy(comp1modulenames, ".") << endl;
+  //cout << "second compartment submodule name: " << ToStringFromVecDelimitedBy(comp2modulenames, ".") << endl;
 
   //And we have the full names of the submodules whose variables need to be synchronized.  But there might be multiple variables, so we go through them all:
   RETURN_INTO_OBJREF(mvs, iface::cellml_api::MapVariablesSet, connection->variableMappings());
@@ -690,17 +691,17 @@ bool Registry::SynchronizeCellMLConnection(iface::cellml_api::Connection* connec
         newvar = topmod->AddNewNumberedVariable(newvarname[0]);
       }
       if (firstvar->Synchronize(newvar, NULL)) {
-        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + firstvar->GetNameDelimitedBy('.') + " and " + newvar->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
+        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + firstvar->GetNameDelimitedBy(".") + " and " + newvar->GetNameDelimitedBy(".") + " were unable to be set as equivalent:  " + g_registry.GetError());
         somefalse = true;
       }
       if (secondvar->Synchronize(newvar, NULL)) {
-        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + secondvar->GetNameDelimitedBy('.') + " and " + newvar->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
+        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + secondvar->GetNameDelimitedBy(".") + " and " + newvar->GetNameDelimitedBy(".") + " were unable to be set as equivalent:  " + g_registry.GetError());
         somefalse = true;
       }
     }
     else {
       if (firstvar->Synchronize(secondvar, NULL)) {
-        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + firstvar->GetNameDelimitedBy('.') + " and " + secondvar->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
+        g_registry.AddWarning("In module '" + topmod->GetModuleName() + "', the variables " + firstvar->GetNameDelimitedBy(".") + " and " + secondvar->GetNameDelimitedBy(".") + " were unable to be set as equivalent:  " + g_registry.GetError());
         somefalse = true;
       }
     }
@@ -999,11 +1000,11 @@ bool Registry::SetNewCurrentEvent(Formula* trigger, Variable* var)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("In event trigger \"" + trigger->ToDelimitedStringWithEllipses('.') + "\":  " + SBML_getLastParseL3Error());
+      g_registry.SetError("In event trigger \"" + trigger->ToDelimitedStringWithEllipses(".") + "\":  " + SBML_getLastParseL3Error());
       return true;
     }
     else if (!ASTform->isBoolean()) {
-      g_registry.SetError("The formula \"" + trigger->ToDelimitedStringWithEllipses('.') + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
+      g_registry.SetError("The formula \"" + trigger->ToDelimitedStringWithEllipses(".") + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
       delete ASTform;
       return true;
     }
@@ -1339,4 +1340,14 @@ void Registry::FreeAll()
     free(m_rd_typestars[i]);
   }
   m_rd_typestars.clear();
+}
+
+void Registry::SetWriteNameToSBML(bool set)
+{
+  m_writeNameToSBML = set;
+}
+
+bool Registry::GetWriteNameToSBML()
+{
+  return m_writeNameToSBML;
 }

@@ -95,7 +95,7 @@ public:
   void SetIsMain(bool ismain) {m_ismain=ismain;};
   bool AddDeletion(Variable* deletedvar);
   bool DeleteFromSynchronized(Variable* deletedvar);
-  void ClearReferencesTo(Variable* deletedvar);
+  void ClearReferencesTo(Variable* deletedvar, std::set<std::pair<std::vector<std::string>, deletion_type> >* ret);
   Variable* AddOrFindUnitDef(UnitDef* unitdef);
   bool AddUnitVariables(UnitDef* unitdef);
   void AddDefaultVariables();
@@ -123,14 +123,16 @@ public:
 
 
   const std::string& GetModuleName() const;
-  std::string GetVariableNameDelimitedBy(char cc) const;
+  std::string GetVariableNameDelimitedBy(std::string cc) const;
   std::string ToString() const;
-  std::string OutputOnly(std::vector<var_type> types, std::string name, std::string indent, char cc, std::map<const Variable*, Variable > origmap) const;
+  std::string OutputOnly(std::vector<var_type> types, std::string name, std::string indent, std::string cc, std::map<const Variable*, Variable > origmap) const;
   std::string ListIn80Cols(std::string type, std::vector<std::string> names, std::string indent) const;
   std::string GetAntimony(std::set<const Module*>& usedmods, bool funcsincluded) const;
   std::string GetJarnacReactions() const;
   std::string GetJarnacVarFormulas() const;
   std::string GetJarnacConstFormulas(std::string modulename) const;
+
+  bool GetNeedDefaultCompartment() const;
 
 
   //Output for the API
@@ -158,7 +160,8 @@ public:
   void  LoadSBML(const Model* sbml);
   const SBMLDocument* GetSBML(bool comp);
   void  CreateSBMLModel(bool comp);
-  void  SetAssignmentFor(Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp);
+  void  SetAssignmentFor(Model* sbmlmod, const Variable* var, const std::map<const Variable*, Variable>& syncmap, bool comp, std::set<std::pair<std::string, const Variable*> > referencedVars);
+  void  FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod);
 #endif //NSBML
   std::vector<const Variable*> GetSynchronizedVariablesFor(const Variable* var);
   void FillInSyncmap(std::map<const Variable*, Variable >& syncmap) const;

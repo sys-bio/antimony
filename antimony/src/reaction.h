@@ -4,10 +4,12 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <set>
 
 #include "enums.h"
 #include "reactantlist.h"
 #include "formula.h"
+#include "enums.h"
 
 //Note:  'AntimonyReaction' instead of just 'Reaction' because libSBML defines a 'Reaction' class.
 class AntimonyReaction
@@ -34,7 +36,7 @@ public:
   void SetComponentCompartments(Variable* var, bool frommodule);
   bool SetFormulaOfInteracteesAndClear();
   void Clear();
-  void ClearReferencesTo(Variable* deletedvar);
+  void ClearReferencesTo(Variable* deletedvar, std::set<std::pair<std::vector<std::string>, deletion_type> >* ret);
 
   const Formula* GetFormula() const;
   const ReactantList* GetLeft()  const {return &m_left;};
@@ -47,8 +49,8 @@ public:
   bool LeftIsEmpty() const;
 
   bool Matches(const AntimonyReaction* newrxn) const;
-  std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands) const;
-  std::string ToDelimitedStringWithEllipses(char cc) const;
+  std::string ToDelimitedStringWithStrands(std::string cc, std::vector<std::pair<Variable*, size_t> > strands) const;
+  std::string ToDelimitedStringWithEllipses(std::string cc) const;
   double GetStoichiometryFor(const Variable* var) const;
   void FixNames();
 };

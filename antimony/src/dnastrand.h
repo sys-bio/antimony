@@ -38,12 +38,12 @@ public:
   bool GetUpstreamOpen() const {return m_upstreamopen;};
   bool GetDownstreamOpen() const {return m_downstreamopen;};
   bool CheckContains(Variable* var) const;
-  void ClearReferencesTo(Variable* deletedvar);
+  bool ClearReferencesTo(Variable* deletedvar);
 
   void SetNewTopName(std::string newmodname, std::string newtopname);
-  std::string ToStringDelimitedBy(char cc) const;
-  std::vector<std::string> ToExpandedStringVecDelimitedBy(char cc) const;
-  std::vector<std::string> ToModularStringVecDelimitedBy(char cc) const;
+  std::string ToStringDelimitedBy(std::string cc) const;
+  std::vector<std::string> ToExpandedStringVecDelimitedBy(std::string cc) const;
+  std::vector<std::string> ToModularStringVecDelimitedBy(std::string cc) const;
 
   void FixNames();
 };
