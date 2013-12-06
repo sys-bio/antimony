@@ -77,12 +77,45 @@ void AntimonyReaction::Clear()
   m_formula.Clear();
 }
 
-void AntimonyReaction::ClearReferencesTo(Variable* deletedvar)
+void AntimonyReaction::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, deletion_type> >* ret)
 {
+  vector<string> delname = deletedvar->GetName();
+  bool isinrxn = false;
   if (m_empty) return;
-  m_left.ClearReferencesTo(deletedvar);
-  m_right.ClearReferencesTo(deletedvar);
-  m_formula.ClearReferencesTo(deletedvar);
+  vector<string> longername = m_name;
+  if (m_divider == rdBecomes || m_divider == rdBecomesIrreversibly) {
+    longername.push_back(delname[delname.size()-1]);
+    if (m_left.ClearReferencesTo(deletedvar)) {
+      ret->insert(make_pair(longername,  delReactant));
+      isinrxn = true;
+    }
+    if (m_right.ClearReferencesTo(deletedvar)) {
+      ret->insert(make_pair(longername, delProduct));
+      isinrxn = true;
+    }
+    if (m_formula.ClearReferencesTo(deletedvar)) {
+      ret->insert(make_pair(m_name, delKineticLaw));
+      //Also remove any modifier species references:
+      if (!isinrxn && IsSpecies(deletedvar->GetType())) {
+        ret->insert(make_pair(longername, delModifier));
+      }
+    }
+  }
+  else {
+    //This is an interaction, not a reaction
+    if (m_left.ClearReferencesTo(deletedvar)) {
+      longername = m_right.GetNthReactant(0)->GetName();
+      longername.push_back(delname[delname.size()-1]);
+      ret->insert(make_pair(longername, delModifier));
+    }
+    m_right.ClearReferencesTo(deletedvar);
+    if (m_left.GetVariableList().size()==0 ||
+      m_right.GetVariableList().size()==0) {
+      //The interaction itself has to be removed for Antimony purposes.
+      ret->insert(make_pair(m_name, delInteraction));
+    }
+    //We don't have to worry about the right-hand side, since that's the reaction itself--if it is the deleted var, we're good.  Also, we don't have to worry about the 'kinetic law', since that just gets set as the KL of the reaction itself, too.
+  }
 }
 
 const Formula* AntimonyReaction::GetFormula() const
@@ -108,7 +141,7 @@ bool AntimonyReaction::LeftIsEmpty() const
   return (m_left.Size() == 0);
 }
 
-string AntimonyReaction::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, size_t> > strands) const
+string AntimonyReaction::ToDelimitedStringWithStrands(std::string cc, vector<pair<Variable*, size_t> > strands) const
 {
   if (IsEmpty()) return "";
   string retval;
@@ -130,7 +163,7 @@ string AntimonyReaction::ToDelimitedStringWithStrands(char cc, vector<pair<Varia
   return retval;
 }
 
-string AntimonyReaction::ToDelimitedStringWithEllipses(char cc) const
+string AntimonyReaction::ToDelimitedStringWithEllipses(std::string cc) const
 {
   if (IsEmpty()) return "";
   string retval;
@@ -147,6 +180,9 @@ string AntimonyReaction::ToDelimitedStringWithEllipses(char cc) const
       if (i>0) retval += cc;
       retval += m_name[i];
     }
+  }
+  if (actualvar->GetCompartment() != NULL) {
+    retval += " in " + actualvar->GetCompartment()->GetNameDelimitedBy(cc);
   }
   retval += ": " + m_left.ToStringDelimitedBy(cc) + " " + RDToString(m_divider) + " " + m_right.ToStringDelimitedBy(cc) + "; " + m_formula.ToDelimitedStringWithEllipses(cc) + ";";
   return retval;

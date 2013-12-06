@@ -28,14 +28,14 @@ public:
   bool SetComponentTypesTo(var_type vtype);
   bool SetComponentFormulasTo(Formula form);
 
-  void ClearReferencesTo(Variable* deletedvar);
+  bool ClearReferencesTo(Variable* deletedvar);
 
   std::vector<std::vector<std::string> > GetVariableList() const;
   size_t Size() const {return m_components.size();};
 
   bool Matches(const ReactantList* newrl) const;
-  std::string ToStringDelimitedBy(char cc) const;
-  std::vector<std::string> ToStringVecDelimitedBy(char cc) const;
+  std::string ToStringDelimitedBy(std::string cc) const;
+  std::vector<std::string> ToStringVecDelimitedBy(std::string cc) const;
   std::vector<double> GetStoichiometries() const;
   double GetStoichiometryFor(const Variable* var) const;
   double GetStoichiometryFor(size_t n) const;

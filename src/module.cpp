@@ -266,7 +266,7 @@ bool Module::AddVariableToExportList(Variable* var)
   vector<string> varname = var->GetName();
   for (size_t exp=0; exp<m_exportlist.size(); exp++) {
     if (m_exportlist[exp] == varname) {
-      g_registry.SetError("Unable to add '" + ToStringFromVecDelimitedBy(varname, '.') + "' to the interface to module " + m_modulename + " because that variable is already in the interface.");
+      g_registry.SetError("Unable to add '" + ToStringFromVecDelimitedBy(varname, ".") + "' to the interface to module " + m_modulename + " because that variable is already in the interface.");
       return true;
     }
   }
@@ -284,7 +284,7 @@ Variable* Module::AddNewReaction(ReactantList* left, rd_type divider, ReactantLi
 {
   AntimonyReaction newrxn(*left, divider, *right, *formula, var);
   if (formula->ContainsVar(var)) {
-    g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy('.') + "' contains a reference to itself directly or indirectly in its reaction rate (" + formula->ToDelimitedStringWithEllipses('.') + ").");
+    g_registry.SetError("The definition of reaction '" + var->GetNameDelimitedBy(".") + "' contains a reference to itself directly or indirectly in its reaction rate (" + formula->ToDelimitedStringWithEllipses(".") + ").");
     return NULL;
   }
   if (var->SetReaction(&newrxn)) return NULL;
@@ -295,7 +295,7 @@ bool Module::SetFormula(Formula* formula)
 {
   Variable* retvar = GetVariable(m_returnvalue);
   if (retvar == NULL) {
-    g_registry.SetError(GetVariableNameDelimitedBy('.') + " is a submodule, not a variable you can set to be equal to something.");
+    g_registry.SetError(GetVariableNameDelimitedBy(".") + " is a submodule, not a variable you can set to be equal to something.");
     return true;
   }
   return GetVariable(m_returnvalue)->SetFormula(formula);
@@ -409,12 +409,12 @@ bool Module::AddDeletion(Variable* deletedvar)
   for (size_t sync=0; sync<m_synchronized.size(); sync++) {
     Variable* var = GetVariable(m_synchronized[sync].first);
     if (var->GetSameVariable() == deletedvar) {
-      g_registry.SetError("Unable to delete variable " + deletedvar->GetNameDelimitedBy('.') + " because it is already synchronized to the variable " + ToStringFromVecDelimitedBy(m_synchronized[sync].second, '.') + ".");
+      g_registry.SetError("Unable to delete variable " + deletedvar->GetNameDelimitedBy(".") + " because it is already synchronized to the variable " + ToStringFromVecDelimitedBy(m_synchronized[sync].second, ".") + ".");
       return true;
     }
     var = GetVariable(m_synchronized[sync].second);
     if (var->GetSameVariable() == deletedvar) {
-      g_registry.SetError("Unable to delete variable " + deletedvar->GetNameDelimitedBy('.') + " because it is already synchronized to the variable " + ToStringFromVecDelimitedBy(m_synchronized[sync].first, '.') + ".");
+      g_registry.SetError("Unable to delete variable " + deletedvar->GetNameDelimitedBy(".") + " because it is already synchronized to the variable " + ToStringFromVecDelimitedBy(m_synchronized[sync].first, ".") + ".");
       return true;
     }
   }
@@ -430,7 +430,7 @@ bool Module::AddDeletion(Variable* deletedvar)
   Variable* subvar = GetVariable(submodname);
   if (subvar==NULL) {
     assert(false); //Should be impossible to find a variable whose submodel does not exist.
-    g_registry.SetError("Unable to find submodel " + submodname[0] + " to delete variable " + deletedvar->GetNameDelimitedBy('.') + " from it.");
+    g_registry.SetError("Unable to find submodel " + submodname[0] + " to delete variable " + deletedvar->GetNameDelimitedBy(".") + " from it.");
     return true;
   }
   if (deletedvar->GetType()==varModule) {
@@ -439,10 +439,12 @@ bool Module::AddDeletion(Variable* deletedvar)
   return subvar->DeleteFromSubmodel(deletedvar);
 }
 
-void Module::ClearReferencesTo(Variable* deletedvar)
+void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, deletion_type> >* ret)
 {
+  set<pair<vector<string>, deletion_type> > temp;
   for (size_t v=0; v<m_variables.size(); v++) {
-    m_variables[v]->ClearReferencesTo(deletedvar);
+    temp = m_variables[v]->ClearReferencesTo(deletedvar);
+    ret->insert(temp.begin(), temp.end());
   }
   if (deletedvar->GetIsEquivalentTo(GetVariable(m_returnvalue))) {
     m_returnvalue.clear();
@@ -453,6 +455,7 @@ void Module::ClearReferencesTo(Variable* deletedvar)
       m_conversionFactors[sync].clear();
     }
   }
+  return;
 }
 
 //Used when 'deletedvar' is a submodel itself.
@@ -487,7 +490,7 @@ bool Module::DeleteFromSynchronized(Variable* deletedvar)
     if (secondname.size() > delname.size()) {
       for (size_t n=0; n<delname.size(); n++) {
         if (secondname[n] != delname[n]) {
-          g_registry.SetError("Unable to delete model " + deletedvar->GetNameDelimitedBy('.') + " because a variable in that model (" + ToStringFromVecDelimitedBy(secondname, '.') + ") was already synchronized with " + ToStringFromVecDelimitedBy(firstname, '.') + ".  Either delete that variable first, or do not try to delete the entire submodel, and instead delete unused elements from it.");
+          g_registry.SetError("Unable to delete model " + deletedvar->GetNameDelimitedBy(".") + " because a variable in that model (" + ToStringFromVecDelimitedBy(secondname, ".") + ") was already synchronized with " + ToStringFromVecDelimitedBy(firstname, ".") + ".  Either delete that variable first, or do not try to delete the entire submodel, and instead delete unused elements from it.");
           return true;
         }
       }
@@ -531,7 +534,7 @@ Variable* Module::AddOrFindUnitDef(UnitDef* unitdef)
     }
   }
   //Need a new variable;
-  string udname = unitdef->GetNameDelimitedBy('.');
+  string udname = unitdef->GetNameDelimitedBy(".");
   Variable* var = AddOrFindVariable(&udname); //Since this unitdef was never a part of a variable, it will always have a simple name.
   if (var->SetUnitDef(unitdef)) return NULL;
   return var;
@@ -600,7 +603,7 @@ void PrintVarMap(map<vector<string>, Variable* > varmap)
 {
   cout << "variables in map:" << endl;
   for (map<vector<string>, Variable* >::iterator var=varmap.begin(); var != varmap.end(); var++) {
-    cout << ToStringFromVecDelimitedBy(var->first, '.') << endl;
+    cout << ToStringFromVecDelimitedBy(var->first, ".") << endl;
   }
 }
 
@@ -801,14 +804,14 @@ Variable* Module::GetUpstreamDNA()
     Variable* var = m_variables[vnum];
     if (var->GetType() == varStrand && var->GetDNAStrand()->GetUpstreamOpen()) {
       if (retvar != NULL) {
-        g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has multiple sites at which to attach upstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in 'NEWDNA--" + var->GetNameDelimitedBy('.') + "'.");
+        g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy(".") + "', because this module has multiple sites at which to attach upstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in 'NEWDNA--" + var->GetNameDelimitedBy(".") + "'.");
         return NULL;
       }
       retvar = var;
     }
   }
   if (retvar==NULL) {
-    g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has no 'open ends' at which to attach DNA.");
+    g_registry.SetError("Unable to attach DNA upstream of module '" + GetVariableNameDelimitedBy(".") + "', because this module has no 'open ends' at which to attach DNA.");
     return NULL;
   }
   return retvar;
@@ -821,14 +824,14 @@ Variable* Module::GetDownstreamDNA()
     Variable* var = m_variables[vnum];
     if (var->GetType() == varStrand && var->GetDNAStrand()->GetDownstreamOpen()) {
       if (retvar != NULL) {
-        g_registry.SetError("Unable to attach DNA downstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has multiple sites at which to attach downstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in '" + var->GetNameDelimitedBy('.') + "--NEWDNA'.");
+        g_registry.SetError("Unable to attach DNA downstream of module '" + GetVariableNameDelimitedBy(".") + "', because this module has multiple sites at which to attach downstream DNA.  To attach DNA to a particular strand of DNA within this module, mention it explicitly, as in '" + var->GetNameDelimitedBy(".") + "--NEWDNA'.");
         return NULL;
       }
       retvar = var;
     }
   }
   if (retvar==NULL) {
-    g_registry.SetError("Unable to attach DNA downstream of module '" + GetVariableNameDelimitedBy('.') + "', because this module has no 'open ends' at which to attach DNA.");
+    g_registry.SetError("Unable to attach DNA downstream of module '" + GetVariableNameDelimitedBy(".") + "', because this module has no 'open ends' at which to attach DNA.");
     return NULL;
   }
   return retvar;
@@ -848,7 +851,7 @@ const string& Module::GetModuleName() const
   return m_modulename;
 }
 
-string Module::GetVariableNameDelimitedBy(char cc) const
+string Module::GetVariableNameDelimitedBy(string cc) const
 {
   if (m_variablename.size() == 0) return "";
   string retval = m_variablename[0];
@@ -861,6 +864,8 @@ string Module::GetVariableNameDelimitedBy(char cc) const
 bool Module::Finalize()
 {
   m_uniquevars.clear();
+  string cc = g_registry.GetCC();
+
 
   //Phase 1:  Error checking for loops
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -882,7 +887,7 @@ bool Module::Finalize()
         const Formula* form = rightvar->GetFormula();
         if (!form->IsEmpty() &&
             form->CheckIncludes(m_variables[var]->GetNamespace(), m_variables[var]->GetReaction()->GetLeft())) {
-          g_registry.AddErrorPrefix("According to the interaction '" + m_variables[var]->GetNameDelimitedBy('_') + "', the formula for '" + rightvar->GetNameDelimitedBy('_') + "' (=" + form->ToDelimitedStringWithEllipses('_') + ") ");
+          g_registry.AddErrorPrefix("According to the interaction '" + m_variables[var]->GetNameDelimitedBy(cc) + "', the formula for '" + rightvar->GetNameDelimitedBy(cc) + "' (=" + form->ToDelimitedStringWithEllipses(cc) + ") ");
           return true;
         }
       }
@@ -1255,7 +1260,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   return false;
 }
 
-string Module::OutputOnly(vector<var_type> types, string name, string indent, char cc, map<const Variable*, Variable > origmap) const
+string Module::OutputOnly(vector<var_type> types, string name, string indent, string cc, map<const Variable*, Variable > origmap) const
 {
   string retval = "";
   bool firstone = true;
@@ -1330,7 +1335,7 @@ string Module::ToString() const
   retval += "\nReactions:  ";
   for (size_t var=0; var<m_variables.size(); var++) {
     if (IsReaction(m_variables[var]->GetType())) {
-      retval += m_variables[var]->GetReaction()->ToDelimitedStringWithEllipses('.');
+      retval += m_variables[var]->GetReaction()->ToDelimitedStringWithEllipses(".");
     }
   }
   
@@ -1360,7 +1365,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
 {
   assert(m_uniquevars.size() > 0 || m_variables.size() == 0); //The api usually calls Finalize--it didn't!
   string retval;
-  char cc = '.';
+  string cc = ".";
   //First, we need any user-defined functions if we don't have them already.  Eventually we'll want to only write out the used ones, but for now, we'll just write them all out LS DEBUG
 
   if (!funcsincluded) {
@@ -1611,6 +1616,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   for (size_t var=0; var<m_uniquevars.size(); var++) {
     var_type type = m_uniquevars[var]->GetType();
     if (IsSpecies(type)) continue; //already named them and know if they're const.
+    if (IsReaction(type)) continue; //Also know if reactions are constant ('no') and if they're in a compartment.
     const_type isconst = m_uniquevars[var]->GetConstType();
     string name = m_uniquevars[var]->GetNameDelimitedBy(cc);
     Variable* comp = m_uniquevars[var]->GetCompartment();
@@ -1649,7 +1655,16 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
       genenames.push_back(name);
       break;
     case varDeleted:
-      delnames.push_back(name);
+      if (constnames.size() && constnames.back() == name) {
+        constnames.pop_back();
+      }
+      if (varnames.size() && varnames.back() == name) {
+        varnames.pop_back();
+      }
+      if (innames.size() && innames.back() == name) {
+        innames.pop_back();
+      }
+      delnames.push_back(m_uniquevars[var]->GetNameDelimitedBy(cc));
       break;
     case varSpeciesUndef: //already taken care of at top
     case varFormulaUndef: //
@@ -1728,7 +1743,7 @@ string Module::GetJarnacReactions() const
   for (size_t var=0; var<m_variables.size(); var++) {
     if (IsReaction(m_variables[var]->GetType()) &&
         !m_variables[var]->IsPointer()) {
-      retval += "  " + m_variables[var]->GetReaction()->ToDelimitedStringWithStrands('_', m_variables[var]->GetStrandVars()) + "\n";
+      retval += "  " + m_variables[var]->GetReaction()->ToDelimitedStringWithStrands(g_registry.GetCC(), m_variables[var]->GetStrandVars()) + "\n";
     }
     else if (m_variables[var]->GetType() == varModule) {
       retval += m_variables[var]->GetModule()->GetJarnacReactions();
@@ -1745,7 +1760,7 @@ string Module::GetJarnacVarFormulas() const
     if (!m_variables[var]->IsPointer() &&
         (HasOrIsFormula(type) && m_variables[var]->HasFormula() && !m_variables[var]->GetIsConst())) {
       retval += "  ";
-      retval += m_variables[var]->GetNameDelimitedBy('_') + " = ";
+      retval += m_variables[var]->GetNameDelimitedBy(g_registry.GetCC()) + " = ";
       retval += m_variables[var]->GetFormula()->ToSBMLString() + "\n";
     }
     else if (m_variables[var]->GetType() == varModule) {
@@ -1763,7 +1778,7 @@ string Module::GetJarnacConstFormulas(string modulename) const
     if (!m_variables[var]->IsPointer() &&
         (HasOrIsFormula(type) && m_variables[var]->HasFormula() && m_variables[var]->GetIsConst())) {
       retval += modulename + ".";
-      retval += m_variables[var]->GetNameDelimitedBy('_') + " = ";
+      retval += m_variables[var]->GetNameDelimitedBy(g_registry.GetCC()) + " = ";
       retval += m_variables[var]->GetFormula()->ToSBMLString() + "\n";
     }
     else if (m_variables[var]->GetType() == varModule) {
@@ -1773,9 +1788,21 @@ string Module::GetJarnacConstFormulas(string modulename) const
   return retval;
 }
 
+bool Module::GetNeedDefaultCompartment() const
+{
+  size_t numsp= GetNumVariablesOfType(allSpecies, false);
+  for (size_t sp=0; sp<numsp; sp++) {
+    const Variable* species = GetNthVariableOfType(allSpecies, sp, false);
+    if (species->GetCompartment() == NULL) {
+      return true;
+    }
+  }
+  return false;
+}
+
 string Module::ListSynchronizedVariables(string indent, set<size_t> alreadysynchronized) const
 {
-  char cc = '.';
+  string cc = ".";
   string list = "";
   for (size_t pair=0; pair<m_synchronized.size(); pair++) {
     if (alreadysynchronized.find(pair) == alreadysynchronized.end()) {
@@ -1793,7 +1820,7 @@ string Module::ListSynchronizedVariables(string indent, set<size_t> alreadysynch
 
 string Module::ListAssignmentDifferencesFrom(const Module* origmod, string mname, string indent) const
 {
-  char cc = '.';
+  std::string cc = ".";
   string list = "";
   assert(GetNumVariablesOfType(allSymbols, false) == origmod->GetNumVariablesOfType(allSymbols, false));
   set<const Variable*> renamed;
@@ -1851,8 +1878,8 @@ void Module::FillInOrigmap(map<const Variable*, Variable >& origmap) const
       const Module* origmod = g_registry.GetModule(submod->GetModuleName());
       for (size_t uniq=0; uniq<origmod->m_uniquevars.size(); uniq++) {
         const Variable* origmodvar = origmod->m_uniquevars[uniq];
-        //cout << "Original: " << origmodvar->GetNameDelimitedBy('.') << ": " << FormulaTypeToString(origmodvar->GetFormulaType());
-        //if (origmodvar->GetFormula() != NULL) cout << ": " << origmodvar->GetFormula()->ToDelimitedStringWithEllipses('.');
+        //cout << "Original: " << origmodvar->GetNameDelimitedBy(".") << ": " << FormulaTypeToString(origmodvar->GetFormulaType());
+        //if (origmodvar->GetFormula() != NULL) cout << ": " << origmodvar->GetFormula()->ToDelimitedStringWithEllipses(".");
         //cout << endl;
         assert(!origmodvar->IsPointer());
         Variable copied(*(origmod->m_uniquevars[uniq]));
@@ -1916,7 +1943,7 @@ bool Module::OrigFormulaIsAlready(const Variable* var, const map<const Variable*
 {
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) {
-    //cout << var->GetNameDelimitedBy('.') << " not found" << endl;
+    //cout << var->GetNameDelimitedBy(".") << " not found" << endl;
     return false;
   }
   const Formula* origform = origmapiter->second.GetFormula();
@@ -1926,7 +1953,7 @@ bool Module::OrigFormulaIsAlready(const Variable* var, const map<const Variable*
     return origform->Matches(formula);
   }
   /*
-  cout << var->GetNameDelimitedBy('.') << " original is blank or wrong type: ";
+  cout << var->GetNameDelimitedBy(".") << " original is blank or wrong type: ";
   if (form != NULL) {
     cout << form->ToDelimitedStringWithEllipses(cc);
   }
@@ -1939,7 +1966,7 @@ bool Module::OrigRateRuleIsAlready(const Variable* var, const map<const Variable
 {
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) {
-    //cout << var->GetNameDelimitedBy('.') << " not found" << endl;
+    //cout << var->GetNameDelimitedBy(".") << " not found" << endl;
     return false;
   }
   const Formula* origform = origmapiter->second.GetRateRule();
@@ -1970,7 +1997,7 @@ bool Module::OrigIsAlreadyDNAStrand(const Variable* var, const map<const Variabl
 {
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) return false;
-  char cc = '.';
+  std::string cc = ".";
   if (origmapiter->second.GetType() != varStrand) return false;
   return (origmapiter->second.GetDNAStrand()->ToStringDelimitedBy(cc) == strand);
 }
@@ -1979,7 +2006,7 @@ bool Module::OrigAssignmentRuleIsAlready(const Variable* var, const map<const Va
 {
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) {
-    //cout << var->GetNameDelimitedBy('.') << " not found" << endl;
+    //cout << var->GetNameDelimitedBy(".") << " not found" << endl;
     return false;
   }
   const Formula* origform = origmapiter->second.GetFormula();
@@ -1989,7 +2016,7 @@ bool Module::OrigAssignmentRuleIsAlready(const Variable* var, const map<const Va
     return origform->Matches(formula);
   }
   /*
-  cout << var->GetNameDelimitedBy('.') << " original is blank or wrong type: ";
+  cout << var->GetNameDelimitedBy(".") << " original is blank or wrong type: ";
   if (form != NULL) {
     cout << form->ToDelimitedStringWithEllipses(cc);
   }
@@ -2002,7 +2029,7 @@ bool Module::OrigReactionIsAlready(const Variable* var, const map<const Variable
 {
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) return false;
-  char cc = '.';
+  std::string cc = ".";
   var_type type = origmapiter->second.GetType();
   if (!(IsReaction(type) || type==varInteraction)) return false;
   return (origmapiter->second.GetReaction()->Matches(rxn));
@@ -2020,7 +2047,7 @@ bool Module::OrigIsAlreadyUnitDef(const Variable* var, const map<const Variable*
 {
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) return false;
-  char cc = '.';
+  std::string cc = ".";
   if (origmapiter->second.GetType() != varUnitDefinition) return false;
   return (origmapiter->second.GetUnitDef()->ToStringDelimitedBy(cc) == unitdef);
 }

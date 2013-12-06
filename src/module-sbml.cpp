@@ -19,19 +19,28 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
     setFormulaWithString(delaystring, &delay, module);
     delay.SetAnnotation(sbmldelay);
   }
-  AntimonyEvent antevent(delay, trigger, var);
 
   //Set the priority:
+  Formula priority;
   if (event->isSetPriority()) {
     const Priority* sbmlpriority = event->getPriority();
-    Formula priority;
     if (sbmlpriority != NULL) {
       string prioritystring(parseASTNodeToString(sbmlpriority->getMath()));
       setFormulaWithString(prioritystring, &priority, module);
       priority.SetAnnotation(sbmlpriority);
     }
-    antevent.SetPriority(priority);
   }
+
+  //Set the new top names for everything
+  string modname = module->GetModuleName();
+  for (size_t n=submodname.size(); n>0; n--) {
+    string name = submodname[n-1];
+    trigger.SetNewTopName(modname, name);
+    priority.SetNewTopName(modname, name);
+    delay.SetNewTopName(modname, name);
+  }
+  AntimonyEvent antevent(delay, trigger, var);
+  antevent.SetPriority(priority);
   //And set the other optional booleans:
   if (event->isSetUseValuesFromTriggerTime()) {
     antevent.SetUseValuesFromTriggerTime(event->getUseValuesFromTriggerTime());
@@ -58,6 +67,10 @@ void SetVarWithEvent(Variable* var, const Event* event, Module* module, vector<s
     Formula*  asntform = g_registry.NewBlankFormula();
     setFormulaWithString(parseASTNodeToString(assignment->getMath()), asntform, module);
     asntform->SetAnnotation(assignment);
+    for (size_t n=submodname.size(); n>0; n--) {
+      string name = submodname[n-1];
+      asntform->SetNewTopName(modname, name);
+    }
     var->GetEvent()->AddResult(asntvar, asntform);
   }
   module->TranslateRulesAndAssignmentsTo(event, var);
@@ -103,6 +116,138 @@ string GetNewIDForLocalParameter(const SBase* lp)
 }
 
 #ifdef USE_COMP
+
+void  SetSBaseReference(SBaseRef* sbr, SBase* target, Model* targetmodel, string baseid)
+{
+  //We'll re-set any of these that happened to be correct:
+  sbr->unsetIdRef();
+  sbr->unsetMetaIdRef();
+  sbr->unsetUnitRef();
+  string id = target->getId();
+  string metaid = target->getMetaId();
+  int type = target->getTypeCode();
+  CompModelPlugin* cmp = static_cast<CompModelPlugin*>(targetmodel->getPlugin("comp"));
+  for (unsigned long p=0; p<cmp->getNumPorts(); p++) {
+    Port* port = cmp->getPort(p);
+    if (port->getMetaIdRef() == metaid) {
+      sbr->setPortRef(port->getId());
+      return;
+    }
+    if (type == SBML_UNIT_DEFINITION && port->getUnitRef() == id) {
+      sbr->setPortRef(port->getId());
+      return;
+    }
+    if (port->getIdRef() == id) {
+      sbr->setPortRef(port->getId());
+      return;
+    }
+  }
+  if (!id.empty() && type != SBML_RATE_RULE && type != SBML_INITIAL_ASSIGNMENT
+    && type != SBML_EVENT_ASSIGNMENT && type != SBML_ASSIGNMENT_RULE) {
+      sbr->setIdRef(id);
+      return;
+  }
+  if (id.empty() && type == SBML_SPECIES_REFERENCE) {
+    target->setId(baseid);
+    sbr->setIdRef(baseid);
+    return;
+  }
+  if (metaid.empty()) {
+    SBMLDocument* sbml = sbr->getSBMLDocument();
+    assert(sbml != NULL);
+    size_t num = 1;
+    metaid = baseid;
+    while (sbml->getElementByMetaId(metaid) != NULL) {
+      metaid = baseid + SizeTToString(num);
+      num++;
+    }
+    target->setMetaId(metaid);
+  }
+  sbr->setMetaIdRef(metaid);
+  return;
+}
+
+void Module::FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod)
+{
+  if(var->GetName().size() == 1) {
+    //We'll create this variable normally.
+    return;
+  }
+  string cc = g_registry.GetCC();
+  string flatname = var->GetNameDelimitedBy(cc);
+  SBase* topvar = sbmlmod->getElementBySId(flatname);
+  if (topvar != NULL) {
+    //We already created this variable with a previous call to this function.
+    return;
+  }
+  Species* species;
+  Compartment* compartment;
+  Parameter* parameter;
+  UnitDefinition* unitdefinition;
+  bool isunit = false;
+  Variable* varcompartment = var->GetCompartment();
+  switch(var->GetType()) {
+  case varCompartment:
+    compartment = sbmlmod->createCompartment();
+    compartment->setId(flatname);
+    compartment->setConstant(var->GetConstType() == constVAR);
+    topvar = compartment;
+    break;
+  case varSpeciesUndef:
+    species = sbmlmod->createSpecies();
+    species->setId(flatname);
+    species->setConstant(false);
+    species->setBoundaryCondition(var->GetIsConst());
+    species->setHasOnlySubstanceUnits(false);
+    species->setCompartment(DEFAULTCOMP);
+    if (varcompartment != NULL) {
+      species->setCompartment(varcompartment->GetNameDelimitedBy(cc));
+      if (varcompartment->GetName().size() > 1) {
+        FindOrCreateLocalVersionOf(varcompartment, sbmlmod);
+      }
+    }
+    topvar = species;
+    break;
+  case varUnitDefinition:
+    unitdefinition=sbmlmod->createUnitDefinition();
+    unitdefinition->setId(flatname);
+    isunit = true;
+    topvar=unitdefinition;
+  case varFormulaOperator:
+  case varFormulaUndef:
+  case varUndefined:
+  case varReactionGene:
+  case varReactionUndef:
+  case varDNA:
+    //LS NOTE:  Currently, the only things that can reference reactions are formulas, for which a Parameter is a perfectly acceptable substitute.  However, in the future, there may be other things that can reference Reactions that will require them to be replaced by an actual local Reaction.
+    parameter = sbmlmod->createParameter();
+    parameter->setId(flatname);
+    parameter->setConstant(false);
+    topvar = parameter;
+    break;
+  case varInteraction:
+  case varModule:
+  case varEvent:
+  case varStrand:
+  case varDeleted:
+    assert(false); //Unhandled type
+    break;
+  }
+  vector<string> varname = var->GetName();
+  CompSBasePlugin* csbp = static_cast<CompSBasePlugin*>(topvar->getPlugin("comp"));
+  ReplacedBy* rb = csbp->createReplacedBy();
+  rb->setSubmodelRef(varname[0]);
+  rb->setIdRef(varname[1]);
+  SBaseRef* sbr = rb;
+  for (size_t sub=2; sub<varname.size(); sub++) {
+    sbr = rb->createSBaseRef();
+    sbr->setIdRef(varname[sub]);
+  }
+  if (isunit) {
+    sbr->unsetIdRef();
+    sbr->setUnitRef(varname[varname.size()-1]);
+  }
+}
 
 void Module::GetReplacingAndRules(const Replacing* replacing, string re_string, const SBase* orig, Variable*& reference, const InitialAssignment*& ia, const Rule*& rule)
 {
@@ -199,7 +344,7 @@ Variable* Module::GetSBaseRef(const SBaseRef* csbr, string modname, string re_st
   }
   Variable* ret = GetVariable(refname);
   if (ret==NULL) {
-      g_registry.AddWarning("Unable to connect a " + re_string + " for " + orig->getElementName() + " " + orig->getId() + " in model " + GetModuleName() + ": the variable " + ToStringFromVecDelimitedBy(refname, '.') + " could not be found.");
+      g_registry.AddWarning("Unable to connect a " + re_string + " for " + orig->getElementName() + " " + orig->getId() + " in model " + GetModuleName() + ": the variable " + ToStringFromVecDelimitedBy(refname, ".") + " could not be found.");
   }
   return ret;
 }
@@ -293,7 +438,6 @@ void Module::AddSubmodelsToDocument(SBMLDocument* sbml)
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(sbml->getPlugin("comp"));
 
   size_t numsubmods = GetNumVariablesOfType(subModules, true);
-  if (numsubmods > 0) compdoc->setRequired(true);
   for (size_t sm=0; sm<numsubmods; sm++) {
     Module* submod = GetNthVariableOfType(subModules, sm, true)->GetModule();
     Module* origmod = g_registry.GetModule(submod->GetModuleName());
@@ -303,6 +447,82 @@ void Module::AddSubmodelsToDocument(SBMLDocument* sbml)
       const SBMLDocument* subdoc = origmod->GetSBML(true);
       const ModelDefinition md(*(subdoc->getModel()));
       int rv = compdoc->addModelDefinition(&md);
+    }
+  }
+}
+
+Port* GetPortFor(SBase* referent, Model* topmodel)
+{
+  Port* port = NULL;
+  SBase* parent = referent->getParentSBMLObject();
+  while (parent != NULL && parent != topmodel) {
+    if (parent->getTypeCode() == SBML_MODEL ||
+        parent->getTypeCode() == SBML_COMP_MODELDEFINITION) {
+          Model* modparent = static_cast<Model*>(parent);
+          CompModelPlugin* cmp = static_cast<CompModelPlugin*>(modparent->getPlugin("comp"));
+          for (unsigned long p=0; p<cmp->getNumPorts(); p++) {
+            Port* modport = cmp->getPort(p);
+            if (modport->getReferencedElement() == referent) {
+              port = modport;
+              //However, don't stop the loop, because we want the topmost reference.
+            }
+          }
+    }
+    parent = parent->getParentSBMLObject();
+  }
+  return port;
+}
+
+
+//When we create an SBML model, we never use ports.  Now we need to go through the model and use them if possible.
+void FixPortReferencesIn(Model* sbmlmod)
+{
+  List* elements = sbmlmod->getAllElements();
+  vector<SBaseRef*> sBaseRefs;
+  for (unsigned int el=0; el<elements->getSize(); el++) {
+    SBase* element = static_cast<SBase*>(elements->get(el));
+    SBaseRef* sbr = static_cast<SBaseRef*>(element);
+    switch (element->getTypeCode()) {
+    case SBML_COMP_DELETION:
+    case SBML_COMP_REPLACEDBY:
+    case SBML_COMP_REPLACEDELEMENT:
+    case SBML_COMP_PORT:
+      //We only want the top-level SBaseRefs, not any instances of the SBaseRef class itself.
+      sBaseRefs.push_back(sbr);
+      break;
+    default:
+      break;
+    }
+  }
+  for (size_t s=0; s<sBaseRefs.size(); s++) {
+    SBaseRef* sbr = sBaseRefs[s];
+    SBase* referent = sbr->getReferencedElement();
+    Port* port = GetPortFor(referent, sbmlmod);
+    if (port != NULL) {
+      //We need to remap sbr to point to the Port instead.
+      vector<SBase*> portchain;
+      portchain.push_back(port);
+      SBase* parent = port->getParentSBMLObject();
+      while (parent != NULL && parent->getTypeCode() != SBML_DOCUMENT) {
+        if (parent->getTypeCode() == SBML_COMP_SUBMODEL) {
+          portchain.push_back(parent);
+        }
+        parent = parent->getParentSBMLObject();
+      }
+      //Remove the top-level submodel, which will already be referenced
+      portchain.pop_back();
+      assert(portchain.size() > 0);
+      sbr->unsetSBaseRef();
+      sbr->unsetIdRef();
+      sbr->unsetMetaIdRef();
+      sbr->unsetUnitRef();
+      //Antimony doesn't create any DeletionRefs, so we're OK there.
+      for (size_t pc=portchain.size()-1; pc>0; pc--) {
+        SBase* submodel = portchain[pc];
+        sbr->setIdRef(submodel->getId());
+        sbr = sbr->createSBaseRef();
+      }
+      sbr->setPortRef(port->getId());
     }
   }
 }
@@ -456,9 +676,12 @@ void Module::LoadSBML(const Model* sbml)
           Event* event = static_cast<Event*>(typeparent);
           typeparent = target->getAncestorOfType(SBML_REACTION);
           Reaction* reaction = static_cast<Reaction*>(typeparent);
+          SpeciesReference* sr = static_cast<SpeciesReference*>(target);
           Variable* deletedvar = NULL;
           Variable* origparam = NULL;
           Variable* newparam = NULL;
+          set<pair<vector<string>, deletion_type> > noret;
+          size_t numvars = m_variables.size();
           switch (target->getTypeCode()) {
           case SBML_INITIAL_ASSIGNMENT:
           case SBML_RATE_RULE:
@@ -477,7 +700,10 @@ void Module::LoadSBML(const Model* sbml)
             }
             targetname.push_back(target->getId());
             deletedvar = GetVariable(targetname);
-            assert(deletedvar != NULL);
+            if (deletedvar == NULL) {
+              assert(targetname[targetname.size()-1] == DEFAULTCOMP);
+              break;
+            }
             AddDeletion(deletedvar);
             deletedvar->SetAnnotation(deletion);
             break;
@@ -496,6 +722,10 @@ void Module::LoadSBML(const Model* sbml)
             deletedvar = GetVariable(targetname);
             assert(deletedvar != NULL);
             SetVarWithEvent(deletedvar, event, this, delparentname);
+            while (m_variables.size() > numvars) {
+              //We added variables from the strings in the event, but they are superfluous; take them back out.
+              m_variables.pop_back();
+            }
             break;
           case SBML_CONSTRAINT:
           case SBML_ALGEBRAIC_RULE:
@@ -519,12 +749,55 @@ void Module::LoadSBML(const Model* sbml)
             deletedvar->GetFormula()->ReplaceWith(targetname, paramname);
             deletedvar->SetAnnotation(deletion);
             break;
+          case SBML_SPECIES_REFERENCE:
+            assert(reaction != NULL);
+            if (!reaction->isSetId()) {
+              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Reaction parent of the deleted Local Parameter did not have an ID, making it impossible for Antimony to determine which event was being modified.");
+              continue;
+            }
+            paramname.push_back(reaction->getId());
+            deletedvar = GetVariable(paramname);
+            assert(deletedvar != NULL);
+            paramname = targetname;
+            paramname.push_back(sr->getSpecies());
+            origparam = GetVariable(paramname);
+            deletedvar->GetReaction()->ClearReferencesTo(origparam, &noret);
+            break;
+          case SBML_KINETIC_LAW:
+            assert(reaction != NULL);
+            if (!reaction->isSetId()) {
+              g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because the Reaction parent of the deleted Local Parameter did not have an ID, making it impossible for Antimony to determine which event was being modified.");
+              continue;
+            }
+            paramname.push_back(reaction->getId());
+            deletedvar = GetVariable(paramname);
+            assert(deletedvar != NULL);
+            deletedvar->GetReaction()->GetFormula()->Clear();
+            break;
+          case SBML_MODIFIER_SPECIES_REFERENCE:
+            assert(reaction != NULL);
+            if (reaction->isSetKineticLaw()) {
+              //Antimony is going to re-create the modifier species references, so we don't need to do anything.
+              break;
+            }
+            //Otherwise, we tried to create an interaction for it based on the name.
+            if (target->isSetName()) {
+              paramname.push_back(target->getName());
+              deletedvar = GetVariable(paramname);
+              if (deletedvar != NULL) {
+                if (deletedvar->GetType() == varInteraction) {
+                  AddDeletion(deletedvar);
+                  deletedvar->SetAnnotation(deletion);
+                  break;
+                }
+                if (deletedvar->GetType() == varDeleted) break;
+                g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Modifier species references are translated as 'interactions' in Antimony, but this reference was not able to be discovered.  If this problem persists, try setting the 'name' attribute on the modifier, which Antimony can then use to name the interaction.");
+
+              }
+            }
           default:
             //From core:
             /*
-              SBML_KINETIC_LAW 	
-              SBML_SPECIES_REFERENCE 	
-              SBML_MODIFIER_SPECIES_REFERENCE 	
               SBML_UNIT 	
               SBML_LISTOF
             */
@@ -830,24 +1103,41 @@ void Module::LoadSBML(const Model* sbml)
       //If the kinetic law is empty, we can set some interactions, if there are any Modifiers.
       ReactantList right;
       right.AddReactant(var);
-      ReactantList left;
       for (unsigned int mod=0; mod<reaction->getNumModifiers(); mod++) {
+        ReactantList left;
         const ModifierSpeciesReference* msr = reaction->getModifier(mod);
         string species = msr->getSpecies();
         Variable* specvar = AddOrFindVariable(&species);
         left.AddReactant(specvar);
         sbmlname = getNameFromSBMLObject(msr, "_I");
+        rd_type itype = rdInfluences;
+        if (msr->isSetSBOTerm()) {
+          if (msr->getSBOTerm() == 20) {
+            itype = rdInhibits;
+          }
+          else if (msr->getSBOTerm() == 459) {
+            itype = rdActivates;
+          }
+        }
+        Variable* interaction = AddOrFindVariable(&sbmlname);
+        Formula blankform;
+        AddNewReaction(&left, itype, &right, &blankform, interaction);
       }
-      Variable* interaction = AddOrFindVariable(&sbmlname);
-      Formula blankform;
-      AddNewReaction(&left, rdInfluences, &right, &blankform, interaction);
     }
     rd_type rxntype = rdBecomes;
     if (!reaction->getReversible()) {
       rxntype = rdBecomesIrreversibly;
     }
     //Put reactants, products, and the formula together:
-    AddNewReaction(&reactants, rxntype, &products, &formula, var);
+    Variable* arxn = AddNewReaction(&reactants, rxntype, &products, &formula, var);
+      if (reaction->isSetCompartment()) {
+        if (defaultcompartments.find(reaction->getCompartment()) == defaultcompartments.end()) {
+          Variable* compartment = AddOrFindVariable(&(reaction->getCompartment()));
+          compartment->SetType(varCompartment);
+          arxn->SetCompartment(compartment);
+        }
+
+      }
     TranslateRulesAndAssignmentsTo(reaction, var);
   }
 
@@ -940,17 +1230,19 @@ void Module::CreateSBMLModel(bool comp)
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(m_modulename);
   TransferAnnotationTo(sbmlmod);
-  char cc = g_registry.GetCC();
+  string cc = g_registry.GetCC();
   map<const Variable*, Variable > syncmap;
   if (comp) {
     FillInSyncmap(syncmap); //Only need this if we're hierarchical
   }
 
+  set<pair<string, const Variable*> > referencedVars;
 #ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   CompModelPlugin* mplugin = static_cast<CompModelPlugin*>(sbmlmod->getPlugin("comp"));
   size_t numsubmods = GetNumVariablesOfType(subModules, true);
 
+  //Set of referenced variables, so that we can create replacedBy's to them if they are actually submodel variables.
   //Submodels!
   if (comp) {
     AddSubmodelsToDocument(&m_sbml);
@@ -970,11 +1262,34 @@ void Module::CreateSBMLModel(bool comp)
       if (conv != NULL) {
         sbmlsubmod->setTimeConversionFactor(conv->GetNameDelimitedBy(cc));
       }
-      vector<vector<string> > deletedvars = submod->GetDeletions();
-      for (size_t d=0; d<deletedvars.size(); d++) {
-        vector<string> delname= deletedvars[d];
-        assert(delname.size() > 1);
+      //Delete the submodel's default compartment, if it is no longer needed
+      if (!GetNeedDefaultCompartment() && g_registry.GetModule(module->GetModuleName())->GetNeedDefaultCompartment()) {
         Deletion* deletion = sbmlsubmod->createDeletion();
+        deletion->setIdRef(DEFAULTCOMP);
+      }
+
+      //Delete the things explicitly deleted.
+      set<pair<vector<string>, deletion_type> > deletedvars = submod->GetDeletions();
+      for (set<pair<vector<string>, deletion_type> >::iterator d = deletedvars.begin(); d!= deletedvars.end(); d++) {
+        vector<string> fullname= (*d).first;
+        vector<string> delname = fullname;
+        deletion_type type = (*d).second;
+        //These four deletion types have an extra name on the end:
+        switch(type) {
+        case delEventAssignment:
+        case delReactant:
+        case delProduct:
+        case delModifier:
+          delname.pop_back();
+          break;
+        case delInteraction:
+          //Interactions have no direct SBML equivalent; just ignore it.
+          continue;
+        default:
+          break;
+        }
+        Deletion* deletion = sbmlsubmod->createDeletion();
+        assert(delname.size() > 1);
         deletion->setIdRef(delname[1]);
         SBaseRef* sbr = deletion;
         for (size_t n=2; n<delname.size(); n++) {
@@ -988,6 +1303,98 @@ void Module::CreateSBMLModel(bool comp)
           sbr->setUnitRef(delname[delname.size()-1]);
         }
         deletedvar->TransferAnnotationTo(deletion);
+        //Find the actual bit we're deleting:
+        SBase* referenced = deletion->getReferencedElement();
+        assert(referenced != NULL);
+        SBase* parentModelsb = referenced->getAncestorOfType(SBML_COMP_MODELDEFINITION, "comp");
+        if (parentModelsb==NULL) {
+          assert(false); //They should all be in model definitions, as far as I can work out.
+          parentModelsb = referenced->getAncestorOfType(SBML_MODEL);
+        }
+        assert(parentModelsb != NULL);
+        string parentId = parentModelsb->getId();
+        parentModelsb = compdoc->getModel(parentId);
+        assert(parentModelsb != NULL);
+        Model* parentModel = static_cast<Model*>(parentModelsb);
+        SBase* target = parentModel->getElementBySId(delname[delname.size()-1]);
+        assert(target != NULL);
+        Event* event = static_cast<Event*>(target);
+        Priority* priority = NULL;
+        Delay* delay = NULL;
+        EventAssignment* eventAssignment = NULL;
+        Reaction* rxn = static_cast<Reaction*>(target);
+        SimpleSpeciesReference* ssr = NULL;
+        KineticLaw* kl = NULL;
+        RateRule* rr = NULL;
+        InitialAssignment* ia = NULL;
+        AssignmentRule* ar = NULL;
+        string metaid = "";
+        switch(type) {
+        case delFull:
+          //Don't need to do anything else.
+          SetSBaseReference(sbr, target, parentModel, "meta");
+          break;
+        case delEventPriority:
+          priority = event->getPriority();
+          assert(priority != NULL);
+          metaid = parentId + "__" + event->getId() + "__priority";
+          SetSBaseReference(sbr, priority, parentModel, metaid);
+          break;
+        case delEventDelay:
+          delay = event->getDelay();
+          assert(delay != NULL);
+          metaid = parentId + "__" + event->getId() + "__delay";
+          SetSBaseReference(sbr, delay, parentModel, metaid);
+          break;
+        case delEventAssignment:
+          eventAssignment = event->getEventAssignment(fullname[fullname.size()-1].c_str());
+          assert(eventAssignment != NULL);
+          metaid = parentId + "__" + event->getId() + "__eventAssignment__" + eventAssignment->getVariable();
+          SetSBaseReference(sbr, eventAssignment, parentModel, metaid);
+          break;
+        case delReactant:
+          ssr = rxn->getReactant(fullname[fullname.size()-1].c_str());
+          assert(ssr != NULL);
+          metaid = rxn->getId() + "__reactant__" + ssr->getSpecies();
+          SetSBaseReference(sbr, ssr, parentModel, metaid);
+          break;
+        case delProduct:
+          ssr = rxn->getProduct(fullname[fullname.size()-1].c_str());
+          assert(ssr != NULL);
+          metaid = rxn->getId() + "__product__" + ssr->getSpecies();
+          SetSBaseReference(sbr, ssr, parentModel, metaid);
+          break;
+        case delModifier:
+          ssr = rxn->getModifier(fullname[fullname.size()-1].c_str());
+          assert(ssr != NULL);
+          metaid = parentId + "__" + rxn->getId() + "__modifier__" + ssr->getSpecies();
+          SetSBaseReference(sbr, ssr, parentModel, metaid);
+          break;
+        case delKineticLaw:
+          kl = rxn->getKineticLaw();
+          assert(kl != NULL);
+          metaid = parentId + "__" + rxn->getId() + "__kineticLaw";
+          SetSBaseReference(sbr, kl, parentModel, metaid);
+          break;
+        case delRateRule:
+          rr = parentModel->getRateRule(delname[delname.size()-1]);
+          assert(rr != NULL);
+          metaid = parentId + "__" + rr->getVariable() + "__rateRule";
+          SetSBaseReference(sbr, rr, parentModel, metaid);
+          break;
+        case delInitialAssignment:
+          ia = parentModel->getInitialAssignment(delname[delname.size()-1]);
+          assert(ia != NULL);
+          metaid = parentId + "__" + ia->getSymbol() + "__initialAssignment";
+          SetSBaseReference(sbr, ia, parentModel, metaid);
+          break;
+        case delAssignmentRule:
+          ar = parentModel->getAssignmentRule(delname[delname.size()-1]);
+          assert(ar != NULL);
+          metaid = parentId + "__" + ar->getVariable() + "__assignmentRule";
+          SetSBaseReference(sbr, ar, parentModel, metaid);
+          break;
+        }
       }
     }
   }
@@ -1008,7 +1415,6 @@ void Module::CreateSBMLModel(bool comp)
   }
 
   //Species
-  bool need_default = false;
   size_t numspecies = GetNumVariablesOfType(allSpecies, comp);
   for (size_t spec=0; spec < numspecies; spec++) {
     Variable* species = GetNthVariableOfType(allSpecies, spec, comp);
@@ -1030,10 +1436,16 @@ void Module::CreateSBMLModel(bool comp)
     const Variable* compartment = species->GetCompartment();
     if (compartment == NULL) {
       sbmlspecies->setCompartment(DEFAULTCOMP);
-      need_default = true;
     }
     else {
-      sbmlspecies->setCompartment(compartment->GetNameDelimitedBy(cc));
+      string cname = compartment->GetNameDelimitedBy(cc);
+#ifdef USE_COMP
+      if (comp) {
+        //If the compartment is from a submodel, we might need to create a local compartment for it.
+        referencedVars.insert(make_pair(cname, compartment));
+      }
+#endif
+      sbmlspecies->setCompartment(cname);
     }
     Variable* unitvar = species->GetUnitVariable();
     Formula* formula = species->GetFormula();
@@ -1061,7 +1473,7 @@ void Module::CreateSBMLModel(bool comp)
       sbmlspecies->setSubstanceUnits(newunit->GetNameDelimitedBy(cc));
     }
     sbmlspecies->setHasOnlySubstanceUnits(false);
-    SetAssignmentFor(sbmlmod, species, syncmap, comp);
+    SetAssignmentFor(sbmlmod, species, syncmap, comp, referencedVars);
   }
 
   //Units
@@ -1098,7 +1510,7 @@ void Module::CreateSBMLModel(bool comp)
   }
 
   //Compartments
-  size_t numsp= GetNumVariablesOfType(allSpecies, comp);
+  bool need_default = GetNeedDefaultCompartment();
   unsigned int dim=3;
   if (need_default) {
     Compartment* defaultCompartment = sbmlmod->createCompartment();
@@ -1112,9 +1524,13 @@ void Module::CreateSBMLModel(bool comp)
       CompSBasePlugin* plugcompartment = static_cast<CompSBasePlugin*>(defaultCompartment->getPlugin("comp"));
       for (size_t sm=0; sm<numsubmods; sm++) {
         Variable* submod = GetNthVariableOfType(subModules, sm, true);
-        ReplacedElement* re = plugcompartment->createReplacedElement();
-        re->setSubmodelRef(submod->GetNameDelimitedBy(cc));
-        re->setIdRef(DEFAULTCOMP);
+        string modname = submod->GetModule()->GetModuleName();
+        Module* origmod = g_registry.GetModule(modname);
+        if (origmod->GetNeedDefaultCompartment()) {
+          ReplacedElement* re = plugcompartment->createReplacedElement();
+          re->setSubmodelRef(submod->GetNameDelimitedBy(cc));
+          re->setIdRef(DEFAULTCOMP);
+        }
       }
     }
 #endif //USE_COMP
@@ -1139,9 +1555,9 @@ void Module::CreateSBMLModel(bool comp)
     }
     Variable* unitvar = compartment->GetUnitVariable();
     if (unitvar != NULL) {
-      sbmlcomp->setUnits(unitvar->GetNameDelimitedBy('_'));
+      sbmlcomp->setUnits(unitvar->GetNameDelimitedBy(cc));
     }
-    SetAssignmentFor(sbmlmod, compartment, syncmap, comp);
+    SetAssignmentFor(sbmlmod, compartment, syncmap, comp, referencedVars);
     sbmlcomp->setSpatialDimensions(dim);
   }
 
@@ -1161,9 +1577,9 @@ void Module::CreateSBMLModel(bool comp)
     }
     Variable* unitvar = formvar->GetUnitVariable();
     if (unitvar != NULL) {
-      param->setUnits(unitvar->GetNameDelimitedBy('_'));
+      param->setUnits(unitvar->GetNameDelimitedBy(cc));
     }
-    SetAssignmentFor(sbmlmod, formvar, syncmap, comp);
+    SetAssignmentFor(sbmlmod, formvar, syncmap, comp, referencedVars);
     formula_type ftype = formvar->GetFormulaType();
     assert (ftype == formulaINITIAL || ftype==formulaASSIGNMENT || ftype==formulaRATE);
     if (ftype != formulaINITIAL) {
@@ -1192,6 +1608,16 @@ void Module::CreateSBMLModel(bool comp)
       assert(reaction->GetType() == rdBecomesIrreversibly);
       sbmlrxn->setReversible(false);
     }
+    const Variable* rxncompartment = rxnvar->GetCompartment();
+    if (rxncompartment != NULL) {
+      sbmlrxn->setCompartment(rxncompartment->GetNameDelimitedBy(cc));
+#ifdef USE_COMP
+      if (comp) {
+        //If the compartment is from a submodel, we might need to create a local compartment for it.
+        referencedVars.insert(make_pair(rxncompartment->GetNameDelimitedBy(cc), rxncompartment));
+      }
+#endif
+    }
     const Formula* formula = reaction->GetFormula();
     string formstring = formula->ToSBMLString(rxnvar->GetStrandVars());
     if (!formula->IsEmpty()) {
@@ -1199,10 +1625,16 @@ void Module::CreateSBMLModel(bool comp)
       ASTNode* math = parseStringToASTNode(formstring);
       kl->setMath(math);
       delete math;
+#ifdef USE_COMP
+      if (comp) {
+        formula->AddReferencedVariablesTo(referencedVars);
+      }
+#endif
     }
     const ReactantList* left = reaction->GetLeft();
     for (size_t lnum=0; lnum<left->Size(); lnum++) {
       const Variable* nthleft = left->GetNthReactant(lnum);
+      referencedVars.insert(make_pair(nthleft->GetNameDelimitedBy(cc), nthleft));
       double nthstoich = left->GetStoichiometryFor(lnum);
       SpeciesReference* sr = sbmlmod->createReactant();
       sr->setSpecies(nthleft->GetNameDelimitedBy(cc));
@@ -1212,6 +1644,7 @@ void Module::CreateSBMLModel(bool comp)
     const ReactantList* right = reaction->GetRight();
     for (size_t rnum=0; rnum<right->Size(); rnum++) {
       const Variable* nthright = right->GetNthReactant(rnum);
+      referencedVars.insert(make_pair(nthright->GetNameDelimitedBy(cc), nthright));
       double nthstoich = right->GetStoichiometryFor(rnum);
       SpeciesReference* sr = sbmlmod->createProduct();
       sr->setSpecies(nthright->GetNameDelimitedBy(cc));
@@ -1276,23 +1709,41 @@ void Module::CreateSBMLModel(bool comp)
       //events are stored in reverse order.  Don't ask...
       EventAssignment* sbmlasnt = sbmlmod->createEventAssignment();
       sbmlasnt->setVariable(event->GetNthAssignmentVariableName(asnt, cc));
-      ASTNode* ASTasnt = parseStringToASTNode(event->GetNthAssignmentFormulaString(asnt, '_', true));
+      ASTNode* ASTasnt = parseStringToASTNode(event->GetNthAssignmentFormulaString(asnt, cc, true));
       sbmlasnt->setMath(ASTasnt);
       delete ASTasnt;
     }
   }
 
   //Interactions
-  size_t numinteractions = GetNumVariablesOfType(allInteractions, comp);
+  //Because interactions aren't their own thing in SBML, we want all of the interactions from the entire model, in case one of them interacts with a reaction at this level.  Hence, instead of using the 'comp' boolean, we use 'false', to get everything.
+  size_t numinteractions = GetNumVariablesOfType(allInteractions, false);
   for (size_t irxn=0; irxn<numinteractions; irxn++) {
-    const Variable* arxnvar = GetNthVariableOfType(allInteractions, irxn, comp);
+    const Variable* arxnvar = GetNthVariableOfType(allInteractions, irxn, false);
     const AntimonyReaction* arxn = arxnvar->GetReaction();
     Reaction* rxn = sbmlmod->getReaction(arxn->GetRight()->GetNthReactant(0)->GetNameDelimitedBy(cc));
     if (rxn != NULL) {
       for (size_t interactor=0; interactor<arxn->GetLeft()->Size(); interactor++) {
         ModifierSpeciesReference* msr = rxn->createModifier();
         msr->setSpecies(arxn->GetLeft()->GetNthReactant(interactor)->GetNameDelimitedBy(cc));
-        msr->setName(arxnvar->GetNameDelimitedBy(cc));
+        msr->setName(arxnvar->GetName()[arxnvar->GetName().size()-1]);
+        switch(arxn->GetType()) {
+        case rdBecomes:
+        case rdBecomesIrreversibly:
+          assert(false); //should be interaction, not reaction
+          break;
+        case rdActivates:
+          msr->setSBOTerm(459);
+          break;
+        case rdInhibits:
+          msr->setSBOTerm(20);
+          break;
+        case rdInfluences:
+          msr->setSBOTerm(19);
+          break;
+        }
+        const Variable* intvar = arxn->GetLeft()->GetNthReactant(interactor);
+        referencedVars.insert(make_pair(intvar->GetNameDelimitedBy(cc), intvar));
       }
     }
   }
@@ -1309,7 +1760,7 @@ void Module::CreateSBMLModel(bool comp)
     param->setConstant(formvar->GetIsConst());
     Variable* unitvar = formvar->GetUnitVariable();
     if (unitvar != NULL) {
-      param->setUnits(unitvar->GetNameDelimitedBy('_'));
+      param->setUnits(unitvar->GetNameDelimitedBy(cc));
     }
   }
 
@@ -1387,11 +1838,15 @@ void Module::CreateSBMLModel(bool comp)
         //LS DEBUG
       }
     }
+    for (set<pair<string, const Variable*> >::iterator ref = referencedVars.begin(); ref != referencedVars.end(); ref++) {
+      FindOrCreateLocalVersionOf((*ref).second, sbmlmod);
+    }
+    FixPortReferencesIn(sbmlmod);
   }
 #endif //USE_COMP
 }
 
-void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<const Variable*, Variable>& syncmap, bool comp)
+void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<const Variable*, Variable>& syncmap, bool comp, set<pair<string, const Variable*> > referencedVars)
 {
   bool useinitial = true;
   bool useassignment = true;
@@ -1407,7 +1862,7 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
     userate = SynchronizeRates(sbmlmod, var, synchronized, syncmap);
   }
 #endif
-  char cc = g_registry.GetCC();
+  string cc = g_registry.GetCC();
   formula_type ftype = var->GetFormulaType();
   const Formula* formula = var->GetFormula();
   if (!formula->IsEmpty()) {
@@ -1428,6 +1883,9 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
           ia->setMath(math);
         }
     }
+    if (comp) {
+      formula->AddReferencedVariablesTo(referencedVars);
+    }
     delete math;
   }
   if (ftype == formulaRATE) {
@@ -1439,13 +1897,16 @@ void Module::SetAssignmentFor(Model* sbmlmod, const Variable* var, const map<con
         rr->setVariable(var->GetNameDelimitedBy(cc));
         rr->setMath(math);
         delete math;
+        if (comp) {
+          formula->AddReferencedVariablesTo(referencedVars);
+        }
       }
     }
   }
 }
 
 #ifdef USE_COMP
-void CreateDeletion(Submodel* submodel, SBase* sbase, SBMLDocument& sbml, vector<string> submodname, string basemetaid)
+void CreateImpliedDeletion(Submodel* submodel, SBase* sbase, SBMLDocument& sbml, vector<string> submodname, string basemetaid)
 {
   Deletion* deletion = submodel->createDeletion();
   string metaid = sbase->getMetaId();
@@ -1598,11 +2059,11 @@ bool Module::SynchronizeAssignments(Model* sbmlmod, const Variable* var, const v
     }
     if (ia != NULL) {
       string basemetaid = ia->getParentSBMLObject()->getParentSBMLObject()->getId() + "_" + ia->getId() + "_initialassignment";
-      CreateDeletion(submodel, ia, m_sbml, submodname, basemetaid);
+      CreateImpliedDeletion(submodel, ia, m_sbml, submodname, basemetaid);
     }
     if (ar != NULL && ar->isAssignment()) {
       string basemetaid = ar->getParentSBMLObject()->getParentSBMLObject()->getId() + "_" + ar->getId() + "_assignmentrule";
-      CreateDeletion(submodel, ar, m_sbml, submodname, basemetaid);
+      CreateImpliedDeletion(submodel, ar, m_sbml, submodname, basemetaid);
     }
   }
   return ret;
@@ -1650,7 +2111,7 @@ bool Module::SynchronizeRates(Model* sbmlmod, const Variable* var, const vector<
         return ret;
       }
       string basemetaid = rr->getParentSBMLObject()->getParentSBMLObject()->getId() + "_" + rr->getId() + "_raterule";
-      CreateDeletion(submodel, rr, m_sbml, submodname, basemetaid);
+      CreateImpliedDeletion(submodel, rr, m_sbml, submodname, basemetaid);
     }
   }
   return ret;

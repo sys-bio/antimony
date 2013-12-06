@@ -43,7 +43,7 @@ const vector<string>& Variable::GetName() const
   return m_name;
 }
 
-string Variable::GetNameDelimitedBy(char cc) const
+string Variable::GetNameDelimitedBy(string cc) const
 {
   if (IsPointer()) {
     return GetSameVariable()->GetNameDelimitedBy(cc);
@@ -303,6 +303,15 @@ const AntimonyReaction* Variable::GetReaction() const
   return &(m_valReaction);
 }
 
+AntimonyReaction* Variable::GetReaction()
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetReaction();
+  }
+  assert(IsReaction(m_type) || m_type == varInteraction);
+  return &(m_valReaction);
+}
+
 Module* Variable::GetModule()
 {
   if (IsPointer()) {
@@ -428,9 +437,6 @@ bool Variable::GetIsConst() const
   case varFormulaOperator:
   case varDNA:
   case varCompartment:
-  case varReactionUndef:
-  case varReactionGene:
-  case varInteraction:
     if (m_const == constDEFAULT) {
       if (GetFormula() != NULL) {
         if (GetFormula()->GetIsConst()) {
@@ -444,6 +450,10 @@ bool Variable::GetIsConst() const
       if (formconst==constVAR) return false;
     }
     break;
+  case varReactionUndef:
+  case varReactionGene:
+  case varInteraction:
+    return false;
   case varSpeciesUndef:
     if (m_const == constDEFAULT) return false;
     break;
@@ -507,7 +517,7 @@ bool Variable::IsExpandedStrand() const
   return (m_strands.size()==0);
 }
 
-string Variable::GetFormulaForNthEntryInStrand(char cc, size_t n)
+string Variable::GetFormulaForNthEntryInStrand(string cc, size_t n)
 {
   if (IsPointer()) {
     return GetSameVariable()->GetFormulaForNthEntryInStrand(cc, n);
@@ -564,6 +574,11 @@ bool Variable::SetType(var_type newtype)
 {
   if (newtype == varUndefined) return false;
   if (newtype == m_type) return false;
+  if (newtype == varDeleted) {
+    //You can delete anything
+    m_type = varDeleted;
+    return false;
+  }
   if (IsPointer()) {
     if (GetSameVariable()->SetType(newtype)) return true;
     m_type = GetSameVariable()->GetType();
@@ -583,13 +598,13 @@ bool Variable::SetType(var_type newtype)
     }
   }
   if (IsDNA(m_type) && newtype == varStrand) {
-    if (m_valReaction.IsEmpty() && (m_valFormula.IsEmpty() || m_valFormula.ToDelimitedStringWithEllipses('.')=="...")) {
+    if (m_valReaction.IsEmpty() && (m_valFormula.IsEmpty() || m_valFormula.ToDelimitedStringWithEllipses(".")=="...")) {
       m_type = newtype;
       m_valFormula.Clear();
       return false;
     }
     else {
-      g_registry.SetError("Unable to use the variable '" + GetNameDelimitedBy('.') + "' as a DNA strand because it is already set to be a particular piece of DNA, with an associated reaction or a formula.");
+      g_registry.SetError("Unable to use the variable '" + GetNameDelimitedBy(".") + "' as a DNA strand because it is already set to be a particular piece of DNA, with an associated reaction or a formula.");
       return true;
     }
   }
@@ -620,7 +635,7 @@ bool Variable::SetType(var_type newtype)
     return false;
   }
 
-  string error = "Unable to set the type of variable '" + GetNameDelimitedBy('.') + "' to " + VarTypeToString(newtype) + " because it is already set to be the incompatible type " + VarTypeToString(m_type) + ".  This situation can occur either with explicit type declaration or by using the variable in different, incompatible contexts.";
+  string error = "Unable to set the type of variable '" + GetNameDelimitedBy(".") + "' to " + VarTypeToString(newtype) + " because it is already set to be the incompatible type " + VarTypeToString(m_type) + ".  This situation can occur either with explicit type declaration or by using the variable in different, incompatible contexts.";
   switch(m_type) {
   case varSpeciesUndef:
     switch(newtype) {
@@ -766,7 +781,7 @@ bool Variable::SetType(var_type newtype)
   case varStrand:
     g_registry.SetError(error); return true; //the already-identical cases handled above.
   case varDeleted:
-    g_registry.SetError("Unable to set the type of variable '" + GetNameDelimitedBy('.') + "' to " + VarTypeToString(newtype) + " because it has already been deleted from the containing model.");
+    g_registry.SetError("Unable to set the type of variable '" + GetNameDelimitedBy(".") + "' to " + VarTypeToString(newtype) + " because it has already been deleted from the containing model.");
     return true;
   }
 
@@ -785,7 +800,7 @@ bool Variable::SetFormula(Formula* formula)
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     string errstring = SBML_getLastParseL3Error();
     if (ASTform == NULL && !errstring.empty()) {
-      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\":  " + errstring);
+      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\":  " + errstring);
       return true;
     }
     else {
@@ -794,7 +809,7 @@ bool Variable::SetFormula(Formula* formula)
   }
 #endif
   if (formula->ContainsVar(this)) {
-    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition (" + formula->ToDelimitedStringWithEllipses('.') + ") either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
+    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy(".") + "'s definition (" + formula->ToDelimitedStringWithEllipses(".") + ") either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
     return true;
   }
   switch (m_type) {
@@ -826,10 +841,10 @@ bool Variable::SetFormula(Formula* formula)
     if (m_valEvent.SetTrigger(*formula)) return true;
     break;
   case varStrand:
-    g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' to be " + formula->ToDelimitedStringWithEllipses('.') + " because DNA strands are only defined by their components, and do not have any equations associated with them.");
+    g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to be " + formula->ToDelimitedStringWithEllipses(".") + " because DNA strands are only defined by their components, and do not have any equations associated with them.");
     return true;
   case varDeleted:
-    g_registry.SetError("Cannot set '" + GetNameDelimitedBy('.') + "' to be " + formula->ToDelimitedStringWithEllipses('.') + " because this variable was already deleted.");
+    g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to be " + formula->ToDelimitedStringWithEllipses(".") + " because this variable was already deleted.");
   }
 #ifndef NSBML
   if (m_valFormula.MakeUnitVariablesUnits()) return true;
@@ -856,7 +871,7 @@ bool Variable::SetAssignmentRule(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("In the formula \"" + formstring + "\" for '" + GetNameDelimitedBy('.') + "':  " + SBML_getLastParseL3Error());
+      g_registry.SetError("In the formula \"" + formstring + "\" for '" + GetNameDelimitedBy(".") + "':  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -865,7 +880,7 @@ bool Variable::SetAssignmentRule(Formula* formula)
   }
 #endif
   if (formula->ContainsVar(this)) {
-    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy('.') + "'s definition (" + formula->ToDelimitedStringWithEllipses('.') + ") either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').");
+    g_registry.SetError("Loop detected:  " + GetNameDelimitedBy(".") + "'s definition (" + formula->ToDelimitedStringWithEllipses(".") + ") either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').");
     return true;
   }
   if (IsReaction(m_type)) {
@@ -874,11 +889,11 @@ bool Variable::SetAssignmentRule(Formula* formula)
     return false;
   }
   if (!CanHaveAssignmentRule(m_type)) {
-    g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is the type " + VarTypeToString(m_type) + ", and may not have an assignment rule associated with it.");
+    g_registry.SetError("The variable '" + GetNameDelimitedBy(".") + "' is the type " + VarTypeToString(m_type) + ", and may not have an assignment rule associated with it.");
     return true;
   }
   if (GetFormulaType() == formulaRATE && !m_valRateRule.IsEmpty()) {
-    g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is associated with a rate rule, and may not additionally have an assignment rule.");
+    g_registry.SetError("The variable '" + GetNameDelimitedBy(".") + "' is associated with a rate rule, and may not additionally have an assignment rule.");
     return true;
   }
   if (m_type == varUndefined) {
@@ -900,7 +915,7 @@ bool Variable::SetRateRule(Formula* formula)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" for '" + GetNameDelimitedBy('.') + "':  " + SBML_getLastParseL3Error());
+      g_registry.SetError("In the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\" for '" + GetNameDelimitedBy(".") + "':  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -910,11 +925,11 @@ bool Variable::SetRateRule(Formula* formula)
 #endif
   //if (formula->ContainsVar(this));  //Rate rules may indeed contain references to themselves!
   if (!CanHaveRateRule(m_type)) {
-    g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is the type " + VarTypeToString(m_type) + ", and may not have a rate rule associated with it.");
+    g_registry.SetError("The variable '" + GetNameDelimitedBy(".") + "' is the type " + VarTypeToString(m_type) + ", and may not have a rate rule associated with it.");
     return true;
   }
   if (GetFormulaType() == formulaASSIGNMENT && !m_valFormula.IsEmpty()) {
-    g_registry.SetError("The variable '" + GetNameDelimitedBy('.') + "' is associated with an assignment rule, and may not additionally have a rate rule.");
+    g_registry.SetError("The variable '" + GetNameDelimitedBy(".") + "' is associated with an assignment rule, and may not additionally have a rate rule.");
     return true;
   }
   if (m_type == varUndefined) {
@@ -923,6 +938,8 @@ bool Variable::SetRateRule(Formula* formula)
   if (formula->MakeUnitVariablesUnits()) return true;
   m_valRateRule = *formula;
   m_formulatype = formulaRATE;
+  //If the rate rule is being cleared, set up a deletion.
+
   return false;
 }
 
@@ -936,7 +953,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
   if (formstring.size() > 0) {
     ASTNode_t* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("In the reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses('.') + "\":  " + SBML_getLastParseL3Error());
+      g_registry.SetError("In the reaction rate \"" + rxn->GetFormula()->ToDelimitedStringWithEllipses(".") + "\":  " + SBML_getLastParseL3Error());
       return true;
     }
     else {
@@ -944,7 +961,7 @@ bool Variable::SetReaction(AntimonyReaction* rxn)
     }
   }
 #endif
-  string err = "When defining reaction '" + GetNameDelimitedBy('.') + "':  ";
+  string err = "When defining reaction '" + GetNameDelimitedBy(".") + "':  ";
   if (rxn->GetLeft()->SetComponentTypesTo(varSpeciesUndef)) {
     g_registry.AddErrorPrefix(err);
     return true;
@@ -1059,7 +1076,7 @@ bool Variable::SetIsConst(bool constant)
   if (IsPointer()) {
     return GetSameVariable()->SetIsConst(constant);
   }
-  string error = "Cannot set '" + GetNameDelimitedBy('.') + "' to be constant";
+  string error = "Cannot set '" + GetNameDelimitedBy(".") + "' to be constant";
   switch(m_type) {
   case varFormulaUndef:
   case varFormulaOperator:
@@ -1225,11 +1242,11 @@ bool Variable::SetIsInStrand(Variable* var)
   }
   if (GetType() == varStrand) {
     if (m_strands.size() > 0) {
-      g_registry.SetError("Cannot put the DNA strand '" + GetNameDelimitedBy('.') + "' into the strand '" + var->GetNameDelimitedBy('.') + "' because it is already in the strand '" + g_registry.GetModule(m_module)->GetVariable(*m_strands.begin())->GetNameDelimitedBy('.') + "', and can only be in one strand at a time.  If you want a copy in the new strand, you must copy the DNA itself.");
+      g_registry.SetError("Cannot put the DNA strand '" + GetNameDelimitedBy(".") + "' into the strand '" + var->GetNameDelimitedBy(".") + "' because it is already in the strand '" + g_registry.GetModule(m_module)->GetVariable(*m_strands.begin())->GetNameDelimitedBy(".") + "', and can only be in one strand at a time.  If you want a copy in the new strand, you must copy the DNA itself.");
       return true;
     }
     if (m_valStrand.CheckContains(var)) {
-      g_registry.SetError("Cannot put the DNA strand " + GetNameDelimitedBy('.') + " into the strand " + var->GetNameDelimitedBy('.') + " because the first already contains the second, either directly or indirectly.");
+      g_registry.SetError("Cannot put the DNA strand " + GetNameDelimitedBy(".") + " into the strand " + var->GetNameDelimitedBy(".") + " because the first already contains the second, either directly or indirectly.");
       return true;
     }
   }
@@ -1242,7 +1259,7 @@ bool Variable::SetDisplayName(string name)
   if (IsPointer()) {
     return GetSameVariable()->SetDisplayName(name);
   }
-  if (name == GetNameDelimitedBy('_')) return false; //Don't bother with names that are identical to id's
+  if (name == GetNameDelimitedBy(g_registry.GetCC())) return false; //Don't bother with names that are identical to id's
   size_t quote = name.find('"');
   while (quote != string::npos) {
     name.replace(quote, 1, "&quot;");
@@ -1275,7 +1292,7 @@ bool Variable::SetExtentConversionFactor(Variable* var)
 {
   if (var->SetType(varFormulaUndef)) return true;
   if (var->GetType() != varFormulaUndef) {
-    g_registry.SetError("Unable to use " + var->GetNameDelimitedBy('.') + " as the extent conversion factor for submodel " + GetNameDelimitedBy('.') + " because that variable is of type " + VarTypeToString(var->GetType()) + " and only variables of type Formula may be used as conversion factors.");
+    g_registry.SetError("Unable to use " + var->GetNameDelimitedBy(".") + " as the extent conversion factor for submodel " + GetNameDelimitedBy(".") + " because that variable is of type " + VarTypeToString(var->GetType()) + " and only variables of type Formula may be used as conversion factors.");
     return true;
   }
   if (var->SetIsConst(true)) return true;
@@ -1288,7 +1305,7 @@ bool Variable::SetTimeConversionFactor(Variable* var)
 {
   if (var->SetType(varFormulaUndef)) return true;
   if (var->GetType() != varFormulaUndef) {
-    g_registry.SetError("Unable to use " + var->GetNameDelimitedBy('.') + " as the time conversion factor for submodel " + GetNameDelimitedBy('.') + " because that variable is of type " + VarTypeToString(var->GetType()) + " and only variables of type Formula may be used as conversion factors.");
+    g_registry.SetError("Unable to use " + var->GetNameDelimitedBy(".") + " as the time conversion factor for submodel " + GetNameDelimitedBy(".") + " because that variable is of type " + VarTypeToString(var->GetType()) + " and only variables of type Formula may be used as conversion factors.");
     return true;
   }
   if (var->SetIsConst(true)) return true;
@@ -1327,7 +1344,7 @@ Variable* Variable::GetTimeConversionFactor()
   return g_registry.GetModule(m_module)->GetVariable(m_timeConversionFactor);
 }
 
-vector<vector<string> > Variable::GetDeletions() const
+set<pair<vector<string>, deletion_type> > Variable::GetDeletions() const
 {
   return m_deletions;
 }
@@ -1336,47 +1353,130 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
 {
   if (GetType() != varModule) {
     assert(false);
-    g_registry.SetError("Cannot delete variable " + deletedvar->GetNameDelimitedBy('.') + " because " + GetNameDelimitedBy('.') + " is not a submodel.");
+    g_registry.SetError("Cannot delete variable " + deletedvar->GetNameDelimitedBy(".") + " because " + GetNameDelimitedBy(".") + " is not a submodel.");
     return true;
   }
 
   //Find and delete references to deletedvar:
   Module* submod = GetModule();
-  submod->ClearReferencesTo(deletedvar);
+  submod->ClearReferencesTo(deletedvar, &m_deletions);
 
+  //Now delete the deleted variable's own rate rule, assignment rule, and/or initial assignment
+ Formula* form = deletedvar->GetFormula();
+ Formula* rform = deletedvar->GetRateRule();
+ switch(deletedvar->GetType()) {
+ case varSpeciesUndef:
+ case varFormulaUndef:
+ case varUndefined:
+ case varCompartment:
+   switch (deletedvar->GetFormulaType()) {
+   case formulaRATE:
+     if (!rform->IsEmpty()) {
+       m_deletions.insert(make_pair(deletedvar->GetName(), delRateRule));
+     }
+     //Fall through to:
+   case formulaINITIAL:
+     if (!(form->IsEmpty() || form->IsDouble())) {
+       if (!(IsSpecies(deletedvar->GetType()) && form->IsAmountIn(deletedvar->GetCompartment()))) {
+         m_deletions.insert(make_pair(deletedvar->GetName(), delInitialAssignment));
+       }
+     }
+     break;
+   case formulaASSIGNMENT: 
+     if (!form->IsEmpty()) {
+       m_deletions.insert(make_pair(deletedvar->GetName(), delAssignmentRule));
+     }
+     break;
+   case formulaKINETIC:
+   case formulaTRIGGER:
+     //Nothing extra needed.
+     break;
+   }
+   break;
+  case varDNA:
+  case varFormulaOperator:
+  case varReactionGene:
+  case varReactionUndef:
+  case varInteraction:
+  case varModule:
+  case varEvent:
+  case varStrand:
+  case varUnitDefinition:
+  case varDeleted:
+    //These types can't have rules to them.
+    break;
+  }
+
+  //Save the fact that you deleted the variable:
+  if (deletedvar->GetType() == varInteraction) {
+    m_deletions.insert(make_pair(deletedvar->GetName(), delInteraction));
+  }
+  else {
+    m_deletions.insert(make_pair(deletedvar->GetName(), delFull));
+  }
   //And set deletedvar to 'deleted'!  Like Strong Bad!
   deletedvar->SetType(varDeleted);
-  //And save the fact that you did it:
-  m_deletions.push_back(deletedvar->GetName());
   return false;
 }
 
-void Variable::ClearReferencesTo(Variable* deletedvar)
+set<pair<vector<string>, deletion_type> > Variable::ClearReferencesTo(Variable* deletedvar)
 {
+  set<pair<vector<string>, deletion_type> > ret;
+  set<pair<vector<string>, deletion_type> > temp;
   Module* parentmod = g_registry.GetModule(m_module);
-  m_valFormula.ClearReferencesTo(deletedvar);
-  m_valReaction.ClearReferencesTo(deletedvar);
-  if (!m_valModule.empty()) {
-    m_valModule[0].ClearReferencesTo(deletedvar);
+  if (m_valFormula.ClearReferencesTo(deletedvar)) {
+    if (m_formulatype == formulaINITIAL) {
+      ret.insert(make_pair(m_name, delInitialAssignment));
+    }
+    else if (m_formulatype == formulaASSIGNMENT) {
+      ret.insert(make_pair(m_name, delAssignmentRule));
+    }
+    else {
+      assert(false);
+    }
   }
-  m_valEvent.ClearReferencesTo(deletedvar);
-  m_valStrand.ClearReferencesTo(deletedvar);
-  m_valUnitDef.ClearReferencesTo(deletedvar);
-  m_valRateRule.ClearReferencesTo(deletedvar);
+  m_valReaction.ClearReferencesTo(deletedvar, &ret);
+  if (!m_valModule.empty()) {
+    m_valModule[0].ClearReferencesTo(deletedvar, &ret);
+  }
+  if (m_valEvent.ClearReferencesTo(deletedvar, &ret)) {
+    //The event is no longer viable, and must be cleared and deleted.
+    AntimonyEvent ae;
+    m_valEvent = ae;
+    Module* module = g_registry.GetModule(m_module);
+    Variable* deleteme = module->GetVariable(m_name);
+    module->AddDeletion(deleteme);
+    return ret;
+  }
+  if (m_valStrand.ClearReferencesTo(deletedvar)) {
+    //LS DEBUG:  do something?
+  }
+  if (m_type==varUnitDefinition && m_valUnitDef.ClearReferencesTo(deletedvar)) {
+    ret.insert(make_pair(m_name, delFull));
+    m_deletedunit = true;
+  }
+  if (m_valRateRule.ClearReferencesTo(deletedvar)) {
+    ret.insert(make_pair(m_name, delRateRule));
+  }
   if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_extentConversionFactor))) {
+    //NOTE:  untranslateable to SBML, since you can't delete an attribute, nor effectively replace a submodel.
     m_extentConversionFactor.clear();
   }
   if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_timeConversionFactor))) {
+    //NOTE:  untranslateable to SBML, since you can't delete an attribute, nor effectively replace a submodel.
     m_timeConversionFactor.clear();
   }
   if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_compartment))) {
+    //NOTE:  untranslateable to SBML, since you can't delete an attribute, nor effectively replace a submodel.
     m_compartment.clear();
   }
   if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_supercompartment))) {
+    //Untranslateable to SBML, but so are supercompartments, so it's OK.
     m_supercompartment.clear();
   }
   set<vector<string> >::iterator strand=m_strands.begin();
   while (strand != m_strands.end()) {
+    //LS DEBUG:  I don't think it's worth worrying about translating these deletions yet, until there's an actual corresponding element in SBML or CellML or something.
     if (parentmod->GetVariable(*strand)->GetSameVariable() == deletedvar) {
       m_strands.erase(strand);
       strand = m_strands.begin();
@@ -1386,8 +1486,10 @@ void Variable::ClearReferencesTo(Variable* deletedvar)
     }
   }
   if (deletedvar->GetIsEquivalentTo(parentmod->GetVariable(m_unitVariable))) {
+    //NOTE:  untranslateable to SBML, since you can't delete an attribute.
     m_unitVariable.clear();
   }
+  return ret;
 }
 
 //Set this variable to be a shell pointing to the clone, transferring any data we may already have.
@@ -1419,7 +1521,7 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
   assert(m_module == clone->GetNamespace());
 
   if (m_type == varModule) {
-    g_registry.SetError("Cannot set the modules '" + GetNameDelimitedBy('.') + "' and '" + clone->GetNameDelimitedBy('.') + "' to be the same thing--modules must be unique by definition.");
+    g_registry.SetError("Cannot set the modules '" + GetNameDelimitedBy(".") + "' and '" + clone->GetNameDelimitedBy(".") + "' to be the same thing--modules must be unique by definition.");
     return true;
   }
 
@@ -1427,14 +1529,14 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
   Formula* form = GetFormula();
   if (form != NULL) {
     if (form->ContainsVar(clone)) {
-      g_registry.SetError("Loop detected:  '" + GetNameDelimitedBy('.') + "' may not be set to be equal to '" + clone->GetNameDelimitedBy('.') + "' because " + GetNameDelimitedBy('.') + "'s definition already includes " + clone->GetNameDelimitedBy('.') + " either directly or by proxy.");
+      g_registry.SetError("Loop detected:  '" + GetNameDelimitedBy(".") + "' may not be set to be equal to '" + clone->GetNameDelimitedBy(".") + "' because " + GetNameDelimitedBy(".") + "'s definition already includes " + clone->GetNameDelimitedBy(".") + " either directly or by proxy.");
       return true;
     }
   }
   form = clone->GetFormula();
   if (form != NULL) {
     if (form->ContainsVar(this)) {
-      g_registry.SetError("Loop detected:  '" + GetNameDelimitedBy('.') + "' may not be set to be equal to '" + clone->GetNameDelimitedBy('.') + "' because " + clone->GetNameDelimitedBy('.') + "'s definition already includes " + GetNameDelimitedBy('.') + " either directly or by proxy.");
+      g_registry.SetError("Loop detected:  '" + GetNameDelimitedBy(".") + "' may not be set to be equal to '" + clone->GetNameDelimitedBy(".") + "' because " + clone->GetNameDelimitedBy(".") + "'s definition already includes " + GetNameDelimitedBy(".") + " either directly or by proxy.");
       return true;
     }
   }
@@ -1446,7 +1548,7 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
   }
   else {
     if (clone->SetType(m_type)) {
-      g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy('.') + " with " + clone->GetNameDelimitedBy('.') + " because they are set to be " + VarTypeToString(m_type) + " and " + VarTypeToString(clone->GetType()) + " types, respectively, which are incompatible:  ");
+      g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy(".") + " with " + clone->GetNameDelimitedBy(".") + " because they are set to be " + VarTypeToString(m_type) + " and " + VarTypeToString(clone->GetType()) + " types, respectively, which are incompatible:  ");
       return true;
     }
     m_type = clone->GetType();
@@ -1465,7 +1567,7 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
       UnitDef* ud = unitvar->GetUnitDef();
       UnitDef* cloneud = cloneuv->GetUnitDef();
       if (ud != NULL && cloneud != NULL && !ud->Matches(cloneud)) {
-        g_registry.SetError("The symbols " + GetNameDelimitedBy('.') + " and " + clone->GetNameDelimitedBy('.') + " may not be set to be equal to one another because the units of the first (" + ud->GetNameDelimitedBy('.') + ") are incompatible with the units of the second (" + cloneud->GetNameDelimitedBy('.') + ").");
+        g_registry.SetError("The symbols " + GetNameDelimitedBy(".") + " and " + clone->GetNameDelimitedBy(".") + " may not be set to be equal to one another because the units of the first (" + ud->GetNameDelimitedBy(".") + ") are incompatible with the units of the second (" + cloneud->GetNameDelimitedBy(".") + ").");
         return true;
       }
     }
@@ -1494,13 +1596,13 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
       case formulaINITIAL:
       case formulaRATE: //We'll deal with the actual rate rule next.
         if (clone->SetFormula(&m_valFormula)) {
-          g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy('.') + " with " + clone->GetNameDelimitedBy('.') + ":  ");
+          g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy(".") + " with " + clone->GetNameDelimitedBy(".") + ":  ");
           return true;
         }
         break;
       case formulaASSIGNMENT:
         if (clone->SetAssignmentRule(&m_valFormula)) {
-          g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy('.') + " with " + clone->GetNameDelimitedBy('.')+ ":  ");
+          g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy(".") + " with " + clone->GetNameDelimitedBy(".")+ ":  ");
           return true;
         }
         break;
@@ -1518,7 +1620,7 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
     if (cloneform->IsEmpty()) {
       m_valRateRule.AddConversionFactor(conversionFactor);
       if (clone->SetRateRule(&m_valRateRule))  {
-        g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy('.') + " with " + clone->GetNameDelimitedBy('.') + ":  ");
+        g_registry.AddErrorPrefix("Cannot synchronize " + GetNameDelimitedBy(".") + " with " + clone->GetNameDelimitedBy(".") + ":  ");
         return true;
       }
     }
@@ -1582,7 +1684,7 @@ bool Variable::IncludesSelf()
   Formula* form = GetFormula();
   if (form != NULL) {
     if (form->ContainsVar(this)) {
-      g_registry.SetError("Error in model " + m_module + ":  loop detected.  The formula for '" + GetNameDelimitedBy('.') + "' ('" + GetFormula()->ToDelimitedStringWithEllipses('.') + "') contains itself, either directly or indirectly.");
+      g_registry.SetError("Error in model " + m_module + ":  loop detected.  The formula for '" + GetNameDelimitedBy(".") + "' ('" + GetFormula()->ToDelimitedStringWithEllipses(".") + "') contains itself, either directly or indirectly.");
       return true;
     }
   }
@@ -1607,7 +1709,7 @@ bool Variable::AnyCompartmentLoops(vector<const Variable*> lowercomps) const
   compartment = compartment->GetSameVariable();
   for (size_t lnum=0; lnum<lowercomps.size(); lnum++) {
     if (compartment == lowercomps[lnum]) {
-      g_registry.SetError("Error in model " + m_module + ":  loop detected.  Compartments '" + GetNameDelimitedBy('.') + "' and '" + compartment->GetNameDelimitedBy('.') + "' are contained within each other.");
+      g_registry.SetError("Error in model " + m_module + ":  loop detected.  Compartments '" + GetNameDelimitedBy(".") + "' and '" + compartment->GetNameDelimitedBy(".") + "' are contained within each other.");
       return true;
     }
   }
@@ -1616,9 +1718,9 @@ bool Variable::AnyCompartmentLoops(vector<const Variable*> lowercomps) const
 
 string Variable::ToString() const
 {
-  string ret = GetNameDelimitedBy('.') + " (" + VarTypeToString(m_type) + ")";
+  string ret = GetNameDelimitedBy(".") + " (" + VarTypeToString(m_type) + ")";
   if (GetFormula() != NULL) {
-    ret += ": " + GetFormula()->ToDelimitedStringWithEllipses('.');
+    ret += ": " + GetFormula()->ToDelimitedStringWithEllipses(".");
   }
   return ret;
 }

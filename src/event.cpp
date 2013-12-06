@@ -44,11 +44,11 @@ bool AntimonyEvent::SetTrigger(const Formula& form)
   if (formstring.size() > 0) {
     ASTNode* ASTform = parseStringToASTNode(formstring);
     if (ASTform == NULL) {
-      g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses(".") + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
     else if (!ASTform->isBoolean()) {
-      g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses('.') + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
+      g_registry.SetError("The formula \"" + form.ToDelimitedStringWithEllipses(".") + "\" cannot be parsed in a boolean context, and it is therefore illegal to use it as the trigger for an event.  (Perhaps try adding parentheses?)");
       delete ASTform;
       return true;
     }
@@ -68,11 +68,11 @@ bool AntimonyEvent::SetPriority(const Formula& priority)
   if (prioritystring.size() > 0) {
     ASTNode* ASTpriority = parseStringToASTNode(prioritystring);
     if (ASTpriority == NULL) {
-      g_registry.SetError("The priority \"" + priority.ToDelimitedStringWithEllipses('.') + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
+      g_registry.SetError("The priority \"" + priority.ToDelimitedStringWithEllipses(".") + "\" seems to be incorrect, and cannot be parsed into an Abstract Syntax Tree (AST).");
       return true;
     }
     else if (ASTpriority->isBoolean()) {
-      g_registry.SetError("The priority \"" + priority.ToDelimitedStringWithEllipses('.') + "\" is boolean, and it is therefore illegal to use it as the priority for an event.  Perhaps this was meant as the trigger?  If the line is being misparsed, try adding parentheses.");
+      g_registry.SetError("The priority \"" + priority.ToDelimitedStringWithEllipses(".") + "\" is boolean, and it is therefore illegal to use it as the priority for an event.  Perhaps this was meant as the trigger?  If the line is being misparsed, try adding parentheses.");
       delete ASTpriority;
       return true;
     }
@@ -88,7 +88,7 @@ bool AntimonyEvent::SetPriority(const Formula& priority)
 bool AntimonyEvent::SetUseValuesFromTriggerTime(const Formula& form)
 {
   if (!form.IsBoolean()) {
-    g_registry.SetError("Unable to use '" + form.ToDelimitedStringWithEllipses('.') + "': only 'true' or 'false' may be used to set the value of 'fromTrigger' on an event.");
+    g_registry.SetError("Unable to use '" + form.ToDelimitedStringWithEllipses(".") + "': only 'true' or 'false' may be used to set the value of 'fromTrigger' on an event.");
     return true;
   }
   m_useValuesFromTriggerTime = form.GetBoolean();
@@ -98,7 +98,7 @@ bool AntimonyEvent::SetUseValuesFromTriggerTime(const Formula& form)
 bool AntimonyEvent::SetPersistent(const Formula& form)
 {
   if (!form.IsBoolean()) {
-    g_registry.SetError("Unable to use '" + form.ToDelimitedStringWithEllipses('.') + "': only 'true' or 'false' may be used to set the value of 'persistent' on an event.");
+    g_registry.SetError("Unable to use '" + form.ToDelimitedStringWithEllipses(".") + "': only 'true' or 'false' may be used to set the value of 'persistent' on an event.");
     return true;
   }
   m_persistent = form.GetBoolean();
@@ -108,7 +108,7 @@ bool AntimonyEvent::SetPersistent(const Formula& form)
 bool AntimonyEvent::SetInitialValue(const Formula& form)
 {
   if (!form.IsBoolean()) {
-    g_registry.SetError("Unable to use '" + form.ToDelimitedStringWithEllipses('.') + "': only 'true' or 'false' may be used to set the value of 't0' (the initial value) of an event.");
+    g_registry.SetError("Unable to use '" + form.ToDelimitedStringWithEllipses(".") + "': only 'true' or 'false' may be used to set the value of 't0' (the initial value) of an event.");
     return true;
   }
   m_initialValue = form.GetBoolean();
@@ -175,12 +175,19 @@ void AntimonyEvent::ConvertTime(Variable* tcf)
   }
 }
 
-void AntimonyEvent::ClearReferencesTo(Variable* deletedvar)
+bool AntimonyEvent::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, deletion_type> >* ret)
 {
-  if (IsEmpty()) return;
-  m_trigger.ClearReferencesTo(deletedvar);
-  m_delay.ClearReferencesTo(deletedvar);
-  m_priority.ClearReferencesTo(deletedvar);
+  if (IsEmpty()) return false;
+  if (m_trigger.ClearReferencesTo(deletedvar)) {
+    //Can't (yet?) have an event with no trigger: delete the event
+    return true;
+  }
+  if (m_delay.ClearReferencesTo(deletedvar)) {
+    ret->insert(make_pair(m_name, delEventDelay));
+  }
+  if (m_priority.ClearReferencesTo(deletedvar)) {
+    ret->insert(make_pair(m_name, delEventPriority));
+  }
   vector<Formula>::iterator form = m_formresults.begin();
   vector<vector<string> >::iterator varresult = m_varresults.begin();
   Module* module = g_registry.GetModule(m_module);
@@ -188,6 +195,9 @@ void AntimonyEvent::ClearReferencesTo(Variable* deletedvar)
   while (form != m_formresults.end()) {
     if (form->ClearReferencesTo(deletedvar) ||
         module->GetVariable(*varresult)->GetIsEquivalentTo(deletedvar)) {
+          vector<string> longername = m_name;
+          longername.push_back((*varresult)[varresult->size()-1]);
+          ret->insert(make_pair(longername,  delEventAssignment));
           form = m_formresults.erase(form);
           varresult = m_varresults.erase(varresult);
     }
@@ -196,9 +206,14 @@ void AntimonyEvent::ClearReferencesTo(Variable* deletedvar)
       varresult++;
     }
   }
+  if (m_formresults.size() == 0) {
+    //Can't (yet?) have an event with no event assignments: delete the event
+    return true;
+  }
+  return false; //Didn't have to delete ourselves.
 }
 
-string AntimonyEvent::GetNthAssignmentVariableName(size_t n, char cc) const
+string AntimonyEvent::GetNthAssignmentVariableName(size_t n, std::string cc) const
 {
   if (n >= m_varresults.size()) {
     string error = "Unable to retrieve assignment '" + SizeTToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
@@ -222,7 +237,7 @@ string AntimonyEvent::GetNthAssignmentVariableName(size_t n, char cc) const
   return resultvar->GetNameDelimitedBy(cc);
 }
 
-string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc, bool SBML) const
+string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, std::string cc, bool SBML) const
 {
   if (n >= m_formresults.size()) {
     string error = "Unable to retrieve assignment '" + SizeTToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
@@ -245,7 +260,7 @@ string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, char cc, bool SBML
   return m_formresults[n].ToDelimitedStringWithStrands(cc, resultvar->GetStrandVars());
 }
 
-string AntimonyEvent::ToStringDelimitedBy(char cc) const
+string AntimonyEvent::ToStringDelimitedBy(std::string cc) const
 {
   if (IsEmpty()) return "";
   string retval;

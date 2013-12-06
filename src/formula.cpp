@@ -259,10 +259,11 @@ bool Formula::GetIsConst() const
 
 bool Formula::CheckIncludes(string modname, const ReactantList* rlist) const
 {
+  string cc = g_registry.GetCC();
   vector<vector<string> > varlist = rlist->GetVariableList();
   for (size_t var=0; var<varlist.size(); var++) {
     if (!ContainsVar(modname, varlist[var])) {
-      g_registry.SetError("should include the variable '" + g_registry.GetModule(modname)->GetVariable(varlist[var])->GetNameDelimitedBy('_') + "' (either directly or indirectly), but it does not.");
+      g_registry.SetError("should include the variable '" + g_registry.GetModule(modname)->GetVariable(varlist[var])->GetNameDelimitedBy(cc) + "' (either directly or indirectly), but it does not.");
       return true;
     }
   }
@@ -317,7 +318,7 @@ void Formula::Clear()
   m_components.clear();
 }
 
-string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, size_t> > strands) const
+string Formula::ToDelimitedStringWithStrands(string cc, vector<pair<Variable*, size_t> > strands) const
 {
   string retval;
   if (strands.size() == 0) {
@@ -378,7 +379,7 @@ string Formula::ToDelimitedStringWithStrands(char cc, vector<pair<Variable*, siz
   return retval;
 }
 
-string Formula::ToDelimitedStringWithEllipses(char cc) const
+string Formula::ToDelimitedStringWithEllipses(string cc) const
 {
   string retval;
   for (size_t comp=0; comp < m_components.size(); comp++) {
@@ -410,7 +411,7 @@ string Formula::ToSBMLString() const
 
 string Formula::ToSBMLString(vector<pair<Variable*, size_t> > strands) const
 {
-  return ToDelimitedStringWithStrands('_', strands);
+  return ToDelimitedStringWithStrands(g_registry.GetCC(), strands);
 }
 
 //Now only need this for CellML (for now).
@@ -482,7 +483,7 @@ vector<const Variable*> Formula::GetVariablesFrom(string formula, string module)
   for (size_t pos=0; pos<formula.size(); pos++) {
     if (isalpha(formula[pos]) || formula[pos]=='_' ||
         (foundname && (isdigit(formula[pos]))) ||
-        (foundname && (formula[pos] == g_registry.GetCC())) ) {
+        (foundname && (formula[pos] == g_registry.GetCC()[0])) ) {
       foundname = true;
       varname += formula[pos];
     }
@@ -718,7 +719,7 @@ bool Formula::MakeUnitVariablesUnits()
       Module* module = g_registry.GetModule(m_components[comp].first);
       assert(module != NULL);
       Variable* subvar = module->GetVariable(m_components[comp].second);
-      string unitname = subvar->GetNameDelimitedBy('_');
+      string unitname = subvar->GetNameDelimitedBy(g_registry.GetCC());
       if (allunits.find(unitname) != allunits.end()) {
         if (subvar->SetType(varUnitDefinition)) return true;
       }
@@ -754,6 +755,18 @@ bool Formula::ClearReferencesTo(Variable* deletedvar)
   return false;
 }
 
+void Formula::AddReferencedVariablesTo(set<pair<string, const Variable*> >& referencedVars) const
+{
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() > 1) {
+      Module* module = g_registry.GetModule(m_components[comp].first);
+      assert(module != NULL);
+      Variable* subvar = module->GetVariable(m_components[comp].second);
+      referencedVars.insert(make_pair(subvar->GetNameDelimitedBy(g_registry.GetCC()), subvar));
+    }
+  }
+}
+
 void Formula::UseInstead(string newname, const Variable* oldvar)
 {
   vector<string> newfullname;
@@ -778,7 +791,7 @@ string Formula::ToCellML() const
   for (size_t comp=0; comp<m_components.size(); comp++) {
     if (m_components[comp].second.size() > 0) {
       assert(m_components[comp].second.size()==1); //CellML formulas can't refer to subvariables.
-      formula += ToStringFromVecDelimitedBy(m_components[comp].second, '_');
+      formula += ToStringFromVecDelimitedBy(m_components[comp].second, g_registry.GetCC());
     }
     else {
       formula += m_components[comp].first;
@@ -789,7 +802,7 @@ string Formula::ToCellML() const
 
 string Formula::ToCellMLString(vector<pair<Variable*, size_t> > strands) const
 {
-  string formula = ToDelimitedStringWithStrands('_', strands);
+  string formula = ToDelimitedStringWithStrands(g_registry.GetCC(), strands);
   return CellMLify(formula);
 }
 

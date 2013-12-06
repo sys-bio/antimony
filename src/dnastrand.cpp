@@ -132,21 +132,24 @@ bool DNAStrand::CheckContains(Variable* var) const
   return false;
 }
 
-void DNAStrand::ClearReferencesTo(Variable* deletedvar)
+bool DNAStrand::ClearReferencesTo(Variable* deletedvar)
 {
+  bool ret = false;
   Module* module = g_registry.GetModule(m_module);
   vector<vector<string> >::iterator strand = m_strand.begin();
   while (strand != m_strand.end()) {
     if (module->GetVariable(*strand)->GetIsEquivalentTo(deletedvar)) {
       strand = m_strand.erase(strand);
+      ret = true;
     }
     else {
       strand++;
     }
   }
+  return ret;
 }
 
-string DNAStrand::ToStringDelimitedBy(char cc) const
+string DNAStrand::ToStringDelimitedBy(std::string cc) const
 {
   string retval = "";
   if (m_upstreamopen) {
@@ -166,7 +169,7 @@ string DNAStrand::ToStringDelimitedBy(char cc) const
   return retval;
 }
 
-vector<string> DNAStrand::ToExpandedStringVecDelimitedBy(char cc) const
+vector<string> DNAStrand::ToExpandedStringVecDelimitedBy(std::string cc) const
 {
   vector<string> retval;
   for (size_t dna=0; dna<m_strand.size(); dna++) {
@@ -184,7 +187,7 @@ vector<string> DNAStrand::ToExpandedStringVecDelimitedBy(char cc) const
   return retval;
 }
 
-vector<string> DNAStrand::ToModularStringVecDelimitedBy(char cc) const
+vector<string> DNAStrand::ToModularStringVecDelimitedBy(std::string cc) const
 {
   vector<string> retval;
   for (size_t dna=0; dna<m_strand.size(); dna++) {

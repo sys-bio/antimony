@@ -21,7 +21,7 @@ string DoubleToString(double number)
   return ostr.str();
 }
 
-string ToStringFromVecDelimitedBy(vector<string> name, char cc)
+string ToStringFromVecDelimitedBy(vector<string> name, std::string cc)
 {
   string retval = "";
   for (size_t nn=0; nn<name.size(); nn++) {
@@ -126,15 +126,15 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
     input.get(cc);
 
     // Skip white space.
-    bool somewhite = false;
-    string white = " ";
+    //bool somewhite = false;
+    //string white = " ";
     while ((cc == ' ' || cc == '\t') &&
            input.good()) {
       input.get(cc);
-      somewhite = true;
+      //somewhite = true;
     }
     if (!input.good()) continue;
-    if (somewhite) formula->AddText(&white);
+    //if (somewhite) formula->AddText(&white);
 
     // Parse words
     if (isalpha(cc) || cc == '_') {

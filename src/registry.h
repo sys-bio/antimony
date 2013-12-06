@@ -54,7 +54,7 @@ private:
 
   std::vector<std::string> m_currentEvent;
   
-  char m_cc;
+  std::string m_cc;
   const_type m_constness;
   std::string m_error;
   std::vector<std::string> m_warnings;
@@ -63,6 +63,8 @@ private:
   std::vector<std::map<std::string, size_t> > m_oldmodulemaps;
 
   std::map<std::pair<std::string, std::string>, std::string> m_sbindex;
+
+  bool m_writeNameToSBML;
 
 public:
   Registry();
@@ -169,7 +171,8 @@ public:
 
   size_t GetNumModules();
   std::string GetNthModuleName(size_t n);
-  char GetCC() {return m_cc;};
+  std::string GetCC() {return m_cc;};
+  void        SetCC(std::string cc) {m_cc = cc;};
   std::string GetError() {return m_error;};
   std::vector<std::string> GetWarnings() {return m_warnings;};
   long SaveModules();
@@ -190,6 +193,10 @@ public:
   std::vector<unsigned long*> m_ulongstars;
   std::vector<rd_type*> m_rd_typestars;
   void FreeAll();
+
+  //For testing, we don't want to write our name/version to SBML files so that we can more easily compare the outputs to the expected outputs.
+  void SetWriteNameToSBML(bool set);
+  bool GetWriteNameToSBML();
 };
 
 extern Registry g_registry;

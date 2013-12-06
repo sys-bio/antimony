@@ -4,6 +4,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <set>
 #include "annotated.h"
 
 #ifndef NSBML
@@ -57,8 +58,8 @@ public:
 
   void Clear();
 
-  std::string ToDelimitedStringWithStrands(char cc, std::vector<std::pair<Variable*, size_t> > strands) const;
-  std::string ToDelimitedStringWithEllipses(char cc) const;
+  std::string ToDelimitedStringWithStrands(std::string cc, std::vector<std::pair<Variable*, size_t> > strands) const;
+  std::string ToDelimitedStringWithEllipses(std::string cc) const;
   std::string ToSBMLString() const;
   std::string ToSBMLString(std::vector<std::pair<Variable*, size_t> > strands) const;
   double      ToAmount() const;
@@ -83,6 +84,7 @@ public:
 #endif
 
   bool ClearReferencesTo(Variable* deletedvar);
+  void AddReferencedVariablesTo(std::set<std::pair<std::string, const Variable*> >& referencedVars) const;
 
   //For CellMLStuff:
   void UseInstead(std::string newname, const Variable* oldvar);

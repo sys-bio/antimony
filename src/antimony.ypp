@@ -157,7 +157,7 @@ variableexportlist:
 variable:       ANTWORD {$$ = g_registry.AddVariableToCurrent($1); }
         |       variable '.' ANTWORD {$$ = $1->GetSubVariable($3);
                   if ($$ == NULL) {
-                    g_registry.SetError("'" + *($3) + "' is not a subvariable of '" + $1->GetNameDelimitedBy('.') + "'.");
+                    g_registry.SetError("'" + *($3) + "' is not a subvariable of '" + $1->GetNameDelimitedBy(".") + "'.");
                     YYABORT;
                   }
                 }
