@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model id="bar" name="bar">
+    <listOfParameters>
+      <parameter id="y" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="x" comp:submodelRef="A"/>
+        </comp:listOfReplacedElements>
+      </parameter>
+    </listOfParameters>
+    <listOfRules>
+      <rateRule variable="y">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 2.2 </cn>
+        </math>
+      </rateRule>
+    </listOfRules>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="A" comp:modelRef="foo">
+        <comp:listOfDeletions>
+          <comp:deletion comp:metaIdRef="foo_x_raterule"/>
+        </comp:listOfDeletions>
+      </comp:submodel>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="foo" name="foo">
+      <listOfParameters>
+        <parameter id="x" constant="false"/>
+      </listOfParameters>
+      <listOfRules>
+        <rateRule metaid="foo_x_raterule" variable="x">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn> 4.8 </cn>
+          </math>
+        </rateRule>
+      </listOfRules>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

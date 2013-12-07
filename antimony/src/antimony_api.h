@@ -64,7 +64,6 @@
 #define LIBANTIMONY_VERSION_STRING "v2.0"
 #endif
 
-
 #include "libutil.h"
 #include "enums.h"
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model id="bar" name="bar">
+    <listOfCompartments>
+      <compartment id="A__C1" constant="false">
+        <comp:replacedBy comp:idRef="C1" comp:submodelRef="A"/>
+      </compartment>
+      <compartment id="A__C2" constant="false">
+        <comp:replacedBy comp:idRef="C2" comp:submodelRef="A"/>
+      </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="A__x" compartment="A__C2" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <comp:replacedBy comp:idRef="x" comp:submodelRef="A"/>
+      </species>
+    </listOfSpecies>
+    <listOfReactions>
+      <reaction id="J1" reversible="true" fast="false" compartment="A__C1">
+        <listOfReactants>
+          <speciesReference species="A__x" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="J0" comp:submodelRef="A"/>
+        </comp:listOfReplacedElements>
+      </reaction>
+    </listOfReactions>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="A" comp:modelRef="foo"/>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="foo" name="foo">
+      <listOfCompartments>
+        <compartment id="C1" spatialDimensions="3" constant="true"/>
+        <compartment id="C2" spatialDimensions="3" constant="true"/>
+      </listOfCompartments>
+      <listOfSpecies>
+        <species id="x" compartment="C2" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      </listOfSpecies>
+      <listOfReactions>
+        <reaction id="J0" reversible="true" fast="false" compartment="C1">
+          <listOfReactants>
+            <speciesReference species="x" stoichiometry="1" constant="true"/>
+          </listOfReactants>
+        </reaction>
+      </listOfReactions>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

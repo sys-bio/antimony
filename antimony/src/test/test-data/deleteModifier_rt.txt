@@ -1,0 +1,25 @@
+//Created by libAntimony v2.4
+model foo()
+
+  // Compartments and Species:
+  species S2, S1;
+
+  // Reactions:
+  J1: S1 -> ; ;
+
+  // Interactions:
+  _J0: S2 -o J1; ;
+
+  // Species initializations:
+  S2 = ;
+  S1 = ;
+end
+
+model *bar1()
+
+  // Sub-modules, and any changes to those submodules:
+  A: foo();
+
+  //Deleted elements from submodels:
+  delete A.S2, A._J0;
+end

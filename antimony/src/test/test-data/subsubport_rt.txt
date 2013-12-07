@@ -1,0 +1,28 @@
+//Created by libAntimony v2.4
+model foo(x0)
+
+  // Variable initializations:
+  x0 = 3;
+
+  //Other declarations:
+  const x0;
+end
+
+model bar()
+
+  // Sub-modules, and any changes to those submodules:
+  A1: foo();
+end
+
+model baz()
+
+  // Sub-modules, and any changes to those submodules:
+  A2: bar();
+end
+
+model *biff()
+
+  // Sub-modules, and any changes to those submodules:
+  A3: baz();
+  A3.A2.A1.x0 is x1;
+end

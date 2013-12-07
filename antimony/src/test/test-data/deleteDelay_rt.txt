@@ -1,0 +1,28 @@
+//Created by libAntimony v2.4
+model foo()
+
+  // Variable initializations:
+  Y1 = ;
+  DELAY1 = ;
+  Q1 = ;
+  Z1 = ;
+
+  // Events:
+  E1: at DELAY1 after Y1 > 3: Z1 = 0, Q1 = 0;
+
+  //Other declarations:
+  var Q1, Z1;
+  const Y1, DELAY1;
+end
+
+model *bar()
+
+  // Sub-modules, and any changes to those submodules:
+  A: foo();
+
+  // Events:
+  A.E1: at A.Y1 > 3: A.Z1 = 0, A.Q1 = 0;
+
+  //Deleted elements from submodels:
+  delete A.DELAY1;
+end

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model id="bar1" name="bar1">
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="A" comp:modelRef="foo">
+        <comp:listOfDeletions>
+          <comp:deletion comp:idRef="P1"/>
+          <comp:deletion comp:metaIdRef="foo__P1__rateRule"/>
+        </comp:listOfDeletions>
+      </comp:submodel>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="foo" name="foo">
+      <listOfParameters>
+        <parameter id="P1" constant="false"/>
+      </listOfParameters>
+      <listOfRules>
+        <rateRule metaid="foo__P1__rateRule" variable="P1">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 3 </cn>
+          </math>
+        </rateRule>
+      </listOfRules>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>
