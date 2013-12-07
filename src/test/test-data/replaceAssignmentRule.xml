@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model id="bar" name="bar">
+    <listOfParameters>
+      <parameter id="y" value="2.2" constant="false">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="x" comp:submodelRef="A"/>
+        </comp:listOfReplacedElements>
+      </parameter>
+    </listOfParameters>
+    <listOfRules>
+      <assignmentRule variable="y">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 2.2 </cn>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="A" comp:modelRef="foo">
+        <comp:listOfDeletions>
+          <comp:deletion comp:metaIdRef="foo_x_assignmentrule"/>
+        </comp:listOfDeletions>
+      </comp:submodel>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="foo" name="foo">
+      <listOfParameters>
+        <parameter id="x" value="4.8" constant="false"/>
+      </listOfParameters>
+      <listOfRules>
+        <assignmentRule metaid="foo_x_assignmentrule" variable="x">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn> 4.8 </cn>
+          </math>
+        </assignmentRule>
+      </listOfRules>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

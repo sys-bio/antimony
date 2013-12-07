@@ -1,0 +1,27 @@
+//Created by libAntimony v2.4
+model foo()
+
+  // Events:
+  E1: at Y1 > 3, priority = PRIORITY1: Z1 = 0;
+
+  // Variable initializations:
+  Y1 = ;
+  PRIORITY1 = ;
+  Z1 = ;
+
+  //Other declarations:
+  var Z1;
+  const Y1, PRIORITY1;
+end
+
+model *bar()
+
+  // Sub-modules, and any changes to those submodules:
+  A: foo();
+
+  // Events:
+  A.E1: at A.Y1 > 3: A.Z1 = 0;
+
+  //Deleted elements from submodels:
+  delete A.PRIORITY1;
+end

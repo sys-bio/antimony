@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model id="biff" name="biff">
+    <listOfParameters>
+      <parameter id="x1" value="3" constant="true">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="A2" comp:submodelRef="A3">
+            <comp:sBaseRef comp:idRef="A1">
+              <comp:sBaseRef comp:portRef="x0"/>
+            </comp:sBaseRef>
+          </comp:replacedElement>
+        </comp:listOfReplacedElements>
+      </parameter>
+    </listOfParameters>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="A3" comp:modelRef="baz"/>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="foo" name="foo">
+      <listOfParameters>
+        <parameter id="x0" value="3" constant="true"/>
+      </listOfParameters>
+      <comp:listOfPorts>
+        <comp:port comp:idRef="x0" comp:id="x0"/>
+      </comp:listOfPorts>
+    </comp:modelDefinition>
+    <comp:modelDefinition id="bar" name="bar">
+      <comp:listOfSubmodels>
+        <comp:submodel comp:id="A1" comp:modelRef="foo"/>
+      </comp:listOfSubmodels>
+    </comp:modelDefinition>
+    <comp:modelDefinition id="baz" name="baz">
+      <comp:listOfSubmodels>
+        <comp:submodel comp:id="A2" comp:modelRef="bar"/>
+      </comp:listOfSubmodels>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model id="baz" name="baz">
+    <listOfCompartments>
+      <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true">
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:idRef="default_compartment" comp:submodelRef="A"/>
+        </comp:listOfReplacedElements>
+      </compartment>
+    </listOfCompartments>
+    <comp:listOfSubmodels>
+      <comp:submodel comp:id="A" comp:modelRef="bar"/>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition id="foo" name="foo">
+      <listOfCompartments>
+        <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true"/>
+      </listOfCompartments>
+      <listOfSpecies>
+        <species id="x" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      </listOfSpecies>
+    </comp:modelDefinition>
+    <comp:modelDefinition id="bar" name="bar">
+      <listOfCompartments>
+        <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true">
+          <comp:listOfReplacedElements>
+            <comp:replacedElement comp:idRef="default_compartment" comp:submodelRef="A"/>
+          </comp:listOfReplacedElements>
+        </compartment>
+      </listOfCompartments>
+      <comp:listOfSubmodels>
+        <comp:submodel comp:id="A" comp:modelRef="foo"/>
+      </comp:listOfSubmodels>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

@@ -187,8 +187,8 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
           //Math is simple assignent rule
           if (var->SetAssignmentRule(formula)) {
             //Something went wrong
-            //cout << "Unable to use the formula \"" << formula->ToDelimitedStringWithEllipses('.') << "\" (originally \"" << origeq << "\") to set the assignment rule for " << var->GetNameDelimitedBy('.') << ":  " << getLastError() << endl;
-            string warning = "Unable to use the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" to set the assignment rule for " + var->GetNameDelimitedBy('.') + ":  " + getLastError();
+            //cout << "Unable to use the formula \"" << formula->ToDelimitedStringWithEllipses(".") << "\" (originally \"" << origeq << "\") to set the assignment rule for " << var->GetNameDelimitedBy(".") << ":  " << getLastError() << endl;
+            string warning = "Unable to use the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\" to set the assignment rule for " + var->GetNameDelimitedBy(".") + ":  " + getLastError();
             g_registry.AddWarning(warning);
           }
         }
@@ -211,7 +211,7 @@ void Module::LoadCellMLComponent(iface::cellml_api::CellMLComponent* component)
           variable = Trim(variable);
           var = AddOrFindVariable(&variable);
           if (var->SetRateRule(formula)) {
-            string warning = "Unable to use the formula \"" + formula->ToDelimitedStringWithEllipses('.') + "\" to set the rate rule for " + var->GetNameDelimitedBy('.') + ":  " + getLastError();
+            string warning = "Unable to use the formula \"" + formula->ToDelimitedStringWithEllipses(".") + "\" to set the rate rule for " + var->GetNameDelimitedBy(".") + ":  " + getLastError();
             g_registry.AddWarning(warning);
           }
         }
@@ -330,7 +330,7 @@ void Module::ResyncVariablesWith(const Module* twin, string modulename, vector<s
     for (size_t name=varname.size(); name>0; name--) {
       newvar->SetNewTopName(modulename, varname[name-1]);
     }
-    //cout << "new subvar: " << ToStringFromVecDelimitedBy(newvar->GetName(), '.') << " for module " << ToStringFromVecDelimitedBy(m_variablename, '.') << endl;
+    //cout << "new subvar: " << ToStringFromVecDelimitedBy(newvar->GetName(), ".") << " for module " << ToStringFromVecDelimitedBy(m_variablename, ".") << endl;
     assert(newvar->GetType() != varModule);
     m_variables.push_back(newvar);
     StoreVariable(newvar);
@@ -347,7 +347,7 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
       assert(modcopy != submod);
       submod->ReloadSubmodelConnections(submod);
       modcopy->ReloadSubmodelConnections(syncmod);
-      //cout << "reloading connections from " << submod->m_modulename << " to sync with " << variable->GetNameDelimitedBy('.') << endl;
+      //cout << "reloading connections from " << submod->m_modulename << " to sync with " << variable->GetNameDelimitedBy(".") << endl;
       m_varmap.insert(submod->m_varmap.begin(), submod->m_varmap.end());
       for (size_t sync = modcopy->m_synchronized.size(); sync<submod->m_synchronized.size(); sync++) {
         //There are synchronizations in the ur-module that we didn't get when we copied it.
@@ -376,12 +376,12 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
           modcopy->m_synchronized.push_back(newsync);
           modcopy->m_conversionFactors.push_back(syncmod->m_conversionFactors[syncmod->m_conversionFactors.size()-1]);
           /*
-          cout << ToStringFromVecDelimitedBy(var1name, '.') << " to "
-               << ToStringFromVecDelimitedBy(var2name, '.') << ": " << endl;
-          cout << ToStringFromVecDelimitedBy(var1->GetName(), '.') << " and "
-               << ToStringFromVecDelimitedBy(var2->GetName(), '.') << " now synchronized";
+          cout << ToStringFromVecDelimitedBy(var1name, ".") << " to "
+               << ToStringFromVecDelimitedBy(var2name, ".") << ": " << endl;
+          cout << ToStringFromVecDelimitedBy(var1->GetName(), ".") << " and "
+               << ToStringFromVecDelimitedBy(var2->GetName(), ".") << " now synchronized";
           if (!var1->GetFormula()->IsEmpty()) {
-            cout << ": " << var1->GetFormula()->ToDelimitedStringWithEllipses('.') << endl;
+            cout << ": " << var1->GetFormula()->ToDelimitedStringWithEllipses(".") << endl;
           }
           else {
             cout << "." << endl;
@@ -389,22 +389,22 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
           */
         }
         else {
-          g_registry.AddWarning("In module '" + m_modulename + "', the variables " + var1->GetNameDelimitedBy('.') + " and " + var2->GetNameDelimitedBy('.') + " were unable to be set as equivalent:  " + g_registry.GetError());
+          g_registry.AddWarning("In module '" + m_modulename + "', the variables " + var1->GetNameDelimitedBy(".") + " and " + var2->GetNameDelimitedBy(".") + " were unable to be set as equivalent:  " + g_registry.GetError());
           //This is tricky, because now we have to remove the main module's synchronization that set this up in the first place.
           vector<string> sync1name, sync2name;
           bool foundorig = false;
           if (var1->IsPointer()) {
-            //cout << "var1 is pointer: " << var1->GetNameDelimitedBy('.') << endl;
+            //cout << "var1 is pointer: " << var1->GetNameDelimitedBy(".") << endl;
             sync1name = var1->GetName();
             sync2name = var1->GetPointerName();
-            //cout << "Looking for sync for " << ToStringFromVecDelimitedBy(sync1name, '.') << " and " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
+            //cout << "Looking for sync for " << ToStringFromVecDelimitedBy(sync1name, ".") << " and " << ToStringFromVecDelimitedBy(sync2name, ".") << endl;
             vector<vector<string> >::iterator cf = m_conversionFactors.begin();
             for (vector<pair<vector<string>, vector<string> > >::iterator sync = m_synchronized.begin();
                  sync != m_synchronized.end(); sync++, cf++) {
-              //cout << "Found " << ToStringFromVecDelimitedBy(sync->first, '.') << " and " << ToStringFromVecDelimitedBy(sync->second, '.') << endl;
+              //cout << "Found " << ToStringFromVecDelimitedBy(sync->first, ".") << " and " << ToStringFromVecDelimitedBy(sync->second, ".") << endl;
               if ((sync1name == sync->first && sync2name == sync->second) ||
                   (sync2name == sync->first && sync1name == sync->second)) {
-                //cout << "Removing sync from " << m_modulename << ": " << ToStringFromVecDelimitedBy(sync1name, '.') << " with " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
+                //cout << "Removing sync from " << m_modulename << ": " << ToStringFromVecDelimitedBy(sync1name, ".") << " with " << ToStringFromVecDelimitedBy(sync2name, ".") << endl;
                 m_synchronized.erase(sync);
                 m_conversionFactors.erase(cf);
                 foundorig = true;
@@ -414,7 +414,7 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
             }
           }
           if (!foundorig && var2->IsPointer()) {
-            //cout << "var2 is pointer: " << var2->GetNameDelimitedBy('.') << endl;
+            //cout << "var2 is pointer: " << var2->GetNameDelimitedBy(".") << endl;
             sync1name = var2->GetName();
             sync2name = var2->GetPointerName();
             vector<vector<string> >::iterator cf = m_conversionFactors.begin();
@@ -422,7 +422,7 @@ void Module::ReloadSubmodelConnections(Module* syncmod)
                  sync != m_synchronized.end(); sync++, cf++) {
               if ((sync1name == sync->first && sync2name == sync->second) ||
                   (sync2name == sync->first && sync1name == sync->second)) {
-                //cout << "Removing sync from " << m_modulename << ": " << ToStringFromVecDelimitedBy(sync1name, '.') << " with " << ToStringFromVecDelimitedBy(sync2name, '.') << endl;
+                //cout << "Removing sync from " << m_modulename << ": " << ToStringFromVecDelimitedBy(sync1name, ".") << " with " << ToStringFromVecDelimitedBy(sync2name, ".") << endl;
                 m_synchronized.erase(sync);
                 m_conversionFactors.erase(cf);
                 foundorig = true;
@@ -636,7 +636,7 @@ Variable* Module::WhichFirstDefined(vector<Variable*> varlist, formula_type ftyp
     //Um, help? LS DEBUG
     //At least point to the version that everyone is synced to:
     candidate = varlist[0]->GetSameVariable();
-    //cout << "Help!  Nothing found for the variables synced to " << candidate->GetNameDelimitedBy('.');
+    //cout << "Help!  Nothing found for the variables synced to " << candidate->GetNameDelimitedBy(".");
   }
   return candidate;
 }
@@ -863,11 +863,12 @@ void Module::AssignMathOnceFor(vector<Variable*> varlist, iface::dom::Document* 
   const Variable* origtarget = targetvar->GetOriginal();
   vector<string> varname = origtarget->GetName();
   assert(varname.size()==1);
+  string cc = g_registry.GetCC();
   if (!ia->IsEmpty()) {
     if (ia->IsDouble()) {
-      wstring wiv(makeUTF16(ia->ToDelimitedStringWithEllipses('_')));
+      wstring wiv(makeUTF16(ia->ToDelimitedStringWithEllipses(cc)));
       cmlvar->initialValue(wiv.c_str());
-      //cout << "Successfully set initial value for " << targetvar->GetNameDelimitedBy('.') << endl;
+      //cout << "Successfully set initial value for " << targetvar->GetNameDelimitedBy(".") << endl;
     }
     else {
       //Have to create a new variable.
@@ -883,7 +884,7 @@ void Module::AssignMathOnceFor(vector<Variable*> varlist, iface::dom::Document* 
       //LS DEBUG:  didn't check to see if we renamed 'newvarname'
       string formula = newvarname + " = " + origtarget->GetInitialAssignment()->ToCellMLString(origtarget->GetStrandVars());
       if (!AddCellMLMathTo(formula, targetvar, doc)) {
-        string warning = "Unable to initialize " + targetvar->GetNameDelimitedBy('.') + " through "+ newvarname + " (" + formula + ")";
+        string warning = "Unable to initialize " + targetvar->GetNameDelimitedBy(".") + " through "+ newvarname + " (" + formula + ")";
         g_registry.AddWarning(warning);
       }
     }

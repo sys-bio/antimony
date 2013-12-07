@@ -1,0 +1,9 @@
+model foo()
+  E1: at DELAY1 after (Y1 > 3), priority=PRIORITY1: Z1=0, Q1=0;
+  e2: at delay2 after (y2 > 3), priority=priority2: z2=0, q2=0;
+end
+
+model bar()
+  A: foo();
+  delete A.DELAY1;
+end

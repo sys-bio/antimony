@@ -1,0 +1,27 @@
+//Created by libAntimony v2.4
+model foo()
+
+  // Variable initializations:
+  // Have to put E1 first here because otherwise the order of variables
+  //  gets changed in the roundtripped version.
+  E1 = ;
+  Y1 = ;
+  Q1 = ;
+  Z1 = ;
+
+  // Events:
+  E1: at Y1 > 3: Z1 = 0, Q1 = 0;
+
+  //Other declarations:
+  var Q1, Z1;
+  const Y1;
+end
+
+model *bar()
+
+  // Sub-modules, and any changes to those submodules:
+  A: foo();
+
+  //Deleted elements from submodels:
+  delete A.E1, A.Y1;
+end

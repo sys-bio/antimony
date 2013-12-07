@@ -1,0 +1,16 @@
+model foo(x0)
+  x0=3;
+end
+
+model bar()
+  A1: foo()
+end
+
+model baz()
+  A2: bar()
+end
+
+model biff()
+  A3: baz()
+  A3.A2.A1.x0 is x1;
+end
