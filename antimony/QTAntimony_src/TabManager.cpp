@@ -321,7 +321,7 @@ void TabManager::TranslateAntimony(QString& text)
         textbox(m_anttab)->SetOriginal();
     }
     //Now translate the model:
-    long handle = loadString(text.toUtf8().data());
+    long handle = loadAntimonyString(text.toUtf8().data());
     if (handle == -1) {
         //error condition
         char* error = getLastError();

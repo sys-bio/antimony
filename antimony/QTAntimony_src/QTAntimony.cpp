@@ -60,7 +60,11 @@ void QTAntimony::OpenNewFile()
                          focus,
                          tr("Select one or more files to open"),
                          m_currentdir,
-                         tr("Antimony and SBML files (*.txt *.xml *.sbml);;Antimony files (*.txt);;SBML files (*.xml *.sbml);;All files(*.*)"));
+#ifndef NCELLML
+                         tr("Antimony, SBML, and CellML files (*.txt *.xml *.sbml *.cellml);;Antimony files (*.txt);;SBML files (*.xml *.sbml);;CellML file (*.xml *.cellml);;All files(*.*)"));
+#else
+                         tr("Antimony and SBML files (*.txt *.xml *.sbml *.cellml);;Antimony files (*.txt);;SBML files (*.xml *.sbml);;All files(*.*)"));
+#endif
     OpenFiles(files);
     m_basewindow = NULL;
 }
