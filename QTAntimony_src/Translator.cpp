@@ -197,7 +197,7 @@ Translator::Translator(QTAntimony* app, QString filename)
             filetext = in.readAll();
             m_filewatcher->addPath(filename);
             long SBMLHandle = loadSBMLFile(filename.toUtf8().data());
-            long AntimonyHandle = loadFile(filename.toUtf8().data());
+            long AntimonyHandle = loadAntimonyFile(filename.toUtf8().data());
             if (SBMLHandle == -1 && AntimonyHandle != -1) {
                 //Originally Antimony
                 m_antimony->setText(filetext);
@@ -240,6 +240,8 @@ Translator::Translator(QTAntimony* app, QString filename)
             }
             else if (SBMLHandle != -1) {
                 //Originally SBML
+                m_tabmanager->sbmlTabs(true);
+                sbmlTabs->setChecked(true);
                 char* modname = getNthModuleName(getNumModules()-1);
                 SBMLDocument* document = readSBML(filename.toUtf8().data());
                 int level = document->getLevel();
@@ -256,6 +258,8 @@ Translator::Translator(QTAntimony* app, QString filename)
 #ifndef NCELLML
             else if (loadCellMLFile(filename.toUtf8().data()) != -1) {
                 //Originally CellML
+                m_tabmanager->cellmlTabs(true);
+                cellmlTabs->setChecked(true);
                 char* modname = getMainModuleName();
                 AddCellMLTab(modname, filetext, false);
                 m_tabmanager->cellmltextbox()->SetOriginal();

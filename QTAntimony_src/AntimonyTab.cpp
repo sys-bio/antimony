@@ -67,7 +67,7 @@ bool AntimonyTab::setupSBMLCopy()
     QString antimony = textCursor().selectedText();
     antimony.replace(QChar::ParagraphSeparator, "\n");
     if (antimony == "") return false;
-    long handle = loadString(antimony.toUtf8().data());
+    long handle = loadAntimonyString(antimony.toUtf8().data());
     if (handle==-1) {
         return false;
     }
