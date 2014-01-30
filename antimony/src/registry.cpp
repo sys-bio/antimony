@@ -528,7 +528,7 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
   string modname(makeUTF8(wmodname));
   FixName(modname);
   modname += "__" MAINMODULE;
-  while (NewCurrentModule(&modname)) {
+  while (NewCurrentModule(&modname, true)) {
     //Failure - duplicated name
     modname += "_";
   }
@@ -559,6 +559,7 @@ bool Registry::LoadCellML(iface::cellml_api::Model* model)
   //We've pulled a fast one here by inserting connections into models that were already copied into other models.  So, we need to go back through and pull those connections into the copied models.  We'll do this recursively by calling the routine on the top model.
   CurrentModule()->ReloadSubmodelVariables(CurrentModule()->GetModuleName());
   CurrentModule()->ReloadSubmodelConnections(CurrentModule());
+  CurrentModule()->SetIsMain(true);
   
   return false; //success
 }

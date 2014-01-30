@@ -121,6 +121,7 @@ public:
   std::string GetFormulaForNthEntryInStrand(std::string cc, size_t n);
   std::string GetDisplayName() const;
   bool IsDeletedUnit() const {return m_deletedunit;}
+  void SetIsDeletedUnit(bool del) {m_deletedunit = del;}
 
   Variable* GetUnitVariable() const;
   bool SetUnitVariable(std::string);
@@ -145,6 +146,8 @@ public:
   bool SetDisplayName(std::string name);
   bool SetUnitDef(UnitDef* unitdef);
   bool SetUnit(Variable* var);
+
+  void AddDeletion(Variable* var, deletion_type deltype);
 
   //Submodule conversion factors:
   bool SetExtentConversionFactor(Variable* var);
