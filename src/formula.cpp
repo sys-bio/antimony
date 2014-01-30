@@ -8,6 +8,7 @@
 #include "registry.h"
 #include "stringx.h"
 #include "sbmlx.h"
+#include "typex.h"
 #include "variable.h"
 
 using namespace std;
@@ -605,12 +606,17 @@ bool Formula::Matches(const Formula* newform) const
       Module* module = g_registry.GetModule(orig.m_components[c].first);
       assert(module != NULL);
       Variable* subvar = module->GetVariable(orig.m_components[c].second);
+      assert(subvar != NULL);
       subvar = subvar->GetSameVariable();
       Variable* newvar = module->GetVariable(newform->m_components[c].second);
-      if (newvar == NULL || subvar != newvar->GetSameVariable()) return false;
+      if (newvar == NULL || subvar != newvar->GetSameVariable()){
+        return false;
+      }
     }
     else {
-      if (orig.m_components[c] != newform->m_components[c]) return false;
+      if (orig.m_components[c] != newform->m_components[c]) {
+        return false;
+      }
     }
   }
   return true;
@@ -664,6 +670,25 @@ void Formula::ConvertTime(Variable* tcf)
         AddVariable(tcf);
         AddMathThing(')');
         hasTime = true;
+    }
+    else if (oldcomponents[comp].second.size() > 0) {
+        //We need to convert references to reactions, too.
+        Module* module = g_registry.GetModule(oldcomponents[comp].first);
+        assert(module != NULL);
+        Variable* subvar = module->GetVariable(oldcomponents[comp].second);
+        Variable* samesubvar = subvar->GetSameVariable();
+        if (IsReaction(subvar->GetType()) && subvar == samesubvar) {
+          subvar = subvar->GetSameVariable();
+          AddMathThing('(');
+          m_components.push_back(oldcomponents[comp]);
+          AddMathThing('*');
+          AddVariable(tcf);
+          AddMathThing(')');
+          hasTime = true;
+        }
+        else {
+          m_components.push_back(oldcomponents[comp]);
+        }
     }
     else {
       m_components.push_back(oldcomponents[comp]);

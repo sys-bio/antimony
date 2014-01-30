@@ -1,5 +1,6 @@
 #include "TabManager.h"
 #include "Translator.h"
+#include "CellMLTab.h"
 #include "ChangeableTextBox.h"
 #include "CopyMessageBox.h"
 #include "SBMLTab.h"
@@ -188,13 +189,14 @@ void TabManager::cellmlTabs(bool checked)
         }
         Translator* translator = static_cast<Translator*>(parent());
         translator->AddCellMLTab();
-        TranslateAntimony();
+        //TranslateAntimony();
     }
     else {
         //Remove the CellML Tab
         assert(m_cellmltab == 1);
         removeTab(1);
         m_cellmltab = -1;
+        m_sbmltab = 1;
     }
 }
 
@@ -432,6 +434,12 @@ void TabManager::TranslateSBML(int tab, const QString& text)
         anttab->SetTranslated();
       }
     }
+    if (m_cellmltab != -1) {
+      char* cellmltext = getCellMLString(NULL);
+      CellMLTab* cellmltab = static_cast<CellMLTab*>(textbox(m_cellmltab));
+      cellmltab->SetTranslatedText(QString(cellmltext));
+      cellmltab->SetTranslated();
+    }
     clearPreviousLoads();
 #ifndef WIN32
     freeAll();
@@ -472,6 +480,15 @@ void TabManager::TranslateCellML(QString& text)
         int tabnum = m_sbmltab;
         for (long mod=0; mod<nummods; mod++) {
             char* modname = getNthModuleName(mod);
+			if (mod==0) {
+				//The '__main' module will always be model 0.  I want this to be the *last* tab for this translator, so since the Antimony tab is tab 0, model 0 (if it has any variables) goes to the end.
+				long numvars = getNumSymbolsOfType(modname, allSymbols);
+				if (numvars == 0 && nummods != 1) {
+					removeTab(count()-1);
+					continue;
+				}
+				tabnum = nummods+m_sbmltab-1;
+            }
             ChangeableTextBox* tab_s = textbox(tabnum);
 #ifdef USE_COMP
             if (m_flatten) {

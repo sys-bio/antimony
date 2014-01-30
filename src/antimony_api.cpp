@@ -414,6 +414,7 @@ LIB_EXTERN long loadSBMLStringWithLocation(const char* model, const char* locati
 
 long CheckAndAddCellMLDoc(iface::cellml_api::Model* model)
 {
+  g_registry.ClearModules();
   g_registry.ClearWarnings();
   if (g_registry.LoadCellML(model)) return -1;
   g_registry.FinalizeModules();

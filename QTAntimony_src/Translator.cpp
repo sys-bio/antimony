@@ -196,9 +196,7 @@ Translator::Translator(QTAntimony* app, QString filename)
             QTextStream in(&file);
             filetext = in.readAll();
             m_filewatcher->addPath(filename);
-            long SBMLHandle = loadSBMLFile(filename.toUtf8().data());
-            long AntimonyHandle = loadAntimonyFile(filename.toUtf8().data());
-            if (SBMLHandle == -1 && AntimonyHandle != -1) {
+            if (loadAntimonyFile(filename.toUtf8().data()) != -1) {
                 //Originally Antimony
                 m_antimony->setText(filetext);
                 m_antimony->SetSavedFilename(filename);
@@ -238,7 +236,7 @@ Translator::Translator(QTAntimony* app, QString filename)
                     }
                 }
             }
-            else if (SBMLHandle != -1) {
+            else if (loadSBMLFile(filename.toUtf8().data()) != -1) {
                 //Originally SBML
                 m_tabmanager->sbmlTabs(true);
                 sbmlTabs->setChecked(true);
@@ -261,23 +259,41 @@ Translator::Translator(QTAntimony* app, QString filename)
                 m_tabmanager->cellmlTabs(true);
                 cellmlTabs->setChecked(true);
                 char* modname = getMainModuleName();
-                AddCellMLTab(modname, filetext, false);
-                m_tabmanager->cellmltextbox()->SetOriginal();
-                m_tabmanager->cellmltextbox()->SetSavedFilename(filename);
+                ChangeableTextBox* cellml = m_tabmanager->cellmltextbox();
+                cellml->SetModelName(modname);
+                cellml->setPlainText(filetext);
+                cellml->SetOriginal();
+                cellml->SetSavedFilename(filename);
                 m_antimony->SetTranslatedText(getAntimonyString(NULL));
+                displaycellml = true;
                 if (displaysbml) {
-                  AddSBMLTab();
+                  //AddSBMLTab();
+                  //We have to re-load the model so that we can create and populate the correct number of SBML tabs.
                   m_tabmanager->TranslateCellML();
                 }
             }
 #endif
             else {
-                //Not a valid file of either format, but maybe we can tell if it's XML or not.
+                //Not a valid file of any format, but maybe we can tell if it's XML or not.
                 QRegExp lessthanstart("^\\s*<");
                 if (filetext.contains(lessthanstart)) {
-                    //It's SBML.  Probably.  Re-read it as SBML to find the error:
-                    loadSBMLFile(filename.toUtf8().data());
-                    AddSBMLTab("", filetext, false);
+                    bool iscellml = false;
+                    QRegExp cellmlorg("www.cellml.org");
+                    if (filetext.contains(cellmlorg)) {
+                      iscellml = true;
+                      AddCellMLTab("", filetext, false);
+                      m_tabmanager->cellmltextbox()->SetSavedFilename(filename);
+                      m_tabmanager->cellmltextbox()->SetFailedTranslation();
+                      active = m_tabmanager->cellmltextbox();
+                    }
+                    else {
+                      //It's SBML.  Probably.  Re-read it as SBML to find the error:
+                      loadSBMLFile(filename.toUtf8().data());
+                      AddSBMLTab("", filetext, false);
+                      m_tabmanager->firstsbmltextbox()->SetSavedFilename(filename);
+                      m_tabmanager->firstsbmltextbox()->SetFailedTranslation();
+                      active = m_tabmanager->firstsbmltextbox();
+                    }
                     QString error = getLastError();
                     //m_tabmanager->textbox(1)->DisplayError(error);
                     QRegExp oneline("([^\n]{50}\\S*)\\s");
@@ -288,9 +304,6 @@ Translator::Translator(QTAntimony* app, QString filename)
                     error = "// (Switch to the SBML tab to get the original faulty model.  Hit 'undo' if necessary.)\n" + error;
                     m_antimony->ReplaceTextWith(error);
                     m_antimony->SetFailedTranslation();
-                    m_tabmanager->firstsbmltextbox()->SetSavedFilename(filename);
-                    m_tabmanager->firstsbmltextbox()->SetFailedTranslation();
-                    active = m_tabmanager->firstsbmltextbox();
                 }
                 else{
                     AddSBMLTab();

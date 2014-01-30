@@ -1446,11 +1446,11 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
       retval += ")";
       Variable* extentconv = m_variables[var]->GetExtentConversionFactor();
       Variable* timeconv = m_variables[var]->GetTimeConversionFactor();
-      if (extentconv != NULL) {
-        retval += ", extentconv = " + extentconv->GetNameDelimitedBy(cc);
-      }
       if (timeconv !=NULL) {
         retval += ", timeconv = " + timeconv->GetNameDelimitedBy(cc);
+      }
+      if (extentconv != NULL) {
+        retval += ", extentconv = " + extentconv->GetNameDelimitedBy(cc);
       }
       retval += ";\n";
     }
@@ -2147,7 +2147,9 @@ void Module::Convert(Variable* conv, Variable* cf, string modulename)
     case varInteraction:
       form = subvar->GetFormula();
       origform = *origsubvar->GetFormula();
-      origform.SetNewTopName(modulename, m_variablename[0]);
+      for (size_t vn=m_variablename.size() - origsubvar->GetName().size() + 1; vn > 0; vn--) {
+        origform.SetNewTopName(modulename, m_variablename[vn-1]);
+      }
       if (origform.Matches(form)) {
         form->Convert(conv, cf);
       }
@@ -2213,7 +2215,50 @@ void Module::ConvertTime(Variable* tcf)
     }
   }
 }
-
+/*
+void Module::ConvertTimeForRxnRefs(Variable* tcf)
+{
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* subvar = m_variables[var];
+    Variable* samesubvar = subvar->GetSameVariable();
+    Formula* form = NULL;
+    switch (subvar->GetType()) {
+    case varReactionUndef:
+    case varReactionGene:
+      if (subvar == samesubvar) {
+        subvar->GetFormula()->AddInvTimeConversionFactor(tcf);
+      }
+    case varFormulaUndef:
+    case varFormulaOperator:
+    case varDNA:
+    case varSpeciesUndef:
+    case varCompartment:
+    case varUndefined:
+    case varInteraction:
+      if (subvar == samesubvar) {
+        subvar->GetFormula()->ConvertTime(tcf);
+        if (subvar->GetFormulaType() == formulaRATE) {
+          subvar->GetRateRule()->AddInvTimeConversionFactor(tcf);
+          subvar->GetRateRule()->ConvertTime(tcf);
+        }
+      }
+      break;
+    case varModule:
+      subvar->GetModule()->ConvertTime(tcf);
+      break;
+    case varEvent:
+      if (subvar == samesubvar) {
+        subvar->GetEvent()->ConvertTime(tcf);
+      }
+      break;
+    case varUnitDefinition:
+    case varStrand:
+    case varDeleted:
+      break;
+    }
+  }
+}
+*/
 void Module::ConvertExtent(Variable* xcf)
 {
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -2223,6 +2268,7 @@ void Module::ConvertExtent(Variable* xcf)
     case varReactionUndef:
     case varReactionGene:
       subvar->GetFormula()->AddConversionFactor(xcf);
+      Convert(subvar, xcf, subvar->GetNamespace());
       break;
     case varModule:
       subvar->GetModule()->ConvertExtent(xcf);

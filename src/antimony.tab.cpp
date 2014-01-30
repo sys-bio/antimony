@@ -3397,6 +3397,15 @@ int antimony_yylex(void)
       cc = '/';
     }
   }
+  else if (cc == '#') {
+      while (cc != '\n' && cc != '\r' && !g_registry.input->eof()) {
+        g_registry.input->get(cc);
+      }
+      if (!g_registry.input->eof()) {
+        g_registry.input->unget();
+      }
+      return antimony_yylex();
+  }
 
   //Parse ellipses
   if (cc == '.') {

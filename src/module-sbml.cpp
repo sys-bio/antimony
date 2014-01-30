@@ -589,6 +589,38 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
   if (ia != NULL) {
     bool localparent = true;
 #ifdef USE_COMP
+    //We need to check to see if the initial assignment replaced anything
+    CompSBasePlugin* iaplugin = const_cast<CompSBasePlugin*>(static_cast<const CompSBasePlugin*>(ia->getPlugin("comp")));
+    if (iaplugin != NULL) {
+      if (iaplugin->isSetReplacedBy()) {
+        //Ignore this rule
+        localparent = false;
+      }
+      for (unsigned int re = 0; re<iaplugin->getNumReplacedElements(); re++) {
+        ReplacedElement* replacedelement = iaplugin->getReplacedElement(re);
+        const SBase* target = replacedelement->getReferencedElement();
+        assert(target != NULL);
+        if (target != NULL) {
+          const InitialAssignment* targetia = static_cast<const InitialAssignment*>(target);
+          vector<string> tia_name;
+          const SBaseRef* sbr = replacedelement->getSBaseRef();
+          tia_name.push_back(targetia->getSymbol());
+          const SBase* parentsub = targetia->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
+          while (parentsub != NULL) {
+            const Submodel* submod = static_cast<const Submodel*>(parentsub);
+            tia_name.insert(tia_name.begin(), submod->getId());
+            parentsub = parentsub->getAncestorOfType(SBML_COMP_SUBMODEL, "comp");
+          }
+          Variable* target = GetVariable(tia_name);
+          vector<string> submodname;
+          submodname.push_back(replacedelement->getSubmodelRef());
+          Variable* submodel = GetVariable(submodname);
+          submodel->AddDeletion(target, delInitialAssignment);
+          Formula blankform;
+          target->SetFormula(&blankform);
+        }
+      }
+    }
     const SBase* parent = ia->getParentSBMLObject();
     while (parent != NULL) {
       if (parent->getTypeCode() == SBML_COMP_SUBMODEL) {
@@ -616,6 +648,47 @@ void Module::TranslateRulesAndAssignmentsTo(const SBase* obj, Variable* var)
   if (rule != NULL) {
     bool localparent = true;
 #ifdef USE_COMP
+    //We need to check to see if the rule replaced anything
+    CompSBasePlugin* ruleplugin = const_cast<CompSBasePlugin*>(static_cast<const CompSBasePlugin*>(rule->getPlugin("comp")));
+    if (ruleplugin != NULL) {
+      if (ruleplugin->isSetReplacedBy()) {
+        //Ignore this rule
+        localparent = false;
+      }
+      for (unsigned int re = 0; re<ruleplugin->getNumReplacedElements(); re++) {
+        ReplacedElement* replacedelement = ruleplugin->getReplacedElement(re);
+        SBase* target = replacedelement->getReferencedElement();
+        assert(target != NULL);
+        if (target != NULL) {
+          const Rule* targetrule = static_cast<Rule*>(target);
+          vector<string> trule_name;
+          trule_name.push_back(targetrule->getVariable());
+          const SBase* parentsub = targetrule->getParentSBMLObject();
+          while (parentsub != NULL) {
+            if (parentsub->getTypeCode() == SBML_COMP_SUBMODEL) {
+              const Submodel* submod = static_cast<const Submodel*>(parentsub);
+              trule_name.insert(trule_name.begin(), submod->getId());
+            }
+            parentsub = parentsub->getParentSBMLObject();
+          }
+          Variable* target = GetVariable(trule_name);
+          vector<string> submodname;
+          submodname.push_back(replacedelement->getSubmodelRef());
+          Variable* submodel = GetVariable(submodname);
+          deletion_type deltype = delRateRule;
+          Formula blankform;
+          if (targetrule->getTypeCode() == SBML_ASSIGNMENT_RULE) {
+            deltype = delAssignmentRule;
+            target->SetFormula(&blankform);
+          }
+          else {
+            target->SetRateRule(&blankform);
+          }
+          submodel->AddDeletion(target, deltype);
+
+        }
+      }
+    }
     const SBase* parent = rule->getParentSBMLObject();
     while (parent != NULL) {
       if (parent->getTypeCode() == SBML_COMP_SUBMODEL) {
@@ -706,6 +779,9 @@ void Module::LoadSBML(const Model* sbml)
             }
             AddDeletion(deletedvar);
             deletedvar->SetAnnotation(deletion);
+            if (target->getTypeCode() == SBML_UNIT_DEFINITION) {
+              deletedvar->SetIsDeletedUnit(true);
+            }
             break;
           case SBML_PRIORITY:
           case SBML_DELAY:
@@ -748,6 +824,9 @@ void Module::LoadSBML(const Model* sbml)
             targetname.push_back(GetNewIDForLocalParameter(target));
             deletedvar->GetFormula()->ReplaceWith(targetname, paramname);
             deletedvar->SetAnnotation(deletion);
+            //Create a deletion for the globalized local parameter from the SBML model.
+            origparam = GetVariable(targetname);
+            AddDeletion(origparam);
             break;
           case SBML_SPECIES_REFERENCE:
             assert(reaction != NULL);
@@ -761,6 +840,10 @@ void Module::LoadSBML(const Model* sbml)
             paramname = targetname;
             paramname.push_back(sr->getSpecies());
             origparam = GetVariable(paramname);
+            if (deletedvar->GetType() == varDeleted) {
+              //Don't need to delete a child of a deleted thing
+              break;
+            }
             deletedvar->GetReaction()->ClearReferencesTo(origparam, &noret);
             break;
           case SBML_KINETIC_LAW:
@@ -930,10 +1013,8 @@ void Module::LoadSBML(const Model* sbml)
       if (amount != 0 && defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
         Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
         Formula* compform = compartment->GetFormula();
-        if (!compform->IsOne()) {
-          formula.AddMathThing('/');
-          formula.AddVariable(compartment);
-        }
+        formula.AddMathThing('/');
+        formula.AddVariable(compartment);
       }
       var->SetFormula(&formula);
     }
@@ -949,7 +1030,7 @@ void Module::LoadSBML(const Model* sbml)
     }
     Variable* compartment = NULL;
     if (defaultcompartments.find(species->getCompartment()) == defaultcompartments.end()) {
-      Variable* compartment = AddOrFindVariable(&(species->getCompartment()));
+      compartment = AddOrFindVariable(&(species->getCompartment()));
       compartment->SetType(varCompartment);
       var->SetCompartment(compartment);
     }
@@ -1031,13 +1112,15 @@ void Module::LoadSBML(const Model* sbml)
       const SpeciesReference* reactant = reaction->getReactant(react);
       double stoichiometry = 1;
       if (reactant->isSetStoichiometryMath()) {
-        //LS DEBUG:  error message?
+        g_registry.AddWarning("Unable to set the stoichiometry math for the reactant " + reactant->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry math is not a valid concept in Antimony.");
       }
       else {
         if (reactant->isSetStoichiometry()) {
           stoichiometry = reactant->getStoichiometry();
         }
-        //LS DEBUG:  else error?
+        else {
+          g_registry.AddWarning("Unable to leave the stoichiometry unset for the reactant " + reactant->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry always has a value in Antimony.");
+        }
       }
       sbmlname = reactant->getSpecies();
       if (sbmlname == "") {
@@ -1045,6 +1128,12 @@ void Module::LoadSBML(const Model* sbml)
       }
       Variable* rvar = AddOrFindVariable(&sbmlname);
       reactants.AddReactant(rvar, stoichiometry);
+#ifdef USE_COMP
+      const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(reactant->getPlugin("comp"));
+      if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
+        g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + reactant->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
+      }
+#endif
     }
     //products
     ReactantList products;
@@ -1052,11 +1141,14 @@ void Module::LoadSBML(const Model* sbml)
       const SpeciesReference* product = reaction->getProduct(react);
       double stoichiometry = 1;
       if (product->isSetStoichiometryMath()) {
-        //LS DEBUG:  error message?
+        g_registry.AddWarning("Unable to set the stoichiometry math for the product " + product->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry math is not a valid concept in Antimony.");
       }
       else {
         if (product->isSetStoichiometry()) {
           stoichiometry = product->getStoichiometry();
+        }
+        else {
+          g_registry.AddWarning("Unable to leave the stoichiometry unset for the product " + product->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry always has a value in Antimony.");
         }
       }
       sbmlname = product->getSpecies();
@@ -1065,6 +1157,12 @@ void Module::LoadSBML(const Model* sbml)
       }
       Variable* rvar = AddOrFindVariable(&sbmlname);
       products.AddReactant(rvar, stoichiometry);
+#ifdef USE_COMP
+      const CompSBasePlugin* csbp = static_cast<const CompSBasePlugin*>(product->getPlugin("comp"));
+      if (csbp != NULL && (csbp->getNumReplacedElements() != 0 || csbp->isSetReplacedBy())) {
+        g_registry.AddWarning("Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of " + product->getSpecies() + " in reaction " + reaction->getId() + " will be ignored.");
+      }
+#endif
     }
     //formula
     string formulastring = "";
@@ -1185,6 +1283,25 @@ void Module::LoadSBML(const Model* sbml)
       Variable* portvar = AddOrFindVariable(&refid);
       AddVariableToExportList(portvar);
     }
+    /*
+    //Time and extent for reaction references only:
+    for (unsigned int sm=0; sm<mplugin->getNumSubmodels(); sm++) {
+      const Submodel* submodel = mplugin->getSubmodel(sm);
+      string submodname = getNameFromSBMLObject(submodel, "submod");
+      Variable* var = AddOrFindVariable(&submodname);
+      Module* submod = var->GetModule();
+      if (submodel->isSetTimeConversionFactor()) {
+        string tcf = submodel->getTimeConversionFactor();
+        Variable* tcfvar = AddOrFindVariable(&tcf);
+        submod->SetTimeConversionFactorForRxnRefs(tcfvar);
+      }
+      if (submodel->isSetExtentConversionFactor()) {
+        string xcf = submodel->getExtentConversionFactor();
+        Variable* xcfvar = AddOrFindVariable(&xcf);
+        submod->SetExtentConversionFactorForRxnRefs(xcfvar);
+      }
+    }
+    */
   }
 #endif //USE_COMP
 
@@ -1254,13 +1371,13 @@ void Module::CreateSBMLModel(bool comp)
       sbmlsubmod->setName(submod->GetDisplayName());
       sbmlsubmod->setModelRef(module->GetModuleName());
       submod->TransferAnnotationTo(sbmlsubmod);
-      Variable* conv = submod->GetExtentConversionFactor();
-      if (conv != NULL) {
-        sbmlsubmod->setExtentConversionFactor(conv->GetNameDelimitedBy(cc));
-      }
-      conv = submod->GetTimeConversionFactor();
+      Variable* conv = submod->GetTimeConversionFactor();
       if (conv != NULL) {
         sbmlsubmod->setTimeConversionFactor(conv->GetNameDelimitedBy(cc));
+      }
+      conv = submod->GetExtentConversionFactor();
+      if (conv != NULL) {
+        sbmlsubmod->setExtentConversionFactor(conv->GetNameDelimitedBy(cc));
       }
       //Delete the submodel's default compartment, if it is no longer needed
       if (!GetNeedDefaultCompartment() && g_registry.GetModule(module->GetModuleName())->GetNeedDefaultCompartment()) {
@@ -1317,6 +1434,9 @@ void Module::CreateSBMLModel(bool comp)
         assert(parentModelsb != NULL);
         Model* parentModel = static_cast<Model*>(parentModelsb);
         SBase* target = parentModel->getElementBySId(delname[delname.size()-1]);
+        if (target == NULL) {
+          target = parentModel->getUnitDefinition(delname[delname.size()-1]);
+        }
         assert(target != NULL);
         Event* event = static_cast<Event*>(target);
         Priority* priority = NULL;

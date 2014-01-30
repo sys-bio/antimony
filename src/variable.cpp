@@ -463,6 +463,7 @@ bool Variable::GetIsConst() const
     return false;
   case varUndefined:
     if (m_const==constDEFAULT) return true;
+    break;
   case varUnitDefinition:
   case varDeleted:
     return true;
@@ -1417,6 +1418,13 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
   //And set deletedvar to 'deleted'!  Like Strong Bad!
   deletedvar->SetType(varDeleted);
   return false;
+}
+
+void Variable::AddDeletion(Variable* var, deletion_type deltype)
+{
+  assert(var != NULL);
+  if (var==NULL) return;
+  m_deletions.insert(make_pair(var->GetName(), deltype));
 }
 
 set<pair<vector<string>, deletion_type> > Variable::ClearReferencesTo(Variable* deletedvar)

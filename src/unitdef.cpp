@@ -182,23 +182,32 @@ UnitDef*  UnitDef::GetUnitDefFromASTNode(ASTNode* astn)
   case AST_TIMES:
     if (astn->getNumChildren()==0) break;
     if (astn->getNumChildren()==1) return udch1;
-    if ((child1->isReal() || child1->isInteger()) && (!child2->isReal() && !child2->isInteger())) {
-      if (udch2==NULL) break;
-      udch2->MultiplyBy(GetValueFrom(child1));
-      ret = udch2;
-      delete udch1;
+    if (udch1 == NULL) {
+      if (udch2 == NULL) {
+        //Both are numbers?
+        assert(child1->isNumber() && child2->isNumber());
+        udch1 = new UnitDef("dimensionless", m_module);
+        udch1->MultiplyBy(GetValueFrom(child1));
+        udch1->MultiplyBy(GetValueFrom(child2));
+        ret = udch1;
+      }
+      else {
+        assert(child1->isNumber());
+        udch2->MultiplyBy(GetValueFrom(child1));
+        ret = udch2;
+      }
     }
-    else if ((child2->isReal() || child2->isInteger()) && (!child1->isReal() && !child1->isInteger())) {
-      if (udch1==NULL) break;
-      udch1->MultiplyBy(1/GetValueFrom(child2));
-      ret =  udch1;
-      delete udch2;
-    }
-    else if (udch1==NULL || udch2==NULL) break; //Some sort of error?
     else {
       ret = udch1;
-      ret->MultiplyUnitDef(udch2);
-      delete udch2;
+      if (udch2 != NULL) {
+        //Both are actual UnitDefs
+        udch1->MultiplyUnitDef(udch2);
+        delete udch2;
+      }
+      else {
+        assert(child2->isNumber());
+        udch1->MultiplyBy(GetValueFrom(child2));
+      }
     }
     //Might be 3+ children of astn, so delete the two we have and call recursively:
     if (astn->getNumChildren() > 2) {
@@ -206,15 +215,14 @@ UnitDef*  UnitDef::GetUnitDefFromASTNode(ASTNode* astn)
       astn->removeChild(0);
       udch1 = GetUnitDefFromASTNode(astn);
       if (udch1 == NULL) {
-        delete ret;
-        ret=NULL;
-        break;
+        udch1->MultiplyBy(GetValueFrom(astn->getChild(0)));
       }
-      ret->MultiplyUnitDef(udch1);
-      delete udch1;
+      else {
+        ret->MultiplyUnitDef(udch1);
+        delete udch1;
+      }
     }
     return ret;
-    break;
   case AST_DIVIDE:
     if (astn->getNumChildren()!=2) break;
     if (udch1 != NULL) {
@@ -224,7 +232,6 @@ UnitDef*  UnitDef::GetUnitDefFromASTNode(ASTNode* astn)
         return udch1;
       }
       if (child2->isReal() || child2->isInteger()) {
-        if (udch1==NULL) break;
         udch1->MultiplyBy(1/GetValueFrom(child2));
         delete udch2;
         return udch1;
@@ -320,7 +327,6 @@ bool UnitDef::ComponentsMatch(UnitDef* unitdef)
 
 bool UnitDef::IsOnlyCanonicalKind() const
 {
-  string cc = g_registry.GetCC();
   set<string> usednames;
   const UnitDef* canonical = GetCanonical(usednames);
   if (canonical==NULL) {
@@ -335,7 +341,8 @@ bool UnitDef::IsOnlyCanonicalKind() const
   if (ue.GetExponent() != 1) return false;
   if (ue.GetMultiplier() != 1) return false;
   if (ue.GetScale() != 0) return false;
-  if (ue.GetKind() != GetNameDelimitedBy(cc)) return false;
+  vector<string> fullname = GetName();
+  if (ue.GetKind() != fullname[fullname.size()-1]) return false;
   return ue.KindIsCanonical();
 }
 
