@@ -175,6 +175,17 @@ void AntimonyEvent::ConvertTime(Variable* tcf)
   }
 }
 
+void AntimonyEvent::UnConvertTimeExtent(Variable* tcf, Variable* xcf)
+{
+  m_trigger.UnConvertTimeExtent(tcf, xcf);
+  m_delay.UnConvertTimeExtent(tcf, xcf);
+  m_delay.UnConvertTimeExtent(tcf, xcf);
+  m_priority.UnConvertTimeExtent(tcf, xcf);
+  for (size_t fr=0; fr<m_formresults.size(); fr++) {
+    m_formresults[fr].UnConvertTimeExtent(tcf, xcf);
+  }
+}
+
 bool AntimonyEvent::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, deletion_type> >* ret)
 {
   if (IsEmpty()) return false;

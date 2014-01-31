@@ -32,6 +32,7 @@ Variable::Variable(const string name, const Module* module)
     m_strands(),
     m_type(varUndefined),
     m_deletedunit(false),
+    m_replacedformrxn(false),
     m_const(constDEFAULT),
     m_unitVariable()
 {
@@ -1644,6 +1645,7 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
       m_valReaction.GetFormula()->AddConversionFactor(conversionFactor);
       if (clone->SetReaction(&m_valReaction)) return true;
     }
+    m_replacedformrxn = true;
     m_valReaction.Clear();
   }
 

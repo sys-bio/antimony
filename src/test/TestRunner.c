@@ -116,7 +116,7 @@ main (int argc, char* argv[])
   //SRunner *runner = srunner_create( create_suite_Hierarchy() );
   //SRunner *runner = srunner_create( create_suite_Flattening() );
   srunner_add_suite( runner, create_suite_Hierarchy() );
-  //srunner_add_suite( runner, create_suite_Flattening() );
+  srunner_add_suite( runner, create_suite_Flattening() );
   //srunner_add_suite( runner, create_suite_FlatteningFailures() );
 
 
