@@ -1,0 +1,37 @@
+//Created by libAntimony v2.5
+model moddef1()
+
+  // Compartments and Species:
+  compartment C;
+  species s1 in C;
+
+  // Reactions:
+  J0:  -> s1; (s1*time)/delay(s1,2.000000e+004);
+
+  // Species initializations:
+  s1 = 1/ C;
+
+  // Compartment initializations:
+  C = 1;
+
+  //Other declarations:
+  const C;
+end
+
+model moddef2()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1();
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef2(), extentconv = extentconv;
+
+  // Variable initializations:
+  extentconv = 1000;
+
+  //Other declarations:
+  const extentconv;
+end

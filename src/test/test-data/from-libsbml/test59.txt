@@ -1,0 +1,33 @@
+//Created by libAntimony v2.5
+
+// Warnings from automatic translation:
+//    Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of z in reaction J2 will be ignored.
+
+model foo()
+
+  // Compartments and Species:
+  species x;
+
+  // Reactions:
+  J0: x -> ; ;
+
+  // Species initializations:
+  x = ;
+end
+
+model *bar()
+
+  // Sub-modules, and any changes to those submodules:
+  A: foo();
+  A.J0 is J1;
+
+  // Compartments and Species:
+  species y, z;
+
+  // Reactions:
+  J2:  -> z + z; ;
+
+  // Species initializations:
+  y = ;
+  z = ;
+end

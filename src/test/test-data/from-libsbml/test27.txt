@@ -1,0 +1,33 @@
+//Created by libAntimony v2.5
+model moddef1()
+
+  // Assignment Rules:
+  t1 := time+3;
+
+  //Other declarations:
+  var t1;
+end
+
+model moddef2()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1(), timeconv = timeconv;
+
+  // Variable initializations:
+  timeconv = 60;
+
+  //Other declarations:
+  const timeconv;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef2(), timeconv = timeconv;
+
+  // Variable initializations:
+  timeconv = 60;
+
+  //Other declarations:
+  const timeconv;
+end

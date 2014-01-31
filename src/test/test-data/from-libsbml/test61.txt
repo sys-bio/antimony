@@ -1,0 +1,68 @@
+//Created by libAntimony v2.5
+
+// Warnings from automatic translation:
+//    Unable to leave the stoichiometry unset for the reactant S1 in reaction R1 because stoichiometry always has a value in Antimony.
+//    Unable to leave the stoichiometry unset for the reactant S1 in reaction R1 because stoichiometry always has a value in Antimony.
+//    Cannot replace stoichiometries in Antimony:  all replacedElements and replacedBy children of S1 in reaction R1 will be ignored.
+//    Unable to leave the stoichiometry unset for the product S in reaction R1 because stoichiometry always has a value in Antimony.
+
+model enzyme()
+
+  // Compartments and Species:
+  compartment c;
+  species S1 in c;
+
+  // Reactions:
+  R1: S1 => ; S1/ R1_k;
+
+  // Species initializations:
+  S1 = 1/ c;
+  S1 has mole_per_litre;
+
+  // Compartment initializations:
+  c = 1;
+  c has litre;
+
+  // Variable initializations:
+  R1_k = 0.1;
+  R1_k has second;
+
+  //Other declarations:
+  const c;
+
+  // Unit definitions:
+  unit mole_per_litre = mole / litre;
+end
+
+model *aggregate()
+
+  // Sub-modules, and any changes to those submodules:
+  submod1: enzyme();
+
+  // Compartments and Species:
+  compartment c;
+  species S in c, S1 in c;
+
+  // Reactions:
+  R1: S1 => S; S/ R1_k;
+
+  // Species initializations:
+  S = 1/ c;
+  S has mole_per_litre;
+  S1 = 1/ c;
+  S1 has mole_per_litre;
+
+  // Compartment initializations:
+  c = 1;
+  c has litre;
+
+  // Variable initializations:
+  R1_k = 0.1;
+  R1_k has second;
+
+  //Other declarations:
+  const c;
+
+  // Unit definitions:
+  unit mole_per_litre = mole / litre;
+end
