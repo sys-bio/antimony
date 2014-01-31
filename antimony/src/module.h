@@ -220,6 +220,7 @@ public:
   void FixNames();
   void ConvertTime(Variable* tcf);
   void ConvertExtent(Variable* xcf);
+  void UndoTimeExtentConversions(Variable* tcf, Variable* xcf);
 
 private:
   void FillInOrigmap(std::map<const Variable*, Variable >& origmap) const;

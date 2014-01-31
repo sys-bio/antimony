@@ -66,6 +66,9 @@ private:
   //When we are a deleted variable, it makes a difference to SBML whether or not we used to be a unit
   bool m_deletedunit;
 
+  //If we are a submodel reaction that has been replaced, we need to know this because of time and extent conversion factors.
+  bool m_replacedformrxn;
+
   //Additionally, the variable might be set constant
   const_type m_const;
 
@@ -177,6 +180,8 @@ public:
   bool StillMatchesOriginal(formula_type ftype) const;
   const Variable* GetOriginal() const;
   Variable* GetParentVariable();
+
+  bool IsReplacedFormRxn() const {return m_replacedformrxn;};
 
 
 #ifndef NCELLML

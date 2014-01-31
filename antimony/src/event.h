@@ -53,6 +53,7 @@ public:
   bool Matches(const AntimonyEvent* newevent) const;
   void Convert(Variable* converted, Variable* cf);
   void ConvertTime(Variable* tcf);
+  void UnConvertTimeExtent(Variable* tcf, Variable* xcf);
   bool ClearReferencesTo(Variable* deletedvar, std::set<std::pair<std::vector<std::string>, deletion_type> >* ret);
 
   size_t GetNumAssignments() const {return m_varresults.size();};

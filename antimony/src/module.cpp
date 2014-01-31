@@ -951,6 +951,15 @@ bool Module::Finalize()
   }
 
   //Phase 6:  convert conversion factors.
+  //First, undo the time and extent conversion of any submodel reaction whose formula was replaced:
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* submod = m_variables[var];
+    if (submod->GetType() != varModule) {
+      continue;
+    }
+    submod->GetModule()->UndoTimeExtentConversions(submod->GetTimeConversionFactor(), submod->GetExtentConversionFactor());
+  }
+
   if (m_conversionFactors.size() != m_synchronized.size()) {
     //assert(false);
   }
@@ -2215,50 +2224,7 @@ void Module::ConvertTime(Variable* tcf)
     }
   }
 }
-/*
-void Module::ConvertTimeForRxnRefs(Variable* tcf)
-{
-  for (size_t var=0; var<m_variables.size(); var++) {
-    Variable* subvar = m_variables[var];
-    Variable* samesubvar = subvar->GetSameVariable();
-    Formula* form = NULL;
-    switch (subvar->GetType()) {
-    case varReactionUndef:
-    case varReactionGene:
-      if (subvar == samesubvar) {
-        subvar->GetFormula()->AddInvTimeConversionFactor(tcf);
-      }
-    case varFormulaUndef:
-    case varFormulaOperator:
-    case varDNA:
-    case varSpeciesUndef:
-    case varCompartment:
-    case varUndefined:
-    case varInteraction:
-      if (subvar == samesubvar) {
-        subvar->GetFormula()->ConvertTime(tcf);
-        if (subvar->GetFormulaType() == formulaRATE) {
-          subvar->GetRateRule()->AddInvTimeConversionFactor(tcf);
-          subvar->GetRateRule()->ConvertTime(tcf);
-        }
-      }
-      break;
-    case varModule:
-      subvar->GetModule()->ConvertTime(tcf);
-      break;
-    case varEvent:
-      if (subvar == samesubvar) {
-        subvar->GetEvent()->ConvertTime(tcf);
-      }
-      break;
-    case varUnitDefinition:
-    case varStrand:
-    case varDeleted:
-      break;
-    }
-  }
-}
-*/
+
 void Module::ConvertExtent(Variable* xcf)
 {
   for (size_t var=0; var<m_variables.size(); var++) {
@@ -2289,3 +2255,36 @@ void Module::ConvertExtent(Variable* xcf)
   }
 }
 
+void Module::UndoTimeExtentConversions(Variable* tcf, Variable* xcf)
+{
+  if (xcf == NULL && tcf == NULL) return;
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Variable* subvar = m_variables[var];
+    switch (subvar->GetType()) {
+    case varReactionUndef:
+    case varReactionGene:
+    case varFormulaUndef:
+    case varFormulaOperator:
+    case varDNA:
+    case varSpeciesUndef:
+    case varCompartment:
+    case varUndefined:
+    case varInteraction:
+      subvar->GetFormula()->UnConvertTimeExtent(tcf, xcf);
+      if (subvar->GetFormulaType() == formulaRATE) {
+        subvar->GetRateRule()->UnConvertTimeExtent(tcf, xcf);
+      }
+      break;
+    case varModule:
+      subvar->GetModule()->UndoTimeExtentConversions(tcf, xcf);
+      break;
+    case varEvent:
+      subvar->GetEvent()->UnConvertTimeExtent(tcf, xcf);
+      break;
+    case varUnitDefinition:
+    case varStrand:
+    case varDeleted:
+      break;
+    }
+  }
+}

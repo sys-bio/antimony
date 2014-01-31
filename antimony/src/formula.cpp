@@ -676,8 +676,7 @@ void Formula::ConvertTime(Variable* tcf)
         Module* module = g_registry.GetModule(oldcomponents[comp].first);
         assert(module != NULL);
         Variable* subvar = module->GetVariable(oldcomponents[comp].second);
-        Variable* samesubvar = subvar->GetSameVariable();
-        if (IsReaction(subvar->GetType()) && subvar == samesubvar) {
+        if (IsReaction(subvar->GetType()) && !subvar->IsReplacedFormRxn()) {
           subvar = subvar->GetSameVariable();
           AddMathThing('(');
           m_components.push_back(oldcomponents[comp]);
@@ -714,6 +713,47 @@ void Formula::ConvertTime(Variable* tcf)
     vector<string> timename;
     timename.push_back("time");
     m_convertedVariables.push_back(make_pair(timename, tcf->GetName()));
+  }
+}
+
+void Formula::UnConvertTimeExtent(Variable* tcf, Variable* xcf)
+{
+  assert (tcf != NULL || xcf != NULL);
+  vector<pair<string, vector<string> > > oldcomponents = m_components;
+  m_components.clear();
+  for (size_t comp=0; comp<oldcomponents.size(); comp++) {
+    if (oldcomponents[comp].second.size() > 0) {
+        //We might need to unconvert references to some reactions.
+        Module* module = g_registry.GetModule(oldcomponents[comp].first);
+        assert(module != NULL);
+        Variable* subvar = module->GetVariable(oldcomponents[comp].second);
+        if (subvar->IsReplacedFormRxn()) {
+          pair<string, vector<string> > oldcomp = oldcomponents[comp];
+          m_components.pop_back();
+          comp = comp+3;
+          if (tcf != NULL && xcf != NULL) {
+            m_components.pop_back();
+            comp = comp+3;
+          }
+          m_components.push_back(oldcomp);
+          //Have to remove it from our list of conversion factors
+          for (vector<pair<vector<string>, vector<string> > >::iterator cv=m_convertedVariables.begin(); 
+            cv != m_convertedVariables.end(); ) {
+              if ((*cv).first == oldcomp.second) {
+                cv = m_convertedVariables.erase(cv);
+              }
+              else {
+                cv++;
+              }
+          }
+        }
+        else {
+          m_components.push_back(oldcomponents[comp]);
+        }
+    }
+    else {
+      m_components.push_back(oldcomponents[comp]);
+    }
   }
 }
 

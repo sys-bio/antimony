@@ -75,6 +75,7 @@ public:
   bool Matches(const Formula* newform) const;
   void Convert(Variable* converted, Variable* cf);
   void ConvertTime(Variable* tcf);
+  void UnConvertTimeExtent(Variable* tcf, Variable* xcf);
 
   bool MakeAllVariablesUnits();
   bool MakeUnitVariablesUnits();
