@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
+  <model metaid="iBioSim1" id="CompTest3_antimony_roundtrip" name="CompTest">
+    <listOfCompartments>
+      <compartment id="Cell" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species metaid="iBioSim25" id="S1" compartment="Cell" initialConcentration="0" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfRules>
+      <rateRule metaid="rule0" variable="S1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn type="integer"> 1 </cn>
+        </math>
+        <comp:listOfReplacedElements>
+          <comp:replacedElement comp:portRef="rule__iBioSim7" comp:submodelRef="C1"/>
+        </comp:listOfReplacedElements>
+      </rateRule>
+    </listOfRules>
+    <comp:listOfSubmodels>
+      <comp:submodel metaid="iBioSim27" comp:id="C1" comp:modelRef="CompModel"/>
+    </comp:listOfSubmodels>
+  </model>
+  <comp:listOfModelDefinitions>
+    <comp:modelDefinition metaid="CompModel__iBioSim1" id="CompModel" name="CompModel">
+      <listOfParameters>
+        <parameter metaid="CompModel__iBioSim11" id="V2" value="0" constant="false"/>
+      </listOfParameters>
+      <listOfRules>
+        <rateRule metaid="CompModel__iBioSim7" variable="V2">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <cn type="integer"> 3 </cn>
+          </math>
+        </rateRule>
+      </listOfRules>
+      <comp:listOfPorts>
+        <comp:port comp:metaIdRef="CompModel__iBioSim7" comp:id="rule__iBioSim7"/>
+      </comp:listOfPorts>
+    </comp:modelDefinition>
+  </comp:listOfModelDefinitions>
+</sbml>

@@ -1,0 +1,35 @@
+//Created by libAntimony v2.5
+model moddef1()
+
+  // Compartments and Species:
+  compartment C;
+  species s1 in C;
+
+  // Assignment Rules:
+  p80 := J0+6;
+
+  // Reactions:
+  J0:  -> s1; 10;
+
+  // Species initializations:
+  s1 = 1/ C;
+
+  // Compartment initializations:
+  C = 1;
+
+  //Other declarations:
+  var p80;
+  const C;
+end
+
+model *doc0()
+
+  // Sub-modules, and any changes to those submodules:
+  sub1: moddef1(), timeconv = timeconv;
+
+  // Variable initializations:
+  timeconv = 60;
+
+  //Other declarations:
+  const timeconv;
+end
