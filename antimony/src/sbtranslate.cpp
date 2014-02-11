@@ -7,7 +7,7 @@
 #include "antimony_api.h"
 
 #ifndef NSBML
-#include "sbml/sbmlTypes.h"
+#include <sbml/SBMLTypes.h>
 #endif
 
 #ifdef WIN32
@@ -491,19 +491,19 @@ file_type GetFileType(string filename)
   }
   //Didn't find anything obvious, so:
   if (filename.rfind(".cellml") == filename.size()-7 && filename.size() != 6) {
-    cout << "CellML by file extension" << endl;
+    //cout << "CellML by file extension" << endl;
     return FT_CELLML;
   }
   if (filename.rfind(".xml") == filename.size()-4 && filename.size() != 3) {
-    cout << "SBML by file extension" << endl;
+    //cout << "SBML by file extension" << endl;
     return FT_SBML;
   }
   if (filename.rfind(".sbml") == filename.size()-5 && filename.size() != 4) {
-    cout << "SBML by file extension" << endl;
+    //cout << "SBML by file extension" << endl;
     return FT_SBML;
   }
   if (filename.rfind(".txt") == filename.size()-4 && filename.size() != 3) {
-    cout << "Antimony by file extension" << endl;
+    //cout << "Antimony by file extension" << endl;
     return FT_ANTIMONY;
   }
    cout << "Unknown type" << endl;

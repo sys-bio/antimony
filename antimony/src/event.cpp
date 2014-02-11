@@ -313,7 +313,7 @@ string AntimonyEvent::ToStringDelimitedBy(std::string cc) const
     }
     retval += resultvar->GetNameDelimitedBy(cc);
     retval += " = ";
-    retval += m_formresults[result].ToDelimitedStringWithStrands(cc, resultvar->GetStrandVars());
+    retval += m_formresults[result].ToDelimitedStringWithEllipses(cc);
   }
   retval += ";";
   

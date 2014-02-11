@@ -1,5 +1,5 @@
 #version number
-version = 2.4
+version = 2.5
 
 #mingw:
 #mingw = i586-mingw32msvc
@@ -67,6 +67,7 @@ YPPFILES = $(src_dir)antimony.ypp
 
 CPPFILES = $(src_dir)annotated.cpp \
 	$(src_dir)antimony_api.cpp \
+	$(src_dir)antimony_api_cpp.cpp \
 	$(src_dir)Antimony.cpp \
 	$(src_dir)antimony.tab.cpp \
 	$(src_dir)cellmlx.cpp \
@@ -97,6 +98,7 @@ CPPFILES = $(src_dir)annotated.cpp \
 
 HFILES = $(src_dir)annotated.h \
 	$(src_dir)antimony_api.h \
+	$(src_dir)antimony_api_cpp.h \
 	$(src_dir)dnastrand.h \
 	$(src_dir)cellmlx.h \
 	$(src_dir)enums.h \
@@ -157,7 +159,6 @@ QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 	$(qt_dir)Translator.h \
 	$(qt_dir)Tutorial.cpp \
 	$(qt_dir)Tutorial.h \
-	$(qt_dir)Tutorial.html \
 	$(qt_dir)Tutorial.xxd \
 	$(qt_dir)antimony.icns \
 	$(qt_dir)antimony.ico \
@@ -264,6 +265,27 @@ DOCSRCFILES = \
 	README.txt
 
 
+BINDINGFILES = \
+       $(src_dir)bindings/CMakeLists.txt \
+       $(src_dir)bindings/python/antimony.i \
+       $(src_dir)bindings/python/CMakeLists.txt \
+       $(src_dir)bindings/python/local.i \
+       $(src_dir)bindings/python/pydoc-doxygen.i \
+       $(src_dir)bindings/python/pydoc-normal.i \
+       $(src_dir)bindings/python/test.py \
+       $(src_dir)bindings/python/doc-converter/argparse.py \
+       $(src_dir)bindings/python/doc-converter/Makefile \
+       $(src_dir)bindings/python/doc-converter/out.i \
+       $(src_dir)bindings/python/doc-converter/pydoc-doxygen.i \
+       $(src_dir)bindings/python/doc-converter/README.txt \
+       $(src_dir)bindings/python/doc-converter/rewrite_pydoc.py \
+       $(src_dir)bindings/swig/antimony.h \
+       $(src_dir)bindings/swig/antimony.i \
+       $(src_dir)bindings/swig/OStream.cpp \
+       $(src_dir)bindings/swig/OStream.h \
+       $(src_dir)bindings/swig/swigdoc.py
+
+
 #Pointer:
 all : \
 	Makefile
@@ -315,8 +337,8 @@ $(bin_dir)rehashantimony : $(lib_dir)libantimony.a $(src_dir)rehashantimony.o
 
 
 #The distribution zip file.
-srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) Makefile CMakeLists.txt $(ex_dir)cellml_files.zip
-	tar --transform 's,^,antimony/,' -cvf antimony_src_v$(version).tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) $(ex_dir)cellml_files.zip Makefile CMakeLists.txt
+srcdist : $(YPPFILES) $(CPPFILES) $(HFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) $(BINDINGFILES) Makefile CMakeLists.txt $(ex_dir)cellml_files.zip
+	tar --transform 's,^,antimony/,' -cvf antimony_src_v$(version).tar $(YPPFILES) $(CPPFILES) $(HFILES) $(QMAKEFILES) $(DOCFILES) $(DOCSRCFILES) $(QTANTIMONYFILES) $(BINDINGFILES) $(ex_dir)cellml_files.zip Makefile CMakeLists.txt
 	gzip antimony_src_v$(version).tar
 
 
