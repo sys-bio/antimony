@@ -9,27 +9,27 @@ model *BIOMD0000000288()
   species zpp in cell, w in cell, eph in cell;
 
   // Assignment Rules:
-  r := (KDL * sumrc1) / (KDL + L);
-  c1 := (L * sumrc1) / (KDL + L);
-  ePI3K := ((1 + kappaPI3K + 2 * alphaPI3K * c2) - ((1 + kappaPI3K + 2 * alphaPI3K * c2)^2 - 8 * alphaPI3K * c2)^0.5) / 2;
-  eGEF := (KGR * c2 + KGP * m3PI) / (1 + KGR * c2 + KGP * m3PI) * fGEF;
+  r := (KDL*sumrc1)/(KDL + L);
+  c1 := (L*sumrc1)/(KDL + L);
+  ePI3K := ((1 + kappaPI3K + 2*alphaPI3K*c2) - ((1 + kappaPI3K + 2*alphaPI3K*c2)^2 - 8*alphaPI3K*c2)^0.5)/2;
+  eGEF := (KGR*c2 + KGP*m3PI)/(1 + KGR*c2 + KGP*m3PI)*fGEF;
   yp := 1 - y - ypp;
   zp := 1 - z - zpp;
 
   // Reactions:
-  sumrc1ODE:  -> sumrc1; kt * (1 - sumrc1) + 2 * (kminusx * c2 - kxR0 * c1^2);
-  c2ODE:  -> c2; kxR0 * c1^2 - (kminusx + ke) * c2;
-  m3PIODE:  -> m3PI; k3PI * (ePI3K - m3PI);
-  mRasODE:  -> mRas; kRas * ((1 + Gamma) * eGEF - (1 + Gamma * eGEF) * mRas);
-  x1ODE:  -> x1; kdx1 * (mRas - x1 / (1 + y / KMx11 + yp / KMx12));
-  x2ODE:  -> x2; kdx2 * (((1 + Kx2) * m3PI) / (1 + Kx2 * m3PI) - x2 / (1 + y / KMx21 + yp / KMx22));
-  yODE:  -> y; (VmaxOVERKMyph1 * yp) / (1 + yp / KMyph1 + ypp / KMyph2) - (VmaxOVERKMx11 * x1 * y) / (1 + y / KMx11 + yp / KMx12) - (VmaxOVERKMx21 * x2 * y) / (1 + y / KMx21 + yp / KMx22);
-  yppODE:  -> ypp; ((VmaxOVERKMx12 * x1 * yp) / (1 + y / KMx11 + yp / KMx12) + (VmaxOVERKMx22 * x2 * yp) / (1 + y / KMx21 + yp / KMx22)) - (VmaxOVERKMyph2 * ypp) / ((1 + z / KMy1 + zp / KMy2) * (1 + yp / KMyph1) + ypp / KMyph2);
-  zODE:  -> z; (VmaxOVERKMzph1 * eph * zp) / (1 + zp / KMzph1 + zpp / KMzph2) - (VmaxOVERKMy1 * ypp * z) / (1 + z / KMy1 + zp / KMy2);
-  zppODE:  -> zpp; (VmaxOVERKMy2 * ypp * zp) / (1 + z / KMy1 + zp / KMy2) - (VmaxOVERKMzph2 * eph * zpp) / (1 + zp / KMzph1 + zpp / KMzph2);
-  fGEFODE:  -> fGEF; kFBf * ((1 - fGEF) / Kf - zpp^n / (Zf^n + zpp^n) * fGEF);
-  wODE:  -> w; kdw * (zpp - w);
-  ephODE:  -> eph; kFBph * (w^p / (Wph^p + w^p) - (eph - 1) / Kph);
+  sumrc1ODE:  -> sumrc1; kt*(1 - sumrc1) + 2*(kminusx*c2 - kxR0*c1^2);
+  c2ODE:  -> c2; kxR0*c1^2 - (kminusx + ke)*c2;
+  m3PIODE:  -> m3PI; k3PI*(ePI3K - m3PI);
+  mRasODE:  -> mRas; kRas*((1 + Gamma)*eGEF - (1 + Gamma*eGEF)*mRas);
+  x1ODE:  -> x1; kdx1*(mRas - x1/(1 + y/KMx11 + yp/KMx12));
+  x2ODE:  -> x2; kdx2*(((1 + Kx2)*m3PI)/(1 + Kx2*m3PI) - x2/(1 + y/KMx21 + yp/KMx22));
+  yODE:  -> y; (VmaxOVERKMyph1*yp)/(1 + yp/KMyph1 + ypp/KMyph2) - (VmaxOVERKMx11*x1*y)/(1 + y/KMx11 + yp/KMx12) - (VmaxOVERKMx21*x2*y)/(1 + y/KMx21 + yp/KMx22);
+  yppODE:  -> ypp; ((VmaxOVERKMx12*x1*yp)/(1 + y/KMx11 + yp/KMx12) + (VmaxOVERKMx22*x2*yp)/(1 + y/KMx21 + yp/KMx22)) - (VmaxOVERKMyph2*ypp)/((1 + z/KMy1 + zp/KMy2)*(1 + yp/KMyph1) + ypp/KMyph2);
+  zODE:  -> z; (VmaxOVERKMzph1*eph*zp)/(1 + zp/KMzph1 + zpp/KMzph2) - (VmaxOVERKMy1*ypp*z)/(1 + z/KMy1 + zp/KMy2);
+  zppODE:  -> zpp; (VmaxOVERKMy2*ypp*zp)/(1 + z/KMy1 + zp/KMy2) - (VmaxOVERKMzph2*eph*zpp)/(1 + zp/KMzph1 + zpp/KMzph2);
+  fGEFODE:  -> fGEF; kFBf*((1 - fGEF)/Kf - zpp^n/(Zf^n + zpp^n)*fGEF);
+  wODE:  -> w; kdw*(zpp - w);
+  ephODE:  -> eph; kFBph*(w^p/(Wph^p + w^p) - (eph - 1)/Kph);
 
   // Species initializations:
   sumrc1 = 1;

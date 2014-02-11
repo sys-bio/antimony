@@ -7,42 +7,42 @@ model *restif06()
   species I_1p in env, I_2p in env, R_p in env;
 
   // Assignment Rules:
-  mu := 1 / l_e;
-  beta_1 := R0_1 * gamma_1;
-  gamma_1 := 365 / tInf_1;
-  beta_2 := R0_2 * gamma_2;
-  gamma_2 := 365 / tInf_2;
-  sigma := 1 / tImm;
-  Lambda_1 := (beta_1 * (I_1 + I_1p)) / N;
-  Lambda_2 := (beta_2 * (I_2 + I_2p)) / N;
-  I_1_frac := (I_1 + I_1p) / N;
-  I_2_frac := (I_2 + I_2p) / N;
-  S_frac := S / N;
-  R1_frac := (R_1 + R_p) / N;
-  R2_frac := (R_2 + R_p) / N;
-  Rp_frac := R_p / N;
+  mu := 1/l_e;
+  beta_1 := R0_1*gamma_1;
+  gamma_1 := 365/tInf_1;
+  beta_2 := R0_2*gamma_2;
+  gamma_2 := 365/tInf_2;
+  sigma := 1/tImm;
+  Lambda_1 := (beta_1*(I_1 + I_1p))/N;
+  Lambda_2 := (beta_2*(I_2 + I_2p))/N;
+  I_1_frac := (I_1 + I_1p)/N;
+  I_2_frac := (I_2 + I_2p)/N;
+  S_frac := S/N;
+  R1_frac := (R_1 + R_p)/N;
+  R2_frac := (R_2 + R_p)/N;
+  Rp_frac := R_p/N;
 
   // Reactions:
-  r1:  => S; mu * N;
-  r2: S => ; mu * S;
-  r3: I_1 => ; mu * I_1;
-  r4: I_2 => ; mu * I_2;
-  r5: R_1 => ; mu * R_1;
-  r6: R_2 => ; mu * R_2;
-  r7: I_1p => ; mu * I_1p;
-  r8: I_2p => ; mu * I_2p;
-  r9: R_p => ; mu * R_p;
-  r10: S => I_1; beta_1 * ((I_1 + I_1p) / N) * S;
-  r11: S => I_2; beta_2 * ((I_2 + I_2p) / N) * S;
-  r12: R_2 => I_1p; ((1 - psi) * beta_1 * (I_1 + I_1p)) / N * R_2;
-  r13: R_1 => I_2p; ((1 - psi) * beta_2 * (I_2 + I_2p)) / N * R_1;
-  r14: I_1 => R_1; gamma_1 * I_1;
-  r15: I_2 => R_2; gamma_2 * I_2;
-  r16: I_1p => R_p; gamma_1 * I_1p;
-  r17: I_2p => R_p; gamma_2 * I_2p;
-  r18: R_1 => S; sigma * R_1;
-  r19: R_2 => S; sigma * R_2;
-  r20: R_p => S; sigma * R_p;
+  r1:  => S; mu*N;
+  r2: S => ; mu*S;
+  r3: I_1 => ; mu*I_1;
+  r4: I_2 => ; mu*I_2;
+  r5: R_1 => ; mu*R_1;
+  r6: R_2 => ; mu*R_2;
+  r7: I_1p => ; mu*I_1p;
+  r8: I_2p => ; mu*I_2p;
+  r9: R_p => ; mu*R_p;
+  r10: S => I_1; beta_1*((I_1 + I_1p)/N)*S;
+  r11: S => I_2; beta_2*((I_2 + I_2p)/N)*S;
+  r12: R_2 => I_1p; ((1 - psi)*beta_1*(I_1 + I_1p))/N*R_2;
+  r13: R_1 => I_2p; ((1 - psi)*beta_2*(I_2 + I_2p))/N*R_1;
+  r14: I_1 => R_1; gamma_1*I_1;
+  r15: I_2 => R_2; gamma_2*I_2;
+  r16: I_1p => R_p; gamma_1*I_1p;
+  r17: I_2p => R_p; gamma_2*I_2p;
+  r18: R_1 => S; sigma*R_1;
+  r19: R_2 => S; sigma*R_2;
+  r20: R_p => S; sigma*R_p;
 
   // Species initializations:
   N = 1;

@@ -7,20 +7,20 @@ model *Westermark2003_Pancreatic_GlycOsc_extended()
   species DHAP_G3P in cell, $DHAP in cell;
 
   // Assignment Rules:
-  F6P := (G6P_F6P * KeqGPI) / (1 + KeqGPI);
-  G3P := (DHAP_G3P * KeqTPI) / (1 + KeqTPI);
+  F6P := (G6P_F6P*KeqGPI)/(1 + KeqGPI);
+  G3P := (DHAP_G3P*KeqTPI)/(1 + KeqTPI);
   DHAP := DHAP_G3P - G3P;
-  Vgk := (Vgk_min * dw_per_ml) / min_to_sec;
-  Vpfk := (Vpfk_min * dw_per_ml) / min_to_sec;
-  Vfba := (Vfba_min * dw_per_ml) / min_to_sec;
-  Vgapdh := (Vgapdh_min * dw_per_ml) / min_to_sec;
-  sigma := F6P / Spfk;
+  Vgk := (Vgk_min*dw_per_ml)/min_to_sec;
+  Vpfk := (Vpfk_min*dw_per_ml)/min_to_sec;
+  Vfba := (Vfba_min*dw_per_ml)/min_to_sec;
+  Vgapdh := (Vgapdh_min*dw_per_ml)/min_to_sec;
+  sigma := F6P/Spfk;
 
   // Reactions:
-  vgk: $GLC -> G6P_F6P; (cell * Vgk * (GLC / Sgk)^hGK) / (1 + (GLC / Sgk)^hGK);
-  vpfk: G6P_F6P -> FBP; (cell * Vpfk * (F6P / Spfk)^(hpfk - (hpfk - hact) * (FBP / Sfba / (1 + FBP / Sfba)))) / ((F6P / Spfk)^(hpfk - (hpfk - hact) * (FBP / Sfba / (1 + FBP / Sfba))) + (1 + (FBP / Xpfk)^hx) / (1 + alpha^(hpfk - (hpfk - hact) * (FBP / Sfba / (1 + FBP / Sfba))) * (FBP / Xpfk)^hx));
-  vfba: FBP -> 2DHAP_G3P; (cell * Vfba * (FBP / Sfba - (G3P * DHAP) / (Pfba * Qfba * KeqFBA))) / (1 + FBP / Sfba + DHAP / Qfba + (G3P * DHAP) / (Pfba * Qfba));
-  vgapdh: DHAP_G3P => ; (cell * Vgapdh * G3P) / (Sgapdh + G3P);
+  vgk: $GLC -> G6P_F6P; (cell*Vgk*(GLC/Sgk)^hGK)/(1 + (GLC/Sgk)^hGK);
+  vpfk: G6P_F6P -> FBP; (cell*Vpfk*(F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba))))/((F6P/Spfk)^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba))) + (1 + (FBP/Xpfk)^hx)/(1 + alpha^(hpfk - (hpfk - hact)*(FBP/Sfba/(1 + FBP/Sfba)))*(FBP/Xpfk)^hx));
+  vfba: FBP -> 2DHAP_G3P; (cell*Vfba*(FBP/Sfba - (G3P*DHAP)/(Pfba*Qfba*KeqFBA)))/(1 + FBP/Sfba + DHAP/Qfba + (G3P*DHAP)/(Pfba*Qfba));
+  vgapdh: DHAP_G3P => ; (cell*Vgapdh*G3P)/(Sgapdh + G3P);
 
   // Species initializations:
   GLC = 10;

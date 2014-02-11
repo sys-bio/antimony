@@ -6,17 +6,17 @@ model *Shi1993_Caffeine_pressor_tolerance()
   species $X_gut in Gut, $C_p in C, $C_per in P, $C_e in Eff, $C_t in Tol;
 
   // Assignment Rules:
-  E := E_0 + (S * C_e) / (1 + C_t / T_50);
+  E := E_0 + (S*C_e)/(1 + C_t/T_50);
 
   // Rate Rules:
-  X_gut' = -k_a * X_gut;
-  C_p' = ((k_a * F * X_gut) / V_C - k12 * C_p + k21 * C_per) - k10 * C_p;
-  C_per' = k12 * C_p - k21 * C_per;
-  C_e' = k_eo * (C_p - C_e);
-  C_t' = k_tol * (C_p - C_t);
+  X_gut' = -k_a*X_gut;
+  C_p' = ((k_a*F*X_gut)/V_C - k12*C_p + k21*C_per) - k10*C_p;
+  C_per' = k12*C_p - k21*C_per;
+  C_e' = k_eo*(C_p - C_e);
+  C_t' = k_tol*(C_p - C_t);
 
   // Events:
-  coffecup: at time >= t_int * cups + t_lag: X_gut = X_gut + cupsize / bodyweight, cups = cups + 1;
+  coffecup: at time >= t_int*cups + t_lag: X_gut = X_gut + cupsize/bodyweight, cups = cups + 1;
 
   // Species initializations:
   X_gut = 0;

@@ -7,28 +7,28 @@ model *Alexander2010_Tcell_Regulation_Sys2()
 
   // Assignment Rules:
   mA := b1 + muA;
-  mG := muG + v_max / k;
-  R0 := (f * (v_max / k) * lambdaE * gamma) / (mG * mA * muE);
+  mG := muG + v_max/k;
+  R0 := (f*(v_max/k)*lambdaE*gamma)/(mG*mA*muE);
 
   // Reactions:
-  r1a: G => ; v_max / (k + G) * G;
-  r1b: $A_im => A; f * (v_max / (k + G)) * G;
-  r2:  => G; gamma * E;
-  r3:  => R; beta * A;
-  r4:  => R; pi1 * E * A;
-  r5:  => E; lambdaE * A;
-  r6: A => ; muA * A;
-  r7: R => ; muR * R;
-  r8: E => ; muE * E;
-  r9: G => ; muG * G;
-  r10: A => ; b1 * A;
-  r11: A => ; sigma1 * A * R;
+  r1a: G => ; v_max/(k + G)*G;
+  r1b: $A_im => A; f*(v_max/(k + G))*G;
+  r2:  => G; gamma*E;
+  r3:  => R; beta*A;
+  r4:  => R; pi1*E*A;
+  r5:  => E; lambdaE*A;
+  r6: A => ; muA*A;
+  r7: R => ; muR*R;
+  r8: E => ; muE*E;
+  r9: G => ; muG*G;
+  r10: A => ; b1*A;
+  r11: A => ; sigma1*A*R;
 
   // Species initializations:
-  A = 1 / body;
+  A = 1/body;
   R = 0;
   E = 0;
-  G = 100000000 / body;
+  G = 100000000/body;
   A_im = 0;
 
   // Compartment initializations:

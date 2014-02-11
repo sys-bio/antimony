@@ -9,16 +9,16 @@ model *MODEL7957942740()
   species NANOG in compartment_, OCT4_SOX2 in compartment_, Protein in compartment_;
 
   // Reactions:
-  J0: $OCT4_Gene => OCT4; (eta1 + a1 * A + a2 * OCT4_SOX2 + a3 * OCT4_SOX2 * NANOG) / (1 + eta1 / f + b1 * A + b2 * OCT4_SOX2 + b3 * OCT4_SOX2 * NANOG);
-  J1: OCT4 => $degradation; gamma1 * OCT4;
-  J2: $NANOG_Gene => NANOG; (eta5 + e1 * OCT4_SOX2 + e2 * OCT4_SOX2 * NANOG) / (1 + eta5 / f + f2 * OCT4_SOX2 + f1 * OCT4_SOX2 * NANOG + f3 * p53);
-  J3: NANOG => $degradation; gamma2 * NANOG;
-  J4: OCT4 + SOX2 => OCT4_SOX2; k1c * OCT4 * SOX2 - k2c * OCT4_SOX2;
-  J5: OCT4_SOX2 => $degradation; k3c * OCT4_SOX2;
-  J6: $SOX2_Gene => SOX2; (eta3 + c1 * A + c2 * OCT4_SOX2 + c3 * OCT4_SOX2 * NANOG) / (1 + eta3 / f + d1 * A + d2 * OCT4_SOX2 + d3 * OCT4_SOX2 * NANOG);
-  J7: SOX2 => $degradation; gamma3 * SOX2;
-  J8: $targetGene => Protein; (g1 * OCT4_SOX2 + eta7) / (1 + eta7 / f2 + h1 * OCT4_SOX2 + h2 * OCT4_SOX2 * NANOG);
-  J9: Protein => $degradation; gamma4 * Protein;
+  J0: $OCT4_Gene => OCT4; (eta1 + a1*A + a2*OCT4_SOX2 + a3*OCT4_SOX2*NANOG)/(1 + eta1/f + b1*A + b2*OCT4_SOX2 + b3*OCT4_SOX2*NANOG);
+  J1: OCT4 => $degradation; gamma1*OCT4;
+  J2: $NANOG_Gene => NANOG; (eta5 + e1*OCT4_SOX2 + e2*OCT4_SOX2*NANOG)/(1 + eta5/f + f2*OCT4_SOX2 + f1*OCT4_SOX2*NANOG + f3*p53);
+  J3: NANOG => $degradation; gamma2*NANOG;
+  J4: OCT4 + SOX2 => OCT4_SOX2; k1c*OCT4*SOX2 - k2c*OCT4_SOX2;
+  J5: OCT4_SOX2 => $degradation; k3c*OCT4_SOX2;
+  J6: $SOX2_Gene => SOX2; (eta3 + c1*A + c2*OCT4_SOX2 + c3*OCT4_SOX2*NANOG)/(1 + eta3/f + d1*A + d2*OCT4_SOX2 + d3*OCT4_SOX2*NANOG);
+  J7: SOX2 => $degradation; gamma3*SOX2;
+  J8: $targetGene => Protein; (g1*OCT4_SOX2 + eta7)/(1 + eta7/f2 + h1*OCT4_SOX2 + h2*OCT4_SOX2*NANOG);
+  J9: Protein => $degradation; gamma4*Protein;
 
   // Species initializations:
   OCT4_Gene = 0;

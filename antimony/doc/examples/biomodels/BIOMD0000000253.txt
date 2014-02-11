@@ -9,18 +9,18 @@ model *Teusink1998_Glycolysis_TurboDesign()
   // Assignment Rules:
   Tre6P := HMP^2;
   ADP := 5 - ATP;
-  lambda1 := HMP / KRHMP;
-  lambda2 := ATP / KRATP;
-  lambda3 := ATP / KiATP;
-  R := 1 + lambda1 + lambda2 + gR * lambda1 * lambda2;
-  T := 1 + c1 * lambda1 + c2 * lambda2 + gT_ * c1 * lambda1 * c2 * lambda2;
-  L := L0 * ((1 + ci * lambda3) / (1 + lambda3))^2;
+  lambda1 := HMP/KRHMP;
+  lambda2 := ATP/KRATP;
+  lambda3 := ATP/KiATP;
+  R := 1 + lambda1 + lambda2 + gR*lambda1*lambda2;
+  T := 1 + c1*lambda1 + c2*lambda2 + gT_*c1*lambda1*c2*lambda2;
+  L := L0*((1 + ci*lambda3)/(1 + lambda3))^2;
 
   // Reactions:
-  HK: $Glc + ATP => HMP; (cell * HK_VHK * Glc * ATP) / (HK_KGlc * HK_KATP) / ((1 + Glc / HK_KGlc + (HK_wild_type * Tre6P) / HK_KiTre6P) * (1 + ATP / HK_KATP));
-  PFK: HMP + ATP => Fru16P2; (cell * PFK_VPFK * gR * lambda1 * lambda2 * R) / (R^2 + L * T^2);
-  lower: Fru16P2 + 4$ADP => 4ATP; (cell * lower_Vlower * Fru16P2 * ADP) / (lower_KFru16P2 * lower_KADP) / ((1 + Fru16P2 / lower_KFru16P2) * (1 + ADP / lower_KADP));
-  ATPase: ATP => $ADP; (cell * ATPase_VATPase * ATP) / (ATPase_KATP + ATP);
+  HK: $Glc + ATP => HMP; (cell*HK_VHK*Glc*ATP)/(HK_KGlc*HK_KATP)/((1 + Glc/HK_KGlc + (HK_wild_type*Tre6P)/HK_KiTre6P)*(1 + ATP/HK_KATP));
+  PFK: HMP + ATP => Fru16P2; (cell*PFK_VPFK*gR*lambda1*lambda2*R)/(R^2 + L*T^2);
+  lower: Fru16P2 + 4$ADP => 4ATP; (cell*lower_Vlower*Fru16P2*ADP)/(lower_KFru16P2*lower_KADP)/((1 + Fru16P2/lower_KFru16P2)*(1 + ADP/lower_KADP));
+  ATPase: ATP => $ADP; (cell*ATPase_VATPase*ATP)/(ATPase_KATP + ATP);
 
   // Species initializations:
   HMP = 0.1;

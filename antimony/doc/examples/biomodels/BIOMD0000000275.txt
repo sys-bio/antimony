@@ -6,22 +6,22 @@ model *goldbeter2007()
   species RA in PSM, M_C in PSM, C in PSM, F in PSM, $M_F in PSM;
 
   // Assignment Rules:
-  M_F := M_0 * (x / L);
-  vs1 := ks1 * RALDH2_0 * (1 - x / L);
-  rho := alpha2 / alpha1;
-  alpha2 := F / (F + Kr2);
-  alpha1 := RA / (RA + Kr1);
+  M_F := M_0*(x/L);
+  vs1 := ks1*RALDH2_0*(1 - x/L);
+  rho := alpha2/alpha1;
+  alpha2 := F/(F + Kr2);
+  alpha1 := RA/(RA + Kr1);
 
   // Reactions:
-  RA_synthesis:  => RA; PSM * vs1;
-  RA_decay: RA => ; PSM * kd5 * RA;
-  RA_deg_by_Cyp26: RA => ; PSM * kd1 * RA * C;
-  M_C_transcription:  => M_C; PSM * (V0 + (Vsc * F^n) / (Ka^n + F^n));
-  M_C_decay: M_C => ; PSM * kd3 * M_C;
-  C_translation:  => C; PSM * ks2 * M_C;
-  C_decay: C => ; PSM * kd2 * C;
-  FGF_synthesis:  => F; PSM * ks3 * M_F * (Ki^m / (Ki^m + RA^m));
-  FGF_decay: F => ; PSM * kd4 * F;
+  RA_synthesis:  => RA; PSM*vs1;
+  RA_decay: RA => ; PSM*kd5*RA;
+  RA_deg_by_Cyp26: RA => ; PSM*kd1*RA*C;
+  M_C_transcription:  => M_C; PSM*(V0 + (Vsc*F^n)/(Ka^n + F^n));
+  M_C_decay: M_C => ; PSM*kd3*M_C;
+  C_translation:  => C; PSM*ks2*M_C;
+  C_decay: C => ; PSM*kd2*C;
+  FGF_synthesis:  => F; PSM*ks3*M_F*(Ki^m/(Ki^m + RA^m));
+  FGF_decay: F => ; PSM*kd4*F;
 
   // Species initializations:
   RA = 0.1;

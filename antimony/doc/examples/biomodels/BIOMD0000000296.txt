@@ -7,18 +7,18 @@ model *blub()
   species A2 in environment, $sink in environment, $source in environment;
 
   // Assignment Rules:
-  kA2 := 0.02 + 0.03 * (IPTG^2 / (5^2 + IPTG^2));
-  d1 := 0.5 + IPTG^2 / (5^2 + IPTG^2);
+  kA2 := 0.02 + 0.03*(IPTG^2/(5^2 + IPTG^2));
+  d1 := 0.5 + IPTG^2/(5^2 + IPTG^2);
 
   // Reactions:
-  J0: $source => C1; environment * kc1 * C1 * (1 - (C1 + C2) / Cm);
-  J1: C1 => $sink; environment * (D + (d1 * K1) / (K1 + A2^2)) * C1;
-  J2: $source => C2; environment * kc2 * C2 * (1 - (C1 + C2) / Cm);
-  J3: C2 => $sink; environment * (D + (d2 * A1^2) / (K2 + A1^2)) * C2;
-  J4: $source => A1; environment * kA1 * C1;
-  J5: A1 => $sink; environment * (dAA1 + D) * A1;
-  J6: $source => A2; environment * kA2 * C2;
-  J7: A2 => $sink; environment * (dAA2 + D) * A2;
+  J0: $source => C1; environment*kc1*C1*(1 - (C1 + C2)/Cm);
+  J1: C1 => $sink; environment*(D + (d1*K1)/(K1 + A2^2))*C1;
+  J2: $source => C2; environment*kc2*C2*(1 - (C1 + C2)/Cm);
+  J3: C2 => $sink; environment*(D + (d2*A1^2)/(K2 + A1^2))*C2;
+  J4: $source => A1; environment*kA1*C1;
+  J5: A1 => $sink; environment*(dAA1 + D)*A1;
+  J6: $source => A2; environment*kA2*C2;
+  J7: A2 => $sink; environment*(dAA2 + D)*A2;
 
   // Species initializations:
   IPTG = 5;

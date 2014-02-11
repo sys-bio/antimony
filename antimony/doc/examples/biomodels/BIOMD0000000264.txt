@@ -9,31 +9,31 @@ model *Model_1()
   species EGF_EGFR_i in Cell;
 
   // Assignment Rules:
-  EGF := EGF_conc_step + piecewise(EGF_conc_pulse, time <= pulse_time, 0) + (EGF_conc_ramp * time) / ramp_time;
-  pEGFR_total := (pEGFR + pEGFR_Akt) * pEGFR_scaleFactor;
-  pAkt_total := (pAkt + pAkt_S6) * pAkt_scaleFactor;
-  pS6_total := pS6 * pS6_scaleFactor;
+  EGF := EGF_conc_step + piecewise(EGF_conc_pulse, time <= pulse_time, 0) + (EGF_conc_ramp*time)/ramp_time;
+  pEGFR_total := (pEGFR + pEGFR_Akt)*pEGFR_scaleFactor;
+  pAkt_total := (pAkt + pAkt_S6)*pAkt_scaleFactor;
+  pS6_total := pS6*pS6_scaleFactor;
 
   // Reactions:
-  reaction_1: $EGF + EGFR -> EGF_EGFR; Cell * (EGF_binding_kf * EGF * EGFR - EGF_binding_kb * EGF_EGFR);
-  reaction_2: pEGFR + Akt -> pEGFR_Akt; Cell * (reaction_2_k1 * pEGFR * Akt - reaction_2_k2 * pEGFR_Akt);
-  reaction_3: pEGFR_Akt => pEGFR + pAkt; Cell * reaction_3_k1 * pEGFR_Akt;
-  reaction_4: pEGFR => ; Cell * reaction_4_k1 * pEGFR;
-  reaction_5: pAkt + S6 -> pAkt_S6; Cell * (reaction_5_k1 * pAkt * S6 - reaction_5_k2 * pAkt_S6);
-  reaction_6: pAkt_S6 => pAkt + pS6; Cell * reaction_6_k1 * pAkt_S6;
-  reaction_7: pAkt => Akt; Cell * reaction_7_k1 * pAkt;
-  reaction_8: pS6 => S6; Cell * reaction_8_k1 * pS6;
-  reaction_9: $pro_EGFR => EGFR; Cell * EGFR_turnover * pro_EGFR;
-  reaction_10: EGF_EGFR => pEGFR; Cell * reaction_10_k1 * EGF_EGFR;
-  reaction_11: EGFR => ; Cell * EGFR_turnover * EGFR;
-  reaction_12: $Inhibitor + EGFR -> EGFR_i; Cell * (inhibitor_binding_kf * Inhibitor * EGFR - inhibitor_binding_kb * EGFR_i);
-  reaction_13: $Inhibitor + EGF_EGFR -> EGF_EGFR_i; Cell * (inhibitor_binding_kf * Inhibitor * EGF_EGFR - inhibitor_binding_kb * EGF_EGFR_i);
-  reaction_14: $EGF + EGFR_i -> EGF_EGFR_i; Cell * (EGF_binding_kf * EGF * EGFR_i - EGF_binding_kb * EGF_EGFR_i);
-  reaction_15: EGFR_i => ; Cell * EGFR_turnover * EGFR_i;
+  reaction_1: $EGF + EGFR -> EGF_EGFR; Cell*(EGF_binding_kf*EGF*EGFR - EGF_binding_kb*EGF_EGFR);
+  reaction_2: pEGFR + Akt -> pEGFR_Akt; Cell*(reaction_2_k1*pEGFR*Akt - reaction_2_k2*pEGFR_Akt);
+  reaction_3: pEGFR_Akt => pEGFR + pAkt; Cell*reaction_3_k1*pEGFR_Akt;
+  reaction_4: pEGFR => ; Cell*reaction_4_k1*pEGFR;
+  reaction_5: pAkt + S6 -> pAkt_S6; Cell*(reaction_5_k1*pAkt*S6 - reaction_5_k2*pAkt_S6);
+  reaction_6: pAkt_S6 => pAkt + pS6; Cell*reaction_6_k1*pAkt_S6;
+  reaction_7: pAkt => Akt; Cell*reaction_7_k1*pAkt;
+  reaction_8: pS6 => S6; Cell*reaction_8_k1*pS6;
+  reaction_9: $pro_EGFR => EGFR; Cell*EGFR_turnover*pro_EGFR;
+  reaction_10: EGF_EGFR => pEGFR; Cell*reaction_10_k1*EGF_EGFR;
+  reaction_11: EGFR => ; Cell*EGFR_turnover*EGFR;
+  reaction_12: $Inhibitor + EGFR -> EGFR_i; Cell*(inhibitor_binding_kf*Inhibitor*EGFR - inhibitor_binding_kb*EGFR_i);
+  reaction_13: $Inhibitor + EGF_EGFR -> EGF_EGFR_i; Cell*(inhibitor_binding_kf*Inhibitor*EGF_EGFR - inhibitor_binding_kb*EGF_EGFR_i);
+  reaction_14: $EGF + EGFR_i -> EGF_EGFR_i; Cell*(EGF_binding_kf*EGF*EGFR_i - EGF_binding_kb*EGF_EGFR_i);
+  reaction_15: EGFR_i => ; Cell*EGFR_turnover*EGFR_i;
   EGF has ng_per_ml;
 
   // Species initializations:
-  EGFR = pro_EGFR / (1 + (inhibitor_binding_kf * Inhibitor) / (inhibitor_binding_kb + EGFR_turnover));
+  EGFR = pro_EGFR/(1 + (inhibitor_binding_kf*Inhibitor)/(inhibitor_binding_kb + EGFR_turnover));
   pro_EGFR = 68190.2000000002;
   Inhibitor = 0;
   pEGFR = 0;

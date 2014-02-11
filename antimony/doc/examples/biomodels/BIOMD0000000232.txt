@@ -12,29 +12,29 @@ model *Nazaret2009_TCA_RC_ATP()
   // Assignment Rules:
   ADP := At_ - ATP;
   NADH := Nt - NAD;
-  ATPcrit := At_ / (1 + exp((-3 * DeltaGtransport) / (R * T)) / (Kapp * iP));
-  DeltaGtransport := 1.2 * F * DeltaPsi;
-  Jresp := (kresp * ((Nt - NAD) / ((K + Nt) - NAD))) / (1 + exp(a * (DeltaPsi - DeltaPsim)));
-  JATP := kATP * (2 / (1 + exp(b * (ATP - ATPcrit))) - 1);
-  Jleak := kleak * DeltaPsi;
-  JANT := kANT * ATP;
+  ATPcrit := At_/(1 + exp((-3*DeltaGtransport)/(R*T))/(Kapp*iP));
+  DeltaGtransport := 1.2*F*DeltaPsi;
+  Jresp := (kresp*((Nt - NAD)/((K + Nt) - NAD)))/(1 + exp(a*(DeltaPsi - DeltaPsim)));
+  JATP := kATP*(2/(1 + exp(b*(ATP - ATPcrit))) - 1);
+  Jleak := kleak*DeltaPsi;
+  JANT := kANT*ATP;
 
   // Rate Rules:
-  DeltaPsi' = (10 * Jresp - 3 * JATP - Jleak - JANT) / C;
+  DeltaPsi' = (10*Jresp - 3*JATP - Jleak - JANT)/C;
 
   // Reactions:
-  v1:  => Pyr; mitochondrion * v1_k1;
-  v2: Pyr + NAD => AcCoA + $NADH; mitochondrion * v2_k2 * Pyr * NAD;
-  v3: OAA + AcCoA => Cit; mitochondrion * v3_k3 * OAA * AcCoA;
-  v4: Cit + NAD => KG + $NADH; mitochondrion * v4_k4 * Cit * NAD;
-  v5: KG + $ADP + 2NAD => OAA + ATP + 2$NADH; mitochondrion * v5_k5 * KG * NAD * (At_ - ATP);
-  v6: OAA -> KG; mitochondrion * v6_k6 * (OAA - KG / v6_Keq);
-  v7: Pyr + ATP => OAA + $ADP; mitochondrion * v7_k7 * Pyr * ATP;
-  v8: OAA => ; mitochondrion * v8_k8 * OAA;
-  vresp: $NADH + 0.5$O2 + 11$H => NAD + $H2O + 10$He; mitochondrion * Jresp;
-  vATP: $ADP + $iP + 3$He -> ATP + $H2O + 3$H; mitochondrion * JATP;
-  vANT: ATP => $ADP; mitochondrion * JANT;
-  vleak: $He => $H; mitochondrion * Jleak;
+  v1:  => Pyr; mitochondrion*v1_k1;
+  v2: Pyr + NAD => AcCoA + $NADH; mitochondrion*v2_k2*Pyr*NAD;
+  v3: OAA + AcCoA => Cit; mitochondrion*v3_k3*OAA*AcCoA;
+  v4: Cit + NAD => KG + $NADH; mitochondrion*v4_k4*Cit*NAD;
+  v5: KG + $ADP + 2NAD => OAA + ATP + 2$NADH; mitochondrion*v5_k5*KG*NAD*(At_ - ATP);
+  v6: OAA -> KG; mitochondrion*v6_k6*(OAA - KG/v6_Keq);
+  v7: Pyr + ATP => OAA + $ADP; mitochondrion*v7_k7*Pyr*ATP;
+  v8: OAA => ; mitochondrion*v8_k8*OAA;
+  vresp: $NADH + 0.5$O2 + 11$H => NAD + $H2O + 10$He; mitochondrion*Jresp;
+  vATP: $ADP + $iP + 3$He -> ATP + $H2O + 3$H; mitochondrion*JATP;
+  vANT: ATP => $ADP; mitochondrion*JANT;
+  vleak: $He => $H; mitochondrion*Jleak;
 
   // Species initializations:
   ATP = 3.536;
