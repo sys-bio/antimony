@@ -10,10 +10,10 @@ model *Izhikevich2004_SpikingNeurons_integrator()
 
   // Events:
   event_0000001: at v > Vthresh: u = u + d, v = c;
-  event_0000002: at time > 9 && time < 11 || (time > 14 && time < 16): i = 9;
-  event_0000003: at time > 70 && time < 72 || (time > 80 && time < 82): i = 9;
-  event_0000004: at time >= 11 && time <= 14 || (time >= 14 && time < 16): i = 0;
-  event_0000005: at time >= 16 && time <= 70 || (time >= 72 && time <= 80) || time >= 82: i = 0;
+  event_0000002: at (time > 9 && time < 11) || (time > 14 && time < 16): i = 9;
+  event_0000003: at (time > 70 && time < 72) || (time > 80 && time < 82): i = 9;
+  event_0000004: at (time >= 11 && time <= 14) || (time >= 14 && time < 16): i = 0;
+  event_0000005: at (time >= 16 && time <= 70) || (time >= 72 && time <= 80) || time >= 82: i = 0;
 
   // Compartment initializations:
   cell = 1;

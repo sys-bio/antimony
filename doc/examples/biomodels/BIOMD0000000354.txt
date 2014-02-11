@@ -20,11 +20,11 @@ model *Abell2011_CalciumSignaling_WithoutAdaptation()
   ERtoMito: CaS => CaM; mwc714c217_c8fd_4024_912c_681cd6931f59 * (L + (((1 - g) * A * IP3^2) / (IP3^2 + kIP3R^2) * CaI^2) / (CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2)) * CaS;
 
   // Species initializations:
-  CaI = 0.05;
+  CaI = 0.05 / cytosol;
   IP3 = 0;
-  g = 0.002;
-  CaO = 1000;
-  CaS = 2;
+  g = 0.002 / cytosol;
+  CaO = 1000 / outside;
+  CaS = 2 / ER_store;
   CaM = 0;
 
   // Compartment initializations:

@@ -25,15 +25,15 @@ model *Clarke2006_Smad_signalling()
   reaction_0: receptor => ; 100 * exp(-time / 90);
 
   // Species initializations:
-  receptor = 10000;
-  R_smad_cyt = 162000;
+  receptor = 10000 / cytoplasm;
+  R_smad_cyt = 162000 / cytoplasm;
   R_smad_P_cyt = 0;
-  smad4_cyt = 120000;
+  smad4_cyt = 120000 / cytoplasm;
   R_smad_P_smad4_cyt = 0;
   R_smad_P_smad4_nuc = 0;
-  R_smad_nuc = 18000;
+  R_smad_nuc = 18000 / nucleus;
   R_smad_P_nuc = 0;
-  smad4_nuc = 30000;
+  smad4_nuc = 30000 / nucleus;
   Pi_ = 0;
 
   // Compartment initializations:

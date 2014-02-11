@@ -28,15 +28,15 @@ model *Abell2011_CalciumSignaling_WithAdaptation()
   mw1c50c3d1_dab9_423a_8373_6a4c75479b54: mw013a7c64_a9ec_483c_b3b8_ed658337ee95 => CaI; (mw219cf65d_18cc_4f7e_ab5a_5b87cda6fc43 * mw013a7c64_a9ec_483c_b3b8_ed658337ee95) / (mw013a7c64_a9ec_483c_b3b8_ed658337ee95 + 0.01);
 
   // Species initializations:
-  CaI = 0.05;
+  CaI = 0.05 / cytosol;
   IP3 = 0;
-  g = 0.002;
-  mwaf195932_a72c_4552_8cf2_b349b15d39c4 = 0.013;
-  mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3 = 0.266;
-  mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb = 0.02;
-  mwd6b792d8_c983_42c1_b3bc_2494d6a3363e = 1000;
+  g = 0.002 / cytosol;
+  mwaf195932_a72c_4552_8cf2_b349b15d39c4 = 0.013 / cytosol;
+  mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3 = 0.266 / cytosol;
+  mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb = 0.02 / cytosol;
+  mwd6b792d8_c983_42c1_b3bc_2494d6a3363e = 1000 / outside;
   mw013a7c64_a9ec_483c_b3b8_ed658337ee95 = 0;
-  CaS = 2;
+  CaS = 2 / ER_store;
 
   // Compartment initializations:
   cytosol = 1;

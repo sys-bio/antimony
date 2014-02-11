@@ -8,9 +8,9 @@ model *MODEL1302180003()
   species s13 in default, s119 in default;
 
   // Reactions:
-  re3: s4 => s3; - k6 * s3 * (B_T - s4) + k7 * s4;
+  re3: s4 => s3; -k6 * s3 * (B_T - s4) + k7 * s4;
   re4: s5 => s2; k_CCE * ((fracK * Cao) / (K3 + Cao) - s2) * (s1 - s2);
-  re5: s7 => s6; (k1 * (R_T - half * R_T * (exp(- s12 / tau_I) + exp(- s12 / tau_II) + ((exp(- s12 / tau_I) - exp(- s12 / tau_II)) * (tau_I + tau_II)) / (tau_I - tau_II))) * s3) / (K1 + s3);
+  re5: s7 => s6; (k1 * (R_T - half * R_T * (exp(-s12 / tau_I) + exp(-s12 / tau_II) + ((exp(-s12 / tau_I) - exp(-s12 / tau_II)) * (tau_I + tau_II)) / (tau_I - tau_II))) * s3) / (K1 + s3);
   re6: s6 => s8; k2 * s6;
   re7: s2 => s3; k3 * ((k_CICR * s3) / (K_CICR + s3)) * (s6 / (K2 + s6))^3 * s2 - k4 * (s3 / (K3 + s3))^2 + k5 * s2 * s2;
   re8: s3 => s9; (dot_Vhi * s3^4) / (K_hi^4 + s3^4);
@@ -20,13 +20,13 @@ model *MODEL1302180003()
   re12: s3 => s9; (dot_Vp * s3^2) / (K4^2 + s3^2);
 
   // Species initializations:
-  s1 = 1500000;
+  s1 = 1500000 / default;
   s1 has substance_per_volume;
-  s2 = 2830000;
+  s2 = 2830000 / c2;
   s2 has substance_per_volume;
-  s3 = 117.2;
+  s3 = 117.2 / c1;
   s3 has substance_per_volume;
-  s4 = 3870;
+  s4 = 3870 / c1;
   s4 has substance_per_volume;
   s5 = 0;
   s5 has substance_per_volume;

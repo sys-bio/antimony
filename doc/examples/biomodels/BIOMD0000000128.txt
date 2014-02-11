@@ -24,14 +24,14 @@ model *model_0000001()
   perl_inf := (inh * cAMP * c^4) / (ki^4 + c^4);
 
   // Rate Rules:
-  V' = (- ica - ik - igirk) / cm;
+  V' = (-ica - ik - igirk) / cm;
   h' = (hinf - h) / tauh;
   n' = (lambda * (ninf - n)) / taun;
   inh' = ETswitch * ((0.2 - inh) / taudir);
 
   // Reactions:
   reaction_0000001:  => c; cell * f * (jertot + jmemtot);
-  reaction_0000002:  => cer; - fer * sigmav * jertot * cell;
+  reaction_0000002:  => cer; -fer * sigmav * jertot * cell;
   reaction_000003:  => cAMP; cell * ETswitch * ((cAMPlow - cAMP) / taudir);
 
   // Events:

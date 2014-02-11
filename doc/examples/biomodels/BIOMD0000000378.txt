@@ -29,15 +29,15 @@ model *Chay1997_CalciumConcentration()
   d' = (d_infinity - d) / tau_d;
   n' = (n_infinity - n) / tau_n;
   Ca_i_cytosolic_calcium' = k_rel * (Ca_lum - Ca_i_cytosolic_calcium) - (omega * i_Ca + k_Ca * Ca_i_cytosolic_calcium + k_pump * Ca_i_cytosolic_calcium);
-  Ca_lum' = - k_rel * (Ca_lum - Ca_i_cytosolic_calcium) + k_pump * Ca_i_cytosolic_calcium;
+  Ca_lum' = -k_rel * (Ca_lum - Ca_i_cytosolic_calcium) + k_pump * Ca_i_cytosolic_calcium;
 
   // Species initializations:
-  V_membrane = -38.34146;
-  h = 0.214723;
-  d = 0.0031711238;
-  n = 0.1836403;
-  Ca_i_cytosolic_calcium = 0.6959466;
-  Ca_lum = 102.686;
+  V_membrane = -38.34146 / Compartment_;
+  h = 0.214723 / Compartment_;
+  d = 0.0031711238 / Compartment_;
+  n = 0.1836403 / Compartment_;
+  Ca_i_cytosolic_calcium = 0.6959466 / Compartment_;
+  Ca_lum = 102.686 / Compartment_;
 
   // Compartment initializations:
   Compartment_ = 1;

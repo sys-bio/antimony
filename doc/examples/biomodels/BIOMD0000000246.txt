@@ -32,7 +32,7 @@ model *vasalou2010()
   E_L := (E_L_0 * (T + T_abs)) / (T_room + T_abs);
   E_Ca := (k_q * (T + T_abs)) / 2 * ln(Ca_ex / Ca_in) * 1000;
   Cl_in := Cl_o + M_P / (K_Cl1 + M_P) * v_Cl1 + GABA^n_Cl / (K_Cl2 + GABA^n_Cl) * v_Cl2;
-  E_inhib := - k_q * (T + T_abs) * ln(Cl_ex / Cl_in) * 1000;
+  E_inhib := -k_q * (T + T_abs) * ln(Cl_ex / Cl_in) * 1000;
   P_K := (v_PK * B_C^n_PK) / (K_PK + B_C^n_PK);
   alpha := 4 * P_Ca * Ca_in * 10^-3 + P_K * K_in + P_Na * Na_in + P_Cl * Cl_ex;
   beta_a := ((P_K * K_in - P_K * K_ex + P_Na * Na_in) - P_Na * Na_ex + P_Cl * Cl_ex) - P_Cl * Cl_in;
@@ -418,7 +418,6 @@ model *vasalou2010()
   unit nM_per_h = 1e-9 mole / (litre * 3600 second);
   unit per_uM_per_h = litre / (1e-6 mole * 3600 second);
   unit per_nM_per_h = litre / (1e-9 mole * 3600 second);
-  unit volume = litre;
 
   //Display Names:
   substance is "nmole";

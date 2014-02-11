@@ -46,11 +46,11 @@ model *Suh2004_KCNQ_regulation()
   GTPgS_C = 0;
   GTPgS_C has microMolar;
   KCNQsites_M = 6.7;
-  KCNQsites_M has molecule_per_volume;
+  KCNQsites_M has molecule_per_um2;
   PIP2_M = 5000;
-  PIP2_M has molecule_per_volume;
+  PIP2_M has molecule_per_um2;
   GGDPbS_M = 0;
-  GGDPbS_M has molecule_per_volume;
+  GGDPbS_M has molecule_per_um2;
   Mg2_C = 2100;
   Mg2_C has microMolar;
   ATP_C = 3000;
@@ -60,34 +60,34 @@ model *Suh2004_KCNQ_regulation()
   GDPbS_C = 0;
   GDPbS_C has microMolar;
   GGTPMg_M = 0.1;
-  GGTPMg_M has molecule_per_volume;
+  GGTPMg_M has molecule_per_um2;
   GDP_C = 0;
   GDP_C has microMolar;
   GTP_C has microMolar;
   GGDPAlF4Mg_M = 0;
-  GGDPAlF4Mg_M has molecule_per_volume;
+  GGDPAlF4Mg_M has molecule_per_um2;
   ip3_C = 0.48;
   ip3_C has microMolar;
   AlF4_C = 0;
   AlF4_C has microMolar;
   G_M = 0.065;
-  G_M has molecule_per_volume;
+  G_M has molecule_per_um2;
   GGTP_M = 0.048;
-  GGTP_M has molecule_per_volume;
+  GGTP_M has molecule_per_um2;
   GGDPAlF4_M = 0;
-  GGDPAlF4_M has molecule_per_volume;
+  GGDPAlF4_M has molecule_per_um2;
   GGTPgS_M = 0;
-  GGTPgS_M has molecule_per_volume;
+  GGTPgS_M has molecule_per_um2;
   PI_M = 200000;
-  PI_M has molecule_per_volume;
+  PI_M has molecule_per_um2;
   PIP_M = 1150;
-  PIP_M has molecule_per_volume;
+  PIP_M has molecule_per_um2;
   PIP2xKCNQ_M = 33.3;
-  PIP2xKCNQ_M has molecule_per_volume;
+  PIP2xKCNQ_M has molecule_per_um2;
   GGTPgSMg_M = 0;
-  GGTPgSMg_M has molecule_per_volume;
+  GGTPgSMg_M has molecule_per_um2;
   GGDP_M = 200;
-  GGDP_M has molecule_per_volume;
+  GGDP_M has molecule_per_um2;
 
   // Compartment initializations:
   EX = 1;
@@ -179,10 +179,8 @@ model *Suh2004_KCNQ_regulation()
   unit uM_1_s_1 = litre / (1e-6 mole * second);
   unit uM_um_s_1 = 1e-6 metre * 1e-6 mole / (second * litre);
   unit microMolar = 1e-6 mole / litre;
-  unit volume = litre;
   unit molecule = molecule;
-  unit molecule_per_volume = molecule / litre;
-  unit molecule_per_volume_um2 = molecule * (1e-6 metre)^2 / litre;
+  unit molecule_per_um2 = molecule / (1e-6 metre)^2;
 
   //Display Names:
   substance is "items";

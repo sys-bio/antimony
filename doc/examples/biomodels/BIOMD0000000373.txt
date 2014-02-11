@@ -83,19 +83,19 @@ model *Bertram2004_PancreaticBetaCell_modelB()
   V' = -(IK + ICa + IKCa + IKATP) / Cm;
   n' = (ninf - n) / taun;
   c' = fcyt * (Jmem + Jer);
-  cer' = - fer * sigmaV * Jer;
+  cer' = -fer * sigmaV * Jer;
   g6p' = lambda * (Rgk - pfk);
   fbp' = lambda * (pfk / 1 - 0.5 * rgpdh);
   adp' = (atp - adp * exp(fback * (1 - c / r1))) / (taua * 1);
 
   // Species initializations:
-  V = -60;
-  n = 0.025;
-  c = 0.25;
-  cer = 185;
-  g6p = 200;
-  fbp = 40;
-  adp = 780;
+  V = -60 / COMpartment_;
+  n = 0.025 / COMpartment_;
+  c = 0.25 / COMpartment_;
+  cer = 185 / COMpartment_;
+  g6p = 200 / COMpartment_;
+  fbp = 40 / COMpartment_;
+  adp = 780 / COMpartment_;
 
   // Compartment initializations:
   COMpartment_ = 1;

@@ -9,13 +9,13 @@ model *Kummer2000_CalciumSpiking()
   a' = (k1 + k2 * a) - (k3 * a * b) / (a + K4) - (k5 * a * c) / (a + K6);
   b' = k7 * a - (k8 * b) / (b + K9);
   c' = ((k10 * c * b * d) / (d + K11) + k12 * b + k13 * a) - (k14 * c) / (c + K15) - (k16 * c) / (c + K17);
-  d' = (- k10 * c * b * d) / (d + K11) + (k16 * c) / (c + K17);
+  d' = (-k10 * c * b * d) / (d + K11) + (k16 * c) / (c + K17);
 
   // Species initializations:
   a = 0.01;
-  b = 0.01;
-  c = 0.01;
-  d = 20;
+  b = 0.01 / cytoplasm;
+  c = 0.01 / cytoplasm;
+  d = 20 / ER;
 
   // Compartment initializations:
   cytoplasm = 1;
