@@ -1,0 +1,44 @@
+//Created by libAntimony v2.5
+model *MODEL1308080008()
+
+  // Compartments and Species:
+  compartment default;
+  species Pa in default, Pb in default, Da in default, Db in default, BDa in default;
+  species BDb in default, ESA in default, ESB in default;
+
+  // Reactions:
+  re2: ESA => Pa; default*sa*Da;
+  re1: ESB => Pb; default*sb*Db;
+  re12: Pa => ESA; default*da*Pa;
+  re11: Pb => ESB; default*db*Pb;
+  re13: 2Pa + Db => BDb; default*bb*((Pa*(Pa - 1))/2)*Db;
+  re5: 2Pb + Da => BDa; default*ba*((Pb*(Pb - 1))/2)*Da;
+  re7: BDa => Da + 2Pb; default*ua*BDa;
+  re14: BDb => 2Pa + Db; default*ub*BDb;
+
+  // Species initializations:
+  Pa = 0;
+  Pb = 0;
+  Da = 0;
+  Db = 0;
+  BDa = 0;
+  BDb = 0;
+  ESA = 0;
+  ESB = 0;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  da = 1;
+  db = 1;
+  sa = 100;
+  sb = 100;
+  ba = 1e-005;
+  bb = 1e-005;
+  ua = 0.1;
+  ub = 0.1;
+
+  //Other declarations:
+  const default, da, db, sa, sb, ba, bb, ua, ub;
+end

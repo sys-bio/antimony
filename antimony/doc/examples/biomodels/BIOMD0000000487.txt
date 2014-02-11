@@ -1,0 +1,38 @@
+//Created by libAntimony v2.5
+model *MODEL1308080007()
+
+  // Compartments and Species:
+  compartment default;
+  species S1 in default, S2 in default, S3 in default, S4 in default, S5 in default;
+  species S6 in default;
+
+  // Reactions:
+  re1: S1 + S2 => S3; k1*S1*S2;
+  re2: S3 => S1 + S2; k2*S3;
+  re3: S3 => S1 + S5; k3*S3;
+  re4: S4 + S5 => S6; k4*S4*S5;
+  re5: S6 => S4 + S5; k5*S6;
+  re6: S6 => S4 + S2; k6*S6;
+
+  // Species initializations:
+  S1 = 0;
+  S2 = 0;
+  S3 = 0;
+  S4 = 0;
+  S5 = 0;
+  S6 = 0;
+
+  // Compartment initializations:
+  default = 1;
+
+  // Variable initializations:
+  k1 = 1;
+  k2 = 1;
+  k3 = 0.1;
+  k4 = 1;
+  k5 = 1;
+  k6 = 0.1;
+
+  //Other declarations:
+  const default, k1, k2, k3, k4, k5, k6;
+end
