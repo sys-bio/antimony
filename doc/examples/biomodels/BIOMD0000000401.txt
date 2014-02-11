@@ -8,14 +8,14 @@ model *Ayati2010_BoneRemodelingDynamics_NormalCondition()
   // Assignment Rules:
   y2 := piecewise(B - B_bar, B > B_bar, 0);
   y1 := piecewise(C - C_bar, C > C_bar, 0);
-  C_bar := (beta1 / alpha1)^((1 - g22) / gamma) * (beta2 / alpha2)^(g21 / gamma);
-  B_bar := (beta1 / alpha1)^(g12 / gamma) * (beta2 / alpha2)^((1 - g11) / gamma);
-  gamma := g12 * g21 - (1 - g11) * (1 - g22);
+  C_bar := (beta1/alpha1)^((1 - g22)/gamma)*(beta2/alpha2)^(g21/gamma);
+  B_bar := (beta1/alpha1)^(g12/gamma)*(beta2/alpha2)^((1 - g11)/gamma);
+  gamma := g12*g21 - (1 - g11)*(1 - g22);
 
   // Rate Rules:
-  C' = alpha1 * C^g11 * B^g21 - beta1 * C;
-  B' = alpha2 * C^g12 * B^g22 - beta2 * B;
-  z' = k2 * y2 - k1 * y1;
+  C' = alpha1*C^g11*B^g21 - beta1*C;
+  B' = alpha2*C^g12*B^g22 - beta2*B;
+  z' = k2*y2 - k1*y1;
 
   // Species initializations:
   C = 11.06;

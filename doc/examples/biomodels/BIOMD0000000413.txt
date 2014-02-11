@@ -7,15 +7,15 @@ model *DIIVENUS_fullmodel()
   species VENUS in cell;
 
   // Reactions:
-  auxin_TIR1association: auxin + TIR1 => auxinTIR1; ka * auxin * TIR1;
-  auxin_TIR1dissociation: auxinTIR1 => auxin + TIR1; kd * auxinTIR1;
-  auxin_TIR1_VENUSassociation: auxinTIR1 + VENUS => auxinTIR1VENUS; la * auxinTIR1 * VENUS;
-  auxin_TIR1_VENUSdissociation: auxinTIR1VENUS => auxinTIR1 + VENUS; ld * auxinTIR1VENUS;
-  auxin_TIR1_VENUSdissociationleadingtoubiquitination: auxinTIR1VENUS => auxinTIR1; lm * auxinTIR1VENUS;
+  auxin_TIR1association: auxin + TIR1 => auxinTIR1; ka*auxin*TIR1;
+  auxin_TIR1dissociation: auxinTIR1 => auxin + TIR1; kd*auxinTIR1;
+  auxin_TIR1_VENUSassociation: auxinTIR1 + VENUS => auxinTIR1VENUS; la*auxinTIR1*VENUS;
+  auxin_TIR1_VENUSdissociation: auxinTIR1VENUS => auxinTIR1 + VENUS; ld*auxinTIR1VENUS;
+  auxin_TIR1_VENUSdissociationleadingtoubiquitination: auxinTIR1VENUS => auxinTIR1; lm*auxinTIR1VENUS;
   auxinproduction:  => auxin; alpha_tr;
-  auxindecay: auxin => ; mu * auxin;
+  auxindecay: auxin => ; mu*auxin;
   VENUSproduction:  => VENUS; delta;
-  VENUSphotobleachingdecay: VENUS => ; lambda * VENUS;
+  VENUSphotobleachingdecay: VENUS => ; lambda*VENUS;
 
   // Species initializations:
   auxin = 7.38;

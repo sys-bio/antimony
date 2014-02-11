@@ -7,22 +7,22 @@ model *BIOMD0000000462()
   species Nep in cell;
 
   // Reactions:
-  Abetaproduction: $Source => Abeta; kprod * Source;
-  AbetaDegradation: Abeta + Nep => $Sink + Nep; kdeg * Abeta * Nep * 0.001;
-  AbetaDimerisation: 2Abeta => AbDim; kdimer * Abeta * (Abeta - 1) * 0.5;
-  AbetaDedimerisation: AbDim => 2Abeta; kdedimer * AbDim;
-  AbetaPlaqueFormation: 2AbDim => 4AbP; kpf * AbDim * (AbDim - 1) * 0.5;
-  AbetaPlaqueGrowth: Abeta + AbP => 2AbP; (kpg * Abeta * AbP^2) / (kpghalf^2 + AbP^2);
-  AbetaDisaggregation: AbP => Abeta; kdisagg * AbP;
-  NepDegradation: Nep => $Sink; kdegNep * Nep;
+  Abetaproduction: $Source => Abeta; kprod*Source;
+  AbetaDegradation: Abeta + Nep => $Sink + Nep; kdeg*Abeta*Nep*0.001;
+  AbetaDimerisation: 2Abeta => AbDim; kdimer*Abeta*(Abeta - 1)*0.5;
+  AbetaDedimerisation: AbDim => 2Abeta; kdedimer*AbDim;
+  AbetaPlaqueFormation: 2AbDim => 4AbP; kpf*AbDim*(AbDim - 1)*0.5;
+  AbetaPlaqueGrowth: Abeta + AbP => 2AbP; (kpg*Abeta*AbP^2)/(kpghalf^2 + AbP^2);
+  AbetaDisaggregation: AbP => Abeta; kdisagg*AbP;
+  NepDegradation: Nep => $Sink; kdegNep*Nep;
 
   // Species initializations:
   Abeta = 0;
   AbDim = 0;
   AbP = 0;
-  Source = 1 / cell;
-  Sink = 1 / cell;
-  Nep = 1000 / cell;
+  Source = 1/cell;
+  Sink = 1/cell;
+  Nep = 1000/cell;
 
   // Compartment initializations:
   cell = 1;

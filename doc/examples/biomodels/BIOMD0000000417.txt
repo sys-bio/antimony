@@ -6,15 +6,15 @@ model *Ratushny2012_NF()
   species Target in univ;
 
   // Assignment Rules:
-  dspksp := Ksp / 2 * ((1 + (s + P) / Ksp) - ((1 + (s + P) / Ksp)^2 - (4 * s * P) / Ksp^2)^0.5);
-  dspspkd := Kd / 2 * ((1 + (2 * dspksp) / Kd) - ((1 + (2 * dspksp) / Kd)^2 - (4 * dspksp^2) / Kd^2)^0.5);
+  dspksp := Ksp/2*((1 + (s + P)/Ksp) - ((1 + (s + P)/Ksp)^2 - (4*s*P)/Ksp^2)^0.5);
+  dspspkd := Kd/2*((1 + (2*dspksp)/Kd) - ((1 + (2*dspksp)/Kd)^2 - (4*dspksp^2)/Kd^2)^0.5);
 
   // Reactions:
-  ___r1:  => Target; (ks * (k0 + (dspspkd / ka)^h)) / (1 + (dspspkd / ka)^h);
-  ___r2: Target => ; ___r2___RATE__ * Target;
+  ___r1:  => Target; (ks*(k0 + (dspspkd/ka)^h))/(1 + (dspspkd/ka)^h);
+  ___r2: Target => ; ___r2___RATE__*Target;
 
   // Species initializations:
-  Target = 10 / univ;
+  Target = 10/univ;
 
   // Compartment initializations:
   univ = 1;

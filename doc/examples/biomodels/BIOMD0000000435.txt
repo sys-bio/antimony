@@ -1,10 +1,10 @@
 //Created by libAntimony v2.5
 function function_1(theta, a, Xj, n)
-  theta / (theta + a * Xj^n);
+  theta/(theta + a*Xj^n);
 end
 
 function function_2(theta, b, Yi, Yj, n, c, Xi)
-  (theta + b * (Yi * Yj)^n) / (theta + c * Xi^n + b * (Yi * Yj)^n);
+  (theta + b*(Yi*Yj)^n)/(theta + c*Xi^n + b*(Yi*Yj)^n);
 end
 
 
@@ -16,14 +16,14 @@ model *MODEL1211010000()
   species species_4 in compartment_1;
 
   // Reactions:
-  reaction_1:  => species_1; compartment_1 * function_1(reaction_1_theta, reaction_1_a, species_3, reaction_1_n);
-  reaction_2: species_1 => ; compartment_1 * reaction_2_k1 * species_1;
-  reaction_3:  => species_2; compartment_1 * function_2(reaction_3_theta, reaction_3_b, species_2, species_4, reaction_3_n, reaction_3_c, species_1);
-  reaction_4: species_2 => ; compartment_1 * reaction_4_k1 * species_2;
-  reaction_5:  => species_3; compartment_1 * function_1(reaction_5_theta, reaction_5_a, species_1, reaction_5_n);
-  reaction_6: species_3 => ; compartment_1 * reaction_6_k1 * species_3;
-  reaction_7:  => species_4; compartment_1 * function_2(reaction_7_theta, reaction_7_b, species_2, species_4, reaction_7_n, reaction_7_c, species_3);
-  reaction_8: species_4 => ; compartment_1 * reaction_8_k1 * species_4;
+  reaction_1:  => species_1; compartment_1*function_1(reaction_1_theta, reaction_1_a, species_3, reaction_1_n);
+  reaction_2: species_1 => ; compartment_1*reaction_2_k1*species_1;
+  reaction_3:  => species_2; compartment_1*function_2(reaction_3_theta, reaction_3_b, species_2, species_4, reaction_3_n, reaction_3_c, species_1);
+  reaction_4: species_2 => ; compartment_1*reaction_4_k1*species_2;
+  reaction_5:  => species_3; compartment_1*function_1(reaction_5_theta, reaction_5_a, species_1, reaction_5_n);
+  reaction_6: species_3 => ; compartment_1*reaction_6_k1*species_3;
+  reaction_7:  => species_4; compartment_1*function_2(reaction_7_theta, reaction_7_b, species_2, species_4, reaction_7_n, reaction_7_c, species_3);
+  reaction_8: species_4 => ; compartment_1*reaction_8_k1*species_4;
 
   // Species initializations:
   species_1 = 0;

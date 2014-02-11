@@ -1,42 +1,42 @@
 //Created by libAntimony v2.5
 function function_10(ko, k, S, M, Ki, h)
-  (ko * k * S) / (1 + (M / Ki)^h);
+  (ko*k*S)/(1 + (M/Ki)^h);
 end
 
 function function_9(ko, k, M, S)
-  ko * k * M * S;
+  ko*k*M*S;
 end
 
 function function_8(ko, k, M1, S1, S2, M2, Ki, h)
-  (ko * k * M1 * S1 * S2) / (1 + (M2 / Ki)^h);
+  (ko*k*M1*S1*S2)/(1 + (M2/Ki)^h);
 end
 
 function function_4(k, M)
-  k * M;
+  k*M;
 end
 
 function function_6(A, P, S, f, ks)
-  f * ks * A * (S - P);
+  f*ks*A*(S - P);
 end
 
 function function_2(k, M, S)
-  k * M * S;
+  k*M*S;
 end
 
 function function_5(k1, M1, k2, M2, Km)
-  (k1 * M1 * (1 + k2 * M2)) / (Km + M1 * (1 + k2 * M2));
+  (k1*M1*(1 + k2*M2))/(Km + M1*(1 + k2*M2));
 end
 
 function function_7(k, M, Km)
-  (k * M) / (Km + M);
+  (k*M)/(Km + M);
 end
 
 function function_3(k1, M1, S, k2, M2)
-  k1 * M1 * S + k2 * M2 * S;
+  k1*M1*S + k2*M2*S;
 end
 
 function function_1(ko, k, M1, S, M2, h, Ki)
-  (ko * k * M1 * S) / (1 + (M2 / Ki)^h);
+  (ko*k*M1*S)/(1 + (M2/Ki)^h);
 end
 
 
@@ -51,91 +51,91 @@ model *MODEL1209110001()
   species species_13 in compartment_2, species_14 in compartment_4, species_15 in compartment_4;
 
   // Assignment Rules:
-  parameter_16 := (36 * pi)^(1 / 3) * compartment_3^(2 / 3);
-  parameter_21 := piecewise(parameter_9 * ln(compartment_3 / parameter_15), compartment_3 > parameter_15, 0);
-  parameter_44 := parameter_49 + species_13 / compartment_2;
-  parameter_45 := species_1 / compartment_1 + (parameter_20 * parameter_46) / compartment_1;
+  parameter_16 := (36*pi)^(1/3)*compartment_3^(2/3);
+  parameter_21 := piecewise(parameter_9*ln(compartment_3/parameter_15), compartment_3 > parameter_15, 0);
+  parameter_44 := parameter_49 + species_13/compartment_2;
+  parameter_45 := species_1/compartment_1 + (parameter_20*parameter_46)/compartment_1;
   compartment_3 := parameter_13 + compartment_1;
-  species_12 := parameter_69 * (species_3 / compartment_1) * compartment_1;
+  species_12 := parameter_69*(species_3/compartment_1)*compartment_1;
   parameter_69 := piecewise(piecewise(parameter_67, time > parameter_68, 1), parameter_70 == 1, 1);
-  parameter_22 := piecewise((parameter_47 - parameter_16) / parameter_47 - parameter_24, (parameter_47 - parameter_16) / parameter_47 > parameter_24, 0);
-  parameter_27 := ((parameter_86 * parameter_51 * (1 + parameter_87 * parameter_54)) / (parameter_88 + parameter_51 * (1 + parameter_87 * parameter_54)) * parameter_46) / (0.5 * parameter_47 * (parameter_53 - parameter_50));
-  parameter_28 := species_14 / compartment_4 / parameter_59;
-  parameter_29 := (100 * compartment_3) / parameter_12;
-  parameter_30 := (100 * (species_3 / compartment_1) * compartment_1) / (parameter_14 * parameter_37 * parameter_46);
-  parameter_31 := (19.9 * (species_7 / compartment_1) * compartment_1) / (parameter_51 * parameter_46);
-  parameter_32 := (17 * (species_1 / compartment_1) * compartment_1) / (parameter_53 * parameter_46);
-  parameter_33 := parameter_21 / (parameter_1 * parameter_2 * parameter_5);
-  parameter_36 := (3.4 * (species_8 / compartment_1) * compartment_1) / (parameter_52 * parameter_46);
-  parameter_49 := piecewise(parameter_11 - parameter_50 + (1 - exp((parameter_48 - time) / parameter_6)) * 2 * parameter_4 * parameter_23 * 10^6, time > parameter_48, parameter_11 - parameter_50);
-  parameter_56 := piecewise((parameter_47 - parameter_16) / parameter_47 - parameter_55, (parameter_47 - parameter_16) / parameter_47 > parameter_55, 0);
-  parameter_60 := species_14 / compartment_4 + species_15 / compartment_4;
-  parameter_62 := parameter_21^parameter_61 / (parameter_8^parameter_61 + parameter_21^parameter_61);
-  parameter_63 := 1 - parameter_21^parameter_61 / (parameter_8^parameter_61 + parameter_21^parameter_61);
+  parameter_22 := piecewise((parameter_47 - parameter_16)/parameter_47 - parameter_24, (parameter_47 - parameter_16)/parameter_47 > parameter_24, 0);
+  parameter_27 := ((parameter_86*parameter_51*(1 + parameter_87*parameter_54))/(parameter_88 + parameter_51*(1 + parameter_87*parameter_54))*parameter_46)/(0.5*parameter_47*(parameter_53 - parameter_50));
+  parameter_28 := species_14/compartment_4/parameter_59;
+  parameter_29 := (100*compartment_3)/parameter_12;
+  parameter_30 := (100*(species_3/compartment_1)*compartment_1)/(parameter_14*parameter_37*parameter_46);
+  parameter_31 := (19.9*(species_7/compartment_1)*compartment_1)/(parameter_51*parameter_46);
+  parameter_32 := (17*(species_1/compartment_1)*compartment_1)/(parameter_53*parameter_46);
+  parameter_33 := parameter_21/(parameter_1*parameter_2*parameter_5);
+  parameter_36 := (3.4*(species_8/compartment_1)*compartment_1)/(parameter_52*parameter_46);
+  parameter_49 := piecewise(parameter_11 - parameter_50 + (1 - exp((parameter_48 - time)/parameter_6))*2*parameter_4*parameter_23*10^6, time > parameter_48, parameter_11 - parameter_50);
+  parameter_56 := piecewise((parameter_47 - parameter_16)/parameter_47 - parameter_55, (parameter_47 - parameter_16)/parameter_47 > parameter_55, 0);
+  parameter_60 := species_14/compartment_4 + species_15/compartment_4;
+  parameter_62 := parameter_21^parameter_61/(parameter_8^parameter_61 + parameter_21^parameter_61);
+  parameter_63 := 1 - parameter_21^parameter_61/(parameter_8^parameter_61 + parameter_21^parameter_61);
 
   // Rate Rules:
-  compartment_1' = -parameter_7 * parameter_16 * (parameter_21 + parameter_5 * parameter_1 * parameter_2 * (parameter_44 - parameter_45));
+  compartment_1' = -parameter_7*parameter_16*(parameter_21 + parameter_5*parameter_1*parameter_2*(parameter_44 - parameter_45));
 
   // Reactions:
-  reaction_1: species_4 => species_5; compartment_1 * function_1(parameter_58, parameter_75, parameter_22, species_4 / compartment_1, species_12 / compartment_1, parameter_74, parameter_73);
-  reaction_2: species_5 => species_4; compartment_1 * function_2(parameter_72, species_6 / compartment_1, species_5 / compartment_1);
-  reaction_3: species_2 => species_9; compartment_1 * function_3(parameter_25, species_5 / compartment_1, species_2 / compartment_1, parameter_41, species_11 / compartment_1);
-  reaction_4: species_9 => species_2; compartment_1 * function_2(parameter_26, species_6 / compartment_1, species_9 / compartment_1);
-  reaction_5:  => species_7; compartment_1 * function_4(parameter_76, species_8 / compartment_1);
-  reaction_6: species_7 => ; parameter_35 * species_7;
-  reaction_7:  => species_1; compartment_1 * function_5(parameter_86, species_7 / compartment_1, parameter_87, species_12 / compartment_1, parameter_88);
-  reaction_8: species_1 -> species_13; function_6(parameter_16, species_13 / compartment_2, species_1 / compartment_1, parameter_28, parameter_27);
-  reaction_9:  => species_8; compartment_1 * function_7(parameter_77, species_12 / compartment_1, parameter_78);
-  reaction_10: species_8 => ; parameter_39 * species_8;
-  reaction_11: species_9 => species_3; compartment_1 * function_3(parameter_25, species_5 / compartment_1, species_9 / compartment_1, parameter_41, species_11 / compartment_1);
-  reaction_12: species_3 => species_9; compartment_1 * function_2(parameter_26, species_6 / compartment_1, species_3 / compartment_1);
-  reaction_13: species_11 => species_10 + species_4; parameter_79 * species_11;
-  reaction_14: species_4 + species_10 => species_11; compartment_1 * function_8(parameter_57, parameter_82, parameter_56, species_4 / compartment_1, species_10 / compartment_1, species_12 / compartment_1, parameter_80, parameter_81);
-  reaction_15: species_14 => species_15; compartment_4 * function_9(parameter_71, parameter_83, parameter_63, species_14 / compartment_4);
-  reaction_16: species_15 => species_14; compartment_4 * function_10(parameter_71, parameter_65, species_15 / compartment_4, species_12 / compartment_1, parameter_84, parameter_85);
+  reaction_1: species_4 => species_5; compartment_1*function_1(parameter_58, parameter_75, parameter_22, species_4/compartment_1, species_12/compartment_1, parameter_74, parameter_73);
+  reaction_2: species_5 => species_4; compartment_1*function_2(parameter_72, species_6/compartment_1, species_5/compartment_1);
+  reaction_3: species_2 => species_9; compartment_1*function_3(parameter_25, species_5/compartment_1, species_2/compartment_1, parameter_41, species_11/compartment_1);
+  reaction_4: species_9 => species_2; compartment_1*function_2(parameter_26, species_6/compartment_1, species_9/compartment_1);
+  reaction_5:  => species_7; compartment_1*function_4(parameter_76, species_8/compartment_1);
+  reaction_6: species_7 => ; parameter_35*species_7;
+  reaction_7:  => species_1; compartment_1*function_5(parameter_86, species_7/compartment_1, parameter_87, species_12/compartment_1, parameter_88);
+  reaction_8: species_1 -> species_13; function_6(parameter_16, species_13/compartment_2, species_1/compartment_1, parameter_28, parameter_27);
+  reaction_9:  => species_8; compartment_1*function_7(parameter_77, species_12/compartment_1, parameter_78);
+  reaction_10: species_8 => ; parameter_39*species_8;
+  reaction_11: species_9 => species_3; compartment_1*function_3(parameter_25, species_5/compartment_1, species_9/compartment_1, parameter_41, species_11/compartment_1);
+  reaction_12: species_3 => species_9; compartment_1*function_2(parameter_26, species_6/compartment_1, species_3/compartment_1);
+  reaction_13: species_11 => species_10 + species_4; parameter_79*species_11;
+  reaction_14: species_4 + species_10 => species_11; compartment_1*function_8(parameter_57, parameter_82, parameter_56, species_4/compartment_1, species_10/compartment_1, species_12/compartment_1, parameter_80, parameter_81);
+  reaction_15: species_14 => species_15; compartment_4*function_9(parameter_71, parameter_83, parameter_63, species_14/compartment_4);
+  reaction_16: species_15 => species_14; compartment_4*function_10(parameter_71, parameter_65, species_15/compartment_4, species_12/compartment_1, parameter_84, parameter_85);
 
   // Species initializations:
-  species_1 = parameter_53 * compartment_1;
-  species_2 = (parameter_37 - species_9 / compartment_1 - species_3 / compartment_1) * compartment_1;
-  species_9 = piecewise(1 / 2 * (-(species_3 / compartment_1) + sqrt(species_3 / compartment_1 * (4 * parameter_37 - 3 * (species_3 / compartment_1)))), parameter_58 == 1 && parameter_57 == 1, piecewise((-parameter_25 * parameter_26 * (species_6 / compartment_1) * (species_3 / compartment_1) + sqrt((parameter_25 * parameter_26 * (species_6 / compartment_1))^2 * (species_3 / compartment_1) * (4 * parameter_37 - 3 * (species_3 / compartment_1)))) / (2 * parameter_25 * parameter_26 * (species_6 / compartment_1)), parameter_58 == 1 && parameter_57 == 0, (-parameter_41 * parameter_26 * (species_6 / compartment_1) * (species_3 / compartment_1) + sqrt((parameter_41 * parameter_26 * (species_6 / compartment_1))^2 * (species_3 / compartment_1) * (4 * parameter_37 - 3 * (species_3 / compartment_1)))) / (2 * parameter_41 * parameter_26 * (species_6 / compartment_1)))) * compartment_1;
-  species_3 = parameter_54 * compartment_1;
-  species_4 = (parameter_38 - species_5 / compartment_1 - species_11 / compartment_1) * compartment_1;
-  species_5 = piecewise(-((parameter_26 * (species_6 / compartment_1) * (species_3 / compartment_1 + sqrt(species_3 / compartment_1 * (4 * parameter_37 - 3 * (species_3 / compartment_1))))) / (4 * parameter_25 * (species_3 / compartment_1 - parameter_37))), parameter_58 == 1 && parameter_57 == 1, piecewise(-((parameter_25 * parameter_26 * (species_6 / compartment_1) * (species_3 / compartment_1) + sqrt((parameter_25 * parameter_26 * (species_6 / compartment_1))^2 * (species_3 / compartment_1) * (4 * parameter_37 - 3 * (species_3 / compartment_1)))) / (2 * parameter_25^2 * (species_3 / compartment_1 - parameter_37))), parameter_58 == 1 && parameter_57 == 0, 0)) * compartment_1;
-  species_11 = piecewise(-((parameter_26 * (species_6 / compartment_1) * (species_3 / compartment_1 + sqrt(species_3 / compartment_1 * (4 * parameter_37 - 3 * (species_3 / compartment_1))))) / (4 * parameter_41 * (species_3 / compartment_1 - parameter_37))), parameter_58 == 1 && parameter_57 == 1, piecewise(-((parameter_41 * parameter_26 * (species_6 / compartment_1) * (species_3 / compartment_1) + sqrt((parameter_41 * parameter_26 * (species_6 / compartment_1))^2 * (species_3 / compartment_1) * (4 * parameter_37 - 3 * (species_3 / compartment_1)))) / (2 * parameter_41^2 * (species_3 / compartment_1 - parameter_37))), parameter_58 == 0 && parameter_57 == 1, 0)) * compartment_1;
-  species_6 = 769 * parameter_18 * compartment_1;
-  species_7 = parameter_51 * compartment_1;
-  species_8 = parameter_52 * compartment_1;
-  species_10 = (parameter_40 - species_11 / compartment_1) * compartment_1;
-  species_13 = species_1 / compartment_1 / 100 * compartment_2;
-  species_14 = parameter_59 / 2 * compartment_4;
-  species_15 = parameter_59 / 2 * compartment_4;
+  species_1 = parameter_53*compartment_1;
+  species_2 = (parameter_37 - species_9/compartment_1 - species_3/compartment_1)*compartment_1;
+  species_9 = piecewise(1/2*(-(species_3/compartment_1) + sqrt(species_3/compartment_1*(4*parameter_37 - 3*(species_3/compartment_1)))), parameter_58 == 1 && parameter_57 == 1, piecewise((-parameter_25*parameter_26*(species_6/compartment_1)*(species_3/compartment_1) + sqrt((parameter_25*parameter_26*(species_6/compartment_1))^2*(species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1))))/(2*parameter_25*parameter_26*(species_6/compartment_1)), parameter_58 == 1 && parameter_57 == 0, (-parameter_41*parameter_26*(species_6/compartment_1)*(species_3/compartment_1) + sqrt((parameter_41*parameter_26*(species_6/compartment_1))^2*(species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1))))/(2*parameter_41*parameter_26*(species_6/compartment_1))))*compartment_1;
+  species_3 = parameter_54*compartment_1;
+  species_4 = (parameter_38 - species_5/compartment_1 - species_11/compartment_1)*compartment_1;
+  species_5 = piecewise(-((parameter_26*(species_6/compartment_1)*(species_3/compartment_1 + sqrt(species_3/compartment_1*(4*parameter_37 - 3*(species_3/compartment_1)))))/(4*parameter_25*(species_3/compartment_1 - parameter_37))), parameter_58 == 1 && parameter_57 == 1, piecewise(-((parameter_25*parameter_26*(species_6/compartment_1)*(species_3/compartment_1) + sqrt((parameter_25*parameter_26*(species_6/compartment_1))^2*(species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1))))/(2*parameter_25^2*(species_3/compartment_1 - parameter_37))), parameter_58 == 1 && parameter_57 == 0, 0))*compartment_1;
+  species_11 = piecewise(-((parameter_26*(species_6/compartment_1)*(species_3/compartment_1 + sqrt(species_3/compartment_1*(4*parameter_37 - 3*(species_3/compartment_1)))))/(4*parameter_41*(species_3/compartment_1 - parameter_37))), parameter_58 == 1 && parameter_57 == 1, piecewise(-((parameter_41*parameter_26*(species_6/compartment_1)*(species_3/compartment_1) + sqrt((parameter_41*parameter_26*(species_6/compartment_1))^2*(species_3/compartment_1)*(4*parameter_37 - 3*(species_3/compartment_1))))/(2*parameter_41^2*(species_3/compartment_1 - parameter_37))), parameter_58 == 0 && parameter_57 == 1, 0))*compartment_1;
+  species_6 = 769*parameter_18*compartment_1;
+  species_7 = parameter_51*compartment_1;
+  species_8 = parameter_52*compartment_1;
+  species_10 = (parameter_40 - species_11/compartment_1)*compartment_1;
+  species_13 = species_1/compartment_1/100*compartment_2;
+  species_14 = parameter_59/2*compartment_4;
+  species_15 = parameter_59/2*compartment_4;
 
   // Compartment initializations:
   compartment_1 = parameter_46;
-  compartment_2 = 1000 * compartment_3;
+  compartment_2 = 1000*compartment_3;
   compartment_4 = 1;
 
   // Variable initializations:
-  parameter_46 = parameter_12 * (1 - parameter_10);
+  parameter_46 = parameter_12*(1 - parameter_10);
   parameter_7 = 0.013;
   parameter_5 = 1e-009;
   parameter_1 = 8.314;
   parameter_2 = 303.15;
-  parameter_13 = parameter_12 * parameter_10;
+  parameter_13 = parameter_12*parameter_10;
   parameter_53 = 180000;
-  parameter_37 = 6788 * parameter_18;
-  parameter_54 = piecewise((parameter_37 * parameter_17 * parameter_14) / 100, parameter_58 == 1 && parameter_57 == 1, piecewise((parameter_37 * parameter_42 * parameter_14) / 100, parameter_58 == 1 && parameter_57 == 0, (parameter_37 * parameter_43 * parameter_14) / 100));
-  parameter_38 = 2160 * parameter_18;
+  parameter_37 = 6788*parameter_18;
+  parameter_54 = piecewise((parameter_37*parameter_17*parameter_14)/100, parameter_58 == 1 && parameter_57 == 1, piecewise((parameter_37*parameter_42*parameter_14)/100, parameter_58 == 1 && parameter_57 == 0, (parameter_37*parameter_43*parameter_14)/100));
+  parameter_38 = 2160*parameter_18;
   parameter_26 = 1.78587;
   parameter_25 = 42.6396538263077;
   parameter_58 = 1;
   parameter_57 = 1;
-  parameter_18 = 1.000000e+021 / (parameter_3 * compartment_1);
-  parameter_51 = 807 * parameter_18;
+  parameter_18 = 1.000000e+021/(parameter_3*compartment_1);
+  parameter_51 = 807*parameter_18;
   parameter_52 = 0.034;
   parameter_41 = 48.0003902091319;
-  parameter_40 = 2330 * parameter_18;
-  parameter_59 = 907 * parameter_18;
+  parameter_40 = 2330*parameter_18;
+  parameter_59 = 907*parameter_18;
   parameter_3 = 6.022e+023;
   parameter_4 = 0.93;
   parameter_6 = 10;
@@ -145,12 +145,12 @@ model *MODEL1209110001()
   parameter_11 = 260000;
   parameter_12 = 50;
   parameter_14 = 0.8;
-  parameter_15 = parameter_12 * exp(-parameter_8 / parameter_9);
+  parameter_15 = parameter_12*exp(-parameter_8/parameter_9);
   parameter_17 = 2.23;
-  parameter_19 = parameter_11 + parameter_8 / (parameter_5 * parameter_1 * parameter_2);
-  parameter_20 = parameter_19 - species_1 / compartment_1;
-  parameter_47 = (36 * pi)^(1 / 3) * parameter_12^(2 / 3);
-  parameter_24 = (-parameter_72 * (species_6 / compartment_1) * (species_5 / compartment_1) * (1 + (species_3 / compartment_1 / parameter_73)^parameter_74)) / (parameter_75 * (species_4 / compartment_1));
+  parameter_19 = parameter_11 + parameter_8/(parameter_5*parameter_1*parameter_2);
+  parameter_20 = parameter_19 - species_1/compartment_1;
+  parameter_47 = (36*pi)^(1/3)*parameter_12^(2/3);
+  parameter_24 = (-parameter_72*(species_6/compartment_1)*(species_5/compartment_1)*(1 + (species_3/compartment_1/parameter_73)^parameter_74))/(parameter_75*(species_4/compartment_1));
   parameter_23 = 0.4;
   parameter_72 = 0.607124;
   parameter_73 = 0.00940584;
@@ -159,28 +159,28 @@ model *MODEL1209110001()
   parameter_86 = 680.818;
   parameter_87 = 46.8363;
   parameter_88 = 0.420741;
-  parameter_50 = parameter_53 / 100;
+  parameter_50 = parameter_53/100;
   parameter_34 = 0.128378897200866;
-  parameter_35 = (parameter_76 * (species_8 / compartment_1)) / (species_7 / compartment_1);
+  parameter_35 = (parameter_76*(species_8/compartment_1))/(species_7/compartment_1);
   parameter_76 = 9.06781e-005;
-  parameter_39 = (parameter_77 * (species_3 / compartment_1)) / (parameter_78 + species_3 / compartment_1) / (species_8 / compartment_1);
+  parameter_39 = (parameter_77*(species_3/compartment_1))/(parameter_78 + species_3/compartment_1)/(species_8/compartment_1);
   parameter_77 = 18.1824;
   parameter_78 = 0.506878;
   parameter_42 = 2.23;
   parameter_43 = 2.23;
   parameter_48 = 600;
-  parameter_55 = (-parameter_79 * (species_11 / compartment_1) * (1 + (species_3 / compartment_1 / parameter_80)^parameter_81)) / (parameter_82 * (species_4 / compartment_1) * (species_10 / compartment_1));
+  parameter_55 = (-parameter_79*(species_11/compartment_1)*(1 + (species_3/compartment_1/parameter_80)^parameter_81))/(parameter_82*(species_4/compartment_1)*(species_10/compartment_1));
   parameter_79 = 0.00226722;
   parameter_80 = 0.297524;
   parameter_81 = 2.0793;
   parameter_82 = 0.00459138;
   parameter_61 = 2;
-  parameter_64 = (parameter_83 * (species_14 / compartment_4) * parameter_63) / (species_15 / compartment_4);
+  parameter_64 = (parameter_83*(species_14/compartment_4)*parameter_63)/(species_15/compartment_4);
   parameter_83 = 0.00529124;
-  parameter_65 = (parameter_83 * (species_14 / compartment_4) * parameter_63 * (1 + (species_3 / compartment_1 / parameter_84)^parameter_85)) / (species_15 / compartment_4);
+  parameter_65 = (parameter_83*(species_14/compartment_4)*parameter_63*(1 + (species_3/compartment_1/parameter_84)^parameter_85))/(species_15/compartment_4);
   parameter_84 = 0.0811033;
   parameter_85 = 0.628719;
-  parameter_66 = (parameter_83 * (species_14 / compartment_4) * parameter_63) / (species_15 / compartment_4 * parameter_62);
+  parameter_66 = (parameter_83*(species_14/compartment_4)*parameter_63)/(species_15/compartment_4*parameter_62);
   parameter_67 = 0.001;
   parameter_68 = 600;
   parameter_70 = 0;
