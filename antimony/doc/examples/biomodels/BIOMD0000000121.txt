@@ -6,23 +6,23 @@ model *model_0000001()
   species c3 in cell, c2 in cell, c1 in cell, o in cell, i in cell, $ik in cell;
 
   // Assignment Rules:
-  ik := Gk * o * (v - vk);
-  Gk := 1.350000e-002 * ko^0.59;
-  vk := (R * Temp) / F * ln(ko / ki);
-  a := 5.550000e-002 * exp(0.05547153 * (v - 12));
-  b := 2.357000e-003 * exp(-0.036588 * v);
-  aa := 6.550000e-002 * exp(0.05547153 * (v - 36));
-  bb := 2.935700e-003 * exp(-0.02158 * v);
-  ai := (0.439 * exp(-0.02352 * (v + 25)) * 4.5) / ko;
-  bi := 0.656 * exp(0.000942 * v) * (4.5 / ko)^0.3;
-  u := (ai * bb * aa) / (aa * bi);
+  ik := Gk*o*(v - vk);
+  Gk := 1.350000e-002*ko^0.59;
+  vk := (R*Temp)/F*ln(ko/ki);
+  a := 5.550000e-002*exp(0.05547153*(v - 12));
+  b := 2.357000e-003*exp(-0.036588*v);
+  aa := 6.550000e-002*exp(0.05547153*(v - 36));
+  bb := 2.935700e-003*exp(-0.02158*v);
+  ai := (0.439*exp(-0.02352*(v + 25))*4.5)/ko;
+  bi := 0.656*exp(0.000942*v)*(4.5/ko)^0.3;
+  u := (ai*bb*aa)/(aa*bi);
 
   // Reactions:
-  reaction_0000001: c3 -> c2; (a * c3 - b * c2) * cell;
-  reaction_0000002: c2 -> c1; (ain * c2 - bin * c1) * cell;
-  reaction_0000003: c1 -> o; (c1 * aa - bb * o) * cell;
-  reaction_0000004: o -> i; (o * bi - ai * i) * cell;
-  reaction_0000005: c1 -> i; (aa * c1 - u * i) * cell;
+  reaction_0000001: c3 -> c2; (a*c3 - b*c2)*cell;
+  reaction_0000002: c2 -> c1; (ain*c2 - bin*c1)*cell;
+  reaction_0000003: c1 -> o; (c1*aa - bb*o)*cell;
+  reaction_0000004: o -> i; (o*bi - ai*i)*cell;
+  reaction_0000005: c1 -> i; (aa*c1 - u*i)*cell;
 
   // Events:
   event_0000001: at time > 50 && time <= 300: v = vtest;

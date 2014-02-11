@@ -6,40 +6,40 @@ model *model_0000001()
   species c in cell, cer in cell;
 
   // Assignment Rules:
-  alphaIRn := 0.09 / (1 + exp(0.11 * (V + 100)));
-  betaIRn := 0.00035 * exp(0.07 * (V + 25));
-  nIRinf := 1 / (1 + betaIRn / alphaIRn);
-  tauIRn := 1 / (alphaIRn + betaIRn);
-  alphaIRr := 30 / (1 + exp(0.04 * (V + 230)));
-  betaIRr := 0.15 / (1 + exp(-0.05 * (V + 120)));
-  rIRinf := 1 / (1 + betaIRr / alphaIRr);
-  tauIRr := 1 / (alphaIRr + betaIRr);
-  ica := gca * minf * (V - vca);
-  minf := 1 / (1 + exp((vm - V) / sm));
-  ik := gk * n * (V - vk);
-  ikca := gkca * w * (V - vk);
-  w := c^5 / (c^5 + kd^5);
-  ikatp := gkatp * a * (V - vk);
-  iir := gir * nIR * rIR * (V - vir);
-  ninf := 1 / (1 + exp((vn - V) / sn));
-  ainf := 1 / (1 + exp((r - c) / sa));
-  jmem := -(alpha * ica + kpmca * c);
-  jserca := kserca * c;
-  jleak := pleak * (cer - c);
-  jip3 := oinf * (cer - c);
-  oinf := c / (dact + c) * (ip3 / (dip3 + ip3)) * (dinact / (dinact + c));
+  alphaIRn := 0.09/(1 + exp(0.11*(V + 100)));
+  betaIRn := 0.00035*exp(0.07*(V + 25));
+  nIRinf := 1/(1 + betaIRn/alphaIRn);
+  tauIRn := 1/(alphaIRn + betaIRn);
+  alphaIRr := 30/(1 + exp(0.04*(V + 230)));
+  betaIRr := 0.15/(1 + exp(-0.05*(V + 120)));
+  rIRinf := 1/(1 + betaIRr/alphaIRr);
+  tauIRr := 1/(alphaIRr + betaIRr);
+  ica := gca*minf*(V - vca);
+  minf := 1/(1 + exp((vm - V)/sm));
+  ik := gk*n*(V - vk);
+  ikca := gkca*w*(V - vk);
+  w := c^5/(c^5 + kd^5);
+  ikatp := gkatp*a*(V - vk);
+  iir := gir*nIR*rIR*(V - vir);
+  ninf := 1/(1 + exp((vn - V)/sn));
+  ainf := 1/(1 + exp((r - c)/sa));
+  jmem := -(alpha*ica + kpmca*c);
+  jserca := kserca*c;
+  jleak := pleak*(cer - c);
+  jip3 := oinf*(cer - c);
+  oinf := c/(dact + c)*(ip3/(dip3 + ip3))*(dinact/(dinact + c));
   jer := (jleak + jip3) - jserca;
 
   // Rate Rules:
-  V' = -(ica + ik + ikca + ikatp + iir) / cm;
-  n' = (ninf - n) / taun;
-  a' = (ainf - a) / taua;
-  nIR' = (nIRinf - nIR) / tauIRn;
-  rIR' = (rIRinf - rIR) / tauIRr;
+  V' = -(ica + ik + ikca + ikatp + iir)/cm;
+  n' = (ninf - n)/taun;
+  a' = (ainf - a)/taua;
+  nIR' = (nIRinf - nIR)/tauIRn;
+  rIR' = (rIRinf - rIR)/tauIRr;
 
   // Reactions:
-  reaction_0000005:  => c; cell * fcyt * (jmem + jer);
-  reaction_0000006:  => cer; -fer * vcytver * jer * cell;
+  reaction_0000005:  => c; cell*fcyt*(jmem + jer);
+  reaction_0000006:  => cer; -fer*vcytver*jer*cell;
 
   // Events:
   event_0000001: at time > 3.000000e+004: gkatp = 530;

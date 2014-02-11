@@ -6,13 +6,13 @@ model *Zatorsky2006_p53_Model6()
   species x in compartment_, y in compartment_;
 
   // Rate Rules:
-  S' = beta_S - alpha_S * y * S;
+  S' = beta_S - alpha_S*y*S;
 
   // Reactions:
-  R1:  => x; (compartment_ * beta_x * S^n) / (S^n + 1) * psi;
-  R3: x => ; compartment_ * alpha_xy * y * x;
-  R4:  => y; compartment_ * beta_y * psi * delay(x, tau);
-  R5: y => ; compartment_ * alpha_y * y;
+  R1:  => x; (compartment_*beta_x*S^n)/(S^n + 1)*psi;
+  R3: x => ; compartment_*alpha_xy*y*x;
+  R4:  => y; compartment_*beta_y*psi*delay(x, tau);
+  R5: y => ; compartment_*alpha_y*y;
 
   // Species initializations:
   x = 0;

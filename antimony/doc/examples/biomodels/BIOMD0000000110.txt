@@ -8,32 +8,32 @@ model *Qu2003_CellCycle()
   species i in cell, y in cell, $totalCyclin in cell;
 
   // Assignment Rules:
-  c := (c0 - (x + x1 + ix + ixp)) / (c0 * cell);
+  c := (c0 - (x + x1 + ix + ixp))/(c0*cell);
   totalCyclin := x + x1 + y;
 
   // Reactions:
-  reaction_0000001:  => y; k1 * cell;
-  reaction_0000002: y -> x1; cell * (k3 * c * y - x1 * k4);
-  reaction_0000003: y => ; cell * (k2 + k2u * u) * y;
-  reaction_0000004: z0 -> z1; cell * ((bz + cz * x) * z0 - z1 * az);
-  reaction_0000005: x -> x1; cell * ((k6 + w0) * x - (k5 + z2) * x1);
-  reaction_0000006: z1 -> z2; cell * ((bz + cz * x) * z1 - az * z2);
-  reaction_0000007:  => w0; k10 * cell;
-  reaction_000008: w0 -> w1; cell * ((bw + cw * x) * w0 - aw * w1);
-  reaction_000009:  => u; (cell * x^2) / (a^2 + x^2) / Tau;
-  reaction_0000010:  => i; k12 * cell;
-  reaction_0000011: i + x -> ix; (k14 * x * i - k15 * ix) * cell;
-  reaction_0000014: ix -> ixp; cell * ((bi + ci * x) * ix - ai * ixp);
-  reaction_0000013: u => ; (cell * u) / Tau;
-  reaction_0000015: i => ; cell * k13 * i;
-  reaction_0000016: ixp => x; cell * k16 * k16u * ixp;
-  reaction_0000017: w0 => ; cell * w0 * k11;
-  reaction_0000018: w1 => ; cell * k11 * w1;
-  reaction_0000019: z0 => ; cell * k9 * z0;
-  reaction_0000020: z1 => ; cell * k9 * z1;
-  reaction_0000021: z2 -> ; cell * k9 * z2;
-  reaction_0000022:  => z0; cell * k8;
-  reaction_0000023: x => ; cell * (k7 + k7u * u) * x;
+  reaction_0000001:  => y; k1*cell;
+  reaction_0000002: y -> x1; cell*(k3*c*y - x1*k4);
+  reaction_0000003: y => ; cell*(k2 + k2u*u)*y;
+  reaction_0000004: z0 -> z1; cell*((bz + cz*x)*z0 - z1*az);
+  reaction_0000005: x -> x1; cell*((k6 + w0)*x - (k5 + z2)*x1);
+  reaction_0000006: z1 -> z2; cell*((bz + cz*x)*z1 - az*z2);
+  reaction_0000007:  => w0; k10*cell;
+  reaction_000008: w0 -> w1; cell*((bw + cw*x)*w0 - aw*w1);
+  reaction_000009:  => u; (cell*x^2)/(a^2 + x^2)/Tau;
+  reaction_0000010:  => i; k12*cell;
+  reaction_0000011: i + x -> ix; (k14*x*i - k15*ix)*cell;
+  reaction_0000014: ix -> ixp; cell*((bi + ci*x)*ix - ai*ixp);
+  reaction_0000013: u => ; (cell*u)/Tau;
+  reaction_0000015: i => ; cell*k13*i;
+  reaction_0000016: ixp => x; cell*k16*k16u*ixp;
+  reaction_0000017: w0 => ; cell*w0*k11;
+  reaction_0000018: w1 => ; cell*k11*w1;
+  reaction_0000019: z0 => ; cell*k9*z0;
+  reaction_0000020: z1 => ; cell*k9*z1;
+  reaction_0000021: z2 -> ; cell*k9*z2;
+  reaction_0000022:  => z0; cell*k8;
+  reaction_0000023: x => ; cell*(k7 + k7u*u)*x;
 
   // Species initializations:
   x1 = 0.1;

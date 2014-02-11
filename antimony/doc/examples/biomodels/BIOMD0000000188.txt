@@ -14,44 +14,44 @@ model *p53_Mdm2_ATM_System()
   totMdm2 := Mdm2 + Mdm2_p53 + Mdm2_P;
 
   // Reactions:
-  p53mRNASynthesis: $Source => p53_mRNA; ksynp53mRNA * Source;
-  p53mRNADegradation: p53_mRNA => $Sink; kdegp53mRNA * p53_mRNA;
-  Mdm2Synthesis: Mdm2_mRNA => Mdm2_mRNA + Mdm2 + mdm2syn; ksynMdm2 * Mdm2_mRNA;
-  Mdm2mRNASynthesis1: p53 => p53 + Mdm2_mRNA + Mdm2mRNAsyn; ksynMdm2mRNA * p53;
-  Mdm2mRNASynthesis2: p53_P => p53_P + Mdm2_mRNA + Mdm2mRNAsyn; ksynMdm2mRNA * p53_P;
-  Mdm2mRNADegradation: Mdm2_mRNA => $Sink + Mdm2mRNAdeg; kdegMdm2mRNA * Mdm2_mRNA;
-  Mdm2Degradation: Mdm2 => $Sink + mdm2deg; kdegMdm2 * Mdm2 * kproteff;
-  p53Synthesis: p53_mRNA => p53 + p53_mRNA + p53syn; ksynp53 * p53_mRNA;
-  p53Degradation: Mdm2_p53 => Mdm2 + p53deg; kdegp53 * Mdm2_p53 * kproteff;
-  P53_Mdm2Binding: p53 + Mdm2 => Mdm2_p53; kbinMdm2p53 * p53 * Mdm2;
-  P53_Mdm2Release: Mdm2_p53 => p53 + Mdm2; krelMdm2p53 * Mdm2_p53;
-  DNAdamage:  => damDNA; kdam * IR;
-  DNArepair: damDNA => $Sink; krepair * damDNA;
-  ATMactivation: damDNA + ATMI => damDNA + ATMA; kactATM * damDNA * ATMI;
-  p53phoshorylation: p53 + ATMA => p53_P + ATMA; kphosp53 * p53 * ATMA;
-  p53dephosorylation: p53_P => p53; kdephosp53 * p53_P;
-  Mdm2phoshorylation: Mdm2 + ATMA => Mdm2_P + ATMA; kphosMdm2 * Mdm2 * ATMA;
-  Mdm2dephosorylation: Mdm2_P => Mdm2; kdephosMdm2 * Mdm2_P;
-  Mdm2Pdegradation: Mdm2_P => $Sink + mdm2deg; kdegATMMdm2 * Mdm2_P;
-  ATMInactivation: ATMA => ATMI; kinactATM * ATMA;
+  p53mRNASynthesis: $Source => p53_mRNA; ksynp53mRNA*Source;
+  p53mRNADegradation: p53_mRNA => $Sink; kdegp53mRNA*p53_mRNA;
+  Mdm2Synthesis: Mdm2_mRNA => Mdm2_mRNA + Mdm2 + mdm2syn; ksynMdm2*Mdm2_mRNA;
+  Mdm2mRNASynthesis1: p53 => p53 + Mdm2_mRNA + Mdm2mRNAsyn; ksynMdm2mRNA*p53;
+  Mdm2mRNASynthesis2: p53_P => p53_P + Mdm2_mRNA + Mdm2mRNAsyn; ksynMdm2mRNA*p53_P;
+  Mdm2mRNADegradation: Mdm2_mRNA => $Sink + Mdm2mRNAdeg; kdegMdm2mRNA*Mdm2_mRNA;
+  Mdm2Degradation: Mdm2 => $Sink + mdm2deg; kdegMdm2*Mdm2*kproteff;
+  p53Synthesis: p53_mRNA => p53 + p53_mRNA + p53syn; ksynp53*p53_mRNA;
+  p53Degradation: Mdm2_p53 => Mdm2 + p53deg; kdegp53*Mdm2_p53*kproteff;
+  P53_Mdm2Binding: p53 + Mdm2 => Mdm2_p53; kbinMdm2p53*p53*Mdm2;
+  P53_Mdm2Release: Mdm2_p53 => p53 + Mdm2; krelMdm2p53*Mdm2_p53;
+  DNAdamage:  => damDNA; kdam*IR;
+  DNArepair: damDNA => $Sink; krepair*damDNA;
+  ATMactivation: damDNA + ATMI => damDNA + ATMA; kactATM*damDNA*ATMI;
+  p53phoshorylation: p53 + ATMA => p53_P + ATMA; kphosp53*p53*ATMA;
+  p53dephosorylation: p53_P => p53; kdephosp53*p53_P;
+  Mdm2phoshorylation: Mdm2 + ATMA => Mdm2_P + ATMA; kphosMdm2*Mdm2*ATMA;
+  Mdm2dephosorylation: Mdm2_P => Mdm2; kdephosMdm2*Mdm2_P;
+  Mdm2Pdegradation: Mdm2_P => $Sink + mdm2deg; kdegATMMdm2*Mdm2_P;
+  ATMInactivation: ATMA => ATMI; kinactATM*ATMA;
 
   // Events:
   stressCell: at time >= 3600: IR = 25;
   stopStress: at time >= 3660: IR = 0;
 
   // Species initializations:
-  Mdm2 = 5 / cell;
-  p53 = 5 / cell;
-  Mdm2_p53 = 95 / cell;
-  Mdm2_mRNA = 10 / cell;
-  p53_mRNA = 10 / cell;
+  Mdm2 = 5/cell;
+  p53 = 5/cell;
+  Mdm2_p53 = 95/cell;
+  Mdm2_mRNA = 10/cell;
+  p53_mRNA = 10/cell;
   ATMA = 0;
-  ATMI = 200 / cell;
+  ATMI = 200/cell;
   p53_P = 0;
   Mdm2_P = 0;
   damDNA = 0;
-  Sink = 1 / cell;
-  Source = 1 / cell;
+  Sink = 1/cell;
+  Source = 1/cell;
   p53deg = 0;
   p53syn = 0;
   mdm2deg = 0;

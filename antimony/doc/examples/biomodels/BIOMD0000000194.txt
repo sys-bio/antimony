@@ -7,9 +7,9 @@ model *TM()
   species Cdc20 in Cytoplasm, Cdc20_CMad2 in Cytoplasm;
 
   // Reactions:
-  R6: Mad1_CMad2 + OMad2 -> Mad1_CMad2_OMad2; Cytoplasm * (u * alpha_T * Mad1_CMad2 * OMad2 - beta_T * Mad1_CMad2_OMad2);
-  R7: Mad1_CMad2_OMad2 + Cdc20 => Mad1_CMad2 + Cdc20_CMad2; Cytoplasm * u * gamma_T * Mad1_CMad2_OMad2 * Cdc20;
-  R8: Cdc20_CMad2 => Cdc20 + OMad2; Cytoplasm * eta_T * Cdc20_CMad2;
+  R6: Mad1_CMad2 + OMad2 -> Mad1_CMad2_OMad2; Cytoplasm*(u*alpha_T*Mad1_CMad2*OMad2 - beta_T*Mad1_CMad2_OMad2);
+  R7: Mad1_CMad2_OMad2 + Cdc20 => Mad1_CMad2 + Cdc20_CMad2; Cytoplasm*u*gamma_T*Mad1_CMad2_OMad2*Cdc20;
+  R8: Cdc20_CMad2 => Cdc20 + OMad2; Cytoplasm*eta_T*Cdc20_CMad2;
 
   // Events:
   mt_attachment: at time > 2000: u = const_val_0;

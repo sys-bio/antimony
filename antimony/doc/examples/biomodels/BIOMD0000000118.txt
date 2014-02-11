@@ -1,6 +1,6 @@
 //Created by libAntimony v2.5
 function GAMMAF(VV, theta, sigma)
-  1 / (1 + exp(-(VV - theta) / sigma));
+  1/(1 + exp(-(VV - theta)/sigma));
 end
 
 
@@ -10,21 +10,21 @@ model *model_0000001()
   compartment compartment_0000001;
 
   // Assignment Rules:
-  INa := gNa * Minfs^pms * hhs * (V - VNa);
+  INa := gNa*Minfs^pms*hhs*(V - VNa);
   Minfs := GAMMAF(V, thetam, sigmam);
-  INaP := gNaP * Pinfs * (V - VNa);
+  INaP := gNaP*Pinfs*(V - VNa);
   Pinfs := GAMMAF(V, thetap, sigmap);
-  IKdr := gKdr * nns^pns * (V - VK);
-  IA := gA * Ainfs^3 * bbs * (V - VK);
+  IKdr := gKdr*nns^pns*(V - VK);
+  IA := gA*Ainfs^3*bbs*(V - VK);
   Ainfs := GAMMAF(V, thetaa, sigmaa);
-  Iz := gZ * zzs * (V - VK);
+  Iz := gZ*zzs*(V - VK);
 
   // Rate Rules:
-  hhs' = (phi * (GAMMAF(V, thetah, sigmah) - hhs)) / (1 + 7.5 * GAMMAF(V, t_tauh, -6));
-  V' = (-gL * (V - VL) - INa - INaP - IKdr - IA - Iz + Iapp) / Cm;
-  nns' = (phi * (GAMMAF(V, thetan, sigman) - nns)) / (1 + 5 * GAMMAF(V, t_taun, -15));
-  bbs' = (GAMMAF(V, thetab, sigmab) - bbs) / tauBs;
-  zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs) / tauZs;
+  hhs' = (phi*(GAMMAF(V, thetah, sigmah) - hhs))/(1 + 7.5*GAMMAF(V, t_tauh, -6));
+  V' = (-gL*(V - VL) - INa - INaP - IKdr - IA - Iz + Iapp)/Cm;
+  nns' = (phi*(GAMMAF(V, thetan, sigman) - nns))/(1 + 5*GAMMAF(V, t_taun, -15));
+  bbs' = (GAMMAF(V, thetab, sigmab) - bbs)/tauBs;
+  zzs' = (GAMMAF(V, thetaz, sigmaz) - zzs)/tauZs;
 
   // Compartment initializations:
   compartment_0000001 = 1;

@@ -11,26 +11,26 @@ model *Olsen2003_neutrophil_oscillatory_metabolism()
   species coIII_p in phagosome, NADP2_c in cytoplasm;
 
   // Reactions:
-  R1: per3_p + H2O2_p => coI_p; phagosome * (k1 * H2O2_p * per3_p - kminus1 * coI_p);
-  R2: MLTH_p + coI_p => MLT_p + coII_p; phagosome * k2 * coI_p * MLTH_p;
-  R3: MLTH_p + coII_p => MLT_p + per3_p; phagosome * k3 * coII_p * MLTH_p;
-  R4: O2minus_p + per3_p => coIII_p; phagosome * k4 * per3_p * O2minus_p;
-  R5: 2O2minus_p + 2H_p => O2_p + H2O2_p; phagosome * k5 * O2minus_p^2;
-  R6: O2minus_p + coIII_p => O2_p + coI_p; phagosome * k6 * coIII_p * O2minus_p;
-  R7: O2_c + NADPH_c => H2O2_c + NADPplus_c; cytoplasm * k7 * NADPH_c * O2_c;
-  R8: O2_c + NADP_c => O2minus_c + NADPplus_c; cytoplasm * k8 * NADP_c * O2_c;
-  R9: 2O2minus_c + 2H_c => O2_c + H2O2_c; cytoplasm * k9 * O2minus_c^2;
-  R10: NADPH_c + MLT_c => NADP_c + MLTH_c; cytoplasm * k10 * MLT_c * NADPH_c;
-  R11: 2NADP_c => NADP2_c; cytoplasm * k11 * NADP_c^2;
-  R12:  => NADPH_c; cytoplasm * k12;
-  R13a:  => O2_c; cytoplasm * k13;
-  R13b: O2_c => ; cytoplasm * kminus13 * O2_c;
-  R14: O2_p => O2_c; phagosome * (k14 * O2_p - k14 * O2_c);
-  R15: H2O2_p => H2O2_c; phagosome * (k15 * H2O2_p - k15 * H2O2_c);
-  R16: MLTH_p => MLTH_c; phagosome * (k16 * MLTH_p - k16 * MLTH_c);
-  R17: MLT_p => MLT_c; phagosome * (k17 * MLT_p - k17 * MLT_c);
-  R18: O2minus_p => O2minus_c; phagosome * (k18 * O2minus_p - k18 * O2minus_c);
-  R19: 2O2_p + NADPH_c => 2O2minus_p + NADPplus_c; phagosome * (((V * NADPH_c) / Knadph * (1 + NADPH_c / Knadph) * O2_p) / ((L + (1 + NADPH_c / Knadph)^2) * (Ko + O2_p)));
+  R1: per3_p + H2O2_p => coI_p; phagosome*(k1*H2O2_p*per3_p - kminus1*coI_p);
+  R2: MLTH_p + coI_p => MLT_p + coII_p; phagosome*k2*coI_p*MLTH_p;
+  R3: MLTH_p + coII_p => MLT_p + per3_p; phagosome*k3*coII_p*MLTH_p;
+  R4: O2minus_p + per3_p => coIII_p; phagosome*k4*per3_p*O2minus_p;
+  R5: 2O2minus_p + 2H_p => O2_p + H2O2_p; phagosome*k5*O2minus_p^2;
+  R6: O2minus_p + coIII_p => O2_p + coI_p; phagosome*k6*coIII_p*O2minus_p;
+  R7: O2_c + NADPH_c => H2O2_c + NADPplus_c; cytoplasm*k7*NADPH_c*O2_c;
+  R8: O2_c + NADP_c => O2minus_c + NADPplus_c; cytoplasm*k8*NADP_c*O2_c;
+  R9: 2O2minus_c + 2H_c => O2_c + H2O2_c; cytoplasm*k9*O2minus_c^2;
+  R10: NADPH_c + MLT_c => NADP_c + MLTH_c; cytoplasm*k10*MLT_c*NADPH_c;
+  R11: 2NADP_c => NADP2_c; cytoplasm*k11*NADP_c^2;
+  R12:  => NADPH_c; cytoplasm*k12;
+  R13a:  => O2_c; cytoplasm*k13;
+  R13b: O2_c => ; cytoplasm*kminus13*O2_c;
+  R14: O2_p => O2_c; phagosome*(k14*O2_p - k14*O2_c);
+  R15: H2O2_p => H2O2_c; phagosome*(k15*H2O2_p - k15*H2O2_c);
+  R16: MLTH_p => MLTH_c; phagosome*(k16*MLTH_p - k16*MLTH_c);
+  R17: MLT_p => MLT_c; phagosome*(k17*MLT_p - k17*MLT_c);
+  R18: O2minus_p => O2minus_c; phagosome*(k18*O2minus_p - k18*O2minus_c);
+  R19: 2O2_p + NADPH_c => 2O2minus_p + NADPplus_c; phagosome*(((V*NADPH_c)/Knadph*(1 + NADPH_c/Knadph)*O2_p)/((L + (1 + NADPH_c/Knadph)^2)*(Ko + O2_p)));
 
   // Species initializations:
   H2O2_p = 0;

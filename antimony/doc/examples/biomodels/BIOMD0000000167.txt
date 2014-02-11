@@ -8,16 +8,16 @@ model *Mayya2005_STATmodule()
   species species_test in sol;
 
   // Assignment Rules:
-  statKinase_sol := piecewise(0.01 * sin(0.001571 * (-500 + time)), time > 500 && time < 2502.54614894971, 0);
+  statKinase_sol := piecewise(0.01*sin(0.001571*(-500 + time)), time > 500 && time < 2502.54614894971, 0);
 
   // Reactions:
-  PstatDimerisation: 2Pstat_sol -> PstatDimer_sol; (PstatDimerisation_Kf_PstatDimerisation * Pstat_sol^2 + -(PstatDimerisation_Kr_PstatDimerisation * PstatDimer_sol)) * sol;
-  statDephosphorylation: Pstat_nuc -> stat_nuc; statDephosphorylation_Kcat_dephos * statPhosphatase_nuc * Pstat_nuc * (1 / (statDephosphorylation_Km_dephos + Pstat_nuc)) * nuc;
-  statPhosphorylation: stat_sol -> Pstat_sol + species_test; statPhosphorylation_Kcat_phos * statKinase_sol * stat_sol * (1 / (statPhosphorylation_Km_phos + stat_sol)) * sol;
-  PstatDimerisationNuc: 2Pstat_nuc -> PstatDimer_nuc; (PstatDimerisationNuc_Kf_PstatDimerisation * Pstat_nuc^2 + -(PstatDimerisationNuc_Kr_PstatDimerisation * PstatDimer_nuc)) * nuc;
-  PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc; PstatDimer__import_PstatDimer_impMax * PstatDimer_sol * (1 / (PstatDimer__import_Kpsd_imp + PstatDimer_sol)) * nm;
-  stat_export: stat_sol -> stat_nuc; nuc * stat_export_stat_expMax * stat_nuc * (1 / (stat_export_Ks_exp + stat_nuc)) * nm;
-  stat_import: stat_sol -> stat_nuc; nuc * stat_import_stat_impMax * stat_sol * (1 / (stat_import_Ks_imp + stat_sol)) * nm;
+  PstatDimerisation: 2Pstat_sol -> PstatDimer_sol; (PstatDimerisation_Kf_PstatDimerisation*Pstat_sol^2 + -(PstatDimerisation_Kr_PstatDimerisation*PstatDimer_sol))*sol;
+  statDephosphorylation: Pstat_nuc -> stat_nuc; statDephosphorylation_Kcat_dephos*statPhosphatase_nuc*Pstat_nuc*(1/(statDephosphorylation_Km_dephos + Pstat_nuc))*nuc;
+  statPhosphorylation: stat_sol -> Pstat_sol + species_test; statPhosphorylation_Kcat_phos*statKinase_sol*stat_sol*(1/(statPhosphorylation_Km_phos + stat_sol))*sol;
+  PstatDimerisationNuc: 2Pstat_nuc -> PstatDimer_nuc; (PstatDimerisationNuc_Kf_PstatDimerisation*Pstat_nuc^2 + -(PstatDimerisationNuc_Kr_PstatDimerisation*PstatDimer_nuc))*nuc;
+  PstatDimer__import: PstatDimer_sol -> PstatDimer_nuc; PstatDimer__import_PstatDimer_impMax*PstatDimer_sol*(1/(PstatDimer__import_Kpsd_imp + PstatDimer_sol))*nm;
+  stat_export: stat_sol -> stat_nuc; nuc*stat_export_stat_expMax*stat_nuc*(1/(stat_export_Ks_exp + stat_nuc))*nm;
+  stat_import: stat_sol -> stat_nuc; nuc*stat_import_stat_impMax*stat_sol*(1/(stat_import_Ks_imp + stat_sol))*nm;
 
   // Species initializations:
   stat_sol = 1;
