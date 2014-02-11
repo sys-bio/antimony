@@ -360,9 +360,6 @@ string Formula::ToDelimitedStringWithStrands(string cc, vector<pair<Variable*, s
           actualvar = module->GetVariable(varname);
         }
         if (actualvar != NULL) {
-          if (!retval.empty() && retval[retval.size()-1] != ' ' && retval[retval.size()-1] != '(' && retval[retval.size()-1] != '^') {
-            retval += " ";
-          }
           retval += actualvar->GetNameDelimitedBy(cc);
         }
         else if (varname.size() > 0) {
@@ -391,14 +388,74 @@ string Formula::ToDelimitedStringWithEllipses(string cc) const
       actualvar = module->GetVariable(varname);
     }
     if (actualvar != NULL) {
-      if (!retval.empty() && retval[retval.size()-1] != ' ' && retval[retval.size()-1] != '(' && retval[retval.size()-1] != '^') {
-        retval += " ";
-      }
       retval += actualvar->GetNameDelimitedBy(cc);
     }
     else {
       assert(varname.size() == 0);
-      retval += m_components[comp].first;
+      if (m_components[comp].first == "+" ||
+        m_components[comp].first == ">" ||
+        m_components[comp].first == "<" ||
+        m_components[comp].first == "=" ||
+        m_components[comp].first == "&" ||
+        m_components[comp].first == "|")
+      {
+        retval += " " + m_components[comp].first + " ";
+      }
+      else if (m_components[comp].first == "-" &&
+         comp != 0 &&
+         retval[retval.size()-1] != ' ' &&
+         retval[retval.size()-1] != '^' &&
+         retval[retval.size()-1] != '*' &&
+         retval[retval.size()-1] != '/' &&
+         retval[retval.size()-1] != '%' &&
+         retval[retval.size()-1] != '+' &&
+         retval[retval.size()-1] != '-' &&
+         retval[retval.size()-1] != '>' &&
+         retval[retval.size()-1] != '<' &&
+         retval[retval.size()-1] != '=' &&
+         retval[retval.size()-1] != '&' &&
+         retval[retval.size()-1] != '|' &&
+         retval[retval.size()-1] != '(')
+      {
+        retval += " " + m_components[comp].first + " ";
+      }
+      else if (m_components[comp].first == ",") 
+      {
+        retval += m_components[comp].first + " ";
+      }
+      else {
+        retval += m_components[comp].first;
+      }
+    }
+    size_t pos = retval.find("  ");
+    while (pos != string::npos) {
+      retval.replace(pos, 2, " ");
+      pos = retval.find("  ", pos+1);
+    }
+    pos = retval.find("> =");
+    while (pos != string::npos) {
+      retval.replace(pos, 3, ">=");
+      pos = retval.find("> =", pos+2);
+    }
+    pos = retval.find("< =");
+    while (pos != string::npos) {
+      retval.replace(pos, 3, "<=");
+      pos = retval.find("< =", pos+2);
+    }
+    pos = retval.find("= =");
+    while (pos != string::npos) {
+      retval.replace(pos, 3, "==");
+      pos = retval.find("= =", pos+2);
+    }
+    pos = retval.find("& &");
+    while (pos != string::npos) {
+      retval.replace(pos, 3, "&&");
+      pos = retval.find("& &", pos+2);
+    }
+    pos = retval.find("| |");
+    while (pos != string::npos) {
+      retval.replace(pos, 3, "||");
+      pos = retval.find("| |", pos+2);
     }
   }
   return retval;

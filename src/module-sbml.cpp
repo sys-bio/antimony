@@ -1045,6 +1045,15 @@ void Module::LoadSBML(const Model* sbml)
       }
       else {
         Variable* compunits = compartment->GetUnitVariable();
+        if (compunits == NULL) {
+          vector<string> volname;
+          volname.push_back("volume");
+          compunits = GetVariable(volname);
+          if (compunits == NULL) {
+            compunits = GetDefaultVariable(volname);
+          }
+          assert(compunits != NULL);
+        }
         compud = compunits->GetUnitDef();
       }
       ud->DivideUnitDef(compud);
@@ -1112,14 +1121,11 @@ void Module::LoadSBML(const Model* sbml)
       const SpeciesReference* reactant = reaction->getReactant(react);
       double stoichiometry = 1;
       if (reactant->isSetStoichiometryMath()) {
-        g_registry.AddWarning("Unable to set the stoichiometry math for the reactant " + reactant->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry math is not a valid concept in Antimony.");
+        g_registry.AddWarning("Unable to set the stoichiometry math for the reactant " + reactant->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry math is not a defined concept in Antimony.");
       }
       else {
         if (reactant->isSetStoichiometry()) {
           stoichiometry = reactant->getStoichiometry();
-        }
-        else {
-          g_registry.AddWarning("Unable to leave the stoichiometry unset for the reactant " + reactant->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry always has a value in Antimony.");
         }
       }
       sbmlname = reactant->getSpecies();
@@ -1141,14 +1147,11 @@ void Module::LoadSBML(const Model* sbml)
       const SpeciesReference* product = reaction->getProduct(react);
       double stoichiometry = 1;
       if (product->isSetStoichiometryMath()) {
-        g_registry.AddWarning("Unable to set the stoichiometry math for the product " + product->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry math is not a valid concept in Antimony.");
+        g_registry.AddWarning("Unable to set the stoichiometry math for the product " + product->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry math is not a defined concept in Antimony.");
       }
       else {
         if (product->isSetStoichiometry()) {
           stoichiometry = product->getStoichiometry();
-        }
-        else {
-          g_registry.AddWarning("Unable to leave the stoichiometry unset for the product " + product->getSpecies() + " in reaction " + reaction->getId() + " because stoichiometry always has a value in Antimony.");
         }
       }
       sbmlname = product->getSpecies();
@@ -1581,9 +1584,16 @@ void Module::CreateSBMLModel(bool comp)
       UnitDef volume("liter", m_modulename);
       if (compartment != NULL) {
         Variable* compunit = compartment->GetUnitVariable();
-        if (compunit != NULL) {
-          ud->MultiplyUnitDef(compunit->GetUnitDef());
+        if (compunit == NULL) {
+          vector<string> volname;
+          volname.push_back("volume");
+          compunit = GetVariable(volname);
+          if (compunit == NULL) {
+            compunit = GetDefaultVariable(volname);
+          }
+          assert(compunit != NULL); //'volume' should always exist at least as a default unit.
         }
+        ud->MultiplyUnitDef(compunit->GetUnitDef());
       }
       else {
         ud->MultiplyUnitDef(&volume);
