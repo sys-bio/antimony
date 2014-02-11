@@ -6,8 +6,8 @@ model *Cronwright2002_Glycerol_Synthesis()
   species G3P in compartment_, $Gly in compartment_, $DHAP in compartment_;
 
   // Reactions:
-  Gpd_p: $DHAP -> G3P; ((compartment_ * Gpd_p_Vf1) / (Gpd_p_K1nadh * Gpd_p_K1dhap) * (Gpd_p_NADH * DHAP - (Gpd_p_NAD * G3P) / Gpd_p_Keq1)) / ((1 + Gpd_p_F16BP / Gpd_p_K1f16bp + Gpd_p_ATP / Gpd_p_K1atp + Gpd_p_ADP / Gpd_p_K1adp) * (1 + Gpd_p_NADH / Gpd_p_K1nadh + Gpd_p_NAD / Gpd_p_K1nad) * (1 + DHAP / Gpd_p_K1dhap + G3P / Gpd_p_K1g3p));
-  Gpp_p: G3P -> $Gly; (compartment_ * Gpp_p_V2 * G3P) / Gpp_p_K2g3p / ((1 + G3P / Gpp_p_K2g3p) * (1 + Gpp_p_Phi / Gpp_p_K2phi));
+  Gpd_p: $DHAP -> G3P; ((compartment_*Gpd_p_Vf1)/(Gpd_p_K1nadh*Gpd_p_K1dhap)*(Gpd_p_NADH*DHAP - (Gpd_p_NAD*G3P)/Gpd_p_Keq1))/((1 + Gpd_p_F16BP/Gpd_p_K1f16bp + Gpd_p_ATP/Gpd_p_K1atp + Gpd_p_ADP/Gpd_p_K1adp)*(1 + Gpd_p_NADH/Gpd_p_K1nadh + Gpd_p_NAD/Gpd_p_K1nad)*(1 + DHAP/Gpd_p_K1dhap + G3P/Gpd_p_K1g3p));
+  Gpp_p: G3P -> $Gly; (compartment_*Gpp_p_V2*G3P)/Gpp_p_K2g3p/((1 + G3P/Gpp_p_K2g3p)*(1 + Gpp_p_Phi/Gpp_p_K2phi));
 
   // Species initializations:
   G3P = 0;

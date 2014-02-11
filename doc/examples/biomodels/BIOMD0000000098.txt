@@ -6,12 +6,12 @@ model *Goldbeter1990_CalciumSpike_CICR()
   species Z in cytosol, Y in store;
 
   // Reactions:
-  R0:  => Z; cytosol * v0;
-  R1:  => Z; cytosol * v1 * beta;
-  R2: Z => Y; cytosol * ((Vm2 * Z^n) / (K2^n + Z^n));
-  R3: Y => Z; store * ((Vm3 * Y^m * Z^p) / ((Kr^m + Y^m) * (Ka^p + Z^p)));
-  Rf: Y => Z; store * kf * Y;
-  R_eff: Z => ; cytosol * k * Z;
+  R0:  => Z; cytosol*v0;
+  R1:  => Z; cytosol*v1*beta;
+  R2: Z => Y; cytosol*((Vm2*Z^n)/(K2^n + Z^n));
+  R3: Y => Z; store*((Vm3*Y^m*Z^p)/((Kr^m + Y^m)*(Ka^p + Z^p)));
+  Rf: Y => Z; store*kf*Y;
+  R_eff: Z => ; cytosol*k*Z;
 
   // Species initializations:
   Z = 0.15;

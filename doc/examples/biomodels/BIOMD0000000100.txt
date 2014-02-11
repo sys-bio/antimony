@@ -7,16 +7,16 @@ model *Rozi2003_Glycogen_Phosphorylase_Activation()
   species GP in cytosol;
 
   // Reactions:
-  vin: $EC => Z; extracellular * (v0 + v1 * beta);
-  R2: Z => Y; cytosol * ((Vm2 * Z^2) / (K2^2 + Z^2));
-  R3: Y => Z; (intravesicular * Vm3 * A^4 * Y^2 * Z^m) / ((Ka^4 + A^4) * (Ky^2 + Y^2) * (Kz^m + Z^m));
-  Rkf: Y => Z; intravesicular * Kf * Y;
-  Rkz: Z => $EC; cytosol * K * Z;
-  R4:  => A; cytosol * beta * V4;
-  R5: A => ; (cytosol * Vm5 * A^p * Z^n) / ((K5^p + A^p) * (Kd^n + Z^n));
-  R6: A => ; cytosol * epsilon * A;
-  R7:  => GP; cytosol * ((Vpm1 * (1 + (gamma * Z^4) / (Ka5^4 + Z^4)) * (1 - GP)) / ((K1 / (1 + Z^4 / Ka6^4) + 1) - GP));
-  R8: GP => ; cytosol * ((Vpm2 * (1 + (alpha * G) / (Ka1 + G)) * GP) / (Kp2 / (1 + G / Ka2) + GP));
+  vin: $EC => Z; extracellular*(v0 + v1*beta);
+  R2: Z => Y; cytosol*((Vm2*Z^2)/(K2^2 + Z^2));
+  R3: Y => Z; (intravesicular*Vm3*A^4*Y^2*Z^m)/((Ka^4 + A^4)*(Ky^2 + Y^2)*(Kz^m + Z^m));
+  Rkf: Y => Z; intravesicular*Kf*Y;
+  Rkz: Z => $EC; cytosol*K*Z;
+  R4:  => A; cytosol*beta*V4;
+  R5: A => ; (cytosol*Vm5*A^p*Z^n)/((K5^p + A^p)*(Kd^n + Z^n));
+  R6: A => ; cytosol*epsilon*A;
+  R7:  => GP; cytosol*((Vpm1*(1 + (gamma*Z^4)/(Ka5^4 + Z^4))*(1 - GP))/((K1/(1 + Z^4/Ka6^4) + 1) - GP));
+  R8: GP => ; cytosol*((Vpm2*(1 + (alpha*G)/(Ka1 + G))*GP)/(Kp2/(1 + G/Ka2) + GP));
 
   // Species initializations:
   EC = 1000;

@@ -6,14 +6,14 @@ model *Goldbeter_Calcium_Oscillation_based_on_CICR_AND_CA_Activated_degradation_
   species EC in extracellular, Z in cytosol, A in cytosol, Y in intravesicular;
 
   // Reactions:
-  vin: EC => Z; cytosol * (vin_v0 + vin_v1 * beta);
-  v2: Z => Y; intravesicular * ((v2_Vm2 * Z^2) / (v2_K2^2 + Z^2));
-  v3: Y => Z; (cytosol * v3_Vm3 * A^4 * Y^2 * Z^4) / ((v3_Ka^4 + A^4) * (v3_Ky^2 + Y^2) * (v3_Kz^4 + Z^4));
-  v4: Y => Z; cytosol * v4_Kf * Y;
-  v5: Z => EC; extracellular * v5_K * Z;
-  v6:  => A; cytosol * beta * v6_Vp;
-  v7: A => ; (cytosol * v7_Vd * A^2 * Z^v7_n) / ((v7_Kp^2 + A^2) * (v7_Kd^v7_n + Z^v7_n));
-  v8: A => ; cytosol * v8_epsilon * A;
+  vin: EC => Z; cytosol*(vin_v0 + vin_v1*beta);
+  v2: Z => Y; intravesicular*((v2_Vm2*Z^2)/(v2_K2^2 + Z^2));
+  v3: Y => Z; (cytosol*v3_Vm3*A^4*Y^2*Z^4)/((v3_Ka^4 + A^4)*(v3_Ky^2 + Y^2)*(v3_Kz^4 + Z^4));
+  v4: Y => Z; cytosol*v4_Kf*Y;
+  v5: Z => EC; extracellular*v5_K*Z;
+  v6:  => A; cytosol*beta*v6_Vp;
+  v7: A => ; (cytosol*v7_Vd*A^2*Z^v7_n)/((v7_Kp^2 + A^2)*(v7_Kd^v7_n + Z^v7_n));
+  v8: A => ; cytosol*v8_epsilon*A;
 
   // Species initializations:
   EC = 1000;

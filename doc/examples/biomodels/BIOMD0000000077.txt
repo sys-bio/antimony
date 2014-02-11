@@ -7,14 +7,14 @@ model *Model_1()
   species IP3 in cell, $CHO in cell;
 
   // Assignment Rules:
-  CHO := (0.001 * alpha * IP3 * (0.3 + 0.3 * beta * time * exp(1 - beta * time))) / (1 + 0.001 * alpha * IP3);
+  CHO := (0.001*alpha*IP3*(0.3 + 0.3*beta*time*exp(1 - beta*time)))/(1 + 0.001*alpha*IP3);
 
   // Reactions:
-  reaction_0: H + R -> HR; cell * (reaction_0_k1 * H * R - reaction_0_k2 * HR);
-  reaction_1: 2HR -> HRRH; cell * (reaction_1_k1 * HR^2 - reaction_1_k2 * HRRH);
-  reaction_2: HRRH + GQ -> E; cell * (reaction_2_k1 * HRRH * GQ - reaction_2_k2 * E);
-  reaction_3: IP3 => ; cell * reaction_3_k1 * IP3;
-  reaction_4:  => IP3; cell * reaction_4_k * E;
+  reaction_0: H + R -> HR; cell*(reaction_0_k1*H*R - reaction_0_k2*HR);
+  reaction_1: 2HR -> HRRH; cell*(reaction_1_k1*HR^2 - reaction_1_k2*HRRH);
+  reaction_2: HRRH + GQ -> E; cell*(reaction_2_k1*HRRH*GQ - reaction_2_k2*E);
+  reaction_3: IP3 => ; cell*reaction_3_k1*IP3;
+  reaction_4:  => IP3; cell*reaction_4_k*E;
 
   // Events:
   RemovalH: at time > 5: H = 0;

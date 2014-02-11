@@ -9,31 +9,31 @@ model *Marwan_Genetics_2003()
   species Pi_ in compartment_;
 
   // Reactions:
-  Photoreceptor_activation: Pfr => Pr; compartment_ * Pfr * Photoreceptor_activation_IfrSfrPfr;
-  Photoreceptor_inactivation: Pr => Pfr; Photoreceptor_inactivation_IrSrPr * Pr * compartment_;
-  Transducer_activation: Xi => Xa; Xi * Transducer_activation_kia * Pr * compartment_;
-  Transducer_inactivation: Xa => Xi; Transducer_inactivation_kai * Xa * compartment_;
-  preS_formation: prepreS => preS; prepreS * preS_formation_kx * Xa * compartment_;
-  S_generation: preS => S; preS * S_generation_ky * Ya * compartment_;
-  Glucose_sensor_inactivation: Ya + $Gluc => Yi; Glucose_sensor_inactivation_kG * Ya * Gluc * compartment_;
-  S_formation:  => S; compartment_ * (S_formation_alpha1 / (1 + V^3));
-  V_formation:  => V; compartment_ * (V_formation_alpha2 / (1 + S^3));
-  S_degradation: S => ; S_degradation_kd_s * S * compartment_;
-  V_degradation: V => ; compartment_ * V * V_degradation_kd_v;
-  Photoreceptor_decay: Pr => Pi_; compartment_ * Photoreceptor_decay_kd * Pr;
+  Photoreceptor_activation: Pfr => Pr; compartment_*Pfr*Photoreceptor_activation_IfrSfrPfr;
+  Photoreceptor_inactivation: Pr => Pfr; Photoreceptor_inactivation_IrSrPr*Pr*compartment_;
+  Transducer_activation: Xi => Xa; Xi*Transducer_activation_kia*Pr*compartment_;
+  Transducer_inactivation: Xa => Xi; Transducer_inactivation_kai*Xa*compartment_;
+  preS_formation: prepreS => preS; prepreS*preS_formation_kx*Xa*compartment_;
+  S_generation: preS => S; preS*S_generation_ky*Ya*compartment_;
+  Glucose_sensor_inactivation: Ya + $Gluc => Yi; Glucose_sensor_inactivation_kG*Ya*Gluc*compartment_;
+  S_formation:  => S; compartment_*(S_formation_alpha1/(1 + V^3));
+  V_formation:  => V; compartment_*(V_formation_alpha2/(1 + S^3));
+  S_degradation: S => ; S_degradation_kd_s*S*compartment_;
+  V_degradation: V => ; compartment_*V*V_degradation_kd_v;
+  Photoreceptor_decay: Pr => Pi_; compartment_*Photoreceptor_decay_kd*Pr;
 
   // Species initializations:
-  Pfr = 10 / compartment_;
+  Pfr = 10/compartment_;
   Pr = 0;
-  Xi = 6 / compartment_;
+  Xi = 6/compartment_;
   Xa = 0;
-  prepreS = 200 / compartment_;
+  prepreS = 200/compartment_;
   preS = 0;
-  Ya = 0.9 / compartment_;
+  Ya = 0.9/compartment_;
   S = 0;
   Gluc = 0;
   Yi = 0;
-  V = 30 / compartment_;
+  V = 30/compartment_;
   Pi_ = 0;
 
   // Compartment initializations:

@@ -10,8 +10,8 @@ model *BIOMD0000000007()
   species $Cdc13Total in Cell, $Cig2Total in Cell;
 
   // Assignment Rules:
-  SPF := Cig1 + alpha * G1K + MPF;
-  MPF := G2K + beta * PG2;
+  SPF := Cig1 + alpha*G1K + MPF;
+  MPF := G2K + beta*PG2;
   IEB := 1 - IE;
   UbEB := 1 - UbE;
   UbE2B := 1 - UbE2;
@@ -20,52 +20,52 @@ model *BIOMD0000000007()
   Rum1Total := G1R + G2R + PG2R + R;
   Cdc13Total := G2K + G2R + PG2 + PG2R;
   Cig2Total := G1K + G1R;
-  k2 := UbE * V2 + (1 - UbE) * V2prime;
-  k6 := UbE2 * V6 + (1 - UbE2) * V6prime;
-  kwee := Vwprime * (1 - Wee1) + Vw * Wee1;
-  k25 := Cdc25 * V25 + (1 - Cdc25) * V25prime;
+  k2 := UbE*V2 + (1 - UbE)*V2prime;
+  k6 := UbE2*V6 + (1 - UbE2)*V6prime;
+  kwee := Vwprime*(1 - Wee1) + Vw*Wee1;
+  k25 := Cdc25*V25 + (1 - Cdc25)*V25prime;
 
   // Rate Rules:
-  Mass' = Mass * mu;
+  Mass' = Mass*mu;
 
   // Reactions:
   G2K_Creation:  => G2K; k1;
   G1K_Creation:  => G1K; k5;
-  Cdc2Phos: G2K -> PG2; G2K * kwee - k25 * PG2;
-  G2R_Creation: G2K + R -> G2R; G2K * k7 * R - G2R * k7r;
-  PG2R_Creation: PG2 + R -> PG2R; k7 * PG2 * R - k7r * PG2R;
-  Rum1DegInG2R: G2R => G2K; G2R * k4;
-  Rum1Deg: R => ; k4 * R;
-  Rum1DegInPG2R: PG2R => PG2; k4 * PG2R;
-  RumDegInG1R: G1R => G1K; G1R * k4;
-  G2K_dissoc: G2K => ; G2K * k2;
-  PG2_dissoc: PG2 => ; k2 * PG2;
-  G1K_Dissociation: G1K => ; G1K * k6;
-  PG2R_Dissociation: PG2R => R; k2prime * PG2R;
-  G2R_Dissociation: G2R => R; G2R * k2prime;
-  G1R_Dissociation: G1R => R; G1R * k6prime;
-  G1R_Binding: G1K + R -> G1R; G1K * k8 * R - G1R * k8r;
-  G2R_Dissociation_UbE: G2R => R; G2R * k2;
-  PG2R_Dissociation_UbE: PG2R => R; k2 * PG2R;
+  Cdc2Phos: G2K -> PG2; G2K*kwee - k25*PG2;
+  G2R_Creation: G2K + R -> G2R; G2K*k7*R - G2R*k7r;
+  PG2R_Creation: PG2 + R -> PG2R; k7*PG2*R - k7r*PG2R;
+  Rum1DegInG2R: G2R => G2K; G2R*k4;
+  Rum1Deg: R => ; k4*R;
+  Rum1DegInPG2R: PG2R => PG2; k4*PG2R;
+  RumDegInG1R: G1R => G1K; G1R*k4;
+  G2K_dissoc: G2K => ; G2K*k2;
+  PG2_dissoc: PG2 => ; k2*PG2;
+  G1K_Dissociation: G1K => ; G1K*k6;
+  PG2R_Dissociation: PG2R => R; k2prime*PG2R;
+  G2R_Dissociation: G2R => R; G2R*k2prime;
+  G1R_Dissociation: G1R => R; G1R*k6prime;
+  G1R_Binding: G1K + R -> G1R; G1K*k8*R - G1R*k8r;
+  G2R_Dissociation_UbE: G2R => R; G2R*k2;
+  PG2R_Dissociation_UbE: PG2R => R; k2*PG2R;
   Rum1_Production:  => R; k3;
-  Rum1_Deg_SPF: R => ; (kp * Mass * R * SPF) / (Kmp + R);
-  IE_Reaction: $IEB -> IE; (IEB * ki * MPF) / (IEB + Kmi) - (IE * kir) / (IE + Kmir);
-  UbE_Reaction: $UbEB -> UbE; (IE * ku * UbEB) / (Kmu + UbEB) - (kur * UbE) / (Kmur + UbE);
-  UbE2_Reaction: $UbE2B -> UbE2; (ku2 * MPF * UbE2B) / (Kmu2 + UbE2B) - (kur2 * UbE2) / (Kmur2 + UbE2);
-  Wee1_Reaction: $Wee1B -> Wee1; (kwr * Wee1B) / (Kmwr + Wee1B) - (kw * MPF * Wee1) / (Kmw + Wee1);
-  Cdc25_Reaction: $Cdc25B -> Cdc25; (Cdc25B * kc * MPF) / (Cdc25B + Kmc) - (Cdc25 * kcr) / (Cdc25 + Kmcr);
+  Rum1_Deg_SPF: R => ; (kp*Mass*R*SPF)/(Kmp + R);
+  IE_Reaction: $IEB -> IE; (IEB*ki*MPF)/(IEB + Kmi) - (IE*kir)/(IE + Kmir);
+  UbE_Reaction: $UbEB -> UbE; (IE*ku*UbEB)/(Kmu + UbEB) - (kur*UbE)/(Kmur + UbE);
+  UbE2_Reaction: $UbE2B -> UbE2; (ku2*MPF*UbE2B)/(Kmu2 + UbE2B) - (kur2*UbE2)/(Kmur2 + UbE2);
+  Wee1_Reaction: $Wee1B -> Wee1; (kwr*Wee1B)/(Kmwr + Wee1B) - (kw*MPF*Wee1)/(Kmw + Wee1);
+  Cdc25_Reaction: $Cdc25B -> Cdc25; (Cdc25B*kc*MPF)/(Cdc25B + Kmc) - (Cdc25*kcr)/(Cdc25 + Kmcr);
 
   // Events:
-  Start: at 60 after SPF >= 0.1: kp = kp / 2;
-  Division: at UbE <= 0.1: Mass = Mass / 2, kp = 2 * kp;
+  Start: at 60 after SPF >= 0.1: kp = kp/2;
+  Division: at UbE <= 0.1: Mass = Mass/2, kp = 2*kp;
 
   // Species initializations:
-  UbE = 0.11 / Cell;
+  UbE = 0.11/Cell;
   UbE2 = 0;
   Wee1 = 0;
   Cdc25 = 0;
   G2K = 0;
-  R = 0.4 / Cell;
+  R = 0.4/Cell;
   G1K = 0;
   IE = 0;
   PG2 = 0;

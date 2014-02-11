@@ -12,30 +12,30 @@ model *Hynne2001_Glycolysis()
   species $CNX0 in extracellular, $GlcX0 in extracellular;
 
   // Reactions:
-  vinGlc: $GlcX0 -> GlcX; extracellular * vinGlc_k0 * (GlcX0 - GlcX);
-  vGlcTrans: GlcX -> 59Glc; (extracellular * vGlcTrans_V2f) / vGlcTrans_Yvol * (GlcX / vGlcTrans_K2Glc / (1 + GlcX / vGlcTrans_K2Glc + (vGlcTrans_P2 * (GlcX / vGlcTrans_K2Glc) + 1) / (vGlcTrans_P2 * (Glc / vGlcTrans_K2Glc) + 1) * (1 + Glc / vGlcTrans_K2Glc + G6P / vGlcTrans_K2IG6P + (Glc * G6P) / (vGlcTrans_K2Glc * vGlcTrans_K2IIG6P)))) - (cytosol * vGlcTrans_V2r) / vGlcTrans_Yvol * (Glc / vGlcTrans_K2Glc / (1 + Glc / vGlcTrans_K2Glc + (vGlcTrans_P2 * (Glc / vGlcTrans_K2Glc) + 1) / (vGlcTrans_P2 * (GlcX / vGlcTrans_K2Glc) + 1) * (1 + GlcX / vGlcTrans_K2Glc) + G6P / vGlcTrans_K2IG6P + (Glc * G6P) / (vGlcTrans_K2Glc * vGlcTrans_K2IIG6P)));
-  vHK: ATP + Glc -> G6P + ADP; (cytosol * vHK_V3m * ATP * Glc) / (vHK_K3DGlc * vHK_K3ATP + vHK_K3Glc * ATP + vHK_K3ATP * Glc + Glc * ATP);
-  vPGI: G6P -> F6P; cytosol * ((vPGI_V4f * G6P) / (vPGI_K4G6P + G6P + vPGI_K4G6P / vPGI_K4F6P * F6P) - (vPGI_V4r * (F6P / vPGI_K4eq)) / (vPGI_K4G6P + G6P + vPGI_K4G6P / vPGI_K4F6P * F6P));
-  vPFK: F6P + ATP -> FBP + ADP; cytosol * ((vPFK_V5m * F6P^2) / (vPFK_K5 * (1 + vPFK_kappa5 * (ATP / AMP) * (ATP / AMP)) + F6P^2));
-  vALD: FBP -> GAP + DHAP; cytosol * ((vALD_V6f * FBP) / (vALD_K6FBP + FBP + (GAP * vALD_K6DHAP * vALD_V6f) / (vALD_K6eq * vALD_V6f * vALD_ratio6) + (DHAP * vALD_K6GAP * vALD_V6f) / (vALD_K6eq * vALD_V6f * vALD_ratio6) + (FBP * GAP) / vALD_K6IGAP + (GAP * DHAP * vALD_V6f) / (vALD_K6eq * vALD_V6f * vALD_ratio6)) - (vALD_V6f * GAP * DHAP) / vALD_K6eq / (vALD_K6FBP + FBP + (GAP * vALD_K6DHAP * vALD_V6f) / (vALD_K6eq * vALD_V6f * vALD_ratio6) + (DHAP * vALD_K6GAP * vALD_V6f) / (vALD_K6eq * vALD_V6f * vALD_ratio6) + (FBP * GAP) / vALD_K6IGAP + (GAP * DHAP * vALD_V6f) / (vALD_K6eq * vALD_V6f * vALD_ratio6)));
-  vTIM: DHAP -> GAP; cytosol * ((vTIM_V7f * DHAP) / (vTIM_K7DHAP + DHAP + vTIM_K7DHAP / vTIM_K7GAP * GAP) - (vTIM_V7r * (GAP / vTIM_K7eq)) / (vTIM_K7DHAP + DHAP + vTIM_K7DHAP / vTIM_K7GAP * GAP));
-  vGAPDH: GAP + NAD -> NADH + BPG; cytosol * ((vGAPDH_V8f * GAP * NAD) / vGAPDH_K8GAP / vGAPDH_K8NAD / ((1 + GAP / vGAPDH_K8GAP + BPG / vGAPDH_K8BPG) * (1 + NAD / vGAPDH_K8NAD + NADH / vGAPDH_K8NADH)) - (vGAPDH_V8r * BPG * NADH) / vGAPDH_K8eq / vGAPDH_K8GAP / vGAPDH_K8NAD / ((1 + GAP / vGAPDH_K8GAP + BPG / vGAPDH_K8BPG) * (1 + NAD / vGAPDH_K8NAD + NADH / vGAPDH_K8NADH)));
-  vlpPEP: BPG + ADP -> PEP + ATP; cytosol * (vlpPEP_k9f * BPG * ADP - vlpPEP_k9r * PEP * ATP);
-  vPK: ADP + PEP -> Pyr + ATP; cytosol * ((vPK_V10m * ADP * PEP) / ((vPK_K10PEP + PEP) * (vPK_K10ADP + ADP)));
-  vPDC: Pyr -> ACA; cytosol * ((vPDC_V11m * Pyr) / (vPDC_K11 + Pyr));
-  vADH: NADH + ACA -> NAD + EtOH; cytosol * ((vADH_V12m * ACA * NADH) / ((vADH_K12NADH + NADH) * (vADH_K12ACA + ACA)));
-  vdifEtOH: 59EtOH -> EtOHX; vdifEtOH_k13 / vdifEtOH_Yvol * (cytosol * EtOH - extracellular * EtOHX);
-  voutEtOH: EtOHX -> $P; extracellular * voutEtOH_k0 * EtOHX;
-  vlpGlyc: DHAP + NADH -> Glyc + NAD; cytosol * ((vlpGlyc_V15m * DHAP) / (vlpGlyc_K15DHAP * (1 + vlpGlyc_K15INADH / NADH * (1 + NAD / vlpGlyc_K15INAD)) + DHAP * (1 + vlpGlyc_K15NADH / NADH * (1 + NAD / vlpGlyc_K15INAD))));
-  vdifGlyc: 59Glyc -> GlycX; vdifGlyc_k16 / vdifGlyc_Yvol * (cytosol * Glyc - extracellular * GlycX);
-  voutGlyc: GlycX -> $P; extracellular * voutGlyc_k0 * GlycX;
-  vdifACA: 59ACA -> ACAX; vdifACA_k18 / vdifACA_Yvol * (cytosol * ACA - extracellular * ACAX);
-  voutACA: ACAX -> $P; extracellular * voutACA_k0 * ACAX;
-  vlacto: CNX + ACAX -> $P; extracellular * vlacto_k20 * ACAX * CNX;
-  vinCN: $CNX0 -> CNX; extracellular * vinCN_k0 * (CNX0 - CNX);
-  vstorage: ATP + G6P -> ADP; cytosol * vstorage_k22 * ATP * G6P;
-  vconsum: ATP -> ADP; cytosol * vconsum_k23 * ATP;
-  vAK: ATP + AMP -> 2ADP; cytosol * (vAK_k24f * AMP * ATP - vAK_k24r * ADP^2);
+  vinGlc: $GlcX0 -> GlcX; extracellular*vinGlc_k0*(GlcX0 - GlcX);
+  vGlcTrans: GlcX -> 59Glc; (extracellular*vGlcTrans_V2f)/vGlcTrans_Yvol*(GlcX/vGlcTrans_K2Glc/(1 + GlcX/vGlcTrans_K2Glc + (vGlcTrans_P2*(GlcX/vGlcTrans_K2Glc) + 1)/(vGlcTrans_P2*(Glc/vGlcTrans_K2Glc) + 1)*(1 + Glc/vGlcTrans_K2Glc + G6P/vGlcTrans_K2IG6P + (Glc*G6P)/(vGlcTrans_K2Glc*vGlcTrans_K2IIG6P)))) - (cytosol*vGlcTrans_V2r)/vGlcTrans_Yvol*(Glc/vGlcTrans_K2Glc/(1 + Glc/vGlcTrans_K2Glc + (vGlcTrans_P2*(Glc/vGlcTrans_K2Glc) + 1)/(vGlcTrans_P2*(GlcX/vGlcTrans_K2Glc) + 1)*(1 + GlcX/vGlcTrans_K2Glc) + G6P/vGlcTrans_K2IG6P + (Glc*G6P)/(vGlcTrans_K2Glc*vGlcTrans_K2IIG6P)));
+  vHK: ATP + Glc -> G6P + ADP; (cytosol*vHK_V3m*ATP*Glc)/(vHK_K3DGlc*vHK_K3ATP + vHK_K3Glc*ATP + vHK_K3ATP*Glc + Glc*ATP);
+  vPGI: G6P -> F6P; cytosol*((vPGI_V4f*G6P)/(vPGI_K4G6P + G6P + vPGI_K4G6P/vPGI_K4F6P*F6P) - (vPGI_V4r*(F6P/vPGI_K4eq))/(vPGI_K4G6P + G6P + vPGI_K4G6P/vPGI_K4F6P*F6P));
+  vPFK: F6P + ATP -> FBP + ADP; cytosol*((vPFK_V5m*F6P^2)/(vPFK_K5*(1 + vPFK_kappa5*(ATP/AMP)*(ATP/AMP)) + F6P^2));
+  vALD: FBP -> GAP + DHAP; cytosol*((vALD_V6f*FBP)/(vALD_K6FBP + FBP + (GAP*vALD_K6DHAP*vALD_V6f)/(vALD_K6eq*vALD_V6f*vALD_ratio6) + (DHAP*vALD_K6GAP*vALD_V6f)/(vALD_K6eq*vALD_V6f*vALD_ratio6) + (FBP*GAP)/vALD_K6IGAP + (GAP*DHAP*vALD_V6f)/(vALD_K6eq*vALD_V6f*vALD_ratio6)) - (vALD_V6f*GAP*DHAP)/vALD_K6eq/(vALD_K6FBP + FBP + (GAP*vALD_K6DHAP*vALD_V6f)/(vALD_K6eq*vALD_V6f*vALD_ratio6) + (DHAP*vALD_K6GAP*vALD_V6f)/(vALD_K6eq*vALD_V6f*vALD_ratio6) + (FBP*GAP)/vALD_K6IGAP + (GAP*DHAP*vALD_V6f)/(vALD_K6eq*vALD_V6f*vALD_ratio6)));
+  vTIM: DHAP -> GAP; cytosol*((vTIM_V7f*DHAP)/(vTIM_K7DHAP + DHAP + vTIM_K7DHAP/vTIM_K7GAP*GAP) - (vTIM_V7r*(GAP/vTIM_K7eq))/(vTIM_K7DHAP + DHAP + vTIM_K7DHAP/vTIM_K7GAP*GAP));
+  vGAPDH: GAP + NAD -> NADH + BPG; cytosol*((vGAPDH_V8f*GAP*NAD)/vGAPDH_K8GAP/vGAPDH_K8NAD/((1 + GAP/vGAPDH_K8GAP + BPG/vGAPDH_K8BPG)*(1 + NAD/vGAPDH_K8NAD + NADH/vGAPDH_K8NADH)) - (vGAPDH_V8r*BPG*NADH)/vGAPDH_K8eq/vGAPDH_K8GAP/vGAPDH_K8NAD/((1 + GAP/vGAPDH_K8GAP + BPG/vGAPDH_K8BPG)*(1 + NAD/vGAPDH_K8NAD + NADH/vGAPDH_K8NADH)));
+  vlpPEP: BPG + ADP -> PEP + ATP; cytosol*(vlpPEP_k9f*BPG*ADP - vlpPEP_k9r*PEP*ATP);
+  vPK: ADP + PEP -> Pyr + ATP; cytosol*((vPK_V10m*ADP*PEP)/((vPK_K10PEP + PEP)*(vPK_K10ADP + ADP)));
+  vPDC: Pyr -> ACA; cytosol*((vPDC_V11m*Pyr)/(vPDC_K11 + Pyr));
+  vADH: NADH + ACA -> NAD + EtOH; cytosol*((vADH_V12m*ACA*NADH)/((vADH_K12NADH + NADH)*(vADH_K12ACA + ACA)));
+  vdifEtOH: 59EtOH -> EtOHX; vdifEtOH_k13/vdifEtOH_Yvol*(cytosol*EtOH - extracellular*EtOHX);
+  voutEtOH: EtOHX -> $P; extracellular*voutEtOH_k0*EtOHX;
+  vlpGlyc: DHAP + NADH -> Glyc + NAD; cytosol*((vlpGlyc_V15m*DHAP)/(vlpGlyc_K15DHAP*(1 + vlpGlyc_K15INADH/NADH*(1 + NAD/vlpGlyc_K15INAD)) + DHAP*(1 + vlpGlyc_K15NADH/NADH*(1 + NAD/vlpGlyc_K15INAD))));
+  vdifGlyc: 59Glyc -> GlycX; vdifGlyc_k16/vdifGlyc_Yvol*(cytosol*Glyc - extracellular*GlycX);
+  voutGlyc: GlycX -> $P; extracellular*voutGlyc_k0*GlycX;
+  vdifACA: 59ACA -> ACAX; vdifACA_k18/vdifACA_Yvol*(cytosol*ACA - extracellular*ACAX);
+  voutACA: ACAX -> $P; extracellular*voutACA_k0*ACAX;
+  vlacto: CNX + ACAX -> $P; extracellular*vlacto_k20*ACAX*CNX;
+  vinCN: $CNX0 -> CNX; extracellular*vinCN_k0*(CNX0 - CNX);
+  vstorage: ATP + G6P -> ADP; cytosol*vstorage_k22*ATP*G6P;
+  vconsum: ATP -> ADP; cytosol*vconsum_k23*ATP;
+  vAK: ATP + AMP -> 2ADP; cytosol*(vAK_k24f*AMP*ATP - vAK_k24r*ADP^2);
 
   // Species initializations:
   GlcX = 6.7;

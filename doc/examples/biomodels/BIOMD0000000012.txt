@@ -6,36 +6,36 @@ model *BIOMD0000000012()
   species PX in cell, PY in cell, PZ in cell, X in cell, Y in cell, Z in cell;
 
   // Assignment Rules:
-  beta := tau_mRNA / tau_prot;
-  alpha0 := (a0_tr * eff * tau_prot) / (ln(2) * KM);
-  a0_tr := ps_0 * 60;
-  alpha := (a_tr * eff * tau_prot) / (ln(2) * KM);
-  a_tr := (ps_a - ps_0) * 60;
-  t_ave := tau_mRNA / ln(2);
-  kd_mRNA := ln(2) / tau_mRNA;
-  kd_prot := ln(2) / tau_prot;
-  k_tl := eff / t_ave;
+  beta := tau_mRNA/tau_prot;
+  alpha0 := (a0_tr*eff*tau_prot)/(ln(2)*KM);
+  a0_tr := ps_0*60;
+  alpha := (a_tr*eff*tau_prot)/(ln(2)*KM);
+  a_tr := (ps_a - ps_0)*60;
+  t_ave := tau_mRNA/ln(2);
+  kd_mRNA := ln(2)/tau_mRNA;
+  kd_prot := ln(2)/tau_prot;
+  k_tl := eff/t_ave;
 
   // Reactions:
-  Reaction1: X => ; kd_mRNA * X;
-  Reaction2: Y => ; kd_mRNA * Y;
-  Reaction3: Z => ; kd_mRNA * Z;
-  Reaction4:  => PX; k_tl * X;
-  Reaction5:  => PY; k_tl * Y;
-  Reaction6:  => PZ; k_tl * Z;
-  Reaction7: PX => ; kd_prot * PX;
-  Reaction8: PY => ; kd_prot * PY;
-  Reaction9: PZ => ; kd_prot * PZ;
-  Reaction10:  => X; a0_tr + (a_tr * KM^n) / (KM^n + PZ^n);
-  Reaction11:  => Y; a0_tr + (a_tr * KM^n) / (KM^n + PX^n);
-  Reaction12:  => Z; a0_tr + (a_tr * KM^n) / (KM^n + PY^n);
+  Reaction1: X => ; kd_mRNA*X;
+  Reaction2: Y => ; kd_mRNA*Y;
+  Reaction3: Z => ; kd_mRNA*Z;
+  Reaction4:  => PX; k_tl*X;
+  Reaction5:  => PY; k_tl*Y;
+  Reaction6:  => PZ; k_tl*Z;
+  Reaction7: PX => ; kd_prot*PX;
+  Reaction8: PY => ; kd_prot*PY;
+  Reaction9: PZ => ; kd_prot*PZ;
+  Reaction10:  => X; a0_tr + (a_tr*KM^n)/(KM^n + PZ^n);
+  Reaction11:  => Y; a0_tr + (a_tr*KM^n)/(KM^n + PX^n);
+  Reaction12:  => Z; a0_tr + (a_tr*KM^n)/(KM^n + PY^n);
 
   // Species initializations:
   PX = 0;
   PY = 0;
   PZ = 0;
   X = 0;
-  Y = 20 / cell;
+  Y = 20/cell;
   Z = 0;
 
   // Compartment initializations:

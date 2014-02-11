@@ -6,23 +6,23 @@ model *BIOMD0000000008()
   species C in Cell, X in Cell, M in Cell, Y in Cell, Z in Cell;
 
   // Assignment Rules:
-  V1 := C * V1p * (C + K6)^-1;
-  V3 := M * V3p;
+  V1 := C*V1p*(C + K6)^-1;
+  V3 := M*V3p;
 
   // Reactions:
   reaction1:  => C; reaction1_vi;
-  reaction2: C => ; C * reaction2_k1 * X * (C + reaction2_K5)^-1;
-  reaction3: C => ; C * reaction3_kd;
-  reaction4:  => M; (1 + -1 * M) * V1 * (reaction4_K1 + -1 * M + 1)^-1;
-  reaction5: M => ; M * reaction5_V2 * (reaction5_K2 + M)^-1;
-  reaction6:  => X; V3 * (1 + -1 * X) * (reaction6_K3 + -1 * X + 1)^-1;
-  reaction7: X => ; reaction7_V4 * X * (reaction7_K4 + X)^-1;
-  reaction8: C + Y => Z; reaction8_a1 * C * Y;
-  reaction9: Z => C + Y; reaction9_a2 * Z;
-  reaction10: Z => C; reaction10_alpha * reaction10_d1 * Z;
-  reaction11: Z => Y; reaction11_alpha * reaction11_kd * Z;
+  reaction2: C => ; C*reaction2_k1*X*(C + reaction2_K5)^-1;
+  reaction3: C => ; C*reaction3_kd;
+  reaction4:  => M; (1 + -1*M)*V1*(reaction4_K1 + -1*M + 1)^-1;
+  reaction5: M => ; M*reaction5_V2*(reaction5_K2 + M)^-1;
+  reaction6:  => X; V3*(1 + -1*X)*(reaction6_K3 + -1*X + 1)^-1;
+  reaction7: X => ; reaction7_V4*X*(reaction7_K4 + X)^-1;
+  reaction8: C + Y => Z; reaction8_a1*C*Y;
+  reaction9: Z => C + Y; reaction9_a2*Z;
+  reaction10: Z => C; reaction10_alpha*reaction10_d1*Z;
+  reaction11: Z => Y; reaction11_alpha*reaction11_kd*Z;
   reaction12:  => Y; reaction12_vs;
-  reaction13: Y => ; reaction13_d1 * Y;
+  reaction13: Y => ; reaction13_d1*Y;
 
   // Species initializations:
   C = 0;
@@ -31,9 +31,9 @@ model *BIOMD0000000008()
   X has substance_per_volume;
   M = 0;
   M has substance_per_volume;
-  Y = 1 / Cell;
+  Y = 1/Cell;
   Y has substance_per_volume;
-  Z = 1 / Cell;
+  Z = 1/Cell;
   Z has substance_per_volume;
 
   // Compartment initializations:

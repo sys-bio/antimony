@@ -6,14 +6,14 @@ model *Goldbeter_Calcium_Oscillation_based_onCICR_AND_two_pool_model()
   species EC in extracellular, Z in cytosol, Y in intravesicular2, X in intravesicular1;
 
   // Reactions:
-  vin: EC => Z; cytosol * (vin_v0 + vin_v1 * beta);
-  v2i: Z => Y; (intravesicular2 * v2i_Vm2i * Z^2) / (v2i_K2i^2 + Z^2);
-  v3i: Y => Z; (cytosol * v3i_Vm3i * Y^2 * Z^2) / ((v3i_K3y^2 + Y^2) * (v3i_K3z^2 + Z^2));
-  v4: Y => Z; cytosol * v4_Kf * Y;
-  v5: Z => EC; extracellular * v5_K * Z;
-  v6: X => Z; cytosol * v6_Kf * X;
-  v2s: Z => X; (intravesicular1 * v2s_Vm2s * Z^2) / (v2s_K2s^2 + Z^2);
-  v3s: X => Z; (cytosol * beta * v3s_Vm3s * X^2) / (v3s_K3s^2 + X^2);
+  vin: EC => Z; cytosol*(vin_v0 + vin_v1*beta);
+  v2i: Z => Y; (intravesicular2*v2i_Vm2i*Z^2)/(v2i_K2i^2 + Z^2);
+  v3i: Y => Z; (cytosol*v3i_Vm3i*Y^2*Z^2)/((v3i_K3y^2 + Y^2)*(v3i_K3z^2 + Z^2));
+  v4: Y => Z; cytosol*v4_Kf*Y;
+  v5: Z => EC; extracellular*v5_K*Z;
+  v6: X => Z; cytosol*v6_Kf*X;
+  v2s: Z => X; (intravesicular1*v2s_Vm2s*Z^2)/(v2s_K2s^2 + Z^2);
+  v3s: X => Z; (cytosol*beta*v3s_Vm3s*X^2)/(v3s_K3s^2 + X^2);
 
   // Species initializations:
   EC = 0;
