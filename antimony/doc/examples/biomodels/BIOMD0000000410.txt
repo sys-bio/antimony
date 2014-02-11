@@ -4,27 +4,27 @@ function function_4(v)
 end
 
 function function_1(substrate, Km, V)
-  (V * substrate) / (Km + substrate);
+  (V*substrate)/(Km + substrate);
 end
 
 function function_3(k, rec, s, km)
-  (k * rec * s) / (km + s);
+  (k*rec*s)/(km + s);
 end
 
 function function_2(TGFbeta, k, s, s2)
-  k * s * s2 * TGFbeta;
+  k*s*s2*TGFbeta;
 end
 
 function function_7(k1, substrate, modifier)
-  k1 * substrate * (1 + modifier);
+  k1*substrate*(1 + modifier);
 end
 
 function function_5(k, k1, m)
-  k + k1 * m;
+  k + k1*m;
 end
 
 function function_6(k, k1, m, m2, m3)
-  (k + k1 * m) / (1 + m2 + m3);
+  (k + k1*m)/(1 + m2 + m3);
 end
 
 
@@ -57,97 +57,97 @@ model *Model_1()
   parameter_10 := species_11 + _5 + _9 + _13 + species_18 + species_16 + species_18 + species_19 + species_21 + species_23 + species_26 + species_26 + species_27;
 
   // Reactions:
-  _29: species_27 => _5 + 2species_17; _3 * _29_k1 * species_27;
-  _31: _9 => species_19; _3 * function_1(_9, _31_Km, _31_V);
-  _33: _9 + 2_11 -> _13; _3 * (_33_k1 * _9 * _11^2 - _33_k2 * _13);
-  _35: 3_15 + species_13 => 3_19; _35_k1 * _15^3 * species_13;
-  _37: _5 + 2_19 => _9; _3 * _37_k1 * _5 * _19^2;
-  _39: _19 => _21; _3 * function_1(_19, _39_Km, _39_V);
-  _41: _21 + _15 => ; _3 * _41_k1 * _21 * _15;
-  _43: _15 + _25 -> _27; _3 * (_43_k1 * _15 * _25 - _43_k2 * _27);
-  _77: 2_75 => _79; _1 * function_2(parameter_1, _77_k, _75, _75);
-  _86: _79 + 2_84 -> _96; _1 * (_86_k1 * _79 * _84^2 - _86_k2 * _96);
-  _103: _101 + _99 -> _105; _1 * (_103_k1 * _101 * _99 - _103_k2 * _105);
-  _125: _99 => _129; _1 * function_3(_125_k, _96, _99, _125_km);
-  _132: _105 => _129 + _101; _1 * function_3(_132_k, _96, _105, _132_km);
-  _139: _129 => _19; _139_k1 * _129;
-  _149: _147 + 2_129 => _153; _1 * _149_k1 * _147 * _129^2;
-  _156: _147 -> _5; _156_k1 * _147 - _156_k2 * _5;
-  _164: _153 => _9; _164_k1 * _153;
-  _172: _25 -> _174; _172_k1 * _25 - _172_k2 * _174;
-  _178: _27 -> _181; _178_k1 * _27 - _178_k2 * _181;
-  _192: _181 + _96 => ; _1 * _192_k1 * _181 * _96;
-  _194: _174 + _96 -> _198; _1 * (_194_k1 * _174 * _96 - _194_k2 * _198);
-  reaction_1:  => _75; _1 * function_4(reaction_1_v);
-  reaction_2:  => _101; _1 * function_5(reaction_2_k, reaction_2_k1, species_30);
-  reaction_3:  => _174; _1 * function_6(reaction_3_k, reaction_3_k1, species_30, species_16, species_23);
-  reaction_4:  => species_1; _1 * function_5(reaction_4_k, reaction_4_k1, species_30);
-  reaction_5:  => species_2; _1 * function_5(reaction_5_k, reaction_5_k1, species_30);
-  reaction_6:  => _84; _1 * function_4(reaction_6_v);
-  reaction_7: _5 + _11 -> species_16; _3 * (reaction_7_k1 * _5 * _11 - reaction_7_k2 * species_16);
-  reaction_8: _99 -> _21; reaction_8_k1 * _99 - reaction_8_k2 * _21;
-  reaction_9: _96 => ; _1 * reaction_9_k1 * _96;
-  reaction_10: _84 => ; _1 * reaction_10_k1 * _84;
-  reaction_11: _75 => ; _1 * reaction_11_k1 * _75;
-  reaction_12: _79 => 2_75; _1 * reaction_12_k1 * _79;
-  reaction_13:  => _99; _1 * function_4(reaction_13_v);
-  reaction_14:  => _147; _1 * function_4(reaction_14_v);
-  reaction_15: _147 => ; _1 * reaction_15_k1 * _147;
-  reaction_16: _101 => ; _1 * reaction_16_k1 * _101;
-  reaction_17: _129 => _99; _1 * function_1(_129, reaction_17_Km, reaction_17_V);
-  reaction_18: species_2 => ; _1 * reaction_18_k1 * species_2;
-  reaction_19: _15 -> species_1; reaction_19_k1 * _15 - reaction_19_k2 * species_1;
-  reaction_20: _99 => ; _1 * reaction_20_k1 * _99;
-  reaction_21: species_2 -> _11; reaction_21_k1 * species_2 - reaction_21_k2 * _11;
-  reaction_22:  => species_3; _1 * function_4(reaction_22_v);
-  reaction_23: species_3 => ; _1 * reaction_23_k1 * species_3;
-  reaction_24: species_4 => species_3; _1 * function_1(species_4, reaction_24_Km, reaction_24_V);
-  reaction_25: species_18 => species_27; _3 * function_1(species_18, reaction_25_Km, reaction_25_V);
-  reaction_26: species_20 => species_17; _3 * function_1(species_20, reaction_26_Km, reaction_26_V);
-  reaction_27: species_3 => species_4; _1 * function_3(reaction_27_k, _96, species_3, reaction_27_km);
-  reaction_28: species_5 => species_4 + _101; _1 * function_3(reaction_28_k, _96, species_5, reaction_28_km);
-  reaction_29: species_17 => ; _3 * reaction_29_k1 * species_17;
-  reaction_30: species_3 -> species_17; reaction_30_k1 * species_3 - reaction_30_k2 * species_17;
-  reaction_31: _101 + species_3 -> species_5; _1 * (reaction_31_k1 * _101 * species_3 - reaction_31_k2 * species_5);
-  reaction_32: species_19 => _5 + 2_21; _3 * reaction_32_k1 * species_19;
-  reaction_33: species_4 => species_20; reaction_33_k1 * species_4;
-  reaction_34: _147 + 2species_4 => species_6; _1 * reaction_34_k1 * _147 * species_4^2;
-  reaction_35: _5 + 2species_20 => species_18; _3 * reaction_35_k1 * _5 * species_20^2;
-  reaction_36: species_18 + 2_11 -> species_21; _3 * (reaction_36_k1 * species_18 * _11^2 - reaction_36_k2 * species_21);
-  reaction_37: species_6 => species_18; reaction_37_k1 * species_6;
-  reaction_38: species_14 => species_20; reaction_38_k1 * species_14;
-  reaction_39: _174 => ; _1 * function_7(reaction_39_k1, _174, species_15);
-  reaction_40: species_7 => ; _1 * reaction_40_k1 * species_7;
-  reaction_41: species_7 -> species_22; reaction_41_k1 * species_7 - reaction_41_k2 * species_22;
-  reaction_42:  => species_7; _1 * function_5(reaction_42_k, reaction_42_k1, species_30);
-  reaction_43: species_1 => ; _1 * function_7(reaction_43_k1, species_1, _174);
-  reaction_44: _5 + species_22 -> species_23; _3 * (reaction_44_k1 * _5 * species_22 - reaction_44_k2 * species_23);
-  reaction_45: species_3 + species_7 -> species_8; _1 * (reaction_45_k1 * species_3 * species_7 - reaction_45_k2 * species_8);
-  reaction_46: species_24 + _25 -> species_25; _3 * (reaction_46_k1 * species_24 * _25 - reaction_46_k2 * species_25);
-  reaction_47:  => species_9; _1 * function_5(reaction_47_k, reaction_47_k1, species_30);
-  reaction_48: species_18 + 2species_22 -> species_26; _3 * (reaction_48_k1 * species_18 * species_22^2 - reaction_48_k2 * species_26);
-  reaction_49: species_10 + _96 => ; _1 * reaction_49_k1 * species_10 * _96;
-  reaction_50: species_25 -> species_10; reaction_50_k1 * species_25 - reaction_50_k2 * species_10;
-  reaction_51: species_9 => ; _1 * function_7(reaction_51_k1, species_9, _174);
-  reaction_52: species_24 -> species_9; reaction_52_k1 * species_24 - reaction_52_k2 * species_9;
-  reaction_53: species_18 + species_28 -> species_30; _3 * (reaction_53_k1 * species_18 * species_28 - reaction_53_k2 * species_30);
-  reaction_54: _9 + species_28 -> species_30; _3 * (reaction_54_k1 * _9 * species_28 - reaction_54_k2 * species_30);
-  reaction_55: species_21 + species_28 -> species_29; _3 * (reaction_55_k1 * species_21 * species_28 - reaction_55_k2 * species_29);
-  reaction_56: _13 + species_28 -> species_29; _3 * (reaction_56_k1 * _13 * species_28 - reaction_56_k2 * species_29);
-  reaction_57: species_26 + species_28 -> species_29; _3 * (reaction_57_k1 * species_26 * species_28 - reaction_57_k2 * species_29);
-  reaction_58: _9 + 2species_22 -> species_11; reaction_58_k1 * _9 * species_22^2 - reaction_58_k2 * species_11;
-  reaction_59: species_11 + species_28 -> species_29; reaction_59_k1 * species_11 * species_28 - reaction_59_k2 * species_29;
-  reaction_60: species_23 + species_28 -> species_29; _3 * (reaction_60_k1 * species_23 * species_28 - reaction_60_k2 * species_29);
-  reaction_61: _99 + species_7 -> species_12; _1 * (reaction_61_k1 * _99 * species_7 - reaction_61_k2 * species_12);
-  reaction_62: 3_19 + 3_11 -> species_13; reaction_62_k1 * _19^3 * _11^3 - reaction_62_k2 * species_13;
-  reaction_63: 3species_20 + 3_11 -> species_14; reaction_63_k1 * species_20^3 * _11^3 - reaction_63_k2 * species_14;
-  reaction_64: _9 => ; _3 * reaction_64_k1 * _9;
-  reaction_65: species_18 => ; _3 * reaction_65_k1 * species_18;
-  reaction_66:  => species_15; _1 * function_4(reaction_66_v);
-  reaction_67: species_15 => ; _1 * reaction_67_k1 * species_15;
-  reaction_68: species_13 + 3species_31 => 3_19; reaction_68_k1 * species_13 * species_31^3;
-  reaction_69: species_14 + 3species_31 => species_20; reaction_69_k1 * species_14 * species_31^3;
-  reaction_70: species_15 -> species_31; reaction_70_k1 * species_15 - reaction_70_k2 * species_31;
+  _29: species_27 => _5 + 2species_17; _3*_29_k1*species_27;
+  _31: _9 => species_19; _3*function_1(_9, _31_Km, _31_V);
+  _33: _9 + 2_11 -> _13; _3*(_33_k1*_9*_11^2 - _33_k2*_13);
+  _35: 3_15 + species_13 => 3_19; _35_k1*_15^3*species_13;
+  _37: _5 + 2_19 => _9; _3*_37_k1*_5*_19^2;
+  _39: _19 => _21; _3*function_1(_19, _39_Km, _39_V);
+  _41: _21 + _15 => ; _3*_41_k1*_21*_15;
+  _43: _15 + _25 -> _27; _3*(_43_k1*_15*_25 - _43_k2*_27);
+  _77: 2_75 => _79; _1*function_2(parameter_1, _77_k, _75, _75);
+  _86: _79 + 2_84 -> _96; _1*(_86_k1*_79*_84^2 - _86_k2*_96);
+  _103: _101 + _99 -> _105; _1*(_103_k1*_101*_99 - _103_k2*_105);
+  _125: _99 => _129; _1*function_3(_125_k, _96, _99, _125_km);
+  _132: _105 => _129 + _101; _1*function_3(_132_k, _96, _105, _132_km);
+  _139: _129 => _19; _139_k1*_129;
+  _149: _147 + 2_129 => _153; _1*_149_k1*_147*_129^2;
+  _156: _147 -> _5; _156_k1*_147 - _156_k2*_5;
+  _164: _153 => _9; _164_k1*_153;
+  _172: _25 -> _174; _172_k1*_25 - _172_k2*_174;
+  _178: _27 -> _181; _178_k1*_27 - _178_k2*_181;
+  _192: _181 + _96 => ; _1*_192_k1*_181*_96;
+  _194: _174 + _96 -> _198; _1*(_194_k1*_174*_96 - _194_k2*_198);
+  reaction_1:  => _75; _1*function_4(reaction_1_v);
+  reaction_2:  => _101; _1*function_5(reaction_2_k, reaction_2_k1, species_30);
+  reaction_3:  => _174; _1*function_6(reaction_3_k, reaction_3_k1, species_30, species_16, species_23);
+  reaction_4:  => species_1; _1*function_5(reaction_4_k, reaction_4_k1, species_30);
+  reaction_5:  => species_2; _1*function_5(reaction_5_k, reaction_5_k1, species_30);
+  reaction_6:  => _84; _1*function_4(reaction_6_v);
+  reaction_7: _5 + _11 -> species_16; _3*(reaction_7_k1*_5*_11 - reaction_7_k2*species_16);
+  reaction_8: _99 -> _21; reaction_8_k1*_99 - reaction_8_k2*_21;
+  reaction_9: _96 => ; _1*reaction_9_k1*_96;
+  reaction_10: _84 => ; _1*reaction_10_k1*_84;
+  reaction_11: _75 => ; _1*reaction_11_k1*_75;
+  reaction_12: _79 => 2_75; _1*reaction_12_k1*_79;
+  reaction_13:  => _99; _1*function_4(reaction_13_v);
+  reaction_14:  => _147; _1*function_4(reaction_14_v);
+  reaction_15: _147 => ; _1*reaction_15_k1*_147;
+  reaction_16: _101 => ; _1*reaction_16_k1*_101;
+  reaction_17: _129 => _99; _1*function_1(_129, reaction_17_Km, reaction_17_V);
+  reaction_18: species_2 => ; _1*reaction_18_k1*species_2;
+  reaction_19: _15 -> species_1; reaction_19_k1*_15 - reaction_19_k2*species_1;
+  reaction_20: _99 => ; _1*reaction_20_k1*_99;
+  reaction_21: species_2 -> _11; reaction_21_k1*species_2 - reaction_21_k2*_11;
+  reaction_22:  => species_3; _1*function_4(reaction_22_v);
+  reaction_23: species_3 => ; _1*reaction_23_k1*species_3;
+  reaction_24: species_4 => species_3; _1*function_1(species_4, reaction_24_Km, reaction_24_V);
+  reaction_25: species_18 => species_27; _3*function_1(species_18, reaction_25_Km, reaction_25_V);
+  reaction_26: species_20 => species_17; _3*function_1(species_20, reaction_26_Km, reaction_26_V);
+  reaction_27: species_3 => species_4; _1*function_3(reaction_27_k, _96, species_3, reaction_27_km);
+  reaction_28: species_5 => species_4 + _101; _1*function_3(reaction_28_k, _96, species_5, reaction_28_km);
+  reaction_29: species_17 => ; _3*reaction_29_k1*species_17;
+  reaction_30: species_3 -> species_17; reaction_30_k1*species_3 - reaction_30_k2*species_17;
+  reaction_31: _101 + species_3 -> species_5; _1*(reaction_31_k1*_101*species_3 - reaction_31_k2*species_5);
+  reaction_32: species_19 => _5 + 2_21; _3*reaction_32_k1*species_19;
+  reaction_33: species_4 => species_20; reaction_33_k1*species_4;
+  reaction_34: _147 + 2species_4 => species_6; _1*reaction_34_k1*_147*species_4^2;
+  reaction_35: _5 + 2species_20 => species_18; _3*reaction_35_k1*_5*species_20^2;
+  reaction_36: species_18 + 2_11 -> species_21; _3*(reaction_36_k1*species_18*_11^2 - reaction_36_k2*species_21);
+  reaction_37: species_6 => species_18; reaction_37_k1*species_6;
+  reaction_38: species_14 => species_20; reaction_38_k1*species_14;
+  reaction_39: _174 => ; _1*function_7(reaction_39_k1, _174, species_15);
+  reaction_40: species_7 => ; _1*reaction_40_k1*species_7;
+  reaction_41: species_7 -> species_22; reaction_41_k1*species_7 - reaction_41_k2*species_22;
+  reaction_42:  => species_7; _1*function_5(reaction_42_k, reaction_42_k1, species_30);
+  reaction_43: species_1 => ; _1*function_7(reaction_43_k1, species_1, _174);
+  reaction_44: _5 + species_22 -> species_23; _3*(reaction_44_k1*_5*species_22 - reaction_44_k2*species_23);
+  reaction_45: species_3 + species_7 -> species_8; _1*(reaction_45_k1*species_3*species_7 - reaction_45_k2*species_8);
+  reaction_46: species_24 + _25 -> species_25; _3*(reaction_46_k1*species_24*_25 - reaction_46_k2*species_25);
+  reaction_47:  => species_9; _1*function_5(reaction_47_k, reaction_47_k1, species_30);
+  reaction_48: species_18 + 2species_22 -> species_26; _3*(reaction_48_k1*species_18*species_22^2 - reaction_48_k2*species_26);
+  reaction_49: species_10 + _96 => ; _1*reaction_49_k1*species_10*_96;
+  reaction_50: species_25 -> species_10; reaction_50_k1*species_25 - reaction_50_k2*species_10;
+  reaction_51: species_9 => ; _1*function_7(reaction_51_k1, species_9, _174);
+  reaction_52: species_24 -> species_9; reaction_52_k1*species_24 - reaction_52_k2*species_9;
+  reaction_53: species_18 + species_28 -> species_30; _3*(reaction_53_k1*species_18*species_28 - reaction_53_k2*species_30);
+  reaction_54: _9 + species_28 -> species_30; _3*(reaction_54_k1*_9*species_28 - reaction_54_k2*species_30);
+  reaction_55: species_21 + species_28 -> species_29; _3*(reaction_55_k1*species_21*species_28 - reaction_55_k2*species_29);
+  reaction_56: _13 + species_28 -> species_29; _3*(reaction_56_k1*_13*species_28 - reaction_56_k2*species_29);
+  reaction_57: species_26 + species_28 -> species_29; _3*(reaction_57_k1*species_26*species_28 - reaction_57_k2*species_29);
+  reaction_58: _9 + 2species_22 -> species_11; reaction_58_k1*_9*species_22^2 - reaction_58_k2*species_11;
+  reaction_59: species_11 + species_28 -> species_29; reaction_59_k1*species_11*species_28 - reaction_59_k2*species_29;
+  reaction_60: species_23 + species_28 -> species_29; _3*(reaction_60_k1*species_23*species_28 - reaction_60_k2*species_29);
+  reaction_61: _99 + species_7 -> species_12; _1*(reaction_61_k1*_99*species_7 - reaction_61_k2*species_12);
+  reaction_62: 3_19 + 3_11 -> species_13; reaction_62_k1*_19^3*_11^3 - reaction_62_k2*species_13;
+  reaction_63: 3species_20 + 3_11 -> species_14; reaction_63_k1*species_20^3*_11^3 - reaction_63_k2*species_14;
+  reaction_64: _9 => ; _3*reaction_64_k1*_9;
+  reaction_65: species_18 => ; _3*reaction_65_k1*species_18;
+  reaction_66:  => species_15; _1*function_4(reaction_66_v);
+  reaction_67: species_15 => ; _1*reaction_67_k1*species_15;
+  reaction_68: species_13 + 3species_31 => 3_19; reaction_68_k1*species_13*species_31^3;
+  reaction_69: species_14 + 3species_31 => species_20; reaction_69_k1*species_14*species_31^3;
+  reaction_70: species_15 -> species_31; reaction_70_k1*species_15 - reaction_70_k2*species_31;
 
   // Species initializations:
   _75 = 0;

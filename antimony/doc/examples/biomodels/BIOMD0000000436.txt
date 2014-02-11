@@ -1,6 +1,6 @@
 //Created by libAntimony v2.5
 function activitycalc(x, slopea, yintercepta)
-  yintercepta + x * slopea;
+  yintercepta + x*slopea;
 end
 
 
@@ -16,31 +16,31 @@ model *BIOMD0000000436()
   timevalue := time + t0;
   LPSactivity := activitycalc(timevalue, LPSslope, LPSint);
   DGactivity := activitycalc(timevalue, DGslope, DGint);
-  GPChoratio := activitycalc(timevalue, GPChoslope, GPChoint) / GPChointzero;
+  GPChoratio := activitycalc(timevalue, GPChoslope, GPChoint)/GPChointzero;
 
   // Reactions:
-  r2: $FA => AA; k2 * FA;
-  r3: DG => AA; k3 * DGactivity * DGperDNA * DNA_;
-  r7: GPCho => AA; k7 * GPChoratio * GPCho;
-  r5: GPCho => AA; (k5 * DGactivity * GPChoratio * GPCho) / DNA_;
-  r11: AA => PGH2; k11 * AA;
-  r10: AA => PGH2; (k10 * DGactivity * AA) / DNA_;
-  r8: AA => HETE; k8 * AA;
-  r4: AA => ; k4 * AA;
-  r9: HETE => ; k9 * HETE;
-  r13: PGH2 => PGE2; k13 * PGH2;
-  r14: PGE2 => ; k14 * PGE2;
-  r15: PGH2 => PGF2a; k15 * PGH2;
-  r16: PGF2a => ; k16 * PGF2a;
-  r17: PGH2 => PGD2; k17 * PGH2;
-  r18: PGD2 => PGJ2; k18 * PGD2;
-  r19: PGD2 => dPGD2; k19 * PGD2;
-  r20: dPGD2 => ; k20 * dPGD2;
-  r21: PGJ2 => dPGJ2; k21 * PGJ2;
-  r22: dPGJ2 => ; k22 * dPGJ2;
-  r1: $FA => AA; k1 * onepmol * LPSactivity;
-  r6: GPCho => AA; k6 * GPCho * GPChoratio * LPSactivity;
-  r12: AA => PGH2; k12 * AA * LPSactivity;
+  r2: $FA => AA; k2*FA;
+  r3: DG => AA; k3*DGactivity*DGperDNA*DNA_;
+  r7: GPCho => AA; k7*GPChoratio*GPCho;
+  r5: GPCho => AA; (k5*DGactivity*GPChoratio*GPCho)/DNA_;
+  r11: AA => PGH2; k11*AA;
+  r10: AA => PGH2; (k10*DGactivity*AA)/DNA_;
+  r8: AA => HETE; k8*AA;
+  r4: AA => ; k4*AA;
+  r9: HETE => ; k9*HETE;
+  r13: PGH2 => PGE2; k13*PGH2;
+  r14: PGE2 => ; k14*PGE2;
+  r15: PGH2 => PGF2a; k15*PGH2;
+  r16: PGF2a => ; k16*PGF2a;
+  r17: PGH2 => PGD2; k17*PGH2;
+  r18: PGD2 => PGJ2; k18*PGD2;
+  r19: PGD2 => dPGD2; k19*PGD2;
+  r20: dPGD2 => ; k20*dPGD2;
+  r21: PGJ2 => dPGJ2; k21*PGJ2;
+  r22: dPGJ2 => ; k22*dPGJ2;
+  r1: $FA => AA; k1*onepmol*LPSactivity;
+  r6: GPCho => AA; k6*GPCho*GPChoratio*LPSactivity;
+  r12: AA => PGH2; k12*AA*LPSactivity;
 
   // Events:
   _E0: at timevalue > t0: GPChoslope = GPChoslopezero, GPChoint = GPChointzero, DGslope = DGslopezero, DGint = DGintzero, LPSslope = LPSslopezero, LPSint = LPSintzero;
@@ -52,7 +52,7 @@ model *BIOMD0000000436()
   _E6: at timevalue >= t6: GPChoslope = GPChoslope6, GPChoint = GPChoint6, DGslope = DGslope6, DGint = DGint6;
 
   // Species initializations:
-  FA = 1 / c1;
+  FA = 1/c1;
   FA has pmol_per_litre;
   HETE = 0;
   HETE has pmol_per_litre;
@@ -67,13 +67,13 @@ model *BIOMD0000000436()
   PGJ2 has pmol_per_litre;
   dPGJ2 = 0;
   dPGJ2 has pmol_per_litre;
-  AA = 25 / c1;
+  AA = 25/c1;
   AA has pmol_per_litre;
-  LPS = 0.5 / c1;
+  LPS = 0.5/c1;
   LPS has dimensionless_per_litre;
   DG = 0;
   DG has dimensionless_per_litre;
-  GPCho = 1 / c1;
+  GPCho = 1/c1;
   GPCho has pmol_per_litre;
   dPGD2 = 0;
   dPGD2 has pmol_per_litre;

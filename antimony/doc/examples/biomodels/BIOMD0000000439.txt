@@ -11,27 +11,27 @@ model *MODEL1212040001()
   species P in compartment_, z1 in compartment_, z2 in compartment_, z3 in compartment_;
 
   // Reactions:
-  R1: R + L => RL; compartment_ * R * L * R1_k1;
-  R2: R + Gabg => RGabg; compartment_ * R * Gabg * R2_k2;
-  R3: RL + Gabg => RGabgL; compartment_ * RL * Gabg * R3_k3;
-  R4: RGabg + L => RGabgL; compartment_ * RGabg * L * R4_k4;
-  R5: RGabgL => RL + GaGTP + Gbg; compartment_ * RGabgL * R5_k5;
-  R6: Gabg => GaGTP + Gbg; compartment_ * Gabg * R6_k6;
-  R7: GaGTP + RGS => RGSGaGTP; compartment_ * GaGTP * RGS * R7_k7;
-  R8: RGSGaGTP => GaGDPP + RGS; compartment_ * RGSGaGTP * R8_k8;
-  R9: GaGTP => GaGDPP; compartment_ * GaGTP * R9_k9;
-  R10: Effector + GaGTP => GaGTPEffector; compartment_ * Effector * GaGTP * R10_k10;
-  R11: GaGTPEffector => inertGaGTP + Effector; compartment_ * GaGTPEffector * R11_k11;
-  R12: inertGaGTP + RGS => RGSinertGaGTP; compartment_ * inertGaGTP * RGS * R12_k12;
-  R13: RGSinertGaGTP => GaGDPP + RGS; compartment_ * RGSinertGaGTP * R13_k13;
-  R14: inertGaGTP => GaGDPP; compartment_ * inertGaGTP * R14_k14;
-  R15: GaGDPP => GaGDP + P; compartment_ * GaGDPP * R15_k15;
-  R16: GaGDP + Gbg => Gabg; compartment_ * GaGDP * Gbg * R16_k16;
-  R17: P => ; compartment_ * P * R17_k17;
-  R18:  => z1; compartment_ * GaGTPEffector * ka;
-  R19: z1 => z2; compartment_ * z1 * ka;
-  R20: z2 => z3; compartment_ * z2 * ka;
-  R21: z3 => ; compartment_ * z3 * ka;
+  R1: R + L => RL; compartment_*R*L*R1_k1;
+  R2: R + Gabg => RGabg; compartment_*R*Gabg*R2_k2;
+  R3: RL + Gabg => RGabgL; compartment_*RL*Gabg*R3_k3;
+  R4: RGabg + L => RGabgL; compartment_*RGabg*L*R4_k4;
+  R5: RGabgL => RL + GaGTP + Gbg; compartment_*RGabgL*R5_k5;
+  R6: Gabg => GaGTP + Gbg; compartment_*Gabg*R6_k6;
+  R7: GaGTP + RGS => RGSGaGTP; compartment_*GaGTP*RGS*R7_k7;
+  R8: RGSGaGTP => GaGDPP + RGS; compartment_*RGSGaGTP*R8_k8;
+  R9: GaGTP => GaGDPP; compartment_*GaGTP*R9_k9;
+  R10: Effector + GaGTP => GaGTPEffector; compartment_*Effector*GaGTP*R10_k10;
+  R11: GaGTPEffector => inertGaGTP + Effector; compartment_*GaGTPEffector*R11_k11;
+  R12: inertGaGTP + RGS => RGSinertGaGTP; compartment_*inertGaGTP*RGS*R12_k12;
+  R13: RGSinertGaGTP => GaGDPP + RGS; compartment_*RGSinertGaGTP*R13_k13;
+  R14: inertGaGTP => GaGDPP; compartment_*inertGaGTP*R14_k14;
+  R15: GaGDPP => GaGDP + P; compartment_*GaGDPP*R15_k15;
+  R16: GaGDP + Gbg => Gabg; compartment_*GaGDP*Gbg*R16_k16;
+  R17: P => ; compartment_*P*R17_k17;
+  R18:  => z1; compartment_*GaGTPEffector*ka;
+  R19: z1 => z2; compartment_*z1*ka;
+  R20: z2 => z3; compartment_*z2*ka;
+  R21: z3 => ; compartment_*z3*ka;
 
   // Events:
   Ligand_addition: at time >= 14: L = L + Ligand_conc;

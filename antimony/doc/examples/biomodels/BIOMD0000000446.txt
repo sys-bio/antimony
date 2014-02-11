@@ -1,14 +1,14 @@
 //Created by libAntimony v2.5
 function EMM(St, Et, Km, kcat)
-  0.5 * kcat * ((St + Et + Km) - sqrt((St + Et + Km)^2 - 4 * St * Et));
+  0.5*kcat*((St + Et + Km) - sqrt((St + Et + Km)^2 - 4*St*Et));
 end
 
 function Gamma(v, u, J, K)
-  v - u + v * J + u * K;
+  v - u + v*J + u*K;
 end
 
 function fGK(v, u, J, K)
-  piecewise(0, v == 0 && u == 0, (2 * u * K) / (Gamma(v, u, J, K) + sqrt(Gamma(v, u, J, K)^2 - 4 * (v - u) * u * K)));
+  piecewise(0, v == 0 && u == 0, (2*u*K)/(Gamma(v, u, J, K) + sqrt(Gamma(v, u, J, K)^2 - 4*(v - u)*u*K)));
 end
 
 
@@ -28,79 +28,79 @@ model *MODEL1302180000()
   // Assignment Rules:
   UFP := UFPT - BiUFP;
   BiP := BiPT - BiRE1 - BiATF - BiPER - BiUFP;
-  IRE1 := IRE1T - BiRE1 - n * IRE1A;
-  PERK := PERKT - BiPER - n * PERKA;
+  IRE1 := IRE1T - BiRE1 - n*IRE1A;
+  PERK := PERKT - BiPER - n*PERKA;
   ATF6 := ATF6T - BiATF;
-  eIF2a := eIF2aT * fGK(kphos * 0.5 * n * PERKA, kdephos * (GADD34 + CReP), J / eIF2aT, K / eIF2aT);
-  spliceRate := EMM(mXbp1u, 0.5 * n * IRE1A, krcSplice, ksplice);
+  eIF2a := eIF2aT*fGK(kphos*0.5*n*PERKA, kdephos*(GADD34 + CReP), J/eIF2aT, K/eIF2aT);
+  spliceRate := EMM(mXbp1u, 0.5*n*IRE1A, krcSplice, ksplice);
   BCL2 := BCL2T - BH3BCL2 - BAXmBCL2;
   BH3 := BH3T - BH3BCL2;
   BAXm := BAXmT - BAXmBCL2;
   mUFPT := 13;
 
   // Reactions:
-  re2:  => UFPT; ktrUFP * mUFPT * piecewise(eIF2a / eIF2aT, extATT == 1, 1);
-  re3: UFPT => ; kdUFP * UFPT;
-  re4: UFPT => ; kbu * BiUFP * UFPT;
-  reu1:  => BiUFP; tmr * kf * BiP * UFP;
-  reu2: BiUFP => ; tmr * kr * BiUFP;
-  reu3:  => BiRE1; tmr * kf * BiP * IRE1;
-  reu4: BiRE1 => ; tmr * kr * BiRE1;
-  reu5:  => BiATF; tmr * kf * BiP * ATF6;
-  reu6: BiATF => ; tmr * kr * BiATF;
-  reu7:  => BiPER; tmr * kf * BiP * PERK;
-  reu8: BiPER => ; kr * tmr * BiPER;
-  reu9:  => IRE1A; tmr * kff * IRE1^n;
-  reu10: IRE1A => ; tmr * kr * IRE1A;
-  reu11:  => PERKA; tmr * kff * piecewise(UFP, switch == 1, 1) * PERK^n;
-  reu12: PERKA => ; (tmr * kr * PERKA) / (1 + extPERK * UFP);
-  re5:  => ATF6T; ktrATF6 * mATF6T;
-  re6: ATF6T => ; kdATF6 * ATF6T;
-  re8: ATF6T => ATF6GB; ktrans * ATF6;
-  rew1: ATF6T => ; kdeAW * WFS1 * ATF6T;
-  re9: ATF6GB => ; kdATF6GB * ATF6GB;
-  re10: ATF6GB => ATF6p50; kcleave * ATF6GB;
-  re11: ATF6p50 => ; kdATF6p50 * ATF6p50;
-  rew2:  => mWFS1; (trcWFS * ATF6p50) / (krcWFS + ATF6p50);
-  rew3: mWFS1 => ; kdmWFS * mWFS1;
-  rew4:  => WFS1; ktrWFS * mWFS1;
-  rew5: WFS1 => ; kdWFS * WFS1;
-  re12:  => mXbp1u; (trcXU * (basalXBP + kmAtfsXBP * ATF6p50)) / (krcXU + basalXBP + kmAtfsXBP * ATF6p50);
-  re13: mXbp1u => ; kdmXU * mXbp1u;
+  re2:  => UFPT; ktrUFP*mUFPT*piecewise(eIF2a/eIF2aT, extATT == 1, 1);
+  re3: UFPT => ; kdUFP*UFPT;
+  re4: UFPT => ; kbu*BiUFP*UFPT;
+  reu1:  => BiUFP; tmr*kf*BiP*UFP;
+  reu2: BiUFP => ; tmr*kr*BiUFP;
+  reu3:  => BiRE1; tmr*kf*BiP*IRE1;
+  reu4: BiRE1 => ; tmr*kr*BiRE1;
+  reu5:  => BiATF; tmr*kf*BiP*ATF6;
+  reu6: BiATF => ; tmr*kr*BiATF;
+  reu7:  => BiPER; tmr*kf*BiP*PERK;
+  reu8: BiPER => ; kr*tmr*BiPER;
+  reu9:  => IRE1A; tmr*kff*IRE1^n;
+  reu10: IRE1A => ; tmr*kr*IRE1A;
+  reu11:  => PERKA; tmr*kff*piecewise(UFP, switch == 1, 1)*PERK^n;
+  reu12: PERKA => ; (tmr*kr*PERKA)/(1 + extPERK*UFP);
+  re5:  => ATF6T; ktrATF6*mATF6T;
+  re6: ATF6T => ; kdATF6*ATF6T;
+  re8: ATF6T => ATF6GB; ktrans*ATF6;
+  rew1: ATF6T => ; kdeAW*WFS1*ATF6T;
+  re9: ATF6GB => ; kdATF6GB*ATF6GB;
+  re10: ATF6GB => ATF6p50; kcleave*ATF6GB;
+  re11: ATF6p50 => ; kdATF6p50*ATF6p50;
+  rew2:  => mWFS1; (trcWFS*ATF6p50)/(krcWFS + ATF6p50);
+  rew3: mWFS1 => ; kdmWFS*mWFS1;
+  rew4:  => WFS1; ktrWFS*mWFS1;
+  rew5: WFS1 => ; kdWFS*WFS1;
+  re12:  => mXbp1u; (trcXU*(basalXBP + kmAtfsXBP*ATF6p50))/(krcXU + basalXBP + kmAtfsXBP*ATF6p50);
+  re13: mXbp1u => ; kdmXU*mXbp1u;
   re14: mXbp1u => mXbp1s; spliceRate;
-  re15: mXbp1s => ; kdmXS * mXbp1s;
-  re16:  => Xbp1s; ktrXS * mXbp1s;
-  re17: Xbp1s => ; kdXS * Xbp1s;
-  re18:  => mBiPT; (trcBiP * (basalBiP + kmXbp * Xbp1s + kmAtfsBiP * ATF6p50)) / (krcBiP + basalBiP + kmXbp * Xbp1s + kmAtfsBiP * ATF6p50);
-  re19: mBiPT => ; kdmBiP * mBiPT;
-  re20:  => BiPT; ktrBiP * mBiPT;
-  re21: BiPT => ; kdBiP * BiPT;
-  re23:  => ATF4; (ktrATF4 * mATF4) / (1 + (eIF2a / kATF4)^nh);
-  re24: ATF4 => ; kdATF4 * ATF4;
-  re25:  => mCHOP; (trcCHOP * (kmAtff * ATF4 + kmAtfs * ATF6p50)) / (krcCHOP + kmAtff * ATF4 + kmAtfs * ATF6p50);
-  re26: mCHOP => ; kdmCHOP * mCHOP;
-  re27:  => CHOP; ktrCHOP * mCHOP;
-  re28: CHOP => ; kdCHOP * CHOP;
-  re29:  => mGADD34; (trcGADD34 * kmChop * CHOP) / (krcGADD34 + kmChop * CHOP);
-  re30: mGADD34 => ; kdmGADD34 * mGADD34;
-  re31:  => GADD34; ktrGADD34 * mGADD34;
-  re32: GADD34 => ; kdGADD34 * GADD34;
-  rea1:  => BCL2T; kfbc / (1 + kmbc * CHOP);
-  rea2: BCL2T => ; kdbc * BCL2T;
-  rea3:  => BAXmT; kfx * BAXT;
-  rea4:  => BAXmT; kfxp * BH3 * BAXT;
-  rea5: BAXmT => ; kfx * BAXmT;
-  rea6: BAXmT => ; kfxp * BH3 * BAXmT;
-  rea7: BAXmT => ; kbx * BAXmT;
+  re15: mXbp1s => ; kdmXS*mXbp1s;
+  re16:  => Xbp1s; ktrXS*mXbp1s;
+  re17: Xbp1s => ; kdXS*Xbp1s;
+  re18:  => mBiPT; (trcBiP*(basalBiP + kmXbp*Xbp1s + kmAtfsBiP*ATF6p50))/(krcBiP + basalBiP + kmXbp*Xbp1s + kmAtfsBiP*ATF6p50);
+  re19: mBiPT => ; kdmBiP*mBiPT;
+  re20:  => BiPT; ktrBiP*mBiPT;
+  re21: BiPT => ; kdBiP*BiPT;
+  re23:  => ATF4; (ktrATF4*mATF4)/(1 + (eIF2a/kATF4)^nh);
+  re24: ATF4 => ; kdATF4*ATF4;
+  re25:  => mCHOP; (trcCHOP*(kmAtff*ATF4 + kmAtfs*ATF6p50))/(krcCHOP + kmAtff*ATF4 + kmAtfs*ATF6p50);
+  re26: mCHOP => ; kdmCHOP*mCHOP;
+  re27:  => CHOP; ktrCHOP*mCHOP;
+  re28: CHOP => ; kdCHOP*CHOP;
+  re29:  => mGADD34; (trcGADD34*kmChop*CHOP)/(krcGADD34 + kmChop*CHOP);
+  re30: mGADD34 => ; kdmGADD34*mGADD34;
+  re31:  => GADD34; ktrGADD34*mGADD34;
+  re32: GADD34 => ; kdGADD34*GADD34;
+  rea1:  => BCL2T; kfbc/(1 + kmbc*CHOP);
+  rea2: BCL2T => ; kdbc*BCL2T;
+  rea3:  => BAXmT; kfx*BAXT;
+  rea4:  => BAXmT; kfxp*BH3*BAXT;
+  rea5: BAXmT => ; kfx*BAXmT;
+  rea6: BAXmT => ; kfxp*BH3*BAXmT;
+  rea7: BAXmT => ; kbx*BAXmT;
   rea8:  => BH3T; ks3;
-  rea9:  => BH3T; ks3p * kstr * CHOP;
-  rea10: BH3T => ; kd3 * BH3T;
-  rea11:  => BAXmBCL2; kasx * BAXm * BCL2;
-  rea12: BAXmBCL2 => ; kdsx * BAXmBCL2;
-  rea13: BAXmBCL2 => ; kbx * BAXmBCL2;
-  rea14:  => BH3BCL2; kas3 * BH3 * BCL2;
-  rea15: BH3BCL2 => ; kds3 * BH3BCL2;
-  rea16: BH3BCL2 => ; kd3 * BH3BCL2;
+  rea9:  => BH3T; ks3p*kstr*CHOP;
+  rea10: BH3T => ; kd3*BH3T;
+  rea11:  => BAXmBCL2; kasx*BAXm*BCL2;
+  rea12: BAXmBCL2 => ; kdsx*BAXmBCL2;
+  rea13: BAXmBCL2 => ; kbx*BAXmBCL2;
+  rea14:  => BH3BCL2; kas3*BH3*BCL2;
+  rea15: BH3BCL2 => ; kds3*BH3BCL2;
+  rea16: BH3BCL2 => ; kd3*BH3BCL2;
 
   // Species initializations:
   UFPT = 0;

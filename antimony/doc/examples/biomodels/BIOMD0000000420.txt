@@ -6,18 +6,18 @@ model *Ratushny2012_ASSURE_I()
   species P2 in univ, Target in univ;
 
   // Assignment Rules:
-  dsp1ksp := Ksp / 2 * ((1 + (s + P1) / Ksp) - ((1 + (s + P1) / Ksp)^2 - (4 * s * P1) / Ksp^2)^0.5);
-  dsp1p2kd := Kd / 2 * ((1 + (dsp1ksp + P2 * univ) / Kd) - ((1 + (dsp1ksp + P2 * univ) / Kd)^2 - (4 * dsp1ksp * P2 * univ) / Kd^2)^0.5);
+  dsp1ksp := Ksp/2*((1 + (s + P1)/Ksp) - ((1 + (s + P1)/Ksp)^2 - (4*s*P1)/Ksp^2)^0.5);
+  dsp1p2kd := Kd/2*((1 + (dsp1ksp + P2*univ)/Kd) - ((1 + (dsp1ksp + P2*univ)/Kd)^2 - (4*dsp1ksp*P2*univ)/Kd^2)^0.5);
 
   // Reactions:
-  ___r1:  => P2; (ks * (k0 + (dsp1p2kd / ka)^h)) / (1 + (dsp1p2kd / ka)^h);
-  ___r2: P2 => ; ___r2___RATE__ * P2;
-  ___r3:  => Target; (ks * (k0 + (dsp1p2kd / ka)^h)) / (1 + (dsp1p2kd / ka)^h);
-  ___r4: Target => ; ___r4___RATE__ * Target;
+  ___r1:  => P2; (ks*(k0 + (dsp1p2kd/ka)^h))/(1 + (dsp1p2kd/ka)^h);
+  ___r2: P2 => ; ___r2___RATE__*P2;
+  ___r3:  => Target; (ks*(k0 + (dsp1p2kd/ka)^h))/(1 + (dsp1p2kd/ka)^h);
+  ___r4: Target => ; ___r4___RATE__*Target;
 
   // Species initializations:
-  P2 = 10 / univ;
-  Target = 10 / univ;
+  P2 = 10/univ;
+  Target = 10/univ;
 
   // Compartment initializations:
   univ = 1;

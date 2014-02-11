@@ -1,94 +1,94 @@
 //Created by libAntimony v2.5
 function function_1(ICSmax, IC, ICt, IS_)
-  ICSmax / (1 + (IC / ICt)^IS_);
+  ICSmax/(1 + (IC/ICt)^IS_);
 end
 
 function function_2(k5, HFC, HBS)
-  (k5 * HFC) / HBS;
+  (k5*HFC)/HBS;
 end
 
 function function_3(k6, IC, IBS)
-  k6 * IC * IBS;
+  k6*IC*IBS;
 end
 
 function function_4(k7, IC, IBS)
-  k7 * IC * IBS;
+  k7*IC*IBS;
 end
 
 function function_5(k8, PFC)
-  k8 * PFC;
+  k8*PFC;
 end
 
 function function_6(BCRmax, BCRt, HFC, BS)
-  BCRmax / (1 + (BCRt / HFC)^BS);
+  BCRmax/(1 + (BCRt/HFC)^BS);
 end
 
 function function_7(HCSmax, HFC, HCSt, HS)
-  HCSmax / (1 + (HFC / HCSt)^HS);
+  HCSmax/(1 + (HFC/HCSt)^HS);
 end
 
 function function_8(k9, ACAT, HFC)
-  k9 * ACAT * HFC;
+  k9*ACAT*HFC;
 end
 
 function function_9(k10, CEH, HCE)
-  k10 * CEH * HCE;
+  k10*CEH*HCE;
 end
 
 function function_10(k11, PFC)
-  k11 * PFC;
+  k11*PFC;
 end
 
 function function_11(khrs, HLDLRsS, HFC)
-  (khrs * HLDLRsS) / HFC;
+  (khrs*HLDLRsS)/HFC;
 end
 
 function function_12(k15, VLDLC, LPL)
-  k15 * VLDLC * LPL;
+  k15*VLDLC*LPL;
 end
 
 function function_13(k17, IDLC, HSL)
-  k17 * IDLC * HSL;
+  k17*IDLC*HSL;
 end
 
 function function_14(k18, LDLC, HLDLRs)
-  k18 * LDLC * HLDLRs;
+  k18*LDLC*HLDLRs;
 end
 
 function function_15(k20, PLDLRs, LDLC)
-  k20 * PLDLRs * LDLC;
+  k20*PLDLRs*LDLC;
 end
 
 function function_16(kprs, PLDLRsS, PFC)
-  (kprs * PLDLRsS) / PFC;
+  (kprs*PLDLRsS)/PFC;
 end
 
 function function_17(k23, ACAT, PFC)
-  k23 * ACAT * PFC;
+  k23*ACAT*PFC;
 end
 
 function function_18(k24, CEH, PCE)
-  k24 * CEH * PCE;
+  k24*CEH*PCE;
 end
 
 function function_19(k26, PFC, NHDL, LCAT)
-  k26 * PFC * NHDL * LCAT;
+  k26*PFC*NHDL*LCAT;
 end
 
 function function_20(PCSmax, PFC, PPCt, PCSS)
-  PCSmax / (1 + (PFC / PPCt)^PCSS);
+  PCSmax/(1 + (PFC/PPCt)^PCSS);
 end
 
 function function_21(k27, HDLC, CETP)
-  k27 * HDLC * CETP;
+  k27*HDLC*CETP;
 end
 
 function function_22(k28, HDLC, CETP)
-  k28 * HDLC * CETP;
+  k28*HDLC*CETP;
 end
 
 function function_23(k29, HDLC, SRB1)
-  k29 * HDLC * SRB1;
+  k29*HDLC*SRB1;
 end
 
 
@@ -111,11 +111,11 @@ model *MODEL1206010000()
   species $species_32 in PeripheralTissue, species_33 in Plasma, species_34 in HepaticTissue;
 
   // Reactions:
-  reaction_1: $species_1 => species_2; reaction_1_k1 * species_1;
+  reaction_1: $species_1 => species_2; reaction_1_k1*species_1;
   reaction_2: $species_3 => species_2; function_1(reaction_2_ICSmax, species_2, reaction_2_ICt, reaction_2_IS);
-  reaction_3: species_4 => species_5; reaction_3_k1 * species_4;
-  reaction_4: species_5 => species_4; reaction_4_k1 * species_5;
-  reaction_5: species_5 => species_6; reaction_5_k1 * species_5;
+  reaction_3: species_4 => species_5; reaction_3_k1*species_4;
+  reaction_4: species_5 => species_4; reaction_4_k1*species_5;
+  reaction_5: species_5 => species_6; reaction_5_k1*species_5;
   reaction_6: species_7 => species_4; function_2(reaction_6_k5, species_7, species_4);
   reaction_7: species_2 => species_7; function_3(reaction_7_k6, species_2, species_5);
   reaction_8: species_2 => species_8; function_4(reaction_8_k7, species_2, species_5);
@@ -125,22 +125,22 @@ model *MODEL1206010000()
   reaction_12: species_7 => species_13; function_8(reaction_12_k9, species_14, species_7);
   reaction_13: species_13 => species_7; function_9(reaction_13_k10, species_15, species_13);
   reaction_14: $species_16 => species_10; function_10(reaction_14_k11, species_11);
-  reaction_15: species_7 => species_17; reaction_15_k1 * species_7;
+  reaction_15: species_7 => species_17; reaction_15_k1*species_7;
   reaction_16: $species_19 => species_18; function_11(reaction_16_khrs, species_19, species_7);
-  reaction_17: species_18 => species_20; reaction_17_k1 * species_18;
-  reaction_18: species_17 => species_7; reaction_18_k1 * species_17;
+  reaction_17: species_18 => species_20; reaction_17_k1*species_18;
+  reaction_18: species_17 => species_7; reaction_18_k1*species_17;
   reaction_19: species_17 => species_21; function_12(reaction_19_k15, species_17, species_22);
-  reaction_20: species_21 => species_7; reaction_20_k1 * species_21;
+  reaction_20: species_21 => species_7; reaction_20_k1*species_21;
   reaction_21: species_21 => species_23; function_13(reaction_21_k17, species_21, species_24);
   reaction_22: species_23 => species_7; function_14(reaction_22_k18, species_23, species_18);
-  reaction_23: species_23 => species_7; reaction_23_k1 * species_23;
+  reaction_23: species_23 => species_7; reaction_23_k1*species_23;
   reaction_24: species_23 => species_11; function_15(reaction_24_k20, species_25, species_23);
-  reaction_25: species_23 => species_11; reaction_25_k1 * species_23;
+  reaction_25: species_23 => species_11; reaction_25_k1*species_23;
   reaction_26: $species_26 => species_25; function_16(reaction_26_kprs, species_26, species_11);
-  reaction_27: species_25 => species_27; reaction_27_k1 * species_25;
+  reaction_27: species_25 => species_27; reaction_27_k1*species_25;
   reaction_28: species_11 => species_28; function_17(reaction_28_k23, species_14, species_11);
   reaction_29: species_28 => species_11; function_18(reaction_29_k24, species_15, species_28);
-  reaction_30: species_11 => species_29; reaction_30_k1 * species_11;
+  reaction_30: species_11 => species_29; reaction_30_k1*species_11;
   reaction_31: species_11 + species_10 => species_30; function_19(reaction_31_k26, species_11, species_10, species_31);
   reaction_32: $species_32 => species_11; function_20(reaction_32_PCSmax, species_11, reaction_32_PPCt, reaction_32_PCSS);
   reaction_33: species_30 => species_17; function_21(reaction_33_k27, species_30, species_33);
