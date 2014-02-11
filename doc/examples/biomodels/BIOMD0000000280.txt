@@ -5,13 +5,13 @@ model *Morris1981_MuscleFibre_Voltage_reduced()
   compartment musclefiber;
 
   // Assignment Rules:
-  Minf := (1 + tanh((V - V1) / V2)) / 2;
-  Ninf := (1 + tanh((V - V3) / V4)) / 2;
-  lambdaN := lambdaN_bar * cosh((V - V3) / (2 * V4));
+  Minf := (1 + tanh((V - V1)/V2))/2;
+  Ninf := (1 + tanh((V - V3)/V4))/2;
+  lambdaN := lambdaN_bar*cosh((V - V3)/(2*V4));
 
   // Rate Rules:
-  V' = (Iapp - gL * (V - VL) - gCa * Minf * (V - VCa) - gK * N * (V - VK)) / C;
-  N' = lambdaN * (Ninf - N);
+  V' = (Iapp - gL*(V - VL) - gCa*Minf*(V - VCa) - gK*N*(V - VK))/C;
+  N' = lambdaN*(Ninf - N);
 
   // Compartment initializations:
   musclefiber = 1;
@@ -36,7 +36,7 @@ model *Morris1981_MuscleFibre_Voltage_reduced()
   VCa has mV;
   gK = 8;
   gK has mS_per_cm2;
-  N = (1 + tanh((V - V3) / V4)) / 2;
+  N = (1 + tanh((V - V3)/V4))/2;
   N has dimensionless;
   VK = -70;
   VK has mV;

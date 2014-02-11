@@ -7,29 +7,29 @@ model *Lai2007_O2_Transport_Metabolism()
   species CTcap in Capillary, CTtis in Tissue, $CFcap in Capillary, $CFtis in Tissue;
 
   // Assignment Rules:
-  Qm := piecewise(QWm, time <= tE, QWm + dQMm * (1 - exp((tE - time) / tauQm)));
-  PSm := PSR + (PSE - PSR) * (1 - exp((QRm - Qm) / Qc));
+  Qm := piecewise(QWm, time <= tE, QWm + dQMm*(1 - exp((tE - time)/tauQm)));
+  PSm := PSR + (PSE - PSR)*(1 - exp((QRm - Qm)/Qc));
   Vmax := piecewise(VmaxM, exercise_level == 1, piecewise(VmaxH, exercise_level == 2, VmaxVH));
-  StO2m := (100 * ((Hct * CrbcHb * KHb * CFcap^nH) / (1 + KHb * CFcap^nH) * Capillary + (Wmc * CmcMb * KMb * CFtis) / (1 + KMb * CFtis) * Tissue)) / (CrbcHb * Hct * Capillary + CmcMb * Wmc * Tissue);
-  RStO2m := StO2m / StO2mW - 1;
+  StO2m := (100*((Hct*CrbcHb*KHb*CFcap^nH)/(1 + KHb*CFcap^nH)*Capillary + (Wmc*CmcMb*KMb*CFtis)/(1 + KMb*CFtis)*Tissue))/(CrbcHb*Hct*Capillary + CmcMb*Wmc*Tissue);
+  RStO2m := StO2m/StO2mW - 1;
   Katpase := piecewise(KatpaseW, time <= tE, KatpaseE);
   KatpaseE := piecewise(KatpaseM, exercise_level == 1, piecewise(KatpaseH, exercise_level == 2, KatpaseVH));
   dQMm := piecewise(dQMmM, exercise_level == 1, piecewise(dQMmH, exercise_level == 2, dQMmVH));
   tauQm := piecewise(tauQmM, exercise_level == 1, piecewise(tauQmH, exercise_level == 2, tauQmVH));
-  ATPase_flux_mM := ATPase / Tissue;
-  CK_flux_mM := 1 * (CreatineKinase / Tissue);
-  oxygen_phosph := OxidativePhosphorylation / Tissue * 6;
+  ATPase_flux_mM := ATPase/Tissue;
+  CK_flux_mM := 1*(CreatineKinase/Tissue);
+  oxygen_phosph := OxidativePhosphorylation/Tissue*6;
 
   // Rate Rules:
-  CFcap' = ((Qm * (CTart - CTcap) - PSm * (CFcap - CFtis)) * (1 / Capillary)) / (1 + (4 * Hct * CrbcHb * KHb * nH * CFcap^(nH - 1)) / (1 + KHb * CFcap^nH)^2);
-  CFtis' = ((PSm * (CFcap - CFtis)) / Tissue - Vmax * ((CFtis / (Km + CFtis) * ADP) / (Kadp + ADP))) / (1 + (Wmc * CmcMb * KMb) / (1 + KMb * CFtis)^2);
+  CFcap' = ((Qm*(CTart - CTcap) - PSm*(CFcap - CFtis))*(1/Capillary))/(1 + (4*Hct*CrbcHb*KHb*nH*CFcap^(nH - 1))/(1 + KHb*CFcap^nH)^2);
+  CFtis' = ((PSm*(CFcap - CFtis))/Tissue - Vmax*((CFtis/(Km + CFtis)*ADP)/(Kadp + ADP)))/(1 + (Wmc*CmcMb*KMb)/(1 + KMb*CFtis)^2);
 
   // Reactions:
-  ATPase: ATP -> ADP; Tissue * Katpase * ATP;
-  CreatineKinase: ADP + PCr -> ATP + Cr; (Tissue * ((VfCK * ADP * PCr) / (Kb * Kia) - (VrCK * Cr * ATP) / (Kiq * Kp))) / ((Kia + ADP) / Kia + ATP / Kiq + PCr / Kib + (ADP * PCr) / (Kb * Kia) + (Cr * ATP) / (Kiq * Kp));
-  OxidativePhosphorylation: 6ADP + CTtis -> 6ATP; (Tissue * Vmax * (CFtis / (Km + CFtis)) * ADP) / (Kadp + ADP);
-  ConvectionTransport:  -> CTcap; Qm * (CTart - CTcap);
-  DiffusionTransport: CTcap -> CTtis; PSm * (CFcap - CFtis);
+  ATPase: ATP -> ADP; Tissue*Katpase*ATP;
+  CreatineKinase: ADP + PCr -> ATP + Cr; (Tissue*((VfCK*ADP*PCr)/(Kb*Kia) - (VrCK*Cr*ATP)/(Kiq*Kp)))/((Kia + ADP)/Kia + ATP/Kiq + PCr/Kib + (ADP*PCr)/(Kb*Kia) + (Cr*ATP)/(Kiq*Kp));
+  OxidativePhosphorylation: 6ADP + CTtis -> 6ATP; (Tissue*Vmax*(CFtis/(Km + CFtis))*ADP)/(Kadp + ADP);
+  ConvectionTransport:  -> CTcap; Qm*(CTart - CTcap);
+  DiffusionTransport: CTcap -> CTtis; PSm*(CFcap - CFtis);
 
   // Species initializations:
   ATP = 8.198857;

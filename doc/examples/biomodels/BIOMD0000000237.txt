@@ -14,41 +14,41 @@ model *Schaber2006_Pheromone_Starvation_Crosstalk()
   species Ste12TeSte5 in compartment_, Ste12TeSte5P in compartment_, FREP in compartment_;
 
   // Assignment Rules:
-  alpha := alphastim * piecewise(alphaA * (1 - exp(-(time - alphat) / alphas)), time >= alphat && time <= alphae, piecewise(alphaA * exp(-(time - alphat) / alphas), time >= alphae, 0));
-  beta := betastim * betaA * piecewise(1 - exp(-(time - betat) / betas), time >= betat && time <= betae, piecewise(exp(-(time - betae) / betas), time > betae, 0));
+  alpha := alphastim*piecewise(alphaA*(1 - exp(-(time - alphat)/alphas)), time >= alphat && time <= alphae, piecewise(alphaA*exp(-(time - alphat)/alphas), time >= alphae, 0));
+  beta := betastim*betaA*piecewise(1 - exp(-(time - betat)/betas), time >= betat && time <= betae, piecewise(exp(-(time - betae)/betas), time > betae, 0));
 
   // Reactions:
-  v1: Ste5 + Ste11 -> Ste5Ste11; compartment_ * k1 * Ste5 * Ste11;
-  v2: Ste5Ste11 + Gbg -> Ste5Ste11Gbg; compartment_ * k2 * Ste5Ste11 * Gbg * alpha;
-  v3: Ste5Ste11Gbg + Fus3 -> Ste5Ste11GbgFus3; compartment_ * k3 * Ste5Ste11Gbg * Fus3;
-  v4: Ste5Ste11GbgFus3 -> Ste5Ste11GbgFus3P; compartment_ * k4 * Ste5Ste11GbgFus3;
-  v5: Ste5Ste11GbgFus3P -> Fus3PP + Ste5Ste11GbgP; compartment_ * k5 * Ste5Ste11GbgFus3P;
-  v6: Fus3 + Ste5Ste11GbgP -> Ste5Ste11GbgFus3P; compartment_ * k6 * Fus3 * Ste5Ste11GbgP;
-  v7: Ste5 + Ste5Ste11GbgP -> Gbg + Ste11Ubi; compartment_ * k7 * Ste5Ste11GbgP;
-  v8: Ste11Ubi -> $p; compartment_ * k8 * Ste11Ubi;
-  v9: Ste5Ste11Gbg + Kss1 -> Ste5Ste11GbgKss1; compartment_ * k9 * Ste5Ste11Gbg * Kss1;
-  v10: Ste5Ste11GbgKss1 -> Ste5Ste11GbgKss1P; compartment_ * k10 * Ste5Ste11GbgKss1;
-  v11: Ste5Ste11GbgKss1P -> Ste5Ste11GbgP + Kss1PP; compartment_ * k11 * Ste5Ste11GbgKss1P;
-  v12: Ste5Ste11GbgP + Kss1 -> Ste5Ste11GbgKss1P; compartment_ * k12 * Ste5Ste11GbgP * Kss1;
-  v13: Ste11 -> Ste11P; compartment_ * k13 * Ste11 * beta;
-  v14: Ste11P -> Ste11; compartment_ * k14 * Ste11P;
-  v15: Kss1 -> Kss1PP; compartment_ * (k15 * Kss1 * Ste11P + k30 * Kss1 * Ste11Ubi);
-  v16: Kss1PP -> Kss1; compartment_ * (k16 * Kss1PP + k28 * Kss1PP * Fus3PP);
-  v17: Ste12Kss1 -> 2Kss1 + Ste12; compartment_ * k17 * Ste12Kss1;
-  v18: 2Kss1 + Ste12 -> Ste12Kss1; compartment_ * k18 * Kss1 * Ste12;
-  v19: Ste12 -> Ste12P; compartment_ * (k19 * Ste12 * Fus3PP + k29 * Ste12 * Kss1PP);
-  v20: $s -> PREP; compartment_ * k20 * Ste12P;
-  v21: Ste12TeSte5Kss1 -> Kss1 + Ste12TeSte5; compartment_ * k21 * Ste12TeSte5Kss1;
-  v22: Kss1 + Ste12TeSte5 -> Ste12TeSte5Kss1; compartment_ * k22 * Kss1 * Ste12TeSte5;
-  v23: Ste12TeSte5 -> Ste12TeSte5P; compartment_ * k23 * Ste12TeSte5 * Kss1PP;
-  v24: Ste12TeSte5 -> $p; compartment_ * k24 * Ste12TeSte5 * Fus3PP;
-  v25: $s -> FREP; compartment_ * k25 * Ste12TeSte5P;
-  v26: Fus3PP -> Fus3; compartment_ * k26 * Fus3PP;
-  v27: Ste5Ste11 -> Ste5 + Ste11; compartment_ * k27 * Ste5Ste11;
-  v28: Ste12P -> Ste12; compartment_ * k31 * Ste12P;
-  v29: PREP -> $p; compartment_ * k32 * PREP;
-  v30: Ste12TeSte5P -> Ste12TeSte5; compartment_ * k33 * Ste12TeSte5P;
-  v31: FREP -> $p; compartment_ * k34 * FREP;
+  v1: Ste5 + Ste11 -> Ste5Ste11; compartment_*k1*Ste5*Ste11;
+  v2: Ste5Ste11 + Gbg -> Ste5Ste11Gbg; compartment_*k2*Ste5Ste11*Gbg*alpha;
+  v3: Ste5Ste11Gbg + Fus3 -> Ste5Ste11GbgFus3; compartment_*k3*Ste5Ste11Gbg*Fus3;
+  v4: Ste5Ste11GbgFus3 -> Ste5Ste11GbgFus3P; compartment_*k4*Ste5Ste11GbgFus3;
+  v5: Ste5Ste11GbgFus3P -> Fus3PP + Ste5Ste11GbgP; compartment_*k5*Ste5Ste11GbgFus3P;
+  v6: Fus3 + Ste5Ste11GbgP -> Ste5Ste11GbgFus3P; compartment_*k6*Fus3*Ste5Ste11GbgP;
+  v7: Ste5 + Ste5Ste11GbgP -> Gbg + Ste11Ubi; compartment_*k7*Ste5Ste11GbgP;
+  v8: Ste11Ubi -> $p; compartment_*k8*Ste11Ubi;
+  v9: Ste5Ste11Gbg + Kss1 -> Ste5Ste11GbgKss1; compartment_*k9*Ste5Ste11Gbg*Kss1;
+  v10: Ste5Ste11GbgKss1 -> Ste5Ste11GbgKss1P; compartment_*k10*Ste5Ste11GbgKss1;
+  v11: Ste5Ste11GbgKss1P -> Ste5Ste11GbgP + Kss1PP; compartment_*k11*Ste5Ste11GbgKss1P;
+  v12: Ste5Ste11GbgP + Kss1 -> Ste5Ste11GbgKss1P; compartment_*k12*Ste5Ste11GbgP*Kss1;
+  v13: Ste11 -> Ste11P; compartment_*k13*Ste11*beta;
+  v14: Ste11P -> Ste11; compartment_*k14*Ste11P;
+  v15: Kss1 -> Kss1PP; compartment_*(k15*Kss1*Ste11P + k30*Kss1*Ste11Ubi);
+  v16: Kss1PP -> Kss1; compartment_*(k16*Kss1PP + k28*Kss1PP*Fus3PP);
+  v17: Ste12Kss1 -> 2Kss1 + Ste12; compartment_*k17*Ste12Kss1;
+  v18: 2Kss1 + Ste12 -> Ste12Kss1; compartment_*k18*Kss1*Ste12;
+  v19: Ste12 -> Ste12P; compartment_*(k19*Ste12*Fus3PP + k29*Ste12*Kss1PP);
+  v20: $s -> PREP; compartment_*k20*Ste12P;
+  v21: Ste12TeSte5Kss1 -> Kss1 + Ste12TeSte5; compartment_*k21*Ste12TeSte5Kss1;
+  v22: Kss1 + Ste12TeSte5 -> Ste12TeSte5Kss1; compartment_*k22*Kss1*Ste12TeSte5;
+  v23: Ste12TeSte5 -> Ste12TeSte5P; compartment_*k23*Ste12TeSte5*Kss1PP;
+  v24: Ste12TeSte5 -> $p; compartment_*k24*Ste12TeSte5*Fus3PP;
+  v25: $s -> FREP; compartment_*k25*Ste12TeSte5P;
+  v26: Fus3PP -> Fus3; compartment_*k26*Fus3PP;
+  v27: Ste5Ste11 -> Ste5 + Ste11; compartment_*k27*Ste5Ste11;
+  v28: Ste12P -> Ste12; compartment_*k31*Ste12P;
+  v29: PREP -> $p; compartment_*k32*PREP;
+  v30: Ste12TeSte5P -> Ste12TeSte5; compartment_*k33*Ste12TeSte5P;
+  v31: FREP -> $p; compartment_*k34*FREP;
 
   // Species initializations:
   Ste5 = 42.3;

@@ -1,6 +1,6 @@
 //Created by libAntimony v2.5
 function function_1(Ag, K1, Ifn_Prot, K2, a2)
-  a2 * (Ag / (K1 + Ag)) * (Ifn_Prot / (K2 + Ifn_Prot));
+  a2*(Ag/(K1 + Ag))*(Ifn_Prot/(K2 + Ifn_Prot));
 end
 
 function function_3(a1)
@@ -8,19 +8,19 @@ function function_3(a1)
 end
 
 function function_2(a3, Rec_Prot)
-  a3 * Rec_Prot;
+  a3*Rec_Prot;
 end
 
 function function_4(b, mRNA)
-  b * mRNA;
+  b*mRNA;
 end
 
 function function_5(a4, Tbet_Prot, K4, Ag)
-  a4 * Tbet_Prot * (K4 / (K4 + Ag));
+  a4*Tbet_Prot*(K4/(K4 + Ag));
 end
 
 function function_6(a5, Tbet_Prot, K5, Rec_Prot, K6, Ag, K7)
-  a5 * (Tbet_Prot / (K5 + Tbet_Prot)) * (Rec_Prot / (K6 + Rec_Prot)) * (Ag / (K7 + Ag));
+  a5*(Tbet_Prot/(K5 + Tbet_Prot))*(Rec_Prot/(K6 + Rec_Prot))*(Ag/(K7 + Ag));
 end
 
 
@@ -33,23 +33,23 @@ model *Schulz2009_Th1_differentiation()
   species Rec_mRNA in compartment_;
 
   // Assignment Rules:
-  Ag := 1 - time^10 / (34^10 + time^10);
+  Ag := 1 - time^10/(34^10 + time^10);
 
   // Reactions:
-  vtrnldeg:  => Tbet_mRNA; compartment_ * function_1(Ag, vtrnldeg_K1, Ifn_Prot, vtrnldeg_K2, vtrnldeg_a2);
-  reaction_1:  => Tbet_mRNA; compartment_ * function_2(reaction_1_a3, Rec_Prot);
-  reaction_2:  => Tbet_mRNA; compartment_ * function_3(reaction_2_a1);
-  reaction_3: Tbet_mRNA => ; compartment_ * reaction_3_gamma_Tbet * Tbet_mRNA;
-  reaction_4: Tbet_Prot => ; compartment_ * reaction_4_delta_Tbet * Tbet_Prot;
-  reaction_5: Rec_mRNA => ; compartment_ * reaction_5_gamma_Rec * Rec_mRNA;
-  reaction_6: Rec_Prot => ; compartment_ * reaction_6_delta_Rec * Rec_Prot;
-  reaction_7: Ifn_mRNA => ; compartment_ * reaction_7_gamma_IFN * Ifn_mRNA;
-  reaction_8: Ifn_Prot => ; compartment_ * reaction_8_delta_IFN * Ifn_Prot;
-  reaction_9:  => Tbet_Prot; compartment_ * function_4(reaction_9_b, Tbet_mRNA);
-  reaction_10:  => Ifn_Prot; compartment_ * function_4(reaction_10_b, Ifn_mRNA);
-  reaction_11:  => Rec_Prot; compartment_ * function_4(reaction_11_b, Rec_mRNA);
-  reaction_12:  => Rec_mRNA; compartment_ * function_5(reaction_12_a4, Tbet_Prot, reaction_12_K4, Ag);
-  reaction_13:  => Ifn_mRNA; compartment_ * function_6(reaction_13_a5, Tbet_Prot, reaction_13_K5, Rec_Prot, reaction_13_K6, Ag, reaction_13_K7);
+  vtrnldeg:  => Tbet_mRNA; compartment_*function_1(Ag, vtrnldeg_K1, Ifn_Prot, vtrnldeg_K2, vtrnldeg_a2);
+  reaction_1:  => Tbet_mRNA; compartment_*function_2(reaction_1_a3, Rec_Prot);
+  reaction_2:  => Tbet_mRNA; compartment_*function_3(reaction_2_a1);
+  reaction_3: Tbet_mRNA => ; compartment_*reaction_3_gamma_Tbet*Tbet_mRNA;
+  reaction_4: Tbet_Prot => ; compartment_*reaction_4_delta_Tbet*Tbet_Prot;
+  reaction_5: Rec_mRNA => ; compartment_*reaction_5_gamma_Rec*Rec_mRNA;
+  reaction_6: Rec_Prot => ; compartment_*reaction_6_delta_Rec*Rec_Prot;
+  reaction_7: Ifn_mRNA => ; compartment_*reaction_7_gamma_IFN*Ifn_mRNA;
+  reaction_8: Ifn_Prot => ; compartment_*reaction_8_delta_IFN*Ifn_Prot;
+  reaction_9:  => Tbet_Prot; compartment_*function_4(reaction_9_b, Tbet_mRNA);
+  reaction_10:  => Ifn_Prot; compartment_*function_4(reaction_10_b, Ifn_mRNA);
+  reaction_11:  => Rec_Prot; compartment_*function_4(reaction_11_b, Rec_mRNA);
+  reaction_12:  => Rec_mRNA; compartment_*function_5(reaction_12_a4, Tbet_Prot, reaction_12_K4, Ag);
+  reaction_13:  => Ifn_mRNA; compartment_*function_6(reaction_13_a5, Tbet_Prot, reaction_13_K5, Rec_Prot, reaction_13_K6, Ag, reaction_13_K7);
 
   // Species initializations:
   Tbet_mRNA = 0.0440000000000001;

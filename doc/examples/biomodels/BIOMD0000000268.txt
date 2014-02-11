@@ -1,10 +1,10 @@
 //Created by libAntimony v2.5
 function MM(Vmax, Km, S)
-  (Vmax * S) / (Km + S);
+  (Vmax*S)/(Km + S);
 end
 
 function MM_twosubst(Vmax, Km1, Km2, S1, S2)
-  (Vmax * S1 * S2) / ((Km1 + S1) * (Km2 + S2));
+  (Vmax*S1*S2)/((Km1 + S1)*(Km2 + S2));
 end
 
 
@@ -25,78 +25,78 @@ model *Reed2008()
   species m_coo in mito, src in cell, dmg in cell;
 
   // Assignment Rules:
-  b_met := aa_input * b_met_basal;
+  b_met := aa_input*b_met_basal;
   aa_input := piecewise(breakfast, 7 <= daytime && daytime <= 10, lunch, 12 <= daytime && daytime <= 15, dinner, 18 <= daytime && daytime <= 21, fasting);
-  b_ser := aa_input * b_ser_basal;
+  b_ser := aa_input*b_ser_basal;
   tot_cfol := c_5mf + c_2cf + c_1cf + c_10f + c_dhf + c_thf;
   tot_mfol := m_thf + m_2cf + m_1cf + m_10f;
-  V_oCys_b := aa_input * V_oCys_b_basal;
-  V_oGly_b := aa_input * V_oGly_b_basal;
-  V_oGlu_b := aa_input * V_oGlu_b_basal;
-  daytime := time - 24 * floor(time / 24);
+  V_oCys_b := aa_input*V_oCys_b_basal;
+  V_oGly_b := aa_input*V_oGly_b_basal;
+  V_oGlu_b := aa_input*V_oGlu_b_basal;
+  daytime := time - 24*floor(time/24);
 
   // Reactions:
-  b_gsh_decomp: b_gsh -> b_cys + b_gly + b_glu; blood * 90 * b_gsh;
-  b_gsg_decomp: b_gsg -> 2b_cys + 2b_gly + 2b_glu; blood * 67.5 * b_gsg;
-  b_cys_cystine_conv: b_cys -> ; blood * 0.25 * b_cys;
-  b_cys_loss: b_cys -> ; blood * 0.1 * b_cys;
-  b_glu_loss: b_glu -> ; blood * 0.1 * b_glu;
-  b_gly_loss: b_gly -> ; blood * 0.1 * b_gly;
-  b_gsh_loss: b_gsh -> ; blood * 0.7 * b_gsh;
-  b_gsg_loss: b_gsg -> ; blood * 7.5 * b_gsg;
-  b_cys_import:  -> b_cys; blood * V_oCys_b;
-  b_gly_import:  -> b_gly; blood * V_oGly_b;
-  b_glu_import:  -> b_glu; blood * V_oGlu_b;
-  V_c_gshHb: c_gsh -> b_gsh; cytosol * MM(V_gshHb, K_gshHb, c_gsh);
-  V_c_gshLb: c_gsh -> b_gsh; (cytosol * V_gshLb * c_gsh^h_gshLb) / (K_gshLb^h_gshLb + c_gsh^h_gshLb);
-  V_c_gsgHb: c_gsg -> b_gsg; cytosol * MM(V_gsgHb, K_gsgHb, c_gsg);
-  V_c_gsgLb: c_gsg -> b_gsg; cytosol * MM(V_gsgLb, K_gsgLb, c_gsg);
-  V_b_CYS_c: b_cys -> c_cys; cytosol * MM(V_bcysc, K_bcysc, b_cys);
-  V_b_GLU_c: b_glu -> c_glu; cytosol * (MM(V_bglutc, K_bglutc, b_glu) - k_out_glu * c_glu);
-  V_b_GLY_c: b_gly -> c_gly; cytosol * (MM(V_bglyc, K_bglyc, b_gly) - k_out_gly * c_gly);
-  V_b_SER_c: $b_ser -> c_ser; cytosol * (MM(V_bserc, K_bserc, b_ser) - k_out_ser * c_ser);
-  V_b_MET_c: $b_met -> met; cytosol * (MM(V_bmetc, K_bmetc, b_met) - k_out_met * met);
-  VmFTD: m_10f -> m_thf; mito * MM(Vm_mFTD, K_10f_FTD, m_10f);
-  VmSHMT: m_thf + m_ser -> m_gly + m_2cf; mito * (MM_twosubst(Vf_mSHMT, K_thf_SHMT, K_ser_SHMT, m_thf, m_ser) - MM_twosubst(Vr_mSHMT, K_gly_SHMT, K_2cf_SHMT, m_gly, m_2cf));
-  VmFTS: m_thf + m_coo -> m_10f; mito * (MM_twosubst(Vf_mFTS, K_thf_mFTS, K_coo_mFTS, m_thf, m_coo) - MM(Vr_mFTS, K_10f_mFTS, m_10f));
-  VmNE: m_thf + $HCHO -> m_2cf; mito * (k1_mNE * m_thf * HCHO - k2_mNE * m_2cf);
-  V_GDC: m_thf + m_gly -> m_2cf + $CO; mito * MM_twosubst(Vm_GDC, K_thf_GDC, K_gly_GDC, m_thf, m_gly);
-  V_SDH: m_thf + src -> m_2cf + m_gly; mito * MM_twosubst(Vm_SDH, K_thf_SDH, K_src_SDH, m_thf, src);
-  V_DMGD: m_thf + dmg -> m_2cf + src; mito * MM_twosubst(Vm_DMGD, K_thf_DMGD, K_dmg_DMGD, m_thf, dmg);
-  VmMTD: m_2cf -> m_1cf; mito * (MM(Vf_mMTD, K_2cf_MTD, m_2cf) - MM(Vr_MTD, K_1cf_MTD, m_1cf));
-  VmMTCH: m_1cf -> m_10f; mito * (MM(Vf_mMTCH, K_1cf_MTCH, m_1cf) - MM(Vr_MTCH, K_10f_MTCH, m_10f));
-  VmSERc: 3m_ser -> c_ser; ((MM(V_mser, K_mser, m_ser) * mito) / 3 - MM(V_cser, K_cser, c_ser)) * cytosol;
-  VmHCOOHc: 3m_coo -> c_coo; (k_in_coo * m_coo * mito) / 3 - k_out_coo * c_coo * cytosol;
-  VmGLYc: 3m_gly -> c_gly; MM(V_mgly, K_mgly, m_gly) * mito * (1 / 3) - MM(V_cgly, K_cgly, c_gly) * cytosol;
-  V_MS: c_5mf + hcy -> c_thf + met; (cytosol * MM_twosubst(Vm_MS, K_5mf_MS, K_hcy_MS, c_5mf, hcy) * (ssH2O2 + Ki_MS)) / (H2O2 + Ki_MS);
-  V_DHFR: c_dhf + $NADPH -> c_thf; cytosol * MM_twosubst(Vm_DHFR, K_dhf_DHFR, K_NADPH_DHFR, c_dhf, NADPH);
-  VcFTD: c_10f -> c_thf; cytosol * MM(Vm_cFTD, K_10f_FTD, c_10f);
-  V_PGT: c_10f + $GAR -> aic + c_thf; cytosol * MM_twosubst(Vm_PGT, K_10f_PGT, K_GAR_PGT, c_10f, GAR);
-  VcFTS: c_thf + c_coo -> c_10f; cytosol * MM_twosubst(Vm_cFTS, K_thf_cFTS, K_coo_cFTS, c_thf, c_coo);
-  VcSHMT: c_ser + c_thf -> c_gly + c_2cf; cytosol * (MM_twosubst(Vf_cSHMT, K_thf_SHMT, K_ser_SHMT, c_thf, c_ser) - MM_twosubst(Vr_cSHMT, K_gly_SHMT, K_2cf_SHMT, c_gly, c_2cf));
-  VcNE: c_thf + $HCHO -> c_2cf; cytosol * (k1_cNE * c_thf * HCHO - k2_cNE * c_2cf);
-  V_TS: $DUMP + c_2cf -> c_dhf; cytosol * MM_twosubst(Vm_TS, K_DUMP_TS, K_2cf_TS, DUMP, c_2cf);
-  V_MTHFR: c_2cf + $NADPH -> c_5mf; (cytosol * MM_twosubst(Vm_MTHFR, K_2cf_MTHFR, K_NADPH_MTHFR, c_2cf, NADPH) * 72) / ((10 + sam) - sah);
-  VcMTD: c_2cf -> c_1cf + $NADPH; cytosol * (MM(Vf_cMTD, K_2cf_MTD, c_2cf) - MM(Vr_cMTD, K_1cf_MTD, c_1cf));
-  VcMTCH: c_1cf -> c_10f; cytosol * (MM(Vf_cMTCH, K_1cf_MTCH, c_1cf) - MM(Vr_MTCH, K_10f_MTCH, c_10f));
-  V_ART: c_10f + aic -> c_thf; cytosol * MM_twosubst(Vm_ART, K_10f_ART, K_aic_ART, c_10f, aic);
-  V_BHMT: hcy + $BET -> met + dmg; cytosol * exp(-0.0021 * (sam + sah)) * exp(0.0021 * 102.6) * MM_twosubst(Vm_BHMT, K_hcy_BHMT, K_bet_BHMT, hcy, BET) * ((ssH2O2 + Ki_BHMT) / (H2O2 + Ki_BHMT));
-  V_MATI: met -> sam; cytosol * Vm_MAT1 * (met / (Km_MAT1 + met)) * (0.23 + 0.8 * exp(-0.0026 * sam)) * ((Ki_MAT1 + 66.71) / (Ki_MAT1 + c_gsg));
-  V_MATIII: met -> sam; cytosol * Vm_MAT3 * (met^1.21 / (Km_MAT3 + met^1.21)) * (1 + (7.2 * sam^2) / (Ka_MAT3^2 + sam^2)) * ((Ki_MAT3 + 66.71) / (Ki_MAT3 + c_gsg));
-  V_GNMT: sam + c_gly -> sah + src; cytosol * MM_twosubst(Vm_GNMT, K_sam_GNMT, K_gly_GNMT, sam, c_gly) * (1 / (1 + sah / Ki_GNMT)) * (4.8 / (0.35 + c_5mf));
-  V_DNMT: sam -> sah; cytosol * Vm_DNMT * (sam / (Km_DNMT * (1 + sah / Ki_DNMT) + sam));
-  V_SAHH: sah -> hcy; cytosol * (MM(Vf_SAHH, K_sah_SAHH, sah) - MM(Vr_SAHH, K_hcy_SAHH, hcy));
-  gluconeogenesis_ser: c_ser -> ; cytosol * 1.2 * c_ser;
-  V_CBS: hcy + c_ser -> cyt; cytosol * MM_twosubst(Vm_CBS, K_hcy_CBS, K_ser_CBS, hcy, c_ser) * (((30 / 102.59)^2 + 1) / ((30 / (sam + sah))^2 + 1)) * ((H2O2 + Ka_CBS) / (ssH2O2 + Ka_CBS));
-  V_CTGL: cyt -> c_cys; cytosol * MM(Vm_CTGL, K_cyt_CTGL, cyt);
-  V_GCS: c_cys + c_glu -> glc; (cytosol * Vm_GCS * (c_cys * c_glu - glc / Ke_GCS)) / (K_cys_GCS * K_glu_GCS + c_glu * K_cys_GCS + c_cys * (K_glu_GCS * (1 + c_gsh / Ki_GCS) + c_glu) + glc / Kp_GCS + c_gsh / Ki_GCS) * ((H2O2 + Ka_GCS) / (ssH2O2 + Ka_GCS));
-  cys_usage: c_cys -> ; (cytosol * 0.35 * c_cys^2) / 200;
-  c_glu_usage: c_glu -> ; cytosol * 0.07 * c_glu;
-  V_GS: glc + c_gly -> c_gsh; (cytosol * Vm_GS * (c_gly * glc - c_gsh / Ke_GS)) / (K_gly_GS * K_glc_GS + glc * K_gly_GS + c_gly * (K_glc_GS + glc) + c_gsh / Kp_GS);
-  V_GPX: 2c_gsh + $H2O2 -> c_gsg; cytosol * Vm_GPX * (c_gsh / (K_gsh_GPX + c_gsh))^2 * (H2O2 / (K_H2O2_GPX + H2O2));
-  V_GR: c_gsg + $NADPH -> 2c_gsh; cytosol * MM_twosubst(Vm_GR, K_gsg_GR, K_NADPH_GR, c_gsg, NADPH);
-  c_gsh_degr: c_gsh -> ; cytosol * 0.002 * c_gsh;
-  c_gsg_degr: c_gsg -> ; cytosol * 0.1 * c_gsg;
+  b_gsh_decomp: b_gsh -> b_cys + b_gly + b_glu; blood*90*b_gsh;
+  b_gsg_decomp: b_gsg -> 2b_cys + 2b_gly + 2b_glu; blood*67.5*b_gsg;
+  b_cys_cystine_conv: b_cys -> ; blood*0.25*b_cys;
+  b_cys_loss: b_cys -> ; blood*0.1*b_cys;
+  b_glu_loss: b_glu -> ; blood*0.1*b_glu;
+  b_gly_loss: b_gly -> ; blood*0.1*b_gly;
+  b_gsh_loss: b_gsh -> ; blood*0.7*b_gsh;
+  b_gsg_loss: b_gsg -> ; blood*7.5*b_gsg;
+  b_cys_import:  -> b_cys; blood*V_oCys_b;
+  b_gly_import:  -> b_gly; blood*V_oGly_b;
+  b_glu_import:  -> b_glu; blood*V_oGlu_b;
+  V_c_gshHb: c_gsh -> b_gsh; cytosol*MM(V_gshHb, K_gshHb, c_gsh);
+  V_c_gshLb: c_gsh -> b_gsh; (cytosol*V_gshLb*c_gsh^h_gshLb)/(K_gshLb^h_gshLb + c_gsh^h_gshLb);
+  V_c_gsgHb: c_gsg -> b_gsg; cytosol*MM(V_gsgHb, K_gsgHb, c_gsg);
+  V_c_gsgLb: c_gsg -> b_gsg; cytosol*MM(V_gsgLb, K_gsgLb, c_gsg);
+  V_b_CYS_c: b_cys -> c_cys; cytosol*MM(V_bcysc, K_bcysc, b_cys);
+  V_b_GLU_c: b_glu -> c_glu; cytosol*(MM(V_bglutc, K_bglutc, b_glu) - k_out_glu*c_glu);
+  V_b_GLY_c: b_gly -> c_gly; cytosol*(MM(V_bglyc, K_bglyc, b_gly) - k_out_gly*c_gly);
+  V_b_SER_c: $b_ser -> c_ser; cytosol*(MM(V_bserc, K_bserc, b_ser) - k_out_ser*c_ser);
+  V_b_MET_c: $b_met -> met; cytosol*(MM(V_bmetc, K_bmetc, b_met) - k_out_met*met);
+  VmFTD: m_10f -> m_thf; mito*MM(Vm_mFTD, K_10f_FTD, m_10f);
+  VmSHMT: m_thf + m_ser -> m_gly + m_2cf; mito*(MM_twosubst(Vf_mSHMT, K_thf_SHMT, K_ser_SHMT, m_thf, m_ser) - MM_twosubst(Vr_mSHMT, K_gly_SHMT, K_2cf_SHMT, m_gly, m_2cf));
+  VmFTS: m_thf + m_coo -> m_10f; mito*(MM_twosubst(Vf_mFTS, K_thf_mFTS, K_coo_mFTS, m_thf, m_coo) - MM(Vr_mFTS, K_10f_mFTS, m_10f));
+  VmNE: m_thf + $HCHO -> m_2cf; mito*(k1_mNE*m_thf*HCHO - k2_mNE*m_2cf);
+  V_GDC: m_thf + m_gly -> m_2cf + $CO; mito*MM_twosubst(Vm_GDC, K_thf_GDC, K_gly_GDC, m_thf, m_gly);
+  V_SDH: m_thf + src -> m_2cf + m_gly; mito*MM_twosubst(Vm_SDH, K_thf_SDH, K_src_SDH, m_thf, src);
+  V_DMGD: m_thf + dmg -> m_2cf + src; mito*MM_twosubst(Vm_DMGD, K_thf_DMGD, K_dmg_DMGD, m_thf, dmg);
+  VmMTD: m_2cf -> m_1cf; mito*(MM(Vf_mMTD, K_2cf_MTD, m_2cf) - MM(Vr_MTD, K_1cf_MTD, m_1cf));
+  VmMTCH: m_1cf -> m_10f; mito*(MM(Vf_mMTCH, K_1cf_MTCH, m_1cf) - MM(Vr_MTCH, K_10f_MTCH, m_10f));
+  VmSERc: 3m_ser -> c_ser; ((MM(V_mser, K_mser, m_ser)*mito)/3 - MM(V_cser, K_cser, c_ser))*cytosol;
+  VmHCOOHc: 3m_coo -> c_coo; (k_in_coo*m_coo*mito)/3 - k_out_coo*c_coo*cytosol;
+  VmGLYc: 3m_gly -> c_gly; MM(V_mgly, K_mgly, m_gly)*mito*(1/3) - MM(V_cgly, K_cgly, c_gly)*cytosol;
+  V_MS: c_5mf + hcy -> c_thf + met; (cytosol*MM_twosubst(Vm_MS, K_5mf_MS, K_hcy_MS, c_5mf, hcy)*(ssH2O2 + Ki_MS))/(H2O2 + Ki_MS);
+  V_DHFR: c_dhf + $NADPH -> c_thf; cytosol*MM_twosubst(Vm_DHFR, K_dhf_DHFR, K_NADPH_DHFR, c_dhf, NADPH);
+  VcFTD: c_10f -> c_thf; cytosol*MM(Vm_cFTD, K_10f_FTD, c_10f);
+  V_PGT: c_10f + $GAR -> aic + c_thf; cytosol*MM_twosubst(Vm_PGT, K_10f_PGT, K_GAR_PGT, c_10f, GAR);
+  VcFTS: c_thf + c_coo -> c_10f; cytosol*MM_twosubst(Vm_cFTS, K_thf_cFTS, K_coo_cFTS, c_thf, c_coo);
+  VcSHMT: c_ser + c_thf -> c_gly + c_2cf; cytosol*(MM_twosubst(Vf_cSHMT, K_thf_SHMT, K_ser_SHMT, c_thf, c_ser) - MM_twosubst(Vr_cSHMT, K_gly_SHMT, K_2cf_SHMT, c_gly, c_2cf));
+  VcNE: c_thf + $HCHO -> c_2cf; cytosol*(k1_cNE*c_thf*HCHO - k2_cNE*c_2cf);
+  V_TS: $DUMP + c_2cf -> c_dhf; cytosol*MM_twosubst(Vm_TS, K_DUMP_TS, K_2cf_TS, DUMP, c_2cf);
+  V_MTHFR: c_2cf + $NADPH -> c_5mf; (cytosol*MM_twosubst(Vm_MTHFR, K_2cf_MTHFR, K_NADPH_MTHFR, c_2cf, NADPH)*72)/((10 + sam) - sah);
+  VcMTD: c_2cf -> c_1cf + $NADPH; cytosol*(MM(Vf_cMTD, K_2cf_MTD, c_2cf) - MM(Vr_cMTD, K_1cf_MTD, c_1cf));
+  VcMTCH: c_1cf -> c_10f; cytosol*(MM(Vf_cMTCH, K_1cf_MTCH, c_1cf) - MM(Vr_MTCH, K_10f_MTCH, c_10f));
+  V_ART: c_10f + aic -> c_thf; cytosol*MM_twosubst(Vm_ART, K_10f_ART, K_aic_ART, c_10f, aic);
+  V_BHMT: hcy + $BET -> met + dmg; cytosol*exp(-0.0021*(sam + sah))*exp(0.0021*102.6)*MM_twosubst(Vm_BHMT, K_hcy_BHMT, K_bet_BHMT, hcy, BET)*((ssH2O2 + Ki_BHMT)/(H2O2 + Ki_BHMT));
+  V_MATI: met -> sam; cytosol*Vm_MAT1*(met/(Km_MAT1 + met))*(0.23 + 0.8*exp(-0.0026*sam))*((Ki_MAT1 + 66.71)/(Ki_MAT1 + c_gsg));
+  V_MATIII: met -> sam; cytosol*Vm_MAT3*(met^1.21/(Km_MAT3 + met^1.21))*(1 + (7.2*sam^2)/(Ka_MAT3^2 + sam^2))*((Ki_MAT3 + 66.71)/(Ki_MAT3 + c_gsg));
+  V_GNMT: sam + c_gly -> sah + src; cytosol*MM_twosubst(Vm_GNMT, K_sam_GNMT, K_gly_GNMT, sam, c_gly)*(1/(1 + sah/Ki_GNMT))*(4.8/(0.35 + c_5mf));
+  V_DNMT: sam -> sah; cytosol*Vm_DNMT*(sam/(Km_DNMT*(1 + sah/Ki_DNMT) + sam));
+  V_SAHH: sah -> hcy; cytosol*(MM(Vf_SAHH, K_sah_SAHH, sah) - MM(Vr_SAHH, K_hcy_SAHH, hcy));
+  gluconeogenesis_ser: c_ser -> ; cytosol*1.2*c_ser;
+  V_CBS: hcy + c_ser -> cyt; cytosol*MM_twosubst(Vm_CBS, K_hcy_CBS, K_ser_CBS, hcy, c_ser)*(((30/102.59)^2 + 1)/((30/(sam + sah))^2 + 1))*((H2O2 + Ka_CBS)/(ssH2O2 + Ka_CBS));
+  V_CTGL: cyt -> c_cys; cytosol*MM(Vm_CTGL, K_cyt_CTGL, cyt);
+  V_GCS: c_cys + c_glu -> glc; (cytosol*Vm_GCS*(c_cys*c_glu - glc/Ke_GCS))/(K_cys_GCS*K_glu_GCS + c_glu*K_cys_GCS + c_cys*(K_glu_GCS*(1 + c_gsh/Ki_GCS) + c_glu) + glc/Kp_GCS + c_gsh/Ki_GCS)*((H2O2 + Ka_GCS)/(ssH2O2 + Ka_GCS));
+  cys_usage: c_cys -> ; (cytosol*0.35*c_cys^2)/200;
+  c_glu_usage: c_glu -> ; cytosol*0.07*c_glu;
+  V_GS: glc + c_gly -> c_gsh; (cytosol*Vm_GS*(c_gly*glc - c_gsh/Ke_GS))/(K_gly_GS*K_glc_GS + glc*K_gly_GS + c_gly*(K_glc_GS + glc) + c_gsh/Kp_GS);
+  V_GPX: 2c_gsh + $H2O2 -> c_gsg; cytosol*Vm_GPX*(c_gsh/(K_gsh_GPX + c_gsh))^2*(H2O2/(K_H2O2_GPX + H2O2));
+  V_GR: c_gsg + $NADPH -> 2c_gsh; cytosol*MM_twosubst(Vm_GR, K_gsg_GR, K_NADPH_GR, c_gsg, NADPH);
+  c_gsh_degr: c_gsh -> ; cytosol*0.002*c_gsh;
+  c_gsg_degr: c_gsg -> ; cytosol*0.1*c_gsg;
 
   // Species initializations:
   GAR = 10;
@@ -107,13 +107,13 @@ model *Reed2008()
   H2O2 = 0.01;
   CO = 0;
   HCHO = 500;
-  c_thf = Fol / ((2 * 3) / 4) - (c_5mf + c_2cf + c_1cf + c_10f + c_dhf);
+  c_thf = Fol/((2*3)/4) - (c_5mf + c_2cf + c_1cf + c_10f + c_dhf);
   c_5mf = 4.4965335653401;
   c_2cf = 0.506278119133034;
   c_1cf = 0.278602708139276;
   c_10f = 3.40907070478307;
   c_dhf = 0.0385952337473159;
-  m_thf = Fol / ((2 * 1) / 4) - (m_2cf + m_1cf + m_10f);
+  m_thf = Fol/((2*1)/4) - (m_2cf + m_1cf + m_10f);
   m_2cf = 1.66610924423152;
   m_1cf = 1.54929073348709;
   m_10f = 15.9087989350187;

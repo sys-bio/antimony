@@ -6,9 +6,9 @@ model *Rattanakul2003_BoneFormationModel()
   species $x in Compartment_, $y in Compartment_, $z in Compartment_;
 
   // Rate Rules:
-  x' = a1 / (k1 + y) - b1 * x;
-  y' = epsilon * (((a2 + a3 * x) * y * z) / (k2 + x^2) - b2 * y);
-  z' = epsilon * delta * (a4 * x - (b3 * z + (a5 * x * z) / (k3 + x)));
+  x' = a1/(k1 + y) - b1*x;
+  y' = epsilon*(((a2 + a3*x)*y*z)/(k2 + x^2) - b2*y);
+  z' = epsilon*delta*(a4*x - (b3*z + (a5*x*z)/(k3 + x)));
 
   // Species initializations:
   x = 2;

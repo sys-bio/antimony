@@ -8,36 +8,36 @@ model *lei2001()
   species $S_f in env;
 
   // Assignment Rules:
-  a := x * X_a;
-  AcDH := x * X_AcDH;
-  qO2 := (1000 / 32 * ((0.178 * r1 + 0.908 * r2 + 0.363 * r4 + 1.066 * r5) - 0.363 * r6 + 0.063 * r7 + 0.214 * r8)) / (x * env);
-  qCO2 := (1000 / 44.01 * (1.499 * r2 + 0.5 * r3 + 1.466 * r5 + 0.127 * r7 + 0.325 * r8)) / (x * env);
+  a := x*X_a;
+  AcDH := x*X_AcDH;
+  qO2 := (1000/32*((0.178*r1 + 0.908*r2 + 0.363*r4 + 1.066*r5) - 0.363*r6 + 0.063*r7 + 0.214*r8))/(x*env);
+  qCO2 := (1000/44.01*(1.499*r2 + 0.5*r3 + 1.466*r5 + 0.127*r7 + 0.325*r8))/(x*env);
 
   // Rate Rules:
-  X_a' = ((0.732 * r7 + 0.619 * r8) * (1 - X_a) - r9 - r10) / (x * env);
-  X_AcDH' = (r9 - r11 - (0.732 * r7 + 0.619 * r8) * X_AcDH) / (x * env);
+  X_a' = ((0.732*r7 + 0.619*r8)*(1 - X_a) - r9 - r10)/(x*env);
+  X_AcDH' = (r9 - r11 - (0.732*r7 + 0.619*r8)*X_AcDH)/(x*env);
 
   // Reactions:
-  r1: s_glu => 0.978s_pyr + 0.178$Red; ((k_1l * s_glu) / (s_glu + K_1l) + (k_1h * s_glu) / (s_glu + K_1h) + (k_1e * s_acetald * s_glu) / (s_glu * (K_1i * s_acetald + 1) + K_1e)) * x * X_a * env;
-  r2: s_pyr => 1.499$CO2 + 0.908$Red; (k_2 * s_pyr) / ((s_pyr + K_2) * (K_2i * s_glu + 1)) * x * X_a * env;
-  r4: s_acetald => 1.363s_acetate + 0.363$Red; (k_4 * s_acetald) / (s_acetald + K_4) * x * X_a * X_AcDH * env;
-  r5: s_acetate => 1.446$CO2 + 1.066$Red; ((k_5 * s_acetate) / (s_acetate + K_5) + (k_5e * s_acetate) / ((s_acetate + K_5e) * (1 + K_5i * s_glu))) * x * X_a * env;
-  r6: s_acetald + 0.363$Red -> 1.045s_EtOH; (k_6 * (s_acetald - k_6r * s_EtOH)) / (s_acetald + K_6 + K_6e * s_EtOH) * x * X_a * env;
-  r7: s_glu => 0.732x + 0.127$CO2 + 0.063$Red; (k_7 * s_glu) / (s_glu + K_7) * x * X_a * env;
-  r8: s_acetate => 0.619x + 0.325$CO2 + 0.214$Red; (k_8 * s_acetate) / ((s_acetate + K_5e) * (1 + K_5i * s_glu)) * x * X_a * env;
-  r3: s_pyr => 0.5s_acetald + 0.33$CO2; (k_3 * s_pyr^4) / (s_pyr^4 + K_3) * x * X_a * env;
-  r9: $a => $AcDH; (((k_9 * s_glu) / (s_glu + K_9) + (k_9e * s_EtOH) / (s_EtOH + K_9e)) / (K_9i * s_glu + 1) + (k_9c * s_glu) / (s_glu + K_9)) * X_a * x * env;
-  r10: $a => ; ((k_10 * s_glu) / (s_glu + K_10) + (k_10e * s_EtOH) / (s_EtOH + K_10e)) * X_a * x * env;
-  r11: $AcDH => ; k_11 * X_AcDH * x * env;
-  s_glu_in: $S_f => s_glu; S_f * D * env;
-  s_glu_out: s_glu => ; s_glu * D * env;
-  s_pyr_out: s_pyr => ; s_pyr * D * env;
-  s_acetate_out: s_acetate => ; s_acetate * D * env;
-  s_acetald_out: s_acetald => ; s_acetald * D * env;
-  s_EtOH_out: s_EtOH => ; s_EtOH * D * env;
-  a_out: $a => ; a * D * env;
-  x_out: x => ; x * D * env;
-  AcDH_out: $AcDH => ; AcDH * D * env;
+  r1: s_glu => 0.978s_pyr + 0.178$Red; ((k_1l*s_glu)/(s_glu + K_1l) + (k_1h*s_glu)/(s_glu + K_1h) + (k_1e*s_acetald*s_glu)/(s_glu*(K_1i*s_acetald + 1) + K_1e))*x*X_a*env;
+  r2: s_pyr => 1.499$CO2 + 0.908$Red; (k_2*s_pyr)/((s_pyr + K_2)*(K_2i*s_glu + 1))*x*X_a*env;
+  r4: s_acetald => 1.363s_acetate + 0.363$Red; (k_4*s_acetald)/(s_acetald + K_4)*x*X_a*X_AcDH*env;
+  r5: s_acetate => 1.446$CO2 + 1.066$Red; ((k_5*s_acetate)/(s_acetate + K_5) + (k_5e*s_acetate)/((s_acetate + K_5e)*(1 + K_5i*s_glu)))*x*X_a*env;
+  r6: s_acetald + 0.363$Red -> 1.045s_EtOH; (k_6*(s_acetald - k_6r*s_EtOH))/(s_acetald + K_6 + K_6e*s_EtOH)*x*X_a*env;
+  r7: s_glu => 0.732x + 0.127$CO2 + 0.063$Red; (k_7*s_glu)/(s_glu + K_7)*x*X_a*env;
+  r8: s_acetate => 0.619x + 0.325$CO2 + 0.214$Red; (k_8*s_acetate)/((s_acetate + K_5e)*(1 + K_5i*s_glu))*x*X_a*env;
+  r3: s_pyr => 0.5s_acetald + 0.33$CO2; (k_3*s_pyr^4)/(s_pyr^4 + K_3)*x*X_a*env;
+  r9: $a => $AcDH; (((k_9*s_glu)/(s_glu + K_9) + (k_9e*s_EtOH)/(s_EtOH + K_9e))/(K_9i*s_glu + 1) + (k_9c*s_glu)/(s_glu + K_9))*X_a*x*env;
+  r10: $a => ; ((k_10*s_glu)/(s_glu + K_10) + (k_10e*s_EtOH)/(s_EtOH + K_10e))*X_a*x*env;
+  r11: $AcDH => ; k_11*X_AcDH*x*env;
+  s_glu_in: $S_f => s_glu; S_f*D*env;
+  s_glu_out: s_glu => ; s_glu*D*env;
+  s_pyr_out: s_pyr => ; s_pyr*D*env;
+  s_acetate_out: s_acetate => ; s_acetate*D*env;
+  s_acetald_out: s_acetald => ; s_acetald*D*env;
+  s_EtOH_out: s_EtOH => ; s_EtOH*D*env;
+  a_out: $a => ; a*D*env;
+  x_out: x => ; x*D*env;
+  AcDH_out: $AcDH => ; AcDH*D*env;
 
   // Species initializations:
   s_glu = 15;

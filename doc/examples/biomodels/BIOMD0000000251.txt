@@ -12,15 +12,15 @@ model *Nakakuki2010_CellFateDecision_Core()
   ppERKc := x1 - x2;
 
   // Reactions:
-  reaction_1:  => x1; compartment_ * (-x1 / tau1 + (K1 * L) / tau1);
-  reaction_2:  => x2; compartment_ * (-x2 / tau2 + (K2 * L) / tau2);
-  reaction_3:  => ppERKn; compartment_ * (reaction_3_k1 * ppERKc - reaction_3_k2 * ppERKn - reaction_3_k3 * DUSP * ppERKn);
-  reaction_4:  => DUSP; compartment_ * reaction_4_k * ppERKn;
-  reaction_5:  => pRSKn; compartment_ * (reaction_5_k4 * ppERKn - reaction_5_k5 * pRSKn);
-  reaction_6:  => cFOSp; compartment_ * ((ppERKn * pRSKn)^reaction_6_n / (reaction_6_k6^reaction_6_n + (ppERKn * pRSKn)^reaction_6_n) - k7 * cFOSp);
-  reaction_7:  => cFOSm; compartment_ * (k7 * cFOSp - reaction_7_k8 * cFOSm);
-  reaction_8:  => cFOS; compartment_ * (reaction_8_k9 * cFOSm - reaction_8_k10 * cFOS - k11 * cFOS * ppERKc + k13 * pcFOS);
-  reaction_9:  => pcFOS; compartment_ * (k11 * cFOS * ppERKc - reaction_9_k12 * pcFOS - k13 * pcFOS);
+  reaction_1:  => x1; compartment_*(-x1/tau1 + (K1*L)/tau1);
+  reaction_2:  => x2; compartment_*(-x2/tau2 + (K2*L)/tau2);
+  reaction_3:  => ppERKn; compartment_*(reaction_3_k1*ppERKc - reaction_3_k2*ppERKn - reaction_3_k3*DUSP*ppERKn);
+  reaction_4:  => DUSP; compartment_*reaction_4_k*ppERKn;
+  reaction_5:  => pRSKn; compartment_*(reaction_5_k4*ppERKn - reaction_5_k5*pRSKn);
+  reaction_6:  => cFOSp; compartment_*((ppERKn*pRSKn)^reaction_6_n/(reaction_6_k6^reaction_6_n + (ppERKn*pRSKn)^reaction_6_n) - k7*cFOSp);
+  reaction_7:  => cFOSm; compartment_*(k7*cFOSp - reaction_7_k8*cFOSm);
+  reaction_8:  => cFOS; compartment_*(reaction_8_k9*cFOSm - reaction_8_k10*cFOS - k11*cFOS*ppERKc + k13*pcFOS);
+  reaction_9:  => pcFOS; compartment_*(k11*cFOS*ppERKc - reaction_9_k12*pcFOS - k13*pcFOS);
 
   // Species initializations:
   x1 = 0;

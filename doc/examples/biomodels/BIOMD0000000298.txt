@@ -11,16 +11,16 @@ model *Leloup1999_CircadianRhythms_Drosophila()
   Pt := P0 + P1 + P2 + C + CN;
 
   // Rate Rules:
-  MP' = vsP * (KIP^n / (KIP^n + CN^n)) - (vmP * (MP / (KmP + MP)) + kd * MP);
-  CN' = k1 * C - (k2 * CN + kdN * CN);
-  C' = (k3 * P2 * T2 + k2 * CN) - (k4 * C + k1 * C + kdC * C);
-  P2' = (V3P * (P1 / (K3P + P1)) + k4 * C) - (V4P * (P2 / (K4P + P2)) + k3 * P2 * T2 + vdP * (P2 / (KdP + P2)) + kd * P2);
-  T2' = (V3T * (T1 / (K3T + T1)) + k4 * C) - (V4T * (T2 / (K4T + T2)) + k3 * P2 * T2 + vdT * (T2 / (KdT + T2)) + kd * T2);
-  T1' = (V1T * (T0 / (K1T + T0)) + V4T * (T2 / (K4T + T2))) - (V2T * (T1 / (K2T + T1)) + V3T * (T1 / (K3T + T1)) + kd * T1);
-  T0' = (ksT * MT + V2T * (T1 / (K2T + T1))) - (V1T * (T0 / (K1T + T0)) + kd * T0);
-  MT' = vsT * (KIT^n / (KIT^n + CN^n)) - (vmT * (MT / (KmT + MT)) + kd * MT);
-  P0' = (ksP * MP + V2P * (P1 / (K2P + P1))) - (V1P * (P0 / (K1P + P0)) + kd * P0);
-  P1' = (V1P * (P0 / (K1P + P0)) + V4P * (P2 / (K4P + P2))) - (V2P * (P1 / (K2P + P1)) + V3P * (P1 / (K3P + P1)) + kd * P1);
+  MP' = vsP*(KIP^n/(KIP^n + CN^n)) - (vmP*(MP/(KmP + MP)) + kd*MP);
+  CN' = k1*C - (k2*CN + kdN*CN);
+  C' = (k3*P2*T2 + k2*CN) - (k4*C + k1*C + kdC*C);
+  P2' = (V3P*(P1/(K3P + P1)) + k4*C) - (V4P*(P2/(K4P + P2)) + k3*P2*T2 + vdP*(P2/(KdP + P2)) + kd*P2);
+  T2' = (V3T*(T1/(K3T + T1)) + k4*C) - (V4T*(T2/(K4T + T2)) + k3*P2*T2 + vdT*(T2/(KdT + T2)) + kd*T2);
+  T1' = (V1T*(T0/(K1T + T0)) + V4T*(T2/(K4T + T2))) - (V2T*(T1/(K2T + T1)) + V3T*(T1/(K3T + T1)) + kd*T1);
+  T0' = (ksT*MT + V2T*(T1/(K2T + T1))) - (V1T*(T0/(K1T + T0)) + kd*T0);
+  MT' = vsT*(KIT^n/(KIT^n + CN^n)) - (vmT*(MT/(KmT + MT)) + kd*MT);
+  P0' = (ksP*MP + V2P*(P1/(K2P + P1))) - (V1P*(P0/(K1P + P0)) + kd*P0);
+  P1' = (V1P*(P0/(K1P + P0)) + V4P*(P2/(K4P + P2))) - (V2P*(P1/(K2P + P1)) + V3P*(P1/(K3P + P1)) + kd*P1);
 
   // Species initializations:
   MP = 0.0614368;

@@ -6,18 +6,18 @@ model *Lemaire2004_BoneRemodeling_RANKRANKLOPGpathway()
   species $R in Compartment_, $B in Compartment_, $C in Compartment_;
 
   // Assignment Rules:
-  Phi_C := (C + f0 * C_s) / (C + C_s);
-  D_B := f0 * d_B;
-  Phi_L := (k3 / k4 * K_L_P * Phi_P * B) / (1 + (k3 * K) / k4 + k1 / (k2 * kO) * (I_O + (K_O_P * R) / Phi_P)) * (1 + I_L / r_L);
-  Phi_P := (Pbar + P_O) / (Pbar + P_S);
-  Pbar := I_P / k_P;
-  P_O := S_P / k_P;
-  P_S := k6 / k5;
+  Phi_C := (C + f0*C_s)/(C + C_s);
+  D_B := f0*d_B;
+  Phi_L := (k3/k4*K_L_P*Phi_P*B)/(1 + (k3*K)/k4 + k1/(k2*kO)*(I_O + (K_O_P*R)/Phi_P))*(1 + I_L/r_L);
+  Phi_P := (Pbar + P_O)/(Pbar + P_S);
+  Pbar := I_P/k_P;
+  P_O := S_P/k_P;
+  P_S := k6/k5;
 
   // Rate Rules:
-  R' = D_R * Phi_C - (D_B * R) / Phi_C;
-  B' = (D_B * R) / Phi_C - k_B * B;
-  C' = D_C * Phi_L - D_A * Phi_C * C;
+  R' = D_R*Phi_C - (D_B*R)/Phi_C;
+  B' = (D_B*R)/Phi_C - k_B*B;
+  C' = D_C*Phi_L - D_A*Phi_C*C;
 
   // Species initializations:
   R = 0.0007734;

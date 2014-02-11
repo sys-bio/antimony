@@ -6,16 +6,16 @@ model *Tham2008_PDmodel_TumourShrinkage()
   species $Ce in COMpartment_;
 
   // Assignment Rules:
-  Exposure := piecewise(Dose, time < Cycle_Int * N_Cycle && Dose_Int1 < rem_time && rem_time < Dose_Length, Dose, time < Cycle_Int * N_Cycle && Dose_Int2 < rem_time && rem_time < Dose_Int2 + Dose_Length, 0);
-  Keq := ln(2) / Teq;
-  rem_time := (time * conversion_factor - floor((time * conversion_factor) / (Cycle_Int * conversion_factor)) * Cycle_Int * conversion_factor) / conversion_factor;
-  RateIn := Size_0 * Kover;
-  Effect := 1 - Ce / (AE50 + Ce);
-  Kover := 1 / T_Turnover;
+  Exposure := piecewise(Dose, time < Cycle_Int*N_Cycle && Dose_Int1 < rem_time && rem_time < Dose_Length, Dose, time < Cycle_Int*N_Cycle && Dose_Int2 < rem_time && rem_time < Dose_Int2 + Dose_Length, 0);
+  Keq := ln(2)/Teq;
+  rem_time := (time*conversion_factor - floor((time*conversion_factor)/(Cycle_Int*conversion_factor))*Cycle_Int*conversion_factor)/conversion_factor;
+  RateIn := Size_0*Kover;
+  Effect := 1 - Ce/(AE50 + Ce);
+  Kover := 1/T_Turnover;
 
   // Rate Rules:
-  Ce' = Exposure / 1 - Ce * Keq;
-  Size' = (RateIn * Effect - Kover * Size) * Size;
+  Ce' = Exposure/1 - Ce*Keq;
+  Size' = (RateIn*Effect - Kover*Size)*Size;
 
   // Species initializations:
   Ce = 0;

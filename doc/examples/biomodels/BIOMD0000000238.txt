@@ -5,35 +5,35 @@ model *Overgaard2007_PDmodel_IL21()
   compartment COMpartment_;
 
   // Assignment Rules:
-  M_c := piecewise(M_night, tprime / 3600 >= t_night && tprime / 3600 < t_day, M_day);
-  k := kb + kinc * (T - T_b * (1 + pEtot * BR)) + f2_drug;
-  f_prime := delta_high_dose * (1 + exp(-alpha * (time - (tdose1 + t_prime))))^-1;
-  E_slow := AMT_dose * pEs2 * (gNsTs1 + gNsTs2 + gNsTs3);
-  E_fast := pEf2 * (gNfTf1 + gNfTf2 + gNfTf3);
-  gNsTs1 := piecewise(Ks^Ns / 6 * exp(-Ks * X1) * X1^(Ns - 1), X1 > 0, 0);
-  gNsTs2 := piecewise(Ks^Ns / 6 * exp(-Ks * X2) * X2^(Ns - 1), X2 > 0, 0);
-  gNsTs3 := piecewise(Ks^Ns / 6 * exp(-Ks * X3) * X3^(Ns - 1), X3 > 0, 0);
-  gNfTf1 := piecewise(Kf^Nf / 6 * exp(-Kf * X1) * X1^(Nf - 1), X1 > 0, 0);
-  gNfTf2 := piecewise(Kf^Nf / 6 * exp(-Kf * X2) * X2^(Nf - 1), X2 > 0, 0);
-  gNfTf3 := piecewise(Kf^Nf / 6 * exp(-Kf * X3) * X3^(Nf - 1), X3 > 0, 0);
-  M_night := (1 - f_prime) * M_night_baseline + f_prime * M_day;
-  tprime := time * 3600 * 1 - floor((time * 3600 * 1) / day_length) * day_length;
-  M_day := (kb + kinc * (T_day - T_b)) * (T_day - T_a);
-  kb := M_b / (T_b - T_a);
+  M_c := piecewise(M_night, tprime/3600 >= t_night && tprime/3600 < t_day, M_day);
+  k := kb + kinc*(T - T_b*(1 + pEtot*BR)) + f2_drug;
+  f_prime := delta_high_dose*(1 + exp(-alpha*(time - (tdose1 + t_prime))))^-1;
+  E_slow := AMT_dose*pEs2*(gNsTs1 + gNsTs2 + gNsTs3);
+  E_fast := pEf2*(gNfTf1 + gNfTf2 + gNfTf3);
+  gNsTs1 := piecewise(Ks^Ns/6*exp(-Ks*X1)*X1^(Ns - 1), X1 > 0, 0);
+  gNsTs2 := piecewise(Ks^Ns/6*exp(-Ks*X2)*X2^(Ns - 1), X2 > 0, 0);
+  gNsTs3 := piecewise(Ks^Ns/6*exp(-Ks*X3)*X3^(Ns - 1), X3 > 0, 0);
+  gNfTf1 := piecewise(Kf^Nf/6*exp(-Kf*X1)*X1^(Nf - 1), X1 > 0, 0);
+  gNfTf2 := piecewise(Kf^Nf/6*exp(-Kf*X2)*X2^(Nf - 1), X2 > 0, 0);
+  gNfTf3 := piecewise(Kf^Nf/6*exp(-Kf*X3)*X3^(Nf - 1), X3 > 0, 0);
+  M_night := (1 - f_prime)*M_night_baseline + f_prime*M_day;
+  tprime := time*3600*1 - floor((time*3600*1)/day_length)*day_length;
+  M_day := (kb + kinc*(T_day - T_b))*(T_day - T_a);
+  kb := M_b/(T_b - T_a);
   f2_drug := 0;
-  T_day := T_b + delta_T / 2;
-  T_night := T_b - delta_T / 2;
-  M_night_baseline := (kb + kinc * (T_night - T_b)) * (T_night - T_a);
-  Ks := Ns / Ts;
-  X1 := (time - tdose1) / 24;
-  X2 := (time - tdose2) / 24;
-  X3 := (time - tdose3) / 24;
-  Kf := Nf / Tf;
+  T_day := T_b + delta_T/2;
+  T_night := T_b - delta_T/2;
+  M_night_baseline := (kb + kinc*(T_night - T_b))*(T_night - T_a);
+  Ks := Ns/Ts;
+  X1 := (time - tdose1)/24;
+  X2 := (time - tdose2)/24;
+  X3 := (time - tdose3)/24;
+  Kf := Nf/Tf;
 
   // Rate Rules:
-  M' = -km * (M - M_c);
-  T' = c^-1 * (M - k * (T - T_a));
-  BR' = f_prime * (E_slow + E_fast) * (1 - BR) - kR * BR;
+  M' = -km*(M - M_c);
+  T' = c^-1*(M - k*(T - T_a));
+  BR' = f_prime*(E_slow + E_fast)*(1 - BR) - kR*BR;
 
   // Compartment initializations:
   COMpartment_ = 1;

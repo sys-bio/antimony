@@ -8,14 +8,14 @@ model *Komarova2005_PTHaction_OsteoclastOsteoblastCoupling()
   // Assignment Rules:
   y2 := piecewise(x2 - x2_bar, x2 > x2_bar, 0);
   y1 := piecewise(x1 - x1_bar, x1 > x1_bar, 0);
-  x1_bar := (beta1 / alpha1)^((1 - g22) / gamma) * (beta2 / alpha2)^(g21 / gamma);
-  x2_bar := (beta1 / alpha1)^(g12 / gamma) * (beta2 / alpha2)^((1 - g11) / gamma);
-  gamma := g12 * g21 - (1 - g11) * (1 - g22);
+  x1_bar := (beta1/alpha1)^((1 - g22)/gamma)*(beta2/alpha2)^(g21/gamma);
+  x2_bar := (beta1/alpha1)^(g12/gamma)*(beta2/alpha2)^((1 - g11)/gamma);
+  gamma := g12*g21 - (1 - g11)*(1 - g22);
 
   // Rate Rules:
-  x1' = alpha1 * x1^g11 * x2^g21 - beta1 * x1;
-  x2' = alpha2 * x1^g12 * x2^g22 - beta2 * x2;
-  z' = k2 * y2 - k1 * y1;
+  x1' = alpha1*x1^g11*x2^g21 - beta1*x1;
+  x2' = alpha2*x1^g12*x2^g22 - beta2*x2;
+  z' = k2*y2 - k1*y1;
 
   // Species initializations:
   x1 = 1.06066;
