@@ -11,10 +11,10 @@ model *Smolen2002()
   dClkF_tau2 := piecewise(0, delay(dClk, tau2) - delay(Per, tau2) < 0, delay(dClk, tau2) - delay(Per, tau2));
 
   // Reactions:
-  rPer: $EmptySet => Per; Vsp * (dClkF_tau1 / (K1 + dClkF_tau1)) * CELL;
-  rdClk: $EmptySet => dClk; CELL * Vsc * (K2 / (K2 + dClkF_tau2));
-  rPerD: Per => $EmptySet; kdc * Per * CELL;
-  rdClkD: dClk => $EmptySet; kdp * dClk * CELL;
+  rPer: $EmptySet => Per; Vsp*(dClkF_tau1/(K1 + dClkF_tau1))*CELL;
+  rdClk: $EmptySet => dClk; CELL*Vsc*(K2/(K2 + dClkF_tau2));
+  rPerD: Per => $EmptySet; kdc*Per*CELL;
+  rdClkD: dClk => $EmptySet; kdp*dClk*CELL;
 
   // Species initializations:
   EmptySet = 0;

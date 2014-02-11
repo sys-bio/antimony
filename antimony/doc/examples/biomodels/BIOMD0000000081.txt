@@ -11,32 +11,32 @@ model *Suh2004_KCNQ_regulation()
   species GGTPgSMg_M in M, GGDP_M in M;
 
   // Assignment Rules:
-  GTP_C := 100 - 50 * exp(-(0.00833333333333333 * (290 + time)));
-  MgSat20 := 1 * (1 / (1 + 20 * (1 / Mg2_C)));
-  ATPSat300 := 1 * (1 / (1 + 300 * (1 / (0.5 + ATP_C))));
-  MgSat10 := 0.2 + 0.8 * 1 * (1 / (1 + KMgGTPase * (1 / Mg2_C)));
-  OxoSat := 1 * (1 / (1 + Koxom * (1 / (1.000000e-005 + oxoM_EX))));
+  GTP_C := 100 - 50*exp(-(0.00833333333333333*(290 + time)));
+  MgSat20 := 1*(1/(1 + 20*(1/Mg2_C)));
+  ATPSat300 := 1*(1/(1 + 300*(1/(0.5 + ATP_C))));
+  MgSat10 := 0.2 + 0.8*1*(1/(1 + KMgGTPase*(1/Mg2_C)));
+  OxoSat := 1*(1/(1 + Koxom*(1/(1.000000e-005 + oxoM_EX))));
   Gactive := GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M;
-  ATPSat1000 := 1 * (1 / (1 + 1000 * (1 / (0.5 + ATP_C))));
-  I_KCNQ := 1.33 * (0.025 * PIP2xKCNQ_M)^nHill;
-  fGactive := (GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M) / 200;
+  ATPSat1000 := 1*(1/(1 + 1000*(1/(0.5 + ATP_C))));
+  I_KCNQ := 1.33*(0.025*PIP2xKCNQ_M)^nHill;
+  fGactive := (GGTPMg_M + GGTPgSMg_M + GGDPAlF4Mg_M)/200;
 
   // Reactions:
-  PIP5kinase: 0.0009967ATP_C + PIP_M -> PIP2_M; (0.2 + 0.8 * MgSat20) * PIP5kinase_kPIP5Kinase * PIP_M * ATPSat300;
-  IP3Phosphatase: 1.66611e-018ip3_C -> ; ip3_C * IP3Phosphatase_kIP3ase * Cytoplasm * NA_micro;
-  PIP2binding: KCNQsites_M + PIP2_M -> PIP2xKCNQ_M; (PIP2binding_kPIP2on * KCNQsites_M * PIP2_M + -(PIP2binding_kPIP2off * PIP2xKCNQ_M)) * M;
-  MgonGGTPgS: GGTPgS_M -> GGTPgSMg_M; MgonGGTPgS_kMg2onGTPgS * GGTPgS_M * Mg2_C * M;
-  GGTPase: GGTPMg_M -> GGDP_M; GGTPase_kGGTPase * MgSat10 * GGTPMg_M * M;
-  GTPon: G_M -> GGTP_M; (GTPon_kGTPon * G_M * GTP_C + -(GTPon_kGTPoff * GGTP_M)) * M;
-  GTPgSon: 0.0009967GTPgS_C + G_M -> GGTPgS_M; (GTPgSon_kGTPgSon * G_M * GTPgS_C + -(GTPgSon_kGTPgSoff * GGTPgS_M)) * M;
-  GDPbSon: G_M + 0.0009967GDPbS_C -> GGDPbS_M; (GDPbSon_kGDPbSon * G_M * GDPbS_C + -(GDPbSon_kGGDPbSoff * (1 + 20 * OxoSat) * GGDPbS_M)) * M;
-  MgGTPon: GGTP_M -> GGTPMg_M; MgGTPon_kMg2onGTP * GGTP_M * Mg2_C * M;
-  GDPdissoc: GGDP_M -> 0.0009967GDP_C + G_M; (GDPdissoc_kGDPoff * GGDP_M * (OxoSat + GDPdissoc_TonicAct) + -(GDPdissoc_kGDPon * GDP_C * G_M)) * M;
-  PIP2_5Pase: PIP2_M -> PIP_M; MgSat20 * PIP2_5Pase_kPIP2Pase * PIP2_M * M;
-  PLC: PIP2_M -> 0.0009967ip3_C; PLC_kPLC * (fGactive + PLC_PLCspont) * PIP2_M * M;
-  AlF4on: 0.0009967AlF4_C + GGDP_M -> GGDPAlF4_M; (AlF4on_kAlF4on * AlF4_C * GGDP_M + -(AlF4on_kAlF4off * GGDPAlF4_M)) * M;
-  PI4Kinase: 0.0009967ATP_C + PI_M -> PIP_M; (0.2 + 0.8 * MgSat20) * PI4Kinase_kPI4Kinase * PI_M * ATPSat1000 * M;
-  MgonGDPAlF4: GGDPAlF4_M -> GGDPAlF4Mg_M; MgonGDPAlF4_kMgonAlF4 * GGDPAlF4_M * Mg2_C * M;
+  PIP5kinase: 0.0009967ATP_C + PIP_M -> PIP2_M; (0.2 + 0.8*MgSat20)*PIP5kinase_kPIP5Kinase*PIP_M*ATPSat300;
+  IP3Phosphatase: 1.66611e-018ip3_C -> ; ip3_C*IP3Phosphatase_kIP3ase*Cytoplasm*NA_micro;
+  PIP2binding: KCNQsites_M + PIP2_M -> PIP2xKCNQ_M; (PIP2binding_kPIP2on*KCNQsites_M*PIP2_M + -(PIP2binding_kPIP2off*PIP2xKCNQ_M))*M;
+  MgonGGTPgS: GGTPgS_M -> GGTPgSMg_M; MgonGGTPgS_kMg2onGTPgS*GGTPgS_M*Mg2_C*M;
+  GGTPase: GGTPMg_M -> GGDP_M; GGTPase_kGGTPase*MgSat10*GGTPMg_M*M;
+  GTPon: G_M -> GGTP_M; (GTPon_kGTPon*G_M*GTP_C + -(GTPon_kGTPoff*GGTP_M))*M;
+  GTPgSon: 0.0009967GTPgS_C + G_M -> GGTPgS_M; (GTPgSon_kGTPgSon*G_M*GTPgS_C + -(GTPgSon_kGTPgSoff*GGTPgS_M))*M;
+  GDPbSon: G_M + 0.0009967GDPbS_C -> GGDPbS_M; (GDPbSon_kGDPbSon*G_M*GDPbS_C + -(GDPbSon_kGGDPbSoff*(1 + 20*OxoSat)*GGDPbS_M))*M;
+  MgGTPon: GGTP_M -> GGTPMg_M; MgGTPon_kMg2onGTP*GGTP_M*Mg2_C*M;
+  GDPdissoc: GGDP_M -> 0.0009967GDP_C + G_M; (GDPdissoc_kGDPoff*GGDP_M*(OxoSat + GDPdissoc_TonicAct) + -(GDPdissoc_kGDPon*GDP_C*G_M))*M;
+  PIP2_5Pase: PIP2_M -> PIP_M; MgSat20*PIP2_5Pase_kPIP2Pase*PIP2_M*M;
+  PLC: PIP2_M -> 0.0009967ip3_C; PLC_kPLC*(fGactive + PLC_PLCspont)*PIP2_M*M;
+  AlF4on: 0.0009967AlF4_C + GGDP_M -> GGDPAlF4_M; (AlF4on_kAlF4on*AlF4_C*GGDP_M + -(AlF4on_kAlF4off*GGDPAlF4_M))*M;
+  PI4Kinase: 0.0009967ATP_C + PI_M -> PIP_M; (0.2 + 0.8*MgSat20)*PI4Kinase_kPI4Kinase*PI_M*ATPSat1000*M;
+  MgonGDPAlF4: GGDPAlF4_M -> GGDPAlF4Mg_M; MgonGDPAlF4_kMgonAlF4*GGDPAlF4_M*Mg2_C*M;
 
   // Events:
   event_0000001: at time >= 3: oxoM_EX = 10;

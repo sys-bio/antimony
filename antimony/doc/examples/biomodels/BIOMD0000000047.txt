@@ -6,17 +6,17 @@ model *Oxhamre_Bacteria_induced_Ca_oscillations()
   species CaER in Endoplasmic_Reticulum, Ca_Cyt in Cytosol;
 
   // Assignment Rules:
-  n := n0 * (exp(-kbN * time) + kappa * (1 - exp(-kbN * time)));
-  p1 := p11 + (p12 * n) / (K1 + n);
-  p2 := Ca_Cyt / (K2 + Ca_Cyt);
+  n := n0*(exp(-kbN*time) + kappa*(1 - exp(-kbN*time)));
+  p1 := p11 + (p12*n)/(K1 + n);
+  p2 := Ca_Cyt/(K2 + Ca_Cyt);
 
   // Rate Rules:
-  p3' = -(k31 * Ca_Cyt * p3) + k31 * K3 * (1 - p3);
+  p3' = -(k31*Ca_Cyt*p3) + k31*K3*(1 - p3);
 
   // Reactions:
-  Jch: CaER => Ca_Cyt; Jch_Fch_0 * p1 * p2 * p3;
+  Jch: CaER => Ca_Cyt; Jch_Fch_0*p1*p2*p3;
   Jleak: CaER => Ca_Cyt; Jleak_Fleak;
-  Jpump: Ca_Cyt => CaER; (Jpump_Fpump_0 * Ca_Cyt) / (Jpump_Kpump + Ca_Cyt);
+  Jpump: Ca_Cyt => CaER; (Jpump_Fpump_0*Ca_Cyt)/(Jpump_Kpump + Ca_Cyt);
 
   // Species initializations:
   CaER = 0;

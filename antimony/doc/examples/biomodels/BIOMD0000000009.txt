@@ -13,32 +13,32 @@ model *BIOMD0000000009()
   species $KK_PP_norm in compartment_, $KKK_P_norm in compartment_, $rel_K_PP_max in compartment_;
 
   // Assignment Rules:
-  K_PP_norm := (PP_K + KPase_PP_K) / (PP_K + P_K + K + PP_KK_K + PP_KK_P_K + KPase_PP_K + KPase_P_K);
-  KK_PP_norm := (PP_KK + PP_KK_K + PP_KK_P_K + KKPase_PP_KK) / (PP_KK + P_KK + KK + PP_KK_K + PP_KK_P_K + P_KKK_KK + P_KKK_P_KK + KKPase_PP_KK + KKPase_P_KK);
-  KKK_P_norm := (P_KKK + P_KKK_KK + P_KKK_P_KK) / (KKK + P_KKK + P_KKK_KK + P_KKK_P_KK);
-  rel_K_PP_max := K_PP_norm / K_PP_norm_max;
+  K_PP_norm := (PP_K + KPase_PP_K)/(PP_K + P_K + K + PP_KK_K + PP_KK_P_K + KPase_PP_K + KPase_P_K);
+  KK_PP_norm := (PP_KK + PP_KK_K + PP_KK_P_K + KKPase_PP_KK)/(PP_KK + P_KK + KK + PP_KK_K + PP_KK_P_K + P_KKK_KK + P_KKK_P_KK + KKPase_PP_KK + KKPase_P_KK);
+  KKK_P_norm := (P_KKK + P_KKK_KK + P_KKK_P_KK)/(KKK + P_KKK + P_KKK_KK + P_KKK_P_KK);
+  rel_K_PP_max := K_PP_norm/K_PP_norm_max;
 
   // Reactions:
-  r1a: KKK + E1 -> E1_KKK; compartment_ * (r1a_a1 * E1 * KKK - r1a_d1 * E1_KKK);
-  r1b: E1_KKK => E1 + P_KKK; compartment_ * r1b_k2 * E1_KKK;
-  r2a: P_KKK + E2 -> E2_P_KKK; compartment_ * (r2a_a2 * E2 * P_KKK - r2a_d2 * E2_P_KKK);
-  r2b: E2_P_KKK => E2 + KKK; compartment_ * r2b_k2 * E2_P_KKK;
-  r3a: KK + P_KKK -> P_KKK_KK; compartment_ * (r3a_a3 * KK * P_KKK - r3a_d3 * P_KKK_KK);
-  r3b: P_KKK_KK => P_KK + P_KKK; compartment_ * r3b_k3 * P_KKK_KK;
-  r4a: P_KK + KKPase -> KKPase_P_KK; compartment_ * (r4a_a4 * P_KK * KKPase - r4a_d4 * KKPase_P_KK);
-  r4b: KKPase_P_KK => KK + KKPase; compartment_ * r4b_k4 * KKPase_P_KK;
-  r5a: P_KK + P_KKK -> P_KKK_P_KK; compartment_ * (r5a_a5 * P_KK * P_KKK - r5a_d5 * P_KKK_P_KK);
-  r5b: P_KKK_P_KK => PP_KK + P_KKK; compartment_ * r5b_k5 * P_KKK_P_KK;
-  r6a: PP_KK + KKPase -> KKPase_PP_KK; compartment_ * (r6a_a6 * PP_KK * KKPase - r6a_d6 * KKPase_PP_KK);
-  r6b: KKPase_PP_KK => P_KK + KKPase; compartment_ * r6b_k6 * KKPase_PP_KK;
-  r7a: K + PP_KK -> PP_KK_K; compartment_ * (r7a_a7 * K * PP_KK - r7a_d7 * PP_KK_K);
-  r7b: PP_KK_K => P_K + PP_KK; compartment_ * r7b_k7 * PP_KK_K;
-  r8a: P_K + KPase -> KPase_P_K; compartment_ * (r8a_a8 * P_K * KPase - r8a_d8 * KPase_P_K);
-  r8b: KPase_P_K => K + KPase; compartment_ * r8b_k8 * KPase_P_K;
-  r9a: P_K + PP_KK -> PP_KK_P_K; compartment_ * (r9a_a9 * P_K * PP_KK - r9a_d9 * PP_KK_P_K);
-  r9b: PP_KK_P_K => PP_KK + PP_K; compartment_ * r9b_k9 * PP_KK_P_K;
-  r10a: PP_K + KPase -> KPase_PP_K; compartment_ * (r10a_a10 * PP_K * KPase - r10a_d10 * KPase_PP_K);
-  r10b: KPase_PP_K => P_K + KPase; compartment_ * r10b_k10 * KPase_PP_K;
+  r1a: KKK + E1 -> E1_KKK; compartment_*(r1a_a1*E1*KKK - r1a_d1*E1_KKK);
+  r1b: E1_KKK => E1 + P_KKK; compartment_*r1b_k2*E1_KKK;
+  r2a: P_KKK + E2 -> E2_P_KKK; compartment_*(r2a_a2*E2*P_KKK - r2a_d2*E2_P_KKK);
+  r2b: E2_P_KKK => E2 + KKK; compartment_*r2b_k2*E2_P_KKK;
+  r3a: KK + P_KKK -> P_KKK_KK; compartment_*(r3a_a3*KK*P_KKK - r3a_d3*P_KKK_KK);
+  r3b: P_KKK_KK => P_KK + P_KKK; compartment_*r3b_k3*P_KKK_KK;
+  r4a: P_KK + KKPase -> KKPase_P_KK; compartment_*(r4a_a4*P_KK*KKPase - r4a_d4*KKPase_P_KK);
+  r4b: KKPase_P_KK => KK + KKPase; compartment_*r4b_k4*KKPase_P_KK;
+  r5a: P_KK + P_KKK -> P_KKK_P_KK; compartment_*(r5a_a5*P_KK*P_KKK - r5a_d5*P_KKK_P_KK);
+  r5b: P_KKK_P_KK => PP_KK + P_KKK; compartment_*r5b_k5*P_KKK_P_KK;
+  r6a: PP_KK + KKPase -> KKPase_PP_KK; compartment_*(r6a_a6*PP_KK*KKPase - r6a_d6*KKPase_PP_KK);
+  r6b: KKPase_PP_KK => P_KK + KKPase; compartment_*r6b_k6*KKPase_PP_KK;
+  r7a: K + PP_KK -> PP_KK_K; compartment_*(r7a_a7*K*PP_KK - r7a_d7*PP_KK_K);
+  r7b: PP_KK_K => P_K + PP_KK; compartment_*r7b_k7*PP_KK_K;
+  r8a: P_K + KPase -> KPase_P_K; compartment_*(r8a_a8*P_K*KPase - r8a_d8*KPase_P_K);
+  r8b: KPase_P_K => K + KPase; compartment_*r8b_k8*KPase_P_K;
+  r9a: P_K + PP_KK -> PP_KK_P_K; compartment_*(r9a_a9*P_K*PP_KK - r9a_d9*PP_KK_P_K);
+  r9b: PP_KK_P_K => PP_KK + PP_K; compartment_*r9b_k9*PP_KK_P_K;
+  r10a: PP_K + KPase -> KPase_PP_K; compartment_*(r10a_a10*PP_K*KPase - r10a_d10*KPase_PP_K);
+  r10b: KPase_PP_K => P_K + KPase; compartment_*r10b_k10*KPase_PP_K;
 
   // Species initializations:
   E1 = 3e-005;

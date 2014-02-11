@@ -10,17 +10,17 @@ model *Rohwer2001_Sucrose()
   species $Fruex in compartment_;
 
   // Reactions:
-  v1: $Fruex -> Fru; compartment_ * ((v1_Vmax1 * Fruex) / (v1_Km1Fruex * (1 + Fru / v1_Ki1Fru) + Fruex));
-  v2: $Glcex -> Glc; compartment_ * ((v2_Vmax2 * Glcex) / (v2_Km2Glcex * (1 + Glc / v2_Ki2Glc) + Glcex));
-  v3: $ATP + Glc -> HexP + $ADP; compartment_ * ((v3_Vmax3 * (Glc / v3_Km3Glc) * (ATP / v3_Km3ATP)) / ((1 + ATP / v3_Km3ATP) * (1 + Glc / v3_Km3Glc + Fru / v3_Km4Fru + (0.113 * HexP) / v3_Ki3G6P + (0.0575 * HexP) / v3_Ki4F6P)));
-  v4: Fru + $ATP -> HexP + $ADP; compartment_ * ((v4_Vmax4 * (Fru / v4_Km4Fru) * (ATP / v4_Km4ATP)) / ((1 + ATP / v4_Km4ATP) * (1 + Glc / v4_Km3Glc + Fru / v4_Km4Fru + (0.113 * HexP) / v4_Ki3G6P + (0.0575 * HexP) / v4_Ki4F6P)));
-  v5: Fru + $ATP -> HexP + $ADP; compartment_ * ((v5_Vmax5 / (1 + Fru / v5_Ki5Fru) * (Fru / v5_Km5Fru) * (ATP / v5_Km5ATP)) / (1 + Fru / v5_Km5Fru + ATP / v5_Km5ATP + (Fru * ATP) / (v5_Km5Fru * v5_Km5ATP) + ADP / v5_Ki5ADP));
-  v6: 2HexP -> $UDP + Suc6P; compartment_ * ((v6_Vmax6f * (0.0575 * HexP * 0.8231 * HexP - (Suc6P * UDP) / v6_Keq6)) / (0.0575 * HexP * 0.8231 * HexP * (1 + Suc6P / v6_Ki6Suc6P) + v6_Km6F6P * (1 + phos / v6_Ki6Pi) * (0.8231 * HexP + v6_Ki6UDPGlc) + v6_Km6UDPGlc * 0.0575 * HexP + v6_Vmax6f / (v6_Vmax6r * v6_Keq6) * (v6_Km6UDP * Suc6P * (1 + (0.8231 * HexP) / v6_Ki6UDPGlc) + UDP * (v6_Km6Suc6P * (1 + (v6_Km6UDPGlc * 0.0575 * HexP) / (v6_Ki6UDPGlc * v6_Km6F6P * (1 + phos / v6_Ki6Pi))) + Suc6P * (1 + (0.0575 * HexP) / v6_Ki6F6P)))));
-  v7: Suc6P -> Suc + $phos; compartment_ * ((v7_Vmax7 * Suc6P) / (v7_Km7Suc6P + Suc6P));
-  v8: HexP + Fru -> Suc + $UDP; compartment_ * ((-v8_Vmax8f * (Suc * UDP - (Fru * 0.8231 * HexP) / v8_Keq8)) / (Suc * UDP * (1 + Fru / v8_Ki8Fru) + v8_Km8Suc * (UDP + v8_Ki8UDP) + v8_Km8UDP * Suc + v8_Vmax8f / (v8_Vmax8r * v8_Keq8) * (v8_Km8UDPGlc * Fru * (1 + UDP / v8_Ki8UDP) + 0.8231 * HexP * (v8_Km8Fru * (1 + (v8_Km8UDP * Suc) / (v8_Ki8UDP * v8_Km8Suc)) + Fru * (1 + Suc / v8_Ki8Suc)))));
-  v9: Suc -> Fru + Glc; compartment_ * ((v9_Vmax9 / (1 + Glc / v9_Ki9Glc) * Suc) / (v9_Km9Suc * (1 + Fru / v9_Ki9Fru) + Suc));
-  v10: HexP -> $glycolysis; compartment_ * ((v10_Vmax10 * 0.0575 * HexP) / (v10_Km10F6P + 0.0575 * HexP));
-  v11: Suc -> $Sucvac; compartment_ * ((v11_Vmax11 * Suc) / (v11_Km11Suc + Suc));
+  v1: $Fruex -> Fru; compartment_*((v1_Vmax1*Fruex)/(v1_Km1Fruex*(1 + Fru/v1_Ki1Fru) + Fruex));
+  v2: $Glcex -> Glc; compartment_*((v2_Vmax2*Glcex)/(v2_Km2Glcex*(1 + Glc/v2_Ki2Glc) + Glcex));
+  v3: $ATP + Glc -> HexP + $ADP; compartment_*((v3_Vmax3*(Glc/v3_Km3Glc)*(ATP/v3_Km3ATP))/((1 + ATP/v3_Km3ATP)*(1 + Glc/v3_Km3Glc + Fru/v3_Km4Fru + (0.113*HexP)/v3_Ki3G6P + (0.0575*HexP)/v3_Ki4F6P)));
+  v4: Fru + $ATP -> HexP + $ADP; compartment_*((v4_Vmax4*(Fru/v4_Km4Fru)*(ATP/v4_Km4ATP))/((1 + ATP/v4_Km4ATP)*(1 + Glc/v4_Km3Glc + Fru/v4_Km4Fru + (0.113*HexP)/v4_Ki3G6P + (0.0575*HexP)/v4_Ki4F6P)));
+  v5: Fru + $ATP -> HexP + $ADP; compartment_*((v5_Vmax5/(1 + Fru/v5_Ki5Fru)*(Fru/v5_Km5Fru)*(ATP/v5_Km5ATP))/(1 + Fru/v5_Km5Fru + ATP/v5_Km5ATP + (Fru*ATP)/(v5_Km5Fru*v5_Km5ATP) + ADP/v5_Ki5ADP));
+  v6: 2HexP -> $UDP + Suc6P; compartment_*((v6_Vmax6f*(0.0575*HexP*0.8231*HexP - (Suc6P*UDP)/v6_Keq6))/(0.0575*HexP*0.8231*HexP*(1 + Suc6P/v6_Ki6Suc6P) + v6_Km6F6P*(1 + phos/v6_Ki6Pi)*(0.8231*HexP + v6_Ki6UDPGlc) + v6_Km6UDPGlc*0.0575*HexP + v6_Vmax6f/(v6_Vmax6r*v6_Keq6)*(v6_Km6UDP*Suc6P*(1 + (0.8231*HexP)/v6_Ki6UDPGlc) + UDP*(v6_Km6Suc6P*(1 + (v6_Km6UDPGlc*0.0575*HexP)/(v6_Ki6UDPGlc*v6_Km6F6P*(1 + phos/v6_Ki6Pi))) + Suc6P*(1 + (0.0575*HexP)/v6_Ki6F6P)))));
+  v7: Suc6P -> Suc + $phos; compartment_*((v7_Vmax7*Suc6P)/(v7_Km7Suc6P + Suc6P));
+  v8: HexP + Fru -> Suc + $UDP; compartment_*((-v8_Vmax8f*(Suc*UDP - (Fru*0.8231*HexP)/v8_Keq8))/(Suc*UDP*(1 + Fru/v8_Ki8Fru) + v8_Km8Suc*(UDP + v8_Ki8UDP) + v8_Km8UDP*Suc + v8_Vmax8f/(v8_Vmax8r*v8_Keq8)*(v8_Km8UDPGlc*Fru*(1 + UDP/v8_Ki8UDP) + 0.8231*HexP*(v8_Km8Fru*(1 + (v8_Km8UDP*Suc)/(v8_Ki8UDP*v8_Km8Suc)) + Fru*(1 + Suc/v8_Ki8Suc)))));
+  v9: Suc -> Fru + Glc; compartment_*((v9_Vmax9/(1 + Glc/v9_Ki9Glc)*Suc)/(v9_Km9Suc*(1 + Fru/v9_Ki9Fru) + Suc));
+  v10: HexP -> $glycolysis; compartment_*((v10_Vmax10*0.0575*HexP)/(v10_Km10F6P + 0.0575*HexP));
+  v11: Suc -> $Sucvac; compartment_*((v11_Vmax11*Suc)/(v11_Km11Suc + Suc));
 
   // Species initializations:
   Fru = 1;

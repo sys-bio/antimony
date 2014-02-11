@@ -7,22 +7,22 @@ model *Ferreira_CML_generation()
   species Amadori in compartment_, Glyoxal in compartment_, CML in compartment_;
 
   // Assignment Rules:
-  Fraction_Amadori := Amadori / 0.0034;
-  Fraction_CML := CML / 0.0034;
+  Fraction_Amadori := Amadori/0.0034;
+  Fraction_CML := CML/0.0034;
 
   // Reactions:
-  v1a: Lysine + Glucose => Schiff; compartment_ * v1a_p1 * v1a_k1a * Glucose * Lysine;
-  v1b: Schiff => Lysine + Glucose; compartment_ * v1b_k1b * Schiff;
-  v2a: Schiff => Amadori; compartment_ * v2a_p2 * v2a_k2a * Schiff;
-  v2b: Amadori => Schiff; compartment_ * v2b_p2 * v2b_k2b * Amadori;
-  v3: Glucose => Glyoxal; compartment_ * v3_ox * v3_p3 * v3_k3 * (Glucose / 0.25)^0.36;
-  v4: Amadori => CML; compartment_ * v4_ox * v4_p4 * v4_k4 * Amadori;
-  v5: Lysine + Glyoxal => CML; compartment_ * v5_ox * v5_p5 * v5_k5 * Glyoxal * Lysine;
-  v5b: Glyoxal => ; compartment_ * v5b_k5b * Glyoxal;
-  v6: Schiff => CML; compartment_ * v6_ox * v6_p6 * v6_k3 * (Schiff / 0.25)^0.36;
-  v7a:  => Lysine; compartment_ * 0.05 * v7a_ox * v7a_p7 * v7a_k3 * (Schiff / 0.25)^0.36;
-  v7b:  => Glyoxal; compartment_ * 0.005 * v7b_ox * v7b_p7 * v7b_k3 * (Schiff / 0.25)^0.36;
-  v7c: Schiff => ; compartment_ * v7c_ox * v7c_p7 * v7c_k3 * (Schiff / 0.25)^0.36;
+  v1a: Lysine + Glucose => Schiff; compartment_*v1a_p1*v1a_k1a*Glucose*Lysine;
+  v1b: Schiff => Lysine + Glucose; compartment_*v1b_k1b*Schiff;
+  v2a: Schiff => Amadori; compartment_*v2a_p2*v2a_k2a*Schiff;
+  v2b: Amadori => Schiff; compartment_*v2b_p2*v2b_k2b*Amadori;
+  v3: Glucose => Glyoxal; compartment_*v3_ox*v3_p3*v3_k3*(Glucose/0.25)^0.36;
+  v4: Amadori => CML; compartment_*v4_ox*v4_p4*v4_k4*Amadori;
+  v5: Lysine + Glyoxal => CML; compartment_*v5_ox*v5_p5*v5_k5*Glyoxal*Lysine;
+  v5b: Glyoxal => ; compartment_*v5b_k5b*Glyoxal;
+  v6: Schiff => CML; compartment_*v6_ox*v6_p6*v6_k3*(Schiff/0.25)^0.36;
+  v7a:  => Lysine; compartment_*0.05*v7a_ox*v7a_p7*v7a_k3*(Schiff/0.25)^0.36;
+  v7b:  => Glyoxal; compartment_*0.005*v7b_ox*v7b_p7*v7b_k3*(Schiff/0.25)^0.36;
+  v7c: Schiff => ; compartment_*v7c_ox*v7c_p7*v7c_k3*(Schiff/0.25)^0.36;
 
   // Species initializations:
   Glucose = 0.25;

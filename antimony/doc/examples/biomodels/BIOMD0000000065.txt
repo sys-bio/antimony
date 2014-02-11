@@ -7,22 +7,22 @@ model *Yildirim2003_Lac_operon()
   species I2 in cell, I3 in cell, $L_e in cell;
 
   // Reactions:
-  r_m1:  => M; cell * gamma_0;
-  r_m2: M => ; cell * M * (gamma_M + mu);
-  r_m3_i1: I1 => M; (cell * I1) / tau_M;
-  r_i1:  => I1; cell * alpha_M * ((K_1 * exp(mu * tau_M * -2) * A^2 + 1) / (K + K_1 * exp(-2 * mu * tau_M) * A^2));
-  r_b1: B => ; cell * B * (gamma_B + mu);
-  r_b2_i2: I2 => B; (cell * I2) / tau_B;
-  r_i2:  => I2; cell * alpha_B * M * exp(-(mu * tau_B));
-  r_a1: A => ; cell * A * (gamma_A + mu);
-  r_a2: A => ; cell * beta_A * B * (A / (K_A + A));
-  r_a3_l1: L => A; cell * alpha_A * B * (L / (K_L + L));
-  r_l2: L => ; cell * L * (gamma_L + mu);
-  r_l3: L => ; cell * beta_L1 * P * (L / (K_L1 + L));
-  r_l4:  => L; cell * alpha_L * P * (L_e / (K_Le + L_e));
-  r_p1: P => ; cell * P * (gamma_P + mu);
-  r_p2_i3: I3 => P; (cell * I3) / (tau_B + tau_P);
-  r_i3:  => I3; cell * alpha_P * M * exp(-1 * mu * (tau_B + tau_P));
+  r_m1:  => M; cell*gamma_0;
+  r_m2: M => ; cell*M*(gamma_M + mu);
+  r_m3_i1: I1 => M; (cell*I1)/tau_M;
+  r_i1:  => I1; cell*alpha_M*((K_1*exp(mu*tau_M*-2)*A^2 + 1)/(K + K_1*exp(-2*mu*tau_M)*A^2));
+  r_b1: B => ; cell*B*(gamma_B + mu);
+  r_b2_i2: I2 => B; (cell*I2)/tau_B;
+  r_i2:  => I2; cell*alpha_B*M*exp(-(mu*tau_B));
+  r_a1: A => ; cell*A*(gamma_A + mu);
+  r_a2: A => ; cell*beta_A*B*(A/(K_A + A));
+  r_a3_l1: L => A; cell*alpha_A*B*(L/(K_L + L));
+  r_l2: L => ; cell*L*(gamma_L + mu);
+  r_l3: L => ; cell*beta_L1*P*(L/(K_L1 + L));
+  r_l4:  => L; cell*alpha_L*P*(L_e/(K_Le + L_e));
+  r_p1: P => ; cell*P*(gamma_P + mu);
+  r_p2_i3: I3 => P; (cell*I3)/(tau_B + tau_P);
+  r_i3:  => I3; cell*alpha_P*M*exp(-1*mu*(tau_B + tau_P));
 
   // Species initializations:
   M = 0.000626;

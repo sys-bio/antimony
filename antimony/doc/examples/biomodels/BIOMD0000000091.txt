@@ -11,45 +11,45 @@ model *Proctor2005_Hsp90()
 
   // Reactions:
   proteinSynthesis: 0$source => NatP; k1;
-  misfolding: NatP + ROS => MisP + ROS; k2 * NatP * ROS;
-  Hsp90MisPBinding: MisP + Hsp90 => MCom; k3 * MisP * Hsp90;
-  unsuccessulRefolding: MCom => MisP + Hsp90; k4 * MCom;
-  refolding: MCom + ATP => Hsp90 + NatP + ADP; k5 * MCom * ATP;
-  proteinDegradation: MisP + ATP => ADP; k6 * MisP * ATP;
-  proteinAggregation1: 2MisP => AggP; ((MisP - 1) * k7 * MisP) / 2;
-  proteinAggregation2: MisP + AggP => 2AggP; k7 * MisP * AggP;
-  Hsp90HSF1Binding: Hsp90 + HSF1 => HCom; k8 * Hsp90 * HSF1;
-  Hsp90HSF1Release: HCom => Hsp90 + HSF1; k9 * HCom;
-  dimerisation: 2HSF1 => DiH; ((HSF1 - 1) * k10 * HSF1) / 2;
-  trimerisation: HSF1 + DiH => TriH; k11 * HSF1 * DiH;
-  deTrimerisation: TriH => HSF1 + DiH; k12 * TriH;
-  deDimerisation: DiH => 2HSF1; k13 * DiH;
-  HSETriHBinding: TriH + HSE => HSETriH; k14 * HSE * TriH;
-  HSETriHRelease: HSETriH => HSE + TriH; k15 * HSETriH;
-  Hsp90Transcription: HSETriH => HSETriH + Hsp90; k16 * HSETriH;
-  Hsp90Degradation: Hsp90 + ATP => ADP; k17 * Hsp90 * ATP;
+  misfolding: NatP + ROS => MisP + ROS; k2*NatP*ROS;
+  Hsp90MisPBinding: MisP + Hsp90 => MCom; k3*MisP*Hsp90;
+  unsuccessulRefolding: MCom => MisP + Hsp90; k4*MCom;
+  refolding: MCom + ATP => Hsp90 + NatP + ADP; k5*MCom*ATP;
+  proteinDegradation: MisP + ATP => ADP; k6*MisP*ATP;
+  proteinAggregation1: 2MisP => AggP; ((MisP - 1)*k7*MisP)/2;
+  proteinAggregation2: MisP + AggP => 2AggP; k7*MisP*AggP;
+  Hsp90HSF1Binding: Hsp90 + HSF1 => HCom; k8*Hsp90*HSF1;
+  Hsp90HSF1Release: HCom => Hsp90 + HSF1; k9*HCom;
+  dimerisation: 2HSF1 => DiH; ((HSF1 - 1)*k10*HSF1)/2;
+  trimerisation: HSF1 + DiH => TriH; k11*HSF1*DiH;
+  deTrimerisation: TriH => HSF1 + DiH; k12*TriH;
+  deDimerisation: DiH => 2HSF1; k13*DiH;
+  HSETriHBinding: TriH + HSE => HSETriH; k14*HSE*TriH;
+  HSETriHRelease: HSETriH => HSE + TriH; k15*HSETriH;
+  Hsp90Transcription: HSETriH => HSETriH + Hsp90; k16*HSETriH;
+  Hsp90Degradation: Hsp90 + ATP => ADP; k17*Hsp90*ATP;
   countTime: 0$source => X; 1;
-  ATPformation: ADP => ATP; k18 * ADP;
-  ATPconsumption: ATP => ADP; k19 * ATP;
+  ATPformation: ADP => ATP; k18*ADP;
+  ATPconsumption: ATP => ADP; k19*ATP;
   radicalFormation: 0$source => ROS; k20;
-  radicalScavenging: ROS => ; k21 * ROS;
+  radicalScavenging: ROS => ; k21*ROS;
 
   // Species initializations:
-  Hsp90 = 300000 / compartment_;
-  HCom = 5900 / compartment_;
-  HSF1 = 100 / compartment_;
+  Hsp90 = 300000/compartment_;
+  HCom = 5900/compartment_;
+  HSF1 = 100/compartment_;
   MisP = 0;
   MCom = 0;
   TriH = 0;
   DiH = 0;
-  NatP = 6000000 / compartment_;
+  NatP = 6000000/compartment_;
   AggP = 0;
-  HSE = 1 / compartment_;
+  HSE = 1/compartment_;
   HSETriH = 0;
   X = 0;
-  ROS = 100 / compartment_;
-  ATP = 10000 / compartment_;
-  ADP = 1000 / compartment_;
+  ROS = 100/compartment_;
+  ATP = 10000/compartment_;
+  ADP = 1000/compartment_;
   source = 0;
 
   // Compartment initializations:

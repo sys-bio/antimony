@@ -1,6 +1,6 @@
 //Created by libAntimony v2.5
 function LD(tod, length)
-  ceil(sin((pi * tod) / length + 0.001) / 2);
+  ceil(sin((pi*tod)/length + 0.001)/2);
 end
 
 
@@ -14,38 +14,38 @@ model *Locke2005_CircadianClock()
   species cPn in compartment_;
 
   // Reactions:
-  one11:  => cLm; compartment_ * LD(time, dayLength) * q1 * cPn;
-  two11:  => cLm; compartment_ * ((n1 * cXn^a) / (g1^a + cXn^a));
-  three11: cLm => ; compartment_ * ((m1 * cLm) / (k1 + cLm));
-  one12:  => cLc; compartment_ * p1 * cLm;
-  three12: cLn => cLc; compartment_ * r2 * cLn;
-  four12: cLc => ; compartment_ * ((m2 * cLc) / (k2 + cLc));
-  one13: cLc => cLn; compartment_ * r1 * cLc;
-  three13: cLn => ; compartment_ * ((m3 * cLn) / (k3 + cLn));
-  one14:  => cTm; compartment_ * ((n2 * cYn^b) / (g2^b + cYn^b)) * (g3^c / (g3^c + cLn^c));
-  two14: cTm => ; compartment_ * ((m4 * cTm) / (k4 + cTm));
-  one15:  => cTc; compartment_ * p2 * cTm;
-  three15: cTn => cTc; compartment_ * r4 * cTn;
-  four15: cTc => ; compartment_ * ((1 - LD(time, dayLength)) * m5 + m6) * (cTc / (k5 + cTc));
-  one16: cTc => cTn; compartment_ * r3 * cTc;
-  three16: cTn => ; compartment_ * ((1 - LD(time, dayLength)) * m7 + m8) * (cTn / (k6 + cTn));
-  one17:  => cXm; compartment_ * ((n3 * cTn^d) / (g4^d + cTn^d));
-  two17: cXm => ; compartment_ * ((m9 * cXm) / (k7 + cXm));
-  one18:  => cXc; compartment_ * p3 * cXm;
-  three18: cXn => cXc; compartment_ * r6 * cXn;
-  four18: cXc => ; compartment_ * ((m10 * cXc) / (k8 + cXc));
-  one19: cXc => cXn; compartment_ * r5 * cXc;
-  three19: cXn => ; compartment_ * ((m11 * cXn) / (k9 + cXn));
-  one20:  => cYm; compartment_ * (LD(time, dayLength) * q2 * cPn + ((LD(time, dayLength) * n4 + n5) * g5^e) / (g5^e + cTn^e)) * (g6^f / (g6^f + cLn^f));
-  two20: cYm => ; compartment_ * ((m12 * cYm) / (k10 + cYm));
-  one21:  => cYc; compartment_ * p4 * cYm;
-  three21: cYn => cYc; compartment_ * r8 * cYn;
-  four21: cYc => ; compartment_ * ((m13 * cYc) / (k11 + cYc));
-  one22: cYc => cYn; compartment_ * r7 * cYc;
-  three22: cYn => ; compartment_ * ((m14 * cYn) / (k12 + cYn));
-  one23:  => cPn; compartment_ * (1 - LD(time, dayLength)) * p5;
-  two23: cPn => ; compartment_ * ((m15 * cPn) / (k13 + cPn));
-  three23: cPn => ; compartment_ * q3 * LD(time, dayLength) * cPn;
+  one11:  => cLm; compartment_*LD(time, dayLength)*q1*cPn;
+  two11:  => cLm; compartment_*((n1*cXn^a)/(g1^a + cXn^a));
+  three11: cLm => ; compartment_*((m1*cLm)/(k1 + cLm));
+  one12:  => cLc; compartment_*p1*cLm;
+  three12: cLn => cLc; compartment_*r2*cLn;
+  four12: cLc => ; compartment_*((m2*cLc)/(k2 + cLc));
+  one13: cLc => cLn; compartment_*r1*cLc;
+  three13: cLn => ; compartment_*((m3*cLn)/(k3 + cLn));
+  one14:  => cTm; compartment_*((n2*cYn^b)/(g2^b + cYn^b))*(g3^c/(g3^c + cLn^c));
+  two14: cTm => ; compartment_*((m4*cTm)/(k4 + cTm));
+  one15:  => cTc; compartment_*p2*cTm;
+  three15: cTn => cTc; compartment_*r4*cTn;
+  four15: cTc => ; compartment_*((1 - LD(time, dayLength))*m5 + m6)*(cTc/(k5 + cTc));
+  one16: cTc => cTn; compartment_*r3*cTc;
+  three16: cTn => ; compartment_*((1 - LD(time, dayLength))*m7 + m8)*(cTn/(k6 + cTn));
+  one17:  => cXm; compartment_*((n3*cTn^d)/(g4^d + cTn^d));
+  two17: cXm => ; compartment_*((m9*cXm)/(k7 + cXm));
+  one18:  => cXc; compartment_*p3*cXm;
+  three18: cXn => cXc; compartment_*r6*cXn;
+  four18: cXc => ; compartment_*((m10*cXc)/(k8 + cXc));
+  one19: cXc => cXn; compartment_*r5*cXc;
+  three19: cXn => ; compartment_*((m11*cXn)/(k9 + cXn));
+  one20:  => cYm; compartment_*(LD(time, dayLength)*q2*cPn + ((LD(time, dayLength)*n4 + n5)*g5^e)/(g5^e + cTn^e))*(g6^f/(g6^f + cLn^f));
+  two20: cYm => ; compartment_*((m12*cYm)/(k10 + cYm));
+  one21:  => cYc; compartment_*p4*cYm;
+  three21: cYn => cYc; compartment_*r8*cYn;
+  four21: cYc => ; compartment_*((m13*cYc)/(k11 + cYc));
+  one22: cYc => cYn; compartment_*r7*cYc;
+  three22: cYn => ; compartment_*((m14*cYn)/(k12 + cYn));
+  one23:  => cPn; compartment_*(1 - LD(time, dayLength))*p5;
+  two23: cPn => ; compartment_*((m15*cPn)/(k13 + cPn));
+  three23: cPn => ; compartment_*q3*LD(time, dayLength)*cPn;
 
   // Species initializations:
   cLm = 0.539;
