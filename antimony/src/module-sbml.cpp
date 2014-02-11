@@ -1035,7 +1035,9 @@ void Module::LoadSBML(const Model* sbml)
       var->SetCompartment(compartment);
     }
     if (species->isSetUnits()) {
-      Variable* spunits = AddOrFindVariable(&(species->getUnits()));
+      string unitname = species->getUnits();
+      FixUnitName(unitname);
+      Variable* spunits = AddOrFindVariable(&unitname);
       spunits->SetType(varUnitDefinition);
       UnitDef* ud = new UnitDef(*spunits->GetUnitDef());
       UnitDef* compud = NULL;
