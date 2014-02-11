@@ -10,40 +10,40 @@ model *Oligator()
   species T3_Inh in sample, beta_Inh_T3 in sample, Inh_T1 in sample, $empty in sample;
 
   // Assignment Rules:
-  Bp_concentration := 11 * (alpha_T1 + T1_alpha + alpha_T2 + T2_beta + beta_T3) + 16 * (T3_Inh + Inh_T1) + 22 * (alpha_T1_alpha + alpha_alpha_T1 + alpha_T2_beta + alpha_beta_T2) + 27 * (beta_T3_Inh + beta_Inh_T3);
-  fluorescence := -0.38 + 0.00093 * (11 * (alpha_T1 + T1_alpha + alpha_T2 + T2_beta + beta_T3) + 16 * (T3_Inh + Inh_T1) + 22 * (alpha_T1_alpha + alpha_alpha_T1 + alpha_T2_beta + alpha_beta_T2) + 27 * (beta_T3_Inh + beta_Inh_T3));
+  Bp_concentration := 11*(alpha_T1 + T1_alpha + alpha_T2 + T2_beta + beta_T3) + 16*(T3_Inh + Inh_T1) + 22*(alpha_T1_alpha + alpha_alpha_T1 + alpha_T2_beta + alpha_beta_T2) + 27*(beta_T3_Inh + beta_Inh_T3);
+  fluorescence := -0.38 + 0.00093*(11*(alpha_T1 + T1_alpha + alpha_T2 + T2_beta + beta_T3) + 16*(T3_Inh + Inh_T1) + 22*(alpha_T1_alpha + alpha_alpha_T1 + alpha_T2_beta + alpha_beta_T2) + 27*(beta_T3_Inh + beta_Inh_T3));
   Inh_total := Inh + T3_Inh + beta_T3_Inh + Inh_T1;
   beta_total := beta + T2_beta + alpha_T2_beta + beta_T3 + beta_T3_Inh;
-  alpha_total := alpha + alpha_T1 + T1_alpha + 2 * alpha_T1_alpha + alpha_T2 + alpha_T2_beta + alpha_T2;
+  alpha_total := alpha + alpha_T1 + T1_alpha + 2*alpha_T1_alpha + alpha_T2 + alpha_T2_beta + alpha_T2;
 
   // Reactions:
-  ass_aa_l: T1 + alpha -> alpha_T1; sample * (k0d * T1 * alpha - k0r * alpha_T1);
-  m_ass_aa_lr: alpha_T1_alpha -> alpha + alpha_T1; sample * (k1d * alpha_T1_alpha - k1r * alpha * alpha_T1);
-  m_ass_aa_r: T1_alpha -> T1 + alpha; sample * (k2d * T1_alpha - k2r * T1 * alpha);
-  m_ass_aa_rl: alpha_T1_alpha -> alpha + T1_alpha; sample * (k3d * alpha_T1_alpha - k3r * alpha * T1_alpha);
-  pol_aa: alpha_T1 => alpha_alpha_T1; sample * k4d * alpha_T1;
-  dis_aa: alpha_T1_alpha => alpha + alpha_alpha_T1; sample * k5d * alpha_T1_alpha;
-  nick_aa: alpha_alpha_T1 => alpha_T1_alpha; sample * k6d * alpha_alpha_T1;
-  ass_ab_l: alpha + T2 -> alpha_T2; sample * (k7d * alpha * T2 - k7r * alpha_T2);
-  m_ass_ab_lr: alpha_T2_beta -> alpha_T2 + beta; sample * (k8d * alpha_T2_beta - k8r * alpha_T2 * beta);
-  m_ass_ab_r: T2_beta -> T2 + beta; sample * (k9d * T2_beta - k9r * T2 * beta);
-  m_ass_ab_rl: alpha_T2_beta -> alpha + T2_beta; sample * (k10d * alpha_T2_beta - k10r * alpha * T2_beta);
-  pol_ab: alpha_T2 => alpha_beta_T2; sample * k11d * alpha_T2;
-  dis_ab: alpha_T2_beta => beta + alpha_beta_T2; sample * k12d * alpha_T2_beta;
-  nick_ab: alpha_beta_T2 => alpha_T2_beta; sample * k13d * alpha_beta_T2;
-  ass_bc_l: beta + T3 -> beta_T3; sample * (k14d * beta * T3 - k14r * beta_T3);
-  m_ass_bc_lr: beta_T3_Inh -> beta_T3 + Inh; sample * (k15d * beta_T3_Inh - k15r * beta_T3 * Inh);
-  ass_bc_r: T3 + Inh -> T3_Inh; sample * (k16d * T3 * Inh - k16r * T3_Inh);
-  ass_bc_rl: beta + T3_Inh -> beta_T3_Inh; sample * (k17d * beta * T3_Inh - k17r * beta_T3_Inh);
-  pol_bc: beta_T3 => beta_Inh_T3; sample * k18d * beta_T3;
-  dis_bc: beta_T3_Inh => Inh + beta_Inh_T3; sample * k19d * beta_T3_Inh;
-  nick_bc: beta_Inh_T3 => beta_T3_Inh; sample * k20d * beta_Inh_T3;
-  inh_ac: T1 + Inh -> Inh_T1; sample * (k21d * T1 * Inh - k21r * Inh_T1);
-  inh_displ_ac: T1_alpha + Inh -> alpha + Inh_T1; sample * (k22d * T1_alpha * Inh - k22r * alpha * Inh_T1);
-  m_inh_displ_ca: alpha + Inh_T1 -> alpha_T1 + Inh; sample * (k23d * alpha * Inh_T1 - k23r * alpha_T1 * Inh);
-  exo_a: alpha -> $empty; sample * k24d * alpha;
-  exo_b: beta -> $empty; sample * k25d * beta;
-  exo_c: Inh -> $empty; sample * k26d * Inh;
+  ass_aa_l: T1 + alpha -> alpha_T1; sample*(k0d*T1*alpha - k0r*alpha_T1);
+  m_ass_aa_lr: alpha_T1_alpha -> alpha + alpha_T1; sample*(k1d*alpha_T1_alpha - k1r*alpha*alpha_T1);
+  m_ass_aa_r: T1_alpha -> T1 + alpha; sample*(k2d*T1_alpha - k2r*T1*alpha);
+  m_ass_aa_rl: alpha_T1_alpha -> alpha + T1_alpha; sample*(k3d*alpha_T1_alpha - k3r*alpha*T1_alpha);
+  pol_aa: alpha_T1 => alpha_alpha_T1; sample*k4d*alpha_T1;
+  dis_aa: alpha_T1_alpha => alpha + alpha_alpha_T1; sample*k5d*alpha_T1_alpha;
+  nick_aa: alpha_alpha_T1 => alpha_T1_alpha; sample*k6d*alpha_alpha_T1;
+  ass_ab_l: alpha + T2 -> alpha_T2; sample*(k7d*alpha*T2 - k7r*alpha_T2);
+  m_ass_ab_lr: alpha_T2_beta -> alpha_T2 + beta; sample*(k8d*alpha_T2_beta - k8r*alpha_T2*beta);
+  m_ass_ab_r: T2_beta -> T2 + beta; sample*(k9d*T2_beta - k9r*T2*beta);
+  m_ass_ab_rl: alpha_T2_beta -> alpha + T2_beta; sample*(k10d*alpha_T2_beta - k10r*alpha*T2_beta);
+  pol_ab: alpha_T2 => alpha_beta_T2; sample*k11d*alpha_T2;
+  dis_ab: alpha_T2_beta => beta + alpha_beta_T2; sample*k12d*alpha_T2_beta;
+  nick_ab: alpha_beta_T2 => alpha_T2_beta; sample*k13d*alpha_beta_T2;
+  ass_bc_l: beta + T3 -> beta_T3; sample*(k14d*beta*T3 - k14r*beta_T3);
+  m_ass_bc_lr: beta_T3_Inh -> beta_T3 + Inh; sample*(k15d*beta_T3_Inh - k15r*beta_T3*Inh);
+  ass_bc_r: T3 + Inh -> T3_Inh; sample*(k16d*T3*Inh - k16r*T3_Inh);
+  ass_bc_rl: beta + T3_Inh -> beta_T3_Inh; sample*(k17d*beta*T3_Inh - k17r*beta_T3_Inh);
+  pol_bc: beta_T3 => beta_Inh_T3; sample*k18d*beta_T3;
+  dis_bc: beta_T3_Inh => Inh + beta_Inh_T3; sample*k19d*beta_T3_Inh;
+  nick_bc: beta_Inh_T3 => beta_T3_Inh; sample*k20d*beta_Inh_T3;
+  inh_ac: T1 + Inh -> Inh_T1; sample*(k21d*T1*Inh - k21r*Inh_T1);
+  inh_displ_ac: T1_alpha + Inh -> alpha + Inh_T1; sample*(k22d*T1_alpha*Inh - k22r*alpha*Inh_T1);
+  m_inh_displ_ca: alpha + Inh_T1 -> alpha_T1 + Inh; sample*(k23d*alpha*Inh_T1 - k23r*alpha_T1*Inh);
+  exo_a: alpha -> $empty; sample*k24d*alpha;
+  exo_b: beta -> $empty; sample*k25d*beta;
+  exo_c: Inh -> $empty; sample*k26d*Inh;
 
   // Species initializations:
   T1 = 38.5;

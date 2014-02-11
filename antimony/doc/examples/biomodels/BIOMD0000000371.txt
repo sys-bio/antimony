@@ -6,23 +6,23 @@ model *DeVries2000_PancreaticBetaCells_InsulinSecretion()
   species $V_membrane in Compartment_, $n in Compartment_, $s in Compartment_;
 
   // Assignment Rules:
-  i_Ca := g_Ca * m_infinity * (V_membrane - V_Ca);
-  i_K := g_K * n * (V_membrane - V_K);
-  i_K_ATP := g_K_ATP * p * (V_membrane - V_K);
-  i_s := g_s * s * (V_membrane - V_K);
-  n_infinity := 1 / (1 + exp((V_n - V_membrane) / theta_n));
-  s_infinity := 1 / (1 + exp((V_s - V_membrane) / theta_s));
-  m_infinity := 1 / (1 + exp((V_m - V_membrane) / theta_m));
+  i_Ca := g_Ca*m_infinity*(V_membrane - V_Ca);
+  i_K := g_K*n*(V_membrane - V_K);
+  i_K_ATP := g_K_ATP*p*(V_membrane - V_K);
+  i_s := g_s*s*(V_membrane - V_K);
+  n_infinity := 1/(1 + exp((V_n - V_membrane)/theta_n));
+  s_infinity := 1/(1 + exp((V_s - V_membrane)/theta_s));
+  m_infinity := 1/(1 + exp((V_m - V_membrane)/theta_m));
 
   // Rate Rules:
-  V_membrane' = -(i_Ca + i_K + i_K_ATP + i_s) / tau_membrane;
-  n' = (lamda * (n_infinity - n)) / tau_potassium_current_n_gate;
-  s' = (s_infinity - s) / tau_s;
+  V_membrane' = -(i_Ca + i_K + i_K_ATP + i_s)/tau_membrane;
+  n' = (lamda*(n_infinity - n))/tau_potassium_current_n_gate;
+  s' = (s_infinity - s)/tau_s;
 
   // Species initializations:
-  V_membrane = -65 / Compartment_;
-  n = 0.05 / Compartment_;
-  s = 0.025 / Compartment_;
+  V_membrane = -65/Compartment_;
+  n = 0.05/Compartment_;
+  s = 0.025/Compartment_;
 
   // Compartment initializations:
   Compartment_ = 1;

@@ -1,6 +1,6 @@
 //Created by libAntimony v2.5
 function function_1(k, E, S, Km)
-  (k * E * S) / (Km + S);
+  (k*E*S)/(Km + S);
 end
 
 
@@ -28,51 +28,51 @@ model *Complement_System()
   mC3 := dC3b;
 
   // Reactions:
-  a_01: PC + CRP -> PC_CRP; compartment_ * (ka01_1 * PC * CRP - ka01_2 * PC_CRP);
-  a_02: PC_CRP + C1 -> PC_CRP_C1; compartment_ * (ka02_1 * PC_CRP * C1 - ka02_2 * PC_CRP_C1);
-  a_03: C4 => C4a + C4b; compartment_ * function_1(ka03_1, PC_CRP_C1, C4, ka03_2);
-  a_04: C2 => C2a + C2b; compartment_ * function_1(ka04_1, PC_CRP_C1, C2, ka04_2);
-  c_01: C4b + C2a -> C4b_C2a; compartment_ * (kc01_1 * C4b * C2a - kc01_2 * C4b_C2a);
-  c_02: C4b_C2a + C3 => C4b_C2a + C3a + C3b; compartment_ * kc02 * C4b_C2a * C3;
-  c_03: C3b -> dC3b; compartment_ * (kc03_1 * C3b - kc03_2 * dC3b);
-  c_04: C4b_C2a -> dC4b_C2a; compartment_ * (kc04_1 * C4b_C2a - kc04_2 * dC4b_C2a);
-  d_01: PC_CRP + LF -> PC_CRP_LF; compartment_ * (kd01_1 * PC_CRP * LF - kd01_2 * PC_CRP_LF);
-  d_02: PC_CRP_LF + MASP -> PC_CRP_LF_MASP; compartment_ * (kd02_1 * PC_CRP_LF * MASP - kd02_2 * PC_CRP_LF_MASP);
-  d_03: C4 => C4a + C4b; compartment_ * function_1(kd03_1, PC_CRP_LF_MASP, C4, kd03_2);
-  d_04: C2 => C2a + C2b; compartment_ * function_1(kd04_1, PC_CRP_LF_MASP, C2, kd04_2);
-  b_01: GlcNac + LF -> GlcNac_LF; compartment_ * (kb01_1 * GlcNac * LF - kb01_2 * GlcNac_LF);
-  b_02: GlcNac_LF + MASP -> GlcNac_LF_MASP; compartment_ * (kb02_1 * GlcNac_LF * MASP - kb02_2 * GlcNac_LF_MASP);
-  b_03: C4 => C4a + C4b; compartment_ * function_1(kb03_1, GlcNac_LF_MASP, C4, kb03_2);
-  b_04: C2 => C2a + C2b; compartment_ * function_1(kb04_1, GlcNac_LF_MASP, C2, kb04_2);
-  e_01: GlcNac_LF + CRP -> GlcNac_LF_CRP; compartment_ * (ke01_1 * GlcNac_LF * CRP - ke01_2 * GlcNac_LF_CRP);
-  e_02: GlcNac_LF_CRP + C1 -> GlcNac_LF_CRP_C1; compartment_ * (ke02_1 * GlcNac_LF_CRP * C1 - ke02_2 * GlcNac_LF_CRP_C1);
-  e_03: C4 => C4a + C4b; compartment_ * function_1(ke03_1, GlcNac_LF_CRP_C1, C4, ke03_2);
-  e_04: C2 => C2a + C2b; compartment_ * function_1(ke04_1, GlcNac_LF_CRP_C1, C2, ke04_2);
-  f_01: C4BP + PC_CRP -> C4BP_PC_CRP; compartment_ * (kf01_1 * C4BP * PC_CRP - kf01_2 * C4BP_PC_CRP);
-  f_02: C4BP + GlcNac_LF_CRP -> C4BP_GlcNac_LF_CRP; compartment_ * (kf02_1 * C4BP * GlcNac_LF_CRP - kf02_2 * C4BP_GlcNac_LF_CRP);
-  f_03: C4b_C2a + C4BP => iC4b_C2a + C4BP; compartment_ * kf03 * C4b_C2a * C4BP;
-  f_04: C4BP + C4b -> C4BP_C4b; compartment_ * (kf04_1 * C4BP * C4b - kf04_2 * C4BP_C4b);
-  f_05: C4b_C2a + C4BP => C4b + C2a + C4BP; compartment_ * kf05 * C4b_C2a * C4BP;
-  f_06: C4b_C2a + C4BP -> C4b_C2a_C4BP; compartment_ * (kf06_1 * C4b_C2a * C4BP - kf06_2 * C4b_C2a_C4BP);
-  f_07: dC4b_C2a + C4BP -> dC4b_C2a_C4BP; compartment_ * (kf07_1 * dC4b_C2a * C4BP - kf07_2 * dC4b_C2a_C4BP);
-  t_01: C4BP => ; compartment_ * t_01_k1_4 * C4BP;
-  t_02: C3b => ; compartment_ * t_02_k1_4 * C3b;
-  t_03: C4b_C2a => ; compartment_ * t_03_k1_4 * C4b_C2a;
-  d_05: PC_CRP_LF + C1 -> PC_CRP_LF_C1; compartment_ * (kd05_1 * PC_CRP_LF * C1 - kd05_2 * PC_CRP_LF_C1);
-  d_06: C4 => C4a + C4b; compartment_ * function_1(kd06_1, PC_CRP_LF_C1, C4, kd06_2);
-  d_07: C2 => C2a + C2b; compartment_ * function_1(kd07_1, PC_CRP_LF_C1, C2, kd07_2);
-  t_04: C4BP + PC_CRP_LF -> C4BP_PC_CRP_LF; compartment_ * (t_04_k1_4 * C4BP * PC_CRP_LF - t_04_k2 * C4BP_PC_CRP_LF);
-  e_05: GlcNac_LF_CRP + MASP -> GlcNac_LF_CRP_MASP; compartment_ * (ke05_1 * GlcNac_LF_CRP * MASP - ke05_2 * GlcNac_LF_CRP_MASP);
-  e_06: C4 => C4a + C4b; compartment_ * function_1(ke06_1, GlcNac_LF_CRP_MASP, C4, ke06_2);
-  e_07: C2 => C2a + C2b; compartment_ * function_1(ke07_1, GlcNac_LF_CRP_MASP, C2, ke07_2);
-  d_08: PC_CRP_LF_C1 + MASP -> PC_CRP_LF_C1_MASP; compartment_ * (kd08_1 * PC_CRP_LF_C1 * MASP - kd08_2 * PC_CRP_LF_C1_MASP);
-  d_09: PC_CRP_LF_MASP + C1 -> PC_CRP_LF_C1_MASP; compartment_ * (kd09_1 * PC_CRP_LF_MASP * C1 - kd09_2 * PC_CRP_LF_C1_MASP);
-  d_10: C4 => C4a + C4b; compartment_ * function_1(kd10_1, PC_CRP_LF_C1_MASP, C4, kd10_2);
-  d_11: C2 => C2a + C2b; compartment_ * function_1(kd11_1, PC_CRP_LF_C1_MASP, C2, kd11_2);
-  g_01: X + HF -> GlcNac_HF; compartment_ * (kg01_1 * X * HF - kg01_2 * GlcNac_HF);
-  g_02: GlcNac_HF + MASP -> GlcNac_HF_MASP; compartment_ * (kg02_1 * GlcNac_HF * MASP - kg02_2 * GlcNac_HF_MASP);
-  g_03: C4 => C4a + C4b; compartment_ * function_1(kg03_1, GlcNac_HF_MASP, C4, kg03_2);
-  g_04: C2 => C2a + C2b; compartment_ * function_1(kg04_1, GlcNac_HF_MASP, C2, kg04_2);
+  a_01: PC + CRP -> PC_CRP; compartment_*(ka01_1*PC*CRP - ka01_2*PC_CRP);
+  a_02: PC_CRP + C1 -> PC_CRP_C1; compartment_*(ka02_1*PC_CRP*C1 - ka02_2*PC_CRP_C1);
+  a_03: C4 => C4a + C4b; compartment_*function_1(ka03_1, PC_CRP_C1, C4, ka03_2);
+  a_04: C2 => C2a + C2b; compartment_*function_1(ka04_1, PC_CRP_C1, C2, ka04_2);
+  c_01: C4b + C2a -> C4b_C2a; compartment_*(kc01_1*C4b*C2a - kc01_2*C4b_C2a);
+  c_02: C4b_C2a + C3 => C4b_C2a + C3a + C3b; compartment_*kc02*C4b_C2a*C3;
+  c_03: C3b -> dC3b; compartment_*(kc03_1*C3b - kc03_2*dC3b);
+  c_04: C4b_C2a -> dC4b_C2a; compartment_*(kc04_1*C4b_C2a - kc04_2*dC4b_C2a);
+  d_01: PC_CRP + LF -> PC_CRP_LF; compartment_*(kd01_1*PC_CRP*LF - kd01_2*PC_CRP_LF);
+  d_02: PC_CRP_LF + MASP -> PC_CRP_LF_MASP; compartment_*(kd02_1*PC_CRP_LF*MASP - kd02_2*PC_CRP_LF_MASP);
+  d_03: C4 => C4a + C4b; compartment_*function_1(kd03_1, PC_CRP_LF_MASP, C4, kd03_2);
+  d_04: C2 => C2a + C2b; compartment_*function_1(kd04_1, PC_CRP_LF_MASP, C2, kd04_2);
+  b_01: GlcNac + LF -> GlcNac_LF; compartment_*(kb01_1*GlcNac*LF - kb01_2*GlcNac_LF);
+  b_02: GlcNac_LF + MASP -> GlcNac_LF_MASP; compartment_*(kb02_1*GlcNac_LF*MASP - kb02_2*GlcNac_LF_MASP);
+  b_03: C4 => C4a + C4b; compartment_*function_1(kb03_1, GlcNac_LF_MASP, C4, kb03_2);
+  b_04: C2 => C2a + C2b; compartment_*function_1(kb04_1, GlcNac_LF_MASP, C2, kb04_2);
+  e_01: GlcNac_LF + CRP -> GlcNac_LF_CRP; compartment_*(ke01_1*GlcNac_LF*CRP - ke01_2*GlcNac_LF_CRP);
+  e_02: GlcNac_LF_CRP + C1 -> GlcNac_LF_CRP_C1; compartment_*(ke02_1*GlcNac_LF_CRP*C1 - ke02_2*GlcNac_LF_CRP_C1);
+  e_03: C4 => C4a + C4b; compartment_*function_1(ke03_1, GlcNac_LF_CRP_C1, C4, ke03_2);
+  e_04: C2 => C2a + C2b; compartment_*function_1(ke04_1, GlcNac_LF_CRP_C1, C2, ke04_2);
+  f_01: C4BP + PC_CRP -> C4BP_PC_CRP; compartment_*(kf01_1*C4BP*PC_CRP - kf01_2*C4BP_PC_CRP);
+  f_02: C4BP + GlcNac_LF_CRP -> C4BP_GlcNac_LF_CRP; compartment_*(kf02_1*C4BP*GlcNac_LF_CRP - kf02_2*C4BP_GlcNac_LF_CRP);
+  f_03: C4b_C2a + C4BP => iC4b_C2a + C4BP; compartment_*kf03*C4b_C2a*C4BP;
+  f_04: C4BP + C4b -> C4BP_C4b; compartment_*(kf04_1*C4BP*C4b - kf04_2*C4BP_C4b);
+  f_05: C4b_C2a + C4BP => C4b + C2a + C4BP; compartment_*kf05*C4b_C2a*C4BP;
+  f_06: C4b_C2a + C4BP -> C4b_C2a_C4BP; compartment_*(kf06_1*C4b_C2a*C4BP - kf06_2*C4b_C2a_C4BP);
+  f_07: dC4b_C2a + C4BP -> dC4b_C2a_C4BP; compartment_*(kf07_1*dC4b_C2a*C4BP - kf07_2*dC4b_C2a_C4BP);
+  t_01: C4BP => ; compartment_*t_01_k1_4*C4BP;
+  t_02: C3b => ; compartment_*t_02_k1_4*C3b;
+  t_03: C4b_C2a => ; compartment_*t_03_k1_4*C4b_C2a;
+  d_05: PC_CRP_LF + C1 -> PC_CRP_LF_C1; compartment_*(kd05_1*PC_CRP_LF*C1 - kd05_2*PC_CRP_LF_C1);
+  d_06: C4 => C4a + C4b; compartment_*function_1(kd06_1, PC_CRP_LF_C1, C4, kd06_2);
+  d_07: C2 => C2a + C2b; compartment_*function_1(kd07_1, PC_CRP_LF_C1, C2, kd07_2);
+  t_04: C4BP + PC_CRP_LF -> C4BP_PC_CRP_LF; compartment_*(t_04_k1_4*C4BP*PC_CRP_LF - t_04_k2*C4BP_PC_CRP_LF);
+  e_05: GlcNac_LF_CRP + MASP -> GlcNac_LF_CRP_MASP; compartment_*(ke05_1*GlcNac_LF_CRP*MASP - ke05_2*GlcNac_LF_CRP_MASP);
+  e_06: C4 => C4a + C4b; compartment_*function_1(ke06_1, GlcNac_LF_CRP_MASP, C4, ke06_2);
+  e_07: C2 => C2a + C2b; compartment_*function_1(ke07_1, GlcNac_LF_CRP_MASP, C2, ke07_2);
+  d_08: PC_CRP_LF_C1 + MASP -> PC_CRP_LF_C1_MASP; compartment_*(kd08_1*PC_CRP_LF_C1*MASP - kd08_2*PC_CRP_LF_C1_MASP);
+  d_09: PC_CRP_LF_MASP + C1 -> PC_CRP_LF_C1_MASP; compartment_*(kd09_1*PC_CRP_LF_MASP*C1 - kd09_2*PC_CRP_LF_C1_MASP);
+  d_10: C4 => C4a + C4b; compartment_*function_1(kd10_1, PC_CRP_LF_C1_MASP, C4, kd10_2);
+  d_11: C2 => C2a + C2b; compartment_*function_1(kd11_1, PC_CRP_LF_C1_MASP, C2, kd11_2);
+  g_01: X + HF -> GlcNac_HF; compartment_*(kg01_1*X*HF - kg01_2*GlcNac_HF);
+  g_02: GlcNac_HF + MASP -> GlcNac_HF_MASP; compartment_*(kg02_1*GlcNac_HF*MASP - kg02_2*GlcNac_HF_MASP);
+  g_03: C4 => C4a + C4b; compartment_*function_1(kg03_1, GlcNac_HF_MASP, C4, kg03_2);
+  g_04: C2 => C2a + C2b; compartment_*function_1(kg04_1, GlcNac_HF_MASP, C2, kg04_2);
 
   // Species initializations:
   CRP = 2;

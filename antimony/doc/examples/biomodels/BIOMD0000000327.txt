@@ -1,10 +1,10 @@
 //Created by libAntimony v2.5
 function ap(ao, ai, bo, bi, ka, kb)
-  (ao * bi - bo * ai) / (ka * kb * ((1 + ai / ka + bi / kb) * (ao / ka + bo / kb) + (1 + ao / ka + bo / kb) * (ai / ka + bi / kb)));
+  (ao*bi - bo*ai)/(ka*kb*((1 + ai/ka + bi/kb)*(ao/ka + bo/kb) + (1 + ao/ka + bo/kb)*(ai/ka + bi/kb)));
 end
 
 function g(xi, xo)
-  (xi * xo * ln(xi / xo)) / (xi - xo);
+  (xi*xo*ln(xi/xo))/(xi - xo);
 end
 
 
@@ -17,35 +17,35 @@ model *whitcomb04()
 
   // Assignment Rules:
   cl := 160 - bl;
-  eb := (r * temp) / f * ln(bi / bl);
-  enbc := (r * temp) / f * ln((bi^2 * ni) / (bb^2 * nb));
-  ec := (r * temp) / f * ln(ci / cl);
-  ena := (r * temp) / f * ln(nb / ni);
-  kccf := g(ci, cl) * gcftr * g_cl;
-  kbcf := g(bi, bl) * gcftr * g_bi;
+  eb := (r*temp)/f*ln(bi/bl);
+  enbc := (r*temp)/f*ln((bi^2*ni)/(bb^2*nb));
+  ec := (r*temp)/f*ln(ci/cl);
+  ena := (r*temp)/f*ln(nb/ni);
+  kccf := g(ci, cl)*gcftr*g_cl;
+  kbcf := g(bi, bl)*gcftr*g_bi;
   knbc := gnbc;
-  v := (knbc * enbc + kbcf * eb + kccf * ec + gk * ek + gnaleak * ena) / (knbc + kbcf + kccf + gk);
-  jnbc := knbc * (v - enbc);
-  jbcftr := kbcf * (v - eb);
-  jccftr := kccf * (v - ec);
-  japl := ap(bl, bi, cl, ci, kbi, kcl) * gapl;
-  japbl := ap(bb, bi, cb, ci, kbi, kcl) * gapbl;
-  jlum := (-(jccftr + jbcftr) * vr + jac * (1 + rat)) / ionstr;
-  jnak := gnak * (v - epump) * (ni / np0)^3;
-  jnaleak := gnaleak * (v - ena);
+  v := (knbc*enbc + kbcf*eb + kccf*ec + gk*ek + gnaleak*ena)/(knbc + kbcf + kccf + gk);
+  jnbc := knbc*(v - enbc);
+  jbcftr := kbcf*(v - eb);
+  jccftr := kccf*(v - ec);
+  japl := ap(bl, bi, cl, ci, kbi, kcl)*gapl;
+  japbl := ap(bb, bi, cb, ci, kbi, kcl)*gapbl;
+  jlum := (-(jccftr + jbcftr)*vr + jac*(1 + rat))/ionstr;
+  jnak := gnak*(v - epump)*(ni/np0)^3;
+  jnaleak := gnaleak*(v - ena);
 
   // Reactions:
-  nbc: 2$bb + $nb -> 2bi + ni; cell * zeta * japl;
-  bcftr: bl -> bi; cell * zeta * jbcftr;
-  ccftr: $cl -> ci; cell * zeta * jccftr;
-  apl: bl + ci -> bi + $cl; cell * zeta * japl;
-  apbl: $bb + ci -> bi + $cb; cell * zeta * japbl;
-  nak: ni -> $nb; cell * zeta * jnak;
-  naleak: ni -> $nb; cell * zeta * jnaleak;
-  buffering:  -> bi; cell * zeta * buf * (bi0 - bi);
-  bac:  -> bl; lumen * zeta * jac * rat;
-  cac:  -> $cl; lumen * zeta * jac;
-  outflow: bl -> ; lumen * zeta * jlum * bl;
+  nbc: 2$bb + $nb -> 2bi + ni; cell*zeta*japl;
+  bcftr: bl -> bi; cell*zeta*jbcftr;
+  ccftr: $cl -> ci; cell*zeta*jccftr;
+  apl: bl + ci -> bi + $cl; cell*zeta*japl;
+  apbl: $bb + ci -> bi + $cb; cell*zeta*japbl;
+  nak: ni -> $nb; cell*zeta*jnak;
+  naleak: ni -> $nb; cell*zeta*jnaleak;
+  buffering:  -> bi; cell*zeta*buf*(bi0 - bi);
+  bac:  -> bl; lumen*zeta*jac*rat;
+  cac:  -> $cl; lumen*zeta*jac;
+  outflow: bl -> ; lumen*zeta*jlum*bl;
 
   // Events:
   _E0: at time >= ton: gcftr = gcftron;
@@ -63,7 +63,7 @@ model *whitcomb04()
   // Compartment initializations:
   plasma = 1;
   cell = 1;
-  lumen = cell / vr;
+  lumen = cell/vr;
 
   // Variable initializations:
   vr = 10;

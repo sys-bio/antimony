@@ -6,29 +6,29 @@ model *Bertram2000_PancreaticBetaCells_Oscillations()
   species $V in Compartment_, $n in Compartment_, $s1 in Compartment_, $s2 in Compartment_;
 
   // Assignment Rules:
-  ICa := gCa * minf * (V - VCa);
-  IK := gK * n * (V - VK);
-  Il := gl * (V - Vl);
-  Is1 := gs1 * s1 * (V - VK);
-  Is2 := gs2 * s2 * (V - VK);
-  ninf := 1 / (1 + exp((Vn - V) / sn));
-  taun := tnbar / (1 + exp((V - Vn) / sn));
-  s1inf := 1 / (1 + exp((Vs1 - V) / ss1));
-  s2inf := 1 / (1 + exp((Vs2 - V) / ss2));
-  minf := 1 / (1 + exp((Vm - V) / sm));
+  ICa := gCa*minf*(V - VCa);
+  IK := gK*n*(V - VK);
+  Il := gl*(V - Vl);
+  Is1 := gs1*s1*(V - VK);
+  Is2 := gs2*s2*(V - VK);
+  ninf := 1/(1 + exp((Vn - V)/sn));
+  taun := tnbar/(1 + exp((V - Vn)/sn));
+  s1inf := 1/(1 + exp((Vs1 - V)/ss1));
+  s2inf := 1/(1 + exp((Vs2 - V)/ss2));
+  minf := 1/(1 + exp((Vm - V)/sm));
   parameter_1 := Is1 + Is2;
 
   // Rate Rules:
-  V' = -(ICa + IK + Il + Is1 + Is2) / Cm;
-  n' = (ninf - n) / taun;
-  s1' = (s1inf - s1) / taus1;
-  s2' = (s2inf - s2) / taus2;
+  V' = -(ICa + IK + Il + Is1 + Is2)/Cm;
+  n' = (ninf - n)/taun;
+  s1' = (s1inf - s1)/taus1;
+  s2' = (s2inf - s2)/taus2;
 
   // Species initializations:
-  V = -43 / Compartment_;
-  n = 0.03 / Compartment_;
-  s1 = 0.1 / Compartment_;
-  s2 = 0.434 / Compartment_;
+  V = -43/Compartment_;
+  n = 0.03/Compartment_;
+  s1 = 0.1/Compartment_;
+  s2 = 0.434/Compartment_;
 
   // Compartment initializations:
   Compartment_ = 1;

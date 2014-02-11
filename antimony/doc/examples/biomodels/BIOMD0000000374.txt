@@ -8,44 +8,44 @@ model *Bertram1995_PancreaticBetaCell_CRAC()
 
   // Assignment Rules:
   i_Ca := i_Ca_f + i_Ca_s;
-  i_K := g_K * n * (V_membrane + 70);
-  i_K_ATP := g_K_ATP * (V_membrane + 70);
-  i_K_Ca := (g_K_Ca * Ca_i^5) / (Ca_i^5 + kdkca^5) * (V_membrane + 70);
-  i_CRAC := g_CRAC * r_infinity * (V_membrane - V_CRAC);
-  i_leak := g_leak * (V_membrane - V_CRAC);
-  n_infinity := 1 / (1 + exp((-15 - V_membrane) / 6));
-  tau_n := 9.09 / (1 + exp((15 + V_membrane) / 6));
-  jm_infinity := 1 - 1 / (1 + exp((53 + V_membrane) / 2));
-  tau_j := 50000 / (exp((53 + V_membrane) / 4) + exp((-53 - V_membrane) / 4)) + 1500;
+  i_K := g_K*n*(V_membrane + 70);
+  i_K_ATP := g_K_ATP*(V_membrane + 70);
+  i_K_Ca := (g_K_Ca*Ca_i^5)/(Ca_i^5 + kdkca^5)*(V_membrane + 70);
+  i_CRAC := g_CRAC*r_infinity*(V_membrane - V_CRAC);
+  i_leak := g_leak*(V_membrane - V_CRAC);
+  n_infinity := 1/(1 + exp((-15 - V_membrane)/6));
+  tau_n := 9.09/(1 + exp((15 + V_membrane)/6));
+  jm_infinity := 1 - 1/(1 + exp((53 + V_membrane)/2));
+  tau_j := 50000/(exp((53 + V_membrane)/4) + exp((-53 - V_membrane)/4)) + 1500;
   J_er_tot := (J_er_leak + J_er_IP3) - J_er_p;
-  J_mem_tot := -f * (gamma * i_Ca + k_Ca * Ca_i);
-  i_Ca_f := g_Ca_f * m_f_infinity * (V_membrane - V_Ca);
-  m_f_infinity := 1 / (1 + exp((-20 - V_membrane) / 7.5));
-  i_Ca_s := g_Ca_s * m_s_infinity * (1 - jm) * (V_membrane - V_Ca);
-  m_s_infinity := 1 / (1 + exp((-16 - V_membrane) / 10));
+  J_mem_tot := -f*(gamma*i_Ca + k_Ca*Ca_i);
+  i_Ca_f := g_Ca_f*m_f_infinity*(V_membrane - V_Ca);
+  m_f_infinity := 1/(1 + exp((-20 - V_membrane)/7.5));
+  i_Ca_s := g_Ca_s*m_s_infinity*(1 - jm)*(V_membrane - V_Ca);
+  m_s_infinity := 1/(1 + exp((-16 - V_membrane)/10));
   j := 1 - jm;
-  r_infinity := 1 / (1 + exp(1 * (Ca_er_Ca_equations - Ca_er_bar)));
-  J_er_p := (verp * Ca_i^2) / (Ca_i^2 + kerp^2);
-  a_infinity := 1 / (1 + dact / Ca_i);
-  b_infinity := IP3 / (IP3 + dip3);
-  h_infinity := 1 / (1 + Ca_i / dinh);
-  O := a_infinity^3 * b_infinity^3 * h_infinity^3 * 1;
-  J_er_leak := perl * (Ca_er_Ca_equations - Ca_i);
-  J_er_IP3 := O * (Ca_er_Ca_equations - Ca_i);
+  r_infinity := 1/(1 + exp(1*(Ca_er_Ca_equations - Ca_er_bar)));
+  J_er_p := (verp*Ca_i^2)/(Ca_i^2 + kerp^2);
+  a_infinity := 1/(1 + dact/Ca_i);
+  b_infinity := IP3/(IP3 + dip3);
+  h_infinity := 1/(1 + Ca_i/dinh);
+  O := a_infinity^3*b_infinity^3*h_infinity^3*1;
+  J_er_leak := perl*(Ca_er_Ca_equations - Ca_i);
+  J_er_IP3 := O*(Ca_er_Ca_equations - Ca_i);
 
   // Rate Rules:
-  V_membrane' = -(i_Ca + i_K + i_K_ATP + i_K_Ca + i_CRAC + i_leak) / Cm;
-  n' = (lambda_n * (n_infinity - n)) / tau_n;
-  jm' = (jm_infinity - jm) / tau_j;
-  Ca_er_Ca_equations' = -J_er_tot / (lambda_er * sigma_er);
-  Ca_i' = J_er_tot / lambda_er + J_mem_tot;
+  V_membrane' = -(i_Ca + i_K + i_K_ATP + i_K_Ca + i_CRAC + i_leak)/Cm;
+  n' = (lambda_n*(n_infinity - n))/tau_n;
+  jm' = (jm_infinity - jm)/tau_j;
+  Ca_er_Ca_equations' = -J_er_tot/(lambda_er*sigma_er);
+  Ca_i' = J_er_tot/lambda_er + J_mem_tot;
 
   // Species initializations:
-  V_membrane = -61 / COMpartment_;
-  n = 0.0005 / COMpartment_;
-  jm = 0.25 / COMpartment_;
-  Ca_er_Ca_equations = 9 / COMpartment_;
-  Ca_i = 0.11 / COMpartment_;
+  V_membrane = -61/COMpartment_;
+  n = 0.0005/COMpartment_;
+  jm = 0.25/COMpartment_;
+  Ca_er_Ca_equations = 9/COMpartment_;
+  Ca_i = 0.11/COMpartment_;
 
   // Compartment initializations:
   COMpartment_ = 1;

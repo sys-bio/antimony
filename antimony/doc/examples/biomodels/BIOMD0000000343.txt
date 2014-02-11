@@ -15,22 +15,22 @@ model *model01()
   species $measdosR in compartment_0000001;
 
   // Assignment Rules:
-  V1a := k1a * ins * IR + k1abasic * IR;
-  V1b := k1b * IRins;
-  V1r := k1r * IRi;
-  V1g := k1g * IRp;
-  V1c := k1c * IRins;
-  V1d := k1d * IRp;
-  V1e := IRip * (k1e + (k1f * Xp) / (1 + Xp));
-  V2 := k21 * (IRp + k22 * IRip) * IRS;
-  Vm2 := km2 * IRSip;
-  V3 := k3 * X * IRSip;
-  Vm3 := km3 * Xp;
+  V1a := k1a*ins*IR + k1abasic*IR;
+  V1b := k1b*IRins;
+  V1r := k1r*IRi;
+  V1g := k1g*IRp;
+  V1c := k1c*IRins;
+  V1d := k1d*IRp;
+  V1e := IRip*(k1e + (k1f*Xp)/(1 + Xp));
+  V2 := k21*(IRp + k22*IRip)*IRS;
+  Vm2 := km2*IRSip;
+  V3 := k3*X*IRSip;
+  Vm3 := km3*Xp;
   simXP := Xp;
-  intamount := (IRi + IRip) / 10;
-  measdoublestep := ky2 * IRSip;
-  measanna := kyanna * IRSip;
-  measdosR := kyDosR * IRSip;
+  intamount := (IRi + IRip)/10;
+  measdoublestep := ky2*IRSip;
+  measanna := kyanna*IRSip;
+  measdosR := kyDosR*IRSip;
 
   // Rate Rules:
   IR' = -V1a + V1b + V1r + V1g;
@@ -44,14 +44,14 @@ model *model01()
   Xp' = V3 - Vm3;
 
   // Species initializations:
-  IR = 10 / compartment_0000001;
+  IR = 10/compartment_0000001;
   IRins = 0;
   IRp = 0;
   IRip = 0;
   IRi = 0;
   IRS = 10;
   IRSip = 0;
-  X = 10 / compartment_0000001;
+  X = 10/compartment_0000001;
   Xp = 0;
   measIRp = 1;
 

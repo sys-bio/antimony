@@ -7,31 +7,31 @@ model *Plant1981_BurstingNerveCells()
   species $n1 in COMpartment_, $c in COMpartment_;
 
   // Assignment Rules:
-  i_Na := g_I * m_infinity^3 * h1 * (V_I - V_membrane);
-  i_Ca := g_T * x1 * (V_I - V_membrane);
-  i_K := g_K * n1^4 * (V_K - V_membrane);
-  i_K_Ca := (g_K_Ca * c) / (K_p + c) * (V_K - V_membrane);
-  i_L := g_L * (V_L - V_membrane);
-  h_infinity := alpha_h / (alpha_h + beta_h);
-  tau_h := 12.5 / (alpha_h + beta_h);
-  x_infinity := 1 / (exp(0.15 * (-V_membrane - 50)) + 1);
-  n_infinity := alpha_n / (alpha_n + beta_n);
-  tau_n := 12.5 / (alpha_n + beta_n);
-  m_infinity := alpha_m / (alpha_m + beta_m);
-  Vs := a * V_membrane + b;
-  alpha_m := (0.1 * (50 - Vs)) / (exp((50 - Vs) / 10) - 1);
-  beta_m := 4 * exp((25 - Vs) / 18);
-  alpha_h := 0.07 * exp((25 - Vs) / 20);
-  beta_h := 1 / (exp((55 - Vs) / 10) + 1);
-  alpha_n := (0.01 * (55 - Vs)) / (exp((55 - Vs) / 10) - 1);
-  beta_n := 0.125 * exp((45 - Vs) / 80);
+  i_Na := g_I*m_infinity^3*h1*(V_I - V_membrane);
+  i_Ca := g_T*x1*(V_I - V_membrane);
+  i_K := g_K*n1^4*(V_K - V_membrane);
+  i_K_Ca := (g_K_Ca*c)/(K_p + c)*(V_K - V_membrane);
+  i_L := g_L*(V_L - V_membrane);
+  h_infinity := alpha_h/(alpha_h + beta_h);
+  tau_h := 12.5/(alpha_h + beta_h);
+  x_infinity := 1/(exp(0.15*(-V_membrane - 50)) + 1);
+  n_infinity := alpha_n/(alpha_n + beta_n);
+  tau_n := 12.5/(alpha_n + beta_n);
+  m_infinity := alpha_m/(alpha_m + beta_m);
+  Vs := a*V_membrane + b;
+  alpha_m := (0.1*(50 - Vs))/(exp((50 - Vs)/10) - 1);
+  beta_m := 4*exp((25 - Vs)/18);
+  alpha_h := 0.07*exp((25 - Vs)/20);
+  beta_h := 1/(exp((55 - Vs)/10) + 1);
+  alpha_n := (0.01*(55 - Vs))/(exp((55 - Vs)/10) - 1);
+  beta_n := 0.125*exp((45 - Vs)/80);
 
   // Rate Rules:
   V_membrane' = i_Na + i_Ca + i_K + i_K_Ca + i_L;
-  h1' = (h_infinity - h1) / tau_h;
-  x1' = (x_infinity - x1) / tau_x;
-  n1' = (n_infinity - n1) / tau_n;
-  c' = f * (K_c * x1 * (V_Ca - V_membrane) - c);
+  h1' = (h_infinity - h1)/tau_h;
+  x1' = (x_infinity - x1)/tau_x;
+  n1' = (n_infinity - n1)/tau_n;
+  c' = f*(K_c*x1*(V_Ca - V_membrane) - c);
 
   // Species initializations:
   V_membrane = -55;

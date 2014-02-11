@@ -16,27 +16,27 @@ model *Arnold2011_Hahn1986_CalvinCycle_Starch_Sucrose()
   species $E in phloem, $Resp in chloroplast;
 
   // Assignment Rules:
-  v_15 := 0.0258 * HePc * UTP;
+  v_15 := 0.0258*HePc*UTP;
 
   // Reactions:
-  RuBisCO: RuBP + $CO2 => 2PGA; chloroplast * RuBisCO_k1 * RuBP * CO2;
-  PGA_red: PGA + ATP => TP + ADP + Pi_; chloroplast * PGA_red_k1 * PGA * ATP;
-  FBP_A_ase: 2TP -> HeP + Pi_; chloroplast * (FBP_A_ase_k1 * TP^2 - FBP_A_ase_k2 * HeP * Pi_);
-  F6P_TK1: HeP => TPGA + E4P; chloroplast * F6P_TK1_k1 * HeP;
-  SBP_A_ase: E4P + TP => S7P + Pi_; chloroplast * SBP_A_ase_k1 * E4P * TP;
-  S7P_TK1_R5P_I: S7P => TPGA + Ru5P; chloroplast * S7P_TK1_R5P_I_k1 * S7P;
-  TK2_Ru5P_E: TPGA + TP => Ru5P; chloroplast * TK2_Ru5P_E_k1 * TPGA * TP;
-  Ru5P_K: Ru5P + ATP => RuBP + ADP; chloroplast * Ru5P_K_k1 * Ru5P * ATP;
-  ATP_S: ADP + Pi_ => ATP; chloroplast * ATP_S_k1 * ADP * Pi_;
-  Starch_S: ATP + HeP => GG + ADP + 2Pi_; chloroplast * Starch_S_k1 * ATP * HeP;
-  Starch_P: GG + Pi_ => HeP; chloroplast * Starch_P_k1 * GG * Pi_;
-  TPT: TP + Pic => TPc + Pi_; TPT_k1 * TP * Pic;
-  FBPc_A_ase: 2TPc => HePc + Pic; cytosol * FBPc_A_ase_k1 * TPc^2;
+  RuBisCO: RuBP + $CO2 => 2PGA; chloroplast*RuBisCO_k1*RuBP*CO2;
+  PGA_red: PGA + ATP => TP + ADP + Pi_; chloroplast*PGA_red_k1*PGA*ATP;
+  FBP_A_ase: 2TP -> HeP + Pi_; chloroplast*(FBP_A_ase_k1*TP^2 - FBP_A_ase_k2*HeP*Pi_);
+  F6P_TK1: HeP => TPGA + E4P; chloroplast*F6P_TK1_k1*HeP;
+  SBP_A_ase: E4P + TP => S7P + Pi_; chloroplast*SBP_A_ase_k1*E4P*TP;
+  S7P_TK1_R5P_I: S7P => TPGA + Ru5P; chloroplast*S7P_TK1_R5P_I_k1*S7P;
+  TK2_Ru5P_E: TPGA + TP => Ru5P; chloroplast*TK2_Ru5P_E_k1*TPGA*TP;
+  Ru5P_K: Ru5P + ATP => RuBP + ADP; chloroplast*Ru5P_K_k1*Ru5P*ATP;
+  ATP_S: ADP + Pi_ => ATP; chloroplast*ATP_S_k1*ADP*Pi_;
+  Starch_S: ATP + HeP => GG + ADP + 2Pi_; chloroplast*Starch_S_k1*ATP*HeP;
+  Starch_P: GG + Pi_ => HeP; chloroplast*Starch_P_k1*GG*Pi_;
+  TPT: TP + Pic => TPc + Pi_; TPT_k1*TP*Pic;
+  FBPc_A_ase: 2TPc => HePc + Pic; cytosol*FBPc_A_ase_k1*TPc^2;
   Suc_S: 2HePc + UTP => Suc + UDP + 3Pic; function_1(v_15);
-  UTP_S: UDP + Pic => UTP; UTP_S_k1 * UDP * Pic;
-  Respi: Suc => $Resp; r * Suc;
-  Diffu: Suc -> SucV; D * Suc - D * SucV;
-  Transl: Suc -> $E; phi * Suc - phi * E;
+  UTP_S: UDP + Pic => UTP; UTP_S_k1*UDP*Pic;
+  Respi: Suc => $Resp; r*Suc;
+  Diffu: Suc -> SucV; D*Suc - D*SucV;
+  Transl: Suc -> $E; phi*Suc - phi*E;
 
   // Species initializations:
   RuBP = 2;

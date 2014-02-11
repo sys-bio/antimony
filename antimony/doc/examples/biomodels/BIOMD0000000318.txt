@@ -7,23 +7,23 @@ model *yao08()
   species RP in cell;
 
   // Reactions:
-  r1:  => MC; cell * ((r1_kM * S) / (r1_KS + S));
-  r2:  => CD; cell * ((r2_kkCDS * S) / (r2_KS + S));
-  r3:  => EF; cell * ((r3_kkEF * MC * EF) / ((r3_KMC + MC) * (r3_KEF + EF)) + (r3_kkb * MC) / (r3_KMC + MC));
-  r4:  => CE; cell * ((r4_kkCE * EF) / (r4_KEF + EF));
-  r5:  => CD; cell * ((r5_kkCD * MC) / (r5_KMC + MC));
-  r6:  => RB; cell * r6_kkRB;
-  r7: RE => EF + RP; cell * ((r7_kkRBPP * CD * RE) / (r7_KD + RE) + (r7_kkRBPP * CE * RE) / (r7_KE + RE));
-  r8: EF + RB => RE; cell * r8_kkRE * RB * EF;
-  r9: RB => RP; cell * ((r9_kkRBP * CD * RB) / (r9_KD + RB) + (r9_kkRBP2 * CE * RB) / (r9_KE + RB));
-  r10: RP => RB; cell * ((r10_kkRBUP * RP) / (r10_Kp + RP));
-  r11: MC => ; cell * r11_dMC * MC;
-  r12: EF => ; cell * r12_dEF * EF;
-  r13: CE => ; cell * r13_dCE * CE;
-  r14: CD => ; cell * r14_dCD * CD;
-  r15: RB => ; cell * r15_dRB * RB;
-  r16: RP => ; cell * r16_dRP * RP;
-  r17: RE => ; cell * r17_dRE * RE;
+  r1:  => MC; cell*((r1_kM*S)/(r1_KS + S));
+  r2:  => CD; cell*((r2_kkCDS*S)/(r2_KS + S));
+  r3:  => EF; cell*((r3_kkEF*MC*EF)/((r3_KMC + MC)*(r3_KEF + EF)) + (r3_kkb*MC)/(r3_KMC + MC));
+  r4:  => CE; cell*((r4_kkCE*EF)/(r4_KEF + EF));
+  r5:  => CD; cell*((r5_kkCD*MC)/(r5_KMC + MC));
+  r6:  => RB; cell*r6_kkRB;
+  r7: RE => EF + RP; cell*((r7_kkRBPP*CD*RE)/(r7_KD + RE) + (r7_kkRBPP*CE*RE)/(r7_KE + RE));
+  r8: EF + RB => RE; cell*r8_kkRE*RB*EF;
+  r9: RB => RP; cell*((r9_kkRBP*CD*RB)/(r9_KD + RB) + (r9_kkRBP2*CE*RB)/(r9_KE + RB));
+  r10: RP => RB; cell*((r10_kkRBUP*RP)/(r10_Kp + RP));
+  r11: MC => ; cell*r11_dMC*MC;
+  r12: EF => ; cell*r12_dEF*EF;
+  r13: CE => ; cell*r13_dCE*CE;
+  r14: CD => ; cell*r14_dCD*CD;
+  r15: RB => ; cell*r15_dRB*RB;
+  r16: RP => ; cell*r16_dRP*RP;
+  r17: RE => ; cell*r17_dRE*RE;
 
   // Events:
   e1: at time > 0: S = 20;

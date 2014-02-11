@@ -1,18 +1,18 @@
 //Created by libAntimony v2.5
 function PGA_consumption(S1, Rp, R, Nt, Vc)
-  S1 / Rp * (R / Nt) * Vc;
+  S1/Rp*(R/Nt)*Vc;
 end
 
 function NADPH_production(j, S1, Nt)
-  j / 2 * (S1 / Nt);
+  j/2*(S1/Nt);
 end
 
 function carboxylation(Vc, Vj)
-  ((Vc + Vj) - abs(Vc - Vj)) / 2;
+  ((Vc + Vj) - abs(Vc - Vj))/2;
 end
 
 function oxygenation(phi, Vc, Vj)
-  (phi * ((Vc + Vj) - abs(Vc - Vj))) / 2;
+  (phi*((Vc + Vj) - abs(Vc - Vj)))/2;
 end
 
 
@@ -25,17 +25,17 @@ model *Arnold2011_Medlyn2002_RuBisCO_CalvinCycle()
 
   // Assignment Rules:
   NADP := Nt - NADPH;
-  J := (alpha * Q) / (10 - 9 * teta) / (65 * 0.5);
-  Vomax := 0.21 * Vcmax;
-  Vj := (J / 4 * CO2) / (CO2 + 2 * Gamma);
-  phi := (0.21 * (O2 / Ko)) / (CO2 / Kc);
-  Vc := (Vcmax * CO2) / ((1 + O2 / Ko) * Kc + CO2);
+  J := (alpha*Q)/(10 - 9*teta)/(65*0.5);
+  Vomax := 0.21*Vcmax;
+  Vj := (J/4*CO2)/(CO2 + 2*Gamma);
+  phi := (0.21*(O2/Ko))/(CO2/Kc);
+  Vc := (Vcmax*CO2)/((1 + O2/Ko)*Kc + CO2);
 
   // Reactions:
-  PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast * carboxylation(Vc, Vj);
-  PGA_prod_Vo: $RuBP + $O2 + 2NADPH => 1.5PGA; chloroplast * oxygenation(phi, Vc, Vj);
-  PGA_cons: PGA => $RuBP; chloroplast * PGA_consumption(PGA, Rp, NADPH, Nt, Vcmax);
-  NADPH_prod: $NADP => NADPH; chloroplast * NADPH_production(J, NADP, Nt);
+  PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast*carboxylation(Vc, Vj);
+  PGA_prod_Vo: $RuBP + $O2 + 2NADPH => 1.5PGA; chloroplast*oxygenation(phi, Vc, Vj);
+  PGA_cons: PGA => $RuBP; chloroplast*PGA_consumption(PGA, Rp, NADPH, Nt, Vcmax);
+  NADPH_prod: $NADP => NADPH; chloroplast*NADPH_production(J, NADP, Nt);
 
   // Species initializations:
   RuBP = 2;

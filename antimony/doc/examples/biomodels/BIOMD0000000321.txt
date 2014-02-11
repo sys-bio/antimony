@@ -6,25 +6,25 @@ model *BIOMD0000000321()
   species A_dopa in gut, C_dopa in Vdopa, C_OMD in V_3_OMD;
 
   // Assignment Rules:
-  F_b := F_H * F_G;
-  F_H := 1 - CL_H / Q;
-  CL_H := f_H * CL_dopa;
+  F_b := F_H*F_G;
+  F_H := 1 - CL_H/Q;
+  CL_H := f_H*CL_dopa;
   CL_dopa := CL_AADC + CL_rest + CL_COMT;
-  CL_AADC := CL_dopa0 * f_AADC;
-  CL_rest := CL_dopa0 * f_rest;
-  CL_COMT := CL_dopa0 * f_COMT;
+  CL_AADC := CL_dopa0*f_AADC;
+  CL_rest := CL_dopa0*f_rest;
+  CL_COMT := CL_dopa0*f_COMT;
   f_rest := 1 - (f_AADC + f_COMT);
 
   // Reactions:
-  l_dopa_absorption: A_dopa => C_dopa; ka_b * A_dopa * F_b;
-  l_dopa_blood_hepa_clearance: A_dopa => ; ka_b * A_dopa * (1 - F_b);
-  AADC_clearance: C_dopa => ; CL_AADC * C_dopa;
-  COMT_clearance: C_dopa => C_OMD; CL_COMT * C_dopa;
-  rest_clearance: C_dopa => ; CL_rest * C_dopa;
-  _3_OMD_clearance: C_OMD => ; CL_OMD * C_OMD;
+  l_dopa_absorption: A_dopa => C_dopa; ka_b*A_dopa*F_b;
+  l_dopa_blood_hepa_clearance: A_dopa => ; ka_b*A_dopa*(1 - F_b);
+  AADC_clearance: C_dopa => ; CL_AADC*C_dopa;
+  COMT_clearance: C_dopa => C_OMD; CL_COMT*C_dopa;
+  rest_clearance: C_dopa => ; CL_rest*C_dopa;
+  _3_OMD_clearance: C_OMD => ; CL_OMD*C_OMD;
 
   // Species initializations:
-  A_dopa = L_Dopa_per_kg_rat * rat_body_mass;
+  A_dopa = L_Dopa_per_kg_rat*rat_body_mass;
   C_dopa = 0;
   C_OMD = 0;
 

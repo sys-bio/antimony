@@ -10,12 +10,12 @@ model *Tyson2003_Negative_Feedback_Oscillator()
   R := Rt - Rp;
 
   // Reactions:
-  r1:  => X; env * (k0 + k1 * S);
-  r2: X => ; env * (k2 + k2_prime * Rp) * X;
-  r3: $Y => Yp; (env * k3 * X * (Yt - Yp)) / (Km3 + (Yt - Yp));
-  r4: Yp => $Y; (env * k4 * Yp) / (Km4 + Yp);
-  r5: $R => Rp; (env * k5 * Yp * (Rt - Rp)) / (Km5 + (Rt - Rp));
-  r6: Rp => $R; (env * k6 * Rp) / (Km6 + Rp);
+  r1:  => X; env*(k0 + k1*S);
+  r2: X => ; env*(k2 + k2_prime*Rp)*X;
+  r3: $Y => Yp; (env*k3*X*(Yt - Yp))/(Km3 + (Yt - Yp));
+  r4: Yp => $Y; (env*k4*Yp)/(Km4 + Yp);
+  r5: $R => Rp; (env*k5*Yp*(Rt - Rp))/(Km5 + (Rt - Rp));
+  r6: Rp => $R; (env*k6*Rp)/(Km6 + Rp);
 
   // Species initializations:
   Rp = 0;

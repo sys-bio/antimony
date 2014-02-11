@@ -1,10 +1,10 @@
 //Created by libAntimony v2.5
 function function_2(substrate, Shalve, V, h)
-  (V * substrate^h) / (Shalve^h + substrate^h);
+  (V*substrate^h)/(Shalve^h + substrate^h);
 end
 
 function function_1(V, Shalve, h, substrate)
-  V / (Shalve^h + substrate^h);
+  V/(Shalve^h + substrate^h);
 end
 
 
@@ -16,15 +16,15 @@ model *Kim2011_Oscillator_SimpleI()
   species species_4 in compartment_1;
 
   // Reactions:
-  reaction_1: species_1 => ; compartment_1 * reaction_1_k1 * species_1;
-  reaction_2: species_2 => ; compartment_1 * reaction_2_k1 * species_2;
-  reaction_3: species_3 => ; compartment_1 * reaction_3_k1 * species_3;
-  reaction_4: species_4 => ; compartment_1 * reaction_4_k1 * species_4;
-  reaction_5: species_3 => species_3 + species_1; compartment_1 * parameter_1 * species_3;
-  reaction_6: species_4 => species_4 + species_2; compartment_1 * parameter_2 * species_4;
-  reaction_7: species_2 => species_2 + species_3; compartment_1 * function_1(reaction_7_V, reaction_7_Shalve, parameter_4, species_2);
-  reaction_8: species_1 => species_1 + species_4; compartment_1 * function_2(species_1, reaction_8_Shalve, reaction_8_V, parameter_5);
-  reaction_9: species_4 => species_4 + species_1; compartment_1 * parameter_6 * species_4;
+  reaction_1: species_1 => ; compartment_1*reaction_1_k1*species_1;
+  reaction_2: species_2 => ; compartment_1*reaction_2_k1*species_2;
+  reaction_3: species_3 => ; compartment_1*reaction_3_k1*species_3;
+  reaction_4: species_4 => ; compartment_1*reaction_4_k1*species_4;
+  reaction_5: species_3 => species_3 + species_1; compartment_1*parameter_1*species_3;
+  reaction_6: species_4 => species_4 + species_2; compartment_1*parameter_2*species_4;
+  reaction_7: species_2 => species_2 + species_3; compartment_1*function_1(reaction_7_V, reaction_7_Shalve, parameter_4, species_2);
+  reaction_8: species_1 => species_1 + species_4; compartment_1*function_2(species_1, reaction_8_Shalve, reaction_8_V, parameter_5);
+  reaction_9: species_4 => species_4 + species_1; compartment_1*parameter_6*species_4;
 
   // Species initializations:
   species_1 = 0.1;

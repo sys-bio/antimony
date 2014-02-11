@@ -1,18 +1,18 @@
 //Created by libAntimony v2.5
 function oxygenation(phi, Vc, Vj, Vp)
-  (phi * ((((Vc + Vj) - abs(Vc - Vj)) / 2 + Vp) - abs(((Vc + Vj) - abs(Vc - Vj)) / 2 - Vp))) / 2;
+  (phi*((((Vc + Vj) - abs(Vc - Vj))/2 + Vp) - abs(((Vc + Vj) - abs(Vc - Vj))/2 - Vp)))/2;
 end
 
 function carboxylation(Vc, Vj, Vp)
-  ((((Vc + Vj) - abs(Vc - Vj)) / 2 + Vp) - abs(((Vc + Vj) - abs(Vc - Vj)) / 2 - Vp)) / 2;
+  ((((Vc + Vj) - abs(Vc - Vj))/2 + Vp) - abs(((Vc + Vj) - abs(Vc - Vj))/2 - Vp))/2;
 end
 
 function NADPH_production(j, S1, Nt)
-  j / 2 * (S1 / Nt);
+  j/2*(S1/Nt);
 end
 
 function PGA_consumption(S1, Rp, R, Nt, Vc)
-  S1 / Rp * (R / Nt) * Vc;
+  S1/Rp*(R/Nt)*Vc;
 end
 
 
@@ -25,19 +25,19 @@ model *Arnold2011_Damour2007_RuBisCO_CalvinCycle()
 
   // Assignment Rules:
   NADP := Nt - NADPH;
-  J := (Cst * alpha * 0.9 * Q) / sqrt(1 + ((alpha * 0.9 * Q) / Jmax)^2) / (65 * 0.5);
-  Cst := exp(-0.0398 * starch * a);
-  Gamma := O2 / (2 * exp(-7.458 + 37830 / (8.3143 * 298.15)));
-  Vj := (J / 4 * CO2) / (CO2 + 2 * Gamma);
-  phi := (0.21 * (O2 / Ko)) / (CO2 / Kc);
-  Vc := (Vcmax * CO2) / ((1 + O2 / Ko) * (CO2 + Kc));
-  Vp := (3 * TPU) / (1 - Gamma / CO2);
+  J := (Cst*alpha*0.9*Q)/sqrt(1 + ((alpha*0.9*Q)/Jmax)^2)/(65*0.5);
+  Cst := exp(-0.0398*starch*a);
+  Gamma := O2/(2*exp(-7.458 + 37830/(8.3143*298.15)));
+  Vj := (J/4*CO2)/(CO2 + 2*Gamma);
+  phi := (0.21*(O2/Ko))/(CO2/Kc);
+  Vc := (Vcmax*CO2)/((1 + O2/Ko)*(CO2 + Kc));
+  Vp := (3*TPU)/(1 - Gamma/CO2);
 
   // Reactions:
-  PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast * carboxylation(Vc, Vj, Vp);
-  PGA_prod_Vo: $RuBP + $O2 + 2NADPH => 1.5PGA; chloroplast * oxygenation(phi, Vc, Vj, Vp);
-  PGA_cons: PGA => $RuBP; chloroplast * PGA_consumption(PGA, Rp, NADPH, Nt, Vcmax);
-  NADPH_prod: $NADP => NADPH; chloroplast * NADPH_production(J, NADP, Nt);
+  PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast*carboxylation(Vc, Vj, Vp);
+  PGA_prod_Vo: $RuBP + $O2 + 2NADPH => 1.5PGA; chloroplast*oxygenation(phi, Vc, Vj, Vp);
+  PGA_cons: PGA => $RuBP; chloroplast*PGA_consumption(PGA, Rp, NADPH, Nt, Vcmax);
+  NADPH_prod: $NADP => NADPH; chloroplast*NADPH_production(J, NADP, Nt);
 
   // Species initializations:
   RuBP = 2;

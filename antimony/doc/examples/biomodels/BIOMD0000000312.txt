@@ -6,16 +6,16 @@ model *Tyson2003_Perfect_Adaption()
   species R in env, X in env, $S in env;
 
   // Assignment Rules:
-  S := 1 * floor(time / tau);
+  S := 1*floor(time/tau);
 
   // Reactions:
-  r1:  => R; env * k1 * S;
-  r2: R => ; env * k2 * R * X;
-  r3:  => X; env * k3 * S;
-  r4: X => ; env * k4 * X;
+  r1:  => R; env*k1*S;
+  r2: R => ; env*k2*R*X;
+  r3:  => X; env*k3*S;
+  r4: X => ; env*k4*X;
 
   // Species initializations:
-  R = (k1 * k4) / (k2 * k3);
+  R = (k1*k4)/(k2*k3);
   X = 0;
 
   // Compartment initializations:

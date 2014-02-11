@@ -8,14 +8,14 @@ model *Model_1()
   species Xa_TFPI in compartment_, Xa_TFPI_VIIa_TF in compartment_, VIIa_TF_Xa_TFPI in compartment_;
 
   // Reactions:
-  reaction_1: X + VIIa_TF -> VIIa_TF_X; compartment_ * (reaction_1_k1 * X * VIIa_TF - reaction_1_k2 * VIIa_TF_X);
-  reaction_2: VIIa_TF_X => VIIa_TF_Xa; compartment_ * reaction_2_k1 * VIIa_TF_X;
-  reaction_3: VIIa_TF_Xa -> Xa + VIIa_TF; compartment_ * (reaction_3_k1 * VIIa_TF_Xa - reaction_3_k2 * Xa * VIIa_TF);
-  reaction_4: Xa + TFPI -> Xa_TFPI; compartment_ * (reaction_4_k1 * Xa * TFPI - reaction_4_k2 * Xa_TFPI);
-  reaction_5: VIIa_TF + Xa_TFPI -> Xa_TFPI_VIIa_TF; compartment_ * (reaction_5_k1 * VIIa_TF * Xa_TFPI - reaction_5_k2 * Xa_TFPI_VIIa_TF);
-  reaction_6: VIIa_TF_Xa + TFPI -> VIIa_TF_Xa_TFPI; compartment_ * (reaction_6_k1 * VIIa_TF_Xa * TFPI - reaction_6_k2 * VIIa_TF_Xa_TFPI);
-  reaction_9: VIIa_TF_Xa_TFPI -> Xa_TFPI_VIIa_TF; compartment_ * (reaction_9_k1 * VIIa_TF_Xa_TFPI - reaction_9_k2 * Xa_TFPI_VIIa_TF);
-  reaction_8: VIIa_TF_X + Xa_TFPI -> X + VIIa_TF_Xa_TFPI; compartment_ * (reaction_8_k1 * VIIa_TF_X * Xa_TFPI - reaction_8_k2 * X * VIIa_TF_Xa_TFPI);
+  reaction_1: X + VIIa_TF -> VIIa_TF_X; compartment_*(reaction_1_k1*X*VIIa_TF - reaction_1_k2*VIIa_TF_X);
+  reaction_2: VIIa_TF_X => VIIa_TF_Xa; compartment_*reaction_2_k1*VIIa_TF_X;
+  reaction_3: VIIa_TF_Xa -> Xa + VIIa_TF; compartment_*(reaction_3_k1*VIIa_TF_Xa - reaction_3_k2*Xa*VIIa_TF);
+  reaction_4: Xa + TFPI -> Xa_TFPI; compartment_*(reaction_4_k1*Xa*TFPI - reaction_4_k2*Xa_TFPI);
+  reaction_5: VIIa_TF + Xa_TFPI -> Xa_TFPI_VIIa_TF; compartment_*(reaction_5_k1*VIIa_TF*Xa_TFPI - reaction_5_k2*Xa_TFPI_VIIa_TF);
+  reaction_6: VIIa_TF_Xa + TFPI -> VIIa_TF_Xa_TFPI; compartment_*(reaction_6_k1*VIIa_TF_Xa*TFPI - reaction_6_k2*VIIa_TF_Xa_TFPI);
+  reaction_9: VIIa_TF_Xa_TFPI -> Xa_TFPI_VIIa_TF; compartment_*(reaction_9_k1*VIIa_TF_Xa_TFPI - reaction_9_k2*Xa_TFPI_VIIa_TF);
+  reaction_8: VIIa_TF_X + Xa_TFPI -> X + VIIa_TF_Xa_TFPI; compartment_*(reaction_8_k1*VIIa_TF_X*Xa_TFPI - reaction_8_k2*X*VIIa_TF_Xa_TFPI);
 
   // Species initializations:
   VIIa_TF = 1;

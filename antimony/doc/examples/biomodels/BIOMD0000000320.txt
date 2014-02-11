@@ -7,36 +7,36 @@ model *BIOMD0000000320()
   species C1_M in V1_M, C2_M in V2_M, C1_B in V1_B, C2_B in V2_B;
 
   // Assignment Rules:
-  F_c := F_H * F_G;
-  F_H := 1 - CL_H / Q;
-  CL_H := f_H * CL_dopa;
+  F_c := F_H*F_G;
+  F_H := 1 - CL_H/Q;
+  CL_H := f_H*CL_dopa;
   CL_dopa := CL_AADC + CL_rest + CL_COMT;
-  CL_AADC := CL_AADC0 / (1 + C1_M / ki);
-  CL_rest := CL_dopa0 * f_rest;
-  CL_COMT := CL_dopa0 * f_COMT;
+  CL_AADC := CL_AADC0/(1 + C1_M/ki);
+  CL_rest := CL_dopa0*f_rest;
+  CL_COMT := CL_dopa0*f_COMT;
   f_rest := 1 - (f_AADC + f_COMT);
-  CL_AADC0 := CL_dopa0 * f_AADC;
+  CL_AADC0 := CL_dopa0*f_AADC;
 
   // Reactions:
-  l_dopa_absorption: A_dopa => C_dopa; ka_c * A_dopa * F_c;
-  l_dopa_blood_hepa_clearance: A_dopa => ; ka_c * A_dopa * (1 - F_c);
-  ro_04_5127_absorption: A_M => C1_M; ka_M * A_M;
-  benserazide_absorption: A_B => C1_B; ka_B * A_B * F_B;
-  benserazide_gut_clearance: A_B => ; ka_B * A_B * (1 - F_B);
-  AADC_clearance: C_dopa => ; CL_AADC * C_dopa;
-  COMT_clearance: C_dopa => C_OMD; CL_COMT * C_dopa;
-  rest_clearance: C_dopa => ; CL_rest * C_dopa;
-  _3_OMD_clearance: C_OMD => ; CL_OMD * C_OMD;
-  bens_clearance: C1_B => ; CL_B * C1_B;
-  bens_metabolism: C1_B => C1_M; fm / (1 - fm) * CL_B * C1_B;
-  ro_clearance: C1_M => ; CL_M * C1_M;
-  bens_distribution: C1_B -> C2_B; CL_dB * (C1_B - C2_B);
-  ro_distribution: C1_M -> C2_M; CL_dM * (C1_M - C2_M);
+  l_dopa_absorption: A_dopa => C_dopa; ka_c*A_dopa*F_c;
+  l_dopa_blood_hepa_clearance: A_dopa => ; ka_c*A_dopa*(1 - F_c);
+  ro_04_5127_absorption: A_M => C1_M; ka_M*A_M;
+  benserazide_absorption: A_B => C1_B; ka_B*A_B*F_B;
+  benserazide_gut_clearance: A_B => ; ka_B*A_B*(1 - F_B);
+  AADC_clearance: C_dopa => ; CL_AADC*C_dopa;
+  COMT_clearance: C_dopa => C_OMD; CL_COMT*C_dopa;
+  rest_clearance: C_dopa => ; CL_rest*C_dopa;
+  _3_OMD_clearance: C_OMD => ; CL_OMD*C_OMD;
+  bens_clearance: C1_B => ; CL_B*C1_B;
+  bens_metabolism: C1_B => C1_M; fm/(1 - fm)*CL_B*C1_B;
+  ro_clearance: C1_M => ; CL_M*C1_M;
+  bens_distribution: C1_B -> C2_B; CL_dB*(C1_B - C2_B);
+  ro_distribution: C1_M -> C2_M; CL_dM*(C1_M - C2_M);
 
   // Species initializations:
-  A_dopa = L_Dopa_per_kg_rat * rat_body_mass;
-  A_B = A_bens_tot * (1 - B_M_frac);
-  A_M = A_bens_tot * B_M_frac;
+  A_dopa = L_Dopa_per_kg_rat*rat_body_mass;
+  A_B = A_bens_tot*(1 - B_M_frac);
+  A_M = A_bens_tot*B_M_frac;
   C_dopa = 0;
   C_OMD = 0;
   C1_M = 0;
@@ -58,7 +58,7 @@ model *BIOMD0000000320()
   L_Dopa_per_kg_rat has umol_per_kg;
   rat_body_mass = 0.25;
   rat_body_mass has kilogram;
-  A_bens_tot = Benserazide_per_kg_rat * rat_body_mass;
+  A_bens_tot = Benserazide_per_kg_rat*rat_body_mass;
   A_bens_tot has substance;
   B_M_frac = 0.07;
   F_c has dimensionless;

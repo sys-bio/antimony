@@ -1,10 +1,10 @@
 //Created by libAntimony v2.5
 function LD1212(tod)
-  ceil(sin((pi * tod) / 12) / 2);
+  ceil(sin((pi*tod)/12)/2);
 end
 
 function function_2(acc_rate, acc)
-  acc_rate * acc;
+  acc_rate*acc;
 end
 
 function light(tod)
@@ -12,75 +12,75 @@ function light(tod)
 end
 
 function transcription(t)
-  1 + 0 * t;
+  1 + 0*t;
 end
 
 function ox_toc1(t)
-  0 * t;
+  0*t;
 end
 
 function copies_toc1(t)
-  1 + 0 * t;
+  1 + 0*t;
 end
 
 function copies_cca1(t)
-  1 + 0 * t;
+  1 + 0*t;
 end
 
 function ox_cca1(t)
-  0 * t;
+  0*t;
 end
 
 function translation(t)
-  1 + 0 * t;
+  1 + 0*t;
 end
 
 function proteasome(t)
-  1 + 0 * t;
+  1 + 0*t;
 end
 
 function Translation(t, T, mrna)
-  translation(t) * T * mrna;
+  translation(t)*T*mrna;
 end
 
 function function_4(t, D_l, D_d, level)
-  proteasome(t) * (light(t) * D_l + (1 - light(t)) * D_d) * level;
+  proteasome(t)*(light(t)*D_l + (1 - light(t))*D_d)*level;
 end
 
 function function_5(t, Di_l, Di_d, level)
-  (light(t) * Di_l + (1 - light(t)) * Di_d) * level;
+  (light(t)*Di_l + (1 - light(t))*Di_d)*level;
 end
 
 function function_7(t, R_toc1_acc, acc, R_toc1_cca1, cca1_n, H_toc1_cca1, rep_pTOC1, L_toc1)
-  (rep_pTOC1 * transcription(t) * (L_toc1 + R_toc1_acc * acc)) / (1 + L_toc1 + R_toc1_acc * acc + (R_toc1_cca1 * cca1_n)^H_toc1_cca1);
+  (rep_pTOC1*transcription(t)*(L_toc1 + R_toc1_acc*acc))/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*cca1_n)^H_toc1_cca1);
 end
 
 function function_8(t, R_toc1_acc, acc, R_toc1_cca1, cca1_n, H_toc1_cca1, rep_TOC1, L_toc1)
-  (rep_TOC1 * transcription(t) * copies_toc1(t) * (L_toc1 + R_toc1_acc * acc)) / (1 + L_toc1 + R_toc1_acc * acc + (R_toc1_cca1 * cca1_n)^H_toc1_cca1);
+  (rep_TOC1*transcription(t)*copies_toc1(t)*(L_toc1 + R_toc1_acc*acc))/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*cca1_n)^H_toc1_cca1);
 end
 
 function function_9(t, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, rep_pCCA1)
-  (rep_pCCA1 * transcription(t) * (toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1) / ((toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
+  (rep_pCCA1*transcription(t)*(toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1)/((toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
 end
 
 function function_10(t, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, rep_CCA1)
-  (rep_CCA1 * transcription(t) * copies_cca1(t) * (toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1) / ((toc1_2 * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
+  (rep_CCA1*transcription(t)*copies_cca1(t)*(toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1)/((toc1_2*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1);
 end
 
 function tf_output(reporter, effcopies, tf)
-  (1 + reporter * (effcopies - 1)) * tf;
+  (1 + reporter*(effcopies - 1))*tf;
 end
 
 function function_1(acc_rate, t)
-  acc_rate * light(t);
+  acc_rate*light(t);
 end
 
 function function_3(R_toc1_acc, acc, R_toc1_cca1, H_toc1_cca1, cca1_n, t, L_toc1, rep_CCA1, effcopies_cca1_LHY7)
-  transcription(t) * (ox_toc1(t) + (copies_toc1(t) * (L_toc1 + R_toc1_acc * acc)) / (1 + L_toc1 + R_toc1_acc * acc + (R_toc1_cca1 * tf_output(rep_CCA1, effcopies_cca1_LHY7, cca1_n))^H_toc1_cca1));
+  transcription(t)*(ox_toc1(t) + (copies_toc1(t)*(L_toc1 + R_toc1_acc*acc))/(1 + L_toc1 + R_toc1_acc*acc + (R_toc1_cca1*tf_output(rep_CCA1, effcopies_cca1_LHY7, cca1_n))^H_toc1_cca1));
 end
 
 function function_6(t, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, rep_TOC1, effcopies_toc1_TOC8)
-  transcription(t) * (ox_cca1(t) + (copies_cca1(t) * (tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2) * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1) / ((tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2) * (light(t) * R_cca1_toc1_2_l + (1 - light(t)) * R_cca1_toc1_2_d))^H_cca1_toc1 + 1));
+  transcription(t)*(ox_cca1(t) + (copies_cca1(t)*(tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2)*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1)/((tf_output(rep_TOC1, effcopies_toc1_TOC8, toc1_2)*(light(t)*R_cca1_toc1_2_l + (1 - light(t))*R_cca1_toc1_2_d))^H_cca1_toc1 + 1));
 end
 
 
@@ -98,36 +98,36 @@ model *Model_1()
   toc1luc := toc1luc_1 + toc1luc_2;
 
   // Reactions:
-  reaction_1:  => acc; compartment_ * function_1(acc_rate, time);
-  reaction_2: acc => ; compartment_ * function_2(acc_rate, acc);
-  reaction_3:  => toc1_mrna; compartment_ * function_3(R_toc1_acc, acc, R_toc1_cca1, H_toc1_cca1, cca1_n, time, L_toc1, parameter_4, effcopies_cca1_LHY7);
-  reaction_4: toc1_2 => ; compartment_ * function_4(time, D_toc1_2_l, D_toc1_2_d, toc1_2);
-  reaction_5:  => toc1_1; compartment_ * Translation(time, T_toc1, toc1_mrna);
-  reaction_6: toc1_1 => toc1_2; compartment_ * function_5(time, Di_toc1_12_l, Di_toc1_12_d, toc1_1);
-  reaction_7: toc1_mrna => ; compartment_ * D_mrna_toc1 * toc1_mrna;
-  reaction_8:  => cca1_mrna; compartment_ * function_6(time, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, parameter_2, effcopies_toc1_TOC8);
-  reaction_9: cca1_mrna => ; compartment_ * D_mrna_cca1 * cca1_mrna;
-  reaction_10:  => cca1_c; compartment_ * Translation(time, T_cca1, cca1_mrna);
-  reaction_11: cca1_c => cca1_n; compartment_ * Di_cca1_cn * cca1_c;
-  reaction_12: cca1_c => ; compartment_ * function_4(time, D_cca1_l, D_cca1_d, cca1_c);
-  reaction_13: cca1_n => ; compartment_ * function_4(time, D_cca1_l, D_cca1_d, cca1_n);
-  reaction_14:  => luc_mrna; compartment_ * function_7(time, R_toc1_acc, acc, R_toc1_cca1, cca1_n, H_toc1_cca1, parameter_3, L_toc1);
-  reaction_15: luc_mrna => ; compartment_ * D_mrna_luc * luc_mrna;
-  reaction_16:  => luc; compartment_ * Translation(time, parameter_1, luc_mrna);
-  reaction_17: luc => ; compartment_ * D_luc * luc;
-  reaction_18:  => toc1luc_mrna; compartment_ * function_8(time, R_toc1_acc, acc, R_toc1_cca1, cca1_n, H_toc1_cca1, parameter_2, L_toc1);
-  reaction_19: toc1luc_mrna => ; compartment_ * D_mrna_toc1 * toc1luc_mrna;
-  reaction_20:  => toc1luc_1; compartment_ * Translation(time, T_toc1, toc1luc_mrna);
-  reaction_21: toc1luc_1 => toc1luc_2; compartment_ * function_5(time, Di_toc1_12_l, Di_toc1_12_d, toc1luc_1);
-  reaction_22: toc1luc_2 => ; compartment_ * function_4(time, D_toc1_2_l, D_toc1_2_d, toc1luc_2);
-  reaction_23: toc1luc_1 => ; compartment_ * D_luc * toc1luc_1;
-  reaction_24: toc1luc_2 => ; compartment_ * D_luc * toc1luc_2;
-  reaction_25:  => luc_mrna; compartment_ * function_9(time, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, parameter_5);
-  reaction_26:  => cca1luc_mrna; compartment_ * function_10(time, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, parameter_4);
-  reaction_27: cca1luc_mrna => ; compartment_ * D_mrna_cca1 * cca1luc_mrna;
-  reaction_28:  => cca1luc; compartment_ * Translation(time, T_cca1, cca1luc_mrna);
-  reaction_30: cca1luc => ; compartment_ * function_4(time, D_cca1_l, D_cca1_d, cca1luc);
-  reaction_32: cca1luc => ; compartment_ * D_luc * cca1luc;
+  reaction_1:  => acc; compartment_*function_1(acc_rate, time);
+  reaction_2: acc => ; compartment_*function_2(acc_rate, acc);
+  reaction_3:  => toc1_mrna; compartment_*function_3(R_toc1_acc, acc, R_toc1_cca1, H_toc1_cca1, cca1_n, time, L_toc1, parameter_4, effcopies_cca1_LHY7);
+  reaction_4: toc1_2 => ; compartment_*function_4(time, D_toc1_2_l, D_toc1_2_d, toc1_2);
+  reaction_5:  => toc1_1; compartment_*Translation(time, T_toc1, toc1_mrna);
+  reaction_6: toc1_1 => toc1_2; compartment_*function_5(time, Di_toc1_12_l, Di_toc1_12_d, toc1_1);
+  reaction_7: toc1_mrna => ; compartment_*D_mrna_toc1*toc1_mrna;
+  reaction_8:  => cca1_mrna; compartment_*function_6(time, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, parameter_2, effcopies_toc1_TOC8);
+  reaction_9: cca1_mrna => ; compartment_*D_mrna_cca1*cca1_mrna;
+  reaction_10:  => cca1_c; compartment_*Translation(time, T_cca1, cca1_mrna);
+  reaction_11: cca1_c => cca1_n; compartment_*Di_cca1_cn*cca1_c;
+  reaction_12: cca1_c => ; compartment_*function_4(time, D_cca1_l, D_cca1_d, cca1_c);
+  reaction_13: cca1_n => ; compartment_*function_4(time, D_cca1_l, D_cca1_d, cca1_n);
+  reaction_14:  => luc_mrna; compartment_*function_7(time, R_toc1_acc, acc, R_toc1_cca1, cca1_n, H_toc1_cca1, parameter_3, L_toc1);
+  reaction_15: luc_mrna => ; compartment_*D_mrna_luc*luc_mrna;
+  reaction_16:  => luc; compartment_*Translation(time, parameter_1, luc_mrna);
+  reaction_17: luc => ; compartment_*D_luc*luc;
+  reaction_18:  => toc1luc_mrna; compartment_*function_8(time, R_toc1_acc, acc, R_toc1_cca1, cca1_n, H_toc1_cca1, parameter_2, L_toc1);
+  reaction_19: toc1luc_mrna => ; compartment_*D_mrna_toc1*toc1luc_mrna;
+  reaction_20:  => toc1luc_1; compartment_*Translation(time, T_toc1, toc1luc_mrna);
+  reaction_21: toc1luc_1 => toc1luc_2; compartment_*function_5(time, Di_toc1_12_l, Di_toc1_12_d, toc1luc_1);
+  reaction_22: toc1luc_2 => ; compartment_*function_4(time, D_toc1_2_l, D_toc1_2_d, toc1luc_2);
+  reaction_23: toc1luc_1 => ; compartment_*D_luc*toc1luc_1;
+  reaction_24: toc1luc_2 => ; compartment_*D_luc*toc1luc_2;
+  reaction_25:  => luc_mrna; compartment_*function_9(time, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, parameter_5);
+  reaction_26:  => cca1luc_mrna; compartment_*function_10(time, toc1_2, R_cca1_toc1_2_l, R_cca1_toc1_2_d, H_cca1_toc1, parameter_4);
+  reaction_27: cca1luc_mrna => ; compartment_*D_mrna_cca1*cca1luc_mrna;
+  reaction_28:  => cca1luc; compartment_*Translation(time, T_cca1, cca1luc_mrna);
+  reaction_30: cca1luc => ; compartment_*function_4(time, D_cca1_l, D_cca1_d, cca1luc);
+  reaction_32: cca1luc => ; compartment_*D_luc*cca1luc;
 
   // Species initializations:
   acc = 0.272067372878265;
