@@ -29,29 +29,29 @@ model *Xu2003_Phosphoinositide_turnover()
 
   // Species initializations:
   PIP2_PHGFP_PM = 0;
-  PIP2_PHGFP_PM has molecule_per_um2;
+  PIP2_PHGFP_PM has molecules_um_2;
   PH_GFP_Cyt = 0;
   PH_GFP_Cyt has molecule_per_volume;
   PI_PM = 142857;
-  PI_PM has molecule_per_um2;
+  PI_PM has molecules_um_2;
   stim_PM = 1;
-  stim_PM has molecule_per_um2;
+  stim_PM has molecules_um_2;
   IP3_PHGFP_Cyt = 0;
   IP3_PHGFP_Cyt has molecule_per_volume;
   PIP2_PM = 4000;
-  PIP2_PM has molecule_per_um2;
+  PIP2_PM has molecules_um_2;
   PIP_PM = 2857;
-  PIP_PM has molecule_per_um2;
+  PIP_PM has molecules_um_2;
   DAG_PM = 2000;
-  DAG_PM has molecule_per_um2;
+  DAG_PM has molecules_um_2;
   hv_Cytosol = 0;
   hv_Cytosol has molecule_per_volume;
   IP3X_Cytosol = 0;
   IP3X_Cytosol has molecule_per_volume;
   PLC_PM = 100;
-  PLC_PM has molecule_per_um2;
+  PLC_PM has molecules_um_2;
   PLC_act_PM = 0;
-  PLC_act_PM has molecule_per_um2;
+  PLC_act_PM has molecules_um_2;
   IP3_Cyt = 96.32;
   IP3_Cyt has molecule_per_volume;
 
@@ -157,9 +157,7 @@ model *Xu2003_Phosphoinositide_turnover()
   unit uM_s_1 = 1e-6 mole / (litre * second);
   unit uM_1_s_1 = litre / (1e-6 mole * second);
   unit uM = 1e-6 mole / litre;
-  unit molecule = molecule;
-  unit molecule_per_um2 = molecule / (1e-6 metre)^2;
-  unit molecule_per_volume = molecule / (1e-6 metre)^3;
+  unit molecule_per_volume = item / (1e-6 metre)^3;
 
   //Display Names:
   IP3_PHGFP is "IP3-PHGFP";
