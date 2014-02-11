@@ -1,0 +1,186 @@
+//Created by libAntimony v2.5
+model *MODEL1309060000()
+
+  // Compartments and Species:
+  compartment compartment01;
+  species Ras2_GDP in compartment01, Cdc25 in compartment01, Ras2_GDP_Cdc25 in compartment01;
+  species Ras2_Cdc25 in compartment01, $GDP in compartment01, $GTP in compartment01;
+  species Ras2_GTP_Cdc25 in compartment01, Ras2_GTP in compartment01, Ira2 in compartment01;
+  species Ras2_GTP_Ira2 in compartment01, CYR1 in compartment01, Ras2_GTP_CYR1 in compartment01;
+  species $ATP in compartment01, cAMP in compartment01, PKA in compartment01;
+  species cAMP_PKA in compartment01, IIcAMP_PKA in compartment01, IIIcAMP_PKA in compartment01;
+  species IVcAMP_PKA in compartment01, C in compartment01, R_2cAMP in compartment01;
+  species R in compartment01, R_C in compartment01, Pde1 in compartment01;
+  species Pde1f in compartment01, cAMP_Pde1f in compartment01, AMP in compartment01;
+  species PPA2 in compartment01, Pde2 in compartment01, cAMP_Pde2 in compartment01;
+  species Cdc25f in compartment01, Ira2P in compartment01, Ras2_GTP_Ira2P in compartment01;
+
+  // Reactions:
+  R0: Ras2_GDP + Cdc25 => Ras2_GDP_Cdc25; K0*Ras2_GDP*Cdc25;
+  R1: Ras2_GDP_Cdc25 => Ras2_GDP + Cdc25; K1*Ras2_GDP_Cdc25;
+  R2: Ras2_GDP_Cdc25 => Ras2_Cdc25 + $GDP; K2*Ras2_GDP_Cdc25;
+  R3: Ras2_Cdc25 + $GDP => Ras2_GDP_Cdc25; K3*Ras2_Cdc25*GDP;
+  R4: Ras2_Cdc25 + $GTP => Ras2_GTP_Cdc25; K4*Ras2_Cdc25*GTP;
+  R5: Ras2_GTP_Cdc25 => Ras2_Cdc25 + $GTP; K5*Ras2_GTP_Cdc25;
+  R6: Ras2_GTP_Cdc25 => Cdc25 + Ras2_GTP; K6*Ras2_GTP_Cdc25;
+  R7: Cdc25 + Ras2_GTP => Ras2_GTP_Cdc25; K7*Cdc25*Ras2_GTP;
+  R8: Ras2_GTP + Ira2 => Ras2_GTP_Ira2; K8*Ras2_GTP*Ira2;
+  R9: Ras2_GTP_Ira2 => Ras2_GDP + Ira2; K9*Ras2_GTP_Ira2;
+  R10: Ras2_GTP + CYR1 => Ras2_GTP_CYR1; K10*Ras2_GTP*CYR1;
+  R11: Ras2_GTP_CYR1 + $ATP => Ras2_GTP_CYR1 + cAMP; K11*Ras2_GTP_CYR1*ATP;
+  R12: Ira2 + Ras2_GTP_CYR1 => Ras2_GDP + Ira2 + CYR1; K12*Ira2*Ras2_GTP_CYR1;
+  R13: cAMP + PKA => cAMP_PKA; K13*cAMP*PKA;
+  R14: cAMP + cAMP_PKA => IIcAMP_PKA; K14*cAMP*cAMP_PKA;
+  R15: cAMP + IIcAMP_PKA => IIIcAMP_PKA; K15*cAMP*IIcAMP_PKA;
+  R16: cAMP + IIIcAMP_PKA => IVcAMP_PKA; K16*cAMP*IIIcAMP_PKA;
+  R17: IVcAMP_PKA => cAMP + IIIcAMP_PKA; K17*IVcAMP_PKA;
+  R18: IIIcAMP_PKA => cAMP + IIcAMP_PKA; K18*IIIcAMP_PKA;
+  R19: IIcAMP_PKA => cAMP + cAMP_PKA; K19*IIcAMP_PKA;
+  R20: cAMP_PKA => cAMP + PKA; K20*cAMP_PKA;
+  R21: IVcAMP_PKA => 2C + 2R_2cAMP; K21*IVcAMP_PKA;
+  R22: R_2cAMP => 2cAMP + R; K22*R_2cAMP;
+  R23: C + R => R_C; K23*C*R;
+  R24: 2R_C => PKA; K24*((R_C*(R_C - 1))/2);
+  R25: C + Pde1 => C + Pde1f; K25*C*Pde1;
+  R26: cAMP + Pde1f => cAMP_Pde1f; K26*cAMP*Pde1f;
+  R27: cAMP_Pde1f => cAMP + Pde1f; K27*cAMP_Pde1f;
+  R28: cAMP_Pde1f => Pde1f + AMP; K28*cAMP_Pde1f;
+  R29: Pde1f + PPA2 => Pde1 + PPA2; K29*Pde1f*PPA2;
+  R30: cAMP + Pde2 => cAMP_Pde2; K30*cAMP*Pde2;
+  R31: cAMP_Pde2 => cAMP + Pde2; K31*cAMP_Pde2;
+  R32: cAMP_Pde2 => AMP + Pde2; K32*cAMP_Pde2;
+  R33: Cdc25 + C => C + Cdc25f; K33*Cdc25*C;
+  R34: PPA2 + Cdc25f => Cdc25 + PPA2; K34*PPA2*Cdc25f;
+  R35: Ira2 + C => C + Ira2P; K35*Ira2*C;
+  R36: Ras2_GTP + Ira2P => Ras2_GTP_Ira2P; K36*Ras2_GTP*Ira2P;
+  R37: Ras2_GTP_Ira2P => Ras2_GDP + Ira2P; K37*Ras2_GTP_Ira2P;
+  R38: Ira2P => Ira2; K38*Ira2P;
+
+  // Species initializations:
+  Ras2_GDP = 20000/compartment01;
+  Cdc25 = 300/compartment01;
+  Ras2_GDP_Cdc25 = 0;
+  Ras2_Cdc25 = 0;
+  GDP = 1500000/compartment01;
+  GTP = 5000000/compartment01;
+  Ras2_GTP_Cdc25 = 0;
+  Ras2_GTP = 0;
+  Ira2 = 200/compartment01;
+  Ras2_GTP_Ira2 = 0;
+  CYR1 = 200/compartment01;
+  Ras2_GTP_CYR1 = 0;
+  ATP = 24000000/compartment01;
+  cAMP = 0;
+  PKA = 2500/compartment01;
+  cAMP_PKA = 0;
+  IIcAMP_PKA = 0;
+  IIIcAMP_PKA = 0;
+  IVcAMP_PKA = 0;
+  C = 0;
+  R_2cAMP = 0;
+  R = 0;
+  R_C = 0;
+  Pde1 = 1400/compartment01;
+  Pde1f = 0;
+  cAMP_Pde1f = 0;
+  AMP = 0;
+  PPA2 = 4000/compartment01;
+  Pde2 = 6500/compartment01;
+  cAMP_Pde2 = 0;
+  Cdc25f = 0;
+  Ira2P = 0;
+  Ras2_GTP_Ira2P = 0;
+
+  // Compartment initializations:
+  compartment01 = 1;
+
+  // Variable initializations:
+  K0 = 1;
+  K0 has per_second;
+  K1 = 1;
+  K1 has per_second;
+  K2 = 1.5;
+  K2 has per_second;
+  K3 = 1;
+  K3 has per_second;
+  K4 = 1;
+  K4 has per_second;
+  K5 = 1;
+  K5 has per_second;
+  K6 = 1;
+  K6 has per_second;
+  K7 = 1;
+  K7 has per_second;
+  K8 = 0.01;
+  K8 has per_second;
+  K9 = 0.25;
+  K9 has per_second;
+  K10 = 0.001;
+  K10 has per_second;
+  K11 = 2.1e-006;
+  K11 has per_second;
+  K12 = 0.001;
+  K12 has per_second;
+  K13 = 1e-005;
+  K13 has per_second;
+  K14 = 1e-005;
+  K14 has per_second;
+  K15 = 1e-005;
+  K15 has per_second;
+  K16 = 1e-005;
+  K16 has per_second;
+  K17 = 0.1;
+  K17 has per_second;
+  K18 = 0.1;
+  K18 has per_second;
+  K19 = 0.1;
+  K19 has per_second;
+  K20 = 0.1;
+  K20 has per_second;
+  K21 = 1;
+  K21 has per_second;
+  K22 = 1;
+  K22 has per_second;
+  K23 = 0.75;
+  K23 has per_second;
+  K24 = 1;
+  K24 has per_second;
+  K25 = 1e-006;
+  K25 has per_second;
+  K26 = 0.1;
+  K26 has per_second;
+  K27 = 0.1;
+  K27 has per_second;
+  K28 = 7.5;
+  K28 has per_second;
+  K29 = 0.0001;
+  K29 has per_second;
+  K30 = 0.0001;
+  K30 has per_second;
+  K31 = 1;
+  K31 has per_second;
+  K32 = 1.7;
+  K32 has per_second;
+  K33 = 1;
+  K33 has per_second;
+  K34 = 0.01;
+  K34 has per_second;
+  K35 = 0.001;
+  K35 has per_second;
+  K36 = 1.25;
+  K36 has per_second;
+  K37 = 2.5;
+  K37 has per_second;
+  K38 = 10;
+  K38 has per_second;
+
+  //Other declarations:
+  const compartment01, K0, K1, K2, K3, K4, K5, K6, K7, K8, K9, K10, K11, K12;
+  const K13, K14, K15, K16, K17, K18, K19, K20, K21, K22, K23, K24, K25, K26;
+  const K27, K28, K29, K30, K31, K32, K33, K34, K35, K36, K37, K38;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit substance = dimensionless;
+  unit per_second = 1 / second;
+end

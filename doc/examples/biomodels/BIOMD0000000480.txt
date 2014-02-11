@@ -1,0 +1,617 @@
+//Created by libAntimony v2.5
+function function_13(v)
+  v;
+end
+
+function function_1(Vf, r1, A1, n1, A2, n2, A3, n3)
+  Vf*r1*(n1*A1 + n2*A2 + n3*A3);
+end
+
+function function_3(substrate, a1, k1)
+  substrate*a1*k1;
+end
+
+function function_8(substrate, k1, a1, k2, a2)
+  substrate*(k1*a1 + k2*a2);
+end
+
+function function_10(c, k, A, n, kA, B, kB, C, kC)
+  c + k*(A^n/(A^n + kA^n) + B^n/(B^n + kB^n) + C^n/(C^n + kC^n));
+end
+
+function function_7(k, A, n, kA, c)
+  c + k*(A^n/(A^n + kA^n));
+end
+
+function function_2(k, substrate, A, n, kA, B, kB, C, kC, D, kD, E, kE)
+  k*substrate*(A^n/(A^n + kA^n) + B^n/(B^n + kB^n) + C^n/(C^n + kC^n) + D^n/(D^n + kD^n) + E^n/(E^n + kE^n));
+end
+
+function function_4(k, substrate, A, n, kA, B, kB, C, kC)
+  k*substrate*(A^n/(A^n + kA^n) + B^n/(B^n + kB^n) + C^n/(C^n + kC^n));
+end
+
+function function_11(k, substrate, A, n, kA, B, kB)
+  k*substrate*(A^n/(A^n + kA^n) + B^n/(B^n + kB^n));
+end
+
+function function_5(k, sub, c)
+  (k*sub)/(c + sub);
+end
+
+function function_12(V, s, k, P)
+  V*(s - k*P);
+end
+
+function function_9(substrate, k, k1, a1, k2, a2)
+  substrate*k*(k1*a1 + k2*a2);
+end
+
+function function_6(substrate, k1, a1, k2, a2, k3, a3)
+  substrate*(k1*a1 + k2*a2 + k3*a3);
+end
+
+
+model *MODEL1307130000()
+
+  // Compartments and Species:
+  compartment c1, c2, c4, c3;
+  species s1 in c1, $species_7 in c1, species_10 in c1, species_11 in c1;
+  species species_12 in c1, species_13 in c1, species_14 in c1, species_15 in c1;
+  species species_16 in c1, species_17 in c1, s9 in c2, s13 in c2, s15 in c2;
+  species s16 in c2, s19 in c2, s21 in c2, s22 in c2, s25 in c2, s17 in c2;
+  species s6 in c2, species_1 in c2, $species_2 in c2, s4 in c4, $species_3 in c2;
+  species $species_4 in c2, species_18 in c2, species_19 in c2, s2 in c4;
+  species s3 in c4, species_5 in c4, s26 in c3, s27 in c3, s28 in c3, s29 in c3;
+  species s30 in c3, s31 in c3, s33 in c3, $species_6 in c3, $species_8 in c3;
+  species $species_9 in c3, species_20 in c3;
+
+  // Assignment Rules:
+  species_2 := s9 + species_1 + s25 + s4;
+  species_3 := s22 + s19 + s21;
+  species_4 := s13 + s16 + s15 + s17;
+  species_6 := s26 + s27;
+  species_8 := s31 + s30 + s33 + s29 + s28;
+  species_9 := 0.01*(s31 + s30 + s33 + (s28 + s29)/parameter_70);
+  parameter_2 := 1 - parameter_1;
+  parameter_5 := 1 - ModelValue_3;
+  parameter_11 := 1.000000e-006 - ModelValue_10;
+  parameter_15 := parameter_13*0.4*parameter_14;
+  parameter_16 := parameter_13*parameter_14*0.6;
+  parameter_17 := parameter_49*(1/(1 + parameter_51*s33));
+  parameter_18 := parameter_50*(1/(1 + parameter_51*s15 + parameter_52*s6));
+  parameter_22 := parameter_4*parameter_48;
+  parameter_23 := parameter_48*parameter_5;
+  parameter_24 := parameter_3*parameter_48;
+  parameter_25 := parameter_5*parameter_53;
+  parameter_26 := parameter_4*parameter_53;
+  parameter_27 := parameter_3*parameter_53;
+  parameter_28 := parameter_11*parameter_53;
+  parameter_29 := parameter_12*parameter_53;
+  parameter_30 := parameter_10*parameter_53;
+  parameter_37 := parameter_7*parameter_36;
+  parameter_54 := parameter_7*parameter_39;
+  parameter_55 := parameter_1*parameter_107;
+  parameter_56 := parameter_2*parameter_47;
+  parameter_57 := parameter_1*parameter_107;
+  parameter_58 := parameter_2*parameter_48;
+  parameter_59 := parameter_1*parameter_48;
+  parameter_60 := parameter_2*parameter_48;
+  parameter_64 := (1 - parameter_14)*parameter_13;
+  parameter_67 := s33/species_8;
+  parameter_68 := s31/species_8;
+  parameter_69 := s30/species_8;
+  parameter_71 := s33/species_9;
+  parameter_72 := s31/species_9;
+  parameter_73 := s30/species_9;
+  parameter_75 := 1 - parameter_74;
+  parameter_77 := parameter_75*parameter_76;
+  parameter_78 := parameter_74*parameter_107;
+  parameter_79 := parameter_17*(parameter_27*s29 + parameter_30*s28)*s27;
+  parameter_80 := parameter_17*((parameter_25*s29 + parameter_28*s28)*s26 + (s29*parameter_101 + s28*parameter_103)*species_20);
+  parameter_101 := parameter_53*parameter_98;
+  parameter_103 := parameter_53*parameter_96;
+  parameter_81 := parameter_17*((parameter_26*s29 + parameter_29*s28)*s26 + species_20*(s29*parameter_102 + s28*parameter_104));
+  parameter_102 := parameter_53*parameter_97;
+  parameter_104 := parameter_95*parameter_53;
+  parameter_82 := parameter_18*parameter_24*(s25 + s21)*s17;
+  parameter_83 := parameter_18*(parameter_23*(s19 + s9)*s17 + s17*species_18*parameter_100);
+  parameter_100 := parameter_48*parameter_98;
+  parameter_84 := parameter_18*(parameter_22*(s19 + s9)*s17 + s17*species_18*parameter_99);
+  parameter_99 := parameter_48*parameter_97;
+  parameter_96 := 1.000000e-006 - parameter_95;
+  parameter_98 := 1 - parameter_97;
+
+  // Reactions:
+  re2: s2 => s3; c4*function_3(s2, s1, parameter_7);
+  re3: s1 => s6; function_3(s1, species_5, parameter_7);
+  re4: s3 => species_5; c4*function_1(parameter_48, s3, s13, parameter_32, s16, parameter_32, s19, parameter_38);
+  re6: species_1 + s6 => s9; c2*parameter_57*species_1*s6;
+  re11: s17 => s15; c2*function_8(s17, parameter_24, s21, parameter_24, s25);
+  re13: s4 + s1 => s9; parameter_55*s4*s1;
+  re15: s2 => species_5; c4*function_1(parameter_48, s2, s13, parameter_32, s16, parameter_32, s19, parameter_38);
+  re16: s22 => s19; c2*function_2(parameter_61, s22, s19, parameter_63, parameter_91, s9, parameter_91, s13, parameter_91, s16, parameter_91, s3, parameter_106);
+  re17: s22 => s21; c2*function_4(parameter_61, s22, s21, parameter_63, parameter_92, s15, parameter_92, s25, parameter_92);
+  re18: s21 => s19; c2*function_2(parameter_89, s21, s13, parameter_63, parameter_91, s19, parameter_91, s9, parameter_91, s16, parameter_91, s3, parameter_31);
+  re20: species_1 + s6 => s25; c2*parameter_58*species_1*s6;
+  re21: s9 => s26; parameter_9*s9;
+  re22: s25 => s27; parameter_9*s25;
+  re23: s28 => s30; c3*function_8(s28, parameter_29, s26, parameter_104, species_20);
+  re24: s28 => s31; c3*function_8(s28, parameter_28, s26, parameter_103, s26);
+  re27: s28 => s33; c3*function_3(s28, s27, parameter_30);
+  re28: s29 => s30; c3*function_8(s29, parameter_26, s26, parameter_102, species_20);
+  re29: s29 => s31; c3*function_8(s29, parameter_25, s26, parameter_101, species_20);
+  re31: s29 => s33; c3*function_3(s29, s27, parameter_27);
+  re32: s30 => s16; parameter_8*s30;
+  re33: s31 => s13; parameter_8*s31;
+  re35: s33 => s15; parameter_8*s33;
+  re41: s33 => s30; c3*function_4(parameter_87, s33, s31, parameter_63, parameter_91, s26, parameter_91, s30, parameter_91);
+  re42: s15 => s16; c2*function_2(parameter_87, s15, s16, parameter_63, parameter_91, s9, parameter_91, s19, parameter_91, s13, parameter_91, s3, parameter_31);
+  re43: s16 => s17; c2*parameter_15*s16;
+  re44: s13 => s17; c2*parameter_15*s13;
+  re45: s15 => s17; c2*parameter_15*s15;
+  re46: s16 => s29; parameter_16*s16;
+  re47: s13 => s29; parameter_16*s13;
+  re49: s15 => s29; parameter_16*s15;
+  reaction_1: s3 => s2; c4*parameter_21*s3;
+  reaction_2: species_5 => s2; c4*parameter_21*species_5;
+  reaction_3: s6 => 2s6; c2*function_5(parameter_20, s6, parameter_93);
+  reaction_4: s6 => ; c2*parameter_19*s6;
+  reaction_5: s1 => 2s1; c1*function_5(parameter_20, s1, parameter_93);
+  reaction_6: s1 => ; c1*parameter_19*s1;
+  reaction_10: s17 => s13; c2*function_6(s17, parameter_23, s19, parameter_23, s9, parameter_100, species_18);
+  reaction_11: s17 => s16; c2*function_6(s17, parameter_22, s19, parameter_22, s9, parameter_99, species_18);
+  reaction_12: s16 => ; c2*parameter_64*s16;
+  reaction_13:  => s28; c3*function_7(parameter_33, s26, parameter_63, parameter_86, parameter_35);
+  reaction_14: s28 => ; c3*parameter_34*s28;
+  reaction_16: s1 => s6; function_3(s1, s3, parameter_37);
+  reaction_17: s4 + s1 => s25; parameter_56*s4*s1;
+  reaction_19: s6 => ; c2*function_9(s6, parameter_48, parameter_39, s3, parameter_38, s19);
+  reaction_20: s1 => ; c1*function_3(s1, s3, parameter_54);
+  reaction_24:  => species_1; c2*function_10(parameter_66, parameter_41, s3, parameter_63, parameter_40, s19, parameter_85, s9, parameter_85);
+  reaction_27:  => s22; c2*function_10(parameter_65, parameter_41, s19, parameter_63, parameter_85, s3, parameter_40, s9, parameter_85);
+  reaction_31: species_1 => ; c2*parameter_44*species_1;
+  reaction_32: s22 => ; c2*parameter_45*s22;
+  reaction_37: s19 => ; c2*parameter_62*s19;
+  reaction_38: s21 => ; c2*parameter_62*s21;
+  reaction_39: s13 => ; c2*parameter_64*s13;
+  reaction_40: s15 => ; c2*parameter_64*s15;
+  reaction_7: s19 => s21; c2*function_4(parameter_90, s19, s15, parameter_63, parameter_92, s21, parameter_92, s25, parameter_92);
+  reaction_8: s16 => s15; c2*function_4(parameter_88, s16, s15, parameter_63, parameter_92, s25, parameter_92, s21, parameter_92);
+  reaction_9: s30 => s33; c3*function_11(parameter_88, s30, s33, parameter_63, parameter_92, s27, parameter_92);
+  reaction_15: s22 + s6 => s19; c2*parameter_59*s22*s6;
+  reaction_18: s22 + s6 => s21; c2*parameter_60*s22*s6;
+  reaction_21: s26 => ; c3*parameter_46*s26;
+  reaction_22: s27 => ; c3*parameter_46*s27;
+  reaction_23: species_1 -> s4; function_12(reaction_23_V, species_1, reaction_23_k, s4);
+  reaction_25: s4 => s25; function_3(s4, species_10, parameter_77);
+  reaction_26: s4 => s9; function_3(s4, species_10, parameter_78);
+  reaction_28: species_10 => ; c1*parameter_94*species_10;
+  reaction_29:  => s15; c2*function_13(parameter_82);
+  reaction_30:  => s13; c2*function_13(parameter_83);
+  reaction_33:  => s16; c2*function_13(parameter_84);
+  reaction_34:  => s33; c3*function_13(parameter_79);
+  reaction_35:  => s31; c3*function_13(parameter_80);
+  reaction_36:  => s30; c3*function_13(parameter_81);
+  reaction_41: species_18 => species_20; parameter_9*species_18;
+  reaction_42: species_20 => ; c3*parameter_46*species_20;
+  reaction_43: s2 => s3; c4*function_2(parameter_105, s2, s13, parameter_63, parameter_91, s16, parameter_91, s9, parameter_91, s19, parameter_91, s3, parameter_106);
+  reaction_44: species_20 => ; c3*parameter_46*species_20;
+  reaction_45: s28 => species_12; reaction_45_k1*s28;
+  reaction_46: species_12 => species_13; c1*reaction_46_k1*species_12;
+  reaction_47: species_13 => ; c1*reaction_47_k1*species_13;
+  reaction_48: species_13 => 2species_13; c1*reaction_48_k1*species_13;
+  reaction_49: species_12 => ; c1*reaction_49_k1*species_12;
+  reaction_50: s28 => species_14; reaction_50_k1*s28;
+  reaction_51: species_14 => species_15; c1*reaction_51_k1*species_14;
+  reaction_52: species_15 => ; c1*reaction_52_k1*species_15;
+  reaction_53: species_14 => ; c1*reaction_53_k1*species_14;
+  reaction_54: s28 => species_16; reaction_54_k1*s28;
+  reaction_55: species_16 => species_17; c1*reaction_55_k1*species_16;
+  reaction_56: species_17 => ; c1*reaction_56_k1*species_17;
+  reaction_57: species_16 => ; c1*reaction_57_k1*species_16;
+  reaction_58: species_15 => species_17; c1*reaction_58_k1*species_15;
+
+  // Events:
+  event_1: at time >= 2: species_10 = species_10 + species_11, s1 = s1 + species_7*parameter_6;
+  event_2: at time >= 4: species_10 = species_10 + species_11, s1 = s1 + species_7*parameter_6;
+
+  // Species initializations:
+  s1 = parameter_6*species_7;
+  species_7 = 0.0534;
+  species_10 = species_11;
+  species_11 = 1;
+  species_12 = 1;
+  species_13 = 150000;
+  species_14 = 1;
+  species_15 = 150000;
+  species_16 = 1;
+  species_17 = 150000;
+  s9 = 1;
+  s13 = 0;
+  s15 = 0;
+  s16 = 0;
+  s19 = 0;
+  s21 = 0;
+  s22 = 1000000;
+  s25 = 0;
+  s17 = 1198199.01671451;
+  s6 = 0;
+  species_1 = 1000000;
+  s4 = 4501139.56260765;
+  species_18 = 1;
+  species_19 = 1;
+  s2 = 10000;
+  s3 = 0;
+  species_5 = 0;
+  s26 = 0;
+  s27 = 0;
+  s28 = 10000000;
+  s29 = 41775201.8460542;
+  s30 = 0;
+  s31 = 0;
+  s33 = 0;
+  species_20 = 1;
+
+  // Compartment initializations:
+  c1 = 1;
+  c2 = 1;
+  c4 = 1;
+  c3 = 1;
+
+  // Variable initializations:
+  parameter_6 = 1e-006;
+  parameter_70 = 10;
+  parameter_1 = 0.5;
+  parameter_3 = 1;
+  parameter_4 = 0.3;
+  ModelValue_3 = parameter_4;
+  parameter_7 = 1e-006;
+  parameter_8 = 0.5;
+  parameter_9 = 1;
+  parameter_10 = 1e-006;
+  ModelValue_10 = parameter_12;
+  parameter_12 = 3e-007;
+  parameter_13 = 0.143;
+  parameter_14 = 0.1;
+  parameter_49 = 512;
+  parameter_51 = 0.01;
+  parameter_50 = 128;
+  parameter_52 = 0.01;
+  parameter_19 = 1;
+  parameter_20 = 2;
+  parameter_21 = 1;
+  parameter_48 = 1e-006;
+  parameter_53 = 1e-006;
+  parameter_31 = 1000;
+  parameter_32 = 0.0001;
+  parameter_33 = 100;
+  parameter_34 = 1;
+  parameter_35 = 100000000;
+  parameter_36 = 1;
+  parameter_38 = 0.0001;
+  parameter_39 = 1;
+  parameter_40 = 1000;
+  parameter_41 = 1000;
+  parameter_42 = 1e-006;
+  parameter_44 = 1;
+  parameter_45 = 1;
+  parameter_47 = 1e-006;
+  parameter_107 = 0.62677;
+  parameter_61 = 1;
+  parameter_62 = 0.0218776162394955;
+  parameter_63 = 2;
+  parameter_43 = 0.01;
+  parameter_65 = 100000;
+  parameter_66 = 1000000;
+  parameter_46 = 0.5;
+  parameter_74 = 0.5;
+  parameter_76 = 1;
+  parameter_85 = 10000;
+  parameter_86 = 10000;
+  parameter_87 = 1;
+  parameter_88 = 2.5;
+  parameter_89 = 2;
+  parameter_90 = 1;
+  parameter_91 = 100000;
+  parameter_92 = 100000;
+  parameter_93 = 0.001;
+  parameter_94 = 0.0714;
+  parameter_95 = 3e-007;
+  parameter_97 = 0.3;
+  parameter_105 = 0;
+  parameter_106 = 1;
+  reaction_23_V = 94.3761;
+  reaction_23_k = 1.35871;
+  reaction_45_k1 = 0.00260615;
+  reaction_46_k1 = 0.105682;
+  reaction_47_k1 = 0.158489;
+  reaction_48_k1 = 0.1;
+  reaction_49_k1 = 0.107647;
+  reaction_50_k1 = 0.00214783;
+  reaction_51_k1 = 0.11695;
+  reaction_52_k1 = 0.1;
+  reaction_53_k1 = 0.1;
+  reaction_54_k1 = 0.00346737;
+  reaction_55_k1 = 0.1;
+  reaction_56_k1 = 0.1;
+  reaction_57_k1 = 0.119124;
+  reaction_58_k1 = 0.167494;
+
+  //Other declarations:
+  var parameter_2, parameter_5, parameter_11, parameter_15, parameter_16;
+  var parameter_17, parameter_18, parameter_22, parameter_23, parameter_24;
+  var parameter_25, parameter_26, parameter_27, parameter_28, parameter_29;
+  var parameter_30, parameter_37, parameter_54, parameter_55, parameter_56;
+  var parameter_57, parameter_58, parameter_59, parameter_60, parameter_64;
+  var parameter_67, parameter_68, parameter_69, parameter_71, parameter_72;
+  var parameter_73, parameter_75, parameter_77, parameter_78, parameter_79;
+  var parameter_80, parameter_101, parameter_103, parameter_81, parameter_102;
+  var parameter_104, parameter_82, parameter_83, parameter_100, parameter_84;
+  var parameter_99, parameter_96, parameter_98;
+  const c1, c2, c4, c3, parameter_6, parameter_70, parameter_1, parameter_3;
+  const parameter_4, ModelValue_3, parameter_7, parameter_8, parameter_9;
+  const parameter_10, ModelValue_10, parameter_12, parameter_13, parameter_14;
+  const parameter_49, parameter_51, parameter_50, parameter_52, parameter_19;
+  const parameter_20, parameter_21, parameter_48, parameter_53, parameter_31;
+  const parameter_32, parameter_33, parameter_34, parameter_35, parameter_36;
+  const parameter_38, parameter_39, parameter_40, parameter_41, parameter_42;
+  const parameter_44, parameter_45, parameter_47, parameter_107, parameter_61;
+  const parameter_62, parameter_63, parameter_43, parameter_65, parameter_66;
+  const parameter_46, parameter_74, parameter_76, parameter_85, parameter_86;
+  const parameter_87, parameter_88, parameter_89, parameter_90, parameter_91;
+  const parameter_92, parameter_93, parameter_94, parameter_95, parameter_97;
+  const parameter_105, parameter_106;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = item;
+
+  //Display Names:
+  time_unit is "time";
+  c1 is "Lumen";
+  c2 is "Lamina Propia";
+  c4 is "Epithelium";
+  c3 is "Gastric Lymph Node";
+  s1 is "HP";
+  parameter_6 is "HP Dose Response";
+  species_7 is "HP Dose";
+  species_10 is "LB";
+  species_11 is "LB Dose";
+  species_12 is "nTh1";
+  species_13 is "nTh1_LP";
+  species_14 is "nTh17";
+  species_15 is "nTh17_LP";
+  species_16 is "nTreg";
+  species_17 is "nTreg_LP";
+  s9 is "eDC";
+  s13 is "Th1";
+  s15 is "iTreg";
+  s16 is "Th17";
+  s19 is "M1";
+  s21 is "M2";
+  s22 is "M0";
+  s25 is "tDC";
+  s17 is "emT";
+  s6 is "HP";
+  species_1 is "iDC";
+  species_2 is "TotalDC";
+  s4 is "iDC";
+  species_3 is "TotalM";
+  species_4 is "TotalT";
+  species_18 is "eDCLB";
+  species_19 is "pEC";
+  s2 is "E";
+  s3 is "Ep";
+  species_5 is "Edead";
+  s26 is "eDC";
+  s27 is "tDC";
+  s28 is "nT";
+  s29 is "cmT";
+  s30 is "Th17";
+  s31 is "Th1";
+  s33 is "iTreg";
+  species_6 is "TotalDC";
+  species_8 is "TotalT";
+  species_9 is "TotalT-s";
+  parameter_70 is "Stimulation";
+  species_20 is "eDCLB";
+  event_1 is "2nd Dose";
+  event_2 is "3rd Dose";
+  parameter_1 is "vHP";
+  parameter_2 is "vHP2";
+  parameter_3 is "aTreg";
+  parameter_4 is "aTh17";
+  parameter_5 is "aTh1";
+  ModelValue_3 is "Initial for aTh17";
+  parameter_7 is "kEB";
+  parameter_8 is "@eIE";
+  parameter_9 is "@eEI";
+  parameter_10 is "atreg";
+  parameter_11 is "ath1";
+  ModelValue_10 is "Initial for ath17";
+  parameter_12 is "ath17";
+  parameter_13 is "@uT";
+  parameter_14 is "@vT";
+  parameter_15 is "toemT";
+  parameter_16 is "tcmT";
+  parameter_17 is "pt";
+  parameter_49 is "@pt_0";
+  parameter_51 is "m_reg";
+  parameter_18 is "pT";
+  parameter_50 is "@pT_0";
+  parameter_52 is "m_HP";
+  parameter_19 is "uHP";
+  parameter_20 is "lHP";
+  parameter_21 is "@uE";
+  parameter_22 is "Stim_emT_Th17";
+  parameter_48 is "k_LP";
+  parameter_23 is "Stim_emT_Th1";
+  parameter_24 is "Stim_emT_iTreg";
+  parameter_25 is "Stim_cmT_Th1";
+  parameter_53 is "kGLN";
+  parameter_26 is "Stim_cmT_Th17";
+  parameter_27 is "Stim_cmT_iTreg";
+  parameter_28 is "Stim_t_Th1";
+  parameter_29 is "Stim_t_Th17";
+  parameter_30 is "Stim_t_iTreg";
+  parameter_31 is "Bc";
+  parameter_32 is "uCE";
+  parameter_33 is "@et";
+  parameter_34 is "@ut";
+  parameter_35 is "@lt";
+  parameter_36 is "Bp";
+  parameter_37 is "cyto_change";
+  parameter_38 is "uM1";
+  parameter_39 is "Bd";
+  parameter_40 is "Br";
+  parameter_41 is "er";
+  parameter_42 is "kTD";
+  parameter_44 is "udi_LP";
+  parameter_45 is "um";
+  parameter_47 is "k_lumen";
+  parameter_54 is "HP_Ep_Lumen";
+  parameter_55 is "iDCtoeDC_Lumen";
+  parameter_107 is "k_LP1";
+  parameter_56 is "iDCtotDC_Lumen";
+  parameter_57 is "iDCtoeDC_LP";
+  parameter_58 is "iDCtotDC_LP";
+  parameter_59 is "M0toM1_LP";
+  parameter_60 is "M0toM2_LP";
+  parameter_61 is "vm";
+  parameter_62 is "uMA";
+  parameter_63 is "n";
+  parameter_64 is "T_deactivation";
+  parameter_43 is "iDC percentage";
+  parameter_65 is "lm";
+  parameter_66 is "ld";
+  parameter_67 is "iTreg NS (rel)";
+  parameter_68 is "Th1 NS (rel)";
+  parameter_69 is "Th17 NS (rel)";
+  parameter_71 is "iTreg S (rel)";
+  parameter_72 is "Th1 S (rel)";
+  parameter_73 is "Th17 S (rel)";
+  parameter_46 is "@ud";
+  parameter_74 is "vLB";
+  parameter_75 is "vLB2";
+  parameter_76 is "k_LB";
+  parameter_77 is "iDCtotDC_LB";
+  parameter_78 is "iDCtoeDC_LB";
+  parameter_79 is "new_iTreg_GLN";
+  parameter_80 is "new_Th1_GLN";
+  parameter_101 is "Stim_cmT_Th1LB";
+  parameter_103 is "Stim_t_Th1LB";
+  parameter_81 is "new_Th17_GLN";
+  parameter_102 is "Stim_cmT_Th17LB";
+  parameter_104 is "Stim_t_Th17LB";
+  parameter_82 is "new_emT_iTreg";
+  parameter_83 is "new_emT_Th1";
+  parameter_100 is "Stim_emT_Th1LB";
+  parameter_84 is "new_emT_Th17";
+  parameter_99 is "Stim_emT_Th17LB";
+  parameter_85 is "er_i";
+  parameter_86 is "et_i";
+  parameter_87 is "K_r17";
+  parameter_88 is "K_17r";
+  parameter_89 is "v21";
+  parameter_90 is "v12";
+  parameter_91 is "ri_I";
+  parameter_92 is "ir_I";
+  parameter_93 is "phi_HP";
+  parameter_94 is "uLB";
+  parameter_95 is "ath17LB";
+  parameter_96 is "ath1LB";
+  parameter_97 is "aTh17LB";
+  parameter_98 is "aTh1LB";
+  parameter_105 is "vEC";
+  parameter_106 is "Bc2";
+  re2 is "re055";
+  re3 is "re066";
+  re4 is "re059";
+  re6 is "re105";
+  re11 is "re074";
+  re13 is "re063";
+  re15 is "re058";
+  re16 is "re070";
+  re17 is "re073";
+  re18 is "re072";
+  re20 is "re077";
+  re21 is "re078";
+  re22 is "re079";
+  re23 is "re080";
+  re24 is "re081";
+  re27 is "re082";
+  re28 is "re083";
+  re29 is "re084";
+  re31 is "re085";
+  re32 is "re087";
+  re33 is "re088";
+  re35 is "re089";
+  re41 is "re091";
+  re42 is "re093";
+  re43 is "re095";
+  re44 is "re096";
+  re45 is "re097";
+  re46 is "re098";
+  re47 is "re099";
+  re49 is "re100";
+  reaction_1 is "re060";
+  reaction_2 is "re057";
+  reaction_3 is "re102";
+  reaction_4 is "re101";
+  reaction_5 is "re052";
+  reaction_6 is "re065";
+  reaction_10 is "re103";
+  reaction_11 is "re104";
+  reaction_12 is "re119";
+  reaction_13 is "re106";
+  reaction_14 is "re107";
+  reaction_16 is "re061";
+  reaction_17 is "re062";
+  reaction_19 is "re067";
+  reaction_20 is "re053";
+  reaction_24 is "re068";
+  reaction_27 is "re069";
+  reaction_31 is "re111";
+  reaction_32 is "re112";
+  reaction_37 is "re117";
+  reaction_38 is "re118";
+  reaction_39 is "re120";
+  reaction_40 is "re121";
+  reaction_7 is "re071";
+  reaction_8 is "re094";
+  reaction_9 is "re092";
+  reaction_15 is "re122";
+  reaction_18 is "re123";
+  reaction_21 is "re116";
+  reaction_22 is "re124";
+  reaction_23 is "re127";
+  reaction_25 is "re128";
+  reaction_26 is "re129";
+  reaction_28 is "re130";
+  reaction_29 is "re131";
+  reaction_30 is "re132";
+  reaction_33 is "re133";
+  reaction_34 is "re134";
+  reaction_35 is "re135";
+  reaction_36 is "re136";
+  reaction_41 is "re137";
+  reaction_42 is "re138";
+  reaction_43 is "re139";
+  reaction_44 is "re140";
+  reaction_45 is "nTh1 creation";
+  reaction_46 is "nTh1 trans";
+  reaction_47 is "nTh1_LP deg";
+  reaction_48 is "nTh1_LP expansion";
+  reaction_49 is "nTh1 deg";
+  reaction_50 is "nTh17 creation";
+  reaction_51 is "nTh17 trans";
+  reaction_52 is "nTh17_LP deg";
+  reaction_53 is "nTh17 deg";
+  reaction_54 is "nTreg creation";
+  reaction_55 is "nTreg trans";
+  reaction_56 is "nTreg_LP deg";
+  reaction_57 is "nTreg deg";
+  reaction_58 is "Th17 to Treg";
+end

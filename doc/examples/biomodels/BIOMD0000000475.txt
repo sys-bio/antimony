@@ -1,0 +1,160 @@
+//Created by libAntimony v2.5
+model *PRR_model()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species species_1 in compartment_1, species_2 in compartment_1, species_3 in compartment_1;
+  species species_4 in compartment_1, species_5 in compartment_1, species_6 in compartment_1;
+  species species_7 in compartment_1, species_8 in compartment_1, species_9 in compartment_1;
+  species species_10 in compartment_1, species_11 in compartment_1, species_12 in compartment_1;
+  species species_13 in compartment_1, species_14 in compartment_1, species_15 in compartment_1;
+  species species_16 in compartment_1, species_17 in compartment_1, species_18 in compartment_1;
+  species species_19 in compartment_1, species_20 in compartment_1, species_21 in compartment_1;
+  species species_22 in compartment_1, species_23 in compartment_1;
+
+  // Assignment Rules:
+  parameter_1 := species_12 + species_19 + species_22 + species_11 + species_14 + species_17 + species_21 + species_20 + species_16;
+
+  // Reactions:
+  reaction_1: species_2 + species_1 => species_3; compartment_1*reaction_1_k1*species_2*species_1;
+  reaction_2: 2species_5 => species_4; compartment_1*reaction_2_k1*species_5^2;
+  reaction_3: species_4 => 2species_5; compartment_1*reaction_3_k1*species_4;
+  reaction_4: species_6 + species_8 => species_7; compartment_1*reaction_4_k1*species_6*species_8;
+  reaction_5: species_3 + species_4 => species_9; compartment_1*reaction_5_k1*species_3*species_4;
+  reaction_6: species_9 => species_3 + species_4; compartment_1*reaction_6_k1*species_9;
+  reaction_7: species_7 + species_9 => species_10; compartment_1*reaction_7_k1*species_7*species_9;
+  reaction_8: species_10 => species_7 + species_9; compartment_1*reaction_8_k1*species_10;
+  reaction_9: species_10 => species_6 + species_11; compartment_1*reaction_9_k1*species_10;
+  reaction_10: species_11 => species_4 + species_12; compartment_1*reaction_10_k1*species_11;
+  reaction_11: species_8 + species_18 => species_15; compartment_1*reaction_11_k1*species_8*species_18;
+  reaction_12: species_12 + species_13 => species_14; compartment_1*reaction_12_k1*species_12*species_13;
+  reaction_13: species_14 => species_12 + species_13; compartment_1*reaction_13_k1*species_14;
+  reaction_14: species_14 + species_15 => species_16; compartment_1*reaction_14_k1*species_14*species_15;
+  reaction_15: species_16 => species_14 + species_15; compartment_1*reaction_15_k1*species_16;
+  reaction_16: species_16 => species_18 + species_17; compartment_1*reaction_16_k1*species_16;
+  reaction_17: species_17 => species_13 + species_19; compartment_1*reaction_17_k1*species_17;
+  reaction_18: species_13 + species_19 => species_17; compartment_1*reaction_18_k1*species_13*species_19;
+  reaction_19: species_15 + species_17 => species_20; compartment_1*reaction_19_k1*species_15*species_17;
+  reaction_20: species_20 => species_15 + species_17; compartment_1*reaction_20_k1*species_20;
+  reaction_21: species_20 => species_18 + species_21; compartment_1*reaction_21_k1*species_20;
+  reaction_22: species_21 => species_13 + species_22; compartment_1*reaction_22_k1*species_21;
+  reaction_23: species_12 => species_8 + species_23; compartment_1*reaction_23_k1*species_12;
+  reaction_24: species_19 => 2species_8 + species_23; compartment_1*reaction_24_k1*species_19;
+  reaction_25: species_22 => 3species_8 + species_23; compartment_1*reaction_25_k1*species_22;
+
+  // Species initializations:
+  species_1 = 1001;
+  species_2 = 7480;
+  species_3 = 0;
+  species_4 = 0;
+  species_5 = 206;
+  species_6 = 194;
+  species_7 = 0;
+  species_8 = 8698;
+  species_9 = 0;
+  species_10 = 0;
+  species_11 = 0;
+  species_12 = 0;
+  species_13 = 1520;
+  species_14 = 0;
+  species_15 = 0;
+  species_16 = 0;
+  species_17 = 0;
+  species_18 = 193;
+  species_19 = 0;
+  species_20 = 0;
+  species_21 = 0;
+  species_22 = 0;
+  species_23 = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  reaction_1_k1 = 1.5e-008;
+  reaction_2_k1 = 0.01;
+  reaction_3_k1 = 1000;
+  reaction_4_k1 = 2.5e-007;
+  reaction_5_k1 = 100000;
+  reaction_6_k1 = 1000;
+  reaction_7_k1 = 0.0351;
+  reaction_8_k1 = 0.01;
+  reaction_9_k1 = 0.01;
+  reaction_10_k1 = 1;
+  reaction_11_k1 = 100000;
+  reaction_12_k1 = 5e-006;
+  reaction_13_k1 = 0.005;
+  reaction_14_k1 = 0.078;
+  reaction_15_k1 = 1e-010;
+  reaction_16_k1 = 0.05;
+  reaction_17_k1 = 7.5e-006;
+  reaction_18_k1 = 5e-006;
+  reaction_19_k1 = 0.078;
+  reaction_20_k1 = 1e-010;
+  reaction_21_k1 = 0.005;
+  reaction_22_k1 = 0.005;
+  reaction_23_k1 = 3e-008;
+  reaction_24_k1 = 0.0008;
+  reaction_25_k1 = 0.005;
+
+  //Other declarations:
+  var parameter_1;
+  const compartment_1;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit substance = dimensionless;
+  unit per_second = 1 / second;
+
+  //Display Names:
+  compartment_1 is "compartment";
+  species_1 is "L";
+  species_2 is "PCNA";
+  species_3 is "PCNAon";
+  species_4 is "Rad18:Rad18";
+  species_5 is "Rad18";
+  species_6 is "Rad6";
+  species_7 is "Rad6U";
+  species_8 is "U";
+  species_9 is "Rad18:Rad18:PCNAon";
+  species_10 is "Rad18:Rad18:PCNAon:Rad6U";
+  species_11 is "Rad18:Rad18:PCNAonU";
+  species_12 is "PCNAonU";
+  species_13 is "Rad5";
+  species_14 is "Rad5:PCNAonU";
+  species_15 is "Ubc13U:Mms2";
+  species_16 is "Ubc13U:Mms2:Rad5:PCNAonU";
+  species_17 is "Rad5:PCNAonU:U";
+  species_18 is "Ubc13:Mms2";
+  species_19 is "PCNAonU:U";
+  species_20 is "Ubc13U:Mms2:Rad5:PCNAonU:U";
+  species_21 is "Rad5:PCNAonU:U:U";
+  species_22 is "PCNAonU:U:U";
+  species_23 is "PCNAoff";
+  parameter_1 is "PCNA_sum";
+  reaction_1 is "r01";
+  reaction_2 is "r02";
+  reaction_3 is "r03";
+  reaction_4 is "r04";
+  reaction_5 is "r05";
+  reaction_6 is "r06";
+  reaction_7 is "r07";
+  reaction_8 is "r08";
+  reaction_9 is "r09";
+  reaction_10 is "r10";
+  reaction_11 is "r11";
+  reaction_12 is "r12";
+  reaction_13 is "r13";
+  reaction_14 is "r14";
+  reaction_15 is "r15";
+  reaction_16 is "r16";
+  reaction_17 is "r17";
+  reaction_18 is "r18";
+  reaction_19 is "r19";
+  reaction_20 is "r20";
+  reaction_21 is "r21";
+  reaction_22 is "r22";
+  reaction_23 is "r23";
+  reaction_24 is "r24";
+  reaction_25 is "r25";
+end

@@ -1,0 +1,154 @@
+//Created by libAntimony v2.5
+model *MODEL1301020001()
+
+  // Compartments and Species:
+  compartment default, Vex, Vin;
+  species GP in default, pGP in default, mRNA in default, PEPCK in default;
+  species IRS in default, p1IRS in default, p2IRS in default, p1p2IRS in default;
+  species Akt in default, pAkt in default, mTOR in default, pmTOR in default;
+  species Foxo in default, pFoxo in default, PYRout in Vex, GLCex in Vex;
+  species F16P in Vin, PYRin in Vin, LAC in Vin, OAA in Vin, GLY in Vin, G1P in Vin;
+  species G6P in Vin;
+
+  // Reactions:
+  v1: GLCex -> G6P; (V1*(GLCex/K1) - V1*(G6P/K1))/(1 + GLCex/K1 + G6P/K1);
+  v2: pAkt + G6P -> pAkt + F16P; (((1 + s1*pAkt)*V2_G6P*G6P)/K2_G6P - (V2_F16P*F16P)/K2_F16P)/(1 + G6P/K2_G6P + F16P/K2_F16P);
+  v3: F16P => PYRin; (V3*F16P)/(K3 + F16P);
+  v4: PYRin -> LAC; ((V4_PYR*PYRin)/K4_PYR - (V4_LAC*LAC)/K4_LAC)/(1 + PYRin/K4_PYR + LAC/K4_LAC);
+  v5: PYRout -> PYRin; ((V5*PYRout)/K5 - (V5*PYRin)/K5)/(1 + PYRout/K5 + PYRin/K5);
+  v6: PYRin => OAA; (V6*PYRin)/(K6 + PYRin);
+  v7: PEPCK + OAA => PEPCK + F16P; ((1 + s3*PEPCK)*V7*OAA)/(K7 + OAA);
+  v8: pAkt + G6P -> pAkt + G1P; (((1 + s4*pAkt)*V8_G6P*G6P)/K8_G6P - (V8_G1P*G1P)/K8_G1P)/(1 + G6P/K8_G6P + G1P/K8_G1P);
+  v9: pGP + G1P -> pGP + GLY; ((V9_G1P*G1P)/K9_G1P - ((1 + s2*pGP)*V9_GLY*GLY)/K9_GLY)/(1 + G1P/K9_G1P + GLY/K9_GLY);
+  metabolicENZ: pGP + G6P => GP + G6P; pGP*G6P*k4;
+  reaction1:  => IRS; (proIRS - IRS)*param1;
+  reaction2: IRS -> p1IRS; IRS*insulin*param2 - p1IRS*param3;
+  reaction3: p1IRS => ; p1IRS*param4;
+  reaction4: p1IRS + pmTOR => p1p2IRS + pmTOR; p1IRS*pmTOR*param5;
+  reaction5: p1p2IRS => p1IRS; p1p2IRS*param6;
+  reaction6: IRS + pmTOR => p2IRS + pmTOR; IRS*pmTOR*param7;
+  reaction7: p2IRS => IRS; p2IRS*param8;
+  reaction8: p2IRS => ; p2IRS*param9;
+  reaction9: p2IRS -> p1p2IRS; p2IRS*insulin*param10 - p1p2IRS*param11;
+  reaction10: p1p2IRS => ; p1p2IRS*param12;
+  reaction11: Akt + p1IRS => pAkt + p1IRS; p1IRS*Akt*param13;
+  reaction12: pAkt => Akt; pAkt*param14;
+  reaction13: mTOR + pAkt => pmTOR + pAkt; mTOR*pAkt*param15;
+  reaction14: pmTOR => mTOR; pmTOR*param16;
+  reaction15: Foxo + pAkt => pFoxo + pAkt; pAkt*Foxo*k1_PEPCK;
+  reactionPEP1: Foxo => mRNA + Foxo; Foxo*k3_PEPCK - mRNA*k4_PEPCK;
+  reactionPEP2: mRNA => PEPCK + mRNA; k5_PEPCK*mRNA - k6_PEPCK*PEPCK;
+  mw7c079c91_51e3_4732_8dca_23fb3cd716a7: pFoxo => Foxo; pFoxo*k2_PEPCK;
+  mwfc720c89_b1b3_416a_8958_e9d0aff9f4a6: GP => pGP; GP*k3;
+
+  // Species initializations:
+  GP = 0.4726/default;
+  pGP = 0.1723/default;
+  mRNA = 2.905/default;
+  PEPCK = 0.7686/default;
+  IRS = 888.77/default;
+  p1IRS = 0;
+  p2IRS = 0;
+  p1p2IRS = 0;
+  Akt = 1.1182/default;
+  pAkt = 0;
+  mTOR = 880.25/default;
+  pmTOR = 0;
+  Foxo = 1.069e-005/default;
+  pFoxo = 0;
+  PYRout = 137.5/Vex;
+  GLCex = 114.9/Vex;
+  F16P = 9.571/Vin;
+  PYRin = 0.9872/Vin;
+  LAC = 1001/Vin;
+  OAA = 0.0022/Vin;
+  GLY = 4.8248/Vin;
+  G1P = 5.303/Vin;
+  G6P = 0.5188/Vin;
+
+  // Compartment initializations:
+  default = 1;
+  Vex = 0.004;
+  Vex has litre;
+  Vin = 2.64e-005;
+  Vin has litre;
+
+  // Variable initializations:
+  V1 = 8.97;
+  K1 = 0.0451;
+  V2_G6P = 7.71;
+  K2_G6P = 925;
+  V2_F16P = 0.0839;
+  K2_F16P = 0.597;
+  V3 = 0.00229;
+  K3 = 2.92;
+  V6 = 0.00247;
+  K6 = 0.996;
+  V7 = 2.84e-005;
+  K7 = 8.43;
+  V4_PYR = 23.6;
+  K4_PYR = 56.4;
+  V4_LAC = 1.2e-006;
+  K4_LAC = 0.0154;
+  V8_G6P = 2.02e-005;
+  K8_G6P = 0.791;
+  V8_G1P = 0.04;
+  K8_G1P = 69.8;
+  V5 = 0.00112;
+  K5 = 0.228;
+  V9_G1P = 0.488;
+  K9_G1P = 2.69;
+  V9_GLY = 1.02e-006;
+  K9_GLY = 0.000623;
+  k3 = 112.76;
+  k4 = 1.9448;
+  s1 = 1.722;
+  s2 = 214.7;
+  s3 = 46.54;
+  s4 = 1.19;
+  k1_PEPCK = 0.12225;
+  k2_PEPCK = 0.0045985;
+  k3_PEPCK = 486.28;
+  k4_PEPCK = 0.0046101;
+  k5_PEPCK = 0.00010958;
+  k6_PEPCK = 0.0018592;
+  param1 = 5.5702;
+  param2 = 2.3969;
+  param3 = 0.020934;
+  param4 = 1.214e-005;
+  param5 = 0.2751;
+  param6 = 0.0072509;
+  param7 = 758.12;
+  param8 = 0.91758;
+  param9 = 0.041292;
+  param10 = 0.00013032;
+  param11 = 0.000192;
+  param12 = 0.029311;
+  param13 = 4.4307e-005;
+  param14 = 0.35211;
+  param15 = 3.1385e-005;
+  param16 = 0.0095934;
+  proIRS = 888.77;
+  insulin = 100;
+  insulin has MWDERIVEDUNIT_nanomole__litre;
+
+  //Other declarations:
+  const default, Vex, Vin, V1, K1, V2_G6P, K2_G6P, V2_F16P, K2_F16P, V3, K3;
+  const V6, K6, V7, K7, V4_PYR, K4_PYR, V4_LAC, K4_LAC, V8_G6P, K8_G6P, V8_G1P;
+  const K8_G1P, V5, K5, V9_G1P, K9_G1P, V9_GLY, K9_GLY, k3, k4, s1, s2, s3;
+  const s4, k1_PEPCK, k2_PEPCK, k3_PEPCK, k4_PEPCK, k5_PEPCK, k6_PEPCK, param1;
+  const param2, param3, param4, param5, param6, param7, param8, param9, param10;
+  const param11, param12, param13, param14, param15, param16, proIRS, insulin;
+
+  // Unit definitions:
+  unit MWDERIVEDUNIT_nanomole__litre = mole * 1e-006 dimensionless / metre^3;
+
+  //Display Names:
+  MWDERIVEDUNIT_nanomole__litre is "nanomole/litre";
+  s2 is "s4";
+  s3 is "s2";
+  s4 is "s3";
+  metabolicENZ is "metabolicENZ1";
+  mw7c079c91_51e3_4732_8dca_23fb3cd716a7 is "reaction16";
+  mwfc720c89_b1b3_416a_8958_e9d0aff9f4a6 is "metabolicENZ2";
+end
