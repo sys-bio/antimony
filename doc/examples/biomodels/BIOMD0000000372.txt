@@ -7,30 +7,30 @@ model *Tolic2000_InsulinGlucoseFeedback()
   species $G in COMpartment_, $Ii in COMpartment_;
 
   // Assignment Rules:
-  f5_x3 := Rg / (1 + exp(alpha * ((x3 * 1) / Vp - C5)));
-  f2_G := Ub * (1 - exp(-G / (C2 * Vg)));
-  f3_G := G / (C3 * Vg);
-  f4_Ii := U0 + (Um - U0) / (1 + exp(-beta * ln(Ii / C4 * (1 / Vi + 1 / (E * ti)))));
-  f1_G := Rm / (1 + exp((C1 - G / Vg) / a1));
-  Ip_conc := Ip / Vp;
-  Ii_conc := Ii / Vi;
-  G_conc := G / (Vg * 10);
+  f5_x3 := Rg/(1 + exp(alpha*((x3*1)/Vp - C5)));
+  f2_G := Ub*(1 - exp(-G/(C2*Vg)));
+  f3_G := G/(C3*Vg);
+  f4_Ii := U0 + (Um - U0)/(1 + exp(-beta*ln(Ii/C4*(1/Vi + 1/(E*ti)))));
+  f1_G := Rm/(1 + exp((C1 - G/Vg)/a1));
+  Ip_conc := Ip/Vp;
+  Ii_conc := Ii/Vi;
+  G_conc := G/(Vg*10);
 
   // Rate Rules:
-  x1' = 3 / td * (Ip / 1 - x1);
-  Ip' = f1_G - (E * (Ip / Vp - Ii / Vi) + Ip / tp);
-  x2' = 3 / td * (x1 - x2);
-  x3' = 3 / td * (x2 - x3);
-  G' = Gin + f5_x3 + -(f2_G + f3_G * f4_Ii);
-  Ii' = E * (Ip / Vp - Ii / Vi) - Ii / ti;
+  x1' = 3/td*(Ip/1 - x1);
+  Ip' = f1_G - (E*(Ip/Vp - Ii/Vi) + Ip/tp);
+  x2' = 3/td*(x1 - x2);
+  x3' = 3/td*(x2 - x3);
+  G' = Gin + f5_x3 + -(f2_G + f3_G*f4_Ii);
+  Ii' = E*(Ip/Vp - Ii/Vi) - Ii/ti;
 
   // Species initializations:
-  x1 = 110.420253 / COMpartment_;
-  Ip = 93.36441699 / COMpartment_;
-  x2 = 112.7601171 / COMpartment_;
-  x3 = 104.5878705 / COMpartment_;
-  G = 12342.61665 / COMpartment_;
-  Ii = 243.2865183 / COMpartment_;
+  x1 = 110.420253/COMpartment_;
+  Ip = 93.36441699/COMpartment_;
+  x2 = 112.7601171/COMpartment_;
+  x3 = 104.5878705/COMpartment_;
+  G = 12342.61665/COMpartment_;
+  Ii = 243.2865183/COMpartment_;
 
   // Compartment initializations:
   COMpartment_ = 1;

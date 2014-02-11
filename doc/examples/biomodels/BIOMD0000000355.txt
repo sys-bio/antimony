@@ -9,34 +9,34 @@ model *Abell2011_CalciumSignaling_WithAdaptation()
   species CaS in ER_store;
 
   // Reactions:
-  kPLC:  => IP3; R * CaI;
-  JPump: CaI => CaS; (mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3 * CaI^2) / (CaI^2 + k2^2);
-  JChannel: CaS => CaI; (1 - mwd8bf5d8f_ad00_4119_bde1_91015ef2cd7c) * (L + (((1 - g) * A * IP3^2) / (IP3^2 + mw92b257b7_00af_4fd6_a11b_8e4655a4ba65^2) * CaI^2) / (CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2)) * CaS;
-  kPhosphatase: IP3 => ; D * IP3;
-  inhibition_parameter1:  => g; (E * CaI^4) / (CaI^4 + mwf998b218_be11_4aa4_81ae_41141861fb42^4) * (1 - g);
-  inhibition_parameter2: g => ; F * g;
-  mwbdcd6a40_1ae7_4c86_a99f_1fba0b8beaf7:  => CaI; mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb * (mw0ad64e84_bb75_4be4_a9c3_2d4741b0f45f + mwfe8e89cf_3c67_4dd5_939e_b4cfee2e0778^8 / (CaS^8 + mwfe8e89cf_3c67_4dd5_939e_b4cfee2e0778^8));
-  mw530793e3_76b2_4483_be11_e94364306712: CaI => ; (mwaf195932_a72c_4552_8cf2_b349b15d39c4 * CaI^2) / (CaI^2 + mw3a93c3a6_623a_44fe_84e9_a47823defd1f^2);
-  mw5658298a_d96a_4b97_9a4f_6f06dad35824:  => mwaf195932_a72c_4552_8cf2_b349b15d39c4; (mwd3b36919_202a_4fed_a3c8_1a3a60594404 * mwfbff577a_4e9c_40fe_8777_eb0ceade28c9 * mwd21d3f76_d133_4053_8e44_02a538657e0a * CaI^4) / ((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1) * 0.05^4 + CaI^4);
-  mw700bd02b_9fc4_47e7_864a_967c03874dd6: mwaf195932_a72c_4552_8cf2_b349b15d39c4 => ; mwaf195932_a72c_4552_8cf2_b349b15d39c4 * mwfbff577a_4e9c_40fe_8777_eb0ceade28c9;
-  mw06f8fde4_d97b_4d5f_b71e_d93aa53e9932:  => mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3; (1 / mwd3b36919_202a_4fed_a3c8_1a3a60594404 * B * mwfbff577a_4e9c_40fe_8777_eb0ceade28c9 * ((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1) * 2^4 + CaS^4)) / CaS^4;
-  mw8021d532_dd9b_4e34_a865_c2bb1689b0b5:  => mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb; ((1 / (mwd3b36919_202a_4fed_a3c8_1a3a60594404 * mwd3b36919_202a_4fed_a3c8_1a3a60594404) * mw004dcb62_da5f_41c7_a7bd_033574894f48 * mwfbff577a_4e9c_40fe_8777_eb0ceade28c9 * ((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1) * 2^2 + CaS^2)) / CaS^2 * ((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1) * 0.05^2 + CaI^2)) / CaI^2;
-  mw1f122e51_99cb_4a32_a12e_4c2921920a17: mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb => ; mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb * mwfbff577a_4e9c_40fe_8777_eb0ceade28c9;
-  mw89d547e1_8d48_4cd2_ba3d_e4390294089d: mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3 => ; mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3 * mwfbff577a_4e9c_40fe_8777_eb0ceade28c9;
-  mwa61047ec_49c1_47b2_b78e_4d84a33d432a: CaI => mw013a7c64_a9ec_483c_b3b8_ed658337ee95; (mwa3072851_e3e4_4767_ac41_49fa7c0de7a7 * CaI^4) / (CaI^4 + mwe3841c25_6042_49c2_9feb_90cbf6751167^4);
-  ERtoMito: CaS => mw013a7c64_a9ec_483c_b3b8_ed658337ee95; mwd8bf5d8f_ad00_4119_bde1_91015ef2cd7c * (L + (((1 - g) * A * IP3^2) / (IP3^2 + mw92b257b7_00af_4fd6_a11b_8e4655a4ba65^2) * CaI^2) / (CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2)) * CaS;
-  mw1c50c3d1_dab9_423a_8373_6a4c75479b54: mw013a7c64_a9ec_483c_b3b8_ed658337ee95 => CaI; (mw219cf65d_18cc_4f7e_ab5a_5b87cda6fc43 * mw013a7c64_a9ec_483c_b3b8_ed658337ee95) / (mw013a7c64_a9ec_483c_b3b8_ed658337ee95 + 0.01);
+  kPLC:  => IP3; R*CaI;
+  JPump: CaI => CaS; (mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3*CaI^2)/(CaI^2 + k2^2);
+  JChannel: CaS => CaI; (1 - mwd8bf5d8f_ad00_4119_bde1_91015ef2cd7c)*(L + (((1 - g)*A*IP3^2)/(IP3^2 + mw92b257b7_00af_4fd6_a11b_8e4655a4ba65^2)*CaI^2)/(CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2))*CaS;
+  kPhosphatase: IP3 => ; D*IP3;
+  inhibition_parameter1:  => g; (E*CaI^4)/(CaI^4 + mwf998b218_be11_4aa4_81ae_41141861fb42^4)*(1 - g);
+  inhibition_parameter2: g => ; F*g;
+  mwbdcd6a40_1ae7_4c86_a99f_1fba0b8beaf7:  => CaI; mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb*(mw0ad64e84_bb75_4be4_a9c3_2d4741b0f45f + mwfe8e89cf_3c67_4dd5_939e_b4cfee2e0778^8/(CaS^8 + mwfe8e89cf_3c67_4dd5_939e_b4cfee2e0778^8));
+  mw530793e3_76b2_4483_be11_e94364306712: CaI => ; (mwaf195932_a72c_4552_8cf2_b349b15d39c4*CaI^2)/(CaI^2 + mw3a93c3a6_623a_44fe_84e9_a47823defd1f^2);
+  mw5658298a_d96a_4b97_9a4f_6f06dad35824:  => mwaf195932_a72c_4552_8cf2_b349b15d39c4; (mwd3b36919_202a_4fed_a3c8_1a3a60594404*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9*mwd21d3f76_d133_4053_8e44_02a538657e0a*CaI^4)/((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*0.05^4 + CaI^4);
+  mw700bd02b_9fc4_47e7_864a_967c03874dd6: mwaf195932_a72c_4552_8cf2_b349b15d39c4 => ; mwaf195932_a72c_4552_8cf2_b349b15d39c4*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9;
+  mw06f8fde4_d97b_4d5f_b71e_d93aa53e9932:  => mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3; (1/mwd3b36919_202a_4fed_a3c8_1a3a60594404*B*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9*((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*2^4 + CaS^4))/CaS^4;
+  mw8021d532_dd9b_4e34_a865_c2bb1689b0b5:  => mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb; ((1/(mwd3b36919_202a_4fed_a3c8_1a3a60594404*mwd3b36919_202a_4fed_a3c8_1a3a60594404)*mw004dcb62_da5f_41c7_a7bd_033574894f48*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9*((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*2^2 + CaS^2))/CaS^2*((mwd3b36919_202a_4fed_a3c8_1a3a60594404 - 1)*0.05^2 + CaI^2))/CaI^2;
+  mw1f122e51_99cb_4a32_a12e_4c2921920a17: mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb => ; mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9;
+  mw89d547e1_8d48_4cd2_ba3d_e4390294089d: mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3 => ; mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3*mwfbff577a_4e9c_40fe_8777_eb0ceade28c9;
+  mwa61047ec_49c1_47b2_b78e_4d84a33d432a: CaI => mw013a7c64_a9ec_483c_b3b8_ed658337ee95; (mwa3072851_e3e4_4767_ac41_49fa7c0de7a7*CaI^4)/(CaI^4 + mwe3841c25_6042_49c2_9feb_90cbf6751167^4);
+  ERtoMito: CaS => mw013a7c64_a9ec_483c_b3b8_ed658337ee95; mwd8bf5d8f_ad00_4119_bde1_91015ef2cd7c*(L + (((1 - g)*A*IP3^2)/(IP3^2 + mw92b257b7_00af_4fd6_a11b_8e4655a4ba65^2)*CaI^2)/(CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2))*CaS;
+  mw1c50c3d1_dab9_423a_8373_6a4c75479b54: mw013a7c64_a9ec_483c_b3b8_ed658337ee95 => CaI; (mw219cf65d_18cc_4f7e_ab5a_5b87cda6fc43*mw013a7c64_a9ec_483c_b3b8_ed658337ee95)/(mw013a7c64_a9ec_483c_b3b8_ed658337ee95 + 0.01);
 
   // Species initializations:
-  CaI = 0.05 / cytosol;
+  CaI = 0.05/cytosol;
   IP3 = 0;
-  g = 0.002 / cytosol;
-  mwaf195932_a72c_4552_8cf2_b349b15d39c4 = 0.013 / cytosol;
-  mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3 = 0.266 / cytosol;
-  mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb = 0.02 / cytosol;
-  mwd6b792d8_c983_42c1_b3bc_2494d6a3363e = 1000 / outside;
+  g = 0.002/cytosol;
+  mwaf195932_a72c_4552_8cf2_b349b15d39c4 = 0.013/cytosol;
+  mw0ebc76ad_49d7_4845_8f88_04d443fbe7f3 = 0.266/cytosol;
+  mw7cb2644a_384a_4bbb_93fd_fd686e01d7cb = 0.02/cytosol;
+  mwd6b792d8_c983_42c1_b3bc_2494d6a3363e = 1000/outside;
   mw013a7c64_a9ec_483c_b3b8_ed658337ee95 = 0;
-  CaS = 2 / ER_store;
+  CaS = 2/ER_store;
 
   // Compartment initializations:
   cytosol = 1;

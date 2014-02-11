@@ -1,6 +1,6 @@
 //Created by libAntimony v2.5
 function HenriMichaelisMenten_irreversible_kcat(kcat, enzyme, substrate, Km)
-  (kcat * enzyme * substrate) / (Km + substrate);
+  (kcat*enzyme*substrate)/(Km + substrate);
 end
 
 
@@ -14,17 +14,17 @@ model *BIOMD0000000358()
   species IIa_ATIII in compartment_1, RVV in compartment_1;
 
   // Assignment Rules:
-  AmAct := IIa + 0.556 * IIa_alpha2M;
+  AmAct := IIa + 0.556*IIa_alpha2M;
 
   // Reactions:
-  R1: X => Xa; compartment_1 * HenriMichaelisMenten_irreversible_kcat(kcat_X, RVV, X, km_X);
-  R2: Xa => Xa_ATIII; compartment_1 * ki_Xa * Xa;
-  R3: Va + Xa + PL -> PT; compartment_1 * (k_PT * Va * Xa * PL - k_PL * PT);
-  R4: V => Va; compartment_1 * HenriMichaelisMenten_irreversible_kcat(kcat_V, IIa, V, km_V);
-  R5: II => IIa; compartment_1 * HenriMichaelisMenten_irreversible_kcat(kcat_II, PT, II, km_II);
-  R6: II => IIa; compartment_1 * HenriMichaelisMenten_irreversible_kcat(kcat_2, Xa, II, km_2);
-  R7: IIa => IIa_alpha2M; compartment_1 * ki_IIaAlpha2M * IIa;
-  R8: IIa => IIa_ATIII; compartment_1 * ki_IIaATIII * IIa;
+  R1: X => Xa; compartment_1*HenriMichaelisMenten_irreversible_kcat(kcat_X, RVV, X, km_X);
+  R2: Xa => Xa_ATIII; compartment_1*ki_Xa*Xa;
+  R3: Va + Xa + PL -> PT; compartment_1*(k_PT*Va*Xa*PL - k_PL*PT);
+  R4: V => Va; compartment_1*HenriMichaelisMenten_irreversible_kcat(kcat_V, IIa, V, km_V);
+  R5: II => IIa; compartment_1*HenriMichaelisMenten_irreversible_kcat(kcat_II, PT, II, km_II);
+  R6: II => IIa; compartment_1*HenriMichaelisMenten_irreversible_kcat(kcat_2, Xa, II, km_2);
+  R7: IIa => IIa_alpha2M; compartment_1*ki_IIaAlpha2M*IIa;
+  R8: IIa => IIa_ATIII; compartment_1*ki_IIaATIII*IIa;
 
   // Species initializations:
   X = 81.24998;

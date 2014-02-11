@@ -1,6 +1,6 @@
 //Created by libAntimony v2.5
 function goldbeter_koshland(v1, v2, J1, J2)
-  (2 * v1 * J2) / (v2 - v1 + J1 * v2 + J2 * v1 + ((v2 - v1 + J1 * v2 + J2 * v1)^2 - 4 * (v2 - v1) * v1 * J2)^(1 / 2));
+  (2*v1*J2)/(v2 - v1 + J1*v2 + J2*v1 + ((v2 - v1 + J1*v2 + J2*v1)^2 - 4*(v2 - v1)*v1*J2)^(1/2));
 end
 
 
@@ -12,17 +12,17 @@ model *Tyson2003_Mutual_Inhibition()
 
   // Assignment Rules:
   Ep := Et - E;
-  E := Et * goldbeter_koshland(k3, k4 * R, J3, J4);
-  Km3 := J3 * Et;
-  Km4 := J4 * Et;
+  E := Et*goldbeter_koshland(k3, k4*R, J3, J4);
+  Km3 := J3*Et;
+  Km4 := J4*Et;
 
   // Reactions:
-  r0:  => R; env * k0;
-  r1:  => R; env * k1 * S;
-  r2: R => ; env * k2 * R;
-  r2_prime: R => ; env * k2_prime * R * E;
-  r3: $Ep => $E; (env * k3 * Ep) / (Km3 + Ep);
-  r4: $E => $Ep; (env * k4 * R * E) / (Km4 + E);
+  r0:  => R; env*k0;
+  r1:  => R; env*k1*S;
+  r2: R => ; env*k2*R;
+  r2_prime: R => ; env*k2_prime*R*E;
+  r3: $Ep => $E; (env*k3*Ep)/(Km3 + Ep);
+  r4: $E => $Ep; (env*k4*R*E)/(Km4 + E);
 
   // Species initializations:
   R = 0;

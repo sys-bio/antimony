@@ -7,24 +7,24 @@ model *Abell2011_CalciumSignaling_WithoutAdaptation()
   species CaM in mitochondria;
 
   // Reactions:
-  kPLC:  => IP3; R * CaI;
-  JPump: CaI => CaS; (B * CaI^2) / (CaI^2 + k2^2);
-  JChannel: CaS => CaI; (1 - mwc714c217_c8fd_4024_912c_681cd6931f59) * (L + (((1 - g) * A * IP3^2) / (IP3^2 + kIP3R^2) * CaI^2) / (CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2)) * CaS;
-  kPhosphatase: IP3 => ; D * IP3;
-  inhibition_parameter1:  => g; (E * CaI^4) / (CaI^4 + mwf998b218_be11_4aa4_81ae_41141861fb42^4) * (1 - g);
-  inhibition_parameter2: g => ; F * g;
-  mwbdcd6a40_1ae7_4c86_a99f_1fba0b8beaf7:  => CaI; mw004dcb62_da5f_41c7_a7bd_033574894f48 * (PMleak + kSTIM^8 / (CaS^8 + kSTIM^8));
-  mw530793e3_76b2_4483_be11_e94364306712: CaI => ; (mwd21d3f76_d133_4053_8e44_02a538657e0a * CaI^2) / (CaI^2 + mw3a93c3a6_623a_44fe_84e9_a47823defd1f^2);
-  mwfaf5e05a_b642_4ee2_a069_3c2fc783fba4: CaI => CaM; (mw886be93a_22c7_4966_a1fa_113afd832ae3 * CaI^4) / (CaI^4 + mwc8d6bdb5_59d4_43fa_b96d_7426f4857e0d^4);
-  mw69f19152_7258_45b0_bf9e_b196f19d7e03: CaM => CaI; (mwd90ce3ea_f8d5_4f0a_8093_e39a2d3dbf33 * CaM) / (CaM + 0.01);
-  ERtoMito: CaS => CaM; mwc714c217_c8fd_4024_912c_681cd6931f59 * (L + (((1 - g) * A * IP3^2) / (IP3^2 + kIP3R^2) * CaI^2) / (CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2)) * CaS;
+  kPLC:  => IP3; R*CaI;
+  JPump: CaI => CaS; (B*CaI^2)/(CaI^2 + k2^2);
+  JChannel: CaS => CaI; (1 - mwc714c217_c8fd_4024_912c_681cd6931f59)*(L + (((1 - g)*A*IP3^2)/(IP3^2 + kIP3R^2)*CaI^2)/(CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2))*CaS;
+  kPhosphatase: IP3 => ; D*IP3;
+  inhibition_parameter1:  => g; (E*CaI^4)/(CaI^4 + mwf998b218_be11_4aa4_81ae_41141861fb42^4)*(1 - g);
+  inhibition_parameter2: g => ; F*g;
+  mwbdcd6a40_1ae7_4c86_a99f_1fba0b8beaf7:  => CaI; mw004dcb62_da5f_41c7_a7bd_033574894f48*(PMleak + kSTIM^8/(CaS^8 + kSTIM^8));
+  mw530793e3_76b2_4483_be11_e94364306712: CaI => ; (mwd21d3f76_d133_4053_8e44_02a538657e0a*CaI^2)/(CaI^2 + mw3a93c3a6_623a_44fe_84e9_a47823defd1f^2);
+  mwfaf5e05a_b642_4ee2_a069_3c2fc783fba4: CaI => CaM; (mw886be93a_22c7_4966_a1fa_113afd832ae3*CaI^4)/(CaI^4 + mwc8d6bdb5_59d4_43fa_b96d_7426f4857e0d^4);
+  mw69f19152_7258_45b0_bf9e_b196f19d7e03: CaM => CaI; (mwd90ce3ea_f8d5_4f0a_8093_e39a2d3dbf33*CaM)/(CaM + 0.01);
+  ERtoMito: CaS => CaM; mwc714c217_c8fd_4024_912c_681cd6931f59*(L + (((1 - g)*A*IP3^2)/(IP3^2 + kIP3R^2)*CaI^2)/(CaI^2 + mw78dd80b8_e003_4c62_81d1_547d001767af^2))*CaS;
 
   // Species initializations:
-  CaI = 0.05 / cytosol;
+  CaI = 0.05/cytosol;
   IP3 = 0;
-  g = 0.002 / cytosol;
-  CaO = 1000 / outside;
-  CaS = 2 / ER_store;
+  g = 0.002/cytosol;
+  CaO = 1000/outside;
+  CaS = 2/ER_store;
   CaM = 0;
 
   // Compartment initializations:

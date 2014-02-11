@@ -1,10 +1,10 @@
 //Created by libAntimony v2.5
 function function_1(V, Shalve, h, substrate)
-  V / (Shalve^h + substrate^h);
+  V/(Shalve^h + substrate^h);
 end
 
 function function_3(x, beta)
-  x / beta / (1 + x / beta);
+  x/beta/(1 + x/beta);
 end
 
 
@@ -15,12 +15,12 @@ model *Kim2011_Oscillator_SimpleIII()
   species species_1 in compartment_1, species_2 in compartment_1, species_3 in compartment_1;
 
   // Reactions:
-  reaction_1: species_1 => species_1 + species_3; compartment_1 * function_1(parameter_1, reaction_1_Shalve, parameter_3, species_1);
-  reaction_2: species_2 => species_2 + species_1; compartment_1 * function_1(parameter_1, reaction_2_Shalve, parameter_3, species_2);
-  reaction_3: species_3 => species_3 + species_2; compartment_1 * function_1(parameter_1, reaction_3_Shalve, parameter_3, species_3);
-  reaction_4: species_1 => ; compartment_1 * function_3(species_1, parameter_2);
-  reaction_5: species_2 => ; compartment_1 * function_3(species_2, parameter_2);
-  reaction_6: species_3 => ; compartment_1 * function_3(species_3, parameter_2);
+  reaction_1: species_1 => species_1 + species_3; compartment_1*function_1(parameter_1, reaction_1_Shalve, parameter_3, species_1);
+  reaction_2: species_2 => species_2 + species_1; compartment_1*function_1(parameter_1, reaction_2_Shalve, parameter_3, species_2);
+  reaction_3: species_3 => species_3 + species_2; compartment_1*function_1(parameter_1, reaction_3_Shalve, parameter_3, species_3);
+  reaction_4: species_1 => ; compartment_1*function_3(species_1, parameter_2);
+  reaction_5: species_2 => ; compartment_1*function_3(species_2, parameter_2);
+  reaction_6: species_3 => ; compartment_1*function_3(species_3, parameter_2);
 
   // Species initializations:
   species_1 = 0;
