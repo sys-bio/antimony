@@ -236,7 +236,9 @@ void FixUnitName(string& name)
 {
   if (name.size()>2 && name[name.size()-1]=='s' && name[name.size()-2]!='_' 
       && name != "dimensionless"
-      && name.find("siemens") == string::npos) {
+      && name.find("siemens") == string::npos
+      && name.find("per_nM") == string::npos) //Biomodels 223 (sigh) 
+  {
     name.erase(name.size()-1, name.size());
   }
   if (CaselessStrCmp(name, "meter")) {

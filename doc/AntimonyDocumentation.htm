@@ -44,15 +44,15 @@ The basic features of Antimony include the ability to:
 
 <h3><a id="whatsnew">What's New</a></h3>
 
-In the 2.5 release of Antimony, translation of Antimony concepts to and from the <A HREF="http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp">Hierarchical Model Composition</a> package was developed further to be much more robust, and a new test system was added to ensure that Antimony's 'flattening' routine (which exports plain SBML) matches libSBML's flattening routine.
+<p>In the 2.5 release of Antimony, translation of Antimony concepts to and from the <A HREF="http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp">Hierarchical Model Composition</a> package was developed further to be much more robust, and a new test system was added to ensure that Antimony's 'flattening' routine (which exports plain SBML) matches libSBML's flattening routine.
 
-In the 2.4 release of Antimony, use of the <A HREF="http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp">Hierarchical Model Composition</a> package constructs in the SBML translation became standard, due to the package being fully accepted by the SBML community.
+<p>In the 2.4 release of Antimony, use of the <A HREF="http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp">Hierarchical Model Composition</a> package constructs in the SBML translation became standard, due to the package being fully accepted by the SBML community.
 
-In the 2.2/2.3 release of Antimony, <a href="#units">units</a>, <a href="#convfactors">conversion factors</a>, and <a href="#deletions">deletions</a> were added.
+<p>In the 2.2/2.3 release of Antimony, <a href="#units">units</a>, <a href="#convfactors">conversion factors</a>, and <a href="#deletions">deletions</a> were added.
 
-In the 2.1 version of Antimony, the <a href="#files">'<code>import</code>'</a> handling became much more robust, and it became additionally possible to export hierarchical models using the <A HREF="http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp">Hierarchical Model Composition</a> package constructs for SBML level 3.  
+<p>In the 2.1 version of Antimony, the <a href="#files">'<code>import</code>'</a> handling became much more robust, and it became additionally possible to export hierarchical models using the <A HREF="http://sbml.org/Documents/Specifications/SBML_Level_3/Packages/comp">Hierarchical Model Composition</a> package constructs for SBML level 3.  
 
-In the 2.0 version of Antimony, it became possible to export models as <a href="#importexport">CellML</a>.  This requires the use of the CellML API, which is now available as an SDK.  Hierarchical models are exported using CellML's hierarchy, translated to accommodate their 'black box' requirements.
+<p>In the 2.0 version of Antimony, it became possible to export models as <a href="#importexport">CellML</a>.  This requires the use of the CellML API, which is now available as an SDK.  Hierarchical models are exported using CellML's hierarchy, translated to accommodate their 'black box' requirements.
 
 <h3><a id="speciesrxns">Species and Reactions</a></h3>
 
@@ -89,9 +89,9 @@ If you want, you can define a reaction to be irreversible by using '<code>=></co
   J0: S1 + E => ES;
 </pre>
 
-However, if you additionally provide a reaction rate, that rate is not checked to ensure that it is compatible with an irreversible reaction.
+<p>However, if you additionally provide a reaction rate, that rate is not checked to ensure that it is compatible with an irreversible reaction.
 
-At this point, Antimony will make several assumptions about your model.  It will assume (and require) that all symbols that appear in the reaction itself are species.  Any symbol that appears elsewhere that is not used or defined as a species is '<code>undefined</code>'; '<code>undefined</code>' symbols may later be declared or used as species or as '<code>formulas</code>', Antimony's term for constants and packaged equations like SBML's assignment rules.  In the above example, k1 and k2 are (thus far) undefined symbols, which may be assigned straightforwardly:
+<p>At this point, Antimony will make several assumptions about your model.  It will assume (and require) that all symbols that appear in the reaction itself are species.  Any symbol that appears elsewhere that is not used or defined as a species is '<code>undefined</code>'; '<code>undefined</code>' symbols may later be declared or used as species or as '<code>formulas</code>', Antimony's term for constants and packaged equations like SBML's assignment rules.  In the above example, k1 and k2 are (thus far) undefined symbols, which may be assigned straightforwardly:
 
 <pre>
   J0: S1 + E -> ES; k1*k2*S1*E - k2*ES;
@@ -169,9 +169,9 @@ model example2
 end
 </pre>
 
-This results in a model with a single reaction (A.S + A.E -> A.ES) and a single initial condition (A.S = 3).
+<p>This results in a model with a single reaction (A.S + A.E -> A.ES) and a single initial condition (A.S = 3).
 
-You may also import multiple copies of modules, and modules that themselves contain submodules:
+<p>You may also import multiple copies of modules, and modules that themselves contain submodules:
 
 <pre>
 model example3
@@ -199,7 +199,7 @@ model example4
 end
 </pre>
 
-When combining multiple submodules, you can also 'attach' them to each other by declaring that a species in one submodule is the same species as is found in a different submodule by using the '<code>is</code>' keyword ("A.S is B.S").  For example, let's say that we have a species which is known to bind reversibly to two different species.  You could set this up as the following:
+<p>When combining multiple submodules, you can also 'attach' them to each other by declaring that a species in one submodule is the same species as is found in a different submodule by using the '<code>is</code>' keyword ("A.S is B.S").  For example, let's say that we have a species which is known to bind reversibly to two different species.  You could set this up as the following:
 
 <pre>
 model side_reaction
@@ -247,7 +247,7 @@ end
 
 Note that since we defined the initial concentration of '<code>SE</code>' as '<code>S + E</code>', B.SE will now have a different initial concentration, since B.E has been changed.
 
-Finally, we add a third side reaction, one in which S binds irreversibly, and where the complex it forms degrades.  We'll need a new reaction rate, and a whole new reaction as well:
+<p>Finally, we add a third side reaction, one in which S binds irreversibly, and where the complex it forms degrades.  We'll need a new reaction rate, and a whole new reaction as well:
 
 <pre>
 model full_reaction
@@ -269,7 +269,7 @@ end
 
 Note that defining the reaction rate of C.J0 used the symbol '<code>S</code>'; exactly the same result would be obtained if we had used '<code>C.S</code>' or even '<code>A.S</code>' or '<code>B.S</code>'.  Antimony knows that those symbols all refer to the same species, and will give them all the same name in subsequent output.
 
-For convenience and style, modules may define an interface where some symbols in the module are more easily renamed.  To do this, first enclose a list of the symbols to export in parentheses after the name of the model when defining it:
+<p>For convenience and style, modules may define an interface where some symbols in the module are more easily renamed.  To do this, first enclose a list of the symbols to export in parentheses after the name of the model when defining it:
 
 <pre>
 model side_reaction(S, k1)
@@ -298,7 +298,7 @@ is equivalent to writing:
 
 One thing to be aware of when using this method:  Since wrapping definitions in a defined model is optional, all 'bare' declarations are defined to be in a default module with the name '<code>__main</code>'.  If there are no unwrapped definitions, '<code>__main</code>' will still exist, but will be empty.
 
-As a final note:  use of the '<code>is</code>' keyword is not restricted to elements inside submodules.  As a result, if you wish to change the name of an element (if, for example, you want the reactions to look simpler in Antimony, but wish to have a more descriptive name in the exported SBML), you may use '<code>is</code>' as well:
+<p>As a final note:  use of the '<code>is</code>' keyword is not restricted to elements inside submodules.  As a result, if you wish to change the name of an element (if, for example, you want the reactions to look simpler in Antimony, but wish to have a more descriptive name in the exported SBML), you may use '<code>is</code>' as well:
 
 <pre>
   A -> B;
@@ -317,7 +317,7 @@ is equivalent to writing:
 
 Occasionally, the unit system of a submodel will not match the unit system of the containing model, for one or more model elements.  In this case, you can use conversion factor constructs to bring the submodule in line with the containing model.
 
-If time is different in the submodel (affecting reactions, rate rules, delay, and '<code>time</code>'), use the '<code>timeconv</code>' keyword when declaring the submodel:
+<p>If time is different in the submodel (affecting reactions, rate rules, delay, and '<code>time</code>'), use the '<code>timeconv</code>' keyword when declaring the submodel:
 
 <pre>
   A1: submodel(), timeconv=60;
@@ -325,7 +325,7 @@ If time is different in the submodel (affecting reactions, rate rules, delay, an
 
 This construct means that one unit of time in the submodel multiplied by the time conversion factor should equal one unit of time in the parent model.
 
-Reaction extent may also be different in the submodel when compared to the parent model, and may be converted with the '<code>extentconv</code>' keyword:
+<p>Reaction extent may also be different in the submodel when compared to the parent model, and may be converted with the '<code>extentconv</code>' keyword:
 
 <pre>
   A1: submodel(), extentconv=1000;
@@ -333,7 +333,7 @@ Reaction extent may also be different in the submodel when compared to the paren
 
 This construct means that one unit of reaction extent in the submodel multiplied by the extent conversion factor should equal one unit of reaction extent in the parent model.
 
-Both time and extent conversion factors may be numbers (as above) or they may be references to constant parameters.  They may also both be used at once:
+<p>Both time and extent conversion factors may be numbers (as above) or they may be references to constant parameters.  They may also both be used at once:
 
 <pre>
   A1: submodel(), timeconv=tconv, extentconv=xconv;
@@ -386,7 +386,7 @@ While you're declaring it, you may want to be more specific by using the '<code>
 
 If a symbol appears as a participant in a reaction, Antimony will recognize that it is a species automatically, so the use of the keyword '<code>species</code>' is not required.  If, however, you have a species which never appears in a reaction, you will need to use the '<code>species</code>' keyword.
 
-If you have several species that are all constant, you may declare this all in one line:
+<p>If you have several species that are all constant, you may declare this all in one line:
 
 <pre>
   const species S1, S2, S3;
@@ -412,7 +412,7 @@ This would set the level of '<code>E</code>' to be constant.  You can use this s
 
 This declares six species, three of which are variable (by default) and three of which are constant.
 
-Likewise, formulas are constant by default.  They may be initialized with an equals sign, with either a simple or a complex formula:
+<p>Likewise, formulas are constant by default.  They may be initialized with an equals sign, with either a simple or a complex formula:
 
 <pre>
   k1 = 5;
@@ -435,7 +435,7 @@ and be more specific and declare that both are formulas:
 
 Variables defined with an equals sign are assigned those values at the start of the simulation.  In SBML terms, they use the 'Initial Assignment' values.  If the formula is to vary during the course of the simulation, use the Assignment Rule (or Rate Rule) syntax, described later.
 
-You can also mix-and-match your declarations however best suits what you want to convey:
+<p>You can also mix-and-match your declarations however best suits what you want to convey:
 
 <pre>
   species S1, S2, S3, S4;
@@ -455,7 +455,7 @@ Antimony is a pure model definition language, meaning that all statements in the
 
 In a sequential programming language, the above would result in different values being stored in k1 and k2.  (This is how Jarnac works, for those familiar with that language/simulation environment.)  In a pure model definition language like Antimony, '<code>pH</code>', '<code>k1</code>', '<code>k2</code>', and even the formula '<code>-log10(pH)</code>' are static symbols that are being defined by Antimony statements, and not processed in any way.  A simulator that requests the mathematical expression for k1 will receive the string '<code>-log10(pH)</code>'; the same string it will receive for k2.  A request for the mathematical expression for pH will receive the string "8.2", since that's the last definition found in the file.  As such, k1 and k2 will end up being identical.
 
-As a side note, we considered having libAntimony store a warning when presented with an input file such as the example above with a later definition overwriting an earlier definition.  However, there was no way with our current interface to let the user know that a warning had been saved, and it seemed like there could be a number of cases where the user might legitimately want to override an earlier definition (such as when using submodules, as we'll get to in a bit).  So for now, the above is valid Antimony input that just so happens to produce exactly the same output as:
+<p>As a side note, we considered having libAntimony store a warning when presented with an input file such as the example above with a later definition overwriting an earlier definition.  However, there was no way with our current interface to let the user know that a warning had been saved, and it seemed like there could be a number of cases where the user might legitimately want to override an earlier definition (such as when using submodules, as we'll get to in a bit).  So for now, the above is valid Antimony input that just so happens to produce exactly the same output as:
 
 <pre>
   pH = 8.2;
@@ -533,11 +533,13 @@ Note that declaring that one compartment is '<code>in</code>' a second compartme
 
 yields:
 
+<pre>
 symbol		compartment
 s1		c1
 s2		c1
 c1		c2
 c2		default_compartment
+</pre>
 
 Compartments may not be circular: "c1 in c2; c2 in c3; c3 in c1" is illegal.
 
@@ -564,7 +566,7 @@ You may also give the event a name by prepending it with a colon:
 
 (you may also claim an event is '<code>in</code>' a compartment just like everything else ('<code>E1 in comp1:</code>').  This declaration will never change the compartment of anything else.)
 
-In addition, there are a number of concepts in SBML events that can now be encoded in Antimony.  If event assignments are to occur after a delay, this can be encoded by using the '<code>after</code>' keyword:
+<p>In addition, there are a number of concepts in SBML events that can now be encoded in Antimony.  If event assignments are to occur after a delay, this can be encoded by using the '<code>after</code>' keyword:
 
 <pre>
   E1: at 2 after (x>5): y=3, x=r+2;
@@ -584,7 +586,7 @@ For delayed events (and to a certain extent with simultaneous events, discussed 
 
 You may also declare '<code>fromTrigger=true</code>' to explicitly declare what is the default.
 
-New complications can arise when event assignments from multiple events are to execute at the same time:  which event assignments are to be executed first?  By default, there is no defined answer to this question: as long as both sets of assignments are executed, either may be executed first.  However, if the model depends on a particular order of execution, events may be given priorities, using the priority keyword:
+<p>New complications can arise when event assignments from multiple events are to execute at the same time:  which event assignments are to be executed first?  By default, there is no defined answer to this question: as long as both sets of assignments are executed, either may be executed first.  However, if the model depends on a particular order of execution, events may be given priorities, using the priority keyword:
 
 <pre>
   E1: at ((x>5) && (z<4)), priority=1: y=3, x=r+2;
@@ -593,7 +595,7 @@ New complications can arise when event assignments from multiple events are to e
 
 In situations where z<4, q>7, and x<5, and then x increases, both E1 and E2 will trigger at the same time.  Since both modify the same values, it makes a difference in which order they are executed-in this case, whichever happens last takes precedence.  By giving the events priorities (higher priorities execute first) the result of this situation is deterministic:  E2 will execute last, and y will equal 5 and not 3.
 
-Another question is whether, if at the beginning of the simulation the trigger condition is '<code>true</code>', it should be considered to have just transitioned to being true or not.  The default is no, meaning that no event may trigger at time 0.  You may override this default by using the '<code>t0</code>' keyword:
+<p>Another question is whether, if at the beginning of the simulation the trigger condition is '<code>true</code>', it should be considered to have just transitioned to being true or not.  The default is no, meaning that no event may trigger at time 0.  You may override this default by using the '<code>t0</code>' keyword:
 
 <pre>
   E1: at (x>5)), t0=false: y=3, x=r+2;
@@ -601,7 +603,7 @@ Another question is whether, if at the beginning of the simulation the trigger c
 
 In this situation, the value at t0 is considered to be false, meaning it can immediately transition to true if x is greater than 5, triggering the event.  You may explicitly state the default by using '<code>t0 = true</code>'.
 
-Finally, a different class of events is often modeled in some situations where the trigger condition must persist in being true from the entire time between when the event is triggered to when it is executed.  By default, this is not the case for Antimony events, and, once triggered, all events will execute.  To change the class of your event, use the keyword '<code>persistent</code>':
+<p>Finally, a different class of events is often modeled in some situations where the trigger condition must persist in being true from the entire time between when the event is triggered to when it is executed.  By default, this is not the case for Antimony events, and, once triggered, all events will execute.  To change the class of your event, use the keyword '<code>persistent</code>':
 
 <pre>
   E1: at 3 after (x>5)), persistent=true: y=3, x=r+2;
@@ -609,7 +611,7 @@ Finally, a different class of events is often modeled in some situations where t
 
 For this model, x must be greater than 5 for three seconds before executing its event assignments:  if x dips below 5 during that time, the event will not fire.  To explicitly declare the default situation, use '<code>persistent=false</code>'.
 
-The ability to change the default priority, t0, and persistent characteristics of events was introduced in SBML Level 3, so if you translate your model to SBML Level 2, it will lose the ability to define functionality other than the default.  For more details about the interpretation of these event classifications, see the SBML Level 3 specification.
+<p>The ability to change the default priority, t0, and persistent characteristics of events was introduced in SBML Level 3, so if you translate your model to SBML Level 2, it will lose the ability to define functionality other than the default.  For more details about the interpretation of these event classifications, see the SBML Level 3 specification.
 
 
 <h3><a id="asntrules">Assignment Rules</a></h3>
@@ -622,9 +624,9 @@ In some models, species and/or variables change in a manner not described by a r
 
 In this example, '<code>Ptot</code>' will continually be updated to reflect the total amount of '<code>P</code>' present in the model.
 
-Each symbol (species or formula) may have only one assignment rule associated with it.  If an Antimony file defines more than one rule, only the last will be saved.
+<p>Each symbol (species or formula) may have only one assignment rule associated with it.  If an Antimony file defines more than one rule, only the last will be saved.
 
-When species are used as the target of an assignment rule, they are defined to be 'boundary species' and thus '<code>const</code>'.  Antimony doesn't have a separate syntax for boundary species whose concentrations never change vs. boundary species whose concentrations change due to assignment rules (or rate rules, below).  SBML distinguishes between boundary species that may change and boundary species that may not, but in Antimony, all boundary species may change as the result of being in an Assignment Rule or Rate Rule.
+<p>When species are used as the target of an assignment rule, they are defined to be 'boundary species' and thus '<code>const</code>'.  Antimony doesn't have a separate syntax for boundary species whose concentrations never change vs. boundary species whose concentrations change due to assignment rules (or rate rules, below).  SBML distinguishes between boundary species that may change and boundary species that may not, but in Antimony, all boundary species may change as the result of being in an Assignment Rule or Rate Rule.
 
 
 <h3><a id="raterules">Rate Rules</a></h3>
@@ -637,7 +639,7 @@ Rate rules define the change in a symbol's value over time instead of defining i
 
 Note that unlike initializations and assignment rules, formulas in rate rules may be self-referential, either directly or indirectly.
 
-Any symbol may have only one rate rule or assignment rule associated with it.  Should it find more than one, only the last will be saved.
+<p>Any symbol may have only one rate rule or assignment rule associated with it.  Should it find more than one, only the last will be saved.
 
 
 <h3><a id="display">Display Names</a></h3>
@@ -690,7 +692,7 @@ You may use units when defining formulas using the same syntax as above: any num
 
 Antimony does not calculate any derived units:  in the above example, 'x' is fully defined in terms of moles per liter per second, but it is not annotated as such.
 
-As with many things in Antimony, you may use a unit before defining it:  '<code>x = 10 ml</code>' will create a parameter <code>x</code> and a unit '<code>ml</code>'.
+<p>As with many things in Antimony, you may use a unit before defining it:  '<code>x = 10 ml</code>' will create a parameter <code>x</code> and a unit '<code>ml</code>'.
 
 
 
@@ -718,7 +720,7 @@ By default, the reaction rate or formula associated with an element of a DNA str
 
 the reaction rate of G1 will be "S1*k".
 
-It is also possible to modulate the inherited reaction rate.  To do this, we use ellipses ('...') as shorthand for 'the formula for the element upstream of me'.  Let's add a ribosome binding site that increases the rate of production of protein by a factor of three, and say that the promoter actually increases the rate of protein production by S1*k instead of setting it to S1*k:
+<p>It is also possible to modulate the inherited reaction rate.  To do this, we use ellipses ('...') as shorthand for 'the formula for the element upstream of me'.  Let's add a ribosome binding site that increases the rate of production of protein by a factor of three, and say that the promoter actually increases the rate of protein production by S1*k instead of setting it to S1*k:
 
 <pre>
   dna1: --P1--RBS1--G1--
@@ -729,7 +731,7 @@ It is also possible to modulate the inherited reaction rate.  To do this, we use
 
 Since in this model, nothing is upstream of P1, the upstream rate is set to zero, so the final reaction rate of G1 is equal to "(S1*k + 0)*3".  
 
-Valid elements of DNA strands include formulas (operators), reactions (genes), and other DNA strands.  Let's wrap our model so far in a submodule, and then use the strand in a new strand:
+<p>Valid elements of DNA strands include formulas (operators), reactions (genes), and other DNA strands.  Let's wrap our model so far in a submodule, and then use the strand in a new strand:
 
 <pre>
 model strand1()
@@ -748,7 +750,7 @@ end
 
 In the model '<code>fullstrand</code>', the reaction that produces A.prot1 is equal to "((A.S1*A.k+(S2*k2))*3)".
 
-Operators and genes may be duplicated and appear in multiple strands:
+<p>Operators and genes may be duplicated and appear in multiple strands:
 
 <pre>
   dna1:  --P1--RBS1--G1--
@@ -758,7 +760,7 @@ Operators and genes may be duplicated and appear in multiple strands:
 
 Strands, however, count as unique constructs, and may only appear as singletons or within a single other strand (and may not, of course, exist in a loop, being contained in a strand that it itself contains).
 
-If the reaction rate or formula for any duplicated symbol is left at the default or if it contains ellipses explicitly ('...'), it will be equal to the sum of all reaction rates in all the strands in which it appears.  If we further define our above model:
+<p>If the reaction rate or formula for any duplicated symbol is left at the default or if it contains ellipses explicitly ('...'), it will be equal to the sum of all reaction rates in all the strands in which it appears.  If we further define our above model:
 
 <pre>
   dna1:  --P1--RBS1--G1--
@@ -774,7 +776,7 @@ If the reaction rate or formula for any duplicated symbol is left at the default
 The reaction rate for the production of '<code>prot1</code>' will be equal to "(((0+1.2)+0.3)*0.8) + (((0+1.2)*1.1))".
 If you set the reaction rate of G1 without using an ellipsis, but include it in multiple strands, its reaction rate will be a multiple of the number of strands it is a part of.  For example, if you set the reaction rate of G1 above to "k1*S1", and include it in two strands, the net reaction rate will be "k1*S1 + k1*S1".
 
-The purpose of prepending or postfixing a '<code>--</code>' to a strand is to declare that the strand in question is designed to have DNA attached to it at that end.  If exactly one DNA strand is defined with an upstream '<code>--</code>' in its definition in a submodule, the name of that module may be used as a proxy for that strand when creating attaching something upstream of it, and visa versa with a defined downstream '<code>--</code>' in its definition:
+<p>The purpose of prepending or postfixing a '<code>--</code>' to a strand is to declare that the strand in question is designed to have DNA attached to it at that end.  If exactly one DNA strand is defined with an upstream '<code>--</code>' in its definition in a submodule, the name of that module may be used as a proxy for that strand when creating attaching something upstream of it, and visa versa with a defined downstream '<code>--</code>' in its definition:
 
 <pre>
 model twostrands
@@ -791,7 +793,7 @@ end
 
 The module '<code>long</code>' will have two strands:  "P3--A.P1--A.RBS1--A.G1" and "A.P2--A.RBS2--A.G2--G3".
 
-Submodule strands intended to be used in the middle of other strands should be defined with '<code>--</code>' both upstream and downstream of the strand in question:
+<p>Submodule strands intended to be used in the middle of other strands should be defined with '<code>--</code>' both upstream and downstream of the strand in question:
 
 <pre>
 model oneexported
@@ -828,7 +830,7 @@ If a reaction rate is given for the reaction in question, that reaction must inc
 
 because the species S2 is present in the formula "k1*S1*E/S2".  If the concentration of an inhibitory species increases, it should decrease the reaction rate of the reaction it inhibits, and vice versa for activating species.  The current version of libAntimony (v2.4) does not check this, but future versions may add the check.
 
-When the reaction rate is not known, species from interactions will be added to the SBML 'listOfModifiers' for the reaction in question.  Normally, the kinetic law is parsed by libAntimony and any species there are added to the list of modifiers automatically, but if there is no kinetic law to parse, this is how to add species to that list.
+<p>When the reaction rate is not known, species from interactions will be added to the SBML 'listOfModifiers' for the reaction in question.  Normally, the kinetic law is parsed by libAntimony and any species there are added to the list of modifiers automatically, but if there is no kinetic law to parse, this is how to add species to that list.
 
 
 <h3><a id="functions">Function Definitions</a></h3>
@@ -864,11 +866,11 @@ end
 
 In this example, the file '<code>models1.txt</code>' is an Antimony file that defines the module '<code>mod1</code>', and the file '<code>oscli.xml</code>' is an SBML file that defines a model named '<code>oscli</code>'.  The Antimony module '<code>mod2</code>' may then use modules from either or both of the other imported files.
 
-Remember that imported files act like they were cut and pasted into the main file.  As such, any bare declarations in the main file and in the imported files will all contribute to the default '<code>__main</code>' module.  Most SBML files will not contribute to this module, unless the name of the model in the file is '<code>__main</code>' (for example, if it was created by the antimony converter).
+<p>Remember that imported files act like they were cut and pasted into the main file.  As such, any bare declarations in the main file and in the imported files will all contribute to the default '<code>__main</code>' module.  Most SBML files will not contribute to this module, unless the name of the model in the file is '<code>__main</code>' (for example, if it was created by the antimony converter).
 
-By default, libantimony will examine the '<code>import</code>' text to determine whether it is a relative or absolute filename, and, if relative, will prepend the directory of the working file to the import text before attempting to load the file.  If it cannot find it there, it is possible to tell the libantimony API to look in different directories for files loaded from import statements.
+<p>By default, libantimony will examine the '<code>import</code>' text to determine whether it is a relative or absolute filename, and, if relative, will prepend the directory of the working file to the import text before attempting to load the file.  If it cannot find it there, it is possible to tell the libantimony API to look in different directories for files loaded from import statements.
 
-However, if the working directory contains a '<code>.antimony</code>' file, or if one of the named directories contains a '<code>.antimony</code>' file, import statements can be subverted.  Each line of this file must contain three tab-delimited strings:  the name of the file which contains an import statement, the text of the import statement, and the filename where the program should look for the file.  Thus, if a file "file1.txt" contains the line '<code>import "file2.txt"</code>', and a .antimony file is discovered with the line:
+<p>However, if the working directory contains a '<code>.antimony</code>' file, or if one of the named directories contains a '<code>.antimony</code>' file, import statements can be subverted.  Each line of this file must contain three tab-delimited strings:  the name of the file which contains an import statement, the text of the import statement, and the filename where the program should look for the file.  Thus, if a file "file1.txt" contains the line '<code>import "file2.txt"</code>', and a .antimony file is discovered with the line:
 
 <pre>
 file1.txt	file2.txt	antimony/import/file2.txt
@@ -887,11 +889,11 @@ The first and third entries may be relative filenames:  the directory of the .an
 
 Once you have created an Antimony file, you can convert it to SBML or CellML using 'sbtranslate'  or  the 'QTAntimony' visual editor (both available from http://antimony.sourceforge.net/)  This will convert each of the models defined in the Antimony text file into a separate SBML model, including the overall '<code>__main</code>' module (if it contains anything).  These files can then be used for simulation or visualization in other programs.
 
-QTAntimony can be used to edit and translate Antimony, SBML, and CellML models.  Any file in those three formats can be opened, and from the 'View' menu, you can turn on or off the SBML and CellML tabs.  Select the tabs to translate and view the working model in those different formats.
+<p>QTAntimony can be used to edit and translate Antimony, SBML, and CellML models.  Any file in those three formats can be opened, and from the 'View' menu, you can turn on or off the SBML and CellML tabs.  Select the tabs to translate and view the working model in those different formats.
 
-The SBML tabs can additionally be configured to use the <A HREF="http://sbml.org/Community/Wiki/SBML_Level_3_Proposals/Hierarchical_Model_Composition">'Hierarchical Model Composition'</a> package constructs.  Select 'Edit/Flatten SBML tab(s)' or hit control-F to toggle between this version and the old 'flattened' version of SBML.  (To enable this feature if you compile Antimony yourself, you will need the latest versions of libSBML with the SBML 'comp' package enabled, and to select 'WITH_COMP_SBML' from the CMake menu.)
+<p>The SBML tabs can additionally be configured to use the <A HREF="http://sbml.org/Community/Wiki/SBML_Level_3_Proposals/Hierarchical_Model_Composition">'Hierarchical Model Composition'</a> package constructs.  Select 'Edit/Flatten SBML tab(s)' or hit control-F to toggle between this version and the old 'flattened' version of SBML.  (To enable this feature if you compile Antimony yourself, you will need the latest versions of libSBML with the SBML 'comp' package enabled, and to select 'WITH_COMP_SBML' from the CMake menu.)
 
-As there were now several different file formats available for translation, the old command-line translators still exist (antimony2sbml; sbml2antimony), but have been supplanted by the new 'sbtranslate' executable.  Instructions for use are available by running sbtranslate from the command line, but in brief:  any number of files to translate may be added to the command line, and the desired output format is given with the '<code>-o</code>' flag: 
+<p>As there were now several different file formats available for translation, the old command-line translators still exist (antimony2sbml; sbml2antimony), but have been supplanted by the new 'sbtranslate' executable.  Instructions for use are available by running sbtranslate from the command line, but in brief:  any number of files to translate may be added to the command line, and the desired output format is given with the '<code>-o</code>' flag: 
  '<code>-o antimony</code>', '<code>-o sbml</code>', '<code>-o cellml</code>', or '<code>-o sbml-comp</code>' (the last to output files with the SBML '<code>comp</code>' package constructs).
 
 Examples:
