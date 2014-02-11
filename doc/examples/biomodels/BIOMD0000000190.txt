@@ -9,28 +9,28 @@ model *Model_1()
 
   // Assignment Rules:
   Kaccoa := R;
-  Kcoa := 3 * R;
+  Kcoa := 3*R;
 
   // Rate Rules:
-  Vmaxodc' = Ksodc / (1 + Keq * (D + S)) - Kdodc * Antz * Vmaxodc;
-  Antz' = Ksantz * (1 - 1 / (1 + Keq * 0.01 * (D + S))) - Kdantz * Antz;
-  Vmaxssat' = Ksssat * (1 - 1 / (1 + Keq * (D + S))) - Kdssat * (1 / (1 + Keq * (D + S))) * Vmaxssat;
-  Vmaxsamdc' = Kssamdc * (1 / (1 + Keq * (D + S))) - Kdsamdc * Vmaxsamdc;
+  Vmaxodc' = Ksodc/(1 + Keq*(D + S)) - Kdodc*Antz*Vmaxodc;
+  Antz' = Ksantz*(1 - 1/(1 + Keq*0.01*(D + S))) - Kdantz*Antz;
+  Vmaxssat' = Ksssat*(1 - 1/(1 + Keq*(D + S))) - Kdssat*(1/(1 + Keq*(D + S)))*Vmaxssat;
+  Vmaxsamdc' = Kssamdc*(1/(1 + Keq*(D + S))) - Kdsamdc*Vmaxsamdc;
 
   // Reactions:
-  ODC: $ORN => P; cytosol * ((Vmaxodc * ORN) / (ODC_Kmodc * (1 + P / ODC_Kipodc) + ORN));
-  SAMdc: SAM => A; cytosol * ((Vmaxsamdc / (1 + S / SAMdc_Kissamdc) * SAM) / (SAMdc_Kmsamdc * (1 + SAMdc_Kapsamdc / P + A / SAMdc_Kiasamdc) + SAM));
-  SSAT_for_S: S + $AcCoA => aS + $CoA; cytosol * ((1 / C * Vmaxssat * S * AcCoA) / (SSAT_for_S_Kmsssat * (1 + D / SSAT_for_S_Kmdssat) * SSAT_for_S_Kmaccoassat * (1 + CoA / SSAT_for_S_Kmcoassat) + SSAT_for_S_Kmaccoassat * (1 + CoA / SSAT_for_S_Kmcoassat) * S + SSAT_for_S_Kmsssat * (1 + D / SSAT_for_S_Kmdssat) * AcCoA + S * AcCoA));
-  SSAT_for_D: D + $AcCoA => aD + $CoA; cytosol * ((Vmaxssat * D * AcCoA) / (SSAT_for_D_Kmdssat * (1 + S / SSAT_for_D_Kmsssat) * SSAT_for_D_Kmaccoassat * (1 + CoA / SSAT_for_D_Kmcoassat) + SSAT_for_D_Kmaccoassat * (1 + CoA / SSAT_for_D_Kmcoassat) * D + SSAT_for_D_Kmdssat * (1 + S / SSAT_for_D_Kmsssat) * AcCoA + D * AcCoA));
-  PAO_for_aD: aD => P; cytosol * ((PAO_for_aD_Vmpao * aD) / (PAO_for_aD_Kmadpao * (1 + aD / PAO_for_aD_Kmadpao + aS / PAO_for_aD_Kmaspao + D / PAO_for_aD_Kmdpao + S / PAO_for_aD_Kmspao)));
-  PAO_for_aS: aS => D; cytosol * ((PAO_for_aS_Vmpao * aS) / (PAO_for_aS_Kmaspao * (1 + aD / PAO_for_aS_Kmadpao + aS / PAO_for_aS_Kmaspao + D / PAO_for_aS_Kmdpao + S / PAO_for_aS_Kmspao)));
-  SpdS: A + P => D; cytosol * ((SpdS_Vmspds * A * P) / (SpdS_Kiaspds * SpdS_Kpspds * (1 + D / SpdS_Kidspds) + SpdS_Kpspds * A + SpdS_KaSpds * (1 + D / SpdS_Kidspds) * P + A * P));
-  SpmS: A + D => S; cytosol * ((SpmS_Vmspms * A * D) / (SpmS_Kiaspms * SpmS_Kdspms * (1 + S / SpmS_Kisspms) + SpmS_Kdspms * A + SpmS_Kaspms * (1 + S / SpmS_Kisspms) * D + A * D));
-  MAT: $Met => SAM; cytosol * (MAT_Vmmat / (1 + MAT_Kmmat / Met * (1 + SAM / MAT_Kimetmat)));
-  VCoA: $AcCoA => $CoA; cytosol * Kcoa * AcCoA;
-  VacCoA: $CoA => $AcCoA; cytosol * Kaccoa * CoA;
-  P_efflux: P => ; cytosol * P_efflux_Kpefflux * P;
-  aD_efflux: aD => ; cytosol * aD_efflux_Kadefflux * aD;
+  ODC: $ORN => P; cytosol*((Vmaxodc*ORN)/(ODC_Kmodc*(1 + P/ODC_Kipodc) + ORN));
+  SAMdc: SAM => A; cytosol*((Vmaxsamdc/(1 + S/SAMdc_Kissamdc)*SAM)/(SAMdc_Kmsamdc*(1 + SAMdc_Kapsamdc/P + A/SAMdc_Kiasamdc) + SAM));
+  SSAT_for_S: S + $AcCoA => aS + $CoA; cytosol*((1/C*Vmaxssat*S*AcCoA)/(SSAT_for_S_Kmsssat*(1 + D/SSAT_for_S_Kmdssat)*SSAT_for_S_Kmaccoassat*(1 + CoA/SSAT_for_S_Kmcoassat) + SSAT_for_S_Kmaccoassat*(1 + CoA/SSAT_for_S_Kmcoassat)*S + SSAT_for_S_Kmsssat*(1 + D/SSAT_for_S_Kmdssat)*AcCoA + S*AcCoA));
+  SSAT_for_D: D + $AcCoA => aD + $CoA; cytosol*((Vmaxssat*D*AcCoA)/(SSAT_for_D_Kmdssat*(1 + S/SSAT_for_D_Kmsssat)*SSAT_for_D_Kmaccoassat*(1 + CoA/SSAT_for_D_Kmcoassat) + SSAT_for_D_Kmaccoassat*(1 + CoA/SSAT_for_D_Kmcoassat)*D + SSAT_for_D_Kmdssat*(1 + S/SSAT_for_D_Kmsssat)*AcCoA + D*AcCoA));
+  PAO_for_aD: aD => P; cytosol*((PAO_for_aD_Vmpao*aD)/(PAO_for_aD_Kmadpao*(1 + aD/PAO_for_aD_Kmadpao + aS/PAO_for_aD_Kmaspao + D/PAO_for_aD_Kmdpao + S/PAO_for_aD_Kmspao)));
+  PAO_for_aS: aS => D; cytosol*((PAO_for_aS_Vmpao*aS)/(PAO_for_aS_Kmaspao*(1 + aD/PAO_for_aS_Kmadpao + aS/PAO_for_aS_Kmaspao + D/PAO_for_aS_Kmdpao + S/PAO_for_aS_Kmspao)));
+  SpdS: A + P => D; cytosol*((SpdS_Vmspds*A*P)/(SpdS_Kiaspds*SpdS_Kpspds*(1 + D/SpdS_Kidspds) + SpdS_Kpspds*A + SpdS_KaSpds*(1 + D/SpdS_Kidspds)*P + A*P));
+  SpmS: A + D => S; cytosol*((SpmS_Vmspms*A*D)/(SpmS_Kiaspms*SpmS_Kdspms*(1 + S/SpmS_Kisspms) + SpmS_Kdspms*A + SpmS_Kaspms*(1 + S/SpmS_Kisspms)*D + A*D));
+  MAT: $Met => SAM; cytosol*(MAT_Vmmat/(1 + MAT_Kmmat/Met*(1 + SAM/MAT_Kimetmat)));
+  VCoA: $AcCoA => $CoA; cytosol*Kcoa*AcCoA;
+  VacCoA: $CoA => $AcCoA; cytosol*Kaccoa*CoA;
+  P_efflux: P => ; cytosol*P_efflux_Kpefflux*P;
+  aD_efflux: aD => ; cytosol*aD_efflux_Kadefflux*aD;
 
   // Species initializations:
   SAM = 0.01;

@@ -10,23 +10,23 @@ model *Fisher2006_Ca_Oscillation_dpdnt_NFAT_dynamics()
   species Inact_C_Cyt in cytosol;
 
   // Reactions:
-  R1: NFAT_Pi_Nuc + Act_C_Nuc -> Act_C_Nuc + NFAT_Nuc; nucleus * (k1 * NFAT_Pi_Nuc - k2 * NFAT_Nuc);
-  R2: Act_C_Nuc + NFAT_Nuc -> NFAT_Act_C_Nuc; nucleus * (k16 * NFAT_Nuc * Act_C_Nuc - k15 * NFAT_Act_C_Nuc);
-  R3: NFAT_Nuc -> NFAT_Cyt; nucleus * k18 * NFAT_Nuc - cytosol * k17 * NFAT_Cyt;
-  R4: Act_C_Nuc -> Act_C_Cyt; nucleus * k6 * Act_C_Nuc - cytosol * k5 * Act_C_Cyt;
-  R5: NFAT_Act_C_Nuc -> NFAT_Pi_Act_C_Nuc; nucleus * (k14 * NFAT_Act_C_Nuc - k13 * NFAT_Pi_Act_C_Nuc);
-  R6: NFAT_Pi_Act_C_Nuc -> Act_C_Nuc + NFAT_Pi_Nuc; nucleus * (k12 * NFAT_Pi_Act_C_Nuc - k11 * NFAT_Pi_Nuc * Act_C_Nuc);
-  R7: NFAT_Act_C_Nuc -> NFAT_Act_C_Cyt; nucleus * k10 * NFAT_Act_C_Nuc - cytosol * k9 * NFAT_Act_C_Cyt;
-  R8: NFAT_Act_C_Cyt -> NFAT_Pi_Act_C_Cyt; cytosol * (k14 * NFAT_Act_C_Cyt - k13 * NFAT_Pi_Act_C_Cyt);
-  R9: NFAT_Pi_Act_C_Cyt -> Act_C_Cyt + NFAT_Pi_Cyt; cytosol * (k12 * NFAT_Pi_Act_C_Cyt - k11 * NFAT_Pi_Cyt * Act_C_Cyt);
-  R10: NFAT_Pi_Cyt -> NFAT_Pi_Nuc; cytosol * k3 * NFAT_Pi_Cyt - nucleus * k4 * NFAT_Pi_Nuc;
-  R11: NFAT_Act_C_Cyt -> Act_C_Cyt + NFAT_Cyt; cytosol * (k15 * NFAT_Act_C_Cyt - k16 * NFAT_Cyt * Act_C_Cyt);
-  R17: NFAT_Pi_Act_C_Cyt -> NFAT_Pi_Act_C_Nuc; cytosol * k7 * NFAT_Pi_Act_C_Cyt - nucleus * k8 * NFAT_Pi_Act_C_Nuc;
-  R12: NFAT_Pi_Cyt + Act_C_Cyt -> Act_C_Cyt + NFAT_Cyt; cytosol * (k1 * NFAT_Pi_Cyt - k2 * NFAT_Cyt);
-  R13: 3$Ca_Cyt + Inact_C_Cyt -> Act_C_Cyt; cytosol * (k19 * Inact_C_Cyt * Ca_Cyt^3 - k20 * Act_C_Cyt);
-  R14: 3$Ca_Nuc + Inact_C_Nuc -> Act_C_Nuc; nucleus * (k19 * Inact_C_Nuc * Ca_Nuc^3 - k20 * Act_C_Nuc);
-  R15: Inact_C_Cyt -> Inact_C_Nuc; cytosol * k5 * Inact_C_Cyt - nucleus * k6 * Inact_C_Nuc;
-  R16: $Ca_Cyt -> $Ca_Nuc; cytosol * k21 * Ca_Cyt - nucleus * k22 * Ca_Nuc;
+  R1: NFAT_Pi_Nuc + Act_C_Nuc -> Act_C_Nuc + NFAT_Nuc; nucleus*(k1*NFAT_Pi_Nuc - k2*NFAT_Nuc);
+  R2: Act_C_Nuc + NFAT_Nuc -> NFAT_Act_C_Nuc; nucleus*(k16*NFAT_Nuc*Act_C_Nuc - k15*NFAT_Act_C_Nuc);
+  R3: NFAT_Nuc -> NFAT_Cyt; nucleus*k18*NFAT_Nuc - cytosol*k17*NFAT_Cyt;
+  R4: Act_C_Nuc -> Act_C_Cyt; nucleus*k6*Act_C_Nuc - cytosol*k5*Act_C_Cyt;
+  R5: NFAT_Act_C_Nuc -> NFAT_Pi_Act_C_Nuc; nucleus*(k14*NFAT_Act_C_Nuc - k13*NFAT_Pi_Act_C_Nuc);
+  R6: NFAT_Pi_Act_C_Nuc -> Act_C_Nuc + NFAT_Pi_Nuc; nucleus*(k12*NFAT_Pi_Act_C_Nuc - k11*NFAT_Pi_Nuc*Act_C_Nuc);
+  R7: NFAT_Act_C_Nuc -> NFAT_Act_C_Cyt; nucleus*k10*NFAT_Act_C_Nuc - cytosol*k9*NFAT_Act_C_Cyt;
+  R8: NFAT_Act_C_Cyt -> NFAT_Pi_Act_C_Cyt; cytosol*(k14*NFAT_Act_C_Cyt - k13*NFAT_Pi_Act_C_Cyt);
+  R9: NFAT_Pi_Act_C_Cyt -> Act_C_Cyt + NFAT_Pi_Cyt; cytosol*(k12*NFAT_Pi_Act_C_Cyt - k11*NFAT_Pi_Cyt*Act_C_Cyt);
+  R10: NFAT_Pi_Cyt -> NFAT_Pi_Nuc; cytosol*k3*NFAT_Pi_Cyt - nucleus*k4*NFAT_Pi_Nuc;
+  R11: NFAT_Act_C_Cyt -> Act_C_Cyt + NFAT_Cyt; cytosol*(k15*NFAT_Act_C_Cyt - k16*NFAT_Cyt*Act_C_Cyt);
+  R17: NFAT_Pi_Act_C_Cyt -> NFAT_Pi_Act_C_Nuc; cytosol*k7*NFAT_Pi_Act_C_Cyt - nucleus*k8*NFAT_Pi_Act_C_Nuc;
+  R12: NFAT_Pi_Cyt + Act_C_Cyt -> Act_C_Cyt + NFAT_Cyt; cytosol*(k1*NFAT_Pi_Cyt - k2*NFAT_Cyt);
+  R13: 3$Ca_Cyt + Inact_C_Cyt -> Act_C_Cyt; cytosol*(k19*Inact_C_Cyt*Ca_Cyt^3 - k20*Act_C_Cyt);
+  R14: 3$Ca_Nuc + Inact_C_Nuc -> Act_C_Nuc; nucleus*(k19*Inact_C_Nuc*Ca_Nuc^3 - k20*Act_C_Nuc);
+  R15: Inact_C_Cyt -> Inact_C_Nuc; cytosol*k5*Inact_C_Cyt - nucleus*k6*Inact_C_Nuc;
+  R16: $Ca_Cyt -> $Ca_Nuc; cytosol*k21*Ca_Cyt - nucleus*k22*Ca_Nuc;
 
   // Events:
   event_0000001: at Time_in_Seconds - time <= 0 && time < 1500: Ca_Nuc = 1, Ca_Cyt = 1, Time_in_Seconds = Time_in_Seconds + 100;

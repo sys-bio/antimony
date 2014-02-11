@@ -9,15 +9,15 @@ model *RanGTP_gradient()
   species RanGTP_cy in cytoplasm, RanGTP_RanBP1 in cytoplasm, RanGDP_cy in cytoplasm;
 
   // Reactions:
-  RCC1_binding: RanGDP_nuc + RCC1 -> RCC1_RanGDP; nucleus * (RCC1_binding_r1 * RanGDP_nuc * RCC1 - RCC1_binding_r8 * RCC1_RanGDP);
-  GDP_dissociation: RCC1_RanGDP -> RCC1_Ran + $GDP; nucleus * (GDP_dissociation_r2 * RCC1_RanGDP - GDP_dissociation_r7 * RCC1_Ran * GDP);
-  GTP_binding: RCC1_Ran + $GTP -> RCC1_RanGTP; nucleus * (GTP_binding_r3 * RCC1_Ran * GTP - GTP_binding_r6 * RCC1_RanGTP);
-  RanGTP_release: RCC1_RanGTP -> RanGTP_nuc + RCC1; nucleus * (RanGTP_release_r4 * RCC1_RanGTP - RanGTP_release_r5 * RanGTP_nuc * RCC1);
-  Cytoplasmic_transfer: RanGTP_nuc -> RanGTP_cy; Cytoplasmic_transfer_kpermRanGTP * nucleus * (RanGTP_nuc - RanGTP_cy);
-  Nucleoplasmic_transfer: RanGDP_nuc -> RanGDP_cy; Nucleoplasmic_transfer_kpermRanGDP * nucleus * (RanGDP_nuc - RanGDP_cy);
-  RanGTP_binding: RanGTP_cy + RanBP1 -> RanGTP_RanBP1; (RanGTP_binding_kon * RanGTP_cy * RanBP1 - RanGTP_binding_koff * RanGTP_RanBP1) * cytoplasm;
-  RanBP1_RanGDP: RanGTP_RanBP1 -> RanGDP_cy + RanBP1; (cytoplasm * RanBP1_RanGDP_kcat * RanGTP_RanBP1 * RanGAP) / (RanGTP_RanBP1 + RanBP1_RanGDP_Km);
-  RanGAP_RanGDP: RanGTP_cy -> RanGDP_cy; (cytoplasm * RanGAP_RanGDP_kcat_GAP * RanGTP_cy * RanGAP) / (RanGAP_RanGDP_Km_GAP + RanGTP_cy);
+  RCC1_binding: RanGDP_nuc + RCC1 -> RCC1_RanGDP; nucleus*(RCC1_binding_r1*RanGDP_nuc*RCC1 - RCC1_binding_r8*RCC1_RanGDP);
+  GDP_dissociation: RCC1_RanGDP -> RCC1_Ran + $GDP; nucleus*(GDP_dissociation_r2*RCC1_RanGDP - GDP_dissociation_r7*RCC1_Ran*GDP);
+  GTP_binding: RCC1_Ran + $GTP -> RCC1_RanGTP; nucleus*(GTP_binding_r3*RCC1_Ran*GTP - GTP_binding_r6*RCC1_RanGTP);
+  RanGTP_release: RCC1_RanGTP -> RanGTP_nuc + RCC1; nucleus*(RanGTP_release_r4*RCC1_RanGTP - RanGTP_release_r5*RanGTP_nuc*RCC1);
+  Cytoplasmic_transfer: RanGTP_nuc -> RanGTP_cy; Cytoplasmic_transfer_kpermRanGTP*nucleus*(RanGTP_nuc - RanGTP_cy);
+  Nucleoplasmic_transfer: RanGDP_nuc -> RanGDP_cy; Nucleoplasmic_transfer_kpermRanGDP*nucleus*(RanGDP_nuc - RanGDP_cy);
+  RanGTP_binding: RanGTP_cy + RanBP1 -> RanGTP_RanBP1; (RanGTP_binding_kon*RanGTP_cy*RanBP1 - RanGTP_binding_koff*RanGTP_RanBP1)*cytoplasm;
+  RanBP1_RanGDP: RanGTP_RanBP1 -> RanGDP_cy + RanBP1; (cytoplasm*RanBP1_RanGDP_kcat*RanGTP_RanBP1*RanGAP)/(RanGTP_RanBP1 + RanBP1_RanGDP_Km);
+  RanGAP_RanGDP: RanGTP_cy -> RanGDP_cy; (cytoplasm*RanGAP_RanGDP_kcat_GAP*RanGTP_cy*RanGAP)/(RanGAP_RanGDP_Km_GAP + RanGTP_cy);
 
   // Species initializations:
   RanGDP_nuc = 0;

@@ -15,25 +15,25 @@ model *Clarke2006_Smad_signalling()
   sum_smad4_nuc := smad4_nuc + R_smad_P_smad4_nuc;
 
   // Reactions:
-  reaction_1: R_smad_cyt => R_smad_P_cyt; (reaction_1_KCAT * receptor * R_smad_cyt) / (reaction_1_K1 + R_smad_cyt);
-  reaction_5: R_smad_nuc -> R_smad_cyt; reaction_5_k5nc * R_smad_nuc - reaction_5_k5cn * R_smad_cyt;
-  reaction_4: smad4_nuc -> smad4_cyt; reaction_4_k4nc * smad4_nuc - reaction_4_k4cn * smad4_cyt;
-  reaction_2: R_smad_P_cyt + smad4_cyt -> R_smad_P_smad4_cyt; reaction_2_k2a * R_smad_P_cyt * smad4_cyt - reaction_2_k2d * R_smad_P_smad4_cyt;
-  reaction_3: R_smad_P_smad4_cyt => R_smad_P_smad4_nuc; reaction_3_k3 * R_smad_P_smad4_cyt;
-  reaction_6: R_smad_P_smad4_nuc -> smad4_nuc + R_smad_P_nuc; reaction_6_k6d * R_smad_P_smad4_nuc - reaction_6_k6a * smad4_nuc * R_smad_P_nuc;
-  reaction_7: R_smad_P_nuc => R_smad_nuc + Pi_; (reaction_7_Vmax7 * R_smad_P_nuc) / (reaction_7_K7 + R_smad_P_nuc);
-  reaction_0: receptor => ; 100 * exp(-time / 90);
+  reaction_1: R_smad_cyt => R_smad_P_cyt; (reaction_1_KCAT*receptor*R_smad_cyt)/(reaction_1_K1 + R_smad_cyt);
+  reaction_5: R_smad_nuc -> R_smad_cyt; reaction_5_k5nc*R_smad_nuc - reaction_5_k5cn*R_smad_cyt;
+  reaction_4: smad4_nuc -> smad4_cyt; reaction_4_k4nc*smad4_nuc - reaction_4_k4cn*smad4_cyt;
+  reaction_2: R_smad_P_cyt + smad4_cyt -> R_smad_P_smad4_cyt; reaction_2_k2a*R_smad_P_cyt*smad4_cyt - reaction_2_k2d*R_smad_P_smad4_cyt;
+  reaction_3: R_smad_P_smad4_cyt => R_smad_P_smad4_nuc; reaction_3_k3*R_smad_P_smad4_cyt;
+  reaction_6: R_smad_P_smad4_nuc -> smad4_nuc + R_smad_P_nuc; reaction_6_k6d*R_smad_P_smad4_nuc - reaction_6_k6a*smad4_nuc*R_smad_P_nuc;
+  reaction_7: R_smad_P_nuc => R_smad_nuc + Pi_; (reaction_7_Vmax7*R_smad_P_nuc)/(reaction_7_K7 + R_smad_P_nuc);
+  reaction_0: receptor => ; 100*exp(-time/90);
 
   // Species initializations:
-  receptor = 10000 / cytoplasm;
-  R_smad_cyt = 162000 / cytoplasm;
+  receptor = 10000/cytoplasm;
+  R_smad_cyt = 162000/cytoplasm;
   R_smad_P_cyt = 0;
-  smad4_cyt = 120000 / cytoplasm;
+  smad4_cyt = 120000/cytoplasm;
   R_smad_P_smad4_cyt = 0;
   R_smad_P_smad4_nuc = 0;
-  R_smad_nuc = 18000 / nucleus;
+  R_smad_nuc = 18000/nucleus;
   R_smad_P_nuc = 0;
-  smad4_nuc = 30000 / nucleus;
+  smad4_nuc = 30000/nucleus;
   Pi_ = 0;
 
   // Compartment initializations:

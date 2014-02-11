@@ -13,37 +13,37 @@ model *Schmierer_2008_Smad_Tgfb()
 
   // Assignment Rules:
   SB := piecewise(SB_add, time > t_SB, SB_0);
-  CIF := kin_CIF / kin;
-  K_diss := koff / kon;
-  K_dissSB := koff_SB / kon_SB;
+  CIF := kin_CIF/kin;
+  K_diss := koff/kon;
+  K_dissSB := koff_SB/kon_SB;
 
   // Reactions:
-  reaction_1: S4_c -> S4_n; kin * S4_c - kin * S4_n;
-  reaction_2: S2_c -> S2_n; kin * S2_c - kex * S2_n;
-  reaction_3: pS2_c -> pS2_n; kin * pS2_c - kex * pS2_n;
-  reaction_4: R_act + S2_c => R_act + pS2_c; cytosol * kphos * R_act * S2_c;
-  reaction_5: pS2_c + S4_c -> S24_c; cytosol * (kon * pS2_c * S4_c - koff * S24_c);
-  reaction_6: pS2_n + S4_n -> S24_n; nucleus * (kon * pS2_n * S4_n - koff * S24_n);
-  reaction_7: S24_c => S24_n; kin_CIF * S24_c;
-  reaction_8: S22_c => S22_n; kin_CIF * S22_c;
-  reaction_9: 2pS2_c -> S22_c; cytosol * (kon * pS2_c * pS2_c - koff * S22_c);
-  reaction_10: 2pS2_n -> S22_n; nucleus * (kon * pS2_n * pS2_n - koff * S22_n);
-  reaction_11: pS2_n + $PPase => S2_n + $PPase; nucleus * kdephos * pS2_n * PPase;
-  reaction_12: R + $TGFb_c => R_act; cytosol * k_TGFb * R * TGFb_c;
-  reaction_13: R_act + $SB -> R_inact; cytosol * (kon_SB * R_act * SB - koff_SB * R_inact);
-  reaction_14: G_c + R_act => pG_c + R_act; cytosol * kphos * G_c * R_act;
-  reaction_15: pG_n + $PPase => G_n + $PPase; nucleus * kdephos * pG_n * PPase;
-  reaction_16: G_c -> G_n; kin * G_c - kex * G_n;
-  reaction_17: pG_c -> pG_n; kin * pG_c - kex * pG_n;
-  reaction_18: 2pG_c -> GG_c; cytosol * (kon * pG_c * pG_c - koff * GG_c);
-  reaction_19: 2pG_n -> GG_n; nucleus * (kon * pG_n * pG_n - koff * GG_n);
-  reaction_20: pS2_c + pG_c -> G2_c; cytosol * (kon * pS2_c * pG_c - koff * G2_c);
-  reaction_21: pS2_n + pG_n -> G2_n; nucleus * (kon * pS2_n * pG_n - koff * G2_n);
-  reaction_22: pG_c + S4_c -> G4_c; cytosol * (kon * pG_c * S4_c - koff * G4_c);
-  reaction_23: pG_n + S4_n -> G4_n; nucleus * (kon * pG_n * S4_n - koff * G4_n);
-  reaction_24: GG_c => GG_n; kin_CIF * GG_c;
-  reaction_25: G2_c => G2_n; kin_CIF * G2_c;
-  reaction_26: G4_c => G4_n; kin_CIF * G4_c;
+  reaction_1: S4_c -> S4_n; kin*S4_c - kin*S4_n;
+  reaction_2: S2_c -> S2_n; kin*S2_c - kex*S2_n;
+  reaction_3: pS2_c -> pS2_n; kin*pS2_c - kex*pS2_n;
+  reaction_4: R_act + S2_c => R_act + pS2_c; cytosol*kphos*R_act*S2_c;
+  reaction_5: pS2_c + S4_c -> S24_c; cytosol*(kon*pS2_c*S4_c - koff*S24_c);
+  reaction_6: pS2_n + S4_n -> S24_n; nucleus*(kon*pS2_n*S4_n - koff*S24_n);
+  reaction_7: S24_c => S24_n; kin_CIF*S24_c;
+  reaction_8: S22_c => S22_n; kin_CIF*S22_c;
+  reaction_9: 2pS2_c -> S22_c; cytosol*(kon*pS2_c*pS2_c - koff*S22_c);
+  reaction_10: 2pS2_n -> S22_n; nucleus*(kon*pS2_n*pS2_n - koff*S22_n);
+  reaction_11: pS2_n + $PPase => S2_n + $PPase; nucleus*kdephos*pS2_n*PPase;
+  reaction_12: R + $TGFb_c => R_act; cytosol*k_TGFb*R*TGFb_c;
+  reaction_13: R_act + $SB -> R_inact; cytosol*(kon_SB*R_act*SB - koff_SB*R_inact);
+  reaction_14: G_c + R_act => pG_c + R_act; cytosol*kphos*G_c*R_act;
+  reaction_15: pG_n + $PPase => G_n + $PPase; nucleus*kdephos*pG_n*PPase;
+  reaction_16: G_c -> G_n; kin*G_c - kex*G_n;
+  reaction_17: pG_c -> pG_n; kin*pG_c - kex*pG_n;
+  reaction_18: 2pG_c -> GG_c; cytosol*(kon*pG_c*pG_c - koff*GG_c);
+  reaction_19: 2pG_n -> GG_n; nucleus*(kon*pG_n*pG_n - koff*GG_n);
+  reaction_20: pS2_c + pG_c -> G2_c; cytosol*(kon*pS2_c*pG_c - koff*G2_c);
+  reaction_21: pS2_n + pG_n -> G2_n; nucleus*(kon*pS2_n*pG_n - koff*G2_n);
+  reaction_22: pG_c + S4_c -> G4_c; cytosol*(kon*pG_c*S4_c - koff*G4_c);
+  reaction_23: pG_n + S4_n -> G4_n; nucleus*(kon*pG_n*S4_n - koff*G4_n);
+  reaction_24: GG_c => GG_n; kin_CIF*GG_c;
+  reaction_25: G2_c => G2_n; kin_CIF*G2_c;
+  reaction_26: G4_c => G4_n; kin_CIF*G4_c;
 
   // Species initializations:
   PPase = 1;

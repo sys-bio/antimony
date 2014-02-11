@@ -11,19 +11,19 @@ model *MDCKII_Transport()
   BSP_cell := x3 + x4;
 
   // Reactions:
-  OATP1B3: x1 => x3; p1 * x1;
-  ABCC2: x3 => x5; p2 * x3;
-  endo_in_bl: x1 => x3; p3 * x1;
-  endo_ex_bl: x3 => x1; p4 * x3;
-  endo_ex_ap: x3 => x5; p5 * x3;
-  bl_BSP_binding: x1 => x2; p6 * x1 * (p8 - x2);
-  bl_BSP_dissoc: x2 => x1; p7 * x2;
-  cellular_BSP_binding: x3 => x4; p9 * x3 * (p11 - x4);
-  cellular_BSP_dissoc: x4 => x3; p10 * x4;
-  paracell_transp: x1 -> x5; p12 * (x1 / basolat - x5 / apical);
+  OATP1B3: x1 => x3; p1*x1;
+  ABCC2: x3 => x5; p2*x3;
+  endo_in_bl: x1 => x3; p3*x1;
+  endo_ex_bl: x3 => x1; p4*x3;
+  endo_ex_ap: x3 => x5; p5*x3;
+  bl_BSP_binding: x1 => x2; p6*x1*(p8 - x2);
+  bl_BSP_dissoc: x2 => x1; p7*x2;
+  cellular_BSP_binding: x3 => x4; p9*x3*(p11 - x4);
+  cellular_BSP_dissoc: x4 => x3; p10*x4;
+  paracell_transp: x1 -> x5; p12*(x1/basolat - x5/apical);
 
   // Species initializations:
-  x1 = 88 / basolat;
+  x1 = 88/basolat;
   x2 = 0;
   x3 = 0;
   x4 = 0;

@@ -6,15 +6,15 @@ model *model_0000001()
   species z in Cytosol, y in intracellular_Ca_storepool;
 
   // Assignment Rules:
-  beta := flag * 0.96 * exp(-0.2 * (time - tstim));
+  beta := flag*0.96*exp(-0.2*(time - tstim));
 
   // Reactions:
-  reaction_0000001:  => z; v1 * beta * Cytosol;
-  reaction_0000002:  => z; v0 * Cytosol;
-  reaction_0000003: y => z; kf * y * Cytosol;
-  reaction_0000004: z => y; (intracellular_Ca_storepool * VM2 * z^n) / (K2^n + z^n);
-  reaction_0000005: y => z; Cytosol * VM3 * (y^m / (KR^m + y^m)) * (z^p / (KA^p + z^p));
-  reaction_0000006: z => ; k * z * extracellular;
+  reaction_0000001:  => z; v1*beta*Cytosol;
+  reaction_0000002:  => z; v0*Cytosol;
+  reaction_0000003: y => z; kf*y*Cytosol;
+  reaction_0000004: z => y; (intracellular_Ca_storepool*VM2*z^n)/(K2^n + z^n);
+  reaction_0000005: y => z; Cytosol*VM3*(y^m/(KR^m + y^m))*(z^p/(KA^p + z^p));
+  reaction_0000006: z => ; k*z*extracellular;
 
   // Events:
   event_0000001: at time > tstim: flag = 1;

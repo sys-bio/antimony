@@ -6,26 +6,26 @@ model *model_0000001()
   species c in cell;
 
   // Assignment Rules:
-  phik := 1 / (1 + exp((vn - V) / sn));
-  phia := 1 / (1 + exp((va - V) / sa));
-  phih := 1 / (1 + exp((V - vh) / sh));
-  phif := 1 / (1 + exp((vf - V) / sf));
-  phical := 1 / (1 + exp((vm - V) / sm));
-  cinf := c^2 / (c^2 + ks^2);
-  ica := gcal * phical * (V - vca);
-  isk := gsk * cinf * (V - vk);
-  ibk := gf * phif * (V - vk);
-  ikdr := gk * n * (V - vk);
-  ia := ga * phia * h * (V - vk);
+  phik := 1/(1 + exp((vn - V)/sn));
+  phia := 1/(1 + exp((va - V)/sa));
+  phih := 1/(1 + exp((V - vh)/sh));
+  phif := 1/(1 + exp((vf - V)/sf));
+  phical := 1/(1 + exp((vm - V)/sm));
+  cinf := c^2/(c^2 + ks^2);
+  ica := gcal*phical*(V - vca);
+  isk := gsk*cinf*(V - vk);
+  ibk := gf*phif*(V - vk);
+  ikdr := gk*n*(V - vk);
+  ia := ga*phia*h*(V - vk);
   ik := isk + ibk + ikdr + ia;
 
   // Rate Rules:
-  V' = -(ica + ik) / Cm;
-  n' = (lambda * (phik - n)) / taun;
-  h' = (phih - h) / tauh;
+  V' = -(ica + ik)/Cm;
+  n' = (lambda*(phik - n))/taun;
+  h' = (phih - h)/tauh;
 
   // Reactions:
-  reaction_0000004:  => c; -ff * (alpha * ica + kc * c) * cell;
+  reaction_0000004:  => c; -ff*(alpha*ica + kc*c)*cell;
 
   // Species initializations:
   c = 0.3;

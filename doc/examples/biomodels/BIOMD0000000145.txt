@@ -9,27 +9,27 @@ model *Wang2007_ATP_induced_Ca_Oscillation()
   // Assignment Rules:
   PLC := Cplc_total - APLC;
   DG := IP3;
-  Raplc := APLC / (Kp + APLC);
-  Rpkc := (DG / (Kd + DG) * Ca_Cyt) / (Kr + Ca_Cyt);
-  Rgalpha_gtp := Galpha_GTP^n / (Kg^n + Galpha_GTP^n);
-  Rdg := DG^m / (Kd^m + DG^m);
-  Rip3 := IP3^3 / (Ks^3 + IP3^3);
-  Rcyt1 := Ca_Cyt / (Kc1 + Ca_Cyt);
-  Rcyt2 := Ca_Cyt / (Kc2 + Ca_Cyt);
-  Rer := Ca_ER^w / (Ker^w + Ca_ER^w);
+  Raplc := APLC/(Kp + APLC);
+  Rpkc := (DG/(Kd + DG)*Ca_Cyt)/(Kr + Ca_Cyt);
+  Rgalpha_gtp := Galpha_GTP^n/(Kg^n + Galpha_GTP^n);
+  Rdg := DG^m/(Kd^m + DG^m);
+  Rip3 := IP3^3/(Ks^3 + IP3^3);
+  Rcyt1 := Ca_Cyt/(Kc1 + Ca_Cyt);
+  Rcyt2 := Ca_Cyt/(Kc2 + Ca_Cyt);
+  Rer := Ca_ER^w/(Ker^w + Ca_ER^w);
 
   // Reactions:
-  R1:  => Galpha_GTP; Cytosol * k0;
-  R2:  => Galpha_GTP; Cytosol * k1 * Galpha_GTP;
-  R3: Galpha_GTP => ; Cytosol * k2 * Raplc * Galpha_GTP;
-  R4: Galpha_GTP => ; Cytosol * k3 * Rpkc * Galpha_GTP;
-  R5:  => APLC; Cytosol * k4 * Rgalpha_gtp * Rdg * PLC;
-  R6: APLC => ; Cytosol * k5 * APLC;
-  R7:  => IP3; Cytosol * k6 * APLC;
-  R8: IP3 => ; Cytosol * k7 * IP3;
-  R9: 0.001Ca_ER -> 0.01Ca_Cyt; ER * (k8 * Rip3 * Rer - k9 * Rcyt1);
-  R10: 0.05Ca_Cyt => ; Cytosol * k10 * Rcyt2;
-  R11:  => 0.05Ca_Cyt; Cytosol * k11;
+  R1:  => Galpha_GTP; Cytosol*k0;
+  R2:  => Galpha_GTP; Cytosol*k1*Galpha_GTP;
+  R3: Galpha_GTP => ; Cytosol*k2*Raplc*Galpha_GTP;
+  R4: Galpha_GTP => ; Cytosol*k3*Rpkc*Galpha_GTP;
+  R5:  => APLC; Cytosol*k4*Rgalpha_gtp*Rdg*PLC;
+  R6: APLC => ; Cytosol*k5*APLC;
+  R7:  => IP3; Cytosol*k6*APLC;
+  R8: IP3 => ; Cytosol*k7*IP3;
+  R9: 0.001Ca_ER -> 0.01Ca_Cyt; ER*(k8*Rip3*Rer - k9*Rcyt1);
+  R10: 0.05Ca_Cyt => ; Cytosol*k10*Rcyt2;
+  R11:  => 0.05Ca_Cyt; Cytosol*k11;
 
   // Species initializations:
   Galpha_GTP = 1;
