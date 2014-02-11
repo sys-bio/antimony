@@ -1,4 +1,31 @@
 //Created by libAntimony v2.5
+
+// Warnings from automatic translation:
+//    Unable to set the stoichiometry math for the reactant time in reaction re45 because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the reactant frq_gene in reaction frq_transcription because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the reactant wc1_gene in reaction wc1_transcription because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the reactant wc2_gene in reaction wc2_transcription because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the reactant vvd_gene in reaction vvd_transcription because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the reactant frq_mRNA in reaction frq_translation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the reactant wc1_mRNA in reaction wc1_translation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the reactant wc2_mRNA in reaction wc2_translation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the reactant vvd_mRNA in reaction vvd_translation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_frq_mRNA in reaction frq_mRNA_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_wc1_mRNA in reaction wc1_mRNA_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_wc2_mRNA in reaction wc2_mRNA_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_vvd_mRNA in reaction vvd_mRNA_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_hyperFRQc in reaction hyperFRQc_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_hyperFFCn in reaction hyperFFCn_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_WC1c in reaction WC1c_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_WC2c in reaction WC2c_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_hyperWCCc in reaction hyperWCCc_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_hyperWCCn in reaction hyperWCCn_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_active_hypoWCCn in reaction active_hypoWCCn_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_L_WCCCVVDn in reaction L_WCC_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_VVDc in reaction VVDc_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_VVDn in reaction VVDn_degradation because stoichiometry math is not a defined concept in Antimony.
+//    Unable to set the stoichiometry math for the product degraded_L_WCCCVVDn in reaction L_WCCVVD_degradation because stoichiometry math is not a defined concept in Antimony.
+
 model *MODEL1212150000()
 
   // Compartments and Species:
@@ -99,9 +126,9 @@ model *MODEL1212150000()
   VVDn = 0;
   WC1c = 0.039;
   WC2c = 6.11815;
-  active_hypoWCCn = 0.05281;
-  hypoFRQc = 0.619449;
-  hyperFRQc = 0.368117;
+  active_hypoWCCn = 0.05281 / c2;
+  hypoFRQc = 0.619449 / c1;
+  hyperFRQc = 0.368117 / c1;
   cycle = 0;
   degraded_L_WCCCVVDn = 0;
   degraded_VVDc = 0;
@@ -120,22 +147,22 @@ model *MODEL1212150000()
   frq_gene = 1;
   frq_level_A = 0;
   frq_mRNA = 0.22321;
-  hyperFRQn = 0.07298;
-  hyperWCCc = 0.496374;
-  hyperWCCn = 0.1573204;
-  hypoFRQn = 0.394774;
-  hypoWCCc = 0.4285;
-  hypoWCCn = 0.47086;
+  hyperFRQn = 0.07298 / c2;
+  hyperWCCc = 0.496374 / c1;
+  hyperWCCn = 0.1573204 / c2;
+  hypoFRQn = 0.394774 / c2;
+  hypoWCCc = 0.4285 / c1;
+  hypoWCCn = 0.47086 / c2;
   time_ = 0;
-  vvd_gene = 1;
+  vvd_gene = 1 / c2;
   vvd_mRNA = 0;
   wc1_gene = 1;
   wc1_mRNA = 0.5218;
   wc2_gene = 1;
   wc2_mRNA = 0.636098;
-  line = 1.8728;
-  line2 = 0.985;
-  line3 = 1.67;
+  line = 1.8728 / default;
+  line2 = 0.985 / default;
+  line3 = 1.67 / default;
 
   // Compartment initializations:
   default = 1;

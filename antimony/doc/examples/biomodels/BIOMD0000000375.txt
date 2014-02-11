@@ -18,7 +18,7 @@ model *Mears1997_CRAC_PancreaticBetaCells()
   jm_infinity := 1 - 1 / (1 + exp((V_membrane + 53) / 2));
   tau_j := 50000 / (exp((V_membrane + 53) / 4) + exp((-53 - V_membrane) / 4)) + 1500;
   J_er_tot := (J_er_leak + J_er_IP3) - J_er_p;
-  J_mem_tot := - f * (gamma * i_Ca + Jmp);
+  J_mem_tot := -f * (gamma * i_Ca + Jmp);
   g_K_ATP := piecewise(2000, time > 60000 && time < 660000, 150);
   i_Ca_f := g_Ca_f * m_f_infinity * (V_membrane - V_Ca);
   m_f_infinity := 1 / (1 + exp((-20 - V_membrane) / 7.5));
@@ -38,15 +38,15 @@ model *Mears1997_CRAC_PancreaticBetaCells()
   V_membrane' = -(i_Ca + i_K + i_K_ATP + i_K_Ca + i_CRAC + i_leak) / Cm;
   n' = (lambda_n * (n_infinity - n)) / tau_n;
   jm' = (jm_infinity - jm) / tau_j;
-  Ca_er_Ca_equations' = - J_er_tot / (lambda_er * sigma_er);
+  Ca_er_Ca_equations' = -J_er_tot / (lambda_er * sigma_er);
   Ca_i' = J_er_tot / lambda_er + J_mem_tot;
 
   // Species initializations:
-  V_membrane = -61;
-  n = 0.0005;
-  jm = 0.12;
-  Ca_er_Ca_equations = 60;
-  Ca_i = 0.11;
+  V_membrane = -61 / COMpartment_;
+  n = 0.0005 / COMpartment_;
+  jm = 0.12 / COMpartment_;
+  Ca_er_Ca_equations = 60 / COMpartment_;
+  Ca_i = 0.11 / COMpartment_;
 
   // Compartment initializations:
   COMpartment_ = 1;

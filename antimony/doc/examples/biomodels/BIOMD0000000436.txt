@@ -52,31 +52,31 @@ model *BIOMD0000000436()
   _E6: at timevalue >= t6: GPChoslope = GPChoslope6, GPChoint = GPChoint6, DGslope = DGslope6, DGint = DGint6;
 
   // Species initializations:
-  FA = 1;
-  FA has pmol_per_volume;
+  FA = 1 / c1;
+  FA has pmol_per_litre;
   HETE = 0;
-  HETE has pmol_per_volume;
+  HETE has pmol_per_litre;
   PGH2 = 0;
-  PGH2 has pmol_per_volume;
+  PGH2 has pmol_per_litre;
   PGE2 = 0;
-  PGE2 has pmol_per_volume;
+  PGE2 has pmol_per_litre;
   PGF2a = 0;
-  PGF2a has pmol_per_volume;
+  PGF2a has pmol_per_litre;
   PGD2 = 0;
   PGJ2 = 0;
-  PGJ2 has pmol_per_volume;
+  PGJ2 has pmol_per_litre;
   dPGJ2 = 0;
-  dPGJ2 has pmol_per_volume;
-  AA = 25;
-  AA has pmol_per_volume;
-  LPS = 0.5;
-  LPS has dimensionless_per_volume;
+  dPGJ2 has pmol_per_litre;
+  AA = 25 / c1;
+  AA has pmol_per_litre;
+  LPS = 0.5 / c1;
+  LPS has dimensionless_per_litre;
   DG = 0;
-  DG has dimensionless_per_volume;
-  GPCho = 1;
-  GPCho has pmol_per_volume;
+  DG has dimensionless_per_litre;
+  GPCho = 1 / c1;
+  GPCho has pmol_per_litre;
   dPGD2 = 0;
-  dPGD2 has pmol_per_volume;
+  dPGD2 has pmol_per_litre;
 
   // Compartment initializations:
   c1 = 1;
@@ -254,9 +254,8 @@ model *BIOMD0000000436()
   unit pmol = 1e-12 mole;
   unit pmolperh = 1e-12 mole / 0.0002778 second;
   unit ugDNAperh = 1e-6 gram / 3600 second;
-  unit volume = litre;
-  unit pmol_per_volume = 1e-12 mole / litre;
-  unit dimensionless_per_volume = dimensionless / litre;
+  unit pmol_per_litre = 1e-12 mole / litre;
+  unit dimensionless_per_litre = dimensionless / litre;
 
   //Display Names:
   AA is "Arachidonic acid";

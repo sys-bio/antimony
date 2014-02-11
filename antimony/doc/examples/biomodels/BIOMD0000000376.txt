@@ -100,24 +100,24 @@ model *Bertram2007_IsletCell_Oscillations()
   FBP' = JPFK_ms - 0.5 * JGPDH;
   NADHm' = gamma * (JPDH - JO);
   delta_psi' = (JHres - (JHatp + JANT + JHleak + JNaCa + 2 * Juni)) / Cmito;
-  Cam' = - fmito * Jmito;
+  Cam' = -fmito * Jmito;
   ADPm' = gamma * (JANT - JF1F0);
-  adp' = - delta * JANT + Jhyd;
+  adp' = -delta * JANT + Jhyd;
   c' = fcyt * (Jmem + Jer + delta * Jmito);
-  Caer' = - fer * Vc_Ver * Jer;
+  Caer' = -fer * Vc_Ver * Jer;
 
   // Species initializations:
-  Vm = -60;
+  Vm = -60 / Compartment_;
   n = 0;
-  G6P = 301;
-  FBP = 2.16;
-  NADHm = 0.4;
-  delta_psi = 164;
-  Cam = 0.2;
-  ADPm = 11.1;
-  adp = 1137;
-  c = 0.17;
-  Caer = 345;
+  G6P = 301 / Compartment_;
+  FBP = 2.16 / Compartment_;
+  NADHm = 0.4 / Compartment_;
+  delta_psi = 164 / Compartment_;
+  Cam = 0.2 / Compartment_;
+  ADPm = 11.1 / Compartment_;
+  adp = 1137 / Compartment_;
+  c = 0.17 / Compartment_;
+  Caer = 345 / Compartment_;
 
   // Compartment initializations:
   Compartment_ = 1;

@@ -7,9 +7,9 @@ model *Sturis1991_InsulinGlucoseModel_UltradianOscillation()
   species $h2 in compartment1, $h3 in compartment1;
 
   // Assignment Rules:
-  f1 := 209 / (1 + exp(- z / (300 * v3) + 6.6));
+  f1 := 209 / (1 + exp(-z / (300 * v3) + 6.6));
   f5 := 180 / (1 + exp((0.29 * h3) / v1 - 7.5));
-  f2 := 72 * (1 - exp(- z / 144 * v3));
+  f2 := 72 * (1 - exp(-z / 144 * v3));
   f3 := (0.01 * z) / v3;
   f4 := 90 / (1 + exp(-1.772 * ln(y * (1 / v2 + 1 / (E * t2))) + 7.76)) + 4;
 
@@ -22,12 +22,12 @@ model *Sturis1991_InsulinGlucoseModel_UltradianOscillation()
   h3' = (3 * (h2 - h3)) / t3;
 
   // Species initializations:
-  x = 90;
-  y = 180;
-  z = 13000;
-  h1 = 70;
-  h2 = 70;
-  h3 = 70;
+  x = 90 / compartment1;
+  y = 180 / compartment1;
+  z = 13000 / compartment1;
+  h1 = 70 / compartment1;
+  h2 = 70 / compartment1;
+  h3 = 70 / compartment1;
 
   // Compartment initializations:
   compartment1 = 1;

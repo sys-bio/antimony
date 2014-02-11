@@ -27,7 +27,7 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   S := gamma * I_po;
   I := I_p / V_I;
   G := G_p / V_G;
-  HE := - m_5 * S + m_6;
+  HE := -m_5 * S + m_6;
   m_3 := (HE * m_1) / (1 - HE);
   Q_sto := Q_sto1 + Q_sto2;
   Ra := (f * k_abs * Q_gut) / BW;
@@ -38,18 +38,18 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   S_po := Y + (K * ((EGP + Ra) - E - U_ii - k_1 * G_p + k_2 * G_t)) / V_G + S_b;
 
   // Rate Rules:
-  G_t' = (- U_id + k_1 * G_p) - k_2 * G_t;
-  INS' = - p_2U * INS + p_2U * (I - I_b);
+  G_t' = (-U_id + k_1 * G_p) - k_2 * G_t;
+  INS' = -p_2U * INS + p_2U * (I - I_b);
   G_p' = (EGP + Ra) - E - U_ii - k_1 * G_p + k_2 * G_t;
-  I_d' = - k_i * (I_d - I_1);
-  I_po' = - gamma * I_po + S_po;
-  I_p' = - m_2 * I_p - m_4 * I_p + m_1 * I_l;
-  Q_sto1' = - k_gri * Q_sto1;
-  Q_sto2' = - k_empt * Q_sto2 + k_gri * Q_sto1;
-  Q_gut' = - k_abs * Q_gut + k_empt * Q_sto2;
-  Y' = - alpha * (Y - beta * (G - G_b));
-  I_l' = - m_1 * I_l - m_3 * I_l + m_2 * I_p + S;
-  I_1' = - k_i * (I_1 - I);
+  I_d' = -k_i * (I_d - I_1);
+  I_po' = -gamma * I_po + S_po;
+  I_p' = -m_2 * I_p - m_4 * I_p + m_1 * I_l;
+  Q_sto1' = -k_gri * Q_sto1;
+  Q_sto2' = -k_empt * Q_sto2 + k_gri * Q_sto1;
+  Q_gut' = -k_abs * Q_gut + k_empt * Q_sto2;
+  Y' = -alpha * (Y - beta * (G - G_b));
+  I_l' = -m_1 * I_l - m_3 * I_l + m_2 * I_p + S;
+  I_1' = -k_i * (I_1 - I);
 
   // Reactions:
   R1: r0 => r1; 2 * a1 * S1 * r0;
@@ -118,38 +118,38 @@ model *Nyman2011_M3Hierarachical_InsulinGlucosedynamics()
   v9b: GLUT4_M => GLUT4_C; k9b * GLUT4_M;
 
   // Species initializations:
-  r0 = 9.96820379306998;
-  r1 = 0.0221366043399864;
-  r2 = 0.00934921094738169;
-  r11 = 1.22886711962222e-005;
-  r12 = 1.0376421415741e-005;
-  r22 = 2.18683301945588e-006;
-  r1x2 = 1.36475817837692e-006;
-  r11x2 = 1.51513915390766e-009;
-  r1x22 = 6.39351849488596e-010;
-  r1x22d = 5.59231079319369e-020;
-  r11x22 = 1.78725515332219e-014;
-  rend = 3.31711803810961e-005;
-  rendP = 0.000212533941418487;
-  iendIR = 7.25519178924707e-006;
-  iend = 1.13228497567934e-006;
-  rPbasal = 3.87230309356247e-005;
-  IRS = 9.99982253600007;
-  IRSiP = 0.000177463999892648;
-  X = 9.92463241634744;
-  X_P = 0.0753675836525682;
-  PI3K = 9.97578356966623;
-  PI3K_ = 0.0242164303337614;
-  PDK1 = 8.65876984730663;
-  PDK1_ = 1.34123015269338;
-  PKC = 3.60283594102724e-005;
-  PKC_P = 9.99996397164059;
-  PKB = 9.90193143617302;
-  PKB_P = 0.0980685638269942;
-  mTOR = 0.0201915011292933;
-  mTOR_ = 9.97980849887072;
-  GLUT4_C = 9.99316830771855;
-  GLUT4_M = 0.00683169228144988;
+  r0 = 9.96820379306998 / default;
+  r1 = 0.0221366043399864 / default;
+  r2 = 0.00934921094738169 / default;
+  r11 = 1.22886711962222e-005 / default;
+  r12 = 1.0376421415741e-005 / default;
+  r22 = 2.18683301945588e-006 / default;
+  r1x2 = 1.36475817837692e-006 / default;
+  r11x2 = 1.51513915390766e-009 / default;
+  r1x22 = 6.39351849488596e-010 / default;
+  r1x22d = 5.59231079319369e-020 / default;
+  r11x22 = 1.78725515332219e-014 / default;
+  rend = 3.31711803810961e-005 / default;
+  rendP = 0.000212533941418487 / default;
+  iendIR = 7.25519178924707e-006 / default;
+  iend = 1.13228497567934e-006 / default;
+  rPbasal = 3.87230309356247e-005 / default;
+  IRS = 9.99982253600007 / default;
+  IRSiP = 0.000177463999892648 / default;
+  X = 9.92463241634744 / default;
+  X_P = 0.0753675836525682 / default;
+  PI3K = 9.97578356966623 / default;
+  PI3K_ = 0.0242164303337614 / default;
+  PDK1 = 8.65876984730663 / default;
+  PDK1_ = 1.34123015269338 / default;
+  PKC = 3.60283594102724e-005 / default;
+  PKC_P = 9.99996397164059 / default;
+  PKB = 9.90193143617302 / default;
+  PKB_P = 0.0980685638269942 / default;
+  mTOR = 0.0201915011292933 / default;
+  mTOR_ = 9.97980849887072 / default;
+  GLUT4_C = 9.99316830771855 / default;
+  GLUT4_M = 0.00683169228144988 / default;
 
   // Compartment initializations:
   default = 1;

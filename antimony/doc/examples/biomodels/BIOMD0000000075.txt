@@ -9,12 +9,12 @@ model *Xu2003_Phosphoinositide_turnover()
   species PLC_act_PM in PM, IP3_Cyt in Cytosol;
 
   // Assignment Rules:
-  Ratebasal_PIPsyn_PIPSyn := piecewise(0.581 * kBasalSynPIP_PIPSyn * (-1 + exp((PIP_basal_PIPSyn + - PIP_PM) * (1 / PIP_basal_PIPSyn))), PIP_PM < PIP_basal_PIPSyn, 0);
-  Ratestim_PIPsyn_PIPSyn := piecewise(kStimSynPIP_PIPSyn * exp(-((time + - tauPIPsyn_PIPSyn) * (1 / PIPsyndecay_PIPSyn))), time > tauPIPsyn_PIPSyn, 0);
-  signal_PLCact := piecewise(exp(-((time + - tau0_PLCact) * (1 / stimdecay_PLCact))), time > tau0_PLCact, 0);
+  Ratebasal_PIPsyn_PIPSyn := piecewise(0.581 * kBasalSynPIP_PIPSyn * (-1 + exp((PIP_basal_PIPSyn + -PIP_PM) * (1 / PIP_basal_PIPSyn))), PIP_PM < PIP_basal_PIPSyn, 0);
+  Ratestim_PIPsyn_PIPSyn := piecewise(kStimSynPIP_PIPSyn * exp(-((time + -tauPIPsyn_PIPSyn) * (1 / PIPsyndecay_PIPSyn))), time > tauPIPsyn_PIPSyn, 0);
+  signal_PLCact := piecewise(exp(-((time + -tau0_PLCact) * (1 / stimdecay_PLCact))), time > tau0_PLCact, 0);
   kr_PIP2PH_PIP2_PH := kf_PIP2PH_PIP2_PH * KdPIP2PH_PIP2_PH;
-  Rate_PIP2Synbasal_PIP2Syn := piecewise(0.581 * kBasalSynPIP2_PIP2Syn * (-1 + exp((PIP2_basal_PIP2Syn + - PIP2_PM) * (1 / PIP2_basal_PIP2Syn))), PIP2_PM < PIP2_basal_PIP2Syn, 0);
-  Rate_PIP2SynStim_PIP2Syn := piecewise(kStimSynPIP2_PIP2Syn * exp(-((time + - tauPIP2syn_PIP2Syn) * (1 / PIP2syndecay_PIP2Syn))), time > tauPIP2syn_PIP2Syn, 0);
+  Rate_PIP2Synbasal_PIP2Syn := piecewise(0.581 * kBasalSynPIP2_PIP2Syn * (-1 + exp((PIP2_basal_PIP2Syn + -PIP2_PM) * (1 / PIP2_basal_PIP2Syn))), PIP2_PM < PIP2_basal_PIP2Syn, 0);
+  Rate_PIP2SynStim_PIP2Syn := piecewise(kStimSynPIP2_PIP2Syn * exp(-((time + -tauPIP2syn_PIP2Syn) * (1 / PIP2syndecay_PIP2Syn))), time > tauPIP2syn_PIP2Syn, 0);
   kr_IP3PH_IP3_PHGFP := kf_IP3PH_IP3_PHGFP * KdIP3PH_IP3_PHGFP;
 
   // Reactions:
@@ -23,35 +23,35 @@ model *Xu2003_Phosphoinositide_turnover()
   PLCact: PLC_PM -> PLC_act_PM; (PLCact_KfPLCact * PLC_PM * stim_PM * signal_PLCact + -(PLCact_krPLCact * PLC_act_PM)) * PM;
   PIP2_PH_hyd: PIP2_PHGFP_PM -> PH_GFP_Cyt + IP3_Cyt + DAG_PM; PIP2_PH_hyd_k_PIP2PHhyd * PLC_act_PM * PIP2_PHGFP_PM * PM;
   PIP2_PH: PH_GFP_Cyt + PIP2_PM -> PIP2_PHGFP_PM; (kf_PIP2PH_PIP2_PH * 0.00166112956810631 * PH_GFP_Cyt * PIP2_PM + -(kr_PIP2PH_PIP2_PH * PIP2_PHGFP_PM)) * PM;
-  IP3deg: IP3_Cyt -> ; IP3deg_kIP3deg * (0.00166112956810631 * IP3_Cyt + - IP3deg_IP3_basal) * Cytosol * 1 * (1 / KMOLE);
+  IP3deg: IP3_Cyt -> ; IP3deg_kIP3deg * (0.00166112956810631 * IP3_Cyt + -IP3deg_IP3_basal) * Cytosol * 1 * (1 / KMOLE);
   PIP2Syn: PIP_PM -> PIP2_PM; (Rate_PIP2Synbasal_PIP2Syn + Rate_PIP2SynStim_PIP2Syn) * PIP_PM * PM;
   IP3_PHGFP: IP3_Cyt + PH_GFP_Cyt -> IP3_PHGFP_Cyt; (kf_IP3PH_IP3_PHGFP * 0.00166112956810631 * IP3_Cyt * 0.00166112956810631 * PH_GFP_Cyt + -(kr_IP3PH_IP3_PHGFP * 0.00166112956810631 * IP3_PHGFP_Cyt)) * Cytosol * 1 * (1 / KMOLE);
 
   // Species initializations:
   PIP2_PHGFP_PM = 0;
-  PIP2_PHGFP_PM has molecule_per_volume;
+  PIP2_PHGFP_PM has molecule_per_um2;
   PH_GFP_Cyt = 0;
   PH_GFP_Cyt has molecule_per_volume;
   PI_PM = 142857;
-  PI_PM has molecule_per_volume;
+  PI_PM has molecule_per_um2;
   stim_PM = 1;
-  stim_PM has molecule_per_volume;
+  stim_PM has molecule_per_um2;
   IP3_PHGFP_Cyt = 0;
   IP3_PHGFP_Cyt has molecule_per_volume;
   PIP2_PM = 4000;
-  PIP2_PM has molecule_per_volume;
+  PIP2_PM has molecule_per_um2;
   PIP_PM = 2857;
-  PIP_PM has molecule_per_volume;
+  PIP_PM has molecule_per_um2;
   DAG_PM = 2000;
-  DAG_PM has molecule_per_volume;
+  DAG_PM has molecule_per_um2;
   hv_Cytosol = 0;
   hv_Cytosol has molecule_per_volume;
   IP3X_Cytosol = 0;
   IP3X_Cytosol has molecule_per_volume;
   PLC_PM = 100;
-  PLC_PM has molecule_per_volume;
+  PLC_PM has molecule_per_um2;
   PLC_act_PM = 0;
-  PLC_act_PM has molecule_per_volume;
+  PLC_act_PM has molecule_per_um2;
   IP3_Cyt = 96.32;
   IP3_Cyt has molecule_per_volume;
 
@@ -158,8 +158,8 @@ model *Xu2003_Phosphoinositide_turnover()
   unit uM_1_s_1 = litre / (1e-6 mole * second);
   unit uM = 1e-6 mole / litre;
   unit molecule = molecule;
+  unit molecule_per_um2 = molecule / (1e-6 metre)^2;
   unit molecule_per_volume = molecule / (1e-6 metre)^3;
-  unit molecule_per_volume_um2 = molecule * (1e-6 metre)^2 / (1e-6 metre)^3;
 
   //Display Names:
   IP3_PHGFP is "IP3-PHGFP";

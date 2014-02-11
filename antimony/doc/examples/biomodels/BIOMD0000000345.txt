@@ -36,7 +36,7 @@ model *Koschorreck2008_InsulinClearance()
   vd := 0.272 * 10^-3 * vhep * rholiver;
   mkidney := (2 * 0.85 * bw) / 230;
   Kkidney := 0.0225 * 10^-3 * mkidney;
-  parameter_1 := (-(- r1 - r2 - r3 - r4) * vhep) / vp;
+  parameter_1 := (-(-r1 - r2 - r3 - r4) * vhep) / vp;
   parameter_2 := (Kkidney * ins) / vp;
   parameter_3 := parameter_2 + parameter_1;
   parameter_4 := parameter_1 / (parameter_1 + parameter_2) * 100;
@@ -52,17 +52,17 @@ model *Koschorreck2008_InsulinClearance()
   parameter_14 := parameter_10 - parameter_12;
 
   // Rate Rules:
-  R' = (- r1 + r5) - f1;
+  R' = (-r1 + r5) - f1;
   IR' = r1 - r3 - r6 - f2;
   I2R' = r3 - r7 - f3;
-  Rp' = - r2 - r5 - f4;
+  Rp' = -r2 - r5 - f4;
   IRp' = (r2 - r4 + r6) - f5;
   I2Rp' = (r4 + r7) - f6;
   Ren' = i1 + i5 + f1;
-  IRen' = (- i1 + i3) - i6 + f2;
-  I2Ren' = - i3 - i7 + f3;
+  IRen' = (-i1 + i3) - i6 + f2;
+  I2Ren' = -i3 - i7 + f3;
   RPen' = i2 - i5 + f4;
-  IRPen' = - i2 + i4 + i6 + f5;
+  IRPen' = -i2 + i4 + i6 + f5;
 
   // Species initializations:
   R = 35.3837;

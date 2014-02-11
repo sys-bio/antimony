@@ -22,29 +22,29 @@ model *Fridlyand2010_GlucoseSensitivity_A()
   ACa := 1 + -(1 * (1 / exp(Cam * (1 / KpCam))));
   AD := MgADP * MgADP * (1 / (MgADP * MgADP + Kmadp * Kmadp));
   MgADP := 0.055 * ADP;
-  ADP := Ao + - ATP;
+  ADP := Ao + -ATP;
   AT_ := Vm^hp * (1 / (Kmph^hp + Vm^hp));
   DelJNCa := 1 + Ni^3 * (1 / KNaj^3) + Cam * (1 / KCaj) + Ni^3 * Cam * (1 / (KNaj^3 * KCaj)) + Nam^3 * (1 / KNaj^3) + Cac * (1 / KCaj) + Nam^3 * Cac * (1 / (KNaj^3 * KCaj));
   FDe := NADHm * (1 / (KmNh + NADHm));
   FLNADc := NADHc * (1 / (Klnc + NADHc * (1 / NADc))) * (1 / NADc);
-  NADc := Ntc + - NADHc;
+  NADc := Ntc + -NADHc;
   FNADc := NADHc * (1 / (KTNc + NADHc * (1 / NADc))) * (1 / NADc);
   FPCa := 1 * (1 / (1 + u2 * (1 + u1 * (1 / (1 + Cam * (1 / KCam))^2))));
   FPNAD := NADm * (1 / (KPNm + NADm * (1 / NADHm))) * (1 / NADHm);
-  NADm := Ntm + - NADHm;
+  NADm := Ntm + -NADHm;
   FPYR := PYR * (1 / (Kmpyr + PYR));
   FTe := (1 + kat * Vm) * (1 / (1 + kbt * Vm));
   JO2 := 0.1 * Jhres;
   ID := ATP / ADP;
 
   // Rate Rules:
-  G3P' = (2 * JGlu + - Jgpd) * (1 / Vi) + -(kgpd * G3P);
-  PYR' = (Jgpd + - JPYR + - JLDH) * (1 / (Vi + Vmmit));
+  G3P' = (2 * JGlu + -Jgpd) * (1 / Vi) + -(kgpd * G3P);
+  PYR' = (Jgpd + -JPYR + -JLDH) * (1 / (Vi + Vmmit));
   ATP' = -((kATP + kATPCa * Cac) * ATP) + (2 * JGlu + 0.231 * Jph) * (1 / Vi);
   NADHm' = (4.6 * JPYR + -(0.1 * Jhres) + Jtnadh) * (1 / Vmmit) + -(knadhm * NADHm);
-  NADHc' = (Jgpd + - Jtnadh + - JLDH) * (1 / Vi) + -(knadhc * NADHc);
-  Vm' = (Jhres + - Jph + - Jhl + -(2 * Juni) + - JNCa) * F * (1 / Cmit);
-  Cam' = fm * (Juni + - JNCa) * (1 / Vmmit);
+  NADHc' = (Jgpd + -Jtnadh + -JLDH) * (1 / Vi) + -(knadhc * NADHc);
+  Vm' = (Jhres + -Jph + -Jhl + -(2 * Juni) + -JNCa) * F * (1 / Cmit);
+  Cam' = fm * (Juni + -JNCa) * (1 / Vmmit);
 
   // Species initializations:
   G3P = G3P_init;

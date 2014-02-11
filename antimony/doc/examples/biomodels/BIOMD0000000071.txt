@@ -37,7 +37,7 @@ model *Bakker2001_Glycolysis()
   vGDH: DHAP + NADH -> NAD + $Gly3P; (tot_cell / Vt * vGDH_Vm8 * vGDH_Vm8f * ((NADH * DHAPg) / (vGDH_K8DHAPg * vGDH_K8NADH) - (vGDH_Vm8r * NAD * Gly3Pg) / (vGDH_K8Gly3Pg * vGDH_K8NAD * vGDH_Vm8f))) / ((1 + NAD / vGDH_K8NAD + NADH / vGDH_K8NADH) * (1 + DHAPg / vGDH_K8DHAPg + Gly3Pg / vGDH_K8Gly3Pg));
   vGPO: $Gly3P => DHAP; (tot_cell / Vt * vGPO_Vm9 * Gly3Pc) / (vGPO_K9Gly3Pc * 1 + Gly3Pc);
   vPyrTr: Pyr => $PyrE; (tot_cell / Vt * vPyrTr_Vm10 * Pyr) / vPyrTr_K10Pyr / (1 + Pyr / vPyrTr_K10Pyr);
-  vPGK: BPGA13 -> Nb + Pg; (tot_cell / Vt * vPGK_Vm11 * vPGK_Vm11f * ((- vPGK_Vm11r * PGAg * ATPg) / (vPGK_K11ATPg * vPGK_K11PGA3 * vPGK_Vm11f) + (BPGA13 * ADPg) / (vPGK_K11ADPg * vPGK_K11BPGA13))) / ((1 + BPGA13 / vPGK_K11BPGA13 + PGAg / vPGK_K11PGA3) * (1 + ATPg / vPGK_K11ATPg + ADPg / vPGK_K11ADPg));
+  vPGK: BPGA13 -> Nb + Pg; (tot_cell / Vt * vPGK_Vm11 * vPGK_Vm11f * ((-vPGK_Vm11r * PGAg * ATPg) / (vPGK_K11ATPg * vPGK_K11PGA3 * vPGK_Vm11f) + (BPGA13 * ADPg) / (vPGK_K11ADPg * vPGK_K11BPGA13))) / ((1 + BPGA13 / vPGK_K11BPGA13 + PGAg / vPGK_K11PGA3) * (1 + ATPg / vPGK_K11ATPg + ADPg / vPGK_K11ADPg));
   vPK: Nb => Pc + Pyr; (tot_cell / Vt * vPK_Vm12 * (PEPc / (0.34 * (1 + ADPc / 0.57 + ATPc / 0.64)))^vPK_n12 * ADPc) / vPK_K12ADP / ((1 + (PEPc / (0.34 * (1 + ADPc / 0.57 + ATPc / 0.64)))^vPK_n12) * (1 + ADPc / vPK_K12ADP));
   vATPase: Pc => ; (tot_cell / Vt * vATPase_K13 * ATPc) / ADPc;
   vGlyK: $Gly3P -> Pg + $Gly; (tot_cell / Vt * vGlyK_Vm14 * ((vGlyK_Vm14f * ADPg * Gly3Pg) / (vGlyK_K14ADPg * vGlyK_K14Gly3Pg) - (Gly * vGlyK_Vm14r * ATPg) / (vGlyK_K14ATPg * vGlyK_K14Gly))) / ((1 + Gly / vGlyK_K14Gly + Gly3Pg / vGlyK_K14Gly3Pg) * (1 + ATPg / vGlyK_K14ATPg + ADPg / vGlyK_K14ADPg));

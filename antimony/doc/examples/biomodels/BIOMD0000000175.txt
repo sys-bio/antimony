@@ -131,7 +131,7 @@ model *ErbB()
   E11S_Degradation: E11S + SigS => S; membrane * kdeg * E11S;
   E11R_Degradation: E11R + SigR => R; membrane * kdeg * E11R;
   E11T_Degradation: E11T + SigT => T; membrane * kdeg * E11T;
-  mwbbde76d1_155c_4264_8447_4457527547cb: Empty => fint; membrane * a98 * (- fint + b98);
+  mwbbde76d1_155c_4264_8447_4457527547cb: Empty => fint; membrane * a98 * (-fint + b98);
   EGF_in_EC_compartment: E -> Empty; membrane * (((kon1 * E * E1 - EGF_off * E_E1 + kon86 * E * E1_PT) - EGF_off * E_E1_PT) / VeVc);
   HRG_in_EC_compartment: H -> Empty; membrane * ((((kon87 * H * E4_PT - HRGoff_4 * H_E4_PT + kon2 * H * E3) - HRGoff_3 * H_E3 + kon3 * H * E4) - HRGoff_4 * H_E4) / VeVc);
   ERK_binding_to_MEKstar_1: ERK + MEKstar -> ERK_MEKstar; membrane * (kon89 * ERK * MEKstar - koff89 * ERK_MEKstar);
@@ -144,10 +144,10 @@ model *ErbB()
   pERK_dephosphorylation: pERK_ERKpase => ERK + ERKpase; membrane * kcat96 * pERK_ERKpase;
 
   // Species initializations:
-  E1 = 274;
-  E2 = 158;
-  E3 = 294;
-  E4 = 399;
+  E1 = 274 / membrane;
+  E2 = 158 / membrane;
+  E3 = 294 / membrane;
+  E4 = 399 / membrane;
   E_E1 = 0;
   H_E3 = 0;
   H_E4 = 0;
@@ -163,12 +163,12 @@ model *ErbB()
   E34P = 0;
   E24P = 0;
   E44P = 0;
-  G = 82.4;
-  S = 11.5;
-  I = 46.4;
-  R = 93.6;
-  O = 82.3;
-  A = 43.1;
+  G = 82.4 / membrane;
+  S = 11.5 / membrane;
+  I = 46.4 / membrane;
+  R = 93.6 / membrane;
+  O = 82.3 / membrane;
+  A = 43.1 / membrane;
   E11G = 0;
   E11S = 0;
   E11R = 0;
@@ -206,17 +206,17 @@ model *ErbB()
   SigAP_R = 0;
   Empty = 0;
   P3_A = 0;
-  P2 = 197;
+  P2 = 197 / membrane;
   P3 = 0;
-  Akt = 444;
-  RsD = 95.7;
+  Akt = 444 / membrane;
+  RsD = 95.7 / membrane;
   RsT = 0;
   SigRP = 0;
-  Raf = 743;
+  Raf = 743 / membrane;
   Rafstar = 0;
-  MEK = 772;
+  MEK = 772 / membrane;
   MEKstar = 0;
-  ERK = 750;
+  ERK = 750 / membrane;
   ERKstar = 0;
   OP = 0;
   AP = 0;
@@ -236,7 +236,7 @@ model *ErbB()
   E14S = 0;
   E14I = 0;
   E14R = 0;
-  T = 500;
+  T = 500 / membrane;
   E11T = 0;
   E12T = 0;
   E23T = 0;
@@ -253,15 +253,15 @@ model *ErbB()
   H_E4_PT = 0;
   Aktstar = 0;
   SigAP_T = 0;
-  E = 10;
-  H = 10;
+  E = 10 / membrane;
+  H = 10 / membrane;
   fint = 0;
   pERK = 0;
   ERK_MEKstar = 0;
   pERK_MEKstar = 0;
   pERK_ERKpase = 0;
   ERKpase = 0;
-  ERKstar_ERKpase = 35;
+  ERKstar_ERKpase = 35 / membrane;
 
   // Compartment initializations:
   membrane = 1;
