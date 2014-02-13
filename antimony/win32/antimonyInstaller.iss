@@ -1,25 +1,33 @@
-#define AppDir "antimony"
-#define Py "Python"
-#define PyVer "2.7"
+#define MinimalSetupInstaller "Antimony Python bindings-2.5.0-win32.exe"
+#define MyAppName "QTAntimony"
+#define MyAppVersion "2.5.0"
+#define MyAppSetupIconFile "..\QTAntimony_src\antimony.ico"
 
 [Setup]
 AppId={{9F5DF3DE-FBE7-4AC4-9AFD-357A1C256847}
 DefaultGroupName=Antimony
 UsePreviousGroup=true
-AppName=QTAntimony
-AppVerName=QTAntimony 2.5.0
+AppName={#MyAppName}
+AppVerName={#MyAppName} {#MyAppVersion}
 DefaultDirName={pf}\Antimony
 UsePreviousAppDir=false
+OutputDir=.
+OutputBaseFilename=antimonyInstaller_v{#MyAppVersion}
+SetupIconFile={#MyAppSetupIconFile}
+
 [Icons]
 Name: {group}\{cm:UninstallProgram, QTAntimony}; Filename: {uninstallexe}
 Name: {group}\QTAntimony; Filename: {app}\QTAntimony.exe; WorkingDir: {userdocs}
 Name: {group}\README; Filename: {app}\README.txt
 [Run]
+Filename: "{tmp}\{#MinimalSetupInstaller}"; Description: Run libantimonypython installer; 
+; Flags: ignoreversion 
 Filename: {app}\README.txt; Description: View the README file; Flags: postinstall shellexec skipifsilent
 Filename: {app}\QTAntimony.exe; WorkingDir: {userdocs}; Flags: postinstall unchecked
 [Dirs]
 Name: {app}\biomodels
 [Files]
+Source: "{#MinimalSetupInstaller}"; DestDir: "{tmp}"; Flags: ignoreversion onlyifdoesntexist
 Source: ..\install-release\bindings\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: ..\install-release\bin\QTAntimony.exe; DestDir: {app}
 Source: ..\install-release\bin\QtCore4.dll; DestDir: {app}
@@ -544,159 +552,3 @@ Source: ..\doc\examples\biomodels\BIOMD0000000487.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000488.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000489.txt; DestDir: {app}\biomodels\
 Source: ..\doc\examples\biomodels\BIOMD0000000490.txt; DestDir: {app}\biomodels\
-
-[Code]
-//////////////////////////////////////////////////////////////////////////////
-const
-  appDir = '{#AppDir}';
-  pyReg = 'SOFTWARE\{#Py}\PythonCore\{#PyVer}\InstallPath';
-  pyRegWow6443Node = 'SOFTWARE\Wow6432Node\{#Py}\PythonCore\{#PyVer}\InstallPath';
-
-var
-  //installPython: Boolean;
-  DefaultAppDirName: String;
-
-
-//////////////////////////////////////////////////////////////////////////////
-procedure ExitProcess(exitCode:integer);
-  external 'ExitProcess@kernel32.dll stdcall';
-
-//////////////////////////////////////////////////////////////////////////////
-function GetPathForPythonSitePackages(): string;
-var          
-  InstallPath: string;
-begin
-  
-  if RegQueryStringValue(HKEY_LOCAL_MACHINE, pyReg, '', InstallPath) then
-    begin
-    Log('HKLM pyReg: '+ InstallPath);
-    Result := InstallPath + 'Lib\site-packages\';
-    end
-  else
-  if RegQueryStringValue(HKEY_CURRENT_USER, pyReg, '', InstallPath) then
-    begin
-    Log('HKCU pyReg: '+ InstallPath);
-    Result := InstallPath + 'Lib\site-packages\'; 
-    end
-  else
-  if RegQueryStringValue(HKEY_LOCAL_MACHINE, pyRegWow6443Node, '', InstallPath) then
-    begin
-    Log('HKLM pyRegWow6443Node: '+ InstallPath);
-    Result := InstallPath + 'Lib\site-packages\';
-    end
-  else
-    begin
-    MsgBox('Could not find Python',mbError,MB_OK);
-    //ExitProcess(1);
-    end
-end;
-
-//////////////////////////////////////////////////////////////////////////////
-function IsPythonInstalled(): Boolean;
-var          
-  InstallPath: string; //not really used here
-begin
-  
-  if RegQueryStringValue(HKEY_LOCAL_MACHINE, pyReg, '', InstallPath) then
-    begin
-    Result := True;
-    end
-  else
-  if RegQueryStringValue(HKEY_CURRENT_USER, pyReg, '', InstallPath) then
-    begin
-    Result := True;
-    end
-  else
-  if RegQueryStringValue(HKEY_LOCAL_MACHINE, pyRegWow6443Node, '', InstallPath) then
-    begin
-    Result := True;
-    end
-  else
-    begin
-    Result := False;
-    end
-end;
-
-//////////////////////////////////////////////////////////////////////////////
-function SetDefaultAppDirName(Value: String): String;
-begin
-  
-  if (GetPathForPythonSitePackages() <> '') then
-    begin
-    DefaultAppDirName := GetPathForPythonSitePackages() + AppDir;
-    Result := DefaultAppDirName;
-    end
-  else 
-    begin
-    Result := 'C:\Python27\Lib\site-packages\{#AppDir}';
-    end;
-
-end;
-
-//////////////////////////////////////////////////////////////////////////////
-function IsInstalled(name: String): Boolean;
-//function IsInstalled(name: string; version: string): boolean;  //ver not neeeded
-var          
-  InstallPath: string;
-  //reg : string;
-begin
-  //reg := 'Software\' + name + '\' + version
-  // + '\InstallPath'
-  // Log('reg Python: ' + reg)
-  
-  //if Numpy/ matplotlib installed - direct check for file
-  InstallPath := GetPathForPythonSitePackages() + name + '/__init__.py'
-  Log('install dir: ' + InstallPath)
-  if FileExists(InstallPath) then
-  //if RegQueryStringValue(HKEY_CURRENT_USER, reg, 'InstallPath', InstallPath) then
-   //numpy doesnt have a reg entry! (also gets its install path, not used here)
-    begin 
-    Result := True;
-    end
-  else 
-    begin
-    Result := False;
-    end;
-end;
-
-//////////////////////////////////////////////////////////////////////////////
-procedure RunMsiInstaller(execName: string);
-var
-  ResultCode: Integer;
-  ExecPath: String;
-  ExecCommand: String;
-begin
-  ExecPath := ExpandConstant('{tmp}\') + execName;
-  ExecCommand := '/i ' + ExecPath + ''; //+ ' /qb'; //qb does it silently
- 
-  //Check that the msi installer file is present
-  if FileExists(ExecPath) then
-    begin
-    Log('ExecPath exists : ' + ExecPath);
-    end 
-  else 
-    begin
-    Log('ExecPath doe not exist : ' + ExecPath);
-    MsgBox('Could not find ' + execName + ' installer',mbError,MB_OK);
-    ExitProcess(1);
-    //something went wrong: hell or high water python installer must be there
-    end;
-  
-  //execute msi installer, otherwie error and exit
-  if not ShellExec('', 'msiexec.exe', ExecCommand, '', SW_SHOWNORMAL, 
-                   ewWaitUntilTerminated, ResultCode) then
-      //msi exec not working
-      MsgBox('Msi installer failed to run!' + #13#10 + ExecCommand + ' ' +  
-             SysErrorMessage(ResultCode), mbError, MB_OK);
-end;
-
-procedure RunOtherInstaller(execName: string);
-var
-  ResultCode: Integer;
-begin
-  if not Exec(ExpandConstant('{tmp}\' + execName), '', '', SW_SHOWNORMAL,
-    ewWaitUntilTerminated, ResultCode)
-  then
-    MsgBox('Other installer failed to run!' + #13#10 + execName +
-      SysErrorMessage(ResultCode), mbError, MB_OK);
-end; 
