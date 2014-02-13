@@ -1,17 +1,4 @@
-<center>
-<h2>Antimony Tutorial</h2>
-<h3>A human-readable,
-human-writable,
-model definition language</h3>
-
-<h4>v2.5, February 11th, 2014</h4>
-</center>
-
-<h3>Table of contents</h3>
-<ul>
-<li><a href="#intro">Introduction</a></li>
-<li><a href="#rules">Assignment Rules and Rate Rules</a></li>
-</ul>
+<h4>Antimony Examples</h4>
 
 <h3><a id="intro">Introduction: the basics</a></h3>
 
@@ -39,6 +26,7 @@ The above, then, is a complete model that can be simulated by any software that 
 If you want to give your model a name, you can do that by wrapping it with the text: '<code>model [name] [reactions, etc.] end</code>':
 
 <pre>
+# Simple UniUni reaction with first-order mass-action kinetics
 model example1
   S1 -> S2; k1*S1
   S1 = 10
@@ -49,51 +37,307 @@ end
 
 In subsequent examples in this tutorial, we'll be using this syntax to name the examples, but for simple models, the name is optional.  Later, when we discuss submodels, this will become more important.
 
-We can also name our reactions and add comments.  Here, we give the reaction the ID '<code>J0</code>', and add some comments, using the '<code>//</code>' and '<code>/* */</code>' syntax.
-
-<pre>
-/* This is the second example model
-   in this tutorial */
-model example2
-  J0: S1 -> S2 + S3; k1*S1 //Mass-action kinetics
-  S1 = 10  //The initial concentration of S1
-  S2 = 0   //The initial concentratio of S2
-  S3 = 3   //The initial concentratio of S3
-  k1 = 0.1 //The value of the kinetic parameter from J0.
-end
-</pre>
-
-The names of the reaction and the model are saved in SBML, but any comments are not.  The model fully translated to SBML can be found <A HREF="example2.xml">here</a>.
-
-Some model contain species whose concentrations are not affected by the reactions in the model: these are commonly referred to as 'boundary species'.  In Antimony, you can designate a species as being a boundary species be prefixing it with a '<code>$</code>', or by declaring it to be '<code>const</code>' ('<code>const S1</code>').  This technique is used in the following model of an oscillator, which also uses multiple reactions and more complex reaction rates:
+There are many more complicated options in Antimony, but the above has enough power to define a wide variety of models, such as this oscillator:
 
 <pre>
 model oscli
-  //Reactions:
-  J0: $X0 => S1; J0_v0;
-  J1: S1 => $X1; J1_k3*S1;
-  J2: S1 => S2; (J2_k1*S1 - J2_k_1*S2)*(1 + J2_c*S2^J2_q);
-  J3: S2 => $X2; J3_k2*S2;
+  #Reactions:
+  J0:    -> S1;  J0_v0
+  J1: S1 ->   ;  J1_k3*S1
+  J2: S1 -> S2; (J2_k1*S1 - J2_k2*S2)*(1 + J2_c*S2^J2_q)
+  J3: S2 ->   ;  J3_k2*S2
 
-  // Species initializations:
+  # Species initializations:
   S1 = 0
   S2 = 1
-  X0 = 1
-  X1 = 0
-  X2 = 0
 
-  // Variable initializations:
+  # Variable initializations:
   J0_v0 = 8
   J1_k3 = 0
   J2_k1 = 1
-  J2_k_1 = 0
-  J2_c = 1
-  J2_q = 3
+  J2_k2 = 0
+  J2_c  = 1
+  J2_q  = 3
   J3_k2 = 5
 end
 </pre>
 
 
-<h3><a id="rules">Assignment rules and rate rules</a></h3>
+<h4>Example Antimony Scripts</h4>
 
-Thus far, we have only discussed quantities changing in time through participation in reactions.  It is also possible to define how something changes in time directly, either by declaring what formula a symbol will always equal at all points in time (what SBML calls an 'assignment rule') or by declaring what its derivative with respect to time is (what SBML calls a 'rate rule').
+<a href="#comments">Comments</a>
+<a href="#reactions">Reactions</a>
+<a href="#ratelaws">Rate Laws and Initializing Values</a>
+<a href="#boundarySpecies">Boundary Species</a>
+<a href="#compartments">Compartments</a>
+<a href="#assignments">Assignments</a>
+<a href="#assignmentrules">Assignments in Time</a>
+<a href="#events">Events</a>
+<a href="#functionDefinitions">Function Definitions</a>
+<a href="#modularModels">Modular Models</a>
+<a href="#importingFiles">Importing Files</a>
+<a href="#units">Units</a>
+<a href="#misc">Misc</a>
+
+
+<a name="comments"></a><h4>Comments</h4>
+
+Single-line comments in Antimony can be created using the <code>#</code> symbol, and multi-line comments can be created by surrounding them with <code> /* [comments] */</code>.
+
+<pre>
+/* This is an example of a multi-line
+   comment for this tutorial */
+model example2
+  J0: S1 -> S2 + S3; k1*S1 #Mass-action kinetics
+  S1 = 10  #The initial concentration of S1
+  S2 = 0   #The initial concentratio of S2
+  S3 = 3   #The initial concentratio of S3
+  k1 = 0.1 #The value of the kinetic parameter from J0.
+end
+</pre>
+
+The names of the reaction and the model are saved in SBML, but any comments are not.
+
+<a name="reactions"></a><h4>Reactions</h4>
+
+Reactions can be created with multiple reactants and/or products, and the stoichiometries can be set by adding a number before the name of the species:
+
+<pre>
+     -> S1;                 k0
+  S1 -> S2;                 k1*S1
+  S1 + S2 -> S3;            k2*S1*S2
+  2 S1 -> S2;               k3*S1*S3
+  S1 + 2 S2 -> 3 S3 + 5 S4; k4*S1*S2*S2
+</pre>
+
+<a name="ratelaws"></a><h4>Rate Laws and Initializing Values</h4>
+
+Reactions can be defined with a wide variety of rate laws
+<pre>
+  model pathway()
+    # Examples of different rate laws and initialization
+
+    S1 -> S2; k1*S1
+    S2 -> S3; k2*S2 - k3*S3
+    S3 -> S4; Vm*S3/(Km + S3)
+    S4 -> S5; Vm*S4^n/(Km + S4)^n
+
+    S1 = 10
+    S2 = 0
+    S3 = 0
+    S4 = 0
+    S5 = 0
+    k1 = 0.1
+    k2 = 0.2
+    Vm = 6.7
+    Km = 1E-3
+    n = 4
+  end
+</pre>
+
+<a name="boundarySpecies"></a><h4>Boundary Species</h4>
+
+Boundary species are those species which are unaffected by the model. Usually this means they are fixed. There are two ways to declare boundary species.
+
+1) Using a dollar sign to indicate that a particular species is fixed:
+
+<pre>
+  model pathway()
+    # Example of using $ to fix species
+
+    $S1 ->  S2; k1*S1
+     S2 ->  S3; k2*S2
+     S3 -> $S4; k3*S3
+  end
+</pre>
+
+2) Using the <code>const</code> keyword to declare species are fixed:
+
+<pre>
+  model pathway()
+    # Examples of using the const keyword to fix species
+
+    const S1, S4
+    S1 -> S2; k1*S1
+    S2 -> S3; k2*S2
+    S3 -> S4; k3*S3
+  end
+</pre>
+
+
+<a name="compartments"></a><h4>Compartments</h4>
+
+For multi-compartment models, or models where the compartment size changes over time, you can define the compartments in Antimony by using the 'compartment' keyword, and designate species as being in particular compartments with the 'in' keyword:
+
+<pre>
+  model pathway()
+    # Examples of different compartments
+
+    compartment cytoplasm = 1.5, mitochondria = 2.6
+    const S1 in mitochondria
+    var S2 in cytoplasm
+    var S3 in cytoplasm
+    const S4 in cytoplasm
+
+    S1 -> S2; k1*S1
+    S2 -> S3; k2*S2
+    S3 -> S4; k3*S3
+  end
+</pre>
+
+<a name="assignments"></a><h4>Assignments</h4>
+
+You can also initialize elements with more complicated formulas than simple numbers:
+
+<pre>
+  model pathway()
+    # Examples of different assignments
+
+    A = 1.2
+    k1 = 2.3 + A
+    k2 = sin(0.5)
+    k3 = k2/k1
+
+    S1 -> S2; k1*S1
+    S2 -> S3; k2*S2
+    S3 -> S4; k3*S3
+  end
+</pre>
+
+<a name="assignmentrules"></a><h4>Assignments in Time</h4>
+
+If you want to define some elements as changing in time, you can either define the formula a variable equals at all points in time with a <code>:=</code>, or you can define how a variable changes in time with <code>X'</code>, in which case you'll also need to define its initial starting value.  The keyword 'time' represents time.
+
+<pre>
+  model pathway()
+    # Examples of assignments that change in time
+
+    k1 := sin(time)  # k1 will always equal the sine of time
+    k2  = 0.2
+    k2' = k1         # k2 starts at 0.2, and changes according to the value of k1 (d(k2)/dt = k1)
+
+    S1 -> S2; k1*S1
+    S2 -> S3; k2*S2
+  end
+</pre>
+
+<a name="events"></a><h4>Events</h4>
+
+Events are discontinuities in model simulations that change the definitions of one or more symbols at the moment when certain conditions apply.  The condition is expressed as a boolean formula, and the definition changes are expressed as assignments, using the keyword '<code>at</code>':
+
+<pre>
+at (x>5): y=3, x=r+2
+</pre>
+
+In a model with this event, at any moment when x transitions to being less than or equal to 5 to being greater to five, y will be assigned the value of 3, and x will be assigned the value of r+2, using whatever value r has at that moment.  The following model sees the conversion of S1 to S2 until a threshold is reached, at which point the cycle is reset.
+
+<pre>
+  model reset()
+
+    S1 -> S2; k1*S1
+
+    E1: at (S2>9): S2=0, S1=10
+
+    S1 = 10
+    S2 = 0
+    k1 = 0.5
+  end
+</pre>
+
+
+
+For more advanced options with events, see Antimony's <A HREF="http://tellurium.analogmachine.org/antimony-documentation/#events">full documentation</a>.
+
+<a name="functionDefinitions"></a><h4>Function Definitions</h4>
+
+You may create user-defined functions in a similar fashion to the way you create modules, and then use these functions in Antimony equations.  These functions must be basic single equations, and act in a similar manner to macro expansions.  As an example, you might define the quadratic equation and use it in a later equation as follows:
+
+<pre>
+function quadratic(x, a, b, c)
+  a*x^2 + b*x + c
+end
+
+model quad1
+  S3 := quadratic(s1, k1, k2, k3);
+end
+</pre>
+
+This effectively defines S3 to always equal the equation "k1*s1^2 + k2*s1 + k3".
+
+
+<a name="modularModels"></a><h4>Modular Models</h4>
+
+Antimony was actually originally designed to allow the modular creation of models, and has a basic syntax set up to do so.  For a full discussion of Antimony modularity, see the <A HREF="http://tellurium.analogmachine.org/antimony-documentation/#modules">full documentation</a>, but at the most basic level, you define a re-usable module with the 'model' syntax, followed by parentheses where you define the elements you wish to expose, then import it by using the model's name, and the local variables you want to connect to that module
+
+<pre>
+# This creates a model 'side_reaction', exposing the variables 'S' and 'k1':
+model side_reaction(S, k1)
+  J0: S + E -> SE; k1*k2*S*E - k2*ES;
+  E = 3;
+  SE = E+S;
+  k2 = 0.4;
+end
+
+# In this model, 'side_reaction' is imported twice:
+model full_pathway
+     -> S1; k1
+  S1 -> S2; k2*S1
+  S2 ->   ; k3*S2
+
+  A: side_reaction(S1, k4)
+  B: side_reaction(S2, k5)
+
+  S1 = 0
+  S2 = 0
+  k1 = 0.3
+  k2 = 2.3
+  k3 = 3.5
+  k4 = 0.0004
+  k5 = 1
+
+end
+</pre>
+
+In this model, 'A' is a submodel that creates a side-reaction of S1 with A.E and A.SE, and 'B' is a submodel that creates a side-reaction of S2 with B.E and B.SE.  It is important to note that there is no connection between A.E and B.E (nor A.ES and B.ES):  they are completely different species in the model.
+
+
+<a name="importingFiles"></a><h4>Importing Files</h4>
+
+More than one file may be used to define a set of modules in Antimony through the use of the '<code>import</code>' keyword.  At any point in the file outside of a module definition, use the word '<code>import</code>' followed by the name of the file in quotation marks, and Antimony will include the modules defined in that file as if they had been cut and pasted into your file at that point.  SBML files may also be included in this way:
+
+<pre>
+import "models1.txt"
+import "oscli.xml"
+
+model mod2()
+  A: mod1();
+  B: oscli();
+end
+</pre>
+
+In this example, the file '<code>models1.txt</code>' is an Antimony file that defines the module '<code>mod1</code>', and the file '<code>oscli.xml</code>' is an SBML file that defines a model named '<code>oscli</code>'.  The Antimony module '<code>mod2</code>' may then use modules from either or both of the other imported files.
+
+<a name="units"></a><h4>Units</h4>
+While units do not affect the mathematics of SBML or Antimony models, you can define them in Antimony for annotation purposes by using the '<code>unit</code>' keyword:
+
+<pre>
+  unit substance = 1e-6 mole;
+  unit hour = 3600 seconds;
+</pre>
+
+Adding an 's' to the end of a unit name to make it plural is fine when defining a unit:  '<code>3600 second</code>' is the same as '<code>3600 seconds</code>'.  Compound units may be created by using formulas with '<code>*</code>', '<code>/</code>', and '<code>^</code>'.  However, you must use base units when doing so ('base units' defined as those listed in Table 2 of the SBML Level 3 Version 1 specification, which mostly are SI and SI-derived units).
+
+<pre>
+  unit micromole = 10e-6 mole / liter;
+  unit daily_feeding = 1 item / 86400 seconds
+  unit voltage = 1000 grams * meters^2 / seconds^-3 * ampere^-1
+</pre>
+
+You may use units when defining formulas using the same syntax as above: any number may be given a unit by writing the name of the unit after the number.  When defining a symbol (of any numerical type: species, parameter, compartment, etc.), you can either use the same technique to give it an initial value and a unit, or you may just define its units by using the 'has' keyword:
+
+<pre>
+  unit foo = 100 mole/5 liter;
+  x = 40 foo/3 seconds; # '40' now has units of 'foo' and '3' units of 'seconds'.
+  y = 3.3 foo;          # 'y' is given units of 'foo' and an initial value of '3.3'.
+  z has foo;            # 'z' is given units of 'foo'.
+</pre>
