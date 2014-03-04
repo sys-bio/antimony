@@ -1,9 +1,7 @@
 #ifndef ANNOTATED_H
 #define ANNOTATED_H
 
-#ifndef NSBML
-#include <sbml/math/ASTNode.h>
-#endif
+#include "sbmlx.h"
 
 class Annotated
 {

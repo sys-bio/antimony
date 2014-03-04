@@ -1,6 +1,6 @@
-#define MinimalSetupInstaller "AntimonyPythonBindings-2.5.0-win32.exe"
+#define MinimalSetupInstaller "AntimonyPythonBindings-2.5.1-win32.exe"
 #define MyAppName "QTAntimony"
-#define MyAppVersion "2.5.0"
+#define MyAppVersion "2.5.1"
 #define MyAppSetupIconFile "..\QTAntimony_src\antimony.ico"
 
 [Setup]
@@ -44,7 +44,6 @@ Source: ..\install-release\bin\cevas.dll; DestDir: {app}
 Source: ..\install-release\bin\cuses.dll; DestDir: {app}
 Source: ..\install-release\bin\libantimony.dll; DestDir: {app}
 Source: ..\install-release\bin\libantimony.lib; DestDir: {app}
-Source: ..\install-release\bin\libsbml.dll; DestDir: {app}
 Source: ..\install-release\bin\libxml2.dll; DestDir: {app}
 Source: ..\install-release\bin\malaes.dll; DestDir: {app}
 Source: ..\install-release\bin\msvcp100.dll; DestDir: {app}
