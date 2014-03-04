@@ -6,6 +6,7 @@
 #include <vector>
 #include "unitelement.h"
 
+class Formula;
 class ReactantList;
 class Variable;
 #ifndef NSBML
