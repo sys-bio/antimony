@@ -4,10 +4,10 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <set>
 #include "unitelement.h"
 
 class Formula;
-class ReactantList;
 class Variable;
 #ifndef NSBML
 class Model;
