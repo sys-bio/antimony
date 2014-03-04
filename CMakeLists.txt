@@ -49,6 +49,7 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 option(WITH_SBML            "Generate SBML translations"      ON )
 if (WITH_SBML)
     option(WITH_COMP_SBML       "Use the hierarchical composition package API"      ON )
+    option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      OFF )
 endif()
 option(WITH_CELLML          "Generate CellML translations"    ON )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
@@ -83,31 +84,31 @@ add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
 
 if(WITH_SBML)
 
-	find_library(LIBSBML_LIBRARY 
-		NAMES libsbml.lib libsbml.so libsbml
-		PATHS /usr/lib /usr/local/lib 
+    find_library(LIBSBML_LIBRARY 
+        NAMES libsbml.lib libsbml.so libsbml
+        PATHS /usr/lib /usr/local/lib 
               ${CMAKE_SOURCE_DIR} 
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${CMAKE_SOURCE_DIR}/../libsbml-5/release/lib/
         )
-	
-	find_path(LIBSBML_INCLUDE_DIR
-		NAMES sbml/SBMLTypes.h
-		PATHS /usr/include /usr/local/include 
+
+    find_path(LIBSBML_INCLUDE_DIR
+        NAMES sbml/SBMLTypes.h
+        PATHS /usr/include /usr/local/include 
               ${CMAKE_SOURCE_DIR}/include 
               ${CMAKE_SOURCE_DIR}/dependencies/include
               ${CMAKE_SOURCE_DIR}/../libsbml-5/release/include/
         )
     set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBSBML_LIBRARY} )
-    if(WIN32)
-	find_path(LIBSBML_BIN_DIR
-		NAMES libsbml.dll
-		PATHS /usr/bin /usr/local/bin
-              ${LIBSBML_INCLUDE_DIR}/../bin
-              ${CMAKE_SOURCE_DIR}/ 
-              ${CMAKE_SOURCE_DIR}/dependencies/libsbml/bin
-              ${CMAKE_SOURCE_DIR}/../libsbml-5/release/bin/
-        )
+    if(WIN32 AND NOT(WITH_STATIC_SBML))
+        find_path(LIBSBML_BIN_DIR
+            NAMES libsbml.dll
+            PATHS /usr/bin /usr/local/bin
+                  ${LIBSBML_INCLUDE_DIR}/../bin
+                  ${CMAKE_SOURCE_DIR}/ 
+                  ${CMAKE_SOURCE_DIR}/dependencies/libsbml/bin
+                  ${CMAKE_SOURCE_DIR}/../libsbml-5/release/bin/
+            )
         set(LIBSBML_DLL ${LIBSBML_BIN_DIR}/libsbml.dll)
         install(FILES   ${LIBSBML_DLL} DESTINATION ${CMAKE_SOURCE_DIR}/win32)
     endif()
@@ -127,17 +128,17 @@ endif(WITH_SBML)
 if(WITH_CELLML)
         #CellML:
         find_path(CELLML_API_INSTALL_DIR
-		NAMES include/IfaceCellML_APISPEC.hxx
-		PATHS /usr/include /usr/local/include 
+        NAMES include/IfaceCellML_APISPEC.hxx
+        PATHS /usr/include /usr/local/include 
               C:/Program Files (x86)/cellml-sdk-1.11
               C:/Program Files/cellml-sdk-1.11
               ${CMAKE_SOURCE_DIR}/cellml-sdk 
               ${CMAKE_SOURCE_DIR}/dependencies/cellml-sdk
-			  )
+              )
 
         find_library(CELLML_API_LIB
-		NAMES cellml.lib cellml
-		PATHS /usr/lib /usr/local/lib
+        NAMES cellml.lib cellml
+        PATHS /usr/lib /usr/local/lib
               ${CELLML_API_INSTALL_DIR}/lib
               C:/build/cellml-api/.libs/
               ${CMAKE_SOURCE_DIR} 
@@ -146,26 +147,26 @@ if(WITH_CELLML)
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CELLML_API_LIB})
 
         find_library(CEVAS_LIB 
-		NAMES cevas.lib cevas
-		PATHS /usr/lib /usr/local/lib
+        NAMES cevas.lib cevas
+        PATHS /usr/lib /usr/local/lib
               ${CELLML_API_INSTALL_DIR}/lib
               ${CMAKE_SOURCE_DIR} 
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               )
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CEVAS_LIB})
-	
+    
         find_library(ANNOTOOLS_LIB 
-		NAMES annotools.lib annotools
-		PATHS /usr/lib /usr/local/lib
+        NAMES annotools.lib annotools
+        PATHS /usr/lib /usr/local/lib
               ${CELLML_API_INSTALL_DIR}/lib
               ${CMAKE_SOURCE_DIR} 
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               )
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${ANNOTOOLS_LIB})
-	
-	find_library(CUSES_LIB 
-		NAMES cuses.lib cuses
-		PATHS /usr/lib /usr/local/lib
+    
+    find_library(CUSES_LIB 
+        NAMES cuses.lib cuses
+        PATHS /usr/lib /usr/local/lib
               ${CELLML_API_INSTALL_DIR}/lib
               ${CMAKE_SOURCE_DIR} 
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -173,8 +174,8 @@ if(WITH_CELLML)
         set(ALL_CELLML_LIBS ${ALL_CELLML_LIBS} ${CUSES_LIB})
 
         find_library(TELICEMS_LIB 
-		NAMES telicems.lib telicems
-		PATHS /usr/lib /usr/local/lib
+        NAMES telicems.lib telicems
+        PATHS /usr/lib /usr/local/lib
               ${CELLML_API_INSTALL_DIR}/lib
               ${CMAKE_SOURCE_DIR} 
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -226,7 +227,7 @@ if(WITH_SWIG)
     message(STATUS "  Using SWIG                    = ${SWIG_EXECUTABLE}")
     
     if (SWIG_FOUND AND SWIG_VERSION VERSION_LESS "2.0.4")
-    	message(WARNING "   You are using swig version ${SWIG_VERSION} while we recommend at least version 2.0.4.")
+        message(WARNING "   You are using swig version ${SWIG_VERSION} while we recommend at least version 2.0.4.")
     endif()
 
 endif()
@@ -280,13 +281,13 @@ endif(WITH_CHECK)
 #
 
 if(UNIX)
-	set(PATH_SEP "/")
-	set(FILE_SEP ":")
-	set(LIBANTIMONY_LIBRARY antimony)
+    set(PATH_SEP "/")
+    set(FILE_SEP ":")
+    set(LIBANTIMONY_LIBRARY antimony)
 else()
-	set(PATH_SEP "\\")
-	set(FILE_SEP ";")
-	set(LIBANTIMONY_LIBRARY libantimony)
+    set(PATH_SEP "\\")
+    set(FILE_SEP ";")
+    set(LIBANTIMONY_LIBRARY libantimony)
 endif()
 
 ####################################################################
@@ -297,42 +298,42 @@ endif()
 set (ANTIMONY_SRC_DIR src/)
 
 file(GLOB LIBANTIMONY_SOURCES 
-        ${ANTIMONY_SRC_DIR}antimony_api.cpp
-        ${ANTIMONY_SRC_DIR}antimony_api_cpp.cpp
-	${ANTIMONY_SRC_DIR}Antimony.cpp
-	${ANTIMONY_SRC_DIR}antimony.tab.cpp
-	${ANTIMONY_SRC_DIR}annotated.cpp
-	${ANTIMONY_SRC_DIR}cellmlx.cpp
-	${ANTIMONY_SRC_DIR}dnastrand.cpp
-	${ANTIMONY_SRC_DIR}event.cpp
-	${ANTIMONY_SRC_DIR}formula.cpp
-	${ANTIMONY_SRC_DIR}module.cpp
-	${ANTIMONY_SRC_DIR}reactantlist.cpp
-	${ANTIMONY_SRC_DIR}reaction.cpp
-	${ANTIMONY_SRC_DIR}registry.cpp
-	${ANTIMONY_SRC_DIR}sbmlx.cpp
-	${ANTIMONY_SRC_DIR}stringx.cpp
-	${ANTIMONY_SRC_DIR}typex.cpp
-	${ANTIMONY_SRC_DIR}unitdef.cpp
-	${ANTIMONY_SRC_DIR}unitelement.cpp
-	${ANTIMONY_SRC_DIR}userfunction.cpp
-	${ANTIMONY_SRC_DIR}unitdef.cpp
-	${ANTIMONY_SRC_DIR}unitelement.cpp
-	${ANTIMONY_SRC_DIR}variable.cpp
-	)
+    ${ANTIMONY_SRC_DIR}antimony_api.cpp
+    ${ANTIMONY_SRC_DIR}antimony_api_cpp.cpp
+    ${ANTIMONY_SRC_DIR}Antimony.cpp
+    ${ANTIMONY_SRC_DIR}antimony.tab.cpp
+    ${ANTIMONY_SRC_DIR}annotated.cpp
+    ${ANTIMONY_SRC_DIR}cellmlx.cpp
+    ${ANTIMONY_SRC_DIR}dnastrand.cpp
+    ${ANTIMONY_SRC_DIR}event.cpp
+    ${ANTIMONY_SRC_DIR}formula.cpp
+    ${ANTIMONY_SRC_DIR}module.cpp
+    ${ANTIMONY_SRC_DIR}reactantlist.cpp
+    ${ANTIMONY_SRC_DIR}reaction.cpp
+    ${ANTIMONY_SRC_DIR}registry.cpp
+    ${ANTIMONY_SRC_DIR}sbmlx.cpp
+    ${ANTIMONY_SRC_DIR}stringx.cpp
+    ${ANTIMONY_SRC_DIR}typex.cpp
+    ${ANTIMONY_SRC_DIR}unitdef.cpp
+    ${ANTIMONY_SRC_DIR}unitelement.cpp
+    ${ANTIMONY_SRC_DIR}userfunction.cpp
+    ${ANTIMONY_SRC_DIR}unitdef.cpp
+    ${ANTIMONY_SRC_DIR}unitelement.cpp
+    ${ANTIMONY_SRC_DIR}variable.cpp
+    )
 file(GLOB LIBANTIMONY_TRANSLATORS 
-	${ANTIMONY_SRC_DIR}module-sbml.cpp
-	${ANTIMONY_SRC_DIR}module-cellml.cpp
+    ${ANTIMONY_SRC_DIR}module-sbml.cpp
+    ${ANTIMONY_SRC_DIR}module-cellml.cpp
         )
 SET_SOURCE_FILES_PROPERTIES(
-        ${ANTIMONY_SRC_DIR}module-sbml.cpp
-	${ANTIMONY_SRC_DIR}module-cellml.cpp
-        PROPERTIES HEADER_FILE_ONLY true
-        )
+    ${ANTIMONY_SRC_DIR}module-sbml.cpp
+    ${ANTIMONY_SRC_DIR}module-cellml.cpp
+    PROPERTIES HEADER_FILE_ONLY true
+    )
 source_group(Translators FILES ${LIBANTIMONY_TRANSLATORS})
 
 file(GLOB LIBANTIMONY_HEADERS 
-	${ANTIMONY_SRC_DIR}annotated.h
+        ${ANTIMONY_SRC_DIR}annotated.h
         ${ANTIMONY_SRC_DIR}antimony_api.h
         ${ANTIMONY_SRC_DIR}antimony_api_cpp.h
         ${ANTIMONY_SRC_DIR}dnastrand.h
@@ -351,8 +352,8 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}unitdef.h
         ${ANTIMONY_SRC_DIR}unitelement.h
         ${ANTIMONY_SRC_DIR}userfunction.h
-	${ANTIMONY_SRC_DIR}unitdef.h
-	${ANTIMONY_SRC_DIR}unitelement.h
+        ${ANTIMONY_SRC_DIR}unitdef.h
+        ${ANTIMONY_SRC_DIR}unitelement.h
         ${ANTIMONY_SRC_DIR}variable.h
         )
 
@@ -508,21 +509,21 @@ if (WITH_QTANTIMONY)
         if (WITH_SBW)
            set(SBW_DEFINITIONS "-DSBW_INTEGRATION" )
            find_library(SBW_LIBRARY 
-		NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
-		PATHS /usr/lib /usr/local/lib 
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
+        NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
+        PATHS /usr/lib /usr/local/lib 
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
                           ${CMAKE_SOURCE_DIR}/../SBW/install/lib
                           )
            set(QTANTIMONY_LIBRARIES ${QTANTIMONY_LIBRARIES} ${SBW_LIBRARY} )
-	
-	   find_path(SBW_INCLUDE_DIR
-		NAMES SBW/config.h
-		PATHS /usr/include /usr/local/include 
-			  ${CMAKE_SOURCE_DIR}/include 
-			  ${CMAKE_SOURCE_DIR}/dependencies/include
+    
+       find_path(SBW_INCLUDE_DIR
+        NAMES SBW/config.h
+        PATHS /usr/include /usr/local/include 
+              ${CMAKE_SOURCE_DIR}/include 
+              ${CMAKE_SOURCE_DIR}/dependencies/include
                           ${CMAKE_SOURCE_DIR}/../SBW/install/include/
-			  )
+              )
            INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBW_INCLUDE_DIR})
 
         endif(WITH_SBW)
@@ -542,8 +543,8 @@ endif(WITH_QTANTIMONY)
 #
 if(UNIX)
     if(APPLE)
-		add_definitions(-DMACOSX)
-		#create universal binaries
+        add_definitions(-DMACOSX)
+        #create universal binaries
                 option(ENABLE_UNIVERSAL "Create Universal Binaries" OFF)
                 
                 set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING "A semicolon separated list of build architectures to be used")
@@ -556,45 +557,45 @@ if(UNIX)
                   endif()
                 endif(ENABLE_UNIVERSAL)
     else(APPLE)
-		add_definitions(-DLINUX)
+        add_definitions(-DLINUX)
     endif(APPLE)
    # add_definitions( -DPACKAGE_VERSION=\"${PACKAGE_VERSION}\"  -DPACKAGE_NAME="${PROJECT_NAME}")
 
 else(UNIX)
-	add_definitions(-DWIN32 -DLIBANTIMONY_EXPORTS -DLIBLAX_EXPORTS)
-	if(MSVC)
-	  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-	  option(WITH_STATIC_RUNTIME "Compile using the static MSVC Runtime" OFF)
-	  if (WITH_STATIC_RUNTIME)
-		foreach(flag_var
-			CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
-			CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-		
-			if(${flag_var} MATCHES "/MD")
-					string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
-			endif(${flag_var} MATCHES "/MD")
-		endforeach(flag_var)
-		add_definitions( -D_MT)
-	  endif(WITH_STATIC_RUNTIME)
-	endif(MSVC)
-	
-	
+    add_definitions(-DWIN32 -DLIBANTIMONY_EXPORTS -DLIBLAX_EXPORTS)
+    if(MSVC)
+      add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+      option(WITH_STATIC_RUNTIME "Compile using the static MSVC Runtime" OFF)
+      if (WITH_STATIC_RUNTIME)
+        foreach(flag_var
+            CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+            CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+        
+            if(${flag_var} MATCHES "/MD")
+                    string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+            endif(${flag_var} MATCHES "/MD")
+        endforeach(flag_var)
+        add_definitions( -D_MT)
+      endif(WITH_STATIC_RUNTIME)
+    endif(MSVC)
+    
+    
 endif(UNIX)
 
 if (WITH_SBW_TRANSLATOR)
   
     find_library(LIBSBW_LIBRARY 
-		NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
-		PATHS /usr/lib /usr/local/lib 
-			  ${CMAKE_SOURCE_DIR} 
-			  ${CMAKE_SOURCE_DIR}/dependencies/lib
+        NAMES libsbw.lib sbw.lib libsbw.so libsbw sbw
+        PATHS /usr/lib /usr/local/lib 
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${CMAKE_SOURCE_DIR}/../libsbml-5/build/src/RelWithDebInfo
     )
     find_path(SBW_INCLUDE_DIR
-		NAMES SBW/config.h
-		PATHS /usr/include /usr/local/include 
-			  ${CMAKE_SOURCE_DIR}/include 
-			  ${CMAKE_SOURCE_DIR}/dependencies/include
+        NAMES SBW/config.h
+        PATHS /usr/include /usr/local/include 
+              ${CMAKE_SOURCE_DIR}/include 
+              ${CMAKE_SOURCE_DIR}/dependencies/include
               ${CMAKE_SOURCE_DIR}/../SBW/include/
     )
   INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBW_INCLUDE_DIR})

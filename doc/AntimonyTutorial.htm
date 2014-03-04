@@ -90,8 +90,8 @@ Single-line comments in Antimony can be created using the <code>#</code> symbol,
 model example2
   J0: S1 -> S2 + S3; k1*S1 #Mass-action kinetics
   S1 = 10  #The initial concentration of S1
-  S2 = 0   #The initial concentratio of S2
-  S3 = 3   #The initial concentratio of S3
+  S2 = 0   #The initial concentration of S2
+  S3 = 3   #The initial concentration of S3
   k1 = 0.1 #The value of the kinetic parameter from J0.
 end
 </pre>
@@ -106,7 +106,7 @@ Reactions can be created with multiple reactants and/or products, and the stoich
      -> S1;                 k0
   S1 -> S2;                 k1*S1
   S1 + S2 -> S3;            k2*S1*S2
-  2 S1 -> S2;               k3*S1*S3
+  2 S1 -> S2;               k3*S1*S1
   S1 + 2 S2 -> 3 S3 + 5 S4; k4*S1*S2*S2
 </pre>
 
@@ -212,9 +212,10 @@ If you want to define some elements as changing in time, you can either define t
   model pathway()
     # Examples of assignments that change in time
 
-    k1 := sin(time)  # k1 will always equal the sine of time
+    k1 := sin(time)  #  k1 will always equal the sine of time
     k2  = 0.2
-    k2' = k1         # k2 starts at 0.2, and changes according to the value of k1 (d(k2)/dt = k1)
+    k2' = k1         #' k2 starts at 0.2, and changes according to the value
+                     #   of k1: d(k2)/dt = k1
 
     S1 -> S2; k1*S1
     S2 -> S3; k2*S2
@@ -229,7 +230,7 @@ Events are discontinuities in model simulations that change the definitions of o
 at (x>5): y=3, x=r+2
 </pre>
 
-In a model with this event, at any moment when x transitions to being less than or equal to 5 to being greater to five, y will be assigned the value of 3, and x will be assigned the value of r+2, using whatever value r has at that moment.  The following model sees the conversion of S1 to S2 until a threshold is reached, at which point the cycle is reset.
+In a model with this event, at any moment when x transitions from being less than or equal to 5 to being greater to five, y will be assigned the value of 3, and x will be assigned the value of r+2, using whatever value r has at that moment.  The following model sees the conversion of S1 to S2 until a threshold is reached, at which point the cycle is reset.
 
 <pre>
   model reset()
@@ -338,6 +339,7 @@ You may use units when defining formulas using the same syntax as above: any num
 <pre>
   unit foo = 100 mole/5 liter;
   x = 40 foo/3 seconds; # '40' now has units of 'foo' and '3' units of 'seconds'.
-  y = 3.3 foo;          # 'y' is given units of 'foo' and an initial value of '3.3'.
+  y = 3.3 foo;          # 'y' is given units of 'foo' and an initial
+                        #   value of '3.3'.
   z has foo;            # 'z' is given units of 'foo'.
 </pre>
