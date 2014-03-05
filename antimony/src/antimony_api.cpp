@@ -289,9 +289,9 @@ LIB_EXTERN long loadAntimonyFile(const char* filename)
   if (ofreturn==2) {
     //SBML file
     string file(filename);
+    g_registry.ClearModules();
     g_registry.SetError("The file '" + file + "' is actually an SBML file, and is not in the Antimony format.  Use 'loadFile' or 'loadSBMLFile' to correctly parse it.");
     setlocale(LC_ALL, oldlocale.c_str());
-    g_registry.ClearModules();
     return -1;
   }
   assert(ofreturn==1); //antimony file
