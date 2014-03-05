@@ -270,9 +270,9 @@ LIB_EXTERN long loadAntimonyString(const char* model)
   if (ofreturn==0) return -1; //file read failure
   if (ofreturn==2) {
     //SBML model
+    g_registry.ClearModules();
     g_registry.SetError("The provided string is actually an SBML model, and is not in the Antimony format.  Use 'loadString' or 'loadSBMLString' to correctly parse it.");
     setlocale(LC_ALL, oldlocale.c_str());
-    g_registry.ClearModules();
     return -1;
   }
   assert(ofreturn==1); //antimony file
