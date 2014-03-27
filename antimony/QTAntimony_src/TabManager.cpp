@@ -434,12 +434,14 @@ void TabManager::TranslateSBML(int tab, const QString& text)
         anttab->SetTranslated();
       }
     }
+#ifndef NCELLML
     if (m_cellmltab != -1) {
       char* cellmltext = getCellMLString(NULL);
       CellMLTab* cellmltab = static_cast<CellMLTab*>(textbox(m_cellmltab));
       cellmltab->SetTranslatedText(QString(cellmltext));
       cellmltab->SetTranslated();
     }
+#endif
     clearPreviousLoads();
 #ifndef WIN32
     freeAll();
