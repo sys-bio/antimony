@@ -61,7 +61,7 @@ char *TestDataDirectory;
  * If the memory could not be allocated, prints an error message and exits.
  */
 void *
-safe_calloc (size_t nmemb, size_t size)
+ant_safe_calloc (size_t nmemb, size_t size)
 {
   void *p = (void *) calloc(nmemb, size);
 
@@ -92,7 +92,7 @@ setTestDataDirectory (void)
   /**
    * strlen("/test-data/") = 11 + 1 (for NULL) = 12
    */
-  TestDataDirectory = (char *) safe_calloc( length + 12, sizeof(char) );
+  TestDataDirectory = (char *) ant_safe_calloc( length + 12, sizeof(char) );
 
   if (srcdir != NULL)
   {
