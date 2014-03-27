@@ -238,8 +238,10 @@ Translator::Translator(QTAntimony* app, QString filename)
             }
             else if (loadSBMLFile(filename.toUtf8().data()) != -1) {
                 //Originally SBML
+#ifndef NCELLML
                 m_tabmanager->sbmlTabs(true);
                 sbmlTabs->setChecked(true);
+#endif
                 char* modname = getNthModuleName(getNumModules()-1);
                 SBMLDocument* document = readSBML(filename.toUtf8().data());
                 int level = document->getLevel();
