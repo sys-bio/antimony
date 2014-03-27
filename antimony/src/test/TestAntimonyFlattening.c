@@ -623,6 +623,8 @@ create_suite_Flattening(void)
   Suite *suite = suite_create("Antimony Flattening");
   TCase *tcase = tcase_create("Antimony Flattening");
 
+  tcase_add_test( tcase, test_QTPop); //Fails because of libsbml :(
+
   tcase_add_test( tcase, test_aggregate);
   tcase_add_test( tcase, test_complexified);
   tcase_add_test( tcase, test_complexified2);
@@ -637,7 +639,6 @@ create_suite_Flattening(void)
   tcase_add_test( tcase, test_enzyme_identical);
   tcase_add_test( tcase, test_enzyme_model);
   tcase_add_test( tcase, test_exchangetest);
-  //tcase_add_test( tcase, test_QTPop); //Fails because of libsbml :(
   tcase_add_test( tcase, test_replace_implied_deletion);
   tcase_add_test( tcase, test_replace_implied_deletion2);
   tcase_add_test( tcase, test_replace_rule);

@@ -61,7 +61,6 @@ int main(int argc, char** argv)
   instructions += "\n\t-stdin    : Input is read from stdin, in addition to any files that\n\t\t    might be listed.";
   instructions += "\n\t-stdout   : All output is written to standard output.  No files are\n\t\t    created.";
   instructions += "\n\t-dirsort  : If the input filenames include the name of the directory\n\t\t    they are in, the corresponding output files are written out\n\t\t    to a subdirectory of the working directory with the same\n\t\t    name.  If '-prefix' is used in conjunction with this\n\t\t    option, that prefix is prepended to the directory name\n\t\t    (and if it includes a slash, may itself be a directory).";
-
   bool outputantimony = false;
   bool outputsbml = false;
   bool outputcompsbml = false;
@@ -72,6 +71,7 @@ int main(int argc, char** argv)
   bool readstdin = false;
   bool writestdout = false;
   bool dirsort = false;
+  bool pause = true;
   vector<string> files;
   if (argc==1) {
     cerr << instructions << endl;
@@ -175,14 +175,13 @@ int main(int argc, char** argv)
       cout << instructions << endl;
       retval = 1;
     }
+    else if (CaselessStrcmp(sarg, "-c")) {
+      pause = false;
+    }
     else {
       files.push_back(sarg);
     }
     if (retval == 1) {
-#ifdef WIN32
-      cerr << "(Press any key to exit.)" << endl;
-      getch();
-#endif
       return retval;
     }
   }
@@ -213,6 +212,7 @@ int main(int argc, char** argv)
       if (handles[handles.size()-1] == -1) {
         handles.pop_back();
         cerr << "Error reading in model from standard input: " << getLastError() << endl;
+        retval = 1;
         continue;
       }
     }
@@ -237,6 +237,7 @@ int main(int argc, char** argv)
       }
       if (handles[file] == -1) {
         cerr << getLastError() << endl;
+        retval = 1;
         continue;
       }
       else if (!writestdout) {
@@ -272,18 +273,13 @@ int main(int argc, char** argv)
         if (lastslash != string::npos) {
           subdir = subdir.substr(0, lastslash+1);
 #ifdef WIN32
-          if (mkdir(subdir.c_str()) == -1) {
-            cerr << "Unable to create directory " << subdir << endl;
-            retval = 1;
-          }
+          if (mkdir(subdir.c_str()) == -1  && errno != EEXIST) {
 #else
           if (mkdir(subdir.c_str(), 0777) == -1 && errno != EEXIST) {  // Create the directory
+#endif
             cerr << "Unable to create directory " << subdir << endl;
             retval = 1;
           }
-          //string command = "mkdir -p " + subdir;
-          //system(command.c_str());
-#endif
         }
       }
     }
@@ -315,6 +311,7 @@ int main(int argc, char** argv)
         }
         else {
           cerr << getLastError() << endl;
+          retval = 1;
         }
       }
     }
@@ -353,6 +350,7 @@ int main(int argc, char** argv)
           }
           else {
             cerr << getLastError() << endl;
+            retval = 1;
           }
 #endif
         }
@@ -362,6 +360,7 @@ int main(int argc, char** argv)
           }
           else {
             cerr << getLastError() << endl;
+            retval = 1;
           }
         }
       }
@@ -396,6 +395,7 @@ int main(int argc, char** argv)
           }
           else {
             cerr << getLastError() << endl;
+            retval = 1;
           }
         }
       }
@@ -427,6 +427,7 @@ int main(int argc, char** argv)
         }
         else {
           cerr << getLastError() << endl;
+          retval = 1;
         }
       }
     }
@@ -437,13 +438,6 @@ int main(int argc, char** argv)
     cerr << "No models successfully read!" << endl;
     retval = 1;
   }
-#ifdef WIN32
-  if (retval == 1) {
-    cout << "(Press any key to exit.)" << endl;
-    getch();
-  }
-#endif
-
   return retval;
 }
 
