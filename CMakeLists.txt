@@ -48,8 +48,12 @@ set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, op
 # which language bindings should be build
 option(WITH_SBML            "Generate SBML translations"      ON )
 if (WITH_SBML)
-    option(WITH_COMP_SBML       "Use the hierarchical composition package API"      ON )
     option(WITH_STATIC_SBML     "Use the static version of the libsbml library"      OFF )
+    option(WITH_COMP_SBML       "Use the hierarchical composition package API"      ON )
+    OPTION(WITH_LIBSBML_EXPAT  "Set if libsbml was compiled with a separate expat library."  OFF)
+    OPTION(WITH_LIBSBML_LIBXML "Set if libsbml was compiled with a separate libxml library." ON)
+    OPTION(WITH_LIBSBML_XERCES "Set if libsbml was compiled with a separate xerces library." OFF)
+    OPTION(WITH_LIBSBML_COMPRESSION "Set if libsbml was compiled with separate zdll and bzip libraries." OFF)
 endif()
 option(WITH_CELLML          "Generate CellML translations"    ON )
 option(WITH_QTANTIMONY      "Generate QTAntimony"             ON )
@@ -191,6 +195,75 @@ else(WITH_CELLML)
   add_definitions( -DNCELLML )
 
 endif(WITH_CELLML)
+
+###############################################################
+#
+# Locate the libraries libsbml depends on, for static linking.
+#
+
+if(WITH_LIBSBML_EXPAT)
+    find_library(EXPAT_LIBRARY 
+        NAMES libexpat.lib libexpat.so libexpat.dylib libexpat expat.lib expat.so expat.dylib expat
+	PATHS /usr/lib /usr/local/lib 
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${LIBSBML_INCLUDE_DIR}/../lib
+        )
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${EXPAT_LIBRARY} )
+endif()
+
+if(WITH_LIBSBML_LIBXML)
+    find_library(LIBXML_LIBRARY 
+        NAMES libxml2.lib libxml2.so libxml2.dylib libxml2
+	PATHS /usr/lib /usr/local/lib 
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${LIBSBML_INCLUDE_DIR}/../lib
+        )
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${LIBXML_LIBRARY} )
+
+    if(WIN32)
+      find_library(ICONV_LIBRARY 
+          NAMES iconv.lib iconv.so iconv.dylib iconv libiconv.lib libiconv.so libiconv.dylib libiconv
+          PATHS /usr/lib /usr/local/lib 
+                ${CMAKE_SOURCE_DIR} 
+                ${CMAKE_SOURCE_DIR}/dependencies/lib
+                ${LIBSBML_INCLUDE_DIR}/../lib
+          )
+      set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ICONV_LIBRARY} )
+    endif()
+endif()
+
+if(WITH_LIBSBML_XERCES)
+    find_library(XERCES_LIBRARY 
+        NAMES xerces-c_static_3.lib xerces-c_static_3.so xerces-c_static_3.dylib xerces-c_static_3
+	PATHS /usr/lib /usr/local/lib 
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${LIBSBML_INCLUDE_DIR}/../lib
+        )
+    set(ANTIMONY_LIBS ${ANTIMONY_LIBS} ${XERCES_LIBRARY} )
+endif()
+
+if(WITH_LIBSBML_COMPRESSION)
+    find_library(ZDLL_LIBRARY 
+        NAMES zdll.lib zdll.so zdll.dylib zdll
+	PATHS /usr/lib /usr/local/lib 
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${LIBSBML_INCLUDE_DIR}/../lib
+        )
+    set(ANTIMONY_LIBS ${ANTIMONY_LIBS} ${ZDLL_LIBRARY} )
+
+    find_library(BZIP_LIBRARY 
+        NAMES bzip2.lib bzip2.so bzip2.dylib bzip2
+	PATHS /usr/lib /usr/local/lib 
+              ${CMAKE_SOURCE_DIR} 
+              ${CMAKE_SOURCE_DIR}/dependencies/lib
+              ${LIBSBML_INCLUDE_DIR}/../lib
+        )
+    set(ANTIMONY_LIBS ${ANTIMONY_LIBS} ${BZIP_LIBRARY} )
+endif()
 
 ###############################################################################
 #
