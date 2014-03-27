@@ -130,7 +130,7 @@ if(WITH_CELLML)
         find_path(CELLML_API_INSTALL_DIR
         NAMES include/IfaceCellML_APISPEC.hxx
         PATHS /usr/include /usr/local/include 
-              C:/Program Files (x86)/cellml-sdk-1.11
+              "C:/Program Files (x86)/cellml-sdk-1.11"
               C:/Program Files/cellml-sdk-1.11
               ${CMAKE_SOURCE_DIR}/cellml-sdk 
               ${CMAKE_SOURCE_DIR}/dependencies/cellml-sdk
@@ -200,7 +200,7 @@ if(WITH_SWIG)
     find_program(SWIG_EXECUTABLE
         NAMES swig
         PATHS
-              c:/Program Files (x86)/Swig
+              "c:/Program Files (x86)/Swig"
               c:/Program Files/Swig
               c:/swigwin-2.0.11
               c:/swigwin-2.0.10
@@ -359,9 +359,9 @@ file(GLOB LIBANTIMONY_HEADERS
 
 ##### Build the main library #####
 add_library(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_HEADERS} ${LIBANTIMONY_SOURCES} ${LIBANTIMONY_TRANSLATORS})
-target_link_libraries(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+target_link_libraries(${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
 add_definitions(-DLIB_EXPORTS)
-install(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION bin)
+install(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION lib)
 install(FILES   ${LIBANTIMONY_HEADERS} DESTINATION include)
 
 if (NOT UNIX)
@@ -383,7 +383,7 @@ endif(WIN32 AND NOT CYGWIN)
 target_link_libraries(${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
 
 INSTALL(TARGETS ${LIBANTIMONY_LIBRARY}-static
-        DESTINATION bin
+        DESTINATION lib
   )
 
 
@@ -415,41 +415,41 @@ endif()
 #
 
 add_executable(rehashantimony ${ANTIMONY_SRC_DIR}rehashantimony.cpp)
-add_dependencies(rehashantimony ${LIBANTIMONY_LIBRARY})
-target_link_libraries(rehashantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+add_dependencies(rehashantimony ${LIBANTIMONY_LIBRARY}-static)
+target_link_libraries(rehashantimony ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
 install(TARGETS rehashantimony DESTINATION bin)
 
 add_executable(testantimony ${ANTIMONY_SRC_DIR}testantimony.cpp)
-add_dependencies(testantimony ${LIBANTIMONY_LIBRARY})
-target_link_libraries(testantimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+add_dependencies(testantimony ${LIBANTIMONY_LIBRARY}-static)
+target_link_libraries(testantimony ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
 install(TARGETS testantimony DESTINATION bin)
 
 add_executable(sbtranslate ${ANTIMONY_SRC_DIR}sbtranslate.cpp)
-add_dependencies(sbtranslate ${LIBANTIMONY_LIBRARY})
-target_link_libraries(sbtranslate ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+add_dependencies(sbtranslate ${LIBANTIMONY_LIBRARY}-static)
+target_link_libraries(sbtranslate ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
 install(TARGETS sbtranslate DESTINATION bin)
 
 if(WITH_SBML)
   add_executable(antimony2sbml ${ANTIMONY_SRC_DIR}antimony2sbml.cpp)
-  add_dependencies(antimony2sbml ${LIBANTIMONY_LIBRARY})
-  target_link_libraries(antimony2sbml ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+  add_dependencies(antimony2sbml ${LIBANTIMONY_LIBRARY}-static)
+  target_link_libraries(antimony2sbml ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
   install(TARGETS antimony2sbml DESTINATION bin)
 
   add_executable(sbml2antimony ${ANTIMONY_SRC_DIR}sbml2antimony.cpp)
-  add_dependencies(sbml2antimony ${LIBANTIMONY_LIBRARY})
-  target_link_libraries(sbml2antimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+  add_dependencies(sbml2antimony ${LIBANTIMONY_LIBRARY}-static)
+  target_link_libraries(sbml2antimony ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
   install(TARGETS sbml2antimony DESTINATION bin)
 endif(WITH_SBML)
 
 if(WITH_CELLML)
   add_executable(antimony2cellml ${ANTIMONY_SRC_DIR}antimony2cellml.cpp)
-  add_dependencies(antimony2cellml ${LIBANTIMONY_LIBRARY})
-  target_link_libraries(antimony2cellml ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+  add_dependencies(antimony2cellml ${LIBANTIMONY_LIBRARY}-static)
+  target_link_libraries(antimony2cellml ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
   install(TARGETS antimony2cellml DESTINATION bin)
 
   add_executable(cellml2antimony ${ANTIMONY_SRC_DIR}cellml2antimony.cpp)
-  add_dependencies(cellml2antimony ${LIBANTIMONY_LIBRARY})
-  target_link_libraries(cellml2antimony ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS})
+  add_dependencies(cellml2antimony ${LIBANTIMONY_LIBRARY}-static)
+  target_link_libraries(cellml2antimony ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS})
   install(TARGETS cellml2antimony DESTINATION bin)
 endif(WITH_CELLML)
 
@@ -505,7 +505,7 @@ if (WITH_QTANTIMONY)
            link_libraries(${QT_QTMAIN_LIBRARY})
         endif(WIN32)
         set( MACOSX_BUNDLE_ICON_FILE antimony.icns )
-        set (QTANTIMONY_LIBRARIES ${QT_LIBRARIES} ${LIBANTIMONY_LIBRARY} ${LIBANTIMONY_LIBS} )
+        set (QTANTIMONY_LIBRARIES ${QT_LIBRARIES} ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_LIBS} )
         if (WITH_SBW)
            set(SBW_DEFINITIONS "-DSBW_INTEGRATION" )
            find_library(SBW_LIBRARY 
