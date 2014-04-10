@@ -459,6 +459,7 @@ LIB_EXTERN long loadCellMLString(const char* modelstring)
     wstring error = ml->lastErrorMessage();
     string emsg(makeUTF8(error));
     g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from the CellML API:\n" +  emsg);
+    return -1;
   }
   return CheckAndAddCellMLDoc(model);
 }
