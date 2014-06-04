@@ -43,6 +43,7 @@ private:
   std::vector<std::pair<std::vector<std::string>, std::vector<std::string> > > m_synchronized;
   std::vector<std::vector<std::string> > m_conversionFactors;
   std::vector<std::string> m_returnvalue;
+  std::set<std::string> m_rateNames;
 
   size_t m_currentexportvar;
   bool m_ismain;
@@ -120,6 +121,7 @@ public:
   Variable* GetDownstreamDNA();
   formula_type GetFormulaType() const; //If we have a return value
   bool GetIsMain() const {return m_ismain;};
+  bool IsRateOfSymbol(const std::string& name) const;
 
 
   const std::string& GetModuleName() const;

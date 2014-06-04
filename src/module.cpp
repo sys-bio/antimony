@@ -32,6 +32,7 @@ Module::Module(string name)
     m_synchronized(),
     m_conversionFactors(),
     m_returnvalue(),
+    m_rateNames(),
     m_currentexportvar(0),
     m_ismain(false),
     m_sbmllevel(3),
@@ -82,6 +83,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_synchronized(src.m_synchronized),
     m_conversionFactors(src.m_conversionFactors),
     m_returnvalue(src.m_returnvalue),
+    m_rateNames(src.m_rateNames),
     m_currentexportvar(0),
     m_ismain(src.m_ismain),
     m_sbmllevel(src.m_sbmllevel),
@@ -131,6 +133,7 @@ Module::Module(const Module& src)
     m_synchronized(src.m_synchronized),
     m_conversionFactors(src.m_conversionFactors),
     m_returnvalue(src.m_returnvalue),
+    m_rateNames(src.m_rateNames),
     m_currentexportvar(src.m_currentexportvar),
     m_ismain(src.m_ismain),
     m_sbmllevel(src.m_sbmllevel),
@@ -171,6 +174,7 @@ Module& Module::operator=(const Module& src)
   m_synchronized = src.m_synchronized;
   m_conversionFactors = src.m_conversionFactors;
   m_returnvalue = src.m_returnvalue;
+  m_rateNames = src.m_rateNames;
   m_currentexportvar = src.m_currentexportvar;
   m_ismain = src.m_ismain;
   m_sbmllevel = src.m_sbmllevel;
@@ -846,6 +850,11 @@ formula_type Module::GetFormulaType() const
   return retvar->GetFormulaType();
 }
 
+bool Module::IsRateOfSymbol(const std::string& name) const
+{
+  return m_rateNames.find(name) != m_rateNames.end();
+}
+
 const string& Module::GetModuleName() const
 {
   return m_modulename;
@@ -866,7 +875,6 @@ bool Module::Finalize()
   m_uniquevars.clear();
   string cc = g_registry.GetCC();
 
-
   //Phase 1:  Error checking for loops
   for (size_t var=0; var<m_variables.size(); var++) {
     //If this is a submodule, we'll be calling the error checking bit soon,
@@ -876,23 +884,54 @@ bool Module::Finalize()
     if (m_variables[var]->GetType() == varCompartment){
       if (m_variables[var]->AnyCompartmentLoops()) return true;
     }
-  }
-
-  //Phase 2:  Error checking for interactions
-  for (size_t var=0; var<m_variables.size(); var++) {
-    if (m_variables[var]->GetType() == varInteraction) {
+    else if (m_variables[var]->GetType() == varInteraction) {
       vector<vector<string> > rxns = m_variables[var]->GetReaction()->GetRight()->GetVariableList();
       for (size_t rxn=0; rxn<rxns.size(); rxn++) {
         Variable* rightvar = GetVariable(rxns[rxn]);
         const Formula* form = rightvar->GetFormula();
         if (!form->IsEmpty() &&
             form->CheckIncludes(m_variables[var]->GetNamespace(), m_variables[var]->GetReaction()->GetLeft())) {
-          g_registry.AddErrorPrefix("According to the interaction '" + m_variables[var]->GetNameDelimitedBy(cc) + "', the formula for '" + rightvar->GetNameDelimitedBy(cc) + "' (=" + form->ToDelimitedStringWithEllipses(cc) + ") ");
+          g_registry.AddErrorPrefix("According to the interaction '" + m_variables[var]->GetNameDelimitedBy(cc) + "', the formula for '" + rightvar->GetNameDelimitedBy(cc) + "' ('" + form->ToDelimitedStringWithEllipses(cc) + "') ");
           return true;
         }
       }
     }
   }
+
+#ifndef NSBML
+  //Phase 2:  Check for undefined functions
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Formula* form = m_variables[var]->GetFormula();
+    if (form) {
+      form->ToSBMLString();
+      string formstr = form->ToSBMLString();
+      ASTNode* root = parseStringToASTNode(formstr);
+      set<string> allfns;
+      GetFunctionNames(root, allfns);
+      delete root;
+      for (set<string>::iterator name=allfns.begin(); name != allfns.end(); name++) {
+        if (g_registry.GetUserFunction(*name) == NULL) {
+          //Someone used a function they didn't define, which means it ended up as a variable.
+          if (*name != "rate" && *name != "rateOf") {
+            g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");
+            return true;
+          }
+          m_rateNames.insert(*name);
+          //We need to check the 'rate'/'rateOf' variable:
+          vector<string> varname;
+          varname.push_back(*name);
+          Variable* var = GetVariable(varname);
+          if (var != NULL) {
+            if (var->GetType() != varUndefined) {
+              g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
+              return true;
+            }
+          }
+        }
+      }
+    }
+  }
+#endif
   
   //Phase 3:  Set compartments
   for (size_t var=0; var<m_variables.size(); var++) {

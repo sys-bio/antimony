@@ -142,18 +142,28 @@ void powerToCarat(ASTNode* node)
   }
 }
 
-set<string> GetUnitNames(ASTNode* astn)
+void GetUnitNames(ASTNode* astn, set<string>& names)
 {
-  set<string> ret;
-  if (astn==NULL) return ret;
+  if (astn==NULL) return;
   if (astn->isSetUnits()) {
-    ret.insert(astn->getUnits());
+    names.insert(astn->getUnits());
   }
   for (unsigned int c=0; c<astn->getNumChildren(); c++) {
-    set<string> addme = GetUnitNames(astn->getChild(c));
-    ret.insert(addme.begin(), addme.end());
+    GetUnitNames(astn->getChild(c), names);
   }
-  return ret;
+  return;
+}
+
+void GetFunctionNames(ASTNode* astn, set<string>& names)
+{
+  if (astn==NULL) return;
+  if (astn->getType() == AST_FUNCTION) {
+    names.insert(astn->getName());
+  }
+  for (unsigned int c=0; c<astn->getNumChildren(); c++) {
+    GetFunctionNames(astn->getChild(c), names);
+  }
+  return;
 }
 
 double GetValueFrom(ASTNode* astn)
