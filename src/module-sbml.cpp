@@ -915,7 +915,15 @@ void Module::LoadSBML(const Model* sbml)
     if (annot.find("http://sbml.org/annotations/symbols") != string::npos &&
         annot.find("http://en.wikipedia.org/wiki/Derivative") )
     {
-      //It's the special 'rateOf' function.
+      //It's the special 'rateOf' function.  However, if the name is not 'rateOf' or 'rate', we need to change it to be one of those two.
+      if (sbmlname != "rateOf" && sbmlname != "rate") {
+        List* allElements = const_cast<Model*>(sbml)->getAllElements();
+        for (unsigned int e=0; e<allElements->getSize(); e++) {
+          SBase* element = static_cast<SBase*>(allElements->get(e));
+          element->renameSIdRefs(sbmlname, "rateOf");
+        }
+        sbmlname = "rateOf";
+      }
       m_rateNames.insert(sbmlname);
       continue;
     }
