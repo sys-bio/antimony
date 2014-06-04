@@ -21,7 +21,8 @@ std::string parseASTNodeToString(const ASTNode* ASTform, bool carat=true);
 ASTNode* parseStringToASTNode(const std::string& formula);
 void caratToPower(ASTNode* node);
 void powerToCarat(ASTNode* node);
-std::set<std::string> GetUnitNames(ASTNode* astn);
+void GetUnitNames(ASTNode* astn, std::set<std::string>& names);
+void GetFunctionNames(ASTNode* astn, std::set<std::string>& names);
 double GetValueFrom(ASTNode* astn);
 
 UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, std::string modulename);

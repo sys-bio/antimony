@@ -94,6 +94,7 @@
 %token  <word> TEXTSTRING "text string"
 %token  <word> UNITWORD "'unit'"
 %token  <word> VARWORD "'var'"
+%token  <word> ERROR "an error"
 //                      %token  <word> DELETEWORD "'delete'"
 
 %name-prefix="antimony_yy"
@@ -107,6 +108,7 @@ input:          /* empty */
         |       input modulepart {}
         |       input function {}
         |       input error {YYABORT;} 
+        |       input ERROR {YYABORT;} 
         ;
 
 import:         IMPORT TEXTSTRING { if (g_registry.OpenFile(*($2))==0) YYABORT;}
@@ -443,7 +445,9 @@ int antimony_yylex(void)
   //If we're done with the file:
   if (g_registry.input->eof()) {
     if (g_registry.SwitchToPreviousFile()) {
-      g_registry.CurrentModule()->Finalize();
+      if (g_registry.CurrentModule()->Finalize()) {
+        return ERROR;
+      }
       return 0;
     }
     else {
@@ -456,7 +460,7 @@ int antimony_yylex(void)
   if (!g_registry.input->good()) {
     //Something else went wrong!
     g_registry.SetError("Unparseable content in line " + DoubleToString(antimony_yylloc_last_line) + ".");
-    return -1;
+    return ERROR;
   }
 
   antimony_yylloc_first_line = antimony_yylloc_last_line;

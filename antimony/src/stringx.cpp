@@ -158,6 +158,10 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
         }
         continue;
       }
+      if (module->IsRateOfSymbol(word)) {
+        formula->AddText(&word);
+        continue;
+      }
       if (g_registry.IsModuleName(word)) {
         FixName(word);
       }

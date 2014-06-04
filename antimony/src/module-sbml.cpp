@@ -911,6 +911,14 @@ void Module::LoadSBML(const Model* sbml)
   for (unsigned int func=0; func<sbml->getNumFunctionDefinitions(); func++) {
     const FunctionDefinition* function = sbml->getFunctionDefinition(func);
     sbmlname = getNameFromSBMLObject(function, "_F");
+    string annot = function->getAnnotationString();
+    if (annot.find("http://sbml.org/annotations/symbols") != string::npos &&
+        annot.find("http://en.wikipedia.org/wiki/Derivative") )
+    {
+      //It's the special 'rateOf' function.
+      m_rateNames.insert(sbmlname);
+      continue;
+    }
     UserFunction* uf = g_registry.GetUserFunction(sbmlname);
     bool duplicate = false;
     while (uf != NULL && !duplicate) {
@@ -1539,6 +1547,17 @@ void Module::CreateSBMLModel(bool comp)
     delete math;
   }
 
+  //The 'rateOf' function:
+  for (set<string>::iterator rname=m_rateNames.begin(); rname != m_rateNames.end(); rname++) {
+    FunctionDefinition* fd = sbmlmod->createFunctionDefinition();
+    fd->setId(*rname);
+    ASTNode* math = parseStringToASTNode("lambda(x, NaN)");
+    fd->setMath(math);
+    fd->setAnnotation("<annotation> <symbols xmlns=\"http://sbml.org/annotations/symbols\" definition=\"http://en.wikipedia.org/wiki/Derivative\"/> </annotation>");
+    delete math;
+    
+  }
+
   //Species
   size_t numspecies = GetNumVariablesOfType(allSpecies, comp);
   for (size_t spec=0; spec < numspecies; spec++) {
@@ -1884,6 +1903,12 @@ void Module::CreateSBMLModel(bool comp)
   size_t numunknown = GetNumVariablesOfType(allUnknown, comp);
   for (size_t form=0; form < numunknown; form++) {
     const Variable* formvar = GetNthVariableOfType(allUnknown, form, comp);
+    vector<string> fvname = formvar->GetName();
+    if (fvname[fvname.size()-1] == "rateOf" ||
+        fvname[fvname.size()-1] == "rate") 
+    {
+      continue;
+    }
     Parameter* param = sbmlmod->createParameter();
     param->setId(formvar->GetNameDelimitedBy(cc));
     if (formvar->GetDisplayName() != "") {

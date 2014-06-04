@@ -835,7 +835,9 @@ bool Formula::MakeUnitVariablesUnits()
 #else
   string formula = ToSBMLString();
   ASTNode* root = parseStringToASTNode(formula);
-  set<string> allunits = GetUnitNames(root);
+  set<string> allunits;
+  GetUnitNames(root, allunits);
+  delete root;
   for (size_t comp=0; comp<m_components.size(); comp++) {
     if (m_components[comp].second.size() > 0) {
       Module* module = g_registry.GetModule(m_components[comp].first);
