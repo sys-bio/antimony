@@ -356,12 +356,17 @@ endif(WITH_CHECK)
 if(UNIX)
     set(PATH_SEP "/")
     set(FILE_SEP ":")
-    set(LIBANTIMONY_LIBRARY antimony)
 else()
     set(PATH_SEP "\\")
     set(FILE_SEP ";")
-    set(LIBANTIMONY_LIBRARY libantimony)
 endif()
+
+set(LIBANTIMONY_LIBRARY libantimony)
+
+set(CMAKE_INSTALL_LIBDIR lib CACHE PATH "Full path to the library output directory")
+mark_as_advanced(CMAKE_INSTALL_LIBDIR)
+
+
 
 ####################################################################
 #
@@ -440,7 +445,7 @@ install(FILES   ${LIBANTIMONY_HEADERS} DESTINATION include)
 if (NOT UNIX)
   add_definitions(-DWIN32 -DLIBSBML_EXPORTS -DLIBLAX_EXPORTS)
   if (WITH_PYTHON)
-     INSTALL(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION bindings/python/antimony )
+     INSTALL(TARGETS ${LIBANTIMONY_LIBRARY} DESTINATION bindings/python/${LIBANTIMONY_LIBRARY} )
   endif()
 endif(NOT UNIX)
 
