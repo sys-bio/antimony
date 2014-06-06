@@ -144,16 +144,19 @@ else()
   set(PYTHON_PACKAGE_INSTALL_DIR ${MISC_PREFIX}bindings/python)
 endif()
 
-INSTALL(TARGETS binding_python_lib DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/${LIBANTIMONY_LIBRARY} )
+INSTALL(TARGETS binding_python_lib DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
 
-file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "${LIBANTIMONY_LIBRARY}\n")
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth" "antimony\n")
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.pth  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR})
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.py  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/${LIBANTIMONY_LIBRARY} )
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libantimony.py  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
 
 if (NOT UNIX)
   file(GLOB new_win_dependencies "${CMAKE_SOURCE_DIR}/win32/*.dll")
-  install(FILES ${new_win_dependencies} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/${LIBANTIMONY_LIBRARY} )
+  install(FILES ${new_win_dependencies} DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
 endif()
+
+#Install the __init.py__ file
+install(FILES ${CMAKE_SOURCE_DIR}/src/bindings/python/__init__.py DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/antimony )
 
 ####################################################################
 #

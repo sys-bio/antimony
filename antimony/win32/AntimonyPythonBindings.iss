@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AntimonyPythonBindings"
-#define MyAppVersion "2.5.1"
+#define MyAppVersion "2.5.2"
 #define MyAppPublisher "University of Washington, Seattle, WA, USA"
 #define MyAppURL "http://antimony.sourceforge.net/"
 #define MyAppSetupIconFile "..\install-release\bin\antimony.ico"
@@ -50,7 +50,7 @@ SolidCompression=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: ..\install-release\bindings\python\{#AppDir}\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ..\install-release\bindings\python\antimony\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: ..\install-release\bindings\python\libantimony.pth; DestDir: {app}\..\; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\LICENSE.TXT"; DestDir: "{app}"; Flags: ignoreversion
 
