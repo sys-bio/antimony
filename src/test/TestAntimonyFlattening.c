@@ -53,10 +53,10 @@ void compareFileFlattening(const string& base)
   doc = readSBMLFromFile(filename.c_str());
   model = doc->getModel();
   fail_unless(model != NULL);
-  ConversionProperties* props = new ConversionProperties();
-  props->addOption("flatten comp");
-  props->addOption("performValidation", true);
-  SBMLConverter* converter = SBMLConverterRegistry::getInstance().getConverterFor(*props);
+  ConversionProperties props;
+  props.addOption("flatten comp");
+  props.addOption("performValidation", true);
+  SBMLConverter* converter = SBMLConverterRegistry::getInstance().getConverterFor(props);
   converter->setDocument(doc);
   int result = converter->convert();
   fail_unless(result == LIBSBML_OPERATION_SUCCESS);

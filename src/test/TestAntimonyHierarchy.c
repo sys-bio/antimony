@@ -42,10 +42,10 @@ void compareFileHierarchy(const string& base)
   atosbml = getSBMLString(NULL);
   fail_unless(atosbml != NULL);
 
-  ConversionProperties* props = new ConversionProperties();
-  props->addOption("flatten comp");
-  props->addOption("performValidation", true);
-  SBMLConverter* converter = SBMLConverterRegistry::getInstance().getConverterFor(*props);
+  ConversionProperties props;
+  props.addOption("flatten comp");
+  props.addOption("performValidation", true);
+  SBMLConverter* converter = SBMLConverterRegistry::getInstance().getConverterFor(props);
   converter->setDocument(doc);
   int result = converter->convert();
   // fail if conversion was not valid
