@@ -163,7 +163,7 @@ int Registry::OpenString(string model)
 }
 
 //Return values:  0: failure, 1: antimony, unread 2: SBML, read
-int Registry::OpenFile(const string& filename)
+int Registry::OpenFile(const string& filename, bool antOnly)
 {
   //Find a filename that can be passed to a file input stream that exists.
   ParseSBIndex();
@@ -198,7 +198,13 @@ int Registry::OpenFile(const string& filename)
 #ifndef NSBML
   //Try opening as SBML:
   SBMLDocument* document = readSBML(newname.c_str());
-  int sbmlcheck = CheckAndAddSBMLIfGood(document);
+  int sbmlcheck = 0;
+  if (document->getErrorLog()->getNumFailsWithSeverity(LIBSBML_SEV_ERROR) == 0) {
+    sbmlcheck = 2;
+  }
+  else if (!antOnly) {
+    sbmlcheck = CheckAndAddSBMLIfGood(document);
+  }
   delete document;
   if (sbmlcheck==2) {
     return 2;
@@ -759,6 +765,7 @@ void Registry::SetupFunctions()
   , "arcsech"
   , "asin"
   , "arcsin"
+  , "arcsinh"
   , "atan"
   , "arctan"
   , "atanh"
@@ -784,6 +791,7 @@ void Registry::SetupFunctions()
   , "sqr"
   , "sqrt"
   , "root"
+  , "sec"
   , "sech"
   , "sin"
   , "sinh"
@@ -805,7 +813,7 @@ void Registry::SetupFunctions()
   , "plus"
   , "times"
   };
-  for (size_t func=0; func<64; func++) {
+  for (size_t func=0; func<66; func++) {
     m_functions.push_back(functions[func]);
   }
 }

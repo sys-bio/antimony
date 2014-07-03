@@ -910,7 +910,7 @@ bool Module::Finalize()
       GetFunctionNames(root, allfns);
       delete root;
       for (set<string>::iterator name=allfns.begin(); name != allfns.end(); name++) {
-        if (g_registry.GetUserFunction(*name) == NULL) {
+        if (g_registry.IsFunction(*name) == NULL) {
           //Someone used a function they didn't define, which means it ended up as a variable.
           if (*name != "rate" && *name != "rateOf") {
             g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");

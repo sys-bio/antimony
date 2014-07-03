@@ -1,6 +1,6 @@
-#define MinimalSetupInstaller "AntimonyPythonBindings-2.5.1-win32.exe"
+#define MinimalSetupInstaller "AntimonyPythonBindings-2.5.2-win32.exe"
 #define MyAppName "QTAntimony"
-#define MyAppVersion "2.5.1"
+#define MyAppVersion "2.5.2"
 #define MyAppSetupIconFile "..\QTAntimony_src\antimony.ico"
 
 [Setup]
@@ -42,8 +42,6 @@ Source: ..\install-release\bin\cellml.dll; DestDir: {app}
 Source: ..\install-release\bin\cellml2antimony.exe; DestDir: {app}
 Source: ..\install-release\bin\cevas.dll; DestDir: {app}
 Source: ..\install-release\bin\cuses.dll; DestDir: {app}
-Source: ..\install-release\bin\libantimony.dll; DestDir: {app}
-Source: ..\install-release\bin\libantimony.lib; DestDir: {app}
 Source: ..\install-release\bin\libxml2.dll; DestDir: {app}
 Source: ..\install-release\bin\malaes.dll; DestDir: {app}
 Source: ..\install-release\bin\msvcp100.dll; DestDir: {app}
@@ -53,6 +51,8 @@ Source: ..\install-release\bin\sbml2antimony.exe; DestDir: {app}
 Source: ..\install-release\bin\sbtranslate.exe; DestDir: {app}
 Source: ..\install-release\bin\telicems.dll; DestDir: {app}
 Source: ..\install-release\bin\testantimony.exe; DestDir: {app}
+Source: ..\install-release\lib\libantimony.dll; DestDir: {app}
+Source: ..\install-release\lib\libantimony.lib; DestDir: {app}
 Source: ..\doc\examples\ex_antimony_output.txt; DestDir: {app}
 Source: ..\doc\examples\ex_sbml_input.xml; DestDir: {app}
 Source: ..\doc\examples\ex_sbml_output___main_sbml.xml; DestDir: {app}
