@@ -245,6 +245,7 @@ bool FixName(string& name)
   , "arcsech"
   , "asin"
   , "arcsin"
+  , "arcsinh"
   , "atan"
   , "arctan"
   , "atanh"
@@ -270,6 +271,7 @@ bool FixName(string& name)
   , "sqr"
   , "sqrt"
   , "root"
+  , "sec"
   , "sech"
   , "sin"
   , "sinh"
@@ -302,7 +304,7 @@ bool FixName(string& name)
   , "nan"  
   , "notanumber"
   };
-  for (size_t kw=0; kw<94; kw++) {
+  for (size_t kw=0; kw<96; kw++) {
     if (CaselessStrCmp(name, keywords[kw])) {
       name += "_";
       return true;

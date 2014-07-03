@@ -284,7 +284,7 @@ LIB_EXTERN long loadAntimonyFile(const char* filename)
   string oldlocale = setlocale(LC_ALL, NULL);
   setlocale(LC_ALL, "C");
   g_registry.ClearModules();
-  int ofreturn = g_registry.OpenFile(filename);
+  int ofreturn = g_registry.OpenFile(filename, true);
   if (ofreturn==0) return -1; //file read failure
   if (ofreturn==2) {
     //SBML file

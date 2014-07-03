@@ -84,7 +84,7 @@ public:
   std::vector<std::string> GetDirectories();
   void   ClearDirectories();
 
-  int    OpenFile(const std::string& filename);
+  int    OpenFile(const std::string& filename, bool antOnly=false);
   int    OpenString(std::string model);
 #ifndef NSBML
   int    CheckAndAddSBMLIfGood(SBMLDocument* document);

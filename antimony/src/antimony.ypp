@@ -475,8 +475,8 @@ int antimony_yylex(void)
   // Skip carriage returns after '\':
   if (cc == '\\') {
     g_registry.input->get(cc);
-    if (cc == '\r' || cc == '\n') {
-      while ((cc == '\r' || cc == '\n') && !g_registry.input->eof()) {
+    if (cc == '\r' || cc == '\n' || cc == ' ') {
+      while ((cc == '\r' || cc == '\n' || cc == ' ') && !g_registry.input->eof()) {
         g_registry.input->get(cc);
       }
       ++antimony_yylloc_last_line;
