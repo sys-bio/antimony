@@ -1730,12 +1730,12 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
 
   //Deleted elements:
   if (delnames.size()) {
-    retval += "\n" + indent + "//Deleted elements from submodels:\n";
+    retval += "\n" + indent + "// Deleted elements from submodels:\n";
     retval += ListIn80Cols("delete", delnames, indent);
   }
 
   if (DNAnames.size() || operatornames.size() || genenames.size() || varnames.size() || constnames.size() || innames.size()) {
-    retval += "\n" + indent + "//Other declarations:\n";
+    retval += "\n" + indent + "// Other declarations:\n";
     retval += ListIn80Cols("DNA", DNAnames, indent);
     retval += ListIn80Cols("operator", operatornames, indent);
     retval += ListIn80Cols("gene", genenames, indent);
@@ -1772,7 +1772,7 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
   for (size_t var=0; var<m_uniquevars.size(); var++) {
     if (OrigDisplayNameIsAlready(m_uniquevars[var], origmap)) continue;
     if (anydisplay == false) {
-      retval += "\n" + indent + "//Display Names:\n";
+      retval += "\n" + indent + "// Display Names:\n";
       anydisplay = true;
     }
     retval += indent + m_uniquevars[var]->GetNameDelimitedBy(cc) + " is \"" + m_uniquevars[var]->GetDisplayName() + "\";\n";
