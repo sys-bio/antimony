@@ -319,6 +319,16 @@ void Formula::Clear()
   m_components.clear();
 }
 
+bool isAlphanumeric(char c)
+{
+  if ((c >= 'a' && c <= 'z') ||
+      (c >= 'A' && c <= 'Z') ||
+      (c >= '0' && c <= '9')) {
+        return true;
+  }
+  return false;
+}
+
 string Formula::ToDelimitedStringWithStrands(string cc, vector<pair<Variable*, size_t> > strands) const
 {
   string retval;
@@ -360,12 +370,26 @@ string Formula::ToDelimitedStringWithStrands(string cc, vector<pair<Variable*, s
           actualvar = module->GetVariable(varname);
         }
         if (actualvar != NULL) {
+          char lastchar = ' ';
+          if (retval.size()) {
+            lastchar = retval[retval.size()-1];
+          }
+          if (isAlphanumeric(lastchar)) {
+            retval += " ";
+          }
           retval += actualvar->GetNameDelimitedBy(cc);
         }
         else if (varname.size() > 0) {
           assert(false); //Can't find the variable; should be impossible
         }
         else {
+          char lastchar = ' ';
+          if (retval.size()) {
+            lastchar = retval[retval.size()-1];
+          }
+          if (isAlphanumeric(lastchar) && isAlphanumeric(m_components[comp].first[0])) {
+            retval += " ";
+          }
           retval += m_components[comp].first;
         }
       }

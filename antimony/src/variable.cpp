@@ -833,6 +833,10 @@ bool Variable::SetFormula(Formula* formula)
   case varFormulaUndef:
   case varCompartment:
   case varSpeciesUndef:
+    if (m_formulatype == formulaASSIGNMENT) {
+      g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to have the initial value '" + formula->ToDelimitedStringWithEllipses(".") + "' because it already has an assignment rule, which applies at all times, including time=0.");
+      return true;
+    }
     m_valFormula = *formula;
     break;
   case varUnitDefinition:

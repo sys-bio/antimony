@@ -65,10 +65,39 @@ void matchNamesToTypes(ASTNode *node)
 }
 
 
+void removeGlobalFunctionIDs(ASTNode_t* node)  
+{
+  if (node==NULL) return;
+  unsigned int nc = node->getNumChildren();
+  if (node->getType() == AST_FUNCTION) {
+    string id = node->getName();
+    const UserFunction* uf = g_registry.GetUserFunction(id);
+    if (uf) {
+      //Fill in the missing children with the IDs of the missing variables.
+      for (unsigned int c=nc; c > 0; c--) {
+        vector<string> vecname = uf->GetNthExportVariable(c-1);
+        const ASTNode* n = node->getChild(c-1);
+        const char* cc = n->getName();
+        if (cc != NULL && (string)(cc) == vecname[vecname.size()-1].c_str()) {
+          node->removeChild(c-1);
+          nc--;
+        }
+        else {
+          break;
+        }
+      }
+    }
+  }
+  for (unsigned int c = 0; c < nc ; c++) {
+    removeGlobalFunctionIDs(node->getChild(c));
+  }
+}
+
 string parseASTNodeToString(const ASTNode* ASTform, bool carat) {
   if (ASTform==NULL) return "";
   ASTNode clone(*ASTform);
   matchNamesToTypes(&clone);
+  removeGlobalFunctionIDs(&clone);
   if (carat) {
     powerToCarat(&clone);
   }
@@ -84,7 +113,6 @@ string parseASTNodeToString(const ASTNode* ASTform, bool carat) {
 #endif
   return ret;
 }
-
 
 void matchTypesToNames(ASTNode_t* node)  
 {
@@ -104,12 +132,78 @@ void matchTypesToNames(ASTNode_t* node)
   }
 }
 
+void expandGlobalFunctionIDs(ASTNode_t* node)  
+{
+  if (node==NULL) return;
+  unsigned int nc = node->getNumChildren();
+  if (node->getType() == AST_FUNCTION) {
+    string id = node->getName();
+    const UserFunction* uf = g_registry.GetUserFunction(id);
+    if (uf && uf->GetNumExportVariables() > nc) {
+      //Fill in the missig children with the IDs of the missing variables.
+      for (unsigned int c=nc; c<uf->GetNumExportVariables(); c++) {
+        vector<string> vecname = uf->GetNthExportVariable(c);
+        ASTNode* child = new ASTNode(AST_NAME);
+        child->setName(vecname[vecname.size()-1].c_str());
+        node->addChild(child);
+      }
+    }
+  }
+  for (unsigned int c = 0; c < nc ; c++) {
+    expandGlobalFunctionIDs(node->getChild(c));
+  }
+}
+
+bool isAlphaNumeric(char c)
+{
+  if ((c >= 'a' && c <= 'z') ||
+      (c >= 'A' && c <= 'Z') ||
+      (c >= '0' && c <= '9')) {
+        return true;
+  }
+  return false;
+}
+
+const string pythonToCBooleans(const string& formula)
+{
+  string newform = formula;
+  size_t foundb = newform.find(" and ");
+  while (foundb != string::npos) {
+    newform.replace(foundb, 5, " && ");
+    foundb = newform.find(" and ");
+  }
+  foundb = newform.find(" AND ");
+  while (foundb != string::npos) {
+    newform.replace(foundb, 5, " && ");
+    foundb = newform.find(" AND ");
+  }
+  foundb = newform.find(" or ");
+  while (foundb != string::npos) {
+    newform.replace(foundb, 4, " || ");
+    foundb = newform.find(" or ");
+  }
+  foundb = newform.find(" OR ");
+  while (foundb != string::npos) {
+    newform.replace(foundb, 4, " || ");
+    foundb = newform.find(" OR ");
+  }
+  foundb = newform.find("not ");
+  while (foundb != string::npos) {
+    if (foundb == 0 || !isAlphaNumeric(newform[foundb-1])) {
+      newform.replace(foundb, 4, " ! ");
+    }
+    foundb = newform.find("not ", foundb);
+  }
+  return newform;
+}
+
 ASTNode* parseStringToASTNode(const string& formula)
 {
+  const string newform = pythonToCBooleans(formula);
   L3ParserSettings l3ps;
   l3ps.setParseCollapseMinus(true);
   l3ps.setParseLog(L3P_PARSE_LOG_AS_LN);
-  ASTNode* rootnode = SBML_parseL3FormulaWithSettings(formula.c_str(), &l3ps);
+  ASTNode* rootnode = SBML_parseL3FormulaWithSettings(newform.c_str(), &l3ps);
   if (rootnode == NULL) {
     g_registry.SetError(SBML_getLastParseL3Error());
     return NULL;
@@ -119,6 +213,7 @@ ASTNode* parseStringToASTNode(const string& formula)
       formula.find("delay") != string::npos) {
     matchTypesToNames(rootnode);
   }
+  expandGlobalFunctionIDs(rootnode);
   return rootnode;
 }
 
