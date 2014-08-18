@@ -482,7 +482,7 @@ UnitDefinition* UnitDef::AddToSBML(Model* sbmlmod, string id, string name)
     return NULL;
   }
   UnitDefinition* ud = sbmlmod->createUnitDefinition();
-  if (id=="time_unit") id = "time";
+  //if (id=="time_unit") id = "time";
   ud->setId(id); //Don't use any auto-generated names.
   ud->setName(name);
   if (canonical==NULL) return NULL;

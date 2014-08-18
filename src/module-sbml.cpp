@@ -973,6 +973,62 @@ void Module::LoadSBML(const Model* sbml)
     var->SetUnitDef(unitdef);
   }
 
+  //Model-wide units:
+  string unitname;
+  if (sbml->isSetLengthUnits()) {
+    string lunits = sbml->getLengthUnits();
+    unitname = "length";
+    if (lunits != unitname) {
+      Variable* var = AddOrFindVariable(&unitname);
+      UnitDef* unitdef = new UnitDef(lunits, m_modulename);
+      var->SetUnitDef(unitdef);
+    }
+  }
+  if (sbml->isSetAreaUnits()) {
+    string aunits = sbml->getAreaUnits();
+    unitname = "area";
+    if (aunits != unitname) {
+      Variable* var = AddOrFindVariable(&unitname);
+      UnitDef* unitdef = new UnitDef(aunits, m_modulename);
+      var->SetUnitDef(unitdef);
+    }
+  }
+  if (sbml->isSetVolumeUnits()) {
+    string vunits = sbml->getVolumeUnits();
+    unitname = "volume";
+    if (vunits != unitname) {
+      Variable* var = AddOrFindVariable(&unitname);
+      UnitDef* unitdef = new UnitDef(vunits, m_modulename);
+      var->SetUnitDef(unitdef);
+    }
+  }
+  if (sbml->isSetSubstanceUnits()) {
+    string sunits = sbml->getSubstanceUnits();
+    unitname = "substance";
+    if (sunits != unitname) {
+      Variable* var = AddOrFindVariable(&unitname);
+      UnitDef* unitdef = new UnitDef(sunits, m_modulename);
+      var->SetUnitDef(unitdef);
+    }
+  }
+  if (sbml->isSetExtentUnits()) {
+    string xunits = sbml->getExtentUnits();
+    unitname = "extent";
+    if (xunits != unitname) {
+      Variable* var = AddOrFindVariable(&unitname);
+      UnitDef* unitdef = new UnitDef(xunits, m_modulename);
+      var->SetUnitDef(unitdef);
+    }
+  }
+  if (sbml->isSetTimeUnits()) {
+    string tunits = sbml->getTimeUnits();
+    unitname = "time_unit";
+    if (tunits != unitname) {
+      Variable* var = AddOrFindVariable(&unitname);
+      UnitDef* unitdef = new UnitDef(tunits, m_modulename);
+      var->SetUnitDef(unitdef);
+    }
+  }
  
   //Compartments
   set<string> defaultcompartments;

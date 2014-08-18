@@ -17,137 +17,6 @@ BEGIN_C_DECLS
 
 extern char *TestDataDirectory;
 
-START_TEST (unknown_file1)
-{
-  string filename = "nosuchfile.txt";
-  long ret = loadAntimonyFile(filename.c_str());
-  fail_unless(ret==-1);
-  char* err = getLastError();
-  fail_unless(err != NULL);
-  string error(err);
-  string expected("Could not open 'nosuchfile.txt', and could not find that file in any known directory.  Please check that this file:\n	1) exists in directory that antimony is being run from or knows about\n	2) is read enabled, and\n	3) is not in use by another program.\n");
-  fail_unless(error == expected);
-  delete err;
-}
-END_TEST
-
-
-START_TEST (unknown_file2)
-{
-  string filename = "nosuchfile.xml";
-  long ret = loadSBMLFile(filename.c_str());
-  fail_unless(ret==-1);
-  char* err = getLastError();
-  fail_unless(err != NULL);
-  string error(err);
-  string expected("Unable to read SBML file 'nosuchfile.xml' due to errors encountered when parsing the file.  Error(s) from libSBML:\nline 1: (00002 [Error]) File unreadable.\n");
-  fail_unless(error == expected);
-  delete err;
-}
-END_TEST
-
-
-START_TEST (unknown_file3)
-{
-#ifndef NCELLML
-  string filename = "nosuchfile.cellml";
-  long ret = loadCellMLFile(filename.c_str());
-  fail_unless(ret==-1);
-  char* err = getLastError();
-  fail_unless(err != NULL);
-  string error(err);
-  string expected("Unable to read CellML file 'nosuchfile.cellml' due to errors encountered when parsing the file.  Error(s) from the CellML API:\nservererror\n");
-  fail_unless(error == expected);
-  delete err;
-#endif
-}
-END_TEST
-
-
-START_TEST (unknown_file4)
-{
-  string filename = "nosuchfile.txt";
-  long ret = loadFile(filename.c_str());
-  fail_unless(ret==-1);
-  char* err = getLastError();
-  fail_unless(err != NULL);
-  string error(err);
-  string expected("Could not open 'nosuchfile.txt', and could not find that file in any known directory.  Please check that this file:\n	1) exists in directory that antimony is being run from or knows about\n	2) is read enabled, and\n	3) is not in use by another program.\n");
-  fail_unless(error == expected);
-  delete err;
-}
-END_TEST
-
-
-START_TEST (unknown_file5)
-{
-  string filename = "nosuchdir/nosuchfile.txt";
-  long ret = loadFile(filename.c_str());
-  fail_unless(ret==-1);
-  char* err = getLastError();
-  fail_unless(err != NULL);
-  string error(err);
-  string expected("Could not open 'nosuchdir/nosuchfile.txt', and could not find that file in any known directory.  Please check that this file:\n	1) exists in directory that antimony is being run from or knows about\n	2) is read enabled, and\n	3) is not in use by another program.\n");
-  fail_unless(error == expected);
-  delete err;
-}
-END_TEST
-
-
-START_TEST (unknown_models)
-{
-  char* nomod = getSBMLString("");
-  fail_unless(nomod == NULL);
-  char* err = getLastError();
-  fail_unless(err != NULL);
-  string error(err);
-  string expected("No such module: ''.  Existing modules: '__main'");
-  fail_unless(error == expected);
-  delete err;
-  nomod = getAntimonyString("");
-  fail_unless(nomod == NULL);
-  err = getLastError();
-  fail_unless(err != NULL);
-  error = err;
-  fail_unless(error == expected);
-  delete err;
-#ifndef NCELLML
-  nomod = getCellMLString("");
-  fail_unless(nomod == NULL);
-  err = getLastError();
-  fail_unless(err != NULL);
-  error = err;
-  fail_unless(error == expected);
-  delete err;
-#endif
-
-  nomod = getSBMLString("nosuchmodel");
-  fail_unless(nomod == NULL);
-  err = getLastError();
-  fail_unless(err != NULL);
-  error = err;
-  expected = "No such module: 'nosuchmodel'.  Existing modules: '__main'";
-  fail_unless(error == expected);
-  delete err;
-  nomod = getAntimonyString("nosuchmodel");
-  fail_unless(nomod == NULL);
-  err = getLastError();
-  fail_unless(err != NULL);
-  error = err;
-  fail_unless(error == expected);
-  delete err;
-#ifndef NCELLML
-  nomod = getCellMLString("nosuchmodel");
-  fail_unless(nomod == NULL);
-  err = getLastError();
-  fail_unless(err != NULL);
-  error = err;
-  fail_unless(error == expected);
-  delete err;
-#endif
-}
-END_TEST
-
 void compareFileTranslation(const string& base)
 {
   clearPreviousLoads();
@@ -535,6 +404,19 @@ START_TEST (test_names_txt)
 }
 END_TEST
 
+START_TEST (test_global_units)
+{
+  compareFileTranslation("global_units");
+}
+END_TEST
+
+START_TEST (test_global_units_txt)
+{
+  compareStringTranslation("length = meters; area = meters^2; volume = meters^3; substance = moles; extent = dimensionless; time_unit = seconds*60", "global_units.xml");
+}
+END_TEST
+
+
 
 Suite *
 create_suite_Basic (void)
@@ -542,15 +424,9 @@ create_suite_Basic (void)
   Suite *suite = suite_create("Antimony Basic");
   TCase *tcase = tcase_create("Antimony Basic");
 
-  tcase_add_test( tcase, test_compound_units4);
-  tcase_add_test( tcase, test_compound_units4_txt);
+  tcase_add_test( tcase, test_global_units);
+  tcase_add_test( tcase, test_global_units_txt);
 
-  tcase_add_test( tcase, unknown_file1);
-  tcase_add_test( tcase, unknown_file2);
-  tcase_add_test( tcase, unknown_file3);
-  tcase_add_test( tcase, unknown_file4);
-  tcase_add_test( tcase, unknown_file5);
-  tcase_add_test( tcase, unknown_models);
   tcase_add_test( tcase, test_parameter);
   tcase_add_test( tcase, test_parameter_txt);
   tcase_add_test( tcase, test_reaction);
@@ -601,6 +477,8 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_compound_units3_txt);
   tcase_add_test( tcase, test_names);
   tcase_add_test( tcase, test_names_txt);
+  tcase_add_test( tcase, test_compound_units4);
+  tcase_add_test( tcase, test_compound_units4_txt);
 
   suite_add_tcase(suite, tcase);
 
