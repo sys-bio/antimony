@@ -1069,9 +1069,9 @@ bool Module::Finalize()
       }
     }
     if (trueerrors != "") {
-      g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but this one slipped through--please let us know what happened and we'll try to fix it.  Error message(s) from libSBML:\n" + trueerrors);
-      //delete testdoc;
-      //return true;
+      g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but sometimes cannot.  Error message(s) from libSBML:\n" + trueerrors);
+      delete testdoc;
+      return true;
     }
     delete testdoc;
   }
