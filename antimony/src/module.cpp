@@ -18,6 +18,10 @@
 #include <CellMLBootstrap.hpp>
 #endif
 
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+#include "sbml/packages/distrib/common/DistribExtensionTypes.h"
+#endif
+
 extern Registry g_registry;
 using namespace std;
 
@@ -33,6 +37,7 @@ Module::Module(string name)
     m_conversionFactors(),
     m_returnvalue(),
     m_rateNames(),
+    m_usedDistributions(),
     m_currentexportvar(0),
     m_ismain(false),
     m_sbmllevel(3),
@@ -84,6 +89,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_conversionFactors(src.m_conversionFactors),
     m_returnvalue(src.m_returnvalue),
     m_rateNames(src.m_rateNames),
+    m_usedDistributions(src.m_usedDistributions),
     m_currentexportvar(0),
     m_ismain(src.m_ismain),
     m_sbmllevel(src.m_sbmllevel),
@@ -134,6 +140,7 @@ Module::Module(const Module& src)
     m_conversionFactors(src.m_conversionFactors),
     m_returnvalue(src.m_returnvalue),
     m_rateNames(src.m_rateNames),
+    m_usedDistributions(src.m_usedDistributions),
     m_currentexportvar(src.m_currentexportvar),
     m_ismain(src.m_ismain),
     m_sbmllevel(src.m_sbmllevel),
@@ -175,6 +182,7 @@ Module& Module::operator=(const Module& src)
   m_conversionFactors = src.m_conversionFactors;
   m_returnvalue = src.m_returnvalue;
   m_rateNames = src.m_rateNames;
+  m_usedDistributions = src.m_usedDistributions;
   m_currentexportvar = src.m_currentexportvar;
   m_ismain = src.m_ismain;
   m_sbmllevel = src.m_sbmllevel;
@@ -903,7 +911,6 @@ bool Module::Finalize()
   for (size_t var=0; var<m_variables.size(); var++) {
     Formula* form = m_variables[var]->GetFormula();
     if (form) {
-      form->ToSBMLString();
       string formstr = form->ToSBMLString();
       ASTNode* root = parseStringToASTNode(formstr);
       set<string> allfns;
@@ -912,25 +919,45 @@ bool Module::Finalize()
       for (set<string>::iterator name=allfns.begin(); name != allfns.end(); name++) {
         if (g_registry.IsFunction(*name) == NULL) {
           //Someone used a function they didn't define, which means it ended up as a variable.
-          if (*name != "rate" && *name != "rateOf") {
-            g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");
-            return true;
-          }
-          m_rateNames.insert(*name);
-          //We need to check the 'rate'/'rateOf' variable:
           vector<string> varname;
           varname.push_back(*name);
           Variable* var = GetVariable(varname);
-          if (var != NULL) {
-            if (var->GetType() != varUndefined) {
-              g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
-              return true;
+          bool isPredefined = false;
+          if (*name == "rate" || *name == "rateOf") {
+            isPredefined = true;
+            m_rateNames.insert(*name);
+            //We need to check the 'rate'/'rateOf' variable:
+            if (var != NULL) {
+              if (var->GetType() != varUndefined) {
+                g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
+                return true;
+              }
             }
+          }
+          else {
+            distribution_type dtype = StringToDistributionType(*name);
+            if (dtype != distUNKNOWN) {
+              isPredefined = true;
+              m_usedDistributions.insert(dtype);
+              if (var != NULL && var->GetType() != varUndefined) {
+                g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
+                return true;
+              }
+            }
+          }
+          if (!isPredefined) {
+            g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");
+            return true;
           }
         }
       }
     }
   }
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+  if (m_usedDistributions.size() > 0) {
+    m_sbmlnamespaces.addPackageNamespace("distrib", 1);
+  }
+#endif
 #endif
   
   //Phase 3:  Set compartments

@@ -5,6 +5,7 @@
 #include "variable.h"
 #include "formula.h"
 #include "registry.h"
+#include "typex.h"
 
 using namespace std;
 extern bool CaselessStrCmp(const string& lhs, const string& rhs);
@@ -14,6 +15,9 @@ extern bool CaselessStrCmp(const string& lhs, const string& rhs);
 #include "sbml/math/FormulaFormatter.h"
 #if LIBSBML_VERSION >= 50900
 #include "sbml/math/L3FormulaFormatter.h"
+#endif
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+#include "sbml/packages/distrib/common/DistribExtensionTypes.h"
 #endif
 
 string getNameFromSBMLObject(const SBase* sbml, string basename)
@@ -472,3 +476,256 @@ Model* getModelFromExternalModelDefinition(const ExternalModelDefinition* cextmo
 }
 
 #endif
+
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+void makeNormal(DrawFromDistribution* dfd)
+{
+  DistribInput* di = dfd->createDistribInput();
+  di->setId("mean");
+  di->setIndex(0);
+  di = dfd->createDistribInput();
+  di->setId("stddev");
+  di->setIndex(1);
+  UncertMLNode* dist = UncertMLNode::createDistributionNode("NormalDistribution", "mean, stddev", "mean, stddev");
+  dfd->setUncertML(dist);
+}
+
+void makeTruncNormal(DrawFromDistribution* dfd)
+{
+  DistribInput* di = dfd->createDistribInput();
+  di->setId("mean");
+  di->setIndex(0);
+  di = dfd->createDistribInput();
+  di->setId("stddev");
+  di->setIndex(1);
+  di = dfd->createDistribInput();
+  di->setId("lowlimit");
+  di->setIndex(2);
+  di = dfd->createDistribInput();
+  di->setId("uplimit");
+  di->setIndex(3);
+  UncertMLNode* dist = UncertMLNode::createDistributionNode("NormalDistribution", "mean, stddev, truncationLowerInclusiveBound, truncationUpperInclusiveBound", "mean, stddev, lowlimit, uplimit");
+  dfd->setUncertML(dist);
+}
+
+void makeUniform(DrawFromDistribution* dfd)
+{
+  DistribInput* di = dfd->createDistribInput();
+  di->setId("minimum");
+  di->setIndex(0);
+  di = dfd->createDistribInput();
+  di->setId("maximum");
+  di->setIndex(1);
+  UncertMLNode* dist = UncertMLNode::createDistributionNode("UniformDistribution", "minimum, maximum", "minimum, maximum");
+  dfd->setUncertML(dist);
+}
+#endif
+
+void addDistributionToModel(Model* model, distribution_type dtype)
+{
+  FunctionDefinition* fd = model->createFunctionDefinition();
+  string function = "lambda(" + GetArgumentStringForDistribution(dtype) + " NaN)";
+  ASTNode* math = parseStringToASTNode(function.c_str());
+  fd->setMath(math);
+  string annotation = "<annotation> <symbols xmlns=\"http://sbml.org/annotations/symbols\" definition=\"" + GetURIForDistribution(dtype) + "\"/> </annotation>";
+  fd->setAnnotation(annotation.c_str());
+  fd->setId(DistributionTypeToString(dtype));
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+  DistribFunctionDefinitionPlugin* dfdp = static_cast<DistribFunctionDefinitionPlugin*>(fd->getPlugin("distrib"));
+  DrawFromDistribution* dfd = dfdp->createDrawFromDistribution();
+  switch(dtype) {
+  case distNORMAL:
+    makeNormal(dfd);
+    break;
+  case distTRUNCNORMAL:
+    makeTruncNormal(dfd);
+    break;
+  case distUNIFORM:
+    makeUniform(dfd);
+    break;
+  }
+#endif
+}
+
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+bool isExactNormal(const DrawFromDistribution* dfd)
+{
+  if (dfd->getNumDistribInputs() != 2) return false;
+  const UncertMLNode* dist = dfd->getUncertML();
+  if (dist->getElementName() != "NormalDistribution") return false;
+  if (dist->getNumChildren() != 2) return false;
+  UncertMLNode* child1 = dist->getChild(0);
+  UncertMLNode* child2 = dist->getChild(1);
+  if (child1->getElementName() != "mean") {
+    if (child2->getElementName() != "mean") return false;
+    child2 = dist->getChild(0);
+    child1 = dist->getChild(1);
+  }
+  if (child2->getElementName() != "stddev") return false;
+
+  if (child1->getNumChildren() != 1) return false;
+  if (child2->getNumChildren() != 1) return false;
+  child1 = child1->getChild(0);
+  child2 = child2->getChild(0);
+  
+  if (child1->getElementName() != "var") return false;
+  if (child2->getElementName() != "var") return false;
+  if (child1->getNumAttributes() != 1) return false;
+  if (child2->getNumAttributes() != 1) return false;
+  const XMLAttributes atts1 = child1->getAttributes();
+  if (!atts1.hasAttribute("varId")) return false;
+  const XMLAttributes atts2 = child2->getAttributes();
+  if (!atts2.hasAttribute("varId")) return false;
+
+  const DistribInput* di = dfd->getDistribInput(atts1.getValue("varId"));
+  if (di == NULL) return false;
+  if (di->getIndex() != 0) return false;
+  di = dfd->getDistribInput(atts2.getValue("varId"));
+  if (di == NULL) return false;
+  if (di->getIndex() != 1) return false;
+  return true;
+}
+
+bool isExactTruncNormal(const DrawFromDistribution* dfd)
+{
+  if (dfd->getNumDistribInputs() != 4) return false;
+  const UncertMLNode* dist = dfd->getUncertML();
+  if (dist->getElementName() != "NormalDistribution") return false;
+  if (dist->getNumChildren() != 4) return false;
+  UncertMLNode* child1 = dist->getChild(0);
+  UncertMLNode* child2 = dist->getChild(1);
+  UncertMLNode* child3 = dist->getChild(2);
+  UncertMLNode* child4 = dist->getChild(3);
+  if (child1->getElementName() != "mean") {
+    if (child2->getElementName() == "mean") {
+      child2 = dist->getChild(0);
+      child1 = dist->getChild(1);
+    }
+    else if (child3->getElementName() == "mean"){
+      child3 = dist->getChild(0);
+      child1 = dist->getChild(2);
+    }
+    else if (child4->getElementName() == "mean"){
+      child4 = dist->getChild(0);
+      child1 = dist->getChild(3);
+    }
+    else return false;
+  }
+  if (child2->getElementName() != "stddev") {
+    if (child3->getElementName() == "stddev"){
+      child3 = dist->getChild(1);
+      child2 = dist->getChild(2);
+    }
+    else if (child4->getElementName() == "stddev"){
+      child4 = dist->getChild(1);
+      child2 = dist->getChild(3);
+    }
+    else return false;
+  }
+  if (child3->getElementName() != "truncationLowerInclusiveBound") {
+    if (child4->getElementName() != "truncationLowerInclusiveBound") return false;
+    child4 = dist->getChild(2);
+    child3 = dist->getChild(3);
+  }
+  if (child4->getElementName() != "truncationUpperInclusiveBound") return false;
+
+  if (child1->getNumChildren() != 1) return false;
+  if (child2->getNumChildren() != 1) return false;
+  if (child3->getNumChildren() != 1) return false;
+  if (child4->getNumChildren() != 1) return false;
+  child1 = child1->getChild(0);
+  child2 = child2->getChild(0);
+  child3 = child3->getChild(0);
+  child4 = child4->getChild(0);
+  
+  if (child1->getElementName() != "var") return false;
+  if (child2->getElementName() != "var") return false;
+  if (child3->getElementName() != "var") return false;
+  if (child4->getElementName() != "var") return false;
+  if (child1->getNumAttributes() != 1) return false;
+  if (child2->getNumAttributes() != 1) return false;
+  if (child3->getNumAttributes() != 1) return false;
+  if (child4->getNumAttributes() != 1) return false;
+  const XMLAttributes atts1 = child1->getAttributes();
+  if (!atts1.hasAttribute("varId")) return false;
+  const XMLAttributes atts2 = child2->getAttributes();
+  if (!atts2.hasAttribute("varId")) return false;
+  const XMLAttributes atts3 = child3->getAttributes();
+  if (!atts2.hasAttribute("varId")) return false;
+  const XMLAttributes atts4 = child4->getAttributes();
+  if (!atts2.hasAttribute("varId")) return false;
+
+  const DistribInput* di = dfd->getDistribInput(atts1.getValue("varId"));
+  if (di == NULL) return false;
+  if (di->getIndex() != 0) return false;
+  di = dfd->getDistribInput(atts2.getValue("varId"));
+  if (di == NULL) return false;
+  if (di->getIndex() != 1) return false;
+  di = dfd->getDistribInput(atts3.getValue("varId"));
+  if (di == NULL) return false;
+  if (di->getIndex() != 2) return false;
+  di = dfd->getDistribInput(atts4.getValue("varId"));
+  if (di == NULL) return false;
+  if (di->getIndex() != 3) return false;
+
+  return true;
+}
+
+bool isExactUniform(const DrawFromDistribution* dfd)
+{
+  if (dfd->getNumDistribInputs() != 2) return false;
+  const UncertMLNode* dist = dfd->getUncertML();
+  if (dist->getElementName() != "UniformDistribution") return false;
+  if (dist->getNumChildren() != 2) return false;
+  UncertMLNode* child1 = dist->getChild(0);
+  UncertMLNode* child2 = dist->getChild(1);
+  if (child1->getElementName() != "minimum") {
+    if (child2->getElementName() != "minimum") return false;
+    child2 = dist->getChild(0);
+    child1 = dist->getChild(1);
+  }
+  if (child2->getElementName() != "maximum") return false;
+
+  if (child1->getNumChildren() != 1) return false;
+  if (child2->getNumChildren() != 1) return false;
+  child1 = child1->getChild(0);
+  child2 = child2->getChild(0);
+  
+  if (child1->getElementName() != "var") return false;
+  if (child2->getElementName() != "var") return false;
+  if (child1->getNumAttributes() != 1) return false;
+  if (child2->getNumAttributes() != 1) return false;
+  const XMLAttributes atts1 = child1->getAttributes();
+  if (!atts1.hasAttribute("varId")) return false;
+  const XMLAttributes atts2 = child2->getAttributes();
+  if (!atts2.hasAttribute("varId")) return false;
+
+  const DistribInput* di = dfd->getDistribInput(atts1.getValue("varId"));
+  if (di == NULL) return false;
+  if (di->getIndex() != 0) return false;
+  di = dfd->getDistribInput(atts2.getValue("varId"));
+  if (di == NULL) return false;
+  if (di->getIndex() != 1) return false;
+  return true;
+}
+
+distribution_type GetExactTypeOf(const DistribFunctionDefinitionPlugin* dfdp)
+{
+  const DrawFromDistribution* dfd = dfdp->getDrawFromDistribution();
+  if (isExactNormal(dfd)) return distNORMAL;
+  if (isExactTruncNormal(dfd)) return distTRUNCNORMAL;
+  if (isExactUniform(dfd)) return distUNIFORM;
+  return distUNKNOWN;
+}
+
+ASTNode* GetAntimonyFormOf(const DistribFunctionDefinitionPlugin* dfdp)
+{
+  const DrawFromDistribution* dfd = dfdp->getDrawFromDistribution();
+
+  return NULL;
+}
+#endif
+distribution_type GetDistributionFromAnnotation(const std::string& annot)
+{
+  return distUNKNOWN;
+}
