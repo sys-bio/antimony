@@ -10,6 +10,27 @@ The CellML API v1.11 SDK was used in this version of Antimony (and QTAntimony) a
 
 If downloading the SDK does not work (or if it is unavailable for your operating system) it too now uses CMake as its build system, and we have had reasonable success using this on linux-based systems.
 
+What's new in v2.5.2
+  - New function 'rateOf'/'rate' that uses the custom annotaition of Copasi/roadrunner to define a function that returns the rate of change of a variable.
+  - Default libsbml bindings now static.
+  - Better error handling for miscoded models.
+  - Better python installer
+  - Fix to add 'arcsinh' and 'sec' back in as built-in functions.
+  - Allow python-style 'and', 'or' and 'not' functions instead of '&&', '||' and '!'.
+  - Allow shorthand use of function definitions that uses global variables if present.
+  - Add ability to define and import model-wide units for SBML.
+  - No longer allow export of invalid SBML, for any reason.
+
+What's new in v2.5.1
+  - Fix installers, particularly for python.
+
+What's new in v2.5:
+  - Better support for Python bindings
+  - Various fixes for QTAntimony, including better support for turning on/off CellML visualization.
+  - Better suite of unit tests, along with fixes for the problems they uncovered.
+  - More compact and consistent spacing in produced math infix.
+
+
 What's new in v2.4:
   - Because the SBML 'Hierarchical Model Composition' package has been accepted and is now officially part of SBML (yay!), support for it is now on by default, and has moved out of beta.  Models created using this package should be fully compatible with other programs who also support SBML hierarchy.  Support for 'flattened' models also remains, so core SBML L3v1 models as well as SBML L2 and L1 models can still be exported and imported.)
   - The Tutorial has been updated to include information on all the most recent features.

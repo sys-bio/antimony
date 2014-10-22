@@ -912,12 +912,12 @@ void Module::LoadSBML(const Model* sbml)
     const FunctionDefinition* function = sbml->getFunctionDefinition(func);
     sbmlname = getNameFromSBMLObject(function, "_F");
     string annot = function->getAnnotationString();
+    List* allElements = const_cast<Model*>(sbml)->getAllElements();
     if (annot.find("http://sbml.org/annotations/symbols") != string::npos &&
-        annot.find("http://en.wikipedia.org/wiki/Derivative") )
+        annot.find("http://en.wikipedia.org/wiki/Derivative") != string::npos )
     {
       //It's the special 'rateOf' function.  However, if the name is not 'rateOf' or 'rate', we need to change it to be one of those two.
       if (sbmlname != "rateOf" && sbmlname != "rate") {
-        List* allElements = const_cast<Model*>(sbml)->getAllElements();
         for (unsigned int e=0; e<allElements->getSize(); e++) {
           SBase* element = static_cast<SBase*>(allElements->get(e));
           element->renameSIdRefs(sbmlname, "rateOf");
@@ -927,6 +927,45 @@ void Module::LoadSBML(const Model* sbml)
       m_rateNames.insert(sbmlname);
       continue;
     }
+    FunctionDefinition newfunction(3,1);
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+    const DistribFunctionDefinitionPlugin* dfdp = static_cast<const DistribFunctionDefinitionPlugin*>(function->getPlugin("distrib"));
+    if (dfdp != NULL) {
+      string exactMatch = DistributionTypeToString(GetExactTypeOf(dfdp));
+      if (sbmlname == exactMatch) continue;
+      else if (exactMatch != "Unknown") {
+        for (unsigned int e=0; e<allElements->getSize(); e++) {
+          SBase* element = static_cast<SBase*>(allElements->get(e));
+          element->renameSIdRefs(sbmlname, exactMatch);
+        }
+        sbmlname = exactMatch;
+        continue;
+      }
+      ASTNode* antdist = GetAntimonyFormOf(dfdp);
+      if (antdist != NULL) {
+        newfunction.setMath(antdist);
+        newfunction.setId(sbmlname);
+        function = &newfunction;
+        delete antdist;
+      }
+    }
+#endif
+    if (!newfunction.isSetId()) {
+      distribution_type annotdist = GetDistributionFromAnnotation(annot);
+      if (annotdist != distUNKNOWN) {
+        //It's annotated as one of the distribution functions
+        string newname = DistributionTypeToString(annotdist);
+        if (newname != sbmlname) {
+          //Rename the function to the Antimony standard
+          for (unsigned int e=0; e<allElements->getSize(); e++) {
+            SBase* element = static_cast<SBase*>(allElements->get(e));
+            element->renameSIdRefs(sbmlname, newname);
+          }
+        }
+        continue;
+      }
+    }
+      
     UserFunction* uf = g_registry.GetUserFunction(sbmlname);
     bool duplicate = false;
     while (uf != NULL && !duplicate) {
@@ -1410,16 +1449,21 @@ void Module::CreateSBMLModel(bool comp)
     SBMLDocument newdoc(&m_sbmlnamespaces);
     m_sbml = newdoc;
 #ifdef USE_COMP
-    CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
-    if (compdoc != NULL) compdoc->setRequired(true);
+    m_sbml.setPackageRequired("comp", true);
 #endif
   }
   else {
-    SBMLNamespaces plainnamespaces(m_sbmllevel, m_sbmlversion);
+    SBMLNamespaces plainnamespaces(m_sbmlnamespaces);
+    plainnamespaces.removePackageNamespace(3, 1, "comp", 1);
     SBMLDocument newdoc(&plainnamespaces);
     m_sbml = newdoc;
   }
 
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+  if (m_usedDistributions.size() > 0) {
+    m_sbml.setPackageRequired("distrib", true);
+  }
+#endif
   Model* sbmlmod = m_sbml.createModel();
   sbmlmod->setId(m_modulename);
   sbmlmod->setName(m_modulename);
@@ -1619,7 +1663,11 @@ void Module::CreateSBMLModel(bool comp)
     fd->setMath(math);
     fd->setAnnotation("<annotation> <symbols xmlns=\"http://sbml.org/annotations/symbols\" definition=\"http://en.wikipedia.org/wiki/Derivative\"/> </annotation>");
     delete math;
-    
+  }
+
+  //Predefined distributions:
+  for (set<distribution_type>::iterator dtype = m_usedDistributions.begin(); dtype != m_usedDistributions.end(); dtype++) {
+    addDistributionToModel(sbmlmod, *dtype);
   }
 
   //Species
@@ -1969,7 +2017,8 @@ void Module::CreateSBMLModel(bool comp)
     const Variable* formvar = GetNthVariableOfType(allUnknown, form, comp);
     vector<string> fvname = formvar->GetName();
     if (fvname[fvname.size()-1] == "rateOf" ||
-        fvname[fvname.size()-1] == "rate") 
+        fvname[fvname.size()-1] == "rate" ||
+        StringToDistributionType(fvname[fvname.size()-1]) != distUNKNOWN) 
     {
       continue;
     }

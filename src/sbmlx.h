@@ -3,12 +3,14 @@
 #include <string>
 #include <vector>
 #include "unitdef.h"
+#include "enums.h"
 
 #ifndef NSBML
 #ifdef WIN32
 #define WIN32 1
 #endif
 #include <sbml/SBMLTypes.h>
+class DistribFunctionDefinitionPlugin;
 
 #ifdef USE_COMP
 #include <sbml/packages/comp/common/CompExtensionTypes.h>
@@ -28,5 +30,12 @@ double GetValueFrom(ASTNode* astn);
 UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, std::string modulename);
 #endif
 
+void addDistributionToModel(Model* model, distribution_type dtype);
+
+#ifdef LIBSBML_HAS_PACKAGE_DISTRIB
+distribution_type GetExactTypeOf(const DistribFunctionDefinitionPlugin* dfdp);
+ASTNode* GetAntimonyFormOf(const DistribFunctionDefinitionPlugin* dfdp);
+#endif
+distribution_type GetDistributionFromAnnotation(const std::string& annot);
 
 #endif

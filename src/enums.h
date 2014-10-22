@@ -127,4 +127,14 @@ enum deletion_type {delFull = 0,
                     delModifier,
                     delInteraction};
 
+/**
+ * distribution_type values are used to determine which distribution defined in UncertML is being used
+ */
+enum distribution_type {
+    distUNKNOWN = 0
+  , distNORMAL
+  , distTRUNCNORMAL
+  , distUNIFORM
+};
+
 #endif // ENUMS_H

@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <iostream>
 #include "stringx.h"
+#include "typex.h"
 #include "registry.h"
 
 using namespace std;
@@ -159,6 +160,10 @@ void setFormulaWithString(string formulastring, Formula* formula, Module* module
         continue;
       }
       if (module->IsRateOfSymbol(word)) {
+        formula->AddText(&word);
+        continue;
+      }
+      if (StringToDistributionType(word) != distUNKNOWN) {
         formula->AddText(&word);
         continue;
       }

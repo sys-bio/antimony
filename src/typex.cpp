@@ -323,3 +323,62 @@ string FormulaTypeToString(const formula_type ftype)
   assert(false); //uncaught type
   return "uncaught type";
 }
+
+string DistributionTypeToString(const distribution_type dtype)
+{
+  switch(dtype) {
+  case distUNKNOWN:
+    return "Unknown";
+  case distNORMAL:
+    return "normal";
+  case distTRUNCNORMAL:
+    return "truncatedNormal";
+  case distUNIFORM:
+    return "uniform";
+  }
+  assert(false); //uncaught type
+  return "uncaught type";
+}
+
+distribution_type StringToDistributionType(const string& name)
+{
+  if (CaselessStrCmp(name, "normal"))
+    return distNORMAL;
+  if (CaselessStrCmp(name, "truncatedNormal"))
+    return distTRUNCNORMAL;
+  if (CaselessStrCmp(name, "uniform"))
+    return distUNIFORM;
+  return distUNKNOWN;
+}
+
+string GetArgumentStringForDistribution(const distribution_type dtype)
+{
+  switch(dtype) {
+  case distUNKNOWN:
+    return "";
+  case distNORMAL:
+    return "mean, stddev,";
+  case distTRUNCNORMAL:
+    return "mean, stddev, lowlimit, uplimit,";
+  case distUNIFORM:
+    return "minimum, maximum,";
+  }
+  assert(false); //Uncaught type
+  return "";
+}
+
+std::string GetURIForDistribution(const distribution_type dtype)
+{
+  switch(dtype) {
+  case distUNKNOWN:
+    return "http://uncertml.org/distributions/";
+  case distNORMAL:
+    return "http://uncertml.org/distributions/normal";
+  case distTRUNCNORMAL:
+    return "http://uncertml.org/distributions/normal";
+  case distUNIFORM:
+    return "http://uncertml.org/distributions/uniform";
+  }
+  assert(false); //Uncaught type
+  return "http://uncertml.org/distributions/";
+}

@@ -44,6 +44,7 @@ private:
   std::vector<std::vector<std::string> > m_conversionFactors;
   std::vector<std::string> m_returnvalue;
   std::set<std::string> m_rateNames;
+  std::set<distribution_type> m_usedDistributions;
 
   size_t m_currentexportvar;
   bool m_ismain;
