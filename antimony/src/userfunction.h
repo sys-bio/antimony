@@ -2,6 +2,9 @@
 #include <sbml/SBMLTypes.h>
 #endif
 
+#include "typex.h"
+#include <set>
+
 class UserFunction : public Module
 {
 private:
@@ -17,7 +20,7 @@ public:
   std::string GetAntimony() const;
   void FixNames();
   bool ChangeTimeToRef();
-  //bool GetFormulaUsing(std::vector<std::vector<std::string> > newvars, Formula& setform) const;
+  std::set<distribution_type> UserFunction::GetUsedDistributionTypes();
 
 };
 

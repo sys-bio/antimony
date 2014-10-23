@@ -944,6 +944,13 @@ void Module::LoadSBML(const Model* sbml)
       ASTNode* antdist = GetAntimonyFormOf(dfdp);
       if (antdist != NULL) {
         newfunction.setMath(antdist);
+        if (StringToDistributionType(sbmlname) != distUNKNOWN) {
+          for (unsigned int e=0; e<allElements->getSize(); e++) {
+            SBase* element = static_cast<SBase*>(allElements->get(e));
+            element->renameSIdRefs(sbmlname, sbmlname + "_");
+          }
+          sbmlname += "_";
+        }
         newfunction.setId(sbmlname);
         function = &newfunction;
         delete antdist;

@@ -953,6 +953,12 @@ bool Module::Finalize()
       }
     }
   }
+  //Now check if the functions themselves use distributions
+  for (size_t uf=0; uf<g_registry.GetNumUserFunctions(); uf++) {
+    set<distribution_type> functypes = g_registry.GetNthUserFunction(uf)->GetUsedDistributionTypes();
+    m_usedDistributions.insert(functypes.begin(), functypes.end());
+  }
+
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
   if (m_usedDistributions.size() > 0) {
     m_sbmlnamespaces.addPackageNamespace("distrib", 1);

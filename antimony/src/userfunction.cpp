@@ -107,3 +107,18 @@ bool UserFunction::ChangeTimeToRef()
   }
   return false; //'time' not in function at all.
 }
+
+set<distribution_type> UserFunction::GetUsedDistributionTypes()
+{
+  set<distribution_type> ret;
+  if (m_formula.ContainsName("normal")) {
+    ret.insert(distNORMAL);
+  }
+  if (m_formula.ContainsName("truncatedNormal")) {
+    ret.insert(distTRUNCNORMAL);
+  }
+  if (m_formula.ContainsName("uniform")) {
+    ret.insert(distUNIFORM);
+  }
+  return ret;
+}

@@ -718,11 +718,96 @@ distribution_type GetExactTypeOf(const DistribFunctionDefinitionPlugin* dfdp)
   return distUNKNOWN;
 }
 
+string GetArgumentFor(string element, const UncertMLNode* dist)
+{
+  UncertMLNode* child = NULL;
+  unsigned int n=0;
+  while (n < dist->getNumChildren() && child==NULL) {
+    child = dist->getChild(n);
+    if (child->getElementName() != element) {
+      child = NULL;
+    }
+    n++;
+  }
+  if (child == NULL) return "";
+  if (child->getNumChildren() != 1) return "";
+  child = child->getChild(0);
+  if (child->getElementName() == "var") {
+    //It's a string reference
+    if (child->getNumAttributes() != 1) return "";
+    return child->getAttributes().getValue("varId");
+  }
+  if (child->getElementName() == "rVal") {
+    //It's a numerical value
+    child = child->getChild(0);
+    //However, libsbml has a bug that doesn't let us read that value.
+  }
+  if (child->getElementName() == "prVal") {
+    //It's a numerical value
+    child = child->getChild(0);
+    //However, libsbml has a bug that doesn't let us read that value.
+  }
+  return "";
+}
+
+string GetAntimonyFromNormal(const UncertMLNode* dist)
+{
+  string mean = GetArgumentFor("mean", dist);
+  string stddev = GetArgumentFor("stddev", dist);
+  string variance = GetArgumentFor("variance", dist);
+  string lowlimit = GetArgumentFor("truncationLowerInclusiveBound", dist);
+  string uplimit = GetArgumentFor("truncationUpperInclusiveBound", dist);
+  string function = "normal";
+  //Convert variance to stddev:
+  if (!variance.empty() && stddev.empty()) {
+    stddev = "sqrt(" + variance + ")";
+    variance = "";
+  }
+  if (mean.empty() || stddev.empty()) return "";
+  string arglist = "(" + mean + ", " + stddev;
+  //If this is a truncated normal, adjust accordingly.
+  if (!lowlimit.empty() || !uplimit.empty()) {
+    if (lowlimit.empty()) {
+      lowlimit = "-inf";
+    }
+    if (uplimit.empty()) {
+      uplimit = "inf";
+    }
+    function = "truncatedNormal";
+    arglist += ", " + lowlimit + ", " + uplimit;
+  }
+  return function + arglist + ")";
+}
+
+string GetAntimonyFromUniform(const UncertMLNode* dist)
+{
+  return "";
+}
+
 ASTNode* GetAntimonyFormOf(const DistribFunctionDefinitionPlugin* dfdp)
 {
   const DrawFromDistribution* dfd = dfdp->getDrawFromDistribution();
-
-  return NULL;
+  if (dfd==NULL) return NULL;
+  const UncertMLNode* dist = dfd->getUncertML();
+  if (dist==NULL) return NULL;
+  string antimony = "lambda(";
+  for (unsigned long di=0; di<dfd->getNumDistribInputs(); di++) {
+    const DistribInput* distinp = dfd->getListOfDistribInputs()->getByIndex(di);
+    if (distinp == NULL) return NULL;
+    antimony += distinp->getId() + ", ";
+  }
+  string elname = dist->getElementName();
+  if (elname == "NormalDistribution") {
+    string normal = GetAntimonyFromNormal(dist);
+    if (normal.empty()) return NULL;
+    antimony += normal;
+  }
+  else if (elname == "UniformDistribution") {
+    string uniform = GetAntimonyFromUniform(dist);
+    if (uniform.empty()) return NULL;
+    antimony += uniform;
+  }
+  return parseStringToASTNode(antimony + ")");
 }
 #endif
 distribution_type GetDistributionFromAnnotation(const std::string& annot)
