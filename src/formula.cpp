@@ -314,6 +314,22 @@ bool Formula::ContainsFunction(const string& function) const
 }
 
 
+bool Formula::ContainsName(const string& name) const
+{
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() == 0) {
+      if (m_components[comp].first == name) {
+        return true;
+      }
+    }
+    else if (m_components[comp].second[m_components[comp].second.size()-1] == name) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
 void Formula::Clear()
 {
   m_components.clear();
@@ -588,7 +604,8 @@ vector<vector<string> > Formula::GetVariables() const
 {
   vector<vector<string> > vars;
   for (size_t comp=0; comp<m_components.size(); comp++) {
-    if (m_components[comp].second.size() > 0) {
+    if (m_components[comp].second.size() > 0 &&
+        StringToDistributionType(m_components[comp].second[m_components[comp].second.size()-1]) == distUNKNOWN) {
       vars.push_back(m_components[comp].second);
     }
   }

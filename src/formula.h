@@ -55,6 +55,7 @@ public:
   bool ContainsVar(std::string modname, std::vector<std::string> vname) const;
   bool ContainsVar(const Variable* outervar) const;
   bool ContainsFunction(const std::string& function) const;
+  bool ContainsName(const std::string& name) const;
 
   void Clear();
 
