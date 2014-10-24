@@ -36,6 +36,6 @@ void addDistributionToModel(Model* model, distribution_type dtype);
 distribution_type GetExactTypeOf(const DistribFunctionDefinitionPlugin* dfdp);
 ASTNode* GetAntimonyFormOf(const DistribFunctionDefinitionPlugin* dfdp);
 #endif
-distribution_type GetDistributionFromAnnotation(const std::string& annot);
+distribution_type GetDistributionFromAnnotation(const std::string& annot, unsigned int numargs);
 
 #endif

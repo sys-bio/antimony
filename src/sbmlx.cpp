@@ -781,7 +781,10 @@ string GetAntimonyFromNormal(const UncertMLNode* dist)
 
 string GetAntimonyFromUniform(const UncertMLNode* dist)
 {
-  return "";
+  string minimum = GetArgumentFor("minimum", dist);
+  string maximum = GetArgumentFor("maximum", dist);
+  if (minimum.empty() || maximum.empty()) return "";
+  return "uniform(" + minimum + ", " + maximum + ")";
 }
 
 ASTNode* GetAntimonyFormOf(const DistribFunctionDefinitionPlugin* dfdp)
@@ -810,7 +813,19 @@ ASTNode* GetAntimonyFormOf(const DistribFunctionDefinitionPlugin* dfdp)
   return parseStringToASTNode(antimony + ")");
 }
 #endif
-distribution_type GetDistributionFromAnnotation(const std::string& annot)
+distribution_type GetDistributionFromAnnotation(const std::string& annot, unsigned int numargs)
 {
-  return distUNKNOWN;
+ if (annot.find("http://sbml.org/annotations/symbols") != string::npos) {
+   //It might be a distribution we know about!
+   if (annot.find(GetURIForDistribution(distNORMAL)) != string::npos ) {
+     if (numargs == 2) return distNORMAL;
+     if (numargs == 4) return distTRUNCNORMAL;
+     return distUNKNOWN;
+   }
+   if (annot.find(GetURIForDistribution(distUNIFORM)) != string::npos ) {
+     if (numargs == 2) return distUNIFORM;
+     return distUNKNOWN;
+   }
+ }
+ return distUNKNOWN;
 }
