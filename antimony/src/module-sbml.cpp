@@ -958,7 +958,7 @@ void Module::LoadSBML(const Model* sbml)
     }
 #endif
     if (!newfunction.isSetId()) {
-      distribution_type annotdist = GetDistributionFromAnnotation(annot);
+      distribution_type annotdist = GetDistributionFromAnnotation(annot, function->getNumArguments());
       if (annotdist != distUNKNOWN) {
         //It's annotated as one of the distribution functions
         string newname = DistributionTypeToString(annotdist);
