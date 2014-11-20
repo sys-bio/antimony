@@ -1,6 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" level="3" version="1" comp:required="true">
   <model metaid="iBioSim1" id="CompTest">
+    <listOfFunctionDefinitions>
+      <functionDefinition id="neighborQuantityLeft" name="neighborQuantityLeft">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> a </ci>
+            </bvar>
+            <cn type="integer"> 0 </cn>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="neighborQuantityRight" name="neighborQuantityRight">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> a </ci>
+            </bvar>
+            <cn type="integer"> 0 </cn>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="neighborQuantityAbove" name="neighborQuantityAbove">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> a </ci>
+            </bvar>
+            <cn type="integer"> 0 </cn>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="neighborQuantityBelow" name="neighborQuantityBelow">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> a </ci>
+            </bvar>
+            <cn type="integer"> 0 </cn>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="getCompartmentLocationX" name="getCompartmentLocationX">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> a </ci>
+            </bvar>
+            <cn type="integer"> 0 </cn>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="getCompartmentLocationY" name="getCompartmentLocationY">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> a </ci>
+            </bvar>
+            <cn type="integer"> 0 </cn>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
     <listOfCompartments>
       <compartment id="Cell" spatialDimensions="3" size="1" constant="true">
         <comp:listOfReplacedElements>
@@ -54,10 +116,11 @@
       <comp:submodel metaid="iBioSim2" comp:id="C1" comp:modelRef="CompModel">
         <comp:listOfDeletions>
           <comp:deletion comp:portRef="localParameter__R1___kf"/>
-          <comp:deletion comp:portRef="unitDefinition__perSecond"/>
+          <comp:deletion comp:portRef="functionDefinition__f"/>
           <comp:deletion comp:portRef="constraint__constraint0"/>
           <comp:deletion comp:portRef="event__event0"/>
           <comp:deletion comp:portRef="event__event1"/>
+          <comp:deletion comp:portRef="unitDefinition__perSecond"/>
         </comp:listOfDeletions>
       </comp:submodel>
     </comp:listOfSubmodels>
@@ -72,6 +135,82 @@
   </model>
   <comp:listOfModelDefinitions>
     <comp:modelDefinition metaid="CompModel__iBioSim1" id="CompModel" name="CompModel">
+      <listOfFunctionDefinitions>
+        <functionDefinition id="f">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <lambda>
+              <bvar>
+                <ci> x </ci>
+              </bvar>
+              <apply>
+                <times/>
+                <cn type="integer"> 2 </cn>
+                <ci> x </ci>
+              </apply>
+            </lambda>
+          </math>
+        </functionDefinition>
+        <functionDefinition id="neighborQuantityLeft" name="neighborQuantityLeft">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <lambda>
+              <bvar>
+                <ci> a </ci>
+              </bvar>
+              <cn type="integer"> 0 </cn>
+            </lambda>
+          </math>
+        </functionDefinition>
+        <functionDefinition id="neighborQuantityRight" name="neighborQuantityRight">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <lambda>
+              <bvar>
+                <ci> a </ci>
+              </bvar>
+              <cn type="integer"> 0 </cn>
+            </lambda>
+          </math>
+        </functionDefinition>
+        <functionDefinition id="neighborQuantityAbove" name="neighborQuantityAbove">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <lambda>
+              <bvar>
+                <ci> a </ci>
+              </bvar>
+              <cn type="integer"> 0 </cn>
+            </lambda>
+          </math>
+        </functionDefinition>
+        <functionDefinition id="neighborQuantityBelow" name="neighborQuantityBelow">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <lambda>
+              <bvar>
+                <ci> a </ci>
+              </bvar>
+              <cn type="integer"> 0 </cn>
+            </lambda>
+          </math>
+        </functionDefinition>
+        <functionDefinition id="getCompartmentLocationX" name="getCompartmentLocationX">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <lambda>
+              <bvar>
+                <ci> a </ci>
+              </bvar>
+              <cn type="integer"> 0 </cn>
+            </lambda>
+          </math>
+        </functionDefinition>
+        <functionDefinition id="getCompartmentLocationY" name="getCompartmentLocationY">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <lambda>
+              <bvar>
+                <ci> a </ci>
+              </bvar>
+              <cn type="integer"> 0 </cn>
+            </lambda>
+          </math>
+        </functionDefinition>
+      </listOfFunctionDefinitions>
       <listOfUnitDefinitions>
         <unitDefinition id="perSecond">
           <listOfUnits>
@@ -117,6 +256,7 @@
         <parameter id="kf" value="2" constant="true"/>
         <parameter id="R1_kr" value="1" constant="true"/>
         <parameter id="R3_kr" value="1" constant="true"/>
+        <parameter id="second" constant="true"/>
       </listOfParameters>
       <listOfRules>
         <assignmentRule metaid="CompModel__iBioSim6" variable="V1">
@@ -246,6 +386,7 @@
         <comp:port comp:metaIdRef="CompModel__R1___kf" comp:id="localParameter__R1___kf"/>
         <comp:port comp:metaIdRef="CompModel__constraint0" comp:id="constraint__constraint0"/>
         <comp:port comp:unitRef="perSecond" comp:id="unitDefinition__perSecond"/>
+        <comp:port comp:idRef="f" comp:id="functionDefinition__f"/>
         <comp:port comp:idRef="S1" comp:id="input__S1"/>
         <comp:port comp:idRef="S2" comp:id="output__S2"/>
       </comp:listOfPorts>

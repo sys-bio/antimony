@@ -45,6 +45,7 @@ bool UserFunction::SetFormula(const Formula& formula)
       return true;
     }
   }
+  /*
   for (size_t ufv=0; ufv<m_exportlist.size(); ufv++) {
     bool foundvar = false;
     for (size_t fv=0; fv<formvars.size(); fv++) {
@@ -58,6 +59,7 @@ bool UserFunction::SetFormula(const Formula& formula)
       return true;
     }
   }
+  */
   return false;
 }
 
@@ -119,6 +121,24 @@ set<distribution_type> UserFunction::GetUsedDistributionTypes()
   }
   if (m_formula.ContainsName("uniform")) {
     ret.insert(distUNIFORM);
+  }
+  if (m_formula.ContainsName("exponential")) {
+    ret.insert(distEXPONENTIAL);
+  }
+  if (m_formula.ContainsName("truncatedExponential")) {
+    ret.insert(distTRUNCEXPONENTIAL);
+  }
+  if (m_formula.ContainsName("gamma")) {
+    ret.insert(distGAMMA);
+  }
+  if (m_formula.ContainsName("truncatedGamma")) {
+    ret.insert(distTRUNCGAMMA);
+  }
+  if (m_formula.ContainsName("poisson")) {
+    ret.insert(distPOISSON);
+  }
+  if (m_formula.ContainsName("truncatedPoisson")) {
+    ret.insert(distTRUNCPOISSON);
   }
   return ret;
 }

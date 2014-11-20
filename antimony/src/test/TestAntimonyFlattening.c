@@ -108,25 +108,22 @@ void compareFileFlatteningWithDifferences(const string& base)
   fail_unless(sbml2ant != NULL);
   char* sbmlflat = getSBMLString(NULL);
 
-  ret = loadAntimonyFile(antfile.c_str());
-  fail_unless(ret != -1);
-  char* sbml2ant_ref = getAntimonyString(NULL);
-  fail_unless(string(sbml2ant_ref) == string(sbml2ant));
-
-  ret = loadSBMLFile(flatfile.c_str());
-  fail_unless(ret != -1);
-  char* sbmlflat_ref = getSBMLString(NULL);
+  std::ifstream t(antfile.c_str());
+  std::stringstream sbml2ant_ref;
+  sbml2ant_ref << t.rdbuf();
+  fail_unless(sbml2ant_ref.str() == string(sbml2ant));
 
   ret = loadSBMLString(sbmlflat);
-  delete sbmlflat;
+  free(sbmlflat);
   sbmlflat = getSBMLString(NULL);
 
-  fail_unless(string(sbmlflat) == string(sbmlflat_ref));
+  std::ifstream t2(flatfile.c_str());
+  std::stringstream sbmlflat_ref;
+  sbmlflat_ref << t2.rdbuf();
+  fail_unless(sbmlflat_ref.str() == string(sbmlflat));
 
-  delete sbml2ant;
-  delete sbml2ant_ref;
-  delete sbmlflat;
-  delete sbmlflat_ref;
+  free(sbml2ant);
+  free(sbmlflat);
 }
 
 START_TEST (test_aggregate)
@@ -149,7 +146,7 @@ END_TEST
 
 START_TEST (test_CompTest)
 {
-  compareFileFlattening("CompTest");
+  compareFileFlatteningWithDifferences("CompTest");
 }
 END_TEST
 
@@ -209,7 +206,7 @@ END_TEST
 
 START_TEST (test_exchangetest)
 {
-  compareFileFlattening("exchangetest");
+  compareFileFlatteningWithDifferences("exchangetest");
 }
 END_TEST
 
@@ -221,7 +218,7 @@ END_TEST
 
 START_TEST (test_QTPop)
 {
-  compareFileFlattening("QTPop");
+  compareFileFlatteningWithDifferences("QTPop");
 }
 END_TEST
 
@@ -479,7 +476,7 @@ END_TEST
 
 START_TEST (test_test39)
 {
-  compareFileFlattening("test39");
+  compareFileFlatteningWithDifferences("test39");
 }
 END_TEST
 
@@ -623,7 +620,7 @@ create_suite_Flattening(void)
   Suite *suite = suite_create("Antimony Flattening");
   TCase *tcase = tcase_create("Antimony Flattening");
 
-  tcase_add_test( tcase, test_QTPop); //Fails because of libsbml :(
+  tcase_add_test( tcase, test_QTPop);
 
   tcase_add_test( tcase, test_aggregate);
   tcase_add_test( tcase, test_complexified);

@@ -6,26 +6,29 @@ model moddef1()
   species s1 in C;
 
   // Reactions:
-  J0:  -> s1; 10;
+  J0:  -> s1; J0_p1*s1;
 
   // Species initializations:
-  s1 = 1/C;
+  s1 = 0.001/C;
 
   // Compartment initializations:
   C = 1;
 
+  // Variable initializations:
+  p1 = 100;
+  J0_p1 = 10;
+
   // Other declarations:
-  const C;
+  const C, p1;
 end
 
 model *doc0()
 
   // Sub-modules, and any changes to those submodules:
-  sub1: moddef1(), extentconv = extentconv;
+  sub1: moddef1();
+  sub1.p1 is p1;
+  sub1.J0_p1 is p1;
 
   // Variable initializations:
-  extentconv = 1000;
-
-  // Other declarations:
-  const extentconv;
+  p1 = 100;
 end

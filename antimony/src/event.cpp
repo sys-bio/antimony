@@ -224,7 +224,7 @@ bool AntimonyEvent::ClearReferencesTo(Variable* deletedvar, set<pair<vector<stri
   return false; //Didn't have to delete ourselves.
 }
 
-string AntimonyEvent::GetNthAssignmentVariableName(size_t n, std::string cc) const
+string AntimonyEvent::GetNthAssignmentVariableName(size_t n, string cc) const
 {
   if (n >= m_varresults.size()) {
     string error = "Unable to retrieve assignment '" + SizeTToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
@@ -248,7 +248,7 @@ string AntimonyEvent::GetNthAssignmentVariableName(size_t n, std::string cc) con
   return resultvar->GetNameDelimitedBy(cc);
 }
 
-string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, std::string cc, bool SBML) const
+string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, string cc, bool SBML) const
 {
   if (n >= m_formresults.size()) {
     string error = "Unable to retrieve assignment '" + SizeTToString(n) + "' from event " + ToStringFromVecDelimitedBy(m_name, cc) + ":  ";
@@ -271,7 +271,7 @@ string AntimonyEvent::GetNthAssignmentFormulaString(size_t n, std::string cc, bo
   return m_formresults[n].ToDelimitedStringWithStrands(cc, resultvar->GetStrandVars());
 }
 
-string AntimonyEvent::ToStringDelimitedBy(std::string cc) const
+string AntimonyEvent::ToStringDelimitedBy(string cc) const
 {
   if (IsEmpty()) return "";
   string retval;
@@ -333,12 +333,57 @@ void AntimonyEvent::FixNames()
 
 bool AntimonyEvent::Matches(const AntimonyEvent* newevent) const
 {
+  if (m_useValuesFromTriggerTime != newevent->m_useValuesFromTriggerTime) return false;
+  if (m_persistent != newevent->m_persistent) return false;
+  if (m_initialValue != newevent->m_initialValue) return false;
   if (!m_trigger.Matches(newevent->GetTrigger())) return false;
-  if (!m_delay.Matches(newevent->GetDelay())) return false;
-  if (!m_priority.Matches(newevent->GetPriority())) return false;
-  if (m_formresults.size() != newevent->GetNumAssignments()) return false;
-  for (size_t fr=0; fr<m_formresults.size(); fr++) {
-    if (!m_formresults[fr].Matches(newevent->GetAssignmentFormula(fr))) return false;
+  if (!m_delay.Matches(newevent->GetDelay())) {
+    if (!(newevent->GetDelay()->IsEmpty() && 
+           m_delay.ContainsDeletedVar())) {
+      return false;
+    }
+  }
+  if (!m_priority.Matches(newevent->GetPriority())) {
+    if (!(newevent->GetPriority()->IsEmpty() && 
+           m_priority.ContainsDeletedVar())) {
+      return false;
+    }
+  }
+  if (m_formresults.size() < newevent->GetNumAssignments()) return false;
+  //Create copies we can mess with:
+  vector<vector<string> > varresults = m_varresults;
+  vector<Formula> formresults = m_formresults;
+  if (m_formresults.size() > newevent->m_formresults.size()) {
+    //Some of the event assignments might have been deleted automatically.
+    set<vector<string> > oldvars(m_varresults.begin(), m_varresults.end());
+    set<vector<string> > newvars(newevent->m_varresults.begin(), newevent->m_varresults.end());
+    for (set<vector<string> >::iterator ov=oldvars.begin(); ov != oldvars.end(); ov++) {
+      if (newvars.find(*ov) == newvars.end()) {
+        size_t match = 0;
+        for (size_t ovnum=0; ovnum<varresults.size(); ovnum++) {
+          if (varresults[ovnum] == *ov) {
+            match = ovnum;
+            break;
+          }
+        }
+        Module* module = g_registry.GetModule(m_module);
+        assert(module != NULL);
+        Variable* ov_var = module->GetVariable(*ov);
+        if (ov_var->GetType() == varDeleted || formresults[match].ContainsDeletedVar()) {
+          formresults.erase(formresults.begin()+match);
+          varresults.erase(varresults.begin()+match);
+        }
+        else {
+          return false;
+        }
+      }
+    }
+  }
+
+  if (formresults.size() != newevent->m_formresults.size()) return false;
+  for (size_t fr=0; fr<formresults.size(); fr++) {
+    if (!formresults[fr].Matches(newevent->GetAssignmentFormula(fr))) return false;
+    if (varresults[fr] != newevent->m_varresults[fr]) return false;
   }
   return true;
 }

@@ -302,6 +302,19 @@ bool Formula::ContainsVar(const Variable* outervar) const
   return false;
 }
 
+bool Formula::ContainsDeletedVar() const
+{
+  for (size_t var=0; var<m_components.size(); var++) {
+    if (m_components[var].second.size() > 0) {
+      Module* module = g_registry.GetModule(m_components[var].first);
+      assert(module != NULL);
+      Variable* subvar = module->GetVariable(m_components[var].second);
+      if (subvar->GetType() == varDeleted) return true;
+    }
+  }
+  return false;
+}
+
 bool Formula::ContainsFunction(const string& function) const
 {
   for (size_t comp=0; comp<m_components.size(); comp++) {

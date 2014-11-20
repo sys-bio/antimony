@@ -155,6 +155,7 @@ public:
 #ifndef NSBML
 #ifdef USE_COMP
   void  AddSubmodelsToDocument(SBMLDocument* sbml);
+  void  ReturnSubmodelsFromDocument(SBMLDocument* sbml);
   bool  SynchronizeAssignments(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
   bool  SynchronizeRates(Model* sbmlmod, const Variable* var, const std::vector<const Variable*>& synchronized, const std::map<const Variable*, Variable>& syncmap);
 #endif //USE_COMP

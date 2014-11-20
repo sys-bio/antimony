@@ -210,6 +210,14 @@ bool AntimonyReaction::Matches(const AntimonyReaction* newreaction) const
   if (GetType() != newreaction->GetType()) return false;
   if (!m_left.Matches(newreaction->GetLeft())) return false;
   if (!m_right.Matches(newreaction->GetRight())) return false;
-  return m_formula.Matches(newreaction->GetFormula());
+  if (!m_formula.Matches(newreaction->GetFormula())) {
+    if (newreaction->GetFormula()->IsEmpty() &&
+        m_formula.ContainsDeletedVar()) 
+    {
+      return true;
+    }
+    return false;
+  }
+  return true;
 }
 

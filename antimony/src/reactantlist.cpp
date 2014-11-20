@@ -177,13 +177,41 @@ void ReactantList::FixNames()
 bool ReactantList::Matches(const ReactantList* newrl) const
 {
   vector<vector<string> > newvariables = newrl->GetVariableList();
-  vector<double> newstoichs = newrl->GetStoichiometries();
-  if (m_components.size() != newvariables.size()) return false;
-  for (size_t component=0; component<m_components.size(); component++) {
-    if (m_components[component].first != newstoichs[component]) return false;
+  vector<vector<string> > oldvariables = GetVariableList();
+  if (newvariables.size() > oldvariables.size()) return false;
+  //Make a copy of the components that we can mess with:
+  vector<pair<double, vector<string> > > components = m_components;
+  if (newvariables.size() < oldvariables.size()) {
+    set<vector<string> > newvarset(newvariables.begin(), newvariables.end());
+    set<vector<string> > oldvarset(oldvariables.begin(), oldvariables.end());
+    for (set<vector<string> >::iterator ov = oldvarset.begin(); ov != oldvarset.end(); ov++) {
+      if (newvarset.find(*ov) == newvarset.end()) {
+        //The missing element might have been deleted automatically.
+        size_t match = 0;
+        for (size_t ovnum=0; ovnum<oldvariables.size(); ovnum++) {
+          if (oldvariables[ovnum] == *ov) {
+            match = ovnum;
+            break;
+          }
+        }
+        Module* module = g_registry.GetModule(m_module);
+        assert(module != NULL);
+        Variable* ov_var = module->GetVariable(*ov);
+        if (ov_var->GetType() == varDeleted) {
+          components.erase(components.begin()+match);
+        }
+        else {
+          return false;
+        }
+      }
+    }
+  }
+  if (components.size() != newvariables.size()) return false;
+  for (size_t component=0; component<components.size(); component++) {
+    if (components[component].first != newrl->m_components[component].first) return false;
     Module* module = g_registry.GetModule(m_module);
     assert(module != NULL);
-    Variable* origvar = module->GetVariable(m_components[component].second);
+    Variable* origvar = module->GetVariable(components[component].second);
     assert(origvar != NULL);
     Variable* newvar = module->GetVariable(newvariables[component]);
     assert(newvar != NULL);

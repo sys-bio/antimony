@@ -8,12 +8,12 @@
       <species id="s1" compartment="C" initialAmount="0.001" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
     </listOfSpecies>
     <listOfParameters>
+      <parameter id="timeconv" value="60" constant="true"/>
+      <parameter id="t5" value="1" constant="false"/>
       <parameter id="t1" value="1" constant="false"/>
       <parameter id="t2" constant="false"/>
       <parameter id="t3" constant="false"/>
       <parameter id="t4" value="1" constant="false"/>
-      <parameter id="t5" value="1" constant="false"/>
-      <parameter id="timeconv" value="60" constant="true"/>
     </listOfParameters>
     <listOfInitialAssignments>
       <initialAssignment symbol="t2">
@@ -31,6 +31,27 @@
       </initialAssignment>
     </listOfInitialAssignments>
     <listOfRules>
+      <rateRule variable="t1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <apply>
+              <plus/>
+              <apply>
+                <divide/>
+                <apply>
+                  <divide/>
+                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
+                  <ci> timeconv </ci>
+                </apply>
+                <ci> t1 </ci>
+              </apply>
+              <cn type="integer"> 3 </cn>
+            </apply>
+            <ci> timeconv </ci>
+          </apply>
+        </math>
+      </rateRule>
       <assignmentRule variable="t3">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
           <apply>
@@ -44,27 +65,6 @@
           </apply>
         </math>
       </assignmentRule>
-      <rateRule variable="t5">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <apply>
-            <divide/>
-            <apply>
-              <plus/>
-              <apply>
-                <divide/>
-                <apply>
-                  <divide/>
-                  <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/time"> time </csymbol>
-                  <ci> timeconv </ci>
-                </apply>
-                <ci> t5 </ci>
-              </apply>
-              <cn type="integer"> 3 </cn>
-            </apply>
-            <ci> timeconv </ci>
-          </apply>
-        </math>
-      </rateRule>
     </listOfRules>
     <listOfReactions>
       <reaction id="sub1__J0" reversible="true" fast="false">
@@ -91,11 +91,11 @@
                   <ci> s1 </ci>
                   <apply>
                     <csymbol encoding="text" definitionURL="http://www.sbml.org/sbml/symbols/delay"> delay </csymbol>
-                    <ci> t1 </ci>
+                    <ci> t5 </ci>
                     <apply>
                       <times/>
                       <ci> timeconv </ci>
-                      <cn> 0.2 </cn>
+                      <cn type="e-notation"> 2 <sep/> -1 </cn>
                     </apply>
                   </apply>
                 </apply>
@@ -139,7 +139,7 @@
           </math>
         </delay>
         <listOfEventAssignments>
-          <eventAssignment variable="t1">
+          <eventAssignment variable="t5">
             <math xmlns="http://www.w3.org/1998/Math/MathML">
               <apply>
                 <divide/>
