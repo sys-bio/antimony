@@ -1,36 +1,35 @@
-//Created by libAntimony v2.5
+//Created by libAntimony v2.6.0
 model moddef1()
-
-  // Variable initializations:
-  t5 = 1;
-  t1 = 1;
-  t2 = time+3;
-  var t3;
-  t4 = 1;
 
   // Compartments and Species:
   compartment C;
   species s1 in C;
 
   // Assignment Rules:
-  t3 := delay(t1,3);
+  t3 := delay(t1, 3);
 
   // Rate Rules:
-  t1' = time* t1+3;
+  t1' = time*t1 + 3;
 
   // Reactions:
-  J0:  -> s1; (s1* t3*time)/delay(t5,2.000000e+004);
+  J0:  -> s1; (s1*t3*time)/delay(t5, 2.000000e+004);
 
   // Events:
-  _E0: at 1/time after time>3: t5 = time;
+  _E0: at 1/time after time > 3: t5 = time;
 
   // Species initializations:
-  s1 = 1/ C;
+  s1 = 1/C;
 
   // Compartment initializations:
   C = 1;
 
-  //Other declarations:
+  // Variable initializations:
+  t5 = 1;
+  t1 = 1;
+  t2 = time + 3;
+  t4 = 1;
+
+  // Other declarations:
   var t5, t1, t2, t3, t4;
   const C;
 end
@@ -49,6 +48,6 @@ model *doc0()
   timeconv = 60;
   extentconv = 1000;
 
-  //Other declarations:
+  // Other declarations:
   const timeconv, extentconv;
 end

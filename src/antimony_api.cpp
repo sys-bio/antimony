@@ -372,7 +372,7 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
   g_registry.ClearModules();
   SBMLDocument* document = readSBML(filename);
   long retval = CheckAndAddSBMLDoc(document);
-  if (retval == -1) {
+  if (retval == -1  && g_registry.GetError().empty()) {
     stringstream errorstream;
     document->printErrors(errorstream);
     string file(filename);

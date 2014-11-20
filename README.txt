@@ -10,7 +10,13 @@ The CellML API v1.11 SDK was used in this version of Antimony (and QTAntimony) a
 
 If downloading the SDK does not work (or if it is unavailable for your operating system) it too now uses CMake as its build system, and we have had reasonable success using this on linux-based systems.
 
-What's new in v2.5.2
+What's new in v2.6.0
+  - Built-in distribution functions that round-trip to SBML and SBML-distrib:
+     * normal, truncatedNormal
+     * uniform
+     * exponential, truncatedExponential
+     * gamma, truncatedGamma
+     * poisson, truncatedPoisson
   - New function 'rateOf'/'rate' that uses the custom annotaition of Copasi/roadrunner to define a function that returns the rate of change of a variable.
   - Default libsbml bindings now static.
   - Better error handling for miscoded models.

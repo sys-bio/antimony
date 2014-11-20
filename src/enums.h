@@ -135,6 +135,12 @@ enum distribution_type {
   , distNORMAL
   , distTRUNCNORMAL
   , distUNIFORM
+  , distEXPONENTIAL
+  , distTRUNCEXPONENTIAL
+  , distGAMMA
+  , distTRUNCGAMMA
+  , distPOISSON
+  , distTRUNCPOISSON
 };
 
 #endif // ENUMS_H

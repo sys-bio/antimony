@@ -335,6 +335,18 @@ string DistributionTypeToString(const distribution_type dtype)
     return "truncatedNormal";
   case distUNIFORM:
     return "uniform";
+  case distEXPONENTIAL:
+    return "exponential";
+  case distTRUNCEXPONENTIAL:
+    return "truncatedExponential";
+  case distGAMMA:
+    return "gamma";
+  case distTRUNCGAMMA:
+    return "truncatedGamma";
+  case distPOISSON:
+    return "poisson";
+  case distTRUNCPOISSON:
+    return "truncatedPoisson";
   }
   assert(false); //uncaught type
   return "uncaught type";
@@ -348,6 +360,18 @@ distribution_type StringToDistributionType(const string& name)
     return distTRUNCNORMAL;
   if (CaselessStrCmp(name, "uniform"))
     return distUNIFORM;
+  if (CaselessStrCmp(name, "exponential"))
+    return distEXPONENTIAL;
+  if (CaselessStrCmp(name, "truncatedExponential"))
+    return distTRUNCEXPONENTIAL;
+  if (CaselessStrCmp(name, "gamma"))
+    return distGAMMA;
+  if (CaselessStrCmp(name, "truncatedGamma"))
+    return distTRUNCGAMMA;
+  if (CaselessStrCmp(name, "poisson"))
+    return distPOISSON;
+  if (CaselessStrCmp(name, "truncatedPoisson"))
+    return distTRUNCPOISSON;
   return distUNKNOWN;
 }
 
@@ -362,6 +386,18 @@ string GetArgumentStringForDistribution(const distribution_type dtype)
     return "mean, stddev, lowlimit, uplimit,";
   case distUNIFORM:
     return "minimum, maximum,";
+  case distEXPONENTIAL:
+    return "rate,";
+  case distTRUNCEXPONENTIAL:
+    return "rate, lowlimit, uplimit,";
+  case distGAMMA:
+    return "mean, stddev,";
+  case distTRUNCGAMMA:
+    return "mean, stddev, lowlimit, uplimit,";
+  case distPOISSON:
+    return "rate,";
+  case distTRUNCPOISSON:
+    return "rate, lowlimit, uplimit,";
   }
   assert(false); //Uncaught type
   return "";
@@ -373,11 +409,19 @@ std::string GetURIForDistribution(const distribution_type dtype)
   case distUNKNOWN:
     return "http://uncertml.org/distributions/";
   case distNORMAL:
-    return "http://uncertml.org/distributions/normal";
   case distTRUNCNORMAL:
     return "http://uncertml.org/distributions/normal";
   case distUNIFORM:
     return "http://uncertml.org/distributions/uniform";
+  case distEXPONENTIAL:
+  case distTRUNCEXPONENTIAL:
+    return "http://uncertml.org/distributions/exponential";
+  case distGAMMA:
+  case distTRUNCGAMMA:
+    return "http://uncertml.org/distributions/gamma";
+  case distPOISSON:
+  case distTRUNCPOISSON:
+    return "http://uncertml.org/distributions/poisson";
   }
   assert(false); //Uncaught type
   return "http://uncertml.org/distributions/";

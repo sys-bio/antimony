@@ -577,8 +577,16 @@ bool Variable::SetType(var_type newtype)
   if (newtype == varUndefined) return false;
   if (newtype == m_type) return false;
   if (newtype == varDeleted) {
-    //You can delete anything
-    m_type = varDeleted;
+    //You can delete any type of variable.
+    if (m_type == varUnitDefinition) {
+      m_deletedunit = true; 
+    }
+    m_type = newtype;
+    m_const = constDEFAULT;
+    m_valFormula.Clear();
+    m_valRateRule.Clear();
+    m_valReaction.Clear();
+    m_valUnitDef.ClearComponents();
     return false;
   }
   if (IsPointer()) {
@@ -622,19 +630,6 @@ bool Variable::SetType(var_type newtype)
   //If we're setting this to be a species and we have a rate rule or assignment rule, we need to be 'const' (aka a boundary species):
   if (IsSpecies(newtype) && (m_formulatype == formulaASSIGNMENT || m_formulatype == formulaRATE)) {
     m_const = constCONST;
-  }
-  if (newtype == varDeleted) {
-    //You can delete any type of variable.
-    if (m_type == varUnitDefinition) {
-      m_deletedunit = true; 
-    }
-    m_type = newtype;
-    m_const = constDEFAULT;
-    m_valFormula.Clear();
-    m_valRateRule.Clear();
-    m_valReaction.Clear();
-    m_valUnitDef.ClearComponents();
-    return false;
   }
 
   string error = "Unable to set the type of variable '" + GetNameDelimitedBy(".") + "' to " + VarTypeToString(newtype) + " because it is already set to be the incompatible type " + VarTypeToString(m_type) + ".  This situation can occur either with explicit type declaration or by using the variable in different, incompatible contexts.";
@@ -814,11 +809,22 @@ bool Variable::SetFormula(Formula* formula)
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy(".") + "'s definition (" + formula->ToDelimitedStringWithEllipses(".") + ") either includes itself directly (i.e. 's5 = 6 + s5') or by proxy (i.e. 's5 = 8*d3' and 'd3 = 9*s5').");
     return true;
   }
+  bool isdeletion = false;
+  Variable* submodel = NULL;
+  if (!GetFormula()->IsEmpty() && formula->IsEmpty() && m_name.size()>1) {
+    isdeletion = true;
+    vector<string> submodname = m_name;
+    submodname.pop_back();
+    submodel = g_registry.GetModule(m_module)->GetVariable(submodname);
+  }
   switch (m_type) {
   case varReactionUndef:
   case varReactionGene:
   case varInteraction:
     m_valReaction.SetFormula(formula);
+    if (isdeletion) {
+      submodel->AddDeletion(m_name, delKineticLaw);
+    }
     break;
   case varModule:
     return m_valModule[0].SetFormula(formula);
@@ -826,6 +832,9 @@ bool Variable::SetFormula(Formula* formula)
   case varFormulaOperator:
     m_formulatype = formulaASSIGNMENT;
     m_valFormula = *formula;
+    if (isdeletion) {
+      submodel->AddDeletion(m_name, delAssignmentRule);
+    }
     break;
   case varUndefined:
     m_type = varFormulaUndef;
@@ -836,6 +845,9 @@ bool Variable::SetFormula(Formula* formula)
     if (m_formulatype == formulaASSIGNMENT) {
       g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to have the initial value '" + formula->ToDelimitedStringWithEllipses(".") + "' because it already has an assignment rule, which applies at all times, including time=0.");
       return true;
+    }
+    if (isdeletion) {
+      submodel->AddDeletion(m_name, delInitialAssignment);
     }
     m_valFormula = *formula;
     break;
@@ -889,9 +901,20 @@ bool Variable::SetAssignmentRule(Formula* formula)
     g_registry.SetError("Loop detected:  " + GetNameDelimitedBy(".") + "'s definition (" + formula->ToDelimitedStringWithEllipses(".") + ") either includes itself directly (i.e. 's5 := 6 + s5') or by proxy (i.e. 's5 := 8*d3' and 'd3 := 9*s5').");
     return true;
   }
+  bool isdeletion = false;
+  Variable* submodel = NULL;
+  if (!GetFormula()->IsEmpty() && formula->IsEmpty() && m_name.size()>1) {
+    isdeletion = true;
+    vector<string> submodname = m_name;
+    submodname.pop_back();
+    submodel = g_registry.GetModule(m_module)->GetVariable(submodname);
+  }
   if (IsReaction(m_type)) {
     m_valReaction.SetFormula(formula);
     if (formula->MakeUnitVariablesUnits()) return true;
+    if (isdeletion) {
+      submodel->AddDeletion(m_name, delKineticLaw);
+    }
     return false;
   }
   if (!CanHaveAssignmentRule(m_type)) {
@@ -908,6 +931,9 @@ bool Variable::SetAssignmentRule(Formula* formula)
   if (formula->MakeUnitVariablesUnits()) return true;
   m_formulatype = formulaASSIGNMENT;
   m_valFormula = *formula;
+  if (isdeletion) {
+    submodel->AddDeletion(m_name, delAssignmentRule);
+  }
   return false;
 }
 
@@ -942,9 +968,15 @@ bool Variable::SetRateRule(Formula* formula)
     m_type = varFormulaUndef;
   }
   if (formula->MakeUnitVariablesUnits()) return true;
+  if (!m_valRateRule.IsEmpty() && formula->IsEmpty() && m_name.size()>1) {
+    //The rate rule is being cleared, so set up a deletion.
+    vector<string> submodname = m_name;
+    submodname.pop_back();
+    Variable* submod = g_registry.GetModule(m_module)->GetVariable(submodname);
+    submod->AddDeletion(m_name, delRateRule);
+  }
   m_valRateRule = *formula;
   m_formulatype = formulaRATE;
-  //If the rate rule is being cleared, set up a deletion.
 
   return false;
 }
@@ -1378,19 +1410,19 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
    switch (deletedvar->GetFormulaType()) {
    case formulaRATE:
      if (!rform->IsEmpty()) {
-       m_deletions.insert(make_pair(deletedvar->GetName(), delRateRule));
+       AddDeletion(deletedvar->GetName(), delRateRule);
      }
      //Fall through to:
    case formulaINITIAL:
      if (!(form->IsEmpty() || form->IsDouble())) {
        if (!(IsSpecies(deletedvar->GetType()) && form->IsAmountIn(deletedvar->GetCompartment()))) {
-         m_deletions.insert(make_pair(deletedvar->GetName(), delInitialAssignment));
+         AddDeletion(deletedvar->GetName(), delInitialAssignment);
        }
      }
      break;
    case formulaASSIGNMENT: 
      if (!form->IsEmpty()) {
-       m_deletions.insert(make_pair(deletedvar->GetName(), delAssignmentRule));
+       AddDeletion(deletedvar->GetName(), delAssignmentRule);
      }
      break;
    case formulaKINETIC:
@@ -1415,10 +1447,10 @@ bool Variable::DeleteFromSubmodel(Variable* deletedvar)
 
   //Save the fact that you deleted the variable:
   if (deletedvar->GetType() == varInteraction) {
-    m_deletions.insert(make_pair(deletedvar->GetName(), delInteraction));
+    AddDeletion(deletedvar->GetName(), delInteraction);
   }
   else {
-    m_deletions.insert(make_pair(deletedvar->GetName(), delFull));
+    AddDeletion(deletedvar->GetName(), delFull);
   }
   //And set deletedvar to 'deleted'!  Like Strong Bad!
   deletedvar->SetType(varDeleted);
@@ -1430,6 +1462,16 @@ void Variable::AddDeletion(Variable* var, deletion_type deltype)
   assert(var != NULL);
   if (var==NULL) return;
   m_deletions.insert(make_pair(var->GetName(), deltype));
+}
+
+void Variable::AddDeletion(vector<string> varname, deletion_type deltype)
+{
+  m_deletions.insert(make_pair(varname, deltype));
+}
+
+bool Variable::HasDeletion(vector<string> varname, deletion_type deltype)
+{
+  return m_deletions.find(make_pair(varname, deltype)) != m_deletions.end();
 }
 
 set<pair<vector<string>, deletion_type> > Variable::ClearReferencesTo(Variable* deletedvar)
@@ -1601,6 +1643,12 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
   }
 
   //Synchronize the formulas.
+  if (m_formulatype == formulaASSIGNMENT && clone->GetFormula()->IsEmpty()) {
+    clone->m_formulatype = formulaASSIGNMENT;
+  }
+  if (m_formulatype == formulaRATE && clone->GetRateRule()->IsEmpty() && clone->GetFormula()->IsEmpty()) {
+    clone->m_formulatype = formulaRATE;
+  }
   if (!m_valFormula.IsEmpty()) {
     Formula* cloneform = clone->GetFormula();
     if (cloneform->IsEmpty() || cloneform->IsEllipsesOnly()) {
@@ -1640,7 +1688,8 @@ bool Variable::Synchronize(Variable* clone, const Variable* conversionFactor)
     //else stay with the clone version--it supercedes our own.
     m_valRateRule.Clear();
   }
-  m_formulatype = clone->GetFormulaType();
+  m_formulatype = clone->m_formulatype;
+
 
   //Synchronize the Reactions.
   if (!m_valReaction.IsEmpty()) {

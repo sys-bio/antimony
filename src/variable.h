@@ -52,8 +52,10 @@ private:
   //If the variable is a submodule, it can have conversion factors and deletions.
   std::vector<std::string> m_extentConversionFactor;
   std::vector<std::string> m_timeConversionFactor;
+protected:
   std::set<std::pair<std::vector<std::string>, deletion_type> > m_deletions;
-
+  friend class Module;
+private:
   //If we've set the compartment we're in, this tells us where we are.
   std::vector<std::string> m_compartment;
   std::vector<std::string> m_supercompartment;
@@ -151,6 +153,8 @@ public:
   bool SetUnit(Variable* var);
 
   void AddDeletion(Variable* var, deletion_type deltype);
+  void AddDeletion(std::vector<std::string> varname, deletion_type deltype);
+  bool HasDeletion(std::vector<std::string> varname, deletion_type deltype);
 
   //Submodule conversion factors:
   bool SetExtentConversionFactor(Variable* var);

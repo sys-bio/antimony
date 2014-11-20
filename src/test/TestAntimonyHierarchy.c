@@ -54,6 +54,7 @@ void compareFileHierarchy(const string& base)
   fail_unless(string(atosbml) == string(sbmlFlat));
 
   ret = loadSBMLString(matching);
+  fail_unless(ret != -1);
   char* roundtrip = getAntimonyString(NULL);
   fail_unless(roundtrip != NULL);
   string rtfilename = dir + base + "_rt.txt";
