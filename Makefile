@@ -1,5 +1,5 @@
 #version number
-version = 2.5
+version = 2.6
 
 #mingw:
 #mingw = i586-mingw32msvc
@@ -226,7 +226,7 @@ DOCFILES = $(doc_dir)antimony__api_8h.html \
 	$(doc_dir)files.js \
 	$(doc_dir)index.js \
 	$(doc_dir)jquery.js \
-	$(doc_dir)navtreeindex.js \
+	$(doc_dir)navtreeindex0.js \
 	$(doc_dir)navtree.js \
 	$(doc_dir)resize.js \
 	$(ex_dir).htaccess \
@@ -273,6 +273,7 @@ BINDINGFILES = \
        $(src_dir)bindings/python/pydoc-doxygen.i \
        $(src_dir)bindings/python/pydoc-normal.i \
        $(src_dir)bindings/python/test.py \
+       $(src_dir)bindings/python/__init__.py \
        $(src_dir)bindings/python/doc-converter/argparse.py \
        $(src_dir)bindings/python/doc-converter/Makefile \
        $(src_dir)bindings/python/doc-converter/out.i \
