@@ -1088,8 +1088,12 @@ bool Module::Finalize()
         m_libsbml_warnings += error->getMessage();
         break;
       case 2: //LIBSBML_SEV_ERROR:
+#ifdef NDEBUG
         if (trueerrors != "") trueerrors += "\n";
         trueerrors += error->getMessage();
+#else
+        m_libsbml_warnings += error->getMessage();
+#endif
         break;
       case 3: //LIBSBML_SEV_FATAL:
         g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:  " + error->getMessage());

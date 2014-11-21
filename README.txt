@@ -26,6 +26,7 @@ What's new in v2.6.0
   - Allow shorthand use of function definitions that uses global variables if present.
   - Add ability to define and import model-wide units for SBML.
   - No longer allow export of invalid SBML, for any reason.
+  - Various bug fixes for more robust round-tripping of models involving deletions and other hierarchical features.
 
 What's new in v2.5.1
   - Fix installers, particularly for python.
