@@ -1088,7 +1088,7 @@ bool Module::Finalize()
         m_libsbml_warnings += error->getMessage();
         break;
       case 2: //LIBSBML_SEV_ERROR:
-#ifdef NDEBUG
+#ifndef NDEBUG
         if (trueerrors != "") trueerrors += "\n";
         trueerrors += error->getMessage();
 #else
