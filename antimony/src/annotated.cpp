@@ -4,10 +4,12 @@ using namespace std;
 #ifndef NSBML
 bool Annotated::TransferAnnotationTo(SBase* sbmlobj) const
 {
+  /*
   if (HasAnnotation()) {
     sbmlobj->setMetaId(m_metaid);
     return sbmlobj->setAnnotation(&m_annotation);
   }
+  */
   return true;
 }
 
