@@ -20,7 +20,7 @@ public:
   std::string GetAntimony() const;
   void FixNames();
   bool ChangeTimeToRef();
-  std::set<distribution_type> UserFunction::GetUsedDistributionTypes();
+  std::set<distribution_type> GetUsedDistributionTypes();
 
 };
 
