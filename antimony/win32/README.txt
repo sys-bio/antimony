@@ -12,8 +12,8 @@ To use these Windows executables:
      convert between formats that Antimony understands.  The precompiled
      binary can be used to convert files between Antimony, SBML, and CellML.
 
-     You must use at least one of the following options to set the output format
-     of this translator:
+     You must use at least one of the following options to set the output
+     format of this translator:
 
         -o antimony : Output all models in Antimony format
         -o sbml     : Output the 'main' model as SBML
@@ -22,22 +22,23 @@ To use these Windows executables:
         -o allsbml  : Output each model and submodel as a separate SBML model
         -o cellml   : Output the 'main' model as CellML
 
-     Each file will be exported to the desired format separately.  Multiple output
-     formats are possible; a separate '-o [format]' is needed for each output format.
-     This means that if you give sbtranslate two input files and two output formats,
-     it will write four files by default: one for each file in each format.
+     Each file will be exported to the desired format separately.  Multiple
+     output formats are possible; a separate '-o [format]' is needed for each
+     output format.  This means that if you give sbtranslate two input files
+     and two output formats, it will write four files by default: one for each
+     file in each format.
 
      sbtranslate takes as input any number of valid model files in any of the
-     formats it understands.  If no files are provided, it reads input from stdin
-     and attempts to parse that in one of its known model formats.
+     formats it understands.  If no files are provided, it reads input from
+     stdin and attempts to parse that in one of its known model formats.
 
-     By default, sbtranslate will output files in the working directory with the
-     same name as the original file, minus that file's extention, plus '.txt' for
-     antimony output, '.xml' for SBML output, and '.cellml' for CellML output (when
-     available).  If the file was originally in the same format as the desired
-     output, '_rt' (for 'roundtrip') is appended to the filename before the
-     extention.  If the input was stdin, output will by default be written to
-     stdout.
+     By default, sbtranslate will output files in the working directory with
+     the same name as the original file, minus that file's extention, plus
+     '.txt' for antimony output, '.xml' for SBML output, and '.cellml' for
+     CellML output (when available).  If the file was originally in the same
+     format as the desired output, '_rt' (for 'roundtrip') is appended to the
+     filename before the extention.  If the input was stdin, output will by
+     default be written to stdout.
 
      To change this behavior, the following options may be used:
         -outfile [filename] : All output is written to the given file.
