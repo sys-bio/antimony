@@ -1,0 +1,84 @@
+//Created by libAntimony v2.6.0
+model *MODEL1306190001()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species N0 in compartment_, N1 in compartment_, N2 in compartment_;
+
+  // Assignment Rules:
+  T := N0 + N1 + N2;
+  f0 := r0*N0*(1 - T/K);
+  p00 := 1 - p01;
+  f1 := r1*N1*(1 - T/K);
+  p11 := 1 - p12;
+
+  // Reactions:
+  R0X: N0 => ; d0*N0;
+  R01: N0 => N0 + N1; p01*f0;
+  R00: N0 => 2N0; p00*f0;
+  R1X: N1 => ; d1*N1;
+  R12: N1 => N1 + N2; p12*f1;
+  R11: N1 => 2N1; p11*f1;
+  R2X: N2 => ; d2*N2;
+
+  // Species initializations:
+  N0 = 1.75444831412765/compartment_;
+  N1 = 27.40585059/compartment_;
+  N2 = 45.6191494109/compartment_;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  d0 = 0.1;
+  d0 has per_day;
+  d1 = 0.420467092599869;
+  d1 has per_day;
+  d2 = 1.10138534772246;
+  d2 has per_day;
+  T has cell;
+  K = 120;
+  K has cell;
+  r0 = 1.83898685224665;
+  r0 has per_day;
+  f0 has cell_per_day;
+  p00 has dimensionless;
+  p01 = 0.855699855699856;
+  p01 has dimensionless;
+  r1 = 5.88010232010212;
+  r1 has per_day;
+  f1 has cell_per_day;
+  p11 has dimensionless;
+  p12 = 0.827377484810943;
+  p12 has dimensionless;
+
+  //  Other declarations:
+  var T, f0, p00, f1, p11;
+  const compartment_, d0, d1, d2, K, r0, p01, r1, p12;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 86400 second;
+  unit volume = dimensionless;
+  unit per_day = 1 / 86400 second;
+  unit cell = item;
+  unit cell_per_day = item / 86400 second;
+
+  //  Display Names:
+  substance is "cell";
+  time_unit is "day";
+  per_day is "per day";
+  cell_per_day is "cell per_day";
+  compartment_ is "crypt";
+  T is "cellularity";
+  K is "capacity";
+  f0 is "N0 division rate";
+  f1 is "N1 division rate";
+  R0X is "N0 death";
+  R01 is "N0 differentiation";
+  R00 is "N0 renewal";
+  R1X is "N1 death";
+  R12 is "N1 differentiation";
+  R11 is "N1 renewal";
+  R2X is "N2 death";
+end

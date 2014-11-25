@@ -1,0 +1,31 @@
+//Created by libAntimony v2.6.0
+model *MODEL1407170000()
+
+  // Compartments and Species:
+  compartment Cell;
+  species $alpha in Cell;
+
+  // Assignment Rules:
+  alpha := 1 - 1/(kb*(exp(Ka*time) - 1) + 1);
+  kat50 := ln(1/kb + 1);
+  v50t50 := 1/4*(kb + 1)*ln(1/kb + 1);
+
+  // Compartment initializations:
+  Cell = 1;
+
+  // Variable initializations:
+  kb = 1.6e-010;
+  Ka = 1.44;
+
+  //  Other declarations:
+  var kat50, v50t50;
+  const Cell, kb, Ka;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 3600 second;
+  unit substance = 1e-3 mole;
+
+  //  Display Names:
+  time_unit is "time";
+end

@@ -1,0 +1,48 @@
+//Created by libAntimony v2.6.0
+model *MODEL1402250000()
+
+  // Compartments and Species:
+  compartment plama, tissue;
+  species $C in plama, $P in tissue, $Qp in tissue, $Q in tissue;
+
+  // Assignment Rules:
+  Pstar := P + Q + Qp;
+
+  // Rate Rules:
+  C' = -KDE*C;
+  P' = (lambda_P*P*(1 - Pstar/K) + k_Qp_P*Qp) - k_PQ*P - gamma*C*KDE*P;
+  Qp' = gamma*C*KDE*Q - k_Qp_P*Qp - delta_QP*Qp;
+  Q' = k_PQ - gamma*C*KDE*Q;
+
+  // Species initializations:
+  C = 1;
+  P = 7.13;
+  Qp = 0;
+  Q = 41.2;
+
+  // Compartment initializations:
+  plama = 1;
+  tissue = 1;
+
+  // Variable initializations:
+  KDE = 0.24;
+  lambda_P = 0.121;
+  K = 100;
+  k_Qp_P = 0.0031;
+  k_PQ = 0.00295;
+  delta_QP = 0.0087;
+  P0 = 7.13;
+  Q0 = 41.2;
+  gamma = 0.729;
+
+  //  Other declarations:
+  var Pstar;
+  const plama, tissue, KDE, lambda_P, K, k_Qp_P, k_PQ, delta_QP, P0, Q0, gamma;
+
+  //  Display Names:
+  plama is "plasma";
+  C is "PCV_plasma";
+  P is "Proliferative tissue";
+  Qp is "damaged quiescent cells";
+  Q is "nonproliferative quiescent tissue";
+end

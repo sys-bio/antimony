@@ -1,0 +1,58 @@
+//Created by libAntimony v2.6.0
+model *MODEL1407300001()
+
+  // Compartments and Species:
+  compartment cell;
+  species $RCT0 in cell, $BM in cell, $BTX in cell, $alpha in cell, $BN1 in cell;
+  species $BN2 in cell, $BN3 in cell, $BN4 in cell, $RCT1 in cell, $RC in cell;
+  species $beta in cell;
+
+  // Assignment Rules:
+  RC := RCT0 + RCT1;
+  beta := BM + BN1 + BN2 + BN3 + BN4 + BTX;
+
+  // Rate Rules:
+  RCT0' = -k0*(epsilon + BM)*RCT0 - k1*BTX*RCT0;
+  BM' = k4*BTX;
+  BTX' = 4*k3*BN4 - k4*BTX;
+  alpha' = k1*BTX*RCT0 - k2*BTX^q*alpha;
+  BN1' = k2*BTX^q*alpha - 4*k3*BN1;
+  BN2' = 4*k3*BN1 - 4*k3*BN2;
+  BN3' = 4*k3*BN2 - 4*k3*BN3;
+  BN4' = 4*k3*BN3 - 4*k3*BN4;
+  RCT1' = k0*(epsilon + BM)*RCT0;
+
+  // Species initializations:
+  RCT0 = 88.1;
+  BM = 0;
+  BTX = 0;
+  alpha = 0;
+  BN1 = 11.9;
+  BN2 = 0;
+  BN3 = 0;
+  BN4 = 0;
+  RCT1 = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k0 = 0.59;
+  epsilon = 0;
+  k1 = 0.672;
+  k2 = 0.678;
+  q = 2;
+  k3 = 0.0392;
+  k4 = 0.554;
+
+  //  Other declarations:
+  const cell, k0, epsilon, k1, k2, q, k3, k4;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  //  Display Names:
+  time_unit is "time";
+end

@@ -1,0 +1,176 @@
+//Created by libAntimony v2.6.0
+model *MODEL1311290000()
+
+  // Compartments and Species:
+  compartment cell;
+  species E4P in cell, G6L in cell, NADPH in cell, P6G in cell, R5P in cell;
+  species Ru5P in cell, S7P in cell, X5P in cell, $NADP in cell, $G6P in cell;
+  species $F6P in cell, $GAP in cell, $GND1 in cell, $GND2 in cell, $NQM1 in cell;
+  species $RKI1 in cell, $RPE1 in cell, $SOL3 in cell, $TAL1 in cell, $TKL1 in cell;
+  species $ZWF1 in cell;
+
+  // Assignment Rules:
+  NADP := sum_NADP - NADPH;
+  G6P := 0.9 + piecewise((44.1*time)/(48 + time + 0.45*time^2), time >= 0, 0);
+
+  // Reactions:
+  GND: P6G + $NADP => Ru5P + NADPH; cell*((GND1*GND_kcat_GND1*P6G*NADP)/(GND_Kp6g_GND1*GND_Knadp_GND1)/((1 + P6G/GND_Kp6g_GND1 + Ru5P/GND_Kru5p_GND1)*(1 + NADP/GND_Knadp_GND1 + NADPH/GND_Knadph_GND1)) + (GND2*GND_kcat_GND2*P6G*NADP)/((1 + P6G/GND_Kp6g_GND2 + Ru5P/GND_Kru5p_GND2)*(1 + NADP/GND_Knadp_GND2 + NADPH/GND_Knadph_GND2)));
+  RKI: Ru5P -> R5P; (cell*RKI1*RKI_kcat*(Ru5P - R5P/RKI_Keq))/RKI_Kru5p/(1 + Ru5P/RKI_Kru5p + R5P/RKI_Kr5p);
+  RPE: Ru5P -> X5P; (cell*RPE1*RPE_kcat*(Ru5P - X5P/RPE_Keq))/RPE_Kru5p/(1 + Ru5P/RPE_Kru5p + X5P/RPE_Kx5p);
+  SOL: G6L => P6G; (cell*SOL3*SOL_kcat*G6L)/SOL_Kg6l/(1 + G6L/SOL_Kg6l + P6G/SOL_Kp6g);
+  TAL: $GAP + S7P -> $F6P + E4P; cell*((TAL1*TAL_kcat_TAL1*(GAP*S7P - (F6P*E4P)/TAL_Keq))/(TAL_Kgap_TAL1*TAL_Ks7p_TAL1)/((1 + GAP/TAL_Kgap_TAL1 + F6P/TAL_Kf6p_TAL1)*(1 + S7P/TAL_Ks7p_TAL1 + E4P/TAL_Ke4p_TAL1)) + (NQM1*TAL_kcat_NQM1*(GAP*S7P - (F6P*E4P)/TAL_Keq))/(TAL_Kgap_NQM1*TAL_Ks7p_NQM1)/((1 + GAP/TAL_Kgap_NQM1 + F6P/TAL_Kf6p_NQM1)*(1 + S7P/TAL_Ks7p_NQM1 + E4P/TAL_Ke4p_NQM1)));
+  TKL_E4P: X5P + E4P -> $GAP + $F6P; (cell*TKL1*TKL_E4P_kcat*(X5P*E4P - (GAP*F6P)/TKL_E4P_Keq))/(Kx5p_TAL*Ke4p_TAL)/((1 + X5P/Kx5p_TAL + GAP/Kgap_TAL)*(1 + E4P/Ke4p_TAL + F6P/Kf6p_TAL + R5P/Kr5p_TAL + S7P/Ks7p_TAL));
+  TKL_R5P: X5P + R5P -> $GAP + S7P; (cell*TKL1*TKL_R5P_kcat*(X5P*R5P - (GAP*S7P)/TKL_R5P_Keq))/(Kx5p_TAL*Kr5p_TAL)/((1 + X5P/Kx5p_TAL + GAP/Kgap_TAL)*(1 + E4P/Ke4p_TAL + F6P/Kf6p_TAL + R5P/Kr5p_TAL + S7P/Ks7p_TAL));
+  ZWF: $G6P + $NADP => G6L + NADPH; (cell*ZWF1*ZWF_kcat*G6P*NADP)/(ZWF_Kg6p*ZWF_Knadp)/((1 + G6P/ZWF_Kg6p + G6L/ZWF_Kg6l)*(1 + NADP/ZWF_Knadp + NADPH/ZWF_Knadph));
+  NADPH_oxidase: NADPH => $NADP; cell*NADPH_oxidase_k*NADPH;
+  E4P_sink: E4P => ; cell*E4P_sink_k*E4P;
+  R5P_sink: R5P => ; cell*R5P_sink_k*R5P;
+
+  // Species initializations:
+  E4P = 0.029;
+  G6L = 0.1;
+  NADPH = 0.16;
+  P6G = 0.25;
+  R5P = 0.118;
+  Ru5P = 0.033;
+  S7P = 0.082;
+  X5P = 0.041;
+  F6P = 0.325;
+  GAP = 0.067;
+  GND1 = 0.013;
+  GND2 = 0.003;
+  NQM1 = 0.02;
+  RKI1 = 0.05;
+  RPE1 = 0.03;
+  SOL3 = 0.0296;
+  TAL1 = 0.144;
+  TKL1 = 0.455;
+  ZWF1 = 0.02;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  sum_NADP = 0.33;
+  sum_NADP has mM;
+  Kx5p_TAL = 0.67;
+  Kx5p_TAL has mM;
+  Ke4p_TAL = 0.946;
+  Ke4p_TAL has mM;
+  Kr5p_TAL = 0.235;
+  Kr5p_TAL has mM;
+  Kgap_TAL = 0.1;
+  Kgap_TAL has mM;
+  Kf6p_TAL = 1.1;
+  Kf6p_TAL has mM;
+  Ks7p_TAL = 0.15;
+  Ks7p_TAL has mM;
+  GND_kcat_GND1 = 28;
+  GND_kcat_GND1 has per_s;
+  GND_Kp6g_GND1 = 0.062;
+  GND_Kp6g_GND1 has mM;
+  GND_Knadp_GND1 = 0.094;
+  GND_Knadp_GND1 has mM;
+  GND_Kru5p_GND1 = 0.1;
+  GND_Kru5p_GND1 has mM;
+  GND_Knadph_GND1 = 0.055;
+  GND_Knadph_GND1 has mM;
+  GND_kcat_GND2 = 27.3;
+  GND_kcat_GND2 has per_s;
+  GND_Kp6g_GND2 = 0.115;
+  GND_Kp6g_GND2 has mM;
+  GND_Knadp_GND2 = 0.094;
+  GND_Knadp_GND2 has mM;
+  GND_Kru5p_GND2 = 0.1;
+  GND_Kru5p_GND2 has mM;
+  GND_Knadph_GND2 = 0.055;
+  GND_Knadph_GND2 has mM;
+  RKI_kcat = 335;
+  RKI_kcat has per_s;
+  RKI_Kru5p = 2.47;
+  RKI_Kru5p has mM;
+  RKI_Kr5p = 5.7;
+  RKI_Kr5p has mM;
+  RKI_Kiru5p = 9.88;
+  RKI_Kiru5p has mM;
+  RKI_Keq = 4;
+  RKI_Keq has dimensionless;
+  RPE_kcat = 4020;
+  RPE_kcat has per_s;
+  RPE_Kru5p = 5.97;
+  RPE_Kru5p has mM;
+  RPE_Kx5p = 7.7;
+  RPE_Kx5p has mM;
+  RPE_Keq = 1.4;
+  RPE_Keq has dimensionless;
+  SOL_kcat = 4.3;
+  SOL_kcat has per_s;
+  SOL_Kg6l = 0.8;
+  SOL_Kg6l has mM;
+  SOL_Kp6g = 0.5;
+  SOL_Kp6g has mM;
+  TAL_kcat_TAL1 = 0.694;
+  TAL_kcat_TAL1 has per_s;
+  TAL_Kgap_TAL1 = 0.272;
+  TAL_Kgap_TAL1 has mM;
+  TAL_Ks7p_TAL1 = 0.786;
+  TAL_Ks7p_TAL1 has mM;
+  TAL_Kf6p_TAL1 = 1.44;
+  TAL_Kf6p_TAL1 has mM;
+  TAL_Ke4p_TAL1 = 0.362;
+  TAL_Ke4p_TAL1 has mM;
+  TAL_kcat_NQM1 = 0.694;
+  TAL_kcat_NQM1 has per_s;
+  TAL_Kgap_NQM1 = 0.272;
+  TAL_Kgap_NQM1 has mM;
+  TAL_Ks7p_NQM1 = 0.786;
+  TAL_Ks7p_NQM1 has mM;
+  TAL_Kf6p_NQM1 = 1.04;
+  TAL_Kf6p_NQM1 has mM;
+  TAL_Ke4p_NQM1 = 0.305;
+  TAL_Ke4p_NQM1 has mM;
+  TAL_Keq = 1.05;
+  TAL_Keq has dimensionless;
+  TKL_E4P_kcat = 47.1;
+  TKL_E4P_kcat has per_s;
+  TKL_E4P_Keq = 10;
+  TKL_E4P_Keq has dimensionless;
+  TKL_R5P_kcat = 40.5;
+  TKL_R5P_kcat has per_s;
+  TKL_R5P_Keq = 1.2;
+  TKL_R5P_Keq has dimensionless;
+  ZWF_kcat = 189;
+  ZWF_kcat has per_s;
+  ZWF_Kg6p = 0.042;
+  ZWF_Kg6p has mM;
+  ZWF_Knadp = 0.045;
+  ZWF_Knadp has mM;
+  ZWF_Kg6l = 0.01;
+  ZWF_Kg6l has mM;
+  ZWF_Knadph = 0.017;
+  ZWF_Knadph has mM;
+  NADPH_oxidase_k = 1;
+  NADPH_oxidase_k has per_s;
+  E4P_sink_k = 1;
+  E4P_sink_k has per_s;
+  R5P_sink_k = 1;
+  R5P_sink_k has per_s;
+
+  //  Other declarations:
+  const cell, sum_NADP, Kx5p_TAL, Ke4p_TAL, Kr5p_TAL, Kgap_TAL, Kf6p_TAL;
+  const Ks7p_TAL;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+  unit mM = 1e-3 mole / litre;
+  unit per_s = 1 / second;
+
+  //  Display Names:
+  substance is "mmol";
+  per_s is "per s";
+  TKL_E4P is "TKL (E4P:F6P)";
+  TKL_R5P is "TKL (R5P:S7P)";
+  NADPH_oxidase is "NADPH oxidase";
+  E4P_sink is "E4P sink";
+  R5P_sink is "R5P sink";
+end

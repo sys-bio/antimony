@@ -1,0 +1,53 @@
+//Created by libAntimony v2.6.0
+model *MODEL1310150000()
+
+  // Compartments and Species:
+  species P, O, C;
+
+  // Reactions:
+  a1:  -> P; (aP*P^n + bP)/(mP + zD + cPP*P^n);
+  a2: P -> ; kP*P;
+  a3:  -> O; (aO*O^n + bO + zO)/(mO + cOC*C^n + cOP*P^n + cOO*O^n);
+  a4: O -> ; kO*O;
+  a5:  -> C; (aC*C^n + bC + zC)/(mC + cCO*O^n + cCP*P^n + cCC*C^n);
+  a6: C -> ; kC*C;
+
+  // Events:
+  _E0: at 100 after P > 12.03: zD = 0.8, zO = 1;
+  _E1: at 800 after P > 12.03: zD = 0, zO = 0;
+
+  // Species initializations:
+  P = 12.03;
+  O = 0.14;
+  C = 0.14;
+
+  // Variable initializations:
+  zO = 0;
+  zD = 0;
+  aP = 0.2;
+  n = 2;
+  bP = 0.5;
+  mP = 10;
+  cPP = 0.1;
+  kP = 0.1;
+  aO = 0.1;
+  bO = 1;
+  mO = 1;
+  cOC = 0.1;
+  cOP = 0.5;
+  cOO = 0.1;
+  kO = 0.1;
+  aC = 0.1;
+  bC = 1;
+  zC = 0;
+  mC = 1;
+  cCO = 0.1;
+  cCP = 0.5;
+  cCC = 0.1;
+  kC = 0.1;
+
+  //  Other declarations:
+  var zO, zD;
+  const aP, n, bP, mP, cPP, kP, aO, bO, mO, cOC, cOP, cOO, kO, aC, bC, zC;
+  const mC, cCO, cCP, cCC, kC;
+end

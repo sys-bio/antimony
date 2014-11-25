@@ -1,0 +1,149 @@
+//Created by libAntimony v2.6.0
+model *MODEL1406130000()
+
+  // Compartments and Species:
+  compartment default;
+  species s1 in default, s2 in default, s3 in default, s4 in default, s5 in default;
+  species s6 in default, s7 in default, s8 in default, s9 in default, s10 in default;
+  species s11 in default, s12 in default, s13 in default, s14 in default;
+  species s15 in default, s16 in default, s17 in default, s18 in default;
+  species s20 in default, s21 in default, s19 in default, $s22 in default;
+
+  // Assignment Rules:
+  s22 := s3;
+
+  // Reactions:
+  re1: $s22 => s4; s9/(K_PFKL_f26bp + s9)*(K_PFKL_akg/(K_PFKL_akg + s7))*(K_PFKL_pep/(K_PFKL_pep + s5))*(K_PFKL_cit/(K_PFKL_cit + s10))*(K_PFKL_icit/(K_PFKL_icit + s6))*(K_PFKL_mal/(K_PFKL_mal + s8))*(s13/(K_PFKL_PHOS_S775 + s13))*((Vf_PFKL*s22)/(K_PFKL_f6p + s22));
+  re2: s4 => $s22; K_FBPase_f26bp/(K_FBPase_f26bp + s9)*(s10/(K_FBPase_cit + s10))*((Vf_FBPase*s4)/(K_FBPase_f16bp + s4));
+  re3: s4 => s11; k_ALDO*s4;
+  re4: s8 => s14; -k_mal;
+  re5: s7 => s15; -k_akg;
+  re6: s5 => s16; -k_pep;
+  re7: s6 => s17; -k_icit;
+  re8: s9 => s18; -k_f26bp;
+  re9: s10 => s19; -k_cit;
+  re10: s13 => s20; -k_pfkl_s775;
+  re11: s3 => s21; -k_f6p;
+
+  // Events:
+  ev2min: at time > 2: k_pfkl_s775 = -0.011384308, k_pep = 7.54147813, k_mal = -1.508295626, k_f26bp = 0.028924455, k_icit = -0.038210156, k_f6p = 1.357466063, k_cit = 0.351935646, k_akg = -1.357466063;
+  ev5min: at time > 5: k_pfkl_s775 = 0.057596439, k_pep = -6.334841629, k_mal = -0.904977376, k_f26bp = 0.119075279, k_icit = -0.038210156, k_f6p = 0.271493213, k_cit = -0.211161388, k_akg = 0;
+  ev10min: at time > 10: k_pfkl_s775 = 0.006730598, k_pep = 9.049773756, k_mal = 3.921568627, k_f26bp = -0.050207413, k_icit = -0.038210156, k_f6p = -1.055806938, k_cit = 1.085972851, k_akg = 0.36199095;
+  ev15min: at time > 15: k_pfkl_s775 = 0.006730598, k_pep = -4.826546003, k_mal = 1.809954751, k_f26bp = 0.100115778, k_icit = -0.018099548, k_f6p = -0.12066365, k_cit = 0.452488688, k_akg = 1.085972851;
+  ev20min: at time > 20: k_pfkl_s775 = 0.006730598, k_pep = -3.619909502, k_mal = 1.206636501, k_f26bp = -0.032601514, k_icit = 0.031674208, k_f6p = -0.165912519, k_cit = 0.377073906, k_akg = 0.226244344;
+  ev30min: at time > 30: k_pfkl_s775 = 0.006730598, k_pep = -0.301659125, k_mal = 0.502765209, k_f26bp = -0.003055632, k_icit = 0.031674208, k_f6p = 0.070387129, k_cit = 0.306686777, k_akg = 0.369532428;
+  ev45min: at time > 45: k_pfkl_s775 = 0.00673059831429, k_pep = -0.301659125, k_mal = 0.502765209, k_f26bp = -0.003055632, k_icit = 0.031674208, k_f6p = 0.070387129, k_cit = 0.306686777, k_akg = 0.369532428;
+
+  // Species initializations:
+  s1 = 1/default;
+  s2 = 1/default;
+  s3 = 14.0774258421/default;
+  s4 = 104.07239819/default;
+  s5 = 108.094519859/default;
+  s6 = 1.79487179487/default;
+  s7 = 25.1885369533/default;
+  s8 = 68.8788335846/default;
+  s9 = 1/default;
+  s10 = 17.7476118652/default;
+  s11 = 0;
+  s12 = 1/default;
+  s13 = 0.768939345/default;
+  s14 = 0;
+  s15 = 0;
+  s16 = 0;
+  s17 = 0;
+  s18 = 0;
+  s20 = 0;
+  s21 = 0;
+  s19 = 0;
+  s22 has substance_per_volume;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+
+  // Variable initializations:
+  k_akg = -3.544494721;
+  k_akg has substance;
+  k_cit = -0.351935646;
+  k_cit has substance;
+  k_f6p = -0.930115636;
+  k_f6p has dimensionless;
+  k_icit = -0.038210156;
+  k_icit has substance;
+  k_f26bp = -0.083430336;
+  k_f26bp has substance;
+  k_mal = 1.005530417;
+  k_mal has substance;
+  k_pep = 43.99195576;
+  k_pep has substance;
+  k_pfkl_s775 = -0.011384308;
+  k_pfkl_s775 has substance;
+  K_FBPase_cit = 0.0211646;
+  K_FBPase_cit has dimensionless;
+  K_FBPase_f16bp = 0.104089638;
+  K_FBPase_f16bp has dimensionless;
+  K_FBPase_f26bp = 17.51744342;
+  K_FBPase_f26bp has dimensionless;
+  K_PFKL_PHOS_S775 = 6.283705757;
+  K_PFKL_PHOS_S775 has dimensionless;
+  K_PFKL_akg = 24661.01154;
+  K_PFKL_akg has dimensionless;
+  K_PFKL_cit = 41.30426029;
+  K_PFKL_cit has dimensionless;
+  K_PFKL_f26bp = 1.282443082;
+  K_PFKL_f26bp has dimensionless;
+  K_PFKL_f6p = 0.014114844;
+  K_PFKL_f6p has dimensionless;
+  K_PFKL_icit = 1784.508205;
+  K_PFKL_icit has dimensionless;
+  K_PFKL_mal = 9.544729149;
+  K_PFKL_mal has dimensionless;
+  K_PFKL_pep = 0.633518366;
+  K_PFKL_pep has dimensionless;
+  Vf_FBPase = 9.932861302;
+  Vf_FBPase has dimensionless;
+  Vf_PFKL = 695063.7194;
+  Vf_PFKL has dimensionless;
+  k_ALDO = 0.008187906;
+  k_ALDO has dimensionless;
+
+  //  Other declarations:
+  var k_akg, k_cit, k_f6p, k_icit, k_f26bp, k_mal, k_pep, k_pfkl_s775;
+  const default, K_FBPase_cit, K_FBPase_f16bp, K_FBPase_f26bp, K_PFKL_PHOS_S775;
+  const K_PFKL_akg, K_PFKL_cit, K_PFKL_f26bp, K_PFKL_f6p, K_PFKL_icit, K_PFKL_mal;
+  const K_PFKL_pep, Vf_FBPase, Vf_PFKL, k_ALDO;
+
+  // Unit definitions:
+  unit substance = mole;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit time_unit = second;
+  unit substance_per_volume = mole / litre;
+
+  //  Display Names:
+  time_unit is "time";
+  s1 is "PFKL";
+  s2 is "FBPase";
+  s3 is "F6P";
+  s4 is "F1,6BP";
+  s5 is "PEP";
+  s6 is "Isocitrate";
+  s7 is "2-oxoglutarate";
+  s8 is "Malate";
+  s9 is "F2,6BP";
+  s10 is "Citrate";
+  s11 is "sa4_degraded";
+  s12 is "ALDO";
+  s13 is "pPFKL";
+  s14 is "sa8_degraded";
+  s15 is "sa7_degraded";
+  s16 is "sa5_degraded";
+  s17 is "sa6_degraded";
+  s18 is "sa9_degraded";
+  s20 is "sa13_degraded";
+  s21 is "sa3_degraded";
+  s19 is "sa10_degraded";
+  s22 is "F6P_proxy";
+end

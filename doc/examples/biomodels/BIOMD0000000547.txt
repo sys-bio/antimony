@@ -1,0 +1,235 @@
+//Created by libAntimony v2.6.0
+function function_3(S, M, k, ko)
+  k*ko*M*S;
+end
+
+function function_7(M, k, ko)
+  k*ko*M;
+end
+
+function function_6(Substrate, k, Mod1, Mod, k1, kb)
+  Substrate*(k*Mod1 + k1*Mod + kb);
+end
+
+function function_2(k, ko, sub, sub2)
+  k*ko*sub*sub2;
+end
+
+function function_1(V, Mod, k, Ex, In_)
+  (36*pi)^(1/3)*V^(2/3)*Mod*k*(Ex - In_);
+end
+
+function function_8(V, k, Sub)
+  (36*pi)^(1/3)*V^(2/3)*k*Sub;
+end
+
+function function_4(ko, Mod, k, V, Sub)
+  ko*Mod*k*(36*pi)^(1/3)*V^(2/3)*Sub;
+end
+
+function function_5(V, Mod, Vmax, Sub, Km)
+  ((36*pi)^(1/3)*V^(2/3)*Mod*Vmax*Sub)/(Km + Sub);
+end
+
+
+model *MODEL1403280000()
+
+  // Compartments and Species:
+  compartment compartment_2, compartment_3, compartment_1, compartment_4;
+  species $species_6 in compartment_2, species_5 in compartment_3, species_10 in compartment_3;
+  species species_9 in compartment_3, species_1 in compartment_4, species_15 in compartment_3;
+  species species_11 in compartment_3, species_14 in compartment_3, species_4 in compartment_1;
+  species species_3 in compartment_4, species_7 in compartment_4, species_2 in compartment_4;
+
+  // Assignment Rules:
+  species_6 := piecewise(parameter_5, time < parameter_7, piecewise((parameter_5 + parameter_6)*exp((parameter_8 - time)/parameter_9), time > parameter_8, parameter_5 + parameter_6*(1 - exp((parameter_7 - time)/parameter_9))))*compartment_2;
+  parameter_22 := piecewise(1, ModelValue_22 > 0, 0.2175);
+  parameter_10 := (species_1/compartment_4 + species_2/compartment_4 + species_3/compartment_4)*Compartment_3*parameter_11*10^9 + species_4/compartment_1*Compartment_2*parameter_11*10^9;
+  parameter_13 := species_1/compartment_4*Compartment_3*parameter_11*10^9;
+  parameter_14 := species_2/compartment_4*Compartment_3*parameter_11*10^9;
+  parameter_15 := species_3/compartment_4*Compartment_3*parameter_11*10^9;
+  parameter_16 := species_4/compartment_1*Compartment_2*parameter_11*10^9;
+  parameter_17 := (100*(species_10/compartment_3))/parameter_12;
+  parameter_12 := species_9/compartment_3 + species_10/compartment_3;
+  parameter_18 := (100*(species_15/compartment_3))/ModelValue_13;
+  parameter_2 := (parameter_43*Metabolite_6)/Metabolite_9;
+  parameter_3 := piecewise((parameter_33*Metabolite_5*(Metabolite_0 - Metabolite_9))/(Metabolite_6*Metabolite_9), parameter_25 > 0, 0);
+  Asngpermil_ex := species_6/compartment_2*compartment_3*parameter_11*10^9;
+
+  // Reactions:
+  reaction_1: $species_6 -> species_1; function_1(compartment_3, species_11/compartment_3, parameter_33, species_6/compartment_2, species_1/compartment_4);
+  reaction_4: species_9 => species_10; compartment_3*function_3(species_9/compartment_3, species_1/compartment_4, parameter_26, parameter_28);
+  reaction_5: species_10 => species_9; parameter_27*species_10;
+  reaction_6: species_15 => species_11; parameter_32*species_15;
+  reaction_7: species_1 => species_2; parameter_41*species_1;
+  reaction_8: species_2 => species_1; parameter_42*species_2;
+  reaction_9: species_1 + species_7 => species_3; compartment_4*function_2(parameter_39, parameter_22, species_1/compartment_4, species_7/compartment_4);
+  reaction_10: species_3 => species_4; function_4(parameter_38, species_5/compartment_3, parameter_36, compartment_1, species_3/compartment_4);
+  reaction_13:  => species_14; compartment_3*function_7(species_1/compartment_4, parameter_2, parameter_25);
+  reaction_14: species_14 => ; parameter_43*species_14;
+  reaction_15: species_1 => $species_6; function_5(compartment_3, species_14/compartment_3, parameter_34, species_1/compartment_4, parameter_35);
+  reaction_16: species_11 => species_15; compartment_3*function_6(species_11/compartment_3, parameter_29, species_1/compartment_4, species_10/compartment_3, parameter_30, parameter_31);
+  reaction_17: species_3 => species_1 + species_7; parameter_40*species_3;
+  reaction_18: species_4 => species_3; function_8(compartment_1, parameter_37, species_4/compartment_1);
+
+  // Species initializations:
+  species_5 = piecewise(0.013151, parameter_25 > 0, 0.013151*parameter_24)*compartment_3;
+  species_10 = piecewise((species_9/compartment_3*(species_1/compartment_4)*parameter_26)/parameter_27, parameter_28 > 0, 0)*compartment_3;
+  species_9 = piecewise(0.167/((species_1/compartment_4*parameter_26)/parameter_27 + 1), parameter_28 > 0, 0.167)*compartment_3;
+  species_1 = piecewise(parameter_4, parameter_25 > 0, 100)*compartment_4;
+  species_15 = (species_11/compartment_3*(parameter_29*(species_1/compartment_4) + parameter_30*(species_10/compartment_3) + parameter_31))/parameter_32*compartment_3;
+  species_11 = 0.03/((parameter_29*(species_1/compartment_4) + parameter_30*(species_10/compartment_3) + parameter_31)/parameter_32 + 1)*compartment_3;
+  species_14 = piecewise((species_11/compartment_3*parameter_33*(species_6/compartment_2 - species_1/compartment_4))/((parameter_34*(species_1/compartment_4))/(parameter_35 + species_1/compartment_4)), parameter_25 > 0, 0)*compartment_3;
+  species_4 = piecewise((parameter_36*(species_5/compartment_3)*(species_3/compartment_4))/parameter_37, parameter_38 > 0, 0)*compartment_1;
+  species_3 = (parameter_39*parameter_22*(species_1/compartment_4)*(species_7/compartment_4))/parameter_40*compartment_4;
+  species_7 = piecewise(parameter_19*parameter_22, parameter_25 > 0, piecewise(parameter_19*parameter_21, parameter_28 > 0, parameter_19*parameter_20))*compartment_4;
+  species_2 = (parameter_41*(species_1/compartment_4))/parameter_42*compartment_4;
+
+  // Compartment initializations:
+  compartment_2 = 5e-011;
+  compartment_3 = 5e-014;
+  compartment_1 = 0.4*compartment_3;
+  compartment_4 = 0.6*compartment_3;
+
+  // Variable initializations:
+  parameter_5 = 100;
+  parameter_7 = 0;
+  parameter_6 = 1000;
+  parameter_8 = 3600;
+  parameter_9 = 30;
+  parameter_25 = 1;
+  parameter_24 = 20;
+  parameter_26 = 0.0757274;
+  parameter_27 = 161.334;
+  parameter_28 = 1;
+  parameter_29 = 0.000257134;
+  parameter_30 = 1102.15;
+  parameter_31 = 0.0730991;
+  parameter_32 = 0.0719168;
+  parameter_33 = 0.00215551;
+  parameter_34 = 1;
+  parameter_35 = 5.16159e-006;
+  parameter_36 = 3.49703e-006;
+  parameter_37 = 1.92773e-007;
+  parameter_38 = 1;
+  parameter_39 = 0.202797;
+  parameter_40 = 6.1432;
+  parameter_4 = 13.1549;
+  parameter_41 = 0.00880734;
+  parameter_42 = 0.000656918;
+  parameter_19 = 1600;
+  parameter_21 = 2.82037;
+  parameter_20 = 5.99924;
+  Compartment_3 = compartment_4;
+  parameter_11 = 74.9216;
+  Compartment_2 = compartment_1;
+  ModelValue_13 = parameter_1;
+  parameter_1 = 0.0299643;
+  parameter_43 = 9.01422e-013;
+  Metabolite_6 = species_14;
+  Metabolite_9 = species_1;
+  Metabolite_5 = species_11;
+  Metabolite_0 = species_6;
+  ModelValue_22 = parameter_23;
+  parameter_23 = 1;
+
+  //  Other declarations:
+  var parameter_22, parameter_10, parameter_13, parameter_14, parameter_15;
+  var parameter_16, parameter_17, parameter_12, parameter_18, parameter_2;
+  var parameter_3, Asngpermil_ex;
+  const compartment_2, compartment_3, compartment_1, compartment_4, parameter_5;
+  const parameter_7, parameter_6, parameter_8, parameter_9, parameter_25;
+  const parameter_24, parameter_26, parameter_27, parameter_28, parameter_29;
+  const parameter_30, parameter_31, parameter_32, parameter_33, parameter_34;
+  const parameter_35, parameter_36, parameter_37, parameter_38, parameter_39;
+  const parameter_40, parameter_4, parameter_41, parameter_42, parameter_19;
+  const parameter_21, parameter_20, Compartment_3, parameter_11, Compartment_2;
+  const ModelValue_13, parameter_1, parameter_43, Metabolite_6, Metabolite_9;
+  const Metabolite_5, Metabolite_0, ModelValue_22, parameter_23;
+
+  // Unit definitions:
+  unit substance = 1e-6 mole;
+
+  //  Display Names:
+  compartment_2 is "Medium";
+  compartment_3 is "Cell";
+  compartment_1 is "Vac";
+  compartment_4 is "Cell-vac";
+  species_6 is "AsIIIex";
+  parameter_5 is "AsIIIex_initial";
+  parameter_7 is "AsIIIex_t1";
+  parameter_6 is "AsIIIex_shock";
+  parameter_8 is "AsIIex_t2";
+  parameter_9 is "AsIIIex_tm";
+  species_5 is "Ycf1";
+  parameter_25 is "v12_ko";
+  parameter_24 is "Ycf1_increase";
+  species_10 is "Hog1PP";
+  species_9 is "Hog1";
+  species_1 is "AsIIIin";
+  parameter_26 is "v4_k";
+  parameter_27 is "v5_k1";
+  parameter_28 is "v4_ko";
+  species_15 is "Fps1P";
+  species_11 is "Fps1";
+  parameter_29 is "v6_k";
+  parameter_30 is "v6_k1";
+  parameter_31 is "v6_kb";
+  parameter_32 is "v7_k1";
+  species_14 is "Acr3";
+  parameter_33 is "v1_k";
+  parameter_34 is "v14_Vmax";
+  parameter_35 is "v14_Km";
+  species_4 is "vAsGS3";
+  parameter_36 is "v10_k";
+  species_3 is "AsGS3";
+  parameter_37 is "v11_k";
+  parameter_38 is "v10_ko";
+  parameter_39 is "v8_k";
+  parameter_22 is "GSH_damping_factor";
+  species_7 is "GSH";
+  parameter_40 is "v9_k1";
+  parameter_4 is "D_AsIIIin_initial ";
+  species_2 is "AsIIIProt";
+  parameter_41 is "v2_k1";
+  parameter_42 is "v3_k1";
+  parameter_19 is "GSH_wt";
+  parameter_21 is "GSH_Acr3";
+  parameter_20 is "GSH_Acr3Hog1D";
+  parameter_10 is "Asngpermil_tot";
+  Compartment_3 is "Initial for Cell-vac";
+  parameter_11 is "Asmolweight";
+  Compartment_2 is "Initial for Vac";
+  parameter_13 is "Asngpermil_in";
+  parameter_14 is "Asngpermil_pro";
+  parameter_15 is "Asngpermil_GS3";
+  parameter_16 is "Asngpermil_vac";
+  parameter_17 is "Hog1PPfit";
+  parameter_12 is "Hog1_SUM";
+  parameter_18 is "Fps1Pfit";
+  ModelValue_13 is "Initial for Fps1PPmax";
+  parameter_1 is "Fps1PPmax";
+  parameter_2 is "k18";
+  parameter_43 is "v13_k1";
+  Metabolite_6 is "Initial for Acr3";
+  Metabolite_9 is "Initial for AsIIIin";
+  parameter_3 is "k20";
+  Metabolite_5 is "Initial for Fps1";
+  Metabolite_0 is "Initial for AsIIIex";
+  ModelValue_22 is "Initial for ko-8";
+  parameter_23 is "ko-8";
+  reaction_1 is "v1";
+  reaction_4 is "v4";
+  reaction_5 is "v5";
+  reaction_6 is "v7";
+  reaction_7 is "v2";
+  reaction_8 is "v3";
+  reaction_9 is "v8";
+  reaction_10 is "v10";
+  reaction_13 is "v12";
+  reaction_14 is "v13";
+  reaction_15 is "v14";
+  reaction_16 is "v6";
+  reaction_17 is "v9";
+  reaction_18 is "v11";
+end

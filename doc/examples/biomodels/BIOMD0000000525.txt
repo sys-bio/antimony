@@ -1,0 +1,79 @@
+//Created by libAntimony v2.6.0
+model *MODEL1403050002()
+
+  // Compartments and Species:
+  compartment cell;
+  species CD95 in cell, FADD in cell, p55free in cell, Bid in cell, PrNES_mCherry in cell;
+  species PrER_mGFP in cell, DISC in cell, DISCp55 in cell, p30 in cell, p43 in cell;
+  species p18 in cell, p18inactive in cell, tBid in cell, PrNES in cell, mCherry in cell;
+  species PrER in cell, mGFP in cell, CD95L in cell;
+
+  // Assignment Rules:
+  CD95act := (CD95^3*KDL^2*CD95L)/((CD95L + KDL)*(CD95^2*KDL^2 + KDR*CD95L^2 + 2*KDR*KDL*CD95L + KDR*KDL^2));
+
+  // Reactions:
+  reaction_1: FADD => DISC; kon_FADD*CD95act*FADD*cell;
+  reaction_2: DISC => FADD; koff_FADD*DISC*cell;
+  reaction_3: p55free + DISC => DISCp55; kDISC*p55free*DISC*cell;
+  reaction_4: DISCp55 => p30; kD216*DISCp55*cell;
+  reaction_5: DISCp55 => p30; kD216trans_p55*DISCp55*(DISCp55 + p30)*cell;
+  reaction_6: DISCp55 => p30; kD216trans_p43*DISCp55*p43*cell;
+  reaction_7: p43 => p18 + DISC; kD216*p43*cell;
+  reaction_8: p43 => p18 + DISC; kD216trans_p55*p43*(DISCp55 + p30)*cell;
+  reaction_9: p43 => p18 + DISC; kD216trans_p43*p43*p43*cell;
+  reaction_10: DISCp55 => p43; kD374*DISCp55*cell;
+  reaction_11: DISCp55 => p43; kD374trans_p55*DISCp55*(DISCp55 + p30)*cell;
+  reaction_12: DISCp55 => p43; kD374trans_p43*DISCp55*p43*cell;
+  reaction_13: p30 => p18 + DISC; kD374*p30*cell;
+  reaction_14: p30 => p18 + DISC; kD374trans_p55*p30*(DISCp55 + p30)*cell;
+  reaction_15: p30 => p18 + DISC; kD374trans_p43*p30*p43*cell;
+  reaction_16: p18 => p18inactive; kdiss_p18*p18*cell;
+  reaction_17: Bid => tBid; kBid*Bid*(p43 + p18)*cell;
+  reaction_18: PrNES_mCherry => PrNES + mCherry; kD374probe*PrNES_mCherry*(p43 + p18)*cell;
+  reaction_19: PrER_mGFP => PrER + mGFP; kD374probe*PrER_mGFP*p18*cell;
+
+  // Species initializations:
+  CD95 = 116;
+  FADD = 93;
+  p55free = 155;
+  Bid = 236;
+  PrNES_mCherry = 973;
+  PrER_mGFP = 5178;
+  DISC = 0;
+  DISCp55 = 0;
+  p30 = 0;
+  p43 = 0;
+  p18 = 0;
+  p18inactive = 0;
+  tBid = 0;
+  PrNES = 0;
+  mCherry = 0;
+  PrER = 0;
+  mGFP = 0;
+  CD95L = 16.6;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  kon_FADD = 0.00108871858684363;
+  koff_FADD = 0.00130854998177646;
+  kDISC = 0.000364965874405544;
+  kD216 = 0.00639775937416746;
+  kD216trans_p55 = 0.000223246421372882;
+  kD216trans_p43 = 5.29906975294056e-005;
+  kD374 = 0.000644612643975149;
+  kD374trans_p55 = 0.000543518631342483;
+  kD374trans_p43 = 0.00413530054938906;
+  kdiss_p18 = 0.064713651554491;
+  kBid = 0.00052134055139547;
+  kD374probe = 0.00153710001025539;
+  KDR = 57.2050013008496;
+  KDL = 30.0060394758199;
+
+  //  Other declarations:
+  var CD95act;
+  const cell, kon_FADD, koff_FADD, kDISC, kD216, kD216trans_p55, kD216trans_p43;
+  const kD374, kD374trans_p55, kD374trans_p43, kdiss_p18, kBid, kD374probe;
+  const KDR, KDL;
+end

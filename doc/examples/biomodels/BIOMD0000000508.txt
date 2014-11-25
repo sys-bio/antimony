@@ -1,0 +1,98 @@
+//Created by libAntimony v2.6.0
+model *MODEL1401200000()
+
+  // Compartments and Species:
+  compartment cell;
+  species $d in cell, $ad in cell, $e in cell, $ca in cell, $rs in cell, $x in cell;
+  species $r in cell, $ip3 in cell, $gstar in cell, $kg in cell, $ro in cell;
+  species $delta in cell, $atp in cell, $ip3con in cell, $dcon in cell, $y in cell;
+
+  // Assignment Rules:
+  ad := addash + gamma*(ca - p1);
+  ca := p1 + (p2*ip3^m)/(p3^m + ip3^m) + (p4*ip3^n)/(p5^n + ip3^n);
+  gstar := (ro + delta)/(kg + delta + ro);
+  kg := kd/ka;
+  ro := atp/(kr + atp);
+  delta := (kg*kdeg*ip30)/(rhstar - kdeg*ip30);
+  ip3con := (tanh((ip3 - ip3min)/0.01) + 1)/2;
+  dcon := (tanh((d - dcrit)/0.01) + 1)/2;
+
+  // Rate Rules:
+  d' = ad*((k*gf)/(1 + k*gf)) - ddd*e*d;
+  e' = ae*(1 + af*(yo - rs)) - dee*x*e;
+  rs' = ps*(yo - rs)*r - (pd*rs*d)/(qd + rs + d) - (pe*rs*e)/(qe + rs + e);
+  x' = (ax*e + f*(yo - rs) + g*x^2*e) - dxx*x;
+  r' = (px*(rt - rs - r)*x)/(qx + (rt - rs - r) + x) - ps*(yo - rs)*r;
+  ip3' = scale*(rhstar*gstar - kdeg*ip3);
+  atp' = scale*(vatp_s*(y - atp)*dcon*ip3con*((ip3 - ip3min)/(krel + ip3)) - (vdeg*atp)/(kkdeg + atp));
+  y' = scale*(alpha*(ymax - y) - dcon*ip3con*vatp_s*(y - atp)*((ip3 - ip3min)/(krel + ip3)));
+
+  // Species initializations:
+  d = 0;
+  e = 1;
+  rs = 0;
+  x = 0;
+  r = 0;
+  ip3 = 0;
+  atp = 0;
+  y = 0;
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  k = 0.05;
+  gf = 6.3;
+  ddd = 0.4;
+  addash = 0.41;
+  p1 = 0.0159835;
+  ae = 0.16;
+  af = 0.9;
+  yo = 1.5;
+  dee = 0.2;
+  px = 0.48;
+  rt = 2.5;
+  qx = 0.8;
+  ps = 0.6;
+  pd = 0.48;
+  qd = 0.6;
+  pe = 0.096;
+  qe = 0.6;
+  ax = 0.08;
+  f = 0.2;
+  g = 0.528;
+  dxx = 1.04;
+  scale = 3600;
+  rhstar = 0.6;
+  kdeg = 0.0625;
+  kd = 0.15;
+  ka = 0.017;
+  kr = 25;
+  ip3min = 0.012;
+  dcrit = 0.5;
+  vatp_s = 50;
+  krel = 10;
+  vdeg = 2;
+  kkdeg = 50;
+  alpha = 0.083;
+  ymax = 500;
+  ip30 = 0.013;
+  p2 = 0.514987;
+  m = 24.1946;
+  p3 = 1.31319;
+  p4 = 0.332195;
+  n = 9.79183;
+  p5 = 0.787902;
+  smoothness = 0.01;
+  gamma = 1;
+  dip = 280;
+  datpp = 300;
+  cabasil = 0.02055236;
+  dist = 50;
+
+  //  Other declarations:
+  const cell, k, gf, ddd, addash, p1, ae, af, yo, dee, px, rt, qx, ps, pd;
+  const qd, pe, qe, ax, f, g, dxx, scale, rhstar, kdeg, kd, ka, kr, ip3min;
+  const dcrit, vatp_s, krel, vdeg, kkdeg, alpha, ymax, ip30, p2, m, p3, p4;
+  const n, p5, smoothness, gamma, dip, datpp, cabasil, dist;
+end

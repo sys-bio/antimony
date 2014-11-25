@@ -18,7 +18,7 @@ model *MODEL1001130000()
   species cPn in compartment_, cAm in compartment_, cAc in compartment_, cAn in compartment_;
 
   // Reactions:
-  reaction_1:  => cLm; (compartment_*g0^alpha)/(g0^alpha + cAn^alpha)*(LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*(q1*cPn + n0) + (n1*cXn^a)/(g1^a + cXn^a));
+  reaction_1:  => cLm; (compartment_*g0^alpha)/(g0^alpha + cAn^alpha)*(LightFunction(time)*(q1*cPn + n0) + (n1*cXn^a)/(g1^a + cXn^a));
   reaction_0: cLm => ; compartment_*function_1(m1, cLm, k1);
   reaction_2:  => cLc; compartment_*p1*cLm;
   reaction_3: cLc -> cLn; compartment_*(r1*cLc - r2*cLn);
@@ -38,21 +38,21 @@ model *MODEL1001130000()
   reaction_18: cAc -> cAn; compartment_*(r9*cAc - r10*cAn);
   reaction_19: cAc => ; compartment_*function_1(m17, cAc, k15);
   reaction_20: cAn => ; compartment_*function_1(m18, cAn, k16);
-  reaction_21:  => cPn; (1 - LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod))*p5*compartment_;
-  reaction_22: cPn => ; LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*q3*cPn*compartment_;
+  reaction_21:  => cPn; (1 - LightFunction(time))*p5*compartment_;
+  reaction_22: cPn => ; LightFunction(time)*q3*cPn*compartment_;
   reaction_23: cPn => ; (compartment_*m15*cPn)/(k13 + cPn);
-  reaction_25:  => cAm; LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*q4*cPn*compartment_;
+  reaction_25:  => cAm; LightFunction(time)*q4*cPn*compartment_;
   reaction_26:  => cAm; (compartment_*n6*cLn^g)/(g7^g + cLn^g);
   reaction_27: cAm => ; (compartment_*m16*cAm)/(k14 + cAm);
   reaction_28:  => cXm; (compartment_*n3*cTn^d)/(g4^d + cTn^d);
   reaction_29: cXm => ; (compartment_*m9*cXm)/(k7 + cXm);
   reaction_30:  => cTc; p2*compartment_*cTm;
   reaction_31: cTc -> cTn; compartment_*(-r4*cTn + r3*cTc);
-  reaction_32: cTc => ; (compartment_*(1 - LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod))*m5*cTc)/(k5 + cTc);
+  reaction_32: cTc => ; (compartment_*(1 - LightFunction(time))*m5*cTc)/(k5 + cTc);
   reaction_33: cTc => ; (m6*compartment_*cTc)/(k5 + cTc);
-  reaction_34: cTn => ; (compartment_*(1 - LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod))*m7*cTn)/(k6 + cTn);
+  reaction_34: cTn => ; (compartment_*(1 - LightFunction(time))*m7*cTn)/(k6 + cTn);
   reaction_38: cTn => ; (m8*compartment_*cTn)/(k6 + cTn);
-  reaction_39:  => cYm; compartment_*(LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*q2*cPn + ((LightFunction(time, lightOffset, lightAmplitude, phase, photoPeriod, cyclePeriod, twilightPeriod)*n4 + n5)*g5^e)/(g5^e + cTn^e))*(g6^f/(g6^f + cLn^f));
+  reaction_39:  => cYm; compartment_*(LightFunction(time)*q2*cPn + ((LightFunction(time)*n4 + n5)*g5^e)/(g5^e + cTn^e))*(g6^f/(g6^f + cLn^f));
   reaction_40: cYm => ; (compartment_*m12*cYm)/(k10 + cYm);
 
   // Species initializations:
