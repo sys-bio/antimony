@@ -1,0 +1,299 @@
+//Created by libAntimony v2.6.0
+function vAK(ADP, AMP, ATP, k1, k2)
+  k1*ADP^2 - AMP*ATP*k2;
+end
+
+function v2sub2prod(Vfmax, Keq, S1, Ks1, S2, Ks2, P1, Kp1, P2, Kp2)
+  (Vfmax*S1*S2*(1 - (P1*P2)/(Keq*S1*S2)))/(Ks1*Ks2*(1 + S1/Ks1 + P1/Kp1)*(1 + S2/Ks2 + P2/Kp2));
+end
+
+function v1sub(Vfmax, S, Ks)
+  (Vfmax*S)/(Ks*(1 + S/Ks));
+end
+
+function v2sub2prod_compinhib(Vfmax, Keq, S1, Ks1, S2, Ks2, P1, Kp1, P2, Kp2, I1, Ki1, I2, Ki2)
+  (Vfmax*S1*S2*(1 - (P1*P2)/(Keq*S1*S2)))/(Ks1*Ks2*(1 + S1/Ks1 + P1/Kp1)*(1 + S2/Ks2 + P2/Kp2 + I1/Ki1 + I2/Ki2));
+end
+
+function mass_action_rev(k1, S, k2, P)
+  k1*S - k2*P;
+end
+
+function v1sub1prod(Vfmax, Keq, S, Ks, P, Kp)
+  (Vfmax*S*(1 - P/(Keq*S)))/(Ks*(1 + S/Ks + P/Kp));
+end
+
+function mass_action_irrev(k, S)
+  k*S;
+end
+
+
+model *MODEL1401310001()
+
+  // Compartments and Species:
+  compartment cytosol, glycosome, default;
+  species _2PGA_c in cytosol, DHAP_c in cytosol, ATP_g in glycosome, DHAP_g in glycosome;
+  species ADP_g in glycosome, Glc6P_g in glycosome, ADP_c in cytosol, _3PGA_c in cytosol;
+  species Fru6P_g in glycosome, $Pi_g in glycosome, $O2_c in default, NADP_c in cytosol;
+  species ATP_c in cytosol, NADP_g in glycosome, _6PG_g in glycosome, $CO2_c in cytosol;
+  species Rul5P_c in cytosol, _6PG_c in cytosol, Rul5P_g in glycosome, Glc6P_c in cytosol;
+  species $Rib5P_c in cytosol, _13BPGA_g in glycosome, Glc_c in cytosol, $Rib5P_g in glycosome;
+  species Glc_g in glycosome, $Glc_e in default, NADPH_g in glycosome, NADPH_c in cytosol;
+  species Pyr_c in cytosol, $Pyr_e in default, NAD_g in glycosome, Fru16BP_g in glycosome;
+  species GA3P_g in glycosome, $Gly_e in default, TSH2_c in cytosol, $CO2_g in glycosome;
+  species Gly3P_c in cytosol, Gly3P_g in glycosome, _6PGL_c in cytosol, TS2_c in cytosol;
+  species _6PGL_g in glycosome, PEP_c in cytosol, AMP_g in glycosome, _3PGA_g in glycosome;
+  species AMP_c in cytosol, NADH_g in glycosome;
+
+  // Reactions:
+  TPI_g: DHAP_g -> GA3P_g; v1sub1prod(TPI_g_TPI_g_Vmax, TPI_g_TPI_g_Keq, DHAP_g, TPI_g_TPI_g_KmDHAP, GA3P_g, TPI_g_TPI_g_KmGA3P);
+  PYK_c: PEP_c + ADP_c -> Pyr_c + ATP_c; (PYK_c_PYK_c_Vmax*ADP_c*(1 - (Pyr_c*ATP_c)/(PYK_c_PYK_c_Keq*PEP_c*ADP_c))*(PEP_c/(PYK_c_PYK_c_KmPEP*(1 + ADP_c/PYK_c_PYK_c_KiADP + ATP_c/PYK_c_PYK_c_KiATP)))^PYK_c_PYK_c_n)/(PYK_c_PYK_c_KmADP*(1 + (PEP_c/(PYK_c_PYK_c_KmPEP*(1 + ADP_c/PYK_c_PYK_c_KiADP + ATP_c/PYK_c_PYK_c_KiATP)))^PYK_c_PYK_c_n + Pyr_c/PYK_c_PYK_c_KmPyr)*(1 + ADP_c/PYK_c_PYK_c_KmADP + ATP_c/PYK_c_PYK_c_KmATP));
+  PFK_g: ATP_g + Fru6P_g -> Fru16BP_g + ADP_g; (PFK_g_PFK_g_Vmax*PFK_g_PFK_g_Ki1*Fru6P_g*ATP_g*(1 - (Fru16BP_g*ADP_g)/(PFK_g_PFK_g_Keq*Fru6P_g*ATP_g)))/(PFK_g_PFK_g_KmFru6P*PFK_g_PFK_g_KmATP*(Fru16BP_g + PFK_g_PFK_g_Ki1)*(PFK_g_PFK_g_KsATP/PFK_g_PFK_g_KmATP + Fru6P_g/PFK_g_PFK_g_KmFru6P + ATP_g/PFK_g_PFK_g_KmATP + ADP_g/PFK_g_PFK_g_KmADP + (Fru16BP_g*ADP_g)/(PFK_g_PFK_g_KmADP*PFK_g_PFK_g_Ki2) + (Fru6P_g*ATP_g)/(PFK_g_PFK_g_KmFru6P*PFK_g_PFK_g_KmATP)));
+  G6PDH_g: Glc6P_g + NADP_g -> _6PGL_g + NADPH_g; v2sub2prod(G6PDH_g_G6PDH_g_Vmax, G6PDH_g_G6PDH_g_Keq, Glc6P_g, G6PDH_g_G6PDH_g_KmGlc6P, NADP_g, G6PDH_g_G6PDH_g_KmNADP, _6PGL_g, G6PDH_g_G6PDH_g_Km6PGL, NADPH_g, G6PDH_g_G6PDH_g_KmNADPH);
+  PGAM_c: _3PGA_c -> _2PGA_c; v1sub1prod(PGAM_c_PGAM_c_Vmax, PGAM_c_PGAM_c_Keq, _3PGA_c, PGAM_c_PGAM_c_Km3PGA, _2PGA_c, PGAM_c_PGAM_c_Km2PGA);
+  PyrT_c: Pyr_c => $Pyr_e; v1sub(PyrT_c_PyrT_c_Vmax, Pyr_c, PyrT_c_PyrT_c_KmPyr);
+  G6PDH_c: Glc6P_c + NADP_c -> NADPH_c + _6PGL_c; v2sub2prod(G6PDH_c_G6PDH_c_Vmax, G6PDH_c_G6PDH_c_Keq, Glc6P_c, G6PDH_c_G6PDH_c_KmGlc6P, NADP_c, G6PDH_c_G6PDH_c_KmNADP, _6PGL_c, G6PDH_c_G6PDH_c_Km6PGL, NADPH_c, G6PDH_c_G6PDH_c_KmNADPH);
+  ENO_c: _2PGA_c -> PEP_c; v1sub1prod(ENO_c_ENO_c_Vmax, ENO_c_ENO_c_Keq, _2PGA_c, ENO_c_ENO_c_Km2PGA, PEP_c, ENO_c_ENO_c_KmPEP);
+  HXK_g: ATP_g + Glc_g -> Glc6P_g + ADP_g; v2sub2prod(HXK_g_HXK_g_Vmax, HXK_g_HXK_g_Keq, Glc_g, HXK_g_HXK_g_KmGlc, ATP_g, HXK_g_HXK_g_KmATP, Glc6P_g, HXK_g_HXK_g_KmGlc6P, ADP_g, HXK_g_HXK_g_KmADP);
+  _3PGAT_g: _3PGA_g -> _3PGA_c; mass_action_rev(_3PGAT_g__3PGAT_g_k, _3PGA_g, _3PGAT_g__3PGAT_g_k, _3PGA_c);
+  NADPHu_c: NADPH_c => NADP_c; mass_action_irrev(NADPHu_c_NADPHu_c_k, NADPH_c);
+  HXK_c: Glc_c + ATP_c -> Glc6P_c + ADP_c; v2sub2prod(HXK_c_HXK_c_Vmax, HXK_c_HXK_c_Keq, Glc_c, HXK_c_HXK_c_KmGlc, ATP_c, HXK_c_HXK_c_KmATP, Glc6P_c, HXK_c_HXK_c_KmGlc6P, ADP_c, HXK_c_HXK_c_KmADP);
+  NADPHu_g: NADPH_g => NADP_g; mass_action_irrev(NADPHu_g_NADPHu_g_k, NADPH_g);
+  AK_c: 2ADP_c -> AMP_c + ATP_c; vAK(ADP_c, AMP_c, ATP_c, AK_c_AK_c_k1, AK_c_AK_c_k2);
+  G6PP_c: Glc6P_c -> Glc_c; v1sub1prod(G6PP_c_G6PP_c_Vmax, G6PP_c_G6PP_c_Keq, Glc6P_c, G6PP_c_G6PP_c_KmGlc6P, Glc_c, G6PP_c_G6PP_c_KmGlc);
+  _6PGDH_g: _6PG_g + NADP_g -> Rul5P_g + $CO2_g + NADPH_g; v2sub2prod(_6PGDH_g__6PGDH_g_Vmax, _6PGDH_g__6PGDH_g_Keq, _6PG_g, _6PGDH_g__6PGDH_g_Km6PG, NADP_g, _6PGDH_g__6PGDH_g_KmNADP, Rul5P_g, _6PGDH_g__6PGDH_g_KmRul5P, NADPH_g, _6PGDH_g__6PGDH_g_KmNADPH);
+  PGI_g: Glc6P_g -> Fru6P_g; (PGI_g_PGI_g_Vmax*Glc6P_g*(1 - Fru6P_g/(PGI_g_PGI_g_Keq*Glc6P_g)))/(PGI_g_PGI_g_KmGlc6P*(1 + Glc6P_g/PGI_g_PGI_g_KmGlc6P + Fru6P_g/PGI_g_PGI_g_KmFru6P + _6PG_g/PGI_g_PGI_g_Ki6PG));
+  AK_g: 2ADP_g -> AMP_g + ATP_g; vAK(ADP_g, AMP_g, ATP_g, AK_g_AK_g_k1, AK_g_AK_g_k2);
+  TOX_c: TSH2_c => TS2_c; mass_action_irrev(TOX_c_TOX_c_k, TSH2_c);
+  GDA_g: Gly3P_g + DHAP_c -> Gly3P_c + DHAP_g; Gly3P_g*GDA_g_GDA_g_k*DHAP_c - Gly3P_c*GDA_g_GDA_g_k*DHAP_g;
+  PGL_c: _6PGL_c -> _6PG_c; PGL_c_PGL_c_k*cytosol*(_6PGL_c - _6PG_c/PGL_c_PGL_c_Keq) + v1sub1prod(PGL_c_PGL_c_Vmax, PGL_c_PGL_c_Keq, _6PGL_c, PGL_c_PGL_c_Km6PGL, _6PG_c, PGL_c_PGL_c_Km6PG);
+  _6PGDH_c: NADP_c + _6PG_c -> $CO2_c + NADPH_c + Rul5P_c; v2sub2prod(_6PGDH_c__6PGDH_c_Vmax, _6PGDH_c__6PGDH_c_Keq, _6PG_c, _6PGDH_c__6PGDH_c_Km6PG, NADP_c, _6PGDH_c__6PGDH_c_KmNADP, Rul5P_c, _6PGDH_c__6PGDH_c_KmRul5P, NADPH_c, _6PGDH_c__6PGDH_c_KmNADPH);
+  PPI_c: Rul5P_c -> $Rib5P_c; v1sub1prod(PPI_c_PPI_c_Vmax, PPI_c_PPI_c_Keq, Rul5P_c, PPI_c_PPI_c_KmRul5P, Rib5P_c, PPI_c_PPI_c_KmRib5P);
+  PPI_g: Rul5P_g -> $Rib5P_g; v1sub1prod(PPI_g_PPI_g_Vmax, PPI_g_PPI_g_Keq, Rul5P_g, PPI_g_PPI_g_KmRul5P, Rib5P_g, PPI_g_PPI_g_KmRib5P);
+  GlcT_g: Glc_c -> Glc_g; mass_action_rev(GlcT_g_GlcT_g_k1, Glc_c, GlcT_g_GlcT_g_k2, Glc_g);
+  GlcT_c: $Glc_e -> Glc_c; (GlcT_c_GlcT_c_Vmax*(Glc_e - Glc_c))/(GlcT_c_GlcT_c_KmGlc + Glc_e + Glc_c + (GlcT_c_GlcT_c_alpha*Glc_e*Glc_c)/GlcT_c_GlcT_c_KmGlc);
+  PGL_g: _6PGL_g -> _6PG_g; glycosome*PGL_g_PGL_g_k*(_6PGL_g - _6PG_g/PGL_g_PGL_g_Keq) + v1sub1prod(PGL_g_PGL_g_Vmax, PGL_g_PGL_g_Keq, _6PGL_g, PGL_g_PGL_g_Km6PGL, _6PG_g, PGL_g_PGL_g_Km6PG);
+  TR_c: TS2_c + NADPH_c -> NADP_c + TSH2_c; v2sub2prod(TR_c_TR_c_Vmax, TR_c_TR_c_Keq, TS2_c, TR_c_TR_c_KmTS2, NADPH_c, TR_c_TR_c_KmNADPH, TSH2_c, TR_c_TR_c_KmTSH2, NADP_c, TR_c_TR_c_KmNADP);
+  PGK_g: _13BPGA_g + ADP_g -> _3PGA_g + ATP_g; v2sub2prod(PGK_g_PGK_g_Vmax, PGK_g_PGK_g_Keq, _13BPGA_g, PGK_g_PGK_g_Km13BPGA, ADP_g, PGK_g_PGK_g_KmADP, _3PGA_g, PGK_g_PGK_g_Km3PGA, ATP_g, PGK_g_PGK_g_KmATP);
+  G3PDH_g: NADH_g + DHAP_g -> Gly3P_g + NAD_g; v2sub2prod(G3PDH_g_G3PDH_g_Vmax, G3PDH_g_G3PDH_g_Keq, DHAP_g, G3PDH_g_G3PDH_g_KmDHAP, NADH_g, G3PDH_g_G3PDH_g_KmNADH, Gly3P_g, G3PDH_g_G3PDH_g_KmGly3P, NAD_g, G3PDH_g_G3PDH_g_KmNAD);
+  ATPu_c: ATP_c => ADP_c; (ATPu_c_ATPu_c_k*ATP_c)/ADP_c;
+  GK_g: Gly3P_g + ADP_g -> $Gly_e + ATP_g; v2sub2prod(GK_g_GK_g_Vmax, GK_g_GK_g_Keq, Gly3P_g, GK_g_GK_g_KmGly3P, ADP_g, GK_g_GK_g_KmADP, Gly_e, GK_g_GK_g_KmGly, ATP_g, GK_g_GK_g_KmATP);
+  ALD_g: Fru16BP_g -> GA3P_g + DHAP_g; (ALD_g_ALD_g_Vmax*Fru16BP_g*(1 - (GA3P_g*DHAP_g)/(Fru16BP_g*ALD_g_ALD_g_Keq)))/(ALD_g_ALD_g_KmFru16BP*(1 + ATP_g/ALD_g_ALD_g_KiATP + ADP_g/ALD_g_ALD_g_KiADP + AMP_g/ALD_g_ALD_g_KiAMP)*(1 + GA3P_g/ALD_g_ALD_g_KmGA3P + DHAP_g/ALD_g_ALD_g_KmDHAP + Fru16BP_g/(ALD_g_ALD_g_KmFru16BP*(1 + ATP_g/ALD_g_ALD_g_KiATP + ADP_g/ALD_g_ALD_g_KiADP + AMP_g/ALD_g_ALD_g_KiAMP)) + (GA3P_g*DHAP_g)/(ALD_g_ALD_g_KmGA3P*ALD_g_ALD_g_KmDHAP) + (Fru16BP_g*GA3P_g)/(ALD_g_ALD_g_KmFru16BP*ALD_g_ALD_g_KiGA3P*(1 + ATP_g/ALD_g_ALD_g_KiATP + ADP_g/ALD_g_ALD_g_KiADP + AMP_g/ALD_g_ALD_g_KiAMP))));
+  GAPDH_g: GA3P_g + NAD_g + $Pi_g -> NADH_g + _13BPGA_g; v2sub2prod(GAPDH_g_GAPDH_g_Vmax, GAPDH_g_GAPDH_g_Keq, GA3P_g, GAPDH_g_GAPDH_g_KmGA3P, NAD_g, GAPDH_g_GAPDH_g_KmNAD, _13BPGA_g, GAPDH_g_GAPDH_g_Km13BPGA, NADH_g, GAPDH_g_GAPDH_g_KmNADH);
+  GPO_c: Gly3P_c => DHAP_c; v1sub(GPO_c_GPO_c_Vmax, Gly3P_c, GPO_c_GPO_c_KmGly3P);
+
+  // Species initializations:
+  _2PGA_c = 0.1;
+  DHAP_c = 2.23132912;
+  ATP_g = 0.2405;
+  DHAP_g = 8.483130623;
+  ADP_g = 1.519;
+  Glc6P_g = 0.5;
+  ADP_c = 1.3165;
+  _3PGA_c = 0.1;
+  Fru6P_g = 0.5;
+  Pi_g = 0;
+  O2_c = 1;
+  NADP_c = 0.1;
+  ATP_c = 0.3417;
+  NADP_g = 0.1;
+  _6PG_g = 0.0841958;
+  CO2_c = 0;
+  Rul5P_c = 0.41282;
+  _6PG_c = 0.0841958;
+  Rul5P_g = 0.41282;
+  Glc6P_c = 0.5;
+  Rib5P_c = 0.01;
+  _13BPGA_g = 0.5;
+  Glc_c = 0.1;
+  Rib5P_g = 0.01;
+  Glc_g = 0.1;
+  Glc_e = 5;
+  NADPH_g = 3.9;
+  NADPH_c = 3.9;
+  Pyr_c = 10;
+  Pyr_e = 0;
+  NAD_g = 2;
+  Fru16BP_g = 10;
+  GA3P_g = 2.5;
+  Gly_e = 0;
+  TSH2_c = 0.01;
+  CO2_g = 0;
+  Gly3P_c = 2.76867088;
+  Gly3P_g = 10.51686938;
+  _6PGL_c = 0.0795278;
+  TS2_c = 0.37;
+  _6PGL_g = 0.0795278;
+  PEP_c = 1;
+  AMP_g = 4.2405;
+  _3PGA_g = 0.1;
+  AMP_c = 2.2418;
+  NADH_g = 2;
+
+  // Compartment initializations:
+  cytosol = 5.4549;
+  glycosome = 0.2451;
+  default = 1;
+
+  // Variable initializations:
+  TPI_g_TPI_g_Vmax = 999.3;
+  TPI_g_TPI_g_Keq = 0.046;
+  TPI_g_TPI_g_KmDHAP = 1.2;
+  TPI_g_TPI_g_KmGA3P = 0.25;
+  PYK_c_PYK_c_Vmax = 1020;
+  PYK_c_PYK_c_KmPEP = 0.34;
+  PYK_c_PYK_c_KiATP = 0.57;
+  PYK_c_PYK_c_KiADP = 0.64;
+  PYK_c_PYK_c_n = 2.5;
+  PYK_c_PYK_c_KmADP = 0.114;
+  PYK_c_PYK_c_Keq = 10800;
+  PYK_c_PYK_c_KmPyr = 50;
+  PYK_c_PYK_c_KmATP = 15;
+  PFK_g_PFK_g_Vmax = 1708;
+  PFK_g_PFK_g_Ki1 = 15.8;
+  PFK_g_PFK_g_KmFru6P = 0.999;
+  PFK_g_PFK_g_KmATP = 0.0648;
+  PFK_g_PFK_g_Keq = 1035;
+  PFK_g_PFK_g_KsATP = 0.0393;
+  PFK_g_PFK_g_KmADP = 1;
+  PFK_g_PFK_g_Ki2 = 10.7;
+  G6PDH_g_G6PDH_g_Vmax = 8.4;
+  G6PDH_g_G6PDH_g_Keq = 5.02;
+  G6PDH_g_G6PDH_g_KmGlc6P = 0.058;
+  G6PDH_g_G6PDH_g_KmNADP = 0.0094;
+  G6PDH_g_G6PDH_g_Km6PGL = 0.04;
+  G6PDH_g_G6PDH_g_KmNADPH = 0.0001;
+  PGAM_c_PGAM_c_Vmax = 225;
+  PGAM_c_PGAM_c_Keq = 0.17;
+  PGAM_c_PGAM_c_Km3PGA = 0.15;
+  PGAM_c_PGAM_c_Km2PGA = 0.16;
+  PyrT_c_PyrT_c_Vmax = 230;
+  PyrT_c_PyrT_c_KmPyr = 1.96;
+  G6PDH_c_G6PDH_c_Vmax = 8.4;
+  G6PDH_c_G6PDH_c_Keq = 5.02;
+  G6PDH_c_G6PDH_c_KmGlc6P = 0.058;
+  G6PDH_c_G6PDH_c_KmNADP = 0.0094;
+  G6PDH_c_G6PDH_c_Km6PGL = 0.04;
+  G6PDH_c_G6PDH_c_KmNADPH = 0.0001;
+  ENO_c_ENO_c_Vmax = 598;
+  ENO_c_ENO_c_Keq = 4.17;
+  ENO_c_ENO_c_Km2PGA = 0.054;
+  ENO_c_ENO_c_KmPEP = 0.24;
+  HXK_g_HXK_g_Vmax = 1774.68;
+  HXK_g_HXK_g_Keq = 759;
+  HXK_g_HXK_g_KmGlc = 0.1;
+  HXK_g_HXK_g_KmATP = 0.116;
+  HXK_g_HXK_g_KmGlc6P = 2.7;
+  HXK_g_HXK_g_KmADP = 0.126;
+  _3PGAT_g__3PGAT_g_k = 250;
+  NADPHu_c_NADPHu_c_k = 2;
+  HXK_c_HXK_c_Vmax = 154.32;
+  HXK_c_HXK_c_Keq = 759;
+  HXK_c_HXK_c_KmGlc = 0.1;
+  HXK_c_HXK_c_KmATP = 0.116;
+  HXK_c_HXK_c_KmGlc6P = 2.7;
+  HXK_c_HXK_c_KmADP = 0.126;
+  NADPHu_g_NADPHu_g_k = 2;
+  AK_c_AK_c_k1 = 480;
+  AK_c_AK_c_k2 = 1000;
+  G6PP_c_G6PP_c_Vmax = 28;
+  G6PP_c_G6PP_c_Keq = 263;
+  G6PP_c_G6PP_c_KmGlc6P = 5.6;
+  G6PP_c_G6PP_c_KmGlc = 5.6;
+  _6PGDH_g__6PGDH_g_Vmax = 10.6;
+  _6PGDH_g__6PGDH_g_Keq = 47;
+  _6PGDH_g__6PGDH_g_Km6PG = 0.0035;
+  _6PGDH_g__6PGDH_g_KmNADP = 0.001;
+  _6PGDH_g__6PGDH_g_KmRul5P = 0.03;
+  _6PGDH_g__6PGDH_g_KmNADPH = 0.0006;
+  PGI_g_PGI_g_Vmax = 1305;
+  PGI_g_PGI_g_KmGlc6P = 0.4;
+  PGI_g_PGI_g_Keq = 0.457;
+  PGI_g_PGI_g_KmFru6P = 0.12;
+  PGI_g_PGI_g_Ki6PG = 0.14;
+  AK_g_AK_g_k1 = 480;
+  AK_g_AK_g_k2 = 1000;
+  TOX_c_TOX_c_k = 2;
+  GDA_g_GDA_g_k = 600;
+  PGL_c_PGL_c_Vmax = 28;
+  PGL_c_PGL_c_Keq = 20000;
+  PGL_c_PGL_c_Km6PGL = 0.05;
+  PGL_c_PGL_c_Km6PG = 0.05;
+  PGL_c_PGL_c_k = 0.055;
+  _6PGDH_c__6PGDH_c_Vmax = 10.6;
+  _6PGDH_c__6PGDH_c_Keq = 47;
+  _6PGDH_c__6PGDH_c_Km6PG = 0.0035;
+  _6PGDH_c__6PGDH_c_KmNADP = 0.001;
+  _6PGDH_c__6PGDH_c_KmRul5P = 0.03;
+  _6PGDH_c__6PGDH_c_KmNADPH = 0.0006;
+  PPI_c_PPI_c_Vmax = 72;
+  PPI_c_PPI_c_Keq = 5.6;
+  PPI_c_PPI_c_KmRul5P = 1.4;
+  PPI_c_PPI_c_KmRib5P = 4;
+  PPI_g_PPI_g_Vmax = 72;
+  PPI_g_PPI_g_Keq = 5.6;
+  PPI_g_PPI_g_KmRul5P = 1.4;
+  PPI_g_PPI_g_KmRib5P = 4;
+  GlcT_g_GlcT_g_k1 = 250000;
+  GlcT_g_GlcT_g_k2 = 250000;
+  GlcT_c_GlcT_c_Vmax = 111.7;
+  GlcT_c_GlcT_c_KmGlc = 1;
+  GlcT_c_GlcT_c_alpha = 0.75;
+  PGL_g_PGL_g_Vmax = 5;
+  PGL_g_PGL_g_Keq = 20000;
+  PGL_g_PGL_g_Km6PGL = 0.05;
+  PGL_g_PGL_g_Km6PG = 0.05;
+  PGL_g_PGL_g_k = 0.055;
+  TR_c_TR_c_Vmax = 252;
+  TR_c_TR_c_Keq = 434;
+  TR_c_TR_c_KmTS2 = 0.0069;
+  TR_c_TR_c_KmNADPH = 0.00077;
+  TR_c_TR_c_KmTSH2 = 0.0018;
+  TR_c_TR_c_KmNADP = 0.081;
+  PGK_g_PGK_g_Vmax = 2862;
+  PGK_g_PGK_g_Keq = 3377;
+  PGK_g_PGK_g_Km13BPGA = 0.003;
+  PGK_g_PGK_g_KmADP = 0.1;
+  PGK_g_PGK_g_Km3PGA = 1.62;
+  PGK_g_PGK_g_KmATP = 0.29;
+  G3PDH_g_G3PDH_g_Vmax = 465;
+  G3PDH_g_G3PDH_g_Keq = 17085;
+  G3PDH_g_G3PDH_g_KmDHAP = 0.1;
+  G3PDH_g_G3PDH_g_KmNADH = 0.01;
+  G3PDH_g_G3PDH_g_KmGly3P = 2;
+  G3PDH_g_G3PDH_g_KmNAD = 0.4;
+  ATPu_c_ATPu_c_k = 50;
+  GK_g_GK_g_Vmax = 200;
+  GK_g_GK_g_Keq = 0.000837;
+  GK_g_GK_g_KmGly3P = 3.83;
+  GK_g_GK_g_KmADP = 0.56;
+  GK_g_GK_g_KmGly = 0.44;
+  GK_g_GK_g_KmATP = 0.24;
+  ALD_g_ALD_g_Vmax = 560;
+  ALD_g_ALD_g_KmFru16BP = 0.009;
+  ALD_g_ALD_g_KiATP = 0.68;
+  ALD_g_ALD_g_KiADP = 1.51;
+  ALD_g_ALD_g_KiAMP = 3.65;
+  ALD_g_ALD_g_Keq = 0.084;
+  ALD_g_ALD_g_KmGA3P = 0.067;
+  ALD_g_ALD_g_KmDHAP = 0.015;
+  ALD_g_ALD_g_KiGA3P = 0.098;
+  GAPDH_g_GAPDH_g_Vmax = 720.9;
+  GAPDH_g_GAPDH_g_Keq = 0.066;
+  GAPDH_g_GAPDH_g_KmGA3P = 0.15;
+  GAPDH_g_GAPDH_g_KmNAD = 0.45;
+  GAPDH_g_GAPDH_g_Km13BPGA = 0.1;
+  GAPDH_g_GAPDH_g_KmNADH = 0.02;
+  GPO_c_GPO_c_Vmax = 368;
+  GPO_c_GPO_c_KmGly3P = 1.7;
+
+  //  Other declarations:
+  const cytosol, glycosome, default;
+
+  // Unit definitions:
+  unit volume = 1e-6 litre;
+  unit length = metre;
+  unit substance = 1e-9 mole;
+  unit time_unit = 60 second;
+  unit area = metre^2;
+end

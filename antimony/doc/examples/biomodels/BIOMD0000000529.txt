@@ -1,0 +1,162 @@
+//Created by libAntimony v2.6.0
+model *MODEL1403310001()
+
+  // Compartments and Species:
+  compartment default, c2, compartment_;
+  species $w in compartment_, IFNb_mRNA in compartment_, IFNb_env in c2, STATP2n in compartment_;
+  species SOCS1m in compartment_, IRF7m in compartment_, IRF7Pn in compartment_;
+  species IFNa_mRNA in compartment_, IFNa_env in c2, TNFam in compartment_;
+  species TNFenv in c2, STATm in compartment_, STAT in compartment_;
+
+  // Assignment Rules:
+  NS := (r5*time^n3)/(bm^n3 + time^n3);
+  IC1 := (1 + sp*(NS/delta1)^n1)/(1 + (NS/delta1)^n1);
+  IC2 := (1 + sv*(NS/delta2)^n2)/(1 + (NS/delta2)^n2);
+  IC2ifa := (1 + 3*sv*(NS/delta2)^n2)/(1 + (NS/delta2)^n2);
+  TJ := ((TJtot*(IFNb_env + IFNa_env))/(K3 + IFNb_env + IFNa_env)*1)/(1 + (K9*SOCS1m)/delta);
+
+  // Reactions:
+  J1: $w => IFNb_mRNA; (r0*IC1 + k15*IRF7Pn)*IC2 - (IFNb_mRNA*ln(2))/tao1;
+  J2: $w => IFNb_env; ((1000000000*C*vmax2)/NA*IFNb_mRNA)/(K2 + IFNb_mRNA);
+  J3: $w => STATP2n; (K5*TJ*STAT)/2/(K5 + STAT) - (STATP2n*ln(2))/tao3;
+  J4: $w => SOCS1m; (r3*IC1 + k8*STATP2n)*IC2 - (SOCS1m*ln(2))/tao4;
+  J5: $w => IRF7m; (k11*STATP2n + k14*IRF7Pn)*IC2 - (IRF7m*ln(2))/tao6;
+  J6: $w => IRF7Pn; k12*IC1*IRF7m;
+  J7: $w => IFNa_mRNA; k16*IRF7Pn*IC2ifa - (IFNa_mRNA*ln(2))/tao8;
+  J8: $w => IFNa_env; ((1000000000*C*vmax17)/NA*IFNa_mRNA)/(K17 + IFNa_mRNA);
+  J9: $w => TNFam; (r1*IC1 + (rmax20*TNFenv)/(K20 + TNFenv))*IC2 - (TNFam*ln(2))/tao9;
+  J10: $w => TNFenv; ((1000000000*C*vmax19)/NA*TNFam)/(K19 + TNFam);
+  J11: $w => STATm; (r4*IC1 + k26*STATP2n)*IC2 - (STATm*ln(2))/tao12;
+  J12: $w => STAT; k28*STATm - (STAT*ln(2))/tao13;
+
+  // Species initializations:
+  w = 0;
+  IFNb_mRNA = 0;
+  IFNb_env = 0;
+  STATP2n = 0;
+  SOCS1m = 0;
+  IRF7m = 0;
+  IRF7Pn = 0;
+  IFNa_mRNA = 0;
+  IFNa_env = 0;
+  TNFam = 0;
+  TNFenv = 0;
+  STATm = 0;
+  STAT = 0.1;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+  c2 = 1;
+  c2 has volume;
+  compartment_ = 1;
+  compartment_ has volume;
+
+  // Variable initializations:
+  r5 = 1;
+  r5 has dimensionless;
+  n3 = 8;
+  n3 has substance;
+  bm = 4.5;
+  bm has substance;
+  sp = 0.1;
+  sp has substance;
+  delta1 = 0.1;
+  delta1 has substance;
+  n1 = 5;
+  n1 has substance;
+  sv = 0.1;
+  sv has substance;
+  delta2 = 0.4;
+  delta2 has substance;
+  n2 = 5;
+  n2 has substance;
+  TJtot = 0.0001;
+  TJtot has substance;
+  K3 = 0.0043;
+  K3 has substance;
+  K9 = 780;
+  K9 has substance;
+  delta = 0.0003;
+  delta has substance;
+  r0 = 0.003;
+  r0 has substance;
+  k15 = 3.6e-005;
+  k15 has substance;
+  tao1 = 2.5;
+  tao1 has substance;
+  C = 500000;
+  C has substance;
+  vmax2 = 72000;
+  vmax2 has substance;
+  NA = 6.023e+023;
+  NA has substance;
+  K2 = 72000;
+  K2 has substance;
+  K5 = 0.01;
+  K5 has substance;
+  tao3 = 0.56;
+  tao3 has substance;
+  r3 = 1e-007;
+  r3 has substance;
+  k8 = 0.0036;
+  k8 has substance;
+  tao4 = 0.46;
+  tao4 has substance;
+  k11 = 0.00036;
+  k11 has substance;
+  k14 = 3.204e-007;
+  k14 has substance;
+  tao6 = 1;
+  k12 = 3600;
+  k12 has substance;
+  k16 = 3600;
+  k16 has substance;
+  tao8 = 2;
+  tao8 has substance;
+  vmax17 = 72000;
+  vmax17 has substance;
+  K17 = 0.002;
+  K17 has substance;
+  r1 = 0.00025;
+  r1 has substance;
+  rmax20 = 0.001;
+  rmax20 has substance;
+  K20 = 0.0006;
+  K20 has substance;
+  tao9 = 2;
+  tao9 has substance;
+  vmax19 = 154800;
+  vmax19 has substance;
+  K19 = 0.004;
+  K19 has substance;
+  r4 = 1e-006;
+  r4 has substance;
+  k26 = 0.360085;
+  k26 has substance;
+  tao12 = 1;
+  tao12 has substance;
+  k28 = 360;
+  k28 has substance;
+  tao13 = 15;
+  tao13 has substance;
+
+  //  Other declarations:
+  var NS, IC1, IC2, IC2ifa, TJ;
+  const default, c2, compartment_, r5, n3, bm, sp, delta1, n1, sv, delta2;
+  const n2, TJtot, K3, K9, delta, r0, k15, tao1, C, vmax2, NA, K2, K5, tao3;
+  const r3, k8, tao4, k11, k14, tao6, k12, k16, tao8, vmax17, K17, r1, rmax20;
+  const K20, tao9, vmax19, K19, r4, k26, tao12, k28, tao13;
+
+  // Unit definitions:
+  unit substance = 1e-006 mole;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit time_unit = 3600 second;
+
+  //  Display Names:
+  time_unit is "time";
+  c2 is "Environment";
+  compartment_ is "Cell";
+end

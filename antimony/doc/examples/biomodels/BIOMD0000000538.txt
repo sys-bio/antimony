@@ -1,0 +1,40 @@
+//Created by libAntimony v2.6.0
+model *MODEL1408070000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species $ONLnr in Brain, $ONLpcd in Brain, $ONLrom in Brain;
+
+  // Assignment Rules:
+  ONLrom := (ONLrom_0*exp(((exp(-Rrom*time) - 1)*Murom)/Rrom)*100)/ONLrom_0;
+
+  // Rate Rules:
+  ONLnr' = -Munr*ONLnr;
+  ONLpcd' = -Mupcd*ONLpcd;
+
+  // Species initializations:
+  ONLnr = 100;
+  ONLpcd = 100;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  Munr = 0.278;
+  Mupcd = 0.223;
+  ONLrom_0 = 40.947;
+  Rrom = 0.103;
+  Murom = 0.0708;
+
+  //  Other declarations:
+  const Brain, Munr, Mupcd, ONLrom_0, Rrom, Murom;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit time_unit = 86400 second;
+  unit substance = 1e-3 mole;
+
+  //  Display Names:
+  time_unit is "time";
+  ONLrom_0 is "ONLrom";
+end

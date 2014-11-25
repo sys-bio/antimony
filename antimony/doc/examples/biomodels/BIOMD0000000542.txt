@@ -1,0 +1,313 @@
+//Created by libAntimony v2.6.0
+function Constant_flux__irreversible(v)
+  v;
+end
+
+function Henri_Michaelis_Menten__irreversible(substrate, Km, V)
+  (V*substrate)/(Km + substrate);
+end
+
+function Mass_Action(k1, x1, x2)
+  k1*x1*x2;
+end
+
+function Michaelis_Menten(k1, x1, x2, k2)
+  (k1*x1*x2)/(k2 + x1);
+end
+
+function Mass_Action_(K1, x1, x2, x3)
+  K1*x1*x2*x3;
+end
+
+function Nucleation(k1, x1)
+  k1*x1^2;
+end
+
+
+model *MODEL1408150000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species ADP in Brain, ATP in Brain, MT in Brain, $_20S in Brain, Hsc70 in Brain;
+  species Hsp90 in Brain, CHIP in Brain, Bag2 in Brain, $_26S in Brain, TauH3RUb in Brain;
+  species TauH4RUb in Brain, Nucleus3 in Brain, Nucleus4 in Brain, Agg33 in Brain;
+  species $Ap in Brain, Agg43 in Brain, $Bp in Brain, Tau03R in Brain, TauN3R in Brain;
+  species TauH3R in Brain, Tau0_3R in Brain, Tau03RMT in Brain, TauN_3R in Brain;
+  species TauN3RMT in Brain, TauH_3R in Brain, TauH3RMT in Brain, TauH3R_Hsc70 in Brain;
+  species TauH3R_Hsp90 in Brain, Tau03R_Hsp90 in Brain, TauH3R_CHIP_Hsc70 in Brain;
+  species TauH3R_CHIP_Hsc70_Bag2 in Brain, Tau04R in Brain, TauN4R in Brain;
+  species TauH4R in Brain, Tau0_4R in Brain, Tau04RMT in Brain, TauN_4R in Brain;
+  species TauN4RMT in Brain, TauH_4R in Brain, TauH4RMT in Brain, TauH4R_Hsc70 in Brain;
+  species TauH4R_Hsp90 in Brain, Tau04R_Hsp90 in Brain, TauH4R_CHIP_Hsc70 in Brain;
+  species TauH4R_CHIP_Hsc70_Bag2 in Brain;
+
+  // Rate Rules:
+  _20S' = 0;
+  _26S' = 0;
+  Ap' = r77;
+  Bp' = r82;
+
+  // Reactions:
+  r77: TauH3RUb + Agg33 => $Ap; Brain*Mass_Action(k90, TauH3RUb, Agg33);
+  r82: TauH4RUb + Agg43 => $Bp; Brain*Mass_Action(k92, TauH4RUb, Agg43);
+  r1:  => Tau03R; Brain*Constant_flux__irreversible(k1);
+  r2: Tau03R + ATP => TauN3R + ADP; Brain*Michaelis_Menten(k2, Tau03R, ATP, k3);
+  r3: TauN3R => Tau03R; Brain*Henri_Michaelis_Menten__irreversible(TauN3R, k5, k4);
+  r4: TauN3R + ATP => TauH3R + ADP; Brain*Michaelis_Menten(k6, TauN3R, ATP, k7);
+  r5: TauH3R => TauN3R; Brain*Henri_Michaelis_Menten__irreversible(TauH3R, k9, k8);
+  r6: Tau03R => Tau0_3R; Brain*k10*Tau03R;
+  r7: Tau0_3R => Tau03R; Brain*k11*Tau0_3R;
+  r8: Tau0_3R + MT => Tau03RMT; Brain*Mass_Action(k12, Tau0_3R, MT);
+  r9: Tau03RMT => Tau0_3R + MT; Brain*k13*Tau03RMT;
+  r10: TauN3R => TauN_3R; Brain*k14*TauN3R;
+  r11: TauN_3R => TauN3R; Brain*k15*TauN_3R;
+  r12: TauN_3R + MT => TauN3RMT; Brain*Mass_Action(k16, TauN_3R, MT);
+  r13: TauN3RMT => TauN_3R + MT; Brain*k17*TauN3RMT;
+  r14: TauH3R => TauH_3R; Brain*k18*TauH3R;
+  r15: TauH_3R => TauH3R; Brain*k19*TauH_3R;
+  r16: TauH_3R + MT => TauH3RMT; Brain*Mass_Action(k20, TauH_3R, MT);
+  r17: TauH3RMT => TauH_3R + MT; Brain*k21*TauH3RMT;
+  r18: Tau03R + $_20S + ATP => ADP + $_20S; Brain*Mass_Action_(k22, Tau03R, _20S, ATP);
+  r19: TauN3R + $_20S + ATP => ADP + $_20S; Brain*Mass_Action_(k23, TauN3R, _20S, ATP);
+  r20: TauH3R + $_20S + ATP => $_20S + ADP; Brain*Mass_Action_(k24, TauH3R, _20S, ATP);
+  r21: Tau03RMT + ATP => TauN3RMT + ADP; Brain*Michaelis_Menten(k25, Tau03RMT, ATP, k26);
+  r22: TauN3RMT => Tau03RMT; Brain*Henri_Michaelis_Menten__irreversible(TauN3RMT, k28, k27);
+  r23: TauN3RMT + ATP => TauH3RMT + ADP; Brain*Michaelis_Menten(k29, TauN3RMT, ATP, k30);
+  r24: TauH3RMT => TauN3RMT; Brain*Henri_Michaelis_Menten__irreversible(TauH3RMT, k32, k31);
+  r25: TauH3R + Hsc70 => TauH3R_Hsc70; Brain*Mass_Action(k33, TauH3R, Hsc70);
+  r26: TauH3R_Hsc70 => TauH3R + Hsc70; Brain*k34*TauH3R_Hsc70;
+  r27: TauH3R_Hsc70 + Hsp90 => TauH3R_Hsp90 + Hsc70; Brain*Mass_Action(k35, TauH3R_Hsc70, Hsp90);
+  r28: TauH3R_Hsp90 => Tau03R_Hsp90; Brain*Henri_Michaelis_Menten__irreversible(TauH3R_Hsp90, k9, k8);
+  r29: Tau03R_Hsp90 => Hsp90 + Tau03R; Brain*k36*Tau03R_Hsp90;
+  r30: TauH3R_Hsc70 + CHIP => TauH3R_CHIP_Hsc70; Brain*Mass_Action(k37, TauH3R_Hsc70, CHIP);
+  r31: TauH3R_CHIP_Hsc70 => TauH3RUb + Hsc70 + CHIP; Brain*k38*TauH3R_CHIP_Hsc70;
+  r32: TauH3R_CHIP_Hsc70 + Bag2 => TauH3R_CHIP_Hsc70_Bag2; Brain*Mass_Action(k39, TauH3R_CHIP_Hsc70, Bag2);
+  r33: TauH3R_CHIP_Hsc70_Bag2 => TauH3R_Hsc70 + CHIP + Bag2; Brain*k40*TauH3R_CHIP_Hsc70_Bag2;
+  r34: TauH3RUb + $_26S + ATP => ADP + $_26S; Brain*Mass_Action_(k41, TauH3RUb, _26S, ATP);
+  r35:  => Tau04R; Brain*Constant_flux__irreversible(k42);
+  r36: Tau04R + ATP => TauN4R + ADP; Brain*Michaelis_Menten(k43, Tau04R, ATP, k44);
+  r37: TauN4R => Tau04R; Brain*Henri_Michaelis_Menten__irreversible(TauN4R, k46, k45);
+  r38: TauN4R + ATP => TauH4R + ADP; Brain*Michaelis_Menten(k47, TauN4R, ATP, k48);
+  r39: TauH4R => TauN4R; Brain*Henri_Michaelis_Menten__irreversible(TauH4R, k50, k49);
+  r40: Tau04R => Tau0_4R; Brain*k51*Tau04R;
+  r41: Tau0_4R => Tau04R; Brain*k52*Tau0_4R;
+  r42: Tau0_4R + MT => Tau04RMT; Brain*Mass_Action(k53, Tau0_4R, MT);
+  r43: Tau04RMT => Tau0_4R + MT; Brain*k54*Tau04RMT;
+  r44: TauN4R => TauN_4R; Brain*k55*TauN4R;
+  r45: TauN_4R => TauN4R; Brain*k56*TauN_4R;
+  r46: TauN_4R + MT => TauN4RMT; Brain*Mass_Action(k57, TauN_4R, MT);
+  r47: TauN4RMT => TauN_4R + MT; Brain*k58*TauN4RMT;
+  r48: TauH4R => TauH_4R; Brain*k59*TauH4R;
+  r49: TauH_4R => TauH4R; Brain*k60*TauH_4R;
+  r50: TauH_4R + MT => TauH4RMT; Brain*Mass_Action(k61, TauH_4R, MT);
+  r51: TauH4RMT => TauH_4R + MT; Brain*k62*TauH4RMT;
+  r52: Tau04R + $_20S + ATP => ADP + $_20S; Brain*Mass_Action_(k63, Tau04R, _20S, ATP);
+  r53: TauN4R + $_20S + ATP => ADP + $_20S; Brain*Mass_Action_(k64, TauN4R, _20S, ATP);
+  r54: TauH4R + $_20S + ATP => ADP + $_20S; Brain*Mass_Action_(k65, TauH4R, _20S, ATP);
+  r55: Tau04RMT + ATP => TauN4RMT + ADP; Brain*Michaelis_Menten(k66, Tau04RMT, ATP, k67);
+  r56: TauN4RMT => Tau04RMT; Brain*Henri_Michaelis_Menten__irreversible(TauN4RMT, k69, k68);
+  r57: TauN4RMT + ATP => TauH4RMT + ADP; Brain*Michaelis_Menten(k70, TauN4RMT, ATP, k71);
+  r58: TauH4RMT => TauN4RMT; Brain*Henri_Michaelis_Menten__irreversible(TauH4RMT, k73, k72);
+  r59: TauH4R + Hsc70 => TauH4R_Hsc70; Brain*Mass_Action(k74, TauH4R, Hsc70);
+  r60: TauH4R_Hsc70 => TauH4R + Hsc70; Brain*k75*TauH4R_Hsc70;
+  r61: TauH4R_Hsc70 + Hsp90 => TauH4R_Hsp90 + Hsc70; Brain*Mass_Action(k76, TauH4R_Hsc70, Hsp90);
+  r62: TauH4R_Hsp90 => Tau04R_Hsp90; Brain*Henri_Michaelis_Menten__irreversible(TauH4R_Hsp90, k9, k77);
+  r63: Tau04R_Hsp90 => Hsp90 + Tau04R; Brain*k78*Tau04R_Hsp90;
+  r64: TauH4R_Hsc70 + CHIP => TauH4R_CHIP_Hsc70; Brain*Mass_Action(k79, TauH4R_Hsc70, CHIP);
+  r65: TauH4R_CHIP_Hsc70 => TauH4RUb + Hsc70 + CHIP; Brain*k80*TauH4R_CHIP_Hsc70;
+  r66: TauH4R_CHIP_Hsc70 + Bag2 => TauH4R_CHIP_Hsc70_Bag2; Brain*Mass_Action(k81, TauH4R_CHIP_Hsc70, Bag2);
+  r67: TauH4R_CHIP_Hsc70_Bag2 => TauH4R_Hsc70 + CHIP + Bag2; Brain*k82*TauH4R_CHIP_Hsc70_Bag2;
+  r68: TauH4RUb + $_26S + ATP => ADP + $_26S; Brain*Mass_Action_(k83, TauH4RUb, _26S, ATP);
+  r69: ADP => ATP; Brain*k84*ADP;
+  r70: ATP => ADP; Brain*k85*ATP;
+  r71: 2TauH3RUb => Nucleus3; Brain*Nucleation(k86, TauH3RUb);
+  r72: Nucleus3 => 2TauH3RUb; Brain*k87*Nucleus3;
+  r73: 2TauH4RUb => Nucleus4; Brain*Nucleation(k88, TauH4RUb);
+  r74: Nucleus4 => 2TauH4RUb; Brain*k89*Nucleus4;
+  r75: Nucleus3 + TauH3RUb => Agg33; Brain*Mass_Action(k90, Nucleus3, TauH3RUb);
+  r76: Agg33 => Nucleus3 + TauH3RUb; Brain*k91*Agg33;
+  r78: TauH3RUb + $Ap => $Ap; Brain*Mass_Action(k90, TauH3RUb, Ap);
+  r79: $Ap => TauH3RUb + $Ap; Brain*k91*Ap;
+  r80: Nucleus4 + TauH4RUb => Agg43; Brain*Mass_Action(k92, Nucleus4, TauH4RUb);
+  r81: Agg43 => Nucleus4 + TauH4RUb; Brain*k93*Agg43;
+  r83: TauH4RUb + $Bp => $Bp; Brain*Mass_Action(k92, TauH4RUb, Bp);
+  r84: $Bp => TauH4RUb + $Bp; Brain*k93*Bp;
+
+  // Species initializations:
+  ADP = 1;
+  ATP = 0;
+  MT = 15;
+  _20S = 1;
+  Hsc70 = 0.1;
+  Hsp90 = 0.1;
+  CHIP = 0.1;
+  Bag2 = 0.1;
+  _26S = 1;
+  TauH3RUb = 0;
+  TauH4RUb = 0;
+  Nucleus3 = 0;
+  Nucleus4 = 0;
+  Agg33 = 0;
+  Ap = 0;
+  Agg43 = 0;
+  Bp = 0;
+  Tau03R = 0;
+  TauN3R = 0;
+  TauH3R = 0;
+  Tau0_3R = 0;
+  Tau03RMT = 0;
+  TauN_3R = 0;
+  TauN3RMT = 0;
+  TauH_3R = 0;
+  TauH3RMT = 0;
+  TauH3R_Hsc70 = 0;
+  TauH3R_Hsp90 = 0;
+  Tau03R_Hsp90 = 0;
+  TauH3R_CHIP_Hsc70 = 0;
+  TauH3R_CHIP_Hsc70_Bag2 = 0;
+  Tau04R = 0;
+  TauN4R = 0;
+  TauH4R = 0;
+  Tau0_4R = 0;
+  Tau04RMT = 0;
+  TauN_4R = 0;
+  TauN4RMT = 0;
+  TauH_4R = 0;
+  TauH4RMT = 0;
+  TauH4R_Hsc70 = 0;
+  TauH4R_Hsp90 = 0;
+  Tau04R_Hsp90 = 0;
+  TauH4R_CHIP_Hsc70 = 0;
+  TauH4R_CHIP_Hsc70_Bag2 = 0;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  k1 = 0.03725;
+  k2 = 0.391818;
+  k3 = 27.5668;
+  k4 = 6.065997;
+  k5 = 7.99621;
+  k6 = 0.142099;
+  k7 = 21.91138;
+  k8 = 0.608448;
+  k9 = 5.760257;
+  k10 = 7.118684;
+  k11 = 15;
+  k12 = 9.633772;
+  k13 = 0.163388;
+  k14 = 1.540886;
+  k15 = 9.220426;
+  k16 = 50.66157;
+  k17 = 0.202066;
+  k18 = 3.940468;
+  k19 = 8.052152;
+  k20 = 19.76984;
+  k21 = 7.248652;
+  k22 = 0.173127;
+  k23 = 0.075176;
+  k24 = 0.039141;
+  k25 = 0.066012;
+  k26 = 0.1452;
+  k27 = 0.473124;
+  k28 = 12.62955;
+  k29 = 0.006017;
+  k30 = 16.56551;
+  k31 = 3.991539;
+  k32 = 7.130081;
+  k33 = 0.009267;
+  k34 = 0.000111;
+  k35 = 0.146177;
+  k36 = 0.006298;
+  k37 = 1.07;
+  k38 = 0.029266;
+  k39 = 1.163756;
+  k40 = 0.050949;
+  k41 = 0.279;
+  k42 = 0.025365;
+  k43 = 3.68998;
+  k44 = 27.5668;
+  k45 = 0.216599;
+  k46 = 7.99621;
+  k47 = 2.801964;
+  k48 = 21.91138;
+  k49 = 0.003379;
+  k50 = 5.760257;
+  k51 = 7.118684;
+  k52 = 15;
+  k53 = 9.633772;
+  k54 = 0.054463;
+  k55 = 1.540886;
+  k56 = 9.220426;
+  k57 = 50.66157;
+  k58 = 0.067355;
+  k59 = 3.940468;
+  k60 = 8.052152;
+  k61 = 19.76984;
+  k62 = 2.416217;
+  k63 = 0.211664;
+  k64 = 0.074306;
+  k65 = 0.001334;
+  k66 = 0.028914;
+  k67 = 0.1452;
+  k68 = 0.004313;
+  k69 = 12.62955;
+  k70 = 0.073055;
+  k71 = 16.56551;
+  k72 = 0.014352;
+  k73 = 7.130081;
+  k74 = 0.000161;
+  k75 = 8.57e-005;
+  k76 = 0.283991;
+  k77 = 1.185806;
+  k78 = 0.004562;
+  k79 = 0.346673;
+  k80 = 0.551509;
+  k81 = 5.59e-005;
+  k82 = 0.644848;
+  k83 = 0.006502;
+  k84 = 0.68;
+  k85 = 0.015317;
+  k86 = 5e-006;
+  k87 = 0.0012;
+  k88 = 5e-006;
+  k89 = 0.06;
+  k90 = 0.095;
+  k91 = 0.005429;
+  k92 = 0.095;
+  k93 = 0.019;
+
+  //  Other declarations:
+  const Brain, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14;
+  const k15, k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28;
+  const k29, k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42;
+  const k43, k44, k45, k46, k47, k48, k49, k50, k51, k52, k53, k54, k55, k56;
+  const k57, k58, k59, k60, k61, k62, k63, k64, k65, k66, k67, k68, k69, k70;
+  const k71, k72, k73, k74, k75, k76, k77, k78, k79, k80, k81, k82, k83, k84;
+  const k85, k86, k87, k88, k89, k90, k91, k92, k93;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  //  Display Names:
+  _20S is "20S";
+  _26S is "26S";
+  Tau0_3R is "Tau0*3R";
+  TauN_3R is "TauN*3R";
+  TauH_3R is "TauH*3R";
+  TauH3R_Hsc70 is "TauH3R-Hsc70";
+  TauH3R_Hsp90 is "TauH3R-Hsp90";
+  Tau03R_Hsp90 is "Tau03R-Hsp90";
+  TauH3R_CHIP_Hsc70 is "TauH3R-CHIP-Hsc70";
+  TauH3R_CHIP_Hsc70_Bag2 is "TauH3R-CHIP-Hsc70-Bag2";
+  Tau0_4R is "Tau0*4R";
+  TauN_4R is "TauN*4R";
+  TauH_4R is "TauH*4R";
+  TauH4R_Hsc70 is "TauH4R-Hsc70";
+  TauH4R_Hsp90 is "TauH4R-Hsp90";
+  Tau04R_Hsp90 is "Tau04R-Hsp90";
+  TauH4R_CHIP_Hsc70 is "TauH4R-CHIP-Hsc70";
+  TauH4R_CHIP_Hsc70_Bag2 is "TauH4R-CHIP-Hsc70-Bag2";
+end

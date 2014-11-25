@@ -1,0 +1,141 @@
+//Created by libAntimony v2.6.0
+function function_4_DNA1(DNA_000, DNA_100, Koff_NG1, Kon_NG1, S1, nucleus)
+  (Kon_NG1*DNA_000*S1 - Koff_NG1*DNA_100)/nucleus;
+end
+
+function function_4_DNA50(DNA_011, DNA_01B1, Koff_P1, Kon_P1, nucleus)
+  (Kon_P1*DNA_011 - Koff_P1*DNA_01B1)/nucleus;
+end
+
+function function_4_DNA3(DNA_000, DNA_001, Koff_NG1, Kon_NG1, S1, nucleus)
+  (Kon_NG1*DNA_000*S1 - Koff_NG1*DNA_001)/nucleus;
+end
+
+function function_4_DNA53(DNA_11B1, DNA_1B1B1, Koff_P1, Kon_P1, nucleus)
+  (Kon_P1*DNA_11B1 - Koff_P1*DNA_1B1B1)/nucleus;
+end
+
+function function_4_DNA54(DNA_1B11, DNA_1B1B1, Koff_P1, Kon_P1, nucleus)
+  (Kon_P1*DNA_1B11 - Koff_P1*DNA_1B1B1)/nucleus;
+end
+
+function function_4_DNA2(DNA_000, DNA_010, Koff_G1, Kon_G1, S1, nucleus)
+  (Kon_G1*DNA_000*S1 - Koff_G1*DNA_010)/nucleus;
+end
+
+function function_4_DNA4(DNA_100, DNA_110, Koff_G1, Kon_G1, S1, nucleus)
+  (Kon_G1*DNA_100*S1 - Koff_G1*DNA_110)/nucleus;
+end
+
+function function_4_DNA51(DNA_111, DNA_11B1, Koff_P1, Kon_P1, nucleus)
+  (Kon_P1*DNA_111 - Koff_P1*DNA_11B1)/nucleus;
+end
+
+function function_4_DNA12(DNA_011, DNA_111, Koff_NG1, Kon_NG1, S1, nucleus)
+  (Kon_NG1*DNA_011*S1 - Koff_NG1*DNA_111)/nucleus;
+end
+
+function function_4_DNA9(DNA_001, DNA_011, Koff_G1, Kon_G1, S1, nucleus)
+  (Kon_G1*DNA_001*S1 - Koff_G1*DNA_011)/nucleus;
+end
+
+function function_4_DNA52(DNA_111, DNA_1B11, Koff_P1, Kon_P1, nucleus)
+  (Kon_P1*DNA_111 - Koff_P1*DNA_1B11)/nucleus;
+end
+
+function function_4_DNA6(DNA_010, DNA_110, Koff_NG1, Kon_NG1, S1, nucleus)
+  (Kon_NG1*DNA_010*S1 - Koff_NG1*DNA_110)/nucleus;
+end
+
+function function_4_DNA49(DNA_110, DNA_1B10, Koff_P1, Kon_P1, nucleus)
+  (Kon_P1*DNA_110 - Koff_P1*DNA_1B10)/nucleus;
+end
+
+function function_4_DNA8(DNA_001, DNA_101, Koff_NG1, Kon_NG1, S1, nucleus)
+  (Kon_NG1*DNA_001*S1 - Koff_NG1*DNA_101)/nucleus;
+end
+
+function function_4_DNA7(DNA_010, DNA_011, Koff_NG1, Kon_NG1, S1, nucleus)
+  (Kon_NG1*DNA_010*S1 - Koff_NG1*DNA_011)/nucleus;
+end
+
+function function_4_DNA10(DNA_110, DNA_111, Koff_NG1, Kon_NG1, S1, nucleus)
+  (Kon_NG1*DNA_110*S1 - Koff_NG1*DNA_111)/nucleus;
+end
+
+function function_4_DNA11(DNA_101, DNA_111, Koff_G1, Kon_G1, S1, nucleus)
+  (Kon_G1*DNA_101*S1 - Koff_G1*DNA_111)/nucleus;
+end
+
+function function_4_DNA5(DNA_100, DNA_101, Koff_NG1, Kon_NG1, S1, nucleus)
+  (Kon_NG1*DNA_100*S1 - Koff_NG1*DNA_101)/nucleus;
+end
+
+
+model *MODEL1311130001()
+
+  // Compartments and Species:
+  compartment default, nucleus;
+  species S1 in nucleus, DNA_000 in nucleus, DNA_100 in nucleus, DNA_010 in nucleus;
+  species DNA_001 in nucleus, DNA_110 in nucleus, DNA_101 in nucleus, DNA_011 in nucleus;
+  species DNA_111 in nucleus, DNA_1B10 in nucleus, DNA_01B1 in nucleus, DNA_1B11 in nucleus;
+  species DNA_11B1 in nucleus, DNA_1B1B1 in nucleus;
+
+  // Assignment Rules:
+  parameter_1 := DNA_010 + DNA_011 + DNA_110 + DNA_111 + DNA_01B1 + DNA_1B10 + DNA_1B11 + DNA_11B1 + DNA_1B1B1;
+
+  // Reactions:
+  DNA1: DNA_000 + S1 -> DNA_100; nucleus*function_4_DNA1();
+  DNA2: DNA_000 + S1 -> DNA_010; nucleus*function_4_DNA2();
+  DNA3: DNA_000 + S1 -> DNA_001; nucleus*function_4_DNA3();
+  DNA4: DNA_100 + S1 -> DNA_110; nucleus*function_4_DNA4();
+  DNA5: DNA_100 + S1 -> DNA_101; nucleus*function_4_DNA5();
+  DNA6: DNA_010 + S1 -> DNA_110; nucleus*function_4_DNA6();
+  DNA7: DNA_010 + S1 -> DNA_011; nucleus*function_4_DNA7();
+  DNA8: DNA_001 + S1 -> DNA_101; nucleus*function_4_DNA8();
+  DNA9: DNA_001 + S1 -> DNA_011; nucleus*function_4_DNA9();
+  DNA10: DNA_110 + S1 -> DNA_111; nucleus*function_4_DNA10();
+  DNA11: DNA_101 + S1 -> DNA_111; nucleus*function_4_DNA11();
+  DNA12: DNA_011 + S1 -> DNA_111; nucleus*function_4_DNA12();
+  DNA49: DNA_110 -> DNA_1B10; nucleus*function_4_DNA49();
+  DNA50: DNA_011 -> DNA_01B1; nucleus*function_4_DNA50();
+  DNA51: DNA_111 -> DNA_11B1; nucleus*function_4_DNA51();
+  DNA52: DNA_111 -> DNA_1B11; nucleus*function_4_DNA52();
+  DNA53: DNA_11B1 -> DNA_1B1B1; nucleus*function_4_DNA53();
+  DNA54: DNA_1B11 -> DNA_1B1B1; nucleus*function_4_DNA54();
+
+  // Species initializations:
+  S1 = 1e-010;
+  DNA_000 = 1e-010;
+  DNA_100 = 0;
+  DNA_010 = 0;
+  DNA_001 = 0;
+  DNA_110 = 0;
+  DNA_101 = 0;
+  DNA_011 = 0;
+  DNA_111 = 0;
+  DNA_1B10 = 0;
+  DNA_01B1 = 0;
+  DNA_1B11 = 0;
+  DNA_11B1 = 0;
+  DNA_1B1B1 = 0;
+
+  // Compartment initializations:
+  default = 1;
+  nucleus = 1;
+
+  // Variable initializations:
+  Kon_P1 = 60000;
+  Koff_P1 = 100;
+  Kon_G1 = 20000000000;
+  Koff_G1 = 100;
+  Kon_NG1 = 20000000000;
+  Koff_NG1 = 20000;
+
+  //  Other declarations:
+  var parameter_1;
+  const default, nucleus, Kon_P1, Koff_P1, Kon_G1, Koff_G1, Kon_NG1, Koff_NG1;
+
+  //  Display Names:
+  parameter_1 is "GAS_siteOccupancy";
+end

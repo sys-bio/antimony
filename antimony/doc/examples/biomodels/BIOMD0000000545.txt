@@ -1,0 +1,87 @@
+//Created by libAntimony v2.6.0
+model *MODEL1407230000()
+
+  // Compartments and Species:
+  compartment Hypctol;
+  species CS in Hypctol, CD in Hypctol, CDCS in Hypctol, UVR8M in Hypctol;
+  species UCS in Hypctol, UVR8D in Hypctol, RUP in Hypctol, UR in Hypctol;
+  species UVR8_M in Hypctol, COP1 in Hypctol, HY5 in Hypctol, $FHY3 in Hypctol;
+  species DWD in Hypctol, CDW in Hypctol;
+
+  // Assignment Rules:
+  UM_Total := 2*UCS + UVR8M + UR;
+  COP1_Total := 2*UCS + 2*CDCS + CS;
+
+  // Reactions:
+  r1:  => CS; ks1*(1 + UV*n3*(HY5 + FHY3)) - kdr1*(1 + n1*UV)*CS;
+  r2:  => RUP; ks2*(1 + UV*UCS) - kdr2*RUP;
+  r3: 2UVR8M => UVR8D; k1*UVR8M^2;
+  r4: 2CS + 2UVR8M -> UCS; ka1*CS^2*UVR8M^2 - kd1*UCS;
+  r5: 2CS + CD -> CDCS; ka2*CS^2*CD - kd2*CDCS;
+  r6: UVR8M + RUP => UR; ka3*UVR8M*RUP;
+  r7: 2UR => UVR8D + 2RUP; kd3*UR^2;
+  r8: UVR8D => 2UVR8M; k2*UVR8D;
+  r9:  => HY5; ks3*(1 + n2*UV) - kdr3*((CDCS/(kdr3a + CDCS) + CDW/(kdr3b + CDW)) - UCS/(ksr + UCS))*HY5;
+  r10: CD + DWD -> CDW; ka4*CD*DWD - kd4*CDW;
+
+  // Species initializations:
+  CS = 0.2/Hypctol;
+  CS has mole_per_volume;
+  CD = 10/Hypctol;
+  CD has mole_per_volume;
+  CDCS = 2/Hypctol;
+  CDCS has mole_per_volume;
+  UVR8M = 0;
+  UVR8M has mole_per_volume;
+  UCS = 0;
+  UCS has mole_per_volume;
+  UVR8D = 20/Hypctol;
+  UVR8D has mole_per_volume;
+  RUP = 0;
+  RUP has mole_per_volume;
+  UR = 0;
+  UR has mole_per_volume;
+  UVR8_M = 0;
+  UVR8_M has mole_per_volume;
+  COP1 = 4.2/Hypctol;
+  HY5 = 0.25/Hypctol;
+  FHY3 = 5/Hypctol;
+  DWD = 20/Hypctol;
+  CDW = 0;
+
+  // Compartment initializations:
+  Hypctol = 1;
+
+  // Variable initializations:
+  ks1 = 0.23;
+  ks2 = 4.0526;
+  kdr1 = 0.1;
+  kdr2 = 0.2118;
+  k1 = 0.0043;
+  k2 = 161.62;
+  ka1 = 0.0372;
+  ka2 = 0.0611;
+  ka3 = 4.7207;
+  kd1 = 94.3524;
+  kd2 = 50.6973;
+  kd3 = 0.5508;
+  ks3 = 0.4397;
+  kdr3 = 1.246;
+  UV = 1;
+  ka4 = 10.1285;
+  kd4 = 1.1999;
+  n1 = 3;
+  n2 = 2;
+  n3 = 3.5;
+  kdr3a = 0.9735;
+  kdr3b = 0.406;
+  ksr = 0.7537;
+
+  //  Other declarations:
+  var UM_Total, COP1_Total;
+  const Hypctol, ks1, ks2, kdr1, kdr2, k1, k2, ka1, ka2, ka3, kd1, kd2, kd3;
+  const ks3, kdr3, UV, ka4, kd4, n1, n2, n3, kdr3a, kdr3b, ksr;
+
+  // Unit definitions:
+  unit mole_per_volume = mole / litre;
+end

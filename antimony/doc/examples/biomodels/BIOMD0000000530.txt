@@ -1,0 +1,116 @@
+//Created by libAntimony v2.6.0
+function function_1(k_syn_mRNA, species_7)
+  k_syn_mRNA*species_7;
+end
+
+function function_3(k_syn_miRNA_2, species_9)
+  k_syn_miRNA_2*species_9;
+end
+
+function function_4(k_syn_prot, species_1)
+  k_syn_prot*species_1;
+end
+
+function function_2(k_syn_miRNA_1, species_8)
+  k_syn_miRNA_1*species_8;
+end
+
+
+model *Model_1()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species species_1 in compartment_1, species_2 in compartment_1, species_3 in compartment_1;
+  species species_4 in compartment_1, species_5 in compartment_1, species_6 in compartment_1;
+  species species_7 in compartment_1, species_8 in compartment_1, species_9 in compartment_1;
+  species species_10 in compartment_1;
+
+  // Reactions:
+  reaction_1: species_1 + species_2 => species_4; compartment_1*reaction_1_k1*species_1*species_2;
+  reaction_2: species_1 + species_3 => species_5; compartment_1*reaction_2_k1*species_1*species_3;
+  reaction_3: species_1 + species_2 + species_3 => species_6; compartment_1*reaction_3_k1*species_1*species_2*species_3;
+  reaction_4:  => species_1; compartment_1*function_1(reaction_4_k_syn_mRNA);
+  reaction_5:  => species_2; compartment_1*function_2(reaction_5_k_syn_miRNA_1);
+  reaction_6:  => species_3; compartment_1*function_3(reaction_6_k_syn_miRNA_2);
+  reaction_7: species_1 => ; compartment_1*reaction_7_k1*species_1;
+  reaction_8: species_2 => ; compartment_1*reaction_8_k1*species_2;
+  reaction_9: species_3 => ; compartment_1*reaction_9_k1*species_3;
+  reaction_10: species_4 => species_2 + species_1; compartment_1*reaction_10_k1*species_4;
+  reaction_11: species_5 => species_3 + species_1; compartment_1*reaction_11_k1*species_5;
+  reaction_12: species_6 => species_2 + species_3 + species_1; compartment_1*reaction_12_k1*species_6;
+  reaction_13: species_4 => ; compartment_1*reaction_13_k1*species_4;
+  reaction_14: species_5 => ; compartment_1*reaction_14_k1*species_5;
+  reaction_15: species_6 => ; compartment_1*reaction_15_k1*species_6;
+  reaction_16:  => species_10; compartment_1*function_4(reaction_16_k_syn_prot);
+  reaction_17: species_10 => ; compartment_1*reaction_17_k1*species_10;
+
+  // Species initializations:
+  species_1 = 1;
+  species_2 = 0;
+  species_3 = 0;
+  species_4 = 0;
+  species_5 = 0;
+  species_6 = 0;
+  species_7 = 1;
+  species_8 = 1;
+  species_9 = 1;
+  species_10 = 1;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  reaction_1_k1 = 0.00045298;
+  reaction_2_k1 = 1.30837e-005;
+  reaction_3_k1 = 0.999534;
+  reaction_4_k_syn_mRNA = 1;
+  reaction_5_k_syn_miRNA_1 = 1;
+  reaction_6_k_syn_miRNA_2 = 1;
+  reaction_7_k1 = 1;
+  reaction_8_k1 = 1;
+  reaction_9_k1 = 1;
+  reaction_10_k1 = 0.249955;
+  reaction_11_k1 = 0.241033;
+  reaction_12_k1 = 0.187796;
+  reaction_13_k1 = 1;
+  reaction_14_k1 = 1;
+  reaction_15_k1 = 1;
+  reaction_16_k_syn_prot = 1;
+  reaction_17_k1 = 1;
+
+  //  Other declarations:
+  const compartment_1;
+
+  // Unit definitions:
+  unit substance = 1e-3 mole;
+
+  //  Display Names:
+  compartment_1 is "compartment";
+  species_1 is "mRNA";
+  species_2 is "miRNA_1";
+  species_3 is "miRNA_2";
+  species_4 is "duplex_1";
+  species_5 is "duplex_2";
+  species_6 is "triplex";
+  species_7 is "TF_mRNA";
+  species_8 is "TF_miRNA_1";
+  species_9 is "TF_miRNA_2";
+  species_10 is "protein";
+  reaction_1 is "duplex 1 association";
+  reaction_2 is "duplex 2 association";
+  reaction_3 is "triplex association";
+  reaction_4 is "mRNA synthesis";
+  reaction_5 is "miRNA_1 synthesis";
+  reaction_6 is "miRNA_2 synthesis";
+  reaction_7 is "mRNA degradation";
+  reaction_8 is "miRNA_1 degradation";
+  reaction_9 is "miRNA_2 degradation";
+  reaction_10 is "duplex 1 dissociation";
+  reaction_11 is "duplex 2 dissociation";
+  reaction_12 is "triplex dissociation";
+  reaction_13 is "duplex 1 degradation";
+  reaction_14 is "duplex 2 degradation";
+  reaction_15 is "triplex degradation";
+  reaction_16 is "protein synthesis";
+  reaction_17 is "protein degradation";
+end

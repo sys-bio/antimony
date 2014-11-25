@@ -1,0 +1,64 @@
+//Created by libAntimony v2.6.0
+model *MODEL1312170001()
+
+  // Compartments and Species:
+  compartment LN_;
+  species $L in LN_;
+
+  // Rate Rules:
+  L' = piecewise(mu1 + (r1 - c1)*L, time >= 0 && time <= t1, mu3 + (r3 - c3)*L, time > t1 && time <= t3, mu5 + (r5 - c5)*L, time > t3 && time <= t5, mu10 + (r10 - c10)*L, time > t5 && time <= t10);
+
+  // Species initializations:
+  L = 0;
+  L has dimensionless_per_dimensionles;
+
+  // Compartment initializations:
+  LN_ = 1;
+  LN_ has dimensionless;
+
+  // Variable initializations:
+  mu1 = 297.78957;
+  mu1 has per_day;
+  r1 = 2.8195198;
+  r1 has per_day;
+  c1 = 0;
+  c1 has per_day;
+  t1 = 1;
+  t1 has day;
+  mu3 = 0;
+  mu3 has per_day;
+  r3 = 4.5867007;
+  r3 has per_day;
+  c3 = 5.042901;
+  c3 has per_day;
+  t3 = 3;
+  t3 has day;
+  mu5 = 0;
+  mu5 has per_day;
+  r5 = 1.8812956;
+  r5 has per_day;
+  c5 = 2.497735;
+  c5 has per_day;
+  t5 = 5;
+  t5 has day;
+  mu10 = 0;
+  mu10 has per_day;
+  r10 = 0.3757764;
+  r10 has per_day;
+  c10 = 2.43e-007;
+  c10 has per_day;
+  t10 = 10;
+  t10 has day;
+
+  //  Other declarations:
+  const LN_, mu1, r1, c1, t1, mu3, r3, c3, t3, mu5, r5, c5, t5, mu10, r10;
+  const c10, t10;
+
+  // Unit definitions:
+  unit day = 86400e1 second;
+  unit per_day = 1 / 86400e1 second;
+  unit dimensionless_per_dimensionles = dimensionless / dimensionless;
+
+  //  Display Names:
+  LN_ is "Lymph node";
+end

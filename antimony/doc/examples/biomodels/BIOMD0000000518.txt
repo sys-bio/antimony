@@ -1,0 +1,104 @@
+//Created by libAntimony v2.6.0
+model *MODEL1306190002()
+
+  // Compartments and Species:
+  compartment compartment_;
+  species N0 in compartment_, N1 in compartment_, N2 in compartment_, N3 in compartment_;
+
+  // Assignment Rules:
+  T := N0 + N1 + N2 + N3;
+  f0 := r0*N0*(1 - T/K);
+  p00 := 1 - p01 - p03;
+  p03 := (q03*K03)/(N3 + K03);
+  f1 := r1*N1*(1 - T/K);
+  p11 := 1 - p12;
+
+  // Reactions:
+  R0X: N0 => ; (d0*N0*K0X)/(N3 + K0X);
+  R01: N0 => N0 + N1; p01*f0;
+  R00: N0 => 2N0; p00*f0;
+  R1X: N1 => ; (d1*N1*K1X)/(N3 + K1X);
+  R12: N1 => N1 + N2; p12*f1;
+  R11: N1 => 2N1; p11*f1;
+  R2X: N2 => ; (d2*N2*K2X)/(N3 + K2X);
+  R03: N0 => N0 + N3; p03*f0;
+  R3X: N3 => ; d3*N3;
+
+  // Species initializations:
+  N0 = 1.75444831412765/compartment_;
+  N1 = 27.40585059/compartment_;
+  N2 = 45.6191494109/compartment_;
+  N3 = 1.5709821429/compartment_;
+
+  // Compartment initializations:
+  compartment_ = 1;
+
+  // Variable initializations:
+  d0 = 0.2;
+  d0 has per_day;
+  d1 = 0.840934185199738;
+  d1 has per_day;
+  d2 = 2.20277069544492;
+  d2 has per_day;
+  T has cell;
+  K = 120;
+  K has cell;
+  r0 = 1.99862442375025;
+  r0 has per_day;
+  f0 has cell_per_day;
+  p00 has dimensionless;
+  p01 = 0.815689334807208;
+  p01 has dimensionless;
+  p03 has dimensionless;
+  r1 = 6.09173180099314;
+  r1 has per_day;
+  f1 has cell_per_day;
+  p11 has dimensionless;
+  p12 = 0.827377484810943;
+  p12 has dimensionless;
+  q03 = 0.093515315273862;
+  q03 has dimensionless;
+  K03 = 1.5709821429;
+  K03 has cell;
+  d3 = 0.0379622536021846;
+  d3 has per_day;
+  K0X = 1.5709821429;
+  K0X has cell;
+  K1X = 1.5709821429;
+  K1X has cell;
+  K2X = 1.5709821429;
+  K2X has cell;
+
+  //  Other declarations:
+  var T, f0, p00, p03, f1, p11;
+  const compartment_, d0, d1, d2, K, r0, p01, r1, p12, q03, K03, d3, K0X;
+  const K1X, K2X;
+
+  // Unit definitions:
+  unit substance = item;
+  unit time_unit = 86400 second;
+  unit volume = dimensionless;
+  unit per_day = 1 / 86400 second;
+  unit cell = item;
+  unit cell_per_day = item / 86400 second;
+
+  //  Display Names:
+  substance is "cell";
+  time_unit is "day";
+  per_day is "per day";
+  cell_per_day is "cell per_day";
+  compartment_ is "crypt";
+  T is "cellularity";
+  K is "capacity";
+  f0 is "N0 division rate";
+  f1 is "N1 division rate";
+  R0X is "N0 death";
+  R01 is "N0 differentiation to N1";
+  R00 is "N0 renewal";
+  R1X is "N1 death";
+  R12 is "N1 differentiation";
+  R11 is "N1 renewal";
+  R2X is "N2 death";
+  R03 is "N0 differentiation to N3";
+  R3X is "N3 death";
+end

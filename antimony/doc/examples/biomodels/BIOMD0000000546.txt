@@ -1,0 +1,56 @@
+//Created by libAntimony v2.6.0
+model *MODEL1405150000()
+
+  // Compartments and Species:
+  compartment default;
+  species s1 in default, s2 in default, s3 in default, s4 in default, s5 in default;
+  species s6 in default, s7 in default;
+
+  // Reactions:
+  re1: s1 => s2; beta_a*s1*s3;
+  re3: s4 => s1; rho_E*s1;
+  re5: s2 => s5; delta_Es*s2;
+  re6: s3 => s6; c_V*s3;
+  re7: s7 => s3; pi_a*s2;
+
+  // Species initializations:
+  s1 = 5.800000e+005;
+  s2 = 0;
+  s3 = 1.473000e+003;
+  s4 = 0;
+  s5 = 0;
+  s6 = 0;
+  s7 = 0;
+
+  // Compartment initializations:
+  default = 1;
+  default has volume;
+
+  // Variable initializations:
+  rho_E = 6.2e-008;
+  rho_E has substance;
+  beta_a = 2.4e-006;
+  beta_a has substance;
+  delta_Es = 0.6;
+  delta_Es has substance;
+  pi_a = 100;
+  pi_a has substance;
+  c_V = 4.2;
+  c_V has substance;
+
+  //  Other declarations:
+  const default, rho_E, beta_a, delta_Es, pi_a, c_V;
+
+  // Unit definitions:
+  unit substance = mole;
+  unit volume = litre;
+  unit area = metre^2;
+  unit length = metre;
+  unit time_unit = second;
+
+  //  Display Names:
+  time_unit is "time";
+  s1 is "Ep";
+  s2 is "Eps";
+  s3 is "V";
+end

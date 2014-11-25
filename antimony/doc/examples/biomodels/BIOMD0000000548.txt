@@ -1,0 +1,36 @@
+//Created by libAntimony v2.6.0
+model *MODEL1409100000()
+
+  // Compartments and Species:
+  compartment Brain;
+  species $F in Brain, $P in Brain, $C in Brain;
+
+  // Rate Rules:
+  F' = m/(1 + P) - gamma*F*P;
+  P' = sigma - P - gamma*F*P + nu*C;
+  C' = gamma*F*P - nu*C;
+
+  // Species initializations:
+  F = 135;
+  P = 0;
+  C = 18;
+
+  // Compartment initializations:
+  Brain = 1;
+
+  // Variable initializations:
+  m = 25;
+  sigma = 1;
+  nu = 1;
+  gamma = 1;
+
+  //  Other declarations:
+  const Brain, m, sigma, nu, gamma;
+
+  // Unit definitions:
+  unit volume = 1e-3 litre;
+  unit substance = 1e-3 mole;
+
+  //  Display Names:
+  Brain is "Brain ";
+end

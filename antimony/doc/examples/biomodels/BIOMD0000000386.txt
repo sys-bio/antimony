@@ -32,10 +32,10 @@ model *Arnold2011_Sharkey2007_RuBisCO_CalvinCycle()
   Vp := 3*TPU*((CO2 - (3*TPU - Rd)/gm)/(CO2 - (3*TPU - Rd)/gm - Gamma));
 
   // Reactions:
-  PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast*carboxylation(Vc, Vj, Vp);
-  PGA_prod_Vo: $RuBP + $O2 + 2NADPH => 1.5PGA; chloroplast*oxygenation(phi, Vc, Vj, Vp);
+  PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast*carboxylation();
+  PGA_prod_Vo: $RuBP + $O2 + 2NADPH => 1.5PGA; chloroplast*oxygenation();
   PGA_cons: PGA => $RuBP; chloroplast*PGA_consumption(PGA, Rp, NADPH, Nt, Vcmax);
-  NADPH_prod: $NADP => NADPH; chloroplast*NADPH_production(J, NADP, Nt);
+  NADPH_prod: $NADP => NADPH; chloroplast*NADPH_production(J, NADP);
 
   // Species initializations:
   RuBP = 2;

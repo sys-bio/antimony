@@ -33,10 +33,10 @@ model *Arnold2011_Schultz2003_RuBisCO_CalvinCycle()
   Vp := 3*TPU*((CO2 - 1.6*((1/2*(((1.6*(3*TPU - Rd) + ((k*h)/CO2*Rd + g0)*(CO2 - Gamma)) - k*h*3*TPU)/(1.6 - (k*h)/CO2*(CO2 - Gamma)) + sqrt((((1.6*(3*TPU - Rd) + ((k*h)/CO2*Rd + g0)*(CO2 - Gamma)) - k*h*3*TPU)/(1.6 - (k*h)/CO2*(CO2 - Gamma)))^2 + 4*g0*((Rd*(CO2 - Gamma) - 3*TPU*CO2)/(1.6 - (k*h)/CO2*(CO2 - Gamma))))))/(g0 + (k*h)/CO2*(1/2)*(((1.6*(3*TPU - Rd) + ((k*h)/CO2*Rd + g0)*(CO2 - Gamma)) - k*h*3*TPU)/(1.6 - (k*h)/CO2*(CO2 - Gamma)) + sqrt((((1.6*(3*TPU - Rd) + ((k*h)/CO2*Rd + g0)*(CO2 - Gamma)) - k*h*3*TPU)/(1.6 - (k*h)/CO2*(CO2 - Gamma)))^2 + 4*g0*((Rd*(CO2 - Gamma) - 3*TPU*CO2)/(1.6 - (k*h)/CO2*(CO2 - Gamma))))))))/(CO2 - 1.6*((1/2*(((1.6*(3*TPU - Rd) + ((k*h)/CO2*Rd + g0)*(CO2 - Gamma)) - k*h*3*TPU)/(1.6 - (k*h)/CO2*(CO2 - Gamma)) + sqrt((((1.6*(3*TPU - Rd) + ((k*h)/CO2*Rd + g0)*(CO2 - Gamma)) - k*h*3*TPU)/(1.6 - (k*h)/CO2*(CO2 - Gamma)))^2 + 4*g0*((Rd*(CO2 - Gamma) - 3*TPU*CO2)/(1.6 - (k*h)/CO2*(CO2 - Gamma))))))/(g0 + (k*h)/CO2*(1/2)*(((1.6*(3*TPU - Rd) + ((k*h)/CO2*Rd + g0)*(CO2 - Gamma)) - k*h*3*TPU)/(1.6 - (k*h)/CO2*(CO2 - Gamma)) + sqrt((((1.6*(3*TPU - Rd) + ((k*h)/CO2*Rd + g0)*(CO2 - Gamma)) - k*h*3*TPU)/(1.6 - (k*h)/CO2*(CO2 - Gamma)))^2 + 4*g0*((Rd*(CO2 - Gamma) - 3*TPU*CO2)/(1.6 - (k*h)/CO2*(CO2 - Gamma))))))) - Gamma));
 
   // Reactions:
-  PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast*carboxylation(Vc, Vj, Vp);
-  PGA_prod_Vo: $RuBP + $O2 + 2NADPH => 1.5PGA; chloroplast*oxygenation(phi, Vc, Vj, Vp);
+  PGA_prod_Vc: $RuBP + $CO2 + 2NADPH => 2PGA; chloroplast*carboxylation();
+  PGA_prod_Vo: $RuBP + $O2 + 2NADPH => 1.5PGA; chloroplast*oxygenation();
   PGA_cons: PGA => $RuBP; chloroplast*PGA_consumption(PGA, Rp, NADPH, Nt, Vcmax);
-  NADPH_prod: $NADP => NADPH; chloroplast*NADPH_production(J, NADP, Nt);
+  NADPH_prod: $NADP => NADPH; chloroplast*NADPH_production(J, NADP);
 
   // Species initializations:
   RuBP = 2;

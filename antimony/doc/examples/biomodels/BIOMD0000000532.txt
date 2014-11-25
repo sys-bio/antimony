@@ -1,0 +1,41 @@
+//Created by libAntimony v2.6.0
+model *MODEL1407300000()
+
+  // Compartments and Species:
+  compartment cell;
+  species $X in cell, $Xm in cell, $Vm in cell, $Lambda in cell;
+
+  // Assignment Rules:
+  X := Xm/(1 + exp(2 + (4*Vm)/Xm*(Lambda - time)));
+  Xm := xm*(1 - kx*(1 - exp(-ln(2)*(C/mx)^ax)));
+  Vm := vm*(1 - kv*(1 - exp(-ln(2)*(C/mv)^av)));
+  Lambda := lambda*(1 + klambda*(1 - exp(-ln(2)*(C/mlambda)^alambda)));
+
+  // Compartment initializations:
+  cell = 1;
+
+  // Variable initializations:
+  xm = 1;
+  kx = 1;
+  C = 1;
+  mx = 5;
+  ax = 2;
+  vm = 0.25;
+  kv = 1;
+  mv = 4;
+  av = 2;
+  lambda = 3;
+  klambda = 1;
+  mlambda = 2;
+  alambda = 2;
+
+  //  Other declarations:
+  const cell, xm, kx, C, mx, ax, vm, kv, mv, av, lambda, klambda, mlambda;
+  const alambda;
+
+  // Unit definitions:
+  unit time_unit = 3600 second;
+
+  //  Display Names:
+  time_unit is "time";
+end

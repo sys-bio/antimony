@@ -1,0 +1,83 @@
+//Created by libAntimony v2.6.0
+function function_1(alpha, X, n)
+  alpha/(1 + X^n);
+end
+
+function function_2(alpha, X, n)
+  alpha/(1 + X^n);
+end
+
+
+model *MODEL1401190000()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species species_1 in compartment_1, species_2 in compartment_1, species_3 in compartment_1;
+
+  // Assignment Rules:
+  parameter_7 := species_1/(1 + species_3/ModelValue_4)^ModelValue_5;
+
+  // Reactions:
+  reaction_1:  => species_1; compartment_1*function_1(parameter_1, species_2, parameter_3);
+  reaction_2: species_1 => ; compartment_1*reaction_2_k1*species_1;
+  reaction_3:  => species_2; compartment_1*function_2(parameter_2, parameter_7, parameter_4);
+  reaction_4: species_2 => ; compartment_1*reaction_4_k1*species_2;
+
+  // Species initializations:
+  species_1 = 0;
+  species_1 has mole_per_litre;
+  species_2 = 0;
+  species_2 has mole_per_litre;
+  species_3 = 0;
+  species_3 has mole_per_litre;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+  compartment_1 has litre;
+
+  // Variable initializations:
+  parameter_1 = 156.25;
+  parameter_2 = 15.6;
+  parameter_3 = 2.5;
+  parameter_4 = 1;
+  parameter_5 = 2.9618e-005;
+  parameter_6 = 2.0015;
+  ModelValue_4 = parameter_5;
+  ModelValue_5 = parameter_6;
+  reaction_2_k1 = 1;
+  reaction_4_k1 = 1;
+
+  //  Other declarations:
+  var parameter_7;
+  const compartment_1, parameter_1, parameter_2, parameter_3, parameter_4;
+  const parameter_5, parameter_6, ModelValue_4, ModelValue_5;
+
+  // Unit definitions:
+  unit length = metre;
+  unit area = metre^2;
+  unit volume = litre;
+  unit time_unit = time_unit;
+  unit substance = mole;
+  unit extent = substance;
+  unit mole_per_litre = mole / litre;
+
+  //  Display Names:
+  time_unit is "time";
+  compartment_1 is "compartment";
+  species_1 is "U";
+  species_2 is "V";
+  species_3 is "IPTG";
+  parameter_1 is "alpha1";
+  parameter_2 is "alpha2";
+  parameter_3 is "beta";
+  parameter_4 is "gamma";
+  parameter_5 is "K";
+  parameter_6 is "nu";
+  parameter_7 is "Umodif";
+  ModelValue_4 is "Initial for K";
+  ModelValue_5 is "Initial for nu";
+  reaction_1 is "production of U";
+  reaction_2 is "degradation of U";
+  reaction_3 is "production of V";
+  reaction_4 is "degration of V";
+end

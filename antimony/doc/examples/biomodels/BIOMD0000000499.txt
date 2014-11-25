@@ -1,0 +1,166 @@
+//Created by libAntimony v2.6.0
+model *Model_1()
+
+  // Compartments and Species:
+  compartment compartment_1;
+  species $species_1 in compartment_1, $species_20 in compartment_1, $species_15 in compartment_1;
+  species $species_13 in compartment_1, $species_11 in compartment_1, $species_2 in compartment_1;
+  species $species_18 in compartment_1, $species_21 in compartment_1, $species_17 in compartment_1;
+  species $species_16 in compartment_1, $species_3 in compartment_1, $species_26 in compartment_1;
+  species species_22 in compartment_1, $species_6 in compartment_1, $species_4 in compartment_1;
+  species $species_9 in compartment_1, $species_5 in compartment_1, $species_10 in compartment_1;
+  species $species_7 in compartment_1, $species_25 in compartment_1, $species_8 in compartment_1;
+  species $species_12 in compartment_1, $species_19 in compartment_1, $species_14 in compartment_1;
+  species $species_23 in compartment_1, $species_24 in compartment_1;
+
+  // Assignment Rules:
+  parameter_9 := parameter_8/parameter_10;
+  species_20 := species_8 - 2*species_13 - species_17;
+  species_15 := species_14 - 2*species_11 - species_16;
+  species_11 := (parameter_13 + 1)*species_1 - parameter_13*species_13;
+  species_18 := species_19 - species_17;
+  species_21 := species_12 - species_16;
+  species_16 := (parameter_13 + 1)*species_2 - parameter_13*species_17;
+  species_9 := species_7*(parameter_21/(1 + parameter_21));
+  species_10 := (parameter_13 + 1)*(parameter_14 - species_3) - parameter_13*species_6;
+  species_25 := species_7*(1/(1 + parameter_21));
+  parameter_21 := parameter_16/(1 - parameter_16)*((parameter_4 + 1)/parameter_4);
+  species_12 := (parameter_13 + 1)*parameter_15 - parameter_13*species_19;
+  species_14 := (parameter_13 + 1)*species_3 - parameter_13*species_8;
+  parameter_19 := parameter_3;
+  species_23 := species_5 + species_7 + species_24 + species_26;
+  parameter_10 := 0.171;
+  parameter_20 := (species_10 + species_14)/Metabolite_9;
+
+  // Rate Rules:
+  species_1' = 1/(1 + parameter_13)*(parameter_9*(parameter_13*species_20^2 + species_15^2) - parameter_8*(parameter_13*species_13 + species_11));
+  species_13' = parameter_9*species_20^2 - (parameter_8 + parameter_3*parameter_11)*species_13;
+  species_2' = 1/(parameter_13 + 1)*(parameter_9*(parameter_13*species_18*species_20 + species_15*species_21) - parameter_8*(parameter_13*species_17 + species_16));
+  species_17' = parameter_9*species_18*species_20 - (parameter_8 + parameter_3*parameter_11)*species_17;
+  species_3' = 1/(1 + parameter_13)*(parameter_13*parameter_6*species_26*(parameter_17/(parameter_17 + species_22))*species_6 - parameter_7*species_15);
+  species_26' = parameter_1*(parameter_22*species_24 - parameter_12*(1 - parameter_28)*species_26);
+  species_6' = parameter_2*species_10 - (parameter_3 + parameter_6*species_26*(parameter_17/(parameter_17 + species_22)))*species_6;
+  species_4' = parameter_1*((parameter_27 + parameter_26*species_16) - (parameter_18*species_9 + parameter_25)*species_4);
+  species_5' = parameter_1*((1 - parameter_5)*(1 - parameter_16) - (parameter_4 + (1 - parameter_28))*species_5);
+  species_7' = parameter_1*(parameter_4*species_5 - (1 - parameter_28)*species_25 - parameter_18*species_4*species_9);
+  species_8' = (parameter_6*species_26*(parameter_17/(parameter_17 + species_22))*species_6 + parameter_2*species_15) - parameter_3*(species_20 + parameter_11*(species_17 + 2*species_13));
+  species_19' = parameter_19*species_21 - parameter_3*(species_18 + parameter_11*species_17);
+  species_24' = parameter_1*(parameter_18*species_4*species_9 - (parameter_22 + parameter_12*(1 - parameter_28))*species_24);
+
+  // Species initializations:
+  species_1 = 0;
+  species_13 = 0;
+  species_2 = 0;
+  species_17 = 0;
+  species_3 = 0;
+  species_26 = 0;
+  species_22 = 0;
+  species_6 = (parameter_14*parameter_2*(1 + parameter_13))/(parameter_3 + parameter_13*parameter_2);
+  species_4 = parameter_23*parameter_24;
+  species_5 = (1 - parameter_16)/(parameter_4 + 1);
+  species_7 = (parameter_16 + parameter_4)/(1 + parameter_4);
+  species_8 = 0;
+  species_19 = parameter_15;
+  species_24 = 0;
+
+  // Compartment initializations:
+  compartment_1 = 1;
+
+  // Variable initializations:
+  parameter_13 = 2.27;
+  parameter_8 = 60;
+  parameter_6 = 21.3715;
+  parameter_17 = 0.196565;
+  parameter_7 = 24;
+  parameter_23 = 2;
+  parameter_24 = 2;
+  parameter_1 = 0.32;
+  parameter_27 = 0;
+  parameter_26 = 0;
+  parameter_18 = 100;
+  parameter_25 = 0.35;
+  parameter_16 = 0.05;
+  parameter_4 = 0.08;
+  parameter_5 = 0;
+  parameter_28 = 0;
+  parameter_14 = 1;
+  parameter_2 = 20;
+  parameter_3 = 9.36;
+  parameter_11 = 5.7;
+  parameter_15 = 1;
+  parameter_22 = 24.5383;
+  parameter_12 = 4;
+  Metabolite_9 = species_10;
+
+  //  Other declarations:
+  var parameter_9, parameter_21, parameter_19, parameter_10, parameter_20;
+  const compartment_1, parameter_13, parameter_8, parameter_6, parameter_17;
+  const parameter_7, parameter_23, parameter_24, parameter_1, parameter_27;
+  const parameter_26, parameter_18, parameter_25, parameter_16, parameter_4;
+  const parameter_5, parameter_28, parameter_14, parameter_2, parameter_3;
+  const parameter_11, parameter_15, parameter_22, parameter_12, Metabolite_9;
+
+  // Unit definitions:
+  unit volume = dimensionless;
+  unit time_unit = 3600 second;
+  unit substance = dimensionless;
+
+  //  Display Names:
+  time_unit is "time";
+  compartment_1 is "Cell";
+  species_1 is "S22";
+  parameter_13 is "a";
+  parameter_9 is "kon";
+  species_20 is "pS2fc";
+  species_15 is "pS2fn";
+  parameter_8 is "koff";
+  species_13 is "S22c";
+  species_11 is "S22n";
+  species_2 is "S24";
+  species_18 is "S4fc";
+  species_21 is "S4fn";
+  species_17 is "S24c";
+  species_16 is "S24n";
+  species_3 is "pS2tot";
+  parameter_6 is "kp";
+  species_26 is "Ract";
+  parameter_17 is "KSBI";
+  species_22 is "SBI";
+  species_6 is "S2c";
+  parameter_7 is "kdp";
+  species_4 is "TGF";
+  parameter_23 is "Tmax in ng/ml";
+  parameter_24 is "TSca";
+  parameter_1 is "kd";
+  parameter_27 is "k'synTbas";
+  parameter_26 is "k'synT";
+  parameter_18 is "k'T";
+  species_9 is "Rcom_S";
+  parameter_25 is "k'cc";
+  species_5 is "R";
+  parameter_16 is "rc0";
+  parameter_4 is "alpha";
+  parameter_5 is "CHX";
+  parameter_28 is "MG132";
+  parameter_14 is "S2tot";
+  parameter_2 is "kex";
+  parameter_3 is "kin";
+  species_10 is "S2n";
+  species_7 is "Rcom";
+  species_25 is "Rcom_I";
+  species_8 is "pS2c";
+  parameter_11 is "CIF";
+  parameter_21 is "Ktr";
+  species_12 is "S4n";
+  parameter_15 is "S4tot";
+  species_19 is "S4c";
+  species_14 is "pS2n";
+  parameter_19 is "kex4";
+  species_23 is "Rtot";
+  species_24 is "RT";
+  parameter_22 is "k'act";
+  parameter_12 is "D";
+  parameter_10 is "KDiss";
+  parameter_20 is "Total Nuc S2 for fit";
+  Metabolite_9 is "Initial for S2n";
+end
