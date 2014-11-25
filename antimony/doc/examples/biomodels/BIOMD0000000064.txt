@@ -1,4 +1,4 @@
-//Created by libAntimony v2.5
+//Created by libAntimony v2.6.0
 function L_PFK(L, CiATP, KiATP, CAMP, KAMP, CF26BP, KF26BP, CF16BP, KF16BP, AT_, AM, F16, F26)
   L*((1 + CiATP*(AT_/KiATP))/(1 + AT_/KiATP))^2*((1 + CAMP*(AM/KAMP))/(1 + AM/KAMP))^2*((1 + (CF26BP*F26)/KF26BP + (CF16BP*F16)/KF16BP)/(1 + F26/KF26BP + F16/KF16BP))^2;
 end
@@ -248,7 +248,7 @@ model *Teusink2000_Glycolysis()
   vATP_KATPASE = 33.7;
   vATP_KATPASE has permin;
 
-  //Other declarations:
+  // Other declarations:
   const extracellular, cytosol, KeqAK, gR, KmPFKF6P, KmPFKATP, Lzero, CiPFKATP;
   const KiPFKATP, CPFKAMP, KPFKAMP, CPFKF26BP, KPFKF26BP, CPFKF16BP, KPFKF16BP;
   const CPFKATP, KeqTPI;
@@ -261,7 +261,7 @@ model *Teusink2000_Glycolysis()
   unit permin = 1 / 60 second;
   unit mmolepermin = 1e-3 mole / 60 second;
 
-  //Display Names:
+  // Display Names:
   substance is "millimole";
   time_unit is "minute";
   GLCi is "Glucose in Cytosol";
