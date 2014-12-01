@@ -12,11 +12,11 @@ If downloading the SDK does not work (or if it is unavailable for your operating
 
 What's new in v2.6.0
   - Built-in distribution functions that round-trip to SBML and SBML-distrib:
-     * normal, truncatedNormal
-     * uniform
-     * exponential, truncatedExponential
-     * gamma, truncatedGamma
-     * poisson, truncatedPoisson
+     * normal(mean, stddev), truncatedNormal(mean, stddev, min, max)
+     * uniform(min, max)
+     * exponential(rate), truncatedExponential(rate, min, max)
+     * gamma(shape, scale), truncatedGamma(shape, scale, min, max)
+     * poisson(rate), truncatedPoisson(rate, min, max)
   - New function 'rateOf'/'rate' that uses the custom annotaition of Copasi/roadrunner to define a function that returns the rate of change of a variable.
   - Default libsbml bindings now static.
   - Better error handling for miscoded models.
