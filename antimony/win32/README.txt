@@ -18,7 +18,7 @@ To use these Windows executables:
         -o antimony : Output all models in Antimony format
         -o sbml     : Output the 'main' model as SBML
         -o sbml-comp: Output all models in a single SBML file using the
-                       (unoffical) 'comp' package.
+                       'comp' package.
         -o allsbml  : Output each model and submodel as a separate SBML model
         -o cellml   : Output the 'main' model as CellML
 
