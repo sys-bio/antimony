@@ -910,46 +910,14 @@ bool Module::Finalize()
   //Phase 2:  Check for undefined functions
   for (size_t var=0; var<m_variables.size(); var++) {
     Formula* form = m_variables[var]->GetFormula();
-    if (form) {
-      string formstr = form->ToSBMLString();
-      ASTNode* root = parseStringToASTNode(formstr);
-      set<string> allfns;
-      GetFunctionNames(root, allfns);
-      delete root;
-      for (set<string>::iterator name=allfns.begin(); name != allfns.end(); name++) {
-        if (g_registry.IsFunction(*name) == NULL) {
-          //Someone used a function they didn't define, which means it ended up as a variable.
-          vector<string> varname;
-          varname.push_back(*name);
-          Variable* var = GetVariable(varname);
-          bool isPredefined = false;
-          if (*name == "rate" || *name == "rateOf") {
-            isPredefined = true;
-            m_rateNames.insert(*name);
-            //We need to check the 'rate'/'rateOf' variable:
-            if (var != NULL) {
-              if (var->GetType() != varUndefined) {
-                g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
-                return true;
-              }
-            }
-          }
-          else {
-            distribution_type dtype = StringToDistributionType(*name);
-            if (dtype != distUNKNOWN) {
-              isPredefined = true;
-              m_usedDistributions.insert(dtype);
-              if (var != NULL && var->GetType() != varUndefined) {
-                g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
-                return true;
-              }
-            }
-          }
-          if (!isPredefined) {
-            g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");
-            return true;
-          }
-        }
+    if (CheckUndefined(form)) return true;
+    if (m_variables[var]->GetType() == varEvent) {
+      const AntimonyEvent* event = m_variables[var]->GetEvent();
+      if (CheckUndefined(event->GetPriority())) return true;
+      if (CheckUndefined(event->GetDelay())) return true;
+      //'GetFormula', above, checked the trigger.
+      for (size_t a=0; a<event->GetNumAssignments(); a++) {
+        if (CheckUndefined(event->GetAssignmentFormula(a))) return true;
       }
     }
   }
@@ -1115,6 +1083,55 @@ bool Module::Finalize()
 #endif
   return false;
 }
+
+#ifndef NSBML
+bool Module::CheckUndefined(const Formula* form)
+{
+  if (form) {
+    string formstr = form->ToSBMLString();
+    ASTNode* root = parseStringToASTNode(formstr);
+    set<string> allfns;
+    GetFunctionNames(root, allfns);
+    delete root;
+    for (set<string>::iterator name=allfns.begin(); name != allfns.end(); name++) {
+      if (g_registry.IsFunction(*name) == NULL) {
+        //Someone used a function they didn't define, which means it ended up as a variable.
+        vector<string> varname;
+        varname.push_back(*name);
+        Variable* var = GetVariable(varname);
+        bool isPredefined = false;
+        if (*name == "rate" || *name == "rateOf") {
+          isPredefined = true;
+          m_rateNames.insert(*name);
+          //We need to check the 'rate'/'rateOf' variable:
+          if (var != NULL) {
+            if (var->GetType() != varUndefined) {
+              g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
+              return true;
+            }
+          }
+        }
+        else {
+          distribution_type dtype = StringToDistributionType(*name);
+          if (dtype != distUNKNOWN) {
+            isPredefined = true;
+            m_usedDistributions.insert(dtype);
+            if (var != NULL && var->GetType() != varUndefined) {
+              g_registry.SetError("Unable to use '" + *name + "' as a function, as it is used elsewhere as a " + VarTypeToString(var->GetType()) + ".");
+              return true;
+            }
+          }
+        }
+        if (!isPredefined) {
+          g_registry.SetError("'" + *name + "' was used as a function, but no such function was defined.  Please define the function using 'function " + *name + "([arguments]) [function definition] end'.");
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+#endif
 
 size_t Module::GetNumVariablesOfType(return_type rtype, bool comp) const
 {

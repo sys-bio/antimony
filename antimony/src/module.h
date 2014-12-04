@@ -143,6 +143,7 @@ public:
 #ifndef NSBML
   std::string GetSBMLInfo() const {return m_libsbml_info;};
   std::string GetSBMLWarnings() const {return m_libsbml_warnings;};
+  bool CheckUndefined(const Formula* form);
 #endif
   size_t GetNumVariablesOfType(return_type rtype, bool comp) const;
   const Variable* GetNthVariableOfType(return_type rtype, size_t n, bool comp) const;
