@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AntimonyPythonBindings"
-#define MyAppVersion "2.6.0"
+#define MyAppVersion "2.6.1"
 #define MyAppPublisher "University of Washington, Seattle, WA, USA"
 #define MyAppURL "http://antimony.sourceforge.net/"
 #define MyAppSetupIconFile "..\install-release\bin\antimony.ico"

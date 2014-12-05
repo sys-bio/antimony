@@ -207,6 +207,7 @@ void Module::FindOrCreateLocalVersionOf(const Variable* var, Model* sbmlmod)
     unitdefinition->setId(flatname);
     isunit = true;
     topvar=unitdefinition;
+    break;
   case varFormulaOperator:
   case varFormulaUndef:
   case varUndefined:
