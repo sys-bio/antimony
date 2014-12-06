@@ -10,6 +10,9 @@ The CellML API v1.11 SDK was used in this version of Antimony (and QTAntimony) a
 
 If downloading the SDK does not work (or if it is unavailable for your operating system) it too now uses CMake as its build system, and we have had reasonable success using this on linux-based systems.
 
+What's new in v2.6.1
+  - Fixed a bug that prevented the new distributions from being properly exported to SBML when used in event constructs.
+
 What's new in v2.6.0
   - Built-in distribution functions that round-trip to SBML and SBML-distrib:
      * normal(mean, stddev), truncatedNormal(mean, stddev, min, max)
