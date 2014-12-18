@@ -88,17 +88,38 @@ add_definitions( -DLIBANTIMONY_VERSION_STRING="${LIBANTIMONY_VERSION_STRING}" )
 
 if(WITH_SBML)
 
-    find_library(LIBSBML_LIBRARY 
-        NAMES libsbml.lib libsbml.so libsbml
-        PATHS /usr/lib /usr/local/lib 
+    find_path(LIBSBML_INSTALL_DIR
+    NAMES include/sbml/SBMLTypes.h
+    PATHS /usr /usr/local /usr/lib /usr/local/lib 
+              ${CMAKE_SOURCE_DIR}
+              ${CMAKE_SOURCE_DIR}/dependencies/
+              ${CMAKE_SOURCE_DIR}/../libsbml-5/release/
+              ${CMAKE_SOURCE_DIR}/../
+              )
+
+    if(WITH_STATIC_SBML)
+        find_library(LIBSBML_LIBRARY
+             NAMES libsbml-static.lib libsbml-static.so libsbml-static sbml-static.lib sbml-static.so sbml-static
+             PATHS /usr/lib /usr/local/lib
+               ${LIBSBML_INSTALL_DIR}/lib
+               ${CMAKE_SOURCE_DIR}
+               ${CMAKE_SOURCE_DIR}/dependencies/lib
+               ${CMAKE_SOURCE_DIR}/../libsbml-5/release/lib/
+             )
+    else()
+        find_library(LIBSBML_LIBRARY 
+            NAMES libsbml.lib libsbml.so libsbml sbml.lib sbml.so sbml
+            PATHS /usr/lib /usr/local/lib 
+              ${LIBSBML_INSTALL_DIR}/lib
               ${CMAKE_SOURCE_DIR} 
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${CMAKE_SOURCE_DIR}/../libsbml-5/release/lib/
-        )
-
+            )
+    endif()
     find_path(LIBSBML_INCLUDE_DIR
         NAMES sbml/SBMLTypes.h
         PATHS /usr/include /usr/local/include 
+              ${LIBSBML_INSTALL_DIR}/include
               ${CMAKE_SOURCE_DIR}/include 
               ${CMAKE_SOURCE_DIR}/dependencies/include
               ${CMAKE_SOURCE_DIR}/../libsbml-5/release/include/
@@ -108,6 +129,7 @@ if(WITH_SBML)
         find_path(LIBSBML_BIN_DIR
             NAMES libsbml.dll
             PATHS /usr/bin /usr/local/bin
+                  ${LIBSBML_INSTALL_DIR}/bin
                   ${LIBSBML_INCLUDE_DIR}/../bin
                   ${CMAKE_SOURCE_DIR}/ 
                   ${CMAKE_SOURCE_DIR}/dependencies/libsbml/bin
@@ -247,7 +269,7 @@ endif()
 
 if(WITH_LIBSBML_COMPRESSION)
     find_library(ZDLL_LIBRARY 
-        NAMES zdll.lib zdll.so zdll.dylib zdll
+        NAMES zdll.lib zdll.so zdll.dylib zdll z
 	PATHS /usr/lib /usr/local/lib 
               ${CMAKE_SOURCE_DIR} 
               ${CMAKE_SOURCE_DIR}/dependencies/lib
@@ -256,7 +278,7 @@ if(WITH_LIBSBML_COMPRESSION)
     set(ANTIMONY_LIBS ${ANTIMONY_LIBS} ${ZDLL_LIBRARY} )
 
     find_library(BZIP_LIBRARY 
-        NAMES bzip2.lib bzip2.so bzip2.dylib bzip2
+        NAMES bzip2.lib bzip2.so bzip2.dylib bzip2 bz2
 	PATHS /usr/lib /usr/local/lib 
               ${CMAKE_SOURCE_DIR} 
               ${CMAKE_SOURCE_DIR}/dependencies/lib
