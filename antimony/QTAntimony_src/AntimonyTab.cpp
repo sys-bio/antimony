@@ -20,6 +20,7 @@ AntimonyTab::AntimonyTab(QWidget* parent)
         m_filenodirectory(""),
         m_flatten(false)
 {
+    setlocale(LC_ALL, "C");
     m_filetypes = "Antimony files (*.txt);;All files(*.*)";
     m_extension = ".txt";
     m_actionCopySBML= new QAction(tr("Copy &SBML"), this);

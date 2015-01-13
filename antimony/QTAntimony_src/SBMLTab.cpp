@@ -14,6 +14,7 @@ SBMLTab::SBMLTab(QWidget* parent)
         m_modelname(""),
         m_levelversion(5)
 {
+    setlocale(LC_ALL, "C");
     m_filetypes = "SBML files (*.xml *.sbml);;All files(*.*)";
     m_extension = ".xml";
     QSettings qset(ORG, APP);

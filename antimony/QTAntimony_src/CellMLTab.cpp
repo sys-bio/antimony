@@ -12,6 +12,7 @@ CellMLTab::CellMLTab(QWidget* parent)
         : ChangeableTextBox(parent),
         m_modelname("")
 {
+    setlocale(LC_ALL, "C");
     m_filetypes = "CellML files (*.xml *.cellml);;All files(*.*)";
     m_extension = ".cellml";
     QSettings qset(ORG, APP);

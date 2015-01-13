@@ -39,7 +39,7 @@ ChangeableTextBox::ChangeableTextBox(QWidget* parent)
     connect(this, SIGNAL(undoAvailable(bool)), this, SLOT(SaveAndEmitUndoAvailable(bool)));
     connect(this, SIGNAL(redoAvailable(bool)), this, SLOT(SaveAndEmitRedoAvailable(bool)));
     setAcceptRichText(false);
-    setLineWrapMode(QTextEdit::NoWrap);
+    setLineWrapMode(QTextEdit::WidgetWidth);
     setAutoFillBackground(true);
     QPalette p = viewport()->palette();
     QColor pink;
