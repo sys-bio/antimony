@@ -10,6 +10,8 @@ class SBMLTab;
 class TabManager;
 class QTAntimony;
 class FileWatcher;
+class FindDialog;
+class FindReplaceDialog;
 
 class Translator : public QMainWindow
 {
@@ -31,6 +33,11 @@ private:
     QAction* m_actionRevertToTranslated;
     QAction* m_actionRevertToOriginal;
     QAction* m_actionSetSBMLLevelAndVersion;
+    //Find/Replace actions and dialogues
+    QAction* m_actionFind;
+    QAction* m_actionFindReplace;
+    FindDialog* m_findDialog;
+    FindReplaceDialog* m_findReplaceDialog;
 
 #ifdef SBW_INTEGRATION
     void addSBWMenu();
@@ -45,6 +52,8 @@ public:
     void SetSBMLTab(QString model);
     bool IsBlank();
     virtual void closeEvent(QCloseEvent* event);
+    virtual void dragEnterEvent(QDragEnterEvent *event);
+    virtual void dropEvent(QDropEvent *event);
 	
 public slots:
     void SetPasteAvailability();

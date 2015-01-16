@@ -560,6 +560,7 @@ endif(WITH_CELLML)
 #
 
 set (QTANTIMONY_SRC_DIR QTAntimony_src/)
+set (QTANTIMONY_DIALOG_DIR QTAntimony_src/qtfindreplacedialog-1.1/dialogs/)
 
 file(GLOB QTANTIMONY_SOURCES
         ${QTANTIMONY_SRC_DIR}AntimonyTab.cpp
@@ -567,6 +568,7 @@ file(GLOB QTANTIMONY_SOURCES
         ${QTANTIMONY_SRC_DIR}ChangeableTextBox.cpp
         ${QTANTIMONY_SRC_DIR}CopyMessageBox.cpp
         ${QTANTIMONY_SRC_DIR}FileWatcher.cpp
+        ${QTANTIMONY_SRC_DIR}LineNumberArea.cpp
         ${QTANTIMONY_SRC_DIR}main.cpp
         ${QTANTIMONY_SRC_DIR}QTAntimony.cpp
         ${QTANTIMONY_SRC_DIR}SBMLTab.cpp
@@ -574,6 +576,10 @@ file(GLOB QTANTIMONY_SOURCES
         ${QTANTIMONY_SRC_DIR}TabManager.cpp
         ${QTANTIMONY_SRC_DIR}Translator.cpp
         ${QTANTIMONY_SRC_DIR}Tutorial.cpp
+        ${QTANTIMONY_DIALOG_DIR}finddialog.cpp
+        ${QTANTIMONY_DIALOG_DIR}findform.cpp
+        ${QTANTIMONY_DIALOG_DIR}findreplacedialog.cpp
+        ${QTANTIMONY_DIALOG_DIR}findreplaceform.cpp
         )
 
 file(GLOB QTANTIMONY_HEADERS
@@ -583,6 +589,7 @@ file(GLOB QTANTIMONY_HEADERS
         ${QTANTIMONY_SRC_DIR}CopyMessageBox.h
         ${QTANTIMONY_SRC_DIR}FileWatcher.h
         ${QTANTIMONY_SRC_DIR}QTAntimony.h
+        ${QTANTIMONY_SRC_DIR}LineNumberArea.h
         ${QTANTIMONY_SRC_DIR}resource.h
         ${QTANTIMONY_SRC_DIR}SBMLTab.h
         ${QTANTIMONY_SRC_DIR}SBWIntegration.h
@@ -590,6 +597,16 @@ file(GLOB QTANTIMONY_HEADERS
         ${QTANTIMONY_SRC_DIR}TabManager.h
         ${QTANTIMONY_SRC_DIR}Translator.h
         ${QTANTIMONY_SRC_DIR}Tutorial.h
+        ${QTANTIMONY_DIALOG_DIR}finddialog.h
+        ${QTANTIMONY_DIALOG_DIR}findform.h
+        ${QTANTIMONY_DIALOG_DIR}findreplace_global.h
+        ${QTANTIMONY_DIALOG_DIR}findreplacedialog.h
+        ${QTANTIMONY_DIALOG_DIR}findreplaceform.h
+        )
+
+file(GLOB QTANTIMONY_FORMS
+        ${QTANTIMONY_DIALOG_DIR}findreplacedialog.ui
+        ${QTANTIMONY_DIALOG_DIR}findreplaceform.ui
         )
 
 file(GLOB QTANTIMONY_RESOURCE
@@ -601,6 +618,7 @@ if (WITH_QTANTIMONY)
         INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${ANTIMONY_SRC_DIR} ${QT_INCLUDES})
         QT4_WRAP_CPP(QTANTIMONY_MOC_SRCS ${QTANTIMONY_HEADERS})
         QT4_ADD_RESOURCES(RC_SRC_FILES ${QTANTIMONY_SRC_DIR}antimony.qrc )
+        QT4_WRAP_UI(QTANTIMONY_FORMS_HEADERS ${QTANTIMONY_FORMS})
         source_group(MOC_sources FILES ${QTANTIMONY_MOC_SRCS})
         if (WIN32)
            link_libraries(${QT_QTMAIN_LIBRARY})
@@ -628,7 +646,9 @@ if (WITH_QTANTIMONY)
            INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} ${SBW_INCLUDE_DIR})
 
         endif(WITH_SBW)
-        add_executable(QTAntimony WIN32 MACOSX_BUNDLE ${QTANTIMONY_SOURCES} ${QTANTIMONY_MOC_SRCS} ${QTANTIMONY_HEADERS} ${QTANTIMONY_RESOURCE})
+        INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+        INCLUDE_DIRECTORIES(${QTANTIMONY_DIALOG_DIR})
+        add_executable(QTAntimony WIN32 MACOSX_BUNDLE ${QTANTIMONY_SOURCES} ${QTANTIMONY_MOC_SRCS} ${QTANTIMONY_FORMS_HEADERS} ${QTANTIMONY_HEADERS} ${QTANTIMONY_RESOURCE})
         target_link_libraries(QTAntimony ${QTANTIMONY_LIBRARIES} )
         add_definitions(${QT_DEFINITIONS} ${SBW_DEFINITIONS})
         set(MACOSX_BUNDLE_ICON_FILE ${QTANTIMONY_SRC_DIR}antimony.icns)

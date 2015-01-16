@@ -11,6 +11,7 @@
 #include <QAction>
 #include <QFontDialog>
 #include <QInputDialog>
+#include <QWidget>
 #include <vector>
 #include <cassert>
 
@@ -723,12 +724,12 @@ void TabManager::SaveFonts()
 {
     QSettings qset(ORG, APP);
     qset.sync();
-    qset.setValue("antimonyfont", textbox(m_anttab)->currentFont());
+    qset.setValue("antimonyfont", textbox(m_anttab)->font());
     if (m_sbmltab != -1) {
-        qset.setValue("xmlfont", textbox(m_sbmltab)->currentFont());
+        qset.setValue("xmlfont", textbox(m_sbmltab)->font());
     }
     else if (m_cellmltab != -1) {
-        qset.setValue("xmlfont", textbox(m_cellmltab)->currentFont());
+        qset.setValue("xmlfont", textbox(m_cellmltab)->font());
     }
 }
 
