@@ -1,3 +1,27 @@
+/**
+ * This file is designed to be compiled by the 'bison' program with the
+ * command:
+ *
+ * bison -v antimony.ypp
+ *
+ * The '-v' creates a file called 'antimony.output' which can be examined
+ * to piece together the explicit logic of the parser.  The fact that no
+ * '-o' option is used means that the default output file (antimony.tab.cpp)
+ * will be produced.
+ *
+ * This command produces the file 'antimony.tab.cpp' which is included
+ * explicitly in the antimony distribution.  Automatic creation of this
+ * file is not yet incorporated into the CMake system; it must be
+ * run by hand before change here will make it into the actual antimony
+ * library.
+ *
+ * Bison v2.4.2 was used to create the .cpp file when this file was
+ * first created.  It does not rely on odd features of the bison
+ * parser, so other versions should work fine.
+ *
+ * This file currently compiles with zero reduce/reduce errors and 10
+ * shift/reduce warnings.
+ */
 
 %{
   //#define YYSTYPE double
@@ -292,6 +316,8 @@ variableimportlist:
                 /* empty */ {}
         |       variable {if (g_registry.AddVariableToCurrentImportList($1)) YYABORT; }
         |       variableimportlist ',' variable { if (g_registry.AddVariableToCurrentImportList($3)) YYABORT; }
+        |       NUM {if (g_registry.AddNumberToCurrentImportList($1)) YYABORT; }
+        |       variableimportlist ',' NUM { if (g_registry.AddNumberToCurrentImportList($3)) YYABORT; }
         ;
 
 submodifications:
@@ -490,9 +516,9 @@ int antimony_yylex(void)
  }
 
   // Parse words
-  if (isalpha(cc) || cc == '_') {
+  if (cc > 0 && cc < 256 && (isalpha(cc) || cc == '_')) {
     string word;
-    while ((isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof()) {
+    while (cc > 0 && cc < 256 && (isalpha(cc) || isdigit(cc) || cc == '_') && !g_registry.input->eof()) {
       word += cc;
       g_registry.input->get(cc);
     }
@@ -587,7 +613,7 @@ int antimony_yylex(void)
   }
 
   // Parse numbers
-  if (isdigit(cc) || (cc=='.' && isdigit(g_registry.input->peek()))) {
+  if (cc > 0 && cc < 256 && (isdigit(cc) || (cc=='.' && isdigit(g_registry.input->peek())))) {
     double number;
     g_registry.input->unget();
     streampos numbegin = g_registry.input->tellg();

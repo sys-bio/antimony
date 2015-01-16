@@ -25,6 +25,8 @@ using namespace SystemsBiologyWorkbench;
 #include "FileWatcher.h"
 #include "QTAntimony.h"
 #include "CopyMessageBox.h"
+#include "finddialog.h"
+#include "findreplacedialog.h"
 
 #include "antimony_api.h"
 #include <sbml/SBMLTypes.h>
@@ -49,6 +51,7 @@ Translator::Translator(QTAntimony* app, QString filename)
         m_antimony(),
         m_filewatcher(new FileWatcher)
 {
+    setAcceptDrops(true);
     QAction* actionFlattenSBML = new QAction(tr("&Flatten SBML tab(s)"), this);
     //Set the window icon (for windows)
     QIcon anticon("antimony.ico");
@@ -70,6 +73,14 @@ Translator::Translator(QTAntimony* app, QString filename)
 
     m_tabmanager = new TabManager(this, actionFlattenSBML, flattensbml);
     m_antimony = new AntimonyTab;
+    m_findDialog = new FindDialog(this);
+    m_findDialog->setModal(false);
+    m_findDialog->setPlainTextEdit(m_antimony);
+
+    m_findReplaceDialog = new FindReplaceDialog(this);
+    m_findReplaceDialog->setModal(false);
+    m_findReplaceDialog->setPlainTextEdit(m_antimony);
+
 
     //Actions
     //File
@@ -136,14 +147,17 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_actionRevertToOriginal->setShortcut(tr("Ctrl+L"));
     m_actionRevertToOriginal->setToolTip(tr("Revert this tab to the last original version."));
     m_actionRevertToOriginal->setEnabled(false);
-    QAction* actionFind = new QAction(tr("&Find"), this);
-    actionFind->setShortcut(QKeySequence::Find);
-    actionFind->setEnabled(false);
     m_actionSetSBMLLevelAndVersion = new QAction(tr("Set SBML &Level and Version"), this);
     m_actionSetSBMLLevelAndVersion->setEnabled(true);
     actionFlattenSBML->setCheckable(true);
     actionFlattenSBML->setChecked(flattensbml);
-    actionFlattenSBML->setShortcut(QKeySequence(tr("Ctrl+f")));
+    actionFlattenSBML->setShortcut(QKeySequence(tr("Ctrl+Alt+f")));
+    m_actionFind = new QAction(tr("&Find"), this);
+    m_actionFind->setShortcut(QKeySequence::Find);
+    m_actionFind->setEnabled(true);
+    m_actionFindReplace = new QAction(tr("&Replace"), this);
+    m_actionFindReplace->setShortcut(QKeySequence::Replace);
+    m_actionFindReplace->setEnabled(true);
 
     //View
 //LS DEBUG CELLML
@@ -180,6 +194,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     ChangeableTextBox* active = m_antimony;
     m_tabmanager->addTab(m_antimony, m_antimony->GetTabName());
     connect(m_antimony, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
+    connect(m_antimony, SIGNAL(IsActive(QPlainTextEdit*)), m_findDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
     if (filename != "") {
         QFile file(filename);
         QString filetext = "";
@@ -198,7 +213,7 @@ Translator::Translator(QTAntimony* app, QString filename)
             m_filewatcher->addPath(filename);
             if (loadAntimonyFile(filename.toUtf8().data()) != -1) {
                 //Originally Antimony
-                m_antimony->setText(filetext);
+                m_antimony->setPlainText(filetext);
                 m_antimony->SetSavedFilename(filename);
                 m_antimony->SetOriginal();
 #ifndef NCELLML
@@ -309,7 +324,7 @@ Translator::Translator(QTAntimony* app, QString filename)
                 }
                 else{
                     AddSBMLTab();
-                    m_antimony->setText(filetext);
+                    m_antimony->setPlainText(filetext);
                     m_antimony->SetSavedFilename(filename);
                     m_tabmanager->textbox(1)->SetFailedTranslation();
                     m_antimony->SetFailedTranslation();
@@ -359,7 +374,8 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(zoomOut, SIGNAL(triggered()), m_tabmanager, SLOT(zoomOut()));
     connect(setAntimonyFont, SIGNAL(triggered()), m_tabmanager, SLOT(setAntimonyFont()));
     connect(setXMLFont, SIGNAL(triggered()), m_tabmanager, SLOT(setXMLFont()));
-    //LS DEBUG CELLML
+    connect(m_actionFind, SIGNAL(triggered()), m_findDialog, SLOT(show()));
+    connect(m_actionFindReplace, SIGNAL(triggered()), m_findReplaceDialog, SLOT(show()));
 #ifndef NCELLML
     connect(sbmlTabs, SIGNAL(toggled(bool)), m_tabmanager, SLOT(sbmlTabs(bool)));
     connect(cellmlTabs, SIGNAL(toggled(bool)), m_tabmanager, SLOT(cellmlTabs(bool)));
@@ -398,6 +414,9 @@ Translator::Translator(QTAntimony* app, QString filename)
     editmenu->addAction(m_actionPaste);
     editmenu->addAction(m_actionSelectAll);
     editmenu->addSeparator();
+    editmenu->addAction(m_actionFind);
+    editmenu->addAction(m_actionFindReplace);
+    editmenu->addSeparator();
     editmenu->addAction(actionTranslateCurrent);
     editmenu->addAction(actionTranslateAntimony);
     editmenu->addAction(actionTranslateSBML);
@@ -408,8 +427,6 @@ Translator::Translator(QTAntimony* app, QString filename)
 #ifdef USE_COMP
     editmenu->addAction(actionFlattenSBML);
 #endif
-    editmenu->addSeparator();
-    editmenu->addAction(actionFind);
 
     //The View Menu
     QMenu* viewmenu = menuBar()->addMenu(tr("&View"));
@@ -507,6 +524,7 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated, int lev
     connect(sbml, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), sbml, SLOT(FileChanged(QString)));
     connect(sbml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
+    connect(sbml, SIGNAL(IsActive(QPlainTextEdit*)), m_findDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
 }
 
 void Translator::AddCellMLTab(QString name, QString text, bool translated)
@@ -534,6 +552,7 @@ void Translator::AddCellMLTab(QString name, QString text, bool translated)
     connect(cellml, SIGNAL(StopWatching(QString)), m_filewatcher, SLOT(StopWatching(QString)));
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), cellml, SLOT(FileChanged(QString)));
     connect(cellml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
+    connect(cellml, SIGNAL(IsActive(QPlainTextEdit*)), m_findDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
 }
 
 void Translator::SetSBMLTab(QString model)
@@ -598,4 +617,34 @@ void Translator::DisplayTutorial()
 
     m_app->DisplayWindow(newwin);
     //tutorial.set
+}
+
+void Translator::dragEnterEvent(QDragEnterEvent *event)
+{
+  const QMimeData* qmd = event->mimeData();
+  QString text = event->mimeData()->text();
+    if (event->mimeData()->hasUrls())
+        event->acceptProposedAction();
+}
+
+void Translator::dropEvent(QDropEvent *event)
+{
+    const QMimeData* mimeData = event->mimeData();
+ 
+    // check for a file or a list of files
+    if (mimeData->hasUrls())
+    {
+        QStringList pathList;
+        QList<QUrl> urlList = mimeData->urls();
+ 
+        // extract the local paths of the files
+        for (int i = 0; i < urlList.size() && i < 32; ++i)
+        {
+            pathList.append(urlList.at(i).toLocalFile());
+        }
+ 
+        // call a function to open the files
+        m_app->OpenFiles(pathList);
+    }
+    event->acceptProposedAction();
 }

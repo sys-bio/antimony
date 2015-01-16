@@ -1,7 +1,9 @@
 #include "ChangeableTextBox.h"
+#include "LineNumberArea.h"
 #include "QTAntimony.h"
 #include "CopyMessageBox.h"
 #include <QPalette>
+#include <QPainter>
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <iostream>
@@ -10,13 +12,14 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QTextStream>
+#include <QTextBlock>
 #include <QList>
 #include <QUrl>
 
 using namespace std;
 
 ChangeableTextBox::ChangeableTextBox(QWidget* parent)
-  : QTextEdit(parent),
+  : QPlainTextEdit(parent),
     m_isactive(false),
     m_failedtranslation(false),
     m_copyavailable(false),
@@ -31,15 +34,24 @@ ChangeableTextBox::ChangeableTextBox(QWidget* parent)
     m_saved(""),
     m_filename(""),
     m_filetypes(""),
-    m_extension("")
+    m_extension(""),
+    m_lineNumberArea(new LineNumberArea(this))
 
 {
+//    m_lineNumberArea = new LineNumberArea(this);
+
+    updateLineNumberAreaWidth(0);
+    highlightCurrentLine();
     connect(this, SIGNAL(textChanged()), this, SLOT(SetTextChanged()));
     connect(this, SIGNAL(copyAvailable(bool)), this, SLOT(SaveAndEmitCopyAvailable(bool)));
     connect(this, SIGNAL(undoAvailable(bool)), this, SLOT(SaveAndEmitUndoAvailable(bool)));
     connect(this, SIGNAL(redoAvailable(bool)), this, SLOT(SaveAndEmitRedoAvailable(bool)));
-    setAcceptRichText(false);
-    setLineWrapMode(QTextEdit::WidgetWidth);
+    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
+    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(updateLineNumberArea(QRect,int)));
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
+
+//    setAcceptRichText(false);
+    setLineWrapMode(QPlainTextEdit::WidgetWidth);
     setAutoFillBackground(true);
     QPalette p = viewport()->palette();
     QColor pink;
@@ -53,6 +65,7 @@ ChangeableTextBox::ChangeableTextBox(QWidget* parent)
 void ChangeableTextBox::SetActive()
 {
     m_isactive = true;
+    emit IsActive(this);
 }
 
 void ChangeableTextBox::SetInactive()
@@ -257,7 +270,7 @@ void ChangeableTextBox::dropEvent(QDropEvent* e)
         }
     }
     else {
-        QTextEdit::dropEvent(e);
+        QPlainTextEdit::dropEvent(e);
     }
 }
 
@@ -342,4 +355,108 @@ void ChangeableTextBox::contextMenuEvent(QContextMenuEvent* event)
     addSpecialCopyToMenu(menu, paste);
     menu->exec(event->globalPos());
     delete menu;
+}
+
+int ChangeableTextBox::lineNumberAreaWidth()
+{
+    int digits = 1;
+    int max = qMax(1, blockCount());
+    while (max >= 10) {
+        max /= 10;
+        ++digits;
+    }
+     int space = 3 + fontMetrics().width(QLatin1Char('9')) * digits;
+     return space;
+}
+
+void ChangeableTextBox::zoomIn()
+{
+    QFont mfont = font();
+    int size = mfont.pointSize();
+    size = size*1.1;
+    if (size == mfont.pointSize()) {
+      size++;
+    }
+    mfont.setPointSize(size);
+    setFont(mfont);
+}
+
+void ChangeableTextBox::zoomOut()
+{
+    QFont mfont = font();
+    int size = mfont.pointSize();
+    size = size/1.1;
+    if (size == mfont.pointSize()) {
+      size--;
+    }
+    if (size==0) {
+      size=1;
+    }
+    mfont.setPointSize(size);
+    setFont(mfont);
+}
+void ChangeableTextBox::updateLineNumberAreaWidth(int /* newBlockCount */)
+{
+    setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+}
+
+void ChangeableTextBox::updateLineNumberArea(const QRect &rect, int dy)
+{
+    if (dy)
+      m_lineNumberArea->scroll(0, dy);
+    else
+      m_lineNumberArea->update(0, rect.y(), m_lineNumberArea->width(), rect.height());
+
+    if (rect.contains(viewport()->rect()))
+      updateLineNumberAreaWidth(0);
+}
+
+void ChangeableTextBox::resizeEvent(QResizeEvent *e)
+{
+    QPlainTextEdit::resizeEvent(e);
+
+    QRect cr = contentsRect();
+    m_lineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
+}
+
+void ChangeableTextBox::highlightCurrentLine()
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+
+    if (!isReadOnly()) {
+        QTextEdit::ExtraSelection selection;
+
+        QColor lineColor = QColor(Qt::yellow).lighter(160);
+
+        selection.format.setBackground(lineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = textCursor();
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
+    }
+
+    setExtraSelections(extraSelections);
+ }
+
+void ChangeableTextBox::lineNumberAreaPaintEvent(QPaintEvent *event)
+{
+    QPainter painter(m_lineNumberArea);
+    painter.fillRect(event->rect(), Qt::lightGray);
+    QTextBlock block = firstVisibleBlock();
+    int blockNumber = block.blockNumber();
+    int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
+    int bottom = top + (int) blockBoundingRect(block).height();
+    while (block.isValid() && top <= event->rect().bottom()) {
+        if (block.isVisible() && bottom >= event->rect().top()) {
+            QString number = QString::number(blockNumber + 1);
+            painter.setPen(Qt::black);
+            painter.drawText(0, top, m_lineNumberArea->width(), fontMetrics().height(),
+              Qt::AlignRight, number);
+        }
+
+        block = block.next();
+        top = bottom;
+        bottom = top + (int) blockBoundingRect(block).height();
+        ++blockNumber;
+    }
 }

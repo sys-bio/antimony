@@ -1,11 +1,11 @@
 #ifndef CHANGEABLETEXTBOX_H
 #define CHANGEABLETEXTBOX_H
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 
 class QFile;
 
-class ChangeableTextBox: public QTextEdit
+class ChangeableTextBox: public QPlainTextEdit
 {
     Q_OBJECT
 
@@ -24,6 +24,7 @@ private:
     QString m_translated;
     QString m_original;
     QString m_saved;
+    QWidget *m_lineNumberArea;
 
 protected:
     QString m_filename;
@@ -54,6 +55,10 @@ public:
     void SaveTabAs();
     void DisplayError(QString error);
     virtual void dropEvent(QDropEvent* e);
+    void lineNumberAreaPaintEvent(QPaintEvent *event);
+    int lineNumberAreaWidth();
+    void zoomIn();
+    void zoomOut();
 
 public slots:
     void SetActive();
@@ -78,6 +83,15 @@ signals:
     void StopWatching(const QString& filename);
     void StartWatching(const QString& filename);
     void TabNameIsNow(const QString& tabname, ChangeableTextBox* tab);
+    void IsActive(QPlainTextEdit* tab);
+
+ protected:
+     void resizeEvent(QResizeEvent *event);
+
+ private slots:
+     void updateLineNumberAreaWidth(int newBlockCount);
+     void highlightCurrentLine();
+     void updateLineNumberArea(const QRect &, int);
 
 private:
     void SetNormalBorder();

@@ -911,6 +911,23 @@ bool Registry::AddVariableToCurrentImportList(Variable* import_var)
   return false;
 }
 
+bool Registry::AddNumberToCurrentImportList(double val)
+{
+  Module* submod = CurrentModule()->GetVariable(m_currentImportedModule)->GetModule();
+  Variable* var = submod->GetNextExportVariable();
+  if (var == NULL) {
+    string error = "Unable to add the number '" + DoubleToString(val) + "' + to the argument list when creating an instance of the module '" + submod->GetModuleName() + "' because this module is defined to have only " + SizeTToString(submod->GetNumExportVariables()) + " variable(s) definable by default in its construction.";
+    SetError(error);
+    return true;
+  }
+  Variable* import_var = CurrentModule()->AddNewNumberedVariable("_ant");
+  Formula form;
+  form.AddNum(val);
+  import_var->SetFormula(&form);
+  var->Synchronize(import_var, NULL);
+  return false;
+}
+
 Variable* Registry::AddVariableToCurrent(const string* name)
 {
   if (m_isfunction) {

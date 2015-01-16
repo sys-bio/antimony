@@ -120,6 +120,7 @@ public:
   void SetConstness(const_type isconst) {m_constness = isconst;};
   bool AddVariableToCurrentExportList(Variable* export_var);
   bool AddVariableToCurrentImportList(Variable* import_var);
+  bool AddNumberToCurrentImportList(double val);
   Variable* AddVariableToCurrent(const std::string* name);
   Variable* AddNewReactionToCurrent(rd_type divider, Formula* formula);
   Variable* AddNewReactionToCurrent(rd_type divider, Formula* formula, Variable* var);
