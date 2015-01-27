@@ -12,6 +12,7 @@ class QTAntimony;
 class FileWatcher;
 class FindDialog;
 class FindReplaceDialog;
+class GoToLineDialog;
 
 class Translator : public QMainWindow
 {
@@ -36,8 +37,10 @@ private:
     //Find/Replace actions and dialogues
     QAction* m_actionFind;
     QAction* m_actionFindReplace;
+    QAction* m_actionGoToLine;
     FindDialog* m_findDialog;
     FindReplaceDialog* m_findReplaceDialog;
+    GoToLineDialog* m_goToLineDialog;
 
 #ifdef SBW_INTEGRATION
     void addSBWMenu();

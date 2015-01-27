@@ -576,6 +576,8 @@ file(GLOB QTANTIMONY_SOURCES
         ${QTANTIMONY_SRC_DIR}TabManager.cpp
         ${QTANTIMONY_SRC_DIR}Translator.cpp
         ${QTANTIMONY_SRC_DIR}Tutorial.cpp
+        ${QTANTIMONY_SRC_DIR}GoToLineDialog.cpp
+        ${QTANTIMONY_SRC_DIR}GoToLineForm.cpp
         ${QTANTIMONY_DIALOG_DIR}finddialog.cpp
         ${QTANTIMONY_DIALOG_DIR}findform.cpp
         ${QTANTIMONY_DIALOG_DIR}findreplacedialog.cpp
@@ -597,6 +599,8 @@ file(GLOB QTANTIMONY_HEADERS
         ${QTANTIMONY_SRC_DIR}TabManager.h
         ${QTANTIMONY_SRC_DIR}Translator.h
         ${QTANTIMONY_SRC_DIR}Tutorial.h
+        ${QTANTIMONY_SRC_DIR}GoToLineDialog.h
+        ${QTANTIMONY_SRC_DIR}GoToLineForm.h
         ${QTANTIMONY_DIALOG_DIR}finddialog.h
         ${QTANTIMONY_DIALOG_DIR}findform.h
         ${QTANTIMONY_DIALOG_DIR}findreplace_global.h
@@ -607,6 +611,8 @@ file(GLOB QTANTIMONY_HEADERS
 file(GLOB QTANTIMONY_FORMS
         ${QTANTIMONY_DIALOG_DIR}findreplacedialog.ui
         ${QTANTIMONY_DIALOG_DIR}findreplaceform.ui
+        ${QTANTIMONY_SRC_DIR}GoToLineDialog.ui
+        ${QTANTIMONY_SRC_DIR}GoToLineForm.ui
         )
 
 file(GLOB QTANTIMONY_RESOURCE
