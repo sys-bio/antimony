@@ -376,7 +376,7 @@ LIB_EXTERN long loadSBMLFile(const char* filename)
     stringstream errorstream;
     document->printErrors(errorstream);
     string file(filename);
-    g_registry.SetError("Unable to read SBML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libSBML:\n" +  errorstream.str());
+    g_registry.SetError("Unable to read SBML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from libSBML:\n\n" +  errorstream.str());
   }
   delete document;
   return retval;
@@ -402,8 +402,8 @@ LIB_EXTERN long loadSBMLStringWithLocation(const char* model, const char* locati
   long retval = CheckAndAddSBMLDoc(document);
   if (retval == -1) {
     stringstream errorstream;
-    document->printErrors(errorstream);
-    g_registry.SetError("Unable to read SBML string due to errors encountered when parsing the file.  Error(s) from libSBML:\n" +  errorstream.str());
+    document->printErrors(errorstream, LIBSBML_SEV_ERROR);
+    g_registry.SetError("Unable to read SBML string due to errors encountered when parsing the file.  Error(s) from libSBML:\n\n" +  errorstream.str());
   }
   delete document;
   return retval;
@@ -437,7 +437,7 @@ LIB_EXTERN long loadCellMLFile(const char* filename)
     string file(filename);
     RETURN_INTO_WSTRING(error, ml->lastErrorMessage());
     string emsg(makeUTF8(error));
-    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from the CellML API:\n" +  emsg + "\n");
+    g_registry.SetError("Unable to read CellML file '" + file + "' due to errors encountered when parsing the file.  Error(s) from the CellML API:\n\n" +  emsg + "\n");
     return -1;
   }
   return CheckAndAddCellMLDoc(model);
@@ -458,7 +458,7 @@ LIB_EXTERN long loadCellMLString(const char* modelstring)
   {
     wstring error = ml->lastErrorMessage();
     string emsg(makeUTF8(error));
-    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from the CellML API:\n" +  emsg);
+    g_registry.SetError("Unable to read CellML string due to errors encountered when parsing the file.  Error(s) from the CellML API:\n\n" +  emsg);
     return -1;
   }
   return CheckAndAddCellMLDoc(model);

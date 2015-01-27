@@ -27,6 +27,7 @@ using namespace SystemsBiologyWorkbench;
 #include "CopyMessageBox.h"
 #include "finddialog.h"
 #include "findreplacedialog.h"
+#include "GoToLineDialog.h"
 
 #include "antimony_api.h"
 #include <sbml/SBMLTypes.h>
@@ -81,6 +82,8 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_findReplaceDialog->setModal(false);
     m_findReplaceDialog->setPlainTextEdit(m_antimony);
 
+    m_goToLineDialog = new GoToLineDialog(this);
+    m_goToLineDialog->setPlainTextEdit(m_antimony);
 
     //Actions
     //File
@@ -151,13 +154,16 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_actionSetSBMLLevelAndVersion->setEnabled(true);
     actionFlattenSBML->setCheckable(true);
     actionFlattenSBML->setChecked(flattensbml);
-    actionFlattenSBML->setShortcut(QKeySequence(tr("Ctrl+Alt+f")));
+    actionFlattenSBML->setShortcut(QKeySequence(tr("F4")));
     m_actionFind = new QAction(tr("&Find"), this);
     m_actionFind->setShortcut(QKeySequence::Find);
     m_actionFind->setEnabled(true);
     m_actionFindReplace = new QAction(tr("&Replace"), this);
     m_actionFindReplace->setShortcut(QKeySequence::Replace);
     m_actionFindReplace->setEnabled(true);
+    m_actionGoToLine = new QAction(tr("&Go to line"), this);
+    m_actionGoToLine->setShortcut(tr("Alt+g"));
+    m_actionGoToLine->setEnabled(true);
 
     //View
 //LS DEBUG CELLML
@@ -195,6 +201,8 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_tabmanager->addTab(m_antimony, m_antimony->GetTabName());
     connect(m_antimony, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
     connect(m_antimony, SIGNAL(IsActive(QPlainTextEdit*)), m_findDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+    connect(m_antimony, SIGNAL(IsActive(QPlainTextEdit*)), m_findReplaceDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+    connect(m_antimony, SIGNAL(IsActive(QPlainTextEdit*)), m_goToLineDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
     if (filename != "") {
         QFile file(filename);
         QString filetext = "";
@@ -376,6 +384,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(setXMLFont, SIGNAL(triggered()), m_tabmanager, SLOT(setXMLFont()));
     connect(m_actionFind, SIGNAL(triggered()), m_findDialog, SLOT(show()));
     connect(m_actionFindReplace, SIGNAL(triggered()), m_findReplaceDialog, SLOT(show()));
+    connect(m_actionGoToLine, SIGNAL(triggered()), m_goToLineDialog, SLOT(show()));
 #ifndef NCELLML
     connect(sbmlTabs, SIGNAL(toggled(bool)), m_tabmanager, SLOT(sbmlTabs(bool)));
     connect(cellmlTabs, SIGNAL(toggled(bool)), m_tabmanager, SLOT(cellmlTabs(bool)));
@@ -416,6 +425,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     editmenu->addSeparator();
     editmenu->addAction(m_actionFind);
     editmenu->addAction(m_actionFindReplace);
+    editmenu->addAction(m_actionGoToLine);
     editmenu->addSeparator();
     editmenu->addAction(actionTranslateCurrent);
     editmenu->addAction(actionTranslateAntimony);
@@ -525,6 +535,8 @@ void Translator::AddSBMLTab(QString name, QString text, bool translated, int lev
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), sbml, SLOT(FileChanged(QString)));
     connect(sbml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
     connect(sbml, SIGNAL(IsActive(QPlainTextEdit*)), m_findDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+    connect(sbml, SIGNAL(IsActive(QPlainTextEdit*)), m_findReplaceDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+    connect(sbml, SIGNAL(IsActive(QPlainTextEdit*)), m_goToLineDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
 }
 
 void Translator::AddCellMLTab(QString name, QString text, bool translated)
@@ -553,6 +565,8 @@ void Translator::AddCellMLTab(QString name, QString text, bool translated)
     connect(m_filewatcher, SIGNAL(fileChanged(QString)), cellml, SLOT(FileChanged(QString)));
     connect(cellml, SIGNAL(TabNameIsNow(QString,ChangeableTextBox*)), m_tabmanager, SLOT(TabNameIs(QString,ChangeableTextBox*)));
     connect(cellml, SIGNAL(IsActive(QPlainTextEdit*)), m_findDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+    connect(cellml, SIGNAL(IsActive(QPlainTextEdit*)), m_findReplaceDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
+    connect(cellml, SIGNAL(IsActive(QPlainTextEdit*)), m_goToLineDialog, SLOT(setPlainTextEdit(QPlainTextEdit*)));
 }
 
 void Translator::SetSBMLTab(QString model)
