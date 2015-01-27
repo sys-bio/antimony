@@ -40,7 +40,7 @@ START_TEST (unknown_file2)
   char* err = getLastError();
   fail_unless(err != NULL);
   string error(err);
-  string expected("Unable to read SBML file 'nosuchfile.xml' due to errors encountered when parsing the file.  Error(s) from libSBML:\nline 1: (00002 [Error]) File unreadable.\n");
+  string expected("Unable to read SBML file 'nosuchfile.xml' due to errors encountered when parsing the file.  Error(s) from libSBML:\n\nline 1: (00002 [Error]) File unreadable.\n");
   fail_unless(error == expected);
   delete err;
 }
@@ -56,7 +56,7 @@ START_TEST (unknown_file3)
   char* err = getLastError();
   fail_unless(err != NULL);
   string error(err);
-  string expected("Unable to read CellML file 'nosuchfile.cellml' due to errors encountered when parsing the file.  Error(s) from the CellML API:\nservererror\n");
+  string expected("Unable to read CellML file 'nosuchfile.cellml' due to errors encountered when parsing the file.  Error(s) from the CellML API:\n\nservererror\n");
   fail_unless(error == expected);
   delete err;
 #endif

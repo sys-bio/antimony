@@ -199,6 +199,8 @@ varmaybein:     variable {$$ = $1;}
 
 varmaybeis:     varmaybein {$$ = $1;}
         |       varmaybein '=' formula {$$ = $1; if ($1->SetFormula($3)) YYABORT; }
+        |       varmaybein ':' '=' formula {$$ = $1; if ($1->SetAssignmentRule($4)) YYABORT; }
+        |       varmaybein '\'' '=' formula {$$ = $1; if ($1->SetRateRule($4)) YYABORT; }
         |       varmaybein HASWORD unitdef {$$ = $1; if ($1->SetUnit($3)) YYABORT; }
         ;
 
