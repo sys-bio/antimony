@@ -116,8 +116,8 @@ human-readable,</span></h2>
 <h2 align=center style='text-align:center'><span style='font-size:22.0pt'>model
 definition language</span></h2>
 
-<h4 align=center style='text-align:center'><span style='font-size:16.0pt'>v2.6,
-November 30<sup>th</sup>, 2014</span></h4>
+<h4 align=center style='text-align:center'><span style='font-size:16.0pt'>v2.7,
+January, 2015</span></h4>
 
 <h4 align=center style='text-align:center'><span style='font-size:26.0pt'>Documentation</span></h4>
 
@@ -196,6 +196,13 @@ programs. The basic features of Antimony include the ability to: </p>
 </ul>
 
 <h3>What's New</h3>
+
+<p>In the 2.7 release of Antimony, QTAntimony got several new improvements,
+including displayed line numbers, find/replace, and a &#8216;go to line&#8217;
+option.&nbsp; A few new syntaxes were also added, including the ability to
+concisely define elements plus their assignment rules (&#8216;species S1 in C
+:= 3+p&#8217;), and to define submodules with implied parameters (&#8216;A:
+mod1(1,2)&#8217;).</p>
 
 <p>In the 2.6 release of Antimony, some features of hierarchical translation
 (deletions in particular) were made more robust, and a number of built-in
@@ -368,9 +375,9 @@ module: </p>
 
 <p class=MsoNormal>In this system, '<code><span style='font-size:10.0pt'>S</span></code>'
 is involved in two reversible reactions with exactly the same reaction kinetics
-and initial concentrations. Let's now say the reaction rate of the second side-reaction
-takes the same form, but that the kinetics are twice as fast, and the starting
-conditions are different: </p>
+and initial concentrations. Let's now say the reaction rate of the second
+side-reaction takes the same form, but that the kinetics are twice as fast, and
+the starting conditions are different: </p>
 
 <pre>&nbsp;</pre><pre>model full_reaction</pre><pre>&nbsp; var species S;</pre><pre>&nbsp; A: side_reaction();</pre><pre>&nbsp; A.S is S;</pre><pre>&nbsp; B: side_reaction();</pre><pre>&nbsp; B.S is S;</pre><pre>&nbsp; B.k1 = 2.4;</pre><pre>&nbsp; B.k2 = 0.8;</pre><pre>&nbsp; B.E = 10;</pre><pre>end</pre>
 
@@ -402,7 +409,7 @@ symbols in the module are more easily renamed. To do this, first enclose a list
 of the symbols to export in parentheses after the name of the model when
 defining it: </p>
 
-<pre>model side_reaction(S, k1)</pre><pre>&nbsp; J0: S + E -&gt; SE; k1*k2*S*E - k2*ES;</pre><pre>&nbsp; S = 5;</pre><pre>&nbsp; E = 3;</pre><pre>&nbsp; SE = E+S;</pre><pre>&nbsp; k1 = 1.2;</pre><pre>&nbsp; k2 = 0.4;</pre><pre>end</pre>
+<pre>model side_reaction(S, k1)</pre><pre> &nbsp;J0: S + E -&gt; SE; k1*k2*S*E - k2*ES;</pre><pre>&nbsp; S = 5;</pre><pre>&nbsp; E = 3;</pre><pre>&nbsp; SE = E+S;</pre><pre>&nbsp; k1 = 1.2;</pre><pre>&nbsp; k2 = 0.4;</pre><pre>end</pre>
 
 <p class=MsoNormal>&nbsp;</p>
 
@@ -431,7 +438,7 @@ to look simpler in Antimony, but wish to have a more descriptive name in the
 exported SBML), you may use '<code><span style='font-size:10.0pt'>is</span></code>'
 as well: </p>
 
-<pre>&nbsp; A -&gt; B;</pre><pre> &nbsp;A is ABA;</pre><pre>&nbsp; B is ABA8OH;</pre>
+<pre>&nbsp; A -&gt; B;</pre><pre>&nbsp; A is ABA;</pre><pre>&nbsp; B is ABA8OH;</pre>
 
 <p class=MsoNormal>is equivalent to writing: </p>
 
@@ -567,8 +574,8 @@ variable: </p>
 
 <p class=MsoNormal>Variables defined with an equals sign are assigned those
 values at the start of the simulation. In SBML terms, they use the 'Initial
-Assignment' values. If the formula is to vary during the course of the
-simulation, use the Assignment Rule (or Rate Rule) syntax, described later. </p>
+Assignment' values. If the formula is to vary during the course of the simulation,
+use the Assignment Rule (or Rate Rule) syntax, described later. </p>
 
 <p>You can also mix-and-match your declarations however best suits what you
 want to convey: </p>
@@ -740,9 +747,9 @@ may also itself be a formula: </p>
 simultaneous events, discussed below), one needs to know what values to use
 when performing event assignments: the values from the time the event was
 triggered, or the values from the time the event assignments are being
-executed? By default (in Antimony, as in SBML Level 2) the first holds true: event
-assignments are to use values from the moment the event is triggered. To change
-this, the keyword '<code><span style='font-size:10.0pt'>fromTrigger</span></code>'
+executed? By default (in Antimony, as in SBML Level 2) the first holds true:
+event assignments are to use values from the moment the event is triggered. To
+change this, the keyword '<code><span style='font-size:10.0pt'>fromTrigger</span></code>'
 is used: </p>
 
 <pre>&nbsp;</pre><pre>&nbsp; E1: at 2*z/y after (x&gt;5), fromTrigger=false: y=3, x=r+2;</pre>
@@ -817,9 +824,9 @@ as: </p>
 will continually be updated to reflect the total amount of '<code><span
 style='font-size:10.0pt'>P</span></code>' present in the model. </p>
 
-<p>Each symbol (species or formula) may have only one assignment rule associated
-with it. If an Antimony file defines more than one rule, only the last will be
-saved. </p>
+<p>Each symbol (species or formula) may have only one assignment rule
+associated with it. If an Antimony file defines more than one rule, only the
+last will be saved. </p>
 
 <p>When species are used as the target of an assignment rule, they are defined
 to be 'boundary species' and thus '<code><span style='font-size:10.0pt'>const</span></code>'.
@@ -1023,7 +1030,7 @@ will have two strands: &quot;P3--A.P1--A.RBS1--A.G1&quot; and
 be defined with '<code><span style='font-size:10.0pt'>--</span></code>' both
 upstream and downstream of the strand in question: </p>
 
-<pre>model oneexported</pre><pre>&nbsp; --P1--RBS1--G1--</pre><pre>&nbsp; P2--RBS2--G2</pre><pre>end</pre><pre>&nbsp;</pre><pre>model full</pre><pre>&nbsp; A: oneexported()</pre><pre>&nbsp; P2--A--stop</pre><pre>end</pre>
+<pre>model oneexported</pre><pre>&nbsp; --P1--RBS1--G1--</pre><pre>&nbsp; P2--RBS2--G2</pre><pre>end</pre><pre>&nbsp;</pre><pre>model full</pre><pre>&nbsp; A: oneexported()</pre><pre> &nbsp;P2--A--stop</pre><pre>end</pre>
 
 <p class=MsoNormal>&nbsp;</p>
 
@@ -1083,8 +1090,8 @@ equation and use it in a later equation as follows: </p>
 <p class=MsoNormal>&nbsp;</p>
 
 <p class=MsoNormal>In addition, there are several built-in functions defined in
-Antimony.&nbsp; All of the functions present in the MathML subset used in SBML Level
-3 are likewise defined here, and include:</p>
+Antimony.&nbsp; All of the functions present in the MathML subset used in SBML
+Level 3 are likewise defined here, and include:</p>
 
 <p class=MsoNormal>&nbsp;</p>
 
@@ -1093,7 +1100,7 @@ arcsec, arcsech, arcsin, arcsinh, arctan, arctanh, ceiling, cos, cosh, cot,
 coth, csc, csch, divide, eq, exp, factorial, floor, geq, gt, leq, ln, log, lt,
 minus, neq, not, or, piecewise, plus, power, root, sec, sech, sin, sinh, tan,
 tanh, times, and xor.&nbsp; In addition, the constants true, false, notanumber,
-pi, infinity, and exponentiale are all allowed.</p>
+pi, avogadro, infinity, and exponentiale are all allowed.</p>
 
 <p class=MsoNormal>As of Antimony v2.6, the following distributions are also
 allowed, and will be added to the translated SBML file if used:&nbsp; normal(mean,
@@ -1125,8 +1132,8 @@ point. SBML files may also be included in this way: </p>
 '<code><span style='font-size:10.0pt'>mod1</span></code>', and the file '<code><span
 style='font-size:10.0pt'>oscli.xml</span></code>' is an SBML file that defines
 a model named '<code><span style='font-size:10.0pt'>oscli</span></code>'. The
-Antimony module '<code><span style='font-size:10.0pt'>mod2</span></code>' may then
-use modules from either or both of the other imported files. </p>
+Antimony module '<code><span style='font-size:10.0pt'>mod2</span></code>' may
+then use modules from either or both of the other imported files. </p>
 
 <p>Remember that imported files act like they were cut and pasted into the main
 file. As such, any bare declarations in the main file and in the imported files
@@ -1149,8 +1156,8 @@ import statements can be subverted. Each line of this file must contain three
 tab-delimited strings: the name of the file which contains an import statement,
 the text of the import statement, and the filename where the program should
 look for the file. Thus, if a file &quot;file1.txt&quot; contains the line '<code><span
-style='font-size:10.0pt'>import &quot;file2.txt&quot;</span></code>', and a .antimony
-file is discovered with the line: </p>
+style='font-size:10.0pt'>import &quot;file2.txt&quot;</span></code>', and a
+.antimony file is discovered with the line: </p>
 
 <pre>file1.txt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file2.txt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; antimony/import/file2.txt</pre>
 
