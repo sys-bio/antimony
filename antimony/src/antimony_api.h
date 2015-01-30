@@ -61,7 +61,7 @@
 #define ANTIMONY_API_H
 
 #ifndef LIBANTIMONY_VERSION_STRING //Should be defined in the makefile (from CMakeLists.txt)
-#define LIBANTIMONY_VERSION_STRING "v2.6.0"
+#define LIBANTIMONY_VERSION_STRING "v2.7.0"
 #endif
 
 #include "libutil.h"
@@ -958,6 +958,26 @@ LIB_EXTERN void freeAll();
 
 /** \} */
 
+/**
+  * @name Defaults
+  */
+/** \{ */
+
+/**
+ * Adds default initial values to the named module.
+ * By default, you must provide initial values to all the values in your model.  If you call this function, all parameters and compartments will be given a default value of '1', and all your species and reaction rates will be given a default value of '0'.
+ *
+ * Returns 'true' if no such moduleName exists, 'false' otherwise.
+ */
+LIB_EXTERN bool addDefaultInitialValues(const char* moduleName);
+
+/**
+ * Sets whether bare numbers are dimensionless or undefined.
+ * By default, all numbers in mathematical equations do not have units unless they are explicitly declared ("1 second" vs. "1").  If this function is called with a value of 'true', all numbers without declared units will be assumed to have the units 'dimensionless'.  If called with a value of 'false', the numbers will not have declared units (the default).
+ */
+LIB_EXTERN void setBareNumbersAreDimensionless(bool dimensionless);
+
+/** \} */
 
 
 END_C_DECLS

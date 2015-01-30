@@ -611,6 +611,46 @@ void Module::AddDefaultVariables()
 
 }
 
+void Module::AddDefaultInitialValues()
+{
+  for (size_t var=0; var<m_variables.size(); var++) {
+    Formula one;
+    one.AddNum(1);
+    Formula zero;
+    zero.AddNum(0);
+    switch(m_variables[var]->GetType()) {
+    case varModule:
+      m_variables[var]->GetModule()->AddDefaultInitialValues();
+      break;
+    case varSpeciesUndef:
+    case varReactionGene:
+    case varReactionUndef:
+      if (m_variables[var]->GetFormula()->IsEmpty()) {
+        m_variables[var]->SetFormula(&zero);
+      }
+      break;
+    case varCompartment:
+    case varFormulaUndef:
+    case varFormulaOperator:
+      if (m_variables[var]->GetFormula()->IsEmpty()) {
+        m_variables[var]->SetFormula(&one);
+      }
+      break;
+    case varUndefined:
+      if (StringToDistributionType(m_variables[var]->GetName()[m_variables[var]->GetName().size()-1]) == distUNKNOWN) {
+        m_variables[var]->SetFormula(&one);
+      }
+    case varDNA:
+    case varInteraction:
+    case varEvent:
+    case varStrand:
+    case varUnitDefinition:
+    case varDeleted:
+      break;
+    }
+  }
+}
+
 void PrintVarMap(map<vector<string>, Variable* > varmap)
 {
   cout << "variables in map:" << endl;
@@ -1056,25 +1096,29 @@ bool Module::Finalize()
         m_libsbml_warnings += error->getMessage();
         break;
       case 2: //LIBSBML_SEV_ERROR:
-#ifndef NDEBUG
+//#ifndef NDEBUG
+        if (error->getErrorId() == 10217) {
+          //We allow the creation of 'invalid' use of booleans in numeric contexts.
+          break;
+        }
         if (trueerrors != "") trueerrors += "\n";
         trueerrors += error->getMessage();
-#else
-        m_libsbml_warnings += error->getMessage();
-#endif
+//#else
+//        m_libsbml_warnings += error->getMessage();
+//#endif
         break;
       case 3: //LIBSBML_SEV_FATAL:
-        g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:  " + error->getMessage());
+        g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:\n\n" + error->getMessage());
         delete testdoc;
         return true;
       default:
-        g_registry.SetError("Unknown error when creating an SBML document--there should have only been four types, but we found a fifth?  libSBML may have been updated; try using an older version, perhaps.  Error from libSBML:  " + error->getMessage());
+        g_registry.SetError("Unknown error when creating an SBML document--there should have only been four types, but we found a fifth?  libSBML may have been updated; try using an older version, perhaps.  Error from libSBML:\n\n" + error->getMessage());
         delete testdoc;
         return true;
       }
     }
     if (trueerrors != "") {
-      g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but sometimes cannot.  Error message(s) from libSBML:\n" + trueerrors);
+      g_registry.SetError(SizeTToString(log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)) + " SBML error(s) when creating module '" + m_modulename + "'.  libAntimony tries to catch these errors before libSBML complains, but sometimes cannot.  Error message(s) from libSBML:\n\n" + trueerrors);
       delete testdoc;
       return true;
     }

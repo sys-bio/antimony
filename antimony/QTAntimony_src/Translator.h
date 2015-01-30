@@ -41,6 +41,9 @@ private:
     FindDialog* m_findDialog;
     FindReplaceDialog* m_findReplaceDialog;
     GoToLineDialog* m_goToLineDialog;
+    //Global actions for defaults
+    QAction* m_actionDimensionless;
+    QAction* m_actionAddDefaults;
 
 #ifdef SBW_INTEGRATION
     void addSBWMenu();

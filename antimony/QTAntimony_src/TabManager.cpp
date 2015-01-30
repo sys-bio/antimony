@@ -332,6 +332,9 @@ void TabManager::TranslateAntimony(QString& text)
         textbox(0)->DisplayError(error);
         return;
     }
+    if (m_addDefaults) {
+      addDefaultInitialValues(NULL);
+    }
     //Translate to CellML if need be:
 	if (m_cellmltab != -1) {
 		ChangeableTextBox* cellmltab = textbox(m_cellmltab);
@@ -597,6 +600,16 @@ void TabManager::SetFlatten(bool flatten)
     sbmltab->SetTranslatedText(SBML);
   }
   clearPreviousLoads();
+}
+
+void TabManager::SetDimensionless(bool isDimensionless)
+{
+  setBareNumbersAreDimensionless(isDimensionless);
+}
+
+void TabManager::SetAddDefaults(bool addDefaults)
+{
+  m_addDefaults = addDefaults;
 }
 
 void TabManager::TabNameIs(const QString& tabname, ChangeableTextBox* tab)

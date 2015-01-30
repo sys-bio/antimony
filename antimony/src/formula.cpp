@@ -441,6 +441,9 @@ string Formula::ToDelimitedStringWithEllipses(string cc) const
       actualvar = module->GetVariable(varname);
     }
     if (actualvar != NULL) {
+      if (actualvar->GetType() == varUnitDefinition) {
+        retval += " ";
+      }
       retval += actualvar->GetNameDelimitedBy(cc);
     }
     else {
@@ -480,36 +483,36 @@ string Formula::ToDelimitedStringWithEllipses(string cc) const
         retval += m_components[comp].first;
       }
     }
-    size_t pos = retval.find("  ");
-    while (pos != string::npos) {
-      retval.replace(pos, 2, " ");
-      pos = retval.find("  ", pos+1);
-    }
-    pos = retval.find("> =");
-    while (pos != string::npos) {
-      retval.replace(pos, 3, ">=");
-      pos = retval.find("> =", pos+2);
-    }
-    pos = retval.find("< =");
-    while (pos != string::npos) {
-      retval.replace(pos, 3, "<=");
-      pos = retval.find("< =", pos+2);
-    }
-    pos = retval.find("= =");
-    while (pos != string::npos) {
-      retval.replace(pos, 3, "==");
-      pos = retval.find("= =", pos+2);
-    }
-    pos = retval.find("& &");
-    while (pos != string::npos) {
-      retval.replace(pos, 3, "&&");
-      pos = retval.find("& &", pos+2);
-    }
-    pos = retval.find("| |");
-    while (pos != string::npos) {
-      retval.replace(pos, 3, "||");
-      pos = retval.find("| |", pos+2);
-    }
+  }
+  size_t pos = retval.find("  ");
+  while (pos != string::npos) {
+    retval.replace(pos, 2, " ");
+    pos = retval.find("  ", pos+1);
+  }
+  pos = retval.find("> =");
+  while (pos != string::npos) {
+    retval.replace(pos, 3, ">=");
+    pos = retval.find("> =", pos+2);
+  }
+  pos = retval.find("< =");
+  while (pos != string::npos) {
+    retval.replace(pos, 3, "<=");
+    pos = retval.find("< =", pos+2);
+  }
+  pos = retval.find("= =");
+  while (pos != string::npos) {
+    retval.replace(pos, 3, "==");
+    pos = retval.find("= =", pos+2);
+  }
+  pos = retval.find("& &");
+  while (pos != string::npos) {
+    retval.replace(pos, 3, "&&");
+    pos = retval.find("& &", pos+2);
+  }
+  pos = retval.find("| |");
+  while (pos != string::npos) {
+    retval.replace(pos, 3, "||");
+    pos = retval.find("| |", pos+2);
   }
   return retval;
 }
