@@ -44,6 +44,7 @@ Registry::Registry()
     m_oldmodulemaps(),
     m_sbindex(),
     m_writeNameToSBML(true),
+    m_bareNumbersAreDimensionless(false),
     input(NULL)
 {
   string main = MAINMODULE;
@@ -1376,4 +1377,14 @@ void Registry::SetWriteNameToSBML(bool set)
 bool Registry::GetWriteNameToSBML()
 {
   return m_writeNameToSBML;
+}
+
+void Registry::SetBareNumbersAreDimensionless(bool dimensionless)
+{
+  m_bareNumbersAreDimensionless = dimensionless;
+}
+
+bool Registry::GetBareNumbersAreDimensionless()
+{
+  return m_bareNumbersAreDimensionless;
 }

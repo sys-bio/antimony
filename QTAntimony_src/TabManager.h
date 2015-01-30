@@ -12,6 +12,7 @@ private:
     int m_sbmltab;
     int m_cellmltab;
     bool m_flatten;
+    bool m_addDefaults;
     QAction* m_actionFlatten; 
 public:
     TabManager(QWidget* parent, QAction*, bool);
@@ -63,6 +64,8 @@ public slots:
 
     void SetAllSBMLLevelsAndVersions();
     void SetFlatten(bool);
+    void SetDimensionless(bool);
+    void SetAddDefaults(bool);
 
     void TabNameIs(const QString& tabname, ChangeableTextBox* tab);
 

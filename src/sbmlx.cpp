@@ -218,7 +218,20 @@ ASTNode* parseStringToASTNode(const string& formula)
     matchTypesToNames(rootnode);
   }
   expandGlobalFunctionIDs(rootnode);
+  if (g_registry.GetBareNumbersAreDimensionless()) {
+    makeUnitlessNumbersDimensionless(rootnode);
+  }
   return rootnode;
+}
+
+void makeUnitlessNumbersDimensionless(ASTNode* node)
+{
+  if (node->isNumber() && node->getUnits().empty()) {
+    node->setUnits("dimensionless");
+  }
+  for (unsigned int c = 0; c < node->getNumChildren() ; c++) {
+    makeUnitlessNumbersDimensionless(node->getChild(c));
+  }
 }
 
 void caratToPower(ASTNode* node)

@@ -70,7 +70,13 @@ Translator::Translator(QTAntimony* app, QString filename)
 #endif
 
     bool flattensbml = false;
-    flattensbml = (qset.value("flattensbml", flattensbml).toBool());
+    flattensbml = qset.value("flattensbml", flattensbml).toBool();
+
+    bool isDimensionless = false;
+    isDimensionless = qset.value("isDimensionless", isDimensionless).toBool();
+
+    bool addDefaults = false;
+    addDefaults = qset.value("addDefaults", addDefaults).toBool();
 
     m_tabmanager = new TabManager(this, actionFlattenSBML, flattensbml);
     m_antimony = new AntimonyTab;
@@ -133,6 +139,8 @@ Translator::Translator(QTAntimony* app, QString filename)
     SetPasteAvailability();
     m_actionSelectAll = new QAction(tr("Select &All"), this);
     m_actionSelectAll->setShortcut(QKeySequence::SelectAll);
+
+    //Translation
     QAction* actionTranslateCurrent = new QAction(tr("&Translate Tab"), this);
     actionTranslateCurrent->setShortcut(tr("Ctrl+t"));
     actionTranslateCurrent->setEnabled(true);
@@ -150,11 +158,21 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_actionRevertToOriginal->setShortcut(tr("Ctrl+L"));
     m_actionRevertToOriginal->setToolTip(tr("Revert this tab to the last original version."));
     m_actionRevertToOriginal->setEnabled(false);
+
+    //Translation nuance
     m_actionSetSBMLLevelAndVersion = new QAction(tr("Set SBML &Level and Version"), this);
     m_actionSetSBMLLevelAndVersion->setEnabled(true);
     actionFlattenSBML->setCheckable(true);
     actionFlattenSBML->setChecked(flattensbml);
     actionFlattenSBML->setShortcut(QKeySequence(tr("F4")));
+    m_actionDimensionless = new QAction(tr("Unqualified &numbers are dimensionless"), this);
+    m_actionDimensionless->setCheckable(true);
+    m_actionDimensionless->setChecked(isDimensionless);
+    m_actionAddDefaults = new QAction(tr("Add missing &defaults"), this);
+    m_actionAddDefaults->setCheckable(true);
+    m_actionAddDefaults->setChecked(addDefaults);
+
+    //Find/Replace/Go-to
     m_actionFind = new QAction(tr("&Find"), this);
     m_actionFind->setShortcut(QKeySequence::Find);
     m_actionFind->setEnabled(true);
@@ -375,6 +393,8 @@ Translator::Translator(QTAntimony* app, QString filename)
     connect(actionTranslateSBML, SIGNAL(triggered()), m_tabmanager, SLOT(TranslateSBML()));
     connect(m_actionSetSBMLLevelAndVersion, SIGNAL(triggered()), m_tabmanager, SLOT(SetAllSBMLLevelsAndVersions()));
     connect(actionFlattenSBML, SIGNAL(toggled(bool)), m_tabmanager, SLOT(SetFlatten(bool)));
+    connect(m_actionAddDefaults, SIGNAL(toggled(bool)), m_tabmanager, SLOT(SetAddDefaults(bool)));
+    connect(m_actionDimensionless, SIGNAL(toggled(bool)), m_tabmanager, SLOT(SetDimensionless(bool)));
     connect(m_actionRevertToTranslated, SIGNAL(triggered()), m_tabmanager, SLOT(revertToTranslated()));
     connect(m_antimony, SIGNAL(TranslatedAvailable(bool)), m_actionRevertToTranslated, SLOT(setEnabled(bool)));
     connect(m_actionRevertToOriginal, SIGNAL(triggered()), m_tabmanager, SLOT(revertToOriginal()));
@@ -437,6 +457,8 @@ Translator::Translator(QTAntimony* app, QString filename)
 #ifdef USE_COMP
     editmenu->addAction(actionFlattenSBML);
 #endif
+    editmenu->addAction(m_actionDimensionless);
+    editmenu->addAction(m_actionAddDefaults);
 
     //The View Menu
     QMenu* viewmenu = menuBar()->addMenu(tr("&View"));
@@ -471,6 +493,8 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_tabmanager->sbmlTabs(displaysbml);
     m_tabmanager->cellmlTabs(displaycellml);
     m_tabmanager->SetFlatten(flattensbml);
+    m_tabmanager->SetAddDefaults(addDefaults);
+    setBareNumbersAreDimensionless(isDimensionless);
 
     //And finally...
     setCentralWidget(m_tabmanager);
@@ -604,6 +628,8 @@ void Translator::closeEvent(QCloseEvent* event)
         QSettings qset(ORG, APP);
         qset.sync();
         qset.setValue("geometry", saveGeometry());
+        qset.setValue("isDimensionless", m_actionDimensionless->isChecked());
+        qset.setValue("addDefaults", m_actionAddDefaults->isChecked());
         m_tabmanager->SaveFonts();
         m_tabmanager->SaveTabDisplay();
     }

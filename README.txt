@@ -10,6 +10,20 @@ The CellML API v1.11 SDK was used in this version of Antimony (and QTAntimony) a
 
 If downloading the SDK does not work (or if it is unavailable for your operating system) it too now uses CMake as its build system, and we have had reasonable success using this on linux-based systems.
 
+What's new in v2.7.0
+  - Fixed a bug with QTAntimony and linux systems with German or other languages that use '.' and ',' in numbers opposite to how they are used in American Math.
+  - Added find/replace functionality to QTAntimony
+  - Added 'go to line' functionality to QTAntimony
+  - Added the ability to define submodels with implied parameters:
+          A: foo(1,2)
+    is now the same as declaring
+          A: foo(x,y)
+          x=1
+          y=2
+  - Added the ability to concisely define elements and their assignment rules:
+          const species S1 in C := 1+x
+
+
 What's new in v2.6.1
   - Fixed a bug that prevented the new distributions from being properly exported to SBML when used in event constructs.
 

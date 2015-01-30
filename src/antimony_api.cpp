@@ -1941,6 +1941,22 @@ LIB_EXTERN char* getSBMLWarnings(const char* moduleName)
 }
 #endif
 
+LIB_EXTERN bool addDefaultInitialValues(const char* moduleName)
+{
+  if (moduleName == NULL) {
+    g_registry.GetMainModule()->AddDefaultInitialValues();
+    return false;
+  }
+  if (!checkModule(moduleName)) return true;
+  g_registry.GetModule(moduleName)->AddDefaultInitialValues();
+  return false;
+}
+
+LIB_EXTERN void setBareNumbersAreDimensionless(bool dimensionless)
+{
+  g_registry.SetBareNumbersAreDimensionless(dimensionless);
+}
+
 LIB_EXTERN void freeAll()
 {
   g_registry.FreeAll();

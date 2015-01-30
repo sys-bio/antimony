@@ -25,7 +25,7 @@
 
 #define MAINMODULE "__main"
 #ifndef LIBANTIMONY_VERSION_STRING //Should be created in the makefile (CMakeLists.txt)
-#define LIBANTIMONY_VERSION_STRING "v2.6.0"
+#define LIBANTIMONY_VERSION_STRING "v2.7.0"
 #endif
 
 class Registry
@@ -65,6 +65,7 @@ private:
   std::map<std::pair<std::string, std::string>, std::string> m_sbindex;
 
   bool m_writeNameToSBML;
+  bool m_bareNumbersAreDimensionless;
 
 public:
   Registry();
@@ -198,6 +199,10 @@ public:
   //For testing, we don't want to write our name/version to SBML files so that we can more easily compare the outputs to the expected outputs.
   void SetWriteNameToSBML(bool set);
   bool GetWriteNameToSBML();
+
+  //Defaults
+  void SetBareNumbersAreDimensionless(bool dimensionless);
+  bool GetBareNumbersAreDimensionless();
 };
 
 extern Registry g_registry;

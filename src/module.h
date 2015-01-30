@@ -101,6 +101,7 @@ public:
   Variable* AddOrFindUnitDef(UnitDef* unitdef);
   bool AddUnitVariables(UnitDef* unitdef);
   void AddDefaultVariables();
+  void AddDefaultInitialValues();
 
   Variable* GetVariable(const std::vector<std::string>& name);
   Variable* GetDefaultVariable(const std::vector<std::string>& name);
