@@ -1067,3 +1067,20 @@ distribution_type GetDistributionFromAnnotation(const std::string& annot, unsign
  }
  return distUNKNOWN;
 }
+
+void removeBooleanErrors(SBMLDocument* doc)
+{
+  SBMLErrorLog* log = doc->getErrorLog();
+  log->removeAll(10209);
+  log->removeAll(10210);
+  log->removeAll(10211);
+  log->removeAll(10212);
+  log->removeAll(10213);
+  log->removeAll(10217);
+  if (log->contains(1090105) && log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)==1) {
+    log->remove(1090105);
+  }
+  if (log->contains(1090106) && log->getNumFailsWithSeverity(LIBSBML_SEV_WARNING)==1) {
+    log->remove(1090106);
+  }
+}

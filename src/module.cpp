@@ -1081,6 +1081,7 @@ bool Module::Finalize()
     SBMLDocument* testdoc = reader.readSBMLFromString(newSBML);
     testdoc->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
     testdoc->checkConsistency();
+    removeBooleanErrors(testdoc);
     SBMLErrorLog* log = testdoc->getErrorLog();
     string trueerrors = "";
     for (unsigned int err=0; err<log->getNumErrors(); err++) {
@@ -1096,16 +1097,9 @@ bool Module::Finalize()
         m_libsbml_warnings += error->getMessage();
         break;
       case 2: //LIBSBML_SEV_ERROR:
-//#ifndef NDEBUG
-        if (error->getErrorId() == 10217) {
-          //We allow the creation of 'invalid' use of booleans in numeric contexts.
-          break;
-        }
         if (trueerrors != "") trueerrors += "\n";
         trueerrors += error->getMessage();
-//#else
-//        m_libsbml_warnings += error->getMessage();
-//#endif
+        //  m_libsbml_warnings += error->getMessage(); //If we want to disable fail-on-error again.
         break;
       case 3: //LIBSBML_SEV_FATAL:
         g_registry.SetError("Fatal error when creating an SBML document; unable to continue.  Error from libSBML:\n\n" + error->getMessage());

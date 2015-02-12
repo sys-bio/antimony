@@ -358,6 +358,7 @@ long CheckAndAddSBMLDoc(SBMLDocument* document)
   g_registry.ClearWarnings();
   document->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   document->checkConsistency();
+  removeBooleanErrors(document);
   if (document->getErrorLog()->getNumFailsWithSeverity(2) > 0 || document->getErrorLog()->getNumFailsWithSeverity(3) > 0 ) {
     return -1;
   }

@@ -32,6 +32,7 @@ UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, std::string modulen
 #endif
 
 void addDistributionToModel(Model* model, distribution_type dtype);
+void removeBooleanErrors(SBMLDocument* doc);
 
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
 distribution_type GetExactTypeOf(const DistribFunctionDefinitionPlugin* dfdp);
