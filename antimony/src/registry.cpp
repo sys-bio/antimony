@@ -375,6 +375,7 @@ int Registry::CheckAndAddSBMLIfGood(SBMLDocument* document)
 {
   document->setConsistencyChecks(LIBSBML_CAT_UNITS_CONSISTENCY, false);
   document->checkConsistency();
+  removeBooleanErrors(document);
   SBMLErrorLog* log = document->getErrorLog();
   if (log->getNumFailsWithSeverity(2) == 0 && log->getNumFailsWithSeverity(3) == 0) {
     //It's a valid SBML file.
