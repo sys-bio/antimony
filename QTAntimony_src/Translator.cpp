@@ -180,7 +180,7 @@ Translator::Translator(QTAntimony* app, QString filename)
     m_actionFindReplace->setShortcut(QKeySequence::Replace);
     m_actionFindReplace->setEnabled(true);
     m_actionGoToLine = new QAction(tr("&Go to line"), this);
-    m_actionGoToLine->setShortcut(tr("Alt+g"));
+    m_actionGoToLine->setShortcut(tr("Ctrl+g"));
     m_actionGoToLine->setEnabled(true);
 
     //View
