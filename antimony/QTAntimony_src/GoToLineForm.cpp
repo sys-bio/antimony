@@ -53,7 +53,7 @@ void GoToLineForm::goToLineChanged(QString line) {
   if (max_line < line_number) {
     line_number = max_line;
   }
-  QTextCursor text_cursor(m_textEdit->document()->findBlockByLineNumber(line_number - 1));
+  QTextCursor text_cursor(m_textEdit->document()->findBlockByNumber(line_number - 1));
   m_textEdit->setTextCursor(text_cursor);
 }
 
