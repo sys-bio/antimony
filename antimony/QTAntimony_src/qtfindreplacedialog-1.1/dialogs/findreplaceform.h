@@ -82,7 +82,12 @@ public slots:
      * @param down whether to find the next or the previous
      * occurrence
      */
-    void find(bool down);
+    void find(bool down, bool wrap);
+
+    /**
+     * Finds the next occurrence
+     */
+    void find(bool wrap);
 
     /**
      * Finds the next occurrence
@@ -92,12 +97,12 @@ public slots:
     /**
      * Finds the next occurrence
      */
-    void findNext() { find(true); }
+    void findNext() { find(true, true); }
 
     /**
      * Finds the previous occurrence
      */
-    void findPrev() { find(false); }
+    void findPrev() { find(false, true); }
 
     /**
       * Replaces the found occurrences and goes to the next occurrence
@@ -136,6 +141,8 @@ protected:
 
     /// the text editor (possibly) associated with this form
     QPlainTextEdit* m_textEdit;
+
+    friend class FindReplaceDialog;
 };
 
 #endif // FINDREPLACEFORM_H
