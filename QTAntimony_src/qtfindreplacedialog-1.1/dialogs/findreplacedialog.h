@@ -59,6 +59,8 @@ public slots:
       */
     void setPlainTextEdit(QPlainTextEdit *textEdit);
 
+    virtual void show();
+
 protected:
     void changeEvent(QEvent *e);
 

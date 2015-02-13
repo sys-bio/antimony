@@ -116,13 +116,22 @@ void FindReplaceForm::showMessage(const QString &message) {
     }
 }
 
-void FindReplaceForm::find() {
-    find(ui->downRadioButton->isChecked());
+void FindReplaceForm::find(bool wrap) {
+    find(ui->downRadioButton->isChecked(), wrap);
 }
 
-void FindReplaceForm::find(bool next) {
+void FindReplaceForm::find() {
+    find(ui->downRadioButton->isChecked(), true);
+}
+
+void FindReplaceForm::find(bool next, bool wrap) {
     if (!m_textEdit)
         return; // TODO: show some warning?
+
+    m_textCursor = m_textEdit->textCursor();
+    if (m_textCursor.hasSelection()) {
+
+    }
 
     // backward search
     bool back = !next;
@@ -140,18 +149,20 @@ void FindReplaceForm::find(bool next) {
     if (ui->wholeCheckBox->isChecked())
         flags |= QTextDocument::FindWholeWords;
 
+    QRegExp reg;
     if (ui->regexCheckBox->isChecked()) {
-        QRegExp reg(toSearch,
-                    (ui->caseCheckBox->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive));
+        reg.setCaseSensitivity(ui->caseCheckBox->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive);
+        reg.setPattern(toSearch);
 
         qDebug() << "searching for regexp: " << reg.pattern();
 
-        m_textCursor = m_textEdit->document()->find(reg, m_textCursor, flags);
-        if (!m_textCursor.isNull()) {
-          m_textEdit->setTextCursor(m_textCursor);
+        QTextCursor tempCursor = m_textEdit->document()->find(reg, m_textCursor, flags);
+        if (!tempCursor.isNull()) {
+          m_textEdit->setTextCursor(tempCursor);
           result = true;
         }
-    } else {
+    } 
+    else {
         qDebug() << "searching for: " << toSearch;
 
         result = m_textEdit->find(toSearch, flags);
@@ -159,28 +170,55 @@ void FindReplaceForm::find(bool next) {
 
     if (result) {
         showError("");
-    } else {
-        showError(tr("no match found"));
-        // move to the beginning of the document for the next find
-        //m_textCursor.setPosition(0);
-        //m_textEdit->setTextCursor(m_textCursor);
+    } 
+    else {
+      if (wrap) {
+        showError(tr("Wrapping search..."));
+        if (next) {
+          QTextCursor tempCursor = m_textCursor;
+          tempCursor.setPosition(0);
+          m_textEdit->setTextCursor(tempCursor);
+        }
+        else {
+          QTextCursor tempCursor(m_textEdit->document()->lastBlock());  
+          m_textEdit->setTextCursor(tempCursor);
+        }
+        if (ui->regexCheckBox->isChecked()) {
+          QTextCursor tempCursor = m_textEdit->document()->find(reg, m_textEdit->textCursor(), flags);
+          if (!tempCursor.isNull()) {
+            m_textEdit->setTextCursor(tempCursor);
+            result = true;
+          }
+        }
+        else {
+          result = m_textEdit->find(toSearch, flags);
+        }
+      }
+      if (!result) {
+        showError(tr("Not found"));
+        m_textEdit->setTextCursor(m_textCursor);
+      }
     }
 }
 
 void FindReplaceForm::replace() {
     if (!m_textEdit->textCursor().hasSelection()) {
-        find();
+        find(true);
     } else {
         m_textEdit->textCursor().insertText(ui->textToReplace->text());
-        find();
+        find(true);
     }
 }
 
 void FindReplaceForm::replaceAll() {
     int i=0;
+    QTextCursor qtc = m_textEdit->textCursor();
+    qtc.setPosition(0);
+    m_textEdit->setTextCursor(qtc);
+    find(true, false);
     while (m_textEdit->textCursor().hasSelection()){
         m_textEdit->textCursor().insertText(ui->textToReplace->text());
-        find();
+        find(true, false);
         i++;
     }
     showMessage(tr("Replaced %1 occurrence(s)").arg(i));

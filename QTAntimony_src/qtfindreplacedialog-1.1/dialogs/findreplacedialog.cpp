@@ -5,6 +5,8 @@
 
 #include "findreplacedialog.h"
 #include "ui_findreplacedialog.h"
+#include "ui_findreplaceform.h"
+#include "qplaintextedit.h"
 
 FindReplaceDialog::FindReplaceDialog(QWidget *parent) :
     QDialog(parent),
@@ -48,4 +50,13 @@ void FindReplaceDialog::findNext() {
 
 void FindReplaceDialog::findPrev() {
     ui->findReplaceForm->findPrev();
+}
+
+void FindReplaceDialog::show()
+{
+  QTextCursor qtc = ui->findReplaceForm->m_textEdit->textCursor();
+  if (qtc.hasSelection()) {
+    ui->findReplaceForm->ui->textToFind->setText(qtc.selectedText());
+  }
+  QDialog::show();
 }
