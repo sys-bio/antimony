@@ -1,5 +1,5 @@
 #version number
-version = 2.6
+version = 2.7
 
 #mingw:
 #mingw = i586-mingw32msvc
@@ -62,6 +62,8 @@ bin_dir = bin/
 doc_dir = doc/
 ex_dir  = doc/examples/
 qt_dir  = QTAntimony_src/
+qtdialog_dir = QTAntimony_src/qtfindreplacedialog-1.1/
+qtdialog_subdir = QTAntimony_src/qtfindreplacedialog-1.1/dialogs/
 
 YPPFILES = $(src_dir)antimony.ypp
 
@@ -144,10 +146,19 @@ QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 	$(qt_dir)CellMLTab.h \
 	$(qt_dir)FileWatcher.cpp \
 	$(qt_dir)FileWatcher.h \
+	$(qt_dir)GoToLineDialog.cpp \
+	$(qt_dir)GoToLineDialog.h \
+	$(qt_dir)GoToLineDialog.ui \
+	$(qt_dir)GoToLineForm.cpp \
+	$(qt_dir)GoToLineForm.h \
+	$(qt_dir)GoToLineForm.ui \
+	$(qt_dir)LineNumberArea.cpp \
+	$(qt_dir)LineNumberArea.h \
 	$(qt_dir)main.cpp \
 	$(qt_dir)QTAntimony.cpp \
 	$(qt_dir)QTAntimony.h \
 	$(qt_dir)QTAntimony.pro \
+	$(qt_dir)resource.h \
 	$(qt_dir)SBMLTab.cpp \
 	$(qt_dir)SBMLTab.h \
 	$(qt_dir)SBWIntegration.cpp \
@@ -162,11 +173,26 @@ QTANTIMONYFILES = $(qt_dir)AntimonyTab.cpp \
 	$(qt_dir)Tutorial.xxd \
 	$(qt_dir)antimony.icns \
 	$(qt_dir)antimony.ico \
-#	$(qt_dir)antimony.jpg \
 	$(qt_dir)antimony.qrc \
 	$(qt_dir)antimony_ico.pdn \
 	$(qt_dir)antimonyicon.rc \
 	$(qt_dir)README.txt \
+	$(qtdialog_dir)COPYING \
+	$(qtdialog_dir)README.txt \
+	$(qtdialog_dir)TODO \
+	$(qtdialog_dir)QTAntimony_README.txt \
+	$(qtdialog_subdir)dialogs.pro \
+	$(qtdialog_subdir)finddialog.cpp \
+	$(qtdialog_subdir)finddialog.h \
+	$(qtdialog_subdir)findform.cpp \
+	$(qtdialog_subdir)findform.h \
+	$(qtdialog_subdir)findreplacedialog.cpp \
+	$(qtdialog_subdir)findreplacedialog.h \
+	$(qtdialog_subdir)findreplacedialog.ui \
+	$(qtdialog_subdir)findreplaceform.cpp \
+	$(qtdialog_subdir)findreplaceform.h \
+	$(qtdialog_subdir)findreplaceform.ui \
+	$(qtdialog_subdir)findreplace_global.h \
 
 
 DOCFILES = $(doc_dir)antimony__api_8h.html \
