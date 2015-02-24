@@ -1,6 +1,6 @@
-#define MinimalSetupInstaller "AntimonyPythonBindings-2.6.1-win32.exe"
+#define MinimalSetupInstaller "AntimonyPythonBindings-2.7.0-win32.exe"
 #define MyAppName "QTAntimony"
-#define MyAppVersion "2.6.1"
+#define MyAppVersion "2.7.0"
 #define MyAppSetupIconFile "..\QTAntimony_src\antimony.ico"
 
 [Setup]
