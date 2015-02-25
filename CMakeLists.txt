@@ -264,7 +264,7 @@ if(WITH_LIBSBML_XERCES)
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
         )
-    set(ANTIMONY_LIBS ${ANTIMONY_LIBS} ${XERCES_LIBRARY} )
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${XERCES_LIBRARY} )
 endif()
 
 if(WITH_LIBSBML_COMPRESSION)
@@ -275,7 +275,7 @@ if(WITH_LIBSBML_COMPRESSION)
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
         )
-    set(ANTIMONY_LIBS ${ANTIMONY_LIBS} ${ZDLL_LIBRARY} )
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${ZDLL_LIBRARY} )
 
     find_library(BZIP_LIBRARY 
         NAMES bzip2.lib bzip2.so bzip2.dylib bzip2 bz2
@@ -284,7 +284,7 @@ if(WITH_LIBSBML_COMPRESSION)
               ${CMAKE_SOURCE_DIR}/dependencies/lib
               ${LIBSBML_INCLUDE_DIR}/../lib
         )
-    set(ANTIMONY_LIBS ${ANTIMONY_LIBS} ${BZIP_LIBRARY} )
+    set(LIBANTIMONY_LIBS ${LIBANTIMONY_LIBS} ${BZIP_LIBRARY} )
 endif()
 
 ###############################################################################

@@ -130,7 +130,12 @@ else()
 endif()
 
 #message(STATUS "libraries: ${LIBANTIMONY_LIBS}\nantimony:${LIBANTIMONY_LIBRARY}")
-target_link_libraries(binding_python_lib ${LIBANTIMONY_LIBS} ${LIBANTIMONY_LIBRARY} ${PYTHON_LIBRARIES})
+
+target_link_libraries(binding_python_lib ${LIBANTIMONY_LIBS} ${LIBANTIMONY_LIBRARY}-static ${PYTHON_LIBRARIES})
+
+if(APPLE)
+  set_target_properties(binding_python_lib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif()
 
 # 
 # Determine the python installation directory
