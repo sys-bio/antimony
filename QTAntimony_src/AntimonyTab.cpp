@@ -10,6 +10,7 @@
 #include <QFileInfo>
 
 #include <iostream>
+#include <locale.h>
 using namespace std;
 
 AntimonyTab::AntimonyTab(QWidget* parent)

@@ -1,4 +1,5 @@
 #include <QInputDialog>
+#include <locale.h>
 
 #include "CopyMessageBox.h"
 #include "CellMLTab.h"

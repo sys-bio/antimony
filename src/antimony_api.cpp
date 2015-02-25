@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <string.h>
+#include <locale.h>
 
 #ifndef NSBML
 #include <sbml/SBMLTypes.h>
