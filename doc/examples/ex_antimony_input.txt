@@ -7,7 +7,7 @@
 model bistable(s1, s2)
    gene g1, g2;
    species s1, s2;
-   g1: -> s1; k1*(1 + x)/(1 + k2*s2^2) //gene 1 makes protein s1 at this rate
+   g1: -> s1; k1*(1 + x)/(1 + k2*s2^2) //gene 1 makes protein s1
    s1 -> ; k0*s1                       //protein 1 degrades
    g2: -> s2; k3/(1 + k4*s1^2)         //gene 2 makes protein s2
    s2 -> ; k0*s2                       //protein s2 degrades
@@ -44,7 +44,7 @@ end
 //------------------------------------------
 model ringoscil(x)
    gene g1, g2, g3
-   species s1, s2, s3
+   species s1, s2, s3, x
 
    g1: -> s1; k1/(1 + x + s3^2)
    s1 -> ; k0*s1
