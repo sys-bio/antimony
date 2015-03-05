@@ -1071,12 +1071,21 @@ distribution_type GetDistributionFromAnnotation(const std::string& annot, unsign
 void removeBooleanErrors(SBMLDocument* doc)
 {
   SBMLErrorLog* log = doc->getErrorLog();
+#if LIBSBML_VERSION > 51103
   log->removeAll(10209);
   log->removeAll(10210);
   log->removeAll(10211);
   log->removeAll(10212);
   log->removeAll(10213);
   log->removeAll(10217);
+#else
+  log->remove(10209);
+  log->remove(10210);
+  log->remove(10211);
+  log->remove(10212);
+  log->remove(10213);
+  log->remove(10217);
+#endif
   if (log->contains(1090105) && log->getNumFailsWithSeverity(LIBSBML_SEV_ERROR)==1) {
     log->remove(1090105);
   }
