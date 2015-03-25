@@ -17,6 +17,7 @@ std::wstring ToWString(std::string in);
 std::string ToThinString(std::wstring in);
 std::string Trim(std::string in);
 std::string AndsAndOrs(std::string& in);
+std::string StripMsgXML(std::string& in);
 
 bool IsReal(const std::string& src);
 void setFormulaWithString(std::string formulastring, Formula* formula, Module* module);

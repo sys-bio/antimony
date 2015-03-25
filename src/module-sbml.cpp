@@ -882,9 +882,10 @@ void Module::LoadSBML(const Model* sbml)
               m_variables.pop_back();
             }
             break;
-          case SBML_CONSTRAINT:
           case SBML_ALGEBRAIC_RULE:
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  " + SBMLTypeCode_toString(target->getTypeCode(), "core") + " elements cannot be expressed in Antimony at all.  (Deleting them is therefore safe, because they are automatically dropped anyway.)");
+          case SBML_CONSTRAINT:
+            g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ", because Constraints do not have IDs in SBML.");
             break;
           case SBML_FUNCTION_DEFINITION:
             g_registry.AddWarning("Unable to process deletion " + delname + "from submodel " + submodname + " in model " + GetModuleName() + ".  Function definitions are global in Antimony, not local, and therefore cannot be deleted from submodels.");
@@ -1278,7 +1279,25 @@ void Module::LoadSBML(const Model* sbml)
     var->SetAnnotation(event);
   }
 
-  //LS DEBUG:  Add constraints?
+  //Constraints:
+  vector<AntimonyConstraint> constraints;
+  for (unsigned int c=0; c<sbml->getNumConstraints(); c++) {
+    const Constraint* constraint = sbml->getConstraint(c);
+    sbmlname = getNameFromSBMLObject(constraint, "_con");
+    Variable* var = AddOrFindVariable(&sbmlname);
+    var->SetAnnotation(constraint);
+    if (constraint->isSetMessage()) {
+      string msg = constraint->getMessageString();
+      msg = StripMsgXML(msg);
+      var->SetDisplayName(msg);
+    }
+    if (constraint->isSetMath()) {
+      AntimonyConstraint acon(var);
+      acon.SetWithASTNode(constraint->getMath());
+      var->SetConstraint(&acon);
+      constraints.push_back(acon);
+    }
+  }
 
   //Parameters
   for (unsigned int param=0; param<sbml->getNumParameters(); param++) {
@@ -1442,6 +1461,33 @@ void Module::LoadSBML(const Model* sbml)
     TranslateRulesAndAssignmentsTo(reaction, var);
   }
 
+  //FBC Constraints:
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+  const FbcModelPlugin* fmp = static_cast<const FbcModelPlugin*>(sbml->getPlugin("fbc"));
+  if (fmp != NULL) {
+    for (unsigned int fb=0; fb<fmp->getNumFluxBounds(); fb++) {
+      const FluxBound* fluxbound = fmp->getFluxBound(fb);
+      bool haveAlready = false;
+      for (size_t ac=0; ac<constraints.size(); ac++) {
+        if (constraints[ac].ContainsFlux(fluxbound)) {
+          haveAlready = true;
+        }
+      }
+      if (!haveAlready) {
+        sbmlname = getNameFromSBMLObject(fluxbound, "_con");
+        Variable* var = AddOrFindVariable(&sbmlname);
+        var->SetAnnotation(fluxbound);
+        if (fluxbound->isSetName()) {
+          var->SetDisplayName(fluxbound->getName());
+        }
+        AntimonyConstraint acon(var);
+        acon.SetFromFluxBound(fluxbound);
+        var->SetConstraint(&acon);
+      }
+    }
+  }
+#endif
+
 #ifdef USE_COMP
   if(mplugin != NULL) {
     //Ports!
@@ -1458,6 +1504,8 @@ void Module::LoadSBML(const Model* sbml)
       }
       switch(ref->getTypeCode()) {
       case SBML_CONSTRAINT:
+        g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because Constraint elements do not have IDs in SBML, and therefore cannot be made into ports in Antimony.");
+        continue;
       case SBML_ALGEBRAIC_RULE:
         g_registry.AddWarning("Unable to create port " + port->getId() + " in model " + GetModuleName() + " because " + SBMLTypeCode_toString(ref->getTypeCode(), "core") + " elements do not exist in Antimony, and are therefore untranslateable.");
         continue;
@@ -1549,6 +1597,11 @@ void Module::CreateSBMLModel(bool comp)
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
   if (m_usedDistributions.size() > 0) {
     m_sbml.setPackageRequired("distrib", true);
+  }
+#endif
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+  if (m_hasFBC) {
+    m_sbml.setPackageRequired("fbc", false);
   }
 #endif
   Model* sbmlmod = m_sbml.createModel();
@@ -2110,6 +2163,29 @@ void Module::CreateSBMLModel(bool comp)
       }
     }
   }
+
+  //Constraints (could be FBC constraints)
+  size_t numconstraints = GetNumVariablesOfType(allConstraints, comp);
+  for (size_t con=0; con < numconstraints; con++) {
+    const Variable* convar = GetNthVariableOfType(allConstraints, con, comp);
+    const AntimonyConstraint* antconstraint = convar->GetConstraint();
+    const Formula*  formula = convar->GetFormula();
+    Constraint* constraint = sbmlmod->createConstraint();
+    constraint->setMetaId(convar->GetNameDelimitedBy(cc));
+
+    if (convar->GetDisplayName() != "") {
+#if LIBSBML_VERSION >= 51103
+      constraint->setMessage(convar->GetDisplayName(), true); // <- have to update libsbml for this to work.
+#endif
+    }
+    constraint->setMetaId(convar->GetNameDelimitedBy(cc));
+    constraint->setMath(antconstraint->getASTNode());
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+    //We need to check to see if the constraint can be translated to an FBC constraint.
+    antconstraint->addFluxBounds(sbmlmod);
+#endif
+  }
+
 
   //Unknown variables (turn into parameters)
   size_t numunknown = GetNumVariablesOfType(allUnknown, comp);

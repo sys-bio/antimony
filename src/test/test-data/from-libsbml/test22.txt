@@ -17,6 +17,9 @@ model moddef1()
   // Events:
   _E0: at 1/time after time > 3: t5 = time;
 
+  // Constraints:
+  constraint _con0: time < t4*t5
+
   // Species initializations:
   s1 = 0.001/C;
 
@@ -25,12 +28,12 @@ model moddef1()
 
   // Variable initializations:
   t5 = 1;
+  t4 = 1;
   t1 = 1;
   t2 = time + 3;
-  t4 = 1;
 
   // Other declarations:
-  var t5, t1, t2, t3, t4;
+  var t5, t4, t1, t2, t3;
   const C;
 end
 

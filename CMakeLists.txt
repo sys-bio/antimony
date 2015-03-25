@@ -405,6 +405,7 @@ file(GLOB LIBANTIMONY_SOURCES
     ${ANTIMONY_SRC_DIR}antimony.tab.cpp
     ${ANTIMONY_SRC_DIR}annotated.cpp
     ${ANTIMONY_SRC_DIR}cellmlx.cpp
+    ${ANTIMONY_SRC_DIR}constraint.cpp
     ${ANTIMONY_SRC_DIR}dnastrand.cpp
     ${ANTIMONY_SRC_DIR}event.cpp
     ${ANTIMONY_SRC_DIR}formula.cpp
@@ -437,8 +438,9 @@ file(GLOB LIBANTIMONY_HEADERS
         ${ANTIMONY_SRC_DIR}annotated.h
         ${ANTIMONY_SRC_DIR}antimony_api.h
         ${ANTIMONY_SRC_DIR}antimony_api_cpp.h
-        ${ANTIMONY_SRC_DIR}dnastrand.h
         ${ANTIMONY_SRC_DIR}cellmlx.h
+        ${ANTIMONY_SRC_DIR}constraint.h
+        ${ANTIMONY_SRC_DIR}dnastrand.h
         ${ANTIMONY_SRC_DIR}enums.h
         ${ANTIMONY_SRC_DIR}event.h
         ${ANTIMONY_SRC_DIR}formula.h

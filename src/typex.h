@@ -19,4 +19,5 @@ std::string DistributionTypeToString(const distribution_type dtype);
 distribution_type StringToDistributionType(const std::string& name);
 std::string GetArgumentStringForDistribution(const distribution_type dtype);
 std::string GetURIForDistribution(const distribution_type dtype);
+std::string GetWikipediaURIForDistribution(const distribution_type dtype);
 #endif

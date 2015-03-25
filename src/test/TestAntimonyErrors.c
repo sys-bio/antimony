@@ -40,7 +40,7 @@ START_TEST (unknown_file2)
   char* err = getLastError();
   fail_unless(err != NULL);
   string error(err);
-  string expected("Unable to read SBML file 'nosuchfile.xml' due to errors encountered when parsing the file.  Error(s) from libSBML:\n\nline 1: (00002 [Error]) File unreadable.\n");
+  string expected("Unable to read SBML file 'nosuchfile.xml' due to errors encountered when parsing the file.  Error(s) from libSBML:\n\nline 1: (00002 [Error]) File unreadable.\n\n");
   fail_unless(error == expected);
   delete err;
 }
