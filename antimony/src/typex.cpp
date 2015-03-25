@@ -24,6 +24,7 @@ bool IsReaction(const var_type vtype)
   case varUndefined:
   case varUnitDefinition:
   case varDeleted:
+  case varConstraint:
     return false;
   }
   assert(false); //uncaught vtype
@@ -63,6 +64,7 @@ bool IsSpecies(const var_type vtype)
   case varUndefined:
   case varUnitDefinition:
   case varDeleted:
+  case varConstraint:
     return false;
   }
   assert(false); //uncaught vtype
@@ -87,6 +89,7 @@ bool IsDNA(const var_type vtype)
   case varUndefined:
   case varUnitDefinition:
   case varDeleted:
+  case varConstraint:
     return false;
   }
   assert(false); //uncaught vtype
@@ -111,6 +114,7 @@ bool CanHaveRateRule(const var_type vtype)
   case varStrand:
   case varUnitDefinition:
   case varDeleted:
+  case varConstraint:
     return false;
   }
   assert(false); //uncaught type
@@ -135,6 +139,7 @@ bool CanHaveAssignmentRule(const var_type vtype)
   case varStrand:
   case varUnitDefinition:
   case varDeleted:
+  case varConstraint:
     return false;
   }
   assert(false); //uncaught type
@@ -150,6 +155,7 @@ bool HasOrIsFormula(const var_type vtype)
   case varDNA:
   case varCompartment:
   case varUnitDefinition:
+  case varConstraint:
     return true;
   case varReactionGene:
   case varReactionUndef:
@@ -209,6 +215,8 @@ string VarTypeToString(const var_type vtype)
     return "Deleted element";
   case varUndefined:
     return "Undefined";
+  case varConstraint:
+    return "Constraint";
   }
   assert(false);
   return "";
@@ -239,6 +247,8 @@ string VarTypeToAntimony(const var_type vtype)
     return "unit ";
   case varDeleted:
     return "delete ";
+  case varConstraint:
+    return "constraint ";
   case varStrand:
   case varModule:
   case varUndefined:
@@ -301,6 +311,8 @@ string ReturnTypeToString(const return_type rtype)
     return "units";
   case allDeleted:
     return "deleted submodel elements";
+  case allConstraints:
+    return "constraints";
   }
   assert(false); //uncaught type
   return "Uncaught type";
@@ -425,4 +437,29 @@ std::string GetURIForDistribution(const distribution_type dtype)
   }
   assert(false); //Uncaught type
   return "http://uncertml.org/distributions/";
+}
+
+std::string GetWikipediaURIForDistribution(const distribution_type dtype)
+{
+  switch(dtype) {
+  case distUNKNOWN:
+    return "http://en.wikipedia.org/wiki/Distribution_(mathematics)";
+  case distNORMAL:
+    return "http://en.wikipedia.org/wiki/Normal_distribution";
+  case distTRUNCNORMAL:
+    return "http://en.wikipedia.org/wiki/Truncated_normal_distribution";
+  case distUNIFORM:
+    return "http://en.wikipedia.org/wiki/Uniform_distribution";
+  case distEXPONENTIAL:
+  case distTRUNCEXPONENTIAL:
+    return "http://en.wikipedia.org/wiki/Exponential_distribution";
+  case distGAMMA:
+  case distTRUNCGAMMA:
+    return "http://en.wikipedia.org/wiki/Gamma_distribution";
+  case distPOISSON:
+  case distTRUNCPOISSON:
+    return "http://en.wikipedia.org/wiki/Poisson_distribution";
+  }
+  assert(false); //Uncaught type
+  return "http://en.wikipedia.org/wiki/Distribution_(mathematics)";
 }

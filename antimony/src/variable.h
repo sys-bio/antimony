@@ -5,6 +5,7 @@
 #include <vector>
 #include <set>
 #include "annotated.h"
+#include "constraint.h"
 #include "dnastrand.h"
 #include "event.h"
 #include "formula.h"
@@ -44,6 +45,7 @@ private:
   AntimonyEvent m_valEvent;
   DNAStrand m_valStrand;
   UnitDef m_valUnitDef;
+  AntimonyConstraint m_valConstraint;
 
   //Some parameters and species can have rate rules in addition to initial assignments:
   Formula m_valRateRule;
@@ -110,6 +112,9 @@ public:
   const AntimonyEvent* GetEvent() const;
   UnitDef* GetUnitDef();
   const UnitDef* GetUnitDef() const;
+  AntimonyConstraint* GetConstraint();
+  const AntimonyConstraint* GetConstraint() const;
+
   Variable* GetSubVariable(const std::string* name);
   Variable* GetSameVariable();
   const Variable* GetSameVariable() const;
@@ -139,6 +144,8 @@ public:
   bool SetReaction(AntimonyReaction* rxn);
   bool SetModule(const std::string* modname);
   bool SetEvent(const AntimonyEvent* event);
+  bool SetConstraint(const AntimonyConstraint* constraint);
+
   void SetNewTopName(std::string newmodname, std::string newtopname);
   bool SetIsConst(bool constant);
   void SetRegConst();

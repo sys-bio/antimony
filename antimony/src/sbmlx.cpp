@@ -278,7 +278,7 @@ void GetFunctionNames(ASTNode* astn, set<string>& names)
   return;
 }
 
-double GetValueFrom(ASTNode* astn)
+double GetValueFrom(const ASTNode* astn)
 {
   switch (astn->getType()) {
   case AST_RATIONAL:
@@ -292,6 +292,29 @@ double GetValueFrom(ASTNode* astn)
     return 0; 
   }
 }
+
+ASTNodeType_t ConstraintTypeToASTType(constraint_type type)
+{
+  switch(type) {
+  case constNONE:
+    return AST_UNKNOWN;
+  case constGT:
+    return AST_RELATIONAL_GT;
+  case constLT:
+    return AST_RELATIONAL_LT;
+  case constEQ:
+    return AST_RELATIONAL_EQ;
+  case constGEQ:
+    return AST_RELATIONAL_GEQ;
+  case constLEQ:
+    return AST_RELATIONAL_LEQ;
+  case constNEQ:
+    return AST_RELATIONAL_NEQ;
+  }
+  assert(false);
+  return AST_UNKNOWN;
+}
+
 UnitDef GetUnitDefFrom(const UnitDefinition* unitdefinition, string modulename)
 {
   UnitDef ret(unitdefinition->getId(), modulename);
@@ -619,7 +642,7 @@ void addDistributionToModel(Model* model, distribution_type dtype)
   string function = "lambda(" + GetArgumentStringForDistribution(dtype) + " NaN)";
   ASTNode* math = parseStringToASTNode(function.c_str());
   fd->setMath(math);
-  string annotation = "<annotation> <symbols xmlns=\"http://sbml.org/annotations/symbols\" definition=\"" + GetURIForDistribution(dtype) + "\"/> </annotation>";
+  string annotation = "<annotation> <symbols xmlns=\"http://sbml.org/annotations/symbols\" definition=\"" + GetWikipediaURIForDistribution(dtype) + "\"/> </annotation>";
   fd->setAnnotation(annotation.c_str());
   fd->setId(DistributionTypeToString(dtype));
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
@@ -1093,3 +1116,142 @@ void removeBooleanErrors(SBMLDocument* doc)
     log->remove(1090106);
   }
 }
+
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+FluxBoundOperation_t getFBOperationFrom(constraint_type ctype)
+{
+  switch(ctype) {
+  case constEQ:
+    return FLUXBOUND_OPERATION_EQUAL;
+  case constNEQ:
+    assert(false);
+    return FLUXBOUND_OPERATION_UNKNOWN;
+  case constLEQ:
+  case constLT:
+    return FLUXBOUND_OPERATION_LESS_EQUAL;
+  case constGEQ:
+  case constGT:
+    return FLUXBOUND_OPERATION_GREATER_EQUAL;
+  case constNONE:
+    assert(false);
+    return FLUXBOUND_OPERATION_UNKNOWN;
+  }
+  assert(false);
+  return FLUXBOUND_OPERATION_UNKNOWN;
+}
+
+FluxBoundOperation_t getReverseFBOperationFrom(constraint_type ctype)
+{
+  switch(ctype) {
+  case constEQ:
+    return FLUXBOUND_OPERATION_EQUAL;
+  case constNEQ:
+  case constNONE:
+    assert(false);
+    return FLUXBOUND_OPERATION_UNKNOWN;
+  case constLEQ:
+  case constLT:
+    return FLUXBOUND_OPERATION_GREATER_EQUAL;
+  case constGEQ:
+  case constGT:
+    return FLUXBOUND_OPERATION_LESS_EQUAL;
+  }
+  assert(false);
+  return FLUXBOUND_OPERATION_UNKNOWN;
+}
+
+constraint_type getConstraintTypeFrom(FluxBoundOperation_t fbtype)
+{
+  switch(fbtype) {
+  case FLUXBOUND_OPERATION_LESS_EQUAL:
+    return constLEQ;
+  case FLUXBOUND_OPERATION_GREATER_EQUAL:
+    return constGEQ;
+  case FLUXBOUND_OPERATION_LESS:
+    return constLT;
+  case FLUXBOUND_OPERATION_GREATER:
+    return constGT;
+  case FLUXBOUND_OPERATION_EQUAL:
+    return constEQ;
+  case FLUXBOUND_OPERATION_UNKNOWN:
+    return constNONE;
+  }
+  assert(false); //uncaught type
+  return constNONE;
+}
+
+constraint_type getConstraintTypeFrom(ASTNodeType_t asttype)
+{
+  switch(asttype) {
+  case AST_RELATIONAL_LEQ:
+    return constLEQ;
+  case AST_RELATIONAL_GEQ:
+    return constGEQ;
+  case AST_RELATIONAL_LT:
+    return constLT;
+  case AST_RELATIONAL_GT:
+    return constGT;
+  case AST_RELATIONAL_EQ:
+    return constEQ;
+  case AST_RELATIONAL_NEQ:
+    return constNEQ;
+  default:
+    return constNONE;
+  }
+  assert(false); //uncaught type
+  return constNONE;
+}
+
+FluxBoundOperation_t getFBOperationFrom(ASTNodeType_t asttype)
+{
+  switch(asttype) {
+  case AST_RELATIONAL_EQ:
+    return FLUXBOUND_OPERATION_EQUAL;
+  case AST_RELATIONAL_NEQ:
+    assert(false);
+    return FLUXBOUND_OPERATION_UNKNOWN;
+  case AST_RELATIONAL_LEQ:
+  case AST_RELATIONAL_LT:
+    return FLUXBOUND_OPERATION_LESS_EQUAL;
+  case AST_RELATIONAL_GEQ:
+  case AST_RELATIONAL_GT:
+    return FLUXBOUND_OPERATION_GREATER_EQUAL;
+  default:
+    assert(false);
+    return FLUXBOUND_OPERATION_UNKNOWN;
+  }
+  assert(false);
+  return FLUXBOUND_OPERATION_UNKNOWN;
+}
+
+FluxBoundOperation_t getReverseFBOperationFrom(ASTNodeType_t asttype)
+{
+  switch(asttype) {
+  case AST_RELATIONAL_EQ:
+    return FLUXBOUND_OPERATION_EQUAL;
+  case AST_RELATIONAL_NEQ:
+    assert(false);
+    return FLUXBOUND_OPERATION_UNKNOWN;
+  case AST_RELATIONAL_LEQ:
+  case AST_RELATIONAL_LT:
+    return FLUXBOUND_OPERATION_GREATER_EQUAL;
+  case AST_RELATIONAL_GEQ:
+  case AST_RELATIONAL_GT:
+    return FLUXBOUND_OPERATION_LESS_EQUAL;
+  default:
+    assert(false);
+    return FLUXBOUND_OPERATION_UNKNOWN;
+  }
+  assert(false);
+  return FLUXBOUND_OPERATION_UNKNOWN;
+}
+
+bool FluxesMatch(const FluxBound* fb1, const FluxBound* fb2)
+{
+  if (fb1->getFluxBoundOperation() != fb2->getFluxBoundOperation()) return false;
+  if (fb1->getReaction() != fb2->getReaction()) return false;
+  if (fb1->getValue() != fb2->getValue()) return false;
+  return true;
+}
+
+#endif

@@ -52,6 +52,7 @@ Module::Module(string name)
     m_sbml(&m_sbmlnamespaces),
     m_libsbml_info(""),
     m_libsbml_warnings(""),
+    m_hasFBC(false),
 #endif
 #ifndef NCELLML
     m_cellmlmodel(NULL),
@@ -100,6 +101,7 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_sbml(&m_sbmlnamespaces), //New because we're renaming everything.
     m_libsbml_info(), //don't need this info for submodules--might be wrong anyway.
     m_libsbml_warnings(),
+    m_hasFBC(src.m_hasFBC),
 #endif
 #ifndef NCELLML
     m_cellmlmodel(NULL),
@@ -151,6 +153,7 @@ Module::Module(const Module& src)
     m_sbml(src.m_sbml),
     m_libsbml_info(src.m_libsbml_info),
     m_libsbml_warnings(src.m_libsbml_warnings),
+    m_hasFBC(src.m_hasFBC),
 #endif
 #ifndef NCELLML
     m_cellmlmodel(src.m_cellmlmodel),
@@ -193,6 +196,7 @@ Module& Module::operator=(const Module& src)
   m_sbml = src.m_sbml;
   m_libsbml_info = src.m_libsbml_info;
   m_libsbml_warnings = src.m_libsbml_warnings;
+  m_hasFBC = src.m_hasFBC;
 #ifdef USE_COMP
   CompSBMLDocumentPlugin* compdoc = static_cast<CompSBMLDocumentPlugin*>(m_sbml.getPlugin("comp"));
   compdoc->setRequired(true);
@@ -450,6 +454,90 @@ bool Module::AddDeletion(Variable* deletedvar)
   }
   return subvar->DeleteFromSubmodel(deletedvar);
 }
+
+bool Module::AddConstraint(double val, Formula* formula, constraint_type ctype)
+{
+  Variable* newcon = AddNewNumberedVariable("_con");
+  newcon->SetType(varConstraint);
+  newcon->m_valConstraint.SetName(newcon->GetName());
+  newcon->m_valConstraint.SetModulename(m_modulename);
+  newcon->m_valConstraint.SetInitialValue(val);
+  newcon->m_valConstraint.SetType(ctype);
+  newcon->m_valConstraint.SetFormula(formula, true);
+  return false;
+}
+
+bool Module::AddConstraint(const std::string* str, Formula* formula, constraint_type ctype)
+{
+  //constant is 'time', 'avogadro', etc.
+  Variable* newcon = AddNewNumberedVariable("_con");
+  newcon->SetType(varConstraint);
+  newcon->m_valConstraint.SetName(newcon->GetName());
+  newcon->m_valConstraint.SetModulename(m_modulename);
+  if (g_registry.IsConstant(*str)) {
+    Formula newform;
+    newform.AddText(str);
+    switch(ctype) {
+    case constLEQ:
+      newform.AddMathThing('<');
+      newform.AddMathThing('=');
+    case constGEQ:
+      newform.AddMathThing('>');
+      newform.AddMathThing('=');
+    case constNEQ:
+      newform.AddMathThing('!');
+      newform.AddMathThing('=');
+    case constLT:
+      newform.AddMathThing('<');
+    case constGT:
+      newform.AddMathThing('>');
+    case constEQ:
+      newform.AddMathThing('=');
+      newform.AddMathThing('=');
+    }
+    newform.AddFormula(formula);
+    newcon->m_valConstraint.SetFormula(&newform, true);
+    return false;
+  }
+  Variable* var = AddOrFindVariable(str);
+  newcon->m_valConstraint.SetInitialVariable(var);
+  newcon->m_valConstraint.SetType(ctype);
+  newcon->m_valConstraint.SetFormula(formula, true);
+  return false;
+}
+
+/*
+bool Module::AddConstraint(Variable* variable, Formula* formula, constraint_type ctype)
+{
+  Variable* newcon = AddNewNumberedVariable("_con");
+  newcon->SetType(varConstraint);
+  newcon->m_valConstraint.SetName(newcon->GetName());
+  newcon->m_valConstraint.SetModulename(m_modulename);
+  newcon->m_valConstraint.SetInitialVariable(variable);
+  newcon->m_valConstraint.SetType(ctype);
+  newcon->m_valConstraint.SetFormula(formula, true);
+  return false;
+}
+*/
+bool Module::AddConstraint(Formula* formula)
+{
+  Variable* newcon = AddNewNumberedVariable("_con");
+  newcon->SetType(varConstraint);
+  newcon->m_valConstraint.SetName(newcon->GetName());
+  newcon->m_valConstraint.SetModulename(m_modulename);
+  newcon->m_valConstraint.SetFormula(formula, false);
+  return false;
+}
+
+bool Module::AddConstraint(Variable* newcon, Formula* formula)
+{
+  if (newcon->SetType(varConstraint)) return true;
+  newcon->m_valConstraint.SetName(newcon->GetName());
+  newcon->m_valConstraint.SetModulename(m_modulename);
+  newcon->m_valConstraint.SetFormula(formula, false);
+  return false;
+}
+
 
 void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, deletion_type> >* ret)
 {
@@ -970,6 +1058,19 @@ bool Module::Finalize()
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
   if (m_usedDistributions.size() > 0) {
     m_sbmlnamespaces.addPackageNamespace("distrib", 1);
+    for (set<distribution_type>::iterator dist=m_usedDistributions.begin(); dist != m_usedDistributions.end(); dist++) {
+      vector<string> distname;
+      distname.push_back(DistributionTypeToString(*dist));
+      for (size_t v=0; v<m_variables.size(); ) {
+        Variable * var = m_variables[v];
+        if (var->GetName() == distname && var->GetType()==varUndefined) {
+          m_variables.erase(m_variables.begin()+v);
+        }
+        else {
+          v++;
+        }
+      }
+    }
   }
 #endif
 #endif
@@ -1026,6 +1127,15 @@ bool Module::Finalize()
             m_uniquevars.push_back(subvar);
           }
         }
+        //Also, we need to know if the submodel used any distributions or FBC
+        m_usedDistributions.insert(submod->m_usedDistributions.begin(), submod->m_usedDistributions.end());
+        if (m_usedDistributions.size() > 0) {
+          m_sbmlnamespaces.addPackageNamespace("distrib", 1);
+        }
+        if (submod->m_hasFBC) {
+          m_sbmlnamespaces.addPackageNamespace("fbc", 1);
+          m_hasFBC = true;
+        }
       }
     }
   }
@@ -1063,6 +1173,19 @@ bool Module::Finalize()
   }
 
 #ifndef NSBML
+  //Phase 6.5:  Calculate the constraints.
+  for (size_t var=0; var<m_uniquevars.size(); var++) {
+    Variable* variable = m_uniquevars[var];
+    if (variable->GetType() == varConstraint) {
+      variable->GetConstraint()->calculateASTNode();
+      if (variable->GetConstraint()->calculateFluxBounds()) {
+        m_hasFBC = true;
+        m_sbmlnamespaces.addPackageNamespace("fbc", 1);
+      }
+    }
+  }
+
+
   //Phase 7:  Check SBML compatibility, and create sbml model object.
   //LS DEBUG:  The need for two SBMLDocuments is a hack; fix when libSBML is updated.
   if (m_variablename.empty()) {
@@ -1341,6 +1464,11 @@ bool Module::AreEquivalent(return_type rtype, var_type vtype) const
       return true;
     }
     return false;
+  case allConstraints:
+    if (vtype==varConstraint) {
+      return true;
+    }
+    return false;
   }
   //This is just to to get compiler warnings if we switch vtype later, so
   // we remember to change the rest of this function:
@@ -1394,6 +1522,7 @@ bool Module::AreEquivalent(return_type rtype, bool isconst) const
   case modularStrands:
   case subModules:
   case allDeleted:
+  case allConstraints:
     return true;
   }
   assert(false); //uncaught return_type
@@ -1724,6 +1853,22 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
         firstone = false;
       }
       retval += indent + event->ToStringDelimitedBy(cc) + "\n";
+    }
+  }
+
+  //Then constraints:
+  firstone = true;
+  for (size_t vnum=0; vnum<m_uniquevars.size(); vnum++) {
+    const Variable* var = m_uniquevars[vnum];
+    var_type type = var->GetType();
+    if (type == varConstraint) {
+      const AntimonyConstraint* constraint = var->GetConstraint();
+      if (OrigConstraintIsAlready(var, origmap, constraint)) continue;
+      if (firstone) {
+        retval += "\n" + indent + "// Constraints:\n";
+        firstone = false;
+      }
+      retval += indent + constraint->ToStringDelimitedBy(cc) + "\n";
     }
   }
 
@@ -2181,6 +2326,14 @@ bool Module::OrigEventIsAlready(const Variable* var, const map<const Variable*, 
   if (origmapiter == origmap.end()) return false;
   if (origmapiter->second.GetType() != varEvent) return false;
   return (origmapiter->second.GetEvent()->Matches(event));
+}
+
+bool Module::OrigConstraintIsAlready(const Variable* var, const map<const Variable*, Variable>& origmap, const AntimonyConstraint* constraint) const
+{
+  map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
+  if (origmapiter == origmap.end()) return false;
+  if (origmapiter->second.GetType() != varConstraint) return false;
+  return (origmapiter->second.GetConstraint()->Matches(constraint));
 }
 
 bool Module::OrigIsAlreadyUnitDef(const Variable* var, const map<const Variable*, Variable>& origmap, string unitdef) const

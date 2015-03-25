@@ -72,6 +72,7 @@
   Variable* maybein;
   Variable* unitdef;
   bool maybemain;
+  constraint_type inequality;
 }
 
 %type <character>       mathThing "mathematical symbol"
@@ -79,6 +80,7 @@
 %type <module>          module
 %type <reactantList>    reactantList
 %type <reactionDivider> reactionDivider
+%type <inequality>      inequality    
 %type <variable>        variable variablein varmaybein varmaybeis maybein unitdef
 %type <maybemain>       maybemain
 
@@ -96,6 +98,7 @@
 %token  <word> COMPARTMENT "'compartment'"
 %token  <word> CONSTANT "name of a pre-defined constant"
 %token  <word> CONSTWORD "'const'"
+%token  <word> CONSTRAINTWORD "'constraint'"
 %token  <word> DASHES "--"
 %token  <word> DELETEWORD "'delete'"
 %token  <word> DNA "'DNA'"
@@ -221,6 +224,7 @@ modulepart:     reaction lineend {}
         |       unitinit lineend {}
         |       deletion lineend {}
         |       variablein {}
+        |       constraint lineend {}
         |       lineend {}
         ;
 
@@ -455,6 +459,21 @@ unitdef:        formula {
                     }
                 }
         ;
+
+constraint:     NUM inequality formula {if (g_registry.CurrentModule()->AddConstraint($1, $3, $2)) YYABORT;}
+        |       '-' NUM inequality formula {if (g_registry.CurrentModule()->AddConstraint(-$2, $4, $3)) YYABORT;}
+        |       CONSTANT inequality formula {if (g_registry.CurrentModule()->AddConstraint($1, $3, $2)) YYABORT;}
+        |       ANTWORD inequality formula {if (g_registry.CurrentModule()->AddConstraint($1, $3, $2)) YYABORT;}
+        |       CONSTRAINTWORD ':' formula {if (g_registry.CurrentModule()->AddConstraint($3)) YYABORT;}
+        |       CONSTRAINTWORD variable ':' formula {if (g_registry.CurrentModule()->AddConstraint($2, $4)) YYABORT;}
+        ;
+
+inequality:     '<' {$$ = constLT;}
+        |       '<' '=' {$$ = constLEQ;}
+        |       '>' {$$ = constGT;}
+        |       '>' '=' {$$ = constGEQ;}
+        |       '!' '=' {$$ = constNEQ;}
+        ;
 %%
 
 
@@ -595,6 +614,9 @@ int antimony_yylex(void)
     }
     if (CaselessStrCmp(word, "delete")) {
       return DELETEWORD;
+    }
+    if (CaselessStrCmp(word, "constraint")) {
+      return CONSTRAINTWORD;
     }
     
     if (g_registry.IsFunction(word) != NULL) {

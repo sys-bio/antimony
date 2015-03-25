@@ -23,6 +23,7 @@ Variable::Variable(const string name, const Module* module)
     m_valStrand(),
     m_valRateRule(),
     m_valUnitDef(name, module->GetModuleName()),
+    m_valConstraint(),
     m_formulatype(formulaINITIAL),
     m_extentConversionFactor(),
     m_timeConversionFactor(),
@@ -94,6 +95,7 @@ formula_type Variable::GetFormulaType() const
     return formulaASSIGNMENT; //or kinetic, but we treat them the same in this case.
   case varUnitDefinition:
   case varDeleted:
+  case varConstraint:
     return formulaINITIAL; //For lack of any other default.
   }
   assert(false); //uncaught variable type;
@@ -126,6 +128,8 @@ const Formula* Variable::GetFormula() const
     return m_valStrand.GetFinalFormula();
   case varDeleted:
     return &(g_registry.m_blankform);
+  case varConstraint:
+    return m_valConstraint.GetFormula();
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
@@ -158,6 +162,8 @@ Formula* Variable::GetFormula()
     return m_valStrand.GetFinalFormula();
   case varDeleted:
     return &(g_registry.m_blankform);
+  case varConstraint:
+    return m_valConstraint.GetFormula();
   }
   assert(false); //Uncaught variable type
   g_registry.SetError("Programming error:  uncaught variable type.  Must rewrite to fix.");
@@ -192,6 +198,7 @@ const Formula* Variable::GetInitialAssignment() const
   case varEvent:
   case varStrand:
   case varDeleted:
+  case varConstraint:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -227,6 +234,7 @@ const Formula* Variable::GetAssignmentRuleOrKineticLaw() const
   case varEvent:
   case varUnitDefinition:
   case varDeleted:
+  case varConstraint:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -262,6 +270,7 @@ Formula* Variable::GetAssignmentRuleOrKineticLaw()
   case varEvent:
   case varUnitDefinition:
   case varDeleted:
+  case varConstraint:
     return &(g_registry.m_blankform);
   }
   assert(false); //uncaught type
@@ -367,6 +376,24 @@ const UnitDef* Variable::GetUnitDef() const
   return &(m_valUnitDef);
 }
 
+const AntimonyConstraint* Variable::GetConstraint() const
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetConstraint();
+  }
+  assert(m_type == varConstraint);
+  return &(m_valConstraint);
+}
+
+AntimonyConstraint* Variable::GetConstraint()
+{
+  if (IsPointer()) {
+    return GetSameVariable()->GetConstraint();
+  }
+  assert(m_type == varConstraint);
+  return &(m_valConstraint);
+}
+
 Variable* Variable::GetSubVariable(const string* name)
 {
   if (IsPointer()) {
@@ -467,6 +494,7 @@ bool Variable::GetIsConst() const
     break;
   case varUnitDefinition:
   case varDeleted:
+  case varConstraint:
     return true;
   }
   switch(m_const) {
@@ -587,6 +615,7 @@ bool Variable::SetType(var_type newtype)
     m_valRateRule.Clear();
     m_valReaction.Clear();
     m_valUnitDef.ClearComponents();
+    m_valConstraint.Clear();
     return false;
   }
   if (IsPointer()) {
@@ -652,6 +681,7 @@ bool Variable::SetType(var_type newtype)
     case varCompartment:
     case varStrand:
     case varUnitDefinition:
+    case varConstraint:
       g_registry.SetError(error); return true;
     }
   case varFormulaUndef:
@@ -666,6 +696,7 @@ bool Variable::SetType(var_type newtype)
     case varCompartment:
     case varEvent:
     case varDeleted:
+    case varConstraint:
       m_type = newtype;
       return false;
     case varUnitDefinition:
@@ -704,6 +735,7 @@ bool Variable::SetType(var_type newtype)
     case varCompartment:
     case varStrand:
     case varUnitDefinition:
+    case varConstraint:
       g_registry.SetError(error); return true;
     }
   case varFormulaOperator:
@@ -723,6 +755,7 @@ bool Variable::SetType(var_type newtype)
     case varCompartment:
     case varStrand:
     case varUnitDefinition:
+    case varConstraint:
       g_registry.SetError(error); return true;
     }
   case varReactionGene:
@@ -742,6 +775,7 @@ bool Variable::SetType(var_type newtype)
     case varCompartment:
     case varStrand:
     case varUnitDefinition:
+    case varConstraint:
       g_registry.SetError(error); return true;
     }
   case varReactionUndef:
@@ -763,6 +797,7 @@ bool Variable::SetType(var_type newtype)
     case varCompartment:
     case varStrand:
     case varUnitDefinition:
+    case varConstraint:
       g_registry.SetError(error); return true;
     }
   case varInteraction:
@@ -779,6 +814,8 @@ bool Variable::SetType(var_type newtype)
     g_registry.SetError(error); return true; //the already-identical cases handled above.
   case varDeleted:
     g_registry.SetError("Unable to set the type of variable '" + GetNameDelimitedBy(".") + "' to " + VarTypeToString(newtype) + " because it has already been deleted from the containing model.");
+  case varConstraint:
+    g_registry.SetError(error); return true; //the already-identical cases handled above.
     return true;
   }
 
@@ -863,6 +900,11 @@ bool Variable::SetFormula(Formula* formula)
     return true;
   case varDeleted:
     g_registry.SetError("Cannot set '" + GetNameDelimitedBy(".") + "' to be " + formula->ToDelimitedStringWithEllipses(".") + " because this variable was already deleted.");
+    return true;
+  case varConstraint:
+    m_valConstraint.Clear();
+    m_valConstraint.SetFormula(formula, false);
+    break;
   }
 #ifndef NSBML
   if (m_valFormula.MakeUnitVariablesUnits()) return true;
@@ -1055,6 +1097,15 @@ bool Variable::SetEvent(const AntimonyEvent* event)
   return SetType(varEvent);
 }
 
+bool Variable::SetConstraint(const AntimonyConstraint* constraint)
+{
+  if (IsPointer()) {
+    return GetSameVariable()->SetConstraint(constraint);
+  }
+  m_valConstraint = *constraint;
+  return SetType(varConstraint);
+}
+
 void Variable::SetNewTopName(string newmodname, string newtopname)
 {
   m_module = newmodname;
@@ -1084,6 +1135,9 @@ void Variable::SetNewTopName(string newmodname, string newtopname)
   }
   if (m_valUnitDef.GetName().size() != 0) {
     m_valUnitDef.SetName(m_name);
+  }
+  if (!m_valConstraint.IsEmpty()) {
+    m_valConstraint.SetNewTopName(m_module, newtopname);
   }
   if (m_compartment.size() > 0) {
     m_compartment.insert(m_compartment.begin(), newtopname);

@@ -27,4 +27,3 @@ target_link_libraries(test_antimony ${LIBANTIMONY_LIBRARY}-static ${LIBANTIMONY_
 add_test(test_antimony_run ${CMAKE_CURRENT_BINARY_DIR}/test_antimony )
 set_tests_properties(test_antimony_run PROPERTIES ENVIRONMENT 
 	"srcdir=${CMAKE_CURRENT_SOURCE_DIR}")
-

@@ -59,6 +59,7 @@ private:
   SBMLDocument m_sbml;
   std::string m_libsbml_info;
   std::string m_libsbml_warnings;
+  bool m_hasFBC;
 #endif
 
 #ifndef NCELLML
@@ -96,6 +97,11 @@ public:
   void CreateLocalVariablesForSubmodelInterfaceIfNeeded();
   void SetIsMain(bool ismain) {m_ismain=ismain;};
   bool AddDeletion(Variable* deletedvar);
+  bool AddConstraint(double val, Formula* formula, constraint_type ctype);
+  bool AddConstraint(const std::string* str, Formula* formula, constraint_type ctype);
+  //bool AddConstraint(Variable* var, Formula* formula, constraint_type ctype);
+  bool AddConstraint(Formula* formula);
+  bool AddConstraint(Variable* var, Formula* formula);
   bool DeleteFromSynchronized(Variable* deletedvar);
   void ClearReferencesTo(Variable* deletedvar, std::set<std::pair<std::vector<std::string>, deletion_type> >* ret);
   Variable* AddOrFindUnitDef(UnitDef* unitdef);
@@ -238,6 +244,7 @@ private:
   bool OrigIsAlreadyDNAStrand(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string strand) const;
   bool OrigReactionIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyReaction* rxn) const;
   bool OrigEventIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyEvent* event) const;
+  bool OrigConstraintIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap, const AntimonyConstraint* constraint) const;
   bool OrigIsAlreadyUnitDef(const Variable* var, const std::map<const Variable*, Variable>& origmap, std::string unitdef) const;
   bool OrigDisplayNameIsAlready(const Variable* var, const std::map<const Variable*, Variable>& origmap) const;
   bool OrigMatches(const Variable* var, const std::map<const Variable*, Variable>& origmap, var_type type, const_type isconst, const Variable* comp) const;

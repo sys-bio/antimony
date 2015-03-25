@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by libAntimony version v2.6.0 on 2014-11-04 14:22 with libSBML version 5.11.0. -->
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" xmlns:distrib="http://www.sbml.org/sbml/level3/version1/distrib/version1" level="3" version="1" comp:required="true" distrib:required="true">
+  <model id="__main" name="__main">
+    <listOfFunctionDefinitions>
+      <functionDefinition id="normal">
+        <annotation>
+          <symbols xmlns="http://sbml.org/annotations/symbols" definition="http://en.wikipedia.org/wiki/Normal_distribution"/>
+        </annotation>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> mean </ci>
+            </bvar>
+            <bvar>
+              <ci> stddev </ci>
+            </bvar>
+            <notanumber/>
+          </lambda>
+        </math>
+        <distrib:drawFromDistribution>
+          <distrib:listOfDistribInputs>
+            <distrib:distribInput distrib:id="mean" distrib:index="0"/>
+            <distrib:distribInput distrib:id="stddev" distrib:index="1"/>
+          </distrib:listOfDistribInputs>
+          <UncertML xmlns="http://www.uncertml.org/3.0">
+            <NormalDistribution definition="http://www.uncertml.org/distributions">
+              <mean>
+                <var varId="mean"/>
+              </mean>
+              <stddev>
+                <var varId="stddev"/>
+              </stddev>
+            </NormalDistribution>
+          </UncertML>
+        </distrib:drawFromDistribution>
+      </functionDefinition>
+      <functionDefinition id="truncatedNormal">
+        <annotation>
+          <symbols xmlns="http://sbml.org/annotations/symbols" definition="http://en.wikipedia.org/wiki/Truncated_normal_distribution"/>
+        </annotation>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> mean </ci>
+            </bvar>
+            <bvar>
+              <ci> stddev </ci>
+            </bvar>
+            <bvar>
+              <ci> lowlimit </ci>
+            </bvar>
+            <bvar>
+              <ci> uplimit </ci>
+            </bvar>
+            <notanumber/>
+          </lambda>
+        </math>
+        <distrib:drawFromDistribution>
+          <distrib:listOfDistribInputs>
+            <distrib:distribInput distrib:id="mean" distrib:index="0"/>
+            <distrib:distribInput distrib:id="stddev" distrib:index="1"/>
+            <distrib:distribInput distrib:id="lowlimit" distrib:index="2"/>
+            <distrib:distribInput distrib:id="uplimit" distrib:index="3"/>
+          </distrib:listOfDistribInputs>
+          <UncertML xmlns="http://www.uncertml.org/3.0">
+            <NormalDistribution definition="http://www.uncertml.org/distributions">
+              <mean>
+                <var varId="mean"/>
+              </mean>
+              <stddev>
+                <var varId="stddev"/>
+              </stddev>
+              <truncationLowerInclusiveBound>
+                <var varId="lowlimit"/>
+              </truncationLowerInclusiveBound>
+              <truncationUpperInclusiveBound>
+                <var varId="uplimit"/>
+              </truncationUpperInclusiveBound>
+            </NormalDistribution>
+          </UncertML>
+        </distrib:drawFromDistribution>
+      </functionDefinition>
+      <functionDefinition id="uniform">
+        <annotation>
+          <symbols xmlns="http://sbml.org/annotations/symbols" definition="http://en.wikipedia.org/wiki/Uniform_distribution"/>
+        </annotation>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> minimum </ci>
+            </bvar>
+            <bvar>
+              <ci> maximum </ci>
+            </bvar>
+            <notanumber/>
+          </lambda>
+        </math>
+        <distrib:drawFromDistribution>
+          <distrib:listOfDistribInputs>
+            <distrib:distribInput distrib:id="minimum" distrib:index="0"/>
+            <distrib:distribInput distrib:id="maximum" distrib:index="1"/>
+          </distrib:listOfDistribInputs>
+          <UncertML xmlns="http://www.uncertml.org/3.0">
+            <UniformDistribution definition="http://www.uncertml.org/distributions">
+              <minimum>
+                <var varId="minimum"/>
+              </minimum>
+              <maximum>
+                <var varId="maximum"/>
+              </maximum>
+            </UniformDistribution>
+          </UncertML>
+        </distrib:drawFromDistribution>
+      </functionDefinition>
+      <functionDefinition id="exponential">
+        <annotation>
+          <symbols xmlns="http://sbml.org/annotations/symbols" definition="http://en.wikipedia.org/wiki/Exponential_distribution"/>
+        </annotation>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> rate </ci>
+            </bvar>
+            <notanumber/>
+          </lambda>
+        </math>
+        <distrib:drawFromDistribution>
+          <distrib:listOfDistribInputs>
+            <distrib:distribInput distrib:id="rate" distrib:index="0"/>
+          </distrib:listOfDistribInputs>
+          <UncertML xmlns="http://www.uncertml.org/3.0">
+            <ExponentialDistribution definition="http://www.uncertml.org/distributions">
+              <rate>
+                <var varId="rate"/>
+              </rate>
+            </ExponentialDistribution>
+          </UncertML>
+        </distrib:drawFromDistribution>
+      </functionDefinition>
+      <functionDefinition id="truncatedExponential">
+        <annotation>
+          <symbols xmlns="http://sbml.org/annotations/symbols" definition="http://en.wikipedia.org/wiki/Exponential_distribution"/>
+        </annotation>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> rate </ci>
+            </bvar>
+            <bvar>
+              <ci> lowlimit </ci>
+            </bvar>
+            <bvar>
+              <ci> uplimit </ci>
+            </bvar>
+            <notanumber/>
+          </lambda>
+        </math>
+        <distrib:drawFromDistribution>
+          <distrib:listOfDistribInputs>
+            <distrib:distribInput distrib:id="rate" distrib:index="0"/>
+            <distrib:distribInput distrib:id="lowlimit" distrib:index="1"/>
+            <distrib:distribInput distrib:id="uplimit" distrib:index="2"/>
+          </distrib:listOfDistribInputs>
+          <UncertML xmlns="http://www.uncertml.org/3.0">
+            <ExponentialDistribution definition="http://www.uncertml.org/distributions">
+              <rate>
+                <var varId="rate"/>
+              </rate>
+              <truncationLowerInclusiveBound>
+                <var varId="lowlimit"/>
+              </truncationLowerInclusiveBound>
+              <truncationUpperInclusiveBound>
+                <var varId="uplimit"/>
+              </truncationUpperInclusiveBound>
+            </ExponentialDistribution>
+          </UncertML>
+        </distrib:drawFromDistribution>
+      </functionDefinition>
+      <functionDefinition id="gamma">
+        <annotation>
+          <symbols xmlns="http://sbml.org/annotations/symbols" definition="http://en.wikipedia.org/wiki/Gamma_distribution"/>
+        </annotation>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> mean </ci>
+            </bvar>
+            <bvar>
+              <ci> stddev </ci>
+            </bvar>
+            <notanumber/>
+          </lambda>
+        </math>
+        <distrib:drawFromDistribution>
+          <distrib:listOfDistribInputs>
+            <distrib:distribInput distrib:id="shape" distrib:index="0"/>
+            <distrib:distribInput distrib:id="scale" distrib:index="1"/>
+          </distrib:listOfDistribInputs>
+          <UncertML xmlns="http://www.uncertml.org/3.0">
+            <GammaDistribution definition="http://www.uncertml.org/distributions">
+              <shape>
+                <var varId="shape"/>
+              </shape>
+              <scale>
+                <var varId="scale"/>
+              </scale>
+            </GammaDistribution>
+          </UncertML>
+        </distrib:drawFromDistribution>
+      </functionDefinition>
+      <functionDefinition id="truncatedGamma">
+        <annotation>
+          <symbols xmlns="http://sbml.org/annotations/symbols" definition="http://en.wikipedia.org/wiki/Gamma_distribution"/>
+        </annotation>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> mean </ci>
+            </bvar>
+            <bvar>
+              <ci> stddev </ci>
+            </bvar>
+            <bvar>
+              <ci> lowlimit </ci>
+            </bvar>
+            <bvar>
+              <ci> uplimit </ci>
+            </bvar>
+            <notanumber/>
+          </lambda>
+        </math>
+        <distrib:drawFromDistribution>
+          <distrib:listOfDistribInputs>
+            <distrib:distribInput distrib:id="shape" distrib:index="0"/>
+            <distrib:distribInput distrib:id="scale" distrib:index="1"/>
+            <distrib:distribInput distrib:id="lowlimit" distrib:index="2"/>
+            <distrib:distribInput distrib:id="uplimit" distrib:index="3"/>
+          </distrib:listOfDistribInputs>
+          <UncertML xmlns="http://www.uncertml.org/3.0">
+            <GammaDistribution definition="http://www.uncertml.org/distributions">
+              <shape>
+                <var varId="shape"/>
+              </shape>
+              <scale>
+                <var varId="scale"/>
+              </scale>
+              <truncationLowerInclusiveBound>
+                <var varId="lowlimit"/>
+              </truncationLowerInclusiveBound>
+              <truncationUpperInclusiveBound>
+                <var varId="uplimit"/>
+              </truncationUpperInclusiveBound>
+            </GammaDistribution>
+          </UncertML>
+        </distrib:drawFromDistribution>
+      </functionDefinition>
+      <functionDefinition id="poisson">
+        <annotation>
+          <symbols xmlns="http://sbml.org/annotations/symbols" definition="http://en.wikipedia.org/wiki/Poisson_distribution"/>
+        </annotation>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> rate </ci>
+            </bvar>
+            <notanumber/>
+          </lambda>
+        </math>
+        <distrib:drawFromDistribution>
+          <distrib:listOfDistribInputs>
+            <distrib:distribInput distrib:id="rate" distrib:index="0"/>
+          </distrib:listOfDistribInputs>
+          <UncertML xmlns="http://www.uncertml.org/3.0">
+            <PoissonDistribution definition="http://www.uncertml.org/distributions">
+              <rate>
+                <var varId="rate"/>
+              </rate>
+            </PoissonDistribution>
+          </UncertML>
+        </distrib:drawFromDistribution>
+      </functionDefinition>
+      <functionDefinition id="truncatedPoisson">
+        <annotation>
+          <symbols xmlns="http://sbml.org/annotations/symbols" definition="http://en.wikipedia.org/wiki/Poisson_distribution"/>
+        </annotation>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> rate </ci>
+            </bvar>
+            <bvar>
+              <ci> lowlimit </ci>
+            </bvar>
+            <bvar>
+              <ci> uplimit </ci>
+            </bvar>
+            <notanumber/>
+          </lambda>
+        </math>
+        <distrib:drawFromDistribution>
+          <distrib:listOfDistribInputs>
+            <distrib:distribInput distrib:id="rate" distrib:index="0"/>
+            <distrib:distribInput distrib:id="lowlimit" distrib:index="1"/>
+            <distrib:distribInput distrib:id="uplimit" distrib:index="2"/>
+          </distrib:listOfDistribInputs>
+          <UncertML xmlns="http://www.uncertml.org/3.0">
+            <PoissonDistribution definition="http://www.uncertml.org/distributions">
+              <rate>
+                <var varId="rate"/>
+              </rate>
+              <truncationLowerInclusiveBound>
+                <var varId="lowlimit"/>
+              </truncationLowerInclusiveBound>
+              <truncationUpperInclusiveBound>
+                <var varId="uplimit"/>
+              </truncationUpperInclusiveBound>
+            </PoissonDistribution>
+          </UncertML>
+        </distrib:drawFromDistribution>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfParameters>
+      <parameter id="a" constant="true"/>
+      <parameter id="b" constant="true"/>
+      <parameter id="c" constant="true"/>
+      <parameter id="d" constant="true"/>
+      <parameter id="e" constant="true"/>
+      <parameter id="f" constant="true"/>
+      <parameter id="g" constant="true"/>
+      <parameter id="h" constant="true"/>
+      <parameter id="i" constant="true"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="a">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> normal </ci>
+            <cn type="integer"> 1 </cn>
+            <cn type="integer"> 2 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="b">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> truncatedNormal </ci>
+            <cn type="integer"> 1 </cn>
+            <cn type="integer"> 2 </cn>
+            <cn type="integer"> 3 </cn>
+            <cn type="integer"> 4 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="c">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> uniform </ci>
+            <cn type="integer"> 1 </cn>
+            <cn type="integer"> 2 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="d">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> exponential </ci>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="e">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> truncatedExponential </ci>
+            <cn type="integer"> 1 </cn>
+            <cn type="integer"> 2 </cn>
+            <cn type="integer"> 3 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="f">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> gamma </ci>
+            <cn type="integer"> 1 </cn>
+            <cn type="integer"> 2 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="g">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> truncatedGamma </ci>
+            <cn type="integer"> 1 </cn>
+            <cn type="integer"> 2 </cn>
+            <cn type="integer"> 3 </cn>
+            <cn type="integer"> 4 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="h">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> poisson </ci>
+            <cn type="integer"> 1 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="i">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <ci> truncatedPoisson </ci>
+            <cn type="integer"> 1 </cn>
+            <cn type="integer"> 2 </cn>
+            <cn type="integer"> 3 </cn>
+          </apply>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+  </model>
+</sbml>

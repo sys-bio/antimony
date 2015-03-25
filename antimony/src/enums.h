@@ -33,6 +33,7 @@ enum rd_type {rdBecomes = 0, rdActivates, rdInhibits, rdInfluences, rdBecomesIrr
  * - varStrand: A DNA strand (an ordered list of DNA elements)
  * - varUnitDefinition: A unit definition.
  * - varDeleted: A deleted submodel element
+ * - varConstraint: A constraint (either an FBC constraint or a 'normal' constraint)
  */
 
 enum var_type {varSpeciesUndef = 0,
@@ -48,7 +49,8 @@ enum var_type {varSpeciesUndef = 0,
                varCompartment,
                varStrand,
                varUnitDefinition,
-               varDeleted};
+               varDeleted,
+               varConstraint};
 /**
  * return_types are used in the API when requesting information about different symbols.  Each return_type refers to a different group of symbols, and are overlapping--i.e. a single symbol can be included in 'allGenes' and 'allReactions'. 
   * - allSymbols:        Every symbol of every type in Antimony
@@ -99,7 +101,8 @@ enum return_type {allSymbols = 0,
                   expandedStrands,
                   modularStrands,
                   allUnits,
-                  allDeleted};
+                  allDeleted,
+                  allConstraints};
 
 /**
  * const_type values are not used in the API, but are used internally in libAntimony.  Every symbol starts off being constDEFAULT, which means that the model never stated explicitly whether the symbol was to be constant or variable, so the program will use a heuristic to determine which is the case.  Once set, the heuristic is ignored, and the type (constVAR for variable symbols, constCONST for constant ones) is permanent.  Not all symbols can actually be variable or constant (for example, submodules and reactions), so attempts to set this value for those symbols will fail.
@@ -128,7 +131,7 @@ enum deletion_type {delFull = 0,
                     delInteraction};
 
 /**
- * distribution_type values are used to determine which distribution defined in UncertML is being used
+ * distribution_type values are used to determine which distribution defined in UncertML is being used.
  */
 enum distribution_type {
     distUNKNOWN = 0
@@ -141,6 +144,19 @@ enum distribution_type {
   , distTRUNCGAMMA
   , distPOISSON
   , distTRUNCPOISSON
+};
+
+/**
+ * constraint_type values are used to determine what kind (and whether) of a simple constraint is being defined.
+ */
+enum constraint_type {
+    constNONE = 0
+  , constGT
+  , constLT
+  , constEQ
+  , constGEQ
+  , constLEQ
+  , constNEQ
 };
 
 #endif // ENUMS_H

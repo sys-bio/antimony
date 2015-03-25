@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:comp="http://www.sbml.org/sbml/level3/version1/comp/version1" xmlns:fbc="http://www.sbml.org/sbml/level3/version1/fbc/version1" level="3" version="1" comp:required="true" fbc:required="false">
+  <model id="__main" name="__main">
+    <listOfCompartments>
+      <compartment sboTerm="SBO:0000410" id="default_compartment" spatialDimensions="3" size="1" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="s1" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+      <species id="s2" compartment="default_compartment" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false"/>
+    </listOfSpecies>
+    <listOfConstraints>
+      <constraint metaid="_con0">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <eq/>
+            <ci> J0 </ci>
+            <cn type="integer"> 5 </cn>
+          </apply>
+        </math>
+      </constraint>
+      <constraint metaid="_con1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <neq/>
+            <ci> J0 </ci>
+            <cn type="integer"> 3 </cn>
+          </apply>
+        </math>
+      </constraint>
+      <constraint metaid="_con2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <eq/>
+            <cn> 5 </cn>
+            <ci> J1 </ci>
+          </apply>
+        </math>
+      </constraint>
+      <constraint metaid="_con3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <neq/>
+            <cn> 3 </cn>
+            <ci> J0 </ci>
+          </apply>
+        </math>
+      </constraint>
+    </listOfConstraints>
+    <listOfReactions>
+      <reaction id="J0" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="s1" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+      </reaction>
+      <reaction id="J1" reversible="true" fast="false">
+        <listOfReactants>
+          <speciesReference species="s2" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+      </reaction>
+    </listOfReactions>
+    <fbc:listOfFluxBounds>
+      <fbc:fluxBound id="_con0" fbc:reaction="J0" fbc:operation="equal" fbc:value="5"/>
+      <fbc:fluxBound id="_con2" fbc:reaction="J1" fbc:operation="equal" fbc:value="5"/>
+    </fbc:listOfFluxBounds>
+  </model>
+</sbml>

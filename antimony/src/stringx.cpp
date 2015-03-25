@@ -113,10 +113,25 @@ string AndsAndOrs(string& in)
   return out;
 }
 
+string StripMsgXML(string& in)
+{
+  string out = in;
+  size_t xhtmlpos = out.find("xhtml\">");
+  if (xhtmlpos != string::npos) {
+    out.erase(0,xhtmlpos+7);
+  }
+  size_t slashppos = out.find("</p>");
+  if (slashppos != string::npos) {
+    out.erase(slashppos, out.size()-slashppos+1);
+  }
+  return out;
+}
+
 
 void setFormulaWithString(string formulastring, Formula* formula, Module* module)
 {
   //Note:  this function is a version of the antimony.ypp lexer.
+  formula->Clear();
   if (formulastring.size()==0) return;
   string formpart = "";
   stringstream input;
