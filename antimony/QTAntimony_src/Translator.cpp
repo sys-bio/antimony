@@ -642,7 +642,7 @@ void Translator::DisplayAbout()
 {
   QMessageBox msgBox;
   msgBox.setText("QTAntimony " LIBANTIMONY_VERSION_STRING);
-  msgBox.setInformativeText("Based on libAntimony " LIBANTIMONY_VERSION_STRING " and libSBML v" LIBSBML_DOTTED_VERSION);
+  msgBox.setInformativeText("Based on libAntimony " LIBANTIMONY_VERSION_STRING "\nand libSBML v" LIBSBML_DOTTED_VERSION "\n\nSupported by NIH/NIGMS Grant # GM081070");
   msgBox.setStandardButtons(QMessageBox::Ok);
   msgBox.exec();
 
