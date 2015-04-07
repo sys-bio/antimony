@@ -45,6 +45,8 @@ private:
   std::vector<std::string> m_returnvalue;
   std::set<std::string> m_rateNames;
   std::set<distribution_type> m_usedDistributions;
+  std::vector<std::string> m_objective;
+  bool m_maximize;
 
   size_t m_currentexportvar;
   bool m_ismain;
@@ -102,6 +104,9 @@ public:
   //bool AddConstraint(Variable* var, Formula* formula, constraint_type ctype);
   bool AddConstraint(Formula* formula);
   bool AddConstraint(Variable* var, Formula* formula);
+  bool AddObjective(Formula* formula, bool maximize);
+  bool AddObjective(Variable* var, Formula* formula, bool maximize);
+  bool AddObjective(const Variable* var, bool maximize);
   bool DeleteFromSynchronized(Variable* deletedvar);
   void ClearReferencesTo(Variable* deletedvar, std::set<std::pair<std::vector<std::string>, deletion_type> >* ret);
   Variable* AddOrFindUnitDef(UnitDef* unitdef);

@@ -38,6 +38,8 @@ Module::Module(string name)
     m_returnvalue(),
     m_rateNames(),
     m_usedDistributions(),
+    m_objective(),
+    m_maximize(true),
     m_currentexportvar(0),
     m_ismain(false),
     m_sbmllevel(3),
@@ -91,6 +93,8 @@ Module::Module(const Module& src, string newtopname, string modulename)
     m_returnvalue(src.m_returnvalue),
     m_rateNames(src.m_rateNames),
     m_usedDistributions(src.m_usedDistributions),
+    m_objective(src.m_objective),
+    m_maximize(src.m_maximize),
     m_currentexportvar(0),
     m_ismain(src.m_ismain),
     m_sbmllevel(src.m_sbmllevel),
@@ -143,6 +147,8 @@ Module::Module(const Module& src)
     m_returnvalue(src.m_returnvalue),
     m_rateNames(src.m_rateNames),
     m_usedDistributions(src.m_usedDistributions),
+    m_objective(src.m_objective),
+    m_maximize(src.m_maximize),
     m_currentexportvar(src.m_currentexportvar),
     m_ismain(src.m_ismain),
     m_sbmllevel(src.m_sbmllevel),
@@ -186,6 +192,8 @@ Module& Module::operator=(const Module& src)
   m_returnvalue = src.m_returnvalue;
   m_rateNames = src.m_rateNames;
   m_usedDistributions = src.m_usedDistributions;
+  m_objective = src.m_objective;
+  m_maximize = src.m_maximize;
   m_currentexportvar = src.m_currentexportvar;
   m_ismain = src.m_ismain;
   m_sbmllevel = src.m_sbmllevel;
@@ -346,6 +354,9 @@ void Module::SetNewTopName(string newmodname, string newtopname)
     if (!m_conversionFactors[pair].empty()) {
       m_conversionFactors[pair].insert(m_conversionFactors[pair].begin(), newtopname);
     }
+  }
+  if (m_objective.size() > 0) {
+    m_objective.insert(m_objective.begin(), newtopname);
   }
 }
 
@@ -522,11 +533,7 @@ bool Module::AddConstraint(Variable* variable, Formula* formula, constraint_type
 bool Module::AddConstraint(Formula* formula)
 {
   Variable* newcon = AddNewNumberedVariable("_con");
-  newcon->SetType(varConstraint);
-  newcon->m_valConstraint.SetName(newcon->GetName());
-  newcon->m_valConstraint.SetModulename(m_modulename);
-  newcon->m_valConstraint.SetFormula(formula, false);
-  return false;
+  return AddConstraint(newcon, formula);
 }
 
 bool Module::AddConstraint(Variable* newcon, Formula* formula)
@@ -538,6 +545,37 @@ bool Module::AddConstraint(Variable* newcon, Formula* formula)
   return false;
 }
 
+bool Module::AddObjective(Formula* formula, bool maximize)
+{
+  if (formula->IsSingleVariable()) {
+    const Variable* referenced = GetVariable(formula->GetVariables()[0]);
+    if (referenced != NULL && 
+       (referenced->GetType()==varFormulaUndef || referenced->GetType()==varUndefined)
+       ) {
+         return AddObjective(referenced, maximize);
+    }
+  }
+  Variable* newobj = AddNewNumberedVariable("_objective");
+  return AddObjective(newobj, formula, maximize);
+}
+
+
+bool Module::AddObjective(Variable* obj, Formula* formula, bool maximize)
+{
+  if (obj->SetFormula(formula, true)) return true;
+  return AddObjective(obj, maximize);
+}
+
+bool Module::AddObjective(const Variable* obj, bool maximize)
+{
+  if (m_objective.size() > 0) {
+    g_registry.SetError("Unable to set a new objective, since '" + ToStringFromVecDelimitedBy(m_objective, ".") + "' is already set as this model's objective function.");
+    return true;
+  }
+  m_objective = obj->GetName();
+  m_maximize = maximize;
+  return false;
+}
 
 void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, deletion_type> >* ret)
 {
@@ -555,7 +593,6 @@ void Module::ClearReferencesTo(Variable* deletedvar, set<pair<vector<string>, de
       m_conversionFactors[sync].clear();
     }
   }
-  return;
 }
 
 //Used when 'deletedvar' is a submodel itself.
@@ -1112,7 +1149,7 @@ bool Module::Finalize()
   for (size_t var=0; var<m_variables.size(); var++) {
     Variable* basevar = m_variables[var]->GetSameVariable();
     setret = uniquevarset.insert(basevar);
-    if (setret.second) {
+    if (setret.second && basevar->GetName() != m_objective) {
       m_uniquevars.push_back(basevar);
       if (basevar->GetType() == varModule) {
         Module* submod = basevar->GetModule();
@@ -1136,8 +1173,18 @@ bool Module::Finalize()
           m_sbmlnamespaces.addPackageNamespace("fbc", 1);
           m_hasFBC = true;
         }
+        //Also also, copy over the objective function, if we need one.
+        if (m_objective.size()==0) {
+          m_objective = submod->m_objective;
+          m_maximize = submod->m_maximize;
+        }
       }
     }
+  }
+
+  if (m_objective.size() > 0) {
+    m_sbmlnamespaces.addPackageNamespace("fbc", 1);
+    m_hasFBC = true;
   }
 
   //Phase 6:  convert conversion factors.
@@ -1182,6 +1229,15 @@ bool Module::Finalize()
         m_hasFBC = true;
         m_sbmlnamespaces.addPackageNamespace("fbc", 1);
       }
+    }
+  }
+
+  //Phase whatever, this numbering system is broken: check the maximize function
+  if (m_objective.size() > 0) {
+    Variable* var = GetVariable(m_objective)->GetSameVariable();
+    if (!var->GetFormula()->IsValidObjectiveFunction()) {
+      g_registry.SetError("The objective function '" + var->GetFormula()->ToDelimitedStringWithEllipses(".") + "' is not valid.  Objective functions must be the simple additive combination of reaction IDs, each optionally multiplied by a number.");
+      return true;
     }
   }
 
@@ -1837,6 +1893,28 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
         firstone = false;
       }
       retval += indent + rxn->ToDelimitedStringWithEllipses(cc) + "\n";
+    }
+  }
+
+  //The objective function, if any
+  if (m_objective.size() > 0) {
+    const Variable* var = GetVariable(m_objective);
+    if (var) {
+      retval += "\n" + indent + "// The objective function (for FBC analysis):\n";
+
+      retval += ToStringFromVecDelimitedBy(var->GetName(), ".") + ": ";
+      if (m_maximize) {
+        retval += indent + "maximize ";
+      }
+      else {
+        retval += indent + "minimize ";
+      }
+      retval += var->GetFormula()->ToDelimitedStringWithEllipses(".") + ";\n";
+      //This is not what the origmap was designed for, but it works here.  Yay hacks!  Basically, if the mapped variable has the same information in it, it's not output by any other function, so since we've already output all the information in question, we put it in here mapped to itself, so nothing else thinks it needs to add any more information (which it doesn't).
+      origmap.insert(make_pair(var, *var));
+    }
+    else {
+      assert(false); //A nonexistent variable?
     }
   }
 

@@ -10,6 +10,8 @@ The CellML API v1.11 SDK was used in this version of Antimony (and QTAntimony) a
 
 If downloading the SDK does not work (or if it is unavailable for your operating system) it too now uses CMake as its build system, and we have had reasonable success using this on linux-based systems.
 
+Antimony was supported by NIH/NIGMS Grant # GM081070.
+
 What's new in v2.7.0
   - Fixed a bug with QTAntimony and linux systems with German or other languages that use '.' and ',' in numbers opposite to how they are used in American Math.
   - Added find/replace functionality to QTAntimony

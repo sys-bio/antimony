@@ -9,6 +9,7 @@
 
 #ifndef NSBML
 #include <sbml/math/ASTNode.h>
+class Model;
 #endif
 
 class ReactantList;
@@ -84,6 +85,10 @@ public:
 #ifndef NSBML
   bool MakeUnitVariablesUnits(ASTNode* astn);
   void SetNewTopNameWith(const SBase* from, const std::string& modname);
+  void AddFluxObjective(Model* sbmlmod, bool maximize, const Variable* var) const;
+  bool IsValidObjectiveFunction() const;
+  bool IsValidObjectiveFunction(const ASTNode* astn) const;
+  void GetObjectivesFromAST(const ASTNode* astn, std::vector<std::pair<std::string, double> >& objectives) const;
 #endif
 
   bool ClearReferencesTo(Variable* deletedvar);

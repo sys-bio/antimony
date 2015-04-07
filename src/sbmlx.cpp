@@ -642,7 +642,7 @@ void addDistributionToModel(Model* model, distribution_type dtype)
   string function = "lambda(" + GetArgumentStringForDistribution(dtype) + " NaN)";
   ASTNode* math = parseStringToASTNode(function.c_str());
   fd->setMath(math);
-  string annotation = "<annotation> <symbols xmlns=\"http://sbml.org/annotations/symbols\" definition=\"" + GetWikipediaURIForDistribution(dtype) + "\"/> </annotation>";
+  string annotation = "<annotation> <distribution xmlns=\"http://sbml.org/annotations/distribution\" definition=\"" + GetWikipediaURIForDistribution(dtype) + "\"/> </annotation>";
   fd->setAnnotation(annotation.c_str());
   fd->setId(DistributionTypeToString(dtype));
 #ifdef LIBSBML_HAS_PACKAGE_DISTRIB
@@ -1061,7 +1061,7 @@ ASTNode* GetAntimonyFormOf(const DistribFunctionDefinitionPlugin* dfdp)
 #endif
 distribution_type GetDistributionFromAnnotation(const std::string& annot, unsigned int numargs)
 {
- if (annot.find("http://sbml.org/annotations/symbols") != string::npos) {
+ if (annot.find("http://sbml.org/annotations/distribution") != string::npos) {
    //It might be a distribution we know about!
    if (annot.find(GetURIForDistribution(distNORMAL)) != string::npos ) {
      if (numargs == 2) return distNORMAL;

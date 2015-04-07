@@ -823,7 +823,7 @@ bool Variable::SetType(var_type newtype)
   return false;
 }
 
-bool Variable::SetFormula(Formula* formula)
+bool Variable::SetFormula(Formula* formula, bool isObjective)
 {
   if (IsPointer()) {
     return GetSameVariable()->SetFormula(formula);
@@ -907,15 +907,17 @@ bool Variable::SetFormula(Formula* formula)
     break;
   }
 #ifndef NSBML
-  if (m_valFormula.MakeUnitVariablesUnits()) return true;
-  ASTNode* root = parseStringToASTNode(m_valFormula.ToSBMLString());
-  if (root != NULL && root->isSetUnits() && root->getNumChildren()==0) {
-    string unit = root->getUnits();
-    if (SetUnitVariable(unit)) return true;
-    //Now remove the units from the formula string, since we already stored that information.
-    double val = GetValueFrom(root);
-    m_valFormula.Clear();
-    m_valFormula.AddNum(val);
+  if (!isObjective) {
+    if (m_valFormula.MakeUnitVariablesUnits()) return true;
+    ASTNode* root = parseStringToASTNode(m_valFormula.ToSBMLString());
+    if (root != NULL && root->isSetUnits() && root->getNumChildren()==0) {
+      string unit = root->getUnits();
+      if (SetUnitVariable(unit)) return true;
+      //Now remove the units from the formula string, since we already stored that information.
+      double val = GetValueFrom(root);
+      m_valFormula.Clear();
+      m_valFormula.AddNum(val);
+    }
   }
 #endif
   return false;
