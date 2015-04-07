@@ -1485,6 +1485,38 @@ void Module::LoadSBML(const Model* sbml)
         var->SetConstraint(&acon);
       }
     }
+    const Objective* objective = fmp->getActiveObjective();
+    if (objective != NULL) {
+      sbmlname = getNameFromSBMLObject(objective, "_objective");
+      Variable* varobj = AddOrFindVariable(&sbmlname);
+      varobj->SetAnnotation(objective);
+      if (objective->isSetName()) {
+        varobj->SetDisplayName(objective->getName());
+      }
+      m_maximize = (objective->getObjectiveType() == OBJECTIVE_TYPE_MAXIMIZE);
+      m_objective = varobj->GetName();
+      Formula form;
+      for (unsigned int fo=0; fo<objective->getNumFluxObjectives(); fo++) {
+        if (fo > 0) {
+          form.AddMathThing('+');
+        }
+        const FluxObjective* fluxobj = objective->getFluxObjective(fo);
+        double stoich = fluxobj->getCoefficient();
+        if (stoich != 1) {
+          form.AddNum(stoich);
+          form.AddMathThing('*');
+        }
+        vector<string> rxnname;
+        rxnname.push_back(fluxobj->getReaction());
+        Variable* rxn = GetVariable(rxnname);
+        if (rxn==NULL || !IsReaction(rxn->GetType())) {
+          assert(false); //should be possible?
+          continue;
+        }
+        form.AddVariable(rxn);
+      }
+      varobj->SetFormula(&form, true);
+    }
   }
 #endif
 
@@ -2186,7 +2218,6 @@ void Module::CreateSBMLModel(bool comp)
 #endif
   }
 
-
   //Unknown variables (turn into parameters)
   size_t numunknown = GetNumVariablesOfType(allUnknown, comp);
   for (size_t form=0; form < numunknown; form++) {
@@ -2209,6 +2240,30 @@ void Module::CreateSBMLModel(bool comp)
       param->setUnits(unitvar->GetNameDelimitedBy(cc));
     }
   }
+
+  //The objective function (if present)
+  if (m_objective.size() > 0) {
+    Variable* objective = GetVariable(m_objective)->GetSameVariable();
+    string objname = objective->GetNameDelimitedBy(cc);
+    //First remove the 'objective' parameter:
+    SBase* obj = sbmlmod->getElementBySId(objname);
+    if (obj) {
+      obj->removeFromParentAndDelete();
+    }
+    else {
+      obj = NULL; //What?
+    }
+    obj = sbmlmod->getInitialAssignmentBySymbol(objname);
+    if (obj) {
+      obj->removeFromParentAndDelete();
+    }
+    obj = sbmlmod->getAssignmentRuleByVariable(objname);
+    if (obj) {
+      obj->removeFromParentAndDelete();
+    }
+    objective->GetFormula()->AddFluxObjective(sbmlmod, m_maximize, objective);
+  }
+
 
 #ifdef USE_COMP
   //Ports

@@ -11,6 +11,12 @@
 #include "typex.h"
 #include "variable.h"
 
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+#include <sbml/packages/fbc/sbml/Objective.h>
+#include <sbml/packages/fbc/sbml/FluxObjective.h>
+#include <sbml/packages/fbc/extension/FbcModelPlugin.h>
+#endif
+
 using namespace std;
 extern bool CaselessStrCmp(const string& lhs, const string& rhs);
 
@@ -923,6 +929,147 @@ void Formula::SetNewTopNameWith(const SBase* from, const string& modname)
     from = from->getParentSBMLObject();
   }
 #endif
+}
+
+void Formula::AddFluxObjective(Model* sbmlmod, bool maximize, const Variable* var) const
+{
+  //Don't do anything unless we know about FBC
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+  vector<pair<string, double> > objectives;
+  ASTNode* astn = parseStringToASTNode(ToSBMLString());
+  GetObjectivesFromAST(astn, objectives);
+  if (objectives.size() == 0) return;
+  FbcModelPlugin* fmp = static_cast<FbcModelPlugin*>(sbmlmod->getPlugin("fbc"));
+  Objective* objective = fmp->createObjective();
+  objective->setId(var->GetNameDelimitedBy(g_registry.GetCC()));
+  if (maximize) {
+    objective->setType("maximize");
+  }
+  else {
+    objective->setType("minimize");
+  }
+  fmp->getListOfObjectives()->setActiveObjective(objective->getId());
+  for (size_t o=0; o<objectives.size(); o++) {
+    FluxObjective* fo = objective->createFluxObjective();
+    fo->setReaction(objectives[o].first);
+    fo->setCoefficient(objectives[o].second);
+  }
+#endif
+}
+
+bool Formula::IsValidObjectiveFunction() const
+{
+  //Only worry about whether it's valid or not if we have the FBC package enabled.
+#ifdef LIBSBML_HAS_PACKAGE_FBC
+  //First check to make sure all the referenced variables are Reactions.
+  for (size_t comp=0; comp<m_components.size(); comp++) {
+    if (m_components[comp].second.size() > 0) {
+      Module* module = g_registry.GetModule(m_components[comp].first);
+      assert(module != NULL);
+      Variable* subvar = module->GetVariable(m_components[comp].second);
+      if (!IsReaction(subvar->GetType())) {
+        return false;
+      }
+    }
+  }
+
+  //Now check the form of the formula.
+  ASTNode* astn = parseStringToASTNode(ToSBMLString());
+  if (!IsValidObjectiveFunction(astn)) return false;
+
+#endif
+  return true;
+}
+
+bool Formula::IsValidObjectiveFunction(const ASTNode* astn) const
+{
+  if (astn==NULL) {
+    return false;
+  }
+  switch(astn->getType()) {
+  case AST_NAME:
+    //Already checked to see if the referenced elements are reactions
+    return true;
+  case AST_PLUS:
+  case AST_MINUS:
+    if (astn->getNumChildren()==0) return false;
+    for (unsigned int n=0; n<astn->getNumChildren(); n++) {
+      if (!IsValidObjectiveFunction(astn->getChild(n))) {
+        return false;
+      }
+    }
+    return true;
+  case AST_TIMES:
+    if (astn->getNumChildren() != 2) return false;
+    if (!astn->getChild(0)->isNumber()) return false;
+    return (astn->getChild(1)->getType() == AST_NAME);
+  case AST_INTEGER:
+  case AST_REAL:
+  case AST_REAL_E:
+  case AST_RATIONAL:
+    //Sort of a hack, but it should work anyway:
+    return (astn->isSetUnits());
+  default:
+    return false;
+  }
+}
+
+void Formula::GetObjectivesFromAST(const ASTNode* astn, vector<pair<string, double> >& objectives) const
+{
+  size_t numobjectives; //For the 'minus' case, below.
+  switch(astn->getType()) {
+  case AST_NAME:
+    //Just the name with a stoichiometry of 1
+    objectives.push_back(make_pair(astn->getName(), 1));
+    return;
+  case AST_PLUS:
+    for (unsigned int n=0; n<astn->getNumChildren(); n++) {
+      GetObjectivesFromAST(astn->getChild(n), objectives);
+    }
+    return;
+  case AST_MINUS:
+    switch(astn->getNumChildren()) {
+    case 0:
+      assert(false);
+      return;
+    case 1:
+      numobjectives = objectives.size();
+      GetObjectivesFromAST(astn->getChild(0), objectives);
+      //Switch the sign of anything added:
+      for (unsigned int n=numobjectives; n<objectives.size(); n++) {
+        pair<string, double> obj = objectives[n];
+        obj.second = -obj.second;
+        objectives[n] = obj;
+      }
+      return;
+    case 2:
+      GetObjectivesFromAST(astn->getChild(0), objectives);
+      numobjectives = objectives.size();
+      GetObjectivesFromAST(astn->getChild(1), objectives);
+      //Switch the sign of anything added second:
+      for (unsigned int n=numobjectives; n<objectives.size(); n++) {
+        pair<string, double> obj = objectives[n];
+        obj.second = -obj.second;
+        objectives[n] = obj;
+      }
+      return;
+    default:
+      //It's illegal to have 'minus' with 3+ children.
+      assert(false);
+      return;
+    }
+    return;
+  case AST_TIMES:
+    if (astn->getNumChildren() != 2) return;
+    objectives.push_back(make_pair(astn->getChild(1)->getName(), GetValueFrom(astn->getChild(0))));
+    return;
+  case AST_INTEGER:
+  case AST_REAL:
+  case AST_REAL_E:
+  case AST_RATIONAL:
+    objectives.push_back(make_pair(astn->getUnits(), GetValueFrom(astn)));
+    return;
+  }
 }
 
 #endif

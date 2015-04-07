@@ -138,7 +138,7 @@ public:
   bool SetUnitVariable(Variable* unitvar);
 
   bool SetType(var_type newtype);
-  bool SetFormula(Formula* formula);
+  bool SetFormula(Formula* formula, bool isObjective=false);
   bool SetAssignmentRule(Formula* formula);
   bool SetRateRule(Formula* formula);
   bool SetReaction(AntimonyReaction* rxn);

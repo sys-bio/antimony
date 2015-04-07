@@ -72,6 +72,7 @@
   Variable* maybein;
   Variable* unitdef;
   bool maybemain;
+  bool maxormin;
   constraint_type inequality;
 }
 
@@ -83,6 +84,7 @@
 %type <inequality>      inequality    
 %type <variable>        variable variablein varmaybein varmaybeis maybein unitdef
 %type <maybemain>       maybemain
+%type <maxormin>        maxormin
 
 %left '&' '|' /* Boolean functions and, or */
 %left '-' '+'
@@ -113,6 +115,8 @@
 %token  <word> IMPORT "'import'"
 %token  <word> INWORD "'in'"
 %token  <word> IS "'is'"
+%token  <word> MAXIMIZEWORD "'maximize'"
+%token  <word> MINIMIZEWORD "'minimize'"
 %token  <word> MODNAME "name of an existing module"
 %token  <word> MODULE "'model' or 'module'"
 %token  <word> OPERATOR "'operator'"
@@ -225,6 +229,7 @@ modulepart:     reaction lineend {}
         |       deletion lineend {}
         |       variablein {}
         |       constraint lineend {}
+        |       objective lineend {}
         |       lineend {}
         ;
 
@@ -303,7 +308,8 @@ lineend:        ';' {}
         |       '\n' {}
         ;
 
-assignment:     varmaybein '=' formula {if ($1->SetFormula($3)) YYABORT; }
+assignment:     varmaybein ':' maxormin formula {if (g_registry.CurrentModule()->AddObjective($1, $4, $3)) YYABORT;}
+        |       varmaybein '=' formula {if ($1->SetFormula($3)) YYABORT; }
         |       varmaybein IS variable {if ($1->Synchronize($3, NULL)) YYABORT;}
         |       varmaybein IS variable '/' variable {if ($1->Synchronize($3, $5)) YYABORT;}
         |       varmaybein '*' variable IS variable {if ($1->Synchronize($5, $3)) YYABORT;}
@@ -474,6 +480,13 @@ inequality:     '<' {$$ = constLT;}
         |       '>' '=' {$$ = constGEQ;}
         |       '!' '=' {$$ = constNEQ;}
         ;
+
+objective:      maxormin formula              {if (g_registry.CurrentModule()->AddObjective($2, $1)) YYABORT;}
+        ;
+
+maxormin:       MAXIMIZEWORD {$$ = true;}
+        |       MINIMIZEWORD {$$ = false;}
+        ;
 %%
 
 
@@ -617,6 +630,12 @@ int antimony_yylex(void)
     }
     if (CaselessStrCmp(word, "constraint")) {
       return CONSTRAINTWORD;
+    }
+    if (CaselessStrCmp(word, "maximize")) {
+      return MAXIMIZEWORD;
+    }
+    if (CaselessStrCmp(word, "minimize")) {
+      return MINIMIZEWORD;
     }
     
     if (g_registry.IsFunction(word) != NULL) {

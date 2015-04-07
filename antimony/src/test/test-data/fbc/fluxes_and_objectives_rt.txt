@@ -1,0 +1,23 @@
+//Created by libAntimony v2.7.0
+// Compartments and Species:
+species s1, s2, s3;
+
+// Reactions:
+J0: s1 -> ; ;
+J1: s2 -> ; ;
+J2: s3 -> ; ;
+J3:  -> s1; ;
+
+// The objective function (for FBC analysis):
+Obj: minimize J0 + -1*J1 + -2*J2 + -3.3*J3;
+
+// Constraints:
+-10 < J0 < -3
+-5 > J1 > -100
+-100 <= J2 <= -10
+-100 >= J3 >= -2.2
+
+// Species initializations:
+s1 = ;
+s2 = ;
+s3 = ;
