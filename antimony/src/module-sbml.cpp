@@ -2334,8 +2334,8 @@ void Module::CreateSBMLModel(bool comp)
         }
       }
       else {
-        assert(false);
-        //Need to create a local variable.
+        //assert(false);
+        //We do need to create a local variable, but there's no point in asserting; that will only confuse people.  This is the situation where you synchronize elements that are only in submodels:  A.S is B.S
         //LS DEBUG
       }
     }

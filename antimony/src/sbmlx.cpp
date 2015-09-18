@@ -642,6 +642,7 @@ void addDistributionToModel(Model* model, distribution_type dtype)
   string function = "lambda(" + GetArgumentStringForDistribution(dtype) + " NaN)";
   ASTNode* math = parseStringToASTNode(function.c_str());
   fd->setMath(math);
+  delete math;
   string annotation = "<annotation> <distribution xmlns=\"http://sbml.org/annotations/distribution\" definition=\"" + GetWikipediaURIForDistribution(dtype) + "\"/> </annotation>";
   fd->setAnnotation(annotation.c_str());
   fd->setId(DistributionTypeToString(dtype));
@@ -1094,7 +1095,7 @@ distribution_type GetDistributionFromAnnotation(const std::string& annot, unsign
 void removeBooleanErrors(SBMLDocument* doc)
 {
   SBMLErrorLog* log = doc->getErrorLog();
-#if LIBSBML_VERSION > 51103
+#if LIBSBML_VERSION >= 51103
   log->removeAll(10209);
   log->removeAll(10210);
   log->removeAll(10211);
