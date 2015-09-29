@@ -1891,7 +1891,7 @@ void Module::CreateSBMLModel(bool comp)
     Variable* unitvar = species->GetUnitVariable();
     Formula* formula = species->GetFormula();
     if (formula->IsDouble()) {
-      sbmlspecies->setInitialConcentration(atof(formula->ToSBMLString().c_str()));
+      sbmlspecies->setInitialConcentration(formula->GetDouble());
     }
     else if (formula->IsAmountIn(compartment)) {
       sbmlspecies->setInitialAmount(formula->ToAmount());
@@ -1999,7 +1999,7 @@ void Module::CreateSBMLModel(bool comp)
     }
     const Formula* formula = compartment->GetFormula();
     if (formula->IsDouble()) {
-      sbmlcomp->setSize(atof(formula->ToSBMLString().c_str()));
+      sbmlcomp->setSize(formula->GetDouble());
     }
     Variable* unitvar = compartment->GetUnitVariable();
     if (unitvar != NULL) {
@@ -2021,7 +2021,7 @@ void Module::CreateSBMLModel(bool comp)
     }
     param->setConstant(formvar->GetIsConst());
     if (formula->IsDouble()) {
-      param->setValue(atof(formula->ToSBMLString().c_str()));
+      param->setValue(formula->GetDouble());
     }
     Variable* unitvar = formvar->GetUnitVariable();
     if (unitvar != NULL) {

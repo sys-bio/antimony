@@ -436,7 +436,7 @@ bool FixName(string& name)
   , "time"
   , "inf"  
   , "infinity"  
-  , "nan"  
+  , "NaN"  
   , "notanumber"
   };
   for (size_t kw=0; kw<96; kw++) {

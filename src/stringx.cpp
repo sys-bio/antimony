@@ -4,6 +4,7 @@
 #include "stringx.h"
 #include "typex.h"
 #include "registry.h"
+#include <limits>
 
 using namespace std;
 extern bool CaselessStrCmp(const string& lhs, const string& rhs);
@@ -37,6 +38,11 @@ string ToStringFromVecDelimitedBy(vector<string> name, std::string cc)
 bool IsReal(const string& src)
 {
   if (src.empty()) return false;
+  if (CaselessStrCmp(src, "inf")) return true;
+  if (CaselessStrCmp(src, "infinity")) return true;
+  if (CaselessStrCmp(src, "NaN")) return true;
+  if (CaselessStrCmp(src, "-inf")) return true;
+  if (CaselessStrCmp(src, "-infinity")) return true;
 
   long i;
   long end = src.size();
@@ -53,6 +59,21 @@ bool IsReal(const string& src)
     }
   }
   return true;
+} /* IsReal */
+
+double GetReal(const string& src)
+{
+  if (src.empty()) return false;
+  if (CaselessStrCmp(src, "inf")) return numeric_limits<double>::infinity();
+  if (CaselessStrCmp(src, "infinity")) return numeric_limits<double>::infinity();
+  if (CaselessStrCmp(src, "-inf")) return -numeric_limits<double>::infinity();
+  if (CaselessStrCmp(src, "-infinity")) return -numeric_limits<double>::infinity();
+  if (CaselessStrCmp(src, "NaN")) return numeric_limits<double>::quiet_NaN();
+  if (CaselessStrCmp(src, "notanumber")) return numeric_limits<double>::quiet_NaN();
+  if (CaselessStrCmp(src, "-NaN")) return numeric_limits<double>::quiet_NaN();
+  if (CaselessStrCmp(src, "-notanumber")) return numeric_limits<double>::quiet_NaN();
+
+  return atof(src.c_str());
 } /* IsReal */
 
 wstring ToWString(string in)

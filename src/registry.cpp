@@ -832,7 +832,7 @@ void Registry::SetupConstants()
   , "time"  
   , "inf"  
   , "infinity"  
-  , "nan"  
+  , "NaN"  
   , "notanumber"
   };
   for (size_t c=0; c<10; c++) {

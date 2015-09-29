@@ -416,6 +416,43 @@ START_TEST (test_global_units_txt)
 }
 END_TEST
 
+START_TEST (test_parameter_inf)
+{
+  compareFileTranslation("parameter_inf");
+}
+END_TEST
+
+START_TEST (test_parameter_inf_txt)
+{
+  compareStringTranslation("a=inf", "parameter_inf.xml");
+}
+END_TEST
+
+START_TEST (test_parameter_neginf)
+{
+  compareFileTranslation("parameter_neginf");
+}
+END_TEST
+
+START_TEST (test_parameter_neginf_txt)
+{
+  compareStringTranslation("a=-inf", "parameter_neginf.xml");
+}
+END_TEST
+
+START_TEST (test_parameter_nan)
+{
+  compareFileTranslation("parameter_nan");
+}
+END_TEST
+
+START_TEST (test_parameter_nan_txt)
+{
+  compareStringTranslation("a=nan", "parameter_nan.xml");
+}
+END_TEST
+
+
 
 
 Suite *
@@ -424,8 +461,6 @@ create_suite_Basic (void)
   Suite *suite = suite_create("Antimony Basic");
   TCase *tcase = tcase_create("Antimony Basic");
 
-  tcase_add_test( tcase, test_global_units);
-  tcase_add_test( tcase, test_global_units_txt);
 
   tcase_add_test( tcase, test_parameter);
   tcase_add_test( tcase, test_parameter_txt);
@@ -479,6 +514,14 @@ create_suite_Basic (void)
   tcase_add_test( tcase, test_names_txt);
   tcase_add_test( tcase, test_compound_units4);
   tcase_add_test( tcase, test_compound_units4_txt);
+  tcase_add_test( tcase, test_global_units);
+  tcase_add_test( tcase, test_global_units_txt);
+  tcase_add_test( tcase, test_parameter_inf);
+  tcase_add_test( tcase, test_parameter_inf_txt);
+  tcase_add_test( tcase, test_parameter_neginf);
+  tcase_add_test( tcase, test_parameter_neginf_txt);
+  tcase_add_test( tcase, test_parameter_nan);
+  tcase_add_test( tcase, test_parameter_nan_txt);
 
   suite_add_tcase(suite, tcase);
 
