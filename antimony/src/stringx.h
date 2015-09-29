@@ -20,6 +20,7 @@ std::string AndsAndOrs(std::string& in);
 std::string StripMsgXML(std::string& in);
 
 bool IsReal(const std::string& src);
+double GetReal(const std::string& src);
 void setFormulaWithString(std::string formulastring, Formula* formula, Module* module);
 bool FixName(std::string& name);
 bool FixName(std::vector<std::string>& names);

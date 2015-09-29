@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cassert>
 #include <cstdlib>
+#include <cmath>
+#include <math.h>
 
 #include "formula.h"
 #include "module.h"
@@ -35,8 +37,25 @@ void Formula::AddNum(double num)
   stringstream convert;
   convert.precision(15);
   string strnum;
-  convert << num;
-  convert >> strnum;
+#ifdef _MSC_VER
+  if (_isnan(num)) {
+    strnum = "NaN";
+  }
+#else
+  if (isnan(num)) {
+    strnum = "NaN";
+  }
+#endif
+  else if (num == numeric_limits<double>::infinity()) {
+    strnum = "inf";
+  }
+  else if (num == -numeric_limits<double>::infinity()) {
+    strnum = "-inf";
+  }
+  else {
+    convert << num;
+    convert >> strnum;
+  }
   newvar = make_pair(strnum, novar);
   m_components.push_back(newvar);
 }
@@ -150,6 +169,22 @@ bool Formula::IsDouble() const
   return false;
 }
 
+double Formula::GetDouble() const
+{
+  if (m_components.size() == 1) {
+    if (m_components[0].second.size() == 0) {
+      return GetReal(m_components[0].first);
+    }
+  }
+  else if (m_components.size() == 2) {
+    if (m_components[0].second.size() == 0 && m_components[0].first == "-" &&
+        m_components[1].second.size() == 0 && IsReal(m_components[1].first) ) {
+      return -GetReal(m_components[1].first);
+    }
+  }
+  return 0;
+}
+
 bool Formula::IsBoolean() const
 {
   if (m_components.size() == 1) {
@@ -205,10 +240,10 @@ double Formula::ToAmount() const
 {
   //We will assume that 'IsAmountIn' returned true.
   if (m_components.size() == 3) {
-    return atof(m_components[0].first.c_str());
+    return GetReal(m_components[0].first);
   }
   else if (m_components.size() == 4) {
-    return 0 - atof(m_components[1].first.c_str());
+    return GetReal(m_components[1].first);
   }
   assert(false);
   return 0;
