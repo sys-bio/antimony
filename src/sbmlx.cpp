@@ -101,7 +101,7 @@ string parseASTNodeToString(const ASTNode* ASTform, bool carat) {
   if (ASTform==NULL) return "";
   ASTNode clone(*ASTform);
   matchNamesToTypes(&clone);
-  removeGlobalFunctionIDs(&clone);
+  //removeGlobalFunctionIDs(&clone);
   if (carat) {
     powerToCarat(&clone);
   }
