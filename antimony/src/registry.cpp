@@ -38,6 +38,8 @@ Registry::Registry()
     m_workingstrand(),
     m_currentEvent(),
     m_cc("_"),
+    m_constness(constDEFAULT),
+    m_substonly(false),
     m_error(),
     m_oldmodules(),
     m_olduserfunctions(),

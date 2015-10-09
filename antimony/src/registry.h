@@ -25,7 +25,7 @@
 
 #define MAINMODULE "__main"
 #ifndef LIBANTIMONY_VERSION_STRING //Should be created in the makefile (CMakeLists.txt)
-#define LIBANTIMONY_VERSION_STRING "v2.7.0"
+#define LIBANTIMONY_VERSION_STRING "v2.7.1"
 #endif
 
 class Registry
@@ -56,6 +56,7 @@ private:
   
   std::string m_cc;
   const_type m_constness;
+  bool m_substonly;
   std::string m_error;
   std::vector<std::string> m_warnings;
   std::vector<std::vector<Module> > m_oldmodules;
@@ -119,6 +120,7 @@ public:
 
   //Variables
   void SetConstness(const_type isconst) {m_constness = isconst;};
+  void SetSubstOnly(bool substOnly) {m_substonly = substOnly;};
   bool AddVariableToCurrentExportList(Variable* export_var);
   bool AddVariableToCurrentImportList(Variable* import_var);
   bool AddNumberToCurrentImportList(double val);
@@ -160,6 +162,7 @@ public:
   bool IsModuleName(std::string word);
 
   const_type GetConstness() const {return m_constness;};
+  bool GetSubstOnly() const {return m_substonly;};
   const std::string* AddWord(std::string word);
   void StoreVariable(Variable* var);
   const std::string* IsFunction(std::string word);

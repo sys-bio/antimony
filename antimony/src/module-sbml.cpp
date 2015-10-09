@@ -1203,6 +1203,7 @@ void Module::LoadSBML(const Model* sbml)
     }
     var->SetType(varSpeciesUndef);
     var->SetAnnotation(species);
+    var->SetSubstOnly(species->getHasOnlySubstanceUnits());
 
     //Setting the formula
     Formula formula;
@@ -1874,6 +1875,7 @@ void Module::CreateSBMLModel(bool comp)
     else {
       sbmlspecies->setBoundaryCondition(false);
     }
+    sbmlspecies->setHasOnlySubstanceUnits(species->GetSubstOnly());
     const Variable* compartment = species->GetCompartment();
     if (compartment == NULL) {
       sbmlspecies->setCompartment(DEFAULTCOMP);
@@ -1920,7 +1922,6 @@ void Module::CreateSBMLModel(bool comp)
       Variable* newunit = AddOrFindUnitDef(ud);
       sbmlspecies->setSubstanceUnits(newunit->GetNameDelimitedBy(cc));
     }
-    sbmlspecies->setHasOnlySubstanceUnits(false);
     SetAssignmentFor(sbmlmod, species, syncmap, comp, referencedVars);
   }
 

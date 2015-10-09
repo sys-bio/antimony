@@ -99,13 +99,14 @@
 %token  <word> BECOMESIRREV "=>"
 %token  <word> COMPARTMENT "'compartment'"
 %token  <word> CONSTANT "name of a pre-defined constant"
-%token  <word> CONSTWORD "'const'"
 %token  <word> CONSTRAINTWORD "'constraint'"
+%token  <word> CONSTWORD "'const'"
 %token  <word> DASHES "--"
 %token  <word> DELETEWORD "'delete'"
 %token  <word> DNA "'DNA'"
 %token  <word> ELLIPSES "..."
 %token  <word> END "'end'"
+%token  <word> ERROR "an error"
 %token  <word> EVENT "'event'"
 %token  <word> FORMULA "'formula'"
 %token  <word> FUNCTION "name of an existing function"
@@ -122,10 +123,10 @@
 %token  <word> OPERATOR "'operator'"
 %token  <word> REACTION "'reaction'"
 %token  <word> SPECIES "'species'"
+%token  <word> SUBSTONLY "'substanceOnly'"
 %token  <word> TEXTSTRING "text string"
 %token  <word> UNITWORD "'unit'"
 %token  <word> VARWORD "'var'"
-%token  <word> ERROR "an error"
 //                      %token  <word> DELETEWORD "'delete'"
 
 %name-prefix="antimony_yy"
@@ -353,10 +354,14 @@ varinitialize:  specinit { }
         |       varconstinit { }
         ;
 
-specinit:       SPECIES varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varSpeciesUndef)) YYABORT; }
-        |       VARWORD SPECIES varmaybeis {g_registry.SetConstness(constVAR); $3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
-        |       CONSTWORD SPECIES varmaybeis {g_registry.SetConstness(constCONST); $3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
-        |       specinit ',' varmaybeis {$3->SetRegConst(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
+specinit:       SPECIES varmaybeis {g_registry.SetConstness(constDEFAULT); g_registry.SetSubstOnly(false); $2->SetRegSpecVals(); if ($2->SetType(varSpeciesUndef)) YYABORT; }
+        |       VARWORD SPECIES varmaybeis {g_registry.SetConstness(constVAR); g_registry.SetSubstOnly(false); $3->SetRegSpecVals(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
+        |       CONSTWORD SPECIES varmaybeis {g_registry.SetConstness(constCONST); g_registry.SetSubstOnly(false); $3->SetRegSpecVals(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
+        |       SUBSTONLY SPECIES varmaybeis {g_registry.SetConstness(constDEFAULT); g_registry.SetSubstOnly(true); $3->SetRegSpecVals(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
+        |       SUBSTONLY varmaybeis {g_registry.SetConstness(constDEFAULT); g_registry.SetSubstOnly(true); $2->SetRegSpecVals(); if ($2->SetType(varSpeciesUndef)) YYABORT; }
+        |       VARWORD SUBSTONLY SPECIES varmaybeis {g_registry.SetConstness(constVAR); g_registry.SetSubstOnly(true); $4->SetRegSpecVals(); if ($4->SetType(varSpeciesUndef)) YYABORT; }
+        |       CONSTWORD SUBSTONLY SPECIES varmaybeis {g_registry.SetConstness(constCONST); g_registry.SetSubstOnly(true); $4->SetRegSpecVals(); if ($4->SetType(varSpeciesUndef)) YYABORT; }
+        |       specinit ',' varmaybeis {$3->SetRegSpecVals(); if ($3->SetType(varSpeciesUndef)) YYABORT; }
         ;
 
 formulainit:    FORMULA varmaybeis {g_registry.SetConstness(constDEFAULT); $2->SetRegConst(); if ($2->SetType(varFormulaUndef)) YYABORT; }
@@ -603,6 +608,9 @@ int antimony_yylex(void)
     }
     if (CaselessStrCmp(word, "const")) {
       return CONSTWORD;
+    }
+    if (CaselessStrCmp(word, "substanceOnly")) {
+      return SUBSTONLY;
     }
     if (CaselessStrCmp(word, "ext")) {
       return CONSTWORD;

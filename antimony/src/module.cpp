@@ -1788,7 +1788,8 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
 
   //List the compartments and the species (but don't define them yet) so that the order is preserved:
   vector<string> compartmentnames;
-  vector<string> speciesnames;
+  vector<string> normal_speciesnames;
+  vector<string> substonly_speciesnames;
   for (size_t var=0; var<m_uniquevars.size(); var++) {
     string name = m_uniquevars[var]->GetNameDelimitedBy(cc);
     Variable* comp = m_uniquevars[var]->GetCompartment();
@@ -1801,19 +1802,27 @@ string Module::GetAntimony(set<const Module*>& usedmods, bool funcsincluded) con
       }
     }
     else if (IsSpecies(m_uniquevars[var]->GetType())) {
-      if (m_uniquevars[var]->GetIsConst()) {
+      bool isconst = m_uniquevars[var]->GetIsConst();
+      bool substOnly = m_uniquevars[var]->GetSubstOnly();
+      if (isconst) {
         name = "$" + name;
       }
-      if (!OrigIsAlreadyConstSpecies(m_uniquevars[var], origmap, m_uniquevars[var]->GetIsConst())) {
-        speciesnames.push_back(name);
+      if (!OrigIsAlreadyConstSpecies(m_uniquevars[var], origmap, isconst, substOnly)) {
+        if (m_uniquevars[var]->GetSubstOnly()) {
+          substonly_speciesnames.push_back(name);
+        }
+        else {
+          normal_speciesnames.push_back(name);
+        }
       }
     }
   }
-  if (compartmentnames.size() > 0 || speciesnames.size() > 0) {
+  if (compartmentnames.size() > 0 || normal_speciesnames.size() > 0 || substonly_speciesnames.size() > 0) {
     retval += "\n" + indent + "// Compartments and Species:\n";
   }
   retval += ListIn80Cols("compartment", compartmentnames, indent);
-  retval += ListIn80Cols("species", speciesnames, indent);
+  retval += ListIn80Cols("species", normal_speciesnames, indent);
+  retval += ListIn80Cols("substanceOnly species", substonly_speciesnames, indent);
 
   //Now list DNA strands:
   firstone = true;
@@ -2348,11 +2357,12 @@ bool Module::OrigIsAlreadyCompartment(const Variable* var, const map<const Varia
   return (origmapiter->second.GetType() == varCompartment);
 }
 
-bool Module::OrigIsAlreadyConstSpecies(const Variable* var, const map<const Variable*, Variable>& origmap, bool isconst) const
+bool Module::OrigIsAlreadyConstSpecies(const Variable* var, const map<const Variable*, Variable>& origmap, bool isconst, bool substOnly) const
 {
   map<const Variable*, Variable >::const_iterator origmapiter = origmap.find(var);
   if (origmapiter == origmap.end()) return false;
   if (!IsSpecies(origmapiter->second.GetType())) return false;
+  if (!origmapiter->second.GetSubstOnly() == substOnly) return false;
   return (origmapiter->second.GetIsConst() == isconst);
 }
 
